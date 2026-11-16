@@ -15,7 +15,7 @@
     w.gtag('config',ID,{allow_google_signals:false,allow_ad_personalization_signals:false,debug_mode:debug});
     var tag=d.createElement('script');tag.async=true;tag.src='https://www.googletagmanager.com/gtag/js?id='+ID;d.head.appendChild(tag);
   }
-  var names={crash:'壓潰深度',mines:'水雷區',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'撒網',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',campaign:'宣傳車',boba:'插珍奶'};
+  var names={crash:'壓潰深度',mines:'水雷區',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'撒網',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群'};
   var rounds={},current='',seq=0,bucket=0,last=performance.now(),inputAt=last,visible=!d.hidden,focused=d.hasFocus?d.hasFocus():true,suspended=false;
   var tabToken=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
   function emit(event,game,params){
@@ -451,13 +451,15 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
     <a href="#boba" id="tab-boba">插珍奶<small>Boba Straw</small></a>
     <a href="#fishing" id="tab-fishing">深海釣手<small>Fishing</small></a>
     <a href="#campaign" id="tab-campaign">宣傳車<small>Campaign Truck</small></a>
+    <a href="#cat" id="tab-cat">屋頂貓貓<small>Rooftop Cat</small></a>
+    <a href="#bird" id="tab-bird">便便鳥大戰狼群<small>Poop Bird</small></a>
   </nav></details></div>
 
   <section class="view lobby-view" id="view-lobby" aria-label="遊戲大廳">
-<svg class="lobby-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-crash" viewBox="0 0 96 96"><path d="M18 24l10 8M65 65l12 9M74 19v17m-6-6 6 6 6-6" stroke="#62e6d2" stroke-width="4" stroke-linecap="round"/><g transform="rotate(27 48 48)"><rect x="17" y="34" width="63" height="32" rx="16" fill="#ffb638"/><path d="M39 34v-9h16v9M18 47H9v11h14" fill="#d5912a"/><circle cx="55" cy="50" r="10" fill="#164755" stroke="#fff0c2" stroke-width="4"/><circle cx="52" cy="47" r="3" fill="#62e6d2"/></g></symbol><symbol id="icon-mines" viewBox="0 0 96 96"><circle cx="45" cy="48" r="22" fill="#ff766b"/><g stroke="#ff766b" stroke-width="6" stroke-linecap="round"><path d="M45 17v10m0 42v10M14 48h10m42 0h10M23 26l8 8m29 29 7 7M23 70l8-8m29-29 7-7"/></g><circle cx="38" cy="41" r="6" fill="#ffc4b3"/><circle cx="72" cy="73" r="13" fill="#62e6d2"/><path d="m65 74 5 4 8-10" fill="none" stroke="#0a2a3b" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-plinko" viewBox="0 0 96 96"><path d="M15 72h66v12H15z" fill="#ffb638"/><path d="M37 73v10m22-10v10" stroke="#72562a" stroke-width="3"/><g fill="#85b4c0"><circle cx="48" cy="30" r="4"/><circle cx="35" cy="44" r="4"/><circle cx="61" cy="44" r="4"/><circle cx="22" cy="58" r="4"/><circle cx="48" cy="58" r="4"/><circle cx="74" cy="58" r="4"/></g><path d="m45 13 10 17-11 13 10 13" fill="none" stroke="#62e6d2" stroke-width="3" stroke-dasharray="3 4"/><circle cx="47" cy="13" r="8" fill="#e3fff6"/></symbol><symbol id="icon-merge" viewBox="0 0 96 96"><g fill="#123c4b" stroke="#326475" stroke-width="2"><rect x="12" y="12" width="32" height="32" rx="10"/><rect x="52" y="12" width="32" height="32" rx="10"/><rect x="12" y="52" width="32" height="32" rx="10"/></g><circle cx="28" cy="28" r="11" fill="#8db0b9"/><circle cx="68" cy="28" r="11" fill="#62e6d2"/><circle cx="28" cy="68" r="11" fill="#ffb638"/><circle cx="68" cy="68" r="21" fill="#a8a0ed"/><g font-family="system-ui" font-weight="800" fill="#082333" text-anchor="middle"><text x="28" y="33" font-size="14">2</text><text x="68" y="33" font-size="14">4</text><text x="28" y="73" font-size="14">8</text><text x="68" y="75" font-size="22">16</text></g></symbol><symbol id="icon-dice" viewBox="0 0 96 96"><circle cx="48" cy="48" r="37" fill="none" stroke="#326475" stroke-width="2"/><path d="M48 9v9m39 30h-9M48 87v-9M9 48h9" stroke="#62e6d2" stroke-width="3"/><rect x="24" y="24" width="48" height="48" rx="13" fill="#62e6d2" transform="rotate(-12 48 48)"/><g fill="#0a2a3b"><circle cx="35" cy="39" r="4"/><circle cx="48" cy="48" r="4"/><circle cx="61" cy="57" r="4"/></g></symbol><symbol id="icon-limbo" viewBox="0 0 96 96"><path d="M48 10v29" stroke="#b6d8de" stroke-width="3" stroke-dasharray="4 4"/><path d="m48 31 18 20-18 29-18-29z" fill="#ffb638"/><path d="m48 35 9 16-9 22-9-22z" fill="#ffe1a0"/><path d="M15 69q33 20 66 0M19 80q29 15 58 0" fill="none" stroke="#62e6d2" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-hilo" viewBox="0 0 96 96"><rect x="13" y="20" width="44" height="58" rx="8" fill="#e4f2f3" transform="rotate(-13 35 49)"/><rect x="41" y="14" width="44" height="62" rx="8" fill="#ffb638" transform="rotate(9 63 45)"/><path d="m53 42 12-12 11 12M65 30v28" fill="none" stroke="#483619" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="m22 54 8 8 8-8" fill="none" stroke="#145263" stroke-width="4" stroke-linecap="round"/></symbol><symbol id="icon-keno" viewBox="0 0 96 96"><rect x="12" y="12" width="72" height="72" rx="15" fill="#113041" stroke="#326475" stroke-width="2"/><g fill="#326475"><circle cx="28" cy="28" r="7"/><circle cx="48" cy="28" r="7"/><circle cx="68" cy="28" r="7"/><circle cx="28" cy="48" r="7"/><circle cx="48" cy="48" r="7"/><circle cx="68" cy="48" r="7"/><circle cx="28" cy="68" r="7"/><circle cx="48" cy="68" r="7"/><circle cx="68" cy="68" r="7"/></g><g fill="#ffb638"><circle cx="28" cy="28" r="7"/><circle cx="48" cy="48" r="7"/><circle cx="68" cy="68" r="7"/></g><path d="m22 28 4 3 7-7m9 24 4 3 7-7m9 24 4 3 7-7" fill="none" stroke="#594120" stroke-width="2"/></symbol><symbol id="icon-wheel" viewBox="0 0 96 96"><circle cx="48" cy="48" r="34" fill="#123c4b" stroke="#ffb638" stroke-width="5"/><circle cx="48" cy="48" r="24" fill="none" stroke="#326475" stroke-width="2"/><path d="M48 6v14m0 56v14M6 48h14m56 0h14" stroke="#e4f2f3" stroke-width="3"/><path d="m62 21-8 33-20 21 8-33z" fill="#ff766b"/><path d="m62 21-20 21 12 12z" fill="#62e6d2"/><circle cx="48" cy="48" r="5" fill="#e4f2f3"/></symbol><symbol id="icon-tower" viewBox="0 0 96 96"><g fill="#164755" stroke="#326475" stroke-width="2"><rect x="13" y="64" width="70" height="17" rx="5"/><rect x="22" y="40" width="52" height="17" rx="5"/><rect x="31" y="16" width="34" height="17" rx="5"/></g><g fill="#62e6d2"><circle cx="28" cy="72" r="5"/><circle cx="48" cy="48" r="5"/><circle cx="48" cy="24" r="5"/></g><path d="m76 50 8-10 8 10M84 41v22" fill="none" stroke="#ffb638" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-crossing" viewBox="0 0 96 96"><path d="M14 70h68M19 26h58" stroke="#326475" stroke-width="3" stroke-dasharray="6 6"/><g fill="#62e6d2"><ellipse cx="47" cy="51" rx="23" ry="19"/><circle cx="75" cy="47" r="11"/><ellipse cx="32" cy="31" rx="7" ry="10" transform="rotate(-35 32 31)"/><ellipse cx="34" cy="71" rx="7" ry="10" transform="rotate(35 34 71)"/></g><ellipse cx="47" cy="51" rx="16" ry="14" fill="#297a6e"/><path d="m47 38 9 7v10l-9 8-9-8V45z" fill="none" stroke="#a6f4d9" stroke-width="2"/><circle cx="78" cy="44" r="2.5" fill="#082333"/><path d="m24 50-12-5v12z" fill="#62e6d2"/></symbol><symbol id="icon-dream" viewBox="0 0 96 96"><circle cx="48" cy="49" r="32" fill="#113041" stroke="#326475" stroke-width="6"/><path d="M66 23a32 32 0 0 1 13 33" fill="none" stroke="#62e6d2" stroke-width="8" stroke-linecap="round"/><path d="M48 29v20l17 13" fill="none" stroke="#ffb638" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="49" r="5" fill="#ffb638"/><path d="m16 15 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#b3a3ee"/></symbol><symbol id="icon-runner" viewBox="0 0 96 96"><path d="m34 11-24 75h76L62 11z" fill="#164755"/><path d="m43 20-8 57m19-57 8 57" stroke="#62e6d2" stroke-width="2" stroke-dasharray="5 6"/><rect x="22" y="50" width="19" height="24" rx="3" fill="#ff766b"/><rect x="56" y="27" width="15" height="18" rx="3" fill="#ff766b"/><path d="m50 79 15-17m-13 0h13v13" fill="none" stroke="#ffb638" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="icon-elevator" viewBox="0 0 96 96"><g><path d="M19 59v20m10-20v20" stroke="#6b9ac4" stroke-width="6" stroke-linecap="round"/><path d="M14 41h20v25H14z" fill="#6b9ac4"/><circle cx="24" cy="29" r="11" fill="#2b2118"/></g><g><path d="M45 59v20m10-20v20" stroke="#a78bfa" stroke-width="6" stroke-linecap="round"/><path d="M40 41h20v25H40z" fill="#a78bfa"/><circle cx="50" cy="29" r="11" fill="#f5d0a9"/><path d="M50 18a11 11 0 0 0 0 22z" fill="#2b2118"/><text x="50" y="13" text-anchor="middle" font-family="system-ui" font-size="20" font-weight="700" fill="#ffb638">?</text></g><g><path d="M74 65v16m10-16v16" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="M69 46h20v26H69z" fill="#ffb638"/><circle cx="79" cy="34" r="11" fill="#2b2118"/><path d="m73 10 6 10 6-10z" fill="#e4f2f3"/></g></symbol><symbol id="icon-sneak" viewBox="0 0 96 96"><rect x="62" y="15" width="26" height="65" rx="3" fill="#8d7254"/><rect x="68" y="21" width="14" height="10" rx="2" fill="#62e6d2"/><circle cx="69" cy="53" r="2" fill="#ffb638"/><path d="M23 61 14 82m21-21 9 19" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="M18 37h21v27H18z" fill="#ffb638"/><circle cx="29" cy="25" r="11" fill="#f5d0a9"/><path d="m40 47 13-8" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="m45 12 3-7 3 7m-3-7v13" fill="none" stroke="#ff766b" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-fishing" viewBox="0 0 96 96"><path d="M14 19q22-8 31 1v24" fill="none" stroke="#d6bd8e" stroke-width="3"/><path d="M45 44v5q0 7 8 6" fill="none" stroke="#e4f2f3" stroke-width="2"/><path d="m70 59 17-14v28z" fill="#ffb638"/><ellipse cx="47" cy="60" rx="29" ry="20" fill="#ffb638"/><path d="M38 43v34M51 41v38" stroke="#fff0c2" stroke-width="5"/><circle cx="30" cy="55" r="6" fill="#fff"/><circle cx="28" cy="55" r="3" fill="#082333"/><path d="M12 86q8-7 16 0t16 0t16 0t16 0" fill="none" stroke="#62e6d2" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-campaign" viewBox="0 0 96 96"><path d="M24 46V30l22-9v25z" fill="#62e6d2"/><path d="M54 19q8 9 0 19M62 12q14 16 0 33" fill="none" stroke="#62e6d2" stroke-width="3.5" stroke-linecap="round"/><rect x="10" y="44" width="52" height="28" rx="5" fill="#ffb638"/><path d="M62 52h13l9 10v10H62z" fill="#d5912a"/><rect x="66" y="56" width="10" height="8" rx="2" fill="#164755"/><path d="M18 54h34M18 62h22" stroke="#72562a" stroke-width="3" stroke-linecap="round"/><circle cx="27" cy="74" r="8" fill="#082333" stroke="#e4f2f3" stroke-width="3"/><circle cx="68" cy="74" r="8" fill="#082333" stroke="#e4f2f3" stroke-width="3"/></symbol><symbol id="icon-boba" viewBox="0 0 96 96"><path d="m60 8-9 33" stroke="#ff9dbb" stroke-width="9" stroke-linecap="round"/><path d="m24 31 8 52h35l8-52z" fill="#e9bd91" stroke="#ffd0df" stroke-width="3"/><path d="M28 45h43l-5 35H34z" fill="#d89d74"/><ellipse cx="49" cy="31" rx="27" ry="8" fill="#ffe9f0" stroke="#ff9dbb" stroke-width="3"/><g fill="#6b3f2f"><circle cx="39" cy="72" r="5"/><circle cx="51" cy="74" r="5"/><circle cx="61" cy="69" r="5"/><circle cx="45" cy="63" r="5"/></g><g fill="#7a4a3c"><circle cx="39" cy="49" r="2.5"/><circle cx="58" cy="49" r="2.5"/></g><path d="M44 54q5 6 10 0" fill="none" stroke="#7a4a3c" stroke-width="2.5" stroke-linecap="round"/></symbol></defs></svg><div class="lobby-hero"><div class="lobby-hero-copy"><p class="lobby-eyebrow"><span></span> DEEP SEA ARCADE</p><h2>今天，想潛進<br>哪一場冒險？</h2><p class="lobby-intro">從偷偷下班到深海釣魚，挑一款就開玩。<br>同一個點數錢包，各有不同的心跳。</p><button class="lobby-hero-link" id="lobby-explore" type="button">探索全部遊戲 <span aria-hidden="true">↓</span></button></div><div class="lobby-hero-art" aria-hidden="true"><div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div><span class="hero-bubble bubble-one"></span><span class="hero-bubble bubble-two"></span><span class="hero-bubble bubble-three"></span><div class="hero-sub"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crash"></use></svg></div><div class="hero-fish"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-fishing"></use></svg></div><div class="hero-clock"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dream"></use></svg></div><div class="hero-turtle"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crossing"></use></svg></div><span class="hero-art-label">DIVE INTO PLAY</span></div></div>
-    <div class="lobby-section-heading" id="lobby-games"><div><p class="lobby-eyebrow">PICK YOUR NEXT ADVENTURE</p><h2>遊戲大廳 <span id="lobby-count">18 款遊戲</span></h2></div><p>選一款，開始你的下一局。</p></div>
-    <div class="lobby-filters" role="group" aria-label="篩選遊戲類型"><button type="button" data-lobby-filter="all" aria-pressed="true">全部 <span>18</span></button><button type="button" data-lobby-filter="skill" aria-pressed="false">技巧闖關 <span>8</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false">機率挑戰 <span>10</span></button></div>
-    <div class="lobby-grid"><a class="game-card" href="#boba" data-game-category="skill" aria-label="遊玩插珍奶：抓準力道把吸管插進珍奶，每局20點"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-boba"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-boba"></use></svg></div><h3>插珍奶</h3><p class="game-card-en">Boba Straw</p><p class="game-card-description">抓準力道插吸管，原版粉紅珍奶小遊戲。</p><div class="game-card-footer"><span>每局 20 點</span><span>只扣入場點數</span></div></a><a class="game-card" href="#campaign" data-game-category="skill" aria-label="遊玩宣傳車：繞市區拉票，經過學校、醫院、豪宅要按住靜音。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-campaign"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-campaign"></use></svg></div><h3>宣傳車</h3><p class="game-card-en">Campaign Truck</p><p class="game-card-description">繞市區拉票，經過學校、醫院、豪宅要按住靜音。</p><div class="game-card-footer"><span>10 點起</span><span>越開越快</span></div></a><a class="game-card" href="#fishing" data-game-category="skill" aria-label="遊玩深海釣手：按住收線、放開卸力，把大魚拉上岸。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-fishing"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-fishing"></use></svg></div><h3>深海釣手</h3><p class="game-card-en">Fishing</p><p class="game-card-description">按住收線、放開卸力，把大魚拉上岸。</p><div class="game-card-footer"><span>10 點起</span><span>每條可收手</span></div></a><a class="game-card" href="#elevator" data-game-category="skill" aria-label="遊玩插隊大師：趁乘客背對你，偷偷往前插一位。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-elevator"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-elevator"></use></svg></div><h3>插隊大師</h3><p class="game-card-en">Queue Cutter</p><p class="game-card-description">趁乘客背對你，偷偷往前插一位。</p><div class="game-card-footer"><span>10 點起</span><span>5 關挑戰</span></div></a><a class="game-card" href="#sneak" data-game-category="skill" aria-label="遊玩偷偷下班：按住偷溜，老闆回頭前趕快裝忙。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-sneak"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-sneak"></use></svg></div><h3>偷偷下班</h3><p class="game-card-en">Sneak Out</p><p class="game-card-description">按住偷溜，老闆回頭前趕快裝忙。</p><div class="game-card-footer"><span>10 點起</span><span>10 關挑戰</span></div></a><a class="game-card" href="#runner" data-game-category="skill" aria-label="遊玩閃避跑酷：點左、點右換道，避開一路上的障礙。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-runner"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-runner"></use></svg></div><h3>閃避跑酷</h3><p class="game-card-en">Dodge Run</p><p class="game-card-description">點左、點右換道，避開一路上的障礙。</p><div class="game-card-footer"><span>每局 20 點</span><span>10 關挑戰</span></div></a><a class="game-card" href="#dream" data-game-category="skill" aria-label="遊玩時序修復：抓準時機，讓指針停在青綠色區域。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-dream"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dream"></use></svg></div><h3>時序修復</h3><p class="game-card-en">Dream Repair Shop</p><p class="game-card-description">抓準時機，讓指針停在青綠色區域。</p><div class="game-card-footer"><span>10 點起</span><span>10 關挑戰</span></div></a><a class="game-card" href="#merge" data-game-category="skill" aria-label="遊玩養珠：滑動合併珍珠，養出更大的數字。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-merge"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-merge"></use></svg></div><h3>養珠</h3><p class="game-card-en">Pearl Merge</p><p class="game-card-description">滑動合併珍珠，養出更大的數字。</p><div class="game-card-footer"><span>每局 20 點</span><span>滑動合併</span></div></a><a class="game-card" href="#crash" data-game-category="chance" aria-label="遊玩壓潰深度：隨潛艇一起下潛，在壓潰前上浮。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-crash"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crash"></use></svg></div><h3>壓潰深度</h3><p class="game-card-en">Crush Depth</p><p class="game-card-description">隨潛艇一起下潛，在壓潰前上浮。</p><div class="game-card-footer"><span>10 點起</span><span>隨時上浮</span></div></a><a class="game-card" href="#mines" data-game-category="chance" aria-label="遊玩水雷區：翻出珍珠、避開水雷，見好就收。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mines"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mines"></use></svg></div><h3>水雷區</h3><p class="game-card-en">Mine Field</p><p class="game-card-description">翻出珍珠、避開水雷，見好就收。</p><div class="game-card-footer"><span>10 點起</span><span>翻格尋寶</span></div></a><a class="game-card" href="#plinko" data-game-category="chance" aria-label="遊玩落珠：投下珍珠，看它穿過釘陣落在哪一格。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-plinko"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-plinko"></use></svg></div><h3>落珠</h3><p class="game-card-en">Pearl Drop</p><p class="game-card-description">投下珍珠，看它穿過釘陣落在哪一格。</p><div class="game-card-footer"><span>10 點起</span><span>落點倍率</span></div></a><a class="game-card" href="#dice" data-game-category="chance" aria-label="遊玩測深：設定聲納讀數範圍，等待海底回音。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-dice"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dice"></use></svg></div><h3>測深</h3><p class="game-card-en">Sonar Dice</p><p class="game-card-description">設定聲納讀數範圍，等待海底回音。</p><div class="game-card-footer"><span>10 點起</span><span>範圍預測</span></div></a><a class="game-card" href="#limbo" data-game-category="chance" aria-label="遊玩探底：選定目標倍率，看看探測錘能到多深。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-limbo"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-limbo"></use></svg></div><h3>探底</h3><p class="game-card-en">Deep Probe</p><p class="game-card-description">選定目標倍率，看看探測錘能到多深。</p><div class="game-card-footer"><span>10 點起</span><span>目標倍率</span></div></a><a class="game-card" href="#hilo" data-game-category="chance" aria-label="遊玩漲退：猜下一張牌更高或更低，連猜累積。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-hilo"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-hilo"></use></svg></div><h3>漲退</h3><p class="game-card-en">High Tide</p><p class="game-card-description">猜下一張牌更高或更低，連猜累積。</p><div class="game-card-footer"><span>10 點起</span><span>高低猜牌</span></div></a><a class="game-card" href="#keno" data-game-category="chance" aria-label="遊玩撒網：選好海域撒網，看看能命中幾格。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-keno"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-keno"></use></svg></div><h3>撒網</h3><p class="game-card-en">Cast Net</p><p class="game-card-description">選好海域撒網，看看能命中幾格。</p><div class="game-card-footer"><span>10 點起</span><span>選號撒網</span></div></a><a class="game-card" href="#wheel" data-game-category="chance" aria-label="遊玩羅盤：轉動深海羅盤，等待指針停下。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-wheel"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-wheel"></use></svg></div><h3>羅盤</h3><p class="game-card-en">Compass</p><p class="game-card-description">轉動深海羅盤，等待指針停下。</p><div class="game-card-footer"><span>10 點起</span><span>轉盤挑戰</span></div></a><a class="game-card" href="#tower" data-game-category="chance" aria-label="遊玩浮升：挑選安全的氣泡，一層一層往上浮。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-tower"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-tower"></use></svg></div><h3>浮升</h3><p class="game-card-en">Ascent</p><p class="game-card-description">挑選安全的氣泡，一層一層往上浮。</p><div class="game-card-footer"><span>10 點起</span><span>逐層冒險</span></div></a><a class="game-card" href="#crossing" data-game-category="chance" aria-label="遊玩橫渡：帶小海龜穿越暗流，決定何時收手。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-crossing"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crossing"></use></svg></div><h3>橫渡</h3><p class="game-card-en">Reef Run</p><p class="game-card-description">帶小海龜穿越暗流，決定何時收手。</p><div class="game-card-footer"><span>10 點起</span><span>逐步闖關</span></div></a></div>
+<svg class="lobby-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-crash" viewBox="0 0 96 96"><path d="M18 24l10 8M65 65l12 9M74 19v17m-6-6 6 6 6-6" stroke="#62e6d2" stroke-width="4" stroke-linecap="round"/><g transform="rotate(27 48 48)"><rect x="17" y="34" width="63" height="32" rx="16" fill="#ffb638"/><path d="M39 34v-9h16v9M18 47H9v11h14" fill="#d5912a"/><circle cx="55" cy="50" r="10" fill="#164755" stroke="#fff0c2" stroke-width="4"/><circle cx="52" cy="47" r="3" fill="#62e6d2"/></g></symbol><symbol id="icon-mines" viewBox="0 0 96 96"><circle cx="45" cy="48" r="22" fill="#ff766b"/><g stroke="#ff766b" stroke-width="6" stroke-linecap="round"><path d="M45 17v10m0 42v10M14 48h10m42 0h10M23 26l8 8m29 29 7 7M23 70l8-8m29-29 7-7"/></g><circle cx="38" cy="41" r="6" fill="#ffc4b3"/><circle cx="72" cy="73" r="13" fill="#62e6d2"/><path d="m65 74 5 4 8-10" fill="none" stroke="#0a2a3b" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-plinko" viewBox="0 0 96 96"><path d="M15 72h66v12H15z" fill="#ffb638"/><path d="M37 73v10m22-10v10" stroke="#72562a" stroke-width="3"/><g fill="#85b4c0"><circle cx="48" cy="30" r="4"/><circle cx="35" cy="44" r="4"/><circle cx="61" cy="44" r="4"/><circle cx="22" cy="58" r="4"/><circle cx="48" cy="58" r="4"/><circle cx="74" cy="58" r="4"/></g><path d="m45 13 10 17-11 13 10 13" fill="none" stroke="#62e6d2" stroke-width="3" stroke-dasharray="3 4"/><circle cx="47" cy="13" r="8" fill="#e3fff6"/></symbol><symbol id="icon-merge" viewBox="0 0 96 96"><g fill="#123c4b" stroke="#326475" stroke-width="2"><rect x="12" y="12" width="32" height="32" rx="10"/><rect x="52" y="12" width="32" height="32" rx="10"/><rect x="12" y="52" width="32" height="32" rx="10"/></g><circle cx="28" cy="28" r="11" fill="#8db0b9"/><circle cx="68" cy="28" r="11" fill="#62e6d2"/><circle cx="28" cy="68" r="11" fill="#ffb638"/><circle cx="68" cy="68" r="21" fill="#a8a0ed"/><g font-family="system-ui" font-weight="800" fill="#082333" text-anchor="middle"><text x="28" y="33" font-size="14">2</text><text x="68" y="33" font-size="14">4</text><text x="28" y="73" font-size="14">8</text><text x="68" y="75" font-size="22">16</text></g></symbol><symbol id="icon-dice" viewBox="0 0 96 96"><circle cx="48" cy="48" r="37" fill="none" stroke="#326475" stroke-width="2"/><path d="M48 9v9m39 30h-9M48 87v-9M9 48h9" stroke="#62e6d2" stroke-width="3"/><rect x="24" y="24" width="48" height="48" rx="13" fill="#62e6d2" transform="rotate(-12 48 48)"/><g fill="#0a2a3b"><circle cx="35" cy="39" r="4"/><circle cx="48" cy="48" r="4"/><circle cx="61" cy="57" r="4"/></g></symbol><symbol id="icon-limbo" viewBox="0 0 96 96"><path d="M48 10v29" stroke="#b6d8de" stroke-width="3" stroke-dasharray="4 4"/><path d="m48 31 18 20-18 29-18-29z" fill="#ffb638"/><path d="m48 35 9 16-9 22-9-22z" fill="#ffe1a0"/><path d="M15 69q33 20 66 0M19 80q29 15 58 0" fill="none" stroke="#62e6d2" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-hilo" viewBox="0 0 96 96"><rect x="13" y="20" width="44" height="58" rx="8" fill="#e4f2f3" transform="rotate(-13 35 49)"/><rect x="41" y="14" width="44" height="62" rx="8" fill="#ffb638" transform="rotate(9 63 45)"/><path d="m53 42 12-12 11 12M65 30v28" fill="none" stroke="#483619" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="m22 54 8 8 8-8" fill="none" stroke="#145263" stroke-width="4" stroke-linecap="round"/></symbol><symbol id="icon-keno" viewBox="0 0 96 96"><rect x="12" y="12" width="72" height="72" rx="15" fill="#113041" stroke="#326475" stroke-width="2"/><g fill="#326475"><circle cx="28" cy="28" r="7"/><circle cx="48" cy="28" r="7"/><circle cx="68" cy="28" r="7"/><circle cx="28" cy="48" r="7"/><circle cx="48" cy="48" r="7"/><circle cx="68" cy="48" r="7"/><circle cx="28" cy="68" r="7"/><circle cx="48" cy="68" r="7"/><circle cx="68" cy="68" r="7"/></g><g fill="#ffb638"><circle cx="28" cy="28" r="7"/><circle cx="48" cy="48" r="7"/><circle cx="68" cy="68" r="7"/></g><path d="m22 28 4 3 7-7m9 24 4 3 7-7m9 24 4 3 7-7" fill="none" stroke="#594120" stroke-width="2"/></symbol><symbol id="icon-wheel" viewBox="0 0 96 96"><circle cx="48" cy="48" r="34" fill="#123c4b" stroke="#ffb638" stroke-width="5"/><circle cx="48" cy="48" r="24" fill="none" stroke="#326475" stroke-width="2"/><path d="M48 6v14m0 56v14M6 48h14m56 0h14" stroke="#e4f2f3" stroke-width="3"/><path d="m62 21-8 33-20 21 8-33z" fill="#ff766b"/><path d="m62 21-20 21 12 12z" fill="#62e6d2"/><circle cx="48" cy="48" r="5" fill="#e4f2f3"/></symbol><symbol id="icon-tower" viewBox="0 0 96 96"><g fill="#164755" stroke="#326475" stroke-width="2"><rect x="13" y="64" width="70" height="17" rx="5"/><rect x="22" y="40" width="52" height="17" rx="5"/><rect x="31" y="16" width="34" height="17" rx="5"/></g><g fill="#62e6d2"><circle cx="28" cy="72" r="5"/><circle cx="48" cy="48" r="5"/><circle cx="48" cy="24" r="5"/></g><path d="m76 50 8-10 8 10M84 41v22" fill="none" stroke="#ffb638" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-crossing" viewBox="0 0 96 96"><path d="M14 70h68M19 26h58" stroke="#326475" stroke-width="3" stroke-dasharray="6 6"/><g fill="#62e6d2"><ellipse cx="47" cy="51" rx="23" ry="19"/><circle cx="75" cy="47" r="11"/><ellipse cx="32" cy="31" rx="7" ry="10" transform="rotate(-35 32 31)"/><ellipse cx="34" cy="71" rx="7" ry="10" transform="rotate(35 34 71)"/></g><ellipse cx="47" cy="51" rx="16" ry="14" fill="#297a6e"/><path d="m47 38 9 7v10l-9 8-9-8V45z" fill="none" stroke="#a6f4d9" stroke-width="2"/><circle cx="78" cy="44" r="2.5" fill="#082333"/><path d="m24 50-12-5v12z" fill="#62e6d2"/></symbol><symbol id="icon-dream" viewBox="0 0 96 96"><circle cx="48" cy="49" r="32" fill="#113041" stroke="#326475" stroke-width="6"/><path d="M66 23a32 32 0 0 1 13 33" fill="none" stroke="#62e6d2" stroke-width="8" stroke-linecap="round"/><path d="M48 29v20l17 13" fill="none" stroke="#ffb638" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="49" r="5" fill="#ffb638"/><path d="m16 15 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#b3a3ee"/></symbol><symbol id="icon-runner" viewBox="0 0 96 96"><path d="m34 11-24 75h76L62 11z" fill="#164755"/><path d="m43 20-8 57m19-57 8 57" stroke="#62e6d2" stroke-width="2" stroke-dasharray="5 6"/><rect x="22" y="50" width="19" height="24" rx="3" fill="#ff766b"/><rect x="56" y="27" width="15" height="18" rx="3" fill="#ff766b"/><path d="m50 79 15-17m-13 0h13v13" fill="none" stroke="#ffb638" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="icon-elevator" viewBox="0 0 96 96"><g><path d="M19 59v20m10-20v20" stroke="#6b9ac4" stroke-width="6" stroke-linecap="round"/><path d="M14 41h20v25H14z" fill="#6b9ac4"/><circle cx="24" cy="29" r="11" fill="#2b2118"/></g><g><path d="M45 59v20m10-20v20" stroke="#a78bfa" stroke-width="6" stroke-linecap="round"/><path d="M40 41h20v25H40z" fill="#a78bfa"/><circle cx="50" cy="29" r="11" fill="#f5d0a9"/><path d="M50 18a11 11 0 0 0 0 22z" fill="#2b2118"/><text x="50" y="13" text-anchor="middle" font-family="system-ui" font-size="20" font-weight="700" fill="#ffb638">?</text></g><g><path d="M74 65v16m10-16v16" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="M69 46h20v26H69z" fill="#ffb638"/><circle cx="79" cy="34" r="11" fill="#2b2118"/><path d="m73 10 6 10 6-10z" fill="#e4f2f3"/></g></symbol><symbol id="icon-sneak" viewBox="0 0 96 96"><rect x="62" y="15" width="26" height="65" rx="3" fill="#8d7254"/><rect x="68" y="21" width="14" height="10" rx="2" fill="#62e6d2"/><circle cx="69" cy="53" r="2" fill="#ffb638"/><path d="M23 61 14 82m21-21 9 19" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="M18 37h21v27H18z" fill="#ffb638"/><circle cx="29" cy="25" r="11" fill="#f5d0a9"/><path d="m40 47 13-8" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="m45 12 3-7 3 7m-3-7v13" fill="none" stroke="#ff766b" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-fishing" viewBox="0 0 96 96"><path d="M14 19q22-8 31 1v24" fill="none" stroke="#d6bd8e" stroke-width="3"/><path d="M45 44v5q0 7 8 6" fill="none" stroke="#e4f2f3" stroke-width="2"/><path d="m70 59 17-14v28z" fill="#ffb638"/><ellipse cx="47" cy="60" rx="29" ry="20" fill="#ffb638"/><path d="M38 43v34M51 41v38" stroke="#fff0c2" stroke-width="5"/><circle cx="30" cy="55" r="6" fill="#fff"/><circle cx="28" cy="55" r="3" fill="#082333"/><path d="M12 86q8-7 16 0t16 0t16 0t16 0" fill="none" stroke="#62e6d2" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-campaign" viewBox="0 0 96 96"><path d="M24 46V30l22-9v25z" fill="#62e6d2"/><path d="M54 19q8 9 0 19M62 12q14 16 0 33" fill="none" stroke="#62e6d2" stroke-width="3.5" stroke-linecap="round"/><rect x="10" y="44" width="52" height="28" rx="5" fill="#ffb638"/><path d="M62 52h13l9 10v10H62z" fill="#d5912a"/><rect x="66" y="56" width="10" height="8" rx="2" fill="#164755"/><path d="M18 54h34M18 62h22" stroke="#72562a" stroke-width="3" stroke-linecap="round"/><circle cx="27" cy="74" r="8" fill="#082333" stroke="#e4f2f3" stroke-width="3"/><circle cx="68" cy="74" r="8" fill="#082333" stroke="#e4f2f3" stroke-width="3"/></symbol><symbol id="icon-boba" viewBox="0 0 96 96"><path d="m60 8-9 33" stroke="#ff9dbb" stroke-width="9" stroke-linecap="round"/><path d="m24 31 8 52h35l8-52z" fill="#e9bd91" stroke="#ffd0df" stroke-width="3"/><path d="M28 45h43l-5 35H34z" fill="#d89d74"/><ellipse cx="49" cy="31" rx="27" ry="8" fill="#ffe9f0" stroke="#ff9dbb" stroke-width="3"/><g fill="#6b3f2f"><circle cx="39" cy="72" r="5"/><circle cx="51" cy="74" r="5"/><circle cx="61" cy="69" r="5"/><circle cx="45" cy="63" r="5"/></g><g fill="#7a4a3c"><circle cx="39" cy="49" r="2.5"/><circle cx="58" cy="49" r="2.5"/></g><path d="M44 54q5 6 10 0" fill="none" stroke="#7a4a3c" stroke-width="2.5" stroke-linecap="round"/></symbol><symbol id="icon-cat" viewBox="0 0 96 96"><rect x="6" y="64" width="46" height="26" fill="#ff5d8f"/><rect x="2" y="60" width="54" height="8" fill="#7b2cbf"/><rect x="64" y="74" width="30" height="16" fill="#ff5d8f"/><rect x="60" y="70" width="38" height="8" fill="#7b2cbf"/><path d="M60 62q8-24 24-30" fill="none" stroke="#fff1c1" stroke-width="3" stroke-dasharray="4 5" stroke-linecap="round"/><path d="M28 40q-15-3-11-20" fill="none" stroke="#ff9f1c" stroke-width="6" stroke-linecap="round"/><ellipse cx="42" cy="40" rx="17" ry="12" fill="#ff9f1c"/><path d="M34 50v9M48 50v9" stroke="#ff9f1c" stroke-width="5" stroke-linecap="round"/><path d="M47 22l2-14 10 10zM60 17l9-11 2 16z" fill="#ff9f1c"/><circle cx="58" cy="29" r="13" fill="#ff9f1c"/><circle cx="54" cy="28" r="4" fill="#fff"/><circle cx="64" cy="28" r="4" fill="#fff"/><circle cx="55" cy="28" r="1.8" fill="#1b1b2f"/><circle cx="65" cy="28" r="1.8" fill="#1b1b2f"/><circle cx="69" cy="34" r="2.2" fill="#ff5d8f"/></symbol><symbol id="icon-bird" viewBox="0 0 96 96"><path d="M6 80h84" stroke="#f72585" stroke-width="6" stroke-linecap="round"/><path d="M22 46 5 36l4 19z" fill="#00b4d8"/><circle cx="38" cy="48" r="22" fill="#4cc9f0"/><ellipse cx="41" cy="56" rx="13" ry="10" fill="#caf0f8"/><circle cx="46" cy="42" r="7" fill="#fff"/><circle cx="48" cy="42" r="3.2" fill="#1b1b2f"/><path d="M57 44l19 5-19 5z" fill="#ffbe0b"/><circle cx="33" cy="24" r="4" fill="#f72585"/><circle cx="42" cy="22" r="4" fill="#f72585"/><path d="M33 70v9M43 70v9" stroke="#ff9f1c" stroke-width="5" stroke-linecap="round"/><ellipse cx="77" cy="73" rx="13" ry="7" fill="#8d5524"/><ellipse cx="77" cy="64" rx="9" ry="6" fill="#8d5524"/><ellipse cx="77" cy="57" rx="5.5" ry="4.5" fill="#8d5524"/></symbol></defs></svg><div class="lobby-hero"><div class="lobby-hero-copy"><p class="lobby-eyebrow"><span></span> DEEP SEA ARCADE</p><h2>今天，想潛進<br>哪一場冒險？</h2><p class="lobby-intro">從偷偷下班到深海釣魚，挑一款就開玩。<br>同一個點數錢包，挑選不同的心跳。</p><button class="lobby-hero-link" id="lobby-explore" type="button">探索全部遊戲 <span aria-hidden="true">↓</span></button></div><div class="lobby-hero-art" aria-hidden="true"><div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div><span class="hero-bubble bubble-one"></span><span class="hero-bubble bubble-two"></span><span class="hero-bubble bubble-three"></span><div class="hero-sub"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crash"></use></svg></div><div class="hero-fish"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-fishing"></use></svg></div><div class="hero-clock"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dream"></use></svg></div><div class="hero-turtle"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crossing"></use></svg></div><span class="hero-art-label">DIVE INTO PLAY</span></div></div>
+    <div class="lobby-section-heading" id="lobby-games"><div><p class="lobby-eyebrow">PICK YOUR NEXT ADVENTURE</p><h2>遊戲大廳 <span id="lobby-count">20 款遊戲</span></h2></div><p>選一款，開始你的下一局。</p></div>
+    <div class="lobby-filters" role="group" aria-label="篩選遊戲類型"><button type="button" data-lobby-filter="all" aria-pressed="true">全部 <span>20</span></button><button type="button" data-lobby-filter="skill" aria-pressed="false">技巧闖關 <span>10</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false">機率挑戰 <span>10</span></button></div>
+    <div class="lobby-grid"><a class="game-card" href="#bird" data-game-category="skill" aria-label="遊玩便便鳥大戰狼群：跳過仙人掌和狼群，用便便把狼王打跑。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-bird"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-bird"></use></svg></div><h3>便便鳥大戰狼群</h3><p class="game-card-en">Poop Bird vs Wolves</p><p class="game-card-description">跳過仙人掌和狼群，用便便把狼王打跑。</p><div class="game-card-footer"><span>10 點起</span><span>擊退狼王加倍率</span></div></a><a class="game-card" href="#cat" data-game-category="skill" aria-label="遊玩屋頂貓貓：在屋頂之間跳躍，跑得越遠領得越多。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-cat"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-cat"></use></svg></div><h3>屋頂貓貓</h3><p class="game-card-en">Rooftop Cat</p><p class="game-card-description">在屋頂之間跳躍，跑得越遠領得越多。</p><div class="game-card-footer"><span>10 點起</span><span>越遠越多點</span></div></a><a class="game-card" href="#boba" data-game-category="skill" aria-label="遊玩插珍奶：抓準力道把吸管插進珍奶，每局20點"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-boba"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-boba"></use></svg></div><h3>插珍奶</h3><p class="game-card-en">Boba Straw</p><p class="game-card-description">抓準力道插吸管，原版粉紅珍奶小遊戲。</p><div class="game-card-footer"><span>每局 20 點</span><span>只扣入場點數</span></div></a><a class="game-card" href="#campaign" data-game-category="skill" aria-label="遊玩宣傳車：繞市區拉票，經過學校、醫院、豪宅要按住靜音。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-campaign"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-campaign"></use></svg></div><h3>宣傳車</h3><p class="game-card-en">Campaign Truck</p><p class="game-card-description">繞市區拉票，經過學校、醫院、豪宅要按住靜音。</p><div class="game-card-footer"><span>10 點起</span><span>越開越快</span></div></a><a class="game-card" href="#fishing" data-game-category="skill" aria-label="遊玩深海釣手：按住收線、放開卸力，把大魚拉上岸。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-fishing"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-fishing"></use></svg></div><h3>深海釣手</h3><p class="game-card-en">Fishing</p><p class="game-card-description">按住收線、放開卸力，把大魚拉上岸。</p><div class="game-card-footer"><span>10 點起</span><span>每條可收手</span></div></a><a class="game-card" href="#elevator" data-game-category="skill" aria-label="遊玩插隊大師：趁乘客背對你，偷偷往前插一位。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-elevator"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-elevator"></use></svg></div><h3>插隊大師</h3><p class="game-card-en">Queue Cutter</p><p class="game-card-description">趁乘客背對你，偷偷往前插一位。</p><div class="game-card-footer"><span>10 點起</span><span>5 關挑戰</span></div></a><a class="game-card" href="#sneak" data-game-category="skill" aria-label="遊玩偷偷下班：按住偷溜，老闆回頭前趕快裝忙。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-sneak"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-sneak"></use></svg></div><h3>偷偷下班</h3><p class="game-card-en">Sneak Out</p><p class="game-card-description">按住偷溜，老闆回頭前趕快裝忙。</p><div class="game-card-footer"><span>10 點起</span><span>10 關挑戰</span></div></a><a class="game-card" href="#runner" data-game-category="skill" aria-label="遊玩閃避跑酷：點左、點右換道，避開一路上的障礙。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-runner"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-runner"></use></svg></div><h3>閃避跑酷</h3><p class="game-card-en">Dodge Run</p><p class="game-card-description">點左、點右換道，避開一路上的障礙。</p><div class="game-card-footer"><span>每局 20 點</span><span>10 關挑戰</span></div></a><a class="game-card" href="#dream" data-game-category="skill" aria-label="遊玩時序修復：抓準時機，讓指針停在青綠色區域。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-dream"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dream"></use></svg></div><h3>時序修復</h3><p class="game-card-en">Dream Repair Shop</p><p class="game-card-description">抓準時機，讓指針停在青綠色區域。</p><div class="game-card-footer"><span>10 點起</span><span>10 關挑戰</span></div></a><a class="game-card" href="#merge" data-game-category="skill" aria-label="遊玩養珠：滑動合併珍珠，養出更大的數字。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-merge"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-merge"></use></svg></div><h3>養珠</h3><p class="game-card-en">Pearl Merge</p><p class="game-card-description">滑動合併珍珠，養出更大的數字。</p><div class="game-card-footer"><span>每局 20 點</span><span>滑動合併</span></div></a><a class="game-card" href="#crash" data-game-category="chance" aria-label="遊玩壓潰深度：隨潛艇一起下潛，在壓潰前上浮。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-crash"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crash"></use></svg></div><h3>壓潰深度</h3><p class="game-card-en">Crush Depth</p><p class="game-card-description">隨潛艇一起下潛，在壓潰前上浮。</p><div class="game-card-footer"><span>10 點起</span><span>隨時上浮</span></div></a><a class="game-card" href="#mines" data-game-category="chance" aria-label="遊玩水雷區：翻出珍珠、避開水雷，見好就收。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mines"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mines"></use></svg></div><h3>水雷區</h3><p class="game-card-en">Mine Field</p><p class="game-card-description">翻出珍珠、避開水雷，見好就收。</p><div class="game-card-footer"><span>10 點起</span><span>翻格尋寶</span></div></a><a class="game-card" href="#plinko" data-game-category="chance" aria-label="遊玩落珠：投下珍珠，看它穿過釘陣落在哪一格。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-plinko"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-plinko"></use></svg></div><h3>落珠</h3><p class="game-card-en">Pearl Drop</p><p class="game-card-description">投下珍珠，看它穿過釘陣落在哪一格。</p><div class="game-card-footer"><span>10 點起</span><span>落點倍率</span></div></a><a class="game-card" href="#dice" data-game-category="chance" aria-label="遊玩測深：設定聲納讀數範圍，等待海底回音。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-dice"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dice"></use></svg></div><h3>測深</h3><p class="game-card-en">Sonar Dice</p><p class="game-card-description">設定聲納讀數範圍，等待海底回音。</p><div class="game-card-footer"><span>10 點起</span><span>範圍預測</span></div></a><a class="game-card" href="#limbo" data-game-category="chance" aria-label="遊玩探底：選定目標倍率，看看探測錘能到多深。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-limbo"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-limbo"></use></svg></div><h3>探底</h3><p class="game-card-en">Deep Probe</p><p class="game-card-description">選定目標倍率，看看探測錘能到多深。</p><div class="game-card-footer"><span>10 點起</span><span>目標倍率</span></div></a><a class="game-card" href="#hilo" data-game-category="chance" aria-label="遊玩漲退：猜下一張牌更高或更低，連猜累積。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-hilo"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-hilo"></use></svg></div><h3>漲退</h3><p class="game-card-en">High Tide</p><p class="game-card-description">猜下一張牌更高或更低，連猜累積。</p><div class="game-card-footer"><span>10 點起</span><span>高低猜牌</span></div></a><a class="game-card" href="#keno" data-game-category="chance" aria-label="遊玩撒網：選好海域撒網，看看能命中幾格。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-keno"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-keno"></use></svg></div><h3>撒網</h3><p class="game-card-en">Cast Net</p><p class="game-card-description">選好海域撒網，看看能命中幾格。</p><div class="game-card-footer"><span>10 點起</span><span>選號撒網</span></div></a><a class="game-card" href="#wheel" data-game-category="chance" aria-label="遊玩羅盤：轉動深海羅盤，等待指針停下。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-wheel"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-wheel"></use></svg></div><h3>羅盤</h3><p class="game-card-en">Compass</p><p class="game-card-description">轉動深海羅盤，等待指針停下。</p><div class="game-card-footer"><span>10 點起</span><span>轉盤挑戰</span></div></a><a class="game-card" href="#tower" data-game-category="chance" aria-label="遊玩浮升：挑選安全的氣泡，一層一層往上浮。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-tower"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-tower"></use></svg></div><h3>浮升</h3><p class="game-card-en">Ascent</p><p class="game-card-description">挑選安全的氣泡，一層一層往上浮。</p><div class="game-card-footer"><span>10 點起</span><span>逐層冒險</span></div></a><a class="game-card" href="#crossing" data-game-category="chance" aria-label="遊玩橫渡：帶小海龜穿越暗流，決定何時收手。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-crossing"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crossing"></use></svg></div><h3>橫渡</h3><p class="game-card-en">Reef Run</p><p class="game-card-description">帶小海龜穿越暗流，決定何時收手。</p><div class="game-card-footer"><span>10 點起</span><span>逐步闖關</span></div></a></div>
     <p class="lobby-footnote">每局使用共用虛擬點數，入場費與領回規則依各遊戲說明。Demo 點數沒有現金價值。</p>
   </section>
 
@@ -1098,10 +1100,41 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="得票數與領回倍率"><span data-cp-tier="0"><b>未滿 5,000 票</b>0×</span><span data-cp-tier="5000"><b>5,000 票</b>0.50×</span><span data-cp-tier="6000"><b>6,000 票</b>1.00×</span><span data-cp-tier="7000"><b>7,000 票</b>1.50×</span><span data-cp-tier="8000"><b>8,000 票</b>2.20×</span><span data-cp-tier="9000"><b>9,000 票</b>3.20×</span><span data-cp-tier="9700"><b>9,700 票</b>5.00×</span></div>
     <details class="rules"><summary>玩法、計票與點數</summary><p>每局先扣入場點數（最低 10 點）。宣傳車沿著街道自動往右開，一路經過 60 棟建築後抵達投票所；車速從起點到終點持續加快，終點時約是起點的 2.5 倍，整趟大約 50 秒。其中 22 棟是安靜區（學校、醫院、豪宅），以紅色標示並在路面畫出紅色區段；每局的街道順序會重新洗牌，但不會連續出現三棟安靜區。</p><p>前方的建築會提早出現在畫面右側，畫面上方的「接下來」也會列出接著要經過的六棟。放開時喇叭廣播、按住時靜音。經過一般建築：依廣播時間比例得票，全程廣播得 200 票，全程靜音得 0 票。經過安靜區：有 70% 以上的時間保持靜音就算安靜通過，得 100 票；否則算吵到，扣 400 票並記一次。吵到 5 次立刻落選，本局沒有點數。</p><p>開局有 200 票，整趟全部完美是 10,000 票。抵達投票所後依得票數對照上方倍率表，領回點數＝入場點數 × 倍率並捨去小數；倍率是總領回金額，不是額外獎金。未滿 5,000 票領不到點數，5,000 票只領回一半，6,000 票才打平。這是操作技巧遊戲，結果取決於按放的時機。</p><p>切換遊戲或背景分頁會暫停並放開靜音，回來需要重新按住。重新整理會放棄本局，已扣點數不退回。點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
+
   <section class="view" id="view-boba" hidden>
     <div class="boba-platform-bar"><p class="hint">每局扣 20 點，沒有點數獎勵；按原畫面的開始或重玩才扣點。</p><button class="chip" id="boba-finish" type="button" disabled>結束本局</button></div>
     <p class="msg" id="boba-msg" aria-live="polite">原版畫面完整保留。先按遊戲裡的開始按鈕，每局扣 20 點。</p>
     <div class="boba-stage"><iframe id="boba-frame" title="插珍奶 Boba Straw Won't Go In" allow="autoplay; clipboard-write; web-share"></iframe></div>
+  </section>
+
+  <section class="view" id="view-cat" hidden>
+    <div class="console"><div class="sneak-stage"><canvas id="ct-canvas" tabindex="0" width="400" height="560" aria-label="屋頂貓貓：點一下跳躍，按越久跳越高，別掉進屋頂間的空隙"></canvas></div>
+      <div class="side"><section class="panel" aria-label="屋頂貓貓操作">
+        <dl class="stats"><div><dt>本局距離</dt><dd id="ct-score">0 m</dd></div><div><dt>最佳紀錄</dt><dd id="ct-best">0 m</dd></div><div><dt>目前倍率</dt><dd id="ct-mult">0.00×</dd></div></dl>
+        <div class="field"><label for="ct-amount">本局入場點數</label><div class="input-row"><input id="ct-amount" type="number" min="10" step="1" value="20" inputmode="numeric"><span class="suffix">點</span></div></div>
+        <dl class="stats"><div><dt>照現在可領</dt><dd id="ct-pay">0 點</dd></div><div><dt>本局淨賺／損</dt><dd id="ct-net">—</dd></div></dl>
+        <button class="go" id="ct-go" type="button" data-mode="bet">扣點開始奔跑</button>
+        <p class="msg" id="ct-msg" aria-live="polite">扣點後小貓開始在屋頂上奔跑。點畫面跳躍，跑得越遠，摔下去時領回的點數越多。</p>
+        <p class="hint">點一下跳躍，按越久跳越高；也可以用 <kbd>空白鍵</kbd> 或 <kbd>↑</kbd>。別掉進屋頂間的空隙，也別撞上牆。</p>
+      </section></div>
+    </div>
+    <div class="fishing-ladder campaign-ladder" role="group" aria-label="奔跑距離與領回倍率"><span data-ct-tier="0"><b>未滿 30 m</b>0×</span><span data-ct-tier="30"><b>30 m</b>0.50×</span><span data-ct-tier="60"><b>60 m</b>1.00×</span><span data-ct-tier="100"><b>100 m</b>1.50×</span><span data-ct-tier="150"><b>150 m</b>2.20×</span><span data-ct-tier="220"><b>220 m</b>3.20×</span><span data-ct-tier="300"><b>300 m</b>5.00×</span></div>
+    <details class="rules"><summary>玩法、距離與點數</summary><p>每局先扣入場點數（最低 10 點）。小貓會自動往前跑，速度隨距離慢慢加快。點畫面或按空白鍵跳躍，按得越久跳得越高；在快落地前提早按，落地後會自動接著跳。掉進屋頂之間的空隙，或撞上比你高的屋頂側面，這一局就結束。</p><p>這一局沒有中途領回：摔下去的那一刻，依跑到的距離對照上方倍率表結算。領回點數＝入場點數 × 倍率並捨去小數；倍率是總領回金額，不是額外獎金。未滿 30 公尺領不到點數，30 公尺只領回一半，60 公尺才打平。這是操作技巧遊戲，結果取決於跳躍時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已扣點數不退回。最佳紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+  </section>
+
+  <section class="view" id="view-bird" hidden>
+    <div class="console"><div class="sneak-stage"><canvas id="pb-canvas" tabindex="0" width="400" height="560" aria-label="便便鳥大戰狼群：點畫面跳躍，狼王出現時按右下角的便便按鈕"></canvas></div>
+      <div class="side"><section class="panel" aria-label="便便鳥操作">
+        <dl class="stats"><div><dt>本局距離</dt><dd id="pb-score">0 m</dd></div><div><dt>擊退狼王</dt><dd id="pb-boss">0 隻</dd></div><div><dt>最佳紀錄</dt><dd id="pb-best">0 m</dd></div></dl>
+        <div class="field"><label for="pb-amount">本局入場點數</label><div class="input-row"><input id="pb-amount" type="number" min="10" step="1" value="20" inputmode="numeric"><span class="suffix">點</span></div></div>
+        <dl class="stats"><div><dt>目前倍率</dt><dd id="pb-mult">0.00×</dd></div><div><dt>照現在可領</dt><dd id="pb-pay">0 點</dd></div><div><dt>本局淨賺／損</dt><dd id="pb-net">—</dd></div></dl>
+        <button class="go" id="pb-go" type="button" data-mode="bet">扣點開始奔跑</button>
+        <p class="msg" id="pb-msg" aria-live="polite">狼群偷走了你的蛋！扣點後開始奔跑，跳過障礙，狼王出現時用便便把牠打跑。</p>
+        <p class="hint">看障礙上方的標記：1 個點點 1 下，2 個點點 2 下（二段跳），2 個點加長條是第二下要按住。戴王冠的狼王出現時，按畫面右下角的便便按鈕（或 <kbd>X</kbd>）丟牠，其他地方點一下是跳躍（或 <kbd>空白鍵</kbd>）。</p>
+      </section></div>
+    </div>
+    <div class="fishing-ladder campaign-ladder" role="group" aria-label="奔跑距離與領回倍率"><span data-pb-tier="0"><b>未滿 30 m</b>0×</span><span data-pb-tier="30"><b>30 m</b>0.50×</span><span data-pb-tier="60"><b>60 m</b>1.00×</span><span data-pb-tier="90"><b>90 m</b>1.40×</span><span data-pb-tier="130"><b>130 m</b>2.00×</span><span data-pb-tier="180"><b>180 m</b>2.80×</span><span data-pb-tier="250"><b>250 m</b>4.00×</span></div>
+    <details class="rules"><summary>玩法、狼王獎勵與點數</summary><p>每局先扣入場點數（最低 10 點）。小鳥會自動往前跑，速度隨距離慢慢加快。障礙有仙人掌和迎面衝來的狼，上方的標記告訴你怎麼跳：1 個點是點 1 下；2 個點是點 2 下，在空中再跳一次；2 個點加長條是點 2 下，第二下按住不放可以飛得更高。撞到任何障礙這一局就結束。</p><p>每通過 8 個障礙，戴王冠的狼王會出現。牠跳不過去，必須按右下角的便便按鈕丟牠，打中 3 次才會被擊退；便便每 0.3 秒可以丟一次。每擊退一隻狼王，救回一顆蛋，本局倍率額外加 0.50×。</p><p>這一局沒有中途領回：撞到障礙的那一刻結算。倍率＝距離對照上方倍率表，再加上「擊退狼王數 × 0.50×」；領回點數＝入場點數 × 倍率並捨去小數。倍率是總領回金額，不是額外獎金。未滿 30 公尺又沒有擊退狼王就領不到點數。這是操作技巧遊戲，結果取決於跳躍與丟便便的時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已扣點數不退回。最佳紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
 
 </div>
@@ -1399,8 +1432,8 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
     b.addEventListener('click', function () { elAuto.value = Number(b.dataset.auto).toFixed(2); });
   });
   $('reset').addEventListener('click', function () {
-    var note = function (t) { bobaUI(t); fiSay(t); $('sk-msg').textContent=t; eqSay(t); drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
-    if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.pending || WL.pending || TW.active || CR.active || DR.active || runnerBusy || EQ.active || sneakBusy || FI.active || BOBA.active) { note('這一注結束後才能重設點數。'); return; }
+    var note = function (t) { catSay(t); birdSay(t); bobaUI(t); fiSay(t); $('sk-msg').textContent=t; eqSay(t); drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
+    if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.pending || WL.pending || TW.active || CR.active || DR.active || runnerBusy || EQ.active || sneakBusy || FI.active || BOBA.active || catBusy || birdBusy) { note('這一注結束後才能重設點數。'); return; }
     AN.points(START_BALANCE-S.balance); S.balance = START_BALANCE; save(); note('點數已重設為 1,000。'); renderAll(); renderMines();
   });
 
@@ -3063,6 +3096,7 @@ ui();draw();requestAnimationFrame(loop);
   function cpLoop(now){cpSync(now);if(!$('view-campaign').hidden&&!document.hidden){cpUI();cpDraw();}requestAnimationFrame(cpLoop);}
   cpCity();cpUI();cpDraw();requestAnimationFrame(cpLoop);
 
+
   /* ---------- Boba Straw: original isolated screen, fee-only shared wallet ---------- */
   var BOBA={active:false,fee:20,analytics:null,loaded:false};
   function bobaUI(text){$('boba-finish').disabled=!BOBA.active;if(text)$('boba-msg').textContent=text;}
@@ -3090,6 +3124,316 @@ ui();draw();requestAnimationFrame(loop);
   }
   $('boba-finish').addEventListener('click',function(){var frame=$('boba-frame');if(BOBA.active&&frame.contentWindow&&frame.contentWindow.finishBobaPlatformRound)frame.contentWindow.finishBobaPlatformRound();});
 
+  /* ---------- Rooftop Cat: original rooftop scene; distance at the fall decides the shared-wallet return ---------- */
+  var catBusy=false,catStake=0,catSay=function(){};
+  (function(){
+const c=$('ct-canvas'),g=c.getContext('2d'),W=400,H=560,CX=110,OL='#1b1b2f';
+const TIERS=[[300,5],[220,3.2],[150,2.2],[100,1.5],[60,1],[30,.5]];
+let best=0;try{best=+localStorage.getItem('deep-sea-cat-best')||0}catch(e){}
+let analytics=null,paid=0;
+const mult=s=>{for(const t of TIERS)if(s>=t[0])return t[1];return 0};
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const O=(f,w)=>{g.fillStyle=f;g.fill();g.lineWidth=w||4;g.strokeStyle=OL;g.lineJoin='round';g.stroke()};
+const C=(x,y,r,f,w)=>{g.beginPath();g.arc(x,y,r,0,7);O(f,w||3)};
+const F=(x,y,r,f)=>{g.fillStyle=f;g.beginPath();g.arc(x,y,r,0,7);g.fill()};
+function tx(s,x,y,sz,col){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-30);g.fillStyle=col;g.fillText(s,x,y,W-30)}
+let st='ready',roofs,nid,cy,vy,on,offT,buf,hold=false,dist,v,tt=0,sq=0,shake=0,rec=false,last=0;
+function reset(){roofs=[{x:-60,w:400,y:430,id:0}];nid=1;cy=430;vy=0;on=true;offT=0;buf=0;dist=0;v=230;sq=0;shake=0;fill()}
+function fill(){while(true){const l=roofs[roofs.length-1];if(l.x+l.w>W+260)break;roofs.push({x:l.x+l.w+rnd(45,40+v*.42),w:rnd(120,240),y:Math.max(340,Math.min(470,l.y+rnd(-55,45))),id:nid++})}}
+reset();
+const score=()=>Math.floor(dist/60);
+function say(text,kind){$('ct-msg').textContent=text;$('ct-msg').className='msg'+(kind?' '+kind:'')}
+catSay=say;
+function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
+function ui(){
+ const s=score(),m=mult(s),live=st==='run',pay=st==='over'?paid:Math.floor(catStake*m),net=pay-catStake;
+ setText('ct-score',s+' m');setText('ct-best',best+' m');setText('ct-mult',fx(m)+'×');setText('ct-pay',fmt(pay)+' 點');
+ setText('ct-net',catStake&&st!=='ready'?(net>0?'+':'')+fmt(net)+' 點':'—');$('ct-net').style.color=!catStake||st==='ready'?'':net>0?'var(--glow)':net<0?'var(--crush)':'var(--muted)';
+ $('ct-amount').disabled=catBusy;$('ct-go').disabled=live;setText('ct-go',live?'奔跑中 · 點畫面跳躍':st==='over'?'扣點再跑一次':'扣點開始奔跑');
+ let tier=0;TIERS.forEach(t=>{if(!tier&&s>=t[0])tier=t[0]});
+ document.querySelectorAll('[data-ct-tier]').forEach(el=>el.setAttribute('aria-current',st!=='ready'&&Number(el.dataset.ctTier)===tier?'step':'false'));
+}
+function die(){
+ if(st!=='run')return;
+ st='over';hold=false;shake=reduceMotion?0:.35;const s=score(),m=mult(s);paid=Math.floor(catStake*m);rec=s>best;
+ if(rec){best=s;try{localStorage.setItem('deep-sea-cat-best',best)}catch(e){}}
+ AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,multiplier:m});catBusy=false;S.balance+=paid;save();renderAll();
+ const net=paid-catStake;
+ if(!paid)say('跑了 '+s+' 公尺，未滿 30 公尺，這一局領不到點數，失去 '+fmt(catStake)+' 點。','lose');
+ else say('跑了 '+s+' 公尺，倍率 '+fx(m)+'×，領回 '+fmt(paid)+' 點，本局'+(net>=0?'淨賺 ':'淨損 ')+fmt(Math.abs(net))+' 點。',net>0?'win':'');
+ ui();
+}
+function jump(){if(on||offT<.1){vy=-600;on=false;offT=1;sq=-.25}else buf=.12}
+function update(dt){
+tt+=dt;sq*=.86;if(shake>0)shake-=dt;
+if(st!=='run')return;
+v=Math.min(420,230+dist*.012);dist+=v*dt;
+roofs.forEach(r=>r.x-=v*dt);roofs=roofs.filter(r=>r.x+r.w>-80);fill();
+if(buf>0)buf-=dt;
+const py=cy;vy+=(hold&&vy<0?1000:2100)*dt;cy+=vy*dt;
+if(!on)offT+=dt;
+let land=false;
+for(const r of roofs){
+if(CX+12>r.x&&CX-12<r.x+r.w){
+if(vy>=0&&py<=r.y+14&&cy>=r.y){cy=r.y;vy=0;land=true}
+else if(cy>r.y+14){die();return}}}
+if(land){if(buf>0){vy=-600;buf=0;sq=-.25;on=false;offT=1}else{if(!on)sq=.25;on=true;offT=0}}else on=false;
+if(cy>H+60)die()}
+function drawCat(air){
+const sw=air?0:Math.sin(tt*16)*7;g.lineCap='round';
+const leg=(lx,d)=>{g.beginPath();g.moveTo(lx,-12);g.lineTo(lx+d,0);g.strokeStyle=OL;g.lineWidth=10;g.stroke();g.strokeStyle='#ff9f1c';g.lineWidth=5;g.stroke()};
+leg(-9,air?-7:sw);leg(9,air?8:-sw);
+const tw=Math.sin(tt*8)*6;
+g.beginPath();g.moveTo(-15,-22);g.quadraticCurveTo(-36,-26+tw,-30,-50+tw);g.strokeStyle=OL;g.lineWidth=11;g.stroke();g.strokeStyle='#ff9f1c';g.lineWidth=6;g.stroke();
+g.beginPath();g.ellipse(0,-22,19,14,0,0,7);O('#ff9f1c');
+g.strokeStyle='#e36414';g.lineWidth=3;g.beginPath();[-6,2,10].forEach(x=>{g.moveTo(x,-34);g.lineTo(x,-27)});g.stroke();
+g.beginPath();g.moveTo(4,-46);g.lineTo(6,-64);g.lineTo(18,-49);g.closePath();O('#ff9f1c');
+g.beginPath();g.moveTo(20,-49);g.lineTo(29,-64);g.lineTo(31,-44);g.closePath();O('#ff9f1c');
+C(15,-36,15,'#ff9f1c');
+C(10,-38,5.5,'#fff',2);C(23,-38,5.5,'#fff',2);F(12,-38,2.8,OL);F(25,-38,2.8,OL);
+F(29,-31,3.2,'#ff5d8f');g.globalAlpha=.55;F(6,-31,4,'#ff5d8f');g.globalAlpha=1;
+g.strokeStyle=OL;g.lineWidth=2;g.beginPath();g.moveTo(28,-30);g.lineTo(41,-34);g.moveTo(28,-28);g.lineTo(41,-27);g.stroke()}
+function draw(){
+const ox=shake>0?(Math.random()-.5)*12:0;
+g.save();g.translate(ox,0);
+g.fillStyle='#2ec4b6';g.fillRect(-20,0,W+40,H);
+C(300,120,48,'#fff1c1',4);F(286,108,8,'#ffe08a');F(312,134,5,'#ffe08a');
+g.fillStyle='#1f9d93';
+for(let i=0;i<8;i++){const x=((i*90-dist*.15)%720+720)%720-100,h=110+(i*37)%70;g.beginPath();g.roundRect?g.roundRect(x,420-h,64,h+160,10):g.rect(x,420-h,64,h+160);g.fill()}
+for(const r of roofs){
+g.beginPath();g.rect(r.x,r.y,r.w,H-r.y+10);O('#ff5d8f');
+for(let wx=r.x+24;wx<r.x+r.w-30;wx+=56){g.beginPath();g.rect(wx,r.y+44,24,30);O('#ffd23f',3)}
+if(r.w>170&&r.id%2){g.beginPath();g.rect(r.x+r.w-56,r.y-32,22,34);O('#fff1c1',3)}
+g.beginPath();g.rect(r.x-8,r.y-4,r.w+16,16);O('#7b2cbf')}
+g.save();g.translate(CX,cy);g.scale(1+sq*.4,1-sq*.4);drawCat(!on);g.restore();
+g.restore();
+const s=score();
+tx(s+' m',W/2,62,40,'#fff1c1');
+if(st==='run')tx(fx(mult(s))+'×',W/2,92,18,mult(s)>=1?'#ffd23f':'#fff1c1');
+tx('最佳 '+best+' m',W-70,34,16,'#ffd23f');
+if(st!=='run'){
+g.fillStyle='rgba(27,27,47,.5)';g.fillRect(0,0,W,H);
+if(st==='ready'){tx('屋頂貓貓',W/2,240,36,'#ffd23f');tx('右側扣點開始',W/2,290,22,'#fff1c1')}
+else{tx('喵…摔下去了！',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(paid>0?'領回 '+fmt(paid)+' 點':'距離不夠，沒有點數',W/2,314,22,paid>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,348,20,'#ffd23f');tx('右側可以再跑一次',W/2,392,20,'#fff1c1')}}}
+function start(){
+ if(st==='run')return;
+ const amount=Number($('ct-amount').value);
+ if(!Number.isSafeInteger(amount)||amount<MIN_BET){say('請輸入至少 '+MIN_BET+' 點的整數入場點數。','lose');return;}
+ if(amount>S.balance){say('餘額不足，請降低入場點數。','lose');return;}
+ analytics=AN.start('cat',amount);catStake=amount;catBusy=true;S.balance-=amount;save();renderAll();
+ reset();paid=0;rec=false;hold=false;st='run';last=performance.now();say('出發！點畫面跳躍，按越久跳越高。');ui();c.focus();
+}
+function down(){if(st!=='run'||$('view-cat').hidden||document.hidden)return false;hold=true;jump();return true}
+$('ct-go').addEventListener('click',start);
+c.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;if(down()){e.preventDefault();c.focus()}else if(st!=='run')say(st==='over'?'這一局已結算。按「扣點再跑一次」開始新的一局。':'先按「扣點開始奔跑」。')});
+['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,()=>{hold=false}));
+c.addEventListener('contextmenu',e=>e.preventDefault());
+addEventListener('keydown',e=>{if($('view-cat').hidden||document.hidden||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();if(!e.repeat)down()}});
+addEventListener('keyup',e=>{if(e.key===' '||e.key==='ArrowUp')hold=false});
+addEventListener('blur',()=>{hold=false;last=performance.now()});
+document.addEventListener('visibilitychange',()=>{hold=false;last=performance.now()});
+window.addEventListener('hashchange',()=>{hold=false;last=performance.now()});
+function loop(t){const dt=Math.min(.05,Math.max(0,(t-last)/1000)||0);last=t;if(!$('view-cat').hidden&&!document.hidden){update(dt);ui();draw()}requestAnimationFrame(loop)}
+ui();draw();requestAnimationFrame(loop);
+  })();
+
+  /* ---------- Poop Bird vs Wolves: original desert scene; distance plus alpha wolves beaten decide the return ---------- */
+  var birdBusy=false,birdStake=0,birdSay=function(){};
+  (function(){
+const c=$('pb-canvas'),g=c.getContext('2d'),W=400,H=560,GY=440,BX=90,OL='#1b1b2f',PB={x:335,y:505,r:44};
+const TIERS=[[250,4],[180,2.8],[130,2],[90,1.4],[60,1],[30,.5]],BOSS_BONUS=.5;
+let best=0;try{best=+localStorage.getItem('deep-sea-bird-best')||0}catch(e){}
+let analytics=null,paid=0;
+const tierMult=s=>{for(const t of TIERS)if(s>=t[0])return t[1];return 0};
+const rnd=(a,b)=>a+Math.random()*(b-a),cl=(x,a,b)=>Math.max(a,Math.min(b,x));
+const O=(f,w)=>{g.fillStyle=f;g.fill();g.lineWidth=w||4;g.strokeStyle=OL;g.lineJoin='round';g.stroke()};
+const C=(x,y,r,f,w)=>{g.beginPath();g.arc(x,y,r,0,7);O(f,w||3)};
+const F=(x,y,r,f)=>{g.fillStyle=f;g.beginPath();g.arc(x,y,r,0,7);g.fill()};
+const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();O(f,lw||3)};
+function tx(s,x,y,sz,col){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-30);g.fillStyle=col;g.fillText(s,x,y,W-30)}
+const CH=[40,88,150],CW=[26,34,44],WS=[.65,1.7];
+let st='ready',by,vy,on,buf,hold=false,hid=-1,jc,boost,obs,proj,dist,v,nextAt,cnt,lb,boss,eggs,fxs,tt=0,sq=0,shake=0,rec=false,last=0,pcd=0,warnT=0;
+function reset(){by=GY;vy=0;on=true;buf=0;jc=0;boost=0;obs=[];proj=[];dist=0;v=290;nextAt=450;cnt=0;lb=-1;boss=false;eggs=0;fxs=[];sq=0;shake=0;pcd=0;warnT=0}
+reset();
+const score=()=>Math.floor(dist/60);
+const mult=()=>tierMult(score())+BOSS_BONUS*eggs;
+function say(text,kind){$('pb-msg').textContent=text;$('pb-msg').className='msg'+(kind?' '+kind:'')}
+birdSay=say;
+function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
+function ui(){
+ const s=score(),m=mult(),live=st==='run',pay=st==='over'?paid:Math.floor(birdStake*m),net=pay-birdStake;
+ setText('pb-score',s+' m');setText('pb-boss',eggs+' 隻');setText('pb-best',best+' m');setText('pb-mult',fx(m)+'×');setText('pb-pay',fmt(pay)+' 點');
+ setText('pb-net',birdStake&&st!=='ready'?(net>0?'+':'')+fmt(net)+' 點':'—');$('pb-net').style.color=!birdStake||st==='ready'?'':net>0?'var(--glow)':net<0?'var(--crush)':'var(--muted)';
+ $('pb-amount').disabled=birdBusy;$('pb-go').disabled=live;setText('pb-go',live?'奔跑中 · 點畫面跳躍':st==='over'?'扣點再跑一次':'扣點開始奔跑');
+ let tier=0;TIERS.forEach(t=>{if(!tier&&s>=t[0])tier=t[0]});
+ document.querySelectorAll('[data-pb-tier]').forEach(el=>el.setAttribute('aria-current',st!=='ready'&&Number(el.dataset.pbTier)===tier?'step':'false'));
+}
+function die(){
+ if(st!=='run')return;
+ st='over';hold=false;shake=reduceMotion?0:.35;const s=score(),m=mult();paid=Math.floor(birdStake*m);rec=s>best;
+ if(rec){best=s;try{localStorage.setItem('deep-sea-bird-best',best)}catch(e){}}
+ AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,bosses:eggs,multiplier:m});birdBusy=false;S.balance+=paid;save();renderAll();
+ const net=paid-birdStake,bossText=eggs?'、擊退 '+eggs+' 隻狼王':'';
+ if(!paid)say('跑了 '+s+' 公尺，未滿 30 公尺也沒有擊退狼王，這一局領不到點數，失去 '+fmt(birdStake)+' 點。','lose');
+ else say('跑了 '+s+' 公尺'+bossText+'，倍率 '+fx(m)+'×，領回 '+fmt(paid)+' 點，本局'+(net>=0?'淨賺 ':'淨損 ')+fmt(Math.abs(net))+' 點。',net>0?'win':'');
+ ui();
+}
+function jump(){
+if(on){vy=-600;on=false;jc=1;sq=-.25}
+else if(jc===1){vy=-560;jc=2;boost=.45;sq=-.2}
+else buf=.12}
+function shoot(){if(st!=='run'||pcd>0)return;pcd=.3;proj.push({x:BX+28,y:by-30})}
+function spawn(){
+const pool=['c0','w0'];if(cnt>=3)pool.push('c1');if(cnt>=6)pool.push('w1');if(cnt>=9)pool.push('c2');
+const t=pool[(Math.random()*pool.length)|0],k=t[0],s=+t[1];
+if(k==='c')obs.push({k:'c',s,x:W+40,y:GY,h:CH[s]});
+else obs.push({k:'w',s,x:W+40,y:GY,sc:WS[s],dead:0,vy:0,a:0});
+cnt++;nextAt=dist+rnd(300,420)+(s>0?60:0)}
+function hitRect(x1,y1,x2,y2){const nx=cl(BX,x1,x2),ny=cl(by-22,y1,y2);return Math.hypot(BX-nx,by-22-ny)<16}
+function update(dt){
+tt+=dt;sq*=.86;if(shake>0)shake-=dt;
+fxs.forEach(f=>f.t+=dt);fxs=fxs.filter(f=>f.t<.8);
+if(st!=='run')return;
+if(warnT>0)warnT-=dt;if(pcd>0)pcd-=dt;
+v=Math.min(450,290+dist*.01);dist+=v*dt;
+const bossDue=cnt>0&&cnt%8===0&&lb!==cnt;
+if(!boss){
+if(bossDue){if(!obs.some(o=>!o.dead)){boss=true;lb=cnt;obs.push({k:'a',x:W+220,y:GY,sc:2,hp:3,dead:0,vy:0,a:0,hit:0});warnT=1.3;AN.progress(analytics,{stage:eggs+1,step:score(),phase:'alpha'})}}
+else if(dist>=nextAt)spawn()}
+if(buf>0)buf-=dt;
+const slow=hold&&jc===2&&boost>0&&vy<0;
+if(slow)boost-=dt;
+vy+=(slow?1300:2300)*dt;by+=vy*dt;
+if(by>=GY){by=GY;vy=0;jc=0;if(buf>0){buf=0;vy=-600;jc=1;sq=-.25;on=false}else{if(!on)sq=.25;on=true}}else on=false;
+for(const o of obs){
+if(o.dead){o.x+=140*dt;o.y+=o.vy*dt;o.vy+=1800*dt;o.a+=dt*8;continue}
+if(o.k==='c'){o.x-=v*dt;if(hitRect(o.x+3,GY-o.h+4,o.x+CW[o.s]-3,GY)){die();return}}
+else if(o.k==='w'){o.x-=(v+110)*dt;if(hitRect(o.x-10*o.sc,o.y-54*o.sc,o.x+64*o.sc,o.y)){die();return}}
+else{o.x-=(v+45)*dt;if(o.hit>0)o.hit-=dt;if(hitRect(o.x-20,o.y-400,o.x+128,o.y)){die();return}}}
+for(const p of proj){p.x+=650*dt;
+for(const a of obs){if(a.k!=='a'||a.dead||p.dead)continue;
+if(p.x>=a.x-20&&p.x<=a.x+128&&p.y>a.y-120&&p.y<a.y){p.dead=1;a.hp--;a.x+=55;a.hit=.2;shake=reduceMotion?0:.12;fxs.push({x:a.x,y:a.y-90,t:0,s:'啪！'});
+if(a.hp<=0){a.dead=1;a.vy=-420;boss=false;nextAt=dist+380;eggs++;fxs.push({x:W/2,y:200,t:0,s:'救回一顆蛋 +'+fx(BOSS_BONUS)+'×'});say('擊退狼王！救回第 '+eggs+' 顆蛋，本局倍率加 '+fx(BOSS_BONUS)+'×。','win')}}}}
+proj=proj.filter(p=>!p.dead&&p.x<W+30);
+obs=obs.filter(o=>o.x>-220&&o.x<W+500&&o.y<H+200)}
+function drawPoop(x,y,s,rot){
+g.save();g.translate(x,y);if(rot)g.rotate(rot);g.scale(s,s);const w=4/s;
+g.beginPath();g.ellipse(0,-12,34,18,0,0,7);O('#8d5524',w);
+g.beginPath();g.ellipse(0,-34,26,15,0,0,7);O('#8d5524',w);
+g.beginPath();g.ellipse(0,-52,17,12,0,0,7);O('#8d5524',w);
+g.beginPath();g.moveTo(-6,-60);g.quadraticCurveTo(0,-82,8,-62);g.closePath();O('#8d5524',w);
+C(-9,-34,5.5,'#fff',2/s);C(9,-34,5.5,'#fff',2/s);F(-8,-34,2.6,OL);F(10,-34,2.6,OL);
+g.strokeStyle=OL;g.lineWidth=2.5/s;g.beginPath();g.arc(0,-28,6,.2,Math.PI-.2);g.stroke();
+g.restore()}
+function drawBird(air){
+const sw=air?0:Math.sin(tt*18)*7;g.lineCap='round';
+const leg=(lx,d)=>{g.beginPath();g.moveTo(lx,-8);g.lineTo(lx+d,0);g.strokeStyle=OL;g.lineWidth=9;g.stroke();g.strokeStyle='#ff9f1c';g.lineWidth=4;g.stroke()};
+leg(-5,air?-6:sw);leg(7,air?6:-sw);
+g.beginPath();g.moveTo(-18,-28);g.lineTo(-40,-40);g.lineTo(-36,-20);g.closePath();O('#00b4d8');
+g.beginPath();g.arc(0,-28,22,0,7);O('#4cc9f0');
+g.fillStyle='#caf0f8';g.beginPath();g.ellipse(4,-20,13,11,0,0,7);g.fill();
+g.save();g.translate(-4,-28);g.rotate(air?-.8+Math.sin(tt*22)*.4:Math.sin(tt*18)*.25);g.beginPath();g.ellipse(-4,4,12,7,0,0,7);O('#00b4d8');g.restore();
+C(-2,-52,4,'#f72585');C(6,-54,4,'#f72585');C(13,-50,4,'#f72585');
+C(10,-34,7,'#fff',2.5);F(12,-34,3.2,OL);
+g.beginPath();g.moveTo(18,-31);g.lineTo(37,-26);g.lineTo(18,-21);g.closePath();O('#ffbe0b');
+g.globalAlpha=.6;F(6,-24,4,'#ff4d8d');g.globalAlpha=1}
+function drawWolf(t,col,al){
+const sw=Math.sin(t*14)*6;g.lineCap='round';
+[10,22,40,52].forEach((lx,i)=>{g.beginPath();g.moveTo(lx,-14);g.lineTo(lx+(i%2?sw:-sw),0);g.strokeStyle=OL;g.lineWidth=10;g.stroke();g.strokeStyle=col;g.lineWidth=5;g.stroke()});
+g.beginPath();g.moveTo(58,-30);g.quadraticCurveTo(82,-40,76,-64);g.quadraticCurveTo(66,-44,56,-22);g.closePath();O(col);
+g.beginPath();g.ellipse(34,-28,28,17,0,0,7);O(col);
+g.fillStyle='#e9ecef';g.beginPath();g.ellipse(30,-22,16,8,0,0,7);g.fill();
+g.beginPath();g.moveTo(-2,-56);g.lineTo(2,-80);g.lineTo(15,-60);g.closePath();O(col);
+g.beginPath();g.moveTo(14,-60);g.lineTo(26,-80);g.lineTo(30,-56);g.closePath();O(col);
+C(8,-40,16,col);
+g.beginPath();g.ellipse(-8,-34,10,7,0,0,7);O('#e9ecef');F(-16,-38,3.5,OL);F(-8,-27,3,'#ff4d6d');
+C(6,-45,5,'#fff',2);F(4,-45,2.5,'#d00000');
+g.strokeStyle=OL;g.lineWidth=3;g.beginPath();g.moveTo(-3,-55);g.lineTo(13,-49);g.stroke();
+if(al){g.beginPath();g.moveTo(-4,-54);g.lineTo(-2,-70);g.lineTo(4,-61);g.lineTo(8,-74);g.lineTo(12,-61);g.lineTo(18,-70);g.lineTo(20,-54);g.closePath();O('#ffd23f',3);g.strokeStyle='#d00000';g.lineWidth=2.5;g.beginPath();g.moveTo(1,-52);g.lineTo(11,-38);g.stroke()}}
+function drawCactus(o){
+const x=o.x,h=o.h,w=CW[o.s];
+RR(x,GY-h,w,h,w/2,'#06d6a0');
+RR(x-14,GY-h*.55,16,10,5,'#06d6a0');RR(x-14,GY-h*.55-16,10,24,5,'#06d6a0');
+if(o.s>0){RR(x+w-2,GY-h*.7,16,10,5,'#06d6a0');RR(x+w+4,GY-h*.7-16,10,24,5,'#06d6a0')}
+C(x+w/2,GY-h-3,6,'#ff4d8d',3);
+C(x+w/2-5,GY-h+20,3.5,'#fff',2);C(x+w/2+5,GY-h+20,3.5,'#fff',2);F(x+w/2-4,GY-h+20,1.6,OL);F(x+w/2+6,GY-h+20,1.6,OL)}
+function label(x,top,tier,poop){
+if(x<20||x>W-20)return;
+const y=Math.max(100,top-34),w=poop?46:tier===0?36:58;
+RR(x-w/2,y-18,w,32,14,'#fff1c1',3);
+if(poop)drawPoop(x,y+8,.4);
+else{if(tier===0)F(x,y-4,4.5,OL);else{F(x-10,y-4,4.5,OL);F(x+10,y-4,4.5,OL)}
+if(tier===2){g.fillStyle=OL;g.fillRect(x-16,y+4,32,4)}}}
+function drawEgg(x,y){g.beginPath();g.ellipse(x,y,9,12,0,0,7);O('#fff1c1',3);F(x-3,y-2,1.8,'#ff9f1c');F(x+3,y+4,1.8,'#4cc9f0')}
+function draw(){
+const ox=shake>0?(Math.random()-.5)*12:0;
+g.save();g.translate(ox,0);
+g.fillStyle='#ffb703';g.fillRect(-20,0,W+40,H);
+C(300,130,56,'#fb5607',4);C(300,130,32,'#ffd166',3);
+g.fillStyle='#f48c06';
+for(let i=0;i<6;i++){const x=((i*170-dist*.2)%1020+1020)%1020-200;g.beginPath();g.ellipse(x+100,GY,140,80,0,Math.PI,0);g.fill()}
+g.fillStyle='#7209b7';g.fillRect(-20,GY,W+40,H-GY);
+g.fillStyle='#f72585';g.fillRect(-20,GY,W+40,16);
+g.strokeStyle=OL;g.lineWidth=4;g.beginPath();g.moveTo(-20,GY);g.lineTo(W+20,GY);g.stroke();
+g.fillStyle='#9d4edd';
+for(let i=0;i<8;i++){const x=((i*70-dist)%560+560)%560-80;g.fillRect(x,GY+44+(i%3)*22,26,8)}
+for(const o of obs){
+if(o.k==='c'){drawCactus(o);label(o.x+CW[o.s]/2,GY-o.h,o.s,0)}
+else{
+g.save();g.translate(o.x+(o.hit>0&&!reduceMotion?Math.random()*8-4:0),o.y);g.scale(o.sc,o.sc);
+if(o.dead){g.translate(30,-30);g.rotate(o.a);g.translate(-30,30)}
+drawWolf(tt,o.k==='a'?'#8d99ae':'#adb5bd',o.k==='a');g.restore();
+if(!o.dead){
+if(o.k==='w')label(o.x+27*o.sc,o.y-80*o.sc,o.s,0);
+else{label(o.x+60,o.y-200,0,1);for(let i=0;i<3;i++)C(o.x+30+i*28,o.y-218,8,i<o.hp?'#e63946':'#fff1c1',3)}}}}
+proj.forEach(p=>drawPoop(p.x,p.y+14,.4,tt*10));
+g.save();g.translate(BX,by);g.scale(1+sq*.4,1-sq*.4);drawBird(!on);g.restore();
+fxs.forEach(f=>{g.globalAlpha=1-f.t/.8;tx(f.s,f.x,f.y-f.t*50,24,'#ffd23f');g.globalAlpha=1});
+g.restore();
+const s=score();
+tx(s+' m',W/2,62,40,'#fff1c1');
+if(st==='run')tx(fx(mult())+'×',W/2,92,18,mult()>=1?'#ffd23f':'#fff1c1');
+drawEgg(24,40);tx('x'+eggs,56,48,20,'#fff1c1');
+tx('最佳 '+best+' m',W-70,34,16,'#fff1c1');
+if(warnT>0&&st==='run')tx('狼王來了！快丟便便',W/2,150,26,'#ff5d8f');
+C(PB.x,PB.y,PB.r,pcd>0?'#d9c9a3':'#fff1c1',4);drawPoop(PB.x,PB.y+20,.5);
+if(pcd>0){g.strokeStyle='#ff5d8f';g.lineWidth=5;g.beginPath();g.arc(PB.x,PB.y,PB.r+7,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-pcd/.3));g.stroke()}
+if(st!=='run'){
+g.fillStyle='rgba(27,27,47,.55)';g.fillRect(0,0,W,H);
+if(st==='ready'){tx('便便鳥大戰狼群',W/2,200,32,'#ffd23f');tx('狼群偷走了你的蛋！',W/2,252,19,'#fff1c1');tx('躲開障礙，再賞狼王一坨！',W/2,282,19,'#fff1c1');tx('右側扣點開始',W/2,340,24,'#ffd23f')}
+else{tx('哎喲！被撞到了',W/2,180,32,'#ff5d8f');tx(s+' m',W/2,244,50,'#fff1c1');tx('擊退狼王：'+eggs+' 隻',W/2,284,20,'#fff1c1');tx(paid>0?'領回 '+fmt(paid)+' 點':'距離不夠，沒有點數',W/2,320,22,paid>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,352,20,'#ffd23f');tx('右側可以再跑一次',W/2,396,20,'#fff1c1')}}}
+function start(){
+ if(st==='run')return;
+ const amount=Number($('pb-amount').value);
+ if(!Number.isSafeInteger(amount)||amount<MIN_BET){say('請輸入至少 '+MIN_BET+' 點的整數入場點數。','lose');return;}
+ if(amount>S.balance){say('餘額不足，請降低入場點數。','lose');return;}
+ analytics=AN.start('bird',amount);birdStake=amount;birdBusy=true;S.balance-=amount;save();renderAll();
+ reset();paid=0;rec=false;hold=false;hid=-1;st='run';last=performance.now();say('出發！看障礙上方的標記決定點幾下，狼王出現就丟便便。');ui();c.focus();
+}
+function pos(e){const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}}
+function down(id){if(st!=='run'||$('view-bird').hidden||document.hidden)return false;hid=id;hold=true;jump();return true}
+$('pb-go').addEventListener('click',start);
+c.addEventListener('pointerdown',e=>{
+if(e.button!==undefined&&e.button!==0)return;
+if(st!=='run'){say(st==='over'?'這一局已結算。按「扣點再跑一次」開始新的一局。':'先按「扣點開始奔跑」。');return}
+if($('view-bird').hidden||document.hidden)return;e.preventDefault();c.focus();
+const p=pos(e);
+if(Math.hypot(p.x-PB.x,p.y-PB.y)<PB.r+10){shoot();return}
+down(e.pointerId)});
+['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,e=>{if(e.pointerId===hid)hold=false}));
+c.addEventListener('contextmenu',e=>e.preventDefault());
+addEventListener('keydown',e=>{
+if($('view-bird').hidden||document.hidden||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;
+if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();if(!e.repeat)down(-2)}
+else if(e.key==='x'||e.key==='X'||e.key==='ArrowDown'||e.key==='p'||e.key==='P'){e.preventDefault();shoot()}});
+addEventListener('keyup',e=>{if((e.key===' '||e.key==='ArrowUp')&&hid===-2)hold=false});
+addEventListener('blur',()=>{hold=false;last=performance.now()});
+document.addEventListener('visibilitychange',()=>{hold=false;last=performance.now()});
+window.addEventListener('hashchange',()=>{hold=false;last=performance.now()});
+function loop(t){const dt=Math.min(.05,Math.max(0,(t-last)/1000)||0);last=t;if(!$('view-bird').hidden&&!document.hidden){update(dt);ui();draw()}requestAnimationFrame(loop)}
+ui();draw();requestAnimationFrame(loop);
+  })();
+
   /* ---------- lobby navigation and category filters ---------- */
   var lobbyScroll=0,lastView='';
   document.querySelectorAll('[data-lobby-filter]').forEach(function(button){button.addEventListener('click',function(){
@@ -3101,7 +3445,7 @@ ui();draw();requestAnimationFrame(loop);
   $('lobby-explore').addEventListener('click',function(){if($('lobby-games').scrollIntoView)$('lobby-games').scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});});
 
   /* ---------- tabs ---------- */
-  var VIEWS = { lobby: '深海遊戲廳 <span>Deep Sea Arcade</span>', crash: '壓潰深度 <span>Crush Depth</span>', mines: '水雷區 <span>Mine Field</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '撒網 <span>Cast Net</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>' };
+  var VIEWS = { lobby: '深海遊戲廳 <span>Deep Sea Arcade</span>', crash: '壓潰深度 <span>Crush Depth</span>', mines: '水雷區 <span>Mine Field</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '撒網 <span>Cast Net</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>' };
   function route() {
     var v = location.hash.slice(1); if (!VIEWS[v]) v = 'lobby';
     if(lastView==='lobby'&&v!=='lobby')lobbyScroll=window.scrollY||0;
@@ -3137,7 +3481,7 @@ ui();draw();requestAnimationFrame(loop);
     requestAnimationFrame(frame);
   }
   var hot = window.claude && window.claude.hot;
-  if (hot && hot.snapshot) hot.snapshot(function () { return { balance: S.balance + (S.bet && !S.bet.out && S.phase !== 'crashed' ? S.bet.amount : 0) + (M.active ? M.bet : 0) + P.balls.reduce(function (s, b) { return s + b.bet; }, 0) + D.pending + L.pending + (HL.active ? HL.bet : 0) + KE.pending + WL.pending + (TW.active ? TW.bet : 0) + (CR.active ? CR.bet : 0) + (DR.active ? DR.stake : 0) + (EQ.active ? EQ.stake : 0) + (sneakBusy ? sneakStake : 0) + (FI.active ? FI.stake : 0) + (CP.active ? CP.stake : 0) + (BOBA.active ? BOBA.fee : 0), history: S.history }; });
+  if (hot && hot.snapshot) hot.snapshot(function () { return { balance: S.balance + (S.bet && !S.bet.out && S.phase !== 'crashed' ? S.bet.amount : 0) + (M.active ? M.bet : 0) + P.balls.reduce(function (s, b) { return s + b.bet; }, 0) + D.pending + L.pending + (HL.active ? HL.bet : 0) + KE.pending + WL.pending + (TW.active ? TW.bet : 0) + (CR.active ? CR.bet : 0) + (DR.active ? DR.stake : 0) + (EQ.active ? EQ.stake : 0) + (sneakBusy ? sneakStake : 0) + (FI.active ? FI.stake : 0) + (CP.active ? CP.stake : 0) + (BOBA.active ? BOBA.fee : 0) + (catBusy ? catStake : 0) + (birdBusy ? birdStake : 0), history: S.history }; });
   if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
 })();
 </script>
