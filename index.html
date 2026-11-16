@@ -318,6 +318,12 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
 .queue-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:var(--muted)}.queue-legend span:nth-child(2){color:var(--lamp)}.queue-legend span:nth-child(3){color:var(--crush)}
 .queue-ladder{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px}.queue-ladder span{padding:8px 4px;text-align:center;border:1px solid var(--line);border-radius:7px;color:var(--muted);font:600 14px var(--font-display);background:var(--panel)}.queue-ladder b{display:block;font:12px var(--font-body);margin-bottom:3px}.queue-ladder [aria-current="step"]{border-color:var(--glow);color:var(--glow);background:rgba(98,230,210,.08)}
 @media(max-width:700px){.queue-ladder{grid-template-columns:repeat(5,minmax(0,1fr))}.queue-stage canvas{max-height:65vh}}
+
+.sneak-stage{min-width:0;display:grid;place-items:center;background:#1d2036;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}.sneak-stage canvas{display:block;width:min(100%,400px);height:auto;touch-action:none;user-select:none;-webkit-user-select:none}
+.sneak-hold{padding:18px 10px;width:100%;color:var(--lamp);border-color:var(--lamp);touch-action:none;user-select:none;-webkit-user-select:none}.sneak-hold:active:not(:disabled){background:var(--lamp);color:var(--abyss)}
+#sk-signal[data-state="look"]{border-color:var(--crush);color:var(--crush)}#sk-signal[data-state="warn"]{border-color:var(--lamp);color:var(--lamp)}
+.sneak-ladder{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.sneak-ladder span{padding:10px 6px;border:1px solid var(--line);background:var(--panel);border-radius:7px;text-align:center;color:var(--muted);font-size:13px}
+@media(max-width:700px){.sneak-stage canvas{max-height:70vh;object-fit:contain}.sneak-ladder{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -349,6 +355,7 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
     <a href="#dream" id="tab-dream">時序修復<small>Dream Repair</small></a>
     <a href="#runner" id="tab-runner">閃避跑酷<small>Dodge Run</small></a>
     <a href="#elevator" id="tab-elevator">插隊大師<small>Queue Cutter</small></a>
+    <a href="#sneak" id="tab-sneak">偷偷下班<small>Sneak Out</small></a>
   </nav></details>
 
   <section class="view" id="view-crash">
@@ -936,6 +943,24 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
     </details>
   </section>
 
+  <section class="view" id="view-sneak" hidden>
+    <div class="console"><div class="sneak-stage"><canvas id="sk-canvas" tabindex="0" width="400" height="600" aria-label="偷偷下班：按住前進，放開假裝工作，老闆回頭時不要動"></canvas></div>
+      <div class="side"><section class="panel" aria-label="偷偷下班操作">
+        <dl class="stats"><div><dt>目前關卡</dt><dd id="sk-stage">1 / 5</dd></div><div><dt>下班進度</dt><dd id="sk-progress">0%</dd></div><div><dt>最佳紀錄</dt><dd id="sk-best">0 關</dd></div></dl>
+        <div class="queue-watch" id="sk-signal" role="status" aria-live="polite" data-state="away">等待開始</div><p class="hint" id="sk-difficulty"></p>
+        <div class="field"><label for="sk-amount">本局入場點數</label><div class="input-row"><input id="sk-amount" type="number" min="10" step="1" value="20" inputmode="numeric"><span class="suffix">點</span></div></div>
+        <dl class="stats"><div><dt>領回倍率</dt><dd id="sk-mult">0.00×</dd></div><div><dt>可領回</dt><dd id="sk-pay">0 點</dd></div></dl>
+        <button class="go" id="sk-go" type="button" data-mode="bet">扣點開始下班</button>
+        <button class="chip sneak-hold" id="sk-hold" type="button" disabled>按住前進 · 放開裝忙</button>
+        <button class="chip timing-cash" id="sk-cash" type="button" disabled>過關後可領回</button>
+        <p class="msg" id="sk-msg" aria-live="polite">保留原版辦公室畫面。按住前進、放開裝忙，成功走到出口才能過關。</p>
+        <p class="hint">也可按住 <kbd>空白鍵</kbd>、<kbd>→</kbd> 或 <kbd>D</kbd> 前進。</p>
+      </section></div>
+    </div>
+    <div class="sneak-ladder"><span>第 1 關 · 0.60×</span><span>第 2 關 · 1.10×</span><span>第 3 關 · 1.80×</span><span>第 4 關 · 2.80×</span><span>第 5 關 · 4.50×</span></div>
+    <details class="rules"><summary>玩法、難度與點數</summary><p>每局先扣入場點數（最低 10 點）。按住遊戲畫面、前進按鈕或空白鍵就走路，放開即站定假裝工作。老闆回頭時繼續走就被抓，失去本局下注與全部未領回獎勵。</p><p>共五關，所需實際移動時間依序為 6、8、10、12、14 秒。後面老闆回頭更頻繁，警示時間由約 0.66 秒縮短至 0.30 秒；第三關起警示可能是假動作。第四關有 20%、第五關有 40% 機率跳過警示直接回頭，此時有 0.18 秒反應時間；一般回頭有 0.10 秒反應時間。</p><p>每關成功後暫停，可選領回或繼續下一關；繼續不再扣點。領回為入場點數 × 通關倍率並捨去小數，倍率是總領回，不是額外獎金。第一關 0.60×，例如入場 20 點只領回 12 點，淨損 8 點。第五關完成自動領回 4.50×。</p><p>切換遊戲、背景分頁或視窗失焦會停止前進；切換遊戲與背景分頁會暫停。重新整理會放棄本局，已扣點數不退回。點數共用，免費重設僅供測試。</p></details>
+  </section>
+
 </div>
 
 <script>
@@ -1227,8 +1252,8 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
     b.addEventListener('click', function () { elAuto.value = Number(b.dataset.auto).toFixed(2); });
   });
   $('reset').addEventListener('click', function () {
-    var note = function (t) { eqSay(t); drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
-    if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.pending || WL.pending || TW.active || CR.active || DR.active || runnerBusy || EQ.active) { note('這一注結束後才能重設點數。'); return; }
+    var note = function (t) { $('sk-msg').textContent=t; eqSay(t); drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
+    if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.pending || WL.pending || TW.active || CR.active || DR.active || runnerBusy || EQ.active || sneakBusy) { note('這一注結束後才能重設點數。'); return; }
     S.balance = START_BALANCE; save(); note('點數已重設為 1,000。'); renderAll(); renderMines();
   });
 
@@ -2414,8 +2439,118 @@ runnerUI();draw();requestAnimationFrame(loop);
   function eqLoop(now){eqSync(now);if(!$('view-elevator').hidden&&!document.hidden){eqUI();eqDraw();}requestAnimationFrame(eqLoop);}
   eqLadder();eqUI();eqDraw();requestAnimationFrame(eqLoop);
 
+  /* ---------- Sneak Out: original office scene, shared-wallet stages ---------- */
+  var sneakBusy=false,sneakStake=0;
+  (function(){
+const c=$('sk-canvas'),g=c.getContext('2d'),W=400,H=600,MAX_LEVEL=5,MULT=[0,.6,1.1,1.8,2.8,4.5];
+let best=0;try{const n=Number(localStorage.getItem('sneak'));if(Number.isFinite(n))best=Math.min(MAX_LEVEL,Math.max(0,n))}catch(e){}
+const texts={lv:n=>'第 '+n+' / 5 關',bs:n=>'最佳 '+n+' 關',title:'偷偷下班',tap:'右側扣點開始',caught:'被抓住了！',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'新紀錄！',again:'右側可重新開始',ok:'溜走了！'};const T=k=>texts[k];
+const quotes=['「你這是要去哪裡？」','「報告寫完了嗎就想走？」','「坐下，還有工作呢。」'];
+let st='ready',pr=0,lv=1,score=0,ph='away',pt=2,fk=false,grace=0,flash=0,shake=0,hold=false,walk=0,last=0,rec=false,qi=0;
+let mouseHold=false,keyHold=false;
+const rnd=(a,b)=>a+Math.random()*(b-a);
+function pay(){return Math.floor(sneakStake*MULT[score])}
+function saySneak(text,kind=''){$('sk-msg').textContent=text;$('sk-msg').className='msg'+(kind?' '+kind:'')}
+function remember(){if(score>best){best=score;try{localStorage.setItem('sneak',best)}catch(e){}}}
+function release(){mouseHold=false;keyHold=false;hold=false}
+function ui(){
+ $('sk-stage').textContent=lv+' / '+MAX_LEVEL;$('sk-progress').textContent=Math.floor(pr)+'%';$('sk-best').textContent=best+' 關';
+ $('sk-mult').textContent=MULT[score].toFixed(2)+'×';$('sk-pay').textContent=(st==='dead'?0:pay())+' 點';$('sk-amount').disabled=sneakBusy;
+ $('sk-go').disabled=st==='run';$('sk-go').textContent=st==='passed'?'挑戰下一關':st==='run'?'潛行中 · 按住前進':'扣點開始下班';
+ $('sk-cash').disabled=st!=='passed';$('sk-cash').textContent=st==='passed'?'領回 '+pay()+' 點':'過關後可領回';$('sk-hold').disabled=st!=='run';
+ var signal=st!=='run'?(st==='passed'?'過關成功，可領回或繼續':st==='dead'?'本局被抓住了':st==='cashed'?'本局已結算':'等待開始'):ph==='look'?'老闆回頭了！立刻放開':ph==='warn'?'老闆有動靜，小心回頭':'老闆忙著工作';
+ if($('sk-signal').textContent!==signal)$('sk-signal').textContent=signal;$('sk-signal').dataset.state=ph;
+ $('sk-difficulty').textContent='需移動約 '+(6+(lv-1)*2)+' 秒 · '+(lv>=4?'可能直接回頭':'回頭前會先警示');
+}
+function awayT(){return rnd(Math.max(.65,2.4-lv*.24),Math.max(1.2,3.8-lv*.32))}
+function nextPhase(){
+ if(ph==='away'){
+  const direct=lv>=4&&Math.random()<(lv===4?.2:.4);
+  if(direct){ph='look';pt=rnd(.9,1.5);grace=.18;}
+  else{ph='warn';fk=lv>=3&&Math.random()<.3;pt=Math.max(.25,.75-lv*.09);grace=0;}
+ }else if(ph==='warn'){
+  if(fk){ph='away';pt=awayT();grace=0;}else{ph='look';pt=rnd(.8,1.3+lv*.06);grace=.1;}
+ }else{ph='away';pt=awayT();grace=0;}
+}
+function die(){if(st!=='run')return;st='dead';sneakBusy=false;release();shake=reduceMotion?0:.4;qi=Math.floor(Math.random()*quotes.length);saySneak('被老闆發現！失去本局 '+sneakStake+' 點與未領回獎勵。','lose');ui()}
+function cash(){if(st!=='passed')return;const amount=pay(),net=amount-sneakStake;st='cashed';sneakBusy=false;release();S.balance+=amount;save();renderAll();saySneak((score===MAX_LEVEL?'五關全部溜走！':'已收手。')+'領回 '+amount+' 點，本局'+(net>=0?'淨賺 ':'淨損 ')+Math.abs(net)+' 點。',net>=0?'win':'');ui()}
+function win(){score++;st='passed';release();remember();saySneak('第 '+lv+' 關下班成功！可領回 '+pay()+' 點，或繼續冒險。','win');if(score===MAX_LEVEL)cash();else ui()}
+// Split at phase boundaries, grace expiration and the exit; slow frames cannot skip detection.
+function update(dt){
+ if(st!=='run')return;
+ while(dt>1e-8&&st==='run'){
+  if(hold&&ph==='look'&&grace<=1e-8){die();return;}
+  const speed=100/(6+(lv-1)*2);
+  let step=Math.min(dt,pt);if(grace>1e-8)step=Math.min(step,grace);if(hold)step=Math.min(step,(100-pr)/speed);
+  if(hold){pr=Math.min(100,pr+speed*step);walk+=step*12;}
+  pt-=step;grace=Math.max(0,grace-step);dt-=step;
+  if(pt<=1e-8)nextPhase();
+  if(hold&&ph==='look'&&grace<=1e-8){die();return;}
+  if(pr>=100-1e-8){pr=100;win();return;}
+ }
+}
+function sync(now){const dt=Math.max(0,(now-last)/1000);last=now;if(!$('view-sneak').hidden&&!document.hidden)update(dt)}
+function round(){pr=0;ph='away';pt=awayT();fk=false;grace=0;flash=0;shake=0;walk=0;release();st='run';last=performance.now();saySneak('按住畫面或前進按鈕移動，放開就假裝工作。老闆回頭時不要動。');ui();c.focus()}
+function start(){
+ if(st==='run')return;
+ if(st==='passed'){lv++;round();return;}
+ const amount=Number($('sk-amount').value);
+ if(!Number.isSafeInteger(amount)||amount<MIN_BET){saySneak('請輸入至少 '+MIN_BET+' 點的整數入場點數。','lose');return;}
+ if(amount>S.balance){saySneak('餘額不足，請降低入場點數。','lose');return;}
+ sneakStake=amount;sneakBusy=true;S.balance-=amount;save();renderAll();score=0;lv=1;rec=false;round();
+}
+function draw(){
+const ox=shake>0?(Math.random()-.5)*14:0;
+g.save();g.translate(ox,0);
+g.fillStyle='#2e3350';g.fillRect(-20,0,W+40,470);
+g.fillStyle='#1d2036';g.fillRect(-20,470,W+40,H-470);
+g.strokeStyle='#e8e4d8';g.lineWidth=3;g.beginPath();g.arc(80,100,30,0,7);g.stroke();
+g.beginPath();g.moveTo(80,100);g.lineTo(80,78);g.moveTo(80,100);g.lineTo(93,118);g.stroke();
+g.fillStyle='#5a4636';g.fillRect(230,338,140,34);
+const bx=300,hy=372-76*1.4,hr=17;
+g.fillStyle='#8c3b36';g.fillRect(bx-17,372-62*1.4,34,56);
+g.fillStyle=ph==='away'?'#2b2118':'#f5d0a9';g.beginPath();g.arc(bx,hy,hr,0,7);g.fill();
+if(ph==='warn'){g.fillStyle='#2b2118';g.beginPath();g.arc(bx,hy,hr,Math.PI*.5,Math.PI*1.5);g.fill();g.fillStyle='#f2c14e';g.font='700 34px system-ui,sans-serif';g.textAlign='center';g.fillText('!',bx,hy-28)}
+if(ph==='look'){g.fillStyle='#fff';g.beginPath();g.arc(bx-6,hy-2,4,0,7);g.arc(bx+6,hy-2,4,0,7);g.fill();g.fillStyle='#000';g.beginPath();g.arc(bx-7,hy-2,2,0,7);g.arc(bx+5,hy-2,2,0,7);g.fill();g.strokeStyle='#2b2118';g.lineWidth=2.5;g.beginPath();g.moveTo(bx-11,hy-10);g.lineTo(bx-2,hy-6);g.moveTo(bx+11,hy-10);g.lineTo(bx+2,hy-6);g.stroke()}
+g.fillStyle='#7a5a3a';g.fillRect(352,320,44,220);
+g.fillStyle='#e8e4d8';g.font='600 12px system-ui,sans-serif';g.textAlign='center';g.fillText('EXIT',374,342);
+g.fillStyle='#f2c14e';g.beginPath();g.arc(360,440,3,0,7);g.fill();
+const x=34+pr/100*300,y=540,sw=hold&&st==='run'?Math.sin(walk)*9:0;
+g.strokeStyle='#f2c14e';g.lineWidth=6;g.lineCap='round';g.beginPath();g.moveTo(x,y-28);g.lineTo(x-sw,y);g.moveTo(x,y-28);g.lineTo(x+sw,y);g.stroke();
+g.fillStyle='#f2c14e';g.fillRect(x-11,y-66,22,40);
+g.fillStyle='#f5d0a9';g.beginPath();g.arc(x,y-78,12,0,7);g.fill();
+g.restore();
+if(ph==='look'&&st==='run'){g.fillStyle='rgba(226,75,74,.2)';g.fillRect(0,0,W,H)}
+g.fillStyle='#fff';g.font='600 20px system-ui,sans-serif';g.textAlign='left';g.fillText(T('lv')(lv),16,32);
+g.textAlign='right';g.fillText(T('bs')(best),W-16,32);
+g.fillStyle='rgba(255,255,255,.2)';g.fillRect(16,44,W-32,6);g.fillStyle='#f2c14e';g.fillRect(16,44,(W-32)*Math.min(1,pr/100),6);
+if(flash>0&&st==='run'){g.textAlign='center';g.fillStyle='#fff';g.font='600 28px system-ui,sans-serif';g.fillText(T('ok'),W/2,120)}
+if(st!=='run'){
+g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,0,W,H);g.textAlign='center';g.fillStyle='#fff';
+if(st==='passed'||st==='cashed'){g.font='600 30px system-ui,sans-serif';g.fillText(st==='passed'?'成功溜走了！':'已領回 '+pay()+' 點',W/2,250);g.font='18px system-ui,sans-serif';g.fillText(st==='passed'?'領回點數，或繼續下一關':'右側可以開始新一局',W/2,292)}
+else if(st==='ready'){g.font='600 32px system-ui,sans-serif';g.fillText(T('title'),W/2,270);g.font='18px system-ui,sans-serif';g.fillText(T('tap'),W/2,310)}
+else{g.font='600 34px system-ui,sans-serif';g.fillText(T('caught'),W/2,215);
+g.font='18px system-ui,sans-serif';g.fillText(quotes[qi],W/2,252);
+g.fillText(T('reach')(100-Math.floor(pr)),W/2,296);
+g.font='600 22px system-ui,sans-serif';g.fillText(T('done')(score),W/2,336);
+if(rec){g.fillStyle='#f2c14e';g.font='18px system-ui,sans-serif';g.fillText(T('rec'),W/2,368)}
+g.fillStyle='#fff';g.font='18px system-ui,sans-serif';g.fillText(T('again'),W/2,420)}}}
+
+$('sk-go').addEventListener('click',start);$('sk-cash').addEventListener('click',cash);
+function press(e){if(e.button!==undefined&&e.button!==0)return;if(st!=='run'||$('view-sneak').hidden||document.hidden)return;e.preventDefault();sync(performance.now());if(st!=='run')return;c.focus();mouseHold=true;hold=true;try{e.currentTarget.setPointerCapture(e.pointerId)}catch(_){}ui()}
+function lift(){sync(performance.now());mouseHold=false;hold=keyHold}
+[c,$('sk-hold')].forEach(el=>{el.addEventListener('pointerdown',press);['pointerup','pointercancel','lostpointercapture'].forEach(type=>el.addEventListener(type,lift))});
+addEventListener('keydown',e=>{if($('view-sneak').hidden||document.hidden||st!=='run'||e.repeat||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;if([' ','ArrowRight','d'].includes(e.key)){e.preventDefault();sync(performance.now());if(st==='run'){keyHold=true;hold=true;}}});
+addEventListener('keyup',e=>{if([' ','ArrowRight','d'].includes(e.key)){if(!$('view-sneak').hidden)e.preventDefault();sync(performance.now());keyHold=false;hold=mouseHold}});
+addEventListener('blur',()=>{release();last=performance.now()});
+document.addEventListener('visibilitychange',()=>{release();last=performance.now()});
+window.addEventListener('hashchange',()=>{release();last=performance.now()});
+function loop(t){sync(t);if(!$('view-sneak').hidden&&!document.hidden){if(shake>0)shake=Math.max(0,shake-.016);ui();draw();}requestAnimationFrame(loop)}
+ui();draw();requestAnimationFrame(loop);
+  })();
+
   /* ---------- tabs ---------- */
-  var VIEWS = { crash: '壓潰深度 <span>Crush Depth</span>', mines: '水雷區 <span>Mine Field</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '撒網 <span>Cast Net</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>' };
+  var VIEWS = { crash: '壓潰深度 <span>Crush Depth</span>', mines: '水雷區 <span>Mine Field</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '撒網 <span>Cast Net</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>' };
   function route() {
     var v = location.hash.slice(1); if (!VIEWS[v]) v = 'crash';
     Object.keys(VIEWS).forEach(function (k) {
@@ -2444,7 +2579,7 @@ runnerUI();draw();requestAnimationFrame(loop);
     requestAnimationFrame(frame);
   }
   var hot = window.claude && window.claude.hot;
-  if (hot && hot.snapshot) hot.snapshot(function () { return { balance: S.balance + (S.bet && !S.bet.out && S.phase !== 'crashed' ? S.bet.amount : 0) + (M.active ? M.bet : 0) + P.balls.reduce(function (s, b) { return s + b.bet; }, 0) + D.pending + L.pending + (HL.active ? HL.bet : 0) + KE.pending + WL.pending + (TW.active ? TW.bet : 0) + (CR.active ? CR.bet : 0) + (DR.active ? DR.stake : 0) + (EQ.active ? EQ.stake : 0), history: S.history }; });
+  if (hot && hot.snapshot) hot.snapshot(function () { return { balance: S.balance + (S.bet && !S.bet.out && S.phase !== 'crashed' ? S.bet.amount : 0) + (M.active ? M.bet : 0) + P.balls.reduce(function (s, b) { return s + b.bet; }, 0) + D.pending + L.pending + (HL.active ? HL.bet : 0) + KE.pending + WL.pending + (TW.active ? TW.bet : 0) + (CR.active ? CR.bet : 0) + (DR.active ? DR.stake : 0) + (EQ.active ? EQ.stake : 0) + (sneakBusy ? sneakStake : 0), history: S.history }; });
   if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
 })();
 </script>
