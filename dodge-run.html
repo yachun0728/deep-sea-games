@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chạy né</title>
+<style>
+:root{--bg:#f4f4f1;--fg:#1d1d1b;--mut:#66655f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141413;--fg:#ecebe6;--mut:#9b9a92}}
+:root[data-theme="dark"]{--bg:#141413;--fg:#ecebe6;--mut:#9b9a92}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",Roboto,sans-serif;display:flex;flex-direction:column;align-items:center;padding:12px}
+canvas{display:block;width:min(100%,420px);height:auto;border-radius:12px;touch-action:none;user-select:none;-webkit-user-select:none}
+p{max-width:420px;margin:10px 0 0;font-size:14px;line-height:1.5;color:var(--mut);text-align:center}
+#lg{display:flex;gap:8px;margin-top:12px}
+#lg button{font:inherit;font-size:13px;padding:6px 12px;border:1px solid var(--mut);border-radius:8px;background:none;color:var(--fg);cursor:pointer}
+#lg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+</style><style>
+:root,:root[data-theme="dark"]{color-scheme:dark;--bg:#051620;--fg:#e4f2f3;--mut:#8db0b9;--card:#0c2230;--line:#214658;--ok:#62e6d2;--bad:#ff6f61;--acc:#62e6d2}
+body{box-sizing:border-box;min-height:100vh;padding:20px 16px;font-family:"PingFang TC","Microsoft JhengHei",system-ui,sans-serif}
+button:focus-visible,canvas:focus-visible{outline:2px solid #62e6d2;outline-offset:3px}
+</style></head><body>
+<canvas tabindex="0" id="c" width="400" height="600" aria-label="Trò chơi chạy né chướng ngại vật"></canvas>
+<p id="hint"></p><div id="lg"></div>
+<script>
+let gameActive=true;
+addEventListener('message',e=>{if(e.source!==parent||!e.data||e.data.type!=='deep-sea-active')return;gameActive=!!e.data.active;});
+
+const c=document.getElementById('c'),g=c.getContext('2d'),W=400,H=600,HOR=230,LW=130,F=5;
+let best=0;try{best=+localStorage.getItem('chayne')||0}catch(e){}
+const I={vi:{doc:'Chạy né',aria:'Trò chơi chạy né chướng ngại vật',best:'Kỷ lục',near:'Sát nút!',title:'Chạy né',tap:'Chạm để bắt đầu',crash:'Đụng rồi!',rec:'Kỷ lục mới!',left:n=>'Còn '+n+' m nữa là phá kỷ lục',again:'Chạm để chạy lại',hint:'Chạm nửa trái hoặc nửa phải để đổi làn. Vuốt lên để nhảy, vuốt xuống để cúi. Trên máy tính dùng phím mũi tên.'},en:{doc:'Dodge Run',aria:'Obstacle dodging runner game',best:'Best',near:'Close call!',title:'Dodge Run',tap:'Tap to start',crash:'Crashed!',rec:'New record!',left:n=>'Only '+n+' m to beat your record',again:'Tap to retry',hint:'Tap the left or right half to switch lanes. Swipe up to jump, swipe down to duck. On desktop, use the arrow keys.'},zh:{doc:'闪避跑酷',aria:'躲避障碍的跑酷游戏',best:'最高纪录',near:'好险！',title:'闪避跑酷',tap:'点击开始',crash:'撞上了！',rec:'新纪录！',left:n=>'再跑 '+n+' 米就破纪录',again:'点击重新开始',hint:'点击屏幕左半边或右半边换道。上滑跳跃，下滑下蹲。电脑上请使用方向键。'}};
+let lang='';try{lang=localStorage.getItem('chayne_lang')||''}catch(e){}
+if(!I[lang]){const n=(navigator.language||'').toLowerCase();lang=n.startsWith('zh')?'zh':n.startsWith('vi')?'vi':'en'}
+const T=k=>I[lang][k];
+function setLang(l){lang=l;try{localStorage.setItem('chayne_lang',l)}catch(e){}document.documentElement.lang=l==='zh'?'zh-CN':l;document.title=T('doc');c.setAttribute('aria-label',T('aria'));document.getElementById('hint').textContent=T('hint');document.querySelectorAll('#lg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===l))}
+[['vi','Tiếng Việt'],['en','English'],['zh','中文']].forEach(a=>{const b=document.createElement('button');b.textContent=a[1];b.dataset.l=a[0];b.onclick=()=>{setLang(a[0]);b.blur()};document.getElementById('lg').appendChild(b)});
+setLang(lang);
+let st='ready',dist,px,tl,v,obs,nextAt,jt,dk,flash,shake=0,last=0,deadAt=0,lastD=0,rec=false,ign=false,sx=0,sy=0;
+function reset(){dist=0;px=0;tl=0;v=14;obs=[];nextAt=30;jt=0;dk=0;flash=0;shake=0}
+reset();
+const S=z=>F/(F+z);
+function spawn(){
+const r=Math.random(),P=(l,t)=>obs.push({l,t,z:90,p:0});
+if(dist>500&&r<.15)[-1,0,1].forEach(l=>P(l,'high'));
+else if(dist>250&&r<.32)[-1,0,1].forEach(l=>P(l,'low'));
+else if(r<.7){const gp=Math.floor(Math.random()*3)-1;[-1,0,1].forEach(l=>{if(l!==gp)P(l,'block')})}
+else P(Math.floor(Math.random()*3)-1,'block');
+nextAt=dist+Math.max(15,36-dist*.012)}
+function jh(){return jt>0?Math.sin(Math.PI*(1-jt/.7)):0}
+function die(){st='dead';deadAt=performance.now();shake=.4;lastD=Math.floor(dist);rec=lastD>best;if(rec){best=lastD;try{localStorage.setItem('chayne',best)}catch(e){}}}
+function update(dt){
+if(!gameActive||document.hidden||st!=='run')return;
+v=14+Math.min(dist*.03,40);dist+=v*dt;
+px+=(tl-px)*Math.min(1,dt*14);
+if(jt>0)jt-=dt;if(dk>0)dk-=dt;flash-=dt;
+if(dist>=nextAt)spawn();
+for(const o of obs){o.z-=v*dt;
+if(!o.p&&o.z<.8&&o.z>-.5&&Math.abs(px-o.l)<.62){
+const ok=(o.t==='low'&&jh()>.35)||(o.t==='high'&&dk>0);
+if(!ok){die();return}}
+if(!o.p&&o.z<-.5){o.p=1;const d=Math.abs(px-o.l);if(o.t==='block'&&d>=.62&&d<1.1)flash=.8}}
+obs=obs.filter(o=>o.z>-3)}
+function draw(){
+const camH=jh()*70-(dk>0?50:0),ox=shake>0?(Math.random()-.5)*14:0;
+const X=(l,z)=>W/2+(l-px)*LW*S(z),Y=z=>HOR+(220+camH)*S(z);
+const quad=(a,b,l0,l1,col)=>{g.fillStyle=col;g.beginPath();g.moveTo(X(l0,a),Y(a));g.lineTo(X(l1,a),Y(a));g.lineTo(X(l1,b),Y(b));g.lineTo(X(l0,b),Y(b));g.closePath();g.fill()};
+g.save();g.translate(ox,0);
+g.fillStyle='#14142b';g.fillRect(-20,0,W+40,HOR);
+g.fillStyle='#0d0d1c';g.fillRect(-20,HOR,W+40,H-HOR);
+const off=dist%16;
+for(let i=13;i>=-1;i--){
+let z0=i*8-off,z1=z0+8;if(z1<=-2)continue;if(z0<-2)z0=-2;
+const wd=dist+z0,gold=best>0&&Math.abs(wd+4-best)<5;
+quad(z0,z1,-1.5,1.5,gold?'#f2c14e':(Math.floor(wd/8)%2?'#2d2d52':'#262647'));
+if(!gold&&Math.floor(wd/8)%2){quad(z0,z1,-.53,-.47,'#6a6a9c');quad(z0,z1,.47,.53,'#6a6a9c')}}
+quad(-2,100,-1.58,-1.5,'#8b8bff');quad(-2,100,1.5,1.58,'#8b8bff');
+const cols={block:'#ff5a5f',low:'#f2c14e',high:'#a78bfa'};
+obs.slice().sort((a,b)=>b.z-a.z).forEach(o=>{
+if(o.z<-1.5)return;
+const s=S(o.z),cx=X(o.l,o.z),by=Y(o.z),w=112*s;
+g.globalAlpha=Math.max(0,Math.min(1,(95-o.z)/40));
+g.fillStyle=cols[o.t];
+if(o.t==='block')g.fillRect(cx-w/2,by-130*s,w,130*s);
+else if(o.t==='low')g.fillRect(cx-w/2,by-38*s,w,38*s);
+else g.fillRect(cx-w/2,by-110*s,w,50*s);
+g.globalAlpha=1});
+g.restore();
+g.fillStyle='#fff';g.font='600 20px system-ui,sans-serif';g.textAlign='left';g.fillText(Math.floor(dist)+' m',16,32);
+g.textAlign='right';g.fillText(T('best')+' '+best+' m',W-16,32);
+if(best>0&&st==='run'){g.fillStyle='rgba(255,255,255,.2)';g.fillRect(16,44,W-32,6);g.fillStyle='#f2c14e';g.fillRect(16,44,(W-32)*Math.min(1,dist/best),6)}
+if(flash>0&&st==='run'){g.textAlign='center';g.fillStyle='#fff';g.font='600 26px system-ui,sans-serif';g.fillText(T('near'),W/2,110)}
+if(st!=='run'){
+g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,0,W,H);g.textAlign='center';g.fillStyle='#fff';
+if(st==='ready'){g.font='600 34px system-ui,sans-serif';g.fillText(T('title'),W/2,270);g.font='18px system-ui,sans-serif';g.fillText(T('tap'),W/2,310)}
+else{g.font='600 34px system-ui,sans-serif';g.fillText(T('crash'),W/2,250);
+g.font='600 24px system-ui,sans-serif';g.fillText(lastD+' m',W/2,292);
+g.font='18px system-ui,sans-serif';
+g.fillStyle=rec?'#f2c14e':'#fff';
+g.fillText(rec?T('rec'):T('left')(best-lastD),W/2,326);
+g.fillStyle='#fff';g.fillText(T('again'),W/2,370)}}}
+function start(){if(st==='run')return false;if(st==='dead'&&performance.now()-deadAt<350)return true;reset();st='run';return true}
+const L=()=>{tl=Math.max(-1,tl-1)},R=()=>{tl=Math.min(1,tl+1)};
+const J=()=>{if(jt<=0&&dk<=0)jt=.7},D=()=>{if(dk<=0&&jt<=0)dk=.6};
+addEventListener('keydown',e=>{
+const k=e.key;
+if(e.metaKey||e.ctrlKey||e.altKey||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','a','d','s'].includes(k))return;
+e.preventDefault();
+if(st!=='run'){start();return}
+if(k==='ArrowLeft'||k==='a')L();else if(k==='ArrowRight'||k==='d')R();else if(k==='ArrowUp'||k===' ')J();else if(k==='ArrowDown'||k==='s')D();
+if(k.startsWith('Arrow')||k===' ')e.preventDefault()});
+c.addEventListener('pointerdown',e=>{c.focus();sx=e.clientX;sy=e.clientY;if(st!=='run'){start();ign=true}});
+c.addEventListener('pointerup',e=>{
+if(ign){ign=false;return}
+if(!gameActive||document.hidden||st!=='run')return;
+const dx=e.clientX-sx,dy=e.clientY-sy;
+if(dy<-35&&Math.abs(dy)>Math.abs(dx))J();
+else if(dy>35&&Math.abs(dy)>Math.abs(dx))D();
+else{const r=c.getBoundingClientRect();if(e.clientX<r.left+r.width/2)L();else R()}});
+function loop(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;update(dt);if(shake>0)shake-=dt;draw();requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+</script></body></html>
