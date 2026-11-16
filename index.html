@@ -946,7 +946,7 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
   <section class="view" id="view-sneak" hidden>
     <div class="console"><div class="sneak-stage"><canvas id="sk-canvas" tabindex="0" width="400" height="600" aria-label="偷偷下班：按住前進，放開假裝工作，老闆回頭時不要動"></canvas></div>
       <div class="side"><section class="panel" aria-label="偷偷下班操作">
-        <dl class="stats"><div><dt>目前關卡</dt><dd id="sk-stage">1 / 5</dd></div><div><dt>下班進度</dt><dd id="sk-progress">0%</dd></div><div><dt>最佳紀錄</dt><dd id="sk-best">0 關</dd></div></dl>
+        <dl class="stats"><div><dt>目前關卡</dt><dd id="sk-stage">1 / 10</dd></div><div><dt>下班進度</dt><dd id="sk-progress">0%</dd></div><div><dt>最佳紀錄</dt><dd id="sk-best">0 關</dd></div></dl>
         <div class="queue-watch" id="sk-signal" role="status" aria-live="polite" data-state="away">等待開始</div><p class="hint" id="sk-difficulty"></p>
         <div class="field"><label for="sk-amount">本局入場點數</label><div class="input-row"><input id="sk-amount" type="number" min="10" step="1" value="20" inputmode="numeric"><span class="suffix">點</span></div></div>
         <dl class="stats"><div><dt>領回倍率</dt><dd id="sk-mult">0.00×</dd></div><div><dt>可領回</dt><dd id="sk-pay">0 點</dd></div></dl>
@@ -957,8 +957,8 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
         <p class="hint">也可按住 <kbd>空白鍵</kbd>、<kbd>→</kbd> 或 <kbd>D</kbd> 前進。</p>
       </section></div>
     </div>
-    <div class="sneak-ladder"><span>第 1 關 · 0.60×</span><span>第 2 關 · 1.10×</span><span>第 3 關 · 1.80×</span><span>第 4 關 · 2.80×</span><span>第 5 關 · 4.50×</span></div>
-    <details class="rules"><summary>玩法、難度與點數</summary><p>每局先扣入場點數（最低 10 點）。按住遊戲畫面、前進按鈕或空白鍵就走路，放開即站定假裝工作。老闆回頭時繼續走就被抓，失去本局下注與全部未領回獎勵。</p><p>共五關，所需實際移動時間依序為 6、8、10、12、14 秒。後面老闆回頭更頻繁，警示時間由約 0.66 秒縮短至 0.30 秒；第三關起警示可能是假動作。第四關有 20%、第五關有 40% 機率跳過警示直接回頭，此時有 0.18 秒反應時間；一般回頭有 0.10 秒反應時間。</p><p>每關成功後暫停，可選領回或繼續下一關；繼續不再扣點。領回為入場點數 × 通關倍率並捨去小數，倍率是總領回，不是額外獎金。第一關 0.60×，例如入場 20 點只領回 12 點，淨損 8 點。第五關完成自動領回 4.50×。</p><p>切換遊戲、背景分頁或視窗失焦會停止前進；切換遊戲與背景分頁會暫停。重新整理會放棄本局，已扣點數不退回。點數共用，免費重設僅供測試。</p></details>
+    <div class="sneak-ladder"><span>第 1 關 · 0.60×</span><span>第 2 關 · 1.10×</span><span>第 3 關 · 1.80×</span><span>第 4 關 · 2.80×</span><span>第 5 關 · 4.50×</span><span>第 6 關 · 6.50×</span><span>第 7 關 · 9.00×</span><span>第 8 關 · 12.00×</span><span>第 9 關 · 16.00×</span><span>第 10 關 · 21.00×</span></div>
+    <details class="rules"><summary>玩法、難度與點數</summary><p>每局先扣入場點數（最低 10 點）。按住遊戲畫面、前進按鈕或空白鍵就走路，放開即站定假裝工作。老闆回頭時繼續走就被抓，失去本局下注與全部未領回獎勵。</p><p>共十關，第一關需實際移動 6 秒，每關增加 2 秒，第十關需 24 秒。後面老闆回頭更頻繁，警示時間由約 0.66 秒逐步縮短，最短 0.25 秒；第三關起警示可能是假動作。第四關有 20%、第五關有 40% 機率跳過警示直接回頭，之後每關再增加 5 個百分點，第十關為 65%，此時有 0.18 秒反應時間；一般回頭有 0.10 秒反應時間。</p><p>每關成功後暫停，可選領回或繼續下一關；繼續不再扣點。領回為入場點數 × 通關倍率並捨去小數，倍率是總領回，不是額外獎金。第一關 0.60×，例如入場 20 點只領回 12 點，淨損 8 點。第十關完成自動領回 21.00×。</p><p>切換遊戲、背景分頁或視窗失焦會停止前進；切換遊戲與背景分頁會暫停。重新整理會放棄本局，已扣點數不退回。點數共用，免費重設僅供測試。</p></details>
   </section>
 
 </div>
@@ -2442,9 +2442,9 @@ runnerUI();draw();requestAnimationFrame(loop);
   /* ---------- Sneak Out: original office scene, shared-wallet stages ---------- */
   var sneakBusy=false,sneakStake=0;
   (function(){
-const c=$('sk-canvas'),g=c.getContext('2d'),W=400,H=600,MAX_LEVEL=5,MULT=[0,.6,1.1,1.8,2.8,4.5];
+const c=$('sk-canvas'),g=c.getContext('2d'),W=400,H=600,MAX_LEVEL=10,MULT=[0,.6,1.1,1.8,2.8,4.5,6.5,9,12,16,21];
 let best=0;try{const n=Number(localStorage.getItem('sneak'));if(Number.isFinite(n))best=Math.min(MAX_LEVEL,Math.max(0,n))}catch(e){}
-const texts={lv:n=>'第 '+n+' / 5 關',bs:n=>'最佳 '+n+' 關',title:'偷偷下班',tap:'右側扣點開始',caught:'被抓住了！',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'新紀錄！',again:'右側可重新開始',ok:'溜走了！'};const T=k=>texts[k];
+const texts={lv:n=>'第 '+n+' / 10 關',bs:n=>'最佳 '+n+' 關',title:'偷偷下班',tap:'右側扣點開始',caught:'被抓住了！',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'新紀錄！',again:'右側可重新開始',ok:'溜走了！'};const T=k=>texts[k];
 const quotes=['「你這是要去哪裡？」','「報告寫完了嗎就想走？」','「坐下，還有工作呢。」'];
 let st='ready',pr=0,lv=1,score=0,ph='away',pt=2,fk=false,grace=0,flash=0,shake=0,hold=false,walk=0,last=0,rec=false,qi=0;
 let mouseHold=false,keyHold=false;
@@ -2465,7 +2465,7 @@ function ui(){
 function awayT(){return rnd(Math.max(.65,2.4-lv*.24),Math.max(1.2,3.8-lv*.32))}
 function nextPhase(){
  if(ph==='away'){
-  const direct=lv>=4&&Math.random()<(lv===4?.2:.4);
+  const direct=lv>=4&&Math.random()<(lv===4?.2:Math.min(.65,.4+(lv-5)*.05));
   if(direct){ph='look';pt=rnd(.9,1.5);grace=.18;}
   else{ph='warn';fk=lv>=3&&Math.random()<.3;pt=Math.max(.25,.75-lv*.09);grace=0;}
  }else if(ph==='warn'){
@@ -2473,7 +2473,7 @@ function nextPhase(){
  }else{ph='away';pt=awayT();grace=0;}
 }
 function die(){if(st!=='run')return;st='dead';sneakBusy=false;release();shake=reduceMotion?0:.4;qi=Math.floor(Math.random()*quotes.length);saySneak('被老闆發現！失去本局 '+sneakStake+' 點與未領回獎勵。','lose');ui()}
-function cash(){if(st!=='passed')return;const amount=pay(),net=amount-sneakStake;st='cashed';sneakBusy=false;release();S.balance+=amount;save();renderAll();saySneak((score===MAX_LEVEL?'五關全部溜走！':'已收手。')+'領回 '+amount+' 點，本局'+(net>=0?'淨賺 ':'淨損 ')+Math.abs(net)+' 點。',net>=0?'win':'');ui()}
+function cash(){if(st!=='passed')return;const amount=pay(),net=amount-sneakStake;st='cashed';sneakBusy=false;release();S.balance+=amount;save();renderAll();saySneak((score===MAX_LEVEL?'十關全部溜走！':'已收手。')+'領回 '+amount+' 點，本局'+(net>=0?'淨賺 ':'淨損 ')+Math.abs(net)+' 點。',net>=0?'win':'');ui()}
 function win(){score++;st='passed';release();remember();saySneak('第 '+lv+' 關下班成功！可領回 '+pay()+' 點，或繼續冒險。','win');if(score===MAX_LEVEL)cash();else ui()}
 // Split at phase boundaries, grace expiration and the exit; slow frames cannot skip detection.
 function update(dt){
