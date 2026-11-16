@@ -77,3 +77,7 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 - 建立事件範圍自訂維度：https://support.google.com/analytics/answer/14239696
 - 建立自訂指標：https://support.google.com/analytics/answer/14239619
 - DebugView：https://support.google.com/analytics/answer/7201382
+
+## 插珍奶（boba）
+
+原版畫面以內嵌文件保留，開始與重玩各扣 20 點，沒有點數獎勵。平台記錄 `game_start`、成功杯數的 `game_progress`，與領回為 0 的 `game_end`。原版復活選擇與示範廣告不計入有效遊玩時間；在遊戲內的點擊與按鍵會通知平台，讓跨文件的遊玩時間正確計算。
