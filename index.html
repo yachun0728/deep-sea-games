@@ -348,7 +348,7 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
     <a href="#crossing" id="tab-crossing">橫渡<small>Crossing</small></a>
     <a href="#dream" id="tab-dream">時序修復<small>Dream Repair</small></a>
     <a href="#runner" id="tab-runner">閃避跑酷<small>Dodge Run</small></a>
-    <a href="#elevator" id="tab-elevator">升降艙插隊<small>Queue Sneak</small></a>
+    <a href="#elevator" id="tab-elevator">插隊大師<small>Queue Cutter</small></a>
   </nav></details>
 
   <section class="view" id="view-crash">
@@ -2342,24 +2342,61 @@ runnerUI();draw();requestAnimationFrame(loop);
     if(EQ.people.slice(EQ.passed).some(function(p){return p.state==='look';})){eqLose();return;}
     EQ.phase='moving';EQ.duration=.28+EQ.passed*.012;EQ.moving=EQ.duration;eqSay('正在移動，這段時間被乘客回頭看見也會失敗。');eqUI();
   }
+  // Side-view characters and hopping motion adapted from the original Queue Cutter.
+  function eqPerson(x,y,color,state,isPlayer,alpha){
+    var g=eqCtx;g.save();g.globalAlpha=alpha;
+    g.fillStyle='rgba(0,0,0,.16)';g.beginPath();g.ellipse(x,y+3,14,4,0,0,Math.PI*2);g.fill();
+    g.strokeStyle=color;g.lineWidth=6;g.lineCap='round';g.beginPath();g.moveTo(x-6,y-20);g.lineTo(x-6,y);g.moveTo(x+6,y-20);g.lineTo(x+6,y);g.stroke();
+    g.fillStyle=color;g.fillRect(x-14,y-58,28,40);
+    var hy=y-74;g.fillStyle=state==='safe'?'#2b2118':'#f5d0a9';g.beginPath();g.arc(x,hy,14,0,Math.PI*2);g.fill();
+    if(state==='warn'){
+      g.fillStyle='#2b2118';g.beginPath();g.arc(x,hy,14,-Math.PI/2,Math.PI/2);g.fill();
+      g.fillStyle='#ffcf66';g.font='700 27px system-ui';g.textAlign='center';g.fillText('?',x,hy-23);
+    }
+    if(state==='look'){
+      g.fillStyle='#fff';g.beginPath();g.arc(x-9,hy-2,4,0,Math.PI*2);g.arc(x-1,hy-2,4,0,Math.PI*2);g.fill();
+      g.fillStyle='#191a24';g.beginPath();g.arc(x-10,hy-2,2,0,Math.PI*2);g.arc(x-2,hy-2,2,0,Math.PI*2);g.fill();
+      g.strokeStyle='#2b2118';g.lineWidth=2.5;g.beginPath();g.moveTo(x-14,hy-11);g.lineTo(x-6,hy-7);g.moveTo(x-1,hy-7);g.lineTo(x+5,hy-11);g.stroke();
+      g.strokeStyle='#ff756f';g.lineWidth=2.5;g.beginPath();g.arc(x,hy,18,0,Math.PI*2);g.stroke();
+    }
+    if(isPlayer){g.fillStyle='#fff5d9';g.beginPath();g.moveTo(x-8,hy-34);g.lineTo(x+8,hy-34);g.lineTo(x,hy-22);g.closePath();g.fill();}
+    g.restore();
+  }
   function eqDraw(){
-    var g=eqCtx,w=520,h=580;g.clearRect(0,0,w,h);var bg=g.createLinearGradient(0,0,0,h);bg.addColorStop(0,C.sea);bg.addColorStop(1,C.abyss);g.fillStyle=bg;g.fillRect(0,0,w,h);
-    g.strokeStyle=C.line;g.lineWidth=1;for(var i=0;i<6;i++){g.beginPath();g.moveTo(40+i*88,100);g.lineTo(-100+i*145,h);g.stroke();}
-    g.fillStyle=C['panel-2'];g.fillRect(190,30,140,90);g.strokeStyle=EQ.phase==='cashed'&&EQ.passed===10?C.glow:C.line;g.lineWidth=3;g.strokeRect(190,30,140,90);g.beginPath();g.moveTo(260,30);g.lineTo(260,120);g.stroke();
-    g.textAlign='center';g.fillStyle=C.glow;g.font='600 15px system-ui';g.fillText('升降艙 · 排隊入口',260,22);g.fillStyle=C.muted;g.font='12px system-ui';g.fillText('到達隊首即可進艙',260,75);
-    g.setLineDash([4,7]);g.strokeStyle=C.line;g.beginPath();g.moveTo(260,135);g.lineTo(260,544);g.stroke();g.setLineDash([]);
+    var g=eqCtx,W=520,H=580,FY=420,SP=36;
+    var f=EQ.phase==='moving'?1-EQ.moving/EQ.duration:0;
+    // Smooth camera motion keeps the player at the left as the queue slides past.
+    var travel=EQ.passed+f;
+    g.clearRect(0,0,W,H);g.fillStyle='#2e3350';g.fillRect(0,0,W,FY);g.fillStyle='#1d2036';g.fillRect(0,FY,W,H-FY);
+    g.strokeStyle='#414762';g.lineWidth=1;g.beginPath();g.moveTo(0,205);g.lineTo(W,205);g.stroke();
+    g.fillStyle='#343b59';g.fillRect(28,225,70,68);g.strokeStyle='#586781';g.strokeRect(28,225,70,68);g.fillStyle='#8db0b9';g.font='11px system-ui';g.textAlign='center';g.fillText('請依序排隊',63,254);g.fillText('深海升降艙',63,275);
+    g.strokeStyle='#2a2e4a';g.lineWidth=2;
+    for(var k=-1;k<11;k++){var lx=k*60-(travel*SP)%60;g.beginPath();g.moveTo(lx,FY);g.lineTo(lx-40,H);g.stroke();}
+    var doorX=90+(11-travel)*SP;
+    g.fillStyle='#4a5a7a';g.fillRect(doorX-29,FY-140,58,140);g.fillStyle='#202b42';g.fillRect(doorX-21,FY-119,42,119);
+    g.fillStyle=EQ.passed===10?'#a2e4c2':'#ffcf66';g.fillRect(doorX-17,FY-132,34,8);
+    if(EQ.passed<10){g.strokeStyle='#8297b0';g.lineWidth=2;g.beginPath();g.moveTo(doorX,FY-118);g.lineTo(doorX,FY);g.stroke();}
+    g.fillStyle='#dce5ef';g.font='600 12px system-ui';g.textAlign='center';g.fillText('電梯',doorX,FY-151);
+    var palette=['#6b9ac4','#c47f6b','#7fb08a','#a78bfa','#d98aa8','#8aa2b8'];
     var people=EQ.people.length?EQ.people:Array.from({length:10},function(_,i){return {index:i,state:'safe'};});
-    people.forEach(function(p,i){
-      var y=488-i*35,passed=i<EQ.passed,x=passed?350:260,col=p.state==='look'?C.crush:p.state==='warn'?C.lamp:C.muted;
-      g.globalAlpha=passed?.22:1;g.fillStyle=passed?C.muted:col;g.beginPath();g.arc(x,y-13,8,0,Math.PI*2);g.fill();g.fillRect(x-9,y-3,18,15);
-      if(p.state==='look'&&!passed){g.fillStyle=C.abyss;g.fillRect(x-5,y-15,3,3);g.fillRect(x+2,y-15,3,3);}
-      g.fillStyle=col;g.textAlign='left';g.font='12px system-ui';g.fillText(passed?'已超過':p.state==='look'?'● 回頭注視':p.state==='warn'?'△ 警示':'背對你',x+23,y);
-      g.textAlign='right';g.fillStyle=C.muted;g.fillText('第 '+(i+1)+' 位',x-24,y);g.globalAlpha=1;
+    people.forEach(function(p,i){var x=90+(i+1-travel)*SP,passed=i<EQ.passed;if(x<-24||x>W+24)return;
+      eqPerson(x,FY,palette[i%palette.length],passed?'safe':p.state,false,passed?.28:1);
     });
-    var fraction=EQ.phase==='moving'?1-EQ.moving/EQ.duration:0,py=EQ.passed===10?100:535-(EQ.passed+fraction)*35;
-    g.save();g.translate(260,py);g.fillStyle=EQ.phase==='caught'?C.crush:C.glow;g.beginPath();g.arc(0,-10,9,0,Math.PI*2);g.fill();g.fillRect(-10,0,20,16);g.fillStyle=C.abyss;g.fillRect(-4,-12,3,3);g.fillRect(2,-12,3,3);g.restore();
-    g.textAlign='center';g.font='600 13px system-ui';g.fillStyle=C.glow;g.fillText(EQ.phase==='caught'?'被發現了！':'你',260,py+32);
-    if(EQ.phase==='cashed'||EQ.phase==='caught'){g.fillStyle='rgba(5,22,32,.85)';g.fillRect(55,230,410,110);g.fillStyle=EQ.phase==='caught'?C.crush:C.glow;g.font='600 26px system-ui';g.fillText(EQ.phase==='caught'?'插隊被發現':'已領回 '+fmt(eqPay())+' 點',260,275);g.font='15px system-ui';g.fillStyle=C.fg;g.fillText('成功超過 '+EQ.passed+' / 10 位乘客',260,310);}
+    var hop=EQ.phase==='moving'?Math.sin(Math.PI*f)*18:0;
+    eqPerson(EQ.passed===10?doorX:90,FY-hop,'#f2c14e',EQ.phase==='caught'?'look':'safe',true,1);
+    g.fillStyle='#f5df9f';g.font='600 13px system-ui';g.textAlign='center';g.fillText('你',EQ.passed===10?doorX:90,FY+30);
+    g.textAlign='left';g.fillStyle='#e9edf6';g.font='600 23px system-ui';g.fillText('Queue Cutter',24,38);
+    g.textAlign='right';g.font='600 17px system-ui';g.fillStyle='#a5b4cb';g.fillText(EQ.passed+' / 10',W-24,38);
+    g.fillStyle='#1d2036';g.fillRect(24,55,W-48,7);g.fillStyle='#f2c14e';g.fillRect(24,55,(W-48)*EQ.passed/10,7);
+    var ahead=people.slice(EQ.passed),look=ahead.some(function(p){return p.state==='look';}),warn=ahead.some(function(p){return p.state==='warn';});
+    g.textAlign='center';g.font='19px system-ui';g.fillStyle='#e4e8f1';g.fillText('前面還有 '+(10-EQ.passed)+' 位乘客',W/2,105);
+    g.font='600 17px system-ui';g.fillStyle=look?'#ff8a80':warn?'#ffcf66':'#a2e4c2';
+    g.fillText(!EQ.active?'觀察表情，偷偷向前一步':look?'有人回頭了，先別動！':warn?'出現「？」了，小心隨時回頭':'大家都背對你，找機會往前插',W/2,141);
+    g.fillStyle='#a5b4cb';g.font='13px system-ui';g.fillText('點一下插過一人 · 白色箭頭是你',W/2,517);
+    if(EQ.phase==='cashed'||EQ.phase==='caught'){
+      g.fillStyle='rgba(24,28,48,.93)';g.fillRect(50,180,420,100);g.fillStyle=EQ.phase==='caught'?'#ff8a80':'#a2e4c2';g.font='600 25px system-ui';g.fillText(EQ.phase==='caught'?'「喂，排隊去！」':EQ.passed===10?'偷偷進電梯了！':'見好就收！',W/2,219);
+      g.font='16px system-ui';g.fillStyle='#e9edf6';g.fillText(EQ.phase==='caught'?'被發現了，本局失去 '+fmt(EQ.stake)+' 點':'已領回 '+fmt(eqPay())+' 點 · 插過 '+EQ.passed+' 人',W/2,254);
+    }
   }
   $('eq-go').addEventListener('click',eqAction);$('eq-cash').addEventListener('click',eqCash);
   eqCanvas.addEventListener('pointerdown',function(e){if(!EQ.active)return;e.preventDefault();eqAction();});
@@ -2369,7 +2406,7 @@ runnerUI();draw();requestAnimationFrame(loop);
   eqUI();eqDraw();requestAnimationFrame(eqLoop);
 
   /* ---------- tabs ---------- */
-  var VIEWS = { crash: '壓潰深度 <span>Crush Depth</span>', mines: '水雷區 <span>Mine Field</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '撒網 <span>Cast Net</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '升降艙插隊 <span>Queue Sneak</span>' };
+  var VIEWS = { crash: '壓潰深度 <span>Crush Depth</span>', mines: '水雷區 <span>Mine Field</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '撒網 <span>Cast Net</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>' };
   function route() {
     var v = location.hash.slice(1); if (!VIEWS[v]) v = 'crash';
     Object.keys(VIEWS).forEach(function (k) {
