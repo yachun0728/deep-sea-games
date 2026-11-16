@@ -310,6 +310,14 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
 .game-picker .tabs a{white-space:normal;margin:0;padding:10px 12px;border:1px solid transparent;border-radius:6px;font-size:14px;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .game-picker .tabs a[aria-current="page"]{border-color:var(--glow);color:var(--glow);background:rgba(98,230,210,.08)}.game-picker .tabs small{margin-left:0;font-size:11px}
 @media(max-width:560px){.game-picker .tabs{grid-template-columns:repeat(2,minmax(0,1fr));max-height:240px}.game-picker .tabs a{padding:9px 8px}#picker-current{max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+
+.queue-stage{min-width:0;display:grid;place-items:center;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--abyss)}
+.queue-stage canvas{display:block;width:100%;height:auto;max-height:650px;object-fit:contain;touch-action:manipulation;cursor:pointer}
+.queue-watch{padding:10px 12px;border:1px solid var(--glow);color:var(--glow);border-radius:8px;font-weight:600;font-size:14px}
+.queue-watch[data-state="warn"]{border-color:var(--lamp);color:var(--lamp)}.queue-watch[data-state="look"]{border-color:var(--crush);color:var(--crush)}
+.queue-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:var(--muted)}.queue-legend span:nth-child(2){color:var(--lamp)}.queue-legend span:nth-child(3){color:var(--crush)}
+.queue-ladder{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px}.queue-ladder span{padding:8px 4px;text-align:center;border:1px solid var(--line);border-radius:7px;color:var(--muted);font:600 14px var(--font-display);background:var(--panel)}.queue-ladder b{display:block;font:12px var(--font-body);margin-bottom:3px}.queue-ladder [aria-current="step"]{border-color:var(--glow);color:var(--glow);background:rgba(98,230,210,.08)}
+@media(max-width:700px){.queue-ladder{grid-template-columns:repeat(5,minmax(0,1fr))}.queue-stage canvas{max-height:65vh}}
 </style>
 </head>
 <body>
@@ -340,6 +348,7 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
     <a href="#crossing" id="tab-crossing">橫渡<small>Crossing</small></a>
     <a href="#dream" id="tab-dream">時序修復<small>Dream Repair</small></a>
     <a href="#runner" id="tab-runner">閃避跑酷<small>Dodge Run</small></a>
+    <a href="#elevator" id="tab-elevator">升降艙插隊<small>Queue Sneak</small></a>
   </nav></details>
 
   <section class="view" id="view-crash">
@@ -902,6 +911,30 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
     <details class="rules"><summary>玩法與點數</summary><p>每局從共用餘額扣 20 點，只需左右換道躲避珊瑚色障礙。每排至少留一條可通行的路線，不需要跳躍或下潛。每關 240 公尺，共十關；每關速度增加，過關時會暫停等待選擇。</p><p>每過一關，累積倍率乘以 1.35（取小數兩位），領回點數為 20 × 倍率並捨去小數。第一關可領回 27 點。繼續下一關不再扣點；撞上障礙會失去整局下注與未領回獎勵。第十關成功自動領回，重新開始才再扣 20 點。</p><p>切換遊戲或背景分頁會暫停。重新整理會放棄本局與未結算獎勵；最佳紀錄保存在瀏覽器中。</p></details>
   </section>
 
+  <section class="view" id="view-elevator" hidden>
+    <div class="console">
+      <div class="queue-stage"><canvas id="eq-canvas" width="520" height="580" aria-label="升降艙插隊：觀察十位乘客，背對時向前插隊，警示可能轉為回頭"></canvas></div>
+      <div class="side"><section class="panel" aria-label="插隊操作">
+        <dl class="stats"><div><dt>已插過乘客</dt><dd id="eq-progress">0 / 10</dd></div><div><dt>前方還有</dt><dd id="eq-remaining">10 人</dd></div><div><dt>最佳進度</dt><dd id="eq-best">0 / 10</dd></div></dl>
+        <div class="queue-watch" id="eq-watch" role="status" aria-live="polite" data-state="safe">尚未開始</div>
+        <div class="queue-legend"><span>● 背對：可前進</span><span>△ 警示：可能轉頭</span><span>● 回頭：不要動</span></div>
+        <div class="field"><label for="eq-amount">本局入場點數</label><div class="input-row"><input id="eq-amount" type="number" min="10" step="1" value="20" inputmode="numeric"><span class="suffix">點</span></div></div>
+        <dl class="stats"><div><dt>領回倍率</dt><dd id="eq-mult">0.00×</dd></div><div><dt>可領回</dt><dd id="eq-pay">0 點</dd></div><div><dt>本局淨賺／損</dt><dd id="eq-net">—</dd></div></dl>
+        <button class="go" id="eq-go" type="button" data-mode="bet">扣點開始排隊</button>
+        <button class="chip timing-cash" id="eq-cash" type="button" disabled>成功插隊後可收手</button>
+        <p class="msg" id="eq-msg" aria-live="polite">先扣入場點數。每點一下插過一位，移動時被前方任一乘客看見即失敗；不動不會被抓。</p>
+        <p class="hint">點「往前插一位」、遊戲畫面或按 <kbd>空白鍵</kbd>。警示本身不會抓人，但沒有保證安全時間。</p>
+      </section></div>
+    </div>
+    <div class="queue-ladder" role="group" aria-label="插過乘客數與領回倍率"><span data-eq-step="1"><b>1 人</b>0.40×</span><span data-eq-step="2"><b>2 人</b>0.60×</span><span data-eq-step="3"><b>3 人</b>0.85×</span><span data-eq-step="4"><b>4 人</b>1.05×</span><span data-eq-step="5"><b>5 人</b>1.30×</span><span data-eq-step="6"><b>6 人</b>1.65×</span><span data-eq-step="7"><b>7 人</b>2.10×</span><span data-eq-step="8"><b>8 人</b>2.70×</span><span data-eq-step="9"><b>9 人</b>3.50×</span><span data-eq-step="10"><b>10 人</b>4.60×</span></div>
+    <details class="rules"><summary>玩法、風險與點數</summary>
+      <p>每局先從共用錢包扣除入場點數，最低 10 點。前方有十位乘客，每人隨機在背對、警示、回頭間切換。警示可能解除，也可能隨時轉為回頭；前方任一乘客回頭注視時移動，就會被發現。站著不動不會被抓。</p>
+      <p>每點一次插過一人，移動約 0.3 秒，期間被看見也會失敗。成功後可收手領回，或繼續往前；繼續不會再扣入場費。插過十人進入升降艙，自動領回。進行中的移動無法按收手。</p>
+      <p>領回點數＝入場點數 × 對應倍率，捨去小數；倍率是總領回金額，不是額外獎金。前三位的倍率低於 1，即使成功收手仍會淨損：入場 20 點、插過一人收手只領回 8 點，淨損 12 點。被發現時本局下注與未領回獎勵全部失去，等待不保證獲利。</p>
+      <p>切換遊戲或背景分頁會暫停。重新整理會放棄本局，已扣點數不退回。點數與其他遊戲共用，沒有現金價值。</p>
+    </details>
+  </section>
+
 </div>
 
 <script>
@@ -1193,8 +1226,8 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
     b.addEventListener('click', function () { elAuto.value = Number(b.dataset.auto).toFixed(2); });
   });
   $('reset').addEventListener('click', function () {
-    var note = function (t) { drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
-    if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.pending || WL.pending || TW.active || CR.active || DR.active || runnerBusy) { note('這一注結束後才能重設點數。'); return; }
+    var note = function (t) { eqSay(t); drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
+    if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.pending || WL.pending || TW.active || CR.active || DR.active || runnerBusy || EQ.active) { note('這一注結束後才能重設點數。'); return; }
     S.balance = START_BALANCE; save(); note('點數已重設為 1,000。'); renderAll(); renderMines();
   });
 
@@ -2243,15 +2276,105 @@ document.addEventListener('visibilitychange',()=>{last=performance.now()});windo
 runnerUI();draw();requestAnimationFrame(loop);
   })();
 
+  /* ---------- Elevator Queue: stealth risk and shared wallet ---------- */
+  var EQ={active:false,phase:'ready',passed:0,stake:0,people:[],moving:0,last:0,show:0,best:0};
+  var EQ_MULT=[0,.4,.6,.85,1.05,1.3,1.65,2.1,2.7,3.5,4.6];
+  var eqCanvas=$('eq-canvas'),eqCtx=eqCanvas.getContext('2d');
+  try{var qb=Number(localStorage.getItem('deep-sea-queue-best'));if(Number.isFinite(qb))EQ.best=Math.min(10,Math.max(0,qb));}catch(e){}
+  function eqRand(a,b){return a+Math.random()*(b-a);}
+  function eqRest(i){return eqRand(3.5,7.5)-i*.12;}
+  function eqPay(){return Math.floor(EQ.stake*EQ_MULT[EQ.passed]);}
+  function eqSay(text,kind){$('eq-msg').textContent=text;$('eq-msg').className='msg'+(kind?' '+kind:'');}
+  function eqRemember(){if(EQ.passed>EQ.best){EQ.best=EQ.passed;try{localStorage.setItem('deep-sea-queue-best',String(EQ.best));}catch(e){}}}
+  function eqUI(){
+    var pay=EQ.active?eqPay():EQ.phase==='cashed'?eqPay():0,net=pay-EQ.stake;
+    $('eq-progress').textContent=EQ.passed+' / 10';$('eq-remaining').textContent=(10-EQ.passed)+' 人';
+    $('eq-mult').textContent=fx(EQ_MULT[EQ.passed])+'×';$('eq-pay').textContent=fmt(pay)+' 點';
+    $('eq-net').textContent=EQ.stake?(net>0?'+':'')+fmt(net)+' 點':'—';$('eq-net').style.color=net>0?'var(--glow)':net<0?'var(--crush)':'var(--muted)';
+    $('eq-best').textContent=EQ.best+' / 10';$('eq-amount').disabled=EQ.active;
+    $('eq-go').textContent=EQ.active?(EQ.phase==='moving'?'正在插隊…':'往前插一位'):'扣點開始排隊';$('eq-go').disabled=EQ.phase==='moving';
+    $('eq-go').dataset.mode=EQ.active?'surface':'bet';$('eq-cash').disabled=!(EQ.active&&EQ.passed>0&&EQ.phase==='waiting');
+    $('eq-cash').textContent=EQ.active&&EQ.passed?'收手領回 '+fmt(eqPay())+' 點':'成功插隊後可收手';
+    var ahead=EQ.people.slice(EQ.passed),look=ahead.filter(p=>p.state==='look').length,warn=ahead.filter(p=>p.state==='warn').length;
+    var watchText=!EQ.active?(EQ.phase==='ready'?'尚未開始':'本局已結束'):look?'回頭注視 '+look+' 人':warn?'警示 '+warn+' 人 · 可能隨時轉頭':'前方乘客都背對你';
+    if($('eq-watch').textContent!==watchText)$('eq-watch').textContent=watchText;
+    $('eq-watch').dataset.state=look?'look':warn?'warn':'safe';
+    document.querySelectorAll('[data-eq-step]').forEach(function(b){b.setAttribute('aria-current',Number(b.dataset.eqStep)===EQ.passed?'step':'false');});
+  }
+  function eqLose(){if(!EQ.active)return;EQ.active=false;EQ.phase='caught';EQ.moving=0;eqRemember();eqSay('被發現插隊！本局失去 '+fmt(EQ.stake)+' 點，未領回的獎勵歸零。','lose');eqUI();}
+  function eqCash(){
+    eqSync(performance.now());
+    if(!EQ.active||EQ.phase!=='waiting'||EQ.passed<1)return;
+    var pay=eqPay(),net=pay-EQ.stake;EQ.active=false;EQ.phase='cashed';S.balance+=pay;save();renderAll();eqRemember();
+    eqSay((EQ.passed===10?'成功插過十人，進入升降艙！':'已收手。')+'領回 '+fmt(pay)+' 點，本局'+(net>=0?'淨賺 ':'淨損 ')+fmt(Math.abs(net))+' 點。',net>=0?'win':'');eqUI();
+  }
+  // Process every gaze change and movement end in time order, even on a slow frame.
+  function eqStep(dt){
+    while(dt>1e-8&&EQ.active){
+      var ahead=EQ.people.slice(EQ.passed),slice=dt;
+      ahead.forEach(function(p){slice=Math.min(slice,Math.max(0,p.time));});
+      if(EQ.phase==='moving')slice=Math.min(slice,EQ.moving);
+      ahead.forEach(function(p){p.time-=slice;});if(EQ.phase==='moving')EQ.moving-=slice;dt-=slice;
+      ahead.forEach(function(p){if(p.time>1e-8)return;
+        if(p.state==='safe'){p.state='warn';p.time=eqRand(.18,1.3);}
+        else if(p.state==='warn'){if(Math.random()<.7){p.state='look';p.time=eqRand(.4,.8);}else{p.state='safe';p.time=eqRest(p.index);}}
+        else{p.state='safe';p.time=eqRest(p.index);}
+      });
+      if(EQ.phase==='moving'&&ahead.some(function(p){return p.state==='look';})){eqLose();return;}
+      if(EQ.phase==='moving'&&EQ.moving<=1e-8){EQ.passed++;EQ.phase='waiting';EQ.moving=0;eqRemember();eqSay('已插過 '+EQ.passed+' 人，可領回 '+fmt(eqPay())+' 點。可以收手，也可以觀察後再插一位。','win');if(EQ.passed===10){eqCash();return;}}
+    }
+  }
+  function eqSync(now){var dt=Math.max(0,(now-EQ.last)/1000);EQ.last=now;if(EQ.active&&!$('view-elevator').hidden&&!document.hidden)eqStep(dt);}
+  function eqAction(){
+    var wasActive=EQ.active;eqSync(performance.now());
+    if(wasActive&&!EQ.active)return;
+    if(!EQ.active){
+      var stake=Number($('eq-amount').value);
+      if(!Number.isSafeInteger(stake)||stake<MIN_BET){eqSay('請輸入至少 '+MIN_BET+' 點的整數入場點數。','lose');return;}
+      if(stake>S.balance){eqSay('餘額不足，請降低入場點數。','lose');return;}
+      EQ.stake=stake;EQ.passed=0;EQ.phase='waiting';EQ.active=true;EQ.moving=0;EQ.last=performance.now();
+      EQ.people=Array.from({length:10},function(_,i){return {index:i,state:'safe',time:eqRand(1.2,6.5)};});
+      S.balance-=stake;save();renderAll();eqSay('先觀察乘客，再點一下往前插一位。警示不會直接抓人，但可能隨時轉頭。');eqUI();return;
+    }
+    if(EQ.phase!=='waiting')return;
+    if(EQ.people.slice(EQ.passed).some(function(p){return p.state==='look';})){eqLose();return;}
+    EQ.phase='moving';EQ.duration=.28+EQ.passed*.012;EQ.moving=EQ.duration;eqSay('正在移動，這段時間被乘客回頭看見也會失敗。');eqUI();
+  }
+  function eqDraw(){
+    var g=eqCtx,w=520,h=580;g.clearRect(0,0,w,h);var bg=g.createLinearGradient(0,0,0,h);bg.addColorStop(0,C.sea);bg.addColorStop(1,C.abyss);g.fillStyle=bg;g.fillRect(0,0,w,h);
+    g.strokeStyle=C.line;g.lineWidth=1;for(var i=0;i<6;i++){g.beginPath();g.moveTo(40+i*88,100);g.lineTo(-100+i*145,h);g.stroke();}
+    g.fillStyle=C['panel-2'];g.fillRect(190,30,140,90);g.strokeStyle=EQ.phase==='cashed'&&EQ.passed===10?C.glow:C.line;g.lineWidth=3;g.strokeRect(190,30,140,90);g.beginPath();g.moveTo(260,30);g.lineTo(260,120);g.stroke();
+    g.textAlign='center';g.fillStyle=C.glow;g.font='600 15px system-ui';g.fillText('升降艙 · 排隊入口',260,22);g.fillStyle=C.muted;g.font='12px system-ui';g.fillText('到達隊首即可進艙',260,75);
+    g.setLineDash([4,7]);g.strokeStyle=C.line;g.beginPath();g.moveTo(260,135);g.lineTo(260,544);g.stroke();g.setLineDash([]);
+    var people=EQ.people.length?EQ.people:Array.from({length:10},function(_,i){return {index:i,state:'safe'};});
+    people.forEach(function(p,i){
+      var y=488-i*35,passed=i<EQ.passed,x=passed?350:260,col=p.state==='look'?C.crush:p.state==='warn'?C.lamp:C.muted;
+      g.globalAlpha=passed?.22:1;g.fillStyle=passed?C.muted:col;g.beginPath();g.arc(x,y-13,8,0,Math.PI*2);g.fill();g.fillRect(x-9,y-3,18,15);
+      if(p.state==='look'&&!passed){g.fillStyle=C.abyss;g.fillRect(x-5,y-15,3,3);g.fillRect(x+2,y-15,3,3);}
+      g.fillStyle=col;g.textAlign='left';g.font='12px system-ui';g.fillText(passed?'已超過':p.state==='look'?'● 回頭注視':p.state==='warn'?'△ 警示':'背對你',x+23,y);
+      g.textAlign='right';g.fillStyle=C.muted;g.fillText('第 '+(i+1)+' 位',x-24,y);g.globalAlpha=1;
+    });
+    var fraction=EQ.phase==='moving'?1-EQ.moving/EQ.duration:0,py=EQ.passed===10?100:535-(EQ.passed+fraction)*35;
+    g.save();g.translate(260,py);g.fillStyle=EQ.phase==='caught'?C.crush:C.glow;g.beginPath();g.arc(0,-10,9,0,Math.PI*2);g.fill();g.fillRect(-10,0,20,16);g.fillStyle=C.abyss;g.fillRect(-4,-12,3,3);g.fillRect(2,-12,3,3);g.restore();
+    g.textAlign='center';g.font='600 13px system-ui';g.fillStyle=C.glow;g.fillText(EQ.phase==='caught'?'被發現了！':'你',260,py+32);
+    if(EQ.phase==='cashed'||EQ.phase==='caught'){g.fillStyle='rgba(5,22,32,.85)';g.fillRect(55,230,410,110);g.fillStyle=EQ.phase==='caught'?C.crush:C.glow;g.font='600 26px system-ui';g.fillText(EQ.phase==='caught'?'插隊被發現':'已領回 '+fmt(eqPay())+' 點',260,275);g.font='15px system-ui';g.fillStyle=C.fg;g.fillText('成功超過 '+EQ.passed+' / 10 位乘客',260,310);}
+  }
+  $('eq-go').addEventListener('click',eqAction);$('eq-cash').addEventListener('click',eqCash);
+  eqCanvas.addEventListener('pointerdown',function(e){if(!EQ.active)return;e.preventDefault();eqAction();});
+  document.addEventListener('keydown',function(e){if($('view-elevator').hidden||document.hidden||e.code!=='Space'||e.repeat||e.ctrlKey||e.altKey||e.metaKey)return;if(['INPUT','BUTTON','A','SUMMARY'].indexOf(e.target.tagName)>=0)return;e.preventDefault();if(EQ.active)eqAction();});
+  document.addEventListener('visibilitychange',function(){EQ.last=performance.now();});
+  function eqLoop(now){eqSync(now);if(!$('view-elevator').hidden&&!document.hidden){eqUI();eqDraw();}requestAnimationFrame(eqLoop);}
+  eqUI();eqDraw();requestAnimationFrame(eqLoop);
+
   /* ---------- tabs ---------- */
-  var VIEWS = { crash: '壓潰深度 <span>Crush Depth</span>', mines: '水雷區 <span>Mine Field</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '撒網 <span>Cast Net</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>' };
+  var VIEWS = { crash: '壓潰深度 <span>Crush Depth</span>', mines: '水雷區 <span>Mine Field</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '撒網 <span>Cast Net</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '升降艙插隊 <span>Queue Sneak</span>' };
   function route() {
     var v = location.hash.slice(1); if (!VIEWS[v]) v = 'crash';
     Object.keys(VIEWS).forEach(function (k) {
       $('view-' + k).hidden = k !== v;
       if (k === v) $('tab-' + k).setAttribute('aria-current', 'page'); else $('tab-' + k).removeAttribute('aria-current');
     });
-    DR.last=performance.now();
+    DR.last=performance.now();EQ.last=performance.now();
     $('game-name').innerHTML = VIEWS[v];
     $('picker-current').textContent=VIEWS[v].replace(/<[^>]*>/g,'').trim();
     $('game-picker').open=false;
@@ -2273,7 +2396,7 @@ runnerUI();draw();requestAnimationFrame(loop);
     requestAnimationFrame(frame);
   }
   var hot = window.claude && window.claude.hot;
-  if (hot && hot.snapshot) hot.snapshot(function () { return { balance: S.balance + (S.bet && !S.bet.out && S.phase !== 'crashed' ? S.bet.amount : 0) + (M.active ? M.bet : 0) + P.balls.reduce(function (s, b) { return s + b.bet; }, 0) + D.pending + L.pending + (HL.active ? HL.bet : 0) + KE.pending + WL.pending + (TW.active ? TW.bet : 0) + (CR.active ? CR.bet : 0) + (DR.active ? DR.stake : 0), history: S.history }; });
+  if (hot && hot.snapshot) hot.snapshot(function () { return { balance: S.balance + (S.bet && !S.bet.out && S.phase !== 'crashed' ? S.bet.amount : 0) + (M.active ? M.bet : 0) + P.balls.reduce(function (s, b) { return s + b.bet; }, 0) + D.pending + L.pending + (HL.active ? HL.bet : 0) + KE.pending + WL.pending + (TW.active ? TW.bet : 0) + (CR.active ? CR.bet : 0) + (DR.active ? DR.stake : 0) + (EQ.active ? EQ.stake : 0), history: S.history }; });
   if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
 })();
 </script>
