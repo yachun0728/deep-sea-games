@@ -1,0 +1,2075 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>壓潰深度 Crush Depth</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: a dive console. The sea (canvas) takes the wide left column and the curve runs downward;
+   the right column is the pilot's panel: stake, surface button, crew list. Stacks on phones. */
+:root {
+  color-scheme: dark;
+  --abyss: #051620;
+  --sea: #0a2a3b;
+  --sea-top: #12506a;
+  --panel: #0c2230;
+  --panel-2: #113041;
+  --line: #214658;
+  --fg: #e4f2f3;
+  --muted: #8db0b9;
+  --lamp: #ffb638;
+  --lamp-ink: #2a1a00;
+  --glow: #62e6d2;
+  --glow-ink: #00241f;
+  --crush: #ff6f61;
+  --card-red: #c93a2e;
+  --font-display: "Chakra Petch", "Noto Sans TC", ui-monospace, monospace;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --radius: 10px;
+}
+html, body { height: auto; }
+body {
+  background: var(--abyss);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  padding-block: 20px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+
+.view { display: flex; flex-direction: column; gap: 16px; }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+.tabs a { padding: 8px 16px; color: var(--muted); text-decoration: none; font-weight: 500; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+.tabs a:hover { color: var(--fg); }
+.tabs a[aria-current="page"] { color: var(--fg); border-bottom-color: var(--lamp); }
+.tabs a:focus-visible { outline: 2px solid var(--glow); outline-offset: -2px; }
+.tabs small { font-family: var(--font-display); color: var(--muted); margin-left: 6px; font-size: 12px; }
+
+.board-wrap { min-width: 0; display: flex; justify-content: center; border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; background: linear-gradient(180deg, var(--sea), var(--abyss)); }
+.board { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; width: 100%; max-width: 520px; }
+@media (max-width: 560px) { .board-wrap { padding: 10px; } .board { gap: 6px; } }
+.tile { aspect-ratio: 1; padding: 0; border-radius: 8px; border: 1px solid var(--line); background: var(--panel-2); color: var(--muted); cursor: pointer; display: grid; place-items: center; transition: transform .1s ease, border-color .15s ease; }
+.tile svg { width: 56%; height: 56%; display: block; }
+.tile:hover:not(:disabled) { border-color: var(--glow); transform: translateY(-2px); }
+.tile:disabled { cursor: default; }
+.tile.idle { opacity: .6; }
+.tile.gem { color: var(--glow); border-color: var(--glow); background: rgba(98, 230, 210, .12); }
+.tile.mine { color: var(--crush); border-color: var(--crush); background: rgba(255, 111, 97, .16); }
+.tile.hit { background: var(--crush); color: var(--abyss); }
+.tile.dim { opacity: .4; }
+@media (prefers-reduced-motion: reduce) { .tile { transition: none; } }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.stats div { display: flex; flex-direction: column; gap: 2px; }
+.stats dt { font-size: 12px; color: var(--muted); }
+.stats dd { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 20px; font-variant-numeric: tabular-nums; }
+
+.pk-wrap { position: relative; min-width: 0; max-width: 100%; aspect-ratio: 1 / .92; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: linear-gradient(180deg, var(--sea), var(--abyss)); }
+.pk-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.seg-row { display: flex; gap: 6px; }
+.seg { flex: 1; padding: 8px 4px; font-family: var(--font-body); font-size: 14px; }
+.seg[aria-pressed="true"] { border-color: var(--lamp); color: var(--lamp); }
+.stats .pills { mask-image: none; -webkit-mask-image: none; flex-wrap: wrap; }
+.stats .wide { grid-column: 1 / -1; }
+
+.tabs { overflow-x: auto; scrollbar-width: none; }
+.mg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; width: 100%; max-width: 460px; touch-action: none; user-select: none; -webkit-user-select: none; }
+.mg.idle { opacity: .5; }
+.cell { aspect-ratio: 1; border-radius: 8px; background: var(--panel); border: 1px solid var(--line); display: grid; place-items: center; }
+.orb { width: 84%; height: 84%; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: clamp(18px, 5.4vw, 30px); font-variant-numeric: tabular-nums; line-height: 1; }
+.orb.d3 { font-size: clamp(15px, 4.4vw, 25px); }
+.orb.d4 { font-size: clamp(12px, 3.5vw, 20px); }
+.orb.t1 { background: var(--panel-2); color: var(--fg); box-shadow: inset 0 0 0 1px var(--line); }
+.orb.t2 { background: var(--sea-top); color: var(--fg); }
+.orb.t3 { background: var(--glow); color: var(--glow-ink); }
+.orb.t4 { background: var(--lamp); color: var(--lamp-ink); }
+.orb.t5 { background: var(--fg); color: var(--abyss); box-shadow: 0 0 22px var(--glow); }
+@keyframes pop { from { transform: scale(.6); } to { transform: none; } }
+.orb.new { animation: pop .14s ease-out; }
+@media (prefers-reduced-motion: reduce) { .orb.new { animation: none; } }
+.dpad .chip { flex: 1; padding: 8px 0; font-size: 16px; }
+
+.dice-stage { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius); padding: 28px 20px 20px; background: linear-gradient(180deg, var(--sea), var(--abyss)); display: flex; flex-direction: column; gap: 16px; }
+.dc-read { text-align: center; }
+.dc-read .mult { color: var(--muted); }
+.dice-stage.win .mult { color: var(--glow); }
+.dice-stage.lose .mult { color: var(--crush); }
+.dc-track { position: relative; height: 30px; margin-top: 14px; }
+.dc-zones { position: absolute; inset: 0; border-radius: 6px; opacity: .78; }
+.dc-marker { position: absolute; top: -9px; bottom: -9px; left: 50%; width: 4px; margin-left: -2px; border-radius: 2px; background: var(--fg); box-shadow: 0 0 12px var(--fg); transition: left .45s cubic-bezier(.2, .8, .2, 1); }
+@media (prefers-reduced-motion: reduce) { .dc-marker { transition: none; } }
+.dc-scale { display: flex; justify-content: space-between; font-family: var(--font-display); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.dc-target { display: flex; flex-direction: column; gap: 6px; }
+.dc-target label { font-size: 12px; color: var(--muted); letter-spacing: .08em; }
+.dc-target output { font-family: var(--font-display); font-weight: 600; color: var(--lamp); font-size: 15px; margin-left: 6px; }
+input[type="range"] { width: 100%; margin: 0; accent-color: var(--lamp); }
+.dice-stage .history { margin-top: 4px; }
+
+.lb-gauge { position: relative; margin-top: 8px; }
+.lb-track { position: relative; height: 14px; border-radius: 7px; background: var(--panel-2); overflow: hidden; }
+.lb-fill { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--muted); transition: width .52s cubic-bezier(.2, .8, .2, 1); }
+.dice-stage.win .lb-fill { background: var(--glow); }
+.dice-stage.lose .lb-fill { background: var(--crush); }
+.lb-tick { position: absolute; left: 70%; top: -7px; height: 28px; width: 2px; margin-left: -1px; background: var(--lamp); }
+.lb-labels { position: relative; height: 20px; margin-top: 10px; font-family: var(--font-display); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.lb-labels span { position: absolute; top: 0; white-space: nowrap; }
+.lb-labels .t { left: 70%; transform: translateX(-50%); color: var(--lamp); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .lb-fill { transition: none; } }
+
+.hl-table { display: flex; justify-content: center; padding: 4px 0; }
+.card { width: clamp(104px, 30vw, 136px); aspect-ratio: 5 / 7; border-radius: 12px; background: var(--fg); color: var(--abyss); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-family: var(--font-display); box-shadow: 0 10px 30px rgba(0, 0, 0, .4); }
+.card .rank { font-size: clamp(48px, 13vw, 64px); font-weight: 700; line-height: 1; }
+.card .suit { font-size: 34px; line-height: 1; }
+.card.red, .mini.red { color: var(--card-red); }
+.card.idle { opacity: .55; }
+.card.new { animation: pop .16s ease-out; }
+@media (prefers-reduced-motion: reduce) { .card.new { animation: none; } }
+.dice-stage.lose .card { box-shadow: 0 0 0 3px var(--crush), 0 10px 30px rgba(0, 0, 0, .4); }
+.dice-stage.win .card { box-shadow: 0 0 0 3px var(--glow), 0 10px 30px rgba(0, 0, 0, .4); }
+.hl-trail { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; min-height: 26px; align-items: center; color: var(--muted); font-size: 13px; }
+.mini { font-family: var(--font-display); font-weight: 600; font-size: 13px; padding: 2px 8px; border-radius: 4px; background: var(--fg); color: var(--abyss); }
+.hl-guess { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.guess { padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; font-family: var(--font-body); font-size: 15px; font-weight: 700; white-space: normal; }
+.guess small { font-family: var(--font-display); font-weight: 600; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.guess.hi:not(:disabled) { border-color: var(--glow); color: var(--glow); }
+.guess.lo:not(:disabled) { border-color: var(--lamp); color: var(--lamp); }
+.skip { padding: 8px; font-family: var(--font-body); font-size: 13px; }
+
+.keno-stage { padding: 16px; }
+.kboard { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; width: 100%; }
+.kcell { aspect-ratio: 1; padding: 0; border-radius: 8px; border: 1px solid var(--line); background: var(--panel-2); color: var(--fg); font-family: var(--font-display); font-weight: 600; font-size: clamp(12px, 3.2vw, 17px); font-variant-numeric: tabular-nums; cursor: pointer; transition: transform .1s ease, border-color .15s ease; }
+.kcell:hover:not(:disabled) { border-color: var(--muted); }
+.kcell:disabled { cursor: default; }
+.kcell.picked { border-color: var(--lamp); color: var(--lamp); box-shadow: inset 0 0 0 1px var(--lamp); }
+.kcell.miss { background: rgba(255, 111, 97, .14); border-color: var(--crush); color: var(--crush); }
+.kcell.hit { background: var(--glow); border-color: var(--glow); color: var(--glow-ink); box-shadow: 0 0 14px rgba(98, 230, 210, .5); transform: scale(1.04); }
+@media (prefers-reduced-motion: reduce) { .kcell { transition: none; } .kcell.hit { transform: none; } }
+.kpay { display: flex; flex-wrap: wrap; gap: 6px; }
+.kp { flex: 1 0 52px; display: flex; flex-direction: column; align-items: center; padding: 4px 2px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); font-family: var(--font-display); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.kp b { font-size: 14px; font-weight: 600; color: var(--fg); }
+.kp.zero b { color: var(--muted); font-weight: 500; }
+.kp.on { border-color: var(--glow); }
+.kp.on b { color: var(--glow); }
+.kpay .none { color: var(--muted); font-size: 13px; }
+
+.wh-wrap { position: relative; width: 100%; max-width: 420px; margin: 4px auto 0; aspect-ratio: 1; }
+.wh-wrap canvas { width: 100%; height: 100%; display: block; border-radius: 50%; transition: transform 3s cubic-bezier(.12, .75, .1, 1); }
+@media (prefers-reduced-motion: reduce) { .wh-wrap canvas { transition: none; } }
+.wh-pointer { position: absolute; top: -8px; left: 50%; margin-left: -11px; width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-top: 22px solid var(--fg); z-index: 2; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .6)); }
+.wh-hub { position: absolute; inset: 29%; border-radius: 50%; background: var(--abyss); border: 1px solid var(--line); display: grid; place-items: center; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: clamp(24px, 7vw, 40px); font-variant-numeric: tabular-nums; color: var(--muted); }
+.dice-stage.win .wh-hub { color: var(--glow); }
+.dice-stage.lose .wh-hub { color: var(--crush); }
+.kp i { display: block; width: 70%; height: 4px; border-radius: 2px; margin-bottom: 3px; }
+
+.tower { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 520px; margin: 0 auto; }
+.trow { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 8px; align-items: center; }
+.tmult { font-family: var(--font-display); font-size: 13px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+.trow.cur .tmult { color: var(--lamp); font-weight: 600; }
+.trow.done .tmult { color: var(--glow); }
+.tcells { display: grid; gap: 6px; }
+.tcell { height: clamp(34px, 7.5vw, 46px); padding: 0; border-radius: 8px; border: 1px solid var(--line); background: var(--panel-2); color: var(--muted); display: grid; place-items: center; cursor: pointer; opacity: .45; }
+.tcell svg { height: 62%; width: auto; aspect-ratio: 1; display: block; }
+.tcell:disabled { cursor: default; }
+.trow.cur .tcell { opacity: 1; border-color: var(--lamp); }
+.trow.cur .tcell:hover { background: var(--sea-top); }
+.tcell.gem { opacity: 1; color: var(--glow); border-color: var(--glow); background: rgba(98, 230, 210, .12); }
+.tcell.mine { opacity: 1; color: var(--crush); border-color: var(--crush); background: rgba(255, 111, 97, .16); }
+.tcell.hit { background: var(--crush); color: var(--abyss); }
+.tcell.dim { opacity: .35; }
+
+.lanes { display: grid; gap: 4px; height: clamp(190px, 36vw, 250px); }
+.lane { min-width: 0; border-radius: 8px; border: 1px solid var(--line); background: linear-gradient(180deg, var(--panel-2), var(--panel)); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 10px 0 8px; color: var(--muted); }
+.lane.start { background: var(--abyss); border-style: dashed; }
+.lane.passed { border-color: var(--glow); background: rgba(98, 230, 210, .1); }
+.lane.passed .lmult { color: var(--glow); }
+.lane.next { border-color: var(--lamp); }
+.lane.next .lmult { color: var(--lamp); }
+.lane.lost { border-color: var(--crush); background: rgba(255, 111, 97, .18); color: var(--crush); }
+.lane.would { border-color: var(--crush); border-style: dashed; color: var(--crush); }
+.lslot { width: 80%; max-width: 34px; aspect-ratio: 1; display: grid; place-items: center; }
+.lslot svg { width: 100%; height: 100%; display: block; }
+.lslot.me { color: var(--lamp); }
+.lslot.me svg { transform: rotate(90deg); }
+.lmult { writing-mode: vertical-rl; font-family: var(--font-display); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.step-btn { width: 100%; }
+
+.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; }
+.brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: 26px; letter-spacing: .02em; margin: 0; line-height: 1.2; }
+h1 span { color: var(--lamp); }
+.demo-tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 1px 10px; white-space: nowrap; }
+.wallet { display: flex; align-items: baseline; gap: 10px; }
+.wallet .label { color: var(--muted); font-size: 13px; }
+.wallet .amount { font-family: var(--font-display); font-weight: 600; font-size: 22px; font-variant-numeric: tabular-nums; }
+.wallet .unit { color: var(--muted); font-size: 13px; }
+.link-btn { background: none; border: 0; color: var(--muted); font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 4px; }
+.link-btn:hover { color: var(--fg); }
+
+.history { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.history .label { color: var(--muted); font-size: 12px; letter-spacing: .08em; white-space: nowrap; }
+.pills { display: flex; gap: 6px; overflow: hidden; min-width: 0; flex: 1; mask-image: linear-gradient(90deg, #000 85%, transparent); -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); }
+.pill { font-family: var(--font-display); font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums; padding: 2px 9px; border-radius: 4px; background: var(--panel-2); color: var(--muted); white-space: nowrap; }
+.pill.low { color: var(--crush); }
+.pill.high { color: var(--glow); }
+.pill.jackpot { background: var(--lamp); color: var(--lamp-ink); }
+
+.console { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+@media (max-width: 880px) { .console { grid-template-columns: minmax(0, 1fr); } }
+
+.sea { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--sea); aspect-ratio: 16 / 10; max-width: 100%; }
+@media (max-width: 560px) { .sea { aspect-ratio: 4 / 3.6; } }
+.sea canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.readout { position: absolute; left: 0; right: 0; top: 14%; text-align: center; pointer-events: none; padding: 0 12px; }
+.mult { font-family: var(--font-display); font-weight: 700; font-size: clamp(48px, 11vw, 104px); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -.01em; text-shadow: 0 2px 24px rgba(5, 22, 32, .8); }
+.mult small { font-size: .5em; font-weight: 600; margin-left: .06em; }
+.sub-line { margin-top: 8px; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; text-shadow: 0 1px 8px var(--abyss); }
+.sea[data-phase="betting"] .mult { color: var(--muted); }
+.sea[data-phase="crashed"] .mult { color: var(--crush); }
+.sea[data-phase="crashed"] .sub-line { color: var(--crush); }
+.sea.safe .mult { color: var(--glow); }
+@keyframes shake { 0%,100% { transform: none } 20% { transform: translate(-5px, 3px) } 40% { transform: translate(4px, -4px) } 60% { transform: translate(-3px, -2px) } 80% { transform: translate(3px, 2px) } }
+.sea.shake { animation: shake .35s linear; }
+@media (prefers-reduced-motion: reduce) { .sea.shake { animation: none; } }
+
+.side { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 12px; color: var(--muted); letter-spacing: .08em; }
+.input-row { display: flex; gap: 6px; }
+input[type="number"] {
+  flex: 1; min-width: 0; background: var(--abyss); color: var(--fg); border: 1px solid var(--line); border-radius: 6px;
+  font-family: var(--font-display); font-weight: 600; font-size: 18px; padding: 8px 10px; font-variant-numeric: tabular-nums;
+}
+input[type="number"]::placeholder { color: var(--muted); font-family: var(--font-body); font-weight: 400; font-size: 14px; }
+input:disabled { opacity: .55; }
+.chip { background: var(--panel-2); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; font-family: var(--font-display); font-weight: 600; font-size: 13px; padding: 0 10px; cursor: pointer; white-space: nowrap; }
+.chip:hover:not(:disabled) { border-color: var(--muted); }
+.chip:disabled { opacity: .45; cursor: default; }
+:is(button, input):focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+
+.go {
+  border: 0; border-radius: 8px; padding: 14px 12px; min-height: 68px; cursor: pointer;
+  font-family: var(--font-body); font-weight: 700; font-size: 19px; line-height: 1.25;
+  background: var(--lamp); color: var(--lamp-ink);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  transition: transform .08s ease, filter .15s ease;
+}
+.go small { font-family: var(--font-display); font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; opacity: .85; }
+.go:hover:not(:disabled) { filter: brightness(1.08); }
+.go:active:not(:disabled) { transform: translateY(1px) scale(.99); }
+.go[data-mode="surface"] { background: var(--glow); color: var(--glow-ink); }
+.go[data-mode="cancel"], .go[data-mode="queue"], .go[data-mode="unqueue"] { background: var(--panel-2); color: var(--fg); box-shadow: inset 0 0 0 1px var(--line); }
+.go[data-mode="queue"] { box-shadow: inset 0 0 0 1px var(--lamp); color: var(--lamp); }
+.go:disabled { background: var(--panel-2); color: var(--muted); cursor: default; }
+.msg { min-height: 1.6em; font-size: 14px; color: var(--muted); margin: 0; }
+.msg.win { color: var(--glow); }
+.msg.lose { color: var(--crush); }
+.hint { font-size: 12px; color: var(--muted); margin: 0; }
+kbd { font-family: var(--font-display); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; font-size: 11px; }
+
+.crew h2, .rules summary { font-size: 12px; color: var(--muted); letter-spacing: .08em; font-weight: 500; margin: 0; }
+.crew-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.crew-head span { font-size: 12px; color: var(--muted); }
+.crew ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.crew li { display: grid; grid-template-columns: minmax(0, 1fr) 52px 104px; gap: 8px; padding: 6px 0; border-top: 1px solid var(--line); font-size: 14px; align-items: baseline; }
+.crew li.me { color: var(--lamp); }
+.crew .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.crew .stake, .crew .state { font-family: var(--font-display); font-variant-numeric: tabular-nums; text-align: right; font-size: 13px; }
+.crew .state { color: var(--muted); }
+.crew .state.up { color: var(--glow); }
+.crew .state.lost { color: var(--crush); }
+.crew .empty { color: var(--muted); font-size: 13px; padding: 6px 0; border-top: 1px solid var(--line); display: block; }
+
+.rules { border-top: 1px solid var(--line); padding-top: 14px; color: var(--muted); font-size: 14px; max-width: 68ch; }
+.rules summary { cursor: pointer; font-size: 13px; }
+.rules p { margin: 10px 0 0; }
+.rules code { font-family: var(--font-display); color: var(--fg); background: var(--panel); padding: 1px 6px; border-radius: 4px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1 id="game-name">壓潰深度 <span>Crush Depth</span></h1>
+      <span class="demo-tag">Demo · 虛擬點數</span>
+    </div>
+    <div class="wallet">
+      <span class="label">餘額</span>
+      <span class="amount" id="balance">1,000</span><span class="unit">點</span>
+      <button class="link-btn" id="reset" type="button">重設為 1,000</button>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="遊戲">
+    <a href="#crash" id="tab-crash" aria-current="page">壓潰深度<small>Crash</small></a>
+    <a href="#mines" id="tab-mines">水雷區<small>Mines</small></a>
+    <a href="#plinko" id="tab-plinko">落珠<small>Plinko</small></a>
+    <a href="#merge" id="tab-merge">養珠<small>Merge</small></a>
+    <a href="#dice" id="tab-dice">測深<small>Dice</small></a>
+    <a href="#limbo" id="tab-limbo">探底<small>Limbo</small></a>
+    <a href="#hilo" id="tab-hilo">漲退<small>Hi-Lo</small></a>
+    <a href="#keno" id="tab-keno">撒網<small>Keno</small></a>
+    <a href="#wheel" id="tab-wheel">羅盤<small>Wheel</small></a>
+    <a href="#tower" id="tab-tower">浮升<small>Tower</small></a>
+    <a href="#crossing" id="tab-crossing">橫渡<small>Crossing</small></a>
+  </nav>
+
+  <section class="view" id="view-crash">
+  <div class="history" aria-label="最近回合的壓潰倍率">
+    <span class="label">近期壓潰</span>
+    <div class="pills" id="pills"></div>
+  </div>
+
+  <div class="console">
+    <div class="sea" id="sea" data-phase="betting">
+      <canvas id="cv" aria-hidden="true"></canvas>
+      <div class="readout">
+        <div class="mult" id="mult">1.00<small>×</small></div>
+        <div class="sub-line" id="subline">準備下潛</div>
+      </div>
+    </div>
+
+    <div class="side">
+      <section class="panel" aria-label="下注">
+        <div class="field">
+          <label for="bet-amount">下注點數</label>
+          <div class="input-row">
+            <input id="bet-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
+            <button class="chip" type="button" data-chip="half">½</button>
+            <button class="chip" type="button" data-chip="double">2×</button>
+            <button class="chip" type="button" data-chip="max">全押</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="auto-out">自動上浮倍率（選填）</label>
+          <div class="input-row">
+            <input id="auto-out" type="number" inputmode="decimal" min="1.01" step="0.1" placeholder="例如 2.00">
+            <button class="chip" type="button" data-auto="1.5">1.5×</button>
+            <button class="chip" type="button" data-auto="2">2×</button>
+            <button class="chip" type="button" data-auto="5">5×</button>
+          </div>
+        </div>
+        <button class="go" id="go" type="button" data-mode="bet">下注</button>
+        <p class="msg" id="msg" aria-live="polite">潛得越深倍率越高，在艇身壓潰前按下上浮。</p>
+        <p class="hint">也可以按 <kbd>空白鍵</kbd> 下注與上浮。</p>
+      </section>
+
+      <section class="panel crew" aria-label="本回合艇員">
+        <div class="crew-head"><h2>本回合艇員</h2><span>其他艇員為電腦模擬</span></div>
+        <ul id="crew"></ul>
+      </section>
+    </div>
+  </div>
+
+  <details class="rules">
+    <summary>玩法與機率</summary>
+    <p>每回合開始前有 6 秒下注時間。潛艇下潛後倍率從 1.00× 開始上升（每下潛 1,000 公尺加 1×），你在壓潰前按「上浮」就拿回「下注 × 當下倍率」；來不及上浮就失去這一注。</p>
+    <p>壓潰點在下潛前就已決定：<code>壓潰倍率 = max(1, 0.97 ÷ (1 − r))</code>，r 是 0 到 1 的均勻亂數。也就是有 3% 的回合會在 1.00× 立刻壓潰，長期期望回報約 97%，不論你選哪個上浮倍率都一樣。</p>
+    <p>這是純前端的示範，點數沒有任何現金價值，餘額只存在你的瀏覽器裡。</p>
+  </details>
+  </section>
+
+  <section class="view" id="view-mines" hidden>
+    <div class="console">
+      <div class="board-wrap">
+        <div class="board" id="board" role="group" aria-label="5 乘 5 海域"></div>
+      </div>
+      <div class="side">
+        <section class="panel" aria-label="水雷區下注">
+          <div class="field">
+            <label for="mines-amount">下注點數</label>
+            <div class="input-row">
+              <input id="mines-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
+              <button class="chip mchip" type="button" data-mchip="half">½</button>
+              <button class="chip mchip" type="button" data-mchip="double">2×</button>
+              <button class="chip mchip" type="button" data-mchip="max">全押</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="mines-count">水雷數（1–24）</label>
+            <div class="input-row">
+              <input id="mines-count" type="number" inputmode="numeric" min="1" max="24" step="1" value="3">
+              <button class="chip mchip" type="button" data-mcount="1">1</button>
+              <button class="chip mchip" type="button" data-mcount="3">3</button>
+              <button class="chip mchip" type="button" data-mcount="5">5</button>
+              <button class="chip mchip" type="button" data-mcount="10">10</button>
+            </div>
+          </div>
+          <dl class="stats">
+            <div><dt>目前倍率</dt><dd id="mines-mult">—</dd></div>
+            <div><dt>下一格</dt><dd id="mines-next">—</dd></div>
+            <div><dt>剩餘珍珠</dt><dd id="mines-left">—</dd></div>
+          </dl>
+          <button class="go" id="mines-go" type="button" data-mode="bet">開始</button>
+          <p class="msg" id="mines-msg" aria-live="polite">選好水雷數後按開始，每翻到一顆珍珠倍率就往上。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>25 格海域裡藏著你指定數量的水雷，其餘都是珍珠。每翻開一顆珍珠倍率就上升，隨時可以按「領回」拿走「下注 × 目前倍率」；翻到水雷就失去這一注。水雷越多，每一格的倍率漲得越快。</p>
+      <p>倍率按實際機率計算再乘上 0.97：翻開第 k 顆珍珠後的倍率是 <code>0.97 × Π (25 − i) ÷ (25 − 水雷數 − i)</code>，i 從 0 到 k − 1。所以不論水雷數與翻幾格，長期期望回報都約 97%。</p>
+      <p>水雷位置在按下開始時用瀏覽器亂數決定。點數與「壓潰深度」共用，沒有任何現金價值。</p>
+    </details>
+  </section>
+
+  <section class="view" id="view-plinko" hidden>
+    <div class="console">
+      <div class="pk-wrap" id="pk-wrap"><canvas id="pk" aria-hidden="true"></canvas></div>
+      <div class="side">
+        <section class="panel" aria-label="落珠下注">
+          <div class="field">
+            <label for="pk-amount">每顆下注點數</label>
+            <div class="input-row">
+              <input id="pk-amount" type="number" inputmode="numeric" min="10" step="10" value="50">
+              <button class="chip pchip" type="button" data-pchip="half">½</button>
+              <button class="chip pchip" type="button" data-pchip="double">2×</button>
+            </div>
+          </div>
+          <div class="field">
+            <label id="pk-risk-label">風險</label>
+            <div class="seg-row" role="group" aria-labelledby="pk-risk-label">
+              <button class="chip seg" type="button" data-risk="low">低</button>
+              <button class="chip seg" type="button" data-risk="mid">中</button>
+              <button class="chip seg" type="button" data-risk="high">高</button>
+            </div>
+          </div>
+          <div class="field">
+            <label id="pk-rows-label">礁釘排數</label>
+            <div class="seg-row" role="group" aria-labelledby="pk-rows-label">
+              <button class="chip seg" type="button" data-rows="8">8</button>
+              <button class="chip seg" type="button" data-rows="12">12</button>
+              <button class="chip seg" type="button" data-rows="16">16</button>
+            </div>
+          </div>
+          <dl class="stats">
+            <div><dt>最高倍率</dt><dd id="pk-max">—</dd></div>
+            <div><dt>中央倍率</dt><dd id="pk-mid">—</dd></div>
+            <div><dt>期望回報</dt><dd id="pk-rtp">—</dd></div>
+            <div class="wide"><dt>最近落點</dt><dd><div class="pills" id="pk-last"></div></dd></div>
+          </dl>
+          <button class="go" id="pk-go" type="button" data-mode="bet">投下珍珠</button>
+          <p class="msg" id="pk-msg" aria-live="polite">珍珠會一路撞著礁釘往下沉，落進哪一格就拿那格的倍率。可以連按連投。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>每顆珍珠在每一排礁釘都有一半機率往左、一半往右，所以落在中央的機會最大，越靠兩側越難。落進的那一格倍率 × 下注就是領回的點數；中央的倍率低於 1，兩側才是大獎。</p>
+      <p>風險越高，中央賠得越多、兩側給得越高；排數越多，兩側越難到達、最高倍率也越高。每組設定的倍率表都是先依二項分布算出各格機率，再把期望回報調到約 97%，面板上的「期望回報」是四捨五入後的實際數字。</p>
+      <p>落點在投下的瞬間用瀏覽器亂數決定，動畫只是把結果演出來。點數與另外兩個遊戲共用，沒有任何現金價值。</p>
+    </details>
+  </section>
+
+  <section class="view" id="view-merge" hidden>
+    <div class="console">
+      <div class="board-wrap">
+        <div class="mg idle" id="mg" role="group" aria-label="4 乘 4 養珠盤"></div>
+      </div>
+      <div class="side">
+        <section class="panel" aria-label="養珠">
+          <dl class="stats">
+            <div><dt>分數</dt><dd id="mg-score">0</dd></div>
+            <div><dt>最大珍珠</dt><dd id="mg-max">—</dd></div>
+            <div><dt>最佳分數</dt><dd id="mg-best">0</dd></div>
+          </dl>
+          <div class="field">
+            <label id="mg-dir-label">滑動方向</label>
+            <div class="input-row dpad" role="group" aria-labelledby="mg-dir-label">
+              <button class="chip" type="button" data-dir="left" aria-label="向左滑">←</button>
+              <button class="chip" type="button" data-dir="up" aria-label="向上滑">↑</button>
+              <button class="chip" type="button" data-dir="down" aria-label="向下滑">↓</button>
+              <button class="chip" type="button" data-dir="right" aria-label="向右滑">→</button>
+            </div>
+          </div>
+          <button class="go" id="mg-go" type="button" data-mode="bet">開始一局</button>
+          <p class="msg" id="mg-msg" aria-live="polite">每玩一局扣 20 點。把相同數字的珍珠滑在一起，合併成更大的珍珠。</p>
+          <p class="hint">可以用 <kbd>方向鍵</kbd>、<kbd>WASD</kbd>，或在盤面上滑動。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法</summary>
+      <p>按「開始一局」會從餘額扣 20 點。每次滑動，盤上所有珍珠都往同一個方向靠攏，兩顆相同數字的珍珠相撞就合併成兩倍大，並把合併後的數字加進分數。每滑一步會多長出一顆 2（九成）或 4（一成）。</p>
+      <p>盤面塞滿、而且沒有任何相鄰的相同珍珠時，這一局就結束。這個遊戲只扣入場點數，不會退點也沒有倍率；中途放棄重開會再扣一次。</p>
+      <p>最佳分數只存在你的瀏覽器裡。</p>
+    </details>
+  </section>
+
+  <section class="view" id="view-dice" hidden>
+    <div class="console">
+      <div class="dice-stage" id="dc-stage">
+        <div class="dc-read">
+          <div class="mult" id="dc-result">50.00</div>
+          <div class="sub-line" id="dc-sub">聲納讀數會落在 0.00 到 99.99 之間</div>
+        </div>
+        <div>
+          <div class="dc-track">
+            <div class="dc-zones" id="dc-zones"></div>
+            <div class="dc-marker" id="dc-marker" hidden></div>
+          </div>
+          <div class="dc-scale" aria-hidden="true"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
+        </div>
+        <div class="dc-target">
+          <label for="dc-target">門檻<output id="dc-target-out" for="dc-target">50</output></label>
+          <input id="dc-target" type="range" min="2" max="95" step="1" value="50">
+        </div>
+        <div class="history" aria-label="最近的讀數">
+          <span class="label">最近讀數</span>
+          <div class="pills" id="dc-last"></div>
+        </div>
+      </div>
+      <div class="side">
+        <section class="panel" aria-label="測深下注">
+          <div class="field">
+            <label for="dc-amount">下注點數</label>
+            <div class="input-row">
+              <input id="dc-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
+              <button class="chip dchip" type="button" data-dchip="half">½</button>
+              <button class="chip dchip" type="button" data-dchip="double">2×</button>
+              <button class="chip dchip" type="button" data-dchip="max">全押</button>
+            </div>
+          </div>
+          <div class="field">
+            <label id="dc-mode-label">猜讀數</label>
+            <div class="seg-row" role="group" aria-labelledby="dc-mode-label">
+              <button class="chip seg" type="button" data-dmode="under" id="dc-under">低於 50</button>
+              <button class="chip seg" type="button" data-dmode="over" id="dc-over">50 以上</button>
+            </div>
+          </div>
+          <dl class="stats">
+            <div><dt>勝率</dt><dd id="dc-chance">—</dd></div>
+            <div><dt>倍率</dt><dd id="dc-mult">—</dd></div>
+            <div><dt>猜中可領</dt><dd id="dc-win">—</dd></div>
+          </dl>
+          <button class="go" id="dc-go" type="button" data-mode="bet">發出聲納</button>
+          <p class="msg" id="dc-msg" aria-live="polite">拉動門檻決定勝率：勝率越低，倍率越高。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>每次聲納會回傳一個 0.00 到 99.99 的讀數，共 10,000 種結果、機率相同。你先選門檻，再猜讀數會「低於門檻」還是「在門檻以上」（剛好等於門檻算以上）。亮色那一段就是你會贏的範圍。</p>
+      <p>猜「低於 T」的勝率是 T%，猜「T 以上」的勝率是 (100 − T)%。倍率固定是 <code>97 ÷ 勝率(%)</code>，所以不論門檻怎麼選，長期期望回報都約 97%。勝率可調範圍是 2% 到 95%，對應倍率 48.50× 到 1.02×。</p>
+      <p>讀數在按下的瞬間用瀏覽器亂數決定。點數與其他遊戲共用，沒有任何現金價值。</p>
+    </details>
+  </section>
+
+  <section class="view" id="view-limbo" hidden>
+    <div class="console">
+      <div class="dice-stage" id="lb-stage">
+        <div class="dc-read">
+          <div class="mult" id="lb-result">1.00<small>×</small></div>
+          <div class="sub-line" id="lb-sub">探測錘沉到你的目標倍率就算贏</div>
+        </div>
+        <div class="lb-gauge">
+          <div class="lb-track"><div class="lb-fill" id="lb-fill"></div></div>
+          <div class="lb-tick" aria-hidden="true"></div>
+          <div class="lb-labels" aria-hidden="true"><span>1.00×</span><span class="t" id="lb-tlabel">目標 2.00×</span></div>
+        </div>
+        <div class="history" aria-label="最近的結果">
+          <span class="label">最近結果</span>
+          <div class="pills" id="lb-last"></div>
+        </div>
+      </div>
+      <div class="side">
+        <section class="panel" aria-label="探底下注">
+          <div class="field">
+            <label for="lb-amount">下注點數</label>
+            <div class="input-row">
+              <input id="lb-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
+              <button class="chip lchip" type="button" data-lchip="half">½</button>
+              <button class="chip lchip" type="button" data-lchip="double">2×</button>
+              <button class="chip lchip" type="button" data-lchip="max">全押</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="lb-target">目標倍率（1.01–1000）</label>
+            <div class="input-row">
+              <input id="lb-target" type="number" inputmode="decimal" min="1.01" max="1000" step="0.1" value="2.00">
+              <button class="chip lchip" type="button" data-ltarget="1.5">1.5×</button>
+              <button class="chip lchip" type="button" data-ltarget="5">5×</button>
+              <button class="chip lchip" type="button" data-ltarget="10">10×</button>
+              <button class="chip lchip" type="button" data-ltarget="100">100×</button>
+            </div>
+          </div>
+          <dl class="stats">
+            <div><dt>勝率</dt><dd id="lb-chance">—</dd></div>
+            <div><dt>目標倍率</dt><dd id="lb-mult">—</dd></div>
+            <div><dt>達標可領</dt><dd id="lb-win">—</dd></div>
+          </dl>
+          <button class="go" id="lb-go" type="button" data-mode="bet">放下探測錘</button>
+          <p class="msg" id="lb-msg" aria-live="polite">目標訂得越高越難達到，達到了就拿目標倍率。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>先訂一個目標倍率，再放下探測錘。探測錘會瞬間沉到某個倍率：沉到的倍率大於或等於你的目標就算贏，領回「下注 × 目標倍率」；沒到就失去這一注。贏的時候拿的是你訂的目標，不是探測錘實際沉到的倍率。</p>
+      <p>結果的算法和「壓潰深度」相同：<code>結果 = max(1, 0.97 ÷ (1 − r))</code>，所以達到目標 T 的機率是 <code>97% ÷ T</code>，長期期望回報約 97%，不論目標訂多少都一樣。它等於是不用等、也不用自己按上浮的 Crash。</p>
+      <p>結果在按下的瞬間用瀏覽器亂數決定。點數與其他遊戲共用，沒有任何現金價值。</p>
+    </details>
+  </section>
+
+  <section class="view" id="view-hilo" hidden>
+    <div class="console">
+      <div class="dice-stage" id="hl-stage">
+        <div class="hl-table"><div class="card idle" id="hl-card"></div></div>
+        <div class="dc-read"><div class="sub-line" id="hl-sub">猜下一張牌比這張大還是小</div></div>
+        <div class="hl-trail" id="hl-trail" aria-label="這一局翻過的牌"></div>
+      </div>
+      <div class="side">
+        <section class="panel" aria-label="漲退下注">
+          <div class="field">
+            <label for="hl-amount">下注點數</label>
+            <div class="input-row">
+              <input id="hl-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
+              <button class="chip hchip" type="button" data-hchip="half">½</button>
+              <button class="chip hchip" type="button" data-hchip="double">2×</button>
+              <button class="chip hchip" type="button" data-hchip="max">全押</button>
+            </div>
+          </div>
+          <div class="hl-guess">
+            <button class="chip guess hi" type="button" id="hl-hi" disabled>漲 ▲<small>—</small></button>
+            <button class="chip guess lo" type="button" id="hl-lo" disabled>退 ▼<small>—</small></button>
+          </div>
+          <button class="chip skip" type="button" id="hl-skip" disabled>換一張牌</button>
+          <dl class="stats">
+            <div><dt>目前倍率</dt><dd id="hl-mult">—</dd></div>
+            <div><dt>可領</dt><dd id="hl-win">—</dd></div>
+            <div><dt>猜對</dt><dd id="hl-picks">—</dd></div>
+          </dl>
+          <button class="go" id="hl-go" type="button" data-mode="bet">開始</button>
+          <p class="msg" id="hl-msg" aria-live="polite">按開始翻出第一張牌，每猜對一次倍率就往上，隨時可以領回。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>牌面由小到大是 A、2 … 10、J、Q、K，A 最小。按開始後翻出一張牌，你猜下一張會「漲」（更大或相同）還是「退」（更小或相同）。猜對倍率就乘上去，可以繼續猜或領回「下注 × 目前倍率」；猜錯就失去這一注。</p>
+      <p>手上是 A 時，「漲」變成嚴格更大、「退」變成猜剛好相同；手上是 K 時反過來。每局可以免費換牌 3 次，換牌不影響倍率。</p>
+      <p>每張牌都是從 13 種點數裡等機率抽出（等於無限副牌，不會算牌）。倍率是每次猜測「1 ÷ 猜中機率」連乘，最後乘上 0.97，所以長期期望回報約 97%。按鈕上會直接顯示該選項的機率與猜中後的倍率。</p>
+    </details>
+  </section>
+
+  <section class="view" id="view-keno" hidden>
+    <div class="console">
+      <div class="dice-stage keno-stage">
+        <div class="kboard" id="ke-board" role="group" aria-label="40 格海域"></div>
+        <div class="field">
+          <label id="ke-pay-label">命中幾格的倍率</label>
+          <div class="kpay" id="ke-pay" aria-labelledby="ke-pay-label"></div>
+        </div>
+      </div>
+      <div class="side">
+        <section class="panel" aria-label="撒網下注">
+          <div class="field">
+            <label for="ke-amount">下注點數</label>
+            <div class="input-row">
+              <input id="ke-amount" type="number" inputmode="numeric" min="10" step="10" value="50">
+              <button class="chip kchip" type="button" data-kchip="half">½</button>
+              <button class="chip kchip" type="button" data-kchip="double">2×</button>
+              <button class="chip kchip" type="button" data-kchip="max">全押</button>
+            </div>
+          </div>
+          <div class="seg-row">
+            <button class="chip seg kchip" type="button" id="ke-random">隨機選 5 格</button>
+            <button class="chip seg kchip" type="button" id="ke-clear">清除</button>
+          </div>
+          <dl class="stats">
+            <div><dt>已選</dt><dd id="ke-count">0 / 10</dd></div>
+            <div><dt>命中</dt><dd id="ke-hits">—</dd></div>
+            <div><dt>期望回報</dt><dd id="ke-rtp">—</dd></div>
+          </dl>
+          <button class="go" id="ke-go" type="button" data-mode="bet">撒網</button>
+          <p class="msg" id="ke-msg" aria-live="polite">選 1 到 10 格下網，魚群會出現在其中 10 格，網到越多倍率越高。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>海域有 40 格。你先選 1 到 10 格下網，按「撒網」後魚群會隨機出現在 40 格裡的 10 格。你選的格子裡有幾格出現魚群就是命中幾格，依「命中格數」對照倍率表領回點數。</p>
+      <p>選的格數不同，倍率表也不同：選得少，命中 1 格就有賠；選得多，要命中 2 到 3 格以上才開始賠，但最高倍率也高得多（選 10 格全中是 3,645×，機率約 8 億分之一）。有些低命中格數的倍率低於 1×，代表只拿回一部分下注。</p>
+      <p>每張倍率表都是依實際機率（超幾何分布）算出，再調到期望回報約 97%；面板上的「期望回報」是四捨五入後的實際數字。魚群位置在按下的瞬間用瀏覽器亂數決定。點數與其他遊戲共用，沒有任何現金價值。</p>
+    </details>
+  </section>
+
+  <section class="view" id="view-wheel" hidden>
+    <div class="console">
+      <div class="dice-stage keno-stage" id="wh-stage">
+        <div class="wh-wrap">
+          <div class="wh-pointer" aria-hidden="true"></div>
+          <canvas id="wh" width="840" height="840" aria-hidden="true"></canvas>
+          <div class="wh-hub" id="wh-hub">—</div>
+        </div>
+        <div class="field">
+          <label id="wh-legend-label">羅盤上的倍率與格數</label>
+          <div class="kpay" id="wh-legend" aria-labelledby="wh-legend-label"></div>
+        </div>
+        <div class="history" aria-label="最近的結果">
+          <span class="label">最近結果</span>
+          <div class="pills" id="wh-last"></div>
+        </div>
+      </div>
+      <div class="side">
+        <section class="panel" aria-label="羅盤下注">
+          <div class="field">
+            <label for="wh-amount">下注點數</label>
+            <div class="input-row">
+              <input id="wh-amount" type="number" inputmode="numeric" min="10" step="10" value="50">
+              <button class="chip wchip" type="button" data-wchip="half">½</button>
+              <button class="chip wchip" type="button" data-wchip="double">2×</button>
+              <button class="chip wchip" type="button" data-wchip="max">全押</button>
+            </div>
+          </div>
+          <div class="field">
+            <label id="wh-risk-label">風險</label>
+            <div class="seg-row" role="group" aria-labelledby="wh-risk-label">
+              <button class="chip seg" type="button" data-wrisk="low">低</button>
+              <button class="chip seg" type="button" data-wrisk="mid">中</button>
+              <button class="chip seg" type="button" data-wrisk="high">高</button>
+            </div>
+          </div>
+          <div class="field">
+            <label id="wh-n-label">羅盤格數</label>
+            <div class="seg-row" role="group" aria-labelledby="wh-n-label">
+              <button class="chip seg" type="button" data-wn="10">10</button>
+              <button class="chip seg" type="button" data-wn="20">20</button>
+              <button class="chip seg" type="button" data-wn="30">30</button>
+            </div>
+          </div>
+          <dl class="stats">
+            <div><dt>最高倍率</dt><dd id="wh-max">—</dd></div>
+            <div><dt>有賠機率</dt><dd id="wh-chance">—</dd></div>
+            <div><dt>期望回報</dt><dd id="wh-rtp">—</dd></div>
+          </dl>
+          <button class="go" id="wh-go" type="button" data-mode="bet">轉動羅盤</button>
+          <p class="msg" id="wh-msg" aria-live="polite">羅盤停下時，上方指針指到哪一格就拿那格的倍率。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>按「轉動羅盤」扣下注，羅盤停下時上方指針指到的那一格決定倍率，領回「下注 × 倍率」；指到 0 就失去這一注。每一格被指到的機率相同。</p>
+      <p>低風險：十格裡八格有賠（1.2× 或 1.3×）、兩格是 0。中風險：一半的格子是 0，另一半是 1.5× 到 3×。高風險：整個羅盤只有一格有賠，倍率是「格數 × 0.97」（10 格 9.7×、20 格 19.4×、30 格 29.1×）。低、中風險的格數只影響羅盤切得多細，機率不變。</p>
+      <p>每種設定所有格子的倍率平均都剛好是 0.97，所以期望回報是 97%。停在哪一格在按下的瞬間用瀏覽器亂數決定，轉動只是把結果演出來。點數與其他遊戲共用，沒有任何現金價值。</p>
+    </details>
+  </section>
+
+  <section class="view" id="view-tower" hidden>
+    <div class="console">
+      <div class="dice-stage keno-stage" id="tw-stage">
+        <div class="tower" id="tw-tower" role="group" aria-label="八層水道，由下往上"></div>
+      </div>
+      <div class="side">
+        <section class="panel" aria-label="浮升下注">
+          <div class="field">
+            <label for="tw-amount">下注點數</label>
+            <div class="input-row">
+              <input id="tw-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
+              <button class="chip tchip" type="button" data-tchip="half">½</button>
+              <button class="chip tchip" type="button" data-tchip="double">2×</button>
+              <button class="chip tchip" type="button" data-tchip="max">全押</button>
+            </div>
+          </div>
+          <div class="field">
+            <label id="tw-diff-label">難度</label>
+            <div class="seg-row" role="group" aria-labelledby="tw-diff-label">
+              <button class="chip seg" type="button" data-tdiff="easy">簡單</button>
+              <button class="chip seg" type="button" data-tdiff="mid">中等</button>
+              <button class="chip seg" type="button" data-tdiff="hard">困難</button>
+              <button class="chip seg" type="button" data-tdiff="extreme">極限</button>
+            </div>
+          </div>
+          <dl class="stats">
+            <div><dt>目前倍率</dt><dd id="tw-mult">—</dd></div>
+            <div><dt>下一層</dt><dd id="tw-next">—</dd></div>
+            <div><dt>已上浮</dt><dd id="tw-level">—</dd></div>
+          </dl>
+          <button class="go" id="tw-go" type="button" data-mode="bet">開始</button>
+          <p class="msg" id="tw-msg" aria-live="polite">從最底層開始，每層選一條水道。選到氣泡就往上一層，選到海膽就結束。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>共 8 層，從最底下那層開始，每層選一格。選到氣泡就上浮一層、倍率往上；選到海膽就失去這一注。每上浮一層之後都可以按「領回」拿走「下注 × 目前倍率」，浮到最頂層會自動領回。</p>
+      <p>難度決定每層有幾格、其中幾格安全：簡單是 4 格 3 安全，中等 3 格 2 安全，困難 2 格 1 安全，極限 3 格只有 1 安全。浮完 8 層的倍率分別是 9.69×、24.86×、248.32×、6,364.17×。</p>
+      <p>倍率是「(格數 ÷ 安全格數) 的層數次方 × 0.97」，所以不論難度和在第幾層領回，長期期望回報都約 97%。海膽位置在按下開始時用瀏覽器亂數決定。點數與其他遊戲共用，沒有任何現金價值。</p>
+    </details>
+  </section>
+
+  <section class="view" id="view-crossing" hidden>
+    <div class="console">
+      <div class="dice-stage keno-stage" id="cr-stage">
+        <div class="lanes" id="cr-lanes" role="group" aria-label="十二道海流，由左往右"></div>
+        <div class="dc-read"><div class="sub-line" id="cr-sub">小海龜要從左邊橫渡十二道海流</div></div>
+      </div>
+      <div class="side">
+        <section class="panel" aria-label="橫渡下注">
+          <div class="field">
+            <label for="cr-amount">下注點數</label>
+            <div class="input-row">
+              <input id="cr-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
+              <button class="chip cchip" type="button" data-cchip="half">½</button>
+              <button class="chip cchip" type="button" data-cchip="double">2×</button>
+              <button class="chip cchip" type="button" data-cchip="max">全押</button>
+            </div>
+          </div>
+          <div class="field">
+            <label id="cr-diff-label">難度</label>
+            <div class="seg-row" role="group" aria-labelledby="cr-diff-label">
+              <button class="chip seg" type="button" data-cdiff="easy">簡單</button>
+              <button class="chip seg" type="button" data-cdiff="mid">中等</button>
+              <button class="chip seg" type="button" data-cdiff="hard">困難</button>
+              <button class="chip seg" type="button" data-cdiff="extreme">極限</button>
+            </div>
+          </div>
+          <button class="chip guess hi step-btn" type="button" id="cr-step" disabled>前進一道<small>—</small></button>
+          <dl class="stats">
+            <div><dt>目前倍率</dt><dd id="cr-mult">—</dd></div>
+            <div><dt>每道過關率</dt><dd id="cr-p">—</dd></div>
+            <div><dt>已橫渡</dt><dd id="cr-pos">—</dd></div>
+          </dl>
+          <button class="go" id="cr-go" type="button" data-mode="bet">開始</button>
+          <p class="msg" id="cr-msg" aria-live="polite">每前進一道倍率就往上，但每一道都可能遇上暗流。見好就收。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>按開始後，小海龜停在最左邊。每按一次「前進一道」就往右渡過一道海流：平安渡過倍率就往上，遇上暗流就被捲走、失去這一注。每渡過一道之後都可以按「領回」拿走「下注 × 目前倍率」，渡完十二道會自動領回。</p>
+      <p>這個遊戲不用選格子，只決定要不要再往前。難度決定每一道的過關率：簡單 92%、中等 85%、困難 75%、極限 60%。渡完十二道的倍率分別是 2.63×、6.82×、30.62×、445.62×。</p>
+      <p>倍率是「0.97 ÷ 過關率的道數次方」，所以不論難度和在第幾道領回，長期期望回報都約 97%。暗流在第幾道出現，在按下開始時就用瀏覽器亂數決定；結束後會用虛線標出來。點數與其他遊戲共用，沒有任何現金價值。</p>
+    </details>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var K = 0.12;                 // multiplier growth: m = e^(K·秒)
+  var BET_MS = 6000, REST_MS = 3200, MIN_BET = 10, START_BALANCE = 1000;
+  var STORE = 'crush-depth-balance';
+  var $ = function (id) { return document.getElementById(id); };
+  var sea = $('sea'), cv = $('cv'), ctx = cv.getContext('2d');
+  var elMult = $('mult'), elSub = $('subline'), elGo = $('go'), elMsg = $('msg');
+  var elBal = $('balance'), elAmt = $('bet-amount'), elAuto = $('auto-out'), elPills = $('pills'), elCrew = $('crew');
+  var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var css = getComputedStyle(document.documentElement);
+  var C = {}; ['abyss', 'sea', 'sea-top', 'line', 'fg', 'muted', 'lamp', 'glow', 'crush', 'panel-2', 'lamp-ink'].forEach(function (k) { C[k] = css.getPropertyValue('--' + k).trim(); });
+
+  var S = { phase: 'betting', phaseEnd: 0, t0: 0, crash: 1, m: 1, crashedAt: 0,
+            balance: START_BALANCE, bet: null, queued: false, history: [], bots: [] };
+  var BOT_NAMES = ['燈籠魚', '老船長', '聲納手', '壓載艙', '潮汐', '珊瑚仔', '七號艇', '浮游生物'];
+  var W = 0, H = 0, lastFrame = 0, snow = [];
+
+  function fmt(n) { return Math.round(n).toLocaleString('zh-TW'); }
+  function fx(m) { return m.toFixed(2); }
+  function rollCrash() { var r = Math.random(); return Math.min(1000, Math.max(1, Math.floor(97 / (1 - r)) / 100)); }
+  function save() { try { localStorage.setItem(STORE, String(S.balance)); } catch (e) {} }
+  function load() { try { var v = parseInt(localStorage.getItem(STORE), 10); if (isFinite(v) && v >= 0) S.balance = v; } catch (e) {} }
+
+  function readAmount() { var v = Math.floor(Number(elAmt.value)); return isFinite(v) ? v : 0; }
+  function readAuto() { var v = Number(elAuto.value); return isFinite(v) && v >= 1.01 ? Math.round(v * 100) / 100 : null; }
+  function say(text, cls) { elMsg.textContent = text; elMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
+  function checkAmount() {
+    var a = readAmount();
+    if (a < MIN_BET) { say('最低下注 ' + MIN_BET + ' 點。', 'lose'); return 0; }
+    if (a > S.balance) { say('餘額不足，請調低下注或重設點數。', 'lose'); return 0; }
+    return a;
+  }
+
+  /* ---------- round flow ---------- */
+  function startBetting(now) {
+    S.phase = 'betting'; S.phaseEnd = now + BET_MS; S.m = 1; S.bet = null;
+    S.crash = rollCrash();
+    S.bots = BOT_NAMES.filter(function () { return Math.random() < 0.7; }).map(function (name) {
+      var stakes = [20, 50, 100, 200, 500];
+      return { name: name, stake: stakes[Math.floor(Math.random() * stakes.length)],
+               target: Math.min(60, Math.max(1.05, Math.round(99 / (1 - Math.random())) / 100)), out: null };
+    });
+    sea.classList.remove('safe');
+    if (S.queued) { S.queued = false; if (!placeBet()) say('預約的下注未成立：餘額不足。', 'lose'); }
+    renderAll();
+  }
+  function startDive(now) {
+    S.phase = 'diving'; S.t0 = now; S.m = 1;
+    if (S.bet) say('下潛中，倍率到了就上浮。');
+    renderAll();
+  }
+  function doCrash(now) {
+    S.phase = 'crashed'; S.m = S.crash; S.crashedAt = now; S.phaseEnd = now + REST_MS;
+    S.history.unshift(S.crash); S.history.length = Math.min(S.history.length, 18);
+    if (S.bet && !S.bet.out) say('艇身在 ' + fx(S.crash) + '× 壓潰，失去 ' + fmt(S.bet.amount) + ' 點。', 'lose');
+    if (!reduceMotion) { sea.classList.remove('shake'); void sea.offsetWidth; sea.classList.add('shake'); }
+    renderAll();
+  }
+  function placeBet() {
+    var a = checkAmount(); if (!a) return false;
+    S.balance -= a; S.bet = { amount: a, auto: readAuto(), out: null }; save();
+    say('已下注 ' + fmt(a) + ' 點' + (S.bet.auto ? '，到 ' + fx(S.bet.auto) + '× 自動上浮。' : '。'));
+    return true;
+  }
+  function cashOut(at) {
+    if (!S.bet || S.bet.out) return;
+    var pay = Math.floor(S.bet.amount * at);
+    S.bet.out = at; S.bet.pay = pay; S.balance += pay; save();
+    sea.classList.add('safe');
+    say('在 ' + fx(at) + '× 上浮，領回 ' + fmt(pay) + ' 點（+' + fmt(pay - S.bet.amount) + '）。', 'win');
+    renderAll();
+  }
+  function mainAction() {
+    if (S.phase === 'betting') {
+      if (S.bet) { S.balance += S.bet.amount; S.bet = null; save(); say('已取消下注。'); }
+      else placeBet();
+    } else if (S.phase === 'diving' && S.bet && !S.bet.out) {
+      cashOut(S.m);
+    } else if (!(S.phase === 'diving' && S.bet)) {
+      if (S.queued) { S.queued = false; say('已取消預約。'); }
+      else if (checkAmount()) { S.queued = true; say('已預約，下一回合自動下注 ' + fmt(readAmount()) + ' 點。'); }
+    }
+    renderAll();
+  }
+
+  /* ---------- DOM ---------- */
+  function renderAll() {
+    sea.dataset.phase = S.phase;
+    elBal.textContent = fmt(S.balance);
+    var locked = !!S.bet && S.phase !== 'crashed';
+    elAmt.disabled = locked; elAuto.disabled = locked;
+    document.querySelectorAll('#view-crash .chip').forEach(function (b) { b.disabled = locked; });
+    renderPills(); renderCrew(); renderGo();
+  }
+  function setGo(mode, html, disabled) {
+    if (elGo.dataset.mode !== mode) elGo.dataset.mode = mode;
+    if (elGo.innerHTML !== html) elGo.innerHTML = html;
+    elGo.disabled = !!disabled;
+  }
+  function renderGo() {
+    if (S.phase === 'betting') {
+      if (S.bet) setGo('cancel', '取消下注<small>已下注 ' + fmt(S.bet.amount) + ' 點</small>');
+      else setGo('bet', '下注<small>' + fmt(readAmount()) + ' 點</small>');
+    } else if (S.phase === 'diving' && S.bet && !S.bet.out) {
+      setGo('surface', '上浮<small>領回 ' + fmt(Math.floor(S.bet.amount * S.m)) + ' 點</small>');
+    } else if (S.phase === 'diving' && S.bet) {
+      setGo('done', '已上浮<small>' + fx(S.bet.out) + '× · ' + fmt(S.bet.pay) + ' 點</small>', true);
+    } else if (S.queued) {
+      setGo('unqueue', '取消預約<small>下一回合 ' + fmt(readAmount()) + ' 點</small>');
+    } else {
+      setGo('queue', '預約下一回合<small>' + fmt(readAmount()) + ' 點</small>');
+    }
+  }
+  function pillClass(v) { return v < 1.5 ? 'low' : v >= 10 ? 'jackpot' : v >= 3 ? 'high' : ''; }
+  function renderPills() {
+    elPills.innerHTML = S.history.map(function (v) { return '<span class="pill ' + pillClass(v) + '">' + fx(v) + '×</span>'; }).join('');
+  }
+  function crewRow(name, stake, out, me) {
+    var state, cls = '';
+    if (out) { state = fx(out) + '× +' + fmt(Math.floor(stake * out) - stake); cls = 'up'; }
+    else if (S.phase === 'crashed') { state = '壓潰'; cls = 'lost'; }
+    else state = S.phase === 'diving' ? '下潛中' : '待命';
+    return '<li' + (me ? ' class="me"' : '') + '><span class="name">' + name + '</span><span class="stake">' + fmt(stake) +
+           '</span><span class="state ' + cls + '">' + state + '</span></li>';
+  }
+  function renderCrew() {
+    var rows = [];
+    if (S.bet) rows.push(crewRow('你', S.bet.amount, S.bet.out, true));
+    S.bots.forEach(function (b) { rows.push(crewRow(b.name, b.stake, b.out, false)); });
+    elCrew.innerHTML = rows.join('') || '<li class="empty">這一趟沒有人下潛。</li>';
+  }
+
+  /* ---------- canvas ---------- */
+  function resize() {
+    var r = sea.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = r.width; H = r.height;
+    cv.width = Math.max(1, Math.round(W * dpr)); cv.height = Math.max(1, Math.round(H * dpr));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function seedSnow() { snow = []; for (var i = 0; i < 70; i++) snow.push({ x: Math.random(), y: Math.random(), r: .6 + Math.random() * 1.6, a: .08 + Math.random() * .25 }); }
+  function niceStep(span) { var steps = [.1, .2, .5, 1, 2, 5, 10, 20, 50, 100, 200, 500]; for (var i = 0; i < steps.length; i++) if (span / steps[i] <= 5) return steps[i]; return 1000; }
+
+  function draw(now, dt) {
+    if (!W) return;
+    var pad = { l: 14, r: 58, t: 26, b: 18 };
+    var t = S.phase === 'betting' ? 0 : Math.log(S.m) / K;
+    var tMax = Math.max(6, t / 0.8), mMax = Math.max(1.8, 1 + (S.m - 1) / 0.76);
+    var X = function (tt) { return pad.l + tt / tMax * (W - pad.l - pad.r); };
+    var Y = function (mm) { return pad.t + (mm - 1) / (mMax - 1) * (H - pad.t - pad.b); };
+
+    // water: darkens as the dive goes deeper
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, C['sea-top']); g.addColorStop(.45, C.sea); g.addColorStop(1, C.abyss);
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    var dark = Math.min(.62, Math.log(S.m) / 5);
+    ctx.globalAlpha = dark; ctx.fillStyle = C.abyss; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
+
+    // marine snow
+    var speed = S.phase === 'diving' ? .05 + Math.min(.12, Math.log(S.m) * .03) : .008;
+    ctx.fillStyle = C.fg;
+    for (var i = 0; i < snow.length; i++) {
+      var p = snow[i];
+      if (!reduceMotion) { p.y -= speed * dt * (0.6 + p.r / 2); p.x -= speed * dt * .5; if (p.y < 0) { p.y += 1; p.x = Math.random(); } if (p.x < 0) p.x += 1; }
+      ctx.globalAlpha = p.a; ctx.beginPath(); ctx.arc(p.x * W, p.y * H, p.r, 0, 6.2832); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // depth lines + labels
+    var step = niceStep(mMax - 1);
+    ctx.font = '600 12px "Chakra Petch", monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (var mm = 1 + step; mm < mMax; mm += step) {
+      var yy = Y(mm);
+      if (yy > H - pad.b) break;
+      ctx.strokeStyle = C.line; ctx.globalAlpha = .7; ctx.lineWidth = 1; ctx.setLineDash([3, 6]);
+      ctx.beginPath(); ctx.moveTo(pad.l, yy); ctx.lineTo(W - pad.r + 6, yy); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1; ctx.fillStyle = C.muted;
+      ctx.fillText((step < 1 ? mm.toFixed(1) : mm.toFixed(0)) + '×', W - 10, yy);
+    }
+    // sea surface
+    ctx.strokeStyle = C.fg; ctx.globalAlpha = .55; ctx.lineWidth = 1.5; ctx.beginPath();
+    for (var x = 0; x <= W; x += 6) { var wy = Y(1) + Math.sin(x / 22 + (reduceMotion ? 0 : now / 600)) * 2.2; if (x) ctx.lineTo(x, wy); else ctx.moveTo(x, wy); }
+    ctx.stroke(); ctx.globalAlpha = 1;
+
+    // dive path
+    var tipX = X(t), tipY = Y(S.m), crashed = S.phase === 'crashed';
+    var bob = S.phase === 'betting' && !reduceMotion ? Math.sin(now / 500) * 2 : 0;
+    if (t > 0) {
+      var col = crashed ? C.crush : C.lamp, n = 48;
+      ctx.beginPath(); ctx.moveTo(X(0), Y(1));
+      for (var j = 1; j <= n; j++) { var tt = t * j / n; ctx.lineTo(X(tt), Y(Math.exp(K * tt))); }
+      ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      ctx.shadowColor = col; ctx.shadowBlur = 12; ctx.stroke(); ctx.shadowBlur = 0;
+      ctx.lineTo(tipX, Y(1)); ctx.closePath(); ctx.globalAlpha = .1; ctx.fillStyle = col; ctx.fill(); ctx.globalAlpha = 1;
+    }
+    // your surfacing mark
+    if (S.bet && S.bet.out && S.phase !== 'betting') {
+      var ot = Math.log(S.bet.out) / K, ox = X(ot), oy = Y(S.bet.out);
+      ctx.fillStyle = C.glow; ctx.beginPath(); ctx.arc(ox, oy, 5, 0, 6.2832); ctx.fill();
+      ctx.strokeStyle = C.glow; ctx.globalAlpha = .5; ctx.setLineDash([2, 4]); ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox, Y(1)); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1; ctx.textAlign = 'left'; ctx.fillText('你 ' + fx(S.bet.out) + '×', ox + 9, oy - 9);
+    }
+
+    if (crashed) {
+      var e = (now - S.crashedAt) / 1000;
+      for (var k = 0; k < 3; k++) {
+        var rr = (e * 90 - k * 22); if (rr <= 0) continue;
+        ctx.strokeStyle = C.crush; ctx.globalAlpha = Math.max(0, .8 - rr / 140); ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(tipX, tipY, reduceMotion ? 20 + k * 14 : rr, 0, 6.2832); ctx.stroke();
+      }
+      ctx.fillStyle = C.fg;
+      for (var b = 0; b < 12; b++) {
+        var bx = tipX + Math.sin(b * 2.4) * (10 + b * 2.2), by = tipY - (reduceMotion ? 20 + b * 6 : e * (40 + b * 9));
+        if (by < Y(1)) continue;
+        ctx.globalAlpha = .5; ctx.beginPath(); ctx.arc(bx, by, 1.5 + (b % 3), 0, 6.2832); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    } else {
+      // submersible, nose along the dive path
+      var slope = t > 0 ? Math.atan2((K * S.m) * (H - pad.t - pad.b) / (mMax - 1), (W - pad.l - pad.r) / tMax) : 0;
+      ctx.save(); ctx.translate(tipX + (t > 0 ? 0 : 26), tipY + bob + (t > 0 ? 0 : 10)); ctx.rotate(slope);
+      var beam = ctx.createLinearGradient(14, 0, 110, 0);
+      beam.addColorStop(0, 'rgba(98,230,210,.38)'); beam.addColorStop(1, 'rgba(98,230,210,0)');
+      ctx.fillStyle = beam; ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(110, -30); ctx.lineTo(110, 30); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = C.lamp;
+      ctx.beginPath(); ctx.ellipse(-4, 0, 20, 9, 0, 0, 6.2832); ctx.fill();          // hull
+      ctx.fillRect(-10, -15, 11, 8);                                                  // sail
+      ctx.beginPath(); ctx.moveTo(-22, 0); ctx.lineTo(-31, -8); ctx.lineTo(-31, 8); ctx.closePath(); ctx.fill(); // tail
+      ctx.fillStyle = C.abyss; ctx.beginPath(); ctx.arc(6, -1, 3.6, 0, 6.2832); ctx.fill();
+      ctx.fillStyle = C.glow; ctx.beginPath(); ctx.arc(6, -1, 2, 0, 6.2832); ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  /* ---------- loop ---------- */
+  function frame(now) {
+    var dt = Math.min(.1, (now - (lastFrame || now)) / 1000); lastFrame = now;
+    if (S.phase === 'betting') {
+      var left = S.phaseEnd - now;
+      if (left <= 0) startDive(now);
+      else { elMult.innerHTML = '1.00<small>×</small>'; elSub.textContent = '下注中 · ' + (left / 1000).toFixed(1) + ' 秒後下潛'; }
+    }
+    if (S.phase === 'diving') {
+      var m = Math.exp(K * (now - S.t0) / 1000), hit = m >= S.crash, lim = hit ? S.crash : m;
+      var changed = false;
+      if (S.bet && !S.bet.out && S.bet.auto && S.bet.auto <= lim) cashOut(S.bet.auto);
+      S.bots.forEach(function (b) { if (!b.out && b.target <= lim) { b.out = b.target; changed = true; } });
+      S.m = lim;
+      if (hit) doCrash(now);
+      else {
+        if (changed) renderCrew();
+        renderGo();
+        elMult.innerHTML = fx(S.m) + '<small>×</small>';
+        elSub.textContent = '深度 ' + fmt((S.m - 1) * 1000) + ' m';
+      }
+    }
+    if (S.phase === 'crashed') {
+      elMult.innerHTML = fx(S.crash) + '<small>×</small>';
+      elSub.textContent = '壓潰於 ' + fmt((S.crash - 1) * 1000) + ' m';
+      if (now >= S.phaseEnd) startBetting(now);
+    }
+    draw(now, dt);
+    pkTick(now);
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- wiring ---------- */
+  elGo.addEventListener('click', mainAction);
+  document.addEventListener('keydown', function (e) {
+    if (e.code !== 'Space' || e.repeat) return;
+    var tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'summary' || tag === 'button' || tag === 'a' || $('view-crash').hidden) return;
+    e.preventDefault();
+    if (!elGo.disabled) mainAction();
+  });
+  elAmt.addEventListener('input', renderGo);
+  document.querySelectorAll('[data-chip]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var a = readAmount() || MIN_BET, k = b.dataset.chip;
+      a = k === 'half' ? a / 2 : k === 'double' ? a * 2 : S.balance;
+      elAmt.value = Math.max(MIN_BET, Math.min(Math.floor(a), Math.max(MIN_BET, S.balance)));
+      renderGo();
+    });
+  });
+  document.querySelectorAll('[data-auto]').forEach(function (b) {
+    b.addEventListener('click', function () { elAuto.value = Number(b.dataset.auto).toFixed(2); });
+  });
+  $('reset').addEventListener('click', function () {
+    var note = function (t) { say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
+    if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.pending || WL.pending || TW.active || CR.active) { note('這一注結束後才能重設點數。'); return; }
+    S.balance = START_BALANCE; save(); note('點數已重設為 1,000。'); renderAll(); renderMines();
+  });
+
+  /* ---------- Mines ---------- */
+  var N = 25;
+  var M = { active: false, over: false, bet: 0, mines: 3, layout: [], open: [], picks: 0, hit: -1 };
+  var elBoard = $('board'), elMGo = $('mines-go'), elMMsg = $('mines-msg'), elMAmt = $('mines-amount'), elMCount = $('mines-count');
+  var tiles = [];
+  var SVG_PEARL = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="currentColor"/><circle cx="9.2" cy="9.2" r="2.4" fill="#fff" opacity=".75"/></svg>';
+  var SVG_MINE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="12" r="6.5" fill="currentColor"/></svg>';
+
+  function minesMult(k, m) { var x = 0.97; for (var i = 0; i < k; i++) x *= (N - i) / (N - m - i); return Math.floor(x * 100) / 100; }
+  function readMines() { var v = Math.floor(Number(elMCount.value)); return isFinite(v) ? Math.max(1, Math.min(N - 1, v)) : 3; }
+  function readMAmount() { var v = Math.floor(Number(elMAmt.value)); return isFinite(v) ? v : 0; }
+  function mSay(text, cls) { elMMsg.textContent = text; elMMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
+  function syncBalance() { elBal.textContent = fmt(S.balance); save(); renderGo(); }
+
+  function buildBoard() {
+    for (var i = 0; i < N; i++) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'tile';
+      b.addEventListener('click', pick.bind(null, i));
+      elBoard.appendChild(b); tiles.push(b);
+    }
+  }
+  function renderMines() {
+    var m = M.active || M.over ? M.mines : readMines();
+    tiles.forEach(function (b, i) {
+      var pos = '第 ' + (Math.floor(i / 5) + 1) + ' 列第 ' + (i % 5 + 1) + ' 格', cls = 'tile', html = '', label = pos + '，未翻開';
+      var shown = M.open[i] || M.over;
+      if (shown && M.layout[i]) { cls += ' mine' + (i === M.hit ? ' hit' : ''); html = SVG_MINE; label = pos + '，水雷'; }
+      else if (shown) { cls += ' gem'; html = SVG_PEARL; label = pos + '，珍珠'; }
+      if (M.over && !M.open[i]) cls += ' dim';
+      if (!M.active && !M.over) cls += ' idle';
+      b.className = cls; b.innerHTML = html; b.setAttribute('aria-label', label);
+      b.disabled = !M.active || !!M.open[i];
+    });
+    var safeLeft = N - m - M.picks;
+    $('mines-mult').textContent = M.picks > 0 ? fx(minesMult(M.picks, m)) + '×' : '—';
+    $('mines-next').textContent = M.over || safeLeft <= 0 ? '—' : fx(minesMult(M.picks + 1, m)) + '×';
+    $('mines-left').textContent = M.over ? '—' : String(safeLeft);
+    elMAmt.disabled = M.active; elMCount.disabled = M.active;
+    document.querySelectorAll('.mchip').forEach(function (b) { b.disabled = M.active; });
+    if (!M.active) { elMGo.dataset.mode = 'bet'; elMGo.disabled = false; elMGo.innerHTML = (M.over ? '再來一局' : '開始') + '<small>下注 ' + fmt(readMAmount()) + ' 點 · ' + readMines() + ' 顆水雷</small>'; }
+    else if (M.picks === 0) { elMGo.dataset.mode = 'done'; elMGo.disabled = true; elMGo.innerHTML = '先翻開一格<small>第一格 ' + fx(minesMult(1, m)) + '×</small>'; }
+    else { elMGo.dataset.mode = 'surface'; elMGo.disabled = false; elMGo.innerHTML = '領回<small>' + fmt(Math.floor(M.bet * minesMult(M.picks, m))) + ' 點 · ' + fx(minesMult(M.picks, m)) + '×</small>'; }
+  }
+  function startMines() {
+    var a = readMAmount();
+    if (a < MIN_BET) { mSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
+    if (a > S.balance) { mSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    var m = readMines(); elMCount.value = m;
+    var cells = []; for (var i = 0; i < N; i++) cells.push(i < m);
+    for (var j = N - 1; j > 0; j--) { var r = Math.floor(Math.random() * (j + 1)), tmp = cells[j]; cells[j] = cells[r]; cells[r] = tmp; }
+    S.balance -= a;
+    M.active = true; M.over = false; M.bet = a; M.mines = m; M.layout = cells; M.open = []; M.picks = 0; M.hit = -1;
+    mSay('已下注 ' + fmt(a) + ' 點，海域裡有 ' + m + ' 顆水雷。');
+    syncBalance(); renderMines();
+  }
+  function cashMines() {
+    var mult = minesMult(M.picks, M.mines), pay = Math.floor(M.bet * mult);
+    S.balance += pay; M.active = false; M.over = true;
+    mSay('在 ' + fx(mult) + '× 領回 ' + fmt(pay) + ' 點（+' + fmt(pay - M.bet) + '）。', 'win');
+    syncBalance(); renderMines();
+  }
+  function pick(i) {
+    if (!M.active || M.open[i]) return;
+    M.open[i] = true;
+    if (M.layout[i]) {
+      M.active = false; M.over = true; M.hit = i;
+      mSay('翻到水雷，失去 ' + fmt(M.bet) + ' 點。', 'lose');
+      renderMines(); return;
+    }
+    M.picks++;
+    if (M.picks === N - M.mines) { cashMines(); return; }
+    mSay('珍珠！目前 ' + fx(minesMult(M.picks, M.mines)) + '×，可以領回或繼續翻。');
+    renderMines();
+  }
+  elMGo.addEventListener('click', function () { if (M.active) { if (M.picks > 0) cashMines(); } else startMines(); });
+  elMAmt.addEventListener('input', renderMines);
+  elMCount.addEventListener('input', renderMines);
+  elMCount.addEventListener('change', function () { elMCount.value = readMines(); renderMines(); });
+  document.querySelectorAll('[data-mchip]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var a = readMAmount() || MIN_BET, k = b.dataset.mchip;
+      a = k === 'half' ? a / 2 : k === 'double' ? a * 2 : S.balance;
+      elMAmt.value = Math.max(MIN_BET, Math.min(Math.floor(a), Math.max(MIN_BET, S.balance)));
+      renderMines();
+    });
+  });
+  document.querySelectorAll('[data-mcount]').forEach(function (b) {
+    b.addEventListener('click', function () { elMCount.value = b.dataset.mcount; renderMines(); });
+  });
+
+  /* ---------- Plinko ---------- */
+  var RISK = { low: { c: 0.5, p: 2 }, mid: { c: 0.4, p: 4 }, high: { c: 0.2, p: 6 } };
+  var P = { rows: 12, risk: 'mid', table: [], rtp: 0, balls: [], pegHit: {}, binHit: [], last: [], W: 0, H: 0 };
+  var pk = $('pk'), pctx = pk.getContext('2d'), pkWrap = $('pk-wrap'), elPGo = $('pk-go'), elPMsg = $('pk-msg'), elPAmt = $('pk-amount');
+  var MAX_BALLS = 15;
+
+  function pSay(text, cls) { elPMsg.textContent = text; elPMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
+  function readPAmount() { var v = Math.floor(Number(elPAmt.value)); return isFinite(v) ? v : 0; }
+  function pkLabel(m) { var s = String(m); return (s.charAt(0) === '0' && s.length > 1 ? s.slice(1) : s) + '×'; }
+  // Payout table: centre pays c, edges rise as distance^p, scaled so the expected return is 97% before rounding.
+  function pkSetup() {
+    var n = P.rows, cfg = RISK[P.risk], probs = [], comb = 1, e = 0, i;
+    var dist = function (i) { return Math.pow(Math.abs(i - n / 2) / (n / 2), cfg.p); };
+    for (i = 0; i <= n; i++) { probs.push(comb / Math.pow(2, n)); comb = comb * (n - i) / (i + 1); }
+    for (i = 0; i <= n; i++) e += probs[i] * dist(i);
+    var s = (0.97 - cfg.c) / e, rtp = 0;
+    P.table = probs.map(function (_, i) {
+      var m = cfg.c + s * dist(i);
+      return m >= 10 ? Math.round(m) : m >= 1 ? Math.round(m * 10) / 10 : Math.round(m * 100) / 100;
+    });
+    for (i = 0; i <= n; i++) rtp += probs[i] * P.table[i];
+    P.rtp = rtp; P.pegHit = {}; P.binHit = [];
+  }
+  function pkUI() {
+    var busy = P.balls.length > 0;
+    document.querySelectorAll('[data-risk]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.risk === P.risk)); b.disabled = busy; });
+    document.querySelectorAll('[data-rows]').forEach(function (b) { b.setAttribute('aria-pressed', String(Number(b.dataset.rows) === P.rows)); b.disabled = busy; });
+    $('pk-max').textContent = P.table[0] + '×';
+    $('pk-mid').textContent = P.table[P.rows / 2] + '×';
+    $('pk-rtp').textContent = (P.rtp * 100).toFixed(1) + '%';
+    $('pk-last').innerHTML = P.last.map(function (m) { return '<span class="pill ' + (m < 1 ? 'low' : m >= 10 ? 'jackpot' : m >= 2 ? 'high' : '') + '">' + m + '×</span>'; }).join('') ||
+      '<span class="pill">尚未投珠</span>';
+    elPGo.innerHTML = '投下珍珠<small>下注 ' + fmt(readPAmount()) + ' 點</small>';
+  }
+  function pkDrop() {
+    var a = readPAmount();
+    if (a < MIN_BET) { pSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
+    if (a > S.balance) { pSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    if (P.balls.length >= MAX_BALLS) { pSay('水裡已經有 ' + MAX_BALLS + ' 顆珍珠，等它們落底再投。'); return; }
+    var k = [], rights = 0;
+    for (var r = 0; r < P.rows; r++) { k.push(rights); if (Math.random() < 0.5) rights++; }
+    S.balance -= a;
+    P.balls.push({ bet: a, k: k, bin: rights, t0: performance.now(), seg: 190 - P.rows * 6, at: 0 });
+    syncBalance(); pkUI();
+  }
+  function pkLand(b, now) {
+    var m = P.table[b.bin], pay = Math.floor(b.bet * m);
+    S.balance += pay; P.binHit[b.bin] = now;
+    P.last.unshift(m); P.last.length = Math.min(P.last.length, 8);
+    pSay('落在 ' + m + '×，領回 ' + fmt(pay) + ' 點（' + (pay >= b.bet ? '+' : '−') + fmt(Math.abs(pay - b.bet)) + '）。', pay >= b.bet ? 'win' : 'lose');
+  }
+  function pkResize() {
+    var r = pkWrap.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    P.W = r.width; P.H = r.height;
+    if (!P.W) return;
+    pk.width = Math.round(P.W * dpr); pk.height = Math.round(P.H * dpr);
+    pctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function pkGeo() {
+    var n = P.rows, binH = Math.max(20, Math.min(30, P.H * 0.07)), binsY = P.H - binH - 10, top = 20;
+    var dx = (P.W - 16) / (n + 2), dy = (binsY - 12 - top) / n;
+    return { n: n, dx: dx, dy: dy, cx: P.W / 2, top: top, binsY: binsY, binH: binH,
+             pegR: Math.max(1.8, Math.min(4, dx * 0.12)), ballR: Math.max(3.5, Math.min(8, dx * 0.28)) };
+  }
+  // idx 0 = release point, 1..n = resting on the peg of row idx-1, n+1 = inside the bin
+  function pkPoint(g, b, idx) {
+    if (idx <= 0) return { x: g.cx, y: g.top - g.ballR };
+    if (idx <= g.n) { var r = idx - 1; return { x: g.cx + (b.k[r] - r / 2) * g.dx, y: g.top + (r + 0.5) * g.dy - g.pegR - g.ballR }; }
+    return { x: g.cx + (b.bin - g.n / 2) * g.dx, y: g.binsY + g.binH / 2 };
+  }
+  function pkTick(now) {
+    var landed = false;
+    P.balls.forEach(function (b) {
+      var n = b.k.length, idx = Math.floor((now - b.t0) / b.seg);
+      while (b.at < Math.min(idx, n)) { b.at++; P.pegHit[(b.at - 1) + '-' + (b.k[b.at - 1] + 1)] = now; }
+      if (idx >= n + 1) { pkLand(b, now); b.done = true; landed = true; }
+    });
+    if (landed) { P.balls = P.balls.filter(function (b) { return !b.done; }); syncBalance(); pkUI(); }
+    if (P.W && !$('view-plinko').hidden) pkDraw(now, pkGeo());
+  }
+  function pkDraw(now, g) {
+    var c = pctx, r, j, i;
+    c.clearRect(0, 0, P.W, P.H);
+    for (r = 0; r < g.n; r++) {
+      for (j = 0; j <= r + 2; j++) {
+        var px = g.cx + (j - (r + 2) / 2) * g.dx, py = g.top + (r + 0.5) * g.dy;
+        var age = now - (P.pegHit[r + '-' + j] || -1e9), hot = age < 260;
+        c.globalAlpha = hot ? 1 : .7; c.fillStyle = hot ? C.glow : C.muted;
+        c.beginPath(); c.arc(px, py, g.pegR * (hot ? 1.7 - age / 370 : 1), 0, 6.2832); c.fill();
+      }
+    }
+    c.globalAlpha = 1;
+    c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.font = '600 ' + Math.max(7, Math.min(13, g.dx * 0.46)).toFixed(1) + 'px "Chakra Petch", monospace';
+    for (i = 0; i <= g.n; i++) {
+      var m = P.table[i], bx = g.cx + (i - g.n / 2) * g.dx, w = g.dx - 3;
+      var bump = now - (P.binHit[i] || -1e9) < 180 ? 4 : 0, by = g.binsY + bump;
+      var fill = m >= 10 ? C.lamp : m >= 2 ? C.lamp : m >= 1 ? C.glow : C['panel-2'];
+      c.globalAlpha = m >= 10 ? 1 : m >= 2 ? .28 : m >= 1 ? .2 : 1; c.fillStyle = fill;
+      c.beginPath();
+      if (c.roundRect) c.roundRect(bx - w / 2, by, w, g.binH, 4); else c.rect(bx - w / 2, by, w, g.binH);
+      c.fill(); c.globalAlpha = 1;
+      c.fillStyle = m >= 10 ? C['lamp-ink'] : m >= 2 ? C.lamp : m >= 1 ? C.glow : C.muted;
+      c.fillText(pkLabel(m).replace('×', g.dx < 26 ? '' : '×'), bx, by + g.binH / 2 + 1);
+    }
+    P.balls.forEach(function (b) {
+      var e = Math.max(0, (now - b.t0) / b.seg), idx = Math.min(Math.floor(e), g.n), t = Math.min(1, e - idx);
+      var A = pkPoint(g, b, idx), B = pkPoint(g, b, idx + 1);
+      var x = A.x + (B.x - A.x) * t, y = A.y + (B.y - A.y) * t * t - (idx > 0 ? g.dy * 0.22 * Math.sin(Math.PI * t) : 0);
+      c.fillStyle = C.fg; c.shadowColor = C.glow; c.shadowBlur = 10;
+      c.beginPath(); c.arc(x, y, g.ballR, 0, 6.2832); c.fill(); c.shadowBlur = 0;
+      c.fillStyle = C.glow; c.globalAlpha = .55; c.beginPath(); c.arc(x + g.ballR * .25, y + g.ballR * .25, g.ballR * .55, 0, 6.2832); c.fill(); c.globalAlpha = 1;
+    });
+  }
+  elPGo.addEventListener('click', pkDrop);
+  elPAmt.addEventListener('input', pkUI);
+  document.querySelectorAll('[data-pchip]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var a = readPAmount() || MIN_BET;
+      a = b.dataset.pchip === 'half' ? a / 2 : a * 2;
+      elPAmt.value = Math.max(MIN_BET, Math.min(Math.floor(a), Math.max(MIN_BET, S.balance)));
+      pkUI();
+    });
+  });
+  document.querySelectorAll('[data-risk]').forEach(function (b) {
+    b.addEventListener('click', function () { if (P.balls.length) return; P.risk = b.dataset.risk; pkSetup(); pkUI(); });
+  });
+  document.querySelectorAll('[data-rows]').forEach(function (b) {
+    b.addEventListener('click', function () { if (P.balls.length) return; P.rows = Number(b.dataset.rows); pkSetup(); pkUI(); });
+  });
+  if (window.ResizeObserver) new ResizeObserver(pkResize).observe(pkWrap); else window.addEventListener('resize', pkResize);
+
+  /* ---------- Merge ---------- */
+  var MG_FEE = 20, BEST = 'pearl-merge-best';
+  var G = { grid: [0, 0, 2, 0, 0, 4, 2, 0, 8, 4, 0, 0, 32, 16, 2, 0], score: 0, best: 0, active: false, over: false, fresh: {} };
+  var elMg = $('mg'), elGGo = $('mg-go'), elGMsg = $('mg-msg'), cells = [];
+  try { var gb = parseInt(localStorage.getItem(BEST), 10); if (isFinite(gb) && gb > 0) G.best = gb; } catch (e) {}
+
+  function gSay(text, cls) { elGMsg.textContent = text; elGMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
+  function mgTier(v) { var l = Math.round(Math.log(v) / Math.LN2); return l <= 2 ? 't1' : l <= 5 ? 't2' : l <= 8 ? 't3' : l <= 10 ? 't4' : 't5'; }
+  function mgBuild() { for (var i = 0; i < 16; i++) { var c = document.createElement('div'); c.className = 'cell'; elMg.appendChild(c); cells.push(c); } }
+  function mgRender() {
+    var max = 0;
+    cells.forEach(function (c, i) {
+      var v = G.grid[i]; if (v > max) max = v;
+      c.innerHTML = v ? '<span class="orb ' + mgTier(v) + (v >= 1000 ? ' d4' : v >= 100 ? ' d3' : '') + (G.fresh[i] ? ' new' : '') + '">' + v + '</span>' : '';
+    });
+    G.fresh = {};
+    elMg.classList.toggle('idle', !G.active);
+    $('mg-score').textContent = fmt(G.score);
+    $('mg-max').textContent = G.active || G.over ? String(max) : '—';
+    $('mg-best').textContent = fmt(G.best);
+    document.querySelectorAll('[data-dir]').forEach(function (b) { b.disabled = !G.active; });
+    if (G.active) { elGGo.dataset.mode = 'cancel'; elGGo.innerHTML = '放棄重開<small>再扣 ' + MG_FEE + ' 點</small>'; }
+    else { elGGo.dataset.mode = 'bet'; elGGo.innerHTML = (G.over ? '再玩一局' : '開始一局') + '<small>扣 ' + MG_FEE + ' 點</small>'; }
+  }
+  function mgSpawn() {
+    var empty = []; G.grid.forEach(function (v, i) { if (!v) empty.push(i); });
+    if (!empty.length) return;
+    var i = empty[Math.floor(Math.random() * empty.length)];
+    G.grid[i] = Math.random() < 0.9 ? 2 : 4; G.fresh[i] = 1;
+  }
+  function mgCanMove() {
+    for (var i = 0; i < 16; i++) {
+      if (!G.grid[i]) return true;
+      if (i % 4 < 3 && G.grid[i] === G.grid[i + 1]) return true;
+      if (i < 12 && G.grid[i] === G.grid[i + 4]) return true;
+    }
+    return false;
+  }
+  function mgStart() {
+    if (S.balance < MG_FEE) { gSay('餘額不足 ' + MG_FEE + ' 點，請先重設點數。', 'lose'); return; }
+    S.balance -= MG_FEE;
+    G.grid = []; for (var i = 0; i < 16; i++) G.grid.push(0);
+    G.score = 0; G.active = true; G.over = false; G.fresh = {};
+    mgSpawn(); mgSpawn();
+    gSay('已扣 ' + MG_FEE + ' 點，開始養珠。');
+    syncBalance(); mgRender();
+  }
+  function mgMove(dir) {
+    if (!G.active) return;
+    var moved = false, before = Math.max.apply(null, G.grid);
+    for (var a = 0; a < 4; a++) {
+      var idxs = [], b;
+      for (b = 0; b < 4; b++) idxs.push(dir === 'left' ? a * 4 + b : dir === 'right' ? a * 4 + 3 - b : dir === 'up' ? b * 4 + a : (3 - b) * 4 + a);
+      var vals = idxs.map(function (i) { return G.grid[i]; }).filter(Boolean), out = [], merged = {};
+      for (b = 0; b < vals.length; b++) {
+        if (vals[b] === vals[b + 1]) { out.push(vals[b] * 2); G.score += vals[b] * 2; merged[out.length - 1] = 1; b++; }
+        else out.push(vals[b]);
+      }
+      while (out.length < 4) out.push(0);
+      idxs.forEach(function (gi, p) { if (G.grid[gi] !== out[p]) moved = true; G.grid[gi] = out[p]; if (merged[p]) G.fresh[gi] = 1; });
+    }
+    if (!moved) { G.fresh = {}; return; }
+    mgSpawn();
+    if (G.score > G.best) { G.best = G.score; try { localStorage.setItem(BEST, String(G.best)); } catch (e) {} }
+    var max = Math.max.apply(null, G.grid);
+    if (!mgCanMove()) { G.active = false; G.over = true; gSay('盤面滿了，這一局結束：' + fmt(G.score) + ' 分，最大珍珠 ' + max + '。', 'lose'); }
+    else if (max > before && max >= 128) gSay('養出 ' + max + ' 的珍珠了！', 'win');
+    mgRender();
+  }
+  elGGo.addEventListener('click', mgStart);
+  document.querySelectorAll('[data-dir]').forEach(function (b) { b.addEventListener('click', function () { mgMove(b.dataset.dir); }); });
+  document.addEventListener('keydown', function (e) {
+    if ($('view-merge').hidden || !G.active || e.metaKey || e.ctrlKey || e.altKey) return;
+    if ((e.target.tagName || '').toLowerCase() === 'input') return;
+    var map = { ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down', KeyA: 'left', KeyD: 'right', KeyW: 'up', KeyS: 'down' };
+    var dir = map[e.code]; if (!dir) return;
+    e.preventDefault(); mgMove(dir);
+  });
+  var swipe = null;
+  elMg.addEventListener('pointerdown', function (e) { swipe = { x: e.clientX, y: e.clientY }; });
+  elMg.addEventListener('pointerup', function (e) {
+    if (!swipe) return;
+    var dx = e.clientX - swipe.x, dy = e.clientY - swipe.y; swipe = null;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+    mgMove(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
+  });
+  elMg.addEventListener('pointercancel', function () { swipe = null; });
+
+  /* ---------- Dice ---------- */
+  var D = { mode: 'under', target: 50, pending: 0, last: [] };
+  var elDGo = $('dc-go'), elDMsg = $('dc-msg'), elDAmt = $('dc-amount'), elDTarget = $('dc-target'), elDStage = $('dc-stage'), elDMarker = $('dc-marker');
+  function dSay(text, cls) { elDMsg.textContent = text; elDMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
+  function readDAmount() { var v = Math.floor(Number(elDAmt.value)); return isFinite(v) ? v : 0; }
+  function dChance() { return D.mode === 'under' ? D.target : 100 - D.target; }
+  function dMult() { return Math.floor(9700 / dChance()) / 100; }
+  function dUI() {
+    var lo = D.mode === 'under' ? 2 : 5, hi = D.mode === 'under' ? 95 : 98, busy = D.pending > 0;
+    D.target = Math.max(lo, Math.min(hi, D.target));
+    elDTarget.min = lo; elDTarget.max = hi; elDTarget.value = D.target; elDTarget.disabled = busy;
+    $('dc-target-out').textContent = D.target;
+    var win = 'var(--glow)', lose = 'var(--crush)';
+    $('dc-zones').style.background = 'linear-gradient(90deg, ' + (D.mode === 'under' ? win : lose) + ' 0 ' + D.target + '%, ' + (D.mode === 'under' ? lose : win) + ' ' + D.target + '% 100%)';
+    $('dc-under').textContent = '低於 ' + D.target; $('dc-over').textContent = D.target + ' 以上';
+    document.querySelectorAll('[data-dmode]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.dmode === D.mode)); b.disabled = busy; });
+    document.querySelectorAll('.dchip').forEach(function (b) { b.disabled = busy; });
+    elDAmt.disabled = busy;
+    $('dc-chance').textContent = dChance() + '%';
+    $('dc-mult').textContent = fx(dMult()) + '×';
+    $('dc-win').textContent = fmt(Math.floor(readDAmount() * dMult()));
+    $('dc-last').innerHTML = D.last.map(function (r) { return '<span class="pill ' + (r.win ? 'high' : 'low') + '">' + r.roll.toFixed(2) + '</span>'; }).join('') || '<span class="pill">尚未發出聲納</span>';
+    elDGo.disabled = busy;
+    elDGo.innerHTML = busy ? '等待回波…' : '發出聲納<small>下注 ' + fmt(readDAmount()) + ' 點</small>';
+  }
+  function dRoll() {
+    if (D.pending) return;
+    var a = readDAmount();
+    if (a < MIN_BET) { dSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
+    if (a > S.balance) { dSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    var roll = Math.floor(Math.random() * 10000) / 100;
+    var win = D.mode === 'under' ? roll < D.target : roll >= D.target, mult = dMult(), mode = D.mode, target = D.target;
+    S.balance -= a; D.pending = a;
+    elDStage.classList.remove('win', 'lose');
+    $('dc-result').textContent = '··.··'; $('dc-sub').textContent = '聲納發出，等待回波';
+    elDMarker.hidden = false; void elDMarker.offsetWidth; elDMarker.style.left = roll + '%';
+    syncBalance(); dUI();
+    setTimeout(function () {
+      var pay = win ? Math.floor(a * mult) : 0;
+      S.balance += pay; D.pending = 0;
+      D.last.unshift({ roll: roll, win: win }); D.last.length = Math.min(D.last.length, 10);
+      $('dc-result').textContent = roll.toFixed(2);
+      $('dc-sub').textContent = (mode === 'under' ? '猜低於 ' + target : '猜 ' + target + ' 以上') + (win ? ' · 猜中' : ' · 沒中');
+      elDStage.classList.add(win ? 'win' : 'lose');
+      if (win) dSay('讀數 ' + roll.toFixed(2) + '，猜中！以 ' + fx(mult) + '× 領回 ' + fmt(pay) + ' 點（+' + fmt(pay - a) + '）。', 'win');
+      else dSay('讀數 ' + roll.toFixed(2) + '，沒猜中，失去 ' + fmt(a) + ' 點。', 'lose');
+      syncBalance(); dUI();
+    }, reduceMotion ? 0 : 480);
+  }
+  elDGo.addEventListener('click', dRoll);
+  elDAmt.addEventListener('input', dUI);
+  elDTarget.addEventListener('input', function () { D.target = Number(elDTarget.value); dUI(); });
+  document.querySelectorAll('[data-dmode]').forEach(function (b) {
+    b.addEventListener('click', function () { if (D.pending) return; D.mode = b.dataset.dmode; dUI(); });
+  });
+  document.querySelectorAll('[data-dchip]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var a = readDAmount() || MIN_BET, k = b.dataset.dchip;
+      a = k === 'half' ? a / 2 : k === 'double' ? a * 2 : S.balance;
+      elDAmt.value = Math.max(MIN_BET, Math.min(Math.floor(a), Math.max(MIN_BET, S.balance)));
+      dUI();
+    });
+  });
+
+  /* ---------- Limbo ---------- */
+  var L = { pending: 0, last: [] };
+  var elLGo = $('lb-go'), elLMsg = $('lb-msg'), elLAmt = $('lb-amount'), elLTarget = $('lb-target'), elLStage = $('lb-stage'), elLFill = $('lb-fill'), elLResult = $('lb-result');
+  function lSay(text, cls) { elLMsg.textContent = text; elLMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
+  function readLAmount() { var v = Math.floor(Number(elLAmt.value)); return isFinite(v) ? v : 0; }
+  function readLTarget() { var v = Number(elLTarget.value); return isFinite(v) ? Math.round(v * 100) / 100 : 0; }
+  function lUI() {
+    var t = readLTarget(), ok = t >= 1.01 && t <= 1000, busy = L.pending > 0;
+    $('lb-chance').textContent = ok ? (97 / t).toFixed(2) + '%' : '—';
+    $('lb-mult').textContent = ok ? fx(t) + '×' : '—';
+    $('lb-win').textContent = ok ? fmt(Math.floor(readLAmount() * t)) : '—';
+    if (!busy) $('lb-tlabel').textContent = ok ? '目標 ' + fx(t) + '×' : '目標 —';
+    $('lb-last').innerHTML = L.last.map(function (r) { return '<span class="pill ' + (r.win ? 'high' : 'low') + '">' + fx(r.result) + '×</span>'; }).join('') || '<span class="pill">尚未放下探測錘</span>';
+    elLAmt.disabled = busy; elLTarget.disabled = busy;
+    document.querySelectorAll('.lchip').forEach(function (b) { b.disabled = busy; });
+    elLGo.disabled = busy;
+    elLGo.innerHTML = busy ? '下沉中…' : '放下探測錘<small>下注 ' + fmt(readLAmount()) + ' 點</small>';
+  }
+  function lRoll() {
+    if (L.pending) return;
+    var a = readLAmount(), t = readLTarget();
+    if (a < MIN_BET) { lSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
+    if (a > S.balance) { lSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    if (t < 1.01 || t > 1000) { lSay('目標倍率要在 1.01 到 1000 之間。', 'lose'); return; }
+    elLTarget.value = fx(t);
+    var result = rollCrash(), win = result >= t, dur = reduceMotion ? 0 : 520, t0 = performance.now();
+    S.balance -= a; L.pending = a;
+    elLStage.classList.remove('win', 'lose');
+    $('lb-sub').textContent = '探測錘下沉中';
+    elLFill.style.transition = 'none'; elLFill.style.width = '0'; void elLFill.offsetWidth; elLFill.style.transition = '';
+    elLFill.style.width = Math.max(1.5, Math.min(100, 70 * Math.log(result) / Math.log(t))) + '%';
+    syncBalance(); lUI();
+    (function step(now) {
+      if (!L.pending || !dur) return;
+      var p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      elLResult.innerHTML = fx(Math.exp(Math.log(result) * e)) + '<small>×</small>';
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+    setTimeout(function () {
+      var pay = win ? Math.floor(a * t) : 0;
+      S.balance += pay; L.pending = 0;
+      L.last.unshift({ result: result, win: win }); L.last.length = Math.min(L.last.length, 10);
+      elLResult.innerHTML = fx(result) + '<small>×</small>';
+      $('lb-sub').textContent = '目標 ' + fx(t) + '× · ' + (win ? '達標' : '沒到');
+      elLStage.classList.add(win ? 'win' : 'lose');
+      if (win) lSay('沉到 ' + fx(result) + '×，達到目標！以 ' + fx(t) + '× 領回 ' + fmt(pay) + ' 點（+' + fmt(pay - a) + '）。', 'win');
+      else lSay('只沉到 ' + fx(result) + '×，沒到 ' + fx(t) + '×，失去 ' + fmt(a) + ' 點。', 'lose');
+      syncBalance(); lUI();
+    }, dur + 60);
+  }
+  elLGo.addEventListener('click', lRoll);
+  elLAmt.addEventListener('input', lUI);
+  elLTarget.addEventListener('input', lUI);
+  document.querySelectorAll('[data-ltarget]').forEach(function (b) {
+    b.addEventListener('click', function () { elLTarget.value = Number(b.dataset.ltarget).toFixed(2); lUI(); });
+  });
+  document.querySelectorAll('[data-lchip]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var a = readLAmount() || MIN_BET, k = b.dataset.lchip;
+      a = k === 'half' ? a / 2 : k === 'double' ? a * 2 : S.balance;
+      elLAmt.value = Math.max(MIN_BET, Math.min(Math.floor(a), Math.max(MIN_BET, S.balance)));
+      lUI();
+    });
+  });
+
+  /* ---------- Hi-Lo ---------- */
+  var RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'], SUITS = ['♠', '♥', '♦', '♣'], HL_SKIPS = 3;
+  function hDraw() { return { r: 1 + Math.floor(Math.random() * 13), s: Math.floor(Math.random() * 4) }; }
+  var HL = { active: false, over: false, bet: 0, card: hDraw(), raw: 1, picks: 0, trail: [], skips: 0, fresh: false };
+  var elHGo = $('hl-go'), elHMsg = $('hl-msg'), elHAmt = $('hl-amount'), elHStage = $('hl-stage'), elHCard = $('hl-card');
+  function hSay(text, cls) { elHMsg.textContent = text; elHMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
+  function readHAmount() { var v = Math.floor(Number(elHAmt.value)); return isFinite(v) ? v : 0; }
+  function hName(c) { return RANKS[c.r - 1] + SUITS[c.s]; }
+  function hRed(c) { return c.s === 1 || c.s === 2; }
+  // The two guesses for a card of rank r: label, chance, and the comparison the next rank must pass.
+  function hOpts(r) {
+    return {
+      hi: r === 1 ? { label: '更大', p: 12 / 13, kind: 'gt' } : r === 13 ? { label: '相同', p: 1 / 13, kind: 'eq' } : { label: '更大或相同', p: (14 - r) / 13, kind: 'ge' },
+      lo: r === 13 ? { label: '更小', p: 12 / 13, kind: 'lt' } : r === 1 ? { label: '相同', p: 1 / 13, kind: 'eq' } : { label: '更小或相同', p: r / 13, kind: 'le' }
+    };
+  }
+  function hTest(kind, n, r) { return kind === 'gt' ? n > r : kind === 'ge' ? n >= r : kind === 'lt' ? n < r : kind === 'le' ? n <= r : n === r; }
+  function hMult(raw) { return Math.floor(0.97 * raw * 100) / 100; }
+  function hUI() {
+    var c = HL.card, o = hOpts(c.r);
+    elHCard.className = 'card' + (hRed(c) ? ' red' : '') + (!HL.active && !HL.over ? ' idle' : '') + (HL.fresh ? ' new' : '');
+    elHCard.innerHTML = '<span class="rank">' + RANKS[c.r - 1] + '</span><span class="suit">' + SUITS[c.s] + '</span>';
+    elHCard.setAttribute('aria-label', '目前的牌 ' + hName(c));
+    HL.fresh = false;
+    $('hl-trail').innerHTML = HL.trail.length ? HL.trail.slice(-10).map(function (t) { return '<span class="mini' + (hRed(t) ? ' red' : '') + '">' + hName(t) + '</span>'; }).join('<span aria-hidden="true">›</span>') + '<span aria-hidden="true">›</span>' : '';
+    [['hl-hi', '漲 ▲ ', o.hi], ['hl-lo', '退 ▼ ', o.lo]].forEach(function (x) {
+      var b = $(x[0]);
+      b.disabled = !HL.active;
+      b.innerHTML = x[1] + x[2].label + '<small>' + (HL.active ? (x[2].p * 100).toFixed(1) + '% · 猜中 ' + fx(hMult(HL.raw / x[2].p)) + '×' : '—') + '</small>';
+    });
+    $('hl-skip').disabled = !HL.active || HL.skips >= HL_SKIPS;
+    $('hl-skip').textContent = '換一張牌' + (HL.active ? '（剩 ' + (HL_SKIPS - HL.skips) + ' 次）' : '');
+    var has = (HL.active || HL.over) && HL.picks > 0, m = hMult(HL.raw);
+    $('hl-mult').textContent = has ? fx(m) + '×' : '—';
+    $('hl-win').textContent = HL.active && HL.picks > 0 ? fmt(Math.floor(HL.bet * m)) : '—';
+    $('hl-picks').textContent = HL.active || HL.over ? HL.picks + ' 次' : '—';
+    $('hl-sub').textContent = HL.active ? 'A 最小、K 最大 · 下一張會漲還是退？' : HL.over ? '這一局結束' : '猜下一張牌比這張大還是小';
+    elHAmt.disabled = HL.active;
+    document.querySelectorAll('.hchip').forEach(function (b) { b.disabled = HL.active; });
+    if (!HL.active) { elHGo.dataset.mode = 'bet'; elHGo.disabled = false; elHGo.innerHTML = (HL.over ? '再來一局' : '開始') + '<small>下注 ' + fmt(readHAmount()) + ' 點</small>'; }
+    else if (HL.picks === 0) { elHGo.dataset.mode = 'done'; elHGo.disabled = true; elHGo.innerHTML = '先猜一次<small>猜對才能領回</small>'; }
+    else { elHGo.dataset.mode = 'surface'; elHGo.disabled = false; elHGo.innerHTML = '領回<small>' + fmt(Math.floor(HL.bet * m)) + ' 點 · ' + fx(m) + '×</small>'; }
+  }
+  function hStart() {
+    var a = readHAmount();
+    if (a < MIN_BET) { hSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
+    if (a > S.balance) { hSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    S.balance -= a;
+    HL.active = true; HL.over = false; HL.bet = a; HL.card = hDraw(); HL.raw = 1; HL.picks = 0; HL.trail = []; HL.skips = 0; HL.fresh = true;
+    elHStage.classList.remove('win', 'lose');
+    hSay('已下注 ' + fmt(a) + ' 點，第一張是 ' + hName(HL.card) + '。');
+    syncBalance(); hUI();
+  }
+  function hGuess(side) {
+    if (!HL.active) return;
+    var prev = HL.card, o = hOpts(prev.r)[side], next = hDraw();
+    HL.trail.push(prev); HL.card = next; HL.fresh = true;
+    if (hTest(o.kind, next.r, prev.r)) {
+      HL.raw /= o.p; HL.picks++;
+      hSay('翻出 ' + hName(next) + '，猜對了！目前 ' + fx(hMult(HL.raw)) + '×，可以領回或繼續猜。', 'win');
+    } else {
+      HL.active = false; HL.over = true; elHStage.classList.add('lose');
+      hSay('翻出 ' + hName(next) + '，猜錯了，失去 ' + fmt(HL.bet) + ' 點。', 'lose');
+    }
+    hUI();
+  }
+  function hCash() {
+    var m = hMult(HL.raw), pay = Math.floor(HL.bet * m);
+    S.balance += pay; HL.active = false; HL.over = true; elHStage.classList.add('win');
+    hSay('在 ' + fx(m) + '× 領回 ' + fmt(pay) + ' 點（' + (pay >= HL.bet ? '+' : '−') + fmt(Math.abs(pay - HL.bet)) + '）。', pay >= HL.bet ? 'win' : 'lose');
+    syncBalance(); hUI();
+  }
+  elHGo.addEventListener('click', function () { if (HL.active) { if (HL.picks > 0) hCash(); } else hStart(); });
+  $('hl-hi').addEventListener('click', function () { hGuess('hi'); });
+  $('hl-lo').addEventListener('click', function () { hGuess('lo'); });
+  $('hl-skip').addEventListener('click', function () {
+    if (!HL.active || HL.skips >= HL_SKIPS) return;
+    HL.skips++; HL.card = hDraw(); HL.fresh = true;
+    hSay('換成 ' + hName(HL.card) + '。'); hUI();
+  });
+  elHAmt.addEventListener('input', hUI);
+  document.querySelectorAll('[data-hchip]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var a = readHAmount() || MIN_BET, k = b.dataset.hchip;
+      a = k === 'half' ? a / 2 : k === 'double' ? a * 2 : S.balance;
+      elHAmt.value = Math.max(MIN_BET, Math.min(Math.floor(a), Math.max(MIN_BET, S.balance)));
+      hUI();
+    });
+  });
+
+  /* ---------- Keno ---------- */
+  var KE_N = 40, KE_DRAW = 10, KE_MAX = 10;
+  var KE = { picked: {}, drawn: [], shown: 0, pending: 0, settled: false, tables: {}, rtp: {} };
+  var elKGo = $('ke-go'), elKMsg = $('ke-msg'), elKAmt = $('ke-amount'), elKBoard = $('ke-board'), kcells = [];
+  function kSay(text, cls) { elKMsg.textContent = text; elKMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
+  function readKAmount() { var v = Math.floor(Number(elKAmt.value)); return isFinite(v) ? v : 0; }
+  function nCr(n, r) { if (r < 0 || r > n) return 0; var x = 1; for (var i = 1; i <= r; i++) x = x * (n - r + i) / i; return x; }
+  function kePicks() { var a = []; for (var n = 1; n <= KE_N; n++) if (KE.picked[n]) a.push(n); return a; }
+  // One payout table per pick count: nothing below a threshold, then ×3.5 per extra hit, scaled to a 97% return.
+  function keTables() {
+    for (var k = 1; k <= KE_MAX; k++) {
+      var t = Math.max(1, Math.round(k * 0.3)), probs = [], e = 0, h, rtp = 0;
+      for (h = 0; h <= k; h++) { probs.push(nCr(k, h) * nCr(KE_N - k, KE_DRAW - h) / nCr(KE_N, KE_DRAW)); if (h >= t) e += probs[h] * Math.pow(3.5, h - t); }
+      var s = 0.97 / e;
+      KE.tables[k] = probs.map(function (_, h) {
+        if (h < t) return 0;
+        var m = s * Math.pow(3.5, h - t);
+        return m >= 100 ? Math.round(m) : m >= 10 ? Math.round(m * 10) / 10 : Math.round(m * 100) / 100;
+      });
+      for (h = 0; h <= k; h++) rtp += probs[h] * KE.tables[k][h];
+      KE.rtp[k] = rtp;
+    }
+  }
+  function keBuild() {
+    for (var n = 1; n <= KE_N; n++) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'kcell'; b.textContent = n;
+      b.addEventListener('click', keToggle.bind(null, n));
+      elKBoard.appendChild(b); kcells.push(b);
+    }
+  }
+  function keUI() {
+    var picks = kePicks(), k = picks.length, busy = KE.pending > 0, shown = {}, hits = 0;
+    KE.drawn.slice(0, KE.shown).forEach(function (n) { shown[n] = 1; if (KE.picked[n]) hits++; });
+    kcells.forEach(function (b, i) {
+      var n = i + 1, state = shown[n] ? (KE.picked[n] ? 'hit' : 'miss') : KE.picked[n] ? 'picked' : '';
+      b.className = 'kcell' + (state ? ' ' + state : '');
+      b.disabled = busy;
+      b.setAttribute('aria-pressed', String(!!KE.picked[n]));
+      b.setAttribute('aria-label', n + ' 號' + (state === 'hit' ? '，命中' : state === 'miss' ? '，魚群出現但沒下網' : ''));
+    });
+    var table = KE.tables[k];
+    $('ke-pay').innerHTML = table ? table.map(function (m, h) {
+      return '<span class="kp' + (m ? '' : ' zero') + (KE.settled && h === hits ? ' on' : '') + '">' + h + ' 格<b>' + (m ? m + '×' : '0') + '</b></span>';
+    }).join('') : '<span class="none">先在上面選格子，這裡會顯示對應的倍率表。</span>';
+    $('ke-count').textContent = k + ' / ' + KE_MAX;
+    $('ke-hits').textContent = KE.shown ? hits + ' 格' : '—';
+    $('ke-rtp').textContent = k ? (KE.rtp[k] * 100).toFixed(1) + '%' : '—';
+    elKAmt.disabled = busy;
+    document.querySelectorAll('.kchip').forEach(function (b) { b.disabled = busy; });
+    elKGo.disabled = busy;
+    elKGo.innerHTML = busy ? '收網中…' : '撒網<small>下注 ' + fmt(readKAmount()) + ' 點 · 已選 ' + k + ' 格</small>';
+  }
+  function keClearDraw() { KE.drawn = []; KE.shown = 0; KE.settled = false; }
+  function keToggle(n) {
+    if (KE.pending) return;
+    keClearDraw();
+    if (KE.picked[n]) delete KE.picked[n];
+    else if (kePicks().length >= KE_MAX) { kSay('最多選 ' + KE_MAX + ' 格，先取消一格再選。', 'lose'); keUI(); return; }
+    else KE.picked[n] = 1;
+    keUI();
+  }
+  function kePlay() {
+    if (KE.pending) return;
+    var a = readKAmount(), picks = kePicks(), k = picks.length;
+    if (!k) { kSay('先選至少 1 格再撒網。', 'lose'); return; }
+    if (a < MIN_BET) { kSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
+    if (a > S.balance) { kSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    var pool = [], i;
+    for (i = 1; i <= KE_N; i++) pool.push(i);
+    for (i = KE_N - 1; i > 0; i--) { var r = Math.floor(Math.random() * (i + 1)), tmp = pool[i]; pool[i] = pool[r]; pool[r] = tmp; }
+    S.balance -= a; KE.pending = a; KE.drawn = pool.slice(0, KE_DRAW); KE.shown = 0; KE.settled = false;
+    kSay('魚群出現中…');
+    syncBalance(); keUI();
+    (function reveal() {
+      if (reduceMotion) KE.shown = KE_DRAW; else KE.shown++;
+      if (KE.shown < KE_DRAW) { keUI(); setTimeout(reveal, 95); return; }
+      var hits = KE.drawn.filter(function (n) { return KE.picked[n]; }).length, m = KE.tables[k][hits], pay = Math.floor(a * m);
+      S.balance += pay; KE.pending = 0; KE.settled = true;
+      if (!pay) kSay('命中 ' + hits + ' 格，這一網落空，失去 ' + fmt(a) + ' 點。', 'lose');
+      else kSay('命中 ' + hits + ' 格，' + m + '× 領回 ' + fmt(pay) + ' 點（' + (pay >= a ? '+' : '−') + fmt(Math.abs(pay - a)) + '）。', pay >= a ? 'win' : 'lose');
+      syncBalance(); keUI();
+    })();
+  }
+  elKGo.addEventListener('click', kePlay);
+  elKAmt.addEventListener('input', keUI);
+  $('ke-clear').addEventListener('click', function () { if (KE.pending) return; KE.picked = {}; keClearDraw(); kSay('已清除，重新選格子。'); keUI(); });
+  $('ke-random').addEventListener('click', function () {
+    if (KE.pending) return;
+    KE.picked = {}; keClearDraw();
+    while (kePicks().length < 5) KE.picked[1 + Math.floor(Math.random() * KE_N)] = 1;
+    kSay('已隨機選 5 格。'); keUI();
+  });
+  document.querySelectorAll('[data-kchip]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var a = readKAmount() || MIN_BET, k = b.dataset.kchip;
+      a = k === 'half' ? a / 2 : k === 'double' ? a * 2 : S.balance;
+      elKAmt.value = Math.max(MIN_BET, Math.min(Math.floor(a), Math.max(MIN_BET, S.balance)));
+      keUI();
+    });
+  });
+
+  /* ---------- Wheel ---------- */
+  // Each 10-slot pattern averages 0.97, so every setting returns 97%.
+  var WH_BASE = { low: [1.3, 1.2, 1.2, 1.2, 0, 1.2, 1.2, 1.2, 1.2, 0], mid: [0, 1.5, 0, 1.7, 0, 2, 0, 3, 0, 1.5] };
+  var WL = { risk: 'mid', n: 20, segs: [], colorOf: {}, rot: 0, pending: 0, last: [] };
+  var elWGo = $('wh-go'), elWMsg = $('wh-msg'), elWAmt = $('wh-amount'), elWStage = $('wh-stage'), elWheel = $('wh'), wctx = elWheel.getContext('2d');
+  function wSay(text, cls) { elWMsg.textContent = text; elWMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
+  function readWAmount() { var v = Math.floor(Number(elWAmt.value)); return isFinite(v) ? v : 0; }
+  function whSetup() {
+    var segs = [], i;
+    for (i = 0; i < WL.n; i++) segs.push(WL.risk === 'high' ? (i === 0 ? Math.round(0.97 * WL.n * 100) / 100 : 0) : WH_BASE[WL.risk][i % 10]);
+    WL.segs = segs;
+    var vals = segs.filter(function (v, i) { return v > 0 && segs.indexOf(v) === i; }).sort(function (a, b) { return a - b; });
+    var tones = vals.length === 1 ? ['lamp'] : ['sea-top', 'glow', 'lamp', 'crush'];
+    WL.colorOf = { 0: 'panel-2' };
+    vals.forEach(function (v, i) { WL.colorOf[v] = tones[Math.min(i, tones.length - 1)]; });
+    var c = wctx, R = 420, a = Math.PI * 2 / WL.n;
+    c.clearRect(0, 0, 840, 840);
+    for (i = 0; i < WL.n; i++) {
+      c.beginPath(); c.moveTo(R, R); c.arc(R, R, R - 8, -Math.PI / 2 + i * a, -Math.PI / 2 + (i + 1) * a); c.closePath();
+      c.fillStyle = C[WL.colorOf[segs[i]]]; c.fill();
+      c.strokeStyle = C.abyss; c.lineWidth = 4; c.stroke();
+    }
+    c.beginPath(); c.arc(R, R, R - 8, 0, Math.PI * 2); c.strokeStyle = C.line; c.lineWidth = 8; c.stroke();
+  }
+  function whUI() {
+    var busy = WL.pending > 0, n = WL.n, counts = {}, sum = 0, paying = 0;
+    WL.segs.forEach(function (v) { counts[v] = (counts[v] || 0) + 1; sum += v; if (v) paying++; });
+    $('wh-legend').innerHTML = Object.keys(counts).map(Number).sort(function (a, b) { return a - b; }).map(function (v) {
+      return '<span class="kp' + (v ? '' : ' zero') + '"><i style="background:var(--' + WL.colorOf[v] + ')"></i><b>' + (v ? v + '×' : '0') + '</b>' + counts[v] + ' / ' + n + ' 格</span>';
+    }).join('');
+    document.querySelectorAll('[data-wrisk]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.wrisk === WL.risk)); b.disabled = busy; });
+    document.querySelectorAll('[data-wn]').forEach(function (b) { b.setAttribute('aria-pressed', String(Number(b.dataset.wn) === n)); b.disabled = busy; });
+    document.querySelectorAll('.wchip').forEach(function (b) { b.disabled = busy; });
+    elWAmt.disabled = busy;
+    $('wh-max').textContent = Math.max.apply(null, WL.segs) + '×';
+    $('wh-chance').textContent = (paying / n * 100).toFixed(1) + '%';
+    $('wh-rtp').textContent = (sum / n * 100).toFixed(1) + '%';
+    $('wh-last').innerHTML = WL.last.map(function (m) { return '<span class="pill ' + (m === 0 ? 'low' : m >= 5 ? 'jackpot' : m >= 1.5 ? 'high' : '') + '">' + m + '×</span>'; }).join('') || '<span class="pill">尚未轉動</span>';
+    elWGo.disabled = busy;
+    elWGo.innerHTML = busy ? '轉動中…' : '轉動羅盤<small>下注 ' + fmt(readWAmount()) + ' 點</small>';
+  }
+  function whSpin() {
+    if (WL.pending) return;
+    var a = readWAmount();
+    if (a < MIN_BET) { wSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
+    if (a > S.balance) { wSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    var i = Math.floor(Math.random() * WL.n), m = WL.segs[i], deg = 360 / WL.n;
+    // Slot i's centre sits (i + 0.5)·deg clockwise of the pointer, so the wheel must end that far short of a full turn.
+    var stop = ((360 - (i + 0.5) * deg + (Math.random() - 0.5) * deg * 0.7) % 360 + 360) % 360;
+    WL.rot = Math.ceil(WL.rot / 360) * 360 + 360 * 4 + stop;
+    S.balance -= a; WL.pending = a;
+    elWStage.classList.remove('win', 'lose');
+    $('wh-hub').textContent = '…';
+    elWheel.style.transform = 'rotate(' + WL.rot.toFixed(2) + 'deg)';
+    wSay('羅盤轉動中…');
+    syncBalance(); whUI();
+    setTimeout(function () {
+      var pay = Math.floor(a * m);
+      S.balance += pay; WL.pending = 0;
+      WL.last.unshift(m); WL.last.length = Math.min(WL.last.length, 10);
+      $('wh-hub').textContent = m ? m + '×' : '0';
+      elWStage.classList.add(pay >= a ? 'win' : 'lose');
+      if (!pay) wSay('指到 0，失去 ' + fmt(a) + ' 點。', 'lose');
+      else wSay('指到 ' + m + '×，領回 ' + fmt(pay) + ' 點（' + (pay >= a ? '+' : '−') + fmt(Math.abs(pay - a)) + '）。', pay >= a ? 'win' : 'lose');
+      syncBalance(); whUI();
+    }, reduceMotion ? 0 : 3100);
+  }
+  elWGo.addEventListener('click', whSpin);
+  elWAmt.addEventListener('input', whUI);
+  document.querySelectorAll('[data-wrisk]').forEach(function (b) {
+    b.addEventListener('click', function () { if (WL.pending) return; WL.risk = b.dataset.wrisk; whSetup(); whUI(); });
+  });
+  document.querySelectorAll('[data-wn]').forEach(function (b) {
+    b.addEventListener('click', function () { if (WL.pending) return; WL.n = Number(b.dataset.wn); whSetup(); whUI(); });
+  });
+  document.querySelectorAll('[data-wchip]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var a = readWAmount() || MIN_BET, k = b.dataset.wchip;
+      a = k === 'half' ? a / 2 : k === 'double' ? a * 2 : S.balance;
+      elWAmt.value = Math.max(MIN_BET, Math.min(Math.floor(a), Math.max(MIN_BET, S.balance)));
+      whUI();
+    });
+  });
+
+  /* ---------- Tower ---------- */
+  var TW_ROWS = 8, TW_DIFF = { easy: { n: 4, safe: 3 }, mid: { n: 3, safe: 2 }, hard: { n: 2, safe: 1 }, extreme: { n: 3, safe: 1 } };
+  var TW = { active: false, over: false, bet: 0, diff: 'mid', level: 0, layout: [], picks: [], hit: null };
+  var elTGo = $('tw-go'), elTMsg = $('tw-msg'), elTAmt = $('tw-amount'), elTower = $('tw-tower');
+  function tSay(text, cls) { elTMsg.textContent = text; elTMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
+  function readTAmount() { var v = Math.floor(Number(elTAmt.value)); return isFinite(v) ? v : 0; }
+  function twMult(level) { var d = TW_DIFF[TW.diff]; return Math.floor(0.97 * Math.pow(d.n / d.safe, level) * 100) / 100; }
+  function twUI() {
+    var d = TW_DIFF[TW.diff], html = '';
+    for (var r = TW_ROWS - 1; r >= 0; r--) {
+      var cur = TW.active && r === TW.level;
+      html += '<div class="trow' + (cur ? ' cur' : '') + (r < TW.level ? ' done' : '') + '"><span class="tmult">' + fx(twMult(r + 1)) + '×</span>' +
+              '<div class="tcells" style="grid-template-columns:repeat(' + d.n + ',minmax(0,1fr))">';
+      for (var c = 0; c < d.n; c++) {
+        var chosen = TW.picks[r] === c, cls = 'tcell', icon = '', label = '第 ' + (r + 1) + ' 層第 ' + (c + 1) + ' 格';
+        if (TW.over && TW.layout[r]) {
+          if (TW.layout[r][c]) { cls += ' mine' + (TW.hit && TW.hit.r === r && TW.hit.c === c ? ' hit' : ''); icon = SVG_MINE; label += '，海膽'; }
+          else { cls += ' gem'; icon = SVG_PEARL; label += '，氣泡'; }
+          if (!chosen) cls += ' dim';
+        } else if (chosen) { cls += ' gem'; icon = SVG_PEARL; label += '，氣泡'; }
+        html += '<button type="button" class="' + cls + '" data-r="' + r + '" data-c="' + c + '" aria-label="' + label + '"' + (cur ? '' : ' disabled') + '>' + icon + '</button>';
+      }
+      html += '</div></div>';
+    }
+    elTower.innerHTML = html;
+    document.querySelectorAll('[data-tdiff]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.tdiff === TW.diff)); b.disabled = TW.active; });
+    document.querySelectorAll('.tchip').forEach(function (b) { b.disabled = TW.active; });
+    elTAmt.disabled = TW.active;
+    var m = twMult(TW.level);
+    $('tw-mult').textContent = TW.level > 0 ? fx(m) + '×' : '—';
+    $('tw-next').textContent = TW.over || TW.level >= TW_ROWS ? '—' : fx(twMult(TW.level + 1)) + '×';
+    $('tw-level').textContent = TW.active || TW.over ? TW.level + ' / ' + TW_ROWS : '—';
+    if (!TW.active) { elTGo.dataset.mode = 'bet'; elTGo.disabled = false; elTGo.innerHTML = (TW.over ? '再來一局' : '開始') + '<small>下注 ' + fmt(readTAmount()) + ' 點</small>'; }
+    else if (TW.level === 0) { elTGo.dataset.mode = 'done'; elTGo.disabled = true; elTGo.innerHTML = '選最底層的一格<small>第一層 ' + fx(twMult(1)) + '×</small>'; }
+    else { elTGo.dataset.mode = 'surface'; elTGo.disabled = false; elTGo.innerHTML = '領回<small>' + fmt(Math.floor(TW.bet * m)) + ' 點 · ' + fx(m) + '×</small>'; }
+  }
+  function twStart() {
+    var a = readTAmount(), d = TW_DIFF[TW.diff];
+    if (a < MIN_BET) { tSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
+    if (a > S.balance) { tSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    var layout = [];
+    for (var r = 0; r < TW_ROWS; r++) {
+      var row = [], c;
+      for (c = 0; c < d.n; c++) row.push(c >= d.safe);          // traps first sit at the end…
+      for (c = d.n - 1; c > 0; c--) { var j = Math.floor(Math.random() * (c + 1)), tmp = row[c]; row[c] = row[j]; row[j] = tmp; }  // …then shuffle
+      layout.push(row);
+    }
+    S.balance -= a;
+    TW.active = true; TW.over = false; TW.bet = a; TW.level = 0; TW.layout = layout; TW.picks = []; TW.hit = null;
+    tSay('已下注 ' + fmt(a) + ' 點，從最底層選一格。');
+    syncBalance(); twUI();
+  }
+  function twCash() {
+    var m = twMult(TW.level), pay = Math.floor(TW.bet * m);
+    S.balance += pay; TW.active = false; TW.over = true;
+    tSay((TW.level === TW_ROWS ? '浮到頂了！' : '') + '在 ' + fx(m) + '× 領回 ' + fmt(pay) + ' 點（' + (pay >= TW.bet ? '+' : '−') + fmt(Math.abs(pay - TW.bet)) + '）。', pay >= TW.bet ? 'win' : 'lose');
+    syncBalance(); twUI();
+  }
+  function twPick(r, c) {
+    if (!TW.active || r !== TW.level) return;
+    TW.picks[r] = c;
+    if (TW.layout[r][c]) {
+      TW.active = false; TW.over = true; TW.hit = { r: r, c: c };
+      tSay('第 ' + (r + 1) + ' 層選到海膽，失去 ' + fmt(TW.bet) + ' 點。', 'lose');
+      twUI(); return;
+    }
+    TW.level++;
+    if (TW.level === TW_ROWS) { twCash(); return; }
+    tSay('氣泡！上浮到第 ' + TW.level + ' 層，目前 ' + fx(twMult(TW.level)) + '×，可以領回或繼續。');
+    twUI();
+  }
+  elTower.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.tcell') : null;
+    if (b && !b.disabled) twPick(Number(b.dataset.r), Number(b.dataset.c));
+  });
+  elTGo.addEventListener('click', function () { if (TW.active) { if (TW.level > 0) twCash(); } else twStart(); });
+  elTAmt.addEventListener('input', twUI);
+  document.querySelectorAll('[data-tdiff]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (TW.active) return;
+      TW.diff = b.dataset.tdiff; TW.over = false; TW.level = 0; TW.layout = []; TW.picks = []; TW.hit = null;
+      twUI();
+    });
+  });
+  document.querySelectorAll('[data-tchip]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var a = readTAmount() || MIN_BET, k = b.dataset.tchip;
+      a = k === 'half' ? a / 2 : k === 'double' ? a * 2 : S.balance;
+      elTAmt.value = Math.max(MIN_BET, Math.min(Math.floor(a), Math.max(MIN_BET, S.balance)));
+      twUI();
+    });
+  });
+
+  /* ---------- Crossing ---------- */
+  var CR_LANES = 12, CR_P = { easy: 0.92, mid: 0.85, hard: 0.75, extreme: 0.6 };
+  var CR = { active: false, over: false, bet: 0, diff: 'mid', pos: 0, failAt: 0, lost: false };
+  var elCGo = $('cr-go'), elCMsg = $('cr-msg'), elCAmt = $('cr-amount'), elCStep = $('cr-step'), elCLanes = $('cr-lanes');
+  var SVG_TURTLE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9L3 6M18 9l3-3M6.5 18L4 21M17.5 18l2.5 3" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="12" cy="4.6" r="2.7" fill="currentColor"/><ellipse cx="12" cy="13.5" rx="7" ry="6.5" fill="currentColor"/></svg>';
+  var SVG_RIP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 7c3-3 4 3 7 0s4 3 7 0 4 2 6 0M2 12.5c3-3 4 3 7 0s4 3 7 0 4 2 6 0M2 18c3-3 4 3 7 0s4 3 7 0 4 2 6 0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+  function rSay(text, cls) { elCMsg.textContent = text; elCMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
+  function readCAmount() { var v = Math.floor(Number(elCAmt.value)); return isFinite(v) ? v : 0; }
+  function crMult(k) { return Math.floor(0.97 / Math.pow(CR_P[CR.diff], k) * 100) / 100; }
+  function crUI() {
+    var html = '<div class="lane start"><span class="lslot' + (CR.pos === 0 && !CR.lost ? ' me' : '') + '">' + (CR.pos === 0 && !CR.lost ? SVG_TURTLE : '') + '</span><span class="lmult">起點</span></div>';
+    for (var i = 1; i <= CR_LANES; i++) {
+      var cls = 'lane', icon = '', me = false;
+      if (CR.lost && i === CR.failAt) { cls += ' lost'; icon = SVG_RIP; }
+      else if (i <= CR.pos) { cls += ' passed'; if (i === CR.pos) { icon = SVG_TURTLE; me = true; } }
+      else if (CR.over && i === CR.failAt) { cls += ' would'; icon = SVG_RIP; }
+      else if (CR.active && i === CR.pos + 1) cls += ' next';
+      html += '<div class="' + cls + '"><span class="lslot' + (me ? ' me' : '') + '">' + icon + '</span><span class="lmult">' + fx(crMult(i)) + '×</span></div>';
+    }
+    elCLanes.style.gridTemplateColumns = 'repeat(' + (CR_LANES + 1) + ', minmax(0, 1fr))';
+    elCLanes.innerHTML = html;
+    document.querySelectorAll('[data-cdiff]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.cdiff === CR.diff)); b.disabled = CR.active; });
+    document.querySelectorAll('.cchip').forEach(function (b) { b.disabled = CR.active; });
+    elCAmt.disabled = CR.active;
+    var m = crMult(CR.pos);
+    elCStep.disabled = !CR.active;
+    elCStep.innerHTML = '前進一道 ▶<small>' + (CR.active ? '過關率 ' + (CR_P[CR.diff] * 100).toFixed(0) + '% · 渡過後 ' + fx(crMult(CR.pos + 1)) + '×' : '—') + '</small>';
+    $('cr-mult').textContent = CR.pos > 0 && !CR.lost ? fx(m) + '×' : '—';
+    $('cr-p').textContent = (CR_P[CR.diff] * 100).toFixed(0) + '%';
+    $('cr-pos').textContent = CR.active || CR.over ? CR.pos + ' / ' + CR_LANES : '—';
+    $('cr-sub').textContent = CR.lost ? '在第 ' + CR.failAt + ' 道被暗流捲走' : CR.active ? '已渡過 ' + CR.pos + ' 道，還有 ' + (CR_LANES - CR.pos) + ' 道' :
+      CR.over ? (CR.failAt <= CR_LANES ? '平安上岸；暗流原本在第 ' + CR.failAt + ' 道' : '平安上岸；這一趟十二道都沒有暗流') : '小海龜要從左邊橫渡十二道海流';
+    if (!CR.active) { elCGo.dataset.mode = 'bet'; elCGo.disabled = false; elCGo.innerHTML = (CR.over ? '再來一局' : '開始') + '<small>下注 ' + fmt(readCAmount()) + ' 點</small>'; }
+    else if (CR.pos === 0) { elCGo.dataset.mode = 'done'; elCGo.disabled = true; elCGo.innerHTML = '先前進一道<small>渡過才能領回</small>'; }
+    else { elCGo.dataset.mode = 'surface'; elCGo.disabled = false; elCGo.innerHTML = '領回<small>' + fmt(Math.floor(CR.bet * m)) + ' 點 · ' + fx(m) + '×</small>'; }
+  }
+  function crStart() {
+    var a = readCAmount();
+    if (a < MIN_BET) { rSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
+    if (a > S.balance) { rSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    var fail = 1; while (fail <= CR_LANES && Math.random() < CR_P[CR.diff]) fail++;   // first lane that hides the rip current; 13 = none
+    S.balance -= a;
+    CR.active = true; CR.over = false; CR.lost = false; CR.bet = a; CR.pos = 0; CR.failAt = fail;
+    elCStage().classList.remove('win', 'lose');
+    rSay('已下注 ' + fmt(a) + ' 點，按「前進一道」出發。');
+    syncBalance(); crUI();
+  }
+  function elCStage() { return $('cr-stage'); }
+  function crCash() {
+    var m = crMult(CR.pos), pay = Math.floor(CR.bet * m);
+    S.balance += pay; CR.active = false; CR.over = true;
+    rSay((CR.pos === CR_LANES ? '渡完十二道了！' : '') + '在 ' + fx(m) + '× 領回 ' + fmt(pay) + ' 點（' + (pay >= CR.bet ? '+' : '−') + fmt(Math.abs(pay - CR.bet)) + '）。', pay >= CR.bet ? 'win' : 'lose');
+    syncBalance(); crUI();
+  }
+  function crStep() {
+    if (!CR.active) return;
+    if (CR.pos + 1 === CR.failAt) {
+      CR.active = false; CR.over = true; CR.lost = true;
+      rSay('第 ' + CR.failAt + ' 道遇上暗流，失去 ' + fmt(CR.bet) + ' 點。', 'lose');
+      crUI(); return;
+    }
+    CR.pos++;
+    if (CR.pos === CR_LANES) { crCash(); return; }
+    rSay('渡過第 ' + CR.pos + ' 道，目前 ' + fx(crMult(CR.pos)) + '×，可以領回或繼續前進。');
+    crUI();
+  }
+  elCStep.addEventListener('click', crStep);
+  elCGo.addEventListener('click', function () { if (CR.active) { if (CR.pos > 0) crCash(); } else crStart(); });
+  elCAmt.addEventListener('input', crUI);
+  document.querySelectorAll('[data-cdiff]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (CR.active) return;
+      CR.diff = b.dataset.cdiff; CR.over = false; CR.lost = false; CR.pos = 0; CR.failAt = 0;
+      crUI();
+    });
+  });
+  document.querySelectorAll('[data-cchip]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var a = readCAmount() || MIN_BET, k = b.dataset.cchip;
+      a = k === 'half' ? a / 2 : k === 'double' ? a * 2 : S.balance;
+      elCAmt.value = Math.max(MIN_BET, Math.min(Math.floor(a), Math.max(MIN_BET, S.balance)));
+      crUI();
+    });
+  });
+
+  /* ---------- tabs ---------- */
+  var VIEWS = { crash: '壓潰深度 <span>Crush Depth</span>', mines: '水雷區 <span>Mine Field</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '撒網 <span>Cast Net</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>' };
+  function route() {
+    var v = location.hash.slice(1); if (!VIEWS[v]) v = 'crash';
+    Object.keys(VIEWS).forEach(function (k) {
+      $('view-' + k).hidden = k !== v;
+      if (k === v) $('tab-' + k).setAttribute('aria-current', 'page'); else $('tab-' + k).removeAttribute('aria-current');
+    });
+    $('game-name').innerHTML = VIEWS[v];
+    if (v === 'crash') resize();
+    if (v === 'plinko') pkResize();
+  }
+  window.addEventListener('hashchange', route);
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(sea); else window.addEventListener('resize', resize);
+
+  function start(data) {
+    load();
+    if (data && typeof data.balance === 'number') S.balance = data.balance;
+    S.history = data && Array.isArray(data.history) ? data.history : Array.from({ length: 12 }, rollCrash);
+    buildBoard(); renderMines(); pkSetup(); pkUI(); mgBuild(); mgRender(); dUI(); lUI(); hUI(); keTables(); keBuild(); [3, 11, 18, 26, 34].forEach(function (n) { KE.picked[n] = 1; }); keUI(); whSetup(); whUI(); twUI(); crUI(); route();
+    resize(); seedSnow();
+    startBetting(performance.now());
+    requestAnimationFrame(frame);
+  }
+  var hot = window.claude && window.claude.hot;
+  if (hot && hot.snapshot) hot.snapshot(function () { return { balance: S.balance + (S.bet && !S.bet.out && S.phase !== 'crashed' ? S.bet.amount : 0) + (M.active ? M.bet : 0) + P.balls.reduce(function (s, b) { return s + b.bet; }, 0) + D.pending + L.pending + (HL.active ? HL.bet : 0) + KE.pending + WL.pending + (TW.active ? TW.bet : 0) + (CR.active ? CR.bet : 0), history: S.history }; });
+  if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
+})();
+</script>
+</body>
+</html>
