@@ -237,5 +237,12 @@
     "view": "games/baby/view.html",
     "card": "games/baby/card.html",
     "icon": "games/baby/icon.svg"
+  },
+  {
+    "id": "pudding",
+    "logic": "games/pudding/game.js",
+    "view": "games/pudding/view.html",
+    "card": "games/pudding/card.html",
+    "icon": "games/pudding/icon.svg"
   }
 ]
