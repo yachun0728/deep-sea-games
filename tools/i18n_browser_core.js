@@ -58,6 +58,12 @@
     assert(document.querySelector('[data-language="en"]').getAttribute('aria-pressed')==='true','Selected language is accessible');
     assert(i.sourceText(document.getElementById('dr-go'))==='停針','Mobile behavior reads original action label');
     assert(i.english('第 12 關 · 目標寬度 24°')==='Stage 12 · Target width 24°','Dynamic stage label uses English ordering');
+    assert(!document.getElementById('dr-cash'),'Dream Repair has no collection control');
+    assert(!/collect|multiplier/i.test(document.querySelector('#view-dream .rules').textContent),'English Dream rules contain no collection or multiplier rewards');
+    assert(i.english('注意！中心燈閃爍，0.5 秒後指針反轉。')==='Watch out! The center light is flashing. The needle reverses in 0.5 seconds.','Reversal warning has synchronized English');
+    var spread=i.english('散彈倒數 12 秒 · 撿箱刷新至12秒');
+    assert(!/[\u3400-\u9fff]/.test(spread)&&/12/.test(spread),'Timed spread and crate-refresh prompt translated');
+    assert(i.english('散彈強化結束，恢復雙管速射，火力等級保留。')==='Spread boost ended. Twin rapid fire restored; firepower level retained.','Spread expiry prompt has synchronized English');
     location.hash='crash';await settle();
     assert(location.hash==='#lobby','Hidden game still blocked in English');
     location.hash='keno';await settle();

@@ -7,7 +7,7 @@
 - 網址：`#blaster`　分類：技巧闖關　狀態：顯示中
 - 大廳卡片：「六種武器進化，迎戰換道、護盾與分裂怪。」｜每局 10 點 · 無盡 · 每10關+1點
 - 追蹤名稱（GA4 `game_name`）：深海火線，`game_id` 為 `blaster`
-- 檔案：`games/blaster/card.html`、`games/blaster/game.js`、`games/blaster/icon.svg`、`games/blaster/style.css`、`games/blaster/view.html`；`game.js` 共 253 行、25.0 KB
+- 檔案：`games/blaster/card.html`、`games/blaster/game.js`、`games/blaster/icon.svg`、`games/blaster/style.css`、`games/blaster/view.html`；`game.js` 共 255 行、25.7 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「22. 深海火線 Reef Blaster（blaster）」（下方「規則摘要」已複製）
 
@@ -19,40 +19,40 @@
 
 - 狀態物件／進行中旗標：`BL`（L2）
 - L8 常數：`BL_GUNS`
-- L75 常數：`BL_MOBS`
+- L76 常數：`BL_MOBS`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`blSay` L5、`blRetryFee` L6、`blPay` L7、`blWeapon` L16、`blStageConfig` L20、`blHealth` L21、`blPace` L22、`blNextGun` L23、`blVisible` L24、`blTracking` L25、`blUI` L26、`blRound` L37、`blStart` L41、`blRetry` L49、`blCash` L56、`blHurt` L62、`blClear` L67、`blEnemy` L84、`blMobType` L88、`blSpawn` L96、`blAdvanceEnemy` L103、`blDamage` L109、`blSegmentHit` L120、`blMove` L124、`blBurst` L128、`blAdvanceBullet` L134、`blEffect` L152、`blStep` L153、`blSync` L166、`blRoundRect` L170、`blDrawMonster` L171、`blDrawBullet` L197、`blDrawPickup` L206、`blDrawPlayer` L211、`blDraw` L223、`blSuspend` L247、`blLoop` L251
+`blSay` L5、`blRetryFee` L6、`blPay` L7、`blWeapon` L16、`blStageConfig` L21、`blHealth` L22、`blPace` L23、`blNextGun` L24、`blVisible` L25、`blTracking` L26、`blUI` L27、`blRound` L38、`blStart` L42、`blRetry` L50、`blCash` L57、`blHurt` L63、`blClear` L68、`blEnemy` L85、`blMobType` L89、`blSpawn` L97、`blAdvanceEnemy` L104、`blDamage` L110、`blSegmentHit` L121、`blMove` L125、`blBurst` L129、`blAdvanceBullet` L135、`blEffect` L153、`blStep` L154、`blSync` L168、`blRoundRect` L172、`blDrawMonster` L173、`blDrawBullet` L199、`blDrawPickup` L208、`blDrawPlayer` L213、`blDraw` L225、`blSuspend` L249、`blLoop` L253
 
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L47 `blStart`：`S.balance-=stake;`
-- L54 `blRetry`：`S.balance-=cost;`
+- L48 `blStart`：`S.balance-=stake;`
+- L55 `blRetry`：`S.balance-=cost;`
 
 **入帳（領回／獎勵）**
-- L70 `blClear`：`S.balance+=bonus;`
+- L71 `blClear`：`S.balance+=bonus;`
 
 **餘額檢查**
-- L33 `blUI`：`$('bl-retry').disabled=BL.phase!=='lost'||S.balance<blRetryFee();`
-- L34 `blUI`：`$('bl-retry-info').textContent='保留 Lv.'+BL.weapon+' 武器，恢復 3 心，從第 '+BL.stage+' 關第一波重來。'+(S.balance<blRetryFee(…`
-- L45 `blStart`：`if(stake>S.balance){blSay(LOW_MSG,'lose');`
-- L52 `blRetry`：`if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點；可等待平台自動回點。','lose');`
+- L34 `blUI`：`$('bl-retry').disabled=BL.phase!=='lost'||S.balance<blRetryFee();`
+- L35 `blUI`：`$('bl-retry-info').textContent='保留 Lv.'+BL.weapon+' 武器，恢復 3 心，從第 '+BL.stage+' 關第一波重來。'+(S.balance<blRetryFee(…`
+- L46 `blStart`：`if(stake>S.balance){blSay(LOW_MSG,'lose');`
+- L53 `blRetry`：`if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點；可等待平台自動回點。','lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L25 `blTracking`：`if(engaged)AN.resume(BL.analytics,{stage:BL.stage});`
-- L25 `blTracking`：`else if(BL.active)AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills},true);`
-- L47 `blStart`：`BL.analytics=AN.start('blaster',stake);`
-- L54 `blRetry`：`BL.analytics=AN.start('blaster',cost,{stage:BL.stage,entry_kind:'stage_retry',retry_count:BL.retries});`
-- L59 `blCash`：`AN.end(BL.analytics,BL.attemptEarned,'cashout',{stage:BL.cleared,score:BL.kills,multiplier:BL.stake?BL.attemp…`
-- L64 `blHurt`：`AN.end(BL.analytics,BL.attemptEarned,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`
-- L71 `blClear`：`AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills,bonus_points:bonus,total_bonus_points:BL.earned},true…`
-- L250 `blSuspend`：`AN.end(BL.analytics,BL.attemptEarned,'abandoned',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`
+- L26 `blTracking`：`if(engaged)AN.resume(BL.analytics,{stage:BL.stage});`
+- L26 `blTracking`：`else if(BL.active)AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills},true);`
+- L48 `blStart`：`BL.analytics=AN.start('blaster',stake);`
+- L55 `blRetry`：`BL.analytics=AN.start('blaster',cost,{stage:BL.stage,entry_kind:'stage_retry',retry_count:BL.retries});`
+- L60 `blCash`：`AN.end(BL.analytics,BL.attemptEarned,'cashout',{stage:BL.cleared,score:BL.kills,multiplier:BL.stake?BL.attemp…`
+- L65 `blHurt`：`AN.end(BL.analytics,BL.attemptEarned,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`
+- L72 `blClear`：`AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills,bonus_points:bonus,total_bonus_points:BL.earned},true…`
+- L252 `blSuspend`：`AN.end(BL.analytics,BL.attemptEarned,'abandoned',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -85,18 +85,20 @@
 
 怪物種類依 blMobType 的判斷優先序選出，不是每個倍數同時生出所有種類。小水母血量為.25H向上取整，速度1.18倍；分裂位置最多到y=390，保留反應距離。
 
-武器Lv.1起，不設遊玩上的等級上限（數值限制為安全整數上限）；每5波保證一個不同於第一隻怪物跑道的彩色武器箱，撿取+1級。武器與剩餘生命跨關保留，新局重設。單發基礎傷害D=ceil(等級/3)；武器各有獨立槍身與彈色／彈形，箱子會預告升級後的型態：
+武器Lv.1起，不設遊玩上的等級上限（數值限制為安全整數上限）；每4波（第1、5、9…波）保證一個不同於第一隻怪物跑道的彩色武器箱，撿取+1級。武器與剩餘生命跨關保留，新局重設。單發基礎傷害D=1+ceil(等級/3)；武器各有獨立槍身與彈色／彈形，箱子會預告升級後的型態：
 
 | 解鎖 | 武器 | 實際攻擊 |
 | --- | --- | --- |
-| Lv.1 | 脈衝彈，薄荷色圓彈與單管 | 1發，D |
+| Lv.1 | 脈衝彈，薄荷色圓彈與單管 | 1發，1.2D |
 | Lv.4 | 雙管速射，藍色雙管與長彈 | 2發，各D |
-| Lv.8 | 扇形散彈，金色外張槍管與箭形彈 | 3發扇形，各D，可掃向旁道 |
+| Lv.8 | 扇形散彈，金色外張槍管與箭形彈 | 3發扇形，各0.65D，可掃向旁道；限時12秒 |
 | Lv.13 | 穿透光槍，綠色長導軌與光束 | 2發，各1.35D，每發最多命中3隻，同一隻不重複計直接傷害 |
-| Lv.18 | 追蹤火箭，紅色側掛發射筒與尾焰 | 2發，各2.4D，會轉向追蹤，爆炸半徑78 |
-| Lv.24 | 電漿砲，紫色能量核心與光球 | 3發，各1.8D，每發穿透2隻，範圍半徑58 |
+| Lv.18 | 追蹤火箭，紅色側掛發射筒與尾焰 | 2發，各2.2D，會轉向追蹤，爆炸半徑78 |
+| Lv.24 | 電漿砲，紫色能量核心與光球 | 3發，各1.6D，每發穿透2隻，範圍半徑58 |
 
-火箭連射間隔.38秒，其餘max(.11,.27-等級×.005)秒。範圍攻擊對直接命中以外的半徑內怪物造成該發55%傷害；護盾同樣先吸收。未撿武器不補發，也不依目前火力降低敵人血量。
+Lv.8～12撿箱啟動／刷新散彈12秒，不疊加；到期恢復雙管但保留等級，Lv.13起切換光槍並清除散彈倒數。倒數僅在可見、聚焦且戰鬥中扣減，切頁、背景、失焦與關後選擇暫停。死亡清除限時效果，付費重玩保留等級但不補散彈；新局重設。面板與畫布顯示剩餘秒數。拾取箱子容許水平距離<52、垂直距離<48；火箭速度600、電漿720，其他速度沿用。
+
+火箭連射間隔.34秒，其餘max(.11,.27-等級×.005)秒。範圍攻擊對直接命中以外的半徑內怪物造成該發55%傷害；護盾同樣先吸收。未撿武器不補發，也不依目前火力降低敵人血量。
 
 整局3心，碰到怪物或任一道漏怪穿過底部都扣1心，每隻只扣一次。生命歸零時本局結束，不發點數獎勵。場上怪物與武器箱處理完、波數全部出完才過關；關後可繼續或提前收隊，續關不扣費亦不補心。
 

@@ -122,3 +122,7 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 ## 踩地雷（mines）與每日挖金礦（keno）
 
 踩地雷每局一次start（entry_points=0），翻格progress帶step；勝利complete、踩雷loss或離頁abandoned結束，payout_points=0。單局難度固定，無逐關resume；勝負帶board_size與mine_count，不更改game_id。每日挖礦每次免費回合start（entry_points=0），每挖progress帶step、score、bonus_points與total_bonus_points；最後一次或到每日30點上限送complete。end只記錄本次分析回合已入帳總點數，不再發點。重新整理後舊回合abandoned，新分析回合start從本次載入後的入帳重新累計，剩餘免費機會不變；捕獲pagehide先送已入帳總額，BFCache保留回合。午夜到期以complete結束舊日回合。未驗證正式GA4後台收件。
+
+## 時序修復（dream）
+
+無限關卡、固定入場10點，沒有點數獎勵。每局一次start；過關progress帶stage、score（完成關數）、reversals（本關已反轉次數）並暫停有效時間，下一關resume。失敗end為loss、payout_points=0，不送multiplier或cashout；正常離頁由共用層送abandoned，BFCache沿用暫停／恢復。未驗證GA4後台收件。

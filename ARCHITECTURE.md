@@ -206,3 +206,9 @@ KE.active涵蓋免費挖掘，使用現有syncBalance／save入帳；可用時�
 翻譯只作用於顯示層：保留原文字的 WeakMap、監看新增／更新的文字及 aria-label／title／placeholder／alt，跳過 script、style、noscript 與 data-i18n-ignore。以原文字重新翻譯或還原，不將英文再反向猜成中文，不替換 DOM 按鈕、不修改 input 值。Canvas 的 fillText／strokeText／measureText 在繪製邊界翻譯，英文繪製依現有 transform、對齊與 maxWidth 限制寬度；遊戲內的文字常數、狀態、判定與 GA4 名稱不翻譯。`js/mobile-stage-actions.js` 用 sourceText 讀原按鈕文字，保留續關／重玩放置的既有判定。珍奶 iframe 原本已是英文，保留其原始 HTML、橋接與暫停流程。
 
 修改介面文字時須同步 `locales/en.json`；`tools/test_i18n.py` 檢查來源字串與翻譯覆蓋、英文值及 JSON script 安全。可用 `python3 tools/check_i18n_browser.py` 在獨立暫存 Chrome 設定檔驗證語言、資料與遊戲操作；以裝置模擬設定實際 CSS 寬度，不把視窗截圖寬度當成手機 viewport 的證據。
+
+## 時序修復與深海火線更新（2026-11-17）
+
+時序修復為固定入場10點、無限關卡的停針挑戰，沒有點數獎勵或領回。drDifficulty限制目標寬度與速度，drAdvance管理預告反轉及暫停；第11關起最多一次、第21關起最多兩次。保留既有狀態與ID，不新增儲存Key。hot.snapshot不將本局入場費加回餘額；每局單次扣款與start，過關progress、續關resume、失敗end且payout_points=0。
+
+深海火線武器平衡：BL.spreadLeft為記憶體中的散彈倒數（12秒），不新增儲存Key；暫停不消耗時間、死亡清除。blWeapon依等級與剩餘時間決定散彈或雙管，升級光槍後清除限時效果。基礎火力、火箭速度與武器箱拾取範圍調整，武器箱保證頻率由每5波改為每4波；扣點、重玩費、里程碑與GA4生命週期不變。

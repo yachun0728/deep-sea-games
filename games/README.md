@@ -15,7 +15,7 @@
 | [羅盤 Compass](wheel/README.md) | `#wheel` | 機率挑戰 | 隱藏 | 85 行 | 轉動深海羅盤，等待指針停下。 |
 | [浮升 Ascent](tower/README.md) | `#tower` | 機率挑戰 | 隱藏 | 94 行 | 挑選安全的氣泡，一層一層往上浮。 |
 | [橫渡 Reef Run](crossing/README.md) | `#crossing` | 機率挑戰 | 隱藏 | 86 行 | 帶小海龜穿越暗流，決定何時收手。 |
-| [時序修復 Dream Repair Shop](dream/README.md) | `#dream` | 技巧闖關 | 顯示 | 57 行 | 抓準時機，讓指針停在青綠色區域。 |
+| [時序修復 Dream Repair Shop](dream/README.md) | `#dream` | 技巧闖關 | 顯示 | 79 行 | 抓準時機，讓指針停在青綠色區域。 |
 | [閃避跑酷 Dodge Run](runner/README.md) | `#runner` | 技巧闖關 | 顯示 | 118 行 | 點左、點右換道，避開一路上的障礙。 |
 | [插隊大師 Queue Cutter](elevator/README.md) | `#elevator` | 技巧闖關 | 顯示 | 129 行 | 趁乘客背對你，偷偷往前插一位。 |
 | [偷偷下班 Sneak Out](sneak/README.md) | `#sneak` | 技巧闖關 | 顯示 | 116 行 | 按住偷溜，老闆回頭前趕快裝忙。 |
@@ -27,7 +27,7 @@
 | [青蛙吃蟲 Frog Snack](frog/README.md) | `#frog` | 技巧闖關 | 顯示 | 165 行 | 對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。 |
 | [偷睡大師 Nap Master](nap/README.md) | `#nap` | 技巧闖關 | 顯示 | 458 行 | 趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。 |
 | [死神打工 Reaper Shift](reaper/README.md) | `#reaper` | 技巧闖關 | 顯示 | 107 行 | 普通靈魂要接走，綠色通行證要放行。 |
-| [深海火線 Reef Blaster](blaster/README.md) | `#blaster` | 技巧闖關 | 顯示 | 253 行 | 六種武器進化，迎戰換道、護盾與分裂怪。 |
+| [深海火線 Reef Blaster](blaster/README.md) | `#blaster` | 技巧闖關 | 顯示 | 255 行 | 六種武器進化，迎戰換道、護盾與分裂怪。 |
 | [一口氣探險 One Breath Dive](dive/README.md) | `#dive` | 技巧闖關 | 顯示 | 54 行 | 選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。 |
 | [捷運搶位 MRT Seat Grab](mrt/README.md) | `#mrt` | 技巧闖關 | 顯示 | 52 行 | 看小動作猜誰要下車，一階一階往上搶座位。 |
 | [泡麵煎餅翻面 Noodle Pancake](pancake/README.md) | `#pancake` | 技巧闖關 | 顯示 | 43 行 | 半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。 |

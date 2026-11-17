@@ -46,7 +46,7 @@ check('Auto-fire damages and kills; a leaking monster only costs one heart',()=>
 check('Collecting weapons unlocks two/three bullets, scales damage beyond level 30',()=>{
   const f=fixture();f.run('blStart();BL.pickups=[{x:200,y:532,speed:0,boost:3}];blStep(.016)');assert.equal(f.state.weapon,4);assert.equal(f.run('blWeapon().pellets'),2);
   f.run('BL.pickups=[{x:200,y:532,speed:0,boost:6}];blStep(.016)');assert.equal(f.state.weapon,10);assert.equal(f.run('blWeapon().pellets'),3);
-  f.run('BL.pickups=[{x:200,y:532,speed:0,boost:50}];blStep(.016)');assert.equal(f.state.weapon,60);assert.equal(f.run('blWeapon().damage'),20);f.run('BL.bullets=[];blBurst()');assert.equal(f.state.bullets.length,3);
+  f.run('BL.pickups=[{x:200,y:532,speed:0,boost:50}];blStep(.016)');assert.equal(f.state.weapon,60);assert.equal(f.run('blWeapon().damage'),21);f.run('BL.bullets=[];blBurst()');assert.equal(f.state.bullets.length,3);
 });
 check('Lane input stays within three lanes; hidden, background and unfocused games pause',()=>{
   const f=fixture();f.run('blStart();blMove(-1);blMove(-1);blMove(-1)');assert.equal(f.state.lane,0);f.run('blMove(1);blMove(1);blMove(1)');assert.equal(f.state.lane,2);
@@ -60,14 +60,14 @@ check('Clear waits for all waves/enemies/pickups; later enemies are stronger, an
 });
 check('Six weapon forms have unique colors and shot mechanics at their unlock levels',()=>{
   const f=fixture();const kinds=[],colors=[];
-  for(const level of [1,4,8,13,18,24]){f.run(`BL.weapon=${level};BL.bullets=[];blBurst()`);kinds.push(f.run('blWeapon().kind'));colors.push(f.run('blWeapon().color'));assert(f.state.bullets.every(b=>b.kind===kinds.at(-1)));}
+  for(const level of [1,4,8,13,18,24]){f.run(`BL.weapon=${level};BL.spreadLeft=12;BL.bullets=[];blBurst()`);kinds.push(f.run('blWeapon().kind'));colors.push(f.run('blWeapon().color'));assert(f.state.bullets.every(b=>b.kind===kinds.at(-1)));}
   assert.equal(new Set(kinds).size,6);assert.equal(new Set(colors).size,6);
-  f.run('BL.weapon=8;BL.bullets=[];blBurst()');assert(f.state.bullets.some(b=>b.vx<0));assert(f.state.bullets.some(b=>b.vx>0));
+  f.run('BL.weapon=8;BL.spreadLeft=12;BL.bullets=[];blBurst()');assert(f.state.bullets.some(b=>b.vx<0));assert(f.state.bullets.some(b=>b.vx>0));
 });
 check('Piercing rail hits three enemies once each without repeated damage',()=>{
   const f=fixture();f.run("blStart();BL.weapon=13;BL.enemies=[440,380,320].map((y,i)=>({x:200,y,hp:100,max:100,speed:0,id:i+100}));BL.bullets=[];blBurst();var testBeam=BL.bullets[0]");
   for(let i=0;i<30;i++)f.run('if(testBeam.pierce>0)blAdvanceBullet(testBeam,.02)');
-  assert.equal(f.run('testBeam.hits.length'),3);assert.equal(f.run('testBeam.pierce'),0);for(const e of f.state.enemies)assert.equal(e.hp,93.25);
+  assert.equal(f.run('testBeam.hits.length'),3);assert.equal(f.run('testBeam.pierce'),0);for(const e of f.state.enemies)assert.equal(e.hp,91.9);
 });
 check('Rockets steer toward targets and damage nearby enemies on explosion',()=>{
   const f=fixture();f.run('blStart();BL.weapon=18;BL.enemies=[{x:320,y:160,hp:100,max:100,speed:0,id:100},{x:365,y:160,hp:100,max:100,speed:0,id:101}];BL.bullets=[];blBurst();var testRocket=BL.bullets[0]');
@@ -93,7 +93,7 @@ check('Stages are longer while later-stage and within-stage travel/spawning acce
 });
 check('Six weapon silhouettes differ and every monster renderer executes',()=>{
   const f=fixture(),signatures=new Set();
-  for(const level of [1,4,8,13,18,24]){f.state.weapon=level;f.drawCalls.length=0;f.run('blDrawPlayer()');signatures.add(JSON.stringify(f.drawCalls));}
+  for(const level of [1,4,8,13,18,24]){f.state.weapon=level;f.state.spreadLeft=12;f.drawCalls.length=0;f.run('blDrawPlayer()');signatures.add(JSON.stringify(f.drawCalls));}
   assert.equal(signatures.size,6);
   for(const type of ['octo','crab','ray','eel','turtle','jelly','mini'])f.run(`blDrawMonster(blEnemy(1,200,'${type}',20))`);
 });
@@ -137,4 +137,22 @@ check('Generated scripts compile and existing JSON child document still decodes'
   const html=fs.readFileSync(new URL('index.html',root),'utf8');for(const [,attrs,body] of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)){if(attrs.includes('application/json'))JSON.parse(body);else new vm.Script(body);}
 });
 export {results};
+check('Spread expires to twin at the same level; pickups refresh rather than stack its duration',()=>{
+ const f=fixture();f.run('blStart();BL.weapon=7;BL.pickups=[{x:200,y:532,speed:0,boost:1}];blStep(.016)');assert.equal(f.run('blWeapon().kind'),'spread');assert.equal(f.state.spreadLeft,12);
+ f.run('BL.spreadLeft=.01;BL.nextWave=100;blStep(.016)');assert.equal(f.state.spreadLeft,0);assert.equal(f.run('blWeapon().kind'),'twin');assert.equal(f.state.weapon,8);
+ f.run('BL.pickups=[{x:200,y:532,speed:0,boost:1}];blStep(.016)');assert.equal(f.run('blWeapon().kind'),'spread');assert.equal(f.state.spreadLeft,12);
+ f.run('BL.pickups=[{x:200,y:532,speed:0,boost:1}];blStep(.016)');assert.equal(f.state.spreadLeft,12);
+ f.run('BL.weapon=12;BL.pickups=[{x:200,y:532,speed:0,boost:1}];blStep(.016)');assert.equal(f.run('blWeapon().kind'),'rail');assert.equal(f.state.spreadLeft,0);
+});
+check('Spread timer pauses on hidden/background/focus/checkpoint; death clears only timed power',()=>{
+ const f=fixture();f.run('blStart();BL.weapon=8;BL.spreadLeft=7');
+ for(const pause of ['hidden','background','focus']){f.el('view-blaster').hidden=pause==='hidden';f.document.hidden=pause==='background';f.state.focused=pause!=='focus';f.advance(5000);assert.equal(f.state.spreadLeft,7);}
+ f.el('view-blaster').hidden=false;f.document.hidden=false;f.state.focused=true;f.run('blClear()');f.advance(5000);assert.equal(f.state.spreadLeft,7);f.run('blStart()');assert.equal(f.state.spreadLeft,7);f.advance(40);assert(f.state.spreadLeft<7);
+ f.run('blHurt();blHurt();blHurt();blRetry()');assert.equal(f.state.weapon,8);assert.equal(f.state.spreadLeft,0);assert.equal(f.run('blWeapon().kind'),'twin');
+});
+check('Starter can kill a first-stage octopus within three hits; crates have wider pickup reach',()=>{
+ const f=fixture();f.run('blStart();var starter=blWeapon();var hp=blHealth()');assert(Math.ceil(f.run('hp/(starter.damage*starter.scale)'))<=3);
+ f.run('BL.pickups=[{x:250,y:532,speed:0,boost:1}];blStep(.016)');assert.equal(f.state.weapon,2);
+ f.run('BL.pickups=[];BL.wave=4;blSpawn()');assert.equal(f.state.pickups.length,1);
+});
 console.log(`PASS: ${results.length} Reef Blaster behavior checks`);
