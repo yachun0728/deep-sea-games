@@ -2,10 +2,9 @@
   var birdBusy=false,birdStake=0,birdSay=function(){};
   (function(){
 const c=$('pb-canvas'),g=c.getContext('2d'),W=400,H=560,GY=440,BX=90,OL='#1b1b2f',PB={x:335,y:505,r:44};
-const TIERS=[[250,4],[180,2.8],[130,2],[90,1.4],[60,1],[30,.5]],BOSS_BONUS=.5;
+const BOSS_REWARD=1;   // points credited the moment an alpha wolf is beaten; distance pays nothing
 let best=0;try{best=+localStorage.getItem('deep-sea-bird-best')||0}catch(e){}
-let analytics=null,paid=0;
-const tierMult=s=>{for(const t of TIERS)if(s>=t[0])return t[1];return 0};
+let analytics=null,earned=0;
 const rnd=(a,b)=>a+Math.random()*(b-a),cl=(x,a,b)=>Math.max(a,Math.min(b,x));
 const O=(f,w)=>{g.fillStyle=f;g.fill();g.lineWidth=w||4;g.strokeStyle=OL;g.lineJoin='round';g.stroke()};
 const C=(x,y,r,f,w)=>{g.beginPath();g.arc(x,y,r,0,7);O(f,w||3)};
@@ -17,7 +16,6 @@ let st='ready',by,vy,on,buf,hold=false,hid=-1,jc,boost,obs,proj,dist,v,nextAt,cn
 function reset(){by=GY;vy=0;on=true;buf=0;jc=0;boost=0;obs=[];proj=[];dist=0;v=290;nextAt=450;cnt=0;lb=-1;boss=false;eggs=0;fxs=[];sq=0;shake=0;pcd=0;warnT=0}
 reset();
 const score=()=>Math.floor(dist/60);
-const mult=()=>tierMult(score())+BOSS_BONUS*eggs;
 function say(text,kind){$('pb-msg').textContent=text;$('pb-msg').className='msg'+(kind?' '+kind:'')}
 birdSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
@@ -25,17 +23,14 @@ function ui(){
  const s=score(),live=st==='run';
  setText('pb-score',s+' m');setText('pb-boss',eggs+' 隻');setText('pb-best',best+' m');
  $('pb-amount').disabled=birdBusy;$('pb-go').disabled=live;setText('pb-go',live?'奔跑中 · 點畫面跳躍':st==='over'?'扣點再跑一次':'扣點開始奔跑');
- let tier=0;TIERS.forEach(t=>{if(!tier&&s>=t[0])tier=t[0]});
- document.querySelectorAll('[data-pb-tier]').forEach(el=>el.setAttribute('aria-current',st!=='ready'&&Number(el.dataset.pbTier)===tier?'step':'false'));
 }
 function die(){
  if(st!=='run')return;
- st='over';hold=false;shake=reduceMotion?0:.35;const s=score(),m=mult();paid=Math.floor(birdStake*m);rec=s>best;
+ st='over';hold=false;shake=reduceMotion?0:.35;const s=score();rec=s>best;
  if(rec){best=s;try{localStorage.setItem('deep-sea-bird-best',best)}catch(e){}}
- AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,bosses:eggs,multiplier:m});birdBusy=false;S.balance+=paid;save();renderAll();
- const bossText=eggs?'、擊退 '+eggs+' 隻狼王':'';
- if(!paid)say('跑了 '+s+' 公尺，這一局沒有點數。','lose');
- else say('跑了 '+s+' 公尺'+bossText+'，領回 '+fmt(paid)+' 點。','win');
+ AN.end(analytics,earned,earned>0?'complete':'loss',{score:s,bosses:eggs});birdBusy=false;save();renderAll();
+ if(!earned)say('跑了 '+s+' 公尺，這一局沒有點數。','lose');
+ else say('跑了 '+s+' 公尺、擊退 '+eggs+' 隻狼王，本局共入帳 '+fmt(earned)+' 點。','win');
  ui();
 }
 function jump(){
@@ -73,7 +68,7 @@ else{o.x-=(v+45)*dt;if(o.hit>0)o.hit-=dt;if(hitRect(o.x-20,o.y-400,o.x+128,o.y))
 for(const p of proj){p.x+=650*dt;
 for(const a of obs){if(a.k!=='a'||a.dead||p.dead)continue;
 if(p.x>=a.x-20&&p.x<=a.x+128&&p.y>a.y-120&&p.y<a.y){p.dead=1;a.hp--;a.x+=55;a.hit=.2;shake=reduceMotion?0:.12;fxs.push({x:a.x,y:a.y-90,t:0,s:'啪！'});
-if(a.hp<=0){a.dead=1;a.vy=-420;boss=false;nextAt=dist+380;eggs++;fxs.push({x:W/2,y:200,t:0,s:'救回一顆蛋！'});say('擊退狼王！救回第 '+eggs+' 顆蛋。','win')}}}}
+if(a.hp<=0){a.dead=1;a.vy=-420;boss=false;nextAt=dist+380;eggs++;earned+=BOSS_REWARD;S.balance+=BOSS_REWARD;save();renderAll();AN.progress(analytics,{step:score(),score:score(),bosses:eggs,bonus_points:BOSS_REWARD});fxs.push({x:W/2,y:200,t:0,s:'救回一顆蛋！ +'+BOSS_REWARD+' 點'});say('擊退狼王！救回第 '+eggs+' 顆蛋，+'+BOSS_REWARD+' 點已入帳。','win')}}}}
 proj=proj.filter(p=>!p.dead&&p.x<W+30);
 obs=obs.filter(o=>o.x>-220&&o.x<W+500&&o.y<H+200)}
 function drawPoop(x,y,s,rot){
@@ -160,13 +155,13 @@ if(pcd>0){g.strokeStyle='#ff5d8f';g.lineWidth=5;g.beginPath();g.arc(PB.x,PB.y,PB
 if(st!=='run'){
 g.fillStyle='rgba(27,27,47,.55)';g.fillRect(0,0,W,H);
 if(st==='ready'){tx('便便鳥大戰狼群',W/2,200,32,'#ffd23f');tx('狼群偷走了你的蛋！',W/2,252,19,'#fff1c1');tx('躲開障礙，再賞狼王一坨！',W/2,282,19,'#fff1c1');tx('到操作區扣點開始',W/2,340,24,'#ffd23f')}
-else{tx('哎喲！被撞到了',W/2,180,32,'#ff5d8f');tx(s+' m',W/2,244,50,'#fff1c1');tx('擊退狼王：'+eggs+' 隻',W/2,284,20,'#fff1c1');tx(paid>0?'領回 '+fmt(paid)+' 點':'距離不夠，沒有點數',W/2,320,22,paid>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,352,20,'#ffd23f');tx('到操作區再跑一次',W/2,396,20,'#fff1c1')}}}
+else{tx('哎喲！被撞到了',W/2,180,32,'#ff5d8f');tx(s+' m',W/2,244,50,'#fff1c1');tx('擊退狼王：'+eggs+' 隻',W/2,284,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'沒打贏狼王，沒有點數',W/2,320,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,352,20,'#ffd23f');tx('到操作區再跑一次',W/2,396,20,'#fff1c1')}}}
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
  analytics=AN.start('bird',amount);birdStake=amount;birdBusy=true;S.balance-=amount;save();renderAll();
- reset();paid=0;rec=false;hold=false;hid=-1;st='run';last=performance.now();say('出發！看障礙上方的標記決定點幾下，狼王出現就丟便便。');ui();c.focus();
+ reset();earned=0;rec=false;hold=false;hid=-1;st='run';last=performance.now();say('出發！看障礙上方的標記決定點幾下，狼王出現就丟便便。');ui();c.focus();
 }
 function pos(e){const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}}
 function down(id){if(st!=='run'||$('view-bird').hidden||document.hidden)return false;hid=id;hold=true;jump();return true}
