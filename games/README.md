@@ -28,3 +28,4 @@
 | [深海火線 Reef Blaster](blaster/README.md) | `#blaster` | 技巧闖關 | 顯示 | 253 行 | 六種武器進化，迎戰換道、護盾與分裂怪。 |
 | [一口氣探險 One Breath Dive](dive/README.md) | `#dive` | 技巧闖關 | 顯示 | 57 行 | 選路線往下潛撿珍珠，氧氣用完前上浮結算。 |
 | [捷運搶位 MRT Seat Grab](mrt/README.md) | `#mrt` | 技巧闖關 | 顯示 | 56 行 | 看小動作猜誰要下車，搶到座位倍率升一階。 |
+| [泡麵煎餅翻面 Noodle Pancake](pancake/README.md) | `#pancake` | 技巧闖關 | 顯示 | 43 行 | 半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。 |

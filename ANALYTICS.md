@@ -82,6 +82,10 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 原版畫面以內嵌文件保留，開始與重玩各扣 20 點，沒有點數獎勵。平台記錄 `game_start`、成功杯數的 `game_progress`，與領回為 0 的 `game_end`。原版復活選擇與示範廣告不計入有效遊玩時間；在遊戲內的點擊與按鍵會通知平台，讓跨文件的遊玩時間正確計算。
 
+## 泡麵煎餅翻面（pancake）
+
+子頁以 iframe 載入，開始與再煎一次各扣 10 點（看示範廣告後 30 分鐘內 entry_points 為 0，另附 `entry_kind=free_pass`），沒有點數獎勵。平台記錄 `game_start`、每煎好一片的 `game_progress`（`step` 為片數）、泡麵用完時的暫停 checkpoint、以 30 點換泡麵的 `game_progress`（`phase=buy_noodles`、`extra_points`）、續煎時的 `game_resume`，以及領回為 0 的 `game_end`（附 `score`、`cleared`、`extra_spent_points`；整局總支出為 entry_points 加 extra_spent_points）。子頁內的點擊、按鍵與晃動會節流通知平台，避免跨文件遊玩時間被當成閒置。子頁自己的本機事件只存 localStorage，不另外送出。
+
 ## 死神打工（reaper）
 
 每局先扣入場點數，十班制；普通靈魂要接走，綠色通行證要放行。每班全部處理完才送出 `game_progress`，班次以 `stage` 記錄，累計接走數以 `score` 記錄。過關選擇時間不列入有效遊玩時間；收手與三顆心用完分別送出 `cashout` 與 `loss` 的 `game_end`。第一班領回 0.70 倍，第十班自動領回 22 倍。

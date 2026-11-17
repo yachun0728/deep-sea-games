@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d0b0a">
+<title>泡麵煎餅翻面</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#000;overflow:hidden;overscroll-behavior:none;touch-action:none;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;color:#f5ead6}
+body{position:fixed;inset:0}
+#app{position:relative;width:100%;max-width:480px;height:100%;margin:0 auto;overflow:hidden;background:#0d0b0a}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.hidden{display:none!important}
+
+/* 文字風格：跟 landing 標題一樣，奶油白／金黃字＋醬汁色描邊 */
+:root{--cream:#fbfaf3;--gold:#f8c23c;--sauce:#a8301a;--sauce-dk:#5a1a0c;--crust:#6e3f16;--crust-dk:#3a1d08}
+.ol-sauce{text-shadow:0 2px 0 var(--sauce),2px 0 0 var(--sauce),-2px 0 0 var(--sauce),0 -2px 0 var(--sauce),2px 2px 0 var(--sauce),-2px 2px 0 var(--sauce),2px -2px 0 var(--sauce),-2px -2px 0 var(--sauce),0 5px 0 var(--sauce-dk)}
+.ol-crust{text-shadow:0 2px 0 var(--crust),2px 0 0 var(--crust),-2px 0 0 var(--crust),0 -2px 0 var(--crust),2px 2px 0 var(--crust),-2px 2px 0 var(--crust),2px -2px 0 var(--crust),-2px -2px 0 var(--crust),0 5px 0 var(--crust-dk)}
+#hud{position:absolute;left:0;right:0;top:0;padding:calc(12px + env(safe-area-inset-top)) 14px 0 14px;z-index:5;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+#hud-order{font-weight:900;font-size:18px;color:var(--cream);letter-spacing:1px}
+#hud-lives{font-size:20px;letter-spacing:3px;filter:drop-shadow(0 2px 2px #000)}
+#hud-streak{color:var(--gold);font-weight:900;font-size:15px}
+#mute{position:absolute;top:calc(8px + env(safe-area-inset-top));right:10px;z-index:40;width:42px;height:42px;border-radius:50%;
+  border:1px solid #ffffff30;background:#00000070;color:#fff;font-size:20px;cursor:pointer}
+#hint{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));width:max-content;max-width:calc(100% - 150px);z-index:5;pointer-events:none;
+  font-size:13px;font-weight:700;line-height:1.45;text-align:center;background:rgba(40,18,6,.82);border:2px solid var(--crust);border-radius:12px;padding:6px 12px;color:#f1e3c6}
+#hint b{color:var(--gold)}
+#hint:empty{display:none}
+
+.screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+  padding:calc(24px + env(safe-area-inset-top)) 22px calc(24px + env(safe-area-inset-bottom));text-align:center;
+  background:linear-gradient(180deg,rgba(10,10,30,.78),rgba(14,8,4,.86));-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:20;gap:14px}
+.screen.show{display:flex}
+.screen h2{font-size:28px;font-weight:900;color:var(--gold);letter-spacing:1px;line-height:1.3}
+.screen p{font-size:16px;line-height:1.6;color:#f1e3c6;font-weight:600}
+.screen .small{font-size:13px;color:#cdbb98;font-weight:400}
+.btn{appearance:none;border:none;border-radius:14px;padding:14px 22px;min-width:220px;font-size:18px;font-weight:900;cursor:pointer;
+  background:#f2a52b;color:#2b1500;box-shadow:0 4px 0 #8a520c;font-family:inherit;letter-spacing:1px}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #8a520c}
+.btn.sec{background:var(--cream);color:var(--sauce);box-shadow:0 4px 0 #b9a77e}
+.btn.sec:active{box-shadow:0 1px 0 #b9a77e}
+.btn.ghost{background:transparent;color:#d9c7a6;box-shadow:none;font-size:15px;font-weight:600;text-decoration:underline;padding:6px}
+.btn[disabled]{opacity:.4}
+.btn.dim{opacity:.55}
+.big-emoji{font-size:64px;line-height:1;filter:drop-shadow(0 3px 3px #000)}
+#calib-count{font-size:72px;font-weight:900;color:var(--gold);min-height:84px}
+#s-title{gap:8px;justify-content:space-between;pointer-events:none;-webkit-backdrop-filter:none;backdrop-filter:none;background:
+  linear-gradient(180deg,rgba(8,10,30,.55) 0%,rgba(8,10,30,0) 26%,rgba(0,0,0,0) 72%,rgba(10,6,2,.82) 88%,rgba(10,6,2,.92) 100%)}
+#s-title button{pointer-events:auto}
+.t-top,.t-bot{display:flex;flex-direction:column;align-items:center;gap:6px}
+.t-top{margin-top:calc(26px + env(safe-area-inset-top))}
+.t-bot .small{color:#f1e3c6;text-shadow:0 1px 3px #000}
+#t-clock{position:absolute;top:calc(14px + env(safe-area-inset-top));left:16px;font:600 13px ui-monospace,Menlo,monospace;color:#ff6b5a;
+  background:#000;border:1px solid #ffffff22;border-radius:6px;padding:3px 8px;letter-spacing:1px;text-shadow:0 0 6px #ff3b2a}
+#t-clock span{text-shadow:none}
+#t-logo{display:flex;flex-direction:column;align-items:center;line-height:1.05;transform:rotate(-3deg)}
+#t-logo .l1{font-size:42px;font-weight:900;color:#fbfaf3;letter-spacing:3px;
+  text-shadow:0 3px 0 #a8301a,3px 0 0 #a8301a,-3px 0 0 #a8301a,0 -3px 0 #a8301a,3px 3px 0 #a8301a,-3px 3px 0 #a8301a,0 8px 0 #5a1a0c}
+#t-logo .l2{font-size:48px;font-weight:900;color:#f8c23c;letter-spacing:10px;margin-top:4px;transform:rotate(4deg);
+  text-shadow:0 3px 0 #6e3f16,3px 0 0 #6e3f16,-3px 0 0 #6e3f16,0 -3px 0 #6e3f16,3px 3px 0 #6e3f16,-3px 3px 0 #6e3f16,0 8px 0 #3a1d08}
+#t-sub{font-size:15px;color:#f1e3c6;margin-top:4px;text-shadow:0 1px 4px #000,0 0 10px #000}
+/* 點數 */
+.wallet-pill{pointer-events:none;font-size:14px;font-weight:700;color:#f1e3c6;background:rgba(40,18,6,.82);border:2px solid var(--crust);
+  border-radius:999px;padding:5px 14px;line-height:1.4;text-align:center}
+.wallet-pill b{color:var(--gold);font-size:17px;font-weight:900}
+.wallet-pill .w-sub{font-size:11px;font-weight:400;color:#cdbb98}
+.wallet-pill:empty{display:none}
+.btn-sub{font-size:12px;font-weight:600;opacity:.85;letter-spacing:0}
+#t-warn{font-size:12px;color:#bfae90!important}
+
+#rotate{position:absolute;inset:0;z-index:60;background:#0d0b0aF2;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;font-size:18px}
+#rotate.show{display:flex}
+#countdown{position:absolute;inset:0;z-index:30;display:none;align-items:center;justify-content:center;font-size:96px;font-weight:800;color:#ffd166;text-shadow:0 4px 0 #000;pointer-events:none}
+#countdown.show{display:flex}
+
+#toast{position:absolute;left:50%;bottom:22%;transform:translateX(-50%);z-index:70;background:#000000d8;color:#fff;padding:12px 18px;border-radius:12px;
+  font-size:15px;line-height:1.5;max-width:86%;text-align:center;opacity:0;transition:opacity .25s;pointer-events:none}
+#toast.show{opacity:1}
+
+#s-ad{background:#8a8a8a;color:#222;-webkit-backdrop-filter:none;backdrop-filter:none}
+#s-ad p{color:#222}
+#ad-count{font-size:80px;font-weight:900;color:#333}
+
+#s-result{justify-content:flex-start;overflow-y:auto;touch-action:pan-y;gap:10px}
+#rcv{width:100%;max-width:340px;height:200px;border-radius:14px;flex-shrink:0}
+#r-rank{color:var(--cream);font-size:24px;font-weight:900}
+#r-notes{font-size:14px;color:#f3b08a;line-height:1.6}
+#r-stats{font-size:14px;color:#cbb994}
+#s-result .btn{min-width:240px;padding:12px 20px;font-size:17px}
+
+#debug{position:absolute;left:4px;top:110px;z-index:50;font:11px/1.35 ui-monospace,Menlo,monospace;background:#000000b0;color:#7fff9f;
+  padding:6px 8px;border-radius:6px;white-space:pre;pointer-events:auto}
+#debug button{font:11px ui-monospace,monospace;margin-top:4px;padding:3px 6px;border-radius:4px;border:none;background:#2c6;color:#012}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="cv"></canvas>
+
+  <div id="hud" class="hidden">
+    <div id="hud-order" class="ol-sauce"></div>
+    <div id="hud-lives"></div>
+    <div id="hud-streak" class="ol-crust"></div>
+  </div>
+  <div id="hint"></div>
+  <button id="mute" aria-label="靜音">🔊</button>
+
+  <!-- 開始畫面 -->
+  <div id="s-title" class="screen show">
+    <div id="t-clock"><span>🌙</span> 02:13 AM</div>
+    <div class="t-top">
+      <h1 id="t-logo"><span class="l1">泡麵煎餅</span><span class="l2">翻面</span></h1>
+      <p id="t-sub">半夜偷煮宵夜中，小聲一點 🤫</p>
+    </div>
+    <div class="t-bot">
+      <div class="wallet-pill" id="t-wallet"></div>
+      <p class="small">晃手機讓煎餅滑動、別黏鍋・外圈變<b style="color:#ffc23a">金黃</b>就往上甩</p>
+      <button class="btn" id="btn-fire">🔥 開火</button>
+      <p class="small" id="t-warn">請握緊手機，手機飛出去不在保固範圍 📱</p>
+    </div>
+  </div>
+
+  <!-- 權限 / 感應器訊息 -->
+  <div id="s-perm" class="screen">
+    <div class="big-emoji" id="perm-emoji">📱</div>
+    <p id="perm-msg" class="ol-sauce" style="font-size:20px;font-weight:900;color:var(--cream)">感應器檢查中…</p>
+    <p class="small" id="perm-sub"></p>
+    <button class="btn sec hidden" id="btn-copyurl">📋 複製網址</button>
+    <button class="btn hidden" id="btn-touch">👆 用手指玩</button>
+  </div>
+
+  <!-- 校準 -->
+  <div id="s-calib" class="screen">
+    <div class="big-emoji" id="calib-emoji">🍳</div>
+    <p id="calib-msg" class="ol-sauce" style="font-size:22px;font-weight:900;color:var(--cream)"></p>
+    <div id="calib-count" class="ol-crust"></div>
+    <button class="btn sec hidden" id="btn-calib-touch">👆 搖不起來？用手指玩</button>
+    <button class="btn ghost hidden" id="btn-skip-calib">跳過校準（用上次的設定）</button>
+  </div>
+
+  <!-- 續命 -->
+  <div id="s-revive" class="screen">
+    <div class="big-emoji">🍜💨</div>
+    <h2 class="ol-crust">泡麵用完了…</h2>
+    <p id="revive-sub"></p>
+    <div class="wallet-pill" id="revive-wallet"></div>
+    <button class="btn" id="btn-free">🎟️ 狂煎中！免費補 3 包</button>
+    <button class="btn" id="btn-ad">📺 看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎，不扣點數</span></button>
+    <button class="btn sec" id="btn-buy">💰 用 30 點換 5 包泡麵</button>
+    <p class="small" id="buy-note"></p>
+    <button class="btn ghost" id="btn-sleep">不煮了，去睡覺 😴</button>
+  </div>
+
+  <!-- 點數不足 -->
+  <div id="s-low" class="screen">
+    <div class="big-emoji">🪙💨</div>
+    <h2 class="ol-crust">點數不夠開火了…</h2>
+    <div class="wallet-pill" id="low-wallet"></div>
+    <p class="small">每局需要 10 點。低於 100 點時每分鐘會自動回 1 點。</p>
+    <button class="btn" id="btn-low-ad">📺 看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎，不扣點數</span></button>
+    <button class="btn ghost" id="btn-low-back">先等等，回首頁</button>
+  </div>
+
+  <!-- 假廣告 -->
+  <div id="s-ad" class="screen">
+    <p style="font-size:22px;font-weight:700">這裡是廣告（模擬）</p>
+    <div id="ad-count">5</div>
+    <p class="small" style="color:#333">廣告結束後送你 1 包泡麵</p>
+  </div>
+
+  <!-- 結算 -->
+  <div id="s-result" class="screen">
+    <h2 id="r-title" class="ol-crust"></h2>
+    <canvas id="rcv"></canvas>
+    <div id="r-stats"></div>
+    <div style="font-weight:700;color:#f1e3c6">稱號：「<b id="r-rank" class="ol-sauce"></b>」</div>
+    <div id="r-notes"></div>
+    <div class="wallet-pill" id="r-wallet"></div>
+    <button class="btn" id="btn-retry">🔁 再煎一次</button>
+    <button class="btn sec" id="btn-share">📤 分享成績</button>
+    <button class="btn ghost" id="btn-next">想玩第 2 晚？</button>
+  </div>
+
+  <div id="countdown"></div>
+  <div id="rotate"><div class="big-emoji">📱↩️</div><div>請轉回直式，或先鎖定螢幕旋轉 🔒</div></div>
+  <div id="toast"></div>
+  <div id="debug" class="hidden"><div id="debug-text"></div><button id="btn-export">匯出事件 JSON</button></div>
+</div>
+
+<script>
+'use strict';
+/* =========================================================
+   可調參數
+   ========================================================= */
+const CONFIG = {
+  // 關卡
+  level1Target: 3,            // 第 1 晚要煎幾片
+  startLives: 3,
+  maxLives: 5,
+  perfectStreakReward: 3,
+
+  // 熟度（秒）
+  rawUntil: 1.2,              // 0 ~ 1.2 秒：生的
+  goldenUntil: 2.0,           // 1.2 ~ 2.0 秒：金黃
+  burntAt: 2.8,               // 2.0 ~ 2.8 秒：有點焦；2.8 秒：黑炭
+
+  // 黏鍋
+  stickFillSeconds: 1.5,      // 不動多久會黏住
+  stickMoveThreshold: 0.15,   // 低於這個速度算「沒在動」（單位：鍋子半徑/秒）
+  unstickSeconds: 0.8,        // 黏住後要持續晃多久才會鬆開
+
+  // 晃
+  maxTiltDeg: 30,
+  tiltForce: 1.0,
+  panAccel: 6,                // 傾斜到 maxTiltDeg 時的加速度（鍋子半徑/秒²）
+  friction: 0.92,             // 每 1/60 秒保留的速度比例
+  pauseTiltAroundShake: 0.3,  // 搖動前後暫停晃的物理（秒）
+
+  // 搖
+  shakeMinAccel: 12,          // 最低門檻（m/s²），低於這個不算搖
+  weakRatio: 0.5,             // 低於標準力道的幾倍算太輕
+  strongRatio: 1.8,           // 高於標準力道的幾倍算太大力
+  shakeCooldown: 0.6,
+
+  // 觸控備案
+  touchJoystickPx: 90,        // 手指拖多遠 = 傾斜到 maxTiltDeg
+  touchStandardSpeed: 1.5,    // 「標準」上滑速度（px/ms）
+  touchMinFlickSpeed: 0.5,    // 低於這個上滑速度不算搖
+  touchMinFlickDist: 30,      // 最少要往上滑多少 px
+
+  // 媽媽開門
+  level1MomEvent: true,
+  momTriggerAt: 0.6,          // 第 3 片第一面煎到幾秒時觸發
+  momGrace: 0.9,              // 出現大字後，給玩家反應的時間（秒）
+  momStillSeconds: 1.5,
+  momTiltTolerance: 4,        // 傾斜變化超過幾度算「動了」
+  momAccelTolerance: 2.5,     // 加速度變化超過多少算「動了」
+
+  // 其他
+  sensorTimeout: 1.5,         // 幾秒收不到感應數據就顯示提示
+  fakeAdSeconds: 5,
+
+  // 點數（跟 deep-sea-games 大廳共用同一個餘額）
+  entryFee: 10,               // 每局開火扣幾點（跟大廳每局 10 點一致）；設 0 = 不收
+  buyNoodlesCost: 30,         // 用幾點換泡麵
+  buyNoodlesAmount: 5,        // 換幾包
+  adFreeMinutes: 30,          // 看完廣告後，幾分鐘內不扣點數（開局免費、泡麵免費補）
+  freeRefillLives: 3,         // 不扣點時間內，泡麵用完可以免費補幾包
+};
+const TRACK_ENDPOINT = '';
+const GAME_ID = 'noodle_pancake';
+const EVENTS_KEY = 'noodle_pancake_events';
+const CALIB_KEY = 'noodle_pancake_calib';
+const DEBUG = new URLSearchParams(location.search).get('debug') === '1';
+
+/* =========================================================
+   小工具
+   ========================================================= */
+const $ = (id) => document.getElementById(id);
+const now = () => performance.now() / 1000;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+function hex2rgb(h) { h = h.replace('#', ''); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; }
+function mixColor(a, b, t) { const A = hex2rgb(a), B = hex2rgb(b); return [0, 1, 2].map(i => Math.round(lerp(A[i], B[i], clamp(t, 0, 1)))); }
+const rgba = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+const shade = (c, k) => c.map(v => clamp(Math.round(v * k), 0, 255));
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+const UA = navigator.userAgent || '';
+const IS_IOS = /iPhone|iPad|iPod/i.test(UA) || (/Macintosh/.test(UA) && navigator.maxTouchPoints > 1);
+const IS_ANDROID = /Android/i.test(UA);
+const IS_MOBILE = IS_IOS || IS_ANDROID;
+const IN_APP = /Line\/|FBAN|FBAV|FB_IAB|Instagram|Slack|MicroMessenger|KAKAOTALK|Twitter|; wv\)/i.test(UA);
+const DEVICE = IS_IOS ? 'iOS' : IS_ANDROID ? 'Android' : 'other';
+
+function toast(msg, sec = 2.4) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._h); toast._h = setTimeout(() => t.classList.remove('show'), sec * 1000);
+}
+function vibrate(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+async function copyText(text) {
+  try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return true; } } catch (e) {}
+  try {
+    const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); return ok;
+  } catch (e) { return false; }
+}
+/* 平台橋接：嵌在 deep-sea-games 裡時，扣點／追蹤交給大廳（window.parent.deepSeaPancake） */
+function pancakeHost() { try { return window.parent !== window ? window.parent.deepSeaPancake || null : null; } catch (_) { return null; } }
+const HOST = pancakeHost();
+function cleanUrl() {
+  if (HOST) { try { const l = window.parent.location; return l.origin + l.pathname + '#pancake'; } catch (_) {} }
+  return location.origin + location.pathname;
+}
+
+/* =========================================================
+   數據紀錄
+   ========================================================= */
+let inputMode = IS_MOBILE ? 'motion' : 'touch';
+let isReturning = false;
+const playerId = (() => {
+  let id = lsGet('mini_player_id');
+  isReturning = !!id;
+  if (!id) { id = 'p_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36); lsSet('mini_player_id', id); }
+  return id;
+})();
+function track(eventName, data = {}) {
+  const rec = { ts: new Date().toISOString(), player_id: playerId, game_id: GAME_ID, input_mode: inputMode, event: eventName, data };
+  console.log('[track]', eventName, data);
+  try {
+    const arr = JSON.parse(lsGet(EVENTS_KEY) || '[]');
+    arr.push(rec); if (arr.length > 3000) arr.splice(0, arr.length - 3000);
+    lsSet(EVENTS_KEY, JSON.stringify(arr));
+  } catch (e) {}
+  if (TRACK_ENDPOINT) {
+    try {
+      fetch(TRACK_ENDPOINT, {
+        method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ player_id: playerId, game_id: GAME_ID, input_mode: inputMode, event: eventName, data })
+      }).catch(() => {});
+    } catch (e) {}
+  }
+}
+/* =========================================================
+   點數錢包：跟 deep-sea-games 共用 localStorage（同一個 github.io 網域才會共用）
+   ========================================================= */
+const Wallet = {
+  STORE: 'crush-depth-balance', REGEN_KEY: 'deep-sea-regen-at', FREE_KEY: 'deep-sea-free-until',
+  START: 500, REGEN_CAP: 100, REGEN_MS: 60000,
+  bal: 500, regenAt: Date.now(), last: 500,
+  load() {
+    const v = parseInt(lsGet(this.STORE), 10); this.bal = isFinite(v) && v >= 0 ? v : this.START;
+    const t = Number(lsGet(this.REGEN_KEY)); if (isFinite(t) && t > 0) this.regenAt = t;
+    this.last = this.bal; this.tick(Date.now());
+  },
+  save() {
+    if (this.last >= this.REGEN_CAP && this.bal < this.REGEN_CAP) this.regenAt = Date.now();
+    this.last = this.bal;
+    lsSet(this.STORE, String(this.bal)); lsSet(this.REGEN_KEY, String(this.regenAt));
+  },
+  // 低於 100 點時每分鐘回 1 點（跟大廳同一套規則，關掉頁面也會算）
+  tick(now) {
+    // 別的分頁可能改過餘額，先同步
+    const v = parseInt(lsGet(this.STORE), 10); if (isFinite(v) && v >= 0 && v !== this.bal) { this.bal = v; this.last = v; }
+    if (this.bal >= this.REGEN_CAP) { this.regenAt = now; return false; }
+    if (now < this.regenAt) this.regenAt = now;
+    const mins = Math.floor((now - this.regenAt) / this.REGEN_MS);
+    if (mins < 1) return false;
+    this.bal += Math.min(mins, this.REGEN_CAP - this.bal);
+    this.regenAt = this.bal >= this.REGEN_CAP ? now : this.regenAt + mins * this.REGEN_MS;
+    this.save(); return true;
+  },
+  spend(n) { if (this.bal < n) return false; this.bal -= n; this.save(); return true; },
+  freeUntil() { const t = Number(lsGet(this.FREE_KEY)); return isFinite(t) ? t : 0; },
+  freeLeftMs() { return Math.max(0, this.freeUntil() - Date.now()); },
+  isFree() { return this.freeLeftMs() > 0; },
+  grantFree(min) { lsSet(this.FREE_KEY, String(Date.now() + min * 60000)); },
+  canStart() { return this.isFree() || this.bal >= CONFIG.entryFee; },
+};
+if (HOST) {
+  // 嵌在大廳裡：餘額以大廳的 S.balance 為準，回點也由大廳負責
+  Wallet.load = function () { this.bal = HOST.balance(); this.last = this.bal; };
+  Wallet.tick = function () { this.bal = HOST.balance(); return false; };
+  Wallet.save = function () {};
+  Wallet.spend = function (n) { const ok = HOST.spend(window, n); this.bal = HOST.balance(); return ok; };
+}
+function fmtMs(ms) { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+function walletText() {
+  if (Wallet.isFree()) return `🎟️ 狂煎時間 ${fmtMs(Wallet.freeLeftMs())}・不扣點`;
+  let t = `💰 餘額 <b>${Wallet.bal}</b> 點` + (CONFIG.entryFee ? `・每局 ${CONFIG.entryFee} 點` : '');
+  if (!HOST && Wallet.bal < Wallet.REGEN_CAP) {
+    const s = Math.max(1, Math.min(60, Math.ceil((Wallet.REGEN_MS - (Date.now() - Wallet.regenAt)) / 1000)));
+    t += `<br><span class="w-sub">下一點 ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}・回到 ${Wallet.REGEN_CAP} 點為止</span>`;
+  }
+  return t;
+}
+function renderWallet() {
+  const html = walletText();
+  for (const id of ['t-wallet', 'revive-wallet', 'r-wallet', 'low-wallet']) { const el = $(id); if (el && el.innerHTML !== html) el.innerHTML = html; }
+  if (appState === 'revive' && G) renderReviveButtons();
+}
+
+function eventCount() { try { return JSON.parse(lsGet(EVENTS_KEY) || '[]').length; } catch (e) { return 0; } }
+
+/* =========================================================
+   音效（Web Audio）
+   ========================================================= */
+const Snd = {
+  ctx: null, master: null, muted: false, sizzleGain: null, noiseBuf: null,
+  init() {
+    if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    try {
+      this.ctx = new AC();
+      this.master = this.ctx.createGain(); this.master.gain.value = this.muted ? 0 : 0.55; this.master.connect(this.ctx.destination);
+      const len = this.ctx.sampleRate * 2; this.noiseBuf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+      const d = this.noiseBuf.getChannelData(0); for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      // 持續的滋滋聲
+      const src = this.ctx.createBufferSource(); src.buffer = this.noiseBuf; src.loop = true;
+      const bp = this.ctx.createBiquadFilter(); bp.type = 'highpass'; bp.frequency.value = 2500;
+      const lp = this.ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 7000;
+      this.sizzleGain = this.ctx.createGain(); this.sizzleGain.gain.value = 0;
+      src.connect(bp); bp.connect(lp); lp.connect(this.sizzleGain); this.sizzleGain.connect(this.master); src.start();
+      // iOS 解鎖
+      const o = this.ctx.createOscillator(), g = this.ctx.createGain(); g.gain.value = 0; o.connect(g); g.connect(this.master); o.start(); o.stop(this.ctx.currentTime + 0.05);
+    } catch (e) { this.ctx = null; }
+  },
+  setMuted(m) { this.muted = m; if (this.master) this.master.gain.setTargetAtTime(m ? 0 : 0.55, this.ctx.currentTime, 0.02); },
+  sizzle(level) {
+    if (!this.ctx || !this.sizzleGain) return;
+    // 隨機抖動，像油在跳
+    const v = level > 0 ? level * (0.75 + Math.random() * 0.5) : 0;
+    this.sizzleGain.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05);
+  },
+  tone(f, dur, o = {}) {
+    if (!this.ctx) return;
+    const t0 = this.ctx.currentTime + (o.delay || 0);
+    const osc = this.ctx.createOscillator(), g = this.ctx.createGain();
+    osc.type = o.type || 'sine'; osc.frequency.setValueAtTime(f, t0);
+    if (o.f2) osc.frequency.exponentialRampToValueAtTime(o.f2, t0 + dur);
+    const v = o.vol == null ? 0.25 : o.vol, a = o.attack || 0.005;
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + a); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    let node = osc;
+    if (o.lp) { const f1 = this.ctx.createBiquadFilter(); f1.type = 'lowpass'; f1.frequency.value = o.lp; osc.connect(f1); node = f1; }
+    node.connect(g); g.connect(this.master); osc.start(t0); osc.stop(t0 + dur + 0.05);
+  },
+  noise(dur, o = {}) {
+    if (!this.ctx) return;
+    const t0 = this.ctx.currentTime + (o.delay || 0);
+    const src = this.ctx.createBufferSource(); src.buffer = this.noiseBuf;
+    const f = this.ctx.createBiquadFilter(); f.type = o.type || 'bandpass'; f.frequency.setValueAtTime(o.freq || 1000, t0); f.Q.value = o.q || 1;
+    if (o.f2) f.frequency.exponentialRampToValueAtTime(o.f2, t0 + dur);
+    const g = this.ctx.createGain(); const v = o.vol == null ? 0.4 : o.vol;
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + (o.attack || 0.01)); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    src.connect(f); f.connect(g); g.connect(this.master); src.start(t0, Math.random()); src.stop(t0 + dur + 0.05);
+  },
+  click() { this.tone(900, 0.05, { type: 'square', vol: 0.08 }); },
+  pour() { this.noise(0.35, { type: 'lowpass', freq: 900, f2: 300, vol: 0.5 }); this.tone(220, 0.2, { f2: 110, vol: 0.2 }); },
+  golden() { this.tone(1320, 0.12, { vol: 0.08 }); },
+  flip() { this.noise(0.28, { freq: 500, f2: 2500, q: 2, vol: 0.45 }); this.tone(420, 0.15, { f2: 840, type: 'triangle', vol: 0.15 }); this.noise(0.12, { type: 'lowpass', freq: 600, vol: 0.4, delay: 0.42 }); },
+  hop() { this.tone(300, 0.12, { f2: 420, type: 'triangle', vol: 0.2 }); this.tone(380, 0.1, { f2: 260, type: 'triangle', vol: 0.15, delay: 0.12 }); },
+  stuck() { this.tone(140, 0.12, { type: 'square', vol: 0.12, lp: 600 }); this.tone(120, 0.15, { type: 'square', vol: 0.12, lp: 600, delay: 0.13 }); },
+  perfect() { [660, 880, 1100, 1320].forEach((f, i) => this.tone(f, 0.25, { vol: 0.16, delay: i * 0.08 })); this.tone(1760, 0.5, { vol: 0.08, delay: 0.32 }); },
+  normal() { this.tone(523, 0.15, { vol: 0.15 }); this.tone(659, 0.25, { vol: 0.15, delay: 0.12 }); },
+  raw() { this.tone(330, 0.3, { f2: 200, type: 'triangle', vol: 0.2 }); this.noise(0.2, { type: 'lowpass', freq: 400, vol: 0.25, delay: 0.25 }); },
+  thud() { this.tone(90, 0.25, { f2: 45, vol: 0.5 }); this.noise(0.18, { type: 'lowpass', freq: 500, vol: 0.5 }); },
+  meow(delay = 0) {
+    if (!this.ctx) return;
+    const t0 = this.ctx.currentTime + delay;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain(), f = this.ctx.createBiquadFilter();
+    o.type = 'sawtooth'; f.type = 'bandpass'; f.Q.value = 3;
+    o.frequency.setValueAtTime(520, t0); o.frequency.linearRampToValueAtTime(860, t0 + 0.18); o.frequency.linearRampToValueAtTime(480, t0 + 0.55);
+    f.frequency.setValueAtTime(900, t0); f.frequency.linearRampToValueAtTime(2200, t0 + 0.2); f.frequency.linearRampToValueAtTime(800, t0 + 0.55);
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.35, t0 + 0.05); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.6);
+    o.connect(f); f.connect(g); g.connect(this.master); o.start(t0); o.stop(t0 + 0.65);
+  },
+  whooshUp() { this.noise(0.5, { freq: 300, f2: 4000, q: 3, vol: 0.5 }); this.tone(200, 0.5, { f2: 1200, type: 'triangle', vol: 0.12 }); },
+  splat(delay = 0) { this.noise(0.35, { type: 'lowpass', freq: 1800, f2: 200, vol: 0.9, delay }); this.tone(160, 0.2, { f2: 60, vol: 0.5, delay }); },
+  alarm() { for (let i = 0; i < 6; i++) this.tone(3100, 0.08, { type: 'square', vol: 0.12, delay: i * 0.17 }); },
+  door() { this.tone(110, 0.7, { f2: 190, type: 'sawtooth', vol: 0.12, lp: 700, attack: 0.1 }); this.tone(1200, 0.04, { type: 'square', vol: 0.15, delay: 0.75 }); this.noise(0.05, { freq: 3000, vol: 0.3, delay: 0.75 }); },
+  caught() { this.tone(98, 0.35, { type: 'square', vol: 0.2, lp: 900 }); this.tone(73, 0.6, { type: 'square', vol: 0.2, lp: 900, delay: 0.35 }); },
+  phew() { this.tone(520, 0.3, { f2: 330, vol: 0.12 }); this.tone(1200, 0.04, { type: 'square', vol: 0.12, delay: 0.5 }); },
+  life() { [784, 988, 1175].forEach((f, i) => this.tone(f, 0.18, { vol: 0.15, type: 'triangle', delay: i * 0.1 })); },
+  clear() { [523, 659, 784, 1047, 784, 1047].forEach((f, i) => this.tone(f, 0.22, { vol: 0.16, type: 'triangle', delay: i * 0.12 })); },
+  sad() { [392, 349, 311, 262].forEach((f, i) => this.tone(f, 0.35, { vol: 0.15, type: 'triangle', delay: i * 0.25 })); },
+};
+
+/* =========================================================
+   輸入：感應器 / 觸控 / 鍵盤
+   ========================================================= */
+const Input = {
+  beta: null, gamma: null, base: { b: 0, g: 0 },
+  accelMag: 0, grav: null, sensorSeen: false,
+  tiltPauseUntil: 0, cooldownUntil: 0, peak: null, lastPeak: 0,
+  touchDown: false, touchStart: null, touchPos: null, samples: [],
+  keys: {}, keyTouched: false,
+  shakeHandler: null,
+  force: 20, // 校準的標準力道
+};
+
+function emitShake(ratio, raw) {
+  const t = now();
+  Input.lastPeak = raw;
+  Input.tiltPauseUntil = Math.max(Input.tiltPauseUntil, t + CONFIG.pauseTiltAroundShake);
+  if (Input.shakeHandler) Input.shakeHandler(ratio, raw);
+}
+
+window.addEventListener('deviceorientation', (e) => {
+  if (e.beta == null && e.gamma == null) return;
+  Input.beta = e.beta || 0; Input.gamma = e.gamma || 0; Input.sensorSeen = true;
+}, true);
+
+window.addEventListener('devicemotion', (e) => {
+  let lin = null;
+  const a = e.acceleration, ag = e.accelerationIncludingGravity;
+  if (a && a.x != null) lin = [a.x || 0, a.y || 0, a.z || 0];
+  else if (ag && ag.x != null) {
+    const v = [ag.x || 0, ag.y || 0, ag.z || 0];
+    if (!Input.grav) Input.grav = v.slice();
+    for (let i = 0; i < 3; i++) Input.grav[i] = lerp(Input.grav[i], v[i], 0.1);
+    lin = v.map((x, i) => x - Input.grav[i]);
+  }
+  if (!lin) return;
+  Input.sensorSeen = true;
+  if (inputMode !== 'motion') return;
+  const mag = Math.hypot(lin[0], lin[1], lin[2]);
+  Input.accelMag = mag;
+  const t = now();
+  // 「搖動前」暫停晃的物理：加速度一開始變大就先停
+  if (mag > CONFIG.shakeMinAccel * 0.6) Input.tiltPauseUntil = Math.max(Input.tiltPauseUntil, t + CONFIG.pauseTiltAroundShake);
+  if (t < Input.cooldownUntil) return;
+  if (!Input.peak) {
+    if (mag >= CONFIG.shakeMinAccel) Input.peak = { start: t, max: mag };
+  } else {
+    Input.peak.max = Math.max(Input.peak.max, mag);
+    if (t - Input.peak.start > 0.12) resolvePeak();
+  }
+}, true);
+
+function resolvePeak() {
+  const p = Input.peak; if (!p) return;
+  Input.peak = null; Input.cooldownUntil = p.start + CONFIG.shakeCooldown;
+  emitShake(p.max / Input.force, p.max);
+}
+
+function getTilt() {
+  let x = 0, y = 0;
+  if (inputMode === 'motion' && Input.beta != null) {
+    x = Input.gamma - Input.base.g; y = Input.beta - Input.base.b;
+  } else if (inputMode === 'touch' && Input.touchDown && Input.touchStart && Input.touchPos) {
+    x = (Input.touchPos.x - Input.touchStart.x) / CONFIG.touchJoystickPx * CONFIG.maxTiltDeg;
+    y = (Input.touchPos.y - Input.touchStart.y) / CONFIG.touchJoystickPx * CONFIG.maxTiltDeg;
+  }
+  const k = Input.keys;
+  if (k.ArrowLeft || k.ArrowRight || k.ArrowUp || k.ArrowDown) {
+    const kt = CONFIG.maxTiltDeg * 0.6;
+    x = (k.ArrowRight ? kt : 0) - (k.ArrowLeft ? kt : 0);
+    y = (k.ArrowDown ? kt : 0) - (k.ArrowUp ? kt : 0);
+  }
+  const m = Math.hypot(x, y);
+  if (m > CONFIG.maxTiltDeg) { x *= CONFIG.maxTiltDeg / m; y *= CONFIG.maxTiltDeg / m; }
+  return { x, y };
+}
+
+const cv = $('cv');
+cv.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  Snd.init();
+  if (inputMode !== 'touch') return;
+  try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+  Input.touchDown = true;
+  Input.touchStart = { x: e.clientX, y: e.clientY };
+  Input.touchPos = { x: e.clientX, y: e.clientY };
+  Input.samples = [{ x: e.clientX, y: e.clientY, t: performance.now() }];
+});
+cv.addEventListener('pointermove', (e) => {
+  if (!Input.touchDown) return;
+  const t = performance.now();
+  Input.touchPos = { x: e.clientX, y: e.clientY };
+  Input.samples.push({ x: e.clientX, y: e.clientY, t });
+  while (Input.samples.length > 2 && t - Input.samples[0].t > 250) Input.samples.shift();
+});
+function pointerEnd(e) {
+  if (!Input.touchDown) return;
+  const t = performance.now();
+  Input.samples.push({ x: e.clientX, y: e.clientY, t });
+  Input.touchDown = false; Input.touchPos = null;
+  // 找最近 100ms 的上滑速度
+  const last = Input.samples[Input.samples.length - 1];
+  let s0 = Input.samples[0];
+  for (const s of Input.samples) { if (t - s.t <= 110) { s0 = s; break; } }
+  const dt = Math.max(16, last.t - s0.t);
+  const up = s0.y - last.y;
+  const speed = up / dt;
+  if (up >= CONFIG.touchMinFlickDist && speed >= CONFIG.touchMinFlickSpeed && now() >= Input.cooldownUntil) {
+    Input.cooldownUntil = now() + CONFIG.shakeCooldown;
+    emitShake(speed / CONFIG.touchStandardSpeed, speed);
+  }
+}
+cv.addEventListener('pointerup', pointerEnd);
+cv.addEventListener('pointercancel', pointerEnd);
+
+window.addEventListener('keydown', (e) => {
+  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '].includes(e.key)) e.preventDefault();
+  if (e.key.startsWith('Arrow')) { Input.keys[e.key] = true; Input.keyTouched = true; }
+  if (e.key === ' ' && !e.repeat) {
+    Input.keyTouched = true;
+    if (now() >= Input.cooldownUntil) { Input.cooldownUntil = now() + CONFIG.shakeCooldown; emitShake(1.0, 1.0); }
+  }
+});
+window.addEventListener('keyup', (e) => { if (e.key.startsWith('Arrow')) Input.keys[e.key] = false; });
+
+// 防止選取、捲動、放大
+document.addEventListener('touchmove', (e) => { if (!e.target.closest('#s-result')) e.preventDefault(); }, { passive: false });
+document.addEventListener('gesturestart', (e) => e.preventDefault());
+document.addEventListener('dblclick', (e) => e.preventDefault());
+document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+/* =========================================================
+   版面
+   ========================================================= */
+const ctx = cv.getContext('2d');
+/* 圖片 */
+const IMG = { bg: new Image(), pc: new Image(), bgGame: new Image() };
+const imgReady = (im) => !!im && im.complete && im.naturalWidth > 0;
+// 遊戲背景圖裡鍋子的位置（原圖 941×1672）：中心與鍋內壁半徑
+const GAME_PAN = { cx: 477, cy: 828, r: 292 };
+IMG.bg.src = 'assets/bg_landing.webp';
+IMG.pc.src = 'assets/pancake.webp';
+IMG.bgGame.src = 'assets/bg_game.webp';
+IMG.bgGame.onload = () => resize();
+IMG.pc.onload = () => { pcTopCanvas = null; };
+let W = 375, H = 667, DPR = 1, L = {};
+function resize() {
+  const r = $('app').getBoundingClientRect();
+  W = r.width; H = r.height; DPR = Math.min(window.devicePixelRatio || 1, 2.5);
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+  const R = Math.min(W * 0.40, H * 0.27);
+  L = { cx: W / 2, cy: H * 0.52, R, pr: R * 0.42 };
+  // 有遊戲背景圖時，鍋子位置跟著圖走
+  if (typeof IMG !== 'undefined' && imgReady(IMG.bgGame)) {
+    const bg = IMG.bgGame, s = Math.max(W / bg.naturalWidth, H / bg.naturalHeight);
+    const dw = bg.naturalWidth * s, dh = bg.naturalHeight * s;
+    L.bg = { s, ox: (W - dw) / 2, oy: (H - dh) * 0.5, dw, dh };
+    L.cx = L.bg.ox + GAME_PAN.cx * s; L.cy = L.bg.oy + GAME_PAN.cy * s; L.R = GAME_PAN.r * s; L.pr = L.R * 0.5;
+  }
+  L.plate = { x: W - 58, y: H - 74, r: 42 };
+  L.splatTop = 96; L.splatBot = Math.max(L.splatTop + 20, L.cy - R * 1.12);
+}
+window.addEventListener('resize', () => { resize(); heroCtx = null; });
+resize();
+
+/* =========================================================
+   遊戲狀態
+   ========================================================= */
+let appState = 'title'; // title / perm / calib / play / revive / ad / result
+let G = null;           // 一局的資料
+let pauseReason = null, resumeCountdown = 0;
+let fx = { particles: [], texts: [], flash: null, camShake: 0, fallingNoodles: [] };
+
+function doneState(t) {
+  if (t < CONFIG.rawUntil) return 'raw';
+  if (t < CONFIG.goldenUntil) return 'golden';
+  if (t < CONFIG.burntAt) return 'burnt_bit';
+  return 'charcoal';
+}
+const STATE_LABEL = { raw: '生的', golden: '金黃', burnt_bit: '有點焦', charcoal: '黑炭' };
+
+function bodyColor(t) {
+  if (t < CONFIG.rawUntil) return mixColor('#f3e4b0', '#efd790', t / CONFIG.rawUntil);
+  if (t < CONFIG.goldenUntil) return mixColor('#f8c23c', '#e9a222', (t - CONFIG.rawUntil) / (CONFIG.goldenUntil - CONFIG.rawUntil));
+  if (t < CONFIG.burntAt) return mixColor('#a3612a', '#4a2a12', (t - CONFIG.goldenUntil) / (CONFIG.burntAt - CONFIG.goldenUntil));
+  return [24, 18, 16];
+}
+function haloColor(t) {
+  if (t < CONFIG.rawUntil) return mixColor('#ffffff', '#fff3cf', t / CONFIG.rawUntil);
+  if (t < CONFIG.goldenUntil) return mixColor('#ffc21a', '#f5a000', (t - CONFIG.rawUntil) / (CONFIG.goldenUntil - CONFIG.rawUntil));
+  if (t < CONFIG.burntAt) return mixColor('#9a5418', '#3a1d08', (t - CONFIG.goldenUntil) / (CONFIG.burntAt - CONFIG.goldenUntil));
+  return [10, 8, 8];
+}
+
+function genNoodles(rand = Math.random) {
+  const arr = [];
+  for (let i = 0; i < 10; i++) {
+    const pts = []; const a = rand() * Math.PI * 2, rr = Math.sqrt(rand()) * 0.7;
+    let x = Math.cos(a) * rr, y = Math.sin(a) * rr, dir = rand() * Math.PI * 2;
+    const n = 10 + (rand() * 10 | 0);
+    for (let k = 0; k < n; k++) {
+      dir += (rand() - 0.5) * 1.4;
+      x += Math.cos(dir) * 0.07; y += Math.sin(dir) * 0.07;
+      const d = Math.hypot(x, y); if (d > 0.86) { x *= 0.86 / d; y *= 0.86 / d; dir += Math.PI * 0.7; }
+      pts.push([x, y]);
+    }
+    arr.push(pts);
+  }
+  return arr;
+}
+
+function newGame() {
+  G = {
+    lives: CONFIG.startLives, served: 0, perfectCount: 0, streak: 0,
+    plate: [], rawPlate: 0, fails: { floor: 0, ceiling: 0, burnt: 0, mom: 0 },
+    splats: [], momDone: false, adUsed: 0, playTime: 0, attempt: 0, pc: null,
+    passed: false, ended: false,
+  };
+  fx = { particles: [], texts: [], flash: null, camShake: 0, fallingNoodles: [] };
+}
+
+function newPancake() {
+  G.attempt++;
+  G.pc = {
+    x: 0, y: 0, vx: 0, vy: 0, sides: [0, 0], down: 0, side: 0,
+    stick: 0, stuck: false, phase: 'pour', t: 0, hop: 0, wiggle: 0,
+    noodles: genNoodles(), hist: [], sideStates: [null, null], goldenCued: false,
+  };
+  Snd.pour();
+  updateHud();
+}
+
+// 開局前檢查點數；不夠就顯示點數不足畫面
+function tryStart(next) {
+  Wallet.tick(Date.now());
+  if (Wallet.canStart()) { next(); return true; }
+  track('low_points', { balance: Wallet.bal });
+  showLow(next);
+  return false;
+}
+function startGame() {
+  const free = Wallet.isFree();
+  let paid = 0;
+  if (HOST) {
+    // 大廳負責扣入場點數與 GA4 game_start；失敗（點數不足等）就不開局
+    if (!HOST.start(window)) { Wallet.tick(); track('low_points', { balance: Wallet.bal }); showLow(startGame); return; }
+    Wallet.tick(); paid = free ? 0 : CONFIG.entryFee;
+  } else if (!free && CONFIG.entryFee > 0) { if (Wallet.spend(CONFIG.entryFee)) paid = CONFIG.entryFee; }
+  newGame();
+  appState = 'play';
+  showScreen(null);
+  $('hud').classList.remove('hidden');
+  Input.shakeHandler = onGameShake;
+  const today = new Date().toISOString().slice(0, 10);
+  let daily = {}; try { daily = JSON.parse(lsGet('noodle_pancake_daily') || '{}'); } catch (e) {}
+  if (daily.date !== today) daily = { date: today, count: 0 };
+  daily.count++; lsSet('noodle_pancake_daily', JSON.stringify(daily));
+  track('game_start', { today_count: daily.count, fee_paid: paid, free_pass: free, balance: Wallet.bal });
+  newPancake();
+}
+
+function updateHud() {
+  if (!G) return;
+  $('hud-order').textContent = `第 1 晚：自己餓了　🥞 ${G.served} / ${CONFIG.level1Target}`;
+  $('hud-lives').textContent = G.lives > 0 ? '🍜'.repeat(G.lives) : '🍜 沒了…';
+  $('hud-streak').textContent = G.streak >= 1 ? `✨ 連續完美 ×${G.streak}` : '';
+}
+
+function setHint() {
+  const h = $('hint');
+  if (appState !== 'play' || !G || !G.pc) { h.textContent = ''; return; }
+  const pc = G.pc;
+  let ctrl;
+  if (inputMode === 'motion') ctrl = '晃手機＝滑動｜往上甩＝翻面';
+  else if (IS_MOBILE) ctrl = '按住拖曳＝晃｜快速上滑放開＝翻面';
+  else ctrl = '拖曳 / 方向鍵＝晃｜快速上滑 / 空白鍵＝翻面';
+  let tip = '';
+  if (pc.phase === 'mom') tip = inputMode === 'touch' ? '手指離開，不要動！' : '拿穩，不要動！';
+  else if (pc.stuck) tip = '黏住了！一直晃到鬆開';
+  else if (G.served === 0 && G.attempt <= 2) tip = pc.side === 0 ? '外圈變金黃就翻面' : '這面也金黃就再搖一下起鍋';
+  h.innerHTML = (tip ? `<b style="color:#ffd166">${tip}</b><br>` : '') + ctrl;
+}
+
+/* ---------- 搖一下 ---------- */
+function onGameShake(ratio) {
+  if (appState !== 'play' || pauseReason || resumeCountdown > 0 || !G || !G.pc) return;
+  const pc = G.pc;
+  if (pc.phase === 'mom') { if (pc.mom.stage === 'hold') momCaught(); return; }
+  if (pc.phase !== 'cook') return;
+  const seg = ratio < CONFIG.weakRatio ? 'weak' : ratio > CONFIG.strongRatio ? 'strong' : 'ok';
+  const st = doneState(pc.sides[pc.down]);
+  track('flip', { pancake: G.served + 1, attempt: G.attempt, side: pc.side + 1, doneness: st, power: seg, stuck: pc.stuck, ratio: +ratio.toFixed(2) });
+  // 搖動前 0.3 秒的晃動不算（倒回去）
+  rewind(pc);
+  if (pc.stuck) {
+    pc.wiggle = 0.4; Snd.stuck();
+    floatText('黏住了！翻不起來', L.cx + pc.x * L.R, L.cy + pc.y * L.R - L.pr - 10, '#ff7a5c', 22);
+    return;
+  }
+  if (seg === 'weak') {
+    pc.hop = 0.35; Snd.hop();
+    floatText('太輕了！', L.cx + pc.x * L.R, L.cy + pc.y * L.R - L.pr - 10, '#fbfaf3', 22);
+    return;
+  }
+  if (seg === 'strong') { fail('ceiling'); return; }
+  if (pc.side === 0) startFlip(); else startServe();
+}
+
+function rewind(pc) {
+  const target = now() - CONFIG.pauseTiltAroundShake;
+  for (let i = pc.hist.length - 1; i >= 0; i--) {
+    const h = pc.hist[i];
+    if (h.t <= target) { pc.x = h.x; pc.y = h.y; pc.vx = h.vx; pc.vy = h.vy; break; }
+  }
+  pc.hist = [];
+}
+
+function startFlip() {
+  const pc = G.pc;
+  pc.sideStates[0] = doneState(pc.sides[0]);
+  pc.phase = 'flip'; pc.t = 0; pc.flipped = false;
+  Snd.flip(); vibrate(30); Snd.sizzle(0);
+  const lab = { golden: '金黃 ✨', raw: '還有點生…', burnt_bit: '有點焦' }[pc.sideStates[0]];
+  floatText(lab, L.cx + pc.x * L.R, L.cy + pc.y * L.R - L.pr - 14, pc.sideStates[0] === 'golden' ? '#ffd34d' : '#fbfaf3', 24);
+}
+
+function startServe() {
+  const pc = G.pc;
+  pc.sideStates[1] = doneState(pc.sides[1]);
+  pc.phase = 'serve'; pc.t = 0;
+  pc.from = { x: L.cx + pc.x * L.R, y: L.cy + pc.y * L.R };
+  Snd.flip(); vibrate(30); Snd.sizzle(0);
+}
+
+function finishServe() {
+  const pc = G.pc;
+  const s = pc.sideStates;
+  let result;
+  if (s.includes('raw')) result = 'raw';
+  else if (s[0] === 'golden' && s[1] === 'golden') result = 'perfect';
+  else result = 'normal';
+  pc.result = result; pc.phase = 'served'; pc.t = 0;
+  const tx = L.cx, ty = L.cy - L.R * 0.15;
+  if (result === 'perfect') {
+    G.served++; G.perfectCount++; G.streak++; G.plate.push('perfect');
+    Snd.perfect(); vibrate([20, 40, 20]);
+    floatText('完美！', tx, ty, '#ffd34d', 56, 1.4);
+    fx.flash = { color: [255, 210, 80], t: 0, life: 0.5, a: 0.45 };
+    sparkle(L.plate.x, L.plate.y, 26);
+    if (G.streak > 0 && G.streak % CONFIG.perfectStreakReward === 0 && G.lives < CONFIG.maxLives) {
+      G.lives++; Snd.life();
+      toast(`連續 ${CONFIG.perfectStreakReward} 片完美！送你 1 包泡麵 🍜`);
+    }
+  } else if (result === 'normal') {
+    G.served++; G.streak = 0; G.plate.push('normal');
+    Snd.normal();
+    floatText('普通煎餅 👍', tx, ty, '#fbfaf3', 34, 1.2);
+    floatText(s.map(x => STATE_LABEL[x]).join(' / '), tx, ty + 40, '#d9c39a', 18, 1.2);
+  } else {
+    G.rawPlate++; G.streak = 0;
+    Snd.raw();
+    floatText('半生不熟…軟軟的', tx, ty, '#f0e6c0', 32, 1.3);
+    floatText('這片不算（不扣命）', tx, ty + 40, '#d9c39a', 18, 1.3);
+  }
+  track('pancake_done', { pancake: result === 'raw' ? G.served + 1 : G.served, result });
+  if (HOST && result !== 'raw') HOST.progress(window, G.served);
+  updateHud();
+}
+
+/* ---------- 失敗 ---------- */
+function fail(kind) {
+  const pc = G.pc;
+  pc.phase = 'fail'; pc.failKind = kind; pc.t = 0;
+  pc.failFrom = { x: L.cx + pc.x * L.R, y: L.cy + pc.y * L.R };
+  G.fails[kind]++; G.lives--; G.streak = 0;
+  Snd.sizzle(0);
+  track('fail', { pancake: G.served + 1, kind });
+  if (kind === 'floor') {
+    const d = Math.hypot(pc.x, pc.y) || 1;
+    pc.outDir = { x: pc.x / d, y: pc.y / d };
+    Snd.thud(); Snd.meow(0.8);
+    pc.failDur = 2.3;
+  } else if (kind === 'ceiling') {
+    const rand = Math.random;
+    pc.splat = { u: 0.08 + rand() * 0.84, v: rand(), rot: rand() * Math.PI * 2, seed: (rand() * 1e9) | 0, noodles: genNoodles() };
+    Snd.whooshUp(); Snd.splat(0.5); vibrate(60);
+    pc.failDur = 2.0;
+  } else if (kind === 'burnt') {
+    pc.sides[pc.down] = CONFIG.burntAt; pc.sides[1 - pc.down] = Math.max(pc.sides[1 - pc.down], CONFIG.burntAt);
+    Snd.alarm(); vibrate([100, 60, 100, 60, 100]);
+    pc.failDur = 2.0;
+  } else if (kind === 'mom') {
+    Snd.caught(); vibrate(200);
+    pc.failDur = 2.0;
+  }
+  updateHud();
+}
+
+function afterFail() {
+  if (G.lives <= 0) {
+    track('out_of_noodles', { pancakes: G.served });
+    showRevive();
+  } else newPancake();
+}
+
+/* ---------- 媽媽開門 ---------- */
+function startMom() {
+  const pc = G.pc;
+  G.momDone = true;
+  pc.phase = 'mom';
+  pc.mom = { stage: 'appear', t: 0, still: 0, base: null, light: 0 };
+  Snd.sizzle(0); Snd.door();
+}
+function momCaught() {
+  const pc = G.pc;
+  track('mom_event', { result: 'caught' });
+  pc.mom.stage = 'caught';
+  fail('mom');
+}
+function updateMom(dt) {
+  const pc = G.pc, m = pc.mom;
+  m.t += dt;
+  m.light = Math.min(1, m.light + dt * 4);
+  if (m.stage === 'appear') {
+    if (m.t >= CONFIG.momGrace) {
+      if (inputMode === 'touch' && Input.touchDown) { momCaught(); return; }
+      m.stage = 'hold'; m.t = 0; m.still = 0;
+      m.base = { b: Input.beta || 0, g: Input.gamma || 0 };
+      Input.keyTouched = false;
+    }
+  } else if (m.stage === 'hold') {
+    let moved = Input.keyTouched || Object.values(Input.keys).some(Boolean);
+    if (inputMode === 'touch') moved = moved || Input.touchDown;
+    else {
+      const dTilt = Math.hypot((Input.beta || 0) - m.base.b, (Input.gamma || 0) - m.base.g);
+      m.dTilt = dTilt;
+      if (dTilt > CONFIG.momTiltTolerance || Input.accelMag > CONFIG.momAccelTolerance) moved = true;
+    }
+    if (moved) { momCaught(); return; }
+    m.still += dt;
+    if (m.still >= CONFIG.momStillSeconds) {
+      m.stage = 'pass'; m.t = 0;
+      track('mom_event', { result: 'pass' });
+      Snd.phew();
+    }
+  } else if (m.stage === 'pass') {
+    m.light = Math.max(0, 1 - Math.max(0, m.t - 0.9) * 3);
+    if (m.t >= 1.6) { pc.phase = 'cook'; pc.hist = []; pc.stick = Math.min(pc.stick, 0.3); }
+  }
+}
+
+/* ---------- 每一幀 ---------- */
+function updatePhysics(pc, dt) {
+  const t = now();
+  let tl = { x: 0, y: 0 };
+  if (t >= Input.tiltPauseUntil) tl = getTilt();
+  const effort = Math.hypot(tl.x, tl.y) / CONFIG.maxTiltDeg;
+  const ax = tl.x / CONFIG.maxTiltDeg * CONFIG.tiltForce * CONFIG.panAccel;
+  const ay = tl.y / CONFIG.maxTiltDeg * CONFIG.tiltForce * CONFIG.panAccel;
+  if (pc.stuck) {
+    pc.vx = 0; pc.vy = 0;
+    if (effort > 0.2) pc.stick -= dt / CONFIG.unstickSeconds * Math.min(1.5, effort * 2);
+    pc.jitter = effort > 0.2 ? effort : 0;
+    if (pc.stick <= 0.35) { pc.stuck = false; floatText('鬆開了！', L.cx + pc.x * L.R, L.cy + pc.y * L.R - L.pr - 10, '#9fff9f', 20); }
+  } else {
+    pc.vx += ax * dt; pc.vy += ay * dt;
+    const f = Math.pow(CONFIG.friction, dt * 60);
+    pc.vx *= f; pc.vy *= f;
+    pc.x += pc.vx * dt; pc.y += pc.vy * dt;
+    const sp = Math.hypot(pc.vx, pc.vy);
+    pc.speed = sp;
+    if (sp < CONFIG.stickMoveThreshold) pc.stick += dt / CONFIG.stickFillSeconds;
+    else pc.stick -= dt / 0.6;
+    pc.stick = clamp(pc.stick, 0, 1);
+    if (pc.stick >= 1) {
+      pc.stuck = true; Snd.stuck();
+      floatText('黏住了！', L.cx + pc.x * L.R, L.cy + pc.y * L.R - L.pr - 10, '#ff7a5c', 26);
+    }
+    pc.hist.push({ t, x: pc.x, y: pc.y, vx: pc.vx, vy: pc.vy });
+    while (pc.hist.length && t - pc.hist[0].t > 0.6) pc.hist.shift();
+    if (Math.hypot(pc.x, pc.y) > 1.0) fail('floor');
+  }
+}
+
+function updateGame(dt) {
+  const pc = G.pc; if (!pc) return;
+  G.playTime += dt;
+  pc.t += dt;
+  pc.hop = Math.max(0, pc.hop - dt);
+  pc.wiggle = Math.max(0, pc.wiggle - dt);
+  switch (pc.phase) {
+    case 'pour':
+      if (pc.t >= 0.3) { pc.phase = 'cook'; pc.t = 0; }
+      break;
+    case 'cook': {
+      updatePhysics(pc, dt);
+      if (pc.phase !== 'cook') break;
+      pc.sides[pc.down] += dt;
+      const dT = pc.sides[pc.down];
+      if (!pc.goldenCued && dT >= CONFIG.rawUntil) { pc.goldenCued = true; Snd.golden(); }
+      if (CONFIG.level1MomEvent && !G.momDone && G.served === 2 && pc.side === 0 && dT >= CONFIG.momTriggerAt) { startMom(); break; }
+      if (dT >= CONFIG.burntAt) { fail('burnt'); break; }
+      if (dT >= CONFIG.goldenUntil) {
+        const k = (dT - CONFIG.goldenUntil) / (CONFIG.burntAt - CONFIG.goldenUntil);
+        if (Math.random() < dt * (8 + 40 * k)) spawnSmoke(L.cx + pc.x * L.R, L.cy + pc.y * L.R, k > 0.5 ? 0.6 : 0.85, 1 + k);
+      }
+      Snd.sizzle(0.05 + 0.08 * Math.min(1, dT / CONFIG.burntAt));
+      break;
+    }
+    case 'flip':
+      if (!pc.flipped && pc.t >= 0.25) { pc.flipped = true; pc.down = 1; }
+      if (pc.t >= 0.5) { pc.phase = 'cook'; pc.side = 1; pc.t = 0; pc.stick = 0; pc.stuck = false; pc.vx = pc.vy = 0; pc.hist = []; pc.goldenCued = false; }
+      break;
+    case 'serve':
+      if (pc.t >= 0.55) finishServe();
+      break;
+    case 'served':
+      if (pc.t >= 1.3) {
+        if (G.served >= CONFIG.level1Target) levelClear();
+        else newPancake();
+      }
+      break;
+    case 'fail':
+      updateFailFx(pc, dt);
+      if (pc.t >= pc.failDur) afterFail();
+      break;
+    case 'mom':
+      updateMom(dt);
+      break;
+  }
+}
+
+function updateFailFx(pc, dt) {
+  if (pc.failKind === 'burnt') {
+    if (Math.random() < dt * 60) spawnSmoke(pc.failFrom.x, pc.failFrom.y, 0.25, 2.2);
+  }
+  if (pc.failKind === 'ceiling' && !pc.splatted && pc.t >= 0.5) {
+    pc.splatted = true;
+    G.splats.push(pc.splat);
+    fx.flash = { color: [255, 255, 255], t: 0, life: 0.25, a: 0.7 };
+    fx.camShake = 0.35;
+    const sp = splatPos(pc.splat);
+    for (let i = 0; i < 7; i++) fx.fallingNoodles.push({ x: sp.x + (Math.random() - 0.5) * L.pr * 1.4, y: sp.y + Math.random() * 10, vy: 40 + Math.random() * 80, rot: Math.random() * 6, vr: (Math.random() - 0.5) * 6, life: 1.6, t: 0, len: 14 + Math.random() * 16 });
+  }
+  if (pc.failKind === 'floor' && !pc.thudded && pc.t >= 0.45) { pc.thudded = true; fx.camShake = 0.15; }
+}
+
+function levelClear() {
+  G.passed = true; G.ended = true;
+  Snd.clear();
+  const totalFails = Object.values(G.fails).reduce((a, b) => a + b, 0);
+  track('level_clear', { perfect: G.perfectCount, fails: totalFails, play_seconds: Math.round(G.playTime) });
+  showResult();
+}
+
+/* ---------- 特效 ---------- */
+function floatText(text, x, y, color = '#fbfaf3', size = 22, life = 1.0) {
+  fx.texts.push({ text, x, y, color, size, life, t: 0 });
+}
+function spawnSmoke(x, y, gray = 0.8, big = 1) {
+  const c = Math.round(255 * gray);
+  fx.particles.push({ kind: 'smoke', x: x + (Math.random() - 0.5) * L.pr, y: y + (Math.random() - 0.5) * L.pr, vx: (Math.random() - 0.5) * 20, vy: -20 - Math.random() * 30, r: (8 + Math.random() * 10) * big, life: 1.2 + Math.random() * 0.8, t: 0, c: [c, c, c] });
+}
+function sparkle(x, y, n) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, s = 60 + Math.random() * 160;
+    fx.particles.push({ kind: 'spark', x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, r: 2 + Math.random() * 3, life: 0.6 + Math.random() * 0.5, t: 0, c: [255, 215, 90] });
+  }
+}
+function updateFx(dt) {
+  for (const p of fx.particles) {
+    p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt;
+    if (p.kind === 'smoke') { p.r += dt * 14; p.vx *= 0.98; }
+    else { p.vx *= 0.92; p.vy *= 0.92; }
+  }
+  fx.particles = fx.particles.filter(p => p.t < p.life);
+  for (const s of fx.texts) s.t += dt;
+  fx.texts = fx.texts.filter(s => s.t < s.life);
+  for (const n of fx.fallingNoodles) { n.t += dt; n.vy += 260 * dt; n.y += n.vy * dt; n.rot += n.vr * dt; }
+  fx.fallingNoodles = fx.fallingNoodles.filter(n => n.t < n.life);
+  if (fx.flash) { fx.flash.t += dt; if (fx.flash.t > fx.flash.life) fx.flash = null; }
+  fx.camShake = Math.max(0, fx.camShake - dt);
+}
+
+/* =========================================================
+   繪圖
+   ========================================================= */
+function splatPos(s) {
+  return { x: 34 + s.u * (W - 68), y: L.splatTop + s.v * (L.splatBot - L.splatTop) };
+}
+
+function drawNoodles(c, x, y, r, noodles, color, lw) {
+  c.strokeStyle = color; c.lineWidth = lw; c.lineCap = 'round'; c.lineJoin = 'round';
+  for (const pts of noodles) {
+    c.beginPath();
+    c.moveTo(x + pts[0][0] * r, y + pts[0][1] * r);
+    for (let i = 1; i < pts.length - 1; i++) {
+      const mx = (pts[i][0] + pts[i + 1][0]) / 2, my = (pts[i][1] + pts[i + 1][1]) / 2;
+      c.quadraticCurveTo(x + pts[i][0] * r, y + pts[i][1] * r, x + mx * r, y + my * r);
+    }
+    c.stroke();
+  }
+}
+
+/* ---------- 遊戲用煎餅：把斜角的煎餅圖「拉正」成俯視圓形 ---------- */
+// 煎餅圖（裁切後 1213×947）頂面橢圓的位置
+const PC_TOP_ELLIPSE = { cx: 606, cy: 428, rx: 604, ry: 424 };
+let pcTopCanvas = null, pcTint = null;
+function buildPcTop() {
+  const im = IMG.pc; if (!imgReady(im)) return null;
+  const E = PC_TOP_ELLIPSE, S = 512, k = S / (E.rx * 2);
+  const cv2 = document.createElement('canvas'); cv2.width = cv2.height = S;
+  const c = cv2.getContext('2d');
+  c.beginPath(); c.arc(S / 2, S / 2, S / 2 - 1, 0, Math.PI * 2); c.clip();
+  // 水平照原比例、垂直拉長 rx/ry 倍，頂面就變成圓的
+  c.drawImage(im, (-E.cx + E.rx) * k, (-E.cy + E.ry) * k * (E.rx / E.ry), im.naturalWidth * k, im.naturalHeight * k * (E.rx / E.ry));
+  // 餅緣描邊
+  c.lineWidth = 6; c.strokeStyle = 'rgba(90,45,12,0.9)'; c.beginPath(); c.arc(S / 2, S / 2, S / 2 - 3, 0, Math.PI * 2); c.stroke();
+  pcTint = document.createElement('canvas'); pcTint.width = pcTint.height = S;
+  return cv2;
+}
+// 朝上那面的熟度 → 疊在圖上的顏色
+function upTint(t) {
+  if (t < CONFIG.rawUntil) return [250, 240, 205, 0.62 - 0.25 * (t / CONFIG.rawUntil)];
+  if (t < CONFIG.goldenUntil) return null;
+  if (t < CONFIG.burntAt) return [95, 45, 10, 0.25 + 0.4 * (t - CONFIG.goldenUntil) / (CONFIG.burntAt - CONFIG.goldenUntil)];
+  return [20, 14, 12, 0.92];
+}
+
+function drawPancake(c, x, y, r, upT, downT, noodles, o = {}) {
+  if (!pcTopCanvas) pcTopCanvas = buildPcTop();
+  if (pcTopCanvas) return drawPancakeImg(c, x, y, r, upT, downT, o);
+  drawPancakeOld(c, x, y, r, upT, downT, noodles, o);
+}
+function drawPancakeImg(c, x, y, r, upT, downT, o) {
+  c.save();
+  c.translate(x, y);
+  if (o.rot) c.rotate(o.rot);
+  if (o.sx != null) c.scale(o.sx, o.sy == null ? 1 : o.sy);
+  c.globalAlpha = o.alpha == null ? 1 : o.alpha;
+  if (!o.noHalo) {
+    const hc = haloColor(downT);
+    const g = c.createRadialGradient(0, 0, r * 0.9, 0, 0, r * 1.36);
+    g.addColorStop(0, rgba(hc, 1)); g.addColorStop(0.45, rgba(hc, 0.75)); g.addColorStop(1, rgba(hc, 0));
+    c.fillStyle = g; c.beginPath(); c.arc(0, 0, r * 1.36, 0, Math.PI * 2); c.fill();
+  }
+  const tint = upTint(o.black ? 99 : upT);
+  let src = pcTopCanvas;
+  if (tint) {
+    const tc = pcTint.getContext('2d');
+    tc.globalCompositeOperation = 'copy'; tc.drawImage(pcTopCanvas, 0, 0);
+    tc.globalCompositeOperation = 'source-atop'; tc.fillStyle = rgba(tint, tint[3]); tc.fillRect(0, 0, pcTint.width, pcTint.height);
+    tc.globalCompositeOperation = 'source-over';
+    src = pcTint;
+  }
+  c.drawImage(src, -r, -r, r * 2, r * 2);
+  c.restore();
+}
+
+function drawPancakeOld(c, x, y, r, upT, downT, noodles, o = {}) {
+  c.save();
+  c.translate(x, y);
+  if (o.rot) c.rotate(o.rot);
+  if (o.sx != null) c.scale(o.sx, o.sy == null ? 1 : o.sy);
+  c.globalAlpha = o.alpha == null ? 1 : o.alpha;
+  // 外圍光暈 = 朝下那面
+  if (!o.noHalo) {
+    const hc = haloColor(downT);
+    const g = c.createRadialGradient(0, 0, r * 0.88, 0, 0, r * 1.32);
+    g.addColorStop(0, rgba(hc, 1)); g.addColorStop(0.45, rgba(hc, 0.75)); g.addColorStop(1, rgba(hc, 0));
+    c.fillStyle = g; c.beginPath(); c.arc(0, 0, r * 1.32, 0, Math.PI * 2); c.fill();
+  }
+  // 本體 = 朝上那面
+  const bc = o.black ? [22, 18, 16] : bodyColor(upT);
+  c.fillStyle = rgba(bc); c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.fill();
+  c.strokeStyle = rgba(shade(bc, 0.78)); c.lineWidth = Math.max(1.5, r * 0.05); c.stroke();
+  drawNoodles(c, 0, 0, r, noodles, rgba(shade(bc, o.black ? 1.8 : 0.8)), Math.max(1.2, r * 0.05));
+  drawNoodles(c, -r * 0.02, -r * 0.03, r, noodles.slice(0, 5), rgba(shade(bc, 1.12), 0.55), Math.max(0.8, r * 0.022));
+  c.restore();
+}
+
+function drawKitchen(t) {
+  const c = ctx;
+  c.fillStyle = '#0d0b0a'; c.fillRect(0, 0, W, H);
+  // 地板磁磚（很暗）
+  c.strokeStyle = 'rgba(255,255,255,0.025)'; c.lineWidth = 1;
+  for (let x = 0; x < W; x += 48) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, H); c.stroke(); }
+  for (let y = 0; y < H; y += 48) { c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke(); }
+  // 爐火的光
+  const flick = 0.9 + Math.sin(t * 13) * 0.04 + Math.sin(t * 7.3) * 0.04;
+  const g = c.createRadialGradient(L.cx, L.cy, L.R * 0.6, L.cx, L.cy, L.R * 2.4);
+  g.addColorStop(0, `rgba(255,140,50,${0.28 * flick})`); g.addColorStop(0.5, `rgba(255,90,20,${0.08 * flick})`); g.addColorStop(1, 'rgba(0,0,0,0)');
+  c.fillStyle = g; c.fillRect(0, 0, W, H);
+  // 爐架
+  c.strokeStyle = '#26221f'; c.lineWidth = 6;
+  for (let i = 0; i < 4; i++) {
+    const a = i * Math.PI / 2 + Math.PI / 4;
+    c.beginPath(); c.moveTo(L.cx + Math.cos(a) * L.R * 0.95, L.cy + Math.sin(a) * L.R * 0.95); c.lineTo(L.cx + Math.cos(a) * L.R * 1.35, L.cy + Math.sin(a) * L.R * 1.35); c.stroke();
+  }
+  // 藍色火焰
+  for (let i = 0; i < 22; i++) {
+    const a = i / 22 * Math.PI * 2 + t * 0.2;
+    const fl = 0.7 + Math.sin(t * 20 + i * 2.1) * 0.3;
+    const r0 = L.R * 1.07, r1 = L.R * (1.15 + 0.06 * fl);
+    c.fillStyle = `rgba(80,140,255,${0.55 * fl})`;
+    c.beginPath();
+    c.moveTo(L.cx + Math.cos(a - 0.06) * r0, L.cy + Math.sin(a - 0.06) * r0);
+    c.lineTo(L.cx + Math.cos(a) * r1, L.cy + Math.sin(a) * r1);
+    c.lineTo(L.cx + Math.cos(a + 0.06) * r0, L.cy + Math.sin(a + 0.06) * r0);
+    c.fill();
+  }
+}
+
+function drawPan(warn) {
+  const c = ctx, { cx, cy, R } = L;
+  // 把手（往左下）
+  const ha = Math.PI * 0.68;
+  c.lineCap = 'round';
+  c.strokeStyle = '#151517'; c.lineWidth = R * 0.2;
+  c.beginPath(); c.moveTo(cx + Math.cos(ha) * R, cy + Math.sin(ha) * R); c.lineTo(cx + Math.cos(ha) * R * 1.75, cy + Math.sin(ha) * R * 1.75); c.stroke();
+  c.strokeStyle = '#2b2b30'; c.lineWidth = R * 0.12;
+  c.beginPath(); c.moveTo(cx + Math.cos(ha) * R * 1.15, cy + Math.sin(ha) * R * 1.15); c.lineTo(cx + Math.cos(ha) * R * 1.72, cy + Math.sin(ha) * R * 1.72); c.stroke();
+  // 鍋緣
+  c.fillStyle = '#3d3d44'; c.beginPath(); c.arc(cx, cy, R * 1.07, 0, Math.PI * 2); c.fill();
+  c.strokeStyle = '#5a5a63'; c.lineWidth = 2; c.stroke();
+  // 鍋面
+  const g = c.createRadialGradient(cx - R * 0.2, cy - R * 0.25, R * 0.1, cx, cy, R);
+  g.addColorStop(0, '#3a3a41'); g.addColorStop(1, '#19191c');
+  c.fillStyle = g; c.beginPath(); c.arc(cx, cy, R, 0, Math.PI * 2); c.fill();
+  // 油光
+  c.fillStyle = 'rgba(255,220,150,0.05)';
+  c.beginPath(); c.ellipse(cx - R * 0.3, cy - R * 0.35, R * 0.35, R * 0.18, -0.6, 0, Math.PI * 2); c.fill();
+  if (warn > 0) {
+    c.strokeStyle = `rgba(255,60,40,${warn * (0.5 + 0.5 * Math.sin(now() * 18))})`;
+    c.lineWidth = 6; c.beginPath(); c.arc(cx, cy, R * 1.03, 0, Math.PI * 2); c.stroke();
+  }
+}
+
+function drawPlate(c, px, py, pr, plate, rawCount, t) {
+  c.save();
+  c.fillStyle = 'rgba(0,0,0,0.35)'; c.beginPath(); c.ellipse(px + 3, py + 5, pr, pr * 0.92, 0, 0, Math.PI * 2); c.fill();
+  c.fillStyle = '#e9e4da'; c.beginPath(); c.arc(px, py, pr, 0, Math.PI * 2); c.fill();
+  c.fillStyle = '#d6cfc2'; c.beginPath(); c.arc(px, py, pr * 0.72, 0, Math.PI * 2); c.fill();
+  // 軟掉的生煎餅掛在盤子邊
+  for (let i = 0; i < rawCount; i++) {
+    const a = -Math.PI * 0.15 + i * 0.7;
+    c.save(); c.translate(px + Math.cos(a) * pr * 0.95, py + Math.sin(a) * pr * 0.95); c.rotate(a + Math.PI / 2);
+    c.fillStyle = '#eadfae'; c.beginPath(); c.ellipse(0, 0, pr * 0.42, pr * 0.2, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#eadfae'; c.beginPath(); c.ellipse(pr * 0.05, pr * 0.18, pr * 0.15, pr * 0.22, 0.3, 0, Math.PI * 2); c.fill();
+    c.restore();
+  }
+  plate.forEach((kind, i) => {
+    const yy = py - i * 5;
+    const pt = kind === 'perfect' ? 1.6 : 2.3;
+    if (kind === 'perfect') {
+      const gl = 0.5 + 0.5 * Math.sin(t * 5 + i);
+      const g = c.createRadialGradient(px, yy, pr * 0.4, px, yy, pr * 0.95);
+      g.addColorStop(0, `rgba(255,215,80,${0.35 + 0.3 * gl})`); g.addColorStop(1, 'rgba(255,215,80,0)');
+      c.fillStyle = g; c.beginPath(); c.arc(px, yy, pr * 0.95, 0, Math.PI * 2); c.fill();
+    }
+    drawPancake(c, px, yy, pr * 0.62, pt, pt, PLATE_NOODLES, { noHalo: true });
+  });
+  c.restore();
+}
+const PLATE_NOODLES = genNoodles(mulberry32(7));
+
+/* ---------- 插畫風泡麵煎餅（參考圖：酥脆餅皮＋高麗菜＋麵條＋醬汁＋美乃滋＋蔥花） ----------
+   c: context, (x,y): 頂面中心, r: 半徑
+   o.sy: 透視壓扁（1 = 正上方俯視）, o.thick: 厚度（相對 r）, o.seed: 亂數種子 */
+function drawOkonomiyaki(c, x, y, r, o = {}) {
+  const sy = o.sy == null ? 1 : o.sy, thick = (o.thick || 0) * r, seed = o.seed || 3;
+  const rand = mulberry32(seed);
+  const TAU = Math.PI * 2;
+  const ph = [0, 0, 0, 0, 0].map(() => rand() * TAU);
+  // 波浪狀的餅緣
+  const edgeR = (a, k = 1) => 1 + k * (0.022 * Math.sin(a * 5 + ph[0]) + 0.014 * Math.sin(a * 12 + ph[1]) + 0.007 * Math.sin(a * 27 + ph[2]));
+  const cabR = (a) => 0.85 + 0.025 * Math.sin(a * 8 + ph[3]) + 0.018 * Math.sin(a * 19 + ph[4]) + 0.008 * Math.sin(a * 41);
+  const P = (u, v, dy = 0) => [x + u * r, y + v * r * sy + dy];
+  const lw = (k) => Math.max(0.6, r * k);
+  function shape(fn, n = 120, dy = 0) {
+    c.beginPath();
+    for (let i = 0; i <= n; i++) {
+      const a = i / n * TAU, e = fn(a), p = P(Math.cos(a) * e, Math.sin(a) * e, dy);
+      i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]);
+    }
+    c.closePath();
+  }
+  function line(pts, w, col, du = 0, dv = 0) {
+    if (pts.length < 2) return;
+    c.strokeStyle = col; c.lineWidth = w; c.lineCap = 'round'; c.lineJoin = 'round';
+    c.beginPath();
+    pts.forEach((p, i) => { const q = P(p[0] + du, p[1] + dv); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); });
+    c.stroke();
+  }
+  function dot(u, v, rad, col) { const q = P(u, v); c.fillStyle = col; c.beginPath(); c.ellipse(q[0], q[1], rad, rad * Math.max(0.6, sy), 0, 0, TAU); c.fill(); }
+  const pick = (arr) => { let t = rand(), acc = 0; for (const [p, v] of arr) { acc += p; if (t <= acc) return v; } return arr[arr.length - 1][1]; };
+
+  c.save();
+  // ---------- 影子 ----------
+  c.fillStyle = 'rgba(0,0,0,0.4)';
+  c.beginPath(); c.ellipse(x + r * 0.03, y + thick + r * 0.06 * sy, r * 1.05, r * 1.02 * sy, 0, 0, TAU); c.fill();
+
+  // ---------- 側面：蛋麵糊＋麵條一層層 ----------
+  if (thick > 0) {
+    const sidePath = () => {
+      c.beginPath();
+      const n = 90;
+      for (let i = 0; i <= n; i++) { const a = i / n * Math.PI, e = edgeR(a), p = P(Math.cos(a) * e, Math.sin(a) * e); i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]); }
+      for (let i = n; i >= 0; i--) { const a = i / n * Math.PI, e = edgeR(a) * 0.985, p = P(Math.cos(a) * e, Math.sin(a) * e, thick); c.lineTo(p[0], p[1]); }
+      c.closePath();
+    };
+    sidePath();
+    const sg = c.createLinearGradient(0, y, 0, y + r * sy + thick);
+    sg.addColorStop(0, '#f2d27e'); sg.addColorStop(0.55, '#e6b45c'); sg.addColorStop(0.85, '#c88434'); sg.addColorStop(1, '#8e5018');
+    c.fillStyle = sg; c.fill();
+    c.save(); sidePath(); c.clip();
+    // 焦色斑
+    for (let i = 0; i < 70; i++) {
+      const a = rand() * Math.PI, e = edgeR(a), h = thick * (0.2 + rand() * 0.8), q = P(Math.cos(a) * e, Math.sin(a) * e, h);
+      c.fillStyle = `rgba(140,72,20,${0.15 + rand() * 0.3})`;
+      c.beginPath(); c.ellipse(q[0], q[1], r * (0.02 + rand() * 0.05), thick * (0.08 + rand() * 0.15), 0, 0, TAU); c.fill();
+    }
+    // 一條條麵
+    for (let j = 0; j < 7; j++) {
+      const base = thick * (0.12 + j * 0.13), pts = [];
+      const a0 = rand() * 0.3, a1 = Math.PI - rand() * 0.3, f = 10 + rand() * 10, amp = thick * (0.04 + rand() * 0.05), p0 = rand() * TAU;
+      for (let a = a0; a <= a1; a += 0.03) {
+        const e = edgeR(a); const q = P(Math.cos(a) * e, Math.sin(a) * e, base + Math.sin(a * f + p0) * amp);
+        pts.push(q);
+      }
+      const draw = (w, col) => { c.strokeStyle = col; c.lineWidth = w; c.lineCap = 'round'; c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.stroke(); };
+      draw(lw(0.026), 'rgba(150,90,30,0.55)');
+      draw(lw(0.014), j % 2 ? '#fbe7ad' : '#f5d98e');
+    }
+    c.restore();
+    sidePath(); c.strokeStyle = '#6a3a12'; c.lineWidth = lw(0.01); c.stroke();
+  }
+
+  // ---------- 頂面：酥脆餅皮 ----------
+  const g = c.createRadialGradient(x, y, r * 0.3, x, y, r * 1.02);
+  g.addColorStop(0, '#e9a640'); g.addColorStop(0.8, '#dc8f2c'); g.addColorStop(1, '#b0631c');
+  c.fillStyle = g; shape(edgeR); c.fill();
+  // 斑點
+  for (let i = 0; i < 260; i++) {
+    const a = rand() * TAU, rr = 0.76 + rand() * 0.22;
+    dot(Math.cos(a) * rr, Math.sin(a) * rr, r * (0.004 + rand() * 0.012), pick([[0.7, 'rgba(120,52,10,0.55)'], [0.3, 'rgba(255,214,120,0.6)']]));
+  }
+  // 餅緣的麵條
+  for (let i = 0; i < 18; i++) {
+    const a0 = rand() * TAU, len = 0.25 + rand() * 0.5, rr = 0.83 + rand() * 0.12, pts = [], f = 8 + rand() * 8;
+    for (let a = a0; a <= a0 + len; a += 0.03) { const rad = rr + Math.sin(a * f) * 0.015; pts.push([Math.cos(a) * rad, Math.sin(a) * rad]); }
+    line(pts, lw(0.03), 'rgba(140,80,25,0.7)');
+    line(pts, lw(0.016), pick([[0.6, '#f7d88a'], [0.4, '#eec06a']]));
+  }
+  shape(edgeR); c.strokeStyle = '#6a3a12'; c.lineWidth = lw(0.012); c.stroke();
+
+  // ---------- 高麗菜絲 ----------
+  c.fillStyle = 'rgba(40,70,10,0.35)'; shape(a => cabR(a) + 0.02, 160, r * 0.02); c.fill();
+  c.fillStyle = '#74c236'; shape(cabR, 160); c.fill();
+  c.save(); shape(cabR, 160); c.clip();
+  for (let i = 0; i < 520; i++) {
+    const a = rand() * TAU, rr = Math.sqrt(rand()) * 0.86;
+    const u = Math.cos(a) * rr, v = Math.sin(a) * rr;
+    const dir = a + Math.PI / 2 + (rand() - 0.5) * 1.1, l = 0.04 + rand() * 0.09, bend = (rand() - 0.5) * 0.05;
+    const nx = -Math.sin(dir), ny = Math.cos(dir);
+    const pts = [[u - Math.cos(dir) * l, v - Math.sin(dir) * l], [u + nx * bend, v + ny * bend], [u + Math.cos(dir) * l, v + Math.sin(dir) * l]];
+    line(pts, lw(0.006 + rand() * 0.01), pick([[0.3, '#3f8f18'], [0.2, '#62b02a'], [0.25, '#a8e264'], [0.25, '#e4f8bf']]));
+  }
+  c.restore();
+  shape(cabR, 160); c.strokeStyle = '#3f861c'; c.lineWidth = lw(0.008); c.stroke();
+
+  // ---------- 中間煎得焦香、麵條排成一條條 ----------
+  const pa = -0.5, ca = Math.cos(pa), sa = Math.sin(pa);
+  const rot = (s, t) => [ca * s - sa * t, sa * s + ca * t];
+  const patchPath = () => {
+    c.beginPath();
+    for (let i = 0; i <= 80; i++) {
+      const a = i / 80 * TAU, k = 1 + 0.08 * Math.sin(a * 7 + ph[1]) + 0.05 * Math.sin(a * 13);
+      const p = rot(Math.cos(a) * 0.56 * k, Math.sin(a) * 0.36 * k), q = P(p[0], p[1]);
+      i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]);
+    }
+    c.closePath();
+  };
+  patchPath(); c.fillStyle = '#b87436'; c.fill();
+  c.save(); patchPath(); c.clip();
+  for (let k = -9; k <= 9; k++) {
+    const pts = [];
+    for (let s = -0.7; s <= 0.7; s += 0.03) pts.push(rot(s, k * 0.042 + Math.sin(s * 9 + k) * 0.008));
+    line(pts, lw(0.03), 'rgba(110,55,15,0.6)');
+    line(pts, lw(0.016), pick([[0.6, '#f0cf87'], [0.4, '#e2b468']]));
+  }
+  for (let i = 0; i < 60; i++) { const p = rot((rand() - 0.5) * 1.1, (rand() - 0.5) * 0.7); dot(p[0], p[1], r * (0.004 + rand() * 0.01), 'rgba(80,35,8,0.7)'); }
+  c.restore();
+  // 邊界再補幾根高麗菜蓋過去
+  for (let i = 0; i < 70; i++) {
+    const a = rand() * TAU, k = 0.95 + rand() * 0.15, p = rot(Math.cos(a) * 0.56 * k, Math.sin(a) * 0.36 * k), dir = rand() * Math.PI, l = 0.04 + rand() * 0.05;
+    line([[p[0] - Math.cos(dir) * l, p[1] - Math.sin(dir) * l], [p[0] + Math.cos(dir) * l, p[1] + Math.sin(dir) * l]], lw(0.01), pick([[0.4, '#5aa82a'], [0.3, '#9fd666'], [0.3, '#e2f5bf']]));
+  }
+
+  // ---------- 醬汁與美乃滋 ----------
+  function drizzle(d, R, amp, phase, angle) {
+    const ux = Math.cos(angle), uy = Math.sin(angle), nx = -uy, ny = ux;
+    const Lh = Math.sqrt(Math.max(0, R * R - d * d)) * (0.85 + rand() * 0.12);
+    const pts = [];
+    for (let s = -Lh; s <= Lh; s += 0.02) {
+      const w = Math.sin(s * 5.5 + phase) * amp + Math.sin(s * 12 + phase * 2) * amp * 0.35;
+      pts.push([ux * s + nx * (d + w), uy * s + ny * (d + w)]);
+    }
+    return pts;
+  }
+  const ang = -0.52;
+  const sw = lw(0.085);
+  for (let i = 0; i < 4; i++) {
+    const pts = drizzle((i - 1.5) * 0.32, 0.9, 0.075, rand() * TAU, ang + (rand() - 0.5) * 0.12);
+    line(pts, sw * 1.2, 'rgba(50,10,0,0.45)', 0.01, 0.035);
+    line(pts, sw * 1.12, '#5c1208');
+    line(pts, sw, '#a8220f');
+    line(pts, sw * 0.55, '#c93a1e', -0.004, -0.01);
+    // 斷斷續續的亮光
+    for (let s = 0; s < pts.length - 4; s += 6 + (rand() * 6 | 0)) line(pts.slice(s, s + 4), sw * 0.18, 'rgba(255,170,140,0.9)', -0.008, -0.02);
+  }
+  const mw = lw(0.075);
+  for (let i = 0; i < 4; i++) {
+    const pts = drizzle((i - 1.5) * 0.32 + 0.16, 0.93, 0.065, rand() * TAU, ang + 0.05 + (rand() - 0.5) * 0.12);
+    const ends = [pts[0], pts[pts.length - 1]];
+    const bulbs = (col, k, du = 0, dv = 0) => ends.forEach(e => dot(e[0] + du, e[1] + dv, mw * k, col));
+    line(pts, mw * 1.2, 'rgba(30,40,60,0.35)', 0.01, 0.035); bulbs('rgba(30,40,60,0.35)', 0.85, 0.01, 0.035);
+    line(pts, mw * 1.12, '#8f9bb0'); bulbs('#8f9bb0', 0.8);
+    line(pts, mw, '#f6f7f4'); bulbs('#f6f7f4', 0.72);
+    line(pts, mw * 0.45, '#d7dde8', 0.004, 0.014); bulbs('#d7dde8', 0.35, 0.006, 0.02);
+    line(pts, mw * 0.25, '#ffffff', -0.006, -0.016); bulbs('#ffffff', 0.25, -0.008, -0.02);
+  }
+
+  // ---------- 蔥花 ----------
+  for (let i = 0; i < 20; i++) {
+    const a = rand() * TAU, rr = Math.pow(rand(), 0.8) * 0.45;
+    const u = Math.cos(a) * rr * 1.1, v = Math.sin(a) * rr * 0.9, q = P(u, v);
+    const rad = r * (0.035 + rand() * 0.02), k = 0.55 + rand() * 0.35, ro = rand() * Math.PI, h = rad * (0.45 + rand() * 0.3);
+    // 側面（圓柱）
+    c.fillStyle = 'rgba(20,50,0,0.4)'; c.beginPath(); c.ellipse(q[0] + 1.5, q[1] + h + 2, rad, rad * k, ro, 0, TAU); c.fill();
+    c.fillStyle = '#3f9a1a'; c.beginPath(); c.ellipse(q[0], q[1] + h, rad, rad * k, ro, 0, TAU); c.fill();
+    c.fillRect(q[0] - rad * 0.98, q[1], rad * 1.96, h);
+    c.fillStyle = '#7ccf3c'; c.beginPath(); c.ellipse(q[0], q[1], rad, rad * k, ro, 0, TAU); c.fill();
+    c.strokeStyle = '#2b7010'; c.lineWidth = lw(0.008); c.stroke();
+    c.fillStyle = '#dcf7ae'; c.beginPath(); c.ellipse(q[0], q[1], rad * 0.6, rad * k * 0.6, ro, 0, TAU); c.fill();
+    c.fillStyle = '#a3dd6a'; c.beginPath(); c.ellipse(q[0], q[1] + rad * k * 0.1, rad * 0.32, rad * k * 0.3, ro, 0, TAU); c.fill();
+    c.fillStyle = 'rgba(255,255,255,0.8)'; c.beginPath(); c.ellipse(q[0] - rad * 0.4, q[1] - rad * k * 0.45, rad * 0.22, rad * k * 0.12, ro, 0, TAU); c.fill();
+  }
+  c.restore();
+}
+
+/* ---------- 開始畫面的主視覺（畫一次存起來，之後只浮動） ---------- */
+let heroCtx = null, heroCache = null, HW = 340, HH = 260;
+function setupHero() {
+  const hc = $('hero'); const rc = hc.getBoundingClientRect();
+  HW = rc.width || 320; HH = rc.height || 240;
+  hc.width = Math.round(HW * DPR); hc.height = Math.round(HH * DPR);
+  heroCtx = hc.getContext('2d');
+  heroCache = document.createElement('canvas');
+  heroCache.width = hc.width; heroCache.height = hc.height;
+  const cc = heroCache.getContext('2d'); cc.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const r = Math.min(HW * 0.42, HH * 0.56);
+  drawOkonomiyaki(cc, HW / 2, HH * 0.47, r, { sy: 0.72, thick: 0.17, seed: 11 });
+  heroCache.r = r;
+}
+function drawHero(t) {
+  if (!heroCtx) setupHero();
+  const c = heroCtx; c.setTransform(1, 0, 0, 1, 0, 0);
+  c.clearRect(0, 0, heroCtx.canvas.width, heroCtx.canvas.height);
+  const bob = Math.sin(t * 2.2) * 3 * DPR;
+  c.drawImage(heroCache, 0, bob);
+  c.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const r = heroCache.r, cx = HW / 2, cy = HH * 0.47 + bob / DPR;
+  // 熱氣
+  c.lineCap = 'round';
+  for (let i = 0; i < 3; i++) {
+    const p = (t * 0.45 + i / 3) % 1, bx = cx + (i - 1) * r * 0.42;
+    c.strokeStyle = `rgba(255,255,255,${0.3 * Math.sin(p * Math.PI)})`; c.lineWidth = 4;
+    c.beginPath();
+    for (let k = 0; k <= 10; k++) {
+      const yy = cy - r * 0.35 - p * r * 0.45 - k * 5, xx = bx + Math.sin(k * 0.7 + t * 3 + i) * 6;
+      k ? c.lineTo(xx, yy) : c.moveTo(xx, yy);
+    }
+    c.stroke();
+  }
+}
+
+function drawSplat(c, s, x, y, r, alpha) {
+  if (!pcTopCanvas) pcTopCanvas = buildPcTop();
+  if (pcTopCanvas) {
+    // 用煎餅圖糊在螢幕上：壓扁、轉一下、半透明，加幾滴噴濺
+    const rand = mulberry32(s.seed);
+    c.save(); c.translate(x, y); c.rotate(s.rot); c.globalAlpha = alpha;
+    c.fillStyle = '#e9c27a';
+    for (let i = 0; i < 7; i++) { const a = rand() * Math.PI * 2, d = r * (1.05 + rand() * 0.45); c.beginPath(); c.arc(Math.cos(a) * d, Math.sin(a) * d * 0.85, r * (0.05 + rand() * 0.09), 0, Math.PI * 2); c.fill(); }
+    c.scale(1.12, 0.88);
+    c.drawImage(pcTopCanvas, -r, -r, r * 2, r * 2);
+    c.restore();
+    return;
+  }
+  const rand = mulberry32(s.seed);
+  c.save(); c.translate(x, y); c.rotate(s.rot); c.globalAlpha = alpha;
+  c.fillStyle = '#efcf7a';
+  c.beginPath();
+  const n = 16;
+  for (let i = 0; i <= n; i++) {
+    const a = i / n * Math.PI * 2, rr = r * (0.8 + rand() * 0.45);
+    const px = Math.cos(a) * rr, py = Math.sin(a) * rr;
+    if (i === 0) c.moveTo(px, py); else c.lineTo(px, py);
+  }
+  c.closePath(); c.fill();
+  // 噴濺點
+  for (let i = 0; i < 6; i++) {
+    const a = rand() * Math.PI * 2, d = r * (1.1 + rand() * 0.5);
+    c.beginPath(); c.arc(Math.cos(a) * d, Math.sin(a) * d, r * (0.05 + rand() * 0.08), 0, Math.PI * 2); c.fill();
+  }
+  drawNoodles(c, 0, 0, r * 0.95, s.noodles, 'rgba(170,120,40,0.9)', Math.max(1.2, r * 0.05));
+  c.restore();
+}
+
+function drawGame(t) {
+  const c = ctx, pc = G.pc;
+  // 天花板（= 螢幕）上的煎餅：最後畫在上層，但半透明
+  // 盤子
+  drawPlate(c, L.plate.x, L.plate.y, L.plate.r, G.plate, G.rawPlate, t);
+  if (!pc) return;
+  const px = L.cx + pc.x * L.R, py = L.cy + pc.y * L.R, r = L.pr;
+  const up = pc.sides[1 - pc.down], down = pc.sides[pc.down];
+  switch (pc.phase) {
+    case 'pour': {
+      const k = easeOut(clamp(pc.t / 0.3, 0, 1));
+      drawPancake(c, px, py, r * k, 0, 0, pc.noodles, { alpha: k });
+      break;
+    }
+    case 'cook': case 'mom': {
+      let ox = 0, oy = 0, sx = 1;
+      if (pc.stuck && pc.jitter) { ox = (Math.random() - 0.5) * 4 * pc.jitter; oy = (Math.random() - 0.5) * 4 * pc.jitter; }
+      if (pc.wiggle > 0) ox += Math.sin(pc.wiggle * 60) * 5;
+      if (pc.hop > 0) sx = 1 + Math.sin(pc.hop / 0.35 * Math.PI) * 0.12;
+      // 影子
+      c.fillStyle = 'rgba(0,0,0,0.3)'; c.beginPath(); c.arc(px + 4, py + 6, r, 0, Math.PI * 2); c.fill();
+      drawPancake(c, px + ox, py + oy - (sx - 1) * 30, r * sx, up, down, pc.noodles);
+      // 黏鍋提示
+      if (pc.stuck) {
+        c.save(); c.setLineDash([8, 6]); c.strokeStyle = '#ff5a3c'; c.lineWidth = 4;
+        c.beginPath(); c.arc(px, py, r * 1.05, 0, Math.PI * 2); c.stroke(); c.restore();
+        label(c, '黏住了！快晃！', px, py - r - 18, '#ff7a5c', 18);
+      } else if (pc.stick > 0.3) {
+        c.strokeStyle = `rgba(255,${Math.round(180 - pc.stick * 150)},60,0.9)`; c.lineWidth = 4; c.lineCap = 'round';
+        c.beginPath(); c.arc(px, py, r * 1.4, -Math.PI / 2, -Math.PI / 2 + pc.stick * Math.PI * 2); c.stroke();
+        if (pc.stick > 0.65) label(c, '快黏住了！', px, py - r * 1.4 - 12, '#ffb070', 15);
+      }
+      break;
+    }
+    case 'flip': {
+      const k = clamp(pc.t / 0.5, 0, 1);
+      const sy = Math.abs(Math.cos(k * Math.PI)) * 0.95 + 0.05;
+      const lift = Math.sin(k * Math.PI);
+      c.fillStyle = `rgba(0,0,0,${0.3 - lift * 0.15})`; c.beginPath(); c.arc(px + 4 + lift * 10, py + 6 + lift * 14, r * (1 - lift * 0.1), 0, Math.PI * 2); c.fill();
+      drawPancake(c, px, py - lift * r * 0.6, r * (1 + lift * 0.3), up, down, pc.noodles, { sx: 1, sy });
+      break;
+    }
+    case 'serve': {
+      const k = easeOut(clamp(pc.t / 0.55, 0, 1));
+      const x = lerp(pc.from.x, L.plate.x, k), y = lerp(pc.from.y, L.plate.y - G.plate.length * 5, k) - Math.sin(k * Math.PI) * 80;
+      drawPancake(c, x, y, lerp(r, L.plate.r * 0.62, k), pc.sides[1], pc.sides[0], pc.noodles, { rot: k * Math.PI * 2, noHalo: k > 0.3 });
+      break;
+    }
+    case 'fail':
+      drawFail(c, pc, t);
+      break;
+  }
+}
+
+function drawFail(c, pc, t) {
+  const r = L.pr, f = pc.failFrom, k = pc.t;
+  const up = pc.sides[1 - pc.down], down = pc.sides[pc.down];
+  if (pc.failKind === 'floor') {
+    // 滑出鍋外，掉到地上，貓叼走
+    const slide = easeOut(clamp(k / 0.45, 0, 1));
+    let x = f.x + pc.outDir.x * L.R * 0.7 * slide, y = f.y + pc.outDir.y * L.R * 0.7 * slide;
+    x = clamp(x, r * 0.6, W - r * 0.6); y = clamp(y, r + 60, H - r * 0.6);
+    pc.floorPos = pc.floorPos || null;
+    if (k >= 0.45 && !pc.floorPos) pc.floorPos = { x, y };
+    const fp = pc.floorPos || { x, y };
+    const catIn = 0.75, catGrab = 1.25, catOut = 2.1;
+    let catX = null;
+    if (k < catIn) {
+      drawPancake(c, x, y, r * (1 - slide * 0.15), up, down, pc.noodles, { noHalo: true, rot: slide * 0.6 });
+    } else if (k < catGrab) {
+      drawPancake(c, fp.x, fp.y, r * 0.85, up, down, pc.noodles, { noHalo: true, rot: 0.6 });
+      const kk = easeOut((k - catIn) / (catGrab - catIn));
+      catX = lerp(W + 60, fp.x + r * 0.3, kk);
+    } else {
+      const kk = clamp((k - catGrab) / (catOut - catGrab), 0, 1);
+      catX = lerp(fp.x + r * 0.3, -120, kk * kk);
+      drawPancake(c, catX - 30, fp.y + 10, r * 0.6, up, down, pc.noodles, { noHalo: true, rot: 0.3 + Math.sin(k * 30) * 0.1 });
+    }
+    if (catX != null) {
+      c.font = '70px serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+      c.fillText('🐈', catX, fp.y + Math.sin(k * 30) * 3);
+    }
+    if (k > 0.5) label(c, '🐈 貓叼走了！', W / 2, L.cy - L.R - 30, '#fbfaf3', 26);
+  } else if (pc.failKind === 'ceiling') {
+    const sp = splatPos(pc.splat);
+    if (k < 0.5) {
+      const kk = k / 0.5;
+      const x = lerp(f.x, sp.x, kk * kk), y = lerp(f.y, sp.y, kk * kk);
+      drawPancake(c, x, y, r * lerp(1, 3.2, kk * kk), up, down, pc.noodles, { rot: kk * 4, alpha: 1 });
+    }
+    if (k >= 0.5) label(c, '啪！糊在天花板上了', W / 2, L.cy - L.R * 0.1, '#fbfaf3', 26);
+    if (k >= 0.7) label(c, '（太大力了）', W / 2, L.cy + 26, '#d9c39a', 17);
+  } else if (pc.failKind === 'burnt') {
+    drawPancake(c, f.x + (Math.random() - 0.5) * 3, f.y, r, 3, 3, pc.noodles, { black: true });
+    if (k < 1.1 && Math.floor(k * 6) % 2 === 0) { c.fillStyle = 'rgba(255,0,0,0.18)'; c.fillRect(0, 0, W, H); }
+    c.font = '46px serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    if (k < 1.2) c.fillText('🚨', W / 2 + Math.sin(k * 40) * 4, L.splatTop + 10);
+    if (k < 1.2) label(c, '嗶嗶嗶！', W / 2, L.splatTop + 54, '#ff6060', 22);
+    label(c, '⚫ 燒成黑炭了…', W / 2, L.cy + L.R + 40, '#fbfaf3', 24);
+  } else if (pc.failKind === 'mom') {
+    drawPancake(c, f.x, f.y, r, up, down, pc.noodles, { alpha: Math.max(0, 1 - k) });
+  }
+}
+
+function drawMomOverlay(c, t) {
+  const pc = G && G.pc; if (!pc) return;
+  let m = pc.mom, light = 0, stage = null;
+  if (pc.phase === 'mom') { light = m.light; stage = m.stage; }
+  else if (pc.phase === 'fail' && pc.failKind === 'mom') { light = Math.max(0, 1 - Math.max(0, pc.t - 1.4) * 2); stage = 'caught'; }
+  if (light <= 0) return;
+  c.fillStyle = `rgba(255,246,215,${0.55 * light})`; c.fillRect(0, 0, W, H);
+  // 門縫的光
+  const g = c.createLinearGradient(0, 0, 0, H * 0.7);
+  g.addColorStop(0, `rgba(255,255,230,${0.5 * light})`); g.addColorStop(1, 'rgba(255,255,230,0)');
+  c.fillStyle = g; c.beginPath(); c.moveTo(W * 0.38, 0); c.lineTo(W * 0.62, 0); c.lineTo(W * 0.95, H * 0.7); c.lineTo(W * 0.05, H * 0.7); c.fill();
+  c.font = '64px serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+  const momY = L.splatTop + 20;
+  if (stage === 'caught') {
+    c.fillText('👩', W / 2 + Math.sin(t * 30) * 3, momY);
+    label(c, '媽媽：你在幹嘛！', W / 2, momY + 60, '#b00020', 30, '#fff');
+  } else if (stage === 'pass') {
+    c.globalAlpha = light; c.fillText('🚪', W / 2, momY); c.globalAlpha = 1;
+    label(c, '媽媽：……大概是貓吧。', W / 2, momY + 60, '#3a2a10', 24, '#fff');
+  } else {
+    c.fillText('🚪', W / 2, momY);
+    label(c, '……是誰在廚房？', W / 2, momY + 60, '#3a2a10', 30, '#fff');
+    // 靜止條
+    const bw = W * 0.7, bh = 18, bx = (W - bw) / 2, by = L.cy + L.R + 34;
+    c.fillStyle = 'rgba(0,0,0,0.5)'; roundRect(c, bx, by, bw, bh, 9); c.fill();
+    const p = stage === 'hold' ? m.still / CONFIG.momStillSeconds : 0;
+    c.fillStyle = '#4caf50'; roundRect(c, bx, by, Math.max(bh, bw * p), bh, 9); c.fill();
+    label(c, stage === 'hold' ? (inputMode === 'touch' ? '手指離開螢幕，不要動！' : '拿穩手機，不要動！') : '……', W / 2, by + 40, '#3a2a10', 18, '#fff');
+  }
+}
+
+function roundRect(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+function shadeStroke(col) { return col === '#fff' || col === '#ffffff' ? '#b9a77e' : '#2a0c04'; }
+function label(c, text, x, y, color, size, strokeColor = '#7a2412') {
+  c.font = `900 ${size}px -apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif`;
+  c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+  // 跟 landing 標題一樣：底下一層深色厚影＋描邊
+  c.lineWidth = Math.max(4, size * 0.26); c.strokeStyle = shadeStroke(strokeColor); c.strokeText(text, x, y + Math.max(2, size * 0.1));
+  c.strokeStyle = strokeColor; c.strokeText(text, x, y);
+  c.fillStyle = color; c.fillText(text, x, y);
+}
+
+function drawFx(c) {
+  for (const p of fx.particles) {
+    const a = 1 - p.t / p.life;
+    c.fillStyle = rgba(p.c, p.kind === 'smoke' ? a * 0.35 : a);
+    c.beginPath(); c.arc(p.x, p.y, p.r, 0, Math.PI * 2); c.fill();
+  }
+  for (const n of fx.fallingNoodles) {
+    c.save(); c.translate(n.x, n.y); c.rotate(n.rot);
+    c.strokeStyle = `rgba(230,190,90,${1 - n.t / n.life})`; c.lineWidth = 3; c.lineCap = 'round';
+    c.beginPath(); c.moveTo(-n.len / 2, 0); c.quadraticCurveTo(0, -8, n.len / 2, 0); c.stroke(); c.restore();
+  }
+  for (const s of fx.texts) {
+    const k = s.t / s.life;
+    const sc = k < 0.15 ? easeOut(k / 0.15) * 1.15 : 1;
+    c.globalAlpha = k > 0.75 ? (1 - k) / 0.25 : 1;
+    label(c, s.text, s.x, s.y - k * 30, s.color, s.size * sc);
+    c.globalAlpha = 1;
+  }
+  if (fx.flash) { c.fillStyle = rgba(fx.flash.color, fx.flash.a * (1 - fx.flash.t / fx.flash.life)); c.fillRect(0, 0, W, H); }
+}
+
+/* ---------- 開始畫面：GPT 生的背景＋煎餅圖 ---------- */
+// 背景圖裡鍋子的位置（原圖 941×1672 的像素座標）
+const LANDING_PAN = { cx: 467, floorY: 1226, innerW: 535 };
+function drawLanding(t) {
+  const bg = IMG.bg, pc = IMG.pc;
+  const s = Math.max(W / bg.naturalWidth, H / bg.naturalHeight);
+  const dw = bg.naturalWidth * s, dh = bg.naturalHeight * s;
+  const ox = (W - dw) / 2, oy = (H - dh) * 0.7;
+  ctx.drawImage(bg, ox, oy, dw, dh);
+  const cx = ox + LANDING_PAN.cx * s, floor = oy + LANDING_PAN.floorY * s;
+  // 爐火的光微微閃動
+  const fl = 0.5 + 0.5 * Math.sin(t * 11) * Math.sin(t * 7.3);
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  const g = ctx.createRadialGradient(cx, floor + 60 * s, 10, cx, floor + 60 * s, 420 * s);
+  g.addColorStop(0, `rgba(255,140,50,${0.10 + 0.06 * fl})`); g.addColorStop(1, 'rgba(255,140,50,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore();
+  if (!imgReady(pc)) return;
+  // 煎餅：配合鍋子的透視壓扁一點
+  const pw = LANDING_PAN.innerW * 0.88 * s, ph = pw * pc.naturalHeight / pc.naturalWidth * 0.62;
+  const hop = Math.max(0, Math.sin(t * 2.4)) ** 6 * 10 * s * 2; // 偶爾滋一下跳起來
+  const bob = Math.sin(t * 18) * 0.6;
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.beginPath(); ctx.ellipse(cx, floor - ph * 0.2, pw * 0.48 * (1 - hop / 200), ph * 0.26, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.drawImage(pc, cx - pw / 2, floor - ph - hop + bob, pw, ph);
+  // 熱氣
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 3; i++) {
+    const p = (t * 0.45 + i / 3) % 1, bx = cx + (i - 1) * pw * 0.22, by = floor - ph * 0.7;
+    ctx.strokeStyle = `rgba(255,255,255,${0.32 * Math.sin(p * Math.PI)})`; ctx.lineWidth = 4;
+    ctx.beginPath();
+    for (let k = 0; k <= 10; k++) {
+      const yy = by - p * ph * 0.9 - k * 5, xx = bx + Math.sin(k * 0.7 + t * 3 + i) * 6;
+      k ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy);
+    }
+    ctx.stroke();
+  }
+}
+
+function render() {
+  const t = now();
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  if (appState === 'title' && imgReady(IMG.bg)) { drawLanding(t); return; }
+  ctx.save();
+  if (fx.camShake > 0) ctx.translate((Math.random() - 0.5) * 14 * fx.camShake / 0.35, (Math.random() - 0.5) * 14 * fx.camShake / 0.35);
+  let warn = 0;
+  if (G && G.pc && G.pc.phase === 'cook') { const d = Math.hypot(G.pc.x, G.pc.y); warn = clamp((d - 0.68) / 0.25, 0, 1); }
+  if (L.bg && imgReady(IMG.bgGame)) {
+    ctx.drawImage(IMG.bgGame, L.bg.ox, L.bg.oy, L.bg.dw, L.bg.dh);
+    const fl = 0.5 + 0.5 * Math.sin(t * 11) * Math.sin(t * 7.3);
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    const g = ctx.createRadialGradient(L.cx, L.cy, L.R * 0.9, L.cx, L.cy, L.R * 1.6);
+    g.addColorStop(0, `rgba(90,120,255,${0.05 + 0.05 * fl})`); g.addColorStop(0.4, `rgba(255,140,50,${0.06 + 0.04 * fl})`); g.addColorStop(1, 'rgba(255,140,50,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore();
+    if (warn > 0) {
+      ctx.strokeStyle = `rgba(255,60,40,${warn * (0.5 + 0.5 * Math.sin(t * 18))})`;
+      ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(L.cx, L.cy, L.R * 1.02, 0, Math.PI * 2); ctx.stroke();
+    }
+  } else {
+    drawKitchen(t);
+    drawPan(warn);
+  }
+  if (G && appState !== 'title' && appState !== 'perm' && appState !== 'calib') drawGame(t);
+  // 糊在螢幕上的煎餅（半透明、不擋鍋子）
+  if (G) for (const s of G.splats) { const p = splatPos(s); drawSplat(ctx, s, p.x, p.y, L.pr * 0.85, 0.5); }
+  drawFx(ctx);
+  if (G) drawMomOverlay(ctx, t);
+  ctx.restore();
+}
+
+/* =========================================================
+   畫面切換 / 流程
+   ========================================================= */
+const SCREENS = ['s-title', 's-perm', 's-calib', 's-revive', 's-low', 's-ad', 's-result'];
+function showScreen(id) { for (const s of SCREENS) $(s).classList.toggle('show', s === id); }
+
+// 開火
+$('btn-fire').addEventListener('click', () => {
+  Snd.init(); Snd.click();
+  Wallet.tick(Date.now());
+  if (!Wallet.canStart()) { track('low_points', { balance: Wallet.bal }); showLow(null); return; }
+  const DM = window.DeviceMotionEvent, DO = window.DeviceOrientationEvent;
+  if (DM && typeof DM.requestPermission === 'function') {
+    // iPhone：一定要在點擊事件裡同步呼叫
+    let pMotion;
+    try { pMotion = DM.requestPermission(); } catch (e) { pMotion = Promise.reject(e); }
+    let pOrient = Promise.resolve('granted');
+    if (DO && typeof DO.requestPermission === 'function') { try { pOrient = DO.requestPermission(); } catch (e) { pOrient = Promise.resolve('denied'); } }
+    Promise.all([pMotion.catch(() => 'denied'), pOrient.catch(() => 'denied')]).then(([rm, ro]) => {
+      if (rm === 'granted' || ro === 'granted') { track('permission_result', { result: 'granted' }); sensorCheck(); }
+      else { track('permission_result', { result: 'denied' }); showDenied(); }
+    });
+  } else {
+    track('permission_result', { result: 'not_needed' });
+    sensorCheck();
+  }
+});
+
+function permScreen(emoji, msg, sub, copy, touch) {
+  appState = 'perm'; showScreen('s-perm');
+  $('perm-emoji').textContent = emoji; $('perm-msg').textContent = msg; $('perm-sub').textContent = sub || '';
+  $('btn-copyurl').classList.toggle('hidden', !copy); $('btn-touch').classList.toggle('hidden', !touch);
+}
+function showDenied() { permScreen('🙆', '沒關係，可以用手指玩', '按住拖曳＝晃，快速上滑放開＝翻面', false, true); }
+
+function sensorCheck() {
+  permScreen('📱', '感應器檢查中…', '', false, false);
+  const t0 = now();
+  const iv = setInterval(() => {
+    if (Input.sensorSeen) {
+      clearInterval(iv); track('sensor_check', { received: true });
+      inputMode = 'motion'; startCalib();
+    } else if (now() - t0 > CONFIG.sensorTimeout) {
+      clearInterval(iv); track('sensor_check', { received: false });
+      if (IS_MOBILE) permScreen('🤷', '這裡讀不到動作感應，請用 Safari / Chrome 開啟', IN_APP ? '（看起來你是從 App 裡打開的）' : '', true, true);
+      else permScreen('💻', '這裡讀不到動作感應，請用 Safari / Chrome 開啟', '在電腦上可以用滑鼠拖曳或方向鍵＋空白鍵玩', true, true);
+    }
+  }, 100);
+}
+
+$('btn-copyurl').addEventListener('click', async () => { Snd.click(); const ok = await copyText(cleanUrl()); toast(ok ? '已複製網址，貼到 Safari / Chrome 開啟' : cleanUrl()); });
+$('btn-touch').addEventListener('click', () => { Snd.init(); Snd.click(); inputMode = 'touch'; startGame(); });
+$('btn-calib-touch').addEventListener('click', () => { Snd.click(); inputMode = 'touch'; calib = null; startGame(); });
+
+// 校準
+let calib = null;
+function savedCalib() { try { const c = JSON.parse(lsGet(CALIB_KEY) || 'null'); return c && c.force ? c : null; } catch (e) { return null; } }
+function startCalib() {
+  appState = 'calib'; showScreen('s-calib');
+  calib = { step: 1, t: 0, samples: [] };
+  Input.shakeHandler = null;
+  $('calib-emoji').textContent = '🍳';
+  $('calib-msg').textContent = '把手機拿平，像拿著平底鍋';
+  $('btn-calib-touch').classList.add('hidden');
+  $('btn-skip-calib').classList.toggle('hidden', !savedCalib());
+}
+$('btn-skip-calib').addEventListener('click', () => {
+  Snd.click(); const c = savedCalib(); if (!c) return;
+  Input.base = { b: c.b, g: c.g }; Input.force = c.force; calib = null; startGame();
+});
+function updateCalib(dt) {
+  if (!calib) return;
+  calib.t += dt;
+  if (calib.step === 1) {
+    $('calib-count').textContent = Math.max(1, Math.ceil(2 - calib.t));
+    if (calib.t > 1.2 && Input.beta != null) calib.samples.push([Input.beta, Input.gamma]);
+    if (calib.t >= 2) {
+      if (calib.samples.length) {
+        const n = calib.samples.length;
+        Input.base = { b: calib.samples.reduce((a, s) => a + s[0], 0) / n, g: calib.samples.reduce((a, s) => a + s[1], 0) / n };
+      } else Input.base = { b: Input.beta || 0, g: Input.gamma || 0 };
+      Snd.click();
+      calib.step = 2; calib.t = 0;
+      $('calib-emoji').textContent = '💪';
+      $('calib-msg').textContent = '用力往上搖一下試試看！';
+      $('calib-count').textContent = '⬆️';
+      Input.cooldownUntil = 0; Input.peak = null;
+      Input.shakeHandler = (ratio, raw) => {
+        if (!calib || calib.step !== 2) return;
+        const force = Math.max(raw, CONFIG.shakeMinAccel * 1.25);
+        Input.force = force;
+        lsSet(CALIB_KEY, JSON.stringify({ b: Input.base.b, g: Input.base.g, force }));
+        track('calibration_done', { force: +force.toFixed(2), raw: +raw.toFixed(2) });
+        Snd.perfect(); vibrate(40);
+        calib.step = 3; calib.t = 0;
+        $('calib-emoji').textContent = '👌';
+        $('calib-msg').textContent = 'OK，開始煎！';
+        $('calib-count').textContent = '';
+        $('btn-calib-touch').classList.add('hidden');
+        Input.shakeHandler = null;
+      };
+    }
+  } else if (calib.step === 2) {
+    if (calib.t > 6) $('btn-calib-touch').classList.remove('hidden');
+  } else if (calib.step === 3) {
+    if (calib.t >= 1.2) { calib = null; startGame(); }
+  }
+}
+
+// 續命
+function showRevive() {
+  appState = 'revive'; showScreen('s-revive'); Snd.sizzle(0);
+  if (HOST) HOST.pause(window);
+  $('revive-sub').textContent = `已經煎好 ${G.served} / ${CONFIG.level1Target} 片`;
+  $('buy-note').textContent = '';
+  renderReviveButtons(); renderWallet();
+  setHint();
+}
+function renderReviveButtons() {
+  const free = Wallet.isFree();
+  $('btn-free').classList.toggle('hidden', !free);
+  $('btn-ad').classList.toggle('hidden', free);
+  const b = $('btn-buy');
+  b.innerHTML = `💰 用 ${CONFIG.buyNoodlesCost} 點換 ${CONFIG.buyNoodlesAmount} 包泡麵`;
+  b.classList.toggle('dim', Wallet.bal < CONFIG.buyNoodlesCost);
+}
+function resumeWithLives(n, msg) {
+  G.lives = clamp(n, 1, CONFIG.maxLives); Snd.life();
+  if (HOST) HOST.resume(window);
+  appState = 'play'; showScreen(null);
+  toast(msg);
+  newPancake();
+}
+// 看廣告 → 30 分鐘不扣點（開局免費、泡麵用完免費補）
+let adCtx = null;
+function startAd(from) {
+  track('fake_ad_click', { pancakes: G ? G.served : 0, from, balance: Wallet.bal });
+  adCtx = { from, t: CONFIG.fakeAdSeconds };
+  appState = 'ad'; showScreen('s-ad'); $('ad-count').textContent = CONFIG.fakeAdSeconds;
+}
+$('btn-ad').addEventListener('click', () => { Snd.click(); if (G) G.adUsed++; startAd('revive'); });
+$('btn-free').addEventListener('click', () => {
+  Snd.click(); if (!Wallet.isFree()) { renderReviveButtons(); return; }
+  track('free_refill', { pancakes: G.served, left_sec: Math.round(Wallet.freeLeftMs() / 1000) });
+  resumeWithLives(CONFIG.freeRefillLives, `免費補 ${CONFIG.freeRefillLives} 包 🍜 繼續煎！`);
+});
+$('btn-buy').addEventListener('click', () => {
+  Snd.click(); Wallet.tick(Date.now());
+  if (!Wallet.spend(CONFIG.buyNoodlesCost)) {
+    track('points_buy_fail', { pancakes: G.served, balance: Wallet.bal });
+    $('buy-note').textContent = `點數不夠（需要 ${CONFIG.buyNoodlesCost} 點），可以先看廣告 📺`;
+    Snd.stuck(); return;
+  }
+  track('points_buy', { pancakes: G.served, cost: CONFIG.buyNoodlesCost, noodles: CONFIG.buyNoodlesAmount, balance: Wallet.bal });
+  renderWallet();
+  resumeWithLives(CONFIG.buyNoodlesAmount, `-${CONFIG.buyNoodlesCost} 點，泡麵 +${CONFIG.buyNoodlesAmount} 包 🍜`);
+});
+$('btn-sleep').addEventListener('click', () => { Snd.click(); G.ended = true; showResult(); });
+function updateAd(dt) {
+  adCtx.t -= dt;
+  $('ad-count').textContent = Math.max(0, Math.ceil(adCtx.t));
+  if (adCtx.t <= 0) {
+    Wallet.grantFree(CONFIG.adFreeMinutes);
+    track('fake_ad_complete', { pancakes: G ? G.served : 0, from: adCtx.from, free_minutes: CONFIG.adFreeMinutes });
+    const from = adCtx.from; adCtx = null;
+    if (from === 'revive') resumeWithLives(CONFIG.freeRefillLives, `接下來 ${CONFIG.adFreeMinutes} 分鐘不扣點，泡麵補滿 🍜`);
+    else { toast(`接下來 ${CONFIG.adFreeMinutes} 分鐘不扣點 🎟️`); const n = lowNext; lowNext = null; if (n) n(); else { appState = 'title'; showScreen('s-title'); } }
+  }
+}
+// 點數不足
+let lowNext = null;
+function showLow(next) {
+  lowNext = next; appState = 'low'; showScreen('s-low');
+  $('hud').classList.add('hidden'); renderWallet();
+}
+$('btn-low-ad').addEventListener('click', () => { Snd.click(); startAd('low_points'); });
+$('btn-low-back').addEventListener('click', () => { Snd.click(); lowNext = null; G = null; appState = 'title'; showScreen('s-title'); });
+
+// 結算
+function rankOf() {
+  if (G.passed && G.plate.length >= CONFIG.level1Target && G.plate.every(k => k === 'perfect')) return '宵夜之神';
+  if (G.passed) return '宿舍廚神';
+  if (G.served >= 1) return '宵夜新手';
+  return '連泡麵都會煮壞';
+}
+function showResult() {
+  appState = 'result'; Snd.sizzle(0);
+  if (!G.passed) Snd.sad();
+  $('hud').classList.add('hidden'); setHint();
+  showScreen('s-result');
+  $('r-title').textContent = G.passed ? '第 1 晚完成！今晚吃飽了 🍜' : '第 1 晚失敗……今晚餓肚子 😢';
+  const rank = rankOf(); G.rank = rank;
+  $('r-rank').textContent = rank;
+  const notes = [];
+  if (G.fails.ceiling >= 2) notes.push('房東明天會來找你');
+  if (G.fails.floor >= 2) notes.push('貓今天吃得比你好');
+  if (G.fails.mom >= 1) notes.push('明天早餐桌上會很尷尬');
+  $('r-notes').innerHTML = notes.map(n => '・' + n).join('<br>');
+  $('r-stats').textContent = `煎好 ${G.served} 片（完美 ${G.perfectCount}）・天花板 ${G.fails.ceiling}・貓 ${G.fails.floor}・黑炭 ${G.fails.burnt}・被抓 ${G.fails.mom}`;
+  track('game_over', { passed: G.passed, pancakes: G.served, fails: { ...G.fails }, play_seconds: Math.round(G.playTime) });
+  if (HOST && !G.hostFinished) { G.hostFinished = true; HOST.finish(window, { served: G.served, perfect: G.perfectCount, passed: G.passed }); }
+  setupResultCanvas();
+}
+let rctx = null, RW = 340, RH = 200;
+function setupResultCanvas() {
+  const rc = $('rcv'); const r = rc.getBoundingClientRect();
+  RW = r.width || 320; RH = r.height || 200;
+  rc.width = Math.round(RW * DPR); rc.height = Math.round(RH * DPR);
+  rctx = rc.getContext('2d');
+}
+function drawResult(t) {
+  if (!rctx) return;
+  const c = rctx; c.setTransform(DPR, 0, 0, DPR, 0, 0);
+  // 牆
+  c.fillStyle = '#2b2420'; c.fillRect(0, 0, RW, RH);
+  // 天花板
+  c.fillStyle = '#3b332c'; c.fillRect(0, 0, RW, 46);
+  c.fillStyle = '#4a4038'; c.fillRect(0, 44, RW, 3);
+  const nC = G.fails.ceiling;
+  for (let i = 0; i < nC; i++) {
+    const s = G.splats[i] || { seed: i + 1, rot: i, noodles: PLATE_NOODLES };
+    const x = nC === 1 ? RW / 2 : 30 + i * ((RW - 60) / Math.max(1, nC - 1));
+    drawSplat(c, s, x, 22, 16, 0.85);
+  }
+  // 桌子
+  c.fillStyle = '#5a3d26'; c.fillRect(0, RH - 60, RW, 60);
+  c.fillStyle = '#6e4b2f'; c.fillRect(0, RH - 60, RW, 6);
+  // 盤子
+  drawPlate(c, RW / 2, RH - 62, 40, G.plate, G.rawPlate, t);
+  // 垃圾桶 + 黑炭
+  const bx = 42, by = RH - 30;
+  for (let i = 0; i < G.fails.burnt; i++) {
+    c.fillStyle = '#141010'; c.beginPath(); c.arc(bx - 10 + (i % 3) * 10, by - 38 - Math.floor(i / 3) * 8, 8, 0, Math.PI * 2); c.fill();
+  }
+  c.fillStyle = '#6b6f75'; c.beginPath(); c.moveTo(bx - 22, by - 36); c.lineTo(bx + 22, by - 36); c.lineTo(bx + 17, by + 10); c.lineTo(bx - 17, by + 10); c.closePath(); c.fill();
+  c.strokeStyle = '#555a60'; c.lineWidth = 2; for (let i = -1; i <= 1; i++) { c.beginPath(); c.moveTo(bx + i * 9, by - 30); c.lineTo(bx + i * 7, by + 6); c.stroke(); }
+  if (G.fails.burnt) label(c, '⚫×' + G.fails.burnt, bx, by - 64, '#fbfaf3', 13);
+  // 吃很飽的貓
+  if (G.fails.floor > 0) {
+    c.font = '46px serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillText('🐈', RW - 46, RH - 40 + Math.sin(t * 2) * 1.5);
+    label(c, '飽～ ×' + G.fails.floor, RW - 46, RH - 82, '#fbfaf3', 14);
+  }
+  if (nC) label(c, '天花板 ×' + nC, RW - 50, 58, '#efcf7a', 12);
+}
+$('btn-retry').addEventListener('click', () => { Snd.click(); track('retry_click', { prev_passed: G.passed }); tryStart(startGame); });
+$('btn-share').addEventListener('click', async () => {
+  Snd.click();
+  const text = `我半夜煎了 ${G.served} 片泡麵煎餅 🍜，天花板糊了 ${G.fails.ceiling} 片，貓吃掉 ${G.fails.floor} 片\n稱號：「${G.rank}」\n你翻得贏我嗎？ ${cleanUrl()}`;
+  if (navigator.share) {
+    track('share_click', { pancakes: G.served, method: 'native' });
+    try { await navigator.share({ text }); } catch (e) {}
+  } else {
+    track('share_click', { pancakes: G.served, method: 'clipboard' });
+    const ok = await copyText(text);
+    toast(ok ? '已複製，貼給同事吧！' : '複製失敗，請手動截圖分享 🙏');
+  }
+});
+$('btn-next').addEventListener('click', () => {
+  Snd.click();
+  track('next_level_interest_click', { passed: G.passed });
+  lsSet('noodle_pancake_next_clicks', String((+lsGet('noodle_pancake_next_clicks') || 0) + 1));
+  toast('第 2 晚還在準備中，我們會加油的 💪', 3);
+});
+
+// 靜音
+$('mute').addEventListener('click', (e) => {
+  e.stopPropagation(); Snd.init(); Snd.setMuted(!Snd.muted); $('mute').textContent = Snd.muted ? '🔇' : '🔊';
+});
+
+// 切到背景
+// 平台切換到別的遊戲／回大廳時暫停；回來時倒數 1 秒繼續
+window.setPancakePlatformActive = function (active) {
+  if (!active) {
+    if (appState === 'play' || appState === 'calib') pauseReason = pauseReason || 'platform';
+    Snd.sizzle(0); if (Snd.ctx && Snd.ctx.state === 'running') Snd.ctx.suspend();
+  } else {
+    if (pauseReason === 'platform') { pauseReason = null; resumeCountdown = 1; }
+    if (Snd.ctx && !Snd.muted && Snd.ctx.state === 'suspended') Snd.ctx.resume().catch(() => {});
+    resize(); heroCtx = null;
+  }
+};
+// 大廳的「結束本局」按鈕
+window.finishPancakePlatformRound = function () {
+  if (!G || G.hostFinished || !['play', 'revive', 'ad'].includes(appState)) return;
+  G.ended = true; adCtx = null; showResult();
+};
+// iframe 裡的操作不會冒泡到大廳，主動通知有效遊玩時間
+if (HOST) {
+  let lastTouch = 0;
+  const touch = () => { const t = Date.now(); if (t - lastTouch > 3000) { lastTouch = t; try { HOST.touch(window); } catch (_) {} } };
+  ['pointerdown', 'keydown', 'touchstart'].forEach(ev => window.addEventListener(ev, touch, { capture: true, passive: true }));
+  window.addEventListener('devicemotion', () => { if (appState === 'play') touch(); }, { passive: true });
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { if (appState === 'play') pauseReason = pauseReason || 'hidden'; Snd.sizzle(0); }
+  else if (pauseReason === 'hidden') { pauseReason = null; resumeCountdown = 1; }
+});
+
+/* =========================================================
+   Debug
+   ========================================================= */
+if (DEBUG) {
+  $('debug').classList.remove('hidden');
+  $('btn-export').addEventListener('click', () => {
+    const data = lsGet(EVENTS_KEY) || '[]';
+    const blob = new Blob([JSON.stringify(JSON.parse(data), null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'noodle_pancake_events.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    copyText(data).then(ok => ok && toast('已下載，也複製到剪貼簿了'));
+  });
+}
+let dbgT = 0;
+function updateDebug(dt) {
+  if (!DEBUG) return;
+  dbgT += dt; if (dbgT < 0.1) return; dbgT = 0;
+  const tl = getTilt(), pc = G && G.pc;
+  const lines = [
+    `mode   ${inputMode}  state ${appState}${pauseReason ? ' (' + pauseReason + ')' : ''}`,
+    `beta   ${Input.beta == null ? '-' : Input.beta.toFixed(1)}  gamma ${Input.gamma == null ? '-' : Input.gamma.toFixed(1)}`,
+    `tilt   x ${tl.x.toFixed(1)}  y ${tl.y.toFixed(1)}  ${now() < Input.tiltPauseUntil ? '[PAUSED]' : ''}`,
+    `accel  ${Input.accelMag.toFixed(2)}  peak ${(+Input.lastPeak || 0).toFixed(2)}  std ${Input.force.toFixed(1)}`,
+  ];
+  if (pc) {
+    lines.push(`phase  ${pc.phase}  side ${pc.side + 1}`);
+    lines.push(`stick  ${pc.stick.toFixed(2)}${pc.stuck ? ' STUCK' : ''}  spd ${(pc.speed || 0).toFixed(2)}`);
+    lines.push(`done   A ${pc.sides[0].toFixed(2)}  B ${pc.sides[1].toFixed(2)}  (down ${pc.down ? 'B' : 'A'})`);
+    if (pc.mom && pc.mom.dTilt != null) lines.push(`momΔ   ${pc.mom.dTilt.toFixed(1)}°`);
+  }
+  lines.push(`events ${eventCount()}`);
+  $('debug-text').textContent = lines.join('\n');
+}
+
+/* =========================================================
+   主迴圈
+   ========================================================= */
+let lastT = now(), hintT = 0;
+function loop() {
+  const t = now();
+  const dt = Math.min(0.05, t - lastT); lastT = t;
+  // 搖動峰值逾時（沒有新事件時）
+  if (Input.peak && t - Input.peak.start > 0.12) resolvePeak();
+
+  const landscape = IS_MOBILE && window.innerWidth > window.innerHeight;
+  const rotatable = appState === 'play' || appState === 'calib';
+  if (landscape && rotatable) {
+    if (pauseReason !== 'rotate') { pauseReason = 'rotate'; track('orientation_pause'); Snd.sizzle(0); }
+    $('rotate').classList.add('show');
+  } else if (pauseReason === 'rotate') {
+    pauseReason = null; $('rotate').classList.remove('show'); resumeCountdown = 1; resize();
+  }
+
+  if (!pauseReason) {
+    if (resumeCountdown > 0) {
+      resumeCountdown -= dt;
+      $('countdown').textContent = '1'; $('countdown').classList.toggle('show', resumeCountdown > 0);
+    } else {
+      if (appState === 'play' && G) updateGame(dt);
+      else if (appState === 'calib') updateCalib(dt);
+      else if (appState === 'ad') updateAd(dt);
+      updateFx(dt);
+    }
+  }
+  // 點數：每秒回點／更新顯示
+  loop.wT = (loop.wT || 0) + dt;
+  if (loop.wT > 0.5) { loop.wT = 0; Wallet.tick(Date.now()); renderWallet(); }
+  // 靜音按鈕只在首頁出現
+  const showMute = appState === 'title';
+  if (loop.mute !== showMute) { loop.mute = showMute; $('mute').classList.toggle('hidden', !showMute); }
+  render();
+  if (appState === 'result') drawResult(t);
+  hintT += dt; if (hintT > 0.15) { hintT = 0; setHint(); }
+  updateDebug(dt);
+  requestAnimationFrame(loop);
+}
+
+// 開啟紀錄
+(function pageOpen() {
+  const last = +lsGet('noodle_pancake_last_open') || 0;
+  const nowMs = Date.now();
+  track('page_open', {
+    returning: isReturning,
+    hours_since_last: last ? +((nowMs - last) / 3600000).toFixed(2) : null,
+    device: DEVICE, in_app_browser: IN_APP,
+  });
+  lsSet('noodle_pancake_last_open', String(nowMs));
+})();
+Wallet.load(); renderWallet();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

@@ -176,5 +176,12 @@
     "view": "games/mrt/view.html",
     "card": "games/mrt/card.html",
     "icon": "games/mrt/icon.svg"
+  },
+  {
+    "id": "pancake",
+    "logic": "games/pancake/game.js",
+    "view": "games/pancake/view.html",
+    "card": "games/pancake/card.html",
+    "icon": "games/pancake/icon.svg"
   }
 ]

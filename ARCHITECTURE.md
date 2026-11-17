@@ -37,7 +37,8 @@ deep-sea-games/
 │   │   └── README.md         自動產生的說明（函式索引、扣款／追蹤位置、規則摘要），勿手改
 │   ├── README.md             所有遊戲的索引，同樣自動產生
 │   ├── boba/original.html    額外：珍奶原始完整子頁
-│   └── dive/、mrt/           另含 original.html（原始完整子頁）與 style.css（限定該遊戲的平台外框樣式）
+│   ├── dive/、mrt/           另含 original.html（原始完整子頁）與 style.css（限定該遊戲的平台外框樣式）
+│   └── pancake/original.html 額外：泡麵煎餅子頁（iframe src 載入）與 assets/ 圖片、style.css
 ├── tools/
 │   ├── build.py              Python 標準函式庫靜態組合／檢查
 │   ├── test_build.py         組合工具與來源一致性測試
@@ -89,6 +90,7 @@ flowchart TD
 | boba | BOBA、deepSeaBoba；original.html 為子頁 |
 | dive | DIVE、deepSeaDive；original.html 為子頁（一口氣探險） |
 | mrt | MRT、deepSeaMrt；original.html 為子頁（捷運搶位） |
+| pancake | PANCAKE、deepSeaPancake；original.html 為以 iframe src 載入的子頁，圖片在 assets/ |
 
 ### 隱藏遊戲
 
@@ -97,6 +99,8 @@ flowchart TD
 ### 路由與珍奶橋接
 
 js/navigation.js 的 route 以 hash 切換 view 與 tab、標題、AN.view，空白／未知 hash 回 #lobby；保留大廳捲動位置及左上返回。各遊戲暫停方式不同，沒有新增統一暫停行為。
+
+games/pancake/game.js 首次進入時把 iframe `src` 設為 `games/pancake/original.html`（同源，圖片以相對路徑載入）。deepSeaPancake 提供 balance、start、spend、finish、progress、pause、resume、touch，同樣驗證來源 contentWindow；子頁提供 setPancakePlatformActive（切走時暫停）、finishPancakePlatformRound。iframe 帶 `allow="accelerometer; gyroscope; magnetometer"` 供晃手機玩法使用。
 
 games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.srcdoc。deepSeaBoba 提供 start、finish、progress、pause、resume、touch，驗證來源 contentWindow；子頁提供 setBobaPlatformActive、finishBobaPlatformRound。原粉色 UI、父頁扣點／GA4、子頁本機紀錄責任維持原狀。
 
@@ -127,6 +131,10 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `straw_game_today` | 珍奶當日紀錄 `{d,n}` |
 | `diveBestMult` | 一口氣探險最高倍率（子頁寫入，同源） |
 | `mrtBestMult` | 捷運搶位最高倍率（子頁寫入，同源） |
+| `deep-sea-free-until` | 泡麵煎餅看示範廣告後的免扣點截止時間（毫秒時間戳）；新增於 2026-11-17，只有泡麵煎餅讀取 |
+| `noodle_pancake_events` | 泡麵煎餅本機事件紀錄，上限 3,000 筆 |
+| `mini_player_id` | 泡麵煎餅（及之後的小遊戲）本機玩家識別值，不送 GA4 |
+| `noodle_pancake_calib` / `noodle_pancake_daily` / `noodle_pancake_last_open` / `noodle_pancake_next_clicks` | 泡麵煎餅的動作感應校準、當日局數、最後開啟時間、「想玩第 2 晚」點擊數 |
 
 大部分回合只存在記憶體；重新整理不會還原進行中的遊戲，已扣餘額仍保存。這是瀏覽器本機錢包，沒有伺服器帳戶、跨裝置同步或付款系統。
 
