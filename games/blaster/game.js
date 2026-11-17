@@ -1,5 +1,5 @@
   /* ---------- Reef Blaster: free horizontal movement, automatic fire, monsters in five columns, persistent levels ---------- */
-  var BL={active:false,phase:'ready',stage:1,cleared:0,stake:0,spent:0,retries:0,earned:0,attemptEarned:0,rewarded:0,analytics:null,lives:3,weapon:1,form:'pulse',picks:[],pickResume:false,keys:{l:false,r:false},ink:[],bossSpawned:false,target:200,x:200,kills:0,stageKills:0,wave:0,waves:18,clock:0,scroll:0,nextWave:.9,shot:0,enemies:[],bullets:[],fx:[],last:0,focused:document.hasFocus?document.hasFocus():true,flash:0,best:0,serial:0,tracked:false};
+  var BL={active:false,phase:'ready',stage:1,cleared:0,stake:0,spent:0,retries:0,earned:0,attemptEarned:0,rewarded:0,analytics:null,lives:3,weapon:1,form:'pulse',picks:[],sinceCard:0,keys:{l:false,r:false},ink:[],bossSpawned:false,target:200,x:200,kills:0,stageKills:0,wave:0,waves:18,clock:0,scroll:0,nextWave:.9,shot:0,enemies:[],bullets:[],fx:[],last:0,focused:document.hasFocus?document.hasFocus():true,flash:0,best:0,serial:0,tracked:false};
   var blCanvas=$('bl-canvas'),blCtx=blCanvas.getContext('2d');
   try{var blSaved=Number(localStorage.getItem('deep-sea-blaster-best'));if(Number.isFinite(blSaved))BL.best=Math.max(0,Math.min(Number.MAX_SAFE_INTEGER,Math.floor(blSaved)));}catch(_){}
   function blSay(text,kind){$('bl-msg').textContent=text;$('bl-msg').className='msg'+(kind?' '+kind:'');}
@@ -20,7 +20,7 @@
     return Object.assign({},gun,{damage:1+Math.ceil(BL.weapon/3),interval:gun.kind==='rocket'?.34:Math.max(.11,.27-BL.weapon*.005)});
   }
   function blBossStage(stage){return stage%5===0;}
-  function blStageConfig(stage){var waves=Math.min(60,18+4*(stage-1));return {waves:blBossStage(stage)?Math.ceil(waves*.6):waves,interval:Math.max(.8,1.5-(stage-1)*.06),speed:stage<=10?135+stage*14:275+12*Math.log2(stage-9)};}
+  function blStageConfig(stage){var waves=Math.min(180,54+12*(stage-1));return {waves:blBossStage(stage)?Math.ceil(waves*.6):waves,interval:Math.max(.7,1.3-(stage-1)*.05),speed:stage<=10?150+stage*14:290+12*Math.log2(stage-9)};}
   function blHealth(){return BL.stage<=10?3+Math.ceil(.8*BL.stage):11+3*(BL.stage-10);}
   function blPace(){return 1+.35*Math.min(1,BL.wave/BL.waves);}
   function blVisible(){return !$('view-blaster').hidden&&!document.hidden&&BL.focused;}
@@ -28,7 +28,7 @@
   function blUI(){
     var w=blWeapon();$('bl-stage').textContent='第 '+BL.stage+' 關';$('bl-lives').textContent=BL.lives+' / 3';$('bl-wave').textContent=BL.wave+' / '+BL.waves;
     $('bl-weapon').textContent=w.name+' Lv.'+BL.weapon;$('bl-power').textContent=Math.round(w.damage*w.scale*100)/100+' 傷害 × '+w.pellets+' 發';
-    $('bl-evolution').textContent=BL.phase==='pick'?'選一張強化卡，開始下一關':blBossStage(BL.stage)?'第 '+BL.stage+' 關：關底有王':'開局、每 6 波與每關前三選一強化';$('bl-weapon').style.color=w.color;$('bl-speed').textContent=(blStageConfig(BL.stage).speed*blPace()/96).toFixed(2)+'×';$('bl-kills').textContent=BL.kills+' 隻';$('bl-best').textContent=BL.best+' 關';
+    $('bl-evolution').textContent=BL.phase==='pick'?'選一張強化卡，戰鬥會接著繼續':blBossStage(BL.stage)?'第 '+BL.stage+' 關：關底有王':'戰鬥中每隔一段時間三選一強化';$('bl-weapon').style.color=w.color;$('bl-speed').textContent=(blStageConfig(BL.stage).speed*blPace()/96).toFixed(2)+'×';$('bl-kills').textContent=BL.kills+' 隻';$('bl-best').textContent=BL.best+' 關';
     $('bl-reward-status').textContent=BL.cleared+' / '+((Math.floor(BL.cleared/10)+1)*10)+' 關';$('bl-pay').textContent=BL.earned+' 點';$('bl-amount').disabled=BL.active;
     $('bl-go').hidden=BL.phase==='lost'||BL.phase==='pick';$('bl-go').disabled=BL.phase==='run';$('bl-picks').hidden=BL.phase!=='pick';for(var pi=0;pi<3;pi++){var card=BL.picks[pi],pb=$('bl-pick-'+pi);pb.hidden=!card;if(card){var label=blCardText(card);if(pb.textContent!==label)pb.textContent=label;pb.disabled=BL.phase!=='pick';}}$('bl-go').textContent=BL.phase==='cleared'?'帶著武器，挑戰下一關':'扣點開始出擊';$('bl-go').dataset.mode='bet';
     $('bl-cash').disabled=BL.phase!=='cleared';$('bl-cash').textContent=BL.phase==='cleared'?'結束這輪（已獲 '+BL.earned+' 點）':'過關後可選擇收隊';
@@ -45,29 +45,28 @@
     var gun=BL_GUNS.filter(function(g){return g.kind===card.kind;})[0];
     return gun.name+' · '+gun.desc;
   }
-  // Weapon choice cards: before the run, at every stage start and every 6 waves (mid-stage pauses the fight and resumes it).
+  // Weapon choice cards: the fight pauses every BL_CARD_EVERY waves (counted across stages) and resumes after the pick.
   // Cards only swap the weapon form (or heal); firepower level grows by +1 per cleared stage and +1 per boss.
-  function blOfferPicks(resume,starter){
+  var BL_CARD_EVERY=36;
+  function blOfferPicks(){
     var pool=BL_GUNS.filter(function(g){return g.kind!==BL.form;}).sort(function(){return Math.random()-.5;}).slice(0,3).map(function(g){return {type:'weapon',kind:g.kind};});
-    if(BL.lives<3&&pool.length&&!starter)pool[pool.length-1]={type:'repair'};
-    BL.picks=pool;BL.phase='pick';BL.pickResume=!!resume;BL.tracked=false;
-    if(!resume){BL.bullets=[];BL.ink=[];}
-    blSay(resume?'暫停選擇：從三張強化卡中選一張，戰鬥會接著繼續。':starter?'選擇起始武器：從三張卡中選一張。':'第 '+BL.stage+' 關開始前，從三張強化卡中選一張。','win');blUI();
+    if(BL.lives<3&&pool.length)pool[pool.length-1]={type:'repair'};
+    BL.picks=pool;BL.phase='pick';BL.sinceCard=0;BL.tracked=false;
+    blSay('暫停選擇：從三張強化卡中選一張，戰鬥會接著繼續。','win');blUI();
   }
   function blChoose(index){
     if(BL.phase!=='pick'||!BL.picks[index])return;
     var card=BL.picks[index];BL.picks=[];
     if(card.type==='repair')BL.lives=Math.min(3,BL.lives+1);else BL.form=card.kind;
-    if(BL.pickResume){BL.pickResume=false;BL.phase='run';BL.last=performance.now();blTracking();blSay('強化完成，繼續出擊！');blUI();blCanvas.focus();}
-    else blRound();
+    BL.phase='run';BL.last=performance.now();blTracking();blSay('強化完成，繼續出擊！');blUI();blCanvas.focus();
   }
   function blStart(){
     if(BL.phase==='run'||BL.phase==='lost'||BL.phase==='pick')return;
-    if(BL.active&&BL.phase==='cleared'){BL.stage++;blOfferPicks(false,false);return;}
+    if(BL.active&&BL.phase==='cleared'){BL.stage++;blRound();return;}
     var stake=ENTRY_FEE;
     if(stake>S.balance){blSay(LOW_MSG,'lose');return;}
-    BL.stake=stake;BL.spent=stake;BL.retries=0;BL.earned=0;BL.attemptEarned=0;BL.rewarded=0;BL.stage=1;BL.cleared=0;BL.lives=3;BL.weapon=1;BL.form='pulse';BL.picks=[];BL.kills=0;BL.active=true;BL.tracked=false;BL.serial=0;
-    BL.analytics=AN.start('blaster',stake);S.balance-=stake;save();renderAll();blOfferPicks(false,true);
+    BL.stake=stake;BL.spent=stake;BL.retries=0;BL.earned=0;BL.attemptEarned=0;BL.rewarded=0;BL.stage=1;BL.cleared=0;BL.lives=3;BL.weapon=1;BL.form='pulse';BL.picks=[];BL.sinceCard=0;BL.kills=0;BL.active=true;BL.tracked=false;BL.serial=0;
+    BL.analytics=AN.start('blaster',stake);S.balance-=stake;save();renderAll();blRound();
   }
   function blRetry(){
     if(BL.active||BL.phase!=='lost')return;
@@ -121,7 +120,10 @@
     var lanes=[0,1,2,3,4].sort(function(){return Math.random()-.5;});
     var intro=pool.filter(function(t){return BL_UNLOCK[t]===stage&&stage>1;});
     if(intro.length&&wave===3)return [{lane:lanes[0],type:intro[0],dy:0}];
-    var p1=Math.max(.1,.3-.03*(stage-1)),p4=Math.min(.22,.03+.03*(stage-1)),p3=.28,roll=Math.random(),maxPer=roll<p1?1:roll<p1+(1-p1-p3-p4)?2:roll<1-p4?3:4,budget=Math.min(8,3.2+.5*(stage-1)),plan=[];
+    // Intensity ramps with total progress T (stages plus position inside the stage): a quiet start with the starter gun, then denser waves.
+    var T=(stage-1)+(BL.waves?wave/BL.waves:0),mean=Math.min(3.6,1+.55*T),n=Math.floor(mean)+(Math.random()<mean-Math.floor(mean)?1:0);
+    if(Math.random()<.2)n+=Math.random()<.5?-1:1;
+    var maxPer=Math.max(1,Math.min(5,n)),budget=1.4*maxPer+.5,plan=[];
     for(var i=0;i<maxPer;i++){
       var options=pool.filter(function(t){return BL_COST[t]<=budget+1e-9&&!(t==='rock'&&plan.some(function(q){return q.type==='rock';}));});
       if(!options.length)break;
@@ -132,10 +134,11 @@
     return plan;
   }
   function blSpawn(){
-    BL.wave++;var hp=blHealth(),config=blStageConfig(BL.stage),plan=blWavePlan(BL.wave),scale=Math.max(.65,1-.12*(plan.length-1));
+    BL.wave++;var hp=blHealth(),config=blStageConfig(BL.stage),plan=blWavePlan(BL.wave),scale=Math.max(.6,1-.1*(plan.length-1));
     plan.forEach(function(q){BL.enemies.push(blEnemy(q.lane,-32+q.dy,q.type,Math.max(1,Math.round(hp*scale))));});
     BL.nextWave=config.interval*(1-.16*BL.wave/BL.waves);
-    if(BL.wave%6===0&&BL.wave<BL.waves){blOfferPicks(true,false);return;}
+    BL.sinceCard++;
+    if(BL.sinceCard>=BL_CARD_EVERY&&BL.wave<BL.waves){blOfferPicks();return;}
     blUI();
   }
   function blBossSpawn(){
@@ -214,7 +217,7 @@
     }else b.x+=(b.vx||0)*step;
     b.y-=b.speed*step;
     // Resolve nearest along this projectile's path, preserving one hit per enemy for piercing shots.
-    var targets=BL.enemies.filter(function(e){return e.hp>0&&b.hits.indexOf(e.id)<0&&blSegmentHit(ax,ay,b.x,b.y,e,27+(b.kind==='plasma'?7:0));}).sort(function(a,c){return Math.hypot(a.x-ax,a.y-ay)-Math.hypot(c.x-ax,c.y-ay);});
+    var targets=BL.enemies.filter(function(e){return e.hp>0&&b.hits.indexOf(e.id)<0&&blSegmentHit(ax,ay,b.x,b.y,e,22+(b.kind==='plasma'?7:0));}).sort(function(a,c){return Math.hypot(a.x-ax,a.y-ay)-Math.hypot(c.x-ax,c.y-ay);});
     for(var j=0;j<targets.length&&b.pierce>0;j++){
       var enemy=targets[j];if(enemy.hp<=0)continue;b.hits.push(enemy.id);blDamage(enemy,b.damage);b.pierce--;
       if(b.kind==='frost'&&enemy.type!=='boss')enemy.slow=2;
@@ -238,7 +241,7 @@
       BL.bullets=BL.bullets.filter(function(b){return b.y>-40&&b.x>-40&&b.x<440;});BL.enemies=BL.enemies.filter(function(e){return e.hp>0;});
       for(var k=BL.enemies.length-1;k>=0;k--){
         var e=BL.enemies[k];if(e.type==='boss')continue;
-        var touch=Math.abs(e.x-BL.x)<38&&Math.abs(e.y-532)<37;
+        var touch=Math.abs(e.x-BL.x)<34&&Math.abs(e.y-532)<34;
         if(e.type==='rock'){if(e.y>585){BL.enemies.splice(k,1);}else if(touch){BL.enemies.splice(k,1);blHurt();if(BL.phase!=='run')return;}continue;}
         if(e.y>585||touch){BL.enemies.splice(k,1);blHurt();if(BL.phase!=='run')return;}
       }
@@ -273,7 +276,7 @@
     if(e.type==='eel'&&e.targetLane!==null){
       var target=BL_SLOTS[e.targetLane];g.strokeStyle='rgba(255,224,118,.65)';g.lineWidth=2;g.setLineDash([5,5]);g.beginPath();g.moveTo(x,y);g.lineTo(target,y+40);g.stroke();g.setLineDash([]);g.fillStyle='#ffe076';g.font='bold 20px system-ui';g.textAlign='center';g.fillText(target<x?'←':'→',target,y+30);
     }
-    g.save();g.translate(x,y);if(!reduceMotion)g.rotate(Math.sin(t*4+e.id)*.06);
+    g.save();g.translate(x,y);g.scale(.8,.8);if(!reduceMotion)g.rotate(Math.sin(t*4+e.id)*.06);
     g.fillStyle=c;g.strokeStyle=c;g.lineWidth=7;g.lineCap='round';
     if(e.type==='crab'){
       [-1,1].forEach(function(d){g.beginPath();g.moveTo(d*20,4);g.lineTo(d*37,-7);g.lineTo(d*39,-19);g.stroke();g.beginPath();g.arc(d*39,-23,9,0,Math.PI*1.6);g.fill();for(var i=0;i<2;i++){g.beginPath();g.moveTo(d*18,12+i*6);g.lineTo(d*33,22+i*7);g.stroke();}});
@@ -299,9 +302,9 @@
     }
     var ey=e.type==='turtle'?-26:e.type==='eel'?-22:-4,eyeSize=e.type==='mini'?4:6;
     if(e.type!=='mine'&&e.type!=='rock'){g.fillStyle='#fff';g.beginPath();g.ellipse(-8,ey,eyeSize,eyeSize+2,0,0,7);g.ellipse(8,ey,eyeSize,eyeSize+2,0,0,7);g.fill();g.fillStyle='#182c40';g.beginPath();g.arc(-7,ey+1,2.5,0,7);g.arc(9,ey+1,2.5,0,7);g.fill();}g.restore();
-    if(e.slow>0){g.strokeStyle='#bdefff';g.lineWidth=2;g.beginPath();g.arc(x,y,34,0,7);g.stroke();}
-    if(e.shield>0){g.strokeStyle='#79bfff';g.lineWidth=3;g.beginPath();g.ellipse(x,y,34,42,0,0,7);g.stroke();blRoundRect(x-27,y-60,54*e.shield/e.shieldMax,4,2,'#79bfff');}
-    blRoundRect(x-27,y-49,54,6,3,'#183a49');blRoundRect(x-27,y-49,54*Math.max(0,e.hp/e.max),6,3,spec.color);g.font='bold 11px system-ui';g.textAlign='center';g.fillStyle='#e4f2f3';g.fillText(Math.max(0,Math.ceil(e.hp))+' HP',x,y-66);
+    if(e.slow>0){g.strokeStyle='#bdefff';g.lineWidth=2;g.beginPath();g.arc(x,y,28,0,7);g.stroke();}
+    if(e.shield>0){g.strokeStyle='#79bfff';g.lineWidth=3;g.beginPath();g.ellipse(x,y,27,34,0,0,7);g.stroke();blRoundRect(x-22,y-49,44*e.shield/e.shieldMax,4,2,'#79bfff');}
+    blRoundRect(x-22,y-40,44,5,2,'#183a49');blRoundRect(x-22,y-40,44*Math.max(0,e.hp/e.max),5,2,spec.color);g.font='bold 10px system-ui';g.textAlign='center';g.fillStyle='#e4f2f3';g.fillText(Math.max(0,Math.ceil(e.hp))+' HP',x,y-45);
   }
   function blDrawBullet(b){
     var g=blCtx,x=b.x,y=b.y;g.fillStyle=b.color;g.strokeStyle=b.color;
@@ -333,7 +336,7 @@
   }
   function blPickCard(card){var gun=card.type==='weapon'?BL_GUNS.filter(function(x){return x.kind===card.kind;})[0]:null;return {title:gun?gun.name:'修補船體',desc:gun?gun.desc:'恢復 1 心',color:gun?gun.color:'#ff958c'};}
   function blDrawPicks(){
-    var g=blCtx;g.fillStyle='rgba(4,18,29,.9)';g.fillRect(0,0,400,600);g.textAlign='center';g.fillStyle='#62e6d2';g.font='bold 26px system-ui';g.fillText('選擇強化',200,120);g.fillStyle='#e4f2f3';g.font='14px system-ui';g.fillText(BL.pickResume?'戰鬥暫停，三選一':BL.stage>1||BL.wave>0?'第 '+BL.stage+' 關開始前，三選一':'出擊前，三選一',200,150);
+    var g=blCtx;g.fillStyle='rgba(4,18,29,.9)';g.fillRect(0,0,400,600);g.textAlign='center';g.fillStyle='#62e6d2';g.font='bold 26px system-ui';g.fillText('選擇強化',200,120);g.fillStyle='#e4f2f3';g.font='14px system-ui';g.fillText('戰鬥暫停，三選一',200,150);
     BL.picks.forEach(function(card,i){var info=blPickCard(card),x=22+i*120;blRoundRect(x,190,116,300,14,'#113041');blRoundRect(x,190,116,8,4,info.color);g.fillStyle=info.color;g.font='bold 16px system-ui';g.fillText(info.title,x+58,250,100);g.fillStyle='#e4f2f3';g.font='12px system-ui';g.fillText(info.desc,x+58,290,100);g.fillStyle='#ffdc87';g.fillText('火力 Lv.'+BL.weapon,x+58,330,100);g.fillStyle='#9fc1ca';g.fillText('按 '+(i+1),x+58,470,100);});
     g.fillStyle='#9fc1ca';g.font='13px system-ui';g.fillText('點選卡片，或按數字鍵 1 / 2 / 3',200,540);
   }

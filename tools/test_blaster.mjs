@@ -58,9 +58,9 @@ check('Free movement: nudges, held keys and drag set the target within bounds; h
   f.el('view-blaster').hidden=false;f.document.hidden=false;f.state.focused=true;f.advance(16);assert(f.state.clock>0);assert(f.events.some(e=>e[0]==='progress'&&e[3]===true));
 });
 check('Clear waits for all waves and enemies; later enemies are stronger and faster',()=>{
-  const f=fixture();f.run('blGo();blSpawn()');assert(f.state.enemies.length>=1);const hp=f.state.enemies[0].hp,speed=f.state.enemies[0].speed;
+  const f=fixture();f.run('blGo();blSpawn()');assert(f.state.enemies.length>=1);const hp=f.run("blEnemy(1,100,'octo',blHealth()).hp"),speed=f.run("blEnemy(1,100,'octo',1).speed");
   f.run('BL.wave=BL.waves;BL.enemies=[blEnemy(1,100,"octo",50)];blStep(.016)');assert.equal(f.state.phase,'run');f.run('BL.enemies=[];blStep(.016)');assert.equal(f.state.phase,'cleared');
-  f.run('blGo();BL.stage=10;BL.wave=0;blSpawn()');assert(f.state.enemies[0].hp>hp);assert(f.state.enemies[0].speed>speed);
+  f.run('blGo();BL.stage=10');assert(f.run("blEnemy(1,100,'octo',blHealth()).hp")>hp);assert(f.run("blEnemy(1,100,'octo',1).speed")>speed);
 });
 check('Seven weapon forms have unique colors and shot mechanics',()=>{
   const f=fixture();const kinds=[],colors=[];
@@ -88,8 +88,8 @@ check('Eels telegraph before moving lanes, rays sprint, and jellyfish split only
 });
 check('Stages grow, bosses shorten the wave count, and travel/spawning accelerate',()=>{
   const f=fixture();let previousSpeed=0,previousInterval=9;
-  for(let stage=1;stage<=10;stage++){const c=f.run(`blStageConfig(${stage})`);const base=Math.min(60,18+4*(stage-1));assert.equal(c.waves,stage%5===0?Math.ceil(base*.6):base);assert(c.speed>previousSpeed);assert(c.interval<=previousInterval);previousSpeed=c.speed;previousInterval=c.interval;}
-  assert.equal(f.run('blBossStage(5)'),true);assert.equal(f.run('blBossStage(4)'),false);assert(f.run('blStageConfig(60).interval')>=.8);
+  for(let stage=1;stage<=10;stage++){const c=f.run(`blStageConfig(${stage})`);const base=Math.min(180,54+12*(stage-1));assert.equal(c.waves,stage%5===0?Math.ceil(base*.6):base);assert(c.speed>previousSpeed);assert(c.interval<=previousInterval);previousSpeed=c.speed;previousInterval=c.interval;}
+  assert.equal(f.run('blBossStage(5)'),true);assert.equal(f.run('blBossStage(4)'),false);assert(f.run('blStageConfig(60).interval')>=.7);
   f.run('blGo();BL.wave=0');const slow=f.run('blPace()');f.run('BL.wave=BL.waves');assert(f.run('blPace()')>slow);
 });
 check('Seven weapon silhouettes differ and every monster renderer executes',()=>{
@@ -124,7 +124,7 @@ check('Death and paid replay beyond stage ten preserve earned rewards and only r
 });
 check('High-stage replay is always five points, waves stay bounded and difficulty keeps increasing',()=>{
   const f=fixture();let speed=0,health=0;
-  for(const stage of [10,11,20,100,1000]){f.state.stage=stage;const config=f.run('blStageConfig(BL.stage)');assert.equal(f.run('blRetryFee()'),5);assert(config.waves<=96);assert(config.speed>speed);speed=config.speed;const hp=f.run('blHealth()');assert(hp>health);health=hp;assert(Number.isFinite(config.speed)&&Number.isFinite(hp));}
+  for(const stage of [10,11,20,100,1000]){f.state.stage=stage;const config=f.run('blStageConfig(BL.stage)');assert.equal(f.run('blRetryFee()'),5);assert(config.waves<=180);assert(config.speed>speed);speed=config.speed;const hp=f.run('blHealth()');assert(hp>health);health=hp;assert(Number.isFinite(config.speed)&&Number.isFinite(hp));}
   f.run('blUI()');assert.equal(f.el('bl-stage').textContent,'第 1000 關');
 });
 check('Best stage values above ten remain compatible with the existing storage key',()=>{
@@ -145,8 +145,8 @@ check('Shotgun stays removed and picks decide the weapon form, not the level',()
  for(const level of [1,4,8,13,24]){f.run(`BL.weapon=${level}`);assert.equal(f.run('blWeapon().kind'),'pulse');}
  f.run('BL.weapon=8;blHurt();blHurt();blHurt();blRetry()');assert.equal(f.state.weapon,8);assert.equal(f.run('blWeapon().kind'),'pulse');
 });
-check('Pacing: stage 1 speed 149, wave gap 1.5, in-stage boost 35%',()=>{
- const f=fixture();assert.equal(f.run('blStageConfig(1).speed'),149);assert.equal(f.run('blStageConfig(1).interval'),1.5);assert.equal(f.run('blStageConfig(10).speed'),275);
+check('Pacing: stage 1 speed 164, wave gap 1.3, in-stage boost 35%',()=>{
+ const f=fixture();assert.equal(f.run('blStageConfig(1).speed'),164);assert.equal(f.run('blStageConfig(1).interval'),1.3);assert.equal(f.run('blStageConfig(10).speed'),290);
  f.run('blGo();BL.wave=BL.waves');assert(Math.abs(f.run('blPace()')-1.35)<1e-9);
 });
 check('Starter can kill a first-stage octopus within four hits; no weapon crates fall any more',()=>{
@@ -154,22 +154,27 @@ check('Starter can kill a first-stage octopus within four hits; no weapon crates
  assert.equal(f.state.pickups,undefined);f.run('blSpawn()');assert.equal(f.state.pickups,undefined);
 });
 
-check('Three-card pick between stages: no charge, time frozen, one choice applies once; repair card appears when hurt',()=>{
-  const f=fixture();f.run('blGo();blClear()');const balance=f.wallet.balance;f.run('blStart()');
-  assert.equal(f.state.phase,'pick');assert.equal(f.state.stage,2);assert.equal(f.state.picks.length,3);assert.equal(f.wallet.balance,balance);assert.equal(f.events.filter(e=>e[0]==='start').length,1);
-  assert.equal(f.el('bl-picks').hidden,false);assert.equal(f.el('bl-go').hidden,true);f.advance(5000);assert.equal(f.state.wave,0);assert.equal(f.state.enemies.length,0);
+check('Weapon cards appear only mid-fight (every 36 waves): no starter or stage-start pick, no charge, time frozen, one choice applies once',()=>{
+  const f=fixture();f.run('blStart()');assert.equal(f.state.phase,'run');assert.equal(f.state.form,'pulse');assert.equal(f.state.picks.length,0);f.run('blClear();blStart()');assert.equal(f.state.phase,'run');assert.equal(f.state.stage,2);assert.equal(f.state.picks.length,0);
+  f.run("BL.sinceCard=35;BL.enemies=[blEnemy(1,300,'octo',50)];BL.bullets=[{x:200,y:400,vx:0,speed:600,kind:'pulse',color:'#fff',pierce:1,radius:0,damage:1,hits:[]}];var waveBefore=BL.wave;blSpawn()");
+  assert.equal(f.state.phase,'pick');assert.equal(f.state.picks.length,3);assert.equal(f.state.sinceCard,0);assert(f.state.enemies.length>=2);assert.equal(f.state.bullets.length,1);
+  assert.equal(f.el('bl-picks').hidden,false);assert.equal(f.el('bl-go').hidden,true);assert.equal(f.events.filter(e=>e[0]==='start').length,1);
   assert.equal(new Set(f.state.picks.map(c=>c.kind)).size,3);assert(f.state.picks.every(c=>c.type==='weapon'&&c.kind!==f.state.form));
-  const card=f.state.picks[1],level=f.state.weapon;f.run('blChoose(1);blChoose(0)');assert.equal(f.state.phase,'run');assert.equal(f.state.form,card.kind);assert.equal(f.state.weapon,level);assert.equal(f.el('bl-picks').hidden,true);
-  const g=fixture();g.run('blGo();BL.lives=1;blClear();blStart()');assert(g.state.picks.some(c=>c.type==='repair'));const index=g.state.picks.findIndex(c=>c.type==='repair');g.run(`blChoose(${index})`);assert.equal(g.state.lives,2);assert.equal(g.state.form,'pulse');
-  const h=fixture();h.run('blGo();blClear();blStart()');h.emitWindow('pagehide',{persisted:false});assert.equal(h.events.filter(e=>e[0]==='end').length,1);assert.equal(h.events.find(e=>e[0]==='end')[3],'abandoned');
+  const frozen=f.state.enemies.map(e=>e.y);f.advance(5000);assert.deepEqual(f.state.enemies.map(e=>e.y),frozen);
+  const card=f.state.picks[1],level=f.state.weapon,balance=f.wallet.balance;f.run('blChoose(1);blChoose(0)');assert.equal(f.state.phase,'run');assert.equal(f.state.form,card.kind);assert.equal(f.state.weapon,level);assert.equal(f.wallet.balance,balance);assert.equal(f.el('bl-picks').hidden,true);
+  f.advance(200);assert(f.state.enemies.some(e=>e.y>frozen[0]));
+  for(let i=0;i<35;i++)f.run('blSpawn()');assert.equal(f.state.phase,'run');f.run('blSpawn()');assert.equal(f.state.phase,'pick');
+  const g=fixture();g.run('blStart();BL.lives=1;BL.sinceCard=35;blSpawn()');assert(g.state.picks.some(c=>c.type==='repair'));const index=g.state.picks.findIndex(c=>c.type==='repair');g.run(`blChoose(${index})`);assert.equal(g.state.lives,2);assert.equal(g.state.form,'pulse');
+  const h=fixture();h.run('blStart();BL.sinceCard=35;blSpawn()');h.emitWindow('pagehide',{persisted:false});assert.equal(h.events.filter(e=>e[0]==='end').length,1);assert.equal(h.events.find(e=>e[0]==='end')[3],'abandoned');
+  const k=fixture();k.run('blStart();BL.wave=BL.waves=5;BL.sinceCard=99;blSpawn()');assert.equal(k.state.phase,'run');
 });
-check('Wave plans: one to four of five columns from the first stage (more later), unlocked types only, one rock at most, lone intro of each new type',()=>{
+check('Wave plans: quiet start (mostly one monster) ramping up to three or four per wave, unlocked types only, one rock at most, lone intro of each new type',()=>{
   const f=fixture();f.run('blGo()');const plan=(stage,wave)=>{f.run(`BL.stage=${stage}`);return f.run(`blWavePlan(${wave})`);};
-  let total1=0;for(let i=0;i<300;i++){const q=plan(1,5);total1+=q.length;assert(q.length>=1&&q.length<=4);assert(q.every(e=>e.type==='octo'));assert.equal(new Set(q.map(e=>e.lane)).size,q.length);}assert(total1/300>1.6);
+  let total1=0;for(let i=0;i<300;i++){const q=plan(1,5);total1+=q.length;assert(q.length>=1&&q.length<=5);assert(q.every(e=>e.type==='octo'));assert.equal(new Set(q.map(e=>e.lane)).size,q.length);}assert(total1/300<1.5);
   const intro=plan(3,3);assert.equal(intro.length,1);assert.equal(intro[0].type,'mine');assert.equal(plan(4,3)[0].type,'turtle');assert.equal(plan(5,3)[0].type,'rock');assert.equal(plan(6,3)[0].type,'jelly');assert.equal(plan(7,3)[0].type,'squid');
   let total2=0,total8=0;
-  for(let i=0;i<200;i++){const a=plan(2,5),b=plan(8,5);total2+=a.length;total8+=b.length;assert(a.every(e=>['octo','ray','crab'].includes(e.type)));assert(new Set(b.map(e=>e.lane)).size===b.length);assert(b.length<=4);assert(b.filter(e=>e.type==='rock').length<=1);}
-  assert(total8/200>total1/300);assert(total8/200>=2.2);
+  for(let i=0;i<200;i++){const a=plan(2,5),b=plan(8,5);total2+=a.length;total8+=b.length;assert(a.every(e=>['octo','ray','crab'].includes(e.type)));assert(new Set(b.map(e=>e.lane)).size===b.length);assert(b.length<=5);assert(b.filter(e=>e.type==='rock').length<=1);}
+  assert(total8/200>total1/300);assert(total8/200>=2.8);
   f.run('BL.stage=8;BL.wave=0;blSpawn()');assert(f.state.enemies.length>=1);assert(f.state.enemies.every(e=>e.hp>=1));
 });
 check('Empty screens call the next wave early',()=>{
@@ -214,16 +219,6 @@ check('Frost slows hit monsters; chain lightning hits two neighbours; bosses ign
   f.run('frostTarget.slow=0;var y2=frostTarget.y;blAdvanceEnemy(frostTarget,.1)');assert(f.run('frostTarget.y-y2')>slowed*1.5);
   const g=fixture();g.run("blGo();BL.form='chain';BL.enemies=[blEnemy(2,300,'octo',60),blEnemy(1,290,'octo',60),blEnemy(3,310,'octo',60),blEnemy(2,100,'octo',60)];BL.bullets=[];BL.x=200;blBurst()");
   for(let i=0;i<40;i++)g.run('BL.bullets.forEach(b=>blAdvanceBullet(b,.016))');const hps=g.state.enemies.map(e=>e.hp);assert.equal(hps.filter(h=>h<60).length,3);assert.equal(hps[3],60);
-});
-check('Run start offers a free starter pick; mid-stage cards pause and resume the fight every 6 waves',()=>{
-  const f=fixture();f.run('blStart()');assert.equal(f.state.phase,'pick');assert.equal(f.state.pickResume,false);assert.equal(f.wallet.balance,1000-fee);assert.equal(f.state.weapon,1);
-  f.run('blChoose(2)');assert.equal(f.state.phase,'run');assert.equal(f.state.weapon,1);assert.equal(f.events.filter(e=>e[0]==='start').length,1);
-  f.run("BL.form='pulse';BL.wave=5;BL.enemies=[blEnemy(1,300,'octo',50)];BL.bullets=[{x:200,y:400,vx:0,speed:600,kind:'pulse',color:'#fff',pierce:1,radius:0,damage:1,hits:[]}];blSpawn()");
-  assert.equal(f.state.wave,6);assert.equal(f.state.phase,'pick');assert.equal(f.state.pickResume,true);assert(f.state.enemies.length>=2);assert.equal(f.state.bullets.length,1);
-  const frozen=f.state.enemies.map(e=>e.y);f.advance(5000);assert.deepEqual(f.state.enemies.map(e=>e.y),frozen);
-  const level=f.state.weapon,card=f.state.picks[0];f.run('blChoose(0);blChoose(1)');assert.equal(f.state.phase,'run');assert.equal(f.state.pickResume,false);assert.equal(f.state.weapon,level);assert.equal(f.state.form,card.kind);assert.equal(f.state.wave,6);
-  f.advance(200);assert(f.state.enemies.some(e=>e.y>frozen[0]));
-  f.run('BL.wave=11;blSpawn()');assert.equal(f.state.phase,'pick');f.run('blChoose(0)');f.run('BL.wave=17;BL.picks=[];blSpawn()');assert.equal(f.state.phase,'run');
 });
 if(failures.length){console.error(failures.length+' check(s) failed');process.exitCode=1;}
 console.log(`PASS: ${results.length} Reef Blaster behavior checks`);
