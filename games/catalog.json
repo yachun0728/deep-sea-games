@@ -253,6 +253,13 @@
     "icon": "games/clock-out/icon.svg"
   },
   {
+    "id": "peek",
+    "logic": "games/peek/game.js",
+    "view": "games/peek/view.html",
+    "card": "games/peek/card.html",
+    "icon": "games/peek/icon.svg"
+  },
+  {
     "id": "breakout",
     "logic": "games/breakout/game.js",
     "view": "games/breakout/view.html",
