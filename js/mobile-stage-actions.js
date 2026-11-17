@@ -2,9 +2,10 @@
   (function(){
     if(!window.matchMedia||!window.MutationObserver)return;
     var media=window.matchMedia('(max-width:880px)'),groups=[];
+    function actionText(button){return window.deepSeaI18n?window.deepSeaI18n.sourceText(button):button.textContent||'';}
     function eligible(button){
       if(button.hidden)return false;
-      var text=button.textContent||'';
+      var text=actionText(button);
       if(button.disabled&&!/重玩第.*關/.test(text))return false;
       return ['surface','cancel'].indexOf(button.dataset.mode)<0||/下一關|下一班|下一條/.test(text);
     }
@@ -23,7 +24,7 @@
         var shown=false,label='';
         records.forEach(function(record){
           var show=media.matches&&eligible(record.button);record.wrapper.hidden=!show;
-          if(show){if(record.button.parentNode!==record.wrapper)record.wrapper.appendChild(record.button);shown=true;label=record.button.textContent||'';}
+          if(show){if(record.button.parentNode!==record.wrapper)record.wrapper.appendChild(record.button);shown=true;label=actionText(record.button);}
           else if(record.marker.parentNode&&record.button.parentNode!==record.marker.parentNode)record.marker.parentNode.insertBefore(record.button,record.marker.nextSibling);
         });
         note.textContent=/下一關|下一班|下一條/.test(label)?'繼續挑戰不另扣點':/\d+\s*點/.test(label)?'':typeof ENTRY_FEE==='number'?'每局 '+ENTRY_FEE+' 點':'';

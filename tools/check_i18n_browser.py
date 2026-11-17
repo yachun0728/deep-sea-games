@@ -1,0 +1,172 @@
+#!/usr/bin/env python3
+"""Optional isolated Chrome checks: python3 tools/check_i18n_browser.py [--chrome PATH]."""
+import argparse
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+import threading
+from urllib.parse import urlsplit
+import base64
+import json
+import os
+from pathlib import Path
+import select
+import shutil
+import subprocess
+import tempfile
+import time
+
+ROOT = Path(__file__).resolve().parents[1]
+MONITOR = r'''<script>
+window.__untranslatedCanvas=[];
+['fillText','strokeText'].forEach(function(method){
+  var proto=CanvasRenderingContext2D.prototype,native=proto[method];
+  proto[method]=function(text){
+    if(window.deepSeaI18n&&window.deepSeaI18n.getLanguage()==='en'&&/[\u3400-\u9fff]/.test(String(text))&&window.__untranslatedCanvas.length<30)window.__untranslatedCanvas.push(String(text));
+    return native.apply(this,arguments);
+  };
+});
+if(new URLSearchParams(location.search).get('probe')==='blocked'){
+  ['getItem','setItem'].forEach(function(method){var native=Storage.prototype[method];Storage.prototype[method]=function(key){if(key==='deep-sea-language-v1')throw new Error('Test: preference storage blocked');return native.apply(this,arguments)}});
+}
+</script>'''
+
+
+class Chrome:
+    """Use Chromium's private pipe in a temporary profile; never attach to the user's browser."""
+    def __init__(self, executable, profile):
+        browser_read, self.write_fd = os.pipe()
+        self.read_fd, browser_write = os.pipe()
+
+        def pipes():
+            os.dup2(browser_read, 3)
+            os.dup2(browser_write, 4)
+
+        self.process = subprocess.Popen([
+            executable, '--headless', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
+            f'--user-data-dir={profile}', '--remote-debugging-pipe',
+            '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1', 'about:blank'
+        ], pass_fds=tuple(set((browser_read, browser_write, 3, 4))), preexec_fn=pipes,
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        os.close(browser_read)
+        os.close(browser_write)
+        self.sequence, self.buffer = 0, b''
+        target = self.call('Target.createTarget', {'url': 'about:blank'})['targetId']
+        self.session = self.call('Target.attachToTarget', {'targetId': target, 'flatten': True})['sessionId']
+
+    def call(self, method, params=None, page=False):
+        self.sequence += 1
+        request = {'id': self.sequence, 'method': method, 'params': params or {}}
+        if page:
+            request['sessionId'] = self.session
+        os.write(self.write_fd, json.dumps(request).encode() + b'\0')
+        deadline = time.monotonic() + 15
+        while time.monotonic() < deadline:
+            if b'\0' not in self.buffer:
+                ready, _, _ = select.select([self.read_fd], [], [], max(0, deadline - time.monotonic()))
+                if not ready:
+                    break
+                data = os.read(self.read_fd, 65536)
+                if not data:
+                    raise RuntimeError('Chrome closed its test pipe')
+                self.buffer += data
+            while b'\0' in self.buffer:
+                message, self.buffer = self.buffer.split(b'\0', 1)
+                response = json.loads(message)
+                if response.get('id') == request['id']:
+                    if 'error' in response:
+                        raise RuntimeError(response['error'])
+                    return response.get('result', {})
+        raise TimeoutError(method)
+
+    def evaluate(self, expression):
+        result = self.call('Runtime.evaluate', {'expression': expression, 'returnByValue': True}, page=True)
+        if 'exceptionDetails' in result:
+            raise RuntimeError(result['exceptionDetails'])
+        return result['result'].get('value')
+
+    def check(self, page, query, label):
+        url = str(page) + query
+        self.call('Page.navigate', {'url': url}, page=True)
+        deadline = time.monotonic() + 25
+        while time.monotonic() < deadline:
+            state = self.evaluate("({url:location.href,status:document.body&&document.body.dataset.testStatus,checks:document.getElementById('test-results')&&document.getElementById('test-results').textContent})")
+            if state.get('status') and state.get('checks') and state.get('url', '').split('#')[0] == url:
+                checks = json.loads(state['checks'] or '[]')
+                if state['status'] != 'PASS':
+                    raise RuntimeError(label + '\n' + '\n'.join(checks))
+                print(f'PASS: {label}: {len(checks)} checks', flush=True)
+                return len(checks)
+            time.sleep(0.05)
+        raise TimeoutError(label)
+
+    def close(self):
+        self.process.terminate()
+        try:
+            self.process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            self.process.kill()
+            self.process.wait()
+        os.close(self.write_fd)
+        os.close(self.read_fd)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--chrome', default=shutil.which('google-chrome') or shutil.which('chromium') or '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
+    parser.add_argument('--screenshots', type=Path, help='Optional directory for English lobby and game screenshots')
+    args = parser.parse_args()
+    source = (ROOT / 'index.html').read_text(encoding='utf-8')
+    total = 0
+    pages = {}
+    class Handler(SimpleHTTPRequestHandler):
+        def do_GET(self):
+            name = urlsplit(self.path).path
+            if name in pages:
+                content = pages[name].encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html; charset=utf-8')
+                self.send_header('Content-Length', str(len(content)))
+                self.end_headers()
+                self.wfile.write(content)
+            else:
+                super().do_GET()
+        def log_message(self, *args):
+            pass
+    server = ThreadingHTTPServer(('127.0.0.1', 0), partial(Handler, directory=str(ROOT)))
+    server.daemon_threads = True
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    with tempfile.TemporaryDirectory(prefix='deep-sea-i18n-') as temp:
+        folder = Path(temp)
+        for suite, width, height in [('core', 1366, 900), ('games', 1366, 900), ('games', 390, 844)]:
+            script = (ROOT / f'tools/i18n_browser_{suite}.js').read_text(encoding='utf-8')
+            route = f'/{suite}-{width}.html'
+            pages[route] = source.replace('<head>', '<head>' + MONITOR).replace('</body>', '<script>' + script + '</script></body>')
+            page = f'http://127.0.0.1:{server.server_port}{route}'
+            chrome = Chrome(args.chrome, folder / f'profile-{suite}-{width}')
+            try:
+                chrome.call('Emulation.setDeviceMetricsOverride', {'width': width, 'height': height, 'deviceScaleFactor': 1, 'mobile': width < 880}, page=True)
+                if suite == 'core':
+                    total += chrome.check(page, '?probe=default', 'Default Chinese')
+                total += chrome.check(page, '?lang=en&keep=1', f'{suite} {width}×{height}')
+                if suite == 'core':
+                    for query, label in [('?probe=saved', 'Saved English after reload'), ('?probe=explicit&lang=zh-Hant', 'Explicit Chinese overrides saved English'), ('?probe=blocked&lang=en', 'Blocked preference storage')]:
+                        total += chrome.check(page, query, label)
+                actual = chrome.evaluate('innerWidth')
+                if actual != width:
+                    raise RuntimeError(f'Viewport is {actual}, expected {width}')
+                if args.screenshots and suite == 'games':
+                    args.screenshots.mkdir(parents=True, exist_ok=True)
+                    for view in ('lobby', 'dream'):
+                        chrome.evaluate(f"document.getElementById('test-results').remove();location.hash='{view}';window.scrollTo(0,0)" if view == 'lobby' else f"location.hash='{view}';window.scrollTo(0,0)")
+                        time.sleep(0.2)
+                        capture = chrome.call('Page.captureScreenshot', {'format': 'png'}, page=True)
+                        (args.screenshots / f'{view}-{width}.png').write_bytes(base64.b64decode(capture['data']))
+            finally:
+                chrome.close()
+    server.shutdown()
+    server.server_close()
+    print(f'PASS: {total} isolated browser assertions')
+
+
+if __name__ == '__main__':
+    main()

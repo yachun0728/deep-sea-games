@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <style>{{include:css/arcade.css}}
 {{include:css/mobile-navigation.css}}
+{{include:css/i18n.css}}
 {{include:games/blaster/style.css}}
 {{include:games/mines/style.css}}
 {{include:games/keno/style.css}}
@@ -23,11 +24,11 @@
       <a class="brand-home" href="#lobby" aria-label="返回遊戲大廳" title="返回遊戲大廳"><svg class="brand-home-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9" fill="#123c4b" stroke="#326475"/><path d="m8 15 8-7 8 7v10h-6v-7h-4v7H8z" fill="none" stroke="#62e6d2" stroke-width="1.8" stroke-linejoin="round"/></svg><h1 id="game-name" tabindex="-1">深海遊戲廳 <span>Deep Sea Arcade</span></h1></a>
       <span class="demo-tag">Demo · 虛擬點數</span>
     </div>
-    <div class="wallet-box"><div class="wallet">
+    <div class="header-tools"><div class="language-switch" role="group" aria-label="Language / 語言" data-i18n-ignore><button type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button><button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button></div><div class="wallet-box"><div class="wallet">
       <span class="label">餘額</span>
       <span class="amount" id="balance">500</span><span class="unit">點</span>
       <button class="link-btn" id="reset" type="button">重設為 500</button>
-    </div><p class="regen-hint" id="regen-hint">低於 100 點時，每分鐘回 1 點</p></div>
+    </div><p class="regen-hint" id="regen-hint">低於 100 點時，每分鐘回 1 點</p></div></div>
   </header>
 
   <div class="game-toolbar"><a class="back-lobby" href="#lobby"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m14 6-6 6 6 6M8 12h12"/></svg>遊戲大廳</a>
@@ -76,6 +77,8 @@
 <script type="application/json" id="boba-source">{{json:games/boba/original.html}}</script>
 <script type="application/json" id="dive-source">{{json:games/dive/original.html}}</script>
 <script type="application/json" id="mrt-source">{{json:games/mrt/original.html}}</script>
+<script type="application/json" id="arcade-english">{{include:locales/en.json}}</script>
+<script id="arcade-i18n">{{include:js/i18n.js}}</script>
 <script id="game-runtime">{{include:js/runtime.js}}</script>
 </body>
 </html>

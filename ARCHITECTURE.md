@@ -196,3 +196,13 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 踩地雷為免費懷舊遊戲，開局與重玩皆不扣點、不限次數；M.active表示進行中，重設防護不變。低中高預設或自訂2～10邊長與1～N×N−1顆雷，每局固定設定。deep-sea-mines-level-best保留舊關卡紀錄，不再更新；舊deep-sea-mines-best保持第一關安全格紀錄。挖礦不再扣點，新增deep-sea-gold-daily-v1保存當日配額與剩餘格子，舊deep-sea-gold-best保持分數格式。新Key獨立，缺少時初始化，不遷移或清除玩家餘額；回復來源時可保留新Key，舊版忽略。每日補給卡片放在右下角固定daily-supply浮動圖示，正常lobby-grid計數與篩選不包含它。
 
 KE.active涵蓋免費挖掘，使用現有syncBalance／save入帳；可用時以Web Locks序列化跨分頁操作，刷新及其他分頁先讀配額與已挖格子防止重複發點。儲存消耗先於入帳，非資料庫原子交易；突然關閉可能少發一次，不能宣稱強一致或防作弊。台灣日期變更後舊回合到期。正常pagehide以捕獲階段先送含已發點數的abandoned，BFCache不提前結束。其他遊戲與錢包Key不變。
+
+## 中英文顯示與語言切換
+
+`templates/index.html` 的頁首提供「繁中／EN」。`locales/en.json` 保存英文翻譯，透過 JSON script 組合進部署產出；`js/i18n.js` 在原本的 game-runtime 前初始化，維持原有 runtime 片段順序與 IIFE。`css/i18n.css` 處理較長的英文、重複英文副標及手機頁首。
+
+預設繁體中文；`?lang=en` 或 `?lang=zh-Hant` 優先於已儲存偏好。切換只以 replaceState 更新語言參數，保留其他 query 與目前 hash，不呼叫 route、開始／結束回合或 GA4。新 Key `deep-sea-language-v1` 僅保存 `en`／`zh-Hant`，不遷移、清除或改寫舊的點數／紀錄 Key。偏好儲存受限時仍可在目前頁面切換。
+
+翻譯只作用於顯示層：保留原文字的 WeakMap、監看新增／更新的文字及 aria-label／title／placeholder／alt，跳過 script、style、noscript 與 data-i18n-ignore。以原文字重新翻譯或還原，不將英文再反向猜成中文，不替換 DOM 按鈕、不修改 input 值。Canvas 的 fillText／strokeText／measureText 在繪製邊界翻譯，英文繪製依現有 transform、對齊與 maxWidth 限制寬度；遊戲內的文字常數、狀態、判定與 GA4 名稱不翻譯。`js/mobile-stage-actions.js` 用 sourceText 讀原按鈕文字，保留續關／重玩放置的既有判定。珍奶 iframe 原本已是英文，保留其原始 HTML、橋接與暫停流程。
+
+修改介面文字時須同步 `locales/en.json`；`tools/test_i18n.py` 檢查來源字串與翻譯覆蓋、英文值及 JSON script 安全。可用 `python3 tools/check_i18n_browser.py` 在獨立暫存 Chrome 設定檔驗證語言、資料與遊戲操作；以裝置模擬設定實際 CSS 寬度，不把視窗截圖寬度當成手機 viewport 的證據。

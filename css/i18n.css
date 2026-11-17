@@ -1,0 +1,26 @@
+/* Language controls share the header without covering game controls. */
+.header-tools{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap;min-width:0}
+.language-switch{display:inline-flex;flex:none;gap:3px;padding:3px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
+.language-switch button{border:0;border-radius:6px;padding:6px 9px;min-height:32px;background:transparent;color:var(--muted);font:600 12px var(--font-body);cursor:pointer;touch-action:manipulation}
+.language-switch button[aria-pressed="true"]{background:var(--glow);color:var(--abyss)}
+.language-switch button:focus-visible{outline:2px solid var(--lamp);outline-offset:3px}
+html[lang="en"] .brand-home h1>span,html[lang="en"] .tabs a>small,html[lang="en"] .game-card-en{display:none}
+html[lang="en"] .game-card h3{font-size:19px;line-height:1.35;min-height:1.35em}
+html[lang="en"] .game-card-description{line-height:1.65}
+html[lang="en"] .game-card-footer{flex-wrap:wrap}
+html[lang="en"] .stats>div{min-width:0}
+html[lang="en"] .stats dt{line-height:1.4;overflow-wrap:anywhere}
+html[lang="en"] .go{white-space:normal;line-height:1.4}
+html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
+@media(max-width:880px){
+  .wrap:not(.is-lobby) .header-tools{gap:4px;flex-wrap:nowrap}
+  .wrap:not(.is-lobby) .language-switch{gap:1px;padding:2px}
+  .wrap:not(.is-lobby) .language-switch button{padding:5px;min-height:30px;font-size:10px}
+  html[lang="en"] .wrap:not(.is-lobby) .wallet .link-btn{max-width:50px;white-space:normal}
+  html[lang="en"] .mobile-stage-action>.go{font-size:14px}
+}
+@media(max-width:420px){
+  .is-lobby .header-tools{width:100%;justify-content:space-between;gap:8px}
+  .wrap:not(.is-lobby) .brand-home h1{font-size:13px}
+  .wrap:not(.is-lobby) .brand-home-icon{width:22px;height:22px}
+}

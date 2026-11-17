@@ -79,3 +79,17 @@ python3 -m http.server 8765
 ## 偷睡大師行為檢查
 
 修改 `games/nap/` 時可在有 Node.js 的環境執行 `node tools/test_nap.mjs`，驗證單次扣款、每過 1 關入帳一次、考績歸零單次結算、通關 10 關入帳 10 點與按鍵只在遊戲顯示時作用。
+
+## 中英文版本
+
+頁首「繁中／EN」可即時切換大廳、遊戲操作、規則、動態提示與 Canvas 文字，保留目前遊戲及點數。珍奶內嵌原版已使用英文，保留原畫面。可分享 `index.html?lang=en#lobby`，或以 `index.html?lang=en#dream` 直接開啟英文遊戲；中文網址使用 `?lang=zh-Hant`。語言偏好保存在此瀏覽器，明確網址參數優先，不跨裝置同步。
+
+翻譯來源為 `locales/en.json`，顯示邏輯為 `js/i18n.js`，樣式為 `css/i18n.css`。新增或調整遊戲文字後，補齊翻譯並執行既有組合與單元測試。額外瀏覽器驗證：
+
+```sh
+python3 tools/check_i18n_browser.py
+# Chrome 不在預設位置時可加 --chrome /完整/執行檔路徑
+# 可加 --screenshots /tmp/arcade-i18n-shots 保留英文版截圖
+```
+
+此工具使用獨立暫存設定檔與測試點數，不操作使用者的瀏覽器紀錄或正式站；檢查桌面及 390px 裝置尺寸、語言記憶、顯示文字、既有資料與單次扣點。它不取代全關卡、實體手機或 GA4 後台驗收。
