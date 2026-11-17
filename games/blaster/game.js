@@ -1,5 +1,5 @@
-  /* ---------- Reef Blaster: three lanes, automatic fire, persistent levels with timed spread boost ---------- */
-  var BL={active:false,phase:'ready',stage:1,cleared:0,stake:0,spent:0,retries:0,earned:0,attemptEarned:0,rewarded:0,analytics:null,lives:3,weapon:1,spreadLeft:0,lane:1,x:200,kills:0,stageKills:0,wave:0,waves:24,clock:0,scroll:0,nextWave:.9,shot:0,enemies:[],bullets:[],pickups:[],fx:[],last:0,focused:document.hasFocus?document.hasFocus():true,flash:0,best:0,serial:0,tracked:false};
+  /* ---------- Reef Blaster: three lanes, automatic fire, persistent levels ---------- */
+  var BL={active:false,phase:'ready',stage:1,cleared:0,stake:0,spent:0,retries:0,earned:0,attemptEarned:0,rewarded:0,analytics:null,lives:3,weapon:1,lane:1,x:200,kills:0,stageKills:0,wave:0,waves:24,clock:0,scroll:0,nextWave:.9,shot:0,enemies:[],bullets:[],pickups:[],fx:[],last:0,focused:document.hasFocus?document.hasFocus():true,flash:0,best:0,serial:0,tracked:false};
   var blCanvas=$('bl-canvas'),blCtx=blCanvas.getContext('2d');
   try{var blSaved=Number(localStorage.getItem('deep-sea-blaster-best'));if(Number.isFinite(blSaved))BL.best=Math.max(0,Math.min(Number.MAX_SAFE_INTEGER,Math.floor(blSaved)));}catch(_){}
   function blSay(text,kind){$('bl-msg').textContent=text;$('bl-msg').className='msg'+(kind?' '+kind:'');}
@@ -8,26 +8,24 @@
   var BL_GUNS=[
     {level:1,name:'脈衝彈',kind:'pulse',color:'#9bfff0',pellets:1,scale:1.2,speed:660,pierce:1,radius:0},
     {level:4,name:'雙管速射',kind:'twin',color:'#74baff',pellets:2,scale:1,speed:740,pierce:1,radius:0},
-    {level:8,name:'扇形散彈',kind:'spread',color:'#ffcf68',pellets:3,scale:.65,speed:700,pierce:1,radius:0},
     {level:13,name:'穿透光槍',kind:'rail',color:'#9dff86',pellets:2,scale:1.35,speed:1050,pierce:3,radius:0},
     {level:18,name:'追蹤火箭',kind:'rocket',color:'#ff8f75',pellets:2,scale:2.2,speed:600,pierce:1,radius:78},
     {level:24,name:'電漿砲',kind:'plasma',color:'#e6a3ff',pellets:3,scale:1.6,speed:720,pierce:2,radius:58}
   ];
   function blWeapon(){
     var gun=BL_GUNS[0];BL_GUNS.forEach(function(g){if(BL.weapon>=g.level)gun=g;});
-    if(gun.kind==='spread'&&BL.spreadLeft<=0)gun=BL_GUNS[1];
     return Object.assign({},gun,{damage:1+Math.ceil(BL.weapon/3),interval:gun.kind==='rocket'?.34:Math.max(.11,.27-BL.weapon*.005)});
   }
-  function blStageConfig(stage){return {waves:Math.min(96,24+6*(stage-1)),interval:Math.max(.78,1.85-(stage-1)*.10),speed:stage<=10?84+stage*12:204+10*Math.log2(stage-9)};}
+  function blStageConfig(stage){return {waves:Math.min(96,24+6*(stage-1)),interval:Math.max(.62,1.6-(stage-1)*.11),speed:stage<=10?105+stage*15:255+12*Math.log2(stage-9)};}
   function blHealth(){return 3+Math.ceil(1.25*(BL.stage<=10?BL.stage*BL.stage:100+18*(BL.stage-10)));}
-  function blPace(){return 1+.28*Math.min(1,BL.wave/BL.waves);}
+  function blPace(){return 1+.35*Math.min(1,BL.wave/BL.waves);}
   function blNextGun(){return BL_GUNS.find(function(g){return g.level>BL.weapon;});}
   function blVisible(){return !$('view-blaster').hidden&&!document.hidden&&BL.focused;}
   function blTracking(){var engaged=BL.active&&BL.phase==='run'&&blVisible();if(engaged===BL.tracked)return;BL.tracked=engaged;if(engaged)AN.resume(BL.analytics,{stage:BL.stage});else if(BL.active)AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills},true);}
   function blUI(){
     var w=blWeapon();$('bl-stage').textContent='第 '+BL.stage+' 關';$('bl-lives').textContent=BL.lives+' / 3';$('bl-wave').textContent=BL.wave+' / '+BL.waves;
-    $('bl-weapon').textContent=w.name+' Lv.'+BL.weapon+(w.kind==='spread'?' · '+Math.ceil(BL.spreadLeft)+' 秒':'');$('bl-power').textContent=Math.round(w.damage*w.scale*100)/100+' 傷害 × '+w.pellets+' 發';
-    var next=blNextGun();$('bl-evolution').textContent=BL.weapon>=8&&BL.weapon<13?(BL.spreadLeft>0?'散彈倒數 '+Math.ceil(BL.spreadLeft)+' 秒 · 撿箱刷新至12秒':'散彈已結束 · 撿箱可再啟動12秒'):next?'Lv.'+next.level+' 進化 → '+next.name:'電漿砲 · 火力可繼續升級';$('bl-weapon').style.color=w.color;$('bl-speed').textContent=(blStageConfig(BL.stage).speed*blPace()/96).toFixed(2)+'×';$('bl-kills').textContent=BL.kills+' 隻';$('bl-best').textContent=BL.best+' 關';
+    $('bl-weapon').textContent=w.name+' Lv.'+BL.weapon;$('bl-power').textContent=Math.round(w.damage*w.scale*100)/100+' 傷害 × '+w.pellets+' 發';
+    var next=blNextGun();$('bl-evolution').textContent=next?'Lv.'+next.level+' 進化 → '+next.name:'電漿砲 · 火力可繼續升級';$('bl-weapon').style.color=w.color;$('bl-speed').textContent=(blStageConfig(BL.stage).speed*blPace()/96).toFixed(2)+'×';$('bl-kills').textContent=BL.kills+' 隻';$('bl-best').textContent=BL.best+' 關';
     $('bl-reward-status').textContent=BL.cleared+' / '+((Math.floor(BL.cleared/10)+1)*10)+' 關';$('bl-pay').textContent=BL.earned+' 點';$('bl-amount').disabled=BL.active;
     $('bl-go').hidden=BL.phase==='lost';$('bl-go').disabled=BL.phase==='run';$('bl-go').textContent=BL.phase==='cleared'?'帶著武器，挑戰下一關':'扣點開始出擊';$('bl-go').dataset.mode='bet';
     $('bl-cash').disabled=BL.phase!=='cleared';$('bl-cash').textContent=BL.phase==='cleared'?'結束這輪（已獲 '+BL.earned+' 點）':'過關後可選擇收隊';
@@ -44,7 +42,7 @@
     if(BL.active&&BL.phase==='cleared'){BL.stage++;blRound();return;}
     var stake=ENTRY_FEE;
     if(stake>S.balance){blSay(LOW_MSG,'lose');return;}
-    BL.stake=stake;BL.spent=stake;BL.retries=0;BL.earned=0;BL.attemptEarned=0;BL.rewarded=0;BL.stage=1;BL.cleared=0;BL.lives=3;BL.weapon=1;BL.spreadLeft=0;BL.kills=0;BL.active=true;BL.tracked=false;BL.serial=0;
+    BL.stake=stake;BL.spent=stake;BL.retries=0;BL.earned=0;BL.attemptEarned=0;BL.rewarded=0;BL.stage=1;BL.cleared=0;BL.lives=3;BL.weapon=1;BL.kills=0;BL.active=true;BL.tracked=false;BL.serial=0;
     BL.analytics=AN.start('blaster',stake);S.balance-=stake;save();renderAll();blRound();
   }
   function blRetry(){
@@ -62,7 +60,7 @@
   }
   function blHurt(){
     if(BL.phase!=='run')return;BL.lives--;BL.flash=.3;
-    if(BL.lives<=0){BL.active=false;BL.phase='lost';BL.spreadLeft=0;BL.tracked=false;AN.end(BL.analytics,BL.attemptEarned,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});blSay('防線失守！已獲得的 '+BL.earned+' 點獎勵保留。可扣 '+blRetryFee()+' 點重玩目前第 '+BL.stage+' 關，保留武器並恢復 3 心。','lose');}
+    if(BL.lives<=0){BL.active=false;BL.phase='lost';BL.tracked=false;AN.end(BL.analytics,BL.attemptEarned,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});blSay('防線失守！已獲得的 '+BL.earned+' 點獎勵保留。可扣 '+blRetryFee()+' 點重玩目前第 '+BL.stage+' 關，保留武器並恢復 3 心。','lose');}
     else blSay('怪物突破防線，扣 1 心！剩 '+BL.lives+' 心，快找武器箱提升火力。','lose');blUI();
   }
   function blClear(){
@@ -128,7 +126,7 @@
   }
   function blBurst(){
     var w=blWeapon();for(var i=0;i<w.pellets;i++){
-      var offset=i-(w.pellets-1)/2,spread=w.kind==='spread'?offset*175:w.kind==='plasma'?offset*60:0;
+      var offset=i-(w.pellets-1)/2,spread=w.kind==='plasma'?offset*60:0;
       BL.bullets.push({x:BL.x+offset*13,y:508,damage:w.damage*w.scale,vx:spread,speed:w.speed,kind:w.kind,color:w.color,pierce:w.pierce,radius:w.radius,hits:[]});
     }BL.shot=w.interval;
   }
@@ -154,13 +152,13 @@
   function blStep(dt){
     while(dt>1e-8&&BL.phase==='run'){
       var step=Math.min(dt,.016);dt-=step;
-      if(BL.spreadLeft>0){var before=Math.ceil(BL.spreadLeft);BL.spreadLeft=Math.max(0,BL.spreadLeft-step);if(Math.ceil(BL.spreadLeft)!==before){blUI();if(!BL.spreadLeft)blSay('散彈強化結束，恢復雙管速射，火力等級保留。');}}BL.clock+=step;BL.scroll+=blStageConfig(BL.stage).speed*blPace()*step;BL.flash=Math.max(0,BL.flash-step);BL.x+=(80+BL.lane*120-BL.x)*Math.min(1,step*22);
+      BL.clock+=step;BL.scroll+=blStageConfig(BL.stage).speed*blPace()*step;BL.flash=Math.max(0,BL.flash-step);BL.x+=(80+BL.lane*120-BL.x)*Math.min(1,step*22);
       BL.shot-=step;if(BL.shot<=0)blBurst();BL.nextWave-=step;if(BL.wave<BL.waves&&BL.nextWave<=0)blSpawn();
       BL.enemies.forEach(function(e){blAdvanceEnemy(e,step);});BL.pickups.forEach(function(p){p.y+=p.speed*blPace()*step;});
       BL.bullets.forEach(function(b){blAdvanceBullet(b,step);});
       BL.bullets=BL.bullets.filter(function(b){return b.y>-40&&b.x>-40&&b.x<440;});BL.enemies=BL.enemies.filter(function(e){return e.hp>0;});
       for(var k=BL.enemies.length-1;k>=0;k--){var e=BL.enemies[k];if(e.y>585||(Math.abs(e.x-BL.x)<38&&Math.abs(e.y-532)<37)){BL.enemies.splice(k,1);blHurt();if(BL.phase!=='run')return;}}
-      for(var k=BL.pickups.length-1;k>=0;k--){var p=BL.pickups[k];if(Math.abs(p.x-BL.x)<52&&Math.abs(p.y-532)<48){BL.weapon=Math.min(Number.MAX_SAFE_INTEGER,BL.weapon+p.boost);BL.spreadLeft=BL.weapon>=8&&BL.weapon<13?12:0;BL.pickups.splice(k,1);blEffect(p.x,p.y,'#ffb638',12);blSay(blWeapon().name+' Lv.'+BL.weapon+'！'+(BL.spreadLeft?'散彈強化12秒，重複撿取只刷新、不疊加時間。':'火力等級永久保留。'),'win');blUI();}else if(p.y>620)BL.pickups.splice(k,1);}
+      for(var k=BL.pickups.length-1;k>=0;k--){var p=BL.pickups[k];if(Math.abs(p.x-BL.x)<52&&Math.abs(p.y-532)<48){BL.weapon=Math.min(Number.MAX_SAFE_INTEGER,BL.weapon+p.boost);BL.pickups.splice(k,1);blEffect(p.x,p.y,'#ffb638',12);blSay(blWeapon().name+' Lv.'+BL.weapon+'！火力等級永久保留。','win');blUI();}else if(p.y>620)BL.pickups.splice(k,1);}
       BL.fx.forEach(function(f){f.x+=f.vx*step;f.y+=f.vy*step;f.t-=step;});BL.fx=BL.fx.filter(function(f){return f.t>0;});
       if(BL.wave===BL.waves&&!BL.enemies.length&&!BL.pickups.length)blClear();
     }
@@ -200,7 +198,6 @@
     var g=blCtx,x=b.x,y=b.y;g.fillStyle=b.color;g.strokeStyle=b.color;
     if(b.kind==='pulse'){g.beginPath();g.ellipse(x,y,4,8,0,0,7);g.fill();}
     else if(b.kind==='twin'){blRoundRect(x-3,y-12,6,24,3,b.color);blRoundRect(x-1,y-9,2,13,1,'#e7f5ff');}
-    else if(b.kind==='spread'){g.beginPath();g.moveTo(x,y-11);g.lineTo(x+5,y+6);g.lineTo(x,y+2);g.lineTo(x-5,y+6);g.closePath();g.fill();}
     else if(b.kind==='rail'){g.globalAlpha=.2;blRoundRect(x-7,y-30,14,62,7,b.color);g.globalAlpha=1;blRoundRect(x-2,y-30,4,45,2,'#e4ffd9');}
     else if(b.kind==='rocket'){g.beginPath();g.moveTo(x,y-12);g.lineTo(x+5,y-3);g.lineTo(x+5,y+8);g.lineTo(x-5,y+8);g.lineTo(x-5,y-3);g.closePath();g.fill();g.fillStyle='#ffcf68';g.beginPath();g.moveTo(x-3,y+9);g.lineTo(x,y+19);g.lineTo(x+3,y+9);g.fill();}
     else {g.globalAlpha=.2;g.beginPath();g.arc(x,y,14,0,7);g.fill();g.globalAlpha=1;g.beginPath();g.arc(x,y,8,0,7);g.fill();g.fillStyle='#fff2ff';g.beginPath();g.arc(x-2,y-2,3,0,7);g.fill();}
@@ -216,7 +213,6 @@
     blRoundRect(px-9,py-13,18,23,8,'#163e50');g.fillStyle='#ecffff';g.beginPath();g.arc(px,py-6,5,0,7);g.fill();
     if(gun.kind==='pulse')blRoundRect(px-4,py-35,8,24,4,c);
     if(gun.kind==='twin')[-1,1].forEach(function(d){blRoundRect(px+d*14-5,py-35,10,29,4,c);});
-    if(gun.kind==='spread')[-1,0,1].forEach(function(d){g.save();g.translate(px+d*13,py-16);g.rotate(d*.24);blRoundRect(-5,-22,10,26,3,c);g.restore();});
     if(gun.kind==='rail'){blRoundRect(px-11,py-48,7,38,2,c);blRoundRect(px+4,py-48,7,38,2,c);blRoundRect(px-14,py-30,28,7,2,'#406f58');}
     if(gun.kind==='rocket')[-1,1].forEach(function(d){blRoundRect(px+d*24-8,py-23,16,35,5,'#734b4c');blRoundRect(px+d*24-6,py-31,12,20,4,c);g.fillStyle='#ffcf68';g.beginPath();g.arc(px+d*24,py-24,3,0,7);g.fill();});
     if(gun.kind==='plasma'){g.strokeStyle=c;g.lineWidth=3;g.beginPath();g.ellipse(px,py-29,24,12,0,0,7);g.stroke();g.fillStyle=c;g.beginPath();g.arc(px,py-29,11,0,7);g.fill();g.fillStyle='#fff2ff';g.beginPath();g.arc(px-3,py-32,4,0,7);g.fill();[-1,1].forEach(function(d){blRoundRect(px+d*27-4,py-17,8,31,3,c);});}
@@ -231,13 +227,13 @@
     g.fillStyle='rgba(98,230,210,.22)';for(var i=0;i<12;i++){g.beginPath();g.arc(9+(i%2)*382,((i*71-BL.scroll*.15)%640+640)%640,2+i%3,0,7);g.fill();}
     BL.bullets.forEach(blDrawBullet);BL.enemies.forEach(blDrawMonster);BL.pickups.forEach(blDrawPickup);blDrawPlayer();
     BL.fx.forEach(function(f){g.globalAlpha=Math.max(0,f.t/.45);g.fillStyle=f.color;if(f.ring){g.strokeStyle=f.color;g.lineWidth=2;g.beginPath();g.arc(f.x,f.y,f.ring*(reduceMotion?.8:1-f.t/.36),0,7);g.stroke();}else g.fillRect(f.x-2,f.y-2,4,4);});g.globalAlpha=1;
-    g.fillStyle='rgba(4,18,29,.9)';g.fillRect(0,0,400,54);g.font='bold 14px system-ui';g.fillStyle='#e4f2f3';g.textAlign='left';g.fillText('第 '+BL.stage+' 關 · '+BL.wave+'/'+BL.waves+' 波',16,23);g.fillStyle='#ffb638';g.fillText(blWeapon().name+' Lv.'+BL.weapon+(BL.spreadLeft>0?' '+Math.ceil(BL.spreadLeft)+'s':''),16,44);g.textAlign='right';g.fillStyle='#ff958c';g.fillText('♥'.repeat(Math.max(0,BL.lives))+'♡'.repeat(3-Math.max(0,BL.lives)),384,25);g.fillStyle='#9fc1ca';g.font='12px system-ui';g.fillText((blStageConfig(BL.stage).speed*blPace()/96).toFixed(2)+'× 航速',384,44);
+    g.fillStyle='rgba(4,18,29,.9)';g.fillRect(0,0,400,54);g.font='bold 14px system-ui';g.fillStyle='#e4f2f3';g.textAlign='left';g.fillText('第 '+BL.stage+' 關 · '+BL.wave+'/'+BL.waves+' 波',16,23);g.fillStyle='#ffb638';g.fillText(blWeapon().name+' Lv.'+BL.weapon,16,44);g.textAlign='right';g.fillStyle='#ff958c';g.fillText('♥'.repeat(Math.max(0,BL.lives))+'♡'.repeat(3-Math.max(0,BL.lives)),384,25);g.fillStyle='#9fc1ca';g.font='12px system-ui';g.fillText((blStageConfig(BL.stage).speed*blPace()/96).toFixed(2)+'× 航速',384,44);
     if(BL.flash>0){g.fillStyle='rgba(255,111,97,'+(BL.flash*.6)+')';g.fillRect(0,0,w,h);}
     if(BL.phase!=='run'||!blVisible()){
       g.fillStyle='rgba(4,18,29,.82)';g.fillRect(0,0,w,h);blRoundRect(28,180,344,222,18,'#113041');g.strokeStyle='#326475';g.lineWidth=1;g.strokeRect(40,194,320,194);
       g.textAlign='center';g.fillStyle=BL.phase==='lost'?'#ff958c':'#62e6d2';g.font='bold 28px system-ui';g.fillText(BL.phase==='ready'?'深海火線':BL.phase==='cleared'?'防線守住了！':BL.phase==='cashed'?'出擊完成':BL.phase==='lost'?'防線失守':'已暫停',200,236);
       g.fillStyle='#e4f2f3';g.font='15px system-ui';g.fillText(BL.phase==='ready'?'三條航道，自動開火。':BL.phase==='cleared'?'下一站：第 '+(BL.stage+1)+' 關':BL.phase==='cashed'?'本輪已獲得 '+BL.earned+' 點':BL.phase==='lost'?'已獲 '+BL.earned+' 點保留，可付費重玩本關':'回到遊戲後繼續',200,276);
-      g.fillStyle='#ffdc87';g.fillText(BL.phase==='ready'?'散彈 · 穿透光槍 · 追蹤火箭 · 電漿砲':blWeapon().name+' · 擊破 '+BL.kills+' 隻',200,310);
+      g.fillStyle='#ffdc87';g.fillText(BL.phase==='ready'?'穿透光槍 · 追蹤火箭 · 電漿砲':blWeapon().name+' · 擊破 '+BL.kills+' 隻',200,310);
       g.fillStyle='#9fc1ca';g.font='13px system-ui';g.fillText(BL.phase==='ready'?'到操作區扣點開始':'使用操作面板選擇下一步',200,352);
     }
     g.textAlign='center';g.fillStyle='#8db0b9';g.font='11px system-ui';g.fillText('← 點左半邊換道　｜　點右半邊換道 →',200,585);

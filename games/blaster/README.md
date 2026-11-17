@@ -5,9 +5,9 @@
 ## 概覽
 
 - 網址：`#blaster`　分類：技巧闖關　狀態：顯示中
-- 大廳卡片：「六種武器進化，迎戰換道、護盾與分裂怪。」｜每局 10 點 · 無盡 · 每10關+1點
+- 大廳卡片：「五種武器進化，迎戰換道、護盾與分裂怪。」｜每局 10 點 · 無盡 · 每10關+1點
 - 追蹤名稱（GA4 `game_name`）：深海火線，`game_id` 為 `blaster`
-- 檔案：`games/blaster/card.html`、`games/blaster/game.js`、`games/blaster/icon.svg`、`games/blaster/style.css`、`games/blaster/view.html`；`game.js` 共 255 行、25.7 KB
+- 檔案：`games/blaster/card.html`、`games/blaster/game.js`、`games/blaster/icon.svg`、`games/blaster/style.css`、`games/blaster/view.html`；`game.js` 共 251 行、24.5 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「22. 深海火線 Reef Blaster（blaster）」（下方「規則摘要」已複製）
 
@@ -19,40 +19,40 @@
 
 - 狀態物件／進行中旗標：`BL`（L2）
 - L8 常數：`BL_GUNS`
-- L76 常數：`BL_MOBS`
+- L74 常數：`BL_MOBS`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`blSay` L5、`blRetryFee` L6、`blPay` L7、`blWeapon` L16、`blStageConfig` L21、`blHealth` L22、`blPace` L23、`blNextGun` L24、`blVisible` L25、`blTracking` L26、`blUI` L27、`blRound` L38、`blStart` L42、`blRetry` L50、`blCash` L57、`blHurt` L63、`blClear` L68、`blEnemy` L85、`blMobType` L89、`blSpawn` L97、`blAdvanceEnemy` L104、`blDamage` L110、`blSegmentHit` L121、`blMove` L125、`blBurst` L129、`blAdvanceBullet` L135、`blEffect` L153、`blStep` L154、`blSync` L168、`blRoundRect` L172、`blDrawMonster` L173、`blDrawBullet` L199、`blDrawPickup` L208、`blDrawPlayer` L213、`blDraw` L225、`blSuspend` L249、`blLoop` L253
+`blSay` L5、`blRetryFee` L6、`blPay` L7、`blWeapon` L15、`blStageConfig` L19、`blHealth` L20、`blPace` L21、`blNextGun` L22、`blVisible` L23、`blTracking` L24、`blUI` L25、`blRound` L36、`blStart` L40、`blRetry` L48、`blCash` L55、`blHurt` L61、`blClear` L66、`blEnemy` L83、`blMobType` L87、`blSpawn` L95、`blAdvanceEnemy` L102、`blDamage` L108、`blSegmentHit` L119、`blMove` L123、`blBurst` L127、`blAdvanceBullet` L133、`blEffect` L151、`blStep` L152、`blSync` L166、`blRoundRect` L170、`blDrawMonster` L171、`blDrawBullet` L197、`blDrawPickup` L205、`blDrawPlayer` L210、`blDraw` L221、`blSuspend` L245、`blLoop` L249
 
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L48 `blStart`：`S.balance-=stake;`
-- L55 `blRetry`：`S.balance-=cost;`
+- L46 `blStart`：`S.balance-=stake;`
+- L53 `blRetry`：`S.balance-=cost;`
 
 **入帳（領回／獎勵）**
-- L71 `blClear`：`S.balance+=bonus;`
+- L69 `blClear`：`S.balance+=bonus;`
 
 **餘額檢查**
-- L34 `blUI`：`$('bl-retry').disabled=BL.phase!=='lost'||S.balance<blRetryFee();`
-- L35 `blUI`：`$('bl-retry-info').textContent='保留 Lv.'+BL.weapon+' 武器，恢復 3 心，從第 '+BL.stage+' 關第一波重來。'+(S.balance<blRetryFee(…`
-- L46 `blStart`：`if(stake>S.balance){blSay(LOW_MSG,'lose');`
-- L53 `blRetry`：`if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點；可等待平台自動回點。','lose');`
+- L32 `blUI`：`$('bl-retry').disabled=BL.phase!=='lost'||S.balance<blRetryFee();`
+- L33 `blUI`：`$('bl-retry-info').textContent='保留 Lv.'+BL.weapon+' 武器，恢復 3 心，從第 '+BL.stage+' 關第一波重來。'+(S.balance<blRetryFee(…`
+- L44 `blStart`：`if(stake>S.balance){blSay(LOW_MSG,'lose');`
+- L51 `blRetry`：`if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點；可等待平台自動回點。','lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L26 `blTracking`：`if(engaged)AN.resume(BL.analytics,{stage:BL.stage});`
-- L26 `blTracking`：`else if(BL.active)AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills},true);`
-- L48 `blStart`：`BL.analytics=AN.start('blaster',stake);`
-- L55 `blRetry`：`BL.analytics=AN.start('blaster',cost,{stage:BL.stage,entry_kind:'stage_retry',retry_count:BL.retries});`
-- L60 `blCash`：`AN.end(BL.analytics,BL.attemptEarned,'cashout',{stage:BL.cleared,score:BL.kills,multiplier:BL.stake?BL.attemp…`
-- L65 `blHurt`：`AN.end(BL.analytics,BL.attemptEarned,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`
-- L72 `blClear`：`AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills,bonus_points:bonus,total_bonus_points:BL.earned},true…`
-- L252 `blSuspend`：`AN.end(BL.analytics,BL.attemptEarned,'abandoned',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`
+- L24 `blTracking`：`if(engaged)AN.resume(BL.analytics,{stage:BL.stage});`
+- L24 `blTracking`：`else if(BL.active)AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills},true);`
+- L46 `blStart`：`BL.analytics=AN.start('blaster',stake);`
+- L53 `blRetry`：`BL.analytics=AN.start('blaster',cost,{stage:BL.stage,entry_kind:'stage_retry',retry_count:BL.retries});`
+- L58 `blCash`：`AN.end(BL.analytics,BL.attemptEarned,'cashout',{stage:BL.cleared,score:BL.kills,multiplier:BL.stake?BL.attemp…`
+- L63 `blHurt`：`AN.end(BL.analytics,BL.attemptEarned,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`
+- L70 `blClear`：`AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills,bonus_points:bonus,total_bonus_points:BL.earned},true…`
+- L248 `blSuspend`：`AN.end(BL.analytics,BL.attemptEarned,'abandoned',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -70,7 +70,7 @@
 
 定位：`games/blaster/game.js` 的 BL、blWeapon、blSpawn、blStep、blClear、blCash；樣式獨立於 style.css。固定投入10，只在新局扣款。自動朝前射擊，點左／右半邊或按 ← →／A D 換道，亦可用畫面外的左右按鈕。
 
-無盡關卡，第s關min(96,24+6×(s-1))波（首關24、第10關78、第13關起96）。基本波間距max(.78,1.85-(s-1)×.10)，再乘以1-.16×當前波數/總波數。同關移速加成為1+.28×當前波數/總波數，第1～10關普通移速基準84+12s，第11關起204+10×log2(s-9)，維持遞增但放緩增幅；後關與同關後段都更快，增加波數讓出怪段仍比舊版長至少1.5倍。背景航道也隨實際速度捲動。第3關起每4波中的第2波加第二隻怪，錯開出場。
+無盡關卡，第s關min(96,24+6×(s-1))波（首關24、第10關78、第13關起96）。基本波間距max(.62,1.6-(s-1)×.11)，再乘以1-.16×當前波數/總波數。同關移速加成為1+.35×當前波數/總波數，第1～10關普通移速基準105+15s，第11關起255+12×log2(s-9)，維持遞增但放緩增幅（2026-11-17 因難度偏低加快節奏，約為舊版 1.25 倍）；後關與同關後段都更快，增加波數讓出怪段仍比舊版長至少1.5倍。背景航道也隨實際速度捲動。第3關起每4波中的第2波加第二隻怪，錯開出場。
 
 六種怪物以可辨識輪廓與顏色呈現，不只增加血量。普通血量H在第1～10關為3+ceil(s²×1.25)，第11關起為3+ceil(1.25×(100+18×(s-10)))，各種血量乘數向上取整：
 
@@ -91,12 +91,11 @@
 | --- | --- | --- |
 | Lv.1 | 脈衝彈，薄荷色圓彈與單管 | 1發，1.2D |
 | Lv.4 | 雙管速射，藍色雙管與長彈 | 2發，各D |
-| Lv.8 | 扇形散彈，金色外張槍管與箭形彈 | 3發扇形，各0.65D，可掃向旁道；限時12秒 |
 | Lv.13 | 穿透光槍，綠色長導軌與光束 | 2發，各1.35D，每發最多命中3隻，同一隻不重複計直接傷害 |
 | Lv.18 | 追蹤火箭，紅色側掛發射筒與尾焰 | 2發，各2.2D，會轉向追蹤，爆炸半徑78 |
 | Lv.24 | 電漿砲，紫色能量核心與光球 | 3發，各1.6D，每發穿透2隻，範圍半徑58 |
 
-Lv.8～12撿箱啟動／刷新散彈12秒，不疊加；到期恢復雙管但保留等級，Lv.13起切換光槍並清除散彈倒數。倒數僅在可見、聚焦且戰鬥中扣減，切頁、背景、失焦與關後選擇暫停。死亡清除限時效果，付費重玩保留等級但不補散彈；新局重設。面板與畫布顯示剩餘秒數。拾取箱子容許水平距離<52、垂直距離<48；火箭速度600、電漿720，其他速度沿用。
+2026-11-17 因過於強勢移除扇形散彈（原 Lv.8）：Lv.4～12 維持雙管速射，Lv.13 起切換光槍；已無任何限時武器效果與倒數。拾取箱子容許水平距離<52、垂直距離<48；火箭速度600、電漿720，其他速度沿用。
 
 火箭連射間隔.34秒，其餘max(.11,.27-等級×.005)秒。範圍攻擊對直接命中以外的半徑內怪物造成該發55%傷害；護盾同樣先吸收。未撿武器不補發，也不依目前火力降低敵人血量。
 
