@@ -22,12 +22,19 @@ check('Entry deducts once; insufficient, fractional and unsafe amounts rejected'
   for(const value of (flatFee?[]:['9','20.5','9007199254740992','NaN'])){const g=fixture();g.el('bl-amount').value=value;g.run('blStart()');assert.equal(g.wallet.balance,1000);assert.equal(g.state.active,false);}
   const g=fixture(fee-1);g.run('blStart()');assert.equal(g.wallet.balance,fee-1);assert.equal(g.state.active,false);
 });
-check('First checkpoint returns 0.6 times the entry once; mid-combat cashout blocked',()=>{
-  const f=fixture();f.run('blStart();blCash()');assert.equal(f.wallet.balance,1000-fee);f.run('blClear();blCash();blCash()');assert.equal(f.wallet.balance,1000-fee+Math.floor(fee*.6));assert.equal(f.state.active,false);assert.equal(f.events.filter(e=>e[0]==='end').length,1);assert.equal(f.events.find(e=>e[0]==='end')[2],Math.floor(fee*.6));assert.equal(f.storage.get('deep-sea-blaster-best'),'1');
+check('Early checkpoints and voluntary exit award zero; mid-combat exit blocked',()=>{
+  const f=fixture();f.run('blStart();blCash()');assert.equal(f.wallet.balance,1000-fee);f.run('blClear();blCash();blCash()');assert.equal(f.wallet.balance,1000-fee);assert.equal(f.state.active,false);assert.equal(f.events.filter(e=>e[0]==='end').length,1);assert.equal(f.events.find(e=>e[0]==='end')[2],0);assert.equal(f.storage.get('deep-sea-blaster-best'),'1');
 });
-check('Continue preserves weapon/lives and does not charge; stage ten pays 20 times the entry once',()=>{
+check('Continue preserves weapon/lives and does not charge; only stage ten awards one point once',()=>{
   const f=fixture();f.run('blStart();BL.weapon=7;BL.lives=2;blClear();blStart();blStart()');assert.equal(f.state.stage,2);assert.equal(f.state.weapon,7);assert.equal(f.state.lives,2);assert.equal(f.wallet.balance,1000-fee);
-  f.run('blClear()');for(let stage=3;stage<=10;stage++)f.run('blStart();blClear()');assert.equal(f.wallet.balance,1000-fee+fee*20);assert.equal(f.state.phase,'cashed');f.run('blCash();blClear()');assert.equal(f.wallet.balance,1000-fee+fee*20);assert.equal(f.events.filter(e=>e[0]==='start').length,1);assert.equal(f.events.filter(e=>e[0]==='end').length,1);
+  f.run('blClear()');for(let stage=3;stage<=10;stage++)f.run('blStart();blClear()');assert.equal(f.wallet.balance,1000-fee+1);assert.equal(f.state.phase,'cashed');f.run('blCash();blClear()');assert.equal(f.wallet.balance,1000-fee+1);assert.equal(f.events.filter(e=>e[0]==='start').length,1);assert.equal(f.events.filter(e=>e[0]==='end').length,1);
+});
+check('Clearing nine stages then losing or exiting never awards partial points',()=>{
+  for(const exit of ['blCash()','blStart();blHurt();blHurt();blHurt()']){const f=fixture();f.run('blStart()');for(let stage=1;stage<=9;stage++){f.run('blClear()');assert.equal(f.wallet.balance,1000-fee);if(stage<9)f.run('blStart()');}f.run(exit);assert.equal(f.wallet.balance,1000-fee);assert.equal(f.events.filter(e=>e[0]==='end').length,1);assert.equal(f.events.find(e=>e[0]==='end')[2],0);}
+});
+check('Full clear reports a one-point completion and a new paid round resets reward progress',()=>{
+  const f=fixture();f.run('blStart()');for(let stage=1;stage<=10;stage++){f.run('blClear()');if(stage<10)f.run('blStart()');}
+  const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],1);assert.equal(end[3],'complete');assert.equal(end[4].multiplier,1/fee);assert.equal(f.storage.get('crush-depth-balance'),String(1000-fee+1));f.run('blCash();blClear()');assert.equal(f.wallet.balance,1000-fee+1);f.run('blStart();blHurt();blHurt();blHurt()');assert.equal(f.wallet.balance,1000-fee*2+1);assert.equal(f.state.cleared,0);
 });
 check('Three hits lose the entire round with one loss event',()=>{
   const f=fixture();f.run('blStart();blHurt();blHurt();blHurt();blHurt();blCash()');assert.equal(f.wallet.balance,1000-fee);assert.equal(f.state.lives,0);assert.equal(f.state.active,false);assert.equal(f.events.filter(e=>e[0]==='end').length,1);assert.equal(f.events.find(e=>e[0]==='end')[3],'loss');

@@ -1,10 +1,9 @@
   /* ---------- Reef Blaster: three lanes, automatic fire, persistent weapon upgrades ---------- */
   var BL={active:false,phase:'ready',stage:1,cleared:0,stake:0,analytics:null,lives:3,weapon:1,lane:1,x:200,kills:0,stageKills:0,wave:0,waves:24,clock:0,scroll:0,nextWave:.9,shot:0,enemies:[],bullets:[],pickups:[],fx:[],last:0,focused:document.hasFocus?document.hasFocus():true,flash:0,best:0,serial:0,tracked:false};
-  var BL_MULT=[0,.6,1.05,1.65,2.5,3.6,5.2,7.2,10,14,20];
   var blCanvas=$('bl-canvas'),blCtx=blCanvas.getContext('2d');
   try{var blSaved=Number(localStorage.getItem('deep-sea-blaster-best'));if(Number.isFinite(blSaved))BL.best=Math.max(0,Math.min(10,Math.floor(blSaved)));}catch(_){}
   function blSay(text,kind){$('bl-msg').textContent=text;$('bl-msg').className='msg'+(kind?' '+kind:'');}
-  function blPay(){return Math.floor(BL.stake*Math.round(BL_MULT[BL.cleared]*100)/100);}
+  function blPay(){return BL.cleared===10?1:0;}
   var BL_GUNS=[
     {level:1,name:'脈衝彈',kind:'pulse',color:'#9bfff0',pellets:1,scale:1,speed:660,pierce:1,radius:0},
     {level:4,name:'雙管速射',kind:'twin',color:'#74baff',pellets:2,scale:1,speed:740,pierce:1,radius:0},
@@ -26,9 +25,9 @@
     var w=blWeapon();$('bl-stage').textContent=BL.stage+' / 10';$('bl-lives').textContent=BL.lives+' / 3';$('bl-wave').textContent=BL.wave+' / '+BL.waves;
     $('bl-weapon').textContent=w.name+' Lv.'+BL.weapon;$('bl-power').textContent=Math.round(w.damage*w.scale*100)/100+' 傷害 × '+w.pellets+' 發';
     var next=blNextGun();$('bl-evolution').textContent=next?'Lv.'+next.level+' 進化 → '+next.name:'最終型態 · 電漿砲';$('bl-weapon').style.color=w.color;$('bl-speed').textContent=(blStageConfig(BL.stage).speed*blPace()/96).toFixed(2)+'×';$('bl-kills').textContent=BL.kills+' 隻';$('bl-best').textContent=BL.best+' 關';
-    $('bl-mult').textContent=fx(BL_MULT[BL.cleared])+'×';$('bl-pay').textContent=(BL.phase==='lost'?0:blPay())+' 點';$('bl-amount').disabled=BL.active;
+    $('bl-reward-status').textContent=BL.cleared+' / 10 關';$('bl-pay').textContent=(BL.phase==='lost'?0:blPay())+' 點';$('bl-amount').disabled=BL.active;
     $('bl-go').disabled=BL.phase==='run';$('bl-go').textContent=BL.phase==='cleared'?'帶著武器，挑戰下一關':'扣點開始出擊';$('bl-go').dataset.mode='bet';
-    $('bl-cash').disabled=BL.phase!=='cleared';$('bl-cash').textContent=BL.phase==='cleared'?'領回 '+blPay()+' 點':'過關後可領回';
+    $('bl-cash').disabled=BL.phase!=='cleared';$('bl-cash').textContent=BL.phase==='cleared'?'提前收隊（無點數獎勵）':'過關後可選擇收隊';
     $('bl-left').disabled=$('bl-right').disabled=BL.phase!=='run';
   }
   function blRound(){
@@ -46,18 +45,18 @@
   function blCash(){
     if(!BL.active||BL.phase!=='cleared')return;
     var pay=blPay();BL.active=false;BL.phase='cashed';BL.tracked=false;S.balance+=pay;save();renderAll();
-    AN.end(BL.analytics,pay,'cashout',{stage:BL.cleared,score:BL.kills,multiplier:BL_MULT[BL.cleared],weapon_level:BL.weapon});
-    blSay((BL.cleared===10?'十關全破！':'已收隊。')+'領回 '+pay+' 點，本局淨'+(pay>=BL.stake?'賺 ':'損 ')+Math.abs(pay-BL.stake)+' 點。',pay>=BL.stake?'win':'');blUI();
+    AN.end(BL.analytics,pay,pay?'complete':'cashout',{stage:BL.cleared,score:BL.kills,multiplier:BL.stake?pay/BL.stake:0,weapon_level:BL.weapon});
+    blSay(pay?'十關全破！獲得 1 點獎勵。入場費 '+BL.stake+' 點不退還，本局淨減少 '+(BL.stake-pay)+' 點。':'已提前收隊，未全破十關，本局沒有點數獎勵；入場費不退還。',pay?'win':'');blUI();
   }
   function blHurt(){
     if(BL.phase!=='run')return;BL.lives--;BL.flash=.3;
-    if(BL.lives<=0){BL.active=false;BL.phase='lost';BL.tracked=false;AN.end(BL.analytics,0,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});blSay('防線失守！三顆心用完，本局投入與未領回金額歸零。','lose');}
+    if(BL.lives<=0){BL.active=false;BL.phase='lost';BL.tracked=false;AN.end(BL.analytics,0,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});blSay('防線失守！未全破十關，本局沒有點數獎勵；入場費不退還。','lose');}
     else blSay('怪物突破防線，扣 1 心！剩 '+BL.lives+' 心，快找武器箱提升火力。','lose');blUI();
   }
   function blClear(){
     if(BL.phase!=='run')return;BL.cleared=BL.stage;BL.phase='cleared';BL.bullets=[];blTracking();
     if(BL.cleared>BL.best){BL.best=BL.cleared;try{localStorage.setItem('deep-sea-blaster-best',String(BL.best));}catch(_){}}
-    blSay('第 '+BL.stage+' 關完成！可領回 '+blPay()+' 點，或帶著 Lv.'+BL.weapon+' 武器與 '+BL.lives+' 心繼續。','win');
+    blSay('第 '+BL.stage+' 關完成！全破十關才獎勵 1 點。可帶著 Lv.'+BL.weapon+' 武器與 '+BL.lives+' 心繼續。','win');
     if(BL.cleared===10)blCash();else blUI();
   }
   var BL_MOBS={
@@ -222,7 +221,7 @@
     if(BL.phase!=='run'||!blVisible()){
       g.fillStyle='rgba(4,18,29,.82)';g.fillRect(0,0,w,h);blRoundRect(28,180,344,222,18,'#113041');g.strokeStyle='#326475';g.lineWidth=1;g.strokeRect(40,194,320,194);
       g.textAlign='center';g.fillStyle=BL.phase==='lost'?'#ff958c':'#62e6d2';g.font='bold 28px system-ui';g.fillText(BL.phase==='ready'?'深海火線':BL.phase==='cleared'?'防線守住了！':BL.phase==='cashed'?'出擊完成':BL.phase==='lost'?'防線失守':'已暫停',200,236);
-      g.fillStyle='#e4f2f3';g.font='15px system-ui';g.fillText(BL.phase==='ready'?'三條航道，自動開火。':BL.phase==='cleared'?'領回 '+blPay()+' 點，或繼續下一關':BL.phase==='cashed'?'已領回 '+blPay()+' 點':BL.phase==='lost'?'三顆心用完，本局返還 0 點':'回到遊戲後繼續',200,276);
+      g.fillStyle='#e4f2f3';g.font='15px system-ui';g.fillText(BL.phase==='ready'?'三條航道，自動開火。':BL.phase==='cleared'?'繼續挑戰，全破十關獎勵 1 點':BL.phase==='cashed'?(blPay()?'全破十關，獲得 1 點獎勵':'提前收隊，沒有點數獎勵'):BL.phase==='lost'?'三顆心用完，本局獎勵 0 點':'回到遊戲後繼續',200,276);
       g.fillStyle='#ffdc87';g.fillText(BL.phase==='ready'?'散彈 · 穿透光槍 · 追蹤火箭 · 電漿砲':blWeapon().name+' · 擊破 '+BL.kills+' 隻',200,310);
       g.fillStyle='#9fc1ca';g.font='13px system-ui';g.fillText(BL.phase==='ready'?'使用下方或右側按鈕扣點開始':'使用操作面板選擇下一步',200,352);
     }

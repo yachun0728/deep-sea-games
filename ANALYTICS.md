@@ -92,4 +92,4 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 ## 深海火線（blaster）
 
-使用共用 game_start／game_resume／game_progress／game_end：投入為 entry_points，過關 checkpoint 記錄 stage 與累計擊破 score，收隊 cashout、生命歸零 loss；結束另附 weapon_level。切換遊戲、背景與失焦透過 progress 暫停，恢復透過 resume，過關選擇不計有效遊玩時間。重設防護與 hot.snapshot 包含 BL.active／BL.stake。未新增 GA4 事件名稱，weapon_level 若需用於自訂報表，仍須另在 GA4 設定自訂定義。
+每局固定扣 ENTRY_FEE=10 點，十關全破才獎勵 1 點、不退入場費。game_start 的 entry_points 為10；關卡進度沿用 game_progress（stage、score、checkpoint），續關沿用 game_resume。全破自動 game_end：result=complete、payout_points=1、net_points=-9；提前收隊 result=cashout、payout_points=0；失敗 result=loss、payout_points=0。保留 weapon_level，multiplier 為總入帳／入場費比值（全破0.1、其餘0），不是畫面獎勵規則。切換遊戲、背景及失焦仍暫停有效時間。未新增事件名稱；自訂參數後台收件未於此次驗證。
