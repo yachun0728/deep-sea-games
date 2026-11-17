@@ -244,5 +244,12 @@
     "view": "games/pudding/view.html",
     "card": "games/pudding/card.html",
     "icon": "games/pudding/icon.svg"
+  },
+  {
+    "id": "clock-out",
+    "logic": "games/clock-out/game.js",
+    "view": "games/clock-out/view.html",
+    "card": "games/clock-out/card.html",
+    "icon": "games/clock-out/icon.svg"
   }
 ]
