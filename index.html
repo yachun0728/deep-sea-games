@@ -453,6 +453,16 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
 }
 @media(max-width:360px){.wrap:not(.is-lobby) .brand-home h1{font-size:14px}.wrap:not(.is-lobby) .wallet .link-btn{font-size:9px}}
 
+.mobile-stage-actions{display:none}
+@media(max-width:880px){
+  .mobile-start-stage{position:relative}
+  .mobile-start-stage>.mobile-stage-actions{position:absolute;z-index:4;top:68%;left:12px;right:12px;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+  .mobile-stage-action{display:flex;justify-content:center;width:100%;pointer-events:none}
+  .mobile-stage-action>.go{box-sizing:border-box;min-height:48px;min-width:180px;max-width:100%;padding:12px 20px;border:1px solid rgba(255,255,255,.18);border-radius:999px;font-size:15px;line-height:1.4;box-shadow:0 6px 22px rgba(0,0,0,.3);pointer-events:auto;touch-action:manipulation}
+  .mobile-stage-action>.go small{font-size:11px}
+}
+@media(max-width:880px){.mobile-stage-note{margin:0;padding:3px 9px;border-radius:99px;background:rgba(5,22,32,.8);color:#e4f2f3;font-size:11px;line-height:1.5;pointer-events:none}}
+
 #view-blaster .bl-stage{display:grid;place-items:center;min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#061c2c}
 #bl-canvas{display:block;width:min(100%,400px);height:auto;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 #view-blaster .bl-legend{display:flex;gap:10px;flex-wrap:wrap;padding:10px 0;font-size:12px;color:var(--muted)}
@@ -4105,6 +4115,44 @@ ui();draw();requestAnimationFrame(loop);
     if(frame.contentWindow&&frame.contentWindow.setPancakePlatformActive)frame.contentWindow.setPancakePlatformActive(active);
   }
   $('pancake-finish').addEventListener('click',function(){var frame=$('pancake-frame');if(PANCAKE.active&&frame.contentWindow&&frame.contentWindow.finishPancakePlatformRound)frame.contentWindow.finishPancakePlatformRound();});
+  /* Move the existing buttons on mobile; never duplicate their wallet or game handlers. */
+  (function(){
+    if(!window.matchMedia||!window.MutationObserver)return;
+    var media=window.matchMedia('(max-width:880px)'),groups=[];
+    function eligible(button){
+      if(button.hidden)return false;
+      var text=button.textContent||'';
+      if(button.disabled&&!/重玩第.*關/.test(text))return false;
+      return ['surface','cancel'].indexOf(button.dataset.mode)<0||/下一關|下一班|下一條/.test(text);
+    }
+    document.querySelectorAll('.view .console').forEach(function(console){
+      var side=console.querySelector('.side'),stage=console.firstElementChild;
+      if(!side||!stage||stage===side)return;
+      var buttons=[].slice.call(side.querySelectorAll('button.go'));if(!buttons.length)return;
+      stage.classList.add('mobile-start-stage');
+      var tray=document.createElement('div');tray.className='mobile-stage-actions';tray.setAttribute('role','group');tray.setAttribute('aria-label','開始、續關與重玩');stage.appendChild(tray);
+      var records=buttons.map(function(button){
+        var marker=document.createComment('original game action position'),wrapper=document.createElement('div');
+        button.parentNode.insertBefore(marker,button);wrapper.className='mobile-stage-action';tray.appendChild(wrapper);return {button:button,marker:marker,wrapper:wrapper};
+      });
+      var note=document.createElement('p');note.className='mobile-stage-note';tray.appendChild(note);
+      function sync(){
+        var shown=false,label='';
+        records.forEach(function(record){
+          var show=media.matches&&eligible(record.button);record.wrapper.hidden=!show;
+          if(show){if(record.button.parentNode!==record.wrapper)record.wrapper.appendChild(record.button);shown=true;label=record.button.textContent||'';}
+          else if(record.marker.parentNode&&record.button.parentNode!==record.marker.parentNode)record.marker.parentNode.insertBefore(record.button,record.marker.nextSibling);
+        });
+        note.textContent=/下一關|下一班|下一條/.test(label)?'繼續挑戰不另扣點':/\d+\s*點/.test(label)?'':typeof ENTRY_FEE==='number'?'每局 '+ENTRY_FEE+' 點':'';
+        note.hidden=!note.textContent;tray.hidden=!shown;
+      }
+      var observer=new window.MutationObserver(sync);
+      records.forEach(function(record){observer.observe(record.button,{attributes:true,attributeFilter:['hidden','disabled','data-mode'],childList:true,characterData:true,subtree:true});});
+      groups.push(sync);sync();
+    });
+    function resize(){groups.forEach(function(sync){sync();});}
+    if(media.addEventListener)media.addEventListener('change',resize);else if(media.addListener)media.addListener(resize);
+  })();
   /* Navigation uses separate DOM controls; game pointer listeners are untouched. */
   (function(){
     function scrollPad(){

@@ -29,3 +29,13 @@
   .console>.mobile-scroll-pad{margin-block:-6px}
 }
 @media(max-width:360px){.wrap:not(.is-lobby) .brand-home h1{font-size:14px}.wrap:not(.is-lobby) .wallet .link-btn{font-size:9px}}
+
+.mobile-stage-actions{display:none}
+@media(max-width:880px){
+  .mobile-start-stage{position:relative}
+  .mobile-start-stage>.mobile-stage-actions{position:absolute;z-index:4;top:68%;left:12px;right:12px;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+  .mobile-stage-action{display:flex;justify-content:center;width:100%;pointer-events:none}
+  .mobile-stage-action>.go{box-sizing:border-box;min-height:48px;min-width:180px;max-width:100%;padding:12px 20px;border:1px solid rgba(255,255,255,.18);border-radius:999px;font-size:15px;line-height:1.4;box-shadow:0 6px 22px rgba(0,0,0,.3);pointer-events:auto;touch-action:manipulation}
+  .mobile-stage-action>.go small{font-size:11px}
+}
+@media(max-width:880px){.mobile-stage-note{margin:0;padding:3px 9px;border-radius:99px;background:rgba(5,22,32,.8);color:#e4f2f3;font-size:11px;line-height:1.5;pointer-events:none}}

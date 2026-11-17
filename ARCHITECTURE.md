@@ -168,3 +168,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 `css/mobile-navigation.css`、`templates/mobile-navigation.html` 與 `js/mobile-navigation.js` 提供880px以下的精簡遊戲頁首及合併工具列。頁首只顯示中文遊戲名、首頁入口與點數，英文副標／Demo／回點說明在遊戲頁隱藏（大廳仍顯示）；重設功能保留。工具列合併「切換遊戲、畫面、操作」，不另占第三排，不擠窄畫布；已移除固定側邊滑軌。
 
 畫布與操作面板之間插入低調的 native pan-y 捲動區；iframe遊戲則放在父頁的frame區塊之後，不改珍奶或其他子頁原畫面。也可在置頂工具列上滑動捲頁。這些區域沒有pointer／touch阻擋事件，遊戲內手勢保持原狀。跳轉只捲動目前view，遵守減少動態效果偏好，不改hash／點數／遊戲狀態。桌面與大廳不顯示手機導覽。
+
+### 手機畫面內開始按鈕
+
+`js/mobile-stage-actions.js` 在880px以下將原有 `.side button.go` 移到遊戲畫面內，保留原 DOM 節點、id、click listener、disabled／hidden 與扣點／追蹤流程，不建立代理扣款按鈕。以註解節點記住原位置；進行中操作（surface／cancel或disabled）回原位置，待機／關後／死亡可操作按鈕顯示於畫面內。MutationObserver只觀察原按鈕狀態，沒有輪詢、沒有觸發click；回桌面即復位。遊戲中浮層收起，僅按鈕本身接收事件，不蓋住畫布觸控。原本畫面內已有開始按鈕的iframe遊戲維持不變。
