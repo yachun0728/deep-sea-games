@@ -7,7 +7,7 @@
 - 網址：`#keno`　分類：每日免費補給　狀態：顯示中
 - 大廳卡片：「免費挖金礦拿點數，再去挑戰喜歡的小遊戲。」｜免費 · 不扣點 · 台灣時間午夜重置
 - 追蹤名稱（GA4 `game_name`）：挖金礦，`game_id` 為 `keno`
-- 檔案：`games/keno/card.html`、`games/keno/game.js`、`games/keno/icon.svg`、`games/keno/style.css`、`games/keno/view.html`；`game.js` 共 74 行、7.0 KB
+- 檔案：`games/keno/card.html`、`games/keno/game.js`、`games/keno/icon.svg`、`games/keno/style.css`、`games/keno/view.html`；`game.js` 共 76 行、7.4 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「8. Keno（keno）」（下方「規則摘要」已複製）
 
@@ -23,7 +23,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`kSay` L6、`keDay` L7、`keRead` L8、`keStore` L15、`keLocked` L16、`run` L17、`keArt` L21、`keBuild` L26、`keSync` L31、`keUI` L41、`kePlay` L50、`keDig` L55
+`kSay` L6、`keDay` L7、`keRead` L8、`keStore` L15、`keLocked` L16、`run` L17、`keArt` L21、`keBuild` L26、`keSync` L31、`keUI` L41、`kePlay` L52、`keDig` L57
 
 ## 錢包與結算接點
 
@@ -31,7 +31,7 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L61 `keDig`：`S.balance+=bonus;`
+- L63 `keDig`：`S.balance+=bonus;`
 
 **餘額檢查**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
@@ -44,9 +44,9 @@
 - L32 `keSync`：`AN.end(KE.analytics,KE.earned,'complete',{step:KE.digs,score:KE.score});`
 - L36 `keSync`：`KE.analytics=AN.start('keno',0);`
 - L39 `keSync`：`AN.end(KE.analytics,KE.earned,'complete',{step:KE.digs,score:KE.score});`
-- L63 `keDig`：`AN.progress(KE.analytics,{step:KE.digs,score:KE.score,bonus_points:bonus,total_bonus_points:KE.earned});`
-- L64 `keDig`：`AN.end(KE.analytics,KE.earned,'complete',{step:KE.digs,score:KE.score});`
-- L71 `keDig`：`if(!e.persisted&&KE.active)AN.end(KE.analytics,KE.earned,'abandoned',{step:KE.digs,score:KE.score});`
+- L65 `keDig`：`AN.progress(KE.analytics,{step:KE.digs,score:KE.score,bonus_points:bonus,total_bonus_points:KE.earned});`
+- L66 `keDig`：`AN.end(KE.analytics,KE.earned,'complete',{step:KE.digs,score:KE.score});`
+- L73 `keDig`：`if(!e.persisted&&KE.active)AN.end(KE.analytics,KE.earned,'abandoned',{step:KE.digs,score:KE.score});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

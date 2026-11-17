@@ -185,6 +185,6 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 
 ## 踩地雷與每日挖金礦
 
-踩地雷為免費懷舊遊戲，開局與重玩皆不扣點、不限次數；M.active表示進行中，重設防護不變。低中高預設或自訂2～10邊長與1～N×N−1顆雷，每局固定設定。deep-sea-mines-level-best保留舊關卡紀錄，不再更新；舊deep-sea-mines-best保持第一關安全格紀錄。挖礦不再扣點，新增deep-sea-gold-daily-v1保存當日配額與剩餘格子，舊deep-sea-gold-best保持分數格式。新Key獨立，缺少時初始化，不遷移或清除玩家餘額；回復來源時可保留新Key，舊版忽略。每日補給卡片放在獨立daily-supply區，正常lobby-grid計數與篩選不包含它。
+踩地雷為免費懷舊遊戲，開局與重玩皆不扣點、不限次數；M.active表示進行中，重設防護不變。低中高預設或自訂2～10邊長與1～N×N−1顆雷，每局固定設定。deep-sea-mines-level-best保留舊關卡紀錄，不再更新；舊deep-sea-mines-best保持第一關安全格紀錄。挖礦不再扣點，新增deep-sea-gold-daily-v1保存當日配額與剩餘格子，舊deep-sea-gold-best保持分數格式。新Key獨立，缺少時初始化，不遷移或清除玩家餘額；回復來源時可保留新Key，舊版忽略。每日補給卡片放在右下角固定daily-supply浮動圖示，正常lobby-grid計數與篩選不包含它。
 
 KE.active涵蓋免費挖掘，使用現有syncBalance／save入帳；可用時以Web Locks序列化跨分頁操作，刷新及其他分頁先讀配額與已挖格子防止重複發點。儲存消耗先於入帳，非資料庫原子交易；突然關閉可能少發一次，不能宣稱強一致或防作弊。台灣日期變更後舊回合到期。正常pagehide以捕獲階段先送含已發點數的abandoned，BFCache不提前結束。其他遊戲與錢包Key不變。

@@ -11,7 +11,7 @@
 | [測深 Sonar Dice](dice/README.md) | `#dice` | 機率挑戰 | 隱藏 | 65 行 | 設定聲納讀數範圍，等待海底回音。 |
 | [探底 Deep Probe](limbo/README.md) | `#limbo` | 機率挑戰 | 隱藏 | 66 行 | 選定目標倍率，看看探測錘能到多深。 |
 | [漲退 High Tide](hilo/README.md) | `#hilo` | 機率挑戰 | 隱藏 | 91 行 | 猜下一張牌更高或更低，連猜累積。 |
-| [挖金礦 Gold Digger](keno/README.md) | `#keno` | 每日免費補給 | 顯示 | 74 行 | 免費挖金礦拿點數，再去挑戰喜歡的小遊戲。 |
+| [挖金礦 Gold Digger](keno/README.md) | `#keno` | 每日免費補給 | 顯示 | 76 行 | 免費挖金礦拿點數，再去挑戰喜歡的小遊戲。 |
 | [羅盤 Compass](wheel/README.md) | `#wheel` | 機率挑戰 | 隱藏 | 85 行 | 轉動深海羅盤，等待指針停下。 |
 | [浮升 Ascent](tower/README.md) | `#tower` | 機率挑戰 | 隱藏 | 94 行 | 挑選安全的氣泡，一層一層往上浮。 |
 | [橫渡 Reef Run](crossing/README.md) | `#crossing` | 機率挑戰 | 隱藏 | 86 行 | 帶小海龜穿越暗流，決定何時收手。 |

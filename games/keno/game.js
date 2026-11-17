@@ -45,6 +45,8 @@
     elKGo.disabled=KE.active||!KE.daily||KE.daily.plays>=3||KE.daily.earned>=30;elKGo.dataset.mode=KE.active?'playing':'start';
     elKGo.innerHTML=KE.active?'選一格挖掘吧':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'今日補給已完成<small>台灣時間午夜再來</small>':'免費挖金礦<small>不扣點 · 每次可挖 5 格</small>';
     var cta=$('gold-daily-cta');if(cta)cta.textContent=KE.active?'繼續本次挖掘 ↗':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'查看今日補給':'免費挖一次 ↗';
+    var badge=$('gold-free-badge');if(badge)badge.textContent=KE.active?'挖':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'✓':KE.daily?String(3-KE.daily.plays):'3';
+    var link=$('gold-float');if(link)link.setAttribute('aria-label',KE.active?'每日挖礦：繼續本次挖掘':KE.daily?'每日免費挖礦：剩餘'+(3-KE.daily.plays)+'次，今日已獲得'+KE.daily.earned+'點':'每日免費挖礦');
     var card=$('gold-daily-status');if(card)card.textContent=KE.daily?'今日剩 '+(3-KE.daily.plays)+' 次 · 已獲 '+KE.daily.earned+'/30 點':'每天免費 3 次 · 最多獲得 30 點';
   }
   function kePlay(){keLocked(function(){var d=keRead();keSync(d);if(KE.active)return;if(d.plays>=3||d.earned>=30){keUI();return;}
