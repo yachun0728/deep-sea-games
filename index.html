@@ -15,7 +15,7 @@
     w.gtag('config',ID,{allow_google_signals:false,allow_ad_personalization_signals:false,debug_mode:debug});
     var tag=d.createElement('script');tag.async=true;tag.src='https://www.googletagmanager.com/gtag/js?id='+ID;d.head.appendChild(tag);
   }
-  var names={blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看'};
+  var names={blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師','last-hair':'尊嚴保衛戰',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看'};
   var rounds={},current='',seq=0,bucket=0,last=performance.now(),inputAt=last,visible=!d.hidden,focused=d.hasFocus?d.hasFocus():true,suspended=false;
   var tabToken=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
   function emit(event,game,params){
@@ -584,6 +584,8 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
 .dive-stage{min-width:0;display:flex;justify-content:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#000}.dive-stage iframe{display:block;width:min(100%,480px);height:min(860px,calc(100svh - 150px));min-height:600px;border:0;background:#000}
 .mrt-stage{min-width:0;display:flex;justify-content:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#000}.mrt-stage iframe{display:block;width:min(100%,480px);height:min(860px,calc(100svh - 150px));min-height:600px;border:0;background:#000}
 .pancake-platform-bar{display:flex;align-items:center;justify-content:space-between;gap:12px}.pancake-platform-bar p{margin:0}.pancake-platform-bar .chip{padding:9px 12px;white-space:nowrap}.pancake-stage{display:flex;justify-content:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#0d0b0a}.pancake-stage iframe{display:block;width:min(100%,430px);height:min(860px,calc(100svh - 150px));min-height:600px;border:0;background:#0d0b0a;touch-action:none}
+
+.sneak-stage #lh-canvas{width:min(100%,400px,calc(80vh * 400 / 720));height:auto;aspect-ratio:400/720;max-height:none;object-fit:fill}
 </style>
 </head>
 <body>
@@ -625,7 +627,7 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
     <a href="#bird" id="tab-bird">便便鳥大戰狼群<small>Poop Bird</small></a>
     <a href="#frog" id="tab-frog">青蛙吃蟲<small>Frog Snack</small></a>
     <a href="#clock-out" id="tab-clock-out">下班保衛戰<small>Clock Out</small></a><a href="#peek" id="tab-peek">別看<small>Don’t Peek</small></a>
-    <a href="#nap" id="tab-nap">偷睡大師<small>Nap Master</small></a><a href="#pudding" id="tab-pudding">布丁突圍<small>Pudding Dash</small></a><a href="#mosquito" id="tab-mosquito">血壓上升<small>Midnight Mosquito</small></a>
+    <a href="#nap" id="tab-nap">偷睡大師<small>Nap Master</small></a><a href="#pudding" id="tab-pudding">布丁突圍<small>Pudding Dash</small></a><a href="#mosquito" id="tab-mosquito">血壓上升<small>Midnight Mosquito</small></a><a href="#last-hair" id="tab-last-hair">尊嚴保衛戰<small>The Last Hair</small></a>
     <a href="#blaster" id="tab-blaster">深海火線<small>Reef Blaster</small></a>
     <a href="#reaper" id="tab-reaper">死神打工<small>Reaper Shift</small></a>
     <a href="#dive" id="tab-dive">一口氣探險<small>One Breath Dive</small></a>
@@ -645,7 +647,8 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
 
   <section class="view lobby-view" id="view-lobby" aria-label="遊戲大廳">
 <svg class="lobby-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-blaster" viewBox="0 0 96 96"><path d="M27 9v77M68 9v77" stroke="#326475" stroke-width="2" stroke-dasharray="4 5"/><path d="m47 53 21 29-21-6-21 6z" fill="#62e6d2"/><rect x="44" y="48" width="6" height="14" rx="3" fill="#ffe1a0"/><path d="M47 38v-9" stroke="#ffb638" stroke-width="5" stroke-linecap="round"/><circle cx="47" cy="16" r="13" fill="#b8a4f4"/><circle cx="43" cy="15" r="3" fill="#163e50"/><circle cx="52" cy="15" r="3" fill="#163e50"/><rect x="69" y="38" width="22" height="22" rx="6" fill="#ffb638"/><path d="m81 42-7 9h5l-1 6 8-10h-5z" fill="#694d24"/></symbol>
-<symbol id="icon-clock-out" viewBox="0 0 96 96"><rect x="10" y="58" width="76" height="24" rx="5" fill="#8d6e63"/><rect x="16" y="62" width="30" height="16" rx="3" fill="#a1887f"/><rect x="50" y="62" width="30" height="16" rx="3" fill="#a1887f"/><circle cx="48" cy="34" r="24" fill="#fff8e1" stroke="#37474f" stroke-width="4"/><path d="M48 34V20M48 34l11 7" stroke="#37474f" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="34" r="3" fill="#e53935"/><rect x="64" y="8" width="22" height="22" rx="2" fill="#ffd54f" transform="rotate(8 75 19)"/><path d="M68 16h14M68 22h10" stroke="#8d6e63" stroke-width="2.5" stroke-linecap="round" transform="rotate(8 75 19)"/></symbol><symbol id="icon-mosquito" viewBox="0 0 96 96"><path d="M6 84h84" stroke="#5a6a9a" stroke-width="6" stroke-linecap="round"/><ellipse cx="44" cy="52" rx="20" ry="9" fill="rgba(210,225,255,.65)" stroke="#9fb4ff" stroke-width="2" transform="rotate(-28 44 52)"/><ellipse cx="30" cy="48" rx="19" ry="12" fill="#c62840" stroke="#1b1b2f" stroke-width="3"/><ellipse cx="54" cy="50" rx="12" ry="8" fill="#2b2b33" stroke="#1b1b2f" stroke-width="3"/><circle cx="68" cy="48" r="7" fill="#2b2b33" stroke="#1b1b2f" stroke-width="3"/><circle cx="70" cy="46" r="2.4" fill="#ff5a5a"/><path d="M74 51 90 66" stroke="#1b1b2f" stroke-width="3" stroke-linecap="round"/><path d="M48 58 44 74M56 58 56 76M62 56 68 72" stroke="#1b1b2f" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-peek" viewBox="0 0 96 96"><rect width="96" height="96" rx="0" fill="none"/><rect x="14" y="44" width="68" height="36" rx="6" fill="#b8863b" stroke="#120d0a" stroke-width="3"/><path d="M12 44 L16 30 H80 L84 44 Z" fill="#d6a24e" stroke="#120d0a" stroke-width="3" stroke-linejoin="round"/><circle cx="34" cy="62" r="6" fill="#8a6226"/><circle cx="54" cy="62" r="6" fill="#8a6226"/><path d="M82 62h8" stroke="#e8c675" stroke-width="4" stroke-linecap="round"/><circle cx="91" cy="62" r="4" fill="#e8c675"/><ellipse cx="48" cy="37" rx="9" ry="5" fill="#2a0505"/><circle cx="48" cy="37" r="3.4" fill="#ff2a2a"/><path d="M48 37 L30 8 L66 8 Z" fill="#ff3030" opacity=".28"/><path d="M20 20q6-8 12 0" stroke="#dfe6ff" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/></symbol><symbol id="icon-crash" viewBox="0 0 96 96"><path d="M18 24l10 8M65 65l12 9M74 19v17m-6-6 6 6 6-6" stroke="#62e6d2" stroke-width="4" stroke-linecap="round"/><g transform="rotate(27 48 48)"><rect x="17" y="34" width="63" height="32" rx="16" fill="#ffb638"/><path d="M39 34v-9h16v9M18 47H9v11h14" fill="#d5912a"/><circle cx="55" cy="50" r="10" fill="#164755" stroke="#fff0c2" stroke-width="4"/><circle cx="52" cy="47" r="3" fill="#62e6d2"/></g></symbol><symbol id="icon-mines" viewBox="0 0 96 96"><circle cx="45" cy="48" r="22" fill="#ff766b"/><g stroke="#ff766b" stroke-width="6" stroke-linecap="round"><path d="M45 17v10m0 42v10M14 48h10m42 0h10M23 26l8 8m29 29 7 7M23 70l8-8m29-29 7-7"/></g><circle cx="38" cy="41" r="6" fill="#ffc4b3"/><circle cx="72" cy="73" r="13" fill="#62e6d2"/><path d="m65 74 5 4 8-10" fill="none" stroke="#0a2a3b" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-plinko" viewBox="0 0 96 96"><path d="M15 72h66v12H15z" fill="#ffb638"/><path d="M37 73v10m22-10v10" stroke="#72562a" stroke-width="3"/><g fill="#85b4c0"><circle cx="48" cy="30" r="4"/><circle cx="35" cy="44" r="4"/><circle cx="61" cy="44" r="4"/><circle cx="22" cy="58" r="4"/><circle cx="48" cy="58" r="4"/><circle cx="74" cy="58" r="4"/></g><path d="m45 13 10 17-11 13 10 13" fill="none" stroke="#62e6d2" stroke-width="3" stroke-dasharray="3 4"/><circle cx="47" cy="13" r="8" fill="#e3fff6"/></symbol><symbol id="icon-merge" viewBox="0 0 96 96"><g fill="#123c4b" stroke="#326475" stroke-width="2"><rect x="12" y="12" width="32" height="32" rx="10"/><rect x="52" y="12" width="32" height="32" rx="10"/><rect x="12" y="52" width="32" height="32" rx="10"/></g><circle cx="28" cy="28" r="11" fill="#8db0b9"/><circle cx="68" cy="28" r="11" fill="#62e6d2"/><circle cx="28" cy="68" r="11" fill="#ffb638"/><circle cx="68" cy="68" r="21" fill="#a8a0ed"/><g font-family="system-ui" font-weight="800" fill="#082333" text-anchor="middle"><text x="28" y="33" font-size="14">2</text><text x="68" y="33" font-size="14">4</text><text x="28" y="73" font-size="14">8</text><text x="68" y="75" font-size="22">16</text></g></symbol><symbol id="icon-dice" viewBox="0 0 96 96"><circle cx="48" cy="48" r="37" fill="none" stroke="#326475" stroke-width="2"/><path d="M48 9v9m39 30h-9M48 87v-9M9 48h9" stroke="#62e6d2" stroke-width="3"/><rect x="24" y="24" width="48" height="48" rx="13" fill="#62e6d2" transform="rotate(-12 48 48)"/><g fill="#0a2a3b"><circle cx="35" cy="39" r="4"/><circle cx="48" cy="48" r="4"/><circle cx="61" cy="57" r="4"/></g></symbol><symbol id="icon-limbo" viewBox="0 0 96 96"><path d="M48 10v29" stroke="#b6d8de" stroke-width="3" stroke-dasharray="4 4"/><path d="m48 31 18 20-18 29-18-29z" fill="#ffb638"/><path d="m48 35 9 16-9 22-9-22z" fill="#ffe1a0"/><path d="M15 69q33 20 66 0M19 80q29 15 58 0" fill="none" stroke="#62e6d2" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-hilo" viewBox="0 0 96 96"><rect x="13" y="20" width="44" height="58" rx="8" fill="#e4f2f3" transform="rotate(-13 35 49)"/><rect x="41" y="14" width="44" height="62" rx="8" fill="#ffb638" transform="rotate(9 63 45)"/><path d="m53 42 12-12 11 12M65 30v28" fill="none" stroke="#483619" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="m22 54 8 8 8-8" fill="none" stroke="#145263" stroke-width="4" stroke-linecap="round"/></symbol><symbol id="icon-keno" viewBox="0 0 96 96"><path d="M12 76 30 47 52 59 72 35 85 76Z" fill="#665036"/><path d="m32 69 7-16h19l7 16Z" fill="#ffcf54"/><path d="m25 18 45 44" stroke="#b98a58" stroke-width="9" stroke-linecap="round"/><path d="M40 14Q67 5 82 34L61 25Z" fill="#a6d4df"/><path d="m76 52 3 7 7 3-7 3-3 7-3-7-7-3 7-3Z" fill="#9af3eb"/></symbol><symbol id="icon-wheel" viewBox="0 0 96 96"><circle cx="48" cy="48" r="34" fill="#123c4b" stroke="#ffb638" stroke-width="5"/><circle cx="48" cy="48" r="24" fill="none" stroke="#326475" stroke-width="2"/><path d="M48 6v14m0 56v14M6 48h14m56 0h14" stroke="#e4f2f3" stroke-width="3"/><path d="m62 21-8 33-20 21 8-33z" fill="#ff766b"/><path d="m62 21-20 21 12 12z" fill="#62e6d2"/><circle cx="48" cy="48" r="5" fill="#e4f2f3"/></symbol><symbol id="icon-tower" viewBox="0 0 96 96"><g fill="#164755" stroke="#326475" stroke-width="2"><rect x="13" y="64" width="70" height="17" rx="5"/><rect x="22" y="40" width="52" height="17" rx="5"/><rect x="31" y="16" width="34" height="17" rx="5"/></g><g fill="#62e6d2"><circle cx="28" cy="72" r="5"/><circle cx="48" cy="48" r="5"/><circle cx="48" cy="24" r="5"/></g><path d="m76 50 8-10 8 10M84 41v22" fill="none" stroke="#ffb638" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-crossing" viewBox="0 0 96 96"><path d="M14 70h68M19 26h58" stroke="#326475" stroke-width="3" stroke-dasharray="6 6"/><g fill="#62e6d2"><ellipse cx="47" cy="51" rx="23" ry="19"/><circle cx="75" cy="47" r="11"/><ellipse cx="32" cy="31" rx="7" ry="10" transform="rotate(-35 32 31)"/><ellipse cx="34" cy="71" rx="7" ry="10" transform="rotate(35 34 71)"/></g><ellipse cx="47" cy="51" rx="16" ry="14" fill="#297a6e"/><path d="m47 38 9 7v10l-9 8-9-8V45z" fill="none" stroke="#a6f4d9" stroke-width="2"/><circle cx="78" cy="44" r="2.5" fill="#082333"/><path d="m24 50-12-5v12z" fill="#62e6d2"/></symbol><symbol id="icon-dream" viewBox="0 0 96 96"><circle cx="48" cy="49" r="32" fill="#113041" stroke="#326475" stroke-width="6"/><path d="M66 23a32 32 0 0 1 13 33" fill="none" stroke="#62e6d2" stroke-width="8" stroke-linecap="round"/><path d="M48 29v20l17 13" fill="none" stroke="#ffb638" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="49" r="5" fill="#ffb638"/><path d="m16 15 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#b3a3ee"/></symbol><symbol id="icon-runner" viewBox="0 0 96 96"><path d="m34 11-24 75h76L62 11z" fill="#164755"/><path d="m43 20-8 57m19-57 8 57" stroke="#62e6d2" stroke-width="2" stroke-dasharray="5 6"/><rect x="22" y="50" width="19" height="24" rx="3" fill="#ff766b"/><rect x="56" y="27" width="15" height="18" rx="3" fill="#ff766b"/><path d="m50 79 15-17m-13 0h13v13" fill="none" stroke="#ffb638" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="icon-elevator" viewBox="0 0 96 96"><g><path d="M19 59v20m10-20v20" stroke="#6b9ac4" stroke-width="6" stroke-linecap="round"/><path d="M14 41h20v25H14z" fill="#6b9ac4"/><circle cx="24" cy="29" r="11" fill="#2b2118"/></g><g><path d="M45 59v20m10-20v20" stroke="#a78bfa" stroke-width="6" stroke-linecap="round"/><path d="M40 41h20v25H40z" fill="#a78bfa"/><circle cx="50" cy="29" r="11" fill="#f5d0a9"/><path d="M50 18a11 11 0 0 0 0 22z" fill="#2b2118"/><text x="50" y="13" text-anchor="middle" font-family="system-ui" font-size="20" font-weight="700" fill="#ffb638">?</text></g><g><path d="M74 65v16m10-16v16" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="M69 46h20v26H69z" fill="#ffb638"/><circle cx="79" cy="34" r="11" fill="#2b2118"/><path d="m73 10 6 10 6-10z" fill="#e4f2f3"/></g></symbol><symbol id="icon-sneak" viewBox="0 0 96 96"><rect x="62" y="15" width="26" height="65" rx="3" fill="#8d7254"/><rect x="68" y="21" width="14" height="10" rx="2" fill="#62e6d2"/><circle cx="69" cy="53" r="2" fill="#ffb638"/><path d="M23 61 14 82m21-21 9 19" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="M18 37h21v27H18z" fill="#ffb638"/><circle cx="29" cy="25" r="11" fill="#f5d0a9"/><path d="m40 47 13-8" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="m45 12 3-7 3 7m-3-7v13" fill="none" stroke="#ff766b" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-fishing" viewBox="0 0 96 96"><path d="M14 19q22-8 31 1v24" fill="none" stroke="#d6bd8e" stroke-width="3"/><path d="M45 44v5q0 7 8 6" fill="none" stroke="#e4f2f3" stroke-width="2"/><path d="m70 59 17-14v28z" fill="#ffb638"/><ellipse cx="47" cy="60" rx="29" ry="20" fill="#ffb638"/><path d="M38 43v34M51 41v38" stroke="#fff0c2" stroke-width="5"/><circle cx="30" cy="55" r="6" fill="#fff"/><circle cx="28" cy="55" r="3" fill="#082333"/><path d="M12 86q8-7 16 0t16 0t16 0t16 0" fill="none" stroke="#62e6d2" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-campaign" viewBox="0 0 96 96"><path d="M24 46V30l22-9v25z" fill="#62e6d2"/><path d="M54 19q8 9 0 19M62 12q14 16 0 33" fill="none" stroke="#62e6d2" stroke-width="3.5" stroke-linecap="round"/><rect x="10" y="44" width="52" height="28" rx="5" fill="#ffb638"/><path d="M62 52h13l9 10v10H62z" fill="#d5912a"/><rect x="66" y="56" width="10" height="8" rx="2" fill="#164755"/><path d="M18 54h34M18 62h22" stroke="#72562a" stroke-width="3" stroke-linecap="round"/><circle cx="27" cy="74" r="8" fill="#082333" stroke="#e4f2f3" stroke-width="3"/><circle cx="68" cy="74" r="8" fill="#082333" stroke="#e4f2f3" stroke-width="3"/></symbol><symbol id="icon-boba" viewBox="0 0 96 96"><path d="m60 8-9 33" stroke="#ff9dbb" stroke-width="9" stroke-linecap="round"/><path d="m24 31 8 52h35l8-52z" fill="#e9bd91" stroke="#ffd0df" stroke-width="3"/><path d="M28 45h43l-5 35H34z" fill="#d89d74"/><ellipse cx="49" cy="31" rx="27" ry="8" fill="#ffe9f0" stroke="#ff9dbb" stroke-width="3"/><g fill="#6b3f2f"><circle cx="39" cy="72" r="5"/><circle cx="51" cy="74" r="5"/><circle cx="61" cy="69" r="5"/><circle cx="45" cy="63" r="5"/></g><g fill="#7a4a3c"><circle cx="39" cy="49" r="2.5"/><circle cx="58" cy="49" r="2.5"/></g><path d="M44 54q5 6 10 0" fill="none" stroke="#7a4a3c" stroke-width="2.5" stroke-linecap="round"/></symbol><symbol id="icon-cat" viewBox="0 0 96 96"><rect x="6" y="64" width="46" height="26" fill="#ff5d8f"/><rect x="2" y="60" width="54" height="8" fill="#7b2cbf"/><rect x="64" y="74" width="30" height="16" fill="#ff5d8f"/><rect x="60" y="70" width="38" height="8" fill="#7b2cbf"/><path d="M60 62q8-24 24-30" fill="none" stroke="#fff1c1" stroke-width="3" stroke-dasharray="4 5" stroke-linecap="round"/><path d="M28 40q-15-3-11-20" fill="none" stroke="#ff9f1c" stroke-width="6" stroke-linecap="round"/><ellipse cx="42" cy="40" rx="17" ry="12" fill="#ff9f1c"/><path d="M34 50v9M48 50v9" stroke="#ff9f1c" stroke-width="5" stroke-linecap="round"/><path d="M47 22l2-14 10 10zM60 17l9-11 2 16z" fill="#ff9f1c"/><circle cx="58" cy="29" r="13" fill="#ff9f1c"/><circle cx="54" cy="28" r="4" fill="#fff"/><circle cx="64" cy="28" r="4" fill="#fff"/><circle cx="55" cy="28" r="1.8" fill="#1b1b2f"/><circle cx="65" cy="28" r="1.8" fill="#1b1b2f"/><circle cx="69" cy="34" r="2.2" fill="#ff5d8f"/></symbol><symbol id="icon-bird" viewBox="0 0 96 96"><path d="M6 80h84" stroke="#f72585" stroke-width="6" stroke-linecap="round"/><path d="M22 46 5 36l4 19z" fill="#00b4d8"/><circle cx="38" cy="48" r="22" fill="#4cc9f0"/><ellipse cx="41" cy="56" rx="13" ry="10" fill="#caf0f8"/><circle cx="46" cy="42" r="7" fill="#fff"/><circle cx="48" cy="42" r="3.2" fill="#1b1b2f"/><path d="M57 44l19 5-19 5z" fill="#ffbe0b"/><circle cx="33" cy="24" r="4" fill="#f72585"/><circle cx="42" cy="22" r="4" fill="#f72585"/><path d="M33 70v9M43 70v9" stroke="#ff9f1c" stroke-width="5" stroke-linecap="round"/><ellipse cx="77" cy="73" rx="13" ry="7" fill="#8d5524"/><ellipse cx="77" cy="64" rx="9" ry="6" fill="#8d5524"/><ellipse cx="77" cy="57" rx="5.5" ry="4.5" fill="#8d5524"/></symbol><symbol id="icon-frog" viewBox="0 0 96 96"><path d="M6 84h84" stroke="#7cb342" stroke-width="6" stroke-linecap="round"/><rect x="56" y="58" width="34" height="18" rx="9" fill="#8bc34a"/><rect x="56" y="38" width="34" height="18" rx="9" fill="#d32f2f"/><rect x="56" y="18" width="34" height="18" rx="9" fill="#ffb74d"/><circle cx="64" cy="66" r="3" fill="#fff"/><circle cx="64" cy="46" r="3" fill="#fff"/><circle cx="64" cy="26" r="3" fill="#fff"/><path d="M38 62 58 67" stroke="#ff6f91" stroke-width="6" stroke-linecap="round"/><ellipse cx="26" cy="62" rx="22" ry="19" fill="#4caf50"/><circle cx="16" cy="42" r="9" fill="#4caf50"/><circle cx="34" cy="42" r="9" fill="#4caf50"/><circle cx="16" cy="42" r="5" fill="#fff"/><circle cx="34" cy="42" r="5" fill="#fff"/><circle cx="18" cy="42" r="2.4" fill="#1b1b2f"/><circle cx="36" cy="42" r="2.4" fill="#1b1b2f"/><ellipse cx="28" cy="68" rx="13" ry="9" fill="#c8e6c9"/></symbol><symbol id="icon-nap" viewBox="0 0 96 96"><rect x="4" y="62" width="88" height="24" rx="6" fill="#8d6e63"/><rect x="4" y="56" width="88" height="10" rx="4" fill="#a1887f"/><rect x="60" y="34" width="28" height="22" rx="4" fill="#263238"/><rect x="64" y="38" width="20" height="14" rx="2" fill="#4dd0e1"/><rect x="12" y="50" width="38" height="9" rx="4" fill="#5c6bc0"/><circle cx="34" cy="46" r="12" fill="#f1c9a0"/><path d="M22 43a12 12 0 0 1 24 0z" fill="#3e2723"/><path d="M27 48q3 3 6 0M35 48q3 3 6 0" stroke="#4e342e" stroke-width="2" fill="none" stroke-linecap="round"/><text x="50" y="32" font-size="18" font-weight="800" fill="#b39ddb" font-family="sans-serif">Z</text><text x="64" y="20" font-size="13" font-weight="800" fill="#ce93d8" font-family="sans-serif">z</text><rect x="70" y="4" width="14" height="26" rx="5" fill="#37474f" opacity="0"/><circle cx="14" cy="16" r="7" fill="#f1c9a0"/><rect x="8" y="23" width="12" height="14" rx="3" fill="#37474f"/><rect x="13" y="25" width="2.5" height="8" fill="#d32f2f"/><text x="24" y="22" font-size="18" font-weight="800" fill="#d32f2f" font-family="sans-serif">!</text></symbol>
+<symbol id="icon-clock-out" viewBox="0 0 96 96"><rect x="10" y="58" width="76" height="24" rx="5" fill="#8d6e63"/><rect x="16" y="62" width="30" height="16" rx="3" fill="#a1887f"/><rect x="50" y="62" width="30" height="16" rx="3" fill="#a1887f"/><circle cx="48" cy="34" r="24" fill="#fff8e1" stroke="#37474f" stroke-width="4"/><path d="M48 34V20M48 34l11 7" stroke="#37474f" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="34" r="3" fill="#e53935"/><rect x="64" y="8" width="22" height="22" rx="2" fill="#ffd54f" transform="rotate(8 75 19)"/><path d="M68 16h14M68 22h10" stroke="#8d6e63" stroke-width="2.5" stroke-linecap="round" transform="rotate(8 75 19)"/></symbol><symbol id="icon-mosquito" viewBox="0 0 96 96"><path d="M6 84h84" stroke="#5a6a9a" stroke-width="6" stroke-linecap="round"/><ellipse cx="44" cy="52" rx="20" ry="9" fill="rgba(210,225,255,.65)" stroke="#9fb4ff" stroke-width="2" transform="rotate(-28 44 52)"/><ellipse cx="30" cy="48" rx="19" ry="12" fill="#c62840" stroke="#1b1b2f" stroke-width="3"/><ellipse cx="54" cy="50" rx="12" ry="8" fill="#2b2b33" stroke="#1b1b2f" stroke-width="3"/><circle cx="68" cy="48" r="7" fill="#2b2b33" stroke="#1b1b2f" stroke-width="3"/><circle cx="70" cy="46" r="2.4" fill="#ff5a5a"/><path d="M74 51 90 66" stroke="#1b1b2f" stroke-width="3" stroke-linecap="round"/><path d="M48 58 44 74M56 58 56 76M62 56 68 72" stroke="#1b1b2f" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-peek" viewBox="0 0 96 96"><rect width="96" height="96" rx="0" fill="none"/><rect x="14" y="44" width="68" height="36" rx="6" fill="#b8863b" stroke="#120d0a" stroke-width="3"/><path d="M12 44 L16 30 H80 L84 44 Z" fill="#d6a24e" stroke="#120d0a" stroke-width="3" stroke-linejoin="round"/><circle cx="34" cy="62" r="6" fill="#8a6226"/><circle cx="54" cy="62" r="6" fill="#8a6226"/><path d="M82 62h8" stroke="#e8c675" stroke-width="4" stroke-linecap="round"/><circle cx="91" cy="62" r="4" fill="#e8c675"/><ellipse cx="48" cy="37" rx="9" ry="5" fill="#2a0505"/><circle cx="48" cy="37" r="3.4" fill="#ff2a2a"/><path d="M48 37 L30 8 L66 8 Z" fill="#ff3030" opacity=".28"/><path d="M20 20q6-8 12 0" stroke="#dfe6ff" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/></symbol><symbol id="icon-last-hair" viewBox="0 0 96 96"><rect x="0" y="66" width="96" height="30" fill="#9aa0a8"/><path d="M6 24h26M2 36h20M64 20h28M70 32h22" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity=".8"/><rect x="26" y="62" width="44" height="34" rx="10" fill="#2f3b57"/><path d="M42 62h12l-6 16z" fill="#f5f5f5"/><path d="M46 64h4l1 14-3 4-3-4z" fill="#c62828"/><circle cx="48" cy="44" r="22" fill="#f1c9a0"/><circle cx="40" cy="43" r="4" fill="#fff"/><circle cx="56" cy="43" r="4" fill="#fff"/><circle cx="40" cy="44" r="2" fill="#222"/><circle cx="56" cy="44" r="2" fill="#222"/><path d="M41 54q7 5 14 0" stroke="#222" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M38 24q-8-10-18-8M48 22q2-12 14-16M58 24q10-6 22 2" stroke="#1d1610" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="70" cy="30" r="2.5" fill="#4fc3f7"/></symbol>
+<symbol id="icon-crash" viewBox="0 0 96 96"><path d="M18 24l10 8M65 65l12 9M74 19v17m-6-6 6 6 6-6" stroke="#62e6d2" stroke-width="4" stroke-linecap="round"/><g transform="rotate(27 48 48)"><rect x="17" y="34" width="63" height="32" rx="16" fill="#ffb638"/><path d="M39 34v-9h16v9M18 47H9v11h14" fill="#d5912a"/><circle cx="55" cy="50" r="10" fill="#164755" stroke="#fff0c2" stroke-width="4"/><circle cx="52" cy="47" r="3" fill="#62e6d2"/></g></symbol><symbol id="icon-mines" viewBox="0 0 96 96"><circle cx="45" cy="48" r="22" fill="#ff766b"/><g stroke="#ff766b" stroke-width="6" stroke-linecap="round"><path d="M45 17v10m0 42v10M14 48h10m42 0h10M23 26l8 8m29 29 7 7M23 70l8-8m29-29 7-7"/></g><circle cx="38" cy="41" r="6" fill="#ffc4b3"/><circle cx="72" cy="73" r="13" fill="#62e6d2"/><path d="m65 74 5 4 8-10" fill="none" stroke="#0a2a3b" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-plinko" viewBox="0 0 96 96"><path d="M15 72h66v12H15z" fill="#ffb638"/><path d="M37 73v10m22-10v10" stroke="#72562a" stroke-width="3"/><g fill="#85b4c0"><circle cx="48" cy="30" r="4"/><circle cx="35" cy="44" r="4"/><circle cx="61" cy="44" r="4"/><circle cx="22" cy="58" r="4"/><circle cx="48" cy="58" r="4"/><circle cx="74" cy="58" r="4"/></g><path d="m45 13 10 17-11 13 10 13" fill="none" stroke="#62e6d2" stroke-width="3" stroke-dasharray="3 4"/><circle cx="47" cy="13" r="8" fill="#e3fff6"/></symbol><symbol id="icon-merge" viewBox="0 0 96 96"><g fill="#123c4b" stroke="#326475" stroke-width="2"><rect x="12" y="12" width="32" height="32" rx="10"/><rect x="52" y="12" width="32" height="32" rx="10"/><rect x="12" y="52" width="32" height="32" rx="10"/></g><circle cx="28" cy="28" r="11" fill="#8db0b9"/><circle cx="68" cy="28" r="11" fill="#62e6d2"/><circle cx="28" cy="68" r="11" fill="#ffb638"/><circle cx="68" cy="68" r="21" fill="#a8a0ed"/><g font-family="system-ui" font-weight="800" fill="#082333" text-anchor="middle"><text x="28" y="33" font-size="14">2</text><text x="68" y="33" font-size="14">4</text><text x="28" y="73" font-size="14">8</text><text x="68" y="75" font-size="22">16</text></g></symbol><symbol id="icon-dice" viewBox="0 0 96 96"><circle cx="48" cy="48" r="37" fill="none" stroke="#326475" stroke-width="2"/><path d="M48 9v9m39 30h-9M48 87v-9M9 48h9" stroke="#62e6d2" stroke-width="3"/><rect x="24" y="24" width="48" height="48" rx="13" fill="#62e6d2" transform="rotate(-12 48 48)"/><g fill="#0a2a3b"><circle cx="35" cy="39" r="4"/><circle cx="48" cy="48" r="4"/><circle cx="61" cy="57" r="4"/></g></symbol><symbol id="icon-limbo" viewBox="0 0 96 96"><path d="M48 10v29" stroke="#b6d8de" stroke-width="3" stroke-dasharray="4 4"/><path d="m48 31 18 20-18 29-18-29z" fill="#ffb638"/><path d="m48 35 9 16-9 22-9-22z" fill="#ffe1a0"/><path d="M15 69q33 20 66 0M19 80q29 15 58 0" fill="none" stroke="#62e6d2" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-hilo" viewBox="0 0 96 96"><rect x="13" y="20" width="44" height="58" rx="8" fill="#e4f2f3" transform="rotate(-13 35 49)"/><rect x="41" y="14" width="44" height="62" rx="8" fill="#ffb638" transform="rotate(9 63 45)"/><path d="m53 42 12-12 11 12M65 30v28" fill="none" stroke="#483619" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="m22 54 8 8 8-8" fill="none" stroke="#145263" stroke-width="4" stroke-linecap="round"/></symbol><symbol id="icon-keno" viewBox="0 0 96 96"><path d="M12 76 30 47 52 59 72 35 85 76Z" fill="#665036"/><path d="m32 69 7-16h19l7 16Z" fill="#ffcf54"/><path d="m25 18 45 44" stroke="#b98a58" stroke-width="9" stroke-linecap="round"/><path d="M40 14Q67 5 82 34L61 25Z" fill="#a6d4df"/><path d="m76 52 3 7 7 3-7 3-3 7-3-7-7-3 7-3Z" fill="#9af3eb"/></symbol><symbol id="icon-wheel" viewBox="0 0 96 96"><circle cx="48" cy="48" r="34" fill="#123c4b" stroke="#ffb638" stroke-width="5"/><circle cx="48" cy="48" r="24" fill="none" stroke="#326475" stroke-width="2"/><path d="M48 6v14m0 56v14M6 48h14m56 0h14" stroke="#e4f2f3" stroke-width="3"/><path d="m62 21-8 33-20 21 8-33z" fill="#ff766b"/><path d="m62 21-20 21 12 12z" fill="#62e6d2"/><circle cx="48" cy="48" r="5" fill="#e4f2f3"/></symbol><symbol id="icon-tower" viewBox="0 0 96 96"><g fill="#164755" stroke="#326475" stroke-width="2"><rect x="13" y="64" width="70" height="17" rx="5"/><rect x="22" y="40" width="52" height="17" rx="5"/><rect x="31" y="16" width="34" height="17" rx="5"/></g><g fill="#62e6d2"><circle cx="28" cy="72" r="5"/><circle cx="48" cy="48" r="5"/><circle cx="48" cy="24" r="5"/></g><path d="m76 50 8-10 8 10M84 41v22" fill="none" stroke="#ffb638" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-crossing" viewBox="0 0 96 96"><path d="M14 70h68M19 26h58" stroke="#326475" stroke-width="3" stroke-dasharray="6 6"/><g fill="#62e6d2"><ellipse cx="47" cy="51" rx="23" ry="19"/><circle cx="75" cy="47" r="11"/><ellipse cx="32" cy="31" rx="7" ry="10" transform="rotate(-35 32 31)"/><ellipse cx="34" cy="71" rx="7" ry="10" transform="rotate(35 34 71)"/></g><ellipse cx="47" cy="51" rx="16" ry="14" fill="#297a6e"/><path d="m47 38 9 7v10l-9 8-9-8V45z" fill="none" stroke="#a6f4d9" stroke-width="2"/><circle cx="78" cy="44" r="2.5" fill="#082333"/><path d="m24 50-12-5v12z" fill="#62e6d2"/></symbol><symbol id="icon-dream" viewBox="0 0 96 96"><circle cx="48" cy="49" r="32" fill="#113041" stroke="#326475" stroke-width="6"/><path d="M66 23a32 32 0 0 1 13 33" fill="none" stroke="#62e6d2" stroke-width="8" stroke-linecap="round"/><path d="M48 29v20l17 13" fill="none" stroke="#ffb638" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="49" r="5" fill="#ffb638"/><path d="m16 15 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#b3a3ee"/></symbol><symbol id="icon-runner" viewBox="0 0 96 96"><path d="m34 11-24 75h76L62 11z" fill="#164755"/><path d="m43 20-8 57m19-57 8 57" stroke="#62e6d2" stroke-width="2" stroke-dasharray="5 6"/><rect x="22" y="50" width="19" height="24" rx="3" fill="#ff766b"/><rect x="56" y="27" width="15" height="18" rx="3" fill="#ff766b"/><path d="m50 79 15-17m-13 0h13v13" fill="none" stroke="#ffb638" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="icon-elevator" viewBox="0 0 96 96"><g><path d="M19 59v20m10-20v20" stroke="#6b9ac4" stroke-width="6" stroke-linecap="round"/><path d="M14 41h20v25H14z" fill="#6b9ac4"/><circle cx="24" cy="29" r="11" fill="#2b2118"/></g><g><path d="M45 59v20m10-20v20" stroke="#a78bfa" stroke-width="6" stroke-linecap="round"/><path d="M40 41h20v25H40z" fill="#a78bfa"/><circle cx="50" cy="29" r="11" fill="#f5d0a9"/><path d="M50 18a11 11 0 0 0 0 22z" fill="#2b2118"/><text x="50" y="13" text-anchor="middle" font-family="system-ui" font-size="20" font-weight="700" fill="#ffb638">?</text></g><g><path d="M74 65v16m10-16v16" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="M69 46h20v26H69z" fill="#ffb638"/><circle cx="79" cy="34" r="11" fill="#2b2118"/><path d="m73 10 6 10 6-10z" fill="#e4f2f3"/></g></symbol><symbol id="icon-sneak" viewBox="0 0 96 96"><rect x="62" y="15" width="26" height="65" rx="3" fill="#8d7254"/><rect x="68" y="21" width="14" height="10" rx="2" fill="#62e6d2"/><circle cx="69" cy="53" r="2" fill="#ffb638"/><path d="M23 61 14 82m21-21 9 19" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="M18 37h21v27H18z" fill="#ffb638"/><circle cx="29" cy="25" r="11" fill="#f5d0a9"/><path d="m40 47 13-8" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="m45 12 3-7 3 7m-3-7v13" fill="none" stroke="#ff766b" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-fishing" viewBox="0 0 96 96"><path d="M14 19q22-8 31 1v24" fill="none" stroke="#d6bd8e" stroke-width="3"/><path d="M45 44v5q0 7 8 6" fill="none" stroke="#e4f2f3" stroke-width="2"/><path d="m70 59 17-14v28z" fill="#ffb638"/><ellipse cx="47" cy="60" rx="29" ry="20" fill="#ffb638"/><path d="M38 43v34M51 41v38" stroke="#fff0c2" stroke-width="5"/><circle cx="30" cy="55" r="6" fill="#fff"/><circle cx="28" cy="55" r="3" fill="#082333"/><path d="M12 86q8-7 16 0t16 0t16 0t16 0" fill="none" stroke="#62e6d2" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-campaign" viewBox="0 0 96 96"><path d="M24 46V30l22-9v25z" fill="#62e6d2"/><path d="M54 19q8 9 0 19M62 12q14 16 0 33" fill="none" stroke="#62e6d2" stroke-width="3.5" stroke-linecap="round"/><rect x="10" y="44" width="52" height="28" rx="5" fill="#ffb638"/><path d="M62 52h13l9 10v10H62z" fill="#d5912a"/><rect x="66" y="56" width="10" height="8" rx="2" fill="#164755"/><path d="M18 54h34M18 62h22" stroke="#72562a" stroke-width="3" stroke-linecap="round"/><circle cx="27" cy="74" r="8" fill="#082333" stroke="#e4f2f3" stroke-width="3"/><circle cx="68" cy="74" r="8" fill="#082333" stroke="#e4f2f3" stroke-width="3"/></symbol><symbol id="icon-boba" viewBox="0 0 96 96"><path d="m60 8-9 33" stroke="#ff9dbb" stroke-width="9" stroke-linecap="round"/><path d="m24 31 8 52h35l8-52z" fill="#e9bd91" stroke="#ffd0df" stroke-width="3"/><path d="M28 45h43l-5 35H34z" fill="#d89d74"/><ellipse cx="49" cy="31" rx="27" ry="8" fill="#ffe9f0" stroke="#ff9dbb" stroke-width="3"/><g fill="#6b3f2f"><circle cx="39" cy="72" r="5"/><circle cx="51" cy="74" r="5"/><circle cx="61" cy="69" r="5"/><circle cx="45" cy="63" r="5"/></g><g fill="#7a4a3c"><circle cx="39" cy="49" r="2.5"/><circle cx="58" cy="49" r="2.5"/></g><path d="M44 54q5 6 10 0" fill="none" stroke="#7a4a3c" stroke-width="2.5" stroke-linecap="round"/></symbol><symbol id="icon-cat" viewBox="0 0 96 96"><rect x="6" y="64" width="46" height="26" fill="#ff5d8f"/><rect x="2" y="60" width="54" height="8" fill="#7b2cbf"/><rect x="64" y="74" width="30" height="16" fill="#ff5d8f"/><rect x="60" y="70" width="38" height="8" fill="#7b2cbf"/><path d="M60 62q8-24 24-30" fill="none" stroke="#fff1c1" stroke-width="3" stroke-dasharray="4 5" stroke-linecap="round"/><path d="M28 40q-15-3-11-20" fill="none" stroke="#ff9f1c" stroke-width="6" stroke-linecap="round"/><ellipse cx="42" cy="40" rx="17" ry="12" fill="#ff9f1c"/><path d="M34 50v9M48 50v9" stroke="#ff9f1c" stroke-width="5" stroke-linecap="round"/><path d="M47 22l2-14 10 10zM60 17l9-11 2 16z" fill="#ff9f1c"/><circle cx="58" cy="29" r="13" fill="#ff9f1c"/><circle cx="54" cy="28" r="4" fill="#fff"/><circle cx="64" cy="28" r="4" fill="#fff"/><circle cx="55" cy="28" r="1.8" fill="#1b1b2f"/><circle cx="65" cy="28" r="1.8" fill="#1b1b2f"/><circle cx="69" cy="34" r="2.2" fill="#ff5d8f"/></symbol><symbol id="icon-bird" viewBox="0 0 96 96"><path d="M6 80h84" stroke="#f72585" stroke-width="6" stroke-linecap="round"/><path d="M22 46 5 36l4 19z" fill="#00b4d8"/><circle cx="38" cy="48" r="22" fill="#4cc9f0"/><ellipse cx="41" cy="56" rx="13" ry="10" fill="#caf0f8"/><circle cx="46" cy="42" r="7" fill="#fff"/><circle cx="48" cy="42" r="3.2" fill="#1b1b2f"/><path d="M57 44l19 5-19 5z" fill="#ffbe0b"/><circle cx="33" cy="24" r="4" fill="#f72585"/><circle cx="42" cy="22" r="4" fill="#f72585"/><path d="M33 70v9M43 70v9" stroke="#ff9f1c" stroke-width="5" stroke-linecap="round"/><ellipse cx="77" cy="73" rx="13" ry="7" fill="#8d5524"/><ellipse cx="77" cy="64" rx="9" ry="6" fill="#8d5524"/><ellipse cx="77" cy="57" rx="5.5" ry="4.5" fill="#8d5524"/></symbol><symbol id="icon-frog" viewBox="0 0 96 96"><path d="M6 84h84" stroke="#7cb342" stroke-width="6" stroke-linecap="round"/><rect x="56" y="58" width="34" height="18" rx="9" fill="#8bc34a"/><rect x="56" y="38" width="34" height="18" rx="9" fill="#d32f2f"/><rect x="56" y="18" width="34" height="18" rx="9" fill="#ffb74d"/><circle cx="64" cy="66" r="3" fill="#fff"/><circle cx="64" cy="46" r="3" fill="#fff"/><circle cx="64" cy="26" r="3" fill="#fff"/><path d="M38 62 58 67" stroke="#ff6f91" stroke-width="6" stroke-linecap="round"/><ellipse cx="26" cy="62" rx="22" ry="19" fill="#4caf50"/><circle cx="16" cy="42" r="9" fill="#4caf50"/><circle cx="34" cy="42" r="9" fill="#4caf50"/><circle cx="16" cy="42" r="5" fill="#fff"/><circle cx="34" cy="42" r="5" fill="#fff"/><circle cx="18" cy="42" r="2.4" fill="#1b1b2f"/><circle cx="36" cy="42" r="2.4" fill="#1b1b2f"/><ellipse cx="28" cy="68" rx="13" ry="9" fill="#c8e6c9"/></symbol><symbol id="icon-nap" viewBox="0 0 96 96"><rect x="4" y="62" width="88" height="24" rx="6" fill="#8d6e63"/><rect x="4" y="56" width="88" height="10" rx="4" fill="#a1887f"/><rect x="60" y="34" width="28" height="22" rx="4" fill="#263238"/><rect x="64" y="38" width="20" height="14" rx="2" fill="#4dd0e1"/><rect x="12" y="50" width="38" height="9" rx="4" fill="#5c6bc0"/><circle cx="34" cy="46" r="12" fill="#f1c9a0"/><path d="M22 43a12 12 0 0 1 24 0z" fill="#3e2723"/><path d="M27 48q3 3 6 0M35 48q3 3 6 0" stroke="#4e342e" stroke-width="2" fill="none" stroke-linecap="round"/><text x="50" y="32" font-size="18" font-weight="800" fill="#b39ddb" font-family="sans-serif">Z</text><text x="64" y="20" font-size="13" font-weight="800" fill="#ce93d8" font-family="sans-serif">z</text><rect x="70" y="4" width="14" height="26" rx="5" fill="#37474f" opacity="0"/><circle cx="14" cy="16" r="7" fill="#f1c9a0"/><rect x="8" y="23" width="12" height="14" rx="3" fill="#37474f"/><rect x="13" y="25" width="2.5" height="8" fill="#d32f2f"/><text x="24" y="22" font-size="18" font-weight="800" fill="#d32f2f" font-family="sans-serif">!</text></symbol>
 <symbol id="icon-reaper" viewBox="0 0 96 96"><path d="M23 78 31 36Q44 15 57 36l9 42z" fill="#171426"/><circle cx="44" cy="33" r="16" fill="#171426"/><g fill="#ffb638"><circle cx="38" cy="33" r="3"/><circle cx="50" cy="33" r="3"/></g><path d="m59 78 12-52" stroke="#8b7a5a" stroke-width="5" stroke-linecap="round"/><path d="M66 28q18-13 24 13-11-8-24-7" fill="#cfd6e6"/><path d="M10 55q0-13 11-13t11 13v21l-6-4-6 4-5-4-5 4z" fill="#dfe9ff"/><g fill="#1b1630"><circle cx="17" cy="54" r="2"/><circle cx="25" cy="54" r="2"/></g><ellipse cx="21" cy="33" rx="10" ry="3" fill="none" stroke="#6cc58f" stroke-width="3"/></symbol><symbol id="icon-dive" viewBox="0 0 96 96"><circle cx="48" cy="52" r="36" fill="#0d4a7a" stroke="#6be3f5" stroke-width="3"/><path d="M16 42q16-7 32 0t32 0" fill="none" stroke="#6be3f5" stroke-width="3" stroke-linecap="round" opacity=".55"/><rect x="25" y="46" width="46" height="22" rx="10" fill="#f5c26b" stroke="#10283d" stroke-width="3"/><rect x="30" y="50" width="16" height="14" rx="6" fill="#9fe8f7"/><rect x="50" y="50" width="16" height="14" rx="6" fill="#9fe8f7"/><path d="M71 56h6V26" fill="none" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/><g fill="#d8f7ff"><circle cx="77" cy="17" r="4"/><circle cx="67" cy="11" r="3"/><circle cx="84" cy="7" r="2.5"/></g><circle cx="40" cy="78" r="4.5" fill="#fff8e6" stroke="#f5c26b" stroke-width="2"/><circle cx="54" cy="80" r="3.5" fill="#fff8e6" stroke="#f5c26b" stroke-width="2"/></symbol><symbol id="icon-mrt" viewBox="0 0 96 96"><path d="M30 80l-9 10M66 80l9 10" stroke="#9aa3ad" stroke-width="4" stroke-linecap="round"/><rect x="18" y="10" width="60" height="70" rx="15" fill="#e9eef3" stroke="#4f8cff" stroke-width="3"/><rect x="26" y="20" width="44" height="28" rx="7" fill="#10203f"/><path d="M38 44V31a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v8h10a3 3 0 0 1 3 3v2z" fill="#4a8cff"/><path d="M26 56h44" stroke="#4f8cff" stroke-width="5"/><circle cx="32" cy="68" r="5" fill="#f5c26b"/><circle cx="64" cy="68" r="5" fill="#f5c26b"/><path d="M42 68h12" stroke="#9aa3ad" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-pancake" viewBox="0 0 96 96"><path d="M14 66 4 86" stroke="#8a4a1e" stroke-width="9" stroke-linecap="round"/><circle cx="52" cy="48" r="38" fill="#2b2b31" stroke="#5a5a63" stroke-width="3"/><circle cx="52" cy="48" r="27" fill="#ffc21a" opacity=".55"/><circle cx="52" cy="48" r="22" fill="#e9a640" stroke="#8a4a1e" stroke-width="2"/><circle cx="52" cy="48" r="16" fill="#86c94a"/><path d="M38 55c6-8 12 4 18-4s10 2 12-4" fill="none" stroke="#a8301a" stroke-width="4" stroke-linecap="round"/><path d="M37 46c6-8 12 4 18-4s10 2 12-4" fill="none" stroke="#fbfaf3" stroke-width="4" stroke-linecap="round"/><g fill="none" stroke="#3f9a1a" stroke-width="2.5"><circle cx="50" cy="44" r="2.5"/><circle cx="57" cy="50" r="2.5"/><circle cx="46" cy="52" r="2.5"/></g><path d="M74 14q-4-6 0-10M84 20q-4-6 0-10" fill="none" stroke="#cfe0ff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/></symbol><symbol id="icon-skybuilder" viewBox="0 0 96 96"><rect x="0" y="82" width="96" height="14" fill="#7bd88f"/><rect x="24" y="64" width="48" height="20" rx="3" fill="#a8dadc" stroke="#2b2d42" stroke-width="3"/><rect x="28" y="44" width="46" height="20" rx="3" fill="#ffe28a" stroke="#2b2d42" stroke-width="3"/><rect x="26" y="26" width="44" height="18" rx="3" fill="#ffb4a2" stroke="#2b2d42" stroke-width="3"/><path d="M20 26L48 6l28 20z" fill="#e63946" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><rect x="34" y="50" width="10" height="10" rx="2" fill="#fff7c2"/><rect x="54" y="50" width="10" height="10" rx="2" fill="#fff7c2"/><rect x="34" y="70" width="10" height="10" rx="2" fill="#fff7c2"/><rect x="54" y="70" width="10" height="10" rx="2" fill="#fff7c2"/><path d="M84 0v26M84 6H56" stroke="#ffb703" stroke-width="4" fill="none"/></symbol>
 <symbol id="icon-carp" viewBox="0 0 96 96"><rect y="70" width="96" height="26" fill="#219ebc"/><path d="M0 70q12-9 24 0t24 0 24 0 24 0" fill="none" stroke="#bde0fe" stroke-width="4"/><path d="M26 40L8 24v32z" fill="#d00000" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><ellipse cx="50" cy="40" rx="27" ry="17" fill="#ff6b35" stroke="#2b2d42" stroke-width="3"/><path d="M42 26l8-13 9 13z" fill="#d00000" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><ellipse cx="52" cy="46" rx="16" ry="7" fill="#ffe8d6"/><circle cx="66" cy="35" r="5" fill="#fff" stroke="#2b2d42" stroke-width="2"/><circle cx="67" cy="35" r="2.3" fill="#2b2d42"/><path d="M80 30l8-10M82 36l10-2" stroke="#2b2d42" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-rider" viewBox="0 0 96 96"><rect y="76" width="96" height="20" fill="#5c5c7a"/><circle cx="26" cy="68" r="11" fill="#333" stroke="#2b2d42" stroke-width="3"/><circle cx="68" cy="68" r="11" fill="#333" stroke="#2b2d42" stroke-width="3"/><path d="M26 68l12-24h20l10 24" fill="#ffd166" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><rect x="6" y="28" width="30" height="26" rx="5" fill="#e63946" stroke="#2b2d42" stroke-width="3"/><rect x="42" y="26" width="16" height="22" rx="5" fill="#2ec4b6" stroke="#2b2d42" stroke-width="3"/><circle cx="52" cy="16" r="9" fill="#f5cba7" stroke="#2b2d42" stroke-width="3"/><path d="M43 14a9 9 0 0118 0z" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3"/></symbol><symbol id="icon-boss" viewBox="0 0 96 96"><rect y="78" width="96" height="18" fill="#6d597a"/><ellipse cx="44" cy="56" rx="34" ry="24" fill="#3d405b" stroke="#2b2d42" stroke-width="3"/><ellipse cx="50" cy="58" rx="20" ry="17" fill="#f1faee" stroke="#2b2d42" stroke-width="3"/><path d="M48 32h14l4 24-10 8-8-8z" fill="#e63946" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><circle cx="56" cy="22" r="15" fill="#f5cba7" stroke="#2b2d42" stroke-width="3"/><circle cx="50" cy="20" r="3" fill="#fff"/><circle cx="62" cy="20" r="3" fill="#fff"/><path d="M48 14l8 3M64 14l-8 3" stroke="#2b2d42" stroke-width="3" stroke-linecap="round"/><ellipse cx="56" cy="31" rx="6" ry="4" fill="#7a1c1c"/></symbol><symbol id="icon-thief" viewBox="0 0 96 96"><rect width="96" height="96" fill="none"/><circle cx="30" cy="70" r="12" fill="#e63946" stroke="#2b2d42" stroke-width="3"/><circle cx="52" cy="74" r="10" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3"/><circle cx="72" cy="70" r="11" fill="#7bd88f" stroke="#2b2d42" stroke-width="3"/><path d="M22 36l4-20 14 12zM58 28l14-12 4 20z" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><circle cx="48" cy="42" r="24" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3"/><circle cx="39" cy="38" r="4" fill="#2b2d42"/><circle cx="57" cy="38" r="4" fill="#2b2d42"/><circle cx="48" cy="48" r="3.5" fill="#ff5d8f"/><path d="M34 48l-12-3M34 52l-12 3M62 48l12-3M62 52l12 3" stroke="#2b2d42" stroke-width="2.5" stroke-linecap="round"/></symbol><symbol id="icon-baby" viewBox="0 0 96 96"><rect y="78" width="96" height="18" fill="#c08552"/><rect x="26" y="52" width="44" height="30" rx="12" fill="#a0c4ff" stroke="#2b2d42" stroke-width="3"/><rect x="26" y="66" width="44" height="14" rx="6" fill="#fff" stroke="#2b2d42" stroke-width="3"/><circle cx="48" cy="34" r="22" fill="#f5cba7" stroke="#2b2d42" stroke-width="3"/><path d="M40 14a8 8 0 018-6 8 8 0 018 6" fill="none" stroke="#ffd6a5" stroke-width="5" stroke-linecap="round"/><circle cx="41" cy="34" r="3.5" fill="#2b2d42"/><circle cx="56" cy="34" r="3.5" fill="#2b2d42"/><ellipse cx="48" cy="44" rx="6" ry="4" fill="#ff8fab" stroke="#2b2d42" stroke-width="2"/></symbol><symbol id="icon-pudding" viewBox="0 0 96 96"><path d="M6 86h84" stroke="#b79b6b" stroke-width="6" stroke-linecap="round"/><rect x="52" y="22" width="14" height="14" fill="#e53935" stroke="#1b1b2f" stroke-width="2.5"/><rect x="52" y="36" width="14" height="14" fill="#e53935" stroke="#1b1b2f" stroke-width="2.5"/><rect x="66" y="36" width="14" height="14" fill="#1e88e5" stroke="#1b1b2f" stroke-width="2.5"/><rect x="66" y="50" width="14" height="14" fill="#1e88e5" stroke="#1b1b2f" stroke-width="2.5"/><rect x="52" y="50" width="14" height="14" fill="#fdd835" stroke="#1b1b2f" stroke-width="2.5"/><rect x="14" y="48" width="30" height="34" rx="8" fill="#eef2f8" stroke="#1b1b2f" stroke-width="3"/><rect x="14" y="52" width="30" height="7" fill="#d32f2f"/><circle cx="29" cy="36" r="10" fill="#f1c9a0" stroke="#1b1b2f" stroke-width="3"/><path d="M25 27l4-12 4 12z" fill="#d32f2f"/><circle cx="45" cy="42" r="8" fill="#ffe0bd" stroke="#1b1b2f" stroke-width="2.5"/><circle cx="43" cy="41" r="1.4" fill="#1b1b2f"/><circle cx="48" cy="41" r="1.4" fill="#1b1b2f"/><path d="M42.5 45.5q2.5 2.5 5 0" stroke="#1b1b2f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M18 56l24 14" stroke="#d32f2f" stroke-width="4" stroke-linecap="round"/></symbol></defs></svg><div class="lobby-hero"><div class="lobby-hero-copy"><p class="lobby-eyebrow"><span></span> DEEP SEA ARCADE</p><h2>今天，想潛進<br>哪一場冒險？</h2><p class="lobby-intro">從偷偷下班到深海釣魚，挑一款就開玩。<br>同一個點數錢包，挑選不同的心跳。</p><button class="lobby-hero-link" id="lobby-explore" type="button">探索全部遊戲 <span aria-hidden="true">↓</span></button></div><div class="lobby-hero-art" aria-hidden="true"><div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div><span class="hero-bubble bubble-one"></span><span class="hero-bubble bubble-two"></span><span class="hero-bubble bubble-three"></span><div class="hero-sub"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crash"></use></svg></div><div class="hero-fish"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-fishing"></use></svg></div><div class="hero-clock"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dream"></use></svg></div><div class="hero-turtle"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crossing"></use></svg></div><span class="hero-art-label">DIVE INTO PLAY</span></div></div>
     <section class="daily-supply" aria-label="每日免費補給"><a class="game-card" href="#keno" id="gold-float" title="每日免費挖礦" aria-describedby="gold-daily-status" data-game-category="daily" aria-label="每日免費挖金礦：每天免費3次，每次挖5格，最多獲得30點">
@@ -656,6 +659,7 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
     <div class="lobby-section-heading" id="lobby-games"><div><p class="lobby-eyebrow">PICK YOUR NEXT ADVENTURE</p><h2>遊戲大廳 <span id="lobby-count">26 款遊戲</span></h2></div><p>選一款，開始你的下一局。</p></div>
     <div class="lobby-filters" role="group" aria-label="篩選遊戲類型"><button type="button" data-lobby-filter="all" aria-pressed="true">全部 <span>26</span></button><button type="button" data-lobby-filter="skill" aria-pressed="false">技巧闖關 <span>25</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false">免費懷舊 <span>1</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false">機率挑戰 <span>0</span></button></div>
     <div class="lobby-grid"><a class="game-card" href="#peek" data-game-category="skill" aria-label="遊玩別看：轉動八音盒發條，躲開盒子裡的東西，燈滅前蓋住螢幕。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-peek"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-peek"></use></svg></div><h3>別看</h3><p class="game-card-en">Don’t Peek</p><p class="game-card-description">轉動八音盒發條，躲開盒子裡的東西，燈滅前蓋住螢幕。</p><div class="game-card-footer"><span>每局 10 點</span><span>聽聲反應</span></div></a><a class="game-card" href="#mosquito" data-game-category="skill" aria-label="遊玩血壓上升：深夜當蚊子，吸飽血再從窗戶逃走，別把睡著的人吵醒。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mosquito"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mosquito"></use></svg></div><h3>血壓上升</h3><p class="game-card-en">Midnight Mosquito</p><p class="game-card-description">深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。</p><div class="game-card-footer"><span>每局 10 點</span><span>按住吸血</span></div></a>
+<a class="game-card" href="#last-hair" data-game-category="skill" aria-label="遊玩尊嚴保衛戰：頂著最後三根頭髮，在強風中走完 500 公尺去面試。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-last-hair"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-last-hair"></use></svg></div><h3>尊嚴保衛戰</h3><p class="game-card-en">The Last Hair</p><p class="game-card-description">頂著最後三根頭髮，在強風中走完 500 公尺去面試。</p><div class="game-card-footer"><span>每局 10 點</span><span>雙拇指操作</span></div></a>
 <a class="game-card" href="#clock-out" data-game-category="skill" aria-label="遊玩下班保衛戰：在抽屜裡擺放辦公用品擋住文件與會議，撐到 17:00。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-clock-out"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-clock-out"></use></svg></div><h3>下班保衛戰</h3><p class="game-card-en">Clock Out</p><p class="game-card-description">擺好辦公用品擋住一波波工作，撐到 17:00 打卡下班。</p><div class="game-card-footer"><span>每局 10 點</span><span>背包塔防</span></div></a><a class="game-card" href="#skybuilder" data-game-category="skill" aria-label="遊玩蓋樓大師：用起重機一層一層疊高樓，挑戰高度紀錄，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-skybuilder"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-skybuilder"></use></svg></div><h3>蓋樓大師</h3><p class="game-card-en">Sky Builder</p><p class="game-card-description">抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。</p><div class="game-card-footer"><span>每局 10 點</span><span>高度挑戰</span></div></a>
 <a class="game-card" href="#carp" data-game-category="skill" aria-label="遊玩鯉魚躍龍門：蓄力起跳，越過一道道石瀑。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-carp"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-carp"></use></svg></div><h3>鯉魚躍龍門</h3><p class="game-card-en">Carp Leap</p><p class="game-card-description">蓄力起跳，越過一道道石瀑。</p><div class="game-card-footer"><span>每局 10 點</span><span>蓄力跳躍</span></div></a><a class="game-card" href="#rider" data-game-category="skill" aria-label="遊玩外送員大戰惡犬：巷子裡閃狗送餐，餐涼之前送越多越好。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-rider"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-rider"></use></svg></div><h3>外送員大戰惡犬</h3><p class="game-card-en">Rider vs Dogs</p><p class="game-card-description">巷子裡閃狗送餐，餐涼之前送越多越好。</p><div class="game-card-footer"><span>每局 10 點</span><span>閃避送餐</span></div></a><a class="game-card" href="#boss" data-game-category="skill" aria-label="遊玩胖老闆追人：遲到了！跳過障礙，別被胖老闆追上。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-boss"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-boss"></use></svg></div><h3>胖老闆追人</h3><p class="game-card-en">Chubby Boss Chase</p><p class="game-card-description">遲到了！跳過障礙，別被胖老闆追上。</p><div class="game-card-footer"><span>每局 10 點</span><span>辦公室逃亡</span></div></a><a class="game-card" href="#thief" data-game-category="skill" aria-label="遊玩偷水果的貓：換道、跳籃子，偷水果躲開老闆娘。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-thief"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-thief"></use></svg></div><h3>偷水果的貓</h3><p class="game-card-en">Fruit Thief Cat</p><p class="game-card-description">換道、跳籃子，偷水果躲開老闆娘。</p><div class="game-card-footer"><span>每局 10 點</span><span>市場追逐</span></div></a><a class="game-card" href="#baby" data-game-category="skill" aria-label="遊玩寶寶逃洗澡：跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-baby"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-baby"></use></svg></div><h3>寶寶逃洗澡</h3><p class="game-card-en">Baby Bath Escape</p><p class="game-card-description">跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。</p><div class="game-card-footer"><span>每局 10 點</span><span>居家逃亡</span></div></a><a class="game-card" href="#pancake" data-game-category="skill" aria-label="遊玩泡麵煎餅翻面：晃手機煎泡麵煎餅，金黃時往上甩翻面，每局10點"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-pancake"></use></svg></div><h3>泡麵煎餅翻面</h3><p class="game-card-en">Noodle Pancake</p><p class="game-card-description">半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。</p><div class="game-card-footer"><span>每局 10 點</span><span>只扣入場點數</span></div></a><a class="game-card" href="#mrt" data-game-category="skill" aria-label="遊玩捷運搶位：看線索猜誰要下車，搶到座位階數升一階。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mrt"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mrt"></use></svg></div><h3>捷運搶位</h3><p class="game-card-en">MRT Seat Grab</p><p class="game-card-description">看小動作猜誰要下車，一階一階往上搶座位。</p><div class="game-card-footer"><span>每局 10 點</span><span>8 階挑戰</span></div></a><a class="game-card" href="#dive" data-game-category="skill" aria-label="遊玩一口氣探險：選路線往下潛，在氧氣用完前上浮。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-dive"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dive"></use></svg></div><h3>一口氣探險</h3><p class="game-card-en">One Breath Dive</p><p class="game-card-description">選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。</p><div class="game-card-footer"><span>每局 10 點</span><span>最佳分數</span></div></a><a class="game-card" href="#blaster" data-game-category="skill" aria-label="遊玩深海火線：左右換道自動射擊，拾取武器擊退怪物"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-blaster"></use></svg></div><h3>深海火線</h3><p class="game-card-en">Reef Blaster</p><p class="game-card-description">六種武器進化，迎戰換道、護盾與分裂怪。</p><div class="game-card-footer"><span>每局 10 點</span><span>無盡 · 每10關+1點</span></div></a>
 <a class="game-card" href="#reaper" data-game-category="skill" aria-label="遊玩死神打工：接走普通靈魂，放行綠色通行證有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-reaper"></use></svg></div><h3>死神打工</h3><p class="game-card-en">Reaper Shift</p><p class="game-card-description">普通靈魂要接走，綠色通行證要放行。</p><div class="game-card-footer"><span>每局 10 點</span><span>無盡挑戰</span></div></a><a class="game-card" href="#bird" data-game-category="skill" aria-label="遊玩便便鳥大戰狼群：跳過仙人掌和狼群，用便便把狼王打跑。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-bird"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-bird"></use></svg></div><h3>便便鳥大戰狼群</h3><p class="game-card-en">Poop Bird vs Wolves</p><p class="game-card-description">跳過仙人掌和狼群，用便便把狼王打跑。</p><div class="game-card-footer"><span>每局 10 點</span><span>狼王挑戰</span></div></a><a class="game-card" href="#frog" data-game-category="skill" aria-label="遊玩青蛙吃蟲：對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-frog"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-frog"></use></svg></div><h3>青蛙吃蟲</h3><p class="game-card-en">Frog Snack</p><p class="game-card-description">對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。</p><div class="game-card-footer"><span>每局 10 點</span><span>一鍵反應</span></div></a><a class="game-card" href="#nap" data-game-category="skill" aria-label="遊玩偷睡大師：趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-nap"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-nap"></use></svg></div><h3>偷睡大師</h3><p class="game-card-en">Nap Master</p><p class="game-card-description">趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。</p><div class="game-card-footer"><span>每局 10 點</span><span>按住反應</span></div></a>
@@ -1393,6 +1397,18 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
       </section></div>
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>每局固定扣 10 點。按住發條把八音盒轉到 100%，轉滿就打開盒子過關。轉發條時盒子必須接近水平，也不能蓋住螢幕，所以每次襲擊都會讓進度停下來。</p><p>盒子裡有三種東西：窺視之眼先轉動眼珠，接著射出紅光，要往反方向傾斜撐滿 3 秒；雙子怨靈先在單邊耳朵發出笑聲，接著要往笑聲的反方向傾斜，往笑聲那邊靠就會死；無頭巡夜人的腳步聲慢慢靠近，燈閃三下就熄滅，熄滅前一定要蓋住螢幕，並保持不動直到腳步聲遠去。進度超過 85% 時，有機會再多來一次突襲。</p><p>固定獎勵：躲過 3 次襲擊，獲得 2 點；打開盒子，獲得 5 點。每項每局只發一次，當場入帳，之後死亡也不會收回；每局最多 7 點。分數與最佳進度只是顯示用，不換點數。這是操作與反應遊戲，結果取決於你的動作。</p><p>手機可按「啟用體感」，用傾斜手機代替傾斜盒子，把手機螢幕朝下代替蓋住螢幕；不支援的瀏覽器會自動改用按鈕。畫面含閃爍燈光，不適合者請勿遊玩。切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已扣點數不退回，已入帳的點數會保留。最佳進度與死因紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+  </section>
+  <section class="view" id="view-last-hair" hidden>
+    <div class="console"><div class="sneak-stage"><canvas id="lh-canvas" tabindex="0" width="400" height="720" aria-label="尊嚴保衛戰：左手滑動脖子迎著風歪頭，右手按住壓住頭髮；走完 500 公尺去面試，至少要留下一根頭髮"></canvas></div>
+      <div class="side"><section class="panel" aria-label="尊嚴保衛戰操作">
+        <dl class="stats"><div><dt>目前距離</dt><dd id="lh-dist">0 m</dd></div><div><dt>剩餘頭髮</dt><dd id="lh-hairs">3 / 3</dd></div><div><dt>最遠紀錄</dt><dd id="lh-best">0 m</dd></div></dl>
+        <div class="field"><label>每局入場</label><p class="runner-fee">10 <small>點</small></p><input id="lh-amount" type="hidden" value="10"></div>
+        <button class="go" id="lh-go" type="button" data-mode="bet">扣點開始出門</button>
+        <p class="msg" id="lh-msg" aria-live="polite">佐藤只剩 3 根頭髮，今天要去面試！扣點後出門，迎著風歪頭、壓住頭髮，走完 500 公尺。</p>
+        <p class="hint">手機：左手在左半邊畫面滑動脖子，把滑桿移到綠圈；右手在右半邊畫面按住「死命壓住」。電腦：<kbd>A</kbd><kbd>D</kbd>（或 <kbd>←</kbd><kbd>→</kbd>、滑鼠左右移動）歪頭，按住 <kbd>空白鍵</kbd> 或滑鼠壓頭。歪頭太久脖子會抽筋，壓太久手會流汗、路人會側目。</p>
+      </section></div>
+    </div>
+    <details class="rules"><summary>玩法與點數</summary><p>每局固定扣 10 點。佐藤只剩 3 根頭髮，要在強風中走完 500 公尺去面試。把脖子歪向風來的那一邊可以減少受風；按住壓頭則大幅擋風，並讓髮膠慢慢回復。三根頭髮各有髮膠（黃條）和髮根（紅條），髮膠先流失，之後髮根才會掉，掉光一根就「啵」地飛走，三根全掉光就面試取消。剩的頭髮越少，走得越慢。</p><p>歪頭超過 85% 滿格連續 3 秒，脖子會抽筋、僵直 2 秒。壓頭會累積手汗，手汗滿了就壓不住；壓頭時路人會側目，側目滿格會社死，腳步變慢並被迫放下手 1.5 秒。四個路段各有不同事件：商店街的打招呼（放開手 1.2 秒才算揮手）與傳單（手被佔住 2 秒）、高架橋的滴水（壓住頭可擋）與鴿子亂流、帝國大廈廣場的下沉氣流與面試官回頭（此時壓頭會被側目）。每個事件都有預警。</p><p>抵達 100、250、400、500 公尺，分別立即入帳 1、2、3、4 點，每個里程碑每局只發一次，全部達成共 10 點；頭髮掉光不會收回已入帳的點數，結局與頭髮根數只影響稱號，不給點數。距離只是紀錄，不換點數。這是操作技巧遊戲，沒有任何倍率。</p><p>切換遊戲或背景分頁會暫停，回來後點一下畫面繼續。重新整理會放棄本局，已扣點數不退回，已入帳的點數會保留。最遠紀錄、死亡位置與操作設定保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-carp" hidden>
     <div class="console"><div class="sneak-stage"><canvas id="carp-canvas" tabindex="0" width="400" height="560" aria-label="鯉魚躍龍門：按住蓄力、放開起跳，越過石瀑，別撞到石頭和魚鉤"></canvas></div>
@@ -3661,7 +3677,107 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
   "連一半都沒吸到": "You didn't even get halfway",
   "遊玩血壓上升：深夜當蚊子，吸飽血再從窗戶逃走，別把睡著的人吵醒。有 BONUS 獎勵。": "Play Midnight Mosquito: be a mosquito at night, fill up on blood and escape through the window without waking the sleeper. BONUS rewards available.",
   "開燈了！衝向左邊的破洞！": "Lights on! Dash for the hole on the left!",
-  "降落在皮膚上，按住就吸血": "Land on skin and hold to drink blood"
+  "降落在皮膚上，按住就吸血": "Land on skin and hold to drink blood",
+  "◀ 左歪": "◀ Tilt left",
+  "右歪 ▶": "Tilt right ▶",
+  "、滑鼠左右移動）歪頭，按住": ", or move the mouse left and right) to tilt your head; hold ",
+  "三根都還在，只是有點蓬。面試官沒多問，錄取為課長。": "All three are still there, just a bit fluffy. The interviewer asks nothing and hires you as a section chief.",
+  "三根頭髮全黏在臉上。面試官誤以為你是蓄鬍的藝術家，意外錄取。": "All three hairs are plastered across your face. The interviewer mistakes you for a bearded artist and hires you by accident.",
+  "三根頭髮服服貼貼。面試官驚嘆於你的氣場，當場錄取為副部長。": "All three hairs lie perfectly flat. The interviewer is awed by your aura and hires you on the spot as deputy director.",
+  "住宅區小巷": "Residential alley",
+  "佐藤只剩 3 根頭髮，今天要去面試！扣點後出門，迎著風歪頭、壓住頭髮，走完 500 公尺。": "Sato has only 3 hairs left and an interview today! Pay the entry, head out, tilt into the wind, press your hair down, and walk 500 m.",
+  "你失去了最後的尊嚴": "You lost your last shred of dignity",
+  "側目": "Stares",
+  "傳單！手被佔住": "Flyer! Hand occupied",
+  "先按「扣點開始出門」。": "Press \"Pay and head out\" first.",
+  "公尺！+": " m! +",
+  "出門了！左手滑脖子迎風歪頭，右手按住壓頭，走完 500 公尺。": "Off you go! Left hand slides the neck to tilt into the wind, right hand presses the hair. Walk 500 m.",
+  "切換遊戲或背景分頁會暫停，回來後點一下畫面繼續。重新整理會放棄本局，已扣點數不退回，已入帳的點數會保留。最遠紀錄、死亡位置與操作設定保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。": "Switching games or background tabs pauses the run; tap the screen to resume. Refreshing abandons the run: the paid entry is not refunded, but points already credited are kept. Best distance, death spots and control settings are stored in your browser. Points are shared with other games and have no cash value.",
+  "剩 0 根": "0 left",
+  "剩 1 根": "1 left",
+  "剩 2 根": "2 left",
+  "剩 3 根": "3 left",
+  "剩一根孤零零豎著。面試官覺得你很幽默，錄取為諧星企劃。": "One lonely hair stands straight up. The interviewer finds you hilarious and hires you as a comedy planner.",
+  "剩兩根，頭皮閃到面試官。他說你很有個人特色，錄取為業務。": "Two hairs left, and your scalp dazzles the interviewer. He says you have real character and hires you for sales.",
+  "剩餘頭髮": "Hairs left",
+  "勉強過關": "Barely passed",
+  "反光頭皮": "Reflective scalp",
+  "右手按住壓頭：抗風 ×4，但會流手汗、被側目": "Right hand presses the hair: wind resistance ×4, but you get sweaty hands and stares",
+  "右手按住壓頭：抗風 ×4，但會流汗、被側目": "Right hand presses the hair: wind resistance ×4, but you sweat and draw stares",
+  "啵！": "Pop!",
+  "喀啦！": "Crack!",
+  "大樓的下沉氣流": "the downdraft from the tower",
+  "天降水滴洗掉髮膠": "falling water drops wash off the gel",
+  "尊嚴保衛戰": "Dignity Defense",
+  "尊嚴保衛戰操作": "Dignity Defense controls",
+  "尊嚴保衛戰：左手滑動脖子迎著風歪頭，右手按住壓住頭髮；走完 500 公尺去面試，至少要留下一根頭髮": "Dignity Defense: slide the neck with your left hand to tilt into the wind and press the hair with your right; walk 500 m to the interview with at least one hair left",
+  "工讀生來了！手要被佔住": "Part-timer ahead! Your hand will be busy",
+  "左手把脖子滑到綠圈：迎著風歪頭": "Left hand slides the neck to the green ring: tilt into the wind",
+  "帝國大廈": "Empire Tower",
+  "帝國大廈廣場": "Empire Tower Plaza",
+  "強風": "strong wind",
+  "強風中的地中海": "Bald Spot in the Gale",
+  "或滑鼠壓頭。歪頭太久脖子會抽筋，壓太久手會流汗、路人會側目。": " or mouse to press the hair. Tilting too long cramps your neck; pressing too long makes your hand sweat and passers-by stare.",
+  "手機：左手在左半邊畫面滑動脖子，把滑桿移到綠圈；右手在右半邊畫面按住「死命壓住」。電腦：": "Mobile: slide the neck on the left half of the screen to move the slider into the green ring; hold \"Press hard\" on the right half. Desktop: ",
+  "手汗": "Sweat",
+  "手被佔住": "Hand occupied",
+  "手被傳單佔住": "a flyer occupies your hand",
+  "打招呼！放開手揮一揮": "Greeting! Let go and wave",
+  "扣點開始出門": "Pay and head out",
+  "抵達": "Reached",
+  "抵達 100、250、400、500 公尺，分別立即入帳 1、2、3、4 點，每個里程碑每局只發一次，全部達成共 10 點；頭髮掉光不會收回已入帳的點數，結局與頭髮根數只影響稱號，不給點數。距離只是紀錄，不換點數。這是操作技巧遊戲，沒有任何倍率。": "Reaching 100, 250, 400 and 500 m credits 1, 2, 3 and 4 points immediately. Each milestone pays once per run, 10 points in total. Losing all your hair does not take back points already credited. The ending and hair count only change your title and give no points. Distance is only a record and is not exchanged for points. This is a skill game with no multipliers.",
+  "抵達面試現場！": "You made it to the interview!",
+  "抵達面試現場！剩 1 根頭髮，本局共入帳": "You made it to the interview! 1 hair left. Total credited this round:",
+  "抵達面試現場！剩 2 根頭髮，本局共入帳": "You made it to the interview! 2 hairs left. Total credited this round:",
+  "抵達面試現場！剩 3 根頭髮，本局共入帳": "You made it to the interview! 3 hairs left. Total credited this round:",
+  "按住不放": "Keep holding",
+  "擋住了": "Blocked",
+  "操作：左壓右歪": "Controls: left presses, right tilts",
+  "操作：左歪右壓": "Controls: left tilts, right presses",
+  "早高峰商店街": "Rush-hour shopping street",
+  "暫停中": "Paused",
+  "最遠紀錄": "Best distance",
+  "歪頭太久脖子會抽筋；遇到路人記得放手": "Tilting too long cramps your neck; let go when you meet passers-by",
+  "歪頭超過 85% 滿格連續 3 秒，脖子會抽筋、僵直 2 秒。壓頭會累積手汗，手汗滿了就壓不住；壓頭時路人會側目，側目滿格會社死，腳步變慢並被迫放下手 1.5 秒。四個路段各有不同事件：商店街的打招呼（放開手 1.2 秒才算揮手）與傳單（手被佔住 2 秒）、高架橋的滴水（壓住頭可擋）與鴿子亂流、帝國大廈廣場的下沉氣流與面試官回頭（此時壓頭會被側目）。每個事件都有預警。": "Tilting past 85% for 3 seconds in a row cramps your neck and freezes it for 2 seconds. Pressing builds up hand sweat, and a full sweat meter means you can no longer press. Passers-by stare while you press; a full stare meter means social death, which slows your steps and forces your hand down for 1.5 seconds. Each of the four sections has its own events: greetings on the shopping street (let go for 1.2 seconds to count as a wave) and flyers (hand occupied for 2 seconds), dripping water under the overpass (blocked by pressing) and pigeon turbulence, and the downdraft and the interviewer turning around on the plaza (pressing then draws stares). Every event gives a warning first.",
+  "死命壓住": "Press hard",
+  "死於": "Died at",
+  "每局固定扣 10 點。佐藤只剩 3 根頭髮，要在強風中走完 500 公尺去面試。把脖子歪向風來的那一邊可以減少受風；按住壓頭則大幅擋風，並讓髮膠慢慢回復。三根頭髮各有髮膠（黃條）和髮根（紅條），髮膠先流失，之後髮根才會掉，掉光一根就「啵」地飛走，三根全掉光就面試取消。剩的頭髮越少，走得越慢。": "Each run costs a fixed 10 points. Sato has only 3 hairs left and must walk 500 m through a gale to his interview. Tilting your neck toward the wind reduces exposure; pressing your head blocks most of the wind and slowly restores the gel. Each of the three hairs has gel (yellow bar) and a root (red bar). The gel drains first, then the root; when one is gone it flies away with a \"pop\", and when all three are gone the interview is cancelled. The fewer hairs you have left, the slower you walk.",
+  "水滴和鴿子亂流：只有壓住頭擋得住": "Water drops and pigeon turbulence: only pressing your head blocks them",
+  "用時": "Time",
+  "用最後 3 根頭髮，走完 500 公尺去面試": "Walk 500 m to the interview with your last 3 hairs",
+  "的強風": " gale",
+  "目前距離": "Distance",
+  "社死中…腳步變慢": "Mortified... walking slower",
+  "社死！腳步變慢": "Mortified! Walking slower",
+  "禮貌滿分": "Perfectly polite",
+  "穩如泰山": "Rock solid",
+  "絡腮鬍藝術家": "Bearded artist",
+  "脖子": "Neck",
+  "脖子快抽筋！回正一點！": "Neck about to cramp! Straighten up!",
+  "脖子抽筋": "Neck cramp",
+  "脖子抽筋！僵直": "Neck cramp! Frozen",
+  "被當成怪人…": "Taken for a weirdo...",
+  "變向！": "Wind shift!",
+  "逆風前進中": "Walking into the wind",
+  "遊玩尊嚴保衛戰：頂著最後三根頭髮，在強風中走完 500 公尺去面試。有 BONUS 獎勵。": "Play Dignity Defense: walk 500 m through a gale to the interview with your last three hairs. BONUS rewards available.",
+  "雙拇指操作": "Two-thumb controls",
+  "面試取消": "Interview cancelled",
+  "面試官在看！優雅！別壓頭": "The interviewer is watching! Stay elegant, no pressing!",
+  "面試官在看！回頭時別壓頭，優雅走完": "The interviewer is watching! Do not press when he turns; stay elegant",
+  "面試官要回頭！放開手！": "The interviewer is turning around! Let go!",
+  "音效：開": "Sound: on",
+  "音效：關": "Sound: off",
+  "頂著最後三根頭髮，在強風中走完 500 公尺去面試。": "Walk 500 m through a gale to the interview with your last three hairs.",
+  "頭上要滴水了！壓住頭！": "Water about to drip! Press your head!",
+  "頭頂天線": "Head antenna",
+  "頭髮掉光了。倒在": "Out of hair. Collapsed at",
+  "高架橋風口": "Overpass wind tunnel",
+  "髮膠被洗掉！": "Gel washed off!",
+  "鴿子亂流！壓住頭！": "Pigeon turbulence! Press your head!",
+  "鴿子群來了！壓住頭準備": "Pigeons incoming! Get ready to press your head",
+  "鴿子群的亂流": "the pigeons' turbulence",
+  "黃＝髮膠　紅＝髮根": "Yellow = gel   Red = root",
+  "點一下畫面繼續": "Tap the screen to resume"
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -3677,7 +3793,7 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
   // Numeric sample labels are exact matches only; matching "1 關" inside "21 關…" would corrupt a live sentence.
   var keys = Object.keys(dictionary).filter(function (key) { return !/^\d/.test(key); }).sort(function (a, b) { return b.length - a.length; });
   var phrases = new RegExp(keys.map(function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|'), 'g');
-  var names = ['Deep Sea Arcade','Crush Depth','Minesweeper','Pearl Drop','Pearl Merge','Sonar Dice','Deep Probe','High Tide','Gold Digger','Compass','Ascent','Reef Run','Dream Repair Shop','Dodge Run','Queue Cutter','Sneak Out','Fishing','Campaign Truck','Boba Straw','Rooftop Cat','Poop Bird vs Wolves','Reaper Shift','Reef Blaster','Sky Builder','Carp Leap','Rider vs Dogs','Chubby Boss','Fruit Thief Cat','Baby Bath Escape','Frog Snack','Nap Master','One Breath Dive','MRT Seat Grab','Noodle Pancake','Pudding Dash','Clock Out','Midnight Mosquito','Don’t Peek'];
+  var names = ['Deep Sea Arcade','Crush Depth','Minesweeper','Pearl Drop','Pearl Merge','Sonar Dice','Deep Probe','High Tide','Gold Digger','Compass','Ascent','Reef Run','Dream Repair Shop','Dodge Run','Queue Cutter','Sneak Out','Fishing','Campaign Truck','Boba Straw','Rooftop Cat','Poop Bird vs Wolves','Reaper Shift','Reef Blaster','Sky Builder','Carp Leap','Rider vs Dogs','Chubby Boss','Fruit Thief Cat','Baby Bath Escape','Frog Snack','Nap Master','One Breath Dive','MRT Seat Grab','Noodle Pancake','Pudding Dash','Clock Out','Midnight Mosquito','Don’t Peek','The Last Hair'];
   var numbered = { '關': 'Stage', '班': 'Shift', '隊': 'Queue', '條': 'Fish', '層': 'Floor', '道': 'Crossing', '格': 'Cell', '列': 'Row', '階': 'Tier', '段': 'Segment', '晚': 'Night', '站': 'Station' };
 
   function english(value) {
@@ -4176,8 +4292,8 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
     b.addEventListener('click', function () { elAuto.value = Number(b.dataset.auto).toFixed(2); });
   });
   $('reset').addEventListener('click', function () {
-    var note = function (t) { diveSay(t); carpSay(t); riderSay(t); bossSay(t); thiefSay(t); babySay(t); mrtSay(t); blSay(t); sbSay(t); rpSay(t); catSay(t); birdSay(t); frogSay(t); puddingSay(t); clockSay(t); mqSay(t); peekSay(t); napSay(t); bobaUI(t); pancakeUI(t); fiSay(t); $('sk-msg').textContent=t; eqSay(t); drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
-    if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.active || WL.pending || TW.active || CR.active || DR.active || runnerBusy || EQ.active || sneakBusy || FI.active || BOBA.active || catBusy || birdBusy || frogBusy || puddingBusy || clockBusy || mqBusy || peekBusy || napBusy || RP.active || BL.active || DIVE.active || MRT.active || PANCAKE.active || carpBusy || riderBusy || bossBusy || thiefBusy || babyBusy) { note('這一局結束後才能重設點數。'); return; }
+    var note = function (t) { diveSay(t); carpSay(t); riderSay(t); bossSay(t); thiefSay(t); babySay(t); mrtSay(t); blSay(t); sbSay(t); rpSay(t); catSay(t); birdSay(t); frogSay(t); puddingSay(t); clockSay(t); mqSay(t); peekSay(t); napSay(t); hairSay(t); bobaUI(t); pancakeUI(t); fiSay(t); $('sk-msg').textContent=t; eqSay(t); drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
+    if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.active || WL.pending || TW.active || CR.active || DR.active || runnerBusy || EQ.active || sneakBusy || FI.active || BOBA.active || catBusy || birdBusy || frogBusy || puddingBusy || clockBusy || mqBusy || peekBusy || napBusy || hairBusy || RP.active || BL.active || DIVE.active || MRT.active || PANCAKE.active || carpBusy || riderBusy || bossBusy || thiefBusy || babyBusy) { note('這一局結束後才能重設點數。'); return; }
     AN.points(START_BALANCE-S.balance); S.balance = START_BALANCE; save(); note('點數已重設為 ' + fmt(START_BALANCE) + '。'); renderAll(); renderMines();
   });
 
@@ -8862,7 +8978,584 @@ if(gb)gb.addEventListener('click',()=>{
 function loop(t){const dt=Math.min(.05,Math.max(0,(t-last)/1000)||0);last=t;if(shown()){update(dt);ui();draw()}requestAnimationFrame(loop)}
 ui();draw();requestAnimationFrame(loop);
   })();
-  /* ---------- 鯉魚躍龍門: endless runner adapted from a standalone page; fixed score milestones award bonus points immediately ---------- */
+  /* ---------- The Last Hair: slide the neck to lean into the wind, hold to press the hair down; reach the interview with at least one hair ---------- */
+  var hairBusy=false,hairStake=0,hairSay=function(){};
+  (function(){
+// ===== 全部數值集中在 CONFIG =====
+const CONFIG = {
+  goal: 500,
+  baseSpeed: 6.0,                 // 公尺/秒
+  speedByHair: [0, 0.5, 0.75, 1], // 剩幾根 → 速度倍率
+  tiltEase: 7,                    // 脖子跟上手指的速度
+  alignMax: 0.75,                 // 完美迎風歪頭可減少的受風比例
+  updraftAlignMul: 0.4,           // 第 4 段歪頭效果打折
+  updraft: 0.42,                  // 第 4 段垂直上吸的固定受風
+  pressExposure: 0.25,            // 壓頭後受風倍率（抗風 +300%）
+  deadzone: 0.12,                 // 低於此受風不傷頭髮
+  hairK: [1.0, 1.2, 0.85],        // 三根頭髮各自的敏感度
+  glueDrain: 24,                  // 黃條每秒流失（受風=1 時）
+  rootDrain: 32,                  // 紅條每秒流失
+  glueRegen: 16,                  // 壓頭時黃條每秒回復（乘 1−手汗）
+  windEase: 3.5,
+  firstGrace: 3.5,                // 開場風力緩升秒數
+  cramp: { limit: 0.85, warn: 2.0, trigger: 3.0, lock: 2.0, decay: 1.5 },
+  sweat: { up: 0.28, down: 0.3, boost: 0.6 },
+  side: { press: 11, decay: 6, full: 100, reset: 55, slow: 3.0, slowMul: 0.6, shameLock: 1.5, greetFail: 45, lookRate: 70, finalMul: 2 },
+  zones: [
+    { from: 0,   to: 100, name: '住宅區小巷',   mag: 0.55, flip: [2.8, 3.2], crowd: 0.25, updraft: false },
+    { from: 100, to: 250, name: '早高峰商店街', mag: 0.75, flip: [2.4, 3.0], crowd: 1.0,  updraft: false },
+    { from: 250, to: 400, name: '高架橋風口',   mag: 0.90, flip: [2.0, 3.0], crowd: 0.35, updraft: false },
+    { from: 400, to: 500, name: '帝國大廈廣場', mag: 0.80, flip: [2.2, 2.8], crowd: 0.6,  updraft: true  }
+  ],
+  greet: { win: 2.4, need: 1.2, every: [6.5, 8.5] },
+  flyer: { tele: 0.8, lock: 2.0, every: [9, 12] },
+  drip:  { tele: 0.9, hit: 40, shielded: 8, every: [6, 9] },
+  vortex:{ tele: 1.0, dur: 2.4, flip: 0.6, mag: 1.0, every: [10, 13] },
+  look:  { at: [455, 478], tele: 0.8, dur: 1.6 },
+  slowmo:{ scale: 0.45, time: 0.6 }
+};
+
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+function createGame(rng) {
+  rng = rng || Math.random;
+  const C = CONFIG;
+  const rnd = rng;
+  const rr = (r) => r[0] + rnd() * (r[1] - r[0]);
+
+  const g = {
+    t: 0, dist: 0, over: false, won: false, rankKey: null, cause: '', deathDist: 0,
+    tilt: 0, cramp: 0, crampLock: 0, crampLocked: false,
+    pressing: false, pressLock: 0,
+    sweat: 0, sideEye: 0, slowT: 0, timeScale: 1, slowmoT: 0,
+    wind: 0, windDir: 1, flipIn: C.firstGrace, tele: null, E: 0, zoneIdx: 0,
+    hairs: [0, 1, 2].map(i => ({ alive: true, glue: 100, root: 100, k: C.hairK[i] })),
+    ev: { greet: null, flyer: null, drip: null, vortex: null, look: null },
+    timers: { greet: rr(C.greet.every) * 0.6, flyer: rr(C.flyer.every) * 0.6, drip: rr(C.drip.every) * 0.5, vortex: rr(C.vortex.every) * 0.7 },
+    looksDone: 0, lastDripT: -99, ctx: 'wind',
+    events: [], stats: { greetOk: 0, greetFail: 0, drips: 0, cramps: 0, embarrassed: 0 }
+  };
+
+  const emit = (type, data) => g.events.push(Object.assign({ type }, data || {}));
+  const aliveCount = () => g.hairs.filter(h => h.alive).length;
+  const zoneAt = (d) => { for (let i = C.zones.length - 1; i >= 0; i--) if (d >= C.zones[i].from) return i; return 0; };
+  const anyMajor = () => g.ev.greet || g.ev.flyer || g.ev.drip || g.ev.vortex || g.ev.look;
+
+  function update(rawDt, input) {
+    if (g.over) return;
+    let dt = Math.min(rawDt, 0.05);
+    if (g.slowmoT > 0) { g.slowmoT -= dt; dt *= C.slowmo.scale; }
+    g.t += dt;
+
+    // 1. 輸入與抽筋
+    if (g.pressLock > 0) g.pressLock -= dt;
+    g.pressing = !!input.press && g.pressLock <= 0;
+    if (g.crampLock > 0) {
+      g.crampLock -= dt; g.crampLocked = true;
+    } else {
+      g.crampLocked = false;
+      const target = clamp(input.tilt || 0, -1, 1);
+      g.tilt += (target - g.tilt) * Math.min(1, dt * C.tiltEase);
+    }
+    if (!g.crampLocked) {
+      if (Math.abs(g.tilt) > C.cramp.limit) g.cramp += dt; else g.cramp = Math.max(0, g.cramp - C.cramp.decay * dt);
+      if (g.cramp >= C.cramp.trigger) { g.crampLock = C.cramp.lock; g.cramp = 0; g.stats.cramps++; emit('cramp'); }
+    }
+
+    // 2. 區段與風
+    const zi = zoneAt(g.dist); const zone = C.zones[zi];
+    if (zi !== g.zoneIdx) { g.zoneIdx = zi; g.flipIn = Math.min(g.flipIn, 1.2); emit('zone', { zone: zi }); }
+    const ramp = Math.min(1, g.t / C.firstGrace);
+    let mag = zone.mag * ramp, vort = g.ev.vortex;
+    g.flipIn -= dt;
+    if (vort && vort.started) {
+      mag = C.vortex.mag; vort.flipT -= dt;
+      if (vort.flipT <= 0) { g.windDir = -g.windDir; vort.flipT = C.vortex.flip; }
+    } else if (g.flipIn <= 0) {
+      g.windDir = -g.windDir; g.flipIn = rr(zone.flip);
+    }
+    g.tele = (!vort && g.flipIn < 0.8) ? { dir: -g.windDir, t: g.flipIn } : null;
+    g.wind += (g.windDir * mag - g.wind) * Math.min(1, dt * C.windEase);
+
+    // 3. 事件排程
+    const e = g.ev;
+    if (!anyMajor()) {
+      if (zi === 1) {
+        g.timers.greet -= dt; g.timers.flyer -= dt;
+        if (g.timers.greet <= 0) { e.greet = { t: C.greet.win, wave: 0 }; g.timers.greet = rr(C.greet.every); emit('greetStart'); }
+        else if (g.timers.flyer <= 0) { e.flyer = { tele: C.flyer.tele, t: 0 }; g.timers.flyer = rr(C.flyer.every); emit('flyerTele'); }
+      } else if (zi === 2) {
+        g.timers.drip -= dt; g.timers.vortex -= dt;
+        if (g.timers.vortex <= 0) { e.vortex = { tele: C.vortex.tele, t: C.vortex.dur, started: false, flipT: 0 }; g.timers.vortex = rr(C.vortex.every); emit('vortexTele'); }
+        else if (g.timers.drip <= 0) { e.drip = { tele: C.drip.tele }; g.timers.drip = rr(C.drip.every); emit('dripTele'); }
+      } else if (zi === 3 && g.looksDone < C.look.at.length && g.dist >= C.look.at[g.looksDone] - 6) {
+        e.look = { tele: C.look.tele, t: C.look.dur }; g.looksDone++; emit('lookTele');
+      }
+    }
+    if (e.greet) {
+      e.greet.t -= dt;
+      if (!g.pressing) e.greet.wave += dt; else e.greet.wave = 0;
+      if (e.greet.wave >= C.greet.need) { g.stats.greetOk++; g.sideEye = Math.max(0, g.sideEye - 15); emit('greetOk'); e.greet = null; }
+      else if (e.greet.t <= 0) { g.stats.greetFail++; g.sideEye += C.side.greetFail; emit('greetFail'); e.greet = null; }
+    }
+    if (e.flyer) {
+      if (e.flyer.tele > 0) { e.flyer.tele -= dt; if (e.flyer.tele <= 0) { e.flyer.t = C.flyer.lock; g.pressLock = C.flyer.lock; g.pressing = false; emit('flyer'); } }
+      else { e.flyer.t -= dt; g.pressing = false; if (e.flyer.t <= 0) e.flyer = null; }
+    }
+    if (e.drip) {
+      e.drip.tele -= dt;
+      if (e.drip.tele <= 0) {
+        const loss = g.pressing ? C.drip.shielded : C.drip.hit;
+        g.hairs.forEach(h => { if (h.alive) h.glue = Math.max(0, h.glue - loss); });
+        g.stats.drips++; g.lastDripT = g.t; emit('drip', { shielded: g.pressing }); e.drip = null;
+      }
+    }
+    if (e.vortex) {
+      if (!e.vortex.started) { e.vortex.tele -= dt; if (e.vortex.tele <= 0) { e.vortex.started = true; e.vortex.flipT = C.vortex.flip; emit('vortex'); } }
+      else { e.vortex.t -= dt; if (e.vortex.t <= 0) { e.vortex = null; g.flipIn = 1.4; } }
+    }
+    if (e.look) {
+      if (e.look.tele > 0) { e.look.tele -= dt; if (e.look.tele <= 0) emit('look'); }
+      else {
+        e.look.t -= dt;
+        if (g.pressing) g.sideEye += C.side.lookRate * dt;
+        if (e.look.t <= 0) e.look = null;
+      }
+    }
+
+    // 4. 受風與頭髮
+    const s = Math.sign(g.wind), absW = Math.abs(g.wind);
+    const align = Math.max(0, g.tilt * s);
+    const am = C.alignMax * (zone.updraft ? C.updraftAlignMul : 1);
+    let E = absW * (1 - am * align) + (zone.updraft ? C.updraft * ramp : 0);
+    if (g.pressing) E *= C.pressExposure;
+    g.E = E;
+    g.ctx = e.vortex && e.vortex.started ? 'vortex' : (g.t - g.lastDripT < 2 ? 'drip' : (g.crampLocked ? 'cramp' : (g.pressLock > 0 ? 'flyer' : (zone.updraft ? 'updraft' : 'wind'))));
+    const boost = 1 + g.sweat * C.sweat.boost;
+    for (let i = 0; i < 3; i++) {
+      const h = g.hairs[i]; if (!h.alive) continue;
+      const eff = Math.max(0, E * h.k - C.deadzone);
+      if (eff > 0) {
+        if (h.glue > 0) h.glue = Math.max(0, h.glue - C.glueDrain * eff * boost * dt);
+        else h.root -= C.rootDrain * eff * boost * dt;
+      }
+      if (g.pressing) h.glue = Math.min(100, h.glue + C.glueRegen * (1 - g.sweat) * dt);
+      if (h.root <= 0) {
+        h.alive = false; h.root = 0;
+        emit('hairLost', { i }); g.slowmoT = C.slowmo.time;
+        if (aliveCount() === 0) {
+          g.over = true; g.won = false; g.deathDist = g.dist; g.cause = g.ctx + '|' + zi; emit('dead'); return;
+        }
+      }
+    }
+
+    // 5. 手汗與側目
+    if (g.pressing) g.sweat = Math.min(1, g.sweat + C.sweat.up * dt); else g.sweat = Math.max(0, g.sweat - C.sweat.down * dt);
+    const finalMul = g.dist >= 450 ? C.side.finalMul : 1;
+    if (g.pressing) g.sideEye += C.side.press * zone.crowd * finalMul * dt; else g.sideEye = Math.max(0, g.sideEye - C.side.decay * dt);
+    if (g.sideEye >= C.side.full) { g.sideEye = C.side.reset; g.slowT = C.side.slow; g.stats.embarrassed++; g.pressLock = Math.max(g.pressLock, C.side.shameLock); g.pressing = false; emit('embarrassed'); }
+    if (g.slowT > 0) g.slowT -= dt;
+
+    // 6. 前進與抵達
+    const sp = C.baseSpeed * C.speedByHair[aliveCount()] * (g.slowT > 0 ? C.side.slowMul : 1);
+    g.dist += sp * dt;
+    if (g.dist >= C.goal) { g.dist = C.goal; g.over = true; g.won = true; g.rankKey = rankOf(g); emit('finish'); }
+  }
+
+  return { state: g, update, config: C };
+}
+
+function rankOf(g) {
+  const alive = g.hairs.filter(h => h.alive);
+  if (alive.length === 3) {
+    if (alive.every(h => h.glue >= 10)) return 'S';
+    if (alive.every(h => h.glue <= 0)) return 'BEARD';
+    return 'A';
+  }
+  return alive.length === 2 ? 'B' : 'C';
+}
+
+
+const c=$('lh-canvas'),ctx=c.getContext('2d'),W=400,H=720,SCENE_H=482,PX=18;
+const DPR=Math.min(2,Math.max(1,window.devicePixelRatio||1));
+c.width=Math.round(W*DPR);c.height=Math.round(H*DPR);
+const FONT='"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif';
+const REWARDS=[[100,1],[250,2],[400,3],[500,4]];   // 固定里程碑：抵達該公尺立即入帳；共 10 點，與入場費、頭髮根數、結局無關
+const RANK_ORDER=['C','BEARD','B','A','S'];
+const RANKS={
+ S:{big:'S',title:'穩如泰山',desc:'三根頭髮服服貼貼。面試官驚嘆於你的氣場，當場錄取為副部長。',col:'#ffd54f'},
+ A:{big:'A',title:'勉強過關',desc:'三根都還在，只是有點蓬。面試官沒多問，錄取為課長。',col:'#9ccc65'},
+ BEARD:{big:'?',title:'絡腮鬍藝術家',desc:'三根頭髮全黏在臉上。面試官誤以為你是蓄鬍的藝術家，意外錄取。',col:'#ba68c8'},
+ B:{big:'B',title:'反光頭皮',desc:'剩兩根，頭皮閃到面試官。他說你很有個人特色，錄取為業務。',col:'#4fc3f7'},
+ C:{big:'C',title:'頭頂天線',desc:'剩一根孤零零豎著。面試官覺得你很幽默，錄取為諧星企劃。',col:'#ff8a65'}};
+const CAUSE={vortex:'鴿子群的亂流',drip:'天降水滴洗掉髮膠',cramp:'脖子抽筋',flyer:'手被傳單佔住',updraft:'大樓的下沉氣流'};
+const WIN_MSG=['','抵達面試現場！剩 1 根頭髮，本局共入帳','抵達面試現場！剩 2 根頭髮，本局共入帳','抵達面試現場！剩 3 根頭髮，本局共入帳'];
+const HAIR_LEFT=['剩 0 根','剩 1 根','剩 2 根','剩 3 根'];
+const TIPS=['左手把脖子滑到綠圈：迎著風歪頭','右手按住壓頭：抗風 ×4，但會流手汗、被側目','水滴和鴿子亂流：只有壓住頭擋得住','面試官在看！回頭時別壓頭，優雅走完'];
+let best=0,deaths=[],swap=false,soundOn=true;
+try{best=+localStorage.getItem('deep-sea-last-hair-best')||0}catch(e){}
+try{deaths=JSON.parse(localStorage.getItem('deep-sea-last-hair-deaths')||'[]');if(!Array.isArray(deaths))deaths=[]}catch(e){deaths=[]}
+try{swap=localStorage.getItem('deep-sea-last-hair-swap')==='1';soundOn=localStorage.getItem('deep-sea-last-hair-sound')!=='0'}catch(e){}
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+let analytics=null,earned=0,rewarded=0,st='ready',paused=false,game=createGame(),g=game.state,idle=createGame(function(){return .5}).state,rec=false,time=0,last=0,tipT=0,tipText='',flapAcc=0,endAt=0,causeText='';
+const idleG=idle;
+const input={tilt:0,press:false},ptrs=new Map(),floats=[],flyHairs=[],streaks=[],ups=[],hs=[{},{},{}];
+let kbL=false,kbR=false,kbPress=false;
+for(let i=0;i<30;i++)streaks.push({x:Math.random()*W,y:90+Math.random()*380,l:20+Math.random()*40,v:.6+Math.random()*.8});
+for(let i=0;i<18;i++)ups.push({x:Math.random()*W,y:Math.random()*SCENE_H,l:14+Math.random()*26,v:.6+Math.random()});
+const lerp=(a,b,t)=>a+(b-a)*t;
+function hash(n){const s=Math.sin(n*127.1+311.7)*43758.5453;return s-Math.floor(s)}
+const padBox=()=>({cx:swap?300:100,r:78}),btnBox=()=>({cx:swap?100:300,cy:612,r:76});
+function say(text,kind){$('lh-msg').textContent=text;$('lh-msg').className='msg'+(kind?' '+kind:'')}
+hairSay=say;
+function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
+function aliveN(){return g.hairs.filter(h=>h.alive).length}
+function ui(){
+ const live=st==='run';
+ setText('lh-dist',Math.floor(live||st==='over'?g.dist:0)+' m');setText('lh-hairs',(live||st==='over'?aliveN():3)+' / 3');setText('lh-best',best.toFixed(0)+' m');
+ $('lh-amount').disabled=hairBusy;$('lh-go').disabled=live;setText('lh-go',live?'逆風前進中':st==='over'?'扣點再玩一次':'扣點開始出門');
+}
+// ---- audio / haptics ----
+let ac=null;
+function audioInit(){if(!soundOn)return;try{if(!ac)ac=new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume()}catch(e){ac=null}}
+function tone(f1,f2,dur,type,vol,delay){if(!ac||!soundOn)return;try{const o=ac.createOscillator(),gn=ac.createGain(),t=ac.currentTime+(delay||0);o.type=type||'sine';o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(Math.max(20,f2),t+dur);gn.gain.setValueAtTime(vol||.12,t);gn.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(gn);gn.connect(ac.destination);o.start(t);o.stop(t+dur+.03)}catch(e){}}
+function vib(p){try{if(navigator.vibrate&&!reduceMotion)navigator.vibrate(p)}catch(e){}}
+const SFX={pop(){tone(700,90,.28,'sine',.2);tone(300,60,.18,'triangle',.1,.05)},cramp(){tone(900,700,.04,'square',.1);tone(500,300,.05,'square',.1,.07)},drip(){tone(1200,500,.12,'sine',.12)},ok(){tone(520,520,.09,'triangle',.12);tone(780,780,.12,'triangle',.12,.09)},bad(){tone(220,120,.25,'sawtooth',.08)},warn(){tone(880,880,.08,'square',.06)},flap(){tone(60+Math.random()*50,40,.05,'square',.035)},win(){[523,659,784,1047].forEach((f,i)=>tone(f,f,.18,'triangle',.14,i*.12))},lose(){[440,370,311,220].forEach((f,i)=>tone(f,f*.9,.3,'sawtooth',.09,i*.18))},coin(){tone(988,1319,.12,'triangle',.12)}};
+function addFloat(text,x,y,col,size,dur){floats.push({text,x,y,col:col||'#fff',size:size||20,t:dur||1.4,d:dur||1.4})}
+// ---- 結算 ----
+function end(won){
+ if(st!=='run')return;
+ st='over';endAt=time;clearInput();
+ if(won){rec=best<500;if(rec){best=500;lsSet('deep-sea-last-hair-best',String(best))}}
+ else{
+  const parts=g.cause.split('|'),zn=game.config.zones[+parts[1]].name;
+  causeText=parts[0]==='wind'?zn+'的強風':(CAUSE[parts[0]]||'強風');
+  rec=g.deathDist>best;if(rec){best=g.deathDist;lsSet('deep-sea-last-hair-best',best.toFixed(1))}
+  deaths.push({d:+g.deathDist.toFixed(1),c:causeText});if(deaths.length>12)deaths.shift();lsSet('deep-sea-last-hair-deaths',JSON.stringify(deaths));
+ }
+ AN.end(analytics,earned,earned>0?'complete':'loss',{score:Math.floor(g.dist),step:earned,stage:Math.min(4,rewarded+1)});hairBusy=false;save();renderAll();
+ if(won)say(WIN_MSG[aliveN()]+' '+fmt(earned)+' 點。','win');
+ else if(earned)say('頭髮掉光了。倒在 '+Math.floor(g.deathDist)+' 公尺，本局共入帳 '+fmt(earned)+' 點。','win');
+ else say('頭髮掉光了。倒在 '+Math.floor(g.deathDist)+' 公尺，這一局沒有點數。','lose');
+ ui();
+}
+function milestones(){
+ while(rewarded<REWARDS.length&&g.dist>=REWARDS[rewarded][0]){
+  const pts=REWARDS[rewarded][1];rewarded++;earned+=pts;S.balance+=pts;save();renderAll();
+  AN.progress(analytics,{stage:rewarded,step:earned,score:Math.floor(g.dist),bonus_points:pts,total_bonus_points:earned});
+  addFloat('+'+pts+' 點',200,215,'#ffd54f',26,1.4);SFX.coin();
+  say('抵達 '+REWARDS[rewarded-1][0]+' 公尺！+'+pts+' 點已入帳。','win');
+ }
+}
+function handleEvents(){
+ const evs=g.events.splice(0),hx=200;
+ for(const e of evs){
+  switch(e.type){
+   case'hairLost':SFX.pop();vib([70,40,70]);addFloat('啵！',hx+(e.i-1)*24,200,'#ff5252',30,1.3);flyHairs.push({x:hx+(e.i-1)*24,y:232,vx:(Math.random()<.5?-1:1)*(120+Math.random()*80),vy:-180,r:0,t:2});break;
+   case'cramp':SFX.cramp();vib(40);addFloat('喀啦！',200,170,'#ffab40',30,1.2);break;
+   case'drip':SFX.drip();vib(20);addFloat(e.shielded?'擋住了':'髮膠被洗掉！',200,190,e.shielded?'#80cbc4':'#4fc3f7',22,1.3);break;
+   case'greetOk':SFX.ok();addFloat('禮貌滿分',200,190,'#9ccc65',24,1.1);break;
+   case'greetFail':SFX.bad();vib(30);addFloat('被當成怪人…',200,190,'#ff8a80',24,1.3);break;
+   case'embarrassed':SFX.bad();vib([30,30,30]);addFloat('社死！腳步變慢',200,190,'#ff8a80',26,1.6);break;
+   case'greetStart':case'flyerTele':case'dripTele':case'vortexTele':case'lookTele':SFX.warn();break;
+   case'zone':tipText=TIPS[e.zone];tipT=4.5;addFloat(game.config.zones[e.zone].name,200,222,'#fff',22,2);break;
+   case'finish':SFX.win();end(true);break;
+   case'dead':SFX.lose();end(false);break;
+  }
+ }
+}
+// ---- drawing ----
+function txt(s,x,y,size,col,align,bold,stroke,mw){ctx.font=(bold===false?'':'bold ')+size+'px '+FONT;ctx.textAlign=align||'center';ctx.textBaseline='middle';if(stroke){ctx.lineWidth=4;ctx.strokeStyle=stroke;ctx.lineJoin='round';ctx.strokeText(s,x,y,mw)}ctx.fillStyle=col||'#fff';ctx.fillText(s,x,y,mw)}
+function rrect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function bar(x,y,w,h,v,col,back){ctx.fillStyle=back||'rgba(0,0,0,.35)';rrect(x,y,w,h,h/2);ctx.fill();if(v>0){ctx.fillStyle=col;rrect(x,y,Math.max(h,w*clamp(v,0,1)),h,h/2);ctx.fill()}}
+function mix(c1,c2,t){return c1.map((v,i)=>Math.round(lerp(v,c2[i],t)))}
+const SKY=[[[196,224,245],[236,245,250]],[[245,214,170],[252,236,205]],[[150,165,185],[196,204,214]],[[96,110,135],[150,162,180]]];
+function skyAt(d){const k=clamp(d/125,0,3),i=Math.min(2,Math.floor(k)),t=clamp((k-i)*1.6-.3,0,1);return[mix(SKY[i][0],SKY[i+1][0],t),mix(SKY[i][1],SKY[i+1][1],t)]}
+const rgb=c=>'rgb('+c.join(',')+')';
+function layer(dist,speed,bw,hmin,hmax,col,base,win){
+ const off=dist*PX*speed,i0=Math.floor(off/bw),sh=off-i0*bw;
+ for(let i=-1;i<W/bw+2;i++){const idx=i0+i,h=hmin+hash(idx*3.7)*(hmax-hmin),x=i*bw-sh;ctx.fillStyle=col;ctx.fillRect(x,base-h,bw-3,h);
+  if(win){ctx.fillStyle='rgba(255,240,180,.35)';for(let wy=base-h+8;wy<base-10;wy+=16)for(let wx=x+6;wx<x+bw-12;wx+=14)if(hash(idx*9+wy+wx)>.55)ctx.fillRect(wx,wy,6,8)}}
+}
+function drawScene(){
+ const d=g.dist,sky=skyAt(d),grd=ctx.createLinearGradient(0,0,0,400);
+ grd.addColorStop(0,rgb(sky[0]));grd.addColorStop(1,rgb(sky[1]));ctx.fillStyle=grd;ctx.fillRect(0,0,W,SCENE_H);
+ const dark=clamp((d-250)/150,0,1);
+ layer(d,.15,64,60,170,rgb(mix([170,185,200],[90,100,120],dark)),392,false);
+ layer(d,.4,52,40,120,rgb(mix([140,152,170],[70,80,100],dark)),398,true);
+ if(d>250&&d<420){const ox=-((d*PX*.9)%140);ctx.fillStyle='rgba(60,66,80,.9)';ctx.fillRect(0,70,W,16);ctx.fillStyle='rgba(60,66,80,.7)';for(let x=ox;x<W+140;x+=140)ctx.fillRect(x,86,14,312)}
+ ctx.fillStyle='#9aa0a8';ctx.fillRect(0,392,W,SCENE_H-392);ctx.fillStyle='#868c94';ctx.fillRect(0,392,W,8);
+ const off=d*PX,tw=70;ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=2;
+ for(let x=-(off%tw);x<W;x+=tw){ctx.beginPath();ctx.moveTo(x,400);ctx.lineTo(x-20,SCENE_H);ctx.stroke()}
+ const dens=[.12,.75,.15,.35][g.zoneIdx],pw=96,pi0=Math.floor(off/pw),psh=off-pi0*pw;
+ for(let i=-1;i<W/pw+2;i++){
+  const idx=pi0+i;if(hash(idx*5.3)>dens)continue;
+  const x=i*pw-psh+hash(idx)*40,hgt=70+hash(idx*2)*22,col=['#6d7a8c','#a1887f','#7e9c7a','#b0768a','#8c8f9e'][Math.floor(hash(idx*7)*5)];
+  if(Math.abs(x-200)<70||(d>395&&x>215&&x<350))continue;
+  ctx.fillStyle=col;rrect(x-14,432-hgt,28,hgt,12);ctx.fill();ctx.fillStyle='#e3c3a5';ctx.beginPath();ctx.arc(x,432-hgt-12,12,0,7);ctx.fill();
+  if(g.sideEye>30){ctx.fillStyle='#fff';ctx.fillRect(x-9,432-hgt-16,7,6);ctx.fillRect(x+2,432-hgt-16,7,6);ctx.fillStyle='#222';ctx.fillRect(x-5,432-hgt-15,3,4);ctx.fillRect(x+6,432-hgt-15,3,4)}
+ }
+ if(st!=='ready')for(const t of deaths){const x=200+(t.d-d)*PX+70;if(x<-30||x>W+30||t.d>d+40)continue;ctx.fillStyle='#6f7680';rrect(x-13,418,26,36,10);ctx.fill();ctx.fillStyle='#4b5159';ctx.fillRect(x-2,424,4,14);ctx.fillRect(x-7,429,14,4);txt(t.d.toFixed(0)+'m',x,464,11,'#33383f','center',true)}
+ if(d>400){
+  const gx=200+(500-d)*PX+120,hgt=520;ctx.fillStyle='#4a5568';ctx.fillRect(gx-90,392-hgt,360,hgt+90);
+  ctx.fillStyle='rgba(180,215,240,.5)';for(let y=392-hgt+14;y<380;y+=26)for(let x=gx-80;x<gx+260;x+=28)ctx.fillRect(x,y,18,16);
+  ctx.fillStyle='#263238';ctx.fillRect(gx-40,336,90,120);ctx.fillStyle='rgba(160,200,230,.55)';ctx.fillRect(gx-34,342,38,108);ctx.fillRect(gx+8,342,36,108);
+  txt('帝國大廈',gx+5,318,16,'#fff','center',true);
+  const look=g.ev.look&&g.ev.look.tele<=0,ix=285,iy=440;
+  ctx.fillStyle='#37474f';rrect(ix-15,iy-62,30,62,10);ctx.fill();ctx.fillStyle='#e3c3a5';ctx.beginPath();ctx.arc(ix,iy-74,13,0,7);ctx.fill();
+  if(look){ctx.fillStyle='#222';ctx.fillRect(ix-8,iy-77,4,4);ctx.fillRect(ix+4,iy-77,4,4);ctx.fillRect(ix-6,iy-68,12,2);txt('！',ix,iy-104,26,'#ff5252','center',true,'#000')}
+  else{ctx.fillStyle='#3b2f2a';ctx.beginPath();ctx.arc(ix,iy-77,12,Math.PI,0);ctx.fill()}
+ }
+}
+function drawStreaks(dt){
+ const w=g.wind,a=clamp(Math.abs(w),0,1);ctx.strokeStyle='rgba(255,255,255,'+(.15+a*.45)+')';ctx.lineWidth=2;ctx.lineCap='round';
+ for(const s of streaks){s.x-=Math.sign(w)*a*700*s.v*dt;if(s.x<-60)s.x=W+20;if(s.x>W+60)s.x=-20;ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x+Math.sign(w)*s.l*(.4+a),s.y);ctx.stroke()}
+ if(g.zoneIdx===3)for(const s of ups){s.y-=340*s.v*dt;if(s.y<0){s.y=SCENE_H;s.x=Math.random()*W}ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x,s.y+s.l);ctx.stroke()}
+}
+const SKIN='#f1c9a0';
+function drawHair(i,pressing,dtr){
+ const h=g.hairs[i];if(!h.alive)return;
+ const rx=(i-1)*24,ry=-Math.sqrt(44*44-rx*rx)+3,L=72;
+ const lift=1-h.glue/100,s=Math.sign(g.wind)||1,vis=clamp(g.E*h.k*1.25,0,1.2),ph=i*2.1;
+ const a=.2+.6*Math.sin(time*(9+i*2)+ph)*clamp(vis,0,1);
+ let wtx=-s*L*Math.cos(a),wty=-L*Math.sin(a)-8;
+ if(g.zoneIdx===3){wtx*=.35;wty=wty*.35-L*.65}
+ const m=clamp(vis*1.7,0,1);
+ let tx=lerp(-.3*L,wtx,m),ty=lerp(.55*L,wty,m);
+ tx=lerp(-36,tx,lift);ty=lerp(9,ty,lift);
+ if(pressing){tx=-36;ty=12}
+ const sh=hs[i];if(!sh.init){sh.tx=tx;sh.ty=ty;sh.init=true}
+ const k=Math.min(1,dtr*16);sh.tx+=(tx-sh.tx)*k;sh.ty+=(ty-sh.ty)*k;
+ const wob=Math.sin(time*22+ph)*9*clamp(vis,0,1)*lift;
+ ctx.beginPath();ctx.moveTo(rx,ry);ctx.quadraticCurveTo(rx+sh.tx*.5+wob,ry+sh.ty*.5-lift*12-wob*.6,rx+sh.tx,ry+sh.ty);
+ ctx.strokeStyle='#1d1610';ctx.lineWidth=3.2;ctx.lineCap='round';ctx.stroke();
+ if(h.glue>55){ctx.strokeStyle='rgba(255,235,150,.65)';ctx.lineWidth=1;ctx.stroke()}
+}
+function drawMan(dtr,opt){
+ opt=opt||{};const lost=opt.lost,pressing=!lost&&g.pressing;
+ const tilt=g.tilt,bob=lost?0:Math.sin(g.dist*2.4)*3,px=200,py=(lost?405:352)+bob,ang=lost?.5:tilt*.4;
+ const alive=aliveN(),sw=g.dist*2.4,ls=lost?0:Math.sin(sw)*16;
+ ctx.fillStyle='#232b3e';
+ rrect(px-28+ls*.4,py+92,22,56+(lost?-14:0),8);ctx.fill();rrect(px+6-ls*.4,py+92,22,56+(lost?-14:0),8);ctx.fill();
+ ctx.fillStyle='#111';rrect(px-32+ls*.4,py+140+(lost?-14:0),30,12,6);ctx.fill();rrect(px+4-ls*.4,py+140+(lost?-14:0),30,12,6);ctx.fill();
+ ctx.fillStyle='#2f3b57';rrect(px-44,py-2,88,104,22);ctx.fill();
+ ctx.fillStyle='#f5f5f5';ctx.beginPath();ctx.moveTo(px-14,py-2);ctx.lineTo(px+14,py-2);ctx.lineTo(px,py+38);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#c62828';ctx.beginPath();ctx.moveTo(px-5,py+6);ctx.lineTo(px+5,py+6);ctx.lineTo(px+7,py+56);ctx.lineTo(px,py+64);ctx.lineTo(px-7,py+56);ctx.closePath();ctx.fill();
+ ctx.strokeStyle='#2f3b57';ctx.lineWidth=20;ctx.lineCap='round';
+ if(!lost){ctx.beginPath();ctx.moveTo(px-42,py+16);ctx.lineTo(px-52-ls*.2,py+86);ctx.stroke();ctx.fillStyle=SKIN;ctx.beginPath();ctx.arc(px-52-ls*.2,py+94,10,0,7);ctx.fill()}
+ ctx.save();ctx.translate(px,py);ctx.rotate(ang);ctx.translate(0,-56);
+ ctx.fillStyle='#e6b88e';ctx.beginPath();ctx.arc(-44,2,8,0,7);ctx.arc(44,2,8,0,7);ctx.fill();
+ ctx.fillStyle=SKIN;ctx.beginPath();ctx.arc(0,0,44,0,7);ctx.fill();
+ if(alive<3){ctx.fillStyle='rgba(255,255,255,'+(alive===1?.5:.28)+')';ctx.beginPath();ctx.ellipse(-8,-30,18,7,-.3,0,7);ctx.fill()}
+ const cr=g.crampLocked,sad=alive<=1||lost,emb=g.slowT>0;
+ ctx.fillStyle='#222';ctx.strokeStyle='#222';ctx.lineWidth=3;
+ if(cr||lost){[-15,15].forEach(x=>{ctx.beginPath();ctx.moveTo(x-5,-7);ctx.lineTo(x+5,3);ctx.moveTo(x+5,-7);ctx.lineTo(x-5,3);ctx.stroke()})}
+ else{[-15,15].forEach(x=>{ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x,-2,8,0,7);ctx.fill();ctx.fillStyle='#222';ctx.beginPath();ctx.arc(x+clamp(g.wind,-1,1)*-2,alive===1?1:-1,alive===1?2.6:3.6,0,7);ctx.fill()})}
+ ctx.beginPath();ctx.moveTo(-24,alive<3||sad?-14:-16);ctx.lineTo(-8,alive<3?-17:-14);ctx.moveTo(24,alive<3||sad?-14:-16);ctx.lineTo(8,alive<3?-17:-14);ctx.stroke();
+ ctx.beginPath();if(cr||sad){ctx.moveTo(-10,24);ctx.quadraticCurveTo(0,15,10,24)}else if(emb){ctx.moveTo(-9,21);ctx.lineTo(-3,24);ctx.lineTo(3,20);ctx.lineTo(9,23)}else if(alive===3){ctx.moveTo(-11,17);ctx.quadraticCurveTo(0,27,11,17)}else{ctx.moveTo(-9,21);ctx.lineTo(9,21)}ctx.stroke();
+ if(emb){ctx.fillStyle='rgba(255,90,90,.35)';ctx.beginPath();ctx.arc(-26,10,9,0,7);ctx.arc(26,10,9,0,7);ctx.fill()}
+ if(g.sweat>.3){ctx.fillStyle='#4fc3f7';for(let i=0;i<3;i++){const y=-30+((time*40+i*20)%50);ctx.beginPath();ctx.arc(-34+i*34,y,3+g.sweat*2,0,7);ctx.fill()}}
+ if(opt.beard){ctx.strokeStyle='#1d1610';ctx.lineWidth=3;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(-30+i*6,14);ctx.quadraticCurveTo(-8,34+i*4,30-i*6,14+i*3);ctx.stroke()}}
+ for(let i=0;i<3;i++)drawHair(i,pressing,dtr);
+ ctx.restore();
+ ctx.strokeStyle='#2f3b57';ctx.lineWidth=20;ctx.lineCap='round';ctx.fillStyle=SKIN;
+ const sx=px+42,sy=py+16;
+ if(lost){ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(px+24,py-36);ctx.stroke();ctx.beginPath();ctx.moveTo(px-42,sy);ctx.lineTo(px-24,py-36);ctx.stroke();ctx.beginPath();ctx.arc(px-22,py-44,14,0,7);ctx.arc(px+22,py-44,14,0,7);ctx.fill()}
+ else if(pressing){const hx=px+100*Math.sin(ang),hy=py-100*Math.cos(ang)+4;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(hx+28,hy+22);ctx.stroke();ctx.beginPath();ctx.arc(hx,hy,24,0,7);ctx.fill();ctx.strokeStyle='#d9a97c';ctx.lineWidth=2;for(let i=-1;i<=1;i++){ctx.beginPath();ctx.moveTo(hx+i*9-4,hy-20);ctx.lineTo(hx+i*9-4,hy-4);ctx.stroke()}if(g.sweat>.5){ctx.fillStyle='rgba(255,255,255,.55)';ctx.beginPath();ctx.ellipse(hx-8,hy-10,8,4,-.4,0,7);ctx.fill()}}
+ else if(g.ev.greet){const wy=py-60+Math.sin(time*14)*12;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(px+82,wy+20);ctx.stroke();ctx.beginPath();ctx.arc(px+84,wy,14,0,7);ctx.fill()}
+ else if(g.ev.flyer&&g.ev.flyer.tele<=0){ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(px+66,py+36);ctx.stroke();ctx.beginPath();ctx.arc(px+68,py+40,10,0,7);ctx.fill();ctx.fillStyle='#fff59d';ctx.save();ctx.translate(px+74,py+28);ctx.rotate(.3);ctx.fillRect(-12,-16,26,34);ctx.restore()}
+ else{ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(px+52+ls*.2,py+86);ctx.stroke();ctx.beginPath();ctx.arc(px+52+ls*.2,py+94,10,0,7);ctx.fill()}
+}
+function drawEventsWorld(){
+ const e=g.ev,C=game.config;
+ if(e.flyer){const t=e.flyer.tele>0?1-e.flyer.tele/C.flyer.tele:1,x=lerp(430,318,t);ctx.fillStyle='#ef6c00';rrect(x-16,372,32,70,12);ctx.fill();ctx.fillStyle=SKIN;ctx.beginPath();ctx.arc(x,358,13,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.fillRect(x-10,350,20,4)}
+ if(e.drip&&e.drip.tele>0){const t=1-e.drip.tele/C.drip.tele,y=lerp(10,215,t*t);ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.ellipse(200,232,20*t+6,5,0,0,7);ctx.fill();ctx.fillStyle='#4fc3f7';ctx.beginPath();ctx.moveTo(200,y-14);ctx.quadraticCurveTo(212,y+6,200,y+10);ctx.quadraticCurveTo(188,y+6,200,y-14);ctx.fill()}
+ if(e.vortex){const n=7,t=e.vortex.started?time:time*.7;ctx.fillStyle='rgba(40,40,50,.85)';for(let i=0;i<n;i++){const x=((t*160+i*71)%520)-60,y=120+(i%4)*28+Math.sin(t*8+i)*10,f=Math.sin(t*24+i)*6;ctx.beginPath();ctx.moveTo(x-12,y);ctx.quadraticCurveTo(x,y-8-f,x+12,y);ctx.quadraticCurveTo(x,y+2+f*.5,x-12,y);ctx.fill()}}
+ for(const f of flyHairs){ctx.save();ctx.translate(f.x,f.y);ctx.rotate(f.r);ctx.strokeStyle='#1d1610';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-30,0);ctx.quadraticCurveTo(0,-12,30,4);ctx.stroke();ctx.restore()}
+}
+function bannerList(){
+ const b=[],e=g.ev,c=game.config;
+ if(g.crampLocked)b.push(['脖子抽筋！僵直 '+Math.max(0,g.crampLock).toFixed(1)+'s','#ff7043']);
+ else if(g.cramp>=c.cramp.warn)b.push(['脖子快抽筋！回正一點！','#ffb74d']);
+ if(e.greet)b.push(['打招呼！放開手揮一揮 '+(e.greet.wave/c.greet.need*100|0)+'%','#aed581']);
+ if(e.flyer)b.push([e.flyer.tele>0?'工讀生來了！手要被佔住':'傳單！手被佔住 '+Math.max(0,e.flyer.t).toFixed(1)+'s','#ffd54f']);
+ if(e.drip)b.push(['頭上要滴水了！壓住頭！','#4fc3f7']);
+ if(e.vortex)b.push([e.vortex.started?'鴿子亂流！壓住頭！':'鴿子群來了！壓住頭準備','#90a4ae']);
+ if(e.look)b.push([e.look.tele>0?'面試官要回頭！放開手！':'面試官在看！優雅！別壓頭','#ff8a80']);
+ if(g.slowT>0)b.push(['社死中…腳步變慢','#ff8a80']);
+ return b.slice(0,2);
+}
+function drawHUD(){
+ ctx.fillStyle='rgba(0,0,0,.35)';rrect(14,12,372,14,7);ctx.fill();
+ ctx.fillStyle='#ffd54f';rrect(14,12,Math.max(14,372*g.dist/500),14,7);ctx.fill();
+ ctx.fillStyle='rgba(255,255,255,.7)';[100,250,400].forEach(m=>ctx.fillRect(14+372*m/500-1,12,2,14));
+ txt(g.dist.toFixed(0)+' / 500m',200,40,13,'#fff','center',true,'rgba(0,0,0,.5)');
+ for(let i=0;i<3;i++){
+  const h=g.hairs[i],x=14+i*58;
+  ctx.strokeStyle=h.alive?'#1d1610':'#777';ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();
+  if(h.alive){ctx.moveTo(x,62);ctx.quadraticCurveTo(x+10,50,x+26,60);ctx.stroke();bar(x,68,50,5,h.glue/100,'#ffd54f');bar(x,76,50,5,h.root/100,'#ef5350')}
+  else{ctx.moveTo(x+6,52);ctx.lineTo(x+24,66);ctx.moveTo(x+24,52);ctx.lineTo(x+6,66);ctx.stroke()}
+ }
+ txt('黃＝髮膠　紅＝髮根',14,92,10,'rgba(255,255,255,.75)','left',false,'rgba(0,0,0,.35)');
+ txt('側目',258,62,12,'#fff','right',true,'rgba(0,0,0,.4)');bar(264,56,122,10,g.sideEye/100,g.sideEye>70?'#ff5252':'#ff9800');
+ txt('手汗',258,82,12,'#fff','right',true,'rgba(0,0,0,.4)');bar(264,76,122,10,g.sweat,g.sweat>.6?'#29b6f6':'#80deea');
+ const w=g.wind,a=clamp(Math.abs(w),0,1.2),dir=-Math.sign(w)||-1,len=22+54*a,cx=200,cy=112;
+ ctx.save();ctx.translate(cx,cy);ctx.scale(dir,1);ctx.fillStyle='rgba(255,213,79,'+(.5+a*.5)+')';ctx.strokeStyle='rgba(0,0,0,.45)';ctx.lineWidth=3;
+ ctx.beginPath();ctx.moveTo(len,0);ctx.lineTo(len-26,-22);ctx.lineTo(len-26,-9);ctx.lineTo(-len,-9);ctx.lineTo(-len,9);ctx.lineTo(len-26,9);ctx.lineTo(len-26,22);ctx.closePath();ctx.stroke();ctx.fill();ctx.restore();
+ if(g.tele){if(Math.floor(time*8)%2){const side=g.tele.dir>0?1:-1;ctx.save();ctx.translate(200+side*150,112);ctx.scale(-side,1);ctx.fillStyle='#ff8a65';ctx.beginPath();ctx.moveTo(18,0);ctx.lineTo(-6,-16);ctx.lineTo(-6,16);ctx.closePath();ctx.fill();ctx.restore();txt('變向！',200+side*150,138,13,'#ff8a65','center',true,'rgba(0,0,0,.5)')}}
+ const bl=bannerList();
+ if(tipT>0&&!bl.length){ctx.globalAlpha=clamp(tipT,0,1);ctx.fillStyle='rgba(0,0,0,.5)';rrect(20,160,360,30,15);ctx.fill();txt(tipText,200,175,14,'#fff','center',true,null,340);ctx.globalAlpha=1}
+ bl.forEach((it,i)=>{ctx.fillStyle='rgba(0,0,0,.62)';rrect(30,158+i*36,340,30,15);ctx.fill();txt(it[0],200,173+i*36,16,it[1],'center',true,null,320)});
+}
+function drawControls(){
+ ctx.fillStyle='#242a38';ctx.fillRect(0,SCENE_H,W,H-SCENE_H);ctx.fillStyle='#10131b';ctx.fillRect(0,SCENE_H,W,3);
+ const pd=padBox(),b=btnBox(),y=612;
+ ctx.fillStyle='rgba(255,255,255,.07)';rrect(pd.cx-pd.r-14,y-70,pd.r*2+28,140,22);ctx.fill();
+ txt('脖子',pd.cx-52,y-50,14,'rgba(255,255,255,.7)');
+ {const v=g.crampLocked?1:g.cramp/game.config.cramp.trigger;bar(pd.cx-24,y-56,76,10,v,v>.66?'#ff5252':'#ffb74d')}
+ if(st==='run'){
+  const s=Math.sign(g.wind)||1,pulse=.6+.4*Math.sin(time*8);
+  if(Math.abs(g.wind)>.2){ctx.strokeStyle='rgba(105,240,174,'+pulse+')';ctx.lineWidth=5;ctx.beginPath();ctx.arc(pd.cx+s*.8*pd.r,y,28,0,7);ctx.stroke();txt('▼',pd.cx+s*.8*pd.r,y-36,14,'#69f0ae')}
+  if(g.tele&&Math.floor(time*8)%2){ctx.strokeStyle='rgba(255,138,101,.9)';ctx.setLineDash([6,6]);ctx.lineWidth=4;ctx.beginPath();ctx.arc(pd.cx+(g.tele.dir>0?1:-1)*.8*pd.r,y,28,0,7);ctx.stroke();ctx.setLineDash([])}
+ }
+ ctx.fillStyle='#3b4358';rrect(pd.cx-pd.r,y-7,pd.r*2,14,7);ctx.fill();
+ ctx.fillStyle='rgba(255,255,255,.35)';ctx.fillRect(pd.cx-1,y-12,2,24);
+ const lim=game.config.cramp.limit*pd.r;ctx.fillStyle='rgba(255,112,67,.5)';ctx.fillRect(pd.cx-pd.r,y-7,pd.r-lim,14);ctx.fillRect(pd.cx+lim,y-7,pd.r-lim,14);
+ const kx=pd.cx+input.tilt*pd.r;ctx.fillStyle='#ffd54f';ctx.beginPath();ctx.arc(kx,y,22,0,7);ctx.fill();ctx.strokeStyle='#8d6e00';ctx.lineWidth=3;ctx.stroke();
+ txt('◀ 左歪',pd.cx-pd.r+8,y+46,13,'rgba(255,255,255,.7)','left');txt('右歪 ▶',pd.cx+pd.r-8,y+46,13,'rgba(255,255,255,.7)','right');
+ const locked=g.pressLock>0,on=g.pressing;
+ ctx.fillStyle=locked?'#4a4f5c':(on?'#ff8f00':'#e65100');ctx.beginPath();ctx.arc(b.cx,b.cy,b.r,0,7);ctx.fill();
+ ctx.lineWidth=6;ctx.strokeStyle=on?'#ffe0b2':'rgba(0,0,0,.35)';ctx.stroke();
+ if(g.sweat>.05){ctx.strokeStyle='#4fc3f7';ctx.lineWidth=7;ctx.beginPath();ctx.arc(b.cx,b.cy,b.r+8,-Math.PI/2,-Math.PI/2+Math.PI*2*g.sweat);ctx.stroke()}
+ txt(locked?'手被佔住':'死命壓住',b.cx,b.cy-6,20,'#fff');if(!locked)txt('按住不放',b.cx,b.cy+20,13,'rgba(255,255,255,.8)','center',false);
+}
+function wrapC(s,x,y,w,lh,size,col,align){
+ // Translate the whole sentence first so English wraps on words instead of on Chinese characters.
+ const T=window.deepSeaI18n&&window.deepSeaI18n.text,str=T?String(T(s)):s,words=/[\u3400-\u9fff]/.test(str)?Array.from(str):str.split(' '),sep=/[\u3400-\u9fff]/.test(str)?'':' ';
+ ctx.font='bold '+size+'px '+FONT;let line='',yy=y;
+ for(const word of words){const next=line?line+sep+word:word;if(line&&ctx.measureText(next).width>w){txt(line,x,yy,size,col,align);line=word;yy+=lh}else line=next}
+ txt(line,x,yy,size,col,align);
+}
+const TOGGLES=()=>[[24,swap?'操作：左壓右歪':'操作：左歪右壓'],[204,soundOn?'音效：開':'音效：關']];
+function drawReady(){
+ const keep=g;g=idleG;idleG.E=.05;idleG.wind=Math.sin(time*1.5)*.15;
+ drawScene();drawMan(.016,{});g=keep;
+ ctx.fillStyle='rgba(16,19,27,.72)';ctx.fillRect(0,0,W,190);
+ txt('尊嚴保衛戰',200,54,44,'#ffd54f','center',true,'#000');txt('強風中的地中海',200,100,22,'#fff','center',true);
+ txt('用最後 3 根頭髮，走完 500 公尺去面試',200,140,15,'rgba(255,255,255,.85)','center',false);
+ ctx.fillStyle='rgba(16,19,27,.92)';ctx.fillRect(0,SCENE_H,W,H-SCENE_H);
+ ['左手把脖子滑到綠圈：迎著風歪頭','右手按住壓頭：抗風 ×4，但會流汗、被側目','歪頭太久脖子會抽筋；遇到路人記得放手'].forEach((s,i)=>txt(s,200,556+i*22,14,'rgba(255,255,255,.88)','center',false,null,370));
+ ctx.globalAlpha=.6+.4*Math.sin(time*4);txt('到操作區扣點開始',200,624,20,'#ffd54f');ctx.globalAlpha=1;
+ TOGGLES().forEach(it=>{ctx.fillStyle='#3b4358';rrect(it[0],642,172,42,14);ctx.fill();txt(it[1],it[0]+86,663,16,'#fff','center',true,null,160)});
+ txt('最遠紀錄 '+best.toFixed(0)+' m',200,704,14,'rgba(255,255,255,.7)','center',false);
+}
+function drawOver(){
+ const won=g.won;
+ drawScene();drawStreaks(0);drawMan(.016,{lost:!won,beard:won&&g.rankKey==='BEARD'});drawEventsWorld();
+ if(!won){ctx.save();ctx.globalCompositeOperation='saturation';ctx.fillStyle='#808080';ctx.fillRect(0,0,W,SCENE_H);ctx.restore();ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(0,0,W,SCENE_H)}
+ ctx.fillStyle='rgba(16,19,27,.96)';ctx.fillRect(0,SCENE_H,W,H-SCENE_H);ctx.fillStyle='#10131b';ctx.fillRect(0,SCENE_H,W,3);
+ if(won){
+  const r=RANKS[g.rankKey];txt('抵達面試現場！',200,552,15,'rgba(255,255,255,.8)');
+  txt(r.big,64,622,76,r.col,'center',true,'#000');txt(r.title,124,582,24,r.col,'left',true,null,270);
+  wrapC(r.desc,124,606,272,18,13,'rgba(255,255,255,.92)','left');
+  txt(HAIR_LEFT[aliveN()],130,682,14,'rgba(255,255,255,.65)','center',false);txt('用時 '+g.t.toFixed(0)+' 秒',270,682,14,'rgba(255,255,255,.65)','center',false);
+ }else{
+  txt('面試取消',200,556,28,'#eceff1','center',true);txt('你失去了最後的尊嚴',200,584,17,'#eceff1','center',true,null,370);
+  txt('死於 '+g.deathDist.toFixed(1)+'m',200,612,20,'#ffcc80');wrapC('— '+causeText,200,636,340,20,15,'#eceff1');
+  txt('最遠紀錄 '+best.toFixed(0)+' m',200,676,14,'rgba(255,255,255,.65)','center',false);
+ }
+ if(time-endAt>.8){ctx.globalAlpha=.6+.4*Math.sin(time*4);txt('到操作區再玩一次',200,704,18,'#ffd54f');ctx.globalAlpha=1}
+}
+function draw(dt){
+ ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);
+ if(st==='ready'){drawReady();return}
+ if(st==='over'){drawOver();return}
+ ctx.save();if(g.crampLocked)ctx.translate((Math.random()-.5)*4,(Math.random()-.5)*3);
+ drawScene();drawStreaks(dt);drawMan(dt);drawEventsWorld();ctx.restore();
+ drawHUD();drawControls();
+ for(let i=floats.length-1;i>=0;i--){const f=floats[i];f.t-=dt;if(f.t<=0){floats.splice(i,1);continue}ctx.globalAlpha=clamp(f.t/(f.d*.5),0,1);txt(f.text,f.x,f.y-(1-f.t/f.d)*36,f.size,f.col,'center',true,'rgba(0,0,0,.6)');ctx.globalAlpha=1}
+ for(let i=flyHairs.length-1;i>=0;i--){const f=flyHairs[i];f.t-=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=120*dt;f.r+=5*dt;if(f.t<=0)flyHairs.splice(i,1)}
+ if(paused){ctx.fillStyle='rgba(0,0,0,.7)';ctx.fillRect(0,0,W,H);txt('暫停中',200,320,36,'#fff');txt('點一下畫面繼續',200,380,22,'#ffd54f')}
+}
+// ---- input ----
+const shown=()=>!$('view-last-hair').hidden&&!document.hidden;
+const toLocal=e=>{const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H}};
+const clampT=v=>Math.max(-1,Math.min(1,v));
+function recomputePress(){let n=0;ptrs.forEach(v=>{if(v==='press')n++});input.press=n>0}
+function clearInput(){ptrs.clear();input.press=false;input.tilt=0;kbL=kbR=kbPress=false}
+function pauseNow(){if(st==='run'&&!paused){paused=true;clearInput()}last=performance.now()}
+function start(){
+ if(st==='run')return;
+ const amount=ENTRY_FEE;
+ if(amount>S.balance){say(LOW_MSG,'lose');return}
+ analytics=AN.start('last-hair',amount);hairBusy=true;hairStake=amount;S.balance-=amount;save();renderAll();
+ game=createGame();g=game.state;earned=0;rewarded=0;rec=false;floats.length=0;flyHairs.length=0;hs.forEach(h=>{h.init=false});clearInput();paused=false;
+ tipText=TIPS[0];tipT=4.5;st='run';last=performance.now();say('出門了！左手滑脖子迎風歪頭，右手按住壓頭，走完 500 公尺。');ui();c.focus();
+}
+$('lh-go').addEventListener('click',start);
+c.addEventListener('pointerdown',e=>{
+ if(e.button!==undefined&&e.button!==0)return;
+ if(!shown())return;
+ audioInit();const p=toLocal(e);
+ if(st!=='run'){
+  e.preventDefault();
+  if(st==='ready'){
+   if(p.y>642&&p.y<684){
+    if(p.x>24&&p.x<196){swap=!swap;lsSet('deep-sea-last-hair-swap',swap?'1':'0')}
+    else if(p.x>204&&p.x<376){soundOn=!soundOn;lsSet('deep-sea-last-hair-sound',soundOn?'1':'0');if(soundOn)audioInit()}
+    else say('先按「扣點開始出門」。');
+   }else say('先按「扣點開始出門」。');
+  }else say('這一局已結算。按「扣點再玩一次」開始新的一局。');
+  return;
+ }
+ e.preventDefault();c.focus();
+ if(paused){paused=false;last=performance.now();return}
+ try{c.setPointerCapture(e.pointerId)}catch(_){}
+ const role=e.pointerType==='mouse'?'press':((p.x<W/2)!==swap?'tilt':'press');
+ ptrs.set(e.pointerId,role);
+ if(role==='tilt'){const pd=padBox();input.tilt=clampT((p.x-pd.cx)/pd.r)}
+ recomputePress();
+});
+c.addEventListener('pointermove',e=>{
+ if(st!=='run'||paused||!shown())return;const p=toLocal(e);
+ if(e.pointerType==='mouse'){input.tilt=clampT((p.x-W/2)/170);return}
+ if(ptrs.get(e.pointerId)==='tilt'){const pd=padBox();input.tilt=clampT((p.x-pd.cx)/pd.r)}
+});
+const endPointer=e=>{ptrs.delete(e.pointerId);recomputePress()};
+c.addEventListener('pointerup',endPointer);c.addEventListener('pointercancel',endPointer);c.addEventListener('lostpointercapture',endPointer);
+c.addEventListener('contextmenu',e=>e.preventDefault());
+addEventListener('keydown',e=>{
+ if(!shown()||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;
+ if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A'){e.preventDefault();kbL=true;input.tilt=-1}
+ else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D'){e.preventDefault();kbR=true;input.tilt=1}
+ else if(e.key===' '||e.key==='j'||e.key==='J'||e.key==='ArrowDown'){e.preventDefault();kbPress=true}
+});
+addEventListener('keyup',e=>{
+ if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A'){kbL=false;if(!kbR)input.tilt=0}
+ else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D'){kbR=false;if(!kbL)input.tilt=0}
+ else if(e.key===' '||e.key==='j'||e.key==='J'||e.key==='ArrowDown')kbPress=false;
+});
+addEventListener('blur',pauseNow);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseNow();else last=performance.now()});
+window.addEventListener('hashchange',pauseNow);
+let flapT=0;
+function loop(t){
+ const dt=Math.min(.05,Math.max(0,(t-last)/1000)||0);last=t;
+ if(shown()){
+  time+=dt;
+  if(st==='run'&&!paused){
+   tipT=Math.max(0,tipT-dt);
+   game.update(dt,{tilt:input.tilt,press:input.press||kbPress});
+   if(!g.over)milestones();else if(g.won)milestones();
+   if(g.E>.35){flapT+=dt;if(flapT>.16){flapT=0;SFX.flap()}}
+   handleEvents();
+  }
+  ui();draw(dt);
+ }
+ requestAnimationFrame(loop);
+}
+ui();draw(0);requestAnimationFrame(loop);
+  })();  /* ---------- 鯉魚躍龍門: endless runner adapted from a standalone page; fixed score milestones award bonus points immediately ---------- */
   var carpBusy=false,carpStake=0,carpSay=function(){};
   (function(){
 const c=$('carp-canvas'),g=c.getContext('2d'),W=400,H=560,OL='#2b2d42',G={};
@@ -10566,7 +11259,7 @@ ui();draw();requestAnimationFrame(loop);
   $('lobby-explore').addEventListener('click',function(){if($('lobby-games').scrollIntoView)$('lobby-games').scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});});
 
   /* ---------- tabs ---------- */
-  var VIEWS = { blaster: '深海火線 <span>Reef Blaster</span>', lobby: '深海遊戲廳 <span>Deep Sea Arcade</span>', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>' };
+  var VIEWS = { blaster: '深海火線 <span>Reef Blaster</span>', lobby: '深海遊戲廳 <span>Deep Sea Arcade</span>', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>' };
   function route() {
     var v = location.hash.slice(1);
     // Hidden games keep their code but cannot be opened by link; show the lobby and correct the address.
@@ -10605,7 +11298,7 @@ ui();draw();requestAnimationFrame(loop);
     requestAnimationFrame(frame);
   }
   var hot = window.claude && window.claude.hot;
-  if (hot && hot.snapshot) hot.snapshot(function () { return { balance: S.balance + (S.bet && !S.bet.out && S.phase !== 'crashed' ? S.bet.amount : 0) + P.balls.reduce(function (s, b) { return s + b.bet; }, 0) + D.pending + L.pending + (HL.active ? HL.bet : 0) + WL.pending + (TW.active ? TW.bet : 0) + (CR.active ? CR.bet : 0) + (EQ.active ? EQ.stake : 0) + (sneakBusy ? sneakStake : 0) + (FI.active ? FI.stake : 0) + (CP.active ? CP.stake : 0) + (BOBA.active ? BOBA.fee : 0) + (PANCAKE.active && !PANCAKE.free ? PANCAKE.fee : 0) + (catBusy ? catStake : 0) + (birdBusy ? birdStake : 0) + (frogBusy ? frogStake : 0) + (puddingBusy ? puddingStake : 0) + (clockBusy ? clockStake : 0) + (peekBusy ? peekStake : 0) + (napBusy ? napStake : 0) + (mqBusy ? mqStake : 0) + (RP.active ? RP.stake : 0) + (BL.active ? BL.stake : 0) + (DIVE.active ? DIVE.stake : 0) + (MRT.active ? MRT.stake : 0) + (carpBusy ? carpStake : 0) + (riderBusy ? riderStake : 0) + (bossBusy ? bossStake : 0) + (thiefBusy ? thiefStake : 0) + (babyBusy ? babyStake : 0), history: S.history }; });
+  if (hot && hot.snapshot) hot.snapshot(function () { return { balance: S.balance + (S.bet && !S.bet.out && S.phase !== 'crashed' ? S.bet.amount : 0) + P.balls.reduce(function (s, b) { return s + b.bet; }, 0) + D.pending + L.pending + (HL.active ? HL.bet : 0) + WL.pending + (TW.active ? TW.bet : 0) + (CR.active ? CR.bet : 0) + (EQ.active ? EQ.stake : 0) + (sneakBusy ? sneakStake : 0) + (FI.active ? FI.stake : 0) + (CP.active ? CP.stake : 0) + (BOBA.active ? BOBA.fee : 0) + (PANCAKE.active && !PANCAKE.free ? PANCAKE.fee : 0) + (catBusy ? catStake : 0) + (birdBusy ? birdStake : 0) + (frogBusy ? frogStake : 0) + (puddingBusy ? puddingStake : 0) + (clockBusy ? clockStake : 0) + (peekBusy ? peekStake : 0) + (napBusy ? napStake : 0) + (hairBusy ? hairStake : 0) + (mqBusy ? mqStake : 0) + (RP.active ? RP.stake : 0) + (BL.active ? BL.stake : 0) + (DIVE.active ? DIVE.stake : 0) + (MRT.active ? MRT.stake : 0) + (carpBusy ? carpStake : 0) + (riderBusy ? riderStake : 0) + (bossBusy ? bossStake : 0) + (thiefBusy ? thiefStake : 0) + (babyBusy ? babyStake : 0), history: S.history }; });
   if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
 })();
 </script>
