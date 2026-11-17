@@ -13,7 +13,7 @@
       var side=console.querySelector('.side'),stage=console.firstElementChild;
       if(!side||!stage||stage===side)return;
       var buttons=[].slice.call(side.querySelectorAll('button.go'));if(!buttons.length)return;
-      var freeEntry=buttons.some(function(button){return button.id==='mines-go';});
+      var freeEntry=buttons.some(function(button){return button.id==='mines-go'||button.id==='br-go';});
       stage.classList.add('mobile-start-stage');
       var tray=document.createElement('div');tray.className='mobile-stage-actions';tray.setAttribute('role','group');tray.setAttribute('aria-label','開始、續關與重玩');stage.appendChild(tray);
       var records=buttons.map(function(button){

@@ -37,3 +37,5 @@
 | [胖老闆追人 Chubby Boss](boss/README.md) | `#boss` | 技巧闖關 | 顯示 | 177 行 | 遲到了！跳過障礙，別被胖老闆追上。 |
 | [偷水果的貓 Fruit Thief Cat](thief/README.md) | `#thief` | 技巧闖關 | 顯示 | 178 行 | 換道、跳籃子，偷水果躲開老闆娘。 |
 | [寶寶逃洗澡 Baby Bath Escape](baby/README.md) | `#baby` | 技巧闖關 | 顯示 | 180 行 | 跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。 |
+| [? ?](pudding/README.md) | `#pudding` | 技巧闖關 | 顯示 | 380 行 | 拼出武器，背著小王子殺出重圍。 |
+| [打磚塊 Breakout](breakout/README.md) | `#breakout` | 免費懷舊 | 顯示 | 228 行 | 移動擋板反彈小球，打光磚塊一關闖過一關。 |

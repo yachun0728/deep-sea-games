@@ -120,6 +120,8 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `deep-sea-mines-best` | 踩地雷最多翻開安全格（0～22）；缺少或無效時以0起算 |
 | `deep-sea-gold-daily-v1` | 台灣日期、每日次數、已發點數及本次layout／open；沒有舊資料時初始化，不修改舊Key |
 | `deep-sea-mines-level-best` | 舊版通關紀錄，保留不再更新 |
+| `deep-sea-breakout-best` | 打磚塊最佳分數；缺少或無效時以0起算 |
+| `deep-sea-breakout-level-best` | 打磚塊最高關卡；缺少或無效時以0起算 |
 | `deep-sea-gold-best` | 挖金礦最佳分數；缺少或無效時以0起算 |
 | `pearl-merge-best` | 合併最佳分數 |
 | `chayne` | Dodge Run 最佳距離 |
