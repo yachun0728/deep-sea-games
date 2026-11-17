@@ -8,7 +8,9 @@
 <title>深海遊戲廳 Deep Sea Arcade</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <style>{{include:css/arcade.css}}
-{{include:games/blaster/style.css}}</style>
+{{include:games/blaster/style.css}}
+{{include:games/dive/style.css}}
+{{include:games/mrt/style.css}}</style>
 </head>
 <body>
 <div class="wrap is-lobby" id="site-shell">
@@ -49,12 +51,18 @@
     <a href="#bird" id="tab-bird">便便鳥大戰狼群<small>Poop Bird</small></a>
     <a href="#blaster" id="tab-blaster">深海火線<small>Reef Blaster</small></a>
     <a href="#reaper" id="tab-reaper">死神打工<small>Reaper Shift</small></a>
+    <a href="#dive" id="tab-dive">一口氣探險<small>One Breath Dive</small></a>
+    <a href="#mrt" id="tab-mrt">捷運搶位<small>MRT Seat Grab</small></a>
   </nav></details></div>
 
 {{include:templates/lobby.html}}{{include:games/crash/view.html}}{{include:games/mines/view.html}}{{include:games/plinko/view.html}}{{include:games/merge/view.html}}{{include:games/dice/view.html}}{{include:games/limbo/view.html}}{{include:games/hilo/view.html}}{{include:games/keno/view.html}}{{include:games/wheel/view.html}}{{include:games/tower/view.html}}{{include:games/crossing/view.html}}{{include:games/dream/view.html}}{{include:games/runner/view.html}}{{include:games/elevator/view.html}}{{include:games/sneak/view.html}}{{include:games/fishing/view.html}}{{include:games/campaign/view.html}}{{include:games/boba/view.html}}{{include:games/cat/view.html}}{{include:games/bird/view.html}}{{include:games/reaper/view.html}}{{include:games/blaster/view.html}}
+{{include:games/dive/view.html}}
+{{include:games/mrt/view.html}}
 </div>
 
 <script type="application/json" id="boba-source">{{json:games/boba/original.html}}</script>
+<script type="application/json" id="dive-source">{{json:games/dive/original.html}}</script>
+<script type="application/json" id="mrt-source">{{json:games/mrt/original.html}}</script>
 <script id="game-runtime">{{include:js/runtime.js}}</script>
 </body>
 </html>

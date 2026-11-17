@@ -162,5 +162,19 @@
     "view": "games/blaster/view.html",
     "card": "games/blaster/card.html",
     "icon": "games/blaster/icon.svg"
+  },
+  {
+    "id": "dive",
+    "logic": "games/dive/game.js",
+    "view": "games/dive/view.html",
+    "card": "games/dive/card.html",
+    "icon": "games/dive/icon.svg"
+  },
+  {
+    "id": "mrt",
+    "logic": "games/mrt/game.js",
+    "view": "games/mrt/view.html",
+    "card": "games/mrt/card.html",
+    "icon": "games/mrt/icon.svg"
   }
 ]

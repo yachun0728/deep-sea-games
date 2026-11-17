@@ -86,6 +86,13 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 每局先扣入場點數，十班制；普通靈魂要接走，綠色通行證要放行。每班全部處理完才送出 `game_progress`，班次以 `stage` 記錄，累計接走數以 `score` 記錄。過關選擇時間不列入有效遊玩時間；收手與三顆心用完分別送出 `cashout` 與 `loss` 的 `game_end`。第一班領回 0.70 倍，第十班自動領回 22 倍。
 
+## 一口氣探險（dive）與捷運搶位（mrt）
+
+兩款都以內嵌原畫面運作，由父頁扣入場點數並送出 `game_start`；子頁內的點擊與按鍵會通知平台，維持跨文件有效遊玩時間。
+
+- dive：每次下潛後送 `game_progress`，`stage` 為海域（1 淺海～4 深淵）、`step` 為層數。`game_end` 的 `score` 為最終層數、`multiplier` 為結算倍率；上浮為 `cashout`，到海底或救生繩為 `complete`，溺水或領回 0 為 `loss`。
+- mrt：每站開始送 `game_progress`，`stage` 為第幾站、`step` 為目前階數。暫停時送 `checkpoint=1` 的 progress 並停止計時，按繼續送 `game_resume`。`game_end` 的 `score` 為階數；下車結算為 `cashout`，搶滿 8 階或末班車為 `complete`，體力歸零或領回 0 為 `loss`。
+
 ## 程式來源定位
 
 追蹤實作位於 `js/analytics.js`，各遊戲呼叫位於 `games/<id>/game.js`，路由追蹤位於 `js/navigation.js`。`index.html` 為靜態組合產出，修改後執行 `python3 tools/build.py` 與 `--check`；事件與欄位契約沒有因來源拆分而變更。

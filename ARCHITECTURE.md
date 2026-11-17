@@ -34,7 +34,8 @@ deep-sea-games/
 │   │   ├── view.html         該遊戲完整 view
 │   │   ├── card.html         該遊戲大廳卡片
 │   │   └── icon.svg          該遊戲 SVG symbol
-│   └── boba/original.html    額外：珍奶原始完整子頁
+│   ├── boba/original.html    額外：珍奶原始完整子頁
+│   └── dive/、mrt/           另含 original.html（原始完整子頁）與 style.css（限定該遊戲的平台外框樣式）
 ├── tools/
 │   ├── build.py              Python 標準函式庫靜態組合／檢查
 │   ├── test_build.py         組合工具與來源一致性測試
@@ -48,7 +49,7 @@ deep-sea-games/
 
 ## 組合方式與責任邊界
 
-`python3 tools/build.py` 從 templates/index.html 遞迴展開 `{{include:專案相對路徑}}`，不自動加換行或改寫程式。`{{json:games/boba/original.html}}` 將子頁序列化為 JSON 並跳脫 `<`，保留原 srcdoc 橋接流程。相對路徑皆從專案根目錄解析；工具拒絕循環引用與越界路徑。`--check` 不寫檔，檢查產出與遊戲 catalog 是否一致。
+`python3 tools/build.py` 從 templates/index.html 遞迴展開 `{{include:專案相對路徑}}`，不自動加換行或改寫程式。`{{json:games/<id>/original.html}}`（boba、dive、mrt）將子頁序列化為 JSON 並跳脫 `<`，保留原 srcdoc 橋接流程。相對路徑皆從專案根目錄解析；工具拒絕循環引用與越界路徑。`--check` 不寫檔，檢查產出與遊戲 catalog 是否一致。
 
 這次是「來源拆分」，不是把所有遊戲改成獨立 ES module。JS 片段仍在部署產出中構成原本一個共享 IIFE，順序由 js/runtime.js 決定。不要把 platform.js 或 bootstrap.js 單獨加為 script，單一片段也不一定能獨立通過語法解析；應解析組合後的 game-runtime。
 
@@ -82,6 +83,8 @@ flowchart TD
 | dream / elevator / fishing / campaign / reaper / blaster | DR / EQ / FI / CP / RP / BL |
 | runner / sneak / cat / bird | runnerBusy / sneakBusy / catBusy / birdBusy，各自內層 IIFE |
 | boba | BOBA、deepSeaBoba；original.html 為子頁 |
+| dive | DIVE、deepSeaDive；original.html 為子頁（一口氣探險） |
+| mrt | MRT、deepSeaMrt；original.html 為子頁（捷運搶位） |
 
 ### 隱藏遊戲
 
@@ -92,6 +95,8 @@ flowchart TD
 js/navigation.js 的 route 以 hash 切換 view 與 tab、標題、AN.view，空白／未知 hash 回 #lobby；保留大廳捲動位置及左上返回。各遊戲暫停方式不同，沒有新增統一暫停行為。
 
 games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.srcdoc。deepSeaBoba 提供 start、finish、progress、pause、resume、touch，驗證來源 contentWindow；子頁提供 setBobaPlatformActive、finishBobaPlatformRound。原粉色 UI、父頁扣點／GA4、子頁本機紀錄責任維持原狀。
+
+一口氣探險（dive）與捷運搶位（mrt）沿用相同 srcdoc 子頁模式，但 view 採用與其他遊戲相同的 `.console` 版型（左側 iframe、右側 `.side .panel` 放固定 10 點入場、目前倍率、可領點數、淨賺／損與扣點按鈕）。右側按鈕呼叫子頁的 `startDivePlatformRound`／`startMrtPlatformRound`，與子頁開場按鈕共用同一開局流程；開局時呼叫 `deepSeaDive.start`／`deepSeaMrt.start` 由父頁驗證來源、檢查餘額並扣 `ENTRY_FEE`（回傳 0 代表未扣款），結束時以 `finish` 回報倍率，由父頁計算 `floor(入場 × round(倍率×100) / 100)` 並入帳，`active` 旗標保證單次扣款與單次結算。兩者另提供 `live`（只更新右側面板倍率）、`progress`、`touch`；mrt 另有 `pause`／`resume`。父頁經 `setDivePlatformActive`／`setMrtPlatformActive` 通知子頁是否顯示：隱藏時停止繪圖，mrt 在進站中會自動暫停。子頁單獨開啟（無父頁）時維持原本不扣點的示範模式。原始子頁中未使用的示範錢包（`lobbyPoints`）已移除，子頁不保存點數。
 
 ## 資料與錢包
 
@@ -116,6 +121,8 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `straw_game_best` | 珍奶最佳杯數 |
 | `straw_game_last_open` | 珍奶最後開啟時間 |
 | `straw_game_today` | 珍奶當日紀錄 `{d,n}` |
+| `diveBestMult` | 一口氣探險最高倍率（子頁寫入，同源） |
+| `mrtBestMult` | 捷運搶位最高倍率（子頁寫入，同源） |
 
 大部分回合只存在記憶體；重新整理不會還原進行中的遊戲，已扣餘額仍保存。這是瀏覽器本機錢包，沒有伺服器帳戶、跨裝置同步或付款系統。
 

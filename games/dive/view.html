@@ -1,0 +1,13 @@
+  <section class="view" id="view-dive" hidden>
+    <div class="console"><div class="dive-stage"><iframe id="dv-frame" title="一口氣探險 One Breath Dive"></iframe></div>
+      <div class="side"><section class="panel" aria-label="一口氣探險操作">
+        <dl class="stats"><div><dt>目前倍率</dt><dd id="dv-mult">0.00×</dd></div><div><dt>照倍率可領</dt><dd id="dv-pay">0 點</dd></div><div><dt>本局淨賺／損</dt><dd id="dv-net">—</dd></div></dl>
+        <div class="field"><label>每局入場</label><p class="runner-fee">10 <small>點</small></p><input id="dv-amount" type="hidden" value="10"></div>
+        <button class="go" id="dv-go" type="button" data-mode="bet">扣點開始下潛</button>
+        <p class="msg" id="dv-msg" aria-live="polite">每局固定扣 10 點。按「扣點開始下潛」或遊戲裡的「深吸一口氣」開始。上浮結算時依倍率領回。</p>
+        <p class="hint">每層挑一條路往下潛；氧氣高於紅線才能上浮結算，溺水歸零。上浮時若需要丟珍珠減重，實際倍率以結算畫面為準。</p>
+      </section></div>
+    </div>
+    <details class="rules"><summary>玩法、倍率與點數</summary><p>每局固定扣 10 點。每層從幾條路線中挑一條往下潛，會消耗氧氣，並可能拿到珍珠、氧氣或遺物。氧氣條上的紅線是上浮所需氧氣，珍珠越多越重、紅線越高；高於紅線才能上浮，差一點時可以丟掉部分珍珠減重。</p><p>倍率＝（珍珠＋層數×2）÷ 250，取到小數第二位並捨去，上限 100×。上浮結算或潛到第 40 層海底時，領回點數＝入場點數 × 倍率並捨去小數；倍率是總領回金額（含本金），低於 1.00× 會少於入場點數。氧氣耗盡就歸零；若有「救生繩」遺物，第一次耗盡會保留一半珍珠結算。</p><p>這款是回合制，離開畫面不會自動結束；回來後可以繼續同一局。重新整理會放棄本局，已扣點數不退回。最高倍率紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+  </section>
+

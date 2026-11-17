@@ -1,0 +1,1 @@
+.dive-stage{min-width:0;display:flex;justify-content:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#000}.dive-stage iframe{display:block;width:min(100%,480px);height:min(860px,calc(100svh - 150px));min-height:600px;border:0;background:#000}
