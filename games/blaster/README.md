@@ -7,7 +7,7 @@
 - 網址：`#blaster`　分類：技巧闖關　狀態：顯示中
 - 大廳卡片：「七種武器三選一，闖過水雷、礁石與深海巨獸。」｜每局 10 點 · 無盡 · 每10關+1點
 - 追蹤名稱（GA4 `game_name`）：深海火線，`game_id` 為 `blaster`
-- 檔案：`games/blaster/card.html`、`games/blaster/game.js`、`games/blaster/icon.svg`、`games/blaster/style.css`、`games/blaster/view.html`；`game.js` 共 372 行、35.9 KB
+- 檔案：`games/blaster/card.html`、`games/blaster/game.js`、`games/blaster/icon.svg`、`games/blaster/style.css`、`games/blaster/view.html`；`game.js` 共 391 行、36.9 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「22. 深海火線 Reef Blaster（blaster）」（下方「規則摘要」已複製）
 
@@ -19,28 +19,29 @@
 
 - 狀態物件／進行中旗標：`BL`（L2）
 - L9 常數：`BL_GUNS`
-- L94 常數：`BL_MOBS`
-- L108 常數：`BL_COST`
-- L109 常數：`BL_UNLOCK`
+- L98 常數：`BL_MOBS`
+- L112 常數：`BL_SLOTS`
+- L113 常數：`BL_COST`
+- L114 常數：`BL_UNLOCK`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`blSay` L5、`blRetryFee` L6、`blPay` L7、`blWeapon` L18、`blBossStage` L22、`blStageConfig` L23、`blHealth` L24、`blPace` L25、`blVisible` L26、`blTracking` L27、`blUI` L28、`blRound` L39、`blCardText` L43、`blOfferPicks` L48、`blChoose` L54、`blStart` L60、`blRetry` L68、`blCash` L75、`blHurt` L81、`blClear` L86、`blEnemy` L110、`blWavePlan` L114、`blSpawn` L129、`blBossSpawn` L135、`blAdvanceBoss` L139、`blAdvanceEnemy` L153、`blDamage` L167、`blSegmentHit` L186、`blMove` L190、`blBurst` L194、`blAdvanceBullet` L200、`blEffect` L221、`blStep` L222、`blSync` L250、`blRoundRect` L254、`blDrawBoss` L255、`blDrawMonster` L262、`blDrawBullet` L298、`blDrawInk` L308、`blDrawPickup` L313、`blDrawPlayer` L318、`blPickCard` L331、`blDrawPicks` L332、`blDraw` L337、`blSuspend` L366、`blLoop` L370
+`blSay` L5、`blRetryFee` L6、`blPay` L7、`blWeapon` L18、`blBossStage` L22、`blStageConfig` L23、`blHealth` L24、`blPace` L25、`blVisible` L26、`blTracking` L27、`blUI` L28、`blRound` L39、`blCardText` L43、`blOfferPicks` L50、`blChoose` L57、`blStart` L64、`blRetry` L72、`blCash` L79、`blHurt` L85、`blClear` L90、`blEnemy` L115、`blWavePlan` L119、`blSpawn` L134、`blBossSpawn` L141、`blAdvanceBoss` L145、`blAdvanceEnemy` L159、`blDamage` L173、`blSegmentHit` L192、`blClampX` L196、`blMove` L198、`blAim` L202、`blBurst` L203、`blAdvanceBullet` L209、`blEffect` L230、`blStep` L231、`blSync` L258、`blRoundRect` L262、`blDrawBoss` L263、`blDrawMonster` L270、`blDrawBullet` L306、`blDrawInk` L316、`blDrawPlayer` L321、`blPickCard` L334、`blDrawPicks` L335、`blDraw` L340、`blHold` L362、`down` L363、`up` L364、`blPointerX` L369、`blSuspend` L385、`blLoop` L389
 
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L66 `blStart`：`S.balance-=stake;`
-- L73 `blRetry`：`S.balance-=cost;`
+- L70 `blStart`：`S.balance-=stake;`
+- L77 `blRetry`：`S.balance-=cost;`
 
 **入帳（領回／獎勵）**
-- L89 `blClear`：`S.balance+=bonus;`
+- L93 `blClear`：`S.balance+=bonus;`
 
 **餘額檢查**
 - L35 `blUI`：`$('bl-retry').disabled=BL.phase!=='lost'||S.balance<blRetryFee();`
 - L36 `blUI`：`$('bl-retry-info').textContent='保留 Lv.'+BL.weapon+' 武器，恢復 3 心，從第 '+BL.stage+' 關第一波重來。'+(S.balance<blRetryFee(…`
-- L64 `blStart`：`if(stake>S.balance){blSay(LOW_MSG,'lose');`
-- L71 `blRetry`：`if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點；可等待平台自動回點。','lose');`
+- L68 `blStart`：`if(stake>S.balance){blSay(LOW_MSG,'lose');`
+- L75 `blRetry`：`if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點；可等待平台自動回點。','lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
@@ -49,12 +50,12 @@
 
 - L27 `blTracking`：`if(engaged)AN.resume(BL.analytics,{stage:BL.stage});`
 - L27 `blTracking`：`else if(BL.active)AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills},true);`
-- L66 `blStart`：`BL.analytics=AN.start('blaster',stake);`
-- L73 `blRetry`：`BL.analytics=AN.start('blaster',cost,{stage:BL.stage,entry_kind:'stage_retry',retry_count:BL.retries});`
-- L78 `blCash`：`AN.end(BL.analytics,BL.attemptEarned,'cashout',{stage:BL.cleared,score:BL.kills,multiplier:BL.stake?BL.attemp…`
-- L83 `blHurt`：`AN.end(BL.analytics,BL.attemptEarned,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`
-- L90 `blClear`：`AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills,bonus_points:bonus,total_bonus_points:BL.earned,weapo…`
-- L369 `blSuspend`：`AN.end(BL.analytics,BL.attemptEarned,'abandoned',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`
+- L70 `blStart`：`BL.analytics=AN.start('blaster',stake);`
+- L77 `blRetry`：`BL.analytics=AN.start('blaster',cost,{stage:BL.stage,entry_kind:'stage_retry',retry_count:BL.retries});`
+- L82 `blCash`：`AN.end(BL.analytics,BL.attemptEarned,'cashout',{stage:BL.cleared,score:BL.kills,multiplier:BL.stake?BL.attemp…`
+- L87 `blHurt`：`AN.end(BL.analytics,BL.attemptEarned,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`
+- L94 `blClear`：`AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills,bonus_points:bonus,total_bonus_points:BL.earned,weapo…`
+- L388 `blSuspend`：`AN.end(BL.analytics,BL.attemptEarned,'abandoned',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -70,13 +71,13 @@
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-定位：`games/blaster/game.js` 的 BL、blWeapon、blSpawn、blStep、blClear、blCash；樣式獨立於 style.css。固定投入10，只在新局扣款。自動朝前射擊，點左／右半邊或按 ← →／A D 換道，亦可用畫面外的左右按鈕。
+定位：`games/blaster/game.js` 的 BL、blWeapon、blSpawn、blStep、blClear、blCash；樣式獨立於 style.css。固定投入10，只在新局扣款。自動朝前射擊，**自由左右移動**（2026-11-17 由三條航道改版）：在畫面上按住拖曳／點按設定目標 x，或按住左右按鈕、← →／A D 連續移動；玩家位置 x∈[28,372]，最高移速 720px/s，鍵盤／按鈕滑動速度 430px/s；`blMove(方向)` 為單步微調（±80px，鍵盤啟動按鈕的 click 使用）。
 
-無盡關卡（2026-11-17 大改，目標：更密、更有趣）：第s關波數為 min(60,18+4×(s-1))（首關18、第10關54、第11關起上限60）；每5關（5、10、15…）為王關，波數取 ceil(原波數×.6)，怪潮清完後出現王。基本波間距 max(.85,1.7-(s-1)×.09)，再乘以 1-.16×當前波數/總波數；場上沒有怪時下一波提早至.35秒。同關移速加成為 1+.35×當前波數/總波數，第1～10關普通移速基準 105+15s，第11關起 255+12×log2(s-9)。背景航道隨實際速度捲動。
+無盡關卡（2026-11-17 大改，目標：更密、更有壓力）：第s關波數為 min(60,18+4×(s-1))（首關18、第10關54、第11關起上限60）；每5關（5、10、15…）為王關，波數取 ceil(原波數×.6)，怪潮清完後出現王。基本波間距 max(.8,1.5-(s-1)×.06)，再乘以 1-.16×當前波數/總波數；場上沒有怪時下一波提早至.35秒。同關移速加成為 1+.35×當前波數/總波數，第1～10關普通移速基準 135+14s，第11關起 275+12×log2(s-9)。背景航道隨實際速度捲動。
 
-**出怪預算**：每波從預算選怪，每波最多 min(3,1+floor(s/3)) 條航道（第1～2關單航道，第3～5關2條，第6關起3條），預算 min(5.2,1.3+.3×(s-1))；各怪成本：章魚1、魟魚1、螃蟹1.4、電鰻1.3、海龜1.6、水母1.5、水雷1.1、礁石1.2、烏賊1.6，同一波至多一塊礁石。多怪同波時每隻血量乘 max(.7,1-.12×(同波數量-1))，並以 -70px 錯開出場高度。每種新東西在首次解鎖的關卡第3波單獨出現一次。
+**出怪預算**：怪物從 5 個欄位（x=56、128、200、272、344）落下。每波的怪數依關卡加權為 1～4 隻（1隻機率 max(.1,.3-.03(s-1))；4隻 min(.22,.03+.03(s-1))；3隻 .28；其餘 2隻），並受預算 min(8,3.2+.5×(s-1)) 限制；各怪成本：章魚1、魟魚1、螃蟹1.4、電鰻1.3、海龜1.6、水母1.5、水雷1.1、礁石1.2、烏賊1.6，同一波至多一塊礁石、每隻使用不同欄位。多怪同波時每隻血量乘 max(.65,1-.12×(同波數量-1))，並以 -70px 錯開出場高度。每種新東西在首次解鎖的關卡第3波單獨出現一次。
 
-普通血量H在第1～10關為 4+ceil(2.2×s^1.5)，第11關起為 74+14×(s-10)，各種血量乘數向上取整：
+普通血量H在第1～10關為 3+ceil(.8×s)，第11關起為 11+3×(s-10)（血量放低，難度主要來自密度、速度與障礙），各種血量乘數向上取整：
 
 | 怪物／障礙 | 解鎖 | 行為 | 血量／移速倍率 |
 | --- | --- | --- | --- |
@@ -84,21 +85,21 @@
 | 衝刺魟魚 | 第2關 | 高速衝線 | .65／1.48 |
 | 裝甲螃蟹 | 第2關 | 厚甲與蟹鉗輪廓 | 1.7／.82 |
 | 水雷 | 第3關 | 打爆時連鎖爆炸（半徑90，對其他怪造成 ceil(.6H) 傷害），若在 y>400 且距玩家<110 引爆則扣1心；漏過底部同樣扣1心 | .45／1.1 |
-| 換道電鰻 | 第3關 | 先預告箭頭.65秒才平滑換道，接近底部不再啟動新換道 | .9／1.08 |
+| 橫移電鰻 | 第3關 | 先預告箭頭.65秒才平滑橫移到距離1～2個欄位的位置，接近底部不再啟動新橫移 | .9／1.08 |
 | 護盾海龜 | 第4關 | 另有ceil(.75H)護盾，先吸收傷害，超出部分扣血 | 1／.86 |
 | 礁石（障礙） | 第5關 | 擋住子彈（最近的目標先中彈）；不計擊破；漏過底部不扣心，只在碰到玩家時扣1心 | 2.2／.62 |
-| 分裂水母 | 第6關 | 死亡生成2隻小水母，小水母不再分裂 | 1.15／.9 |
-| 噴墨烏賊 | 第7關 | 下降到 y=150 後懸停最多4秒，每1.7秒朝「玩家當時所在航道」吐一顆墨彈（速度300，可被子彈打掉；碰到玩家扣1心，彈體1次）；懸停結束後繼續下降 | 1.1／.72 |
+| 分裂水母 | 第6關 | 死亡生成2隻小水母（左右相鄰欄位），小水母不再分裂 | 1.15／.9 |
+| 噴墨烏賊 | 第7關 | 下降到 y=150 後懸停最多4秒，每1.7秒朝「玩家當時所在的 x」吐一顆墨彈（速度300，可被子彈打掉；碰到玩家扣1心，彈體1次）；懸停結束後繼續下降 | 1.1／.72 |
 
 小水母血量為.25H向上取整，速度1.18倍；分裂位置最多到y=390，保留反應距離。
 
-**王關（深海巨獸）**：第 5、10、15… 關最後一波清完後出現一次。血量 28H（約 10～15 秒的對戰），固定在 y=150 左右游動（x=200±105）；每個循環先以紅色標示航道 .9秒（第10關起或血量<50% 時標2條，否則1條，不會三條全標），隨後發射墨浪（速度500，寬約80，不可被打掉，碰到玩家扣1心）；循環間隔：第5～9關 3.2秒（血量<50% 為2.4秒），第10關起 2.6秒（血量<50% 為1.9秒）；血量<50% 時每個循環另丟一顆水雷（場上怪物<7隻）。王不會因碰撞扣心，也不受寒流減速。擊敗王：擊破數+10、火力 +2、清除墨彈，其餘怪物處理完即過關。
+**王關（深海巨獸）**：第 5、10、15… 關最後一波清完後出現一次。血量 28H（約 10～15 秒的對戰），固定在 y=150 左右游動（x=200±105）；每個循環先以紅色標示 1～2 個欄位區域（寬72px）.9秒（第10關起或血量<50% 時標2個，否則1個，5個欄位最多標2個），隨後發射墨浪（速度500，寬約52，不可被打掉，碰到玩家扣1心）；循環間隔：第5～9關 3.2秒（血量<50% 為2.4秒），第10關起 2.6秒（血量<50% 為1.9秒）；血量<50% 時每個循環另丟一顆水雷（場上怪物<7隻）。王不會因碰撞扣心，也不受寒流減速。擊敗王：擊破數+10、火力 +1、清除墨彈，其餘怪物處理完即過關。
 
-**武器形態與三選一**（取代舊版「依等級解鎖」）：火力等級 L 從1起，不設遊玩上限（數值限制為安全整數上限），只決定單發傷害 D=1+ceil(L/3) 與射速（火箭間隔.34秒，其餘 max(.11,.27-L×.005)秒）。武器形態（BL.form）從脈衝彈開始，第2關起每關開始前暫停並提供 3 張強化卡（時間凍結，可點卡片或按 1／2／3，亦可用面板按鈕）：卡片是與目前不同的 3 種武器形態，選擇後換成該形態並火力 +2；若生命<3，其中一張改為「修補船體」（恢復1心、火力 +2）。每 6 波（第1、7、13…波）出現一個不同於同波怪物跑道的彩色武器箱，撿取火力 +1（擊敗王另 +2）。形態、火力與剩餘生命跨關保留，新局重設；付費重玩關卡保留形態與火力，不再抽卡。
+**武器形態與三選一**：火力等級 L 從1起，不設遊玩上限（數值限制為安全整數上限），只決定單發傷害 D=1+ceil(L/3) 與射速（火箭間隔.34秒，其餘 max(.11,.27-L×.005)秒）；每過一關 L+1、擊敗王再 +1，**選卡不增加火力**。武器形態（BL.form）：開局先從 3 張卡選起始形態（不增加火力），之後每 6 波（第6、12、18… 波，最後一波不彈出）與每關開始前都會暫停彈出 3 張卡（時間凍結，戰鬥接著繼續；可點卡片、按 1／2／3 或用面板按鈕）；卡片是與目前不同的 3 種武器形態，若生命<3 且非起始，其中一張改為「修補船體」（恢復1心）。已移除掉落的武器箱。形態、火力與剩餘生命跨關保留，新局重設；付費重玩關卡保留形態與火力，不再抽卡。
 
 | 形態 | 外觀 | 實際攻擊 |
 | --- | --- | --- |
-| 脈衝彈（起始） | 薄荷色圓彈與單管 | 1發，1.2D |
+| 脈衝彈（預設） | 薄荷色圓彈與單管 | 1發，1.2D |
 | 雙管速射 | 藍色雙管與長彈 | 2發，各D |
 | 穿透光槍 | 綠色長導軌與光束 | 2發，各1.35D，每發最多命中3隻，同一隻不重複計直接傷害 |
 | 追蹤火箭 | 紅色側掛發射筒與尾焰 | 2發，各2.2D，會轉向追蹤，爆炸半徑78 |
@@ -106,7 +107,7 @@
 | 寒流彈 | 淡藍雙管與菱形彈 | 2發，各.9D，命中使怪物減速（移速×.55）2秒，王不受影響 |
 | 電鏈彈 | 黃色線圈與閃電彈 | 1發，1.3D，命中後對最近2隻（距離<140）造成該發60%傷害 |
 
-2026-11-17 因過於強勢移除扇形散彈；已無任何限時武器效果與倒數。拾取箱子容許水平距離<52、垂直距離<48；火箭速度600、電漿720、寒流720、電鏈800，其他速度沿用。範圍攻擊對直接命中以外的半徑內怪物造成該發55%傷害；護盾同樣先吸收。不依目前火力降低敵人血量。
+2026-11-17 因過於強勢移除扇形散彈；已無任何限時武器效果與倒數。火箭速度600、電漿720、寒流720、電鏈800，其他速度沿用。範圍攻擊對直接命中以外的半徑內怪物造成該發55%傷害；護盾同樣先吸收。不依目前火力降低敵人血量。
 
 整局3心，碰到怪物、任一隻漏怪穿過底部、水雷近距離引爆、墨彈或王的墨浪打到都扣1心，每個來源只扣一次（礁石漏過不扣）。生命歸零時本局結束，不發點數獎勵。場上怪物與武器箱處理完、波數全部出完才過關；關後可繼續或提前收隊，續關不扣費亦不補心。
 

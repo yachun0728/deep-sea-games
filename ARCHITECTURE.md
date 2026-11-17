@@ -223,4 +223,4 @@ KE.active涵蓋免費挖掘，使用現有syncBalance／save入帳；可用時�
 
 時序修復為固定入場10點、無限關卡的停針挑戰，沒有點數獎勵或領回。drDifficulty限制目標寬度與速度，drAdvance管理預告反轉及暫停；第11關起最多一次、第21關起最多兩次。保留既有狀態與ID，不新增儲存Key。hot.snapshot不將本局入場費加回餘額；每局單次扣款與start，過關progress、續關resume、失敗end且payout_points=0。
 
-深海火線（2026-11-17 玩法大改）：武器改為「形態」BL.form（7 種）由每關前 3 選 1 決定，火力等級 BL.weapon 只影響傷害與射速；新增 BL.picks／BL.ink／BL.bossSpawned，phase 多一個 'pick'（暫停，不計時、不扣款、離頁記 abandoned）。出怪改為每波預算（blWavePlan），新增水雷、礁石、噴墨烏賊與每5關的深海巨獸；不新增儲存Key，扣點、重玩費、里程碑與GA4生命週期不變。數值與公式見 GAME_RULES.md 第22節。tools/test_blaster.mjs 為 Node 行為測試。
+深海火線（2026-11-17 玩法大改）：改為自由左右移動（BL.target／BL.keys，拖曳、按住按鈕與鍵盤；移除三條航道）；武器為「形態」BL.form（7 種），開局、每關前與每 6 波暫停彈出三選一（BL.picks／BL.pickResume，phase 'pick'，不計時、不扣款、離頁記 abandoned），不再有掉落的武器箱；火力等級只在過關與王戰 +1。出怪改為每波預算（blWavePlan，5 個欄位 1～4 隻），新增水雷、礁石、噴墨烏賊與每5關的深海巨獸（BL.ink）；不新增儲存Key，扣點、重玩費、里程碑與GA4生命週期不變。數值與公式見 GAME_RULES.md 第22節。tools/test_blaster.mjs 為 Node 行為測試。
