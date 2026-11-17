@@ -115,6 +115,10 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 無盡跑酷，沒有關卡。每局只送一次 game_start（entry_points=10）。每到一個里程碑（150、300、500、750、1000 公尺，之後每 250 公尺）就送一次 `game_progress`，帶 `step`／`score`（公尺數）與 `bonus_points`（該里程碑獎勵），不暫停有效遊玩時間。摔下去時送 `game_end`：`payout_points` 為本局累計入帳點數（沒到 150 公尺為 0）、結果 `complete`（有入帳）或 `loss`，`score` 為跑到的公尺數。`bonus_points` 沒有註冊為 GA4 自訂定義，需要時在後台新增。
 
+## 打磚塊（breakout）
+
+免費懷舊遊戲，每局一次 `game_start`（entry_points=0）。每清一關送一次 `game_progress`，帶 `stage`／`step`（關卡）、`score` 與 `level`。球用完送 `game_end`，result 為 `loss`；離頁為 `abandoned`，兩者皆帶 `score`、`level`、`bricks`（累計破壞磚塊數），payout_points=0。暫停以現有可見性與互動計時處理，不另送事件。
+
 ## 蓋樓大師（skybuilder）
 
 固定入場10點，start一次；10、20、30層各立即發5點並送progress（step、score、floors、milestone、bonus_points、total_bonus_points），不暫停有效時間。失手／倒塌送loss，正常離頁送abandoned；end的payout_points記錄本局已入帳BONUS，不再發點，不帶返還倍率。BFCache保留回合。未驗證GA4後台收件。

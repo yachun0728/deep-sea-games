@@ -272,5 +272,12 @@
     "view": "games/last-hair/view.html",
     "card": "games/last-hair/card.html",
     "icon": "games/last-hair/icon.svg"
+  },
+  {
+    "id": "breakout",
+    "logic": "games/breakout/game.js",
+    "view": "games/breakout/view.html",
+    "card": "games/breakout/card.html",
+    "icon": "games/breakout/icon.svg"
   }
 ]
