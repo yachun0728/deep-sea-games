@@ -25,8 +25,12 @@ body{position:fixed;inset:0}
 #hud-order{font-weight:900;font-size:18px;color:var(--cream);letter-spacing:1px}
 #hud-lives{font-size:20px;letter-spacing:3px;filter:drop-shadow(0 2px 2px #000)}
 #hud-streak{color:var(--gold);font-weight:900;font-size:15px}
-#mute{position:absolute;top:calc(8px + env(safe-area-inset-top));right:10px;z-index:40;width:42px;height:42px;border-radius:50%;
-  border:1px solid #ffffff30;background:#00000070;color:#fff;font-size:20px;cursor:pointer}
+/* 音效按鈕：手繪風（奶油色底、墨線描邊、醬汁紅喇叭） */
+#mute{position:absolute;top:calc(10px + env(safe-area-inset-top));right:12px;z-index:40;width:48px;height:48px;padding:0;border:none;background:none;cursor:pointer}
+#mute svg{display:block;width:100%;height:100%;filter:drop-shadow(0 3px 0 #2a160a)}
+#mute:active{transform:translateY(2px)}
+#mute .waves{transition:opacity .15s}#mute .slash{opacity:0}
+#mute.muted .waves{opacity:0}#mute.muted .slash{opacity:1}
 #hint{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));width:max-content;max-width:calc(100% - 150px);z-index:5;pointer-events:none;
   font-size:13px;font-weight:700;line-height:1.45;text-align:center;background:rgba(40,18,6,.82);border:2px solid var(--crust);border-radius:12px;padding:6px 12px;color:#f1e3c6}
 #hint b{color:var(--gold)}
@@ -47,7 +51,9 @@ body{position:fixed;inset:0}
 .btn.ghost{background:transparent;color:#d9c7a6;box-shadow:none;font-size:15px;font-weight:600;text-decoration:underline;padding:6px}
 .btn[disabled]{opacity:.4}
 .btn.dim{opacity:.55}
-.big-emoji{font-size:64px;line-height:1;filter:drop-shadow(0 3px 3px #000)}
+.art-icon{width:96px;height:96px;filter:drop-shadow(0 4px 0 rgba(0,0,0,.45))}.art-icon:empty{display:none}.art-icon svg{width:100%;height:100%;display:block}
+.pack{display:inline-block;width:34px;height:34px;margin:0 2px;vertical-align:middle;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M8 14 L56 14 L58 50 L6 50 Z' fill='%23c93a1e' stroke='%232a160a' stroke-width='3.5' stroke-linejoin='round'/%3E%3Cpath d='M6 50 l4 4 l4-4 l4 4 l4-4 l4 4 l4-4 l4 4 l4-4 l4 4 l4-4 l4 4 l4-4 M8 14 l4-4 l4 4 l4-4 l4 4 l4-4 l4 4 l4-4 l4 4 l4-4 l4 4 l4-4 l4 4' fill='none' stroke='%232a160a' stroke-width='3' stroke-linejoin='round'/%3E%3Crect x='16' y='22' width='32' height='20' rx='5' fill='%23f6d488' stroke='%232a160a' stroke-width='3'/%3E%3Cpath d='M19 28q3-4 6 0t6 0t6 0t6 0M19 35q3-4 6 0t6 0t6 0t6 0' fill='none' stroke='%23b8732a' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;filter:drop-shadow(0 2px 0 rgba(0,0,0,.5))}
+.pack.empty{opacity:.28;filter:grayscale(1)}
 #calib-count{font-size:72px;font-weight:900;color:var(--gold);min-height:84px}
 #s-title{gap:8px;justify-content:space-between;pointer-events:none;-webkit-backdrop-filter:none;backdrop-filter:none;background:
   linear-gradient(180deg,rgba(8,10,30,.55) 0%,rgba(8,10,30,0) 26%,rgba(0,0,0,0) 72%,rgba(10,6,2,.82) 88%,rgba(10,6,2,.92) 100%)}
@@ -55,9 +61,6 @@ body{position:fixed;inset:0}
 .t-top,.t-bot{display:flex;flex-direction:column;align-items:center;gap:6px}
 .t-top{margin-top:calc(26px + env(safe-area-inset-top))}
 .t-bot .small{color:#f1e3c6;text-shadow:0 1px 3px #000}
-#t-clock{position:absolute;top:calc(14px + env(safe-area-inset-top));left:16px;font:600 13px ui-monospace,Menlo,monospace;color:#ff6b5a;
-  background:#000;border:1px solid #ffffff22;border-radius:6px;padding:3px 8px;letter-spacing:1px;text-shadow:0 0 6px #ff3b2a}
-#t-clock span{text-shadow:none}
 #t-logo{display:flex;flex-direction:column;align-items:center;line-height:1.05;transform:rotate(-3deg)}
 #t-logo .l1{font-size:42px;font-weight:900;color:#fbfaf3;letter-spacing:3px;
   text-shadow:0 3px 0 #a8301a,3px 0 0 #a8301a,-3px 0 0 #a8301a,0 -3px 0 #a8301a,3px 3px 0 #a8301a,-3px 3px 0 #a8301a,0 8px 0 #5a1a0c}
@@ -108,61 +111,60 @@ body{position:fixed;inset:0}
     <div id="hud-streak" class="ol-crust"></div>
   </div>
   <div id="hint"></div>
-  <button id="mute" aria-label="靜音">🔊</button>
+  <button id="mute" aria-label="音效開關" aria-pressed="false"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="#fbf3dc" stroke="#2a160a" stroke-width="3.5"/><path d="M15 26h8l11-9v30l-11-9h-8z" fill="#c93a1e" stroke="#2a160a" stroke-width="3" stroke-linejoin="round"/><g class="waves" fill="none" stroke="#2a160a" stroke-width="3" stroke-linecap="round"><path d="M40 25q5 7 0 14"/><path d="M45 20q9 12 0 24"/></g><g class="slash" stroke="#a8301a" stroke-width="4" stroke-linecap="round"><path d="M40 24l12 16M52 24l-12 16"/></g></svg></button>
 
   <!-- 開始畫面 -->
   <div id="s-title" class="screen show">
-    <div id="t-clock"><span>🌙</span> 02:13 AM</div>
     <div class="t-top">
       <h1 id="t-logo"><span class="l1">泡麵煎餅</span><span class="l2">翻面</span></h1>
-      <p id="t-sub">半夜偷煮宵夜中，小聲一點 🤫</p>
+      <p id="t-sub">半夜偷煮宵夜中，小聲一點</p>
     </div>
     <div class="t-bot">
       <div class="wallet-pill" id="t-wallet"></div>
       <p class="small">晃手機讓煎餅滑動、別黏鍋・外圈變<b style="color:#ffc23a">金黃</b>就往上甩</p>
-      <button class="btn" id="btn-fire">🔥 開火</button>
-      <p class="small" id="t-warn">請握緊手機，手機飛出去不在保固範圍 📱</p>
+      <button class="btn" id="btn-fire">開火</button>
+      <p class="small" id="t-warn">請握緊手機，手機飛出去不在保固範圍</p>
     </div>
   </div>
 
   <!-- 權限 / 感應器訊息 -->
   <div id="s-perm" class="screen">
-    <div class="big-emoji" id="perm-emoji">📱</div>
+    <div class="art-icon" id="perm-emoji"></div>
     <p id="perm-msg" class="ol-sauce" style="font-size:20px;font-weight:900;color:var(--cream)">感應器檢查中…</p>
     <p class="small" id="perm-sub"></p>
-    <button class="btn sec hidden" id="btn-copyurl">📋 複製網址</button>
-    <button class="btn hidden" id="btn-touch">👆 用手指玩</button>
+    <button class="btn sec hidden" id="btn-copyurl">複製網址</button>
+    <button class="btn hidden" id="btn-touch">用手指玩</button>
   </div>
 
   <!-- 校準 -->
   <div id="s-calib" class="screen">
-    <div class="big-emoji" id="calib-emoji">🍳</div>
+    <div class="art-icon" id="calib-emoji"></div>
     <p id="calib-msg" class="ol-sauce" style="font-size:22px;font-weight:900;color:var(--cream)"></p>
     <div id="calib-count" class="ol-crust"></div>
-    <button class="btn sec hidden" id="btn-calib-touch">👆 搖不起來？用手指玩</button>
+    <button class="btn sec hidden" id="btn-calib-touch">搖不起來？用手指玩</button>
     <button class="btn ghost hidden" id="btn-skip-calib">跳過校準（用上次的設定）</button>
   </div>
 
   <!-- 續命 -->
   <div id="s-revive" class="screen">
-    <div class="big-emoji">🍜💨</div>
+    <div class="art-icon" data-icon="packEmpty"></div>
     <h2 class="ol-crust">泡麵用完了…</h2>
     <p id="revive-sub"></p>
     <div class="wallet-pill" id="revive-wallet"></div>
-    <button class="btn" id="btn-free">🎟️ 狂煎中！免費補 3 包</button>
-    <button class="btn" id="btn-ad">📺 看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎，不扣點數</span></button>
-    <button class="btn sec" id="btn-buy">💰 用 30 點換 5 包泡麵</button>
+    <button class="btn" id="btn-free">狂煎中！免費補 3 包</button>
+    <button class="btn" id="btn-ad">看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎，不扣點數</span></button>
+    <button class="btn sec" id="btn-buy">用 30 點換 5 包泡麵</button>
     <p class="small" id="buy-note"></p>
-    <button class="btn ghost" id="btn-sleep">不煮了，去睡覺 😴</button>
+    <button class="btn ghost" id="btn-sleep">不煮了，去睡覺</button>
   </div>
 
   <!-- 點數不足 -->
   <div id="s-low" class="screen">
-    <div class="big-emoji">🪙💨</div>
+    <div class="art-icon" data-icon="coin"></div>
     <h2 class="ol-crust">點數不夠開火了…</h2>
     <div class="wallet-pill" id="low-wallet"></div>
     <p class="small">每局需要 10 點。低於 100 點時每分鐘會自動回 1 點。</p>
-    <button class="btn" id="btn-low-ad">📺 看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎，不扣點數</span></button>
+    <button class="btn" id="btn-low-ad">看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎，不扣點數</span></button>
     <button class="btn ghost" id="btn-low-back">先等等，回首頁</button>
   </div>
 
@@ -181,13 +183,13 @@ body{position:fixed;inset:0}
     <div style="font-weight:700;color:#f1e3c6">稱號：「<b id="r-rank" class="ol-sauce"></b>」</div>
     <div id="r-notes"></div>
     <div class="wallet-pill" id="r-wallet"></div>
-    <button class="btn" id="btn-retry">🔁 再煎一次</button>
-    <button class="btn sec" id="btn-share">📤 分享成績</button>
+    <button class="btn" id="btn-retry">再煎一次</button>
+    <button class="btn sec" id="btn-share">分享成績</button>
     <button class="btn ghost" id="btn-next">想玩第 2 晚？</button>
   </div>
 
   <div id="countdown"></div>
-  <div id="rotate"><div class="big-emoji">📱↩️</div><div>請轉回直式，或先鎖定螢幕旋轉 🔒</div></div>
+  <div id="rotate"><div class="art-icon" data-icon="rotate"></div><div>請轉回直式，或先鎖定螢幕旋轉</div></div>
   <div id="toast"></div>
   <div id="debug" class="hidden"><div id="debug-text"></div><button id="btn-export">匯出事件 JSON</button></div>
 </div>
@@ -374,8 +376,8 @@ if (HOST) {
 }
 function fmtMs(ms) { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
 function walletText() {
-  if (Wallet.isFree()) return `🎟️ 狂煎時間 ${fmtMs(Wallet.freeLeftMs())}・不扣點`;
-  let t = `💰 餘額 <b>${Wallet.bal}</b> 點` + (CONFIG.entryFee ? `・每局 ${CONFIG.entryFee} 點` : '');
+  if (Wallet.isFree()) return `狂煎時間 ${fmtMs(Wallet.freeLeftMs())}・不扣點`;
+  let t = `餘額 <b>${Wallet.bal}</b> 點` + (CONFIG.entryFee ? `・每局 ${CONFIG.entryFee} 點` : '');
   if (!HOST && Wallet.bal < Wallet.REGEN_CAP) {
     const s = Math.max(1, Math.min(60, Math.ceil((Wallet.REGEN_MS - (Date.now() - Wallet.regenAt)) / 1000)));
     t += `<br><span class="w-sub">下一點 ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}・回到 ${Wallet.REGEN_CAP} 點為止</span>`;
@@ -736,9 +738,9 @@ function startGame() {
 
 function updateHud() {
   if (!G) return;
-  $('hud-order').textContent = `第 1 晚：自己餓了　🥞 ${G.served} / ${CONFIG.level1Target}`;
-  $('hud-lives').textContent = G.lives > 0 ? '🍜'.repeat(G.lives) : '🍜 沒了…';
-  $('hud-streak').textContent = G.streak >= 1 ? `✨ 連續完美 ×${G.streak}` : '';
+  $('hud-order').textContent = `第 1 晚：自己餓了　煎好 ${G.served} / ${CONFIG.level1Target}`;
+  $('hud-lives').innerHTML = G.lives > 0 ? '<i class="pack"></i>'.repeat(G.lives) : '<i class="pack empty"></i>';
+  $('hud-streak').textContent = G.streak >= 1 ? `連續完美 ×${G.streak}` : '';
 }
 
 function setHint() {
@@ -795,7 +797,7 @@ function startFlip() {
   pc.sideStates[0] = doneState(pc.sides[0]);
   pc.phase = 'flip'; pc.t = 0; pc.flipped = false;
   Snd.flip(); vibrate(30); Snd.sizzle(0);
-  const lab = { golden: '金黃 ✨', raw: '還有點生…', burnt_bit: '有點焦' }[pc.sideStates[0]];
+  const lab = { golden: '金黃！', raw: '還有點生…', burnt_bit: '有點焦' }[pc.sideStates[0]];
   floatText(lab, L.cx + pc.x * L.R, L.cy + pc.y * L.R - L.pr - 14, pc.sideStates[0] === 'golden' ? '#ffd34d' : '#fbfaf3', 24);
 }
 
@@ -824,12 +826,12 @@ function finishServe() {
     sparkle(L.plate.x, L.plate.y, 26);
     if (G.streak > 0 && G.streak % CONFIG.perfectStreakReward === 0 && G.lives < CONFIG.maxLives) {
       G.lives++; Snd.life();
-      toast(`連續 ${CONFIG.perfectStreakReward} 片完美！送你 1 包泡麵 🍜`);
+      toast(`連續 ${CONFIG.perfectStreakReward} 片完美！送你 1 包泡麵`);
     }
   } else if (result === 'normal') {
     G.served++; G.streak = 0; G.plate.push('normal');
     Snd.normal();
-    floatText('普通煎餅 👍', tx, ty, '#fbfaf3', 34, 1.2);
+    floatText('普通煎餅', tx, ty, '#fbfaf3', 34, 1.2);
     floatText(s.map(x => STATE_LABEL[x]).join(' / '), tx, ty + 40, '#d9c39a', 18, 1.2);
   } else {
     G.rawPlate++; G.streak = 0;
@@ -1075,6 +1077,143 @@ function drawNoodles(c, x, y, r, noodles, color, lw) {
     }
     c.stroke();
   }
+}
+
+/* =========================================================
+   手繪風圖示（不使用任何 emoji）：墨線描邊＋奶油／金黃／醬汁紅
+   ========================================================= */
+const INK = 'stroke="#2a160a" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"';
+const PACK_BODY = `<path d="M18 22 L78 22 L80 70 L16 70 Z" fill="#c93a1e" ${INK}/><path d="M16 70 l4 5 l4-5 l4 5 l4-5 l4 5 l4-5 l4 5 l4-5 l4 5 l4-5 l4 5 l4-5 l4 5 l4-5 l4 5 l4-5 M18 22 l4-5 l4 5 l4-5 l4 5 l4-5 l4 5 l4-5 l4 5 l4-5 l4 5 l4-5 l4 5 l4-5 l4 5 l4-5" fill="none" ${INK}/>`;
+const ICONS = {
+  // 泡麵用完：空的泡麵袋（撕開、沒有麵）
+  packEmpty: `<svg viewBox="0 0 96 96">${PACK_BODY}<path d="M30 34h36v24H30z" fill="#3a1d08" ${INK}/><g transform="rotate(-12 48 46)"></g><g fill="#f6d488" stroke="#2a160a" stroke-width="1.5"><circle cx="40" cy="84" r="2.5"/><circle cx="52" cy="88" r="2"/><circle cx="60" cy="82" r="2.5"/></g></svg>`,
+  // 一包泡麵
+  pack: `<svg viewBox="0 0 96 96">${PACK_BODY}<rect x="28" y="32" width="40" height="28" rx="6" fill="#f6d488" ${INK}/><path d="M32 41q4-5 8 0t8 0t8 0t8 0M32 51q4-5 8 0t8 0t8 0t8 0" fill="none" stroke="#b8732a" stroke-width="3" stroke-linecap="round"/></svg>`,
+  // 點數不足：一枚翻倒的硬幣
+  coin: `<svg viewBox="0 0 96 96"><ellipse cx="48" cy="70" rx="30" ry="9" fill="#a0601c" ${INK}/><ellipse cx="48" cy="62" rx="30" ry="9" fill="#f8c23c" ${INK}/><ellipse cx="44" cy="40" rx="20" ry="20" fill="#f8c23c" ${INK}/><ellipse cx="44" cy="40" rx="12" ry="12" fill="none" stroke="#a0601c" stroke-width="3"/><path d="M72 24q6-8 12-2M76 34q8-2 10 4" fill="none" stroke="#fbfaf3" stroke-width="3" stroke-linecap="round"/></svg>`,
+  // 手機
+  phone: `<svg viewBox="0 0 96 96"><rect x="28" y="10" width="40" height="76" rx="9" fill="#fbf3dc" ${INK}/><rect x="34" y="20" width="28" height="52" rx="3" fill="#f8c23c" ${INK}/><circle cx="48" cy="79" r="3" fill="#2a160a"/><path d="M14 36q-6 12 0 24M82 36q6 12 0 24" fill="none" stroke="#fbfaf3" stroke-width="3.5" stroke-linecap="round"/></svg>`,
+  // 平底鍋＋煎餅
+  pan: `<svg viewBox="0 0 96 96"><path d="M70 66 L90 86" stroke="#6e3f16" stroke-width="10" stroke-linecap="round"/><path d="M70 66 L90 86" fill="none" stroke="#2a160a" stroke-width="3.5" stroke-linecap="round" opacity=".6"/><circle cx="44" cy="44" r="34" fill="#2b2b31" ${INK}/><circle cx="44" cy="44" r="21" fill="#e9a640" ${INK}/><path d="M32 48q6-8 12 0t12 0" fill="none" stroke="#a8301a" stroke-width="4" stroke-linecap="round"/><path d="M32 40q6-8 12 0t12 0" fill="none" stroke="#fbfaf3" stroke-width="4" stroke-linecap="round"/></svg>`,
+  // 往上甩
+  flick: `<svg viewBox="0 0 96 96"><g transform="rotate(-14 48 60)"><rect x="32" y="36" width="32" height="54" rx="7" fill="#fbf3dc" ${INK}/><rect x="37" y="44" width="22" height="36" rx="2" fill="#f8c23c" ${INK}/></g><path d="M48 30 V8 M38 18 L48 8 L58 18" fill="none" stroke="#c93a1e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M48 30 V8 M38 18 L48 8 L58 18" fill="none" stroke="#2a160a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/></svg>`,
+  // OK：金黃煎餅＋勾
+  ok: `<svg viewBox="0 0 96 96"><circle cx="48" cy="48" r="38" fill="#f8c23c" ${INK}/><path d="M30 50 L43 63 L68 34" fill="none" stroke="#2a160a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  // 轉回直式
+  rotate: `<svg viewBox="0 0 96 96"><rect x="32" y="16" width="32" height="56" rx="7" fill="#fbf3dc" ${INK}/><rect x="37" y="24" width="22" height="38" rx="2" fill="#f8c23c" ${INK}/><path d="M20 72q-8-28 14-46" fill="none" stroke="#c93a1e" stroke-width="5" stroke-linecap="round"/><path d="M28 22 L36 26 L30 34" fill="none" stroke="#c93a1e" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+};
+function fillIcons(root = document) { root.querySelectorAll('[data-icon]').forEach(el => { if (!el.innerHTML) el.innerHTML = ICONS[el.dataset.icon] || ''; }); }
+
+/* ---------- 黑貓（跟背景圖裡的貓一樣：黑毛、黃眼睛） ---------- */
+function drawCat(c, x, y, s, t, mode = 'run', flip = false) {
+  c.save(); c.translate(x, y); if (flip) c.scale(-1, 1);
+  c.lineJoin = 'round'; c.lineCap = 'round';
+  const ink = '#0b0810', fur = '#24202c', rim = '#5d4f6e';
+  const outline = () => { c.lineWidth = Math.max(2, s * 0.05); c.strokeStyle = ink; c.stroke(); };
+  if (mode === 'run') {
+    const g = Math.sin(t * 28);
+    // 腳
+    c.strokeStyle = ink; c.lineWidth = s * 0.13;
+    [[-0.3, g], [-0.12, -g], [0.25, -g], [0.42, g]].forEach(([lx, ph]) => {
+      c.beginPath(); c.moveTo(lx * s, 0.1 * s); c.lineTo((lx + ph * 0.14) * s, 0.42 * s); c.stroke();
+    });
+    c.strokeStyle = fur; c.lineWidth = s * 0.08;
+    [[-0.3, g], [-0.12, -g], [0.25, -g], [0.42, g]].forEach(([lx, ph]) => {
+      c.beginPath(); c.moveTo(lx * s, 0.1 * s); c.lineTo((lx + ph * 0.14) * s, 0.42 * s); c.stroke();
+    });
+    // 尾巴
+    c.beginPath(); c.moveTo(0.48 * s, -0.05 * s);
+    c.bezierCurveTo(0.8 * s, -0.1 * s, 0.75 * s, (-0.5 + g * 0.08) * s, 0.95 * s, (-0.55 + g * 0.1) * s);
+    c.strokeStyle = ink; c.lineWidth = s * 0.12; c.stroke(); c.strokeStyle = fur; c.lineWidth = s * 0.07; c.stroke();
+    // 身體
+    c.beginPath(); c.ellipse(0.08 * s, -0.02 * s, 0.5 * s, 0.24 * s, 0.06 * g * 0.3, 0, Math.PI * 2);
+    c.fillStyle = fur; c.fill(); outline();
+    c.beginPath(); c.ellipse(0.05 * s, -0.16 * s, 0.32 * s, 0.06 * s, 0, Math.PI, Math.PI * 2); c.strokeStyle = rim; c.lineWidth = s * 0.03; c.stroke();
+    // 頭
+    const hx = -0.48 * s, hy = -0.2 * s, hr = 0.24 * s;
+    c.beginPath(); c.moveTo(hx - hr * 0.8, hy - hr * 0.4); c.lineTo(hx - hr * 0.7, hy - hr * 1.35); c.lineTo(hx - hr * 0.15, hy - hr * 0.85);
+    c.lineTo(hx + hr * 0.25, hy - hr * 1.35); c.lineTo(hx + hr * 0.75, hy - hr * 0.5);
+    c.arc(hx, hy, hr, -0.6, Math.PI * 0.95 + Math.PI, false); c.closePath();
+    c.fillStyle = fur; c.fill(); outline();
+    c.beginPath(); c.arc(hx, hy, hr, 0, Math.PI * 2); c.fillStyle = fur; c.fill(); outline();
+    // 眼睛
+    [[-0.6, -0.24], [-0.4, -0.24]].forEach(([ex, ey]) => {
+      c.beginPath(); c.ellipse(ex * s, ey * s, s * 0.055, s * 0.065, 0, 0, Math.PI * 2); c.fillStyle = '#ffd23a'; c.fill();
+      c.lineWidth = s * 0.02; c.strokeStyle = ink; c.stroke();
+      c.beginPath(); c.ellipse(ex * s - s * 0.01, ey * s, s * 0.015, s * 0.05, 0, 0, Math.PI * 2); c.fillStyle = ink; c.fill();
+    });
+    c.beginPath(); c.moveTo(-0.52 * s, -0.12 * s); c.lineTo(-0.48 * s, -0.09 * s); c.lineTo(-0.44 * s, -0.12 * s); c.fillStyle = '#e88aa0'; c.fill();
+  } else {
+    // 坐著、吃很飽、肚子圓圓
+    const b = Math.sin(t * 2) * 0.01;
+    c.beginPath(); c.moveTo(0.3 * s, 0.35 * s); c.bezierCurveTo(0.75 * s, 0.4 * s, 0.75 * s, -0.05 * s, 0.55 * s, -0.15 * s);
+    c.strokeStyle = ink; c.lineWidth = s * 0.13; c.stroke(); c.strokeStyle = fur; c.lineWidth = s * 0.08; c.stroke();
+    c.beginPath(); c.ellipse(0, 0.12 * s, 0.4 * s, (0.33 + b) * s, 0, 0, Math.PI * 2); c.fillStyle = fur; c.fill(); outline();
+    c.beginPath(); c.ellipse(0, 0.2 * s, 0.22 * s, 0.17 * s, 0, 0, Math.PI * 2); c.fillStyle = '#3a3344'; c.fill();
+    const hx = 0, hy = -0.32 * s, hr = 0.25 * s;
+    c.beginPath(); c.moveTo(hx - hr * 0.85, hy - hr * 0.3); c.lineTo(hx - hr * 0.75, hy - hr * 1.3); c.lineTo(hx - hr * 0.2, hy - hr * 0.85);
+    c.lineTo(hx + hr * 0.2, hy - hr * 0.85); c.lineTo(hx + hr * 0.75, hy - hr * 1.3); c.lineTo(hx + hr * 0.85, hy - hr * 0.3); c.closePath();
+    c.fillStyle = fur; c.fill(); outline();
+    c.beginPath(); c.arc(hx, hy, hr, 0, Math.PI * 2); c.fillStyle = fur; c.fill(); outline();
+    // 滿足的瞇眼
+    c.strokeStyle = '#ffd23a'; c.lineWidth = s * 0.035;
+    [-0.1, 0.1].forEach(ex => { c.beginPath(); c.arc(ex * s, hy + 0.01 * s, 0.05 * s, Math.PI * 1.1, Math.PI * 1.9); c.stroke(); });
+    c.beginPath(); c.moveTo(-0.03 * s, hy + 0.08 * s); c.lineTo(0, hy + 0.11 * s); c.lineTo(0.03 * s, hy + 0.08 * s); c.fillStyle = '#e88aa0'; c.fill();
+  }
+  c.restore();
+}
+
+/* ---------- 煙霧警報器 ---------- */
+function drawAlarm(c, x, y, r, t) {
+  const on = Math.floor(t * 6) % 2 === 0;
+  c.save(); c.lineJoin = 'round'; c.lineCap = 'round';
+  if (on) {
+    const g = c.createRadialGradient(x, y + r * 0.2, 0, x, y + r * 0.2, r * 2.6);
+    g.addColorStop(0, 'rgba(255,60,40,0.55)'); g.addColorStop(1, 'rgba(255,60,40,0)');
+    c.fillStyle = g; c.beginPath(); c.arc(x, y + r * 0.2, r * 2.6, 0, Math.PI * 2); c.fill();
+  }
+  c.beginPath(); c.ellipse(x, y, r, r * 0.55, 0, 0, Math.PI * 2); c.fillStyle = '#fbf3dc'; c.fill(); c.lineWidth = 3; c.strokeStyle = '#2a160a'; c.stroke();
+  c.beginPath(); c.ellipse(x, y - r * 0.08, r * 0.62, r * 0.3, 0, 0, Math.PI * 2); c.strokeStyle = '#b9a77e'; c.lineWidth = 2; c.stroke();
+  c.beginPath(); c.arc(x + r * 0.45, y + r * 0.12, r * 0.13, 0, Math.PI * 2); c.fillStyle = on ? '#ff3b2a' : '#7a2412'; c.fill(); c.lineWidth = 2; c.strokeStyle = '#2a160a'; c.stroke();
+  c.strokeStyle = on ? '#ff6b5a' : 'rgba(255,107,90,0.4)'; c.lineWidth = 3;
+  [1, 1.45].forEach(k => {
+    c.beginPath(); c.arc(x - r * 1.05, y, r * 0.35 * k, Math.PI * 0.65, Math.PI * 1.35); c.stroke();
+    c.beginPath(); c.arc(x + r * 1.05, y, r * 0.35 * k, -Math.PI * 0.35, Math.PI * 0.35); c.stroke();
+  });
+  c.restore();
+}
+
+/* ---------- 媽媽開門：門框＋門縫的光＋媽媽的剪影 ---------- */
+function drawDoorMom(c, x, y, h, t, stage, light) {
+  const w = h * 0.55, open = stage === 'pass' ? Math.max(0, 1 - light) * 0 + light : 1;
+  c.save(); c.lineJoin = 'round'; c.lineCap = 'round';
+  // 門框
+  c.fillStyle = '#5a3416'; c.strokeStyle = '#2a160a'; c.lineWidth = 3;
+  c.beginPath(); c.rect(x - w / 2 - 8, y - h / 2 - 8, w + 16, h + 8); c.fill(); c.stroke();
+  // 門後的光
+  const g = c.createLinearGradient(x, y - h / 2, x, y + h / 2);
+  g.addColorStop(0, '#fff7d6'); g.addColorStop(1, '#ffd98a');
+  c.fillStyle = g; c.beginPath(); c.rect(x - w / 2, y - h / 2, w, h); c.fill(); c.stroke();
+  // 媽媽剪影
+  const shake = stage === 'caught' ? Math.sin(t * 30) * 2 : 0;
+  const mx = x + shake, sc = stage === 'caught' ? 1.08 : 1;
+  c.fillStyle = '#3b2a3c';
+  c.beginPath(); c.arc(mx, y - h * 0.22 * sc, h * 0.12 * sc, 0, Math.PI * 2); c.fill();
+  c.beginPath(); c.arc(mx + h * 0.02, y - h * 0.36 * sc, h * 0.065, 0, Math.PI * 2); c.fill();
+  c.beginPath(); c.moveTo(mx - h * 0.2 * sc, y + h / 2); c.quadraticCurveTo(mx - h * 0.2, y - h * 0.08, mx, y - h * 0.1); c.quadraticCurveTo(mx + h * 0.2, y - h * 0.08, mx + h * 0.2 * sc, y + h / 2); c.closePath(); c.fill();
+  if (stage === 'caught') {
+    // 生氣的符號
+    c.strokeStyle = '#c93a1e'; c.lineWidth = 4;
+    const ax = mx + h * 0.2, ay = y - h * 0.4;
+    c.beginPath(); c.moveTo(ax - 6, ay - 2); c.lineTo(ax - 1, ay - 1); c.lineTo(ax - 2, ay - 6); c.moveTo(ax + 6, ay - 2); c.lineTo(ax + 1, ay - 1); c.lineTo(ax + 2, ay - 6);
+    c.moveTo(ax - 6, ay + 6); c.lineTo(ax - 1, ay + 5); c.lineTo(ax - 2, ay + 10); c.moveTo(ax + 6, ay + 6); c.lineTo(ax + 1, ay + 5); c.lineTo(ax + 2, ay + 10); c.stroke();
+  }
+  // 門板（打開的角度）
+  const doorW = w * (1 - 0.85 * (stage === 'pass' ? light : 1));
+  c.fillStyle = '#8a5428'; c.strokeStyle = '#2a160a'; c.lineWidth = 3;
+  c.beginPath(); c.rect(x - w / 2, y - h / 2, Math.max(4, doorW), h); c.fill(); c.stroke();
+  c.beginPath(); c.arc(x - w / 2 + Math.max(4, doorW) - 7, y + h * 0.05, 3, 0, Math.PI * 2); c.fillStyle = '#f8c23c'; c.fill();
+  c.restore();
 }
 
 /* ---------- 遊戲用煎餅：把斜角的煎餅圖「拉正」成俯視圓形 ---------- */
@@ -1571,11 +1710,8 @@ function drawFail(c, pc, t) {
       catX = lerp(fp.x + r * 0.3, -120, kk * kk);
       drawPancake(c, catX - 30, fp.y + 10, r * 0.6, up, down, pc.noodles, { noHalo: true, rot: 0.3 + Math.sin(k * 30) * 0.1 });
     }
-    if (catX != null) {
-      c.font = '70px serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
-      c.fillText('🐈', catX, fp.y + Math.sin(k * 30) * 3);
-    }
-    if (k > 0.5) label(c, '🐈 貓叼走了！', W / 2, L.cy - L.R - 30, '#fbfaf3', 26);
+    if (catX != null) drawCat(c, catX, fp.y + Math.sin(k * 30) * 2, 64, k, 'run', false);
+    if (k > 0.5) label(c, '貓叼走了！', W / 2, L.cy - L.R - 30, '#fbfaf3', 26);
   } else if (pc.failKind === 'ceiling') {
     const sp = splatPos(pc.splat);
     if (k < 0.5) {
@@ -1588,10 +1724,9 @@ function drawFail(c, pc, t) {
   } else if (pc.failKind === 'burnt') {
     drawPancake(c, f.x + (Math.random() - 0.5) * 3, f.y, r, 3, 3, pc.noodles, { black: true });
     if (k < 1.1 && Math.floor(k * 6) % 2 === 0) { c.fillStyle = 'rgba(255,0,0,0.18)'; c.fillRect(0, 0, W, H); }
-    c.font = '46px serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
-    if (k < 1.2) c.fillText('🚨', W / 2 + Math.sin(k * 40) * 4, L.splatTop + 10);
+    if (k < 1.2) drawAlarm(c, W / 2 + Math.sin(k * 40) * 3, L.splatTop + 10, 26, k);
     if (k < 1.2) label(c, '嗶嗶嗶！', W / 2, L.splatTop + 54, '#ff6060', 22);
-    label(c, '⚫ 燒成黑炭了…', W / 2, L.cy + L.R + 40, '#fbfaf3', 24);
+    label(c, '燒成黑炭了…', W / 2, L.cy + L.R + 40, '#fbfaf3', 24);
   } else if (pc.failKind === 'mom') {
     drawPancake(c, f.x, f.y, r, up, down, pc.noodles, { alpha: Math.max(0, 1 - k) });
   }
@@ -1608,17 +1743,14 @@ function drawMomOverlay(c, t) {
   const g = c.createLinearGradient(0, 0, 0, H * 0.7);
   g.addColorStop(0, `rgba(255,255,230,${0.5 * light})`); g.addColorStop(1, 'rgba(255,255,230,0)');
   c.fillStyle = g; c.beginPath(); c.moveTo(W * 0.38, 0); c.lineTo(W * 0.62, 0); c.lineTo(W * 0.95, H * 0.7); c.lineTo(W * 0.05, H * 0.7); c.fill();
-  c.font = '64px serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
-  const momY = L.splatTop + 20;
+  const momY = L.splatTop + 52;
+  drawDoorMom(c, W / 2, momY, 92, t, stage, light);
   if (stage === 'caught') {
-    c.fillText('👩', W / 2 + Math.sin(t * 30) * 3, momY);
-    label(c, '媽媽：你在幹嘛！', W / 2, momY + 60, '#b00020', 30, '#fff');
+    label(c, '媽媽：你在幹嘛！', W / 2, momY + 72, '#b00020', 30, '#fff');
   } else if (stage === 'pass') {
-    c.globalAlpha = light; c.fillText('🚪', W / 2, momY); c.globalAlpha = 1;
-    label(c, '媽媽：……大概是貓吧。', W / 2, momY + 60, '#3a2a10', 24, '#fff');
+    label(c, '媽媽：……大概是貓吧。', W / 2, momY + 72, '#3a2a10', 24, '#fff');
   } else {
-    c.fillText('🚪', W / 2, momY);
-    label(c, '……是誰在廚房？', W / 2, momY + 60, '#3a2a10', 30, '#fff');
+    label(c, '……是誰在廚房？', W / 2, momY + 72, '#3a2a10', 30, '#fff');
     // 靜止條
     const bw = W * 0.7, bh = 18, bx = (W - bw) / 2, by = L.cy + L.R + 34;
     c.fillStyle = 'rgba(0,0,0,0.5)'; roundRect(c, bx, by, bw, bh, 9); c.fill();
@@ -1759,13 +1891,13 @@ $('btn-fire').addEventListener('click', () => {
 
 function permScreen(emoji, msg, sub, copy, touch) {
   appState = 'perm'; showScreen('s-perm');
-  $('perm-emoji').textContent = emoji; $('perm-msg').textContent = msg; $('perm-sub').textContent = sub || '';
+  $('perm-emoji').innerHTML = ICONS[emoji] || ''; $('perm-msg').textContent = msg; $('perm-sub').textContent = sub || '';
   $('btn-copyurl').classList.toggle('hidden', !copy); $('btn-touch').classList.toggle('hidden', !touch);
 }
-function showDenied() { permScreen('🙆', '沒關係，可以用手指玩', '按住拖曳＝晃，快速上滑放開＝翻面', false, true); }
+function showDenied() { permScreen('pan', '沒關係，可以用手指玩', '按住拖曳＝晃，快速上滑放開＝翻面', false, true); }
 
 function sensorCheck() {
-  permScreen('📱', '感應器檢查中…', '', false, false);
+  permScreen('phone', '感應器檢查中…', '', false, false);
   const t0 = now();
   const iv = setInterval(() => {
     if (Input.sensorSeen) {
@@ -1773,8 +1905,8 @@ function sensorCheck() {
       inputMode = 'motion'; startCalib();
     } else if (now() - t0 > CONFIG.sensorTimeout) {
       clearInterval(iv); track('sensor_check', { received: false });
-      if (IS_MOBILE) permScreen('🤷', '這裡讀不到動作感應，請用 Safari / Chrome 開啟', IN_APP ? '（看起來你是從 App 裡打開的）' : '', true, true);
-      else permScreen('💻', '這裡讀不到動作感應，請用 Safari / Chrome 開啟', '在電腦上可以用滑鼠拖曳或方向鍵＋空白鍵玩', true, true);
+      if (IS_MOBILE) permScreen('phone', '這裡讀不到動作感應，請用 Safari / Chrome 開啟', IN_APP ? '（看起來你是從 App 裡打開的）' : '', true, true);
+      else permScreen('phone', '這裡讀不到動作感應，請用 Safari / Chrome 開啟', '在電腦上可以用滑鼠拖曳或方向鍵＋空白鍵玩', true, true);
     }
   }, 100);
 }
@@ -1790,7 +1922,7 @@ function startCalib() {
   appState = 'calib'; showScreen('s-calib');
   calib = { step: 1, t: 0, samples: [] };
   Input.shakeHandler = null;
-  $('calib-emoji').textContent = '🍳';
+  $('calib-emoji').innerHTML = ICONS.pan;
   $('calib-msg').textContent = '把手機拿平，像拿著平底鍋';
   $('btn-calib-touch').classList.add('hidden');
   $('btn-skip-calib').classList.toggle('hidden', !savedCalib());
@@ -1812,9 +1944,9 @@ function updateCalib(dt) {
       } else Input.base = { b: Input.beta || 0, g: Input.gamma || 0 };
       Snd.click();
       calib.step = 2; calib.t = 0;
-      $('calib-emoji').textContent = '💪';
+      $('calib-emoji').innerHTML = ICONS.flick;
       $('calib-msg').textContent = '用力往上搖一下試試看！';
-      $('calib-count').textContent = '⬆️';
+      $('calib-count').textContent = '';
       Input.cooldownUntil = 0; Input.peak = null;
       Input.shakeHandler = (ratio, raw) => {
         if (!calib || calib.step !== 2) return;
@@ -1824,7 +1956,7 @@ function updateCalib(dt) {
         track('calibration_done', { force: +force.toFixed(2), raw: +raw.toFixed(2) });
         Snd.perfect(); vibrate(40);
         calib.step = 3; calib.t = 0;
-        $('calib-emoji').textContent = '👌';
+        $('calib-emoji').innerHTML = ICONS.ok;
         $('calib-msg').textContent = 'OK，開始煎！';
         $('calib-count').textContent = '';
         $('btn-calib-touch').classList.add('hidden');
@@ -1852,7 +1984,7 @@ function renderReviveButtons() {
   $('btn-free').classList.toggle('hidden', !free);
   $('btn-ad').classList.toggle('hidden', free);
   const b = $('btn-buy');
-  b.innerHTML = `💰 用 ${CONFIG.buyNoodlesCost} 點換 ${CONFIG.buyNoodlesAmount} 包泡麵`;
+  b.innerHTML = `用 ${CONFIG.buyNoodlesCost} 點換 ${CONFIG.buyNoodlesAmount} 包泡麵`;
   b.classList.toggle('dim', Wallet.bal < CONFIG.buyNoodlesCost);
 }
 function resumeWithLives(n, msg) {
@@ -1873,18 +2005,18 @@ $('btn-ad').addEventListener('click', () => { Snd.click(); if (G) G.adUsed++; st
 $('btn-free').addEventListener('click', () => {
   Snd.click(); if (!Wallet.isFree()) { renderReviveButtons(); return; }
   track('free_refill', { pancakes: G.served, left_sec: Math.round(Wallet.freeLeftMs() / 1000) });
-  resumeWithLives(CONFIG.freeRefillLives, `免費補 ${CONFIG.freeRefillLives} 包 🍜 繼續煎！`);
+  resumeWithLives(CONFIG.freeRefillLives, `免費補 ${CONFIG.freeRefillLives} 包，繼續煎！`);
 });
 $('btn-buy').addEventListener('click', () => {
   Snd.click(); Wallet.tick(Date.now());
   if (!Wallet.spend(CONFIG.buyNoodlesCost)) {
     track('points_buy_fail', { pancakes: G.served, balance: Wallet.bal });
-    $('buy-note').textContent = `點數不夠（需要 ${CONFIG.buyNoodlesCost} 點），可以先看廣告 📺`;
+    $('buy-note').textContent = `點數不夠（需要 ${CONFIG.buyNoodlesCost} 點），可以先看廣告`;
     Snd.stuck(); return;
   }
   track('points_buy', { pancakes: G.served, cost: CONFIG.buyNoodlesCost, noodles: CONFIG.buyNoodlesAmount, balance: Wallet.bal });
   renderWallet();
-  resumeWithLives(CONFIG.buyNoodlesAmount, `-${CONFIG.buyNoodlesCost} 點，泡麵 +${CONFIG.buyNoodlesAmount} 包 🍜`);
+  resumeWithLives(CONFIG.buyNoodlesAmount, `-${CONFIG.buyNoodlesCost} 點，泡麵 +${CONFIG.buyNoodlesAmount}包`);
 });
 $('btn-sleep').addEventListener('click', () => { Snd.click(); G.ended = true; showResult(); });
 function updateAd(dt) {
@@ -1894,8 +2026,8 @@ function updateAd(dt) {
     Wallet.grantFree(CONFIG.adFreeMinutes);
     track('fake_ad_complete', { pancakes: G ? G.served : 0, from: adCtx.from, free_minutes: CONFIG.adFreeMinutes });
     const from = adCtx.from; adCtx = null;
-    if (from === 'revive') resumeWithLives(CONFIG.freeRefillLives, `接下來 ${CONFIG.adFreeMinutes} 分鐘不扣點，泡麵補滿 🍜`);
-    else { toast(`接下來 ${CONFIG.adFreeMinutes} 分鐘不扣點 🎟️`); const n = lowNext; lowNext = null; if (n) n(); else { appState = 'title'; showScreen('s-title'); } }
+    if (from === 'revive') resumeWithLives(CONFIG.freeRefillLives, `接下來 ${CONFIG.adFreeMinutes} 分鐘不扣點，泡麵補滿`);
+    else { toast(`接下來 ${CONFIG.adFreeMinutes} 分鐘不扣點`); const n = lowNext; lowNext = null; if (n) n(); else { appState = 'title'; showScreen('s-title'); } }
   }
 }
 // 點數不足
@@ -1919,7 +2051,7 @@ function showResult() {
   if (!G.passed) Snd.sad();
   $('hud').classList.add('hidden'); setHint();
   showScreen('s-result');
-  $('r-title').textContent = G.passed ? '第 1 晚完成！今晚吃飽了 🍜' : '第 1 晚失敗……今晚餓肚子 😢';
+  $('r-title').textContent = G.passed ? '第 1 晚完成！今晚吃飽了' : '第 1 晚失敗……今晚餓肚子';
   const rank = rankOf(); G.rank = rank;
   $('r-rank').textContent = rank;
   const notes = [];
@@ -1965,11 +2097,10 @@ function drawResult(t) {
   }
   c.fillStyle = '#6b6f75'; c.beginPath(); c.moveTo(bx - 22, by - 36); c.lineTo(bx + 22, by - 36); c.lineTo(bx + 17, by + 10); c.lineTo(bx - 17, by + 10); c.closePath(); c.fill();
   c.strokeStyle = '#555a60'; c.lineWidth = 2; for (let i = -1; i <= 1; i++) { c.beginPath(); c.moveTo(bx + i * 9, by - 30); c.lineTo(bx + i * 7, by + 6); c.stroke(); }
-  if (G.fails.burnt) label(c, '⚫×' + G.fails.burnt, bx, by - 64, '#fbfaf3', 13);
+  if (G.fails.burnt) label(c, '黑炭 ×' + G.fails.burnt, bx, by - 64, '#fbfaf3', 13);
   // 吃很飽的貓
   if (G.fails.floor > 0) {
-    c.font = '46px serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
-    c.fillText('🐈', RW - 46, RH - 40 + Math.sin(t * 2) * 1.5);
+    drawCat(c, RW - 46, RH - 44, 52, t, 'sit');
     label(c, '飽～ ×' + G.fails.floor, RW - 46, RH - 82, '#fbfaf3', 14);
   }
   if (nC) label(c, '天花板 ×' + nC, RW - 50, 58, '#efcf7a', 12);
@@ -1977,26 +2108,26 @@ function drawResult(t) {
 $('btn-retry').addEventListener('click', () => { Snd.click(); track('retry_click', { prev_passed: G.passed }); tryStart(startGame); });
 $('btn-share').addEventListener('click', async () => {
   Snd.click();
-  const text = `我半夜煎了 ${G.served} 片泡麵煎餅 🍜，天花板糊了 ${G.fails.ceiling} 片，貓吃掉 ${G.fails.floor} 片\n稱號：「${G.rank}」\n你翻得贏我嗎？ ${cleanUrl()}`;
+  const text = `我半夜煎了 ${G.served} 片泡麵煎餅，天花板糊了 ${G.fails.ceiling} 片，貓吃掉 ${G.fails.floor} 片\n稱號：「${G.rank}」\n你翻得贏我嗎？ ${cleanUrl()}`;
   if (navigator.share) {
     track('share_click', { pancakes: G.served, method: 'native' });
     try { await navigator.share({ text }); } catch (e) {}
   } else {
     track('share_click', { pancakes: G.served, method: 'clipboard' });
     const ok = await copyText(text);
-    toast(ok ? '已複製，貼給同事吧！' : '複製失敗，請手動截圖分享 🙏');
+    toast(ok ? '已複製，貼給同事吧！' : '複製失敗，請手動截圖分享');
   }
 });
 $('btn-next').addEventListener('click', () => {
   Snd.click();
   track('next_level_interest_click', { passed: G.passed });
   lsSet('noodle_pancake_next_clicks', String((+lsGet('noodle_pancake_next_clicks') || 0) + 1));
-  toast('第 2 晚還在準備中，我們會加油的 💪', 3);
+  toast('第 2 晚還在準備中，我們會加油的！', 3);
 });
 
 // 靜音
 $('mute').addEventListener('click', (e) => {
-  e.stopPropagation(); Snd.init(); Snd.setMuted(!Snd.muted); $('mute').textContent = Snd.muted ? '🔇' : '🔊';
+  e.stopPropagation(); Snd.init(); Snd.setMuted(!Snd.muted); $('mute').classList.toggle('muted', Snd.muted); $('mute').setAttribute('aria-pressed', String(Snd.muted));
 });
 
 // 切到背景
@@ -2117,7 +2248,7 @@ function loop() {
   });
   lsSet('noodle_pancake_last_open', String(nowMs));
 })();
-Wallet.load(); renderWallet();
+Wallet.load(); renderWallet(); fillIcons();
 requestAnimationFrame(loop);
 </script>
 </body>
