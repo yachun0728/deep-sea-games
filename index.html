@@ -421,6 +421,19 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
 
 .reaper-stage{min-width:0;display:grid;place-items:center;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#1b1630}.reaper-stage canvas{display:block;width:min(100%,400px);height:auto;touch-action:manipulation;user-select:none;-webkit-user-select:none}.reaper-legend{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#dfe9ff}.reaper-legend span:last-child{color:#6cc58f}.reaper-ladder{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.reaper-ladder span{padding:9px 4px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--muted);font-size:12px;text-align:center}@media(max-width:700px){.reaper-stage canvas{max-height:65vh;object-fit:contain}.reaper-ladder{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
+/* Separate page navigation from the game's own gesture surface. */
+.mobile-page-tools,.mobile-scroll-rail{display:none}
+@media(max-width:880px){
+  .wrap:not(.is-lobby){margin-inline-end:28px}
+  .wrap:not(.is-lobby) .mobile-page-tools{position:sticky;z-index:80;top:max(4px,env(safe-area-inset-top,0px));align-self:stretch;display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:14px;background:rgba(12,34,48,.97);box-shadow:0 5px 20px rgba(0,0,0,.3);touch-action:pan-y pinch-zoom}
+  .mobile-page-tools button{min-height:44px;min-width:0;flex:1;padding:8px 12px;border:0;border-radius:10px;background:var(--panel-2);color:var(--fg);font:600 13px var(--font-body);white-space:nowrap;cursor:pointer;touch-action:pan-y pinch-zoom}
+  .view canvas,.view iframe,.view .mg,.view .side .go{scroll-margin-top:calc(64px + env(safe-area-inset-top,0px))}
+  .mobile-page-tools button:last-child{color:var(--glow)}
+  .wrap:not(.is-lobby) .mobile-scroll-rail{position:fixed;z-index:80;right:max(2px,env(safe-area-inset-right,0px));top:36%;width:26px;height:174px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:1px solid var(--line);border-radius:14px;background:rgba(17,48,65,.94);color:var(--muted);touch-action:pan-y pinch-zoom;user-select:none;-webkit-user-select:none}
+  .mobile-scroll-rail .rail-label{writing-mode:vertical-rl;font-size:10px;letter-spacing:2px;line-height:1.3}
+  .mobile-scroll-rail .rail-arrow{font-size:16px;line-height:1;color:var(--glow)}
+}
+
 #view-blaster .bl-stage{display:grid;place-items:center;min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#061c2c}
 #bl-canvas{display:block;width:min(100%,400px);height:auto;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 #view-blaster .bl-legend{display:flex;gap:10px;flex-wrap:wrap;padding:10px 0;font-size:12px;color:var(--muted)}
@@ -484,6 +497,12 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
     <a href="#dive" id="tab-dive">一口氣探險<small>One Breath Dive</small></a>
     <a href="#mrt" id="tab-mrt">捷運搶位<small>MRT Seat Grab</small></a>
   </nav></details></div>
+
+<nav class="mobile-page-tools" aria-label="手機頁面導覽">
+  <button type="button" id="mobile-game" aria-label="捲動到遊戲畫面">↑ 遊戲畫面</button>
+  <button type="button" id="mobile-controls" aria-label="捲動到操作區">↓ 操作區</button>
+</nav>
+<div class="mobile-scroll-rail" role="note" aria-label="在此上下滑動頁面，不會操作遊戲"><span class="rail-arrow" aria-hidden="true">↕</span><span class="rail-label">滑動頁面</span><span class="rail-arrow" aria-hidden="true">↕</span></div>
 
   <section class="view lobby-view" id="view-lobby" aria-label="遊戲大廳">
 <svg class="lobby-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-blaster" viewBox="0 0 96 96"><path d="M27 9v77M68 9v77" stroke="#326475" stroke-width="2" stroke-dasharray="4 5"/><path d="m47 53 21 29-21-6-21 6z" fill="#62e6d2"/><rect x="44" y="48" width="6" height="14" rx="3" fill="#ffe1a0"/><path d="M47 38v-9" stroke="#ffb638" stroke-width="5" stroke-linecap="round"/><circle cx="47" cy="16" r="13" fill="#b8a4f4"/><circle cx="43" cy="15" r="3" fill="#163e50"/><circle cx="52" cy="15" r="3" fill="#163e50"/><rect x="69" y="38" width="22" height="22" rx="6" fill="#ffb638"/><path d="m81 42-7 9h5l-1 6 8-10h-5z" fill="#694d24"/></symbol>
@@ -3345,8 +3364,8 @@ tx('本局 +'+earned+' 點',70,34,16,earned>0?'#ffd23f':'#fff1c1');
 pops.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/2.2);const y=175-(reduceMotion?0:Math.min(1,p.age*3)*22);tx('+'+p.b+' 點',W/2,y,38,'#ffd23f');tx(p.m+' 公尺里程碑',W/2,y+28,17,'#fff1c1');g.globalAlpha=1});
 if(st!=='run'){
 g.fillStyle='rgba(27,27,47,.5)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx('屋頂貓貓',W/2,240,36,'#ffd23f');tx('右側扣點開始',W/2,290,22,'#fff1c1')}
-else{tx('喵…摔下去了！',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(earned>0?'本局獎勵 +'+earned+' 點':'沒到 '+MILESTONES[0][0]+' 公尺，沒有獎勵',W/2,314,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,348,20,'#ffd23f');tx('右側可以再跑一次',W/2,392,20,'#fff1c1')}}}
+if(st==='ready'){tx('屋頂貓貓',W/2,240,36,'#ffd23f');tx('到操作區扣點開始',W/2,290,22,'#fff1c1')}
+else{tx('喵…摔下去了！',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(earned>0?'本局獎勵 +'+earned+' 點':'沒到 '+MILESTONES[0][0]+' 公尺，沒有獎勵',W/2,314,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,348,20,'#ffd23f');tx('到操作區再跑一次',W/2,392,20,'#fff1c1')}}}
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
@@ -3899,7 +3918,7 @@ ui();draw();requestAnimationFrame(loop);
       g.textAlign='center';g.fillStyle=BL.phase==='lost'?'#ff958c':'#62e6d2';g.font='bold 28px system-ui';g.fillText(BL.phase==='ready'?'深海火線':BL.phase==='cleared'?'防線守住了！':BL.phase==='cashed'?'出擊完成':BL.phase==='lost'?'防線失守':'已暫停',200,236);
       g.fillStyle='#e4f2f3';g.font='15px system-ui';g.fillText(BL.phase==='ready'?'三條航道，自動開火。':BL.phase==='cleared'?'下一站：第 '+(BL.stage+1)+' 關':BL.phase==='cashed'?'本輪已獲得 '+BL.earned+' 點':BL.phase==='lost'?'已獲 '+BL.earned+' 點保留，可付費重玩本關':'回到遊戲後繼續',200,276);
       g.fillStyle='#ffdc87';g.fillText(BL.phase==='ready'?'散彈 · 穿透光槍 · 追蹤火箭 · 電漿砲':blWeapon().name+' · 擊破 '+BL.kills+' 隻',200,310);
-      g.fillStyle='#9fc1ca';g.font='13px system-ui';g.fillText(BL.phase==='ready'?'使用下方或右側按鈕扣點開始':'使用操作面板選擇下一步',200,352);
+      g.fillStyle='#9fc1ca';g.font='13px system-ui';g.fillText(BL.phase==='ready'?'到操作區扣點開始':'使用操作面板選擇下一步',200,352);
     }
     g.textAlign='center';g.fillStyle='#8db0b9';g.font='11px system-ui';g.fillText('← 點左半邊換道　｜　點右半邊換道 →',200,585);
   }
@@ -4024,6 +4043,21 @@ ui();draw();requestAnimationFrame(loop);
   });
   mrtUI();
 
+  /* Navigation uses separate DOM controls; game pointer listeners are untouched. */
+  (function(){
+    function jump(destination){
+      var view=document.querySelector('.view:not([hidden])');
+      if(!view||view.id==='view-lobby')return;
+      var target=destination==='game'
+        ?view.querySelector('canvas,iframe,.mg')||view
+        :view.querySelector('.side .go:not([hidden])')||view.querySelector('.side,.boba-platform-bar,.panel')||view;
+      if(typeof target.scrollIntoView!=='function')return;
+      var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      target.scrollIntoView({behavior:reduced?'auto':'smooth',block:destination==='game'?'start':'center'});
+    }
+    document.getElementById('mobile-game').addEventListener('click',function(){jump('game');});
+    document.getElementById('mobile-controls').addEventListener('click',function(){jump('controls');});
+  })();
   /* ---------- lobby navigation and category filters ---------- */
   var lobbyScroll=0,lastView='';
   document.querySelectorAll('[data-lobby-filter]').forEach(function(button){button.addEventListener('click',function(){

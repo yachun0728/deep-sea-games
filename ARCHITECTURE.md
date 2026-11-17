@@ -154,3 +154,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 ## 後續演進
 
 目前每款遊戲已能分開定位，通常不必讀取產出的 index.html。若日後共享相依持續增加，再另提方案建立明確錢包／遊戲註冊 API、逐款遷移並做行為測試；此次沒有進行該第二次重構，也沒有變更規則。完整新增遊戲流程見 [README.md](README.md)。
+
+## 手機頁面導覽
+
+`css/mobile-navigation.css`、`templates/mobile-navigation.html` 與 `js/mobile-navigation.js` 提供手機版獨立頁面滑動區及遊戲／操作區跳轉。880px 以下顯示，與 console 單欄斷點一致；大廳及桌面隱藏。滑軌位於遊戲觸控區外，使用原生 pan-y／pinch-zoom，不監聽或取消 pointer／touch 事件，也不改遊戲輸入。跳轉只對目前顯示的 view 操作，遵守減少動態效果偏好；不改 hash、不開始遊戲、不扣點。珍奶原始 iframe 與子頁維持不變，父頁的滑軌仍可捲動整頁。

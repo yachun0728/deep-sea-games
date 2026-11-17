@@ -98,8 +98,8 @@ tx('本局 +'+earned+' 點',70,34,16,earned>0?'#ffd23f':'#fff1c1');
 pops.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/2.2);const y=175-(reduceMotion?0:Math.min(1,p.age*3)*22);tx('+'+p.b+' 點',W/2,y,38,'#ffd23f');tx(p.m+' 公尺里程碑',W/2,y+28,17,'#fff1c1');g.globalAlpha=1});
 if(st!=='run'){
 g.fillStyle='rgba(27,27,47,.5)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx('屋頂貓貓',W/2,240,36,'#ffd23f');tx('右側扣點開始',W/2,290,22,'#fff1c1')}
-else{tx('喵…摔下去了！',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(earned>0?'本局獎勵 +'+earned+' 點':'沒到 '+MILESTONES[0][0]+' 公尺，沒有獎勵',W/2,314,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,348,20,'#ffd23f');tx('右側可以再跑一次',W/2,392,20,'#fff1c1')}}}
+if(st==='ready'){tx('屋頂貓貓',W/2,240,36,'#ffd23f');tx('到操作區扣點開始',W/2,290,22,'#fff1c1')}
+else{tx('喵…摔下去了！',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(earned>0?'本局獎勵 +'+earned+' 點':'沒到 '+MILESTONES[0][0]+' 公尺，沒有獎勵',W/2,314,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,348,20,'#ffd23f');tx('到操作區再跑一次',W/2,392,20,'#fff1c1')}}}
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
