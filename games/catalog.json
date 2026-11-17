@@ -258,5 +258,12 @@
     "view": "games/peek/view.html",
     "card": "games/peek/card.html",
     "icon": "games/peek/icon.svg"
+  },
+  {
+    "id": "mosquito",
+    "logic": "games/mosquito/game.js",
+    "view": "games/mosquito/view.html",
+    "card": "games/mosquito/card.html",
+    "icon": "games/mosquito/icon.svg"
   }
 ]
