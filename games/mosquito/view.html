@@ -1,0 +1,12 @@
+  <section class="view" id="view-mosquito" hidden>
+    <div class="console"><div class="sneak-stage"><canvas id="mq-canvas" tabindex="0" width="480" height="720" aria-label="血壓上升：放開空白鍵上升，按住下降，降落在皮膚上按住吸血，吸滿後從左上角窗戶的破洞飛出去"></canvas></div>
+      <div class="side"><section class="panel" aria-label="血壓上升操作">
+        <dl class="stats"><div><dt>本局吸血</dt><dd id="mq-blood">0.0%</dd></div><div><dt>警覺值</dt><dd id="mq-alert">0%</dd></div><div><dt>最佳紀錄</dt><dd id="mq-best">0.0%</dd></div></dl>
+        <div class="field"><label>每局入場</label><p class="runner-fee">10 <small>點</small></p><input id="mq-amount" type="hidden" value="10"></div>
+        <button class="go" id="mq-go" type="button" data-mode="bet">扣點開始吸血</button>
+        <p class="msg" id="mq-msg" aria-live="polite">蚊子準備出動！扣點後開始，放開空白鍵上升、按住下降，降落在皮膚上按住吸血。</p>
+        <p class="hint">按住 <kbd>空白鍵</kbd> 或按住畫面往下俯衝，放開就往上飄。降落在臉頰、手臂或腳上並持續按住就吸血，放開就起飛。吸越多越重、越飛不動。皮膚出現紅色波紋要立刻放開，棉被隆起要往上飛，警覺值滿了會開燈。</p>
+      </section></div>
+    </div>
+    <details class="rules"><summary>玩法與點數</summary><p>每局固定扣 10 點。你是深夜的一隻蚊子，要在睡著的人身上吸滿血，再從左上角窗戶的破洞逃出去。放開空白鍵蚊子往上飄，按住往下俯衝；降落在臉頰、手臂或腳上，持續按住就開始吸血，放開就起飛。降落時速度太快，蚊子會折斷口器、暈眩 1 秒。</p><p>吸得越多，蚊子越重，上升越慢、俯衝越快。警覺值會隨著飛行與吸血上升：臉最快也最吵，腳最慢最安靜，靠近耳朵飛和飛到高處也會更吵。吸血進度到 90% 以後，警覺值上升速度減半。</p><p>睡著的人有三種方式拍死你。吸血時皮膚出現紅色波紋，1.2 秒後巨手會抓下來，要立刻放開飛走。棉被隆起代表要翻身，翻身時畫面下方會全部被壓到，要先往上飛。警覺值滿了會開燈，2 秒內飛進左上角窗戶的破洞才能逃生，但沒吸滿就逃走不算過關。</p><p>固定獎勵：吸血進度每達 25%、50%、75%，分別立即入帳 1、2、3 點；吸滿 100% 並成功飛出窗戶，再入帳 4 點，每局最多 10 點。每個門檻每局只入帳一次，被拍扁後已入帳的點數不會收回，結束時也不會另外結算。吸血百分比與最佳紀錄只是記錄，不換點數。這是操作技巧遊戲，結果取決於你的時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已扣點數不退回，已入帳的點數會保留。最佳紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+  </section>

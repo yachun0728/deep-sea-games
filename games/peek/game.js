@@ -1,11 +1,11 @@
   /* ---------- Don't Peek: wind the music box while spirits strike; lean away, cover the screen, hold still ---------- */
   var peekBusy=false,peekStake=0,peekSay=function(){};
   (function(){
-const c=$('pk-canvas'),g=c.getContext('2d'),W=400,H=560,OL='#120d0a';
-const WIND_RATE=4;                         // % of the music-box spring wound per second while cranking
+const c=$('peek-canvas'),g=c.getContext('2d'),W=400,H=560,OL='#120d0a';
+const WIND_RATE=3;                         // % of the music-box spring wound per second while cranking
 const WIND_MAX_TILT=.35;                   // cranking only works while the box is nearly level
 const MILE_EVENTS=3,MILE_REWARD=2,WIN_REWARD=5; // fixed BONUS: survive 3 spirits +2, open the box +5, each once per round
-const FIRST_GAP=5,GAP_MIN=5,GAP_MAX=8;     // seconds before the first spirit and between spirits
+const FIRST_GAP=4,GAP_MIN=4,GAP_MAX=7;     // seconds before the first spirit and between spirits
 const DIRECTOR_AT=85,DIRECTOR_P=.75;       // once per round, past 85% a spirit may strike within 3 seconds
 const TILT_SPEED=6;                        // keyboard / button lean speed per second
 const EYE={warn:2.5,judge:3,away:.5,grace:.35};   // lean away from the red beam for 3s, 0.35s of slack
@@ -34,13 +34,13 @@ function tone(f,d,vol,pan,type,slide){
   gn.gain.setValueAtTime(vol||.05,t);gn.gain.linearRampToValueAtTime(.0001,t+d);o.connect(gn);
   if(ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=pan||0;gn.connect(p);p.connect(ac.destination)}else gn.connect(ac.destination);
   o.start(t);o.stop(t+d+.02)}catch(e){}}
-function say(text,kind){$('pk-msg').textContent=text;$('pk-msg').className='msg'+(kind?' '+kind:'')}
+function say(text,kind){$('peek-msg').textContent=text;$('peek-msg').className='msg'+(kind?' '+kind:'')}
 peekSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
 function ui(){
  const live=st==='run';
- setText('pk-prog',Math.floor(prog)+'%');setText('pk-spirits',survived+' 次襲擊');setText('pk-best',best+'%');
- $('pk-amount').disabled=peekBusy;$('pk-go').disabled=live;setText('pk-go',live?'上弦中 · 別看裡面':st==='ready'?'扣點開始上弦':'扣點再開一次');
+ setText('peek-prog',Math.floor(prog)+'%');setText('peek-spirits',survived+' 次襲擊');setText('peek-best',best+'%');
+ $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'上弦中 · 別看裡面':st==='ready'?'扣點開始上弦':'扣點再開一次');
 }
 function fx(s,x,y,col){fxs.push({s,x,y,col,t:0})}
 function end(kind,reason){
@@ -172,7 +172,7 @@ function region(e){
  for(let i=0;i<BTN.length;i++){const b=BTN[i];if(x>=b[0]&&x<=b[0]+b[2]&&y>=b[1]&&y<=b[1]+b[3])return i}
  return y<480?3:-1}
 function syncPtrs(){btn=[0,0,0,0];ptrs.forEach(i=>{if(i>=0)btn[i]=1})}
-$('pk-go').addEventListener('click',start);
+$('peek-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
  if(st!=='run'){say(st==='ready'?'先按「扣點開始上弦」。':'這一局已結算。按「扣點再開一次」開始新的一局。');return}
@@ -192,7 +192,7 @@ document.addEventListener('visibilitychange',()=>{last=performance.now();clearIn
 window.addEventListener('hashchange',()=>{last=performance.now();clearInput()});
 /* ---- optional phone motion: lean the phone, turn it face down to cover ---- */
 function onOrient(e){if(e.gamma===null||e.gamma===undefined)return;gyro.tilt=clamp(e.gamma/30,-1,1);gyro.down=Math.abs(e.beta||0)>145}
-const gb=$('pk-gyro');
+const gb=$('peek-gyro');
 if(gb)gb.addEventListener('click',()=>{
  if(gyro.on){gyro.on=false;window.removeEventListener('deviceorientation',onOrient);gb.textContent='啟用體感（手機）';return}
  const go=()=>{gyro.on=true;window.addEventListener('deviceorientation',onOrient);gb.textContent='關閉體感'};

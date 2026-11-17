@@ -40,4 +40,6 @@
 | [布丁突圍 Pudding Dash](pudding/README.md) | `#pudding` | 技巧闖關 | 顯示 | 380 行 | 拼出武器，背著小王子殺出重圍。 |
 | [下班保衛戰 Clock Out](clock-out/README.md) | `#clock-out` | 技巧闖關 | 顯示 | 1096 行 | 擺好辦公用品擋住一波波工作，撐到 17:00 打卡下班。 |
 | [別看 Don’t Peek](peek/README.md) | `#peek` | 技巧闖關 | 顯示 | 203 行 | 轉動八音盒發條，躲開盒子裡的東西，燈滅前蓋住螢幕。 |
+| [血壓上升 Midnight Mosquito](mosquito/README.md) | `#mosquito` | 技巧闖關 | 顯示 | 437 行 | 深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。 |
+| [尊嚴保衛戰 The Last Hair](last-hair/README.md) | `#last-hair` | 技巧闖關 | 顯示 | 578 行 | 頂著最後三根頭髮，在強風中走完 500 公尺去面試。 |
 | [打磚塊 Breakout](breakout/README.md) | `#breakout` | 免費懷舊 | 顯示 | 228 行 | 移動擋板反彈小球，打光磚塊一關闖過一關。 |

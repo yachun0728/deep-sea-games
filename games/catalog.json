@@ -260,6 +260,20 @@
     "icon": "games/peek/icon.svg"
   },
   {
+    "id": "mosquito",
+    "logic": "games/mosquito/game.js",
+    "view": "games/mosquito/view.html",
+    "card": "games/mosquito/card.html",
+    "icon": "games/mosquito/icon.svg"
+  },
+  {
+    "id": "last-hair",
+    "logic": "games/last-hair/game.js",
+    "view": "games/last-hair/view.html",
+    "card": "games/last-hair/card.html",
+    "icon": "games/last-hair/icon.svg"
+  },
+  {
     "id": "breakout",
     "logic": "games/breakout/game.js",
     "view": "games/breakout/view.html",
