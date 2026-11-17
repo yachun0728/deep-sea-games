@@ -4,61 +4,63 @@
 
 ## 概覽
 
-- 網址：`#mines`　分類：技巧闖關　狀態：顯示中
-- 大廳卡片：「看懂數字、標記地雷，找出全部安全區。」｜入場 10 點 · 推理排雷
+- 網址：`#mines`　分類：免費懷舊　狀態：顯示中
+- 大廳卡片：「低中高難度或自訂棋盤，免費重溫經典踩地雷。」｜免費 · 不限次數 · 推理排雷
 - 追蹤名稱（GA4 `game_name`）：踩地雷，`game_id` 為 `mines`
-- 檔案：`games/mines/card.html`、`games/mines/game.js`、`games/mines/icon.svg`、`games/mines/style.css`、`games/mines/view.html`；`game.js` 共 85 行、5.1 KB
+- 檔案：`games/mines/card.html`、`games/mines/game.js`、`games/mines/icon.svg`、`games/mines/style.css`、`games/mines/view.html`；`game.js` 共 113 行、7.7 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「2. Mines（mines）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-mines`、`board`、`mines-flag`、`mines-left`、`mines-flags`、`mines-best`、`mines-go`、`mines-msg`
+`view-mines`、`board`、`mines-difficulty`、`mines-custom`、`mines-size`、`mines-bomb-limit`、`mines-bombs`、`mines-level`、`mines-flag`、`mines-left`、`mines-flags`、`mines-best`、`mines-go`、`mines-msg`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`M`（L3）
+- 狀態物件／進行中旗標：`M`（L4）
+- L3 常數：`M_PRESETS`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`mSay` L5、`syncBalance` L7、`mineNeighbors` L8、`mineNumber` L13、`buildBoard` L14、`renderMines` L23、`startMines` L40、`mineFinish` L49、`mineFlag` L55、`pick` L60
+`mSay` L6、`syncBalance` L8、`mineNeighbors` L9、`mineNumber` L14、`buildBoard` L15、`renderMines` L28、`mineStage` L49、`startMines` L60、`mineFinish` L70、`mineFlag` L78、`pick` L83、`mineSettings` L103
 
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L43 `startMines`：`S.balance -= ENTRY_FEE;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **餘額檢查**
-- L42 `startMines`：`if (S.balance < ENTRY_FEE) { mSay(LOW_MSG, 'lose');`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
-- 入場費常數 `ENTRY_FEE` 在本檔出現 4 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
+- 入場費常數 `ENTRY_FEE` 在本檔出現 0 次、餘額不足訊息 `LOW_MSG` 0 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L45 `startMines`：`M.analytics = AN.start('mines', ENTRY_FEE);`
-- L52 `mineFinish`：`AN.end(M.analytics, 0, won ? 'complete' : 'loss', {step: M.picks, score: M.picks});`
-- L78 `pick`：`AN.progress(M.analytics, {step: M.picks, score: M.picks});`
+- L67 `startMines`：`M.analytics = AN.start('mines', 0);`
+- L74 `mineFinish`：`AN.end(M.analytics, 0, won ? 'complete' : 'loss', {step:M.picks,board_size:M.size,mine_count:M.mines});`
+- L97 `pick`：`AN.progress(M.analytics, {stage: M.level, step: M.picks, score: M.picks});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 
 - `deep-sea-mines-best`（寫、讀）
+- `deep-sea-mines-level-best`（讀）
 
 ## 平台共用相依
 
-- 直接使用的共用名稱：`S`、`AN`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`syncBalance`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- 直接使用的共用名稱：`S`、`AN`、`save`、`fmt`、`syncBalance`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/bootstrap.js` 會呼叫：`buildBoard`、`renderMines`
 - `js/controls.js` 會呼叫：`mSay`、`renderMines`
 - 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`M`
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-踩地雷。定位：`M`、`mineNeighbors`、`mineNumber`、`startMines`、`pick`、`mineFinish`。每局固定入場10點；5×5共25格、3顆雷，第一次實際翻格才配置地雷並排除該格，保證首格安全（不保證整盤無須猜測）。數字為周圍八格雷數，零雷區自動展開；可切換插旗模式或按右鍵，最多3面旗，可取消，旗子不算翻開。翻開全部22格安全區過關，踩雷失敗。最佳成績為最多翻開的安全格數，存在 `deep-sea-mines-best`；與錢包無關，不發點、不退款。進行中不重開、不重複扣款；回大廳及背景不自動操作，回來可繼續；重新整理放棄進度。
+踩地雷。定位：`M`、`M_PRESETS`、`mineSettings`、`startMines`。完全免費、不限次數、不發點。低為5×5／3雷、中為8×8／10雷、高為10×10／20雷；自訂N×N，N須為2～10整數，地雷數須為1～N×N−1整數。輸入無效不開局，不悄悄截斷；進行中鎖定設定，勝負後可重新選擇，每局固定棋盤不逐關擴大。開局立即隨機佈雷，第一格不保證安全。地雷達總格數減1時只有1安全格，只有翻到唯一安全格才獲勝。數字代表八鄰格雷數，零雷區展開，可插旗（上限為當局雷數）。翻開全部安全格勝利complete、踩雷loss，各只end一次；重玩另開start，entry_points與payout_points皆0。保留deep-sea-mines-best與deep-sea-mines-level-best舊Key及格式，不將自訂成績寫入舊關卡紀錄；5×5／3雷的安全格舊紀錄仍相容。大棋盤格子至少44px、可水平捲動；重新整理不還原本局。
 
 ## 修改檢查清單
 

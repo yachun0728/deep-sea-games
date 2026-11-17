@@ -119,6 +119,6 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 固定入場10點，start一次；10、20、30層各立即發5點並送progress（step、score、floors、milestone、bonus_points、total_bonus_points），不暫停有效時間。失手／倒塌送loss，正常離頁送abandoned；end的payout_points記錄本局已入帳BONUS，不再發點，不帶返還倍率。BFCache保留回合。未驗證GA4後台收件。
 
-## 踩地雷（mines）與挖金礦（keno）
+## 踩地雷（mines）與每日挖金礦（keno）
 
-沿用 game_id，game_name 分別更新為「踩地雷」與「挖金礦」。每局一次 start，entry_points=10；每次翻格／挖掘送 progress，step 與 score 分別為安全格數或挖掘次數／總分。踩地雷過關 complete、踩雷 loss；挖金礦挖完5次 complete（包含0分）。end 的 payout_points 固定0，不送返還倍率或 cashout。中途回大廳可繼續，真正離頁由既有分析層送 abandoned，背景時間依既有聚焦與可見狀態排除。未驗證正式站後台收件。
+踩地雷每局一次start（entry_points=0），翻格progress帶step；勝利complete、踩雷loss或離頁abandoned結束，payout_points=0。單局難度固定，無逐關resume；勝負帶board_size與mine_count，不更改game_id。每日挖礦每次免費回合start（entry_points=0），每挖progress帶step、score、bonus_points與total_bonus_points；最後一次或到每日30點上限送complete。end只記錄本次分析回合已入帳總點數，不再發點。重新整理後舊回合abandoned，新分析回合start從本次載入後的入帳重新累計，剩餘免費機會不變；捕獲pagehide先送已入帳總額，BFCache保留回合。午夜到期以complete結束舊日回合。未驗證正式GA4後台收件。

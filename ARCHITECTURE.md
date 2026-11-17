@@ -109,13 +109,15 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 
 ## 資料與錢包
 
-預設餘額 `START_BALANCE=500`，顯示中的遊戲每局固定扣 `ENTRY_FEE=10`（js/config.js；餘額不足提示統一用 `LOW_MSG`），共用最低投入 `MIN_BET=10` 仍供隱藏的機率遊戲使用。餘額低於 `REGEN_CAP=100` 時，js/wallet.js 的 `regenTick` 每分鐘加 1 點（`REGEN_MS`），以牆上時鐘計算，含頁面關閉期間；`regenStart` 在 bootstrap 啟動 1 秒計時與回到分頁時的補算。讀取餘額以 parseInt 並檢查有限且非負；各投入欄位的讀取／取整方式並非完全一致，修改時應核對對應函式。
+預設餘額 `START_BALANCE=500`，踩地雷與每日挖礦不扣點，其餘遊戲依入場說明扣 `ENTRY_FEE=10`（js/config.js；餘額不足提示統一用 `LOW_MSG`），共用最低投入 `MIN_BET=10` 仍供隱藏的機率遊戲使用。餘額低於 `REGEN_CAP=100` 時，js/wallet.js 的 `regenTick` 每分鐘加 1 點（`REGEN_MS`），以牆上時鐘計算，含頁面關閉期間；`regenStart` 在 bootstrap 啟動 1 秒計時與回到分頁時的補算。讀取餘額以 parseInt 並檢查有限且非負；各投入欄位的讀取／取整方式並非完全一致，修改時應核對對應函式。
 
 | localStorage Key | 用途 |
 | --- | --- |
 | `crush-depth-balance` | 共用餘額字串 |
 | `deep-sea-regen-at` | 回點計時的起點（毫秒時間戳）；新增於 2026-11-17，缺少時以載入當下起算，不補發舊資料 |
 | `deep-sea-mines-best` | 踩地雷最多翻開安全格（0～22）；缺少或無效時以0起算 |
+| `deep-sea-gold-daily-v1` | 台灣日期、每日次數、已發點數及本次layout／open；沒有舊資料時初始化，不修改舊Key |
+| `deep-sea-mines-level-best` | 舊版通關紀錄，保留不再更新 |
 | `deep-sea-gold-best` | 挖金礦最佳分數；缺少或無效時以0起算 |
 | `pearl-merge-best` | 合併最佳分數 |
 | `chayne` | Dodge Run 最佳距離 |
@@ -181,6 +183,8 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 
 `games/skybuilder/` 是 TowerBuilding.html 的繁中整合，沿用共享 IIFE、錢包與追蹤。`sbBusy` 防止遊玩中重設；每局固定10點，10／20／30層各即時送固定5點BONUS，結束不重複入帳。最佳樓層使用新增的 `deep-sea-skybuilder-best`，不修改既有資料鍵；缺少時以0起算，回復程式時可保留此鍵。
 
-## 踩地雷與挖金礦改造
+## 踩地雷與每日挖金礦
 
-兩款僅扣固定 ENTRY_FEE，不提供點數返還；保留共享 syncBalance 函式供其他遊戲使用。M.active 與 KE.active 供重設防護，宿主 hot.snapshot 不再把其入場費加回。新增兩個最佳成績 Key，不遷移、不覆寫任何既有玩家資料；回復本次來源時可保留這兩個 Key，舊版不使用它們。沒有自動操作或背景計時，切換畫面後可繼續。AN.start／progress／end 沿用 mines、keno ID，end 的 payout_points 固定0，score與step只代表遊戲成績。
+踩地雷為免費懷舊遊戲，開局與重玩皆不扣點、不限次數；M.active表示進行中，重設防護不變。低中高預設或自訂2～10邊長與1～N×N−1顆雷，每局固定設定。deep-sea-mines-level-best保留舊關卡紀錄，不再更新；舊deep-sea-mines-best保持第一關安全格紀錄。挖礦不再扣點，新增deep-sea-gold-daily-v1保存當日配額與剩餘格子，舊deep-sea-gold-best保持分數格式。新Key獨立，缺少時初始化，不遷移或清除玩家餘額；回復來源時可保留新Key，舊版忽略。每日補給卡片放在獨立daily-supply區，正常lobby-grid計數與篩選不包含它。
+
+KE.active涵蓋免費挖掘，使用現有syncBalance／save入帳；可用時以Web Locks序列化跨分頁操作，刷新及其他分頁先讀配額與已挖格子防止重複發點。儲存消耗先於入帳，非資料庫原子交易；突然關閉可能少發一次，不能宣稱強一致或防作弊。台灣日期變更後舊回合到期。正常pagehide以捕獲階段先送含已發點數的abandoned，BFCache不提前結束。其他遊戲與錢包Key不變。

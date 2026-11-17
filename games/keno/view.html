@@ -1,11 +1,11 @@
   <section class="view" id="view-keno" hidden>
-    <div class="console"><div class="dice-stage keno-stage"><div class="kboard" id="ke-board" role="group" aria-label="40 格礦區"></div><p class="ore-legend">● 石頭 0 分　◆ 銅礦 10 分<br>◆ 金礦 30 分　✦ 寶石 60 分</p></div>
+    <div class="console"><div class="dice-stage keno-stage"><div class="kboard" id="ke-board" role="group" aria-label="36 格礦區"></div><p class="ore-legend">石頭 0 點 · 銅礦 2 點<br>金礦 3 點 · 鑽石 5 點</p></div>
       <div class="side"><section class="panel" aria-label="挖金礦操作">
-        <p>每局入場 10 點</p>
-        <dl class="stats"><div><dt>剩餘挖掘</dt><dd id="ke-left">5 / 5</dd></div><div><dt>本局分數</dt><dd id="ke-score">0</dd></div><div><dt>最佳分數</dt><dd id="ke-best">0</dd></div></dl>
+        <p>每日免費補給 · 不扣入場點數</p>
+        <dl class="stats"><div><dt>今日免費次數</dt><dd id="ke-free">3 / 3</dd></div><div><dt>今日已獲得</dt><dd id="ke-earned">0 / 30 點</dd></div><div><dt>剩餘挖掘</dt><dd id="ke-left">5 / 5</dd></div><div><dt>本局分數</dt><dd id="ke-score">0</dd></div><div><dt>最佳分數</dt><dd id="ke-best">0</dd></div></dl>
         <button class="go" id="ke-go" type="button" data-mode="start">開始挖金礦</button>
         <p class="msg" id="ke-msg" aria-live="polite">每局 5 次機會，一次挖一格，看看能找到多少礦物！</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法說明</summary><p>40 格礦區藏著 20 格石頭、10 格銅礦、8 格金礦與 2 格寶石，每局開始時隨機排列。每次點擊一個未挖過的格子，立即揭曉礦物；石頭 0 分、銅礦 10 分、金礦 30 分、寶石 60 分。挖完 5 次後顯示總分，挖到石頭也不會扣掉已累積的分數。</p><p>分數與最佳紀錄只用於挑戰，不會換成共用點數。每局開始扣 10 點，中途回大廳可再回來繼續；重新整理不保留本局進度，也不退入場費。</p></details>
-  </section>
+    <details class="rules"><summary>每日補給規則</summary><p>每天免費 3 次，每次挖 5 格。36 格礦區有 18 格石頭、10 格銅礦、6 格金礦與 2 格鑽石，每次隨機排列；石頭 0 點、銅礦 2 點、金礦 3 點、鑽石 5 點，立即加入共用點數。每天最多獲得 30 點，接近上限時只發剩餘額度，達上限即完成今日補給。</p><p>台灣時間凌晨 0 點重置。次數在開始時使用，重新整理可繼續本次剩餘挖掘，不會補發已挖過的獎勵。記錄僅保存在此瀏覽器，不跨裝置同步；不提供付費加挖。分數與最佳分數另計，不等於點數。</p></details>
+</section>

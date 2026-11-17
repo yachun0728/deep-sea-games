@@ -4,46 +4,49 @@
 
 ## 概覽
 
-- 網址：`#keno`　分類：技巧闖關　狀態：顯示中
-- 大廳卡片：「五次挖掘機會，發現金礦與閃亮寶石。」｜入場 10 點 · 探索集分
+- 網址：`#keno`　分類：每日免費補給　狀態：顯示中
+- 大廳卡片：「免費挖金礦拿點數，再去挑戰喜歡的小遊戲。」｜免費 · 不扣點 · 台灣時間午夜重置
 - 追蹤名稱（GA4 `game_name`）：挖金礦，`game_id` 為 `keno`
-- 檔案：`games/keno/card.html`、`games/keno/game.js`、`games/keno/icon.svg`、`games/keno/style.css`、`games/keno/view.html`；`game.js` 共 50 行、3.3 KB
+- 檔案：`games/keno/card.html`、`games/keno/game.js`、`games/keno/icon.svg`、`games/keno/style.css`、`games/keno/view.html`；`game.js` 共 74 行、7.0 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「8. Keno（keno）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-keno`、`ke-board`、`ke-left`、`ke-score`、`ke-best`、`ke-go`、`ke-msg`
+`view-keno`、`ke-board`、`ke-free`、`ke-earned`、`ke-left`、`ke-score`、`ke-best`、`ke-go`、`ke-msg`
 
 ## 狀態與常數
 
 - 狀態物件／進行中旗標：`KE`（L3）
-- L2 常數：`KE_N`、`KE_DIGS`
+- L2 常數：`KE_N`、`KE_DIGS`、`KE_DAILY_KEY`
 - L5 常數：`KE_ORES`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`kSay` L6、`keBuild` L7、`keUI` L14、`kePlay` L26、`keDig` L36
+`kSay` L6、`keDay` L7、`keRead` L8、`keStore` L15、`keLocked` L16、`run` L17、`keArt` L21、`keBuild` L26、`keSync` L31、`keUI` L41、`kePlay` L50、`keDig` L55
 
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L32 `kePlay`：`S.balance -= ENTRY_FEE;`
-
-**入帳（領回／獎勵）**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
-**餘額檢查**
-- L28 `kePlay`：`if (S.balance < ENTRY_FEE) { kSay(LOW_MSG, 'lose');`
+**入帳（領回／獎勵）**
+- L61 `keDig`：`S.balance+=bonus;`
 
-- 入場費常數 `ENTRY_FEE` 在本檔出現 4 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
+**餘額檢查**
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
+
+- 入場費常數 `ENTRY_FEE` 在本檔出現 0 次、餘額不足訊息 `LOW_MSG` 0 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L33 `kePlay`：`KE.analytics = AN.start('keno', ENTRY_FEE);`
-- L41 `keDig`：`AN.progress(KE.analytics, {step: KE.digs, score: KE.score});`
-- L44 `keDig`：`AN.end(KE.analytics, 0, 'complete', {step: KE.digs, score: KE.score});`
+- L32 `keSync`：`AN.end(KE.analytics,KE.earned,'complete',{step:KE.digs,score:KE.score});`
+- L36 `keSync`：`KE.analytics=AN.start('keno',0);`
+- L39 `keSync`：`AN.end(KE.analytics,KE.earned,'complete',{step:KE.digs,score:KE.score});`
+- L63 `keDig`：`AN.progress(KE.analytics,{step:KE.digs,score:KE.score,bonus_points:bonus,total_bonus_points:KE.earned});`
+- L64 `keDig`：`AN.end(KE.analytics,KE.earned,'complete',{step:KE.digs,score:KE.score});`
+- L71 `keDig`：`if(!e.persisted&&KE.active)AN.end(KE.analytics,KE.earned,'abandoned',{step:KE.digs,score:KE.score});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -53,14 +56,14 @@
 
 ## 平台共用相依
 
-- 直接使用的共用名稱：`S`、`AN`、`ENTRY_FEE`、`LOW_MSG`、`syncBalance`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- 直接使用的共用名稱：`S`、`AN`、`syncBalance`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/bootstrap.js` 會呼叫：`keBuild`、`keUI`
 - `js/controls.js` 會呼叫：`kSay`
 - 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`KE`
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-挖金礦。定位：`KE`、`KE_ORES`、`kePlay`、`keDig`。每局固定入場10點；40格固定包含石頭20格（0分）、銅礦10格（10分）、金礦8格（30分）、寶石2格（60分），開局隨機洗牌。每次挖一個未挖過的格子並即時揭曉，共5次，石頭不扣已累積分數；挖完自動結束。最佳總分存在 `deep-sea-gold-best`，分數不換錢包點數、不發點、不退款。進行中不重開；重點同格不消耗次數，結束後點格不再計分。回大廳及背景不自動挖掘，回來可繼續；重新整理放棄進度。
+挖金礦，每日免費補給。定位：`KE`、`keDay`、`keRead`、`keLocked`、`kePlay`、`keDig`。不扣入場費，台灣時間每日免費3次，每次5格，開局即消耗1次。6×6礦區固定18石頭（0點）、10銅礦（2點）、6金礦（3點）、2鑽石（5點），每次洗牌。挖到當下入帳，每日最多30點；臨近上限只發剩餘額度，達上限提前完成當次且當日不能再開。無付費加挖、下注或倍率。每次最多5個不同格子，重點不重發。分數沿用0／10／30／60，與錢包點數分開；最佳分數Key保持 `deep-sea-gold-best`。新增 `deep-sea-gold-daily-v1` 保存 `{day,plays,earned,round}`，round含layout與open，可重新整理接續同一次剩餘機會，不補發已發點數。午夜尚未挖完的舊日回合到期，已得點數不收回；恢復頁面或最晚30秒刷新日期提示。Web Locks可用時序列化同瀏覽器跨分頁操作；無支援時採同步操作。紀錄僅限本瀏覽器，清除儲存、調整系統時間或另用裝置仍可影響限制，不宣稱帳戶級防作弊。儲存異常時停止開局／發點，不重設玩家資料。每筆先保存消耗與配額再存錢包，突然中斷可能少發該筆，不會藉重新整理重發；無伺服器交易保證。
 
 ## 修改檢查清單
 

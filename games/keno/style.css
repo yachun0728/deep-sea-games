@@ -1,7 +1,25 @@
-#view-keno .kboard { grid-template-columns: repeat(5, minmax(0, 1fr)); max-width: 420px; margin: auto; }
-#view-keno .kcell { min-height: 44px; font-size: 24px; background: #352b20; border-color: #756044; }
-#view-keno .ore-0 { color: #a5a9ae; background: #26313a; }
-#view-keno .ore-1 { color: #f5a46e; }
-#view-keno .ore-2 { color: #ffda65; background: #51411f; }
-#view-keno .ore-3 { color: #9af3eb; background: #21464b; }
-#view-keno .ore-legend { text-align: center; color: var(--lamp); line-height: 1.8; }
+#view-keno .kboard { grid-template-columns: repeat(6, minmax(44px, 1fr)); min-width: 294px; max-width: 480px; margin: auto; gap: 6px; }
+#view-keno .keno-stage { overflow-x: auto; background: radial-gradient(ellipse at top,#534538,#1a211f); }
+#view-keno .kcell { min-height: 44px; border-radius: 8px; background: linear-gradient(140deg,#8a7862,#574b40); border: 2px solid #3a332c; box-shadow: inset 2px 2px #b09b7a, inset -3px -3px #403931; }
+#view-keno .kcell svg { width: 86%; height: 86%; display: block; margin: auto; }
+#view-keno .kcell[class*="ore-"] { background: #302e2b; box-shadow: inset 0 2px 5px #111; }
+#view-keno .ore-crack { display: block; width: 45%; height: 45%; margin: auto; border-left: 3px solid #433a31; border-bottom: 3px solid #433a31; transform: rotate(-25deg); }
+#view-keno .ore-legend { text-align: center; color: #ffe0a2; line-height: 1.8; }
+.daily-supply { width:100%; }
+.daily-supply #gold-banner { display:grid; grid-template-columns:120px minmax(0,1fr) auto; align-items:center; gap:24px; width:100%; max-width:none; margin:0; padding:24px 30px; border:1px solid #9b7e40; border-radius:18px; background:radial-gradient(ellipse at top left,#66502d55,transparent 60%),linear-gradient(120deg,#302b20,#112e30); text-decoration:none; }
+.gold-banner-art { position:relative; }
+.gold-banner-art svg { width:120px; height:120px; display:block; filter:drop-shadow(0 8px 14px #0005); }
+.gold-banner-art > span { position:absolute; top:4px; right:0; color:#ffe49a; font-size:24px; }
+.daily-supply #gold-banner h3 { color:#ffe0a2; font-size:clamp(24px,3vw,32px); margin:6px 0; }
+.daily-supply #gold-banner .game-card-en { display:none; }
+.daily-supply #gold-banner .game-card-description { margin:0; }
+.daily-supply #gold-daily-status { color:#ffe0a2; font-size:14px; margin:10px 0; }
+.daily-supply #gold-banner .game-card-footer { border:0; padding-top:0; gap:16px; justify-content:flex-start; flex-wrap:wrap; }
+.gold-banner-cta { background:#ffcf66; color:#322714; padding:14px 22px; border-radius:12px; font-weight:700; white-space:nowrap; box-shadow:0 4px 0 #987536; }
+.daily-supply #gold-banner:focus-visible { outline:3px solid #fff0b0; outline-offset:4px; }
+@media(max-width:640px) {
+ .daily-supply #gold-banner { grid-template-columns:64px minmax(0,1fr); gap:12px; padding:20px; }
+ .gold-banner-art svg { width:64px; height:64px; }
+ .gold-banner-cta { grid-column:1 / -1; text-align:center; white-space:normal; }
+ .daily-supply #gold-banner .game-card-footer { gap:8px; }
+}

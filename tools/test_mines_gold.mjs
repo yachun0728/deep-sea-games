@@ -1,35 +1,47 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
-const root = new URL('../', import.meta.url);
-function fixture() {
-  const elements = {}, storage = {}, events = [];
-  function element() { return {dataset:{},children:[],disabled:false,textContent:'',innerHTML:'',addEventListener(){},setAttribute(){},appendChild(b){this.children.push(b);}}; }
-  const c = {$:id=>elements[id]??=element(),document:{createElement:element},S:{balance:500},ENTRY_FEE:10,LOW_MSG:'不足',fmt:String,elBal:element(),save(){storage.balance=c.S.balance;},renderGo(){},localStorage:{getItem:k=>storage[k]??null,setItem:(k,v)=>storage[k]=v},AN:{start:(...a)=>{events.push(['start',...a]);return events.length;},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
-  vm.createContext(c);
-  for(const game of ['mines','keno']) vm.runInContext(fs.readFileSync(new URL(`games/${game}/game.js`,root),'utf8'),c);
-  c.buildBoard();c.renderMines();c.keBuild();c.keUI();
-  return {c,storage,events,elements};
+const root=new URL('../',import.meta.url);
+function fixture(storage={}){
+ const elements={},events=[];let day='2026-11-17';
+ function element(){return {style:{},dataset:{},children:[],disabled:false,textContent:'',innerHTML:'',addEventListener(){},setAttribute(){},appendChild(b){this.children.push(b);}};}
+ const c={$:id=>elements[id]??=element(),window:{addEventListener(){}},navigator:{},setInterval(){},document:{createElement:element,addEventListener(){},hidden:false},S:{balance:Number(storage.wallet??500)},STORE:'wallet',ENTRY_FEE:10,LOW_MSG:'不足',fmt:String,elBal:element(),save(){storage.wallet=String(c.S.balance);},renderGo(){},localStorage:{getItem:k=>storage[k]??null,setItem:(k,v)=>storage[k]=v},AN:{start:(...a)=>{events.push(['start',...a]);return events.length;},progress:(...a)=>events.push(['progress',...a]),resume:(...a)=>events.push(['resume',...a]),end:(...a)=>events.push(['end',...a])}};
+ vm.createContext(c);for(const game of ['mines','keno'])vm.runInContext(fs.readFileSync(new URL(`games/${game}/game.js`,root),'utf8'),c);
+ c.keDay=()=>day;c.buildBoard();c.renderMines();c.keBuild();c.keUI();return {c,storage,events,elements,setDay:d=>day=d};
 }
-const {c,storage,events}=fixture();
-c.S.balance=9;c.startMines();c.kePlay();assert.equal(events.length,0);assert.equal(c.S.balance,9);
-c.S.balance=500;c.startMines();c.startMines();assert.equal(c.S.balance,490);assert.equal(storage.balance,490);
-c.mineFlag(12);c.pick(12);assert.equal(c.M.picks,0);c.mineFlag(12);c.pick(12);assert.ok(!c.M.layout[12]);assert.equal(c.M.layout.filter(Boolean).length,3);assert.ok(c.M.picks>0);
-assert.deepEqual(Array.from(c.mineNeighbors(0)),[1,5,6]);
-for(let i=0;i<25;i++)if(!c.M.layout[i])c.pick(i);
-assert.equal(c.M.picks,22);assert.equal(c.M.active,false);assert.equal(c.M.best,22);assert.equal(storage['deep-sea-mines-best'],'22');assert.equal(c.S.balance,490);
-const ends=events.filter(e=>e[0]==='end').length;c.pick(1);c.mineFinish(true);assert.equal(events.filter(e=>e[0]==='end').length,ends);
-c.startMines();c.M.ready=true;c.M.layout=[true];c.pick(0);assert.equal(c.M.active,false);assert.equal(events.at(-1)[3],'loss');
-c.kePlay();c.kePlay();assert.equal(c.S.balance,470);assert.equal(c.KE.layout.filter(x=>x===3).length,2);
-c.KE.layout=[3,2,1,0,0];c.keDig(0);c.keDig(0);assert.equal(c.KE.digs,1);assert.equal(c.KE.score,60);
-for(let i=1;i<5;i++)c.keDig(i);
-assert.equal(c.KE.score,100);assert.equal(c.KE.active,false);assert.equal(storage['deep-sea-gold-best'],'100');assert.equal(events.at(-1)[3],'complete');assert.equal(events.at(-1)[2],0);assert.equal(c.S.balance,470);
-c.keDig(5);assert.equal(c.KE.digs,5);assert.equal(c.KE.score,100);
-c.kePlay();c.KE.layout=Array(40).fill(0);for(let i=0;i<5;i++)c.keDig(i);assert.equal(c.KE.score,0);assert.equal(events.at(-1)[3],'complete');
-assert.ok(events.filter(e=>e[0]==='end').every(e=>e[2]===0));
-const reloaded=fixture();reloaded.storage['deep-sea-mines-best']=storage['deep-sea-mines-best'];reloaded.storage['deep-sea-gold-best']=storage['deep-sea-gold-best'];
-// Recreate initialization with persisted records; ongoing rounds remain inactive.
-reloaded.c.buildBoard();reloaded.c.keBuild();assert.equal(reloaded.c.M.best,22);assert.equal(reloaded.c.KE.best,100);assert.equal(reloaded.c.M.active,false);assert.equal(reloaded.c.KE.active,false);
-// Exercise many random first clicks, including all edges and corners.
-for(let i=0;i<100;i++){const f=fixture();f.c.startMines();f.c.pick(i%25);assert.ok(!f.c.M.layout[i%25]);assert.equal(f.c.M.layout.filter(Boolean).length,3);}
-console.log('PASS: insufficient balance, single charge, first-click safety, flood reveal, flags, win/loss, repeat clicks, five digs, score persistence and zero payouts.');
+const f=fixture(),{c,events,storage}=f;
+c.S.balance=0;c.$('mines-difficulty').value='low';c.startMines();c.startMines();assert.equal(c.S.balance,0);assert.equal(events.filter(e=>e[0]==='start').length,1);
+assert.equal(c.M.layout.filter(Boolean).length,3);const safe=Array.from({length:c.N},(_,i)=>i).find(i=>!c.M.layout[i]);c.mineFlag(safe);c.pick(safe);assert.equal(c.M.picks,0);c.mineFlag(safe);c.pick(safe);
+for(let i=0;i<c.N;i++)if(!c.M.layout[i])c.pick(i);
+assert.equal(c.M.active,false);assert.equal(events.at(-1)[3],'complete');
+const ends=events.filter(e=>e[0]==='end').length;c.mineFinish(true);c.pick(0);assert.equal(events.filter(e=>e[0]==='end').length,ends);
+for(const [mode,size,bombs] of [['medium',8,10],['high',10,20]]){
+ c.$('mines-difficulty').value=mode;c.startMines();assert.equal(c.N,size*size);assert.equal(c.M.mines,bombs);assert.equal(c.M.layout.filter(Boolean).length,bombs);const bomb=c.M.layout.findIndex(Boolean);c.pick(bomb);assert.equal(events.at(-1)[3],'loss');
+}
+c.$('mines-difficulty').value='custom';
+for(const [size,bombs] of [[2,3],[10,99]]){
+ c.$('mines-size').value=size;c.$('mines-bombs').value=bombs;c.startMines();assert.equal(c.N,size*size);const safe=Array.from({length:c.N},(_,i)=>i).find(i=>!c.M.layout[i]);c.pick(safe);assert.equal(c.M.active,false);assert.equal(c.M.picks,1);assert.equal(events.at(-1)[3],'complete');assert.equal(c.M.layout.filter(Boolean).length,bombs);
+}
+for(const [size,bombs] of [[1,1],[11,1],[5,25],[5,0],[5,1.5],[2.5,1],['',1]]){
+ const before=events.length;c.$('mines-size').value=size;c.$('mines-bombs').value=bombs;c.startMines();assert.equal(c.M.active,false);assert.equal(events.length,before);
+}
+assert.equal(c.S.balance,0);
+// Mining is free even at zero balance and zero-score runs still consume a free visit.
+const g=fixture(),gc=g.c;gc.S.balance=0;g.storage.wallet='0';gc.kePlay();gc.kePlay();assert.equal(gc.KE.daily.plays,1);assert.equal(gc.S.balance,0);
+let d=JSON.parse(g.storage[gc.KE_DAILY_KEY]);d.round.layout=Array(36).fill(0);d.round.layout[0]=1;d.round.layout[1]=3;g.storage[gc.KE_DAILY_KEY]=JSON.stringify(d);
+gc.keDig(0);assert.equal(gc.S.balance,2);gc.keDig(0);assert.equal(gc.S.balance,2);assert.equal(gc.KE.digs,1);
+// Reload resumes remaining digs without consuming an extra visit or repeating rewards.
+const re=fixture(g.storage);assert.equal(re.c.KE.active,true);assert.equal(re.c.KE.digs,1);assert.equal(re.c.KE.daily.plays,1);
+re.c.keDig(0);assert.equal(re.c.S.balance,2);re.c.keDig(1);assert.equal(re.c.S.balance,7);
+for(let i=2;i<5;i++)re.c.keDig(i);assert.equal(re.c.KE.active,false);assert.equal(re.c.KE.daily.earned,7);assert.equal(re.events.at(-1)[2],5); // only this resumed session's credited amount
+for(let n=0;n<2;n++){re.c.kePlay();let record=JSON.parse(re.storage[re.c.KE_DAILY_KEY]);record.round.layout=Array(36).fill(0);re.storage[re.c.KE_DAILY_KEY]=JSON.stringify(record);for(let i=0;i<5;i++)re.c.keDig(i);}
+assert.equal(re.c.KE.daily.plays,3);re.c.kePlay();assert.equal(re.c.KE.active,false);
+re.setDay('2026-11-18');re.c.kePlay();assert.equal(re.c.KE.daily.plays,1);assert.equal(re.c.KE.daily.earned,0);
+// Daily cap awards exactly the remainder, ends the visit, and prevents more starts.
+d=JSON.parse(re.storage[re.c.KE_DAILY_KEY]);d.earned=29;d.round.layout[0]=3;re.storage[re.c.KE_DAILY_KEY]=JSON.stringify(d);const balance=re.c.S.balance;re.c.keDig(0);assert.equal(re.c.S.balance,balance+1);assert.equal(re.c.KE.daily.earned,30);assert.equal(re.c.KE.active,false);re.c.kePlay();assert.equal(re.c.KE.active,false);
+// Another open tab cannot re-credit an already consumed cell.
+const t=fixture(),t2=fixture(t.storage);t.c.kePlay();d=JSON.parse(t.storage[t.c.KE_DAILY_KEY]);d.round.layout[0]=3;t.storage[t.c.KE_DAILY_KEY]=JSON.stringify(d);t.c.keDig(0);t2.c.keDig(0);assert.equal(Number(t.storage.wallet),505);
+// Storage failure fails closed, without starting or paying.
+const bad=fixture();bad.c.localStorage.setItem=()=>{throw Error('blocked');};bad.c.kePlay();assert.equal(bad.c.KE.active,false);assert.equal(bad.c.S.balance,500);
+
+console.log('PASS: Mines difficulty presets, custom size and mine bounds, maximum-density wins, first-click mine loss, zero-balance free starts, daily free quotas, reload continuation, cross-tab duplicate prevention, daily reset, reward cap and storage failures.');
