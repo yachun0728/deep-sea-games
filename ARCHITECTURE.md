@@ -110,7 +110,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `deep-sea-cat-best` | Rooftop Cat 最佳顯示距離 |
 | `deep-sea-bird-best` | Poop Bird 最佳顯示距離 |
 | `reaper` | Reaper 最佳正常靈魂處理總數 |
-| `deep-sea-blaster-best` | 深海火線最佳通關數（0～10） |
+| `deep-sea-blaster-best` | 深海火線最佳通關數（無關卡上限，沿用既有數值格式） |
 | `straw_game_events` | 珍奶本機事件紀錄，上限 5,000 筆 |
 | `straw_game_player_id` | 珍奶本機玩家識別值 |
 | `straw_game_best` | 珍奶最佳杯數 |

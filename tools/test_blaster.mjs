@@ -7,14 +7,14 @@ const source=fs.readFileSync(new URL('games/blaster/game.js',root),'utf8');
 const flatFee=/var stake=ENTRY_FEE/.test(source);
 const fee=flatFee?Number(fs.readFileSync(new URL('js/config.js',root),'utf8').match(/ENTRY_FEE\s*=\s*(\d+)/)[1]):20;
 const results=[];
-function fixture(balance=1000){
+function fixture(balance=1000,savedBest=null){
   let now=1000;
-  const elements=new Map(),storage=new Map(),events=[],drawCalls=[],drawing=new Proxy({createLinearGradient:()=>({addColorStop(){}})},{get:(t,k)=>k in t?t[k]:(...args)=>drawCalls.push([k,...args])});
+  const elements=new Map(),storage=new Map(savedBest===null?[]:[['deep-sea-blaster-best',String(savedBest)]]),events=[],drawCalls=[],drawing=new Proxy({createLinearGradient:()=>({addColorStop(){}})},{get:(t,k)=>k in t?t[k]:(...args)=>drawCalls.push([k,...args])});
   function el(id){if(!elements.has(id))elements.set(id,{hidden:false,value:'20',textContent:'',className:'',dataset:{},style:{},disabled:false,handlers:{},focus(){},getContext:()=>drawing,getBoundingClientRect:()=>({left:0,width:400}),addEventListener(type,fn){this.handlers[type]=fn;}});return elements.get(id);}
-  const document={hidden:false,hasFocus:()=>true,addEventListener(){}};
-  const sandbox={document,window:{addEventListener(){}},Number,Math,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,v)},requestAnimationFrame(){},$:el,MIN_BET:10,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fx:n=>n.toFixed(2),AN:{start:(...args)=>{events.push(['start',...args]);return 'round';},resume:(...args)=>events.push(['resume',...args]),progress:(...args)=>events.push(['progress',...args]),end:(...args)=>events.push(['end',...args])}};
+  const document={hidden:false,hasFocus:()=>true,addEventListener(){}};const windowListeners={};
+  const sandbox={document,window:{addEventListener(name,fn){(windowListeners[name]??=[]).push(fn);}},Number,Math,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,v)},requestAnimationFrame(){},$:el,MIN_BET:10,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fx:n=>n.toFixed(2),AN:{start:(...args)=>{events.push(['start',...args]);return 'round';},resume:(...args)=>events.push(['resume',...args]),progress:(...args)=>events.push(['progress',...args]),end:(...args)=>events.push(['end',...args])}};
   const ctx=vm.createContext(sandbox);vm.runInContext(source,ctx);
-  return {ctx,el,events,storage,drawCalls,run:s=>vm.runInContext(s,ctx),state:ctx.BL,wallet:sandbox.S,document,advance(ms){now+=ms;vm.runInContext('blSync(performance.now())',ctx);}};
+  return {ctx,el,events,storage,drawCalls,emitWindow:(name,e)=>{for(const fn of windowListeners[name]||[])fn(e);},run:s=>vm.runInContext(s,ctx),state:ctx.BL,wallet:sandbox.S,document,advance(ms){now+=ms;vm.runInContext('blSync(performance.now())',ctx);}};
 }
 function check(name,fn){fn();results.push(name);}
 check('Entry deducts once; insufficient, fractional and unsafe amounts rejected',()=>{
@@ -25,16 +25,16 @@ check('Entry deducts once; insufficient, fractional and unsafe amounts rejected'
 check('Early checkpoints and voluntary exit award zero; mid-combat exit blocked',()=>{
   const f=fixture();f.run('blStart();blCash()');assert.equal(f.wallet.balance,1000-fee);f.run('blClear();blCash();blCash()');assert.equal(f.wallet.balance,1000-fee);assert.equal(f.state.active,false);assert.equal(f.events.filter(e=>e[0]==='end').length,1);assert.equal(f.events.find(e=>e[0]==='end')[2],0);assert.equal(f.storage.get('deep-sea-blaster-best'),'1');
 });
-check('Continue preserves weapon/lives and does not charge; only stage ten awards one point once',()=>{
+check('Continue preserves weapon/lives and does not charge; the tenth checkpoint awards one point without ending the game',()=>{
   const f=fixture();f.run('blStart();BL.weapon=7;BL.lives=2;blClear();blStart();blStart()');assert.equal(f.state.stage,2);assert.equal(f.state.weapon,7);assert.equal(f.state.lives,2);assert.equal(f.wallet.balance,1000-fee);
-  f.run('blClear()');for(let stage=3;stage<=10;stage++)f.run('blStart();blClear()');assert.equal(f.wallet.balance,1000-fee+1);assert.equal(f.state.phase,'cashed');f.run('blCash();blClear()');assert.equal(f.wallet.balance,1000-fee+1);assert.equal(f.events.filter(e=>e[0]==='start').length,1);assert.equal(f.events.filter(e=>e[0]==='end').length,1);
+  f.run('blClear()');for(let stage=3;stage<=10;stage++)f.run('blStart();blClear()');assert.equal(f.wallet.balance,1000-fee+1);assert.equal(f.state.phase,'cleared');f.run('blCash();blClear()');assert.equal(f.wallet.balance,1000-fee+1);assert.equal(f.events.filter(e=>e[0]==='start').length,1);assert.equal(f.events.filter(e=>e[0]==='end').length,1);
 });
 check('Clearing nine stages then losing or exiting never awards partial points',()=>{
   for(const exit of ['blCash()','blStart();blHurt();blHurt();blHurt()']){const f=fixture();f.run('blStart()');for(let stage=1;stage<=9;stage++){f.run('blClear()');assert.equal(f.wallet.balance,1000-fee);if(stage<9)f.run('blStart()');}f.run(exit);assert.equal(f.wallet.balance,1000-fee);assert.equal(f.events.filter(e=>e[0]==='end').length,1);assert.equal(f.events.find(e=>e[0]==='end')[2],0);}
 });
-check('Full clear reports a one-point completion and a new paid round resets reward progress',()=>{
+check('Milestone rewards are not paid twice on exit and a new paid round resets progress',()=>{
   const f=fixture();f.run('blStart()');for(let stage=1;stage<=10;stage++){f.run('blClear()');if(stage<10)f.run('blStart()');}
-  const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],1);assert.equal(end[3],'complete');assert.equal(end[4].multiplier,1/fee);assert.equal(f.storage.get('crush-depth-balance'),String(1000-fee+1));f.run('blCash();blClear()');assert.equal(f.wallet.balance,1000-fee+1);f.run('blStart();blHurt();blHurt();blHurt()');assert.equal(f.wallet.balance,1000-fee*2+1);assert.equal(f.state.cleared,0);
+  assert.equal(f.events.filter(e=>e[0]==='end').length,0);f.run('blCash()');const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],1);assert.equal(end[3],'cashout');assert.equal(end[4].multiplier,1/fee);assert.equal(f.storage.get('crush-depth-balance'),String(1000-fee+1));f.run('blCash();blClear()');assert.equal(f.wallet.balance,1000-fee+1);f.run('blStart();blHurt();blHurt();blHurt()');assert.equal(f.wallet.balance,1000-fee*2+1);assert.equal(f.state.cleared,0);
 });
 check('Three hits lose the entire round with one loss event',()=>{
   const f=fixture();f.run('blStart();blHurt();blHurt();blHurt();blHurt();blCash()');assert.equal(f.wallet.balance,1000-fee);assert.equal(f.state.lives,0);assert.equal(f.state.active,false);assert.equal(f.events.filter(e=>e[0]==='end').length,1);assert.equal(f.events.find(e=>e[0]==='end')[3],'loss');
@@ -43,10 +43,10 @@ check('Auto-fire damages and kills; a leaking monster only costs one heart',()=>
   const f=fixture();f.run('blStart();BL.enemies=[{x:200,y:490,hp:1,max:1,speed:0,id:1}];blStep(.016)');assert.equal(f.state.kills,1);assert.equal(f.state.enemies.length,0);
   f.run('BL.enemies=[{x:80,y:586,hp:999,max:999,speed:0,id:2}];blStep(.016);blStep(.1)');assert.equal(f.state.lives,2);assert.equal(f.state.enemies.length,0);
 });
-check('Collecting weapons unlocks two/three bullets, scales damage and caps at level 30',()=>{
+check('Collecting weapons unlocks two/three bullets, scales damage beyond level 30',()=>{
   const f=fixture();f.run('blStart();BL.pickups=[{x:200,y:532,speed:0,boost:3}];blStep(.016)');assert.equal(f.state.weapon,4);assert.equal(f.run('blWeapon().pellets'),2);
   f.run('BL.pickups=[{x:200,y:532,speed:0,boost:6}];blStep(.016)');assert.equal(f.state.weapon,10);assert.equal(f.run('blWeapon().pellets'),3);
-  f.run('BL.pickups=[{x:200,y:532,speed:0,boost:50}];blStep(.016)');assert.equal(f.state.weapon,30);assert.equal(f.run('blWeapon().damage'),10);f.run('BL.bullets=[];blBurst()');assert.equal(f.state.bullets.length,3);
+  f.run('BL.pickups=[{x:200,y:532,speed:0,boost:50}];blStep(.016)');assert.equal(f.state.weapon,60);assert.equal(f.run('blWeapon().damage'),20);f.run('BL.bullets=[];blBurst()');assert.equal(f.state.bullets.length,3);
 });
 check('Lane input stays within three lanes; hidden, background and unfocused games pause',()=>{
   const f=fixture();f.run('blStart();blMove(-1);blMove(-1);blMove(-1)');assert.equal(f.state.lane,0);f.run('blMove(1);blMove(1);blMove(1)');assert.equal(f.state.lane,2);
@@ -106,7 +106,32 @@ check('Insufficient retry funds do not alter failed state, weapon or wallet',()=
   const f=fixture();f.run('blStart();BL.stage=10;BL.weapon=25;blHurt();blHurt();blHurt()');f.wallet.balance=4;f.run('blRetry()');assert.equal(f.wallet.balance,4);assert.equal(f.state.phase,'lost');assert.equal(f.state.stage,10);assert.equal(f.state.weapon,25);assert.equal(f.events.filter(e=>e[0]==='start').length,1);
 });
 check('Replaying stage ten awards only one point and cannot farm rewards after completion',()=>{
-  const f=fixture();f.run('blStart();BL.stage=10;BL.cleared=9;blHurt();blHurt();blHurt();blRetry();blClear();blRetry();blCash();blClear()');assert.equal(f.wallet.balance,1000-fee-5+1);assert.equal(f.state.phase,'cashed');const ends=f.events.filter(e=>e[0]==='end');assert.equal(ends.length,2);assert.equal(ends[0][2],0);assert.equal(ends[1][2],1);assert.equal(ends[1][3],'complete');assert.equal(ends[1][4].multiplier,1/5);
+  const f=fixture();f.run('blStart();BL.stage=10;BL.cleared=9;blHurt();blHurt();blHurt();blRetry();blClear();blRetry();blCash();blClear()');assert.equal(f.wallet.balance,1000-fee-5+1);assert.equal(f.state.phase,'cashed');const ends=f.events.filter(e=>e[0]==='end');assert.equal(ends.length,2);assert.equal(ends[0][2],0);assert.equal(ends[1][2],1);assert.equal(ends[1][3],'cashout');assert.equal(ends[1][4].multiplier,1/5);
+});
+check('Endless progression crosses stages 10 and 20, immediately awards each milestone once',()=>{
+  const f=fixture();f.run('blStart()');
+  for(let stage=1;stage<=25;stage++){assert.equal(f.state.stage,stage);f.run('blClear();blClear()');assert.equal(f.state.phase,'cleared');assert.equal(f.wallet.balance,1000-fee+Math.floor(stage/10));if(stage<25)f.run('blStart()');}
+  assert.equal(f.state.earned,2);assert.equal(f.events.filter(e=>e[0]==='end').length,0);assert.equal(f.events.filter(e=>e[0]==='progress'&&e[2]?.bonus_points>0).length,2);f.run('blCash();blCash()');assert.equal(f.wallet.balance,1000-fee+2);assert.equal(f.events.find(e=>e[0]==='end')[2],2);
+});
+check('Death and paid replay beyond stage ten preserve earned rewards and only report new attempt rewards',()=>{
+  const f=fixture();f.run('blStart()');for(let stage=1;stage<=20;stage++){f.run('blClear();blStart()');}
+  assert.equal(f.state.stage,21);f.run('BL.weapon=45;blHurt();blHurt();blHurt()');assert.equal(f.wallet.balance,1000-fee+2);assert.equal(f.el('bl-pay').textContent,'2 點');assert.match(f.el('bl-retry').textContent,/第 21 關.*5 點/);assert.equal(f.events.find(e=>e[0]==='end')[2],2);
+  f.run('blRetry();blRetry()');assert.equal(f.wallet.balance,1000-fee+2-5);assert.equal(f.state.stage,21);assert.equal(f.state.weapon,45);assert.equal(f.state.lives,3);assert.equal(f.state.earned,2);assert.equal(f.state.attemptEarned,0);
+  for(let stage=21;stage<=30;stage++){f.run('blClear()');if(stage<30)f.run('blStart()');}
+  assert.equal(f.wallet.balance,1000-fee+3-5);assert.equal(f.state.earned,3);f.run('blCash()');const ends=f.events.filter(e=>e[0]==='end');assert.equal(ends.length,2);assert.equal(ends[1][2],1);
+});
+check('High-stage replay is always five points, waves stay bounded and difficulty keeps increasing',()=>{
+  const f=fixture();let speed=0,health=0;
+  for(const stage of [10,11,20,100,1000]){f.state.stage=stage;const config=f.run('blStageConfig(BL.stage)');assert.equal(f.run('blRetryFee()'),5);assert(config.waves<=96);assert(config.speed>speed);speed=config.speed;const hp=f.run('blHealth()');assert(hp>health);health=hp;assert(Number.isFinite(config.speed)&&Number.isFinite(hp));}
+  f.run('blUI()');assert.equal(f.el('bl-stage').textContent,'第 1000 關');
+});
+check('Best stage values above ten remain compatible with the existing storage key',()=>{
+  const f=fixture(1000,47);assert.equal(f.state.best,47);f.run('blStart()');assert.equal(f.state.earned,0);f.run('BL.stage=48;blClear()');assert.equal(f.storage.get('deep-sea-blaster-best'),'48');
+});
+check('Normal page exit reports credited rewards once while BFCache preserves the active round',()=>{
+  const f=fixture();f.run('blStart()');for(let stage=1;stage<=10;stage++){f.run('blClear()');if(stage<10)f.run('blStart()');}
+  f.emitWindow('pagehide',{persisted:true});assert.equal(f.state.active,true);assert.equal(f.events.filter(e=>e[0]==='end').length,0);
+  const balance=f.wallet.balance;f.emitWindow('pagehide',{persisted:false});f.emitWindow('pagehide',{persisted:false});assert.equal(f.wallet.balance,balance);const ends=f.events.filter(e=>e[0]==='end');assert.equal(ends.length,1);assert.equal(ends[0][2],1);assert.equal(ends[0][3],'abandoned');
 });
 check('Generated scripts compile and existing JSON child document still decodes',()=>{
   const html=fs.readFileSync(new URL('index.html',root),'utf8');for(const [,attrs,body] of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)){if(attrs.includes('application/json'))JSON.parse(body);else new vm.Script(body);}
