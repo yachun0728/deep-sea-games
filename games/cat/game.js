@@ -91,9 +91,8 @@ if(st==='ready'){tx('屋頂貓貓',W/2,240,36,'#ffd23f');tx('右側扣點開始'
 else{tx('喵…摔下去了！',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(paid>0?'領回 '+fmt(paid)+' 點':'距離不夠，沒有點數',W/2,314,22,paid>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,348,20,'#ffd23f');tx('右側可以再跑一次',W/2,392,20,'#fff1c1')}}}
 function start(){
  if(st==='run')return;
- const amount=Number($('ct-amount').value);
- if(!Number.isSafeInteger(amount)||amount<MIN_BET){say('請輸入至少 '+MIN_BET+' 點的整數入場點數。','lose');return;}
- if(amount>S.balance){say('餘額不足，請降低入場點數。','lose');return;}
+ const amount=ENTRY_FEE;
+ if(amount>S.balance){say(LOW_MSG,'lose');return;}
  analytics=AN.start('cat',amount);catStake=amount;catBusy=true;S.balance-=amount;save();renderAll();
  reset();paid=0;rec=false;hold=false;st='run';last=performance.now();say('出發！點畫面跳躍，按越久跳越高。');ui();c.focus();
 }

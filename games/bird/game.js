@@ -165,9 +165,8 @@ if(st==='ready'){tx('便便鳥大戰狼群',W/2,200,32,'#ffd23f');tx('狼群偷�
 else{tx('哎喲！被撞到了',W/2,180,32,'#ff5d8f');tx(s+' m',W/2,244,50,'#fff1c1');tx('擊退狼王：'+eggs+' 隻',W/2,284,20,'#fff1c1');tx(paid>0?'領回 '+fmt(paid)+' 點':'距離不夠，沒有點數',W/2,320,22,paid>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,352,20,'#ffd23f');tx('右側可以再跑一次',W/2,396,20,'#fff1c1')}}}
 function start(){
  if(st==='run')return;
- const amount=Number($('pb-amount').value);
- if(!Number.isSafeInteger(amount)||amount<MIN_BET){say('請輸入至少 '+MIN_BET+' 點的整數入場點數。','lose');return;}
- if(amount>S.balance){say('餘額不足，請降低入場點數。','lose');return;}
+ const amount=ENTRY_FEE;
+ if(amount>S.balance){say(LOW_MSG,'lose');return;}
  analytics=AN.start('bird',amount);birdStake=amount;birdBusy=true;S.balance-=amount;save();renderAll();
  reset();paid=0;rec=false;hold=false;hid=-1;st='run';last=performance.now();say('出發！看障礙上方的標記決定點幾下，狼王出現就丟便便。');ui();c.focus();
 }

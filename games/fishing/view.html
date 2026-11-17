@@ -4,7 +4,7 @@
         <dl class="stats"><div><dt>挑戰第幾條</dt><dd id="fi-number">1 / 10</dd></div><div><dt>距離岸邊</dt><dd id="fi-distance">20.0 m</dd></div><div><dt>最佳紀錄</dt><dd id="fi-best">0 條</dd></div></dl>
         <p class="fishing-name" id="fi-name">小丑魚</p><div class="queue-watch" id="fi-signal" role="status" aria-live="polite" data-state="calm">下竿後，觀察魚的動作</div>
         <div class="field"><div class="fishing-tension-label"><label id="fi-tension-label">魚線張力</label><span id="fi-tension-value">45 / 100</span></div><div class="fishing-tension" id="fi-tension" role="progressbar" aria-labelledby="fi-tension-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45"><div id="fi-tension-fill"></div></div><p class="hint" id="fi-slack">張力 20～75 較穩定</p></div>
-        <div class="field"><label for="fi-amount">本局入場點數</label><div class="input-row"><input id="fi-amount" type="number" min="10" step="1" value="20" inputmode="numeric"><span class="suffix">點</span></div></div>
+        <div class="field"><label>每局入場</label><p class="runner-fee">10 <small>點</small></p><input id="fi-amount" type="hidden" value="10"></div>
         <dl class="stats"><div><dt>已上岸倍率</dt><dd id="fi-mult">0.00×</dd></div><div><dt>累積可領回</dt><dd id="fi-pay">0 點</dd></div><div><dt>本局淨賺／損</dt><dd id="fi-net">—</dd></div></dl>
         <button class="go" id="fi-go" type="button" data-mode="bet">扣點下竿</button>
         <button class="chip fishing-hold" id="fi-hold" type="button" disabled>按住收線 · 放開卸力</button>
@@ -13,6 +13,6 @@
       </section></div>
     </div>
     <div class="fishing-ladder" role="group" aria-label="成功上岸條數與領回倍率"><span data-fi-count="1"><b>1 條</b>0.60×</span><span data-fi-count="2"><b>2 條</b>1.10×</span><span data-fi-count="3"><b>3 條</b>1.70×</span><span data-fi-count="4"><b>4 條</b>2.50×</span><span data-fi-count="5"><b>5 條</b>3.60×</span><span data-fi-count="6"><b>6 條</b>5.00×</span><span data-fi-count="7"><b>7 條</b>6.80×</span><span data-fi-count="8"><b>8 條</b>9.20×</span><span data-fi-count="9"><b>9 條</b>12.50×</span><span data-fi-count="10"><b>10 條</b>17.00×</span></div>
-    <details class="rules"><summary>玩法、風險與點數</summary><p>每局先扣入場點數（最低 10 點），只有成功把魚釣上岸才增加倍率。按住收線可以拉近魚，但張力會上升；放開可卸力，但魚會逐漸游遠。平穩時可收線，水花變大時要準備卸力；猛烈掙扎時硬拉會快速提高張力，疲累時收線最有效。</p><p>張力達 100 就斷線；低於或等於 8 持續 1.2 秒會脫鉤。警示只提示水花變化，不直接判輸。魚越大，距離越遠、掙扎越久，硬拉的張力也上升更快。拖時間、等待與放線都不增加倍率。</p><p>每條成功後暫停，可領回或挑戰下一條，繼續不再扣點。只有上岸後才能領回；斷線或脫鉤會失去本局下注與全部未領回金額。第十條上岸自動領回。倍率是總領回金額，領回為入場點數 × 倍率並捨去小數；第一條 0.60×，入場 20 點只領回 12 點，仍淨損 8 點。</p><p>切換遊戲或背景分頁會暫停並放開收線，回來需要重新按住。視窗失焦會放開收線。重新整理會放棄本局，已扣點數不退回。點數與其他遊戲共用，免費重設保留供測試。</p></details>
+    <details class="rules"><summary>玩法、風險與點數</summary><p>每局固定扣 10 點，只有成功把魚釣上岸才增加倍率。按住收線可以拉近魚，但張力會上升；放開可卸力，但魚會逐漸游遠。平穩時可收線，水花變大時要準備卸力；猛烈掙扎時硬拉會快速提高張力，疲累時收線最有效。</p><p>張力達 100 就斷線；低於或等於 8 持續 1.2 秒會脫鉤。警示只提示水花變化，不直接判輸。魚越大，距離越遠、掙扎越久，硬拉的張力也上升更快。拖時間、等待與放線都不增加倍率。</p><p>每條成功後暫停，可領回或挑戰下一條，繼續不再扣點。只有上岸後才能領回；斷線或脫鉤會失去本局下注與全部未領回金額。第十條上岸自動領回。倍率是總領回金額，領回為入場點數 × 倍率並捨去小數；第一條 0.60×，入場 10 點只領回 6 點，仍淨損 4 點。</p><p>切換遊戲或背景分頁會暫停並放開收線，回來需要重新按住。視窗失焦會放開收線。重新整理會放棄本局，已扣點數不退回。點數與其他遊戲共用，免費重設保留供測試。</p></details>
   </section>
 

@@ -54,9 +54,8 @@ function round(){AN.resume(sneakAnalytics,{stage:lv});pr=0;ph='away';pt=awayT();
 function start(){
  if(st==='run')return;
  if(st==='passed'){lv++;round();return;}
- const amount=Number($('sk-amount').value);
- if(!Number.isSafeInteger(amount)||amount<MIN_BET){saySneak('請輸入至少 '+MIN_BET+' 點的整數入場點數。','lose');return;}
- if(amount>S.balance){saySneak('餘額不足，請降低入場點數。','lose');return;}
+ const amount=ENTRY_FEE;
+ if(amount>S.balance){saySneak(LOW_MSG,'lose');return;}
  sneakAnalytics=AN.start('sneak',amount);sneakStake=amount;sneakBusy=true;S.balance-=amount;save();renderAll();score=0;lv=1;rec=false;round();
 }
 function draw(){

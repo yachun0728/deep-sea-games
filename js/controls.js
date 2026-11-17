@@ -22,6 +22,6 @@
   $('reset').addEventListener('click', function () {
     var note = function (t) { blSay(t); rpSay(t); catSay(t); birdSay(t); bobaUI(t); fiSay(t); $('sk-msg').textContent=t; eqSay(t); drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
     if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.pending || WL.pending || TW.active || CR.active || DR.active || runnerBusy || EQ.active || sneakBusy || FI.active || BOBA.active || catBusy || birdBusy || RP.active || BL.active) { note('這一注結束後才能重設點數。'); return; }
-    AN.points(START_BALANCE-S.balance); S.balance = START_BALANCE; save(); note('點數已重設為 1,000。'); renderAll(); renderMines();
+    AN.points(START_BALANCE-S.balance); S.balance = START_BALANCE; save(); note('點數已重設為 ' + fmt(START_BALANCE) + '。'); renderAll(); renderMines();
   });
 

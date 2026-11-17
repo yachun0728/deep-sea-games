@@ -7,3 +7,10 @@
 #view-blaster .bl-ladder{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:14px}
 #view-blaster .bl-ladder span{padding:9px 4px;border:1px solid var(--line);border-radius:7px;color:var(--muted);background:var(--panel);font-size:12px;text-align:center}
 @media(max-width:700px){#view-blaster .bl-ladder{grid-template-columns:repeat(3,minmax(0,1fr))}#bl-canvas{max-height:68svh;object-fit:contain}}
+#view-blaster .bl-evolution-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:7px 0 12px;padding:8px;border-left:3px solid #ffcf68;background:rgba(255,207,104,.06);color:#ffdc87;font-size:11px;line-height:1.5}
+#view-blaster .bl-evolution-row p{margin:0}#view-blaster .bl-evolution-row span{white-space:nowrap;color:var(--muted)}
+#view-blaster #bl-weapon,#view-blaster #bl-power{font-size:15px;line-height:1.5;overflow-wrap:anywhere}
+#view-blaster .bl-guide{margin:10px 0;color:var(--muted);font-size:12px}#view-blaster .bl-guide summary{cursor:pointer;padding:6px 0}
+#view-blaster .bl-arsenal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:10px 0}
+#view-blaster .bl-arsenal span{padding:7px 3px;border:1px solid currentColor;border-radius:5px;text-align:center;font-size:10px;color:#9bfff0}
+#view-blaster .bl-arsenal span:nth-child(2){color:#74baff}#view-blaster .bl-arsenal span:nth-child(3){color:#ffcf68}#view-blaster .bl-arsenal span:nth-child(4){color:#9dff86}#view-blaster .bl-arsenal span:nth-child(5){color:#ff8f75}#view-blaster .bl-arsenal span:nth-child(6){color:#e6a3ff}

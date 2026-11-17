@@ -87,9 +87,8 @@
   }
   function cpStart(){
     if(CP.phase==='run')return;
-    var stake=Number($('cp-amount').value);
-    if(!Number.isSafeInteger(stake)||stake<MIN_BET){cpSay('請輸入至少 '+MIN_BET+' 點的整數入場點數。','lose');return;}
-    if(stake>S.balance){cpSay('餘額不足，請降低入場點數。','lose');return;}
+    var stake=ENTRY_FEE;
+    if(stake>S.balance){cpSay(LOW_MSG,'lose');return;}
     CP.analytics=AN.start('campaign',stake);CP.stake=stake;CP.active=true;S.balance-=stake;save();renderAll();
     cpCity();CP.dist=0;CP.votes=CP_START;CP.miss=0;CP.idx=0;CP.floats=[];CP.pay=0;CP.phase='run';CP.last=performance.now();cpRelease();
     cpSay('出發！放開讓喇叭廣播，前方出現紅色的學校、醫院、豪宅時按住靜音。');cpUI();campaignCanvas.focus();

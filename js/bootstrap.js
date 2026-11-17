@@ -1,5 +1,5 @@
   function start(data) {
-    load();
+    load(); regenStart();
     if (data && typeof data.balance === 'number') S.balance = data.balance;
     S.history = data && Array.isArray(data.history) ? data.history : Array.from({ length: 12 }, rollCrash);
     buildBoard(); renderMines(); pkSetup(); pkUI(); mgBuild(); mgRender(); dUI(); lUI(); hUI(); keTables(); keBuild(); [3, 11, 18, 26, 34].forEach(function (n) { KE.picked[n] = 1; }); keUI(); whSetup(); whUI(); twUI(); crUI(); route();

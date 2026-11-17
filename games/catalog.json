@@ -4,21 +4,24 @@
     "logic": "games/crash/game.js",
     "view": "games/crash/view.html",
     "card": "games/crash/card.html",
-    "icon": "games/crash/icon.svg"
+    "icon": "games/crash/icon.svg",
+    "hidden": true
   },
   {
     "id": "mines",
     "logic": "games/mines/game.js",
     "view": "games/mines/view.html",
     "card": "games/mines/card.html",
-    "icon": "games/mines/icon.svg"
+    "icon": "games/mines/icon.svg",
+    "hidden": true
   },
   {
     "id": "plinko",
     "logic": "games/plinko/game.js",
     "view": "games/plinko/view.html",
     "card": "games/plinko/card.html",
-    "icon": "games/plinko/icon.svg"
+    "icon": "games/plinko/icon.svg",
+    "hidden": true
   },
   {
     "id": "merge",
@@ -32,49 +35,56 @@
     "logic": "games/dice/game.js",
     "view": "games/dice/view.html",
     "card": "games/dice/card.html",
-    "icon": "games/dice/icon.svg"
+    "icon": "games/dice/icon.svg",
+    "hidden": true
   },
   {
     "id": "limbo",
     "logic": "games/limbo/game.js",
     "view": "games/limbo/view.html",
     "card": "games/limbo/card.html",
-    "icon": "games/limbo/icon.svg"
+    "icon": "games/limbo/icon.svg",
+    "hidden": true
   },
   {
     "id": "hilo",
     "logic": "games/hilo/game.js",
     "view": "games/hilo/view.html",
     "card": "games/hilo/card.html",
-    "icon": "games/hilo/icon.svg"
+    "icon": "games/hilo/icon.svg",
+    "hidden": true
   },
   {
     "id": "keno",
     "logic": "games/keno/game.js",
     "view": "games/keno/view.html",
     "card": "games/keno/card.html",
-    "icon": "games/keno/icon.svg"
+    "icon": "games/keno/icon.svg",
+    "hidden": true
   },
   {
     "id": "wheel",
     "logic": "games/wheel/game.js",
     "view": "games/wheel/view.html",
     "card": "games/wheel/card.html",
-    "icon": "games/wheel/icon.svg"
+    "icon": "games/wheel/icon.svg",
+    "hidden": true
   },
   {
     "id": "tower",
     "logic": "games/tower/game.js",
     "view": "games/tower/view.html",
     "card": "games/tower/card.html",
-    "icon": "games/tower/icon.svg"
+    "icon": "games/tower/icon.svg",
+    "hidden": true
   },
   {
     "id": "crossing",
     "logic": "games/crossing/game.js",
     "view": "games/crossing/view.html",
     "card": "games/crossing/card.html",
-    "icon": "games/crossing/icon.svg"
+    "icon": "games/crossing/icon.svg",
+    "hidden": true
   },
   {
     "id": "dream",

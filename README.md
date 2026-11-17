@@ -1,6 +1,6 @@
 # Deep Sea Arcade
 
-22 款遊戲共用本機點數與 GA4，部署為 GitHub Pages 靜態網站。
+22 款遊戲共用本機點數與 GA4，部署為 GitHub Pages 靜態網站。目前顯示 12 款（每局固定扣 10 點；點數低於 100 時每分鐘回 1 點），另外 10 款機率遊戲以 catalog 的 `hidden` 隱藏，程式碼保留。
 
 ## 先定位，再讀程式
 
@@ -27,6 +27,10 @@ python3 -m http.server 8765
 `templates/`、`games/`、`js/`、`css/` 是來源。`index.html` 是追蹤在 Git 的靜態產出，修改來源後必須重新組合，提交時一併包含來源與產出。GitHub Pages 不需 Python，也不用調整現有入口。`--check` 可用於未來 CI，但目前沒有擅自加入部署 workflow。
 
 `{{include:路徑}}` 原樣插入內容，`{{json:路徑}}` 插入安全序列化的子頁字串；路徑均相對專案根目錄。JS 片段仍組成同一個原有 IIFE，不可各自用 script 標籤載入或當成 ES module。檔案結尾的空白與換行屬組合內容，工具不做格式化。
+
+## 隱藏或重新顯示遊戲
+
+在 `games/catalog.json` 該遊戲加上 `"hidden": true`，重新執行 `python3 tools/build.py`：大廳卡片、選單與網址都不會出現，view 與邏輯仍會組合。要重新顯示就移除該欄位。重新顯示前先確認該遊戲的投入是否要改成固定 10 點。
 
 ## 新增一款遊戲
 

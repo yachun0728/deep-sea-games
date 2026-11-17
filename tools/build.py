@@ -36,7 +36,30 @@ def render(root: Path = ROOT, entry: str = 'templates/index.html') -> str:
 
         return DIRECTIVE.sub(replace, text)
 
-    return expand(entry)
+    return apply_hidden(expand(entry), root)
+
+
+def apply_hidden(html: str, root: Path = ROOT) -> str:
+    """Mark catalog games flagged "hidden": true so the lobby, picker and router skip them.
+
+    Their view and logic still ship because the shared runtime initializes every game.
+    """
+    catalog_file = root / 'games/catalog.json'
+    if not catalog_file.is_file():
+        return html
+    for game in json.loads(catalog_file.read_text(encoding='utf-8')):
+        flag = game.get('hidden', False)
+        if not isinstance(flag, bool):
+            raise ValueError(f"hidden must be true or false: {game['id']}")
+        if not flag:
+            continue
+        gid = game['id']
+        for old, new in ((f'class="game-card" href="#{gid}"', f'class="game-card" href="#{gid}" hidden data-game-hidden'),
+                         (f'id="tab-{gid}"', f'id="tab-{gid}" hidden')):
+            if html.count(old) != 1:
+                raise ValueError(f'Expected one {old} to hide {gid}')
+            html = html.replace(old, new)
+    return html
 
 
 def validate_catalog(html: str, root: Path = ROOT) -> None:

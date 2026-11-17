@@ -35,9 +35,8 @@
   function fiStart(){
     if(FI.phase==='fishing')return;
     if(FI.phase==='landed'){fiRound();return;}
-    var stake=Number($('fi-amount').value);
-    if(!Number.isSafeInteger(stake)||stake<MIN_BET){fiSay('請輸入至少 '+MIN_BET+' 點的整數入場點數。','lose');return;}
-    if(stake>S.balance){fiSay('餘額不足，請降低入場點數。','lose');return;}
+    var stake=ENTRY_FEE;
+    if(stake>S.balance){fiSay(LOW_MSG,'lose');return;}
     FI.analytics=AN.start('fishing',stake);FI.stake=stake;FI.landed=0;FI.active=true;S.balance-=stake;save();renderAll();fiRound();
   }
   function fiLose(reason){if(FI.phase!=='fishing')return;AN.end(FI.analytics,0,'loss',{stage:FI.number,landed_fish:FI.landed});FI.active=false;FI.phase='lost';fiRelease();fiSay(reason+' 本局失去 '+fmt(FI.stake)+' 點下注與全部未領回金額。','lose');fiUI();}

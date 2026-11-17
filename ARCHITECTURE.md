@@ -83,6 +83,10 @@ flowchart TD
 | runner / sneak / cat / bird | runnerBusy / sneakBusy / catBusy / birdBusy，各自內層 IIFE |
 | boba | BOBA、deepSeaBoba；original.html 為子頁 |
 
+### 隱藏遊戲
+
+`games/catalog.json` 的 `"hidden": true` 讓 `tools/build.py` 在組合時替該遊戲的大廳卡片加上 `hidden data-game-hidden`、替選單連結加上 `hidden`。遊戲的 view 與邏輯仍照常組合與初始化（共用執行環境會逐款初始化，直接移除 view 會造成錯誤），只是看不到也開不了：`js/navigation.js` 的 route 遇到被隱藏的 hash 會回大廳並以 replaceState 修正網址；大廳篩選與數量由頁面上實際顯示的卡片即時計算，沒有遊戲的分類按鈕會自動隱藏。重新顯示只需移除該遊戲的 `hidden`、重新組合。
+
 ### 路由與珍奶橋接
 
 js/navigation.js 的 route 以 hash 切換 view 與 tab、標題、AN.view，空白／未知 hash 回 #lobby；保留大廳捲動位置及左上返回。各遊戲暫停方式不同，沒有新增統一暫停行為。
@@ -91,11 +95,12 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 
 ## 資料與錢包
 
-預設餘額 `START_BALANCE=1000`，共用最低投入 `MIN_BET=10`，固定入場遊戲另見玩法文件。讀取餘額以 parseInt 並檢查有限且非負；各投入欄位的讀取／取整方式並非完全一致，修改時應核對對應函式。
+預設餘額 `START_BALANCE=500`，顯示中的遊戲每局固定扣 `ENTRY_FEE=10`（js/config.js；餘額不足提示統一用 `LOW_MSG`），共用最低投入 `MIN_BET=10` 仍供隱藏的機率遊戲使用。餘額低於 `REGEN_CAP=100` 時，js/wallet.js 的 `regenTick` 每分鐘加 1 點（`REGEN_MS`），以牆上時鐘計算，含頁面關閉期間；`regenStart` 在 bootstrap 啟動 1 秒計時與回到分頁時的補算。讀取餘額以 parseInt 並檢查有限且非負；各投入欄位的讀取／取整方式並非完全一致，修改時應核對對應函式。
 
 | localStorage Key | 用途 |
 | --- | --- |
 | `crush-depth-balance` | 共用餘額字串 |
+| `deep-sea-regen-at` | 回點計時的起點（毫秒時間戳）；新增於 2026-11-17，缺少時以載入當下起算，不補發舊資料 |
 | `pearl-merge-best` | 合併最佳分數 |
 | `chayne` | Dodge Run 最佳距離 |
 | `deep-sea-queue-best` | Queue Cutter 最多累積超越乘客數 |
@@ -114,7 +119,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 
 大部分回合只存在記憶體；重新整理不會還原進行中的遊戲，已扣餘額仍保存。這是瀏覽器本機錢包，沒有伺服器帳戶、跨裝置同步或付款系統。
 
-測試用重設按鈕直接設為 1,000 點並發送 points_reset。現有進行中防護檢查多個遊戲，但未涵蓋 `G.active`（Merge）與 `CP.active`（Campaign）；這是核對到的現況缺口，本次沒有修正，不能聲稱所有遊戲中都禁止重設。
+測試用重設按鈕直接設為 `START_BALANCE`（500）點並發送 points_reset。現有進行中防護檢查多個遊戲，但未涵蓋 `G.active`（Merge）與 `CP.active`（Campaign）；這是核對到的現況缺口，本次沒有修正，不能聲稱所有遊戲中都禁止重設。
 
 ## GA4 契約
 

@@ -25,9 +25,8 @@
   function rpStart(){
     if(RP.phase==='run')return;
     if(RP.phase==='cleared'){RP.level++;rpRound();return;}
-    var stake=Number($('rp-amount').value);
-    if(!Number.isSafeInteger(stake)||stake<MIN_BET){rpSay('請輸入至少 '+MIN_BET+' 點的整數入場點數。','lose');return;}
-    if(stake>S.balance){rpSay('餘額不足，請降低入場點數。','lose');return;}
+    var stake=ENTRY_FEE;
+    if(stake>S.balance){rpSay(LOW_MSG,'lose');return;}
     RP.stake=stake;RP.level=1;RP.cleared=0;RP.lives=3;RP.total=0;RP.active=true;RP.analytics=AN.start('reaper',stake);S.balance-=stake;save();renderAll();rpRound();
   }
   function rpCash(){

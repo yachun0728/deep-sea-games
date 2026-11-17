@@ -2,18 +2,18 @@
   (function(){
 const c=$('rn-canvas'),g=c.getContext('2d'),W=400,H=600,HOR=230,LW=130,F=5,BASE_LENGTH=1200,MAX_STAGE=10;
 let best=0;try{const n=Number(localStorage.getItem('chayne'));if(Number.isFinite(n))best=Math.max(0,n)}catch(e){}
-const texts={best:'最佳',near:'擦身而過！',title:'深海潛行',tap:'扣 20 點開始挑戰',crash:'撞上障礙',rec:'新紀錄！',left:n=>'距離紀錄還差 '+n+' m',again:'本局下注與獎勵已失去'};const T=k=>texts[k];
+const texts={best:'最佳',near:'擦身而過！',title:'深海潛行',tap:'扣 '+ENTRY_FEE+' 點開始挑戰',crash:'撞上障礙',rec:'新紀錄！',left:n=>'距離紀錄還差 '+n+' m',again:'本局下注與獎勵已失去'};const T=k=>texts[k];
 let runnerAnalytics=null;
 let st='ready',stage=1,wins=0,progress=0,dist=0,px=0,tl=0,v=20,obs=[],nextAt=15,lastGap=0,flash=0,shake=0,last=0,lastD=0,rec=false;
 const perspective=z=>F/(F+z);
 function stageLength(){return BASE_LENGTH+(stage-1)*160}
-function reward(){return wins?Math.floor(20*(Math.round(Math.pow(1.35,wins)*100)/100)):0}
+function reward(){return wins?Math.floor(ENTRY_FEE*(Math.round(Math.pow(1.35,wins)*100)/100)):0}
 function note(text,kind=''){$('rn-msg').textContent=text;$('rn-msg').className='msg'+(kind?' '+kind:'')}
 function remember(){lastD=Math.floor(dist);rec=lastD>best;if(rec){best=lastD;try{localStorage.setItem('chayne',best)}catch(e){}}}
 function runnerUI(){
  $('rn-distance').textContent=Math.floor(progress)+' / '+stageLength()+' m';$('rn-best').textContent=best+' m';$('rn-reward').textContent=reward()+' 點';
  $('rn-stage').textContent=stage+' / '+MAX_STAGE;$('rn-speed').textContent=(v/20).toFixed(1)+'×';
- $('rn-go').disabled=st==='run';$('rn-go').textContent=st==='passed'?'挑戰下一關':st==='run'?'潛行中 · 只需左右換道':'扣 20 點，開始潛行';
+ $('rn-go').disabled=st==='run';$('rn-go').textContent=st==='passed'?'挑戰下一關':st==='run'?'潛行中 · 只需左右換道':'扣 '+ENTRY_FEE+' 點，開始潛行';
  $('rn-finish').disabled=st!=='passed';$('rn-finish').textContent=st==='passed'?'領回 '+reward()+' 點':'過關後可領回';
  document.querySelectorAll('[data-run]').forEach(b=>b.disabled=st!=='run');
 }
@@ -21,11 +21,11 @@ function round(){AN.resume(runnerAnalytics,{stage:stage});progress=0;px=0;tl=0;v
 function start(){
  if(st==='run')return;
  if(st==='passed'){stage++;round();return;}
- if(S.balance<20){note('餘額不足，需要 20 點才能開始。','lose');return;}
- runnerAnalytics=AN.start('runner',20);S.balance-=20;save();renderAll();stage=1;wins=0;dist=0;runnerBusy=true;round();
+ if(S.balance<ENTRY_FEE){note(LOW_MSG,'lose');return;}
+ runnerAnalytics=AN.start('runner',ENTRY_FEE);S.balance-=ENTRY_FEE;save();renderAll();stage=1;wins=0;dist=0;runnerBusy=true;round();
 }
 function cash(){if(st!=='passed')return;const pay=reward();AN.end(runnerAnalytics,pay,'cashout',{stage:stage,distance:Math.floor(dist)});st='cashed';runnerBusy=false;S.balance+=pay;save();renderAll();note((stage===MAX_STAGE?'十關全部完成！':'已停止挑戰。')+'領回 '+pay+' 點（本局淨利 '+(pay-20)+' 點）。','win');runnerUI()}
-function die(){if(st!=='run')return;AN.end(runnerAnalytics,0,'loss',{stage:stage,distance:Math.floor(dist)});st='dead';runnerBusy=false;shake=reduceMotion?0:.4;remember();note('撞上障礙，失去本局 20 點下注與尚未領回的獎勵。','lose');runnerUI()}
+function die(){if(st!=='run')return;AN.end(runnerAnalytics,0,'loss',{stage:stage,distance:Math.floor(dist)});st='dead';runnerBusy=false;shake=reduceMotion?0:.4;remember();note('撞上障礙，失去本局 '+ENTRY_FEE+' 點下注與尚未領回的獎勵。','lose');runnerUI()}
 function spawn(){
  const lanes=[-1,0,1].filter(l=>l!==lastGap);
  const gap=lanes[Math.floor(Math.random()*lanes.length)];lastGap=gap;

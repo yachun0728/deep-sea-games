@@ -1,5 +1,5 @@
   /* ---------- Merge ---------- */
-  var MG_FEE = 20, BEST = 'pearl-merge-best';
+  var MG_FEE = ENTRY_FEE, BEST = 'pearl-merge-best';
   var G = { grid: [0, 0, 2, 0, 0, 4, 2, 0, 8, 4, 0, 0, 32, 16, 2, 0], score: 0, best: 0, active: false, over: false, fresh: {} };
   var elMg = $('mg'), elGGo = $('mg-go'), elGMsg = $('mg-msg'), cells = [];
   try { var gb = parseInt(localStorage.getItem(BEST), 10); if (isFinite(gb) && gb > 0) G.best = gb; } catch (e) {}
@@ -37,7 +37,7 @@
     return false;
   }
   function mgStart() {
-    if (S.balance < MG_FEE) { gSay('餘額不足 ' + MG_FEE + ' 點，請先重設點數。', 'lose'); return; }
+    if (S.balance < MG_FEE) { gSay(LOW_MSG, 'lose'); return; }
     if(G.active)AN.end(G.analytics,0,'restart',{score:G.score});
     G.analytics=AN.start('merge',MG_FEE); S.balance -= MG_FEE;
     G.grid = []; for (var i = 0; i < 16; i++) G.grid.push(0);

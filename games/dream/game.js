@@ -41,9 +41,8 @@
       drUI();return;
     }
     if(DR.phase==='passed'){DR.stage++;drRound();return;}
-    var amount=Number($('dr-amount').value);
-    if(!Number.isSafeInteger(amount)||amount<MIN_BET){drSay('請輸入至少 '+MIN_BET+' 點的整數下注。','lose');return;}
-    if(amount>S.balance){drSay('餘額不足，請降低下注。','lose');return;}
+    var amount=ENTRY_FEE;
+    if(amount>S.balance){drSay(LOW_MSG,'lose');return;}
     DR.analytics=AN.start('dream',amount);DR.stake=amount;DR.stage=1;DR.wins=0;DR.active=true;S.balance-=amount;save();renderAll();drRound();
   }
   function drCash(){

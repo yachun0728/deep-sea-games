@@ -57,9 +57,8 @@
     var wasActive=EQ.active;eqSync(performance.now());
     if(wasActive&&!EQ.active)return;
     if(!EQ.active){
-      var stake=Number($('eq-amount').value);
-      if(!Number.isSafeInteger(stake)||stake<MIN_BET){eqSay('請輸入至少 '+MIN_BET+' 點的整數入場點數。','lose');return;}
-      if(stake>S.balance){eqSay('餘額不足，請降低入場點數。','lose');return;}
+      var stake=ENTRY_FEE;
+      if(stake>S.balance){eqSay(LOW_MSG,'lose');return;}
       EQ.analytics=AN.start('elevator',stake);EQ.stake=stake;EQ.stage=1;EQ.active=true;eqRound();
       S.balance-=stake;save();renderAll();eqSay('先觀察乘客，再點一下往前插一位。警示不會直接抓人，但可能隨時轉頭。');eqUI();return;
     }

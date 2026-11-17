@@ -58,6 +58,36 @@ class BuildTests(unittest.TestCase):
         build.validate_catalog(html)
         self.assertEqual(html.encode('utf-8'), (build.ROOT / 'index.html').read_bytes())
 
+    def test_hidden_flag_marks_only_card_and_tab(self):
+        self.write('games/catalog.json', json.dumps([{'id': 'one', 'hidden': True}, {'id': 'two'}]))
+        html = '<a class="game-card" href="#one">x</a><a class="game-card" href="#two">y</a><a id="tab-one"></a><a id="tab-two"></a>'
+        result = build.apply_hidden(html, self.root)
+        self.assertIn('class="game-card" href="#one" hidden data-game-hidden', result)
+        self.assertIn('id="tab-one" hidden', result)
+        self.assertNotIn('href="#two" hidden', result)
+        self.assertNotIn('id="tab-two" hidden', result)
+
+    def test_hidden_flag_needs_one_card_and_one_tab(self):
+        self.write('games/catalog.json', json.dumps([{'id': 'one', 'hidden': True}]))
+        with self.assertRaises(ValueError):
+            build.apply_hidden('<a id="tab-one"></a>', self.root)
+        with self.assertRaises(ValueError):
+            build.apply_hidden('<a class="game-card" href="#one"></a><a id="tab-one"></a><a id="tab-one"></a>', self.root)
+
+    def test_hidden_flag_must_be_boolean(self):
+        self.write('games/catalog.json', json.dumps([{'id': 'one', 'hidden': 'yes'}]))
+        with self.assertRaises(ValueError):
+            build.apply_hidden('', self.root)
+
+    def test_current_output_hides_exactly_the_flagged_games(self):
+        html = build.render()
+        catalog = json.loads((build.ROOT / 'games/catalog.json').read_text(encoding='utf-8'))
+        self.assertTrue(any(g.get('hidden') for g in catalog))
+        for game in catalog:
+            flagged = game.get('hidden', False)
+            self.assertEqual('class="game-card" href="#%s" hidden data-game-hidden' % game['id'] in html, flagged)
+            self.assertEqual('id="tab-%s" hidden' % game['id'] in html, flagged)
+
     def test_missing_view_or_duplicate_card_is_rejected(self):
         html = build.render()
         with self.assertRaises(ValueError):
