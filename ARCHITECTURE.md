@@ -115,6 +115,8 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | --- | --- |
 | `crush-depth-balance` | 共用餘額字串 |
 | `deep-sea-regen-at` | 回點計時的起點（毫秒時間戳）；新增於 2026-11-17，缺少時以載入當下起算，不補發舊資料 |
+| `deep-sea-mines-best` | 踩地雷最多翻開安全格（0～22）；缺少或無效時以0起算 |
+| `deep-sea-gold-best` | 挖金礦最佳分數；缺少或無效時以0起算 |
 | `pearl-merge-best` | 合併最佳分數 |
 | `chayne` | Dodge Run 最佳距離 |
 | `deep-sea-queue-best` | Queue Cutter 最多累積超越乘客數 |
@@ -178,3 +180,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 ## 蓋樓大師（skybuilder）
 
 `games/skybuilder/` 是 TowerBuilding.html 的繁中整合，沿用共享 IIFE、錢包與追蹤。`sbBusy` 防止遊玩中重設；每局固定10點，10／20／30層各即時送固定5點BONUS，結束不重複入帳。最佳樓層使用新增的 `deep-sea-skybuilder-best`，不修改既有資料鍵；缺少時以0起算，回復程式時可保留此鍵。
+
+## 踩地雷與挖金礦改造
+
+兩款僅扣固定 ENTRY_FEE，不提供點數返還；保留共享 syncBalance 函式供其他遊戲使用。M.active 與 KE.active 供重設防護，宿主 hot.snapshot 不再把其入場費加回。新增兩個最佳成績 Key，不遷移、不覆寫任何既有玩家資料；回復本次來源時可保留這兩個 Key，舊版不使用它們。沒有自動操作或背景計時，切換畫面後可繼續。AN.start／progress／end 沿用 mines、keno ID，end 的 payout_points 固定0，score與step只代表遊戲成績。

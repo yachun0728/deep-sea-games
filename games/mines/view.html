@@ -1,44 +1,11 @@
   <section class="view" id="view-mines" hidden>
-    <div class="console">
-      <div class="board-wrap">
-        <div class="board" id="board" role="group" aria-label="5 乘 5 海域"></div>
-      </div>
-      <div class="side">
-        <section class="panel" aria-label="水雷區下注">
-          <div class="field">
-            <label for="mines-amount">下注點數</label>
-            <div class="input-row">
-              <input id="mines-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
-              <button class="chip mchip" type="button" data-mchip="half">½</button>
-              <button class="chip mchip" type="button" data-mchip="double">2×</button>
-              <button class="chip mchip" type="button" data-mchip="max">全押</button>
-            </div>
-          </div>
-          <div class="field">
-            <label for="mines-count">水雷數（1–24）</label>
-            <div class="input-row">
-              <input id="mines-count" type="number" inputmode="numeric" min="1" max="24" step="1" value="3">
-              <button class="chip mchip" type="button" data-mcount="1">1</button>
-              <button class="chip mchip" type="button" data-mcount="3">3</button>
-              <button class="chip mchip" type="button" data-mcount="5">5</button>
-              <button class="chip mchip" type="button" data-mcount="10">10</button>
-            </div>
-          </div>
-          <dl class="stats">
-            <div><dt>目前倍率</dt><dd id="mines-mult">—</dd></div>
-            <div><dt>下一格</dt><dd id="mines-next">—</dd></div>
-            <div><dt>剩餘珍珠</dt><dd id="mines-left">—</dd></div>
-          </dl>
-          <button class="go" id="mines-go" type="button" data-mode="bet">開始</button>
-          <p class="msg" id="mines-msg" aria-live="polite">選好水雷數後按開始，每翻到一顆珍珠倍率就往上。</p>
-        </section>
-      </div>
+    <div class="console"><div class="board-wrap"><div class="board" id="board" role="group" aria-label="5 乘 5 排雷棋盤"></div></div>
+      <div class="side"><section class="panel" aria-label="踩地雷操作">
+        <p>每局入場 10 點</p><button class="chip" id="mines-flag" type="button" aria-pressed="false" disabled>翻格模式（點此改插旗）</button>
+        <dl class="stats"><div><dt>剩餘安全格</dt><dd id="mines-left">22 格</dd></div><div><dt>已插旗</dt><dd id="mines-flags">0 / 3</dd></div><div><dt>最佳安全格</dt><dd id="mines-best">0 / 22</dd></div></dl>
+        <button class="go" id="mines-go" type="button" data-mode="start">開始踩地雷</button>
+        <p class="msg" id="mines-msg" aria-live="polite">翻開全部 22 格安全區就過關。第一格保證安全！</p>
+      </section></div>
     </div>
-    <details class="rules">
-      <summary>玩法與機率</summary>
-      <p>25 格海域裡藏著你指定數量的水雷，其餘都是珍珠。每翻開一顆珍珠倍率就上升，隨時可以按「領回」拿走「下注 × 目前倍率」；翻到水雷就失去這一注。水雷越多，每一格的倍率漲得越快。</p>
-      <p>倍率按實際機率計算再乘上 0.97：翻開第 k 顆珍珠後的倍率是 <code>0.97 × Π (25 − i) ÷ (25 − 水雷數 − i)</code>，i 從 0 到 k − 1。所以不論水雷數與翻幾格，長期期望回報都約 97%。</p>
-      <p>水雷位置在按下開始時用瀏覽器亂數決定。點數與「壓潰深度」共用，沒有任何現金價值。</p>
-    </details>
+    <details class="rules"><summary>玩法說明</summary><p>棋盤有 25 格，藏著 3 顆地雷。數字表示周圍八格的地雷數；空白區會自動展開。翻開全部 22 格安全區即過關，踩雷則結束。可切換插旗模式標記可疑格，最多 3 面旗；桌面也可用滑鼠右鍵插旗或取消。插旗不等於翻開，第一個實際翻開的格子保證安全。</p><p>分數與最佳紀錄只用於挑戰，不會換成共用點數。每局開始扣 10 點，中途回大廳可再回來繼續；重新整理不保留本局進度，也不退入場費。</p></details>
   </section>
-

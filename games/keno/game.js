@@ -1,102 +1,49 @@
-  /* ---------- Keno ---------- */
-  var KE_N = 40, KE_DRAW = 10, KE_MAX = 10;
-  var KE = { picked: {}, drawn: [], shown: 0, pending: 0, settled: false, tables: {}, rtp: {} };
-  var elKGo = $('ke-go'), elKMsg = $('ke-msg'), elKAmt = $('ke-amount'), elKBoard = $('ke-board'), kcells = [];
+  /* ---------- Keno: gold digging ---------- */
+  var KE_N = 40, KE_DIGS = 5;
+  var KE = { active: false, over: false, layout: [], open: [], digs: 0, score: 0, best: 0 };
+  var elKGo = $('ke-go'), elKMsg = $('ke-msg'), elKBoard = $('ke-board'), kcells = [];
+  var KE_ORES = [{name: '石頭', icon: '●', score: 0}, {name: '銅礦', icon: '◆', score: 10}, {name: '金礦', icon: '◆', score: 30}, {name: '寶石', icon: '✦', score: 60}];
   function kSay(text, cls) { elKMsg.textContent = text; elKMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
-  function readKAmount() { var v = Math.floor(Number(elKAmt.value)); return isFinite(v) ? v : 0; }
-  function nCr(n, r) { if (r < 0 || r > n) return 0; var x = 1; for (var i = 1; i <= r; i++) x = x * (n - r + i) / i; return x; }
-  function kePicks() { var a = []; for (var n = 1; n <= KE_N; n++) if (KE.picked[n]) a.push(n); return a; }
-  // One payout table per pick count: nothing below a threshold, then ×3.5 per extra hit, scaled to a 97% return.
-  function keTables() {
-    for (var k = 1; k <= KE_MAX; k++) {
-      var t = Math.max(1, Math.round(k * 0.3)), probs = [], e = 0, h, rtp = 0;
-      for (h = 0; h <= k; h++) { probs.push(nCr(k, h) * nCr(KE_N - k, KE_DRAW - h) / nCr(KE_N, KE_DRAW)); if (h >= t) e += probs[h] * Math.pow(3.5, h - t); }
-      var s = 0.97 / e;
-      KE.tables[k] = probs.map(function (_, h) {
-        if (h < t) return 0;
-        var m = s * Math.pow(3.5, h - t);
-        return m >= 100 ? Math.round(m) : m >= 10 ? Math.round(m * 10) / 10 : Math.round(m * 100) / 100;
-      });
-      for (h = 0; h <= k; h++) rtp += probs[h] * KE.tables[k][h];
-      KE.rtp[k] = rtp;
-    }
-  }
   function keBuild() {
-    for (var n = 1; n <= KE_N; n++) {
-      var b = document.createElement('button');
-      b.type = 'button'; b.className = 'kcell'; b.textContent = n;
-      b.addEventListener('click', keToggle.bind(null, n));
-      elKBoard.appendChild(b); kcells.push(b);
+    try { var best = Number(localStorage.getItem('deep-sea-gold-best')); KE.best = Number.isSafeInteger(best) && best >= 0 && best <= 300 ? best : 0; } catch (e) {}
+    for (var n = 0; n < KE_N; n++) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'kcell';
+      b.addEventListener('click', keDig.bind(null, n)); elKBoard.appendChild(b); kcells.push(b);
     }
   }
   function keUI() {
-    var picks = kePicks(), k = picks.length, busy = KE.pending > 0, shown = {}, hits = 0;
-    KE.drawn.slice(0, KE.shown).forEach(function (n) { shown[n] = 1; if (KE.picked[n]) hits++; });
     kcells.forEach(function (b, i) {
-      var n = i + 1, state = shown[n] ? (KE.picked[n] ? 'hit' : 'miss') : KE.picked[n] ? 'picked' : '';
-      b.className = 'kcell' + (state ? ' ' + state : '');
-      b.disabled = busy;
-      b.setAttribute('aria-pressed', String(!!KE.picked[n]));
-      b.setAttribute('aria-label', n + ' 號' + (state === 'hit' ? '，命中' : state === 'miss' ? '，魚群出現但沒下網' : ''));
+      var shown = !!KE.open[i], ore = KE_ORES[KE.layout[i] || 0];
+      b.className = 'kcell' + (shown ? ' ore-' + KE.layout[i] : ' soil');
+      b.textContent = shown ? ore.icon : '⛏'; b.disabled = !KE.active || shown;
+      b.setAttribute('aria-label', '礦區第 ' + (i + 1) + ' 格，' + (shown ? ore.name + '，' + ore.score + ' 分' : '尚未挖掘'));
     });
-    var table = KE.tables[k];
-    $('ke-pay').innerHTML = table ? table.map(function (m, h) {
-      return '<span class="kp' + (m ? '' : ' zero') + (KE.settled && h === hits ? ' on' : '') + '">' + h + ' 格<b>' + (m ? m + '×' : '0') + '</b></span>';
-    }).join('') : '<span class="none">先在上面選格子，這裡會顯示對應的倍率表。</span>';
-    $('ke-count').textContent = k + ' / ' + KE_MAX;
-    $('ke-hits').textContent = KE.shown ? hits + ' 格' : '—';
-    $('ke-rtp').textContent = k ? (KE.rtp[k] * 100).toFixed(1) + '%' : '—';
-    elKAmt.disabled = busy;
-    document.querySelectorAll('.kchip').forEach(function (b) { b.disabled = busy; });
-    elKGo.disabled = busy;
-    elKGo.innerHTML = busy ? '收網中…' : '撒網<small>下注 ' + fmt(readKAmount()) + ' 點 · 已選 ' + k + ' 格</small>';
-  }
-  function keClearDraw() { KE.drawn = []; KE.shown = 0; KE.settled = false; }
-  function keToggle(n) {
-    if (KE.pending) return;
-    keClearDraw();
-    if (KE.picked[n]) delete KE.picked[n];
-    else if (kePicks().length >= KE_MAX) { kSay('最多選 ' + KE_MAX + ' 格，先取消一格再選。', 'lose'); keUI(); return; }
-    else KE.picked[n] = 1;
-    keUI();
+    $('ke-left').textContent = (KE_DIGS - KE.digs) + ' / ' + KE_DIGS;
+    $('ke-score').textContent = KE.score; $('ke-best').textContent = KE.best;
+    elKGo.disabled = KE.active; elKGo.dataset.mode = KE.active ? 'playing' : 'start';
+    elKGo.innerHTML = KE.active ? '選一格挖掘吧' : (KE.over ? '再挖一局' : '開始挖金礦') + '<small>入場 ' + ENTRY_FEE + ' 點 · 每局 5 次</small>';
   }
   function kePlay() {
-    if (KE.pending) return;
-    var a = readKAmount(), picks = kePicks(), k = picks.length;
-    if (!k) { kSay('先選至少 1 格再撒網。', 'lose'); return; }
-    if (a < MIN_BET) { kSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
-    if (a > S.balance) { kSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
-    var pool = [], i;
-    for (i = 1; i <= KE_N; i++) pool.push(i);
-    for (i = KE_N - 1; i > 0; i--) { var r = Math.floor(Math.random() * (i + 1)), tmp = pool[i]; pool[i] = pool[r]; pool[r] = tmp; }
-    KE.analytics=AN.start('keno',a); S.balance -= a; KE.pending = a; KE.drawn = pool.slice(0, KE_DRAW); KE.shown = 0; KE.settled = false;
-    kSay('魚群出現中…');
-    syncBalance(); keUI();
-    (function reveal() {
-      if (reduceMotion) KE.shown = KE_DRAW; else KE.shown++;
-      if (KE.shown < KE_DRAW) { keUI(); setTimeout(reveal, 95); return; }
-      var hits = KE.drawn.filter(function (n) { return KE.picked[n]; }).length, m = KE.tables[k][hits], pay = Math.floor(a * m);
-      AN.end(KE.analytics,pay,pay>0?'complete':'loss'); S.balance += pay; KE.pending = 0; KE.settled = true;
-      if (!pay) kSay('命中 ' + hits + ' 格，這一網落空，失去 ' + fmt(a) + ' 點。', 'lose');
-      else kSay('命中 ' + hits + ' 格，' + m + '× 領回 ' + fmt(pay) + ' 點（' + (pay >= a ? '+' : '−') + fmt(Math.abs(pay - a)) + '）。', pay >= a ? 'win' : 'lose');
-      syncBalance(); keUI();
-    })();
+    if (KE.active) return;
+    if (S.balance < ENTRY_FEE) { kSay(LOW_MSG, 'lose'); return; }
+    // Fixed contents: 20 stones, 10 copper, 8 gold and 2 gems; shuffled once per round.
+    KE.layout = Array.from({length: KE_N}, function (_, i) { return i < 20 ? 0 : i < 30 ? 1 : i < 38 ? 2 : 3; });
+    for (var i = KE_N - 1; i > 0; i--) { var r = Math.floor(Math.random() * (i + 1)), tmp = KE.layout[i]; KE.layout[i] = KE.layout[r]; KE.layout[r] = tmp; }
+    S.balance -= ENTRY_FEE; KE.active = true; KE.over = false; KE.open = []; KE.digs = 0; KE.score = 0;
+    KE.analytics = AN.start('keno', ENTRY_FEE);
+    kSay('帶上十字鎬出發！點一格挖一格，共有 5 次機會。'); syncBalance(); keUI();
+  }
+  function keDig(i) {
+    if (!KE.active || i < 0 || i >= KE_N || KE.open[i]) return;
+    KE.open[i] = true; KE.digs++;
+    var ore = KE_ORES[KE.layout[i]]; KE.score += ore.score;
+    if (KE.score > KE.best) { KE.best = KE.score; try { localStorage.setItem('deep-sea-gold-best', String(KE.best)); } catch (e) {} }
+    AN.progress(KE.analytics, {step: KE.digs, score: KE.score});
+    if (KE.digs === KE_DIGS) {
+      KE.active = false; KE.over = true;
+      AN.end(KE.analytics, 0, 'complete', {step: KE.digs, score: KE.score});
+      kSay('挖掘完成！最後挖到' + ore.name + '，本局共 ' + KE.score + ' 分。', 'win');
+    } else kSay('挖到' + ore.name + '，增加 ' + ore.score + ' 分！還能挖 ' + (KE_DIGS - KE.digs) + ' 次。');
+    keUI();
   }
   elKGo.addEventListener('click', kePlay);
-  elKAmt.addEventListener('input', keUI);
-  $('ke-clear').addEventListener('click', function () { if (KE.pending) return; KE.picked = {}; keClearDraw(); kSay('已清除，重新選格子。'); keUI(); });
-  $('ke-random').addEventListener('click', function () {
-    if (KE.pending) return;
-    KE.picked = {}; keClearDraw();
-    while (kePicks().length < 5) KE.picked[1 + Math.floor(Math.random() * KE_N)] = 1;
-    kSay('已隨機選 5 格。'); keUI();
-  });
-  document.querySelectorAll('[data-kchip]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var a = readKAmount() || MIN_BET, k = b.dataset.kchip;
-      a = k === 'half' ? a / 2 : k === 'double' ? a * 2 : S.balance;
-      elKAmt.value = Math.max(MIN_BET, Math.min(Math.floor(a), Math.max(MIN_BET, S.balance)));
-      keUI();
-    });
-  });
-

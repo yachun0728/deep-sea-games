@@ -12,8 +12,7 @@
     "logic": "games/mines/game.js",
     "view": "games/mines/view.html",
     "card": "games/mines/card.html",
-    "icon": "games/mines/icon.svg",
-    "hidden": true
+    "icon": "games/mines/icon.svg"
   },
   {
     "id": "plinko",
@@ -59,8 +58,7 @@
     "logic": "games/keno/game.js",
     "view": "games/keno/view.html",
     "card": "games/keno/card.html",
-    "icon": "games/keno/icon.svg",
-    "hidden": true
+    "icon": "games/keno/icon.svg"
   },
   {
     "id": "wheel",

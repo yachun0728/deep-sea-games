@@ -1,0 +1,7 @@
+#view-keno .kboard { grid-template-columns: repeat(5, minmax(0, 1fr)); max-width: 420px; margin: auto; }
+#view-keno .kcell { min-height: 44px; font-size: 24px; background: #352b20; border-color: #756044; }
+#view-keno .ore-0 { color: #a5a9ae; background: #26313a; }
+#view-keno .ore-1 { color: #f5a46e; }
+#view-keno .ore-2 { color: #ffda65; background: #51411f; }
+#view-keno .ore-3 { color: #9af3eb; background: #21464b; }
+#view-keno .ore-legend { text-align: center; color: var(--lamp); line-height: 1.8; }

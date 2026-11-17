@@ -5,13 +5,13 @@
 | 遊戲 | hash | 分類 | 狀態 | game.js | 說明 |
 | --- | --- | --- | --- | --- | --- |
 | [壓潰深度 Crush Depth](crash/README.md) | `#crash` | 機率挑戰 | 隱藏 | 235 行 | 隨潛艇一起下潛，在壓潰前上浮。 |
-| [水雷區 Mine Field](mines/README.md) | `#mines` | 機率挑戰 | 隱藏 | 92 行 | 翻出珍珠、避開水雷，見好就收。 |
+| [踩地雷 Minesweeper](mines/README.md) | `#mines` | 技巧闖關 | 顯示 | 85 行 | 看懂數字、標記地雷，找出全部安全區。 |
 | [落珠 Pearl Drop](plinko/README.md) | `#plinko` | 機率挑戰 | 隱藏 | 133 行 | 投下珍珠，看它穿過釘陣落在哪一格。 |
 | [養珠 Pearl Merge](merge/README.md) | `#merge` | 技巧闖關 | 顯示 | 90 行 | 滑動合併珍珠，養出更大的數字。 |
 | [測深 Sonar Dice](dice/README.md) | `#dice` | 機率挑戰 | 隱藏 | 65 行 | 設定聲納讀數範圍，等待海底回音。 |
 | [探底 Deep Probe](limbo/README.md) | `#limbo` | 機率挑戰 | 隱藏 | 66 行 | 選定目標倍率，看看探測錘能到多深。 |
 | [漲退 High Tide](hilo/README.md) | `#hilo` | 機率挑戰 | 隱藏 | 91 行 | 猜下一張牌更高或更低，連猜累積。 |
-| [撒網 Cast Net](keno/README.md) | `#keno` | 機率挑戰 | 隱藏 | 103 行 | 選好海域撒網，看看能命中幾格。 |
+| [挖金礦 Gold Digger](keno/README.md) | `#keno` | 技巧闖關 | 顯示 | 50 行 | 五次挖掘機會，發現金礦與閃亮寶石。 |
 | [羅盤 Compass](wheel/README.md) | `#wheel` | 機率挑戰 | 隱藏 | 85 行 | 轉動深海羅盤，等待指針停下。 |
 | [浮升 Ascent](tower/README.md) | `#tower` | 機率挑戰 | 隱藏 | 94 行 | 挑選安全的氣泡，一層一層往上浮。 |
 | [橫渡 Reef Run](crossing/README.md) | `#crossing` | 機率挑戰 | 隱藏 | 86 行 | 帶小海龜穿越暗流，決定何時收手。 |
