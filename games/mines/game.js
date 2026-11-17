@@ -32,7 +32,7 @@
       var flagArt = '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M30 10v42" stroke="#293b46" stroke-width="5" stroke-linecap="round"/><path d="M29 10 51 18 29 29Z" fill="#ed654d" stroke="#a93428" stroke-width="2" stroke-linejoin="round"/><path d="m20 52 10-7 13 7Z" fill="#344d48"/><path d="M16 55h34" stroke="#344d48" stroke-width="4" stroke-linecap="round"/></svg>';
       var text = shown ? (M.layout[i] ? mineArt : number ? String(number) : '') : M.flags[i] ? flagArt : '';
       b.className = 'tile' + (shown ? (M.layout[i] ? ' mine' : ' revealed number-' + number) : M.flags[i] ? ' flagged' : ' covered');
-      b.innerHTML = text; b.disabled = !M.active || M.checkpoint || !!M.open[i];
+      b.innerHTML = text; b.disabled = !M.active || M.checkpoint || (!!M.open[i] && !number);
       b.setAttribute('aria-label', '第 ' + (Math.floor(i / M.size) + 1) + ' 列第 ' + (i % M.size + 1) + ' 格，' + (shown ? M.layout[i] ? '地雷' : '周圍 ' + number + ' 顆雷' : M.flags[i] ? '已插旗' : '未翻開'));
     });
     $('mines-left').textContent = (N - M.mines - M.picks) + ' 格';
@@ -81,11 +81,21 @@
     M.flags[i] = !M.flags[i]; renderMines();
   }
   function pick(i) {
-    if (!M.active || M.checkpoint || i < 0 || i >= N || M.open[i]) return;
-    if (M.flagMode) { mineFlag(i); return; }
-    if (M.flags[i]) return;
-    if (M.layout[i]) { M.open[i] = true; mineFinish(false); renderMines(); return; }
-    var queue = [i];
+    if (!M.active || M.checkpoint || i < 0 || i >= N) return;
+    var queue;
+    if (M.open[i]) {
+      var number = mineNumber(i), neighbors = mineNeighbors(i);
+      if (!number || neighbors.filter(function (n) { return !!M.flags[n]; }).length !== number) return;
+      queue = neighbors.filter(function (n) { return !M.open[n] && !M.flags[n]; });
+      if (!queue.length) return;
+      var bomb = queue.find(function (n) { return M.layout[n]; });
+      if (bomb !== undefined) { M.open[bomb] = true; mineFinish(false); renderMines(); return; }
+    } else {
+      if (M.flagMode) { mineFlag(i); return; }
+      if (M.flags[i]) return;
+      if (M.layout[i]) { M.open[i] = true; mineFinish(false); renderMines(); return; }
+      queue = [i];
+    }
     while (queue.length) {
       var cell = queue.pop();
       if (M.open[cell] || M.flags[cell] || M.layout[cell]) continue;

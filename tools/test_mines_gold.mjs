@@ -45,3 +45,11 @@ const t=fixture(),t2=fixture(t.storage);t.c.kePlay();d=JSON.parse(t.storage[t.c.
 const bad=fixture();bad.c.localStorage.setItem=()=>{throw Error('blocked');};bad.c.kePlay();assert.equal(bad.c.KE.active,false);assert.equal(bad.c.S.balance,500);
 
 console.log('PASS: Mines difficulty presets, custom size and mine bounds, maximum-density wins, first-click mine loss, zero-balance free starts, daily free quotas, reload continuation, cross-tab duplicate prevention, daily reset, reward cap and storage failures.');
+
+// Chord opened numbers only when adjacent flags match, including in flag mode.
+function chordFixture(){const f=fixture();const c=f.c;c.$('mines-difficulty').value='custom';c.$('mines-size').value=3;c.$('mines-bombs').value=1;c.startMines();c.M.layout=Array(9).fill(false);c.M.layout[0]=true;c.pick(4);return f;}
+let chord=chordFixture();let cc=chord.c;const previous=cc.M.picks;cc.pick(4);assert.equal(cc.M.picks,previous);assert.equal(cc.M.active,true);assert.equal(chord.elements.board.children.at(-5).disabled,false);
+cc.mineFlag(0);cc.M.flagMode=true;cc.pick(4);assert.equal(cc.M.active,false);assert.equal(cc.M.picks,8);assert.equal(chord.events.filter(e=>e[0]==='end').length,1);assert.equal(chord.events.at(-1)[3],'complete');cc.pick(4);assert.equal(chord.events.filter(e=>e[0]==='end').length,1);
+chord=chordFixture();cc=chord.c;cc.mineFlag(1);cc.pick(4);assert.equal(cc.M.active,false);assert.equal(chord.events.at(-1)[3],'loss');assert.equal(cc.M.open[0],true);assert.equal(chord.events.filter(e=>e[0]==='end').length,1);
+assert.equal(cc.S.balance,500);
+console.log('PASS: chord flag-count guard, opened-number interaction, correct flags/flood/win, flag mode, wrong flags/loss, single settlement and free balance');

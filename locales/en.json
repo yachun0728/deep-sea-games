@@ -1938,5 +1938,7 @@
   "🚶 下車了": "🚶 Got off",
   "🫙 集氣瓶：溢出的": "🫙 Air Bottle: overflow ",
   "晚": " nights",
-  "自己餓了": "Hungry"
+  "自己餓了": "Hungry",
+  "翻格與插旗": "Reveal and flag",
+  "插旗數等於數字時，點數字快開周圍；旗子插錯仍會踩雷。": "When adjacent flags match a number, tap it to reveal its neighbors. Incorrect flags can still hit a mine."
 }

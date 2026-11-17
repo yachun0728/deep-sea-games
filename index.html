@@ -552,6 +552,16 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
 
 #view-mines select, #view-mines #mines-custom input { width:100%; min-height:44px; padding:8px; border:1px solid var(--line); border-radius:8px; background:var(--panel-2); color:var(--fg); font:inherit; }
 
+/* Keep the original flag control visible immediately above the board. */
+#view-mines .mines-stage{min-width:0}
+#view-mines .mines-board-tools{display:flex;margin-bottom:10px}
+#view-mines #mines-flag{font-weight:700;border:1px solid var(--glow);color:var(--glow);background:var(--panel);padding:10px 14px}
+#view-mines #mines-flag:disabled{opacity:.65}
+#view-mines #mines-flag[aria-pressed="true"]{color:#ffe0a5;border-color:#ed8f69;background:#533c30}
+
+#view-mines .mines-board-tools{flex-direction:column;gap:6px}
+#view-mines .mines-chord-hint{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+
 #view-keno .kboard { grid-template-columns: repeat(6, minmax(44px, 1fr)); min-width: 294px; max-width: 480px; margin: auto; gap: 6px; }
 #view-keno .keno-stage { overflow-x: auto; background: radial-gradient(ellipse at top,#534538,#1a211f); }
 #view-keno .kcell { min-height: 44px; border-radius: 8px; background: linear-gradient(140deg,#8a7862,#574b40); border: 2px solid #3a332c; box-shadow: inset 2px 2px #b09b7a, inset -3px -3px #403931; }
@@ -706,11 +716,11 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
   </section>
 
   <section class="view" id="view-mines" hidden>
-    <div class="console"><div class="board-wrap"><div class="board" id="board" role="group" aria-label="5 乘 5 排雷棋盤"></div></div>
+    <div class="console"><div class="mines-stage"><div class="mines-board-tools" role="group" aria-label="翻格與插旗"><button class="chip" id="mines-flag" type="button" aria-pressed="false" disabled>翻格模式（點此改插旗）</button><p class="mines-chord-hint">插旗數等於數字時，點數字快開周圍；旗子插錯仍會踩雷。</p></div><div class="board-wrap"><div class="board" id="board" role="group" aria-label="5 乘 5 排雷棋盤"></div></div></div>
       <div class="side"><section class="panel" aria-label="踩地雷操作">
         <p>免費懷舊遊戲 · 不限次數</p>
         <div class="field"><label for="mines-difficulty">難度</label><select id="mines-difficulty"><option value="low">低 · 5×5／3 雷</option><option value="medium">中 · 8×8／10 雷</option><option value="high">高 · 10×10／20 雷</option><option value="custom">自訂棋盤與地雷</option></select></div>
-        <div id="mines-custom" hidden><div class="field"><label for="mines-size">棋盤邊長 N（2～10）</label><input id="mines-size" type="number" min="2" max="10" step="1" value="5" inputmode="numeric"></div><div class="field"><label for="mines-bombs" id="mines-bomb-limit">地雷數：1～24（N×N−1）</label><input id="mines-bombs" type="number" min="1" max="24" step="1" value="3" inputmode="numeric"></div></div><p id="mines-level">5×5 · 3 雷</p><button class="chip" id="mines-flag" type="button" aria-pressed="false" disabled>翻格模式（點此改插旗）</button>
+        <div id="mines-custom" hidden><div class="field"><label for="mines-size">棋盤邊長 N（2～10）</label><input id="mines-size" type="number" min="2" max="10" step="1" value="5" inputmode="numeric"></div><div class="field"><label for="mines-bombs" id="mines-bomb-limit">地雷數：1～24（N×N−1）</label><input id="mines-bombs" type="number" min="1" max="24" step="1" value="3" inputmode="numeric"></div></div><p id="mines-level">5×5 · 3 雷</p>
         <dl class="stats"><div><dt>剩餘安全格</dt><dd id="mines-left">22 格</dd></div><div><dt>已插旗</dt><dd id="mines-flags">0 / 3</dd></div><div><dt>安全格總數</dt><dd id="mines-best">22 格</dd></div></dl>
         <button class="go" id="mines-go" type="button" data-mode="start">開始踩地雷</button>
         <p class="msg" id="mines-msg" aria-live="polite">翻開全部 22 格安全區就過關。第一格也可能踩雷。</p>
@@ -3390,7 +3400,9 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
   "🚶 下車了": "🚶 Got off",
   "🫙 集氣瓶：溢出的": "🫙 Air Bottle: overflow ",
   "晚": " nights",
-  "自己餓了": "Hungry"
+  "自己餓了": "Hungry",
+  "翻格與插旗": "Reveal and flag",
+  "插旗數等於數字時，點數字快開周圍；旗子插錯仍會踩雷。": "When adjacent flags match a number, tap it to reveal its neighbors. Incorrect flags can still hit a mine."
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -3944,7 +3956,7 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
       var flagArt = '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M30 10v42" stroke="#293b46" stroke-width="5" stroke-linecap="round"/><path d="M29 10 51 18 29 29Z" fill="#ed654d" stroke="#a93428" stroke-width="2" stroke-linejoin="round"/><path d="m20 52 10-7 13 7Z" fill="#344d48"/><path d="M16 55h34" stroke="#344d48" stroke-width="4" stroke-linecap="round"/></svg>';
       var text = shown ? (M.layout[i] ? mineArt : number ? String(number) : '') : M.flags[i] ? flagArt : '';
       b.className = 'tile' + (shown ? (M.layout[i] ? ' mine' : ' revealed number-' + number) : M.flags[i] ? ' flagged' : ' covered');
-      b.innerHTML = text; b.disabled = !M.active || M.checkpoint || !!M.open[i];
+      b.innerHTML = text; b.disabled = !M.active || M.checkpoint || (!!M.open[i] && !number);
       b.setAttribute('aria-label', '第 ' + (Math.floor(i / M.size) + 1) + ' 列第 ' + (i % M.size + 1) + ' 格，' + (shown ? M.layout[i] ? '地雷' : '周圍 ' + number + ' 顆雷' : M.flags[i] ? '已插旗' : '未翻開'));
     });
     $('mines-left').textContent = (N - M.mines - M.picks) + ' 格';
@@ -3993,11 +4005,21 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
     M.flags[i] = !M.flags[i]; renderMines();
   }
   function pick(i) {
-    if (!M.active || M.checkpoint || i < 0 || i >= N || M.open[i]) return;
-    if (M.flagMode) { mineFlag(i); return; }
-    if (M.flags[i]) return;
-    if (M.layout[i]) { M.open[i] = true; mineFinish(false); renderMines(); return; }
-    var queue = [i];
+    if (!M.active || M.checkpoint || i < 0 || i >= N) return;
+    var queue;
+    if (M.open[i]) {
+      var number = mineNumber(i), neighbors = mineNeighbors(i);
+      if (!number || neighbors.filter(function (n) { return !!M.flags[n]; }).length !== number) return;
+      queue = neighbors.filter(function (n) { return !M.open[n] && !M.flags[n]; });
+      if (!queue.length) return;
+      var bomb = queue.find(function (n) { return M.layout[n]; });
+      if (bomb !== undefined) { M.open[bomb] = true; mineFinish(false); renderMines(); return; }
+    } else {
+      if (M.flagMode) { mineFlag(i); return; }
+      if (M.flags[i]) return;
+      if (M.layout[i]) { M.open[i] = true; mineFinish(false); renderMines(); return; }
+      queue = [i];
+    }
     while (queue.length) {
       var cell = queue.pop();
       if (M.open[cell] || M.flags[cell] || M.layout[cell]) continue;
@@ -7079,6 +7101,7 @@ ui();draw(0);requestAnimationFrame(loop);
       var side=console.querySelector('.side'),stage=console.firstElementChild;
       if(!side||!stage||stage===side)return;
       var buttons=[].slice.call(side.querySelectorAll('button.go'));if(!buttons.length)return;
+      var freeEntry=buttons.some(function(button){return button.id==='mines-go';});
       stage.classList.add('mobile-start-stage');
       var tray=document.createElement('div');tray.className='mobile-stage-actions';tray.setAttribute('role','group');tray.setAttribute('aria-label','開始、續關與重玩');stage.appendChild(tray);
       var records=buttons.map(function(button){
@@ -7093,7 +7116,7 @@ ui();draw(0);requestAnimationFrame(loop);
           if(show){if(record.button.parentNode!==record.wrapper)record.wrapper.appendChild(record.button);shown=true;label=actionText(record.button);}
           else if(record.marker.parentNode&&record.button.parentNode!==record.marker.parentNode)record.marker.parentNode.insertBefore(record.button,record.marker.nextSibling);
         });
-        note.textContent=/下一關|下一班|下一條/.test(label)?'繼續挑戰不另扣點':/\d+\s*點/.test(label)?'':typeof ENTRY_FEE==='number'?'每局 '+ENTRY_FEE+' 點':'';
+        note.textContent=freeEntry?'':/下一關|下一班|下一條/.test(label)?'繼續挑戰不另扣點':/\d+\s*點/.test(label)?'':typeof ENTRY_FEE==='number'?'每局 '+ENTRY_FEE+' 點':'';
         note.hidden=!note.textContent;tray.hidden=!shown;
       }
       var observer=new window.MutationObserver(sync);

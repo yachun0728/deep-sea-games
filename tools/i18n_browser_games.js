@@ -18,6 +18,16 @@ try {
   i.setLanguage('zh-Hant');await wait();i.setLanguage('en');await wait();
   assert(balance()===charged&&location.hash===hash,id+': language switch preserves balance and route');
   assert(!chinese(view).length,id+': live labels translated '+JSON.stringify(chinese(view)));
+  if(id==='mines'){
+    var flag=document.getElementById('mines-flag'),board=document.getElementById('board'),tile=board.querySelector('button');
+    assert(flag.getBoundingClientRect().bottom<=board.getBoundingClientRect().top,'Flag switch is above the minefield');
+    flag.click();await wait();tile.click();await wait();
+    assert(tile.classList.contains('flagged')&&tile.querySelector('svg'),'Flag mode keeps the original flag icon');
+    tile.click();await wait();assert(!tile.classList.contains('flagged'),'Tap again removes the flag');
+    flag.click();await wait();tile.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true}));await wait();
+    assert(tile.classList.contains('flagged'),'Desktop right-click still places a flag');
+    assert(!/10/.test(view.querySelector('.mobile-stage-note').textContent),'Free Minesweeper does not show a ten-point entry hint');
+  }
   if(matchMedia('(max-width:880px)').matches)assert(innerWidth===390&&document.documentElement.scrollWidth<=390,id+': English game fits a true 390px viewport');
   if(matchMedia('(max-width:880px)').matches&&id==='dream'){
     var sourceLabel=i.sourceText(button),mode=button.dataset.mode;

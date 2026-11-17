@@ -13,6 +13,7 @@
       var side=console.querySelector('.side'),stage=console.firstElementChild;
       if(!side||!stage||stage===side)return;
       var buttons=[].slice.call(side.querySelectorAll('button.go'));if(!buttons.length)return;
+      var freeEntry=buttons.some(function(button){return button.id==='mines-go';});
       stage.classList.add('mobile-start-stage');
       var tray=document.createElement('div');tray.className='mobile-stage-actions';tray.setAttribute('role','group');tray.setAttribute('aria-label','開始、續關與重玩');stage.appendChild(tray);
       var records=buttons.map(function(button){
@@ -27,7 +28,7 @@
           if(show){if(record.button.parentNode!==record.wrapper)record.wrapper.appendChild(record.button);shown=true;label=actionText(record.button);}
           else if(record.marker.parentNode&&record.button.parentNode!==record.marker.parentNode)record.marker.parentNode.insertBefore(record.button,record.marker.nextSibling);
         });
-        note.textContent=/下一關|下一班|下一條/.test(label)?'繼續挑戰不另扣點':/\d+\s*點/.test(label)?'':typeof ENTRY_FEE==='number'?'每局 '+ENTRY_FEE+' 點':'';
+        note.textContent=freeEntry?'':/下一關|下一班|下一條/.test(label)?'繼續挑戰不另扣點':/\d+\s*點/.test(label)?'':typeof ENTRY_FEE==='number'?'每局 '+ENTRY_FEE+' 點':'';
         note.hidden=!note.textContent;tray.hidden=!shown;
       }
       var observer=new window.MutationObserver(sync);

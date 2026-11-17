@@ -7,13 +7,13 @@
 - 網址：`#mines`　分類：免費懷舊　狀態：顯示中
 - 大廳卡片：「低中高難度或自訂棋盤，免費重溫經典踩地雷。」｜免費 · 不限次數 · 推理排雷
 - 追蹤名稱（GA4 `game_name`）：踩地雷，`game_id` 為 `mines`
-- 檔案：`games/mines/card.html`、`games/mines/game.js`、`games/mines/icon.svg`、`games/mines/style.css`、`games/mines/view.html`；`game.js` 共 113 行、7.7 KB
+- 檔案：`games/mines/card.html`、`games/mines/game.js`、`games/mines/icon.svg`、`games/mines/style.css`、`games/mines/view.html`；`game.js` 共 123 行、8.2 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「2. Mines（mines）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-mines`、`board`、`mines-difficulty`、`mines-custom`、`mines-size`、`mines-bomb-limit`、`mines-bombs`、`mines-level`、`mines-flag`、`mines-left`、`mines-flags`、`mines-best`、`mines-go`、`mines-msg`
+`view-mines`、`mines-flag`、`board`、`mines-difficulty`、`mines-custom`、`mines-size`、`mines-bomb-limit`、`mines-bombs`、`mines-level`、`mines-left`、`mines-flags`、`mines-best`、`mines-go`、`mines-msg`
 
 ## 狀態與常數
 
@@ -22,7 +22,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`mSay` L6、`syncBalance` L8、`mineNeighbors` L9、`mineNumber` L14、`buildBoard` L15、`renderMines` L28、`mineStage` L49、`startMines` L60、`mineFinish` L70、`mineFlag` L78、`pick` L83、`mineSettings` L103
+`mSay` L6、`syncBalance` L8、`mineNeighbors` L9、`mineNumber` L14、`buildBoard` L15、`renderMines` L28、`mineStage` L49、`startMines` L60、`mineFinish` L70、`mineFlag` L78、`pick` L83、`mineSettings` L113
 
 ## 錢包與結算接點
 
@@ -42,7 +42,7 @@
 
 - L67 `startMines`：`M.analytics = AN.start('mines', 0);`
 - L74 `mineFinish`：`AN.end(M.analytics, 0, won ? 'complete' : 'loss', {step:M.picks,board_size:M.size,mine_count:M.mines});`
-- L97 `pick`：`AN.progress(M.analytics, {stage: M.level, step: M.picks, score: M.picks});`
+- L107 `pick`：`AN.progress(M.analytics, {stage: M.level, step: M.picks, score: M.picks});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -60,7 +60,7 @@
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-踩地雷。定位：`M`、`M_PRESETS`、`mineSettings`、`startMines`。完全免費、不限次數、不發點。低為5×5／3雷、中為8×8／10雷、高為10×10／20雷；自訂N×N，N須為2～10整數，地雷數須為1～N×N−1整數。輸入無效不開局，不悄悄截斷；進行中鎖定設定，勝負後可重新選擇，每局固定棋盤不逐關擴大。開局立即隨機佈雷，第一格不保證安全。地雷達總格數減1時只有1安全格，只有翻到唯一安全格才獲勝。數字代表八鄰格雷數，零雷區展開，可插旗（上限為當局雷數）。翻開全部安全格勝利complete、踩雷loss，各只end一次；重玩另開start，entry_points與payout_points皆0。保留deep-sea-mines-best與deep-sea-mines-level-best舊Key及格式，不將自訂成績寫入舊關卡紀錄；5×5／3雷的安全格舊紀錄仍相容。大棋盤格子至少44px、可水平捲動；重新整理不還原本局。
+踩地雷。定位：`M`、`M_PRESETS`、`mineSettings`、`startMines`。完全免費、不限次數、不發點。低為5×5／3雷、中為8×8／10雷、高為10×10／20雷；自訂N×N，N須為2～10整數，地雷數須為1～N×N−1整數。輸入無效不開局，不悄悄截斷；進行中鎖定設定，勝負後可重新選擇，每局固定棋盤不逐關擴大。開局立即隨機佈雷，第一格不保證安全。地雷達總格數減1時只有1安全格，只有翻到唯一安全格才獲勝。數字代表八鄰格雷數，零雷區展開，可插旗（上限為當局雷數）。插旗切換位於棋盤上方，保留原旗子圖示與右鍵插旗。已翻開的數字格可再次點擊：周圍旗子數恰好等於數字時，一次翻開未插旗的相鄰格並依原規則展開空白區；旗數不足或過多不動作。旗子位置不一定正確，插錯仍可能快開地雷而失敗；插旗模式下點已翻開數字也可快開。翻開全部安全格勝利complete、踩雷loss，各只end一次；重玩另開start，entry_points與payout_points皆0。保留deep-sea-mines-best與deep-sea-mines-level-best舊Key及格式，不將自訂成績寫入舊關卡紀錄；5×5／3雷的安全格舊紀錄仍相容。大棋盤格子至少44px、可水平捲動；重新整理不還原本局。
 
 ## 修改檢查清單
 
