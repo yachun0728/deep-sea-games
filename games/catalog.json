@@ -251,5 +251,26 @@
     "view": "games/clock-out/view.html",
     "card": "games/clock-out/card.html",
     "icon": "games/clock-out/icon.svg"
+  },
+  {
+    "id": "peek",
+    "logic": "games/peek/game.js",
+    "view": "games/peek/view.html",
+    "card": "games/peek/card.html",
+    "icon": "games/peek/icon.svg"
+  },
+  {
+    "id": "mosquito",
+    "logic": "games/mosquito/game.js",
+    "view": "games/mosquito/view.html",
+    "card": "games/mosquito/card.html",
+    "icon": "games/mosquito/icon.svg"
+  },
+  {
+    "id": "last-hair",
+    "logic": "games/last-hair/game.js",
+    "view": "games/last-hair/view.html",
+    "card": "games/last-hair/card.html",
+    "icon": "games/last-hair/icon.svg"
   }
 ]
