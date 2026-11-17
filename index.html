@@ -3665,7 +3665,7 @@ ui();draw();requestAnimationFrame(loop);
   }
   function blRound(){
     BL.phase='run';BL.stageKills=0;BL.wave=0;BL.waves=blStageConfig(BL.stage).waves;BL.clock=0;BL.scroll=0;BL.nextWave=.9;BL.shot=0;BL.enemies=[];BL.bullets=[];BL.pickups=[];BL.fx=[];BL.lane=1;BL.x=200;BL.flash=0;BL.last=performance.now();
-    blTracking();blSay('第 '+BL.stage+' 關：自動射擊中。左右換道瞄準怪物，撿亮黃色武器箱強化火力。');blUI();blCanvas.focus();
+    blTracking();blSay('第 '+BL.stage+' 關：自動射擊中。左右換道瞄準怪物，撿彩色武器箱強化火力。');blUI();blCanvas.focus();
   }
   function blStart(){
     if(BL.phase==='run')return;

@@ -9,12 +9,12 @@ const fee=flatFee?Number(fs.readFileSync(new URL('js/config.js',root),'utf8').ma
 const results=[];
 function fixture(balance=1000){
   let now=1000;
-  const elements=new Map(),storage=new Map(),events=[],drawing=new Proxy({createLinearGradient:()=>({addColorStop(){}})},{get:(t,k)=>k in t?t[k]:()=>{}});
+  const elements=new Map(),storage=new Map(),events=[],drawCalls=[],drawing=new Proxy({createLinearGradient:()=>({addColorStop(){}})},{get:(t,k)=>k in t?t[k]:(...args)=>drawCalls.push([k,...args])});
   function el(id){if(!elements.has(id))elements.set(id,{hidden:false,value:'20',textContent:'',className:'',dataset:{},style:{},disabled:false,handlers:{},focus(){},getContext:()=>drawing,getBoundingClientRect:()=>({left:0,width:400}),addEventListener(type,fn){this.handlers[type]=fn;}});return elements.get(id);}
   const document={hidden:false,hasFocus:()=>true,addEventListener(){}};
   const sandbox={document,window:{addEventListener(){}},Number,Math,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,v)},requestAnimationFrame(){},$:el,MIN_BET:10,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fx:n=>n.toFixed(2),AN:{start:(...args)=>{events.push(['start',...args]);return 'round';},resume:(...args)=>events.push(['resume',...args]),progress:(...args)=>events.push(['progress',...args]),end:(...args)=>events.push(['end',...args])}};
   const ctx=vm.createContext(sandbox);vm.runInContext(source,ctx);
-  return {ctx,el,events,storage,run:s=>vm.runInContext(s,ctx),state:ctx.BL,wallet:sandbox.S,document,advance(ms){now+=ms;vm.runInContext('blSync(performance.now())',ctx);}};
+  return {ctx,el,events,storage,drawCalls,run:s=>vm.runInContext(s,ctx),state:ctx.BL,wallet:sandbox.S,document,advance(ms){now+=ms;vm.runInContext('blSync(performance.now())',ctx);}};
 }
 function check(name,fn){fn();results.push(name);}
 check('Entry deducts once; insufficient, fractional and unsafe amounts rejected',()=>{
@@ -83,6 +83,12 @@ check('Stages are longer while later-stage and within-stage travel/spawning acce
     const duration=Array.from({length:c.waves-1},(_,i)=>c.interval*(1-.16*(i+1)/c.waves)).reduce((a,b)=>a+b,0);assert(duration>old*1.5);}
   f.run('blStart();BL.wave=0');const slow=f.run('blPace()');f.run('BL.wave=BL.waves');assert(f.run('blPace()')>slow);
   for(const [stage,type,wave] of [[2,'ray',2],[3,'eel',3],[4,'turtle',7],[5,'jelly',5]])assert.equal(f.run(`BL.stage=${stage};blMobType(${wave})`),type);
+});
+check('Six weapon silhouettes differ and every monster renderer executes',()=>{
+  const f=fixture(),signatures=new Set();
+  for(const level of [1,4,8,13,18,24]){f.state.weapon=level;f.drawCalls.length=0;f.run('blDrawPlayer()');signatures.add(JSON.stringify(f.drawCalls));}
+  assert.equal(signatures.size,6);
+  for(const type of ['octo','crab','ray','eel','turtle','jelly','mini'])f.run(`blDrawMonster(blEnemy(1,200,'${type}',20))`);
 });
 check('Generated scripts compile and existing JSON child document still decodes',()=>{
   const html=fs.readFileSync(new URL('index.html',root),'utf8');for(const [,attrs,body] of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)){if(attrs.includes('application/json'))JSON.parse(body);else new vm.Script(body);}
