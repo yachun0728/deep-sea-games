@@ -251,5 +251,12 @@
     "view": "games/clock-out/view.html",
     "card": "games/clock-out/card.html",
     "icon": "games/clock-out/icon.svg"
+  },
+  {
+    "id": "peek",
+    "logic": "games/peek/game.js",
+    "view": "games/peek/view.html",
+    "card": "games/peek/card.html",
+    "icon": "games/peek/icon.svg"
   }
 ]
