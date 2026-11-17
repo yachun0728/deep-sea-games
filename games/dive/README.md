@@ -5,15 +5,15 @@
 ## 概覽
 
 - 網址：`#dive`　分類：技巧闖關　狀態：顯示中
-- 大廳卡片：「選路線往下潛撿珍珠，氧氣用完前上浮結算。」｜每局 10 點 · 最高 100×
+- 大廳卡片：「選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。」｜每局 10 點 · 最佳分數
 - 追蹤名稱（GA4 `game_name`）：一口氣探險，`game_id` 為 `dive`
-- 檔案：`games/dive/card.html`、`games/dive/game.js`、`games/dive/icon.svg`、`games/dive/original.html`、`games/dive/style.css`、`games/dive/view.html`；`game.js` 共 57 行、3.6 KB
+- 檔案：`games/dive/card.html`、`games/dive/game.js`、`games/dive/icon.svg`、`games/dive/original.html`、`games/dive/style.css`、`games/dive/view.html`；`game.js` 共 54 行、3.4 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「23. 一口氣探險（dive）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-dive`、`dv-frame`、`dv-mult`、`dv-pay`、`dv-net`、`dv-amount`、`dv-go`、`dv-msg`
+`view-dive`、`dv-frame`、`dv-score`、`dv-depth`、`dv-best`、`dv-amount`、`dv-go`、`dv-msg`
 
 ## 狀態與常數
 
@@ -22,7 +22,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`diveSay` L3、`diveUI` L4、`diveValid` L11、`diveRoute` L44
+`diveSay` L3、`diveBest` L4、`diveUI` L5、`diveValid` L11、`diveRoute` L41
 
 ## 錢包與結算接點
 
@@ -30,7 +30,7 @@
 - L18 `diveValid`：`S.balance-=amount;`
 
 **入帳（領回／獎勵）**
-- L31 `diveValid`：`S.balance+=paid;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **餘額檢查**
 - L16 `diveValid`：`if(amount>S.balance){diveSay(LOW_MSG,'lose');`
@@ -41,18 +41,18 @@
 ## 追蹤（GA4）
 
 - L18 `diveValid`：`DIVE.analytics=AN.start('dive',amount);`
-- L32 `diveValid`：`AN.end(DIVE.analytics,paid,paid<=0?'loss':kind==='up'?'cashout':'complete',{score:depth,multiplier:cents/100}…`
-- L40 `diveValid`：`AN.progress(DIVE.analytics,{stage:d>=30?4:d>=20?3:d>=10?2:1,step:d});`
+- L30 `diveValid`：`AN.end(DIVE.analytics,0,kind==='drown'?'loss':'complete',{score:score,depth:depth});`
+- L37 `diveValid`：`AN.progress(DIVE.analytics,{stage:d>=30?4:d>=20?3:d>=10?2:1,step:d});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 
-- （沒有使用）
+- `diveBestScore`（讀）
 
 ## 平台共用相依
 
-- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`fx`、`ENTRY_FEE`、`LOW_MSG`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/controls.js` 會呼叫：`diveSay`
 - `js/navigation.js` 會呼叫：`diveRoute`
 - 「重設為 500 點」進行中防護（`js/controls.js`）：無法判斷（沒有偵測到狀態名稱）
@@ -63,7 +63,7 @@
 
 每層選一張路線卡往下潛（氣泡帶、寶箱、水雷區、捷徑洋流、未知洞穴、沉船、寄居蟹商人），耗氧 `max(2, round(6+深度×0.35) ± 遺物修正)`。上浮所需氧氣＝`ceil(深度×1.2×遺物修正)`＋珍珠重量 `floor(珍珠/10)`；氧氣不足但高於基本需求時可丟珍珠減重上浮。10／20／30層起進入暮光／午夜／深淵帶，看不清的卡片增加、水雷變多。開局隨機給一個遺物，約每5層有沉船可選遺物。
 
-倍率 `min(100, floor((珍珠+深度×2)/250×100)/100)`。上浮或到第40層依當下倍率結算，返還 `floor(投入×round(倍率×100)/100)`；氧氣耗盡返還0；持有救生繩時第一次耗盡改以一半珍珠計算倍率結算。最高倍率紀錄 `diveBestMult` 不是共用點數。
+2026-11-17 移除倍率與領回：分數 `珍珠+深度×2` 只作成績與最佳紀錄（`diveBestScore`，舊 `diveBestMult` 不再使用），不換算成點數。上浮（需氧氣高於紅線，可丟珍珠減重）或到第40層海底時這一趟結束；氧氣耗盡分數歸零；持有救生繩時第一次耗盡改以一半珍珠計分並結束。此款為一般遊戲，沒有 BONUS 里程碑（尚無難度校準資料）。
 
 ## 修改檢查清單
 

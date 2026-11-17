@@ -94,8 +94,8 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 兩款都以內嵌原畫面運作，由父頁扣入場點數並送出 `game_start`；子頁內的點擊與按鍵會通知平台，維持跨文件有效遊玩時間。
 
-- dive：每次下潛後送 `game_progress`，`stage` 為海域（1 淺海～4 深淵）、`step` 為層數。`game_end` 的 `score` 為最終層數、`multiplier` 為結算倍率；上浮為 `cashout`，到海底或救生繩為 `complete`，溺水或領回 0 為 `loss`。
-- mrt：每站開始送 `game_progress`，`stage` 為第幾站、`step` 為目前階數。暫停時送 `checkpoint=1` 的 progress 並停止計時，按繼續送 `game_resume`。`game_end` 的 `score` 為階數；下車結算為 `cashout`，搶滿 8 階或末班車為 `complete`，體力歸零或領回 0 為 `loss`。
+- dive：每次下潛後送 `game_progress`，`stage` 為海域（1 淺海～4 深淵）、`step` 為層數。`game_end` 的 `score` 為分數（珍珠＋層數×2）、`depth` 為最深層數，點數為 0；溺水為 `loss`，其餘為 `complete`。不再送 `multiplier`，也沒有 `cashout`。
+- mrt：每站開始送 `game_progress`，`stage` 為第幾站、`step` 為目前階數。暫停時送 `checkpoint=1` 的 progress 並停止計時，按繼續送 `game_resume`。`game_end` 的 `score` 為階數、點數為 0；有搶到座位為 `complete`，一個座位都沒搶到為 `loss`。不再送 `multiplier`，也沒有 `cashout`。
 
 ## 無盡里程碑遊戲（runner / sneak / elevator / fishing / campaign）
 

@@ -182,13 +182,13 @@
   .btn small{font-weight:500;opacity:.6;margin-left:6px;font-size:12px}
   .stats.four{grid-template-columns:repeat(4,1fr)}
 
-  /* ---------- v5：下注與倍率階梯 ---------- */
+  /* ---------- v5：階數顯示 ---------- */
   #mult{font-size:38px;font-weight:700;letter-spacing:-.03em;line-height:1.1;color:var(--amber);font-variant-numeric:tabular-nums;margin-top:2px;display:inline-block}
   #mult.under{color:rgba(255,255,255,.85)}
   #claim{margin-top:2px;font-size:12px;color:rgba(255,255,255,.7);font-variant-numeric:tabular-nums}
   footer{gap:8px}
   .stand.hidden,.seatBtns.hidden{display:none}
-  .seatBtns{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .seatBtns{flex:1;display:grid;grid-template-columns:1fr;gap:8px}
   .fbtn{height:50px;border-radius:16px;background:var(--card2);border:1px solid var(--line2);font-size:14px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.25}
   .fbtn b{font-size:11px;font-weight:600;opacity:.65;font-variant-numeric:tabular-nums}
   .fbtn.gold{background:var(--amber);color:#000;border-color:transparent}
@@ -227,8 +227,8 @@
         <div class="chips"><span class="chip" id="nth"></span><span class="chip zone" id="zone"></span></div>
       </div>
       <div class="hud-r">
-        <div class="lbl">倍率</div>
-        <div id="mult">0.00×</div>
+        <div class="lbl">已搶座位</div>
+        <div id="mult">0</div>
         <div id="claim"></div>
       </div>
     </div>
@@ -245,7 +245,7 @@
 
   <footer>
     <div class="stand" id="standBox"><div class="token" id="meToken">🧍</div><div class="standtxt" id="standTxt"></div></div>
-    <div class="seatBtns hidden" id="seatBtns"><button class="fbtn gold" id="cashBtn"></button><button class="fbtn" id="standBtn"></button></div>
+    <div class="seatBtns hidden" id="seatBtns"><button class="fbtn" id="standBtn"></button></div>
     <div class="rivals"><div class="token rv hidden" id="rv0">👵</div><div class="token rv hidden" id="rv1">🧔‍♂️</div></div>
   </footer>
 
@@ -256,14 +256,13 @@
     <div class="hero">🚇</div>
     <div class="lbl">通勤小遊戲</div>
     <div class="title">捷運<br><span>搶位</span></div>
-    <div class="lead">每搶到一次座位，倍率升一階。<br>體力歸零，倍率也歸零。</div>
+    <div class="lead">每搶到一次座位，階數升一階。<br>體力歸零，這一趟就結束。</div>
     <ol>
       <li><i>01</i><span>看小動作和隨身物品猜誰要下車，點一下站到他面前</span></li>
-      <li><i>02</i><span>坐著時可以<b style="color:var(--amber)">下車結算</b>，或起身再搶下一階。站著就不能下車</span></li>
+      <li><i>02</i><span>坐著時可以休息，準備好再<b style="color:var(--amber)">起身搶下一階</b>。沒搶到會白站、扣體力</span></li>
       <li><i>03</i><span>階數越高，進站越快、線索越不可靠、對手也越多。共 8 階</span></li>
     </ol>
-    <div class="ladder" id="ladder"></div>
-    <button class="btn" id="startBtn">上車</button>
+        <button class="btn" id="startBtn">上車</button>
     <div class="bestline" id="introBest"></div>
   </div>
 </div>
@@ -280,8 +279,6 @@ const wait = ms => FAST ? Promise.resolve() : new Promise(res => setTimeout(res,
 
 /* ================= 資料 ================= */
 const TRIP = 21, TOP = 8;
-// 倍率階梯：搶到第 n 個座位時的倍率
-const LADDER = [0, 0.3, 0.55, 0.8, 1, 1.5, 3.5, 6, 15];
 // 對手：from = 第幾階開始出現，noise = 判斷多不準，tr = 大約在進站的哪個時間點出手
 const RIVALS = [
   { em:'👵', name:'阿姨', from:2, noise:1.5, tr:[.55, .9] },
@@ -311,13 +308,12 @@ const CUES = {
 const LOSE_LINES = ['他只是調整一下而已，根本沒要下車。','你在他面前站了一整站。','他還要坐很久…'];
 
 let st = null, r = null, els = [], paused = false, lastTs = 0;
-function loadBest() { try { return +localStorage.getItem('mrtBestMult') || 0; } catch (e) { return 0; } }
-function saveBest(v) { try { localStorage.setItem('mrtBestMult', v); } catch (e) {} }
+function loadBest() { try { return +localStorage.getItem('mrtBestTier') || 0; } catch (e) { return 0; } }
+function saveBest(v) { try { localStorage.setItem('mrtBestTier', v); } catch (e) {} }
 // 點數由 Deep Sea Arcade 父頁的共用錢包處理（deepSeaMrt 橋接）；此頁不保存點數
 function mrtHost() { try { return window.parent !== window ? window.parent.deepSeaMrt || null : null; } catch (e) { return null; } }
 const hostOf = () => st && st.hosted ? mrtHost() : null;
 let mrtActive = true;
-const payNow = () => Math.floor(st.bet * LADDER[st.tier]);
 const inLine = i => i >= 0 && i < STATIONS.length;
 const isPax = o => o && o !== 'me';
 
@@ -466,9 +462,8 @@ function renderStam() {
 }
 const drain = () => 25 + 3 * st.tier;   // 階數越高，白站一站扣越多
 function renderHud() {
-  const m = LADDER[st.tier], el = $('#mult'), txt = m.toFixed(2) + '×';
+  const m = st.tier, el = $('#mult'), txt = String(m);
   if (el.textContent !== txt) { el.textContent = txt; pulse(el); }
-  el.classList.toggle('under', m < 1);
   $('#claim').textContent = `第 ${st.tier} / ${TOP} 階`;
   if (!st.result && hostOf()) hostOf().live(window, m, st.tier);
 }
@@ -479,8 +474,7 @@ function renderStand() {
   $('#meToken').classList.remove('away');
   $('#standTxt').innerHTML = st.tier ? `<b>站著搶第 ${st.tier + 1} 階</b> 沒搶到 −${drain()} 體力，歸零全賠` : `<b>你站著</b> 沒搶到每站 −${drain()} 體力`;
   if (seated) {
-    $('#cashBtn').innerHTML = `下車結算<b>${LADDER[st.tier].toFixed(2)}×</b>`;
-    $('#standBtn').innerHTML = st.standNext ? '下一站起身 ✓<b>再按取消</b>' : `起身再搶<b>下一階 ${LADDER[st.tier + 1].toFixed(2)}×</b>`;
+    $('#standBtn').innerHTML = st.standNext ? '下一站起身 ✓<b>再按取消</b>' : `起身再搶<b>下一階（第 ${Math.min(TOP, st.tier + 1)} 階）</b>`;
     $('#standBtn').classList.toggle('armed', st.standNext);
   }
   st.rivals.forEach((R, k) => { const t = $('#rv' + k); t.classList.toggle('hidden', !R.on); t.classList.remove('away'); });
@@ -649,7 +643,7 @@ async function arrive() {
     paintSeat(ps, '😌 你坐下了');
     buzz([30, 50, 30]);
     log(`坐到了！升到第 ${st.tier} 階${quick ? '，判斷得早，體力 +8' : ''}`, 'good');
-    await fly(`${LADDER[st.tier].toFixed(2)}×`, centerOf(el), $('#mult'), { color: 'var(--amber)', dur: 760 });
+    await fly(`第 ${st.tier} 階`, centerOf(el), $('#mult'), { color: 'var(--amber)', dur: 760 });
     renderHud(); renderStand();
     await wait(350);
     if (st.tier >= TOP) return gameOver('top');
@@ -672,7 +666,7 @@ async function arrive() {
         ${real ? `<div><span class="lbl">真正下車的人 ${real.ava}${real.prop}</span>${cueTxt(realCues) || '幾乎沒有動作，很難猜'}</div>` : ''}
         ${real && real.byP ? `<div><span class="lbl">下次留意</span>${P.prop} ${P.label}常在「${P.zone}」下車，${r.name}就是。</div>` : ''}
       </div>
-      <button class="btn" data-v="next">${dead ? '腿軟了，看結算' : `繼續，體力剩 ${st.stam}`}</button>`);
+      <button class="btn" data-v="next">${dead ? '腿軟了，看成績' : `繼續，體力剩 ${st.stam}`}</button>`);
     if (dead) return gameOver('bust');
   }
 
@@ -731,21 +725,20 @@ async function arrive() {
 function gameOver(kind) {
   if (st.result) return;
   r.phase = 'over';
-  const m = kind === 'bust' ? 0 : LADDER[st.tier];
-  const pay = m;                               // 平台串接時：派彩 = 入場點數 × m
+  const m = st.tier;                           // 成績 = 搶到的最高階數，只作紀錄，不換算點數
 
   const isBest = m > loadBest();
   if (isBest) saveBest(m);
-  st.result = { kind, m, pay };
+  st.result = { kind, m };
   const host = hostOf();
-  const paid = host ? host.finish(window, { kind, m, tier: st.tier, round: st.round }) : null;
+  const paid = host ? host.finish(window, { kind, tier: st.tier, round: st.round }) : null;
   renderStand();
-  const H = { cash: [`在 ${r.name} 前下車結算`, 'var(--green)'], top: [`搶滿 ${TOP} 階！`, 'var(--gold)'], end: ['末班車到站', 'var(--green)'], bust: [`腿軟了，倒在 ${r.name}`, 'var(--red)'] }[kind];
-  const msg = kind === 'bust' ? '體力歸零，倍率也歸零。'
-    : `搶到 ${st.tier} 次座位，帶走 ${m.toFixed(2)} 倍。`;
+  const H = { top: [`搶滿 ${TOP} 階！`, 'var(--gold)'], end: ['末班車到站', 'var(--green)'], bust: [`腿軟了，倒在 ${r.name}`, 'var(--red)'] }[kind];
+  const msg = kind === 'bust' ? `體力歸零，這一趟搶到 ${st.tier} 次座位。`
+    : `搶到 ${st.tier} 次座位。`;
   openSheet(`<div class="lbl" style="color:${H[1]}">${H[0]}</div>
-    <div class="big" style="color:${m >= 1 ? 'var(--amber)' : 'var(--text)'}">${m.toFixed(2)}×</div>
-    <p style="margin-bottom:0">${msg}${isBest && m > 0 ? '<span class="newbest">最高倍率</span>' : ''}${typeof paid === 'number' ? `<br>入場 ${st.bet} 點，領回 <b style="color:var(--text)">${paid}</b> 點。` : ''}</p>
+    <div class="big" style="color:${m > 0 ? 'var(--amber)' : 'var(--text)'}">${m} 階</div>
+    <p style="margin-bottom:0">${msg}${isBest && m > 0 ? '<span class="newbest">最佳紀錄</span>' : ''}</p>
     <div class="stats four">
       <div><span class="lbl">搭了</span><b>${st.round} 站</b></div>
       <div><span class="lbl">階數</span><b>${st.tier}</b></div>
@@ -786,9 +779,9 @@ function loop(ts) {
 }
 
 /* ================= 開場 ================= */
-// 這個 demo 不處理點數。平台串接時：開始前扣入場點數，結束時用 st.result.m（倍率）計算派彩。
+// 這個 demo 不處理點數。平台串接時只扣固定入場點數；階數只作成績，不換算點數。
 function showIntro() {
-  $('#introBest').textContent = loadBest() ? `最高倍率 ${loadBest().toFixed(2)}×` : '';
+  $('#introBest').textContent = loadBest() ? `最佳 ${loadBest()} 階` : '';
   $('#intro').classList.remove('hide');
 }
 // 開場按鈕與平台右側「扣點上車」共用同一個開局流程，由父頁決定是否扣點
@@ -804,11 +797,9 @@ function beginRound() {
 }
 $('#startBtn').onclick = beginRound;
 window.startMrtPlatformRound = beginRound;
-$('#cashBtn').onclick = () => { if (st && st.seat >= 0 && st.tier >= 1 && r.phase === 'approach' && !paused && !sheetOpen()) { buzz([20, 40, 20]); gameOver('cash'); } };
 $('#standBtn').onclick = () => { if (st && st.seat >= 0 && r.phase === 'approach') { st.standNext = !st.standNext; buzz(12); renderStand(); log(st.standNext ? '下一站起身再搶，先看好目標' : '繼續坐著休息'); } };
 window.addEventListener('resize', resize);
-$('#mult').textContent = '0.00×';
-$('#ladder').innerHTML = LADDER.slice(1).map(m => `<span class="${m >= 1 ? 'pos' : ''}">${m}×</span>`).join('');
+$('#mult').textContent = '0';
 setRoll($('#stam'), 100);
 targetSpeed = 600;
 showIntro();

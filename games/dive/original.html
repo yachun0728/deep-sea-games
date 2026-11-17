@@ -164,7 +164,7 @@
   #surface.drop{background:var(--amber)}
   #surface .sl{white-space:nowrap}
 
-  /* ---------- v4：下注與倍率 ---------- */
+  /* ---------- v4：分數顯示 ---------- */
   #mult{font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1.1;color:var(--amber);font-variant-numeric:tabular-nums;margin-top:2px;display:inline-block}
   #mult.under{color:rgba(255,255,255,.85)}
   .best{margin-top:2px;font-size:12px;color:rgba(255,255,255,.7);font-variant-numeric:tabular-nums}
@@ -205,8 +205,8 @@
         <div class="chip" id="zone"></div>
       </div>
       <div class="hud-r">
-        <div class="lbl">倍率</div>
-        <div id="mult">0.00×</div>
+        <div class="lbl">分數</div>
+        <div id="mult">0</div>
         <div class="best" id="best"></div>
         <div id="pearlBox"><span class="gem">💎</span><span class="roll" id="pearls"></span></div>
       </div>
@@ -224,7 +224,7 @@
 
   <div class="tray" id="tray"></div>
   <section class="cards" id="cards"></section>
-  <footer><button id="surface"><span class="sl" id="sL">上浮結算</span><span class="sr" id="sR"></span></button></footer>
+  <footer><button id="surface"><span class="sl" id="sL">上浮結束</span><span class="sr" id="sR"></span></button></footer>
 
   <div class="scrim" id="scrim"></div>
   <div class="sheet" id="sheet"><div class="grab"></div><div id="sheetBody"></div></div>
@@ -233,11 +233,11 @@
     <div class="d">🤿</div>
     <div class="lbl">通勤小遊戲</div>
     <div class="big">一口氣<br><span>探險</span></div>
-    <div class="lead">珍珠越多，倍率越高。<br>活著上岸才算數，溺水就歸零。</div>
+    <div class="lead">珍珠越多、潛得越深，分數越高。<br>活著上岸才算數，溺水就歸零。</div>
     <ol>
       <li><i>01</i><span>每層挑一條路往下潛。<b style="color:var(--red)">紅線</b>是上浮所需的氧氣，珍珠越重紅線越高</span></li>
-      <li><i>02</i><span>隨時可以上浮結算，帶回當下的倍率</span></li>
-      <li><i>03</i><span>越深越暗、水雷越多。潛到第 40 層海底自動結算</span></li>
+      <li><i>02</i><span>隨時可以上浮結束這一趟，帶回當下的分數</span></li>
+      <li><i>03</i><span>越深越暗、水雷越多。潛到第 40 層海底自動結束</span></li>
     </ol>
     <button class="btn" id="go">深吸一口氣</button>
     <div class="bestline" id="introBest"></div>
@@ -311,13 +311,12 @@ const pearlMult = () => (has('magnet') ? 1.5 : 1) * (has('greed') ? 2 : 1) * (ha
 const mineChance = () => Math.max(0.08, Math.min(0.6, 0.25 + S.depth * 0.006 - (has('star') ? 0.15 : 0)));
 const priceMult = () => has('crab') ? 0.6 : 1;
 const unowned = () => Object.keys(RELICS).filter(k => !has(k));
-function loadBest() { try { return +localStorage.getItem('diveBestMult') || 0; } catch (e) { return 0; } }
-function saveBest(v) { try { localStorage.setItem('diveBestMult', v); } catch (e) {} }
+function loadBest() { try { return +localStorage.getItem('diveBestScore') || 0; } catch (e) { return 0; } }
+function saveBest(v) { try { localStorage.setItem('diveBestScore', v); } catch (e) {} }
 // 點數由 Deep Sea Arcade 父頁的共用錢包處理（deepSeaDive 橋接）；此頁不保存點數
-const BOTTOM = 40, DIV = 250;
-// 倍率 = (珍珠 + 深度×2) ÷ DIV，上限 100 倍
-const multOf = (p = S.pearls, d = S.depth) => Math.min(100, Math.floor((p + d * 2) / DIV * 100) / 100);
-const payOf = (p = S.pearls) => Math.floor(S.bet * multOf(p));
+const BOTTOM = 40;
+// 分數 = 珍珠 + 深度×2，只作為成績與最佳紀錄，不換算點數
+const multOf = (p = S.pearls, d = S.depth) => Math.max(0, Math.floor(p + d * 2));
 // 要丟幾顆珍珠才浮得上去：0 = 不用丟，-1 = 丟光也不夠
 function dropNeeded() {
   if (S.o2 >= ascentCost()) return 0;
@@ -410,11 +409,10 @@ function renderO2() {
 function renderMult() {
   const m = S.bet ? multOf() : 0;
   const el = $('#mult');
-  const txt = m.toFixed(2) + '×';
+  const txt = String(m);
   if (el.textContent !== txt) { el.textContent = txt; if (S.bet) pulse(el); }
-  el.classList.toggle('under', m < 1);
   $('#best').textContent = '';
-  if (S.hosted && !S.over && diveHost()) diveHost().live(window, m);
+  if (S.hosted && !S.over && diveHost()) diveHost().live(window, m, S.depth);
 }
 function renderAscent() {
   renderMult();
@@ -427,8 +425,8 @@ function renderAscent() {
   b.classList.toggle('danger', S.depth > 0 && drop < 0);
   b.classList.toggle('drop', drop > 0);
   if (S.depth === 0) { $('#sL').textContent = '先往下潛吧'; $('#sR').textContent = ''; }
-  else if (drop === 0) { $('#sL').textContent = '⬆ 上浮結算'; $('#sR').textContent = `${multOf().toFixed(2)}×`; }
-  else if (drop > 0) { $('#sL').textContent = `⬆ 丟 ${drop} 💎 減重上浮`; $('#sR').textContent = `${multOf(S.pearls - drop).toFixed(2)}×`; }
+  else if (drop === 0) { $('#sL').textContent = '⬆ 上浮結束'; $('#sR').textContent = `${multOf()} 分`; }
+  else if (drop > 0) { $('#sL').textContent = `⬆ 丟 ${drop} 💎 減重上浮`; $('#sR').textContent = `${multOf(S.pearls - drop)} 分`; }
   else { $('#sL').textContent = '氧氣低於上浮線'; $('#sR').textContent = `需 ${baseAscent()}`; }
 }
 function renderTray(incoming) {
@@ -707,20 +705,19 @@ function endRun(kind, note) {
   S.over = true; renderAscent();
   const pearls = kind === 'drown' ? 0 : kind === 'rope' ? Math.floor(S.pearls / 2) : S.pearls;
   const m = kind === 'drown' ? 0 : multOf(pearls);
-  const pay = m;                               // 平台串接時：派彩 = 入場點數 × m
 
   const bestM = loadBest(), isBest = m > bestM;
   if (isBest) saveBest(m);
-  S.result = { kind, m, pay };
+  S.result = { kind, m };
   const host = S.hosted ? diveHost() : null;
-  const paid = host ? host.finish(window, { kind, m, depth: S.depth, pearls }) : null;
+  const paid = host ? host.finish(window, { kind, score: m, depth: S.depth, pearls }) : null;
   const H = { up: ['平安上岸', 'var(--green)'], bottom: ['潛到海底了', 'var(--gold)'], rope: ['救生繩把你拉上來了', 'var(--gold)'], drown: ['氧氣耗盡', 'var(--red)'] }[kind];
-  const msg = kind === 'drown' ? '珍珠全掉進深海，倍率歸零。'
+  const msg = kind === 'drown' ? '珍珠全掉進深海，這一趟分數歸零。'
     : `${note || ''}${kind === 'rope' ? '保住一半珍珠。' : ''}帶著 ${pearls} 顆珍珠回到水面。`;
   openSheet(`<div class="result">
     <div class="lbl eyebrow" style="color:${H[1]}">${H[0]}</div>
-    <div class="score" style="color:${m >= 1 ? 'var(--amber)' : 'var(--text)'}">${m.toFixed(2)}×</div>
-    <p style="margin-bottom:0">${msg}${isBest && m > 0 ? '<span class="newbest">最高倍率</span>' : ''}${typeof paid === 'number' ? `<br>入場 ${S.bet} 點，領回 <b style="color:var(--text)">${paid}</b> 點。` : ''}</p>
+    <div class="score" style="color:${m > 0 ? 'var(--amber)' : 'var(--text)'}">${m} 分</div>
+    <p style="margin-bottom:0">${msg}${isBest && m > 0 ? '<span class="newbest">最佳紀錄</span>' : ''}</p>
     <div class="stats">
       <div><span class="lbl">最深</span><b>${S.depth * 10} m</b></div>
       <div><span class="lbl">珍珠</span><b>${pearls}</b></div>
@@ -758,9 +755,9 @@ function newRun(bet, hosted) {
   }, FAST ? 0 : 350);
 }
 /* ================= 開場 ================= */
-// 這個 demo 不處理點數。平台串接時：開始前扣入場點數，結束時用 S.result.m（倍率）計算派彩。
+// 這個 demo 不處理點數。平台串接時只扣固定入場點數；分數只作成績，不換算點數。
 function showIntro() {
-  $('#introBest').textContent = loadBest() ? `最高倍率 ${loadBest().toFixed(2)}×` : '';
+  $('#introBest').textContent = loadBest() ? `最佳分數 ${loadBest()} 分` : '';
   $('#intro').classList.remove('hide');
 }
 // 開場按鈕與平台右側「扣點開始下潛」共用同一個開局流程，由父頁決定是否扣點

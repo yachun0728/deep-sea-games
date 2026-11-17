@@ -1,12 +1,12 @@
-  /* ---------- One Breath Dive: original isolated screen; stake × final multiplier returns to the shared wallet ---------- */
-  var DIVE={active:false,stake:0,cents:0,paid:null,analytics:null,loaded:false,max:100};
+  /* ---------- One Breath Dive: original isolated screen; fixed entry fee, score and best record only (no points returned) ---------- */
+  var DIVE={active:false,stake:0,score:0,depth:0,best:0,done:false,analytics:null,loaded:false};
   function diveSay(text,kind){var el=$('dv-msg');el.textContent=text;el.className='msg'+(kind?' '+kind:'');}
+  function diveBest(){try{return Math.max(0,Math.floor(Number(localStorage.getItem('diveBestScore'))||0));}catch(_){return 0;}}
   function diveUI(){
-    var pay=DIVE.active?Math.floor(DIVE.stake*DIVE.cents/100):(DIVE.paid||0),shown=DIVE.stake&&(DIVE.active||DIVE.paid!==null),net=pay-DIVE.stake;
-    $('dv-mult').textContent=fx(DIVE.cents/100)+'×';$('dv-pay').textContent=fmt(pay)+' 點';
-    $('dv-net').textContent=shown?(net>0?'+':'')+fmt(net)+' 點':'—';$('dv-net').style.color=!shown?'':net>0?'var(--glow)':net<0?'var(--crush)':'var(--muted)';
+    DIVE.best=Math.max(DIVE.best,diveBest());
+    $('dv-score').textContent=fmt(DIVE.score)+' 分';$('dv-depth').textContent=DIVE.depth*10+' m';$('dv-best').textContent=fmt(DIVE.best)+' 分';
     $('dv-go').disabled=DIVE.active;
-    $('dv-go').textContent=DIVE.active?'下潛中 · 在左側畫面操作':DIVE.paid!==null?'扣點再潛一次':'扣點開始下潛';
+    $('dv-go').textContent=DIVE.active?'下潛中 · 在左側畫面操作':DIVE.done?'扣點再潛一次':'扣點開始下潛';
   }
   function diveValid(source){return source===$('dv-frame').contentWindow;}
   window.deepSeaDive={
@@ -15,24 +15,21 @@
       var amount=ENTRY_FEE;
       if(amount>S.balance){diveSay(LOW_MSG,'lose');return 0;}
       if(AN.interact)AN.interact();
-      DIVE.active=true;DIVE.stake=amount;DIVE.cents=0;DIVE.paid=null;DIVE.analytics=AN.start('dive',amount);S.balance-=amount;save();renderAll();diveUI();
-      diveSay('已扣 '+fmt(amount)+' 點。在左側畫面挑路線往下潛，上浮結算時依倍率領回；溺水歸零。');
+      DIVE.active=true;DIVE.stake=amount;DIVE.score=0;DIVE.depth=0;DIVE.done=false;DIVE.analytics=AN.start('dive',amount);S.balance-=amount;save();renderAll();diveUI();
+      diveSay('已扣 '+fmt(amount)+' 點。在左側畫面挑路線往下潛，珍珠與深度累積成分數；沒有點數返還，只記錄成績。');
       return amount;
     },
-    live:function(source,m){
+    live:function(source,score,depth){
       if(!diveValid(source)||!DIVE.active)return;
-      m=Number(m);DIVE.cents=isFinite(m)?Math.max(0,Math.min(DIVE.max*100,Math.round(m*100))):0;diveUI();
+      score=Number(score);DIVE.score=isFinite(score)?Math.max(0,Math.floor(score)):0;depth=Number(depth);DIVE.depth=isFinite(depth)?Math.max(0,Math.floor(depth)):DIVE.depth;diveUI();
     },
     finish:function(source,data){
       if(!diveValid(source)||!DIVE.active)return null;
-      var m=Number(data&&data.m),kind=String(data&&data.kind||''),depth=Math.max(0,Math.floor(Number(data&&data.depth)||0));
-      var cents=isFinite(m)?Math.max(0,Math.min(DIVE.max*100,Math.round(m*100))):0;
-      var paid=Math.floor(DIVE.stake*cents/100),net=paid-DIVE.stake;
-      DIVE.active=false;DIVE.cents=cents;DIVE.paid=paid;S.balance+=paid;save();renderAll();diveUI();
-      AN.end(DIVE.analytics,paid,paid<=0?'loss':kind==='up'?'cashout':'complete',{score:depth,multiplier:cents/100});
-      if(paid<=0)diveSay(kind==='drown'?'氧氣耗盡，倍率歸零，失去 '+fmt(DIVE.stake)+' 點。':'倍率 0.00×，這一局沒有領回點數。','lose');
-      else diveSay('倍率 '+fx(cents/100)+'×，領回 '+fmt(paid)+' 點，本局'+(net>=0?'淨賺 ':'淨損 ')+fmt(Math.abs(net))+' 點。',net>0?'win':'');
-      return paid;
+      var score=Math.max(0,Math.floor(Number(data&&data.score)||0)),kind=String(data&&data.kind||''),depth=Math.max(0,Math.floor(Number(data&&data.depth)||0));
+      DIVE.active=false;DIVE.done=true;DIVE.score=score;DIVE.depth=depth;diveUI();
+      AN.end(DIVE.analytics,0,kind==='drown'?'loss':'complete',{score:score,depth:depth});
+      diveSay(kind==='drown'?'氧氣耗盡，這一趟分數歸零。':'本局 '+fmt(score)+' 分，最深 '+depth*10+' m。',kind==='drown'?'lose':'win');
+      return 0;
     },
     progress:function(source,depth){
       if(!diveValid(source)||!DIVE.active)return;
