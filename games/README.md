@@ -30,3 +30,4 @@
 | [一口氣探險 One Breath Dive](dive/README.md) | `#dive` | 技巧闖關 | 顯示 | 57 行 | 選路線往下潛撿珍珠，氧氣用完前上浮結算。 |
 | [捷運搶位 MRT Seat Grab](mrt/README.md) | `#mrt` | 技巧闖關 | 顯示 | 56 行 | 看小動作猜誰要下車，搶到座位倍率升一階。 |
 | [泡麵煎餅翻面 Noodle Pancake](pancake/README.md) | `#pancake` | 技巧闖關 | 顯示 | 43 行 | 半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。 |
+| [蓋樓大師 Sky Builder](skybuilder/README.md) | `#skybuilder` | 技巧闖關 | 顯示 | 156 行 | 抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。 |

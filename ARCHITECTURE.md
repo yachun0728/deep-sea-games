@@ -174,3 +174,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 ### 手機畫面內開始按鈕
 
 `js/mobile-stage-actions.js` 在880px以下將原有 `.side button.go` 移到遊戲畫面內，保留原 DOM 節點、id、click listener、disabled／hidden 與扣點／追蹤流程，不建立代理扣款按鈕。以註解節點記住原位置；進行中操作（surface／cancel或disabled）回原位置，待機／關後／死亡可操作按鈕顯示於畫面內。MutationObserver只觀察原按鈕狀態，沒有輪詢、沒有觸發click；回桌面即復位。遊戲中浮層收起，僅按鈕本身接收事件，不蓋住畫布觸控。原本畫面內已有開始按鈕的iframe遊戲維持不變。
+
+## 蓋樓大師（skybuilder）
+
+`games/skybuilder/` 是 TowerBuilding.html 的繁中整合，沿用共享 IIFE、錢包與追蹤。`sbBusy` 防止遊玩中重設；每局固定10點，10／20／30層各即時送固定5點BONUS，結束不重複入帳。最佳樓層使用新增的 `deep-sea-skybuilder-best`，不修改既有資料鍵；缺少時以0起算，回復程式時可保留此鍵。

@@ -190,5 +190,12 @@
     "view": "games/pancake/view.html",
     "card": "games/pancake/card.html",
     "icon": "games/pancake/icon.svg"
+  },
+  {
+    "id": "skybuilder",
+    "logic": "games/skybuilder/game.js",
+    "view": "games/skybuilder/view.html",
+    "card": "games/skybuilder/card.html",
+    "icon": "games/skybuilder/icon.svg"
   }
 ]
