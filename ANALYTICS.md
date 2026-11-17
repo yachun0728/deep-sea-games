@@ -88,7 +88,7 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 ## 死神打工（reaper）
 
-每局先扣入場點數，十班制；普通靈魂要接走，綠色通行證要放行。每班全部處理完才送出 `game_progress`，班次以 `stage` 記錄，累計接走數以 `score` 記錄。過關選擇時間不列入有效遊玩時間；收手與三顆心用完分別送出 `cashout` 與 `loss` 的 `game_end`。第一班領回 0.70 倍，第十班自動領回 22 倍。
+無盡值班（2026-11-17 起），每局先扣入場10點，沒有班別上限與領回。每到一個里程碑（處理 120、150、200、260 位，之後每 50 位）送一次 `game_progress`，`step` 為處理數、`score` 為累計接走數、`bonus_points` 為該次入帳點數；生命歸零送 `game_end`（本局入帳總點數 > 0 為 `complete`，否則 `loss`）。
 
 ## 一口氣探險（dive）與捷運搶位（mrt）
 
@@ -96,6 +96,10 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 - dive：每次下潛後送 `game_progress`，`stage` 為海域（1 淺海～4 深淵）、`step` 為層數。`game_end` 的 `score` 為最終層數、`multiplier` 為結算倍率；上浮為 `cashout`，到海底或救生繩為 `complete`，溺水或領回 0 為 `loss`。
 - mrt：每站開始送 `game_progress`，`stage` 為第幾站、`step` 為目前階數。暫停時送 `checkpoint=1` 的 progress 並停止計時，按繼續送 `game_resume`。`game_end` 的 `score` 為階數；下車結算為 `cashout`，搶滿 8 階或末班車為 `complete`，體力歸零或領回 0 為 `loss`。
+
+## 無盡里程碑遊戲（runner / sneak / elevator / fishing / campaign）
+
+2026-11-17 起閃避跑酷、偷偷下班、插隊大師、深海釣手、宣傳車與死神打工一樣改為無盡玩法，每局只送一次 `game_start`（entry_points=10），沒有領回，`cashout` 不再出現。里程碑當場入帳時送 `game_progress`，帶 `bonus_points`；`game_end` 的點數為本局入帳總和，大於 0 為 `complete`，否則 `loss`。`step`／`stage` 以各遊戲自己的進度為準：跑酷為距離（`distance`）、偷偷下班為關數、插隊大師為累計人數、深海釣手為條數（`landed_fish`）、宣傳車為已過建築（`step`）與得票（`votes`）。舊的 `multiplier` 參數不再送出。
 
 ## 程式來源定位
 

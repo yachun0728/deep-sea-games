@@ -1,52 +1,49 @@
-  /* ---------- Elevator Queue: stealth risk and shared wallet ---------- */
-  var EQ={active:false,phase:'ready',stage:1,passed:0,stake:0,people:[],moving:0,last:0,show:0,best:0};
-  var EQ_COUNTS=[10,12,14,16,18],EQ_END=[4.6,6.3,8.2,10.4,13];
-  var EQ_MULT=[0,.4,.6,.85,1.05,1.3,1.65,2.1,2.7,3.5,4.6];
+  /* ---------- Elevator Queue: endless queues; milestone bonuses are credited to the shared wallet when reached ---------- */
+  var EQ={active:false,phase:'ready',stage:1,passed:0,total:0,earned:0,pops:[],stake:0,people:[],moving:0,last:0,show:0,best:0};
+// Every cleared queue leads straight to a longer, faster one. Milestones count total people passed
+// and were calibrated with a state-machine simulation (see GAME_RULES.md).
+var EQ_MILESTONES=[[40,3],[55,7],[70,15],[90,30]],EQ_ENDLESS_FROM=90,EQ_ENDLESS_STEP=20,EQ_ENDLESS_BONUS=40;
+function eqBonusAt(n){for(var i=0;i<EQ_MILESTONES.length;i++)if(EQ_MILESTONES[i][0]===n)return EQ_MILESTONES[i][1];return n>EQ_ENDLESS_FROM&&(n-EQ_ENDLESS_FROM)%EQ_ENDLESS_STEP===0?EQ_ENDLESS_BONUS:0;}
+function eqNext(n){for(var i=0;i<EQ_MILESTONES.length;i++)if(EQ_MILESTONES[i][0]>n)return EQ_MILESTONES[i];return [EQ_ENDLESS_FROM+(Math.floor((n-EQ_ENDLESS_FROM)/EQ_ENDLESS_STEP)+1)*EQ_ENDLESS_STEP,EQ_ENDLESS_BONUS];}
   var eqCanvas=$('eq-canvas'),eqCtx=eqCanvas.getContext('2d');
-  try{var qb=Number(localStorage.getItem('deep-sea-queue-best'));if(Number.isFinite(qb))EQ.best=Math.min(70,Math.max(0,qb));}catch(e){}
+  try{var qb=Number(localStorage.getItem('deep-sea-queue-best'));if(Number.isFinite(qb))EQ.best=Math.max(0,Math.floor(qb));}catch(e){}
   function eqRand(a,b){return a+Math.random()*(b-a);}
-  function eqRest(i){return eqRand(3.5,7.5)-i*.12;}
-  function eqCount(){return EQ_COUNTS[EQ.stage-1];}
-  function eqTotal(){return EQ_COUNTS.slice(0,EQ.stage-1).reduce(function(a,n){return a+n;},0)+EQ.passed;}
-  function eqMultAt(n){if(EQ.stage===1)return EQ_MULT[n];var start=EQ_END[EQ.stage-2],end=EQ_END[EQ.stage-1];return Math.round((start+(end-start)*n/eqCount())*100)/100;}
-  function eqPay(){return Math.floor(EQ.stake*eqMultAt(EQ.passed));}
+  function eqFactor(){return Math.max(.3,1-.1*(EQ.stage-1));}
+  function eqRest(i){return Math.max(.8,(eqRand(3.5,7.5)-i*.12)*eqFactor());}
+  function eqLookChance(){return Math.min(.95,.7+.02*(EQ.stage-1));}
+  function eqCount(){return Math.min(30,10+2*(EQ.stage-1));}
+  function eqTotal(){return EQ.total;}
   function eqRound(){AN.resume(EQ.analytics,{stage:EQ.stage,step:0});EQ.passed=0;EQ.phase='waiting';EQ.moving=0;EQ.last=performance.now();EQ.people=Array.from({length:eqCount()},function(_,i){return {index:i,state:'safe',time:eqRand(1.2,6.5)};});}
   function eqSay(text,kind){$('eq-msg').textContent=text;$('eq-msg').className='msg'+(kind?' '+kind:'');}
   function eqRemember(){if(eqTotal()>EQ.best){EQ.best=eqTotal();try{localStorage.setItem('deep-sea-queue-best',String(EQ.best));}catch(e){}}}
   function eqUI(){
-    var pay=EQ.active?eqPay():EQ.phase==='cashed'?eqPay():0,net=pay-EQ.stake;
+    var nx=eqNext(EQ.total);
     $('eq-progress').textContent=EQ.passed+' / '+eqCount();$('eq-remaining').textContent=(eqCount()-EQ.passed)+' 人';
-    $('eq-best').textContent=EQ.best+' 人';$('eq-stage').textContent=EQ.stage+' / 5';$('eq-total').textContent=eqTotal()+' 人';$('eq-amount').disabled=EQ.active;
-    $('eq-go').textContent=EQ.active?(EQ.phase==='moving'?'正在插隊…':EQ.phase==='cleared'?'挑戰下一關':'往前插一位'):'扣點開始排隊';$('eq-go').disabled=EQ.phase==='moving';
-    $('eq-go').dataset.mode=EQ.active?'surface':'bet';$('eq-cash').disabled=!(EQ.active&&eqTotal()>0&&(EQ.phase==='waiting'||EQ.phase==='cleared'));
-    $('eq-cash').textContent=EQ.active&&eqTotal()>0?'收手領回':'成功插隊後可收手';
+    $('eq-best').textContent=EQ.best+' 人';$('eq-stage').textContent='第 '+EQ.stage+' 隊';$('eq-total').textContent=eqTotal()+' 人';$('eq-next').textContent=nx[0]+' 人 · +'+nx[1];$('eq-amount').disabled=EQ.active;
+    $('eq-go').textContent=EQ.active?(EQ.phase==='moving'?'正在插隊…':'往前插一位'):'扣點開始排隊';$('eq-go').disabled=EQ.phase==='moving';
+    $('eq-go').dataset.mode=EQ.active?'surface':'bet';
     var ahead=EQ.people.slice(EQ.passed),look=ahead.filter(p=>p.state==='look').length,warn=ahead.filter(p=>p.state==='warn').length;
     var watchText=!EQ.active?(EQ.phase==='ready'?'尚未開始':'本局已結束'):look?'回頭注視 '+look+' 人':warn?'警示 '+warn+' 人 · 可能隨時轉頭':'前方乘客都背對你';
     if($('eq-watch').textContent!==watchText)$('eq-watch').textContent=watchText;
     $('eq-watch').dataset.state=look?'look':warn?'warn':'safe';
     document.querySelectorAll('[data-eq-step]').forEach(function(b){b.setAttribute('aria-current',Number(b.dataset.eqStep)===EQ.passed?'step':'false');});
   }
-  function eqLose(){if(!EQ.active)return;AN.end(EQ.analytics,0,'loss',{stage:EQ.stage,step:EQ.passed});EQ.active=false;EQ.phase='caught';EQ.moving=0;eqRemember();eqSay('被發現插隊！本局失去 '+fmt(EQ.stake)+' 點，未領回的獎勵歸零。','lose');eqUI();}
-  function eqCash(){
-    eqSync(performance.now());
-    if(!EQ.active||['waiting','cleared'].indexOf(EQ.phase)<0||eqTotal()<1)return;
-    var pay=eqPay(),net=pay-EQ.stake;AN.end(EQ.analytics,pay,'cashout',{stage:EQ.stage,step:EQ.passed,multiplier:eqMultAt(EQ.passed)});EQ.active=false;EQ.phase='cashed';S.balance+=pay;save();renderAll();eqRemember();
-    eqSay((EQ.stage===5&&EQ.passed===eqCount()?'五關全部完成！':'已收手。')+'領回 '+fmt(pay)+' 點。','win');eqUI();
-  }
+  function eqLose(){if(!EQ.active)return;AN.end(EQ.analytics,EQ.earned,EQ.earned>0?'complete':'loss',{stage:EQ.stage,step:EQ.passed});EQ.active=false;EQ.phase='caught';EQ.moving=0;eqRemember();eqSay('被發現插隊！本局共插過 '+EQ.total+' 人，'+(EQ.earned>0?'入帳 '+fmt(EQ.earned)+' 點。':'這一局沒有獎勵。'),EQ.earned>0?'win':'lose');eqUI();}
+  function eqAward(n,b){EQ.earned+=b;S.balance+=b;save();renderAll();AN.progress(EQ.analytics,{stage:EQ.stage,step:n,bonus_points:b});EQ.pops.push({n:n,b:b,age:0});if(EQ.pops.length>3)EQ.pops.shift();eqSay('累計插過 '+n+' 人！獎勵 +'+b+' 點已入帳，本局累計 +'+EQ.earned+' 點。','win');}
   // Process every gaze change and movement end in time order, even on a slow frame.
   function eqStep(dt){
-    while(dt>1e-8&&EQ.active&&EQ.phase!=='cleared'){
+    while(dt>1e-8&&EQ.active){
       var ahead=EQ.people.slice(EQ.passed),slice=dt;
       ahead.forEach(function(p){slice=Math.min(slice,Math.max(0,p.time));});
       if(EQ.phase==='moving')slice=Math.min(slice,EQ.moving);
       ahead.forEach(function(p){p.time-=slice;});if(EQ.phase==='moving')EQ.moving-=slice;dt-=slice;
       ahead.forEach(function(p){if(p.time>1e-8)return;
         if(p.state==='safe'){p.state='warn';p.time=eqRand(.18,1.3);}
-        else if(p.state==='warn'){if(Math.random()<.7){p.state='look';p.time=eqRand(.4,.8);}else{p.state='safe';p.time=eqRest(p.index);}}
+        else if(p.state==='warn'){if(Math.random()<eqLookChance()){p.state='look';p.time=eqRand(.4,.8);}else{p.state='safe';p.time=eqRest(p.index);}}
         else{p.state='safe';p.time=eqRest(p.index);}
       });
       if(EQ.phase==='moving'&&ahead.some(function(p){return p.state==='look';})){eqLose();return;}
-      if(EQ.phase==='moving'&&EQ.moving<=1e-8){EQ.passed++;AN.progress(EQ.analytics,{stage:EQ.stage,step:EQ.passed,multiplier:eqMultAt(EQ.passed)},EQ.passed===eqCount());EQ.phase='waiting';EQ.moving=0;eqRemember();eqSay('已插過 '+EQ.passed+' 人。可以收手，也可以觀察後再插一位。','win');if(EQ.passed===eqCount()){EQ.phase='cleared';if(EQ.stage===5)eqCash();else{eqSay('第 '+EQ.stage+' 關完成！可以領回，或挑戰 '+EQ_COUNTS[EQ.stage]+' 人的下一關。','win');eqUI();}return;}}
+      if(EQ.phase==='moving'&&EQ.moving<=1e-8){EQ.passed++;EQ.total++;AN.progress(EQ.analytics,{stage:EQ.stage,step:EQ.passed},EQ.passed===eqCount());EQ.phase='waiting';EQ.moving=0;eqRemember();var bn=eqBonusAt(EQ.total);if(bn)eqAward(EQ.total,bn);else eqSay('已插過 '+EQ.total+' 人。觀察乘客，再插下一位。','win');if(EQ.passed===eqCount()){EQ.stage++;eqRound();eqSay('到隊首了！第 '+EQ.stage+' 隊：前方 '+eqCount()+' 人，乘客轉頭更頻繁。','win');eqUI();return;}}
     }
   }
   function eqSync(now){var dt=Math.max(0,(now-EQ.last)/1000);EQ.last=now;if(EQ.active&&!$('view-elevator').hidden&&!document.hidden)eqStep(dt);}
@@ -56,13 +53,12 @@
     if(!EQ.active){
       var stake=ENTRY_FEE;
       if(stake>S.balance){eqSay(LOW_MSG,'lose');return;}
-      EQ.analytics=AN.start('elevator',stake);EQ.stake=stake;EQ.stage=1;EQ.active=true;eqRound();
-      S.balance-=stake;save();renderAll();eqSay('先觀察乘客，再點一下往前插一位。警示不會直接抓人，但可能隨時轉頭。');eqUI();return;
+      EQ.analytics=AN.start('elevator',stake);EQ.stake=stake;EQ.stage=1;EQ.total=0;EQ.earned=0;EQ.pops=[];EQ.active=true;eqRound();
+      S.balance-=stake;save();renderAll();eqSay('先觀察乘客，再點一下往前插一位。沒有終點，隊伍越來越長、乘客越來越常轉頭，被發現才結束。');eqUI();return;
     }
-    if(EQ.phase==='cleared'){EQ.stage++;eqRound();eqSay('第 '+EQ.stage+' 關：前方 '+eqCount()+' 人，累積的進度保留；繼續挑戰不再扣點。');eqUI();return;}
     if(EQ.phase!=='waiting')return;
     if(EQ.people.slice(EQ.passed).some(function(p){return p.state==='look';})){eqLose();return;}
-    EQ.phase='moving';EQ.duration=.28+EQ.passed*.012;EQ.moving=EQ.duration;eqSay('正在移動，這段時間被乘客回頭看見也會失敗。');eqUI();
+    EQ.phase='moving';EQ.duration=.4+EQ.passed*.012;EQ.moving=EQ.duration;eqSay('正在移動，這段時間被乘客回頭看見也會失敗。');eqUI();
   }
   // Side-view characters and hopping motion adapted from the original Queue Cutter.
   function eqPerson(x,y,color,state,isPlayer,alpha){
@@ -110,22 +106,23 @@
     eqPerson(playerX,playerY-hop,'#f2c14e',EQ.phase==='caught'?'look':'safe',true,1);
     g.fillStyle='#f5df9f';g.font='600 13px system-ui';g.textAlign='center';g.fillText('你',playerX,playerY+30);
     g.textAlign='left';g.fillStyle='#e9edf6';g.font='600 23px system-ui';g.fillText('Queue Cutter',24,38);
-    g.textAlign='right';g.font='600 17px system-ui';g.fillStyle='#a5b4cb';g.fillText('第 '+EQ.stage+' 關 · '+EQ.passed+' / '+count,W-24,38);
+    g.textAlign='right';g.font='600 17px system-ui';g.fillStyle='#a5b4cb';g.fillText('第 '+EQ.stage+' 隊 · '+EQ.passed+' / '+count+' · 本局 +'+EQ.earned+' 點',W-24,38);
     g.fillStyle='#1d2036';g.fillRect(24,55,W-48,7);g.fillStyle='#f2c14e';g.fillRect(24,55,(W-48)*EQ.passed/count,7);
     var ahead=people.slice(EQ.passed),look=ahead.some(function(p){return p.state==='look';}),warn=ahead.some(function(p){return p.state==='warn';});
     g.textAlign='center';g.font='19px system-ui';g.fillStyle='#e4e8f1';g.fillText('前面還有 '+(eqCount()-EQ.passed)+' 位乘客',W/2,105);
     g.font='600 17px system-ui';g.fillStyle=look?'#ff8a80':warn?'#ffcf66':'#a2e4c2';
-    g.fillText(!EQ.active?'觀察表情，偷偷向前一步':EQ.phase==='cleared'?'本關完成！收手或繼續下一關':look?'有人回頭了，先別動！':warn?'出現「？」了，小心隨時回頭':'大家都背對你，找機會往前插',W/2,141);
+    g.fillText(!EQ.active?'觀察表情，偷偷向前一步':look?'有人回頭了，先別動！':warn?'出現「？」了，小心隨時回頭':'大家都背對你，找機會往前插',W/2,141);
     g.fillStyle='#a5b4cb';g.font='13px system-ui';g.fillText('點一下插過一人 · 白色箭頭是你',W/2,517);
-    if(EQ.phase==='cashed'||EQ.phase==='caught'||EQ.phase==='cleared'){
-      g.fillStyle='rgba(24,28,48,.93)';g.fillRect(50,180,420,100);g.fillStyle=EQ.phase==='caught'?'#ff8a80':'#a2e4c2';g.font='600 25px system-ui';g.fillText(EQ.phase==='caught'?'「喂，排隊去！」':EQ.phase==='cleared'?'到隊首了！要繼續嗎？':EQ.stage===5&&EQ.passed===count?'五關全部完成！':'見好就收！',W/2,219);
-      g.font='16px system-ui';g.fillStyle='#e9edf6';g.fillText(EQ.phase==='caught'?'被發現了，本局失去 '+fmt(EQ.stake)+' 點':(EQ.phase==='cleared'?'可領回或繼續 · ':'已領回 '+fmt(eqPay())+' 點 · ')+'累計插過 '+eqTotal()+' 人',W/2,254);
+    EQ.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=200-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#f2c14e';g.font='700 38px system-ui';g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#e9edf6';g.font='600 17px system-ui';g.fillText('累計插過 '+p.n+' 人里程碑',W/2,py+28);g.globalAlpha=1;});
+    if(EQ.phase==='caught'){
+      g.fillStyle='rgba(24,28,48,.93)';g.fillRect(50,180,420,100);g.fillStyle='#ff8a80';g.font='600 25px system-ui';g.fillText('「喂，排隊去！」',W/2,219);
+      g.font='16px system-ui';g.fillStyle='#e9edf6';g.fillText('被發現了 · 累計插過 '+eqTotal()+' 人'+(EQ.earned>0?' · 入帳 +'+fmt(EQ.earned)+' 點':''),W/2,254);
     }
   }
-  $('eq-go').addEventListener('click',eqAction);$('eq-cash').addEventListener('click',eqCash);
+  $('eq-go').addEventListener('click',eqAction);
   eqCanvas.addEventListener('pointerdown',function(e){if(!EQ.active)return;e.preventDefault();eqAction();});
   document.addEventListener('keydown',function(e){if($('view-elevator').hidden||document.hidden||e.code!=='Space'||e.repeat||e.ctrlKey||e.altKey||e.metaKey)return;if(['INPUT','BUTTON','A','SUMMARY'].indexOf(e.target.tagName)>=0)return;e.preventDefault();if(EQ.active)eqAction();});
   document.addEventListener('visibilitychange',function(){EQ.last=performance.now();});
-  function eqLoop(now){eqSync(now);if(!$('view-elevator').hidden&&!document.hidden){eqUI();eqDraw();}requestAnimationFrame(eqLoop);}
+  function eqLoop(now){eqSync(now);EQ.pops.forEach(function(p){p.age+=.016;});EQ.pops=EQ.pops.filter(function(p){return p.age<2.2;});if(!$('view-elevator').hidden&&!document.hidden){eqUI();eqDraw();}requestAnimationFrame(eqLoop);}
   eqUI();eqDraw();requestAnimationFrame(eqLoop);
 

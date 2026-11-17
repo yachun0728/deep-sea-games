@@ -5,46 +5,46 @@
 ## 概覽
 
 - 網址：`#sneak`　分類：技巧闖關　狀態：顯示中
-- 大廳卡片：「按住偷溜，老闆回頭前趕快裝忙。」｜每局 10 點 · 10 關挑戰
+- 大廳卡片：「按住偷溜，老闆回頭前趕快裝忙。」｜每局 10 點 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：偷偷下班，`game_id` 為 `sneak`
-- 檔案：`games/sneak/card.html`、`games/sneak/game.js`、`games/sneak/icon.svg`、`games/sneak/view.html`；`game.js` 共 111 行、9.6 KB
+- 檔案：`games/sneak/card.html`、`games/sneak/game.js`、`games/sneak/icon.svg`、`games/sneak/view.html`；`game.js` 共 116 行、10.4 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「15. Sneak（sneak）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-sneak`、`sk-canvas`、`sk-stage`、`sk-progress`、`sk-best`、`sk-signal`、`sk-difficulty`、`sk-amount`、`sk-go`、`sk-hold`、`sk-cash`、`sk-msg`
+`view-sneak`、`sk-canvas`、`sk-stage`、`sk-progress`、`sk-best`、`sk-next`、`sk-signal`、`sk-difficulty`、`sk-amount`、`sk-go`、`sk-hold`、`sk-msg`
 
 ## 狀態與常數
 
 - 狀態物件／進行中旗標：`sneakBusy`（L2）
-- L4 常數：`MAX_LEVEL`、`MULT`
+- L6 常數：`MILESTONES`、`ENDLESS_FROM`、`ENDLESS_STEP`、`ENDLESS_BONUS`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`T` L6、`rnd` L11、`pay` L12、`saySneak` L13、`remember` L14、`release` L15、`ui` L16、`awayT` L25、`nextPhase` L26、`die` L35、`cash` L36、`win` L37、`update` L39、`sync` L52、`round` L53、`start` L54、`draw` L61、`press` L99、`lift` L100、`loop` L107
+`bonusAt` L7、`nextMilestone` L8、`lvCap` L9、`T` L11、`rnd` L16、`saySneak` L17、`remember` L18、`release` L19、`ui` L20、`lookGrace` L29、`awayT` L30、`nextPhase` L31、`die` L40、`award` L41、`win` L42、`update` L44、`sync` L57、`round` L58、`start` L59、`draw` L65、`press` L104、`lift` L105、`loop` L112
 
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L59 `start`：`S.balance-=amount;`
+- L63 `start`：`S.balance-=amount;`
 
 **入帳（領回／獎勵）**
-- L36 `cash`：`S.balance+=amount;`
+- L41 `award`：`S.balance+=b;`
 
 **餘額檢查**
-- L58 `start`：`if(amount>S.balance){saySneak(LOW_MSG,'lose');`
+- L62 `start`：`if(amount>S.balance){saySneak(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L35 `die`：`AN.end(sneakAnalytics,0,'loss',{stage:lv,progress_percent:Math.floor(pr)});`
-- L36 `cash`：`AN.end(sneakAnalytics,amount,'cashout',{stage:lv,multiplier:MULT[score]});`
-- L37 `win`：`AN.progress(sneakAnalytics,{stage:lv,multiplier:MULT[score]},true);`
-- L53 `round`：`AN.resume(sneakAnalytics,{stage:lv});`
-- L59 `start`：`sneakAnalytics=AN.start('sneak',amount);`
+- L40 `die`：`AN.end(sneakAnalytics,earned,earned>0?'complete':'loss',{stage:lv,progress_percent:Math.floor(pr)});`
+- L41 `award`：`AN.progress(sneakAnalytics,{stage:n,bonus_points:b});`
+- L42 `win`：`AN.progress(sneakAnalytics,{stage:done},true);`
+- L58 `round`：`AN.resume(sneakAnalytics,{stage:lv});`
+- L63 `start`：`sneakAnalytics=AN.start('sneak',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -54,15 +54,15 @@
 
 ## 平台共用相依
 
-- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - 共用檔沒有直接呼叫本遊戲的函式。
 - 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`sneakBusy`
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-定位：`sneakBusy` 所在 IIFE。按住畫面／按鈕或Space、右鍵方向／D往出口走，放開裝忙。10關，第s關需累積6+2×(s-1)秒移動時間。主管有背對、警示與轉頭；第3關起有30%假警示，第4關開始可能直接轉頭（第4關20%，第5關40%，之後每關+5%至第10關65%）。一般轉頭容許約.1秒反應，直接轉頭約.18秒；轉頭期間繼續移動被抓整局0。後關背對與警示時間縮短。每關到出口可領回／續關，第10關自動領回；離開或背景時釋放移動。
+定位：`sneakBusy` 所在 IIFE。無盡下班（2026-11-17 改為直到被抓）：按住畫面／按鈕或Space、右鍵方向／D往出口走，放開裝忙。第n關需累積 `6+2×(min(n,10)-1)` 秒移動時間（第10關起固定24秒），走到出口立刻進下一關，沒有領回。主管有背對、警示與轉頭；第3關起有30%假警示，第4關起可能直接轉頭（第4關15%，之後每關+3%，最高50%）。反應時間：直接轉頭約 `max(.22, .34-.01(n-4))` 秒，警示後轉頭約 `max(.12, .16-.003n)` 秒（此版比舊版寬鬆，因舊版直接轉頭僅.18秒幾乎無法反應）；轉頭期間繼續移動被抓。後關背對與警示時間縮短。離開或背景時釋放移動。
 
-第1～10關倍率 `[.6,1.1,1.8,2.8,4.5,6.5,9,12,16,21]`。
+里程碑以通過關數計，點數當場入帳、不扣回：9關 +3、11關 +7（累計10點，回本）、13關 +15、16關 +30，之後每多3關 +40。以反應時間模擬校準：平均玩家約通過5關，技巧好者約11～12關，達13關約三成以下。大廳卡片只標示「✦ BONUS」。
 
 ## 修改檢查清單
 

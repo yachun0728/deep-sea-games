@@ -1,46 +1,51 @@
-  /* ---------- Sneak Out: original office scene, shared-wallet stages ---------- */
+  /* ---------- Sneak Out: original office scene, endless levels with milestone bonuses credited when reached ---------- */
   var sneakBusy=false,sneakStake=0;
   (function(){
-const c=$('sk-canvas'),g=c.getContext('2d'),W=400,H=600,MAX_LEVEL=10,MULT=[0,.6,1.1,1.8,2.8,4.5,6.5,9,12,16,21];
-let best=0;try{const n=Number(localStorage.getItem('sneak'));if(Number.isFinite(n))best=Math.min(MAX_LEVEL,Math.max(0,n))}catch(e){}
-const texts={lv:n=>'第 '+n+' / 10 關',bs:n=>'最佳 '+n+' 關',title:'偷偷下班',tap:'到操作區扣點開始',caught:'被抓住了！',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'新紀錄！',again:'到操作區重新開始',ok:'溜走了！'};const T=k=>texts[k];
+const c=$('sk-canvas'),g=c.getContext('2d'),W=400,H=600;
+// Milestones count completed levels; calibrated with a reaction-time simulation (see GAME_RULES.md).
+const MILESTONES=[[9,3],[11,7],[13,15],[16,30]],ENDLESS_FROM=16,ENDLESS_STEP=3,ENDLESS_BONUS=40;
+function bonusAt(n){for(const m of MILESTONES)if(m[0]===n)return m[1];return n>ENDLESS_FROM&&(n-ENDLESS_FROM)%ENDLESS_STEP===0?ENDLESS_BONUS:0}
+function nextMilestone(n){for(const m of MILESTONES)if(m[0]>n)return m;return [ENDLESS_FROM+(Math.floor((n-ENDLESS_FROM)/ENDLESS_STEP)+1)*ENDLESS_STEP,ENDLESS_BONUS]}
+const lvCap=()=>Math.min(lv,10);
+let best=0;try{const n=Number(localStorage.getItem('sneak'));if(Number.isFinite(n))best=Math.max(0,Math.floor(n))}catch(e){}
+const texts={lv:n=>'第 '+n+' 關',bs:n=>'最佳 '+n+' 關',title:'偷偷下班',tap:'到操作區扣點開始',caught:'被抓住了！',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'新紀錄！',again:'到操作區重新開始',ok:'溜走了！'};const T=k=>texts[k];
 const quotes=['「你這是要去哪裡？」','「報告寫完了嗎就想走？」','「坐下，還有工作呢。」'];
 let sneakAnalytics=null;
-let st='ready',pr=0,lv=1,score=0,ph='away',pt=2,fk=false,grace=0,flash=0,shake=0,hold=false,walk=0,last=0,rec=false,qi=0;
+let prevBest=0,earned=0,pops=[],st='ready',pr=0,lv=1,score=0,ph='away',pt=2,fk=false,grace=0,flash=0,shake=0,hold=false,walk=0,last=0,rec=false,qi=0;
 let mouseHold=false,keyHold=false;
 const rnd=(a,b)=>a+Math.random()*(b-a);
-function pay(){return Math.floor(sneakStake*MULT[score])}
 function saySneak(text,kind=''){$('sk-msg').textContent=text;$('sk-msg').className='msg'+(kind?' '+kind:'')}
 function remember(){if(score>best){best=score;try{localStorage.setItem('sneak',best)}catch(e){}}}
 function release(){mouseHold=false;keyHold=false;hold=false}
 function ui(){
- $('sk-stage').textContent=lv+' / '+MAX_LEVEL;$('sk-progress').textContent=Math.floor(pr)+'%';$('sk-best').textContent=best+' 關';
+ const nx=nextMilestone(score);
+ $('sk-stage').textContent=lv+' 關';$('sk-progress').textContent=Math.floor(pr)+'%';$('sk-best').textContent=best+' 關';$('sk-next').textContent='完成 '+nx[0]+' 關 · +'+nx[1];
  $('sk-amount').disabled=sneakBusy;
- $('sk-go').disabled=st==='run';$('sk-go').textContent=st==='passed'?'挑戰下一關':st==='run'?'潛行中 · 按住前進':'扣點開始下班';
- $('sk-cash').disabled=st!=='passed';$('sk-cash').textContent=st==='passed'?'收手領回':'過關後可領回';$('sk-hold').disabled=st!=='run';
- var signal=st!=='run'?(st==='passed'?'過關成功，可領回或繼續':st==='dead'?'本局被抓住了':st==='cashed'?'本局已結算':'等待開始'):ph==='look'?'老闆回頭了！立刻放開':ph==='warn'?'老闆有動靜，小心回頭':'老闆忙著工作';
+ $('sk-go').disabled=st==='run';$('sk-go').textContent=st==='run'?'潛行中 · 按住前進':'扣點開始下班';$('sk-hold').disabled=st!=='run';
+ var signal=st!=='run'?(st==='dead'?'本局被抓住了':'等待開始'):ph==='look'?'老闆回頭了！立刻放開':ph==='warn'?'老闆有動靜，小心回頭':'老闆忙著工作';
  if($('sk-signal').textContent!==signal)$('sk-signal').textContent=signal;$('sk-signal').dataset.state=ph;
- $('sk-difficulty').textContent='需移動約 '+(6+(lv-1)*2)+' 秒 · '+(lv>=4?'可能直接回頭':'回頭前會先警示');
+ $('sk-difficulty').textContent='需移動約 '+(6+(lvCap()-1)*2)+' 秒 · '+(lv>=4?'可能直接回頭':'回頭前會先警示');
 }
+function lookGrace(direct){return direct?Math.max(.22,.34-.01*(lv-4)):Math.max(.12,.16-.003*lv)}
 function awayT(){return rnd(Math.max(.65,2.4-lv*.24),Math.max(1.2,3.8-lv*.32))}
 function nextPhase(){
  if(ph==='away'){
-  const direct=lv>=4&&Math.random()<(lv===4?.2:Math.min(.65,.4+(lv-5)*.05));
-  if(direct){ph='look';pt=rnd(.9,1.5);grace=.18;}
+  const direct=lv>=4&&Math.random()<(lv===4?.15:Math.min(.5,.3+(lv-5)*.03));
+  if(direct){ph='look';pt=rnd(.9,1.5);grace=lookGrace(true);}
   else{ph='warn';fk=lv>=3&&Math.random()<.3;pt=Math.max(.25,.75-lv*.09);grace=0;}
  }else if(ph==='warn'){
-  if(fk){ph='away';pt=awayT();grace=0;}else{ph='look';pt=rnd(.8,1.3+lv*.06);grace=.1;}
+  if(fk){ph='away';pt=awayT();grace=0;}else{ph='look';pt=rnd(.8,1.3+lv*.06);grace=lookGrace(false);}
  }else{ph='away';pt=awayT();grace=0;}
 }
-function die(){if(st!=='run')return;AN.end(sneakAnalytics,0,'loss',{stage:lv,progress_percent:Math.floor(pr)});st='dead';sneakBusy=false;release();shake=reduceMotion?0:.4;qi=Math.floor(Math.random()*quotes.length);saySneak('被老闆發現！失去本局 '+sneakStake+' 點與未領回獎勵。','lose');ui()}
-function cash(){if(st!=='passed')return;const amount=pay(),net=amount-sneakStake;AN.end(sneakAnalytics,amount,'cashout',{stage:lv,multiplier:MULT[score]});st='cashed';sneakBusy=false;release();S.balance+=amount;save();renderAll();saySneak((score===MAX_LEVEL?'十關全部溜走！':'已收手。')+'領回 '+amount+' 點。','win');ui()}
-function win(){score++;AN.progress(sneakAnalytics,{stage:lv,multiplier:MULT[score]},true);st='passed';release();remember();saySneak('第 '+lv+' 關下班成功！可以領回，或繼續冒險。','win');if(score===MAX_LEVEL)cash();else ui()}
+function die(){if(st!=='run')return;AN.end(sneakAnalytics,earned,earned>0?'complete':'loss',{stage:lv,progress_percent:Math.floor(pr)});st='dead';sneakBusy=false;release();rec=score>0&&score>=best&&score>prevBest;shake=reduceMotion?0:.4;qi=Math.floor(Math.random()*quotes.length);saySneak('被老闆發現！共通過 '+score+' 關，'+(earned>0?'本局入帳 '+fmt(earned)+' 點。':'這一局沒有獎勵。'),earned>0?'win':'lose');ui()}
+function award(n,b){earned+=b;S.balance+=b;save();renderAll();AN.progress(sneakAnalytics,{stage:n,bonus_points:b});pops.push({n:n,b:b,age:0});if(pops.length>3)pops.shift();saySneak('完成 '+n+' 關！獎勵 +'+b+' 點已入帳，本局累計 +'+earned+' 點。','win')}
+function win(){const done=lv;score++;remember();AN.progress(sneakAnalytics,{stage:done},true);const b=bonusAt(score);if(b)award(score,b);else saySneak('第 '+done+' 關溜走了！下一關馬上開始。','win');flash=.8;lv++;round(true)}
 // Split at phase boundaries, grace expiration and the exit; slow frames cannot skip detection.
 function update(dt){
  if(st!=='run')return;
  while(dt>1e-8&&st==='run'){
   if(hold&&ph==='look'&&grace<=1e-8){die();return;}
-  const speed=100/(6+(lv-1)*2);
+  const speed=100/(6+(lvCap()-1)*2);
   let step=Math.min(dt,pt);if(grace>1e-8)step=Math.min(step,grace);if(hold)step=Math.min(step,(100-pr)/speed);
   if(hold){pr=Math.min(100,pr+speed*step);walk+=step*12;}
   pt-=step;grace=Math.max(0,grace-step);dt-=step;
@@ -50,13 +55,12 @@ function update(dt){
  }
 }
 function sync(now){const dt=Math.max(0,(now-last)/1000);last=now;if(!$('view-sneak').hidden&&!document.hidden)update(dt)}
-function round(){AN.resume(sneakAnalytics,{stage:lv});pr=0;ph='away';pt=awayT();fk=false;grace=0;flash=0;shake=0;walk=0;release();st='run';last=performance.now();saySneak('按住畫面或前進按鈕移動，放開就假裝工作。老闆回頭時不要動。');ui();c.focus()}
+function round(cont){AN.resume(sneakAnalytics,{stage:lv});pr=0;ph='away';pt=awayT();fk=false;grace=0;if(!cont){flash=0;saySneak('按住畫面或前進按鈕移動，放開就假裝工作。沒有終點，被老闆抓到才結束。');}shake=0;walk=0;release();st='run';last=performance.now();ui();c.focus()}
 function start(){
  if(st==='run')return;
- if(st==='passed'){lv++;round();return;}
  const amount=ENTRY_FEE;
  if(amount>S.balance){saySneak(LOW_MSG,'lose');return;}
- sneakAnalytics=AN.start('sneak',amount);sneakStake=amount;sneakBusy=true;S.balance-=amount;save();renderAll();score=0;lv=1;rec=false;round();
+ sneakAnalytics=AN.start('sneak',amount);sneakStake=amount;sneakBusy=true;S.balance-=amount;save();renderAll();score=0;lv=1;rec=false;earned=0;pops=[];prevBest=best;round();
 }
 function draw(){
 const ox=shake>0?(Math.random()-.5)*14:0;
@@ -84,18 +88,19 @@ g.fillStyle='#fff';g.font='600 20px system-ui,sans-serif';g.textAlign='left';g.f
 g.textAlign='right';g.fillText(T('bs')(best),W-16,32);
 g.fillStyle='rgba(255,255,255,.2)';g.fillRect(16,44,W-32,6);g.fillStyle='#f2c14e';g.fillRect(16,44,(W-32)*Math.min(1,pr/100),6);
 if(flash>0&&st==='run'){g.textAlign='center';g.fillStyle='#fff';g.font='600 28px system-ui,sans-serif';g.fillText(T('ok'),W/2,120)}
+pops.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/2.2);const py=210-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#f2c14e';g.font='700 38px system-ui,sans-serif';g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#fff';g.font='600 17px system-ui,sans-serif';g.fillText('完成 '+p.n+' 關里程碑',W/2,py+28);g.globalAlpha=1});
+if(earned>0&&st==='run'){g.textAlign='right';g.fillStyle='#f2c14e';g.font='600 16px system-ui,sans-serif';g.fillText('本局 +'+earned+' 點',W-16,68)}
 if(st!=='run'){
 g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,0,W,H);g.textAlign='center';g.fillStyle='#fff';
-if(st==='passed'||st==='cashed'){g.font='600 30px system-ui,sans-serif';g.fillText(st==='passed'?'成功溜走了！':'已領回 '+pay()+' 點',W/2,250);g.font='18px system-ui,sans-serif';g.fillText(st==='passed'?'領回點數，或繼續下一關':'到操作區開始新一局',W/2,292)}
-else if(st==='ready'){g.font='600 32px system-ui,sans-serif';g.fillText(T('title'),W/2,270);g.font='18px system-ui,sans-serif';g.fillText(T('tap'),W/2,310)}
+if(st==='ready'){g.font='600 32px system-ui,sans-serif';g.fillText(T('title'),W/2,270);g.font='18px system-ui,sans-serif';g.fillText(T('tap'),W/2,310)}
 else{g.font='600 34px system-ui,sans-serif';g.fillText(T('caught'),W/2,215);
 g.font='18px system-ui,sans-serif';g.fillText(quotes[qi],W/2,252);
 g.fillText(T('reach')(100-Math.floor(pr)),W/2,296);
-g.font='600 22px system-ui,sans-serif';g.fillText(T('done')(score),W/2,336);
+g.font='600 22px system-ui,sans-serif';g.fillText(T('done')(score)+(earned>0?' · 入帳 +'+earned+' 點':''),W/2,336);
 if(rec){g.fillStyle='#f2c14e';g.font='18px system-ui,sans-serif';g.fillText(T('rec'),W/2,368)}
 g.fillStyle='#fff';g.font='18px system-ui,sans-serif';g.fillText(T('again'),W/2,420)}}}
 
-$('sk-go').addEventListener('click',start);$('sk-cash').addEventListener('click',cash);
+$('sk-go').addEventListener('click',start);
 function press(e){if(e.button!==undefined&&e.button!==0)return;if(st!=='run'||$('view-sneak').hidden||document.hidden)return;e.preventDefault();sync(performance.now());if(st!=='run')return;c.focus();mouseHold=true;hold=true;try{e.currentTarget.setPointerCapture(e.pointerId)}catch(_){}ui()}
 function lift(){sync(performance.now());mouseHold=false;hold=keyHold}
 [c,$('sk-hold')].forEach(el=>{el.addEventListener('pointerdown',press);['pointerup','pointercancel','lostpointercapture'].forEach(type=>el.addEventListener(type,lift))});
@@ -104,7 +109,7 @@ addEventListener('keyup',e=>{if([' ','ArrowRight','d'].includes(e.key)){if(!$('v
 addEventListener('blur',()=>{release();last=performance.now()});
 document.addEventListener('visibilitychange',()=>{release();last=performance.now()});
 window.addEventListener('hashchange',()=>{release();last=performance.now()});
-function loop(t){sync(t);if(!$('view-sneak').hidden&&!document.hidden){if(shake>0)shake=Math.max(0,shake-.016);ui();draw();}requestAnimationFrame(loop)}
+function loop(t){sync(t);if(!$('view-sneak').hidden&&!document.hidden){if(shake>0)shake=Math.max(0,shake-.016);if(flash>0)flash=Math.max(0,flash-.016);pops.forEach(p=>p.age+=.016);pops=pops.filter(p=>p.age<2.2);ui();draw();}requestAnimationFrame(loop)}
 ui();draw();requestAnimationFrame(loop);
   })();
 

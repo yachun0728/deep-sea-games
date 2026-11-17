@@ -1,23 +1,22 @@
   <section class="view" id="view-elevator" hidden>
     <div class="console">
-      <div class="queue-stage"><canvas id="eq-canvas" width="520" height="580" aria-label="升降艙插隊：五關逐漸加長的隊伍，背對時向前插隊，警示可能轉為回頭"></canvas></div>
+      <div class="queue-stage"><canvas id="eq-canvas" width="520" height="580" aria-label="升降艙插隊：無盡加長的隊伍，背對時向前插隊，警示可能轉為回頭"></canvas></div>
       <div class="side"><section class="panel" aria-label="插隊操作">
-        <dl class="stats"><div><dt>已插過乘客</dt><dd id="eq-progress">0 / 10</dd></div><div><dt>前方還有</dt><dd id="eq-remaining">10 人</dd></div><div><dt>目前關卡</dt><dd id="eq-stage">1 / 5</dd></div></dl>
-        <dl class="stats"><div><dt>本局累計超過</dt><dd id="eq-total">0 人</dd></div><div><dt>最佳紀錄</dt><dd id="eq-best">0 人</dd></div></dl>
+        <dl class="stats"><div><dt>已插過乘客</dt><dd id="eq-progress">0 / 10</dd></div><div><dt>前方還有</dt><dd id="eq-remaining">10 人</dd></div><div><dt>目前隊伍</dt><dd id="eq-stage">第 1 隊</dd></div></dl>
+        <dl class="stats"><div><dt>本局累計超過</dt><dd id="eq-total">0 人</dd></div><div><dt>最佳紀錄</dt><dd id="eq-best">0 人</dd></div><div><dt>下一個獎勵</dt><dd id="eq-next">40 人 · +3</dd></div></dl>
         <div class="queue-watch" id="eq-watch" role="status" aria-live="polite" data-state="safe">尚未開始</div>
         <div class="queue-legend"><span>● 背對：可前進</span><span>△ 警示：可能轉頭</span><span>● 回頭：不要動</span></div>
         <div class="field"><label>每局入場</label><p class="runner-fee">10 <small>點</small></p><input id="eq-amount" type="hidden" value="10"></div>
         <button class="go" id="eq-go" type="button" data-mode="bet">扣點開始排隊</button>
-        <button class="chip timing-cash" id="eq-cash" type="button" disabled>成功插隊後可收手</button>
         <p class="msg" id="eq-msg" aria-live="polite">先扣入場點數。每點一下插過一位，移動時被前方任一乘客看見即失敗；不動不會被抓。</p>
         <p class="hint">點「往前插一位」、遊戲畫面或按 <kbd>空白鍵</kbd>。警示本身不會抓人，但沒有保證安全時間。</p>
       </section></div>
     </div>
     <details class="rules"><summary>玩法、風險與點數</summary>
-      <p>每局固定從共用錢包扣 10 點。共五關，隊伍依序為 10、12、14、16、18 位乘客，每人隨機在背對、警示、回頭間切換。警示可能解除，也可能隨時轉為回頭；前方任一乘客回頭注視時移動，就會被發現。站著不動不會被抓。</p>
-      <p>每點一次插過一人，移動約 0.3～0.5 秒，期間被看見也會失敗。成功後可收手領回，或繼續往前；繼續不會再扣入場費。每關到達隊首後暫停，可領回或繼續下一關；繼續不再扣點，累積金額保留。第五關完成才自動領回。下一關失敗仍會失去整局下注與未領回金額。進行中的移動無法按收手。</p>
-      <p>領回的點數依累計插過的乘客數決定，插得越多領回越多。被發現時本局下注與未領回獎勵全部失去，等待不保證獲利。</p>
-      <p>切換遊戲或背景分頁會暫停。重新整理會放棄本局，已扣點數不退回。點數與其他遊戲共用，沒有現金價值。</p>
+      <p>每局固定從共用錢包扣 10 點。每隊乘客各自隨機在背對、警示、回頭間切換。警示可能解除，也可能隨時轉為回頭；前方任一乘客回頭注視時移動，就會被發現。站著不動不會被抓。</p>
+      <p>每點一次插過一人，移動約 0.4～0.7 秒，期間被看見也會失敗。沒有終點：插到隊首後立刻換下一隊，第一隊 10 人，之後每隊多 2 人（最多 30 人），乘客休息時間越來越短、警示後轉頭的機率也越來越高，被發現這一局才結束。</p>
+      <p>累計插過的人數達到特定數量時，獎勵點數當場入帳，之後被發現也不會收回：40 人 +3、55 人 +7（累計 10 點，剛好回本）、70 人 +15、90 人 +30，之後每多 20 人 +40。這是固定點數，沒有倍率。這些人數刻意設得很高，一般玩家大約能插過 25 人。</p>
+      <p>切換遊戲或背景分頁會暫停。重新整理會放棄本局，已入帳的點數會保留。點數與其他遊戲共用，沒有現金價值。</p>
     </details>
   </section>
 

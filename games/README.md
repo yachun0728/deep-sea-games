@@ -16,15 +16,15 @@
 | [浮升 Ascent](tower/README.md) | `#tower` | 機率挑戰 | 隱藏 | 94 行 | 挑選安全的氣泡，一層一層往上浮。 |
 | [橫渡 Reef Run](crossing/README.md) | `#crossing` | 機率挑戰 | 隱藏 | 86 行 | 帶小海龜穿越暗流，決定何時收手。 |
 | [時序修復 Dream Repair Shop](dream/README.md) | `#dream` | 技巧闖關 | 顯示 | 57 行 | 抓準時機，讓指針停在青綠色區域。 |
-| [閃避跑酷 Dodge Run](runner/README.md) | `#runner` | 技巧闖關 | 顯示 | 96 行 | 點左、點右換道，避開一路上的障礙。 |
-| [插隊大師 Queue Cutter](elevator/README.md) | `#elevator` | 技巧闖關 | 顯示 | 132 行 | 趁乘客背對你，偷偷往前插一位。 |
-| [偷偷下班 Sneak Out](sneak/README.md) | `#sneak` | 技巧闖關 | 顯示 | 111 行 | 按住偷溜，老闆回頭前趕快裝忙。 |
-| [深海釣手 Fishing](fishing/README.md) | `#fishing` | 技巧闖關 | 顯示 | 116 行 | 按住收線、放開卸力，把大魚拉上岸。 |
-| [宣傳車 Campaign Truck](campaign/README.md) | `#campaign` | 技巧闖關 | 顯示 | 248 行 | 繞市區拉票，經過學校、醫院、豪宅要按住靜音。 |
+| [閃避跑酷 Dodge Run](runner/README.md) | `#runner` | 技巧闖關 | 顯示 | 118 行 | 點左、點右換道，避開一路上的障礙。 |
+| [插隊大師 Queue Cutter](elevator/README.md) | `#elevator` | 技巧闖關 | 顯示 | 129 行 | 趁乘客背對你，偷偷往前插一位。 |
+| [偷偷下班 Sneak Out](sneak/README.md) | `#sneak` | 技巧闖關 | 顯示 | 116 行 | 按住偷溜，老闆回頭前趕快裝忙。 |
+| [深海釣手 Fishing](fishing/README.md) | `#fishing` | 技巧闖關 | 顯示 | 113 行 | 按住收線、放開卸力，把大魚拉上岸。 |
+| [宣傳車 Campaign Truck](campaign/README.md) | `#campaign` | 技巧闖關 | 顯示 | 250 行 | 繞市區拉票，經過學校、醫院、豪宅要按住靜音。 |
 | [插珍奶 Boba Straw](boba/README.md) | `#boba` | 技巧闖關 | 顯示 | 28 行 | 抓準力道插吸管，原版粉紅珍奶小遊戲。 |
 | [屋頂貓貓 Rooftop Cat](cat/README.md) | `#cat` | 技巧闖關 | 顯示 | 124 行 | 無盡跑酷，看你能跑多遠。 |
 | [便便鳥大戰狼群 Poop Bird vs Wolves](bird/README.md) | `#bird` | 技巧闖關 | 顯示 | 190 行 | 跳過仙人掌和狼群，用便便把狼王打跑。 |
-| [死神打工 Reaper Shift](reaper/README.md) | `#reaper` | 技巧闖關 | 顯示 | 100 行 | 普通靈魂要接走，綠色通行證要放行。 |
+| [死神打工 Reaper Shift](reaper/README.md) | `#reaper` | 技巧闖關 | 顯示 | 107 行 | 普通靈魂要接走，綠色通行證要放行。 |
 | [深海火線 Reef Blaster](blaster/README.md) | `#blaster` | 技巧闖關 | 顯示 | 253 行 | 六種武器進化，迎戰換道、護盾與分裂怪。 |
 | [一口氣探險 One Breath Dive](dive/README.md) | `#dive` | 技巧闖關 | 顯示 | 57 行 | 選路線往下潛撿珍珠，氧氣用完前上浮結算。 |
 | [捷運搶位 MRT Seat Grab](mrt/README.md) | `#mrt` | 技巧闖關 | 顯示 | 56 行 | 看小動作猜誰要下車，搶到座位倍率升一階。 |

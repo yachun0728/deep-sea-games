@@ -1,72 +1,79 @@
-  /* ---------- Campaign Truck: side-scrolling street; hold to mute past quiet zones; votes decide the return ---------- */
-  var CP={active:false,phase:'ready',stake:0,dist:0,votes:200,miss:0,hold:false,last:0,clock:0,best:0,lots:[],idx:0,floats:[],pay:0,total:1,finishX:0,wheel:0};
-  var CP_COUNT=60,CP_QUIET_COUNT=22,CP_START=200,CP_GAIN=200,CP_QUIET=100,CP_PENALTY=400,CP_MAX_MISS=5,CP_NOISE_LIMIT=.3;
-  var CP_V0=150,CP_V1=380,CP_TRUCK=150,CP_GAP=26,CP_LEAD=430,CP_GROUND=330;   // px/s at start and finish; truck's screen x; ground line
-  var CP_TIERS=[[9700,5],[9000,3.2],[8000,2.2],[7000,1.5],[6000,1],[5000,.5]];
+  /* ---------- Campaign Truck: endless street, hold to mute past quiet zones; milestone vote bonuses are credited when reached ---------- */
+  var CP={active:false,phase:'ready',stake:0,dist:0,votes:200,miss:0,hold:false,last:0,clock:0,best:0,lots:[],idx:0,floats:[],pops:[],earned:0,awarded:0,wheel:0,n:0,qrun:0,nx:0,cleared:0};
+  var CP_START=200,CP_GAIN=200,CP_QUIET=100,CP_PENALTY=400,CP_MAX_MISS=5,CP_NOISE_LIMIT=.3,CP_NEGLECT=.3;
+  // The truck starts fast and keeps accelerating up to a cap; quiet zones get more frequent as the street goes on.
+  var CP_V0=300,CP_VK=.06,CP_VMAX=800,CP_TRUCK=150,CP_GAP=26,CP_LEAD=430,CP_GROUND=330,CP_PQ0=.35,CP_PQK=.004,CP_PQMAX=.6;
+  // Milestones count votes and were calibrated with a mute-timing simulation (see GAME_RULES.md).
+  var CP_MILESTONES=[[8000,3],[10000,7],[12000,15],[15000,30]],CP_ENDLESS_FROM=15000,CP_ENDLESS_STEP=3000,CP_ENDLESS_BONUS=40;
+  function cpNextMilestone(v){for(var i=0;i<CP_MILESTONES.length;i++)if(CP_MILESTONES[i][0]>v)return CP_MILESTONES[i];return [CP_ENDLESS_FROM+(Math.floor((v-CP_ENDLESS_FROM)/CP_ENDLESS_STEP)+1)*CP_ENDLESS_STEP,CP_ENDLESS_BONUS];}
   var CP_KINDS={'學校':{w:220,h:150,quiet:true},'醫院':{w:190,h:184,quiet:true},'豪宅':{w:210,h:150,quiet:true},'住宅':{w:170,h:158},'公寓':{w:160,h:178},'商店':{w:150,h:112},'市場':{w:200,h:104},'夜市':{w:200,h:122},'公園':{w:190,h:112},'廟口':{w:190,h:150}};
   var CP_FONT='"Noto Sans TC",system-ui,sans-serif';
   var campaignCanvas=$('cp-canvas'),campaignCtx=campaignCanvas.getContext('2d'),campaignPointers=new Set(),campaignKeys=new Set();
   try{var cpb=Number(localStorage.getItem('deep-sea-campaign-best'));if(Number.isFinite(cpb))CP.best=Math.max(0,cpb);}catch(e){}
   function cpText(id,value){var el=$(id);if(el.textContent!==value)el.textContent=value;}
   function cpSay(text,kind){cpText('cp-msg',text);$('cp-msg').className='msg'+(kind?' '+kind:'');}
-  function cpMult(votes){for(var i=0;i<CP_TIERS.length;i++)if(votes>=CP_TIERS[i][0])return CP_TIERS[i][1];return 0;}
   function cpRelease(){campaignPointers.clear();campaignKeys.clear();CP.hold=false;}
-  function cpSpeed(){return CP_V0+(CP_V1-CP_V0)*Math.max(0,Math.min(1,CP.dist/(CP.finishX-CP_TRUCK)));}
-  // 60 buildings in a shuffled row: exactly 22 quiet ones, never three quiet in a row, and the first two are ordinary.
-  function cpCity(){
-    var quiet=['學校','醫院','豪宅'],normal=['住宅','商店','公寓','市場','公園','廟口','夜市'],names,ok=false,i,j,tries=0;
-    while(!ok&&tries++<2000){
-      names=[];for(i=0;i<CP_QUIET_COUNT;i++)names.push(quiet[i%3]);for(i=0;i<CP_COUNT-CP_QUIET_COUNT;i++)names.push(normal[i%7]);
-      for(i=names.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));var tmp=names[i];names[i]=names[j];names[j]=tmp;}
-      ok=!CP_KINDS[names[0]].quiet&&!CP_KINDS[names[1]].quiet;
-      for(i=0;ok&&i<names.length-2;i++)if(CP_KINDS[names[i]].quiet&&CP_KINDS[names[i+1]].quiet&&CP_KINDS[names[i+2]].quiet)ok=false;
-    }
-    var x=CP_LEAD;
-    CP.lots=names.map(function(name,n){var k=CP_KINDS[name],lot={name:name,quiet:!!k.quiet,w:k.w,h:k.h,x0:x,x1:x+k.w,seed:n,tot:0,noisy:0,flash:-9,good:true};x+=k.w+CP_GAP;return lot;});
-    CP.finishX=x+150;CP.total=CP.finishX+300;
+  function cpSpeed(){return Math.min(CP_VMAX,CP_V0+CP_VK*CP.dist);}
+  function cpPassed(){return CP.cleared+CP.idx;}
+  // Endless street: buildings are generated just ahead of the truck. The first two are ordinary and quiet buildings never come three in a row.
+  function cpMake(){
+    var quiet=['學校','醫院','豪宅'],normal=['住宅','商店','公寓','市場','公園','廟口','夜市'],n=CP.n++,pq=Math.min(CP_PQMAX,CP_PQ0+CP_PQK*n),isQ=n>=2&&CP.qrun<2&&Math.random()<pq,name;
+    CP.qrun=isQ?CP.qrun+1:0;
+    name=isQ?quiet[Math.floor(Math.random()*3)]:normal[Math.floor(Math.random()*7)];
+    var k=CP_KINDS[name],x=CP.nx;CP.nx=x+k.w+CP_GAP;
+    CP.lots.push({name:name,quiet:!!k.quiet,w:k.w,h:k.h,x0:x,x1:x+k.w,seed:n,tot:0,noisy:0,flash:-9,good:true});
   }
+  function cpEnsure(){while(CP.lots.length<CP.idx+14)cpMake();}
+  function cpCity(){CP.lots=[];CP.n=0;CP.qrun=0;CP.nx=CP_LEAD;CP.cleared=0;CP.idx=0;cpEnsure();}
   function cpFloat(lot,text,kind){CP.floats.push({x:(lot.x0+lot.x1)/2,y:CP_GROUND-lot.h-44,text:text,kind:kind,t:CP.clock});if(CP.floats.length>8)CP.floats.shift();}
   function cpRemember(){if(CP.votes>CP.best){CP.best=CP.votes;try{localStorage.setItem('deep-sea-campaign-best',String(CP.best));}catch(e){}}}
-  function cpLose(){
-    AN.end(CP.analytics,0,'loss',{step:CP.idx,votes:CP.votes,misses:CP.miss});
-    CP.active=false;CP.phase='lost';CP.pay=0;cpRelease();
-    cpSay('吵到安靜區 '+CP_MAX_MISS+' 次，被檢舉落選。本局失去 '+fmt(CP.stake)+' 點。','lose');cpUI();
+  function cpLose(reason){
+    AN.end(CP.analytics,CP.earned,CP.earned>0?'complete':'loss',{step:cpPassed(),votes:CP.votes,misses:CP.miss});
+    CP.active=false;CP.phase='lost';cpRelease();cpRemember();
+    cpSay(reason+' 累計 '+CP_MAX_MISS+' 次失誤，被檢舉落選。最終 '+fmt(CP.votes)+' 票，'+(CP.earned>0?'本局共入帳 '+fmt(CP.earned)+' 點。':'這一局沒有獎勵。'),CP.earned>0?'win':'lose');cpUI();
   }
-  function cpFinish(){
-    var mult=cpMult(CP.votes),pay=Math.floor(CP.stake*mult);
-    AN.end(CP.analytics,pay,pay>0?'complete':'loss',{step:CP_COUNT,votes:CP.votes,misses:CP.miss,multiplier:mult});
-    CP.active=false;CP.phase='done';CP.pay=pay;cpRelease();cpRemember();S.balance+=pay;save();renderAll();
-    if(!pay)cpSay('開票結果 '+fmt(CP.votes)+' 票，這一趟沒有點數。','lose');
-    else cpSay('開票結果 '+fmt(CP.votes)+' 票，領回 '+fmt(pay)+' 點。','win');
-    cpUI();
+  function cpMilestones(){
+    var nx=cpNextMilestone(CP.awarded);
+    while(CP.votes>=nx[0]&&CP.phase==='run'){
+      var b=nx[1];CP.awarded=nx[0];CP.earned+=b;S.balance+=b;save();renderAll();
+      AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss,bonus_points:b});
+      CP.pops.push({v:nx[0],b:b,age:0});if(CP.pops.length>3)CP.pops.shift();
+      cpSay('得票達 '+fmt(nx[0])+'！獎勵 +'+b+' 點已入帳，本局累計 +'+CP.earned+' 點。','win');
+      nx=cpNextMilestone(CP.awarded);
+    }
   }
   function cpSettle(lot){
     var frac=lot.tot>0?lot.noisy/lot.tot:0;lot.flash=CP.clock;
     if(lot.quiet){
       if(frac>CP_NOISE_LIMIT){
         CP.miss++;CP.votes=Math.max(0,CP.votes-CP_PENALTY);lot.good=false;cpFloat(lot,'吵到'+lot.name+' −'+CP_PENALTY,'bad');
-        if(CP.miss>=CP_MAX_MISS){cpLose();return;}
+        if(CP.miss>=CP_MAX_MISS){cpLose('吵到安靜區了。');return;}
       }else{CP.votes+=CP_QUIET;lot.good=true;cpFloat(lot,'安靜通過 +'+CP_QUIET,'good');}
     }else{
-      var gain=Math.round(CP_GAIN*frac/10)*10;CP.votes+=gain;lot.good=gain>0;cpFloat(lot,gain>0?'+'+gain+' 票':'沒廣播到','gain'+(gain>0?'':' dim'));
+      var gain=Math.round(CP_GAIN*frac/10)*10;CP.votes+=gain;
+      if(frac<CP_NEGLECT){CP.miss++;lot.good=false;cpFloat(lot,'沒宣傳到'+(gain>0?' +'+gain:''),'bad');if(CP.miss>=CP_MAX_MISS){cpLose('一般路段靜音太久，沒有拉到票。');return;}}
+      else{lot.good=true;cpFloat(lot,'+'+gain+' 票','gain');}
     }
+    cpMilestones();
   }
   function cpStep(dt){
     // Small slices keep zone entry and exit accurate on delayed frames.
     while(dt>1e-8&&CP.phase==='run'){
       var step=Math.min(dt,.012),v=cpSpeed();
       CP.dist+=v*step;CP.clock+=step;CP.wheel+=v*step/12;dt-=step;
+      CP.pops.forEach(function(p){p.age+=step;});CP.pops=CP.pops.filter(function(p){return p.age<2.2;});
       var wx=CP.dist+CP_TRUCK;
       while(CP.idx<CP.lots.length&&wx>=CP.lots[CP.idx].x1){
         cpSettle(CP.lots[CP.idx]);if(CP.phase!=='run')return;
-        CP.idx++;if(CP.idx%15===0&&CP.idx<CP_COUNT)AN.progress(CP.analytics,{step:CP.idx,votes:CP.votes,misses:CP.miss});
+        CP.idx++;if(cpPassed()%15===0)AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss});
+        if(CP.idx>40){CP.lots.splice(0,20);CP.idx-=20;CP.cleared+=20;}
+        cpEnsure();
       }
       if(CP.idx<CP.lots.length){var lot=CP.lots[CP.idx];if(wx>=lot.x0){lot.tot+=step;if(!CP.hold)lot.noisy+=step;}}
-      else if(wx>=CP.finishX){cpFinish();return;}
     }
   }
   function cpSignal(){
-    if(CP.phase!=='run')return[CP.phase==='lost'?'look':'safe',CP.phase==='lost'?'被檢舉落選':CP.phase==='done'?'開票完成':'尚未出發'];
+    if(CP.phase!=='run')return[CP.phase==='lost'?'look':'safe',CP.phase==='lost'?'被檢舉落選':'尚未出發'];
     var wx=CP.dist+CP_TRUCK,look=cpSpeed()*.6,cur=CP.lots[CP.idx],inQuiet=!!cur&&cur.quiet&&wx>=cur.x0,soon=false;
     for(var i=CP.idx;i<Math.min(CP.lots.length,CP.idx+2);i++){var lot=CP.lots[i];if(lot.quiet&&lot.x0>wx&&lot.x0-wx<look)soon=true;}
     if(inQuiet)return CP.hold?['safe','安靜區通過中 · 繼續按住']:['look','吵到了！快按住靜音'];
@@ -74,24 +81,22 @@
     return CP.hold?['warn','靜音中 · 這裡放開才有票']:['safe','廣播拉票中'];
   }
   function cpUI(){
-    var live=CP.phase==='run',sig=cpSignal();
-    cpText('cp-votes',fmt(CP.votes));cpText('cp-miss',CP.miss+' / '+CP_MAX_MISS);cpText('cp-lap',Math.min(CP.idx,CP_COUNT)+' / '+CP_COUNT+' 棟');
+    var live=CP.phase==='run',sig=cpSignal(),nx=cpNextMilestone(CP.awarded);
+    cpText('cp-votes',fmt(CP.votes));cpText('cp-miss',CP.miss+' / '+CP_MAX_MISS);cpText('cp-lap',cpPassed()+' 棟');cpText('cp-next',fmt(nx[0])+' 票 · +'+nx[1]);
     cpText('cp-best',fmt(CP.best));
     $('cp-miss').style.color=CP.miss>=3?'var(--crush)':'';
     cpText('cp-signal',sig[1]);$('cp-signal').dataset.state=sig[0];
     $('cp-amount').disabled=CP.active;$('cp-go').disabled=live;
     cpText('cp-go',live?'拉票中 · 安靜區按住靜音':CP.phase==='ready'?'扣點出發拉票':'扣點再跑一趟');
     $('cp-hold').disabled=!live;cpText('cp-hold',CP.hold?'靜音中 · 放開廣播':'按住靜音 · 放開廣播');
-    var tier=0;if(CP.phase!=='lost')CP_TIERS.forEach(function(t){if(!tier&&CP.votes>=t[0])tier=t[0];});
-    document.querySelectorAll('[data-cp-tier]').forEach(function(el){el.setAttribute('aria-current',(live||CP.phase==='done')&&Number(el.dataset.cpTier)===tier?'step':'false');});
   }
   function cpStart(){
     if(CP.phase==='run')return;
     var stake=ENTRY_FEE;
     if(stake>S.balance){cpSay(LOW_MSG,'lose');return;}
     CP.analytics=AN.start('campaign',stake);CP.stake=stake;CP.active=true;S.balance-=stake;save();renderAll();
-    cpCity();CP.dist=0;CP.votes=CP_START;CP.miss=0;CP.idx=0;CP.floats=[];CP.pay=0;CP.phase='run';CP.last=performance.now();cpRelease();
-    cpSay('出發！放開讓喇叭廣播，前方出現紅色的學校、醫院、豪宅時按住靜音。');cpUI();campaignCanvas.focus();
+    cpCity();CP.dist=0;CP.votes=CP_START;CP.miss=0;CP.floats=[];CP.pops=[];CP.earned=0;CP.awarded=0;CP.phase='run';CP.last=performance.now();cpRelease();
+    cpSay('出發！沒有終點，越開越快。放開讓喇叭廣播，前方出現紅色的學校、醫院、豪宅時按住靜音；在一般路段靜音太久也算失誤。');cpUI();campaignCanvas.focus();
   }
   function cpSync(now){var dt=Math.max(0,(now-CP.last)/1000);CP.last=now;if(!$('view-campaign').hidden&&!document.hidden)cpStep(dt);}
 
@@ -195,10 +200,6 @@
       cpBox(g,sx,G+18,3,86,'#ff6f61');cpBox(g,sx+lot.w-3,G+18,3,86,'#ff6f61');
     });
     CP.lots.forEach(function(lot){var sx=lot.x0-cam;if(sx<W+20&&sx+lot.w>-20)cpBuilding(g,lot,sx,t);});
-    // polling station at the end of the route
-    var fxs=CP.finishX-cam;
-    if(fxs<W+80){cpBox(g,fxs-4,G-150,8,150,'#cfe3e6');cpBox(g,fxs+116,G-150,8,150,'#cfe3e6');g.fillStyle='#62e6d2';cpRR(g,fxs-10,G-176,144,36,8);g.fill();g.fillStyle='#00241f';g.font='700 18px '+CP_FONT;g.textAlign='center';g.textBaseline='middle';g.fillText('投票所',fxs+62,G-157);
-      for(i=0;i<8;i++)cpBox(g,fxs+(i%2)*10,G+18+i*10.75,10,10.75,'#e4f2f3');}
     cpTruck(g,CP_TRUCK,t,live);
     // street lamps in front make the speed readable
     var near=cam*1.25;
@@ -210,25 +211,26 @@
     // HUD: votes, route progress and speed, strikes
     cpBox(g,0,0,W,96,'rgba(5,22,32,.86)');cpBox(g,0,96,W,1,'#214658');
     g.textAlign='left';g.fillStyle='#8db0b9';g.font='12px '+CP_FONT;g.fillText('目前選票',16,16);g.fillStyle='#e4f2f3';g.font='700 30px "Chakra Petch",'+CP_FONT;g.fillText(fmt(CP.votes),16,42);
-    var prog=Math.max(0,Math.min(1,cam/(CP.finishX-CP_TRUCK)));
-    g.textAlign='center';g.fillStyle='#8db0b9';g.font='12px '+CP_FONT;g.fillText('車速 '+(cpSpeed()/CP_V0).toFixed(1)+'× · 已過 '+Math.min(CP.idx,CP_COUNT)+' / '+CP_COUNT+' 棟',W/2,16);
+    var prog=Math.max(0,Math.min(1,(cpSpeed()-CP_V0)/(CP_VMAX-CP_V0)));
+    g.textAlign='center';g.fillStyle='#8db0b9';g.font='12px '+CP_FONT;g.fillText('車速 '+(cpSpeed()/CP_V0).toFixed(1)+'× · 已過 '+cpPassed()+' 棟 · 本局 +'+CP.earned+' 點',W/2,16);
     g.fillStyle='#113041';cpRR(g,200,32,240,10,5);g.fill();g.fillStyle='#ffb638';cpRR(g,200,32,Math.max(10,240*prog),10,5);g.fill();g.fillStyle='#62e6d2';cpBox(g,436,28,3,18,'#62e6d2');
     g.textAlign='right';g.fillStyle='#8db0b9';g.font='12px '+CP_FONT;g.fillText('吵到 '+CP.miss+' / '+CP_MAX_MISS+' 次',W-16,16);
     for(i=0;i<CP_MAX_MISS;i++){g.beginPath();g.arc(W-24-(CP_MAX_MISS-1-i)*24,40,8,0,7);if(i<CP.miss){g.fillStyle='#ff6f61';g.fill();}else{g.lineWidth=1.5;g.strokeStyle='#326475';g.stroke();}}
     // upcoming buildings
     g.textAlign='left';g.fillStyle='#8db0b9';g.font='12px '+CP_FONT;g.fillText('接下來',16,75);
-    for(i=0;i<6;i++){var up=CP.lots[CP.idx+i],ux=66+i*95;if(!up){if(i===0||CP.lots[CP.idx+i-1]){g.fillStyle='rgba(98,230,210,.16)';cpRR(g,ux,62,84,26,13);g.fill();g.fillStyle='#62e6d2';g.font='600 13px '+CP_FONT;g.textAlign='center';g.fillText('投票所',ux+42,76);}break;}
+    for(i=0;i<6;i++){var up=CP.lots[CP.idx+i],ux=66+i*95;if(!up)break;
       g.fillStyle=up.quiet?'rgba(255,111,97,.22)':'#113041';cpRR(g,ux,62,84,26,13);g.fill();g.lineWidth=i===0?2:1;g.strokeStyle=up.quiet?'#ff6f61':i===0?'#8db0b9':'#2b5568';g.stroke();
       g.fillStyle=up.quiet?'#ff9a8f':'#b9d3d9';g.font='600 13px '+CP_FONT;g.textAlign='center';g.fillText(up.quiet?up.name+' 靜':up.name,ux+42,76);
       if(i<5){g.fillStyle='#326475';g.fillText('›',ux+89.5,75);}}
     g.textAlign='center';g.fillStyle=live?(CP.hold?'#8db0b9':'#62e6d2'):'#8db0b9';g.font='600 14px '+CP_FONT;
     g.fillText(live?(CP.hold?'靜音中 · 放開才會廣播':'廣播拉票中 · 紅色路段要按住'):'放開＝廣播拉票　按住＝靜音',W/2,H-13);
+    CP.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=190-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#ffb638';g.font='700 38px '+CP_FONT;g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#e4f2f3';g.font='600 17px '+CP_FONT;g.fillText('得票 '+fmt(p.v)+' 里程碑',W/2,py+28);g.globalAlpha=1;});
     if(!live){
       g.fillStyle='rgba(5,22,32,.9)';cpRR(g,150,150,340,104,12);g.fill();g.lineWidth=1;g.strokeStyle='#214658';g.stroke();
       g.fillStyle=CP.phase==='lost'?'#ff6f61':'#62e6d2';g.font='700 24px '+CP_FONT;
-      g.fillText(CP.phase==='ready'?'準備出發拉票？':CP.phase==='lost'?'被檢舉，落選了！':CP.pay>0?'領回 '+fmt(CP.pay)+' 點':'票數不夠，沒有點數',W/2,186);
+      g.fillText(CP.phase==='ready'?'準備出發拉票？':'被檢舉，落選了！',W/2,186);
       g.fillStyle='#e4f2f3';g.font='14px '+CP_FONT;
-      g.fillText(CP.phase==='ready'?'紅色建築要按住靜音，其他放開廣播':CP.phase==='lost'?'吵到安靜區 '+CP_MAX_MISS+' 次，本局沒有點數':'最終得票 '+fmt(CP.votes)+' 票',W/2,222);
+      g.fillText(CP.phase==='ready'?'紅色建築要按住靜音，其他路段放開廣播':'最終 '+fmt(CP.votes)+' 票 · 過了 '+cpPassed()+' 棟'+(CP.earned>0?' · 入帳 +'+fmt(CP.earned)+' 點':''),W/2,222);
     }
     g.textBaseline='alphabetic';g.textAlign='left';
   }

@@ -5,46 +5,45 @@
 ## 概覽
 
 - 網址：`#reaper`　分類：技巧闖關　狀態：顯示中
-- 大廳卡片：「普通靈魂要接走，綠色通行證要放行。」｜每局 10 點 · 10 班挑戰
+- 大廳卡片：「普通靈魂要接走，綠色通行證要放行。」｜每局 10 點 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：死神打工，`game_id` 為 `reaper`
-- 檔案：`games/reaper/card.html`、`games/reaper/game.js`、`games/reaper/icon.svg`、`games/reaper/view.html`；`game.js` 共 100 行、10.6 KB
+- 檔案：`games/reaper/card.html`、`games/reaper/game.js`、`games/reaper/icon.svg`、`games/reaper/view.html`；`game.js` 共 107 行、10.9 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「21. Reaper Shift（reaper）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-reaper`、`rp-canvas`、`rp-level`、`rp-progress`、`rp-lives`、`rp-score`、`rp-best`、`rp-difficulty`、`rp-amount`、`rp-go`、`rp-cash`、`rp-msg`
+`view-reaper`、`rp-canvas`、`rp-level`、`rp-progress`、`rp-lives`、`rp-score`、`rp-best`、`rp-next`、`rp-difficulty`、`rp-amount`、`rp-go`、`rp-msg`
 
 ## 狀態與常數
 
 - 狀態物件／進行中旗標：`RP`（L2）
-- L3 常數：`RP_MULT`
+- L5 常數：`RP_PER`、`RP_VK`、`RP_VMAX`、`RP_ZK`、`RP_ZMIN`、`RP_PPMAX`
+- L6 常數：`RP_MILESTONES`、`RP_ENDLESS_FROM`、`RP_ENDLESS_STEP`、`RP_ENDLESS_BONUS`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rpRand` L6、`rpPay` L7、`rpSay` L8、`rpRemember` L9、`rpUI` L10、`rpRound` L17、`rpStart` L25、`rpCash` L32、`rpStrike` L36、`rpCheck` L41、`rpSpawn` L46、`rpStep` L47、`rpSync` L59、`rpAct` L60、`rpGhost` L68、`rpDraw` L72、`rpLoop` L97
+`rpBonusAt` L7、`rpNext` L8、`rpLevel` L9、`rpRand` L12、`rpSay` L13、`rpRemember` L14、`rpParams` L15、`rpUI` L16、`rpStart` L24、`rpAward` L32、`rpGood` L38、`rpStrike` L39、`rpSpawn` L47、`rpStep` L52、`rpSync` L65、`rpAct` L66、`rpGhost` L74、`rpDraw` L78、`rpLoop` L104
 
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L30 `rpStart`：`S.balance-=stake;`
+- L29 `rpStart`：`S.balance-=stake;`
 
 **入帳（領回／獎勵）**
-- L34 `rpCash`：`S.balance+=pay;`
+- L33 `rpAward`：`S.balance+=b;`
 
 **餘額檢查**
-- L29 `rpStart`：`if(stake>S.balance){rpSay(LOW_MSG,'lose');`
+- L27 `rpStart`：`if(stake>S.balance){rpSay(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L23 `rpRound`：`AN.resume(RP.analytics,{stage:RP.level});`
-- L30 `rpStart`：`RP.analytics=AN.start('reaper',stake);`
-- L34 `rpCash`：`AN.end(RP.analytics,pay,'cashout',{stage:RP.level,score:RP.total,multiplier:RP_MULT[RP.cleared]});`
-- L38 `rpStrike`：`AN.end(RP.analytics,0,'loss',{stage:RP.level,step:RP.resolved,score:RP.total});`
-- L43 `rpCheck`：`AN.progress(RP.analytics,{stage:RP.level,score:RP.total,lives:RP.lives,multiplier:RP_MULT[RP.cleared]},true);`
+- L29 `rpStart`：`RP.analytics=AN.start('reaper',stake);`
+- L34 `rpAward`：`AN.progress(RP.analytics,{step:n,score:RP.total,lives:RP.lives,bonus_points:b});`
+- L42 `rpStrike`：`AN.end(RP.analytics,RP.earned,RP.earned>0?'complete':'loss',{step:RP.good,score:RP.total});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -54,17 +53,15 @@
 
 ## 平台共用相依
 
-- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fx`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`fx`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/controls.js` 會呼叫：`rpSay`
 - 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`RP`
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-定位：`RP`、`RP_MULT`、`rpPay`、`rpRemember`。10班，第s班有8+2×(s-1)個靈魂（8～26個）。正常靈魂進入金色區時點擊收割；綠色光環者應放行。漏掉正常靈魂或誤收綠色者扣一心；空揮冷卻.35秒，不扣心。開始3心，續班不回滿，生命歸零整局返還0。
+定位：`RP`、`rpGood`、`rpAward`、`rpRemember`。無盡值班（2026-11-17 改為直到生命歸零）：每正確處理10位靈魂升一班，沒有班別上限與領回。正常靈魂進入金色區時點擊收割；綠色光環者應放行。漏掉正常靈魂或誤收綠色者扣一心；空揮冷卻.35秒，不扣心。開始3心，不回滿。班次 L=1+floor(正確處理數/10)：速度 `min(300, 110+12L)`、金色區半寬 `max(15, 29-0.9(L-1))`、持證機率 `min(.5, .18+.012L)`，間隔 `max(.5, rand(1.1,1.7)-.065(L-1))` 秒。前3班綠光明顯，4～6班接近時消退，7班起更早消退。
 
-每班所有靈魂處理完且仍有心即可過班，允許帶著犯錯過班，不要求全對。每班後可領回或帶剩餘生命續班，末班自動領回。後班靈魂速度增加、判定區縮小；前3班綠光明顯，4～6班接近時消退，7～10班更早消退，需記住辨識。
-
-第1～10班倍率 `[.7,1.15,1.8,2.7,4,5.8,8.2,11.5,16,22]`。實際返還為 `floor(投入×round(倍率×100)/100)`，保留此乘法順序以避免浮點邊界差異。投入10全過返還220、淨增加210。最佳紀錄是正常靈魂處理總數，不是最高餘額。
+里程碑以正確處理數計，點數當場入帳、不扣回：120位 +3、150位 +7（累計10點，回本）、200位 +15、260位 +30，之後每多50位 +40。以揮鐮誤差模擬校準：休閒約72位、一般約104位、不錯約143位、高手約218位（中位數）；一般玩家到120位約兩成。最佳紀錄是接走的正常靈魂總數，不是最高餘額。大廳卡片只標示「✦ BONUS」。
 
 ## 修改檢查清單
 

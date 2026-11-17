@@ -5,49 +5,49 @@
 ## 概覽
 
 - 網址：`#campaign`　分類：技巧闖關　狀態：顯示中
-- 大廳卡片：「繞市區拉票，經過學校、醫院、豪宅要按住靜音。」｜每局 10 點 · 越開越快
+- 大廳卡片：「繞市區拉票，經過學校、醫院、豪宅要按住靜音。」｜每局 10 點 · 無盡 · 越開越快
 - 追蹤名稱（GA4 `game_name`）：宣傳車，`game_id` 為 `campaign`
-- 檔案：`games/campaign/card.html`、`games/campaign/game.js`、`games/campaign/icon.svg`、`games/campaign/view.html`；`game.js` 共 248 行、23.5 KB
+- 檔案：`games/campaign/card.html`、`games/campaign/game.js`、`games/campaign/icon.svg`、`games/campaign/view.html`；`game.js` 共 250 行、23.7 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「17. Campaign（campaign）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-campaign`、`cp-canvas`、`cp-votes`、`cp-miss`、`cp-lap`、`cp-signal`、`cp-amount`、`cp-best`、`cp-go`、`cp-hold`、`cp-msg`
+`view-campaign`、`cp-canvas`、`cp-votes`、`cp-miss`、`cp-lap`、`cp-signal`、`cp-amount`、`cp-best`、`cp-next`、`cp-go`、`cp-hold`、`cp-msg`
 
 ## 狀態與常數
 
 - 狀態物件／進行中旗標：`CP`（L2）
-- L3 常數：`CP_COUNT`、`CP_QUIET_COUNT`、`CP_START`、`CP_GAIN`、`CP_QUIET`、`CP_PENALTY`、`CP_MAX_MISS`、`CP_NOISE_LIMIT`
-- L4 常數：`CP_V0`、`CP_V1`、`CP_TRUCK`、`CP_GAP`、`CP_LEAD`、`CP_GROUND`
-- L5 常數：`CP_TIERS`
-- L6 常數：`CP_KINDS`
-- L7 常數：`CP_FONT`
+- L3 常數：`CP_START`、`CP_GAIN`、`CP_QUIET`、`CP_PENALTY`、`CP_MAX_MISS`、`CP_NOISE_LIMIT`、`CP_NEGLECT`
+- L5 常數：`CP_V0`、`CP_VK`、`CP_VMAX`、`CP_TRUCK`、`CP_GAP`、`CP_LEAD`、`CP_GROUND`、`CP_PQ0`、`CP_PQK`、`CP_PQMAX`
+- L7 常數：`CP_MILESTONES`、`CP_ENDLESS_FROM`、`CP_ENDLESS_STEP`、`CP_ENDLESS_BONUS`
+- L9 常數：`CP_KINDS`
+- L10 常數：`CP_FONT`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`cpText` L10、`cpSay` L11、`cpMult` L12、`cpRelease` L13、`cpSpeed` L14、`cpCity` L16、`cpFloat` L28、`cpRemember` L29、`cpLose` L30、`cpFinish` L35、`cpSettle` L43、`cpStep` L54、`cpSignal` L68、`cpUI` L76、`cpStart` L88、`cpSync` L96、`cpRR` L99、`cpBox` L100、`cpWindows` L101、`cpBuilding` L102、`cpTruck` L167、`cpDraw` L179、`cpPress` L235、`cpLift` L236、`cpLoop` L244
+`cpNextMilestone` L8、`cpText` L13、`cpSay` L14、`cpRelease` L15、`cpSpeed` L16、`cpPassed` L17、`cpMake` L19、`cpEnsure` L26、`cpCity` L27、`cpFloat` L28、`cpRemember` L29、`cpLose` L30、`cpMilestones` L35、`cpSettle` L45、`cpStep` L59、`cpSignal` L75、`cpUI` L83、`cpStart` L93、`cpSync` L101、`cpRR` L104、`cpBox` L105、`cpWindows` L106、`cpBuilding` L107、`cpTruck` L172、`cpDraw` L184、`cpPress` L237、`cpLift` L238、`cpLoop` L246
 
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L92 `cpStart`：`S.balance-=stake;`
+- L97 `cpStart`：`S.balance-=stake;`
 
 **入帳（領回／獎勵）**
-- L38 `cpFinish`：`S.balance+=pay;`
+- L38 `cpMilestones`：`S.balance+=b;`
 
 **餘額檢查**
-- L91 `cpStart`：`if(stake>S.balance){cpSay(LOW_MSG,'lose');`
+- L96 `cpStart`：`if(stake>S.balance){cpSay(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L31 `cpLose`：`AN.end(CP.analytics,0,'loss',{step:CP.idx,votes:CP.votes,misses:CP.miss});`
-- L37 `cpFinish`：`AN.end(CP.analytics,pay,pay>0?'complete':'loss',{step:CP_COUNT,votes:CP.votes,misses:CP.miss,multiplier:mult}…`
-- L62 `cpStep`：`if(CP.idx%15===0&&CP.idx<CP_COUNT)AN.progress(CP.analytics,{step:CP.idx,votes:CP.votes,misses:CP.miss});`
-- L92 `cpStart`：`CP.analytics=AN.start('campaign',stake);`
+- L31 `cpLose`：`AN.end(CP.analytics,CP.earned,CP.earned>0?'complete':'loss',{step:cpPassed(),votes:CP.votes,misses:CP.miss});`
+- L39 `cpMilestones`：`AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss,bonus_points:b});`
+- L68 `cpStep`：`if(cpPassed()%15===0)AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss});`
+- L97 `cpStart`：`CP.analytics=AN.start('campaign',stake);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -63,9 +63,9 @@
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-定位：`CP`、`cpMult`、`cpSettle`、`cpFinish`、`cpLose`。跑過60棟建築，其中22棟安靜區；前兩棟普通，不連續出現3棟安靜區。放開廣播，按住靜音；起始200票。普通建築依廣播比例獲得 round(200×比例/10)×10票；安靜區廣播比例>.3算吵到一次並扣400票（最低0），否則加100票。吵到5次立即失敗，返還0；否則整段跑完依最終票數一次結算，途中不能領回。
+定位：`CP`、`cpMake`、`cpSettle`、`cpMilestones`、`cpLose`。無盡街道（2026-11-17 改為直到落選，並大幅加快加難）：建築依序即時生成，前兩棟普通，不連續出現3棟安靜區；第n棟為安靜區機率 `min(.6, .35+.004n)`。車速 `min(800, 300+0.06×已行距離)` px/s（舊版150→380）。放開廣播，按住靜音；起始200票。普通建築依廣播比例獲得 round(200×比例/10)×10票，但廣播比例<.3（靜音太久）算「沒宣傳到」記一次失誤；安靜區廣播比例>.3算吵到並記一次失誤、扣400票（最低0），否則加100票。累計5次失誤落選。
 
-票數 `<5000:0`、`>=5000:.5`、`>=6000:1`、`>=7000:1.5`、`>=8000:2.2`、`>=9000:3.2`、`>=9700:5` 倍。理想滿票為10,000，不直接等於錢包點數。
+里程碑以得票計，點數當場入帳、每個里程碑每局只入帳一次（票數被扣再回升不重複）：8,000票 +3、10,000票 +7（累計10點，回本）、12,000票 +15、15,000票 +30，之後每多3,000票 +40。以靜音時機模擬校準（四種操作誤差）：平均玩家中位約5,600票，抵達8,000票約6%；技巧好者約六成。大廳卡片只標示「✦ BONUS」。
 
 ## 修改檢查清單
 

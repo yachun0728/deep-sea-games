@@ -5,47 +5,47 @@
 ## 概覽
 
 - 網址：`#fishing`　分類：技巧闖關　狀態：顯示中
-- 大廳卡片：「按住收線、放開卸力，把大魚拉上岸。」｜每局 10 點 · 每條可收手
+- 大廳卡片：「按住收線、放開卸力，把大魚拉上岸。」｜每局 10 點 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：深海釣手，`game_id` 為 `fishing`
-- 檔案：`games/fishing/card.html`、`games/fishing/game.js`、`games/fishing/icon.svg`、`games/fishing/view.html`；`game.js` 共 116 行、12.6 KB
+- 檔案：`games/fishing/card.html`、`games/fishing/game.js`、`games/fishing/icon.svg`、`games/fishing/view.html`；`game.js` 共 113 行、13.0 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「16. Fishing（fishing）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-fishing`、`fi-canvas`、`fi-number`、`fi-distance`、`fi-best`、`fi-name`、`fi-signal`、`fi-tension-label`、`fi-tension-value`、`fi-tension`、`fi-tension-fill`、`fi-slack`、`fi-amount`、`fi-go`、`fi-hold`、`fi-cash`、`fi-msg`
+`view-fishing`、`fi-canvas`、`fi-number`、`fi-distance`、`fi-best`、`fi-next`、`fi-name`、`fi-signal`、`fi-tension-label`、`fi-tension-value`、`fi-tension`、`fi-tension-fill`、`fi-slack`、`fi-amount`、`fi-go`、`fi-hold`、`fi-msg`
 
 ## 狀態與常數
 
 - 狀態物件／進行中旗標：`FI`（L2）
-- L3 常數：`FI_MULT`
-- L4 常數：`FI_NAMES`
+- L4 常數：`FI_MILESTONES`、`FI_ENDLESS_FROM`、`FI_ENDLESS_STEP`、`FI_ENDLESS_BONUS`
+- L9 常數：`FI_NAMES`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`fiText` L7、`fiSay` L8、`fiRand` L9、`fiPay` L10、`fiRelease` L11、`fiRemember` L12、`fiUI` L13、`fiRound` L30、`fiStart` L34、`fiLose` L41、`fiCash` L42、`fiLand` L47、`fiNextMode` L53、`fiStep` L59、`fiSync` L76、`fiDraw` L77、`fiPress` L103、`fiLift` L104、`fiLoop` L112
+`fiBonusAt` L5、`fiNextMilestone` L6、`fiFishName` L7、`fiHard` L8、`fiText` L12、`fiSay` L13、`fiRand` L14、`fiRelease` L15、`fiRemember` L16、`fiUI` L17、`fiRound` L32、`fiStart` L36、`fiLose` L42、`fiAward` L43、`fiLand` L44、`fiNextMode` L50、`fiStep` L56、`fiSync` L73、`fiDraw` L74、`fiPress` L100、`fiLift` L101、`fiLoop` L109
 
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L39 `fiStart`：`S.balance-=stake;`
+- L40 `fiStart`：`S.balance-=stake;`
 
 **入帳（領回／獎勵）**
-- L44 `fiCash`：`S.balance+=pay;`
+- L43 `fiAward`：`S.balance+=b;`
 
 **餘額檢查**
-- L38 `fiStart`：`if(stake>S.balance){fiSay(LOW_MSG,'lose');`
+- L39 `fiStart`：`if(stake>S.balance){fiSay(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L31 `fiRound`：`AN.resume(FI.analytics,{stage:FI.number});`
-- L39 `fiStart`：`FI.analytics=AN.start('fishing',stake);`
-- L41 `fiLose`：`AN.end(FI.analytics,0,'loss',{stage:FI.number,landed_fish:FI.landed});`
-- L44 `fiCash`：`AN.end(FI.analytics,pay,'cashout',{stage:FI.number,landed_fish:FI.landed,multiplier:FI_MULT[FI.landed]});`
-- L49 `fiLand`：`AN.progress(FI.analytics,{stage:FI.number,landed_fish:FI.landed,multiplier:FI_MULT[FI.landed]},true);`
+- L33 `fiRound`：`AN.resume(FI.analytics,{stage:FI.number});`
+- L40 `fiStart`：`FI.analytics=AN.start('fishing',stake);`
+- L42 `fiLose`：`AN.end(FI.analytics,FI.earned,FI.earned>0?'complete':'loss',{stage:FI.number,landed_fish:FI.landed});`
+- L43 `fiAward`：`AN.progress(FI.analytics,{stage:n,landed_fish:n,bonus_points:b});`
+- L46 `fiLand`：`AN.progress(FI.analytics,{stage:FI.number,landed_fish:FI.landed},true);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -55,15 +55,15 @@
 
 ## 平台共用相依
 
-- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/controls.js` 會呼叫：`fiSay`
 - 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`FI`
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-定位：`FI`、`fiStep`、`fiLand`。最多10條魚；按住收線、放開卸力，觀察平靜／警示／掙扎／疲累狀態，掙扎時硬拉可能拉遠。初始張力45，第n條距離18+2n公尺；張力>=100斷線，張力<=8持續1.2秒魚逃脫，皆整局0。只有真正釣上魚才提高倍率；每條上岸後可領回或繼續，不按撐住秒數增加獎勵，第10條自動領回。
+定位：`FI`、`fiStep`、`fiLand`。無盡釣魚（2026-11-17 改為直到斷線／脫鉤）：按住收線、放開卸力，觀察平靜／警示／掙扎／疲累狀態，掙扎時硬拉可能拉遠。初始張力45，第n條距離 `18+2×min(n,20)` 公尺，難度參數在第20條後不再增加；張力>=100斷線，張力<=8持續1.2秒魚逃脫，皆結束本局。釣上一條後下一條立刻上鉤，沒有領回。第11條起魚名為「深海魚王 · 第N代」。
 
-第1～10條倍率 `[.6,1.1,1.7,2.5,3.6,5,6.8,9.2,12.5,17]`。
+里程碑以釣到條數計，點數當場入帳、不扣回：10條 +3、12條 +7（累計10點，回本）、14條 +15、17條 +30，之後每多3條 +40。以收線控制器機器人模擬（反應0.18～0.45秒）：多數在第13～16條失敗；但機器人比真人穩定，此校準偏寬鬆，正式上線後應以 GA4 分數重新檢視。大廳卡片只標示「✦ BONUS」。
 
 ## 修改檢查清單
 
