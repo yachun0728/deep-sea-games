@@ -1,47 +1,56 @@
-  /* ---------- Rooftop Cat: original rooftop scene; distance at the fall decides the shared-wallet return ---------- */
+  /* ---------- Rooftop Cat: endless rooftop run; milestone bonuses are credited to the shared wallet when reached ---------- */
   var catBusy=false,catStake=0,catSay=function(){};
   (function(){
 const c=$('ct-canvas'),g=c.getContext('2d'),W=400,H=560,CX=110,OL='#1b1b2f';
-const TIERS=[[300,5],[220,3.2],[150,2.2],[100,1.5],[60,1],[30,.5]];
+// Milestones are deliberately far apart. Distances were calibrated by simulating noisy players (see GAME_RULES.md):
+// ~35% of average players reach 150 m, ~7% reach 300 m (break-even: 3+7 = 10), and 1,000 m is for the best players only.
+const MILESTONES=[[150,3],[300,7],[500,15],[750,30],[1000,60]],ENDLESS_FROM=1000,ENDLESS_STEP=250,ENDLESS_BONUS=40,LADDER=[150,300,500,750,1000,1250],COYOTE=.14;
+const bonusAt=m=>{for(const t of MILESTONES)if(t[0]===m)return t[1];return m>ENDLESS_FROM&&(m-ENDLESS_FROM)%ENDLESS_STEP===0?ENDLESS_BONUS:0};
+const nextMilestone=s=>{for(const t of MILESTONES)if(t[0]>s)return t;return [ENDLESS_FROM+(Math.floor((s-ENDLESS_FROM)/ENDLESS_STEP)+1)*ENDLESS_STEP,ENDLESS_BONUS]};
 let best=0;try{best=+localStorage.getItem('deep-sea-cat-best')||0}catch(e){}
-let analytics=null,paid=0;
-const mult=s=>{for(const t of TIERS)if(s>=t[0])return t[1];return 0};
+let analytics=null,earned=0,awarded=0,pops=[];
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const O=(f,w)=>{g.fillStyle=f;g.fill();g.lineWidth=w||4;g.strokeStyle=OL;g.lineJoin='round';g.stroke()};
 const C=(x,y,r,f,w)=>{g.beginPath();g.arc(x,y,r,0,7);O(f,w||3)};
 const F=(x,y,r,f)=>{g.fillStyle=f;g.beginPath();g.arc(x,y,r,0,7);g.fill()};
 function tx(s,x,y,sz,col){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-30);g.fillStyle=col;g.fillText(s,x,y,W-30)}
 let st='ready',roofs,nid,cy,vy,on,offT,buf,hold=false,dist,v,tt=0,sq=0,shake=0,rec=false,last=0;
-function reset(){roofs=[{x:-60,w:400,y:430,id:0}];nid=1;cy=430;vy=0;on=true;offT=0;buf=0;dist=0;v=230;sq=0;shake=0;fill()}
-function fill(){while(true){const l=roofs[roofs.length-1];if(l.x+l.w>W+260)break;roofs.push({x:l.x+l.w+rnd(45,40+v*.42),w:rnd(120,240),y:Math.max(340,Math.min(470,l.y+rnd(-55,45))),id:nid++})}}
+function reset(){roofs=[{x:-60,w:400,y:430,id:0}];nid=1;cy=430;vy=0;on=true;offT=0;buf=0;dist=0;v=190;sq=0;shake=0;fill()}
+function fill(){while(true){const l=roofs[roofs.length-1];if(l.x+l.w>W+260)break;const s=Math.floor(dist/60),dy=Math.min(20,s*.04);roofs.push({x:l.x+l.w+rnd(45,40+v*.34),w:rnd(Math.max(105,170-s*.12),Math.max(180,300-s*.3)),y:Math.max(340,Math.min(470,l.y+rnd(-55-dy,45+dy))),id:nid++})}}
 reset();
 const score=()=>Math.floor(dist/60);
 function say(text,kind){$('ct-msg').textContent=text;$('ct-msg').className='msg'+(kind?' '+kind:'')}
 catSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
+function award(m,b){
+ earned+=b;S.balance+=b;save();renderAll();
+ AN.progress(analytics,{step:m,score:m,bonus_points:b});
+ pops.push({m:m,b:b,age:0});if(pops.length>3)pops.shift();
+ say('到達 '+m+' 公尺！獎勵 +'+b+' 點已入帳，本局累計 +'+earned+' 點。','win');
+}
 function ui(){
- const s=score(),m=mult(s),live=st==='run',pay=st==='over'?paid:Math.floor(catStake*m),net=pay-catStake;
- setText('ct-score',s+' m');setText('ct-best',best+' m');setText('ct-mult',fx(m)+'×');setText('ct-pay',fmt(pay)+' 點');
- setText('ct-net',catStake&&st!=='ready'?(net>0?'+':'')+fmt(net)+' 點':'—');$('ct-net').style.color=!catStake||st==='ready'?'':net>0?'var(--glow)':net<0?'var(--crush)':'var(--muted)';
+ const s=score(),nx=nextMilestone(s),live=st==='run';
+ setText('ct-score',s+' m');setText('ct-best',best+' m');setText('ct-next',nx[0]+' m · +'+nx[1]);
  $('ct-amount').disabled=catBusy;$('ct-go').disabled=live;setText('ct-go',live?'奔跑中 · 點畫面跳躍':st==='over'?'扣點再跑一次':'扣點開始奔跑');
- let tier=0;TIERS.forEach(t=>{if(!tier&&s>=t[0])tier=t[0]});
- document.querySelectorAll('[data-ct-tier]').forEach(el=>el.setAttribute('aria-current',st!=='ready'&&Number(el.dataset.ctTier)===tier?'step':'false'));
+ let tier=0;LADDER.forEach(m=>{if(s>=m)tier=m});
+ document.querySelectorAll('[data-ct-tier]').forEach(el=>el.setAttribute('aria-current',st!=='ready'&&tier>0&&Number(el.dataset.ctTier)===tier?'step':'false'));
 }
 function die(){
  if(st!=='run')return;
- st='over';hold=false;shake=reduceMotion?0:.35;const s=score(),m=mult(s);paid=Math.floor(catStake*m);rec=s>best;
+ st='over';hold=false;shake=reduceMotion?0:.35;const s=score();rec=s>best;
  if(rec){best=s;try{localStorage.setItem('deep-sea-cat-best',best)}catch(e){}}
- AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,multiplier:m});catBusy=false;S.balance+=paid;save();renderAll();
- const net=paid-catStake;
- if(!paid)say('跑了 '+s+' 公尺，未滿 30 公尺，這一局領不到點數，失去 '+fmt(catStake)+' 點。','lose');
- else say('跑了 '+s+' 公尺，倍率 '+fx(m)+'×，領回 '+fmt(paid)+' 點，本局'+(net>=0?'淨賺 ':'淨損 ')+fmt(Math.abs(net))+' 點。',net>0?'win':'');
+ AN.end(analytics,earned,earned>0?'complete':'loss',{score:s});catBusy=false;save();renderAll();
+ if(!earned)say('跑了 '+s+' 公尺，這一局沒有獎勵。','lose');
+ else say('跑了 '+s+' 公尺，本局共入帳 '+fmt(earned)+' 點。','win');
  ui();
 }
-function jump(){if(on||offT<.1){vy=-600;on=false;offT=1;sq=-.25}else buf=.12}
+function jump(){if(on||offT<COYOTE){vy=-600;on=false;offT=1;sq=-.25}else buf=.12}
 function update(dt){
 tt+=dt;sq*=.86;if(shake>0)shake-=dt;
+pops.forEach(p=>{p.age+=dt});pops=pops.filter(p=>p.age<2.2);
 if(st!=='run')return;
-v=Math.min(420,230+dist*.012);dist+=v*dt;
+v=Math.min(400,190+dist*.0035);dist+=v*dt;
+const reached=score();while(awarded<reached){awarded++;const b=bonusAt(awarded);if(b)award(awarded,b)}
 roofs.forEach(r=>r.x-=v*dt);roofs=roofs.filter(r=>r.x+r.w>-80);fill();
 if(buf>0)buf-=dt;
 const py=cy;vy+=(hold&&vy<0?1000:2100)*dt;cy+=vy*dt;
@@ -81,20 +90,22 @@ if(r.w>170&&r.id%2){g.beginPath();g.rect(r.x+r.w-56,r.y-32,22,34);O('#fff1c1',3)
 g.beginPath();g.rect(r.x-8,r.y-4,r.w+16,16);O('#7b2cbf')}
 g.save();g.translate(CX,cy);g.scale(1+sq*.4,1-sq*.4);drawCat(!on);g.restore();
 g.restore();
-const s=score();
+const s=score(),nx=nextMilestone(s);
 tx(s+' m',W/2,62,40,'#fff1c1');
-if(st==='run')tx(fx(mult(s))+'×',W/2,92,18,mult(s)>=1?'#ffd23f':'#fff1c1');
+if(st==='run')tx('下一個獎勵 '+nx[0]+' m · +'+nx[1]+' 點',W/2,92,15,'#9bfff0');
 tx('最佳 '+best+' m',W-70,34,16,'#ffd23f');
+tx('本局 +'+earned+' 點',70,34,16,earned>0?'#ffd23f':'#fff1c1');
+pops.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/2.2);const y=175-(reduceMotion?0:Math.min(1,p.age*3)*22);tx('+'+p.b+' 點',W/2,y,38,'#ffd23f');tx(p.m+' 公尺里程碑',W/2,y+28,17,'#fff1c1');g.globalAlpha=1});
 if(st!=='run'){
 g.fillStyle='rgba(27,27,47,.5)';g.fillRect(0,0,W,H);
 if(st==='ready'){tx('屋頂貓貓',W/2,240,36,'#ffd23f');tx('右側扣點開始',W/2,290,22,'#fff1c1')}
-else{tx('喵…摔下去了！',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(paid>0?'領回 '+fmt(paid)+' 點':'距離不夠，沒有點數',W/2,314,22,paid>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,348,20,'#ffd23f');tx('右側可以再跑一次',W/2,392,20,'#fff1c1')}}}
+else{tx('喵…摔下去了！',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(earned>0?'本局獎勵 +'+earned+' 點':'沒到 '+MILESTONES[0][0]+' 公尺，沒有獎勵',W/2,314,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,348,20,'#ffd23f');tx('右側可以再跑一次',W/2,392,20,'#fff1c1')}}}
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
  analytics=AN.start('cat',amount);catStake=amount;catBusy=true;S.balance-=amount;save();renderAll();
- reset();paid=0;rec=false;hold=false;st='run';last=performance.now();say('出發！點畫面跳躍，按越久跳越高。');ui();c.focus();
+ reset();earned=0;awarded=0;pops=[];rec=false;hold=false;st='run';last=performance.now();say('出發！點畫面跳躍，按越久跳越高。到達里程碑會當場入帳點數。');ui();c.focus();
 }
 function down(){if(st!=='run'||$('view-cat').hidden||document.hidden)return false;hold=true;jump();return true}
 $('ct-go').addEventListener('click',start);

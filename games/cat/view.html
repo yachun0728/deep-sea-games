@@ -1,15 +1,14 @@
   <section class="view" id="view-cat" hidden>
     <div class="console"><div class="sneak-stage"><canvas id="ct-canvas" tabindex="0" width="400" height="560" aria-label="屋頂貓貓：點一下跳躍，按越久跳越高，別掉進屋頂間的空隙"></canvas></div>
       <div class="side"><section class="panel" aria-label="屋頂貓貓操作">
-        <dl class="stats"><div><dt>本局距離</dt><dd id="ct-score">0 m</dd></div><div><dt>最佳紀錄</dt><dd id="ct-best">0 m</dd></div><div><dt>目前倍率</dt><dd id="ct-mult">0.00×</dd></div></dl>
+        <dl class="stats"><div><dt>本局距離</dt><dd id="ct-score">0 m</dd></div><div><dt>最佳紀錄</dt><dd id="ct-best">0 m</dd></div><div><dt>下一個獎勵</dt><dd id="ct-next">150 m · +3</dd></div></dl>
         <div class="field"><label>每局入場</label><p class="runner-fee">10 <small>點</small></p><input id="ct-amount" type="hidden" value="10"></div>
-        <dl class="stats"><div><dt>照現在可領</dt><dd id="ct-pay">0 點</dd></div><div><dt>本局淨賺／損</dt><dd id="ct-net">—</dd></div></dl>
         <button class="go" id="ct-go" type="button" data-mode="bet">扣點開始奔跑</button>
-        <p class="msg" id="ct-msg" aria-live="polite">扣點後小貓開始在屋頂上奔跑。點畫面跳躍，跑得越遠，摔下去時領回的點數越多。</p>
+        <p class="msg" id="ct-msg" aria-live="polite">扣點後小貓開始在屋頂上奔跑，沒有終點。點畫面跳躍，跑到里程碑獎勵會當場入帳，之後摔下去也不會收回。</p>
         <p class="hint">點一下跳躍，按越久跳越高；也可以用 <kbd>空白鍵</kbd> 或 <kbd>↑</kbd>。別掉進屋頂間的空隙，也別撞上牆。</p>
       </section></div>
     </div>
-    <div class="fishing-ladder campaign-ladder" role="group" aria-label="奔跑距離與領回倍率"><span data-ct-tier="0"><b>未滿 30 m</b>0×</span><span data-ct-tier="30"><b>30 m</b>0.50×</span><span data-ct-tier="60"><b>60 m</b>1.00×</span><span data-ct-tier="100"><b>100 m</b>1.50×</span><span data-ct-tier="150"><b>150 m</b>2.20×</span><span data-ct-tier="220"><b>220 m</b>3.20×</span><span data-ct-tier="300"><b>300 m</b>5.00×</span></div>
-    <details class="rules"><summary>玩法、距離與點數</summary><p>每局固定扣 10 點。小貓會自動往前跑，速度隨距離慢慢加快。點畫面或按空白鍵跳躍，按得越久跳得越高；在快落地前提早按，落地後會自動接著跳。掉進屋頂之間的空隙，或撞上比你高的屋頂側面，這一局就結束。</p><p>這一局沒有中途領回：摔下去的那一刻，依跑到的距離對照上方倍率表結算。領回點數＝入場點數 × 倍率並捨去小數；倍率是總領回金額，不是額外獎金。未滿 30 公尺領不到點數，30 公尺只領回一半，60 公尺才打平。這是操作技巧遊戲，結果取決於跳躍時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已扣點數不退回。最佳紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+    <div class="fishing-ladder cat-ladder" role="group" aria-label="奔跑距離與里程碑獎勵"><span data-ct-tier="150"><b>150 m</b>+3 點</span><span data-ct-tier="300"><b>300 m</b>+7 點（回本）</span><span data-ct-tier="500"><b>500 m</b>+15 點</span><span data-ct-tier="750"><b>750 m</b>+30 點</span><span data-ct-tier="1000"><b>1,000 m</b>+60 點</span><span data-ct-tier="1250"><b>之後每 250 m</b>+40 點</span></div>
+    <details class="rules"><summary>玩法、里程碑與點數</summary><p>每局固定扣 10 點。小貓會自動往前跑，沒有終點，一路跑到掉下去或撞牆為止。起步速度較慢，之後隨距離慢慢加快，約 1,000 公尺後達到最高速；越往後屋頂越窄、高低落差越大。點畫面或按空白鍵跳躍，按得越久跳得越高；在快落地前提早按，落地後會自動接著跳；剛走出屋頂邊緣的 0.14 秒內仍可起跳。</p><p>里程碑獎勵：跑到下列距離時，獎勵點數當場入帳，之後摔下去也不會收回。150 公尺 +3、300 公尺 +7（累計 10 點，剛好回本）、500 公尺 +15、750 公尺 +30、1,000 公尺 +60，之後每多 250 公尺 +40。這是固定點數，沒有倍率，摔下去時也不再另外結算。沒到 150 公尺就只是損失入場的 10 點。</p><p>這些距離刻意設得很遠：要連續準確地跳上百次，一般玩家很難跑過 300 公尺，1,000 公尺只有技術最好的玩家才會看到。這是操作技巧遊戲，結果取決於跳躍與按住的時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的獎勵會保留。最佳紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
 

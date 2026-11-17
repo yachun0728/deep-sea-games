@@ -95,3 +95,7 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 死亡時原付費嘗試以 loss 結束；付費重玩目前關卡另開 game_start，entry_points 記錄實際1～5點，stage 保留死亡關卡，另附 entry_kind=stage_retry 與 retry_count。同次重玩只扣款與送 start 一次。全破 complete 的 net_points 是最後付費嘗試的1減實際扣款，整輪總支出需加總所有付費嘗試，不能一律解讀為-9；multiplier同樣為1／該次實際扣款。
 
 每局固定扣 ENTRY_FEE=10 點，十關全破才獎勵 1 點、不退入場費。首次入場 game_start 的 entry_points 為10；關卡進度沿用 game_progress（stage、score、checkpoint），續關沿用 game_resume。全破自動 game_end：result=complete、payout_points=1（無重玩時 net_points=-9）；提前收隊 result=cashout、payout_points=0；失敗 result=loss、payout_points=0。保留 weapon_level，multiplier 為總入帳／入場費比值（全破0.1、其餘0），不是畫面獎勵規則。切換遊戲、背景及失焦仍暫停有效時間。未新增事件名稱；自訂參數後台收件未於此次驗證。
+
+## 屋頂貓貓（cat）
+
+無盡跑酷，沒有關卡。每局只送一次 game_start（entry_points=10）。每到一個里程碑（150、300、500、750、1000 公尺，之後每 250 公尺）就送一次 `game_progress`，帶 `step`／`score`（公尺數）與 `bonus_points`（該里程碑獎勵），不暫停有效遊玩時間。摔下去時送 `game_end`：`payout_points` 為本局累計入帳點數（沒到 150 公尺為 0）、結果 `complete`（有入帳）或 `loss`，`score` 為跑到的公尺數。`bonus_points` 沒有註冊為 GA4 自訂定義，需要時在後台新增。
