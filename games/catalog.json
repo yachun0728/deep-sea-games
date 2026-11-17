@@ -145,5 +145,12 @@
     "view": "games/reaper/view.html",
     "card": "games/reaper/card.html",
     "icon": "games/reaper/icon.svg"
+  },
+  {
+    "id": "blaster",
+    "logic": "games/blaster/game.js",
+    "view": "games/blaster/view.html",
+    "card": "games/blaster/card.html",
+    "icon": "games/blaster/icon.svg"
   }
 ]

@@ -37,7 +37,8 @@ deep-sea-games/
 │   └── boba/original.html    額外：珍奶原始完整子頁
 ├── tools/
 │   ├── build.py              Python 標準函式庫靜態組合／檢查
-│   └── test_build.py         組合工具與來源一致性測試
+│   ├── test_build.py         組合工具與來源一致性測試
+│   └── test_blaster.mjs      深海火線行為測試（可選 Node.js）
 ├── dodge-run.html            舊網址 → index.html#runner
 ├── dream-repair.html         舊網址 → index.html#dream
 └── .gitignore                忽略 .claude/、crush-depth.html 與 Python 暫存
@@ -78,7 +79,7 @@ flowchart TD
 | mines / plinko / merge | M / P / G |
 | dice / limbo / hilo | D / L / HL |
 | keno / wheel / tower / crossing | KE / WL / TW / CR |
-| dream / elevator / fishing / campaign / reaper | DR / EQ / FI / CP / RP |
+| dream / elevator / fishing / campaign / reaper / blaster | DR / EQ / FI / CP / RP / BL |
 | runner / sneak / cat / bird | runnerBusy / sneakBusy / catBusy / birdBusy，各自內層 IIFE |
 | boba | BOBA、deepSeaBoba；original.html 為子頁 |
 
@@ -104,6 +105,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `deep-sea-cat-best` | Rooftop Cat 最佳顯示距離 |
 | `deep-sea-bird-best` | Poop Bird 最佳顯示距離 |
 | `reaper` | Reaper 最佳正常靈魂處理總數 |
+| `deep-sea-blaster-best` | 深海火線最佳通關數（0～10） |
 | `straw_game_events` | 珍奶本機事件紀錄，上限 5,000 筆 |
 | `straw_game_player_id` | 珍奶本機玩家識別值 |
 | `straw_game_best` | 珍奶最佳杯數 |

@@ -1,6 +1,6 @@
 # Deep Sea Arcade
 
-21 款遊戲共用本機點數與 GA4，部署為 GitHub Pages 靜態網站。
+22 款遊戲共用本機點數與 GA4，部署為 GitHub Pages 靜態網站。
 
 ## 先定位，再讀程式
 
@@ -48,3 +48,7 @@ python3 -m http.server 8765
 本次初始拆分以組合後 HTML 與拆分前檔案逐位元組一致為驗證，沒有改規則、倍率、畫面、localStorage Key 或 GA4。
 
 一般遊戲修改若需回復，回復該次變更的來源與對應產出，再跑 `--check`。不要只回復 index.html，否則下一次組合會覆蓋它。不要使用會丟棄其他未提交工作的全目錄重設；Git 提交與推送依本次授權範圍處理。
+
+## 深海火線行為檢查
+
+修改 `games/blaster/` 時可在有 Node.js 的環境執行 `node tools/test_blaster.mjs`，驗證單次扣款／結算、續關、武器升級、漏怪扣心與暫停。無需 npm 套件；Python 組合檢查仍照常執行。

@@ -89,3 +89,7 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 ## 程式來源定位
 
 追蹤實作位於 `js/analytics.js`，各遊戲呼叫位於 `games/<id>/game.js`，路由追蹤位於 `js/navigation.js`。`index.html` 為靜態組合產出，修改後執行 `python3 tools/build.py` 與 `--check`；事件與欄位契約沒有因來源拆分而變更。
+
+## 深海火線（blaster）
+
+使用共用 game_start／game_resume／game_progress／game_end：投入為 entry_points，過關 checkpoint 記錄 stage 與累計擊破 score，收隊 cashout、生命歸零 loss；結束另附 weapon_level。切換遊戲、背景與失焦透過 progress 暫停，恢復透過 resume，過關選擇不計有效遊玩時間。重設防護與 hot.snapshot 包含 BL.active／BL.stake。未新增 GA4 事件名稱，weapon_level 若需用於自訂報表，仍須另在 GA4 設定自訂定義。
