@@ -223,4 +223,4 @@ KE.active涵蓋免費挖掘，使用現有syncBalance／save入帳；可用時�
 
 時序修復為固定入場10點、無限關卡的停針挑戰，沒有點數獎勵或領回。drDifficulty限制目標寬度與速度，drAdvance管理預告反轉及暫停；第11關起最多一次、第21關起最多兩次。保留既有狀態與ID，不新增儲存Key。hot.snapshot不將本局入場費加回餘額；每局單次扣款與start，過關progress、續關resume、失敗end且payout_points=0。
 
-深海火線武器平衡：已移除散彈（BL.spreadLeft不再存在，無限時武器效果），blWeapon僅依等級決定武器；並調快出怪間距與移速（見GAME_RULES）。基礎火力、火箭速度與武器箱拾取範圍調整，武器箱保證頻率由每5波改為每4波；扣點、重玩費、里程碑與GA4生命週期不變。
+深海火線（2026-11-17 玩法大改）：武器改為「形態」BL.form（7 種）由每關前 3 選 1 決定，火力等級 BL.weapon 只影響傷害與射速；新增 BL.picks／BL.ink／BL.bossSpawned，phase 多一個 'pick'（暫停，不計時、不扣款、離頁記 abandoned）。出怪改為每波預算（blWavePlan），新增水雷、礁石、噴墨烏賊與每5關的深海巨獸；不新增儲存Key，扣點、重玩費、里程碑與GA4生命週期不變。數值與公式見 GAME_RULES.md 第22節。tools/test_blaster.mjs 為 Node 行為測試。
