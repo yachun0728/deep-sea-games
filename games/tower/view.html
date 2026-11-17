@@ -1,0 +1,43 @@
+  <section class="view" id="view-tower" hidden>
+    <div class="console">
+      <div class="dice-stage keno-stage" id="tw-stage">
+        <div class="tower" id="tw-tower" role="group" aria-label="八層水道，由下往上"></div>
+      </div>
+      <div class="side">
+        <section class="panel" aria-label="浮升下注">
+          <div class="field">
+            <label for="tw-amount">下注點數</label>
+            <div class="input-row">
+              <input id="tw-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
+              <button class="chip tchip" type="button" data-tchip="half">½</button>
+              <button class="chip tchip" type="button" data-tchip="double">2×</button>
+              <button class="chip tchip" type="button" data-tchip="max">全押</button>
+            </div>
+          </div>
+          <div class="field">
+            <label id="tw-diff-label">難度</label>
+            <div class="seg-row" role="group" aria-labelledby="tw-diff-label">
+              <button class="chip seg" type="button" data-tdiff="easy">簡單</button>
+              <button class="chip seg" type="button" data-tdiff="mid">中等</button>
+              <button class="chip seg" type="button" data-tdiff="hard">困難</button>
+              <button class="chip seg" type="button" data-tdiff="extreme">極限</button>
+            </div>
+          </div>
+          <dl class="stats">
+            <div><dt>目前倍率</dt><dd id="tw-mult">—</dd></div>
+            <div><dt>下一層</dt><dd id="tw-next">—</dd></div>
+            <div><dt>已上浮</dt><dd id="tw-level">—</dd></div>
+          </dl>
+          <button class="go" id="tw-go" type="button" data-mode="bet">開始</button>
+          <p class="msg" id="tw-msg" aria-live="polite">從最底層開始，每層選一條水道。選到氣泡就往上一層，選到海膽就結束。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>共 8 層，從最底下那層開始，每層選一格。選到氣泡就上浮一層、倍率往上；選到海膽就失去這一注。每上浮一層之後都可以按「領回」拿走「下注 × 目前倍率」，浮到最頂層會自動領回。</p>
+      <p>難度決定每層有幾格、其中幾格安全：簡單是 4 格 3 安全，中等 3 格 2 安全，困難 2 格 1 安全，極限 3 格只有 1 安全。浮完 8 層的倍率分別是 9.69×、24.86×、248.32×、6,364.17×。</p>
+      <p>倍率是「(格數 ÷ 安全格數) 的層數次方 × 0.97」，所以不論難度和在第幾層領回，長期期望回報都約 97%。海膽位置在按下開始時用瀏覽器亂數決定。點數與其他遊戲共用，沒有任何現金價值。</p>
+    </details>
+  </section>
+

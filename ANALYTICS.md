@@ -81,3 +81,11 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 ## 插珍奶（boba）
 
 原版畫面以內嵌文件保留，開始與重玩各扣 20 點，沒有點數獎勵。平台記錄 `game_start`、成功杯數的 `game_progress`，與領回為 0 的 `game_end`。原版復活選擇與示範廣告不計入有效遊玩時間；在遊戲內的點擊與按鍵會通知平台，讓跨文件的遊玩時間正確計算。
+
+## 死神打工（reaper）
+
+每局先扣入場點數，十班制；普通靈魂要接走，綠色通行證要放行。每班全部處理完才送出 `game_progress`，班次以 `stage` 記錄，累計接走數以 `score` 記錄。過關選擇時間不列入有效遊玩時間；收手與三顆心用完分別送出 `cashout` 與 `loss` 的 `game_end`。第一班領回 0.70 倍，第十班自動領回 22 倍。
+
+## 程式來源定位
+
+追蹤實作位於 `js/analytics.js`，各遊戲呼叫位於 `games/<id>/game.js`，路由追蹤位於 `js/navigation.js`。`index.html` 為靜態組合產出，修改後執行 `python3 tools/build.py` 與 `--check`；事件與欄位契約沒有因來源拆分而變更。

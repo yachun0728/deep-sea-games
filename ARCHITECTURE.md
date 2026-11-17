@@ -1,0 +1,138 @@
+# Deep Sea Arcade：架構與來源定位
+
+## 基準
+
+2026-11-17 將現有單檔實作抽出為可維護來源，組合結果與拆分前 index.html 逐位元組一致。拆分基於工作樹（含 Reaper Shift），不代表已提交或部署。規則／UI／倍率／儲存 Key／GA4 未作行為變更。
+
+## 實際檔案結構
+
+```text
+deep-sea-games/
+├── AGENTS.md / ARCHITECTURE.md / GAME_RULES.md
+├── README.md                 本機操作與新增遊戲指南
+├── ANALYTICS.md              GA4 事件與後台設定說明
+├── index.html                產生並追蹤的靜態部署檔，勿直接編輯
+├── templates/
+│   ├── index.html            頁面外殼、選單、view 與 script/style 組合位置
+│   └── lobby.html            大廳結構、卡片與 SVG 圖示組合位置
+├── css/
+│   ├── base.css              原第一段樣式
+│   └── arcade.css            原第二段樣式，保留原級聯順序
+├── js/
+│   ├── analytics.js          獨立追蹤 IIFE
+│   ├── config.js             K、時間、最低投入、初始餘額及 STORE 常數
+│   ├── wallet.js             原 save/load 儲存函式
+│   ├── platform.js           開啟 runtime IIFE、共享狀態 S、工具與 Crash 共用元素
+│   ├── controls.js           Crash 輸入與平台重設按鈕
+│   ├── navigation.js         大廳篩選、VIEWS、hash 路由
+│   ├── bootstrap.js          初始化、宿主 hot 掛鉤、關閉 runtime IIFE
+│   └── runtime.js            JS 片段引用順序；本身不是獨立可執行 JS
+├── games/
+│   ├── catalog.json          遊戲 ID 與檔案路徑索引，不自動註冊遊戲
+│   ├── <id>/
+│   │   ├── game.js           該遊戲原有邏輯片段
+│   │   ├── view.html         該遊戲完整 view
+│   │   ├── card.html         該遊戲大廳卡片
+│   │   └── icon.svg          該遊戲 SVG symbol
+│   └── boba/original.html    額外：珍奶原始完整子頁
+├── tools/
+│   ├── build.py              Python 標準函式庫靜態組合／檢查
+│   └── test_build.py         組合工具與來源一致性測試
+├── dodge-run.html            舊網址 → index.html#runner
+├── dream-repair.html         舊網址 → index.html#dream
+└── .gitignore                忽略 .claude/、crush-depth.html 與 Python 暫存
+```
+
+`.claude/launch.json` 與 crush-depth.html 為既有被忽略的本機檔案，不是可編輯主來源。沒有 package.json、npm 框架、伺服器端模組或 games 以外的隱藏遊戲框架。
+
+## 組合方式與責任邊界
+
+`python3 tools/build.py` 從 templates/index.html 遞迴展開 `{{include:專案相對路徑}}`，不自動加換行或改寫程式。`{{json:games/boba/original.html}}` 將子頁序列化為 JSON 並跳脫 `<`，保留原 srcdoc 橋接流程。相對路徑皆從專案根目錄解析；工具拒絕循環引用與越界路徑。`--check` 不寫檔，檢查產出與遊戲 catalog 是否一致。
+
+這次是「來源拆分」，不是把所有遊戲改成獨立 ES module。JS 片段仍在部署產出中構成原本一個共享 IIFE，順序由 js/runtime.js 決定。不要把 platform.js 或 bootstrap.js 單獨加為 script，單一片段也不一定能獨立通過語法解析；應解析組合後的 game-runtime。
+
+```mermaid
+flowchart TD
+  Template[templates/index.html] --> Build[tools/build.py]
+  Lobby[templates/lobby.html] --> Build
+  Games[games 各遊戲畫面 卡片 圖示 邏輯] --> Build
+  Services[js 共用服務與組合清單] --> Build
+  Styles[css 原樣式] --> Build
+  Build --> Output[index.html 靜態產出]
+  Output --> Pages[GitHub Pages]
+```
+
+### 實際共享相依
+
+- S 在 js/platform.js 初始化，仍同時保存 Crash 狀態與共用餘額；js/wallet.js 僅抽出 save/load，未宣稱錢包已完全獨立。
+- games/crash/game.js 中的 renderAll／renderGo 等仍被其他遊戲使用；js/platform.js 的 rollCrash 同時供 Crash 與 Limbo 使用。各遊戲可直接引用共享 `$`、C、MIN_BET、S、AN 等。
+- 原有各遊戲的 syncBalance 等函式保留在原遊戲區段，沒有為統一介面而改寫。
+- js/bootstrap.js 依原有順序初始化各款遊戲；js/controls.js 的重設防護及 hot.snapshot 仍逐款列舉。新增遊戲必須核對這些接點。
+- js/analytics.js 保持獨立 IIFE，runtime 使用 AN；目前沒有新建 wallet class、事件匯流排或自動註冊框架。
+
+### 遊戲路徑與狀態識別字
+
+| games/ 子目錄（亦為 hash） | 主要定位 |
+| --- | --- |
+| crash | S、placeBet、cashOut、doCrash、frame |
+| mines / plinko / merge | M / P / G |
+| dice / limbo / hilo | D / L / HL |
+| keno / wheel / tower / crossing | KE / WL / TW / CR |
+| dream / elevator / fishing / campaign / reaper | DR / EQ / FI / CP / RP |
+| runner / sneak / cat / bird | runnerBusy / sneakBusy / catBusy / birdBusy，各自內層 IIFE |
+| boba | BOBA、deepSeaBoba；original.html 為子頁 |
+
+### 路由與珍奶橋接
+
+js/navigation.js 的 route 以 hash 切換 view 與 tab、標題、AN.view，空白／未知 hash 回 #lobby；保留大廳捲動位置及左上返回。各遊戲暫停方式不同，沒有新增統一暫停行為。
+
+games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.srcdoc。deepSeaBoba 提供 start、finish、progress、pause、resume、touch，驗證來源 contentWindow；子頁提供 setBobaPlatformActive、finishBobaPlatformRound。原粉色 UI、父頁扣點／GA4、子頁本機紀錄責任維持原狀。
+
+## 資料與錢包
+
+預設餘額 `START_BALANCE=1000`，共用最低投入 `MIN_BET=10`，固定入場遊戲另見玩法文件。讀取餘額以 parseInt 並檢查有限且非負；各投入欄位的讀取／取整方式並非完全一致，修改時應核對對應函式。
+
+| localStorage Key | 用途 |
+| --- | --- |
+| `crush-depth-balance` | 共用餘額字串 |
+| `pearl-merge-best` | 合併最佳分數 |
+| `chayne` | Dodge Run 最佳距離 |
+| `deep-sea-queue-best` | Queue Cutter 最多累積超越乘客數 |
+| `sneak` | Sneak 最多完成關卡 |
+| `deep-sea-fishing-best` | 最多釣獲條數 |
+| `deep-sea-campaign-best` | 選戰最佳票數 |
+| `deep-sea-cat-best` | Rooftop Cat 最佳顯示距離 |
+| `deep-sea-bird-best` | Poop Bird 最佳顯示距離 |
+| `reaper` | Reaper 最佳正常靈魂處理總數 |
+| `straw_game_events` | 珍奶本機事件紀錄，上限 5,000 筆 |
+| `straw_game_player_id` | 珍奶本機玩家識別值 |
+| `straw_game_best` | 珍奶最佳杯數 |
+| `straw_game_last_open` | 珍奶最後開啟時間 |
+| `straw_game_today` | 珍奶當日紀錄 `{d,n}` |
+
+大部分回合只存在記憶體；重新整理不會還原進行中的遊戲，已扣餘額仍保存。這是瀏覽器本機錢包，沒有伺服器帳戶、跨裝置同步或付款系統。
+
+測試用重設按鈕直接設為 1,000 點並發送 points_reset。現有進行中防護檢查多個遊戲，但未涵蓋 `G.active`（Merge）與 `CP.active`（Campaign）；這是核對到的現況缺口，本次沒有修正，不能聲稱所有遊戲中都禁止重設。
+
+## GA4 契約
+
+實際使用直接 Google tag，評估 ID `G-B5PKZSCCEQ`，不是另載入 `GTM-THMM5HVQ`。`window.deepSeaAnalytics` 由頂部 IIFE 建立，runtime 以 `AN` 呼叫。完整操作參考 [ANALYTICS.md](ANALYTICS.md)。
+
+- 事件：`lobby_view`、`game_view`、`game_start`、`game_resume`、`game_progress`、`game_active_time`、`game_end`、`points_reset`。
+- 共用識別：`send_to`、`game_id`、`game_name`、`app_version='analytics-v1'`；回合使用隨機 round_id。
+- 開始投入欄位是 `entry_points`；結束使用 `stake_points`、`payout_points`、`net_points`、`round_active_seconds`、`round_elapsed_seconds`。progress 保留 stage、step、checkpoint 等欄位。
+- end 後移除回合，避免二次結束；結果包含 cashout、loss、complete、cancelled、restart、abandoned。
+- 有效時間只計算目前可見、聚焦、遊玩中的遊戲；閒置 60 秒停止累計，約每 15 秒及切換／結束／失焦時送出 active_seconds。關卡選擇停留不計；同款多顆 Plinko 的遊戲總時間不重複累計。
+- 正常 pagehide 對未完成回合標記 abandoned；BFCache 的 persisted 情況走暫停／恢復。
+- localhost、127.0.0.1、[::1] 與 file 協定不送出追蹤；正式環境可用 `?analytics_debug=1` 啟用 debug_mode。關閉 Google signals 與廣告個人化訊號。
+- 珍奶本機 player_id 不應被新增為 GA4 個人識別參數。此次未驗證 GA4 後台收件或自訂維度設定。
+
+## 執行與部署相依
+
+可用 Python 靜態伺服器在專案根目錄執行 `python3 -m http.server 8765`，以 HTTP 開啟 index.html。無 npm 安裝；修改來源後先執行 `python3 tools/build.py` 產生靜態 index.html，GitHub Pages 本身不需要執行 Python。部署保持 GitHub Pages 專案子路徑相容；本次沒有據未檢視的遠端設定推定部署工作流程。
+
+瀏覽器相依包含 DOM、Canvas 2D、SVG、localStorage、requestAnimationFrame、Pointer／Keyboard 事件等。ResizeObserver、減少動態效果偏好與音效等已有對應偵測／處理。外部資源主要為 Google Fonts（Chakra Petch、Noto Sans TC）及 Google Analytics；核心遊戲沒有框架、ES module 套件或後端 API 相依。珍奶另使用可選 Web Audio、分享／剪貼簿能力及其替代流程。
+
+## 後續演進
+
+目前每款遊戲已能分開定位，通常不必讀取產出的 index.html。若日後共享相依持續增加，再另提方案建立明確錢包／遊戲註冊 API、逐款遷移並做行為測試；此次沒有進行該第二次重構，也沒有變更規則。完整新增遊戲流程見 [README.md](README.md)。

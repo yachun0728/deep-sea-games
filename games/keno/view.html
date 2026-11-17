@@ -1,0 +1,42 @@
+  <section class="view" id="view-keno" hidden>
+    <div class="console">
+      <div class="dice-stage keno-stage">
+        <div class="kboard" id="ke-board" role="group" aria-label="40 格海域"></div>
+        <div class="field">
+          <label id="ke-pay-label">命中幾格的倍率</label>
+          <div class="kpay" id="ke-pay" aria-labelledby="ke-pay-label"></div>
+        </div>
+      </div>
+      <div class="side">
+        <section class="panel" aria-label="撒網下注">
+          <div class="field">
+            <label for="ke-amount">下注點數</label>
+            <div class="input-row">
+              <input id="ke-amount" type="number" inputmode="numeric" min="10" step="10" value="50">
+              <button class="chip kchip" type="button" data-kchip="half">½</button>
+              <button class="chip kchip" type="button" data-kchip="double">2×</button>
+              <button class="chip kchip" type="button" data-kchip="max">全押</button>
+            </div>
+          </div>
+          <div class="seg-row">
+            <button class="chip seg kchip" type="button" id="ke-random">隨機選 5 格</button>
+            <button class="chip seg kchip" type="button" id="ke-clear">清除</button>
+          </div>
+          <dl class="stats">
+            <div><dt>已選</dt><dd id="ke-count">0 / 10</dd></div>
+            <div><dt>命中</dt><dd id="ke-hits">—</dd></div>
+            <div><dt>期望回報</dt><dd id="ke-rtp">—</dd></div>
+          </dl>
+          <button class="go" id="ke-go" type="button" data-mode="bet">撒網</button>
+          <p class="msg" id="ke-msg" aria-live="polite">選 1 到 10 格下網，魚群會出現在其中 10 格，網到越多倍率越高。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>海域有 40 格。你先選 1 到 10 格下網，按「撒網」後魚群會隨機出現在 40 格裡的 10 格。你選的格子裡有幾格出現魚群就是命中幾格，依「命中格數」對照倍率表領回點數。</p>
+      <p>選的格數不同，倍率表也不同：選得少，命中 1 格就有賠；選得多，要命中 2 到 3 格以上才開始賠，但最高倍率也高得多（選 10 格全中是 3,645×，機率約 8 億分之一）。有些低命中格數的倍率低於 1×，代表只拿回一部分下注。</p>
+      <p>每張倍率表都是依實際機率（超幾何分布）算出，再調到期望回報約 97%；面板上的「期望回報」是四捨五入後的實際數字。魚群位置在按下的瞬間用瀏覽器亂數決定。點數與其他遊戲共用，沒有任何現金價值。</p>
+    </details>
+  </section>
+

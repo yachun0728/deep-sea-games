@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<script data-game-analytics>{{include:js/analytics.js}}</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>{{include:css/base.css}}</style>
+<title>深海遊戲廳 Deep Sea Arcade</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>{{include:css/arcade.css}}</style>
+</head>
+<body>
+<div class="wrap is-lobby" id="site-shell">
+  <header class="top">
+    <div class="brand">
+      <a class="brand-home" href="#lobby" aria-label="返回遊戲大廳" title="返回遊戲大廳"><svg class="brand-home-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9" fill="#123c4b" stroke="#326475"/><path d="m8 15 8-7 8 7v10h-6v-7h-4v7H8z" fill="none" stroke="#62e6d2" stroke-width="1.8" stroke-linejoin="round"/></svg><h1 id="game-name" tabindex="-1">深海遊戲廳 <span>Deep Sea Arcade</span></h1></a>
+      <span class="demo-tag">Demo · 虛擬點數</span>
+    </div>
+    <div class="wallet">
+      <span class="label">餘額</span>
+      <span class="amount" id="balance">1,000</span><span class="unit">點</span>
+      <button class="link-btn" id="reset" type="button">重設為 1,000</button>
+    </div>
+  </header>
+
+  <div class="game-toolbar"><a class="back-lobby" href="#lobby"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m14 6-6 6 6 6M8 12h12"/></svg>遊戲大廳</a>
+  <details class="game-picker" id="game-picker"><summary><span>切換遊戲</span><span id="picker-current">壓潰深度</span><span class="picker-chevron" aria-hidden="true">⌄</span></summary><nav class="tabs" aria-label="遊戲">
+    <a href="#lobby" id="tab-lobby">遊戲大廳<small>Lobby</small></a>
+    <a href="#crash" id="tab-crash" aria-current="page">壓潰深度<small>Crash</small></a>
+    <a href="#mines" id="tab-mines">水雷區<small>Mines</small></a>
+    <a href="#plinko" id="tab-plinko">落珠<small>Plinko</small></a>
+    <a href="#merge" id="tab-merge">養珠<small>Merge</small></a>
+    <a href="#dice" id="tab-dice">測深<small>Dice</small></a>
+    <a href="#limbo" id="tab-limbo">探底<small>Limbo</small></a>
+    <a href="#hilo" id="tab-hilo">漲退<small>Hi-Lo</small></a>
+    <a href="#keno" id="tab-keno">撒網<small>Keno</small></a>
+    <a href="#wheel" id="tab-wheel">羅盤<small>Wheel</small></a>
+    <a href="#tower" id="tab-tower">浮升<small>Tower</small></a>
+    <a href="#crossing" id="tab-crossing">橫渡<small>Crossing</small></a>
+    <a href="#dream" id="tab-dream">時序修復<small>Dream Repair</small></a>
+    <a href="#runner" id="tab-runner">閃避跑酷<small>Dodge Run</small></a>
+    <a href="#elevator" id="tab-elevator">插隊大師<small>Queue Cutter</small></a>
+    <a href="#sneak" id="tab-sneak">偷偷下班<small>Sneak Out</small></a>
+    <a href="#boba" id="tab-boba">插珍奶<small>Boba Straw</small></a>
+    <a href="#fishing" id="tab-fishing">深海釣手<small>Fishing</small></a>
+    <a href="#campaign" id="tab-campaign">宣傳車<small>Campaign Truck</small></a>
+    <a href="#cat" id="tab-cat">屋頂貓貓<small>Rooftop Cat</small></a>
+    <a href="#bird" id="tab-bird">便便鳥大戰狼群<small>Poop Bird</small></a>
+    <a href="#reaper" id="tab-reaper">死神打工<small>Reaper Shift</small></a>
+  </nav></details></div>
+
+{{include:templates/lobby.html}}{{include:games/crash/view.html}}{{include:games/mines/view.html}}{{include:games/plinko/view.html}}{{include:games/merge/view.html}}{{include:games/dice/view.html}}{{include:games/limbo/view.html}}{{include:games/hilo/view.html}}{{include:games/keno/view.html}}{{include:games/wheel/view.html}}{{include:games/tower/view.html}}{{include:games/crossing/view.html}}{{include:games/dream/view.html}}{{include:games/runner/view.html}}{{include:games/elevator/view.html}}{{include:games/sneak/view.html}}{{include:games/fishing/view.html}}{{include:games/campaign/view.html}}{{include:games/boba/view.html}}{{include:games/cat/view.html}}{{include:games/bird/view.html}}{{include:games/reaper/view.html}}
+</div>
+
+<script type="application/json" id="boba-source">{{json:games/boba/original.html}}</script>
+<script id="game-runtime">{{include:js/runtime.js}}</script>
+</body>
+</html>

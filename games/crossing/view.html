@@ -1,0 +1,45 @@
+  <section class="view" id="view-crossing" hidden>
+    <div class="console">
+      <div class="dice-stage keno-stage" id="cr-stage">
+        <div class="lanes" id="cr-lanes" role="group" aria-label="十二道海流，由左往右"></div>
+        <div class="dc-read"><div class="sub-line" id="cr-sub">小海龜要從左邊橫渡十二道海流</div></div>
+      </div>
+      <div class="side">
+        <section class="panel" aria-label="橫渡下注">
+          <div class="field">
+            <label for="cr-amount">下注點數</label>
+            <div class="input-row">
+              <input id="cr-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
+              <button class="chip cchip" type="button" data-cchip="half">½</button>
+              <button class="chip cchip" type="button" data-cchip="double">2×</button>
+              <button class="chip cchip" type="button" data-cchip="max">全押</button>
+            </div>
+          </div>
+          <div class="field">
+            <label id="cr-diff-label">難度</label>
+            <div class="seg-row" role="group" aria-labelledby="cr-diff-label">
+              <button class="chip seg" type="button" data-cdiff="easy">簡單</button>
+              <button class="chip seg" type="button" data-cdiff="mid">中等</button>
+              <button class="chip seg" type="button" data-cdiff="hard">困難</button>
+              <button class="chip seg" type="button" data-cdiff="extreme">極限</button>
+            </div>
+          </div>
+          <button class="chip guess hi step-btn" type="button" id="cr-step" disabled>前進一道<small>—</small></button>
+          <dl class="stats">
+            <div><dt>目前倍率</dt><dd id="cr-mult">—</dd></div>
+            <div><dt>每道過關率</dt><dd id="cr-p">—</dd></div>
+            <div><dt>已橫渡</dt><dd id="cr-pos">—</dd></div>
+          </dl>
+          <button class="go" id="cr-go" type="button" data-mode="bet">開始</button>
+          <p class="msg" id="cr-msg" aria-live="polite">每前進一道倍率就往上，但每一道都可能遇上暗流。見好就收。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>按開始後，小海龜停在最左邊。每按一次「前進一道」就往右渡過一道海流：平安渡過倍率就往上，遇上暗流就被捲走、失去這一注。每渡過一道之後都可以按「領回」拿走「下注 × 目前倍率」，渡完十二道會自動領回。</p>
+      <p>這個遊戲不用選格子，只決定要不要再往前。難度決定每一道的過關率：簡單 92%、中等 85%、困難 75%、極限 60%。渡完十二道的倍率分別是 2.63×、6.82×、30.62×、445.62×。</p>
+      <p>倍率是「0.97 ÷ 過關率的道數次方」，所以不論難度和在第幾道領回，長期期望回報都約 97%。暗流在第幾道出現，在按下開始時就用瀏覽器亂數決定；結束後會用虛線標出來。點數與其他遊戲共用，沒有任何現金價值。</p>
+    </details>
+  </section>
+

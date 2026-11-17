@@ -1,2 +1,5 @@
 .claude/
 crush-depth.html
+
+__pycache__/
+*.pyc

@@ -1,0 +1,16 @@
+  <section class="view" id="view-campaign" hidden>
+    <div class="console"><div class="fishing-stage"><canvas id="cp-canvas" width="640" height="460" tabindex="0" aria-label="宣傳車：車子沿街往右開，經過學校、醫院、豪宅時按住畫面靜音"></canvas></div>
+      <div class="side"><section class="panel" aria-label="宣傳車操作">
+        <dl class="stats"><div><dt>目前選票</dt><dd id="cp-votes">200</dd></div><div><dt>吵到安靜區</dt><dd id="cp-miss">0 / 5</dd></div><div><dt>已經過</dt><dd id="cp-lap">0 / 60 棟</dd></div></dl>
+        <div class="queue-watch" id="cp-signal" role="status" aria-live="polite" data-state="safe">尚未出發</div>
+        <div class="field"><label for="cp-amount">本局入場點數</label><div class="input-row"><input id="cp-amount" type="number" min="10" step="1" value="20" inputmode="numeric"><span class="suffix">點</span></div></div>
+        <dl class="stats"><div><dt>目前倍率</dt><dd id="cp-mult">0.00×</dd></div><div><dt>照現在可領</dt><dd id="cp-pay">0 點</dd></div><div><dt>最佳得票</dt><dd id="cp-best">0</dd></div></dl>
+        <button class="go" id="cp-go" type="button" data-mode="bet">扣點出發拉票</button>
+        <button class="chip fishing-hold" id="cp-hold" type="button" disabled>按住靜音 · 放開廣播</button>
+        <p class="msg" id="cp-msg" aria-live="polite">宣傳車沿街往右開，越開越快。平常放開讓喇叭廣播拉票，前方出現紅色的學校、醫院、豪宅時按住畫面靜音。</p><p class="hint">可按住畫面、靜音按鈕或 <kbd>空白鍵</kbd>。畫面上方的「接下來」會預告前面幾棟建築。吵到安靜區 5 次就落選。</p>
+      </section></div>
+    </div>
+    <div class="fishing-ladder campaign-ladder" role="group" aria-label="得票數與領回倍率"><span data-cp-tier="0"><b>未滿 5,000 票</b>0×</span><span data-cp-tier="5000"><b>5,000 票</b>0.50×</span><span data-cp-tier="6000"><b>6,000 票</b>1.00×</span><span data-cp-tier="7000"><b>7,000 票</b>1.50×</span><span data-cp-tier="8000"><b>8,000 票</b>2.20×</span><span data-cp-tier="9000"><b>9,000 票</b>3.20×</span><span data-cp-tier="9700"><b>9,700 票</b>5.00×</span></div>
+    <details class="rules"><summary>玩法、計票與點數</summary><p>每局先扣入場點數（最低 10 點）。宣傳車沿著街道自動往右開，一路經過 60 棟建築後抵達投票所；車速從起點到終點持續加快，終點時約是起點的 2.5 倍，整趟大約 50 秒。其中 22 棟是安靜區（學校、醫院、豪宅），以紅色標示並在路面畫出紅色區段；每局的街道順序會重新洗牌，但不會連續出現三棟安靜區。</p><p>前方的建築會提早出現在畫面右側，畫面上方的「接下來」也會列出接著要經過的六棟。放開時喇叭廣播、按住時靜音。經過一般建築：依廣播時間比例得票，全程廣播得 200 票，全程靜音得 0 票。經過安靜區：有 70% 以上的時間保持靜音就算安靜通過，得 100 票；否則算吵到，扣 400 票並記一次。吵到 5 次立刻落選，本局沒有點數。</p><p>開局有 200 票，整趟全部完美是 10,000 票。抵達投票所後依得票數對照上方倍率表，領回點數＝入場點數 × 倍率並捨去小數；倍率是總領回金額，不是額外獎金。未滿 5,000 票領不到點數，5,000 票只領回一半，6,000 票才打平。這是操作技巧遊戲，結果取決於按放的時機。</p><p>切換遊戲或背景分頁會暫停並放開靜音，回來需要重新按住。重新整理會放棄本局，已扣點數不退回。點數與其他遊戲共用，沒有現金價值。</p></details>
+  </section>
+

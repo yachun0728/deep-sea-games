@@ -1,0 +1,62 @@
+  <section class="view" id="view-wheel" hidden>
+    <div class="console">
+      <div class="dice-stage keno-stage" id="wh-stage">
+        <div class="wh-wrap">
+          <div class="wh-pointer" aria-hidden="true"></div>
+          <canvas id="wh" width="840" height="840" aria-hidden="true"></canvas>
+          <div class="wh-hub" id="wh-hub">—</div>
+        </div>
+        <div class="field">
+          <label id="wh-legend-label">羅盤上的倍率與格數</label>
+          <div class="kpay" id="wh-legend" aria-labelledby="wh-legend-label"></div>
+        </div>
+        <div class="history" aria-label="最近的結果">
+          <span class="label">最近結果</span>
+          <div class="pills" id="wh-last"></div>
+        </div>
+      </div>
+      <div class="side">
+        <section class="panel" aria-label="羅盤下注">
+          <div class="field">
+            <label for="wh-amount">下注點數</label>
+            <div class="input-row">
+              <input id="wh-amount" type="number" inputmode="numeric" min="10" step="10" value="50">
+              <button class="chip wchip" type="button" data-wchip="half">½</button>
+              <button class="chip wchip" type="button" data-wchip="double">2×</button>
+              <button class="chip wchip" type="button" data-wchip="max">全押</button>
+            </div>
+          </div>
+          <div class="field">
+            <label id="wh-risk-label">風險</label>
+            <div class="seg-row" role="group" aria-labelledby="wh-risk-label">
+              <button class="chip seg" type="button" data-wrisk="low">低</button>
+              <button class="chip seg" type="button" data-wrisk="mid">中</button>
+              <button class="chip seg" type="button" data-wrisk="high">高</button>
+            </div>
+          </div>
+          <div class="field">
+            <label id="wh-n-label">羅盤格數</label>
+            <div class="seg-row" role="group" aria-labelledby="wh-n-label">
+              <button class="chip seg" type="button" data-wn="10">10</button>
+              <button class="chip seg" type="button" data-wn="20">20</button>
+              <button class="chip seg" type="button" data-wn="30">30</button>
+            </div>
+          </div>
+          <dl class="stats">
+            <div><dt>最高倍率</dt><dd id="wh-max">—</dd></div>
+            <div><dt>有賠機率</dt><dd id="wh-chance">—</dd></div>
+            <div><dt>期望回報</dt><dd id="wh-rtp">—</dd></div>
+          </dl>
+          <button class="go" id="wh-go" type="button" data-mode="bet">轉動羅盤</button>
+          <p class="msg" id="wh-msg" aria-live="polite">羅盤停下時，上方指針指到哪一格就拿那格的倍率。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>按「轉動羅盤」扣下注，羅盤停下時上方指針指到的那一格決定倍率，領回「下注 × 倍率」；指到 0 就失去這一注。每一格被指到的機率相同。</p>
+      <p>低風險：十格裡八格有賠（1.2× 或 1.3×）、兩格是 0。中風險：一半的格子是 0，另一半是 1.5× 到 3×。高風險：整個羅盤只有一格有賠，倍率是「格數 × 0.97」（10 格 9.7×、20 格 19.4×、30 格 29.1×）。低、中風險的格數只影響羅盤切得多細，機率不變。</p>
+      <p>每種設定所有格子的倍率平均都剛好是 0.97，所以期望回報是 97%。停在哪一格在按下的瞬間用瀏覽器亂數決定，轉動只是把結果演出來。點數與其他遊戲共用，沒有任何現金價值。</p>
+    </details>
+  </section>
+

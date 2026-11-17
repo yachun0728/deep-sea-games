@@ -1,0 +1,2 @@
+  function save() { try { localStorage.setItem(STORE, String(S.balance)); } catch (e) {} }
+  function load() { try { var v = parseInt(localStorage.getItem(STORE), 10); if (isFinite(v) && v >= 0) S.balance = v; } catch (e) {} }

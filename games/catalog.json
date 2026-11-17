@@ -1,0 +1,149 @@
+[
+  {
+    "id": "crash",
+    "logic": "games/crash/game.js",
+    "view": "games/crash/view.html",
+    "card": "games/crash/card.html",
+    "icon": "games/crash/icon.svg"
+  },
+  {
+    "id": "mines",
+    "logic": "games/mines/game.js",
+    "view": "games/mines/view.html",
+    "card": "games/mines/card.html",
+    "icon": "games/mines/icon.svg"
+  },
+  {
+    "id": "plinko",
+    "logic": "games/plinko/game.js",
+    "view": "games/plinko/view.html",
+    "card": "games/plinko/card.html",
+    "icon": "games/plinko/icon.svg"
+  },
+  {
+    "id": "merge",
+    "logic": "games/merge/game.js",
+    "view": "games/merge/view.html",
+    "card": "games/merge/card.html",
+    "icon": "games/merge/icon.svg"
+  },
+  {
+    "id": "dice",
+    "logic": "games/dice/game.js",
+    "view": "games/dice/view.html",
+    "card": "games/dice/card.html",
+    "icon": "games/dice/icon.svg"
+  },
+  {
+    "id": "limbo",
+    "logic": "games/limbo/game.js",
+    "view": "games/limbo/view.html",
+    "card": "games/limbo/card.html",
+    "icon": "games/limbo/icon.svg"
+  },
+  {
+    "id": "hilo",
+    "logic": "games/hilo/game.js",
+    "view": "games/hilo/view.html",
+    "card": "games/hilo/card.html",
+    "icon": "games/hilo/icon.svg"
+  },
+  {
+    "id": "keno",
+    "logic": "games/keno/game.js",
+    "view": "games/keno/view.html",
+    "card": "games/keno/card.html",
+    "icon": "games/keno/icon.svg"
+  },
+  {
+    "id": "wheel",
+    "logic": "games/wheel/game.js",
+    "view": "games/wheel/view.html",
+    "card": "games/wheel/card.html",
+    "icon": "games/wheel/icon.svg"
+  },
+  {
+    "id": "tower",
+    "logic": "games/tower/game.js",
+    "view": "games/tower/view.html",
+    "card": "games/tower/card.html",
+    "icon": "games/tower/icon.svg"
+  },
+  {
+    "id": "crossing",
+    "logic": "games/crossing/game.js",
+    "view": "games/crossing/view.html",
+    "card": "games/crossing/card.html",
+    "icon": "games/crossing/icon.svg"
+  },
+  {
+    "id": "dream",
+    "logic": "games/dream/game.js",
+    "view": "games/dream/view.html",
+    "card": "games/dream/card.html",
+    "icon": "games/dream/icon.svg"
+  },
+  {
+    "id": "runner",
+    "logic": "games/runner/game.js",
+    "view": "games/runner/view.html",
+    "card": "games/runner/card.html",
+    "icon": "games/runner/icon.svg"
+  },
+  {
+    "id": "elevator",
+    "logic": "games/elevator/game.js",
+    "view": "games/elevator/view.html",
+    "card": "games/elevator/card.html",
+    "icon": "games/elevator/icon.svg"
+  },
+  {
+    "id": "sneak",
+    "logic": "games/sneak/game.js",
+    "view": "games/sneak/view.html",
+    "card": "games/sneak/card.html",
+    "icon": "games/sneak/icon.svg"
+  },
+  {
+    "id": "fishing",
+    "logic": "games/fishing/game.js",
+    "view": "games/fishing/view.html",
+    "card": "games/fishing/card.html",
+    "icon": "games/fishing/icon.svg"
+  },
+  {
+    "id": "campaign",
+    "logic": "games/campaign/game.js",
+    "view": "games/campaign/view.html",
+    "card": "games/campaign/card.html",
+    "icon": "games/campaign/icon.svg"
+  },
+  {
+    "id": "boba",
+    "logic": "games/boba/game.js",
+    "view": "games/boba/view.html",
+    "card": "games/boba/card.html",
+    "icon": "games/boba/icon.svg"
+  },
+  {
+    "id": "cat",
+    "logic": "games/cat/game.js",
+    "view": "games/cat/view.html",
+    "card": "games/cat/card.html",
+    "icon": "games/cat/icon.svg"
+  },
+  {
+    "id": "bird",
+    "logic": "games/bird/game.js",
+    "view": "games/bird/view.html",
+    "card": "games/bird/card.html",
+    "icon": "games/bird/icon.svg"
+  },
+  {
+    "id": "reaper",
+    "logic": "games/reaper/game.js",
+    "view": "games/reaper/view.html",
+    "card": "games/reaper/card.html",
+    "icon": "games/reaper/icon.svg"
+  }
+]

@@ -1,0 +1,48 @@
+  <section class="view" id="view-plinko" hidden>
+    <div class="console">
+      <div class="pk-wrap" id="pk-wrap"><canvas id="pk" aria-hidden="true"></canvas></div>
+      <div class="side">
+        <section class="panel" aria-label="落珠下注">
+          <div class="field">
+            <label for="pk-amount">每顆下注點數</label>
+            <div class="input-row">
+              <input id="pk-amount" type="number" inputmode="numeric" min="10" step="10" value="50">
+              <button class="chip pchip" type="button" data-pchip="half">½</button>
+              <button class="chip pchip" type="button" data-pchip="double">2×</button>
+            </div>
+          </div>
+          <div class="field">
+            <label id="pk-risk-label">風險</label>
+            <div class="seg-row" role="group" aria-labelledby="pk-risk-label">
+              <button class="chip seg" type="button" data-risk="low">低</button>
+              <button class="chip seg" type="button" data-risk="mid">中</button>
+              <button class="chip seg" type="button" data-risk="high">高</button>
+            </div>
+          </div>
+          <div class="field">
+            <label id="pk-rows-label">礁釘排數</label>
+            <div class="seg-row" role="group" aria-labelledby="pk-rows-label">
+              <button class="chip seg" type="button" data-rows="8">8</button>
+              <button class="chip seg" type="button" data-rows="12">12</button>
+              <button class="chip seg" type="button" data-rows="16">16</button>
+            </div>
+          </div>
+          <dl class="stats">
+            <div><dt>最高倍率</dt><dd id="pk-max">—</dd></div>
+            <div><dt>中央倍率</dt><dd id="pk-mid">—</dd></div>
+            <div><dt>期望回報</dt><dd id="pk-rtp">—</dd></div>
+            <div class="wide"><dt>最近落點</dt><dd><div class="pills" id="pk-last"></div></dd></div>
+          </dl>
+          <button class="go" id="pk-go" type="button" data-mode="bet">投下珍珠</button>
+          <p class="msg" id="pk-msg" aria-live="polite">珍珠會一路撞著礁釘往下沉，落進哪一格就拿那格的倍率。可以連按連投。</p>
+        </section>
+      </div>
+    </div>
+    <details class="rules">
+      <summary>玩法與機率</summary>
+      <p>每顆珍珠在每一排礁釘都有一半機率往左、一半往右，所以落在中央的機會最大，越靠兩側越難。落進的那一格倍率 × 下注就是領回的點數；中央的倍率低於 1，兩側才是大獎。</p>
+      <p>風險越高，中央賠得越多、兩側給得越高；排數越多，兩側越難到達、最高倍率也越高。每組設定的倍率表都是先依二項分布算出各格機率，再把期望回報調到約 97%，面板上的「期望回報」是四捨五入後的實際數字。</p>
+      <p>落點在投下的瞬間用瀏覽器亂數決定，動畫只是把結果演出來。點數與另外兩個遊戲共用，沒有任何現金價值。</p>
+    </details>
+  </section>
+
