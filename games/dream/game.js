@@ -6,13 +6,11 @@
   function drMultiplier(){return Math.round(Math.pow(1.4,DR.wins)*100)/100;}
   function drUI(){
     $('dr-stage').textContent=DR.stage+' / 10';
-    $('dr-mult').textContent=fx(drMultiplier())+'×';
-    $('dr-pay').textContent=DR.active&&DR.wins?fmt(Math.floor(DR.stake*drMultiplier())):'—';
     $('dr-amount').disabled=DR.active;
     $('dr-go').textContent=DR.phase==='spinning'?'停針':DR.phase==='passed'?'挑戰下一關':'下注並開始';
     $('dr-go').dataset.mode=DR.phase==='spinning'?'surface':'bet';
     $('dr-cash').disabled=!(DR.active&&DR.phase==='passed');
-    $('dr-cash').textContent=DR.active&&DR.wins?'領回 '+fmt(Math.floor(DR.stake*drMultiplier()))+' 點':'過關後可領回';
+    $('dr-cash').textContent=DR.active&&DR.wins?'收手領回':'過關後可領回';
     drDraw();
   }
   function drDraw(){
@@ -36,7 +34,7 @@
     if(DR.phase==='spinning'){
       drAdvance(performance.now());
       var delta=Math.abs(Math.atan2(Math.sin(DR.angle-DR.target),Math.cos(DR.angle-DR.target)));
-      if(delta<=DR.width/2){DR.wins++;DR.phase='passed';AN.progress(DR.analytics,{stage:DR.stage,multiplier:drMultiplier()},true);drSay('第 '+DR.stage+' 關修復成功！可領回 '+fmt(Math.floor(DR.stake*drMultiplier()))+' 點，或冒險挑戰下一關。','win');if(DR.stage===10){drCash();return;}}
+      if(delta<=DR.width/2){DR.wins++;DR.phase='passed';AN.progress(DR.analytics,{stage:DR.stage,multiplier:drMultiplier()},true);drSay('第 '+DR.stage+' 關修復成功！可以領回，或冒險挑戰下一關。','win');if(DR.stage===10){drCash();return;}}
       else{DR.phase='lost';DR.active=false;AN.end(DR.analytics,0,'loss',{stage:DR.stage});drSay('指針沒有停在目標區，失去本局 '+fmt(DR.stake)+' 點下注。','lose');}
       drUI();return;
     }
@@ -47,7 +45,7 @@
   }
   function drCash(){
     if(!DR.active||DR.phase!=='passed')return;
-    var pay=Math.floor(DR.stake*drMultiplier());AN.end(DR.analytics,pay,'cashout',{stage:DR.stage,multiplier:drMultiplier()});S.balance+=pay;DR.active=false;DR.phase='cashed';save();renderAll();drSay((DR.stage===10?'十關全部修復！':'已停止挑戰。')+'領回 '+fmt(pay)+' 點（本局淨利 '+fmt(pay-DR.stake)+' 點）。','win');drUI();
+    var pay=Math.floor(DR.stake*drMultiplier());AN.end(DR.analytics,pay,'cashout',{stage:DR.stage,multiplier:drMultiplier()});S.balance+=pay;DR.active=false;DR.phase='cashed';save();renderAll();drSay((DR.stage===10?'十關全部修復！':'已停止挑戰。')+'領回 '+fmt(pay)+' 點。','win');drUI();
   }
   $('dr-go').addEventListener('click',drAction);$('dr-cash').addEventListener('click',drCash);
   drCanvas.addEventListener('pointerdown',function(e){if(DR.phase==='spinning'){e.preventDefault();drAction();}});

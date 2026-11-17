@@ -33,12 +33,16 @@ deep-sea-games/
 │   │   ├── game.js           該遊戲原有邏輯片段
 │   │   ├── view.html         該遊戲完整 view
 │   │   ├── card.html         該遊戲大廳卡片
-│   │   └── icon.svg          該遊戲 SVG symbol
+│   │   ├── icon.svg          該遊戲 SVG symbol
+│   │   └── README.md         自動產生的說明（函式索引、扣款／追蹤位置、規則摘要），勿手改
+│   ├── README.md             所有遊戲的索引，同樣自動產生
 │   ├── boba/original.html    額外：珍奶原始完整子頁
 │   └── dive/、mrt/           另含 original.html（原始完整子頁）與 style.css（限定該遊戲的平台外框樣式）
 ├── tools/
 │   ├── build.py              Python 標準函式庫靜態組合／檢查
 │   ├── test_build.py         組合工具與來源一致性測試
+│   ├── game_docs.py          從原始碼產生各遊戲的 README.md（`--check` 檢查是否過期）
+│   ├── test_game_docs.py     說明檔新鮮度測試
 │   └── test_blaster.mjs      深海火線行為測試（可選 Node.js）
 ├── dodge-run.html            舊網址 → index.html#runner
 ├── dream-repair.html         舊網址 → index.html#dream

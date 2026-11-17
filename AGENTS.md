@@ -9,7 +9,7 @@
 ## 每次修改前
 
 1. 確認需求、Git 分支、`git status --short` 與既有未提交修改，不覆蓋或順手提交他人的變更。
-2. 先讀 `games/catalog.json` 定位遊戲 ID，搜尋 `games/<id>/` 或對應 `js/` 檔案，再讀附近區段。不要讀取整份產出的 `index.html`，也不要預設讀完所有遊戲。珍奶原始畫面位於 `games/boba/original.html`，只在需求涉及原畫面時讀取。
+2. 先讀 `games/catalog.json` 定位遊戲 ID，再讀該遊戲的 `games/<id>/README.md`（由 `python3 tools/game_docs.py` 從原始碼自動產生：檔案、畫面元素、函式索引與行號、扣款／入帳／追蹤位置、規則摘要；`games/README.md` 是全部遊戲的索引），之後只打開需要的行號範圍，必要時再搜尋 `games/<id>/` 或對應 `js/` 檔案。不要讀取整份產出的 `index.html`，也不要預設讀完所有遊戲。珍奶原始畫面位於 `games/boba/original.html`，只在需求涉及原畫面時讀取。
 3. 優先進行最小範圍的修改。未經要求，不得修改其他遊戲規則、倍率、難度或 UI。
 4. 若涉及多個模組的大幅重構，先提出分階段方案，說明相依性、驗證與回復方式，再開始修改。文件中的未來拆分方向不是重構授權。
 
@@ -30,7 +30,7 @@
 
 依變更範圍執行相關檢查，不需要為純文件修改重玩全部遊戲：
 
-- 通用：執行 `python3 tools/build.py`、`python3 tools/build.py --check`、`python3 -m unittest discover -s tools -p "test_*.py"` 與 `git diff --check`。確認僅修改授權範圍、產出已同步、文件連結正確。
+- 通用：修改遊戲來源或 GAME_RULES.md 後先執行 `python3 tools/game_docs.py` 重新產生說明檔（單元測試會檢查是否過期）；再執行 `python3 tools/build.py`、`python3 tools/build.py --check`、`python3 -m unittest discover -s tools -p "test_*.py"` 與 `git diff --check`。確認僅修改授權範圍、產出已同步、文件連結正確。
 - JavaScript：擷取可執行 script 後做語法檢查；JSON script 必須以 JSON 解析，不能當作 JavaScript 程式。若無 Node 或瀏覽器環境，明列限制。
 - 錢包／遊戲：檢查不足額、開始只扣一次、成功／失敗／領回、續關、重複點擊、重新開始及重新整理後的儲存結果；核對倍率與取整。
 - 路由／UI：從大廳、直接 hash、左上回大廳、手機尺寸、切分頁／背景恢復驗證受影響流程。不得假設每款遊戲離開頁面後都會自動暫停。

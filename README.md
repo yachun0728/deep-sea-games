@@ -8,6 +8,7 @@
 2. [ARCHITECTURE.md](ARCHITECTURE.md)：實際相依、資料 Key、共用程式邊界。
 3. [GAME_RULES.md](GAME_RULES.md)：玩法、扣款與返還公式。
 4. `games/catalog.json`：用 hash ID 找到遊戲來源。
+5. [games/README.md](games/README.md) 與各款的 `games/<id>/README.md`：自動產生的函式索引（含行號）、扣款與追蹤位置、規則摘要。改某一款先讀它，不必掃整支 `game.js`。改完執行 `python3 tools/game_docs.py` 重新產生。
 
 例如修改插隊遊戲，先讀 `games/elevator/game.js` 與 `view.html`；修改大廳入口才讀該目錄的 card.html／icon.svg。不要從 400 KB 的 index.html 開始；它是產出。原生單款邏輯約 2～25 KB，珍奶完整子頁另存，沒有改珍奶時不必讀取。
 

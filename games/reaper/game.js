@@ -9,9 +9,9 @@
   function rpRemember(){if(RP.total>RP.best){RP.best=RP.total;try{localStorage.setItem('reaper',String(RP.best));}catch(_){}}}
   function rpUI(){
     $('rp-level').textContent=RP.level+' / 10';$('rp-progress').textContent=RP.resolved+' / '+RP.count;$('rp-lives').textContent=RP.lives+' / 3';$('rp-score').textContent=RP.total+' 位';$('rp-best').textContent=RP.best+' 位';
-    $('rp-mult').textContent=fx(RP_MULT[RP.cleared])+'×';$('rp-pay').textContent=(RP.phase==='over'?0:rpPay())+' 點';$('rp-amount').disabled=RP.active;
+    $('rp-amount').disabled=RP.active;
     $('rp-go').textContent=RP.phase==='run'?'揮鐮接走':RP.phase==='cleared'?'挑戰下一班':'扣點開始值班';$('rp-go').disabled=RP.phase==='run'&&RP.cd>0;
-    $('rp-go').dataset.mode=RP.phase==='run'?'surface':'bet';$('rp-cash').disabled=RP.phase!=='cleared';$('rp-cash').textContent=RP.phase==='cleared'?'領回 '+rpPay()+' 點':'完成本班後可領回';
+    $('rp-go').dataset.mode=RP.phase==='run'?'surface':'bet';$('rp-cash').disabled=RP.phase!=='cleared';$('rp-cash').textContent=RP.phase==='cleared'?'收手領回':'完成本班後可領回';
     $('rp-difficulty').textContent=RP.level<4?'綠色通行證全程可見':RP.level<7?'通行證靠近金色區域時會淡去':'通行證會提早淡去，先記住誰該放行';
   }
   function rpRound(){
@@ -31,7 +31,7 @@
   }
   function rpCash(){
     if(!RP.active||RP.phase!=='cleared')return;
-    var pay=rpPay(),net=pay-RP.stake;RP.active=false;RP.phase='cashed';AN.end(RP.analytics,pay,'cashout',{stage:RP.level,score:RP.total,multiplier:RP_MULT[RP.cleared]});S.balance+=pay;save();renderAll();rpSay((RP.cleared===10?'十班全部完成！':'已下班。')+'領回 '+pay+' 點，本局'+(net>=0?'淨賺 ':'淨損 ')+Math.abs(net)+' 點。',net>=0?'win':'');rpUI();
+    var pay=rpPay(),net=pay-RP.stake;RP.active=false;RP.phase='cashed';AN.end(RP.analytics,pay,'cashout',{stage:RP.level,score:RP.total,multiplier:RP_MULT[RP.cleared]});S.balance+=pay;save();renderAll();rpSay((RP.cleared===10?'十班全部完成！':'已下班。')+'領回 '+pay+' 點。','win');rpUI();
   }
   function rpStrike(message){
     if(RP.phase!=='run')return;RP.lives--;RP.flash=1.1;RP.message=message;RP.shake=reduceMotion?0:.35;
@@ -40,7 +40,7 @@
   }
   function rpCheck(){
     if(RP.phase!=='run'||RP.resolved<RP.count)return;
-    RP.cleared++;RP.phase='cleared';rpRemember();AN.progress(RP.analytics,{stage:RP.level,score:RP.total,lives:RP.lives,multiplier:RP_MULT[RP.cleared]},true);rpSay('第 '+RP.level+' 班處理完成！可領回 '+rpPay()+' 點，或帶著剩下 '+RP.lives+' 顆心繼續。','win');
+    RP.cleared++;RP.phase='cleared';rpRemember();AN.progress(RP.analytics,{stage:RP.level,score:RP.total,lives:RP.lives,multiplier:RP_MULT[RP.cleared]},true);rpSay('第 '+RP.level+' 班處理完成！可以領回，或帶著剩下 '+RP.lives+' 顆心繼續。','win');
     if(RP.cleared===10)rpCash();else rpUI();
   }
   function rpSpawn(){RP.ghosts.push({x:-30,d:RP.lineup[RP.spawned],m:false});RP.spawned++;RP.gap=Math.max(.56,rpRand(1.1,1.7)-(RP.level-1)*.065);}
@@ -86,7 +86,7 @@
     if(RP.phase!=='run'){
       g.fillStyle='rgba(14,10,26,.88)';g.fillRect(24,135,352,225);g.textAlign='center';g.fillStyle=RP.phase==='over'?'#ff8a80':'#e4f2f3';g.font='600 28px system-ui';g.fillText(RP.phase==='ready'?'死神打工':RP.phase==='cleared'?'這班辛苦了！':RP.phase==='cashed'?'下班領回 '+rpPay()+' 點':'實習結束了！',W/2,186,W-40);
       g.font='15px system-ui';g.fillStyle='#b4acc9';g.fillText(RP.phase==='ready'?'冥界人手不足，你是新來的實習生':RP.phase==='cleared'?'領回點數，或帶著剩下的心繼續':RP.phase==='over'?'三顆心用完，本局未領回金額歸零':'累計接走 '+RP.total+' 位普通靈魂',W/2,225,W-40);
-      g.fillStyle='#6cc58f';g.fillText('看見綠色光環，讓他通過就好',W/2,261);g.fillStyle='#f2c14e';g.font='600 17px system-ui';g.fillText(RP.phase==='ready'?'右側扣點開始值班':RP.phase==='cleared'?'本班完成 · '+RP_MULT[RP.cleared].toFixed(2)+'×':'右側可開始新一局',W/2,312);
+      g.fillStyle='#6cc58f';g.fillText('看見綠色光環，讓他通過就好',W/2,261);g.fillStyle='#f2c14e';g.font='600 17px system-ui';g.fillText(RP.phase==='ready'?'到操作區扣點開始值班':RP.phase==='cleared'?'本班完成':'到操作區開始新一局',W/2,312);
     }
   }
   $('rp-go').addEventListener('click',rpAct);$('rp-cash').addEventListener('click',rpCash);

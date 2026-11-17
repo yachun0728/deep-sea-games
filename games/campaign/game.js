@@ -33,11 +33,11 @@
     cpSay('吵到安靜區 '+CP_MAX_MISS+' 次，被檢舉落選。本局失去 '+fmt(CP.stake)+' 點。','lose');cpUI();
   }
   function cpFinish(){
-    var mult=cpMult(CP.votes),pay=Math.floor(CP.stake*mult),net=pay-CP.stake;
+    var mult=cpMult(CP.votes),pay=Math.floor(CP.stake*mult);
     AN.end(CP.analytics,pay,pay>0?'complete':'loss',{step:CP_COUNT,votes:CP.votes,misses:CP.miss,multiplier:mult});
     CP.active=false;CP.phase='done';CP.pay=pay;cpRelease();cpRemember();S.balance+=pay;save();renderAll();
-    if(!pay)cpSay('開票結果 '+fmt(CP.votes)+' 票，未滿 5,000 票，這一趟領不到點數，失去 '+fmt(CP.stake)+' 點。','lose');
-    else cpSay('開票結果 '+fmt(CP.votes)+' 票，倍率 '+fx(mult)+'×，領回 '+fmt(pay)+' 點，本局'+(net>=0?'淨賺 ':'淨損 ')+fmt(Math.abs(net))+' 點。',net>0?'win':'');
+    if(!pay)cpSay('開票結果 '+fmt(CP.votes)+' 票，這一趟沒有點數。','lose');
+    else cpSay('開票結果 '+fmt(CP.votes)+' 票，領回 '+fmt(pay)+' 點。','win');
     cpUI();
   }
   function cpSettle(lot){
@@ -74,9 +74,9 @@
     return CP.hold?['warn','靜音中 · 這裡放開才有票']:['safe','廣播拉票中'];
   }
   function cpUI(){
-    var live=CP.phase==='run',mult=CP.phase==='lost'?0:cpMult(CP.votes),stake=CP.stake||0,sig=cpSignal();
+    var live=CP.phase==='run',sig=cpSignal();
     cpText('cp-votes',fmt(CP.votes));cpText('cp-miss',CP.miss+' / '+CP_MAX_MISS);cpText('cp-lap',Math.min(CP.idx,CP_COUNT)+' / '+CP_COUNT+' 棟');
-    cpText('cp-mult',fx(mult)+'×');cpText('cp-pay',fmt(CP.phase==='done'?CP.pay:Math.floor(stake*mult))+' 點');cpText('cp-best',fmt(CP.best));
+    cpText('cp-best',fmt(CP.best));
     $('cp-miss').style.color=CP.miss>=3?'var(--crush)':'';
     cpText('cp-signal',sig[1]);$('cp-signal').dataset.state=sig[0];
     $('cp-amount').disabled=CP.active;$('cp-go').disabled=live;

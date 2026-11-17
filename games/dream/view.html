@@ -2,7 +2,7 @@
     <div class="console">
       <div class="timing-stage"><canvas id="dr-canvas" width="520" height="480" aria-label="時序修復：在青綠色目標區域停針"></canvas></div>
       <div class="side"><section class="panel" aria-label="時序修復操作">
-        <dl class="stats"><div><dt>目前關卡</dt><dd id="dr-stage">1 / 10</dd></div><div><dt>累積倍率</dt><dd id="dr-mult">1.00×</dd></div><div><dt>可領回點數</dt><dd id="dr-pay">—</dd></div></dl>
+        <dl class="stats"><div><dt>目前關卡</dt><dd id="dr-stage">1 / 10</dd></div></dl>
         <div class="field"><label>每局入場</label><p class="runner-fee">10 <small>點</small></p><input id="dr-amount" type="hidden" value="10"></div>
         <button class="go" id="dr-go" type="button" data-mode="bet">下注並開始</button>
         <button class="chip timing-cash" id="dr-cash" type="button" disabled>過關後可領回</button>
@@ -10,5 +10,5 @@
         <p class="hint">按「停針」、點擊儀表或按 <kbd>空白鍵</kbd>。過關後可領回，或挑戰下一關。</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法與點數</summary><p>每局固定扣 10 點。指針停在青綠色區域就過關，每關累積倍率乘以 1.4，顯示倍率取小數兩位；領回點數為下注 × 顯示倍率，無條件捨去到整數。第一關過關後即可領回。</p><p>選擇下一關不會再扣點，但目標區域會縮小、指針會加速；失敗會失去整局下注與尚未領回的獎勵。共十關，第十關成功自動領回。這是操作技巧遊戲，結果取決於停針時機。</p><p>切換遊戲或離開瀏覽器分頁會暫停；返回後可繼續。重新整理會放棄尚未結束的本局，已扣下注不退回。點數與其他遊戲共用，沒有現金價值。</p></details>
+    <details class="rules"><summary>玩法與點數</summary><p>每局固定扣 10 點。指針停在青綠色區域就過關；過的關卡越多，可領回的點數越多。第一關過關後即可領回。</p><p>選擇下一關不會再扣點，但目標區域會縮小、指針會加速；失敗會失去整局下注與尚未領回的獎勵。共十關，第十關成功自動領回。這是操作技巧遊戲，結果取決於停針時機。</p><p>切換遊戲或離開瀏覽器分頁會暫停；返回後可繼續。重新整理會放棄尚未結束的本局，已扣下注不退回。點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>

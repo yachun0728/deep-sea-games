@@ -1,0 +1,69 @@
+# 養珠 Pearl Merge（merge）
+
+> 這份檔案由 `python3 tools/game_docs.py` 從原始碼自動產生，請勿手改；修改遊戲後重新執行。先讀這份找到位置，再只打開需要的函式範圍，不必掃整支 `game.js`。
+
+## 概覽
+
+- 網址：`#merge`　分類：技巧闖關　狀態：顯示中
+- 大廳卡片：「滑動合併珍珠，養出更大的數字。」｜每局 10 點 · 滑動合併
+- 追蹤名稱（GA4 `game_name`）：養珠，`game_id` 為 `merge`
+- 檔案：`games/merge/card.html`、`games/merge/game.js`、`games/merge/icon.svg`、`games/merge/view.html`；`game.js` 共 90 行、5.0 KB
+
+- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「4. Pearl Merge（merge）」（下方「規則摘要」已複製）
+
+## 畫面元素（view.html 的 id）
+
+`view-merge`、`mg`、`mg-score`、`mg-max`、`mg-best`、`mg-dir-label`、`mg-go`、`mg-msg`
+
+## 狀態與常數
+
+- 狀態物件／進行中旗標：`G`（L3）
+- L2 常數：`MG_FEE`、`BEST`
+
+## 函式索引（game.js，行號為宣告位置）
+
+`gSay` L7、`mgTier` L8、`mgBuild` L9、`mgRender` L10、`mgSpawn` L25、`mgCanMove` L31、`mgStart` L39、`mgMove` L49
+
+## 錢包與結算接點
+
+**扣款（開始一局）**
+- L42 `mgStart`：`S.balance -= MG_FEE;`
+
+**入帳（領回／獎勵）**
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
+
+**餘額檢查**
+- L40 `mgStart`：`if (S.balance < MG_FEE) { gSay(LOW_MSG, 'lose');`
+
+- 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
+- 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
+
+## 追蹤（GA4）
+
+- L41 `mgStart`：`if(G.active)AN.end(G.analytics,0,'restart',{score:G.score});`
+- L42 `mgStart`：`G.analytics=AN.start('merge',MG_FEE);`
+- L67 `mgMove`：`AN.end(G.analytics,0,'complete',{score:G.score});`
+
+- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+
+## 儲存（localStorage）
+
+- （沒有使用）
+
+## 平台共用相依
+
+- 直接使用的共用名稱：`S`、`AN`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`syncBalance`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- `js/bootstrap.js` 會呼叫：`mgBuild`、`mgRender`
+- `js/controls.js` 會呼叫：`gSay`
+- 「重設為 500 點」進行中防護（`js/controls.js`）：**未涵蓋**：進行中按「重設」仍可能生效
+
+## 規則摘要（取自 GAME_RULES.md）
+
+定位：`G`、`MG_FEE`、`mgStart`、`mgMove`、`mgCanMove`。4×4 滑動合併相同數字；開始兩格，新生格 90% 為2、10%為4。合併增加分數；棋盤無合法移動結束。開始或付費重開扣10，無倍率、無點數獎勵；最佳分數保存於 pearl-merge-best。
+
+## 修改檢查清單
+
+- 先確認需求只涉及這一款；不要順手改其他遊戲、倍率或儲存鍵（見 AGENTS.md）。
+- 改 `games/merge/` 或共用來源後執行 `python3 tools/build.py`，再執行 `--check`、單元測試與 `git diff --check`；`index.html` 是產出，不要直接改。
+- 改了函式、扣款、追蹤或規則：重新執行 `python3 tools/game_docs.py`，並同步 GAME_RULES.md。
+- 在瀏覽器確認：開局只扣一次、結算只一次、切換遊戲／背景會暫停、手機寬度可玩。

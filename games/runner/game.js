@@ -11,10 +11,10 @@ function reward(){return wins?Math.floor(ENTRY_FEE*(Math.round(Math.pow(1.35,win
 function note(text,kind=''){$('rn-msg').textContent=text;$('rn-msg').className='msg'+(kind?' '+kind:'')}
 function remember(){lastD=Math.floor(dist);rec=lastD>best;if(rec){best=lastD;try{localStorage.setItem('chayne',best)}catch(e){}}}
 function runnerUI(){
- $('rn-distance').textContent=Math.floor(progress)+' / '+stageLength()+' m';$('rn-best').textContent=best+' m';$('rn-reward').textContent=reward()+' 點';
+ $('rn-distance').textContent=Math.floor(progress)+' / '+stageLength()+' m';$('rn-best').textContent=best+' m';
  $('rn-stage').textContent=stage+' / '+MAX_STAGE;$('rn-speed').textContent=(v/20).toFixed(1)+'×';
  $('rn-go').disabled=st==='run';$('rn-go').textContent=st==='passed'?'挑戰下一關':st==='run'?'潛行中 · 只需左右換道':'扣 '+ENTRY_FEE+' 點，開始潛行';
- $('rn-finish').disabled=st!=='passed';$('rn-finish').textContent=st==='passed'?'領回 '+reward()+' 點':'過關後可領回';
+ $('rn-finish').disabled=st!=='passed';$('rn-finish').textContent=st==='passed'?'收手領回':'過關後可領回';
  document.querySelectorAll('[data-run]').forEach(b=>b.disabled=st!=='run');
 }
 function round(){AN.resume(runnerAnalytics,{stage:stage});progress=0;px=0;tl=0;v=20+(stage-1)*4;obs=[];lastGap=0;nextAt=10;flash=0;shake=0;st='run';last=performance.now();note('第 '+stage+' 關：左右換道避開障礙，前進 '+stageLength()+' 公尺即可過關。');runnerUI();c.focus()}
@@ -24,7 +24,7 @@ function start(){
  if(S.balance<ENTRY_FEE){note(LOW_MSG,'lose');return;}
  runnerAnalytics=AN.start('runner',ENTRY_FEE);S.balance-=ENTRY_FEE;save();renderAll();stage=1;wins=0;dist=0;runnerBusy=true;round();
 }
-function cash(){if(st!=='passed')return;const pay=reward();AN.end(runnerAnalytics,pay,'cashout',{stage:stage,distance:Math.floor(dist)});st='cashed';runnerBusy=false;S.balance+=pay;save();renderAll();note((stage===MAX_STAGE?'十關全部完成！':'已停止挑戰。')+'領回 '+pay+' 點（本局淨利 '+(pay-20)+' 點）。','win');runnerUI()}
+function cash(){if(st!=='passed')return;const pay=reward();AN.end(runnerAnalytics,pay,'cashout',{stage:stage,distance:Math.floor(dist)});st='cashed';runnerBusy=false;S.balance+=pay;save();renderAll();note((stage===MAX_STAGE?'十關全部完成！':'已停止挑戰。')+'領回 '+pay+' 點。','win');runnerUI()}
 function die(){if(st!=='run')return;AN.end(runnerAnalytics,0,'loss',{stage:stage,distance:Math.floor(dist)});st='dead';runnerBusy=false;shake=reduceMotion?0:.4;remember();note('撞上障礙，失去本局 '+ENTRY_FEE+' 點下注與尚未領回的獎勵。','lose');runnerUI()}
 function spawn(){
  const lanes=[-1,0,1].filter(l=>l!==lastGap);
@@ -41,7 +41,7 @@ function update(dt){
   if(!o.p&&o.z<-.5){o.p=1;const d=Math.abs(px-o.l);if(d>=.62&&d<1.1)flash=.8;}
  }
  obs=obs.filter(o=>o.z>-3);
- if(progress>=stageLength()){remember();wins++;st='passed';AN.progress(runnerAnalytics,{stage:stage,distance:Math.floor(dist)},true);note('第 '+stage+' 關完成！可領回 '+reward()+' 點，或挑戰速度更快的下一關；繼續失敗會失去整局。','win');if(stage===MAX_STAGE)cash();else runnerUI();}
+ if(progress>=stageLength()){remember();wins++;st='passed';AN.progress(runnerAnalytics,{stage:stage,distance:Math.floor(dist)},true);note('第 '+stage+' 關完成！可以領回，或挑戰速度更快的下一關；繼續失敗會失去整局。','win');if(stage===MAX_STAGE)cash();else runnerUI();}
 }
 function draw(){
 const camH=0,ox=shake>0?(Math.random()-.5)*14:0;
@@ -74,7 +74,7 @@ g.fillStyle='#214658';g.fillRect(16,44,W-32,6);g.fillStyle='#62e6d2';g.fillRect(
 if(flash>0&&st==='run'){g.textAlign='center';g.fillStyle='#e4f2f3';g.font='600 26px system-ui,sans-serif';g.fillText(T('near'),W/2,110)}
 if(st!=='run'){
 g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,0,W,H);g.textAlign='center';g.fillStyle='#e4f2f3';
-if(st==='passed'||st==='cashed'){g.font='600 30px system-ui';g.fillText(st==='passed'?'第 '+stage+' 關完成！':'已領回 '+reward()+' 點',W/2,270);g.font='17px system-ui';g.fillText(st==='passed'?'領回點數，或挑戰更快的下一關':'可從右側開始新一局',W/2,315)}
+if(st==='passed'||st==='cashed'){g.font='600 30px system-ui';g.fillText(st==='passed'?'第 '+stage+' 關完成！':'已領回 '+reward()+' 點',W/2,270);g.font='17px system-ui';g.fillText(st==='passed'?'領回點數，或挑戰更快的下一關':'可到操作區開始新一局',W/2,315)}
 else if(st==='ready'){g.font='600 34px system-ui,sans-serif';g.fillText(T('title'),W/2,270);g.font='18px system-ui,sans-serif';g.fillText(T('tap'),W/2,310)}
 else{g.font='600 34px system-ui,sans-serif';g.fillText(T('crash'),W/2,250);
 g.font='600 24px system-ui,sans-serif';g.fillText(lastD+' m',W/2,292);

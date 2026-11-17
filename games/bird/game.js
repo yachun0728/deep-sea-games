@@ -22,9 +22,8 @@ function say(text,kind){$('pb-msg').textContent=text;$('pb-msg').className='msg'
 birdSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
 function ui(){
- const s=score(),m=mult(),live=st==='run',pay=st==='over'?paid:Math.floor(birdStake*m),net=pay-birdStake;
- setText('pb-score',s+' m');setText('pb-boss',eggs+' 隻');setText('pb-best',best+' m');setText('pb-mult',fx(m)+'×');setText('pb-pay',fmt(pay)+' 點');
- setText('pb-net',birdStake&&st!=='ready'?(net>0?'+':'')+fmt(net)+' 點':'—');$('pb-net').style.color=!birdStake||st==='ready'?'':net>0?'var(--glow)':net<0?'var(--crush)':'var(--muted)';
+ const s=score(),live=st==='run';
+ setText('pb-score',s+' m');setText('pb-boss',eggs+' 隻');setText('pb-best',best+' m');
  $('pb-amount').disabled=birdBusy;$('pb-go').disabled=live;setText('pb-go',live?'奔跑中 · 點畫面跳躍':st==='over'?'扣點再跑一次':'扣點開始奔跑');
  let tier=0;TIERS.forEach(t=>{if(!tier&&s>=t[0])tier=t[0]});
  document.querySelectorAll('[data-pb-tier]').forEach(el=>el.setAttribute('aria-current',st!=='ready'&&Number(el.dataset.pbTier)===tier?'step':'false'));
@@ -34,9 +33,9 @@ function die(){
  st='over';hold=false;shake=reduceMotion?0:.35;const s=score(),m=mult();paid=Math.floor(birdStake*m);rec=s>best;
  if(rec){best=s;try{localStorage.setItem('deep-sea-bird-best',best)}catch(e){}}
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,bosses:eggs,multiplier:m});birdBusy=false;S.balance+=paid;save();renderAll();
- const net=paid-birdStake,bossText=eggs?'、擊退 '+eggs+' 隻狼王':'';
- if(!paid)say('跑了 '+s+' 公尺，未滿 30 公尺也沒有擊退狼王，這一局領不到點數，失去 '+fmt(birdStake)+' 點。','lose');
- else say('跑了 '+s+' 公尺'+bossText+'，倍率 '+fx(m)+'×，領回 '+fmt(paid)+' 點，本局'+(net>=0?'淨賺 ':'淨損 ')+fmt(Math.abs(net))+' 點。',net>0?'win':'');
+ const bossText=eggs?'、擊退 '+eggs+' 隻狼王':'';
+ if(!paid)say('跑了 '+s+' 公尺，這一局沒有點數。','lose');
+ else say('跑了 '+s+' 公尺'+bossText+'，領回 '+fmt(paid)+' 點。','win');
  ui();
 }
 function jump(){
@@ -74,7 +73,7 @@ else{o.x-=(v+45)*dt;if(o.hit>0)o.hit-=dt;if(hitRect(o.x-20,o.y-400,o.x+128,o.y))
 for(const p of proj){p.x+=650*dt;
 for(const a of obs){if(a.k!=='a'||a.dead||p.dead)continue;
 if(p.x>=a.x-20&&p.x<=a.x+128&&p.y>a.y-120&&p.y<a.y){p.dead=1;a.hp--;a.x+=55;a.hit=.2;shake=reduceMotion?0:.12;fxs.push({x:a.x,y:a.y-90,t:0,s:'啪！'});
-if(a.hp<=0){a.dead=1;a.vy=-420;boss=false;nextAt=dist+380;eggs++;fxs.push({x:W/2,y:200,t:0,s:'救回一顆蛋 +'+fx(BOSS_BONUS)+'×'});say('擊退狼王！救回第 '+eggs+' 顆蛋，本局倍率加 '+fx(BOSS_BONUS)+'×。','win')}}}}
+if(a.hp<=0){a.dead=1;a.vy=-420;boss=false;nextAt=dist+380;eggs++;fxs.push({x:W/2,y:200,t:0,s:'救回一顆蛋！'});say('擊退狼王！救回第 '+eggs+' 顆蛋。','win')}}}}
 proj=proj.filter(p=>!p.dead&&p.x<W+30);
 obs=obs.filter(o=>o.x>-220&&o.x<W+500&&o.y<H+200)}
 function drawPoop(x,y,s,rot){
@@ -153,7 +152,6 @@ fxs.forEach(f=>{g.globalAlpha=1-f.t/.8;tx(f.s,f.x,f.y-f.t*50,24,'#ffd23f');g.glo
 g.restore();
 const s=score();
 tx(s+' m',W/2,62,40,'#fff1c1');
-if(st==='run')tx(fx(mult())+'×',W/2,92,18,mult()>=1?'#ffd23f':'#fff1c1');
 drawEgg(24,40);tx('x'+eggs,56,48,20,'#fff1c1');
 tx('最佳 '+best+' m',W-70,34,16,'#fff1c1');
 if(warnT>0&&st==='run')tx('狼王來了！快丟便便',W/2,150,26,'#ff5d8f');
@@ -161,8 +159,8 @@ C(PB.x,PB.y,PB.r,pcd>0?'#d9c9a3':'#fff1c1',4);drawPoop(PB.x,PB.y+20,.5);
 if(pcd>0){g.strokeStyle='#ff5d8f';g.lineWidth=5;g.beginPath();g.arc(PB.x,PB.y,PB.r+7,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-pcd/.3));g.stroke()}
 if(st!=='run'){
 g.fillStyle='rgba(27,27,47,.55)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx('便便鳥大戰狼群',W/2,200,32,'#ffd23f');tx('狼群偷走了你的蛋！',W/2,252,19,'#fff1c1');tx('躲開障礙，再賞狼王一坨！',W/2,282,19,'#fff1c1');tx('右側扣點開始',W/2,340,24,'#ffd23f')}
-else{tx('哎喲！被撞到了',W/2,180,32,'#ff5d8f');tx(s+' m',W/2,244,50,'#fff1c1');tx('擊退狼王：'+eggs+' 隻',W/2,284,20,'#fff1c1');tx(paid>0?'領回 '+fmt(paid)+' 點':'距離不夠，沒有點數',W/2,320,22,paid>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,352,20,'#ffd23f');tx('右側可以再跑一次',W/2,396,20,'#fff1c1')}}}
+if(st==='ready'){tx('便便鳥大戰狼群',W/2,200,32,'#ffd23f');tx('狼群偷走了你的蛋！',W/2,252,19,'#fff1c1');tx('躲開障礙，再賞狼王一坨！',W/2,282,19,'#fff1c1');tx('到操作區扣點開始',W/2,340,24,'#ffd23f')}
+else{tx('哎喲！被撞到了',W/2,180,32,'#ff5d8f');tx(s+' m',W/2,244,50,'#fff1c1');tx('擊退狼王：'+eggs+' 隻',W/2,284,20,'#fff1c1');tx(paid>0?'領回 '+fmt(paid)+' 點':'距離不夠，沒有點數',W/2,320,22,paid>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,352,20,'#ffd23f');tx('到操作區再跑一次',W/2,396,20,'#fff1c1')}}}
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;

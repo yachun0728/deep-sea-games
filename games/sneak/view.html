@@ -4,7 +4,6 @@
         <dl class="stats"><div><dt>目前關卡</dt><dd id="sk-stage">1 / 10</dd></div><div><dt>下班進度</dt><dd id="sk-progress">0%</dd></div><div><dt>最佳紀錄</dt><dd id="sk-best">0 關</dd></div></dl>
         <div class="queue-watch" id="sk-signal" role="status" aria-live="polite" data-state="away">等待開始</div><p class="hint" id="sk-difficulty"></p>
         <div class="field"><label>每局入場</label><p class="runner-fee">10 <small>點</small></p><input id="sk-amount" type="hidden" value="10"></div>
-        <dl class="stats"><div><dt>領回倍率</dt><dd id="sk-mult">0.00×</dd></div><div><dt>可領回</dt><dd id="sk-pay">0 點</dd></div></dl>
         <button class="go" id="sk-go" type="button" data-mode="bet">扣點開始下班</button>
         <button class="chip sneak-hold" id="sk-hold" type="button" disabled>按住前進 · 放開裝忙</button>
         <button class="chip timing-cash" id="sk-cash" type="button" disabled>過關後可領回</button>
@@ -12,7 +11,6 @@
         <p class="hint">也可按住 <kbd>空白鍵</kbd>、<kbd>→</kbd> 或 <kbd>D</kbd> 前進。</p>
       </section></div>
     </div>
-    <div class="sneak-ladder"><span>第 1 關 · 0.60×</span><span>第 2 關 · 1.10×</span><span>第 3 關 · 1.80×</span><span>第 4 關 · 2.80×</span><span>第 5 關 · 4.50×</span><span>第 6 關 · 6.50×</span><span>第 7 關 · 9.00×</span><span>第 8 關 · 12.00×</span><span>第 9 關 · 16.00×</span><span>第 10 關 · 21.00×</span></div>
-    <details class="rules"><summary>玩法、難度與點數</summary><p>每局固定扣 10 點。按住遊戲畫面、前進按鈕或空白鍵就走路，放開即站定假裝工作。老闆回頭時繼續走就被抓，失去本局下注與全部未領回獎勵。</p><p>共十關，第一關需實際移動 6 秒，每關增加 2 秒，第十關需 24 秒。後面老闆回頭更頻繁，警示時間由約 0.66 秒逐步縮短，最短 0.25 秒；第三關起警示可能是假動作。第四關有 20%、第五關有 40% 機率跳過警示直接回頭，之後每關再增加 5 個百分點，第十關為 65%，此時有 0.18 秒反應時間；一般回頭有 0.10 秒反應時間。</p><p>每關成功後暫停，可選領回或繼續下一關；繼續不再扣點。領回為入場點數 × 通關倍率並捨去小數，倍率是總領回，不是額外獎金。第一關 0.60×，例如入場 10 點只領回 6 點，淨損 4 點。第十關完成自動領回 21.00×。</p><p>切換遊戲、背景分頁或視窗失焦會停止前進；切換遊戲與背景分頁會暫停。重新整理會放棄本局，已扣點數不退回。點數共用，免費重設僅供測試。</p></details>
+    <details class="rules"><summary>玩法、難度與點數</summary><p>每局固定扣 10 點。按住遊戲畫面、前進按鈕或空白鍵就走路，放開即站定假裝工作。老闆回頭時繼續走就被抓，失去本局下注與全部未領回獎勵。</p><p>共十關，第一關需實際移動 6 秒，每關增加 2 秒，第十關需 24 秒。後面老闆回頭更頻繁，警示時間由約 0.66 秒逐步縮短，最短 0.25 秒；第三關起警示可能是假動作。第四關有 20%、第五關有 40% 機率跳過警示直接回頭，之後每關再增加 5 個百分點，第十關為 65%，此時有 0.18 秒反應時間；一般回頭有 0.10 秒反應時間。</p><p>每關成功後暫停，可選領回或繼續下一關；繼續不再扣點。領回的點數依通過的關數決定，過得越多領得越多。第十關完成自動領回。</p><p>切換遊戲、背景分頁或視窗失焦會停止前進；切換遊戲與背景分頁會暫停。重新整理會放棄本局，已扣點數不退回。點數共用，免費重設僅供測試。</p></details>
   </section>
 

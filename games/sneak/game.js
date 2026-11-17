@@ -3,7 +3,7 @@
   (function(){
 const c=$('sk-canvas'),g=c.getContext('2d'),W=400,H=600,MAX_LEVEL=10,MULT=[0,.6,1.1,1.8,2.8,4.5,6.5,9,12,16,21];
 let best=0;try{const n=Number(localStorage.getItem('sneak'));if(Number.isFinite(n))best=Math.min(MAX_LEVEL,Math.max(0,n))}catch(e){}
-const texts={lv:n=>'第 '+n+' / 10 關',bs:n=>'最佳 '+n+' 關',title:'偷偷下班',tap:'右側扣點開始',caught:'被抓住了！',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'新紀錄！',again:'右側可重新開始',ok:'溜走了！'};const T=k=>texts[k];
+const texts={lv:n=>'第 '+n+' / 10 關',bs:n=>'最佳 '+n+' 關',title:'偷偷下班',tap:'到操作區扣點開始',caught:'被抓住了！',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'新紀錄！',again:'到操作區重新開始',ok:'溜走了！'};const T=k=>texts[k];
 const quotes=['「你這是要去哪裡？」','「報告寫完了嗎就想走？」','「坐下，還有工作呢。」'];
 let sneakAnalytics=null;
 let st='ready',pr=0,lv=1,score=0,ph='away',pt=2,fk=false,grace=0,flash=0,shake=0,hold=false,walk=0,last=0,rec=false,qi=0;
@@ -15,9 +15,9 @@ function remember(){if(score>best){best=score;try{localStorage.setItem('sneak',b
 function release(){mouseHold=false;keyHold=false;hold=false}
 function ui(){
  $('sk-stage').textContent=lv+' / '+MAX_LEVEL;$('sk-progress').textContent=Math.floor(pr)+'%';$('sk-best').textContent=best+' 關';
- $('sk-mult').textContent=MULT[score].toFixed(2)+'×';$('sk-pay').textContent=(st==='dead'?0:pay())+' 點';$('sk-amount').disabled=sneakBusy;
+ $('sk-amount').disabled=sneakBusy;
  $('sk-go').disabled=st==='run';$('sk-go').textContent=st==='passed'?'挑戰下一關':st==='run'?'潛行中 · 按住前進':'扣點開始下班';
- $('sk-cash').disabled=st!=='passed';$('sk-cash').textContent=st==='passed'?'領回 '+pay()+' 點':'過關後可領回';$('sk-hold').disabled=st!=='run';
+ $('sk-cash').disabled=st!=='passed';$('sk-cash').textContent=st==='passed'?'收手領回':'過關後可領回';$('sk-hold').disabled=st!=='run';
  var signal=st!=='run'?(st==='passed'?'過關成功，可領回或繼續':st==='dead'?'本局被抓住了':st==='cashed'?'本局已結算':'等待開始'):ph==='look'?'老闆回頭了！立刻放開':ph==='warn'?'老闆有動靜，小心回頭':'老闆忙著工作';
  if($('sk-signal').textContent!==signal)$('sk-signal').textContent=signal;$('sk-signal').dataset.state=ph;
  $('sk-difficulty').textContent='需移動約 '+(6+(lv-1)*2)+' 秒 · '+(lv>=4?'可能直接回頭':'回頭前會先警示');
@@ -33,8 +33,8 @@ function nextPhase(){
  }else{ph='away';pt=awayT();grace=0;}
 }
 function die(){if(st!=='run')return;AN.end(sneakAnalytics,0,'loss',{stage:lv,progress_percent:Math.floor(pr)});st='dead';sneakBusy=false;release();shake=reduceMotion?0:.4;qi=Math.floor(Math.random()*quotes.length);saySneak('被老闆發現！失去本局 '+sneakStake+' 點與未領回獎勵。','lose');ui()}
-function cash(){if(st!=='passed')return;const amount=pay(),net=amount-sneakStake;AN.end(sneakAnalytics,amount,'cashout',{stage:lv,multiplier:MULT[score]});st='cashed';sneakBusy=false;release();S.balance+=amount;save();renderAll();saySneak((score===MAX_LEVEL?'十關全部溜走！':'已收手。')+'領回 '+amount+' 點，本局'+(net>=0?'淨賺 ':'淨損 ')+Math.abs(net)+' 點。',net>=0?'win':'');ui()}
-function win(){score++;AN.progress(sneakAnalytics,{stage:lv,multiplier:MULT[score]},true);st='passed';release();remember();saySneak('第 '+lv+' 關下班成功！可領回 '+pay()+' 點，或繼續冒險。','win');if(score===MAX_LEVEL)cash();else ui()}
+function cash(){if(st!=='passed')return;const amount=pay(),net=amount-sneakStake;AN.end(sneakAnalytics,amount,'cashout',{stage:lv,multiplier:MULT[score]});st='cashed';sneakBusy=false;release();S.balance+=amount;save();renderAll();saySneak((score===MAX_LEVEL?'十關全部溜走！':'已收手。')+'領回 '+amount+' 點。','win');ui()}
+function win(){score++;AN.progress(sneakAnalytics,{stage:lv,multiplier:MULT[score]},true);st='passed';release();remember();saySneak('第 '+lv+' 關下班成功！可以領回，或繼續冒險。','win');if(score===MAX_LEVEL)cash();else ui()}
 // Split at phase boundaries, grace expiration and the exit; slow frames cannot skip detection.
 function update(dt){
  if(st!=='run')return;
@@ -86,7 +86,7 @@ g.fillStyle='rgba(255,255,255,.2)';g.fillRect(16,44,W-32,6);g.fillStyle='#f2c14e
 if(flash>0&&st==='run'){g.textAlign='center';g.fillStyle='#fff';g.font='600 28px system-ui,sans-serif';g.fillText(T('ok'),W/2,120)}
 if(st!=='run'){
 g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,0,W,H);g.textAlign='center';g.fillStyle='#fff';
-if(st==='passed'||st==='cashed'){g.font='600 30px system-ui,sans-serif';g.fillText(st==='passed'?'成功溜走了！':'已領回 '+pay()+' 點',W/2,250);g.font='18px system-ui,sans-serif';g.fillText(st==='passed'?'領回點數，或繼續下一關':'右側可以開始新一局',W/2,292)}
+if(st==='passed'||st==='cashed'){g.font='600 30px system-ui,sans-serif';g.fillText(st==='passed'?'成功溜走了！':'已領回 '+pay()+' 點',W/2,250);g.font='18px system-ui,sans-serif';g.fillText(st==='passed'?'領回點數，或繼續下一關':'到操作區開始新一局',W/2,292)}
 else if(st==='ready'){g.font='600 32px system-ui,sans-serif';g.fillText(T('title'),W/2,270);g.font='18px system-ui,sans-serif';g.fillText(T('tap'),W/2,310)}
 else{g.font='600 34px system-ui,sans-serif';g.fillText(T('caught'),W/2,215);
 g.font='18px system-ui,sans-serif';g.fillText(quotes[qi],W/2,252);
