@@ -1,6 +1,6 @@
 # Deep Sea Arcade
 
-25 款遊戲共用本機點數與 GA4，部署為 GitHub Pages 靜態網站。目前顯示 15 款（每局固定扣 10 點；點數低於 100 時每分鐘回 1 點），另外 10 款機率遊戲以 catalog 的 `hidden` 隱藏，程式碼保留。
+26 款遊戲共用本機點數與 GA4，部署為 GitHub Pages 靜態網站。目前顯示 16 款（每局固定扣 10 點；點數低於 100 時每分鐘回 1 點），另外 10 款機率遊戲以 catalog 的 `hidden` 隱藏，程式碼保留。
 
 ## 先定位，再讀程式
 
@@ -57,3 +57,7 @@ python3 -m http.server 8765
 ## 深海火線行為檢查
 
 修改 `games/blaster/` 時可在有 Node.js 的環境執行 `node tools/test_blaster.mjs`，驗證單次扣款／結算、續關、武器升級、漏怪扣心與暫停。無需 npm 套件；Python 組合檢查仍照常執行。
+
+## 青蛙吃蟲行為檢查
+
+修改 `games/frog/` 時可在有 Node.js 的環境執行 `node tools/test_frog.mjs`，驗證單次扣款、每 10 隻入帳一次、單次結算、被螫與餓昏結束、生氣蟲的狀態循環與空白鍵只在本款畫面作用。無需 npm 套件。
