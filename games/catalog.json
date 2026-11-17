@@ -150,6 +150,13 @@
     "icon": "games/bird/icon.svg"
   },
   {
+    "id": "frog",
+    "logic": "games/frog/game.js",
+    "view": "games/frog/view.html",
+    "card": "games/frog/card.html",
+    "icon": "games/frog/icon.svg"
+  },
+  {
     "id": "reaper",
     "logic": "games/reaper/game.js",
     "view": "games/reaper/view.html",
