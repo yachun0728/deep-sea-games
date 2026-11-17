@@ -45,7 +45,7 @@ check('Auto-fire damages and kills; a leaking monster only costs one heart',()=>
 });
 check('Collecting weapons unlocks two/three bullets, scales damage beyond level 30',()=>{
   const f=fixture();f.run('blStart();BL.pickups=[{x:200,y:532,speed:0,boost:3}];blStep(.016)');assert.equal(f.state.weapon,4);assert.equal(f.run('blWeapon().pellets'),2);
-  f.run('BL.pickups=[{x:200,y:532,speed:0,boost:6}];blStep(.016)');assert.equal(f.state.weapon,10);assert.equal(f.run('blWeapon().pellets'),3);
+  f.run('BL.pickups=[{x:200,y:532,speed:0,boost:6}];blStep(.016)');assert.equal(f.state.weapon,10);assert.equal(f.run('blWeapon().pellets'),2);
   f.run('BL.pickups=[{x:200,y:532,speed:0,boost:50}];blStep(.016)');assert.equal(f.state.weapon,60);assert.equal(f.run('blWeapon().damage'),21);f.run('BL.bullets=[];blBurst()');assert.equal(f.state.bullets.length,3);
 });
 check('Lane input stays within three lanes; hidden, background and unfocused games pause',()=>{
@@ -58,11 +58,10 @@ check('Clear waits for all waves/enemies/pickups; later enemies are stronger, an
   f.run('BL.wave=BL.waves;BL.enemies=[];BL.pickups=[{x:80,y:10,speed:0,boost:1}];blStep(.016)');assert.equal(f.state.phase,'run');f.run('BL.pickups=[];blStep(.016)');assert.equal(f.state.phase,'cleared');
   f.run('blStart();BL.stage=10;BL.wave=0;blSpawn()');assert(f.state.enemies[0].hp>hp);assert(f.state.enemies[0].speed>speed);assert.equal(f.state.pickups.length,1);
 });
-check('Six weapon forms have unique colors and shot mechanics at their unlock levels',()=>{
+check('Five weapon forms have unique colors and shot mechanics at their unlock levels',()=>{
   const f=fixture();const kinds=[],colors=[];
-  for(const level of [1,4,8,13,18,24]){f.run(`BL.weapon=${level};BL.spreadLeft=12;BL.bullets=[];blBurst()`);kinds.push(f.run('blWeapon().kind'));colors.push(f.run('blWeapon().color'));assert(f.state.bullets.every(b=>b.kind===kinds.at(-1)));}
-  assert.equal(new Set(kinds).size,6);assert.equal(new Set(colors).size,6);
-  f.run('BL.weapon=8;BL.spreadLeft=12;BL.bullets=[];blBurst()');assert(f.state.bullets.some(b=>b.vx<0));assert(f.state.bullets.some(b=>b.vx>0));
+  for(const level of [1,4,13,18,24]){f.run(`BL.weapon=${level};BL.bullets=[];blBurst()`);kinds.push(f.run('blWeapon().kind'));colors.push(f.run('blWeapon().color'));assert(f.state.bullets.every(b=>b.kind===kinds.at(-1)));}
+  assert.equal(new Set(kinds).size,5);assert.equal(new Set(colors).size,5);
 });
 check('Piercing rail hits three enemies once each without repeated damage',()=>{
   const f=fixture();f.run("blStart();BL.weapon=13;BL.enemies=[440,380,320].map((y,i)=>({x:200,y,hp:100,max:100,speed:0,id:i+100}));BL.bullets=[];blBurst();var testBeam=BL.bullets[0]");
@@ -91,10 +90,10 @@ check('Stages are longer while later-stage and within-stage travel/spawning acce
   f.run('blStart();BL.wave=0');const slow=f.run('blPace()');f.run('BL.wave=BL.waves');assert(f.run('blPace()')>slow);
   for(const [stage,type,wave] of [[2,'ray',2],[3,'eel',3],[4,'turtle',7],[5,'jelly',5]])assert.equal(f.run(`BL.stage=${stage};blMobType(${wave})`),type);
 });
-check('Six weapon silhouettes differ and every monster renderer executes',()=>{
+check('Five weapon silhouettes differ and every monster renderer executes',()=>{
   const f=fixture(),signatures=new Set();
-  for(const level of [1,4,8,13,18,24]){f.state.weapon=level;f.state.spreadLeft=12;f.drawCalls.length=0;f.run('blDrawPlayer()');signatures.add(JSON.stringify(f.drawCalls));}
-  assert.equal(signatures.size,6);
+  for(const level of [1,4,13,18,24]){f.state.weapon=level;f.drawCalls.length=0;f.run('blDrawPlayer()');signatures.add(JSON.stringify(f.drawCalls));}
+  assert.equal(signatures.size,5);
   for(const type of ['octo','crab','ray','eel','turtle','jelly','mini'])f.run(`blDrawMonster(blEnemy(1,200,'${type}',20))`);
 });
 check('Retry fees scale from one to five; replay keeps the current stage and weapon with three hearts',()=>{
@@ -137,18 +136,16 @@ check('Generated scripts compile and existing JSON child document still decodes'
   const html=fs.readFileSync(new URL('index.html',root),'utf8');for(const [,attrs,body] of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)){if(attrs.includes('application/json'))JSON.parse(body);else new vm.Script(body);}
 });
 export {results};
-check('Spread expires to twin at the same level; pickups refresh rather than stack its duration',()=>{
- const f=fixture();f.run('blStart();BL.weapon=7;BL.pickups=[{x:200,y:532,speed:0,boost:1}];blStep(.016)');assert.equal(f.run('blWeapon().kind'),'spread');assert.equal(f.state.spreadLeft,12);
- f.run('BL.spreadLeft=.01;BL.nextWave=100;blStep(.016)');assert.equal(f.state.spreadLeft,0);assert.equal(f.run('blWeapon().kind'),'twin');assert.equal(f.state.weapon,8);
- f.run('BL.pickups=[{x:200,y:532,speed:0,boost:1}];blStep(.016)');assert.equal(f.run('blWeapon().kind'),'spread');assert.equal(f.state.spreadLeft,12);
- f.run('BL.pickups=[{x:200,y:532,speed:0,boost:1}];blStep(.016)');assert.equal(f.state.spreadLeft,12);
- f.run('BL.weapon=12;BL.pickups=[{x:200,y:532,speed:0,boost:1}];blStep(.016)');assert.equal(f.run('blWeapon().kind'),'rail');assert.equal(f.state.spreadLeft,0);
+check('Shotgun is removed: levels 4-12 stay twin, rail from 13, no timed power remains, retry keeps level',()=>{
+ const f=fixture();f.run('blStart()');
+ for(const level of [4,8,9,12]){f.run(`BL.weapon=${level}`);assert.equal(f.run('blWeapon().kind'),'twin');assert.equal(f.run('blWeapon().pellets'),2);}
+ f.run('BL.weapon=12;BL.pickups=[{x:200,y:532,speed:0,boost:1}];blStep(.016)');assert.equal(f.run('blWeapon().kind'),'rail');
+ assert.equal(f.state.spreadLeft,undefined);assert.equal(f.run("BL_GUNS.some(function(g){return g.kind==='spread'})"),false);
+ f.run('BL.weapon=8;blHurt();blHurt();blHurt();blRetry()');assert.equal(f.state.weapon,8);assert.equal(f.run('blWeapon().kind'),'twin');
 });
-check('Spread timer pauses on hidden/background/focus/checkpoint; death clears only timed power',()=>{
- const f=fixture();f.run('blStart();BL.weapon=8;BL.spreadLeft=7');
- for(const pause of ['hidden','background','focus']){f.el('view-blaster').hidden=pause==='hidden';f.document.hidden=pause==='background';f.state.focused=pause!=='focus';f.advance(5000);assert.equal(f.state.spreadLeft,7);}
- f.el('view-blaster').hidden=false;f.document.hidden=false;f.state.focused=true;f.run('blClear()');f.advance(5000);assert.equal(f.state.spreadLeft,7);f.run('blStart()');assert.equal(f.state.spreadLeft,7);f.advance(40);assert(f.state.spreadLeft<7);
- f.run('blHurt();blHurt();blHurt();blRetry()');assert.equal(f.state.weapon,8);assert.equal(f.state.spreadLeft,0);assert.equal(f.run('blWeapon().kind'),'twin');
+check('Pacing is faster than the old curve (stage 1 speed 120, wave gap 1.6, in-stage boost 35%)',()=>{
+ const f=fixture();assert.equal(f.run('blStageConfig(1).speed'),120);assert.equal(f.run('blStageConfig(1).interval'),1.6);assert.equal(f.run('blStageConfig(10).speed'),255);
+ assert(f.run('blStageConfig(40).interval')>=.62);f.run('blStart();BL.wave=BL.waves');assert(Math.abs(f.run('blPace()')-1.35)<1e-9);
 });
 check('Starter can kill a first-stage octopus within three hits; crates have wider pickup reach',()=>{
  const f=fixture();f.run('blStart();var starter=blWeapon();var hp=blHealth()');assert(Math.ceil(f.run('hp/(starter.damage*starter.scale)'))<=3);

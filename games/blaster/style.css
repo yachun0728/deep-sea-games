@@ -13,5 +13,5 @@
 #view-blaster .bl-guide{margin:10px 0;color:var(--muted);font-size:12px}#view-blaster .bl-guide summary{cursor:pointer;padding:6px 0}
 #view-blaster .bl-arsenal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:10px 0}
 #view-blaster .bl-arsenal span{padding:7px 3px;border:1px solid currentColor;border-radius:5px;text-align:center;font-size:10px;color:#9bfff0}
-#view-blaster .bl-arsenal span:nth-child(2){color:#74baff}#view-blaster .bl-arsenal span:nth-child(3){color:#ffcf68}#view-blaster .bl-arsenal span:nth-child(4){color:#9dff86}#view-blaster .bl-arsenal span:nth-child(5){color:#ff8f75}#view-blaster .bl-arsenal span:nth-child(6){color:#e6a3ff}
+#view-blaster .bl-arsenal span:nth-child(2){color:#74baff}#view-blaster .bl-arsenal span:nth-child(3){color:#9dff86}#view-blaster .bl-arsenal span:nth-child(4){color:#ff8f75}#view-blaster .bl-arsenal span:nth-child(5){color:#e6a3ff}
 #view-blaster .bl-reward-note{margin:14px 0;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--muted);font-size:13px;line-height:1.8}#view-blaster .bl-reward-note strong{color:#ffdc87}
