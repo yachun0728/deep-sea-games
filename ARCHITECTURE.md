@@ -46,7 +46,8 @@ deep-sea-games/
 │   ├── test_game_docs.py     說明檔新鮮度測試
 │   ├── test_blaster.mjs      深海火線行為測試（可選 Node.js）
 │   ├── test_frog.mjs         青蛙吃蟲行為測試（可選 Node.js）
-│   └── test_nap.mjs          偷睡大師行為測試（可選 Node.js）
+│   ├── test_nap.mjs          偷睡大師行為測試（可選 Node.js）
+│   └── test_peek.mjs         別看行為測試（可選 Node.js）
 ├── dodge-run.html            舊網址 → index.html#runner
 ├── dream-repair.html         舊網址 → index.html#dream
 └── .gitignore                忽略 .claude/、crush-depth.html 與 Python 暫存
@@ -88,7 +89,7 @@ flowchart TD
 | dice / limbo / hilo | D / L / HL |
 | keno / wheel / tower / crossing | KE / WL / TW / CR |
 | dream / elevator / fishing / campaign / reaper / blaster | DR / EQ / FI / CP / RP / BL |
-| runner / sneak / cat / bird / frog / nap / clock-out | runnerBusy / sneakBusy / catBusy / birdBusy / frogBusy / napBusy / clockBusy，各自內層 IIFE |
+| runner / sneak / cat / bird / frog / nap / clock-out / peek | runnerBusy / sneakBusy / catBusy / birdBusy / frogBusy / napBusy / clockBusy / peekBusy，各自內層 IIFE |
 | carp / rider / boss / thief / baby | carpBusy / riderBusy / bossBusy / thiefBusy / babyBusy，各自內層 IIFE（由獨立頁面改編，共用 G 物件與造型解鎖流程）|
 | boba | BOBA、deepSeaBoba；original.html 為子頁 |
 | dive | DIVE、deepSeaDive；original.html 為子頁（一口氣探險） |
@@ -131,6 +132,8 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `deep-sea-bird-best` | Poop Bird 最佳顯示距離 |
 | `deep-sea-frog-best` | 青蛙吃蟲最多吃掉隻數；新增於 2026-11-17 |
 | `deep-sea-clock-out-best` | 下班保衛戰最高分；新增於 2026-11-17 |
+| `deep-sea-peek-best` | 別看最佳進度（百分比整數）；新增於 2026-11-17 |
+| `deep-sea-peek-deaths` | 別看各死因次數（JSON 物件）；新增於 2026-11-17 |
 | `deep-sea-nap-best` | 偷睡大師最高分；新增於 2026-11-17 |
 | `reaper` | Reaper 最佳正常靈魂處理總數 |
 | `deep-sea-blaster-best` | 深海火線最佳通關數（無關卡上限，沿用既有數值格式） |

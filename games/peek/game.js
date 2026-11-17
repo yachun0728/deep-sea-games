@@ -2,10 +2,10 @@
   var peekBusy=false,peekStake=0,peekSay=function(){};
   (function(){
 const c=$('pk-canvas'),g=c.getContext('2d'),W=400,H=560,OL='#120d0a';
-const WIND_RATE=4;                         // % of the music-box spring wound per second while cranking
+const WIND_RATE=3;                         // % of the music-box spring wound per second while cranking
 const WIND_MAX_TILT=.35;                   // cranking only works while the box is nearly level
 const MILE_EVENTS=3,MILE_REWARD=2,WIN_REWARD=5; // fixed BONUS: survive 3 spirits +2, open the box +5, each once per round
-const FIRST_GAP=5,GAP_MIN=5,GAP_MAX=8;     // seconds before the first spirit and between spirits
+const FIRST_GAP=4,GAP_MIN=4,GAP_MAX=7;     // seconds before the first spirit and between spirits
 const DIRECTOR_AT=85,DIRECTOR_P=.75;       // once per round, past 85% a spirit may strike within 3 seconds
 const TILT_SPEED=6;                        // keyboard / button lean speed per second
 const EYE={warn:2.5,judge:3,away:.5,grace:.35};   // lean away from the red beam for 3s, 0.35s of slack
