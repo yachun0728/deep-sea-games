@@ -109,7 +109,7 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 無盡關卡，首次入場10點；每通過10關即加1點至錢包。game_progress 的 bonus_points 是該次里程碑入帳，total_bonus_points 是本輪累計；一般關卡 bonus_points=0。關後暫停、續關 resume 及有效時間邏輯保留。game_end 的 payout_points 記錄「目前付費嘗試已入帳點數」，結束事件不再發點，避免二次入帳；loss、cashout、abandoned 均可能有正的 payout_points，死亡不扣回。multiplier 為該嘗試實際入帳／實際扣款，不是 UI 獎勵規則。
 
-死亡後重玩目前關卡另開 start（entry_kind=stage_retry、stage、retry_count），費用1～5點，第10關以上固定5點。每個新付費嘗試的入帳累計歸零，但本輪總獎勵及已發里程碑保留。正常離頁以捕獲階段 handler 先結束該回合並帶入已入帳點數；BFCache persisted 不提前結束。事件名稱與既有 round_id／entry_points／net_points 等契約保持。未驗證後台收件或自訂定義。
+死亡後重玩目前關卡另開 start（entry_kind=stage_retry、stage、retry_count），費用1～5點，第10關以上固定5點。每個新付費嘗試的入帳累計歸零，但本輪總獎勵及已發里程碑保留。正常離頁以捕獲階段 handler 先結束該回合並帶入已入帳點數；BFCache persisted 不提前結束。事件名稱與既有 round_id／entry_points／net_points 等契約保持。2026-11-17 起關後 game_progress 另帶 weapon_form（目前武器形態）與 boss（該關是否王關）參數；每關前的三選一不另送事件（pick 階段不計有效遊玩時間，離頁記 abandoned）。未驗證後台收件或自訂定義。
 
 ## 屋頂貓貓（cat）
 
