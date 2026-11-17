@@ -421,18 +421,37 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
 
 .reaper-stage{min-width:0;display:grid;place-items:center;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#1b1630}.reaper-stage canvas{display:block;width:min(100%,400px);height:auto;touch-action:manipulation;user-select:none;-webkit-user-select:none}.reaper-legend{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#dfe9ff}.reaper-legend span:last-child{color:#6cc58f}.reaper-ladder{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.reaper-ladder span{padding:9px 4px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--muted);font-size:12px;text-align:center}@media(max-width:700px){.reaper-stage canvas{max-height:65vh;object-fit:contain}.reaper-ladder{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
-/* Separate page navigation from the game's own gesture surface. */
-.mobile-page-tools,.mobile-scroll-rail{display:none}
+/* Compact mobile app chrome; gameplay keeps the full available width. */
+.mobile-page-tools,.mobile-scroll-pad{display:none}
 @media(max-width:880px){
-  .wrap:not(.is-lobby){margin-inline-end:28px}
-  .wrap:not(.is-lobby) .mobile-page-tools{position:sticky;z-index:80;top:max(4px,env(safe-area-inset-top,0px));align-self:stretch;display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:14px;background:rgba(12,34,48,.97);box-shadow:0 5px 20px rgba(0,0,0,.3);touch-action:pan-y pinch-zoom}
-  .mobile-page-tools button{min-height:44px;min-width:0;flex:1;padding:8px 12px;border:0;border-radius:10px;background:var(--panel-2);color:var(--fg);font:600 13px var(--font-body);white-space:nowrap;cursor:pointer;touch-action:pan-y pinch-zoom}
-  .view canvas,.view iframe,.view .mg,.view .side .go{scroll-margin-top:calc(64px + env(safe-area-inset-top,0px))}
-  .mobile-page-tools button:last-child{color:var(--glow)}
-  .wrap:not(.is-lobby) .mobile-scroll-rail{position:fixed;z-index:80;right:max(2px,env(safe-area-inset-right,0px));top:36%;width:26px;height:174px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:1px solid var(--line);border-radius:14px;background:rgba(17,48,65,.94);color:var(--muted);touch-action:pan-y pinch-zoom;user-select:none;-webkit-user-select:none}
-  .mobile-scroll-rail .rail-label{writing-mode:vertical-rl;font-size:10px;letter-spacing:2px;line-height:1.3}
-  .mobile-scroll-rail .rail-arrow{font-size:16px;line-height:1;color:var(--glow)}
+  .wrap:not(.is-lobby){gap:10px}
+  .wrap:not(.is-lobby) .top{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px}
+  .wrap:not(.is-lobby) .brand{display:block;min-width:0}
+  .wrap:not(.is-lobby) .brand-home{gap:7px;min-width:0}
+  .wrap:not(.is-lobby) .brand-home-icon{width:25px;height:25px}
+  .wrap:not(.is-lobby) .brand-home h1{min-width:0;margin:0;font-size:16px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .wrap:not(.is-lobby) .brand-home h1 span,.wrap:not(.is-lobby) .demo-tag,.wrap:not(.is-lobby) .wallet .label,.wrap:not(.is-lobby) .regen-hint{display:none}
+  .wrap:not(.is-lobby) .wallet-box{min-width:0;max-width:145px}
+  .wrap:not(.is-lobby) .wallet{gap:4px;white-space:nowrap}
+  .wrap:not(.is-lobby) .wallet .amount{font-size:19px;line-height:1.3}
+  .wrap:not(.is-lobby) .wallet .unit{font-size:10px}
+  .wrap:not(.is-lobby) .wallet .link-btn{padding:4px 0 4px 3px;font-size:10px;line-height:1.4}
+  .wrap:not(.is-lobby) .game-toolbar{position:sticky;z-index:80;top:0;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:8px;padding:4px 0;background:var(--abyss);touch-action:pan-y pinch-zoom}
+  .wrap:not(.is-lobby) .back-lobby{display:none}
+  .wrap:not(.is-lobby) .game-picker{min-width:0;border:0;background:transparent;overflow:visible}
+  .wrap:not(.is-lobby) .game-picker summary{box-sizing:border-box;min-height:44px;padding:10px 12px;gap:8px;border:1px solid var(--line);border-radius:9px;background:var(--panel);font-size:12px;line-height:1.4}
+  .wrap:not(.is-lobby) #picker-current{display:none}
+  .wrap:not(.is-lobby) .picker-chevron{margin-left:auto}
+  .wrap:not(.is-lobby) .game-picker .tabs{position:absolute;z-index:90;top:calc(100% + 4px);left:0;right:0;max-height:50svh;border:1px solid var(--line);border-radius:9px;background:var(--panel);box-shadow:0 10px 24px rgba(0,0,0,.3)}
+  .wrap:not(.is-lobby) .mobile-page-tools{display:flex;align-items:center;gap:6px;touch-action:pan-y pinch-zoom}
+  .mobile-page-tools button{box-sizing:border-box;min-height:44px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--muted);font:500 12px var(--font-body);white-space:nowrap;cursor:pointer;touch-action:pan-y pinch-zoom}
+  .mobile-page-tools button:last-child{color:var(--glow);background:rgba(98,230,210,.06)}
+  .view canvas,.view iframe,.view .mg,.view .side .go{scroll-margin-top:60px}
+  .view .console{gap:10px}
+  .mobile-scroll-pad{display:flex;align-items:center;justify-content:center;min-height:30px;color:var(--muted);font-size:10px;letter-spacing:.4px;opacity:.8;touch-action:pan-y pinch-zoom;user-select:none;-webkit-user-select:none}
+  .console>.mobile-scroll-pad{margin-block:-6px}
 }
+@media(max-width:360px){.wrap:not(.is-lobby) .brand-home h1{font-size:14px}.wrap:not(.is-lobby) .wallet .link-btn{font-size:9px}}
 
 #view-blaster .bl-stage{display:grid;place-items:center;min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#061c2c}
 #bl-canvas{display:block;width:min(100%,400px);height:auto;touch-action:manipulation;user-select:none;-webkit-user-select:none}
@@ -496,13 +515,11 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
     <a href="#reaper" id="tab-reaper">死神打工<small>Reaper Shift</small></a>
     <a href="#dive" id="tab-dive">一口氣探險<small>One Breath Dive</small></a>
     <a href="#mrt" id="tab-mrt">捷運搶位<small>MRT Seat Grab</small></a>
-  </nav></details></div>
-
-<nav class="mobile-page-tools" aria-label="手機頁面導覽">
-  <button type="button" id="mobile-game" aria-label="捲動到遊戲畫面">↑ 遊戲畫面</button>
-  <button type="button" id="mobile-controls" aria-label="捲動到操作區">↓ 操作區</button>
+  </nav></details><nav class="mobile-page-tools" aria-label="手機頁面導覽">
+  <button type="button" id="mobile-game" aria-label="捲動到遊戲畫面">↑ 畫面</button>
+  <button type="button" id="mobile-controls" aria-label="捲動到操作區">↓ 操作</button>
 </nav>
-<div class="mobile-scroll-rail" role="note" aria-label="在此上下滑動頁面，不會操作遊戲"><span class="rail-arrow" aria-hidden="true">↕</span><span class="rail-label">滑動頁面</span><span class="rail-arrow" aria-hidden="true">↕</span></div>
+</div>
 
   <section class="view lobby-view" id="view-lobby" aria-label="遊戲大廳">
 <svg class="lobby-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-blaster" viewBox="0 0 96 96"><path d="M27 9v77M68 9v77" stroke="#326475" stroke-width="2" stroke-dasharray="4 5"/><path d="m47 53 21 29-21-6-21 6z" fill="#62e6d2"/><rect x="44" y="48" width="6" height="14" rx="3" fill="#ffe1a0"/><path d="M47 38v-9" stroke="#ffb638" stroke-width="5" stroke-linecap="round"/><circle cx="47" cy="16" r="13" fill="#b8a4f4"/><circle cx="43" cy="15" r="3" fill="#163e50"/><circle cx="52" cy="15" r="3" fill="#163e50"/><rect x="69" y="38" width="22" height="22" rx="6" fill="#ffb638"/><path d="m81 42-7 9h5l-1 6 8-10h-5z" fill="#694d24"/></symbol>
@@ -4045,6 +4062,16 @@ ui();draw();requestAnimationFrame(loop);
 
   /* Navigation uses separate DOM controls; game pointer listeners are untouched. */
   (function(){
+    function scrollPad(){
+      var pad=document.createElement('div');pad.className='mobile-scroll-pad';pad.textContent='↕ 在這裡上下滑動頁面';pad.setAttribute('role','note');return pad;
+    }
+    document.querySelectorAll('.view .console').forEach(function(console){
+      var side=console.querySelector('.side');if(side)console.insertBefore(scrollPad(),side);
+    });
+    document.querySelectorAll('.view iframe').forEach(function(frame){
+      var stage=frame.parentElement;
+      if(stage&&!stage.closest('.console')&&stage.parentNode)stage.parentNode.insertBefore(scrollPad(),stage.nextSibling);
+    });
     function jump(destination){
       var view=document.querySelector('.view:not([hidden])');
       if(!view||view.id==='view-lobby')return;

@@ -1,12 +1,31 @@
-/* Separate page navigation from the game's own gesture surface. */
-.mobile-page-tools,.mobile-scroll-rail{display:none}
+/* Compact mobile app chrome; gameplay keeps the full available width. */
+.mobile-page-tools,.mobile-scroll-pad{display:none}
 @media(max-width:880px){
-  .wrap:not(.is-lobby){margin-inline-end:28px}
-  .wrap:not(.is-lobby) .mobile-page-tools{position:sticky;z-index:80;top:max(4px,env(safe-area-inset-top,0px));align-self:stretch;display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:14px;background:rgba(12,34,48,.97);box-shadow:0 5px 20px rgba(0,0,0,.3);touch-action:pan-y pinch-zoom}
-  .mobile-page-tools button{min-height:44px;min-width:0;flex:1;padding:8px 12px;border:0;border-radius:10px;background:var(--panel-2);color:var(--fg);font:600 13px var(--font-body);white-space:nowrap;cursor:pointer;touch-action:pan-y pinch-zoom}
-  .view canvas,.view iframe,.view .mg,.view .side .go{scroll-margin-top:calc(64px + env(safe-area-inset-top,0px))}
-  .mobile-page-tools button:last-child{color:var(--glow)}
-  .wrap:not(.is-lobby) .mobile-scroll-rail{position:fixed;z-index:80;right:max(2px,env(safe-area-inset-right,0px));top:36%;width:26px;height:174px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:1px solid var(--line);border-radius:14px;background:rgba(17,48,65,.94);color:var(--muted);touch-action:pan-y pinch-zoom;user-select:none;-webkit-user-select:none}
-  .mobile-scroll-rail .rail-label{writing-mode:vertical-rl;font-size:10px;letter-spacing:2px;line-height:1.3}
-  .mobile-scroll-rail .rail-arrow{font-size:16px;line-height:1;color:var(--glow)}
+  .wrap:not(.is-lobby){gap:10px}
+  .wrap:not(.is-lobby) .top{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px}
+  .wrap:not(.is-lobby) .brand{display:block;min-width:0}
+  .wrap:not(.is-lobby) .brand-home{gap:7px;min-width:0}
+  .wrap:not(.is-lobby) .brand-home-icon{width:25px;height:25px}
+  .wrap:not(.is-lobby) .brand-home h1{min-width:0;margin:0;font-size:16px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .wrap:not(.is-lobby) .brand-home h1 span,.wrap:not(.is-lobby) .demo-tag,.wrap:not(.is-lobby) .wallet .label,.wrap:not(.is-lobby) .regen-hint{display:none}
+  .wrap:not(.is-lobby) .wallet-box{min-width:0;max-width:145px}
+  .wrap:not(.is-lobby) .wallet{gap:4px;white-space:nowrap}
+  .wrap:not(.is-lobby) .wallet .amount{font-size:19px;line-height:1.3}
+  .wrap:not(.is-lobby) .wallet .unit{font-size:10px}
+  .wrap:not(.is-lobby) .wallet .link-btn{padding:4px 0 4px 3px;font-size:10px;line-height:1.4}
+  .wrap:not(.is-lobby) .game-toolbar{position:sticky;z-index:80;top:0;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:8px;padding:4px 0;background:var(--abyss);touch-action:pan-y pinch-zoom}
+  .wrap:not(.is-lobby) .back-lobby{display:none}
+  .wrap:not(.is-lobby) .game-picker{min-width:0;border:0;background:transparent;overflow:visible}
+  .wrap:not(.is-lobby) .game-picker summary{box-sizing:border-box;min-height:44px;padding:10px 12px;gap:8px;border:1px solid var(--line);border-radius:9px;background:var(--panel);font-size:12px;line-height:1.4}
+  .wrap:not(.is-lobby) #picker-current{display:none}
+  .wrap:not(.is-lobby) .picker-chevron{margin-left:auto}
+  .wrap:not(.is-lobby) .game-picker .tabs{position:absolute;z-index:90;top:calc(100% + 4px);left:0;right:0;max-height:50svh;border:1px solid var(--line);border-radius:9px;background:var(--panel);box-shadow:0 10px 24px rgba(0,0,0,.3)}
+  .wrap:not(.is-lobby) .mobile-page-tools{display:flex;align-items:center;gap:6px;touch-action:pan-y pinch-zoom}
+  .mobile-page-tools button{box-sizing:border-box;min-height:44px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--muted);font:500 12px var(--font-body);white-space:nowrap;cursor:pointer;touch-action:pan-y pinch-zoom}
+  .mobile-page-tools button:last-child{color:var(--glow);background:rgba(98,230,210,.06)}
+  .view canvas,.view iframe,.view .mg,.view .side .go{scroll-margin-top:60px}
+  .view .console{gap:10px}
+  .mobile-scroll-pad{display:flex;align-items:center;justify-content:center;min-height:30px;color:var(--muted);font-size:10px;letter-spacing:.4px;opacity:.8;touch-action:pan-y pinch-zoom;user-select:none;-webkit-user-select:none}
+  .console>.mobile-scroll-pad{margin-block:-6px}
 }
+@media(max-width:360px){.wrap:not(.is-lobby) .brand-home h1{font-size:14px}.wrap:not(.is-lobby) .wallet .link-btn{font-size:9px}}

@@ -157,4 +157,6 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 
 ## 手機頁面導覽
 
-`css/mobile-navigation.css`、`templates/mobile-navigation.html` 與 `js/mobile-navigation.js` 提供手機版獨立頁面滑動區及遊戲／操作區跳轉。880px 以下顯示，與 console 單欄斷點一致；大廳及桌面隱藏。滑軌位於遊戲觸控區外，使用原生 pan-y／pinch-zoom，不監聽或取消 pointer／touch 事件，也不改遊戲輸入。跳轉只對目前顯示的 view 操作，遵守減少動態效果偏好；不改 hash、不開始遊戲、不扣點。珍奶原始 iframe 與子頁維持不變，父頁的滑軌仍可捲動整頁。
+`css/mobile-navigation.css`、`templates/mobile-navigation.html` 與 `js/mobile-navigation.js` 提供880px以下的精簡遊戲頁首及合併工具列。頁首只顯示中文遊戲名、首頁入口與點數，英文副標／Demo／回點說明在遊戲頁隱藏（大廳仍顯示）；重設功能保留。工具列合併「切換遊戲、畫面、操作」，不另占第三排，不擠窄畫布；已移除固定側邊滑軌。
+
+畫布與操作面板之間插入低調的 native pan-y 捲動區；iframe遊戲則放在父頁的frame區塊之後，不改珍奶或其他子頁原畫面。也可在置頂工具列上滑動捲頁。這些區域沒有pointer／touch阻擋事件，遊戲內手勢保持原狀。跳轉只捲動目前view，遵守減少動態效果偏好，不改hash／點數／遊戲狀態。桌面與大廳不顯示手機導覽。
