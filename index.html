@@ -1189,6 +1189,8 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
         <div class="field"><label>每局入場</label><p class="runner-fee">10 <small>點</small></p><input id="bl-amount" type="hidden" value="10"></div>
         <dl class="stats"><div><dt>獎勵進度</dt><dd id="bl-reward-status">0 / 10 關</dd></div><div><dt>本局獎勵</dt><dd id="bl-pay">0 點</dd></div></dl>
         <button class="go" id="bl-go" type="button" data-mode="bet">扣點開始出擊</button>
+        <button class="go" id="bl-retry" type="button" hidden>重玩目前這一關</button>
+        <p class="hint" id="bl-retry-info" hidden></p>
         <div class="bl-controls" role="group" aria-label="換道"><button class="chip" id="bl-left" type="button" aria-label="向左換道" disabled>← 左移</button><button class="chip" id="bl-right" type="button" aria-label="向右換道" disabled>右移 →</button></div>
         <button class="chip timing-cash" id="bl-cash" type="button" disabled>過關後可選擇收隊</button>
         <p class="msg" id="bl-msg" aria-live="polite">只需左右換道，角色會自動射擊。瞄準怪物、撿武器，守住十關深海防線。</p>
@@ -1200,7 +1202,7 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
       </section></div>
     </div>
     <p class="bl-reward-note">全破十關才獎勵 <strong>1 點</strong>。未全破、失敗或提前收隊皆無獎勵，入場費 10 點不退還。</p>
-    <details class="rules"><summary>玩法、武器與點數</summary><p>角色自動開火，只需左右換道瞄準與撿武器。武器升級會改變槍身、顏色與子彈：Lv.1 脈衝、Lv.4 雙管速射、Lv.8 扇形散彈、Lv.13 穿透光槍、Lv.18 追蹤火箭、Lv.24 電漿砲，最高 Lv.30。光槍穿透最多 3 隻；火箭追蹤並爆炸；電漿穿透與範圍傷害兼具。每 5 波保證出現一箱，撿到提升 1 級；武器與剩餘生命跨關保留。</p><p>怪物有泡泡章魚、厚甲螃蟹、高速魟魚、預告換道的電鰻、帶可擊破護盾的海龜，以及擊破會分成兩隻小水母的水母。怪物血條與護盾可分別辨識。首關 24 波，每關再加 6 波，第十關 78 波；後關移速更高、出怪更密，同一關也會逐漸加速。</p><p>全局共 3 心，碰到怪物或讓怪物穿過底部防線，都扣 1 心。每隻怪最多扣一次；生命歸零時整局失敗，不獎勵點數。每關等所有波次與場上物件結束後過關，可繼續或提前收隊；提前收隊沒有點數獎勵。</p><p>每局固定扣 10 點，繼續下一關不另扣款。只有全破全部 10 關才自動獲得 1 點獎勵；第 1～9 關不發點數，失敗或提前收隊也沒有獎勵。這 1 點是通關獎勵，入場費不退還；例如 500 點開始，入場扣到 490，全破後變成 491 點。本遊戲不再採用倍率或下注返還。</p><p>切換遊戲、背景分頁或視窗失焦會暫停。重新整理會放棄回合，已扣點數不退還；最佳通關紀錄儲存在瀏覽器，共用點數沒有現金價值。</p></details>
+    <details class="rules"><summary>玩法、武器與點數</summary><p>角色自動開火，只需左右換道瞄準與撿武器。武器升級會改變槍身、顏色與子彈：Lv.1 脈衝、Lv.4 雙管速射、Lv.8 扇形散彈、Lv.13 穿透光槍、Lv.18 追蹤火箭、Lv.24 電漿砲，最高 Lv.30。光槍穿透最多 3 隻；火箭追蹤並爆炸；電漿穿透與範圍傷害兼具。每 5 波保證出現一箱，撿到提升 1 級；武器與剩餘生命跨關保留。</p><p>怪物有泡泡章魚、厚甲螃蟹、高速魟魚、預告換道的電鰻、帶可擊破護盾的海龜，以及擊破會分成兩隻小水母的水母。怪物血條與護盾可分別辨識。首關 24 波，每關再加 6 波，第十關 78 波；後關移速更高、出怪更密，同一關也會逐漸加速。</p><p>全局共 3 心，碰到怪物或讓怪物穿過底部防線，都扣 1 心。每隻怪最多扣一次；生命歸零時整局失敗，不獎勵點數。每關等所有波次與場上物件結束後過關，可繼續或提前收隊；提前收隊沒有點數獎勵。</p><p>每局固定扣 10 點，繼續下一關不另扣款。只有全破全部 10 關才自動獲得 1 點獎勵；第 1～9 關不發點數，失敗或提前收隊也沒有獎勵。這 1 點是通關獎勵，入場費不退還；例如 500 點開始，入場扣到 490，全破後變成 491 點。本遊戲不再採用倍率或下注返還。</p><p>死亡後可付較少點數重玩目前這一關，不回到第 1 關。第 1～2 關扣 1 點、3～4 關扣 2 點、5～6 關扣 3 點、7～8 關扣 4 點、9～10 關扣 5 點。保留死亡時的武器、恢復 3 心，但當關的敵人、子彈、道具與波數全部重置，從第一波重打；不會在死亡位置直接接著打。每次重玩另扣款，沒有次數限制，餘額不足時無法重玩。全破只發 1 點獎勵，重玩費不退還。</p><p>切換遊戲、背景分頁或視窗失焦會暫停。重新整理會放棄回合，已扣點數不退還；最佳通關紀錄儲存在瀏覽器，共用點數沒有現金價值。</p></details>
   </section>
 
 
@@ -3632,10 +3634,11 @@ ui();draw();requestAnimationFrame(loop);
   rpUI();rpDraw();requestAnimationFrame(rpLoop);
 
   /* ---------- Reef Blaster: three lanes, automatic fire, persistent weapon upgrades ---------- */
-  var BL={active:false,phase:'ready',stage:1,cleared:0,stake:0,analytics:null,lives:3,weapon:1,lane:1,x:200,kills:0,stageKills:0,wave:0,waves:24,clock:0,scroll:0,nextWave:.9,shot:0,enemies:[],bullets:[],pickups:[],fx:[],last:0,focused:document.hasFocus?document.hasFocus():true,flash:0,best:0,serial:0,tracked:false};
+  var BL={active:false,phase:'ready',stage:1,cleared:0,stake:0,spent:0,retries:0,analytics:null,lives:3,weapon:1,lane:1,x:200,kills:0,stageKills:0,wave:0,waves:24,clock:0,scroll:0,nextWave:.9,shot:0,enemies:[],bullets:[],pickups:[],fx:[],last:0,focused:document.hasFocus?document.hasFocus():true,flash:0,best:0,serial:0,tracked:false};
   var blCanvas=$('bl-canvas'),blCtx=blCanvas.getContext('2d');
   try{var blSaved=Number(localStorage.getItem('deep-sea-blaster-best'));if(Number.isFinite(blSaved))BL.best=Math.max(0,Math.min(10,Math.floor(blSaved)));}catch(_){}
   function blSay(text,kind){$('bl-msg').textContent=text;$('bl-msg').className='msg'+(kind?' '+kind:'');}
+  function blRetryFee(){return Math.min(5,Math.ceil(BL.stage/2));}
   function blPay(){return BL.cleared===10?1:0;}
   var BL_GUNS=[
     {level:1,name:'脈衝彈',kind:'pulse',color:'#9bfff0',pellets:1,scale:1,speed:660,pierce:1,radius:0},
@@ -3659,8 +3662,10 @@ ui();draw();requestAnimationFrame(loop);
     $('bl-weapon').textContent=w.name+' Lv.'+BL.weapon;$('bl-power').textContent=Math.round(w.damage*w.scale*100)/100+' 傷害 × '+w.pellets+' 發';
     var next=blNextGun();$('bl-evolution').textContent=next?'Lv.'+next.level+' 進化 → '+next.name:'最終型態 · 電漿砲';$('bl-weapon').style.color=w.color;$('bl-speed').textContent=(blStageConfig(BL.stage).speed*blPace()/96).toFixed(2)+'×';$('bl-kills').textContent=BL.kills+' 隻';$('bl-best').textContent=BL.best+' 關';
     $('bl-reward-status').textContent=BL.cleared+' / 10 關';$('bl-pay').textContent=(BL.phase==='lost'?0:blPay())+' 點';$('bl-amount').disabled=BL.active;
-    $('bl-go').disabled=BL.phase==='run';$('bl-go').textContent=BL.phase==='cleared'?'帶著武器，挑戰下一關':'扣點開始出擊';$('bl-go').dataset.mode='bet';
+    $('bl-go').hidden=BL.phase==='lost';$('bl-go').disabled=BL.phase==='run';$('bl-go').textContent=BL.phase==='cleared'?'帶著武器，挑戰下一關':'扣點開始出擊';$('bl-go').dataset.mode='bet';
     $('bl-cash').disabled=BL.phase!=='cleared';$('bl-cash').textContent=BL.phase==='cleared'?'提前收隊（無點數獎勵）':'過關後可選擇收隊';
+    $('bl-retry').hidden=BL.phase!=='lost';$('bl-retry').disabled=BL.phase!=='lost'||S.balance<blRetryFee();$('bl-retry').textContent='重玩第 '+BL.stage+' 關（扣 '+blRetryFee()+' 點）';
+    $('bl-retry-info').hidden=BL.phase!=='lost';$('bl-retry-info').textContent='保留 Lv.'+BL.weapon+' 武器，恢復 3 心，從第 '+BL.stage+' 關第一波重來。'+(S.balance<blRetryFee()?'目前餘額不足，可等待回點。':'');
     $('bl-left').disabled=$('bl-right').disabled=BL.phase!=='run';
   }
   function blRound(){
@@ -3668,22 +3673,29 @@ ui();draw();requestAnimationFrame(loop);
     blTracking();blSay('第 '+BL.stage+' 關：自動射擊中。左右換道瞄準怪物，撿彩色武器箱強化火力。');blUI();blCanvas.focus();
   }
   function blStart(){
-    if(BL.phase==='run')return;
+    if(BL.phase==='run'||BL.phase==='lost')return;
     if(BL.active&&BL.phase==='cleared'){BL.stage++;blRound();return;}
     var stake=ENTRY_FEE;
     if(stake>S.balance){blSay(LOW_MSG,'lose');return;}
-    BL.stake=stake;BL.stage=1;BL.cleared=0;BL.lives=3;BL.weapon=1;BL.kills=0;BL.active=true;BL.tracked=false;BL.serial=0;
+    BL.stake=stake;BL.spent=stake;BL.retries=0;BL.stage=1;BL.cleared=0;BL.lives=3;BL.weapon=1;BL.kills=0;BL.active=true;BL.tracked=false;BL.serial=0;
     BL.analytics=AN.start('blaster',stake);S.balance-=stake;save();renderAll();blRound();
+  }
+  function blRetry(){
+    if(BL.active||BL.phase!=='lost')return;
+    var cost=blRetryFee();
+    if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點；可等待平台自動回點。','lose');return;}
+    BL.stake=cost;BL.spent+=cost;BL.retries++;BL.lives=3;BL.active=true;BL.tracked=false;
+    BL.analytics=AN.start('blaster',cost,{stage:BL.stage,entry_kind:'stage_retry',retry_count:BL.retries});S.balance-=cost;save();renderAll();blRound();
   }
   function blCash(){
     if(!BL.active||BL.phase!=='cleared')return;
     var pay=blPay();BL.active=false;BL.phase='cashed';BL.tracked=false;S.balance+=pay;save();renderAll();
     AN.end(BL.analytics,pay,pay?'complete':'cashout',{stage:BL.cleared,score:BL.kills,multiplier:BL.stake?pay/BL.stake:0,weapon_level:BL.weapon});
-    blSay(pay?'十關全破！獲得 1 點獎勵。入場費 '+BL.stake+' 點不退還，本局淨減少 '+(BL.stake-pay)+' 點。':'已提前收隊，未全破十關，本局沒有點數獎勵；入場費不退還。',pay?'win':'');blUI();
+    blSay(pay?'十關全破！獲得 1 點獎勵。本輪入場與重玩費共 '+BL.spent+' 點不退還，本局淨減少 '+(BL.spent-pay)+' 點。':'已提前收隊，未全破十關，本局沒有點數獎勵；入場費不退還。',pay?'win':'');blUI();
   }
   function blHurt(){
     if(BL.phase!=='run')return;BL.lives--;BL.flash=.3;
-    if(BL.lives<=0){BL.active=false;BL.phase='lost';BL.tracked=false;AN.end(BL.analytics,0,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});blSay('防線失守！未全破十關，本局沒有點數獎勵；入場費不退還。','lose');}
+    if(BL.lives<=0){BL.active=false;BL.phase='lost';BL.tracked=false;AN.end(BL.analytics,0,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});blSay('防線失守！本次沒有點數獎勵。可扣 '+blRetryFee()+' 點重玩目前第 '+BL.stage+' 關，保留武器並恢復 3 心。','lose');}
     else blSay('怪物突破防線，扣 1 心！剩 '+BL.lives+' 心，快找武器箱提升火力。','lose');blUI();
   }
   function blClear(){
@@ -3860,7 +3872,7 @@ ui();draw();requestAnimationFrame(loop);
     }
     g.textAlign='center';g.fillStyle='#8db0b9';g.font='11px system-ui';g.fillText('← 點左半邊換道　｜　點右半邊換道 →',200,585);
   }
-  $('bl-go').addEventListener('click',blStart);$('bl-cash').addEventListener('click',blCash);
+  $('bl-go').addEventListener('click',blStart);$('bl-retry').addEventListener('click',blRetry);$('bl-cash').addEventListener('click',blCash);
   $('bl-left').addEventListener('click',function(){blMove(-1);});$('bl-right').addEventListener('click',function(){blMove(1);});
   blCanvas.addEventListener('pointerdown',function(e){if(BL.phase!=='run')return;e.preventDefault();blCanvas.focus();var bounds=blCanvas.getBoundingClientRect();blMove(e.clientX-bounds.left<bounds.width/2?-1:1);});
   document.addEventListener('keydown',function(e){if(!blVisible()||BL.phase!=='run'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;if(['INPUT','BUTTON','A','SUMMARY','TEXTAREA','SELECT'].indexOf(e.target.tagName)>=0||e.target.isContentEditable)return;var key=e.key.toLowerCase();if(['arrowleft','a','arrowright','d'].indexOf(key)<0)return;e.preventDefault();blMove(key==='arrowleft'||key==='a'?-1:1);});

@@ -97,6 +97,17 @@ check('Six weapon silhouettes differ and every monster renderer executes',()=>{
   assert.equal(signatures.size,6);
   for(const type of ['octo','crab','ray','eel','turtle','jelly','mini'])f.run(`blDrawMonster(blEnemy(1,200,'${type}',20))`);
 });
+check('Retry fees scale from one to five; replay keeps the current stage and weapon with three hearts',()=>{
+  const f=fixture();f.run('blStart();BL.stage=7;BL.cleared=6;BL.weapon=18;BL.wave=20;BL.enemies=[blEnemy(1,400,"octo",20)];blHurt();blHurt();blHurt()');
+  assert.equal(f.el('bl-go').hidden,true);assert.equal(f.el('bl-retry').hidden,false);assert.match(f.el('bl-retry').textContent,/第 7 關.*4 點/);const before=f.wallet.balance;f.run('blStart()');assert.equal(f.state.stage,7);assert.equal(f.wallet.balance,before);f.run('blRetry();blRetry()');assert.equal(f.wallet.balance,before-4);assert.equal(f.state.stage,7);assert.equal(f.state.cleared,6);assert.equal(f.state.weapon,18);assert.equal(f.state.lives,3);assert.equal(f.state.wave,0);assert.equal(f.state.enemies.length,0);assert.equal(f.state.bullets.length,0);assert.equal(f.state.pickups.length,0);assert.equal(f.state.retries,1);assert.equal(f.el('bl-retry').hidden,true);assert.equal(f.events.filter(e=>e[0]==='start').length,2);assert.equal(f.events.filter(e=>e[0]==='start')[1][3].stage,7);
+  for(let stage=1;stage<=10;stage++)assert.equal(f.run(`BL.stage=${stage};blRetryFee()`),Math.min(5,Math.ceil(stage/2)));
+});
+check('Insufficient retry funds do not alter failed state, weapon or wallet',()=>{
+  const f=fixture();f.run('blStart();BL.stage=10;BL.weapon=25;blHurt();blHurt();blHurt()');f.wallet.balance=4;f.run('blRetry()');assert.equal(f.wallet.balance,4);assert.equal(f.state.phase,'lost');assert.equal(f.state.stage,10);assert.equal(f.state.weapon,25);assert.equal(f.events.filter(e=>e[0]==='start').length,1);
+});
+check('Replaying stage ten awards only one point and cannot farm rewards after completion',()=>{
+  const f=fixture();f.run('blStart();BL.stage=10;BL.cleared=9;blHurt();blHurt();blHurt();blRetry();blClear();blRetry();blCash();blClear()');assert.equal(f.wallet.balance,1000-fee-5+1);assert.equal(f.state.phase,'cashed');const ends=f.events.filter(e=>e[0]==='end');assert.equal(ends.length,2);assert.equal(ends[0][2],0);assert.equal(ends[1][2],1);assert.equal(ends[1][3],'complete');assert.equal(ends[1][4].multiplier,1/5);
+});
 check('Generated scripts compile and existing JSON child document still decodes',()=>{
   const html=fs.readFileSync(new URL('index.html',root),'utf8');for(const [,attrs,body] of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)){if(attrs.includes('application/json'))JSON.parse(body);else new vm.Script(body);}
 });

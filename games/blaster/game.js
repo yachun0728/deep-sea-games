@@ -1,8 +1,9 @@
   /* ---------- Reef Blaster: three lanes, automatic fire, persistent weapon upgrades ---------- */
-  var BL={active:false,phase:'ready',stage:1,cleared:0,stake:0,analytics:null,lives:3,weapon:1,lane:1,x:200,kills:0,stageKills:0,wave:0,waves:24,clock:0,scroll:0,nextWave:.9,shot:0,enemies:[],bullets:[],pickups:[],fx:[],last:0,focused:document.hasFocus?document.hasFocus():true,flash:0,best:0,serial:0,tracked:false};
+  var BL={active:false,phase:'ready',stage:1,cleared:0,stake:0,spent:0,retries:0,analytics:null,lives:3,weapon:1,lane:1,x:200,kills:0,stageKills:0,wave:0,waves:24,clock:0,scroll:0,nextWave:.9,shot:0,enemies:[],bullets:[],pickups:[],fx:[],last:0,focused:document.hasFocus?document.hasFocus():true,flash:0,best:0,serial:0,tracked:false};
   var blCanvas=$('bl-canvas'),blCtx=blCanvas.getContext('2d');
   try{var blSaved=Number(localStorage.getItem('deep-sea-blaster-best'));if(Number.isFinite(blSaved))BL.best=Math.max(0,Math.min(10,Math.floor(blSaved)));}catch(_){}
   function blSay(text,kind){$('bl-msg').textContent=text;$('bl-msg').className='msg'+(kind?' '+kind:'');}
+  function blRetryFee(){return Math.min(5,Math.ceil(BL.stage/2));}
   function blPay(){return BL.cleared===10?1:0;}
   var BL_GUNS=[
     {level:1,name:'脈衝彈',kind:'pulse',color:'#9bfff0',pellets:1,scale:1,speed:660,pierce:1,radius:0},
@@ -26,8 +27,10 @@
     $('bl-weapon').textContent=w.name+' Lv.'+BL.weapon;$('bl-power').textContent=Math.round(w.damage*w.scale*100)/100+' 傷害 × '+w.pellets+' 發';
     var next=blNextGun();$('bl-evolution').textContent=next?'Lv.'+next.level+' 進化 → '+next.name:'最終型態 · 電漿砲';$('bl-weapon').style.color=w.color;$('bl-speed').textContent=(blStageConfig(BL.stage).speed*blPace()/96).toFixed(2)+'×';$('bl-kills').textContent=BL.kills+' 隻';$('bl-best').textContent=BL.best+' 關';
     $('bl-reward-status').textContent=BL.cleared+' / 10 關';$('bl-pay').textContent=(BL.phase==='lost'?0:blPay())+' 點';$('bl-amount').disabled=BL.active;
-    $('bl-go').disabled=BL.phase==='run';$('bl-go').textContent=BL.phase==='cleared'?'帶著武器，挑戰下一關':'扣點開始出擊';$('bl-go').dataset.mode='bet';
+    $('bl-go').hidden=BL.phase==='lost';$('bl-go').disabled=BL.phase==='run';$('bl-go').textContent=BL.phase==='cleared'?'帶著武器，挑戰下一關':'扣點開始出擊';$('bl-go').dataset.mode='bet';
     $('bl-cash').disabled=BL.phase!=='cleared';$('bl-cash').textContent=BL.phase==='cleared'?'提前收隊（無點數獎勵）':'過關後可選擇收隊';
+    $('bl-retry').hidden=BL.phase!=='lost';$('bl-retry').disabled=BL.phase!=='lost'||S.balance<blRetryFee();$('bl-retry').textContent='重玩第 '+BL.stage+' 關（扣 '+blRetryFee()+' 點）';
+    $('bl-retry-info').hidden=BL.phase!=='lost';$('bl-retry-info').textContent='保留 Lv.'+BL.weapon+' 武器，恢復 3 心，從第 '+BL.stage+' 關第一波重來。'+(S.balance<blRetryFee()?'目前餘額不足，可等待回點。':'');
     $('bl-left').disabled=$('bl-right').disabled=BL.phase!=='run';
   }
   function blRound(){
@@ -35,22 +38,29 @@
     blTracking();blSay('第 '+BL.stage+' 關：自動射擊中。左右換道瞄準怪物，撿彩色武器箱強化火力。');blUI();blCanvas.focus();
   }
   function blStart(){
-    if(BL.phase==='run')return;
+    if(BL.phase==='run'||BL.phase==='lost')return;
     if(BL.active&&BL.phase==='cleared'){BL.stage++;blRound();return;}
     var stake=ENTRY_FEE;
     if(stake>S.balance){blSay(LOW_MSG,'lose');return;}
-    BL.stake=stake;BL.stage=1;BL.cleared=0;BL.lives=3;BL.weapon=1;BL.kills=0;BL.active=true;BL.tracked=false;BL.serial=0;
+    BL.stake=stake;BL.spent=stake;BL.retries=0;BL.stage=1;BL.cleared=0;BL.lives=3;BL.weapon=1;BL.kills=0;BL.active=true;BL.tracked=false;BL.serial=0;
     BL.analytics=AN.start('blaster',stake);S.balance-=stake;save();renderAll();blRound();
+  }
+  function blRetry(){
+    if(BL.active||BL.phase!=='lost')return;
+    var cost=blRetryFee();
+    if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點；可等待平台自動回點。','lose');return;}
+    BL.stake=cost;BL.spent+=cost;BL.retries++;BL.lives=3;BL.active=true;BL.tracked=false;
+    BL.analytics=AN.start('blaster',cost,{stage:BL.stage,entry_kind:'stage_retry',retry_count:BL.retries});S.balance-=cost;save();renderAll();blRound();
   }
   function blCash(){
     if(!BL.active||BL.phase!=='cleared')return;
     var pay=blPay();BL.active=false;BL.phase='cashed';BL.tracked=false;S.balance+=pay;save();renderAll();
     AN.end(BL.analytics,pay,pay?'complete':'cashout',{stage:BL.cleared,score:BL.kills,multiplier:BL.stake?pay/BL.stake:0,weapon_level:BL.weapon});
-    blSay(pay?'十關全破！獲得 1 點獎勵。入場費 '+BL.stake+' 點不退還，本局淨減少 '+(BL.stake-pay)+' 點。':'已提前收隊，未全破十關，本局沒有點數獎勵；入場費不退還。',pay?'win':'');blUI();
+    blSay(pay?'十關全破！獲得 1 點獎勵。本輪入場與重玩費共 '+BL.spent+' 點不退還，本局淨減少 '+(BL.spent-pay)+' 點。':'已提前收隊，未全破十關，本局沒有點數獎勵；入場費不退還。',pay?'win':'');blUI();
   }
   function blHurt(){
     if(BL.phase!=='run')return;BL.lives--;BL.flash=.3;
-    if(BL.lives<=0){BL.active=false;BL.phase='lost';BL.tracked=false;AN.end(BL.analytics,0,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});blSay('防線失守！未全破十關，本局沒有點數獎勵；入場費不退還。','lose');}
+    if(BL.lives<=0){BL.active=false;BL.phase='lost';BL.tracked=false;AN.end(BL.analytics,0,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});blSay('防線失守！本次沒有點數獎勵。可扣 '+blRetryFee()+' 點重玩目前第 '+BL.stage+' 關，保留武器並恢復 3 心。','lose');}
     else blSay('怪物突破防線，扣 1 心！剩 '+BL.lives+' 心，快找武器箱提升火力。','lose');blUI();
   }
   function blClear(){
@@ -227,7 +237,7 @@
     }
     g.textAlign='center';g.fillStyle='#8db0b9';g.font='11px system-ui';g.fillText('← 點左半邊換道　｜　點右半邊換道 →',200,585);
   }
-  $('bl-go').addEventListener('click',blStart);$('bl-cash').addEventListener('click',blCash);
+  $('bl-go').addEventListener('click',blStart);$('bl-retry').addEventListener('click',blRetry);$('bl-cash').addEventListener('click',blCash);
   $('bl-left').addEventListener('click',function(){blMove(-1);});$('bl-right').addEventListener('click',function(){blMove(1);});
   blCanvas.addEventListener('pointerdown',function(e){if(BL.phase!=='run')return;e.preventDefault();blCanvas.focus();var bounds=blCanvas.getBoundingClientRect();blMove(e.clientX-bounds.left<bounds.width/2?-1:1);});
   document.addEventListener('keydown',function(e){if(!blVisible()||BL.phase!=='run'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;if(['INPUT','BUTTON','A','SUMMARY','TEXTAREA','SELECT'].indexOf(e.target.tagName)>=0||e.target.isContentEditable)return;var key=e.key.toLowerCase();if(['arrowleft','a','arrowright','d'].indexOf(key)<0)return;e.preventDefault();blMove(key==='arrowleft'||key==='a'?-1:1);});
