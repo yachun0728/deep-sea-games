@@ -1,0 +1,15 @@
+  <section class="view" id="view-carp" hidden>
+    <div class="console"><div class="sneak-stage"><canvas id="carp-canvas" tabindex="0" width="400" height="560" aria-label="鯉魚躍龍門：按住蓄力、放開起跳，越過石瀑，別撞到石頭和魚鉤"></canvas></div>
+      <div class="side"><section class="panel" aria-label="鯉魚躍龍門操作">
+        <dl class="stats"><div><dt>本局瀑布</dt><dd id="carp-score">0 道</dd></div><div><dt>最佳紀錄</dt><dd id="carp-best">0 道</dd></div></dl>
+        <div class="field"><label>每局入場</label><p class="runner-fee">10 <small>點</small></p><input id="carp-amount" type="hidden" value="10"></div>
+        <dl class="stats"><div><dt>✦ BONUS 已入帳</dt><dd id="carp-pay">0 點</dd></div><div><dt>下一個里程碑</dt><dd id="carp-next">10 道 · +5 點</dd></div></dl>
+        <button class="go" id="carp-go" type="button" data-mode="start">扣點開始躍龍門</button>
+        <p class="msg" id="carp-msg" aria-live="polite">扣點後鯉魚開始逆流而上，沒有終點。按住蓄力、放開起跳，越過的瀑布越多，達成里程碑就送 BONUS。</p>
+        <p class="hint">按住畫面（或 <kbd>空白鍵</kbd>）蓄力，放開起跳。跳太低會撞石頭，太高會被魚鉤鉤住。魚旁邊的力量條有綠色區域，標示下一個障礙適合的力度。每到里程碑，鯉魚會更像龍。</p>
+      </section></div>
+    </div>
+    <div class="fishing-ladder campaign-ladder" role="group" aria-label="BONUS 里程碑"><span data-carp-tier="10"><b>10 道 BONUS</b>+5 點</span><span data-carp-tier="20"><b>20 道 BONUS</b>+5 點</span><span data-carp-tier="35"><b>35 道 BONUS</b>+5 點</span></div>
+    <details class="rules"><summary>玩法、里程碑與點數</summary><p>每局固定扣 10 點，沒有終點，玩到失敗為止。鯉魚自動逆流前進，按住畫面（或空白鍵）蓄力、放開起跳，力道越大跳得越高。跳太低會撞到石頭，跳太高會被魚鉤鉤住；左側力量條上的綠色區域是下一個障礙適合的力度。每成功越過一道瀑布得 1 分，速度與難度隨進度慢慢提高。</p><p>BONUS：10道、20道、35道 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵與入場費無關；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已扣點數不退回。最佳紀錄與已解鎖造型保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+  </section>
+

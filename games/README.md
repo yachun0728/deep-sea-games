@@ -31,3 +31,8 @@
 | [捷運搶位 MRT Seat Grab](mrt/README.md) | `#mrt` | 技巧闖關 | 顯示 | 52 行 | 看小動作猜誰要下車，一階一階往上搶座位。 |
 | [泡麵煎餅翻面 Noodle Pancake](pancake/README.md) | `#pancake` | 技巧闖關 | 顯示 | 43 行 | 半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。 |
 | [蓋樓大師 Sky Builder](skybuilder/README.md) | `#skybuilder` | 技巧闖關 | 顯示 | 156 行 | 抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。 |
+| [鯉魚躍龍門 Carp Leap](carp/README.md) | `#carp` | 技巧闖關 | 顯示 | 160 行 | 蓄力起跳，越過一道道石瀑。 |
+| [外送員大戰惡犬 Rider vs Dogs](rider/README.md) | `#rider` | 技巧闖關 | 顯示 | 179 行 | 巷子裡閃狗送餐，餐涼之前送越多越好。 |
+| [胖老闆追人 Chubby Boss](boss/README.md) | `#boss` | 技巧闖關 | 顯示 | 177 行 | 遲到了！跳過障礙，別被胖老闆追上。 |
+| [偷水果的貓 Fruit Thief Cat](thief/README.md) | `#thief` | 技巧闖關 | 顯示 | 178 行 | 換道、跳籃子，偷水果躲開老闆娘。 |
+| [寶寶逃洗澡 Baby Bath Escape](baby/README.md) | `#baby` | 技巧闖關 | 顯示 | 180 行 | 跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。 |

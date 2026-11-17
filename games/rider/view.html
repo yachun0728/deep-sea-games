@@ -1,0 +1,15 @@
+  <section class="view" id="view-rider" hidden>
+    <div class="console"><div class="sneak-stage"><canvas id="rider-canvas" tabindex="0" width="400" height="560" aria-label="外送員大戰惡犬：點左半邊跳躍、按住右半邊加速、按喇叭嚇跑狗，在餐涼之前送達訂單"></canvas></div>
+      <div class="side"><section class="panel" aria-label="外送員大戰惡犬操作">
+        <dl class="stats"><div><dt>本局分數</dt><dd id="rider-score">0 分</dd></div><div><dt>最佳紀錄</dt><dd id="rider-best">0 分</dd></div></dl>
+        <div class="field"><label>每局入場</label><p class="runner-fee">10 <small>點</small></p><input id="rider-amount" type="hidden" value="10"></div>
+        <dl class="stats"><div><dt>✦ BONUS 已入帳</dt><dd id="rider-pay">0 點</dd></div><div><dt>下一個里程碑</dt><dd id="rider-next">300 分 · +5 點</dd></div></dl>
+        <button class="go" id="rider-go" type="button" data-mode="start">扣點開始送餐</button>
+        <p class="msg" id="rider-msg" aria-live="polite">扣點後開始送餐，沒有終點。跳過障礙、準時送達，分數達到里程碑就送 BONUS。</p>
+        <p class="hint">點畫面左半邊（或 <kbd>空白鍵</kbd>／<kbd>↑</kbd>）跳過坑洞和狗；按住右半邊（或 <kbd>→</kbd>）加速，油用完就停；點右下角喇叭（或 <kbd>X</kbd>）嚇跑前方的狗。到有綠色區域的客人家門口，放開加速約半秒才算送達。送達能讓訂單回溫，撞到狗或坑洞會讓訂單快速變涼。</p>
+      </section></div>
+    </div>
+    <div class="fishing-ladder campaign-ladder" role="group" aria-label="BONUS 里程碑"><span data-rider-tier="300"><b>300 分 BONUS</b>+5 點</span><span data-rider-tier="700"><b>700 分 BONUS</b>+5 點</span><span data-rider-tier="1300"><b>1,300 分 BONUS</b>+5 點</span></div>
+    <details class="rules"><summary>玩法、里程碑與點數</summary><p>每局固定扣 10 點，沒有終點，玩到失敗為止。訂單溫度會一直下降，降到 0 這一局就結束。點左半邊跳過坑洞和狗；按住右半邊加速（油量有限，不加速時會慢慢回復）；點右下角喇叭可以嚇跑前方的狗（有冷卻時間）。到客人家門口的綠色區域，放開加速約半秒才算送達，送達得 20 分並回溫；沒送到會扣溫度，撞到狗或坑洞也會讓訂單變涼。分數＝前進距離（每 50 單位 1 分）＋送達訂單數 × 20。</p><p>BONUS：300分、700分、1,300分 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵與入場費無關；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已扣點數不退回。最佳紀錄與已解鎖造型保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+  </section>
+

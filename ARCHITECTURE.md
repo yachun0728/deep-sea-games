@@ -88,6 +88,7 @@ flowchart TD
 | keno / wheel / tower / crossing | KE / WL / TW / CR |
 | dream / elevator / fishing / campaign / reaper / blaster | DR / EQ / FI / CP / RP / BL |
 | runner / sneak / cat / bird / frog | runnerBusy / sneakBusy / catBusy / birdBusy / frogBusy，各自內層 IIFE |
+| carp / rider / boss / thief / baby | carpBusy / riderBusy / bossBusy / thiefBusy / babyBusy，各自內層 IIFE（由獨立頁面改編，共用 G 物件與造型解鎖流程）|
 | boba | BOBA、deepSeaBoba；original.html 為子頁 |
 | dive | DIVE、deepSeaDive；original.html 為子頁（一口氣探險） |
 | mrt | MRT、deepSeaMrt；original.html 為子頁（捷運搶位） |
@@ -130,6 +131,11 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `deep-sea-frog-best` | 青蛙吃蟲最多吃掉隻數；新增於 2026-11-17 |
 | `reaper` | Reaper 最佳正常靈魂處理總數 |
 | `deep-sea-blaster-best` | 深海火線最佳通關數（無關卡上限，沿用既有數值格式） |
+| `deep-sea-carp-best` / `deep-sea-carp-skin` | 鯉魚躍龍門 最佳紀錄／已選造型編號 |
+| `deep-sea-rider-best` / `deep-sea-rider-skin` | 外送員大戰惡犬 最佳紀錄／已選造型編號 |
+| `deep-sea-boss-best` / `deep-sea-boss-skin` | 胖老闆追人 最佳紀錄／已選造型編號 |
+| `deep-sea-thief-best` / `deep-sea-thief-skin` | 偷水果的貓 最佳紀錄／已選造型編號 |
+| `deep-sea-baby-best` / `deep-sea-baby-skin` | 寶寶逃洗澡 最佳紀錄／已選造型編號 |
 | `straw_game_events` | 珍奶本機事件紀錄，上限 5,000 筆 |
 | `straw_game_player_id` | 珍奶本機玩家識別值 |
 | `straw_game_best` | 珍奶最佳杯數 |

@@ -195,5 +195,40 @@
     "view": "games/skybuilder/view.html",
     "card": "games/skybuilder/card.html",
     "icon": "games/skybuilder/icon.svg"
+  },
+  {
+    "id": "carp",
+    "logic": "games/carp/game.js",
+    "view": "games/carp/view.html",
+    "card": "games/carp/card.html",
+    "icon": "games/carp/icon.svg"
+  },
+  {
+    "id": "rider",
+    "logic": "games/rider/game.js",
+    "view": "games/rider/view.html",
+    "card": "games/rider/card.html",
+    "icon": "games/rider/icon.svg"
+  },
+  {
+    "id": "boss",
+    "logic": "games/boss/game.js",
+    "view": "games/boss/view.html",
+    "card": "games/boss/card.html",
+    "icon": "games/boss/icon.svg"
+  },
+  {
+    "id": "thief",
+    "logic": "games/thief/game.js",
+    "view": "games/thief/view.html",
+    "card": "games/thief/card.html",
+    "icon": "games/thief/icon.svg"
+  },
+  {
+    "id": "baby",
+    "logic": "games/baby/game.js",
+    "view": "games/baby/view.html",
+    "card": "games/baby/card.html",
+    "icon": "games/baby/icon.svg"
   }
 ]
