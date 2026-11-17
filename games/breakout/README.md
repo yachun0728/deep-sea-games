@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：打磚塊，`game_id` 為 `breakout`
 - 檔案：`games/breakout/card.html`、`games/breakout/game.js`、`games/breakout/icon.svg`、`games/breakout/view.html`；`game.js` 共 228 行、14.3 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「33. 打磚塊 Breakout（breakout）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「34. 打磚塊 Breakout（breakout）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 

@@ -61,8 +61,8 @@ def load_catalog(root: Path) -> list[dict]:
 def view_names(root: Path) -> dict[str, tuple[str, str]]:
     block = re.search(r'var VIEWS = \{(.*?)\};', read(root / 'js/navigation.js'), re.S)
     names = {}
-    for key, zh, en in re.findall(r"(\w+):\s*'([^<']+?)\s*<span>([^<]+)</span>'", block.group(1) if block else ''):
-        names[key] = (zh.strip(), en.strip())
+    for key, zh, en in re.findall(r"""(['"]?[\w-]+['"]?):\s*'([^<']+?)\s*<span>([^<]+)</span>'""", block.group(1) if block else ''):
+        names[key.strip('\'"')] = (zh.strip(), en.strip())
     return names
 
 
@@ -248,7 +248,7 @@ def render_index(infos: list[dict]) -> str:
 def render_all(root: Path = ROOT) -> dict[Path, str]:
     names, rules = view_names(root), rules_sections(root)
     controls = read(root / 'js/controls.js')
-    analytics_names = dict(re.findall(r"(\w+):'([^']+)'", (re.search(r'var names=\{(.*?)\};', read(root / 'js/analytics.js'), re.S) or [None, ''])[1]))
+    analytics_names = {k.strip('\'"'): v for k, v in re.findall(r"""(['"]?[\w-]+['"]?):'([^']+)'""", (re.search(r'var names=\{(.*?)\};', read(root / 'js/analytics.js'), re.S) or [None, ''])[1])}
     catalog = load_catalog(root)
     infos = [analyze(root, game, names, rules, controls, analytics_names) for game in catalog]
     out = {root / 'games' / info['game']['id'] / 'README.md': render_game(info) for info in infos}
