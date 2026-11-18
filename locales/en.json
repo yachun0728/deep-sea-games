@@ -3125,7 +3125,6 @@
   "1 種花色": "1 suit",
   "2 種花色": "2 suits",
   "4 種花色": "4 suits",
-  "28 款遊戲": "28 games",
   "人魚低語：只剩小調整了，先整理牌列。": "Mermaid whisper: only small tidy-ups left. Straighten your columns first.",
   "人魚低語：沒有可走的步了，悔棋換個走法吧。": "Mermaid whisper: no moves left. Undo and try another line.",
   "人魚低語：沒有好走的牌了，發牌試試。": "Mermaid whisper: no good moves left. Try dealing.",
@@ -3173,5 +3172,8 @@
   "通關！8 顆珍珠全部收集完成，本局共入帳": "Cleared! All 8 pearls collected. Credited",
   "遊玩人魚接龍：牌背是美人魚的蜘蛛接龍，把牌排成 K 到 A 收成珍珠。有 BONUS 獎勵。": "Play Mermaid Spider: spider solitaire with mermaid card backs. Stack K to A to collect pearls. Has BONUS rewards.",
   "難度分三種：淺灘只有 1 種花色，珊瑚礁 2 種，深海 4 種。難度要在扣點前選好，開始後不能更換。悔棋和指路不限次數、不另扣點，但每步（含悔棋）會讓分數少 1 分，每收成一顆珍珠加 100 分；分數只是顯示用，不換點數。": "There are three difficulties: Shallows has 1 suit, Coral Reef 2 and Deep Sea 4. Pick before paying; it cannot change once the round starts. Undo and hints are unlimited and cost no points, but every move (undo included) lowers your score by 1, and each pearl adds 100. Score is for display only and is not exchanged for points.",
-  "顆珍珠，本局共入帳": "pearls. Credited"
+  "顆珍珠，本局共入帳": "pearls. Credited",
+  "免費懷舊遊戲不限次數；每日挖礦免費。其他遊戲依入場說明扣點。Demo 點數沒有現金價值。": "Free classics have unlimited plays; daily mining is free. Other games charge their stated entry fee. Demo points have no cash value.",
+  "目前餘額不足。": "Not enough points.",
+  "每局需要 10 點。": "Each round costs 10 points."
 }

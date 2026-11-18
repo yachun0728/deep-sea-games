@@ -54,7 +54,6 @@
 
 - 直接使用的共用名稱：`S`、`AN`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`syncBalance`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/bootstrap.js` 會呼叫：`mgBuild`、`mgRender`
-- `js/controls.js` 會呼叫：`gSay`
 - 「重設為 500 點」進行中防護（`js/controls.js`）：**未涵蓋**：進行中按「重設」仍可能生效
 
 ## 規則摘要（取自 GAME_RULES.md）

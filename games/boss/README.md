@@ -56,7 +56,7 @@
 
 - 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`fx`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`、`C`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - 共用檔沒有直接呼叫本遊戲的函式。
-- 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`bossBusy`
+- 「重設為 500 點」進行中防護（`js/controls.js`）：**未涵蓋**：進行中按「重設」仍可能生效
 
 ## 規則摘要（取自 GAME_RULES.md）
 

@@ -33,7 +33,7 @@
     $('bl-go').hidden=BL.phase==='lost'||BL.phase==='pick';$('bl-go').disabled=BL.phase==='run';$('bl-picks').hidden=BL.phase!=='pick';for(var pi=0;pi<3;pi++){var card=BL.picks[pi],pb=$('bl-pick-'+pi);pb.hidden=!card;if(card){var label=blCardText(card);if(pb.textContent!==label)pb.textContent=label;pb.disabled=BL.phase!=='pick';}}$('bl-go').textContent=BL.phase==='cleared'?'帶著武器，挑戰下一關':'扣點開始出擊';$('bl-go').dataset.mode='bet';
     $('bl-cash').disabled=BL.phase!=='cleared';$('bl-cash').textContent=BL.phase==='cleared'?'結束這輪（已獲 '+BL.earned+' 點）':'過關後可選擇收隊';
     $('bl-retry').hidden=BL.phase!=='lost';$('bl-retry').disabled=BL.phase!=='lost'||S.balance<blRetryFee();$('bl-retry').textContent='重玩第 '+BL.stage+' 關（扣 '+blRetryFee()+' 點）';
-    $('bl-retry-info').hidden=BL.phase!=='lost';$('bl-retry-info').textContent='保留 Lv.'+BL.weapon+' 武器，恢復 3 心，從第 '+BL.stage+' 關第一波重來。'+(S.balance<blRetryFee()?'目前餘額不足，可等待回點。':'');
+    $('bl-retry-info').hidden=BL.phase!=='lost';$('bl-retry-info').textContent='保留 Lv.'+BL.weapon+' 武器，恢復 3 心，從第 '+BL.stage+' 關第一波重來。'+(S.balance<blRetryFee()?'目前餘額不足。':'');
     $('bl-left').disabled=$('bl-right').disabled=BL.phase!=='run';
   }
   function blRound(){
@@ -71,7 +71,7 @@
   function blRetry(){
     if(BL.active||BL.phase!=='lost')return;
     var cost=blRetryFee();
-    if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點；可等待平台自動回點。','lose');return;}
+    if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點。','lose');return;}
     BL.stake=cost;BL.spent+=cost;BL.retries++;BL.attemptEarned=0;BL.lives=3;BL.active=true;BL.tracked=false;
     BL.analytics=AN.start('blaster',cost,{stage:BL.stage,entry_kind:'stage_retry',retry_count:BL.retries});S.balance-=cost;save();renderAll();blRound();
   }
