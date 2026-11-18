@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#campaign`　分類：潛行偷閒　狀態：顯示中
+- 網址：`#campaign`　分類：技巧闖關　狀態：顯示中
 - 大廳卡片：「繞市區拉票，經過學校、醫院、豪宅要按住靜音。」｜每局 10 點 · 無盡 · 越開越快
 - 追蹤名稱（GA4 `game_name`）：宣傳車，`game_id` 為 `campaign`
 - 檔案：`games/campaign/card.html`、`games/campaign/game.js`、`games/campaign/icon.svg`、`games/campaign/view.html`；`game.js` 共 250 行、23.7 KB

@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#reaper`　分類：潛行偷閒　狀態：顯示中
+- 網址：`#reaper`　分類：技巧闖關　狀態：顯示中
 - 大廳卡片：「普通靈魂要接走，綠色通行證要放行。」｜每局 10 點 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：死神打工，`game_id` 為 `reaper`
 - 檔案：`games/reaper/card.html`、`games/reaper/game.js`、`games/reaper/icon.svg`、`games/reaper/view.html`；`game.js` 共 107 行、10.9 KB
