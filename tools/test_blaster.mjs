@@ -101,7 +101,7 @@ check('Seven weapon silhouettes differ and every monster renderer executes',()=>
 });
 check('Retries are free at every stage; replay keeps the current stage and weapon with three hearts',()=>{
   const f=fixture();f.run('blGo();BL.stage=7;BL.cleared=6;BL.weapon=18;BL.wave=20;BL.enemies=[blEnemy(1,400,"octo",20)];blHurt();blHurt();blHurt()');
-  assert.equal(f.el('bl-go').hidden,true);assert.equal(f.el('bl-retry').hidden,false);assert.match(f.el('bl-retry').textContent,/免費重玩第 7 關/);const before=f.wallet.balance;f.run('blGo()');assert.equal(f.state.stage,7);assert.equal(f.wallet.balance,before);f.run('blRetry();blRetry()');assert.equal(f.wallet.balance,before);assert.equal(f.state.stage,7);assert.equal(f.state.cleared,6);assert.equal(f.state.weapon,18);assert.equal(f.state.lives,3);assert.equal(f.state.wave,0);assert.equal(f.state.enemies.length,0);assert.equal(f.state.bullets.length,0);assert.equal(f.state.retries,1);assert.equal(f.el('bl-retry').hidden,true);assert.equal(f.events.filter(e=>e[0]==='start').length,2);assert.equal(f.events.filter(e=>e[0]==='start')[1][3].stage,7);
+  assert.equal(f.el('bl-go').hidden,true);assert.equal(f.el('bl-retry').hidden,false);assert.match(f.el('bl-retry').textContent,/重玩第 7 關/);const before=f.wallet.balance;f.run('blGo()');assert.equal(f.state.stage,7);assert.equal(f.wallet.balance,before);f.run('blRetry();blRetry()');assert.equal(f.wallet.balance,before);assert.equal(f.state.stage,7);assert.equal(f.state.cleared,6);assert.equal(f.state.weapon,18);assert.equal(f.state.lives,3);assert.equal(f.state.wave,0);assert.equal(f.state.enemies.length,0);assert.equal(f.state.bullets.length,0);assert.equal(f.state.retries,1);assert.equal(f.el('bl-retry').hidden,true);assert.equal(f.events.filter(e=>e[0]==='start').length,2);assert.equal(f.events.filter(e=>e[0]==='start')[1][3].stage,7);
   for(let stage=1;stage<=10;stage++)assert.equal(f.run(`BL.stage=${stage};blRetryFee()`),0);
 });
 check('Zero-balance retry preserves stage and weapon',()=>{
@@ -117,7 +117,7 @@ check('Endless progression crosses stages 10 and 20, immediately awards each mil
 });
 check('Death and free replay beyond stage ten preserve earned rewards and only report new attempt rewards',()=>{
   const f=fixture();f.run('blGo()');for(let stage=1;stage<=20;stage++){f.run('blClear();blGo()');}
-  assert.equal(f.state.stage,21);f.run('BL.weapon=45;blHurt();blHurt();blHurt()');assert.equal(f.wallet.balance,1000-fee+2);assert.equal(f.el('bl-pay').textContent,'2 點');assert.match(f.el('bl-retry').textContent,/免費重玩第 21 關/);assert.equal(f.events.find(e=>e[0]==='end')[2],2);
+  assert.equal(f.state.stage,21);f.run('BL.weapon=45;blHurt();blHurt();blHurt()');assert.equal(f.wallet.balance,1000-fee+2);assert.equal(f.el('bl-pay').textContent,'2 點');assert.match(f.el('bl-retry').textContent,/重玩第 21 關/);assert.equal(f.events.find(e=>e[0]==='end')[2],2);
   f.run('blRetry();blRetry()');assert.equal(f.wallet.balance,1000-fee+2);assert.equal(f.state.stage,21);assert.equal(f.state.weapon,45);assert.equal(f.state.lives,3);assert.equal(f.state.earned,2);assert.equal(f.state.attemptEarned,0);
   for(let stage=21;stage<=30;stage++){f.run('blClear()');if(stage<30)f.run('blGo()');}
   assert.equal(f.wallet.balance,1000-fee+3);assert.equal(f.state.earned,3);f.run('blCash()');const ends=f.events.filter(e=>e[0]==='end');assert.equal(ends.length,2);assert.equal(ends[1][2],1);

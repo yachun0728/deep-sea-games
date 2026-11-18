@@ -760,7 +760,7 @@ function showIntro() {
   $('#introBest').textContent = loadBest() ? `最佳分數 ${loadBest()} 分` : '';
   $('#intro').classList.remove('hide');
 }
-// 開場按鈕與平台右側「免費開始下潛」共用同一個開局流程，由父頁決定是否免費
+// 開場按鈕與平台右側「開始下潛」共用同一個開局流程，由父頁決定是否免費
 function beginRound() {
   const host = diveHost();
   let bet = 0;                                  // 單獨開啟時維持原本免費的示範模式

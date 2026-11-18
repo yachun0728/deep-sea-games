@@ -68,7 +68,7 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const live=st==='run';
  setText('pd-seg','第 '+seg+'/'+SEGS+' 段');setText('pd-score',String(score));setText('pd-best',best+' 分');
- $('pd-amount').disabled=puddingBusy;$('pd-go').disabled=live;setText('pd-go',live?'突圍中':st==='over'?'免費再突圍一次':'免費開始突圍');
+ $('pd-amount').disabled=puddingBusy;$('pd-go').disabled=live;setText('pd-go',live?'突圍中':st==='over'?'再突圍一次':'開始突圍');
 }
 const fl=(s,x,y,col)=>floats.push({s,x,y,col,t:0});
 function end(reason){
@@ -342,7 +342,7 @@ function drawReady(){
  g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
  tx('布丁突圍',W/2,150,42,'#ffd23f');tx('背著小王子殺出重圍',W/2,200,20,'#fff1c1');
  tx('每段先拼武器碎片，再往前衝',W/2,250,19,'#fff1c1');tx('武器的形狀就是打擊範圍',W/2,280,19,'#fff1c1');tx('按住 ←→ / AD 或按住畫面移動',W/2,310,19,'#fff1c1');
- tx('到操作區免費開始',W/2,372,24,'#ffd23f');
+ tx('到操作區開始',W/2,372,24,'#ffd23f');
 }
 function draw(){
  if(st==='ready')drawReady();else if(st==='over')drawOver();else if(ph==='forge')drawForge();else drawRun();
@@ -360,7 +360,7 @@ const ptX=e=>{const rc=c.getBoundingClientRect();return(e.clientX-rc.left)*W/(rc
 $('pd-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
- if(st!=='run'){say(st==='over'?'這一局已結算。按「免費再突圍一次」開始新的一局。':'先按「免費開始突圍」。');return}
+ if(st!=='run'){say(st==='over'?'這一局已結算。按「再突圍一次」開始新的一局。':'先按「開始突圍」。');return}
  if(!shown())return;e.preventDefault();c.focus();
  if(ph==='forge')forgeTap(ptX(e),ptY(e));
  else if(sub==='play'){ptr=ptX(e);try{c.setPointerCapture(e.pointerId)}catch(err){}}

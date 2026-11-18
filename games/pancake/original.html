@@ -165,7 +165,7 @@ body{position:fixed;inset:0}
     <p id="revive-sub"></p>
     <div class="wallet-pill" id="revive-wallet"></div>
     <button class="btn" id="btn-free">狂煎中！免費補 3 包</button>
-    <button class="btn" id="btn-ad">看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎，免費數</span></button>
+    <button class="btn" id="btn-ad">看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎</span></button>
     <button class="btn sec" id="btn-buy">用 30 點換 5 包泡麵</button>
     <p class="small" id="buy-note"></p>
     <button class="btn ghost" id="btn-sleep">不煮了，去睡覺</button>
@@ -176,8 +176,8 @@ body{position:fixed;inset:0}
     <div class="art-icon" data-icon="coin"></div>
     <h2 class="ol-crust">點數不夠開火了…</h2>
     <div class="wallet-pill" id="low-wallet"></div>
-    <p class="small">免費遊玩，沒有入場費。</p>
-    <button class="btn" id="btn-low-ad">看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎，免費數</span></button>
+    <p class="small">沒有入場費。</p>
+    <button class="btn" id="btn-low-ad">看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎</span></button>
     <button class="btn ghost" id="btn-low-back">先等等，回首頁</button>
   </div>
 
@@ -2001,7 +2001,7 @@ function renderReviveButtons() {
   $('btn-free').classList.toggle('hidden', !free);
   $('btn-ad').classList.toggle('hidden', free);
   const b = $('btn-buy');
-  b.innerHTML = `免費補充 ${CONFIG.buyNoodlesAmount} 包泡麵`;
+  b.innerHTML = `補充 ${CONFIG.buyNoodlesAmount} 包泡麵`;
   b.classList.toggle('dim', Wallet.bal < CONFIG.buyNoodlesCost);
 }
 function resumeWithLives(n, msg) {
@@ -2022,7 +2022,7 @@ $('btn-ad').addEventListener('click', () => { Snd.click(); if (G) G.adUsed++; st
 $('btn-free').addEventListener('click', () => {
   Snd.click(); if (!Wallet.isFree()) { renderReviveButtons(); return; }
   track('free_refill', { pancakes: G.served, left_sec: Math.round(Wallet.freeLeftMs() / 1000) });
-  resumeWithLives(CONFIG.freeRefillLives, `免費補 ${CONFIG.freeRefillLives} 包，繼續煎！`);
+  resumeWithLives(CONFIG.freeRefillLives, `補 ${CONFIG.freeRefillLives} 包，繼續煎！`);
 });
 $('btn-buy').addEventListener('click', () => {
   Snd.click(); Wallet.tick(Date.now());
@@ -2033,7 +2033,7 @@ $('btn-buy').addEventListener('click', () => {
   }
   track('points_buy', { pancakes: G.served, cost: CONFIG.buyNoodlesCost, noodles: CONFIG.buyNoodlesAmount, balance: Wallet.bal });
   renderWallet();
-  resumeWithLives(CONFIG.buyNoodlesAmount, `免費補給，泡麵 +${CONFIG.buyNoodlesAmount}包`);
+  resumeWithLives(CONFIG.buyNoodlesAmount, `補給，泡麵 +${CONFIG.buyNoodlesAmount}包`);
 });
 $('btn-sleep').addEventListener('click', () => { Snd.click(); G.ended = true; showResult(); });
 function updateAd(dt) {
@@ -2043,8 +2043,8 @@ function updateAd(dt) {
     Wallet.grantFree(CONFIG.adFreeMinutes);
     track('fake_ad_complete', { pancakes: G ? G.served : 0, from: adCtx.from, free_minutes: CONFIG.adFreeMinutes });
     const from = adCtx.from; adCtx = null;
-    if (from === 'revive') resumeWithLives(CONFIG.freeRefillLives, `接下來 ${CONFIG.adFreeMinutes} 分鐘免費，泡麵補滿`);
-    else { toast(`接下來 ${CONFIG.adFreeMinutes} 分鐘免費`); const n = lowNext; lowNext = null; if (n) n(); else { appState = 'title'; showScreen('s-title'); } }
+    if (from === 'revive') resumeWithLives(CONFIG.freeRefillLives, `接下來 ${CONFIG.adFreeMinutes} 分鐘狂煎，泡麵補滿`);
+    else { toast(`接下來 ${CONFIG.adFreeMinutes} 分鐘狂煎`); const n = lowNext; lowNext = null; if (n) n(); else { appState = 'title'; showScreen('s-title'); } }
   }
 }
 // 點數不足

@@ -138,9 +138,9 @@ class LocalizationTests(unittest.TestCase):
     def test_embedded_dictionary_cannot_close_script(self):
         self.assertNotIn('</script', (ROOT / 'locales/en.json').read_text().lower())
 
-    def test_boba_accessibility_fee_matches_the_display(self):
+    def test_boba_card_has_no_fee_wording(self):
         source = (ROOT / 'games/boba/card.html').read_text()
-        self.assertIn('免費遊玩', source)
+        self.assertNotIn('免費', source)
         self.assertNotIn('每局 10 點', source)
 
 

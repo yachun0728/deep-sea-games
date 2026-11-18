@@ -6,7 +6,7 @@
   function esCleared(){try{var b=JSON.parse(localStorage.getItem('eatSmaller.bests'))||{};return Object.keys(b).filter(function(k){return isFinite(Number(b[k]));}).length;}catch(_){return esStored();}}
   function esUI(){
     $('es-cleared').textContent=EATS.cleared;$('es-pay').textContent=EATS.earned+' / '+EATS_CAP;$('es-best').textContent=Math.min(EATS_LEVELS,esCleared())+' / '+EATS_LEVELS;
-    $('es-go').disabled=EATS.active;$('es-go').textContent=EATS.active?'本局進行中 · 在左側選關':'免費開始一局';$('es-end').hidden=!EATS.active;
+    $('es-go').disabled=EATS.active;$('es-go').textContent=EATS.active?'本局進行中 · 在左側選關':'開始一局';$('es-end').hidden=!EATS.active;
   }
   function esValid(source){return source===$('es-frame').contentWindow;}
   window.deepSeaEatSmaller={
@@ -16,7 +16,7 @@
       if(AN.interact)AN.interact();
       EATS.active=true;EATS.stake=ENTRY_FEE;EATS.earned=0;EATS.paid={};EATS.cleared=0;EATS.analytics=AN.start('eat-smaller',ENTRY_FEE);
       save();renderAll();esUI();
-      esSay('免費遊玩，本局開始。在左側選一關；每關第一次通過 BONUS +2 點，最多 10 點。|Free play, round started. Pick a stage on the left; each stage’s first clear gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
+      esSay('本局開始。在左側選一關；每關第一次通過 BONUS +2 點，最多 10 點。|Free play, round started. Pick a stage on the left; each stage’s first clear gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
       return true;
     },
     clear:function(source,level){
@@ -56,6 +56,6 @@
   });
   $('es-end').addEventListener('click',esFinish);
   window.addEventListener('arcade-languagechange',function(){if(EATS.msg)esSay(EATS.msg.text,EATS.msg.kind,EATS.msg.params);});
-  esSay('每局免費。按「免費開始一局」或直接在左側點一關開始。|Each round costs a fixed 10 pts. Press “Pay & start a round” or just pick a stage on the left.');
+  esSay('按「開始一局」或直接在左側點一關開始。|Each round costs a fixed 10 pts. Press “Pay & start a round” or just pick a stage on the left.');
   esUI();
 

@@ -91,7 +91,7 @@ check('Overtime before any boss ends once as a loss with no points and saves the
 check('Overtime after BONUS keeps the credited points and reports them once as complete',()=>{
   const f=fixture();f.begin();f.nextDay();f.nextDay();const b=f.wallet.balance;assert.equal(b,500-fee+4);f.overtime();
   assert.equal(f.wallet.balance,b);const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],4);assert.equal(end[3],'complete');assert.equal(end[4].stage,3);
-  assert.equal(f.el('os-go').textContent,'免費再上一次班');
+  assert.equal(f.el('os-go').textContent,'再上一次班');
 });
 check('Another shift after the end deducts again and resets BONUS eligibility',()=>{
   const f=fixture();f.begin();f.nextDay();f.overtime();f.begin();

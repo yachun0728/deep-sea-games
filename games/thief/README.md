@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#thief`　分類：跑酷動作　狀態：顯示中
-- 大廳卡片：「換道、跳籃子，偷水果躲開老闆娘。」｜免費遊玩 · 市場追逐
+- 大廳卡片：「換道、跳籃子，偷水果躲開老闆娘。」｜立即開玩 · 市場追逐
 - 追蹤名稱（GA4 `game_name`）：偷水果的貓，`game_id` 為 `thief`
 - 檔案：`games/thief/card.html`、`games/thief/game.js`、`games/thief/icon.svg`、`games/thief/view.html`；`game.js` 共 178 行、12.8 KB
 

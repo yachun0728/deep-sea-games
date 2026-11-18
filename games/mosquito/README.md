@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#mosquito`　分類：潛行偷閒　狀態：顯示中
-- 大廳卡片：「深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。」｜免費遊玩 · 按住吸血
+- 大廳卡片：「深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。」｜立即開玩 · 按住吸血
 - 追蹤名稱（GA4 `game_name`）：血壓上升，`game_id` 為 `mosquito`
 - 檔案：`games/mosquito/card.html`、`games/mosquito/game.js`、`games/mosquito/icon.svg`、`games/mosquito/view.html`；`game.js` 共 437 行、24.4 KB
 

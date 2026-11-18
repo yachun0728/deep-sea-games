@@ -189,7 +189,7 @@ function ui(){
  const live=st==='run';
  let hearts='';for(let i=0;i<G.cfg.hearts;i++)hearts+=i<G.hearts?'♥':'♡';
  setText('np-level','第 '+G.level+' 關');setText('np-hearts',hearts);setText('np-best',best+' 分');
- $('np-amount').disabled=napBusy;$('np-go').disabled=live;setText('np-go',live?'偷睡中 · 按住睡覺':st==='over'?'免費再玩一次':'免費開始偷睡');
+ $('np-amount').disabled=napBusy;$('np-go').disabled=live;setText('np-go',live?'偷睡中 · 按住睡覺':st==='over'?'再玩一次':'開始偷睡');
 }
 function addFloat(x,y,text,color,size,life){floats.push({x:x,y:y,text:text,color:color,size:size||18,life:life||.9,max:life||.9})}
 function end(win){
@@ -380,7 +380,7 @@ function drawOverlay(){
   tx('丟垃圾：砸主管，血歸零就暈倒',200,304,15,'#fff');
   tx('睡意滿了就過關，共 10 關',200,330,15,'#fff');
   tx('空白鍵＝睡　J＝丟垃圾',200,366,13,'#90a4ae');
-  tx('到操作區免費開始',200,430,22,'#ffd54f','center',true,'#000');
+  tx('到操作區開始',200,430,22,'#ffd54f','center',true,'#000');
  }else if(st==='over'){
   ctx.fillStyle='rgba(10,10,20,0.82)';ctx.fillRect(0,0,W,H);
   if(why==='win'){tx('升職加薪！',200,140,38,'#ffd54f','center',true,'#000');tx('你睡過了 10 關，主管還是不知道。',200,190,15,'#fff')}
@@ -430,7 +430,7 @@ const toLocal=e=>{const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)/
 $('np-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
- if(st!=='run'){say(st==='over'?'這一局已結算。按「免費再玩一次」開始新的一局。':'先按「免費開始偷睡」。');return}
+ if(st!=='run'){say(st==='over'?'這一局已結算。按「再玩一次」開始新的一局。':'先按「開始偷睡」。');return}
  if(!shown())return;e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(_){}
  const p=toLocal(e);
  if(inRect(p,BTN_SLEEP))pointers.set(e.pointerId,'sleep');

@@ -5,9 +5,9 @@
 ## 概覽
 
 - 網址：`#shadow-relay`　分類：益智策略　狀態：顯示中
-- 大廳卡片：「影子會照你的路線重走，讓它點亮燈籠，別被它追上。」｜免費遊玩 · 8 關
+- 大廳卡片：「影子會照你的路線重走，讓它點亮燈籠，別被它追上。」｜立即開玩 · 8 關
 - 追蹤名稱（GA4 `game_name`）：影子接力，`game_id` 為 `shadow-relay`
-- 檔案：`games/shadow-relay/card.html`、`games/shadow-relay/game.js`、`games/shadow-relay/icon.svg`、`games/shadow-relay/original.html`、`games/shadow-relay/style.css`、`games/shadow-relay/view.html`；`game.js` 共 62 行、5.4 KB
+- 檔案：`games/shadow-relay/card.html`、`games/shadow-relay/game.js`、`games/shadow-relay/icon.svg`、`games/shadow-relay/original.html`、`games/shadow-relay/style.css`、`games/shadow-relay/view.html`；`game.js` 共 62 行、5.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「44. 影子接力 Shadow Relay（shadow-relay）」（下方「規則摘要」已複製）
 

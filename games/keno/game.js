@@ -43,16 +43,16 @@
     $('ke-left').textContent=(5-KE.digs)+' / 5';$('ke-score').textContent=KE.score;$('ke-best').textContent=KE.best;
     $('ke-free').textContent=KE.daily?(3-KE.daily.plays)+' / 3':'—';$('ke-earned').textContent=KE.daily?KE.daily.earned+' / 30 點':'—';
     elKGo.disabled=KE.active||!KE.daily||KE.daily.plays>=3||KE.daily.earned>=30;elKGo.dataset.mode=KE.active?'playing':'start';
-    elKGo.innerHTML=KE.active?'選一格挖掘吧':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'今日補給已完成<small>台灣時間午夜再來</small>':'免費挖金礦<small>免費 · 每次可挖 5 格</small>';
-    var cta=$('gold-daily-cta');if(cta)cta.textContent=KE.active?'繼續本次挖掘 ↗':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'查看今日補給':'免費挖一次 ↗';
+    elKGo.innerHTML=KE.active?'選一格挖掘吧':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'今日補給已完成<small>台灣時間午夜再來</small>':'挖金礦<small>每次可挖 5 格</small>';
+    var cta=$('gold-daily-cta');if(cta)cta.textContent=KE.active?'繼續本次挖掘 ↗':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'查看今日補給':'挖一次 ↗';
     var badge=$('gold-free-badge');if(badge)badge.textContent=KE.active?'挖':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'✓':KE.daily?String(3-KE.daily.plays):'3';
-    var link=$('gold-float');if(link)link.setAttribute('aria-label',KE.active?'每日挖礦：繼續本次挖掘':KE.daily?'每日免費挖礦：剩餘'+(3-KE.daily.plays)+'次，今日已獲得'+KE.daily.earned+'點':'每日免費挖礦');
-    var card=$('gold-daily-status');if(card)card.textContent=KE.daily?'今日剩 '+(3-KE.daily.plays)+' 次 · 已獲 '+KE.daily.earned+'/30 點':'每天免費 3 次 · 最多獲得 30 點';
+    var link=$('gold-float');if(link)link.setAttribute('aria-label',KE.active?'每日挖礦：繼續本次挖掘':KE.daily?'每日挖礦：剩餘'+(3-KE.daily.plays)+'次，今日已獲得'+KE.daily.earned+'點':'每日挖礦');
+    var card=$('gold-daily-status');if(card)card.textContent=KE.daily?'今日剩 '+(3-KE.daily.plays)+' 次 · 已獲 '+KE.daily.earned+'/30 點':'每天 3 次 · 最多獲得 30 點';
   }
   function kePlay(){keLocked(function(){var d=keRead();keSync(d);if(KE.active)return;if(d.plays>=3||d.earned>=30){keUI();return;}
     var layout=Array.from({length:36},function(_,i){return i<18?0:i<28?1:i<34?2:3;});
     for(var i=35;i>0;i--){var r=Math.floor(Math.random()*(i+1)),t=layout[i];layout[i]=layout[r];layout[r]=t;}
-    d.plays++;d.round={layout:layout,open:Array(36).fill(false)};keStore(d);KE.over=false;KE.earned=0;keSync(d);kSay('免費出發！每次挖 5 格，礦物點數立即加入共用餘額。');keUI();
+    d.plays++;d.round={layout:layout,open:Array(36).fill(false)};keStore(d);KE.over=false;KE.earned=0;keSync(d);kSay('出發！每次挖 5 格，礦物點數立即加入共用餘額。');keUI();
   });}
   function keDig(i){keLocked(function(){var d=keRead();keSync(d);if(!KE.active||i<0||i>=36||KE.open[i]){keUI();return;}
     var ore=KE_ORES[KE.layout[i]],bonus=Math.min(ore.reward,30-d.earned);

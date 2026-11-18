@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#office-shoot`　分類：跑酷動作　狀態：顯示中
-- 大廳卡片：「自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。」｜免費遊玩 · 自動射擊
+- 大廳卡片：「自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。」｜立即開玩 · 自動射擊
 - 追蹤名稱（GA4 `game_name`）：拒絕加班，`game_id` 為 `office-shoot`
 - 檔案：`games/office-shoot/card.html`、`games/office-shoot/game.js`、`games/office-shoot/icon.svg`、`games/office-shoot/style.css`、`games/office-shoot/view.html`；`game.js` 共 1178 行、76.9 KB
 

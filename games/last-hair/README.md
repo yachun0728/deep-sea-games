@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#last-hair`　分類：潛行偷閒　狀態：顯示中
-- 大廳卡片：「頂著最後三根頭髮，在強風中走完 500 公尺去面試。」｜免費遊玩 · 雙拇指操作
+- 大廳卡片：「頂著最後三根頭髮，在強風中走完 500 公尺去面試。」｜立即開玩 · 雙拇指操作
 - 追蹤名稱（GA4 `game_name`）：尊嚴保衛戰，`game_id` 為 `last-hair`
 - 檔案：`games/last-hair/card.html`、`games/last-hair/game.js`、`games/last-hair/icon.svg`、`games/last-hair/style.css`、`games/last-hair/view.html`；`game.js` 共 585 行、42.0 KB
 

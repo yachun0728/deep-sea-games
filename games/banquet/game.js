@@ -520,7 +520,7 @@ function render(){
  renderCups();renderHand();renderDealerHand();renderLog();renderNotes();
  var mine=live&&E.turn==='p'&&!E.pending,sel=E.sel?cupOf(E.sel):null,pend=live&&E.pending&&E.pending.to==='p';
  var turn=$('bq-turn');
- put(turn,!live?(over?'這一場結束了。':'按右側「免費開始晚宴」'):pend?'莊家蓋上了銀蓋，等你決定。':E.turn==='d'?'莊家思考中…':E.decree.p?'你被勸酒令指定：這次只能自己喝。':sel?'已選 #'+sel.id+'：決定怎麼處理這杯酒。':'先點選一杯酒，再決定怎麼處理它。');
+ put(turn,!live?(over?'這一場結束了。':'按右側「開始晚宴」'):pend?'莊家蓋上了銀蓋，等你決定。':E.turn==='d'?'莊家思考中…':E.decree.p?'你被勸酒令指定：這次只能自己喝。':sel?'已選 #'+sel.id+'：決定怎麼處理這杯酒。':'先點選一杯酒，再決定怎麼處理它。');
  $('bq-act-row').hidden=!mine;
  var forced=E.decree.p;
  $('bq-self').disabled=!sel||E.fxT>0;$('bq-toast').disabled=!sel||forced||E.fxT>0;$('bq-silver').disabled=!sel||forced||E.fxT>0;$('bq-silver').hidden=!ADV;
@@ -535,7 +535,7 @@ function render(){
  setCls($('bq-hands'),'is-ready',mine&&!!E.sel&&!(E.fxT>0));
  var pr=$('bq-prompt');pr.hidden=!pend;
  if(pend)put($('bq-prompt-t'),'莊家宣稱 #'+E.pending.id+' 是瓊漿。你要相信並喝下，還是質疑？');
- var go=$('bq-go');go.disabled=bqBusy;put(go,bqBusy?'晚宴進行中':over?'免費再辦一場':'免費開始晚宴');
+ var go=$('bq-go');go.disabled=bqBusy;put(go,bqBusy?'晚宴進行中':over?'再辦一場':'開始晚宴');
  $('bq-quit').hidden=!bqBusy;put($('bq-quit'),quitArm>0?'再按一次確認放棄':'放棄本局');
  put($('bq-stage-t'),!E.act?'未開始':SHORT[E.act]);
  put($('bq-bonus'),E.earned+' 點');put($('bq-best'),wins+' 場');

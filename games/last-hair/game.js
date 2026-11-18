@@ -238,7 +238,7 @@ function aliveN(){return g.hairs.filter(h=>h.alive).length}
 function ui(){
  const live=st==='run';
  setText('lh-dist',Math.floor(live||st==='over'?g.dist:0)+' m');setText('lh-hairs',(live||st==='over'?aliveN():3)+' / 3');setText('lh-best',best.toFixed(0)+' m');
- $('lh-amount').disabled=hairBusy;$('lh-go').disabled=live;setText('lh-go',live?'逆風前進中':st==='over'?'免費再玩一次':'免費開始出門');
+ $('lh-amount').disabled=hairBusy;$('lh-go').disabled=live;setText('lh-go',live?'逆風前進中':st==='over'?'再玩一次':'開始出門');
 }
 // ---- audio / haptics ----
 let ac=null;
@@ -471,7 +471,7 @@ function drawReady(){
  txt('用最後 3 根頭髮，走完 500 公尺去面試',200,140,15,'rgba(255,255,255,.85)','center',false);
  ctx.fillStyle='rgba(16,19,27,.92)';ctx.fillRect(0,SCENE_H,W,H-SCENE_H);
  ['左手把脖子滑到綠圈：迎著風歪頭','右手按住壓頭：抗風 ×4，但會流汗、被側目','歪頭太久脖子會抽筋；遇到路人記得放手'].forEach((s,i)=>txt(s,200,556+i*22,14,'rgba(255,255,255,.88)','center',false,null,370));
- ctx.globalAlpha=.6+.4*Math.sin(time*4);txt('到操作區免費開始',200,624,20,'#ffd54f');ctx.globalAlpha=1;
+ ctx.globalAlpha=.6+.4*Math.sin(time*4);txt('到操作區開始',200,624,20,'#ffd54f');ctx.globalAlpha=1;
  TOGGLES().forEach(it=>{ctx.fillStyle='#3b4358';rrect(it[0],642,172,42,14);ctx.fill();txt(it[1],it[0]+86,663,16,'#fff','center',true,null,160)});
  txt('最遠紀錄 '+best.toFixed(0)+' m',200,704,14,'rgba(255,255,255,.7)','center',false);
 }
@@ -529,9 +529,9 @@ c.addEventListener('pointerdown',e=>{
    if(p.y>642&&p.y<684){
     if(p.x>24&&p.x<196){swap=!swap;lsSet('deep-sea-last-hair-swap',swap?'1':'0')}
     else if(p.x>204&&p.x<376){soundOn=!soundOn;lsSet('deep-sea-last-hair-sound',soundOn?'1':'0');if(soundOn)audioInit()}
-    else say('先按「免費開始出門」。');
-   }else say('先按「免費開始出門」。');
-  }else say('這一局已結算。按「免費再玩一次」開始新的一局。');
+    else say('先按「開始出門」。');
+   }else say('先按「開始出門」。');
+  }else say('這一局已結算。按「再玩一次」開始新的一局。');
   return;
  }
  e.preventDefault();c.focus();

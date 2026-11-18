@@ -161,7 +161,7 @@ function runFx(f){
 function ui(){
  const live=st==='run';
  setText('mm-pearls',(G?G.done:0)+' / '+TOTAL_RUNS);setText('mm-score',G?String(G.score):'—');setText('mm-best',bestFor(mode)+' 分');
- const go=$('mm-go');go.disabled=live;setText('mm-go',live?'牌局進行中':st==='over'?'免費再玩一次':'免費發牌');
+ const go=$('mm-go');go.disabled=live;setText('mm-go',live?'牌局進行中':st==='over'?'再玩一次':'發牌');
  const q=$('mm-quit');q.hidden=!live;setText('mm-quit',quitArm?'再按一次確認放棄':'放棄本局');
  $('mm-undo').disabled=!live||!G||!G.history.length;$('mm-hint').disabled=!live;
  stockBtn.disabled=!live||!G||!G.stock.length;setText('mm-stock-count',String(G?Math.ceil(G.stock.length/10):5));
