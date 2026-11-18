@@ -50,7 +50,8 @@ deep-sea-games/
 │   ├── test_pudding.mjs      布丁突圍行為測試（可選 Node.js）
 │   ├── test_peek.mjs         別看行為測試（可選 Node.js）
 │   ├── test_mosquito.mjs     血壓上升行為測試（可選 Node.js）
-│   └── test_last_hair.mjs    尊嚴保衛戰行為測試（可選 Node.js）
+│   ├── test_last_hair.mjs    尊嚴保衛戰行為測試（可選 Node.js）
+│   └── test_pet_walk.mjs     小灰出門行為測試（可選 Node.js）
 ├── dodge-run.html            舊網址 → index.html#runner
 ├── dream-repair.html         舊網址 → index.html#dream
 └── .gitignore                忽略 .claude/、crush-depth.html 與 Python 暫存
@@ -92,7 +93,7 @@ flowchart TD
 | dice / limbo / hilo | D / L / HL |
 | keno / wheel / tower / crossing | KE / WL / TW / CR |
 | dream / elevator / fishing / campaign / reaper / blaster | DR / EQ / FI / CP / RP / BL |
-| runner / sneak / cat / bird / frog / nap / clock-out / pudding / peek / mosquito / last-hair | runnerBusy / sneakBusy / catBusy / birdBusy / frogBusy / napBusy / clockBusy / puddingBusy / peekBusy / mqBusy / hairBusy，各自內層 IIFE（last-hair 即尊嚴保衛戰）|
+| runner / sneak / cat / bird / frog / nap / clock-out / pudding / peek / mosquito / last-hair / pet-walk | runnerBusy / sneakBusy / catBusy / birdBusy / frogBusy / napBusy / clockBusy / puddingBusy / peekBusy / mqBusy / hairBusy / petBusy，各自內層 IIFE（last-hair 即尊嚴保衛戰）|
 | carp / rider / boss / thief / baby | carpBusy / riderBusy / bossBusy / thiefBusy / babyBusy，各自內層 IIFE（由獨立頁面改編，共用 G 物件與造型解鎖流程）|
 | boba | BOBA、deepSeaBoba；original.html 為子頁 |
 | dive | DIVE、deepSeaDive；original.html 為子頁（一口氣探險） |
@@ -142,6 +143,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `deep-sea-peek-deaths` | 別看各死因次數（JSON 物件）；新增於 2026-11-17 |
 | `deep-sea-last-hair-best` / `-deaths` / `-swap` / `-sound` | 尊嚴保衛戰最遠距離、最近死亡位置與原因、左右手對調、音效開關；新增於 2026-11-17 |
 | `deep-sea-mosquito-best` | 血壓上升最高吸血百分比（一位小數）；新增於 2026-11-17 |
+| `deep-sea-pet-walk-save` | 小灰出門存檔（JSON：最高分、出門次數、物資、事件與物資圖鑑、上次事件）；新增於 2026-11-17 |
 | `deep-sea-nap-best` | 偷睡大師最高分；新增於 2026-11-17 |
 | `reaper` | Reaper 最佳正常靈魂處理總數 |
 | `deep-sea-blaster-best` | 深海火線最佳通關數（無關卡上限，沿用既有數值格式） |
