@@ -12553,6 +12553,14 @@ function tone(f,d,vol,pan,type,slide,amb){
   gn.gain.setValueAtTime((vol||.05)*(amb?AMB:MASTER*(L&&L.wi===2?.7:1)*(wx===8||wx===9?.8:1))*1.4,t);gn.gain.linearRampToValueAtTime(.0001,t+d);o.connect(gn);
   if(ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=(pan||0)*(wx===3&&L&&L.wi===1?.5:1);gn.connect(p);p.connect(ac.destination)}else gn.connect(ac.destination);
   o.start(t);o.stop(t+d+.02)}catch(e){}}
+let nbuf=null,rainN=null,thCyc=-1;
+function noiseBuf(){if(!nbuf){nbuf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);const d=nbuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}return nbuf}
+function weatherAudio(){   // thunderstorm: a steady rain bed, plus a rumble that follows each lightning flash
+ if(!ac)return;
+ try{const on=st==='run'&&!introP&&wx===3&&!camp;
+  if(on&&!rainN){const src=ac.createBufferSource(),hp=ac.createBiquadFilter(),lp=ac.createBiquadFilter(),gn=ac.createGain();src.buffer=noiseBuf();src.loop=true;hp.type='highpass';hp.frequency.value=700;lp.type='lowpass';lp.frequency.value=6500;gn.gain.value=0;src.connect(hp);hp.connect(lp);lp.connect(gn);gn.connect(ac.destination);src.start();rainN={src,gn}}
+  if(rainN)rainN.gn.gain.setTargetAtTime(on?.16*AMB*1.6:0,ac.currentTime,.4);
+  if(on){const cyc=Math.floor(tt/11),q=tt%11;if(q<.2&&thCyc!==cyc){thCyc=cyc;const t=ac.currentTime+.45+Math.random()*.5,src=ac.createBufferSource(),lp=ac.createBiquadFilter(),gn=ac.createGain();src.buffer=noiseBuf();lp.type='lowpass';lp.frequency.setValueAtTime(260,t);lp.frequency.exponentialRampToValueAtTime(60,t+2.4);gn.gain.setValueAtTime(.0001,t);gn.gain.linearRampToValueAtTime(.9*MASTER,t+.08);gn.gain.exponentialRampToValueAtTime(.0001,t+2.6);src.connect(lp);lp.connect(gn);gn.connect(ac.destination);src.start(t,Math.random());src.stop(t+2.7)}}}catch(e){}}
 function say(text,kind){$('peek-msg').textContent=text;$('peek-msg').className='msg'+(kind?' '+kind:'')}
 peekSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
@@ -12706,7 +12714,7 @@ function tap(x,y){const n=performance.now();lastTap=tt;tapQ.push(tt);if(tapQ.len
 function passEnd(){if(ev.pass<ev.passes){ev.pass++;ev.phase='gap';ev.t=1;ev.ok=false;ev.bad=0;ev.snd=0}else if(L&&L.l>=41&&!ev.fakeBack&&R()<.25){ev.fakeBack=true;ev.phase='gap';ev.t=1.6;ev.snd=0}else survive()}
 function allClear(){[0,110,220,330].forEach(d=>later(()=>tone(3100+Math.random()*500,.05,.03,0,'sine'),d))}   // after a multi-pass attack the crickets burst back: it is really over
 function update(dt){
- tt+=dt;
+ tt+=dt;weatherAudio();
  if(introP)return;
  if(openFx){openFx.t-=dt;if(openFx.t<=0)openFx=null}
  if(shieldFx>0)shieldFx=Math.max(0,shieldFx-dt*1.4);if(flash>0)flash-=dt;if(shake>0)shake-=dt;if(scareT>0)scareT-=dt;fxs.forEach(f=>f.t+=dt);fxs=fxs.filter(f=>f.t<.9);
@@ -13169,7 +13177,8 @@ function drawWeather(){
  if(w===9&&g.canvas&&g.canvas.width){const k=g.canvas.width/W;for(let y=190;y<H;y+=10){const dx=Math.sin(tt*3+y*.05)*(2+(y-190)/80);g.drawImage(g.canvas,0,y*k,g.canvas.width,10*k,dx,y,W,10)}}   // heat shimmer
  const vis=w===5||w===7?.6:w===4?.8:1;
  if(vis<1){const gr=g.createRadialGradient(CX,260,330*vis,CX,260,620*vis);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,.85)');g.fillStyle=gr;g.fillRect(0,0,W,H)}
- const n=w===3?60:w===6?40:w===7?90:w===8?35:0;
+ if(w===3){for(let L2=0;L2<3;L2++){const sp=[560,740,940][L2],ln=[7,11,16][L2],al=[.13,.2,.3][L2];g.strokeStyle='rgba(185,205,225,'+al+')';g.lineWidth=[.7,1,1.2][L2];g.beginPath();for(let i=L2;i<240;i+=3){const x=((i*73.1+tt*sp*.12)%(W+60))-30,y=(i*131.7+tt*sp)%(H+20)-10;g.moveTo(x,y);g.lineTo(x-ln*.12,y-ln)}g.stroke()}}   // fine layered rain: thin, steep, depth by speed
+ const n=w===6?40:w===7?90:w===8?35:0;
  g.save();for(let i=0;i<n;i++){const sx=(i*97.3+tt*(w===3?260:w===7?340:40*(1+i%3)))%W,sy=(i*53.7+tt*(w===3?520:w===8?30:90))%H;
   if(w===3){g.strokeStyle='rgba(170,200,230,.45)';g.beginPath();g.moveTo(sx,sy);g.lineTo(sx-4,sy+14);g.stroke()}
   else{g.fillStyle=w===8?'rgba(150,140,130,.55)':'rgba(255,255,255,.7)';g.fillRect(sx,sy,w===7?3:2,w===7?3:2)}}g.restore();g.restore()}
