@@ -89,6 +89,8 @@ python3 -m http.server 8765
 
 ## 血壓上升行為檢查
 
+修改 `games/mermaid/` 時可執行 `node tools/test_mermaid.mjs`，驗證單次扣款、每顆珍珠 BONUS 只發一次（悔棋後重收不重發）、通關加發、發牌／移動／收組規則與放棄單次結算。無需 npm 套件。
+
 修改 `games/banquet/` 時可執行 `node tools/test_banquet.mjs`，驗證扣款、BONUS、道具、銀蓋、醉倒、延長賽與 AI 完整對戰不變量。無需 npm 套件。
 
 修改 `games/mosquito/` 時可在有 Node.js 的環境執行 `node tools/test_mosquito.mjs`，驗證單次扣款、25／50／75% 里程碑與吸滿逃出各只入帳一次、三種死法（抓癢、翻身、開燈）、開燈逃生、最佳紀錄、空白鍵與指標按住只在本款畫面作用，以及機器人難度合理性檢查。無需 npm 套件。

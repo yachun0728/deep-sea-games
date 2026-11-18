@@ -308,5 +308,12 @@
     "view": "games/banquet/view.html",
     "card": "games/banquet/card.html",
     "icon": "games/banquet/icon.svg"
+  },
+  {
+    "id": "mermaid",
+    "logic": "games/mermaid/game.js",
+    "view": "games/mermaid/view.html",
+    "card": "games/mermaid/card.html",
+    "icon": "games/mermaid/icon.svg"
   }
 ]

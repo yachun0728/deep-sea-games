@@ -8,7 +8,7 @@ function chinese(view){var texts=[];var walker=(view.ownerDocument||document).cr
 try {
  await wait();
  if(matchMedia('(max-width:880px)').matches)assert(innerWidth===390&&document.documentElement.scrollWidth<=390,'English lobby fits a true 390px viewport');
- var games={'ocean-link':'ol-full',mines:'mines-go',breakout:'br-go',merge:'mg-go',dream:'dr-go',runner:'rn-go',elevator:'eq-go',sneak:'sk-go',fishing:'fi-go',campaign:'cp-go',cat:'ct-go',bird:'pb-go',reaper:'rp-go',blaster:'bl-go',skybuilder:'sb-go',carp:'carp-go',rider:'rider-go',boss:'boss-go',thief:'thief-go',baby:'baby-go',frog:'fg-go',nap:'np-go',mosquito:'mq-go','last-hair':'lh-go','pet-walk':'pw-go','office-shoot':'os-go',banquet:'bq-go'};
+ var games={'ocean-link':'ol-full',mines:'mines-go',breakout:'br-go',merge:'mg-go',dream:'dr-go',runner:'rn-go',elevator:'eq-go',sneak:'sk-go',fishing:'fi-go',campaign:'cp-go',cat:'ct-go',bird:'pb-go',reaper:'rp-go',blaster:'bl-go',skybuilder:'sb-go',carp:'carp-go',rider:'rider-go',boss:'boss-go',thief:'thief-go',baby:'baby-go',frog:'fg-go',nap:'np-go',mosquito:'mq-go','last-hair':'lh-go','pet-walk':'pw-go','office-shoot':'os-go',mermaid:'mm-go',banquet:'bq-go'};
  for(var id of Object.keys(games)){
   location.hash=id;await wait();
   var button=document.getElementById(games[id]),view=document.getElementById('view-'+id),before=balance();
