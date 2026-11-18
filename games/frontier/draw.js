@@ -136,9 +136,9 @@ function ftEnemyFortress(eb,w){
 }
 function ftBuilding(b,w){
  var x=b.x,y=b.y,colors={camp:'#d8b778',house:'#a5c8b5',market:'#dcb269',quarry:'#a6bac1',mill:'#79b6aa',forge:'#b78165',depot:'#95b8a0',tower:'#7d9c9e',beacon:'#e4ce8a'};
- var sprite={barracks:6,warehouse:9,camp:6,house:6,market:7,quarry:6,mill:8,forge:9,depot:6,tower:10,beacon:11}[b.kind];
+ var sprite={guardhouse:6,barracks:6,warehouse:9,camp:6,house:6,market:7,quarry:6,mill:8,forge:9,depot:6,tower:10,beacon:11}[b.kind];
  if(sprite!==undefined&&ftSprite(sprite,x,y,b.kind==='tower'||b.kind==='beacon'?145:142)){
-  if(b.kind==='barracks')text('⚔',x,y-95,30,'#baf3d6');if(b.kind==='quarry')ftSprite(4,x+35,y+5,50);if(b.kind==='depot')ftSprite(5,x+32,y+4,48);
+  if(b.kind==='barracks')text('⚔',x,y-95,30,'#baf3d6');if(b.kind==='guardhouse')text('🛡',x,y-95,28,'#baf3d6');if(b.built&&['barracks','guardhouse','house'].includes(b.kind))text('Lv.'+(b.level||1),x,y-112,12,'#ffe4a4');if(b.kind==='quarry')ftSprite(4,x+35,y+5,50);if(b.kind==='depot')ftSprite(5,x+32,y+4,48);
   if(b.hp<b.maxHp){ctx.fillStyle='#563e33';ctx.fillRect(x-30,y-123,60,5);ctx.fillStyle=b.hp>0?'#e4b26b':'#ee806d';ctx.fillRect(x-30,y-123,60*b.hp/b.maxHp,5);if(b.hp===0)text('需修復',x,y-130,12,'#ffc59a');}return;
  }
  ftEllipse(x+3,y+6,40,15,'#143c3944');

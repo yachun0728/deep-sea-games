@@ -2,7 +2,7 @@
 var frontierClassic=false; // tests can switch the first region back to the beacon rules
 function frontierPlan(level){
  var c=Math.floor((level-1)/10),n=(level-1)%10;
- return {level:level,chapter:c,mission:!frontierClassic?'war':n===9?'boss':['build','rescue','hunt','defend','elite','rescue','defend','hunt','elite'][n],wood:24+c*6+n*2,stone:14+c*4+n,enemies:4+c*2+Math.floor(n/2),hp:36+c*13+n*3,damage:9+c*3+Math.floor(n/3),windup:Math.max(.62,1.18-c*.09-n*.015),waves:2+c,hold:24+c*6,night:150-c*12,width:1200+c*300,height:900+c*150,trees:160+c*45,requiredCamps:c>=2?c-1:0,assaultWaves:3+c+Math.floor(n/4),waveGap:Math.max(18,32-c*3-Math.floor(n/3)),war:!frontierClassic,enemyHp:3000+Math.floor((level-1)/5)*2800,enemyDamage:4+Math.floor((level-1)/5),fighterCap:12+c*4,towers:2+c,guards:2+c*2};
+ return {level:level,chapter:c,mission:!frontierClassic?'war':n===9?'boss':['build','rescue','hunt','defend','elite','rescue','defend','hunt','elite'][n],wood:24+c*6+n*2,stone:14+c*4+n,enemies:4+c*2+Math.floor(n/2),hp:36+c*13+n*3,damage:9+c*3+Math.floor(n/3),windup:Math.max(.62,1.18-c*.09-n*.015),waves:2+c,hold:24+c*6,night:150-c*12,width:1200+c*300,height:900+c*150,trees:160+c*45,requiredCamps:c>=2?c-1:0,assaultWaves:3+c+Math.floor(n/4),waveGap:Math.max(18,32-c*3-Math.floor(n/3)),war:!frontierClassic,houseMax:1+Math.floor((level-1)/10),enemyHp:3000+Math.floor((level-1)/5)*2800,enemyDamage:4+Math.floor((level-1)/5),fighterCap:12+c*4,towers:2+c,guards:2+c*2};
 }
 var FRONTIER_CARDS=[
  {id:'tool',name:'採集工具',desc:'採集更快、一次拿更多',key:'tool',max:8},
@@ -32,11 +32,11 @@ function frontierWorld(level,tech,coins){
  var w={version:1,level:level,cfg:cfg,tech:frontierTech(tech),offer:null,coins:Math.max(0,Number(coins)||0),siege:{wave:0,next:cfg.war?Math.max(80,100-Math.floor(level*.4)):40},fighters:[],failure:"",workers:[],supplies:[],drops:[],raids:0,raidAt:75,depotReady:false,settled:false,time:0,phase:'play',p:{x:180,y:450,hp:100,inv:0,attack:0,dash:0,dx:1,dy:0},bag:{wood:0,stone:0},bank:{wood:0,stone:0},nodes:[],enemies:[],shots:[],effects:[],kills:0,rescued:0,hold:0,wave:0,waveAt:0,heal:35,worker:0,threat:0,
  buildings:[{kind:'camp',x:180,y:450,built:true,wood:0,stone:0},{kind:'mill',x:320,y:450+flip*230,built:false,wood:cfg.wood,stone:0},{kind:'forge',x:330,y:450-flip*230,built:false,wood:12,stone:cfg.stone},{kind:'bridge',x:590,y:450,built:false,wood:cfg.wood+10,stone:cfg.stone},{kind:'tower',x:860,y:450+offset,built:false,wood:cfg.wood,stone:cfg.stone+6,cd:0},{kind:'beacon',x:1090,y:450-offset,built:false,wood:cfg.wood,stone:cfg.stone}],cages:[{x:880,y:180,open:false},{x:1020,y:700,open:false}]};
  w.buildings.push(
- {kind:'house',x:185,y:620,built:false,wood:16,stone:4,hp:140,maxHp:140},
+ {kind:'house',x:185,y:620,built:false,wood:16,stone:4,hp:140,maxHp:140,level:1},
  {kind:'market',x:370,y:470,built:false,wood:12,stone:6,hp:140,maxHp:140},
  {kind:'quarry',x:430,y:700,built:false,wood:18,stone:12,hp:140,maxHp:140});
  if(cfg.chapter>0)w.buildings.push({kind:'depot',x:cfg.width-380,y:cfg.height-270,built:false,wood:30+cfg.chapter*6,stone:20+cfg.chapter*4,hp:180,maxHp:180});
- if(cfg.war)w.buildings.push({kind:'barracks',x:cfg.width-430,y:250,built:false,wood:30,stone:20,hp:220,maxHp:220,queue:0,train:0});
+ if(cfg.war){w.buildings.push({kind:'barracks',x:cfg.width-430,y:250,built:false,wood:30,stone:20,hp:220,maxHp:220,queue:0,train:0,level:1});w.buildings.push({kind:'guardhouse',x:430,y:200,built:false,wood:20,stone:10,hp:260,maxHp:260,level:1,safe:true});}
  if(level>=11&&!cfg.war)w.buildings.push({kind:'barracks',x:450,y:180,built:false,wood:30+cfg.chapter*5,stone:20+cfg.chapter*3,hp:220,maxHp:220,queue:0,train:0});
  w.buildings[0].hp=w.buildings[0].maxHp=360+cfg.chapter*80;
  w.buildings[5].x=cfg.width-110;w.buildings[5].y=cfg.height/2;
@@ -116,7 +116,7 @@ function frontierCollect(w){
 }
 function frontierWorkers(w,dt){
  w.supplies.forEach(function(d){d.wait=Math.max(0,d.wait-dt);});
- var house=w.buildings.find(function(b){return b.kind==='house';}),roles=[];if(house&&house.built&&house.hp>0){roles=['wood','wood'];if(frontierBuilt(w,'mill'))roles.push('wood');if(frontierBuilt(w,'quarry'))roles.push('stone');for(var ri=0;ri<w.rescued;ri++)roles.push(ri%2?'stone':'wood');}var count=roles.length;
+ var house=w.buildings.find(function(b){return b.kind==='house';}),roles=[];if(house&&house.built&&house.hp>0){roles=['wood','wood'];for(var hl=1;hl<(house.level||1);hl++)roles.push(hl%2?'stone':'wood');if(frontierBuilt(w,'mill'))roles.push('wood');if(frontierBuilt(w,'quarry'))roles.push('stone');for(var ri=0;ri<w.rescued;ri++)roles.push(ri%2?'stone':'wood');}var count=roles.length;
  while(w.workers.length<count)w.workers.push({x:180,y:600,wood:0,stone:0,target:-1,t:0,mode:'wood'});
  w.workers.forEach(function(a,i){
   if(i>=count)return;a.mode=roles[i];a.t-=dt;
@@ -128,7 +128,7 @@ function frontierWorkers(w,dt){
    if(a.t<=0){var take0=Math.min(node0.left,1+Math.floor(w.tech.tool/3));node0.left-=take0;node0.respawn=14;
     var pile=w.supplies.find(function(d){return d.kind===a.mode&&Math.hypot(d.x-node0.x,d.y-node0.y)<40&&d.amount<40;});
     if(pile)pile.amount+=take0;else w.supplies.push({x:node0.x+12,y:node0.y+10,kind:a.mode,amount:take0,wait:0});
-    a.t=frontierBuilt(w,'mill')&&a.mode==='wood'||frontierBuilt(w,'quarry')&&a.mode==='stone'?.8:1.2;w.effects.push({x:node0.x,y:node0.y,t:.3,kind:node0.kind,gain:take0,empty:node0.left===0});}
+    a.t=(frontierBuilt(w,'mill')&&a.mode==='wood'||frontierBuilt(w,'quarry')&&a.mode==='stone'?.8:1.2)/(1+.22*((house&&house.level||1)-1));w.effects.push({x:node0.x,y:node0.y,t:.3,kind:node0.kind,gain:take0,empty:node0.left===0});}
    return;
   }
   var depots=w.buildings.filter(function(b){return b.built&&b.hp>0&&(b.kind==='camp'||b.kind==='depot');});
@@ -158,6 +158,14 @@ function frontierWorkerMove(a,target,dt){
  var dist=Math.hypot(x-a.x,y-a.y);if(dist>1){a.x+=(x-a.x)/dist*Math.min(dist,120*dt);a.y+=(y-a.y)/dist*Math.min(dist,120*dt);}
 }
 function frontierAttackers(w){return w.fighters.filter(function(a){return a.role!=='guard';});}
+function frontierHut(w,kind){return w.buildings.find(function(b){return b.kind===kind;});}
+function frontierHutLevel(w,kind){var b=frontierHut(w,kind);return b?(b.level||1):1;}
+function frontierHutCost(w,kind){var lv=frontierHutLevel(w,kind);return {wood:30+lv*20,stone:20+lv*15};}
+// Upgrade the barracks (attack warriors) or the guard house (guards) up to level 5; each level adds a little attack.
+function frontierUpgradeHut(w,kind){
+ var b=frontierHut(w,kind);if(!b||(kind!=='barracks'&&kind!=='guardhouse'&&kind!=='house')||w.phase!=='play'||!b.built||b.hp<=0||!frontierNear(w.p,b,110)||(b.level||1)>=(kind==='house'?w.cfg.houseMax:5))return false;
+ if(!frontierPay(w,frontierHutCost(w,kind)))return false;b.level=(b.level||1)+1;w.effects.push({x:b.x,y:b.y,t:1,kind:'build'});return true;
+}
 function frontierPay(w,cost){
  if(w.bank.wood+w.bag.wood<cost.wood||w.bank.stone+w.bag.stone<cost.stone)return false;
  ['wood','stone'].forEach(function(k){var need=cost[k],fromBag=Math.min(need,w.bag[k]);w.bag[k]-=fromBag;w.bank[k]-=need-fromBag;});return true;
@@ -181,22 +189,24 @@ function frontierSiege(w,dt){
  var barracks=w.buildings.find(function(b){return b.kind==='barracks';});
  if(barracks&&barracks.built&&barracks.hp>0&&barracks.queue>0){barracks.train=(barracks.train||0)+dt;if(barracks.train>=3){barracks.train=0;barracks.queue--;w.fighters.push({x:barracks.x,y:barracks.y,hp:100+w.cfg.chapter*20,max:frontierFighterHp(w),attack:0});}}
  var camp=w.buildings[0],eb=w.cfg.war?w.enemyBase:null;
- // Missing guards are replaced one by one while the hero stands at the barracks; each costs 5 wood + 5 stone.
- var hutNear=w.buildings.find(function(b){return b.kind==='barracks';});
+ // Missing guards are trained one by one while the hero stands at the guard house; each costs 5 wood + 5 stone.
+ var hutNear=w.buildings.find(function(b){return b.kind==='guardhouse';});
  if(w.cfg.war&&w.cfg.guards>0&&hutNear&&hutNear.built&&hutNear.hp>0&&frontierNear(w.p,hutNear,110)&&w.fighters.filter(function(a){return a.role==='guard'&&a.hp>0;}).length<w.cfg.guards){w.guardTimer=(w.guardTimer||0)+dt;if(w.guardTimer>=3){w.guardTimer=3;if(frontierPay(w,frontierGuardCost())){w.guardTimer=0;w.fighters.push({x:hutNear.x,y:hutNear.y,hp:frontierFighterHp(w),max:frontierFighterHp(w),attack:0,role:'guard'});}}}
+ var eastHut=eb?frontierHut(w,'barracks'):null;
+ if(eb&&eb.hp>0&&eastHut&&eastHut.built&&eastHut.hp>0){w.harass=(w.harass==null?30:w.harass)-dt;if(w.harass<=0){w.harass=Math.max(35,60-Math.floor(w.level/2));var hn=1+Math.floor(w.level/20),alive=w.enemies.filter(function(x){return x.hut&&x.hp>0;}).length;for(var hi=0;hi<hn&&alive+hi<3;hi++){frontierSpawn(w,eb.x-90,eb.y+(hi-(hn-1)/2)*44,hi+7);w.enemies[w.enemies.length-1].hut=true;}}}
  if(eb&&eb.hp>0){eb.cool-=dt;var victim=w.fighters.filter(function(a){return a.hp>0&&frontierNear(a,eb,150);}).sort(function(a,b){return Math.hypot(a.x-eb.x,a.y-eb.y)-Math.hypot(b.x-eb.x,b.y-eb.y);})[0];
   if(victim&&eb.cool<=0){victim.hp=Math.max(0,victim.hp-w.cfg.enemyDamage);eb.cool=2.2;w.effects.push({x:victim.x,y:victim.y,t:.22,kind:'hit'});}}
  w.fighters.forEach(function(a,i){if(a.hp<=0)return;a.attack-=dt;
   if(a.role==='guard'){
    var foe=w.enemies.filter(function(e){return e.hp>0&&(frontierNear(e,camp,330)||frontierNear(e,a,150));}).sort(function(b,c){return Math.hypot(a.x-b.x,a.y-b.y)-Math.hypot(a.x-c.x,a.y-c.y);})[0];
-   if(foe){if(frontierNear(a,foe,46)){if(a.attack<=0){foe.hp-=14+w.tech.blade*3+(frontierBuilt(w,'forge')?6:0);a.attack=.8;w.effects.push({x:foe.x,y:foe.y,t:.22,kind:'hit'});}}else frontierWorkerMove(a,foe,dt);return;}
+   if(foe){if(frontierNear(a,foe,46)){if(a.attack<=0){foe.hp-=14+w.tech.blade*3+(frontierBuilt(w,'forge')?6:0)+(frontierHutLevel(w,'guardhouse')-1);a.attack=.8;w.effects.push({x:foe.x,y:foe.y,t:.22,kind:'hit'});}}else frontierWorkerMove(a,foe,dt);return;}
    var post={x:camp.x+60+Math.cos(i*2.4)*70,y:camp.y+Math.sin(i*2.4)*70};if(!frontierNear(a,post,15))frontierWorkerMove(a,post,dt);return;
   }
   if(eb){
    var mob=w.enemies.filter(function(e){return e.hp>0&&frontierNear(e,a,150);}).sort(function(b,c){return Math.hypot(a.x-b.x,a.y-b.y)-Math.hypot(a.x-c.x,a.y-c.y);})[0];
-   if(mob){if(frontierNear(a,mob,46)){if(a.attack<=0){mob.hp-=14+w.tech.blade*3+(frontierBuilt(w,'forge')?6:0);a.attack=.8;w.effects.push({x:mob.x,y:mob.y,t:.22,kind:'hit'});}}else frontierWorkerMove(a,mob,dt);return;}
+   if(mob){if(frontierNear(a,mob,46)){if(a.attack<=0){mob.hp-=14+w.tech.blade*3+(frontierBuilt(w,'forge')?6:0)+(frontierHutLevel(w,'barracks')-1);a.attack=.8;w.effects.push({x:mob.x,y:mob.y,t:.22,kind:'hit'});}}else frontierWorkerMove(a,mob,dt);return;}
    if(eb.hp>0){var spot={x:eb.x-62+Math.cos(i*2.1)*18,y:eb.y+Math.sin(i*2.1)*52};
-    if(frontierNear(a,eb,92)){if(a.attack<=0){eb.hp=Math.max(0,eb.hp-(5+w.tech.blade*1.5+(frontierBuilt(w,'forge')?2:0)));a.attack=1.8;w.effects.push({x:eb.x-20+(i%3)*20,y:eb.y-30,t:.22,kind:'hit'});}}
+    if(frontierNear(a,eb,92)){if(a.attack<=0){eb.hp=Math.max(0,eb.hp-(5+w.tech.blade*1.5+(frontierBuilt(w,'forge')?2:0)+(frontierHutLevel(w,'barracks')-1)*.6));a.attack=1.8;w.effects.push({x:eb.x-20+(i%3)*20,y:eb.y-30,t:.22,kind:'hit'});}}
     else frontierWorkerMove(a,spot,dt);return;}
    return;
   }
@@ -244,6 +254,15 @@ function frontierStep(w,input,dt){
  if(nearest&&p.attack<=0){nearest.hp-=16+w.tech.blade*5+(frontierBuilt(w,'forge')?9:0);p.attack=.58;w.effects.push({x:nearest.x,y:nearest.y,t:.22,kind:'hit'});}
  w.enemies.forEach(function(e){
   if(e.hp<=0){if(!e.counted){e.counted=true;w.kills++;w.drops.push({x:e.x,y:e.y,amount:e.type==='boss'?35+c.chapter*12:4+c.chapter*2});}return;}
+  if(e.hut){
+   var hut2=frontierHut(w,'barracks'),near2=w.fighters.find(function(a){return a.hp>0&&a.role!=='guard'&&frontierNear(e,a,70);});
+   e.cool-=dt;
+   if(near2){if(e.cool<=0){near2.hp=Math.max(0,near2.hp-c.damage);e.cool=1.3;}return;}
+   if(hut2&&hut2.built&&hut2.hp>0){
+    if(frontierNear(e,hut2,62)){if(e.baseWarn>0){e.baseWarn-=dt;if(e.baseWarn<=0){hut2.hp-=c.damage;if(hut2.hp<=0){if((hut2.level||1)>1){hut2.level--;hut2.hp=hut2.maxHp;}else hut2.hp=1;}w.effects.push({x:hut2.x,y:hut2.y,t:.3,kind:'hit'});e.cool=1.3;}}else if(e.cool<=0)e.baseWarn=c.windup;}
+    else frontierWorkerMove(e,hut2,dt*.8);
+    return;}
+  }
   if(e.raider&&(c.war||!frontierNear(e,p,95))){
    e.cool-=dt;var fighter=w.fighters.find(function(a){return a.hp>0&&frontierNear(e,a,65);});
    if(fighter){if(e.cool<=0){fighter.hp=Math.max(0,fighter.hp-c.damage);e.cool=1.3;}return;}

@@ -167,9 +167,36 @@ ok(model.frontierRecruitCost(w).wood===10&&model.frontierRecruitCost(w).stone===
  // guards defend the home base and never march on the enemy
  w=create(21);w.siege.next=1e6;w.enemies=[];w.p.x=100;w.p.y=100;w.p.inv=1e6;for(let g=0;g<4;g++)w.fighters.push({x:w.buildings[0].x+60,y:w.buildings[0].y+40,hp:120,max:120,attack:0,role:'guard'});tick(w,20);ok(w.fighters.filter(f=>f.role==='guard').every(f=>Math.hypot(f.x-w.buildings[0].x,f.y-w.buildings[0].y)<200),'guards stay at the home base');
  w.enemies.push({x:w.buildings[0].x+120,y:w.buildings[0].y,type:'melee',hp:60,max:60,state:'walk',t:0,cool:99,tx:0,ty:0,hit:false,counted:false,wave:false,radius:17});tick(w,6);ok(w.enemies.every(e=>e.hp<=0||e.hp<60),'guards fight monsters near the base');
- const hut=w.buildings.find(b=>b.kind==='barracks');hut.built=true;w.fighters=w.fighters.filter(f=>f.role!=='guard');tick(w,40);ok(w.fighters.filter(f=>f.role==='guard').length===0,'guards are not replaced while the hero is away from the barracks');
+ const hut=w.buildings.find(b=>b.kind==='guardhouse');hut.built=true;w.fighters=w.fighters.filter(f=>f.role!=='guard');tick(w,40);ok(w.fighters.filter(f=>f.role==='guard').length===0,'guards are not trained while the hero is away from the guard house');
  w.nodes=[];w.bag.wood=w.bag.stone=0;w.bank.wood=w.bank.stone=0;w.p.x=hut.x;w.p.y=hut.y;tick(w,3.5);ok(w.fighters.filter(f=>f.role==='guard').length===0,'no materials, no new guard');
  w.bag.wood=12;w.bag.stone=12;tick(w,.2);ok(w.fighters.filter(f=>f.role==='guard').length===1&&w.bag.wood===7&&w.bag.stone===7,'a guard costs 5 wood + 5 stone');tick(w,2.5);ok(w.fighters.filter(f=>f.role==='guard').length===1,'the next guard needs another 3 seconds');tick(w,.6);ok(w.fighters.filter(f=>f.role==='guard').length===2&&w.bag.wood===2,'the next guard follows after 3 seconds');
+ // barracks levels: attack barracks (can be harassed) and guard house (safe), up to level 5
+ {let w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;w.nodes=[];const east=w.buildings.find(b=>b.kind==='barracks'),home=w.buildings.find(b=>b.kind==='guardhouse');
+  ok(east.level===1&&home.level===1&&home.safe===true&&home.x<678&&east.x>678,'the guard house is at home and safe; the attack barracks is across the bridge');
+  w.p.x=east.x;w.p.y=east.y;w.bag.wood=w.bag.stone=99;ok(!model.frontierUpgradeHut(w,'barracks'),'an unbuilt barracks cannot be upgraded');east.built=true;
+  ok(model.frontierHutCost(w,'barracks').wood===50&&model.frontierHutCost(w,'barracks').stone===35,'level 1 to 2 costs 50 wood and 35 stone');
+  ok(model.frontierUpgradeHut(w,'barracks')&&east.level===2&&w.bag.wood===49&&w.bag.stone===64,'upgrading pays from the bag and raises the level');
+  w.p.x=100;w.p.y=100;ok(!model.frontierUpgradeHut(w,'barracks'),'the hero must stand at the barracks');w.p.x=east.x;w.p.y=east.y;w.bag.wood=w.bag.stone=999;
+  while(model.frontierUpgradeHut(w,'barracks')){}ok(east.level===5,'the barracks stops at level 5');ok(!model.frontierUpgradeHut(w,'tower'),'only the two barracks can be upgraded');
+  // each level adds a little damage to the warriors
+  const dmg=lv=>{const x=create(1);x.enemies=[];x.siege.next=1e6;x.p.inv=1e6;x.nodes=[];x.buildings.find(b=>b.kind==='barracks').level=lv;x.p.x=100;x.p.y=100;x.fighters.push({x:x.enemyBase.x-60,y:x.enemyBase.y,hp:999,max:999,attack:0});const hp0=x.enemyBase.hp;for(let n=0;n<40;n++)step(x,{x:0,y:0},.05);return hp0-x.enemyBase.hp;};
+  ok(dmg(5)>dmg(1)&&dmg(5)-dmg(1)<dmg(1)*1.2,'a higher barracks level hits a little harder');
+  // harassers attack the attack barracks and can destroy it; guards stay safe
+  w=create(1);w.siege.next=1e6;w.p.inv=1e6;w.nodes=[];w.fighters=[];const eh=w.buildings.find(b=>b.kind==='barracks');eh.built=true;w.p.x=100;w.p.y=100;
+  w.harass=.01;tick(w,1);ok(w.enemies.some(e=>e.hut),'the enemy stronghold sends harassers once the barracks stands');
+  for(let n=0;n<20*80&&eh.hp>0;n++){step(w,{x:0,y:0},.05);}ok(eh.hp<eh.maxHp,'harassers damage the attack barracks');
+  const gh=w.buildings.find(b=>b.kind==='guardhouse');ok(gh.hp===gh.maxHp,'the guard house is never attacked');
+  eh.hp=0;ok(!model.frontierBuilt(w,'barracks'),'a destroyed barracks stops training');
+  // harassment only lowers the level and never goes below level 1; the number of harassers stays small
+  w=create(1);w.siege.next=1e6;w.p.inv=1e6;w.nodes=[];w.fighters=[];const hb=w.buildings.find(b=>b.kind==='barracks');hb.built=true;hb.level=3;w.p.x=100;w.p.y=100;let maxAlive=0;
+  for(let n=0;n<20*400;n++){step(w,{x:0,y:0},.05);maxAlive=Math.max(maxAlive,w.enemies.filter(e=>e.hut&&e.hp>0).length);}
+  ok(hb.level<3&&hb.level>=1&&hb.hp>0&&model.frontierBuilt(w,'barracks'),'harassers lower the barracks level but never destroy it');ok(maxAlive<=3,'at most three harassers at a time');
+  // the villagers' house: more villagers and faster harvesting per level
+  const crew=lv=>{const x=create(1);x.enemies=[];x.siege.next=1e6;x.p.inv=1e6;x.p.x=100;x.p.y=100;const hs=x.buildings.find(b=>b.kind==='house');hs.built=true;hs.level=lv;x.nodes=[{x:300,y:480,kind:'wood',left:999,cool:0,respawn:0},{x:340,y:520,kind:'stone',left:999,cool:0,respawn:0},{x:380,y:560,kind:'wood',left:999,cool:0,respawn:0},{x:420,y:500,kind:'stone',left:999,cool:0,respawn:0},{x:460,y:540,kind:'wood',left:999,cool:0,respawn:0},{x:500,y:480,kind:'wood',left:999,cool:0,respawn:0}];
+   for(let n=0;n<20*40;n++)step(x,{x:0,y:0},.05);return {villagers:x.workers.length,piled:x.supplies.reduce((n,d)=>n+d.amount,0)};};
+  const c1=crew(1),c5=crew(5);ok(c1.villagers===2&&c5.villagers===6,'each house level adds a villager');ok(c5.piled>c1.piled*2,'a level 5 house makes far more resources');
+  ok([[1,1],[10,1],[11,2],[20,2],[21,3],[31,4],[41,5],[50,5]].every(([lv,max])=>create(lv).cfg.houseMax===max),'the villagers\' house gets one more level every ten stages');
+  for(const [lv,top] of [[1,1],[11,2],[21,3],[41,5]]){const x=create(lv);x.enemies=[];x.siege.next=1e6;x.p.inv=1e6;x.nodes=[];const hs=x.buildings.find(b=>b.kind==='house');hs.built=true;x.p.x=hs.x;x.p.y=hs.y;x.bag.wood=x.bag.stone=9999;while(model.frontierUpgradeHut(x,'house')){}ok(hs.level===top,`stage ${lv}: the house stops at level ${top}`);}}
  // enemy stronghold grows every 5 stages; an idle hero loses
  ok([[1,3000,4],[5,3000,4],[6,5800,5],[26,17000,9],[46,28200,13],[50,28200,13]].every(([lv,hp,dmg])=>{const x=create(lv);return x.enemyBase.maxHp===hp&&x.cfg.enemyDamage===dmg;}),'the enemy stronghold gets thicker and a little stronger every 5 stages');
  for(const lv of [1,10,30]){const idle=create(lv);idle.p.inv=0;for(let n=0;n<20*600&&idle.phase==='play';n++){if(idle.offer)model.frontierChoose(idle,0);step(idle,{x:0,y:0},.05);}ok(idle.phase==='dead'&&idle.failure==='base',`stage ${lv}: standing still at camp loses the base`);}
