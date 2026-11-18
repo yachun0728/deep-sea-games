@@ -331,6 +331,7 @@ if(isRun){
 }
 }
 export {results};
+check('Title menu shows before the first banquet and hides once it starts',()=>{const f=fixture();f.ev('render()');assert.equal(f.el('bq-menu').hidden,false);f.B.start();f.ev('render()');assert.equal(f.el('bq-menu').hidden,true);});
 check('Language defaults to English; all six languages resolve every key without leftover tokens and keep the same log entries',()=>{
   const f=started();assert.equal(f.ev('LANG'),'en');
   f.scene({cups:['poison','nectar','truth','water'],turn:'p',hand:{p:['needle','scent'],d:['spin']}});
