@@ -333,11 +333,10 @@ function drawWorld(lamp){
  const fg=g.createLinearGradient(0,280,0,H);fg.addColorStop(0,'rgba(8,10,14,0)');fg.addColorStop(1,'rgba(8,10,14,.6)');g.fillStyle=fg;g.fillRect(0,280,W,H-280);
  const vg=g.createRadialGradient(CX,240,150,CX,240,520);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');g.fillStyle=vg;g.fillRect(0,0,W,H);
  if(lamp<1){g.fillStyle='rgba(0,0,0,'+(1-lamp)*.85+')';g.fillRect(0,0,W,H)}}
-function drawExit(wi){   // the way out is always in sight: a lit doorway at the end of the road that grows as you close in
- const f=clamp(prog/100,0,1),h=14+170*Math.pow(f,1.6),w=h*.55,x=CX-clamp(tilt,-1,1)*10,by=262,col=['255,225,150','170,150,255','150,255,200','200,230,255','255,150,70'][wi]||'255,225,150';
- g.save();const gl=g.createRadialGradient(x,by-h*.5,h*.1,x,by-h*.5,h*1.3);gl.addColorStop(0,'rgba('+col+',.55)');gl.addColorStop(1,'rgba('+col+',0)');g.fillStyle=gl;g.fillRect(x-h*1.4,by-h*1.9,h*2.8,h*2.4);
- g.fillStyle='rgba('+col+',.95)';g.beginPath();g.moveTo(x-w/2,by);g.lineTo(x-w/2,by-h*.7);g.arc(x,by-h*.7,w/2,Math.PI,0);g.lineTo(x+w/2,by);g.closePath();g.fill();
- g.strokeStyle='rgba(20,14,8,.7)';g.lineWidth=Math.max(2,h*.04);g.stroke();g.restore()}
+function drawExit(wi){   // no door: the way out is a soft light at the end of the road that swells as you close in
+ const f=clamp(prog/100,0,1),h=14+170*Math.pow(f,1.6),x=CX-clamp(tilt,-1,1)*10,by=262,col=['255,225,150','170,150,255','150,255,200','200,230,255','255,150,70'][wi]||'255,225,150',pulse=1+.06*Math.sin(tt*2.2);
+ g.save();const gl=g.createRadialGradient(x,by-h*.45,h*.05,x,by-h*.45,h*1.5*pulse);gl.addColorStop(0,'rgba('+col+',.8)');gl.addColorStop(.35,'rgba('+col+',.35)');gl.addColorStop(1,'rgba('+col+',0)');
+ g.fillStyle=gl;g.fillRect(x-h*1.6,by-h*2.1,h*3.2,h*2.6);g.restore()}
 function sprite(im,cx,by,h,al){const w=im.naturalWidth*h/im.naturalHeight;g.save();g.globalAlpha=clamp(al,0,1)*.4;g.fillStyle='#000';g.beginPath();g.ellipse(cx,by,w*.32,7,0,0,7);g.fill();g.globalAlpha=clamp(al,0,1);g.drawImage(im,cx-w/2,by-h,w,h);g.restore();return w}
 function floatImg(im,cx,cy,sz,al){const w=im.naturalWidth*sz/Math.max(im.naturalWidth,im.naturalHeight),h=im.naturalHeight*sz/Math.max(im.naturalWidth,im.naturalHeight);g.save();g.globalAlpha=clamp(al==null?1:al,0,1);g.drawImage(im,cx-w/2,cy-h/2,w,h);g.restore()}
 function blob(x,y,r,al,col){g.save();g.globalAlpha=clamp(al,0,1);g.fillStyle=col||'#1a0f14';g.beginPath();g.ellipse(x,y,r,r*1.5,0,0,7);g.fill();g.restore()}
