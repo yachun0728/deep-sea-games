@@ -9,6 +9,21 @@
     var keys={},stick={x:0,y:0,id:null},dash=false,walkTarget=null,viewCamera=null;
     var zones=['翠葉群島','斷崖海岸','荊棘森林','寒霜高地','熔火遺跡'];
     var labels={camp:'營地',mill:'木材廠',forge:'鐵匠鋪',bridge:'橋樑',tower:'箭塔',beacon:'燈塔',barracks:'戰士小屋',house:'工人小屋',market:'市集',quarry:'採石場',depot:'前線分倉'};
+    /* Every requirement for lighting the beacon, in the order a player should tackle them. */
+    function stageSteps(w){
+      var c=w.cfg,m=c.mission,steps=[],camps=(w.camps||[]).filter(function(k){return k.hp>0;}).length,need=Math.ceil(c.enemies*(m==='build'?.65:1));
+      if(m==='rescue')steps.push([w.rescued>=2,'救出被困工人 '+Math.min(2,w.rescued)+'/2']);
+      else if(m==='defend')steps.push([frontierGoal(w),'守住據點 '+Math.min(w.wave,c.waves)+'/'+c.waves]);
+      else if(m==='elite')steps.push([frontierGoal(w),'擊敗精英守衛']);
+      else if(m==='boss')steps.push([frontierGoal(w),'擊敗區域首領']);
+      else steps.push([frontierGoal(w),(m==='hunt'?'消滅守衛 ':'擊退敵人 ')+Math.min(w.kills,need)+'/'+need]);
+      ['house','market','mill'].concat(c.chapter>0?['depot']:[]).forEach(function(k){steps.push([frontierBuilt(w,k),'建造'+labels[k]]);});
+      if((w.camps||[]).length)steps.push([camps===0,'摧毀敵營 剩 '+camps]);
+      steps.push([w.siege.wave>=c.assaultWaves&&!w.enemies.some(function(e){return e.assault&&e.hp>0;}),'擋下敵襲 '+Math.min(w.siege.wave,c.assaultWaves)+'/'+c.assaultWaves]);
+      steps.push([frontierBuilt(w,'beacon'),'點亮燈塔（走到東側燈塔投入材料）']);
+      return steps;
+    }
+    function stageList(steps){return steps.map(function(t){return (t[0]?'✓ ':'○ ')+t[1];}).join('\n');}
     var missions={build:'建立據點，清除守衛，點亮燈塔。',rescue:'救出兩位工人，再點亮燈塔。',hunt:'擊敗所有守衛，再點亮燈塔。',defend:'建造箭塔，抵擋所有波次，再點亮燈塔。',elite:'擊敗精英守衛，再點亮燈塔。',boss:'擊敗區域首領，再點亮燈塔。'};
     function set(id,text){var e=$(id);if(window.deepSeaI18n.sourceText(e)!==String(text))e.textContent=text;}
     function safeNumbers(v){if(typeof v==='number')return Number.isFinite(v)&&Math.abs(v)<1e7;if(Array.isArray(v))return v.length<400&&v.every(safeNumbers);if(v&&typeof v==='object')return Object.values(v).every(safeNumbers);return true;}
@@ -48,10 +63,8 @@
     function updateMap(){Array.from($('ft-map').children).forEach(function(b,i){b.disabled=!paid||i+1>Math.min(50,cleared+1);var cl=(i+1<=cleared?'ft-done ':'')+(world&&world.level===i+1?'ft-current':'');if(b.className!==cl)b.className=cl;var current=world&&world.level===i+1?'step':'false';if(b.getAttribute('aria-current')!==current)b.setAttribute('aria-current',current);});}
     function update(){
       var w=world||preview,overlay=$('ft-overlay');var cost=frontierRecruitCost(w),barracks=w.buildings.find(function(b){return b.kind==='barracks';});set('ft-recruit','訓練戰士 · 🪵 '+cost.wood+' ◆ '+cost.stone+' · '+w.fighters.length+'/'+(4+w.cfg.chapter));$('ft-recruit').disabled=!world||paused||!barracks||!barracks.built||barracks.hp<=0||!frontierNear(w.p,barracks,110);set('ft-army','戰士 '+w.fighters.length+' · 訓練中 '+(barracks&&barracks.queue||0));set('ft-journal-stock','倉庫 🪵 '+w.bank.wood+' · ◆ '+w.bank.stone+' · 工人 '+w.workers.length);set('ft-zone',zones[w.cfg.chapter]);set('ft-level',w.level+' / 50');set('ft-health','♥ '+Math.ceil(w.p.hp));set('ft-base-health','大本營 '+Math.ceil(w.buildings[0].hp)+'/'+w.buildings[0].maxHp);set('ft-assault','第 '+Math.min(w.siege.wave,w.cfg.assaultWaves)+'/'+w.cfg.assaultWaves+' 波 · 下一波 '+Math.ceil(w.siege.next)+'s');
-      var objective=missions[w.cfg.mission];if(frontierReady(w))objective='任務完成！前往東側燈塔投入材料。';if(frontierBuilt(w,'beacon'))objective='島嶼已開拓，可繼續採集或前往下一島。';
-      var detail=w.cfg.mission==='rescue'?' · '+w.rescued+'/2':w.cfg.mission==='defend'?' · '+w.wave+'/'+w.cfg.waves+' · '+Math.floor(w.hold)+'s':w.cfg.mission==='boss'||w.cfg.mission==='elite'?'':' · '+w.kills+'/'+(w.cfg.mission==='build'?Math.ceil(w.cfg.enemies*.65):w.cfg.enemies);
-      set('ft-objective',objective+detail);set('ft-bag','背包 '+(w.bag.wood+w.bag.stone)+'/'+frontierCapacity(w)+' · 🪵 '+w.bag.wood+' · ◆ '+w.bag.stone);set('ft-stock','倉庫 '+'🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');set('ft-building-effects',(frontierBuilt(w,'mill')?'木材廠：伐木 +1、工具上限 8、伐木工 +1。':'木材廠：建造後強化伐木，解鎖工具上限。')+' '+(frontierBuilt(w,'quarry')?'採石場：採石 +1、背包 +12、背包上限 8、採石工 +1。':'採石場：建造後增加背包容量與採石工。')+' '+(frontierBuilt(w,'forge')?'鐵匠鋪：攻擊 +9、武器上限 8、解除寒霜減速。':'鐵匠鋪：建造後強化攻擊，解鎖武器上限。'));set('ft-coins','金幣 '+w.coins);set('ft-workers','工人 '+w.workers.length);set('ft-hauling','搬運中 '+w.workers.reduce(function(n,a){return n+a.wood+a.stone;},0)+' · 地面資源 '+w.supplies.reduce(function(n,d){return n+d.amount;},0));set('ft-checklist',
-        (frontierBuilt(w,'house')?'✓ ':'○ ')+labels.house+' · '+(frontierBuilt(w,'market')?'✓ ':'○ ')+labels.market+' · '+(frontierBuilt(w,'mill')?'✓ ':'○ ')+labels.mill+(w.cfg.chapter>0?' · '+(frontierBuilt(w,'depot')?'✓ ':'○ ')+labels.depot:'')+' · '+(w.camps.filter(function(c){return c.hp>0;}).length)+' 敵營');
+      var steps=stageSteps(w),doneCount=steps.filter(function(t){return t[0];}).length,nextStep=steps.find(function(t){return !t[0];}),objective=frontierBuilt(w,'beacon')?'島嶼已開拓，可繼續採集或前往下一島。':'本關 '+doneCount+'/'+steps.length+' · 下一步：'+nextStep[1];
+      set('ft-objective',objective);set('ft-bag','背包 '+(w.bag.wood+w.bag.stone)+'/'+frontierCapacity(w)+' · 🪵 '+w.bag.wood+' · ◆ '+w.bag.stone);set('ft-stock','倉庫 '+'🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');set('ft-building-effects',(frontierBuilt(w,'mill')?'木材廠：伐木 +1、工具上限 8、伐木工 +1。':'木材廠：建造後強化伐木，解鎖工具上限。')+' '+(frontierBuilt(w,'quarry')?'採石場：採石 +1、背包 +12、背包上限 8、採石工 +1。':'採石場：建造後增加背包容量與採石工。')+' '+(frontierBuilt(w,'forge')?'鐵匠鋪：攻擊 +9、武器上限 8、解除寒霜減速。':'鐵匠鋪：建造後強化攻擊，解鎖武器上限。'));set('ft-coins','金幣 '+w.coins);set('ft-workers','工人 '+w.workers.length);set('ft-hauling','搬運中 '+w.workers.reduce(function(n,a){return n+a.wood+a.stone;},0)+' · 地面資源 '+w.supplies.reduce(function(n,d){return n+d.amount;},0));set('ft-checklist',stageList(steps));
       set('ft-warning',w.siege.next<12?'敵襲倒數 '+Math.ceil(w.siege.next)+'s':'靠近資源採集，靠近地基建造');
       $('ft-next').hidden=!world||!frontierBuilt(w,'beacon');$('ft-next').disabled=paused;set('ft-full',document.fullscreenElement||$('ft-main').classList.contains('ft-immersive')?'退出全螢幕':'全螢幕');
       var market=w.buildings.find(function(b){return b.kind==='market';}),atMarket=market&&market.built&&market.hp>0&&frontierNear(w.p,market,100);
@@ -60,8 +73,8 @@
       ['tool','blade','pack'].forEach(function(k,i){var n=w.tech[k],limit=frontierUpgradeLimit(w,k),cost=frontierUpgradeCost(w,k);set('ft-'+k,['採集工具','戰鬥武器','背包容量'][i]+' Lv.'+n+'/'+limit+(n>=limit?' · MAX':' · 金幣 '+cost));$('ft-'+k).disabled=!world||paused||!frontierNear(w.p,w.buildings[0],100)||n>=limit;});
       overlay.hidden=!!world&&!paused&&w.phase==='play';
       if(!overlay.hidden){
-        var title='荒島遠征',message='五大區域，五十場考驗。建立據點，穿越危險地帶。',button='免費開始遠征';
-        if(world){if(w.phase==='dead'){title=w.failure==='base'?'大本營失守':'遠征失敗';message='科技升級保留。調整建造順序，利用預告閃避攻擊。';button='免費重試當關';}else if(w.phase==='clear'){title=w.level===50?'五十關全破！':'燈塔已點亮';message='科技已保存，下一關將建立新的據點。';button=w.level===50?'重遊群島 · 免費':'下一關 · 免費';}else{title='遠征已暫停';message='進度已保留，準備好再繼續。';button='繼續遠征 · 免費';}}
+        var title='荒島遠征',message='五大區域，五十場考驗。建立據點，穿越危險地帶。\n\n本關任務\n'+stageList(steps),button='免費開始遠征';
+        if(world){if(w.phase==='dead'){title=w.failure==='base'?'大本營失守':'遠征失敗';message='科技升級保留。調整建造順序，利用預告閃避攻擊。\n\n本關任務\n'+stageList(steps);button='免費重試當關';}else if(w.phase==='clear'){title=w.level===50?'五十關全破！':'燈塔已點亮';message='科技已保存，下一關將建立新的據點。';button=w.level===50?'重遊群島 · 免費':'下一關 · 免費';}else{title='遠征已暫停';message='進度已保留，準備好再繼續。\n\n本關任務\n'+stageList(steps);button='繼續遠征 · 免費';}}
         set('ft-title',title);if(!transientMessage)set('ft-message',message);set('ft-go',button);
       }updateMap();
     }

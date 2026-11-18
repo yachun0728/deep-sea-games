@@ -7,7 +7,7 @@
 - 網址：`#frontier`　分類：益智策略　狀態：已隱藏（catalog 的 `hidden`；大廳、選單與網址都進不去，程式碼仍會組合與初始化）
 - 大廳卡片：「砍出道路，建立據點，挑戰五大區域與五十關考驗。」｜遠征與續玩皆免費 · 50 關 · 自動存檔
 - 追蹤名稱（GA4 `game_name`）：荒島遠征，`game_id` 為 `frontier`
-- 檔案：`games/frontier/AGENTS.md`、`games/frontier/ART_DIRECTION.md`、`games/frontier/VALIDATION.md`、`games/frontier/card.html`、`games/frontier/draw.js`、`games/frontier/game.js`、`games/frontier/icon.svg`、`games/frontier/style.css`、`games/frontier/view.html`、`games/frontier/world.js`；`game.js` 共 117 行、19.2 KB
+- 檔案：`games/frontier/AGENTS.md`、`games/frontier/ART_DIRECTION.md`、`games/frontier/VALIDATION.md`、`games/frontier/card.html`、`games/frontier/draw.js`、`games/frontier/game.js`、`games/frontier/icon.svg`、`games/frontier/style.css`、`games/frontier/view.html`、`games/frontier/world.js`；`game.js` 共 130 行、20.1 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「46. 荒島遠征 Frontier Islands（frontier）」（下方「規則摘要」已複製）
 
@@ -21,7 +21,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`set` L13、`safeNumbers` L14、`validShape` L15、`loadFrontier` L16、`persist` L29、`params` L30、`release` L31、`endRound` L32、`pause` L33、`start` L34、`selectLevel` L47、`updateMap` L48、`update` L49、`finishStage` L69、`frame` L70、`moveStick` L81、`isHandheld` L84、`autoScreen` L85、`screenClass` L86、`syncViewport` L87、`enterScreen` L92、`fallback` L94、`exitScreen` L98、`showShop` L105
+`stageSteps` L13、`stageList` L26、`set` L28、`safeNumbers` L29、`validShape` L30、`loadFrontier` L31、`persist` L44、`params` L45、`release` L46、`endRound` L47、`pause` L48、`start` L49、`selectLevel` L62、`updateMap` L63、`update` L64、`finishStage` L82、`frame` L83、`moveStick` L94、`isHandheld` L97、`autoScreen` L98、`screenClass` L99、`syncViewport` L100、`enterScreen` L105、`fallback` L107、`exitScreen` L111、`showShop` L118
 
 ## 錢包與結算接點
 
@@ -39,13 +39,13 @@
 
 ## 追蹤（GA4）
 
-- L32 `endRound`：`AN.end(round,0,result,params());`
-- L33 `pause`：`AN.progress(round,params(),true);`
-- L40 `start`：`round=AN.start('frontier',0,params());`
-- L44 `start`：`if(round)AN.resume(round,params());`
-- L44 `start`：`else round=AN.start('frontier',0,params());`
-- L69 `finishStage`：`AN.progress(round,params(),true);`
-- L77 `frame`：`AN.progress(round,params(),false);`
+- L47 `endRound`：`AN.end(round,0,result,params());`
+- L48 `pause`：`AN.progress(round,params(),true);`
+- L55 `start`：`round=AN.start('frontier',0,params());`
+- L59 `start`：`if(round)AN.resume(round,params());`
+- L59 `start`：`else round=AN.start('frontier',0,params());`
+- L82 `finishStage`：`AN.progress(round,params(),true);`
+- L90 `frame`：`AN.progress(round,params(),false);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
