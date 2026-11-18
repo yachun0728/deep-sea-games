@@ -2,7 +2,7 @@
 var frontierClassic=false; // tests can switch the first region back to the beacon rules
 function frontierPlan(level){
  var c=Math.floor((level-1)/10),n=(level-1)%10;
- return {level:level,chapter:c,mission:!frontierClassic?'war':n===9?'boss':['build','rescue','hunt','defend','elite','rescue','defend','hunt','elite'][n],wood:24+c*6+n*2,stone:14+c*4+n,enemies:4+c*2+Math.floor(n/2),hp:36+c*13+n*3,damage:9+c*3+Math.floor(n/3),windup:Math.max(.62,1.18-c*.09-n*.015),waves:2+c,hold:24+c*6,night:150-c*12,width:1200+c*300,height:900+c*150,trees:160+c*45,requiredCamps:c>=2?c-1:0,assaultWaves:3+c+Math.floor(n/4),waveGap:Math.max(18,32-c*3-Math.floor(n/3)),war:!frontierClassic,enemyHp:3000+Math.floor((level-1)/5)*2800,enemyDamage:4+Math.floor((level-1)/5),fighterCap:12+c*4,towers:2+c,guards:2+c*2};
+ return {level:level,chapter:c,mission:!frontierClassic?'war':n===9?'boss':['build','rescue','hunt','defend','elite','rescue','defend','hunt','elite'][n],wood:24+c*6+n*2,stone:14+c*4+n,enemies:4+c*2+Math.floor(n/2),hp:36+c*13+n*3,damage:9+c*3+Math.floor(n/3),windup:Math.max(.62,1.18-c*.09-n*.015),waves:2+c,hold:24+c*6,night:150-c*12,width:1200+c*300,height:900+c*150,trees:160+c*45,requiredCamps:c>=2?c-1:0,assaultWaves:3+c+Math.floor(n/4),waveGap:Math.max(18,32-c*3-Math.floor(n/3)),war:!frontierClassic,houseMax:1+Math.floor((level-1)/10),enemyHp:3000+Math.floor((level-1)/5)*2800,enemyDamage:4+Math.floor((level-1)/5),fighterCap:12+c*4,towers:2+c,guards:2+c*2};
 }
 var FRONTIER_CARDS=[
  {id:'tool',name:'採集工具',desc:'採集更快、一次拿更多',key:'tool',max:8},
@@ -32,7 +32,7 @@ function frontierWorld(level,tech,coins){
  var w={version:1,level:level,cfg:cfg,tech:frontierTech(tech),offer:null,coins:Math.max(0,Number(coins)||0),siege:{wave:0,next:cfg.war?Math.max(80,100-Math.floor(level*.4)):40},fighters:[],failure:"",workers:[],supplies:[],drops:[],raids:0,raidAt:75,depotReady:false,settled:false,time:0,phase:'play',p:{x:180,y:450,hp:100,inv:0,attack:0,dash:0,dx:1,dy:0},bag:{wood:0,stone:0},bank:{wood:0,stone:0},nodes:[],enemies:[],shots:[],effects:[],kills:0,rescued:0,hold:0,wave:0,waveAt:0,heal:35,worker:0,threat:0,
  buildings:[{kind:'camp',x:180,y:450,built:true,wood:0,stone:0},{kind:'mill',x:320,y:450+flip*230,built:false,wood:cfg.wood,stone:0},{kind:'forge',x:330,y:450-flip*230,built:false,wood:12,stone:cfg.stone},{kind:'bridge',x:590,y:450,built:false,wood:cfg.wood+10,stone:cfg.stone},{kind:'tower',x:860,y:450+offset,built:false,wood:cfg.wood,stone:cfg.stone+6,cd:0},{kind:'beacon',x:1090,y:450-offset,built:false,wood:cfg.wood,stone:cfg.stone}],cages:[{x:880,y:180,open:false},{x:1020,y:700,open:false}]};
  w.buildings.push(
- {kind:'house',x:185,y:620,built:false,wood:16,stone:4,hp:140,maxHp:140},
+ {kind:'house',x:185,y:620,built:false,wood:16,stone:4,hp:140,maxHp:140,level:1},
  {kind:'market',x:370,y:470,built:false,wood:12,stone:6,hp:140,maxHp:140},
  {kind:'quarry',x:430,y:700,built:false,wood:18,stone:12,hp:140,maxHp:140});
  if(cfg.chapter>0)w.buildings.push({kind:'depot',x:cfg.width-380,y:cfg.height-270,built:false,wood:30+cfg.chapter*6,stone:20+cfg.chapter*4,hp:180,maxHp:180});
@@ -163,7 +163,7 @@ function frontierHutLevel(w,kind){var b=frontierHut(w,kind);return b?(b.level||1
 function frontierHutCost(w,kind){var lv=frontierHutLevel(w,kind);return {wood:30+lv*20,stone:20+lv*15};}
 // Upgrade the barracks (attack warriors) or the guard house (guards) up to level 5; each level adds a little attack.
 function frontierUpgradeHut(w,kind){
- var b=frontierHut(w,kind);if(!b||(kind!=='barracks'&&kind!=='guardhouse'&&kind!=='house')||w.phase!=='play'||!b.built||b.hp<=0||!frontierNear(w.p,b,110)||(b.level||1)>=5)return false;
+ var b=frontierHut(w,kind);if(!b||(kind!=='barracks'&&kind!=='guardhouse'&&kind!=='house')||w.phase!=='play'||!b.built||b.hp<=0||!frontierNear(w.p,b,110)||(b.level||1)>=(kind==='house'?w.cfg.houseMax:5))return false;
  if(!frontierPay(w,frontierHutCost(w,kind)))return false;b.level=(b.level||1)+1;w.effects.push({x:b.x,y:b.y,t:1,kind:'build'});return true;
 }
 function frontierPay(w,cost){

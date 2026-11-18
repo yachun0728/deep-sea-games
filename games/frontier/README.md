@@ -7,13 +7,13 @@
 - 網址：`#frontier`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「砍出道路，建立據點，挑戰五大區域與五十關考驗。」｜遠征與續玩不限次數 · 50 關 · 自動存檔
 - 追蹤名稱（GA4 `game_name`）：荒島遠征，`game_id` 為 `frontier`
-- 檔案：`games/frontier/AGENTS.md`、`games/frontier/ART_DIRECTION.md`、`games/frontier/VALIDATION.md`、`games/frontier/card.html`、`games/frontier/draw.js`、`games/frontier/game.js`、`games/frontier/icon.svg`、`games/frontier/style.css`、`games/frontier/view.html`、`games/frontier/world.js`；`game.js` 共 149 行、23.8 KB
+- 檔案：`games/frontier/AGENTS.md`、`games/frontier/ART_DIRECTION.md`、`games/frontier/VALIDATION.md`、`games/frontier/card.html`、`games/frontier/draw.js`、`games/frontier/game.js`、`games/frontier/icon.svg`、`games/frontier/style.css`、`games/frontier/view.html`、`games/frontier/world.js`；`game.js` 共 152 行、24.4 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「46. 荒島遠征 Frontier Islands（frontier）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-frontier`、`ft-main`、`ft-zone`、`ft-level`、`ft-health`、`ft-base-health`、`ft-journal`、`ft-full`、`ft-assault`、`ft-objective`、`ft-task-details`、`ft-checklist`、`ft-warning`、`ft-hauling`、`ft-army`、`ft-journal-stock`、`ft-stage`、`ft-canvas`、`ft-cards`、`ft-cards-title`、`ft-card-0`、`ft-card-0-name`、`ft-card-0-lv`、`ft-card-0-desc`、`ft-card-1`、`ft-card-1-name`、`ft-card-1-lv`、`ft-card-1-desc`、`ft-card-2`、`ft-card-2-name`、`ft-card-2-lv`、`ft-card-2-desc`、`ft-overlay`、`ft-title`、`ft-message`、`ft-go`、`ft-stick`、`ft-knob`、`ft-dash`、`ft-bag`、`ft-stock`、`ft-troops`、`ft-coins`、`ft-workers`、`ft-hut-up`、`ft-home`、`ft-shop-toggle`、`ft-pause`、`ft-next`、`ft-shop`、`ft-shop-close`、`ft-sale-count`、`ft-building-effects`、`ft-recruit`、`ft-sell-wood`、`ft-sell-stone`、`ft-tool`、`ft-blade`、`ft-pack`、`ft-upgrade`、`ft-storage`、`ft-record`、`ft-map`、`ft-select`、`ft-select-label`、`ft-select-yes`、`ft-select-no`
+`view-frontier`、`ft-main`、`ft-zone`、`ft-level`、`ft-health`、`ft-base-health`、`ft-journal`、`ft-full`、`ft-assault`、`ft-objective`、`ft-task-details`、`ft-checklist`、`ft-warning`、`ft-hauling`、`ft-army`、`ft-journal-stock`、`ft-stage`、`ft-canvas`、`ft-cards`、`ft-cards-title`、`ft-card-0`、`ft-card-0-name`、`ft-card-0-lv`、`ft-card-0-desc`、`ft-card-1`、`ft-card-1-name`、`ft-card-1-lv`、`ft-card-1-desc`、`ft-card-2`、`ft-card-2-name`、`ft-card-2-lv`、`ft-card-2-desc`、`ft-notice`、`ft-overlay`、`ft-title`、`ft-message`、`ft-go`、`ft-stick`、`ft-knob`、`ft-dash`、`ft-bag`、`ft-stock`、`ft-troops`、`ft-coins`、`ft-workers`、`ft-hut-up`、`ft-home`、`ft-shop-toggle`、`ft-pause`、`ft-next`、`ft-shop`、`ft-shop-close`、`ft-sale-count`、`ft-building-effects`、`ft-recruit`、`ft-sell-wood`、`ft-sell-stone`、`ft-tool`、`ft-blade`、`ft-pack`、`ft-upgrade`、`ft-storage`、`ft-record`、`ft-map`、`ft-select`、`ft-select-label`、`ft-select-yes`、`ft-select-no`
 
 ## 狀態與常數
 
@@ -21,7 +21,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`stageSteps` L13、`warTip` L29、`renderCards` L31、`stageList` L41、`set` L43、`safeNumbers` L44、`validShape` L45、`loadFrontier` L46、`persist` L59、`params` L60、`release` L61、`endRound` L62、`pause` L63、`start` L64、`selectLevel` L77、`updateMap` L78、`update` L79、`finishStage` L99、`frame` L100、`moveStick` L111、`isHandheld` L114、`autoScreen` L115、`screenClass` L116、`syncViewport` L117、`enterScreen` L122、`fallback` L124、`exitScreen` L128、`showShop` L135
+`stageSteps` L13、`warTip` L29、`showNotice` L31、`renderCards` L33、`stageList` L43、`set` L45、`safeNumbers` L46、`validShape` L47、`loadFrontier` L48、`persist` L61、`params` L62、`release` L63、`endRound` L64、`pause` L65、`start` L66、`selectLevel` L80、`updateMap` L81、`update` L82、`finishStage` L102、`frame` L103、`moveStick` L114、`isHandheld` L117、`autoScreen` L118、`screenClass` L119、`syncViewport` L120、`enterScreen` L125、`fallback` L127、`exitScreen` L131、`showShop` L138
 
 ## 錢包與結算接點
 
@@ -39,13 +39,13 @@
 
 ## 追蹤（GA4）
 
-- L62 `endRound`：`AN.end(round,0,result,params());`
-- L63 `pause`：`AN.progress(round,params(),true);`
-- L70 `start`：`round=AN.start('frontier',0,params());`
-- L74 `start`：`if(round)AN.resume(round,params());`
-- L74 `start`：`else round=AN.start('frontier',0,params());`
-- L99 `finishStage`：`AN.progress(round,params(),true);`
-- L107 `frame`：`AN.progress(round,params(),false);`
+- L64 `endRound`：`AN.end(round,0,result,params());`
+- L65 `pause`：`AN.progress(round,params(),true);`
+- L72 `start`：`round=AN.start('frontier',0,params());`
+- L76 `start`：`if(round)AN.resume(round,params());`
+- L76 `start`：`else round=AN.start('frontier',0,params());`
+- L102 `finishStage`：`AN.progress(round,params(),true);`
+- L110 `frame`：`AN.progress(round,params(),false);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

@@ -27,6 +27,8 @@
       return steps;
     }
     function warTip(w){return w.cfg.war?'\n\n提示：箭塔會守護大本營，但也會被怪攻擊，受損後靠近用木材修復。主角不能攻擊對手大本營，只有戰士可以。守備營在大本營旁訓練守衛，橋東的戰士營訓練進攻戰士，站在戰士營、守備營或工人小屋旁可花資源升級，最高到滿級；敵人偶爾會來攻擊戰士營，最多把它打回最低級。木材廠、採石場、倉庫蓋好後會增加背包容量。工人小屋的村民會自動砍樹採石，把資源丟在地上，走過去就能撿起來。':'';}
+    var noticeTimer=0;
+    function showNotice(text){var box=$('ft-notice');set('ft-notice',text);box.hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(function(){box.hidden=true;},10000);}
     var cardsShown='';
     function renderCards(w){
       var offer=world&&world.offer,box=$('ft-cards');
@@ -72,13 +74,14 @@
       else if(world.phase==='dead')world=frontierWorld(world.level,Object.assign({},world.tech),world.coins);
       else if(world.phase==='clear')world=frontierWorld(world.level===50?1:world.level+1,Object.assign({},world.tech),world.coins);
       if(!fresh){if(round)AN.resume(round,params());else round=AN.start('frontier',0,params());}
+      if(world.level>10&&(world.level-1)%10===0&&world.time<1)showNotice('新解鎖：工人小屋現在可以升到 Lv.'+world.cfg.houseMax+'！村民更多、採集更快。');
       paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});syncViewport();
     }
     function selectLevel(n){if(!paid||n>Math.min(50,cleared+1))return;pause();pendingLevel=n;set('ft-select-label','前往關卡 '+n+'？');$('ft-select').hidden=false;}
     function updateMap(){Array.from($('ft-map').children).forEach(function(b,i){b.disabled=!paid||i+1>Math.min(50,cleared+1);var cl=(i+1<=cleared?'ft-done ':'')+(world&&world.level===i+1?'ft-current':'');if(b.className!==cl)b.className=cl;var current=world&&world.level===i+1?'step':'false';if(b.getAttribute('aria-current')!==current)b.setAttribute('aria-current',current);});}
     function update(){
       var w=world||preview,overlay=$('ft-overlay');var cost=frontierRecruitCost(w),barracks=w.buildings.find(function(b){return b.kind==='barracks';});set('ft-recruit','訓練戰士 · 🪵 '+cost.wood+' ◆ '+cost.stone+' · '+frontierAttackers(w).length+'/'+frontierFighterCap(w));$('ft-recruit').disabled=!world||paused||!barracks||!barracks.built||barracks.hp<=0||!frontierNear(w.p,barracks,110);set('ft-troops','戰士 '+frontierAttackers(w).length+'/'+frontierFighterCap(w)+((barracks&&barracks.queue)?' +1':'')+' · 守衛 '+(w.fighters.length-frontierAttackers(w).length)+'/'+(w.cfg.guards||0));var upKinds=['barracks','guardhouse','house'],upB=world&&!paused?upKinds.map(function(k){return w.buildings.find(function(b){return b.kind===k;});}).find(function(b){return b&&b.built&&b.hp>0&&frontierNear(w.p,b,110);}):null;
-      $('ft-hut-up').hidden=!upB;if(upB){var lv=upB.level||1,uc=frontierHutCost(w,upB.kind);$('ft-hut-up').dataset.kind=upB.kind;set('ft-hut-up',lv>=5?labels[upB.kind]+' Lv.5 · MAX':'升級'+labels[upB.kind]+' Lv.'+lv+' → Lv.'+(lv+1)+' · 🪵 '+uc.wood+' ◆ '+uc.stone);$('ft-hut-up').disabled=lv>=5||w.bag.wood+w.bank.wood<uc.wood||w.bag.stone+w.bank.stone<uc.stone;}
+      $('ft-hut-up').hidden=!upB;if(upB){var lv=upB.level||1,uc=frontierHutCost(w,upB.kind);$('ft-hut-up').dataset.kind=upB.kind;var capLv=upB.kind==='house'?w.cfg.houseMax:5,locked=lv>=capLv&&lv<5;set('ft-hut-up',lv>=5?labels[upB.kind]+' Lv.5 · MAX':locked?labels[upB.kind]+' Lv.'+lv+' · 第 '+(Math.floor((w.level-1)/10)+1)*10+1+' 關起可再升級':'升級'+labels[upB.kind]+' Lv.'+lv+' → Lv.'+(lv+1)+' · 🪵 '+uc.wood+' ◆ '+uc.stone);$('ft-hut-up').disabled=lv>=capLv||w.bag.wood+w.bank.wood<uc.wood||w.bag.stone+w.bank.stone<uc.stone;}
       set('ft-army','戰士 '+frontierAttackers(w).length+' · 守衛 '+(w.fighters.length-frontierAttackers(w).length)+' · 訓練中 '+(barracks&&barracks.queue||0));set('ft-journal-stock','倉庫 🪵 '+w.bank.wood+' · ◆ '+w.bank.stone+' · 工人 '+w.workers.length);set('ft-zone',zones[w.cfg.chapter]);set('ft-level',w.level+' / 50');set('ft-health','♥ '+Math.ceil(w.p.hp));set('ft-base-health','大本營 '+Math.ceil(w.buildings[0].hp)+'/'+w.buildings[0].maxHp);set('ft-assault','第 '+Math.min(w.siege.wave,w.cfg.assaultWaves)+'/'+w.cfg.assaultWaves+' 波 · 下一波 '+Math.ceil(w.siege.next)+'s');
       var steps=stageSteps(w),doneCount=steps.filter(function(t){return t[0];}).length,nextStep=steps.find(function(t){return !t[0];}),objective=frontierBuilt(w,'beacon')?'島嶼已開拓，可繼續採集或前往下一島。':(nextStep?'本關 '+doneCount+'/'+steps.length+' · 下一步：'+nextStep[1]:'本關任務完成');
       set('ft-objective',objective);set('ft-bag','背包 🪵 '+w.bag.wood+'/'+frontierCapacity(w,'wood')+' · ◆ '+w.bag.stone+'/'+frontierCapacity(w,'stone'));set('ft-stock','倉庫 🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');set('ft-building-effects',(frontierBuilt(w,'mill')?'木材廠：伐木 +1、工具上限 8、伐木工 +1。':'木材廠：建造後強化伐木，解鎖工具上限。')+' '+(frontierBuilt(w,'quarry')?'採石場：採石 +1、背包 +12、背包上限 8、採石工 +1。':'採石場：建造後增加背包容量與採石工。')+' '+(frontierBuilt(w,'forge')?'鐵匠鋪：攻擊 +9、武器上限 8、解除寒霜減速。':'鐵匠鋪：建造後強化攻擊，解鎖武器上限。'));set('ft-coins','金幣 '+w.coins+'/'+frontierPickCost(w));renderCards(w);set('ft-workers','工人 '+w.workers.length);set('ft-hauling','搬運中 '+w.workers.reduce(function(n,a){return n+a.wood+a.stone;},0)+' · 地面資源 '+w.supplies.reduce(function(n,d){return n+d.amount;},0));set('ft-checklist',stageList(steps));
@@ -91,7 +94,7 @@
       overlay.hidden=!!world&&!paused&&w.phase==='play';
       if(!overlay.hidden){
         var title='荒島遠征',message='五大區域，五十場考驗。建立據點，穿越危險地帶。\n\n本關任務\n'+stageList(steps)+warTip(w),button='開始遠征';
-        if(world){if(w.phase==='dead'){title=w.failure==='base'?'大本營失守':'遠征失敗';message='科技升級保留。調整建造順序，利用預告閃避攻擊。\n\n本關任務\n'+stageList(steps)+warTip(w);button='重試當關';}else if(w.phase==='clear'){title=w.level===50?'五十關全破！':w.cfg.war?'對手大本營已摧毀':'燈塔已點亮';message='科技已保存，下一關將建立新的據點。';button=w.level===50?'重遊群島':'下一關';}else{title='遠征已暫停';message='進度已保留，準備好再繼續。';button='繼續遠征';}}
+        if(world){if(w.phase==='dead'){title=w.failure==='base'?'大本營失守':'遠征失敗';message='科技升級保留。調整建造順序，利用預告閃避攻擊。\n\n本關任務\n'+stageList(steps)+warTip(w);button='重試當關';}else if(w.phase==='clear'){title=w.level===50?'五十關全破！':w.cfg.war?'對手大本營已摧毀':'燈塔已點亮';message='科技已保存，下一關將建立新的據點。'+(w.level%10===0&&w.level<50?'\n下一關起，工人小屋可以再升一級！':'');button=w.level===50?'重遊群島':'下一關';}else{title='遠征已暫停';message='進度已保留，準備好再繼續。';button='繼續遠征';}}
         set('ft-title',title);if(!transientMessage)set('ft-message',message);set('ft-go',button);
       }updateMap();
     }

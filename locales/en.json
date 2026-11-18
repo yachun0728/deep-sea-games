@@ -4822,5 +4822,9 @@
   "你抱著盒子在森林裡自動往出口跑，距離跑滿 100% 就衝出去、盒子打開過關。躲藏處不會一直有：路邊的樹洞、草叢、墓碑凹處遠遠就看得到，左右滑進去，但躲進去會消耗憋氣，視野邊緣變暗就是快憋不住了，憋不住就會被發現；有些鬼會折返好幾趟，蟲鳴恢復才算結束。畫面為第一人稱，背景是目前這一關所在的世界。": "You run through the forest with the box toward the exit and burst out once the distance reaches 100%, opening the box. Hiding spots are not always there: hollow trees, bushes and grave niches by the road can be seen from afar, and you swipe left or right to get in, but hiding uses up your breath, the edges of your vision darken as you run out, and you are found when it runs out. Some ghosts come back for several passes; it is only over when the crickets return. The view is first-person, and the background is the world of the current level.",
   "提示：箭塔會守護大本營，但也會被怪攻擊，受損後靠近用木材修復。主角不能攻擊對手大本營，只有戰士可以。守備營在大本營旁訓練守衛，橋東的戰士營訓練進攻戰士，站在戰士營、守備營或工人小屋旁可花資源升級，最高到滿級；敵人偶爾會來攻擊戰士營，最多把它打回最低級。木材廠、採石場、倉庫蓋好後會增加背包容量。工人小屋的村民會自動砍樹採石，把資源丟在地上，走過去就能撿起來。": "Tip: the tower guards your base but monsters will attack it; repair it with wood when damaged. The hero cannot attack the enemy stronghold; only warriors can. The guard house trains guards beside your base and the barracks across the bridge trains attack warriors; stand next to the barracks, guard house or workers' cottage to spend resources on upgrades up to the top level. Enemies sometimes attack the barracks but can only knock it down to the lowest level. The lumber mill, quarry and warehouse raise your bag capacity once built. Villagers from the workers' cottage chop and mine on their own and leave the resources on the ground for you to pick up.",
   "升級": "Upgrade",
-  "守備營": "Guard house"
+  "守備營": "Guard house",
+  "下一關起，工人小屋可以再升一級！": "From the next stage the workers' cottage can be upgraded one more level!",
+  "新解鎖：工人小屋現在可以升到 Lv.": "Unlocked: the workers' cottage can now reach Lv.",
+  "關起可再升級": " can be upgraded again",
+  "！村民更多、採集更快。": "! More villagers and faster gathering."
 }
