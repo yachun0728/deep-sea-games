@@ -23,12 +23,10 @@
    var before=balance();click('ft-go');click('ft-go');await wait();assert(balance()===before,'Double start charges exactly once');assert(events.filter(function(e){return e.k==='start';}).length===1,'One start event per attempt');
    click('ft-shop-toggle');await wait();assert(!document.getElementById('ft-shop').hidden,'Equipment and trading drawer opens inside game');click('ft-shop-close');await wait();assert(document.getElementById('ft-shop').hidden,'Drawer closes without restarting');
    if(innerWidth<=600&&innerHeight>innerWidth){
-    assert(!document.getElementById('ft-rotate').hidden,'Portrait handheld shows rotation prompt');
-    assert(document.getElementById('ft-title').textContent.length>0,'Portrait game remains safely paused');
-    assert(getComputedStyle(document.querySelector('.game-toolbar')).display==='none','Immersive mode hides platform navigation');
-    click('ft-rotate-exit');await wait();assert(document.getElementById('ft-rotate').hidden,'Rotation prompt can exit immersive mode');
-    assert(document.documentElement.scrollWidth<=innerWidth,'Portrait layout fits CSS viewport');
-    document.body.dataset.testStatus='PASS';var portraitOut=document.createElement('pre');portraitOut.id='test-results';portraitOut.setAttribute('data-i18n-ignore','');portraitOut.textContent=JSON.stringify(results,null,2);document.body.appendChild(portraitOut);return;
+    assert(!document.getElementById('ft-rotate'),'Portrait has no rotation gate');
+    assert(document.getElementById('ft-overlay').hidden,'Portrait starts playing');
+    assert(getComputedStyle(document.querySelector('.game-toolbar')).display==='none','Platform navigation hidden');
+    assert(document.documentElement.scrollWidth<=innerWidth,'Portrait fits viewport');
    }
    if(innerWidth>innerHeight&&innerWidth<=1100){click('ft-full');await wait();assert(!!document.fullscreenElement||document.getElementById('ft-main').classList.contains('ft-immersive'),'Landscape viewport enters fullscreen or fallback');}
    assert(document.getElementById('ft-map').children.length===50,'All 50 stage buttons exist');

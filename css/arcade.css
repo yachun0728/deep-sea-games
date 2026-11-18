@@ -349,3 +349,48 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
 .boba-platform-bar{display:flex;align-items:center;justify-content:space-between;gap:12px}.boba-platform-bar p{margin:0}.boba-platform-bar .chip{padding:9px 12px;white-space:nowrap}.boba-stage{display:flex;justify-content:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#f6d3df}.boba-stage iframe{display:block;width:min(100%,430px);height:min(860px,calc(100svh - 150px));min-height:600px;border:0;background:#f6d3df}
 
 .reaper-stage{min-width:0;display:grid;place-items:center;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#1b1630}.reaper-stage canvas{display:block;width:min(100%,400px);height:auto;touch-action:manipulation;user-select:none;-webkit-user-select:none}.reaper-legend{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#dfe9ff}.reaper-legend span:last-child{color:#6cc58f}.reaper-ladder{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.reaper-ladder span{padding:9px 4px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--muted);font-size:12px;text-align:center}@media(max-width:700px){.reaper-stage canvas{max-height:65vh;object-fit:contain}.reaper-ladder{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.game-view-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-block-end: 8px;
+}
+.game-view-controls a, .game-view-controls button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--panel);
+  color: var(--fg);
+  font: 500 12px var(--font-body);
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+#ol-toolbar-actions .game-view-controls { margin: 0; }
+#ol-stage.ol-board-focus .game-view-controls a { min-height: 32px; padding: 3px 6px; }
+.view:is(:fullscreen, .game-view-expanded) {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100dvh;
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: var(--abyss);
+  padding: max(6px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right))
+    max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+}
+.view.game-view-expanded { position: fixed; inset: 0; z-index: 1000; }
+body.game-view-scroll-lock { overflow: hidden; }
+.view:is(:fullscreen, .game-view-expanded) > .game-view-controls {
+  position: sticky;
+  z-index: 90;
+  top: 0;
+  padding-block: 4px;
+  background: var(--abyss);
+}
