@@ -187,7 +187,7 @@ check('Campfire at 20% pauses the run, offers three cards, and gives the chosen 
 });
 check('A charm absorbs one deadly mistake; a pickup needs the item to be near',()=>{
   const f=fixture();f.F.start();f.F.ev('bag.charm=1');f.spirit('eye',1);f.run(10);assert.equal(f.ev('st'),'run');assert.equal(f.ev('bag.charm'),0);
-  f.F.ev('drops=[{k:"torch",side:1,z:.9}]');f.hold('pick');f.F.update(.05);assert.equal(f.ev('bag.torch'),0);
+  f.F.ev('dropT=999;nibT=999;gapT=999;ev=null');f.F.ev('drops=[{k:"torch",side:1,z:.9}]');f.hold('pick');f.F.update(.05);assert.equal(f.ev('bag.torch'),0);
   f.hold('pick',0);f.F.update(.05);f.F.ev('drops[0].z=.2');f.hold('pick');f.F.update(.05);assert.equal(f.ev('bag.torch'),1);
 });
 check('Level table: buffer, learn, boss and difficulty ramp follow the ten-level sawtooth',()=>{
