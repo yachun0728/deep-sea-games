@@ -104,7 +104,9 @@
   function route() {
     var v = location.hash.slice(1);
     // Hidden games keep their code but cannot be opened by link; show the lobby and correct the address.
-    if (VIEWS[v] && document.querySelector('.game-card[data-game-hidden][href="#' + v + '"]')) { try { history.replaceState(null, '', '#lobby'); } catch (e) {} v = 'lobby'; }
+    // A hidden game can still be opened for testing with ?preview=<id>#<id>; the lobby keeps it hidden.
+    var previewing = false; try { previewing = new URLSearchParams(location.search).get('preview') === v; } catch (e) {}
+    if (VIEWS[v] && !previewing && document.querySelector('.game-card[data-game-hidden][href="#' + v + '"]')) { try { history.replaceState(null, '', '#lobby'); } catch (e) {} v = 'lobby'; }
     if (!VIEWS[v]) v = 'lobby';
     if (fullscreenView && fullscreenView !== $('view-' + v)) leaveGameFullscreen();
     if(lastView==='lobby'&&v!=='lobby')lobbyScroll=window.scrollY||0;

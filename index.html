@@ -12174,7 +12174,7 @@ function drawCamp(){
   tx('點卡片或按 1／2／3',CX,CARD_Y+CARD_H+30,16,'#f1d9a6')}
  else tx('歇一口氣……',CX,128,24,'#f1d9a6')}
 /* centred text with wrapping by character count (CJK is one em wide, so no measureText needed) */
-function wrapLines(s,sz,wd){const n=Math.max(2,Math.floor(wd/sz)),o=[];for(let i=0;i<s.length&&o.length<12;i+=n)o.push(s.slice(i,i+n));return o}
+function wrapLines(s,sz,wd){const I=typeof window!=='undefined'&&window.deepSeaI18n;if(I&&I.getLanguage&&I.getLanguage()==='en'){const per=Math.max(6,Math.floor(wd/(sz*.52))),o=[];let cur='';I.text(s).split(' ').forEach(w=>{if(cur&&(cur+' '+w).length>per){o.push(cur);cur=w}else cur=cur?cur+' '+w:w});if(cur)o.push(cur);return o.slice(0,12)}const n=Math.max(2,Math.floor(wd/sz)),o=[];for(let i=0;i<s.length&&o.length<12;i+=n)o.push(s.slice(i,i+n));return o}
 function txp(s,x,y,sz,col){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.fillStyle=col;g.fillText(s,x,y,W-24)}   // plain text for parchment
 function txd(s,x,y,sz,col,wd,maxL){g.font='700 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.fillStyle=col;wrapLines(s,sz,wd).slice(0,maxL||12).forEach((ln,i)=>g.fillText(ln,x,y+i*(sz+4)))}
 function drawButtons(){
@@ -19518,7 +19518,9 @@ function ftBuilding(b,w){
   function route() {
     var v = location.hash.slice(1);
     // Hidden games keep their code but cannot be opened by link; show the lobby and correct the address.
-    if (VIEWS[v] && document.querySelector('.game-card[data-game-hidden][href="#' + v + '"]')) { try { history.replaceState(null, '', '#lobby'); } catch (e) {} v = 'lobby'; }
+    // A hidden game can still be opened for testing with ?preview=<id>#<id>; the lobby keeps it hidden.
+    var previewing = false; try { previewing = new URLSearchParams(location.search).get('preview') === v; } catch (e) {}
+    if (VIEWS[v] && !previewing && document.querySelector('.game-card[data-game-hidden][href="#' + v + '"]')) { try { history.replaceState(null, '', '#lobby'); } catch (e) {} v = 'lobby'; }
     if (!VIEWS[v]) v = 'lobby';
     if (fullscreenView && fullscreenView !== $('view-' + v)) leaveGameFullscreen();
     if(lastView==='lobby'&&v!=='lobby')lobbyScroll=window.scrollY||0;

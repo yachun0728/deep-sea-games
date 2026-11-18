@@ -152,7 +152,7 @@ def main():
                 chrome.call('Emulation.setDeviceMetricsOverride', {'width': width, 'height': height, 'deviceScaleFactor': 1, 'mobile': width < 880}, page=True)
                 if suite == 'core':
                     total += chrome.check(page, '?probe=default', 'Default Chinese')
-                query = '?lang=en&keep=1' + ('#ocean-link' if suite == 'ocean_link' else '#frontier' if suite == 'frontier' else '')
+                query = '?lang=en&keep=1' + ('&preview=frontier' if suite == 'frontier' else '') + ('#ocean-link' if suite == 'ocean_link' else '#frontier' if suite == 'frontier' else '')
                 total += chrome.check(page, query, f'{suite} {width}×{height}')
                 if suite == 'core':
                     for query, label in [('?probe=saved', 'Saved English after reload'), ('?probe=explicit&lang=zh-Hant', 'Explicit Chinese overrides saved English'), ('?probe=blocked&lang=en', 'Blocked preference storage')]:
@@ -173,9 +173,9 @@ def main():
                     chrome.evaluate("localStorage.setItem('crush-depth-balance', '0'); localStorage.setItem('deep-sea-regen-at', Date.now())")
                     total += chrome.check(page, '?probe=low&lang=zh-Hant#ocean-link', 'Ocean Link direct Chinese / zero balance')
                 if suite == 'frontier' and not (width <= 600 and height > width):
-                    total += chrome.check(page, '?probe=reload#frontier', f'Frontier reload {width}')
+                    total += chrome.check(page, '?probe=reload&preview=frontier#frontier', f'Frontier reload {width}')
                     chrome.evaluate("localStorage.removeItem('deep-sea-frontier-v1');localStorage.setItem('crush-depth-balance','0');localStorage.setItem('deep-sea-regen-at',Date.now())")
-                    total += chrome.check(page, '?probe=low&lang=zh-Hant#frontier', f'Frontier zero balance {width}')
+                    total += chrome.check(page, '?probe=low&lang=zh-Hant&preview=frontier#frontier', f'Frontier zero balance {width}')
                 chrome.evaluate("var r=document.getElementById('test-results');if(r)r.remove();")  # the long result list itself can widen a mobile viewport
                 actual = chrome.evaluate('innerWidth')
                 if actual != width:
