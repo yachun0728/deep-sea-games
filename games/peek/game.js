@@ -43,7 +43,7 @@ const rnd=(a,b)=>a+R()*(b-a);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function tx(s,x,y,sz,col,al){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign=al||'center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-24);g.fillStyle=col;g.fillText(s,x,y,W-24)}
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();if(f){g.fillStyle=f;g.fill()}if(lw){g.lineWidth=lw;g.strokeStyle=OL;g.stroke()}};
-let st='ready',prog,tilt,gapT,ev,survived,lastType,directorUsed,score,why,rec,flash,shake,tt=0,last=0,fxs=[],lampOut=0;
+let shieldFx=0,st='ready',prog,tilt,gapT,ev,survived,lastType,directorUsed,score,why,rec,flash,shake,tt=0,last=0,fxs=[],lampOut=0;
 let keys={l:0,r:0,cover:0,pick:0},gs=new Map(),hideWant=0,tapPick=0,dbl=0,tapT=-9,touchT=-9,lt=0,breath=1,spots={'-1':[],'1':[]},spotsAll=false,pendType=null,pendSide=1,itemTap=0,headDown=false,torchTap=0,chainN=0,lastTap=-9,tapQ=[],pendWait=0,breathOff=false,tutDone=false,gyro={on:false,tilt:0,down:false};
 let bag,drops,dropT,camp,campNext,openFx,pickHeld=0,sc=0,scrolls=0,audioOk=false,assist=false,lowScare=false,MASTER=.7,chirpT=0;
 try{scrolls=+localStorage.getItem('deep-sea-peek-scrolls')||0}catch(e){}
@@ -102,7 +102,7 @@ function applyLevel(){
  wx=L.wxp[(R()*L.wxp.length)|0];if(L.wxp.length>1&&wx===lastWx)wx=L.wxp.find(x=>x!==lastWx);lastWx=wx;
  assistHid=L.ease?1:0;
  say('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'：'+KIND_NAME[L.kind]+(L.fixed?'（固定種子）':'')+'。'+WORLD_RULE[L.wi]+(L.ease?'小螢多給你 0.3 秒預警，少來一次襲擊。':''))}
-function reset(){torchTap=0;tapQ=[];headDown=false;itemTap=0;pendType=null;hideWant=0;tapPick=0;lt=0;breath=1;gs.clear();eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;sc=0;rB=BASE_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
+function reset(){shieldFx=0;torchTap=0;tapQ=[];headDown=false;itemTap=0;pendType=null;hideWant=0;tapPick=0;lt=0;breath=1;gs.clear();eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;sc=0;rB=BASE_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
 reset();
 /* ---- audio: stereo cues, so headphones help; silent if the browser has no Web Audio ---- */
 let ac=null;
@@ -126,7 +126,7 @@ function ui(){
 function fx(s,x,y,col){fxs.push({s,x,y,col,t:0})}
 function end(kind,reason){
  if(st!=='run')return;
- if(kind==='dead'&&bag.charm>0){bag.charm--;fx('護身符碎了，擋下一次！',CX,150,'#7fe8ff');ev=null;gapT=Math.max(nextGap(),4);flash=lowScare?.1:.3;return}
+ if(kind==='dead'&&bag.charm>0){bag.charm--;shieldFx=1;ev=null;gapT=Math.max(nextGap(),4);flash=lowScare?.1:.3;return}
  deathEv=ev?{type:ev.type,side:ev.side,boss:!!ev.boss}:null;
  st=kind==='won'?'won':'over';why=reason||'';lostAll=false;
  const p=Math.floor(prog);rec=!L&&!practice&&p>best;
@@ -210,7 +210,7 @@ function allClear(){[0,110,220,330].forEach(d=>later(()=>tone(3100+Math.random()
 function update(dt){
  tt+=dt;
  if(openFx){openFx.t-=dt;if(openFx.t<=0)openFx=null}
- if(flash>0)flash-=dt;if(shake>0)shake-=dt;fxs.forEach(f=>f.t+=dt);fxs=fxs.filter(f=>f.t<.9);
+ if(shieldFx>0)shieldFx=Math.max(0,shieldFx-dt*1.4);if(flash>0)flash-=dt;if(shake>0)shake-=dt;fxs.forEach(f=>f.t+=dt);fxs=fxs.filter(f=>f.t<.9);
  if(st!=='run')return;
  const I=inputs();
  const covered=I.cover,aim=hideOK(I.tilt);
@@ -364,22 +364,22 @@ function drawSpirits(){
  else if(ev.type==='reach'){     // Reacher: the soil bulges and mud bubbles on one side, then a hand claws out
   const im=art('ghost-reacher'),bx=sx;
   g.save();g.fillStyle='rgba(40,30,22,'+(.25+.45*open)+')';g.beginPath();g.ellipse(bx,by+4,30+50*open,6+9*open,0,0,7);g.fill();
-  for(let i=0;i<4;i++){const ph2=(tt*1.3+i*.37)%1;g.strokeStyle='rgba(180,170,140,'+(.7*(1-ph2)*open)+')';g.beginPath();g.arc(bx+(i-1.5)*18,by-ph2*26,2+ph2*4,0,7);g.stroke()}g.restore();
+  {const bb=art('fx-bubbles');if(bb)floatImg(bb,bx,by-50*open,40+120*open,.85*open)}g.restore();
   if(im)sprite(im,bx+(judge?Math.sin(tt*30)*3:0),by,(judge?290:180)*(.5+.5*open),judge?.95:Math.pow(open,1.6)*.75);else blob(bx,by-40,30,open*.7,'#8a7a62')}
  else if(ev.type==='magma'){     // Magma: the ground glows red, one side smokes, something burns up out of the smoke
-  const im=art('ghost-magma');g.save();g.fillStyle='rgba(255,70,20,'+(.12+.2*open)+')';g.fillRect(0,300,W,150);
-  for(let i=0;i<6;i++){const p2=(tt*.6+i*.17)%1;g.fillStyle='rgba(60,55,52,'+(.5*(1-p2)*open)+')';g.beginPath();g.arc(sx+(i-2.5)*18,by-p2*160,14+p2*34,0,7);g.fill()}g.restore();
+  const im=art('ghost-magma');g.save();g.fillStyle='rgba(255,70,20,'+(.05+.06*open)+')';g.fillRect(0,0,W,H);
+  {const lv=art('fx-lava');if(lv)floatImg(lv,sx,by-40,150+250*open,.95*open)}g.restore();
   if(im)sprite(im,sx+(judge?Math.sin(tt*30)*3:0),by,(judge?300:190)*(.5+.5*open),judge?.95:Math.pow(open,1.6)*.75);else blob(sx,by-40,34,open*.7,'#a33')}
  else if(ev.type==='white'){     // Whiteout: the world goes white, one side flashes with the mouth of a snow cave
   const im=art('ghost-whiteout');g.save();g.fillStyle='rgba(240,246,255,'+(.55*open)+')';g.fillRect(0,0,W,H);
-  const gl=g.createRadialGradient(sx,330,10,sx,330,150);gl.addColorStop(0,'rgba(255,255,255,'+(.4+.5*Math.abs(Math.sin(tt*6)))+')');gl.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gl;g.fillRect(sx-160,170,320,300);g.restore();
+  const gl=g.createRadialGradient(sx,330,10,sx,330,150);gl.addColorStop(0,'rgba(255,255,255,'+(.4+.5*Math.abs(Math.sin(tt*6)))+')');gl.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gl;g.fillRect(sx-160,170,320,300);g.restore();{const cv2=art('fx-snowcave');if(cv2)sprite(cv2,sx,by+14,60+150*open,.5+.45*Math.abs(Math.sin(tt*5))*open)}
   if(im&&judge)sprite(im,CX-ev.side*60,by,300,.6)}
  else if(ev.type==='bog'){       // Bog: bubbles, a long shadow under the water, then it rises and grabs
   const im=art('ghost-bog'),bx=CX;g.save();g.fillStyle='rgba(16,30,26,'+(.3+.4*open)+')';g.beginPath();g.ellipse(bx,by+6,50+90*open,8+14*open,0,0,7);g.fill();
-  for(let i=0;i<5;i++){const p2=(tt*1.1+i*.23)%1;g.strokeStyle='rgba(140,200,170,'+(.6*(1-p2)*open)+')';g.beginPath();g.arc(bx+(i-2)*34,by-p2*30,2+p2*5,0,7);g.stroke()}g.restore();
+  {const bb=art('fx-bubbles');if(bb)floatImg(bb,bx,by-60*open,60+180*open,.85*open)}g.restore();
   if(im)sprite(im,bx,by,(judge?340:200)*(.5+.5*open),judge?.95:Math.pow(open,1.6)*.7);else blob(bx,by-40,40,open*.7,'#1d2d28')}
  else if(ev.type==='crawl'){     // Crawler: a crack runs across the ice toward your feet
-  const im=art('ghost-crawler'),pr=judge?1:open;g.save();g.strokeStyle='rgba(200,230,255,'+(.4+.5*pr)+')';g.lineWidth=2;g.beginPath();g.moveTo(CX+ev.side*220,250);let x0=CX+ev.side*220,y0=250;for(let i=1;i<=8;i++){const f=i/8;if(f>pr)break;x0=CX+ev.side*220*(1-f)+Math.sin(i*3.1)*22;y0=250+f*140;g.lineTo(x0,y0)}g.stroke();g.restore();
+  const im=art('ghost-crawler'),pr=judge?1:open;{const cr=art('fx-crack');if(cr)floatImg(cr,CX+ev.side*220*(1-pr),250+pr*140,60+340*pr,.3+.6*pr)}
   if(im&&judge)sprite(im,CX,by+10,300,.9)}
  else if(ev.type==='howl'){      // Howler: a far shape in the blizzard; rings pulse with each howl
   const im=art('ghost-howler');for(let i=0;i<(ev.pi||0);i++){const age=Math.max(0,(ev.pel||0)-(ev.pat[i]+.4));if(age<.8){g.save();g.strokeStyle='rgba(220,235,255,'+(.5*(1-age/.8))+')';g.lineWidth=3;g.beginPath();g.arc(CX,230,40+age*260,0,7);g.stroke();g.restore()}}
@@ -645,7 +645,8 @@ function drawTut(){
 function drawHead(){   // head down: the road rushes by under your feet and a long shadow slides over you
  g.save();g.fillStyle='rgba(6,5,4,.92)';g.fillRect(0,0,W,H);
  const sp=run*140;for(let i=0;i<14;i++){const y=140+((i*47+sp*(.4+i*.07))%310),w=60+i*14,x=(i*211+sp*.3)%W;g.fillStyle='rgba(70,60,50,'+(.12+i*.02)+')';g.fillRect(x,y,w,3)}
- const k=ev.phase==='judge'?clamp((BELL.judge-ev.t)/BELL.judge*1.2,0,1):0;g.fillStyle='rgba(0,0,0,'+(.3+.6*k)+')';g.beginPath();g.ellipse(CX,60+160*k,120+260*k,40+110*k,0,0,7);g.fill();g.restore()}
+ const k=ev.phase==='judge'?clamp((BELL.judge-ev.t)/BELL.judge*1.2,0,1):0;g.fillStyle='rgba(0,0,0,'+(.3+.6*k)+')';g.beginPath();g.ellipse(CX,60+160*k,120+260*k,40+110*k,0,0,7);g.fill();
+ const bt=art('fx-boots');if(bt)floatImg(bt,CX,H-90+Math.sin(run*14)*7,360,.95);g.restore()}
 function drawWeather(){
  const w=wx;if(!w)return;
  const fade=clamp(lt/3,0,1);g.save();g.globalAlpha=fade;   // the weather rolls in over the first 3 seconds of a level
@@ -677,6 +678,7 @@ function draw(){
  if(st==='run'&&camp){drawCamp();hud(I,lamp)}
  else if(st==='run'){
   if(!(headDown&&ev&&ev.type==='bell'))hud(I,lamp);if(!tutDone)drawTut()}
+ if(shieldFx>0){const o=art('fx-orb');if(o)floatImg(o,CX,250,230+260*(1-shieldFx),Math.min(1,shieldFx*1.4))}
  if(flash>0){g.fillStyle='rgba(200,20,20,'+flash*1.2+')';g.fillRect(0,0,W,H)}
  if(st==='ready'){
   g.fillStyle='rgba(18,13,10,.72)';g.fillRect(0,0,W,H);
