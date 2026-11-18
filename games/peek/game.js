@@ -346,7 +346,7 @@ function drawSpirits(){
   if(flashA>0){g.save();g.fillStyle='rgba(255,230,160,'+(.12*flashA)+')';g.fillRect(0,0,W,H);g.restore()}
   if(im)sprite(im,sx+ev.side*-60*(1-open),by,judge?330:240*(.7+.3*open),judge?.9:Math.pow(open,1.5)*.55);else blob(sx,by-60,40,open*.7,'#2a2a2a');}
  else{                           // Hush: the crickets stop, the lamp flickers, fog rolls in and something walks toward you
-  const fg=art('env-fog'),im=ev.gh==='hush'?null:art(ev.gh==='hollow'?'ghost-hollow':ev.gh==='ash'?'ghost-ash':'ghost-wraith'),p=judge?1:clamp(1-ev.t/WALK.warn,0,1);
+  const fg=art('env-fog'),im=ev.gh==='hush'?null:art(ev.gh==='hollow'?'ghost-hollow':ev.gh==='ash'?'ghost-ash':'ghost-glassface'),p=judge?1:clamp(1-ev.t/WALK.warn,0,1);
   if(fg){g.save();g.globalAlpha=.15+.55*p;g.drawImage(fg,-40,H-250,W+80,250);g.restore()}
   if(im)sprite(im,CX,by-8,(ev.boss?110:90)+(ev.boss?360:300)*p,clamp(.2+p*1.1,0,1));else blob(CX,by-60,20+60*p,.3+p*.6,'#08060a')}}
 function drawEvItems(){   // the two props on the road: one is the ghost's weakness (tap that side), the other is a decoy (or empty the first time you meet the ghost)
@@ -509,7 +509,7 @@ const DEX=[
  {id:'hollow',ghost:1,img:'ghost-hollow',name:'空殼 Hollow（首領）',type:'hollow',clue:'每個世界的第 10 關，先依序面對學過的鬼，最後是牠。',judge:'牠怕符紙。',act:'點符紙所在的那一側。點錯就死。'},
  {id:'reacher',ghost:1,img:'ghost-reacher',name:'墳手 Reacher',type:'reach',clue:'土面鼓起，泥水冒泡，一側地面隆起。',judge:'哪一邊的土在鼓起？',act:'躲進另一邊，撐住 2 秒。'},
  {id:'bellkeeper',ghost:1,img:'ghost-bellkeeper',name:'守墓鐘 Bellkeeper',type:'bell',clue:'遠處的鐘敲了三下。',judge:'第三下就是信號。',act:'第三下之後 1.5 秒內，什麼都別碰。'},
- {id:'glassface',ghost:1,img:'ghost-wraith',name:'玻璃臉 Glassface（暫用圖）',type:'glass',clue:'畫面起霧，一張臉貼近。',judge:'牠怕鐵鎚。',act:'點鐵鎚所在的那一側。'},
+ {id:'glassface',ghost:1,img:'ghost-glassface',name:'玻璃臉 Glassface',type:'glass',clue:'畫面起霧，一張臉貼近。',judge:'牠怕鐵鎚。',act:'點鐵鎚所在的那一側。'},
  {id:'ash',ghost:1,img:'ghost-ash',name:'灰燼鴉群 Ash',type:'ash',clue:'天空變暗，翅膀聲。',judge:'牠怕水桶。',act:'點水桶所在的那一側。'},
  {id:'flick',img:'guide-flick',name:'小螢 Flick',clue:'友方的螢火蟲，會在死亡後告訴你剛才漏掉了什麼。',judge:'牠不是鬼。',act:'多看牠的提示。'},
  {id:'rook',img:'npc-rook',name:'旅人 Rook',clue:'在營火旁出現。',judge:'牠不追你。',act:'營火邊三選一，帶走一樣東西。'},
