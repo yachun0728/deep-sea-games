@@ -13,7 +13,7 @@
     function stageSteps(w){
       if(w.cfg.war){var eb=w.enemyBase,barracks=w.buildings.find(function(b){return b.kind==='barracks';}),trained=frontierAttackers(w).length+(barracks&&barracks.queue||0);
         var towersBuilt=w.buildings.filter(function(b){return b.kind==='tower'&&b.built&&b.hp>0;}).length,towersNeeded=w.cfg.towers;
-        return [[towersBuilt>=towersNeeded,'建造箭塔守護大本營 '+towersBuilt+'/'+towersNeeded],[frontierBuilt(w,'bridge'),'建造橋樑'],[frontierBuilt(w,'barracks'),'過橋建造戰士營'],[frontierAttackers(w).length>=3||eb.hp<=0,'走到戰士營自動訓練戰士 '+Math.min(trained,frontierFighterCap(w))+'/'+frontierFighterCap(w)+'（至少 3 名）'],[eb.hp<=0,'戰士摧毀對手大本營 '+Math.max(0,Math.ceil(eb.hp/eb.maxHp*100))+'%']];}
+        return [[towersBuilt>=towersNeeded,'建造箭塔守護大本營 '+towersBuilt+'/'+towersNeeded],[frontierBuilt(w,'bridge'),'建造橋樑'],[frontierBuilt(w,'barracks'),'過橋建造戰士營'],[frontierAttackers(w).length>=3||eb.hp<=0,'走到戰士營自動訓練戰士 '+Math.min(trained,frontierFighterCap(w))+'/'+frontierFighterCap(w)+'（每名 10 木材、10 石頭，至少 3 名）'],[eb.hp<=0,'戰士摧毀對手大本營 '+Math.max(0,Math.ceil(eb.hp/eb.maxHp*100))+'%']];}
       var c=w.cfg,m=c.mission,steps=[],camps=(w.camps||[]).filter(function(k){return k.hp>0;}).length,need=Math.ceil(c.enemies*(m==='build'?.65:1));
       if(m==='rescue')steps.push([w.rescued>=2,'救出被困工人 '+Math.min(2,w.rescued)+'/2']);
       else if(m==='defend')steps.push([frontierGoal(w),'守住據點 '+Math.min(w.wave,c.waves)+'/'+c.waves]);

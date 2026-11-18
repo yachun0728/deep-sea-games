@@ -97,7 +97,7 @@ html.frontier-immersive{overflow:hidden}
  #view-frontier .ft-objective{display:none}
  #view-frontier .ft-assault{top:51px;left:max(8px,env(safe-area-inset-left));font-size:10px;padding:3px 7px}
  #view-frontier .ft-resource,#view-frontier .ft-main:fullscreen .ft-resource,#view-frontier .ft-main.ft-immersive .ft-resource{left:auto;right:max(8px,env(safe-area-inset-right));bottom:6px;width:auto;max-width:calc(100% - 110px);padding:4px 7px;gap:7px;flex-wrap:nowrap}
- #view-frontier #ft-stock,#view-frontier #ft-workers{display:none}
+ #view-frontier #ft-workers{display:none}
  #view-frontier #ft-home{margin-left:0}
  #view-frontier .ft-top button,#view-frontier .ft-resource button{min-width:44px;min-height:38px;padding:4px;font-size:0}
  #view-frontier #ft-full::after{content:'⤢';font-size:21px}#view-frontier #ft-journal::after{content:'☰';font-size:19px}
@@ -123,7 +123,7 @@ html.frontier-immersive{overflow:hidden}
  #view-frontier .ft-top button{min-height:36px;font-size:10px;padding:4px 6px}
  #view-frontier .ft-objective{display:block;top:58px;left:10px;max-width:calc(100% - 104px);font-size:10px;line-height:1.35;padding:4px 8px}#view-frontier .ft-assault{top:96px;left:10px;max-width:calc(100% - 120px);font-size:10px}
  #view-frontier .ft-resource,#view-frontier .ft-main:fullscreen .ft-resource,#view-frontier .ft-main.ft-immersive .ft-resource{left:124px;right:8px;bottom:max(12px,env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:6px;gap:4px 6px;font-size:10px}
- #view-frontier #ft-bag{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#view-frontier #ft-coins{text-align:right;white-space:nowrap}#view-frontier #ft-stock,#view-frontier #ft-workers{display:none}
+ #view-frontier #ft-bag{grid-column:1/-1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#view-frontier #ft-stock{display:block;white-space:nowrap}#view-frontier #ft-coins{text-align:right;white-space:nowrap}#view-frontier #ft-workers{display:none}
  #view-frontier .ft-resource button{min-height:34px;padding:3px 2px;font-size:10px;line-height:1.3;margin:0;overflow-wrap:anywhere}
  #view-frontier #ft-next{grid-column:1/-1}
  #view-frontier .ft-touch{left:12px;right:12px;bottom:max(16px,env(safe-area-inset-bottom))}#view-frontier #ft-stick{width:96px;height:96px}#view-frontier #ft-knob{left:29px;top:29px}

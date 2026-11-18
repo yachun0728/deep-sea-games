@@ -1,6 +1,7 @@
 
   /* ---------- Roar Through the Ceiling (rocket-chair): isolated iframe page (games/rocket-chair/original.html), fee-only shared wallet ---------- */
   var ROCKET={active:false,fee:ENTRY_FEE,analytics:null,loaded:false,extra:0};
+  var ROCKET_COFFEE=5; // points for one extra-strong coffee (also CONFIG.coffeeCost in original.html)
   var ROCKET_FREE_KEY='deep-sea-free-until'; // 看完示範廣告後的免免費截止時間（毫秒）
   function rocketFreeLeft(){try{var t=Number(localStorage.getItem(ROCKET_FREE_KEY));return isFinite(t)?Math.max(0,t-Date.now()):0;}catch(e){return 0;}}
   function rocketUI(text){if(text)$('rocket-chair-msg').textContent=text;}
@@ -19,10 +20,13 @@
     },
     spend:function(source,n){
       n=Math.floor(Number(n)||0);
-      if(!rocketValid(source)||!ROCKET.active||n<0)return false;
-
-      AN.progress(ROCKET.analytics,{phase:'free_coffee',extra_points:0});
-      rocketUI('已補充咖啡。');return true;
+      if(!rocketValid(source)||!ROCKET.active)return false;
+      if(n===0)return true;
+      if(n!==ROCKET_COFFEE)return false;
+      if(S.balance<n){rocketUI('點數不夠，需要 '+n+' 點。');return false;}
+      S.balance-=n;save();renderAll();ROCKET.extra+=n;
+      AN.progress(ROCKET.analytics,{phase:'coffee',extra_points:n});
+      rocketUI('已用 '+n+' 點補充咖啡。');return true;
     },
     finish:function(source,data){
       if(!rocketValid(source)||!ROCKET.active)return;ROCKET.active=false;
