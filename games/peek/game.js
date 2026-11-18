@@ -42,7 +42,7 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function tx(s,x,y,sz,col,al){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign=al||'center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-24);g.fillStyle=col;g.fillText(s,x,y,W-24)}
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();if(f){g.fillStyle=f;g.fill()}if(lw){g.lineWidth=lw;g.strokeStyle=OL;g.stroke()}};
 let st='ready',prog,tilt,gapT,ev,survived,lastType,directorUsed,score,why,rec,flash,shake,tt=0,last=0,fxs=[],lampOut=0;
-let keys={l:0,r:0,cover:0,wind:0,pick:0},gs=new Map(),hideWant=0,tapPick=0,dbl=0,tapT=-9,touchT=-9,lt=0,breath=1,spots={'-1':[],'1':[]},spotsAll=false,breathOff=false,tutDone=false,gyro={on:false,tilt:0,down:false};
+let keys={l:0,r:0,cover:0,wind:0,pick:0},gs=new Map(),hideWant=0,tapPick=0,dbl=0,tapT=-9,touchT=-9,lt=0,breath=1,spots={'-1':[],'1':[]},spotsAll=false,pendType=null,pendSide=1,pendWait=0,breathOff=false,tutDone=false,gyro={on:false,tilt:0,down:false};
 let bag,drops,dropT,camp,campNext,openFx,pickHeld=0,sc=0,scrolls=0,audioOk=false,assist=false,lowScare=false,MASTER=.7,chirpT=0;
 try{scrolls=+localStorage.getItem('deep-sea-peek-scrolls')||0}catch(e){}
 try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-opts')||'{}');assist=!!o.a;lowScare=!!o.l;captions=!!o.c;if(typeof o.m==='number')AMB=clamp(o.m,0,1);if(typeof o.v==='number')MASTER=clamp(o.v,0,1)}catch(e){}
@@ -99,7 +99,7 @@ function applyLevel(){
  wx=L.wxp[(R()*L.wxp.length)|0];if(L.wxp.length>1&&wx===lastWx)wx=L.wxp.find(x=>x!==lastWx);lastWx=wx;
  assistHid=L.ease?1:0;
  say('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'：'+KIND_NAME[L.kind]+(L.fixed?'（固定種子）':'')+'。'+WORLD_RULE[L.wi]+(L.ease?'小螢多給你 0.3 秒預警，少來一次襲擊。':''))}
-function reset(){hideWant=0;tapPick=0;lt=0;breath=1;gs.clear();eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;shake1=0;sc=0;rB=BASE_RATE;rW=WIND_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
+function reset(){pendType=null;hideWant=0;tapPick=0;lt=0;breath=1;gs.clear();eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;shake1=0;sc=0;rB=BASE_RATE;rW=WIND_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
 reset();
 /* ---- audio: stereo cues, so headphones help; silent if the browser has no Web Audio ---- */
 let ac=null;
@@ -151,20 +151,29 @@ function pickPool(){
  const pool=open.filter(t=>t!==lastType);return pool.length?pool:open}
 function startEvent(){
  if(L&&L.left<=0&&!L.forceFake){gapT=99;return}
- let type;
- if(practice)type=practice;
- else if(L&&L.plan&&L.plan.length)type=L.plan.shift();
- else if(L){const p=L.pool.filter(t=>t!==lastType);type=wpick(p.length?p:L.pool)}
- else{const pool=pickPool();type=pool[(R()*pool.length)|0]}
+ if(!pendType){
+  if(practice)pendType=practice;
+  else if(L&&L.plan&&L.plan.length)pendType=L.plan.shift();
+  else if(L){const p=L.pool.filter(t=>t!==lastType);pendType=wpick(p.length?p:L.pool)}
+  else{const pool=pickPool();pendType=pool[(R()*pool.length)|0]}
+  pendSide=R()<.5?-1:1;pendWait=0}
+ let type=pendType;
  const boss=type==='hollow';if(boss)type='walker';
  let fake=false;if(L&&L.forceFake){fake=true;L.forceFake=false}else if(L&&!boss&&L.fakeP&&R()<L.fakeP)fake=true;
  const eyeBase=eyeSeen<EASY_EYES&&(!L||L.kind==='learn')?EYE_EASY_WARN:EYE.warn;
  const base=type==='eye'?eyeBase:type==='twins'?TWIN.warn:type==='gale'?GALE.warn:type==='reach'?REACH.warn:type==='bell'?BELL.warn:WALK.warn;
  let warn=base;if(L&&!boss)warn=Math.max(WARN_FLOOR[type],base*L.wmul)+(L.kind==='learn'?.6:0)+(assistHid?.3:0);
+ let side=pendSide;
+ {const sol=sd=>type==='eye'||type==='twins'||type==='reach'?-sd:type==='gale'?sd:0,dur=({eye:3,twins:1.5,gale:2,reach:2}[type]||0)+2.2*((L&&L.kind!=='learn'&&!boss&&L.l>=8&&(type==='twins'||type==='gale'))?1:0)+1;
+  if(!spotsAll&&sol(1)){const okS=sd=>spots[sol(sd)].some(w=>w[0]<=lt+1&&w[1]>=lt+warn+dur);
+   if(!okS(side)&&okS(-side))side=-side;
+   if(!okS(side)){if(pendWait<7){pendWait+=.5;gapT=.5;return}
+    ensureSpot(sol(side),lt+APPROACH+.1,lt+APPROACH+.1+warn+dur+2);gapT=APPROACH+.2;pendWait=0;return}}}
+ pendType=null;
  if(type==='eye')eyeSeen++;
- ev={type,side:R()<.5?-1:1,phase:'warn',t:warn,warn,el:0,bad:0,rung:0,ok:false,snd:0,fake,boss};
+ ev={type,side,phase:'warn',t:warn,warn,el:0,bad:0,rung:0,ok:false,snd:0,fake,boss};
  ev.passes=L&&L.kind!=='learn'&&!boss&&L.l>=8&&(type==='twins'||type==='gale')?2:1;ev.pass=1;
- {const need=type==='eye'||type==='twins'||type==='reach'?-ev.side:type==='gale'?ev.side:0;if(need)ensureSpot(need,lt+.6,lt+warn+({eye:3,twins:1.5,gale:2,reach:2}[type]||0)+2.2*(ev.passes-1)+1)}
+ {const need=type==='eye'||type==='twins'||type==='reach'?-ev.side:type==='gale'?ev.side:0;if(need&&spotsAll)ensureSpot(need,lt+.6,lt+warn+({eye:3,twins:1.5,gale:2,reach:2}[type]||0)+2.2*(ev.passes-1)+1)}
  if(L&&!fake)L.left--;
  lastType=type;mark(boss?'hollow':type==='eye'?'leafling':type==='twins'?'knocker':type==='walker'?'hush':type==='reach'?'reacher':type==='bell'?'bellkeeper':'gale');
  if(bag.torch>0&&!fake){bag.torch--;ev.warn+=.6;ev.t+=.6;ev.torch=true}}   // a torch buys 0.6s of extra warning and lights the side it comes from
@@ -185,9 +194,9 @@ function inputs(){
 const gestCover=()=>{const n=performance.now();for(const q of gs.values())if(!q.sw&&n-q.t>=COVER_MS)return true;return false};
 const spotAt=sd=>spots[sd].some(w=>lt>=w[0]&&lt<=w[1]);
 const hideOK=v=>!v?0:(spotsAll||spotAt(v<0?-1:1))?v:0;
-function genSpots(rf){spots={'-1':[],'1':[]};[-1,1].forEach(sd=>{let t=2+rf()*3;while(t<420){const len=3.5+rf()*2;spots[sd].push([t,t+len]);t+=len+7+rf()*5}})}   // about one hiding spot per side every 12-15 s of road
+function genSpots(rf){spots={'-1':[],'1':[]};[-1,1].forEach(sd=>{let t=2+rf()*3;while(t<420){const len=5.5+rf()*2.5;spots[sd].push([t,t+len]);t+=len+5+rf()*4}})}   // about one hiding spot per side every 12-15 s of road
 function ensureSpot(sd,a,b){if(spots[sd].some(w=>w[0]<=a+.2&&w[1]>=b))return;spots[sd]=spots[sd].filter(w=>w[1]<a-.5||w[0]>b+.5).concat([[a,b]]).sort((x,y)=>x[0]-y[0])}   // every attack gets a usable spot on its safe side
-function swipe(d){if(hideWant===-d){hideWant=0;return}if(!spotsAll&&!spotAt(d)){fx('這裡沒地方躲',CX+d*200,200,'#cfd8e6');return}hideWant=d}
+function swipe(d){if(hideWant===-d){hideWant=0;return}if(!spotsAll&&!spotAt(d))return;hideWant=d}
 function tap(){const n=performance.now();if(canPick()){tapPick=1;return}if(hideWant){hideWant=0;return}if(n-tapT<350){dbl=1;tapT=-9}else tapT=n}
 function passEnd(){if(ev.pass<ev.passes){ev.pass++;ev.phase='gap';ev.t=1;ev.ok=false;ev.bad=0;ev.snd=0;fx('還沒完……',CX,170,'#cfd8e6')}else survive()}
 function update(dt){
@@ -202,7 +211,7 @@ function update(dt){
  if(camp){updateCamp(dt);ph+=dt*2;return}
  lt+=dt;if(hideWant&&!spotsAll&&!spotAt(hideWant))hideWant=0;
  if(Math.abs(tilt)>.5&&!breathOff){breath-=dt/BREATH;if(breath<=0){breath=0;end('dead','breath');return}}else breath=Math.min(1,breath+dt/BREATH_BACK);   // hiding costs breath; out of breath means found
- chirpT-=dt;if(chirpT<=0){chirpT=rnd(.3,.8);if(!(ev&&(ev.type==='walker'||ev.passes>1))&&!covered)tone(3000+Math.random()*700,.04,.012,rnd(-.8,.8),'sine',0,true)}   // crickets: they go quiet before Hush
+ chirpT-=dt;if(chirpT<=0){chirpT=rnd(.3,.8);if(!(ev&&(ev.type==='walker'))&&!covered)tone(3000+Math.random()*700,.04,.012,rnd(-.8,.8),'sine',0,true)}   // crickets: they go quiet before Hush
  if(!covered){prog=Math.min(L&&(L.left>0||ev)?97:100,prog+(sprint?rW:rB)*dt);run+=dt*(sprint?2.6:1.5)}
  ph+=dt*(covered?2.5:sprint?15:9);
  if(prog>=100){score+=500;pay(WIN_REWARD,'盒子打開了！');end('won');return}
@@ -331,8 +340,7 @@ function drawSpirits(){
  else if(ev.type==='bell'){      // Bellkeeper: a bell tolls three times in the dark, then it stands over you
   const im=art('ghost-bellkeeper'),since=tt-(ev.ring||-9),flashA=clamp(1-since/.6,0,1);
   if(flashA>0){g.save();g.fillStyle='rgba(255,230,160,'+(.12*flashA)+')';g.fillRect(0,0,W,H);g.restore()}
-  if(im)sprite(im,sx+ev.side*-60*(1-open),by,judge?330:240*(.7+.3*open),judge?.9:Math.pow(open,1.5)*.55);else blob(sx,by-60,40,open*.7,'#2a2a2a');
-  if(judge)tx('別動……',CX,230,22,'#ffd98a')}
+  if(im)sprite(im,sx+ev.side*-60*(1-open),by,judge?330:240*(.7+.3*open),judge?.9:Math.pow(open,1.5)*.55);else blob(sx,by-60,40,open*.7,'#2a2a2a');}
  else{                           // Hush: the crickets stop, the lamp flickers, fog rolls in and something walks toward you
   const lp=art('env-lamp'),fg=art('env-fog'),im=art(ev.boss?'ghost-hollow':'ghost-wraith'),p=judge?1:clamp(1-ev.t/WALK.warn,0,1),lampA=ev.t<1.5||judge?.45+.55*lampLevel():1;
   if(lp)sprite(lp,sx,by,330,lampA);
@@ -401,27 +409,13 @@ function hud(I,lamp){
    tx('火把',lx+lw*.42,ly+sh*k+12,12,'#f1d9a6');tx('護身符',lx+lw*.61,ly+sh*k+12,12,'#f1d9a6');tx('卷軸',lx+lw*.805,ly+sh*k+12,12,'#f1d9a6')}}
  else tx(L?'生命 '+lives:'火把'+bag.torch+' 護身符'+bag.charm+' 卷軸'+scrolls,W-16,50,15,'#f1d9a6','right');
  if(L)tx('火把 '+bag.torch+'　護身符 '+bag.charm+'　卷軸 '+scrolls,16,108,13,'#f1d9a6','left');
- let hint='';
- if(ev&&ev.type==='eye')hint=ev.phase==='warn'?'腳邊的落葉在聚集……準備躲進另一側！':'躲進落葉的另一側！躲開紅光！';
- else if(ev&&ev.type==='twins')hint=ev.phase==='warn'?'鳥群飛走了，有東西在敲樹枝……別躲在敲擊那一側':'躲進敲擊的另一側！';
- else if(ev&&ev.type==='gale')hint=ev.phase==='warn'?'風向反了，葉子逆風翻動……準備躲進風來的那一側！':'躲進風來的那一側，頂住！';
- else if(ev&&ev.type==='reach')hint=ev.phase==='warn'?'土面在鼓起，泥水冒泡……準備躲進另一側！':'躲進另一側，撐住！';
- else if(ev&&ev.type==='bell')hint=ev.phase==='warn'?'遠處有鐘聲。第三下一響，什麼都別碰！':'什麼都別碰，等鐘聲散去……';
- else if(ev&&ev.type==='walker')hint=ev.phase==='warn'?(ev.boss?'空殼來了。燈一滅就蓋住螢幕！':'蟲鳴停了，路燈在閃。燈滅前蓋住螢幕！'):'蓋住不要動，等腳步聲遠去……';
- else if(canPick())hint='路邊有東西！靠近時點一下撿起（電腦：F）';
- else if(L&&L.l===1&&prog<30)hint='小螢：這是森林。先聽聽蟲鳴，這就是「平常」的聲音。';
- else if(L&&L.l===1&&prog<65)hint='小螢：路邊發亮的東西，靠近時點一下撿起。';
- else if(L&&L.l===1)hint='小螢：林子越來越深了……下一關開始，會有東西靠近。';
- else if(L&&L.kind==='safe'&&L.l!==1)hint='安全緩衝：這一關沒有致命的鬼，放心撿東西、聽聲音。';
- else if(prog<25&&!I.wind)hint='自動奔跑中！左右滑躲進路邊，按住畫面閉眼。';
- if(hint)tx(hint,CX,150,17,'#ffd98a');
  if(captions&&ev&&!ev.fake)tx(capText(ev),CX,176,16,'#cfe8ff');
  if(ev&&(assist||ev.torch)){   // assist mode / torch: mark the dangerous side and the safe side
   const dg=ev.type==='walker'||ev.type==='bell'?0:ev.type==='gale'?-ev.side:ev.side,col=ev.torch?'#ffb347':'#ffd98a';
-  if(dg){const dx=CX+dg*340;g.save();g.fillStyle='#ff5a4d';g.globalAlpha=.8;g.beginPath();g.moveTo(dx+dg*22,170);g.lineTo(dx-dg*10,150);g.lineTo(dx-dg*10,190);g.closePath();g.fill();g.restore();tx('危險',dx,215,14,'#ff9a8a');
-   const sxm=CX-dg*340;g.save();g.fillStyle=col;g.globalAlpha=.8;g.beginPath();g.moveTo(sxm-dg*22,170);g.lineTo(sxm+dg*10,150);g.lineTo(sxm+dg*10,190);g.closePath();g.fill();g.restore();tx('躲這邊',sxm,215,14,col);
+  if(dg){const dx=CX+dg*340;g.save();g.fillStyle='#ff5a4d';g.globalAlpha=.8;g.beginPath();g.moveTo(dx+dg*22,170);g.lineTo(dx-dg*10,150);g.lineTo(dx-dg*10,190);g.closePath();g.fill();g.restore();
+   const sxm=CX-dg*340;g.save();g.fillStyle=col;g.globalAlpha=.8;g.beginPath();g.moveTo(sxm-dg*22,170);g.lineTo(sxm+dg*10,150);g.lineTo(sxm+dg*10,190);g.closePath();g.fill();g.restore();
    if(assist){const sp=art('env-stump');if(sp)sprite(sp,sxm+(-dg)*10,300,110,.55)}}
-  else tx(ev.type==='bell'?'什麼都別碰':'蓋住螢幕',CX,160,18,col)}
+}
  if(assist){const cp=art('ui-compass');if(cp)floatImg(cp,CX,300,70,.85)}
  if(L&&seedCode)tx('種子 '+seedCode,W-10,H-6,11,'rgba(241,217,166,.6)','right')}
 /* ---- end-of-round buttons (retry / listen again / codex / later) ---- */
@@ -552,13 +546,14 @@ function dexClick(e){
   else if(i===0&&ok)playCue({type:d.type==='hollow'?'walker':d.type,side:1});
   else if(i===1&&ok&&st!=='run'){dex=false;practiceStart(d.type==='hollow'?'walker':d.type)}}})}
 function practiceStart(ty){nextPractice=ty;forceLvl=0;start();forceLvl=null}
+const SPOT_ART=['spot-tree','spot-coffin','spot-tree','spot-tree','spot-coffin'],APPROACH=2.5;
 function drawSpots(){
- const col=['#1d2a16','#25232b','#1c2a24','#33414b','#2e1a14'][L?L.wi:clamp(Math.floor(prog/20),0,4)]||'#1d2a16';
+ const wi=L?L.wi:clamp(Math.floor(prog/20),0,4),col=['#1d2a16','#25232b','#1c2a24','#33414b','#2e1a14'][wi]||'#1d2a16',im=art(SPOT_ART[wi]||'spot-tree');
  [-1,1].forEach(sd=>spots[sd].forEach(w=>{
-  const f=clamp((lt-(w[0]-1.2))/1.2,0,1),o=clamp((w[1]+.5-lt)/.5,0,1),a=Math.min(f,o);if(a<=0)return;
-  const x=CX+sd*(300-60*(1-f)),sz=170*(.5+.5*f);
-  g.save();g.globalAlpha=a;g.fillStyle=col;g.strokeStyle='rgba(255,217,138,.55)';g.lineWidth=2;g.beginPath();g.ellipse(x,392,sz*.6,sz*.38,0,Math.PI,0);g.fill();g.stroke();g.restore();
-  if(a>.6)tx('可躲',x,334,13,'rgba(255,217,138,.8)')}))}
+  const f=clamp((lt-(w[0]-APPROACH))/APPROACH,0,1),o=clamp((w[1]+.5-lt)/.5,0,1),a=Math.min(f,o);if(a<=0)return;
+  const x=CX+sd*(520-220*f),sz=120+120*f;   // slides in from the edge and grows as you run up to it
+  if(im)sprite(im,x,400,sz*1.6,a);
+  else{g.save();g.globalAlpha=a;g.fillStyle=col;g.strokeStyle='rgba(255,217,138,.35)';g.lineWidth=2;g.beginPath();g.ellipse(x,392,sz*.6,sz*.38,0,Math.PI,0);g.fill();g.stroke();g.restore()}}))}
 function drawHide(){
  const h=Math.abs(tilt);
  if(h>.2){const sd=tilt<0?-1:1,gr=g.createLinearGradient(CX+sd*W/2,0,CX-sd*W*.1,0);gr.addColorStop(0,'rgba(8,10,6,'+(.85*h)+')');gr.addColorStop(1,'rgba(8,10,6,0)');g.fillStyle=gr;g.fillRect(0,0,W,H)}

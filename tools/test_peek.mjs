@@ -129,8 +129,8 @@ check('Hiding costs breath: too long in a spot is fatal, leaving refills it',()=
   f.F.ev('hideWant=0');f.run(3);assert.equal(f.ev('breath'),1);f.F.ev('hideWant=1');f.run(6);assert.equal(f.ev('why'),'breath');
 });
 check('Every attack gets a usable hiding spot on its safe side',()=>{
-  for(const ty of ['eye','twins','gale','reach']){const f=fixture();f.F.ev('spotsAll=false;forceLvl=24;maxLvl=24;runTop=24');f.F.start();f.F.ev('spots={"-1":[],"1":[]};L.pool=["'+ty+'"];gapT=0;L.left=3');f.F.update(.05);
-    const side=f.ev('ev.side'),need=ty==='gale'?side:-side;assert.equal(f.ev('spots['+need+'].some(w=>w[0]<=lt+.8&&w[1]>=lt+3)'),true,ty)}
+  for(const ty of ['eye','twins','gale','reach']){const f=fixture();f.F.ev('spotsAll=false;forceLvl=24;maxLvl=24;runTop=24');f.F.start();f.F.ev('spots={"-1":[],"1":[]};L.pool=["'+ty+'"];gapT=0;L.left=3');for(let i=0;i<400&&!f.ev('ev');i++)f.F.update(.05);assert.equal(!!f.ev('ev'),true,ty+' starts');   // the attack may wait a few seconds for a spot to run up
+    const side=f.ev('ev.side'),need=ty==='gale'?side:-side;assert.equal(f.ev('spots['+need+'].some(w=>w[0]<=lt+1&&w[1]>=lt+3)'),true,ty)}
 });
 check('Knocker on later levels comes back for a second pass; surviving both counts once',()=>{
   const f=fixture();f.F.ev('forceLvl=9;maxLvl=9;runTop=9');f.F.start();
