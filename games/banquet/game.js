@@ -424,6 +424,8 @@ function say(k,p,kind){SAYST={k:k,p:p||null,kind:kind||''};showSay()}
 bqSay=function(t,kind){say(t,null,kind)};
 function put(el,text){if(el.__bq!==text){el.__bq=text;el.textContent=text}}
 function putAttr(el,name,text){var key='__a'+name;if(el[key]!==text){el[key]=text;el.setAttribute(name,text)}}
+function pips(box,img,max,n,hideZero){var sig=img+max+'|'+n;if(box.__sig===sig)return;box.__sig=sig;box.textContent='';box.title=img==='st-heart'?tr('u.hp',{a:n,b:max}):tr('u.dr',{a:n,b:max,tip:''});
+ if(hideZero&&!n)return;for(var i=0;i<max;i++){var im=iconImg(img,'bq-pip'+(i<n?'':' is-off'));if(im)box.appendChild(im)}}
 function hearts(n){var s='';for(var i=0;i<HP_MAX;i++)s+=i<n?'♥':'♡';return s}
 function mmss(sec){var s=Math.max(0,Math.ceil(sec));return Math.floor(s/60)+':'+('0'+s%60).slice(-2)}
 function kLabel(side,c){
@@ -502,7 +504,7 @@ function renderChips(){
   var left=Math.max(0,E.comp[t]-E.out[t]);if(E.comp[t])list.push({t:t,left:left,all:E.comp[t]});
  });
  var sig=LANG+list.map(function(x){return x.t+x.left+'/'+x.all}).join('|');if(box.__sig===sig)return;box.__sig=sig;box.textContent='';
- list.forEach(function(x){var c=document.createElement('span');c.className='bq-chip t-'+x.t+(x.left?'':' is-gone');var ci=stIcon(x.t,'bq-chip-ic');if(ci)c.appendChild(ci);c.appendChild(txt(tn(x.t)+' ×'+x.left));box.appendChild(c)});
+ list.forEach(function(x){var c=document.createElement('span');c.className='bq-chip t-'+x.t+(x.left?'':' is-gone');var ci=stIcon(x.t,'bq-chip-ic');if(ci)c.appendChild(ci);c.appendChild(txt('×'+x.left));c.title=tn(x.t);box.appendChild(c)});
 }
 var fxPlayed=0,overPlayed=false,hbT=0,lastTurnKey='',poseT=0,poseTok=0;
 function setPose(name,dur){poseTok++;poseT=dur||0;$('bq-dealerbox').dataset.pose=name}
@@ -534,15 +536,15 @@ function render(){
  playFx();
  put($('bq-act'),!E.act?tr('act.none'):E.act===4?actName(4)+' '+mmss(E.ot):actName(E.act));
  ['p','d'].forEach(function(s){
-  put($('bq-hp-'+s),hearts(E.hp[s]));put($('bq-hp-'+s+'-t'),tr('u.hp',{a:E.hp[s],b:HP_MAX}));
-  put($('bq-dr-'+s),tr('u.dr',{a:E.dr[s],b:DR_MAX,tip:E.dr[s]>=3?tr('u.tipsy'):''}));
+  pips($('bq-hp-'+s),'st-heart',HP_MAX,E.hp[s]);put($('bq-hp-'+s+'-t'),tr('u.hp',{a:E.hp[s],b:HP_MAX}));
+  pips($('bq-dr-'+s),'st-drunk',DR_MAX,E.dr[s],true);
   put($('bq-items-'+s),tr('u.items',{n:E.hand[s].length}));
   var box=$('bq-side-'+s),cls='bq-side bq-side-'+s+(live&&E.turn===s?' is-turn':'')+(E.dr[s]>=3?' is-drunk':'');if(box.className!==cls)box.className=cls;
  });
  var oc=E.out;
  renderChips();
  put($('bq-comp'),live||over?tr('u.comp',{a:E.comp.poison,b:E.comp.nectar,c:E.comp.truth,n:E.cups.length,x:oc.poison,y:oc.nectar,z:oc.truth,w:oc.water?tr('u.compwater',{w:oc.water}):''}):tr('u.compidle'));
- put($('bq-center-1'),!E.act?tr('act.none'):over?(E.result.w==='p'?tr('u.cwin'):E.result.w==='d'?tr('u.close'):tr('u.cdraw')):tr('u.cups',{n:E.cups.length}));
+ put($('bq-center-1'),!E.act?tr('act.none'):over?(E.result.w==='p'?tr('u.cwin'):E.result.w==='d'?tr('u.close'):tr('u.cdraw')):'');
  put($('bq-center-2'),over?tr('u.again'):live?(E.turn==='p'?tr('u.yourturn'):tr('u.hostturn')):tr('u.press'));
  renderCups();renderHand();renderDealerHand();renderNotes();
  var mine=live&&E.turn==='p'&&!E.pending,sel=E.sel?cupOf(E.sel):null,pend=live&&E.pending&&E.pending.to==='p';
@@ -562,6 +564,7 @@ function render(){
  setCls($('bq-hands'),'is-ready',mine&&!!E.sel&&!(E.fxT>0));
  var pr=$('bq-prompt');pr.hidden=!pend;
  if(pend)put($('bq-prompt-t'),tr('u.claimq',{id:E.pending.id}));
+ var mn=$('bq-menu');if(mn){mn.hidden=E.phase!=='ready';var ma=$('bq-m-adv'),mm=$('bq-m-mute');put(ma,$('bq-adv').textContent);put(mm,$('bq-mute').textContent);var A=$('bq-adv'),M=$('bq-mute');if(ma.setAttribute&&A.getAttribute){ma.setAttribute('aria-pressed',A.getAttribute('aria-pressed')||'false');mm.setAttribute('aria-pressed',M.getAttribute('aria-pressed')||'false')}}
  var go=$('bq-go');go.disabled=bqBusy;put(go,bqBusy?tr('u.going'):over?tr('u.goagain'):tr('u.go'));
  $('bq-quit').hidden=!bqBusy;put($('bq-quit'),quitArm>0?tr('u.quitarm'):tr('u.quit'));
  put($('bq-stage-t'),!E.act?tr('u.notstarted'):actShort(E.act));
@@ -601,6 +604,9 @@ function quit(){
  quitArm=0;log('l.quit');endGame('d','quit');render();
 }
 $('bq-go').addEventListener('click',start);
+{var mk=function(id,fn){var e=$(id);if(e&&e.addEventListener)e.addEventListener('click',fn)};
+ mk('bq-m-start',start);mk('bq-m-adv',function(){$('bq-adv').click()});mk('bq-m-mute',function(){$('bq-mute').click()});
+ mk('bq-m-rules',function(){$('bq-menu-main').hidden=true;$('bq-menu-rules').hidden=false});mk('bq-m-back',function(){$('bq-menu-main').hidden=false;$('bq-menu-rules').hidden=true})}
 $('bq-quit').addEventListener('click',quit);
 $('bq-adv').addEventListener('click',function(){if(bqBusy)return;ADV=!ADV;try{localStorage.setItem('deep-sea-banquet-adv',ADV?'1':'0')}catch(e){}render()});
 $('bq-mute').addEventListener('click',function(){MUTED=!MUTED;try{localStorage.setItem('deep-sea-banquet-mute',MUTED?'1':'0')}catch(e){}if(!MUTED)SFX.pick();render()});
@@ -644,6 +650,15 @@ function setLang(l){
  applyLang();render();
 }
 {var langSel=$('bq-lang');if(langSel&&langSel.addEventListener)langSel.addEventListener('change',function(){setLang(langSel.value)})}
+function fitStage(){try{
+  var W=window.innerWidth;if(!W||W<820||$v.hidden){$v.style.removeProperty('--bq-w');$v.style.removeProperty('--bq-k');return}
+  var fs=document.fullscreenElement===$v||$v.classList.contains('game-view-expanded');
+  var availW=fs?W-16:Math.min($v.clientWidth||W,1240);
+  var availH=fs?window.innerHeight-190:Math.max(window.innerHeight-250,540);
+  var w=Math.max(640,Math.min(availW,availH*16/9));
+  $v.style.setProperty('--bq-w',Math.floor(w)+'px');$v.style.setProperty('--bq-k',(w/1000).toFixed(4));
+}catch(e){}}
+if(typeof window!=='undefined'&&window.addEventListener){window.addEventListener('resize',fitStage);document.addEventListener('fullscreenchange',fitStage);if(typeof ResizeObserver!=='undefined')new ResizeObserver(fitStage).observe($v);if(typeof MutationObserver!=='undefined')new MutationObserver(fitStage).observe($v,{attributes:true,attributeFilter:['hidden','class']});fitStage()}
 applyLang();
 render();requestAnimationFrame(loop);
   })();
