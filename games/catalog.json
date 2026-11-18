@@ -286,5 +286,12 @@
     "view": "games/pet-walk/view.html",
     "card": "games/pet-walk/card.html",
     "icon": "games/pet-walk/icon.svg"
+  },
+  {
+    "id": "banquet",
+    "logic": "games/banquet/game.js",
+    "view": "games/banquet/view.html",
+    "card": "games/banquet/card.html",
+    "icon": "games/banquet/icon.svg"
   }
 ]
