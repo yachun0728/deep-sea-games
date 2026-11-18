@@ -13177,7 +13177,10 @@ function drawWeather(){
  if(w===9&&g.canvas&&g.canvas.width){const k=g.canvas.width/W;for(let y=190;y<H;y+=10){const dx=Math.sin(tt*3+y*.05)*(2+(y-190)/80);g.drawImage(g.canvas,0,y*k,g.canvas.width,10*k,dx,y,W,10)}}   // heat shimmer
  const vis=w===5||w===7?.6:w===4?.8:1;
  if(vis<1){const gr=g.createRadialGradient(CX,260,330*vis,CX,260,620*vis);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,.85)');g.fillStyle=gr;g.fillRect(0,0,W,H)}
- if(w===3){for(let L2=0;L2<3;L2++){const sp=[560,740,940][L2],ln=[7,11,16][L2],al=[.13,.2,.3][L2];g.strokeStyle='rgba(185,205,225,'+al+')';g.lineWidth=[.7,1,1.2][L2];g.beginPath();for(let i=L2;i<240;i+=3){const x=((i*73.1+tt*sp*.12)%(W+60))-30,y=(i*131.7+tt*sp)%(H+20)-10;g.moveTo(x,y);g.lineTo(x-ln*.12,y-ln)}g.stroke()}}   // fine layered rain: thin, steep, depth by speed
+ if(w===3){const hs=n=>{const q=Math.sin(n*127.1+311.7)*43758.5453;return q-Math.floor(q)};   // every drop has its own depth, speed, length and landing spot; it splashes where it lands
+  for(let i=0;i<150;i++){const z=hs(i+1),v=520+z*520,len=6+z*14,gy=200+z*230+hs(i+9)*30,fall=gy/v,per=fall+.28,off=hs(i+5)*per*9,cyc=Math.floor((tt+off)/per),t=(tt+off)%per,x=hs(i*7+cyc*13+2)*(W+60)-30;
+   if(t<fall){const y=t*v,xs=x+y*.1;g.strokeStyle='rgba(190,208,228,'+(.12+z*.3)+')';g.lineWidth=.6+z*.9;g.beginPath();g.moveTo(xs,y);g.lineTo(xs-len*.1,y-len);g.stroke()}
+   else{const p=(t-fall)/.28,xs=x+gy*.1,rx=2+z*9*p;g.strokeStyle='rgba(190,208,228,'+(.28*(1-p))*(.4+z)+')';g.lineWidth=1;g.beginPath();g.ellipse(xs,gy,rx,rx*.3,0,0,7);g.stroke()}}}   // thin, steep, layered rain
  const n=w===6?40:w===7?90:w===8?35:0;
  g.save();for(let i=0;i<n;i++){const sx=(i*97.3+tt*(w===3?260:w===7?340:40*(1+i%3)))%W,sy=(i*53.7+tt*(w===3?520:w===8?30:90))%H;
   if(w===3){g.strokeStyle='rgba(170,200,230,.45)';g.beginPath();g.moveTo(sx,sy);g.lineTo(sx-4,sy+14);g.stroke()}
