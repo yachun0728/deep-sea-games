@@ -958,7 +958,7 @@ body.ol-expanded { overflow: hidden; }
     </div>
     <div class="header-tools"><button type="button" id="open-wardrobe" class="wardrobe-open"><span class="wardrobe-preview" id="wardrobe-mini" aria-hidden="true"></span>我的造型</button><div class="language-switch" role="group" aria-label="Language / 語言" data-i18n-ignore><button type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button><button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button></div><div class="wallet-box"><div class="wallet">
       <span class="label" data-i18n-ignore>BONUS</span>
-      <span class="amount" id="balance">0</span><span class="unit">點</span>
+      <span class="amount" id="balance">0</span><span class="unit">點</span><script>try{var b=parseInt(localStorage.getItem('crush-depth-balance'),10);if(isFinite(b)&&b>=0)document.getElementById('balance').textContent=b.toLocaleString('zh-TW')}catch(e){}</script>
     </div></div></div>
   </header>
 
@@ -1030,8 +1030,8 @@ body.ol-expanded { overflow: hidden; }
   <div class="gold-banner-copy"><span class="game-card-category">每日免費補給</span><h3>每天挖點好運氣</h3><p class="game-card-en">Daily Gold Mine</p><p class="game-card-description">免費挖金礦拿點數，再去挑戰喜歡的小遊戲。</p><p id="gold-daily-status" aria-live="polite">每天免費 3 次 · 每次挖 5 格 · 每日最多 30 點</p><div class="game-card-footer"><span>免費 · 免費</span><span>台灣時間午夜重置</span></div></div>
   <span class="gold-banner-cta" id="gold-daily-cta">免費挖一次 <span aria-hidden="true">↗</span></span>
 </a></section>
-    <div class="lobby-section-heading" id="lobby-games"><div><p class="lobby-eyebrow">PICK YOUR NEXT ADVENTURE</p><h2>遊戲大廳 <span id="lobby-count">28 款遊戲</span></h2></div><p>選一款，開始你的下一局。</p></div>
-    <div class="lobby-filters" role="group" aria-label="篩選遊戲類型"><button type="button" data-lobby-filter="all" aria-pressed="true">全部 <span>30</span></button><button type="button" data-lobby-filter="run" aria-pressed="false">跑酷動作 <span>0</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false">潛行偷閒 <span>0</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false">時機操作 <span>0</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false">益智策略 <span>0</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false">經典小遊戲 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false">機率挑戰 <span>0</span></button></div>
+    <div class="lobby-section-heading" id="lobby-games"><div><p class="lobby-eyebrow">PICK YOUR NEXT ADVENTURE</p><h2>遊戲大廳 <span id="lobby-count">36 款遊戲</span></h2></div><p>選一款，開始你的下一局。</p></div>
+    <div class="lobby-filters" role="group" aria-label="篩選遊戲類型"><button type="button" data-lobby-filter="all" aria-pressed="true">全部 <span>36</span></button><button type="button" data-lobby-filter="run" aria-pressed="false">跑酷動作 <span>11</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false">潛行偷閒 <span>8</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false">時機操作 <span>7</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false">益智策略 <span>7</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false">經典小遊戲 <span>3</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false" hidden>機率挑戰 <span>0</span></button></div>
     <div class="lobby-grid"><a class="game-card" href="#ocean-link" data-game-category="retro" aria-label="免費遊玩深海連連看，配對圖案闖關並獲得獎勵。">
   <div class="game-card-top"><span class="game-card-category">經典小遊戲</span><span class="game-card-arrow" aria-hidden="true">↗</span></div>
   <div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-ocean-link"></use></svg></div>

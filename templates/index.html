@@ -34,7 +34,7 @@
     </div>
     <div class="header-tools"><button type="button" id="open-wardrobe" class="wardrobe-open"><span class="wardrobe-preview" id="wardrobe-mini" aria-hidden="true"></span>我的造型</button><div class="language-switch" role="group" aria-label="Language / 語言" data-i18n-ignore><button type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button><button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button></div><div class="wallet-box"><div class="wallet">
       <span class="label" data-i18n-ignore>BONUS</span>
-      <span class="amount" id="balance">0</span><span class="unit">點</span>
+      <span class="amount" id="balance">0</span><span class="unit">點</span><script>try{var b=parseInt(localStorage.getItem('crush-depth-balance'),10);if(isFinite(b)&&b>=0)document.getElementById('balance').textContent=b.toLocaleString('zh-TW')}catch(e){}</script>
     </div></div></div>
   </header>
 
