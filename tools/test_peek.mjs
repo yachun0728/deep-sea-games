@@ -76,22 +76,22 @@ check('Night Watchman: covered and still through the dark survives; moving or un
   const peek=fixture();peek.F.start();peek.spirit('walker',1);peek.hold('cover');peek.run(7);peek.hold('cover',0);peek.run(1);assert.equal(peek.ev('why'),'walkerMove');
 });
 check('Spirits never repeat the type of the previous one',()=>{
-  const f=fixture();f.F.start();let prev='';for(let i=0;i<60;i++){f.F.ev('ev=null');f.F.ev('startEvent()');const t=f.ev('ev.type');assert.notEqual(t,prev);prev=t;}
+  const f=fixture();f.F.start();f.F.ev('survived=3');let prev='';for(let i=0;i<60;i++){f.F.ev('ev=null');f.F.ev('startEvent()');const t=f.ev('ev.type');assert.notEqual(t,prev);prev=t;}
 });
-check('Dodging 3 spirits pays 2 points once; opening the box pays 5; the end reports the total without paying again',()=>{
+check('Dodging 2 spirits pays 2 points once; opening the box pays 5; the end reports the total without paying again',()=>{
   const f=fixture();f.F.start();
-  for(let i=0;i<3;i++){f.spirit('eye',1);f.hold('l');f.run(7);f.hold('l',0);f.F.ev('tilt=0');}
-  assert.equal(f.ev('survived'),3);assert.equal(f.wallet.balance,500-fee+2);assert.equal(f.count('progress'),1);
+  for(let i=0;i<2;i++){f.spirit('eye',1);f.hold('l');f.run(7);f.hold('l',0);f.F.ev('tilt=0');}
+  assert.equal(f.ev('survived'),2);assert.equal(f.wallet.balance,500-fee+2);assert.equal(f.count('progress'),1);
   const p=f.events.find(e=>e[0]==='progress');assert.equal(p[2].bonus_points,2);
-  f.spirit('eye',1);f.hold('l');f.run(7);f.hold('l',0);f.F.ev('tilt=0');assert.equal(f.ev('survived'),4);assert.equal(f.wallet.balance,500-fee+2);assert.equal(f.count('progress'),1);
+  f.spirit('eye',1);f.hold('l');f.run(7);f.hold('l',0);f.F.ev('tilt=0');assert.equal(f.ev('survived'),3);assert.equal(f.wallet.balance,500-fee+2);assert.equal(f.count('progress'),1);
   f.F.ev('gapT=999;ev=null;prog=99.9');f.hold('wind');f.run(1);
   assert.equal(f.ev('st'),'won');assert.equal(f.wallet.balance,500-fee+7);assert.equal(f.count('progress'),2);assert.equal(f.events.filter(e=>e[0]==='progress')[1][2].bonus_points,5);
   const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],7);assert.equal(end[3],'complete');assert.equal(f.count('end'),1);assert.equal(f.busy(),false);
   assert.equal(f.storage.get('deep-sea-peek-best'),'100');assert.equal(f.storage.get('crush-depth-balance'),String(500-fee+7));
   f.run(3);f.F.update(.05);assert.equal(f.wallet.balance,500-fee+7);assert.equal(f.count('end'),1);
 });
-check('Dying after the 3-spirit bonus keeps the bonus and reports it once',()=>{
-  const f=fixture();f.F.start();for(let i=0;i<3;i++){f.spirit('twins',1);f.hold('l');f.run(6);f.hold('l',0);f.F.ev('tilt=0');}
+check('Dying after the 2-spirit bonus keeps the bonus and reports it once',()=>{
+  const f=fixture();f.F.start();for(let i=0;i<2;i++){f.spirit('twins',1);f.hold('l');f.run(6);f.hold('l',0);f.F.ev('tilt=0');}
   assert.equal(f.wallet.balance,500-fee+2);f.spirit('eye',1);f.run(10);assert.equal(f.ev('st'),'over');
   const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],2);assert.equal(end[3],'complete');assert.equal(f.wallet.balance,500-fee+2);
 });
@@ -121,6 +121,31 @@ check('Screen buttons and multi-touch map to tilt, cover and crank',()=>{
 check('Phone motion: leaning the phone sets the tilt and a face-down phone counts as covered',()=>{
   const f=fixture();f.F.start();f.F.ev('gyro.on=true;gyro.tilt=-.8;gyro.down=false');f.F.ev('gapT=999');f.F.update(.05);assert.equal(f.ev('tilt'),-.8);
   f.F.ev('gyro.down=true');assert.equal(f.ev('inputs().cover'),true);f.F.ev('gyro.down=false');assert.equal(f.ev('inputs().cover'),false);
+});
+check('Spirits unlock by dodges this round: eye only, then giggles, then the night watchman',()=>{
+  const f=fixture();f.F.start();const seen=n=>{const t=new Set();for(let i=0;i<200;i++){f.F.ev('ev=null;lastType=""');f.F.ev('survived='+n);f.F.ev('startEvent()');t.add(f.ev('ev.type'))}return [...t].sort().join()};
+  assert.equal(seen(0),'eye');assert.equal(seen(1),'eye');assert.equal(seen(2),'eye,twins');assert.equal(seen(3),'eye,twins,walker');assert.equal(seen(4),'eye,twins,walker');
+});
+check('The first two red eyes warn for 3.5 s, later ones for 2.5 s; the safe start is 9 s',()=>{
+  const f=fixture();f.F.start();assert.equal(f.ev('gapT'),9);
+  f.F.ev('ev=null;lastType="";survived=0;eyeSeen=0;startEvent()');assert.equal(f.ev('ev.warn'),3.5);
+  f.F.ev('ev=null;lastType="";startEvent()');assert.equal(f.ev('ev.warn'),3.5);
+  f.F.ev('ev=null;lastType="";startEvent()');assert.equal(f.ev('ev.warn'),2.5);
+});
+check('Gap between spirits shrinks with progress and every third dodge gives a longer breather',()=>{
+  const f=fixture(500,null,()=>.5);f.F.start();
+  f.F.ev('prog=0;survived=1');assert.equal(f.ev('nextGap()'),7);f.F.ev('prog=80;survived=1');assert.equal(f.ev('nextGap()'),4);
+  f.F.ev('prog=0;survived=3');assert.equal(f.ev('nextGap()'),10);f.F.ev('prog=80;survived=3');assert.equal(f.ev('nextGap()'),7);
+});
+check('Total dodges and the death codex are stored; a quick tap on the run button explains hold-to-run',()=>{
+  const f=fixture();f.F.start();f.spirit('eye',1);f.hold('l');f.run(7);assert.equal(f.storage.get('deep-sea-peek-dodges'),'1');
+  f.F.ev('tilt=0');const c=f.el('peek-canvas');c.handlers.pointerdown({pointerId:9,clientX:340,clientY:520,button:0,preventDefault(){}});c.handlers.pointerup({pointerId:9});
+  assert.ok(f.ev('toast')>0);assert.ok(f.el('peek-msg').textContent.includes('按住'));
+  f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 4');assert.equal(f.el('peek-dodges').textContent,'1 次');
+});
+check('Running scrolls the corridor and progress, but not while leaning on the wall or covered',()=>{
+  const f=fixture();f.F.start();f.F.ev('gapT=999');f.hold('wind');f.run(1);assert.ok(f.ev('run')>1.4);const r1=f.ev('run');
+  f.F.ev('tilt=0.9;keys.r=1');f.run(1);assert.equal(f.ev('run'),r1);f.F.ev('keys.r=0;tilt=0');f.hold('cover');f.run(1);assert.equal(f.ev('run'),r1);
 });
 check('Every element id in the Don’t Peek view is unique across all game views and templates (a clash made the start button dead)',()=>{
   const ids=new Map(),files=[...fs.readdirSync(new URL('games/',root)).filter(d=>fs.existsSync(new URL('games/'+d+'/view.html',root))).map(d=>'games/'+d+'/view.html'),'templates/index.html','templates/lobby.html'];

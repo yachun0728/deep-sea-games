@@ -85,9 +85,11 @@ python3 -m http.server 8765
 
 ## 別看行為檢查
 
-修改 `games/peek/` 時可在有 Node.js 的環境執行 `node tools/test_peek.mjs`，驗證單次扣款、發條與傾斜／蓋住互斥、三種邪靈的生死判定、3 次襲擊 +2 點與開盒 +5 點各只發一次、結束只結算一次、手機按鈕多點觸控與按鍵只在本款畫面作用。無需 npm 套件。
+修改 `games/peek/` 時可在有 Node.js 的環境執行 `node tools/test_peek.mjs`，驗證單次扣款、奔跑與靠牆／蓋住互斥、三種邪靈的生死判定與依躲過次數登場、2 次襲擊 +2 點與衝出出口 +5 點各只發一次、結束只結算一次、手機按鈕多點觸控與按鍵只在本款畫面作用。無需 npm 套件。
 
 ## 血壓上升行為檢查
+
+修改 `games/banquet/` 時可執行 `node tools/test_banquet.mjs`，驗證扣款、BONUS、道具、銀蓋、醉倒、延長賽與 AI 完整對戰不變量。無需 npm 套件。
 
 修改 `games/mosquito/` 時可在有 Node.js 的環境執行 `node tools/test_mosquito.mjs`，驗證單次扣款、25／50／75% 里程碑與吸滿逃出各只入帳一次、三種死法（抓癢、翻身、開燈）、開燈逃生、最佳紀錄、空白鍵與指標按住只在本款畫面作用，以及機器人難度合理性檢查。無需 npm 套件。
 
