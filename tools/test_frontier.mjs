@@ -113,13 +113,13 @@ model.frontierClassic=false;
  w=create(1);w.enemies=[];w.siege.next=1e6;w.bank.wood=w.bank.stone=10000;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');
  ok(!model.frontierRecruit(w),'cannot recruit before the barracks exists');
  w.p.x=barracks.x;w.p.y=barracks.y;tick(w,12);ok(barracks.built,'barracks builds across the bridge');
- w.bank.wood=w.bank.stone=0;w.bag.wood=60;w.bag.stone=40;ok(model.frontierRecruit(w)&&w.bag.wood===60-model.frontierRecruitCost(w).wood,'warriors can be trained from the carried bag');w.bank.wood=w.bank.stone=10000;barracks.queue=0;
+ w.bank.wood=w.bank.stone=0;w.bag.wood=7;w.bag.stone=3;ok(model.frontierRecruit(w)&&w.bag.wood===7&&w.bag.stone===3&&w.bank.wood===0,'training attack warriors costs no materials');w.bank.wood=w.bank.stone=10000;barracks.queue=0;
  for(let n=0;n<15;n++)model.frontierRecruit(w);ok(model.frontierAttackers(w).length+barracks.queue===12&&model.frontierFighterCap(w)===12,'attack warrior cap is twelve');
  tick(w,3*12+1);ok(model.frontierAttackers(w).length===12,'barracks trains fighters one by one');
  // walking next to the barracks trains warriors by itself
  {let w=create(1);let barracks;w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');barracks.built=true;w.bank.wood=w.bank.stone=500;w.p.x=barracks.x;w.p.y=barracks.y;tick(w,30);ok(model.frontierAttackers(w).length>=5,'standing at the barracks auto-trains warriors');
  w.p.x=100;w.p.y=100;const hired=model.frontierAttackers(w).length+barracks.queue;tick(w,10);ok(model.frontierAttackers(w).length+barracks.queue===hired,'no training when the hero is away');
- w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');barracks.built=true;w.bank.wood=w.bank.stone=0;w.p.x=barracks.x;w.p.y=barracks.y;tick(w,10);ok(model.frontierAttackers(w).length===0&&!barracks.queue,'no materials, no warriors');}
+ w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');barracks.built=true;w.bank.wood=w.bank.stone=0;w.p.x=barracks.x;w.p.y=barracks.y;tick(w,10);ok(model.frontierAttackers(w).length>=3,'warriors are trained even with empty storage');}
  // fighters march on the base, damage it slowly, and the base hurts them only a little
  const start=w.enemyBase.hp;let fighterHp=w.fighters[0].max;w.p.x=barracks.x;w.p.y=barracks.y;w.p.inv=1e6;
  tick(w,40);ok(w.enemyBase.hp<start,'fighters attack the enemy base');ok((start-w.enemyBase.hp)/(12*40)<4,'each warrior attacks slowly');

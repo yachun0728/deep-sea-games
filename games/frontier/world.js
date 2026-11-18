@@ -144,8 +144,9 @@ function frontierFighterCap(w){return w.cfg.war?w.cfg.fighterCap:4+w.cfg.chapter
 function frontierRecruitCost(w){return {wood:18+w.cfg.chapter*2,stone:10+w.cfg.chapter};}
 function frontierRecruit(w){
  var b=w.buildings.find(function(b){return b.kind==='barracks';}),cost=frontierRecruitCost(w),cap=frontierFighterCap(w);
- if(w.phase!=='play'||!b||!b.built||b.hp<=0||!frontierNear(w.p,b,110)||frontierAttackers(w).length+(b.queue||0)>=cap||w.bank.wood+w.bag.wood<cost.wood||w.bank.stone+w.bag.stone<cost.stone)return false;
- ['wood','stone'].forEach(function(k){var need=cost[k],fromBank=Math.min(need,w.bank[k]);w.bank[k]-=fromBank;w.bag[k]-=need-fromBank;});b.queue=(b.queue||0)+1;return true;
+ if(w.phase!=='play'||!b||!b.built||b.hp<=0||!frontierNear(w.p,b,110)||frontierAttackers(w).length+(b.queue||0)>=cap)return false;
+ // Enemy-base stages: warriors cost no materials (the barracks itself is what you pay for).
+ if(!w.cfg.war){if(w.bank.wood+w.bag.wood<cost.wood||w.bank.stone+w.bag.stone<cost.stone)return false;['wood','stone'].forEach(function(k){var need=cost[k],fromBank=Math.min(need,w.bank[k]);w.bank[k]-=fromBank;w.bag[k]-=need-fromBank;});}b.queue=(b.queue||0)+1;return true;
 }
 function frontierSiege(w,dt){
  w.siege.next-=dt;
