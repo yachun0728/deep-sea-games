@@ -33,7 +33,7 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const live=st==='run';
  setText('fg-eaten',eaten+' 隻');setText('fg-level','Lv.'+level());setText('fg-best',best+' 隻');
- $('fg-amount').disabled=frogBusy;$('fg-go').disabled=live;setText('fg-go',live?'進食中 · 按空白鍵吃蟲':st==='over'?'扣點再吃一次':'扣點開始吃蟲');
+ $('fg-amount').disabled=frogBusy;$('fg-go').disabled=live;setText('fg-go',live?'進食中 · 按空白鍵吃蟲':st==='over'?'免費再吃一次':'免費開始吃蟲');
 }
 function fx(s,x,y,col){fxs.push({s,x,y,col,t:0})}
 function end(reason){
@@ -42,7 +42,7 @@ function end(reason){
  if(rec){best=eaten;try{localStorage.setItem('deep-sea-frog-best',best)}catch(e){}}
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:pts,step:eaten,stage:level()});frogBusy=false;save();renderAll();
  const head=reason==='hunger'?'青蛙餓昏了。':'青蛙被螫暈了。';
- if(!earned)say(head+'吃了 '+eaten+' 隻，這一局沒有點數。','lose');
+ if(!earned)say(head+'吃了 '+eaten+' 隻，這一局沒有額外成就獎勵。','lose');
  else say(head+'吃了 '+eaten+' 隻，本局共入帳 '+fmt(earned)+' 點。','win');
  ui();
 }
@@ -137,21 +137,21 @@ function draw(){
  if(flash>0){g.fillStyle='rgba(230,57,70,.35)';g.fillRect(0,0,W,H)}
  if(st!=='run'){
   g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
-  if(st==='ready'){tx('青蛙吃蟲',W/2,190,36,'#ffd23f');tx('箭頭對準最底下那隻蟲的中間',W/2,244,19,'#fff1c1');tx('按空白鍵或點畫面吐舌頭',W/2,274,19,'#fff1c1');tx('紅色帶刺的蟲不能吃！',W/2,304,19,'#ff5d8f');tx('到操作區扣點開始',W/2,360,24,'#ffd23f')}
+  if(st==='ready'){tx('青蛙吃蟲',W/2,190,36,'#ffd23f');tx('箭頭對準最底下那隻蟲的中間',W/2,244,19,'#fff1c1');tx('按空白鍵或點畫面吐舌頭',W/2,274,19,'#fff1c1');tx('紅色帶刺的蟲不能吃！',W/2,304,19,'#ff5d8f');tx('到操作區免費開始',W/2,360,24,'#ffd23f')}
   else{tx(why==='hunger'?'餓昏了…':'被螫暈了！',W/2,176,32,'#ff5d8f');tx(eaten+' 隻',W/2,240,50,'#fff1c1');tx('分數 '+pts+'　到達 Lv.'+level(),W/2,280,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'沒吃滿 '+REWARD_EVERY+' 隻，沒有點數',W/2,316,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,350,20,'#ffd23f');tx('到操作區再吃一次',W/2,396,20,'#fff1c1')}}
 }
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
- analytics=AN.start('frog',amount);frogStake=amount;frogBusy=true;S.balance-=amount;save();renderAll();
+ analytics=AN.start('frog',amount);frogStake=amount;frogBusy=true;save();renderAll();
  reset();earned=0;rec=false;st='run';last=performance.now();say('開吃！箭頭掃到最底下那隻蟲的中間就按，紅色帶刺的先忍住。');ui();c.focus();
 }
 const shown=()=>!$('view-frog').hidden&&!document.hidden;
 $('fg-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
- if(st!=='run'){say(st==='over'?'這一局已結算。按「扣點再吃一次」開始新的一局。':'先按「扣點開始吃蟲」。');return}
+ if(st!=='run'){say(st==='over'?'這一局已結算。按「免費再吃一次」開始新的一局。':'先按「免費開始吃蟲」。');return}
  if(!shown())return;e.preventDefault();c.focus();press()});
 c.addEventListener('contextmenu',e=>e.preventDefault());
 addEventListener('keydown',e=>{

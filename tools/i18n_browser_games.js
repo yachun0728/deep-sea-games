@@ -21,7 +21,7 @@ try {
     }),'Tapping either corner of the game area targets fullscreen');
   }
   button.click();await wait();
-  assert(balance()===before-(id==='mines'||id==='breakout'||id==='ocean-link'?0:10),id+': start has the correct entry fee');
+  assert(balance()===before,id+': start has the correct entry fee');
   var charged=balance(),hash=location.hash;
   i.setLanguage('zh-Hant');await wait();i.setLanguage('en');await wait();
   assert(balance()===charged&&location.hash===hash,id+': language switch preserves balance and route');
@@ -100,7 +100,7 @@ try {
    var before=balance();
    if(game.id==='pancake')doc.getElementById(game.button).click();else document.getElementById(game.button).click();
    await wait();
-   assert(balance()===before-10,game.id+': iframe start charges exactly ten points');
+   assert(balance()===before,game.id+': iframe start is free and charges nothing');
    var paid=balance();i.setLanguage('zh-Hant');await wait();i.setLanguage('en');await wait();
    assert(balance()===paid,game.id+': iframe switching preserves balance');
    assert(!chinese(doc.body).length,game.id+': live iframe labels translated '+JSON.stringify(chinese(doc.body)));

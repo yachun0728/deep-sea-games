@@ -138,3 +138,11 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 ## Ocean Link 深海連連看
 
 `game_id=ocean-link`，`game_name=深海連連看`。每次免費開始遠征時發一次 start（`entry_points=0`），關卡完成送 progress（含 `stage`、`step`、`bonus_points`、`total_bonus_points` 與 `mode`），等待下一關時暫停有效時間，下一關送 resume。`mode` 可為 `easy`、`standard` 或 `challenge`。第 10 關完成送 win；離開全螢幕、路由離開或非 BFCache 離頁送 abandoned。end 的 `payout_points` 為這次遠征已實際入帳的總點數，非 BFCache 離頁在共用 pagehide 結束處理前送出。背景與失焦沿用共用時間追蹤。
+
+## 荒島遠征（frontier）
+
+首次建立遠征 `game_start entry_points=0`（免費）；已保存資格後新關、重試或重新載入以 `entry_points=0` 開啟新的嘗試。每關完成 `game_progress checkpoint=1` 及 `game_end complete`，生命歸零 `loss`；無點數獎勵，end payout_points固定0。進度附stage、chapter、mission、step（擊敗數）；升級也回報progress。離開遊戲／背景／失焦暫停progress，按繼續resume；正常pagehide在共用處理前結束abandoned，BFCache不提前結束。沒有另載tag。正式站與GA4後台收件尚未驗收。
+
+## 平台獎勵與外觀事件（2026-11-18）
+
+新增 `platform_points_earned`（`reward_kind`=`play_time`／`daily_complete`、`reward_points`，`game_name` 為來源遊戲）與 `cosmetic_redeemed`（`item_id`、`spent_points`）。`points_reset` 已不再送出。全站遊戲 `game_start` 的 `entry_points`／`stake_points` 為 0；`net_points` 即本局 BONUS 入帳。造型頁 `#wardrobe` 不送 `game_view`，離開遊戲時僅結算有效時間。

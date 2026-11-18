@@ -53,8 +53,8 @@ const started=(balance=500,random=Math.random)=>{const f=fixture(balance,random)
 function check(name,fn){fn();results.push(name);}
 const isMain=process.argv[1]&&fs.realpathSync(process.argv[1])===fs.realpathSync(new URL(import.meta.url));
 if(isMain){
-check('Not enough points: nothing is deducted and no round starts',()=>{
-  const f=fixture(fee-1);f.B.start();assert.equal(f.wallet.balance,fee-1);assert.equal(f.busy(),false);assert.equal(f.count('start'),0);assert.equal(f.ev('E.phase'),'ready');
+check('Free entry: a zero balance can start a round and nothing is deducted',()=>{
+  const f=fixture(0);f.B.start();assert.equal(f.wallet.balance,0);assert.equal(f.busy(),true);assert.equal(f.count('start'),1);
 });
 check('Start deducts the entry fee once even when clicked twice, and tracks one round',()=>{
   const f=fixture();f.B.start();f.B.start();assert.equal(f.wallet.balance,500-fee);assert.equal(f.count('start'),1);assert.equal(f.storage.get('crush-depth-balance'),String(500-fee));assert.equal(f.busy(),true);assert.deepEqual(f.events[0].slice(1),['banquet',fee]);
@@ -199,7 +199,6 @@ check('Finishing an act pays its BONUS once, lowers Drunk by 1 and deals the nex
   const f=started();f.scene({cups:['water'],dr:{p:2,d:0}});f.ev('E.hand.p=["needle"]');f.B.selfDrink('p',1);let e=f.E();assert.equal(e.act,2);assert.equal(e.paid.a1,1);assert.equal(f.wallet.balance,500-fee+1);assert.equal(e.dr.p,2);assert.ok(e.hand.p.includes('needle'));
   f.ev('E.cups=[{id:1,t:"water"}];E.turn="p"');f.B.selfDrink('p',1);assert.equal(f.E().act,3);assert.equal(f.wallet.balance,500-fee+3);
   f.ev('E.cups=[{id:1,t:"water"}];E.turn="p";E.hp.p=4;E.hp.d=2');f.B.selfDrink('p',1);e=f.E();assert.equal(e.phase,'over');assert.equal(e.result.w,'p');assert.equal(e.result.why,'life');assert.equal(f.wallet.balance,500-fee+8);assert.equal(f.count('end'),1);assert.equal(f.events.find(x=>x[0]==='end')[2],8);assert.equal(f.busy(),false);assert.equal(f.storage.get('deep-sea-banquet-best'),'1');
-  assert.ok(8<fee);
 });
 check('Reaching HP 0 ends the game at once, pays the win only to the player, and a second end call changes nothing',()=>{
   const f=started();f.scene({cups:['poison','water'],hp:{p:5,d:1}});f.B.toast('p',1);let e=f.E();assert.equal(e.phase,'over');assert.equal(e.result.w,'p');assert.equal(f.wallet.balance,500-fee+2);f.B.endGame('p','hp');f.B.endGame('d','hp');assert.equal(f.wallet.balance,500-fee+2);assert.equal(f.count('end'),1);

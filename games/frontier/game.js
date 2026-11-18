@@ -1,0 +1,79 @@
+  /* ---------- Frontier Islands ---------- */
+  var frontierBusy=false,frontierRoute;
+  (function(){
+    'use strict';
+    {{include:games/frontier/world.js}}
+    {{include:games/frontier/draw.js}}
+    var canvas=$('ft-canvas'),ctx=canvas.getContext('2d'),world=null;
+    var paid=false,cleared=0,paused=true,round=null,visible=false,last=0,saveAt=0,uiAt=0,pendingLevel=0;
+    var keys={},stick={x:0,y:0,id:null},dash=false;
+    var zones=['翠葉群島','斷崖海岸','荊棘森林','寒霜高地','熔火遺跡'];
+    var labels={camp:'營地',mill:'木材廠',forge:'鐵匠鋪',bridge:'橋樑',tower:'箭塔',beacon:'燈塔'};
+    var missions={build:'建立據點，清除守衛，點亮燈塔。',rescue:'救出兩位工人，再點亮燈塔。',hunt:'擊敗所有守衛，再點亮燈塔。',defend:'建造箭塔，抵擋所有波次，再點亮燈塔。',elite:'擊敗精英守衛，再點亮燈塔。',boss:'擊敗區域首領，再點亮燈塔。'};
+    function set(id,text){var e=$(id);if(window.deepSeaI18n.sourceText(e)!==String(text))e.textContent=text;}
+    function safeNumbers(v){if(typeof v==='number')return Number.isFinite(v)&&Math.abs(v)<1e7;if(Array.isArray(v))return v.length<400&&v.every(safeNumbers);if(v&&typeof v==='object')return Object.values(v).every(safeNumbers);return true;}
+    function validShape(v,s){if(typeof v!==typeof s||v===null)return false;if(Array.isArray(s))return Array.isArray(v)&&v.length>=s.length&&(!s.length||v.every(function(x){return validShape(x,s[0]);}));if(typeof s==='object')return Object.keys(s).every(function(k){return validShape(v[k],s[k]);});return true;}
+    function loadFrontier(){
+      try{
+        var data=JSON.parse(localStorage.getItem('deep-sea-frontier-v1')||'null');if(!data||data.version!==1)return;
+        paid=data.paid===true;cleared=Number.isInteger(data.cleared)?Math.max(0,Math.min(50,data.cleared)):0;var w=data.world;
+        if(w&&Number.isInteger(w.level)&&w.level>=1&&w.level<=Math.min(50,cleared+1)&&safeNumbers(w)){
+          var sample=frontierWorld(w.level),simple=Object.assign({},sample,{enemies:[],shots:[],effects:[]});
+          if(validShape(w,simple)&&w.nodes.length===62&&w.buildings.length===6&&w.cages.length===2&&w.enemies.length<=70&&w.enemies.every(function(e){return validShape(e,sample.enemies[0]);})&&w.shots.every(function(s){return ['x','y','vx','vy','t'].every(function(k){return typeof s[k]==='number';});})&&['play','clear','dead'].includes(w.phase)&&['tool','blade','pack'].every(function(k){return Number.isInteger(w.tech[k])&&w.tech[k]>=0&&w.tech[k]<=8;})&&w.nodes.every(function(n){return ['wood','stone'].includes(n.kind)&&n.left>=0&&n.left<=6;})&&w.buildings.every(function(b,i){return b.kind===sample.buildings[i].kind;})){world=w;world.cfg=frontierPlan(w.level);world.effects=[];}
+        }
+        if(paid&&!world){world=frontierWorld(Math.min(50,cleared+1));set('ft-storage','存檔內容不完整，已保留遠征資格與通關紀錄，重建當關。');}
+      }catch(e){set('ft-storage','無法讀取存檔；請確認瀏覽器允許本機儲存。');}
+    }
+    function persist(){if(!paid||!world)return true;try{localStorage.setItem('deep-sea-frontier-v1',JSON.stringify({version:1,paid:true,cleared:cleared,world:world}));set('ft-storage','進度已儲存');return true;}catch(e){set('ft-storage','無法儲存進度，請勿關閉此頁。');return false;}}
+    function params(){return {stage:world.level,step:world.kills,chapter:world.cfg.chapter+1,mission:world.cfg.mission};}
+    function release(){keys={};stick.x=stick.y=0;stick.id=null;dash=false;$('ft-knob').style.transform='';}
+    function endRound(result){if(round){AN.end(round,0,result,params());round=null;}}
+    function pause(){if(!world||paused||world.phase!=='play')return;paused=true;frontierBusy=!!round;release();AN.progress(round,params(),true);persist();update();}
+    function start(){
+      if(!visible||document.hidden||!paused&&world&&world.phase==='play')return;
+      if(!paid)loadFrontier();
+      var fresh=false;
+      if(!paid){
+        world=frontierWorld(1);paid=true;persist();
+        save();renderAll();round=AN.start('frontier',ENTRY_FEE,params());fresh=true;
+      }else if(!world)world=frontierWorld(Math.min(50,cleared+1));
+      else if(world.phase==='dead')world=frontierWorld(world.level,Object.assign({},world.tech));
+      else if(world.phase==='clear')world=frontierWorld(world.level===50?1:world.level+1,Object.assign({},world.tech));
+      if(!fresh){if(round)AN.resume(round,params());else round=AN.start('frontier',0,params());}
+      paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});
+    }
+    function selectLevel(n){if(!paid||n>Math.min(50,cleared+1))return;pause();pendingLevel=n;set('ft-select-label','前往關卡 '+n+'？');$('ft-select').hidden=false;}
+    function updateMap(){Array.from($('ft-map').children).forEach(function(b,i){b.disabled=!paid||i+1>Math.min(50,cleared+1);var cl=(i+1<=cleared?'ft-done ':'')+(world&&world.level===i+1?'ft-current':'');if(b.className!==cl)b.className=cl;var current=world&&world.level===i+1?'step':'false';if(b.getAttribute('aria-current')!==current)b.setAttribute('aria-current',current);});}
+    function update(){
+      var w=world||preview,overlay=$('ft-overlay');set('ft-zone',zones[w.cfg.chapter]);set('ft-level',w.level+' / 50');set('ft-health','♥ '+Math.ceil(w.p.hp));
+      var objective=missions[w.cfg.mission];if(frontierGoal(w))objective='任務完成！前往東側燈塔投入材料。';
+      var detail=w.cfg.mission==='rescue'?' · '+w.rescued+'/2':w.cfg.mission==='defend'?' · '+w.wave+'/'+w.cfg.waves+' · '+Math.floor(w.hold)+'s':w.cfg.mission==='boss'||w.cfg.mission==='elite'?'':' · '+w.kills+'/'+(w.cfg.mission==='build'?Math.ceil(w.cfg.enemies*.65):w.cfg.enemies);
+      set('ft-objective',objective+detail);set('ft-bag','背包 '+(w.bag.wood+w.bag.stone)+'/'+(24+w.tech.pack*9)+' · 🪵 '+w.bag.wood+' · ◆ '+w.bag.stone);set('ft-stock','倉庫 '+'🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');
+      set('ft-dash',w.p.dash>0?'衝刺 '+w.p.dash.toFixed(1):'衝刺');$('ft-dash').disabled=paused||w.p.dash>0;$('ft-pause').disabled=!world||w.phase!=='play';set('ft-pause',paused?'繼續':'暫停');
+      ['tool','blade','pack'].forEach(function(k,i){var n=w.tech[k],cost=20+n*22;set('ft-'+k,['採集工具','戰鬥武器','背包容量'][i]+' Lv.'+n+(n===8?' · MAX':' · 🪵 '+cost+' ◆ '+Math.floor(cost*.65)));$('ft-'+k).disabled=!world||paused||!frontierNear(w.p,w.buildings[0],100)||n>=8;});
+      overlay.hidden=!!world&&!paused&&w.phase==='play';
+      if(!overlay.hidden){
+        var title='荒島遠征',message='五大區域，五十場考驗。建立據點，穿越危險地帶。',button='免費開始遠征';
+        if(world){if(w.phase==='dead'){title='遠征失敗';message='科技升級保留。調整建造順序，利用預告閃避攻擊。';button='免費重試當關';}else if(w.phase==='clear'){title=w.level===50?'五十關全破！':'燈塔已點亮';message='科技已保存，下一關將建立新的據點。';button=w.level===50?'重遊群島 · 免費':'下一關 · 免費';}else{title='遠征已暫停';message='進度已保留，準備好再繼續。';button='繼續遠征 · 免費';}}
+        set('ft-title',title);if(!transientMessage)set('ft-message',message);set('ft-go',button);
+      }updateMap();
+    }
+    var transientMessage=false;
+    function finishStage(){if(world.phase==='clear'){cleared=Math.max(cleared,world.level);AN.progress(round,params(),true);endRound('complete');}else endRound('loss');paused=true;frontierBusy=false;release();persist();update();}
+    function frame(now){if(visible){if(world&&!paused&&world.phase==='play'){
+      var x=stick.x+(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),y=stick.y+(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
+      frontierStep(world,{x:x,y:y,dash:dash},Math.min(.05,(now-last)/1000));dash=false;if(world.phase!=='play')finishStage();else if(now-saveAt>5000){persist();saveAt=now;}
+    }if(now-uiAt>180){update();uiAt=now;}paint();}last=now;requestAnimationFrame(frame);}
+    $('ft-go').addEventListener('click',function(){transientMessage=false;start();if(!world)transientMessage=true;});$('ft-pause').addEventListener('click',function(){if(paused)start();else pause();});
+    ['tool','blade','pack'].forEach(function(k){$('ft-'+k).addEventListener('click',function(){if(world&&!paused){var ok=frontierUpgrade(world,k);set('ft-upgrade',ok?'升級完成':'材料不足，或需要回到營地。');if(ok){AN.progress(round,params(),false);persist();}update();}});});
+    $('ft-select-yes').addEventListener('click',function(){if(!pendingLevel)return;endRound('restart');world=frontierWorld(pendingLevel,world?Object.assign({},world.tech):undefined);pendingLevel=0;$('ft-select').hidden=true;paused=true;frontierBusy=false;persist();update();});$('ft-select-no').addEventListener('click',function(){pendingLevel=0;$('ft-select').hidden=true;});
+    for(var n=1;n<=50;n++){var b=document.createElement('button');b.type='button';b.textContent=n;b.dataset.level=n;b.addEventListener('click',function(){selectLevel(Number(this.dataset.level));});$('ft-map').appendChild(b);}
+    document.addEventListener('keydown',function(e){var k=e.key.toLowerCase();if(!visible||paused||(e.target.closest&&e.target.closest('input,select,textarea,button'))||!['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))return;e.preventDefault();keys[k]=true;if(k===' '&&!e.repeat)dash=true;AN.interact();});document.addEventListener('keyup',function(e){delete keys[e.key.toLowerCase()];});
+    var pad=$('ft-stick');function moveStick(e){if(e.pointerId!==stick.id)return;var r=pad.getBoundingClientRect(),x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2,len=Math.max(32,Math.hypot(x,y));stick.x=x/len;stick.y=y/len;$('ft-knob').style.transform='translate('+(stick.x*32)+'px,'+(stick.y*32)+'px)';AN.interact();}
+    pad.addEventListener('pointerdown',function(e){if(paused||stick.id!==null)return;stick.id=e.pointerId;pad.setPointerCapture(e.pointerId);moveStick(e);e.preventDefault();});pad.addEventListener('pointermove',moveStick);['pointerup','pointercancel','lostpointercapture'].forEach(function(type){pad.addEventListener(type,function(e){if(stick.id===e.pointerId){stick.id=null;stick.x=stick.y=0;$('ft-knob').style.transform='';}});});
+    $('ft-dash').addEventListener('pointerdown',function(e){e.preventDefault();if(!paused){dash=true;AN.interact();}});
+    $('ft-full').addEventListener('click',function(){if(document.fullscreenElement)document.exitFullscreen().catch(function(){});else if($('ft-main').requestFullscreen)$('ft-main').requestFullscreen().catch(function(){set('ft-storage','此瀏覽器無法啟用全螢幕。');});else set('ft-storage','此瀏覽器無法啟用全螢幕。');});
+    document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});window.addEventListener('blur',pause);window.addEventListener('pagehide',function(e){pause();if(!e.persisted)endRound('abandoned');},{capture:true});
+    frontierRoute=function(active){if(!active)pause();visible=active;if(active){update();paint();}};
+    var preview=frontierWorld(1);loadFrontier();update();requestAnimationFrame(frame);
+  })();

@@ -82,7 +82,7 @@ def validate_catalog(html: str, root: Path = ROOT) -> None:
             if html.count(marker) != 1:
                 raise ValueError(f'Expected one {marker}')
     views = re.findall(r'id="view-([a-z0-9-]+)"', html)
-    if set(views) != set(ids) | {'lobby'}:
+    if set(views) != set(ids) | {'lobby', 'wardrobe'}:  # platform pages besides the games
         raise ValueError('Catalog and rendered views differ')
 
 

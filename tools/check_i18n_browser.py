@@ -90,7 +90,7 @@ class Chrome:
         deadline = time.monotonic() + 25
         while time.monotonic() < deadline:
             state = self.evaluate("({url:location.href,status:document.body&&document.body.dataset.testStatus,checks:document.getElementById('test-results')&&document.getElementById('test-results').textContent})")
-            if state.get('status') and state.get('checks') and state.get('url', '').split('#')[0] == url.split('#')[0]:
+            if state.get('status') and state.get('checks') and state.get('url', '').split('#')[0].split('?')[0] == url.split('#')[0].split('?')[0]:
                 checks = json.loads(state['checks'] or '[]')
                 if state['status'] != 'PASS':
                     raise RuntimeError(label + '\n' + '\n'.join(checks))
@@ -138,17 +138,21 @@ def main():
     with tempfile.TemporaryDirectory(prefix='deep-sea-i18n-') as temp:
         folder = Path(temp)
         for suite, width, height in [('core', 1366, 900), ('games', 1366, 900), ('games', 390, 844),
-                                     ('ocean_link', 1366, 900), ('ocean_link', 844, 390)]:
+                                     ('ocean_link', 1366, 900), ('ocean_link', 844, 390), ('frontier', 1366, 900), ('frontier', 390, 844)]:
             script = (ROOT / f'tools/i18n_browser_{suite}.js').read_text(encoding='utf-8')
             route = f'/{suite}-{width}.html'
-            pages[route] = source.replace('<head>', '<head>' + MONITOR).replace('</body>', '<script>' + script + '</script></body>')
+            tested_source = source
+            if suite == 'frontier':
+                hook = 'window.__frontierTest={world:function(){return world;},create:frontierWorld,step:frontierStep,plan:frontierPlan,goal:frontierGoal,upgrade:frontierUpgrade,finish:finishStage,persist:persist};'
+                tested_source = source.replace('var preview=frontierWorld(1);', hook+'var preview=frontierWorld(1);')
+            pages[route] = tested_source.replace('<head>', '<head>' + MONITOR).replace('</body>', '<script>' + script + '</script></body>')
             page = f'http://127.0.0.1:{server.server_port}{route}'
             chrome = Chrome(args.chrome, folder / f'profile-{suite}-{width}')
             try:
                 chrome.call('Emulation.setDeviceMetricsOverride', {'width': width, 'height': height, 'deviceScaleFactor': 1, 'mobile': width < 880}, page=True)
                 if suite == 'core':
                     total += chrome.check(page, '?probe=default', 'Default Chinese')
-                query = '?lang=en&keep=1' + ('#ocean-link' if suite == 'ocean_link' else '')
+                query = '?lang=en&keep=1' + ('#ocean-link' if suite == 'ocean_link' else '#frontier' if suite == 'frontier' else '')
                 total += chrome.check(page, query, f'{suite} {width}×{height}')
                 if suite == 'core':
                     for query, label in [('?probe=saved', 'Saved English after reload'), ('?probe=explicit&lang=zh-Hant', 'Explicit Chinese overrides saved English'), ('?probe=blocked&lang=en', 'Blocked preference storage')]:
@@ -168,6 +172,11 @@ def main():
                     print('PASS: Ocean Link reload preserves points and records', flush=True)
                     chrome.evaluate("localStorage.setItem('crush-depth-balance', '0'); localStorage.setItem('deep-sea-regen-at', Date.now())")
                     total += chrome.check(page, '?probe=low&lang=zh-Hant#ocean-link', 'Ocean Link direct Chinese / zero balance')
+                if suite == 'frontier':
+                    total += chrome.check(page, '?probe=reload#frontier', f'Frontier reload {width}')
+                    chrome.evaluate("localStorage.removeItem('deep-sea-frontier-v1');localStorage.setItem('crush-depth-balance','0');localStorage.setItem('deep-sea-regen-at',Date.now())")
+                    total += chrome.check(page, '?probe=low&lang=zh-Hant#frontier', f'Frontier zero balance {width}')
+                chrome.evaluate("var r=document.getElementById('test-results');if(r)r.remove();")  # the long result list itself can widen a mobile viewport
                 actual = chrome.evaluate('innerWidth')
                 if actual != width:
                     raise RuntimeError(f'Viewport is {actual}, expected {width}')

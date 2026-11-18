@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#cat`　分類：跑酷動作　狀態：顯示中
-- 大廳卡片：「無盡跑酷，看你能跑多遠。」｜每局 10 點 · 無盡挑戰
+- 大廳卡片：「無盡跑酷，看你能跑多遠。」｜免費遊玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：屋頂貓貓，`game_id` 為 `cat`
 - 檔案：`games/cat/card.html`、`games/cat/game.js`、`games/cat/icon.svg`、`games/cat/view.html`；`game.js` 共 124 行、9.0 KB
 
@@ -27,7 +27,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L107 `start`：`S.balance-=amount;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L26 `award`：`S.balance+=b;`
@@ -54,7 +54,7 @@
 
 - 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`、`C`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - 共用檔沒有直接呼叫本遊戲的函式。
-- 「重設為 500 點」進行中防護（`js/controls.js`）：**未涵蓋**：進行中按「重設」仍可能生效
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 

@@ -1,5 +1,5 @@
   function start(data) {
-    load();
+    load(); window.deepSeaWardrobe.init();
     if (data && typeof data.balance === 'number') S.balance = data.balance;
     S.history = data && Array.isArray(data.history) ? data.history : Array.from({ length: 12 }, rollCrash);
     buildBoard(); renderMines(); pkSetup(); pkUI(); mgBuild(); mgRender(); dUI(); lUI(); hUI(); keBuild(); keUI(); whSetup(); whUI(); twUI(); crUI(); route();

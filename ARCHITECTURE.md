@@ -238,3 +238,15 @@ KE.active涵蓋免費挖掘，使用現有syncBalance／save入帳；可用時�
 ## Ocean Link
 
 `#ocean-link` 透過 `games/ocean-link/view.html`、`style.css`、`card.html` 與 `icon.svg` 接入靜態組合，列於免費懷舊分類。點擊遊戲區會啟用全螢幕並免費開局。`game.js` 在共用 runtime 內管理畫面、遠征、錢包及追蹤，並在其閉包內組合 `board.js`（關卡設定、路徑、移動與保證可解的發牌）及 `tiles.js`（64 種圖案）。全螢幕使用 Fullscreen API，若無法啟用則使用有安全區邊距的固定版面。新增 `deep-sea-ocean-link-best-v1`，以 JSON 物件分開記錄簡單、標準與挑戰的最高通關關卡；共用餘額沿用既有儲存。
+
+## 荒島遠征（frontier）
+
+`games/frontier/game.js` 在共享runtime內建立獨立閉包，內含純模擬 `world.js` 與Canvas繪圖 `draw.js`；view、card、style、icon依現有靜態include接入。`frontierRoute`暫停離開畫面，`frontierBusy`供重設防護；hot.snapshot無待退本金，不新增返還。新Key `deep-sea-frontier-v1`儲存完整當關、科技、通關及一次付費資格；不改舊Key／格式。未有資料時初始化，回復舊程式可保留新Key。存檔schema異常時保留可辨識的付費資格與最高通關，重建當關；讀取失敗不清除資料。不是跨分頁交易或伺服器帳戶。關卡參數與限制見GAME_RULES第42節。
+
+## 初始點數與重設入口更新（2026-11-18）
+
+依使用者新指示，START_BALANCE與頁首初始顯示改為0，移除重設按鈕與整段click處理器，不再提供測試補點。舊crush-depth-balance原樣讀取，不清除玩家已累積的餘額／收藏；新瀏覽器沒有儲存值時才從0開始。此節取代前文「保留重設500」的歷史規則。
+
+## 全站免費遊玩與造型頁（2026-11-18）
+
+`START_BALANCE=0`、`ENTRY_FEE=0`，移除重設按鈕、重設處理器與每分鐘回點；`REGEN_*` 常數不再存在，`deep-sea-regen-at` 不再讀寫（舊值保留）。`platform/wardrobe.{html,css,js}` 提供獨立頁面 `#wardrobe`（`view-wardrobe`，VIEWS／tab 已登記，`tools/build.py` 的檢視清單允許 `lobby`、`wardrobe` 兩個非遊戲頁），並以 `window.deepSeaProgress`（由 `js/analytics.js` 的有效時間與結束事件呼叫）發放固定平台獎勵、`window.deepSeaWardrobe` 管理外觀。獎勵與兌換各自只寫一次，儲存 Key `deep-sea-wardrobe-v1`。前文中的 `ENTRY_FEE=10`、回點、重設按鈕與「重設進行中防護」描述已過時。

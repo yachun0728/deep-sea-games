@@ -189,7 +189,7 @@ function ui(){
  const live=st==='run';
  let hearts='';for(let i=0;i<G.cfg.hearts;i++)hearts+=i<G.hearts?'♥':'♡';
  setText('np-level','第 '+G.level+' 關');setText('np-hearts',hearts);setText('np-best',best+' 分');
- $('np-amount').disabled=napBusy;$('np-go').disabled=live;setText('np-go',live?'偷睡中 · 按住睡覺':st==='over'?'扣點再玩一次':'扣點開始偷睡');
+ $('np-amount').disabled=napBusy;$('np-go').disabled=live;setText('np-go',live?'偷睡中 · 按住睡覺':st==='over'?'免費再玩一次':'免費開始偷睡');
 }
 function addFloat(x,y,text,color,size,life){floats.push({x:x,y:y,text:text,color:color,size:size||18,life:life||.9,max:life||.9})}
 function end(win){
@@ -200,7 +200,7 @@ function end(win){
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:earned,stage:G.level});napBusy=false;save();renderAll();
  if(win)say('10 關全部睡過，主管毫不知情！本局共入帳 '+fmt(earned)+' 點。','win');
  else if(earned)say('被炒魷魚了。撐到第 '+G.level+' 關，本局共入帳 '+fmt(earned)+' 點。','win');
- else say('被炒魷魚了。第 1 關沒睡飽，這一局沒有點數。','lose');
+ else say('被炒魷魚了。第 1 關沒睡飽，這一局沒有額外成就獎勵。','lose');
  ui();
 }
 function handleEvents(){
@@ -380,7 +380,7 @@ function drawOverlay(){
   tx('丟垃圾：砸主管，血歸零就暈倒',200,304,15,'#fff');
   tx('睡意滿了就過關，共 10 關',200,330,15,'#fff');
   tx('空白鍵＝睡　J＝丟垃圾',200,366,13,'#90a4ae');
-  tx('到操作區扣點開始',200,430,22,'#ffd54f','center',true,'#000');
+  tx('到操作區免費開始',200,430,22,'#ffd54f','center',true,'#000');
  }else if(st==='over'){
   ctx.fillStyle='rgba(10,10,20,0.82)';ctx.fillRect(0,0,W,H);
   if(why==='win'){tx('升職加薪！',200,140,38,'#ffd54f','center',true,'#000');tx('你睡過了 10 關，主管還是不知道。',200,190,15,'#fff')}
@@ -421,7 +421,7 @@ function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
- analytics=AN.start('nap',amount);napStake=amount;napBusy=true;S.balance-=amount;save();renderAll();
+ analytics=AN.start('nap',amount);napStake=amount;napBusy=true;save();renderAll();
  G=createGame();G.startRun();earned=0;rec=false;why='';floats.length=0;clearInput();shake=0;flashRed=0;flashWhite=0;
  st='run';last=performance.now();say('開始偷睡！按住睡覺鍵累積睡意，看到「!」立刻放開。');ui();c.focus();
 }
@@ -430,7 +430,7 @@ const toLocal=e=>{const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)/
 $('np-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
- if(st!=='run'){say(st==='over'?'這一局已結算。按「扣點再玩一次」開始新的一局。':'先按「扣點開始偷睡」。');return}
+ if(st!=='run'){say(st==='over'?'這一局已結算。按「免費再玩一次」開始新的一局。':'先按「免費開始偷睡」。');return}
  if(!shown())return;e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(_){}
  const p=toLocal(e);
  if(inRect(p,BTN_SLEEP))pointers.set(e.pointerId,'sleep');

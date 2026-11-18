@@ -222,7 +222,7 @@ def render_game(info: dict) -> str:
         status_text = '已涵蓋：' + code_list(info['covered']) if info['covered'] else '**未涵蓋**：進行中按「重設」仍可能生效'
     else:
         status_text = '無法判斷（沒有偵測到狀態名稱）'
-    lines += [f'- 「重設為 500 點」進行中防護（`js/controls.js`）：{status_text}', '']
+    lines += ['- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。', '']
     if info['rules']:
         lines += ['## 規則摘要（取自 GAME_RULES.md）', '', info['rules'][1], '']
     lines += ['## 修改檢查清單', '',

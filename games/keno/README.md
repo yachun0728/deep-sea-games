@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#keno`　分類：每日免費補給　狀態：顯示中
-- 大廳卡片：「免費挖金礦拿點數，再去挑戰喜歡的小遊戲。」｜免費 · 不扣點 · 台灣時間午夜重置
+- 大廳卡片：「免費挖金礦拿點數，再去挑戰喜歡的小遊戲。」｜免費 · 免費 · 台灣時間午夜重置
 - 追蹤名稱（GA4 `game_name`）：挖金礦，`game_id` 為 `keno`
 - 檔案：`games/keno/card.html`、`games/keno/game.js`、`games/keno/icon.svg`、`games/keno/style.css`、`games/keno/view.html`；`game.js` 共 76 行、7.4 KB
 
@@ -58,7 +58,7 @@
 
 - 直接使用的共用名稱：`S`、`AN`、`syncBalance`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/bootstrap.js` 會呼叫：`keBuild`、`keUI`
-- 「重設為 500 點」進行中防護（`js/controls.js`）：**未涵蓋**：進行中按「重設」仍可能生效
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 

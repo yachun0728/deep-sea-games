@@ -31,7 +31,7 @@ function award(m,b){
 function ui(){
  const s=score(),nx=nextMilestone(s),live=st==='run';
  setText('ct-score',s+' m');setText('ct-best',best+' m');setText('ct-next',nx[0]+' m · +'+nx[1]);
- $('ct-amount').disabled=catBusy;$('ct-go').disabled=live;setText('ct-go',live?'奔跑中 · 點畫面跳躍':st==='over'?'扣點再跑一次':'扣點開始奔跑');
+ $('ct-amount').disabled=catBusy;$('ct-go').disabled=live;setText('ct-go',live?'奔跑中 · 點畫面跳躍':st==='over'?'免費再跑一次':'免費開始奔跑');
  let tier=0;LADDER.forEach(m=>{if(s>=m)tier=m});
  document.querySelectorAll('[data-ct-tier]').forEach(el=>el.setAttribute('aria-current',st!=='ready'&&tier>0&&Number(el.dataset.ctTier)===tier?'step':'false'));
 }
@@ -98,18 +98,18 @@ tx('本局 +'+earned+' 點',70,34,16,earned>0?'#ffd23f':'#fff1c1');
 pops.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/2.2);const y=175-(reduceMotion?0:Math.min(1,p.age*3)*22);tx('+'+p.b+' 點',W/2,y,38,'#ffd23f');tx(p.m+' 公尺里程碑',W/2,y+28,17,'#fff1c1');g.globalAlpha=1});
 if(st!=='run'){
 g.fillStyle='rgba(27,27,47,.5)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx('屋頂貓貓',W/2,240,36,'#ffd23f');tx('到操作區扣點開始',W/2,290,22,'#fff1c1')}
+if(st==='ready'){tx('屋頂貓貓',W/2,240,36,'#ffd23f');tx('到操作區免費開始',W/2,290,22,'#fff1c1')}
 else{tx('喵…摔下去了！',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(earned>0?'本局獎勵 +'+earned+' 點':'沒到 '+MILESTONES[0][0]+' 公尺，沒有獎勵',W/2,314,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,348,20,'#ffd23f');tx('到操作區再跑一次',W/2,392,20,'#fff1c1')}}}
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
- analytics=AN.start('cat',amount);catStake=amount;catBusy=true;S.balance-=amount;save();renderAll();
+ analytics=AN.start('cat',amount);catStake=amount;catBusy=true;save();renderAll();
  reset();earned=0;awarded=0;pops=[];rec=false;hold=false;st='run';last=performance.now();say('出發！點畫面跳躍，按越久跳越高。到達里程碑會當場入帳點數。');ui();c.focus();
 }
 function down(){if(st!=='run'||$('view-cat').hidden||document.hidden)return false;hold=true;jump();return true}
 $('ct-go').addEventListener('click',start);
-c.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;if(down()){e.preventDefault();c.focus()}else if(st!=='run')say(st==='over'?'這一局已結算。按「扣點再跑一次」開始新的一局。':'先按「扣點開始奔跑」。')});
+c.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;if(down()){e.preventDefault();c.focus()}else if(st!=='run')say(st==='over'?'這一局已結算。按「免費再跑一次」開始新的一局。':'先按「免費開始奔跑」。')});
 ['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,()=>{hold=false}));
 c.addEventListener('contextmenu',e=>e.preventDefault());
 addEventListener('keydown',e=>{if($('view-cat').hidden||document.hidden||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();if(!e.repeat)down()}});

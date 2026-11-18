@@ -45,7 +45,7 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const live=st==='run';
  setText('peek-prog',Math.floor(prog)+'%');setText('peek-spirits',survived+' 次襲擊');setText('peek-best',best+'%');setText('peek-codex',Object.keys(CAUSES).filter(k=>deaths[k]>0).length+' / '+Object.keys(CAUSES).length);setText('peek-dodges',dodgesTotal+' 次');
- $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'逃跑中 · 別回頭':st==='ready'?'扣點開始逃跑':'扣點再開一次');
+ $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'逃跑中 · 別回頭':st==='ready'?'免費開始逃跑':'免費再開一次');
 }
 function fx(s,x,y,col){fxs.push({s,x,y,col,t:0})}
 function end(kind,reason){
@@ -56,7 +56,7 @@ function end(kind,reason){
  if(kind==='dead'){deaths[reason]=(deaths[reason]||0)+1;try{localStorage.setItem('deep-sea-peek-deaths',JSON.stringify(deaths))}catch(e){}flash=.5;shake=.5}
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p});peekBusy=false;save();renderAll();
  if(kind==='won')say('衝出出口，盒子打開了。別看裡面。本局共入帳 '+fmt(earned)+' 點。','win');
- else if(!earned)say(CAUSES[reason]+'。這一局沒有點數。','lose');
+ else if(!earned)say(CAUSES[reason]+'。這一局沒有額外成就獎勵。','lose');
  else say(CAUSES[reason]+'。本局共入帳 '+fmt(earned)+' 點。','win');
  ui();
 }
@@ -202,7 +202,7 @@ function draw(){
  if(st!=='run'){
   g.fillStyle='rgba(18,13,10,.72)';g.fillRect(0,0,W,H);
   if(st==='ready'){tx('別看',200,150,52,'#e8c675');tx('禁忌寶盒・夜逃',200,190,22,'#f1d9a6');
-   tx('按住「奔跑」，抱著八音盒衝向出口',200,250,18,'#f1d9a6');tx('紅光來了：往反方向靠牆',200,284,18,'#f1d9a6');tx('笑聲來了：往笑聲的反方向靠牆',200,314,18,'#f1d9a6');tx('燈要滅了：蓋住螢幕，不要動',200,344,18,'#f1d9a6');tx('建議戴耳機。到操作區扣點開始',200,420,20,'#ffd98a')}
+   tx('按住「奔跑」，抱著八音盒衝向出口',200,250,18,'#f1d9a6');tx('紅光來了：往反方向靠牆',200,284,18,'#f1d9a6');tx('笑聲來了：往笑聲的反方向靠牆',200,314,18,'#f1d9a6');tx('燈要滅了：蓋住螢幕，不要動',200,344,18,'#f1d9a6');tx('建議戴耳機。到操作區免費開始',200,420,20,'#ffd98a')}
   else if(st==='won'){tx('衝出去了',200,190,40,'#ffd98a');tx('別看裡面。',200,250,28,'#ff6a4d');tx('躲過 '+survived+' 次襲擊',200,310,20,'#f1d9a6');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'',200,350,22,'#ffd98a');tx('到操作區再開一次',200,420,20,'#f1d9a6')}
   else{tx('你死了',200,160,40,'#ff6a4d');tx(CAUSES[why]||'',200,215,15,'#f1d9a6');tx(Math.floor(prog)+'%',200,290,60,'#ffd98a');tx('躲過 '+survived+' 次襲擊',200,330,20,'#f1d9a6');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'躲過 '+MILE_EVENTS+' 次才有點數',200,368,20,earned>0?'#ffd98a':'#f1d9a6');if(rec)tx('新紀錄！',200,402,20,'#ffd98a');tx('到操作區再開一次',200,450,20,'#f1d9a6')}}
 }
@@ -211,7 +211,7 @@ function start(){
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
  audioInit();
- analytics=AN.start('peek',amount);peekStake=amount;peekBusy=true;S.balance-=amount;save();renderAll();
+ analytics=AN.start('peek',amount);peekStake=amount;peekBusy=true;save();renderAll();
  reset();earned=0;st='run';last=performance.now();say('開始逃跑。別回頭。');ui();c.focus();
 }
 const shown=()=>!$('view-peek').hidden&&!document.hidden;
@@ -223,7 +223,7 @@ function syncPtrs(){btn=[0,0,0,0];ptrs.forEach(i=>{if(i>=0)btn[i]=1})}
 $('peek-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
- if(st!=='run'){say(st==='ready'?'先按「扣點開始逃跑」。':'這一局已結算。按「扣點再開一次」開始新的一局。');return}
+ if(st!=='run'){say(st==='ready'?'先按「免費開始逃跑」。':'這一局已結算。按「免費再開一次」開始新的一局。');return}
  if(!shown())return;e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(x){}
  ptrs.set(e.pointerId,region(e));ptrT.set(e.pointerId,performance.now());syncPtrs()});
 const upPtr=e=>{if(st==='run'&&ptrs.get(e.pointerId)===3&&performance.now()-(ptrT.get(e.pointerId)||0)<250){toast=1.6;say('要「按住不放」才會跑，點一下沒用。')}ptrs.delete(e.pointerId);ptrT.delete(e.pointerId);syncPtrs()};

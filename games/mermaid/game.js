@@ -161,7 +161,7 @@ function runFx(f){
 function ui(){
  const live=st==='run';
  setText('mm-pearls',(G?G.done:0)+' / '+TOTAL_RUNS);setText('mm-score',G?String(G.score):'—');setText('mm-best',bestFor(mode)+' 分');
- const go=$('mm-go');go.disabled=live;setText('mm-go',live?'牌局進行中':st==='over'?'扣點再玩一次':'扣點發牌');
+ const go=$('mm-go');go.disabled=live;setText('mm-go',live?'牌局進行中':st==='over'?'免費再玩一次':'免費發牌');
  const q=$('mm-quit');q.hidden=!live;setText('mm-quit',quitArm?'再按一次確認放棄':'放棄本局');
  $('mm-undo').disabled=!live||!G||!G.history.length;$('mm-hint').disabled=!live;
  stockBtn.disabled=!live||!G||!G.stock.length;setText('mm-stock-count',String(G?Math.ceil(G.stock.length/10):5));
@@ -201,7 +201,7 @@ function end(win){
 function start(){
  if(st==='run')return;
  if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');return}
- analytics=AN.start('mermaid',ENTRY_FEE);mmStake=ENTRY_FEE;mmBusy=true;S.balance-=ENTRY_FEE;save();renderAll();
+ analytics=AN.start('mermaid',ENTRY_FEE);mmStake=ENTRY_FEE;mmBusy=true;save();renderAll();
  buildBoard();G=createGame(mode);earned=0;maxDone=0;bonusPaid=false;sel=null;clearHint();drag=null;lastResult=null;quitArm=false;
  st='run';ui();render();
  say('發牌囉！把牌從大排到小，同花色排滿 K 到 A 就收成珍珠。')}

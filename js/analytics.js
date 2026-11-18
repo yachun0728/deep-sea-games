@@ -12,7 +12,7 @@
     w.gtag('config',ID,{allow_google_signals:false,allow_ad_personalization_signals:false,debug_mode:debug});
     var tag=d.createElement('script');tag.async=true;tag.src='https://www.googletagmanager.com/gtag/js?id='+ID;d.head.appendChild(tag);
   }
-  var names={'ocean-link':'深海連連看',blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班',mermaid:'人魚接龍',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看',banquet:'最後的晚餐'};
+  var names={frontier:'荒島遠征','ocean-link':'深海連連看',blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班',mermaid:'人魚接龍',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看',banquet:'最後的晚餐'};
   var rounds={},current='',seq=0,bucket=0,last=performance.now(),inputAt=last,visible=!d.hidden,focused=d.hasFocus?d.hasFocus():true,suspended=false;
   var tabToken=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
   function emit(event,game,params){
@@ -23,7 +23,7 @@
     var delta=Math.max(0,Math.min(now,inputAt+60000)-last);last=now;
     if(suspended||!visible||!focused||!current||delta<=0)return;
     var any=false;Object.keys(rounds).forEach(function(id){var r=rounds[id];if(r.game===current&&r.engaged){r.activeMs+=delta;any=true;}});
-    if(any)bucket+=delta;
+    if(any){bucket+=delta;if(w.deepSeaProgress)w.deepSeaProgress.active(current,delta);}
   }
   function flush(){if(bucket>0){emit('game_active_time',current,{active_seconds:Math.round(bucket)/1000});bucket=0;}}
   function start(game,stake,params){
@@ -40,10 +40,10 @@
   }
   function resume(id,params){var r=rounds[id];if(!r)return;tick(performance.now());inputAt=performance.now();r.engaged=true;var p=params||{};if(p.stage!==undefined)r.stage=p.stage;if(p.step!==undefined)r.step=p.step;emit('game_resume',r.game,Object.assign({round_id:id,stage:r.stage,step:r.step},p));}
   function end(id,payout,result,params){
-    var r=rounds[id];if(!r)return;tick(performance.now());flush();delete rounds[id];
+    var r=rounds[id];if(!r)return;tick(performance.now());flush();delete rounds[id];if(w.deepSeaProgress)w.deepSeaProgress.complete(r.game,result,r.activeMs);
     emit('game_end',r.game,Object.assign({round_id:id,stage:r.stage,step:r.step,result:result,stake_points:r.stake,payout_points:payout,net_points:payout-r.stake,round_active_seconds:Math.round(r.activeMs)/1000,round_elapsed_seconds:Math.round(performance.now()-r.started)/1000},params||{}));
   }
-  function view(game){if(game==='lobby'){tick(performance.now());flush();current='';emit('lobby_view','');return;}if(!names[game]||game===current)return;tick(performance.now());flush();current=game;emit('game_view',game);}
+  function view(game){if(game==='wardrobe'){tick(performance.now());flush();current='';return;}if(game==='lobby'){tick(performance.now());flush();current='';emit('lobby_view','');return;}if(!names[game]||game===current)return;tick(performance.now());flush();current=game;emit('game_view',game);}
   function interaction(){tick(performance.now());inputAt=performance.now();focused=d.hasFocus?d.hasFocus():true;}
   ['pointerdown','keydown','touchstart'].forEach(function(type){d.addEventListener(type,interaction,{capture:true,passive:true});});
   d.addEventListener('visibilitychange',function(){tick(performance.now());flush();visible=!d.hidden;if(visible)inputAt=performance.now();});
@@ -52,6 +52,6 @@
   w.addEventListener('pagehide',function(e){tick(performance.now());flush();suspended=true;if(!e.persisted)Object.keys(rounds).forEach(function(id){end(id,0,'abandoned');});});
   w.addEventListener('pageshow',function(){last=performance.now();suspended=false;visible=!d.hidden;focused=d.hasFocus?d.hasFocus():true;inputAt=last;});
   setInterval(function(){tick(performance.now());flush();},15000);
-  w.deepSeaAnalytics={start:start,progress:progress,resume:resume,end:end,view:view,interact:interaction,points:function(amount){emit('points_reset',current,{granted_points:amount});}};
+  w.deepSeaAnalytics={reward:function(kind,amount,game){emit('platform_points_earned',game,{reward_kind:kind,reward_points:amount});},cosmetic:function(id,cost){emit('cosmetic_redeemed','',{item_id:id,spent_points:cost});},start:start,progress:progress,resume:resume,end:end,view:view,interact:interaction,points:function(amount){emit('points_reset',current,{granted_points:amount});}};
 })(window,document);
 

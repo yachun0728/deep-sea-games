@@ -315,5 +315,13 @@
     "view": "games/mermaid/view.html",
     "card": "games/mermaid/card.html",
     "icon": "games/mermaid/icon.svg"
+  },
+  {
+    "id": "frontier",
+    "logic": "games/frontier/game.js",
+    "view": "games/frontier/view.html",
+    "card": "games/frontier/card.html",
+    "icon": "games/frontier/icon.svg",
+    "style": "games/frontier/style.css"
   }
 ]

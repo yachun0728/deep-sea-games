@@ -8,7 +8,7 @@ function bonusAt(n){for(const m of MILESTONES)if(m[0]===n)return m[1];return n>E
 function nextMilestone(n){for(const m of MILESTONES)if(m[0]>n)return m;return [ENDLESS_FROM+(Math.floor((n-ENDLESS_FROM)/ENDLESS_STEP)+1)*ENDLESS_STEP,ENDLESS_BONUS]}
 const lvCap=()=>Math.min(lv,10);
 let best=0;try{const n=Number(localStorage.getItem('sneak'));if(Number.isFinite(n))best=Math.max(0,Math.floor(n))}catch(e){}
-const texts={lv:n=>'第 '+n+' 關',bs:n=>'最佳 '+n+' 關',title:'偷偷下班',tap:'到操作區扣點開始',caught:'被抓住了！',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'新紀錄！',again:'到操作區重新開始',ok:'溜走了！'};const T=k=>texts[k];
+const texts={lv:n=>'第 '+n+' 關',bs:n=>'最佳 '+n+' 關',title:'偷偷下班',tap:'到操作區免費開始',caught:'被抓住了！',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'新紀錄！',again:'到操作區重新開始',ok:'溜走了！'};const T=k=>texts[k];
 const quotes=['「你這是要去哪裡？」','「報告寫完了嗎就想走？」','「坐下，還有工作呢。」'];
 let sneakAnalytics=null;
 let prevBest=0,earned=0,pops=[],st='ready',pr=0,lv=1,score=0,ph='away',pt=2,fk=false,grace=0,flash=0,shake=0,hold=false,walk=0,last=0,rec=false,qi=0;
@@ -21,7 +21,7 @@ function ui(){
  const nx=nextMilestone(score);
  $('sk-stage').textContent=lv+' 關';$('sk-progress').textContent=Math.floor(pr)+'%';$('sk-best').textContent=best+' 關';$('sk-next').textContent='完成 '+nx[0]+' 關 · +'+nx[1];
  $('sk-amount').disabled=sneakBusy;
- $('sk-go').disabled=st==='run';$('sk-go').textContent=st==='run'?'潛行中 · 按住前進':'扣點開始下班';$('sk-hold').disabled=st!=='run';
+ $('sk-go').disabled=st==='run';$('sk-go').textContent=st==='run'?'潛行中 · 按住前進':'免費開始下班';$('sk-hold').disabled=st!=='run';
  var signal=st!=='run'?(st==='dead'?'本局被抓住了':'等待開始'):ph==='look'?'老闆回頭了！立刻放開':ph==='warn'?'老闆有動靜，小心回頭':'老闆忙著工作';
  if($('sk-signal').textContent!==signal)$('sk-signal').textContent=signal;$('sk-signal').dataset.state=ph;
  $('sk-difficulty').textContent='需移動約 '+(6+(lvCap()-1)*2)+' 秒 · '+(lv>=4?'可能直接回頭':'回頭前會先警示');
@@ -60,7 +60,7 @@ function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){saySneak(LOW_MSG,'lose');return;}
- sneakAnalytics=AN.start('sneak',amount);sneakStake=amount;sneakBusy=true;S.balance-=amount;save();renderAll();score=0;lv=1;rec=false;earned=0;pops=[];prevBest=best;round();
+ sneakAnalytics=AN.start('sneak',amount);sneakStake=amount;sneakBusy=true;save();renderAll();score=0;lv=1;rec=false;earned=0;pops=[];prevBest=best;round();
 }
 function draw(){
 const ox=shake>0?(Math.random()-.5)*14:0;

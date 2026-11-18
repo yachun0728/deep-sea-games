@@ -48,3 +48,4 @@
 | [深海連連看 Ocean Link](ocean-link/README.md) | `#ocean-link` | 免費懷舊 | 顯示 | 407 行 | 把相同的圖案連起來，穿越礁石與移動棋盤。 |
 | [最後的晚餐 The Last Banquet](banquet/README.md) | `#banquet` | 益智策略 | 顯示 | 594 行 | 與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。 |
 | [人魚接龍 Mermaid Spider](mermaid/README.md) | `#mermaid` | 益智策略 | 顯示 | 287 行 | 牌背是美人魚的蜘蛛接龍，排滿 K 到 A 收成珍珠。 |
+| [荒島遠征 Frontier Islands](frontier/README.md) | `#frontier` | 益智策略 | 顯示 | 80 行 | 砍出道路，建立據點，挑戰五大區域與五十關考驗。 |

@@ -11,7 +11,7 @@
   // Numeric sample labels are exact matches only; matching "1 關" inside "21 關…" would corrupt a live sentence.
   var keys = Object.keys(dictionary).filter(function (key) { return !/^\d/.test(key); }).sort(function (a, b) { return b.length - a.length; });
   var phrases = new RegExp(keys.map(function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|'), 'g');
-  var names = ['Deep Sea Arcade','Crush Depth','Minesweeper','Pearl Drop','Pearl Merge','Sonar Dice','Deep Probe','High Tide','Gold Digger','Compass','Ascent','Reef Run','Dream Repair Shop','Dodge Run','Queue Cutter','Sneak Out','Fishing','Campaign Truck','Boba Straw','Rooftop Cat','Poop Bird vs Wolves','Reaper Shift','Reef Blaster','Sky Builder','Carp Leap','Rider vs Dogs','Chubby Boss','Fruit Thief Cat','Baby Bath Escape','Frog Snack','Nap Master','One Breath Dive','MRT Seat Grab','Noodle Pancake','Pudding Dash','Clock Out','Midnight Mosquito','Don’t Peek','Pet Walkies','No Overtime!','Mermaid Spider','The Last Hair','The Last Banquet','Breakout','Ocean Link'];
+  var names = ['My Wardrobe','Deep Sea Arcade','Crush Depth','Minesweeper','Pearl Drop','Pearl Merge','Sonar Dice','Deep Probe','High Tide','Gold Digger','Compass','Ascent','Reef Run','Dream Repair Shop','Dodge Run','Queue Cutter','Sneak Out','Fishing','Campaign Truck','Boba Straw','Rooftop Cat','Poop Bird vs Wolves','Reaper Shift','Reef Blaster','Sky Builder','Carp Leap','Rider vs Dogs','Chubby Boss','Fruit Thief Cat','Baby Bath Escape','Frog Snack','Nap Master','One Breath Dive','MRT Seat Grab','Noodle Pancake','Pudding Dash','Clock Out','Midnight Mosquito','Don’t Peek','Pet Walkies','No Overtime!','Mermaid Spider','The Last Hair','The Last Banquet','Breakout','Ocean Link'];
   var numbered = { '關': 'Stage', '班': 'Shift', '隊': 'Queue', '條': 'Fish', '層': 'Floor', '道': 'Crossing', '格': 'Cell', '列': 'Row', '階': 'Tier', '段': 'Segment', '晚': 'Night', '站': 'Station' };
 
   function english(value) {
@@ -23,6 +23,7 @@
       result = text.slice(0, text.indexOf(trimmed)) + dictionary[trimmed] + text.slice(text.indexOf(trimmed) + trimmed.length);
     } else {
       result = text.replace(/礦區第\s*(\d+)\s*列第\s*(\d+)\s*格/g, 'Mine row $1, cell $2')
+        .replace(/免費重玩第\s*(\d+)\s*關/g, 'Free retry · Stage $1')
         .replace(/重玩第\s*(\d+)\s*關（扣\s*(\d+)\s*點）/g, 'Retry stage $1 ($2 pts)')
         .replace(/第\s*(\d+)\s*(關|班|隊|條|層|道|格|列|階|段|晚|站)/g, function (_, n, unit) { return numbered[unit] + ' ' + n + ' ' + unit; })
         .replace(phrases, function (match) { return dictionary[match]; });
