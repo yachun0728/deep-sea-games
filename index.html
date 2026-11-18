@@ -11691,7 +11691,7 @@ function drawCorridor(lamp){
 function drawWorld(lamp){
  const wi=clamp(Math.floor(prog/20),0,4),nx=Math.min(4,wi+1),into=(prog%20)/20,a=art('bg-'+WORLDS[wi]);
  if(!a){drawCorridor(lamp);return}
- const one=(im,al)=>{const z=1.12+.015*Math.sin(run*6.28),h=H*z,w=im.naturalWidth*h/im.naturalHeight,x=200-w/2-clamp(tilt,-1,1)*34+Math.sin(run*3.1)*5,y=(H-h)/2-Math.abs(Math.sin(ph))*3;g.globalAlpha=al;g.drawImage(im,x,y,w,h);g.globalAlpha=1};
+ const one=(im,al)=>{const z=1.12+.015*Math.sin(run*6.28),h=H*z,w=im.naturalWidth*h/im.naturalHeight,x=200-w/2-clamp(tilt,-1,1)*34+Math.sin(run*3.1)*5,y=(H-h)/2-Math.abs(Math.sin(ph))*(st==='run'?7:2);g.globalAlpha=al;g.drawImage(im,x,y,w,h);g.globalAlpha=1};
  one(a,1);
  if(wi<4){if(into>.7){const b=art('bg-'+WORLDS[nx]);if(b&&into>.92)one(b,(into-.92)/.08)}}
  const fg=g.createLinearGradient(0,330,0,H);fg.addColorStop(0,'rgba(8,10,14,0)');fg.addColorStop(1,'rgba(8,10,14,.6)');g.fillStyle=fg;g.fillRect(0,330,W,H-330);
@@ -11746,7 +11746,7 @@ function drawSpirits(){
  else{                           // Gale drifts out of the far trees toward you
   const p=ev.phase==='judge'?1:clamp(1-ev.t/WALK.warn,0,1),s=.12+.5*p;
   sprite(im,200,VPY+270*s,560*s,clamp(.25+p*1.1,0,1))}}
-function drawScene(lamp){drawWorld(lamp);drawSpirits();drawRunner()}
+function drawScene(lamp){drawWorld(lamp);drawSpirits()}   // first person: no runner on screen, the camera itself bobs and leans
 function drawButtons(){
  const I=inputs();const on=[I.tilt<-.05&&!gyro.on,I.tilt>.05&&!gyro.on,I.cover,I.wind];
  BTN.forEach((b,i)=>{RR(b[0],b[1],b[2],b[3],12,on[i]?'#d6a24e':'#3a2c1c',3);tx(b[4],b[0]+b[2]/2,b[1]+36,20,on[i]?'#1b1208':'#f1d9a6')})}
