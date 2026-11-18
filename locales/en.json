@@ -4843,5 +4843,13 @@
   "小螢：起霧了，有張臉貼過來。點鐵鎚。": "Flick: fog is rolling in and a face is coming close. Tap the hammer.",
   "死因 #17 玻璃臉：你沒有及時點鐵鎚，或點錯了道具": "Cause #17 Glassface: you did not tap the hammer in time, or tapped the wrong item",
   "死因 #18 灰燼鴉群：你沒有及時點水桶，或點錯了道具": "Cause #18 Ash flock: you did not tap the bucket in time, or tapped the wrong item",
-  "畫面起霧，一張臉貼近，左右各有一件道具。玻璃臉怕鐵鎚：點鐵鎚那一側。": "The screen fogs and a face draws near. An item appears on each side; Glassface fears the hammer: tap the hammer side."
+  "畫面起霧，一張臉貼近，左右各有一件道具。玻璃臉怕鐵鎚：點鐵鎚那一側。": "The screen fogs and a face draws near. An item appears on each side; Glassface fears the hammer: tap the hammer side.",
+  "三卷湊齊：+1 命": "Three scrolls: +1 life",
+  "三卷湊齊：+1 護身符": "Three scrolls: +1 charm",
+  "火把：多 0.6 秒預警": "Torch: 0.6 s extra warning",
+  "護身符擋下了這一次": "The charm took that hit",
+  "每集滿 3 卷 +1 命（上限 5），並掛上骷髏燈籠": "Every 3 scrolls give +1 life (max 5) and hang a skull lantern",
+  "每集滿 3 卷 +1 命（上限 5）；自由跑改給 1 個護身符。": "Every 3 scrolls give +1 life (max 5); in free run you get a charm instead.",
+  "三卷湊齊的紀念，營火旁的裝飾。": "A keepsake for three scrolls; it decorates the campfire.",
+  "卷軸 ": "Scroll "
 }
