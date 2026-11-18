@@ -10,9 +10,9 @@ assert.ok(raw.includes(hookAt),'test hook anchor missing');
 // Expose the closure to the test only; the shipped source is not changed.
 const source="'use strict';\n"+raw.replace(hookAt,'globalThis.__peek={update,start,draw,ev:code=>eval(code)};'+hookAt);
 const results=[];
-export function fixture(balance=500,savedBest=null,random=Math.random){
+export function fixture(balance=500,savedBest=null,random=Math.random,newPlayer=false){
   let now=1000;
-  const elements=new Map(),storage=new Map(savedBest===null?[]:[['deep-sea-peek-best',String(savedBest)]]),events=[];
+  const elements=new Map(),storage=new Map([...(savedBest===null?[]:[['deep-sea-peek-best',String(savedBest)]]),...(newPlayer?[]:[['deep-sea-peek-tut2','1']])]),events=[];
   const drawing=new Proxy({},{get:(t,k)=>k in t?t[k]:(k==='createRadialGradient'||k==='createLinearGradient')?()=>({addColorStop(){}}):()=>{},set:(t,k,v)=>{t[k]=v;return true;}});
   function el(id){if(!elements.has(id))elements.set(id,{hidden:false,value:'10',textContent:'',className:'',dataset:{},style:{},disabled:false,handlers:{},focus(){},getContext:()=>drawing,getBoundingClientRect:()=>({left:0,top:0,width:800,height:450}),addEventListener(type,fn){this.handlers[type]=fn;}});return elements.get(id);}
   const listeners={};
@@ -298,6 +298,20 @@ check('Every screen draws: ready, death with buttons, won, codex, share text',()
   const f=fixture();f.F.ev('forceLvl=3;maxLvl=5;audioOk=true');f.F.draw();f.F.start();f.spirit('twins',-1,'judge');f.F.ev('ev.t=1.5;tilt=-1');f.run(2);f.F.draw();assert.ok(f.ev('endBtns.length')>=4);
   f.F.ev('dex=true;seen={leafling:1,knocker:1};draw()');f.F.ev('dexSel=1;draw();dex=false');assert.ok(f.ev('shareText()').includes('第 3 關'));
   f.F.ev('st="won";draw();st="ready";audioOk=false;draw()');
+});
+check('Tutorial: a new player is taught hide, item and pickup; mistakes cannot kill; it ends in stage 1; returning players skip it',()=>{
+  const f=fixture(500,null,Math.random,true);f.F.start();
+  assert.equal(f.ev('st'),'run');assert.equal(f.ev('tut&&tut.i'),0);assert.equal(f.ev('L'),null);
+  const upTo=(cond,sec)=>{for(let t=0;t<sec&&!f.ev(cond);t+=.05)f.F.update(.05)};
+  f.F.ev('gapT=0');upTo('ev&&ev.phase==="judge"',8);assert.equal(f.ev('ev.type'),'eye');
+  f.run(8);assert.equal(f.ev('st'),'run','a wrong move in the tutorial must not kill');assert.ok(f.ev('tut.fails')>=1);assert.equal(f.ev('tut.i'),0);
+  f.F.ev('gapT=0');upTo('ev&&ev.phase==="warn"',4);f.F.ev('swipe(-ev.side)');f.run(10);assert.equal(f.ev('tut.i'),1,'hiding on the safe side advances to the item step');
+  f.F.ev('gapT=0');upTo('itemsUp()',10);const lantern=f.ev('ev.items[-1]')==='item-lantern'?-1:1;f.F.ev(`tap(${lantern<0?200:600})`);f.run(3);assert.equal(f.ev('tut.i'),2,'tapping the lantern advances');
+  upTo('drops.some(d=>d.z<PICK_AT&&d.z>=0)',8);f.F.ev('tapPick=1');f.run(.2);assert.equal(f.ev('tut.i'),3,'picking up the torch advances');
+  f.F.ev('gapT=0');upTo('ev&&ev.phase==="warn"',4);f.F.ev('swipe(-ev.side)');f.run(10);
+  assert.equal(f.ev('tut'),null);assert.equal(f.ev('tutDone'),true);assert.equal(f.ev('st'),'run');assert.equal(f.ev('lvl'),f.ev('wantLevel()'),'the tutorial hands over to the chosen stage');assert.equal(f.ev('survived'),0);
+  assert.equal(f.storage.get('deep-sea-peek-tut2'),'1');
+  const again=fixture();again.F.start();assert.equal(again.ev('tut'),null);
 });
 console.log(results.length+' peek checks passed');
 }

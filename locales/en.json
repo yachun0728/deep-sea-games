@@ -4851,5 +4851,14 @@
   "每集滿 3 卷 +1 命（上限 5），並掛上骷髏燈籠": "Every 3 scrolls give +1 life (max 5) and hang a skull lantern",
   "每集滿 3 卷 +1 命（上限 5）；自由跑改給 1 個護身符。": "Every 3 scrolls give +1 life (max 5); in free run you get a charm instead.",
   "三卷湊齊的紀念，營火旁的裝飾。": "A keepsake for three scrolls; it decorates the campfire.",
-  "卷軸 ": "Scroll "
+  "卷軸 ": "Scroll ",
+  "落葉堆在一側，往另一側滑，躲進去。": "Leaves pile up on one side. Swipe the other way to hide.",
+  "鬼來了。牠怕燈籠，點燈籠那一側。": "A ghost is coming. It fears light: tap the lantern.",
+  "路邊有東西，點一下撿起來。": "Something on the road. Tap it to pick it up.",
+  "換你了。聽聲音，自己判斷。": "Your turn. Listen, then decide.",
+  "沒關係，再來一次。": "No problem, try again.",
+  "很好！": "Nice!",
+  "跳過教學": "Skip tutorial",
+  "教學": "Tutorial",
+  "開聲音、戴耳機更容易聽出方向。按喇叭試聽左右各一聲，再按勾勾開始。": "Turn sound on; headphones make direction easier to hear. Press the speaker to hear one tone on each side, then press the check to start."
 }
