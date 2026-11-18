@@ -408,7 +408,7 @@ function restart(el,name,ms){setCls(el,name,false);void el.offsetWidth;setCls(el
 
 /* ---------- interface ---------- */
 var $v=$('view-banquet'),cupEls={},lastLogV=-1,lastLogLen=-1;
-var CUP_SVG='<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M9 6h22l-2.5 12c-.9 4.6-4 7.5-8.5 7.5s-7.6-2.9-8.5-7.5z" fill="currentColor" stroke="#1b1b2f" stroke-width="2" stroke-linejoin="round"/><path d="M20 25.5V34M12.5 34h15" stroke="#1b1b2f" stroke-width="3" stroke-linecap="round"/></svg>';
+var CUP_SVG='<span class="bq-gob" aria-hidden="true"><img class="bq-gob-n" src="games/banquet/assets/cup-normal.webp" alt="" draggable="false"><img class="bq-gob-s" src="games/banquet/assets/cup-selected.webp" alt="" draggable="false"></span>';
 var shown=function(){return!$v.hidden&&!document.hidden};
 function say(t,kind){var m=$('bq-msg');m.textContent=t;m.className='msg'+(kind?' '+kind:'')}
 bqSay=say;
