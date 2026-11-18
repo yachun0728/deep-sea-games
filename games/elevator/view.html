@@ -6,14 +6,14 @@
         <dl class="stats"><div><dt>本局累計超過</dt><dd id="eq-total">0 人</dd></div><div><dt>最佳紀錄</dt><dd id="eq-best">0 人</dd></div><div><dt>下一個獎勵</dt><dd id="eq-next">40 人 · +3</dd></div></dl>
         <div class="queue-watch" id="eq-watch" role="status" aria-live="polite" data-state="safe">尚未開始</div>
         <div class="queue-legend"><span>● 背對：可前進</span><span>△ 警示：可能轉頭</span><span>● 回頭：不要動</span></div>
-        <div class="field"><label>遊玩費用</label><p class="runner-fee">免費</p><input id="eq-amount" type="hidden" value="0"></div>
-        <button class="go" id="eq-go" type="button" data-mode="bet">免費開始排隊</button>
+        <input id="eq-amount" type="hidden" value="0">
+        <button class="go" id="eq-go" type="button" data-mode="bet">開始排隊</button>
         <p class="msg" id="eq-msg" aria-live="polite">先扣入場點數。每點一下插過一位，移動時被前方任一乘客看見即失敗；不動不會被抓。</p>
         <p class="hint">點「往前插一位」、遊戲畫面或按 <kbd>空白鍵</kbd>。警示本身不會抓人，但沒有保證安全時間。</p>
       </section></div>
     </div>
     <details class="rules"><summary>玩法、風險與點數</summary>
-      <p>每局固定從共用錢包免費。每隊乘客各自隨機在背對、警示、回頭間切換。警示可能解除，也可能隨時轉為回頭；前方任一乘客回頭注視時移動，就會被發現。站著不動不會被抓。</p>
+      <p>每隊乘客各自隨機在背對、警示、回頭間切換。警示可能解除，也可能隨時轉為回頭；前方任一乘客回頭注視時移動，就會被發現。站著不動不會被抓。</p>
       <p>每點一次插過一人，移動約 0.4～0.7 秒，期間被看見也會失敗。沒有終點：插到隊首後立刻換下一隊，第一隊 10 人，之後每隊多 2 人（最多 30 人），乘客休息時間越來越短、警示後轉頭的機率也越來越高，被發現這一局才結束。</p>
       <p>累計插過的人數達到特定數量時，獎勵點數當場入帳，之後被發現也不會收回：40 人 +3、55 人 +7（累計 10 點，累計獲得）、70 人 +15、90 人 +30，之後每多 20 人 +40。這是固定點數，沒有倍率。這些人數刻意設得很高，一般玩家大約能插過 25 人。</p>
       <p>切換遊戲或背景分頁會暫停。重新整理會放棄本局，已入帳的點數會保留。點數與其他遊戲共用，沒有現金價值。</p>

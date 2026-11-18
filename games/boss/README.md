@@ -5,9 +5,9 @@
 ## 概覽
 
 - 網址：`#boss`　分類：跑酷動作　狀態：顯示中
-- 大廳卡片：「遲到了！跳過障礙，別被胖老闆追上。」｜免費遊玩 · 辦公室逃亡
+- 大廳卡片：「遲到了！跳過障礙，別被胖老闆追上。」｜立即開玩 · 辦公室逃亡
 - 追蹤名稱（GA4 `game_name`）：胖老闆追人，`game_id` 為 `boss`
-- 檔案：`games/boss/card.html`、`games/boss/game.js`、`games/boss/icon.svg`、`games/boss/view.html`；`game.js` 共 177 行、12.6 KB
+- 檔案：`games/boss/card.html`、`games/boss/game.js`、`games/boss/icon.svg`、`games/boss/view.html`；`game.js` 共 177 行、12.5 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「29. 胖老闆追人 Chubby Boss Chase（boss）」（下方「規則摘要」已複製）
 

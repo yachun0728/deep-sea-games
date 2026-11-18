@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#frog`　分類：時機操作　狀態：顯示中
-- 大廳卡片：「對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。」｜免費遊玩 · 一鍵反應
+- 大廳卡片：「對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。」｜立即開玩 · 一鍵反應
 - 追蹤名稱（GA4 `game_name`）：青蛙吃蟲，`game_id` 為 `frog`
 - 檔案：`games/frog/card.html`、`games/frog/game.js`、`games/frog/icon.svg`、`games/frog/view.html`；`game.js` 共 166 行、12.2 KB
 

@@ -314,7 +314,7 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const live=st==='run';
  setText('mq-blood',mo.blood.toFixed(1)+'%');setText('mq-alert',Math.floor(mo.alert)+'%');setText('mq-best',best.toFixed(1)+'%');
- $('mq-amount').disabled=mqBusy;$('mq-go').disabled=live;setText('mq-go',live?'出動中 · 放開上升、按住下降':st==='over'?'免費再來一隻':'免費開始吸血');
+ $('mq-amount').disabled=mqBusy;$('mq-go').disabled=live;setText('mq-go',live?'出動中 · 放開上升、按住下降':st==='over'?'再來一隻':'開始吸血');
 }
 function pay(n){
  earned+=n;paidCount++;S.balance+=n;save();renderAll();
@@ -368,7 +368,7 @@ function drawOverlay(){
   text('血壓上升',240,130,54,'#ff5a5a','center','#200');text('深夜蚊子大作戰',240,184,26,'#ffd6d6','center','#200');
   const ins=['放開：蚊子往上飄','按住：往下俯衝','降落在皮膚上，按住就吸血','吸越多越重、越飛不動','吸滿 100% 才能從窗戶破洞逃出去','別把他吵醒，被拍扁是你太貪心'];
   for(let i=0;i<ins.length;i++)text(ins[i],240,250+i*30,18,'#e8e8f4');
-  text('到操作區免費開始',240,560,24,'#ffd23f','center','#000');
+  text('到操作區開始',240,560,24,'#ffd23f','center','#000');
   return}
  if(st!=='over'||!result)return;
  const r=result;
@@ -418,7 +418,7 @@ const shown=()=>!$('view-mosquito').hidden&&!document.hidden;
 $('mq-go').addEventListener('click',start);
 cv.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
- if(st!=='run'){say(st==='over'?'這一局已結算。按「免費再來一隻」開始新的一局。':'先按「免費開始吸血」。');return}
+ if(st!=='run'){say(st==='over'?'這一局已結算。按「再來一隻」開始新的一局。':'先按「開始吸血」。');return}
  if(!shown())return;e.preventDefault();cv.focus();try{cv.setPointerCapture(e.pointerId)}catch(_){}
  ptrs.add(e.pointerId)});
 const endPointer=e=>{ptrs.delete(e.pointerId)};

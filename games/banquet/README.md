@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#banquet`　分類：益智策略　狀態：顯示中
-- 大廳卡片：「與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。」｜免費遊玩 · 心理博弈
+- 大廳卡片：「與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。」｜立即開玩 · 心理博弈
 - 追蹤名稱（GA4 `game_name`）：最後的晚餐，`game_id` 為 `banquet`
 - 檔案：`games/banquet/card.html`、`games/banquet/game.js`、`games/banquet/icon.svg`、`games/banquet/style.css`、`games/banquet/view.html`；`game.js` 共 601 行、37.0 KB
 

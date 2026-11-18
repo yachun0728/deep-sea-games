@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#sneak`　分類：潛行偷閒　狀態：顯示中
-- 大廳卡片：「按住偷溜，老闆回頭前趕快裝忙。」｜免費遊玩 · 無盡挑戰
+- 大廳卡片：「按住偷溜，老闆回頭前趕快裝忙。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：偷偷下班，`game_id` 為 `sneak`
 - 檔案：`games/sneak/card.html`、`games/sneak/game.js`、`games/sneak/icon.svg`、`games/sneak/view.html`；`game.js` 共 116 行、10.4 KB
 

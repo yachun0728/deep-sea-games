@@ -166,7 +166,7 @@ body{position:fixed;inset:0}
     <h2 class="ol">點數不夠</h2>
     <p>每局需要 <span id="low-fee"></span> 點</p>
     <div id="low-wallet" class="pill"></div>
-    <button class="btn" id="btn-low-ad">看 5 秒示範廣告<span class="btn-sub">之後 30 分鐘開局不免費</span></button>
+    <button class="btn" id="btn-low-ad">看 5 秒示範廣告<span class="btn-sub">之後 30 分鐘狂煎</span></button>
     <button class="btn ghost" id="btn-low-back">回首頁</button>
   </div>
 
@@ -258,7 +258,7 @@ const CONFIG = {
   adContinuePerGame: 1,
   fakeAdSeconds: 5,
   adFreeMinutes: 30,
-  coffeeCost: 0,
+  coffeeCost: 5,
   coffeeExtendSeconds: 15,
   coffeeBoostSeconds: 10,
 };
@@ -749,7 +749,7 @@ function renderRevive() {
   const adLeft = G.adUsed < CONFIG.adContinuePerGame;
   $('btn-ad').disabled = !adLeft;
   $('ad-sub').textContent = adLeft ? `主管的會議延長 ${CONFIG.adExtendSeconds} 秒（每局 1 次）` : '這局已經看過了';
-  $('btn-coffee').innerHTML = `免費領取一杯特濃咖啡<span class="btn-sub">會議再拖 ${CONFIG.coffeeExtendSeconds} 秒，接下來 ${CONFIG.coffeeBoostSeconds} 秒推力加倍</span>`;
+  $('btn-coffee').innerHTML = `領取一杯特濃咖啡<span class="btn-sub">會議再拖 ${CONFIG.coffeeExtendSeconds} 秒，接下來 ${CONFIG.coffeeBoostSeconds} 秒推力加倍</span>`;
   $('btn-coffee').classList.toggle('dim', Wallet.bal < CONFIG.coffeeCost);
 }
 function reviveContinue() {

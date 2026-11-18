@@ -6,7 +6,7 @@
     MRT.best=Math.max(MRT.best,mrtBest());
     $('mr-tier').textContent=MRT.tier+' / '+MRT.max+' 階';$('mr-best').textContent=MRT.best+' 階';
     $('mr-go').disabled=MRT.active;
-    $('mr-go').textContent=MRT.active?'搭車中 · 在左側畫面操作':MRT.done?'免費再搭一次':'免費上車';
+    $('mr-go').textContent=MRT.active?'搭車中 · 在左側畫面操作':MRT.done?'再搭一次':'上車';
   }
   function mrtValid(source){return source===$('mr-frame').contentWindow;}
   window.deepSeaMrt={
@@ -16,7 +16,7 @@
       if(amount>S.balance){mrtSay(LOW_MSG,'lose');return 0;}
       if(AN.interact)AN.interact();
       MRT.active=true;MRT.stake=amount;MRT.tier=0;MRT.done=false;MRT.analytics=AN.start('mrt',amount);save();renderAll();mrtUI();
-      mrtSay('免費遊玩。在左側畫面猜誰要下車、搶座位；體力歸零或搶滿 8 階就結束，遊玩點數依平台規則累積。');
+      mrtSay('在左側畫面猜誰要下車、搶座位；體力歸零或搶滿 8 階就結束，遊玩點數依平台規則累積。');
       return true;
     },
     live:function(source,m,tier){

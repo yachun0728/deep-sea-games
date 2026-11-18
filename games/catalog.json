@@ -357,7 +357,6 @@
     "view": "games/frontier/view.html",
     "card": "games/frontier/card.html",
     "icon": "games/frontier/icon.svg",
-    "style": "games/frontier/style.css",
-    "hidden": true
+    "style": "games/frontier/style.css"
   }
 ]

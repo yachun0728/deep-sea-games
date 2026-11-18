@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#breakout`　分類：免費懷舊　狀態：顯示中
-- 大廳卡片：「移動擋板反彈小球，打光磚塊一關闖過一關。」｜免費 · 不限次數 · 反應闖關
+- 大廳卡片：「移動擋板反彈小球，打光磚塊一關闖過一關。」｜不限次數 · 反應闖關
 - 追蹤名稱（GA4 `game_name`）：打磚塊，`game_id` 為 `breakout`
 - 檔案：`games/breakout/card.html`、`games/breakout/game.js`、`games/breakout/icon.svg`、`games/breakout/view.html`；`game.js` 共 228 行、14.3 KB
 

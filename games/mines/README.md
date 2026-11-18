@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#mines`　分類：免費懷舊　狀態：顯示中
-- 大廳卡片：「低中高難度或自訂棋盤，免費重溫經典踩地雷。」｜免費 · 不限次數 · 推理排雷
+- 大廳卡片：「低中高難度或自訂棋盤，重溫經典踩地雷。」｜不限次數 · 推理排雷
 - 追蹤名稱（GA4 `game_name`）：踩地雷，`game_id` 為 `mines`
 - 檔案：`games/mines/card.html`、`games/mines/game.js`、`games/mines/icon.svg`、`games/mines/style.css`、`games/mines/view.html`；`game.js` 共 123 行、8.2 KB
 
