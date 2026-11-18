@@ -7,17 +7,17 @@
 - 網址：`#peek`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，燈滅前蓋住螢幕。」｜免費遊玩 · 聽聲反應
 - 追蹤名稱（GA4 `game_name`）：別看，`game_id` 為 `peek`
-- 檔案：`games/peek/card.html`、`games/peek/game.js`、`games/peek/icon.svg`、`games/peek/view.html`；`game.js` 共 279 行、23.3 KB
+- 檔案：`games/peek/card.html`、`games/peek/game.js`、`games/peek/icon.svg`、`games/peek/view.html`；`game.js` 共 366 行、30.5 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「34. 別看 Don’t Peek（peek）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-peek`、`peek-canvas`、`peek-prog`、`peek-spirits`、`peek-best`、`peek-codex`、`peek-dodges`、`peek-amount`、`peek-go`、`peek-gyro`、`peek-msg`
+`view-peek`、`peek-canvas`、`peek-prog`、`peek-spirits`、`peek-best`、`peek-codex`、`peek-dodges`、`peek-amount`、`peek-go`、`peek-gyro`、`peek-msg`、`peek-assist`、`peek-lowscare`、`peek-vol`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`EYE`（L15）、`ART`（L20）、`peekBusy`（L2）
+- 狀態物件／進行中旗標：`EYE`（L15）、`ART`（L20）、`HP`（L244）、`peekBusy`（L2）
 - L5 常數：`SPRINT_GAP`
 - L6 常數：`BASE_RATE`、`WIND_RATE`
 - L7 常數：`MILE_EVENTS`、`MILE_REWARD`、`WIN_REWARD`
@@ -32,11 +32,11 @@
 - L16 常數：`TWIN`
 - L17 常數：`WALK`
 - L18 常數：`TYPES`
-- …另有 6 行常數宣告，請直接搜尋大寫名稱
+- …另有 14 行常數宣告，請直接搜尋大寫名稱
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`art` L21、`rnd` L28、`clamp` L29、`tx` L30、`RR` L31、`reset` L34、`audioInit` L38、`tone` L39、`say` L45、`setText` L47、`ui` L48、`fx` L53、`end` L54、`pay` L66、`pickPool` L70、`startEvent` L73、`nextGap` L79、`survive` L83、`inputs` L87、`update` L90、`lampLevel` L116、`frm` L123、`wallY` L124、`depthS` L125、`poly` L126、`shade` L127、`drawCorridor` L128、`drawWorld` L145、`one` L148、`sprite` L154、`drawRunner` L155、`drawSpiritsVec` L166、`drawSpirits` L186、`drawScene` L203、`drawButtons` L204、`draw` L207、`start` L237、`shown` L245、`region` L246、`syncPtrs` L250、`upPtr` L257、`clearInput` L265、`onOrient` L270、`go` L274、`loop` L276
+`art` L21、`rnd` L35、`clamp` L36、`tx` L37、`RR` L38、`reset` L44、`audioInit` L48、`tone` L49、`say` L55、`setText` L57、`ui` L58、`fx` L63、`end` L64、`pay` L77、`pickPool` L81、`startEvent` L84、`nextGap` L91、`survive` L95、`inputs` L99、`update` L102、`lampLevel` L135、`cxy` L141、`giveItem` L142、`spawnDrop` L146、`collect` L147、`updateDrops` L148、`canPick` L154、`startCamp` L155、`updateCamp` L156、`campTap` L162、`onMotion` L165、`optSave` L169、`drawWorld` L175、`one` L179、`sprite` L185、`floatImg` L186、`blob` L187、`drawSpirits` L188、`drawDrops` L210、`drawCamp` L217、`wrapLines` L235、`txd` L236、`drawButtons` L237、`hpRect` L245、`hpClick` L248、`drawHeadphone` L253、`hud` L259、`drawDeath` L284、`i0` L298、`draw` L299、`start` L322、`shown` L330、`region` L331、`syncPtrs` L335、`upPtr` L343、`clearInput` L352、`onOrient` L357、`go` L361、`loop` L363
 
 ## 錢包與結算接點
 
@@ -44,19 +44,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L67 `pay`：`S.balance+=n;`
+- L78 `pay`：`S.balance+=n;`
 
 **餘額檢查**
-- L240 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L325 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L60 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p});`
-- L68 `pay`：`AN.progress(analytics,{stage:Math.floor(prog),step:survived,score:score,bonus_points:n});`
-- L242 `start`：`analytics=AN.start('peek',amount);`
+- L71 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p});`
+- L79 `pay`：`AN.progress(analytics,{stage:Math.floor(prog),step:survived,score:score,bonus_points:n});`
+- L327 `start`：`analytics=AN.start('peek',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -65,6 +65,8 @@
 - `deep-sea-peek-best`（寫、讀）
 - `deep-sea-peek-deaths`（寫、讀）
 - `deep-sea-peek-dodges`（寫、讀）
+- `deep-sea-peek-opts`（寫、讀）
+- `deep-sea-peek-scrolls`（寫、讀）
 
 ## 平台共用相依
 
