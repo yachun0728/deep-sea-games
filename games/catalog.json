@@ -286,5 +286,12 @@
     "view": "games/pet-walk/view.html",
     "card": "games/pet-walk/card.html",
     "icon": "games/pet-walk/icon.svg"
+  },
+  {
+    "id": "office-shoot",
+    "logic": "games/office-shoot/game.js",
+    "view": "games/office-shoot/view.html",
+    "card": "games/office-shoot/card.html",
+    "icon": "games/office-shoot/icon.svg"
   }
 ]
