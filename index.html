@@ -7246,7 +7246,16 @@ html.frontier-immersive{overflow:hidden}
   "很好！": "Nice!",
   "跳過教學": "Skip tutorial",
   "教學": "Tutorial",
-  "開聲音、戴耳機更容易聽出方向。按喇叭試聽左右各一聲，再按勾勾開始。": "Turn sound on; headphones make direction easier to hear. Press the speaker to hear one tone on each side, then press the check to start."
+  "開聲音、戴耳機更容易聽出方向。按喇叭試聽左右各一聲，再按勾勾開始。": "Turn sound on; headphones make direction easier to hear. Press the speaker to hear one tone on each side, then press the check to start.",
+  "落葉堆在一側，等紅光亮起。": "Leaves pile up on one side. Wait for the red light.",
+  "現在！往另一側滑（或按 ← →）躲進去，撐滿 3 秒。": "Now! Swipe (or press ← →) to the other side and hold for 3 seconds.",
+  "躲太久會喘不過氣，只在紅光亮時躲。": "You can't hold your breath for long. Only hide while the light is red.",
+  "鬼來了。點燈籠那一側（或按 ← →）。": "A ghost is coming. Tap the lantern side (or press ← →).",
+  "牠怕光。點錯道具就會被抓到。": "It fears light. Tap the wrong item and it gets you.",
+  "路邊有東西，點一下（或按 F）撿起來。": "Something on the road. Tap (or press F) to pick it up.",
+  "落葉在哪邊就躲另一邊，紅光亮時才躲。": "Hide opposite the leaves, and only while the light is red.",
+  "憋氣": "Breath",
+  "現在！往另一側滑（或按住 ← →）躲進去，撐滿 3 秒。": "Now! Swipe (or hold ← →) to the other side and stay hidden for 3 seconds."
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -12565,7 +12574,11 @@ function pay(n,text){
 function pickPool(){
  const open=['eye'];if(survived>=UNLOCK_TWINS)open.push('twins');if(survived>=UNLOCK_WALKER)open.push('walker');
  const pool=open.filter(t=>t!==lastType);return pool.length?pool:open}
-const TUT=[{ty:'eye',t:'落葉堆在一側，往另一側滑，躲進去。'},{ty:'walker',t:'鬼來了。牠怕燈籠，點燈籠那一側。'},{ty:'pick',t:'路邊有東西，點一下撿起來。'},{ty:'eye',t:'換你了。聽聲音，自己判斷。',solo:1}];
+const TUT=[
+ {ty:'eye',t:'落葉堆在一側，等紅光亮起。',tj:'現在！往另一側滑（或按住 ← →）躲進去，撐滿 3 秒。',t2:'躲太久會喘不過氣，只在紅光亮時躲。'},
+ {ty:'walker',t:'鬼來了。點燈籠那一側（或按 ← →）。',t2:'牠怕光。點錯道具就會被抓到。'},
+ {ty:'pick',t:'路邊有東西，點一下（或按 F）撿起來。',t2:''},
+ {ty:'eye',t:'換你了。聽聲音，自己判斷。',t2:'落葉在哪邊就躲另一邊，紅光亮時才躲。',solo:1}];
 const tutHelp=()=>!!(tut&&!TUT[tut.i].solo);
 function tutFail(){ev=null;pendType=null;tilt=0;hideWant=0;breath=1;clearInput();tut.fails++;gapT=1.8;flash=0;fx('沒關係，再來一次。',CX,118,'#9fe8ff')}
 function tutOk(){fx('很好！',CX,118,'#9fe8ff');ev=null;pendType=null;tut.i++;clearInput();
@@ -12579,10 +12592,11 @@ function tutTick(){dropT=999;nibT=0;campNext=999;prog=Math.min(prog,40);
  return false}
 function drawTutUI(){
  const s=TUT[tut.i];g.save();
- RR(CX-300,146,600,52,12,'rgba(18,13,10,.84)',2);tx(s.t,CX,180,18,'#ffd98a');
- for(let i=0;i<TUT.length;i++){g.fillStyle=i<tut.i?'#e8c675':i===tut.i?'#fff':'rgba(255,255,255,.25)';g.beginPath();g.arc(CX-((TUT.length-1)*9)+i*18,214,4,0,7);g.fill()}
+ const main=(ev&&ev.phase==='judge'&&s.tj)?s.tj:s.t;RR(CX-350,142,700,s.t2?70:52,12,'rgba(18,13,10,.84)',2);tx(main,CX,172,18,'#ffd98a');if(s.t2)tx(s.t2,CX,198,13,'#cfcfcf');
+ {const dy=s.t2?226:214;for(let i=0;i<TUT.length;i++){g.fillStyle=i<tut.i?'#e8c675':i===tut.i?'#fff':'rgba(255,255,255,.25)';g.beginPath();g.arc(CX-((TUT.length-1)*9)+i*18,dy,4,0,7);g.fill()}}
+ RR(CX-80,H-34,160,12,6,'rgba(255,255,255,.15)');if(breath>.01)RR(CX-80,H-34,160*breath,12,6,Math.abs(tilt)>.5?'#ffb347':'#9fe8ff');tx('憋氣',CX,H-40,12,'#cfcfcf');
  if(!s.solo){g.strokeStyle='#ffd98a';g.lineWidth=4;g.globalAlpha=.9;
-  if(s.ty==='eye'&&ev&&!ev.fake){const safe=-ev.side,x=CX+safe*150;tx(safe<0?'◀◀':'▶▶',x+safe*Math.abs(Math.sin(tt*5))*14,275,46,'#ffd98a')}
+  if(s.ty==='eye'&&ev&&!ev.fake&&ev.phase==='judge'){const safe=-ev.side,x=CX+safe*150;tx(safe<0?'◀◀':'▶▶',x+safe*Math.abs(Math.sin(tt*5))*14,275,46,'#ffd98a')}
   else if(s.ty==='walker'&&itemsUp()){const f=ev.phase==='judge'?1:clamp((ITEM_SHOW-ev.t)/1.2,0,1);[-1,1].forEach(sd=>{if(ev.items[sd]===ITEM_OF.hush){g.beginPath();g.arc(CX+sd*(540-300*f),310,60+7*Math.sin(tt*6),0,7);g.stroke()}})}
   else if(s.ty==='pick')drops.forEach(d=>{if(d.z<0)return;const q=1-d.z;g.beginPath();g.arc(CX+d.side*(90+(SIDE+30-90)*q),300+95*q,40+90*q*.4+6*Math.sin(tt*6),0,7);g.stroke()})}
  RR(W-146,H-42,132,28,8,'rgba(18,13,10,.7)');tx('跳過教學',W-80,H-22,13,'#cfcfcf');
