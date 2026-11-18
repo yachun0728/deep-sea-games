@@ -90,12 +90,20 @@ page = """<!doctype html>
 <style>{css}
 body{{background:#050805;min-height:100vh}}
 html[lang="en"] .t-zh{{display:none}}
-.itch-wrap{{max-width:1180px;margin:0 auto;padding:10px 12px 24px}}
-.itch-top{{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 10px}}
-.itch-top h1{{margin:0;font-size:20px;font-family:var(--font-display);letter-spacing:.04em;color:#e8c675}}
-.itch-lang{{display:flex;gap:6px}}
-.itch-lang{{flex:none}}.itch-lang button{{flex:none;width:auto;min-height:0;white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:4px 10px;font:inherit;cursor:pointer}}
-.itch-lang button[aria-pressed="true"]{{background:var(--glow);color:var(--glow-ink)}}
+.itch-wrap{{max-width:840px;margin:0 auto;padding:8px 8px 16px}}
+.itch-top{{display:none}}
+#view-peek .console{{display:block!important}}
+#view-peek .sneak-stage{{width:100%;max-width:none;background:#050805!important;border:0!important;border-radius:10px;overflow:hidden}}
+#view-peek .console{{background:none!important;border:0!important;padding:0!important}}
+#view-peek .side{{width:100%;margin-top:10px}}
+#view-peek .side .panel{{display:flex!important;flex-direction:row!important;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;background:none;border:0;box-shadow:none;padding:0}}
+#view-peek .stats,#view-peek .hint,#view-peek .rules,#peek-share,#peek-gyro,#peek-full,#view-peek .field:has(#peek-level){{display:none!important}}
+#view-peek .side .go{{width:auto!important;min-width:150px;flex:none;margin:0;padding:10px 20px;min-height:0}}
+#view-peek .msg{{display:none}}
+#view-peek .field:has(#peek-assist){{flex:1 1 100%;display:flex!important;flex-direction:row!important;flex-wrap:wrap;justify-content:center;gap:6px 18px;font-size:12px;opacity:.75}}
+#view-peek .field:has(#peek-assist) label{{display:inline-flex!important;width:auto!important;margin:0!important;gap:6px;align-items:center}}
+#view-peek .field:has(#peek-assist) input[type=range]{{width:90px!important}}
+#view-peek .field:has(#peek-assist) label{{flex-direction:row!important}}
 </style>
 </head>
 <body>
