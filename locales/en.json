@@ -2827,5 +2827,15 @@
   "遊玩別看：抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，燈滅前蓋住螢幕。有 BONUS 獎勵。": "Play Don’t Peek: run through the night corridor with the music box, dodge what lurks by ear, and cover the screen before the light goes out. BONUS rewards available.",
   "開始逃跑。別回頭。": "Run. Don’t look back.",
   "靠右": "Right",
-  "靠左": "Left"
+  "靠左": "Left",
+  "別看：自動奔跑逃向出口，按住衝刺跑更快；紅光和笑聲來襲時往反方向靠牆，燈滅前蓋住螢幕並保持不動": "Don’t Peek: you run toward the exit on your own and holding Sprint makes you faster; lean to the opposite wall when the red beam or the giggling comes, and cover the screen and stay still before the light goes out",
+  "有東西在追你。扣點後開始，自動奔跑，按住「衝刺」跑更快。": "Something is chasing you. Start, and you run on your own; hold “Sprint” to go faster.",
+  "或畫面右下「衝刺」跑更快（衝刺時不能靠牆）；": " or the “Sprint” button at the bottom right to go faster (you cannot lean while sprinting); ",
+  "或「蓋住」把螢幕蓋起來。紅光來了往反方向靠牆，笑聲來了往笑聲的反方向靠牆，燈要滅了就蓋住螢幕不要動。建議戴耳機。": " or “Cover” to cover the screen. When the red beam comes, lean to the opposite wall; when you hear giggling, lean to the wall away from it; when the light is about to go out, cover the screen and stay still. Headphones recommended.",
+  "每局固定扣 10 點。你抱著八音盒在夜間走廊裡自動往出口跑，按住「衝刺」可以跑得兩倍快，距離跑滿 100% 就衝出去、盒子打開過關。衝刺時身體會被固定在走廊中間，不能靠牆，所以鬼來之前要記得放開；蓋住螢幕時會停下來。開局有 9 秒安全時間，之後襲擊的間隔會隨進度縮短。": "Each round costs 10 points. You run down a night corridor toward the exit on your own, holding the music box; hold “Sprint” to go twice as fast, and when the distance reaches 100% you break out and the box opens. While sprinting you are pinned to the middle of the corridor and cannot lean, so let go before a ghost arrives; covering the screen makes you stop. You get 9 safe seconds at the start, and attacks come closer together as you progress.",
+  "自動奔跑，按住「衝刺」跑更快": "You run on your own; hold “Sprint” to go faster",
+  "自動奔跑中！按住「衝刺」跑更快（衝刺時不能靠牆）": "Running on your own! Hold “Sprint” to go faster (you cannot lean while sprinting)",
+  "牆上有東西在轉動眼珠……放開「衝刺」！": "Something on the wall is rolling its eyes… let go of “Sprint”!",
+  "有笑聲貼著耳朵……放開「衝刺」，不要往聲音那邊靠": "Giggling right by your ear… let go of “Sprint” and do not lean toward the sound",
+  "衝刺": "Sprint"
 }

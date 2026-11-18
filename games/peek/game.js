@@ -2,8 +2,8 @@
   var peekBusy=false,peekStake=0,peekSay=function(){};
   (function(){
 const c=$('peek-canvas'),g=c.getContext('2d'),W=400,H=560,OL='#120d0a';
-const WIND_RATE=3;                         // % of the music-box spring wound per second while cranking
-const WIND_MAX_TILT=.35;                   // cranking only works while the box is nearly level
+const SPRINT_GAP=2;                        // while sprinting the next attack comes this many times sooner, so speed is paid for with pressure
+const BASE_RATE=2,WIND_RATE=4;             // % of the corridor covered per second: the runner keeps jogging by itself, holding Sprint doubles it
 const MILE_EVENTS=2,MILE_REWARD=2,WIN_REWARD=5; // fixed BONUS: survive 2 spirits +2, reach the exit and open the box +5, each once per round
 const FIRST_GAP=9;                         // safe seconds before the first spirit
 const GAP_NEAR=7,GAP_FAR=4,BREATH_EVERY=3,BREATH_EXTRA=3; // gap between spirits shrinks from 7s to 4s by 80% progress; every 3rd dodge earns a longer breather
@@ -17,10 +17,10 @@ const TWIN={warn:2.5,judge:1.5,away:.6,toward:.3}; // lean away from the giggle 
 const WALK={warn:6,judge:4,still:.3};      // cover before the light goes out, stay covered and still
 const TYPES=['eye','twins','walker'];
 const CAUSES={eye:'死因 #1 對視：紅光鎖定你時，你沒有往反方向躲',twins:'死因 #2 回頭：笑聲在哪邊，你就往哪邊看',walkerLate:'死因 #3 慢半拍：燈滅的時候你還沒蓋住螢幕',walkerMove:'死因 #4 手賤：腳步聲還沒走遠你就動了'};
-const BTN=[[8,492,90,56,'靠左'],[106,492,90,56,'靠右'],[204,492,90,56,'蓋住'],[302,492,90,56,'奔跑']];
+const BTN=[[8,492,90,56,'靠左'],[106,492,90,56,'靠右'],[204,492,90,56,'蓋住'],[302,492,90,56,'衝刺']];
 let best=0,deaths={};try{best=+localStorage.getItem('deep-sea-peek-best')||0}catch(e){}
 try{deaths=JSON.parse(localStorage.getItem('deep-sea-peek-deaths')||'{}')||{}}catch(e){deaths={}}
-let analytics=null,earned=0,dodgesTotal=0,run=0,ph=0,toast=0,eyeSeen=0;try{dodgesTotal=+localStorage.getItem('deep-sea-peek-dodges')||0}catch(e){}
+let analytics=null,earned=0,dodgesTotal=0,run=0,ph=0,eyeSeen=0;try{dodgesTotal=+localStorage.getItem('deep-sea-peek-dodges')||0}catch(e){}
 const ptrT=new Map();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -28,7 +28,7 @@ function tx(s,x,y,sz,col,al){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();if(f){g.fillStyle=f;g.fill()}if(lw){g.lineWidth=lw;g.strokeStyle=OL;g.stroke()}};
 let st='ready',prog,tilt,gapT,ev,survived,lastType,directorUsed,score,why,rec,flash,shake,tt=0,last=0,fxs=[],lampOut=0;
 let keys={l:0,r:0,cover:0,wind:0},btn=[0,0,0,0],ptrs=new Map(),gyro={on:false,tilt:0,down:false};
-function reset(){eyeSeen=0;run=0;ph=0;toast=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0}
+function reset(){eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0}
 reset();
 /* ---- audio: stereo cues, so headphones help; silent if the browser has no Web Audio ---- */
 let ac=null;
@@ -88,16 +88,14 @@ function update(dt){
  tt+=dt;
  if(flash>0)flash-=dt;if(shake>0)shake-=dt;fxs.forEach(f=>f.t+=dt);fxs=fxs.filter(f=>f.t<.9);
  if(st!=='run')return;
- if(toast>0)toast-=dt;
  const I=inputs();
- if(gyro.on)tilt=I.tilt;else tilt+=clamp(I.tilt-tilt,-TILT_SPEED*dt,TILT_SPEED*dt);
- const covered=I.cover;
- const running=I.wind&&!covered&&Math.abs(tilt)<=WIND_MAX_TILT;
- if(running){prog=Math.min(100,prog+WIND_RATE*dt);run+=dt*1.6}
- ph+=dt*(running?13:2.5);
+ const covered=I.cover,sprint=I.wind&&!covered,aim=sprint?0:I.tilt;   // sprinting pins you to the middle: you cannot lean while sprinting
+ if(gyro.on)tilt=aim;else tilt+=clamp(aim-tilt,-TILT_SPEED*dt,TILT_SPEED*dt);
+ if(!covered){prog=Math.min(100,prog+(sprint?WIND_RATE:BASE_RATE)*dt);run+=dt*(sprint?2.6:1.5)}
+ ph+=dt*(covered?2.5:sprint?15:9);
  if(prog>=100){score+=500;pay(WIN_REWARD,'盒子打開了！');end('won');return}
  if(!directorUsed&&prog>=DIRECTOR_AT){directorUsed=true;if(!ev&&Math.random()<DIRECTOR_P)gapT=Math.min(gapT,rnd(1,3))}
- if(!ev){gapT-=dt;if(gapT<=0)startEvent();return}
+ if(!ev){gapT-=dt*(sprint?SPRINT_GAP:1);if(gapT<=0)startEvent();return}
  ev.t-=dt;ev.el=(ev.el||0)+dt;
  const away=tilt*-ev.side;   // positive when leaning away from the spirit's side
  if(ev.type==='eye'){
@@ -142,9 +140,9 @@ function drawCorridor(lamp){
  g.fillStyle=gl;g.fillRect(dx,dy,dw,d.b-dy);
  g.fillStyle='rgba(255,230,160,'+(.18*lamp)+')';g.fillRect(dx-dw*.3,dy-dw*.1,dw*1.6,d.b-dy+dw*.1)}
 function drawRunner(){
- const x=200+clamp(tilt,-1,1)*105,y=470,run1=st==='run'&&(keys.wind||btn[3]||ptrs.size>0),bob=Math.abs(Math.sin(ph))*(run1?5:1);
+ const x=200+clamp(tilt,-1,1)*105,y=470,spr=st==='run'&&(keys.wind||btn[3]||ptrs.size>0),jog=st==='run'&&!inputs().cover,bob=Math.abs(Math.sin(ph))*(spr?6:jog?3.5:1);
  g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(x,y+4,34,9,0,0,7);g.fill();
- const sw=Math.sin(ph)*(run1?15:3);
+ const sw=Math.sin(ph)*(spr?16:jog?10:3);
  RR(x-21,y-46+(sw>0?-Math.abs(sw)*.6:0),16,46,6,'#35405a',3);RR(x+5,y-46+(sw<0?-Math.abs(sw)*.6:0),16,46,6,'#35405a',3);
  RR(x-24,y-104-bob,48,62,12,'#6b8fb8',3);
  g.strokeStyle=OL;g.lineWidth=11;g.lineCap='round';g.beginPath();g.moveTo(x-22,y-92-bob);g.lineTo(x-30,y-62-bob+sw*.5);g.stroke();g.beginPath();g.moveTo(x+22,y-92-bob);g.lineTo(x+30,y-62-bob-sw*.5);g.stroke();
@@ -190,11 +188,11 @@ function draw(){
  tx('距離出口',16,50,15,'#f1d9a6','left');tx(Math.floor(prog)+'%',W-16,50,15,'#f1d9a6','right');
  let hint='';
  if(st==='run'){
-  if(ev&&ev.type==='eye')hint=ev.phase==='warn'?'牆上有東西在轉動眼珠……':'往反方向靠牆！躲開紅光！';
-  else if(ev&&ev.type==='twins')hint=ev.phase==='warn'?'有笑聲貼著耳朵……不要往聲音那邊靠':'往笑聲的反方向靠牆！';
+  if(ev&&ev.type==='eye')hint=ev.phase==='warn'?'牆上有東西在轉動眼珠……放開「衝刺」！':'往反方向靠牆！躲開紅光！';
+  else if(ev&&ev.type==='twins')hint=ev.phase==='warn'?'有笑聲貼著耳朵……放開「衝刺」，不要往聲音那邊靠':'往笑聲的反方向靠牆！';
   else if(ev&&ev.type==='walker')hint=ev.phase==='warn'?'走廊盡頭有腳步聲。燈滅前蓋住螢幕！':'蓋住不要動，等腳步聲遠去……';
-  else if(prog<25&&!I.wind)hint='用手指「按住」下方「奔跑」（點一下沒用）';
-  if(toast>0&&!hint)hint='要「按住不放」才會跑！';if(hint)tx(hint,200,80,17,'#ffd98a')}
+  else if(prog<25&&!I.wind)hint='自動奔跑中！按住「衝刺」跑更快（衝刺時不能靠牆）';
+  if(hint)tx(hint,200,80,17,'#ffd98a')}
  if(st==='run')drawButtons();
  if(cov){g.fillStyle='rgba(0,0,0,.96)';g.fillRect(0,0,W,H);tx('（螢幕蓋住了）',200,280,18,'#4a3a2a');drawButtons()}
  else if(st==='run'&&lamp<=0){g.fillStyle='rgba(0,0,0,.93)';g.fillRect(0,0,W,H);tx('燈滅了。有什麼東西走過來了……',200,280,18,'#6a4a3a')}
@@ -202,7 +200,7 @@ function draw(){
  if(st!=='run'){
   g.fillStyle='rgba(18,13,10,.72)';g.fillRect(0,0,W,H);
   if(st==='ready'){tx('別看',200,150,52,'#e8c675');tx('禁忌寶盒・夜逃',200,190,22,'#f1d9a6');
-   tx('按住「奔跑」，抱著八音盒衝向出口',200,250,18,'#f1d9a6');tx('紅光來了：往反方向靠牆',200,284,18,'#f1d9a6');tx('笑聲來了：往笑聲的反方向靠牆',200,314,18,'#f1d9a6');tx('燈要滅了：蓋住螢幕，不要動',200,344,18,'#f1d9a6');tx('建議戴耳機。到操作區扣點開始',200,420,20,'#ffd98a')}
+   tx('自動奔跑，按住「衝刺」跑更快',200,250,18,'#f1d9a6');tx('紅光來了：往反方向靠牆',200,284,18,'#f1d9a6');tx('笑聲來了：往笑聲的反方向靠牆',200,314,18,'#f1d9a6');tx('燈要滅了：蓋住螢幕，不要動',200,344,18,'#f1d9a6');tx('建議戴耳機。到操作區扣點開始',200,420,20,'#ffd98a')}
   else if(st==='won'){tx('衝出去了',200,190,40,'#ffd98a');tx('別看裡面。',200,250,28,'#ff6a4d');tx('躲過 '+survived+' 次襲擊',200,310,20,'#f1d9a6');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'',200,350,22,'#ffd98a');tx('到操作區再開一次',200,420,20,'#f1d9a6')}
   else{tx('你死了',200,160,40,'#ff6a4d');tx(CAUSES[why]||'',200,215,15,'#f1d9a6');tx(Math.floor(prog)+'%',200,290,60,'#ffd98a');tx('躲過 '+survived+' 次襲擊',200,330,20,'#f1d9a6');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'躲過 '+MILE_EVENTS+' 次才有點數',200,368,20,earned>0?'#ffd98a':'#f1d9a6');if(rec)tx('新紀錄！',200,402,20,'#ffd98a');tx('到操作區再開一次',200,450,20,'#f1d9a6')}}
 }
@@ -226,7 +224,7 @@ c.addEventListener('pointerdown',e=>{
  if(st!=='run'){say(st==='ready'?'先按「扣點開始逃跑」。':'這一局已結算。按「扣點再開一次」開始新的一局。');return}
  if(!shown())return;e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(x){}
  ptrs.set(e.pointerId,region(e));ptrT.set(e.pointerId,performance.now());syncPtrs()});
-const upPtr=e=>{if(st==='run'&&ptrs.get(e.pointerId)===3&&performance.now()-(ptrT.get(e.pointerId)||0)<250){toast=1.6;say('要「按住不放」才會跑，點一下沒用。')}ptrs.delete(e.pointerId);ptrT.delete(e.pointerId);syncPtrs()};
+const upPtr=e=>{ptrs.delete(e.pointerId);ptrT.delete(e.pointerId);syncPtrs()};
 c.addEventListener('pointerup',upPtr);c.addEventListener('pointercancel',upPtr);c.addEventListener('lostpointercapture',upPtr);
 c.addEventListener('contextmenu',e=>e.preventDefault());
 const KEYMAP={a:'l',A:'l',ArrowLeft:'l',d:'r',D:'r',ArrowRight:'r',' ':'cover',w:'wind',W:'wind',ArrowUp:'wind'};
