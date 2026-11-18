@@ -22,8 +22,8 @@ const art=k=>{if(typeof Image!=='function')return null;let i=ART[k];if(!i){i=ART
 const SIDE=230,PICK_AT=.3,DROP_EVERY=[7,11],CAMP_EVERY=20,CAMP_REST=3,CAMP_WIN=3,CAMP_PICK_MAX=8;   // props sit SIDE px off centre; items can be grabbed once nearer than 30% depth; a campfire every 20%
 const CARD_W=170,CARD_H=198,CARD_Y=146,CARDS_X=[CX-285,CX-85,CX+115];
 const CAMP_CARDS=['torch','charm','scroll'];
-const ITEM_NAME={torch:'火把',charm:'護身符',scroll:'舊卷軸',nib:'Nib'};
-const ITEM_DESC={torch:'下次襲擊多 0.6 秒並標出方向',charm:'擋下一次致命失誤',scroll:'收藏品，集滿 3 卷營火旁會掛上骷髏燈籠',nib:'無害的小傢伙，偷偷塞給你一卷軸'};
+const ITEM_NAME={torch:'火把',charm:'護身符',scroll:'舊卷軸',nib:'Nib',chest:'寶箱',rook:'旅人 Rook'};
+const ITEM_DESC={torch:'下次襲擊多 0.6 秒並標出方向',charm:'擋下一次致命失誤',scroll:'收藏品，集滿 3 卷營火旁會掛上骷髏燈籠',nib:'無害的小傢伙，偷偷塞給你一卷軸',chest:'火把 +1、護身符 +1',rook:'旅人分你一樣：火把或護身符'};
 const FLICK_TIPS=['小螢：腳邊的落葉聚成一堆，就往反方向靠。','小螢：鳥群突然飛走，是有東西在敲樹枝。','小螢：蟲鳴停了、路燈在閃，趁燈滅前蓋住螢幕。','小螢：蓋住螢幕之後別動，牠走遠了才放開。','小螢：風向反了。拖行聲從哪邊來，就往那邊靠。','小螢：首領會一直站著。蓋住螢幕，多等一下。','小螢：首領會一直站著。蓋住螢幕，多等一下。'];
 const CAUSES={eye:'死因 #1 葉下客：落葉聚在哪一邊，你沒有往反方向躲',twins:'死因 #2 敲枝者：敲擊聲在哪一邊，你就往哪一邊靠',walkerLate:'死因 #3 靜林鬼：燈滅的時候你還沒蓋住螢幕',walkerMove:'死因 #4 靜林鬼：牠還沒走遠你就動了',gale:'死因 #5 逆風客：風反著吹的時候，你沒有迎著風來的方向靠',hollowLate:'死因 #6 空殼：燈滅的時候你還沒蓋住螢幕',hollowMove:'死因 #7 空殼：牠還沒離開你就動了'};
 const TIPS={eye:'下次：落葉聚在哪邊，就往另一邊靠，撐滿 3 秒。',twins:'下次：鳥群飛走、敲擊聲響起時，往敲擊的反方向靠。',walkerLate:'下次：路燈開始閃就要準備，燈滅前蓋住螢幕。',walkerMove:'下次：蓋住之後別動，等牠走遠才放開。',gale:'下次：風向反了、拖行聲靠近時，往風來的那一邊靠。',hollowLate:'下次：首領前一定先放開衝刺，燈一滅就蓋住螢幕。',hollowMove:'下次：空殼停留很久，蓋住螢幕後再等一下。'};
@@ -32,7 +32,7 @@ let best=0,deaths={};try{best=+localStorage.getItem('deep-sea-peek-best')||0}cat
 try{deaths=JSON.parse(localStorage.getItem('deep-sea-peek-deaths')||'{}')||{}}catch(e){deaths={}}
 let analytics=null,earned=0,dodgesTotal=0,run=0,ph=0,eyeSeen=0;try{dodgesTotal=+localStorage.getItem('deep-sea-peek-dodges')||0}catch(e){}
 const ptrT=new Map();
-let R=()=>Math.random(),L=null,lvl=0,lives=3,ck=1,maxLvl=1,noDrop=0,healTen=-1,lvDeaths={},seen={},runTop=1,daily=false,seed=0,seedCode='',rB=BASE_RATE,rW=WIND_RATE,practice='',nextPractice='',forceLvl=null,dex=false,dexSel=0,assistHid=0,deathEv=null,guarantee=false,dropped=false,scared=false,nibT=0,lostAll=false,captions=false,AMB=.6;
+let wx=0,lastWx=-1,prevWxT=-1,evK='',R=()=>Math.random(),L=null,lvl=0,lives=3,ck=1,maxLvl=1,noDrop=0,healTen=-1,lvDeaths={},seen={},runTop=1,daily=false,seed=0,seedCode='',rB=BASE_RATE,rW=WIND_RATE,practice='',nextPractice='',forceLvl=null,dex=false,dexSel=0,assistHid=0,deathEv=null,guarantee=false,dropped=false,scared=false,nibT=0,lostAll=false,captions=false,AMB=.6;
 try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-save')||'{}');maxLvl=o.m||1;ck=1;lives=o.l||3;noDrop=o.n||0;healTen=o.h==null?-1:o.h;lvDeaths=o.d||{};seen=o.s||{};runTop=o.r||maxLvl}catch(e){}
 const rnd=(a,b)=>a+R()*(b-a);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -45,9 +45,12 @@ try{scrolls=+localStorage.getItem('deep-sea-peek-scrolls')||0}catch(e){}
 try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-opts')||'{}');assist=!!o.a;lowScare=!!o.l;captions=!!o.c;if(typeof o.m==='number')AMB=clamp(o.m,0,1);if(typeof o.v==='number')MASTER=clamp(o.v,0,1)}catch(e){}
 /* ---- levels: 100 levels in 5 worlds, a ten-level sawtooth with buffer levels and a boss every tenth (v0.5 section 5) ---- */
 const WORLD_BASE=[1,1.15,1.3,1.45,1.6],WORLD_NAME=['森林','墓地','沼澤','雪原','火山'];
-const WORLD_RULE=['','濃霧讓視野變窄。','沼澤讓聲音變悶，要聽仔細。','雪地讓腳步沉重，靠邊比較慢。','熱浪讓畫面微微晃動。'];
+const WORLD_RULE=['霧天視野會變窄。','雨聲會蓋住方向，聲音從哪邊來比較難分。','沼澤讓聲音變悶，要聽仔細。','雪地讓腳步沉重，靠邊比較慢。','熱浪讓畫面晃動，灰燼蓋住聲音。'];
 const RHYTHM=[0,.65,.8,.85,.9,.65,.95,1,1.05,1.2,1];   // multiplier by level number inside a ten
-const LEARN={2:'eye',3:'twins',4:'walker',12:'gale'};   // the level that teaches each ghost
+const LEARN={4:'eye',8:'twins',12:'walker',16:'gale'};   // the level that teaches each ghost
+/* ---- level table (docs: 100 關關卡表 v0.6). Worlds 2-5 reuse the four forest ghosts until their own ghosts exist. ---- */
+// kind, weather pool (indices into WX), event flags: c chest, r traveler 30%, n Nib
+const LVT=[0,['safe',[0],''],['safe',[2,0],''],['safe',[3,1],'n'],['learn',[0,1],''],['safe',[0,2],''],['mix',[3,1],''],['mix',[3,0],''],['learn',[4,1],''],['peak',[0,1],''],['boss',[3,2],''],['safe',[1,3],''],['learn',[1,0],''],['normal',[1,3],'c'],['normal',[1,4],''],['review',[0,4],''],['learn',[1,4],''],['mix',[1,4],''],['mix',[2,4],''],['peak',[1,4],''],['boss',[1,4],''],['safe',[1,3],''],['learn',[2,3],''],['learn',[1,2],'c'],['normal',[3,1],''],['safe',[2,3],''],['mix',[4,1],''],['mix',[2,4],'r'],['mix',[4,2],''],['peak',[4,3],''],['boss',[4,3],''],['safe',[4,2],''],['normal',[1,3],''],['normal',[3,2],'c'],['normal',[4,2],''],['review',[4,3],''],['mix',[2,4],''],['mix',[1,3],'r'],['mix',[1,4],''],['peak',[2,3],''],['boss',[2,4],''],['safe',[3,2],''],['learn',[3,5],''],['learn',[3,4],'c'],['normal',[2,4],''],['safe',[2,4],''],['mix',[2,3],''],['mix',[5,2],'r'],['mix',[2,3],''],['peak',[5,3],''],['boss',[5,4],''],['safe',[2,4],''],['normal',[2,5],''],['normal',[2,3],'c'],['normal',[5,3],''],['review',[2,3],''],['mix',[3,5],''],['mix',[3,2],'r'],['mix',[2,3],''],['peak',[3,2],''],['boss',[5,4],''],['safe',[1,6],''],['learn',[7,2],''],['learn',[2,7],'c'],['learn',[1,2],''],['safe',[1,6],''],['mix',[6,2],''],['mix',[6,7],'r'],['mix',[2,6],''],['peak',[7,2],''],['boss',[7,2],''],['safe',[1,6],''],['normal',[7,1],''],['normal',[2,6],'c'],['normal',[6,7],''],['review',[2,6],''],['mix',[1,2],''],['mix',[7,2],'r'],['mix',[1,7],''],['peak',[2,7],''],['boss',[2,7],''],['safe',[9,2],''],['learn',[2,8],''],['learn',[9,1],'c'],['normal',[2,1],''],['safe',[9,2],''],['mix',[2,8],''],['mix',[9,2],'r'],['mix',[1,8],''],['peak',[1,9],''],['boss',[8,2],''],['safe',[1,9],''],['normal',[1,2],''],['normal',[1,9],'c'],['normal',[1,2],''],['review',[2,1],''],['mix',[8,2],''],['mix',[1,2],'r'],['mix',[1,2],''],['peak',[1,9],''],['boss',[1,2],'']];
 const KIND_NAME={safe:'安全緩衝',review:'低壓複習',learn:'學新鬼',normal:'一般',mix:'混合',peak:'高峰',boss:'首領'};
 const WARN_FLOOR={eye:1.6,twins:1.4,walker:3.5,gale:1.6};   // no knob may push a clue below these
 const GALE={warn:2.5,judge:2,toward:.5,grace:.35};            // lean toward the side the reversed wind comes from
@@ -55,14 +58,14 @@ const GHOST_OF={eye:'eye',twins:'twins',walkerLate:'walker',walkerMove:'walker',
 const mulberry=a=>()=>{a=(a+0x6D2B79F5)|0;let t=Math.imul(a^(a>>>15),1|a);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296};
 const deathsOf=ty=>Object.keys(GHOST_OF).filter(k=>GHOST_OF[k]===ty).reduce((a,k)=>a+(deaths[k]||0),0);
 function levelCfg(l,ease){
- const wi=Math.min(4,((l-1)/20)|0),inW=(l-1)%20,k=inW%10+1,ten=((l-1)/10)|0;
+ const wi=Math.min(4,((l-1)/20)|0),inW=(l-1)%20,k=inW%10+1,T=LVT[l]||['normal',[0],''];
  const D=WORLD_BASE[wi]*RHYTHM[k]*(1+(inW>=10?.1:0)),t=clamp((D-.65)/1.45,0,1);
  const pool=['eye','twins','walker','gale'].filter(ty=>l>=+Object.keys(LEARN).find(n=>LEARN[n]===ty));
- const kind=k===1?'safe':k===5?(ten%2?'review':'safe'):k===10?'boss':LEARN[l]?'learn':k>=9?'peak':k>=6?'mix':'normal';
+ let kind=T[0]==='learn'&&!LEARN[l]?'normal':T[0];
  let n=kind==='safe'?0:kind==='review'?1:kind==='boss'?pool.length+1:kind==='learn'?3:Math.round(2+6*t);
  if(ease&&n>1)n--;
  const gap=8-5*t,dur=Math.max(30,8+n*(gap+4.5)),free=kind==='normal'||kind==='mix'||kind==='peak';
- return{l,wi,k,kind,D,t,left:n,gap,rate:100/dur,wmul:1.25-.65*t,ease:!!ease,fixed:k===1||k===10,
+ return{l,wi,k,kind,D,t,left:n,gap,rate:100/dur,wmul:1.25-.65*t,ease:!!ease,fixed:k===1||k===10,wxp:T[1],evf:T[2],
   pool:kind==='learn'?[LEARN[l]]:pool,plan:kind==='boss'?pool.concat('hollow'):null,
   fakeP:l>=15&&free?.15*t:0,chainP:l>=25&&free?.35*t:0}}
 function wpick(pool){   // weighted: the newest ghost x2, the one that killed you most x1.5
@@ -79,7 +82,7 @@ function sv(){try{localStorage.setItem('deep-sea-peek-save',JSON.stringify({m:ma
 function mark(id){if(!seen[id]){seen[id]=1;sv()}}
 function applyLevel(){
  R=()=>Math.random();rB=BASE_RATE;rW=WIND_RATE;seedCode='';
- if(!L){campNext=practice?999:CAMP_EVERY;if(practice)gapT=2;return}
+ if(!L){wx=0;lastWx=-1;campNext=practice?999:CAMP_EVERY;if(practice)gapT=2;return}
  const sEl=hasLv?$('peek-seed'):null,dEl=hasLv?$('peek-daily'):null,sIn=sEl?String(sEl.value||'').trim():'';
  if(L.fixed)seed=L.l*7919+101;
  else if(sIn)seed=parseInt(sIn,36)||1;
@@ -89,7 +92,8 @@ function applyLevel(){
  rB=L.rate;rW=L.rate*2;gapT=L.kind==='learn'?FIRST_GAP:6;
  campNext=L.k===5?50:999;
  guarantee=noDrop>=3;dropT=L.kind==='safe'?rnd(3,5):rnd(5,8);
- nibT=R()<.02?rnd(8,25):0;
+ evK=L.evf==='n'?'nib':L.evf==='c'?'chest':L.evf==='r'&&R()<.3?'rook':'';nibT=evK?rnd(8,22):0;
+ wx=L.wxp[(R()*L.wxp.length)|0];if(L.wxp.length>1&&wx===lastWx)wx=L.wxp.find(x=>x!==lastWx);lastWx=wx;
  assistHid=L.ease?1:0;
  say('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'：'+KIND_NAME[L.kind]+(L.fixed?'（固定種子）':'')+'。'+WORLD_RULE[L.wi]+(L.ease?'小螢多給你 0.3 秒預警，少來一次襲擊。':''))}
 function reset(){eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;shake1=0;sc=0;rB=BASE_RATE;rW=WIND_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
@@ -100,8 +104,8 @@ function audioInit(){if(ac){try{ac.resume()}catch(e){}return}try{const A=window.
 function tone(f,d,vol,pan,type,slide,amb){
  if(!ac)return;
  try{const o=ac.createOscillator(),gn=ac.createGain(),t=ac.currentTime;o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(slide)o.frequency.linearRampToValueAtTime(slide,t+d);
-  gn.gain.setValueAtTime((vol||.05)*(amb?AMB:MASTER*(L&&L.wi===2?.7:1))*1.4,t);gn.gain.linearRampToValueAtTime(.0001,t+d);o.connect(gn);
-  if(ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=pan||0;gn.connect(p);p.connect(ac.destination)}else gn.connect(ac.destination);
+  gn.gain.setValueAtTime((vol||.05)*(amb?AMB:MASTER*(L&&L.wi===2?.7:1)*(wx===8||wx===9?.8:1))*1.4,t);gn.gain.linearRampToValueAtTime(.0001,t+d);o.connect(gn);
+  if(ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=(pan||0)*(wx===3&&L&&L.wi===1?.5:1);gn.connect(p);p.connect(ac.destination)}else gn.connect(ac.destination);
   o.start(t);o.stop(t+d+.02)}catch(e){}}
 function say(text,kind){$('peek-msg').textContent=text;$('peek-msg').className='msg'+(kind?' '+kind:'')}
 peekSay=say;
@@ -225,15 +229,17 @@ const cxy=e=>{const r=c.getBoundingClientRect();
 function giveItem(k){
  if(k==='torch'){bag.torch=Math.min(3,bag.torch+1);fx('火把 +1',CX,150,'#ffb347')}
  else if(k==='charm'){bag.charm=Math.min(2,bag.charm+1);fx('護身符 +1',CX,150,'#7fe8ff')}
+ else if(k==='chest'){giveItem('torch');giveItem('charm');return}
+ else if(k==='rook'){giveItem(R()<.5?'torch':'charm');return}
  else{scrolls++;try{localStorage.setItem('deep-sea-peek-scrolls',scrolls)}catch(e){}fx(k==='nib'?'Nib 塞給你一卷軸':'撿到舊卷軸',CX,150,'#e8c675')}
  mark(k==='nib'?'nib':k)}
-function spawnDrop(kind){const r=R();dropped=true;drops.push({k:kind||(r<.4?'torch':r<.7?'charm':'scroll'),side:R()<.5?-1:1,z:1});mark('rook'===kind?'rook':'flick')}
+function spawnDrop(kind){const r=R();dropped=true;drops.push({k:kind||(r<.4?'torch':r<.7?'charm':'scroll'),side:R()<.5?-1:1,z:1});mark(kind==='rook'?'rook':kind==='chest'?'chest':'flick')}
 function collect(d){d.z=-1;giveItem(d.k);say('撿到'+ITEM_NAME[d.k]+'：'+ITEM_DESC[d.k]+'。','win')}
 function updateDrops(dt,covered,sprint,pk){
  if(!covered){
   if(!ev){dropT-=dt;if(dropT<=0){if(drops.length<2)spawnDrop();dropT=rnd(DROP_EVERY[0],DROP_EVERY[1])}}
   if(guarantee&&!dropped&&prog>=8&&!ev&&drops.length<2)spawnDrop(noDrop>=6?'charm':R()<.5?'torch':'scroll');   // pity: three levels without a drop guarantees one
-  if(nibT>0){nibT-=dt;if(nibT<=0){drops.push({k:'nib',side:R()<.5?-1:1,z:1});mark('nib')}}
+  if(nibT>0){nibT-=dt;if(nibT<=0){drops.push({k:evK||'nib',side:R()<.5?-1:1,z:1});mark(evK||'nib')}}
   const sp=(sprint?.2:.11)*dt;drops.forEach(d=>d.z-=sp)}
  if(pk){let b=null;drops.forEach(d=>{if(d.z>=0&&d.z<PICK_AT&&(!b||d.z<b.z))b=d});if(b)collect(b)}
  drops=drops.filter(d=>d.z>-.05&&d.z>=0)}
@@ -304,7 +310,7 @@ function drawSpirits(){
   if(im)sprite(im,CX,by-8,(ev.boss?110:90)+(ev.boss?360:300)*p,clamp(.2+p*1.1,0,1));else blob(CX,by-60,20+60*p,.3+p*.6,'#08060a')}}
 function drawDrops(){
  drops.forEach(d=>{
-  const s=1-d.z,x=CX+d.side*(90+(SIDE+30-90)*s),y=300+95*s+Math.sin(tt*3+d.side)*3,sz=44+70*s,im=d.k==='nib'?null:art(d.k==='scroll'?'item-chest':'item-'+d.k),near=d.z<PICK_AT;
+  const s=1-d.z,x=CX+d.side*(90+(SIDE+30-90)*s),y=300+95*s+Math.sin(tt*3+d.side)*3,sz=44+70*s,im=d.k==='nib'?null:art(d.k==='scroll'||d.k==='chest'?'item-chest':d.k==='rook'?'npc-rook':'item-'+d.k),near=d.z<PICK_AT;
   g.save();if(near){g.shadowColor='#ffd98a';g.shadowBlur=18}
   if(d.k==='nib'){g.fillStyle='#6b4a32';g.beginPath();g.ellipse(x,y,sz*.3,sz*.22,0,0,7);g.fill();g.fillStyle='#e8d8b8';g.beginPath();g.arc(x-sz*.1,y-sz*.05,3,0,7);g.arc(x+sz*.1,y-sz*.05,3,0,7);g.fill()}
   else if(im)floatImg(im,x,y,sz,1);else{g.fillStyle=d.k==='torch'?'#ffb347':d.k==='charm'?'#7fe8ff':'#e8c675';g.beginPath();g.arc(x,y,sz*.3,0,7);g.fill()}
@@ -509,6 +515,16 @@ function dexClick(e){
   else if(i===0&&ok)playCue({type:d.type==='hollow'?'walker':d.type,side:1});
   else if(i===1&&ok&&st!=='run'){dex=false;practiceStart(d.type==='hollow'?'walker':d.type)}}})}
 function practiceStart(ty){nextPractice=ty;forceLvl=0;start();forceLvl=null}
+function drawWeather(){
+ const w=wx;if(!w)return;
+ const tint=[0,'rgba(150,70,20,.2)','rgba(4,8,30,.42)','rgba(20,30,50,.22)','rgba(190,200,205,.28)','rgba(10,14,28,.4)','rgba(200,215,235,.1)','rgba(235,240,250,.3)','rgba(60,50,45,.25)','rgba(255,120,30,.1)'][w];
+ if(tint){g.fillStyle=tint;g.fillRect(0,0,W,H)}
+ const vis=w===5||w===7?.6:w===4?.8:1;
+ if(vis<1){const gr=g.createRadialGradient(CX,260,330*vis,CX,260,620*vis);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,.85)');g.fillStyle=gr;g.fillRect(0,0,W,H)}
+ const n=w===3?60:w===6?40:w===7?90:w===8?35:0;
+ g.save();for(let i=0;i<n;i++){const sx=(i*97.3+tt*(w===3?260:w===7?340:40*(1+i%3)))%W,sy=(i*53.7+tt*(w===3?520:w===8?30:90))%H;
+  if(w===3){g.strokeStyle='rgba(170,200,230,.45)';g.beginPath();g.moveTo(sx,sy);g.lineTo(sx-4,sy+14);g.stroke()}
+  else{g.fillStyle=w===8?'rgba(150,140,130,.55)':'rgba(255,255,255,.7)';g.fillRect(sx,sy,w===7?3:2,w===7?3:2)}}g.restore()}
 function draw(){
  const I=inputs(),lamp=st==='run'?lampLevel():1,cov=st==='run'&&I.cover;
  const wi=L?L.wi:clamp(Math.floor(prog/20),0,4);
@@ -517,6 +533,7 @@ function draw(){
  drawWorld(lamp);
  if(wi===1){const fg=art('env-fog');if(fg){g.save();g.globalAlpha=.3;g.drawImage(fg,-40,H-260,W+80,260);g.restore()}g.fillStyle='rgba(20,26,30,.22)';g.fillRect(0,0,W,H)}   // graveyard: fog narrows the view
  if(st==='run'){drawSpirits();drawDrops()}
+ if(st==='run'&&L)drawWeather();
  if(ev&&ev.type==='walker'&&ev.phase==='warn'&&ev.t<3.5){g.fillStyle='rgba(200,230,255,'+(.05+.18*(1-ev.t/3.5))+')';g.fillRect(0,0,W,H)}
  fxs.forEach(f=>{g.globalAlpha=1-f.t/.9;tx(f.s,f.x,f.y-f.t*40,22,f.col);g.globalAlpha=1});
  g.restore();

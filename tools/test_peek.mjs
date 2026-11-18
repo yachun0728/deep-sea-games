@@ -175,11 +175,17 @@ check('A charm absorbs one deadly mistake; a pickup needs the item to be near',(
 });
 check('Level table: buffer, learn, boss and difficulty ramp follow the ten-level sawtooth',()=>{
   const f=fixture(),c=n=>JSON.parse(f.ev(`JSON.stringify((({l,wi,k,kind,left,plan,pool,fixed,fakeP,chainP})=>({l,wi,k,kind,left,plan,pool,fixed,fakeP,chainP}))(levelCfg(${n})))`));
-  assert.equal(c(1).kind,'safe');assert.equal(c(1).left,0);assert.equal(c(1).fixed,true);assert.equal(c(2).kind,'learn');assert.deepEqual(c(2).pool,['eye']);assert.deepEqual(c(3).pool,['twins']);assert.deepEqual(c(4).pool,['walker']);
-  assert.equal(c(5).kind,'safe');assert.equal(c(15).kind,'review');assert.equal(c(15).left,1);assert.equal(c(12).kind,'learn');assert.deepEqual(c(12).pool,['gale']);
-  assert.equal(c(9).kind,'peak');assert.equal(c(10).kind,'boss');assert.deepEqual(c(10).plan,['eye','twins','walker','hollow']);assert.equal(c(30).plan.at(-1),'hollow');assert.ok(c(30).plan.includes('gale'));
+  assert.equal(c(1).kind,'safe');assert.equal(c(1).left,0);assert.equal(c(1).fixed,true);assert.equal(c(2).kind,'safe');assert.equal(c(3).kind,'safe');assert.equal(c(4).kind,'learn');assert.deepEqual(c(4).pool,['eye']);assert.deepEqual(c(8).pool,['twins']);assert.equal(c(30).kind,'boss');assert.equal(c(22).kind,'normal');
+  assert.equal(c(5).kind,'safe');assert.equal(c(15).kind,'review');assert.equal(c(15).left,1);assert.equal(c(12).kind,'learn');assert.deepEqual(c(12).pool,['walker']);assert.deepEqual(c(16).pool,['gale']);
+  assert.equal(c(9).kind,'peak');assert.equal(c(10).kind,'boss');assert.deepEqual(c(10).plan,['eye','twins','hollow']);assert.equal(c(30).plan.at(-1),'hollow');assert.ok(c(30).plan.includes('gale'));
   assert.equal(c(21).wi,1);assert.equal(c(100).wi,4);assert.equal(c(99).left,8);assert.ok(c(9).left<c(29).left&&c(29).left<c(89).left);
   assert.equal(c(14).fakeP,0);assert.ok(c(18).fakeP===0||c(18).fakeP>0);assert.equal(c(26).chainP>0,true);assert.equal(c(24).chainP,0);
+});
+check('Weather comes from the level pool and never repeats on consecutive levels; events follow the table',()=>{
+  const f=fixture();
+  for(let l=2;l<=100;l++){f.F.ev("st='over';forceLvl="+l+";maxLvl=100;runTop=100");f.F.start();assert.equal(f.ev('L.l'),l);const w=f.ev('wx'),pool=JSON.parse(f.ev('JSON.stringify(L.wxp)'));assert.ok(pool.includes(w),'level '+l+' weather');if(pool.length>1&&l>2)assert.notEqual(w,f.ev('prevWxT'),'repeat at '+l);f.F.ev('prevWxT=wx')}
+  const ev=l=>{const g=fixture();g.F.ev('forceLvl='+l+';maxLvl=100;runTop=100');g.F.start();return g.ev('evK')};
+  assert.equal(ev(3),'nib');assert.equal(ev(13),'chest');assert.equal(ev(14),'');
 });
 check('A safe level has only harmless false cues; clearing it pays once and unlocks the next level',()=>{
   const f=fixture(500,null,()=>.3);f.F.ev('forceLvl=1');f.F.ev('maxLvl=1');f.F.start();assert.equal(f.ev('L.l'),1);f.hold('wind');f.run(200);
@@ -202,12 +208,12 @@ check('Gale must be met by leaning toward the reversed wind; boss Hollow is a lo
   h.run(7);assert.equal(h.ev('why'),'hollowLate');
 });
 check('Boss level runs its fixed plan, saves a checkpoint and adds a life',()=>{
-  const f=fixture();f.F.ev('forceLvl=10;maxLvl=10;lives=3');f.F.start();assert.equal(f.ev('L.plan.length'),4);
-  const seq=[];for(let i=0;i<4;i++){f.F.ev('ev=null;startEvent()');seq.push(f.ev('ev.boss?"hollow":ev.type'))}assert.deepEqual(seq,['eye','twins','walker','hollow']);
+  const f=fixture();f.F.ev('forceLvl=10;maxLvl=10;lives=3');f.F.start();assert.equal(f.ev('L.plan.length'),3);
+  const seq=[];for(let i=0;i<3;i++){f.F.ev('ev=null;startEvent()');seq.push(f.ev('ev.boss?"hollow":ev.type'))}assert.deepEqual(seq,['eye','twins','hollow']);
   const g=fixture();g.F.ev('forceLvl=10;maxLvl=10;lives=3');g.F.start();g.F.ev('ev=null;gapT=999;prog=99.9;L.left=0');g.hold('wind');g.run(1);assert.equal(g.ev('st'),'won');assert.equal(g.ev('ck'),1);assert.equal(g.ev('lives'),4);assert.equal(g.ev('maxLvl'),11);
 });
 check('Fixed-seed levels repeat exactly; seed code is shown for the others',()=>{
-  const run=()=>{const f=fixture(500,null,()=>.9);f.F.ev('forceLvl=10;maxLvl=10');f.F.start();return f.ev('seedCode')+'|'+[0,1,2,3].map(()=>{f.F.ev('ev=null;startEvent()');return f.ev('ev.side')}).join()};
+  const run=()=>{const f=fixture(500,null,()=>.9);f.F.ev('forceLvl=10;maxLvl=10');f.F.start();return f.ev('seedCode')+'|'+[0,1,2].map(()=>{f.F.ev('ev=null;startEvent()');return f.ev('ev.side')}).join()};
   assert.equal(run(),run());
   const f=fixture();f.F.ev('forceLvl=6;maxLvl=6');f.F.start();assert.ok(f.ev('seedCode').length>0);
 });
