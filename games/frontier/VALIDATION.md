@@ -49,3 +49,11 @@ Integrated on origin/main 78f0a23 to preserve the latest TiCATiCA name, BONUS la
 - Local play visibly reached stage 2, with four active workers, warehouse deliveries, full 36-slot quarry bag, gold retained and manual stage departure. Not all 50 stages were human-playtested.
 - Screenshot saved at /tmp/frontier-polish-landscape.jpg. The automated headless browser runner was attempted but Chrome closed its test pipe; it is not reported as passed. Manual Chrome checks above were performed instead.
 - Remaining: real iOS/Android orientation lock and touch feel, long-session mobile performance, 50-stage human balance, GA4 backend receipt. Publication must be confirmed separately after push.
+
+## Siege and Safari help publication checks
+
+- Node model/adapter: 353 assertions passed, including timed waves, HQ loss, paid training, warrior combat and save restoration.
+- Python: all 19 tests passed; generated build and diff checks passed.
+- Manual Chrome 390px: expanded mobile help displays the three Safari instructions; closing hides it and keeps the start button available. Expanding help does not start a round.
+- Short landscape styles and visualViewport sizing implemented; real iPhone Safari toolbar transitions and home-screen launch remain unverified. Browser hint only explains actions; it cannot hide native browser controls.
+- No changes to platform balance or Lobby sources in this update. Frontier remains free and does not grant or deduct platform points.

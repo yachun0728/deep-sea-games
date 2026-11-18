@@ -687,3 +687,9 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 Worker harvests now create visible world.supplies. Players collect within 58 units, or take carried worker cargo within 42 units. Transfer debits the source before crediting the bag; partial pickups leave the remainder, and full bags remove nothing. Workers wait 0.65 seconds before collecting nearby supplies and still deliver five-unit loads. Supplies are an optional additive save field, defaulting to []. Pickup and warehouse delivery use distinct floating feedback.
 
 Equipment initially caps at level 2. Mill / forge / quarry unlock tool / weapon / pack levels to 8. Existing higher equipment is not downgraded. Mill adds one wood per harvest and one lumberjack; quarry adds one stone per harvest, twelve bag slots and one miner; forge retains +9 attack and frost protection. A cottage supports two workers, mill and quarry each add one, and two rescues bring the total to six. Capacity is 24 + 9 * pack level + 12 with an operational quarry. Damage disables building bonuses without deleting excess carried resources. These formulas supersede the older unrestricted level-8 and worker-count descriptions above.
+
+### Frontier siege and mobile update (2026-11-18)
+
+每關開場準備 40 秒後持續出怪，必要波數為 3＋區域序號＋floor(區域內關卡序號/4)（序號從 0 起），間隔隨關卡縮短至最低 18 秒；清完必要波次且完成既有條件才能建燈塔。之後仍會繼續來襲，需自行離島。敵人以大本營為目標，可被玩家與戰士攔截；大本營血量 360＋80×區域序號，歸零立刻失敗。第 11 關起可建戰士小屋，靠近後消耗倉庫木材 18＋2×區域序號、石材 10＋區域序號，排隊訓練 2 秒。部隊與排隊合計上限 4＋區域序號；戰士會自動迎敵，資料隨當關保存。
+
+手機短橫向畫面使用角落 HUD，倉庫與工人數收進任務。開始與暫停畫面提供可關閉的 Safari 操作提示：隱藏工具列、加入主畫面並以網頁 App 開啟；任務內可重新查看。不代替瀏覽器操作，也不清除玩家存檔。

@@ -85,3 +85,38 @@
 
 html.frontier-immersive .top,html.frontier-immersive .game-toolbar{display:none!important}
 html.frontier-immersive{overflow:hidden}
+
+/* Safari's visible viewport excludes its native address/tab bars. */
+#view-frontier .ft-main.ft-immersive{top:var(--ft-visible-top,0px);bottom:auto;height:var(--ft-visible-height,100dvh);padding:0;box-sizing:border-box}
+#view-frontier .ft-assault{position:absolute;z-index:4;top:99px;left:14px;background:#423921dd;color:#ffe3a4;border:1px solid #e6bf6555;border-radius:8px;padding:5px 9px;font-size:11px;pointer-events:none}
+#view-frontier #ft-base-health{color:#bce8c8;font-size:11px}
+@media(orientation:landscape) and (max-height:500px){
+ #view-frontier .ft-top,#view-frontier .ft-main:fullscreen .ft-top,#view-frontier .ft-main.ft-immersive .ft-top{left:max(8px,env(safe-area-inset-left));right:auto;top:6px;width:auto;max-width:calc(100% - 120px);padding:3px 7px;gap:6px;box-sizing:border-box}
+ #view-frontier .ft-top .ft-status{font-size:11px;gap:8px;flex-wrap:nowrap;white-space:nowrap}
+ #view-frontier #ft-zone{display:none}
+ #view-frontier .ft-objective{display:none}
+ #view-frontier .ft-assault{top:51px;left:max(8px,env(safe-area-inset-left));font-size:10px;padding:3px 7px}
+ #view-frontier .ft-resource,#view-frontier .ft-main:fullscreen .ft-resource,#view-frontier .ft-main.ft-immersive .ft-resource{left:auto;right:max(8px,env(safe-area-inset-right));bottom:6px;width:auto;max-width:calc(100% - 110px);padding:4px 7px;gap:7px;flex-wrap:nowrap}
+ #view-frontier #ft-stock,#view-frontier #ft-workers{display:none}
+ #view-frontier #ft-home{margin-left:0}
+ #view-frontier .ft-top button,#view-frontier .ft-resource button{min-width:44px;min-height:38px;padding:4px;font-size:0}
+ #view-frontier #ft-full::after{content:'⤢';font-size:21px}#view-frontier #ft-journal::after{content:'☰';font-size:19px}
+ #view-frontier #ft-home::after{content:'⌂';font-size:23px}#view-frontier #ft-shop-toggle::after{content:'⚒';font-size:22px}#view-frontier #ft-pause::after{content:'Ⅱ';font-size:20px}
+ #view-frontier #ft-next{font-size:11px;padding:4px 8px}
+ #view-frontier .ft-touch{bottom:14px;left:max(14px,env(safe-area-inset-left));right:16px}
+ #view-frontier #ft-stick{width:88px;height:88px}#view-frontier #ft-knob{left:25px;top:25px}
+ #view-frontier .ft-mission{top:82px;max-height:calc(100% - 100px);overflow:auto}
+ #view-frontier .ft-shop{top:6px;bottom:6px;width:280px;max-height:none}
+ #view-frontier .ft-main.ft-shop-open .ft-top,#view-frontier .ft-main.ft-shop-open .ft-resource{right:300px;max-width:calc(100% - 410px)}
+}
+
+/* Explain Safari controls before play; never cover the running playfield. */
+#view-frontier .ft-browser-tip{display:none;width:min(420px,100%);padding:10px 12px;border:1px solid #e6c68266;border-radius:12px;background:#123a36e8;text-align:left;font-size:12px;box-sizing:border-box}
+#view-frontier .ft-browser-tip[hidden]{display:none!important}
+#view-frontier .ft-browser-tip summary,#view-frontier .ft-browser-help summary{cursor:pointer;color:#ffe2a2;font-weight:700;line-height:1.5}
+#view-frontier .ft-browser-tip p,#view-frontier .ft-browser-help p{font-size:12px;line-height:1.65;margin:8px 0;max-width:100%}
+#view-frontier #ft-browser-tip-close{font-size:11px;min-height:32px;padding:4px 10px;margin-top:6px}
+#view-frontier .ft-overlay{overflow-y:auto}
+@media(pointer:coarse),(max-width:600px){#view-frontier .ft-browser-tip{display:block}}
+@media(orientation:landscape) and (max-height:500px){#view-frontier .ft-overlay{justify-content:flex-start;padding:14px;gap:8px}#view-frontier .ft-overlay h2{font-size:25px}#view-frontier .ft-overlay>p{margin:0;font-size:12px}#view-frontier .ft-overlay>.ft-eyebrow{display:none}}
+@media(display-mode:standalone),(display-mode:fullscreen){#view-frontier .ft-browser-tip{display:none}}

@@ -9,7 +9,7 @@
     var orientationLocked=false;
     var keys={},stick={x:0,y:0,id:null},dash=false,walkTarget=null,viewCamera=null;
     var zones=['翠葉群島','斷崖海岸','荊棘森林','寒霜高地','熔火遺跡'];
-    var labels={camp:'營地',mill:'木材廠',forge:'鐵匠鋪',bridge:'橋樑',tower:'箭塔',beacon:'燈塔',house:'工人小屋',market:'市集',quarry:'採石場',depot:'前線分倉'};
+    var labels={camp:'營地',mill:'木材廠',forge:'鐵匠鋪',bridge:'橋樑',tower:'箭塔',beacon:'燈塔',barracks:'戰士小屋',house:'工人小屋',market:'市集',quarry:'採石場',depot:'前線分倉'};
     var missions={build:'建立據點，清除守衛，點亮燈塔。',rescue:'救出兩位工人，再點亮燈塔。',hunt:'擊敗所有守衛，再點亮燈塔。',defend:'建造箭塔，抵擋所有波次，再點亮燈塔。',elite:'擊敗精英守衛，再點亮燈塔。',boss:'擊敗區域首領，再點亮燈塔。'};
     function set(id,text){var e=$(id);if(window.deepSeaI18n.sourceText(e)!==String(text))e.textContent=text;}
     function safeNumbers(v){if(typeof v==='number')return Number.isFinite(v)&&Math.abs(v)<1e7;if(Array.isArray(v))return v.length<400&&v.every(safeNumbers);if(v&&typeof v==='object')return Object.values(v).every(safeNumbers);return true;}
@@ -22,7 +22,7 @@
           var sample=frontierWorld(w.level),legacyKeys=['version','level','time','phase','p','bag','bank','nodes','enemies','shots','effects','kills','rescued','hold','wave','waveAt','heal','worker','threat','buildings','cages','tech'];
           var shape={};legacyKeys.forEach(function(k){shape[k]=sample[k];});shape.nodes=[];shape.enemies=[];shape.shots=[];shape.effects=[];shape.buildings=[];
           var valid=validShape(w,shape)&&w.nodes.length>=62&&w.nodes.length<=400&&w.buildings.length>=6&&w.buildings.length<=12&&w.cages.length===2&&w.enemies.length<=100&&w.enemies.every(function(e){return validShape(e,sample.enemies[0]);})&&w.shots.every(function(s){return ['x','y','vx','vy','t'].every(function(k){return typeof s[k]==='number';});})&&['play','clear','dead'].includes(w.phase)&&['tool','blade','pack'].every(function(k){return Number.isInteger(w.tech[k])&&w.tech[k]>=0&&w.tech[k]<=8;})&&w.nodes.every(function(n){return validShape(n,sample.nodes[0])&&['wood','stone'].includes(n.kind)&&n.left>=0&&n.left<=6;})&&w.buildings.every(function(b,i){return sample.buildings[i]&&b.kind===sample.buildings[i].kind&&validShape(b,{kind:'',x:0,y:0,built:false,wood:0,stone:0});});
-          if(valid&&(!w.supplies||Array.isArray(w.supplies)&&w.supplies.length<=200&&w.supplies.every(function(d){return validShape(d,{x:0,y:0,kind:'',amount:0,wait:0})&&['wood','stone'].includes(d.kind)&&d.amount>0;}))&&(!w.workers||Array.isArray(w.workers)&&w.workers.length<=6&&w.workers.every(function(a){return validShape(a,{x:0,y:0,wood:0,stone:0,target:0,t:0,mode:''});}))&&(!w.drops||Array.isArray(w.drops)&&w.drops.length<=100&&w.drops.every(function(d){return validShape(d,{x:0,y:0,amount:0});}))&&(!w.camps||Array.isArray(w.camps)&&w.camps.length<=3&&w.camps.every(function(c){return validShape(c,{x:0,y:0,hp:0,maxHp:0,cool:0});})))world=frontierMigrate(w);
+          if(valid&&(!w.siege||validShape(w.siege,{wave:0,next:0}))&&(!w.fighters||Array.isArray(w.fighters)&&w.fighters.length<=12&&w.fighters.every(function(a){return validShape(a,{x:0,y:0,hp:0,max:0,attack:0});}))&&(!w.supplies||Array.isArray(w.supplies)&&w.supplies.length<=200&&w.supplies.every(function(d){return validShape(d,{x:0,y:0,kind:'',amount:0,wait:0})&&['wood','stone'].includes(d.kind)&&d.amount>0;}))&&(!w.workers||Array.isArray(w.workers)&&w.workers.length<=6&&w.workers.every(function(a){return validShape(a,{x:0,y:0,wood:0,stone:0,target:0,t:0,mode:''});}))&&(!w.drops||Array.isArray(w.drops)&&w.drops.length<=100&&w.drops.every(function(d){return validShape(d,{x:0,y:0,amount:0});}))&&(!w.camps||Array.isArray(w.camps)&&w.camps.length<=3&&w.camps.every(function(c){return validShape(c,{x:0,y:0,hp:0,maxHp:0,cool:0});})))world=frontierMigrate(w);
         }
         if(paid&&!world){world=frontierWorld(Math.min(50,cleared+1));set('ft-storage','存檔內容不完整，已保留遠征資格與通關紀錄，重建當關。');}
       }catch(e){set('ft-storage','無法讀取存檔；請確認瀏覽器允許本機儲存。');}
@@ -48,12 +48,12 @@
     function selectLevel(n){if(!paid||n>Math.min(50,cleared+1))return;pause();pendingLevel=n;set('ft-select-label','前往關卡 '+n+'？');$('ft-select').hidden=false;}
     function updateMap(){Array.from($('ft-map').children).forEach(function(b,i){b.disabled=!paid||i+1>Math.min(50,cleared+1);var cl=(i+1<=cleared?'ft-done ':'')+(world&&world.level===i+1?'ft-current':'');if(b.className!==cl)b.className=cl;var current=world&&world.level===i+1?'step':'false';if(b.getAttribute('aria-current')!==current)b.setAttribute('aria-current',current);});}
     function update(){
-      var w=world||preview,overlay=$('ft-overlay');set('ft-zone',zones[w.cfg.chapter]);set('ft-level',w.level+' / 50');set('ft-health','♥ '+Math.ceil(w.p.hp));
+      var w=world||preview,overlay=$('ft-overlay');var cost=frontierRecruitCost(w),barracks=w.buildings.find(function(b){return b.kind==='barracks';});set('ft-recruit','訓練戰士 · 🪵 '+cost.wood+' ◆ '+cost.stone+' · '+w.fighters.length+'/'+(4+w.cfg.chapter));$('ft-recruit').disabled=!world||paused||!barracks||!barracks.built||barracks.hp<=0||!frontierNear(w.p,barracks,110);set('ft-army','戰士 '+w.fighters.length+' · 訓練中 '+(barracks&&barracks.queue||0));set('ft-journal-stock','倉庫 🪵 '+w.bank.wood+' · ◆ '+w.bank.stone+' · 工人 '+w.workers.length);set('ft-zone',zones[w.cfg.chapter]);set('ft-level',w.level+' / 50');set('ft-health','♥ '+Math.ceil(w.p.hp));set('ft-base-health','大本營 '+Math.ceil(w.buildings[0].hp)+'/'+w.buildings[0].maxHp);set('ft-assault','第 '+Math.min(w.siege.wave,w.cfg.assaultWaves)+'/'+w.cfg.assaultWaves+' 波 · 下一波 '+Math.ceil(w.siege.next)+'s');
       var objective=missions[w.cfg.mission];if(frontierReady(w))objective='任務完成！前往東側燈塔投入材料。';if(frontierBuilt(w,'beacon'))objective='島嶼已開拓，可繼續採集或前往下一島。';
       var detail=w.cfg.mission==='rescue'?' · '+w.rescued+'/2':w.cfg.mission==='defend'?' · '+w.wave+'/'+w.cfg.waves+' · '+Math.floor(w.hold)+'s':w.cfg.mission==='boss'||w.cfg.mission==='elite'?'':' · '+w.kills+'/'+(w.cfg.mission==='build'?Math.ceil(w.cfg.enemies*.65):w.cfg.enemies);
       set('ft-objective',objective+detail);set('ft-bag','背包 '+(w.bag.wood+w.bag.stone)+'/'+frontierCapacity(w)+' · 🪵 '+w.bag.wood+' · ◆ '+w.bag.stone);set('ft-stock','倉庫 '+'🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');set('ft-building-effects',(frontierBuilt(w,'mill')?'木材廠：伐木 +1、工具上限 8、伐木工 +1。':'木材廠：建造後強化伐木，解鎖工具上限。')+' '+(frontierBuilt(w,'quarry')?'採石場：採石 +1、背包 +12、背包上限 8、採石工 +1。':'採石場：建造後增加背包容量與採石工。')+' '+(frontierBuilt(w,'forge')?'鐵匠鋪：攻擊 +9、武器上限 8、解除寒霜減速。':'鐵匠鋪：建造後強化攻擊，解鎖武器上限。'));set('ft-coins','金幣 '+w.coins);set('ft-workers','工人 '+w.workers.length);set('ft-hauling','搬運中 '+w.workers.reduce(function(n,a){return n+a.wood+a.stone;},0)+' · 地面資源 '+w.supplies.reduce(function(n,d){return n+d.amount;},0));set('ft-checklist',
         (frontierBuilt(w,'house')?'✓ ':'○ ')+labels.house+' · '+(frontierBuilt(w,'market')?'✓ ':'○ ')+labels.market+' · '+(frontierBuilt(w,'mill')?'✓ ':'○ ')+labels.mill+(w.cfg.chapter>0?' · '+(frontierBuilt(w,'depot')?'✓ ':'○ ')+labels.depot:'')+' · '+(w.camps.filter(function(c){return c.hp>0;}).length)+' 敵營');
-      set('ft-warning',w.cfg.chapter>=2&&frontierBuilt(w,'bridge')?'敵襲倒數 '+Math.ceil(w.raidAt)+'s':'靠近資源採集，靠近地基建造');
+      set('ft-warning',w.siege.next<12?'敵襲倒數 '+Math.ceil(w.siege.next)+'s':'靠近資源採集，靠近地基建造');
       $('ft-next').hidden=!world||!frontierBuilt(w,'beacon');$('ft-next').disabled=paused;set('ft-full',document.fullscreenElement||$('ft-main').classList.contains('ft-immersive')?'退出全螢幕':'全螢幕');
       var market=w.buildings.find(function(b){return b.kind==='market';}),atMarket=market&&market.built&&market.hp>0&&frontierNear(w.p,market,100);
       ['wood','stone'].forEach(function(k){$('ft-sell-'+k).disabled=!world||paused||!atMarket||w.bank[k]<Number($('ft-sale-count').value||10);});
@@ -62,7 +62,7 @@
       overlay.hidden=!!world&&!paused&&w.phase==='play';
       if(!overlay.hidden){
         var title='荒島遠征',message='五大區域，五十場考驗。建立據點，穿越危險地帶。',button='免費開始遠征';
-        if(world){if(w.phase==='dead'){title='遠征失敗';message='科技升級保留。調整建造順序，利用預告閃避攻擊。';button='免費重試當關';}else if(w.phase==='clear'){title=w.level===50?'五十關全破！':'燈塔已點亮';message='科技已保存，下一關將建立新的據點。';button=w.level===50?'重遊群島 · 免費':'下一關 · 免費';}else{title='遠征已暫停';message='進度已保留，準備好再繼續。';button='繼續遠征 · 免費';}}
+        if(world){if(w.phase==='dead'){title=w.failure==='base'?'大本營失守':'遠征失敗';message='科技升級保留。調整建造順序，利用預告閃避攻擊。';button='免費重試當關';}else if(w.phase==='clear'){title=w.level===50?'五十關全破！':'燈塔已點亮';message='科技已保存，下一關將建立新的據點。';button=w.level===50?'重遊群島 · 免費':'下一關 · 免費';}else{title='遠征已暫停';message='進度已保留，準備好再繼續。';button='繼續遠征 · 免費';}}
         set('ft-title',title);if(!transientMessage)set('ft-message',message);set('ft-go',button);
       }updateMap();
     }
@@ -86,7 +86,9 @@
     function autoScreen(){if(isHandheld())enterScreen();}
     function screenClass(active){if(document.documentElement){if(active)document.documentElement.classList.add('frontier-immersive');else document.documentElement.classList.remove('frontier-immersive');}}
     function syncOrientation(){
-      var main=$('ft-main'),touch=isHandheld();
+      var main=$('ft-main'),touch=isHandheld(),vv=window.visualViewport;
+      if(main.style.setProperty){main.style.setProperty('--ft-visible-height',(vv?vv.height:window.innerHeight)+'px');main.style.setProperty('--ft-visible-top',(vv?vv.offsetTop:0)+'px');}
+      if(window.innerHeight&&window.innerWidth>window.innerHeight&&window.innerHeight<=500)main.classList.add('ft-short');else main.classList.remove('ft-short');
       var rotate=!!(visible&&touch&&(document.fullscreenElement||main.classList.contains('ft-immersive'))&&window.matchMedia('(orientation: portrait)').matches);
       $('ft-rotate').hidden=!rotate;if(rotate)pause();
     }
@@ -97,23 +99,26 @@
       else syncOrientation();
     }
     function enterScreen(){
-      var main=$('ft-main');screenClass(true);if(document.fullscreenElement||main.classList.contains('ft-immersive')){requestLandscape();return;}
-      function fallback(){main.classList.add('ft-immersive');requestLandscape();}
+      var main=$('ft-main');screenClass(true);syncOrientation();if(document.fullscreenElement||main.classList.contains('ft-immersive')){requestLandscape();return;}
+      function fallback(){main.classList.add('ft-immersive');syncOrientation();requestLandscape();}
       if(main.requestFullscreen){try{var result=main.requestFullscreen();if(result&&result.then)result.then(requestLandscape,fallback);}catch(e){fallback();}}
       else fallback();
     }
     function exitScreen(){if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(function(){});$('ft-main').classList.remove('ft-immersive');if(orientationLocked&&window.screen&&window.screen.orientation&&window.screen.orientation.unlock)window.screen.orientation.unlock();orientationLocked=false;screenClass(false);$('ft-rotate').hidden=true;}
+    if(window.visualViewport){window.visualViewport.addEventListener('resize',syncOrientation);window.visualViewport.addEventListener('scroll',syncOrientation);}
     window.addEventListener('resize',syncOrientation);window.addEventListener('orientationchange',syncOrientation);
     document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement&&!$('ft-main').classList.contains('ft-immersive')){if(orientationLocked&&window.screen&&window.screen.orientation&&window.screen.orientation.unlock)window.screen.orientation.unlock();orientationLocked=false;screenClass(false);}syncOrientation();});
+    $('ft-browser-tip-close').addEventListener('click',function(){$('ft-browser-tip').hidden=true;});
     $('ft-rotate-exit').addEventListener('click',exitScreen);
     $('ft-full').addEventListener('click',function(){if(document.fullscreenElement||$('ft-main').classList.contains('ft-immersive'))exitScreen();else enterScreen();});
-    $('ft-stage').addEventListener('click',function(e){if(e.target!==canvas&&!(e.target.closest&&e.target.closest('#ft-overlay')))return;if(e.target.closest&&e.target.closest('button'))return;if(paused){start();}});
+    $('ft-stage').addEventListener('click',function(e){if(e.target!==canvas&&!(e.target.closest&&e.target.closest('#ft-overlay')))return;if(e.target.closest&&e.target.closest('button,summary,details,a,#ft-browser-tip'))return;if(paused){start();}});
     canvas.addEventListener('pointerdown',function(e){if(paused)return;var r=canvas.getBoundingClientRect();if(viewCamera)walkTarget={x:(e.clientX-r.left)/viewCamera.scale+viewCamera.left,y:(e.clientY-r.top)/viewCamera.scale+viewCamera.top};if(walkTarget&&walkTarget.x>552&&walkTarget.x<678){walkTarget.x=walkTarget.x<615?530:700;}AN.interact();});
     function showShop(open){$('ft-shop').hidden=!open;$('ft-shop-toggle').setAttribute('aria-expanded',String(open));if(open)$('ft-main').classList.add('ft-shop-open');else $('ft-main').classList.remove('ft-shop-open');release();if(!open)canvas.focus({preventScroll:true});}
     $('ft-journal').addEventListener('click',function(){var open=$('ft-task-details').hidden;$('ft-task-details').hidden=!open;this.setAttribute('aria-expanded',String(open));release();});
     $('ft-shop-toggle').addEventListener('click',function(){showShop($('ft-shop').hidden);});
     $('ft-shop-close').addEventListener('click',function(){showShop(false);});
     ['wood','stone'].forEach(function(k){$('ft-sell-'+k).addEventListener('click',function(){if(!world||paused)return;var sold=frontierSell(world,k,Number($('ft-sale-count').value||10));set('ft-upgrade',sold?'交易完成':'需要市集、倉庫材料與靠近市集');if(sold)persist();update();});});
+    $('ft-recruit').addEventListener('click',function(){if(world&&!paused){var recruited=frontierRecruit(world);set('ft-upgrade',recruited?'戰士訓練中':'需要戰士小屋、足夠材料與空位');if(recruited)persist();update();}});
     $('ft-next').addEventListener('click',function(){if(world&&!paused&&frontierLeave(world))finishStage();});
     $('ft-home').addEventListener('click',function(){if(world&&!paused){walkTarget={x:180,y:450};AN.interact();}});
     document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});window.addEventListener('blur',pause);window.addEventListener('pagehide',function(e){pause();if(!e.persisted)endRound('abandoned');},{capture:true});

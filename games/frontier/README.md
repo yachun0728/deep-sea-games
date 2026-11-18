@@ -7,13 +7,13 @@
 - 網址：`#frontier`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「砍出道路，建立據點，挑戰五大區域與五十關考驗。」｜遠征與續玩皆免費 · 50 關 · 自動存檔
 - 追蹤名稱（GA4 `game_name`）：荒島遠征，`game_id` 為 `frontier`
-- 檔案：`games/frontier/AGENTS.md`、`games/frontier/ART_DIRECTION.md`、`games/frontier/VALIDATION.md`、`games/frontier/card.html`、`games/frontier/draw.js`、`games/frontier/game.js`、`games/frontier/icon.svg`、`games/frontier/style.css`、`games/frontier/view.html`、`games/frontier/world.js`；`game.js` 共 123 行、18.6 KB
+- 檔案：`games/frontier/AGENTS.md`、`games/frontier/ART_DIRECTION.md`、`games/frontier/VALIDATION.md`、`games/frontier/card.html`、`games/frontier/draw.js`、`games/frontier/game.js`、`games/frontier/icon.svg`、`games/frontier/style.css`、`games/frontier/view.html`、`games/frontier/world.js`；`game.js` 共 128 行、20.5 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「46. 荒島遠征 Frontier Islands（frontier）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-frontier`、`ft-main`、`ft-zone`、`ft-level`、`ft-health`、`ft-journal`、`ft-full`、`ft-objective`、`ft-task-details`、`ft-checklist`、`ft-warning`、`ft-hauling`、`ft-stage`、`ft-canvas`、`ft-overlay`、`ft-title`、`ft-message`、`ft-go`、`ft-rotate`、`ft-rotate-exit`、`ft-stick`、`ft-knob`、`ft-dash`、`ft-bag`、`ft-stock`、`ft-coins`、`ft-workers`、`ft-home`、`ft-shop-toggle`、`ft-pause`、`ft-next`、`ft-shop`、`ft-shop-close`、`ft-sale-count`、`ft-building-effects`、`ft-sell-wood`、`ft-sell-stone`、`ft-tool`、`ft-blade`、`ft-pack`、`ft-upgrade`、`ft-storage`、`ft-record`、`ft-map`、`ft-select`、`ft-select-label`、`ft-select-yes`、`ft-select-no`
+`view-frontier`、`ft-main`、`ft-zone`、`ft-level`、`ft-health`、`ft-base-health`、`ft-journal`、`ft-full`、`ft-assault`、`ft-objective`、`ft-task-details`、`ft-checklist`、`ft-warning`、`ft-hauling`、`ft-army`、`ft-journal-stock`、`ft-stage`、`ft-canvas`、`ft-overlay`、`ft-title`、`ft-message`、`ft-browser-tip`、`ft-browser-tip-close`、`ft-go`、`ft-rotate`、`ft-rotate-exit`、`ft-stick`、`ft-knob`、`ft-dash`、`ft-bag`、`ft-stock`、`ft-coins`、`ft-workers`、`ft-home`、`ft-shop-toggle`、`ft-pause`、`ft-next`、`ft-shop`、`ft-shop-close`、`ft-sale-count`、`ft-building-effects`、`ft-recruit`、`ft-sell-wood`、`ft-sell-stone`、`ft-tool`、`ft-blade`、`ft-pack`、`ft-upgrade`、`ft-storage`、`ft-record`、`ft-map`、`ft-select`、`ft-select-label`、`ft-select-yes`、`ft-select-no`
 
 ## 狀態與常數
 
@@ -21,7 +21,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`set` L14、`safeNumbers` L15、`validShape` L16、`loadFrontier` L17、`persist` L30、`params` L31、`release` L32、`endRound` L33、`pause` L34、`start` L35、`selectLevel` L48、`updateMap` L49、`update` L50、`finishStage` L70、`frame` L71、`moveStick` L82、`isHandheld` L85、`autoScreen` L86、`screenClass` L87、`syncOrientation` L88、`requestLandscape` L93、`enterScreen` L99、`fallback` L101、`exitScreen` L105、`showShop` L112
+`set` L14、`safeNumbers` L15、`validShape` L16、`loadFrontier` L17、`persist` L30、`params` L31、`release` L32、`endRound` L33、`pause` L34、`start` L35、`selectLevel` L48、`updateMap` L49、`update` L50、`finishStage` L70、`frame` L71、`moveStick` L82、`isHandheld` L85、`autoScreen` L86、`screenClass` L87、`syncOrientation` L88、`requestLandscape` L95、`enterScreen` L101、`fallback` L103、`exitScreen` L107、`showShop` L116
 
 ## 錢包與結算接點
 

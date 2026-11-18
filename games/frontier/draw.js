@@ -1,4 +1,5 @@
 // Cropped production art, separate from the concept board. Geometric fallback keeps slow/offline loads playable.
+var ftWarrior=typeof Image==='function'?new Image():null;if(ftWarrior)ftWarrior.src='games/frontier/art/warrior.png';
 var ftAtlas=typeof Image==='function'?new Image():null;
 if(ftAtlas)ftAtlas.src='games/frontier/art/sprites.png';
 function ftSprite(index,x,y,size){if(!ftAtlas||!ftAtlas.complete||!ftAtlas.naturalWidth)return false;var cell=ftAtlas.naturalWidth/4;ctx.drawImage(ftAtlas,index%4*cell,Math.floor(index/4)*cell,cell,cell,x-size/2,y-size*.89,size,size);return true;}
@@ -103,17 +104,18 @@ function paint(){
  w.workers.forEach(function(a,i){objects.push({y:a.y,draw:function(){if(ftSprite(a.t>.5?1:0,a.x,a.y+Math.sin(w.time*12+i)*1.1,65)){if(a.wood+a.stone)ftSprite(a.wood?5:4,a.x-14,a.y-5,27);return;}ftEllipse(a.x,a.y+5,12,5,'#143f3c44');ctx.fillStyle=i%3===2?'#7c8fa3':'#b07b51';ctx.fillRect(a.x-8,a.y-19,16,21);point(a.x,a.y-27,9,'#efc59b');ftEllipse(a.x,a.y-33,13,4,'#d6c387');ctx.fillStyle='#423f36';ctx.fillRect(a.x-7,a.y+2,5,6);ctx.fillRect(a.x+2,a.y+2,5,6);if(a.wood+a.stone){ctx.fillStyle=a.wood?'#c69764':'#a8c3c6';ctx.fillRect(a.x-15,a.y-18,10,17);}else if(a.t>.25){ctx.strokeStyle='#e5dac3';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(a.x+8,a.y-12);ctx.lineTo(a.x+20,a.y-28);ctx.stroke();}}});});
  w.camps.forEach(function(c){objects.push({y:c.y,draw:function(){ftPoly([[c.x-35,c.y],[c.x,c.y-60],[c.x+35,c.y]],c.hp>0?'#86504a':'#4e5350');if(c.hp>0){text('敵營',c.x,c.y+20,12,'#ffbe9f');ctx.fillStyle='#472f34';ctx.fillRect(c.x-30,c.y-70,60,5);ctx.fillStyle='#e9a086';ctx.fillRect(c.x-30,c.y-70,60*c.hp/c.maxHp,5);}}});});
  w.drops.forEach(function(d){ftEllipse(d.x,d.y+5,10,4,'#163f3a33');point(d.x,d.y-5+Math.sin(w.time*4)*3,8,'#ecc56b','#fff0af');text(String(d.amount),d.x,d.y-20,11);});
+ w.fighters.forEach(function(a){objects.push({y:a.y,draw:function(){if(ftWarrior&&ftWarrior.complete&&ftWarrior.naturalWidth){ctx.drawImage(ftWarrior,a.x-54,a.y-76,108,82);}else{ftSprite(0,a.x,a.y,75);text('⚔',a.x+16,a.y-30,20,'#a7f0e0');}ctx.fillStyle='#163e37';ctx.fillRect(a.x-16,a.y+5,32,3);ctx.fillStyle='#8ee7ba';ctx.fillRect(a.x-16,a.y+5,32*a.hp/a.max,3);}});});
  objects.push({y:w.p.y,draw:function(){ftExplorer(w);}});objects.sort(function(a,b){return a.y-b.y;}).forEach(function(o){o.draw();});
  w.shots.forEach(function(s){point(s.x,s.y,6,'#ffcc8b','#a86051');});w.effects.forEach(ftParticles);
- ctx.setTransform(dpr,0,0,dpr,0,0);var mx=rect.width-98,my=64;ctx.fillStyle='#102e2dcc';ctx.fillRect(mx,my,84,64);w.buildings.forEach(function(b){point(mx+b.x/w.cfg.width*84,my+b.y/w.cfg.height*64,3,b.built?'#b7dca5':'#a5b4a1');});w.enemies.forEach(function(e){if(e.hp>0)point(mx+e.x/w.cfg.width*84,my+e.y/w.cfg.height*64,2,'#e6a08e');});point(mx+w.p.x/w.cfg.width*84,my+w.p.y/w.cfg.height*64,4,'#ffe2a3');
+ ctx.setTransform(dpr,0,0,dpr,0,0);var mx=rect.width-98,my=rect.height<=500?12:64;ctx.fillStyle='#102e2dcc';ctx.fillRect(mx,my,84,64);w.buildings.forEach(function(b){point(mx+b.x/w.cfg.width*84,my+b.y/w.cfg.height*64,3,b.built?'#b7dca5':'#a5b4a1');});w.enemies.forEach(function(e){if(e.hp>0)point(mx+e.x/w.cfg.width*84,my+e.y/w.cfg.height*64,2,'#e6a08e');});point(mx+w.p.x/w.cfg.width*84,my+w.p.y/w.cfg.height*64,4,'#ffe2a3');
  if(w.bag.wood+w.bag.stone>=frontierCapacity(w)){ctx.textAlign='center';ctx.font='600 12px system-ui';ctx.fillStyle='#ffe4a4';ctx.fillText('背包已滿：回營地或投入建築',rect.width/2,rect.height-92,rect.width-30);}
 }
 
 function ftBuilding(b,w){
  var x=b.x,y=b.y,colors={camp:'#d8b778',house:'#a5c8b5',market:'#dcb269',quarry:'#a6bac1',mill:'#79b6aa',forge:'#b78165',depot:'#95b8a0',tower:'#7d9c9e',beacon:'#e4ce8a'};
- var sprite={camp:6,house:6,market:7,quarry:6,mill:8,forge:9,depot:6,tower:10,beacon:11}[b.kind];
+ var sprite={barracks:6,camp:6,house:6,market:7,quarry:6,mill:8,forge:9,depot:6,tower:10,beacon:11}[b.kind];
  if(sprite!==undefined&&ftSprite(sprite,x,y,b.kind==='tower'||b.kind==='beacon'?145:142)){
-  if(b.kind==='quarry')ftSprite(4,x+35,y+5,50);if(b.kind==='depot')ftSprite(5,x+32,y+4,48);
+  if(b.kind==='barracks')text('⚔',x,y-95,30,'#baf3d6');if(b.kind==='quarry')ftSprite(4,x+35,y+5,50);if(b.kind==='depot')ftSprite(5,x+32,y+4,48);
   if(b.hp<b.maxHp){ctx.fillStyle='#563e33';ctx.fillRect(x-30,y-123,60,5);ctx.fillStyle=b.hp>0?'#e4b26b':'#ee806d';ctx.fillRect(x-30,y-123,60*b.hp/b.maxHp,5);if(b.hp===0)text('需修復',x,y-130,12,'#ffc59a');}return;
  }
  ftEllipse(x+3,y+6,40,15,'#143c3944');
