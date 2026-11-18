@@ -19100,9 +19100,11 @@ function frontierSiege(w,dt){
   for(var i=0;i<count;i++){var side=(i+w.siege.wave)%3,x=side===0?65:side===1?400:frontierBuilt(w,'bridge')?w.cfg.width-75:470,y=side===1?65:80+(i*83+w.siege.wave*41)%(w.cfg.height-160);frontierSpawn(w,x,y,i+w.siege.wave);var enemy=w.enemies[w.enemies.length-1];enemy.raider=true;enemy.assault=true;enemy.wave=true;}
  }
  var barracks=w.buildings.find(function(b){return b.kind==='barracks';});
- if(barracks&&barracks.built&&barracks.hp>0&&barracks.queue>0){barracks.train=(barracks.train||0)+dt;if(barracks.train>=2){barracks.train=0;barracks.queue--;w.fighters.push({x:barracks.x,y:barracks.y,hp:100+w.cfg.chapter*20,max:frontierFighterHp(w),attack:0});}}
+ if(barracks&&barracks.built&&barracks.hp>0&&barracks.queue>0){barracks.train=(barracks.train||0)+dt;if(barracks.train>=3){barracks.train=0;barracks.queue--;w.fighters.push({x:barracks.x,y:barracks.y,hp:100+w.cfg.chapter*20,max:frontierFighterHp(w),attack:0});}}
  var camp=w.buildings[0],eb=w.cfg.war?w.enemyBase:null;
- if(w.cfg.war&&w.cfg.guards>0&&w.fighters.filter(function(a){return a.role==='guard'&&a.hp>0;}).length<w.cfg.guards){w.guardTimer=(w.guardTimer||0)+dt;if(w.guardTimer>=25){w.guardTimer=0;w.fighters.push({x:camp.x+70,y:camp.y+60,hp:frontierFighterHp(w),max:frontierFighterHp(w),attack:0,role:'guard'});}}
+ // Missing guards are replaced one by one while the hero stands at the barracks (like training).
+ var hutNear=w.buildings.find(function(b){return b.kind==='barracks';});
+ if(w.cfg.war&&w.cfg.guards>0&&hutNear&&hutNear.built&&hutNear.hp>0&&frontierNear(w.p,hutNear,110)&&w.fighters.filter(function(a){return a.role==='guard'&&a.hp>0;}).length<w.cfg.guards){w.guardTimer=(w.guardTimer||0)+dt;if(w.guardTimer>=3){w.guardTimer=0;w.fighters.push({x:hutNear.x,y:hutNear.y,hp:frontierFighterHp(w),max:frontierFighterHp(w),attack:0,role:'guard'});}}
  if(eb&&eb.hp>0){eb.cool-=dt;var victim=w.fighters.filter(function(a){return a.hp>0&&frontierNear(a,eb,150);}).sort(function(a,b){return Math.hypot(a.x-eb.x,a.y-eb.y)-Math.hypot(b.x-eb.x,b.y-eb.y);})[0];
   if(victim&&eb.cool<=0){victim.hp=Math.max(0,victim.hp-w.cfg.enemyDamage);eb.cool=2.2;w.effects.push({x:victim.x,y:victim.y,t:.22,kind:'hit'});}}
  w.fighters.forEach(function(a,i){if(a.hp<=0)return;a.attack-=dt;
