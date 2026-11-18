@@ -4456,5 +4456,12 @@
   "（蟲鳴停了……左右出現了道具）": "(The crickets stopped... props appeared on both sides)",
   "抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，點對牠怕的道具。": "Run through the night with the music box, dodge what lurks by ear, and tap the prop it fears.",
   "遊玩別看：抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，點對牠怕的道具。有 BONUS 獎勵。": "Play Don’t Peek: run through the night with the music box, dodge what lurks by ear, and tap the prop it fears. BONUS rewards available.",
-  "玻璃臉 Glassface": "Glassface"
+  "玻璃臉 Glassface": "Glassface",
+  "下次：鐘響三下，第三下之後往下滑低頭，低著頭直到鐘聲散去。": "Next time: after the third toll swipe down to lower your head and keep it down until the toll fades.",
+  "小螢：鐘響三下。第三下之後往下滑低頭，一直低著頭，直到鐘聲散去。": "Flick: the bell tolls three times. After the third, swipe down and keep your head down until the toll fades.",
+  "死因 #9 守墓鐘：第三下鐘響之後，你沒有一直低著頭": "Cause #9 Bellkeeper: after the third toll you did not keep your head down",
+  "每隻鬼都有自己的線索和答案。葉下客（第 4 關）：腳邊的落葉聚成一堆，睜開紅眼，躲進另一側並撐滿 3 秒。敲枝者（第 8 關）：鳥群先飛走，接著有敲擊聲從單邊傳來，躲進敲擊的另一側；後面的關卡會折返兩趟。靜林鬼（第 12 關）：蟲鳴停了，左右各冒出一件道具；牠怕燈籠，點燈籠那一側。點錯就死。逆風客（第 16 關）：風向反了、葉子逆風翻動，接著有拖行聲從一邊靠近，躲進風來的那一側。墳手（第 22 關）：土面鼓起、泥水冒泡，躲進另一側並撐住 2 秒。守墓鐘（第 23 關）：鐘響三下，第三下之後往下滑低頭，一直低著頭直到鐘聲散去。每個首領關前面會依序出現學過的鬼，最後是空殼：牠怕符紙。玻璃臉（第 30 關首領）怕鐵鎚，灰燼鴉群怕水桶。第 15 關起可能出現假前兆（只是虛驚一場），第 25 關起會有連續襲擊。": "Every ghost has its own clue and answer. Leafling (level 4): the leaves pile up at your feet and a red eye opens; hide on the other side and hold on for 3 seconds. Knocker (level 8): the birds fly off, then knocking comes from one side; hide on the side opposite the knocking; later levels come back for two passes. Hush (level 12): the crickets stop and a prop appears on each side; it fears the lantern, so tap the lantern's side. Tapping the wrong one kills you. Gale (level 16): the wind reverses and leaves turn against it, then dragging approaches from one side; hide on the side the wind comes from. Reacher (level 22): the soil bulges and mud bubbles; hide on the other side and hold on for 2 seconds. Bellkeeper (level 23): the bell tolls three times; after the third, swipe down to lower your head and keep it down until the toll fades. Before each boss level you meet the ghosts you have learned in turn, and the last is the Hollow: it fears the talisman. Glassface (the level 30 boss) fears the hammer, and the Ash Flock fears the bucket. From level 15 on there may be false omens (just a scare), and from level 25 attacks can come back to back.",
+  "第三下之後往下滑低頭，一直低著頭直到鐘聲散去。": "After the third toll, swipe down and keep your head down until the toll fades.",
+  "第三下之後要低頭，直到鐘聲散去。": " After the third toll, keep your head down until the toll fades.",
+  "鐘響三下。第三下之後要往下滑低頭，一直低著頭，直到鐘聲散去才抬頭。": "The bell tolls three times. After the third, swipe down to lower your head, keep it down, and only look up once the toll has faded."
 }
