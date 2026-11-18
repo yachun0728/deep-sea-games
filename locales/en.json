@@ -4835,5 +4835,13 @@
   "下一關起，工人小屋可以再升一級！": "From the next stage the workers' cottage can be upgraded one more level!",
   "新解鎖：工人小屋現在可以升到 Lv.": "Unlocked: the workers' cottage can now reach Lv.",
   "關起可再升級": " can be upgraded again",
-  "！村民更多、採集更快。": "! More villagers and faster gathering."
+  "！村民更多、採集更快。": "! More villagers and faster gathering.",
+  "下次：天色變暗、鴉群飛過、有拍翅聲時，點水桶那一側。": "Next time: when the sky darkens, crows fly over and wings flap, tap the bucket side.",
+  "下次：畫面起霧、一張臉貼近時，點鐵鎚那一側。": "Next time: when the screen fogs and a face draws near, tap the hammer side.",
+  "天色變暗，鴉群飛過，翅膀聲拍動。左右各有一件道具，灰燼鴉群怕水桶：點水桶那一側。": "The sky darkens, crows fly over and wings beat. An item appears on each side; the Ash flock fears the bucket: tap the bucket side.",
+  "小螢：天暗了，鴉群在拍翅。點水桶。": "Flick: the sky is dark and the crows are flapping. Tap the bucket.",
+  "小螢：起霧了，有張臉貼過來。點鐵鎚。": "Flick: fog is rolling in and a face is coming close. Tap the hammer.",
+  "死因 #17 玻璃臉：你沒有及時點鐵鎚，或點錯了道具": "Cause #17 Glassface: you did not tap the hammer in time, or tapped the wrong item",
+  "死因 #18 灰燼鴉群：你沒有及時點水桶，或點錯了道具": "Cause #18 Ash flock: you did not tap the bucket in time, or tapped the wrong item",
+  "畫面起霧，一張臉貼近，左右各有一件道具。玻璃臉怕鐵鎚：點鐵鎚那一側。": "The screen fogs and a face draws near. An item appears on each side; Glassface fears the hammer: tap the hammer side."
 }

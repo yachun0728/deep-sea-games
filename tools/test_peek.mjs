@@ -69,6 +69,14 @@ check('Twin Spirits: leaning toward the giggle kills, away survives, standing st
 check('Night Watchman: not covered when the light goes out kills',()=>{
   const f=fixture();f.F.start();f.spirit('walker',1);f.run(9);assert.equal(f.ev('why'),'walkerLate');assert.equal(f.count('end'),1);
 });
+check('Glassface and Ash have their own death causes and draw their own omens',()=>{
+  for(const [gh,boss,item,decoy] of [['glass',true,'item-hammer','item-lantern'],['ash',false,'item-bucket','item-talisman']]){
+    const late=fixture();late.F.start();late.F.ev(`ev={type:'walker',side:1,phase:'warn',t:6,bad:0,ok:false,snd:0,warn:6,gh:'${gh}',boss:${boss},items:{'1':'${item}','-1':'${decoy}'}};gapT=999`);late.run(12);assert.equal(late.ev('why'),gh);
+    const wrong=fixture();wrong.F.start();wrong.F.ev(`ev={type:'walker',side:1,phase:'judge',t:2.5,bad:0,ok:false,snd:0,warn:6,gh:'${gh}',boss:${boss},items:{'1':'${item}','-1':'${decoy}'}};gapT=999`);wrong.F.ev('itemTap=-1');wrong.run(1);assert.equal(wrong.ev('why'),gh);
+    const good=fixture();good.F.start();good.F.ev(`ev={type:'walker',side:1,phase:'warn',t:2,bad:0,ok:false,snd:0,warn:6,gh:'${gh}',boss:${boss},items:{'1':'${item}','-1':'${decoy}'}};gapT=999`);good.F.ev('itemTap=1');good.run(1);assert.equal(good.ev('survived'),1);
+    const draw=fixture();draw.F.start();draw.F.ev(`ev={type:'walker',side:1,phase:'warn',t:3,bad:0,ok:false,snd:0,warn:6,gh:'${gh}',boss:${boss},items:{'1':'${item}','-1':'${decoy}'}};gapT=999`);draw.F.draw();
+  }
+});
 check('Hush: tapping the lantern side survives; the decoy side or nothing kills; items only appear late in the warning',()=>{
   const ok=fixture();ok.F.start();ok.spirit('walker',1);ok.run(1);assert.equal(ok.F.ev('itemsUp()'),false);ok.run(2);assert.equal(ok.F.ev('itemsUp()'),true);ok.F.ev('tap(600)');ok.run(.2);assert.equal(ok.ev('st'),'run');assert.equal(ok.ev('survived'),1);
   const bad=fixture();bad.F.start();bad.spirit('walker',1);bad.run(3);bad.F.ev('tap(200)');bad.run(.2);assert.equal(bad.ev('why'),'walkerMove');
@@ -153,7 +161,7 @@ check('Gap between spirits shrinks with progress and every third dodge gives a l
 });
 check('Total dodges and the death codex are stored; the codex counts distinct causes',()=>{
   const f=fixture();f.F.start();f.spirit('eye',1);f.hold('l');f.run(7);assert.equal(f.storage.get('deep-sea-peek-dodges'),'1');
-  f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 16');assert.equal(f.el('peek-dodges').textContent,'1 次');
+  f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 18');assert.equal(f.el('peek-dodges').textContent,'1 次');
 });
 check('The corridor scrolls by itself and stops while covered',()=>{
   const f=fixture();f.F.start();f.F.ev('gapT=999');f.run(1);const r0=f.ev('run');assert.ok(r0>1.3);f.run(1);const r1=f.ev('run');assert.ok(r1-r0>1.3);
