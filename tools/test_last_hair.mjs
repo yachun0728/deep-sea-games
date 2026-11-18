@@ -86,6 +86,10 @@ check('Another round after the end deducts again and resets earned',()=>{
   const f=fixture();f.start();f.ev('g.hairs.forEach(h=>{h.glue=0;h.root=0})');f.step(60);f.ev("st='over'");f.start();
   assert.equal(f.wallet.balance,500-fee*2);assert.equal(f.count('start'),2);assert.equal(f.ev('earned'),0);assert.equal(f.ev('rewarded'),0);assert.equal(f.busy(),true);
 });
+check('Calm window: 250-266 m lowers the wind and schedules no new events, then normal wind returns',()=>{
+  const f=fixture();f.start();f.ev('g.dist=252');f.step(2);assert.equal(f.ev('g.calmOn'),true);assert.ok(Math.abs(f.ev('g.wind'))<=0.31,'wind capped in calm');
+  f.ev('g.dist=270');f.step(2);assert.equal(f.ev('g.calmOn'),false);
+});
 check('Drawing runs in every state without throwing',()=>{
   const f=fixture();f.step(3);f.start();f.step(30);f.ev('paused=true');f.step(3);f.ev('paused=false');f.ev('g.hairs.forEach(h=>{h.glue=0;h.root=0})');f.step(80);
 });
