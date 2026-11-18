@@ -94,7 +94,7 @@ function paint(){
    ctx.fillStyle='#b29b6d66';ctx.fillRect(b.x-31,b.y-14,62,30);ctx.fillStyle='#98734f';for(var stake=0;stake<4;stake++)ctx.fillRect(b.x+(stake%2?28:-31),b.y+(stake>1?11:-17),4,13);ctx.fillStyle='#123b31e6';ctx.beginPath();ctx.roundRect(b.x-52,b.y+12,104,23,7);ctx.fill();
    text('🪵 '+b.wood+' ◆ '+b.stone,b.x,b.y+28,11);if(b.kind==='beacon'&&!frontierReady(w))text('先完成任務',b.x,b.y+22,10);
   }
-  text(labels[b.kind],b.x,b.y+(b.built?24:-119),12);if(b.built&&b.hp>0&&['mill','quarry','forge'].includes(b.kind))text(b.kind==='mill'?'伐木 +1 · 工具上限 8':b.kind==='quarry'?'採石 +1 · 背包 +12':'攻擊 +9 · 武器上限 8',b.x,b.y+40,10,'#ffe4a4');
+  text(labels[b.kind],b.x,b.y+(b.built?24:-119),12);if(b.built&&b.hp>0&&['mill','quarry','forge','warehouse'].includes(b.kind))text(w.cfg.war?(b.kind==='mill'?'木材背包 +5':b.kind==='quarry'?'石頭背包 +5':'木材石頭背包各 +5'):(b.kind==='mill'?'伐木 +1 · 工具上限 8':b.kind==='quarry'?'採石 +1 · 背包 +12':'攻擊 +9 · 武器上限 8'),b.x,b.y+40,10,'#ffe4a4');
  }});});
  if(w.cfg.mission==='rescue')w.cages.forEach(function(c){objects.push({y:c.y,draw:function(){point(c.x,c.y,20,c.open?'#b9d59b':'#6e7460','#f1d89d');text(c.open?'✓':'!',c.x,c.y+5,20);if(!c.open){ctx.strokeStyle='#dfd3a7';for(var j=-12;j<=12;j+=8){ctx.beginPath();ctx.moveTo(c.x+j,c.y-20);ctx.lineTo(c.x+j,c.y+20);ctx.stroke();}}}});});
  w.enemies.forEach(function(e){if(e.hp<=0)return;objects.push({y:e.y,draw:function(){
@@ -110,7 +110,7 @@ function paint(){
  objects.push({y:w.p.y,draw:function(){ftExplorer(w);}});objects.sort(function(a,b){return a.y-b.y;}).forEach(function(o){o.draw();});
  w.shots.forEach(function(s){point(s.x,s.y,6,'#ffcc8b','#a86051');});w.effects.forEach(ftParticles);
  ctx.setTransform(dpr,0,0,dpr,0,0);var mx=rect.width-98,my=rect.height<=500?12:64;ctx.fillStyle='#102e2dcc';ctx.fillRect(mx,my,84,64);w.buildings.forEach(function(b){point(mx+b.x/w.cfg.width*84,my+b.y/w.cfg.height*64,3,b.built?'#b7dca5':'#a5b4a1');});if(w.enemyBase)point(mx+w.enemyBase.x/w.cfg.width*84,my+w.enemyBase.y/w.cfg.height*64,4,w.enemyBase.hp>0?'#e07a6b':'#777f78');w.enemies.forEach(function(e){if(e.hp>0)point(mx+e.x/w.cfg.width*84,my+e.y/w.cfg.height*64,2,'#e6a08e');});point(mx+w.p.x/w.cfg.width*84,my+w.p.y/w.cfg.height*64,4,'#ffe2a3');
- if(w.bag.wood>=frontierCapacity(w)||w.bag.stone>=frontierCapacity(w)){ctx.textAlign='center';ctx.font='600 12px system-ui';ctx.fillStyle='#ffe4a4';ctx.fillText('背包的木材或石頭已滿：回營地或投入建築',rect.width/2,rect.height-92,rect.width-30);}
+ if(w.bag.wood>=frontierCapacity(w,'wood')||w.bag.stone>=frontierCapacity(w,'stone')){ctx.textAlign='center';ctx.font='600 12px system-ui';ctx.fillStyle='#ffe4a4';ctx.fillText('背包的木材或石頭已滿：去蓋建築或訓練戰士',rect.width/2,rect.height-92,rect.width-30);}
 }
 
 var ftTinted={};
@@ -131,13 +131,12 @@ function ftEnemyFortress(eb,w){
  if(ratio<.55)[-30,22,-4].forEach(function(fx,n){var h=12+Math.sin(t*10+n)*4,fy=y-42-n*18;ftPoly([[x+fx-8,fy],[x+fx,fy-h-10],[x+fx+8,fy]],'#ff8a3d');ftPoly([[x+fx-3,fy],[x+fx,fy-h],[x+fx+3,fy]],'#ffd27d');});
  if(ratio<.3)for(var q=0;q<5;q++)point(x-30+q*15+Math.sin(t*2+q)*5,y-90-((t*16+q*17)%46),4+q%2,'#2f2a2a66');
  var bx=x,by=y-170;
- ctx.fillStyle='#2a1719e6';ctx.beginPath();ctx.roundRect(bx-62,by-4,124,22,6);ctx.fill();
- ctx.fillStyle='#472f34';ctx.fillRect(bx-54,by+10,108,5);ctx.fillStyle=ratio>.5?'#e9a086':ratio>.25?'#f0b14e':'#f26a4f';ctx.fillRect(bx-54,by+10,108*ratio,5);
+ var tier=Math.floor((w.level-1)/5),bw=96+tier*14;ctx.fillStyle='#2a1719e6';ctx.beginPath();ctx.roundRect(bx-bw/2-8,by-4,bw+16,22,6);ctx.fill();ctx.fillStyle='#472f34';ctx.fillRect(bx-bw/2,by+10,bw,5);ctx.fillStyle=ratio>.5?'#e9a086':ratio>.25?'#f0b14e':'#f26a4f';ctx.fillRect(bx-bw/2,by+10,bw*ratio,5);
  text('對手大本營 '+Math.ceil(ratio*100)+'%',bx,by+7,11,'#ffd2bd');
 }
 function ftBuilding(b,w){
  var x=b.x,y=b.y,colors={camp:'#d8b778',house:'#a5c8b5',market:'#dcb269',quarry:'#a6bac1',mill:'#79b6aa',forge:'#b78165',depot:'#95b8a0',tower:'#7d9c9e',beacon:'#e4ce8a'};
- var sprite={barracks:6,camp:6,house:6,market:7,quarry:6,mill:8,forge:9,depot:6,tower:10,beacon:11}[b.kind];
+ var sprite={barracks:6,warehouse:9,camp:6,house:6,market:7,quarry:6,mill:8,forge:9,depot:6,tower:10,beacon:11}[b.kind];
  if(sprite!==undefined&&ftSprite(sprite,x,y,b.kind==='tower'||b.kind==='beacon'?145:142)){
   if(b.kind==='barracks')text('⚔',x,y-95,30,'#baf3d6');if(b.kind==='quarry')ftSprite(4,x+35,y+5,50);if(b.kind==='depot')ftSprite(5,x+32,y+4,48);
   if(b.hp<b.maxHp){ctx.fillStyle='#563e33';ctx.fillRect(x-30,y-123,60,5);ctx.fillStyle=b.hp>0?'#e4b26b':'#ee806d';ctx.fillRect(x-30,y-123,60*b.hp/b.maxHp,5);if(b.hp===0)text('需修復',x,y-130,12,'#ffc59a');}return;

@@ -113,9 +113,11 @@ model.frontierClassic=false;
  w=create(1);w.enemies=[];w.siege.next=1e6;w.bank.wood=w.bank.stone=10000;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');
  ok(!model.frontierRecruit(w),'cannot recruit before the barracks exists');
  w.p.x=barracks.x;w.p.y=barracks.y;tick(w,12);ok(barracks.built,'barracks builds across the bridge');
- ok(model.frontierRecruitCost(w).wood===10&&model.frontierRecruitCost(w).stone===10,'a warrior costs 10 wood and 10 stone');w.bank.wood=w.bank.stone=0;w.bag.wood=7;w.bag.stone=3;ok(!model.frontierRecruit(w),'too few materials cannot train');w.bag.wood=15;w.bag.stone=12;w.bank.wood=3;w.bank.stone=0;ok(model.frontierRecruit(w)&&w.bag.wood===5&&w.bag.stone===2&&w.bank.wood===3,'training pays 10/10 from the bag first');w.bank.wood=w.bank.stone=10000;barracks.queue=0;
- for(let n=0;n<15;n++)model.frontierRecruit(w);ok(model.frontierAttackers(w).length+barracks.queue===12&&model.frontierFighterCap(w)===12,'attack warrior cap is twelve');
- tick(w,3*12+1);ok(model.frontierAttackers(w).length===12,'barracks trains fighters one by one');
+ barracks.queue=0;barracks.train=0;w.fighters=w.fighters.filter(f=>f.role==='guard');w.p.x=100;w.p.y=100;
+ ok(!model.frontierRecruit(w),'recruiting needs the hero at the barracks');w.p.x=barracks.x;w.p.y=barracks.y;
+ok(model.frontierRecruitCost(w).wood===10&&model.frontierRecruitCost(w).stone===10,'a warrior costs 10 wood and 10 stone');w.bank.wood=w.bank.stone=0;w.bag.wood=7;w.bag.stone=3;ok(!model.frontierRecruit(w),'too few materials cannot train');w.bag.wood=15;w.bag.stone=12;w.bank.wood=3;w.bank.stone=0;ok(model.frontierRecruit(w)&&w.bag.wood===5&&w.bag.stone===2&&w.bank.wood===3,'training pays 10/10 from the bag first');w.bank.wood=w.bank.stone=10000;barracks.queue=0;
+ ok(model.frontierRecruit(w)&&!model.frontierRecruit(w)&&barracks.queue===1,'only one warrior is in training at a time and it is paid up front');
+ for(let n=0;n<16;n++){tick(w,3.1);model.frontierRecruit(w);}tick(w,3.1);ok(model.frontierAttackers(w).length===12&&model.frontierFighterCap(w)===12,'attack warrior cap is twelve and warriors arrive one by one');
  // walking next to the barracks trains warriors by itself
  {let w=create(1);let barracks;w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');barracks.built=true;w.bank.wood=w.bank.stone=500;w.p.x=barracks.x;w.p.y=barracks.y;tick(w,30);ok(model.frontierAttackers(w).length>=5,'standing at the barracks auto-trains warriors');
  w.p.x=100;w.p.y=100;const hired=model.frontierAttackers(w).length+barracks.queue;tick(w,10);ok(model.frontierAttackers(w).length+barracks.queue===hired,'no training when the hero is away');
@@ -132,10 +134,17 @@ model.frontierClassic=false;
  w.enemies.push({x:tower.x+30,y:tower.y,type:'melee',hp:99999,max:99999,state:'walk',t:0,cool:0,tx:0,ty:0,hit:false,counted:false,wave:true,radius:17,raider:true,assault:true});
  w.p.x=900;w.p.y=700;tick(w,12);ok(tower.hp<towerHp&&w.phase==='play','monsters attack the tower');
  // later stages keep the beacon rules
+ // the bag is the only storage; buildings only raise its capacity
+ {let w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;ok(!w.buildings.some(b=>['house','market','depot','forge'].includes(b.kind))&&w.buildings.some(b=>b.kind==='warehouse'),'war stages have a warehouse and no village economy');
+  ok(model.frontierCapacity(w,'wood')===24&&model.frontierCapacity(w,'stone')===24,'base bag capacity is 24 of each');
+  w.buildings.find(b=>b.kind==='mill').built=true;ok(model.frontierCapacity(w,'wood')===29&&model.frontierCapacity(w,'stone')===24,'the lumber mill adds 5 wood capacity');
+  w.buildings.find(b=>b.kind==='quarry').built=true;ok(model.frontierCapacity(w,'stone')===29,'the quarry adds 5 stone capacity');
+  w.buildings.find(b=>b.kind==='warehouse').built=true;ok(model.frontierCapacity(w,'wood')===34&&model.frontierCapacity(w,'stone')===34,'the warehouse adds 5 to both');
+  w.bag.wood=7;w.bag.stone=3;w.p.x=w.buildings[0].x;w.p.y=w.buildings[0].y;tick(w,.5);ok(w.bag.wood===7&&w.bag.stone===3&&w.bank.wood===0,'walking back to camp no longer banks resources');}
  // gold meter -> upgrade cards (tool, weapon, bag)
  {let w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;ok(model.frontierPickCost(w)===30,'first card costs 30 gold');w.coins=29;tick(w,.2);ok(!w.offer,'no cards before the meter fills');
   w.coins=30;tick(w,.1);ok(w.offer&&w.offer.length===3&&new Set(w.offer).size===3&&w.coins===0,'a full meter offers the three upgrades');
-  ok(['tool','blade','pack'].every(k=>w.offer.includes(k)),'cards are tool, weapon and bag');
+  ok(w.offer.every(k=>['tool','blade','pack'].includes(k)),'cards are tool, weapon and bag');
   const t0=w.time;tick(w,2);ok(w.time===t0,'the game waits while cards are shown');
   ok(!model.frontierChoose(w,5)&&w.offer,'invalid card index is ignored');const picked=w.offer[0];ok(model.frontierChoose(w,0)&&w.offer===null,'choosing applies one card');
   ok(Object.values(w.tech).reduce((n,v)=>n+v,0)===1&&w.tech[picked]===1,'exactly the chosen upgrade is applied');ok(model.frontierPickCost(w)===66,'the next card costs more');
@@ -151,7 +160,11 @@ model.frontierClassic=false;
  w=create(21);w.siege.next=1e6;w.enemies=[];w.p.x=100;w.p.y=100;w.p.inv=1e6;tick(w,20);ok(w.fighters.filter(f=>f.role==='guard').every(f=>Math.hypot(f.x-w.buildings[0].x,f.y-w.buildings[0].y)<200),'guards stay at the home base');
  w.enemies.push({x:w.buildings[0].x+120,y:w.buildings[0].y,type:'melee',hp:60,max:60,state:'walk',t:0,cool:99,tx:0,ty:0,hit:false,counted:false,wave:false,radius:17});tick(w,6);ok(w.enemies.every(e=>e.hp<=0||e.hp<60),'guards fight monsters near the base');
  const hut=w.buildings.find(b=>b.kind==='barracks');hut.built=true;w.fighters=w.fighters.filter(f=>f.role!=='guard');tick(w,40);ok(w.fighters.filter(f=>f.role==='guard').length===0,'guards are not replaced while the hero is away from the barracks');
- w.p.x=hut.x;w.p.y=hut.y;tick(w,3.2);ok(w.fighters.filter(f=>f.role==='guard').length===1,'standing at the barracks replaces one guard every 3 seconds');tick(w,3.2);ok(w.fighters.filter(f=>f.role==='guard').length===2,'the next guard follows after another 3 seconds');
+ w.nodes=[];w.bag.wood=w.bag.stone=0;w.bank.wood=w.bank.stone=0;w.p.x=hut.x;w.p.y=hut.y;tick(w,3.5);ok(w.fighters.filter(f=>f.role==='guard').length===0,'no materials, no new guard');
+ w.bag.wood=12;w.bag.stone=12;tick(w,.2);ok(w.fighters.filter(f=>f.role==='guard').length===1&&w.bag.wood===7&&w.bag.stone===7,'a guard costs 5 wood + 5 stone');tick(w,2.5);ok(w.fighters.filter(f=>f.role==='guard').length===1,'the next guard needs another 3 seconds');tick(w,.6);ok(w.fighters.filter(f=>f.role==='guard').length===2&&w.bag.wood===2,'the next guard follows after 3 seconds');
+ // enemy stronghold grows every 5 stages; an idle hero loses
+ ok([[1,3000,4],[5,3000,4],[6,5800,5],[26,17000,9],[46,28200,13],[50,28200,13]].every(([lv,hp,dmg])=>{const x=create(lv);return x.enemyBase.maxHp===hp&&x.cfg.enemyDamage===dmg;}),'the enemy stronghold gets thicker and a little stronger every 5 stages');
+ for(const lv of [1,10,30]){const idle=create(lv);idle.p.inv=0;for(let n=0;n<20*600&&idle.phase==='play';n++){if(idle.offer)model.frontierChoose(idle,0);step(idle,{x:0,y:0},.05);}ok(idle.phase==='dead'&&idle.failure==='base',`stage ${lv}: standing still at camp loses the base`);}
  // saves from the earlier one-tower version gain the missing towers and a base garrison
  w=create(4);const stale=JSON.parse(JSON.stringify(w));stale.buildings=stale.buildings.filter((b,i,a)=>b.kind!=='tower'||a.findIndex(x=>x.kind==='tower')===i);const fixed=model.frontierMigrate(stale);ok(fixed.buildings.filter(b=>b.kind==='tower').length===2,'migration adds the missing tower');
 }
