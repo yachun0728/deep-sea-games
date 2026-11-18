@@ -77,7 +77,7 @@ shim = r"""
   window.setText=function(id,t){var e=$(id);if(e)e.textContent=t};
   window.fmt=function(n){return String(n)};
   window.AN={start:function(){return {}},progress:function(){},end:function(){}};
-  try{if(!localStorage.getItem('deep-sea-language-v1')&&!/^zh/i.test(navigator.language||''))localStorage.setItem('deep-sea-language-v1','en')}catch(e){}
+  try{localStorage.setItem('deep-sea-language-v1','en')}catch(e){}
 })();
 """
 
@@ -100,7 +100,7 @@ html[lang="en"] .t-zh{{display:none}}
 </head>
 <body>
 <div class="itch-wrap">
-<div class="itch-top"><h1 data-i18n-ignore><span class="t-zh">別看 </span>Don't Peek</h1><div class="itch-lang"><button type="button" data-language="en" aria-pressed="false">English</button><button type="button" data-language="zh-Hant" aria-pressed="false">繁體中文</button></div></div>
+<div class="itch-top"><h1 data-i18n-ignore>Don't Peek</h1></div>
 {view}
 </div>
 <script type="application/json" id="arcade-english">{dictionary}</script>
