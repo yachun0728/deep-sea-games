@@ -143,7 +143,7 @@ def main():
             route = f'/{suite}-{width}.html'
             tested_source = source
             if suite == 'frontier':
-                hook = 'window.__frontierTest={world:function(){return world;},create:frontierWorld,step:frontierStep,plan:frontierPlan,goal:frontierGoal,upgrade:frontierUpgrade,finish:finishStage,persist:persist};'
+                hook = 'window.__frontierTest={world:function(){return world;},create:frontierWorld,step:frontierStep,plan:frontierPlan,goal:frontierGoal,upgrade:frontierUpgrade,leave:frontierLeave,finish:finishStage,persist:persist};'
                 tested_source = source.replace('var preview=frontierWorld(1);', hook+'var preview=frontierWorld(1);')
             pages[route] = tested_source.replace('<head>', '<head>' + MONITOR).replace('</body>', '<script>' + script + '</script></body>')
             page = f'http://127.0.0.1:{server.server_port}{route}'

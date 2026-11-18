@@ -16,3 +16,23 @@
 #view-frontier .ft-touch{position:absolute;inset:auto 18px 20px;display:flex;align-items:center;justify-content:space-between;pointer-events:none;opacity:.85}#view-frontier #ft-stick{width:104px;height:104px;border-radius:50%;border:1px solid #fff5;background:#102e2d66;position:relative;pointer-events:auto;touch-action:none}#view-frontier #ft-knob{display:block;position:absolute;left:33px;top:33px;width:38px;height:38px;border-radius:50%;background:#efce8bb3;box-shadow:0 3px 15px #0003}#view-frontier #ft-dash{pointer-events:auto;touch-action:none;width:72px;height:72px;border-radius:50%;background:#e9c481d9;color:#15302a;font-weight:700}
 #view-frontier .ft-main:fullscreen{width:100vw;height:100dvh;display:flex;flex-direction:column;border-radius:0}#view-frontier .ft-main:fullscreen .ft-stage{height:auto;flex:1;min-height:0}
 @media(max-width:880px){#view-frontier .ft-layout{grid-template-columns:minmax(0,1fr)}#view-frontier .ft-stage{height:64dvh;min-height:400px}#view-frontier .ft-top,#view-frontier .ft-status,#view-frontier .ft-resource{padding:10px 12px}#view-frontier .ft-map button{min-height:30px}#view-frontier .ft-objective{font-size:12px;padding:8px 12px}#view-frontier .ft-overlay{padding:20px}}
+/* Expedition journal: warm brass, deep teal, and a translucent opening card. */
+#view-frontier .ft-main{background:linear-gradient(135deg,#244a49,#112e32);border-color:#d1b67644;box-shadow:0 24px 65px #061c2855,inset 0 1px #ffedc322}
+#view-frontier .ft-top{background:linear-gradient(90deg,#e2ba7520,transparent);border-bottom:1px solid #e4c88f20}
+#view-frontier .ft-status{padding-top:12px;font-weight:700;letter-spacing:.4px}
+#view-frontier .ft-objective{border-left:3px solid #d9b571;background:#081e2438;color:#e4dfc5}
+#view-frontier .ft-overlay{background:radial-gradient(ellipse at center,#123631b8,#09262b9c);backdrop-filter:blur(3px);text-shadow:0 3px 20px #061a24}
+#view-frontier .ft-overlay h2{letter-spacing:4px;text-shadow:0 4px #143c3c,0 8px 30px #0006}
+#view-frontier #ft-go{background:linear-gradient(#ffe1a0,#d9ac61);border-color:#ffedb5;box-shadow:0 5px 0 #916b36,0 12px 25px #0004;border-radius:14px;transition:transform .15s}
+#view-frontier #ft-go:active{transform:translateY(3px);box-shadow:0 2px 0 #916b36}
+#view-frontier .ft-panel{background:linear-gradient(145deg,#244541,#132d30);border-color:#d0bb8240;box-shadow:inset 0 1px #fff1c415}
+#view-frontier .ft-map button{border-color:#d1bd7e28}#view-frontier .ft-map .ft-current{box-shadow:0 0 12px #efce8b55}
+#view-frontier .ft-main{position:relative}#view-frontier .ft-mission{display:grid;gap:5px;padding:8px 16px;font-size:11px;color:#d8d3ad;background:#102c2d}
+#view-frontier .ft-mission #ft-warning{color:#f0c58a}#view-frontier .ft-resource{gap:7px;font-variant-numeric:tabular-nums}#view-frontier .ft-resource button{font-size:12px;padding:7px 10px;min-height:36px}
+#view-frontier #ft-next{background:#e8c785;color:#163d3a;font-weight:700}#view-frontier .ft-shop{position:absolute;z-index:8;right:15px;bottom:80px;width:min(390px,calc(100% - 30px));max-height:75%;overflow:auto;padding:18px;background:#163d3af5;border:1px solid #e3ca8b88;border-radius:16px;box-shadow:0 20px 70px #0008}
+#view-frontier .ft-shop[hidden]{display:none}#view-frontier .ft-shop-head{display:flex;justify-content:space-between;align-items:center}#view-frontier .ft-shop p{font-size:12px;line-height:1.6}#view-frontier .ft-shop-actions{display:grid;gap:8px;margin-top:12px}#view-frontier .ft-shop select{padding:8px;background:#214843;color:#fff1d0;border-radius:7px}
+#view-frontier .ft-main.ft-immersive{position:fixed;inset:0;z-index:2000;width:100%;height:100dvh;display:flex;flex-direction:column;border-radius:0;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+#view-frontier .ft-main.ft-immersive .ft-stage{flex:1;height:auto;min-height:0}#view-frontier .ft-main:fullscreen{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+#view-frontier .ft-art-board{display:block;max-width:100%;height:auto;border-radius:14px;margin-top:12px}
+@media(max-width:600px){#view-frontier .ft-optional-dash{display:none}#view-frontier .ft-mission{font-size:10px;padding:5px 10px}#view-frontier .ft-resource{font-size:10px;padding:6px 10px}#view-frontier .ft-resource button{min-height:32px;font-size:10px;padding:5px 8px}#view-frontier .ft-main:fullscreen .ft-top,#view-frontier .ft-main.ft-immersive .ft-top{padding:5px 10px}#view-frontier .ft-status{font-size:13px}#view-frontier .ft-shop{bottom:95px}}
+@media(prefers-reduced-motion:reduce){#view-frontier button{transition:none}}

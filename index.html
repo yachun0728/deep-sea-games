@@ -964,6 +964,26 @@ body.ol-expanded { overflow: hidden; }
 #view-frontier .ft-touch{position:absolute;inset:auto 18px 20px;display:flex;align-items:center;justify-content:space-between;pointer-events:none;opacity:.85}#view-frontier #ft-stick{width:104px;height:104px;border-radius:50%;border:1px solid #fff5;background:#102e2d66;position:relative;pointer-events:auto;touch-action:none}#view-frontier #ft-knob{display:block;position:absolute;left:33px;top:33px;width:38px;height:38px;border-radius:50%;background:#efce8bb3;box-shadow:0 3px 15px #0003}#view-frontier #ft-dash{pointer-events:auto;touch-action:none;width:72px;height:72px;border-radius:50%;background:#e9c481d9;color:#15302a;font-weight:700}
 #view-frontier .ft-main:fullscreen{width:100vw;height:100dvh;display:flex;flex-direction:column;border-radius:0}#view-frontier .ft-main:fullscreen .ft-stage{height:auto;flex:1;min-height:0}
 @media(max-width:880px){#view-frontier .ft-layout{grid-template-columns:minmax(0,1fr)}#view-frontier .ft-stage{height:64dvh;min-height:400px}#view-frontier .ft-top,#view-frontier .ft-status,#view-frontier .ft-resource{padding:10px 12px}#view-frontier .ft-map button{min-height:30px}#view-frontier .ft-objective{font-size:12px;padding:8px 12px}#view-frontier .ft-overlay{padding:20px}}
+/* Expedition journal: warm brass, deep teal, and a translucent opening card. */
+#view-frontier .ft-main{background:linear-gradient(135deg,#244a49,#112e32);border-color:#d1b67644;box-shadow:0 24px 65px #061c2855,inset 0 1px #ffedc322}
+#view-frontier .ft-top{background:linear-gradient(90deg,#e2ba7520,transparent);border-bottom:1px solid #e4c88f20}
+#view-frontier .ft-status{padding-top:12px;font-weight:700;letter-spacing:.4px}
+#view-frontier .ft-objective{border-left:3px solid #d9b571;background:#081e2438;color:#e4dfc5}
+#view-frontier .ft-overlay{background:radial-gradient(ellipse at center,#123631b8,#09262b9c);backdrop-filter:blur(3px);text-shadow:0 3px 20px #061a24}
+#view-frontier .ft-overlay h2{letter-spacing:4px;text-shadow:0 4px #143c3c,0 8px 30px #0006}
+#view-frontier #ft-go{background:linear-gradient(#ffe1a0,#d9ac61);border-color:#ffedb5;box-shadow:0 5px 0 #916b36,0 12px 25px #0004;border-radius:14px;transition:transform .15s}
+#view-frontier #ft-go:active{transform:translateY(3px);box-shadow:0 2px 0 #916b36}
+#view-frontier .ft-panel{background:linear-gradient(145deg,#244541,#132d30);border-color:#d0bb8240;box-shadow:inset 0 1px #fff1c415}
+#view-frontier .ft-map button{border-color:#d1bd7e28}#view-frontier .ft-map .ft-current{box-shadow:0 0 12px #efce8b55}
+#view-frontier .ft-main{position:relative}#view-frontier .ft-mission{display:grid;gap:5px;padding:8px 16px;font-size:11px;color:#d8d3ad;background:#102c2d}
+#view-frontier .ft-mission #ft-warning{color:#f0c58a}#view-frontier .ft-resource{gap:7px;font-variant-numeric:tabular-nums}#view-frontier .ft-resource button{font-size:12px;padding:7px 10px;min-height:36px}
+#view-frontier #ft-next{background:#e8c785;color:#163d3a;font-weight:700}#view-frontier .ft-shop{position:absolute;z-index:8;right:15px;bottom:80px;width:min(390px,calc(100% - 30px));max-height:75%;overflow:auto;padding:18px;background:#163d3af5;border:1px solid #e3ca8b88;border-radius:16px;box-shadow:0 20px 70px #0008}
+#view-frontier .ft-shop[hidden]{display:none}#view-frontier .ft-shop-head{display:flex;justify-content:space-between;align-items:center}#view-frontier .ft-shop p{font-size:12px;line-height:1.6}#view-frontier .ft-shop-actions{display:grid;gap:8px;margin-top:12px}#view-frontier .ft-shop select{padding:8px;background:#214843;color:#fff1d0;border-radius:7px}
+#view-frontier .ft-main.ft-immersive{position:fixed;inset:0;z-index:2000;width:100%;height:100dvh;display:flex;flex-direction:column;border-radius:0;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+#view-frontier .ft-main.ft-immersive .ft-stage{flex:1;height:auto;min-height:0}#view-frontier .ft-main:fullscreen{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+#view-frontier .ft-art-board{display:block;max-width:100%;height:auto;border-radius:14px;margin-top:12px}
+@media(max-width:600px){#view-frontier .ft-optional-dash{display:none}#view-frontier .ft-mission{font-size:10px;padding:5px 10px}#view-frontier .ft-resource{font-size:10px;padding:6px 10px}#view-frontier .ft-resource button{min-height:32px;font-size:10px;padding:5px 8px}#view-frontier .ft-main:fullscreen .ft-top,#view-frontier .ft-main.ft-immersive .ft-top{padding:5px 10px}#view-frontier .ft-status{font-size:13px}#view-frontier .ft-shop{bottom:95px}}
+@media(prefers-reduced-motion:reduce){#view-frontier button{transition:none}}
 
 .wardrobe-hub{margin:24px 0;border:1px solid #5bada93b;border-radius:20px;background:linear-gradient(120deg,#102d36,#173c40);overflow:hidden;color:#e0eee8}
 .wardrobe-hub summary{cursor:pointer;padding:20px 24px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-weight:700}.wardrobe-hub summary span+span{font-size:12px;font-weight:400;color:#9ec9bf}
@@ -1069,7 +1089,8 @@ body.ol-expanded { overflow: hidden; }
 
     <div class="lobby-section-heading" id="lobby-games"><div><p class="lobby-eyebrow">PICK YOUR NEXT ADVENTURE</p><h2>遊戲大廳 <span id="lobby-count">28 款遊戲</span></h2></div><p>選一款，開始你的下一局。</p></div>
     <div class="lobby-filters" role="group" aria-label="篩選遊戲類型"><button type="button" data-lobby-filter="all" aria-pressed="true">全部 <span>30</span></button><button type="button" data-lobby-filter="run" aria-pressed="false">跑酷動作 <span>0</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false">潛行偷閒 <span>0</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false">時機操作 <span>0</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false">益智策略 <span>0</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false">經典小遊戲 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false">機率挑戰 <span>0</span></button></div>
-    <div class="lobby-grid"><a class="game-card" href="#rocket-chair" data-game-category="timing" aria-label="遊玩社畜要下班：對著手機大吼讓火箭椅往上衝，撞破 5 層天花板提早下班，免費遊玩"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-rocket-chair"></use></svg></div><h3>社畜要下班</h3><p class="game-card-en">Roar Through the Ceiling</p><p class="game-card-description">對著手機大吼，火箭椅一路撞破天花板提早下班。</p><div class="game-card-footer"><span>免費遊玩</span><span>不限次數</span></div></a>
+    <div class="lobby-grid"><a class="game-card" href="#frontier" data-game-category="puzzle" aria-label="遊玩荒島遠征：五十關採集、建造與戰鬥冒險"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#icon-frontier"></use></svg></div><h3>荒島遠征</h3><p class="game-card-en">Frontier Islands</p><p class="game-card-description">砍出道路，建立據點，挑戰五大區域與五十關考驗。</p><div class="game-card-footer"><span>遠征與續玩皆免費</span><span>50 關 · 自動存檔</span></div></a>
+<a class="game-card" href="#rocket-chair" data-game-category="timing" aria-label="遊玩社畜要下班：對著手機大吼讓火箭椅往上衝，撞破 5 層天花板提早下班，免費遊玩"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-rocket-chair"></use></svg></div><h3>社畜要下班</h3><p class="game-card-en">Roar Through the Ceiling</p><p class="game-card-description">對著手機大吼，火箭椅一路撞破天花板提早下班。</p><div class="game-card-footer"><span>免費遊玩</span><span>不限次數</span></div></a>
 <a class="game-card" href="#ocean-link" data-game-category="retro" aria-label="免費遊玩深海連連看，配對圖案闖關並獲得獎勵。">
   <div class="game-card-top"><span class="game-card-category">經典小遊戲</span><span class="game-card-arrow" aria-hidden="true">↗</span></div>
   <div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-ocean-link"></use></svg></div>
@@ -1087,8 +1108,7 @@ body.ol-expanded { overflow: hidden; }
 <a class="game-card" href="#peek" data-game-category="stealth" aria-label="遊玩別看：抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，燈滅前蓋住螢幕。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-peek"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-peek"></use></svg></div><h3>別看</h3><p class="game-card-en">Don’t Peek</p><p class="game-card-description">抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，燈滅前蓋住螢幕。</p><div class="game-card-footer"><span>免費遊玩</span><span>聽聲反應</span></div></a><a class="game-card" href="#mosquito" data-game-category="stealth" aria-label="遊玩血壓上升：深夜當蚊子，吸飽血再從窗戶逃走，別把睡著的人吵醒。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mosquito"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mosquito"></use></svg></div><h3>血壓上升</h3><p class="game-card-en">Midnight Mosquito</p><p class="game-card-description">深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。</p><div class="game-card-footer"><span>免費遊玩</span><span>按住吸血</span></div></a>
 <a class="game-card" href="#last-hair" data-game-category="stealth" aria-label="遊玩尊嚴保衛戰：頂著最後三根頭髮，在強風中走完 500 公尺去面試。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-last-hair"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-last-hair"></use></svg></div><h3>尊嚴保衛戰</h3><p class="game-card-en">The Last Hair</p><p class="game-card-description">頂著最後三根頭髮，在強風中走完 500 公尺去面試。</p><div class="game-card-footer"><span>免費遊玩</span><span>雙拇指操作</span></div></a>
 <a class="game-card" href="#clock-out" data-game-category="puzzle" aria-label="遊玩下班保衛戰：在抽屜裡擺放辦公用品擋住文件與會議，撐到 17:00。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-clock-out"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-clock-out"></use></svg></div><h3>下班保衛戰</h3><p class="game-card-en">Clock Out</p><p class="game-card-description">擺好辦公用品擋住一波波工作，撐到 17:00 打卡下班。</p><div class="game-card-footer"><span>免費遊玩</span><span>背包塔防</span></div></a><a class="game-card" href="#skybuilder" data-game-category="timing" aria-label="遊玩蓋樓大師：用起重機一層一層疊高樓，挑戰高度紀錄，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-skybuilder"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-skybuilder"></use></svg></div><h3>蓋樓大師</h3><p class="game-card-en">Sky Builder</p><p class="game-card-description">抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。</p><div class="game-card-footer"><span>免費遊玩</span><span>高度挑戰</span></div></a>
-<a class="game-card" href="#carp" data-game-category="timing" aria-label="遊玩鯉魚躍龍門：蓄力起跳，越過一道道石瀑。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-carp"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-carp"></use></svg></div><h3>鯉魚躍龍門</h3><p class="game-card-en">Carp Leap</p><p class="game-card-description">蓄力起跳，越過一道道石瀑。</p><div class="game-card-footer"><span>免費遊玩</span><span>蓄力跳躍</span></div></a><a class="game-card" href="#rider" data-game-category="run" aria-label="遊玩外送員大戰惡犬：巷子裡閃狗送餐，餐涼之前送越多越好。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-rider"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-rider"></use></svg></div><h3>外送員大戰惡犬</h3><p class="game-card-en">Rider vs Dogs</p><p class="game-card-description">巷子裡閃狗送餐，餐涼之前送越多越好。</p><div class="game-card-footer"><span>免費遊玩</span><span>閃避送餐</span></div></a><a class="game-card" href="#boss" data-game-category="run" aria-label="遊玩胖老闆追人：遲到了！跳過障礙，別被胖老闆追上。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-boss"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-boss"></use></svg></div><h3>胖老闆追人</h3><p class="game-card-en">Chubby Boss Chase</p><p class="game-card-description">遲到了！跳過障礙，別被胖老闆追上。</p><div class="game-card-footer"><span>免費遊玩</span><span>辦公室逃亡</span></div></a><a class="game-card" href="#thief" data-game-category="run" aria-label="遊玩偷水果的貓：換道、跳籃子，偷水果躲開老闆娘。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-thief"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-thief"></use></svg></div><h3>偷水果的貓</h3><p class="game-card-en">Fruit Thief Cat</p><p class="game-card-description">換道、跳籃子，偷水果躲開老闆娘。</p><div class="game-card-footer"><span>免費遊玩</span><span>市場追逐</span></div></a><a class="game-card" href="#baby" data-game-category="run" aria-label="遊玩寶寶逃洗澡：跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-baby"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-baby"></use></svg></div><h3>寶寶逃洗澡</h3><p class="game-card-en">Baby Bath Escape</p><p class="game-card-description">跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。</p><div class="game-card-footer"><span>免費遊玩</span><span>居家逃亡</span></div></a><a class="game-card" href="#pancake" data-game-category="timing" aria-label="遊玩泡麵煎餅翻面：晃手機煎泡麵煎餅，金黃時往上甩翻面，免費遊玩"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-pancake"></use></svg></div><h3>泡麵煎餅翻面</h3><p class="game-card-en">Noodle Pancake</p><p class="game-card-description">半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。</p><div class="game-card-footer"><span>免費遊玩</span><span>只扣入場點數</span></div></a><a class="game-card" href="#mrt" data-game-category="puzzle" aria-label="遊玩捷運搶位：看線索猜誰要下車，搶到座位階數升一階。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mrt"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mrt"></use></svg></div><h3>捷運搶位</h3><p class="game-card-en">MRT Seat Grab</p><p class="game-card-description">看小動作猜誰要下車，一階一階往上搶座位。</p><div class="game-card-footer"><span>免費遊玩</span><span>8 階挑戰</span></div></a><a class="game-card" href="#dive" data-game-category="puzzle" aria-label="遊玩一口氣探險：選路線往下潛，在氧氣用完前上浮。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-dive"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dive"></use></svg></div><h3>一口氣探險</h3><p class="game-card-en">One Breath Dive</p><p class="game-card-description">選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。</p><div class="game-card-footer"><span>免費遊玩</span><span>最佳分數</span></div></a><a class="game-card" href="#frontier" data-game-category="puzzle" aria-label="遊玩荒島遠征：五十關採集、建造與戰鬥冒險"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#icon-frontier"></use></svg></div><h3>荒島遠征</h3><p class="game-card-en">Frontier Islands</p><p class="game-card-description">砍出道路，建立據點，挑戰五大區域與五十關考驗。</p><div class="game-card-footer"><span>遠征與續玩皆免費</span><span>50 關 · 自動存檔</span></div></a>
-<a class="game-card" href="#blaster" data-game-category="run" aria-label="遊玩深海火線：自由移動自動射擊，三選一武器擊退怪物"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-blaster"></use></svg></div><h3>深海火線</h3><p class="game-card-en">Reef Blaster</p><p class="game-card-description">七種武器三選一，闖過水雷、礁石與深海巨獸。</p><div class="game-card-footer"><span>免費遊玩</span><span>無盡 · 每10關+1點</span></div></a>
+<a class="game-card" href="#carp" data-game-category="timing" aria-label="遊玩鯉魚躍龍門：蓄力起跳，越過一道道石瀑。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-carp"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-carp"></use></svg></div><h3>鯉魚躍龍門</h3><p class="game-card-en">Carp Leap</p><p class="game-card-description">蓄力起跳，越過一道道石瀑。</p><div class="game-card-footer"><span>免費遊玩</span><span>蓄力跳躍</span></div></a><a class="game-card" href="#rider" data-game-category="run" aria-label="遊玩外送員大戰惡犬：巷子裡閃狗送餐，餐涼之前送越多越好。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-rider"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-rider"></use></svg></div><h3>外送員大戰惡犬</h3><p class="game-card-en">Rider vs Dogs</p><p class="game-card-description">巷子裡閃狗送餐，餐涼之前送越多越好。</p><div class="game-card-footer"><span>免費遊玩</span><span>閃避送餐</span></div></a><a class="game-card" href="#boss" data-game-category="run" aria-label="遊玩胖老闆追人：遲到了！跳過障礙，別被胖老闆追上。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-boss"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-boss"></use></svg></div><h3>胖老闆追人</h3><p class="game-card-en">Chubby Boss Chase</p><p class="game-card-description">遲到了！跳過障礙，別被胖老闆追上。</p><div class="game-card-footer"><span>免費遊玩</span><span>辦公室逃亡</span></div></a><a class="game-card" href="#thief" data-game-category="run" aria-label="遊玩偷水果的貓：換道、跳籃子，偷水果躲開老闆娘。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-thief"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-thief"></use></svg></div><h3>偷水果的貓</h3><p class="game-card-en">Fruit Thief Cat</p><p class="game-card-description">換道、跳籃子，偷水果躲開老闆娘。</p><div class="game-card-footer"><span>免費遊玩</span><span>市場追逐</span></div></a><a class="game-card" href="#baby" data-game-category="run" aria-label="遊玩寶寶逃洗澡：跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-baby"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-baby"></use></svg></div><h3>寶寶逃洗澡</h3><p class="game-card-en">Baby Bath Escape</p><p class="game-card-description">跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。</p><div class="game-card-footer"><span>免費遊玩</span><span>居家逃亡</span></div></a><a class="game-card" href="#pancake" data-game-category="timing" aria-label="遊玩泡麵煎餅翻面：晃手機煎泡麵煎餅，金黃時往上甩翻面，免費遊玩"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-pancake"></use></svg></div><h3>泡麵煎餅翻面</h3><p class="game-card-en">Noodle Pancake</p><p class="game-card-description">半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。</p><div class="game-card-footer"><span>免費遊玩</span><span>只扣入場點數</span></div></a><a class="game-card" href="#mrt" data-game-category="puzzle" aria-label="遊玩捷運搶位：看線索猜誰要下車，搶到座位階數升一階。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mrt"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mrt"></use></svg></div><h3>捷運搶位</h3><p class="game-card-en">MRT Seat Grab</p><p class="game-card-description">看小動作猜誰要下車，一階一階往上搶座位。</p><div class="game-card-footer"><span>免費遊玩</span><span>8 階挑戰</span></div></a><a class="game-card" href="#dive" data-game-category="puzzle" aria-label="遊玩一口氣探險：選路線往下潛，在氧氣用完前上浮。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-dive"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dive"></use></svg></div><h3>一口氣探險</h3><p class="game-card-en">One Breath Dive</p><p class="game-card-description">選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。</p><div class="game-card-footer"><span>免費遊玩</span><span>最佳分數</span></div></a><a class="game-card" href="#blaster" data-game-category="run" aria-label="遊玩深海火線：自由移動自動射擊，三選一武器擊退怪物"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-blaster"></use></svg></div><h3>深海火線</h3><p class="game-card-en">Reef Blaster</p><p class="game-card-description">七種武器三選一，闖過水雷、礁石與深海巨獸。</p><div class="game-card-footer"><span>免費遊玩</span><span>無盡 · 每10關+1點</span></div></a>
 <a class="game-card" href="#reaper" data-game-category="stealth" aria-label="遊玩死神打工：接走普通靈魂，放行綠色通行證有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-reaper"></use></svg></div><h3>死神打工</h3><p class="game-card-en">Reaper Shift</p><p class="game-card-description">普通靈魂要接走，綠色通行證要放行。</p><div class="game-card-footer"><span>免費遊玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#bird" data-game-category="run" aria-label="遊玩便便鳥大戰狼群：跳過仙人掌和狼群，用便便把狼王打跑。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-bird"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-bird"></use></svg></div><h3>便便鳥大戰狼群</h3><p class="game-card-en">Poop Bird vs Wolves</p><p class="game-card-description">跳過仙人掌和狼群，用便便把狼王打跑。</p><div class="game-card-footer"><span>免費遊玩</span><span>狼王挑戰</span></div></a><a class="game-card" href="#frog" data-game-category="timing" aria-label="遊玩青蛙吃蟲：對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-frog"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-frog"></use></svg></div><h3>青蛙吃蟲</h3><p class="game-card-en">Frog Snack</p><p class="game-card-description">對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。</p><div class="game-card-footer"><span>免費遊玩</span><span>一鍵反應</span></div></a><a class="game-card" href="#nap" data-game-category="stealth" aria-label="遊玩偷睡大師：趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-nap"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-nap"></use></svg></div><h3>偷睡大師</h3><p class="game-card-en">Nap Master</p><p class="game-card-description">趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。</p><div class="game-card-footer"><span>免費遊玩</span><span>按住反應</span></div></a>
 <a class="game-card" href="#cat" data-game-category="run" aria-label="遊玩屋頂貓貓：無盡跑酷，看你能跑多遠。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-cat"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-cat"></use></svg></div><h3>屋頂貓貓</h3><p class="game-card-en">Rooftop Cat</p><p class="game-card-description">無盡跑酷，看你能跑多遠。</p><div class="game-card-footer"><span>免費遊玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#boba" data-game-category="timing" aria-label="遊玩插珍奶：抓準力道把吸管插進珍奶，免費遊玩"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-boba"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-boba"></use></svg></div><h3>插珍奶</h3><p class="game-card-en">Boba Straw</p><p class="game-card-description">抓準力道插吸管，原版粉紅珍奶小遊戲。</p><div class="game-card-footer"><span>免費遊玩</span><span>只扣入場點數</span></div></a><a class="game-card" href="#campaign" data-game-category="stealth" aria-label="遊玩宣傳車：繞市區拉票，經過學校、醫院、豪宅要按住靜音。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-campaign"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-campaign"></use></svg></div><h3>宣傳車</h3><p class="game-card-en">Campaign Truck</p><p class="game-card-description">繞市區拉票，經過學校、醫院、豪宅要按住靜音。</p><div class="game-card-footer"><span>免費遊玩</span><span>無盡 · 越開越快</span></div></a><a class="game-card" href="#fishing" data-game-category="timing" aria-label="遊玩深海釣手：按住收線、放開卸力，把大魚拉上岸。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-fishing"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-fishing"></use></svg></div><h3>深海釣手</h3><p class="game-card-en">Fishing</p><p class="game-card-description">按住收線、放開卸力，把大魚拉上岸。</p><div class="game-card-footer"><span>免費遊玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#elevator" data-game-category="stealth" aria-label="遊玩插隊大師：趁乘客背對你，偷偷往前插一位。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-elevator"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-elevator"></use></svg></div><h3>插隊大師</h3><p class="game-card-en">Queue Cutter</p><p class="game-card-description">趁乘客背對你，偷偷往前插一位。</p><div class="game-card-footer"><span>免費遊玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#sneak" data-game-category="stealth" aria-label="遊玩偷偷下班：按住偷溜，老闆回頭前趕快裝忙。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-sneak"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-sneak"></use></svg></div><h3>偷偷下班</h3><p class="game-card-en">Sneak Out</p><p class="game-card-description">按住偷溜，老闆回頭前趕快裝忙。</p><div class="game-card-footer"><span>免費遊玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#runner" data-game-category="run" aria-label="遊玩閃避跑酷：點左、點右換道，避開一路上的障礙。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-runner"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-runner"></use></svg></div><h3>閃避跑酷</h3><p class="game-card-en">Dodge Run</p><p class="game-card-description">點左、點右換道，避開一路上的障礙。</p><div class="game-card-footer"><span>免費遊玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#dream" data-game-category="timing" aria-label="遊玩時序修復：抓準時機，讓指針停在青綠色區域。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-dream"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dream"></use></svg></div><h3>時序修復</h3><p class="game-card-en">Dream Repair Shop</p><p class="game-card-description">抓準時機，讓指針停在青綠色區域。</p><div class="game-card-footer"><span>免費遊玩</span><span>無限關卡</span></div></a><a class="game-card" href="#merge" data-game-category="puzzle" aria-label="遊玩養珠：滑動合併珍珠，養出更大的數字。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-merge"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-merge"></use></svg></div><h3>養珠</h3><p class="game-card-en">Pearl Merge</p><p class="game-card-description">滑動合併珍珠，養出更大的數字。</p><div class="game-card-footer"><span>免費遊玩</span><span>滑動合併</span></div></a><a class="game-card" href="#crash" hidden data-game-hidden data-game-category="chance" aria-label="遊玩壓潰深度：隨潛艇一起下潛，在壓潰前上浮。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-crash"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crash"></use></svg></div><h3>壓潰深度</h3><p class="game-card-en">Crush Depth</p><p class="game-card-description">隨潛艇一起下潛，在壓潰前上浮。</p><div class="game-card-footer"><span>10 點起</span><span>隨時上浮</span></div></a><a class="game-card" href="#breakout" data-game-category="retro" aria-label="遊玩打磚塊：移動擋板反彈小球、打光磚塊並一關一關挑戰，免費不限次數。"><div class="game-card-top"><span class="game-card-category">經典小遊戲</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-breakout"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-breakout"></use></svg></div><h3>打磚塊</h3><p class="game-card-en">Breakout</p><p class="game-card-description">移動擋板反彈小球，打光磚塊一關闖過一關。</p><div class="game-card-footer"><span>免費 · 不限次數</span><span>反應闖關</span></div></a>
 <a class="game-card" href="#mines" data-game-category="retro" aria-label="遊玩踩地雷：低中高難度或自訂棋盤，免費重溫經典踩地雷。"><div class="game-card-top"><span class="game-card-category">經典小遊戲</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mines"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mines"></use></svg></div><h3>踩地雷</h3><p class="game-card-en">Minesweeper</p><p class="game-card-description">低中高難度或自訂棋盤，免費重溫經典踩地雷。</p><div class="game-card-footer"><span>免費 · 不限次數</span><span>推理排雷</span></div></a><a class="game-card" href="#plinko" hidden data-game-hidden data-game-category="chance" aria-label="遊玩落珠：投下珍珠，看它穿過釘陣落在哪一格。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-plinko"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-plinko"></use></svg></div><h3>落珠</h3><p class="game-card-en">Pearl Drop</p><p class="game-card-description">投下珍珠，看它穿過釘陣落在哪一格。</p><div class="game-card-footer"><span>10 點起</span><span>落點倍率</span></div></a><a class="game-card" href="#dice" hidden data-game-hidden data-game-category="chance" aria-label="遊玩測深：設定聲納讀數範圍，等待海底回音。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-dice"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dice"></use></svg></div><h3>測深</h3><p class="game-card-en">Sonar Dice</p><p class="game-card-description">設定聲納讀數範圍，等待海底回音。</p><div class="game-card-footer"><span>10 點起</span><span>範圍預測</span></div></a><a class="game-card" href="#limbo" hidden data-game-hidden data-game-category="chance" aria-label="遊玩探底：選定目標倍率，看看探測錘能到多深。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-limbo"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-limbo"></use></svg></div><h3>探底</h3><p class="game-card-en">Deep Probe</p><p class="game-card-description">選定目標倍率，看看探測錘能到多深。</p><div class="game-card-footer"><span>10 點起</span><span>目標倍率</span></div></a><a class="game-card" href="#hilo" hidden data-game-hidden data-game-category="chance" aria-label="遊玩漲退：猜下一張牌更高或更低，連猜累積。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-hilo"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-hilo"></use></svg></div><h3>漲退</h3><p class="game-card-en">High Tide</p><p class="game-card-description">猜下一張牌更高或更低，連猜累積。</p><div class="game-card-footer"><span>10 點起</span><span>高低猜牌</span></div></a><a class="game-card" href="#wheel" hidden data-game-hidden data-game-category="chance" aria-label="遊玩羅盤：轉動深海羅盤，等待指針停下。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-wheel"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-wheel"></use></svg></div><h3>羅盤</h3><p class="game-card-en">Compass</p><p class="game-card-description">轉動深海羅盤，等待指針停下。</p><div class="game-card-footer"><span>10 點起</span><span>轉盤挑戰</span></div></a><a class="game-card" href="#tower" hidden data-game-hidden data-game-category="chance" aria-label="遊玩浮升：挑選安全的氣泡，一層一層往上浮。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-tower"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-tower"></use></svg></div><h3>浮升</h3><p class="game-card-en">Ascent</p><p class="game-card-description">挑選安全的氣泡，一層一層往上浮。</p><div class="game-card-footer"><span>10 點起</span><span>逐層冒險</span></div></a><a class="game-card" href="#crossing" hidden data-game-hidden data-game-category="chance" aria-label="遊玩橫渡：帶小海龜穿越暗流，決定何時收手。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-crossing"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crossing"></use></svg></div><h3>橫渡</h3><p class="game-card-en">Reef Run</p><p class="game-card-description">帶小海龜穿越暗流，決定何時收手。</p><div class="game-card-footer"><span>10 點起</span><span>逐步闖關</span></div></a><a class="game-card" href="#pudding" data-game-category="run" aria-label="遊玩布丁突圍：拼出武器，背著小王子殺出重圍。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-pudding"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-pudding"></use></svg></div><h3>布丁突圍</h3><p class="game-card-en">Pudding Dash</p><p class="game-card-description">拼出武器，背著小王子殺出重圍。</p><div class="game-card-footer"><span>免費遊玩</span><span>拼武器闖關</span></div></a></div>
@@ -1096,12 +1116,12 @@ body.ol-expanded { overflow: hidden; }
   </section>
 <section class="view" id="view-frontier" hidden><div class="ft-layout"><div class="ft-main" id="ft-main">
 <div class="ft-top"><span class="ft-eyebrow">FRONTIER / 50 STAGES</span><button type="button" id="ft-full">全螢幕</button></div><div class="ft-status"><strong id="ft-zone">翠葉群島</strong><span id="ft-level">1 / 50</span><span id="ft-health">♥ 100</span></div><p id="ft-objective" class="ft-objective" aria-live="polite">建立據點，清除守衛，點亮燈塔。</p>
-<div class="ft-stage" id="ft-stage"><canvas id="ft-canvas" width="900" height="650" tabindex="0" aria-label="荒島遠征：移動採集、靠近建造、閃避攻擊"></canvas><div id="ft-overlay" class="ft-overlay"><span class="ft-eyebrow">GATHER · BUILD · SURVIVE</span><h2 id="ft-title">荒島遠征</h2><p id="ft-message">五大區域，五十場考驗。建立據點，穿越危險地帶。</p><button type="button" id="ft-go">免費開始遠征</button></div><div class="ft-touch"><div id="ft-stick" role="group" aria-label="拖曳搖桿移動"><span id="ft-knob"></span></div><button type="button" id="ft-dash">衝刺</button></div></div>
-<div class="ft-resource"><span id="ft-bag">背包</span><span id="ft-stock">倉庫</span><button type="button" id="ft-pause">暫停</button></div></div>
+<div class="ft-mission"><span id="ft-checklist"></span><span id="ft-warning"></span></div><div class="ft-stage" id="ft-stage"><canvas id="ft-canvas" width="900" height="650" tabindex="0" aria-label="荒島遠征：移動採集、靠近建造、閃避攻擊"></canvas><div id="ft-overlay" class="ft-overlay"><span class="ft-eyebrow">GATHER · BUILD · SURVIVE</span><h2 id="ft-title">荒島遠征</h2><p id="ft-message">五大區域，五十場考驗。建立據點，穿越危險地帶。</p><button type="button" id="ft-go">免費開始遠征</button></div><div class="ft-touch"><div id="ft-stick" role="group" aria-label="拖曳搖桿移動"><span id="ft-knob"></span></div><button type="button" id="ft-dash" class="ft-optional-dash">衝刺</button></div></div>
+<div class="ft-resource"><span id="ft-bag">背包</span><span id="ft-stock">倉庫</span><span id="ft-coins">金幣 0</span><span id="ft-workers">工人 0</span><button type="button" id="ft-home">返回營地</button><button type="button" id="ft-shop-toggle" aria-expanded="false" aria-controls="ft-shop">交易與裝備</button><button type="button" id="ft-pause">暫停</button><button type="button" id="ft-next" hidden>前往下一島</button></div>
+<section id="ft-shop" class="ft-shop" hidden><div class="ft-shop-head"><h3>交易與裝備</h3><button type="button" id="ft-shop-close">關閉</button></div><p>靠近營地購買裝備，靠近市集出售倉庫材料。金幣只用於本遊戲。</p><label for="ft-sale-count">出售數量</label><select id="ft-sale-count"><option value="5">5</option><option value="10" selected>10</option><option value="25">25</option></select><div class="ft-shop-actions"><button type="button" id="ft-sell-wood">出售木材 · 每份 2 金幣</button><button type="button" id="ft-sell-stone">出售石材 · 每份 3 金幣</button><button type="button" id="ft-tool">採集工具</button><button type="button" id="ft-blade">戰鬥武器</button><button type="button" id="ft-pack">背包容量</button></div><p id="ft-upgrade" aria-live="polite"></p><p id="ft-storage" aria-live="polite"></p></section></div>
 <aside class="ft-side"><section class="ft-panel"><span class="ft-eyebrow">EXPEDITION LOG</span><h3>遠征進度</h3><p id="ft-record">0 / 50</p><div id="ft-map" class="ft-map" aria-label="五十關遠征地圖"></div><p>點選已解鎖關卡可重玩，會取代當前關卡進度。</p><div id="ft-select" hidden><p id="ft-select-label"></p><button type="button" id="ft-select-yes">確認前往</button><button type="button" id="ft-select-no">取消</button></div></section>
-<section class="ft-panel"><h3>營地升級</h3><p>回營地存放背包。靠近營地可升級，科技跨關保留。</p><button type="button" id="ft-tool">採集工具</button><button type="button" id="ft-blade">戰鬥武器</button><button type="button" id="ft-pack">背包容量</button><p id="ft-upgrade" aria-live="polite"></p><p id="ft-storage" aria-live="polite"></p></section>
-<section class="ft-panel"><h3>生存指南</h3><p>靠近樹木與礦石自動採集；靠近地基自動投入材料。木材廠持續供料，鐵匠鋪提升攻擊，箭塔提供火力支援。</p><p>紅圈亮起後才會攻擊。保持移動，衝刺穿越危險區；營地每關最多恢復 35 生命，不能無限補血。</p><p>電腦：WASD／方向鍵移動，空白鍵衝刺。手機：左側搖桿移動、右側衝刺。</p></section></aside></div>
-<details class="rules"><summary>遠征規則與存檔</summary><p>遠征免費，後續五十關、失敗重試與讀取存檔免費，沒有額外成就獎勵。每關建立新據點，科技與最高通關紀錄保留，當地材料不跨關。每五秒及暫停時自動存檔；切換遊戲或背景會暫停，回來需按繼續。存檔只在本瀏覽器，不跨裝置。</p><p>五個區域各十關，交替建設、救援、討伐、守點與精英戰，每十關有區域首領。守點須先建箭塔；完成任務後才能建燈塔過關。後期預告縮短、敵人組合增加，第三區起有琥珀色地面危險預告。寒霜區未建鐵匠鋪時移速降低。夜幕提高敵人移速但有上限，沒有隱藏逾時失敗。</p></details></section>
+<section class="ft-panel"><h3>生存指南</h3><p>靠近樹木與礦石自動採集；靠近地基自動投入材料。工人小屋招募工人採集與搬運；採石場增加採石工，木材廠提升工作效率。箭塔協助守城。</p><p>打怪後靠近撿取金幣；市集出售材料，營地購買裝備。受損建築靠近後消耗倉庫木材修復。敵襲前會倒數預告。</p><p>只要移動角色，就會自動採集、建造與攻擊。電腦可用 WASD／方向鍵；手機拖曳搖桿，或點地面前往。</p></section></aside></div>
+<details class="rules"><summary>遠征規則與存檔</summary><p>遠征免費，後續五十關、失敗重試與讀取存檔免費，沒有額外成就獎勵。每關建立新據點，裝備、金幣與最高通關紀錄保留，當地材料與建築不跨關。每五秒及暫停時自動存檔；切換遊戲或背景會暫停，回來需按繼續。存檔只在本瀏覽器，不跨裝置。</p><p>五個區域各十關，交替建設、救援、討伐、守點與精英戰，每十關有區域首領。守點須先建箭塔；完成建設與任務後才能建燈塔，自行選擇前往下一島。後期預告縮短、敵人組合增加，第三區起有琥珀色地面危險預告。寒霜區未建鐵匠鋪時移速降低。夜幕提高敵人移速但有上限，沒有隱藏逾時失敗。</p></details><details class="rules"><summary>美術設定與設計規範</summary><p>設定圖是美術方向參考，實際畫面由 Canvas 繪製。</p><a href="games/frontier/art/direction-board.png" target="_blank" rel="noopener"><img class="ft-art-board" src="games/frontier/art/direction-board.png" alt="荒島遠征美術設定圖：探險家、樹木、礦石與砍伐效果" loading="lazy"></a><p><a href="games/frontier/ART_DIRECTION.md" target="_blank" rel="noopener">美術與維護規範</a></p></details></section>
   <section class="view" id="view-crash" hidden>
   <div class="history" aria-label="最近回合的壓潰倍率">
     <span class="label">近期壓潰</span>
@@ -6198,7 +6218,41 @@ body.ol-expanded { overflow: hidden; }
   "牆上有東西在轉動眼珠……放開「衝刺」！": "Something on the wall is rolling its eyes… let go of “Sprint”!",
   "有笑聲貼著耳朵……放開「衝刺」，不要往聲音那邊靠": "Giggling right by your ear… let go of “Sprint” and do not lean toward the sound",
   "有東西在追你。開始後自動奔跑，按住「衝刺」跑更快。": "Something is chasing you. Once you start you run on your own; hold “Sprint” to go faster.",
-  "每局免費。你抱著八音盒在夜間走廊裡自動往出口跑，按住「衝刺」可以跑得兩倍快，距離跑滿 100% 就衝出去、盒子打開過關。衝刺時身體會被固定在走廊中間，不能靠牆，所以鬼來之前要記得放開；蓋住螢幕時會停下來。開局有 9 秒安全時間，之後襲擊的間隔會隨進度縮短。": "Each round is free. You run down a night corridor toward the exit on your own, holding the music box; hold “Sprint” to go twice as fast, and when the distance reaches 100% you break out and the box opens. While sprinting you are pinned to the middle of the corridor and cannot lean, so let go before a ghost arrives; covering the screen makes you stop. You get 9 safe seconds at the start, and attacks come closer together as you progress."
+  "每局免費。你抱著八音盒在夜間走廊裡自動往出口跑，按住「衝刺」可以跑得兩倍快，距離跑滿 100% 就衝出去、盒子打開過關。衝刺時身體會被固定在走廊中間，不能靠牆，所以鬼來之前要記得放開；蓋住螢幕時會停下來。開局有 9 秒安全時間，之後襲擊的間隔會隨進度縮短。": "Each round is free. You run down a night corridor toward the exit on your own, holding the music box; hold “Sprint” to go twice as fast, and when the distance reaches 100% you break out and the box opens. While sprinting you are pinned to the middle of the corridor and cannot lean, so let go before a ghost arrives; covering the screen makes you stop. You get 9 safe seconds at the start, and attacks come closer together as you progress.",
+  "設定圖是美術方向參考，實際畫面由 Canvas 繪製。": "The board is an art direction reference. The playable scene is drawn with Canvas.",
+  "美術與維護規範": "Art & maintenance guide",
+  "金幣 0": "Gold 0",
+  "工人 0": "Workers 0",
+  "荒島遠征美術設定圖：探險家、樹木、礦石與砍伐效果": "Frontier Islands art reference: explorer, trees, rocks and chopping feedback",
+  "出售石材 · 每份 3 金幣": "Sell stone · 3 gold each",
+  "關閉": "Close",
+  "敵襲倒數": "Raid in",
+  "靠近樹木與礦石自動採集；靠近地基自動投入材料。工人小屋招募工人採集與搬運；採石場增加採石工，木材廠提升工作效率。箭塔協助守城。": "Approach trees and rocks to gather; approach foundations to contribute materials. Cottages recruit gathering and hauling workers. The quarry adds a stone worker, the mill improves efficiency, and the tower defends the village.",
+  "島嶼已開拓，可繼續採集或前往下一島。": "Island secured. Keep gathering or depart for the next island.",
+  "· 金幣": "· Gold",
+  "遠征免費，後續五十關、失敗重試與讀取存檔免費，沒有額外成就獎勵。每關建立新據點，裝備、金幣與最高通關紀錄保留，當地材料與建築不跨關。每五秒及暫停時自動存檔；切換遊戲或背景會暫停，回來需按繼續。存檔只在本瀏覽器，不跨裝置。": "Expeditions, all 50 stages, retries and saved games are free, with no extra achievement payout. Equipment, gold and highest stage persist; local materials and buildings reset on each island. Progress saves every five seconds and on pause. Switching games or hiding the page pauses play; resume manually. Saves stay in this browser.",
+  "需要市集、倉庫材料與靠近市集": "Build and approach the market with enough stored materials.",
+  "交易與裝備": "Trade & equipment",
+  "打怪後靠近撿取金幣；市集出售材料，營地購買裝備。受損建築靠近後消耗倉庫木材修復。敵襲前會倒數預告。": "Approach defeated enemies to collect gold. Sell materials at the market and buy equipment at camp. Approach damaged buildings to repair them with carried or stored wood. Raids have a countdown warning.",
+  "返回營地": "Walk to camp",
+  "工人小屋": "Workers’ cottage",
+  "需修復": "Repair needed",
+  "五個區域各十關，交替建設、救援、討伐、守點與精英戰，每十關有區域首領。守點須先建箭塔；完成建設與任務後才能建燈塔，自行選擇前往下一島。後期預告縮短、敵人組合增加，第三區起有琥珀色地面危險預告。寒霜區未建鐵匠鋪時移速降低。夜幕提高敵人移速但有上限，沒有隱藏逾時失敗。": "Five regions have ten stages each, mixing construction, rescue, combat, defense and elite missions, with a boss every ten stages. Build a tower for defense missions. Complete village and mission requirements to build the beacon, then choose when to depart. Later enemies have shorter warnings and mixed formations. Region three adds amber ground warnings. Frost slows movement without a forge. Night increases enemy speed up to a cap, without a hidden timeout.",
+  "工人": "Workers",
+  "出售木材 · 每份 2 金幣": "Sell wood · 2 gold each",
+  "交易完成": "Trade complete",
+  "退出全螢幕": "Exit fullscreen",
+  "敵營": "Enemy camps",
+  "靠近資源採集，靠近地基建造": "Approach resources to gather; approach foundations to build.",
+  "美術設定與設計規範": "Art reference & design guide",
+  "採石場": "Quarry",
+  "前往下一島": "Next island",
+  "市集": "Market",
+  "靠近營地購買裝備，靠近市集出售倉庫材料。金幣只用於本遊戲。": "Buy equipment near camp and sell stored materials near the market. Gold is used only in this game.",
+  "出售數量": "Quantity to sell",
+  "金幣": "Gold",
+  "前線分倉": "Frontier depot",
+  "只要移動角色，就會自動採集、建造與攻擊。電腦可用 WASD／方向鍵；手機拖曳搖桿，或點地面前往。": "Move to gather, build and attack automatically. Use WASD / arrow keys, drag the joystick, or tap the ground to walk there."
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -18084,29 +18138,90 @@ render();requestAnimationFrame(loop);
     // Simulation stays in the game's closure; the model never touches points or tracking.
 function frontierPlan(level){
  var c=Math.floor((level-1)/10),n=(level-1)%10;
- return {level:level,chapter:c,mission:n===9?'boss':['build','rescue','hunt','defend','elite','rescue','defend','hunt','elite'][n],wood:24+c*6+n*2,stone:14+c*4+n,enemies:4+c*2+Math.floor(n/2),hp:36+c*13+n*3,damage:9+c*3+Math.floor(n/3),windup:Math.max(.62,1.18-c*.09-n*.015),waves:2+c,hold:24+c*6,night:150-c*12};
+ return {level:level,chapter:c,mission:n===9?'boss':['build','rescue','hunt','defend','elite','rescue','defend','hunt','elite'][n],wood:24+c*6+n*2,stone:14+c*4+n,enemies:4+c*2+Math.floor(n/2),hp:36+c*13+n*3,damage:9+c*3+Math.floor(n/3),windup:Math.max(.62,1.18-c*.09-n*.015),waves:2+c,hold:24+c*6,night:150-c*12,width:1200+c*300,height:900+c*150,trees:160+c*45,requiredCamps:c>=2?c-1:0};
 }
-function frontierWorld(level,tech){
+function frontierWorld(level,tech,coins){
  var cfg=frontierPlan(level),seed=level*1973;
  function rand(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}
  var flip=level%2?-1:1,offset=(level%3-1)*35;
- var w={version:1,level:level,cfg:cfg,tech:tech||{tool:0,blade:0,pack:0},time:0,phase:'play',p:{x:180,y:450,hp:100,inv:0,attack:0,dash:0,dx:1,dy:0},bag:{wood:0,stone:0},bank:{wood:0,stone:0},nodes:[],enemies:[],shots:[],effects:[],kills:0,rescued:0,hold:0,wave:0,waveAt:0,heal:35,worker:0,threat:0,
+ var w={version:1,level:level,cfg:cfg,tech:tech||{tool:0,blade:0,pack:0},coins:Math.max(0,Number(coins)||0),workers:[],drops:[],raids:0,raidAt:75,depotReady:false,settled:false,time:0,phase:'play',p:{x:180,y:450,hp:100,inv:0,attack:0,dash:0,dx:1,dy:0},bag:{wood:0,stone:0},bank:{wood:0,stone:0},nodes:[],enemies:[],shots:[],effects:[],kills:0,rescued:0,hold:0,wave:0,waveAt:0,heal:35,worker:0,threat:0,
  buildings:[{kind:'camp',x:180,y:450,built:true,wood:0,stone:0},{kind:'mill',x:320,y:450+flip*230,built:false,wood:cfg.wood,stone:0},{kind:'forge',x:330,y:450-flip*230,built:false,wood:12,stone:cfg.stone},{kind:'bridge',x:590,y:450,built:false,wood:cfg.wood+10,stone:cfg.stone},{kind:'tower',x:860,y:450+offset,built:false,wood:cfg.wood,stone:cfg.stone+6,cd:0},{kind:'beacon',x:1090,y:450-offset,built:false,wood:cfg.wood,stone:cfg.stone}],cages:[{x:880,y:180,open:false},{x:1020,y:700,open:false}]};
- for(var i=0;i<62;i++){
-  var x=70+rand()*1050,y=80+rand()*740;
+ w.buildings.push(
+ {kind:'house',x:185,y:620,built:false,wood:16,stone:4,hp:140,maxHp:140},
+ {kind:'market',x:370,y:470,built:false,wood:12,stone:6,hp:140,maxHp:140},
+ {kind:'quarry',x:430,y:700,built:false,wood:18,stone:12,hp:140,maxHp:140});
+ if(cfg.chapter>0)w.buildings.push({kind:'depot',x:cfg.width-380,y:cfg.height-270,built:false,wood:30+cfg.chapter*6,stone:20+cfg.chapter*4,hp:180,maxHp:180});
+ w.buildings[5].x=cfg.width-110;w.buildings[5].y=cfg.height/2;
+ w.cages[1].x=cfg.width-180;w.cages[1].y=cfg.height-170;
+ w.buildings.forEach(function(b){b.hp=b.hp||180;b.maxHp=b.maxHp||180;b.repair=0;});
+ w.camps=[];
+ for(var k=0;k<cfg.requiredCamps;k++)w.camps.push({x:1050+k*250,y:k%2?cfg.height-160:170,hp:120+cfg.chapter*60,maxHp:120+cfg.chapter*60,cool:12});
+ for(var i=0;i<cfg.trees;i++){
+  var x=70+rand()*(cfg.width-140),y=80+rand()*(cfg.height-160);
   if(x>530&&x<700||w.buildings.concat(w.cages).some(function(b){return Math.hypot(b.x-x,b.y-y)<85;})){i--;continue;}
   w.nodes.push({x:x,y:y,kind:i%3===0?'stone':'wood',left:6,cool:0,respawn:0});
  }
  // Guaranteed accessible supplies; regeneration prevents a finite-resource softlock.
  w.nodes[0]={x:100,y:320,kind:'stone',left:6,cool:0,respawn:0};w.nodes[1]={x:260,y:340,kind:'wood',left:6,cool:0,respawn:0};
- for(i=0;i<cfg.enemies;i++)frontierSpawn(w,750+rand()*370,100+rand()*700,i);
- if(cfg.mission==='boss'||cfg.mission==='elite')frontierSpawn(w,1040,450,99);
+ for(i=0;i<cfg.enemies;i++)frontierSpawn(w,750+rand()*(cfg.width-820),100+rand()*(cfg.height-200),i);
+ if(cfg.mission==='boss'||cfg.mission==='elite')frontierSpawn(w,cfg.width-180,cfg.height/2,99);
  return w;
 }
 function frontierSpawn(w,x,y,i){var boss=i===99,type=boss?'boss':i%4===2&&w.level>3?'ranged':i%4===1&&w.level>1?'charger':'melee',hp=w.cfg.hp*(boss?(w.cfg.mission==='boss'?7:3):1);w.enemies.push({x:x,y:y,type:type,hp:hp,max:hp,state:'walk',t:0,cool:.5+i%3,tx:x,ty:y,hit:false,counted:false,wave:false,radius:boss?27:17});}
 function frontierNear(a,b,r){return Math.hypot(a.x-b.x,a.y-b.y)<r;}
-function frontierBuilt(w,k){return w.buildings.some(function(b){return b.kind===k&&b.built;});}
-function frontierUpgrade(w,k){if(!['tool','blade','pack'].includes(k)||w.phase!=='play'||!frontierNear(w.p,w.buildings[0],100))return false;var n=w.tech[k],cost=20+n*22;if(n>=8||w.bank.wood<cost||w.bank.stone<Math.floor(cost*.65))return false;w.bank.wood-=cost;w.bank.stone-=Math.floor(cost*.65);w.tech[k]++;return true;}
+function frontierBuilt(w,k){return w.buildings.some(function(b){return b.kind===k&&b.built&&b.hp!==0;});}
+function frontierUpgradeCost(w,k){return 25+w.tech[k]*30;}
+function frontierUpgrade(w,k){
+ if(!['tool','blade','pack'].includes(k)||w.phase!=='play'||!frontierNear(w.p,w.buildings[0],105))return false;
+ var cost=frontierUpgradeCost(w,k);if(w.tech[k]>=8||w.coins<cost)return false;
+ w.coins-=cost;w.tech[k]++;return true;
+}
+function frontierSell(w,k,count){
+ if(!['wood','stone'].includes(k)||!Number.isInteger(count)||count<1||count>1000||w.phase!=='play')return false;
+ var market=w.buildings.find(function(b){return b.kind==='market';});if(!market||!market.built||market.hp<=0||!frontierNear(w.p,market,100)||w.bank[k]<count)return false;
+ w.bank[k]-=count;w.coins+=count*(k==='wood'?2:3);return true;
+}
+function frontierReady(w){return frontierGoal(w)&&frontierBuilt(w,'house')&&frontierBuilt(w,'market')&&frontierBuilt(w,'mill')&&(w.cfg.chapter===0||frontierBuilt(w,'depot'))&&(!w.camps||w.camps.every(function(c){return c.hp<=0;}));}
+function frontierLeave(w){if(w.phase!=='play'||!frontierBuilt(w,'beacon'))return false;w.phase='clear';return true;}
+function frontierMigrate(w){
+ // Additive migration: keep coordinates, inventory, equipment and progress of version-1 worlds.
+ var sample=frontierWorld(w.level,w.tech,w.coins),old=!Array.isArray(w.workers);
+ w.cfg=frontierPlan(w.level);w.coins=Math.max(0,Number(w.coins)||0);w.workers=w.workers||[];w.drops=w.drops||[];w.camps=w.camps||sample.camps;
+ w.raidAt=Number.isFinite(w.raidAt)?w.raidAt:w.time+75;w.raids=w.raids||0;w.settled=!!w.settled;
+ sample.buildings.forEach(function(b){if(!w.buildings.some(function(a){return a.kind===b.kind;}))w.buildings.push(b);});
+ w.buildings.forEach(function(b){b.maxHp=b.maxHp||180;b.hp=Number.isFinite(b.hp)?b.hp:b.maxHp;b.repair=0;});
+ if(old)sample.nodes.forEach(function(n){if(w.nodes.length<w.cfg.trees&& !w.nodes.some(function(a){return Math.hypot(a.x-n.x,a.y-n.y)<24;}))w.nodes.push(n);});
+ w.effects=[];return w;
+}
+function frontierWorkers(w,dt){
+ var house=w.buildings.find(function(b){return b.kind==='house';}),count=house&&house.built&&house.hp>0?2+(frontierBuilt(w,'quarry')?1:0)+w.rescued:0;
+ while(w.workers.length<count)w.workers.push({x:180,y:600,wood:0,stone:0,target:-1,t:0,mode:'wood'});
+ w.workers.forEach(function(a,i){
+  if(i>=count)return;a.mode=i%3===2?'stone':'wood';a.t-=dt;
+  var depots=w.buildings.filter(function(b){return b.built&&b.hp>0&&(b.kind==='camp'||b.kind==='depot');});
+  var home=depots.slice().sort(function(b,c){return Math.hypot(a.x-b.x,a.y-b.y)-Math.hypot(a.x-c.x,a.y-c.y);})[0];
+  if(!home)return;
+  if(a.wood+a.stone>=5){
+   if(frontierNear(a,home,30)){w.bank.wood+=a.wood;w.bank.stone+=a.stone;a.wood=a.stone=0;a.target=-1;return;}
+   frontierWorkerMove(a,home,dt);return;
+  }
+  var node=w.nodes[a.target];
+  if(!node||node.left<=0||node.kind!==a.mode){
+   var best=Infinity;a.target=-1;w.nodes.forEach(function(n,j){if(n.left<=0||n.kind!==a.mode||n.x>530&&!frontierBuilt(w,'bridge'))return;var d=Math.hypot(a.x-n.x,a.y-n.y);if(d<best){best=d;a.target=j;}});node=w.nodes[a.target];
+  }
+  if(!node)return;
+  if(!frontierNear(a,node,30)){frontierWorkerMove(a,node,dt);return;}
+  if(a.t<=0){var gain=Math.min(node.left,1+Math.floor(w.tech.tool/3),5-a.wood-a.stone);node.left-=gain;node.respawn=14;a[node.kind]+=gain;a.t=frontierBuilt(w,'mill')?.65:1.1;w.effects.push({x:node.x,y:node.y,t:.3,kind:node.kind,gain:gain,empty:node.left===0});}
+ });
+}
+function frontierWaypoint(a,target){
+ var crossing=(a.x<552&&target.x>678)||(a.x>678&&target.x<552)||(a.x>=552&&a.x<=678);
+ if(crossing){if(Math.abs(a.y-450)>12)return {x:a.x,y:450};return {x:target.x>615?710:525,y:450};}return target;
+}
+function frontierWorkerMove(a,target,dt){
+ var waypoint=frontierWaypoint(a,target),x=waypoint.x,y=waypoint.y;
+ var dist=Math.hypot(x-a.x,y-a.y);if(dist>1){a.x+=(x-a.x)/dist*Math.min(dist,120*dt);a.y+=(y-a.y)/dist*Math.min(dist,120*dt);}
+}
 function frontierDamage(w,n){if(w.p.inv>0||w.phase!=='play')return;w.p.hp=Math.max(0,w.p.hp-n);w.p.inv=.6;if(w.p.hp===0)w.phase='dead';}
 function frontierGoal(w){var m=w.cfg.mission,boss=w.enemies.some(function(e){return e.type==='boss'&&e.hp>0;});return m==='rescue'?w.rescued===2:m==='defend'?w.wave>=w.cfg.waves&&w.hold>=w.cfg.hold&&!w.enemies.some(function(e){return e.wave&&e.hp>0;}):m==='boss'||m==='elite'?!boss:m==='hunt'?w.kills>=w.cfg.enemies:w.kills>=Math.ceil(w.cfg.enemies*.65);}
 function frontierStep(w,input,dt){
@@ -18118,28 +18233,37 @@ function frontierStep(w,input,dt){
  if(p.dash>1.98)speed=440;
  // Ice requires shorter movements; forge provides cleats. Other regions preserve movement speed.
  if(c.chapter===3&&!frontierBuilt(w,'forge'))speed*=.84;
- var nx=Math.max(40,Math.min(1160,p.x+p.dx*(move?speed:0)*dt)),ny=Math.max(45,Math.min(855,p.y+p.dy*(move?speed:0)*dt));
+ var nx=Math.max(40,Math.min(c.width-40,p.x+p.dx*(move?speed:0)*dt)),ny=Math.max(45,Math.min(c.height-45,p.y+p.dy*(move?speed:0)*dt));
  if(nx>552&&nx<678&&(!bridge||ny<385||ny>515))nx=p.x;p.x=nx;p.y=ny;
- if(frontierNear(p,w.buildings[0],67)){
+ if(w.buildings.some(function(b){return b.built&&b.hp>0&&(b.kind==='camp'||b.kind==='depot')&&frontierNear(p,b,67);})){
   ['wood','stone'].forEach(function(k){w.bank[k]+=w.bag[k];w.bag[k]=0;});var h=Math.max(0,Math.min(w.heal,dt*7,100-p.hp));w.heal-=h;p.hp+=h;
  }
  var cap=24+w.tech.pack*9;
- w.nodes.forEach(function(n){if(n.left===0){n.respawn-=dt;if(n.respawn<=0)n.left=6;return;}n.cool-=dt;if(n.cool<=0&&w.bag.wood+w.bag.stone<cap&&frontierNear(n,p,53)){var gain=Math.min(n.left,1+Math.floor(w.tech.tool/2),cap-w.bag.wood-w.bag.stone);n.left-=gain;w.bag[n.kind]+=gain;n.cool=.5/(1+w.tech.tool*.16);n.respawn=14;w.effects.push({x:n.x,y:n.y,t:.3,kind:n.kind});}});
+ w.nodes.forEach(function(n){if(n.left===0){n.respawn-=dt;if(n.respawn<=0)n.left=6;return;}n.cool-=dt;if(n.cool<=0&&w.bag.wood+w.bag.stone<cap&&frontierNear(n,p,53)){var gain=Math.min(n.left,1+Math.floor(w.tech.tool/2),cap-w.bag.wood-w.bag.stone);n.left-=gain;w.bag[n.kind]+=gain;n.cool=.5/(1+w.tech.tool*.16);n.respawn=14;w.effects.push({x:n.x,y:n.y,t:.3,kind:n.kind,gain:gain,empty:n.left===0,px:p.x,py:p.y});}});
  w.buildings.forEach(function(b){
-  if(b.built||!frontierNear(b,p,68)||b.kind==='beacon'&&(!bridge||!frontierGoal(w))||b.kind==='tower'&&!bridge)return;
+  if(b.built||!frontierNear(b,p,68)||b.kind==='beacon'&&(!bridge||!frontierReady(w))||b.kind==='tower'&&!bridge)return;
   b.charge=(b.charge||0)+dt;if(b.charge<.07)return;b.charge=0;
   ['wood','stone'].forEach(function(k){if(b[k]>0){if(w.bag[k]>0){w.bag[k]--;b[k]--;}else if(w.bank[k]>0){w.bank[k]--;b[k]--;}}});
   if(b.wood+b.stone===0){b.built=true;w.effects.push({x:b.x,y:b.y,t:1,kind:'build'});}
  });
- if(frontierBuilt(w,'mill')){w.worker+=dt;if(w.worker>=3){w.worker=0;w.bank.wood+=2;w.bank.stone+=1;}}
+ w.buildings.forEach(function(b){if(!b.built||b.hp>=b.maxHp||!frontierNear(p,b,68)||w.bank.wood+w.bag.wood<1)return;b.repair=(b.repair||0)+dt;if(b.repair>=.25){b.repair=0;if(w.bag.wood>0)w.bag.wood--;else w.bank.wood--;b.hp=Math.min(b.maxHp,b.hp+8);}});
+ frontierWorkers(w,dt);
+ w.camps.forEach(function(a){if(a.hp<=0)return;a.cool-=dt;if(frontierNear(p,a,78)&&p.attack<=0){a.hp-=16+w.tech.blade*5;p.attack=.58;w.effects.push({x:a.x,y:a.y,t:.22,kind:'hit'});if(a.hp<=0)w.drops.push({x:a.x,y:a.y,amount:25+w.cfg.chapter*8});}
+  if(a.cool<=0&&w.enemies.filter(function(e){return e.hp>0;}).length<35){a.cool=28;frontierSpawn(w,a.x,a.y,w.raids++);w.enemies[w.enemies.length-1].raider=true;}
+ });
+ // Predictable raids: ten-second visible warning; broken buildings are repairable, never deleted.
+ if(c.chapter>=2&&bridge){w.raidAt-=dt;if(w.raidAt<=0){w.raidAt=75;for(var ri=0;ri<2+c.chapter;ri++){frontierSpawn(w,720,180+ri*70,ri+w.raids);w.enemies[w.enemies.length-1].raider=true;}w.raids++;}}
  if(c.mission==='rescue')w.cages.forEach(function(a){if(!a.open&&bridge&&frontierNear(p,a,46)&&!w.enemies.some(function(e){return e.hp>0&&frontierNear(a,e,130);})){a.open=true;w.rescued++;}});
- var tower=w.buildings[4];if(tower.built){tower.cd-=dt;var target=w.enemies.find(function(e){return e.hp>0&&frontierNear(e,tower,235);});if(target&&tower.cd<=0){target.hp-=22+w.tech.blade*3;tower.cd=.8;w.effects.push({x:target.x,y:target.y,t:.2,kind:'hit'});}}
+ var tower=w.buildings[4];if(tower.built&&tower.hp>0){tower.cd-=dt;var target=w.enemies.find(function(e){return e.hp>0&&frontierNear(e,tower,235);});if(target&&tower.cd<=0){target.hp-=22+w.tech.blade*3;tower.cd=.8;w.effects.push({x:target.x,y:target.y,t:.2,kind:'hit'});}}
  if(bridge&&c.mission==='defend'&&tower.built){w.hold+=dt;w.waveAt-=dt;if(w.waveAt<=0&&w.wave<c.waves){w.wave++;w.waveAt=12;for(var i=0;i<2+c.chapter;i++){frontierSpawn(w,1100,100+i*125,i+w.wave);w.enemies[w.enemies.length-1].wave=true;}}}
  if(w.time>c.night)w.threat=Math.min(4,(w.time-c.night)/70);
  var nearest=w.enemies.filter(function(e){return e.hp>0&&frontierNear(e,p,e.radius+62);}).sort(function(a,b){return Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y);})[0];
  if(nearest&&p.attack<=0){nearest.hp-=16+w.tech.blade*5+(frontierBuilt(w,'forge')?9:0);p.attack=.58;w.effects.push({x:nearest.x,y:nearest.y,t:.22,kind:'hit'});}
  w.enemies.forEach(function(e){
-  if(e.hp<=0){if(!e.counted){e.counted=true;w.kills++;w.bank.stone+=3;}return;}
+  if(e.hp<=0){if(!e.counted){e.counted=true;w.kills++;w.drops.push({x:e.x,y:e.y,amount:e.type==='boss'?35+c.chapter*12:4+c.chapter*2});}return;}
+  if(e.raider){var victim=w.buildings.filter(function(b){return b.built&&b.hp>0&&b.kind!=='bridge'&&b.kind!=='beacon';}).sort(function(a,b){return Math.hypot(e.x-a.x,e.y-a.y)-Math.hypot(e.x-b.x,e.y-b.y);})[0];
+   if(victim&&!frontierNear(e,p,120)){e.cool-=dt;if(frontierNear(e,victim,50)){if(e.cool<=0){victim.hp=Math.max(0,victim.hp-c.damage);e.cool=1.4;w.effects.push({x:victim.x,y:victim.y,t:.3,kind:'hit'});}}else{var vd=Math.hypot(victim.x-e.x,victim.y-e.y);frontierWorkerMove(e,victim,dt*.65);}return;}
+  }
   e.cool-=dt;var dist=Math.hypot(e.x-p.x,e.y-p.y),range=e.type==='ranged'?245:e.type==='charger'?165:e.type==='boss'?140:65;
   if(e.state==='warn'){
    e.t-=dt;if(e.t<=0){e.state='strike';e.t=e.type==='charger'?.32:.2;e.hit=false;if(e.type==='ranged'){var d=Math.max(1,Math.hypot(e.tx-e.x,e.ty-e.y));w.shots.push({x:e.x,y:e.y,vx:(e.tx-e.x)/d*230,vy:(e.ty-e.y)/d*230,t:3});}}
@@ -18149,66 +18273,130 @@ function frontierStep(w,input,dt){
    if(e.t<=0){e.state='walk';e.cool=e.type==='boss'?.9:1.15;}
   }else if(dist<range&&e.cool<=0&&(bridge||p.x>678)){e.state='warn';e.t=c.windup;e.tx=p.x;e.ty=p.y;}
   else if(dist<360&&(bridge||p.x>678)){var s=(e.type==='boss'?52:58)+c.chapter*8+w.threat*7;if(dist>(e.type==='ranged'?170:45)){e.x+=(p.x-e.x)/dist*s*dt;e.y+=(p.y-e.y)/dist*s*dt;}}
-  e.x=Math.max(695,Math.min(1160,e.x));e.y=Math.max(50,Math.min(850,e.y));
+  e.x=Math.max(695,Math.min(c.width-40,e.x));e.y=Math.max(50,Math.min(c.height-50,e.y));
  });
  w.shots=w.shots.filter(function(s){s.t-=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;if(frontierNear(s,p,22)){frontierDamage(w,c.damage);s.t=0;}return s.t>0;});
  if(c.chapter>=2&&p.x>690){var cycle=w.time%9,hx=800+Math.floor(w.time/9)%3*120,hy=240+Math.floor(w.time/9)%2*360;if(cycle>7.2&&Math.hypot(p.x-hx,p.y-hy)<70)frontierDamage(w,10+c.chapter*2);}
- w.effects=w.effects.filter(function(e){e.t-=dt;return e.t>0;});if(w.phase==='play'&&frontierBuilt(w,'beacon'))w.phase='clear';
+ w.effects=w.effects.filter(function(e){e.t-=dt;return e.t>0;});w.enemies=w.enemies.filter(function(e){return e.hp>0||!e.counted;});w.drops=w.drops.filter(function(d){if(frontierNear(p,d,65)){w.coins+=d.amount;return false;}return true;});if(w.drops.length>90){var extra=w.drops.splice(90);extra.forEach(function(d){w.drops[0].amount+=d.amount;});}if(w.effects.length>70)w.effects.splice(0,w.effects.length-70);
 }
 
     function point(x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();}}
 function text(label,x,y,size,color){ctx.font='600 '+(size||13)+'px system-ui';ctx.textAlign='center';ctx.fillStyle=color||'#f6efd3';ctx.fillText(label,x,y,155);}
+// Visual feedback is derived from existing effects: no new save fields or gameplay timers.
+function ftEllipse(x,y,rx,ry,color){ctx.fillStyle=color;ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();}
+function ftPoly(points,color){ctx.fillStyle=color;ctx.beginPath();points.forEach(function(p,i){if(i)ctx.lineTo(p[0],p[1]);else ctx.moveTo(p[0],p[1]);});ctx.closePath();ctx.fill();}
+function ftResource(n,w,palette){
+ var hit=w.effects.find(function(e){return e.kind===n.kind&&e.x===n.x&&e.y===n.y;}),a=hit?Math.max(0,hit.t/.3):0;
+ ctx.save();if(n.kind==='wood'&&w.p.y<n.y+10&&w.p.y>n.y-110&&Math.abs(w.p.x-n.x)<55)ctx.globalAlpha=.38;ctx.translate(n.x,n.y);ctx.rotate(Math.sin(a*18)*a*.075);
+ ftEllipse(5,7,n.kind==='wood'?29:27,11,'#183c3840');
+ if(n.kind==='wood'){
+  ctx.fillStyle='#795135';ctx.fillRect(-9,-42,18,43);ftEllipse(0,0,10,5,'#c99a60');ftEllipse(0,-1,5,2,'#815939');
+  if(n.left||hit&&hit.empty){
+   if(hit&&hit.empty){ctx.translate(0,4);ctx.rotate((1-a)*1.1);ctx.globalAlpha=a;}
+   ftPoly([[-8,-10],[-20,-23],[-17,-28],[-4,-17]],'#63452e');ctx.fillStyle='#b7844d';ctx.fillRect(-7,-43,5,36);
+   var green=w.cfg.chapter===3?'#b4d4bd':palette[2];
+   [[-20,-43,22,'#285647'],[16,-46,24,'#316b4d'],[0,-69,29,green],[-18,-62,21,'#579459'],[17,-71,20,'#73aa64'],[-6,-83,15,'#94bc75']].forEach(function(c){point(c[0],c[1],c[2],c[3]);});
+   ftEllipse(-11,-82,10,4,'#d9e9a33d');ftEllipse(22,-59,6,3,'#d9e9a34a');
+  }
+ }else if(n.left||hit&&hit.empty){
+  if(hit&&hit.empty)ctx.globalAlpha=a;
+  ftPoly([[-28,0],[-24,-24],[-8,-42],[15,-37],[30,-13],[22,5]],'#526b73');
+  ftPoly([[-24,-24],[-8,-42],[15,-37],[3,-18]],'#b4c7c5');
+  ftPoly([[3,-18],[15,-37],[30,-13],[22,5],[2,0]],'#7f9d9e');
+  ftPoly([[-28,0],[-24,-24],[3,-18],[2,0]],'#728b8f');
+  ctx.strokeStyle='#d9e7dc80';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-7,-36);ctx.lineTo(-13,-24);ctx.lineTo(-5,-15);ctx.stroke();
+  if(n.left<4){ctx.strokeStyle='#304c58';ctx.beginPath();ctx.moveTo(2,-26);ctx.lineTo(7,-17);ctx.lineTo(0,-10);ctx.lineTo(5,0);ctx.stroke();}
+ }else{ftEllipse(-7,0,8,4,'#708782');ftEllipse(9,2,5,3,'#9bb0a4');}
+ ctx.restore();
+}
+function ftExplorer(w){
+ var p=w.p,action=w.effects.filter(function(e){return (e.kind==='wood'||e.kind==='stone'||e.kind==='hit')&&Math.hypot(e.x-p.x,e.y-p.y)<90;}).slice(-1)[0];
+ var moving=typeof keys!=='undefined'&&(Object.values(keys).some(Boolean)||Math.hypot(stick.x,stick.y)>.1),bob=moving?Math.sin(w.time*16)*2:Math.sin(w.time*2)*.7;
+ ftEllipse(p.x+3,p.y+7,19,8,'#173d4560');ctx.save();ctx.translate(p.x,p.y+bob);if(p.inv>0)ctx.globalAlpha=.65;
+ var face=action?(action.x<p.x?-1:1):(p.dx<0?-1:1);ctx.scale(face,1);
+ var walk=moving?Math.sin(w.time*16)*4:0;
+ ctx.fillStyle='#263c50';ctx.fillRect(-10,-3+walk,8,12);ctx.fillRect(3,-3-walk,8,12);ftEllipse(-6,9+walk,7,4,'#423b34');ftEllipse(7,9-walk,7,4,'#423b34');
+ ctx.fillStyle='#956a44';ctx.beginPath();ctx.roundRect(-21,-28,17,27,5);ctx.fill();ctx.fillStyle='#dab47c';ctx.fillRect(-18,-22,10,3);
+ ctx.fillStyle='#367d83';ctx.beginPath();ctx.roundRect(-12,-30,25,28,7);ctx.fill();ctx.fillStyle='#6fb1a4';ctx.fillRect(-9,-28,5,22);ctx.fillStyle='#493f35';ctx.fillRect(-12,-8,25,5);ctx.fillStyle='#efc571';ctx.fillRect(-1,-8,5,5);
+ point(1,-39,13,'#eebf94');ftEllipse(7,-37,2,3,'#2b3841');ftEllipse(11,-32,3,2,'#d98d78');
+ ftEllipse(0,-48,16,10,'#d5ac63');ftEllipse(1,-44,23,5,'#f3d38f');ctx.fillStyle='#446b63';ctx.fillRect(-14,-49,28,4);ftPoly([[9,-51],[12,-65],[17,-58],[13,-48]],'#9fcec0');
+ ctx.save();ctx.translate(12,-23);var progress=action?1-Math.min(1,action.t/(action.kind==='hit'?.22:.3)):0;ctx.rotate(action?-1.8+Math.sin(progress*Math.PI)*2.8:-.5);
+ point(1,0,5,'#edbe94');ctx.strokeStyle='#b78752';ctx.lineWidth=5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,4);ctx.lineTo(0,-28);ctx.stroke();
+ ftPoly([[0,-29],[15,-34],[20,-25],[14,-17],[0,-20]],'#d7e9e4');ftPoly([[14,-33],[20,-25],[14,-17],[11,-20]],'#ffffff');ctx.restore();
+ if(action){ctx.strokeStyle='#fff0bb99';ctx.lineWidth=4;ctx.beginPath();ctx.arc(12,-23,36,-1.7,1.1);ctx.stroke();}
+ for(var j=0;j<Math.min(5,Math.ceil((w.bag.wood+w.bag.stone)/5));j++){ctx.fillStyle=j%2?'#a66d40':'#c9965b';ctx.fillRect(-25,-13-j*6,17,5);point(-25,-11-j*6,3,'#edc789');}ctx.restore();
+}
+function ftParticles(e){
+ var harvest=e.kind==='wood'||e.kind==='stone',duration=harvest?.3:e.kind==='hit'?.22:1,age=1-Math.min(1,e.t/duration);
+ if(harvest){
+  for(var i=0;i<9;i++){var angle=i*2.399+e.x,dist=10+age*(22+i*3),x=e.x+Math.cos(angle)*dist,y=e.y-25+Math.sin(angle)*dist*.6-age*20+age*age*35;ctx.save();ctx.globalAlpha=1-age;ctx.translate(x,y);ctx.rotate(angle+age*7);ctx.fillStyle=e.kind==='wood'?['#edc78c','#98663f','#a9ca70'][i%3]:['#e0ede6','#90adb0','#5c7d88'][i%3];ctx.fillRect(-3,-2,e.kind==='wood'?8:5,4);ctx.restore();}
+  ctx.save();ctx.globalAlpha=1-age;ctx.strokeStyle='#fff2cb';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(e.x-12,e.y-34);ctx.lineTo(e.x+12,e.y-15);ctx.moveTo(e.x+10,e.y-37);ctx.lineTo(e.x-8,e.y-13);ctx.stroke();text('+'+(e.gain||1),e.x,e.y-48-age*30,18,'#fff0b6');ctx.restore();
+ }else{ctx.save();ctx.globalAlpha=Math.min(1,e.t*4);point(e.x,e.y,12+age*25,'#ffffff00',e.kind==='hit'?'#ffedbc':'#f7e6ac88');ctx.restore();}
+}
 function paint(){
  var w=world||preview,rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
  var dpr=Math.min(2,window.devicePixelRatio||1),cw=Math.round(rect.width*dpr),ch=Math.round(rect.height*dpr);if(canvas.width!==cw||canvas.height!==ch){canvas.width=cw;canvas.height=ch;}
  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,rect.width,rect.height);
  var scale=Math.min(rect.width/(rect.width<600?540:850),rect.height/650),vw=rect.width/scale,vh=rect.height/scale;
- var cx=Math.max(vw/2,Math.min(1200-vw/2,w.p.x)),cy=Math.max(vh/2,Math.min(900-vh/2,w.p.y));if(vw>1200)cx=600;if(vh>900)cy=450;
+ var cx=Math.max(vw/2,Math.min(w.cfg.width-vw/2,w.p.x)),cy=Math.max(vh/2,Math.min(w.cfg.height-vh/2,w.p.y));if(vw>w.cfg.width)cx=w.cfg.width/2;if(vh>w.cfg.height)cy=w.cfg.height/2;viewCamera={left:cx-vw/2,top:cy-vh/2,scale:scale};
  ctx.scale(scale,scale);ctx.translate(vw/2-cx,vh/2-cy);
  var palette=[['#244e4b','#8cae70','#426e4e'],['#264c60','#a3aa78','#6d8655'],['#273e42','#718658','#3b5b49'],['#344e65','#b1c4c2','#668b88'],['#382f3c','#8f7965','#534a50']][w.cfg.chapter];
  ctx.fillStyle=palette[0];ctx.fillRect(cx-vw/2,cy-vh/2,vw,vh);
- ctx.fillStyle='#c7b991';ctx.beginPath();ctx.roundRect(26,31,1148,844,75);ctx.fill();ctx.fillStyle=palette[1];ctx.beginPath();ctx.roundRect(42,47,1116,812,60);ctx.fill();ctx.fillStyle=palette[0];ctx.fillRect(552,40,126,820);
- for(var t=0;t<24;t++){ctx.strokeStyle='#ffffff12';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(567,65+t*34);ctx.lineTo(656,72+t*34);ctx.stroke();}
+ ctx.strokeStyle='#83cfbe33';ctx.lineWidth=12;ctx.beginPath();ctx.roundRect(17,22,w.cfg.width-34,w.cfg.height-38,84);ctx.stroke();ctx.fillStyle='#c7b991';ctx.beginPath();ctx.roundRect(26,31,w.cfg.width-52,w.cfg.height-56,75);ctx.fill();ctx.fillStyle=palette[1];ctx.beginPath();ctx.roundRect(42,47,w.cfg.width-84,w.cfg.height-88,60);ctx.fill();ctx.fillStyle=palette[0];ctx.fillRect(552,40,126,w.cfg.height-80);
+ for(var t=0;t<Math.ceil(w.cfg.height/34);t++){ctx.strokeStyle='#ffffff12';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(567,65+t*34);ctx.lineTo(656,72+t*34);ctx.stroke();}
  if(frontierBuilt(w,'bridge')){ctx.fillStyle='#6b523b';ctx.fillRect(537,385,156,130);for(t=0;t<11;t++){ctx.fillStyle=t%2?'#b99762':'#cbaa75';ctx.fillRect(539+t*14,390,11,120);}}
- for(t=0;t<65;t++){var gx=75+(t*137)%1050,gy=90+(t*233)%720;if(gx>530&&gx<700)continue;ctx.fillStyle='#ffffff15';ctx.fillRect(gx,gy,3,6);}
+ for(t=0;t<w.cfg.trees;t++){var gx=75+(t*137)%(w.cfg.width-150),gy=90+(t*233)%(w.cfg.height-180);if(gx>530&&gx<700)continue;ctx.strokeStyle=t%3?'#325d4333':'#f0e7a04d';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(gx-3,gy+3);ctx.lineTo(gx,gy-3);ctx.lineTo(gx+3,gy+3);ctx.stroke();if(t%11===0){point(gx+5,gy,2,'#ead399');}}
  if(w.cfg.chapter>=2&&w.time%9>6){var hx=800+Math.floor(w.time/9)%3*120,hy=240+Math.floor(w.time/9)%2*360;point(hx,hy,70,w.time%9>7.2?'#ee573f99':'#edb45255','#ffd183');text('危險區',hx,hy-77,12);}
  w.enemies.forEach(function(e){if(e.hp<=0||e.state==='walk')return;
   if(e.type==='charger'||e.type==='ranged'){ctx.strokeStyle=e.state==='warn'?'#f8b16d':'#ff5748';ctx.lineWidth=e.type==='charger'?34:3;ctx.globalAlpha=.5;ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.tx,e.ty);ctx.stroke();ctx.globalAlpha=1;}
   else point(e.tx,e.ty,e.type==='boss'?90:48,e.state==='warn'?'#e84b493b':'#fa694e99','#ffb398');
  });
  var objects=[];
- w.nodes.forEach(function(n){objects.push({y:n.y,draw:function(){
-  if(!n.left){point(n.x,n.y,9,'#785c42');return;}
-  ctx.fillStyle='#163d3033';ctx.beginPath();ctx.ellipse(n.x+7,n.y+6,22,10,0,0,7);ctx.fill();
-  if(n.kind==='wood'){ctx.fillStyle='#806043';ctx.fillRect(n.x-5,n.y-32,10,36);point(n.x,n.y-42,25,palette[2]);point(n.x-12,n.y-34,19,palette[2]);point(n.x+9,n.y-52,16,w.cfg.chapter===3?'#d8e1cd':'#8db079');}
-  else{ctx.fillStyle='#667f7b';ctx.beginPath();ctx.moveTo(n.x-22,n.y);ctx.lineTo(n.x-16,n.y-21);ctx.lineTo(n.x+5,n.y-32);ctx.lineTo(n.x+23,n.y-9);ctx.lineTo(n.x+18,n.y+5);ctx.closePath();ctx.fill();ctx.fillStyle='#bbc8b0';ctx.fillRect(n.x-5,n.y-22,10,5);}
- }});});
+ w.nodes.forEach(function(n){if(Math.abs(n.x-cx)>vw/2+80||Math.abs(n.y-cy)>vh/2+110)return;objects.push({y:n.y,draw:function(){ftResource(n,w,palette);}});});
  w.buildings.forEach(function(b){objects.push({y:b.y+12,draw:function(){
   if(b.kind==='bridge'&&b.built)return;
   point(b.x,b.y,52,b.built?'#21493633':'#2a444466',b.built?'#c5d99b':'#e4d3a3');
-  if(b.built){ctx.fillStyle=b.kind==='beacon'?'#f3dfaa':'#d4bd88';ctx.fillRect(b.x-22,b.y-36,44,36);ctx.fillStyle=b.kind==='camp'?'#c28055':b.kind==='beacon'?'#f1c567':'#4a6c61';ctx.beginPath();ctx.moveTo(b.x-30,b.y-35);ctx.lineTo(b.x,b.y-65);ctx.lineTo(b.x+30,b.y-35);ctx.closePath();ctx.fill();ctx.fillStyle='#33554b';ctx.fillRect(b.x-7,b.y-23,14,23);
-   if(b.kind==='mill'){ctx.strokeStyle='#ecd6a1';ctx.lineWidth=5;ctx.save();ctx.translate(b.x,b.y-47);ctx.rotate(w.time*.6);ctx.beginPath();ctx.moveTo(-28,0);ctx.lineTo(28,0);ctx.moveTo(0,-28);ctx.lineTo(0,28);ctx.stroke();ctx.restore();}
-   if(b.kind==='tower'){ctx.fillStyle='#4b6251';ctx.fillRect(b.x-19,b.y-60,38,16);}
-  }else{text('🪵 '+b.wood+' ◆ '+b.stone,b.x,b.y+3,12);if(b.kind==='beacon'&&!frontierGoal(w))text('先完成任務',b.x,b.y+22,10);}
+  if(b.built){ftBuilding(b,w);}else{
+   ctx.strokeStyle='#d2c099';ctx.lineWidth=4;ctx.setLineDash([7,5]);ctx.strokeRect(b.x-32,b.y-25,64,50);ctx.setLineDash([]);
+   text('🪵 '+b.wood+' ◆ '+b.stone,b.x,b.y+3,12);if(b.kind==='beacon'&&!frontierReady(w))text('先完成任務',b.x,b.y+22,10);
+  }
   text(labels[b.kind],b.x,b.y+(b.built?24:-63),12);
  }});});
  if(w.cfg.mission==='rescue')w.cages.forEach(function(c){objects.push({y:c.y,draw:function(){point(c.x,c.y,20,c.open?'#b9d59b':'#6e7460','#f1d89d');text(c.open?'✓':'!',c.x,c.y+5,20);if(!c.open){ctx.strokeStyle='#dfd3a7';for(var j=-12;j<=12;j+=8){ctx.beginPath();ctx.moveTo(c.x+j,c.y-20);ctx.lineTo(c.x+j,c.y+20);ctx.stroke();}}}});});
  w.enemies.forEach(function(e){if(e.hp<=0)return;objects.push({y:e.y,draw:function(){
   point(e.x+4,e.y+6,e.radius,'#173a3433');point(e.x,e.y-9,e.radius,e.type==='boss'?'#995a62':e.type==='ranged'?'#9279a1':e.type==='charger'?'#b07a55':'#687a65','#d6ba91');point(e.x-6,e.y-13,3,'#fff4d6');point(e.x+6,e.y-13,3,'#fff4d6');ctx.fillStyle='#313d34';ctx.fillRect(e.x-4,e.y-9,8,3);ctx.fillStyle='#473e38';ctx.fillRect(e.x-23,e.y-e.radius-23,46,5);ctx.fillStyle='#ef9e80';ctx.fillRect(e.x-23,e.y-e.radius-23,46*Math.max(0,e.hp/e.max),5);if(e.state==='warn')text('!',e.x,e.y-e.radius-30,23,'#ffe2a0');
  }});});
- objects.push({y:w.p.y,draw:function(){var p=w.p;point(p.x+3,p.y+6,17,'#244e3d55');ctx.save();if(p.inv>0)ctx.globalAlpha=.65;ctx.fillStyle='#345756';ctx.fillRect(p.x-12,p.y-24,24,27);point(p.x,p.y-31,12,'#edc69d');point(p.x,p.y-37,14,'#e7d497');ctx.fillStyle='#284743';ctx.fillRect(p.x-15,p.y-38,30,5);ctx.fillStyle='#e0c08a';ctx.fillRect(p.x-7,p.y+2,5,9);ctx.fillRect(p.x+3,p.y+2,5,9);
-  for(var j=0;j<Math.min(8,Math.ceil((w.bag.wood+w.bag.stone)/4));j++){ctx.fillStyle=j%2?'#b18554':'#cba06e';ctx.fillRect(p.x-21,p.y-12-j*7,13,5);}ctx.strokeStyle='#e9dec0';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(p.x+13,p.y-16);ctx.lineTo(p.x+29,p.y-33);ctx.stroke();ctx.restore();
- }});objects.sort(function(a,b){return a.y-b.y;}).forEach(function(o){o.draw();});
- w.shots.forEach(function(s){point(s.x,s.y,6,'#ffcc8b','#a86051');});w.effects.forEach(function(e){point(e.x,e.y,12+(1-e.t)*15,'#ffffff00',e.kind==='hit'?'#ffedbc':'#f7e6ac88');});
- ctx.setTransform(dpr,0,0,dpr,0,0);var mx=rect.width-130,my=15;ctx.fillStyle='#102e2dcc';ctx.fillRect(mx,my,115,87);w.buildings.forEach(function(b){point(mx+b.x/1200*115,my+b.y/900*87,3,b.built?'#b7dca5':'#a5b4a1');});w.enemies.forEach(function(e){if(e.hp>0)point(mx+e.x/1200*115,my+e.y/900*87,2,'#e6a08e');});point(mx+w.p.x/1200*115,my+w.p.y/900*87,4,'#ffe2a3');
+ w.workers.forEach(function(a,i){objects.push({y:a.y,draw:function(){ftEllipse(a.x,a.y+5,12,5,'#143f3c44');ctx.fillStyle=i%3===2?'#7c8fa3':'#b07b51';ctx.fillRect(a.x-8,a.y-19,16,21);point(a.x,a.y-27,9,'#efc59b');ftEllipse(a.x,a.y-33,13,4,'#d6c387');ctx.fillStyle='#423f36';ctx.fillRect(a.x-7,a.y+2,5,6);ctx.fillRect(a.x+2,a.y+2,5,6);if(a.wood+a.stone){ctx.fillStyle=a.wood?'#c69764':'#a8c3c6';ctx.fillRect(a.x-15,a.y-18,10,17);}else if(a.t>.25){ctx.strokeStyle='#e5dac3';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(a.x+8,a.y-12);ctx.lineTo(a.x+20,a.y-28);ctx.stroke();}}});});
+ w.camps.forEach(function(c){objects.push({y:c.y,draw:function(){ftPoly([[c.x-35,c.y],[c.x,c.y-60],[c.x+35,c.y]],c.hp>0?'#86504a':'#4e5350');if(c.hp>0){text('敵營',c.x,c.y+20,12,'#ffbe9f');ctx.fillStyle='#472f34';ctx.fillRect(c.x-30,c.y-70,60,5);ctx.fillStyle='#e9a086';ctx.fillRect(c.x-30,c.y-70,60*c.hp/c.maxHp,5);}}});});
+ w.drops.forEach(function(d){ftEllipse(d.x,d.y+5,10,4,'#163f3a33');point(d.x,d.y-5+Math.sin(w.time*4)*3,8,'#ecc56b','#fff0af');text(String(d.amount),d.x,d.y-20,11);});
+ objects.push({y:w.p.y,draw:function(){ftExplorer(w);}});objects.sort(function(a,b){return a.y-b.y;}).forEach(function(o){o.draw();});
+ w.shots.forEach(function(s){point(s.x,s.y,6,'#ffcc8b','#a86051');});w.effects.forEach(ftParticles);
+ ctx.setTransform(dpr,0,0,dpr,0,0);var mx=rect.width-130,my=15;ctx.fillStyle='#102e2dcc';ctx.fillRect(mx,my,115,87);w.buildings.forEach(function(b){point(mx+b.x/w.cfg.width*115,my+b.y/w.cfg.height*87,3,b.built?'#b7dca5':'#a5b4a1');});w.enemies.forEach(function(e){if(e.hp>0)point(mx+e.x/w.cfg.width*115,my+e.y/w.cfg.height*87,2,'#e6a08e');});point(mx+w.p.x/w.cfg.width*115,my+w.p.y/w.cfg.height*87,4,'#ffe2a3');
  ctx.textAlign='left';ctx.font='12px system-ui';ctx.fillStyle='#fff1cb';ctx.fillText(w.threat>0?'夜幕：敵人加速':'營地：存放材料與升級',14,24,Math.max(100,rect.width-155));if(w.bag.wood+w.bag.stone>=24+w.tech.pack*9)ctx.fillText('背包已滿：回營地或投入建築',14,44,rect.width-30);
+}
+
+function ftBuilding(b,w){
+ var x=b.x,y=b.y,colors={camp:'#d8b778',house:'#a5c8b5',market:'#dcb269',quarry:'#a6bac1',mill:'#79b6aa',forge:'#b78165',depot:'#95b8a0',tower:'#7d9c9e',beacon:'#e4ce8a'};
+ ftEllipse(x+3,y+6,40,15,'#143c3944');
+ if(b.kind==='bridge')return;
+ ctx.fillStyle=colors[b.kind]||'#c6b080';ctx.beginPath();ctx.roundRect(x-26,y-43,52,44,3);ctx.fill();
+ ctx.fillStyle='#725139';ctx.fillRect(x-28,y-42,5,46);ctx.fillRect(x+23,y-42,5,46);
+ for(var k=0;k<3;k++){ctx.strokeStyle='#71553d33';ctx.beginPath();ctx.moveTo(x-22,y-31+k*11);ctx.lineTo(x+22,y-31+k*11);ctx.stroke();}
+ ftPoly([[x-36,y-43],[x,y-74],[x+36,y-43]],b.kind==='forge'?'#a95a44':'#286c69');
+ ftPoly([[x-36,y-43],[x,y-74],[x-3,y-43]],'#478c7c');ctx.strokeStyle='#e5d09b';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x-37,y-43);ctx.lineTo(x,y-75);ctx.lineTo(x+37,y-43);ctx.stroke();
+ ctx.fillStyle='#244344';ctx.fillRect(x-7,y-24,14,26);ctx.fillStyle='#ffe3a4';ctx.fillRect(x-19,y-32,8,9);ctx.fillRect(x+11,y-32,8,9);
+ if(b.kind==='mill'){ctx.strokeStyle='#eddbac';ctx.lineWidth=5;ctx.save();ctx.translate(x,y-51);ctx.rotate(w.time*.6);for(var i=0;i<4;i++){ctx.rotate(Math.PI/2);ctx.strokeRect(0,-3,29,9);}ctx.restore();point(x,y-51,5,'#6b533e');}
+ if(b.kind==='market'){ctx.fillStyle='#e9c47d';ctx.fillRect(x-34,y-31,68,8);for(k=0;k<5;k++){ctx.fillStyle=k%2?'#bc6c53':'#f3d89c';ctx.fillRect(x-34+k*14,y-42,14,14);}point(x+20,y-7,6,'#d6a34e');}
+ if(b.kind==='tower'||b.kind==='beacon'){ctx.fillStyle='#768c82';ctx.fillRect(x-18,y-65,36,40);ctx.fillStyle='#b3bf9c';ctx.fillRect(x-23,y-67,46,10);if(b.kind==='beacon'){point(x,y-83,13,'#ffd886');point(x,y-86+Math.sin(w.time*5)*3,7,'#fff5c0');}else{ctx.strokeStyle='#e6c998';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x-18,y-76);ctx.lineTo(x+18,y-76);ctx.moveTo(x,y-88);ctx.lineTo(x,y-64);ctx.stroke();}}
+ if(b.kind==='quarry'){ftPoly([[x+24,y],[x+30,y-24],[x+48,y-15],[x+45,y]],'#a6bfc0');}
+ if(b.hp<b.maxHp){ctx.fillStyle='#563e33';ctx.fillRect(x-28,y-88,56,5);ctx.fillStyle=b.hp>0?'#e4b26b':'#ee806d';ctx.fillRect(x-28,y-88,56*b.hp/b.maxHp,5);if(b.hp===0)text('需修復',x,y-95,12,'#ffc59a');}
 }
 
     var canvas=$('ft-canvas'),ctx=canvas.getContext('2d'),world=null;
     var paid=false,cleared=0,paused=true,round=null,visible=false,last=0,saveAt=0,uiAt=0,pendingLevel=0;
-    var keys={},stick={x:0,y:0,id:null},dash=false;
+    var keys={},stick={x:0,y:0,id:null},dash=false,walkTarget=null,viewCamera=null;
     var zones=['翠葉群島','斷崖海岸','荊棘森林','寒霜高地','熔火遺跡'];
-    var labels={camp:'營地',mill:'木材廠',forge:'鐵匠鋪',bridge:'橋樑',tower:'箭塔',beacon:'燈塔'};
+    var labels={camp:'營地',mill:'木材廠',forge:'鐵匠鋪',bridge:'橋樑',tower:'箭塔',beacon:'燈塔',house:'工人小屋',market:'市集',quarry:'採石場',depot:'前線分倉'};
     var missions={build:'建立據點，清除守衛，點亮燈塔。',rescue:'救出兩位工人，再點亮燈塔。',hunt:'擊敗所有守衛，再點亮燈塔。',defend:'建造箭塔，抵擋所有波次，再點亮燈塔。',elite:'擊敗精英守衛，再點亮燈塔。',boss:'擊敗區域首領，再點亮燈塔。'};
     function set(id,text){var e=$(id);if(window.deepSeaI18n.sourceText(e)!==String(text))e.textContent=text;}
     function safeNumbers(v){if(typeof v==='number')return Number.isFinite(v)&&Math.abs(v)<1e7;if(Array.isArray(v))return v.length<400&&v.every(safeNumbers);if(v&&typeof v==='object')return Object.values(v).every(safeNumbers);return true;}
@@ -18218,15 +18406,17 @@ function paint(){
         var data=JSON.parse(localStorage.getItem('deep-sea-frontier-v1')||'null');if(!data||data.version!==1)return;
         paid=data.paid===true;cleared=Number.isInteger(data.cleared)?Math.max(0,Math.min(50,data.cleared)):0;var w=data.world;
         if(w&&Number.isInteger(w.level)&&w.level>=1&&w.level<=Math.min(50,cleared+1)&&safeNumbers(w)){
-          var sample=frontierWorld(w.level),simple=Object.assign({},sample,{enemies:[],shots:[],effects:[]});
-          if(validShape(w,simple)&&w.nodes.length===62&&w.buildings.length===6&&w.cages.length===2&&w.enemies.length<=70&&w.enemies.every(function(e){return validShape(e,sample.enemies[0]);})&&w.shots.every(function(s){return ['x','y','vx','vy','t'].every(function(k){return typeof s[k]==='number';});})&&['play','clear','dead'].includes(w.phase)&&['tool','blade','pack'].every(function(k){return Number.isInteger(w.tech[k])&&w.tech[k]>=0&&w.tech[k]<=8;})&&w.nodes.every(function(n){return ['wood','stone'].includes(n.kind)&&n.left>=0&&n.left<=6;})&&w.buildings.every(function(b,i){return b.kind===sample.buildings[i].kind;})){world=w;world.cfg=frontierPlan(w.level);world.effects=[];}
+          var sample=frontierWorld(w.level),legacyKeys=['version','level','time','phase','p','bag','bank','nodes','enemies','shots','effects','kills','rescued','hold','wave','waveAt','heal','worker','threat','buildings','cages','tech'];
+          var shape={};legacyKeys.forEach(function(k){shape[k]=sample[k];});shape.nodes=[];shape.enemies=[];shape.shots=[];shape.effects=[];shape.buildings=[];
+          var valid=validShape(w,shape)&&w.nodes.length>=62&&w.nodes.length<=400&&w.buildings.length>=6&&w.buildings.length<=12&&w.cages.length===2&&w.enemies.length<=100&&w.enemies.every(function(e){return validShape(e,sample.enemies[0]);})&&w.shots.every(function(s){return ['x','y','vx','vy','t'].every(function(k){return typeof s[k]==='number';});})&&['play','clear','dead'].includes(w.phase)&&['tool','blade','pack'].every(function(k){return Number.isInteger(w.tech[k])&&w.tech[k]>=0&&w.tech[k]<=8;})&&w.nodes.every(function(n){return validShape(n,sample.nodes[0])&&['wood','stone'].includes(n.kind)&&n.left>=0&&n.left<=6;})&&w.buildings.every(function(b,i){return sample.buildings[i]&&b.kind===sample.buildings[i].kind&&validShape(b,{kind:'',x:0,y:0,built:false,wood:0,stone:0});});
+          if(valid&&(!w.workers||Array.isArray(w.workers)&&w.workers.length<=6&&w.workers.every(function(a){return validShape(a,{x:0,y:0,wood:0,stone:0,target:0,t:0,mode:''});}))&&(!w.drops||Array.isArray(w.drops)&&w.drops.length<=100&&w.drops.every(function(d){return validShape(d,{x:0,y:0,amount:0});}))&&(!w.camps||Array.isArray(w.camps)&&w.camps.length<=3&&w.camps.every(function(c){return validShape(c,{x:0,y:0,hp:0,maxHp:0,cool:0});})))world=frontierMigrate(w);
         }
         if(paid&&!world){world=frontierWorld(Math.min(50,cleared+1));set('ft-storage','存檔內容不完整，已保留遠征資格與通關紀錄，重建當關。');}
       }catch(e){set('ft-storage','無法讀取存檔；請確認瀏覽器允許本機儲存。');}
     }
     function persist(){if(!paid||!world)return true;try{localStorage.setItem('deep-sea-frontier-v1',JSON.stringify({version:1,paid:true,cleared:cleared,world:world}));set('ft-storage','進度已儲存');return true;}catch(e){set('ft-storage','無法儲存進度，請勿關閉此頁。');return false;}}
     function params(){return {stage:world.level,step:world.kills,chapter:world.cfg.chapter+1,mission:world.cfg.mission};}
-    function release(){keys={};stick.x=stick.y=0;stick.id=null;dash=false;$('ft-knob').style.transform='';}
+    function release(){keys={};stick.x=stick.y=0;stick.id=null;dash=false;walkTarget=null;$('ft-knob').style.transform='';}
     function endRound(result){if(round){AN.end(round,0,result,params());round=null;}}
     function pause(){if(!world||paused||world.phase!=='play')return;paused=true;frontierBusy=!!round;release();AN.progress(round,params(),true);persist();update();}
     function start(){
@@ -18235,10 +18425,10 @@ function paint(){
       var fresh=false;
       if(!paid){
         world=frontierWorld(1);paid=true;persist();
-        save();renderAll();round=AN.start('frontier',ENTRY_FEE,params());fresh=true;
+        round=AN.start('frontier',0,params());fresh=true;
       }else if(!world)world=frontierWorld(Math.min(50,cleared+1));
-      else if(world.phase==='dead')world=frontierWorld(world.level,Object.assign({},world.tech));
-      else if(world.phase==='clear')world=frontierWorld(world.level===50?1:world.level+1,Object.assign({},world.tech));
+      else if(world.phase==='dead')world=frontierWorld(world.level,Object.assign({},world.tech),world.coins);
+      else if(world.phase==='clear')world=frontierWorld(world.level===50?1:world.level+1,Object.assign({},world.tech),world.coins);
       if(!fresh){if(round)AN.resume(round,params());else round=AN.start('frontier',0,params());}
       paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});
     }
@@ -18246,11 +18436,16 @@ function paint(){
     function updateMap(){Array.from($('ft-map').children).forEach(function(b,i){b.disabled=!paid||i+1>Math.min(50,cleared+1);var cl=(i+1<=cleared?'ft-done ':'')+(world&&world.level===i+1?'ft-current':'');if(b.className!==cl)b.className=cl;var current=world&&world.level===i+1?'step':'false';if(b.getAttribute('aria-current')!==current)b.setAttribute('aria-current',current);});}
     function update(){
       var w=world||preview,overlay=$('ft-overlay');set('ft-zone',zones[w.cfg.chapter]);set('ft-level',w.level+' / 50');set('ft-health','♥ '+Math.ceil(w.p.hp));
-      var objective=missions[w.cfg.mission];if(frontierGoal(w))objective='任務完成！前往東側燈塔投入材料。';
+      var objective=missions[w.cfg.mission];if(frontierReady(w))objective='任務完成！前往東側燈塔投入材料。';if(frontierBuilt(w,'beacon'))objective='島嶼已開拓，可繼續採集或前往下一島。';
       var detail=w.cfg.mission==='rescue'?' · '+w.rescued+'/2':w.cfg.mission==='defend'?' · '+w.wave+'/'+w.cfg.waves+' · '+Math.floor(w.hold)+'s':w.cfg.mission==='boss'||w.cfg.mission==='elite'?'':' · '+w.kills+'/'+(w.cfg.mission==='build'?Math.ceil(w.cfg.enemies*.65):w.cfg.enemies);
-      set('ft-objective',objective+detail);set('ft-bag','背包 '+(w.bag.wood+w.bag.stone)+'/'+(24+w.tech.pack*9)+' · 🪵 '+w.bag.wood+' · ◆ '+w.bag.stone);set('ft-stock','倉庫 '+'🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');
+      set('ft-objective',objective+detail);set('ft-bag','背包 '+(w.bag.wood+w.bag.stone)+'/'+(24+w.tech.pack*9)+' · 🪵 '+w.bag.wood+' · ◆ '+w.bag.stone);set('ft-stock','倉庫 '+'🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');set('ft-coins','金幣 '+w.coins);set('ft-workers','工人 '+w.workers.length);set('ft-checklist',
+        (frontierBuilt(w,'house')?'✓ ':'○ ')+labels.house+' · '+(frontierBuilt(w,'market')?'✓ ':'○ ')+labels.market+' · '+(frontierBuilt(w,'mill')?'✓ ':'○ ')+labels.mill+(w.cfg.chapter>0?' · '+(frontierBuilt(w,'depot')?'✓ ':'○ ')+labels.depot:'')+' · '+(w.camps.filter(function(c){return c.hp>0;}).length)+' 敵營');
+      set('ft-warning',w.cfg.chapter>=2&&frontierBuilt(w,'bridge')?'敵襲倒數 '+Math.ceil(w.raidAt)+'s':'靠近資源採集，靠近地基建造');
+      $('ft-next').hidden=!world||!frontierBuilt(w,'beacon');$('ft-next').disabled=paused;set('ft-full',document.fullscreenElement||$('ft-main').classList.contains('ft-immersive')?'退出全螢幕':'全螢幕');
+      var market=w.buildings.find(function(b){return b.kind==='market';}),atMarket=market&&market.built&&market.hp>0&&frontierNear(w.p,market,100);
+      ['wood','stone'].forEach(function(k){$('ft-sell-'+k).disabled=!world||paused||!atMarket||w.bank[k]<Number($('ft-sale-count').value||10);});
       set('ft-dash',w.p.dash>0?'衝刺 '+w.p.dash.toFixed(1):'衝刺');$('ft-dash').disabled=paused||w.p.dash>0;$('ft-pause').disabled=!world||w.phase!=='play';set('ft-pause',paused?'繼續':'暫停');
-      ['tool','blade','pack'].forEach(function(k,i){var n=w.tech[k],cost=20+n*22;set('ft-'+k,['採集工具','戰鬥武器','背包容量'][i]+' Lv.'+n+(n===8?' · MAX':' · 🪵 '+cost+' ◆ '+Math.floor(cost*.65)));$('ft-'+k).disabled=!world||paused||!frontierNear(w.p,w.buildings[0],100)||n>=8;});
+      ['tool','blade','pack'].forEach(function(k,i){var n=w.tech[k],cost=frontierUpgradeCost(w,k);set('ft-'+k,['採集工具','戰鬥武器','背包容量'][i]+' Lv.'+n+(n===8?' · MAX':' · 金幣 '+cost));$('ft-'+k).disabled=!world||paused||!frontierNear(w.p,w.buildings[0],100)||n>=8;});
       overlay.hidden=!!world&&!paused&&w.phase==='play';
       if(!overlay.hidden){
         var title='荒島遠征',message='五大區域，五十場考驗。建立據點，穿越危險地帶。',button='免費開始遠征';
@@ -18262,19 +18457,34 @@ function paint(){
     function finishStage(){if(world.phase==='clear'){cleared=Math.max(cleared,world.level);AN.progress(round,params(),true);endRound('complete');}else endRound('loss');paused=true;frontierBusy=false;release();persist();update();}
     function frame(now){if(visible){if(world&&!paused&&world.phase==='play'){
       var x=stick.x+(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),y=stick.y+(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
+      if(x||y)walkTarget=null;
+      if(walkTarget&&!x&&!y){var destination=frontierWaypoint(world.p,walkTarget);var distance=Math.hypot(destination.x-world.p.x,destination.y-world.p.y);if(distance>8){x=(destination.x-world.p.x)/distance;y=(destination.y-world.p.y)/distance;}else if(destination===walkTarget)walkTarget=null;}
       frontierStep(world,{x:x,y:y,dash:dash},Math.min(.05,(now-last)/1000));dash=false;if(world.phase!=='play')finishStage();else if(now-saveAt>5000){persist();saveAt=now;}
     }if(now-uiAt>180){update();uiAt=now;}paint();}last=now;requestAnimationFrame(frame);}
-    $('ft-go').addEventListener('click',function(){transientMessage=false;start();if(!world)transientMessage=true;});$('ft-pause').addEventListener('click',function(){if(paused)start();else pause();});
+    $('ft-go').addEventListener('click',function(){enterScreen();transientMessage=false;start();if(!world)transientMessage=true;});$('ft-pause').addEventListener('click',function(){if(paused)start();else pause();});
     ['tool','blade','pack'].forEach(function(k){$('ft-'+k).addEventListener('click',function(){if(world&&!paused){var ok=frontierUpgrade(world,k);set('ft-upgrade',ok?'升級完成':'材料不足，或需要回到營地。');if(ok){AN.progress(round,params(),false);persist();}update();}});});
-    $('ft-select-yes').addEventListener('click',function(){if(!pendingLevel)return;endRound('restart');world=frontierWorld(pendingLevel,world?Object.assign({},world.tech):undefined);pendingLevel=0;$('ft-select').hidden=true;paused=true;frontierBusy=false;persist();update();});$('ft-select-no').addEventListener('click',function(){pendingLevel=0;$('ft-select').hidden=true;});
+    $('ft-select-yes').addEventListener('click',function(){if(!pendingLevel)return;endRound('restart');world=frontierWorld(pendingLevel,world?Object.assign({},world.tech):undefined,world?world.coins:0);pendingLevel=0;$('ft-select').hidden=true;paused=true;frontierBusy=false;persist();update();});$('ft-select-no').addEventListener('click',function(){pendingLevel=0;$('ft-select').hidden=true;});
     for(var n=1;n<=50;n++){var b=document.createElement('button');b.type='button';b.textContent=n;b.dataset.level=n;b.addEventListener('click',function(){selectLevel(Number(this.dataset.level));});$('ft-map').appendChild(b);}
     document.addEventListener('keydown',function(e){var k=e.key.toLowerCase();if(!visible||paused||(e.target.closest&&e.target.closest('input,select,textarea,button'))||!['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))return;e.preventDefault();keys[k]=true;if(k===' '&&!e.repeat)dash=true;AN.interact();});document.addEventListener('keyup',function(e){delete keys[e.key.toLowerCase()];});
     var pad=$('ft-stick');function moveStick(e){if(e.pointerId!==stick.id)return;var r=pad.getBoundingClientRect(),x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2,len=Math.max(32,Math.hypot(x,y));stick.x=x/len;stick.y=y/len;$('ft-knob').style.transform='translate('+(stick.x*32)+'px,'+(stick.y*32)+'px)';AN.interact();}
     pad.addEventListener('pointerdown',function(e){if(paused||stick.id!==null)return;stick.id=e.pointerId;pad.setPointerCapture(e.pointerId);moveStick(e);e.preventDefault();});pad.addEventListener('pointermove',moveStick);['pointerup','pointercancel','lostpointercapture'].forEach(function(type){pad.addEventListener(type,function(e){if(stick.id===e.pointerId){stick.id=null;stick.x=stick.y=0;$('ft-knob').style.transform='';}});});
     $('ft-dash').addEventListener('pointerdown',function(e){e.preventDefault();if(!paused){dash=true;AN.interact();}});
-    $('ft-full').addEventListener('click',function(){if(document.fullscreenElement)document.exitFullscreen().catch(function(){});else if($('ft-main').requestFullscreen)$('ft-main').requestFullscreen().catch(function(){set('ft-storage','此瀏覽器無法啟用全螢幕。');});else set('ft-storage','此瀏覽器無法啟用全螢幕。');});
+    function enterScreen(){
+      var main=$('ft-main');if(document.fullscreenElement||main.classList.contains('ft-immersive'))return;
+      if(main.requestFullscreen){var result=main.requestFullscreen();if(result&&result.catch)result.catch(function(){main.classList.add('ft-immersive');});}
+      else main.classList.add('ft-immersive');
+    }
+    function exitScreen(){if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(function(){});$('ft-main').classList.remove('ft-immersive');}
+    $('ft-full').addEventListener('click',function(){if(document.fullscreenElement||$('ft-main').classList.contains('ft-immersive'))exitScreen();else enterScreen();});
+    $('ft-stage').addEventListener('click',function(e){if(e.target!==canvas&&!(e.target.closest&&e.target.closest('#ft-overlay')))return;if(e.target.closest&&e.target.closest('button'))return;if(paused){enterScreen();start();}});
+    canvas.addEventListener('pointerdown',function(e){if(paused)return;var r=canvas.getBoundingClientRect();if(viewCamera)walkTarget={x:(e.clientX-r.left)/viewCamera.scale+viewCamera.left,y:(e.clientY-r.top)/viewCamera.scale+viewCamera.top};if(walkTarget&&walkTarget.x>552&&walkTarget.x<678){walkTarget.x=walkTarget.x<615?530:700;}AN.interact();});
+    $('ft-shop-toggle').addEventListener('click',function(){$('ft-shop').hidden=!$('ft-shop').hidden;release();this.setAttribute('aria-expanded',String(!$('ft-shop').hidden));});
+    $('ft-shop-close').addEventListener('click',function(){$('ft-shop').hidden=true;$('ft-shop-toggle').setAttribute('aria-expanded','false');});
+    ['wood','stone'].forEach(function(k){$('ft-sell-'+k).addEventListener('click',function(){if(!world||paused)return;var sold=frontierSell(world,k,Number($('ft-sale-count').value||10));set('ft-upgrade',sold?'交易完成':'需要市集、倉庫材料與靠近市集');if(sold)persist();update();});});
+    $('ft-next').addEventListener('click',function(){if(world&&!paused&&frontierLeave(world))finishStage();});
+    $('ft-home').addEventListener('click',function(){if(world&&!paused){walkTarget={x:180,y:450};AN.interact();}});
     document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});window.addEventListener('blur',pause);window.addEventListener('pagehide',function(e){pause();if(!e.persisted)endRound('abandoned');},{capture:true});
-    frontierRoute=function(active){if(!active)pause();visible=active;if(active){update();paint();}};
+    frontierRoute=function(active){if(!active){pause();exitScreen();}visible=active;if(active){update();paint();}};
     var preview=frontierWorld(1);loadFrontier();update();requestAnimationFrame(frame);
   })();
 /* Platform-owned cosmetics and fixed play rewards. Existing wallet key and game bonuses stay intact. */

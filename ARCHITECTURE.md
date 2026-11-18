@@ -248,7 +248,9 @@ KE.active涵蓋免費挖掘，使用現有syncBalance／save入帳；可用時�
 
 ## 荒島遠征（frontier）
 
-`games/frontier/game.js` 在共享runtime內建立獨立閉包，內含純模擬 `world.js` 與Canvas繪圖 `draw.js`；view、card、style、icon依現有靜態include接入。`frontierRoute`暫停離開畫面，`frontierBusy`供重設防護；hot.snapshot無待退本金，不新增返還。新Key `deep-sea-frontier-v1`儲存完整當關、科技、通關及一次付費資格；不改舊Key／格式。未有資料時初始化，回復舊程式可保留新Key。存檔schema異常時保留可辨識的付費資格與最高通關，重建當關；讀取失敗不清除資料。不是跨分頁交易或伺服器帳戶。關卡參數與限制見GAME_RULES第42節。
+`games/frontier/game.js` 在共享 runtime 內建立獨立閉包，組合純模擬 `world.js` 與 Canvas `draw.js`。後者依攝影機裁剪資源並按腳底 y 排序。`frontierRoute` 管離頁暫停，已有 start/progress/resume/end 防重複結算。`view.html` 的手機全螢幕包含背包、金幣、交易與裝備抽屜；原生 Fullscreen API 失敗時用 `.ft-immersive` 固定全視窗，離開路由時退出。手機搖桿與點地面前往並存，採集／建造／攻擊／拾幣／卸貨／修復自動執行；跨河自動行走經橋樑。
+
+`world.js` 管50關逐區擴張、實體採集搬運工人、金幣／買賣／裝備、箭塔、敵營與敵襲。遊戲金幣不讀寫平台餘額。沿用 `deep-sea-frontier-v1`，保留舊paid資格與cleared，載入62點／6建築舊存檔時先驗證再以 `frontierMigrate` 補上新欄位與資源／建築；材料、位置、裝備與進度保留。異常解析不清除原資料。增大陣列後退版不保證舊loader可讀，回復應保留存檔副本。不是跨分頁交易或伺服器帳戶。美術入口為 `games/frontier/AGENTS.md`、`ART_DIRECTION.md` 與 `art/direction-board.png`；設定圖也附於遊戲規則下方，與Canvas實際畫面區分。參數與限制見GAME_RULES第46節。
 
 ## 免費平台、遊玩獎勵與紙娃娃（2026-11-18）
 
