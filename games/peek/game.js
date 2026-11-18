@@ -323,7 +323,7 @@ function drawCamp(){
   tx('點卡片或按 1／2／3',CX,CARD_Y+CARD_H+30,16,'#f1d9a6')}
  else tx('歇一口氣……',CX,128,24,'#f1d9a6')}
 /* centred text with wrapping by character count (CJK is one em wide, so no measureText needed) */
-function wrapLines(s,sz,wd){const n=Math.max(2,Math.floor(wd/sz)),o=[];for(let i=0;i<s.length&&o.length<12;i+=n)o.push(s.slice(i,i+n));return o}
+function wrapLines(s,sz,wd){const I=typeof window!=='undefined'&&window.deepSeaI18n;if(I&&I.getLanguage&&I.getLanguage()==='en'){const per=Math.max(6,Math.floor(wd/(sz*.52))),o=[];let cur='';I.text(s).split(' ').forEach(w=>{if(cur&&(cur+' '+w).length>per){o.push(cur);cur=w}else cur=cur?cur+' '+w:w});if(cur)o.push(cur);return o.slice(0,12)}const n=Math.max(2,Math.floor(wd/sz)),o=[];for(let i=0;i<s.length&&o.length<12;i+=n)o.push(s.slice(i,i+n));return o}
 function txp(s,x,y,sz,col){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.fillStyle=col;g.fillText(s,x,y,W-24)}   // plain text for parchment
 function txd(s,x,y,sz,col,wd,maxL){g.font='700 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.fillStyle=col;wrapLines(s,sz,wd).slice(0,maxL||12).forEach((ln,i)=>g.fillText(ln,x,y+i*(sz+4)))}
 function drawButtons(){

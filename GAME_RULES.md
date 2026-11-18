@@ -705,3 +705,7 @@ Equipment initially caps at level 2. Mill / forge / quarry unlock tool / weapon 
 ### Frontier portrait update
 
 手機改為直式優先，開始遊戲無須橫放，不鎖定方向。上方關卡、生命與大本營；左下搖桿，右下背包與操作。倉庫與工人數從任務查看。商店不縮窄直式地圖，鏡頭跟隨角色；採集、戰鬥與存檔規則維持。繼續從大廳隱藏。
+
+## 隱藏遊戲的測試網址（2026-11-18）
+
+被 `hidden: true` 隱藏的遊戲（目前含荒島遠征）仍可用 `?preview=<遊戲ID>#<遊戲ID>` 開啟測試，例如 `https://www.ticaticagames.com/?preview=frontier#frontier`。參數必須與 hash 的遊戲 ID 相同；不帶參數時仍導回大廳，大廳卡片與選單維持隱藏。預覽仍會送一般的 `game_view`／回合事件。
