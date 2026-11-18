@@ -114,8 +114,12 @@ model.frontierClassic=false;
  ok(!model.frontierRecruit(w),'cannot recruit before the barracks exists');
  w.p.x=barracks.x;w.p.y=barracks.y;tick(w,12);ok(barracks.built,'barracks builds across the bridge');
  w.bank.wood=w.bank.stone=0;w.bag.wood=60;w.bag.stone=40;ok(model.frontierRecruit(w)&&w.bag.wood===60-model.frontierRecruitCost(w).wood,'warriors can be trained from the carried bag');w.bank.wood=w.bank.stone=10000;barracks.queue=0;
- for(let n=0;n<15;n++)model.frontierRecruit(w);ok(barracks.queue===12&&model.frontierFighterCap(w)===12,'attack warrior cap is twelve');
- tick(w,2*12+1);ok(w.fighters.length===12,'barracks trains fighters one by one');
+ for(let n=0;n<15;n++)model.frontierRecruit(w);ok(model.frontierAttackers(w).length+barracks.queue===12&&model.frontierFighterCap(w)===12,'attack warrior cap is twelve');
+ tick(w,2*12+1);ok(model.frontierAttackers(w).length===12,'barracks trains fighters one by one');
+ // walking next to the barracks trains warriors by itself
+ {let w=create(1);let barracks;w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');barracks.built=true;w.bank.wood=w.bank.stone=500;w.p.x=barracks.x;w.p.y=barracks.y;tick(w,30);ok(model.frontierAttackers(w).length>=5,'standing at the barracks auto-trains warriors');
+ w.p.x=100;w.p.y=100;const hired=model.frontierAttackers(w).length+barracks.queue;tick(w,10);ok(model.frontierAttackers(w).length+barracks.queue===hired,'no training when the hero is away');
+ w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');barracks.built=true;w.bank.wood=w.bank.stone=0;w.p.x=barracks.x;w.p.y=barracks.y;tick(w,10);ok(model.frontierAttackers(w).length===0&&!barracks.queue,'no materials, no warriors');}
  // fighters march on the base, damage it slowly, and the base hurts them only a little
  const start=w.enemyBase.hp;let fighterHp=w.fighters[0].max;w.p.x=barracks.x;w.p.y=barracks.y;w.p.inv=1e6;
  tick(w,40);ok(w.enemyBase.hp<start,'fighters attack the enemy base');ok((start-w.enemyBase.hp)/(12*40)<4,'each warrior attacks slowly');
@@ -124,12 +128,22 @@ model.frontierClassic=false;
  // victory
  w.enemyBase.hp=1;w.fighters.forEach(f=>{f.hp=f.max;});tick(w,10);ok(w.enemyBase.hp===0&&w.phase==='clear','destroying the enemy base clears the stage');
  // raiders attack the tower and can break it
- w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;tower=w.buildings[4];tower.built=true;const towerHp=tower.hp;
+ w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;tower=w.buildings[4];w.fighters=[];tower.built=true;const towerHp=tower.hp;
  w.enemies.push({x:tower.x+30,y:tower.y,type:'melee',hp:99999,max:99999,state:'walk',t:0,cool:0,tx:0,ty:0,hit:false,counted:false,wave:true,radius:17,raider:true,assault:true});
  w.p.x=900;w.p.y=700;tick(w,12);ok(tower.hp<towerHp&&w.phase==='play','monsters attack the tower');
  // later stages keep the beacon rules
+ // gold meter -> upgrade cards (tool, weapon, bag)
+ {let w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;ok(model.frontierPickCost(w)===30,'first card costs 30 gold');w.coins=29;tick(w,.2);ok(!w.offer,'no cards before the meter fills');
+  w.coins=30;tick(w,.1);ok(w.offer&&w.offer.length===3&&new Set(w.offer).size===3&&w.coins===0,'a full meter offers the three upgrades');
+  ok(['tool','blade','pack'].every(k=>w.offer.includes(k)),'cards are tool, weapon and bag');
+  const t0=w.time;tick(w,2);ok(w.time===t0,'the game waits while cards are shown');
+  ok(!model.frontierChoose(w,5)&&w.offer,'invalid card index is ignored');const picked=w.offer[0];ok(model.frontierChoose(w,0)&&w.offer===null,'choosing applies one card');
+  ok(Object.values(w.tech).reduce((n,v)=>n+v,0)===1&&w.tech[picked]===1,'exactly the chosen upgrade is applied');ok(model.frontierPickCost(w)===66,'the next card costs more');
+  w.tech=model.frontierTech({tool:8,blade:8,pack:7});w.offer=null;ok(model.frontierDraw(w).join()==='pack','maxed upgrades are never offered');w.tech=model.frontierTech({tool:8,blade:8,pack:8});ok(model.frontierDraw(w).length===0,'nothing is offered once everything is maxed');
+  let total=0;for(let n=0;n<24;n++)total+=30+n*36;ok(total<12000&&total>9000,'maxing everything takes a long run (about the whole 50 stages)');
+  w=create(1);w.coins=500;tick(w,.1);ok(w.offer&&w.coins===470,'only one card is offered at a time');}
  // every stage is an enemy-base stage; defences and attackers scale with the region
- for(const [lv,towers,guards,cap] of [[1,2,0,12],[10,2,0,12],[11,3,2,16],[25,4,4,20],[41,6,8,28],[50,6,8,28]]){
+ for(const [lv,towers,guards,cap] of [[1,2,2,12],[10,2,2,12],[11,3,4,16],[25,4,6,20],[41,6,10,28],[50,6,10,28]]){
   w=create(lv);ok(w.cfg.war&&w.enemyBase&&w.buildings.filter(b=>b.kind==='tower').length===towers&&w.fighters.filter(f=>f.role==='guard').length===guards&&model.frontierFighterCap(w)===cap&&!w.buildings.some(b=>b.kind==='beacon'),`stage ${lv}: ${towers} towers, ${guards} guards, attacker cap ${cap}`);
   ok(w.buildings.filter(b=>b.kind==='barracks').every(b=>b.x>678),`stage ${lv}: only the barracks across the bridge exists`);
  }
