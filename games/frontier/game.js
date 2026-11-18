@@ -8,7 +8,7 @@
     var paid=false,cleared=0,paused=true,round=null,visible=false,last=0,saveAt=0,uiAt=0,pendingLevel=0;
     var keys={},stick={x:0,y:0,id:null},dash=false,walkTarget=null,viewCamera=null;
     var zones=['翠葉群島','斷崖海岸','荊棘森林','寒霜高地','熔火遺跡'];
-    var labels={camp:'營地',warehouse:'倉庫',mill:'木材廠',forge:'鐵匠鋪',bridge:'橋樑',tower:'箭塔',beacon:'燈塔',barracks:'戰士小屋',house:'工人小屋',market:'市集',quarry:'採石場',depot:'前線分倉'};
+    var labels={camp:'營地',guardhouse:'守備營',warehouse:'倉庫',mill:'木材廠',forge:'鐵匠鋪',bridge:'橋樑',tower:'箭塔',beacon:'燈塔',barracks:'戰士小屋',house:'工人小屋',market:'市集',quarry:'採石場',depot:'前線分倉'};
     /* Every requirement for lighting the beacon, in the order a player should tackle them. */
     function stageSteps(w){
       if(w.cfg.war){var eb=w.enemyBase,barracks=w.buildings.find(function(b){return b.kind==='barracks';}),trained=frontierAttackers(w).length+(barracks&&barracks.queue||0);
@@ -26,7 +26,7 @@
       steps.push([frontierBuilt(w,'beacon'),'點亮燈塔（走到東側燈塔投入材料）']);
       return steps;
     }
-    function warTip(w){return w.cfg.war?'\n\n提示：箭塔會守護大本營，但也會被怪攻擊，受損後靠近用木材修復。主角不能攻擊對手大本營，只有戰士可以。木材廠、採石場、倉庫蓋好後會增加背包容量。工人小屋的村民會自動砍樹採石，把資源丟在地上，走過去就能撿起來。':'';}
+    function warTip(w){return w.cfg.war?'\n\n提示：箭塔會守護大本營，但也會被怪攻擊，受損後靠近用木材修復。主角不能攻擊對手大本營，只有戰士可以。守備營在大本營旁訓練守衛，橋東的戰士營訓練進攻戰士，站在戰士營、守備營或工人小屋旁可花資源升級，最高到滿級；敵人偶爾會來攻擊戰士營，最多把它打回最低級。木材廠、採石場、倉庫蓋好後會增加背包容量。工人小屋的村民會自動砍樹採石，把資源丟在地上，走過去就能撿起來。':'';}
     var cardsShown='';
     function renderCards(w){
       var offer=world&&world.offer,box=$('ft-cards');
@@ -77,7 +77,9 @@
     function selectLevel(n){if(!paid||n>Math.min(50,cleared+1))return;pause();pendingLevel=n;set('ft-select-label','前往關卡 '+n+'？');$('ft-select').hidden=false;}
     function updateMap(){Array.from($('ft-map').children).forEach(function(b,i){b.disabled=!paid||i+1>Math.min(50,cleared+1);var cl=(i+1<=cleared?'ft-done ':'')+(world&&world.level===i+1?'ft-current':'');if(b.className!==cl)b.className=cl;var current=world&&world.level===i+1?'step':'false';if(b.getAttribute('aria-current')!==current)b.setAttribute('aria-current',current);});}
     function update(){
-      var w=world||preview,overlay=$('ft-overlay');var cost=frontierRecruitCost(w),barracks=w.buildings.find(function(b){return b.kind==='barracks';});set('ft-recruit','訓練戰士 · 🪵 '+cost.wood+' ◆ '+cost.stone+' · '+frontierAttackers(w).length+'/'+frontierFighterCap(w));$('ft-recruit').disabled=!world||paused||!barracks||!barracks.built||barracks.hp<=0||!frontierNear(w.p,barracks,110);set('ft-troops','戰士 '+frontierAttackers(w).length+'/'+frontierFighterCap(w)+((barracks&&barracks.queue)?' +1':'')+' · 守衛 '+(w.fighters.length-frontierAttackers(w).length)+'/'+(w.cfg.guards||0));set('ft-army','戰士 '+frontierAttackers(w).length+' · 守衛 '+(w.fighters.length-frontierAttackers(w).length)+' · 訓練中 '+(barracks&&barracks.queue||0));set('ft-journal-stock','倉庫 🪵 '+w.bank.wood+' · ◆ '+w.bank.stone+' · 工人 '+w.workers.length);set('ft-zone',zones[w.cfg.chapter]);set('ft-level',w.level+' / 50');set('ft-health','♥ '+Math.ceil(w.p.hp));set('ft-base-health','大本營 '+Math.ceil(w.buildings[0].hp)+'/'+w.buildings[0].maxHp);set('ft-assault','第 '+Math.min(w.siege.wave,w.cfg.assaultWaves)+'/'+w.cfg.assaultWaves+' 波 · 下一波 '+Math.ceil(w.siege.next)+'s');
+      var w=world||preview,overlay=$('ft-overlay');var cost=frontierRecruitCost(w),barracks=w.buildings.find(function(b){return b.kind==='barracks';});set('ft-recruit','訓練戰士 · 🪵 '+cost.wood+' ◆ '+cost.stone+' · '+frontierAttackers(w).length+'/'+frontierFighterCap(w));$('ft-recruit').disabled=!world||paused||!barracks||!barracks.built||barracks.hp<=0||!frontierNear(w.p,barracks,110);set('ft-troops','戰士 '+frontierAttackers(w).length+'/'+frontierFighterCap(w)+((barracks&&barracks.queue)?' +1':'')+' · 守衛 '+(w.fighters.length-frontierAttackers(w).length)+'/'+(w.cfg.guards||0));var upKinds=['barracks','guardhouse','house'],upB=world&&!paused?upKinds.map(function(k){return w.buildings.find(function(b){return b.kind===k;});}).find(function(b){return b&&b.built&&b.hp>0&&frontierNear(w.p,b,110);}):null;
+      $('ft-hut-up').hidden=!upB;if(upB){var lv=upB.level||1,uc=frontierHutCost(w,upB.kind);$('ft-hut-up').dataset.kind=upB.kind;set('ft-hut-up',lv>=5?labels[upB.kind]+' Lv.5 · MAX':'升級'+labels[upB.kind]+' Lv.'+lv+' → Lv.'+(lv+1)+' · 🪵 '+uc.wood+' ◆ '+uc.stone);$('ft-hut-up').disabled=lv>=5||w.bag.wood+w.bank.wood<uc.wood||w.bag.stone+w.bank.stone<uc.stone;}
+      set('ft-army','戰士 '+frontierAttackers(w).length+' · 守衛 '+(w.fighters.length-frontierAttackers(w).length)+' · 訓練中 '+(barracks&&barracks.queue||0));set('ft-journal-stock','倉庫 🪵 '+w.bank.wood+' · ◆ '+w.bank.stone+' · 工人 '+w.workers.length);set('ft-zone',zones[w.cfg.chapter]);set('ft-level',w.level+' / 50');set('ft-health','♥ '+Math.ceil(w.p.hp));set('ft-base-health','大本營 '+Math.ceil(w.buildings[0].hp)+'/'+w.buildings[0].maxHp);set('ft-assault','第 '+Math.min(w.siege.wave,w.cfg.assaultWaves)+'/'+w.cfg.assaultWaves+' 波 · 下一波 '+Math.ceil(w.siege.next)+'s');
       var steps=stageSteps(w),doneCount=steps.filter(function(t){return t[0];}).length,nextStep=steps.find(function(t){return !t[0];}),objective=frontierBuilt(w,'beacon')?'島嶼已開拓，可繼續採集或前往下一島。':(nextStep?'本關 '+doneCount+'/'+steps.length+' · 下一步：'+nextStep[1]:'本關任務完成');
       set('ft-objective',objective);set('ft-bag','背包 🪵 '+w.bag.wood+'/'+frontierCapacity(w,'wood')+' · ◆ '+w.bag.stone+'/'+frontierCapacity(w,'stone'));set('ft-stock','倉庫 🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');set('ft-building-effects',(frontierBuilt(w,'mill')?'木材廠：伐木 +1、工具上限 8、伐木工 +1。':'木材廠：建造後強化伐木，解鎖工具上限。')+' '+(frontierBuilt(w,'quarry')?'採石場：採石 +1、背包 +12、背包上限 8、採石工 +1。':'採石場：建造後增加背包容量與採石工。')+' '+(frontierBuilt(w,'forge')?'鐵匠鋪：攻擊 +9、武器上限 8、解除寒霜減速。':'鐵匠鋪：建造後強化攻擊，解鎖武器上限。'));set('ft-coins','金幣 '+w.coins+'/'+frontierPickCost(w));renderCards(w);set('ft-workers','工人 '+w.workers.length);set('ft-hauling','搬運中 '+w.workers.reduce(function(n,a){return n+a.wood+a.stone;},0)+' · 地面資源 '+w.supplies.reduce(function(n,d){return n+d.amount;},0));set('ft-checklist',stageList(steps));
       set('ft-warning',w.siege.next<12?'敵襲倒數 '+Math.ceil(w.siege.next)+'s':'靠近資源採集，靠近地基建造');
@@ -136,6 +138,7 @@
     $('ft-shop-close').addEventListener('click',function(){showShop(false);});
     ['wood','stone'].forEach(function(k){$('ft-sell-'+k).addEventListener('click',function(){if(!world||paused)return;var sold=frontierSell(world,k,Number($('ft-sale-count').value||10));set('ft-upgrade',sold?'交易完成':'需要市集、倉庫材料與靠近市集');if(sold)persist();update();});});
     for(var ci=0;ci<3;ci++)(function(n){$('ft-card-'+n).addEventListener('click',function(){if(world&&frontierChoose(world,n)){persist();update();$('ft-canvas').focus({preventScroll:true});}});})(ci);
+    $('ft-hut-up').addEventListener('click',function(){if(world&&!paused&&frontierUpgradeHut(world,this.dataset.kind)){persist();update();}});
     $('ft-recruit').addEventListener('click',function(){if(world&&!paused){var recruited=frontierRecruit(world);set('ft-upgrade',recruited?'戰士訓練中':'需要戰士小屋、足夠材料與空位');if(recruited)persist();update();}});
     $('ft-next').addEventListener('click',function(){if(world&&!paused&&frontierLeave(world))finishStage();});
     $('ft-home').addEventListener('click',function(){if(world&&!paused){walkTarget={x:180,y:450};AN.interact();}});
