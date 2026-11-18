@@ -144,7 +144,7 @@ check('Gap between spirits shrinks with progress and every third dodge gives a l
 });
 check('Total dodges and the death codex are stored; the codex counts distinct causes',()=>{
   const f=fixture();f.F.start();f.spirit('eye',1);f.hold('l');f.run(7);assert.equal(f.storage.get('deep-sea-peek-dodges'),'1');
-  f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 4');assert.equal(f.el('peek-dodges').textContent,'1 次');
+  f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 7');assert.equal(f.el('peek-dodges').textContent,'1 次');
 });
 check('The corridor scrolls by itself, faster when sprinting, and stops while covered',()=>{
   const f=fixture();f.F.start();f.F.ev('gapT=999');f.run(1);const r0=f.ev('run');assert.ok(r0>1.3);f.hold('wind');f.run(1);const r1=f.ev('run');assert.ok(r1-r0>2.4);
@@ -172,6 +172,60 @@ check('A charm absorbs one deadly mistake; a pickup needs the item to be near',(
   const f=fixture();f.F.start();f.F.ev('bag.charm=1');f.spirit('eye',1);f.run(10);assert.equal(f.ev('st'),'run');assert.equal(f.ev('bag.charm'),0);
   f.F.ev('drops=[{k:"torch",side:1,z:.9}]');f.hold('pick');f.F.update(.05);assert.equal(f.ev('bag.torch'),0);
   f.hold('pick',0);f.F.update(.05);f.F.ev('drops[0].z=.2');f.hold('pick');f.F.update(.05);assert.equal(f.ev('bag.torch'),1);
+});
+check('Level table: buffer, learn, boss and difficulty ramp follow the ten-level sawtooth',()=>{
+  const f=fixture(),c=n=>JSON.parse(f.ev(`JSON.stringify((({l,wi,k,kind,left,plan,pool,fixed,fakeP,chainP})=>({l,wi,k,kind,left,plan,pool,fixed,fakeP,chainP}))(levelCfg(${n})))`));
+  assert.equal(c(1).kind,'safe');assert.equal(c(1).left,0);assert.equal(c(1).fixed,true);assert.equal(c(2).kind,'learn');assert.deepEqual(c(2).pool,['eye']);assert.deepEqual(c(3).pool,['twins']);assert.deepEqual(c(4).pool,['walker']);
+  assert.equal(c(5).kind,'safe');assert.equal(c(15).kind,'review');assert.equal(c(15).left,1);assert.equal(c(12).kind,'learn');assert.deepEqual(c(12).pool,['gale']);
+  assert.equal(c(9).kind,'peak');assert.equal(c(10).kind,'boss');assert.deepEqual(c(10).plan,['eye','twins','walker','hollow']);assert.equal(c(30).plan.at(-1),'hollow');assert.ok(c(30).plan.includes('gale'));
+  assert.equal(c(21).wi,1);assert.equal(c(100).wi,4);assert.equal(c(99).left,8);assert.ok(c(9).left<c(29).left&&c(29).left<c(89).left);
+  assert.equal(c(14).fakeP,0);assert.ok(c(18).fakeP===0||c(18).fakeP>0);assert.equal(c(26).chainP>0,true);assert.equal(c(24).chainP,0);
+});
+check('A safe level has only harmless false cues; clearing it pays once and unlocks the next level',()=>{
+  const f=fixture(500,null,()=>.3);f.F.ev('forceLvl=1');f.F.ev('maxLvl=1');f.F.start();assert.equal(f.ev('L.l'),1);f.hold('wind');f.run(200);
+  assert.equal(f.ev('st'),'won');assert.equal(f.ev('lives'),3);assert.equal(f.ev('maxLvl'),2);assert.equal(f.wallet.balance,500+5);
+  f.F.ev('forceLvl=1');f.F.start();f.hold('wind');f.run(200);assert.equal(f.ev('st'),'won');assert.equal(f.wallet.balance,505);   // replay: no second payout
+});
+check('Dying in a level costs a life; running out sends you back to the checkpoint',()=>{
+  const f=fixture();f.F.ev('forceLvl=3;maxLvl=3;ck=1');f.F.start();
+  for(let i=0;i<3;i++){f.spirit('twins',1,'judge');f.F.ev('ev.t=1.5;tilt=1');f.run(2);assert.equal(f.ev('st'),'over');if(i<2){assert.equal(f.ev('lives'),2-i);assert.equal(f.ev('lostAll'),false);f.F.ev('forceLvl=3');f.F.start()}}
+  assert.equal(f.ev('lostAll'),true);assert.equal(f.ev('lives'),3);assert.equal(f.ev('lvDeaths[3]'),undefined);
+});
+check('After two deaths on a level the next try gets 0.3 s more warning and one attack fewer, and says so',()=>{
+  const f=fixture();f.F.ev('lvDeaths={7:2};forceLvl=7;maxLvl=7');f.F.start();assert.equal(f.ev('assistHid'),1);assert.equal(f.ev('L.ease'),true);
+  const f2=fixture();f2.F.ev('lvDeaths={};forceLvl=7;maxLvl=7');f2.F.start();assert.equal(f.ev('L.left')+1,f2.ev('L.left'));
+});
+check('Gale must be met by leaning toward the reversed wind; boss Hollow is a long Hush',()=>{
+  const f=fixture();f.F.ev('forceLvl=12;maxLvl=12');f.F.start();f.spirit('gale',1,'judge');f.F.ev('ev.t=2;tilt=1');f.hold('r');f.run(1);assert.equal(f.ev('st'),'run');f.run(2);f.hold('r',0);assert.equal(f.ev('survived'),1);
+  f.spirit('gale',1,'judge');f.F.ev('ev.t=2;tilt=0');f.run(1);assert.equal(f.ev('why'),'gale');
+  const h=fixture();h.F.ev('forceLvl=10;maxLvl=10');h.F.start();h.F.ev('ev={type:"walker",side:1,phase:"warn",t:6,warn:6,el:0,bad:0,ok:false,snd:0,fake:false,boss:true};gapT=999');
+  h.run(7);assert.equal(h.ev('why'),'hollowLate');
+});
+check('Boss level runs its fixed plan, saves a checkpoint and adds a life',()=>{
+  const f=fixture();f.F.ev('forceLvl=10;maxLvl=10;lives=3');f.F.start();assert.equal(f.ev('L.plan.length'),4);
+  const seq=[];for(let i=0;i<4;i++){f.F.ev('ev=null;startEvent()');seq.push(f.ev('ev.boss?"hollow":ev.type'))}assert.deepEqual(seq,['eye','twins','walker','hollow']);
+  const g=fixture();g.F.ev('forceLvl=10;maxLvl=10;lives=3');g.F.start();g.F.ev('ev=null;gapT=999;prog=99.9');g.hold('wind');g.run(1);assert.equal(g.ev('st'),'won');assert.equal(g.ev('ck'),11);assert.equal(g.ev('lives'),4);assert.equal(g.ev('maxLvl'),11);
+});
+check('Fixed-seed levels repeat exactly; seed code is shown for the others',()=>{
+  const run=()=>{const f=fixture(500,null,()=>.9);f.F.ev('forceLvl=10;maxLvl=10');f.F.start();return f.ev('seedCode')+'|'+[0,1,2,3].map(()=>{f.F.ev('ev=null;startEvent()');return f.ev('ev.side')}).join()};
+  assert.equal(run(),run());
+  const f=fixture();f.F.ev('forceLvl=6;maxLvl=6');f.F.start();assert.ok(f.ev('seedCode').length>0);
+});
+check('Pity drop: three levels without an item guarantees one early in the next',()=>{
+  const f=fixture();f.F.ev('noDrop=3;forceLvl=6;maxLvl=6');f.F.start();assert.equal(f.ev('guarantee'),true);f.F.ev('gapT=999;prog=9;dropT=999');f.F.update(.05);f.F.update(.05);assert.equal(f.ev('drops.length'),1);
+});
+check('A false cue fades without an attack and does not count as a dodge',()=>{
+  const f=fixture();f.F.ev('forceLvl=20;maxLvl=20');f.F.start();f.F.ev('L.fakeP=1;L.left=5;ev=null;lastType="";startEvent()');assert.equal(f.ev('ev.fake'),true);assert.equal(f.ev('L.left'),5);f.F.ev('gapT=999');f.run(8);assert.equal(f.ev('ev'),null);assert.equal(f.ev('survived'),0);assert.equal(f.ev('st'),'run');
+});
+check('Practice from the codex neither costs lives nor counts deaths or pays',()=>{
+  const f=fixture();f.F.ev('lives=3;practiceStart("eye")');assert.equal(f.ev('L'),null);assert.equal(f.ev('practice'),'eye');f.F.ev('ev=null;startEvent()');assert.equal(f.ev('ev.type'),'eye');
+  f.spirit('eye',1,'judge');f.F.ev('tilt=0');f.run(10);assert.equal(f.ev('st'),'over');assert.equal(f.ev('lives'),3);assert.equal(f.ev('deaths.eye||0'),0);
+  f.F.ev('draw()');
+});
+check('Every screen draws: ready, death with buttons, won, codex, share text',()=>{
+  const f=fixture();f.F.ev('forceLvl=3;maxLvl=5;audioOk=true');f.F.draw();f.F.start();f.spirit('twins',-1,'judge');f.F.ev('ev.t=1.5;tilt=-1');f.run(2);f.F.draw();assert.ok(f.ev('endBtns.length')>=4);
+  f.F.ev('dex=true;seen={leafling:1,knocker:1};draw()');f.F.ev('dexSel=1;draw();dex=false');assert.ok(f.ev('shareText()').includes('第 3 關'));
+  f.F.ev('st="won";draw();st="ready";audioOk=false;draw()');
 });
 console.log(results.length+' peek checks passed');
 }
