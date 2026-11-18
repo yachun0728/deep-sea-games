@@ -6963,7 +6963,10 @@ html.frontier-immersive{overflow:hidden}
   "分鐘狂煎": " min of cooking spree",
   "分鐘狂煎，泡麵補滿": " minutes of cooking spree, noodles refilled",
   "可用點數購買咖啡補給。": "You can spend points on coffee supplies.",
-  "補": "Refill "
+  "補": "Refill ",
+  "/ 各": "/ each",
+  "背包 🪵": "Bag 🪵",
+  "背包的木材或石頭已滿：回營地或投入建築": "Bag is full of wood or stone: return to camp or use it on a building"
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -19275,12 +19278,13 @@ function frontierMigrate(w){
  if(!w.siege){var camp=w.buildings[0],ratio=camp.maxHp?camp.hp/camp.maxHp:1;camp.maxHp=360+w.cfg.chapter*80;camp.hp=Math.max(0,Math.round(camp.maxHp*ratio));w.siege={wave:0,next:40};}w.fighters=w.fighters||[];w.failure=w.failure||'';w.effects=[];return w;
 }
 function frontierCollect(w){
- var room=frontierCapacity(w)-w.bag.wood-w.bag.stone,wood=0,stone=0;
- function take(a,k){var amount=Math.min(room,a[k]);if(amount<=0)return;a[k]-=amount;w.bag[k]+=amount;room-=amount;if(k==='wood')wood+=amount;else stone+=amount;}
- w.supplies.forEach(function(d){if(room<=0||!frontierNear(w.p,d,58))return;var amount=Math.min(room,d.amount);d.amount-=amount;w.bag[d.kind]+=amount;room-=amount;if(d.kind==='wood')wood+=amount;else stone+=amount;});
+ var cap=frontierCapacity(w),wood=0,stone=0;
+ function room(k){return cap-w.bag[k];}
+ function take(a,k){var amount=Math.min(room(k),a[k]);if(amount<=0)return;a[k]-=amount;w.bag[k]+=amount;if(k==='wood')wood+=amount;else stone+=amount;}
+ w.supplies.forEach(function(d){if(room(d.kind)<=0||!frontierNear(w.p,d,58))return;var amount=Math.min(room(d.kind),d.amount);d.amount-=amount;w.bag[d.kind]+=amount;if(d.kind==='wood')wood+=amount;else stone+=amount;});
  w.supplies=w.supplies.filter(function(d){return d.amount>0;});
  // Carried worker cargo remains collectible too; the same inventory is debited before any delivery.
- w.workers.forEach(function(a){if(room>0&&frontierNear(w.p,a,42)){take(a,'wood');take(a,'stone');}});
+ w.workers.forEach(function(a){if(frontierNear(w.p,a,42)){take(a,'wood');take(a,'stone');}});
  if(wood+stone)w.effects.push({x:w.p.x,y:w.p.y-20,t:1.2,kind:'pickup',wood:wood,stone:stone});
  return wood+stone;
 }
@@ -19377,7 +19381,7 @@ function frontierStep(w,input,dt){
   if(w.bag.wood+w.bag.stone)w.effects.push({x:p.x,y:p.y-25,t:1.2,kind:'delivery',wood:w.bag.wood,stone:w.bag.stone});['wood','stone'].forEach(function(k){w.bank[k]+=w.bag[k];w.bag[k]=0;});var h=Math.max(0,Math.min(w.heal,dt*7,frontierMaxHp(w)-p.hp));w.heal-=h;p.hp+=h;
  }
  var cap=frontierCapacity(w);
- w.nodes.forEach(function(n){if(n.left===0){n.respawn-=dt;if(n.respawn<=0)n.left=6;return;}n.cool-=dt;if(n.cool<=0&&w.bag.wood+w.bag.stone<cap&&frontierNear(n,p,53)){var gain=Math.min(n.left,1+Math.floor(w.tech.tool/2)+(frontierBuilt(w,n.kind==='wood'?'mill':'quarry')?1:0),cap-w.bag.wood-w.bag.stone);n.left-=gain;w.bag[n.kind]+=gain;n.cool=.5/(1+w.tech.tool*.16);n.respawn=14;w.effects.push({x:n.x,y:n.y,t:.3,kind:n.kind,gain:gain,empty:n.left===0,px:p.x,py:p.y});}});
+ w.nodes.forEach(function(n){if(n.left===0){n.respawn-=dt;if(n.respawn<=0)n.left=6;return;}n.cool-=dt;if(n.cool<=0&&w.bag[n.kind]<cap&&frontierNear(n,p,53)){var gain=Math.min(n.left,1+Math.floor(w.tech.tool/2)+(frontierBuilt(w,n.kind==='wood'?'mill':'quarry')?1:0),cap-w.bag[n.kind]);n.left-=gain;w.bag[n.kind]+=gain;n.cool=.5/(1+w.tech.tool*.16);n.respawn=14;w.effects.push({x:n.x,y:n.y,t:.3,kind:n.kind,gain:gain,empty:n.left===0,px:p.x,py:p.y});}});
  w.buildings.forEach(function(b){
   if(b.built||!frontierNear(b,p,68)||b.kind==='beacon'&&(!bridge||!frontierReady(w))||b.kind==='tower'&&!bridge&&!c.war)return;
   b.charge=(b.charge||0)+dt;if(b.charge<.07)return;b.charge=0;
@@ -19538,7 +19542,7 @@ function paint(){
  objects.push({y:w.p.y,draw:function(){ftExplorer(w);}});objects.sort(function(a,b){return a.y-b.y;}).forEach(function(o){o.draw();});
  w.shots.forEach(function(s){point(s.x,s.y,6,'#ffcc8b','#a86051');});w.effects.forEach(ftParticles);
  ctx.setTransform(dpr,0,0,dpr,0,0);var mx=rect.width-98,my=rect.height<=500?12:64;ctx.fillStyle='#102e2dcc';ctx.fillRect(mx,my,84,64);w.buildings.forEach(function(b){point(mx+b.x/w.cfg.width*84,my+b.y/w.cfg.height*64,3,b.built?'#b7dca5':'#a5b4a1');});if(w.enemyBase)point(mx+w.enemyBase.x/w.cfg.width*84,my+w.enemyBase.y/w.cfg.height*64,4,w.enemyBase.hp>0?'#e07a6b':'#777f78');w.enemies.forEach(function(e){if(e.hp>0)point(mx+e.x/w.cfg.width*84,my+e.y/w.cfg.height*64,2,'#e6a08e');});point(mx+w.p.x/w.cfg.width*84,my+w.p.y/w.cfg.height*64,4,'#ffe2a3');
- if(w.bag.wood+w.bag.stone>=frontierCapacity(w)){ctx.textAlign='center';ctx.font='600 12px system-ui';ctx.fillStyle='#ffe4a4';ctx.fillText('背包已滿：回營地或投入建築',rect.width/2,rect.height-92,rect.width-30);}
+ if(w.bag.wood>=frontierCapacity(w)||w.bag.stone>=frontierCapacity(w)){ctx.textAlign='center';ctx.font='600 12px system-ui';ctx.fillStyle='#ffe4a4';ctx.fillText('背包的木材或石頭已滿：回營地或投入建築',rect.width/2,rect.height-92,rect.width-30);}
 }
 
 var ftTinted={};
@@ -19660,7 +19664,7 @@ function ftBuilding(b,w){
     function update(){
       var w=world||preview,overlay=$('ft-overlay');var cost=frontierRecruitCost(w),barracks=w.buildings.find(function(b){return b.kind==='barracks';});set('ft-recruit','訓練戰士 · 🪵 '+cost.wood+' ◆ '+cost.stone+' · '+frontierAttackers(w).length+'/'+frontierFighterCap(w));$('ft-recruit').disabled=!world||paused||!barracks||!barracks.built||barracks.hp<=0||!frontierNear(w.p,barracks,110);set('ft-army','戰士 '+frontierAttackers(w).length+' · 守衛 '+(w.fighters.length-frontierAttackers(w).length)+' · 訓練中 '+(barracks&&barracks.queue||0));set('ft-journal-stock','倉庫 🪵 '+w.bank.wood+' · ◆ '+w.bank.stone+' · 工人 '+w.workers.length);set('ft-zone',zones[w.cfg.chapter]);set('ft-level',w.level+' / 50');set('ft-health','♥ '+Math.ceil(w.p.hp));set('ft-base-health','大本營 '+Math.ceil(w.buildings[0].hp)+'/'+w.buildings[0].maxHp);set('ft-assault','第 '+Math.min(w.siege.wave,w.cfg.assaultWaves)+'/'+w.cfg.assaultWaves+' 波 · 下一波 '+Math.ceil(w.siege.next)+'s');
       var steps=stageSteps(w),doneCount=steps.filter(function(t){return t[0];}).length,nextStep=steps.find(function(t){return !t[0];}),objective=frontierBuilt(w,'beacon')?'島嶼已開拓，可繼續採集或前往下一島。':(nextStep?'本關 '+doneCount+'/'+steps.length+' · 下一步：'+nextStep[1]:'本關任務完成');
-      set('ft-objective',objective);set('ft-bag','背包 '+(w.bag.wood+w.bag.stone)+'/'+frontierCapacity(w)+' · 🪵 '+w.bag.wood+' · ◆ '+w.bag.stone);set('ft-stock','倉庫 '+'🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');set('ft-building-effects',(frontierBuilt(w,'mill')?'木材廠：伐木 +1、工具上限 8、伐木工 +1。':'木材廠：建造後強化伐木，解鎖工具上限。')+' '+(frontierBuilt(w,'quarry')?'採石場：採石 +1、背包 +12、背包上限 8、採石工 +1。':'採石場：建造後增加背包容量與採石工。')+' '+(frontierBuilt(w,'forge')?'鐵匠鋪：攻擊 +9、武器上限 8、解除寒霜減速。':'鐵匠鋪：建造後強化攻擊，解鎖武器上限。'));set('ft-coins','金幣 '+w.coins+'/'+frontierPickCost(w));renderCards(w);set('ft-workers','工人 '+w.workers.length);set('ft-hauling','搬運中 '+w.workers.reduce(function(n,a){return n+a.wood+a.stone;},0)+' · 地面資源 '+w.supplies.reduce(function(n,d){return n+d.amount;},0));set('ft-checklist',stageList(steps));
+      set('ft-objective',objective);set('ft-bag','背包 🪵 '+w.bag.wood+' · ◆ '+w.bag.stone+' / 各 '+frontierCapacity(w));set('ft-stock','倉庫 '+'🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');set('ft-building-effects',(frontierBuilt(w,'mill')?'木材廠：伐木 +1、工具上限 8、伐木工 +1。':'木材廠：建造後強化伐木，解鎖工具上限。')+' '+(frontierBuilt(w,'quarry')?'採石場：採石 +1、背包 +12、背包上限 8、採石工 +1。':'採石場：建造後增加背包容量與採石工。')+' '+(frontierBuilt(w,'forge')?'鐵匠鋪：攻擊 +9、武器上限 8、解除寒霜減速。':'鐵匠鋪：建造後強化攻擊，解鎖武器上限。'));set('ft-coins','金幣 '+w.coins+'/'+frontierPickCost(w));renderCards(w);set('ft-workers','工人 '+w.workers.length);set('ft-hauling','搬運中 '+w.workers.reduce(function(n,a){return n+a.wood+a.stone;},0)+' · 地面資源 '+w.supplies.reduce(function(n,d){return n+d.amount;},0));set('ft-checklist',stageList(steps));
       set('ft-warning',w.siege.next<12?'敵襲倒數 '+Math.ceil(w.siege.next)+'s':'靠近資源採集，靠近地基建造');
       $('ft-next').hidden=!world||!frontierBuilt(w,'beacon');$('ft-next').disabled=paused;set('ft-full',document.fullscreenElement||$('ft-main').classList.contains('ft-immersive')?'退出全螢幕':'全螢幕');
       var market=w.buildings.find(function(b){return b.kind==='market';}),atMarket=market&&market.built&&market.hp>0&&frontierNear(w.p,market,100);
@@ -19670,7 +19674,7 @@ function ftBuilding(b,w){
       overlay.hidden=!!world&&!paused&&w.phase==='play';
       if(!overlay.hidden){
         var title='荒島遠征',message='五大區域，五十場考驗。建立據點，穿越危險地帶。\n\n本關任務\n'+stageList(steps)+warTip(w),button='開始遠征';
-        if(world){if(w.phase==='dead'){title=w.failure==='base'?'大本營失守':'遠征失敗';message='科技升級保留。調整建造順序，利用預告閃避攻擊。\n\n本關任務\n'+stageList(steps)+warTip(w);button='重試當關';}else if(w.phase==='clear'){title=w.level===50?'五十關全破！':w.cfg.war?'對手大本營已摧毀':'燈塔已點亮';message='科技已保存，下一關將建立新的據點。';button=w.level===50?'重遊群島':'下一關';}else{title='遠征已暫停';message='進度已保留，準備好再繼續。\n\n本關任務\n'+stageList(steps)+warTip(w);button='繼續遠征';}}
+        if(world){if(w.phase==='dead'){title=w.failure==='base'?'大本營失守':'遠征失敗';message='科技升級保留。調整建造順序，利用預告閃避攻擊。\n\n本關任務\n'+stageList(steps)+warTip(w);button='重試當關';}else if(w.phase==='clear'){title=w.level===50?'五十關全破！':w.cfg.war?'對手大本營已摧毀':'燈塔已點亮';message='科技已保存，下一關將建立新的據點。';button=w.level===50?'重遊群島':'下一關';}else{title='遠征已暫停';message='進度已保留，準備好再繼續。';button='繼續遠征';}}
         set('ft-title',title);if(!transientMessage)set('ft-message',message);set('ft-go',button);
       }updateMap();
     }

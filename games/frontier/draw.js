@@ -110,7 +110,7 @@ function paint(){
  objects.push({y:w.p.y,draw:function(){ftExplorer(w);}});objects.sort(function(a,b){return a.y-b.y;}).forEach(function(o){o.draw();});
  w.shots.forEach(function(s){point(s.x,s.y,6,'#ffcc8b','#a86051');});w.effects.forEach(ftParticles);
  ctx.setTransform(dpr,0,0,dpr,0,0);var mx=rect.width-98,my=rect.height<=500?12:64;ctx.fillStyle='#102e2dcc';ctx.fillRect(mx,my,84,64);w.buildings.forEach(function(b){point(mx+b.x/w.cfg.width*84,my+b.y/w.cfg.height*64,3,b.built?'#b7dca5':'#a5b4a1');});if(w.enemyBase)point(mx+w.enemyBase.x/w.cfg.width*84,my+w.enemyBase.y/w.cfg.height*64,4,w.enemyBase.hp>0?'#e07a6b':'#777f78');w.enemies.forEach(function(e){if(e.hp>0)point(mx+e.x/w.cfg.width*84,my+e.y/w.cfg.height*64,2,'#e6a08e');});point(mx+w.p.x/w.cfg.width*84,my+w.p.y/w.cfg.height*64,4,'#ffe2a3');
- if(w.bag.wood+w.bag.stone>=frontierCapacity(w)){ctx.textAlign='center';ctx.font='600 12px system-ui';ctx.fillStyle='#ffe4a4';ctx.fillText('背包已滿：回營地或投入建築',rect.width/2,rect.height-92,rect.width-30);}
+ if(w.bag.wood>=frontierCapacity(w)||w.bag.stone>=frontierCapacity(w)){ctx.textAlign='center';ctx.font='600 12px system-ui';ctx.fillStyle='#ffe4a4';ctx.fillText('背包的木材或石頭已滿：回營地或投入建築',rect.width/2,rect.height-92,rect.width-30);}
 }
 
 var ftTinted={};
