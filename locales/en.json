@@ -2785,5 +2785,12 @@
   "，你知道的情報：": ", what you know: ",
   "，內容未知": ", contents unknown",
   "，銀蓋宣稱是瓊漿": ", silver lid claims it is nectar",
-  "：決定怎麼處理這杯酒。": ": decide what to do with this cup."
+  "：決定怎麼處理這杯酒。": ": decide what to do with this cup.",
+  "基礎版沒有銀蓋吹牛，只有自己喝、直接敬酒與道具；在右側打開「進階模式」才會出現銀蓋宣稱與質疑，下面提到銀蓋的規則都只適用於進階模式。": "The basic game has no silver-lid bluffing, only drinking it yourself, toasting the host and items. Turn on Advanced Mode on the right to get silver-lid claims and doubts; every rule below that mentions the silver lid applies to Advanced Mode only.",
+  "晚宴開始！先點選一杯酒，再決定自己喝或敬給莊家。": "The banquet begins! Pick a cup first, then decide to drink it yourself or toast the host.",
+  "莊家已經入席。扣點後開始，先選一杯酒，再決定自己喝或敬給莊家。": "The host has taken his seat. Pay to start, pick a cup first, then drink it yourself or toast the host.",
+  "進階模式：銀蓋吹牛（開）": "Advanced mode: silver-lid bluffing (on)",
+  "進階模式：銀蓋吹牛（關）": "Advanced mode: silver-lid bluffing (off)",
+  "遊玩最後的晚餐：記憶、機率與道具的心理博弈，在陰暗的餐桌上自己喝或敬給莊家。有 BONUS 獎勵。": "Play The Last Banquet: a mind game of memory, odds and items. Drink it yourself or toast the Host at a dim table. Has BONUS rewards.",
+  "與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。": "Take turns drinking unknown wine with the Host in a dark room. Outlast him with memory, odds and items."
 }

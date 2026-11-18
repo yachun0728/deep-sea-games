@@ -28,7 +28,7 @@ export function fixture(balance=500,random=Math.random,savedWins=null){
   const listeners={};
   const math=Object.create(Math);math.random=random;
   const doc={hidden:false,addEventListener(){},createElement:()=>new El()};
-  const sandbox={document:doc,window:{addEventListener(){}},addEventListener(name,fn){(listeners[name]??=[]).push(fn);},Number,Math:math,String,Object,Array,JSON,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fmt:n=>String(n),AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
+  const sandbox={setTimeout:()=>0,document:doc,window:{addEventListener(){}},addEventListener(name,fn){(listeners[name]??=[]).push(fn);},Number,Math:math,String,Object,Array,JSON,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fmt:n=>String(n),AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
   sandbox.globalThis=sandbox;
   const ctx=vm.createContext(sandbox);vm.runInContext(source,ctx);
   const B=sandbox.__bq;
@@ -38,7 +38,7 @@ export function fixture(balance=500,random=Math.random,savedWins=null){
     // Replace the table and sides with a controlled scene during a started round.
     scene(o={}){
       const cups=(o.cups||['poison','nectar','truth','water']).map((t,i)=>({id:i+1,t}));
-      f.ev('E.cups='+JSON.stringify(cups)+';E.sel=0;E.pending=null;E.known={p:{},d:{}};E.notes={p:[],d:[]};E.liquor=false;E.used={};E.lock=false;E.decree={p:false,d:false};E.skip={p:false,d:false};E.seen={p:false,d:false};E.heals={p:0,d:0}');
+      f.ev('E.cups='+JSON.stringify(cups)+';E.sel=0;E.pending=null;E.known={p:{},d:{}};E.notes={p:[],d:[]};E.liquor=false;E.fx=[];E.fxT=0;E.used={};E.lock=false;E.decree={p:false,d:false};E.skip={p:false,d:false};E.seen={p:false,d:false};E.heals={p:0,d:0}');
       const set=(path,v)=>f.ev(path+'='+JSON.stringify(v));
       set('E.hp',{p:o.hp?.p??5,d:o.hp?.d??5});set('E.dr',{p:o.dr?.p??0,d:o.dr?.d??0});
       set('E.hand',{p:o.hand?.p??[],d:o.hand?.d??[]});
@@ -293,6 +293,22 @@ check('Full games: 3000 host-vs-random-player rounds always end, keep every valu
     assert.equal(f.events.find(x=>x[0]==='end')[2],e.earned);
   }
   assert.ok(wins.p>200&&wins.d>200,JSON.stringify(wins));
+});
+check('Basic mode: the host never uses the silver lid, and the player cannot either; advanced mode brings it back',()=>{
+  let claims=0;
+  for(let n=0;n<300;n++){const f=started();for(let g=0;g<80&&f.ev('E.phase')==='play';g++){const e=f.ev('E');if(e.pending){claims++;f.B.playerRespond(true);continue}if(e.turn==='d'){f.B.tick(1);f.B.tick(1);continue}f.B.selfDrink('p',e.cups[0].id);}}
+  assert.equal(claims,0);
+  const f=started();f.scene({cups:['water','water']});f.ev('E.sel=1');f.B.playerAct('claim');assert.equal(f.E().pending,null);
+  f.ev('ADV=true;E.sel=1');f.B.playerAct('claim');assert.ok(f.E().pending);
+  let adv=0;for(let n=0;n<300;n++){const g=started();g.ev('ADV=true');for(let k=0;k<80&&g.ev('E.phase')==='play';k++){const e=g.ev('E');if(e.pending){if(e.pending.from==='d')adv++;if(e.pending.to==='p')g.B.respond(true);continue}if(e.turn==='d'){g.B.tick(1);g.B.tick(1);continue}g.B.selfDrink('p',e.cups[0].id);}}
+  assert.ok(adv>0,'host never bluffed in advanced mode');
+});
+check('A drink queues a reveal beat: the host and the player wait for it, and it clears with time',()=>{
+  const f=started();f.scene({cups:['poison','water','water']});f.ev('E.hand.p=["needle"]');f.B.selfDrink('p',1);assert.ok(f.E().fxT>0);assert.ok(f.E().fx.length>=2);
+  f.ev('E.aiT=0');f.B.tick(.3);assert.equal(f.E().cups.length,2,'host moved during the reveal');
+  f.B.playerItem('needle');assert.equal(f.E().hand.p.length,1,'player item accepted during the reveal');
+  f.B.render();assert.equal(f.E().fx.length,0);
+  f.B.tick(1);f.ev('E.aiT=0');f.B.tick(.1);assert.ok(f.E().cups.length<2||f.E().pending);
 });
 const isRun=process.argv.includes('--balance');
 if(isRun){

@@ -25,8 +25,8 @@ var ITEMS={
  ice:{name:'稀釋冰塊',cup:1,desc:'雙倍劇毒−1；劇毒變清水；毒瓊漿變瓊漿。'}};
 var IKEYS=Object.keys(ITEMS);
 var SAY={p:'你',d:'莊家'};
-var E=null,analytics=null,wins=0,quitArm=0;
-try{wins=+localStorage.getItem('deep-sea-banquet-best')||0}catch(e){}
+var E=null,analytics=null,wins=0,quitArm=0,ADV=false,MUTED=false;
+try{wins=+localStorage.getItem('deep-sea-banquet-best')||0;ADV=localStorage.getItem('deep-sea-banquet-adv')==='1';MUTED=localStorage.getItem('deep-sea-banquet-mute')==='1'}catch(e){}
 var opp=function(s){return s==='p'?'d':'p'};
 var rnd=function(){return Math.random()};
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(rnd()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
@@ -35,7 +35,7 @@ function fresh(){
  E={phase:'ready',act:0,hp:{p:HP_MAX,d:HP_MAX},dr:{p:0,d:0},heals:{p:0,d:0},cups:[],hand:{p:[],d:[]},turn:'p',extra:false,
   skip:{p:false,d:false},liquor:false,decree:{p:false,d:false},used:{},lock:false,known:{p:{},d:{}},notes:{p:[],d:[]},seen:{p:false,d:false},
   pending:null,sel:0,comp:{poison:0,nectar:0,truth:0},out:{poison:0,nectar:0,truth:0,water:0},claims:{p:0,d:0},lies:{p:0,d:0},publicScan:0,
-  log:[],result:null,ot:OT_SECONDS,aiT:1,paid:{},earned:0,v:0};
+  log:[],result:null,ot:OT_SECONDS,aiT:1,paid:{},earned:0,v:0,fx:[],fxT:0};
 }
 fresh();
 function log(t){E.log.push(t);if(E.log.length>LOG_KEEP)E.log.shift();E.v++}
@@ -78,7 +78,7 @@ function canUse(side,key){
  if(key==='scent'&&!E.cups.length)return '桌上沒有酒杯。';
  return '';
 }
-function takeItem(side,key){var i=E.hand[side].indexOf(key);if(i>=0)E.hand[side].splice(i,1);E.used[key]=1}
+function takeItem(side,key){var i=E.hand[side].indexOf(key);if(i>=0)E.hand[side].splice(i,1);E.used[key]=1;SFX.item()}
 function useItem(side,key,cupId){
  var why=canUse(side,key);if(why)return{ok:false,msg:why};
  var def=ITEMS[key],cup=def.cup?cupOf(cupId):null;
@@ -141,10 +141,11 @@ function heal(side,n,o){
 // Resolves one drink. The cup must already be off the table. src is whoever's drunkenness makes poison hit harder.
 function drinkEffect(side,cup,o){
  var t=cup.t,other=opp(side),bonus=drunkMid(o.src||side)?1:0,extra=false,who=SAY[side],text=who+'喝下 #'+cup.id+'：'+TNAME[t]+'。';
- if(t==='poison'||t==='poison2'){var dmg=(o.big||t==='poison2')?2:1;dmg+=bonus;hurt(side,dmg);text+=' '+who+'失去 '+dmg+' 點生命。'}
+ E.fx.push({k:'reveal',s:side,t:t});E.fxT=Math.min(1.4,(E.fxT||0)+.9);
+ if(t==='poison'||t==='poison2'){var dmg=(o.big||t==='poison2')?2:1;dmg+=bonus;hurt(side,dmg);E.fx.push({k:'hit',s:side,n:dmg});text+=' '+who+'失去 '+dmg+' 點生命。'}
  else if(t==='nectar'||t==='pnectar'){
-  var h=heal(side,o.big?2:1,o);text+=h>0?' '+who+'回復 '+h+' 點生命。':(o.noHeal?' 沒有回血。':' 回血次數已達本幕上限。');
-  if(t==='pnectar'){var d2=o.big?2:1;hurt(other,d2);text+=' '+SAY[other]+'失去 '+d2+' 點生命。'}
+  var h=heal(side,o.big?2:1,o);if(h>0)E.fx.push({k:'heal',s:side,n:h});text+=h>0?' '+who+'回復 '+h+' 點生命。':(o.noHeal?' 沒有回血。':' 回血次數已達本幕上限。');
+  if(t==='pnectar'){var d2=o.big?2:1;hurt(other,d2);E.fx.push({k:'hit',s:other,n:d2});text+=' '+SAY[other]+'失去 '+d2+' 點生命。'}
   if(!o.noExtra){extra=true;text+=' '+who+'可以再行動一次。'}
  }else if(t==='truth'){
   if(E.hand[side].length){E.seen[side]=true;text+=' 公開手牌：'+who+'。'}
@@ -158,7 +159,7 @@ function drinkEffect(side,cup,o){
 function resolveFaints(){
  ['p','d'].forEach(function(s){
   if(E.dr[s]>=DR_MAX&&E.hp[s]>0){
-   E.dr[s]=0;E.hp[s]=Math.min(HP_MAX,E.hp[s]+1);E.skip[s]=true;reshuffle();
+   E.dr[s]=0;E.hp[s]=Math.min(HP_MAX,E.hp[s]+1);E.skip[s]=true;reshuffle();E.fx.push({k:'faint',s:s});E.fxT=Math.min(1.8,(E.fxT||0)+.8);
    log(SAY[s]+'醉倒翻桌：酒醉歸零、回復 1 點生命、跳過下一次行動，酒杯重新洗牌。');
   }});
 }
@@ -347,6 +348,7 @@ function aiStep(){
  if(aiItemStep())return;
  var plan=E.aiPlan||aiPlan();E.aiPlan=null;
  if(!cupOf(plan.cup.id))plan=aiPlan();
+ if(plan.kind==='claim'&&!ADV)plan={kind:aiView(plan.cup).p>=.5?'toast':'self',cup:plan.cup};
  if(E.decree.d)plan={kind:'self',cup:plan.cup};
  if(plan.kind==='self')selfDrink('d',plan.cup.id);
  else if(plan.kind==='claim'&&E.cups.length>=1)claim('d',plan.cup.id);
@@ -360,8 +362,49 @@ function tick(dt){
   E.ot-=dt;
   if(E.ot<=0){E.ot=0;log('延長賽時間到！比較生命。');endGame(E.hp.p>E.hp.d?'p':E.hp.p<E.hp.d?'d':'draw','time');return}
  }
+ if(E.fxT>0){E.fxT-=dt;if(E.fxT>0)return}
  if(E.pending?E.pending.to==='d':E.turn==='d'){E.aiT-=dt;if(E.aiT<=0){E.aiT=.55+rnd()*.45;aiStep()}}
 }
+
+/* ---------- sound: tiny synthesized effects, no files; silent when muted or unsupported ---------- */
+var AC=null;
+function ac(){
+ if(MUTED)return null;
+ if(!AC){var C=window.AudioContext||window.webkitAudioContext;if(!C)return null;try{AC=new C()}catch(e){return null}}
+ try{if(AC.state==='suspended')AC.resume()}catch(e){}
+ return AC;
+}
+function tone(f0,f1,dur,type,vol,delay){
+ var c=ac();if(!c)return;
+ try{var t=c.currentTime+(delay||0),o=c.createOscillator(),g=c.createGain();
+  o.type=type||'sine';o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(Math.max(20,f1),t+dur);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol||.12,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+.05)}catch(e){}
+}
+function noise(dur,vol,delay){
+ var c=ac();if(!c)return;
+ try{var t=c.currentTime+(delay||0),n=Math.floor(c.sampleRate*dur),b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);
+  for(var i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);
+  var src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='lowpass';f.frequency.value=900;g.gain.value=vol||.2;
+  src.connect(f);f.connect(g);g.connect(c.destination);src.start(t)}catch(e){}
+}
+var SFX={
+ start:function(){tone(110,70,.5,'sawtooth',.1);tone(55,40,.8,'sine',.14)},
+ pick:function(){tone(520,430,.07,'square',.05)},
+ lift:function(){tone(180,360,.45,'sine',.07)},
+ poison:function(){noise(.35,.3);tone(150,38,.45,'sawtooth',.16)},
+ nectar:function(){tone(440,660,.14,'triangle',.12);tone(660,990,.3,'triangle',.12,.13)},
+ truth:function(){tone(880,1320,.5,'sine',.07);tone(660,990,.5,'sine',.06,.1)},
+ water:function(){tone(300,200,.22,'sine',.09)},
+ faint:function(){tone(420,50,.9,'sawtooth',.12);noise(.5,.18,.15)},
+ item:function(){tone(300,700,.12,'square',.05);tone(700,300,.1,'square',.04,.1)},
+ beat:function(){tone(70,45,.14,'sine',.2);tone(60,40,.16,'sine',.16,.2)},
+ win:function(){[392,494,587,784].forEach(function(f,i){tone(f,f,.28,'triangle',.11,i*.14)})},
+ lose:function(){[300,250,200,130].forEach(function(f,i){tone(f,f*.9,.4,'sawtooth',.09,i*.2)})},
+ turn:function(){tone(260,330,.12,'triangle',.07)}
+};
+function setCls(el,name,on){var c=(' '+el.className+' ');var has=c.indexOf(' '+name+' ')>=0;if(on&&!has)el.className=(el.className+' '+name).trim();else if(!on&&has)el.className=c.replace(' '+name+' ',' ').trim()}
+function restart(el,name,ms){setCls(el,name,false);void el.offsetWidth;setCls(el,name,true);if(ms)setTimeout(function(){setCls(el,name,false)},ms)}
 
 /* ---------- interface ---------- */
 var $v=$('view-banquet'),cupEls={},lastLogV=-1,lastLogLen=-1;
@@ -425,8 +468,37 @@ function renderNotes(){
  var sig=lines.join('|');if(box.__sig===sig)return;box.__sig=sig;box.textContent='';
  lines.forEach(function(t){var p=document.createElement('p');p.textContent=t;box.appendChild(p)});
 }
+function renderChips(){
+ var box=$('bq-chips'),live=E.phase==='play',list=[];
+ if(live||E.phase==='over')['poison','nectar','truth'].forEach(function(t){
+  var left=Math.max(0,E.comp[t]-E.out[t]);if(E.comp[t])list.push({t:t,left:left,all:E.comp[t]});
+ });
+ var sig=list.map(function(x){return x.t+x.left+'/'+x.all}).join('|');if(box.__sig===sig)return;box.__sig=sig;box.textContent='';
+ list.forEach(function(x){var c=document.createElement('span');c.className='bq-chip t-'+x.t+(x.left?'':' is-gone');c.textContent=TICON[x.t]+' '+TNAME[x.t]+' ×'+x.left;box.appendChild(c)});
+}
+var fxPlayed=0,overPlayed=false,hbT=0,lastTurnKey='';
+function floatNum(side,text,cls){
+ var host=$('bq-side-'+side),n=document.createElement('span');n.className='bq-float '+cls;n.textContent=text;host.appendChild(n);setTimeout(function(){n.remove()},1300);
+}
+function playFx(){
+ var list=E.fx;if(!list||!list.length)return;E.fx=[];
+ var rv=$('bq-reveal'),st=$('bq-stage'),dl=$('bq-dealerbox'),fl=$('bq-flash');
+ list.forEach(function(f){
+  if(f.k==='reveal'){
+   rv.textContent=TICON[f.t]+' '+TNAME[f.t];rv.className='bq-reveal t-'+f.t;restart(rv,'is-on',1500);
+   SFX.lift();setTimeout(function(){f.t==='poison'||f.t==='poison2'?SFX.poison():f.t==='nectar'||f.t==='pnectar'?SFX.nectar():f.t==='truth'?SFX.truth():SFX.water()},380);
+  }else if(f.k==='hit'){
+   floatNum(f.s,'−'+f.n,'is-hit');restart(st,'is-shake',500);restart(fl,'is-red',600);if(f.s==='d')restart(dl,'is-hurt',600);
+  }else if(f.k==='heal'){
+   floatNum(f.s,'+'+f.n,'is-heal');restart(fl,'is-green',700);
+  }else if(f.k==='faint'){
+   restart(st,'is-flip',1000);SFX.faint();
+  }
+ });
+}
 function render(){
  var live=E.phase==='play',over=E.phase==='over';
+ playFx();
  put($('bq-act'),!E.act?'晚宴尚未開始':E.act===4?ACTS[4].name+' '+mmss(E.ot):ACTS[E.act].name);
  ['p','d'].forEach(function(s){
   put($('bq-hp-'+s),hearts(E.hp[s]));put($('bq-hp-'+s+'-t'),'生命 '+E.hp[s]+'/'+HP_MAX);
@@ -435,6 +507,7 @@ function render(){
   var box=$('bq-side-'+s),cls='bq-side bq-side-'+s+(live&&E.turn===s?' is-turn':'')+(E.dr[s]>=3?' is-drunk':'');if(box.className!==cls)box.className=cls;
  });
  var oc=E.out;
+ renderChips();
  put($('bq-comp'),live||over?'本幕原配：劇毒 '+E.comp.poison+'、瓊漿 '+E.comp.nectar+'、真言水 '+E.comp.truth+' · 桌上還有 '+E.cups.length+' 杯酒 · 已喝出：劇毒 '+oc.poison+'、瓊漿 '+oc.nectar+'、真言水 '+oc.truth+(oc.water?'、清水 '+oc.water:''):'每幕開始時公開各種酒的杯數。');
  put($('bq-center-1'),!E.act?'晚宴尚未開始':over?(E.result.w==='p'?'你贏了':E.result.w==='d'?'莊家贏了':'平手'):'桌上還有 '+E.cups.length+' 杯酒');
  put($('bq-center-2'),over?'到右側再來一場':live?(E.turn==='p'?'輪到你':'輪到莊家'):'按右側開始');
@@ -444,7 +517,15 @@ function render(){
  put(turn,!live?(over?'這一場結束了。':'按右側「扣點開始晚宴」'):pend?'莊家蓋上了銀蓋，等你決定。':E.turn==='d'?'莊家思考中…':E.decree.p?'你被勸酒令指定：這次只能自己喝。':sel?'已選 #'+sel.id+'：決定怎麼處理這杯酒。':'先點選一杯酒，再決定怎麼處理它。');
  $('bq-act-row').hidden=!mine;
  var forced=E.decree.p;
- $('bq-self').disabled=!sel;$('bq-toast').disabled=!sel||forced;$('bq-silver').disabled=!sel||forced;
+ $('bq-self').disabled=!sel||E.fxT>0;$('bq-toast').disabled=!sel||forced||E.fxT>0;$('bq-silver').disabled=!sel||forced||E.fxT>0;$('bq-silver').hidden=!ADV;
+ $('bq-adv').disabled=bqBusy;put($('bq-adv'),ADV?'進階模式：銀蓋吹牛（開）':'進階模式：銀蓋吹牛（關）');putAttr($('bq-adv'),'aria-pressed',ADV?'true':'false');
+ put($('bq-mute'),MUTED?'音效：關':'音效：開');putAttr($('bq-mute'),'aria-pressed',MUTED?'true':'false');
+ var dl=$('bq-dealerbox'),dcls='bq-dealer-box'+(live&&(E.turn==='d'||(E.pending&&E.pending.to==='d'))?' is-think':'')+(over&&E.result.w==='p'?' is-dead':'')+(dl.className.indexOf('is-hurt')>=0?' is-hurt':'');
+ if(dl.className!==dcls)dl.className=dcls;
+ var tk=$('bq-ticker'),last=E.log.length?E.log[E.log.length-1]:'';if(tk.__v!==E.v){tk.__v=E.v;tk.textContent=last;restart(tk,'is-in',0)}
+ setCls($('bq-stage'),'is-low',live&&E.hp.p<=1);setCls($('bq-stage'),'is-mine',mine&&!(E.fxT>0));
+ if(over&&!overPlayed){overPlayed=true;E.result.w==='p'?SFX.win():SFX.lose()}
+ if(!over)overPlayed=false;
  var pr=$('bq-prompt');pr.hidden=!pend;
  if(pend)put($('bq-prompt-t'),'莊家宣稱 #'+E.pending.id+' 是瓊漿。你要相信並喝下，還是質疑？');
  var go=$('bq-go');go.disabled=bqBusy;put(go,bqBusy?'晚宴進行中':over?'扣點再辦一場':'扣點開始晚宴');
@@ -454,30 +535,31 @@ function render(){
 }
 function pickCup(id){
  if(E.phase!=='play'||E.turn!=='p'||E.pending||!cupOf(id))return;
- E.sel=E.sel===id?0:id;E.v++;render();
+ E.sel=E.sel===id?0:id;E.v++;if(E.sel)SFX.pick();render();
 }
 function playerItem(key){
- if(E.phase!=='play')return;
+ if(E.phase!=='play'||E.fxT>0)return;
  var r=useItem('p',key,E.sel);
  if(!r.ok){say(r.msg,'lose');render();return}
  if(r.msg)say(r.msg,'win');
  if(!cupOf(E.sel))E.sel=0;render();
 }
 function playerAct(kind){
- if(E.phase!=='play'||E.turn!=='p'||E.pending)return;
+ if(E.phase!=='play'||E.turn!=='p'||E.pending||E.fxT>0)return;
+ if(kind==='claim'&&!ADV)return;
  if(!E.sel){say('請先點選一杯酒。','lose');return}
  var id=E.sel;E.sel=0;
  if(kind==='self')selfDrink('p',id);else if(kind==='toast')toast('p',id);else claim('p',id);
  render();
 }
-function playerRespond(believe){if(E.pending&&E.pending.to==='p')respond(believe);render()}
+function playerRespond(believe){if(E.fxT>0)return;if(E.pending&&E.pending.to==='p')respond(believe);render()}
 function start(){
  if(bqBusy)return;
  var amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
  analytics=AN.start('banquet',amount);bqStake=amount;bqBusy=true;S.balance-=amount;save();renderAll();
  fresh();E.phase='play';quitArm=0;log('晚宴開始。你先行動。');deal(1);beginTurn('p',false);
- say('晚宴開始！先點選一杯酒，再決定自己喝、敬給莊家，或蓋上銀蓋騙他。');render();$('bq-stage').focus({preventScroll:true});
+ say(ADV?'晚宴開始！先點選一杯酒，再決定自己喝、敬給莊家，或蓋上銀蓋騙他。':'晚宴開始！先點選一杯酒，再決定自己喝或敬給莊家。');SFX.start();render();$('bq-stage').focus({preventScroll:true});
 }
 function quit(){
  if(!bqBusy)return;
@@ -486,6 +568,8 @@ function quit(){
 }
 $('bq-go').addEventListener('click',start);
 $('bq-quit').addEventListener('click',quit);
+$('bq-adv').addEventListener('click',function(){if(bqBusy)return;ADV=!ADV;try{localStorage.setItem('deep-sea-banquet-adv',ADV?'1':'0')}catch(e){}render()});
+$('bq-mute').addEventListener('click',function(){MUTED=!MUTED;try{localStorage.setItem('deep-sea-banquet-mute',MUTED?'1':'0')}catch(e){}if(!MUTED)SFX.pick();render()});
 $('bq-self').addEventListener('click',function(){playerAct('self')});
 $('bq-toast').addEventListener('click',function(){playerAct('toast')});
 $('bq-silver').addEventListener('click',function(){playerAct('claim')});
@@ -499,7 +583,7 @@ addEventListener('keydown',function(e){
 var last=0;
 function loop(t){
  var dt=Math.min(.1,Math.max(0,(t-last)/1000)||0);last=t;
- if(shown()){if(quitArm>0){quitArm-=dt;if(quitArm<=0){quitArm=0}}tick(dt);render()}
+ if(shown()){if(quitArm>0){quitArm-=dt;if(quitArm<=0){quitArm=0}}tick(dt);render();if(E.phase==='play'&&E.hp.p<=1){hbT-=dt;if(hbT<=0){hbT=1.1;SFX.beat()}}}
  requestAnimationFrame(loop);
 }
 addEventListener('blur',function(){last=performance.now()});
