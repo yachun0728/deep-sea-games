@@ -4591,5 +4591,10 @@
   "補": "Refill ",
   "/ 各": "/ each",
   "背包 🪵": "Bag 🪵",
-  "背包的木材或石頭已滿：回營地或投入建築": "Bag is full of wood or stone: return to camp or use it on a building"
+  "背包的木材或石頭已滿：回營地或投入建築": "Bag is full of wood or stone: return to camp or use it on a building",
+  "沒有點數獎勵。會議時間用完可用 5 點買特濃咖啡續命，或看示範廣告延長一次。": "No point rewards. When the meeting timer runs out you can buy an extra-strong coffee for 5 points, or watch a demo ad to extend once.",
+  "點數不夠，需要": "Not enough points, need",
+  "已用": "Used",
+  "點補充咖啡。": "points for coffee.",
+  "（每名 10 木材、10 石頭，至少 3 名）": " (10 wood and 10 stone each, at least 3)"
 }

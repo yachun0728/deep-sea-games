@@ -31,7 +31,7 @@
 | [一口氣探險 One Breath Dive](dive/README.md) | `#dive` | 益智策略 | 顯示 | 54 行 | 選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。 |
 | [捷運搶位 MRT Seat Grab](mrt/README.md) | `#mrt` | 益智策略 | 顯示 | 52 行 | 看小動作猜誰要下車，一階一階往上搶座位。 |
 | [泡麵煎餅翻面 Noodle Pancake](pancake/README.md) | `#pancake` | 時機操作 | 顯示 | 43 行 | 半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。 |
-| [社畜要下班 Roar Through the Ceiling](rocket-chair/README.md) | `#rocket-chair` | 時機操作 | 顯示 | 40 行 | 對著手機大吼，火箭椅一路撞破天花板提早下班。 |
+| [社畜要下班 Roar Through the Ceiling](rocket-chair/README.md) | `#rocket-chair` | 時機操作 | 顯示 | 44 行 | 對著手機大吼，火箭椅一路撞破天花板提早下班。 |
 | [蓋樓大師 Sky Builder](skybuilder/README.md) | `#skybuilder` | 時機操作 | 顯示 | 156 行 | 抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。 |
 | [鯉魚躍龍門 Carp Leap](carp/README.md) | `#carp` | 時機操作 | 顯示 | 160 行 | 蓄力起跳，越過一道道石瀑。 |
 | [外送員大戰惡犬 Rider vs Dogs](rider/README.md) | `#rider` | 跑酷動作 | 顯示 | 179 行 | 巷子裡閃狗送餐，餐涼之前送越多越好。 |
