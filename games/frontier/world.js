@@ -7,9 +7,11 @@ function frontierPlan(level){
 var FRONTIER_CARDS=[
  {id:'tool',name:'採集工具',desc:'採集更快、一次拿更多',key:'tool',max:8},
  {id:'blade',name:'戰鬥武器',desc:'主角、戰士與箭塔的攻擊更強',key:'blade',max:8},
- {id:'pack',name:'背包容量',desc:'背包容量增加',key:'pack',max:8}
+ {id:'pack',name:'背包容量',desc:'背包容量增加',key:'pack',max:8},
+ {id:'stock',name:'倉庫擴建',desc:'倉庫容量增加',key:'stock',max:8}
 ];
-function frontierTech(t){t=t||{};function n(v){v=Number(v)|0;return Math.max(0,Math.min(8,v));}return {tool:n(t.tool),blade:n(t.blade),pack:n(t.pack),heart:n(t.heart),boots:n(t.boots),warrior:n(t.warrior),towerup:n(t.towerup)};}
+function frontierTech(t){t=t||{};function n(v){v=Number(v)|0;return Math.max(0,Math.min(8,v));}return {tool:n(t.tool),blade:n(t.blade),pack:n(t.pack),heart:n(t.heart),boots:n(t.boots),warrior:n(t.warrior),towerup:n(t.towerup),stock:n(t.stock)};}
+function frontierStockCap(w){return 40+(w.tech.stock|0)*15;}
 function frontierMaxHp(w){return 100+(w.tech.heart||0)*20;}
 function frontierFighterHp(w){return 100+w.cfg.chapter*20+(w.tech.warrior||0)*15;}
 // Gold fills a meter; each full meter offers three random upgrade cards (replaces the old shop).
@@ -117,7 +119,7 @@ function frontierWorkers(w,dt){
   var home=depots.slice().sort(function(b,c){return Math.hypot(a.x-b.x,a.y-b.y)-Math.hypot(a.x-c.x,a.y-c.y);})[0];
   if(!home)return;
   if(a.wood+a.stone>=5){
-   if(frontierNear(a,home,30)){w.bank.wood+=a.wood;w.bank.stone+=a.stone;w.effects.push({x:home.x,y:home.y-25,t:1.2,kind:'delivery',wood:a.wood,stone:a.stone});a.wood=a.stone=0;a.target=-1;return;}
+   if(frontierNear(a,home,30)){var sc=w.cfg.war?frontierStockCap(w):1e9;w.bank.wood=Math.min(sc,w.bank.wood+a.wood);w.bank.stone=Math.min(sc,w.bank.stone+a.stone);w.effects.push({x:home.x,y:home.y-25,t:1.2,kind:'delivery',wood:a.wood,stone:a.stone});a.wood=a.stone=0;a.target=-1;return;}
    frontierWorkerMove(a,home,dt);return;
   }
   var pile=w.supplies.find(function(d){return d.kind===a.mode&&frontierNear(a,d,55);});
@@ -144,7 +146,7 @@ function frontierFighterCap(w){return w.cfg.war?w.cfg.fighterCap:4+w.cfg.chapter
 function frontierRecruitCost(w){if(w.cfg.war)return {wood:10,stone:10};return {wood:18+w.cfg.chapter*2,stone:10+w.cfg.chapter};}
 function frontierRecruit(w){
  var b=w.buildings.find(function(b){return b.kind==='barracks';}),cost=frontierRecruitCost(w),cap=frontierFighterCap(w);
- if(w.phase!=='play'||!b||!b.built||b.hp<=0||!frontierNear(w.p,b,110)||frontierAttackers(w).length+(b.queue||0)>=cap||w.bank.wood+w.bag.wood<cost.wood||w.bank.stone+w.bag.stone<cost.stone)return false;
+ if(w.phase!=='play'||!b||!b.built||b.hp<=0||!frontierNear(w.p,b,110)||frontierAttackers(w).length+(b.queue||0)>=cap||(w.cfg.war&&(b.queue||0)>=1)||w.bank.wood+w.bag.wood<cost.wood||w.bank.stone+w.bag.stone<cost.stone)return false;
  // Pay from the carried bag first (so the cost is visible), then from the stock.
  ['wood','stone'].forEach(function(k){var need=cost[k],fromBag=Math.min(need,w.bag[k]);w.bag[k]-=fromBag;w.bank[k]-=need-fromBag;});b.queue=(b.queue||0)+1;return true;
 }
@@ -198,7 +200,7 @@ function frontierStep(w,input,dt){
  var nx=Math.max(40,Math.min(c.width-40,p.x+p.dx*(move?speed:0)*dt)),ny=Math.max(45,Math.min(c.height-45,p.y+p.dy*(move?speed:0)*dt));
  if(nx>552&&nx<678&&(!bridge||ny<385||ny>515))nx=p.x;p.x=nx;p.y=ny;
  if(w.buildings.some(function(b){return b.built&&b.hp>0&&(b.kind==='camp'||b.kind==='depot')&&frontierNear(p,b,67);})){
-  if(w.bag.wood+w.bag.stone)w.effects.push({x:p.x,y:p.y-25,t:1.2,kind:'delivery',wood:w.bag.wood,stone:w.bag.stone});['wood','stone'].forEach(function(k){w.bank[k]+=w.bag[k];w.bag[k]=0;});var h=Math.max(0,Math.min(w.heal,dt*7,frontierMaxHp(w)-p.hp));w.heal-=h;p.hp+=h;
+  if(w.bag.wood+w.bag.stone)w.effects.push({x:p.x,y:p.y-25,t:1.2,kind:'delivery',wood:w.bag.wood,stone:w.bag.stone});var stockCap=c.war?frontierStockCap(w):1e9;['wood','stone'].forEach(function(k){var mv=Math.max(0,Math.min(w.bag[k],stockCap-w.bank[k]));w.bank[k]+=mv;w.bag[k]-=mv;});var h=Math.max(0,Math.min(w.heal,dt*7,frontierMaxHp(w)-p.hp));w.heal-=h;p.hp+=h;
  }
  var cap=frontierCapacity(w);
  w.nodes.forEach(function(n){if(n.left===0){n.respawn-=dt;if(n.respawn<=0)n.left=6;return;}n.cool-=dt;if(n.cool<=0&&w.bag[n.kind]<cap&&frontierNear(n,p,53)){var gain=Math.min(n.left,1+Math.floor(w.tech.tool/2)+(frontierBuilt(w,n.kind==='wood'?'mill':'quarry')?1:0),cap-w.bag[n.kind]);n.left-=gain;w.bag[n.kind]+=gain;n.cool=.5/(1+w.tech.tool*.16);n.respawn=14;w.effects.push({x:n.x,y:n.y,t:.3,kind:n.kind,gain:gain,empty:n.left===0,px:p.x,py:p.y});}});

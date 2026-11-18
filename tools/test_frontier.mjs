@@ -113,9 +113,11 @@ model.frontierClassic=false;
  w=create(1);w.enemies=[];w.siege.next=1e6;w.bank.wood=w.bank.stone=10000;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');
  ok(!model.frontierRecruit(w),'cannot recruit before the barracks exists');
  w.p.x=barracks.x;w.p.y=barracks.y;tick(w,12);ok(barracks.built,'barracks builds across the bridge');
- ok(model.frontierRecruitCost(w).wood===10&&model.frontierRecruitCost(w).stone===10,'a warrior costs 10 wood and 10 stone');w.bank.wood=w.bank.stone=0;w.bag.wood=7;w.bag.stone=3;ok(!model.frontierRecruit(w),'too few materials cannot train');w.bag.wood=15;w.bag.stone=12;w.bank.wood=3;w.bank.stone=0;ok(model.frontierRecruit(w)&&w.bag.wood===5&&w.bag.stone===2&&w.bank.wood===3,'training pays 10/10 from the bag first');w.bank.wood=w.bank.stone=10000;barracks.queue=0;
- for(let n=0;n<15;n++)model.frontierRecruit(w);ok(model.frontierAttackers(w).length+barracks.queue===12&&model.frontierFighterCap(w)===12,'attack warrior cap is twelve');
- tick(w,3*12+1);ok(model.frontierAttackers(w).length===12,'barracks trains fighters one by one');
+ barracks.queue=0;barracks.train=0;w.fighters=w.fighters.filter(f=>f.role==='guard');w.p.x=100;w.p.y=100;
+ ok(!model.frontierRecruit(w),'recruiting needs the hero at the barracks');w.p.x=barracks.x;w.p.y=barracks.y;
+ok(model.frontierRecruitCost(w).wood===10&&model.frontierRecruitCost(w).stone===10,'a warrior costs 10 wood and 10 stone');w.bank.wood=w.bank.stone=0;w.bag.wood=7;w.bag.stone=3;ok(!model.frontierRecruit(w),'too few materials cannot train');w.bag.wood=15;w.bag.stone=12;w.bank.wood=3;w.bank.stone=0;ok(model.frontierRecruit(w)&&w.bag.wood===5&&w.bag.stone===2&&w.bank.wood===3,'training pays 10/10 from the bag first');w.bank.wood=w.bank.stone=10000;barracks.queue=0;
+ ok(model.frontierRecruit(w)&&!model.frontierRecruit(w)&&barracks.queue===1,'only one warrior is in training at a time and it is paid up front');
+ for(let n=0;n<16;n++){tick(w,3.1);model.frontierRecruit(w);}tick(w,3.1);ok(model.frontierAttackers(w).length===12&&model.frontierFighterCap(w)===12,'attack warrior cap is twelve and warriors arrive one by one');
  // walking next to the barracks trains warriors by itself
  {let w=create(1);let barracks;w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');barracks.built=true;w.bank.wood=w.bank.stone=500;w.p.x=barracks.x;w.p.y=barracks.y;tick(w,30);ok(model.frontierAttackers(w).length>=5,'standing at the barracks auto-trains warriors');
  w.p.x=100;w.p.y=100;const hired=model.frontierAttackers(w).length+barracks.queue;tick(w,10);ok(model.frontierAttackers(w).length+barracks.queue===hired,'no training when the hero is away');
@@ -132,15 +134,20 @@ model.frontierClassic=false;
  w.enemies.push({x:tower.x+30,y:tower.y,type:'melee',hp:99999,max:99999,state:'walk',t:0,cool:0,tx:0,ty:0,hit:false,counted:false,wave:true,radius:17,raider:true,assault:true});
  w.p.x=900;w.p.y=700;tick(w,12);ok(tower.hp<towerHp&&w.phase==='play','monsters attack the tower');
  // later stages keep the beacon rules
+ // warehouse capacity
+ {let w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;ok(model.frontierStockCap(w)===40,'the warehouse holds 40 of each at first');
+  w.bank.wood=35;w.bank.stone=0;w.bag.wood=20;w.bag.stone=8;w.p.x=w.buildings[0].x;w.p.y=w.buildings[0].y;tick(w,.2);ok(w.bank.wood===40&&w.bag.wood===15&&w.bank.stone===8,'depositing stops at the warehouse cap and keeps the rest in the bag');
+  w.tech.stock=2;ok(model.frontierStockCap(w)===70,'each warehouse upgrade adds 15');
+  ok(model.frontierTech({stock:99}).stock===8&&model.frontierDraw(Object.assign(w,{tech:model.frontierTech({tool:8,blade:8,pack:8,stock:7})})).join()==='stock','the warehouse card is offered until level 8');}
  // gold meter -> upgrade cards (tool, weapon, bag)
  {let w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;ok(model.frontierPickCost(w)===30,'first card costs 30 gold');w.coins=29;tick(w,.2);ok(!w.offer,'no cards before the meter fills');
   w.coins=30;tick(w,.1);ok(w.offer&&w.offer.length===3&&new Set(w.offer).size===3&&w.coins===0,'a full meter offers the three upgrades');
-  ok(['tool','blade','pack'].every(k=>w.offer.includes(k)),'cards are tool, weapon and bag');
+  ok(w.offer.every(k=>['tool','blade','pack','stock'].includes(k)),'cards are tool, weapon, bag and warehouse');
   const t0=w.time;tick(w,2);ok(w.time===t0,'the game waits while cards are shown');
   ok(!model.frontierChoose(w,5)&&w.offer,'invalid card index is ignored');const picked=w.offer[0];ok(model.frontierChoose(w,0)&&w.offer===null,'choosing applies one card');
   ok(Object.values(w.tech).reduce((n,v)=>n+v,0)===1&&w.tech[picked]===1,'exactly the chosen upgrade is applied');ok(model.frontierPickCost(w)===66,'the next card costs more');
-  w.tech=model.frontierTech({tool:8,blade:8,pack:7});w.offer=null;ok(model.frontierDraw(w).join()==='pack','maxed upgrades are never offered');w.tech=model.frontierTech({tool:8,blade:8,pack:8});ok(model.frontierDraw(w).length===0,'nothing is offered once everything is maxed');
-  let total=0;for(let n=0;n<24;n++)total+=30+n*36;ok(total<12000&&total>9000,'maxing everything takes a long run (about the whole 50 stages)');
+  w.tech=model.frontierTech({tool:8,blade:8,pack:7,stock:8});w.offer=null;ok(model.frontierDraw(w).join()==='pack','maxed upgrades are never offered');w.tech=model.frontierTech({tool:8,blade:8,pack:8,stock:8});ok(model.frontierDraw(w).length===0,'nothing is offered once everything is maxed');
+  let total=0;for(let n=0;n<32;n++)total+=30+n*36;ok(total<20000&&total>15000,'maxing everything takes a long run (about the whole 50 stages)');
   w=create(1);w.coins=500;tick(w,.1);ok(w.offer&&w.coins===470,'only one card is offered at a time');}
  // every stage is an enemy-base stage; defences and attackers scale with the region
  for(const [lv,towers,guards,cap] of [[1,2,2,12],[10,2,2,12],[11,3,4,16],[25,4,6,20],[41,6,10,28],[50,6,10,28]]){
