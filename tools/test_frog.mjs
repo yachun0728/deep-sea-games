@@ -45,6 +45,15 @@ check('Edge of the hit window counts as a normal eat, one pixel further is a mis
   const f=fixture();f.F.start();f.F.ev('aimY=TY+HIT;lock=0');f.F.press();assert.equal(f.ev('eaten'),1);assert.equal(f.ev('pts'),10);
   f.F.ev('aimY=TY-HIT-1;lock=0');f.F.press();assert.equal(f.ev('eaten'),1);assert.equal(f.ev('combo'),0);assert.equal(f.ev('hearts'),3);assert.equal(f.ev('lock'),.35);
 });
+check('A miss costs fullness: 2 on level 1, 4 from level 2, never below 0',()=>{
+  const f=fixture();f.F.start();f.F.ev('food=50;aimY=AIM_TOP;lock=0');f.F.press();assert.equal(f.ev('food'),48);
+  f.F.ev('eaten=10;food=50;lock=0;aimY=AIM_TOP');f.F.press();assert.equal(f.ev('food'),46);
+  f.F.ev('food=1;lock=0;aimY=AIM_TOP');f.F.press();assert.equal(f.ev('food'),0);
+});
+check('Reaching a new level refills 10 fullness (capped at 100)',()=>{
+  const f=fixture();f.F.start();f.F.ev('eaten=9;food=50;bugs[0].state="calm";bugs[0].angry=false');f.eat();assert.equal(f.ev('eaten'),10);assert.equal(f.ev("food"),50+12+10);
+  f.F.ev('eaten=19;food=99;bugs[0].state="calm";bugs[0].angry=false');f.eat();assert.equal(f.ev('food'),100);
+});
 check('Input is ignored while locked after a miss',()=>{
   const f=fixture();f.F.start();f.F.ev('aimY=AIM_TOP;lock=0');f.F.press();f.F.ev('aimY=TY');f.F.press();assert.equal(f.ev('eaten'),0);
 });
