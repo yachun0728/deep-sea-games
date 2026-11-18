@@ -13,7 +13,7 @@
 
 ## 畫面元素（view.html 的 id）
 
-`view-banquet`、`bq-stage`、`bq-act`、`bq-dealerbox`、`bq-side-d`、`bq-hp-d`、`bq-hp-d-t`、`bq-dr-d`、`bq-items-d`、`bq-chips`、`bq-comp`、`bq-table`、`bq-center`、`bq-center-1`、`bq-center-2`、`bq-reveal`、`bq-hands`、`bq-ticker`、`bq-side-p`、`bq-hp-p`、`bq-hp-p-t`、`bq-dr-p`、`bq-items-p`、`bq-prompt`、`bq-prompt-t`、`bq-believe`、`bq-doubt`、`bq-actions`、`bq-turn`、`bq-act-row`、`bq-self`、`bq-toast`、`bq-silver`、`bq-notes`、`bq-dhand-t`、`bq-dhand`、`bq-hand`、`bq-log`、`bq-flash`、`bq-stage-t`、`bq-bonus`、`bq-best`、`bq-amount`、`bq-go`、`bq-quit`、`bq-adv`、`bq-mute`、`bq-msg`
+`view-banquet`、`bq-stage`、`bq-scene`、`bq-act`、`bq-center`、`bq-center-1`、`bq-center-2`、`bq-dealerbox`、`bq-side-d`、`bq-hp-d`、`bq-hp-d-t`、`bq-dr-d`、`bq-items-d`、`bq-table`、`bq-reveal`、`bq-hands`、`bq-chips`、`bq-comp`、`bq-ticker`、`bq-side-p`、`bq-hp-p`、`bq-hp-p-t`、`bq-dr-p`、`bq-items-p`、`bq-prompt`、`bq-prompt-t`、`bq-believe`、`bq-doubt`、`bq-actions`、`bq-turn`、`bq-act-row`、`bq-self`、`bq-toast`、`bq-silver`、`bq-notes`、`bq-dhand-t`、`bq-dhand`、`bq-hand`、`bq-log`、`bq-flash`、`bq-stage-t`、`bq-bonus`、`bq-best`、`bq-amount`、`bq-go`、`bq-quit`、`bq-adv`、`bq-mute`、`bq-msg`
 
 ## 狀態與常數
 
