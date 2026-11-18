@@ -7,7 +7,7 @@
 - 網址：`#peek`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，燈滅前蓋住螢幕。」｜免費遊玩 · 聽聲反應
 - 追蹤名稱（GA4 `game_name`）：別看，`game_id` 為 `peek`
-- 檔案：`games/peek/card.html`、`games/peek/game.js`、`games/peek/icon.svg`、`games/peek/view.html`；`game.js` 共 598 行、54.4 KB
+- 檔案：`games/peek/card.html`、`games/peek/game.js`、`games/peek/icon.svg`、`games/peek/view.html`；`game.js` 共 600 行、55.0 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「34. 別看 Don’t Peek（peek）」（下方「規則摘要」已複製）
 
@@ -17,7 +17,7 @@
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`EYE`（L15）、`ART`（L20）、`HP`（L340）、`peekBusy`（L2）
+- 狀態物件／進行中旗標：`EYE`（L15）、`ART`（L20）、`HP`（L342）、`peekBusy`（L2）
 - L5 常數：`SPRINT_GAP`
 - L6 常數：`BASE_RATE`、`WIND_RATE`
 - L7 常數：`MILE_EVENTS`、`MILE_REWARD`、`WIN_REWARD`
@@ -36,7 +36,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`art` L21、`R` L35、`rnd` L37、`clamp` L38、`tx` L39、`RR` L40、`mulberry` L55、`deathsOf` L56、`levelCfg` L57、`wpick` L68、`wantLevel` L72、`sv` L76、`mark` L77、`applyLevel` L78、`reset` L93、`audioInit` L97、`tone` L98、`say` L104、`setText` L106、`ui` L107、`fx` L114、`end` L115、`pay` L135、`pickPool` L140、`startEvent` L143、`nextGap` L160、`survive` L165、`inputs` L171、`update` L174、`lampLevel` L212、`isRot` L219、`cxy` L220、`giveItem` L223、`spawnDrop` L228、`collect` L229、`updateDrops` L230、`canPick` L238、`startCamp` L239、`updateCamp` L240、`campTap` L246、`onMotion` L249、`optSave` L253、`drawWorld` L264、`one` L268、`sprite` L274、`floatImg` L275、`blob` L276、`drawSpirits` L277、`drawDrops` L303、`drawCamp` L311、`wrapLines` L330、`txp` L331、`txd` L332、`drawButtons` L333、`hpRect` L341、`hpClick` L344、`drawHeadphone` L349、`capText` L356、`hud` L357、`btnRow` L395、`deathClick` L398、`doAct` L402、`later` L409、`playCue` L410、`shareText` L418、`share` L419、`shareCard` L423、`drawDeath` L436、`drawWon` L456、`dexPos` L480、`txl` L482、`drawDex` L483、`dexClick` L501、`practiceStart` L509、`draw` L510、`start` L538、`shown` L548、`region` L549、`syncPtrs` L554、`upPtr` L563、`clearInput` L572、`onOrient` L577、`fsOff` L580、`fsOn` L581、`go` L593、`loop` L595
+`art` L21、`R` L35、`rnd` L37、`clamp` L38、`tx` L39、`RR` L40、`mulberry` L55、`deathsOf` L56、`levelCfg` L57、`wpick` L68、`dailyOn` L72、`dailyLvl` L73、`wantLevel` L74、`sv` L78、`mark` L79、`applyLevel` L80、`reset` L95、`audioInit` L99、`tone` L100、`say` L106、`setText` L108、`ui` L109、`fx` L116、`end` L117、`pay` L137、`pickPool` L142、`startEvent` L145、`nextGap` L162、`survive` L167、`inputs` L173、`update` L176、`lampLevel` L214、`isRot` L221、`cxy` L222、`giveItem` L225、`spawnDrop` L230、`collect` L231、`updateDrops` L232、`canPick` L240、`startCamp` L241、`updateCamp` L242、`campTap` L248、`onMotion` L251、`optSave` L255、`drawWorld` L266、`one` L270、`sprite` L276、`floatImg` L277、`blob` L278、`drawSpirits` L279、`drawDrops` L305、`drawCamp` L313、`wrapLines` L332、`txp` L333、`txd` L334、`drawButtons` L335、`hpRect` L343、`hpClick` L346、`drawHeadphone` L351、`capText` L358、`hud` L359、`btnRow` L397、`deathClick` L400、`doAct` L404、`later` L411、`playCue` L412、`shareText` L420、`share` L421、`shareCard` L425、`drawDeath` L438、`drawWon` L458、`dexPos` L482、`txl` L484、`drawDex` L485、`dexClick` L503、`practiceStart` L511、`draw` L512、`start` L540、`shown` L550、`region` L551、`syncPtrs` L556、`upPtr` L565、`clearInput` L574、`onOrient` L579、`fsOff` L582、`fsOn` L583、`go` L595、`loop` L597
 
 ## 錢包與結算接點
 
@@ -44,19 +44,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L137 `pay`：`S.balance+=n;`
+- L139 `pay`：`S.balance+=n;`
 
 **餘額檢查**
-- L541 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L543 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L129 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p,level:lvl,seed:seedCode…`
-- L138 `pay`：`AN.progress(analytics,{stage:Math.floor(prog),step:survived,score:score,bonus_points:n});`
-- L543 `start`：`analytics=AN.start('peek',amount);`
+- L131 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p,level:lvl,seed:seedCode…`
+- L140 `pay`：`AN.progress(analytics,{stage:Math.floor(prog),step:survived,score:score,bonus_points:n});`
+- L545 `start`：`analytics=AN.start('peek',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -85,7 +85,7 @@
 - 鬼：葉下客 `eye`（落葉聚在一側，紅光時往反方向傾斜 ≥0.5，暴露超過 0.35 秒即死）、敲枝者 `twins`（鳥群飛走後一側敲擊，往敲擊方向傾斜 >0.3 即死，判定 1.5 秒內要往反方向傾斜 ≥0.6）、靜林鬼 `walker`（蟲鳴停、燈閃三下，熄滅前蓋住並保持不動 4 秒）、逆風客 `gale`（風向反、拖行聲從一側靠近，判定 2 秒內要往來源側傾斜 ≥0.5，累計不足超過 0.35 秒即死）、首領空殼 `hollow`（＝`walker` 加 `boss` 旗標，判定 6.4 秒）。登場關：葉下客第 2 關、敲枝者第 3 關、靜林鬼第 4 關、逆風客第 12 關；學新鬼關只出現該鬼，其他關從已學的鬼加權抽（最新 ×2、死最多次 ×1.5、不連續同種）。每十關第 10 關是首領關：依序出現已學的鬼，最後是空殼，固定種子。
 - 假前兆：第 15 關起，一般／混合／高峰關每次襲擊有 `0.15t` 機率只是虛驚（前兆結束後消失、不算躲過、不扣 `left`）。連續襲擊：第 25 關起，躲過後有 `0.35t` 機率 1.4 秒後立刻再來一次。安全緩衝關只會在 45% 時出現一次無害的假前兆。
 - 世界規則：墓地濃霧縮小視野、沼澤聲音變悶（效果音 ×0.7）、雪原靠邊速度 ×0.7、火山畫面輕微晃動（低驚嚇模式關閉）。
-- 生命與存檔：3 條命（上限 5）。關卡內死亡扣 1 命並在同一關重來；命用完回到存檔點（`ck`，打倒首領後設為下一關）並回復 3 命。首領通關 +1 命並存檔；營火停留 3 秒補 1 命，每十關最多一次（`healTen`）。同一關累計死 2 次後，下次重試前兆 +0.3 秒、襲擊少 1 次，畫面明確告知，`AN.end` 帶 `retry_assist`。
+- 生命與存檔：3 條命（上限 5）。關卡內死亡扣 1 命並在同一關重來；命用完回到存檔點（`ck`，打倒首領後設為下一關）並回復 3 命。選關上限為本輪實際打到的關（`runTop`，命用完回存檔點時重設為 `ck`）；每日挑戰（`dailyLvl`，依日期固定一關、非安全關與首領關）不扣命、不存檔、不發點；關卡進度在襲擊出完前停在 97%。首領通關 +1 命並存檔；營火停留 3 秒補 1 命，每十關最多一次（`healTen`）。同一關累計死 2 次後，下次重試前兆 +0.3 秒、襲擊少 1 次，畫面明確告知，`AN.end` 帶 `retry_assist`。
 - 種子：第 1、10 關固定種子（`關卡×7919+101`）；其他關每次隨機，種子碼（36 進位）顯示在畫面右下與結果卡，可在 `peek-seed` 輸入重玩；`peek-daily` 勾選時用當天日期當種子。同一種子的鬼種、方向、掉落都相同。
 - 道具：路邊掉落火把（下次襲擊前兆 +0.6 秒並標出方向，上限 3）、護身符（擋下一次致命失誤，上限 2）、舊卷軸（收藏，存 `deep-sea-peek-scrolls`，集滿 3 卷營火旁掛骷髏燈籠）；Nib 每關約 2% 機率跑過，給 1 卷軸。連續 3 關沒有掉落，下一關在 8% 進度後必掉（連續 6 關則掉護身符）。營火（第 5 關 50% 處；自由跑每 20%）三選一，旅人 Rook 在旁；撿取靠近 30% 深度內可按 F／「撿」／搖手機。
 - 操作：電腦 `W` 衝刺、`A`／`D` 靠邊、空白鍵蓋住、`F` 撿、營火按 `1`～`3`；手機用畫布下方五顆按鈕（靠左、靠右、蓋住、衝刺、撿，多點觸控）。「啟用體感」為選用（`deviceorientation` 的 gamma 當左右、`|beta|>145` 當螢幕朝下、`devicemotion` 搖動撿東西；iOS 需使用者授權）。

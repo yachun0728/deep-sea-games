@@ -32,8 +32,8 @@ let best=0,deaths={};try{best=+localStorage.getItem('deep-sea-peek-best')||0}cat
 try{deaths=JSON.parse(localStorage.getItem('deep-sea-peek-deaths')||'{}')||{}}catch(e){deaths={}}
 let analytics=null,earned=0,dodgesTotal=0,run=0,ph=0,eyeSeen=0;try{dodgesTotal=+localStorage.getItem('deep-sea-peek-dodges')||0}catch(e){}
 const ptrT=new Map();
-let R=()=>Math.random(),L=null,lvl=0,lives=3,ck=1,maxLvl=1,noDrop=0,healTen=-1,lvDeaths={},seen={},seed=0,seedCode='',rB=BASE_RATE,rW=WIND_RATE,practice='',nextPractice='',forceLvl=null,dex=false,dexSel=0,assistHid=0,deathEv=null,guarantee=false,dropped=false,scared=false,nibT=0,lostAll=false,captions=false,AMB=.6;
-try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-save')||'{}');maxLvl=o.m||1;ck=o.c||1;lives=o.l||3;noDrop=o.n||0;healTen=o.h==null?-1:o.h;lvDeaths=o.d||{};seen=o.s||{}}catch(e){}
+let R=()=>Math.random(),L=null,lvl=0,lives=3,ck=1,maxLvl=1,noDrop=0,healTen=-1,lvDeaths={},seen={},runTop=1,daily=false,seed=0,seedCode='',rB=BASE_RATE,rW=WIND_RATE,practice='',nextPractice='',forceLvl=null,dex=false,dexSel=0,assistHid=0,deathEv=null,guarantee=false,dropped=false,scared=false,nibT=0,lostAll=false,captions=false,AMB=.6;
+try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-save')||'{}');maxLvl=o.m||1;ck=o.c||1;lives=o.l||3;noDrop=o.n||0;healTen=o.h==null?-1:o.h;lvDeaths=o.d||{};seen=o.s||{};runTop=o.r||maxLvl}catch(e){}
 const rnd=(a,b)=>a+R()*(b-a);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function tx(s,x,y,sz,col,al){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign=al||'center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-24);g.fillStyle=col;g.fillText(s,x,y,W-24)}
@@ -69,11 +69,13 @@ function wpick(pool){   // weighted: the newest ghost x2, the one that killed yo
  const dm=Math.max(0,...pool.map(deathsOf)),w=pool.map((ty,i)=>(i===pool.length-1&&pool.length>1?2:1)*(dm>0&&deathsOf(ty)===dm?1.5:1));
  let r=R()*w.reduce((a,b)=>a+b,0);for(let i=0;i<pool.length;i++){r-=w[i];if(r<=0)return pool[i]}return pool[pool.length-1]}
 const lvUI=$('peek-level'),hasLv=!!(lvUI&&lvUI.dataset&&lvUI.dataset.lv==='1');
+const dailyOn=()=>{const d=hasLv?$('peek-daily'):null;return !!(d&&d.checked)};
+function dailyLvl(){const d=new Date(),n=Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5);let l=(n*37)%100+1;while([1,5,10].includes((l-1)%10+1))l=l%100+1;return l}   // same level for everyone on the same date; never a safe or boss level
 function wantLevel(){
  if(forceLvl!==null)return forceLvl;
  if(!hasLv)return 0;
- const v=lvUI.value===''||isNaN(+lvUI.value)?ck:Math.floor(+lvUI.value);return clamp(v,0,maxLvl)}
-function sv(){try{localStorage.setItem('deep-sea-peek-save',JSON.stringify({m:maxLvl,c:ck,l:lives,n:noDrop,h:healTen,d:lvDeaths,s:seen}))}catch(e){}}
+ const v=lvUI.value===''||isNaN(+lvUI.value)?ck:Math.floor(+lvUI.value);return clamp(v,0,Math.max(ck,runTop))}
+function sv(){try{localStorage.setItem('deep-sea-peek-save',JSON.stringify({m:maxLvl,r:runTop,c:ck,l:lives,n:noDrop,h:healTen,d:lvDeaths,s:seen}))}catch(e){}}
 function mark(id){if(!seen[id]){seen[id]=1;sv()}}
 function applyLevel(){
  R=()=>Math.random();rB=BASE_RATE;rW=WIND_RATE;seedCode='';
@@ -81,7 +83,7 @@ function applyLevel(){
  const sEl=hasLv?$('peek-seed'):null,dEl=hasLv?$('peek-daily'):null,sIn=sEl?String(sEl.value||'').trim():'';
  if(L.fixed)seed=L.l*7919+101;
  else if(sIn)seed=parseInt(sIn,36)||1;
- else if(dEl&&dEl.checked){const d=new Date();seed=(d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate())*131+L.l}
+ else if(daily){const d=new Date();seed=(d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate())*131+L.l}
  else seed=(Math.random()*1e9)|0;
  R=mulberry(seed);seedCode=seed.toString(36).toUpperCase();
  rB=L.rate;rW=L.rate*2;gapT=L.kind==='learn'?FIRST_GAP:6;
@@ -121,11 +123,11 @@ function end(kind,reason){
  if(rec){best=p;try{localStorage.setItem('deep-sea-peek-best',best)}catch(e){}}
  if(kind==='dead'){
   flash=lowScare?.15:.5;shake=lowScare?0:.5;
-  if(!practice){deaths[reason]=(deaths[reason]||0)+1;try{localStorage.setItem('deep-sea-peek-deaths',JSON.stringify(deaths))}catch(e){}mark('flick');
-   if(L){lvDeaths[lvl]=(lvDeaths[lvl]||0)+1;lives--;if(lives<=0){lostAll=true;lives=3;lvDeaths={}}sv();if(lostAll&&hasLv)lvUI.value=ck}}}
- if(kind==='won'&&L&&!practice){
+  if(!practice&&!daily){deaths[reason]=(deaths[reason]||0)+1;try{localStorage.setItem('deep-sea-peek-deaths',JSON.stringify(deaths))}catch(e){}mark('flick');
+   if(L){lvDeaths[lvl]=(lvDeaths[lvl]||0)+1;lives--;if(lives<=0){lostAll=true;lives=3;lvDeaths={};runTop=ck}sv();if(lostAll&&hasLv)lvUI.value=ck}}}
+ if(kind==='won'&&L&&!practice&&!daily){
   if(L.kind==='boss'){ck=Math.min(100,lvl+1);lives=Math.min(5,lives+1)}
-  maxLvl=Math.min(100,Math.max(maxLvl,lvl+1));noDrop=dropped?0:noDrop+1;delete lvDeaths[lvl];sv();if(hasLv)lvUI.value=Math.min(100,lvl+1)}
+  maxLvl=Math.min(100,Math.max(maxLvl,lvl+1));runTop=Math.max(runTop,Math.min(100,lvl+1));noDrop=dropped?0:noDrop+1;delete lvDeaths[lvl];sv();if(hasLv)lvUI.value=Math.min(100,lvl+1)}
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p,level:lvl,seed:seedCode,retry_assist:assistHid});peekBusy=false;save();renderAll();
  if(kind==='won')say((L?'第 '+lvl+' 關通關。':'衝出出口，盒子打開了。別看裡面。')+(earned>0?'本局共入帳 '+fmt(earned)+' 點。':''),'win');
  else if(!earned)say(CAUSES[reason]+'。'+(L?(lostAll?'生命用完，回到存檔點第 '+ck+' 關。':'剩下 '+lives+' 條命。'):'這一局沒有額外成就獎勵。'),'lose');
@@ -133,7 +135,7 @@ function end(kind,reason){
  ui();
 }
 function pay(n,text){
- if(practice||(L&&lvl<maxLvl)){say(text+'。','win');return}   // practice and replays of cleared levels pay nothing
+ if(practice||daily||(L&&lvl<maxLvl)){say(text+'。','win');return}   // practice and replays of cleared levels pay nothing
  earned+=n;S.balance+=n;save();renderAll();
  AN.progress(analytics,{stage:Math.floor(prog),step:survived,score:score,bonus_points:n});
  say(text+' +'+n+' 點已入帳。','win')}
@@ -182,7 +184,7 @@ function update(dt){
  const pk=(keys.pick||btn[4]||shake1)&&!pickHeld;pickHeld=!!(keys.pick||btn[4]);shake1=0;
  if(camp){updateCamp(dt);ph+=dt*2;return}
  chirpT-=dt;if(chirpT<=0){chirpT=rnd(.3,.8);if(!(ev&&ev.type==='walker')&&!covered)tone(3000+Math.random()*700,.04,.012,rnd(-.8,.8),'sine',0,true)}   // crickets: they go quiet before Hush
- if(!covered){prog=Math.min(100,prog+(sprint?rW:rB)*dt);run+=dt*(sprint?2.6:1.5)}
+ if(!covered){prog=Math.min(L&&(L.left>0||ev)?97:100,prog+(sprint?rW:rB)*dt);run+=dt*(sprint?2.6:1.5)}
  ph+=dt*(covered?2.5:sprint?15:9);
  if(prog>=100){score+=500;pay(WIN_REWARD,'盒子打開了！');end('won');return}
  while(campNext<100&&prog>=campNext+CAMP_WIN)campNext+=CAMP_EVERY;
@@ -242,7 +244,7 @@ function updateCamp(dt){
  if(camp.state==='pick'){
   if(camp.choice<0&&camp.t>CAMP_PICK_MAX)camp.choice=1;
   if(camp.choice>=0){giveItem(CAMP_CARDS[camp.choice]);camp.state='rest';camp.rest=CAMP_REST;camp.t=0}}
- else{camp.rest-=dt;if(camp.rest<=0){if(L&&!practice&&lives<3&&healTen!==((lvl-1)/10|0)){lives++;healTen=((lvl-1)/10|0);sv();fx('生命 +1',CX,150,'#7fe8ff')}camp=null;campNext=L?999:campNext+CAMP_EVERY;gapT=Math.max(gapT,4)}}}
+ else{camp.rest-=dt;if(camp.rest<=0){if(L&&!practice&&!daily&&lives<3&&healTen!==((lvl-1)/10|0)){lives++;healTen=((lvl-1)/10|0);sv();fx('生命 +1',CX,150,'#7fe8ff')}camp=null;campNext=L?999:campNext+CAMP_EVERY;gapT=Math.max(gapT,4)}}}
 function campTap(e){
  if(!camp||camp.state!=='pick')return;
  const p=cxy(e);CARDS_X.forEach((x,i)=>{if(p[0]>=x&&p[0]<=x+CARD_W&&p[1]>=CARD_Y&&p[1]<=CARD_Y+CARD_H)camp.choice=i})}
@@ -541,7 +543,7 @@ function start(){
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
  audioInit();audioOk=true;
  analytics=AN.start('peek',amount);peekStake=amount;peekBusy=true;save();renderAll();
- practice=nextPractice;nextPractice='';lvl=practice?0:wantLevel();L=lvl>0?levelCfg(lvl,(lvDeaths[lvl]||0)>=2):null;
+ practice=nextPractice;nextPractice='';daily=forceLvl===null&&!practice&&dailyOn();lvl=practice?0:daily?dailyLvl():wantLevel();L=lvl>0?levelCfg(lvl,(lvDeaths[lvl]||0)>=2):null;
  reset();earned=0;st='run';last=performance.now();applyLevel();if(L)mark('flick');dex=false;endBtns=[];
  if(!L)say(practice?'練習：不扣生命，也不發點。':'開始逃跑。別回頭。');ui();c.focus();
 }

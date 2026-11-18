@@ -204,7 +204,7 @@ check('Gale must be met by leaning toward the reversed wind; boss Hollow is a lo
 check('Boss level runs its fixed plan, saves a checkpoint and adds a life',()=>{
   const f=fixture();f.F.ev('forceLvl=10;maxLvl=10;lives=3');f.F.start();assert.equal(f.ev('L.plan.length'),4);
   const seq=[];for(let i=0;i<4;i++){f.F.ev('ev=null;startEvent()');seq.push(f.ev('ev.boss?"hollow":ev.type'))}assert.deepEqual(seq,['eye','twins','walker','hollow']);
-  const g=fixture();g.F.ev('forceLvl=10;maxLvl=10;lives=3');g.F.start();g.F.ev('ev=null;gapT=999;prog=99.9');g.hold('wind');g.run(1);assert.equal(g.ev('st'),'won');assert.equal(g.ev('ck'),11);assert.equal(g.ev('lives'),4);assert.equal(g.ev('maxLvl'),11);
+  const g=fixture();g.F.ev('forceLvl=10;maxLvl=10;lives=3');g.F.start();g.F.ev('ev=null;gapT=999;prog=99.9;L.left=0');g.hold('wind');g.run(1);assert.equal(g.ev('st'),'won');assert.equal(g.ev('ck'),11);assert.equal(g.ev('lives'),4);assert.equal(g.ev('maxLvl'),11);
 });
 check('Fixed-seed levels repeat exactly; seed code is shown for the others',()=>{
   const run=()=>{const f=fixture(500,null,()=>.9);f.F.ev('forceLvl=10;maxLvl=10');f.F.start();return f.ev('seedCode')+'|'+[0,1,2,3].map(()=>{f.F.ev('ev=null;startEvent()');return f.ev('ev.side')}).join()};
@@ -221,6 +221,15 @@ check('Practice from the codex neither costs lives nor counts deaths or pays',()
   const f=fixture();f.F.ev('lives=3;practiceStart("eye")');assert.equal(f.ev('L'),null);assert.equal(f.ev('practice'),'eye');f.F.ev('ev=null;startEvent()');assert.equal(f.ev('ev.type'),'eye');
   f.spirit('eye',1,'judge');f.F.ev('tilt=0');f.run(10);assert.equal(f.ev('st'),'over');assert.equal(f.ev('lives'),3);assert.equal(f.ev('deaths.eye||0'),0);
   f.F.ev('draw()');
+});
+check('Level cannot end before all its attacks are used; checkpoint and daily rules',()=>{
+  const f=fixture();f.F.ev('forceLvl=10;maxLvl=10');f.F.start();f.F.ev('ev=null;gapT=999;prog=99.9');f.hold('wind');f.run(1);
+  assert.equal(f.ev('st'),'run');assert.ok(f.ev('prog')<=97.01);
+  const g=fixture();g.F.ev('forceLvl=3;maxLvl=9;runTop=9;ck=1;lives=1');g.F.start();g.spirit('twins',1,'judge');g.F.ev('ev.t=1.5;tilt=1');g.run(2);
+  assert.equal(g.ev('lostAll'),true);assert.equal(g.ev('runTop'),1);
+  const h=fixture();for(let i=0;i<40;i++){const l=h.F.ev('dailyLvl()');assert.ok(l>=1&&l<=100&&![1,5,10].includes((l-1)%10+1))}
+  const d=fixture();d.F.ev('forceLvl=3;maxLvl=3;lives=3;daily=true');d.F.start();d.F.ev('daily=true');d.spirit('twins',1,'judge');d.F.ev('ev.t=1.5;tilt=1');d.run(2);
+  assert.equal(d.ev('st'),'over');assert.equal(d.ev('lives'),3);
 });
 check('Every screen draws: ready, death with buttons, won, codex, share text',()=>{
   const f=fixture();f.F.ev('forceLvl=3;maxLvl=5;audioOk=true');f.F.draw();f.F.start();f.spirit('twins',-1,'judge');f.F.ev('ev.t=1.5;tilt=-1');f.run(2);f.F.draw();assert.ok(f.ev('endBtns.length')>=4);
