@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#1d221e">
+<title>一筆畫守城</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:#2f4a3a; --board2:#253c2f; --wood:#8a6a44; --wood2:#5e4426;
+    --text:#f3f1e6; --chalk:#f3f1e6; --mute:rgba(243,241,230,.62); --mute2:rgba(243,241,230,.42);
+    --cyan:#a8dcf0; --violet:#d2b0ff; --amber:#ffe08a; --red:#ff9e9e; --green:#bfe8a8;
+    --font:"LXGW WenKai TC","Kaiti TC","STKaiti","BiauKai",cursive;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;color:var(--chalk);font-family:var(--font);overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-font-smoothing:antialiased;
+    background:#1d221e;background-image:radial-gradient(ellipse at 50% 35%,#2b332d 0%,#161a17 75%)}
+  button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+  b{font-weight:700}
+  .num{font-variant-numeric:tabular-nums}
+  #app{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px}
+  .bar{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+  .lbl{font-size:13px;letter-spacing:.12em;color:var(--mute)}
+  .big{font-size:34px;font-weight:700;line-height:1.05}
+  .hearts{font-size:22px;letter-spacing:3px;color:var(--red)}
+  .hearts .off{color:rgba(243,241,230,.15)}
+  canvas#cv{display:block;cursor:crosshair;border:14px solid var(--wood);border-bottom-width:24px;border-radius:5px;
+    box-shadow:0 0 0 2px var(--wood2),inset 0 0 0 2px var(--wood2),0 24px 60px rgba(0,0,0,.55);background:var(--board)}
+  .hint{font-size:14px;color:var(--mute2);text-align:center}
+  .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(10,14,11,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:16px;z-index:10}
+  .overlay.show{display:flex}
+  .card{width:min(460px,100%);background:var(--board);border:12px solid var(--wood);border-radius:5px;padding:26px 24px 22px;text-align:center;
+    box-shadow:0 0 0 2px var(--wood2),inset 0 0 40px rgba(0,0,0,.35),0 30px 80px rgba(0,0,0,.6)}
+  .card h1{font-size:38px;font-weight:700;letter-spacing:.06em;text-shadow:0 0 1px rgba(243,241,230,.6)}
+  .card h2{font-size:30px;font-weight:700}
+  .sub{color:var(--mute);font-size:16px;line-height:1.65;margin-top:10px}
+  .rules{text-align:left;margin:18px 0 6px;display:grid;gap:10px;font-size:16px;line-height:1.5}
+  .rules div{display:flex;gap:10px;align-items:flex-start}
+  .ico{flex:none;width:16px;height:16px;margin-top:3px;border-radius:50%;opacity:.9}
+  .btn{display:inline-block;margin-top:18px;padding:9px 30px;border:2.5px solid var(--amber);border-radius:12px 18px 10px 16px;color:var(--amber);font-weight:700;font-size:20px;background:rgba(255,224,138,.06)}
+  .btn:hover{background:rgba(255,224,138,.14)}
+  #btnTut{border-color:var(--mute)!important;color:var(--chalk)!important}
+  .stat{display:flex;justify-content:center;gap:26px;margin-top:14px}
+  .stat b{display:block;font-size:32px}
+  .stat span{font-size:13px;color:var(--mute)}
+  .plat{margin-top:12px;padding:8px 12px;border:1.5px dashed rgba(243,241,230,.35);border-radius:8px;font-size:14px;line-height:1.55;color:var(--chalk);background:rgba(255,224,138,.06)}
+  .bonus{margin-top:8px;font-size:17px;font-weight:700;color:var(--green)}
+  .bonus:empty{display:none}
+  .newbest{color:var(--amber);font-weight:700;font-size:17px;margin-top:10px;min-height:22px}
+  /* 平台內嵌：說明卡比畫面高時可在浮層內捲動，不裁掉標題 */
+  .overlay{overflow-y:auto;align-items:flex-start;touch-action:pan-y;overscroll-behavior:contain}
+  .overlay .card{margin:auto}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="bar" id="bar">
+    <div><div class="lbl" data-t="score"></div><div class="big num" id="score">0</div></div>
+    <div style="text-align:center"><div class="lbl" data-t="core"></div><div class="hearts" id="hearts"></div></div>
+    <div style="text-align:right"><div class="lbl" data-t="time"></div><div class="big num" id="time">0</div></div>
+  </div>
+  <canvas id="cv"></canvas>
+  <div class="hint" data-t="hint"></div>
+</div>
+
+<div class="overlay show" id="ovStart">
+  <div class="card">
+    <h1 data-t="title"></h1>
+    <div class="sub" data-t="intro"></div>
+    <div class="rules">
+      <div><span class="ico" style="background:var(--cyan);border-radius:3px"></span><span data-t="r1"></span></div>
+      <div><span class="ico" style="background:var(--amber)"></span><span data-t="r2"></span></div>
+      <div><span class="ico" style="background:var(--green)"></span><span data-t="r3"></span></div>
+      <div><span class="ico" style="background:var(--red)"></span><span data-t="r4"></span></div>
+    </div>
+    <div class="plat" id="platNote" hidden></div>
+    <div class="sub" id="bestLine" style="margin-top:6px"></div>
+    <button class="btn" id="btnStart" data-t="start"></button>
+    <div><button class="btn" id="btnTut" style="background:rgba(255,255,255,.08);color:var(--text);padding:9px 18px;font-size:14px;margin-top:10px" data-t="tut"></button></div>
+  </div>
+</div>
+
+<div class="overlay" id="ovEnd">
+  <div class="card">
+    <h2 data-t="over"></h2>
+    <div class="stat">
+      <div><b class="num" id="endScore">0</b><span data-t="score"></span></div>
+      <div><b class="num" id="endTime">0</b><span data-t="lasted"></span></div>
+      <div><b class="num" id="endCombo">0</b><span data-t="combo"></span></div>
+    </div>
+    <div class="newbest" id="newBest"></div>
+    <div class="bonus" id="endBonus"></div>
+    <button class="btn" id="btnAgain" data-t="again"></button>
+    <div class="hint" style="margin-top:10px"><span data-t="bestLbl"></span><span class="num" id="endBest">0</span><span data-t="spaceAgain"></span></div>
+  </div>
+</div>
+
+<div class="overlay" id="ovPause">
+  <div class="card">
+    <h2 data-t="paused"></h2>
+    <div class="sub" data-t="pausedSub"></div>
+    <button class="btn" id="btnResume" data-t="resume"></button>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const W = 800, H = 800, CX = W / 2, CY = H / 2, CORE_R = 32, MAX_HP = 5;
+const MAX_INK = 900;              // 一條線最長
+const lifeOf = len => Math.max(0.6, Math.min(4.5, 650 / Math.max(len, 1)));
+
+// ---------- 語言：字串寫成「中文|English」，語言跟隨 Deep Sea Arcade 頁首切換 ----------
+function lang() { try { const i = window.parent !== window && window.parent.deepSeaI18n; return i && i.getLanguage() === 'en' ? 'en' : 'zh'; } catch (e) { return 'zh'; } }
+function Lx(s, p) {
+  const k = s.indexOf('|'); let t = k < 0 ? s : lang() === 'en' ? s.slice(k + 1) : s.slice(0, k);
+  t = t.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  return p ? t.replace(/\{(\w+)\}/g, (_, n) => p[n] != null ? p[n] : '') : t;
+}
+const TX = {
+  score: '分數|Score', core: '核心|Core', time: '時間|Time',
+  hint: '按住拖曳畫一條線 · 新線一畫，舊線就消失 · 線越長，撐得越短|Press and drag to draw a line · a new line erases the old one · longer lines fade faster',
+  title: '一筆畫守城|One-Line Defense', intro: '敵人從四面八方湧向核心。你只能畫**一條**線來擋。|Enemies swarm the core from every direction. You get **one** line to stop them.',
+  r1: '拖曳畫線。碰到線的敵人會被消滅。|Drag to draw a line. Enemies that touch it are wiped out.',
+  r2: '**線越長，消失得越快**：短線能撐好幾秒（藍色），繞一大圈只能撐不到 1 秒（紅色）。所以要看敵人從哪裡來，在那個方向畫短線。|**The longer the line, the faster it fades**: a short line lasts several seconds (blue), a big loop less than 1 second (red). Watch where enemies come from and draw short lines that way.',
+  r3: '一條線消滅越多敵人，連擊加分越多。|The more enemies one line wipes out, the bigger the combo score.',
+  r4: '大顆的會**撞斷**你的線；紫色的被打中會分裂。核心被撞五次就結束。|Big ones **break** your line; purple ones split when hit. The game ends when the core is hit five times.',
+  start: '開始|Start', tut: '重看教學|Replay tutorial', over: '核心被攻破|The core has fallen',
+  lasted: '撐了幾秒|Seconds survived', combo: '最高連擊|Best combo', again: '再來一局|Play again',
+  bestLbl: '最佳分數：|Best score: ', spaceAgain: ' · 按空白鍵重來| · Press Space to play again',
+  paused: '已暫停|Paused', pausedSub: '離開畫面時會自動暫停。|The game pauses when you leave the screen.', resume: '繼續|Resume',
+};
+function applyStatic() {
+  document.querySelectorAll('[data-t]').forEach(el => { el.innerHTML = Lx(TX[el.dataset.t]); });
+}
+
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('oneLine.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('oneLine.' + k, JSON.stringify(v)); } catch (e) {} }
+};
+let best = store.get('best', 0);
+
+// ---------- Deep Sea Arcade 平台：扣點、BONUS 與暫停由父頁 deepSeaOneLine 處理；單獨開啟時是不扣點的示範 ----------
+const BONUS_EVERY = 30, BONUS_MARKS = 5;
+function host() { try { return window.parent !== window ? window.parent.deepSeaOneLine || null : null; } catch (e) { return null; } }
+let roundOn = false, earned = 0, marks = 0, platformVisible = true;
+function renderNote() {
+  const el = document.getElementById('platNote');
+  if (!host()) { el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = Lx('每局扣 10 點開始；每撐過 30 秒 BONUS +2 點，最多 10 點（150 秒）。|Each game costs 10 pts; every 30 seconds survived gives a +2 pt BONUS, up to 10 pts (150 seconds).');
+}
+function touch() { const h = host(); if (h && roundOn && h.touch) h.touch(window); }
+
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+function resize() {
+  const avail = Math.min(window.innerWidth - 24, window.innerHeight - 120);
+  const size = Math.max(260, Math.floor(avail));
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.style.width = cv.style.height = size + 'px';
+  cv.width = cv.height = Math.round(size * dpr);
+  document.getElementById('bar').style.width = size + 'px';
+  ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
+}
+window.addEventListener('resize', resize); resize();
+
+const rand = (a, b) => a + Math.random() * (b - a);
+let state = 'start', time = 0, score = 0, hp = MAX_HP, enemies = [], particles = [], popups = [], shake = 0, coreHit = 0;
+let line = null, drawing = false, spawnT = 0, waveT = 8, maxCombo = 0, tut = null;
+
+function reset() {
+  time = 0; score = 0; hp = MAX_HP; enemies = []; particles = []; popups = []; shake = 0; coreHit = 0;
+  line = null; drawing = false; spawnT = 1.5; waveT = 20; maxCombo = 0;
+  updHud();
+}
+
+// ---------- 敵人 ----------
+const TYPES = {
+  dot:   { r: 9,  speed: [55, 80],   hp: 1, color: '#ff9e9e', pts: 10 },
+  dart:  { r: 6,  speed: [125, 155], hp: 1, color: '#ffc48a', pts: 15 },
+  brute: { r: 16, speed: [36, 46],   hp: 2, color: '#ff7a7a', pts: 30 },
+  split: { r: 12, speed: [46, 62],   hp: 1, color: '#d2b0ff', pts: 20 },
+};
+function pickType() {
+  const r = Math.random();
+  if (time > 60 && r < .14) return 'split';
+  if (time > 40 && r < .30) return 'brute';
+  if (time > 20 && r < .50) return 'dart';
+  return 'dot';
+}
+function spawnEnemy(type, ang) {
+  const T = TYPES[type];
+  const a = ang != null ? ang : rand(0, Math.PI * 2);
+  const d = 440 + T.r;
+  const x = CX + Math.cos(a) * d, y = CY + Math.sin(a) * d;
+  const sp = rand(...T.speed) * (1 + Math.min(time, 150) / 300);
+  return enemies[enemies.push({ id: Math.random() * 1e6 | 0, type, x, y, r: T.r, hp: T.hp, sp, vx: 0, vy: 0, knock: 0, color: T.color, wob: rand(0, 6) }) - 1];
+}
+
+// ---------- 畫線 ----------
+function toLocal(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; }
+function lineLen(pts) { let s = 0; for (let i = 1; i < pts.length; i++) s += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y); return s; }
+cv.addEventListener('pointerdown', e => {
+  if (state !== 'play') return;
+  cv.setPointerCapture(e.pointerId);
+  const p = toLocal(e);
+  line = { pts: [p], len: 0, age: 0, kills: 0, id: Math.random() };
+  drawing = true;
+});
+cv.addEventListener('pointermove', e => {
+  if (!drawing || !line || state !== 'play') return;
+  const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+  for (const ev of evs) {
+    const p = toLocal(ev), q = line.pts[line.pts.length - 1];
+    const d = Math.hypot(p.x - q.x, p.y - q.y);
+    if (d < 5) continue;
+    if (line.len + d > MAX_INK) { drawing = false; break; }
+    line.pts.push(p); line.len += d;
+  }
+});
+const endDraw = () => { drawing = false; };
+window.addEventListener('pointerup', endDraw);
+window.addEventListener('pointercancel', endDraw);
+
+function distToSeg(px, py, a, b) {
+  const vx = b.x - a.x, vy = b.y - a.y, wx = px - a.x, wy = py - a.y;
+  const l2 = vx * vx + vy * vy;
+  let t = l2 ? (wx * vx + wy * vy) / l2 : 0; t = Math.max(0, Math.min(1, t));
+  return Math.hypot(px - (a.x + vx * t), py - (a.y + vy * t));
+}
+function hitsLine(e) {
+  if (!line || line.pts.length < 2) return false;
+  const pts = line.pts;
+  for (let i = 1; i < pts.length; i++) if (distToSeg(e.x, e.y, pts[i - 1], pts[i]) < e.r + 4) return true;
+  return false;
+}
+
+// ---------- 更新 ----------
+function update(dt) {
+  if (!tut) time += dt;
+  // 線的壽命
+  if (line) {
+    line.age += dt;
+    if (line.age >= lifeOf(Math.max(line.len, 30))) { line = null; drawing = false; }
+  }
+  // 生成
+  if (tut) tutUpdate(dt);
+  else {
+  spawnT -= dt;
+  const interval = Math.max(0.38, 1.6 - time * 0.009);
+  if (spawnT <= 0) { spawnEnemy(pickType()); spawnT = interval * rand(.7, 1.3); }
+  waveT -= dt;
+  if (waveT <= 0) {
+    // 同一方向一整串
+    const a = rand(0, Math.PI * 2), n = 4 + Math.floor(time / 20);
+    for (let i = 0; i < n; i++) setTimeout(() => state === 'play' && spawnEnemy(time > 20 && i % 3 === 2 ? 'dart' : 'dot', a + rand(-.25, .25)), i * 160);
+    waveT = Math.max(6, 13 - time / 15);
+  }
+  }
+  // 敵人移動
+  for (const e of enemies) {
+    const dx = CX - e.x, dy = CY - e.y, d = Math.hypot(dx, dy);
+    e.wob += dt;
+    if (e.knock > 0) { e.knock -= dt; e.x += e.vx * dt; e.y += e.vy * dt; e.vx *= .92; e.vy *= .92; }
+    else { e.x += dx / d * e.sp * dt; e.y += dy / d * e.sp * dt; }
+    if (e.lineImmune && (!line || line.id !== e.lineImmune)) e.lineImmune = null;
+  }
+  // 碰撞
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    const e = enemies[i];
+    if (Math.hypot(e.x - CX, e.y - CY) < CORE_R + e.r) {
+      enemies.splice(i, 1); shake = 10; coreHit = 1;
+      burst(e.x, e.y, '#ff9e9e', 16);
+      if (tut) { popup(CX, CY - 60, Lx('沒擋到，再試一次|Missed it, try again'), '#ff9e9e'); continue; }
+      hp--; shake = 16;
+      if (hp <= 0) return gameOver();
+      continue;
+    }
+    if (line && e.lineImmune !== line.id && hitsLine(e)) {
+      if (e.type === 'brute' && e.hp > 1) {
+        // 撞斷線
+        e.hp--; e.knock = .35;
+        const dx = e.x - CX, dy = e.y - CY, d = Math.hypot(dx, dy);
+        e.vx = dx / d * 260; e.vy = dy / d * 260;
+        burst(e.x, e.y, '#a8dcf0', 18); popup(e.x, e.y - 20, Lx('線斷了！|Line broken!'), '#a8dcf0');
+        line = null; drawing = false;
+        continue;
+      }
+      line.kills++;
+      if (tut) tut.kills++;
+      const combo = line.kills;
+      maxCombo = Math.max(maxCombo, combo);
+      const pts = TYPES[e.type].pts * combo;
+      score += pts;
+      popup(e.x, e.y - 14, combo > 1 ? `+${pts} ×${combo}` : `+${pts}`, combo > 2 ? '#ffe08a' : '#bfe8a8');
+      burst(e.x, e.y, e.color, 12);
+      enemies.splice(i, 1);
+      if (e.type === 'split') {
+        const base = Math.atan2(e.y - CY, e.x - CX);
+        for (const s of [-1, 1]) {
+          const a = base + s * .7, T = TYPES.dot;
+          const ne = { type: 'dot', x: e.x + Math.cos(a) * 14, y: e.y + Math.sin(a) * 14, r: 7, hp: 1, sp: 95, vx: Math.cos(a) * 160, vy: Math.sin(a) * 160, knock: .45, color: '#d2b0ff', id: Math.random() * 1e6 | 0, wob: 0, lineImmune: line.id };
+          enemies.push(ne);
+        }
+      }
+    }
+  }
+  // 特效
+  particles.forEach(p => { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= .93; p.vy *= .93; });
+  particles = particles.filter(p => p.t < .6);
+  popups.forEach(p => { p.t += dt; p.y -= 28 * dt; }); popups = popups.filter(p => p.t < .9);
+  shake = Math.max(0, shake - dt * 40); coreHit = Math.max(0, coreHit - dt * 2);
+  checkBonus();
+  updHud();
+}
+function checkBonus() {
+  const h = host();
+  if (!h || !roundOn || tut) return;
+  while (marks < BONUS_MARKS && time >= (marks + 1) * BONUS_EVERY) {
+    marks++;
+    const got = Math.max(0, Math.floor(Number(h.bonus(window, marks)) || 0));
+    if (got) { earned += got; popup(CX, CY - 80, Lx('撐過 {s} 秒 · BONUS +{p} 點|{s}s survived · BONUS +{p} pts', { s: marks * BONUS_EVERY, p: got }), '#ffe08a'); }
+  }
+}
+// ---------- 教學 ----------
+const TUT_TEXT = [
+  '在敵人（粉筆叉叉）和核心之間**畫一條短線**|**Draw a short line** between the enemy (chalk X) and the core',
+  '一條線可以擋很多個：**一筆擋下這一串**，連擊加分|One line can stop many: **block this whole row in one stroke** for combo points',
+  '注意線頭的秒數：**線越長，消失越快**。準備開始！|Watch the timer at the tip: **longer lines fade faster**. Get ready!',
+];
+function startTut() { tut = { step: 0, kills: 0, t: 0, ang: rand(0, Math.PI * 2) }; }
+function tutUpdate(dt) {
+  tut.t += dt;
+  if (tut.step === 0) {
+    if (tut.kills >= 1) { tut.step = 1; tut.kills = 0; tut.t = 0; tut.ang += 2.2; return; }
+    if (!enemies.length) { const e = spawnEnemy('dot', tut.ang); e.sp = 55; }
+  } else if (tut.step === 1) {
+    if (tut.kills >= 3) { tut.step = 2; tut.t = 0; return; }
+    if (!enemies.length && tut.t > .6) {
+      tut.kills = 0;
+      for (let i = 0; i < 3; i++) { const e = spawnEnemy('dot', tut.ang + (i - 1) * .18); e.sp = 50; }
+    }
+  } else if (tut.t > 3.2) {
+    tut = null; store.set('tutDone', true); spawnT = 1;
+  }
+}
+
+function burst(x, y, color, n) { for (let i = 0; i < n; i++) { const a = rand(0, 6.28), s = rand(60, 240); particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, color, t: 0 }); } }
+function popup(x, y, text, color) { popups.push({ x, y, text, color, t: 0 }); }
+
+let lastHud = '';
+function updHud() {
+  const h = score + '|' + hp + '|' + Math.floor(time);
+  if (h === lastHud) return; lastHud = h;
+  document.getElementById('score').textContent = score;
+  document.getElementById('time').textContent = Math.floor(time);
+  document.getElementById('hearts').innerHTML = Array.from({ length: MAX_HP }, (_, i) => `<span class="${i < hp ? '' : 'off'}">♥</span>`).join('');
+}
+let lastNewBest = false;
+function gameOver() {
+  state = 'over'; line = null; drawing = false; updHud();
+  const nb = score > best;
+  if (nb) { best = score; store.set('best', best); }
+  lastNewBest = nb && score > 0;
+  const h = host();
+  if (h && roundOn) { roundOn = false; h.finish(window, { score, time: Math.floor(time), combo: maxCombo }); }
+  document.getElementById('endScore').textContent = score;
+  document.getElementById('endTime').textContent = Math.floor(time);
+  document.getElementById('endCombo').textContent = maxCombo;
+  document.getElementById('endBest').textContent = best;
+  renderEnd();
+  setTimeout(() => show('ovEnd'), 700);
+}
+function renderEnd() {
+  document.getElementById('newBest').textContent = lastNewBest ? Lx('新紀錄！|New record!') : '';
+  document.getElementById('endBonus').textContent = host() && state === 'over' ? Lx('本局 BONUS {e} 點|BONUS this game: {e} pts', { e: earned }) : '';
+  document.getElementById('bestLine').textContent = best ? Lx('最佳分數：{b}|Best score: {b}', { b: best }) : '';
+}
+
+// ---------- 手繪筆觸工具 ----------
+const FONT = '"LXGW WenKai TC","Kaiti TC","STKaiti","BiauKai","Comic Sans MS",cursive';
+const INK = '#2b2b2b', PAPER = '#f6eedb';
+function rng(seed) {
+  let s = (Math.imul(seed | 0, 2654435761) >>> 0) || 1;
+  return () => { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; };
+}
+function wobblyCircle(x, y, r, R, over) {
+  const n = Math.max(12, Math.round(r / 2)), a0 = R() * 6.2832, amp = Math.min(2, r * .08);
+  const extra = over ? 0.12 + R() * 0.12 : 0;
+  ctx.beginPath();
+  for (let i = 0; i <= n * (1 + extra); i++) {
+    const a = a0 + i / n * 6.2832, rr = r + (R() - .5) * 2 * amp;
+    const px = x + Math.cos(a) * rr, py = y + Math.sin(a) * rr;
+    i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+  }
+}
+function sketchCircle(x, y, r, seed, o) {
+  const R = rng(seed);
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  if (o.fill) { ctx.fillStyle = o.fill; wobblyCircle(x + (R() - .5) * 2.5, y + (R() - .5) * 2.5, r * .97, R, false); ctx.closePath(); ctx.fill(); }
+  if (o.stroke) {
+    ctx.strokeStyle = o.stroke;
+    if (o.dash) ctx.setLineDash(o.dash);
+    ctx.lineWidth = o.lw || 2; wobblyCircle(x, y, r, R, true); ctx.stroke();
+    if (o.passes !== 1) { ctx.lineWidth = (o.lw || 2) * .55; wobblyCircle(x, y, r + .6, R, true); ctx.stroke(); }
+    ctx.setLineDash([]);
+  }
+}
+function sketchLine(x1, y1, x2, y2, R, j) {
+  const mx = (x1 + x2) / 2 + (R() - .5) * j * 2, my = (y1 + y2) / 2 + (R() - .5) * j * 2;
+  ctx.moveTo(x1 + (R() - .5) * j, y1 + (R() - .5) * j);
+  ctx.quadraticCurveTo(mx, my, x2 + (R() - .5) * j, y2 + (R() - .5) * j);
+}
+function sketchRect(x, y, w, h, seed, o) {
+  const R = rng(seed), j = o.j != null ? o.j : 1.6, e = o.over != null ? o.over : 3;
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  if (o.fill) {
+    ctx.fillStyle = o.fill; ctx.beginPath();
+    ctx.moveTo(x + R() * j, y + R() * j); ctx.lineTo(x + w - R() * j, y + R() * j);
+    ctx.lineTo(x + w - R() * j, y + h - R() * j); ctx.lineTo(x + R() * j, y + h - R() * j); ctx.closePath(); ctx.fill();
+  }
+  if (o.stroke) {
+    ctx.strokeStyle = o.stroke; ctx.lineWidth = o.lw || 2;
+    if (o.dash) ctx.setLineDash(o.dash);
+    ctx.beginPath();
+    sketchLine(x - e, y, x + w + e * .4, y, R, j); sketchLine(x + w, y - e * .4, x + w, y + h + e, R, j);
+    sketchLine(x + w + e * .4, y + h, x - e, y + h, R, j); sketchLine(x, y + h + e * .4, x, y - e, R, j);
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+}
+function sketchPoly(pts, seed, o) {
+  const R = rng(seed), j = o.j != null ? o.j : 1.4;
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  if (o.fill) { ctx.fillStyle = o.fill; ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); ctx.fill(); }
+  if (o.stroke) {
+    ctx.strokeStyle = o.stroke; ctx.lineWidth = o.lw || 2; ctx.beginPath();
+    for (let i = 0; i < pts.length; i++) { const a = pts[i], b = pts[(i + 1) % pts.length]; sketchLine(a[0], a[1], b[0] + (b[0] - a[0]) * .08, b[1] + (b[1] - a[1]) * .08, R, j); }
+    ctx.stroke();
+  }
+}
+function hatch(x, y, w, h, seed, color, gap, lw) {
+  const R = rng(seed);
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+  ctx.strokeStyle = color; ctx.lineWidth = lw || 1.2; ctx.lineCap = 'round'; ctx.beginPath();
+  for (let k = -h; k < w + h; k += gap) {
+    ctx.moveTo(x + k + (R() - .5) * 2, y + h + 2 + (R() - .5) * 2);
+    ctx.lineTo(x + k + h + (R() - .5) * 2, y - 2 + (R() - .5) * 2);
+  }
+  ctx.stroke(); ctx.restore();
+}
+function inkText(text, x, y, size, color, weight) {
+  ctx.font = `${weight || 700} ${size}px ${FONT}`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = color; ctx.fillText(text, x, y);
+}
+
+// ---------- 繪圖（粉筆黑板） ----------
+// 所有粉筆筆觸先畫在一張透明圖層上，再用「粉筆顆粒紋理」把它侵蝕掉一部分，
+// 最後蓋到黑板上。紋理固定在黑板上（跟真的粉筆一樣，顆粒來自板面）。
+const BOARD = '#2f4a3a';
+let boardBg = null, layer = null, lctx = null, chalkPat = null, tctx = null;
+function makeBoard() {
+  const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+  g.fillStyle = BOARD; g.fillRect(0, 0, W, H);
+  for (let i = 0; i < 22; i++) {
+    g.save(); g.translate(Math.random() * W, Math.random() * H); g.rotate(Math.random() * Math.PI);
+    g.fillStyle = `rgba(243,241,230,${.006 + Math.random() * .01})`;
+    g.beginPath(); g.ellipse(0, 0, 60 + Math.random() * 160, 18 + Math.random() * 40, 0, 0, Math.PI * 2); g.fill(); g.restore();
+  }
+  for (let i = 0; i < 9000; i++) {
+    g.fillStyle = Math.random() < .5 ? 'rgba(243,241,230,.035)' : 'rgba(0,0,0,.05)';
+    g.fillRect(Math.random() * W, Math.random() * H, 1.5, 1.5);
+  }
+  return c;
+}
+function makeChalkTexture(target) {
+  const S = 256, c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d');
+  // 低頻雜訊：讓有些區域比較乾、比較淡
+  const lf = document.createElement('canvas'); lf.width = lf.height = 28; const lg = lf.getContext('2d'); const ld = lg.createImageData(28, 28);
+  for (let i = 0; i < ld.data.length; i += 4) { const v = Math.random() * 255; ld.data[i] = ld.data[i + 1] = ld.data[i + 2] = v; ld.data[i + 3] = 255; }
+  lg.putImageData(ld, 0, 0);
+  g.imageSmoothingEnabled = true; g.drawImage(lf, 0, 0, S, S);
+  const low = g.getImageData(0, 0, S, S).data, out = g.createImageData(S, S);
+  for (let i = 0; i < out.data.length; i += 4) {
+    const n = Math.random() * .8 + (low[i] / 255) * .55 - .12;
+    const a = n < .36 ? 0 : n < .52 ? (n - .36) / .16 * .55 : Math.min(1, .55 + (n - .52) * 1.5);
+    out.data[i] = out.data[i + 1] = out.data[i + 2] = 255; out.data[i + 3] = a * 255;
+  }
+  g.putImageData(out, 0, 0);
+  // 斜向的細刮痕（粉筆在板面上拖過的紋路）
+  g.globalCompositeOperation = 'destination-out'; g.strokeStyle = 'rgba(0,0,0,.6)'; g.lineWidth = .9;
+  for (let k = 0; k < 220; k++) {
+    const x = Math.random() * S, y = Math.random() * S, l = 4 + Math.random() * 16;
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x + l, y - l * .3); g.stroke();
+  }
+  return target.createPattern(c, 'repeat');
+}
+function beginChalk(sx, sy) {
+  if (!layer || layer.width !== cv.width || layer.height !== cv.height) {
+    layer = document.createElement('canvas'); layer.width = cv.width; layer.height = cv.height;
+    lctx = layer.getContext('2d'); chalkPat = makeChalkTexture(lctx);
+  }
+  lctx.setTransform(1, 0, 0, 1, 0, 0); lctx.globalCompositeOperation = 'source-over'; lctx.globalAlpha = 1;
+  lctx.clearRect(0, 0, layer.width, layer.height);
+  const k = cv.width / W; lctx.setTransform(k, 0, 0, k, sx * k, sy * k);
+  tctx = lctx;
+}
+function endChalk() {
+  const k = cv.width / W * 1.4;
+  lctx.setTransform(k, 0, 0, k, 0, 0);
+  lctx.globalAlpha = 1; lctx.globalCompositeOperation = 'destination-in';
+  lctx.fillStyle = chalkPat; lctx.fillRect(0, 0, layer.width / k + 1, layer.height / k + 1);
+  lctx.globalCompositeOperation = 'source-over';
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(layer, 0, 0); ctx.restore();
+  tctx = ctx;
+}
+function chalkPath(c, pts) { c.beginPath(); c.moveTo(pts[0].x, pts[0].y); for (let i = 1; i < pts.length; i++) c.lineTo(pts[i].x, pts[i].y); }
+function chalkStroke(pts, color, w, seed) {
+  if (pts.length < 2) return;
+  const c = tctx, R = rng(seed);
+  c.save(); c.lineCap = 'round'; c.lineJoin = 'round'; c.strokeStyle = color;
+  c.lineWidth = w; chalkPath(c, pts); c.stroke();
+  // 粗糙、斷續的邊緣
+  const base = c.globalAlpha;
+  for (let k = 0; k < 5; k++) {
+    const a = k * 1.2566 + R() * .9, d = w * (.32 + R() * .3);
+    c.save(); c.translate(Math.cos(a) * d, Math.sin(a) * d);
+    c.globalAlpha = base * (.35 + R() * .35); c.lineWidth = Math.max(.8, w * (.18 + R() * .2));
+    c.setLineDash([2 + R() * 9, 1 + R() * 5, 1 + R() * 3, 2 + R() * 6]); c.lineDashOffset = R() * 30;
+    chalkPath(c, pts); c.stroke(); c.restore();
+  }
+  // 掉在旁邊的粉筆屑
+  c.fillStyle = color;
+  for (let i = 0; i < pts.length; i++) {
+    if (R() < .55) continue;
+    const p = pts[i];
+    c.globalAlpha = base * (.25 + R() * .4);
+    c.fillRect(p.x + (R() - .5) * w * 3.2, p.y + (R() - .5) * w * 3.2, 1 + R() * 1.2, 1 + R() * 1.2);
+  }
+  c.restore();
+}
+function chalkCircle(x, y, r, color, w, seed) {
+  const R = rng(seed), n = Math.max(14, Math.round(r / 1.6)), a0 = R() * 6.28, pts = [];
+  for (let i = 0; i <= n * 1.12; i++) { const a = a0 + i / n * 6.2832, rr = r + (R() - .5) * Math.min(3, r * .12); pts.push({ x: x + Math.cos(a) * rr, y: y + Math.sin(a) * rr }); }
+  chalkStroke(pts, color, w, seed + 1);
+}
+// 文字不經過顆粒紋理（不然小字會看不清楚），只疊兩層做出粉筆的毛邊
+function chalkText(text, x, y, size, color, align) {
+  const c = ctx;
+  c.save(); c.globalAlpha = tctx.globalAlpha * .93;
+  c.font = `700 ${size}px ${FONT}`; c.textAlign = align || 'center'; c.textBaseline = 'middle';
+  c.fillStyle = color; c.fillText(text, x, y);
+  c.globalAlpha *= .45; c.fillText(text, x + .9, y + .7); c.fillText(text, x - .6, y + .4);
+  c.restore();
+}
+function draw(now) {
+  if (!boardBg) boardBg = makeBoard();
+  const sx = shake ? rand(-shake, shake) * .5 : 0, sy = shake ? rand(-shake, shake) * .5 : 0;
+  ctx.save(); ctx.translate(sx, sy);
+  ctx.drawImage(boardBg, 0, 0);
+  if (tut && state === 'play') drawTutBox();
+  ctx.restore();
+
+  beginChalk(sx, sy);
+  const c = tctx;
+  // 擦得不乾淨的同心圓
+  c.save(); c.globalAlpha = .1;
+  for (let r = 100, k = 0; r < 600; r += 100, k++) chalkCircle(CX, CY, r, '#f3f1e6', 2.2, 900 + k);
+  c.restore();
+  // 核心：粉筆畫的小城堡
+  const coreCol = coreHit > 0 ? '#ff9e9e' : '#bfe8a8';
+  chalkCircle(CX, CY, CORE_R, coreCol, 4, 11);
+  chalkCircle(CX, CY, CORE_R + 6, coreCol, 1.8, 17);
+  const cw = 26, ch = 16, bx = CX - cw / 2, by = CY - 2;
+  chalkStroke([{ x: bx, y: by + ch }, { x: bx, y: by - 6 }, { x: bx + 5, y: by - 6 }, { x: bx + 5, y: by - 1 }, { x: bx + 10.5, y: by - 1 }, { x: bx + 10.5, y: by - 8 },
+    { x: bx + 15.5, y: by - 8 }, { x: bx + 15.5, y: by - 1 }, { x: bx + 21, y: by - 1 }, { x: bx + 21, y: by - 6 }, { x: bx + cw, y: by - 6 }, { x: bx + cw, y: by + ch }, { x: bx, y: by + ch }], coreCol, 3, 5);
+  for (let i = 0; i < MAX_HP; i++) {
+    const x = CX - (MAX_HP - 1) * 6 + i * 12, alive = i < hp;
+    c.save(); c.globalAlpha = alive ? 1 : .14;
+    chalkStroke([{ x, y: CY + CORE_R + 15 }, { x: x + 1.5, y: CY + CORE_R + 30 }], '#f3f1e6', 3.5, 40 + i);
+    c.restore();
+  }
+  // 你畫的線
+  if (line && line.pts.length > 0) {
+    const life = lifeOf(Math.max(line.len, 30)), left = Math.max(0, 1 - line.age / life);
+    const warn = left < .3 && Math.floor(now / 90) % 2;
+    const hue = Math.round(Math.max(0, Math.min(1, (life - .6) / 2.4)) * 200);
+    const col = `hsl(${hue},80%,85%)`;
+    c.save(); c.globalAlpha = warn ? .35 : .5 + .5 * left;
+    if (line.pts.length === 1) chalkCircle(line.pts[0].x, line.pts[0].y, 2, col, 5, 3);
+    else chalkStroke(line.pts, col, 7 + 3 * left, Math.floor(line.id * 1e6));
+    c.restore();
+    const tip = line.pts[line.pts.length - 1], arc = [];
+    for (let a = 0; a <= left * 6.2832; a += .2) arc.push({ x: tip.x + Math.cos(a - Math.PI / 2) * 15, y: tip.y + Math.sin(a - Math.PI / 2) * 15 });
+    if (arc.length > 1) chalkStroke(arc, '#ffe08a', 3, 99);
+    chalkText((life * left).toFixed(1) + 's', tip.x + 22, tip.y - 2, 19, '#ffe08a', 'left');
+    if (drawing) {
+      c.save(); c.globalAlpha = .2;
+      chalkStroke([{ x: W / 2 - 100, y: H - 20 }, { x: W / 2 + 100, y: H - 20 }], '#f3f1e6', 7, 77);
+      c.restore();
+      chalkStroke([{ x: W / 2 - 100, y: H - 20 }, { x: W / 2 - 100 + 200 * line.len / MAX_INK, y: H - 20 }], line.len > MAX_INK * .8 ? '#ff9e9e' : '#a8dcf0', 7, 78);
+    }
+  }
+  // 敵人：粉筆塗鴉
+  for (const e of enemies) {
+    const sd = e.id * 7, r = e.r;
+    if (e.type === 'dart') {
+      const a = Math.atan2(CY - e.y, CX - e.x), ca = Math.cos(a), sa = Math.sin(a);
+      const P = (u, v) => ({ x: e.x + ca * u - sa * v, y: e.y + sa * u + ca * v });
+      chalkStroke([P(-r - 9, 0), P(r + 5, 0)], e.color, 3.4, sd);
+      chalkStroke([P(r - 3, -6.5), P(r + 6, 0), P(r - 3, 6.5)], e.color, 3.4, sd + 1);
+    } else if (e.type === 'brute') {
+      const pts = [];
+      for (let k = 0; k <= 6; k++) { const a = e.wob * .8 + k * Math.PI / 3; pts.push({ x: e.x + Math.cos(a) * r, y: e.y + Math.sin(a) * r }); }
+      c.save(); c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(p.x, p.y) : c.moveTo(p.x, p.y)); c.clip();
+      const R = rng(sd); c.globalAlpha = e.hp > 1 ? .75 : .35;
+      for (let k = -r * 2; k < r * 2; k += 5.5) chalkStroke([{ x: e.x + k - r + (R() - .5) * 2, y: e.y + r }, { x: e.x + k + r + (R() - .5) * 2, y: e.y - r }], e.color, 2, sd + k);
+      c.restore();
+      chalkStroke(pts, e.color, 3.6, sd + 2);
+    } else if (e.type === 'split') {
+      chalkCircle(e.x - 4, e.y, r * .75, e.color, 3, sd);
+      chalkCircle(e.x + 4, e.y, r * .75, e.color, 3, sd + 1);
+    } else {
+      const R = rng(sd), j = () => (R() - .5) * 2.5;
+      chalkStroke([{ x: e.x - r + j(), y: e.y - r + j() }, { x: e.x + r + j(), y: e.y + r + j() }], e.color, 3.6, sd + 1);
+      chalkStroke([{ x: e.x + r + j(), y: e.y - r + j() }, { x: e.x - r + j(), y: e.y + r + j() }], e.color, 3.6, sd + 2);
+    }
+  }
+  for (const p of popups) { c.save(); c.globalAlpha = 1 - p.t / .9; chalkText(p.text, p.x, p.y, 23, p.color); c.restore(); }
+  if (tut && state === 'play') drawTut(now);
+  endChalk();
+
+  // 粉筆灰（不經過紋理，保持細碎）
+  ctx.save(); ctx.translate(sx, sy);
+  for (const p of particles) { ctx.globalAlpha = (1 - p.t / .6) * .7; ctx.fillStyle = p.color; ctx.fillRect(p.x - 1.2, p.y - 1.2, 2.4, 2.4); }
+  ctx.globalAlpha = 1;
+  if (coreHit > 0) { ctx.fillStyle = `rgba(255,120,120,${coreHit * .14})`; ctx.fillRect(-20, -20, W + 40, H + 40); }
+  ctx.restore();
+}
+let tutBoxW = 0;
+function drawTutBox() {
+  const text = Lx(TUT_TEXT[tut.step]).replace(/<\/?b>/g, '');
+  ctx.font = `700 24px ${FONT}`;
+  tutBoxW = ctx.measureText(text).width + 44;
+  ctx.fillStyle = 'rgba(37,60,47,.92)'; ctx.fillRect(CX - tutBoxW / 2, 38, tutBoxW, 56);
+}
+function drawTut(now) {
+  const c = tctx;
+  if (tut.step < 2 && enemies.length && !line) {
+    let sx = 0, sy = 0; enemies.forEach(e => { sx += e.x; sy += e.y; }); sx /= enemies.length; sy /= enemies.length;
+    const dx = sx - CX, dy = sy - CY, d = Math.hypot(dx, dy) || 1;
+    const mx = CX + dx / d * Math.min(150, d * .5), my = CY + dy / d * Math.min(150, d * .5);
+    const px = -dy / d, py = dx / d, half = tut.step === 0 ? 45 : 85;
+    c.save(); c.globalAlpha = .45 + .35 * Math.sin(now / 200);
+    for (let t = -1; t < .99; t += .3) chalkStroke([{ x: mx + px * half * t, y: my + py * half * t }, { x: mx + px * half * (t + .16), y: my + py * half * (t + .16) }], '#f3f1e6', 4, 300 + Math.round(t * 10));
+    c.restore();
+    const k = (now / 1200) % 1;
+    c.save(); c.globalAlpha = 1 - k * .3;
+    chalkCircle(mx - px * half + px * half * 2 * k, my - py * half + py * half * 2 * k, 8, '#ffe08a', 3, 5);
+    c.restore();
+  }
+  const text = Lx(TUT_TEXT[tut.step]).replace(/<\/?b>/g, ''), w = tutBoxW;
+  c.save(); c.globalAlpha = .6;
+  chalkStroke([{ x: CX - w / 2, y: 38 }, { x: CX + w / 2, y: 38 }, { x: CX + w / 2, y: 94 }, { x: CX - w / 2, y: 94 }, { x: CX - w / 2, y: 38 }], '#f3f1e6', 2.2, 3);
+  c.restore();
+  chalkText(text, CX, 67, 24, '#f3f1e6');
+  c.save(); c.globalAlpha = .55; chalkText(Lx('教學 {n} / 3 · 教學中核心不會受傷|Tutorial {n} / 3 · the core can’t be hurt during the tutorial', { n: tut.step + 1 }), CX, 114, 15, '#f3f1e6'); c.restore();
+}
+
+// ---------- 迴圈 ----------
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  if (!platformVisible) { requestAnimationFrame(frame); return; }
+  if (state === 'play') update(dt);
+  else {
+    particles.forEach(p => { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; }); particles = particles.filter(p => p.t < .6);
+    shake = Math.max(0, shake - dt * 40); coreHit = Math.max(0, coreHit - dt * 2);
+  }
+  draw(now);
+  requestAnimationFrame(frame);
+}
+
+function show(id) { document.querySelectorAll('.overlay').forEach(o => o.classList.toggle('show', o.id === id)); }
+function begin(withTut) {
+  const h = host();
+  if (h && !roundOn) {
+    if (!(h.start(window) > 0)) return false;
+    roundOn = true; earned = 0; marks = 0;
+  }
+  reset(); show(null); state = 'play'; last = performance.now(); if (withTut) startTut();
+  return true;
+}
+document.getElementById('btnStart').onclick = () => begin(!store.get('tutDone', false));
+document.getElementById('btnTut').onclick = () => begin(true);
+document.getElementById('btnAgain').onclick = () => begin(false);
+window.addEventListener('keydown', e => {
+  touch();
+  if ((e.key === ' ' || e.key === 'Enter') && state === 'pause') { e.preventDefault(); resumeGame(); return; }
+  if ((e.key === ' ' || e.key === 'Enter') && state !== 'play') { e.preventDefault(); begin(state === 'start' && !store.get('tutDone', false)); }
+});
+cv.addEventListener('pointerdown', touch);
+
+// ---------- 暫停：切走遊戲、背景分頁時自動暫停，回來要按「繼續」 ----------
+function pauseGame() {
+  if (state !== 'play') return;
+  state = 'pause'; drawing = false;
+  show('ovPause');
+  const h = host(); if (h && roundOn && h.pause) h.pause(window);
+}
+function resumeGame() {
+  if (state !== 'pause') return;
+  state = 'play'; show(null); last = performance.now();
+  const h = host(); if (h && roundOn && h.resume) h.resume(window);
+}
+document.getElementById('btnResume').onclick = resumeGame;
+document.addEventListener('visibilitychange', () => { if (document.hidden) pauseGame(); });
+
+// 父頁介面：右側按鈕開局、切換畫面
+window.startOneLinePlatformRound = () => { if (state === 'play' || state === 'pause') return false; return begin(state === 'start' && !store.get('tutDone', false)); };
+window.setOneLinePlatformActive = v => { platformVisible = !!v; last = performance.now(); if (!platformVisible) pauseGame(); else resize(); };
+
+function relang() { applyStatic(); renderNote(); renderEnd(); }
+try { window.parent.addEventListener('arcade-languagechange', relang); } catch (e) {}
+applyStatic(); renderNote(); renderEnd();
+updHud();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

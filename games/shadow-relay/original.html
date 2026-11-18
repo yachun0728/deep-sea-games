@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#140a04">
+<title>影子接力</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wood:#3a1d0c; --wood2:#5a2e14; --cream:#f6e3c4; --paper:#f4dfb8; --ink:#2a160a;
+    --mute:rgba(246,227,196,.62); --mute2:rgba(246,227,196,.4); --red:#b8322a;
+    --cyan:#1a0e06; --violet:rgba(26,14,6,.38); --amber:#c8402f; --green:#fff1c9;
+    --font:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;color:var(--cream);font-family:var(--font);overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-font-smoothing:antialiased;
+    background:#140a04;background-image:radial-gradient(ellipse at 50% 42%,#3d1f0d 0%,#1a0d05 60%,#0e0603 100%)}
+  button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+  b{font-weight:700}
+  .num{font-variant-numeric:tabular-nums}
+  #app{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:12px}
+  .bar{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+  .bar .lv{font-size:12px;letter-spacing:.3em;color:var(--mute)}
+  .bar .name{font-size:22px;font-weight:700;letter-spacing:.12em;margin-top:2px}
+  .bar .r{text-align:right}
+  .bar .t{font-size:22px;font-weight:700}
+  .icon-btn{width:36px;height:36px;border-radius:50%;background:rgba(246,227,196,.07);border:1px solid rgba(246,227,196,.22);display:inline-flex;align-items:center;justify-content:center;font-size:15px;margin-left:6px}
+  .icon-btn:hover{background:rgba(246,227,196,.16)}
+  canvas#cv{display:block;border:10px solid var(--wood2);border-radius:4px;
+    box-shadow:0 0 0 2px #8a5a2e,0 0 0 8px var(--wood),0 0 0 10px #8a5a2e,0 30px 80px rgba(0,0,0,.7),0 0 120px rgba(233,163,90,.18)}
+  .hint{font-size:13px;color:var(--mute2);text-align:center;letter-spacing:.05em}
+  .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(14,6,3,.66);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);padding:16px;z-index:10}
+  .overlay.show{display:flex}
+  .card{position:relative;width:min(450px,100%);background:var(--paper);color:var(--ink);border:2px solid var(--wood2);border-radius:4px;padding:30px 26px 24px;text-align:center;
+    box-shadow:0 0 0 6px var(--red),0 0 0 8px var(--wood2),0 30px 80px rgba(0,0,0,.7)}
+  .card::before,.card::after{content:"";position:absolute;left:18px;right:18px;height:2px;background:var(--red);opacity:.5}
+  .card::before{top:10px}.card::after{bottom:10px}
+  .card h1{font-size:34px;letter-spacing:.3em;font-weight:900;padding-left:.3em}
+  .card h2{font-size:26px;letter-spacing:.12em;font-weight:900}
+  .card .sub{color:rgba(42,22,10,.68);font-size:15px;line-height:1.7;margin-top:10px}
+  .rules{text-align:left;margin:18px 0 6px;display:grid;gap:9px;font-size:15px;line-height:1.55}
+  .rules div{display:flex;gap:10px;align-items:flex-start}
+  .dot{flex:none;width:14px;height:14px;border-radius:50%;margin-top:4px;border:1.5px solid var(--wood2)}
+  .btn{display:inline-block;margin-top:18px;padding:11px 30px;border-radius:3px;background:var(--red);color:var(--cream);font-weight:700;font-size:17px;letter-spacing:.2em;box-shadow:inset 0 0 0 2px rgba(246,227,196,.25)}
+  .btn:hover{filter:brightness(1.1)}
+  .btn.ghost{background:rgba(42,22,10,.08);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(42,22,10,.25)}
+  .card .hint{color:rgba(42,22,10,.5)}
+  .levels{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
+  .levels button{aspect-ratio:1;border-radius:3px;background:rgba(42,22,10,.07);border:1px solid rgba(42,22,10,.2);font-weight:900;font-size:19px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink)}
+  .levels button small{font-size:11px;font-weight:400;color:rgba(42,22,10,.6)}
+  .levels button:hover:not(:disabled){background:rgba(184,50,42,.14)}
+  .levels button:disabled{opacity:.3;cursor:default}
+  .levels button.done{background:rgba(184,50,42,.12);border-color:var(--red)}
+  .stat{display:flex;justify-content:center;gap:28px;margin-top:14px}
+  .stat b{display:block;font-size:28px}
+  .stat span{font-size:12px;color:rgba(42,22,10,.6);letter-spacing:.1em}
+  .plat{margin-top:14px;padding:9px 12px;border:1px dashed rgba(42,22,10,.4);border-radius:3px;font-size:14px;line-height:1.55;color:var(--ink);background:rgba(184,50,42,.08)}
+  .bonus{margin-top:10px;font-size:16px;font-weight:700;color:var(--red)}
+  .bonus:empty{display:none}
+  #toast{position:fixed;left:50%;top:22%;transform:translate(-50%,-50%);font-size:24px;font-weight:900;letter-spacing:.15em;color:#ffb08a;text-shadow:0 3px 20px rgba(0,0,0,.8);opacity:0;pointer-events:none;transition:opacity .2s;z-index:5;white-space:nowrap}
+  #joy{position:fixed;width:110px;height:110px;margin:-55px 0 0 -55px;border-radius:50%;border:2px solid rgba(246,227,196,.3);display:none;pointer-events:none;z-index:4}
+  #joy i{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(246,227,196,.3)}
+  /* 平台內嵌：說明卡比畫面高時可在浮層內捲動，不裁掉標題 */
+  .overlay{overflow-y:auto;align-items:flex-start;touch-action:pan-y;overscroll-behavior:contain}
+  .overlay .card{margin:auto}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="bar" id="bar">
+    <div><div class="lv" id="lvLabel"></div><div class="name" id="lvName">—</div></div>
+    <div class="r">
+      <div class="lv" data-t="time"></div>
+      <div><span class="t num" id="time">0.0</span>
+        <button class="icon-btn" id="btnRestart" data-tt="restart">↻</button><button class="icon-btn" id="btnMenu" data-tt="menu">☰</button></div>
+    </div>
+  </div>
+  <canvas id="cv"></canvas>
+  <div class="hint" id="hint" data-t="hint"></div>
+</div>
+<div id="toast"></div>
+<div id="joy"><i></i></div>
+
+<div class="overlay show" id="ovMenu">
+  <div class="card">
+    <h1 data-t="title"></h1>
+    <div class="sub" data-t="intro"></div>
+    <div class="rules">
+      <div><span class="dot" style="background:var(--cyan)"></span><span data-t="r1"></span></div>
+      <div><span class="dot" style="background:var(--violet)"></span><span data-t="r2"></span></div>
+      <div><span class="dot" style="background:var(--amber)"></span><span data-t="r3"></span></div>
+      <div><span class="dot" style="background:var(--green)"></span><span data-t="r4"></span></div>
+    </div>
+    <div class="plat" id="platNote" hidden></div>
+    <div class="levels" id="levels"></div>
+  </div>
+</div>
+
+<div class="overlay" id="ovIntro">
+  <div class="card">
+    <div class="sub" id="introLv" style="margin:0;letter-spacing:.14em;font-size:12px"></div>
+    <h2 id="introName" style="margin-top:6px">—</h2>
+    <div class="sub" id="introTip"></div>
+    <button class="btn" id="btnGo" data-t="go"></button>
+    <div class="hint" style="margin-top:10px" data-t="goHint"></div>
+  </div>
+</div>
+
+<div class="overlay" id="ovWin">
+  <div class="card">
+    <h2 data-t="cleared"></h2>
+    <div class="stat">
+      <div><b class="num" id="winTime">0.0</b><span data-t="sec"></span></div>
+      <div><b class="num" id="winBest">0.0</b><span data-t="best"></span></div>
+      <div><b class="num" id="winDeaths">0</b><span data-t="fails"></span></div>
+    </div>
+    <div class="bonus" id="winBonus"></div>
+    <button class="btn" id="btnNext"></button>
+    <div><button class="btn ghost" id="btnWinMenu" style="margin-top:10px;padding:9px 18px;font-size:14px" data-t="pick"></button></div>
+  </div>
+</div>
+
+<div class="overlay" id="ovPause">
+  <div class="card">
+    <h2 data-t="paused"></h2>
+    <div class="sub" data-t="pausedSub"></div>
+    <button class="btn" id="btnResume" data-t="resume"></button>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const T = 40, N = 16, W = T * N, HZ = 60, DT = 1 / HZ;
+const SPEED = 170, R = 11, CATCH = 18, TOUCH = 22;
+
+// ---------- 語言：字串寫成「中文|English」，語言跟隨 Deep Sea Arcade 頁首切換 ----------
+function lang() { try { const i = window.parent !== window && window.parent.deepSeaI18n; return i && i.getLanguage() === 'en' ? 'en' : 'zh'; } catch (e) { return 'zh'; } }
+function Lx(s, p) {
+  const k = s.indexOf('|'); let t = k < 0 ? s : lang() === 'en' ? s.slice(k + 1) : s.slice(0, k);
+  t = t.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  return p ? t.replace(/\{(\w+)\}/g, (_, n) => p[n] != null ? p[n] : '') : t;
+}
+const TX = {
+  time: '時間|Time', restart: '重來 (R)|Restart (R)', menu: '選單 (Esc)|Menu (Esc)',
+  hint: '方向鍵 / WASD 移動 · R 重來 · 手機：在畫面任意處拖曳|Arrow keys / WASD to move · R restart · Mobile: drag anywhere on screen',
+  title: '影子接力|Shadow Relay', intro: '你的影子會晚幾秒，照你走過的路線再走一次。|Your shadow retraces your exact path a few seconds behind you.',
+  r1: '你：紅眼睛的黑色皮影偶，用方向鍵移動。|You: the black shadow puppet with red eyes. Move with the arrow keys.',
+  r2: '影子：模糊的半透明皮影偶，照你的路線走，**碰到你就輸**。在原地停太久，影子也會追上你。|Shadows: blurry, see-through puppets that follow your route. **If one touches you, you lose**. Stand still too long and they catch up.',
+  r3: '燈籠（開關）：**只有影子點得亮**。全部同時亮著的時候出口才會開，**任何一個熄掉，出口就會關上**。|Lanterns (switches): **only shadows can light them**. The exit opens only while all of them are lit; **if any goes out, the exit closes**.',
+  r4: '月洞門（出口）：趁它開著的時候走進去就過關。上方的數字是還會開多久。|Moon gate (exit): walk in while it’s open to clear the stage. The number above shows how long it stays open.',
+  go: '開始|Start', goHint: '按空白鍵 / Enter 也能開始|Space / Enter also starts',
+  cleared: '過關！|Stage cleared!', sec: '秒|sec', best: '最佳|Best', fails: '失敗次數|Fails', pick: '選關|Stages',
+  paused: '已暫停|Paused', pausedSub: '離開畫面時會自動暫停。|The game pauses when you leave the screen.', resume: '繼續|Resume',
+};
+function applyStatic() {
+  document.querySelectorAll('[data-t]').forEach(el => { el.innerHTML = Lx(TX[el.dataset.t]); });
+  document.querySelectorAll('[data-tt]').forEach(el => { el.title = Lx(TX[el.dataset.tt]); el.setAttribute('aria-label', el.title); });
+}
+
+// 地圖：# 牆、S 起點、E 出口、數字 = 開關（影子離開後維持亮幾秒，9 = 永久）
+const LEVELS = [
+  { name: '第一步|First Steps', shadows: [2],
+    tip: '影子會在 **2 秒**後照你的路線重走一次。走過開關，再繞開，讓影子幫你踩亮它。|Your shadow retraces your route **2 seconds** later. Walk over the switch, then step aside and let the shadow light it for you.',
+    map: [
+      '################',
+      '#..............#',
+      '#.S............#',
+      '#..............#',
+      '#..............#',
+      '#......9.......#',
+      '#..............#',
+      '#..............#',
+      '#..............#',
+      '#..............#',
+      '#..............#',
+      '#..........E...#',
+      '#..............#',
+      '#..............#',
+      '#..............#',
+      '################'] },
+  { name: '兩個房間|Two Rooms', shadows: [2],
+    tip: '開關現在有時限：影子離開後只會亮 **8 秒**。兩個開關要同時亮著出口才會開，一熄掉出口就關。所以讓影子踩完開關的時候，你最好已經在出口附近。|Switches now have a timer: they stay lit for only **8 seconds** after the shadow leaves. Both must be lit for the exit to open, and it closes as soon as one goes out. So when the shadow finishes the switches, you’d better be near the exit.',
+    map: [
+      '################',
+      '#S.....#.......#',
+      '#......#.......#',
+      '#......#...8...#',
+      '#..............#',
+      '#......#.......#',
+      '#......#########',
+      '#......#.......#',
+      '#..............#',
+      '#......#.......#',
+      '#.8....#.......#',
+      '#......#....E..#',
+      '#......#.......#',
+      '####...#.......#',
+      '#..............#',
+      '################'] },
+  { name: '死路|Dead End', shadows: [2.4],
+    tip: '窄路走到底就得掉頭，影子可是跟在後面。要在影子進來**之前**先出來。|A narrow corridor means turning back at the end, with your shadow right behind you. Get out **before** it comes in.',
+    map: [
+      '################',
+      '#..............#',
+      '#.S............#',
+      '#..............#',
+      '#..............#',
+      '#..............#',
+      '#..............#',
+      '#..........E...#',
+      '#..............#',
+      '#..............#',
+      '#..............#',
+      '##.#####.####.##',
+      '##.#####.####.##',
+      '##.#####.####.##',
+      '##9#####9####9##',
+      '################'] },
+  { name: '兩個影子|Two Shadows', shadows: [1.5, 3],
+    tip: '現在有**兩個**影子，分別慢 1.5 秒和 3 秒。你走過的路，3 秒內都很危險。|Now there are **two** shadows, 1.5 and 3 seconds behind. Any path you walked stays dangerous for 3 seconds.',
+    map: [
+      '################',
+      '#S.............#',
+      '#..............#',
+      '#...##....##...#',
+      '#...##.9..##...#',
+      '#..............#',
+      '#..............#',
+      '#.9....##....9.#',
+      '#......##......#',
+      '#..............#',
+      '#..............#',
+      '#...##....##...#',
+      '#...##....##...#',
+      '#..............#',
+      '#......E.......#',
+      '################'] },
+  { name: '趕時間|In a Hurry', shadows: [2],
+    tip: '開關只亮 **8 秒**，而且三個開關分散在三個房間。先想好路線再出發。|Switches stay lit for only **8 seconds**, and the three of them are in three different rooms. Plan your route before you set off.',
+    map: [
+      '################',
+      '#S.....#.......#',
+      '#......#...8...#',
+      '#......#.......#',
+      '#..............#',
+      '#......#.......#',
+      '###.####.......#',
+      '#8.....#####.###',
+      '#..............#',
+      '#......#.......#',
+      '#......#.......#',
+      '#......#...8...#',
+      '#..........#####',
+      '#...E..#.......#',
+      '#......#.......#',
+      '################'] },
+  { name: '三重影|Triple Shadow', shadows: [1, 2, 3],
+    tip: '三個影子，排成一條隊伍跟著你。千萬別回頭。|Three shadows follow you in a single line. Whatever you do, don’t turn back.',
+    map: [
+      '################',
+      '#S.............#',
+      '#..............#',
+      '#..##......##..#',
+      '#..##..9...##..#',
+      '#..............#',
+      '#.....####.....#',
+      '#.9...####...9.#',
+      '#.....####.....#',
+      '#..............#',
+      '#..##......##..#',
+      '#..##..9...##..#',
+      '#..............#',
+      '#......E.......#',
+      '#..............#',
+      '################'] },
+  { name: '口袋|Pockets', shadows: [1.5, 3],
+    tip: '小口袋裡的開關要快進快出。四個開關都只亮 **8 秒**。|Get in and out of the little pockets fast. All four switches stay lit for only **8 seconds**.',
+    map: [
+      '################',
+      '#S.......#.....#',
+      '#........#..8..#',
+      '#..####..#.....#',
+      '#..#8....#.....#',
+      '#..####........#',
+      '#..............#',
+      '#####..#####..##',
+      '#..............#',
+      '#........####..#',
+      '#..8.....#.....#',
+      '#........#.##..#',
+      '#.####...#.8#..#',
+      '#........#.....#',
+      '#....E...#.....#',
+      '################'] },
+  { name: '長影|Long Shadow', shadows: [0.8, 4],
+    tip: '一個影子貼得很近，另一個晚 **4 秒**才出發。開關只亮 7 秒。|One shadow follows right on your heels; the other sets off **4 seconds** later. Switches stay lit for only 7 seconds.',
+    map: [
+      '################',
+      '#S.....#.......#',
+      '#......#..7....#',
+      '#..##..#.......#',
+      '#..##.....##...#',
+      '#.........##...#',
+      '#######........#',
+      '#7....#..####..#',
+      '#.....#........#',
+      '#..............#',
+      '#.....####.....#',
+      '#.........#....#',
+      '#..7......#..E.#',
+      '#.........#....#',
+      '#..............#',
+      '################'] },
+];
+
+// ---------- 儲存 ----------
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('shadowRelay.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('shadowRelay.' + k, JSON.stringify(v)); } catch (e) {} }
+};
+let unlocked = store.get('unlocked', 1);
+let bests = store.get('bests', {});
+
+// ---------- Deep Sea Arcade 平台：扣點、BONUS 與暫停由父頁 deepSeaShadowRelay 處理；單獨開啟時是不扣點的示範 ----------
+function host() { try { return window.parent !== window ? window.parent.deepSeaShadowRelay || null : null; } catch (e) { return null; } }
+let roundOn = false, earned = 0, platformVisible = true;
+function ensureRound() {
+  const h = host();
+  if (!h || roundOn) return true;
+  if (!(h.start(window) > 0)) return false;
+  roundOn = true; earned = 0; renderNote();
+  return true;
+}
+function renderNote() {
+  const el = document.getElementById('platNote');
+  if (!host()) { el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = roundOn
+    ? Lx('本局進行中：每關第一次通過 BONUS +2 點（已得 {e} / 10）。被抓到會自動重來，不另扣點。|Round in progress: +2 BONUS pts the first time you clear each stage ({e} / 10 earned). Getting caught restarts the stage at no extra cost.', { e: earned })
+    : Lx('點一關就會扣 10 點開始一局；本局每過一關 BONUS +2 點，最多 10 點。|Picking a stage starts a round for 10 pts; each stage you clear in the round gives a +2 pt BONUS, up to 10 pts.');
+}
+function touch() { const h = host(); if (h && roundOn && h.touch) h.touch(window); }
+
+// ---------- 畫布 ----------
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const bar = document.getElementById('bar');
+function resize() {
+  const avail = Math.min(window.innerWidth - 24, window.innerHeight - 130);
+  const size = Math.max(240, Math.floor(avail));
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.style.width = cv.style.height = size + 'px';
+  cv.width = cv.height = Math.round(size * dpr);
+  bar.style.width = size + 'px';
+  ctx.setTransform(cv.width / W, 0, 0, cv.height / W, 0, 0);
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ---------- 狀態 ----------
+let lvIndex = 0, L = null, grid = [], start = null, exitPos = null, switches = [];
+let player = { x: 0, y: 0 }, hist = [], tick = 0, time = 0, opened = false, openLeft = 0;
+let state = 'menu', deaths = 0, deadTimer = 0, deadAt = null, winAnim = 0;
+
+function loadLevel(i) {
+  lvIndex = i; L = LEVELS[i];
+  grid = []; switches = [];
+  L.map.forEach((row, r) => {
+    grid.push([]);
+    for (let c = 0; c < N; c++) {
+      const ch = row[c] || '#';
+      grid[r].push(ch === '#');
+      const cx = c * T + T / 2, cy = r * T + T / 2;
+      if (ch === 'S') start = { x: cx, y: cy };
+      else if (ch === 'E') exitPos = { x: cx, y: cy };
+      else if (/[1-9]/.test(ch)) switches.push({ x: cx, y: cy, hold: ch === '9' ? Infinity : +ch, t: 0 });
+    }
+  });
+  resetRun();
+  renderLabels();
+}
+function renderLabels() {
+  document.getElementById('lvLabel').textContent = Lx('第 {n} 關|Stage {n}', { n: lvIndex + 1 });
+  document.getElementById('lvName').textContent = Lx(L.name);
+}
+function resetRun() {
+  player = { x: start.x, y: start.y };
+  hist = [{ x: start.x, y: start.y }];
+  tick = 0; time = 0; opened = false; openLeft = 0; deadAt = null;
+  switches.forEach(s => s.t = 0);
+}
+
+// ---------- 碰撞 ----------
+function isWall(c, r) { return r < 0 || r >= N || c < 0 || c >= N || grid[r][c]; }
+function hits(x, y) {
+  const c0 = Math.floor((x - R) / T), c1 = Math.floor((x + R) / T);
+  const r0 = Math.floor((y - R) / T), r1 = Math.floor((y + R) / T);
+  for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) if (isWall(c, r)) return true;
+  return false;
+}
+function moveAxis(dx, dy) {
+  const nx = player.x + dx, ny = player.y + dy;
+  if (!hits(nx, ny)) { player.x = nx; player.y = ny; return; }
+  if (dx > 0) player.x = Math.floor((nx + R) / T) * T - R - 0.01;
+  else if (dx < 0) player.x = Math.floor((nx - R) / T) * T + T + R + 0.01;
+  if (dy > 0) player.y = Math.floor((ny + R) / T) * T - R - 0.01;
+  else if (dy < 0) player.y = Math.floor((ny - R) / T) * T + T + R + 0.01;
+}
+
+// ---------- 輸入 ----------
+const keys = new Set();
+let joy = null; // {id, ox, oy, x, y}
+const joyEl = document.getElementById('joy');
+window.addEventListener('keydown', e => {
+  touch();
+  const k = e.key.toLowerCase();
+  if ((k === ' ' || k === 'enter') && state === 'pause') { e.preventDefault(); resumeGame(); return; }
+  if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(k)) e.preventDefault();
+  keys.add(k);
+  if (k === 'r' && (state === 'play' || state === 'dead')) { resetRun(); state = 'play'; }
+  if (k === 'escape') openMenu();
+  if ((k === ' ' || k === 'enter') && state === 'intro') begin();
+  else if ((k === ' ' || k === 'enter') && state === 'win') next();
+});
+window.addEventListener('keyup', e => keys.delete(e.key.toLowerCase()));
+window.addEventListener('blur', () => keys.clear());
+window.addEventListener('pointerdown', e => {
+  touch();
+  if (e.pointerType === 'mouse' || state !== 'play' || joy) return;
+  if (e.target.closest('button')) return;
+  joy = { id: e.pointerId, ox: e.clientX, oy: e.clientY, x: e.clientX, y: e.clientY };
+  joyEl.style.display = 'block'; joyEl.style.left = e.clientX + 'px'; joyEl.style.top = e.clientY + 'px';
+  updJoyKnob();
+});
+window.addEventListener('pointermove', e => { if (joy && e.pointerId === joy.id) { joy.x = e.clientX; joy.y = e.clientY; updJoyKnob(); } });
+const endJoy = e => { if (joy && e.pointerId === joy.id) { joy = null; joyEl.style.display = 'none'; } };
+window.addEventListener('pointerup', endJoy);
+window.addEventListener('pointercancel', endJoy);
+function updJoyKnob() {
+  let dx = joy.x - joy.ox, dy = joy.y - joy.oy; const d = Math.hypot(dx, dy);
+  if (d > 40) { dx *= 40 / d; dy *= 40 / d; }
+  joyEl.firstElementChild.style.transform = `translate(${dx}px,${dy}px)`;
+}
+function readInput() {
+  let x = 0, y = 0;
+  if (keys.has('arrowleft') || keys.has('a')) x -= 1;
+  if (keys.has('arrowright') || keys.has('d')) x += 1;
+  if (keys.has('arrowup') || keys.has('w')) y -= 1;
+  if (keys.has('arrowdown') || keys.has('s')) y += 1;
+  if (joy) {
+    const dx = joy.x - joy.ox, dy = joy.y - joy.oy;
+    if (Math.hypot(dx, dy) > 10) { x = dx; y = dy; }
+  }
+  const l = Math.hypot(x, y);
+  return l ? { x: x / l, y: y / l } : { x: 0, y: 0 };
+}
+
+// ---------- 規則 ----------
+function shadowAt(d) { const i = tick - Math.round(d * HZ); return i >= 0 ? hist[i] : null; }
+function step() {
+  const inp = readInput();
+  if (inp.x) moveAxis(inp.x * SPEED * DT, 0);
+  if (inp.y) moveAxis(0, inp.y * SPEED * DT);
+  tick++; time += DT;
+  hist.push({ x: player.x, y: player.y });
+
+  const shadows = L.shadows.map(shadowAt);
+  let allLit = switches.length > 0;
+  for (const s of switches) {
+    const on = shadows.some(p => p && Math.hypot(p.x - s.x, p.y - s.y) < TOUCH);
+    if (on) s.t = s.hold; else if (s.t > 0 && s.hold !== Infinity) s.t = Math.max(0, s.t - DT);
+    if (s.t <= 0) allLit = false;
+  }
+  // 出口只在「所有開關同時亮著」時打開，任何一個熄掉就會關上
+  opened = allLit;
+  openLeft = allLit ? Math.min(...switches.map(s => s.t)) : 0;
+
+  for (const p of shadows) {
+    if (p && Math.hypot(p.x - player.x, p.y - player.y) < CATCH) { die(p); return; }
+  }
+  if (opened && Math.hypot(player.x - exitPos.x, player.y - exitPos.y) < TOUCH) win();
+}
+function die(p) {
+  state = 'dead'; deaths++; deadTimer = 0.75; deadAt = { x: player.x, y: player.y };
+  toast(Lx('被影子抓到了|Caught by a shadow'));
+}
+function win() {
+  state = 'win'; winAnim = 0;
+  const t = Math.round(time * 10) / 10;
+  const prev = bests[lvIndex];
+  if (prev == null || t < prev) { bests[lvIndex] = t; store.set('bests', bests); }
+  if (lvIndex + 2 > unlocked) { unlocked = Math.min(LEVELS.length, lvIndex + 2); store.set('unlocked', unlocked); }
+  document.getElementById('winTime').textContent = t.toFixed(1);
+  document.getElementById('winBest').textContent = bests[lvIndex].toFixed(1);
+  document.getElementById('winDeaths').textContent = deaths;
+  const h = host(), got = h && roundOn ? Math.max(0, Math.floor(Number(h.clear(window, lvIndex)) || 0)) : 0;
+  earned += got; winGot = got; renderWin();
+  setTimeout(() => show('ovWin'), 450);
+}
+let winGot = 0;
+function renderWin() {
+  document.getElementById('winBonus').textContent = winGot ? Lx('BONUS +{p} 點已入帳|BONUS +{p} pts added', { p: winGot }) : '';
+  document.getElementById('btnNext').textContent = lvIndex + 1 < LEVELS.length ? Lx('下一關|Next stage') : Lx('全部通關！回選單|All cleared! Back to menu');
+}
+let toastT = 0;
+function toast(msg) {
+  const el = document.getElementById('toast'); el.textContent = msg; el.style.opacity = 1;
+  clearTimeout(toastT); toastT = setTimeout(() => el.style.opacity = 0, 900);
+}
+
+// ---------- 畫面（皮影戲） ----------
+const SIL = '#1a0e06';
+const SFONT = '"Noto Serif TC","Songti TC","PMingLiU",serif';
+let screenBg = null;
+function makeScreen() {
+  const c = document.createElement('canvas'); c.width = c.height = W; const g = c.getContext('2d');
+  const rg = g.createRadialGradient(W / 2, W * .4, 30, W / 2, W / 2, W * .78);
+  rg.addColorStop(0, '#fbdca6'); rg.addColorStop(.5, '#eba65c'); rg.addColorStop(1, '#9a4e22');
+  g.fillStyle = rg; g.fillRect(0, 0, W, W);
+  // 布紋
+  g.fillStyle = 'rgba(90,46,20,.05)';
+  for (let x = 0; x < W; x += 3) g.fillRect(x, 0, 1, W);
+  for (let y = 0; y < W; y += 4) g.fillRect(0, y, W, 1);
+  return c;
+}
+function rrect(x, y, w, h, r) {
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+// 角色朝向：看最近幾格的移動方向
+function facingAt(i) {
+  if (i == null || i < 1) return 1;
+  const a = hist[Math.max(0, i - 8)], b = hist[i];
+  return b.x < a.x - .5 ? -1 : 1;
+}
+// 皮影偶：圓身體、兩隻尖耳、朝向一側的尖嘴，底下一根操偶桿
+function puppet(x, y, face, o) {
+  ctx.save();
+  ctx.globalAlpha = o.alpha;
+  if (o.blur) { ctx.shadowColor = SIL; ctx.shadowBlur = o.blur; }
+  ctx.fillStyle = SIL;
+  ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(x - 8, y - 6); ctx.lineTo(x - 6, y - 19); ctx.lineTo(x - 1, y - 9);
+  ctx.moveTo(x + 1, y - 9); ctx.lineTo(x + 6, y - 19); ctx.lineTo(x + 8, y - 6);
+  ctx.moveTo(x + face * 8, y - 4); ctx.lineTo(x + face * 18, y + 1); ctx.lineTo(x + face * 8, y + 6);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  // 操偶桿
+  ctx.strokeStyle = SIL; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.moveTo(x - face * 2, y + R - 1); ctx.lineTo(x - face * 9, y + R + 22); ctx.stroke();
+  // 鏤空的眼睛（玩家是紅色眼睛）
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = o.eye;
+  ctx.beginPath(); ctx.arc(x + face * 4, y - 3, 2.4, 0, Math.PI * 2); ctx.fill();
+  if (o.mark) { ctx.beginPath(); ctx.arc(x - face * 2, y + 4, 1.6, 0, Math.PI * 2); ctx.arc(x + face * 1.5, y + 6, 1.3, 0, Math.PI * 2); ctx.fill(); }
+  ctx.restore();
+}
+function lantern(s, now) {
+  const lit = s.t > 0;
+  ctx.save(); ctx.translate(s.x, s.y);
+  if (lit) {
+    const gl = ctx.createRadialGradient(0, 0, 4, 0, 0, 40);
+    gl.addColorStop(0, 'rgba(255,214,130,.75)'); gl.addColorStop(1, 'rgba(255,214,130,0)');
+    ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(0, 0, 40, 0, Math.PI * 2); ctx.fill();
+  }
+  // 吊繩
+  ctx.strokeStyle = SIL; ctx.lineWidth = 1.2; ctx.globalAlpha = lit ? 1 : .55;
+  ctx.beginPath(); ctx.moveTo(0, -17); ctx.lineTo(0, -21); ctx.stroke();
+  // 燈籠本體
+  ctx.fillStyle = lit ? '#d8432f' : 'rgba(26,14,6,.18)';
+  ctx.beginPath(); ctx.ellipse(0, 0, 11, 13, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = SIL; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.lineWidth = 1; ctx.globalAlpha *= .7;
+  ctx.beginPath(); ctx.ellipse(0, 0, 5, 13, 0, 0, Math.PI * 2); ctx.moveTo(0, -13); ctx.lineTo(0, 13); ctx.stroke();
+  ctx.globalAlpha = lit ? 1 : .55;
+  ctx.fillStyle = SIL; ctx.fillRect(-6, -16, 12, 4); ctx.fillRect(-6, 12, 12, 4);
+  // 流蘇
+  ctx.strokeStyle = lit ? '#d8432f' : SIL; ctx.lineWidth = 1.4;
+  ctx.beginPath(); for (const dx of [-3, 0, 3]) { ctx.moveTo(dx, 16); ctx.lineTo(dx + Math.sin(now / 300 + dx) * 1.5, 24); } ctx.stroke();
+  ctx.globalAlpha = 1;
+  if (lit && s.hold !== Infinity) {
+    ctx.strokeStyle = SIL; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(0, 0, 19, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (s.t / s.hold)); ctx.stroke();
+  }
+  if (s.hold !== Infinity && !lit) {
+    ctx.fillStyle = SIL; ctx.font = `700 12px ${SFONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(Lx('{n} 秒|{n}s', { n: s.hold }), 0, 33);
+  }
+  ctx.restore();
+}
+function draw(now) {
+  if (!screenBg) screenBg = makeScreen();
+  ctx.drawImage(screenBg, 0, 0);
+  // 油燈閃爍
+  const flick = Math.max(0, .05 + .035 * Math.sin(now / 90) + .025 * Math.sin(now / 37));
+  ctx.fillStyle = `rgba(255,224,160,${flick})`; ctx.fillRect(0, 0, W, W);
+  if (!L) return;
+  // 牆：剪影，加上鏤空花紋
+  ctx.fillStyle = SIL;
+  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) if (grid[r][c]) ctx.fillRect(c * T - .5, r * T - .5, T + 1, T + 1);
+  ctx.fillStyle = 'rgba(235,166,92,.32)';
+  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+    if (!grid[r][c] || (r + c) % 2) continue;
+    const x = c * T + T / 2, y = r * T + T / 2;
+    ctx.beginPath(); ctx.moveTo(x, y - 7); ctx.lineTo(x + 7, y); ctx.lineTo(x, y + 7); ctx.lineTo(x - 7, y); ctx.closePath(); ctx.fill();
+  }
+  // 出口：月洞門
+  ctx.save(); ctx.translate(exitPos.x, exitPos.y);
+  if (opened) {
+    const gl = ctx.createRadialGradient(0, 0, 6, 0, 0, 44);
+    gl.addColorStop(0, 'rgba(255,248,225,.95)'); gl.addColorStop(1, 'rgba(255,240,200,0)');
+    ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(0, 0, 44, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#fff6dc'; ctx.beginPath(); ctx.arc(0, 0, 16, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = SIL; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.arc(0, 0, 17, 0, Math.PI * 2); ctx.stroke();
+    if (openLeft !== Infinity) {
+      ctx.fillStyle = openLeft < 2 && Math.floor(now / 120) % 2 ? '#b8322a' : SIL;
+      ctx.font = `900 14px ${SFONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(openLeft.toFixed(1), 0, -30);
+    }
+  } else {
+    ctx.strokeStyle = 'rgba(26,14,6,.55)'; ctx.lineWidth = 3; ctx.setLineDash([5, 5]);
+    ctx.beginPath(); ctx.arc(0, 0, 17, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(26,14,6,.12)'; ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+  // 影子之後會走的路
+  const maxD = Math.max(...L.shadows);
+  const from = Math.max(0, tick - Math.round(maxD * HZ));
+  if (hist.length > 1) {
+    ctx.strokeStyle = 'rgba(26,14,6,.13)'; ctx.lineWidth = 2 * R; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(hist[from].x, hist[from].y);
+    for (let i = from + 1; i <= tick; i += 2) ctx.lineTo(hist[i].x, hist[i].y);
+    ctx.lineTo(hist[tick].x, hist[tick].y); ctx.stroke();
+  }
+  for (const s of switches) lantern(s, now);
+  // 影子出生倒數
+  for (const d of L.shadows) {
+    const left = d - tick / HZ;
+    if (left > 0) {
+      ctx.strokeStyle = 'rgba(26,14,6,.5)'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(start.x, start.y, R + 6 + d * 3, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (left / d)); ctx.stroke();
+    }
+  }
+  // 影子：模糊、半透明的偶
+  L.shadows.forEach(d => {
+    const i = tick - Math.round(d * HZ); if (i < 0) return;
+    const p = hist[i];
+    puppet(p.x, p.y, facingAt(i), { alpha: .42, blur: 10, eye: 'rgba(251,220,166,.8)' });
+    ctx.fillStyle = 'rgba(26,14,6,.7)'; ctx.font = `700 10px ${SFONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(d + 's', p.x, p.y + R + 9);
+  });
+  // 玩家：清楚的黑色剪影 + 紅眼
+  const pp = deadAt || player;
+  if (state === 'dead') {
+    const k = 1 - deadTimer / 0.75;
+    ctx.save(); ctx.globalAlpha = 1 - k; ctx.strokeStyle = '#b8322a'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(pp.x, pp.y, R + k * 30, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+  }
+  puppet(pp.x, pp.y, facingAt(tick), { alpha: 1, blur: 0, eye: state === 'dead' ? '#ff8a6a' : '#e0452f', mark: true });
+  if (state === 'win') {
+    winAnim = Math.min(1, winAnim + 0.03);
+    ctx.fillStyle = `rgba(255,244,214,${0.35 * (1 - winAnim)})`; ctx.fillRect(0, 0, W, W);
+  }
+}
+
+// ---------- 主迴圈 ----------
+let last = performance.now(), acc = 0;
+function frame(now) {
+  let dt = (now - last) / 1000; last = now;
+  if (!platformVisible) { requestAnimationFrame(frame); return; }
+  if (dt > 0.1) dt = 0.1;
+  if (state === 'play') {
+    acc += dt;
+    while (acc >= DT && state === 'play') { step(); acc -= DT; }
+  } else acc = 0;
+  if (state === 'dead') {
+    deadTimer -= dt;
+    if (deadTimer <= 0) { resetRun(); state = 'play'; }
+  }
+  document.getElementById('time').textContent = time.toFixed(1);
+  draw(now);
+  requestAnimationFrame(frame);
+}
+
+// ---------- 介面 ----------
+function show(id) { document.querySelectorAll('.overlay').forEach(o => o.classList.toggle('show', o.id === id)); }
+function openMenu() {
+  if (state === 'pause') tellResume();
+  state = 'menu';
+  renderMenu(); renderNote();
+  show('ovMenu');
+}
+function renderMenu() {
+  const box = document.getElementById('levels'); box.innerHTML = '';
+  LEVELS.forEach((lv, i) => {
+    const b = document.createElement('button');
+    b.innerHTML = (i + 1) + (bests[i] != null ? `<small>${bests[i].toFixed(1)}s</small>` : '');
+    b.disabled = i >= unlocked;
+    if (bests[i] != null) b.classList.add('done');
+    b.onclick = () => { if (ensureRound()) intro(i); };
+    box.appendChild(b);
+  });
+}
+function intro(i) {
+  loadLevel(i); deaths = 0; state = 'intro';
+  renderIntro();
+  show('ovIntro');
+}
+function renderIntro() {
+  document.getElementById('introLv').textContent = Lx('第 {n} 關 · 影子 {s} 個|Stage {n} · {s} shadow(s)', { n: lvIndex + 1, s: L.shadows.length });
+  document.getElementById('introName').textContent = Lx(L.name);
+  document.getElementById('introTip').innerHTML = Lx(L.tip);
+}
+function begin() { show(null); resetRun(); state = 'play'; last = performance.now(); }
+function next() { if (lvIndex + 1 < LEVELS.length) intro(lvIndex + 1); else openMenu(); }
+document.getElementById('btnGo').onclick = begin;
+document.getElementById('btnNext').onclick = next;
+document.getElementById('btnWinMenu').onclick = openMenu;
+document.getElementById('btnMenu').onclick = openMenu;
+document.getElementById('btnRestart').onclick = () => { if (state === 'play' || state === 'dead') { resetRun(); state = 'play'; } };
+
+// ---------- 暫停：切走遊戲、背景分頁時自動暫停，回來要按「繼續」 ----------
+function pauseGame() {
+  if (state !== 'play' && state !== 'dead') return;
+  if (state === 'dead') { resetRun(); }
+  state = 'pause'; keys.clear();
+  if (joy) { joy = null; joyEl.style.display = 'none'; }
+  show('ovPause');
+  const h = host(); if (h && roundOn && h.pause) h.pause(window);
+}
+function tellResume() { const h = host(); if (h && roundOn && h.resume) h.resume(window); }
+function resumeGame() {
+  if (state !== 'pause') return;
+  state = 'play'; show(null); last = performance.now(); tellResume();
+}
+document.getElementById('btnResume').onclick = resumeGame;
+document.addEventListener('visibilitychange', () => { if (document.hidden) pauseGame(); });
+
+// 父頁介面：右側按鈕開局、切換畫面、結束本局
+window.startShadowPlatformRound = () => { if (roundOn) return roundOn; if (ensureRound()) openMenu(); return roundOn; };
+window.setShadowPlatformActive = v => { platformVisible = !!v; last = performance.now(); if (!platformVisible) pauseGame(); else resize(); };
+window.endShadowPlatformRound = () => { roundOn = false; earned = 0; openMenu(); };
+
+function relang() {
+  applyStatic(); renderLabels(); renderNote(); renderWin(); renderMenu(); renderIntro();
+}
+try { window.parent.addEventListener('arcade-languagechange', relang); } catch (e) {}
+applyStatic();
+loadLevel(0);
+openMenu();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

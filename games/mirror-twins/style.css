@@ -1,0 +1,1 @@
+.mt-stage{min-width:0;display:flex;flex-direction:column;align-items:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#000}.mt-stage iframe{display:block;width:100%;height:min(780px,calc(100svh - 150px));min-height:520px;border:0;background:#000}

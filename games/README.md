@@ -45,3 +45,7 @@
 | [打磚塊 Breakout](breakout/README.md) | `#breakout` | 免費懷舊 | 顯示 | 228 行 | 移動擋板反彈小球，打光磚塊一關闖過一關。 |
 | [小灰出門 Pet Walkies](pet-walk/README.md) | `#pet-walk` | 技巧闖關 | 顯示 | 1104 行 | 一鍵帶小灰散步，路上撞見野狗、河鯊和幸運轉盤。 |
 | [拒絕加班 No Overtime!](office-shoot/README.md) | `#office-shoot` | 技巧闖關 | 顯示 | 1178 行 | 自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。 |
+| [數字吞噬 Number Gulp](eat-smaller/README.md) | `#eat-smaller` | 技巧闖關 | 顯示 | 62 行 | 吃掉比你小的數字、躲開比你大的，剛好變成目標數字就過關。 |
+| [鏡像雙子 Mirror Twins](mirror-twins/README.md) | `#mirror-twins` | 技巧闖關 | 顯示 | 62 行 | 同時操控兩位太空人，其中一位左右相反，一起走進傳送艙。 |
+| [影子接力 Shadow Relay](shadow-relay/README.md) | `#shadow-relay` | 技巧闖關 | 顯示 | 62 行 | 影子會照你的路線重走，讓它點亮燈籠，別被它追上。 |
+| [一筆畫守城 One-Line Defense](one-line-defense/README.md) | `#one-line-defense` | 技巧闖關 | 顯示 | 59 行 | 只能畫一條線擋住湧向核心的敵人，線越長消失越快。 |

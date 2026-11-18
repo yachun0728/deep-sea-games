@@ -293,5 +293,33 @@
     "view": "games/office-shoot/view.html",
     "card": "games/office-shoot/card.html",
     "icon": "games/office-shoot/icon.svg"
+  },
+  {
+    "id": "eat-smaller",
+    "logic": "games/eat-smaller/game.js",
+    "view": "games/eat-smaller/view.html",
+    "card": "games/eat-smaller/card.html",
+    "icon": "games/eat-smaller/icon.svg"
+  },
+  {
+    "id": "mirror-twins",
+    "logic": "games/mirror-twins/game.js",
+    "view": "games/mirror-twins/view.html",
+    "card": "games/mirror-twins/card.html",
+    "icon": "games/mirror-twins/icon.svg"
+  },
+  {
+    "id": "shadow-relay",
+    "logic": "games/shadow-relay/game.js",
+    "view": "games/shadow-relay/view.html",
+    "card": "games/shadow-relay/card.html",
+    "icon": "games/shadow-relay/icon.svg"
+  },
+  {
+    "id": "one-line-defense",
+    "logic": "games/one-line-defense/game.js",
+    "view": "games/one-line-defense/view.html",
+    "card": "games/one-line-defense/card.html",
+    "icon": "games/one-line-defense/icon.svg"
   }
 ]

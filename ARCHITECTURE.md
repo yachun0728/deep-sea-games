@@ -38,6 +38,7 @@ deep-sea-games/
 │   ├── README.md             所有遊戲的索引，同樣自動產生
 │   ├── boba/original.html    額外：珍奶原始完整子頁
 │   ├── dive/、mrt/           另含 original.html（原始完整子頁）與 style.css（限定該遊戲的平台外框樣式）
+│   ├── eat-smaller/、mirror-twins/、shadow-relay/、one-line-defense/  同上，srcdoc 子頁＋style.css
 │   └── pancake/original.html 額外：泡麵煎餅子頁（iframe src 載入）與 assets/ 圖片、style.css
 ├── tools/
 │   ├── build.py              Python 標準函式庫靜態組合／檢查
@@ -99,6 +100,8 @@ flowchart TD
 | boba | BOBA、deepSeaBoba；original.html 為子頁 |
 | dive | DIVE、deepSeaDive；original.html 為子頁（一口氣探險） |
 | mrt | MRT、deepSeaMrt；original.html 為子頁（捷運搶位） |
+| eat-smaller / mirror-twins / shadow-relay | EATS／deepSeaEatSmaller、MIRR／deepSeaMirrorTwins、SHAD／deepSeaShadowRelay；original.html 為子頁（數字吞噬／鏡像雙子／影子接力，關卡制，一局內每關首通 +2 點） |
+| one-line-defense | ONEL、deepSeaOneLine；original.html 為子頁（一筆畫守城，每撐過 30 秒 +2 點） |
 | pancake | PANCAKE、deepSeaPancake；original.html 為以 iframe src 載入的子頁，圖片在 assets/ |
 
 ### 隱藏遊戲
@@ -161,6 +164,10 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `straw_game_today` | 珍奶當日紀錄 `{d,n}` |
 | `diveBestScore` | 一口氣探險最佳分數（子頁寫入，同源；舊 `diveBestMult` 保留不讀） |
 | `mrtBestTier` | 捷運搶位最佳階數（子頁寫入，同源；舊 `mrtBestMult` 保留不讀） |
+| `eatSmaller.unlocked` / `eatSmaller.bests` | 數字吞噬已解鎖關數、每關最佳秒數（JSON，子頁寫入）；新增於 2026-11-18，沿用原版 Key |
+| `mirrorTwins.unlocked` / `mirrorTwins.stars` | 鏡像雙子已解鎖關數、每關最佳星等（JSON，子頁寫入）；新增於 2026-11-18 |
+| `shadowRelay.unlocked` / `shadowRelay.bests` | 影子接力已解鎖關數、每關最佳秒數（JSON，子頁寫入）；新增於 2026-11-18 |
+| `oneLine.best` / `oneLine.tutDone` | 一筆畫守城最佳分數、教學已完成（JSON，子頁寫入）；新增於 2026-11-18 |
 | `deep-sea-free-until` | 泡麵煎餅看示範廣告後的免扣點截止時間（毫秒時間戳）；新增於 2026-11-17，只有泡麵煎餅讀取 |
 | `noodle_pancake_events` | 泡麵煎餅本機事件紀錄，上限 3,000 筆 |
 | `mini_player_id` | 泡麵煎餅（及之後的小遊戲）本機玩家識別值，不送 GA4 |

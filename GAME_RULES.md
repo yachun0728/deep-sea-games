@@ -68,6 +68,10 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 | peek / 別看 Don’t Peek | 固定10 | 躲過 3 次襲擊 +2 點、打開盒子 +5 點，各當場入帳且每局只發一次（每局最多 7 點）；死亡不扣回，分數不給點 |
 | pet-walk / 小灰出門 Pet Walkies | 固定10 | 一趟 60 步，每走完一段 20 步 +1 點當場入帳（每趟最多 3 點，淨支出 7 點）；轉盤、物資與分數不給點 |
 | office-shoot / 拒絕加班 No Overtime! | 固定10 | 無盡；第 1～5 天每擊敗當天大魔王 +2 點當場入帳（每天每局只發一次，最多 10 點，剛好回本）；第 6 天起不給點，加班結束不扣回，分數不給點 |
+| eat-smaller / 數字吞噬 Number Gulp | 固定10 | 8 關；一局內自由選關重玩，本局每關第一次通過 +2 點當場入帳（同局同關不重發，最多 10 點，剛好回本）；失敗重來不另扣，按「結束本局」結束，結束不另發點、不扣回 |
+| mirror-twins / 鏡像雙子 Mirror Twins | 固定10 | 10 關；同數字吞噬：本局每關第一次通過 +2 點（最多 10 點）；星等與步數不給點 |
+| shadow-relay / 影子接力 Shadow Relay | 固定10 | 8 關；同數字吞噬：本局每關第一次通過 +2 點（最多 10 點）；時間與失敗次數不給點 |
+| one-line-defense / 一筆畫守城 One-Line Defense | 固定10 | 無盡；教學後每撐過 30 秒 +2 點當場入帳（30～150 秒各一次，最多 10 點，剛好回本）；核心被攻破結束不扣回，分數與連擊不給點 |
 | mosquito / 血壓上升 Midnight Mosquito | 固定10 | 吸血 25%／50%／75% 立即 +1／+2／+3 點，吸滿並從窗洞逃出再 +4 點，每局最多 10 點、每項只發一次；死亡不扣回 |
 | last-hair / 尊嚴保衛戰 The Last Hair | 固定10 | 抵達 100／250／400／500 公尺各立即 +1／+2／+3／+4 點，每局各發一次，共 10 點剛好回本；頭髮掉光不扣回，距離與頭髮根數不給點 |
 | nap / 偷睡大師 Nap Master | 固定10 | 共10關；每過1關 +1 點當場入帳，10關全過共10點，被炒魷魚不另結算，分數不給點 |
@@ -520,6 +524,59 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 - 語言：原版畫布內的語言鈕已移除，改跟隨大廳語言（`window.deepSeaI18n`），每格依目前語言輸出。所有遊戲內字串寫成「中文|English」單一字面量，`locales/en.json` 以完整字串當 key（同小灰出門做法，避免短 key 影響其他遊戲）。右側訊息與數值欄位標記 `data-i18n-ignore` 由遊戲自行輸出；按鈕、規則與卡片沿用顯示層翻譯。`js/i18n.js` 的 `names` 清單加入 `No Overtime!`。
 - 測試：`node tools/test_office_shoot.mjs`。
 - 平衡：沿用原版數值，尚未依真人數據調整；前 5 天能否穩定通過（影響 BONUS 期望值）待真人測試。
+
+## 40. 數字吞噬 Number Gulp（eat-smaller）
+
+定位：父頁 `games/eat-smaller/game.js`（`EATS`、`window.deepSeaEatSmaller`），子頁 `games/eat-smaller/original.html` 以 srcdoc 載入（同一口氣探險模式，右側 `.console` 面板）。2026-11-18 由使用者提供的單檔 HTML（games-innovation/eat-smaller.html）接入平台，保留原玩法、關卡與數值。你是一個數字，吃掉比你小的、躲開比你大的（碰到即結束本關），運算符 −3／+1／÷2 碰到立即生效，剛好等於目標才過關；越大游得越慢，部分大數字會追人。8 關目標依序為 12、25、40、30、99、50、61、128。
+
+- 入場：每局固定扣 `ENTRY_FEE`（10 點）。按右側「扣點開始一局」，或在子頁選單直接點一關，都走子頁 `ensureRound` → `deepSeaEatSmaller.start` 由父頁驗證來源、檢查餘額後扣款並 `AN.start('eat-smaller')`；回傳 0 代表未扣款，子頁不開關。餘額不足顯示 `LOW_MSG`；進行中右側開始鈕停用、重複點擊不再扣。
+- 一局：扣款後可在子頁自由選已解鎖的關、重玩，失敗按「再試一次」或 R 直接重來不另扣點。按右側「結束本局」（`esFinish` → `endEatPlatformRound`）結束；子頁回到選單，下一次選關需重新扣點。沒有自動結束條件。
+- BONUS（固定點數，不依入場費計算）：子頁過關時呼叫 `deepSeaEatSmaller.clear(level)`；父頁以 `paid[level]` 確保同一局每關只發一次 2 點，累計上限 10 點（共 8 關，最多 5 關有獎勵，剛好回本）。同關重複通過、已達上限都回 0 並提示。已入帳點數不收回，結束不另發點；重新整理時已入帳的保留，入場不退。
+- 追蹤：每次過關送一次 `AN.progress`（`stage`＝關卡、`step`＝本局過關次數、`bonus_points`＝本次入帳，可能為 0、`total_bonus_points`）。結束本局送一次 `AN.end`（payout＝本局已入帳 BONUS，result `complete`，附 `step`）。正常離頁由本款 capture 階段 `pagehide` 先送 `abandoned` 並帶已入帳 BONUS；BFCache persisted 不結束。暫停：切走畫面（`setEatPlatformActive(false)`）或背景分頁時進行中的關卡會暫停並顯示「繼續」，暫停送 `AN.progress(phase:pause)`、繼續送 `AN.resume`。
+- 子頁單獨開啟（無父頁）時是不扣點的示範模式。
+- 儲存：沿用原版 Key `eatSmaller.unlocked`（已解鎖關數）與 `eatSmaller.bests`（每關最佳秒數，JSON），子頁同源寫入；新增於 2026-11-18。
+- 語言：子頁字串寫成「中文|English」單一字面量，`Lx()` 依父頁 `window.deepSeaI18n` 的目前語言輸出並在 `arcade-languagechange` 時重繪（粗體以 `**` 標記，避免翻譯測試把句子拆成短 key）；`locales/en.json` 以完整字串當 key。父頁訊息 `*-msg` 與數值欄位標記 `data-i18n-ignore` 由遊戲自行輸出，按鈕、規則與卡片沿用顯示層翻譯。單獨開啟子頁時維持中文。
+- 重設 500 點：本局進行中會被擋下並顯示提示；重設不算 BONUS。
+
+## 41. 鏡像雙子 Mirror Twins（mirror-twins）
+
+定位：父頁 `games/mirror-twins/game.js`（`MIRR`、`window.deepSeaMirrorTwins`），子頁 `games/mirror-twins/original.html` 以 srcdoc 載入（同一口氣探險模式，右側 `.console` 面板）。2026-11-18 由使用者提供的單檔 HTML（games-innovation/mirror-twins.html）接入平台，保留原玩法、關卡與數值。回合制推箱類解謎：一次操控兩位太空人，藍色照按鍵方向、橘色左右相反；撞到小行星的那位停住，兩人同時站進各自傳送艙才過關，踩到雷射地雷自動退回上一步。最少步數由 BFS（`solve`）計算，依步數給 1～3 星。
+
+- 入場：每局固定扣 `ENTRY_FEE`（10 點）。按右側「扣點開始一局」，或在子頁選單直接點一關，都走子頁 `ensureRound` → `deepSeaMirrorTwins.start` 由父頁驗證來源、檢查餘額後扣款並 `AN.start('mirror-twins')`；回傳 0 代表未扣款，子頁不開關。餘額不足顯示 `LOW_MSG`；進行中右側開始鈕停用、重複點擊不再扣。
+- 一局：扣款後可在子頁自由選已解鎖的關、重玩，失敗可按上一步或 R 重來不另扣點。按右側「結束本局」（`mtFinish` → `endMirrorPlatformRound`）結束；子頁回到選單，下一次選關需重新扣點。沒有自動結束條件。
+- BONUS（固定點數，不依入場費計算）：子頁過關時呼叫 `deepSeaMirrorTwins.clear(level)`；父頁以 `paid[level]` 確保同一局每關只發一次 2 點，累計上限 10 點（共 10 關，最多 5 關有獎勵，剛好回本）。同關重複通過、已達上限都回 0 並提示。已入帳點數不收回，結束不另發點；重新整理時已入帳的保留，入場不退。
+- 追蹤：每次過關送一次 `AN.progress`（`stage`＝關卡、`step`＝本局過關次數、`bonus_points`＝本次入帳，可能為 0、`total_bonus_points`）。結束本局送一次 `AN.end`（payout＝本局已入帳 BONUS，result `complete`，附 `step`）。正常離頁由本款 capture 階段 `pagehide` 先送 `abandoned` 並帶已入帳 BONUS；BFCache persisted 不結束。回合制不需暫停，切走畫面時只停止繪圖（`setMirrorPlatformActive`）。
+- 子頁單獨開啟（無父頁）時是不扣點的示範模式。
+- 儲存：沿用原版 Key `mirrorTwins.unlocked`（已解鎖關數）與 `mirrorTwins.stars`（每關最佳星等，JSON），子頁同源寫入；新增於 2026-11-18。
+- 語言：子頁字串寫成「中文|English」單一字面量，`Lx()` 依父頁 `window.deepSeaI18n` 的目前語言輸出並在 `arcade-languagechange` 時重繪（粗體以 `**` 標記，避免翻譯測試把句子拆成短 key）；`locales/en.json` 以完整字串當 key。父頁訊息 `*-msg` 與數值欄位標記 `data-i18n-ignore` 由遊戲自行輸出，按鈕、規則與卡片沿用顯示層翻譯。單獨開啟子頁時維持中文。
+- 重設 500 點：本局進行中會被擋下並顯示提示；重設不算 BONUS。
+
+## 42. 影子接力 Shadow Relay（shadow-relay）
+
+定位：父頁 `games/shadow-relay/game.js`（`SHAD`、`window.deepSeaShadowRelay`），子頁 `games/shadow-relay/original.html` 以 srcdoc 載入（同一口氣探險模式，右側 `.console` 面板）。2026-11-18 由使用者提供的單檔 HTML（games-innovation/shadow-relay.html）接入平台，保留原玩法、關卡與數值。影子會延遲幾秒照玩家路線重走，碰到玩家即本關失敗並自動重來；燈籠開關只有影子點得亮，全部同時亮著出口才開。後段關卡有 2～3 個影子、開關限時亮 7～8 秒。
+
+- 入場：每局固定扣 `ENTRY_FEE`（10 點）。按右側「扣點開始一局」，或在子頁選單直接點一關，都走子頁 `ensureRound` → `deepSeaShadowRelay.start` 由父頁驗證來源、檢查餘額後扣款並 `AN.start('shadow-relay')`；回傳 0 代表未扣款，子頁不開關。餘額不足顯示 `LOW_MSG`；進行中右側開始鈕停用、重複點擊不再扣。
+- 一局：扣款後可在子頁自由選已解鎖的關、重玩，失敗被影子抓到會自動重來不另扣點。按右側「結束本局」（`srFinish` → `endShadowPlatformRound`）結束；子頁回到選單，下一次選關需重新扣點。沒有自動結束條件。
+- BONUS（固定點數，不依入場費計算）：子頁過關時呼叫 `deepSeaShadowRelay.clear(level)`；父頁以 `paid[level]` 確保同一局每關只發一次 2 點，累計上限 10 點（共 8 關，最多 5 關有獎勵，剛好回本）。同關重複通過、已達上限都回 0 並提示。已入帳點數不收回，結束不另發點；重新整理時已入帳的保留，入場不退。
+- 追蹤：每次過關送一次 `AN.progress`（`stage`＝關卡、`step`＝本局過關次數、`bonus_points`＝本次入帳，可能為 0、`total_bonus_points`）。結束本局送一次 `AN.end`（payout＝本局已入帳 BONUS，result `complete`，附 `step`）。正常離頁由本款 capture 階段 `pagehide` 先送 `abandoned` 並帶已入帳 BONUS；BFCache persisted 不結束。暫停：同數字吞噬，切走畫面或背景分頁時暫停並顯示「繼續」，送 pause／resume。
+- 子頁單獨開啟（無父頁）時是不扣點的示範模式。
+- 儲存：沿用原版 Key `shadowRelay.unlocked`（已解鎖關數）與 `shadowRelay.bests`（每關最佳秒數，JSON），子頁同源寫入；新增於 2026-11-18。
+- 語言：子頁字串寫成「中文|English」單一字面量，`Lx()` 依父頁 `window.deepSeaI18n` 的目前語言輸出並在 `arcade-languagechange` 時重繪（粗體以 `**` 標記，避免翻譯測試把句子拆成短 key）；`locales/en.json` 以完整字串當 key。父頁訊息 `*-msg` 與數值欄位標記 `data-i18n-ignore` 由遊戲自行輸出，按鈕、規則與卡片沿用顯示層翻譯。單獨開啟子頁時維持中文。
+- 重設 500 點：本局進行中會被擋下並顯示提示；重設不算 BONUS。
+
+## 43. 一筆畫守城 One-Line Defense（one-line-defense）
+
+定位：父頁 `games/one-line-defense/game.js`（`ONEL`、`window.deepSeaOneLine`），子頁 `games/one-line-defense/original.html` 以 srcdoc 載入。2026-11-18 由使用者提供的單檔 HTML 接入平台，保留原玩法與數值。敵人從四周湧向核心，同時只能有一條線，碰到線的敵人消滅；線越長壽命越短（0.6～4.5 秒），一條線連續消滅越多，連擊分數越高（只影響遊戲分數，不是點數倍率；原文「連擊倍率」改稱「連擊加分」）。大顆會撞斷線、紫色會分裂，核心被撞 5 次結束。首次遊玩先跑 3 步教學，教學中核心不受傷、時間不計。
+
+- 入場：每局固定扣 `ENTRY_FEE`（10 點）。右側「扣點開始守城」、子頁「開始」「重看教學」「再來一局」與空白鍵都走子頁 `begin` → `deepSeaOneLine.start`；回傳 0 不開局。進行中右側按鈕停用，重複點擊不再扣。
+- BONUS（固定點數）：教學結束後遊戲時間每滿 30 秒（`BONUS_EVERY`）呼叫 `deepSeaOneLine.bonus(mark)`，30／60／90／120／150 秒各 +2 點，父頁以 `marks[mark]` 防重發，一局最多 10 點、剛好回本。已入帳不收回。
+- 結算：核心被攻破時子頁 `gameOver` 呼叫一次 `finish({score,time,combo})`，父頁送一次 `AN.end`（payout＝已入帳 BONUS，有入帳 `complete`、否則 `loss`，附 `score`、`step`＝存活秒數、`combo`），結束不另發點。每次 BONUS 送 `AN.progress`（`stage`＝第幾個 30 秒、`step`＝秒數、`bonus_points`、`total_bonus_points`）。正常離頁由 capture 階段 `pagehide` 先送 `abandoned` 帶已入帳 BONUS。
+- 暫停：切走畫面或背景分頁時暫停並顯示「繼續」，送 pause／resume；暫停期間波次預定生成會跳過。
+- 子頁單獨開啟（無父頁）時是不扣點的示範模式。
+- 儲存：沿用原版 Key `oneLine.best`（最佳分數）與 `oneLine.tutDone`（教學已完成）；新增於 2026-11-18。
+- 語言：子頁字串寫成「中文|English」單一字面量，`Lx()` 依父頁 `window.deepSeaI18n` 的目前語言輸出並在 `arcade-languagechange` 時重繪（粗體以 `**` 標記，避免翻譯測試把句子拆成短 key）；`locales/en.json` 以完整字串當 key。父頁訊息 `*-msg` 與數值欄位標記 `data-i18n-ignore` 由遊戲自行輸出，按鈕、規則與卡片沿用顯示層翻譯。單獨開啟子頁時維持中文。
+- 重設 500 點：本局進行中會被擋下並顯示提示；重設不算 BONUS。
+- 平衡：沿用原版數值；能否穩定撐過 30～150 秒（影響 BONUS 期望值）待真人測試。
 
 ## 文件維護與驗證界線
 
