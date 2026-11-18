@@ -14,13 +14,14 @@ export function fixture(balance=500,savedBest=null,random=Math.random){
   let now=1000;
   const elements=new Map(),storage=new Map(savedBest===null?[]:[['deep-sea-peek-best',String(savedBest)]]),events=[];
   const drawing=new Proxy({},{get:(t,k)=>k in t?t[k]:(k==='createRadialGradient'||k==='createLinearGradient')?()=>({addColorStop(){}}):()=>{},set:(t,k,v)=>{t[k]=v;return true;}});
-  function el(id){if(!elements.has(id))elements.set(id,{hidden:false,value:'10',textContent:'',className:'',dataset:{},style:{},disabled:false,handlers:{},focus(){},getContext:()=>drawing,getBoundingClientRect:()=>({left:0,top:0,width:400,height:560}),addEventListener(type,fn){this.handlers[type]=fn;}});return elements.get(id);}
+  function el(id){if(!elements.has(id))elements.set(id,{hidden:false,value:'10',textContent:'',className:'',dataset:{},style:{},disabled:false,handlers:{},focus(){},getContext:()=>drawing,getBoundingClientRect:()=>({left:0,top:0,width:800,height:450}),addEventListener(type,fn){this.handlers[type]=fn;}});return elements.get(id);}
   const listeners={};
   const math=Object.create(Math);math.random=random;
   const sandbox={document:{hidden:false,addEventListener(){}},window:{addEventListener(){}},addEventListener(name,fn){(listeners[name]??=[]).push(fn);},Number,Math:math,String,JSON,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fmt:n=>String(n),AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
   sandbox.globalThis=sandbox;
   const ctx=vm.createContext(sandbox);vm.runInContext(source,ctx);
   const F=sandbox.__peek;
+  const start0=F.start;F.start=()=>{start0();if(F.ev('st')==='run'&&!F.noCampOff)F.ev('campNext=999')};   // most tests run past 20% without wanting the campfire
   const f={F,el,events,storage,wallet:sandbox.S,ev:F.ev,busy:()=>vm.runInContext('peekBusy',ctx),key:e=>{for(const fn of listeners.keydown||[])fn(e);},keyup:e=>{for(const fn of listeners.keyup||[])fn(e);},
     count:type=>events.filter(e=>e[0]===type).length,
     // Run the simulation for `sec` seconds in 0.05 s steps, stopping early once the round is no longer running.
@@ -117,10 +118,10 @@ check('Keys only work while the view is shown and a round is running',()=>{
 });
 check('Screen buttons and multi-touch map to tilt, cover and crank',()=>{
   const f=fixture();f.F.start();const c=f.el('peek-canvas');
-  c.handlers.pointerdown({pointerId:1,clientX:50,clientY:520,button:0,preventDefault(){}});c.handlers.pointerdown({pointerId:2,clientX:340,clientY:520,button:0,preventDefault(){}});
-  assert.equal(JSON.stringify(f.ev('btn')),JSON.stringify([1,0,0,1]));c.handlers.pointerup({pointerId:1});assert.equal(JSON.stringify(f.ev('btn')),JSON.stringify([0,0,0,1]));
-  c.handlers.pointerdown({pointerId:3,clientX:250,clientY:520,button:0,preventDefault(){}});assert.equal(JSON.stringify(f.ev('btn')),JSON.stringify([0,0,1,1]));
-  c.handlers.pointerdown({pointerId:4,clientX:200,clientY:200,button:0,preventDefault(){}});c.handlers.pointerup({pointerId:2});assert.equal(JSON.stringify(f.ev('btn')),JSON.stringify([0,0,1,1]));
+  c.handlers.pointerdown({pointerId:1,clientX:50,clientY:410,button:0,preventDefault(){}});c.handlers.pointerdown({pointerId:2,clientX:700,clientY:410,button:0,preventDefault(){}});
+  assert.equal(JSON.stringify(f.ev('btn')),JSON.stringify([1,0,0,1,0]));c.handlers.pointerup({pointerId:1});assert.equal(JSON.stringify(f.ev('btn')),JSON.stringify([0,0,0,1,0]));
+  c.handlers.pointerdown({pointerId:3,clientX:580,clientY:410,button:0,preventDefault(){}});assert.equal(JSON.stringify(f.ev('btn')),JSON.stringify([0,0,1,1,0]));
+  c.handlers.pointerdown({pointerId:4,clientX:400,clientY:200,button:0,preventDefault(){}});c.handlers.pointerup({pointerId:2});assert.equal(JSON.stringify(f.ev('btn')),JSON.stringify([0,0,1,1,0]));
 });
 check('Phone motion: leaning the phone sets the tilt and a face-down phone counts as covered',()=>{
   const f=fixture();f.F.start();f.F.ev('gyro.on=true;gyro.tilt=-.8;gyro.down=false');f.F.ev('gapT=999');f.F.update(.05);assert.equal(f.ev('tilt'),-.8);
@@ -161,6 +162,16 @@ check('Drawing runs in every state without throwing',()=>{
   for(const type of ['eye','twins','walker'])for(const phase of ['warn','judge']){f.spirit(type,1,phase);f.F.ev('ev.t=1');f.F.draw();f.hold('cover');f.F.draw();f.hold('cover',0);}
   f.F.ev('fxs.push({s:"x",x:1,y:1,col:"#fff",t:0})');f.F.draw();f.spirit('eye',1);f.run(10);f.F.draw();
   const w=fixture();w.F.start();w.F.ev('prog=99.9');w.hold('wind');w.run(1);w.F.draw();
+});
+check('Campfire at 20% pauses the run, offers three cards, and gives the chosen item',()=>{
+  const f=fixture();f.F.start();f.F.ev('campNext=20;gapT=999;prog=19.9');f.run(1);assert.ok(f.ev('camp')!==null&&f.ev('camp.state')==='pick');
+  const p0=f.ev('prog');f.F.update(.5);assert.equal(f.ev('prog'),p0);
+  f.F.ev('camp.choice=1');f.F.update(.05);assert.equal(f.ev('bag.charm'),1);assert.equal(f.ev('camp.state'),'rest');f.run(4);assert.equal(f.ev('camp'),null);assert.equal(f.ev('campNext'),40);
+});
+check('A charm absorbs one deadly mistake; a pickup needs the item to be near',()=>{
+  const f=fixture();f.F.start();f.F.ev('bag.charm=1');f.spirit('eye',1);f.run(10);assert.equal(f.ev('st'),'run');assert.equal(f.ev('bag.charm'),0);
+  f.F.ev('drops=[{k:"torch",side:1,z:.9}]');f.hold('pick');f.F.update(.05);assert.equal(f.ev('bag.torch'),0);
+  f.hold('pick',0);f.F.update(.05);f.F.ev('drops[0].z=.2');f.hold('pick');f.F.update(.05);assert.equal(f.ev('bag.torch'),1);
 });
 console.log(results.length+' peek checks passed');
 }

@@ -311,6 +311,7 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
 .sneak-hold{padding:18px 10px;width:100%;color:var(--lamp);border-color:var(--lamp);touch-action:none;user-select:none;-webkit-user-select:none}.sneak-hold:active:not(:disabled){background:var(--lamp);color:var(--abyss)}
 #sk-signal[data-state="look"]{border-color:var(--crush);color:var(--crush)}#sk-signal[data-state="warn"]{border-color:var(--lamp);color:var(--lamp)}
 .sneak-ladder{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.sneak-ladder span{padding:10px 6px;border:1px solid var(--line);background:var(--panel);border-radius:7px;text-align:center;color:var(--muted);font-size:13px}
+#peek-canvas{width:min(100%,800px)}
 @media(max-width:700px){.sneak-stage canvas{max-height:70vh;object-fit:contain}.sneak-ladder{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 .fishing-stage{min-width:0;display:grid;place-items:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:var(--abyss)}.fishing-stage canvas{display:block;width:100%;height:auto;touch-action:none;user-select:none;-webkit-user-select:none;outline-offset:-3px}
