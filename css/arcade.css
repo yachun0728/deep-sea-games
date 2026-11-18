@@ -193,7 +193,6 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--lamp); }
 .brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 h1 { font-family: var(--font-display); font-weight: 700; font-size: 26px; letter-spacing: .02em; margin: 0; line-height: 1.2; }
 h1 span { color: var(--lamp); }
-.demo-tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 1px 10px; white-space: nowrap; }
 .wallet { display: flex; align-items: baseline; gap: 10px; }
 .wallet .label { color: var(--muted); font-size: 13px; }
 .wallet .amount { font-family: var(--font-display); font-weight: 600; font-size: 22px; font-variant-numeric: tabular-nums; }

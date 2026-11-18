@@ -67,7 +67,7 @@ body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
 img { max-width: 100%; }
 [hidden] { display: none !important; }
 </style>
-<title>深海遊戲廳 Deep Sea Arcade</title>
+<title>TiCATiCA Games</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <style>
 /* Layout: a dive console. The sea (canvas) takes the wide left column and the curve runs downward;
@@ -264,7 +264,6 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--lamp); }
 .brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 h1 { font-family: var(--font-display); font-weight: 700; font-size: 26px; letter-spacing: .02em; margin: 0; line-height: 1.2; }
 h1 span { color: var(--lamp); }
-.demo-tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 1px 10px; white-space: nowrap; }
 .wallet { display: flex; align-items: baseline; gap: 10px; }
 .wallet .label { color: var(--muted); font-size: 13px; }
 .wallet .amount { font-family: var(--font-display); font-weight: 600; font-size: 22px; font-variant-numeric: tabular-nums; }
@@ -430,7 +429,7 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
   .wrap:not(.is-lobby) .brand-home{gap:7px;min-width:0}
   .wrap:not(.is-lobby) .brand-home-icon{width:25px;height:25px}
   .wrap:not(.is-lobby) .brand-home h1{min-width:0;margin:0;font-size:16px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .wrap:not(.is-lobby) .brand-home h1 span,.wrap:not(.is-lobby) .demo-tag,.wrap:not(.is-lobby) .wallet .label,.wrap:not(.is-lobby) .regen-hint{display:none}
+  .wrap:not(.is-lobby) .brand-home h1 span,.wrap:not(.is-lobby) .wallet .label,.wrap:not(.is-lobby) .regen-hint{display:none}
   .wrap:not(.is-lobby) .wallet-box{min-width:0;max-width:145px}
   .wrap:not(.is-lobby) .wallet{gap:4px;white-space:nowrap}
   .wrap:not(.is-lobby) .wallet .amount{font-size:19px;line-height:1.3}
@@ -955,8 +954,7 @@ body.ol-expanded { overflow: hidden; }
 <div class="wrap is-lobby" id="site-shell">
   <header class="top">
     <div class="brand">
-      <a class="brand-home" href="#lobby" aria-label="返回遊戲大廳" title="返回遊戲大廳"><svg class="brand-home-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9" fill="#123c4b" stroke="#326475"/><path d="m8 15 8-7 8 7v10h-6v-7h-4v7H8z" fill="none" stroke="#62e6d2" stroke-width="1.8" stroke-linejoin="round"/></svg><h1 id="game-name" tabindex="-1">深海遊戲廳 <span>Deep Sea Arcade</span></h1></a>
-      <span class="demo-tag">Demo · 虛擬點數</span>
+      <a class="brand-home" href="#lobby" aria-label="返回遊戲大廳" title="返回遊戲大廳"><svg class="brand-home-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9" fill="#123c4b" stroke="#326475"/><path d="m8 15 8-7 8 7v10h-6v-7h-4v7H8z" fill="none" stroke="#62e6d2" stroke-width="1.8" stroke-linejoin="round"/></svg><h1 id="game-name" tabindex="-1">TiCATiCA <span>Games</span></h1></a>
     </div>
     <div class="header-tools"><button type="button" id="open-wardrobe" class="wardrobe-open"><span class="wardrobe-preview" id="wardrobe-mini" aria-hidden="true"></span>我的造型</button><div class="language-switch" role="group" aria-label="Language / 語言" data-i18n-ignore><button type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button><button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button></div><div class="wallet-box"><div class="wallet">
       <span class="label" data-i18n-ignore>BONUS</span>
@@ -2157,7 +2155,6 @@ body.ol-expanded { overflow: hidden; }
   "BONUS：200m、500m、900m 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵與入場費無關；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。": "BONUS: Reach 200 m, 500 m and 900 m to earn 5 points at each milestone, credited immediately. Each milestone can be earned once per round, up to 15 points total. Rewards are independent of the entry fee. Failure or refreshing does not remove credited rewards; no extra points are paid at the end. Score and distance are for comparison only. These thresholds have not yet been calibrated through extensive playtesting.",
   "BONUS：300分、700分、1,300分 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵與入場費無關；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。": "BONUS: Reach scores of 300, 700 and 1,300 to earn 5 points at each milestone, credited immediately. Each milestone can be earned once per round, up to 15 points total. Rewards are independent of the entry fee. Failure or refreshing does not remove credited rewards; no extra points are paid at the end. Score and distance are for comparison only. These thresholds have not yet been calibrated through extensive playtesting.",
   "DREAM REPAIR / 時序修復": "DREAM REPAIR",
-  "Demo · 虛擬點數": "Demo · Virtual points",
   "IT 工程師": "IT Engineer",
   "Lv.1 脈衝": "Lv.1 Pulse",
   "Lv.13 光槍": "Lv.13 Beam",
@@ -2840,8 +2837,6 @@ body.ol-expanded { overflow: hidden; }
   "深海火線操作": "Reef Blaster controls",
   "深海火線：自動射擊，點左半邊或右半邊換道瞄準怪物與拾取武器": "Reef Blaster: auto-fire; tap left or right to change lanes, aim at monsters and collect weapons",
   "深海跑酷：點左半邊或右半邊換道": "Deep Sea Run: tap the left or right half to switch lanes",
-  "深海遊戲廳": "Deep Sea Arcade",
-  "深海遊戲廳 Deep Sea Arcade": "Deep Sea Arcade",
   "深海釣手": "Fishing",
   "深海釣手：按住收線、放開卸力，把魚拉上岸": "Fishing: hold to reel, release to ease tension and land the fish",
   "深海魚王": "Deep Sea Fish King",
@@ -17553,7 +17548,7 @@ function paint(){
   $('lobby-explore').addEventListener('click',function(){if($('lobby-games').scrollIntoView)$('lobby-games').scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});});
 
   /* ---------- tabs ---------- */
-  var VIEWS = { wardrobe: '我的造型 <span>My Wardrobe</span>', frontier: '荒島遠征 <span>Frontier Islands</span>', 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: '深海遊戲廳 <span>Deep Sea Arcade</span>', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', mermaid: '人魚接龍 <span>Mermaid Spider</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
+  var VIEWS = { wardrobe: '我的造型 <span>My Wardrobe</span>', frontier: '荒島遠征 <span>Frontier Islands</span>', 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: 'TiCATiCA <span>Games</span>', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', mermaid: '人魚接龍 <span>Mermaid Spider</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
   function route() {
     var v = location.hash.slice(1);
     // Hidden games keep their code but cannot be opened by link; show the lobby and correct the address.
