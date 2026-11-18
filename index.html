@@ -11562,6 +11562,9 @@ const EYE={warn:2.5,judge:3,away:.5,grace:.35};   // lean away from the red beam
 const TWIN={warn:2.5,judge:1.5,away:.6,toward:.3}; // lean away from the giggle side; leaning toward it is fatal
 const WALK={warn:6,judge:4,still:.3};      // cover before the light goes out, stay covered and still
 const TYPES=['eye','twins','walker'];
+const WORLDS=['forest','graveyard','swamp','snow','volcano'];   // one painted backdrop per 20% of the run
+const ART={};
+const art=k=>{if(typeof Image!=='function')return null;let i=ART[k];if(!i){i=ART[k]=new Image();i.src='games/peek/assets/'+k+'.webp'}return i.complete&&i.naturalWidth>0?i:null};
 const CAUSES={eye:'死因 #1 對視：紅光鎖定你時，你沒有往反方向躲',twins:'死因 #2 回頭：笑聲在哪邊，你就往哪邊看',walkerLate:'死因 #3 慢半拍：燈滅的時候你還沒蓋住螢幕',walkerMove:'死因 #4 手賤：腳步聲還沒走遠你就動了'};
 const BTN=[[8,492,90,56,'靠左'],[106,492,90,56,'靠右'],[204,492,90,56,'蓋住'],[302,492,90,56,'衝刺']];
 let best=0,deaths={};try{best=+localStorage.getItem('deep-sea-peek-best')||0}catch(e){}
@@ -11685,6 +11688,16 @@ function drawCorridor(lamp){
  const gl=g.createLinearGradient(0,dy,0,d.b);gl.addColorStop(0,'rgba(255,240,190,'+lamp+')');gl.addColorStop(1,'rgba(255,196,110,'+lamp+')');
  g.fillStyle=gl;g.fillRect(dx,dy,dw,d.b-dy);
  g.fillStyle='rgba(255,230,160,'+(.18*lamp)+')';g.fillRect(dx-dw*.3,dy-dw*.1,dw*1.6,d.b-dy+dw*.1)}
+function drawWorld(lamp){
+ const wi=clamp(Math.floor(prog/20),0,4),nx=Math.min(4,wi+1),into=(prog%20)/20,a=art('bg-'+WORLDS[wi]);
+ if(!a){drawCorridor(lamp);return}
+ const one=(im,al)=>{const z=1.12+.015*Math.sin(run*6.28),h=H*z,w=im.naturalWidth*h/im.naturalHeight,x=200-w/2-clamp(tilt,-1,1)*34+Math.sin(run*3.1)*5,y=(H-h)/2-Math.abs(Math.sin(ph))*3;g.globalAlpha=al;g.drawImage(im,x,y,w,h);g.globalAlpha=1};
+ one(a,1);
+ if(wi<4){if(into>.7){const b=art('bg-'+WORLDS[nx]);if(b&&into>.92)one(b,(into-.92)/.08)}}
+ const fg=g.createLinearGradient(0,330,0,H);fg.addColorStop(0,'rgba(8,10,14,0)');fg.addColorStop(1,'rgba(8,10,14,.6)');g.fillStyle=fg;g.fillRect(0,330,W,H-330);
+ const vg=g.createRadialGradient(200,290,110,200,290,390);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');g.fillStyle=vg;g.fillRect(0,0,W,H);
+ if(lamp<1){g.fillStyle='rgba(0,0,0,'+(1-lamp)*.85+')';g.fillRect(0,0,W,H)}}
+function sprite(im,cx,by,h,al){const w=im.naturalWidth*h/im.naturalHeight;g.save();g.globalAlpha=clamp(al,0,1)*.4;g.fillStyle='#000';g.beginPath();g.ellipse(cx,by,w*.32,7,0,0,7);g.fill();g.globalAlpha=clamp(al,0,1);g.drawImage(im,cx-w/2,by-h,w,h);g.restore();return w}
 function drawRunner(){
  const x=200+clamp(tilt,-1,1)*105,y=470,spr=st==='run'&&(keys.wind||btn[3]||ptrs.size>0),jog=st==='run'&&!inputs().cover,bob=Math.abs(Math.sin(ph))*(spr?6:jog?3.5:1);
  g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(x,y+4,34,9,0,0,7);g.fill();
@@ -11696,7 +11709,7 @@ function drawRunner(){
  RR(x-44,y-72-bob+sw*.4,30,20,5,'#d6a24e',3);
  g.fillStyle=OL;g.beginPath();g.arc(x,y-124-bob,22,0,7);g.fill();g.fillStyle='#3a2616';g.beginPath();g.arc(x,y-124-bob,19,0,7);g.fill();
  g.fillStyle='#4b3220';g.beginPath();g.arc(x-6,y-130-bob,9,0,7);g.fill()}
-function drawSpirits(){
+function drawSpiritsVec(){
  if(!ev)return;
  const el=ev.el||0,vis=Math.max(0,el-SOUND_LEAD),w=ev.warn||(ev.type==='eye'?EYE.warn:TWIN.warn);
  if(ev.type==='eye'){
@@ -11716,7 +11729,24 @@ function drawSpirits(){
   const p=ev.phase==='judge'?1:clamp(1-ev.t/WALK.warn,0,1),s=.12+.5*p,fy=VPY+270*s,hgt=240*s,wd=70*s;
   g.fillStyle='rgba(8,6,10,.9)';g.fillRect(200-wd/2,fy-hgt,wd,hgt);g.fillRect(200-wd*.85,fy-hgt*.92,wd*.25,hgt*.55);g.fillRect(200+wd*.6,fy-hgt*.92,wd*.25,hgt*.55);
   g.fillStyle='rgba(140,160,200,.35)';g.beginPath();g.arc(200,fy-hgt-6*s,8*s,0,7);g.fill()}}
-function drawScene(lamp){drawCorridor(lamp);drawSpirits();drawRunner()}
+function drawSpirits(){
+ if(!ev)return;
+ const el=ev.el||0,vis=Math.max(0,el-SOUND_LEAD),w=ev.warn||(ev.type==='eye'?EYE.warn:TWIN.warn),open=ev.phase==='judge'?1:clamp(vis/Math.max(.1,w-SOUND_LEAD),0,1);
+ const im=art(ev.type==='eye'?'ghost-thorn':ev.type==='twins'?'ghost-leafling':'ghost-gale');
+ if(!im){drawSpiritsVec();return}
+ if(ev.type==='eye'){            // Thorn stands beside the path and its red eye opens
+  const x=200+ev.side*100,by=392,h=250*(.9+.1*open),sw=sprite(im,x,by,h,Math.pow(open,1.4)),ex=x+sw*.12,ey=by-h*.9;
+  if(open>.15){g.save();g.globalAlpha=Math.min(1,open*1.2);g.fillStyle='#ff2a2a';g.shadowColor='#ff2a2a';g.shadowBlur=14;g.beginPath();g.arc(ex,ey,5+4*open,0,7);g.fill();g.restore()}
+  if(ev.phase==='judge'){
+   const away=tilt*-ev.side,safe=away>=EYE.away,tx2=safe?200+ev.side*150:200+clamp(tilt,-1,1)*105,ty=safe?440:360;
+   g.save();g.globalAlpha=safe?.18:.55;g.fillStyle='#ff3030';g.beginPath();g.moveTo(ex,ey-5);g.lineTo(tx2-45,ty+60);g.lineTo(tx2+45,ty+60);g.lineTo(ex,ey+5);g.closePath();g.fill();g.restore()}}
+ else if(ev.type==='twins'){     // Leafling: a leaf pile on the ground, rustling on the giggle side
+  const a=ev.phase==='judge'?.95:open*.75,j=ev.phase==='judge'?Math.sin(tt*38)*3:Math.sin(tt*9)*1.2;
+  sprite(im,200+ev.side*105+j,412,150*(.85+.15*open),a)}
+ else{                           // Gale drifts out of the far trees toward you
+  const p=ev.phase==='judge'?1:clamp(1-ev.t/WALK.warn,0,1),s=.12+.5*p;
+  sprite(im,200,VPY+270*s,560*s,clamp(.25+p*1.1,0,1))}}
+function drawScene(lamp){drawWorld(lamp);drawSpirits();drawRunner()}
 function drawButtons(){
  const I=inputs();const on=[I.tilt<-.05&&!gyro.on,I.tilt>.05&&!gyro.on,I.cover,I.wind];
  BTN.forEach((b,i)=>{RR(b[0],b[1],b[2],b[3],12,on[i]?'#d6a24e':'#3a2c1c',3);tx(b[4],b[0]+b[2]/2,b[1]+36,20,on[i]?'#1b1208':'#f1d9a6')})}
