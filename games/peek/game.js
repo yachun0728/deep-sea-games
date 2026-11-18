@@ -2,8 +2,7 @@
   var peekBusy=false,peekStake=0,peekSay=function(){};
   (function(){
 const c=$('peek-canvas'),g=c.getContext('2d'),W=800,H=450,CX=400,OL='#120d0a';
-const SPRINT_GAP=2;                        // while sprinting the next attack comes this many times sooner, so speed is paid for with pressure
-const BASE_RATE=2,WIND_RATE=4;             // % of the corridor covered per second: the runner keeps jogging by itself, holding Sprint doubles it
+const BASE_RATE=2;                         // % of the corridor covered per second: the runner keeps jogging by itself
 const MILE_EVENTS=2,MILE_REWARD=2,WIN_REWARD=5; // fixed BONUS: survive 2 spirits +2, reach the exit and open the box +5, each once per round
 const FIRST_GAP=9;                         // safe seconds before the first spirit
 const GAP_NEAR=7,GAP_FAR=4,BREATH_EVERY=3,BREATH_EXTRA=3; // gap between spirits shrinks from 7s to 4s by 80% progress; every 3rd dodge earns a longer breather
@@ -35,14 +34,14 @@ try{tutDone=localStorage.getItem('deep-sea-peek-tut')==='1'}catch(e){}
 try{deaths=JSON.parse(localStorage.getItem('deep-sea-peek-deaths')||'{}')||{}}catch(e){deaths={}}
 let analytics=null,earned=0,dodgesTotal=0,run=0,ph=0,eyeSeen=0;try{dodgesTotal=+localStorage.getItem('deep-sea-peek-dodges')||0}catch(e){}
 const ptrT=new Map();
-let wx=0,lastWx=-1,prevWxT=-1,evK='',R=()=>Math.random(),L=null,lvl=0,lives=3,ck=1,maxLvl=1,noDrop=0,healTen=-1,lvDeaths={},seen={},runTop=1,daily=false,seed=0,seedCode='',rB=BASE_RATE,rW=WIND_RATE,practice='',nextPractice='',forceLvl=null,dex=false,dexSel=0,assistHid=0,deathEv=null,guarantee=false,dropped=false,scared=false,nibT=0,lostAll=false,captions=false,AMB=.6;
+let wx=0,lastWx=-1,prevWxT=-1,evK='',R=()=>Math.random(),L=null,lvl=0,lives=3,ck=1,maxLvl=1,noDrop=0,healTen=-1,lvDeaths={},seen={},runTop=1,daily=false,seed=0,seedCode='',rB=BASE_RATE,practice='',nextPractice='',forceLvl=null,dex=false,dexSel=0,assistHid=0,deathEv=null,guarantee=false,dropped=false,scared=false,nibT=0,lostAll=false,captions=false,AMB=.6;
 try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-save')||'{}');maxLvl=o.m||1;ck=1;lives=o.l||3;noDrop=o.n||0;healTen=o.h==null?-1:o.h;lvDeaths=o.d||{};seen=o.s||{};runTop=o.r||maxLvl}catch(e){}
 const rnd=(a,b)=>a+R()*(b-a);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function tx(s,x,y,sz,col,al){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign=al||'center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-24);g.fillStyle=col;g.fillText(s,x,y,W-24)}
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();if(f){g.fillStyle=f;g.fill()}if(lw){g.lineWidth=lw;g.strokeStyle=OL;g.stroke()}};
 let st='ready',prog,tilt,gapT,ev,survived,lastType,directorUsed,score,why,rec,flash,shake,tt=0,last=0,fxs=[],lampOut=0;
-let keys={l:0,r:0,cover:0,wind:0,pick:0},gs=new Map(),hideWant=0,tapPick=0,dbl=0,tapT=-9,touchT=-9,lt=0,breath=1,spots={'-1':[],'1':[]},spotsAll=false,pendType=null,pendSide=1,pendWait=0,breathOff=false,tutDone=false,gyro={on:false,tilt:0,down:false};
+let keys={l:0,r:0,cover:0,pick:0},gs=new Map(),hideWant=0,tapPick=0,dbl=0,tapT=-9,touchT=-9,lt=0,breath=1,spots={'-1':[],'1':[]},spotsAll=false,pendType=null,pendSide=1,pendWait=0,breathOff=false,tutDone=false,gyro={on:false,tilt:0,down:false};
 let bag,drops,dropT,camp,campNext,openFx,pickHeld=0,sc=0,scrolls=0,audioOk=false,assist=false,lowScare=false,MASTER=.7,chirpT=0;
 try{scrolls=+localStorage.getItem('deep-sea-peek-scrolls')||0}catch(e){}
 try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-opts')||'{}');assist=!!o.a;lowScare=!!o.l;captions=!!o.c;if(typeof o.m==='number')AMB=clamp(o.m,0,1);if(typeof o.v==='number')MASTER=clamp(o.v,0,1)}catch(e){}
@@ -84,7 +83,7 @@ function wantLevel(){
 function sv(){try{localStorage.setItem('deep-sea-peek-save',JSON.stringify({m:maxLvl,r:runTop,c:ck,l:lives,n:noDrop,h:healTen,d:lvDeaths,s:seen}))}catch(e){}}
 function mark(id){if(!seen[id]){seen[id]=1;sv()}}
 function applyLevel(){
- R=()=>Math.random();rB=BASE_RATE;rW=WIND_RATE;seedCode='';
+ R=()=>Math.random();rB=BASE_RATE;seedCode='';
  if(!L){wx=0;lastWx=-1;genSpots(Math.random);campNext=practice?999:CAMP_EVERY;if(practice)gapT=2;return}
  const sEl=hasLv?$('peek-seed'):null,dEl=hasLv?$('peek-daily'):null,sIn=sEl?String(sEl.value||'').trim():'';
  if(L.fixed)seed=L.l*7919+101;
@@ -92,14 +91,14 @@ function applyLevel(){
  else if(daily){const d=new Date();seed=(d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate())*131+L.l}
  else seed=(Math.random()*1e9)|0;
  R=mulberry(seed);seedCode=seed.toString(36).toUpperCase();genSpots(mulberry(seed^977));
- rB=L.rate;rW=L.rate*2;gapT=L.kind==='learn'?FIRST_GAP:6;
+ rB=L.rate;gapT=L.kind==='learn'?FIRST_GAP:6;
  campNext=L.k===5?50:999;
  guarantee=noDrop>=3;dropT=L.kind==='safe'?rnd(3,5):rnd(5,8);
  evK=L.evf==='n'?'nib':L.evf==='c'?'chest':L.evf==='r'&&R()<.3?'rook':'';nibT=evK?rnd(8,22):0;
  wx=L.wxp[(R()*L.wxp.length)|0];if(L.wxp.length>1&&wx===lastWx)wx=L.wxp.find(x=>x!==lastWx);lastWx=wx;
  assistHid=L.ease?1:0;
  say('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'：'+KIND_NAME[L.kind]+(L.fixed?'（固定種子）':'')+'。'+WORLD_RULE[L.wi]+(L.ease?'小螢多給你 0.3 秒預警，少來一次襲擊。':''))}
-function reset(){pendType=null;hideWant=0;tapPick=0;lt=0;breath=1;gs.clear();eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;shake1=0;sc=0;rB=BASE_RATE;rW=WIND_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
+function reset(){pendType=null;hideWant=0;tapPick=0;lt=0;breath=1;gs.clear();eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;shake1=0;sc=0;rB=BASE_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
 reset();
 /* ---- audio: stereo cues, so headphones help; silent if the browser has no Web Audio ---- */
 let ac=null;
@@ -115,7 +114,7 @@ peekSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
 function ui(){
  const live=st==='run';
- setText('peek-prog',Math.floor(prog)+'%');setText('peek-spirits',survived+' 次襲擊');setText('peek-best',best+'%');setText('peek-codex',Object.keys(CAUSES).filter(k=>deaths[k]>0).length+' / '+Object.keys(CAUSES).length);setText('peek-dodges',dodgesTotal+' 次');
+ setText('peek-prog',L?'第 '+lvl+' 關':Math.floor(prog)+'%');setText('peek-spirits',survived+' 次襲擊');setText('peek-best',best+'%');setText('peek-codex',Object.keys(CAUSES).filter(k=>deaths[k]>0).length+' / '+Object.keys(CAUSES).length);setText('peek-dodges',dodgesTotal+' 次');
  setText('peek-lvl',L?lvl+' / 100':'自由跑');setText('peek-lives',L?String(lives):'—');
  const lv=wantLevel();
  $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'逃跑中 · 別回頭':(st==='ready'?'免費開始':'免費再開')+(lv?'第 '+lv+' 關':'自由跑'));
@@ -190,7 +189,7 @@ function survive(){
  if(survived===MILE_EVENTS)pay(MILE_REWARD,'躲過 '+MILE_EVENTS+' 次襲擊！')}
 function inputs(){
  const kt=gyro.on?gyro.tilt:clamp(keys.r-keys.l,-1,1);
- return{tilt:kt||hideWant,cover:!!(keys.cover||gyro.down||gestCover()),wind:!!keys.wind}}
+ return{tilt:kt||hideWant,cover:!!(keys.cover||gyro.down||gestCover())}}
 const gestCover=()=>{const n=performance.now();for(const q of gs.values())if(!q.sw&&n-q.t>=COVER_MS)return true;return false};
 const spotAt=sd=>spots[sd].some(w=>lt>=w[0]&&lt<=w[1]);
 const hideOK=v=>!v?0:(spotsAll||spotAt(v<0?-1:1))?v:0;
@@ -205,22 +204,22 @@ function update(dt){
  if(flash>0)flash-=dt;if(shake>0)shake-=dt;fxs.forEach(f=>f.t+=dt);fxs=fxs.filter(f=>f.t<.9);
  if(st!=='run')return;
  const I=inputs();
- const covered=I.cover,sprint=I.wind&&!covered,aim=sprint?0:hideOK(I.tilt);   // sprinting pins you to the middle: you cannot lean while sprinting
+ const covered=I.cover,aim=hideOK(I.tilt);
  if(gyro.on)tilt=aim;else tilt+=clamp(aim-tilt,-TILT_SPEED*dt*(L&&L.wi===3?.7:1),TILT_SPEED*dt*(L&&L.wi===3?.7:1));
  const pk=(keys.pick||tapPick)&&!pickHeld;pickHeld=!!keys.pick;tapPick=0;
  if(camp){updateCamp(dt);ph+=dt*2;return}
  lt+=dt;if(hideWant&&!spotsAll&&!spotAt(hideWant))hideWant=0;
  if(Math.abs(tilt)>.5&&!breathOff){breath-=dt/BREATH;if(breath<=0){breath=0;end('dead','breath');return}}else breath=Math.min(1,breath+dt/BREATH_BACK);   // hiding costs breath; out of breath means found
  chirpT-=dt;if(chirpT<=0){chirpT=rnd(.3,.8);if(!(ev&&(ev.type==='walker'))&&!covered)tone(3000+Math.random()*700,.04,.012,rnd(-.8,.8),'sine',0,true)}   // crickets: they go quiet before Hush
- if(!covered){prog=Math.min(L&&(L.left>0||ev)?97:100,prog+(sprint?rW:rB)*dt);run+=dt*(sprint?2.6:1.5)}
- ph+=dt*(covered?2.5:sprint?15:9);
+ if(!covered){prog=Math.min(L&&(L.left>0||ev)?97:100,prog+rB*dt);run+=dt*1.5}
+ ph+=dt*(covered?2.5:9);
  if(prog>=100){score+=500;pay(WIN_REWARD,'盒子打開了！');end('won');return}
  while(campNext<100&&prog>=campNext+CAMP_WIN)campNext+=CAMP_EVERY;
  if(!ev&&prog>=campNext&&campNext<100){startCamp();return}
- updateDrops(dt,covered,sprint,pk);
+ updateDrops(dt,covered,pk);
  if(!L&&!directorUsed&&prog>=DIRECTOR_AT){directorUsed=true;if(!ev&&R()<DIRECTOR_P)gapT=Math.min(gapT,rnd(1,3))}
  if(!ev&&L&&L.kind==='safe'&&!scared&&prog>=45&&L.pool.length){scared=true;L.forceFake=true;gapT=0}   // buffer levels only get harmless scares
- if(!ev){gapT-=dt*(sprint?SPRINT_GAP:1);if(gapT<=0)startEvent();return}
+ if(!ev){gapT-=dt;if(gapT<=0)startEvent();return}
  ev.t-=dt;ev.el=(ev.el||0)+dt;
  if(ev.fake&&ev.t<=0){ev=null;gapT=nextGap();fx('虛驚一場',CX,170,'#cfd8e6');return}   // a false cue: it fades without an attack
  const away=tilt*-ev.side;   // positive when leaning away from the spirit's side
@@ -241,7 +240,7 @@ function update(dt){
   if(ev.phase==='warn'){
    if(ev.rung<2&&ev.t<=1.8-.9*ev.rung){ev.rung++;ev.ring=tt;tone(330,.9,.1,ev.side*.5,'sine');tone(662,.7,.04,ev.side*.5,'sine')}
    if(ev.t<=0){ev.phase='judge';ev.t=BELL.judge;ev.js=tt;ev.hid0=Math.abs(I.tilt)>BELL.still;ev.ring=tt;tone(330,1.1,.12,ev.side*.5,'sine');tone(662,.9,.05,ev.side*.5,'sine')}}
-  else{const moved=I.cover||I.wind||keys.pick||tapPick||touchT>ev.js+BELL.grace||(Math.abs(I.tilt)>BELL.still&&!ev.hid0);if(BELL.judge-ev.t>BELL.grace&&moved){end('dead','bell');return}if(ev.t<=0)survive()}}
+  else{const moved=I.cover||keys.pick||tapPick||touchT>ev.js+BELL.grace||(Math.abs(I.tilt)>BELL.still&&!ev.hid0);if(BELL.judge-ev.t>BELL.grace&&moved){end('dead','bell');return}if(ev.t<=0)survive()}}
  else{
   if(ev.phase==='warn'){ev.snd-=dt;if(ev.snd<=0){ev.snd=.6;tone(70,.08,.02+.1*(1-ev.t/WALK.warn),0,'sine')}
    if(ev.t<=0){if(!covered){end('dead',ev.boss?'hollowLate':'walkerLate');return}ev.phase='judge';ev.t=WALK.judge*(ev.boss?1.6:1)}}
@@ -268,12 +267,12 @@ function giveItem(k){
  mark(k==='nib'?'nib':k)}
 function spawnDrop(kind){const r=R();dropped=true;drops.push({k:kind||(r<.4?'torch':r<.7?'charm':'scroll'),side:R()<.5?-1:1,z:1});mark(kind==='rook'?'rook':kind==='chest'?'chest':'flick')}
 function collect(d){d.z=-1;giveItem(d.k);say('撿到'+ITEM_NAME[d.k]+'：'+ITEM_DESC[d.k]+'。','win')}
-function updateDrops(dt,covered,sprint,pk){
+function updateDrops(dt,covered,pk){
  if(!covered){
   if(!ev){dropT-=dt;if(dropT<=0){if(drops.length<2)spawnDrop();dropT=rnd(DROP_EVERY[0],DROP_EVERY[1])}}
   if(guarantee&&!dropped&&prog>=8&&!ev&&drops.length<2)spawnDrop(noDrop>=6?'charm':R()<.5?'torch':'scroll');   // pity: three levels without a drop guarantees one
   if(nibT>0){nibT-=dt;if(nibT<=0){drops.push({k:evK||'nib',side:R()<.5?-1:1,z:1});mark(evK||'nib')}}
-  const sp=(sprint?.2:.11)*dt;drops.forEach(d=>d.z-=sp)}
+  const sp=.11*dt;drops.forEach(d=>d.z-=sp)}
  if(pk){let b=null;drops.forEach(d=>{if(d.z>=0&&d.z<PICK_AT&&(!b||d.z<b.z))b=d});if(b)collect(b)}
  drops=drops.filter(d=>d.z>-.05&&d.z>=0)}
 const canPick=()=>drops.some(d=>d.z>=0&&d.z<PICK_AT);
@@ -305,9 +304,15 @@ function drawWorld(lamp){
  const one=(im,al)=>{const z=1.12+.015*Math.sin(run*6.28),h=H*z,w=im.naturalWidth*h/im.naturalHeight,x=CX-w/2-clamp(tilt,-1,1)*34+Math.sin(run*3.1)*5,y=(H-h)/2-Math.abs(Math.sin(ph))*(st==='run'?6:2);g.globalAlpha=al;g.drawImage(im,x,y,w,h);g.globalAlpha=1};
  one(a,1);
  if(wi<4&&into>.92){const b=art('bg-'+WORLDS[nx]);if(b)one(b,(into-.92)/.08)}
+ if(L&&st!=='ready')drawExit(wi);
  const fg=g.createLinearGradient(0,280,0,H);fg.addColorStop(0,'rgba(8,10,14,0)');fg.addColorStop(1,'rgba(8,10,14,.6)');g.fillStyle=fg;g.fillRect(0,280,W,H-280);
  const vg=g.createRadialGradient(CX,240,150,CX,240,520);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');g.fillStyle=vg;g.fillRect(0,0,W,H);
  if(lamp<1){g.fillStyle='rgba(0,0,0,'+(1-lamp)*.85+')';g.fillRect(0,0,W,H)}}
+function drawExit(wi){   // the way out is always in sight: a lit doorway at the end of the road that grows as you close in
+ const f=clamp(prog/100,0,1),h=14+170*Math.pow(f,1.6),w=h*.55,x=CX-clamp(tilt,-1,1)*10,by=262,col=['255,225,150','170,150,255','150,255,200','200,230,255','255,150,70'][wi]||'255,225,150';
+ g.save();const gl=g.createRadialGradient(x,by-h*.5,h*.1,x,by-h*.5,h*1.3);gl.addColorStop(0,'rgba('+col+',.55)');gl.addColorStop(1,'rgba('+col+',0)');g.fillStyle=gl;g.fillRect(x-h*1.4,by-h*1.9,h*2.8,h*2.4);
+ g.fillStyle='rgba('+col+',.95)';g.beginPath();g.moveTo(x-w/2,by);g.lineTo(x-w/2,by-h*.7);g.arc(x,by-h*.7,w/2,Math.PI,0);g.lineTo(x+w/2,by);g.closePath();g.fill();
+ g.strokeStyle='rgba(20,14,8,.7)';g.lineWidth=Math.max(2,h*.04);g.stroke();g.restore()}
 function sprite(im,cx,by,h,al){const w=im.naturalWidth*h/im.naturalHeight;g.save();g.globalAlpha=clamp(al,0,1)*.4;g.fillStyle='#000';g.beginPath();g.ellipse(cx,by,w*.32,7,0,0,7);g.fill();g.globalAlpha=clamp(al,0,1);g.drawImage(im,cx-w/2,by-h,w,h);g.restore();return w}
 function floatImg(im,cx,cy,sz,al){const w=im.naturalWidth*sz/Math.max(im.naturalWidth,im.naturalHeight),h=im.naturalHeight*sz/Math.max(im.naturalWidth,im.naturalHeight);g.save();g.globalAlpha=clamp(al==null?1:al,0,1);g.drawImage(im,cx-w/2,cy-h/2,w,h);g.restore()}
 function blob(x,y,r,al,col){g.save();g.globalAlpha=clamp(al,0,1);g.fillStyle=col||'#1a0f14';g.beginPath();g.ellipse(x,y,r,r*1.5,0,0,7);g.fill();g.restore()}
@@ -395,11 +400,11 @@ function drawHeadphone(){
 const CAPS={eye:['（左邊的落葉沙沙作響）','（右邊的落葉沙沙作響）'],twins:['（左邊傳來敲擊聲）','（右邊傳來敲擊聲）'],walker:['（蟲鳴停了……腳步聲逼近）','（蟲鳴停了……腳步聲逼近）'],gale:['（風向反了，拖行聲從左邊靠近）','（風向反了，拖行聲從右邊靠近）'],reach:['（左邊的泥水在冒泡）','（右邊的泥水在冒泡）'],bell:['（遠處傳來鐘聲）','（遠處傳來鐘聲）']};
 const capText=d=>(CAPS[d.type]||['',''])[d.side<0?0:1];
 function hud(I,lamp){
- const bn=art('ui-banner'),bw=420,bh=82,title=(L?'第 '+lvl+' 關　':practice?'練習　':'自由跑　')+Math.floor(prog)+'%';
+ const bn=art('ui-banner'),bw=420,bh=82,title=(L?'第 '+lvl+' 關':(practice?'練習　':'自由跑　')+Math.floor(prog)+'%'),bar=!L;
  if(bn){g.drawImage(bn,10,8,bw,bh);
-  const x0=10+bw*.2,wd=bw*.73;RR(x0,8+bh*.32,wd,bh*.34,6,'rgba(60,40,20,.35)');if(prog>0)RR(x0,8+bh*.32,Math.max(12,wd*prog/100),bh*.34,6,prog>=85?'#c4472f':'#b98a2c');
+  const x0=10+bw*.2,wd=bw*.73;if(bar)RR(x0,8+bh*.32,wd,bh*.34,6,'rgba(60,40,20,.35)');if(bar&&prog>0)RR(x0,8+bh*.32,Math.max(12,wd*prog/100),bh*.34,6,prog>=85?'#c4472f':'#b98a2c');
   tx(title,x0+wd/2,8+bh*.6,17,'#f6e7c0')}
- else{RR(16,14,W-32,14,7,'rgba(255,255,255,.12)');if(prog>0)RR(16,14,Math.max(16,(W-32)*prog/100),14,7,prog>=85?'#ff6a4d':'#e8c675');tx(title,16,50,15,'#f1d9a6','left')}
+ else{if(bar)RR(16,14,W-32,14,7,'rgba(255,255,255,.12)');if(bar&&prog>0)RR(16,14,Math.max(16,(W-32)*prog/100),14,7,prog>=85?'#ff6a4d':'#e8c675');tx(title,16,50,15,'#f1d9a6','left')}
  const lv=art('ui-lives');
  if(lv){const lw=300,k=lw/578,sy=112,sh=190,lx=W-lw-10,ly=14;g.drawImage(lv,0,sy,578,sh,lx,ly,lw,sh*k);
   const oy=ly+(.49*432-sy)*k+4,fr=[.42,.61,.805];
@@ -633,7 +638,7 @@ addEventListener('keydown',e=>{
  if(camp&&camp.state==='pick'&&'123'.includes(e.key)&&e.key){camp.choice=+e.key-1;e.preventDefault();return}
  const k=KEYMAP[e.key];if(!k)return;e.preventDefault();touchT=tt;keys[k]=1});
 addEventListener('keyup',e=>{const k=KEYMAP[e.key];if(k)keys[k]=0});
-function clearInput(){keys={l:0,r:0,cover:0,wind:0,pick:0};gs.clear();hideWant=0}
+function clearInput(){keys={l:0,r:0,cover:0,pick:0};gs.clear();hideWant=0}
 addEventListener('blur',()=>{last=performance.now();clearInput()});
 document.addEventListener('visibilitychange',()=>{last=performance.now();clearInput()});
 window.addEventListener('hashchange',()=>{last=performance.now();clearInput()});

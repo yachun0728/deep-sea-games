@@ -40,17 +40,11 @@ check('Not enough points: nothing is deducted and no round starts',()=>{
 check('Start deducts the entry fee once even when clicked twice',()=>{
   const f=fixture();f.F.start();f.F.start();assert.equal(f.wallet.balance,500-fee);assert.equal(f.count('start'),1);assert.equal(f.storage.get('crush-depth-balance'),String(500-fee));assert.equal(f.busy(),true);assert.equal(f.events[0][1],'peek');
 });
-check('The runner jogs by itself at 2% per second; holding Sprint doubles it to 4%',()=>{
+check('The runner jogs by itself at 2% per second',()=>{
   const f=fixture();f.F.start();f.F.ev('gapT=999');f.run(5);assert.ok(Math.abs(f.ev('prog')-5*f.ev('BASE_RATE'))<.3,'prog '+f.ev('prog'));assert.equal(f.ev('BASE_RATE'),2);
-  const p0=f.ev('prog');f.hold('wind');f.run(5);assert.ok(Math.abs(f.ev('prog')-p0-5*f.ev('WIND_RATE'))<.3,'prog '+f.ev('prog'));assert.equal(f.ev('WIND_RATE'),4);
 });
-check('While sprinting the next attack comes twice as fast',()=>{
-  const f=fixture();f.F.start();f.F.ev('gapT=20');f.run(4);const jog=f.ev('gapT');f.F.ev('gapT=20');f.hold('wind');f.run(4);const spr=f.ev('gapT');
-  assert.ok(Math.abs((20-jog)-4)<.2,'jog '+jog);assert.ok(Math.abs((20-spr)-8)<.3,'sprint '+spr);
-});
-check('Sprinting pins you to the middle (no leaning); covering the screen stops the run',()=>{
-  const f=fixture();f.F.start();f.F.ev('gapT=999');f.hold('wind');f.hold('l');f.run(1);assert.ok(Math.abs(f.ev('tilt'))<.001,'tilt '+f.ev('tilt'));
-  f.hold('wind',0);f.run(1);assert.ok(f.ev('tilt')<-.5,'tilt '+f.ev('tilt'));
+check('Covering the screen stops the run',()=>{
+  const f=fixture();f.F.start();f.F.ev('gapT=999');f.hold('l');f.run(1);assert.ok(f.ev('tilt')<-.5,'tilt '+f.ev('tilt'));
   f.hold('l',0);f.hold('cover');f.F.ev('tilt=0');const before=f.ev('prog');f.run(2);assert.equal(f.ev('prog'),before);
 });
 check('Peeping Eye: leaning away for the 3 second beam survives',()=>{
@@ -89,7 +83,7 @@ check('Dodging 2 spirits pays 2 points once; opening the box pays 5; the end rep
   assert.equal(f.ev('survived'),2);assert.equal(f.wallet.balance,500-fee+2);assert.equal(f.count('progress'),1);
   const p=f.events.find(e=>e[0]==='progress');assert.equal(p[2].bonus_points,2);
   f.spirit('eye',1);f.hold('l');f.run(7);f.hold('l',0);f.F.ev('tilt=0');assert.equal(f.ev('survived'),3);assert.equal(f.wallet.balance,500-fee+2);assert.equal(f.count('progress'),1);
-  f.F.ev('gapT=999;ev=null;prog=99.9');f.hold('wind');f.run(1);
+  f.F.ev('gapT=999;ev=null;prog=99.9');f.run(1);
   assert.equal(f.ev('st'),'won');assert.equal(f.wallet.balance,500-fee+7);assert.equal(f.count('progress'),2);assert.equal(f.events.filter(e=>e[0]==='progress')[1][2].bonus_points,5);
   const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],7);assert.equal(end[3],'complete');assert.equal(f.count('end'),1);assert.equal(f.busy(),false);
   assert.equal(f.storage.get('deep-sea-peek-best'),'100');assert.equal(f.storage.get('crush-depth-balance'),String(500-fee+7));
@@ -106,7 +100,7 @@ check('Best progress and cause counts are saved; a lower run does not overwrite 
   const g=fixture(500,90);g.F.start();g.F.ev('prog=40');g.spirit('eye',1);g.run(10);assert.equal(g.storage.get('deep-sea-peek-best'),'90');
 });
 check('Once past 85% the director may add one early ambush, and only once per round',()=>{
-  const f=fixture(500,null,()=>0);f.F.start();f.F.ev('gapT=30;prog=86');f.hold('wind');f.F.update(.05);assert.equal(f.ev('directorUsed'),true);assert.ok(f.ev('gapT')<=3);
+  const f=fixture(500,null,()=>0);f.F.start();f.F.ev('gapT=30;prog=86');f.F.update(.05);assert.equal(f.ev('directorUsed'),true);assert.ok(f.ev('gapT')<=3);
   f.F.ev('gapT=30');f.F.update(.05);assert.ok(f.ev('gapT')>25);
 });
 check('Keys only work while the view is shown and a round is running',()=>{
@@ -160,9 +154,9 @@ check('Total dodges and the death codex are stored; the codex counts distinct ca
   const f=fixture();f.F.start();f.spirit('eye',1);f.hold('l');f.run(7);assert.equal(f.storage.get('deep-sea-peek-dodges'),'1');
   f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 10');assert.equal(f.el('peek-dodges').textContent,'1 次');
 });
-check('The corridor scrolls by itself, faster when sprinting, and stops while covered',()=>{
-  const f=fixture();f.F.start();f.F.ev('gapT=999');f.run(1);const r0=f.ev('run');assert.ok(r0>1.3);f.hold('wind');f.run(1);const r1=f.ev('run');assert.ok(r1-r0>2.4);
-  f.hold('wind',0);f.hold('cover');f.run(1);assert.equal(f.ev('run'),r1);
+check('The corridor scrolls by itself and stops while covered',()=>{
+  const f=fixture();f.F.start();f.F.ev('gapT=999');f.run(1);const r0=f.ev('run');assert.ok(r0>1.3);f.run(1);const r1=f.ev('run');assert.ok(r1-r0>1.3);
+  f.hold('cover');f.run(1);assert.equal(f.ev('run'),r1);
 });
 check('Every element id in the Don’t Peek view is unique across all game views and templates (a clash made the start button dead)',()=>{
   const ids=new Map(),files=[...fs.readdirSync(new URL('games/',root)).filter(d=>fs.existsSync(new URL('games/'+d+'/view.html',root))).map(d=>'games/'+d+'/view.html'),'templates/index.html','templates/lobby.html'];
@@ -175,7 +169,7 @@ check('Drawing runs in every state without throwing',()=>{
   const f=fixture();f.F.draw();f.F.start();f.F.draw();
   for(const type of ['eye','twins','walker'])for(const phase of ['warn','judge']){f.spirit(type,1,phase);f.F.ev('ev.t=1');f.F.draw();f.hold('cover');f.F.draw();f.hold('cover',0);}
   f.F.ev('fxs.push({s:"x",x:1,y:1,col:"#fff",t:0})');f.F.draw();f.spirit('eye',1);f.run(10);f.F.draw();
-  const w=fixture();w.F.start();w.F.ev('prog=99.9');w.hold('wind');w.run(1);w.F.draw();
+  const w=fixture();w.F.start();w.F.ev('prog=99.9');w.run(1);w.F.draw();
 });
 check('Campfire at 20% pauses the run, offers three cards, and gives the chosen item',()=>{
   const f=fixture();f.F.start();f.F.ev('campNext=20;gapT=999;prog=19.9');f.run(1);assert.ok(f.ev('camp')!==null&&f.ev('camp.state')==='pick');
@@ -219,9 +213,9 @@ check('Codex pages: ghosts first (Reacher and Bellkeeper included), items on pag
   f.F.ev('dexGo(1);draw()');assert.equal(f.ev('dexPg'),1);assert.equal(f.ev('DEX[dexSel].ghost||0'),0);f.F.ev('dexGo(1);draw()');assert.equal(f.ev('dexPg'),0);f.F.ev('dex=false');
 });
 check('A safe level has only harmless false cues; clearing it pays once and unlocks the next level',()=>{
-  const f=fixture(500,null,()=>.3);f.F.ev('forceLvl=1');f.F.ev('maxLvl=1');f.F.start();assert.equal(f.ev('L.l'),1);f.hold('wind');f.run(200);
+  const f=fixture(500,null,()=>.3);f.F.ev('forceLvl=1');f.F.ev('maxLvl=1');f.F.start();assert.equal(f.ev('L.l'),1);f.run(200);
   assert.equal(f.ev('st'),'won');assert.equal(f.ev('lives'),3);assert.equal(f.ev('maxLvl'),2);assert.equal(f.wallet.balance,500+5);
-  f.F.ev('forceLvl=1');f.F.start();f.hold('wind');f.run(200);assert.equal(f.ev('st'),'won');assert.equal(f.wallet.balance,505);   // replay: no second payout
+  f.F.ev('forceLvl=1');f.F.start();f.run(200);assert.equal(f.ev('st'),'won');assert.equal(f.wallet.balance,505);   // replay: no second payout
 });
 check('Dying in a level costs a life; running out sends you back to the checkpoint',()=>{
   const f=fixture();f.F.ev('forceLvl=3;maxLvl=3;ck=1');f.F.start();
@@ -241,7 +235,7 @@ check('Gale must be met by leaning toward the reversed wind; boss Hollow is a lo
 check('Boss level runs its fixed plan, saves a checkpoint and adds a life',()=>{
   const f=fixture();f.F.ev('forceLvl=10;maxLvl=10;lives=3');f.F.start();assert.equal(f.ev('L.plan.length'),3);
   const seq=[];for(let i=0;i<3;i++){f.F.ev('ev=null;startEvent()');seq.push(f.ev('ev.boss?"hollow":ev.type'))}assert.deepEqual(seq,['eye','twins','hollow']);
-  const g=fixture();g.F.ev('forceLvl=10;maxLvl=10;lives=3');g.F.start();g.F.ev('ev=null;gapT=999;prog=99.9;L.left=0');g.hold('wind');g.run(1);assert.equal(g.ev('st'),'won');assert.equal(g.ev('ck'),1);assert.equal(g.ev('lives'),4);assert.equal(g.ev('maxLvl'),11);
+  const g=fixture();g.F.ev('forceLvl=10;maxLvl=10;lives=3');g.F.start();g.F.ev('ev=null;gapT=999;prog=99.9;L.left=0');g.run(1);assert.equal(g.ev('st'),'won');assert.equal(g.ev('ck'),1);assert.equal(g.ev('lives'),4);assert.equal(g.ev('maxLvl'),11);
 });
 check('Fixed-seed levels repeat exactly; seed code is shown for the others',()=>{
   const run=()=>{const f=fixture(500,null,()=>.9);f.F.ev('forceLvl=10;maxLvl=10');f.F.start();return f.ev('seedCode')+'|'+[0,1,2].map(()=>{f.F.ev('ev=null;startEvent()');return f.ev('ev.side')}).join()};
@@ -260,7 +254,7 @@ check('Practice from the codex neither costs lives nor counts deaths or pays',()
   f.F.ev('draw()');
 });
 check('Level cannot end before all its attacks are used; checkpoint and daily rules',()=>{
-  const f=fixture();f.F.ev('forceLvl=10;maxLvl=10');f.F.start();f.F.ev('ev=null;gapT=999;prog=99.9');f.hold('wind');f.run(1);
+  const f=fixture();f.F.ev('forceLvl=10;maxLvl=10');f.F.start();f.F.ev('ev=null;gapT=999;prog=99.9');f.run(1);
   assert.equal(f.ev('st'),'run');assert.ok(f.ev('prog')<=97.01);
   const g=fixture();g.F.ev('forceLvl=3;maxLvl=9;runTop=9;ck=1;lives=1');g.F.start();g.spirit('twins',1,'judge');g.F.ev('ev.t=1.5;tilt=1');g.run(2);
   assert.equal(g.ev('lostAll'),true);assert.equal(g.ev('runTop'),1);
