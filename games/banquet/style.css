@@ -312,3 +312,33 @@
 .bq-scene::after{background:radial-gradient(ellipse at 50% 55%,rgba(255,214,140,.16),transparent 48%),radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(0,0,0,.65) 100%)!important}
 @media(min-width:820px){.bq-notes{max-width:180px;font-size:12px}}
 #view-banquet .panel .msg,.bq-hand-box .bq-hand-title{display:none}
+
+/* ---------- home / how to play / item codex pages ---------- */
+.bq-menu-page{margin-right:0!important;width:min(720px,92%)!important;max-height:88%;overflow:auto;align-items:stretch;text-align:left;gap:10px}
+.bq-menu-page h3{margin:0;font:700 22px var(--bq-head);color:var(--bq-amber);text-align:center}
+.bq-menu-page h4{margin:4px 0 2px;font:700 13px var(--bq-head);letter-spacing:2px;text-transform:uppercase;color:var(--bq-dim)}
+.bq-how{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.bq-how li{display:flex;gap:10px;align-items:flex-start;padding:8px;border:1px solid rgba(226,176,79,.3);border-radius:8px;background:rgba(4,20,16,.55)}
+.bq-how img{width:44px;height:44px;object-fit:contain;flex:0 0 auto;filter:drop-shadow(0 2px 4px #000)}
+.bq-how b{display:block;font:700 14px var(--bq-head);color:var(--bq-amber)}
+.bq-how span{font-size:12.5px;line-height:1.35;color:var(--bq-ink)}
+.bq-wines{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
+.bq-wines h4{grid-column:1/-1}
+.bq-wines p{margin:0;display:flex;gap:6px;align-items:center;font-size:12.5px;line-height:1.3}
+.bq-wines img{width:26px;height:26px;object-fit:contain;flex:0 0 auto}
+.bq-wines b{color:var(--bq-amber);white-space:nowrap}
+.bq-cx-h{margin:0;text-align:center;font-size:13px;color:var(--bq-dim)}
+.bq-cx-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.bq-cx-it{padding:6px;border:1px solid #6b5a34;border-radius:8px;background:radial-gradient(circle at 50% 35%,#143a30,#08130f 75%);cursor:pointer;aspect-ratio:1}
+.bq-cx-it.is-on,.bq-cx-it:hover{border-color:var(--bq-green);box-shadow:0 0 14px rgba(240,207,132,.4)}
+.bq-cx-ic{width:100%;height:100%;object-fit:contain}
+.bq-cx-card{display:flex;gap:14px;align-items:center;padding:10px;border:1px solid rgba(226,176,79,.45);border-radius:8px;background:rgba(4,20,16,.7);min-height:84px}
+.bq-cx-big{width:72px;height:72px;object-fit:contain;flex:0 0 auto;filter:drop-shadow(0 3px 6px #000)}
+.bq-cx-card b{display:block;font:700 18px var(--bq-head);color:var(--bq-amber);margin-bottom:3px}
+.bq-cx-card span{font-size:14px;line-height:1.4;color:var(--bq-ink)}
+#view-banquet .bq-menu-page>.chip{align-self:center;width:auto!important;min-width:130px}
+#bq-home[hidden]{display:none}
+@media(max-width:819px){.bq-menu{align-items:flex-start;overflow:auto}.bq-menu-page{width:94%!important;max-height:none;margin:10px 0}.bq-cx-grid{grid-template-columns:repeat(5,1fr)}.bq-how{grid-template-columns:1fr}}
+.bq-how div{line-height:1.35}.bq-how span{display:block;margin-top:2px}
+.bq-cx-grid{max-width:460px;width:100%;margin:0 auto}
+.bq-cx-card{line-height:1.35}

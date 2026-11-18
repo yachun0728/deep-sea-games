@@ -30,7 +30,7 @@ var STIMG={poison:'poison',poison2:'poison',nectar:'nectar',pnectar:'pnectar',tr
 function iconImg(src,cls){var i=document.createElement('img');i.className=cls;i.src='games/banquet/assets/'+src+'.webp';i.alt='';i.decoding='async';i.draggable=false;return i}
 function txt(t){var e=document.createElement('span');e.textContent=t;return e}
 function stIcon(t,cls){return STIMG[t]?iconImg('st-'+STIMG[t],cls):null}
-var E=null,analytics=null,wins=0,quitArm=0,ADV=false,MUTED=false;
+var menuOpen=false,cxSel='needle',E=null,analytics=null,wins=0,quitArm=0,ADV=false,MUTED=false;
 try{wins=+localStorage.getItem('deep-sea-banquet-best')||0;ADV=localStorage.getItem('deep-sea-banquet-adv')==='1';MUTED=localStorage.getItem('deep-sea-banquet-mute')==='1'}catch(e){}
 var opp=function(s){return s==='p'?'d':'p'};
 var rnd=function(){return Math.random()};
@@ -564,7 +564,7 @@ function render(){
  setCls($('bq-hands'),'is-ready',mine&&!!E.sel&&!(E.fxT>0));
  var pr=$('bq-prompt');pr.hidden=!pend;
  if(pend)put($('bq-prompt-t'),tr('u.claimq',{id:E.pending.id}));
- var mn=$('bq-menu');if(mn){mn.hidden=E.phase!=='ready';var ma=$('bq-m-adv'),mm=$('bq-m-mute');put(ma,$('bq-adv').textContent);put(mm,$('bq-mute').textContent);var A=$('bq-adv'),M=$('bq-mute');if(ma.setAttribute&&A.getAttribute){ma.setAttribute('aria-pressed',A.getAttribute('aria-pressed')||'false');mm.setAttribute('aria-pressed',M.getAttribute('aria-pressed')||'false')}}
+ var mn=$('bq-menu');if(mn){mn.hidden=!(E.phase==='ready'||menuOpen);var hb=$('bq-home');if(hb)hb.hidden=!mn.hidden||bqBusy;var ma=$('bq-m-adv'),mm=$('bq-m-mute');put(ma,$('bq-adv').textContent);put(mm,$('bq-mute').textContent);var A=$('bq-adv'),M=$('bq-mute');if(ma.setAttribute&&A.getAttribute){ma.setAttribute('aria-pressed',A.getAttribute('aria-pressed')||'false');mm.setAttribute('aria-pressed',M.getAttribute('aria-pressed')||'false')}}
  var go=$('bq-go');go.disabled=bqBusy;put(go,bqBusy?tr('u.going'):over?tr('u.goagain'):tr('u.go'));
  $('bq-quit').hidden=!bqBusy;put($('bq-quit'),quitArm>0?tr('u.quitarm'):tr('u.quit'));
  put($('bq-stage-t'),!E.act?tr('u.notstarted'):actShort(E.act));
@@ -590,7 +590,7 @@ function playerAct(kind){
  render();
 }
 function playerRespond(believe){if(E.fxT>0)return;if(E.pending&&E.pending.to==='p')respond(believe);render()}
-function start(){
+function start(){menuOpen=false;
  if(bqBusy)return;
  var amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,null,'lose');return}
@@ -606,7 +606,9 @@ function quit(){
 $('bq-go').addEventListener('click',start);
 {var mk=function(id,fn){var e=$(id);if(e&&e.addEventListener)e.addEventListener('click',fn)};
  mk('bq-m-start',start);mk('bq-m-adv',function(){$('bq-adv').click()});mk('bq-m-mute',function(){$('bq-mute').click()});
- mk('bq-m-rules',function(){$('bq-menu-main').hidden=true;$('bq-menu-rules').hidden=false});mk('bq-m-back',function(){$('bq-menu-main').hidden=false;$('bq-menu-rules').hidden=true})}
+ var pg=function(w){['main','rules','codex'].forEach(function(n){var e=$('bq-menu-'+n);if(e)e.hidden=n!==w})};
+ mk('bq-m-rules',function(){pg('rules')});mk('bq-m-codex',function(){pg('codex')});mk('bq-m-back',function(){pg('main')});mk('bq-m-back2',function(){pg('main')});
+ mk('bq-home',function(){menuOpen=true;pg('main');E.v++;render()})}
 $('bq-quit').addEventListener('click',quit);
 $('bq-adv').addEventListener('click',function(){if(bqBusy)return;ADV=!ADV;try{localStorage.setItem('deep-sea-banquet-adv',ADV?'1':'0')}catch(e){}render()});
 $('bq-mute').addEventListener('click',function(){MUTED=!MUTED;try{localStorage.setItem('deep-sea-banquet-mute',MUTED?'1':'0')}catch(e){}if(!MUTED)SFX.pick();render()});
@@ -635,6 +637,10 @@ function loadFont(key){
  if(fontDone[key]||!FONTS[key]||!document.head||!document.createElement)return;fontDone[key]=1;
  try{var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?'+FONTS[key]+'&display=swap';document.head.appendChild(l)}catch(e){}
 }
+function buildCodex(){var g=$('bq-cx-grid'),c=$('bq-cx-card');if(!g||!c||!g.appendChild)return;g.textContent='';
+ IKEYS.forEach(function(k){var b=document.createElement('button');b.type='button';b.className='bq-cx-it'+(k===cxSel?' is-on':'');b.title=iname(k);b.appendChild(iconImg('item-'+k,'bq-cx-ic'));
+  b.addEventListener('click',function(){cxSel=k;buildCodex()});g.appendChild(b)});
+ c.textContent='';var im=iconImg('item-'+cxSel,'bq-cx-big'),t=document.createElement('b'),d=document.createElement('span');t.textContent=iname(cxSel);d.textContent=idesc(cxSel);c.appendChild(im);var w=document.createElement('div');w.appendChild(t);w.appendChild(d);c.appendChild(w)}
 function applyLang(){
  var st=$('bq-stage'),lg=LANG==='zh'?'zh-Hant':LANG;if(st.setAttribute)st.setAttribute('lang',lg);if($v.setAttribute)$v.setAttribute('lang',lg);
  loadFont('base');if(FONTS[LANG])loadFont(LANG);
@@ -642,7 +648,7 @@ function applyLang(){
   Array.prototype.forEach.call($v.querySelectorAll('[data-bq]'),function(e){e.textContent=tr(e.getAttribute('data-bq'))});
   Array.prototype.forEach.call($v.querySelectorAll('[data-bq-aria]'),function(e){e.setAttribute('aria-label',tr(e.getAttribute('data-bq-aria')))});
  }
- var sel=$('bq-lang');if(sel)sel.value=LANG;
+ buildCodex();var sel=$('bq-lang');if(sel)sel.value=LANG;
  showSay();E.v++;
 }
 function setLang(l){
@@ -655,7 +661,7 @@ function fitStage(){try{
   var fs=document.fullscreenElement===$v||$v.classList.contains('game-view-expanded');
   var availW=fs?W-16:Math.min($v.clientWidth||W,1240);
   var availH=fs?window.innerHeight-190:Math.max(window.innerHeight-250,540);
-  var w=Math.max(640,Math.min(availW,availH*16/9));
+  var w=Math.max(640,Math.min(availW,availH*16/9));var lw=parseFloat($v.style.getPropertyValue('--bq-w'));if(lw&&Math.abs(lw-w)<24&&fs===fitStage.fs)return;fitStage.fs=fs;
   $v.style.setProperty('--bq-w',Math.floor(w)+'px');$v.style.setProperty('--bq-k',(w/1000).toFixed(4));
 }catch(e){}}
 if(typeof window!=='undefined'&&window.addEventListener){window.addEventListener('resize',fitStage);document.addEventListener('fullscreenchange',fitStage);if(typeof ResizeObserver!=='undefined')new ResizeObserver(fitStage).observe($v);if(typeof MutationObserver!=='undefined')new MutationObserver(fitStage).observe($v,{attributes:true,attributeFilter:['hidden','class']});fitStage()}
