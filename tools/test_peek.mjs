@@ -198,6 +198,12 @@ check('Bellkeeper: three tolls, then touching anything in the next 1.5 s is fata
   f.F.ev("ev={type:'bell',side:1,phase:'warn',t:2.7,warn:2.7,el:0,bad:0,rung:0,fake:false};gapT=999");f.run(2.8);f.hold('cover');f.run(1);assert.equal(f.ev('why'),'bell');
   const g=fixture();g.F.ev('forceLvl=23;maxLvl=23;runTop=23');g.F.start();assert.ok(JSON.parse(g.ev('JSON.stringify(L.pool)')).includes('bell'));
 });
+check('Codex pages: ghosts first (Reacher and Bellkeeper included), items on page 2, next/prev wraps',()=>{
+  const f=fixture();f.F.ev('seen={reacher:1,bellkeeper:1};dex=true;dexPg=0;dexSel=0;draw()');
+  const pages=JSON.parse(f.ev('JSON.stringify(dexPages().map(p=>p.map(d=>d.id)))'));
+  assert.equal(pages.length,2);assert.ok(pages[0].includes('reacher')&&pages[0].includes('bellkeeper')&&pages[0].length<=12);assert.ok(pages[1].includes('torch'));
+  f.F.ev('dexGo(1);draw()');assert.equal(f.ev('dexPg'),1);assert.equal(f.ev('DEX[dexSel].ghost||0'),0);f.F.ev('dexGo(1);draw()');assert.equal(f.ev('dexPg'),0);f.F.ev('dex=false');
+});
 check('A safe level has only harmless false cues; clearing it pays once and unlocks the next level',()=>{
   const f=fixture(500,null,()=>.3);f.F.ev('forceLvl=1');f.F.ev('maxLvl=1');f.F.start();assert.equal(f.ev('L.l'),1);f.hold('wind');f.run(200);
   assert.equal(f.ev('st'),'won');assert.equal(f.ev('lives'),3);assert.equal(f.ev('maxLvl'),2);assert.equal(f.wallet.balance,500+5);

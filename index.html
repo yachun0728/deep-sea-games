@@ -6726,7 +6726,18 @@ html.frontier-immersive{overflow:hidden}
   "鐘響三下。第三下之後的 1.5 秒內，不要碰螢幕和按鈕。": "The bell tolls three times. For 1.5 seconds after the third, do not touch the screen or buttons.",
   "（右邊的泥水在冒泡）": "(Mud is bubbling on the right)",
   "（左邊的泥水在冒泡）": "(Mud is bubbling on the left)",
-  "（遠處傳來鐘聲）": "(A bell tolls in the distance)"
+  "（遠處傳來鐘聲）": "(A bell tolls in the distance)",
+  "上一頁": "Prev",
+  "下一頁": "Next",
+  "哪一邊的土在鼓起？": "Which side is the ground bulging on?",
+  "土面鼓起，泥水冒泡，一側地面隆起。": "The soil bulges and mud bubbles up on one side.",
+  "墳手 Reacher": "Reacher",
+  "守墓鐘 Bellkeeper": "Bellkeeper",
+  "往另一邊靠，撐住 2 秒。": "Lean to the other side and hold for 2 seconds.",
+  "第三下之後 1.5 秒內，什麼都別碰。": "For 1.5 seconds after the third toll, touch nothing.",
+  "第三下就是信號。": "The third toll is the signal.",
+  "道具與旅人": "Items and the traveler",
+  "遠處的鐘敲了三下。": "A distant bell tolls three times."
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -12163,7 +12174,7 @@ const optSave=()=>{try{localStorage.setItem('deep-sea-peek-opts',JSON.stringify(
  {const cp=$('peek-caps'),am=$('peek-vol-amb'),dx=$('peek-dex'),sh=$('peek-share');
   if(cp&&cp.addEventListener){cp.checked=captions;cp.addEventListener('change',()=>{captions=!!cp.checked;optSave()})}
   if(am&&am.addEventListener){am.value=Math.round(AMB*100);am.addEventListener('input',()=>{AMB=clamp((+am.value||0)/100,0,1);optSave()})}
-  if(dx&&dx.addEventListener)dx.addEventListener('click',()=>{if(st==='run'){say('逃跑中不能翻圖鑑。');return}dex=true});
+  if(dx&&dx.addEventListener)dx.addEventListener('click',()=>{if(st==='run'){say('逃跑中不能翻圖鑑。');return}dex=true;dexPg=0;dexSel=0});
   if(sh&&sh.addEventListener)sh.addEventListener('click',()=>{if(st==='ready'||st==='run'){say('先玩一局再分享結果。');return}share()})}
  if(v&&v.addEventListener){v.value=Math.round(MASTER*100);v.addEventListener('input',()=>{MASTER=clamp((+v.value||0)/100,0,1);optSave()})}}
 /* ---- scene: painted background per world, parallax by lean, first-person bob ---- */
@@ -12320,7 +12331,7 @@ function deathClick(e){
 function doAct(a){
  if(a==='retry'||a==='next')start();
  else if(a==='listen')playCue(deathEv);
- else if(a==='dex'){dex=true;dexSel=0}
+ else if(a==='dex'){dex=true;dexPg=0;dexSel=0}
  else if(a==='later'){st='ready';reset();endBtns=[];say('慢慢來。選好關卡再按「免費開始」。')}
  else if(a==='assist'){assist=true;optSave();const el=$('peek-assist');if(el)el.checked=true;say('已開啟輔助標記。','win')}
  else if(a==='share')share()}
@@ -12384,11 +12395,13 @@ function drawWon(){
  btnRow([[L&&lvl<100?'下一關':'再玩一次','next'],['分享結果卡','share'],['看鬼圖鑑','dex']])}
 /* ---- ghost codex (12 slots): what you have met, the rule, listen again, practice ---- */
 const DEX=[
- {id:'leafling',img:'ghost-leafling',name:'葉下客 Leafling',type:'eye',clue:'腳邊的落葉聚成一堆，聲音很弱。',judge:'低頭看：落葉堆在哪一邊？',act:'往反方向靠，撐滿 3 秒。'},
- {id:'knocker',img:'ghost-thorn',name:'敲枝者 Knocker',type:'twins',clue:'鳥群飛走，接著有固定節奏的敲擊從一邊傳來。',judge:'敲擊來自哪一邊？',act:'往敲擊的反方向靠；往敲擊那邊靠會死。'},
- {id:'hush',img:'ghost-wraith',name:'靜林鬼 Hush',type:'walker',clue:'蟲鳴停了，路燈閃三下。',judge:'靜默不是安全。',act:'燈滅前蓋住螢幕，保持不動，等牠走遠。'},
- {id:'gale',img:'ghost-gale',name:'逆風客 Gale',type:'gale',clue:'風向反了，葉子逆風翻動，接著有拖行聲。',judge:'拖行聲從哪一邊靠近？',act:'迎著風來的方向靠，頂住 2 秒。'},
- {id:'hollow',img:'ghost-hollow',name:'空殼 Hollow（首領）',type:'hollow',clue:'每個世界的第 10 關，先依序面對學過的鬼，最後是牠。',judge:'牠和靜林鬼同一套規則，但停留更久。',act:'蓋住螢幕，保持不動，直到牠離開。'},
+ {id:'leafling',ghost:1,img:'ghost-leafling',name:'葉下客 Leafling',type:'eye',clue:'腳邊的落葉聚成一堆，聲音很弱。',judge:'低頭看：落葉堆在哪一邊？',act:'往反方向靠，撐滿 3 秒。'},
+ {id:'knocker',ghost:1,img:'ghost-thorn',name:'敲枝者 Knocker',type:'twins',clue:'鳥群飛走，接著有固定節奏的敲擊從一邊傳來。',judge:'敲擊來自哪一邊？',act:'往敲擊的反方向靠；往敲擊那邊靠會死。'},
+ {id:'hush',ghost:1,img:'ghost-wraith',name:'靜林鬼 Hush',type:'walker',clue:'蟲鳴停了，路燈閃三下。',judge:'靜默不是安全。',act:'燈滅前蓋住螢幕，保持不動，等牠走遠。'},
+ {id:'gale',ghost:1,img:'ghost-gale',name:'逆風客 Gale',type:'gale',clue:'風向反了，葉子逆風翻動，接著有拖行聲。',judge:'拖行聲從哪一邊靠近？',act:'迎著風來的方向靠，頂住 2 秒。'},
+ {id:'hollow',ghost:1,img:'ghost-hollow',name:'空殼 Hollow（首領）',type:'hollow',clue:'每個世界的第 10 關，先依序面對學過的鬼，最後是牠。',judge:'牠和靜林鬼同一套規則，但停留更久。',act:'蓋住螢幕，保持不動，直到牠離開。'},
+ {id:'reacher',ghost:1,img:'ghost-reacher',name:'墳手 Reacher',type:'reach',clue:'土面鼓起，泥水冒泡，一側地面隆起。',judge:'哪一邊的土在鼓起？',act:'往另一邊靠，撐住 2 秒。'},
+ {id:'bellkeeper',ghost:1,img:'ghost-bellkeeper',name:'守墓鐘 Bellkeeper',type:'bell',clue:'遠處的鐘敲了三下。',judge:'第三下就是信號。',act:'第三下之後 1.5 秒內，什麼都別碰。'},
  {id:'flick',img:'guide-flick',name:'小螢 Flick',clue:'友方的螢火蟲，會在死亡後告訴你剛才漏掉了什麼。',judge:'牠不是鬼。',act:'多看牠的提示。'},
  {id:'rook',img:'npc-rook',name:'旅人 Rook',clue:'在營火旁出現。',judge:'牠不追你。',act:'營火邊三選一，帶走一樣東西。'},
  {id:'nib',img:'',name:'Nib',clue:'偶爾跑過路邊的無害小傢伙，出現率約五十分之一。',judge:'牠不會傷害你。',act:'靠近時按「撿」，牠會留點小禮物。'},
@@ -12397,17 +12410,21 @@ const DEX=[
  {id:'scroll',img:'item-chest',name:'舊卷軸 Scroll',clue:'收藏品。',judge:'',act:'集滿 3 卷，營火旁會掛上骷髏燈籠。'},
  {id:'lantern',img:'prop-skull-lantern',name:'骷髏燈籠',clue:'收集 3 卷舊卷軸後出現在營火旁。',judge:'',act:'只是裝飾，讓營火更有氣氛。'}];
 const DEXF={x:14,y:5,h:440},DK=DEXF.h/578,DCX=[95,175,256,337],DCY=[190,273,355];
-const dexPos=i=>[DEXF.x+DCX[i%4]*DK,DEXF.y+DCY[(i/4)|0]*DK];
-const DEXB=[[372,392,118,38,'聽一次'],[500,392,118,38,'練習'],[628,392,118,38,'關閉']];
+const dexPos=j=>[DEXF.x+DCX[j%4]*DK,DEXF.y+DCY[(j/4)|0]*DK];
+const dexPages=()=>{const out=[],ch=a=>{for(let i=0;i<a.length;i+=12)out.push(a.slice(i,i+12))};ch(DEX.filter(d=>d.ghost));ch(DEX.filter(d=>!d.ghost));return out};   // 12 slots per page: ghosts first, then NPCs and items
+let dexPg=0;
+const dexGo=n=>{const pg=dexPages();dexPg=(dexPg+n+pg.length)%pg.length;dexSel=DEX.indexOf(pg[dexPg][0])};
+const DEXB=[[372,392,118,38,'聽一次'],[500,392,118,38,'練習'],[628,392,118,38,'關閉']],DEXP=[[40,396,92,32,'上一頁'],[222,396,92,32,'下一頁']];
 function txl(s,x,y,sz,col,wd,maxL){g.font='700 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='left';g.fillStyle=col;const ls=wrapLines(s,sz,wd).slice(0,maxL||12);ls.forEach((ln,i)=>g.fillText(ln,x,y+i*(sz+5)));return y+ls.length*(sz+5)}
 function drawDex(){
  g.fillStyle='#06060a';g.fillRect(0,0,W,H);
  const fr=art('ui-codex');if(fr)g.drawImage(fr,DEXF.x,DEXF.y,432*DK,DEXF.h);
- txp('鬼圖鑑　'+Object.keys(seen).filter(k=>DEX.some(d=>d.id===k)).length+' / 12',DEXF.x+216*DK,DEXF.y+105*DK,18,'#e8e0d0');
+ const pgs=dexPages(),cur=pgs[dexPg]||pgs[0];
+ txp((cur[0].ghost?'鬼圖鑑　':'道具與旅人　')+cur.filter(d=>seen[d.id]).length+' / '+cur.length,DEXF.x+216*DK,DEXF.y+105*DK,18,'#e8e0d0');
  txp('點圓圈看線索與解法',DEXF.x+220*DK,DEXF.y+462*DK,14,'#4a3a2a');
- DEX.forEach((d,i)=>{
-  const p=dexPos(i),im=d.img?art(d.img):null,got=!!seen[d.id];
-  if(i===dexSel){g.strokeStyle='#ffd98a';g.lineWidth=3;g.beginPath();g.arc(p[0],p[1],27*DK*1.2+2,0,7);g.stroke()}
+ cur.forEach((d,j)=>{
+  const p=dexPos(j),im=d.img?art(d.img):null,got=!!seen[d.id];
+  if(DEX.indexOf(d)===dexSel){g.strokeStyle='#ffd98a';g.lineWidth=3;g.beginPath();g.arc(p[0],p[1],27*DK*1.2+2,0,7);g.stroke()}
   if(got){if(im)floatImg(im,p[0],p[1],46,1);else txp(d.id==='nib'?'🐾':'?',p[0],p[1]+6,20,'#e8e0d0')}
   else txp('？',p[0],p[1]+7,22,'#5a5a66')});
  RR(366,10,424,430,12,'rgba(34,26,20,.96)',3);
@@ -12417,10 +12434,13 @@ function drawDex(){
   const n=d.type?deathsOf(d.type):0;if(d.type)txl('被牠打倒 '+n+' 次',490,84,14,'#cfe8ff',290,1);
   let y=150;y=txl('線索：'+d.clue,384,y,15,'#f1d9a6',390,3)+6;if(d.judge)y=txl('判斷：'+d.judge,384,y,15,'#f1d9a6',390,2)+6;txl('應對：'+d.act,384,y,15,'#ffd98a',390,3)}
  else{txl('？？？',490,60,24,'#8a8a96',290,1);txl('還沒遇見。繼續往前走，遇到之後這裡會記下線索和解法。',384,150,15,'#c9c0b0',390,3)}
+ DEXP.forEach(b=>{RR(b[0],b[1],b[2],b[3],8,'#5a4228',2);tx(b[4],b[0]+b[2]/2,b[1]+22,14,'#f1d9a6')});tx((dexPg+1)+' / '+pgs.length,DEXF.x+216*DK,DEXF.y+413,14,'#e8e0d0');
  DEXB.forEach((b,i)=>{const dis=(i<2&&!(got&&d.type));RR(b[0],b[1],b[2],b[3],10,dis?'rgba(90,66,40,.35)':'#5a4228',3);tx(b[4],b[0]+b[2]/2,b[1]+26,16,dis?'rgba(241,217,166,.4)':'#f1d9a6')})}
 function dexClick(e){
  const p=cxy(e);
- for(let i=0;i<12;i++){const q=dexPos(i);if(Math.hypot(p[0]-q[0],p[1]-q[1])<28){dexSel=i;return}}
+ const cur=dexPages()[dexPg]||[];
+ for(let j=0;j<cur.length;j++){const q=dexPos(j);if(Math.hypot(p[0]-q[0],p[1]-q[1])<28){dexSel=DEX.indexOf(cur[j]);return}}
+ DEXP.forEach((b,i)=>{if(p[0]>=b[0]&&p[0]<=b[0]+b[2]&&p[1]>=b[1]&&p[1]<=b[1]+b[3])dexGo(i?1:-1)});
  DEXB.forEach((b,i)=>{if(p[0]>=b[0]&&p[0]<=b[0]+b[2]&&p[1]>=b[1]&&p[1]<=b[1]+b[3]){
   const d=DEX[dexSel],ok=seen[d.id]&&d.type;
   if(i===2)dex=false;
