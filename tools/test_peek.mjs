@@ -27,7 +27,7 @@ export function fixture(balance=500,savedBest=null,random=Math.random){
     // Run the simulation for `sec` seconds in 0.05 s steps, stopping early once the round is no longer running.
     run(sec){for(let t=0;t<sec&&F.ev('st')==='run';t+=.05)F.update(.05);},
     // Put a spirit directly into play (no random choice) and keep the next random one far away.
-    spirit(type,side,phase='warn'){F.ev(`ev={type:${JSON.stringify(type)},side:${side},phase:${JSON.stringify(phase)},t:${type==='walker'?6:2.5},bad:0,ok:false,snd:0};gapT=999`);},
+    spirit(type,side,phase='warn'){F.ev(`ev={type:${JSON.stringify(type)},side:${side},phase:${JSON.stringify(phase)},t:${type==='walker'?6:2.5},bad:0,ok:false,snd:0${type==='walker'?`,warn:6,gh:'hush',items:{'${side}':'item-lantern','${-side}':'item-hammer'}`:''}};gapT=999`);},
     hold(k,v=1){F.ev(`keys.${k}=${v}`);},tick(ms){now+=ms;}};
   return f;
 }
@@ -69,10 +69,11 @@ check('Twin Spirits: leaning toward the giggle kills, away survives, standing st
 check('Night Watchman: not covered when the light goes out kills',()=>{
   const f=fixture();f.F.start();f.spirit('walker',1);f.run(9);assert.equal(f.ev('why'),'walkerLate');assert.equal(f.count('end'),1);
 });
-check('Night Watchman: covered and still through the dark survives; moving or uncovering kills',()=>{
-  const ok=fixture();ok.F.start();ok.spirit('walker',1);ok.hold('cover');ok.run(11);assert.equal(ok.ev('st'),'run');assert.equal(ok.ev('survived'),1);
-  const move=fixture();move.F.start();move.spirit('walker',1);move.hold('cover');move.run(7);assert.equal(move.ev('ev.phase'),'judge');move.hold('r');move.run(2);assert.equal(move.ev('why'),'walkerMove');
-  const peek=fixture();peek.F.start();peek.spirit('walker',1);peek.hold('cover');peek.run(7);peek.hold('cover',0);peek.run(1);assert.equal(peek.ev('why'),'walkerMove');
+check('Hush: tapping the lantern side survives; the decoy side or nothing kills; items only appear late in the warning',()=>{
+  const ok=fixture();ok.F.start();ok.spirit('walker',1);ok.run(1);assert.equal(ok.F.ev('itemsUp()'),false);ok.run(2);assert.equal(ok.F.ev('itemsUp()'),true);ok.F.ev('tap(600)');ok.run(.2);assert.equal(ok.ev('st'),'run');assert.equal(ok.ev('survived'),1);
+  const bad=fixture();bad.F.start();bad.spirit('walker',1);bad.run(3);bad.F.ev('tap(200)');bad.run(.2);assert.equal(bad.ev('why'),'walkerMove');
+  const early=fixture();early.F.start();early.spirit('walker',1);early.run(1);early.F.ev('tap(200)');early.run(.2);assert.equal(early.ev('st'),'run');   // nothing to tap yet
+  const first=fixture();first.F.start();first.spirit('walker',1);first.F.ev('ev.items={"1":"item-lantern","-1":null}');first.run(3);first.F.ev('tap(200)');first.run(.2);assert.equal(first.ev('st'),'run');   // first meeting: only one prop, the empty side does nothing
 });
 check('Spirits never repeat the type of the previous one',()=>{
   const f=fixture();f.F.start();f.F.ev('survived=3');let prev='';for(let i=0;i<60;i++){f.F.ev('ev=null');f.F.ev('startEvent()');const t=f.ev('ev.type');assert.notEqual(t,prev);prev=t;}
@@ -185,7 +186,7 @@ check('Level table: buffer, learn, boss and difficulty ramp follow the ten-level
   const f=fixture(),c=n=>JSON.parse(f.ev(`JSON.stringify((({l,wi,k,kind,left,plan,pool,fixed,fakeP,chainP})=>({l,wi,k,kind,left,plan,pool,fixed,fakeP,chainP}))(levelCfg(${n})))`));
   assert.equal(c(1).kind,'safe');assert.equal(c(1).left,0);assert.equal(c(1).fixed,true);assert.equal(c(2).kind,'safe');assert.equal(c(3).kind,'safe');assert.equal(c(4).kind,'learn');assert.deepEqual(c(4).pool,['eye']);assert.deepEqual(c(8).pool,['twins']);assert.equal(c(30).kind,'boss');assert.equal(c(22).kind,'learn');assert.deepEqual(c(22).pool,['reach']);assert.deepEqual(c(23).pool,['bell']);assert.equal(c(24).kind,'normal');
   assert.equal(c(5).kind,'safe');assert.equal(c(15).kind,'review');assert.equal(c(15).left,1);assert.equal(c(12).kind,'learn');assert.deepEqual(c(12).pool,['walker']);assert.deepEqual(c(16).pool,['gale']);
-  assert.equal(c(9).kind,'peak');assert.equal(c(10).kind,'boss');assert.deepEqual(c(10).plan,['eye','twins','hollow']);assert.equal(c(30).plan.at(-1),'hollow');assert.ok(c(30).plan.includes('gale'));
+  assert.equal(c(9).kind,'peak');assert.equal(c(10).kind,'boss');assert.deepEqual(c(10).plan,['eye','twins','hollow']);assert.equal(c(30).plan.at(-1),'glass');assert.equal(c(40).plan.at(-1),'hollow');assert.ok(c(30).plan.includes('gale'));
   assert.equal(c(21).wi,1);assert.equal(c(100).wi,4);assert.equal(c(99).left,8);assert.ok(c(9).left<c(29).left&&c(29).left<c(89).left);
   assert.equal(c(14).fakeP,0);assert.ok(c(18).fakeP===0||c(18).fakeP>0);assert.equal(c(26).chainP>0,true);assert.equal(c(24).chainP,0);
 });
@@ -230,7 +231,7 @@ check('Gale must be met by leaning toward the reversed wind; boss Hollow is a lo
   const f=fixture();f.F.ev('forceLvl=12;maxLvl=12');f.F.start();f.spirit('gale',1,'judge');f.F.ev('ev.t=2;tilt=1');f.hold('r');f.run(1);assert.equal(f.ev('st'),'run');f.run(2);f.hold('r',0);assert.equal(f.ev('survived'),1);
   f.spirit('gale',1,'judge');f.F.ev('ev.t=2;tilt=0');f.run(1);assert.equal(f.ev('why'),'gale');
   const h=fixture();h.F.ev('forceLvl=10;maxLvl=10');h.F.start();h.F.ev('ev={type:"walker",side:1,phase:"warn",t:6,warn:6,el:0,bad:0,ok:false,snd:0,fake:false,boss:true};gapT=999');
-  h.run(7);assert.equal(h.ev('why'),'hollowLate');
+  h.run(10);assert.equal(h.ev('why'),'hollowLate');
 });
 check('Boss level runs its fixed plan, saves a checkpoint and adds a life',()=>{
   const f=fixture();f.F.ev('forceLvl=10;maxLvl=10;lives=3');f.F.start();assert.equal(f.ev('L.plan.length'),3);
