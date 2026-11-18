@@ -261,3 +261,7 @@ AN.tick只在原有可見聚焦且engaged的有效時間呼叫deepSeaProgress.ac
 ## 全體點數歸零（2026-11-18 一次性）
 
 依使用者指示，所有玩家的共用餘額 `crush-depth-balance` 在載入時一次性歸零：`deep-sea-balance-zero-v1` 標記尚未為 `1` 時，將餘額設為 0 並寫入標記，之後照常讀取（歸零後賺到的點數會保留，不會再歸零）。造型收藏 `deep-sea-wardrobe-v1` 不受影響。頁首第一次畫面的預載腳本也依標記顯示，不會先閃出舊點數。回復方式：移除 `js/wallet.js` 的歸零區塊（已歸零的點數無法恢復）。測試：`node tools/test_balance_zero.mjs`。
+
+## Frontier art and immersive HUD update
+
+Frontier draw.js uses two PNG atlases with vector fallback. Optional world.supplies is added by migration without replacing saved materials. The model handles source-debit-first resource pickup, worker hauling, building bonuses and equipment limits; rendering does not award resources. Handheld start/resume requests fullscreen and landscape; unsupported orientation lock uses a pause-and-rotate prompt. The frontier-immersive document class hides platform navigation only during this game's immersive session and is cleared on exit. Profile/wardrobe entry controls are temporarily hidden; data, rewards and storage keys remain intact.

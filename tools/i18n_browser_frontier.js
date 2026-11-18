@@ -22,6 +22,15 @@
    var events=[],A=window.deepSeaAnalytics;['start','progress','resume','end'].forEach(function(k){var fn=A[k];A[k]=function(){events.push({k:k,args:Array.from(arguments)});return fn.apply(A,arguments);};});
    var before=balance();click('ft-go');click('ft-go');await wait();assert(balance()===before,'Double start charges exactly once');assert(events.filter(function(e){return e.k==='start';}).length===1,'One start event per attempt');
    click('ft-shop-toggle');await wait();assert(!document.getElementById('ft-shop').hidden,'Equipment and trading drawer opens inside game');click('ft-shop-close');await wait();assert(document.getElementById('ft-shop').hidden,'Drawer closes without restarting');
+   if(innerWidth<=600&&innerHeight>innerWidth){
+    assert(!document.getElementById('ft-rotate').hidden,'Portrait handheld shows rotation prompt');
+    assert(document.getElementById('ft-title').textContent.length>0,'Portrait game remains safely paused');
+    assert(getComputedStyle(document.querySelector('.game-toolbar')).display==='none','Immersive mode hides platform navigation');
+    click('ft-rotate-exit');await wait();assert(document.getElementById('ft-rotate').hidden,'Rotation prompt can exit immersive mode');
+    assert(document.documentElement.scrollWidth<=innerWidth,'Portrait layout fits CSS viewport');
+    document.body.dataset.testStatus='PASS';var portraitOut=document.createElement('pre');portraitOut.id='test-results';portraitOut.setAttribute('data-i18n-ignore','');portraitOut.textContent=JSON.stringify(results,null,2);document.body.appendChild(portraitOut);return;
+   }
+   if(innerWidth>innerHeight&&innerWidth<=1100){click('ft-full');await wait();assert(!!document.fullscreenElement||document.getElementById('ft-main').classList.contains('ft-immersive'),'Landscape viewport enters fullscreen or fallback');}
    assert(document.getElementById('ft-map').children.length===50,'All 50 stage buttons exist');
    var w=t.world(),tm=w.time,x=w.p.x;document.getElementById('ft-canvas').focus();document.getElementById('ft-canvas').dispatchEvent(new KeyboardEvent('keydown',{key:'d',bubbles:true}));await wait(220);document.getElementById('ft-canvas').dispatchEvent(new KeyboardEvent('keyup',{key:'d',bubbles:true}));assert(w.p.x>x+10,'Keyboard movement updates player position');
    I.setLanguage('zh-Hant');await wait();I.setLanguage('en');await wait();assert(balance()===before&&t.world()===w,'Live language switch preserves world and points');assert(!untranslated().length,'English UI covers live and hidden labels: '+JSON.stringify(untranslated()));

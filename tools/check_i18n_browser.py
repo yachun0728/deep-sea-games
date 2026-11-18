@@ -138,7 +138,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix='deep-sea-i18n-') as temp:
         folder = Path(temp)
         for suite, width, height in [('core', 1366, 900), ('games', 1366, 900), ('games', 390, 844),
-                                     ('ocean_link', 1366, 900), ('ocean_link', 844, 390), ('frontier', 1366, 900), ('frontier', 390, 844)]:
+                                     ('ocean_link', 1366, 900), ('ocean_link', 844, 390), ('frontier', 1366, 900), ('frontier', 390, 844), ('frontier', 844, 390)]:
             script = (ROOT / f'tools/i18n_browser_{suite}.js').read_text(encoding='utf-8')
             route = f'/{suite}-{width}.html'
             tested_source = source
@@ -172,7 +172,7 @@ def main():
                     print('PASS: Ocean Link reload preserves points and records', flush=True)
                     chrome.evaluate("localStorage.setItem('crush-depth-balance', '0'); localStorage.setItem('deep-sea-regen-at', Date.now())")
                     total += chrome.check(page, '?probe=low&lang=zh-Hant#ocean-link', 'Ocean Link direct Chinese / zero balance')
-                if suite == 'frontier':
+                if suite == 'frontier' and not (width <= 600 and height > width):
                     total += chrome.check(page, '?probe=reload#frontier', f'Frontier reload {width}')
                     chrome.evaluate("localStorage.removeItem('deep-sea-frontier-v1');localStorage.setItem('crush-depth-balance','0');localStorage.setItem('deep-sea-regen-at',Date.now())")
                     total += chrome.check(page, '?probe=low&lang=zh-Hant#frontier', f'Frontier zero balance {width}')

@@ -984,10 +984,61 @@ body.ol-expanded { overflow: hidden; }
 @media(max-width:600px){#view-frontier .ft-optional-dash{display:none}#view-frontier .ft-mission{font-size:10px;padding:5px 10px}#view-frontier .ft-resource{font-size:10px;padding:6px 10px}#view-frontier .ft-resource button{min-height:32px;font-size:10px;padding:5px 8px}#view-frontier .ft-main:fullscreen .ft-top,#view-frontier .ft-main.ft-immersive .ft-top{padding:5px 10px}#view-frontier .ft-status{font-size:13px}#view-frontier .ft-shop{bottom:95px}}
 @media(prefers-reduced-motion:reduce){#view-frontier button{transition:none}}
 
+/* Desktop uses a compact cockpit; only touch devices auto-enter fullscreen. */
+#view-frontier .ft-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;padding:7px 14px;min-height:44px}
+#view-frontier .ft-top .ft-status{padding:0;justify-content:center;gap:18px;font-size:14px;min-width:0}
+#view-frontier .ft-top #ft-full{min-height:30px;padding:5px 10px;font-size:12px}
+#view-frontier .ft-objective{min-height:0;padding:7px 14px;line-height:1.5;font-size:12px}
+#view-frontier .ft-mission{display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px 16px;padding:5px 14px;line-height:1.5}
+#view-frontier .ft-stage{height:clamp(440px,66vh,760px)}
+#view-frontier .ft-shop{top:112px;bottom:68px;right:10px;width:290px;max-height:none;padding:14px;box-sizing:border-box}
+#view-frontier .ft-shop-head h3{font-size:15px;margin:0}#view-frontier .ft-shop-head button{font-size:11px;min-height:30px;padding:5px 9px}
+#view-frontier .ft-shop-actions button{min-height:35px;padding:7px 10px;font-size:12px}
+#view-frontier .ft-main.ft-shop-open .ft-stage{margin-right:310px}
+#view-frontier .ft-resource{justify-content:flex-start;column-gap:14px;row-gap:6px;padding:8px 12px}#view-frontier #ft-home{margin-left:auto}
+@media(hover:hover) and (pointer:fine){#view-frontier .ft-touch{display:none}}
+@media(max-width:1100px){#view-frontier .ft-layout{grid-template-columns:minmax(0,1fr)}#view-frontier .ft-side{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){#view-frontier .ft-top{grid-template-columns:minmax(0,1fr) auto;padding:6px 10px;gap:7px}#view-frontier .ft-top>.ft-eyebrow{display:none}#view-frontier .ft-top .ft-status{justify-content:space-between;gap:8px;font-size:12px}#view-frontier .ft-objective{font-size:11px;padding:6px 10px}#view-frontier .ft-mission{font-size:10px;padding:4px 10px}#view-frontier .ft-side{grid-template-columns:minmax(0,1fr)}#view-frontier .ft-main.ft-shop-open .ft-stage{margin-right:0}#view-frontier .ft-shop{top:auto;bottom:88px;right:10px;width:calc(100% - 20px);max-height:58%;padding:12px}#view-frontier .ft-resource{column-gap:9px;padding:6px 10px}#view-frontier #ft-home{margin-left:0}}
+
+#view-frontier .ft-building-effects{font-size:11px;color:#e9d69e;padding:8px 10px;background:#091f2544;border-radius:8px;line-height:1.8}
+#view-frontier .ft-rotate{position:absolute;inset:0;z-index:15;background:#0c2e30f5;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;gap:14px}
+#view-frontier .ft-rotate[hidden]{display:none}#view-frontier .ft-rotate>span{font-size:65px;color:#e5c985}#view-frontier .ft-rotate h3{font-size:22px}#view-frontier .ft-rotate p{font-size:13px;line-height:1.7;max-width:290px}
+@media(pointer:coarse){#view-frontier .ft-optional-dash{display:none}}
+@media(orientation:landscape) and (max-height:500px){#view-frontier .ft-mission #ft-warning{display:none}#view-frontier .ft-top{min-height:32px;padding:3px 10px}#view-frontier .ft-objective{padding:3px 10px;font-size:11px}#view-frontier .ft-mission{padding:3px 10px;font-size:10px}#view-frontier .ft-resource{padding:4px 10px;font-size:10px}#view-frontier .ft-resource button{min-height:28px;padding:4px 7px;font-size:10px}#view-frontier .ft-touch{bottom:12px}#view-frontier #ft-stick{width:80px;height:80px}#view-frontier #ft-knob{left:21px;top:21px}#view-frontier .ft-shop{top:80px;bottom:48px}}
+
+/* The playfield owns the whole stage; compact glass HUD floats inside it. */
+#view-frontier .ft-main{height:clamp(540px,76dvh,900px);isolation:isolate}
+#view-frontier .ft-main .ft-stage{position:absolute;inset:0;height:auto;min-height:0;margin:0;z-index:0}
+#view-frontier .ft-top{position:absolute;z-index:5;top:10px;left:12px;right:12px;grid-template-columns:auto minmax(0,1fr) auto auto;min-height:38px;padding:5px 10px;border:1px solid #ead29b4d;border-radius:12px;background:#143833db;backdrop-filter:blur(8px);box-shadow:0 3px 18px #09272b44}
+#view-frontier .ft-top .ft-status{gap:12px;font-size:13px}#view-frontier .ft-top button{min-height:28px;padding:5px 8px;font-size:11px}
+#view-frontier .ft-objective{position:absolute;z-index:4;top:64px;left:14px;max-width:calc(100% - 135px);padding:6px 10px;border:1px solid #e3cb8833;border-radius:9px;background:#153b31c9;font-size:11px;pointer-events:none;backdrop-filter:blur(5px)}
+#view-frontier .ft-mission{position:absolute;z-index:7;top:103px;left:14px;width:min(340px,calc(100% - 28px));padding:12px;background:#14382ff2;border:1px solid #e0c38866;border-radius:10px;box-shadow:0 8px 30px #0004;line-height:1.8}
+#view-frontier .ft-mission[hidden]{display:none}#view-frontier .ft-mission:not([hidden]){display:grid;gap:8px}
+#view-frontier .ft-resource{position:absolute;z-index:5;bottom:10px;left:12px;right:12px;padding:8px 10px;border:1px solid #ead29b44;border-radius:12px;background:#12362fe0;backdrop-filter:blur(8px);column-gap:12px;box-shadow:0 3px 18px #09272b44}
+#view-frontier .ft-shop{z-index:8;top:10px;bottom:10px;width:290px;right:10px;max-height:none;border-radius:14px;box-shadow:0 0 0 1px #143c3266,0 10px 35px #0005}
+#view-frontier .ft-main.ft-shop-open .ft-stage{right:310px;margin-right:0}#view-frontier .ft-main.ft-shop-open .ft-top,#view-frontier .ft-main.ft-shop-open .ft-resource{right:322px}
+#view-frontier .ft-main.ft-shop-open .ft-objective{max-width:calc(100% - 450px)}
+#view-frontier .ft-touch{bottom:100px;left:20px;right:20px}#view-frontier .ft-main:fullscreen,#view-frontier .ft-main.ft-immersive{height:100dvh}
+@media(max-width:600px){#view-frontier .ft-top{grid-template-columns:minmax(0,1fr) auto auto;top:8px;left:8px;right:8px;padding:5px 7px;gap:6px}#view-frontier .ft-top>.ft-eyebrow{display:none}#view-frontier .ft-top .ft-status{font-size:11px;gap:6px}#view-frontier .ft-resource{bottom:8px;left:8px;right:8px;font-size:10px;gap:6px 9px}#view-frontier .ft-objective{top:58px;left:10px;max-width:calc(100% - 122px);font-size:10px}#view-frontier .ft-shop{top:auto;bottom:88px;width:calc(100% - 20px);max-height:58%}#view-frontier .ft-main.ft-shop-open .ft-stage{right:0}#view-frontier .ft-main.ft-shop-open .ft-top,#view-frontier .ft-main.ft-shop-open .ft-resource{right:8px}#view-frontier .ft-main.ft-shop-open .ft-objective{max-width:calc(100% - 122px)}}
+@media(orientation:landscape) and (max-height:500px){#view-frontier .ft-top{top:6px;left:8px;right:8px;min-height:28px;padding:4px 8px}#view-frontier .ft-top>.ft-eyebrow{display:none}#view-frontier .ft-top{grid-template-columns:minmax(0,1fr) auto auto}#view-frontier .ft-objective{top:49px;font-size:10px;max-width:calc(100% - 135px)}#view-frontier .ft-resource{bottom:6px;left:8px;right:8px;padding:5px 8px;gap:5px 10px;font-size:10px}#view-frontier .ft-touch{bottom:70px}#view-frontier .ft-shop{top:6px;bottom:6px}#view-frontier .ft-mission{top:83px}}
+
+#view-frontier .ft-main:fullscreen .ft-top,#view-frontier .ft-main.ft-immersive .ft-top{top:max(6px,env(safe-area-inset-top));left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right))}
+#view-frontier .ft-main:fullscreen .ft-resource,#view-frontier .ft-main.ft-immersive .ft-resource{bottom:max(6px,env(safe-area-inset-bottom));left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right))}
+#view-frontier .ft-main.ft-shop-open:fullscreen .ft-top,#view-frontier .ft-main.ft-shop-open:fullscreen .ft-resource{right:322px}
+@media(max-width:600px){#view-frontier .ft-main.ft-shop-open:fullscreen .ft-top,#view-frontier .ft-main.ft-shop-open:fullscreen .ft-resource{right:max(8px,env(safe-area-inset-right))}}
+
+#view-frontier .ft-layout{display:block}#view-frontier .ft-side{display:grid;grid-template-columns:1fr 1fr;margin-top:16px}#view-frontier .ft-main{width:100%}
+@media(max-width:600px){#view-frontier .ft-side{grid-template-columns:minmax(0,1fr)}}
+
+html.frontier-immersive .top,html.frontier-immersive .game-toolbar{display:none!important}
+html.frontier-immersive{overflow:hidden}
+
 .wardrobe-hub{margin:0;border:1px solid #5bada93b;border-radius:20px;background:linear-gradient(120deg,#102d36,#173c40);overflow:hidden;color:#e0eee8}
 .wardrobe-head{padding:20px 24px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-weight:700}.wardrobe-head h2{margin:0;font-size:inherit}.wardrobe-head span{font-size:12px;font-weight:400;color:#9ec9bf}
 .wardrobe-layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:24px;padding:0 24px 24px}.wardrobe-profile{text-align:center;border-radius:16px;background:#ffffff08;padding:20px}.wardrobe-avatar{height:220px}.wardrobe-avatar svg{height:100%;max-width:100%}.wardrobe-hub p{font-size:12px;line-height:1.8;color:#adcec2}.wardrobe-hub h3{font-size:16px}.wardrobe-slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.wardrobe-hub button{font:inherit;background:#275257;color:#e0eee8;border:1px solid #55968c;border-radius:8px;min-height:40px;padding:9px 12px;cursor:pointer}.wardrobe-hub button:disabled{opacity:.45;cursor:default}.wardrobe-slots button{font-size:11px;padding:7px}.wardrobe-items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.wardrobe-item{background:#ffffff09;border:1px solid #ffffff14;border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:9px}.wardrobe-item h4{margin:0;font-size:14px}.wardrobe-item p{margin:0}.wardrobe-icon{font-size:30px}.wardrobe-item button{margin-top:auto;font-size:12px}.wardrobe-preview{width:36px;height:36px;display:inline-flex;vertical-align:middle}.wardrobe-preview svg{width:100%;height:100%}.wardrobe-earn{margin-bottom:18px}.wardrobe-open{background:#143f48;color:#c8e7da;border:1px solid #396967;border-radius:9px;padding:4px 9px;display:flex;align-items:center;gap:6px;cursor:pointer;font:inherit}
 @media(max-width:880px){.wardrobe-layout{grid-template-columns:minmax(0,1fr);padding:0 14px 18px;gap:14px}.wardrobe-items{grid-template-columns:repeat(2,minmax(0,1fr))}.wardrobe-head{padding:18px 14px}.wardrobe-avatar{height:190px}.wardrobe-open{font-size:11px}.wardrobe-preview{height:25px;width:25px}}
+
+#open-wardrobe[hidden],#tab-wardrobe[hidden]{display:none!important}
 
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3316258522775901"
@@ -999,7 +1050,7 @@ body.ol-expanded { overflow: hidden; }
     <div class="brand">
       <a class="brand-home" href="#lobby" aria-label="返回遊戲大廳" title="返回遊戲大廳"><svg class="brand-home-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9" fill="#123c4b" stroke="#326475"/><path d="m8 15 8-7 8 7v10h-6v-7h-4v7H8z" fill="none" stroke="#62e6d2" stroke-width="1.8" stroke-linejoin="round"/></svg><h1 id="game-name" tabindex="-1">TiCATiCA <span>Games</span></h1></a>
     </div>
-    <div class="header-tools"><button type="button" id="open-wardrobe" class="wardrobe-open"><span class="wardrobe-preview" id="wardrobe-mini" aria-hidden="true"></span>我的造型</button><div class="language-switch" role="group" aria-label="Language / 語言" data-i18n-ignore><button type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button><button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button></div><div class="wallet-box"><div class="wallet">
+    <div class="header-tools"><button type="button" id="open-wardrobe" hidden class="wardrobe-open"><span class="wardrobe-preview" id="wardrobe-mini" aria-hidden="true"></span>我的造型</button><div class="language-switch" role="group" aria-label="Language / 語言" data-i18n-ignore><button type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button><button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button></div><div class="wallet-box"><div class="wallet">
       <span class="label" data-i18n-ignore>BONUS</span>
       <span class="amount" id="balance">0</span><span class="unit">點</span><script>try{var b=parseInt(localStorage.getItem('crush-depth-balance'),10);if(localStorage.getItem('deep-sea-balance-zero-v1')==='1'&&isFinite(b)&&b>=0)document.getElementById('balance').textContent=b.toLocaleString('zh-TW')}catch(e){}</script>
     </div></div></div>
@@ -1008,8 +1059,7 @@ body.ol-expanded { overflow: hidden; }
   <div class="game-toolbar"><a class="back-lobby" href="#lobby"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m14 6-6 6 6 6M8 12h12"/></svg>遊戲大廳</a>
   <details class="game-picker" id="game-picker"><summary><span>切換遊戲</span><span id="picker-current">壓潰深度</span><span class="picker-chevron" aria-hidden="true">⌄</span></summary><nav class="tabs" aria-label="遊戲">
     <a href="#lobby" id="tab-lobby">遊戲大廳<small>Lobby</small></a>
-    <a href="#wardrobe" id="tab-wardrobe">我的造型<small>My Wardrobe</small></a>
-    <a href="#wardrobe" id="tab-wardrobe">我的造型<small>My Wardrobe</small></a>
+    <a href="#wardrobe" id="tab-wardrobe" hidden>我的造型<small>My Wardrobe</small></a>
     <a href="#crash" id="tab-crash" hidden aria-current="page">壓潰深度<small>Crash</small></a>
     <a href="#mines" id="tab-mines">踩地雷<small>Mines</small></a>
     <a href="#plinko" id="tab-plinko" hidden>落珠<small>Plinko</small></a>
@@ -1112,12 +1162,12 @@ body.ol-expanded { overflow: hidden; }
   <div class="wardrobe-store"><div class="wardrobe-earn"><h3>玩出你的收藏</h3><p>有效遊玩每分鐘 2 點，每日最多 60 點；背景、選單、暫停及閒置超過 60 秒不計。每款遊戲每日首次完成至少 10 秒有效遊玩的回合，再獲得 5 點；原有技能與里程碑獎勵另外保留。</p><p id="wardrobe-daily"></p></div><div id="wardrobe-items" class="wardrobe-items"></div></div></div>
   </div></section>
 <section class="view" id="view-frontier" hidden><div class="ft-layout"><div class="ft-main" id="ft-main">
-<div class="ft-top"><span class="ft-eyebrow">FRONTIER / 50 STAGES</span><button type="button" id="ft-full">全螢幕</button></div><div class="ft-status"><strong id="ft-zone">翠葉群島</strong><span id="ft-level">1 / 50</span><span id="ft-health">♥ 100</span></div><p id="ft-objective" class="ft-objective" aria-live="polite">建立據點，清除守衛，點亮燈塔。</p>
-<div class="ft-mission"><span id="ft-checklist"></span><span id="ft-warning"></span></div><div class="ft-stage" id="ft-stage"><canvas id="ft-canvas" width="900" height="650" tabindex="0" aria-label="荒島遠征：移動採集、靠近建造、閃避攻擊"></canvas><div id="ft-overlay" class="ft-overlay"><span class="ft-eyebrow">GATHER · BUILD · SURVIVE</span><h2 id="ft-title">荒島遠征</h2><p id="ft-message">五大區域，五十場考驗。建立據點，穿越危險地帶。</p><button type="button" id="ft-go">免費開始遠征</button></div><div class="ft-touch"><div id="ft-stick" role="group" aria-label="拖曳搖桿移動"><span id="ft-knob"></span></div><button type="button" id="ft-dash" class="ft-optional-dash">衝刺</button></div></div>
+<div class="ft-top"><span class="ft-eyebrow">FRONTIER / 50 STAGES</span><div class="ft-status"><strong id="ft-zone">翠葉群島</strong><span id="ft-level">1 / 50</span><span id="ft-health">♥ 100</span></div><button type="button" id="ft-journal" aria-expanded="false" aria-controls="ft-task-details">任務</button><button type="button" id="ft-full">全螢幕</button></div><p id="ft-objective" class="ft-objective" aria-live="polite">建立據點，清除守衛，點亮燈塔。</p>
+<div class="ft-mission" id="ft-task-details" hidden><span id="ft-checklist"></span><span id="ft-warning"></span><span id="ft-hauling"></span></div><div class="ft-stage" id="ft-stage"><canvas id="ft-canvas" width="900" height="650" tabindex="0" aria-label="荒島遠征：移動採集、靠近建造、閃避攻擊"></canvas><div id="ft-overlay" class="ft-overlay"><span class="ft-eyebrow">GATHER · BUILD · SURVIVE</span><h2 id="ft-title">荒島遠征</h2><p id="ft-message">五大區域，五十場考驗。建立據點，穿越危險地帶。</p><button type="button" id="ft-go">免費開始遠征</button></div><div id="ft-rotate" class="ft-rotate" hidden><span aria-hidden="true">↻</span><h3>請將手機轉成橫向</h3><p>橫向可看清角色、資源與建築。轉好後按繼續遠征。</p><button type="button" id="ft-rotate-exit">退出全螢幕</button></div><div class="ft-touch"><div id="ft-stick" role="group" aria-label="拖曳搖桿移動"><span id="ft-knob"></span></div><button type="button" id="ft-dash" class="ft-optional-dash">衝刺</button></div></div>
 <div class="ft-resource"><span id="ft-bag">背包</span><span id="ft-stock">倉庫</span><span id="ft-coins">金幣 0</span><span id="ft-workers">工人 0</span><button type="button" id="ft-home">返回營地</button><button type="button" id="ft-shop-toggle" aria-expanded="false" aria-controls="ft-shop">交易與裝備</button><button type="button" id="ft-pause">暫停</button><button type="button" id="ft-next" hidden>前往下一島</button></div>
-<section id="ft-shop" class="ft-shop" hidden><div class="ft-shop-head"><h3>交易與裝備</h3><button type="button" id="ft-shop-close">關閉</button></div><p>靠近營地購買裝備，靠近市集出售倉庫材料。金幣只用於本遊戲。</p><label for="ft-sale-count">出售數量</label><select id="ft-sale-count"><option value="5">5</option><option value="10" selected>10</option><option value="25">25</option></select><div class="ft-shop-actions"><button type="button" id="ft-sell-wood">出售木材 · 每份 2 金幣</button><button type="button" id="ft-sell-stone">出售石材 · 每份 3 金幣</button><button type="button" id="ft-tool">採集工具</button><button type="button" id="ft-blade">戰鬥武器</button><button type="button" id="ft-pack">背包容量</button></div><p id="ft-upgrade" aria-live="polite"></p><p id="ft-storage" aria-live="polite"></p></section></div>
+<section id="ft-shop" class="ft-shop" hidden><div class="ft-shop-head"><h3>交易與裝備</h3><button type="button" id="ft-shop-close">關閉</button></div><p>靠近營地購買裝備，靠近市集出售倉庫材料。金幣只用於本遊戲。</p><label for="ft-sale-count">出售數量</label><select id="ft-sale-count"><option value="5">5</option><option value="10" selected>10</option><option value="25">25</option></select><p id="ft-building-effects" class="ft-building-effects"></p><div class="ft-shop-actions"><button type="button" id="ft-sell-wood">出售木材 · 每份 2 金幣</button><button type="button" id="ft-sell-stone">出售石材 · 每份 3 金幣</button><button type="button" id="ft-tool">採集工具</button><button type="button" id="ft-blade">戰鬥武器</button><button type="button" id="ft-pack">背包容量</button></div><p id="ft-upgrade" aria-live="polite"></p><p id="ft-storage" aria-live="polite"></p></section></div>
 <aside class="ft-side"><section class="ft-panel"><span class="ft-eyebrow">EXPEDITION LOG</span><h3>遠征進度</h3><p id="ft-record">0 / 50</p><div id="ft-map" class="ft-map" aria-label="五十關遠征地圖"></div><p>點選已解鎖關卡可重玩，會取代當前關卡進度。</p><div id="ft-select" hidden><p id="ft-select-label"></p><button type="button" id="ft-select-yes">確認前往</button><button type="button" id="ft-select-no">取消</button></div></section>
-<section class="ft-panel"><h3>生存指南</h3><p>靠近樹木與礦石自動採集；靠近地基自動投入材料。工人小屋招募工人採集與搬運；採石場增加採石工，木材廠提升工作效率。箭塔協助守城。</p><p>打怪後靠近撿取金幣；市集出售材料，營地購買裝備。受損建築靠近後消耗倉庫木材修復。敵襲前會倒數預告。</p><p>只要移動角色，就會自動採集、建造與攻擊。電腦可用 WASD／方向鍵；手機拖曳搖桿，或點地面前往。</p></section></aside></div>
+<section class="ft-panel"><h3>生存指南</h3><p>靠近樹木與礦石自動採集；靠近地基自動投入材料。工人小屋招募工人採集與搬運；靠近地面資源或搬運中的村民可拾取，背包滿時資源會保留。採石場增加採石工，木材廠提升工作效率。箭塔協助守城。</p><p>打怪後靠近撿取金幣；市集出售材料，營地購買裝備。受損建築靠近後消耗倉庫木材修復。敵襲前會倒數預告。</p><p>只要移動角色，就會自動採集、建造與攻擊。電腦可用 WASD／方向鍵；手機拖曳搖桿，或點地面前往。</p></section></aside></div>
 <details class="rules"><summary>遠征規則與存檔</summary><p>遠征免費，後續五十關、失敗重試與讀取存檔免費，沒有額外成就獎勵。每關建立新據點，裝備、金幣與最高通關紀錄保留，當地材料與建築不跨關。每五秒及暫停時自動存檔；切換遊戲或背景會暫停，回來需按繼續。存檔只在本瀏覽器，不跨裝置。</p><p>五個區域各十關，交替建設、救援、討伐、守點與精英戰，每十關有區域首領。守點須先建箭塔；完成建設與任務後才能建燈塔，自行選擇前往下一島。後期預告縮短、敵人組合增加，第三區起有琥珀色地面危險預告。寒霜區未建鐵匠鋪時移速降低。夜幕提高敵人移速但有上限，沒有隱藏逾時失敗。</p></details><details class="rules"><summary>美術設定與設計規範</summary><p>設定圖是美術方向參考，實際畫面由 Canvas 繪製。</p><a href="games/frontier/art/direction-board.png" target="_blank" rel="noopener"><img class="ft-art-board" src="games/frontier/art/direction-board.png" alt="荒島遠征美術設定圖：探險家、樹木、礦石與砍伐效果" loading="lazy"></a><p><a href="games/frontier/ART_DIRECTION.md" target="_blank" rel="noopener">美術與維護規範</a></p></details></section>
   <section class="view" id="view-crash" hidden>
   <div class="history" aria-label="最近回合的壓潰倍率">
@@ -6248,7 +6298,26 @@ body.ol-expanded { overflow: hidden; }
   "前線分倉": "Frontier depot",
   "只要移動角色，就會自動採集、建造與攻擊。電腦可用 WASD／方向鍵；手機拖曳搖桿，或點地面前往。": "Move to gather, build and attack automatically. Use WASD / arrow keys, drag the joystick, or tap the ground to walk there.",
   "餘額不足。": "Not enough points.",
-  "免費遊玩，沒有入場費。": "Free to play, no entry fee."
+  "免費遊玩，沒有入場費。": "Free to play, no entry fee.",
+  "拾取": "Picked up",
+  "入庫": "Stored",
+  "搬運中": "In transit",
+  "地面資源": "On ground",
+  "靠近樹木與礦石自動採集；靠近地基自動投入材料。工人小屋招募工人採集與搬運；靠近地面資源或搬運中的村民可拾取，背包滿時資源會保留。採石場增加採石工，木材廠提升工作效率。箭塔協助守城。": "Approach resources to gather and foundations to build. Cottages recruit gatherers and haulers. Approach ground resources or a carrying worker to collect supplies; full bags leave supplies intact. The quarry adds a stone worker, the mill improves efficiency, and towers defend the village.",
+  "· 搬運中": "· In transit",
+  "· 地面資源": "· On ground",
+  "伐木 +1 · 工具上限 8": "Wood +1 · Tool cap 8",
+  "採石 +1 · 背包 +12": "Stone +1 · Bag +12",
+  "攻擊 +9 · 武器上限 8": "Attack +9 · Weapon cap 8",
+  "木材廠：伐木 +1、工具上限 8、伐木工 +1。": "Lumber mill: wood +1, tool cap 8, one extra lumberjack.",
+  "木材廠：建造後強化伐木，解鎖工具上限。": "Lumber mill: build to improve wood gathering and unlock higher tool levels.",
+  "採石場：採石 +1、背包 +12、背包上限 8、採石工 +1。": "Quarry: stone +1, bag capacity +12, bag upgrade cap 8, one extra miner.",
+  "採石場：建造後增加背包容量與採石工。": "Quarry: build to increase bag capacity and recruit a miner.",
+  "鐵匠鋪：攻擊 +9、武器上限 8、解除寒霜減速。": "Forge: attack +9, weapon cap 8, removes frost slowdown.",
+  "鐵匠鋪：建造後強化攻擊，解鎖武器上限。": "Forge: build to improve attack and unlock higher weapon levels.",
+  "請將手機轉成橫向": "Rotate your phone to landscape",
+  "橫向可看清角色、資源與建築。轉好後按繼續遠征。": "Landscape gives a clearer view of your character, resources and buildings. Rotate, then resume the expedition.",
+  "任務": "Objectives"
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -6264,7 +6333,7 @@ body.ol-expanded { overflow: hidden; }
   // Numeric sample labels are exact matches only; matching "1 關" inside "21 關…" would corrupt a live sentence.
   var keys = Object.keys(dictionary).filter(function (key) { return !/^\d/.test(key); }).sort(function (a, b) { return b.length - a.length; });
   var phrases = new RegExp(keys.map(function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|'), 'g');
-  var names = ['My Wardrobe','Deep Sea Arcade','Crush Depth','Minesweeper','Pearl Drop','Pearl Merge','Sonar Dice','Deep Probe','High Tide','Gold Digger','Compass','Ascent','Reef Run','Dream Repair Shop','Dodge Run','Queue Cutter','Sneak Out','Fishing','Campaign Truck','Boba Straw','Rooftop Cat','Poop Bird vs Wolves','Reaper Shift','Reef Blaster','Sky Builder','Carp Leap','Rider vs Dogs','Chubby Boss','Fruit Thief Cat','Baby Bath Escape','Frog Snack','Nap Master','One Breath Dive','MRT Seat Grab','Noodle Pancake','Pudding Dash','Clock Out','Midnight Mosquito','Don’t Peek','Pet Walkies','No Overtime!','Number Gulp','Mirror Twins','Shadow Relay','One-Line Defense','Mermaid Spider','The Last Hair','The Last Banquet','Breakout','Ocean Link'];
+  var names = ['My Wardrobe','Deep Sea Arcade','Crush Depth','Minesweeper','Pearl Drop','Pearl Merge','Sonar Dice','Deep Probe','High Tide','Gold Digger','Compass','Ascent','Reef Run','Dream Repair Shop','Dodge Run','Queue Cutter','Sneak Out','Fishing','Campaign Truck','Boba Straw','Rooftop Cat','Poop Bird vs Wolves','Reaper Shift','Reef Blaster','Sky Builder','Carp Leap','Rider vs Dogs','Chubby Boss','Fruit Thief Cat','Baby Bath Escape','Frog Snack','Nap Master','One Breath Dive','MRT Seat Grab','Noodle Pancake','Pudding Dash','Clock Out','Midnight Mosquito','Don’t Peek','Pet Walkies','No Overtime!','Number Gulp','Mirror Twins','Shadow Relay','One-Line Defense','Mermaid Spider','The Last Hair','The Last Banquet','Breakout','Ocean Link','Frontier Islands'];
   var numbered = { '關': 'Stage', '班': 'Shift', '隊': 'Queue', '條': 'Fish', '層': 'Floor', '道': 'Crossing', '格': 'Cell', '列': 'Row', '階': 'Tier', '段': 'Segment', '晚': 'Night', '站': 'Station' };
 
   function english(value) {
@@ -18138,7 +18207,7 @@ function frontierWorld(level,tech,coins){
  var cfg=frontierPlan(level),seed=level*1973;
  function rand(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}
  var flip=level%2?-1:1,offset=(level%3-1)*35;
- var w={version:1,level:level,cfg:cfg,tech:tech||{tool:0,blade:0,pack:0},coins:Math.max(0,Number(coins)||0),workers:[],drops:[],raids:0,raidAt:75,depotReady:false,settled:false,time:0,phase:'play',p:{x:180,y:450,hp:100,inv:0,attack:0,dash:0,dx:1,dy:0},bag:{wood:0,stone:0},bank:{wood:0,stone:0},nodes:[],enemies:[],shots:[],effects:[],kills:0,rescued:0,hold:0,wave:0,waveAt:0,heal:35,worker:0,threat:0,
+ var w={version:1,level:level,cfg:cfg,tech:tech||{tool:0,blade:0,pack:0},coins:Math.max(0,Number(coins)||0),workers:[],supplies:[],drops:[],raids:0,raidAt:75,depotReady:false,settled:false,time:0,phase:'play',p:{x:180,y:450,hp:100,inv:0,attack:0,dash:0,dx:1,dy:0},bag:{wood:0,stone:0},bank:{wood:0,stone:0},nodes:[],enemies:[],shots:[],effects:[],kills:0,rescued:0,hold:0,wave:0,waveAt:0,heal:35,worker:0,threat:0,
  buildings:[{kind:'camp',x:180,y:450,built:true,wood:0,stone:0},{kind:'mill',x:320,y:450+flip*230,built:false,wood:cfg.wood,stone:0},{kind:'forge',x:330,y:450-flip*230,built:false,wood:12,stone:cfg.stone},{kind:'bridge',x:590,y:450,built:false,wood:cfg.wood+10,stone:cfg.stone},{kind:'tower',x:860,y:450+offset,built:false,wood:cfg.wood,stone:cfg.stone+6,cd:0},{kind:'beacon',x:1090,y:450-offset,built:false,wood:cfg.wood,stone:cfg.stone}],cages:[{x:880,y:180,open:false},{x:1020,y:700,open:false}]};
  w.buildings.push(
  {kind:'house',x:185,y:620,built:false,wood:16,stone:4,hp:140,maxHp:140},
@@ -18164,10 +18233,12 @@ function frontierWorld(level,tech,coins){
 function frontierSpawn(w,x,y,i){var boss=i===99,type=boss?'boss':i%4===2&&w.level>3?'ranged':i%4===1&&w.level>1?'charger':'melee',hp=w.cfg.hp*(boss?(w.cfg.mission==='boss'?7:3):1);w.enemies.push({x:x,y:y,type:type,hp:hp,max:hp,state:'walk',t:0,cool:.5+i%3,tx:x,ty:y,hit:false,counted:false,wave:false,radius:boss?27:17});}
 function frontierNear(a,b,r){return Math.hypot(a.x-b.x,a.y-b.y)<r;}
 function frontierBuilt(w,k){return w.buildings.some(function(b){return b.kind===k&&b.built&&b.hp!==0;});}
+function frontierCapacity(w){return 24+w.tech.pack*9+(frontierBuilt(w,'quarry')?12:0);}
+function frontierUpgradeLimit(w,k){return frontierBuilt(w,k==='tool'?'mill':k==='blade'?'forge':'quarry')?8:2;}
 function frontierUpgradeCost(w,k){return 25+w.tech[k]*30;}
 function frontierUpgrade(w,k){
  if(!['tool','blade','pack'].includes(k)||w.phase!=='play'||!frontierNear(w.p,w.buildings[0],105))return false;
- var cost=frontierUpgradeCost(w,k);if(w.tech[k]>=8||w.coins<cost)return false;
+ var cost=frontierUpgradeCost(w,k);if(w.tech[k]>=frontierUpgradeLimit(w,k)||w.coins<cost)return false;
  w.coins-=cost;w.tech[k]++;return true;
 }
 function frontierSell(w,k,count){
@@ -18180,32 +18251,45 @@ function frontierLeave(w){if(w.phase!=='play'||!frontierBuilt(w,'beacon'))return
 function frontierMigrate(w){
  // Additive migration: keep coordinates, inventory, equipment and progress of version-1 worlds.
  var sample=frontierWorld(w.level,w.tech,w.coins),old=!Array.isArray(w.workers);
- w.cfg=frontierPlan(w.level);w.coins=Math.max(0,Number(w.coins)||0);w.workers=w.workers||[];w.drops=w.drops||[];w.camps=w.camps||sample.camps;
+ w.cfg=frontierPlan(w.level);w.coins=Math.max(0,Number(w.coins)||0);w.workers=w.workers||[];w.supplies=w.supplies||[];w.drops=w.drops||[];w.camps=w.camps||sample.camps;
  w.raidAt=Number.isFinite(w.raidAt)?w.raidAt:w.time+75;w.raids=w.raids||0;w.settled=!!w.settled;
  sample.buildings.forEach(function(b){if(!w.buildings.some(function(a){return a.kind===b.kind;}))w.buildings.push(b);});
  w.buildings.forEach(function(b){b.maxHp=b.maxHp||180;b.hp=Number.isFinite(b.hp)?b.hp:b.maxHp;b.repair=0;});
  if(old)sample.nodes.forEach(function(n){if(w.nodes.length<w.cfg.trees&& !w.nodes.some(function(a){return Math.hypot(a.x-n.x,a.y-n.y)<24;}))w.nodes.push(n);});
  w.effects=[];return w;
 }
+function frontierCollect(w){
+ var room=frontierCapacity(w)-w.bag.wood-w.bag.stone,wood=0,stone=0;
+ function take(a,k){var amount=Math.min(room,a[k]);if(amount<=0)return;a[k]-=amount;w.bag[k]+=amount;room-=amount;if(k==='wood')wood+=amount;else stone+=amount;}
+ w.supplies.forEach(function(d){if(room<=0||!frontierNear(w.p,d,58))return;var amount=Math.min(room,d.amount);d.amount-=amount;w.bag[d.kind]+=amount;room-=amount;if(d.kind==='wood')wood+=amount;else stone+=amount;});
+ w.supplies=w.supplies.filter(function(d){return d.amount>0;});
+ // Carried worker cargo remains collectible too; the same inventory is debited before any delivery.
+ w.workers.forEach(function(a){if(room>0&&frontierNear(w.p,a,42)){take(a,'wood');take(a,'stone');}});
+ if(wood+stone)w.effects.push({x:w.p.x,y:w.p.y-20,t:1.2,kind:'pickup',wood:wood,stone:stone});
+ return wood+stone;
+}
 function frontierWorkers(w,dt){
- var house=w.buildings.find(function(b){return b.kind==='house';}),count=house&&house.built&&house.hp>0?2+(frontierBuilt(w,'quarry')?1:0)+w.rescued:0;
+ w.supplies.forEach(function(d){d.wait=Math.max(0,d.wait-dt);});
+ var house=w.buildings.find(function(b){return b.kind==='house';}),roles=[];if(house&&house.built&&house.hp>0){roles=['wood','wood'];if(frontierBuilt(w,'mill'))roles.push('wood');if(frontierBuilt(w,'quarry'))roles.push('stone');for(var ri=0;ri<w.rescued;ri++)roles.push(ri%2?'stone':'wood');}var count=roles.length;
  while(w.workers.length<count)w.workers.push({x:180,y:600,wood:0,stone:0,target:-1,t:0,mode:'wood'});
  w.workers.forEach(function(a,i){
-  if(i>=count)return;a.mode=i%3===2?'stone':'wood';a.t-=dt;
+  if(i>=count)return;a.mode=roles[i];a.t-=dt;
   var depots=w.buildings.filter(function(b){return b.built&&b.hp>0&&(b.kind==='camp'||b.kind==='depot');});
   var home=depots.slice().sort(function(b,c){return Math.hypot(a.x-b.x,a.y-b.y)-Math.hypot(a.x-c.x,a.y-c.y);})[0];
   if(!home)return;
   if(a.wood+a.stone>=5){
-   if(frontierNear(a,home,30)){w.bank.wood+=a.wood;w.bank.stone+=a.stone;a.wood=a.stone=0;a.target=-1;return;}
+   if(frontierNear(a,home,30)){w.bank.wood+=a.wood;w.bank.stone+=a.stone;w.effects.push({x:home.x,y:home.y-25,t:1.2,kind:'delivery',wood:a.wood,stone:a.stone});a.wood=a.stone=0;a.target=-1;return;}
    frontierWorkerMove(a,home,dt);return;
   }
+  var pile=w.supplies.find(function(d){return d.kind===a.mode&&frontierNear(a,d,55);});
+  if(pile){if(pile.wait>0)return;var picked=Math.min(5-a.wood-a.stone,pile.amount);a[pile.kind]+=picked;pile.amount-=picked;w.supplies=w.supplies.filter(function(d){return d.amount>0;});if(a.wood+a.stone>=5)return;}
   var node=w.nodes[a.target];
   if(!node||node.left<=0||node.kind!==a.mode){
    var best=Infinity;a.target=-1;w.nodes.forEach(function(n,j){if(n.left<=0||n.kind!==a.mode||n.x>530&&!frontierBuilt(w,'bridge'))return;var d=Math.hypot(a.x-n.x,a.y-n.y);if(d<best){best=d;a.target=j;}});node=w.nodes[a.target];
   }
   if(!node)return;
   if(!frontierNear(a,node,30)){frontierWorkerMove(a,node,dt);return;}
-  if(a.t<=0){var gain=Math.min(node.left,1+Math.floor(w.tech.tool/3),5-a.wood-a.stone);node.left-=gain;node.respawn=14;a[node.kind]+=gain;a.t=frontierBuilt(w,'mill')?.65:1.1;w.effects.push({x:node.x,y:node.y,t:.3,kind:node.kind,gain:gain,empty:node.left===0});}
+  if(a.t<=0){var gain=Math.min(node.left,1+Math.floor(w.tech.tool/3)+(frontierBuilt(w,node.kind==='wood'?'mill':'quarry')?1:0),5-a.wood-a.stone);node.left-=gain;node.respawn=14;w.supplies.push({x:node.x+12,y:node.y+10,kind:node.kind,amount:gain,wait:.65});a.t=frontierBuilt(w,'mill')?.65:1.1;w.effects.push({x:node.x,y:node.y,t:.3,kind:node.kind,gain:gain,empty:node.left===0});}
  });
 }
 function frontierWaypoint(a,target){
@@ -18230,10 +18314,10 @@ function frontierStep(w,input,dt){
  var nx=Math.max(40,Math.min(c.width-40,p.x+p.dx*(move?speed:0)*dt)),ny=Math.max(45,Math.min(c.height-45,p.y+p.dy*(move?speed:0)*dt));
  if(nx>552&&nx<678&&(!bridge||ny<385||ny>515))nx=p.x;p.x=nx;p.y=ny;
  if(w.buildings.some(function(b){return b.built&&b.hp>0&&(b.kind==='camp'||b.kind==='depot')&&frontierNear(p,b,67);})){
-  ['wood','stone'].forEach(function(k){w.bank[k]+=w.bag[k];w.bag[k]=0;});var h=Math.max(0,Math.min(w.heal,dt*7,100-p.hp));w.heal-=h;p.hp+=h;
+  if(w.bag.wood+w.bag.stone)w.effects.push({x:p.x,y:p.y-25,t:1.2,kind:'delivery',wood:w.bag.wood,stone:w.bag.stone});['wood','stone'].forEach(function(k){w.bank[k]+=w.bag[k];w.bag[k]=0;});var h=Math.max(0,Math.min(w.heal,dt*7,100-p.hp));w.heal-=h;p.hp+=h;
  }
- var cap=24+w.tech.pack*9;
- w.nodes.forEach(function(n){if(n.left===0){n.respawn-=dt;if(n.respawn<=0)n.left=6;return;}n.cool-=dt;if(n.cool<=0&&w.bag.wood+w.bag.stone<cap&&frontierNear(n,p,53)){var gain=Math.min(n.left,1+Math.floor(w.tech.tool/2),cap-w.bag.wood-w.bag.stone);n.left-=gain;w.bag[n.kind]+=gain;n.cool=.5/(1+w.tech.tool*.16);n.respawn=14;w.effects.push({x:n.x,y:n.y,t:.3,kind:n.kind,gain:gain,empty:n.left===0,px:p.x,py:p.y});}});
+ var cap=frontierCapacity(w);
+ w.nodes.forEach(function(n){if(n.left===0){n.respawn-=dt;if(n.respawn<=0)n.left=6;return;}n.cool-=dt;if(n.cool<=0&&w.bag.wood+w.bag.stone<cap&&frontierNear(n,p,53)){var gain=Math.min(n.left,1+Math.floor(w.tech.tool/2)+(frontierBuilt(w,n.kind==='wood'?'mill':'quarry')?1:0),cap-w.bag.wood-w.bag.stone);n.left-=gain;w.bag[n.kind]+=gain;n.cool=.5/(1+w.tech.tool*.16);n.respawn=14;w.effects.push({x:n.x,y:n.y,t:.3,kind:n.kind,gain:gain,empty:n.left===0,px:p.x,py:p.y});}});
  w.buildings.forEach(function(b){
   if(b.built||!frontierNear(b,p,68)||b.kind==='beacon'&&(!bridge||!frontierReady(w))||b.kind==='tower'&&!bridge)return;
   b.charge=(b.charge||0)+dt;if(b.charge<.07)return;b.charge=0;
@@ -18241,7 +18325,7 @@ function frontierStep(w,input,dt){
   if(b.wood+b.stone===0){b.built=true;w.effects.push({x:b.x,y:b.y,t:1,kind:'build'});}
  });
  w.buildings.forEach(function(b){if(!b.built||b.hp>=b.maxHp||!frontierNear(p,b,68)||w.bank.wood+w.bag.wood<1)return;b.repair=(b.repair||0)+dt;if(b.repair>=.25){b.repair=0;if(w.bag.wood>0)w.bag.wood--;else w.bank.wood--;b.hp=Math.min(b.maxHp,b.hp+8);}});
- frontierWorkers(w,dt);
+ frontierCollect(w);frontierWorkers(w,dt);frontierCollect(w);
  w.camps.forEach(function(a){if(a.hp<=0)return;a.cool-=dt;if(frontierNear(p,a,78)&&p.attack<=0){a.hp-=16+w.tech.blade*5;p.attack=.58;w.effects.push({x:a.x,y:a.y,t:.22,kind:'hit'});if(a.hp<=0)w.drops.push({x:a.x,y:a.y,amount:25+w.cfg.chapter*8});}
   if(a.cool<=0&&w.enemies.filter(function(e){return e.hp>0;}).length<35){a.cool=28;frontierSpawn(w,a.x,a.y,w.raids++);w.enemies[w.enemies.length-1].raider=true;}
  });
@@ -18274,7 +18358,14 @@ function frontierStep(w,input,dt){
  w.effects=w.effects.filter(function(e){e.t-=dt;return e.t>0;});w.enemies=w.enemies.filter(function(e){return e.hp>0||!e.counted;});w.drops=w.drops.filter(function(d){if(frontierNear(p,d,65)){w.coins+=d.amount;return false;}return true;});if(w.drops.length>90){var extra=w.drops.splice(90);extra.forEach(function(d){w.drops[0].amount+=d.amount;});}if(w.effects.length>70)w.effects.splice(0,w.effects.length-70);
 }
 
-    function point(x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();}}
+    // Cropped production art, separate from the concept board. Geometric fallback keeps slow/offline loads playable.
+var ftAtlas=typeof Image==='function'?new Image():null;
+if(ftAtlas)ftAtlas.src='games/frontier/art/sprites.png';
+function ftSprite(index,x,y,size){if(!ftAtlas||!ftAtlas.complete||!ftAtlas.naturalWidth)return false;var cell=ftAtlas.naturalWidth/4;ctx.drawImage(ftAtlas,index%4*cell,Math.floor(index/4)*cell,cell,cell,x-size/2,y-size*.89,size,size);return true;}
+var ftEnemyAtlas=typeof Image==='function'?new Image():null;
+if(ftEnemyAtlas)ftEnemyAtlas.src='games/frontier/art/enemies.png';
+function ftEnemySprite(e){if(!ftEnemyAtlas||!ftEnemyAtlas.complete||!ftEnemyAtlas.naturalWidth)return false;var cellW=ftEnemyAtlas.naturalWidth/2,cellH=ftEnemyAtlas.naturalHeight/2,index=e.type==='boss'?3:e.type==='charger'?2:e.type==='ranged'?1:0,size=e.type==='boss'?120:82;ctx.drawImage(ftEnemyAtlas,index%2*cellW,Math.floor(index/2)*cellH,cellW,cellH,e.x-size*cellW/cellH/2,e.y-size*.89,size*cellW/cellH,size);return true;}
+function point(x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();}}
 function text(label,x,y,size,color){ctx.font='600 '+(size||13)+'px system-ui';ctx.textAlign='center';ctx.fillStyle=color||'#f6efd3';ctx.fillText(label,x,y,155);}
 // Visual feedback is derived from existing effects: no new save fields or gameplay timers.
 function ftEllipse(x,y,rx,ry,color){ctx.fillStyle=color;ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();}
@@ -18282,6 +18373,11 @@ function ftPoly(points,color){ctx.fillStyle=color;ctx.beginPath();points.forEach
 function ftResource(n,w,palette){
  var hit=w.effects.find(function(e){return e.kind===n.kind&&e.x===n.x&&e.y===n.y;}),a=hit?Math.max(0,hit.t/.3):0;
  ctx.save();if(n.kind==='wood'&&w.p.y<n.y+10&&w.p.y>n.y-110&&Math.abs(w.p.x-n.x)<55)ctx.globalAlpha=.38;ctx.translate(n.x,n.y);ctx.rotate(Math.sin(a*18)*a*.075);
+ if(ftAtlas&&ftAtlas.complete&&ftAtlas.naturalWidth){
+  if(n.kind==='wood'){if(n.left)ftSprite(2,0,0,118);else{ftSprite(3,0,0,48);if(hit&&hit.empty){ctx.save();ctx.globalAlpha*=a;ctx.rotate((1-a)*1.1);ftSprite(2,0,0,118);ctx.restore();}}}
+  else{if(!n.left)ctx.globalAlpha*=.6;ftSprite(4,0,0,n.left?78:28);}
+  ctx.restore();return;
+ }
  ftEllipse(5,7,n.kind==='wood'?29:27,11,'#183c3840');
  if(n.kind==='wood'){
   ctx.fillStyle='#795135';ctx.fillRect(-9,-42,18,43);ftEllipse(0,0,10,5,'#c99a60');ftEllipse(0,-1,5,2,'#815939');
@@ -18306,6 +18402,7 @@ function ftResource(n,w,palette){
 function ftExplorer(w){
  var p=w.p,action=w.effects.filter(function(e){return (e.kind==='wood'||e.kind==='stone'||e.kind==='hit')&&Math.hypot(e.x-p.x,e.y-p.y)<90;}).slice(-1)[0];
  var moving=typeof keys!=='undefined'&&(Object.values(keys).some(Boolean)||Math.hypot(stick.x,stick.y)>.1),bob=moving?Math.sin(w.time*16)*2:Math.sin(w.time*2)*.7;
+ if(ftAtlas&&ftAtlas.complete&&ftAtlas.naturalWidth){ctx.save();ctx.translate(p.x,p.y+bob);ctx.scale(action&&action.x<p.x||!action&&p.dx<0?-1:1,1);if(p.inv>0)ctx.globalAlpha=.65;ftSprite(action?1:0,0,0,91);var cargo=Math.min(4,Math.ceil((w.bag.wood+w.bag.stone)/7));for(var si=0;si<cargo;si++)ftSprite(5,-22,-5-si*8,28);ctx.restore();return;}
  ftEllipse(p.x+3,p.y+7,19,8,'#173d4560');ctx.save();ctx.translate(p.x,p.y+bob);if(p.inv>0)ctx.globalAlpha=.65;
  var face=action?(action.x<p.x?-1:1):(p.dx<0?-1:1);ctx.scale(face,1);
  var walk=moving?Math.sin(w.time*16)*4:0;
@@ -18321,6 +18418,7 @@ function ftExplorer(w){
  for(var j=0;j<Math.min(5,Math.ceil((w.bag.wood+w.bag.stone)/5));j++){ctx.fillStyle=j%2?'#a66d40':'#c9965b';ctx.fillRect(-25,-13-j*6,17,5);point(-25,-11-j*6,3,'#edc789');}ctx.restore();
 }
 function ftParticles(e){
+ if(e.kind==='pickup'||e.kind==='delivery'){var lift=(1-e.t/1.2)*25;ctx.save();ctx.globalAlpha=Math.min(1,e.t*2);text((e.kind==='pickup'?'拾取':'入庫')+' 🪵 +'+e.wood+' ◆ +'+e.stone,e.x,e.y-35-lift,13,e.kind==='pickup'?'#ffe6a4':'#baf1cc');ctx.restore();return;}
  var harvest=e.kind==='wood'||e.kind==='stone',duration=harvest?.3:e.kind==='hit'?.22:1,age=1-Math.min(1,e.t/duration);
  if(harvest){
   for(var i=0;i<9;i++){var angle=i*2.399+e.x,dist=10+age*(22+i*3),x=e.x+Math.cos(angle)*dist,y=e.y-25+Math.sin(angle)*dist*.6-age*20+age*age*35;ctx.save();ctx.globalAlpha=1-age;ctx.translate(x,y);ctx.rotate(angle+age*7);ctx.fillStyle=e.kind==='wood'?['#edc78c','#98663f','#a9ca70'][i%3]:['#e0ede6','#90adb0','#5c7d88'][i%3];ctx.fillRect(-3,-2,e.kind==='wood'?8:5,4);ctx.restore();}
@@ -18331,12 +18429,12 @@ function paint(){
  var w=world||preview,rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
  var dpr=Math.min(2,window.devicePixelRatio||1),cw=Math.round(rect.width*dpr),ch=Math.round(rect.height*dpr);if(canvas.width!==cw||canvas.height!==ch){canvas.width=cw;canvas.height=ch;}
  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,rect.width,rect.height);
- var scale=Math.min(rect.width/(rect.width<600?540:850),rect.height/650),vw=rect.width/scale,vh=rect.height/scale;
+ var scale=Math.max(rect.width/(rect.width<600?480:1000),Math.min(1.1,rect.height/520)),vw=rect.width/scale,vh=rect.height/scale;
  var cx=Math.max(vw/2,Math.min(w.cfg.width-vw/2,w.p.x)),cy=Math.max(vh/2,Math.min(w.cfg.height-vh/2,w.p.y));if(vw>w.cfg.width)cx=w.cfg.width/2;if(vh>w.cfg.height)cy=w.cfg.height/2;viewCamera={left:cx-vw/2,top:cy-vh/2,scale:scale};
  ctx.scale(scale,scale);ctx.translate(vw/2-cx,vh/2-cy);
  var palette=[['#244e4b','#8cae70','#426e4e'],['#264c60','#a3aa78','#6d8655'],['#273e42','#718658','#3b5b49'],['#344e65','#b1c4c2','#668b88'],['#382f3c','#8f7965','#534a50']][w.cfg.chapter];
- ctx.fillStyle=palette[0];ctx.fillRect(cx-vw/2,cy-vh/2,vw,vh);
- ctx.strokeStyle='#83cfbe33';ctx.lineWidth=12;ctx.beginPath();ctx.roundRect(17,22,w.cfg.width-34,w.cfg.height-38,84);ctx.stroke();ctx.fillStyle='#c7b991';ctx.beginPath();ctx.roundRect(26,31,w.cfg.width-52,w.cfg.height-56,75);ctx.fill();ctx.fillStyle=palette[1];ctx.beginPath();ctx.roundRect(42,47,w.cfg.width-84,w.cfg.height-88,60);ctx.fill();ctx.fillStyle=palette[0];ctx.fillRect(552,40,126,w.cfg.height-80);
+ var sea=ctx.createLinearGradient(0,0,0,w.cfg.height);if(sea&&sea.addColorStop){sea.addColorStop(0,'#267c85');sea.addColorStop(1,'#164e66');}ctx.fillStyle=sea||palette[0];ctx.fillRect(cx-vw/2,cy-vh/2,vw,vh);
+ ctx.strokeStyle='#83cfbe33';ctx.lineWidth=12;ctx.beginPath();ctx.roundRect(17,22,w.cfg.width-34,w.cfg.height-38,84);ctx.stroke();ctx.fillStyle='#c7b991';ctx.beginPath();ctx.roundRect(26,31,w.cfg.width-52,w.cfg.height-56,75);ctx.fill();ctx.fillStyle=palette[1];ctx.beginPath();ctx.roundRect(42,47,w.cfg.width-84,w.cfg.height-88,60);ctx.fill();for(var patch=0;patch<90;patch++){var ax=80+(patch*137)%(w.cfg.width-160),ay=85+(patch*223)%(w.cfg.height-170);if(ax>515&&ax<710)continue;ftEllipse(ax,ay,24+patch%5*8,12+patch%4*6,patch%2?'#b7d77924':'#3b793424');}ctx.strokeStyle='#d3bc8580';ctx.lineWidth=22;ctx.lineCap='round';w.buildings.forEach(function(b){if(b.x>530||b.kind==='camp')return;ctx.beginPath();ctx.moveTo(180,450);ctx.quadraticCurveTo((180+b.x)/2,450,b.x,b.y);ctx.stroke();});ctx.fillStyle=palette[0];ctx.fillRect(552,40,126,w.cfg.height-80);
  for(var t=0;t<Math.ceil(w.cfg.height/34);t++){ctx.strokeStyle='#ffffff12';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(567,65+t*34);ctx.lineTo(656,72+t*34);ctx.stroke();}
  if(frontierBuilt(w,'bridge')){ctx.fillStyle='#6b523b';ctx.fillRect(537,385,156,130);for(t=0;t<11;t++){ctx.fillStyle=t%2?'#b99762':'#cbaa75';ctx.fillRect(539+t*14,390,11,120);}}
  for(t=0;t<w.cfg.trees;t++){var gx=75+(t*137)%(w.cfg.width-150),gy=90+(t*233)%(w.cfg.height-180);if(gx>530&&gx<700)continue;ctx.strokeStyle=t%3?'#325d4333':'#f0e7a04d';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(gx-3,gy+3);ctx.lineTo(gx,gy-3);ctx.lineTo(gx+3,gy+3);ctx.stroke();if(t%11===0){point(gx+5,gy,2,'#ead399');}}
@@ -18349,28 +18447,35 @@ function paint(){
  w.nodes.forEach(function(n){if(Math.abs(n.x-cx)>vw/2+80||Math.abs(n.y-cy)>vh/2+110)return;objects.push({y:n.y,draw:function(){ftResource(n,w,palette);}});});
  w.buildings.forEach(function(b){objects.push({y:b.y+12,draw:function(){
   if(b.kind==='bridge'&&b.built)return;
-  point(b.x,b.y,52,b.built?'#21493633':'#2a444466',b.built?'#c5d99b':'#e4d3a3');
-  if(b.built){ftBuilding(b,w);}else{
-   ctx.strokeStyle='#d2c099';ctx.lineWidth=4;ctx.setLineDash([7,5]);ctx.strokeRect(b.x-32,b.y-25,64,50);ctx.setLineDash([]);
-   text('🪵 '+b.wood+' ◆ '+b.stone,b.x,b.y+3,12);if(b.kind==='beacon'&&!frontierReady(w))text('先完成任務',b.x,b.y+22,10);
+  if(!b.built){ctx.save();ctx.globalAlpha=.27;ftBuilding(b,w);ctx.restore();}
+  if(b.built){ctx.save();if(Math.abs(w.p.x-b.x)<48&&w.p.y>b.y-88&&w.p.y<b.y+12)ctx.globalAlpha=.38;ftBuilding(b,w);ctx.restore();}else{
+   ctx.fillStyle='#b29b6d66';ctx.fillRect(b.x-31,b.y-14,62,30);ctx.fillStyle='#98734f';for(var stake=0;stake<4;stake++)ctx.fillRect(b.x+(stake%2?28:-31),b.y+(stake>1?11:-17),4,13);ctx.fillStyle='#123b31e6';ctx.beginPath();ctx.roundRect(b.x-52,b.y+12,104,23,7);ctx.fill();
+   text('🪵 '+b.wood+' ◆ '+b.stone,b.x,b.y+28,11);if(b.kind==='beacon'&&!frontierReady(w))text('先完成任務',b.x,b.y+22,10);
   }
-  text(labels[b.kind],b.x,b.y+(b.built?24:-63),12);
+  text(labels[b.kind],b.x,b.y+(b.built?24:-119),12);if(b.built&&b.hp>0&&['mill','quarry','forge'].includes(b.kind))text(b.kind==='mill'?'伐木 +1 · 工具上限 8':b.kind==='quarry'?'採石 +1 · 背包 +12':'攻擊 +9 · 武器上限 8',b.x,b.y+40,10,'#ffe4a4');
  }});});
  if(w.cfg.mission==='rescue')w.cages.forEach(function(c){objects.push({y:c.y,draw:function(){point(c.x,c.y,20,c.open?'#b9d59b':'#6e7460','#f1d89d');text(c.open?'✓':'!',c.x,c.y+5,20);if(!c.open){ctx.strokeStyle='#dfd3a7';for(var j=-12;j<=12;j+=8){ctx.beginPath();ctx.moveTo(c.x+j,c.y-20);ctx.lineTo(c.x+j,c.y+20);ctx.stroke();}}}});});
  w.enemies.forEach(function(e){if(e.hp<=0)return;objects.push({y:e.y,draw:function(){
+  if(ftEnemySprite(e)){ctx.fillStyle='#473e38';ctx.fillRect(e.x-25,e.y-(e.type==='boss'?122:83),50,5);ctx.fillStyle='#ef9e80';ctx.fillRect(e.x-25,e.y-(e.type==='boss'?122:83),50*Math.max(0,e.hp/e.max),5);if(e.state==='warn')text('!',e.x,e.y-(e.type==='boss'?130:92),23,'#ffe2a0');return;}
   point(e.x+4,e.y+6,e.radius,'#173a3433');point(e.x,e.y-9,e.radius,e.type==='boss'?'#995a62':e.type==='ranged'?'#9279a1':e.type==='charger'?'#b07a55':'#687a65','#d6ba91');point(e.x-6,e.y-13,3,'#fff4d6');point(e.x+6,e.y-13,3,'#fff4d6');ctx.fillStyle='#313d34';ctx.fillRect(e.x-4,e.y-9,8,3);ctx.fillStyle='#473e38';ctx.fillRect(e.x-23,e.y-e.radius-23,46,5);ctx.fillStyle='#ef9e80';ctx.fillRect(e.x-23,e.y-e.radius-23,46*Math.max(0,e.hp/e.max),5);if(e.state==='warn')text('!',e.x,e.y-e.radius-30,23,'#ffe2a0');
  }});});
- w.workers.forEach(function(a,i){objects.push({y:a.y,draw:function(){ftEllipse(a.x,a.y+5,12,5,'#143f3c44');ctx.fillStyle=i%3===2?'#7c8fa3':'#b07b51';ctx.fillRect(a.x-8,a.y-19,16,21);point(a.x,a.y-27,9,'#efc59b');ftEllipse(a.x,a.y-33,13,4,'#d6c387');ctx.fillStyle='#423f36';ctx.fillRect(a.x-7,a.y+2,5,6);ctx.fillRect(a.x+2,a.y+2,5,6);if(a.wood+a.stone){ctx.fillStyle=a.wood?'#c69764':'#a8c3c6';ctx.fillRect(a.x-15,a.y-18,10,17);}else if(a.t>.25){ctx.strokeStyle='#e5dac3';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(a.x+8,a.y-12);ctx.lineTo(a.x+20,a.y-28);ctx.stroke();}}});});
+ w.supplies.forEach(function(d){objects.push({y:d.y,draw:function(){ftEllipse(d.x,d.y+3,15,6,'#173d3c44');if(ftSprite(d.kind==='wood'?5:4,d.x,d.y,38)){text(String(d.amount),d.x,d.y-25,11,'#fff3bf');return;}if(d.kind==='wood'){for(var j=0;j<3;j++){ctx.fillStyle=j%2?'#c18b52':'#aa7044';ctx.fillRect(d.x-11+j*3,d.y-6-j*4,18,5);point(d.x-11+j*3,d.y-4-j*4,3,'#edc78e');}}else{ftPoly([[d.x-12,d.y],[d.x-8,d.y-13],[d.x+3,d.y-18],[d.x+13,d.y-6],[d.x+9,d.y+3]],'#a6c2c5');ftPoly([[d.x-8,d.y-13],[d.x+3,d.y-18],[d.x+6,d.y-7]],'#e1e9df');}text(String(d.amount),d.x,d.y-25,11,'#fff3bf');}});});
+ w.workers.forEach(function(a,i){objects.push({y:a.y,draw:function(){if(ftSprite(a.t>.5?1:0,a.x,a.y+Math.sin(w.time*12+i)*1.1,65)){if(a.wood+a.stone)ftSprite(a.wood?5:4,a.x-14,a.y-5,27);return;}ftEllipse(a.x,a.y+5,12,5,'#143f3c44');ctx.fillStyle=i%3===2?'#7c8fa3':'#b07b51';ctx.fillRect(a.x-8,a.y-19,16,21);point(a.x,a.y-27,9,'#efc59b');ftEllipse(a.x,a.y-33,13,4,'#d6c387');ctx.fillStyle='#423f36';ctx.fillRect(a.x-7,a.y+2,5,6);ctx.fillRect(a.x+2,a.y+2,5,6);if(a.wood+a.stone){ctx.fillStyle=a.wood?'#c69764':'#a8c3c6';ctx.fillRect(a.x-15,a.y-18,10,17);}else if(a.t>.25){ctx.strokeStyle='#e5dac3';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(a.x+8,a.y-12);ctx.lineTo(a.x+20,a.y-28);ctx.stroke();}}});});
  w.camps.forEach(function(c){objects.push({y:c.y,draw:function(){ftPoly([[c.x-35,c.y],[c.x,c.y-60],[c.x+35,c.y]],c.hp>0?'#86504a':'#4e5350');if(c.hp>0){text('敵營',c.x,c.y+20,12,'#ffbe9f');ctx.fillStyle='#472f34';ctx.fillRect(c.x-30,c.y-70,60,5);ctx.fillStyle='#e9a086';ctx.fillRect(c.x-30,c.y-70,60*c.hp/c.maxHp,5);}}});});
  w.drops.forEach(function(d){ftEllipse(d.x,d.y+5,10,4,'#163f3a33');point(d.x,d.y-5+Math.sin(w.time*4)*3,8,'#ecc56b','#fff0af');text(String(d.amount),d.x,d.y-20,11);});
  objects.push({y:w.p.y,draw:function(){ftExplorer(w);}});objects.sort(function(a,b){return a.y-b.y;}).forEach(function(o){o.draw();});
  w.shots.forEach(function(s){point(s.x,s.y,6,'#ffcc8b','#a86051');});w.effects.forEach(ftParticles);
- ctx.setTransform(dpr,0,0,dpr,0,0);var mx=rect.width-130,my=15;ctx.fillStyle='#102e2dcc';ctx.fillRect(mx,my,115,87);w.buildings.forEach(function(b){point(mx+b.x/w.cfg.width*115,my+b.y/w.cfg.height*87,3,b.built?'#b7dca5':'#a5b4a1');});w.enemies.forEach(function(e){if(e.hp>0)point(mx+e.x/w.cfg.width*115,my+e.y/w.cfg.height*87,2,'#e6a08e');});point(mx+w.p.x/w.cfg.width*115,my+w.p.y/w.cfg.height*87,4,'#ffe2a3');
- ctx.textAlign='left';ctx.font='12px system-ui';ctx.fillStyle='#fff1cb';ctx.fillText(w.threat>0?'夜幕：敵人加速':'營地：存放材料與升級',14,24,Math.max(100,rect.width-155));if(w.bag.wood+w.bag.stone>=24+w.tech.pack*9)ctx.fillText('背包已滿：回營地或投入建築',14,44,rect.width-30);
+ ctx.setTransform(dpr,0,0,dpr,0,0);var mx=rect.width-98,my=64;ctx.fillStyle='#102e2dcc';ctx.fillRect(mx,my,84,64);w.buildings.forEach(function(b){point(mx+b.x/w.cfg.width*84,my+b.y/w.cfg.height*64,3,b.built?'#b7dca5':'#a5b4a1');});w.enemies.forEach(function(e){if(e.hp>0)point(mx+e.x/w.cfg.width*84,my+e.y/w.cfg.height*64,2,'#e6a08e');});point(mx+w.p.x/w.cfg.width*84,my+w.p.y/w.cfg.height*64,4,'#ffe2a3');
+ if(w.bag.wood+w.bag.stone>=frontierCapacity(w)){ctx.textAlign='center';ctx.font='600 12px system-ui';ctx.fillStyle='#ffe4a4';ctx.fillText('背包已滿：回營地或投入建築',rect.width/2,rect.height-92,rect.width-30);}
 }
 
 function ftBuilding(b,w){
  var x=b.x,y=b.y,colors={camp:'#d8b778',house:'#a5c8b5',market:'#dcb269',quarry:'#a6bac1',mill:'#79b6aa',forge:'#b78165',depot:'#95b8a0',tower:'#7d9c9e',beacon:'#e4ce8a'};
+ var sprite={camp:6,house:6,market:7,quarry:6,mill:8,forge:9,depot:6,tower:10,beacon:11}[b.kind];
+ if(sprite!==undefined&&ftSprite(sprite,x,y,b.kind==='tower'||b.kind==='beacon'?145:142)){
+  if(b.kind==='quarry')ftSprite(4,x+35,y+5,50);if(b.kind==='depot')ftSprite(5,x+32,y+4,48);
+  if(b.hp<b.maxHp){ctx.fillStyle='#563e33';ctx.fillRect(x-30,y-123,60,5);ctx.fillStyle=b.hp>0?'#e4b26b':'#ee806d';ctx.fillRect(x-30,y-123,60*b.hp/b.maxHp,5);if(b.hp===0)text('需修復',x,y-130,12,'#ffc59a');}return;
+ }
  ftEllipse(x+3,y+6,40,15,'#143c3944');
  if(b.kind==='bridge')return;
  ctx.fillStyle=colors[b.kind]||'#c6b080';ctx.beginPath();ctx.roundRect(x-26,y-43,52,44,3);ctx.fill();
@@ -18388,6 +18493,7 @@ function ftBuilding(b,w){
 
     var canvas=$('ft-canvas'),ctx=canvas.getContext('2d'),world=null;
     var paid=false,cleared=0,paused=true,round=null,visible=false,last=0,saveAt=0,uiAt=0,pendingLevel=0;
+    var orientationLocked=false;
     var keys={},stick={x:0,y:0,id:null},dash=false,walkTarget=null,viewCamera=null;
     var zones=['翠葉群島','斷崖海岸','荊棘森林','寒霜高地','熔火遺跡'];
     var labels={camp:'營地',mill:'木材廠',forge:'鐵匠鋪',bridge:'橋樑',tower:'箭塔',beacon:'燈塔',house:'工人小屋',market:'市集',quarry:'採石場',depot:'前線分倉'};
@@ -18403,7 +18509,7 @@ function ftBuilding(b,w){
           var sample=frontierWorld(w.level),legacyKeys=['version','level','time','phase','p','bag','bank','nodes','enemies','shots','effects','kills','rescued','hold','wave','waveAt','heal','worker','threat','buildings','cages','tech'];
           var shape={};legacyKeys.forEach(function(k){shape[k]=sample[k];});shape.nodes=[];shape.enemies=[];shape.shots=[];shape.effects=[];shape.buildings=[];
           var valid=validShape(w,shape)&&w.nodes.length>=62&&w.nodes.length<=400&&w.buildings.length>=6&&w.buildings.length<=12&&w.cages.length===2&&w.enemies.length<=100&&w.enemies.every(function(e){return validShape(e,sample.enemies[0]);})&&w.shots.every(function(s){return ['x','y','vx','vy','t'].every(function(k){return typeof s[k]==='number';});})&&['play','clear','dead'].includes(w.phase)&&['tool','blade','pack'].every(function(k){return Number.isInteger(w.tech[k])&&w.tech[k]>=0&&w.tech[k]<=8;})&&w.nodes.every(function(n){return validShape(n,sample.nodes[0])&&['wood','stone'].includes(n.kind)&&n.left>=0&&n.left<=6;})&&w.buildings.every(function(b,i){return sample.buildings[i]&&b.kind===sample.buildings[i].kind&&validShape(b,{kind:'',x:0,y:0,built:false,wood:0,stone:0});});
-          if(valid&&(!w.workers||Array.isArray(w.workers)&&w.workers.length<=6&&w.workers.every(function(a){return validShape(a,{x:0,y:0,wood:0,stone:0,target:0,t:0,mode:''});}))&&(!w.drops||Array.isArray(w.drops)&&w.drops.length<=100&&w.drops.every(function(d){return validShape(d,{x:0,y:0,amount:0});}))&&(!w.camps||Array.isArray(w.camps)&&w.camps.length<=3&&w.camps.every(function(c){return validShape(c,{x:0,y:0,hp:0,maxHp:0,cool:0});})))world=frontierMigrate(w);
+          if(valid&&(!w.supplies||Array.isArray(w.supplies)&&w.supplies.length<=200&&w.supplies.every(function(d){return validShape(d,{x:0,y:0,kind:'',amount:0,wait:0})&&['wood','stone'].includes(d.kind)&&d.amount>0;}))&&(!w.workers||Array.isArray(w.workers)&&w.workers.length<=6&&w.workers.every(function(a){return validShape(a,{x:0,y:0,wood:0,stone:0,target:0,t:0,mode:''});}))&&(!w.drops||Array.isArray(w.drops)&&w.drops.length<=100&&w.drops.every(function(d){return validShape(d,{x:0,y:0,amount:0});}))&&(!w.camps||Array.isArray(w.camps)&&w.camps.length<=3&&w.camps.every(function(c){return validShape(c,{x:0,y:0,hp:0,maxHp:0,cool:0});})))world=frontierMigrate(w);
         }
         if(paid&&!world){world=frontierWorld(Math.min(50,cleared+1));set('ft-storage','存檔內容不完整，已保留遠征資格與通關紀錄，重建當關。');}
       }catch(e){set('ft-storage','無法讀取存檔；請確認瀏覽器允許本機儲存。');}
@@ -18415,7 +18521,7 @@ function ftBuilding(b,w){
     function pause(){if(!world||paused||world.phase!=='play')return;paused=true;frontierBusy=!!round;release();AN.progress(round,params(),true);persist();update();}
     function start(){
       if(!visible||document.hidden||!paused&&world&&world.phase==='play')return;
-      if(!paid)loadFrontier();
+      autoScreen();if(!paid)loadFrontier();
       var fresh=false;
       if(!paid){
         world=frontierWorld(1);paid=true;persist();
@@ -18424,7 +18530,7 @@ function ftBuilding(b,w){
       else if(world.phase==='dead')world=frontierWorld(world.level,Object.assign({},world.tech),world.coins);
       else if(world.phase==='clear')world=frontierWorld(world.level===50?1:world.level+1,Object.assign({},world.tech),world.coins);
       if(!fresh){if(round)AN.resume(round,params());else round=AN.start('frontier',0,params());}
-      paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});
+      paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});syncOrientation();
     }
     function selectLevel(n){if(!paid||n>Math.min(50,cleared+1))return;pause();pendingLevel=n;set('ft-select-label','前往關卡 '+n+'？');$('ft-select').hidden=false;}
     function updateMap(){Array.from($('ft-map').children).forEach(function(b,i){b.disabled=!paid||i+1>Math.min(50,cleared+1);var cl=(i+1<=cleared?'ft-done ':'')+(world&&world.level===i+1?'ft-current':'');if(b.className!==cl)b.className=cl;var current=world&&world.level===i+1?'step':'false';if(b.getAttribute('aria-current')!==current)b.setAttribute('aria-current',current);});}
@@ -18432,14 +18538,14 @@ function ftBuilding(b,w){
       var w=world||preview,overlay=$('ft-overlay');set('ft-zone',zones[w.cfg.chapter]);set('ft-level',w.level+' / 50');set('ft-health','♥ '+Math.ceil(w.p.hp));
       var objective=missions[w.cfg.mission];if(frontierReady(w))objective='任務完成！前往東側燈塔投入材料。';if(frontierBuilt(w,'beacon'))objective='島嶼已開拓，可繼續採集或前往下一島。';
       var detail=w.cfg.mission==='rescue'?' · '+w.rescued+'/2':w.cfg.mission==='defend'?' · '+w.wave+'/'+w.cfg.waves+' · '+Math.floor(w.hold)+'s':w.cfg.mission==='boss'||w.cfg.mission==='elite'?'':' · '+w.kills+'/'+(w.cfg.mission==='build'?Math.ceil(w.cfg.enemies*.65):w.cfg.enemies);
-      set('ft-objective',objective+detail);set('ft-bag','背包 '+(w.bag.wood+w.bag.stone)+'/'+(24+w.tech.pack*9)+' · 🪵 '+w.bag.wood+' · ◆ '+w.bag.stone);set('ft-stock','倉庫 '+'🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');set('ft-coins','金幣 '+w.coins);set('ft-workers','工人 '+w.workers.length);set('ft-checklist',
+      set('ft-objective',objective+detail);set('ft-bag','背包 '+(w.bag.wood+w.bag.stone)+'/'+frontierCapacity(w)+' · 🪵 '+w.bag.wood+' · ◆ '+w.bag.stone);set('ft-stock','倉庫 '+'🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');set('ft-building-effects',(frontierBuilt(w,'mill')?'木材廠：伐木 +1、工具上限 8、伐木工 +1。':'木材廠：建造後強化伐木，解鎖工具上限。')+' '+(frontierBuilt(w,'quarry')?'採石場：採石 +1、背包 +12、背包上限 8、採石工 +1。':'採石場：建造後增加背包容量與採石工。')+' '+(frontierBuilt(w,'forge')?'鐵匠鋪：攻擊 +9、武器上限 8、解除寒霜減速。':'鐵匠鋪：建造後強化攻擊，解鎖武器上限。'));set('ft-coins','金幣 '+w.coins);set('ft-workers','工人 '+w.workers.length);set('ft-hauling','搬運中 '+w.workers.reduce(function(n,a){return n+a.wood+a.stone;},0)+' · 地面資源 '+w.supplies.reduce(function(n,d){return n+d.amount;},0));set('ft-checklist',
         (frontierBuilt(w,'house')?'✓ ':'○ ')+labels.house+' · '+(frontierBuilt(w,'market')?'✓ ':'○ ')+labels.market+' · '+(frontierBuilt(w,'mill')?'✓ ':'○ ')+labels.mill+(w.cfg.chapter>0?' · '+(frontierBuilt(w,'depot')?'✓ ':'○ ')+labels.depot:'')+' · '+(w.camps.filter(function(c){return c.hp>0;}).length)+' 敵營');
       set('ft-warning',w.cfg.chapter>=2&&frontierBuilt(w,'bridge')?'敵襲倒數 '+Math.ceil(w.raidAt)+'s':'靠近資源採集，靠近地基建造');
       $('ft-next').hidden=!world||!frontierBuilt(w,'beacon');$('ft-next').disabled=paused;set('ft-full',document.fullscreenElement||$('ft-main').classList.contains('ft-immersive')?'退出全螢幕':'全螢幕');
       var market=w.buildings.find(function(b){return b.kind==='market';}),atMarket=market&&market.built&&market.hp>0&&frontierNear(w.p,market,100);
       ['wood','stone'].forEach(function(k){$('ft-sell-'+k).disabled=!world||paused||!atMarket||w.bank[k]<Number($('ft-sale-count').value||10);});
       set('ft-dash',w.p.dash>0?'衝刺 '+w.p.dash.toFixed(1):'衝刺');$('ft-dash').disabled=paused||w.p.dash>0;$('ft-pause').disabled=!world||w.phase!=='play';set('ft-pause',paused?'繼續':'暫停');
-      ['tool','blade','pack'].forEach(function(k,i){var n=w.tech[k],cost=frontierUpgradeCost(w,k);set('ft-'+k,['採集工具','戰鬥武器','背包容量'][i]+' Lv.'+n+(n===8?' · MAX':' · 金幣 '+cost));$('ft-'+k).disabled=!world||paused||!frontierNear(w.p,w.buildings[0],100)||n>=8;});
+      ['tool','blade','pack'].forEach(function(k,i){var n=w.tech[k],limit=frontierUpgradeLimit(w,k),cost=frontierUpgradeCost(w,k);set('ft-'+k,['採集工具','戰鬥武器','背包容量'][i]+' Lv.'+n+'/'+limit+(n>=limit?' · MAX':' · 金幣 '+cost));$('ft-'+k).disabled=!world||paused||!frontierNear(w.p,w.buildings[0],100)||n>=limit;});
       overlay.hidden=!!world&&!paused&&w.phase==='play';
       if(!overlay.hidden){
         var title='荒島遠征',message='五大區域，五十場考驗。建立據點，穿越危險地帶。',button='免費開始遠征';
@@ -18455,7 +18561,7 @@ function ftBuilding(b,w){
       if(walkTarget&&!x&&!y){var destination=frontierWaypoint(world.p,walkTarget);var distance=Math.hypot(destination.x-world.p.x,destination.y-world.p.y);if(distance>8){x=(destination.x-world.p.x)/distance;y=(destination.y-world.p.y)/distance;}else if(destination===walkTarget)walkTarget=null;}
       frontierStep(world,{x:x,y:y,dash:dash},Math.min(.05,(now-last)/1000));dash=false;if(world.phase!=='play')finishStage();else if(now-saveAt>5000){persist();saveAt=now;}
     }if(now-uiAt>180){update();uiAt=now;}paint();}last=now;requestAnimationFrame(frame);}
-    $('ft-go').addEventListener('click',function(){enterScreen();transientMessage=false;start();if(!world)transientMessage=true;});$('ft-pause').addEventListener('click',function(){if(paused)start();else pause();});
+    $('ft-go').addEventListener('click',function(){transientMessage=false;start();if(!world)transientMessage=true;});$('ft-pause').addEventListener('click',function(){if(paused)start();else pause();});
     ['tool','blade','pack'].forEach(function(k){$('ft-'+k).addEventListener('click',function(){if(world&&!paused){var ok=frontierUpgrade(world,k);set('ft-upgrade',ok?'升級完成':'材料不足，或需要回到營地。');if(ok){AN.progress(round,params(),false);persist();}update();}});});
     $('ft-select-yes').addEventListener('click',function(){if(!pendingLevel)return;endRound('restart');world=frontierWorld(pendingLevel,world?Object.assign({},world.tech):undefined,world?world.coins:0);pendingLevel=0;$('ft-select').hidden=true;paused=true;frontierBusy=false;persist();update();});$('ft-select-no').addEventListener('click',function(){pendingLevel=0;$('ft-select').hidden=true;});
     for(var n=1;n<=50;n++){var b=document.createElement('button');b.type='button';b.textContent=n;b.dataset.level=n;b.addEventListener('click',function(){selectLevel(Number(this.dataset.level));});$('ft-map').appendChild(b);}
@@ -18463,17 +18569,37 @@ function ftBuilding(b,w){
     var pad=$('ft-stick');function moveStick(e){if(e.pointerId!==stick.id)return;var r=pad.getBoundingClientRect(),x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2,len=Math.max(32,Math.hypot(x,y));stick.x=x/len;stick.y=y/len;$('ft-knob').style.transform='translate('+(stick.x*32)+'px,'+(stick.y*32)+'px)';AN.interact();}
     pad.addEventListener('pointerdown',function(e){if(paused||stick.id!==null)return;stick.id=e.pointerId;pad.setPointerCapture(e.pointerId);moveStick(e);e.preventDefault();});pad.addEventListener('pointermove',moveStick);['pointerup','pointercancel','lostpointercapture'].forEach(function(type){pad.addEventListener(type,function(e){if(stick.id===e.pointerId){stick.id=null;stick.x=stick.y=0;$('ft-knob').style.transform='';}});});
     $('ft-dash').addEventListener('pointerdown',function(e){e.preventDefault();if(!paused){dash=true;AN.interact();}});
-    function enterScreen(){
-      var main=$('ft-main');if(document.fullscreenElement||main.classList.contains('ft-immersive'))return;
-      if(main.requestFullscreen){var result=main.requestFullscreen();if(result&&result.catch)result.catch(function(){main.classList.add('ft-immersive');});}
-      else main.classList.add('ft-immersive');
+    function isHandheld(){return !!(window.matchMedia&&(window.matchMedia('(max-width: 600px)').matches||window.matchMedia('(pointer: coarse)').matches&&window.matchMedia('(max-width: 1100px)').matches));}
+    function autoScreen(){if(isHandheld())enterScreen();}
+    function screenClass(active){if(document.documentElement){if(active)document.documentElement.classList.add('frontier-immersive');else document.documentElement.classList.remove('frontier-immersive');}}
+    function syncOrientation(){
+      var main=$('ft-main'),touch=isHandheld();
+      var rotate=!!(visible&&touch&&(document.fullscreenElement||main.classList.contains('ft-immersive'))&&window.matchMedia('(orientation: portrait)').matches);
+      $('ft-rotate').hidden=!rotate;if(rotate)pause();
     }
-    function exitScreen(){if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(function(){});$('ft-main').classList.remove('ft-immersive');}
+    function requestLandscape(){
+      if(!isHandheld())return;
+      var orientation=window.screen&&window.screen.orientation;
+      if(orientation&&orientation.lock){try{var locked=orientation.lock('landscape');if(locked&&locked.then)locked.then(function(){if(document.fullscreenElement||$('ft-main').classList.contains('ft-immersive'))orientationLocked=true;else if(orientation.unlock)orientation.unlock();syncOrientation();},syncOrientation);}catch(e){syncOrientation();}}
+      else syncOrientation();
+    }
+    function enterScreen(){
+      var main=$('ft-main');screenClass(true);if(document.fullscreenElement||main.classList.contains('ft-immersive')){requestLandscape();return;}
+      function fallback(){main.classList.add('ft-immersive');requestLandscape();}
+      if(main.requestFullscreen){try{var result=main.requestFullscreen();if(result&&result.then)result.then(requestLandscape,fallback);}catch(e){fallback();}}
+      else fallback();
+    }
+    function exitScreen(){if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(function(){});$('ft-main').classList.remove('ft-immersive');if(orientationLocked&&window.screen&&window.screen.orientation&&window.screen.orientation.unlock)window.screen.orientation.unlock();orientationLocked=false;screenClass(false);$('ft-rotate').hidden=true;}
+    window.addEventListener('resize',syncOrientation);window.addEventListener('orientationchange',syncOrientation);
+    document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement&&!$('ft-main').classList.contains('ft-immersive')){if(orientationLocked&&window.screen&&window.screen.orientation&&window.screen.orientation.unlock)window.screen.orientation.unlock();orientationLocked=false;screenClass(false);}syncOrientation();});
+    $('ft-rotate-exit').addEventListener('click',exitScreen);
     $('ft-full').addEventListener('click',function(){if(document.fullscreenElement||$('ft-main').classList.contains('ft-immersive'))exitScreen();else enterScreen();});
-    $('ft-stage').addEventListener('click',function(e){if(e.target!==canvas&&!(e.target.closest&&e.target.closest('#ft-overlay')))return;if(e.target.closest&&e.target.closest('button'))return;if(paused){enterScreen();start();}});
+    $('ft-stage').addEventListener('click',function(e){if(e.target!==canvas&&!(e.target.closest&&e.target.closest('#ft-overlay')))return;if(e.target.closest&&e.target.closest('button'))return;if(paused){start();}});
     canvas.addEventListener('pointerdown',function(e){if(paused)return;var r=canvas.getBoundingClientRect();if(viewCamera)walkTarget={x:(e.clientX-r.left)/viewCamera.scale+viewCamera.left,y:(e.clientY-r.top)/viewCamera.scale+viewCamera.top};if(walkTarget&&walkTarget.x>552&&walkTarget.x<678){walkTarget.x=walkTarget.x<615?530:700;}AN.interact();});
-    $('ft-shop-toggle').addEventListener('click',function(){$('ft-shop').hidden=!$('ft-shop').hidden;release();this.setAttribute('aria-expanded',String(!$('ft-shop').hidden));});
-    $('ft-shop-close').addEventListener('click',function(){$('ft-shop').hidden=true;$('ft-shop-toggle').setAttribute('aria-expanded','false');});
+    function showShop(open){$('ft-shop').hidden=!open;$('ft-shop-toggle').setAttribute('aria-expanded',String(open));if(open)$('ft-main').classList.add('ft-shop-open');else $('ft-main').classList.remove('ft-shop-open');release();if(!open)canvas.focus({preventScroll:true});}
+    $('ft-journal').addEventListener('click',function(){var open=$('ft-task-details').hidden;$('ft-task-details').hidden=!open;this.setAttribute('aria-expanded',String(open));release();});
+    $('ft-shop-toggle').addEventListener('click',function(){showShop($('ft-shop').hidden);});
+    $('ft-shop-close').addEventListener('click',function(){showShop(false);});
     ['wood','stone'].forEach(function(k){$('ft-sell-'+k).addEventListener('click',function(){if(!world||paused)return;var sold=frontierSell(world,k,Number($('ft-sale-count').value||10));set('ft-upgrade',sold?'交易完成':'需要市集、倉庫材料與靠近市集');if(sold)persist();update();});});
     $('ft-next').addEventListener('click',function(){if(world&&!paused&&frontierLeave(world))finishStage();});
     $('ft-home').addEventListener('click',function(){if(world&&!paused){walkTarget={x:180,y:450};AN.interact();}});

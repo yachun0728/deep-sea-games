@@ -681,3 +681,9 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 ## 全體點數歸零（2026-11-18 一次性）
 
 依使用者指示，所有玩家的共用餘額 `crush-depth-balance` 在載入時一次性歸零：`deep-sea-balance-zero-v1` 標記尚未為 `1` 時，將餘額設為 0 並寫入標記，之後照常讀取（歸零後賺到的點數會保留，不會再歸零）。造型收藏 `deep-sea-wardrobe-v1` 不受影響。頁首第一次畫面的預載腳本也依標記顯示，不會先閃出舊點數。回復方式：移除 `js/wallet.js` 的歸零區塊（已歸零的點數無法恢復）。測試：`node tools/test_balance_zero.mjs`。
+
+### Frontier polish update (2026-11-18)
+
+Worker harvests now create visible world.supplies. Players collect within 58 units, or take carried worker cargo within 42 units. Transfer debits the source before crediting the bag; partial pickups leave the remainder, and full bags remove nothing. Workers wait 0.65 seconds before collecting nearby supplies and still deliver five-unit loads. Supplies are an optional additive save field, defaulting to []. Pickup and warehouse delivery use distinct floating feedback.
+
+Equipment initially caps at level 2. Mill / forge / quarry unlock tool / weapon / pack levels to 8. Existing higher equipment is not downgraded. Mill adds one wood per harvest and one lumberjack; quarry adds one stone per harvest, twelve bag slots and one miner; forge retains +9 attack and frost protection. A cottage supports two workers, mill and quarry each add one, and two rescues bring the total to six. Capacity is 24 + 9 * pack level + 12 with an operational quarry. Damage disables building bonuses without deleting excess carried resources. These formulas supersede the older unrestricted level-8 and worker-count descriptions above.

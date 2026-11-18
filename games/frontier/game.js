@@ -6,6 +6,7 @@
     {{include:games/frontier/draw.js}}
     var canvas=$('ft-canvas'),ctx=canvas.getContext('2d'),world=null;
     var paid=false,cleared=0,paused=true,round=null,visible=false,last=0,saveAt=0,uiAt=0,pendingLevel=0;
+    var orientationLocked=false;
     var keys={},stick={x:0,y:0,id:null},dash=false,walkTarget=null,viewCamera=null;
     var zones=['翠葉群島','斷崖海岸','荊棘森林','寒霜高地','熔火遺跡'];
     var labels={camp:'營地',mill:'木材廠',forge:'鐵匠鋪',bridge:'橋樑',tower:'箭塔',beacon:'燈塔',house:'工人小屋',market:'市集',quarry:'採石場',depot:'前線分倉'};
@@ -21,7 +22,7 @@
           var sample=frontierWorld(w.level),legacyKeys=['version','level','time','phase','p','bag','bank','nodes','enemies','shots','effects','kills','rescued','hold','wave','waveAt','heal','worker','threat','buildings','cages','tech'];
           var shape={};legacyKeys.forEach(function(k){shape[k]=sample[k];});shape.nodes=[];shape.enemies=[];shape.shots=[];shape.effects=[];shape.buildings=[];
           var valid=validShape(w,shape)&&w.nodes.length>=62&&w.nodes.length<=400&&w.buildings.length>=6&&w.buildings.length<=12&&w.cages.length===2&&w.enemies.length<=100&&w.enemies.every(function(e){return validShape(e,sample.enemies[0]);})&&w.shots.every(function(s){return ['x','y','vx','vy','t'].every(function(k){return typeof s[k]==='number';});})&&['play','clear','dead'].includes(w.phase)&&['tool','blade','pack'].every(function(k){return Number.isInteger(w.tech[k])&&w.tech[k]>=0&&w.tech[k]<=8;})&&w.nodes.every(function(n){return validShape(n,sample.nodes[0])&&['wood','stone'].includes(n.kind)&&n.left>=0&&n.left<=6;})&&w.buildings.every(function(b,i){return sample.buildings[i]&&b.kind===sample.buildings[i].kind&&validShape(b,{kind:'',x:0,y:0,built:false,wood:0,stone:0});});
-          if(valid&&(!w.workers||Array.isArray(w.workers)&&w.workers.length<=6&&w.workers.every(function(a){return validShape(a,{x:0,y:0,wood:0,stone:0,target:0,t:0,mode:''});}))&&(!w.drops||Array.isArray(w.drops)&&w.drops.length<=100&&w.drops.every(function(d){return validShape(d,{x:0,y:0,amount:0});}))&&(!w.camps||Array.isArray(w.camps)&&w.camps.length<=3&&w.camps.every(function(c){return validShape(c,{x:0,y:0,hp:0,maxHp:0,cool:0});})))world=frontierMigrate(w);
+          if(valid&&(!w.supplies||Array.isArray(w.supplies)&&w.supplies.length<=200&&w.supplies.every(function(d){return validShape(d,{x:0,y:0,kind:'',amount:0,wait:0})&&['wood','stone'].includes(d.kind)&&d.amount>0;}))&&(!w.workers||Array.isArray(w.workers)&&w.workers.length<=6&&w.workers.every(function(a){return validShape(a,{x:0,y:0,wood:0,stone:0,target:0,t:0,mode:''});}))&&(!w.drops||Array.isArray(w.drops)&&w.drops.length<=100&&w.drops.every(function(d){return validShape(d,{x:0,y:0,amount:0});}))&&(!w.camps||Array.isArray(w.camps)&&w.camps.length<=3&&w.camps.every(function(c){return validShape(c,{x:0,y:0,hp:0,maxHp:0,cool:0});})))world=frontierMigrate(w);
         }
         if(paid&&!world){world=frontierWorld(Math.min(50,cleared+1));set('ft-storage','存檔內容不完整，已保留遠征資格與通關紀錄，重建當關。');}
       }catch(e){set('ft-storage','無法讀取存檔；請確認瀏覽器允許本機儲存。');}
@@ -33,7 +34,7 @@
     function pause(){if(!world||paused||world.phase!=='play')return;paused=true;frontierBusy=!!round;release();AN.progress(round,params(),true);persist();update();}
     function start(){
       if(!visible||document.hidden||!paused&&world&&world.phase==='play')return;
-      if(!paid)loadFrontier();
+      autoScreen();if(!paid)loadFrontier();
       var fresh=false;
       if(!paid){
         world=frontierWorld(1);paid=true;persist();
@@ -42,7 +43,7 @@
       else if(world.phase==='dead')world=frontierWorld(world.level,Object.assign({},world.tech),world.coins);
       else if(world.phase==='clear')world=frontierWorld(world.level===50?1:world.level+1,Object.assign({},world.tech),world.coins);
       if(!fresh){if(round)AN.resume(round,params());else round=AN.start('frontier',0,params());}
-      paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});
+      paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});syncOrientation();
     }
     function selectLevel(n){if(!paid||n>Math.min(50,cleared+1))return;pause();pendingLevel=n;set('ft-select-label','前往關卡 '+n+'？');$('ft-select').hidden=false;}
     function updateMap(){Array.from($('ft-map').children).forEach(function(b,i){b.disabled=!paid||i+1>Math.min(50,cleared+1);var cl=(i+1<=cleared?'ft-done ':'')+(world&&world.level===i+1?'ft-current':'');if(b.className!==cl)b.className=cl;var current=world&&world.level===i+1?'step':'false';if(b.getAttribute('aria-current')!==current)b.setAttribute('aria-current',current);});}
@@ -50,14 +51,14 @@
       var w=world||preview,overlay=$('ft-overlay');set('ft-zone',zones[w.cfg.chapter]);set('ft-level',w.level+' / 50');set('ft-health','♥ '+Math.ceil(w.p.hp));
       var objective=missions[w.cfg.mission];if(frontierReady(w))objective='任務完成！前往東側燈塔投入材料。';if(frontierBuilt(w,'beacon'))objective='島嶼已開拓，可繼續採集或前往下一島。';
       var detail=w.cfg.mission==='rescue'?' · '+w.rescued+'/2':w.cfg.mission==='defend'?' · '+w.wave+'/'+w.cfg.waves+' · '+Math.floor(w.hold)+'s':w.cfg.mission==='boss'||w.cfg.mission==='elite'?'':' · '+w.kills+'/'+(w.cfg.mission==='build'?Math.ceil(w.cfg.enemies*.65):w.cfg.enemies);
-      set('ft-objective',objective+detail);set('ft-bag','背包 '+(w.bag.wood+w.bag.stone)+'/'+(24+w.tech.pack*9)+' · 🪵 '+w.bag.wood+' · ◆ '+w.bag.stone);set('ft-stock','倉庫 '+'🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');set('ft-coins','金幣 '+w.coins);set('ft-workers','工人 '+w.workers.length);set('ft-checklist',
+      set('ft-objective',objective+detail);set('ft-bag','背包 '+(w.bag.wood+w.bag.stone)+'/'+frontierCapacity(w)+' · 🪵 '+w.bag.wood+' · ◆ '+w.bag.stone);set('ft-stock','倉庫 '+'🪵 '+w.bank.wood+' · ◆ '+w.bank.stone);set('ft-record',cleared+' / 50');set('ft-building-effects',(frontierBuilt(w,'mill')?'木材廠：伐木 +1、工具上限 8、伐木工 +1。':'木材廠：建造後強化伐木，解鎖工具上限。')+' '+(frontierBuilt(w,'quarry')?'採石場：採石 +1、背包 +12、背包上限 8、採石工 +1。':'採石場：建造後增加背包容量與採石工。')+' '+(frontierBuilt(w,'forge')?'鐵匠鋪：攻擊 +9、武器上限 8、解除寒霜減速。':'鐵匠鋪：建造後強化攻擊，解鎖武器上限。'));set('ft-coins','金幣 '+w.coins);set('ft-workers','工人 '+w.workers.length);set('ft-hauling','搬運中 '+w.workers.reduce(function(n,a){return n+a.wood+a.stone;},0)+' · 地面資源 '+w.supplies.reduce(function(n,d){return n+d.amount;},0));set('ft-checklist',
         (frontierBuilt(w,'house')?'✓ ':'○ ')+labels.house+' · '+(frontierBuilt(w,'market')?'✓ ':'○ ')+labels.market+' · '+(frontierBuilt(w,'mill')?'✓ ':'○ ')+labels.mill+(w.cfg.chapter>0?' · '+(frontierBuilt(w,'depot')?'✓ ':'○ ')+labels.depot:'')+' · '+(w.camps.filter(function(c){return c.hp>0;}).length)+' 敵營');
       set('ft-warning',w.cfg.chapter>=2&&frontierBuilt(w,'bridge')?'敵襲倒數 '+Math.ceil(w.raidAt)+'s':'靠近資源採集，靠近地基建造');
       $('ft-next').hidden=!world||!frontierBuilt(w,'beacon');$('ft-next').disabled=paused;set('ft-full',document.fullscreenElement||$('ft-main').classList.contains('ft-immersive')?'退出全螢幕':'全螢幕');
       var market=w.buildings.find(function(b){return b.kind==='market';}),atMarket=market&&market.built&&market.hp>0&&frontierNear(w.p,market,100);
       ['wood','stone'].forEach(function(k){$('ft-sell-'+k).disabled=!world||paused||!atMarket||w.bank[k]<Number($('ft-sale-count').value||10);});
       set('ft-dash',w.p.dash>0?'衝刺 '+w.p.dash.toFixed(1):'衝刺');$('ft-dash').disabled=paused||w.p.dash>0;$('ft-pause').disabled=!world||w.phase!=='play';set('ft-pause',paused?'繼續':'暫停');
-      ['tool','blade','pack'].forEach(function(k,i){var n=w.tech[k],cost=frontierUpgradeCost(w,k);set('ft-'+k,['採集工具','戰鬥武器','背包容量'][i]+' Lv.'+n+(n===8?' · MAX':' · 金幣 '+cost));$('ft-'+k).disabled=!world||paused||!frontierNear(w.p,w.buildings[0],100)||n>=8;});
+      ['tool','blade','pack'].forEach(function(k,i){var n=w.tech[k],limit=frontierUpgradeLimit(w,k),cost=frontierUpgradeCost(w,k);set('ft-'+k,['採集工具','戰鬥武器','背包容量'][i]+' Lv.'+n+'/'+limit+(n>=limit?' · MAX':' · 金幣 '+cost));$('ft-'+k).disabled=!world||paused||!frontierNear(w.p,w.buildings[0],100)||n>=limit;});
       overlay.hidden=!!world&&!paused&&w.phase==='play';
       if(!overlay.hidden){
         var title='荒島遠征',message='五大區域，五十場考驗。建立據點，穿越危險地帶。',button='免費開始遠征';
@@ -73,7 +74,7 @@
       if(walkTarget&&!x&&!y){var destination=frontierWaypoint(world.p,walkTarget);var distance=Math.hypot(destination.x-world.p.x,destination.y-world.p.y);if(distance>8){x=(destination.x-world.p.x)/distance;y=(destination.y-world.p.y)/distance;}else if(destination===walkTarget)walkTarget=null;}
       frontierStep(world,{x:x,y:y,dash:dash},Math.min(.05,(now-last)/1000));dash=false;if(world.phase!=='play')finishStage();else if(now-saveAt>5000){persist();saveAt=now;}
     }if(now-uiAt>180){update();uiAt=now;}paint();}last=now;requestAnimationFrame(frame);}
-    $('ft-go').addEventListener('click',function(){enterScreen();transientMessage=false;start();if(!world)transientMessage=true;});$('ft-pause').addEventListener('click',function(){if(paused)start();else pause();});
+    $('ft-go').addEventListener('click',function(){transientMessage=false;start();if(!world)transientMessage=true;});$('ft-pause').addEventListener('click',function(){if(paused)start();else pause();});
     ['tool','blade','pack'].forEach(function(k){$('ft-'+k).addEventListener('click',function(){if(world&&!paused){var ok=frontierUpgrade(world,k);set('ft-upgrade',ok?'升級完成':'材料不足，或需要回到營地。');if(ok){AN.progress(round,params(),false);persist();}update();}});});
     $('ft-select-yes').addEventListener('click',function(){if(!pendingLevel)return;endRound('restart');world=frontierWorld(pendingLevel,world?Object.assign({},world.tech):undefined,world?world.coins:0);pendingLevel=0;$('ft-select').hidden=true;paused=true;frontierBusy=false;persist();update();});$('ft-select-no').addEventListener('click',function(){pendingLevel=0;$('ft-select').hidden=true;});
     for(var n=1;n<=50;n++){var b=document.createElement('button');b.type='button';b.textContent=n;b.dataset.level=n;b.addEventListener('click',function(){selectLevel(Number(this.dataset.level));});$('ft-map').appendChild(b);}
@@ -81,17 +82,37 @@
     var pad=$('ft-stick');function moveStick(e){if(e.pointerId!==stick.id)return;var r=pad.getBoundingClientRect(),x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2,len=Math.max(32,Math.hypot(x,y));stick.x=x/len;stick.y=y/len;$('ft-knob').style.transform='translate('+(stick.x*32)+'px,'+(stick.y*32)+'px)';AN.interact();}
     pad.addEventListener('pointerdown',function(e){if(paused||stick.id!==null)return;stick.id=e.pointerId;pad.setPointerCapture(e.pointerId);moveStick(e);e.preventDefault();});pad.addEventListener('pointermove',moveStick);['pointerup','pointercancel','lostpointercapture'].forEach(function(type){pad.addEventListener(type,function(e){if(stick.id===e.pointerId){stick.id=null;stick.x=stick.y=0;$('ft-knob').style.transform='';}});});
     $('ft-dash').addEventListener('pointerdown',function(e){e.preventDefault();if(!paused){dash=true;AN.interact();}});
-    function enterScreen(){
-      var main=$('ft-main');if(document.fullscreenElement||main.classList.contains('ft-immersive'))return;
-      if(main.requestFullscreen){var result=main.requestFullscreen();if(result&&result.catch)result.catch(function(){main.classList.add('ft-immersive');});}
-      else main.classList.add('ft-immersive');
+    function isHandheld(){return !!(window.matchMedia&&(window.matchMedia('(max-width: 600px)').matches||window.matchMedia('(pointer: coarse)').matches&&window.matchMedia('(max-width: 1100px)').matches));}
+    function autoScreen(){if(isHandheld())enterScreen();}
+    function screenClass(active){if(document.documentElement){if(active)document.documentElement.classList.add('frontier-immersive');else document.documentElement.classList.remove('frontier-immersive');}}
+    function syncOrientation(){
+      var main=$('ft-main'),touch=isHandheld();
+      var rotate=!!(visible&&touch&&(document.fullscreenElement||main.classList.contains('ft-immersive'))&&window.matchMedia('(orientation: portrait)').matches);
+      $('ft-rotate').hidden=!rotate;if(rotate)pause();
     }
-    function exitScreen(){if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(function(){});$('ft-main').classList.remove('ft-immersive');}
+    function requestLandscape(){
+      if(!isHandheld())return;
+      var orientation=window.screen&&window.screen.orientation;
+      if(orientation&&orientation.lock){try{var locked=orientation.lock('landscape');if(locked&&locked.then)locked.then(function(){if(document.fullscreenElement||$('ft-main').classList.contains('ft-immersive'))orientationLocked=true;else if(orientation.unlock)orientation.unlock();syncOrientation();},syncOrientation);}catch(e){syncOrientation();}}
+      else syncOrientation();
+    }
+    function enterScreen(){
+      var main=$('ft-main');screenClass(true);if(document.fullscreenElement||main.classList.contains('ft-immersive')){requestLandscape();return;}
+      function fallback(){main.classList.add('ft-immersive');requestLandscape();}
+      if(main.requestFullscreen){try{var result=main.requestFullscreen();if(result&&result.then)result.then(requestLandscape,fallback);}catch(e){fallback();}}
+      else fallback();
+    }
+    function exitScreen(){if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(function(){});$('ft-main').classList.remove('ft-immersive');if(orientationLocked&&window.screen&&window.screen.orientation&&window.screen.orientation.unlock)window.screen.orientation.unlock();orientationLocked=false;screenClass(false);$('ft-rotate').hidden=true;}
+    window.addEventListener('resize',syncOrientation);window.addEventListener('orientationchange',syncOrientation);
+    document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement&&!$('ft-main').classList.contains('ft-immersive')){if(orientationLocked&&window.screen&&window.screen.orientation&&window.screen.orientation.unlock)window.screen.orientation.unlock();orientationLocked=false;screenClass(false);}syncOrientation();});
+    $('ft-rotate-exit').addEventListener('click',exitScreen);
     $('ft-full').addEventListener('click',function(){if(document.fullscreenElement||$('ft-main').classList.contains('ft-immersive'))exitScreen();else enterScreen();});
-    $('ft-stage').addEventListener('click',function(e){if(e.target!==canvas&&!(e.target.closest&&e.target.closest('#ft-overlay')))return;if(e.target.closest&&e.target.closest('button'))return;if(paused){enterScreen();start();}});
+    $('ft-stage').addEventListener('click',function(e){if(e.target!==canvas&&!(e.target.closest&&e.target.closest('#ft-overlay')))return;if(e.target.closest&&e.target.closest('button'))return;if(paused){start();}});
     canvas.addEventListener('pointerdown',function(e){if(paused)return;var r=canvas.getBoundingClientRect();if(viewCamera)walkTarget={x:(e.clientX-r.left)/viewCamera.scale+viewCamera.left,y:(e.clientY-r.top)/viewCamera.scale+viewCamera.top};if(walkTarget&&walkTarget.x>552&&walkTarget.x<678){walkTarget.x=walkTarget.x<615?530:700;}AN.interact();});
-    $('ft-shop-toggle').addEventListener('click',function(){$('ft-shop').hidden=!$('ft-shop').hidden;release();this.setAttribute('aria-expanded',String(!$('ft-shop').hidden));});
-    $('ft-shop-close').addEventListener('click',function(){$('ft-shop').hidden=true;$('ft-shop-toggle').setAttribute('aria-expanded','false');});
+    function showShop(open){$('ft-shop').hidden=!open;$('ft-shop-toggle').setAttribute('aria-expanded',String(open));if(open)$('ft-main').classList.add('ft-shop-open');else $('ft-main').classList.remove('ft-shop-open');release();if(!open)canvas.focus({preventScroll:true});}
+    $('ft-journal').addEventListener('click',function(){var open=$('ft-task-details').hidden;$('ft-task-details').hidden=!open;this.setAttribute('aria-expanded',String(open));release();});
+    $('ft-shop-toggle').addEventListener('click',function(){showShop($('ft-shop').hidden);});
+    $('ft-shop-close').addEventListener('click',function(){showShop(false);});
     ['wood','stone'].forEach(function(k){$('ft-sell-'+k).addEventListener('click',function(){if(!world||paused)return;var sold=frontierSell(world,k,Number($('ft-sale-count').value||10));set('ft-upgrade',sold?'交易完成':'需要市集、倉庫材料與靠近市集');if(sold)persist();update();});});
     $('ft-next').addEventListener('click',function(){if(world&&!paused&&frontierLeave(world))finishStage();});
     $('ft-home').addEventListener('click',function(){if(world&&!paused){walkTarget={x:180,y:450};AN.interact();}});

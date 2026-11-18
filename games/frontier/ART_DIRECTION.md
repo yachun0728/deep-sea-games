@@ -18,7 +18,7 @@ Art direction: dimensional cartoon exploration, deep teal and warm brass, straw-
 - 不是稀疏展示場景：各區 160／205／250／295／340 個可再生資源點，木材約三分之二，避開建築、救援點與河道。
 - 地圖從 1200×900 逐區擴到 2400×1500。手機用攝影機跟隨，不能把整張地圖縮到人物看不清。遠方樹木不繪製，粒子同時最多 70 個。
 - 主要操作是移動：靠近自動採集、建造、攻擊、卸貨、拾金幣與修復。交易與買裝備是次要操作，不要求一直點砍樹按鈕。
-- 手機開始時要求原生全螢幕，失敗則以固定全視窗版面呈現；保留退出、暫停、交易、裝備與前往下一島。搖桿及點地面移動並存；衝刺是電腦可選操作，手機不能強迫使用。
+- 電腦預設視窗遊玩，只有主動點全螢幕才切換；桌面資訊列保持單列，交易面板使用獨立側欄縮減Canvas寬度，不能擋住角色。手機開始時要求原生全螢幕，失敗則以固定全視窗版面呈現；保留退出、暫停、交易、裝備與前往下一島。搖桿及點地面移動並存；衝刺是電腦可選操作，手機不能強迫使用。
 - 不可把大量往返或等待再生當成難度。生產交給實際採集搬運的 NPC，後期以敵營、分倉、敵襲與戰鬥組合增加挑戰。
 
 Dense renewable forests, camera-following mobile maps, automatic proximity actions and optional trading/equipment panels are required. Later difficulty comes from expansion and defense, not repetitive waiting.
@@ -30,3 +30,9 @@ Dense renewable forests, camera-following mobile maps, automatic proximity actio
 儲存鍵仍為 deep-sea-frontier-v1，新增欄位採相容補齊，保留舊材料、科技及通關。不得清資料測試；用隔離測試替身。以 VALIDATION.md 記錄實際測試，不能把 Canvas mock 或設定圖當作實機驗收。
 
 Keep storage compatible and analytics single-settlement. Preserve existing gameplay unless explicitly authorized. Update both languages and record real verification limits.
+
+## Production art and in-game HUD (2026-11-18)
+
+The playable renderer loads art/sprites.png (4 columns, 3 rows) and art/enemies.png (2 columns, 2 rows). Crop using natural image dimensions. Primary slots: idle explorer, chopping explorer, tree, stump, ore, logs, cottage, market, mill, forge, tower, beacon. Enemy slots: melee, ranged, charger, boss. These are actual independent game assets, separate from direction-board.png. Keep the vector renderer only as a loading/error fallback.
+
+The map fills the main game frame. Status and inventory float inside it; mission details expand on demand. Expedition records and help sit below the map. Desktop trading reserves its own column, while narrow screens use a bottom drawer. Desktop starts windowed. Handheld and <=600px layouts enter immersive play when starting/resuming. Request landscape orientation where supported; portrait immersive play pauses behind a rotation prompt. Hide all platform header and switch-game navigation during immersion, then restore on exit. Do not shrink the map to fit stacked HUD rows.

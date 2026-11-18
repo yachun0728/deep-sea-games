@@ -23,6 +23,7 @@
       return;
     }
     assert(document.documentElement.lang==='en','English query selects English');
+    assert(document.getElementById('open-wardrobe').hidden&&document.getElementById('tab-wardrobe').hidden,'Profile entry points are hidden');
     assert(!document.getElementById('reset')&&!document.getElementById('regen-hint'),'Reset button and regen hint removed');
     assert(!/[\u3400-\u9fff]/.test(document.getElementById('view-lobby').innerText),'Lobby has no untranslated Chinese');
     assert(document.querySelectorAll('.game-card[data-game-hidden]').length===8,'Eight hidden games remain hidden');

@@ -37,3 +37,15 @@
 ## 發行整合檢查
 
 以遠端已知main `c1f10cd` 建立乾淨發行副本，保留別看自動奔跑等既有更新。只整合荒島遠征來源、美術資料、相關翻譯／文件／測試、大廳排序與重新組合的index.html；未包含828c239的點數變更。發行副本325項Frontier檢查、19項Python測試、build --check及git diff --check通過。網頁亦確認GitHub main目前為c1f10cd。命令列GitHub DNS失敗，發布狀態須以後續GitHub及正式站結果確認。
+
+## Painted assets and landscape HUD release (2026-11-18)
+
+Integrated on origin/main 78f0a23 to preserve the latest TiCATiCA name, BONUS label, zero-balance behavior and removal of reset controls. Only Frontier updates, related documentation/translations, and explicitly requested Profile entry hiding are added. No previous Cloudflare deployment is restored for this release.
+
+- 343 model/DOM-adapter assertions pass, including ground and worker-cargo pickups, exact partial transfer, full-bag preservation, supply migration, construction bonuses, level caps and handheld portrait pause/exit.
+- 19 Python tests pass; build and --check pass; scripts/JSON parse in the Frontier test; whitespace check passes.
+- Actual Chrome local preview verified: painted explorer, trees, ore and buildings load; desktop stays windowed; trading reserves a separate column (canvas right 801, panel left 811, no overlap); 390px English has no untranslated visible Frontier text or horizontal overflow; English title deduplicates correctly.
+- Actual Chrome viewport 844x390 in fullscreen: Canvas height 388px, no horizontal overflow, platform switch-game/navigation hidden. Portrait 390px displays a rotate prompt and pauses; landscape removes the prompt and requires manual resume. Temporary viewport override reset afterwards. This is browser emulation, not an iPhone orientation-lock acceptance test.
+- Local play visibly reached stage 2, with four active workers, warehouse deliveries, full 36-slot quarry bag, gold retained and manual stage departure. Not all 50 stages were human-playtested.
+- Screenshot saved at /tmp/frontier-polish-landscape.jpg. The automated headless browser runner was attempted but Chrome closed its test pipe; it is not reported as passed. Manual Chrome checks above were performed instead.
+- Remaining: real iOS/Android orientation lock and touch feel, long-session mobile performance, 50-stage human balance, GA4 backend receipt. Publication must be confirmed separately after push.

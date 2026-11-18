@@ -36,3 +36,52 @@
 #view-frontier .ft-art-board{display:block;max-width:100%;height:auto;border-radius:14px;margin-top:12px}
 @media(max-width:600px){#view-frontier .ft-optional-dash{display:none}#view-frontier .ft-mission{font-size:10px;padding:5px 10px}#view-frontier .ft-resource{font-size:10px;padding:6px 10px}#view-frontier .ft-resource button{min-height:32px;font-size:10px;padding:5px 8px}#view-frontier .ft-main:fullscreen .ft-top,#view-frontier .ft-main.ft-immersive .ft-top{padding:5px 10px}#view-frontier .ft-status{font-size:13px}#view-frontier .ft-shop{bottom:95px}}
 @media(prefers-reduced-motion:reduce){#view-frontier button{transition:none}}
+
+/* Desktop uses a compact cockpit; only touch devices auto-enter fullscreen. */
+#view-frontier .ft-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;padding:7px 14px;min-height:44px}
+#view-frontier .ft-top .ft-status{padding:0;justify-content:center;gap:18px;font-size:14px;min-width:0}
+#view-frontier .ft-top #ft-full{min-height:30px;padding:5px 10px;font-size:12px}
+#view-frontier .ft-objective{min-height:0;padding:7px 14px;line-height:1.5;font-size:12px}
+#view-frontier .ft-mission{display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px 16px;padding:5px 14px;line-height:1.5}
+#view-frontier .ft-stage{height:clamp(440px,66vh,760px)}
+#view-frontier .ft-shop{top:112px;bottom:68px;right:10px;width:290px;max-height:none;padding:14px;box-sizing:border-box}
+#view-frontier .ft-shop-head h3{font-size:15px;margin:0}#view-frontier .ft-shop-head button{font-size:11px;min-height:30px;padding:5px 9px}
+#view-frontier .ft-shop-actions button{min-height:35px;padding:7px 10px;font-size:12px}
+#view-frontier .ft-main.ft-shop-open .ft-stage{margin-right:310px}
+#view-frontier .ft-resource{justify-content:flex-start;column-gap:14px;row-gap:6px;padding:8px 12px}#view-frontier #ft-home{margin-left:auto}
+@media(hover:hover) and (pointer:fine){#view-frontier .ft-touch{display:none}}
+@media(max-width:1100px){#view-frontier .ft-layout{grid-template-columns:minmax(0,1fr)}#view-frontier .ft-side{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){#view-frontier .ft-top{grid-template-columns:minmax(0,1fr) auto;padding:6px 10px;gap:7px}#view-frontier .ft-top>.ft-eyebrow{display:none}#view-frontier .ft-top .ft-status{justify-content:space-between;gap:8px;font-size:12px}#view-frontier .ft-objective{font-size:11px;padding:6px 10px}#view-frontier .ft-mission{font-size:10px;padding:4px 10px}#view-frontier .ft-side{grid-template-columns:minmax(0,1fr)}#view-frontier .ft-main.ft-shop-open .ft-stage{margin-right:0}#view-frontier .ft-shop{top:auto;bottom:88px;right:10px;width:calc(100% - 20px);max-height:58%;padding:12px}#view-frontier .ft-resource{column-gap:9px;padding:6px 10px}#view-frontier #ft-home{margin-left:0}}
+
+#view-frontier .ft-building-effects{font-size:11px;color:#e9d69e;padding:8px 10px;background:#091f2544;border-radius:8px;line-height:1.8}
+#view-frontier .ft-rotate{position:absolute;inset:0;z-index:15;background:#0c2e30f5;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;gap:14px}
+#view-frontier .ft-rotate[hidden]{display:none}#view-frontier .ft-rotate>span{font-size:65px;color:#e5c985}#view-frontier .ft-rotate h3{font-size:22px}#view-frontier .ft-rotate p{font-size:13px;line-height:1.7;max-width:290px}
+@media(pointer:coarse){#view-frontier .ft-optional-dash{display:none}}
+@media(orientation:landscape) and (max-height:500px){#view-frontier .ft-mission #ft-warning{display:none}#view-frontier .ft-top{min-height:32px;padding:3px 10px}#view-frontier .ft-objective{padding:3px 10px;font-size:11px}#view-frontier .ft-mission{padding:3px 10px;font-size:10px}#view-frontier .ft-resource{padding:4px 10px;font-size:10px}#view-frontier .ft-resource button{min-height:28px;padding:4px 7px;font-size:10px}#view-frontier .ft-touch{bottom:12px}#view-frontier #ft-stick{width:80px;height:80px}#view-frontier #ft-knob{left:21px;top:21px}#view-frontier .ft-shop{top:80px;bottom:48px}}
+
+/* The playfield owns the whole stage; compact glass HUD floats inside it. */
+#view-frontier .ft-main{height:clamp(540px,76dvh,900px);isolation:isolate}
+#view-frontier .ft-main .ft-stage{position:absolute;inset:0;height:auto;min-height:0;margin:0;z-index:0}
+#view-frontier .ft-top{position:absolute;z-index:5;top:10px;left:12px;right:12px;grid-template-columns:auto minmax(0,1fr) auto auto;min-height:38px;padding:5px 10px;border:1px solid #ead29b4d;border-radius:12px;background:#143833db;backdrop-filter:blur(8px);box-shadow:0 3px 18px #09272b44}
+#view-frontier .ft-top .ft-status{gap:12px;font-size:13px}#view-frontier .ft-top button{min-height:28px;padding:5px 8px;font-size:11px}
+#view-frontier .ft-objective{position:absolute;z-index:4;top:64px;left:14px;max-width:calc(100% - 135px);padding:6px 10px;border:1px solid #e3cb8833;border-radius:9px;background:#153b31c9;font-size:11px;pointer-events:none;backdrop-filter:blur(5px)}
+#view-frontier .ft-mission{position:absolute;z-index:7;top:103px;left:14px;width:min(340px,calc(100% - 28px));padding:12px;background:#14382ff2;border:1px solid #e0c38866;border-radius:10px;box-shadow:0 8px 30px #0004;line-height:1.8}
+#view-frontier .ft-mission[hidden]{display:none}#view-frontier .ft-mission:not([hidden]){display:grid;gap:8px}
+#view-frontier .ft-resource{position:absolute;z-index:5;bottom:10px;left:12px;right:12px;padding:8px 10px;border:1px solid #ead29b44;border-radius:12px;background:#12362fe0;backdrop-filter:blur(8px);column-gap:12px;box-shadow:0 3px 18px #09272b44}
+#view-frontier .ft-shop{z-index:8;top:10px;bottom:10px;width:290px;right:10px;max-height:none;border-radius:14px;box-shadow:0 0 0 1px #143c3266,0 10px 35px #0005}
+#view-frontier .ft-main.ft-shop-open .ft-stage{right:310px;margin-right:0}#view-frontier .ft-main.ft-shop-open .ft-top,#view-frontier .ft-main.ft-shop-open .ft-resource{right:322px}
+#view-frontier .ft-main.ft-shop-open .ft-objective{max-width:calc(100% - 450px)}
+#view-frontier .ft-touch{bottom:100px;left:20px;right:20px}#view-frontier .ft-main:fullscreen,#view-frontier .ft-main.ft-immersive{height:100dvh}
+@media(max-width:600px){#view-frontier .ft-top{grid-template-columns:minmax(0,1fr) auto auto;top:8px;left:8px;right:8px;padding:5px 7px;gap:6px}#view-frontier .ft-top>.ft-eyebrow{display:none}#view-frontier .ft-top .ft-status{font-size:11px;gap:6px}#view-frontier .ft-resource{bottom:8px;left:8px;right:8px;font-size:10px;gap:6px 9px}#view-frontier .ft-objective{top:58px;left:10px;max-width:calc(100% - 122px);font-size:10px}#view-frontier .ft-shop{top:auto;bottom:88px;width:calc(100% - 20px);max-height:58%}#view-frontier .ft-main.ft-shop-open .ft-stage{right:0}#view-frontier .ft-main.ft-shop-open .ft-top,#view-frontier .ft-main.ft-shop-open .ft-resource{right:8px}#view-frontier .ft-main.ft-shop-open .ft-objective{max-width:calc(100% - 122px)}}
+@media(orientation:landscape) and (max-height:500px){#view-frontier .ft-top{top:6px;left:8px;right:8px;min-height:28px;padding:4px 8px}#view-frontier .ft-top>.ft-eyebrow{display:none}#view-frontier .ft-top{grid-template-columns:minmax(0,1fr) auto auto}#view-frontier .ft-objective{top:49px;font-size:10px;max-width:calc(100% - 135px)}#view-frontier .ft-resource{bottom:6px;left:8px;right:8px;padding:5px 8px;gap:5px 10px;font-size:10px}#view-frontier .ft-touch{bottom:70px}#view-frontier .ft-shop{top:6px;bottom:6px}#view-frontier .ft-mission{top:83px}}
+
+#view-frontier .ft-main:fullscreen .ft-top,#view-frontier .ft-main.ft-immersive .ft-top{top:max(6px,env(safe-area-inset-top));left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right))}
+#view-frontier .ft-main:fullscreen .ft-resource,#view-frontier .ft-main.ft-immersive .ft-resource{bottom:max(6px,env(safe-area-inset-bottom));left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right))}
+#view-frontier .ft-main.ft-shop-open:fullscreen .ft-top,#view-frontier .ft-main.ft-shop-open:fullscreen .ft-resource{right:322px}
+@media(max-width:600px){#view-frontier .ft-main.ft-shop-open:fullscreen .ft-top,#view-frontier .ft-main.ft-shop-open:fullscreen .ft-resource{right:max(8px,env(safe-area-inset-right))}}
+
+#view-frontier .ft-layout{display:block}#view-frontier .ft-side{display:grid;grid-template-columns:1fr 1fr;margin-top:16px}#view-frontier .ft-main{width:100%}
+@media(max-width:600px){#view-frontier .ft-side{grid-template-columns:minmax(0,1fr)}}
+
+html.frontier-immersive .top,html.frontier-immersive .game-toolbar{display:none!important}
+html.frontier-immersive{overflow:hidden}
