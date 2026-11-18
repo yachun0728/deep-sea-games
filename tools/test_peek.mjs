@@ -153,7 +153,7 @@ check('Gap between spirits shrinks with progress and every third dodge gives a l
 });
 check('Total dodges and the death codex are stored; the codex counts distinct causes',()=>{
   const f=fixture();f.F.start();f.spirit('eye',1);f.hold('l');f.run(7);assert.equal(f.storage.get('deep-sea-peek-dodges'),'1');
-  f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 10');assert.equal(f.el('peek-dodges').textContent,'1 次');
+  f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 16');assert.equal(f.el('peek-dodges').textContent,'1 次');
 });
 check('The corridor scrolls by itself and stops while covered',()=>{
   const f=fixture();f.F.start();f.F.ev('gapT=999');f.run(1);const r0=f.ev('run');assert.ok(r0>1.3);f.run(1);const r1=f.ev('run');assert.ok(r1-r0>1.3);
@@ -186,7 +186,7 @@ check('Level table: buffer, learn, boss and difficulty ramp follow the ten-level
   const f=fixture(),c=n=>JSON.parse(f.ev(`JSON.stringify((({l,wi,k,kind,left,plan,pool,fixed,fakeP,chainP})=>({l,wi,k,kind,left,plan,pool,fixed,fakeP,chainP}))(levelCfg(${n})))`));
   assert.equal(c(1).kind,'safe');assert.equal(c(1).left,0);assert.equal(c(1).fixed,true);assert.equal(c(2).kind,'safe');assert.equal(c(3).kind,'safe');assert.equal(c(4).kind,'learn');assert.deepEqual(c(4).pool,['eye']);assert.deepEqual(c(8).pool,['twins']);assert.equal(c(30).kind,'boss');assert.equal(c(22).kind,'learn');assert.deepEqual(c(22).pool,['reach']);assert.deepEqual(c(23).pool,['bell']);assert.equal(c(24).kind,'normal');
   assert.equal(c(5).kind,'safe');assert.equal(c(15).kind,'review');assert.equal(c(15).left,1);assert.equal(c(12).kind,'learn');assert.deepEqual(c(12).pool,['walker']);assert.deepEqual(c(16).pool,['gale']);
-  assert.equal(c(9).kind,'peak');assert.equal(c(10).kind,'boss');assert.deepEqual(c(10).plan,['eye','twins','hollow']);assert.equal(c(30).plan.at(-1),'glass');assert.equal(c(40).plan.at(-1),'hollow');assert.ok(c(30).plan.includes('gale'));
+  assert.equal(c(9).kind,'peak');assert.equal(c(10).kind,'boss');assert.deepEqual(c(10).plan,['eye','twins','hollow']);assert.deepEqual(c(30).plan,['reach','bell','walker','glass']);assert.equal(c(40).plan.at(-1),'glass');assert.equal(c(40).chainP,1);assert.deepEqual(c(50).plan,['flick','bog','flick']);assert.equal(c(20).plan.at(-1),'hollow');
   assert.equal(c(21).wi,1);assert.equal(c(100).wi,4);assert.equal(c(99).left,8);assert.ok(c(9).left<c(29).left&&c(29).left<c(89).left);
   assert.equal(c(14).fakeP,0);assert.ok(c(18).fakeP===0||c(18).fakeP>0);assert.equal(c(26).chainP>0,true);assert.equal(c(24).chainP,0);
 });
@@ -211,11 +211,30 @@ check('Bellkeeper: three tolls, then keep your head down (swipe down) until it p
   const off=fixture();off.F.start();off.F.ev('setHead(true)');assert.equal(off.ev('headDown'),false);   // only works during a Bellkeeper attack
   const g=fixture();g.F.ev('forceLvl=23;maxLvl=23;runTop=23');g.F.start();assert.ok(JSON.parse(g.ev('JSON.stringify(L.pool)')).includes('bell'));
 });
+check('New ghosts: Bog (double-tap), Crawler (one tap at the end), Magma and Whiteout (hide), Howler (repeat the rhythm), Flick (torch or hide)',()=>{
+  const mk=(type,extra='',w=2.5)=>{const f=fixture();f.F.start();f.F.ev("ev={type:'"+type+"',side:1,phase:'warn',t:"+w+",warn:"+w+",el:0,bad:0,ok:false,snd:0,fake:false,passes:1,pass:1"+extra+"};gapT=999");return f};
+  let f=mk('bog','',2.4);f.run(2.5);assert.equal(f.ev('ev.phase'),'judge');f.F.ev('tap(400,200)');f.tick(100);f.F.ev('tap(400,200)');f.run(.1);assert.equal(f.ev('survived'),1);
+  f=mk('bog','',2.4);f.run(5);assert.equal(f.ev('why'),'bog');
+  f=mk('crawl','',2.6);f.F.ev('tap(400,200)');f.run(2.7);assert.equal(f.ev('ev.phase'),'judge');assert.equal(f.ev('st'),'run');f.F.ev('tap(400,200)');f.run(.1);assert.equal(f.ev('survived'),1);   // an early tap does not count
+  f=mk('crawl','',2.6);f.run(4.5);assert.equal(f.ev('why'),'crawl');
+  f=mk('magma');f.hold('l');f.run(5);assert.equal(f.ev('survived'),1);f=mk('magma');f.run(5);assert.equal(f.ev('why'),'magma');
+  f=mk('white');f.hold('r');f.run(5);assert.equal(f.ev('survived'),1);f=mk('white');f.run(5);assert.equal(f.ev('why'),'white');
+  f=mk('howl','',2.8);f.F.ev('ev.pat=[0,.5];ev.pi=0;ev.pel=0');f.run(3);assert.equal(f.ev('ev.phase'),'judge');f.F.ev('tap(400,200)');f.run(.5);f.F.ev('tap(400,200)');f.run(.1);assert.equal(f.ev('survived'),1);
+  f=mk('howl','',2.8);f.F.ev('ev.pat=[0,.5];ev.pi=0;ev.pel=0');f.run(3);f.F.ev('tap(400,200)');f.run(1.2);f.F.ev('tap(400,200)');f.run(.1);assert.equal(f.ev('why'),'howl');
+  f=mk('flick','',2.6);f.F.ev('bag.torch=1');f.run(2.7);f.F.ev('tap(400,400)');f.run(.1);assert.equal(f.ev('survived'),1);assert.equal(f.ev('bag.torch'),0);
+  f=mk('flick','',2.6);f.F.ev('bag.torch=0');f.run(6);assert.equal(f.ev('why'),'flick');
+  f=mk('flick','',2.6);f.F.ev('bag.torch=0');f.hold('l');f.run(6);assert.equal(f.ev('survived'),1);
+});
+check('Late-world rules: earlier ghosts mix in lightly, level 40 chains, level 41-43 guarantee a torch, bosses 50-100 have fixed plans',()=>{
+  const f=fixture();f.F.ev('forceLvl=70;maxLvl=70;runTop=70');f.F.start();const pool=JSON.parse(f.ev('JSON.stringify(L.pool)'));assert.ok(pool.includes('bog')&&pool.includes('howl')&&pool.includes('crawl')&&pool.includes('white'));assert.ok(!pool.includes('magma'));
+  const c=n=>JSON.parse(f.F.ev('JSON.stringify(levelCfg('+n+'))'));assert.deepEqual(c(70).plan,['howl','howl','crawl','howl']);assert.equal(c(100).chainP,1);assert.equal(c(42).kind,'learn');
+  let n=0;for(let i=0;i<400;i++){const t=f.F.ev('wpick(L.pool)');if(['eye','twins','walker','gale','reach','bell','glass'].includes(t))n++}assert.ok(n<200,'old ghosts '+n);
+});
 check('Codex pages: ghosts first (Reacher and Bellkeeper included), items on page 2, next/prev wraps',()=>{
   const f=fixture();f.F.ev('seen={reacher:1,bellkeeper:1};dex=true;dexPg=0;dexSel=0;draw()');
   const pages=JSON.parse(f.ev('JSON.stringify(dexPages().map(p=>p.map(d=>d.id)))'));
-  assert.equal(pages.length,2);assert.ok(pages[0].includes('reacher')&&pages[0].includes('bellkeeper')&&pages[0].length<=12);assert.ok(pages[1].includes('torch'));
-  f.F.ev('dexGo(1);draw()');assert.equal(f.ev('dexPg'),1);assert.equal(f.ev('DEX[dexSel].ghost||0'),0);f.F.ev('dexGo(1);draw()');assert.equal(f.ev('dexPg'),0);f.F.ev('dex=false');
+  assert.equal(pages.length,3);assert.ok(pages[0].includes('reacher')&&pages[0].includes('bellkeeper')&&pages[0].length<=12);assert.ok(pages[2].includes('torch'));
+  f.F.ev('dexGo(2);draw()');assert.equal(f.ev('dexPg'),2);assert.equal(f.ev('DEX[dexSel].ghost||0'),0);f.F.ev('dexGo(1);draw()');assert.equal(f.ev('dexPg'),0);f.F.ev('dex=false');
 });
 check('A safe level has only harmless false cues; clearing it pays once and unlocks the next level',()=>{
   const f=fixture(500,null,()=>.3);f.F.ev('forceLvl=1');f.F.ev('maxLvl=1');f.F.start();assert.equal(f.ev('L.l'),1);f.run(200);

@@ -7,7 +7,7 @@
 - 網址：`#peek`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，點對牠怕的道具。」｜免費遊玩 · 聽聲反應
 - 追蹤名稱（GA4 `game_name`）：別看，`game_id` 為 `peek`
-- 檔案：`games/peek/card.html`、`games/peek/game.js`、`games/peek/icon.svg`、`games/peek/view.html`；`game.js` 共 681 行、69.5 KB
+- 檔案：`games/peek/card.html`、`games/peek/game.js`、`games/peek/icon.svg`、`games/peek/view.html`；`game.js` 共 740 行、82.5 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「34. 別看 Don’t Peek（peek）」（下方「規則摘要」已複製）
 
@@ -17,7 +17,7 @@
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`EYE`（L14）、`ART`（L21）、`HP`（L390）、`peekBusy`（L2）
+- 狀態物件／進行中旗標：`EYE`（L14）、`BOG`（L18）、`ART`（L24）、`BP`（L70）、`HP`（L437）、`peekBusy`（L2）
 - L5 常數：`BASE_RATE`
 - L6 常數：`MILE_EVENTS`、`MILE_REWARD`、`WIN_REWARD`
 - L7 常數：`FIRST_GAP`
@@ -31,12 +31,12 @@
 - L15 常數：`TWIN`
 - L16 常數：`REACH`
 - L17 常數：`BELL`
-- L18 常數：`WALK`、`ITEM_OF`、`ITEM_SHOW`
-- …另有 31 行常數宣告，請直接搜尋大寫名稱
+- L18 常數：`BOG`、`CRAWL`、`HOWL`、`FLICKG`、`NEWG`
+- …另有 32 行常數宣告，請直接搜尋大寫名稱
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`art` L22、`rnd` L39、`clamp` L40、`tx` L41、`RR` L42、`mulberry` L60、`deathsOf` L61、`levelCfg` L62、`wpick` L73、`dailyOn` L77、`dailyLvl` L78、`wantLevel` L79、`sv` L83、`mark` L84、`applyLevel` L85、`reset` L101、`audioInit` L105、`tone` L106、`say` L112、`setText` L114、`ui` L115、`fx` L122、`end` L123、`pay` L143、`pickPool` L148、`startEvent` L151、`sol` L166、`okS` L167、`nextGap` L180、`survive` L185、`inputs` L191、`gestCover` L194、`spotAt` L195、`hideOK` L196、`genSpots` L197、`ensureSpot` L198、`swipe` L199、`itemsUp` L200、`setHead` L201、`tap` L202、`passEnd` L203、`update` L204、`lampLevel` L254、`isRot` L257、`cxy` L258、`giveItem` L261、`spawnDrop` L268、`collect` L269、`updateDrops` L270、`canPick` L278、`startCamp` L279、`updateCamp` L280、`campTap` L286、`optSave` L289、`drawWorld` L300、`one` L304、`drawExit` L311、`sprite` L316、`floatImg` L317、`blob` L318、`drawSpirits` L319、`drawEvItems` L354、`drawDrops` L359、`drawCamp` L367、`wrapLines` L386、`txp` L387、`txd` L388、`hpRect` L391、`hpClick` L394、`drawHeadphone` L399、`capText` L406、`hud` L407、`btnRow` L433、`deathClick` L436、`doAct` L440、`later` L447、`playCue` L448、`shareText` L458、`share` L459、`shareCard` L463、`drawDeath` L476、`drawWon` L496、`dexPos` L524、`dexPages` L525、`dexGo` L527、`txl` L529、`drawDex` L530、`dexClick` L550、`practiceStart` L560、`drawSpots` L562、`drawHide` L569、`drawTut` L573、`drawHead` L579、`drawWeather` L583、`draw` L597、`start` L626、`shown` L636、`upPtr` L646、`clearInput` L655、`onOrient` L660、`fsOff` L663、`fsOn` L664、`go` L676、`loop` L678
+`needOf` L19、`passesOf` L20、`art` L25、`rnd` L42、`clamp` L43、`tx` L44、`RR` L45、`mulberry` L63、`deathsOf` L64、`levelCfg` L65、`wpick` L77、`dailyOn` L81、`dailyLvl` L82、`wantLevel` L83、`sv` L87、`mark` L88、`applyLevel` L89、`reset` L105、`audioInit` L109、`tone` L110、`say` L116、`setText` L118、`ui` L119、`fx` L126、`end` L127、`pay` L147、`pickPool` L152、`startEvent` L155、`sol` L170、`okS` L171、`nextGap` L184、`survive` L189、`inputs` L196、`gestCover` L199、`spotAt` L200、`hideOK` L201、`genSpots` L202、`ensureSpot` L203、`swipe` L204、`itemsUp` L205、`setHead` L206、`tap` L207、`passEnd` L208、`allClear` L209、`update` L210、`lampLevel` L279、`isRot` L282、`cxy` L283、`giveItem` L286、`spawnDrop` L293、`collect` L294、`updateDrops` L295、`canPick` L303、`startCamp` L304、`updateCamp` L305、`campTap` L311、`optSave` L314、`drawWorld` L325、`one` L329、`drawExit` L336、`sprite` L341、`floatImg` L342、`blob` L343、`drawSpirits` L344、`drawEvItems` L401、`drawDrops` L406、`drawCamp` L414、`wrapLines` L433、`txp` L434、`txd` L435、`hpRect` L438、`hpClick` L441、`drawHeadphone` L446、`capText` L453、`hud` L454、`btnRow` L480、`deathClick` L483、`doAct` L487、`later` L494、`playCue` L495、`shareText` L511、`share` L512、`shareCard` L516、`drawDeath` L529、`drawWon` L549、`dexPos` L583、`dexPages` L584、`dexGo` L586、`txl` L588、`drawDex` L589、`dexClick` L609、`practiceStart` L619、`drawSpots` L621、`drawHide` L628、`drawTut` L632、`drawHead` L638、`drawWeather` L642、`draw` L656、`start` L685、`shown` L695、`upPtr` L705、`clearInput` L714、`onOrient` L719、`fsOff` L722、`fsOn` L723、`go` L735、`loop` L737
 
 ## 錢包與結算接點
 
@@ -44,19 +44,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L145 `pay`：`S.balance+=n;`
+- L149 `pay`：`S.balance+=n;`
 
 **餘額檢查**
-- L629 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L688 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L137 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p,level:lvl,seed:seedCode…`
-- L146 `pay`：`AN.progress(analytics,{stage:Math.floor(prog),step:survived,score:score,bonus_points:n});`
-- L631 `start`：`analytics=AN.start('peek',amount);`
+- L141 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p,level:lvl,seed:seedCode…`
+- L150 `pay`：`AN.progress(analytics,{stage:Math.floor(prog),step:survived,score:score,bonus_points:n});`
+- L690 `start`：`analytics=AN.start('peek',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -94,11 +94,13 @@
 - 死亡教學：結果畫面顯示死因、規則、小螢提示與按鈕（立刻重試、再聽一次、看鬼圖鑑、稍後再學；同種死 3 次起多一顆「開輔助標記」）。第 1 次完整說明規則，第 2 次聚焦差異，第 3 次起建議輔助與練習。鬼圖鑑 12 格（5 隻鬼、小螢、旅人、Nib、火把、護身符、舊卷軸、骷髏燈籠），遇見後解鎖線索／判斷／應對，可「聽一次」與「練習」（練習不扣命、不計死因、不發點）。
 - 無障礙：首次進入先做耳機檢查（可試聽左右聲道）；選項有輔助標記（顯示危險側與安全側）、字幕方向、低驚嚇（降低閃光與震動）、環境音量與音效音量分開。選項存 `deep-sea-peek-opts`。
 - 結束：死亡或進度 100%。`AN.end` 只呼叫一次，payout 為本局已入帳 BONUS；附 `level`、`seed`。
-- BONUS（固定點數）：躲過 2 次襲擊 +2、通關 +5，每項每局一次；關卡模式只有該關第一次通關才發（重玩已過的關和練習都不發）；自由跑照舊每局可發。每局最多 7 點。分數、最佳進度（只計自由跑）、死因圖鑑 X / 10（`CAUSES`）、累計躲過只顯示。
+- BONUS（固定點數）：躲過 2 次襲擊 +2、通關 +5，每項每局一次；關卡模式只有該關第一次通關才發（重玩已過的關和練習都不發）；自由跑照舊每局可發。每局最多 7 點。分數、最佳進度（只計自由跑）、死因圖鑑 X / 16（`CAUSES`）、累計躲過只顯示。
 - 儲存：`deep-sea-peek-save`（最高解鎖關、存檔點、生命、無掉落關數、補命區段、各關死亡數、圖鑑）、`deep-sea-peek-best`、`deep-sea-peek-deaths`、`deep-sea-peek-dodges`、`deep-sea-peek-scrolls`。
 - 分享：結束畫面「分享結果卡」複製一句結果文字並下載 1200×630 的 PNG 結果卡，不自動發文。
 - 英文：所有介面與畫布文字都有 `locales/en.json` 條目。
-- 尚未做：Glassface／Bog／Flick／Howler／Crawler／Whiteout／Magma／Ash／Colossus 的機制（墳場起的關卡目前以舊鬼頂替；圖已入庫）、三連襲擊、Hush 的專用畫面、Nib 專用圖、正式配樂與鐘聲音檔、圖鑑的場景片段與音訊樣本、生成後 1000 次機器人可解率驗證。以上數值皆為初始假設，需真人試玩校正。
+- 新鬼（2026-11-18，第 42–83 關起）：Bog `bog`（水面冒泡，判定 2.2 秒內連點兩下，第 42 關）、Flick `flick`（假螢火群，判定 2.4 秒內點畫面下方火把 [T 鍵] 消耗 1 個火把過關，沒火把或不點則要躲進 `-side` 側，第 43 關；第 41–43 關保證掉火把）、Howler `howl`（嚎叫 2–3 聲，結束後 3 秒內照同樣間隔點畫面，間隔誤差 ≤0.25 秒，第 62 關）、Crawler `crawl`（裂縫延伸，判定 1.2 秒內點一下，提早點不算，第 63 關）、Whiteout `white`（畫面變白、一側閃光，躲進閃光側＝同 Gale 規則，第 64 關）、Magma `magma`（一側冒煙，躲進另一側＝同 Reacher 規則，第 82 關）。Magma／Whiteout 與 Knocker／Gale 同為多趟（第 8 關起 2 趟，第 50 關起 3 趟）。多趟結束時蟲鳴爆發提示；第 41 關起 25% 機率加一次假折返（只有聲音，不判定）；前世界的鬼權重 ×0.35；第 15 關起前兆有 0–0.4 秒隨機延遲；第 60 關起連續襲擊可到三連；第 40、100 關連續襲擊機率 100%。
+- 首領計畫（`BP`）：30＝Reacher、Bellkeeper、Hush、Glassface；40＝Reacher、Bellkeeper、Reacher、Glassface；50＝Flick、Bog、Flick；60＝Bog×2、Flick；70＝Howler×2、Crawler、Howler；80＝Whiteout、Howler、Crawler、Whiteout；90＝Magma、Ash、Magma、Ash；100＝Magma、Bellkeeper、Bog（Colossus 專屬機制未做，目前用組合頂替）。以上除第 30 關外都是我的提案。
+- 尚未做：Colossus 專屬機制與外觀、Nib 專用圖、正式配樂與鐘聲音檔、圖鑑的場景片段與音訊樣本、生成後 1000 次機器人可解率驗證、每關不同地形。以上數值皆為初始假設，需真人試玩校正。
 
 ## 修改檢查清單
 

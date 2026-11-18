@@ -15,6 +15,9 @@ const EYE={warn:2.5,judge:3,away:.5,grace:.35};   // lean away from the red beam
 const TWIN={warn:2.5,judge:1.5,away:.6,toward:.3}; // lean away from the giggle side; leaning toward it is fatal
 const REACH={warn:2.5,judge:2,away:.5,grace:.35};   // Reacher: lean away from the bulging ground and hold 2s
 const BELL={warn:2.7,judge:3,grace:.8};  // Bellkeeper: after the third bell keep your head down (swipe down) until it has passed
+const BOG={warn:2.4,judge:2.2},CRAWL={warn:2.6,judge:1.2},HOWL={warn:2.8,judge:3},FLICKG={warn:2.6,judge:2.4},NEWG=['bog','flick','howl','crawl','white','magma'];
+const needOf=(ty,sd)=>ty==='eye'||ty==='twins'||ty==='reach'||ty==='magma'||ty==='flick'?-sd:ty==='gale'||ty==='white'?sd:0;   // which side's hiding spot answers the attack
+const passesOf=(ty,boss)=>L&&L.kind!=='learn'&&!boss&&L.l>=8&&(ty==='twins'||ty==='gale'||ty==='magma'||ty==='white')?(L.l>=50?3:2):1;
 const WALK={warn:6,judge:2.5,still:.3},ITEM_OF={hush:'item-lantern',hollow:'item-talisman',glass:'item-hammer',ash:'item-bucket'},ITEM_SHOW=3.5;      // cover before the light goes out, stay covered and still
 const TYPES=['eye','twins','walker'];
 const WORLDS=['forest','graveyard','swamp','snow','volcano'];   // one painted backdrop per 20% of the run
@@ -25,9 +28,9 @@ const CARD_W=170,CARD_H=198,CARD_Y=146,CARDS_X=[CX-285,CX-85,CX+115];
 const CAMP_CARDS=['torch','charm','scroll'];
 const ITEM_NAME={torch:'火把',charm:'護身符',scroll:'舊卷軸',nib:'Nib',chest:'寶箱',rook:'旅人 Rook'};
 const ITEM_DESC={torch:'下次襲擊多 0.6 秒並標出方向',charm:'擋下一次致命失誤',scroll:'收藏品，集滿 3 卷營火旁會掛上骷髏燈籠',nib:'無害的小傢伙，偷偷塞給你一卷軸',chest:'火把 +1、護身符 +1',rook:'旅人分你一樣：火把或護身符'};
-const FLICK_TIPS=['小螢：腳邊的落葉聚成一堆，就躲進另一側。','小螢：鳥群突然飛走，是有東西在敲樹枝。','小螢：蟲鳴停了。左右各有一件道具，點牠怕的那一件。','小螢：不同的鬼怕不同的道具：燈籠、符紙、鐵鎚、水桶。','小螢：風向反了。拖行聲從哪邊來，就躲進那一邊。','小螢：首領怕符紙，點符紙那一側。','小螢：首領怕符紙，點符紙那一側。','小螢：土面鼓起的那邊會伸出手，躲進另一邊。','小螢：鐘響三下。第三下之後往下滑低頭，一直低著頭，直到鐘聲散去。','小螢：躲太久會被發現。視野變暗就快憋不住了，鬼過去就出來。'];
-const CAUSES={eye:'死因 #1 葉下客：落葉聚在哪一邊，你沒有躲進另一側',twins:'死因 #2 敲枝者：敲擊聲在哪一邊，你就躲進哪一邊',walkerLate:'死因 #3 靜林鬼：你沒有及時點起道具',walkerMove:'死因 #4 靜林鬼：你點錯了道具',gale:'死因 #5 逆風客：風反著吹的時候，你沒有躲進風來的那一側',hollowLate:'死因 #6 空殼：你沒有及時點起道具',hollowMove:'死因 #7 空殼：你點錯了道具',reach:'死因 #8 墳手：土面鼓起的那一邊，你沒有躲進另一側',bell:'死因 #9 守墓鐘：第三下鐘響之後，你沒有一直低著頭',breath:'死因 #10 憋氣太久：你躲得太久，被發現了'};
-const TIPS={eye:'下次：落葉聚在哪邊，就躲進另一邊，撐滿 3 秒。',twins:'下次：鳥群飛走、敲擊聲響起時，躲進敲擊的另一側。',walkerLate:'下次：左右各出現一件道具，要在牠逼近前點對的那一件（靜林鬼怕燈籠）。',walkerMove:'下次：看清楚兩件道具，牠怕的是燈籠（第一次遇到只會出現一件）。',gale:'下次：風向反了、拖行聲靠近時，躲進風來的那一側。',hollowLate:'下次：空殼怕符紙，牠逼近前點符紙那一側。',hollowMove:'下次：空殼怕符紙，不是燈籠。',reach:'下次：泥水冒泡、土面鼓起時，躲進另一邊並撐住 2 秒。',bell:'下次：鐘響三下，第三下之後往下滑低頭，低著頭直到鐘聲散去。',breath:'下次：躲藏有時間限制。鬼經過後就出來，別一直躲在裡面。'};
+const FLICK_TIPS=['小螢：腳邊的落葉聚成一堆，就躲進另一側。','小螢：鳥群突然飛走，是有東西在敲樹枝。','小螢：蟲鳴停了。左右各有一件道具，點牠怕的那一件。','小螢：不同的鬼怕不同的道具：燈籠、符紙、鐵鎚、水桶。','小螢：風向反了。拖行聲從哪邊來，就躲進那一邊。','小螢：首領怕符紙，點符紙那一側。','小螢：首領怕符紙，點符紙那一側。','小螢：土面鼓起的那邊會伸出手，躲進另一邊。','小螢：鐘響三下。第三下之後往下滑低頭，一直低著頭，直到鐘聲散去。','小螢：躲太久會被發現。視野變暗就快憋不住了，鬼過去就出來。','小螢：水冒泡了。快速連點兩下！','小螢：冰在裂開。裂縫到腳邊的那一刻，點一下。','小螢：煙在哪邊，就躲進另一邊。','小螢：那些螢火是假的。點下方的火把，沒火把就躲進另一側。','小螢：記住嚎叫的節奏，等牠停了再點。','小螢：哪邊閃光，就躲進哪邊的雪洞。'];
+const CAUSES={eye:'死因 #1 葉下客：落葉聚在哪一邊，你沒有躲進另一側',twins:'死因 #2 敲枝者：敲擊聲在哪一邊，你就躲進哪一邊',walkerLate:'死因 #3 靜林鬼：你沒有及時點起道具',walkerMove:'死因 #4 靜林鬼：你點錯了道具',gale:'死因 #5 逆風客：風反著吹的時候，你沒有躲進風來的那一側',hollowLate:'死因 #6 空殼：你沒有及時點起道具',hollowMove:'死因 #7 空殼：你點錯了道具',reach:'死因 #8 墳手：土面鼓起的那一邊，你沒有躲進另一側',bell:'死因 #9 守墓鐘：第三下鐘響之後，你沒有一直低著頭',breath:'死因 #10 憋氣太久：你躲得太久，被發現了',bog:'死因 #11 泥沼拖行者：水面冒泡時，你沒有連點兩下',crawl:'死因 #12 冰縫行者：裂縫爬到腳邊時，你沒有點一下',magma:'死因 #13 熔岩蟲：冒煙的那一邊，你沒有躲進另一側',flick:'死因 #14 螢火騙子：假螢火飄來時，你沒有點亮火把',howl:'死因 #15 雪嚎者：嚎叫的節奏，你沒有照著點對',white:'死因 #16 白幕：雪洞閃光的那一側，你沒有躲進去'};
+const TIPS={eye:'下次：落葉聚在哪邊，就躲進另一邊，撐滿 3 秒。',twins:'下次：鳥群飛走、敲擊聲響起時，躲進敲擊的另一側。',walkerLate:'下次：左右各出現一件道具，要在牠逼近前點對的那一件（靜林鬼怕燈籠）。',walkerMove:'下次：看清楚兩件道具，牠怕的是燈籠（第一次遇到只會出現一件）。',gale:'下次：風向反了、拖行聲靠近時，躲進風來的那一側。',hollowLate:'下次：空殼怕符紙，牠逼近前點符紙那一側。',hollowMove:'下次：空殼怕符紙，不是燈籠。',reach:'下次：泥水冒泡、土面鼓起時，躲進另一邊並撐住 2 秒。',bell:'下次：鐘響三下，第三下之後往下滑低頭，低著頭直到鐘聲散去。',breath:'下次：躲藏有時間限制。鬼經過後就出來，別一直躲在裡面。',bog:'下次：水面冒泡、長條陰影浮起時，連點畫面兩下。',crawl:'下次：冰面裂縫延伸、咯吱聲變急時，在裂縫到腳邊的那一刻點一下畫面。',magma:'下次：地面發紅、一側冒煙時，躲進沒冒煙的那一側。',flick:'下次：很多螢火飄過來時，點畫面下方的火把；沒有火把就躲進另一側。',howl:'下次：聽清楚嚎叫的節奏，等牠停了，照同樣的間隔點畫面。',white:'下次：畫面一片白、一側閃光時，躲進閃光的那一側（雪洞）。'};
 const SWIPE_PX=40,COVER_MS=250,TAP_MS=260,BREATH=4.5,BREATH_BACK=2;   // gestures: swipe = hide into a spot, hold = close your eyes, tap = pick up / come out
 let best=0,deaths={};try{best=+localStorage.getItem('deep-sea-peek-best')||0}catch(e){}
 try{tutDone=localStorage.getItem('deep-sea-peek-tut')==='1'}catch(e){}
@@ -41,7 +44,7 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function tx(s,x,y,sz,col,al){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign=al||'center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-24);g.fillStyle=col;g.fillText(s,x,y,W-24)}
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();if(f){g.fillStyle=f;g.fill()}if(lw){g.lineWidth=lw;g.strokeStyle=OL;g.stroke()}};
 let st='ready',prog,tilt,gapT,ev,survived,lastType,directorUsed,score,why,rec,flash,shake,tt=0,last=0,fxs=[],lampOut=0;
-let keys={l:0,r:0,cover:0,pick:0},gs=new Map(),hideWant=0,tapPick=0,dbl=0,tapT=-9,touchT=-9,lt=0,breath=1,spots={'-1':[],'1':[]},spotsAll=false,pendType=null,pendSide=1,itemTap=0,headDown=false,pendWait=0,breathOff=false,tutDone=false,gyro={on:false,tilt:0,down:false};
+let keys={l:0,r:0,cover:0,pick:0},gs=new Map(),hideWant=0,tapPick=0,dbl=0,tapT=-9,touchT=-9,lt=0,breath=1,spots={'-1':[],'1':[]},spotsAll=false,pendType=null,pendSide=1,itemTap=0,headDown=false,torchTap=0,chainN=0,lastTap=-9,tapQ=[],pendWait=0,breathOff=false,tutDone=false,gyro={on:false,tilt:0,down:false};
 let bag,drops,dropT,camp,campNext,openFx,pickHeld=0,sc=0,scrolls=0,audioOk=false,assist=false,lowScare=false,MASTER=.7,chirpT=0;
 try{scrolls=+localStorage.getItem('deep-sea-peek-scrolls')||0}catch(e){}
 try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-opts')||'{}');assist=!!o.a;lowScare=!!o.l;captions=!!o.c;if(typeof o.m==='number')AMB=clamp(o.m,0,1);if(typeof o.v==='number')MASTER=clamp(o.v,0,1)}catch(e){}
@@ -49,29 +52,30 @@ try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-opts')||'{}');assist=
 const WORLD_BASE=[1,1.15,1.3,1.45,1.6],WORLD_NAME=['森林','墓地','沼澤','雪原','火山'];
 const WORLD_RULE=['霧天視野會變窄。','雨聲會蓋住方向，聲音從哪邊來比較難分。','沼澤讓聲音變悶，要聽仔細。','雪地讓腳步沉重，躲進去比較慢。','熱浪讓畫面晃動，灰燼蓋住聲音。'];
 const RHYTHM=[0,.65,.8,.85,.9,.65,.95,1,1.05,1.2,1];   // multiplier by level number inside a ten
-const LEARN={4:'eye',8:'twins',12:'walker',16:'gale',22:'reach',23:'bell',30:'glass',83:'ash'};   // the level that teaches each ghost
+const LEARN={4:'eye',8:'twins',12:'walker',16:'gale',22:'reach',23:'bell',30:'glass',42:'bog',43:'flick',62:'howl',63:'crawl',64:'white',82:'magma',83:'ash'};   // the level that teaches each ghost
 /* ---- level table (docs: 100 關關卡表 v0.6). Worlds 2-5 reuse the four forest ghosts until their own ghosts exist. ---- */
 // kind, weather pool (indices into WX), event flags: c chest, r traveler 30%, n Nib
 const LVT=[0,['safe',[0],''],['safe',[2,0],''],['safe',[3,1],'n'],['learn',[0,1],''],['safe',[0,2],''],['mix',[3,1],''],['mix',[3,0],''],['learn',[4,1],''],['peak',[0,1],''],['boss',[3,2],''],['safe',[1,3],''],['learn',[1,0],''],['normal',[1,3],'c'],['normal',[1,4],''],['review',[0,4],''],['learn',[1,4],''],['mix',[1,4],''],['mix',[2,4],''],['peak',[1,4],''],['boss',[1,4],''],['safe',[1,3],''],['learn',[2,3],''],['learn',[1,2],'c'],['normal',[3,1],''],['safe',[2,3],''],['mix',[4,1],''],['mix',[2,4],'r'],['mix',[4,2],''],['peak',[4,3],''],['boss',[4,3],''],['safe',[4,2],''],['normal',[1,3],''],['normal',[3,2],'c'],['normal',[4,2],''],['review',[4,3],''],['mix',[2,4],''],['mix',[1,3],'r'],['mix',[1,4],''],['peak',[2,3],''],['boss',[2,4],''],['safe',[3,2],''],['learn',[3,5],''],['learn',[3,4],'c'],['normal',[2,4],''],['safe',[2,4],''],['mix',[2,3],''],['mix',[5,2],'r'],['mix',[2,3],''],['peak',[5,3],''],['boss',[5,4],''],['safe',[2,4],''],['normal',[2,5],''],['normal',[2,3],'c'],['normal',[5,3],''],['review',[2,3],''],['mix',[3,5],''],['mix',[3,2],'r'],['mix',[2,3],''],['peak',[3,2],''],['boss',[5,4],''],['safe',[1,6],''],['learn',[7,2],''],['learn',[2,7],'c'],['learn',[1,2],''],['safe',[1,6],''],['mix',[6,2],''],['mix',[6,7],'r'],['mix',[2,6],''],['peak',[7,2],''],['boss',[7,2],''],['safe',[1,6],''],['normal',[7,1],''],['normal',[2,6],'c'],['normal',[6,7],''],['review',[2,6],''],['mix',[1,2],''],['mix',[7,2],'r'],['mix',[1,7],''],['peak',[2,7],''],['boss',[2,7],''],['safe',[9,2],''],['learn',[2,8],''],['learn',[9,1],'c'],['normal',[2,1],''],['safe',[9,2],''],['mix',[2,8],''],['mix',[9,2],'r'],['mix',[1,8],''],['peak',[1,9],''],['boss',[8,2],''],['safe',[1,9],''],['normal',[1,2],''],['normal',[1,9],'c'],['normal',[1,2],''],['review',[2,1],''],['mix',[8,2],''],['mix',[1,2],'r'],['mix',[1,2],''],['peak',[1,9],''],['boss',[1,2],'']];
 const KIND_NAME={safe:'安全緩衝',review:'低壓複習',learn:'學新鬼',normal:'一般',mix:'混合',peak:'高峰',boss:'首領'};
-const WARN_FLOOR={eye:1.6,twins:1.4,walker:3.5,gale:1.6,reach:1.6,bell:2.4};   // no knob may push a clue below these
+const WARN_FLOOR={bog:1.6,flick:1.8,howl:2.2,crawl:1.8,white:1.6,magma:1.6,eye:1.6,twins:1.4,walker:3.5,gale:1.6,reach:1.6,bell:2.4};   // no knob may push a clue below these
 const GALE={warn:2.5,judge:2,toward:.5,grace:.35};            // lean toward the side the reversed wind comes from
-const GHOST_OF={eye:'eye',twins:'twins',walkerLate:'walker',walkerMove:'walker',gale:'gale',reach:'reach',bell:'bell',hollowLate:'hollow',hollowMove:'hollow'};
+const GHOST_OF={bog:'bog',crawl:'crawl',magma:'magma',flick:'flick',howl:'howl',white:'white',eye:'eye',twins:'twins',walkerLate:'walker',walkerMove:'walker',gale:'gale',reach:'reach',bell:'bell',hollowLate:'hollow',hollowMove:'hollow'};
 const mulberry=a=>()=>{a=(a+0x6D2B79F5)|0;let t=Math.imul(a^(a>>>15),1|a);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296};
 const deathsOf=ty=>Object.keys(GHOST_OF).filter(k=>GHOST_OF[k]===ty).reduce((a,k)=>a+(deaths[k]||0),0);
 function levelCfg(l,ease){
  const wi=Math.min(4,((l-1)/20)|0),inW=(l-1)%20,k=inW%10+1,T=LVT[l]||['normal',[0],''];
  const D=WORLD_BASE[wi]*RHYTHM[k]*(1+(inW>=10?.1:0)),t=clamp((D-.65)/1.45,0,1);
- const pool=['eye','twins','walker','gale','reach','bell','glass','ash'].filter(ty=>l>=+Object.keys(LEARN).find(n=>LEARN[n]===ty));
+ const pool=['eye','twins','walker','gale','reach','bell','glass','bog','flick','howl','crawl','white','magma','ash'].filter(ty=>l>=+Object.keys(LEARN).find(n=>LEARN[n]===ty));
  let kind=T[0]==='learn'&&!LEARN[l]?'normal':T[0];
- let n=kind==='safe'?0:kind==='review'?1:kind==='boss'?pool.length+1:kind==='learn'?3:Math.round(2+6*t);
+ const BP={30:['reach','bell','walker','glass'],40:['reach','bell','reach','glass'],50:['flick','bog','flick'],60:['bog','bog','flick'],70:['howl','howl','crawl','howl'],80:['white','howl','crawl','white'],90:['magma','ash','magma','ash'],100:['magma','bell','bog']};
+ let n=kind==='safe'?0:kind==='review'?1:kind==='boss'?(BP[l]?BP[l].length:pool.length+1):kind==='learn'?3:Math.round(2+6*t);
  if(ease&&n>1)n--;
  const gap=8-5*t,dur=Math.max(30,8+n*(gap+4.5)),free=kind==='normal'||kind==='mix'||kind==='peak';
  return{l,wi,k,kind,D,t,left:n,gap,rate:100/dur,wmul:1.25-.65*t,ease:!!ease,fixed:k===1||k===10,wxp:T[1],evf:T[2],
-  pool:kind==='learn'?[LEARN[l]]:pool,plan:kind==='boss'?pool.filter(t=>t!=='glass'&&t!=='ash').concat(l===30?'glass':'hollow'):null,
-  fakeP:l>=15&&free?.15*t:0,chainP:l>=25&&free?.35*t:0}}
+  pool:kind==='learn'?[LEARN[l]]:pool,plan:kind==='boss'?(BP[l]?BP[l].slice():pool.concat('hollow')):null,
+  fakeP:l>=15&&free?.15*t:0,chainP:l===40||l===100?1:l>=25&&free?.35*t:0}}
 function wpick(pool){   // weighted: the newest ghost x2, the one that killed you most x1.5
- const dm=Math.max(0,...pool.map(deathsOf)),w=pool.map((ty,i)=>(i===pool.length-1&&pool.length>1?2:1)*(dm>0&&deathsOf(ty)===dm?1.5:1));
+ const dm=Math.max(0,...pool.map(deathsOf)),wOf=ty=>Math.floor((+Object.keys(LEARN).find(n=>LEARN[n]===ty)-1)/20),w=pool.map((ty,i)=>(i===pool.length-1&&pool.length>1?2:1)*(dm>0&&deathsOf(ty)===dm?1.5:1)*(L&&wOf(ty)<L.wi?.35:1));
  let r=R()*w.reduce((a,b)=>a+b,0);for(let i=0;i<pool.length;i++){r-=w[i];if(r<=0)return pool[i]}return pool[pool.length-1]}
 const lvUI=$('peek-level'),hasLv=!!(lvUI&&lvUI.dataset&&lvUI.dataset.lv==='1');
 const dailyOn=()=>{const d=hasLv?$('peek-daily'):null;return !!(d&&d.checked)};
@@ -93,12 +97,12 @@ function applyLevel(){
  R=mulberry(seed);seedCode=seed.toString(36).toUpperCase();genSpots(mulberry(seed^977));
  rB=L.rate;gapT=L.kind==='learn'?FIRST_GAP:6;
  campNext=L.k===5?50:999;
- guarantee=noDrop>=3;dropT=L.kind==='safe'?rnd(3,5):rnd(5,8);
+ guarantee=noDrop>=3||L.l===41||L.l===42;dropT=L.kind==='safe'?rnd(3,5):rnd(5,8);
  evK=L.evf==='n'?'nib':L.evf==='c'?'chest':L.evf==='r'&&R()<.3?'rook':'';nibT=evK?rnd(8,22):0;
  wx=L.wxp[(R()*L.wxp.length)|0];if(L.wxp.length>1&&wx===lastWx)wx=L.wxp.find(x=>x!==lastWx);lastWx=wx;
  assistHid=L.ease?1:0;
  say('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'：'+KIND_NAME[L.kind]+(L.fixed?'（固定種子）':'')+'。'+WORLD_RULE[L.wi]+(L.ease?'小螢多給你 0.3 秒預警，少來一次襲擊。':''))}
-function reset(){headDown=false;itemTap=0;pendType=null;hideWant=0;tapPick=0;lt=0;breath=1;gs.clear();eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;shake1=0;sc=0;rB=BASE_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
+function reset(){torchTap=0;tapQ=[];headDown=false;itemTap=0;pendType=null;hideWant=0;tapPick=0;lt=0;breath=1;gs.clear();eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;shake1=0;sc=0;rB=BASE_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
 reset();
 /* ---- audio: stereo cues, so headphones help; silent if the browser has no Web Audio ---- */
 let ac=null;
@@ -160,10 +164,10 @@ function startEvent(){
  const gh=type==='walker'?'hush':type,boss=type==='hollow'||type==='glass';if(boss||type==='ash')type='walker';
  let fake=false;if(L&&L.forceFake){fake=true;L.forceFake=false}else if(L&&!boss&&L.fakeP&&R()<L.fakeP)fake=true;
  const eyeBase=eyeSeen<EASY_EYES&&(!L||L.kind==='learn')?EYE_EASY_WARN:EYE.warn;
- const base=type==='eye'?eyeBase:type==='twins'?TWIN.warn:type==='gale'?GALE.warn:type==='reach'?REACH.warn:type==='bell'?BELL.warn:WALK.warn;
+ const base=type==='bog'?BOG.warn:type==='flick'?FLICKG.warn:type==='howl'?HOWL.warn:type==='crawl'?CRAWL.warn:type==='white'?GALE.warn:type==='magma'?REACH.warn:type==='eye'?eyeBase:type==='twins'?TWIN.warn:type==='gale'?GALE.warn:type==='reach'?REACH.warn:type==='bell'?BELL.warn:WALK.warn;
  let warn=base;if(L&&!boss)warn=Math.max(WARN_FLOOR[type],base*L.wmul)+(L.kind==='learn'?.6:0)+(assistHid?.3:0);
  let side=pendSide;
- {const sol=sd=>type==='eye'||type==='twins'||type==='reach'?-sd:type==='gale'?sd:0,dur=({eye:3,twins:1.5,gale:2,reach:2}[type]||0)+2.2*((L&&L.kind!=='learn'&&!boss&&L.l>=8&&(type==='twins'||type==='gale'))?1:0)+1;
+ {const sol=sd=>needOf(type,sd),dur=({eye:3,twins:1.5,gale:2,reach:2,magma:2,white:2,flick:2.4}[type]||0)+2.2*(passesOf(type,boss)-1)+1;
   if(!spotsAll&&sol(1)){const okS=sd=>spots[sol(sd)].some(w=>w[0]<=lt+1&&w[1]>=lt+warn+dur);
    if(!okS(side)&&okS(-side))side=-side;
    if(!okS(side)){if(pendWait<7){pendWait+=.5;gapT=.5;return}
@@ -171,11 +175,11 @@ function startEvent(){
  pendType=null;
  if(type==='eye')eyeSeen++;
  ev={type,side,gh,phase:'warn',t:warn,warn,el:0,bad:0,rung:0,ok:false,snd:0,fake,boss};
- ev.passes=L&&L.kind!=='learn'&&!boss&&L.l>=8&&(type==='twins'||type==='gale')?2:1;ev.pass=1;
- {const need=type==='eye'||type==='twins'||type==='reach'?-ev.side:type==='gale'?ev.side:0;if(need&&spotsAll)ensureSpot(need,lt+.6,lt+warn+({eye:3,twins:1.5,gale:2,reach:2}[type]||0)+2.2*(ev.passes-1)+1)}
+ ev.passes=passesOf(type,boss);ev.pass=1;if(L&&L.l>=15&&L.kind!=='learn'&&!boss){const d0=R()*.4;ev.warn+=d0;ev.t+=d0}   // the omen sometimes comes a beat before the ghost
+ {const need=needOf(type,ev.side);if(need&&spotsAll)ensureSpot(need,lt+.6,lt+warn+({eye:3,twins:1.5,gale:2,reach:2}[type]||0)+2.2*(ev.passes-1)+1)}
  if(L&&!fake)L.left--;
  if(type==='walker'&&!fake){const keys0=Object.keys(ITEM_OF).filter(k=>k!==gh),firstTime=!seen[({hush:'hush',hollow:'hollow',glass:'glassface',ash:'ash'})[gh]];ev.items={};ev.items[side]=ITEM_OF[gh];ev.items[-side]=firstTime?null:ITEM_OF[keys0[(R()*keys0.length)|0]]}
- lastType=type;mark(gh==='glass'?'glassface':gh==='ash'?'ash':boss?'hollow':type==='eye'?'leafling':type==='twins'?'knocker':type==='walker'?'hush':type==='reach'?'reacher':type==='bell'?'bellkeeper':'gale');
+ lastType=type;mark(gh==='glass'?'glassface':gh==='ash'?'ash':boss?'hollow':type==='eye'?'leafling':type==='twins'?'knocker':type==='walker'?'hush':type==='reach'?'reacher':type==='bell'?'bellkeeper':type==='bog'?'bog':type==='flick'?'flickghost':type==='howl'?'howler':type==='crawl'?'crawler':type==='white'?'whiteout':type==='magma'?'magma':'gale');
  if(bag.torch>0&&!fake){bag.torch--;ev.warn+=.6;ev.t+=.6;ev.torch=true}}   // a torch buys 0.6s of extra warning and lights the side it comes from
 function nextGap(){
  if(L)return Math.max(2.5,L.gap+rnd(-1,1));
@@ -183,9 +187,10 @@ function nextGap(){
  if(survived>0&&survived%BREATH_EVERY===0)g+=BREATH_EXTRA;
  return Math.max(3,g)}
 function survive(){
+ if(ev.passes>1)allClear();
  survived++;if(!practice){dodgesTotal++;try{localStorage.setItem('deep-sea-peek-dodges',dodgesTotal)}catch(e){}}
  score+=100;lastType=ev.type;ev=null;gapT=nextGap();
- if(L&&L.chainP&&L.left>0&&R()<L.chainP)gapT=1.4;   // chained attack: the next one follows right away (never under 1.2s)
+ if(L&&L.chainP&&L.left>0){const pc=chainN===0?L.chainP:(L.l>=60&&chainN===1?L.chainP*.5:0);if(R()<pc){gapT=1.4;chainN++}else chainN=0}else chainN=0;   // chained attack: the next one follows right away (never under 1.2s)
 
  if(survived===MILE_EVENTS)pay(MILE_REWARD,'躲過 '+MILE_EVENTS+' 次襲擊！')}
 function inputs(){
@@ -199,8 +204,9 @@ function ensureSpot(sd,a,b){if(spots[sd].some(w=>w[0]<=a+.2&&w[1]>=b))return;spo
 function swipe(d){if(hideWant===-d){hideWant=0;return}if(!spotsAll&&!spotAt(d))return;hideWant=d}
 function itemsUp(){return !!(ev&&ev.type==='walker'&&ev.items&&(ev.phase==='judge'||(ev.phase==='warn'&&ev.t<=ITEM_SHOW)))}
 function setHead(v){headDown=!!v&&!!ev&&ev.type==='bell'&&!ev.fake}
-function tap(x){const n=performance.now();if(headDown){headDown=false;return}if(itemsUp()&&x!=null){itemTap=x<CX?-1:1;return}if(canPick()){tapPick=1;return}if(hideWant){hideWant=0;return}if(n-tapT<350){dbl=1;tapT=-9}else tapT=n}
-function passEnd(){if(ev.pass<ev.passes){ev.pass++;ev.phase='gap';ev.t=1;ev.ok=false;ev.bad=0;ev.snd=0;}else survive()}
+function tap(x,y){const n=performance.now();lastTap=tt;tapQ.push(tt);if(tapQ.length>8)tapQ.shift();if(n-tapT<350&&tapT>=0){dbl=1;tapT=-9}else tapT=n;if(ev&&ev.type==='flick'&&ev.phase==='judge'&&bag.torch>0&&(y==null?false:y>320)){torchTap=1;return}if(headDown){headDown=false;return}if(itemsUp()&&x!=null){itemTap=x<CX?-1:1;return}if(canPick()){tapPick=1;return}if(hideWant){hideWant=0;return}}
+function passEnd(){if(ev.pass<ev.passes){ev.pass++;ev.phase='gap';ev.t=1;ev.ok=false;ev.bad=0;ev.snd=0}else if(L&&L.l>=41&&!ev.fakeBack&&R()<.25){ev.fakeBack=true;ev.phase='gap';ev.t=1.6;ev.snd=0}else survive()}
+function allClear(){[0,110,220,330].forEach(d=>later(()=>tone(3100+Math.random()*500,.05,.03,0,'sine'),d))}   // after a multi-pass attack the crickets burst back: it is really over
 function update(dt){
  tt+=dt;
  if(openFx){openFx.t-=dt;if(openFx.t<=0)openFx=null}
@@ -226,7 +232,7 @@ function update(dt){
  ev.t-=dt;ev.el=(ev.el||0)+dt;
  if(ev.fake&&ev.t<=0){ev=null;gapT=nextGap();return}   // a false cue: it fades without an attack
  const away=tilt*-ev.side;   // positive when leaning away from the spirit's side
- if(ev.phase==='gap'){ev.snd-=dt;if(ev.snd<=0){ev.snd=.5;tone(70,.25,.03,-ev.side*.6,'sine')}if(ev.t<=0){ev.phase='warn';ev.t=.8;ev.warn=.8;ev.el=0;tone(ev.type==='gale'?260:150,.2,.08,ev.side*.8,'square',90)}}
+ if(ev.phase==='gap'){ev.snd-=dt;if(ev.snd<=0){ev.snd=.5;tone(70,.25,.03,-ev.side*.6,'sine')}if(ev.t<=0){if(ev.fakeBack){survive();return}ev.phase='warn';ev.t=.8;ev.warn=.8;ev.el=0;tone(ev.type==='gale'?260:150,.2,.08,ev.side*.8,'square',90)}}
  else if(ev.type==='eye'){
   if(ev.phase==='warn'){ev.snd-=dt;if(ev.snd<=0){ev.snd=.5;tone(90+Math.random()*30,.12,.05,ev.side*.7,'sawtooth')}if(ev.t<=0){ev.phase='judge';ev.t=EYE.judge;tone(520,.3,.07,ev.side*.7,'square',380)}}
   else{if(away<EYE.away)ev.bad+=dt;if(ev.bad>EYE.grace){end('dead','eye');return}if(ev.t<=0)survive()}}
@@ -239,6 +245,25 @@ function update(dt){
  else if(ev.type==='reach'){
   if(ev.phase==='warn'){ev.snd-=dt;if(ev.snd<=0){ev.snd=.45;tone(55+Math.random()*25,.16,.07,ev.side*.7,'sine',40)}if(ev.t<=0){ev.phase='judge';ev.t=REACH.judge;tone(210,.4,.08,ev.side*.7,'square',90)}}
   else{if(away<REACH.away)ev.bad+=dt;if(ev.bad>REACH.grace){end('dead','reach');return}if(ev.t<=0)survive()}}
+ else if(ev.type==='magma'){      // Magma: the ground glows red and one side smokes; hide on the other side
+  if(ev.phase==='warn'){ev.snd-=dt;if(ev.snd<=0){ev.snd=.4;tone(60+Math.random()*30,.18,.08,ev.side*.6,'sawtooth',45)}if(ev.t<=0){ev.phase='judge';ev.t=REACH.judge;tone(180,.45,.09,ev.side*.6,'square',70)}}
+  else{if(away<REACH.away)ev.bad+=dt;if(ev.bad>REACH.grace){end('dead','magma');return}if(ev.t<=0)passEnd()}}
+ else if(ev.type==='white'){      // Whiteout: everything goes white, one side flashes: the snow cave is on that side
+  if(ev.phase==='warn'){ev.snd-=dt;if(ev.snd<=0){ev.snd=.5;tone(300+Math.random()*80,.4,.05,ev.side*.8,'sawtooth',150)}if(ev.t<=0){ev.phase='judge';ev.t=GALE.judge;tone(120,.5,.09,ev.side,'square',70)}}
+  else{if(tilt*ev.side<GALE.toward)ev.bad+=dt;if(ev.bad>GALE.grace){end('dead','white');return}if(ev.t<=0)passEnd()}}
+ else if(ev.type==='bog'){        // Bog: bubbles, a long shadow under the water, then it grabs: double-tap to break free
+  if(ev.phase==='warn'){ev.snd-=dt;if(ev.snd<=0){ev.snd=.28;tone(140+Math.random()*60,.08,.07,0,'sine',70)}if(ev.t<=0){ev.phase='judge';ev.t=BOG.judge;dbl=0;tone(70,.5,.12,0,'sawtooth',40)}}
+  else{if(dbl){dbl=0;survive();return}if(ev.t<=0){end('dead','bog');return}}}
+ else if(ev.type==='crawl'){      // Crawler: a crack runs across the ice toward your feet; tap once as it arrives
+  if(ev.phase==='warn'){ev.snd-=dt;if(ev.snd<=0){ev.snd=Math.max(.12,.5*ev.t/CRAWL.warn);tone(900+Math.random()*500,.03,.06,0,'square')}if(ev.t<=0){ev.phase='judge';ev.t=CRAWL.judge;ev.js=tt;tone(220,.3,.1,0,'square',90)}}
+  else{if(lastTap>ev.js){survive();return}if(ev.t<=0){end('dead','crawl');return}}}
+ else if(ev.type==='howl'){       // Howler: a rhythm howled twice or thrice; repeat the same gaps with taps
+  if(!ev.pat){ev.pat=R()<.5?[0,.5+R()*.2]:[0,.45,.45+.5+R()*.4];ev.pi=0;ev.pel=0}
+  if(ev.phase==='warn'){ev.pel+=dt;while(ev.pi<ev.pat.length&&ev.pel>=ev.pat[ev.pi]+.4){tone(200,.28,.1,0,'sawtooth',120);ev.pi++}if(ev.t<=0&&ev.pi>=ev.pat.length){ev.phase='judge';ev.t=HOWL.judge;ev.js=tt;tapQ=[]}else if(ev.t<=0)ev.t=.05}
+  else{const q=tapQ.filter(x=>x>=ev.js);if(q.length>=ev.pat.length){let ok=true;for(let i=1;i<ev.pat.length;i++)if(Math.abs((q[i]-q[i-1])-(ev.pat[i]-ev.pat[i-1]))>.25)ok=false;if(ok){survive();return}end('dead','howl');return}if(ev.t<=0){end('dead','howl');return}}}
+ else if(ev.type==='flick'){      // Flick: a swarm of false lights; light your torch (bottom of the screen) or hide on the other side
+  if(ev.phase==='warn'){ev.snd-=dt;if(ev.snd<=0){ev.snd=.3;tone(1200+Math.random()*900,.06,.04,rnd(-.8,.8),'sine')}if(ev.t<=0){ev.phase='judge';ev.t=FLICKG.judge;tone(400,.4,.08,0,'triangle',900)}}
+  else{if(torchTap&&bag.torch>0){torchTap=0;bag.torch--;survive();return}if(away<REACH.away)ev.bad+=dt;if(ev.bad>REACH.grace&&!(bag.torch>0&&ev.t>.6)){end('dead','flick');return}if(ev.t<=0){if(away>=REACH.away||ev.ok){survive();return}end('dead','flick');return}}}
  else if(ev.type==='bell'){
   if(ev.phase==='warn'){
    if(ev.rung<2&&ev.t<=1.8-.9*ev.rung){ev.rung++;ev.ring=tt;tone(330,.9,.1,ev.side*.5,'sine');tone(662,.7,.04,ev.side*.5,'sine')}
@@ -270,7 +295,7 @@ function collect(d){d.z=-1;giveItem(d.k);say('撿到'+ITEM_NAME[d.k]+'：'+ITEM_
 function updateDrops(dt,covered,pk){
  if(!covered){
   if(!ev){dropT-=dt;if(dropT<=0){if(drops.length<2)spawnDrop();dropT=rnd(DROP_EVERY[0],DROP_EVERY[1])}}
-  if(guarantee&&!dropped&&prog>=8&&!ev&&drops.length<2)spawnDrop(noDrop>=6?'charm':R()<.5?'torch':'scroll');   // pity: three levels without a drop guarantees one
+  if(guarantee&&!dropped&&prog>=8&&!ev&&drops.length<2)spawnDrop(L&&L.l>=41&&L.l<=43&&bag.torch<1?'torch':noDrop>=6?'charm':R()<.5?'torch':'scroll');   // pity: three levels without a drop guarantees one
   if(nibT>0){nibT-=dt;if(nibT<=0){drops.push({k:evK||'nib',side:R()<.5?-1:1,z:1});mark(evK||'nib')}}
   const sp=.11*dt;drops.forEach(d=>d.z-=sp)}
  if(pk){let b=null;drops.forEach(d=>{if(d.z>=0&&d.z<PICK_AT&&(!b||d.z<b.z))b=d});if(b)collect(b)}
@@ -342,6 +367,28 @@ function drawSpirits(){
   g.save();g.fillStyle='rgba(40,30,22,'+(.25+.45*open)+')';g.beginPath();g.ellipse(bx,by+4,30+50*open,6+9*open,0,0,7);g.fill();
   for(let i=0;i<4;i++){const ph2=(tt*1.3+i*.37)%1;g.strokeStyle='rgba(180,170,140,'+(.7*(1-ph2)*open)+')';g.beginPath();g.arc(bx+(i-1.5)*18,by-ph2*26,2+ph2*4,0,7);g.stroke()}g.restore();
   if(im)sprite(im,bx+(judge?Math.sin(tt*30)*3:0),by,(judge?290:180)*(.5+.5*open),judge?.95:Math.pow(open,1.6)*.75);else blob(bx,by-40,30,open*.7,'#8a7a62')}
+ else if(ev.type==='magma'){     // Magma: the ground glows red, one side smokes, something burns up out of the smoke
+  const im=art('ghost-magma');g.save();g.fillStyle='rgba(255,70,20,'+(.12+.2*open)+')';g.fillRect(0,300,W,150);
+  for(let i=0;i<6;i++){const p2=(tt*.6+i*.17)%1;g.fillStyle='rgba(60,55,52,'+(.5*(1-p2)*open)+')';g.beginPath();g.arc(sx+(i-2.5)*18,by-p2*160,14+p2*34,0,7);g.fill()}g.restore();
+  if(im)sprite(im,sx+(judge?Math.sin(tt*30)*3:0),by,(judge?300:190)*(.5+.5*open),judge?.95:Math.pow(open,1.6)*.75);else blob(sx,by-40,34,open*.7,'#a33')}
+ else if(ev.type==='white'){     // Whiteout: the world goes white, one side flashes with the mouth of a snow cave
+  const im=art('ghost-whiteout');g.save();g.fillStyle='rgba(240,246,255,'+(.55*open)+')';g.fillRect(0,0,W,H);
+  const gl=g.createRadialGradient(sx,330,10,sx,330,150);gl.addColorStop(0,'rgba(255,255,255,'+(.4+.5*Math.abs(Math.sin(tt*6)))+')');gl.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gl;g.fillRect(sx-160,170,320,300);g.restore();
+  if(im&&judge)sprite(im,CX-ev.side*60,by,300,.6)}
+ else if(ev.type==='bog'){       // Bog: bubbles, a long shadow under the water, then it rises and grabs
+  const im=art('ghost-bog'),bx=CX;g.save();g.fillStyle='rgba(16,30,26,'+(.3+.4*open)+')';g.beginPath();g.ellipse(bx,by+6,50+90*open,8+14*open,0,0,7);g.fill();
+  for(let i=0;i<5;i++){const p2=(tt*1.1+i*.23)%1;g.strokeStyle='rgba(140,200,170,'+(.6*(1-p2)*open)+')';g.beginPath();g.arc(bx+(i-2)*34,by-p2*30,2+p2*5,0,7);g.stroke()}g.restore();
+  if(im)sprite(im,bx,by,(judge?340:200)*(.5+.5*open),judge?.95:Math.pow(open,1.6)*.7);else blob(bx,by-40,40,open*.7,'#1d2d28')}
+ else if(ev.type==='crawl'){     // Crawler: a crack runs across the ice toward your feet
+  const im=art('ghost-crawler'),pr=judge?1:open;g.save();g.strokeStyle='rgba(200,230,255,'+(.4+.5*pr)+')';g.lineWidth=2;g.beginPath();g.moveTo(CX+ev.side*220,250);let x0=CX+ev.side*220,y0=250;for(let i=1;i<=8;i++){const f=i/8;if(f>pr)break;x0=CX+ev.side*220*(1-f)+Math.sin(i*3.1)*22;y0=250+f*140;g.lineTo(x0,y0)}g.stroke();g.restore();
+  if(im&&judge)sprite(im,CX,by+10,300,.9)}
+ else if(ev.type==='howl'){      // Howler: a far shape in the blizzard; rings pulse with each howl
+  const im=art('ghost-howler');for(let i=0;i<(ev.pi||0);i++){const age=Math.max(0,(ev.pel||0)-(ev.pat[i]+.4));if(age<.8){g.save();g.strokeStyle='rgba(220,235,255,'+(.5*(1-age/.8))+')';g.lineWidth=3;g.beginPath();g.arc(CX,230,40+age*260,0,7);g.stroke();g.restore()}}
+  if(im)sprite(im,CX,by-30,judge?280:(120+130*open),judge?.8:Math.pow(open,1.4)*.6)}
+ else if(ev.type==='flick'){     // Flick: a swarm of false lights drifts toward you; the real answer is a torch
+  const im=art('guide-flick'),ti=art('item-torch');g.save();for(let i=0;i<14;i++){const p2=(tt*.35+i*.071)%1,z=judge?1:open,x=CX+Math.sin(i*2.3+tt)*(60+300*p2*z),y=240+p2*z*150+Math.sin(tt*2+i)*8;g.fillStyle='rgba(120,255,200,'+(.7*(1-p2*.4)*Math.max(.2,z))+')';g.shadowColor='#7fffd4';g.shadowBlur=12;g.beginPath();g.arc(x,y,3+p2*7*z,0,7);g.fill()}g.restore();
+  if(im&&judge)sprite(im,CX,by-20,220,.85);
+  if(ti&&bag.torch>0&&(judge||ev.t<1.2)){g.save();g.shadowColor='#ffb347';g.shadowBlur=20;sprite(ti,CX,445,100,.95);g.restore()}}
  else if(ev.type==='bell'){      // Bellkeeper: a bell tolls three times in the dark, then it stands over you
   const im=art('ghost-bellkeeper'),since=tt-(ev.ring||-9),flashA=clamp(1-since/.6,0,1);
   if(flashA>0){g.save();g.fillStyle='rgba(255,230,160,'+(.12*flashA)+')';g.fillRect(0,0,W,H);g.restore()}
@@ -402,7 +449,7 @@ function drawHeadphone(){
  txp('戴上耳機更容易躲',CX,HP.y+h*.40,26,'#3a2812');
  txd('建議開啟聲音遊玩；戴耳機能更容易聽出森林裡的方向與細節。按喇叭試聽左右各一聲，再按勾勾。',CX,HP.y+h*.50,16,'#3a2812',HP.w*.58,4);
  for(const k of ['spk','ok']){const r=hpRect(k);if(!im){RR(r[0],r[1],r[2],r[3],8,'#5a4228',2);tx(k==='spk'?'聲音':'確認',r[0]+r[2]/2,r[1]+r[3]*.7,16,'#f1d9a6')}}}
-const CAPS={eye:['（左邊的落葉沙沙作響）','（右邊的落葉沙沙作響）'],twins:['（左邊傳來敲擊聲）','（右邊傳來敲擊聲）'],walker:['（蟲鳴停了……左右出現了道具）','（蟲鳴停了……左右出現了道具）'],gale:['（風向反了，拖行聲從左邊靠近）','（風向反了，拖行聲從右邊靠近）'],reach:['（左邊的泥水在冒泡）','（右邊的泥水在冒泡）'],bell:['（遠處傳來鐘聲）','（遠處傳來鐘聲）']};
+const CAPS={eye:['（左邊的落葉沙沙作響）','（右邊的落葉沙沙作響）'],twins:['（左邊傳來敲擊聲）','（右邊傳來敲擊聲）'],walker:['（蟲鳴停了……左右出現了道具）','（蟲鳴停了……左右出現了道具）'],gale:['（風向反了，拖行聲從左邊靠近）','（風向反了，拖行聲從右邊靠近）'],reach:['（左邊的泥水在冒泡）','（右邊的泥水在冒泡）'],bell:['（遠處傳來鐘聲）','（遠處傳來鐘聲）'],bog:['（水面冒著泡）','（水面冒著泡）'],crawl:['（冰面咯吱作響）','（冰面咯吱作響）'],magma:['（左邊冒著煙）','（右邊冒著煙）'],white:['（左邊閃著白光）','（右邊閃著白光）'],flick:['（螢火飄過來了）','（螢火飄過來了）'],howl:['（遠處傳來嚎叫）','（遠處傳來嚎叫）']};
 const capText=d=>(CAPS[d.type]||['',''])[d.side<0?0:1];
 function hud(I,lamp){
  const bn=art('ui-banner'),bw=420,bh=82,title=(L?'第 '+lvl+' 關':(practice?'練習　':'自由跑　')+Math.floor(prog)+'%'),bar=!L;
@@ -452,9 +499,15 @@ function playCue(d){
   :d.type==='reach'?[[0,55,.16,.07,s*.7,'sine',40],[.45,55,.16,.07,s*.7,'sine',40],[.9,55,.16,.07,s*.7,'sine',40],[1.4,210,.4,.08,s*.7,'square',90]]
   :d.type==='bell'?[[0,330,.9,.1,s*.5,'sine'],[.9,330,.9,.1,s*.5,'sine'],[1.8,330,1.1,.12,s*.5,'sine']]
   :d.type==='gale'?[[0,260,.35,.06,s*.8,'sawtooth',120],[.5,260,.35,.06,s*.8,'sawtooth',120],[1,260,.35,.06,s*.8,'sawtooth',120],[1.6,110,.5,.09,s,'square',70]]
+  :d.type==='bog'?[[0,140,.08,.07,0,'sine',70],[.28,160,.08,.07,0,'sine',70],[.56,150,.08,.07,0,'sine',70],[1,70,.5,.12,0,'sawtooth',40]]
+  :d.type==='crawl'?[[0,900,.03,.06,0,'square'],[.4,1100,.03,.06,0,'square'],[.7,1000,.03,.06,0,'square'],[.9,1200,.03,.06,0,'square'],[1.1,220,.3,.1,0,'square',90]]
+  :d.type==='magma'?[[0,60,.18,.08,s*.6,'sawtooth',45],[.4,60,.18,.08,s*.6,'sawtooth',45],[.8,60,.18,.08,s*.6,'sawtooth',45],[1.3,180,.45,.09,s*.6,'square',70]]
+  :d.type==='white'?[[0,300,.4,.05,s*.8,'sawtooth',150],[.5,300,.4,.05,s*.8,'sawtooth',150],[1.1,120,.5,.09,s,'square',70]]
+  :d.type==='flick'?[[0,1200,.06,.04,-.5,'sine'],[.3,1500,.06,.04,.5,'sine'],[.6,1300,.06,.04,0,'sine'],[1,400,.4,.08,0,'triangle',900]]
+  :d.type==='howl'?[[0,200,.28,.1,0,'sawtooth',120],[.5,200,.28,.1,0,'sawtooth',120],[1.05,200,.28,.1,0,'sawtooth',120]]
   :[[0,70,.08,.1,0,'sine'],[.6,70,.08,.1,0,'sine'],[1.2,70,.08,.1,0,'sine']];
  seq.forEach(q=>later(()=>tone(q[1],q[2],q[3],q[4],q[5],q[6]),q[0]*1000));
- say('再聽一次：'+capText(d)+(d.type==='eye'?'　然後紅光射出。':d.type==='twins'?'　之後要躲進另一側。':d.type==='gale'?'　要躲進風來的那一側。':d.type==='reach'?'　要躲進另一側。':d.type==='bell'?'　第三下之後要低頭，直到鐘聲散去。':'　然後燈滅。'))}
+ say('再聽一次：'+capText(d)+(d.type==='eye'?'　然後紅光射出。':d.type==='twins'?'　之後要躲進另一側。':d.type==='gale'?'　要躲進風來的那一側。':d.type==='reach'?'　要躲進另一側。':d.type==='bell'?'　第三下之後要低頭，直到鐘聲散去。':d.type==='bog'?'　要連點兩下。':d.type==='crawl'?'　要在裂縫到腳邊時點一下。':d.type==='magma'?'　要躲進沒冒煙的一側。':d.type==='white'?'　要躲進閃光的一側。':d.type==='flick'?'　要點亮火把，或躲進另一側。':d.type==='howl'?'　要照牠的節奏點。':'　要點對牠怕的道具。'))}
 const shareText=()=>'《別看 Don\'t Peek》'+(L?'第 '+lvl+' 關':'自由跑')+(seedCode?'・種子 '+seedCode:'')+'：躲過 '+survived+' 次襲擊，'+(st==='won'?'衝出去了！':(CAUSES[why]||'').replace(/^死因 #\d+ /,'')+'。');
 function share(){
  const t=shareText();
@@ -471,8 +524,8 @@ function shareCard(t){
  wrapLines(t.replace(/^《[^》]*》/,''),34,720).forEach((ln,i)=>x.fillText(ln,60,200+i*48));
  x.fillStyle='rgba(241,217,166,.7)';x.font='600 24px "Noto Sans TC",system-ui,sans-serif';x.fillText('yachun0728.github.io 的深海遊戲廳',60,590);
  cv.toBlob(b=>{if(!b)return;const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='dont-peek-'+(seedCode||'free')+'.png';a.click()})}
-const KILLER={eye:'ghost-leafling',twins:'ghost-thorn',walkerLate:'ghost-wraith',walkerMove:'ghost-wraith',gale:'ghost-gale',hollowLate:'ghost-hollow',hollowMove:'ghost-hollow',reach:'ghost-reacher',bell:'ghost-bellkeeper'};
-const RULE_FULL={eye:'落葉堆在哪一邊，那邊就有東西。紅光亮起時，躲進另一側並撐滿 3 秒。',twins:'鳥群飛走後，敲擊聲從一邊傳來。躲進敲擊的另一側；躲在敲擊那一側一定會死。',walkerLate:'蟲鳴停了，左右會各出現一件道具。靜林鬼怕燈籠：點燈籠那一側。',walkerMove:'點錯道具打不退牠。這類鬼各怕一件道具，要記住。',gale:'風向反了，拖行聲從一邊靠近。躲進風來的那一側，頂住 2 秒。',hollowLate:'首領空殼出現時左右各有一件道具，點符紙那一側。',hollowMove:'點錯道具打不退牠。空殼怕符紙。',reach:'土面鼓起、泥水冒泡的那一邊會伸出手。躲進另一側，撐住 2 秒。',bell:'鐘響三下。第三下之後要往下滑低頭，一直低著頭，直到鐘聲散去才抬頭。',breath:'躲藏處不能躲太久。視野邊緣變暗就是快憋不住了，鬼過去之後就出來。'};
+const KILLER={bog:'ghost-bog',crawl:'ghost-crawler',magma:'ghost-magma',flick:'guide-flick',howl:'ghost-howler',white:'ghost-whiteout',eye:'ghost-leafling',twins:'ghost-thorn',walkerLate:'ghost-wraith',walkerMove:'ghost-wraith',gale:'ghost-gale',hollowLate:'ghost-hollow',hollowMove:'ghost-hollow',reach:'ghost-reacher',bell:'ghost-bellkeeper'};
+const RULE_FULL={eye:'落葉堆在哪一邊，那邊就有東西。紅光亮起時，躲進另一側並撐滿 3 秒。',twins:'鳥群飛走後，敲擊聲從一邊傳來。躲進敲擊的另一側；躲在敲擊那一側一定會死。',walkerLate:'蟲鳴停了，左右會各出現一件道具。靜林鬼怕燈籠：點燈籠那一側。',walkerMove:'點錯道具打不退牠。這類鬼各怕一件道具，要記住。',gale:'風向反了，拖行聲從一邊靠近。躲進風來的那一側，頂住 2 秒。',hollowLate:'首領空殼出現時左右各有一件道具，點符紙那一側。',hollowMove:'點錯道具打不退牠。空殼怕符紙。',reach:'土面鼓起、泥水冒泡的那一邊會伸出手。躲進另一側，撐住 2 秒。',bell:'鐘響三下。第三下之後要往下滑低頭，一直低著頭，直到鐘聲散去才抬頭。',breath:'躲藏處不能躲太久。視野邊緣變暗就是快憋不住了，鬼過去之後就出來。',bog:'水面冒泡，一道長條陰影浮上來。牠抓住你之前，連點畫面兩下掙脫。',crawl:'冰面裂縫一路延伸到腳邊。咯吱聲最急的那一刻，點一下畫面。',magma:'地面發紅，哪一邊冒煙，熔岩蟲就從那邊鑽出。躲進另一側，撐住 2 秒；牠可能折返。',flick:'成群的假螢火往你飄來。點畫面下方的火把，牠們就散了；沒有火把，躲進另一側。',howl:'風聲裡夾著 2 到 3 聲嚎叫。等牠停下，照同樣的間隔點畫面。',white:'暴雪蓋住畫面，哪一邊閃光，哪裡就是雪洞。躲進閃光那一側，撐住 2 秒；牠可能折返。'};
 function drawDeath(){
  g.fillStyle='rgba(18,13,10,.8)';g.fillRect(0,0,W,H);
  const bn=art('ui-banner'),cd=art('ui-card'),n=deaths[why]||1;
@@ -488,7 +541,7 @@ function drawDeath(){
  tx('躲過 '+survived+' 次襲擊',CX,ky+66,16,'#f1d9a6');
  if(lostAll)txd('整輪重來：回到第 1 關',CX,ky+96,15,'#ffb347',200,2);
  else if(L&&L.ease)txd('小螢多給你 0.3 秒預警，少來一次襲擊。',CX,ky+96,13,'#cfe8ff',200,3);
- txd(n<=1?RULE_FULL[why]||'':FLICK_TIPS[['eye','twins','walkerLate','walkerMove','gale','hollowLate','hollowMove','reach','bell','breath'].indexOf(why)]||'',CX,ky+130,13,'#cfe8ff',210,5);
+ txd(n<=1?RULE_FULL[why]||'':FLICK_TIPS[['eye','twins','walkerLate','walkerMove','gale','hollowLate','hollowMove','reach','bell','breath','bog','crawl','magma','flick','howl','white'].indexOf(why)]||'',CX,ky+130,13,'#cfe8ff',210,5);
  if(rec)tx('新紀錄！',CX,ky+190,16,'#ffd98a');
  if(n>=3)tx('多次失敗：可以開輔助標記，或到圖鑑聽一次、練習。',CX,ky+kh+20,14,'#ffd98a');
  const row=[['立刻重試','retry'],['再聽一次','listen'],['看鬼圖鑑','dex'],['稍後再學','later']];if(n>=3&&!assist)row.splice(3,0,['開輔助標記','assist']);
@@ -513,6 +566,12 @@ const DEX=[
  {id:'bellkeeper',ghost:1,img:'ghost-bellkeeper',name:'守墓鐘 Bellkeeper',type:'bell',clue:'遠處的鐘敲了三下。',judge:'第三下就是信號。',act:'第三下之後往下滑低頭，一直低著頭直到鐘聲散去。'},
  {id:'glassface',ghost:1,img:'ghost-glassface',name:'玻璃臉 Glassface',type:'glass',clue:'畫面起霧，一張臉貼近。',judge:'牠怕鐵鎚。',act:'點鐵鎚所在的那一側。'},
  {id:'ash',ghost:1,img:'ghost-ash',name:'灰燼鴉群 Ash',type:'ash',clue:'天空變暗，翅膀聲。',judge:'牠怕水桶。',act:'點水桶所在的那一側。'},
+ {id:'bog',ghost:1,img:'ghost-bog',name:'泥沼拖行者 Bog',type:'bog',clue:'水面冒泡，一道長條陰影浮上來。',judge:'牠抓住你之前。',act:'連點畫面兩下。'},
+ {id:'flickghost',ghost:1,img:'guide-flick',name:'螢火騙子 Flick',type:'flick',clue:'成群的螢火往你飄來，但那些光是假的。',judge:'真正的光在你手上。',act:'點畫面下方的火把；沒有火把就躲進另一側。'},
+ {id:'howler',ghost:1,img:'ghost-howler',name:'雪嚎者 Howler',type:'howl',clue:'風聲中夾著 2 到 3 聲有節奏的嚎叫。',judge:'牠在教你一段節奏。',act:'等牠停了，照同樣的間隔點畫面。'},
+ {id:'crawler',ghost:1,img:'ghost-crawler',name:'冰縫行者 Crawler',type:'crawl',clue:'冰面裂縫延伸，咯吱聲越來越急。',judge:'裂縫到腳邊的那一刻。',act:'點一下畫面。'},
+ {id:'whiteout',ghost:1,img:'ghost-whiteout',name:'白幕 Whiteout',type:'white',clue:'畫面一片白，一側閃光。',judge:'閃光的地方是雪洞。',act:'躲進閃光那一側，撐住 2 秒；牠可能折返。'},
+ {id:'magma',ghost:1,img:'ghost-magma',name:'熔岩蟲 Magma',type:'magma',clue:'地面發紅，一側冒煙。',judge:'冒煙的地方牠會鑽出來。',act:'躲進沒冒煙的那一側；牠可能折返。'},
  {id:'flick',img:'guide-flick',name:'小螢 Flick',clue:'友方的螢火蟲，會在死亡後告訴你剛才漏掉了什麼。',judge:'牠不是鬼。',act:'多看牠的提示。'},
  {id:'rook',img:'npc-rook',name:'旅人 Rook',clue:'在營火旁出現。',judge:'牠不追你。',act:'營火邊三選一，帶走一樣東西。'},
  {id:'nib',img:'',name:'Nib',clue:'偶爾跑過路邊的無害小傢伙，出現率約五十分之一。',judge:'牠不會傷害你。',act:'靠近時點一下撿起，牠會留點小禮物。'},
@@ -643,14 +702,14 @@ c.addEventListener('pointerdown',e=>{
  if(camp){campTap(e);return}
  const p=cxy(e);gs.set(e.pointerId,{x:p[0],y:p[1],t:performance.now(),sw:false});touchT=tt});
 c.addEventListener('pointermove',e=>{const q=gs.get(e.pointerId);if(!q||q.sw||st!=='run'||camp)return;const p=cxy(e),dx=p[0]-q.x;touchT=tt;const dy=p[1]-q.y;if(Math.abs(dx)>SWIPE_PX&&Math.abs(dx)>Math.abs(dy)){q.sw=true;swipe(dx<0?-1:1)}else if(Math.abs(dy)>SWIPE_PX&&Math.abs(dy)>Math.abs(dx)){q.sw=true;setHead(dy>0)}});
-const upPtr=e=>{const q=gs.get(e.pointerId);gs.delete(e.pointerId);if(q&&!q.sw&&st==='run'&&!camp&&performance.now()-q.t<TAP_MS){touchT=tt;tap(q.x)}};
+const upPtr=e=>{const q=gs.get(e.pointerId);gs.delete(e.pointerId);if(q&&!q.sw&&st==='run'&&!camp&&performance.now()-q.t<TAP_MS){touchT=tt;tap(q.x,q.y)}};
 c.addEventListener('pointerup',upPtr);c.addEventListener('pointercancel',upPtr);c.addEventListener('lostpointercapture',upPtr);
 c.addEventListener('contextmenu',e=>e.preventDefault());
-const KEYMAP={a:'l',A:'l',ArrowLeft:'l',d:'r',D:'r',ArrowRight:'r',' ':'cover',f:'pick',F:'pick',s:'down',S:'down',ArrowDown:'down',ArrowUp:'up'};
+const KEYMAP={t:'torch',T:'torch',a:'l',A:'l',ArrowLeft:'l',d:'r',D:'r',ArrowRight:'r',' ':'cover',f:'pick',F:'pick',s:'down',S:'down',ArrowDown:'down',ArrowUp:'up'};
 addEventListener('keydown',e=>{
  if(!shown()||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;
  if(camp&&camp.state==='pick'&&'123'.includes(e.key)&&e.key){camp.choice=+e.key-1;e.preventDefault();return}
- const k=KEYMAP[e.key];if(!k)return;e.preventDefault();touchT=tt;if(k==='down'){setHead(true);return}if(k==='up'){headDown=false;return}keys[k]=1;if((k==='l'||k==='r')&&itemsUp())itemTap=k==='l'?-1:1});
+ const k=KEYMAP[e.key];if(!k)return;e.preventDefault();touchT=tt;if(k==='torch'){if(ev&&ev.type==='flick'&&ev.phase==='judge'&&bag.torch>0)torchTap=1;return}if(k==='down'){setHead(true);return}if(k==='up'){headDown=false;return}keys[k]=1;if((k==='l'||k==='r')&&itemsUp())itemTap=k==='l'?-1:1});
 addEventListener('keyup',e=>{const k=KEYMAP[e.key];if(k)keys[k]=0});
 function clearInput(){headDown=false;keys={l:0,r:0,cover:0,pick:0};gs.clear();hideWant=0}
 addEventListener('blur',()=>{last=performance.now();clearInput()});
