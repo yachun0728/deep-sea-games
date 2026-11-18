@@ -5,9 +5,9 @@
 ## 概覽
 
 - 網址：`#eat-smaller`　分類：益智策略　狀態：顯示中
-- 大廳卡片：「吃掉比你小的數字、躲開比你大的，剛好變成目標數字就過關。」｜每局 10 點 · 8 關
+- 大廳卡片：「吃掉比你小的數字、躲開比你大的，剛好變成目標數字就過關。」｜免費遊玩 · 8 關
 - 追蹤名稱（GA4 `game_name`）：數字吞噬，`game_id` 為 `eat-smaller`
-- 檔案：`games/eat-smaller/card.html`、`games/eat-smaller/game.js`、`games/eat-smaller/icon.svg`、`games/eat-smaller/original.html`、`games/eat-smaller/style.css`、`games/eat-smaller/view.html`；`game.js` 共 62 行、5.4 KB
+- 檔案：`games/eat-smaller/card.html`、`games/eat-smaller/game.js`、`games/eat-smaller/icon.svg`、`games/eat-smaller/original.html`、`games/eat-smaller/style.css`、`games/eat-smaller/view.html`；`game.js` 共 62 行、5.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「42. 數字吞噬 Number Gulp（eat-smaller）」（下方「規則摘要」已複製）
 
@@ -27,7 +27,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L18 `esValid`：`S.balance-=ENTRY_FEE;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L26 `esValid`：`S.balance+=got;`
@@ -35,7 +35,7 @@
 **餘額檢查**
 - L15 `esValid`：`if(ENTRY_FEE>S.balance){esSay(LOW_MSG,'lose');`
 
-- 入場費常數 `ENTRY_FEE` 在本檔出現 6 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
+- 入場費常數 `ENTRY_FEE` 在本檔出現 4 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）

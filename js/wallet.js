@@ -12,27 +12,7 @@
     } catch (e) {}
     lastSavedBalance = S.balance; regenTick(Date.now());
   }
-  // +1 point per full minute while below the cap, by wall-clock time (it also counts while the page was closed).
-  function regenTick(now) {
-    if (S.balance >= REGEN_CAP) { regenAt = now; return false; }
-    if (now < regenAt) regenAt = now;
-    var mins = Math.floor((now - regenAt) / REGEN_MS);
-    if (mins < 1) return false;
-    S.balance += Math.min(mins, REGEN_CAP - S.balance);
-    regenAt = S.balance >= REGEN_CAP ? now : regenAt + mins * REGEN_MS;
-    save(); return true;
-  }
-  function regenUI() {
-    var el = document.getElementById('regen-hint'); if (!el) return;
-    var text = '低於 ' + REGEN_CAP + ' 點時，每分鐘回 1 點';
-    if (S.balance < REGEN_CAP) {
-      var s = Math.max(1, Math.min(60, Math.ceil((REGEN_MS - (Date.now() - regenAt)) / 1000)));
-      text = '下一點 ' + Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60) + ' · 回到 ' + REGEN_CAP + ' 點為止';
-    }
-    if (el.textContent !== text) el.textContent = text;
-  }
-  function regenStart() {
-    var step = function () { if (regenTick(Date.now())) renderAll(); regenUI(); };
-    document.addEventListener('visibilitychange', function () { if (!document.hidden) step(); });
-    setInterval(step, 1000); regenUI();
-  }
+  // Legacy regeneration keys remain readable; no passive or offline points after free-play migration.
+  function regenTick(now) { return false; }
+  function regenUI() { var el=document.getElementById('regen-hint'); if(el)el.textContent='免費遊玩，點數可兌換外觀'; }
+  function regenStart() { regenUI(); }

@@ -25,6 +25,8 @@
 {{include:games/shadow-relay/style.css}}
 {{include:games/one-line-defense/style.css}}{{include:games/mermaid/style.css}}
 {{include:games/banquet/style.css}}
+{{include:games/frontier/style.css}}
+{{include:platform/wardrobe.css}}
 </style>
 </head>
 <body>
@@ -34,11 +36,11 @@
       <a class="brand-home" href="#lobby" aria-label="返回遊戲大廳" title="返回遊戲大廳"><svg class="brand-home-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9" fill="#123c4b" stroke="#326475"/><path d="m8 15 8-7 8 7v10h-6v-7h-4v7H8z" fill="none" stroke="#62e6d2" stroke-width="1.8" stroke-linejoin="round"/></svg><h1 id="game-name" tabindex="-1">深海遊戲廳 <span>Deep Sea Arcade</span></h1></a>
       <span class="demo-tag">Demo · 虛擬點數</span>
     </div>
-    <div class="header-tools"><div class="language-switch" role="group" aria-label="Language / 語言" data-i18n-ignore><button type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button><button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button></div><div class="wallet-box"><div class="wallet">
+    <div class="header-tools"><button type="button" id="open-wardrobe" class="wardrobe-open"><span class="wardrobe-preview" id="wardrobe-mini" aria-hidden="true"></span>我的造型</button><div class="language-switch" role="group" aria-label="Language / 語言" data-i18n-ignore><button type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button><button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button></div><div class="wallet-box"><div class="wallet">
       <span class="label">餘額</span>
       <span class="amount" id="balance">500</span><span class="unit">點</span>
       <button class="link-btn" id="reset" type="button">重設為 500</button>
-    </div><p class="regen-hint" id="regen-hint">低於 100 點時，每分鐘回 1 點</p></div></div>
+    </div><p class="regen-hint" id="regen-hint">免費遊玩，點數可兌換外觀</p></div></div>
   </header>
 
   <div class="game-toolbar"><a class="back-lobby" href="#lobby"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m14 6-6 6 6 6M8 12h12"/></svg>遊戲大廳</a>
@@ -67,7 +69,7 @@
     <a href="#frog" id="tab-frog">青蛙吃蟲<small>Frog Snack</small></a>
     <a href="#ocean-link" id="tab-ocean-link">深海連連看<small>Ocean Link</small></a><a href="#clock-out" id="tab-clock-out">下班保衛戰<small>Clock Out</small></a><a href="#peek" id="tab-peek">別看<small>Don’t Peek</small></a><a href="#pet-walk" id="tab-pet-walk">小灰出門<small>Pet Walkies</small></a><a href="#office-shoot" id="tab-office-shoot">拒絕加班<small>No Overtime!</small></a><a href="#eat-smaller" id="tab-eat-smaller">數字吞噬<small>Number Gulp</small></a><a href="#mirror-twins" id="tab-mirror-twins">鏡像雙子<small>Mirror Twins</small></a><a href="#shadow-relay" id="tab-shadow-relay">影子接力<small>Shadow Relay</small></a><a href="#one-line-defense" id="tab-one-line-defense">一筆畫守城<small>One-Line Defense</small></a><a href="#mermaid" id="tab-mermaid">人魚接龍<small>Mermaid Spider</small></a><a href="#breakout" id="tab-breakout">打磚塊<small>Breakout</small></a>
     <a href="#nap" id="tab-nap">偷睡大師<small>Nap Master</small></a><a href="#pudding" id="tab-pudding">布丁突圍<small>Pudding Dash</small></a><a href="#mosquito" id="tab-mosquito">血壓上升<small>Midnight Mosquito</small></a><a href="#banquet" id="tab-banquet">最後的晚餐<small>The Last Banquet</small></a><a href="#last-hair" id="tab-last-hair">尊嚴保衛戰<small>The Last Hair</small></a>
-    <a href="#blaster" id="tab-blaster">深海火線<small>Reef Blaster</small></a>
+    <a href="#frontier" id="tab-frontier">荒島遠征<small>Frontier Islands</small></a><a href="#blaster" id="tab-blaster">深海火線<small>Reef Blaster</small></a>
     <a href="#reaper" id="tab-reaper">死神打工<small>Reaper Shift</small></a>
     <a href="#dive" id="tab-dive">一口氣探險<small>One Breath Dive</small></a>
     <a href="#mrt" id="tab-mrt">捷運搶位<small>MRT Seat Grab</small></a>
@@ -80,7 +82,7 @@
     <a href="#baby" id="tab-baby">寶寶逃洗澡<small>Baby Bath Escape</small></a>
   </nav></details>{{include:templates/mobile-navigation.html}}</div>
 
-{{include:templates/lobby.html}}{{include:games/crash/view.html}}{{include:games/mines/view.html}}{{include:games/plinko/view.html}}{{include:games/merge/view.html}}{{include:games/dice/view.html}}{{include:games/limbo/view.html}}{{include:games/hilo/view.html}}{{include:games/keno/view.html}}{{include:games/wheel/view.html}}{{include:games/tower/view.html}}{{include:games/crossing/view.html}}{{include:games/dream/view.html}}{{include:games/runner/view.html}}{{include:games/elevator/view.html}}{{include:games/sneak/view.html}}{{include:games/fishing/view.html}}{{include:games/campaign/view.html}}{{include:games/boba/view.html}}{{include:games/cat/view.html}}{{include:games/bird/view.html}}{{include:games/frog/view.html}}{{include:games/nap/view.html}}{{include:games/reaper/view.html}}{{include:games/blaster/view.html}}{{include:games/skybuilder/view.html}}
+{{include:templates/lobby.html}}{{include:games/frontier/view.html}}{{include:games/crash/view.html}}{{include:games/mines/view.html}}{{include:games/plinko/view.html}}{{include:games/merge/view.html}}{{include:games/dice/view.html}}{{include:games/limbo/view.html}}{{include:games/hilo/view.html}}{{include:games/keno/view.html}}{{include:games/wheel/view.html}}{{include:games/tower/view.html}}{{include:games/crossing/view.html}}{{include:games/dream/view.html}}{{include:games/runner/view.html}}{{include:games/elevator/view.html}}{{include:games/sneak/view.html}}{{include:games/fishing/view.html}}{{include:games/campaign/view.html}}{{include:games/boba/view.html}}{{include:games/cat/view.html}}{{include:games/bird/view.html}}{{include:games/frog/view.html}}{{include:games/nap/view.html}}{{include:games/reaper/view.html}}{{include:games/blaster/view.html}}{{include:games/skybuilder/view.html}}
 {{include:games/dive/view.html}}
 {{include:games/ocean-link/view.html}}{{include:games/mrt/view.html}}{{include:games/pancake/view.html}}{{include:games/rocket-chair/view.html}}{{include:games/clock-out/view.html}}{{include:games/peek/view.html}}{{include:games/pet-walk/view.html}}{{include:games/office-shoot/view.html}}{{include:games/eat-smaller/view.html}}{{include:games/mirror-twins/view.html}}{{include:games/shadow-relay/view.html}}{{include:games/one-line-defense/view.html}}{{include:games/mermaid/view.html}}{{include:games/breakout/view.html}}{{include:games/last-hair/view.html}}{{include:games/carp/view.html}}{{include:games/rider/view.html}}{{include:games/boss/view.html}}{{include:games/thief/view.html}}{{include:games/baby/view.html}}{{include:games/pudding/view.html}}{{include:games/mosquito/view.html}}{{include:games/banquet/view.html}}
 </div>

@@ -5,9 +5,9 @@
 ## 概覽
 
 - 網址：`#rocket-chair`　分類：時機操作　狀態：顯示中
-- 大廳卡片：「對著手機大吼，火箭椅一路撞破天花板提早下班。」｜每局 10 點 · 只扣入場點數
+- 大廳卡片：「對著手機大吼，火箭椅一路撞破天花板提早下班。」｜免費遊玩 · 不限次數
 - 追蹤名稱（GA4 `game_name`）：社畜要下班，`game_id` 為 `rocket-chair`
-- 檔案：`games/rocket-chair/card.html`、`games/rocket-chair/game.js`、`games/rocket-chair/icon.svg`、`games/rocket-chair/original.html`、`games/rocket-chair/style.css`、`games/rocket-chair/view.html`；`game.js` 共 42 行、2.6 KB
+- 檔案：`games/rocket-chair/card.html`、`games/rocket-chair/game.js`、`games/rocket-chair/icon.svg`、`games/rocket-chair/original.html`、`games/rocket-chair/style.css`、`games/rocket-chair/view.html`；`game.js` 共 40 行、2.2 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「25b. 社畜要下班 Roar Through the Ceiling（rocket-chair）」（下方「規則摘要」已複製）
 
@@ -23,30 +23,27 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rocketFreeLeft` L5、`rocketUI` L6、`rocketValid` L7、`rocketRoute` L37
+`rocketFreeLeft` L5、`rocketUI` L6、`rocketValid` L7、`rocketRoute` L35
 
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L19 `rocketValid`：`S.balance-=fee;`
-- L25 `rocketValid`：`S.balance-=n;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **餘額檢查**
-- L15 `rocketValid`：`if(S.balance<fee){rocketUI(LOW_MSG);`
-- L24 `rocketValid`：`if(!rocketValid(source)||!ROCKET.active||n<=0||S.balance<n)return false;`
+- L13 `rocketValid`：`if(S.balance<fee){rocketUI(LOW_MSG);`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L12 `rocketValid`：`if(ROCKET.active)AN.end(ROCKET.analytics,0,'abandoned',{extra_spent_points:ROCKET.extra});`
-- L18 `rocketValid`：`ROCKET.analytics=AN.start('rocket-chair',fee,free?{entry_kind:'free_pass'}:undefined);`
-- L26 `rocketValid`：`AN.progress(ROCKET.analytics,{phase:'buy_coffee',extra_points:n});`
-- L32 `rocketValid`：`AN.end(ROCKET.analytics,0,'complete',{score:early,cleared:data&&data.cleared?1:0,extra_spent_points:ROCKET.ex…`
+- L16 `rocketValid`：`ROCKET.analytics=AN.start('rocket-chair',fee,free?{entry_kind:'free_pass'}:undefined);`
+- L24 `rocketValid`：`AN.progress(ROCKET.analytics,{phase:'free_coffee',extra_points:0});`
+- L30 `rocketValid`：`AN.end(ROCKET.analytics,0,'complete',{score:early,cleared:data&&data.cleared?1:0,extra_spent_points:ROCKET.ex…`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -56,7 +53,7 @@
 
 ## 平台共用相依
 
-- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`ENTRY_FEE`、`LOW_MSG`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- 直接使用的共用名稱：`S`、`AN`、`ENTRY_FEE`、`LOW_MSG`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/controls.js` 會呼叫：`rocketUI`
 - `js/navigation.js` 會呼叫：`rocketRoute`
 - 「重設為 500 點」進行中防護（`js/controls.js`）：無法判斷（沒有偵測到狀態名稱）

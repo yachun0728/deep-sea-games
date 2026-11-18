@@ -245,3 +245,13 @@ KE.active涵蓋免費挖掘，使用現有syncBalance／save入帳；可用時�
 ## Ocean Link
 
 `#ocean-link` 透過 `games/ocean-link/view.html`、`style.css`、`card.html` 與 `icon.svg` 接入靜態組合，列於免費懷舊分類。點擊遊戲區會啟用全螢幕並免費開局。`game.js` 在共用 runtime 內管理畫面、遠征、錢包及追蹤，並在其閉包內組合 `board.js`（關卡設定、路徑、移動與保證可解的發牌）及 `tiles.js`（64 種圖案）。全螢幕使用 Fullscreen API，若無法啟用則使用有安全區邊距的固定版面。新增 `deep-sea-ocean-link-best-v1`，以 JSON 物件分開記錄簡單、標準與挑戰的最高通關關卡；共用餘額沿用既有儲存。
+
+## 荒島遠征（frontier）
+
+`games/frontier/game.js` 在共享runtime內建立獨立閉包，內含純模擬 `world.js` 與Canvas繪圖 `draw.js`；view、card、style、icon依現有靜態include接入。`frontierRoute`暫停離開畫面，`frontierBusy`供重設防護；hot.snapshot無待退本金，不新增返還。新Key `deep-sea-frontier-v1`儲存完整當關、科技、通關及一次付費資格；不改舊Key／格式。未有資料時初始化，回復舊程式可保留新Key。存檔schema異常時保留可辨識的付費資格與最高通關，重建當關；讀取失敗不清除資料。不是跨分頁交易或伺服器帳戶。關卡參數與限制見GAME_RULES第42節。
+
+## 免費平台、遊玩獎勵與紙娃娃（2026-11-18）
+
+ENTRY_FEE=0，已上架遊戲移除扣款，iframe以開局成功布林值通訊，不再以正金額判斷成功。js/wallet.js保留舊STORE與回點時間鍵，停用自然回點；玩家餘額不重設。platform/wardrobe.js放在導航前、同一runtime IIFE內，bootstrap讀取餘額後初始化。大廳details與頁首入口呈現平台角色，三槽帽／服裝／跟隨配件不接入遊戲能力。
+
+AN.tick只在原有可見聚焦且engaged的有效時間呼叫deepSeaProgress.active一次；end以有效時間與結果呼叫complete。新Key deep-sea-wardrobe-v1含version、owned、equipped、day、playMs、playPaid、completed；合法舊錢包原樣讀取，沒有原資料遷移。收藏寫入失敗不扣款；損壞收藏不清除，顯示錯誤。兌換與平台獎勵使用單頁queue，支援時加Web Locks，操作前重讀配額與餘額，避免連點重發／重扣；claim／收藏與wallet為兩個localStorage鍵，不宣稱交易原子性或防作弊，異常關機仍可能少發獎勵或少扣一次兌換費。回復本版只回復來源並重建，保留新Key，舊版忽略。

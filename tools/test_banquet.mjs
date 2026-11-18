@@ -195,11 +195,11 @@ check('The host can use the silver lid on the player: the player answers and the
 check('Silver lid is ignored when it is not that side\'s turn or the cup is gone',()=>{
   const f=started();f.scene({cups:['water','water']});assert.equal(f.B.claim('d',1),false);assert.equal(f.B.claim('p',9),false);f.B.claim('p',1);assert.equal(f.B.claim('p',2),false);assert.equal(f.B.selfDrink('p',2),false);
 });
-check('Finishing an act pays its BONUS once, lowers Drunk by 1 and deals the next act; the win pays +2; the total can never reach the entry fee',()=>{
+check('Finishing an act pays its BONUS once, lowers Drunk by 1 and deals the next act; the win pays +2; free play retains all fixed rewards',()=>{
   const f=started();f.scene({cups:['water'],dr:{p:2,d:0}});f.ev('E.hand.p=["needle"]');f.B.selfDrink('p',1);let e=f.E();assert.equal(e.act,2);assert.equal(e.paid.a1,1);assert.equal(f.wallet.balance,500-fee+1);assert.equal(e.dr.p,2);assert.ok(e.hand.p.includes('needle'));
   f.ev('E.cups=[{id:1,t:"water"}];E.turn="p"');f.B.selfDrink('p',1);assert.equal(f.E().act,3);assert.equal(f.wallet.balance,500-fee+3);
   f.ev('E.cups=[{id:1,t:"water"}];E.turn="p";E.hp.p=4;E.hp.d=2');f.B.selfDrink('p',1);e=f.E();assert.equal(e.phase,'over');assert.equal(e.result.w,'p');assert.equal(e.result.why,'life');assert.equal(f.wallet.balance,500-fee+8);assert.equal(f.count('end'),1);assert.equal(f.events.find(x=>x[0]==='end')[2],8);assert.equal(f.busy(),false);assert.equal(f.storage.get('deep-sea-banquet-best'),'1');
-  assert.ok(8<fee);
+  assert.equal(fee,0);
 });
 check('Reaching HP 0 ends the game at once, pays the win only to the player, and a second end call changes nothing',()=>{
   const f=started();f.scene({cups:['poison','water'],hp:{p:5,d:1}});f.B.toast('p',1);let e=f.E();assert.equal(e.phase,'over');assert.equal(e.result.w,'p');assert.equal(f.wallet.balance,500-fee+2);f.B.endGame('p','hp');f.B.endGame('d','hp');assert.equal(f.wallet.balance,500-fee+2);assert.equal(f.count('end'),1);

@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#banquet`　分類：益智策略　狀態：顯示中
-- 大廳卡片：「與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。」｜每局 10 點 · 心理博弈
+- 大廳卡片：「與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。」｜免費遊玩 · 心理博弈
 - 追蹤名稱（GA4 `game_name`）：最後的晚餐，`game_id` 為 `banquet`
 - 檔案：`games/banquet/card.html`、`games/banquet/game.js`、`games/banquet/icon.svg`、`games/banquet/style.css`、`games/banquet/view.html`；`game.js` 共 594 行、36.2 KB
 
@@ -38,7 +38,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L560 `start`：`S.balance-=amount;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L228 `pay`：`S.balance+=n;`

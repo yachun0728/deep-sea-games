@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#merge`　分類：益智策略　狀態：顯示中
-- 大廳卡片：「滑動合併珍珠，養出更大的數字。」｜每局 10 點 · 滑動合併
+- 大廳卡片：「滑動合併珍珠，養出更大的數字。」｜免費遊玩 · 滑動合併
 - 追蹤名稱（GA4 `game_name`）：養珠，`game_id` 為 `merge`
 - 檔案：`games/merge/card.html`、`games/merge/game.js`、`games/merge/icon.svg`、`games/merge/view.html`；`game.js` 共 90 行、5.0 KB
 
@@ -27,7 +27,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L42 `mgStart`：`S.balance -= MG_FEE;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）

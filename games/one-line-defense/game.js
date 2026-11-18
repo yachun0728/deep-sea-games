@@ -1,22 +1,22 @@
-  /* ---------- One-Line Defense（一筆畫守城）: srcdoc 子頁；固定 10 點入場，每撐過 30 秒 BONUS +2 點，最多 10 點 ---------- */
+  /* ---------- One-Line Defense（一筆畫守城）: srcdoc 子頁；免費入場，每撐過 30 秒 BONUS +2 點，最多 10 點 ---------- */
   var ONEL={active:false,stake:0,earned:0,marks:{},score:0,time:0,analytics:null,loaded:false,msg:null},ONEL_BONUS=2,ONEL_MARKS=5,ONEL_EVERY=30;
   function olL(s,p){var i=window.deepSeaI18n,en=!!(i&&i.getLanguage()==='en'),k=s.indexOf('|'),t=k<0?(en?i.text(s):s):(en?s.slice(k+1):s.slice(0,k));return p?t.replace(/\{(\w+)\}/g,function(_,n){return p[n]!=null?p[n]:'';}):t;}
-  function olSay(text,kind,params){ONEL.msg={text:text,kind:kind||'',params:params};var el=$('ol-msg');el.textContent=olL(text,params);el.className='msg'+(kind?' '+kind:'');}
+  function olSay(text,kind,params){ONEL.msg={text:text,kind:kind||'',params:params};var el=$('od-msg');el.textContent=olL(text,params);el.className='msg'+(kind?' '+kind:'');}
   function olBest(){try{return Math.max(0,Math.floor(Number(JSON.parse(localStorage.getItem('oneLine.best')))||0));}catch(_){return 0;}}
   function olUI(){
-    $('ol-score').textContent=fmt(ONEL.score);$('ol-pay').textContent=ONEL.earned+' / '+ONEL_BONUS*ONEL_MARKS;$('ol-best').textContent=fmt(olBest());
-    $('ol-go').disabled=ONEL.active;$('ol-go').textContent=ONEL.active?'守城中 · 在左側畫線':'扣點開始守城';
+    $('od-score').textContent=fmt(ONEL.score);$('od-pay').textContent=ONEL.earned+' / '+ONEL_BONUS*ONEL_MARKS;$('od-best').textContent=fmt(olBest());
+    $('od-go').disabled=ONEL.active;$('od-go').textContent=ONEL.active?'守城中 · 在左側畫線':'免費開始守城';
   }
-  function olValid(source){return source===$('ol-frame').contentWindow;}
+  function olValid(source){return source===$('od-frame').contentWindow;}
   window.deepSeaOneLine={
     start:function(source){
       if(!olValid(source)||$('view-one-line-defense').hidden||ONEL.active)return 0;
       if(ENTRY_FEE>S.balance){olSay(LOW_MSG,'lose');return 0;}
       if(AN.interact)AN.interact();
       ONEL.active=true;ONEL.stake=ENTRY_FEE;ONEL.earned=0;ONEL.marks={};ONEL.score=0;ONEL.time=0;ONEL.analytics=AN.start('one-line-defense',ENTRY_FEE);
-      S.balance-=ENTRY_FEE;save();renderAll();olUI();
-      olSay('已扣 {fee} 點。在左側拖曳畫線擋住敵人；每撐過 30 秒 BONUS +2 點，最多 10 點。|{fee} pts paid. Drag on the left to draw lines and block enemies; every 30 seconds survived gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
-      return ENTRY_FEE;
+      save();renderAll();olUI();
+      olSay('免費遊玩。在左側拖曳畫線擋住敵人；每撐過 30 秒 BONUS +2 點，最多 10 點。|Free play. Drag on the left to draw lines and block enemies; every 30 seconds survived gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
+      return true;
     },
     bonus:function(source,mark){
       if(!olValid(source)||!ONEL.active)return 0;
@@ -41,18 +41,18 @@
   // 先於共用離頁處理結束，讓 abandoned 帶上已入帳的 BONUS
   window.addEventListener('pagehide',function(e){if(!e.persisted&&ONEL.active&&ONEL.analytics){AN.end(ONEL.analytics,ONEL.earned,'abandoned',{score:ONEL.score});ONEL.analytics=null;ONEL.active=false;ONEL.stake=0;}},true);
   function olRoute(active){
-    var frame=$('ol-frame');
+    var frame=$('od-frame');
     if(active&&!ONEL.loaded){ONEL.loaded=true;frame.onload=function(){if(frame.contentWindow&&frame.contentWindow.setOneLinePlatformActive)frame.contentWindow.setOneLinePlatformActive(!$('view-one-line-defense').hidden);};frame.srcdoc=JSON.parse($('one-line-defense-source').textContent);}
     if(frame.contentWindow&&frame.contentWindow.setOneLinePlatformActive)frame.contentWindow.setOneLinePlatformActive(active);
     if(active)olUI();
   }
-  $('ol-go').addEventListener('click',function(){
-    var w=$('ol-frame').contentWindow;
+  $('od-go').addEventListener('click',function(){
+    var w=$('od-frame').contentWindow;
     if(ONEL.active)return;
     if(!w||!w.startOneLinePlatformRound){olSay('遊戲畫面還在載入，請稍候再試。','lose');return;}
-    if(w.startOneLinePlatformRound())$('ol-frame').focus();
+    if(w.startOneLinePlatformRound())$('od-frame').focus();
   });
   window.addEventListener('arcade-languagechange',function(){if(ONEL.msg)olSay(ONEL.msg.text,ONEL.msg.kind,ONEL.msg.params);});
-  olSay('每局固定扣 10 點。按「扣點開始守城」或遊戲裡的「開始」開局。|Each game costs a fixed 10 pts. Press “Pay & defend” or “Start” in the game.');
+  olSay('每局免費。按「免費開始守城」或遊戲裡的「開始」開局。|Each game costs a fixed 10 pts. Press “Pay & defend” or “Start” in the game.');
   olUI();
 

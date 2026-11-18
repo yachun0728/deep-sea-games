@@ -784,13 +784,13 @@ function showIntro() {
   $('#introBest').textContent = loadBest() ? `最佳 ${loadBest()} 階` : '';
   $('#intro').classList.remove('hide');
 }
-// 開場按鈕與平台右側「扣點上車」共用同一個開局流程，由父頁決定是否扣點
+// 開場按鈕與平台右側「免費上車」共用同一個開局流程，由父頁決定是否免費
 function beginRound() {
   const host = mrtHost();
-  let bet = 1;                                  // 單獨開啟時維持原本不扣點的示範模式
+  let bet = 0;                                  // 單獨開啟時維持原本免費的示範模式
   if (host) {
-    bet = host.start(window);
-    if (!bet) { $('#introBest').textContent = '沒有扣點：餘額不足 10 點，請看右側說明'; return false; }
+    const started = host.start(window);
+    if (!started) { $('#introBest').textContent = '遊戲尚未準備完成，請稍後重試。'; return false; }
   }
   paused = false; $('#intro').classList.add('hide'); newGame(bet, !!host);
   return true;

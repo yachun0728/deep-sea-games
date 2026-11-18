@@ -5,9 +5,9 @@
 ## 概覽
 
 - 網址：`#boba`　分類：時機操作　狀態：顯示中
-- 大廳卡片：「抓準力道插吸管，原版粉紅珍奶小遊戲。」｜每局 10 點 · 只扣入場點數
+- 大廳卡片：「抓準力道插吸管，原版粉紅珍奶小遊戲。」｜免費遊玩 · 只扣入場點數
 - 追蹤名稱（GA4 `game_name`）：插珍奶，`game_id` 為 `boba`
-- 檔案：`games/boba/card.html`、`games/boba/game.js`、`games/boba/icon.svg`、`games/boba/original.html`、`games/boba/view.html`；`game.js` 共 28 行、2.2 KB
+- 檔案：`games/boba/card.html`、`games/boba/game.js`、`games/boba/icon.svg`、`games/boba/original.html`、`games/boba/view.html`；`game.js` 共 28 行、2.1 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「18. 珍奶插吸管（boba）」（下方「規則摘要」已複製）
 
@@ -27,7 +27,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L9 `bobaValid`：`S.balance-=BOBA.fee;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）

@@ -325,7 +325,7 @@ const store = {
 let unlocked = store.get('unlocked', 1);
 let bests = store.get('bests', {});
 
-// ---------- Deep Sea Arcade 平台：扣點、BONUS 與暫停由父頁 deepSeaShadowRelay 處理；單獨開啟時是不扣點的示範 ----------
+// ---------- Deep Sea Arcade 平台：免費、BONUS 與暫停由父頁 deepSeaShadowRelay 處理；單獨開啟時是不免費的示範 ----------
 function host() { try { return window.parent !== window ? window.parent.deepSeaShadowRelay || null : null; } catch (e) { return null; } }
 let roundOn = false, earned = 0, platformVisible = true;
 function ensureRound() {
@@ -340,7 +340,7 @@ function renderNote() {
   if (!host()) { el.hidden = true; return; }
   el.hidden = false;
   el.innerHTML = roundOn
-    ? Lx('本局進行中：每關第一次通過 BONUS +2 點（已得 {e} / 10）。被抓到會自動重來，不另扣點。|Round in progress: +2 BONUS pts the first time you clear each stage ({e} / 10 earned). Getting caught restarts the stage at no extra cost.', { e: earned })
+    ? Lx('本局進行中：每關第一次通過 BONUS +2 點（已得 {e} / 10）。被抓到會自動重來，不另免費。|Round in progress: +2 BONUS pts the first time you clear each stage ({e} / 10 earned). Getting caught restarts the stage at no extra cost.', { e: earned })
     : Lx('點一關就會扣 10 點開始一局；本局每過一關 BONUS +2 點，最多 10 點。|Picking a stage starts a round for 10 pts; each stage you clear in the round gives a +2 pt BONUS, up to 10 pts.');
 }
 function touch() { const h = host(); if (h && roundOn && h.touch) h.touch(window); }

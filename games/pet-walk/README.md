@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#pet-walk`　分類：跑酷動作　狀態：顯示中
-- 大廳卡片：「一鍵帶小灰散步，路上撞見野狗、河鯊和幸運轉盤。」｜每趟 10 點 · 一鍵散步
+- 大廳卡片：「一鍵帶小灰散步，路上撞見野狗、河鯊和幸運轉盤。」｜免費遊玩 · 一鍵散步
 - 追蹤名稱（GA4 `game_name`）：小灰出門，`game_id` 為 `pet-walk`
 - 檔案：`games/pet-walk/card.html`、`games/pet-walk/game.js`、`games/pet-walk/icon.svg`、`games/pet-walk/view.html`；`game.js` 共 1104 行、55.5 KB
 
@@ -41,7 +41,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L1082 `begin`：`S.balance-=ENTRY_FEE;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L1065 `segmentDone`：`S.balance+=1;`
@@ -49,7 +49,7 @@
 **餘額檢查**
 - L1080 `begin`：`if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');`
 
-- 入場費常數 `ENTRY_FEE` 在本檔出現 4 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
+- 入場費常數 `ENTRY_FEE` 在本檔出現 3 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）

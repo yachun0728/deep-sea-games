@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#carp`　分類：時機操作　狀態：顯示中
-- 大廳卡片：「蓄力起跳，越過一道道石瀑。」｜每局 10 點 · 蓄力跳躍
+- 大廳卡片：「蓄力起跳，越過一道道石瀑。」｜免費遊玩 · 蓄力跳躍
 - 追蹤名稱（GA4 `game_name`）：鯉魚躍龍門，`game_id` 為 `carp`
 - 檔案：`games/carp/card.html`、`games/carp/game.js`、`games/carp/icon.svg`、`games/carp/view.html`；`game.js` 共 160 行、11.4 KB
 
@@ -29,7 +29,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L120 `start`：`S.balance-=amount;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L100 `awardBonus`：`S.balance+=BONUS;`

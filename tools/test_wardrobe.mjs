@@ -1,0 +1,22 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const source=fs.readFileSync(new URL('../platform/wardrobe.js',import.meta.url),'utf8');
+let count=0;function ok(v,label){assert.ok(v,label);count++;}
+function fixture(balance=500,saved=null){
+ const store=new Map([['crush-depth-balance',String(balance)]]),els=new Map(),events=[];let fail=false;
+ if(saved)store.set('deep-sea-wardrobe-v1',saved);
+ const el=id=>{if(!els.has(id))els.set(id,{textContent:'',innerHTML:'',children:[],handlers:{},addEventListener(k,f){this.handlers[k]=f;},appendChild(v){this.children.push(v);},scrollIntoView(){}});return els.get(id);};
+ const window={navigator:null,addEventListener(){}};
+ const box={window,document:{createElement:()=>el('node'+els.size),querySelectorAll:()=>[]},location:{hash:''},requestAnimationFrame(){},reduceMotion:true,$:el,S:{balance},STORE:'crush-depth-balance',localStorage:{getItem:k=>store.get(k)??null,setItem(k,v){if(fail)throw Error('blocked');store.set(k,v);}},save(){store.set('crush-depth-balance',String(box.S.balance));},renderAll(){},AN:{reward:(...x)=>events.push(x),cosmetic:(...x)=>events.push(x)}};
+ vm.createContext(box);vm.runInContext(source.replace('window.deepSeaProgress={','window.test={purchase:purchase,flush:function(){return queue;},read:read};window.deepSeaProgress={'),box);window.deepSeaWardrobe.init();
+ return {box,store,events,el,api:window.test,progress:window.deepSeaProgress,fail(){fail=true;},state(){return JSON.parse(store.get('deep-sea-wardrobe-v1'));}};
+}
+export async function run(){
+ let f=fixture();ok(f.box.S.balance===500,'legacy balance retained');f.progress.active('dream',59999);await f.api.flush();ok(f.box.S.balance===500,'no reward before minute boundary');f.progress.active('dream',1);await f.api.flush();ok(f.box.S.balance===502,'minute grants exactly 2');f.progress.complete('dream','complete',9999);await f.api.flush();ok(f.box.S.balance===502,'short completion rejected');f.progress.complete('dream','loss',20000);await f.api.flush();ok(f.box.S.balance===502,'loss not a daily completion');f.progress.complete('dream','complete',10000);f.progress.complete('dream','complete',10000);await f.api.flush();ok(f.box.S.balance===507,'completion daily reward once');f.progress.active('dream',9000000);await f.api.flush();ok(f.box.S.balance===565&&f.state().playPaid===60,'daily play cap retained separately from completion');f.progress.active('dream',60000);await f.api.flush();ok(f.box.S.balance===565,'cap cannot duplicate');f.progress.complete('boba','complete',12000);await f.api.flush();ok(f.box.S.balance===570,'different game gets own daily completion');
+ f=fixture();await Promise.all([f.api.purchase('explorer'),f.api.purchase('explorer')]);ok(f.box.S.balance===420&&f.state().owned.length===1,'double redemption charges once');ok(f.state().equipped.hat==='explorer','redeemed hat equipped');await f.api.purchase('tide');ok(f.box.S.balance===260&&f.state().equipped.jacket==='tide','outfit slot equipped');await f.api.purchase('explorer');ok(f.box.S.balance===260,'owned item is free to re-equip');ok(f.el('wardrobe-avatar').innerHTML.includes('#5faeb1'),'avatar shows purchased outfit color');let re=fixture(260,f.store.get('deep-sea-wardrobe-v1'));ok(re.api.read().equipped.hat==='explorer'&&re.api.read().owned.length===2,'reload retains ownership and outfit');await re.api.purchase('unknown');ok(re.box.S.balance===260,'unknown item rejected');
+ f=fixture(0);await f.api.purchase('robot');ok(f.box.S.balance===0&&!f.store.has('deep-sea-wardrobe-v1'),'insufficient points do not acquire item');f=fixture();f.fail();await f.api.purchase('robot');ok(f.box.S.balance===500,'failed inventory persistence never deducts balance');f.progress.active('boba',60000);await f.api.flush();ok(f.box.S.balance===500,'failed reward persistence never credits duplicates');
+ f=fixture(500,'{bad');await f.api.purchase('robot');ok(f.box.S.balance===500&&f.store.get('deep-sea-wardrobe-v1')==='{bad','invalid data preserved');
+ f=fixture();f.progress.active('boba',60000);await f.api.flush();let state=f.state();state.day='2000-01-01';state.owned=['explorer'];state.equipped.hat='explorer';f.store.set('deep-sea-wardrobe-v1',JSON.stringify(state));f.progress.active('boba',60000);await f.api.flush();ok(f.box.S.balance===504&&f.state().playPaid===2&&f.state().equipped.hat==='explorer','new day resets allowance, keeps collection');
+ console.log('PASS: '+count+' wardrobe/reward checks');return count;
+}

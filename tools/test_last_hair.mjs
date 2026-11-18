@@ -36,7 +36,7 @@ check('Not enough points: nothing is deducted and no round starts',()=>{
   const f=fixture(fee-1);f.start();assert.equal(f.wallet.balance,fee-1);assert.equal(f.busy(),false);assert.equal(f.count('start'),0);assert.equal(f.ev('st'),'ready');
 });
 check('Start deducts the fixed entry fee once even when clicked twice',()=>{
-  const f=fixture();f.start();f.start();assert.equal(fee,10);assert.equal(f.wallet.balance,500-fee);assert.equal(f.count('start'),1);
+  const f=fixture();f.start();f.start();assert.equal(fee,0);assert.equal(f.wallet.balance,500-fee);assert.equal(f.count('start'),1);
   assert.equal(f.storage.get('crush-depth-balance'),String(500-fee));assert.equal(f.busy(),true);assert.deepEqual(f.events[0],['start','last-hair',fee]);assert.equal(f.ev('st'),'run');
 });
 check('Each milestone credits once: 100/250/400/500 m pay 1/2/3/4 points, total 10 (break-even)',()=>{
@@ -59,7 +59,7 @@ check('Losing every hair before any milestone ends as a loss with no points and 
 });
 check('Reaching 500 m ends once as a win, pays all 10 points whatever the hair count',()=>{
   const f=fixture();f.start();f.ev('g.dist=499.99');f.step(5);
-  assert.equal(f.ev('st'),'over');assert.equal(f.count('end'),1);assert.equal(f.wallet.balance,500);assert.equal(f.events.find(e=>e[0]==='end')[2],10);
+  assert.equal(f.ev('st'),'over');assert.equal(f.count('end'),1);assert.equal(f.wallet.balance,500-fee+10);assert.equal(f.events.find(e=>e[0]==='end')[2],10);
   assert.equal(f.storage.get('deep-sea-last-hair-best'),'500');f.step(20);assert.equal(f.count('end'),1);
 });
 check('Two-thumb touch: left half tilts, right half presses, release clears; swap flips roles',()=>{

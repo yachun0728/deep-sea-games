@@ -254,7 +254,7 @@ function endGame(w,why){
  if(analytics){AN.end(analytics,E.earned,res,{score:E.hp.p,step:E.act,stage:E.act});analytics=null}
  bqBusy=false;save();renderAll();
  var head=w==='p'?'你贏了！':w==='d'?(why==='quit'?'你放棄了這一局。':'莊家贏了。'):'平手。';
- say(head+(E.earned>0?'本局共入帳 '+fmt(E.earned)+' 點。':'這一局沒有點數。'),E.earned>0||w==='p'?'win':'lose');
+ say(head+(E.earned>0?'本局共入帳 '+fmt(E.earned)+' 點。':'這一局沒有額外成就獎勵。'),E.earned>0||w==='p'?'win':'lose');
 }
 
 /* ---------- host AI: only public information, its own scans and what the player has revealed ---------- */
@@ -514,7 +514,7 @@ function render(){
  renderCups();renderHand();renderDealerHand();renderLog();renderNotes();
  var mine=live&&E.turn==='p'&&!E.pending,sel=E.sel?cupOf(E.sel):null,pend=live&&E.pending&&E.pending.to==='p';
  var turn=$('bq-turn');
- put(turn,!live?(over?'這一場結束了。':'按右側「扣點開始晚宴」'):pend?'莊家蓋上了銀蓋，等你決定。':E.turn==='d'?'莊家思考中…':E.decree.p?'你被勸酒令指定：這次只能自己喝。':sel?'已選 #'+sel.id+'：決定怎麼處理這杯酒。':'先點選一杯酒，再決定怎麼處理它。');
+ put(turn,!live?(over?'這一場結束了。':'按右側「免費開始晚宴」'):pend?'莊家蓋上了銀蓋，等你決定。':E.turn==='d'?'莊家思考中…':E.decree.p?'你被勸酒令指定：這次只能自己喝。':sel?'已選 #'+sel.id+'：決定怎麼處理這杯酒。':'先點選一杯酒，再決定怎麼處理它。');
  $('bq-act-row').hidden=!mine;
  var forced=E.decree.p;
  $('bq-self').disabled=!sel||E.fxT>0;$('bq-toast').disabled=!sel||forced||E.fxT>0;$('bq-silver').disabled=!sel||forced||E.fxT>0;$('bq-silver').hidden=!ADV;
@@ -528,8 +528,8 @@ function render(){
  if(!over)overPlayed=false;
  var pr=$('bq-prompt');pr.hidden=!pend;
  if(pend)put($('bq-prompt-t'),'莊家宣稱 #'+E.pending.id+' 是瓊漿。你要相信並喝下，還是質疑？');
- var go=$('bq-go');go.disabled=bqBusy;put(go,bqBusy?'晚宴進行中':over?'扣點再辦一場':'扣點開始晚宴');
- $('bq-quit').hidden=!bqBusy;put($('bq-quit'),quitArm>0?'再按一次確認放棄':'放棄本局（不退點）');
+ var go=$('bq-go');go.disabled=bqBusy;put(go,bqBusy?'晚宴進行中':over?'免費再辦一場':'免費開始晚宴');
+ $('bq-quit').hidden=!bqBusy;put($('bq-quit'),quitArm>0?'再按一次確認放棄':'放棄本局');
  put($('bq-stage-t'),!E.act?'未開始':SHORT[E.act]);
  put($('bq-bonus'),E.earned+' 點');put($('bq-best'),wins+' 場');
 }
@@ -557,7 +557,7 @@ function start(){
  if(bqBusy)return;
  var amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
- analytics=AN.start('banquet',amount);bqStake=amount;bqBusy=true;S.balance-=amount;save();renderAll();
+ analytics=AN.start('banquet',amount);bqStake=amount;bqBusy=true;save();renderAll();
  fresh();E.phase='play';quitArm=0;log('晚宴開始。你先行動。');deal(1);beginTurn('p',false);
  say(ADV?'晚宴開始！先點選一杯酒，再決定自己喝、敬給莊家，或蓋上銀蓋騙他。':'晚宴開始！先點選一杯酒，再決定自己喝或敬給莊家。');SFX.start();render();$('bq-stage').focus({preventScroll:true});
 }

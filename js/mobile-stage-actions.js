@@ -28,7 +28,7 @@
           if(show){if(record.button.parentNode!==record.wrapper)record.wrapper.appendChild(record.button);shown=true;label=actionText(record.button);}
           else if(record.marker.parentNode&&record.button.parentNode!==record.marker.parentNode)record.marker.parentNode.insertBefore(record.button,record.marker.nextSibling);
         });
-        note.textContent=freeEntry?'':/下一關|下一班|下一條/.test(label)?'繼續挑戰不另扣點':/\d+\s*點/.test(label)?'':typeof ENTRY_FEE==='number'?'每局 '+ENTRY_FEE+' 點':'';
+        note.textContent='免費遊玩';
         note.hidden=!note.textContent;tray.hidden=!shown;
       }
       var observer=new window.MutationObserver(sync);

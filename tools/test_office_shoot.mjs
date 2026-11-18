@@ -67,7 +67,7 @@ check('Days 1-5 each pay +2 once when the boss falls; day 6 onwards pays nothing
     assert.equal(f.ev('stage'),day);f.nextDay();assert.equal(f.wallet.balance,500-fee+2*day,'balance after day '+day);
   }
   assert.equal(f.ev('stage'),6);f.nextDay();f.nextDay();assert.equal(f.ev('stage'),8);
-  assert.equal(f.wallet.balance,500);assert.equal(f.ev('earned'),10);assert.equal(f.count('progress'),5);
+  assert.equal(f.wallet.balance,500-fee+10);assert.equal(f.ev('earned'),10);assert.equal(f.count('progress'),5);
   const prog=f.events.filter(e=>e[0]==='progress').map(e=>e[2]);
   assert.deepEqual(prog.map(p=>p.bonus_points),[2,2,2,2,2]);assert.deepEqual(prog.map(p=>p.total_bonus_points),[2,4,6,8,10]);assert.deepEqual(prog.map(p=>p.stage),[1,2,3,4,5]);
   assert.equal(f.el('os-pay').textContent,'10 / 10');
@@ -92,7 +92,7 @@ check('Overtime before any boss ends once as a loss with no points and saves the
 check('Overtime after BONUS keeps the credited points and reports them once as complete',()=>{
   const f=fixture();f.begin();f.nextDay();f.nextDay();const b=f.wallet.balance;assert.equal(b,500-fee+4);f.overtime();
   assert.equal(f.wallet.balance,b);const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],4);assert.equal(end[3],'complete');assert.equal(end[4].stage,3);
-  assert.equal(f.el('os-go').textContent,'扣點再上一次班');
+  assert.equal(f.el('os-go').textContent,'免費再上一次班');
 });
 check('Another shift after the end deducts again and resets BONUS eligibility',()=>{
   const f=fixture();f.begin();f.nextDay();f.overtime();f.begin();

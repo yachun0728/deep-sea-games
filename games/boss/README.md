@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#boss`　分類：跑酷動作　狀態：顯示中
-- 大廳卡片：「遲到了！跳過障礙，別被胖老闆追上。」｜每局 10 點 · 辦公室逃亡
+- 大廳卡片：「遲到了！跳過障礙，別被胖老闆追上。」｜免費遊玩 · 辦公室逃亡
 - 追蹤名稱（GA4 `game_name`）：胖老闆追人，`game_id` 為 `boss`
 - 檔案：`games/boss/card.html`、`games/boss/game.js`、`games/boss/icon.svg`、`games/boss/view.html`；`game.js` 共 177 行、12.6 KB
 
@@ -29,7 +29,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L137 `start`：`S.balance-=amount;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L117 `awardBonus`：`S.balance+=BONUS;`

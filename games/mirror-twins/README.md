@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#mirror-twins`　分類：益智策略　狀態：顯示中
-- 大廳卡片：「同時操控兩位太空人，其中一位左右相反，一起走進傳送艙。」｜每局 10 點 · 10 關
+- 大廳卡片：「同時操控兩位太空人，其中一位左右相反，一起走進傳送艙。」｜免費遊玩 · 10 關
 - 追蹤名稱（GA4 `game_name`）：鏡像雙子，`game_id` 為 `mirror-twins`
 - 檔案：`games/mirror-twins/card.html`、`games/mirror-twins/game.js`、`games/mirror-twins/icon.svg`、`games/mirror-twins/original.html`、`games/mirror-twins/style.css`、`games/mirror-twins/view.html`；`game.js` 共 62 行、5.4 KB
 
@@ -27,7 +27,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L18 `mtValid`：`S.balance-=ENTRY_FEE;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L26 `mtValid`：`S.balance+=got;`
@@ -35,7 +35,7 @@
 **餘額檢查**
 - L15 `mtValid`：`if(ENTRY_FEE>S.balance){mtSay(LOW_MSG,'lose');`
 
-- 入場費常數 `ENTRY_FEE` 在本檔出現 6 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
+- 入場費常數 `ENTRY_FEE` 在本檔出現 4 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）

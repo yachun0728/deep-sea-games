@@ -29,7 +29,7 @@ function ui(){
  const n=floors(),live=st==='run',next=MILESTONES.find(x=>!awarded.has(x));
  setText('sb-floors',n+' 層');setText('sb-score',String(sc));setText('sb-best',best+' 層');setText('sb-pay',fmt(paid)+' 點');
  setText('sb-next',next?next+' 層 · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('sb-amount').disabled=sbBusy;$('sb-go').disabled=live;setText('sb-go',live?'蓋樓中 · 點畫面放下樓層':st==='over'?'扣點再蓋一次':'扣點開始蓋樓');
+ $('sb-amount').disabled=sbBusy;$('sb-go').disabled=live;setText('sb-go',live?'蓋樓中 · 點畫面放下樓層':st==='over'?'免費再蓋一次':'免費開始蓋樓');
  document.querySelectorAll('[data-sb-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.dataset.sbTier))?'step':'false'));
 }
 function end(){
@@ -130,20 +130,20 @@ pops.forEach(p=>{g.globalAlpha=1-p.t;tx(p.s,p.x,p.y-p.t*60,p.c?22:30,p.c||COL[p.
 tx(String(sc),16,112,38,'#fff','left');tx(floors()+' 層 · BONUS +'+paid,16,138,16,'#fff','left');tx('最佳 '+best+' 層',16,160,14,'#ffd23f','left');
 if(st!=='run'){
 g.fillStyle='rgba(27,27,47,.5)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx('蓋樓大師',W/2,250,34,'#ffd23f');tx('到操作區扣點開始',W/2,300,22,'#fff')}
+if(st==='ready'){tx('蓋樓大師',W/2,250,34,'#ffd23f');tx('到操作區免費開始',W/2,300,22,'#fff')}
 else{tx(msg==='collapse'?'大樓倒塌了！':'沒蓋上去！',W/2,215,28,'#ff7a7a');tx(floors()+' 層',W/2,278,52,'#fff');tx('分數 '+sc,W/2,312,20,'#fff');tx('BONUS 已入帳 '+fmt(paid)+' 點',W/2,346,22,paid>0?'#ffd23f':'#fff');if(rec)tx('新紀錄！',W/2,376,20,'#ffd23f');tx('到操作區再蓋一次',W/2,412,20,'#fff')}}}
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
- analytics=AN.start('skybuilder',amount);sbStake=amount;sbBusy=true;S.balance-=amount;save();renderAll();
+ analytics=AN.start('skybuilder',amount);sbStake=amount;sbBusy=true;save();renderAll();
  reset();paid=0;awarded.clear();rec=false;st='run';last=performance.now();say('開工！點畫面放下樓層，越準越穩。');ui();c.focus();
 }
 function act(){
  if(st!=='run'||ph!=='swing'||$('view-skybuilder').hidden||document.hidden)return false;
  const h=hook();drop={x:h.x,y:h.y+10,vy:80,sp:blocks.length};ph='drop';return true}
 $('sb-go').addEventListener('click',start);
-c.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;if(st==='run'){e.preventDefault();c.focus();act()}else say(st==='over'?'這一局已結算。按「扣點再蓋一次」開始新的一局。':'先按「扣點開始蓋樓」。')});
+c.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;if(st==='run'){e.preventDefault();c.focus();act()}else say(st==='over'?'這一局已結算。按「免費再蓋一次」開始新的一局。':'先按「免費開始蓋樓」。')});
 c.addEventListener('contextmenu',e=>e.preventDefault());
 addEventListener('keydown',e=>{if($('view-skybuilder').hidden||document.hidden||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;if(e.key===' '||e.key==='ArrowDown'){e.preventDefault();if(!e.repeat)act()}});
 addEventListener('blur',()=>{last=performance.now()});

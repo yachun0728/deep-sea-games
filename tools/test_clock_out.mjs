@@ -41,7 +41,7 @@ check('Wave 5 clear pays 3 immediately, once, and wave 8 clear pays 7 once',()=>
   f.clear(5);assert.equal(f.wallet.balance,500-fee+3);
   const p=f.events.filter(e=>e[0]==='progress');assert.equal(p.length,1);assert.equal(p[0][2].bonus_points,3);assert.equal(p[0][2].total_bonus_points,3);
   assert.equal(f.count('end'),0);assert.equal(f.busy(),true);
-  f.clear(8);assert.equal(f.wallet.balance,500);assert.equal(f.ev('G.state'),'WIN');assert.equal(f.count('end'),1);assert.equal(f.busy(),false);
+  f.clear(8);assert.equal(f.wallet.balance,500-fee+10);assert.equal(f.ev('G.state'),'WIN');assert.equal(f.count('end'),1);assert.equal(f.busy(),false);
   const e=f.events.find(x=>x[0]==='end');assert.equal(e[2],10);assert.equal(e[3],'complete');
 });
 check('Dying after wave 5 keeps the 3 points; dying before pays nothing; end fires once',()=>{
@@ -57,7 +57,7 @@ check('A cleared wave outside a paid round gives nothing',()=>{
 });
 check('A second round pays its own BONUS again and is charged again',()=>{
   const f=fixture();f.C.begin();f.clear(5);f.clear(8);f.C.ev('resetGame()');f.C.begin();
-  assert.equal(f.wallet.balance,500-fee);assert.equal(f.count('start'),2);f.clear(5);assert.equal(f.wallet.balance,500-fee+3);
+  assert.equal(f.wallet.balance,510-fee*2);assert.equal(f.count('start'),2);f.clear(5);assert.equal(f.wallet.balance,510-fee*2+3);
 });
 check('Best score is saved only when beaten and never touches the wallet',()=>{
   const f=fixture(500,100);f.C.begin();f.C.ev('G.killScore=50;G.waveScoreTotal=30');f.C.ev("gameOver('san')");assert.equal(f.storage.get('deep-sea-clock-out-best'),'100');

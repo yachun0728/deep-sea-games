@@ -5,9 +5,9 @@
 ## 概覽
 
 - 網址：`#pancake`　分類：時機操作　狀態：顯示中
-- 大廳卡片：「半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。」｜每局 10 點 · 只扣入場點數
+- 大廳卡片：「半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。」｜免費遊玩 · 只扣入場點數
 - 追蹤名稱（GA4 `game_name`）：泡麵煎餅翻面，`game_id` 為 `pancake`
-- 檔案：`games/pancake/card.html`、`games/pancake/game.js`、`games/pancake/icon.svg`、`games/pancake/original.html`、`games/pancake/style.css`、`games/pancake/view.html`；`game.js` 共 43 行、3.3 KB
+- 檔案：`games/pancake/card.html`、`games/pancake/game.js`、`games/pancake/icon.svg`、`games/pancake/original.html`、`games/pancake/style.css`、`games/pancake/view.html`；`game.js` 共 43 行、3.0 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「25. 泡麵煎餅翻面 Noodle Pancake（pancake）」（下方「規則摘要」已複製）
 
@@ -28,15 +28,13 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L16 `pancakeValid`：`S.balance-=fee;`
-- L22 `pancakeValid`：`S.balance-=n;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **餘額檢查**
 - L12 `pancakeValid`：`if(S.balance<fee){pancakeUI(LOW_MSG);`
-- L21 `pancakeValid`：`if(!pancakeValid(source)||!PANCAKE.active||n<=0||S.balance<n)return false;`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
@@ -44,7 +42,7 @@
 ## 追蹤（GA4）
 
 - L15 `pancakeValid`：`PANCAKE.analytics=AN.start('pancake',fee,free?{entry_kind:'free_pass'}:undefined);`
-- L23 `pancakeValid`：`AN.progress(PANCAKE.analytics,{phase:'buy_noodles',extra_points:n});`
+- L23 `pancakeValid`：`AN.progress(PANCAKE.analytics,{phase:'free_noodles',extra_points:0});`
 - L29 `pancakeValid`：`AN.end(PANCAKE.analytics,0,'complete',{score:served,cleared:data&&data.passed?1:0,extra_spent_points:PANCAKE.…`
 - L32 `pancakeValid`：`if(pancakeValid(source)&&PANCAKE.active)AN.progress(PANCAKE.analytics,{step:Math.max(0,Math.floor(Number(serv…`
 - L33 `pancakeValid`：`if(pancakeValid(source)&&PANCAKE.active)AN.progress(PANCAKE.analytics,{phase:'revive'},true);`

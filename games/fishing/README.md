@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#fishing`　分類：時機操作　狀態：顯示中
-- 大廳卡片：「按住收線、放開卸力，把大魚拉上岸。」｜每局 10 點 · 無盡挑戰
+- 大廳卡片：「按住收線、放開卸力，把大魚拉上岸。」｜免費遊玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：深海釣手，`game_id` 為 `fishing`
 - 檔案：`games/fishing/card.html`、`games/fishing/game.js`、`games/fishing/icon.svg`、`games/fishing/view.html`；`game.js` 共 113 行、13.0 KB
 
@@ -28,7 +28,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L40 `fiStart`：`S.balance-=stake;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L43 `fiAward`：`S.balance+=b;`
