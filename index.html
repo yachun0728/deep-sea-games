@@ -874,9 +874,9 @@ body.ol-expanded { overflow: hidden; }
 @media(prefers-reduced-motion:reduce){.mm-card{transition:none}.mm-card.hint{animation:none}}
 
 /* The Last Banquet (banquet): all selectors are scoped to .bq-*. Dark, grainy, CRT-lit table in the spirit of low-light horror card rooms. */
-.bq-stage{--bq-ink:#eadfcd;--bq-dim:#ab9e8b;--bq-amber:#dcb46a;--bq-red:#e0392f;--bq-green:#7fe3a0;--bq-line:#4a3436;
+.bq-stage{--bq-ink:#f2e6d0;--bq-dim:#bfa98c;--bq-amber:#e6c277;--bq-red:#e0392f;--bq-green:#f0cf84;--bq-line:#3f5a4a;--bq-head:"Cinzel","Noto Serif TC",Georgia,serif;--bq-body:"Cormorant Garamond","Noto Serif TC",Georgia,serif;font-size:17px;
  position:relative;min-width:0;display:flex;flex-direction:column;gap:10px;padding:14px;overflow:hidden;border:1px solid var(--bq-line);border-radius:var(--radius);
- background:#0b0608;color:var(--bq-ink);outline:none;font-family:"Noto Serif TC","Songti TC","PMingLiU",Georgia,serif}
+ background:#0b0608;color:var(--bq-ink);outline:none;font-family:var(--bq-body)}
 .bq-stage>*{position:relative;z-index:2}
 .bq-stage::before{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(120% 90% at 50% 40%,transparent 50%,rgba(0,0,0,.8) 100%)}
 .bq-stage::after{content:"";position:absolute;inset:-50%;z-index:5;pointer-events:none;opacity:.09;mix-blend-mode:screen;
@@ -885,7 +885,7 @@ body.ol-expanded { overflow: hidden; }
 .bq-stage.is-low::before{box-shadow:inset 0 0 70px 10px rgba(255,40,30,.4);animation:bq-pulse 1.1s ease-in-out infinite}
  background:radial-gradient(50% 55% at 50% 0,rgba(255,190,110,.3),rgba(255,150,70,.09) 55%,transparent 75%);animation:bq-flicker 6s linear infinite}
 .bq-act{margin:0;font-weight:700;font-size:15px;letter-spacing:.14em;color:var(--bq-amber);text-shadow:0 0 8px rgba(255,180,84,.5)}
-.bq-scene{position:relative;height:600px;margin:-14px -14px 0;overflow:hidden;border-radius:var(--radius) var(--radius) 0 0;background:#0a0507 url("games/banquet/assets/bg.webp") center/cover no-repeat}
+.bq-scene{position:relative;height:600px;margin:-14px -14px 0;overflow:hidden;border-radius:var(--radius) var(--radius) 0 0;background:#040b09 url("games/banquet/assets/bg.webp") center/cover no-repeat}
 .bq-scene::after{content:"";position:absolute;inset:0;z-index:7;pointer-events:none;background:linear-gradient(transparent 70%,rgba(5,2,3,.55))}
 .bq-act{position:absolute;left:14px;top:12px;z-index:6;margin:0}
 .bq-dealer-box{position:absolute;left:0;right:0;top:22px;height:320px;z-index:2}
@@ -908,7 +908,7 @@ body.ol-expanded { overflow: hidden; }
 .bq-side.is-turn{border-color:var(--bq-amber);box-shadow:0 0 14px rgba(255,180,84,.35)}
 .bq-side.is-drunk{background:rgba(80,10,50,.7)}
 .bq-hearts{color:var(--bq-red);letter-spacing:.14em;font-size:16px;text-shadow:0 0 8px rgba(224,57,47,.7)}
-.bq-float{position:absolute;right:10px;top:-6px;font:700 24px "Noto Serif TC","Songti TC",Georgia,serif;pointer-events:none;animation:bq-float 1.2s ease-out forwards}
+.bq-float{position:absolute;right:10px;top:-6px;font:700 24px var(--bq-head);pointer-events:none;animation:bq-float 1.2s ease-out forwards}
 .bq-float.is-hit{color:var(--bq-red);text-shadow:0 0 10px rgba(255,60,40,.9)}
 .bq-float.is-heal{color:var(--bq-green);text-shadow:0 0 10px rgba(109,255,154,.9)}
 .bq-chips{display:flex;flex-wrap:wrap;gap:6px;min-height:26px}
@@ -919,7 +919,7 @@ body.ol-expanded { overflow: hidden; }
 .bq-stage.is-flip .bq-table{animation:bq-spin 1s cubic-bezier(.5,0,.3,1)}
 .bq-center{position:absolute;right:14px;top:12px;z-index:6;max-width:44%;text-align:right;pointer-events:none;text-shadow:0 0 6px #000,0 0 10px #000}
 .bq-center p{margin:2px 0;font-size:12px;color:var(--bq-dim)}.bq-center p:first-child{font-weight:700;font-size:14px;color:var(--bq-ink)}
-.bq-reveal{position:absolute;left:50%;top:50%;z-index:6;transform:translate(-50%,-50%) scale(.6);padding:10px 18px;border:2px solid currentColor;border-radius:4px;background:rgba(0,0,0,.88);font:700 26px "Noto Serif TC","Songti TC",Georgia,serif;letter-spacing:.08em;white-space:nowrap;opacity:0;pointer-events:none}
+.bq-reveal{position:absolute;left:50%;top:50%;z-index:6;transform:translate(-50%,-50%) scale(.6);padding:10px 18px;border:2px solid currentColor;border-radius:4px;background:rgba(0,0,0,.88);font:700 26px var(--bq-head);letter-spacing:.08em;white-space:nowrap;opacity:0;pointer-events:none}
 .bq-reveal.is-on{animation:bq-pop 1.5s ease-out}
 .bq-reveal.t-poison,.bq-reveal.t-poison2{color:#d17bff;text-shadow:0 0 14px #b13cff}.bq-reveal.t-nectar,.bq-reveal.t-pnectar{color:#ffd23f;text-shadow:0 0 14px #ffb300}
 .bq-reveal.t-truth{color:#6fd3ff;text-shadow:0 0 14px #19a7ff}.bq-reveal.t-water{color:#aab8c2}
@@ -934,11 +934,11 @@ body.ol-expanded { overflow: hidden; }
 .bq-cup.is-known.t-nectar .bq-gob,.bq-cup.is-known.t-pnectar .bq-gob{filter:drop-shadow(0 0 6px #ffb300)}
 .bq-cup.is-known.t-truth .bq-gob{filter:drop-shadow(0 0 6px #19a7ff)}
 .bq-cup.is-known.t-water .bq-gob,.bq-cup.is-known.t-safe .bq-gob{filter:drop-shadow(0 0 5px #9aa7b3)}
-.bq-num{position:absolute;top:2px;left:3px;z-index:2;text-shadow:0 0 4px #000,0 0 4px #000;font:700 12px "Noto Serif TC","Songti TC",Georgia,serif;color:#fff}
+.bq-num{position:absolute;top:2px;left:3px;z-index:2;text-shadow:0 0 4px #000,0 0 4px #000;font:700 12px var(--bq-head);color:#fff}
 .bq-tag{font-size:10px;line-height:1.1;color:#fff;text-align:center;margin-top:0;text-shadow:0 0 4px #000;max-width:100%;overflow:hidden;white-space:nowrap}
 .bq-cup:disabled{cursor:default;opacity:.85}
 .bq-cup:hover:not(:disabled){transform:scale(calc(var(--s,1)*1.1));border-color:var(--bq-amber)}
-.bq-cup.is-sel{border-color:var(--bq-green);background:rgba(127,227,160,.14);transform:scale(calc(var(--s,1)*1.14));box-shadow:0 0 14px rgba(127,227,160,.5)}
+.bq-cup.is-sel{border-color:var(--bq-green);background:rgba(240,207,132,.14);transform:scale(calc(var(--s,1)*1.14));box-shadow:0 0 14px rgba(240,207,132,.5)}
 .bq-cup.is-claim{border-color:var(--bq-amber);border-style:dashed}
 .bq-cup.t-poison,.bq-cup.t-poison2,.bq-cup.t-danger{color:#d17bff}
 .bq-cup.t-nectar,.bq-cup.t-pnectar{color:#ffd23f}
@@ -951,22 +951,22 @@ body.ol-expanded { overflow: hidden; }
 .bq-actions{display:flex;flex-direction:column;gap:8px}
 .bq-turn{margin:0;font-size:13px;color:var(--bq-amber);min-height:1.4em}
 .bq-row{display:flex;flex-wrap:wrap;gap:8px}
-.bq-btn{flex:1 1 120px;min-height:44px;padding:8px 10px;border:1px solid #4d6a50;border-radius:3px;background:#0b140d;color:var(--bq-ink);font:700 14px "Noto Serif TC","Songti TC",Georgia,serif;cursor:pointer}
-.bq-btn:hover:not(:disabled){background:#17301b;border-color:var(--bq-green)}.bq-btn:disabled{opacity:.35;cursor:default}
+.bq-btn{flex:1 1 120px;min-height:44px;padding:8px 10px;border:1px solid #7a5a34;border-radius:3px;background:#1a0b0f;color:var(--bq-ink);font:700 14px var(--bq-head);cursor:pointer}
+.bq-btn:hover:not(:disabled){background:#3a1519;border-color:var(--bq-green)}.bq-btn:disabled{opacity:.35;cursor:default}
 .bq-btn.bq-danger{border-color:var(--bq-red);color:#ffc4bd}
 .bq-notes p{margin:0 0 4px;font-size:12px;color:var(--bq-dim)}
 .bq-hand-box{display:flex;flex-direction:column;gap:6px}
 .bq-hand-title{margin:0;font-size:12px;color:var(--bq-dim);letter-spacing:.08em}
 .bq-hand{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
-.bq-item{flex:0 0 200px;min-height:76px;padding:8px;border:1px solid #4d6a50;border-radius:3px;background:#0a110b;color:var(--bq-ink);text-align:left;display:flex;flex-direction:row;align-items:center;gap:8px;cursor:pointer;font-family:inherit}
-.bq-item:hover:not(.is-off){border-color:var(--bq-green);background:#112215}
+.bq-item{flex:0 0 200px;min-height:76px;padding:8px;border:1px solid #7a5a34;border-radius:3px;background:#08130f;color:var(--bq-ink);text-align:left;display:flex;flex-direction:row;align-items:center;gap:8px;cursor:pointer;font-family:inherit}
+.bq-item:hover:not(.is-off){border-color:var(--bq-green);background:#2a1216}
 .bq-item b{font-size:14px;color:var(--bq-amber)}.bq-item small{font-size:11px;line-height:1.3;color:var(--bq-dim)}
 .bq-item.needs-cup{border-style:dashed}
 .bq-item.is-off{opacity:.4;cursor:not-allowed}
 .bq-dhand{display:flex;flex-wrap:wrap;gap:6px}
-.bq-back{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:44px;padding:0 6px;border:1px solid #2b3a2e;border-radius:3px;background:#050806;color:#5d745f;font-size:13px}
+.bq-back{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:44px;padding:0 6px;border:1px solid #4a3424;border-radius:3px;background:#0d0507;color:#9a8466;font-size:13px}
 .bq-back.is-open{color:var(--bq-ink);border-color:var(--bq-amber)}
-.bq-empty{margin:0;font-size:12px;color:#5d745f}
+.bq-empty{margin:0;font-size:12px;color:#9a8466}
 .bq-log{margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--bq-dim)}
 .bq-log li:first-child{color:#fff}
 .bq-flash{position:absolute!important;inset:0;z-index:4!important;pointer-events:none;opacity:0}
@@ -998,6 +998,153 @@ body.ol-expanded { overflow: hidden; }
 .bq-chip{display:inline-flex;align-items:center;gap:5px}.bq-chip-ic{width:22px;height:22px;object-fit:contain}
 .bq-reveal{display:flex;align-items:center;gap:10px}.bq-reveal-ic{width:48px;height:48px;object-fit:contain}
 @media(max-width:560px){.bq-item{flex:0 0 78%}}
+
+/* ---------- v7 skin: gothic frames, per-language fonts, item tray ---------- */
+#view-banquet{--bq-ink:#f2e6d0;--bq-dim:#bfa98c;--bq-amber:#e6c277;--bq-green:#f0cf84;--bq-head:"Cinzel","Noto Serif TC",Georgia,serif;--bq-body:"Cormorant Garamond","Noto Serif TC",Georgia,serif}
+#view-banquet .side{font-family:var(--bq-body)}
+.bq-stage[lang=ja],#view-banquet[lang=ja]{--bq-head:"Noto Serif JP",Georgia,serif;--bq-body:"Noto Serif JP",Georgia,serif;font-size:15px}
+.bq-stage[lang=ko],#view-banquet[lang=ko]{--bq-head:"Noto Serif KR",Georgia,serif;--bq-body:"Noto Serif KR",Georgia,serif;font-size:15px}
+.bq-stage[lang=zh-Hant],#view-banquet[lang=zh-Hant]{--bq-head:"Noto Serif TC","Songti TC",Georgia,serif;--bq-body:"Noto Serif TC","Songti TC",Georgia,serif;font-size:15px}
+.bq-stage button,.bq-stage select{font-family:var(--bq-head)}
+.bq-act{font-family:var(--bq-head);font-size:17px;top:46px;left:16px}
+.bq-center{top:46px;right:16px}
+.bq-lang{position:absolute;right:16px;top:12px;z-index:8;max-width:140px;padding:5px 26px 5px 10px;border:1px solid #7a5a34;border-radius:3px;background:rgba(6,16,14,.85);color:var(--bq-ink);font-size:13px;cursor:pointer}
+.bq-lang:focus-visible{outline:2px solid var(--bq-green);outline-offset:2px}
+.bq-scene::before{content:"";position:absolute;inset:0;z-index:8;pointer-events:none;border:30px solid transparent;border-image:url("games/banquet/assets/ui-frame.webp") 90 fill/30px stretch;border-image-slice:90;border-image-outset:0;background:none;box-shadow:none}
+.bq-dealer-box .bq-side-d{top:76px}
+.bq-dhand-wrap{position:absolute;left:16px;top:240px;z-index:6;display:flex;flex-direction:column;align-items:flex-start;gap:4px;max-width:40%}
+.bq-dhand-wrap .bq-hand-title{font-size:11px;text-shadow:0 0 6px #000,0 0 10px #000}
+.bq-dhand{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:5px}
+.bq-back{min-width:34px;height:38px;border-radius:4px;background:rgba(4,12,10,.82)}
+.bq-back-ic{width:30px;height:30px}
+.bq-side{background:rgba(6,18,15,.78);border-color:#7a5a34}
+.bq-ticker{border-left-color:var(--bq-amber);background:rgba(40,120,100,.16);font-size:16px}
+.bq-btn,#view-banquet .go,#view-banquet .chip{box-sizing:border-box;border:0;border-style:solid;border-width:0 44px;border-image:url("games/banquet/assets/ui-btn.webp") 0 169 fill/0 44px stretch;border-image-slice:0 169 fill;border-image-width:0 44px;background:transparent;color:var(--bq-ink);padding:6px 4px;min-height:48px;flex:1 1 150px;text-shadow:0 1px 2px #000;transition:filter .12s,transform .12s;font:700 14px var(--bq-head);white-space:normal;line-height:1.2;cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center}
+#view-banquet .go:disabled,#view-banquet .chip:disabled{opacity:.45;filter:grayscale(.6)}
+#view-banquet .go:hover:not(:disabled),#view-banquet .chip:hover:not(:disabled){filter:brightness(1.3)}
+.bq-btn:hover:not(:disabled){background:transparent;filter:brightness(1.3) saturate(1.1);transform:translateY(-1px)}
+.bq-btn:disabled{opacity:.4;filter:grayscale(.6)}
+.bq-btn.bq-danger{border-color:transparent;color:#ffe3c0;filter:hue-rotate(-14deg) saturate(1.5)}
+.bq-btn.bq-ghost{filter:saturate(.5) brightness(.9)}
+#view-banquet .panel{border:0;border-style:solid;border-width:28px;border-image:url("games/banquet/assets/ui-panel.webp") 60 fill/28px stretch;border-image-slice:60 fill;background:#07110f;color:var(--bq-ink)}
+#view-banquet .panel .go,#view-banquet .panel .chip{width:100%;margin:4px 0;flex:0 0 auto;min-height:52px;height:auto}
+#view-banquet .stats dd{font-size:18px}
+#view-banquet .stats dt,#view-banquet .hint,#view-banquet .msg{color:var(--bq-dim)}
+#view-banquet .rules{border:1px solid #3f5a4a;background:rgba(6,16,14,.6);color:var(--bq-ink)}
+.bq-opts{flex-direction:column}
+.bq-hand-box{padding-top:10px;background:url("games/banquet/assets/ui-div.webp") top center/min(420px,90%) auto no-repeat;gap:8px}
+.bq-hand-box .bq-hand-title{margin-top:14px}
+.bq-hand{display:flex;flex-wrap:wrap;gap:8px;overflow:visible}
+.bq-slot{position:relative;width:76px;min-height:92px;padding:6px 4px 4px;border:1px solid #7a5a34;border-radius:6px;background:radial-gradient(circle at 50% 35%,#143a30,#08130f 75%);color:var(--bq-ink);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;font-family:inherit}
+.bq-slot-ic{width:54px;height:54px;object-fit:contain;filter:drop-shadow(0 2px 4px #000);transition:transform .15s}
+.bq-slot-n{font-size:11px;line-height:1.15;text-align:center;color:var(--bq-dim);max-width:100%;word-break:break-word}
+.bq-slot:hover:not(.is-off) .bq-slot-ic,.bq-slot.is-open .bq-slot-ic{transform:translateY(-3px) scale(1.08)}
+.bq-slot:hover{border-color:var(--bq-green)}
+.bq-slot.is-open{border-color:var(--bq-green);box-shadow:0 0 14px rgba(240,207,132,.45)}
+.bq-slot.needs-cup{border-style:dashed}
+.bq-slot.is-off{opacity:.55}
+.bq-slot:focus-visible{outline:2px solid var(--bq-green);outline-offset:2px}
+.bq-detail{padding:12px;border:1px solid #7a5a34;border-radius:6px;background:linear-gradient(#10261f,#08130f);display:flex;flex-direction:column;gap:10px;animation:bq-in .2s ease-out}
+.bq-detail-h{display:flex;gap:12px;align-items:center}
+.bq-detail-ic{width:64px;height:64px;object-fit:contain;flex:0 0 auto;filter:drop-shadow(0 3px 6px #000)}
+.bq-detail-t{display:flex;flex-direction:column;gap:4px}
+.bq-detail-t b{font-family:var(--bq-head);font-size:18px;color:var(--bq-amber)}
+.bq-detail-t span{font-size:14px;line-height:1.35;color:var(--bq-ink)}
+.bq-why{margin:0;font-size:12px;color:var(--bq-dim)}
+.bq-reveal{font-family:var(--bq-head)}
+@media(max-width:560px){
+ .bq-scene::before{border-width:22px;border-image-width:22px}
+ .bq-lang{right:12px;top:10px}
+ .bq-act{top:42px;left:12px;font-size:15px}.bq-center{top:42px;right:12px}
+ .bq-dealer-box .bq-side-d{top:68px}.bq-dhand-wrap{top:236px;left:12px}
+ .bq-slot{width:68px;min-height:86px}.bq-slot-ic{width:48px;height:48px}
+ .bq-btn{flex:1 1 130px}.bq-btn,#view-banquet .go,#view-banquet .chip{border-width:0 36px;border-image-width:0 36px;font-size:13px}
+ #view-banquet .panel .go,#view-banquet .panel .chip{flex:0 0 auto}
+ #view-banquet .panel{border-width:22px;border-image-width:22px}
+}
+
+.bq-side-d .bq-dhand-wrap{position:static;max-width:none;width:100%;margin-top:2px}
+.bq-side-d .bq-dhand-wrap .bq-hand-title{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.bq-side-d .bq-back{min-width:30px;height:32px;padding:0 3px;font-size:12px}.bq-side-d .bq-back-ic{width:26px;height:26px}
+.bq-side-d .bq-empty{display:none}
+
+/* ---------- v8 layout: one wide landscape stage with overlaid HUD; no event log ---------- */
+.bq-comp,#view-banquet .hint{display:none}
+.bq-hand-box{padding-top:6px;background:none}
+.bq-hand-box .bq-hand-title{margin-top:0}
+@media(min-width:820px){
+ #view-banquet{--bq-w:min(100%,max(960px,min(1240px,calc((100vh - 250px)*16/9))))}
+ #view-banquet .console{grid-template-columns:minmax(0,1fr);max-width:none;margin:0 auto}
+ .bq-stage{position:relative;aspect-ratio:16/9;width:var(--bq-w);margin:0 auto;padding:0;gap:0;overflow:visible;border:0;background:#040b09;border-radius:var(--radius)}
+ .bq-stage>*{position:absolute;z-index:9}
+ .bq-stage::before,.bq-stage::after{border-radius:var(--radius)}
+ .bq-scene{position:absolute!important;inset:0;height:auto;margin:0;border-radius:var(--radius);z-index:1!important}
+ .bq-dealer-box{top:3.5%;height:54%}
+ .bq-table-wrap{left:0;width:100%;bottom:-4%}
+ .bq-table{left:21%;width:58%;top:3%;height:54%}
+ .bq-hands{width:min(32%,320px);bottom:-3%}
+ .bq-ticker{top:14px;left:50%;transform:translateX(-50%);width:min(44%,460px);z-index:10;padding:6px 12px;font-size:15px;text-align:center;border-left:0;border-top:1px solid #7a5a34;border-bottom:1px solid #7a5a34;background:rgba(6,16,14,.78)}
+ .bq-ticker.is-in{animation:none}
+ .bq-chips{right:22px;top:98px;flex-direction:column;align-items:flex-end;flex-wrap:nowrap;gap:5px;min-height:0;z-index:10}
+ .bq-notes{right:22px;top:200px;max-width:220px;text-align:right;z-index:10}
+ .bq-notes p{text-shadow:0 0 6px #000,0 0 10px #000}
+ .bq-side-p{left:20px;bottom:114px;width:132px;flex-direction:column;align-items:flex-start;z-index:10}
+ .bq-hand-box{left:20px;bottom:14px;width:310px;z-index:11}
+ .bq-hand-box .bq-hand-title{display:none}
+ .bq-hand{flex-wrap:nowrap;gap:6px}
+ .bq-slot{width:70px;min-height:86px}.bq-slot-ic{width:50px;height:50px}
+ .bq-detail{position:absolute;left:0;bottom:calc(100% + 10px);width:330px;z-index:20;box-shadow:0 8px 28px rgba(0,0,0,.7)}
+ .bq-actions,.bq-prompt{right:22px;bottom:16px;width:176px;z-index:10}
+ .bq-prompt:not([hidden])+.bq-actions{display:none}
+ .bq-prompt{padding:8px;background:rgba(6,16,14,.85)}
+ .bq-row{flex-direction:column;gap:6px}
+ .bq-actions .bq-btn,.bq-prompt .bq-btn{flex:0 0 auto;width:100%;min-height:40px;font-size:13px;line-height:1.1;border-width:0 30px;border-image-width:0 30px;padding:0}
+ .bq-detail .bq-row{flex-direction:row}
+ .bq-detail .bq-btn{flex:1 1 0;width:auto;min-height:40px}
+ .bq-turn{font-size:12px;text-shadow:0 0 6px #000,0 0 10px #000;text-align:right;min-height:0}
+ .bq-center{top:48px;right:22px}
+ .bq-lang{right:22px}
+ .bq-act{left:22px;top:16px}
+ .bq-dealer-box .bq-side-d{left:20px;top:56px}
+ /* control strip: one slim row under the stage */
+ #view-banquet .panel{width:var(--bq-w);margin:6px auto 0;box-sizing:border-box;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:10px;border:0;border-top:1px solid #8a6d3b;border-radius:0 0 8px 8px;background:linear-gradient(#0b1c17,#050d0b);padding:6px 14px}
+ #view-banquet .panel .stats{flex:1 1 auto;display:flex;gap:18px;margin:0}
+ #view-banquet .panel .stats>div{display:flex;gap:6px;align-items:baseline}
+ #view-banquet .panel .stats dt{font-size:11px}#view-banquet .panel .stats dd{font-size:14px;margin:0}
+ #view-banquet .panel .go,#view-banquet .panel .chip{flex:0 0 auto;width:auto;margin:0;min-height:34px;min-width:0;padding:0 4px;font-size:12px;border-width:0 24px;border-image-width:0 24px}
+ #view-banquet .panel .go{min-width:120px}
+ #view-banquet .bq-opts{flex-direction:row;margin:0;gap:8px;flex:0 0 auto}
+ #view-banquet .bq-opts .chip{flex:0 0 auto}
+ #view-banquet .panel .msg{display:none}
+ #view-banquet .rules{width:var(--bq-w);margin:8px auto 0;box-sizing:border-box}
+}
+@media(min-width:820px) and (max-width:1100px){
+ .bq-cup{width:60px;height:104px;margin:-92px 0 0 -30px}.bq-gob{height:82px}
+ .bq-side-p,.bq-dealer-box .bq-side-d{width:118px;font-size:12px}
+ .bq-slot{width:62px;min-height:78px}.bq-slot-ic{width:44px;height:44px}.bq-slot-n{font-size:10px}
+ .bq-hand-box{width:280px}.bq-actions,.bq-prompt{width:160px}
+}
+@media(max-width:819px){
+ .bq-ticker{font-size:15px}
+ #view-banquet .panel{flex-direction:row;flex-wrap:wrap;gap:8px;border-width:20px;border-image-width:20px;padding:0 2px}
+ #view-banquet .panel .stats{flex:1 1 100%}
+ #view-banquet .panel .go{flex:1 1 100%;width:auto;margin:0;min-height:48px}
+ #view-banquet .panel .chip{flex:1 1 40%;width:auto;margin:0;min-height:44px;font-size:12px}
+ #view-banquet .bq-opts{display:contents}
+ #view-banquet .panel .msg{flex:1 1 100%;margin:0;font-size:14px}
+}
+
+/* ---------- ambience (all CSS, decorative) ---------- */
+.bq-scene::after{content:"";position:absolute;inset:0;z-index:7;pointer-events:none;background:
+ radial-gradient(ellipse at 50% 38%,rgba(255,214,140,.10),transparent 55%),
+ radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.55) 100%);animation:bq-flick 3.2s ease-in-out infinite alternate}
+@keyframes bq-flick{0%{opacity:.75}35%{opacity:1}60%{opacity:.82}100%{opacity:.95}}
+.bq-scene .bq-dust{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden}
+.bq-dust i{position:absolute;bottom:-8px;width:3px;height:3px;border-radius:50%;background:rgba(255,226,160,.7);box-shadow:0 0 6px rgba(255,214,140,.8);animation:bq-rise linear infinite}
+@keyframes bq-rise{0%{transform:translate(0,0);opacity:0}15%{opacity:.8}100%{transform:translate(30px,-560px);opacity:0}}
+.bq-btn:not(:disabled)::after,#view-banquet .go:not(:disabled)::after{content:none}
+.bq-cup.is-sel,.bq-cup.sel{filter:drop-shadow(0 0 14px rgba(240,207,132,.75))}
+@media(prefers-reduced-motion:reduce){.bq-scene::after,.bq-dust i{animation:none}}
 
 #view-frontier{--ft-ink:#e9eddc;--ft-line:#ffffff1a;--ft-gold:#efce8b;color:var(--ft-ink)}
 #view-frontier .ft-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px;align-items:start}
@@ -2324,11 +2471,13 @@ html.frontier-immersive{overflow:hidden}
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>你是深夜的一隻蚊子，要在睡著的人身上吸滿血，再從左上角窗戶的破洞逃出去。放開空白鍵蚊子往上飄，按住往下俯衝；降落在臉頰、手臂或腳上，持續按住就開始吸血，放開就起飛。降落時速度太快，蚊子會折斷口器、暈眩 1 秒。</p><p>吸得越多，蚊子越重，上升越慢、俯衝越快。警覺值會隨著飛行與吸血上升：臉最快也最吵，腳最慢最安靜，靠近耳朵飛和飛到高處也會更吵。吸血進度到 90% 以後，警覺值上升速度減半。</p><p>睡著的人有三種方式拍死你。吸血時皮膚出現紅色波紋，1.2 秒後巨手會抓下來，要立刻放開飛走。棉被隆起代表要翻身，翻身時畫面下方會全部被壓到，要先往上飛。警覺值滿了會開燈，2 秒內飛進左上角窗戶的破洞才能逃生，但沒吸滿就逃走不算過關。</p><p>固定獎勵：吸血進度每達 25%、50%、75%，分別立即入帳 1、2、3 點；吸滿 100% 並成功飛出窗戶，再入帳 4 點，每局最多 10 點。每個門檻每局只入帳一次，被拍扁後已入帳的點數不會收回，結束時也不會另外結算。吸血百分比與最佳紀錄只是記錄，不直接換點數。這是操作技巧遊戲，結果取決於你的時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最佳紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
-  <section class="view" id="view-banquet" hidden>
-    <div class="console"><div class="bq-stage" id="bq-stage" tabindex="-1">
+  <section class="view" id="view-banquet" data-i18n-ignore hidden>
+    <div class="console"><div class="bq-stage" id="bq-stage" tabindex="-1" lang="en">
 
-      <div class="bq-scene" id="bq-scene"><p class="bq-act" id="bq-act">第一幕：試探</p>
-      <div class="bq-center" id="bq-center"><p id="bq-center-1">晚宴尚未開始</p><p id="bq-center-2"></p></div>
+      <div class="bq-scene" id="bq-scene"><div class="bq-dust" aria-hidden="true"><i style="left:8%;animation-duration:11s;animation-delay:-2s"></i><i style="left:18%;animation-duration:14s;animation-delay:-7s"></i><i style="left:27%;animation-duration:12s;animation-delay:-4s"></i><i style="left:36%;animation-duration:16s;animation-delay:-9s"></i><i style="left:47%;animation-duration:13s;animation-delay:-1s"></i><i style="left:58%;animation-duration:15s;animation-delay:-6s"></i><i style="left:66%;animation-duration:11s;animation-delay:-3s"></i><i style="left:75%;animation-duration:17s;animation-delay:-10s"></i><i style="left:84%;animation-duration:12s;animation-delay:-5s"></i><i style="left:92%;animation-duration:14s;animation-delay:-8s"></i></div>
+      <select class="bq-lang" id="bq-lang" aria-label="Language" data-bq-aria="v.lang"><option value="en">English</option><option value="es">Español</option><option value="de">Deutsch</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="zh">中文</option></select>
+      <p class="bq-act" id="bq-act"></p>
+      <div class="bq-center" id="bq-center"><p id="bq-center-1"></p><p id="bq-center-2"></p></div>
       <div class="bq-dealer-box" id="bq-dealerbox" data-pose="idle">
         <div class="bq-dealer-imgs" aria-hidden="true">
           <img class="bq-pose bq-p-idle" src="games/banquet/assets/dealer-idle.webp" alt="" draggable="false">
@@ -2338,40 +2487,40 @@ html.frontier-immersive{overflow:hidden}
           <img class="bq-pose bq-p-hurt" src="games/banquet/assets/dealer-hurt.webp" alt="" draggable="false">
           <img class="bq-pose bq-p-victory" src="games/banquet/assets/dealer-victory.webp" alt="" draggable="false">
         </div>
-        <div class="bq-side bq-side-d" id="bq-side-d"><b>莊家</b><span class="bq-hearts" id="bq-hp-d" aria-hidden="true"></span><span id="bq-hp-d-t">生命 5/5</span><span id="bq-dr-d">酒醉 0/5</span><span id="bq-items-d">道具 0</span></div>
+        <div class="bq-side bq-side-d" id="bq-side-d"><b data-bq="who.d.N"></b><span class="bq-hearts" id="bq-hp-d" aria-hidden="true"></span><span id="bq-hp-d-t"></span><span id="bq-dr-d"></span><span id="bq-items-d"></span><div class="bq-dhand-wrap"><p class="bq-hand-title" id="bq-dhand-t"></p><div class="bq-dhand" id="bq-dhand"></div></div></div>
       </div>
-      <div class="bq-table-wrap"><img class="bq-table-img" src="games/banquet/assets/table.webp" alt="" aria-hidden="true" draggable="false"><div class="bq-table" id="bq-table" role="group" aria-label="圓桌上的酒杯，點選一杯">
+      <div class="bq-table-wrap"><img class="bq-table-img" src="games/banquet/assets/table.webp" alt="" aria-hidden="true" draggable="false"><div class="bq-table" id="bq-table" role="group" data-bq-aria="v.table">
         <div class="bq-reveal" id="bq-reveal" aria-hidden="true"></div>
       </div></div><img class="bq-hands" id="bq-hands" src="games/banquet/assets/hands.webp" alt="" aria-hidden="true" draggable="false">
       </div>
       <div class="bq-chips" id="bq-chips" aria-hidden="true"></div>
       <p class="bq-comp" id="bq-comp"></p>
       <p class="bq-ticker" id="bq-ticker" aria-hidden="true"></p>
-      <div class="bq-side bq-side-p" id="bq-side-p"><b>你</b><span class="bq-hearts" id="bq-hp-p" aria-hidden="true"></span><span id="bq-hp-p-t">生命 5/5</span><span id="bq-dr-p">酒醉 0/5</span><span id="bq-items-p">道具 0</span></div>
+      <div class="bq-side bq-side-p" id="bq-side-p"><b data-bq="who.p.N"></b><span class="bq-hearts" id="bq-hp-p" aria-hidden="true"></span><span id="bq-hp-p-t"></span><span id="bq-dr-p"></span><span id="bq-items-p"></span></div>
       <div class="bq-prompt" id="bq-prompt" hidden>
         <p id="bq-prompt-t" aria-live="assertive"></p>
-        <div class="bq-row"><button class="bq-btn" id="bq-believe" type="button">相信並喝下</button><button class="bq-btn bq-danger" id="bq-doubt" type="button">質疑</button></div>
+        <div class="bq-row"><button class="bq-btn" id="bq-believe" type="button" data-bq="v.believe"></button><button class="bq-btn bq-danger" id="bq-doubt" type="button" data-bq="v.doubt"></button></div>
       </div>
       <div class="bq-actions" id="bq-actions">
-        <p class="bq-turn" id="bq-turn" aria-live="polite">按右側「開始晚宴」</p>
-        <div class="bq-row" id="bq-act-row"><button class="bq-btn" id="bq-self" type="button">自己喝下</button><button class="bq-btn" id="bq-toast" type="button">直接敬給莊家</button><button class="bq-btn" id="bq-silver" type="button">銀蓋宣稱是瓊漿</button></div>
+        <p class="bq-turn" id="bq-turn" aria-live="polite"></p>
+        <div class="bq-row" id="bq-act-row"><button class="bq-btn" id="bq-self" type="button" data-bq="v.self"></button><button class="bq-btn" id="bq-toast" type="button" data-bq="v.toast"></button><button class="bq-btn" id="bq-silver" type="button" data-bq="v.silver"></button></div>
       </div>
       <div class="bq-notes" id="bq-notes" aria-live="polite"></div>
-      <div class="bq-hand-box"><p class="bq-hand-title" id="bq-dhand-t"></p><div class="bq-dhand" id="bq-dhand"></div><p class="bq-hand-title">你的道具</p><div class="bq-hand" id="bq-hand" role="group" aria-label="你的道具"></div></div>
-      <div class="bq-log-box"><p class="bq-hand-title">事件紀錄（最新在上）</p><ol class="bq-log" id="bq-log"></ol></div>
+      <div class="bq-hand-box" id="bq-hand-box"><p class="bq-hand-title" data-bq="v.myitems"></p><div class="bq-hand" id="bq-hand" role="group" data-bq-aria="v.myitems"></div><div class="bq-detail" id="bq-detail" hidden></div></div>
+
       <div class="bq-flash" id="bq-flash" aria-hidden="true"></div>
     </div>
-      <div class="side"><section class="panel" aria-label="最後的晚餐操作">
-        <dl class="stats"><div><dt>目前進度</dt><dd id="bq-stage-t">未開始</dd></div><div><dt>本局 BONUS</dt><dd id="bq-bonus">0 點</dd></div><div><dt>勝場</dt><dd id="bq-best">0 場</dd></div></dl>
+      <div class="side"><section class="panel" data-bq-aria="v.panel">
+        <dl class="stats"><div><dt data-bq="v.progress"></dt><dd id="bq-stage-t"></dd></div><div><dt data-bq="v.bonus"></dt><dd id="bq-bonus"></dd></div><div><dt data-bq="v.winsl"></dt><dd id="bq-best"></dd></div></dl>
         <input id="bq-amount" type="hidden" value="0">
-        <button class="go" id="bq-go" type="button" data-mode="bet">開始晚宴</button>
-        <button class="chip" id="bq-quit" type="button" hidden>放棄本局</button>
-        <div class="bq-opts"><button class="chip" id="bq-adv" type="button" aria-pressed="false">進階模式：銀蓋吹牛（關）</button><button class="chip" id="bq-mute" type="button" aria-pressed="false">音效：開</button></div>
-        <p class="msg" id="bq-msg" aria-live="polite">莊家已經入席。開始後開始，先選一杯酒，再決定自己喝或敬給莊家。</p>
-        <p class="hint">先點選圓桌上的酒杯（或按數字鍵），再按下方行動。道具要選杯時，沒選杯不會消耗。劇毒會扣血，瓊漿回血並再行動，真言水會公開手牌。酒醉 3 以上時情報可能是幻覺。</p>
+        <button class="go" id="bq-go" type="button" data-mode="bet"></button>
+        <button class="chip" id="bq-quit" type="button" hidden></button>
+        <div class="bq-opts"><button class="chip" id="bq-adv" type="button" aria-pressed="false"></button><button class="chip" id="bq-mute" type="button" aria-pressed="false"></button></div>
+        <p class="msg" id="bq-msg" aria-live="polite"></p>
+        <p class="hint" data-bq="v.hint"></p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法與點數</summary><p>基礎版沒有銀蓋吹牛，只有自己喝、直接敬酒與道具；在右側打開「進階模式」才會出現銀蓋宣稱與質疑，下面提到銀蓋的規則都只適用於進階模式。</p><p>你和莊家各有 5 點生命，輪流處理桌上來路不明的酒杯。每幕開始時公開各種酒的杯數，但不公開哪一杯是哪種：第一幕 4 杯（劇毒 2、瓊漿 1、真言水 1），第二幕 6 杯（劇毒 3、瓊漿 2、真言水 1），第三幕 8 杯（劇毒 4、瓊漿 2、真言水 2）。每幕雙方各抽道具（2、3、4 件），道具最多持有 4 件，沒用完的會留到下一幕。</p><p>輪到你時可以先用道具，再選一杯：自己喝下、直接敬給莊家（他一定要喝，你保有回合，除非他喝到瓊漿），或蓋上銀蓋宣稱那杯是瓊漿。莊家可以相信並喝下，或質疑。質疑成功，說謊的人自己喝下並多醉 1，回合交給質疑的人；質疑失敗（那杯真的是普通瓊漿），質疑的人被迫喝下、不回血、不能再行動，還要隨機棄掉一件道具，回合交回敬酒的人。每次銀蓋行動後，圓桌會轉一個位置，杯子的編號和內容跟著杯子走。</p><p>劇毒讓飲用者失去 1 點生命；瓊漿回復 1 點生命並再行動一次（每幕每人最多回血 2 次）；真言水會公開飲用者的全部手牌，沒有手牌時改為隨機公開桌上一杯。每喝一杯，酒醉加 1。酒醉 3 到 4 時，銀針和聞香有一半機率顯示錯誤情報，劇毒也會多扣 1 點。酒醉到 5 會醉倒翻桌：酒醉歸零、回復 1 點生命、跳過自己的下一次行動，桌上所有酒杯重新洗牌，已知情報全部作廢。每幕結束雙方酒醉各減 1。</p><p>十種道具：銀針（查看一杯）、聞香（數兩杯裡的危險酒）、醒酒藥（回 1 血、酒醉減 2，用後本回合不能再用道具）、烈酒摻雜（下一杯劇毒固定 2 點、瓊漿加倍）、偷天換日（劇毒、瓊漿、真言水依序輪替）、勸酒令（莊家下次行動必須自己喝）、乾杯！（你和莊家各喝一次同一杯）、轉盤（全部重新洗牌）、濃縮毒粉（劇毒變雙倍、瓊漿變毒瓊漿）、稀釋冰塊（雙倍劇毒變劇毒、劇毒變清水、毒瓊漿變瓊漿）。同名道具每回合最多用一次。</p><p>任一方生命歸零就輸。第三幕結束時生命較高的獲勝；生命相同進入 3 分鐘延長賽（每輪 5 杯：劇毒 3、真言水 2），時間到比生命，仍相同為平手。莊家不會偷看你的手牌，也不知道你查到了什麼。</p><p>BONUS 為固定獎勵、立即入帳：撐過第一幕 +1 點、撐過第二幕 +2 點、撐過第三幕 +3 點、贏得這場晚宴 +2 點；每項每局只發一次，全拿最多 8 點。分數不直接換點數，結果取決於判斷、記憶與機率，沒有任何下注。已入帳的點數不會因為之後輸掉而收回。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。勝場保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+    <details class="rules"><summary data-bq="v.rulesT"></summary><p data-bq="v.r1"></p><p data-bq="v.r2"></p><p data-bq="v.r3"></p><p data-bq="v.r4"></p><p data-bq="v.r5"></p><p data-bq="v.r6"></p><p data-bq="v.r7"></p><p data-bq="v.r8"></p></details>
   </section>
 
 </div>
@@ -19083,37 +19232,40 @@ ui();draw();requestAnimationFrame(loop);
       }
     };
   })();
+/* Generated by tools/banquet_i18n.py; edit that file, not this one. ASCII-escaped on purpose. */
+var BQ_I18N={"en":{"who.p.S":"You","who.p.O":"you","who.p.D":"you","who.p.N":"You","who.d.S":"The Host","who.d.O":"the Host","who.d.D":"the Host","who.d.N":"Host","sep":" ","act.1":"Act I: Probe","act.2":"Act II: Gamble","act.3":"Act III: Death Duel","act.4":"Overtime: Sudden Death","act.s1":"Act I","act.s2":"Act II","act.s3":"Act III","act.s4":"Overtime","act.none":"The banquet has not started","ty.poison":"Poison","ty.poison2":"Double Poison","ty.nectar":"Nectar","ty.pnectar":"Poisoned Nectar","ty.truth":"Truth Water","ty.water":"Water","ty.safe":"Safe","ty.danger":"Dangerous","it.needle.n":"Silver Needle","it.needle.d":"Pick a cup and reveal its wine.","it.scent.n":"Sniff","it.scent.d":"Pick a cup; count the dangerous wine in it and the next cup.","it.sober.n":"Sobering Draught","it.sober.d":"+1 HP, Drunk \u22122; no more items this turn.","it.liquor.n":"Spiked Liquor","it.liquor.d":"Next cup: poison is fixed at 2, nectar is doubled.","it.change.n":"Sleight of Hand","it.change.d":"Poison \u2192 Nectar \u2192 Truth Water \u2192 Poison.","it.decree.n":"Toast Decree","it.decree.d":"The opponent must drink on their next action.","it.cheers.n":"Cheers!","it.cheers.d":"You and the opponent each drink the same cup once.","it.spin.n":"Spin the Wheel","it.spin.d":"Reshuffle all cups; all intel is void.","it.powder.n":"Concentrated Powder","it.powder.d":"Poison +1 damage; nectar becomes poisoned nectar.","it.ice.n":"Diluting Ice","it.ice.d":"Double Poison \u2192 Poison; Poison \u2192 Water; Poisoned Nectar \u2192 Nectar.","it.needcup":"(select a cup first)","cu.turn":"It's not your turn.","cu.now":"You can't use items right now.","cu.none":"You don't have that item.","cu.lock":"After a Sobering Draught you cannot use more items this turn.","cu.once":"Each item can be used once per turn.","cu.decreed":"The opponent is already under a Toast Decree.","cu.cheers":"Under a Toast Decree: you must drink it yourself.","cu.nocup":"There are no cups on the table.","it.pick":"Select a cup first, then use \u201c{item}\u201d.","it.bad":"\u201c{item}\u201d cannot be used on this wine; the item was not spent.","m.needle":"The needle shows #{id} is \u201c{type}\u201d{maybe}.","m.maybe":" (you are drunk: it may be an illusion)","l.start":"{act} begins. {n} cups on the table; both sides draw items.","l.needle":"{a.S} used the Silver Needle on #{id}.","l.scent":"{a.S} sniffed {ids}.","l.sober":"{a.S} drank the Sobering Draught: +1 HP, Drunk \u22122.","l.liquor":"{a.S} used Spiked Liquor: the next cup is intensified.","l.decree":"{a.S} used the Toast Decree: {o.S} must drink the next cup themselves.","l.spin":"{a.S} spun the wheel: all cups reshuffled, known intel void.","l.change":"{a.S} used Sleight of Hand on #{id}.","l.powder":"{a.S} sprinkled Concentrated Powder on #{id}.","l.ice":"{a.S} dropped Diluting Ice into #{id}.","l.cheers":"{a.S} called Cheers!: both drink #{id} once.","l.drank":"{a.S} drank #{id}: {type}.","l.lose":"{x.S} lost {n} HP.","l.heal":"{a.S} recovered {n} HP.","l.noheal":"No healing.","l.healcap":"Healing limit for this act reached.","l.again":"{a.S} may act again.","l.reveal":"Hand revealed: {a.N}.","l.rand":"Randomly revealed cup #{id} on the table.","l.drunkhurt":"Being drunk makes poison hurt more.","l.faint":"{a.S} passes out and flips the table: Drunk reset, +1 HP, next action skipped, cups reshuffled.","l.self":"{a.S} chose to drink #{id} themselves.","l.offer":"{a.S} offered #{id} straight to {o.D}.","l.claim":"{a.S} covered #{id} with the silver lid, claimed it was nectar, and offered it to {o.D}.","l.believe":"{a.S} chose to believe and drank #{id}.","l.truenectar":"It really was nectar: both sides Drunk \u22121.","l.liar":"{a.S} was caught lying: Drunk +1 extra.","l.doubtok":"{a.S} doubted successfully! #{id} is not nectar; {o.S} must drink it.","l.doubtfail":"{a.S} doubted wrongly: #{id} really was nectar. {a.S} must drink it: no healing, no extra action.","l.discard":"{a.S} discarded a random item: {item}.","l.rot":"The round table turned one seat.","l.skip":"{a.S} is too drunk and skips this action.","l.pay":"BONUS +{n} credited: {label}.","pay.a1":"Survived Act I","pay.a2":"Survived Act II","pay.a3":"Survived Act III","pay.win":"Won the banquet","l.cupsout":"All cups are gone: both sides Drunk \u22121.","l.tie":"Act III ended with equal HP! A 3-minute overtime begins.","l.ot":"Overtime: a new round of cups.","l.otend":"Overtime is up! Comparing HP.","e.win":"You won the banquet!","e.lose":"The Host won the banquet.","e.draw":"Equal HP: a draw.","l.begin":"The banquet begins. You act first.","l.quit":"You forfeited this round.","h.win":"You win!","h.quit":"You forfeited this round.","h.lose":"The Host wins.","h.draw":"Draw.","h.earned":"BONUS credited this round: {n} pts.","h.none":"No extra achievement reward this round.","u.cup":"Cup #{id}{info}{claim}","u.known":", intel you hold: {label}","u.unknown":", contents unknown","u.claimed":", silver lid claims nectar","u.noitems":"No items","u.dopen":"Host's items (revealed)","u.dhid":"Host's items ({n}, contents unknown)","u.scentnote":"Sniff: {ids} \u2014 {n} dangerous cups{maybe}.","u.maybe":" (may be an illusion)","u.seen":"The Host has seen your hand.","u.hp":"HP {a}/{b}","u.dr":"Drunk {a}/{b}{tip}","u.tipsy":" (tipsy)","u.items":"Items {n}","u.comp":"This act: Poison {a}, Nectar {b}, Truth Water {c} \u00b7 {n} cups left \u00b7 Drawn: Poison {x}, Nectar {y}, Truth Water {z}{w}","u.compwater":", Water {w}","u.compidle":"The number of each wine is revealed at the start of every act.","u.cups":"{n} cups left on the table","u.cwin":"You win","u.close":"The Host wins","u.cdraw":"Draw","u.again":"Press the button for another round","u.press":"Press Start","u.yourturn":"Your turn","u.hostturn":"The Host's turn","u.over":"This round is over.","u.pressgo":"Press \u201cStart Banquet\u201d.","u.pending":"The Host covered a cup with the silver lid. Your call.","u.think":"The Host is thinking\u2026","u.decreed":"Toast Decree on you: this time you must drink it yourself.","u.selected":"Selected #{id}: decide what to do with this cup.","u.selfirst":"Select a cup first, then decide what to do with it.","u.advon":"Advanced mode: Silver-Lid Bluff (on)","u.advoff":"Advanced mode: Silver-Lid Bluff (off)","u.soundon":"Sound: on","u.soundoff":"Sound: off","u.claimq":"The Host claims #{id} is nectar. Believe and drink, or doubt?","u.going":"Banquet in progress","u.goagain":"Another banquet","u.go":"Start Banquet","u.quitarm":"Press again to confirm","u.quit":"Forfeit round","u.notstarted":"Not started","u.pts":"{n} pts","u.wins":"{n} wins","u.pickfirst":"Select a cup first.","u.startadv":"The banquet begins! Select a cup, then drink it, offer it to the Host, or cover it with the silver lid to bluff.","u.start":"The banquet begins! Select a cup, then drink it or offer it to the Host.","u.bonusmsg":"BONUS +{n} credited: {label}.","v.host":"Host","v.you":"You","v.self":"Drink it myself","v.toast":"Offer it to the Host","v.silver":"Silver lid: claim nectar","v.believe":"Believe and drink","v.doubt":"Doubt","v.table":"Cups on the round table; pick one","v.myitems":"Your items","v.log":"Event log (newest first)","v.panel":"The Last Banquet controls","v.progress":"Progress","v.bonus":"This round BONUS","v.winsl":"Wins","v.msg":"The Host has taken his seat. Press Start, select a cup, then drink it or offer it to the Host.","v.hint":"Select a cup on the table first (or press its number key), then use an action. Items that need a cup are not spent if none is selected. Poison costs HP; nectar heals and gives another action; truth water reveals a hand. From Drunk 3, intel can be an illusion.","v.rulesT":"How to play and BONUS","v.r1":"The base game has no silver-lid bluffing: only drinking, offering and items. Turn on \u201cAdvanced mode\u201d to add silver-lid claims and doubts; every silver-lid rule below applies to advanced mode only.","v.r2":"You and the Host each have 5 HP and take turns dealing with the mysterious cups on the table. At the start of each act the number of each wine is revealed, but not which cup is which: Act I has 4 cups (Poison 2, Nectar 1, Truth Water 1), Act II has 6 (Poison 3, Nectar 2, Truth Water 1), Act III has 8 (Poison 4, Nectar 2, Truth Water 2). Each act both sides draw items (2, 3, 4); you can hold at most 4, and unused items carry over.","v.r3":"On your turn you may use items first, then pick a cup: drink it yourself, or offer it straight to the Host (he must drink, and you keep the turn unless he drinks nectar), or cover it with the silver lid and claim it is nectar. The Host can believe and drink, or doubt. A successful doubt makes the liar drink it with +1 Drunk and passes the turn to the doubter; a failed doubt (it really was plain nectar) forces the doubter to drink with no healing and no extra action, discard a random item, and the turn returns to the one who offered. After every silver-lid action the table turns one seat; cup numbers and contents move with the cups.","v.r4":"Poison costs the drinker 1 HP; nectar restores 1 HP and gives another action (each side can heal at most twice per act); truth water reveals all of the drinker\u2019s items, or a random table cup if they have none. Each cup drunk adds 1 Drunk. At Drunk 3\u20134, the Silver Needle and Sniff show wrong intel half the time, and poison costs 1 extra HP. At Drunk 5 you pass out and flip the table: Drunk resets, +1 HP, your next action is skipped, all cups are reshuffled and all known intel is void. At the end of each act both sides lose 1 Drunk.","v.r5":"Ten items: Silver Needle (inspect one cup), Sniff (count dangerous wine in two cups), Sobering Draught (+1 HP, Drunk \u22122, no more items this turn), Spiked Liquor (next cup: poison fixed at 2, nectar doubled), Sleight of Hand (poison, nectar, truth water rotate in order), Toast Decree (the Host must drink on his next action), Cheers! (you and the Host each drink the same cup once), Spin the Wheel (reshuffle everything), Concentrated Powder (poison becomes double, nectar becomes poisoned nectar), Diluting Ice (double poison \u2192 poison, poison \u2192 water, poisoned nectar \u2192 nectar). Each item can be used once per turn.","v.r6":"Whoever reaches 0 HP loses. When Act III ends, the higher HP wins; equal HP leads to a 3-minute overtime (5 cups per round: Poison 3, Truth Water 2); when time runs out HP is compared, and equal HP is a draw. The Host never peeks at your hand and does not know what you found out.","v.r7":"BONUS is a fixed reward credited immediately: surviving Act I +1, Act II +2, Act III +3, winning the banquet +2; each is paid once per round, 8 at most. Score is not converted directly into points; the result depends on judgment, memory and chance, and there are no wagers. Credited points are never taken back if you lose later.","v.r8":"Switching games or a background tab pauses the game and it resumes when you return. Refreshing forfeits the round; credited points are kept. Wins are saved in your browser; points are shared with the other games and have no cash value.","v.use":"Use","v.close":"Close","v.lang":"Language"},"es":{"who.p.S":"T\u00fa","who.p.O":"a ti","who.p.D":"a ti","who.p.N":"T\u00fa","who.d.S":"El anfitri\u00f3n","who.d.O":"al anfitri\u00f3n","who.d.D":"al anfitri\u00f3n","who.d.N":"Anfitri\u00f3n","sep":" ","act.1":"Acto I: Tanteo","act.2":"Acto II: Apuesta","act.3":"Acto III: Duelo a muerte","act.4":"Pr\u00f3rroga: Muerte s\u00fabita","act.s1":"Acto I","act.s2":"Acto II","act.s3":"Acto III","act.s4":"Pr\u00f3rroga","act.none":"El banquete no ha empezado","ty.poison":"Veneno","ty.poison2":"Doble veneno","ty.nectar":"N\u00e9ctar","ty.pnectar":"N\u00e9ctar envenenado","ty.truth":"Agua de la verdad","ty.water":"Agua","ty.safe":"Seguro","ty.danger":"Peligroso","it.needle.n":"Aguja de plata","it.needle.d":"Elige una copa y revela su vino.","it.scent.n":"Olfatear","it.scent.d":"Elige una copa y cuenta el vino peligroso en ella y en la siguiente.","it.sober.n":"Poci\u00f3n de sobriedad","it.sober.d":"+1 PV, Embriaguez \u22122; no m\u00e1s objetos este turno.","it.liquor.n":"Licor adulterado","it.liquor.d":"Pr\u00f3xima copa: el veneno hace 2 fijos y el n\u00e9ctar se duplica.","it.change.n":"Cambiazo","it.change.d":"Veneno \u2192 n\u00e9ctar \u2192 agua de la verdad \u2192 veneno.","it.decree.n":"Brindis forzado","it.decree.d":"El rival debe beber en su pr\u00f3xima acci\u00f3n.","it.cheers.n":"\u00a1Salud!","it.cheers.d":"T\u00fa y el rival beb\u00e9is una vez de la misma copa.","it.spin.n":"Girar la ruleta","it.spin.d":"Se barajan todas las copas; la informaci\u00f3n se anula.","it.powder.n":"Polvo concentrado","it.powder.d":"Veneno +1 de da\u00f1o; el n\u00e9ctar pasa a n\u00e9ctar envenenado.","it.ice.n":"Hielo diluyente","it.ice.d":"Doble veneno \u2192 veneno; veneno \u2192 agua; n\u00e9ctar envenenado \u2192 n\u00e9ctar.","it.needcup":"(elige una copa antes)","cu.turn":"No es tu turno.","cu.now":"Ahora no puedes usar objetos.","cu.none":"No tienes ese objeto.","cu.lock":"Tras la poci\u00f3n de sobriedad no puedes usar m\u00e1s objetos este turno.","cu.once":"Cada objeto se puede usar una vez por turno.","cu.decreed":"El rival ya est\u00e1 bajo un brindis forzado.","cu.cheers":"Bajo un brindis forzado: debes beber t\u00fa mismo.","cu.nocup":"No hay copas en la mesa.","it.pick":"Elige una copa y luego usa \u00ab{item}\u00bb.","it.bad":"\u00ab{item}\u00bb no sirve con este vino; el objeto no se gast\u00f3.","m.needle":"La aguja indica que #{id} es \u00ab{type}\u00bb{maybe}.","m.maybe":" (est\u00e1s ebrio: puede ser una ilusi\u00f3n)","l.start":"Comienza {act}. Hay {n} copas en la mesa; ambos roban objetos.","l.needle":"{a.S} us\u00f3 la aguja de plata en #{id}.","l.scent":"{a.S} olfate\u00f3 {ids}.","l.sober":"{a.S} bebi\u00f3 la poci\u00f3n de sobriedad: +1 PV, Embriaguez \u22122.","l.liquor":"{a.S} us\u00f3 licor adulterado: la pr\u00f3xima copa se intensifica.","l.decree":"{a.S} us\u00f3 el brindis forzado: {o.S} debe beber la pr\u00f3xima copa por s\u00ed mismo.","l.spin":"{a.S} gir\u00f3 la ruleta: se barajan todas las copas y la informaci\u00f3n se anula.","l.change":"{a.S} hizo un cambiazo en #{id}.","l.powder":"{a.S} espolvore\u00f3 polvo concentrado en #{id}.","l.ice":"{a.S} ech\u00f3 hielo diluyente en #{id}.","l.cheers":"{a.S} grit\u00f3 \u00ab\u00a1Salud!\u00bb: ambos beben de #{id} una vez.","l.drank":"{a.S} bebi\u00f3 #{id}: {type}.","l.lose":"{x.S} perdi\u00f3 {n} PV.","l.heal":"{a.S} recuper\u00f3 {n} PV.","l.noheal":"Sin curaci\u00f3n.","l.healcap":"Se alcanz\u00f3 el l\u00edmite de curaci\u00f3n de este acto.","l.again":"{a.S} puede actuar de nuevo.","l.reveal":"Mano revelada: {a.N}.","l.rand":"Se revel\u00f3 al azar la copa #{id} de la mesa.","l.drunkhurt":"La embriaguez hace que el veneno duela m\u00e1s.","l.faint":"{a.S} se desploma y vuelca la mesa: Embriaguez a 0, +1 PV, pierde su pr\u00f3xima acci\u00f3n y las copas se barajan.","l.self":"{a.S} eligi\u00f3 beber #{id} por s\u00ed mismo.","l.offer":"{a.S} ofreci\u00f3 #{id} directamente {o.D}.","l.claim":"{a.S} tap\u00f3 #{id} con la tapa de plata, afirm\u00f3 que era n\u00e9ctar y se la ofreci\u00f3 {o.D}.","l.believe":"{a.S} decidi\u00f3 creer y bebi\u00f3 #{id}.","l.truenectar":"S\u00ed era n\u00e9ctar: ambos bajan 1 de Embriaguez.","l.liar":"{a.S} fue pillado mintiendo: Embriaguez +1 extra.","l.doubtok":"\u00a1{a.S} dud\u00f3 con \u00e9xito! #{id} no es n\u00e9ctar; {o.S} debe beberla.","l.doubtfail":"{a.S} dud\u00f3 sin raz\u00f3n: #{id} s\u00ed era n\u00e9ctar. {a.S} debe beberla: sin curaci\u00f3n ni acci\u00f3n extra.","l.discard":"{a.S} descart\u00f3 un objeto al azar: {item}.","l.rot":"La mesa redonda gir\u00f3 un puesto.","l.skip":"{a.S} est\u00e1 demasiado ebrio y pierde esta acci\u00f3n.","l.pay":"BONUS +{n} acreditado: {label}.","pay.a1":"Sobreviviste al Acto I","pay.a2":"Sobreviviste al Acto II","pay.a3":"Sobreviviste al Acto III","pay.win":"Ganaste el banquete","l.cupsout":"Se acabaron las copas: ambos bajan 1 de Embriaguez.","l.tie":"\u00a1El Acto III termin\u00f3 con los mismos PV! Comienza una pr\u00f3rroga de 3 minutos.","l.ot":"Pr\u00f3rroga: nueva ronda de copas.","l.otend":"\u00a1Se acab\u00f3 la pr\u00f3rroga! Se comparan los PV.","e.win":"\u00a1Ganaste el banquete!","e.lose":"El anfitri\u00f3n gan\u00f3 el banquete.","e.draw":"Mismos PV: empate.","l.begin":"Comienza el banquete. T\u00fa act\u00faas primero.","l.quit":"Abandonaste esta partida.","h.win":"\u00a1Ganas!","h.quit":"Abandonaste esta partida.","h.lose":"Gana el anfitri\u00f3n.","h.draw":"Empate.","h.earned":"BONUS acreditado en esta partida: {n} pts.","h.none":"Sin recompensa extra en esta partida.","u.cup":"Copa #{id}{info}{claim}","u.known":", informaci\u00f3n que tienes: {label}","u.unknown":", contenido desconocido","u.claimed":", la tapa de plata afirma n\u00e9ctar","u.noitems":"Sin objetos","u.dopen":"Objetos del anfitri\u00f3n (revelados)","u.dhid":"Objetos del anfitri\u00f3n ({n}, contenido desconocido)","u.scentnote":"Olfatear: {ids} \u2014 {n} copas peligrosas{maybe}.","u.maybe":" (puede ser una ilusi\u00f3n)","u.seen":"El anfitri\u00f3n ha visto tu mano.","u.hp":"PV {a}/{b}","u.dr":"Embriaguez {a}/{b}{tip}","u.tipsy":" (achispado)","u.items":"Objetos {n}","u.comp":"Este acto: veneno {a}, n\u00e9ctar {b}, agua de la verdad {c} \u00b7 quedan {n} copas \u00b7 Bebidas: veneno {x}, n\u00e9ctar {y}, agua de la verdad {z}{w}","u.compwater":", agua {w}","u.compidle":"Al empezar cada acto se revela cu\u00e1ntas copas hay de cada vino.","u.cups":"Quedan {n} copas en la mesa","u.cwin":"Ganas","u.close":"Gana el anfitri\u00f3n","u.cdraw":"Empate","u.again":"Pulsa el bot\u00f3n para otra partida","u.press":"Pulsa Empezar","u.yourturn":"Tu turno","u.hostturn":"Turno del anfitri\u00f3n","u.over":"La partida termin\u00f3.","u.pressgo":"Pulsa \u00abEmpezar banquete\u00bb.","u.pending":"El anfitri\u00f3n tap\u00f3 una copa con la tapa de plata. Decide t\u00fa.","u.think":"El anfitri\u00f3n est\u00e1 pensando\u2026","u.decreed":"Brindis forzado sobre ti: esta vez debes beber t\u00fa mismo.","u.selected":"Elegida #{id}: decide qu\u00e9 hacer con esta copa.","u.selfirst":"Elige primero una copa y luego decide qu\u00e9 hacer con ella.","u.advon":"Modo avanzado: farol con tapa de plata (s\u00ed)","u.advoff":"Modo avanzado: farol con tapa de plata (no)","u.soundon":"Sonido: s\u00ed","u.soundoff":"Sonido: no","u.claimq":"El anfitri\u00f3n afirma que #{id} es n\u00e9ctar. \u00bfCrees y bebes, o dudas?","u.going":"Banquete en curso","u.goagain":"Otro banquete","u.go":"Empezar banquete","u.quitarm":"Pulsa de nuevo para confirmar","u.quit":"Abandonar partida","u.notstarted":"Sin empezar","u.pts":"{n} pts","u.wins":"{n} victorias","u.pickfirst":"Elige una copa primero.","u.startadv":"\u00a1Empieza el banquete! Elige una copa y b\u00e9bela, ofr\u00e9cesela al anfitri\u00f3n o t\u00e1pala con la tapa de plata para farolear.","u.start":"\u00a1Empieza el banquete! Elige una copa y b\u00e9bela u ofr\u00e9cesela al anfitri\u00f3n.","u.bonusmsg":"BONUS +{n} acreditado: {label}.","v.host":"Anfitri\u00f3n","v.you":"T\u00fa","v.self":"Beberla yo","v.toast":"Ofrec\u00e9rsela al anfitri\u00f3n","v.silver":"Tapa de plata: afirmar n\u00e9ctar","v.believe":"Creer y beber","v.doubt":"Dudar","v.table":"Copas en la mesa redonda; elige una","v.myitems":"Tus objetos","v.log":"Registro de eventos (lo m\u00e1s nuevo primero)","v.panel":"Controles de El \u00faltimo banquete","v.progress":"Progreso","v.bonus":"BONUS de la partida","v.winsl":"Victorias","v.msg":"El anfitri\u00f3n ya est\u00e1 sentado. Pulsa Empezar, elige una copa y b\u00e9bela u ofr\u00e9cesela.","v.hint":"Elige primero una copa de la mesa (o pulsa su n\u00famero) y luego una acci\u00f3n. Los objetos que piden copa no se gastan si no hay ninguna elegida. El veneno quita PV; el n\u00e9ctar cura y da otra acci\u00f3n; el agua de la verdad revela una mano. Con Embriaguez 3 o m\u00e1s, la informaci\u00f3n puede ser ilusoria.","v.rulesT":"C\u00f3mo jugar y BONUS","v.r1":"El modo b\u00e1sico no tiene farol con tapa de plata: solo beber, ofrecer y objetos. Activa el \u00abModo avanzado\u00bb para a\u00f1adir afirmaciones y dudas con la tapa; las reglas de la tapa de plata de abajo solo valen en el modo avanzado.","v.r2":"T\u00fa y el anfitri\u00f3n ten\u00e9is 5 PV y os turn\u00e1is para tratar con las copas misteriosas de la mesa. Al empezar cada acto se revela cu\u00e1ntas hay de cada vino, pero no cu\u00e1l es cu\u00e1l: Acto I, 4 copas (veneno 2, n\u00e9ctar 1, agua de la verdad 1); Acto II, 6 (veneno 3, n\u00e9ctar 2, agua de la verdad 1); Acto III, 8 (veneno 4, n\u00e9ctar 2, agua de la verdad 2). En cada acto ambos roban objetos (2, 3, 4); el m\u00e1ximo es 4 y los no usados pasan al siguiente acto.","v.r3":"En tu turno puedes usar objetos y luego elegir una copa: beberla t\u00fa, ofrec\u00e9rsela directamente al anfitri\u00f3n (debe beber y conservas el turno salvo que beba n\u00e9ctar) o taparla con la tapa de plata afirmando que es n\u00e9ctar. El anfitri\u00f3n puede creer y beber, o dudar. Si la duda acierta, el mentiroso bebe con +1 de Embriaguez y el turno pasa a quien dud\u00f3; si falla (era n\u00e9ctar de verdad), quien dud\u00f3 bebe sin curarse ni acci\u00f3n extra, descarta un objeto al azar y el turno vuelve a quien ofreci\u00f3. Tras cada acci\u00f3n con tapa la mesa gira un puesto; los n\u00fameros y contenidos se mueven con las copas.","v.r4":"El veneno quita 1 PV a quien bebe; el n\u00e9ctar cura 1 PV y da otra acci\u00f3n (cada bando se cura como m\u00e1ximo 2 veces por acto); el agua de la verdad revela todos los objetos de quien bebe, o una copa al azar de la mesa si no tiene. Cada copa bebida suma 1 de Embriaguez. Con Embriaguez 3\u20134, la aguja de plata y el olfato dan informaci\u00f3n falsa la mitad de las veces, y el veneno quita 1 PV extra. Con Embriaguez 5 te desplomas y vuelcas la mesa: Embriaguez a 0, +1 PV, pierdes tu pr\u00f3xima acci\u00f3n, todas las copas se barajan y la informaci\u00f3n conocida se anula. Al final de cada acto ambos bajan 1 de Embriaguez.","v.r5":"Diez objetos: aguja de plata (inspeccionar una copa), olfatear (contar vino peligroso en dos copas), poci\u00f3n de sobriedad (+1 PV, Embriaguez \u22122, sin m\u00e1s objetos este turno), licor adulterado (pr\u00f3xima copa: veneno fijo en 2, n\u00e9ctar doble), cambiazo (veneno, n\u00e9ctar y agua de la verdad rotan en orden), brindis forzado (el anfitri\u00f3n debe beber en su pr\u00f3xima acci\u00f3n), \u00a1Salud! (t\u00fa y el anfitri\u00f3n beb\u00e9is una vez de la misma copa), girar la ruleta (barajar todo), polvo concentrado (el veneno pasa a doble, el n\u00e9ctar a n\u00e9ctar envenenado), hielo diluyente (doble veneno \u2192 veneno, veneno \u2192 agua, n\u00e9ctar envenenado \u2192 n\u00e9ctar). Cada objeto se usa una vez por turno.","v.r6":"Pierde quien llegue a 0 PV. Al terminar el Acto III gana quien tenga m\u00e1s PV; si empatan, hay una pr\u00f3rroga de 3 minutos (5 copas por ronda: veneno 3, agua de la verdad 2); al acabar el tiempo se comparan los PV y, si siguen iguales, hay empate. El anfitri\u00f3n nunca esp\u00eda tu mano ni sabe lo que has averiguado.","v.r7":"El BONUS es una recompensa fija que se acredita al instante: sobrevivir al Acto I +1, al II +2, al III +3 y ganar el banquete +2; cada uno se paga una vez por partida, 8 como m\u00e1ximo. La puntuaci\u00f3n no se convierte directamente en puntos; el resultado depende del juicio, la memoria y el azar, y no hay apuestas. Los puntos acreditados no se retiran si pierdes despu\u00e9s.","v.r8":"Cambiar de juego o de pesta\u00f1a pausa la partida y contin\u00faa al volver. Recargar abandona la partida; los puntos ya acreditados se conservan. Las victorias se guardan en el navegador; los puntos se comparten con los dem\u00e1s juegos y no tienen valor en dinero.","v.use":"Usar","v.close":"Cerrar","v.lang":"Idioma"},"de":{"who.p.S":"Du","who.p.O":"dich","who.p.D":"dir","who.p.N":"Du","who.d.S":"Der Gastgeber","who.d.O":"den Gastgeber","who.d.D":"dem Gastgeber","who.d.N":"Gastgeber","sep":" ","act.1":"Akt I: Abtasten","act.2":"Akt II: Wagnis","act.3":"Akt III: Todesduell","act.4":"Verl\u00e4ngerung: Sudden Death","act.s1":"Akt I","act.s2":"Akt II","act.s3":"Akt III","act.s4":"Verl\u00e4ngerung","act.none":"Das Bankett hat noch nicht begonnen","ty.poison":"Gift","ty.poison2":"Doppelgift","ty.nectar":"Nektar","ty.pnectar":"Vergifteter Nektar","ty.truth":"Wahrheitswasser","ty.water":"Wasser","ty.safe":"Harmlos","ty.danger":"Gef\u00e4hrlich","it.needle.n":"Silbernadel","it.needle.d":"W\u00e4hle einen Kelch und decke seinen Wein auf.","it.scent.n":"Wittern","it.scent.d":"W\u00e4hle einen Kelch; z\u00e4hle die gef\u00e4hrlichen Weine in ihm und im n\u00e4chsten.","it.sober.n":"Ern\u00fcchterungstrank","it.sober.d":"+1 LP, Rausch \u22122; danach keine Gegenst\u00e4nde in diesem Zug.","it.liquor.n":"Starker Schnaps","it.liquor.d":"N\u00e4chster Kelch: Gift fix 2, Nektar doppelt.","it.change.n":"Taschenspielertrick","it.change.d":"Gift \u2192 Nektar \u2192 Wahrheitswasser \u2192 Gift.","it.decree.n":"Trinkzwang","it.decree.d":"Der Gegner muss bei seiner n\u00e4chsten Aktion selbst trinken.","it.cheers.n":"Prost!","it.cheers.d":"Du und der Gegner trinkt je einmal aus demselben Kelch.","it.spin.n":"Rad drehen","it.spin.d":"Alle Kelche werden neu gemischt; alle Infos verfallen.","it.powder.n":"Giftpulver","it.powder.d":"Gift +1 Schaden; Nektar wird zu vergiftetem Nektar.","it.ice.n":"Verd\u00fcnnungseis","it.ice.d":"Doppelgift \u2192 Gift; Gift \u2192 Wasser; vergifteter Nektar \u2192 Nektar.","it.needcup":"(erst einen Kelch w\u00e4hlen)","cu.turn":"Du bist nicht am Zug.","cu.now":"Du kannst jetzt keine Gegenst\u00e4nde benutzen.","cu.none":"Du besitzt diesen Gegenstand nicht.","cu.lock":"Nach dem Ern\u00fcchterungstrank sind in diesem Zug keine Gegenst\u00e4nde mehr erlaubt.","cu.once":"Jeder Gegenstand darf pro Zug nur einmal benutzt werden.","cu.decreed":"Der Gegner steht bereits unter Trinkzwang.","cu.cheers":"Unter Trinkzwang: Du musst selbst trinken.","cu.nocup":"Es stehen keine Kelche auf dem Tisch.","it.pick":"W\u00e4hle zuerst einen Kelch, dann benutze \u201e{item}\u201c.","it.bad":"\u201e{item}\u201c wirkt bei diesem Wein nicht; der Gegenstand wurde nicht verbraucht.","m.needle":"Die Nadel zeigt: #{id} ist \u201e{type}\u201c{maybe}.","m.maybe":" (du bist betrunken: vielleicht eine T\u00e4uschung)","l.start":"{act} beginnt. {n} Kelche stehen auf dem Tisch; beide ziehen Gegenst\u00e4nde.","l.needle":"{a.S} benutzte die Silbernadel an #{id}.","l.scent":"{a.S} witterte an {ids}.","l.sober":"{a.S} trank den Ern\u00fcchterungstrank: +1 LP, Rausch \u22122.","l.liquor":"{a.S} benutzte starken Schnaps: Der n\u00e4chste Kelch wird verst\u00e4rkt.","l.decree":"{a.S} setzte den Trinkzwang ein: {o.S} muss den n\u00e4chsten Kelch selbst trinken.","l.spin":"{a.S} drehte das Rad: alle Kelche neu gemischt, bekannte Infos verfallen.","l.change":"{a.S} wandte den Taschenspielertrick an #{id} an.","l.powder":"{a.S} streute Giftpulver in #{id}.","l.ice":"{a.S} warf Verd\u00fcnnungseis in #{id}.","l.cheers":"{a.S} rief \u201eProst!\u201c: Beide trinken je einmal aus #{id}.","l.drank":"{a.S} trank #{id}: {type}.","l.lose":"{x.S} verlor {n} LP.","l.heal":"{a.S} erholte {n} LP.","l.noheal":"Keine Heilung.","l.healcap":"Heilungslimit dieses Akts erreicht.","l.again":"{a.S} darf noch einmal handeln.","l.reveal":"Hand aufgedeckt: {a.N}.","l.rand":"Zuf\u00e4llig aufgedeckt: Kelch #{id} auf dem Tisch.","l.drunkhurt":"Der Rausch l\u00e4sst das Gift st\u00e4rker wirken.","l.faint":"{a.S} kippt um und st\u00f6\u00dft den Tisch um: Rausch zur\u00fcckgesetzt, +1 LP, n\u00e4chste Aktion entf\u00e4llt, Kelche neu gemischt.","l.self":"{a.S} entschied sich, #{id} selbst zu trinken.","l.offer":"{a.S} reichte #{id} direkt {o.D}.","l.claim":"{a.S} deckte #{id} mit dem Silberdeckel zu, behauptete Nektar und reichte ihn {o.D}.","l.believe":"{a.S} glaubte und trank #{id}.","l.truenectar":"Es war wirklich Nektar: Beide Seiten Rausch \u22121.","l.liar":"{a.S} wurde beim L\u00fcgen ertappt: Rausch +1 extra.","l.doubtok":"{a.S} zweifelte zu Recht! #{id} ist kein Nektar; {o.S} muss ihn trinken.","l.doubtfail":"{a.S} zweifelte zu Unrecht: #{id} war wirklich Nektar. {a.S} muss trinken: keine Heilung, keine Extra-Aktion.","l.discard":"{a.S} warf einen zuf\u00e4lligen Gegenstand ab: {item}.","l.rot":"Der runde Tisch drehte sich um einen Platz.","l.skip":"{a.S} ist zu betrunken und \u00fcberspringt diese Aktion.","l.pay":"BONUS +{n} gutgeschrieben: {label}.","pay.a1":"Akt I \u00fcberstanden","pay.a2":"Akt II \u00fcberstanden","pay.a3":"Akt III \u00fcberstanden","pay.win":"Bankett gewonnen","l.cupsout":"Alle Kelche sind leer: Beide Seiten Rausch \u22121.","l.tie":"Akt III endet mit gleichen LP! Es folgt eine 3-min\u00fctige Verl\u00e4ngerung.","l.ot":"Verl\u00e4ngerung: neue Kelchrunde.","l.otend":"Verl\u00e4ngerung vorbei! Die LP werden verglichen.","e.win":"Du hast das Bankett gewonnen!","e.lose":"Der Gastgeber hat das Bankett gewonnen.","e.draw":"Gleiche LP: Unentschieden.","l.begin":"Das Bankett beginnt. Du bist zuerst dran.","l.quit":"Du hast diese Runde aufgegeben.","h.win":"Du gewinnst!","h.quit":"Du hast diese Runde aufgegeben.","h.lose":"Der Gastgeber gewinnt.","h.draw":"Unentschieden.","h.earned":"BONUS in dieser Runde: {n} Pkt.","h.none":"Diese Runde gab es keine zus\u00e4tzliche Belohnung.","u.cup":"Kelch #{id}{info}{claim}","u.known":", deine Info: {label}","u.unknown":", Inhalt unbekannt","u.claimed":", Silberdeckel behauptet Nektar","u.noitems":"Keine Gegenst\u00e4nde","u.dopen":"Gegenst\u00e4nde des Gastgebers (aufgedeckt)","u.dhid":"Gegenst\u00e4nde des Gastgebers ({n}, Inhalt unbekannt)","u.scentnote":"Wittern: {ids} \u2014 {n} gef\u00e4hrliche Kelche{maybe}.","u.maybe":" (vielleicht eine T\u00e4uschung)","u.seen":"Der Gastgeber hat deine Hand gesehen.","u.hp":"LP {a}/{b}","u.dr":"Rausch {a}/{b}{tip}","u.tipsy":" (beschwipst)","u.items":"Gegenst\u00e4nde {n}","u.comp":"Dieser Akt: Gift {a}, Nektar {b}, Wahrheitswasser {c} \u00b7 noch {n} Kelche \u00b7 Getrunken: Gift {x}, Nektar {y}, Wahrheitswasser {z}{w}","u.compwater":", Wasser {w}","u.compidle":"Zu Beginn jedes Akts wird die Anzahl jeder Weinsorte bekanntgegeben.","u.cups":"Noch {n} Kelche auf dem Tisch","u.cwin":"Du gewinnst","u.close":"Der Gastgeber gewinnt","u.cdraw":"Unentschieden","u.again":"Dr\u00fccke den Knopf f\u00fcr eine weitere Runde","u.press":"Dr\u00fccke Start","u.yourturn":"Du bist dran","u.hostturn":"Der Gastgeber ist dran","u.over":"Diese Runde ist vorbei.","u.pressgo":"Dr\u00fccke \u201eBankett starten\u201c.","u.pending":"Der Gastgeber hat einen Kelch mit dem Silberdeckel abgedeckt. Du entscheidest.","u.think":"Der Gastgeber \u00fcberlegt\u2026","u.decreed":"Trinkzwang gegen dich: Diesmal musst du selbst trinken.","u.selected":"#{id} gew\u00e4hlt: Entscheide, was mit diesem Kelch geschieht.","u.selfirst":"W\u00e4hle zuerst einen Kelch und entscheide dann, was damit geschieht.","u.advon":"Fortgeschritten: Silberdeckel-Bluff (an)","u.advoff":"Fortgeschritten: Silberdeckel-Bluff (aus)","u.soundon":"Ton: an","u.soundoff":"Ton: aus","u.claimq":"Der Gastgeber behauptet, #{id} sei Nektar. Glauben und trinken oder zweifeln?","u.going":"Bankett l\u00e4uft","u.goagain":"Noch ein Bankett","u.go":"Bankett starten","u.quitarm":"Zum Best\u00e4tigen erneut dr\u00fccken","u.quit":"Runde aufgeben","u.notstarted":"Nicht gestartet","u.pts":"{n} Pkt.","u.wins":"{n} Siege","u.pickfirst":"W\u00e4hle zuerst einen Kelch.","u.startadv":"Das Bankett beginnt! W\u00e4hle einen Kelch: trinke ihn, reiche ihn dem Gastgeber oder bluffe mit dem Silberdeckel.","u.start":"Das Bankett beginnt! W\u00e4hle einen Kelch: trinke ihn oder reiche ihn dem Gastgeber.","u.bonusmsg":"BONUS +{n} gutgeschrieben: {label}.","v.host":"Gastgeber","v.you":"Du","v.self":"Selbst trinken","v.toast":"Dem Gastgeber reichen","v.silver":"Silberdeckel: Nektar behaupten","v.believe":"Glauben und trinken","v.doubt":"Zweifeln","v.table":"Kelche auf dem runden Tisch; w\u00e4hle einen","v.myitems":"Deine Gegenst\u00e4nde","v.log":"Ereignisprotokoll (neueste zuerst)","v.panel":"Steuerung von Das letzte Bankett","v.progress":"Fortschritt","v.bonus":"BONUS dieser Runde","v.winsl":"Siege","v.msg":"Der Gastgeber hat Platz genommen. Dr\u00fccke Start, w\u00e4hle einen Kelch und trinke ihn oder reiche ihn dem Gastgeber.","v.hint":"W\u00e4hle zuerst einen Kelch auf dem Tisch (oder dr\u00fccke seine Zifferntaste), dann eine Aktion. Gegenst\u00e4nde, die einen Kelch brauchen, werden ohne Auswahl nicht verbraucht. Gift kostet LP; Nektar heilt und gibt eine weitere Aktion; Wahrheitswasser deckt eine Hand auf. Ab Rausch 3 k\u00f6nnen Infos T\u00e4uschungen sein.","v.rulesT":"Spielregeln und BONUS","v.r1":"Das Grundspiel hat keinen Silberdeckel-Bluff: nur Trinken, Reichen und Gegenst\u00e4nde. Mit dem \u201eFortgeschrittenen Modus\u201c kommen Behauptungen und Zweifel hinzu; alle Silberdeckel-Regeln unten gelten nur dort.","v.r2":"Du und der Gastgeber habt je 5 LP und k\u00fcmmert euch abwechselnd um die r\u00e4tselhaften Kelche. Zu Beginn jedes Akts wird die Anzahl jeder Sorte bekanntgegeben, aber nicht, welcher Kelch welcher ist: Akt I hat 4 Kelche (Gift 2, Nektar 1, Wahrheitswasser 1), Akt II 6 (Gift 3, Nektar 2, Wahrheitswasser 1), Akt III 8 (Gift 4, Nektar 2, Wahrheitswasser 2). In jedem Akt ziehen beide Gegenst\u00e4nde (2, 3, 4); maximal 4 St\u00fcck, ungenutzte bleiben erhalten.","v.r3":"Du darfst zuerst Gegenst\u00e4nde benutzen und dann einen Kelch w\u00e4hlen: selbst trinken, dem Gastgeber direkt reichen (er muss trinken; du beh\u00e4ltst den Zug, au\u00dfer er trinkt Nektar) oder mit dem Silberdeckel abdecken und Nektar behaupten. Der Gastgeber kann glauben und trinken oder zweifeln. Berechtigter Zweifel: Der L\u00fcgner trinkt mit +1 Rausch, der Zug geht an den Zweifler; unberechtigter Zweifel (es war echter Nektar): Der Zweifler trinkt ohne Heilung und Extra-Aktion, wirft einen zuf\u00e4lligen Gegenstand ab, und der Zug geht zur\u00fcck an den Anbietenden. Nach jeder Silberdeckel-Aktion dreht sich der Tisch um einen Platz; Nummern und Inhalte wandern mit den Kelchen.","v.r4":"Gift kostet den Trinkenden 1 LP; Nektar heilt 1 LP und gibt eine weitere Aktion (pro Akt h\u00f6chstens 2 Heilungen je Seite); Wahrheitswasser deckt alle Gegenst\u00e4nde des Trinkenden auf, bei leerer Hand einen zuf\u00e4lligen Tischkelch. Jeder getrunkene Kelch gibt +1 Rausch. Bei Rausch 3\u20134 zeigen Silbernadel und Wittern in der H\u00e4lfte der F\u00e4lle falsche Infos, und Gift kostet 1 LP mehr. Bei Rausch 5 kippst du um und st\u00f6\u00dft den Tisch um: Rausch auf 0, +1 LP, n\u00e4chste Aktion entf\u00e4llt, alle Kelche neu gemischt, alle Infos verfallen. Am Ende jedes Akts sinkt der Rausch beider Seiten um 1.","v.r5":"Zehn Gegenst\u00e4nde: Silbernadel (einen Kelch pr\u00fcfen), Wittern (gef\u00e4hrliche Weine in zwei Kelchen z\u00e4hlen), Ern\u00fcchterungstrank (+1 LP, Rausch \u22122, danach keine Gegenst\u00e4nde in diesem Zug), Starker Schnaps (n\u00e4chster Kelch: Gift fix 2, Nektar doppelt), Taschenspielertrick (Gift, Nektar, Wahrheitswasser rotieren der Reihe nach), Trinkzwang (der Gastgeber muss bei seiner n\u00e4chsten Aktion trinken), Prost! (du und der Gastgeber trinkt je einmal aus demselben Kelch), Rad drehen (alles neu mischen), Giftpulver (Gift wird doppelt, Nektar wird vergifteter Nektar), Verd\u00fcnnungseis (Doppelgift \u2192 Gift, Gift \u2192 Wasser, vergifteter Nektar \u2192 Nektar). Jeder Gegenstand darf pro Zug nur einmal benutzt werden.","v.r6":"Wer 0 LP erreicht, verliert. Endet Akt III, gewinnt, wer mehr LP hat; bei Gleichstand folgt eine 3-min\u00fctige Verl\u00e4ngerung (5 Kelche pro Runde: Gift 3, Wahrheitswasser 2); bei Zeitablauf werden die LP verglichen, bei Gleichstand gibt es ein Unentschieden. Der Gastgeber sp\u00e4ht nie in deine Hand und wei\u00df nicht, was du herausgefunden hast.","v.r7":"BONUS ist eine feste, sofort gutgeschriebene Belohnung: Akt I \u00fcberstanden +1, Akt II +2, Akt III +3, Bankett gewonnen +2; jede wird pro Runde nur einmal gezahlt, maximal 8. Die Wertung wird nicht direkt in Punkte umgerechnet; das Ergebnis h\u00e4ngt von Urteil, Ged\u00e4chtnis und Zufall ab, es gibt keine Eins\u00e4tze. Gutgeschriebene Punkte werden nicht zur\u00fcckgenommen, wenn du sp\u00e4ter verlierst.","v.r8":"Beim Wechsel des Spiels oder Tabs pausiert das Spiel und l\u00e4uft bei R\u00fcckkehr weiter. Neu laden gibt die Runde auf; gutgeschriebene Punkte bleiben erhalten. Siege werden im Browser gespeichert; Punkte werden mit den anderen Spielen geteilt und haben keinen Geldwert.","v.use":"Benutzen","v.close":"Schlie\u00dfen","v.lang":"Sprache"},"ja":{"who.p.S":"\u3042\u306a\u305f\u306f","who.p.O":"\u3042\u306a\u305f\u3092","who.p.D":"\u3042\u306a\u305f\u306b","who.p.N":"\u3042\u306a\u305f","who.d.S":"\u30db\u30b9\u30c8\u306f","who.d.O":"\u30db\u30b9\u30c8\u3092","who.d.D":"\u30db\u30b9\u30c8\u306b","who.d.N":"\u30db\u30b9\u30c8","sep":"","act.1":"\u7b2c\u4e00\u5e55\uff1a\u63a2\u308a\u5408\u3044","act.2":"\u7b2c\u4e8c\u5e55\uff1a\u99c6\u3051\u5f15\u304d","act.3":"\u7b2c\u4e09\u5e55\uff1a\u6b7b\u95d8","act.4":"\u5ef6\u9577\u6226\uff1a\u30b5\u30c9\u30f3\u30c7\u30b9","act.s1":"\u7b2c\u4e00\u5e55","act.s2":"\u7b2c\u4e8c\u5e55","act.s3":"\u7b2c\u4e09\u5e55","act.s4":"\u5ef6\u9577\u6226","act.none":"\u6669\u9910\u306f\u307e\u3060\u59cb\u307e\u3063\u3066\u3044\u306a\u3044","ty.poison":"\u731b\u6bd2","ty.poison2":"\u4e8c\u91cd\u306e\u6bd2","ty.nectar":"\u7518\u9732","ty.pnectar":"\u6bd2\u5165\u308a\u7518\u9732","ty.truth":"\u771f\u8a00\u6c34","ty.water":"\u6e05\u6c34","ty.safe":"\u7121\u6bd2","ty.danger":"\u6709\u6bd2","it.needle.n":"\u9280\u306e\u91dd","it.needle.d":"\u676f\u30921\u3064\u9078\u3073\u3001\u4e2d\u8eab\u3092\u8abf\u3079\u308b\u3002","it.scent.n":"\u55c5\u304e\u5206\u3051","it.scent.d":"\u676f\u30921\u3064\u9078\u3073\u3001\u305d\u308c\u3068\u6b21\u306e\u676f\u306b\u3042\u308b\u5371\u967a\u306a\u9152\u306e\u6570\u3092\u6570\u3048\u308b\u3002","it.sober.n":"\u9154\u3044\u899a\u307e\u3057","it.sober.d":"HP+1\u3001\u9154\u3044\u22122\u3002\u4ee5\u964d\u3053\u306e\u30bf\u30fc\u30f3\u306f\u9053\u5177\u3092\u4f7f\u3048\u306a\u3044\u3002","it.liquor.n":"\u5f37\u3044\u9152","it.liquor.d":"\u6b21\u306e\u676f\uff1a\u731b\u6bd2\u306f2\u56fa\u5b9a\u3001\u7518\u9732\u306f\u500d\u3002","it.change.n":"\u3059\u308a\u66ff\u3048","it.change.d":"\u731b\u6bd2\u2192\u7518\u9732\u2192\u771f\u8a00\u6c34\u2192\u731b\u6bd2\u3002","it.decree.n":"\u4e7e\u676f\u4ee4","it.decree.d":"\u76f8\u624b\u306f\u6b21\u306e\u884c\u52d5\u3067\u5fc5\u305a\u81ea\u5206\u3067\u98f2\u3080\u3002","it.cheers.n":"\u4e7e\u676f\uff01","it.cheers.d":"\u81ea\u5206\u3068\u76f8\u624b\u304c\u540c\u3058\u676f\u3092\u305d\u308c\u305e\u308c1\u56de\u305a\u3064\u98f2\u3080\u3002","it.spin.n":"\u56de\u8ee2\u76e4","it.spin.d":"\u5168\u3066\u306e\u676f\u3092\u30b7\u30e3\u30c3\u30d5\u30eb\u3002\u5f97\u305f\u60c5\u5831\u306f\u7121\u52b9\u3002","it.powder.n":"\u6fc3\u7e2e\u6bd2\u7c89","it.powder.d":"\u731b\u6bd2\u306e\u30c0\u30e1\u30fc\u30b8+1\u3002\u7518\u9732\u306f\u6bd2\u5165\u308a\u7518\u9732\u306b\u306a\u308b\u3002","it.ice.n":"\u5e0c\u91c8\u6c37","it.ice.d":"\u4e8c\u91cd\u306e\u6bd2\u2192\u731b\u6bd2\u3001\u731b\u6bd2\u2192\u6e05\u6c34\u3001\u6bd2\u5165\u308a\u7518\u9732\u2192\u7518\u9732\u3002","it.needcup":"\uff08\u5148\u306b\u676f\u3092\u9078\u3076\uff09","cu.turn":"\u3042\u306a\u305f\u306e\u756a\u3067\u306f\u306a\u3044\u3002","cu.now":"\u4eca\u306f\u9053\u5177\u3092\u4f7f\u3048\u306a\u3044\u3002","cu.none":"\u305d\u306e\u9053\u5177\u306f\u6301\u3063\u3066\u3044\u306a\u3044\u3002","cu.lock":"\u9154\u3044\u899a\u307e\u3057\u3092\u4f7f\u3063\u305f\u306e\u3067\u3001\u3053\u306e\u30bf\u30fc\u30f3\u306f\u3082\u3046\u9053\u5177\u3092\u4f7f\u3048\u306a\u3044\u3002","cu.once":"\u540c\u3058\u9053\u5177\u306f1\u30bf\u30fc\u30f3\u306b1\u56de\u307e\u3067\u3002","cu.decreed":"\u76f8\u624b\u306f\u3059\u3067\u306b\u4e7e\u676f\u4ee4\u306e\u5bfe\u8c61\u3060\u3002","cu.cheers":"\u4e7e\u676f\u4ee4\u306e\u5bfe\u8c61\uff1a\u81ea\u5206\u3067\u98f2\u3080\u3057\u304b\u306a\u3044\u3002","cu.nocup":"\u5353\u4e0a\u306b\u676f\u304c\u306a\u3044\u3002","it.pick":"\u307e\u305a\u676f\u3092\u9078\u3093\u3067\u304b\u3089\u300c{item}\u300d\u3092\u4f7f\u3046\u3002","it.bad":"\u300c{item}\u300d\u306f\u3053\u306e\u9152\u306b\u306f\u4f7f\u3048\u306a\u3044\u3002\u9053\u5177\u306f\u6d88\u8cbb\u3055\u308c\u306a\u3044\u3002","m.needle":"\u91dd\u306f#{id}\u304c\u300c{type}\u300d\u3060\u3068\u793a\u3059{maybe}\u3002","m.maybe":"\uff08\u9154\u3063\u3066\u3044\u308b\u306e\u3067\u5e7b\u899a\u304b\u3082\u3057\u308c\u306a\u3044\uff09","l.start":"{act}\u304c\u59cb\u307e\u308b\u3002\u5353\u4e0a\u306b\u306f{n}\u676f\u3002\u53cc\u65b9\u304c\u9053\u5177\u3092\u5f15\u304f\u3002","l.needle":"{a.S}#{id}\u306b\u9280\u306e\u91dd\u3092\u4f7f\u3063\u305f\u3002","l.scent":"{a.S}{ids}\u306e\u5302\u3044\u3092\u55c5\u3044\u3060\u3002","l.sober":"{a.S}\u9154\u3044\u899a\u307e\u3057\u3092\u98f2\u3093\u3060\uff1aHP+1\u3001\u9154\u3044\u22122\u3002","l.liquor":"{a.S}\u5f37\u3044\u9152\u3092\u4f7f\u3063\u305f\uff1a\u6b21\u306e\u676f\u306e\u52b9\u679c\u304c\u5f37\u307e\u308b\u3002","l.decree":"{a.S}\u4e7e\u676f\u4ee4\u3092\u4f7f\u3063\u305f\u3002{o.S}\u6b21\u306e\u676f\u3092\u81ea\u5206\u3067\u98f2\u307e\u306a\u3051\u308c\u3070\u306a\u3089\u306a\u3044\u3002","l.spin":"{a.S}\u56de\u8ee2\u76e4\u3092\u56de\u3057\u305f\uff1a\u5168\u3066\u306e\u676f\u304c\u30b7\u30e3\u30c3\u30d5\u30eb\u3055\u308c\u3001\u5f97\u305f\u60c5\u5831\u306f\u7121\u52b9\u306b\u306a\u3063\u305f\u3002","l.change":"{a.S}#{id}\u306b\u3059\u308a\u66ff\u3048\u3092\u4f7f\u3063\u305f\u3002","l.powder":"{a.S}#{id}\u306b\u6fc3\u7e2e\u6bd2\u7c89\u3092\u632f\u308a\u304b\u3051\u305f\u3002","l.ice":"{a.S}#{id}\u306b\u5e0c\u91c8\u6c37\u3092\u843d\u3068\u3057\u305f\u3002","l.cheers":"{a.S}\u4e7e\u676f\uff01\u3092\u5ba3\u8a00\uff1a\u53cc\u65b9\u304c#{id}\u30921\u56de\u305a\u3064\u98f2\u3080\u3002","l.drank":"{a.S}#{id}\u3092\u98f2\u3093\u3060\uff1a{type}\u3002","l.lose":"{x.S}HP\u3092{n}\u5931\u3063\u305f\u3002","l.heal":"{a.S}HP\u3092{n}\u56de\u5fa9\u3057\u305f\u3002","l.noheal":"\u56de\u5fa9\u306a\u3057\u3002","l.healcap":"\u3053\u306e\u5e55\u306e\u56de\u5fa9\u4e0a\u9650\u306b\u9054\u3057\u305f\u3002","l.again":"{a.S}\u3082\u3046\u4e00\u5ea6\u884c\u52d5\u3067\u304d\u308b\u3002","l.reveal":"\u624b\u672d\u304c\u516c\u958b\u3055\u308c\u305f\uff1a{a.N}\u3002","l.rand":"\u5353\u4e0a\u306e#{id}\u304c\u30e9\u30f3\u30c0\u30e0\u306b\u516c\u958b\u3055\u308c\u305f\u3002","l.drunkhurt":"\u9154\u3044\u306e\u305b\u3044\u3067\u731b\u6bd2\u304c\u3088\u308a\u75db\u3044\u3002","l.faint":"{a.S}\u9154\u3044\u3064\u3076\u308c\u3066\u5353\u3092\u3072\u3063\u304f\u308a\u8fd4\u3057\u305f\uff1a\u9154\u30440\u3001HP+1\u3001\u6b21\u306e\u884c\u52d5\u3092\u30b9\u30ad\u30c3\u30d7\u3001\u676f\u304c\u30b7\u30e3\u30c3\u30d5\u30eb\u3055\u308c\u308b\u3002","l.self":"{a.S}#{id}\u3092\u81ea\u5206\u3067\u98f2\u3080\u3053\u3068\u306b\u3057\u305f\u3002","l.offer":"{a.S}#{id}\u3092{o.D}\u305d\u306e\u307e\u307e\u5dee\u3057\u51fa\u3057\u305f\u3002","l.claim":"{a.S}#{id}\u306b\u9280\u306e\u84cb\u3092\u304b\u3076\u305b\u3001\u7518\u9732\u3060\u3068\u8a00\u3063\u3066{o.D}\u5dee\u3057\u51fa\u3057\u305f\u3002","l.believe":"{a.S}\u4fe1\u3058\u3066#{id}\u3092\u98f2\u3093\u3060\u3002","l.truenectar":"\u672c\u5f53\u306b\u7518\u9732\u3060\u3063\u305f\uff1a\u53cc\u65b9\u306e\u9154\u3044\u22121\u3002","l.liar":"{a.S}\u5618\u304c\u66b4\u304b\u308c\u305f\uff1a\u9154\u3044\u304c\u3055\u3089\u306b+1\u3002","l.doubtok":"{a.S}\u7591\u3044\u304c\u7684\u4e2d\uff01#{id}\u306f\u7518\u9732\u3067\u306f\u306a\u304f\u3001{o.S}\u81ea\u5206\u3067\u98f2\u307e\u3055\u308c\u308b\u3002","l.doubtfail":"{a.S}\u7591\u3044\u306f\u5916\u308c\u3001#{id}\u306f\u672c\u5f53\u306b\u7518\u9732\u3060\u3063\u305f\u3002{a.S}\u98f2\u307e\u3055\u308c\u308b\uff1a\u56de\u5fa9\u306a\u3057\u3001\u8ffd\u52a0\u884c\u52d5\u306a\u3057\u3002","l.discard":"{a.S}\u30e9\u30f3\u30c0\u30e0\u306b\u9053\u5177\u3092\u6368\u3066\u305f\uff1a{item}\u3002","l.rot":"\u5186\u5353\u304c1\u5e2d\u5206\u56de\u3063\u305f\u3002","l.skip":"{a.S}\u9154\u3044\u3059\u304e\u3066\u4eca\u56de\u306e\u884c\u52d5\u3092\u30b9\u30ad\u30c3\u30d7\u3057\u305f\u3002","l.pay":"BONUS +{n}\u30dd\u30a4\u30f3\u30c8\u4ed8\u4e0e\uff1a{label}\u3002","pay.a1":"\u7b2c\u4e00\u5e55\u3092\u751f\u304d\u5ef6\u3073\u305f","pay.a2":"\u7b2c\u4e8c\u5e55\u3092\u751f\u304d\u5ef6\u3073\u305f","pay.a3":"\u7b2c\u4e09\u5e55\u3092\u751f\u304d\u5ef6\u3073\u305f","pay.win":"\u6669\u9910\u306b\u52dd\u5229","l.cupsout":"\u676f\u304c\u306a\u304f\u306a\u3063\u305f\uff1a\u53cc\u65b9\u306e\u9154\u3044\u22121\u3002","l.tie":"\u7b2c\u4e09\u5e55\u306fHP\u540c\u70b9\uff013\u5206\u9593\u306e\u5ef6\u9577\u6226\u306b\u5165\u308b\u3002","l.ot":"\u5ef6\u9577\u6226\uff1a\u65b0\u3057\u3044\u676f\u304c\u4e26\u3076\u3002","l.otend":"\u5ef6\u9577\u6226\u7d42\u4e86\uff01HP\u3092\u6bd4\u3079\u308b\u3002","e.win":"\u6669\u9910\u306b\u52dd\u5229\u3057\u305f\uff01","e.lose":"\u30db\u30b9\u30c8\u304c\u6669\u9910\u306b\u52dd\u5229\u3057\u305f\u3002","e.draw":"HP\u304c\u540c\u3058\uff1a\u5f15\u304d\u5206\u3051\u3002","l.begin":"\u6669\u9910\u304c\u59cb\u307e\u3063\u305f\u3002\u3042\u306a\u305f\u304c\u5148\u624b\u3002","l.quit":"\u3053\u306e\u5bfe\u6226\u3092\u653e\u68c4\u3057\u305f\u3002","h.win":"\u3042\u306a\u305f\u306e\u52dd\u3061\uff01","h.quit":"\u3053\u306e\u5bfe\u6226\u3092\u653e\u68c4\u3057\u305f\u3002","h.lose":"\u30db\u30b9\u30c8\u306e\u52dd\u3061\u3002","h.draw":"\u5f15\u304d\u5206\u3051\u3002","h.earned":"\u4eca\u56de\u4ed8\u4e0e\u3055\u308c\u305fBONUS\uff1a{n}\u30dd\u30a4\u30f3\u30c8\u3002","h.none":"\u4eca\u56de\u306f\u8ffd\u52a0\u306e\u9054\u6210\u5831\u916c\u306a\u3057\u3002","u.cup":"\u676f #{id}{info}{claim}","u.known":"\u3001\u6301\u3063\u3066\u3044\u308b\u60c5\u5831\uff1a{label}","u.unknown":"\u3001\u4e2d\u8eab\u306f\u4e0d\u660e","u.claimed":"\u3001\u9280\u306e\u84cb\u306f\u7518\u9732\u3068\u4e3b\u5f35","u.noitems":"\u9053\u5177\u306a\u3057","u.dopen":"\u30db\u30b9\u30c8\u306e\u9053\u5177\uff08\u516c\u958b\u6e08\u307f\uff09","u.dhid":"\u30db\u30b9\u30c8\u306e\u9053\u5177\uff08{n}\u500b\u3001\u5185\u5bb9\u4e0d\u660e\uff09","u.scentnote":"\u55c5\u304e\u5206\u3051\uff1a{ids}\u306b\u5371\u967a\u306a\u9152\u304c{n}\u676f{maybe}\u3002","u.maybe":"\uff08\u5e7b\u899a\u304b\u3082\u3057\u308c\u306a\u3044\uff09","u.seen":"\u3042\u306a\u305f\u306e\u624b\u672d\u306f\u30db\u30b9\u30c8\u306b\u898b\u3089\u308c\u305f\u3002","u.hp":"HP {a}/{b}","u.dr":"\u9154\u3044 {a}/{b}{tip}","u.tipsy":"\uff08\u307b\u308d\u9154\u3044\uff09","u.items":"\u9053\u5177 {n}","u.comp":"\u3053\u306e\u5e55\u306e\u5185\u8a33\uff1a\u731b\u6bd2{a}\u30fb\u7518\u9732{b}\u30fb\u771f\u8a00\u6c34{c} \uff0f \u6b8b\u308a{n}\u676f \uff0f \u5224\u660e\uff1a\u731b\u6bd2{x}\u30fb\u7518\u9732{y}\u30fb\u771f\u8a00\u6c34{z}{w}","u.compwater":"\u30fb\u6e05\u6c34{w}","u.compidle":"\u5404\u5e55\u306e\u958b\u59cb\u6642\u306b\u3001\u9152\u306e\u7a2e\u985e\u3054\u3068\u306e\u676f\u6570\u304c\u516c\u958b\u3055\u308c\u308b\u3002","u.cups":"\u5353\u4e0a\u306b\u6b8b\u308a{n}\u676f","u.cwin":"\u3042\u306a\u305f\u306e\u52dd\u3061","u.close":"\u30db\u30b9\u30c8\u306e\u52dd\u3061","u.cdraw":"\u5f15\u304d\u5206\u3051","u.again":"\u30dc\u30bf\u30f3\u3067\u3082\u3046\u4e00\u6226","u.press":"\u30b9\u30bf\u30fc\u30c8\u3092\u62bc\u3059","u.yourturn":"\u3042\u306a\u305f\u306e\u756a","u.hostturn":"\u30db\u30b9\u30c8\u306e\u756a","u.over":"\u3053\u306e\u5bfe\u6226\u306f\u7d42\u4e86\u3057\u305f\u3002","u.pressgo":"\u300c\u6669\u9910\u3092\u59cb\u3081\u308b\u300d\u3092\u62bc\u3059\u3002","u.pending":"\u30db\u30b9\u30c8\u304c\u676f\u306b\u9280\u306e\u84cb\u3092\u304b\u3076\u305b\u305f\u3002\u3042\u306a\u305f\u304c\u6c7a\u3081\u308b\u756a\u3060\u3002","u.think":"\u30db\u30b9\u30c8\u304c\u8003\u3048\u3066\u3044\u308b\u2026","u.decreed":"\u4e7e\u676f\u4ee4\u306e\u5bfe\u8c61\uff1a\u4eca\u56de\u306f\u81ea\u5206\u3067\u98f2\u3080\u3057\u304b\u306a\u3044\u3002","u.selected":"#{id}\u3092\u9078\u629e\uff1a\u3053\u306e\u676f\u3092\u3069\u3046\u3059\u308b\u304b\u6c7a\u3081\u3088\u3046\u3002","u.selfirst":"\u307e\u305a\u676f\u3092\u9078\u3073\u3001\u305d\u308c\u3092\u3069\u3046\u3059\u308b\u304b\u6c7a\u3081\u3088\u3046\u3002","u.advon":"\u4e0a\u7d1a\u30e2\u30fc\u30c9\uff1a\u9280\u306e\u84cb\u30d6\u30e9\u30d5\uff08\u30aa\u30f3\uff09","u.advoff":"\u4e0a\u7d1a\u30e2\u30fc\u30c9\uff1a\u9280\u306e\u84cb\u30d6\u30e9\u30d5\uff08\u30aa\u30d5\uff09","u.soundon":"\u97f3\uff1a\u30aa\u30f3","u.soundoff":"\u97f3\uff1a\u30aa\u30d5","u.claimq":"\u30db\u30b9\u30c8\u306f#{id}\u304c\u7518\u9732\u3060\u3068\u8a00\u3063\u3066\u3044\u308b\u3002\u4fe1\u3058\u3066\u98f2\u3080\uff1f\u305d\u308c\u3068\u3082\u7591\u3046\uff1f","u.going":"\u6669\u9910\u306e\u6700\u4e2d","u.goagain":"\u3082\u3046\u4e00\u5ea6\u6669\u9910\u3092","u.go":"\u6669\u9910\u3092\u59cb\u3081\u308b","u.quitarm":"\u3082\u3046\u4e00\u5ea6\u62bc\u3057\u3066\u78ba\u5b9a","u.quit":"\u5bfe\u6226\u3092\u653e\u68c4","u.notstarted":"\u672a\u958b\u59cb","u.pts":"{n}\u30dd\u30a4\u30f3\u30c8","u.wins":"{n}\u52dd","u.pickfirst":"\u307e\u305a\u676f\u3092\u9078\u307c\u3046\u3002","u.startadv":"\u6669\u9910\u304c\u59cb\u307e\u308b\uff01\u676f\u3092\u9078\u3073\u3001\u81ea\u5206\u3067\u98f2\u3080\u30fb\u30db\u30b9\u30c8\u306b\u5dee\u3057\u51fa\u3059\u30fb\u9280\u306e\u84cb\u3067\u30d6\u30e9\u30d5\u3001\u306e\u3069\u308c\u304b\u3092\u9078\u307c\u3046\u3002","u.start":"\u6669\u9910\u304c\u59cb\u307e\u308b\uff01\u676f\u3092\u9078\u3073\u3001\u81ea\u5206\u3067\u98f2\u3080\u304b\u30db\u30b9\u30c8\u306b\u5dee\u3057\u51fa\u305d\u3046\u3002","u.bonusmsg":"BONUS +{n}\u30dd\u30a4\u30f3\u30c8\u4ed8\u4e0e\uff1a{label}\u3002","v.host":"\u30db\u30b9\u30c8","v.you":"\u3042\u306a\u305f","v.self":"\u81ea\u5206\u3067\u98f2\u3080","v.toast":"\u30db\u30b9\u30c8\u306b\u5dee\u3057\u51fa\u3059","v.silver":"\u9280\u306e\u84cb\uff1a\u7518\u9732\u3068\u4e3b\u5f35","v.believe":"\u4fe1\u3058\u3066\u98f2\u3080","v.doubt":"\u7591\u3046","v.table":"\u5186\u5353\u306e\u4e0a\u306e\u676f\u30021\u3064\u9078\u3076","v.myitems":"\u3042\u306a\u305f\u306e\u9053\u5177","v.log":"\u30a4\u30d9\u30f3\u30c8\u8a18\u9332\uff08\u65b0\u3057\u3044\u9806\uff09","v.panel":"\u6700\u5f8c\u306e\u6669\u9910\u306e\u64cd\u4f5c","v.progress":"\u9032\u884c","v.bonus":"\u4eca\u56de\u306eBONUS","v.winsl":"\u52dd\u5229\u6570","v.msg":"\u30db\u30b9\u30c8\u306f\u5e2d\u306b\u7740\u3044\u305f\u3002\u30b9\u30bf\u30fc\u30c8\u3092\u62bc\u3057\u3001\u676f\u3092\u9078\u3093\u3067\u81ea\u5206\u3067\u98f2\u3080\u304b\u30db\u30b9\u30c8\u306b\u5dee\u3057\u51fa\u305d\u3046\u3002","v.hint":"\u307e\u305a\u30c6\u30fc\u30d6\u30eb\u306e\u676f\u3092\u9078\u3073\uff08\u6570\u5b57\u30ad\u30fc\u3067\u3082\u53ef\uff09\u3001\u6b21\u306b\u884c\u52d5\u3059\u308b\u3002\u676f\u304c\u5fc5\u8981\u306a\u9053\u5177\u306f\u3001\u672a\u9078\u629e\u306a\u3089\u6d88\u8cbb\u3055\u308c\u306a\u3044\u3002\u731b\u6bd2\u306fHP\u3092\u6e1b\u3089\u3057\u3001\u7518\u9732\u306f\u56de\u5fa9\u3057\u3066\u518d\u884c\u52d5\u3001\u771f\u8a00\u6c34\u306f\u624b\u672d\u3092\u516c\u958b\u3059\u308b\u3002\u9154\u30443\u4ee5\u4e0a\u3067\u306f\u60c5\u5831\u304c\u5e7b\u899a\u306e\u3053\u3068\u304c\u3042\u308b\u3002","v.rulesT":"\u904a\u3073\u65b9\u3068\u30dd\u30a4\u30f3\u30c8","v.r1":"\u57fa\u672c\u7248\u306b\u9280\u306e\u84cb\u30d6\u30e9\u30d5\u306f\u306a\u304f\u3001\u81ea\u5206\u3067\u98f2\u3080\u30fb\u5dee\u3057\u51fa\u3059\u30fb\u9053\u5177\u3060\u3051\u3002\u300c\u4e0a\u7d1a\u30e2\u30fc\u30c9\u300d\u3092\u30aa\u30f3\u306b\u3059\u308b\u3068\u9280\u306e\u84cb\u306e\u5ba3\u8a00\u3068\u7591\u3044\u304c\u52a0\u308f\u308b\u3002\u4ee5\u4e0b\u306e\u9280\u306e\u84cb\u306e\u30eb\u30fc\u30eb\u306f\u4e0a\u7d1a\u30e2\u30fc\u30c9\u5c02\u7528\u3002","v.r2":"\u3042\u306a\u305f\u3068\u30db\u30b9\u30c8\u306fHP5\u3067\u3001\u4ea4\u4e92\u306b\u5353\u4e0a\u306e\u6b63\u4f53\u4e0d\u660e\u306e\u676f\u3092\u6271\u3046\u3002\u5404\u5e55\u306e\u958b\u59cb\u6642\u306b\u9152\u306e\u7a2e\u985e\u3054\u3068\u306e\u676f\u6570\u306f\u516c\u958b\u3055\u308c\u308b\u304c\u3001\u3069\u308c\u304c\u4f55\u304b\u306f\u5206\u304b\u3089\u306a\u3044\uff1a\u7b2c\u4e00\u5e55\u306f4\u676f\uff08\u731b\u6bd22\u30fb\u7518\u97321\u30fb\u771f\u8a00\u6c341\uff09\u3001\u7b2c\u4e8c\u5e55\u306f6\u676f\uff08\u731b\u6bd23\u30fb\u7518\u97322\u30fb\u771f\u8a00\u6c341\uff09\u3001\u7b2c\u4e09\u5e55\u306f8\u676f\uff08\u731b\u6bd24\u30fb\u7518\u97322\u30fb\u771f\u8a00\u6c342\uff09\u3002\u5404\u5e55\u3067\u53cc\u65b9\u304c\u9053\u5177\u3092\u5f15\u304f\uff082\u30fb3\u30fb4\u500b\uff09\u3002\u6240\u6301\u306f\u6700\u59274\u500b\u3001\u4f7f\u308f\u306a\u304b\u3063\u305f\u9053\u5177\u306f\u6b21\u306e\u5e55\u306b\u6301\u3061\u8d8a\u3059\u3002","v.r3":"\u3042\u306a\u305f\u306e\u756a\u3067\u306f\u3001\u307e\u305a\u9053\u5177\u3092\u4f7f\u3044\u3001\u6b21\u306b\u676f\u30921\u3064\u9078\u3076\uff1a\u81ea\u5206\u3067\u98f2\u3080\u3001\u30db\u30b9\u30c8\u306b\u305d\u306e\u307e\u307e\u5dee\u3057\u51fa\u3059\uff08\u30db\u30b9\u30c8\u306f\u5fc5\u305a\u98f2\u307f\u3001\u7518\u9732\u3092\u98f2\u307e\u306a\u3044\u9650\u308a\u624b\u756a\u306f\u3042\u306a\u305f\u306e\u307e\u307e\uff09\u3001\u307e\u305f\u306f\u9280\u306e\u84cb\u3092\u304b\u3076\u305b\u3066\u7518\u9732\u3060\u3068\u5ba3\u8a00\u3059\u308b\u3002\u30db\u30b9\u30c8\u306f\u4fe1\u3058\u3066\u98f2\u3080\u304b\u3001\u7591\u3046\u304b\u9078\u3076\u3002\u7591\u3044\u304c\u5f53\u305f\u308c\u3070\u3001\u5618\u3092\u3064\u3044\u305f\u5074\u304c\u9154\u3044+1\u3067\u98f2\u307f\u3001\u624b\u756a\u306f\u7591\u3063\u305f\u5074\u3078\u3002\u5916\u308c\u305f\uff08\u672c\u5f53\u306b\u666e\u901a\u306e\u7518\u9732\u3060\u3063\u305f\uff09\u5834\u5408\u3001\u7591\u3063\u305f\u5074\u306f\u56de\u5fa9\u3082\u8ffd\u52a0\u884c\u52d5\u3082\u306a\u3057\u3067\u98f2\u307e\u3055\u308c\u3001\u9053\u5177\u3092\u30e9\u30f3\u30c0\u30e0\u306b1\u3064\u6368\u3066\u3001\u624b\u756a\u306f\u5dee\u3057\u51fa\u3057\u305f\u5074\u306b\u623b\u308b\u3002\u9280\u306e\u84cb\u306e\u884c\u52d5\u306e\u305f\u3073\u306b\u5186\u5353\u304c1\u5e2d\u56de\u308a\u3001\u676f\u306e\u756a\u53f7\u3068\u4e2d\u8eab\u306f\u676f\u3068\u4e00\u7dd2\u306b\u52d5\u304f\u3002","v.r4":"\u731b\u6bd2\u306f\u98f2\u3093\u3060\u5074\u306eHP\u30921\u6e1b\u3089\u3059\u3002\u7518\u9732\u306fHP\u30921\u56de\u5fa9\u3057\u3066\u518d\u884c\u52d5\uff08\u56de\u5fa9\u306f1\u5e55\u306b\u3064\u304d\u5404\u81ea\u6700\u59272\u56de\uff09\u3002\u771f\u8a00\u6c34\u306f\u98f2\u3093\u3060\u5074\u306e\u5168\u3066\u306e\u9053\u5177\u3092\u516c\u958b\u3057\u3001\u9053\u5177\u304c\u306a\u3051\u308c\u3070\u5353\u4e0a\u306e\u676f\u30921\u3064\u30e9\u30f3\u30c0\u30e0\u306b\u516c\u958b\u3059\u308b\u3002\u676f\u3092\u98f2\u3080\u305f\u3073\u306b\u9154\u3044+1\u3002\u9154\u30443\u301c4\u3067\u306f\u3001\u9280\u306e\u91dd\u3068\u55c5\u304e\u5206\u3051\u304c\u534a\u3005\u306e\u78ba\u7387\u3067\u8aa4\u60c5\u5831\u306b\u306a\u308a\u3001\u731b\u6bd2\u306e\u30c0\u30e1\u30fc\u30b8\u3082+1\u3002\u9154\u30445\u3067\u9154\u3044\u3064\u3076\u308c\u3066\u5353\u3092\u3072\u3063\u304f\u308a\u8fd4\u3059\uff1a\u9154\u30440\u3001HP+1\u3001\u6b21\u306e\u884c\u52d5\u3092\u30b9\u30ad\u30c3\u30d7\u3001\u5168\u3066\u306e\u676f\u3092\u30b7\u30e3\u30c3\u30d5\u30eb\u3057\u3001\u65e2\u77e5\u306e\u60c5\u5831\u306f\u5168\u3066\u7121\u52b9\u306b\u306a\u308b\u3002\u5404\u5e55\u306e\u7d42\u308f\u308a\u306b\u53cc\u65b9\u306e\u9154\u3044\u304c1\u4e0b\u304c\u308b\u3002","v.r5":"\u9053\u5177\u306f10\u7a2e\u985e\uff1a\u9280\u306e\u91dd\uff08\u676f\u30921\u3064\u8abf\u3079\u308b\uff09\u3001\u55c5\u304e\u5206\u3051\uff082\u676f\u306e\u5371\u967a\u306a\u9152\u3092\u6570\u3048\u308b\uff09\u3001\u9154\u3044\u899a\u307e\u3057\uff08HP+1\u30fb\u9154\u3044\u22122\u3001\u3053\u306e\u30bf\u30fc\u30f3\u306f\u3082\u3046\u9053\u5177\u4e0d\u53ef\uff09\u3001\u5f37\u3044\u9152\uff08\u6b21\u306e\u676f\uff1a\u731b\u6bd2\u306f2\u56fa\u5b9a\u3001\u7518\u9732\u306f\u500d\uff09\u3001\u3059\u308a\u66ff\u3048\uff08\u731b\u6bd2\u2192\u7518\u9732\u2192\u771f\u8a00\u6c34\u306e\u9806\u306b\u5909\u3048\u308b\uff09\u3001\u4e7e\u676f\u4ee4\uff08\u30db\u30b9\u30c8\u306f\u6b21\u306e\u884c\u52d5\u3067\u5fc5\u305a\u81ea\u5206\u3067\u98f2\u3080\uff09\u3001\u4e7e\u676f\uff01\uff08\u53cc\u65b9\u304c\u540c\u3058\u676f\u30921\u56de\u305a\u3064\u98f2\u3080\uff09\u3001\u56de\u8ee2\u76e4\uff08\u5168\u3066\u30b7\u30e3\u30c3\u30d5\u30eb\uff09\u3001\u6fc3\u7e2e\u6bd2\u7c89\uff08\u731b\u6bd2\u306f\u4e8c\u91cd\u306b\u3001\u7518\u9732\u306f\u6bd2\u5165\u308a\u7518\u9732\u306b\uff09\u3001\u5e0c\u91c8\u6c37\uff08\u4e8c\u91cd\u306e\u6bd2\u2192\u731b\u6bd2\u3001\u731b\u6bd2\u2192\u6e05\u6c34\u3001\u6bd2\u5165\u308a\u7518\u9732\u2192\u7518\u9732\uff09\u3002\u540c\u3058\u9053\u5177\u306f1\u30bf\u30fc\u30f3\u306b1\u56de\u307e\u3067\u3002","v.r6":"HP\u304c0\u306b\u306a\u3063\u305f\u5074\u306e\u8ca0\u3051\u3002\u7b2c\u4e09\u5e55\u306e\u7d42\u4e86\u6642\u306bHP\u304c\u9ad8\u3044\u65b9\u304c\u52dd\u3061\u3001\u540c\u3058\u306a\u30893\u5206\u9593\u306e\u5ef6\u9577\u6226\uff08\u6bce\u30e9\u30a6\u30f3\u30c95\u676f\uff1a\u731b\u6bd23\u30fb\u771f\u8a00\u6c342\uff09\u3002\u6642\u9593\u5207\u308c\u3067HP\u3092\u6bd4\u3079\u3001\u305d\u308c\u3067\u3082\u540c\u3058\u306a\u3089\u5f15\u304d\u5206\u3051\u3002\u30db\u30b9\u30c8\u306f\u3042\u306a\u305f\u306e\u624b\u672d\u3092\u8997\u304b\u305a\u3001\u3042\u306a\u305f\u304c\u8abf\u3079\u305f\u60c5\u5831\u3082\u77e5\u3089\u306a\u3044\u3002","v.r7":"BONUS\u306f\u56fa\u5b9a\u5831\u916c\u3067\u3001\u5373\u6642\u306b\u4ed8\u4e0e\u3055\u308c\u308b\uff1a\u7b2c\u4e00\u5e55\u3092\u751f\u304d\u5ef6\u3073\u3066+1\u3001\u7b2c\u4e8c\u5e55\u3067+2\u3001\u7b2c\u4e09\u5e55\u3067+3\u3001\u6669\u9910\u306b\u52dd\u5229\u3057\u3066+2\u3002\u5404\u9805\u76ee\u306f1\u30e9\u30a6\u30f3\u30c9\u306b1\u56de\u306e\u307f\u3001\u6700\u59278\u30dd\u30a4\u30f3\u30c8\u3002\u30b9\u30b3\u30a2\u304c\u76f4\u63a5\u30dd\u30a4\u30f3\u30c8\u306b\u63db\u7b97\u3055\u308c\u308b\u3053\u3068\u306f\u306a\u304f\u3001\u7d50\u679c\u306f\u5224\u65ad\u30fb\u8a18\u61b6\u30fb\u78ba\u7387\u3067\u6c7a\u307e\u308a\u3001\u8ced\u3051\u306f\u306a\u3044\u3002\u4ed8\u4e0e\u6e08\u307f\u306e\u30dd\u30a4\u30f3\u30c8\u306f\u3001\u5f8c\u3067\u8ca0\u3051\u3066\u3082\u53d6\u308a\u6d88\u3055\u308c\u306a\u3044\u3002","v.r8":"\u30b2\u30fc\u30e0\u3084\u80cc\u666f\u30bf\u30d6\u3092\u5207\u308a\u66ff\u3048\u308b\u3068\u4e00\u6642\u505c\u6b62\u3057\u3001\u623b\u308b\u3068\u518d\u958b\u3059\u308b\u3002\u518d\u8aad\u307f\u8fbc\u307f\u3059\u308b\u3068\u5bfe\u6226\u306f\u653e\u68c4\u6271\u3044\u306b\u306a\u308b\u304c\u3001\u4ed8\u4e0e\u6e08\u307f\u306e\u30dd\u30a4\u30f3\u30c8\u306f\u6b8b\u308b\u3002\u52dd\u5229\u6570\u306f\u30d6\u30e9\u30a6\u30b6\u306b\u4fdd\u5b58\u3055\u308c\u3001\u30dd\u30a4\u30f3\u30c8\u306f\u4ed6\u306e\u30b2\u30fc\u30e0\u3068\u5171\u901a\u3067\u3001\u73fe\u91d1\u4fa1\u5024\u306f\u306a\u3044\u3002","v.use":"\u4f7f\u3046","v.close":"\u9589\u3058\u308b","v.lang":"\u8a00\u8a9e"},"ko":{"who.p.S":"\ub2f9\uc2e0\uc740","who.p.O":"\ub2f9\uc2e0\uc744","who.p.D":"\ub2f9\uc2e0\uc5d0\uac8c","who.p.N":"\ub2f9\uc2e0","who.d.S":"\ud638\uc2a4\ud2b8\ub294","who.d.O":"\ud638\uc2a4\ud2b8\ub97c","who.d.D":"\ud638\uc2a4\ud2b8\uc5d0\uac8c","who.d.N":"\ud638\uc2a4\ud2b8","sep":" ","act.1":"1\ub9c9: \ud0d0\uc0c9","act.2":"2\ub9c9: \uc2b9\ubd80\uc218","act.3":"3\ub9c9: \uc0ac\ud22c","act.4":"\uc5f0\uc7a5\uc804: \uc11c\ub4e0\ub370\uc2a4","act.s1":"1\ub9c9","act.s2":"2\ub9c9","act.s3":"3\ub9c9","act.s4":"\uc5f0\uc7a5\uc804","act.none":"\ub9cc\ucc2c\uc774 \uc544\uc9c1 \uc2dc\uc791\ub418\uc9c0 \uc54a\uc558\ub2e4","ty.poison":"\ub9f9\ub3c5","ty.poison2":"\uc774\uc911 \ub3c5","ty.nectar":"\uac10\ub85c","ty.pnectar":"\ub3c5 \uac10\ub85c","ty.truth":"\uc9c4\uc5b8\uc218","ty.water":"\ub9d1\uc740 \ubb3c","ty.safe":"\ubb34\ub3c5","ty.danger":"\uc720\ub3c5","it.needle.n":"\uc740\uce68","it.needle.d":"\uc794 \ud558\ub098\ub97c \uace8\ub77c \uc220\uc758 \uc885\ub958\ub97c \ud655\uc778\ud55c\ub2e4.","it.scent.n":"\ud5a5 \ub9e1\uae30","it.scent.d":"\uc794 \ud558\ub098\ub97c \uace8\ub77c \uadf8 \uc794\uacfc \ub2e4\uc74c \uc794\uc758 \uc704\ud5d8\ud55c \uc220 \uc218\ub97c \uc13c\ub2e4.","it.sober.n":"\ud574\ub3c5\uc57d","it.sober.d":"HP +1, \ucde8\uae30 \u22122. \uc774\ubc88 \ud134\uc5d4 \ub354 \uc774\uc0c1 \ub3c4\uad6c\ub97c \uc4f8 \uc218 \uc5c6\ub2e4.","it.liquor.n":"\ub3c5\uc8fc","it.liquor.d":"\ub2e4\uc74c \uc794: \ub9f9\ub3c5\uc740 2 \uace0\uc815, \uac10\ub85c\ub294 2\ubc30.","it.change.n":"\ubc14\uafd4\uce58\uae30","it.change.d":"\ub9f9\ub3c5\u2192\uac10\ub85c\u2192\uc9c4\uc5b8\uc218\u2192\ub9f9\ub3c5.","it.decree.n":"\uac74\ubc30\ub839","it.decree.d":"\uc0c1\ub300\ub294 \ub2e4\uc74c \ud589\ub3d9\uc5d0\uc11c \ubc18\ub4dc\uc2dc \uc9c1\uc811 \ub9c8\uc154\uc57c \ud55c\ub2e4.","it.cheers.n":"\uac74\ubc30!","it.cheers.d":"\ub098\uc640 \uc0c1\ub300\uac00 \uac19\uc740 \uc794\uc744 \ud55c \ubc88\uc529 \ub9c8\uc2e0\ub2e4.","it.spin.n":"\ub8f0\ub81b","it.spin.d":"\ubaa8\ub4e0 \uc794\uc744 \ub2e4\uc2dc \uc11e\ub294\ub2e4. \uc815\ubcf4\ub294 \ubb34\ud6a8\uac00 \ub41c\ub2e4.","it.powder.n":"\ub18d\ucd95 \ub3c5\uac00\ub8e8","it.powder.d":"\ub9f9\ub3c5 \ud53c\ud574 +1. \uac10\ub85c\ub294 \ub3c5 \uac10\ub85c\uac00 \ub41c\ub2e4.","it.ice.n":"\ud76c\uc11d \uc5bc\uc74c","it.ice.d":"\uc774\uc911 \ub3c5\u2192\ub9f9\ub3c5, \ub9f9\ub3c5\u2192\ub9d1\uc740 \ubb3c, \ub3c5 \uac10\ub85c\u2192\uac10\ub85c.","it.needcup":"(\uba3c\uc800 \uc794\uc744 \uc120\ud0dd)","cu.turn":"\ub2f9\uc2e0\uc758 \ucc28\ub840\uac00 \uc544\ub2c8\ub2e4.","cu.now":"\uc9c0\uae08\uc740 \ub3c4\uad6c\ub97c \uc4f8 \uc218 \uc5c6\ub2e4.","cu.none":"\uadf8 \ub3c4\uad6c\uac00 \uc5c6\ub2e4.","cu.lock":"\ud574\ub3c5\uc57d\uc744 \uc4f4 \ub4a4\uc5d0\ub294 \uc774\ubc88 \ud134\uc5d0 \ub3c4\uad6c\ub97c \uc4f8 \uc218 \uc5c6\ub2e4.","cu.once":"\uac19\uc740 \ub3c4\uad6c\ub294 \ud55c \ud134\uc5d0 \ud55c \ubc88\ub9cc \uc4f8 \uc218 \uc788\ub2e4.","cu.decreed":"\uc0c1\ub300\ub294 \uc774\ubbf8 \uac74\ubc30\ub839\uc5d0 \uac78\ub824 \uc788\ub2e4.","cu.cheers":"\uac74\ubc30\ub839\uc5d0 \uac78\ub824 \uc9c1\uc811 \ub9c8\uc154\uc57c \ud55c\ub2e4.","cu.nocup":"\ud0c1\uc790 \uc704\uc5d0 \uc794\uc774 \uc5c6\ub2e4.","it.pick":"\uba3c\uc800 \uc794\uc744 \uc120\ud0dd\ud55c \ub4a4 \u201c{item}\u201d\uc744(\ub97c) \uc4f4\ub2e4.","it.bad":"\u201c{item}\u201d\uc740(\ub294) \uc774 \uc220\uc5d0 \uc4f8 \uc218 \uc5c6\ub2e4. \ub3c4\uad6c\ub294 \uc18c\ubaa8\ub418\uc9c0 \uc54a\uc558\ub2e4.","m.needle":"\ubc14\ub298\uc774 #{id}\ubc88\uc774 \u201c{type}\u201d\uc774\ub77c\uace0 \uc54c\ub824 \uc900\ub2e4{maybe}.","m.maybe":" (\ucde8\ud574\uc11c \ud658\uac01\uc77c \uc218 \uc788\ub2e4)","l.start":"{act} \uc2dc\uc791. \ud0c1\uc790 \uc704\uc5d0 {n}\uc794\uc774 \uc788\uace0, \uc591\ucabd\uc774 \ub3c4\uad6c\ub97c \ubf51\ub294\ub2e4.","l.needle":"{a.S} #{id}\ubc88\uc5d0 \uc740\uce68\uc744 \uc37c\ub2e4.","l.scent":"{a.S} {ids}\ubc88\uc758 \ud5a5\uc744 \ub9e1\uc558\ub2e4.","l.sober":"{a.S} \ud574\ub3c5\uc57d\uc744 \ub9c8\uc168\ub2e4: HP +1, \ucde8\uae30 \u22122.","l.liquor":"{a.S} \ub3c5\uc8fc\ub97c \uc37c\ub2e4: \ub2e4\uc74c \uc794\uc758 \ud6a8\uacfc\uac00 \uac15\ud574\uc9c4\ub2e4.","l.decree":"{a.S} \uac74\ubc30\ub839\uc744 \uc37c\ub2e4. {o.S} \ub2e4\uc74c \uc794\uc744 \uc9c1\uc811 \ub9c8\uc154\uc57c \ud55c\ub2e4.","l.spin":"{a.S} \ub8f0\ub81b\uc744 \ub3cc\ub838\ub2e4: \ubaa8\ub4e0 \uc794\uc774 \ub2e4\uc2dc \uc11e\uc774\uace0 \uc54c\ub358 \uc815\ubcf4\ub294 \ubb34\ud6a8\uac00 \ub418\uc5c8\ub2e4.","l.change":"{a.S} #{id}\ubc88\uc5d0 \ubc14\uafd4\uce58\uae30\ub97c \uc37c\ub2e4.","l.powder":"{a.S} #{id}\ubc88\uc5d0 \ub18d\ucd95 \ub3c5\uac00\ub8e8\ub97c \ubfcc\ub838\ub2e4.","l.ice":"{a.S} #{id}\ubc88\uc5d0 \ud76c\uc11d \uc5bc\uc74c\uc744 \ub123\uc5c8\ub2e4.","l.cheers":"{a.S} \uac74\ubc30!\ub97c \uc678\ucce4\ub2e4: \uc591\ucabd\uc774 #{id}\ubc88\uc744 \ud55c \ubc88\uc529 \ub9c8\uc2e0\ub2e4.","l.drank":"{a.S} #{id}\ubc88\uc744 \ub9c8\uc168\ub2e4: {type}.","l.lose":"{x.S} HP\ub97c {n} \uc783\uc5c8\ub2e4.","l.heal":"{a.S} HP\ub97c {n} \ud68c\ubcf5\ud588\ub2e4.","l.noheal":"\ud68c\ubcf5 \uc5c6\uc74c.","l.healcap":"\uc774\ubc88 \ub9c9\uc758 \ud68c\ubcf5 \ud55c\ub3c4\uc5d0 \ub3c4\ub2ec\ud588\ub2e4.","l.again":"{a.S} \ud55c \ubc88 \ub354 \ud589\ub3d9\ud560 \uc218 \uc788\ub2e4.","l.reveal":"\ud328 \uacf5\uac1c: {a.N}.","l.rand":"\ud0c1\uc790 \uc704 #{id}\ubc88\uc774 \ubb34\uc791\uc704\ub85c \uacf5\uac1c\ub418\uc5c8\ub2e4.","l.drunkhurt":"\ucde8\uae30 \ub54c\ubb38\uc5d0 \ub9f9\ub3c5\uc774 \ub354 \uc544\ud504\ub2e4.","l.faint":"{a.S} \ucde8\ud574 \uc4f0\ub7ec\uc838 \ud0c1\uc790\ub97c \ub4a4\uc5ce\uc5c8\ub2e4: \ucde8\uae30 0, HP +1, \ub2e4\uc74c \ud589\ub3d9 \uac74\ub108\ub700, \uc794\uc774 \ub2e4\uc2dc \uc11e\uc778\ub2e4.","l.self":"{a.S} #{id}\ubc88\uc744 \uc9c1\uc811 \ub9c8\uc2dc\uae30\ub85c \ud588\ub2e4.","l.offer":"{a.S} #{id}\ubc88\uc744 {o.D} \uadf8\ub300\ub85c \uad8c\ud588\ub2e4.","l.claim":"{a.S} #{id}\ubc88\uc5d0 \uc740\ub69c\uaed1\uc744 \ub36e\uace0 \uac10\ub85c\ub77c\uace0 \uc8fc\uc7a5\ud558\uba70 {o.D} \uad8c\ud588\ub2e4.","l.believe":"{a.S} \ubbff\uace0 #{id}\ubc88\uc744 \ub9c8\uc168\ub2e4.","l.truenectar":"\uc815\ub9d0 \uac10\ub85c\uc600\ub2e4: \uc591\ucabd \ucde8\uae30 \u22121.","l.liar":"{a.S} \uac70\uc9d3\ub9d0\uc774 \ub4e4\ud1b5\ub0ac\ub2e4: \ucde8\uae30 +1 \ucd94\uac00.","l.doubtok":"{a.S} \uc758\uc2ec \uc131\uacf5! #{id}\ubc88\uc740 \uac10\ub85c\uac00 \uc544\ub2c8\uba70, {o.S} \uc9c1\uc811 \ub9c8\uc154\uc57c \ud55c\ub2e4.","l.doubtfail":"{a.S} \uc758\uc2ec \uc2e4\ud328: #{id}\ubc88\uc740 \uc9c4\uc9dc \uac10\ub85c\uc600\ub2e4. {a.S} \uc5b5\uc9c0\ub85c \ub9c8\uc154\uc57c \ud558\uba70 \ud68c\ubcf5\ub3c4 \ucd94\uac00 \ud589\ub3d9\ub3c4 \uc5c6\ub2e4.","l.discard":"{a.S} \ubb34\uc791\uc704\ub85c \ub3c4\uad6c\ub97c \ubc84\ub838\ub2e4: {item}.","l.rot":"\uc6d0\ud0c1\uc774 \ud55c \uc790\ub9ac \ub3cc\uc558\ub2e4.","l.skip":"{a.S} \ub108\ubb34 \ucde8\ud574 \uc774\ubc88 \ud589\ub3d9\uc744 \uac74\ub108\ub6f4\ub2e4.","l.pay":"BONUS +{n}\uc810 \uc9c0\uae09: {label}.","pay.a1":"1\ub9c9 \uc0dd\uc874","pay.a2":"2\ub9c9 \uc0dd\uc874","pay.a3":"3\ub9c9 \uc0dd\uc874","pay.win":"\ub9cc\ucc2c \uc2b9\ub9ac","l.cupsout":"\uc794\uc774 \ubaa8\ub450 \ube44\uc5c8\ub2e4: \uc591\ucabd \ucde8\uae30 \u22121.","l.tie":"3\ub9c9\uc774 \ub3d9\uc810\uc73c\ub85c \ub05d\ub0ac\ub2e4! 3\ubd84 \uc5f0\uc7a5\uc804\uc774 \uc2dc\uc791\ub41c\ub2e4.","l.ot":"\uc5f0\uc7a5\uc804: \uc0c8 \uc794\uc774 \ub193\uc778\ub2e4.","l.otend":"\uc5f0\uc7a5\uc804 \uc885\ub8cc! HP\ub97c \ube44\uad50\ud55c\ub2e4.","e.win":"\ub9cc\ucc2c\uc5d0\uc11c \uc2b9\ub9ac\ud588\ub2e4!","e.lose":"\ud638\uc2a4\ud2b8\uac00 \ub9cc\ucc2c\uc5d0\uc11c \uc2b9\ub9ac\ud588\ub2e4.","e.draw":"HP\uac00 \uac19\ub2e4: \ubb34\uc2b9\ubd80.","l.begin":"\ub9cc\ucc2c\uc774 \uc2dc\uc791\ub418\uc5c8\ub2e4. \ub2f9\uc2e0\uc774 \uba3c\uc800 \ud589\ub3d9\ud55c\ub2e4.","l.quit":"\uc774\ubc88 \ud310\uc744 \ud3ec\uae30\ud588\ub2e4.","h.win":"\ub2f9\uc2e0\uc758 \uc2b9\ub9ac!","h.quit":"\uc774\ubc88 \ud310\uc744 \ud3ec\uae30\ud588\ub2e4.","h.lose":"\ud638\uc2a4\ud2b8\uc758 \uc2b9\ub9ac.","h.draw":"\ubb34\uc2b9\ubd80.","h.earned":"\uc774\ubc88 \ud310\uc5d0 \uc9c0\uae09\ub41c BONUS: {n}\uc810.","h.none":"\uc774\ubc88 \ud310\uc5d4 \ucd94\uac00 \ub2ec\uc131 \ubcf4\uc0c1\uc774 \uc5c6\ub2e4.","u.cup":"#{id}\ubc88 \uc794{info}{claim}","u.known":", \uac00\uc9c4 \uc815\ubcf4: {label}","u.unknown":", \ub0b4\uc6a9 \ubd88\uba85","u.claimed":", \uc740\ub69c\uaed1\uc774 \uac10\ub85c\ub77c\uace0 \uc8fc\uc7a5","u.noitems":"\ub3c4\uad6c \uc5c6\uc74c","u.dopen":"\ud638\uc2a4\ud2b8\uc758 \ub3c4\uad6c (\uacf5\uac1c\ub428)","u.dhid":"\ud638\uc2a4\ud2b8\uc758 \ub3c4\uad6c ({n}\uac1c, \ub0b4\uc6a9 \ubd88\uba85)","u.scentnote":"\ud5a5 \ub9e1\uae30: {ids}\ubc88\uc5d0 \uc704\ud5d8\ud55c \uc220 {n}\uc794{maybe}.","u.maybe":" (\ud658\uac01\uc77c \uc218 \uc788\uc74c)","u.seen":"\ud638\uc2a4\ud2b8\uac00 \ub2f9\uc2e0\uc758 \ud328\ub97c \ubcf4\uc558\ub2e4.","u.hp":"HP {a}/{b}","u.dr":"\ucde8\uae30 {a}/{b}{tip}","u.tipsy":" (\uc54c\ub538\ub538)","u.items":"\ub3c4\uad6c {n}","u.comp":"\uc774\ubc88 \ub9c9 \uad6c\uc131: \ub9f9\ub3c5 {a}, \uac10\ub85c {b}, \uc9c4\uc5b8\uc218 {c} \u00b7 \ub0a8\uc740 \uc794 {n} \u00b7 \ub9c8\uc2e0 \uac83: \ub9f9\ub3c5 {x}, \uac10\ub85c {y}, \uc9c4\uc5b8\uc218 {z}{w}","u.compwater":", \ub9d1\uc740 \ubb3c {w}","u.compidle":"\uac01 \ub9c9\uc774 \uc2dc\uc791\ub420 \ub54c \uc220 \uc885\ub958\ubcc4 \uc794 \uc218\uac00 \uacf5\uac1c\ub41c\ub2e4.","u.cups":"\ud0c1\uc790 \uc704\uc5d0 {n}\uc794 \ub0a8\uc74c","u.cwin":"\ub2f9\uc2e0\uc758 \uc2b9\ub9ac","u.close":"\ud638\uc2a4\ud2b8\uc758 \uc2b9\ub9ac","u.cdraw":"\ubb34\uc2b9\ubd80","u.again":"\ubc84\ud2bc\uc744 \ub20c\ub7ec \ud55c \ud310 \ub354","u.press":"\uc2dc\uc791 \ubc84\ud2bc\uc744 \ub204\ub974\uae30","u.yourturn":"\ub2f9\uc2e0\uc758 \ucc28\ub840","u.hostturn":"\ud638\uc2a4\ud2b8\uc758 \ucc28\ub840","u.over":"\uc774\ubc88 \ud310\uc774 \ub05d\ub0ac\ub2e4.","u.pressgo":"\u201c\ub9cc\ucc2c \uc2dc\uc791\u201d\uc744 \ub204\ub974\uc790.","u.pending":"\ud638\uc2a4\ud2b8\uac00 \uc794\uc5d0 \uc740\ub69c\uaed1\uc744 \ub36e\uc5c8\ub2e4. \ub2f9\uc2e0\uc774 \uacb0\uc815\ud560 \ucc28\ub840\ub2e4.","u.think":"\ud638\uc2a4\ud2b8\uac00 \uc0dd\uac01 \uc911\u2026","u.decreed":"\uac74\ubc30\ub839\uc5d0 \uac78\ub838\ub2e4: \uc774\ubc88\uc5d4 \uc9c1\uc811 \ub9c8\uc154\uc57c \ud55c\ub2e4.","u.selected":"#{id}\ubc88 \uc120\ud0dd: \uc774 \uc794\uc744 \uc5b4\ub5bb\uac8c \ud560\uc9c0 \uc815\ud558\uc790.","u.selfirst":"\uba3c\uc800 \uc794\uc744 \uc120\ud0dd\ud55c \ub4a4 \uc5b4\ub5bb\uac8c \ud560\uc9c0 \uc815\ud558\uc790.","u.advon":"\uace0\uae09 \ubaa8\ub4dc: \uc740\ub69c\uaed1 \ube14\ub7ec\ud504 (\ucf1c\uc9d0)","u.advoff":"\uace0\uae09 \ubaa8\ub4dc: \uc740\ub69c\uaed1 \ube14\ub7ec\ud504 (\uaebc\uc9d0)","u.soundon":"\uc18c\ub9ac: \ucf1c\uc9d0","u.soundoff":"\uc18c\ub9ac: \uaebc\uc9d0","u.claimq":"\ud638\uc2a4\ud2b8\ub294 #{id}\ubc88\uc774 \uac10\ub85c\ub77c\uace0 \ud55c\ub2e4. \ubbff\uace0 \ub9c8\uc2e4\uae4c, \uc758\uc2ec\ud560\uae4c?","u.going":"\ub9cc\ucc2c \uc9c4\ud589 \uc911","u.goagain":"\ud55c \ubc88 \ub354","u.go":"\ub9cc\ucc2c \uc2dc\uc791","u.quitarm":"\ud55c \ubc88 \ub354 \ub20c\ub7ec \ud655\uc778","u.quit":"\ud310 \ud3ec\uae30","u.notstarted":"\uc2dc\uc791 \uc804","u.pts":"{n}\uc810","u.wins":"{n}\uc2b9","u.pickfirst":"\uba3c\uc800 \uc794\uc744 \uc120\ud0dd\ud558\uc790.","u.startadv":"\ub9cc\ucc2c\uc774 \uc2dc\uc791\ub418\uc5c8\ub2e4! \uc794\uc744 \uc120\ud0dd\ud574 \uc9c1\uc811 \ub9c8\uc2dc\uac70\ub098, \ud638\uc2a4\ud2b8\uc5d0\uac8c \uad8c\ud558\uac70\ub098, \uc740\ub69c\uaed1\uc73c\ub85c \uc18d\uc774\uc790.","u.start":"\ub9cc\ucc2c\uc774 \uc2dc\uc791\ub418\uc5c8\ub2e4! \uc794\uc744 \uc120\ud0dd\ud574 \uc9c1\uc811 \ub9c8\uc2dc\uac70\ub098 \ud638\uc2a4\ud2b8\uc5d0\uac8c \uad8c\ud558\uc790.","u.bonusmsg":"BONUS +{n}\uc810 \uc9c0\uae09: {label}.","v.host":"\ud638\uc2a4\ud2b8","v.you":"\ub2f9\uc2e0","v.self":"\uc9c1\uc811 \ub9c8\uc2e0\ub2e4","v.toast":"\ud638\uc2a4\ud2b8\uc5d0\uac8c \uad8c\ud55c\ub2e4","v.silver":"\uc740\ub69c\uaed1: \uac10\ub85c\ub77c\uace0 \uc8fc\uc7a5","v.believe":"\ubbff\uace0 \ub9c8\uc2e0\ub2e4","v.doubt":"\uc758\uc2ec\ud55c\ub2e4","v.table":"\uc6d0\ud0c1 \uc704\uc758 \uc794. \ud558\ub098\ub97c \uace0\ub978\ub2e4","v.myitems":"\ub2f9\uc2e0\uc758 \ub3c4\uad6c","v.log":"\uc774\ubca4\ud2b8 \uae30\ub85d (\ucd5c\uc2e0\uc21c)","v.panel":"\ub9c8\uc9c0\ub9c9 \ub9cc\ucc2c \uc870\uc791","v.progress":"\uc9c4\ud589","v.bonus":"\uc774\ubc88 \ud310 BONUS","v.winsl":"\uc2b9\uc218","v.msg":"\ud638\uc2a4\ud2b8\uac00 \uc790\ub9ac\uc5d0 \uc549\uc558\ub2e4. \uc2dc\uc791\uc744 \ub204\ub974\uace0 \uc794\uc744 \uace8\ub77c \uc9c1\uc811 \ub9c8\uc2dc\uac70\ub098 \ud638\uc2a4\ud2b8\uc5d0\uac8c \uad8c\ud558\uc790.","v.hint":"\uba3c\uc800 \ud0c1\uc790\uc758 \uc794\uc744 \uc120\ud0dd\ud558\uace0(\uc22b\uc790 \ud0a4\ub3c4 \uac00\ub2a5) \ud589\ub3d9\ud55c\ub2e4. \uc794\uc774 \ud544\uc694\ud55c \ub3c4\uad6c\ub294 \uc120\ud0dd\ud558\uc9c0 \uc54a\uc73c\uba74 \uc18c\ubaa8\ub418\uc9c0 \uc54a\ub294\ub2e4. \ub9f9\ub3c5\uc740 HP\ub97c \uae4e\uace0, \uac10\ub85c\ub294 \ud68c\ubcf5 \ud6c4 \uc7ac\ud589\ub3d9, \uc9c4\uc5b8\uc218\ub294 \ud328\ub97c \uacf5\uac1c\ud55c\ub2e4. \ucde8\uae30 3 \uc774\uc0c1\uc774\uba74 \uc815\ubcf4\uac00 \ud658\uac01\uc77c \uc218 \uc788\ub2e4.","v.rulesT":"\uaddc\uce59\uacfc \uc810\uc218","v.r1":"\uae30\ubcf8 \ubaa8\ub4dc\uc5d0\ub294 \uc740\ub69c\uaed1 \ube14\ub7ec\ud504\uac00 \uc5c6\uace0, \uc9c1\uc811 \ub9c8\uc2dc\uae30\u00b7\uad8c\ud558\uae30\u00b7\ub3c4\uad6c\ub9cc \uc788\ub2e4. \u201c\uace0\uae09 \ubaa8\ub4dc\u201d\ub97c \ucf1c\uba74 \uc740\ub69c\uaed1 \uc8fc\uc7a5\uacfc \uc758\uc2ec\uc774 \ucd94\uac00\ub418\uba70, \uc544\ub798 \uc740\ub69c\uaed1 \uaddc\uce59\uc740 \ubaa8\ub450 \uace0\uae09 \ubaa8\ub4dc\uc5d0\uc11c\ub9cc \uc801\uc6a9\ub41c\ub2e4.","v.r2":"\ub2f9\uc2e0\uacfc \ud638\uc2a4\ud2b8\ub294 HP 5\ub85c \ubc88\uac08\uc544 \ud0c1\uc790 \uc704\uc758 \uc815\uccb4\ubd88\uba85\uc758 \uc794\uc744 \ub2e4\ub8ec\ub2e4. \uac01 \ub9c9\uc774 \uc2dc\uc791\ub420 \ub54c \uc220 \uc885\ub958\ubcc4 \uc794 \uc218\ub294 \uacf5\uac1c\ub418\uc9c0\ub9cc \uc5b4\ub290 \uc794\uc774 \ubb34\uc5c7\uc778\uc9c0\ub294 \uc54c \uc218 \uc5c6\ub2e4: 1\ub9c9 4\uc794(\ub9f9\ub3c5 2, \uac10\ub85c 1, \uc9c4\uc5b8\uc218 1), 2\ub9c9 6\uc794(\ub9f9\ub3c5 3, \uac10\ub85c 2, \uc9c4\uc5b8\uc218 1), 3\ub9c9 8\uc794(\ub9f9\ub3c5 4, \uac10\ub85c 2, \uc9c4\uc5b8\uc218 2). \uac01 \ub9c9\ub9c8\ub2e4 \uc591\ucabd\uc774 \ub3c4\uad6c\ub97c \ubf51\ub294\ub2e4(2, 3, 4\uac1c). \ucd5c\ub300 4\uac1c\uae4c\uc9c0 \ubcf4\uc720\ud558\uba70 \uc548 \uc4f4 \ub3c4\uad6c\ub294 \ub2e4\uc74c \ub9c9\uc73c\ub85c \ub118\uc5b4\uac04\ub2e4.","v.r3":"\ub2f9\uc2e0\uc758 \ucc28\ub840\uc5d0\ub294 \uba3c\uc800 \ub3c4\uad6c\ub97c \uc4f4 \ub4a4 \uc794\uc744 \ud558\ub098 \uace0\ub978\ub2e4: \uc9c1\uc811 \ub9c8\uc2dc\uac70\ub098, \ud638\uc2a4\ud2b8\uc5d0\uac8c \uadf8\ub300\ub85c \uad8c\ud558\uac70\ub098(\ud638\uc2a4\ud2b8\ub294 \ubc18\ub4dc\uc2dc \ub9c8\uc2dc\uba70, \uac10\ub85c\ub97c \ub9c8\uc2dc\uc9c0 \uc54a\ub294 \ud55c \ucc28\ub840\ub294 \ub2f9\uc2e0\uc774 \uc720\uc9c0), \uc740\ub69c\uaed1\uc744 \ub36e\uace0 \uac10\ub85c\ub77c\uace0 \uc8fc\uc7a5\ud55c\ub2e4. \ud638\uc2a4\ud2b8\ub294 \ubbff\uace0 \ub9c8\uc2dc\uac70\ub098 \uc758\uc2ec\ud560 \uc218 \uc788\ub2e4. \uc758\uc2ec\uc774 \ub9de\uc73c\uba74 \uac70\uc9d3\ub9d0\ud55c \ucabd\uc774 \ucde8\uae30 +1\ub85c \ub9c8\uc2dc\uace0 \ucc28\ub840\ub294 \uc758\uc2ec\ud55c \ucabd\uc73c\ub85c \ub118\uc5b4\uac04\ub2e4. \ud2c0\ub9ac\uba74(\uc815\ub9d0 \ud3c9\ubc94\ud55c \uac10\ub85c) \uc758\uc2ec\ud55c \ucabd\uc774 \ud68c\ubcf5\ub3c4 \ucd94\uac00 \ud589\ub3d9\ub3c4 \uc5c6\uc774 \uc5b5\uc9c0\ub85c \ub9c8\uc2dc\uace0 \ub3c4\uad6c\ub97c \ubb34\uc791\uc704\ub85c \ud558\ub098 \ubc84\ub9ac\uba70, \ucc28\ub840\ub294 \uad8c\ud55c \ucabd\uc73c\ub85c \ub3cc\uc544\uac04\ub2e4. \uc740\ub69c\uaed1 \ud589\ub3d9 \ub4a4\uc5d0\ub294 \uc6d0\ud0c1\uc774 \ud55c \uc790\ub9ac \ub3cc\uace0, \uc794\uc758 \ubc88\ud638\uc640 \ub0b4\uc6a9\uc740 \uc794\uc744 \ub530\ub77c \uc774\ub3d9\ud55c\ub2e4.","v.r4":"\ub9f9\ub3c5\uc740 \ub9c8\uc2e0 \uc0ac\ub78c\uc758 HP\ub97c 1 \uae4e\uace0, \uac10\ub85c\ub294 HP 1\uc744 \ud68c\ubcf5\ud558\uace0 \ud55c \ubc88 \ub354 \ud589\ub3d9\ud55c\ub2e4(\ub9c9\ub2f9 \uac01\uc790 \ucd5c\ub300 2\ud68c \ud68c\ubcf5). \uc9c4\uc5b8\uc218\ub294 \ub9c8\uc2e0 \uc0ac\ub78c\uc758 \ub3c4\uad6c\ub97c \ubaa8\ub450 \uacf5\uac1c\ud558\uba70, \ub3c4\uad6c\uac00 \uc5c6\uc73c\uba74 \ud0c1\uc790 \uc704 \uc794 \ud558\ub098\ub97c \ubb34\uc791\uc704\ub85c \uacf5\uac1c\ud55c\ub2e4. \uc794\uc744 \ub9c8\uc2e4 \ub54c\ub9c8\ub2e4 \ucde8\uae30 +1. \ucde8\uae30 3~4\uc5d0\uc11c\ub294 \uc740\uce68\uacfc \ud5a5 \ub9e1\uae30\uac00 \uc808\ubc18 \ud655\ub960\ub85c \ud2c0\ub9b0 \uc815\ubcf4\ub97c \uc8fc\uace0 \ub9f9\ub3c5 \ud53c\ud574\ub3c4 1 \ub298\uc5b4\ub09c\ub2e4. \ucde8\uae30 5\uac00 \ub418\uba74 \uc4f0\ub7ec\uc838 \ud0c1\uc790\ub97c \ub4a4\uc5ce\ub294\ub2e4: \ucde8\uae30 0, HP +1, \ub2e4\uc74c \ud589\ub3d9 \uac74\ub108\ub700, \ubaa8\ub4e0 \uc794\uc774 \ub2e4\uc2dc \uc11e\uc774\uace0 \uc54c\ub358 \uc815\ubcf4\ub294 \uc804\ubd80 \ubb34\ud6a8. \uac01 \ub9c9\uc774 \ub05d\ub098\uba74 \uc591\ucabd \ucde8\uae30\uac00 1\uc529 \ub0b4\ub824\uac04\ub2e4.","v.r5":"\ub3c4\uad6c\ub294 10\uc885: \uc740\uce68(\uc794 \ud558\ub098 \ud655\uc778), \ud5a5 \ub9e1\uae30(\ub450 \uc794\uc758 \uc704\ud5d8\ud55c \uc220 \uc218 \uc138\uae30), \ud574\ub3c5\uc57d(HP +1, \ucde8\uae30 \u22122, \uc774\ubc88 \ud134 \ub3c4\uad6c \uc0ac\uc6a9 \ubd88\uac00), \ub3c5\uc8fc(\ub2e4\uc74c \uc794: \ub9f9\ub3c5 2 \uace0\uc815, \uac10\ub85c 2\ubc30), \ubc14\uafd4\uce58\uae30(\ub9f9\ub3c5\u2192\uac10\ub85c\u2192\uc9c4\uc5b8\uc218 \uc21c\uc73c\ub85c \ubcc0\ud658), \uac74\ubc30\ub839(\ud638\uc2a4\ud2b8\ub294 \ub2e4\uc74c \ud589\ub3d9\uc5d0\uc11c \ubc18\ub4dc\uc2dc \uc9c1\uc811 \ub9c8\uc2ec), \uac74\ubc30!(\uc591\ucabd\uc774 \uac19\uc740 \uc794\uc744 \ud55c \ubc88\uc529 \ub9c8\uc2ec), \ub8f0\ub81b(\uc804\ubd80 \ub2e4\uc2dc \uc11e\uae30), \ub18d\ucd95 \ub3c5\uac00\ub8e8(\ub9f9\ub3c5\uc740 \uc774\uc911\uc73c\ub85c, \uac10\ub85c\ub294 \ub3c5 \uac10\ub85c\ub85c), \ud76c\uc11d \uc5bc\uc74c(\uc774\uc911 \ub3c5\u2192\ub9f9\ub3c5, \ub9f9\ub3c5\u2192\ub9d1\uc740 \ubb3c, \ub3c5 \uac10\ub85c\u2192\uac10\ub85c). \uac19\uc740 \ub3c4\uad6c\ub294 \ud55c \ud134\uc5d0 \ud55c \ubc88\ub9cc \uc4f8 \uc218 \uc788\ub2e4.","v.r6":"HP\uac00 0\uc774 \ub418\uba74 \ud328\ubc30. 3\ub9c9\uc774 \ub05d\ub0ac\uc744 \ub54c HP\uac00 \ub192\uc740 \ucabd\uc774 \uc2b9\ub9ac\ud558\uace0, \uac19\uc73c\uba74 3\ubd84 \uc5f0\uc7a5\uc804(\ub77c\uc6b4\ub4dc\ub2f9 5\uc794: \ub9f9\ub3c5 3, \uc9c4\uc5b8\uc218 2)\uc5d0 \ub4e4\uc5b4\uac04\ub2e4. \uc2dc\uac04\uc774 \ub05d\ub098\uba74 HP\ub97c \ube44\uad50\ud558\uace0 \uadf8\ub798\ub3c4 \uac19\uc73c\uba74 \ubb34\uc2b9\ubd80. \ud638\uc2a4\ud2b8\ub294 \ub2f9\uc2e0\uc758 \ud328\ub97c \uc5ff\ubcf4\uc9c0 \uc54a\uc73c\uba70 \ub2f9\uc2e0\uc774 \uc54c\uc544\ub0b8 \uc815\ubcf4\ub3c4 \ubaa8\ub978\ub2e4.","v.r7":"BONUS\ub294 \uc989\uc2dc \uc9c0\uae09\ub418\ub294 \uace0\uc815 \ubcf4\uc0c1\uc774\ub2e4: 1\ub9c9 \uc0dd\uc874 +1, 2\ub9c9 \uc0dd\uc874 +2, 3\ub9c9 \uc0dd\uc874 +3, \ub9cc\ucc2c \uc2b9\ub9ac +2. \uac01 \ud56d\ubaa9\uc740 \ud310\ub2f9 \ud55c \ubc88\ub9cc \uc9c0\uae09\ub418\uba70 \ucd5c\ub300 8\uc810. \uc810\uc218\uac00 \uace7\ubc14\ub85c \ud3ec\uc778\ud2b8\ub85c \ud658\uc0b0\ub418\uc9c0\ub294 \uc54a\uc73c\uba70 \uacb0\uacfc\ub294 \ud310\ub2e8\u00b7\uae30\uc5b5\u00b7\ud655\ub960\ub85c \uc815\ud574\uc9c0\uace0 \ubca0\ud305\uc740 \uc5c6\ub2e4. \uc9c0\uae09\ub41c \ud3ec\uc778\ud2b8\ub294 \ub098\uc911\uc5d0 \uc838\ub3c4 \ud68c\uc218\ub418\uc9c0 \uc54a\ub294\ub2e4.","v.r8":"\uac8c\uc784\uc774\ub098 \ubc31\uadf8\ub77c\uc6b4\ub4dc \ud0ed\uc744 \uc804\ud658\ud558\uba74 \uc77c\uc2dc\uc815\uc9c0\ub418\uace0 \ub3cc\uc544\uc624\uba74 \uc774\uc5b4\uc9c4\ub2e4. \uc0c8\ub85c\uace0\uce68\ud558\uba74 \ud310\uc740 \ud3ec\uae30 \ucc98\ub9ac\ub418\uc9c0\ub9cc \uc9c0\uae09\ub41c \ud3ec\uc778\ud2b8\ub294 \uc720\uc9c0\ub41c\ub2e4. \uc2b9\uc218\ub294 \ube0c\ub77c\uc6b0\uc800\uc5d0 \uc800\uc7a5\ub418\uba70, \ud3ec\uc778\ud2b8\ub294 \ub2e4\ub978 \uac8c\uc784\uacfc \uacf5\uc720\ub418\uace0 \ud604\uae08 \uac00\uce58\uac00 \uc5c6\ub2e4.","v.use":"\uc0ac\uc6a9","v.close":"\ub2eb\uae30","v.lang":"\uc5b8\uc5b4"},"zh":{"who.p.S":"\u4f60","who.p.O":"\u4f60","who.p.D":"\u4f60","who.p.N":"\u4f60","who.d.S":"\u838a\u5bb6","who.d.O":"\u838a\u5bb6","who.d.D":"\u838a\u5bb6","who.d.N":"\u838a\u5bb6","sep":"","act.1":"\u7b2c\u4e00\u5e55\uff1a\u8a66\u63a2","act.2":"\u7b2c\u4e8c\u5e55\uff1a\u535a\u5f08","act.3":"\u7b2c\u4e09\u5e55\uff1a\u6b7b\u9b25","act.4":"\u5ef6\u9577\u8cfd\uff1a\u731d\u6b7b","act.s1":"\u7b2c\u4e00\u5e55","act.s2":"\u7b2c\u4e8c\u5e55","act.s3":"\u7b2c\u4e09\u5e55","act.s4":"\u5ef6\u9577\u8cfd","act.none":"\u665a\u5bb4\u5c1a\u672a\u958b\u59cb","ty.poison":"\u5287\u6bd2","ty.poison2":"\u96d9\u500d\u5287\u6bd2","ty.nectar":"\u74ca\u6f3f","ty.pnectar":"\u6bd2\u74ca\u6f3f","ty.truth":"\u771f\u8a00\u6c34","ty.water":"\u6e05\u6c34","ty.safe":"\u7121\u6bd2","ty.danger":"\u6709\u6bd2","it.needle.n":"\u9280\u91dd","it.needle.d":"\u9078\u4e00\u676f\uff0c\u67e5\u770b\u9152\u7a2e\u3002","it.scent.n":"\u805e\u9999","it.scent.d":"\u9078\u4e00\u676f\uff0c\u6578\u5b83\u548c\u4e0b\u4e00\u676f\u7684\u5371\u96aa\u9152\u3002","it.sober.n":"\u9192\u9152\u85e5","it.sober.d":"\u56de 1 \u8840\u3001\u9152\u9189 \u22122\uff0c\u4e4b\u5f8c\u672c\u56de\u5408\u4e0d\u80fd\u518d\u7528\u9053\u5177\u3002","it.liquor.n":"\u70c8\u9152\u647b\u96dc","it.liquor.d":"\u4e0b\u4e00\u676f\uff1a\u5287\u6bd2\u56fa\u5b9a 2 \u9ede\u3001\u74ca\u6f3f\u52a0\u500d\u3002","it.change.n":"\u5077\u5929\u63db\u65e5","it.change.d":"\u5287\u6bd2\u2192\u74ca\u6f3f\u2192\u771f\u8a00\u6c34\u2192\u5287\u6bd2\u3002","it.decree.n":"\u52f8\u9152\u4ee4","it.decree.d":"\u5c0d\u65b9\u4e0b\u6b21\u884c\u52d5\u5fc5\u9808\u81ea\u5df1\u559d\u3002","it.cheers.n":"\u4e7e\u676f\uff01","it.cheers.d":"\u4f60\u548c\u5c0d\u65b9\u5404\u559d\u4e00\u6b21\u540c\u4e00\u676f\u3002","it.spin.n":"\u8f49\u76e4","it.spin.d":"\u5168\u90e8\u9152\u676f\u91cd\u65b0\u6d17\u724c\uff0c\u60c5\u5831\u4f5c\u5ee2\u3002","it.powder.n":"\u6fc3\u7e2e\u6bd2\u7c89","it.powder.d":"\u5287\u6bd2\u50b7\u5bb3 +1\uff1b\u74ca\u6f3f\u8b8a\u6bd2\u74ca\u6f3f\u3002","it.ice.n":"\u7a00\u91cb\u51b0\u584a","it.ice.d":"\u96d9\u500d\u5287\u6bd2\u22121\uff1b\u5287\u6bd2\u8b8a\u6e05\u6c34\uff1b\u6bd2\u74ca\u6f3f\u8b8a\u74ca\u6f3f\u3002","it.needcup":"\uff08\u9700\u5148\u9078\u676f\uff09","cu.turn":"\u73fe\u5728\u4e0d\u662f\u4f60\u7684\u56de\u5408\u3002","cu.now":"\u73fe\u5728\u4e0d\u80fd\u4f7f\u7528\u9053\u5177\u3002","cu.none":"\u6c92\u6709\u9019\u4ef6\u9053\u5177\u3002","cu.lock":"\u7528\u904e\u9192\u9152\u85e5\u5f8c\uff0c\u672c\u56de\u5408\u4e0d\u80fd\u518d\u7528\u9053\u5177\u3002","cu.once":"\u540c\u540d\u9053\u5177\u6bcf\u56de\u5408\u53ea\u80fd\u7528\u4e00\u6b21\u3002","cu.decreed":"\u5c0d\u65b9\u5df2\u7d93\u88ab\u52f8\u9152\u4ee4\u6307\u5b9a\u4e86\u3002","cu.cheers":"\u88ab\u52f8\u9152\u4ee4\u6307\u5b9a\uff0c\u53ea\u80fd\u81ea\u5df1\u559d\u3002","cu.nocup":"\u684c\u4e0a\u6c92\u6709\u9152\u676f\u3002","it.pick":"\u8acb\u5148\u9ede\u9078\u4e00\u676f\u9152\uff0c\u518d\u4f7f\u7528\u201c{item}\u201d\u3002","it.bad":"\u201c{item}\u201d\u4e0d\u80fd\u7528\u5728\u9019\u7a2e\u9152\u4e0a\uff0c\u9053\u5177\u6c92\u6709\u6d88\u8017\u3002","m.needle":"\u9280\u91dd\u986f\u793a #{id} \u662f\u201c{type}\u201d{maybe}\u3002","m.maybe":"\uff08\u9152\u9189\u4e2d\uff0c\u53ef\u80fd\u662f\u5e7b\u89ba\uff09","l.start":"{act}\u958b\u59cb\u3002\u684c\u4e0a\u9084\u6709 {n} \u676f\u9152\uff0c\u96d9\u65b9\u5404\u62bd\u9053\u5177\u3002","l.needle":"{a.S}\u4f7f\u7528\u9280\u91dd\uff0c\u67e5\u770b\u4e86 #{id}\u3002","l.scent":"{a.S}\u4f7f\u7528\u805e\u9999\uff0c\u55c5\u4e86 {ids}\u3002","l.sober":"{a.S}\u559d\u4e0b\u9192\u9152\u85e5\uff1a\u56de\u5fa9 1 \u9ede\u751f\u547d\uff0c\u9152\u9189 \u22122\u3002","l.liquor":"{a.S}\u4f7f\u7528\u70c8\u9152\u647b\u96dc\uff1a\u4e0b\u4e00\u676f\u7684\u6548\u679c\u52a0\u5f37\u3002","l.decree":"{a.S}\u4f7f\u7528\u52f8\u9152\u4ee4\u3002\u4e0b\u6b21\u884c\u52d5\u88ab\u8feb\u81ea\u5df1\u559d\uff0c\u5c0d\u8c61\uff1a{o.N}\u3002","l.spin":"{a.S}\u8f49\u52d5\u8f49\u76e4\uff1a\u6240\u6709\u9152\u676f\u91cd\u65b0\u6d17\u724c\uff0c\u5df2\u77e5\u60c5\u5831\u4f5c\u5ee2\u3002","l.change":"{a.S}\u5c0d #{id} \u4f7f\u7528\u5077\u5929\u63db\u65e5\u3002","l.powder":"{a.S}\u5c0d #{id} \u6492\u4e0b\u6fc3\u7e2e\u6bd2\u7c89\u3002","l.ice":"{a.S}\u5c0d #{id} \u4e1f\u5165\u7a00\u91cb\u51b0\u584a\u3002","l.cheers":"{a.S}\u767c\u52d5\u4e7e\u676f\uff01\uff1a\u96d9\u65b9\u5404\u559d\u4e00\u6b21 #{id}\u3002","l.drank":"{a.S}\u559d\u4e0b #{id}\uff1a{type}\u3002","l.lose":"{x.S}\u5931\u53bb {n} \u9ede\u751f\u547d\u3002","l.heal":"{a.S}\u56de\u5fa9 {n} \u9ede\u751f\u547d\u3002","l.noheal":"\u6c92\u6709\u56de\u8840\u3002","l.healcap":"\u56de\u8840\u6b21\u6578\u5df2\u9054\u672c\u5e55\u4e0a\u9650\u3002","l.again":"{a.S}\u53ef\u4ee5\u518d\u884c\u52d5\u4e00\u6b21\u3002","l.reveal":"\u516c\u958b\u624b\u724c\uff1a{a.N}\u3002","l.rand":"\u96a8\u6a5f\u516c\u958b\u4e86\u684c\u4e0a #{id}\u3002","l.drunkhurt":"\u9152\u9189\u8b93\u5287\u6bd2\u66f4\u75db\u3002","l.faint":"{a.S}\u9189\u5012\u7ffb\u684c\uff1a\u9152\u9189\u6b78\u96f6\u3001\u56de\u5fa9 1 \u9ede\u751f\u547d\u3001\u8df3\u904e\u4e0b\u4e00\u6b21\u884c\u52d5\uff0c\u9152\u676f\u91cd\u65b0\u6d17\u724c\u3002","l.self":"{a.S}\u9078\u64c7\u81ea\u5df1\u559d #{id}\u3002","l.offer":"{a.S}\u628a #{id} \u76f4\u63a5\u656c\u7d66{o.N}\u3002","l.claim":"{a.S}\u628a #{id} \u84cb\u4e0a\u9280\u84cb\uff0c\u5ba3\u7a31\u662f\u74ca\u6f3f\uff0c\u656c\u7d66{o.N}\u3002","l.believe":"{a.S}\u9078\u64c7\u76f8\u4fe1\uff0c\u559d\u4e0b #{id}\u3002","l.truenectar":"\u90a3\u676f\u771f\u7684\u662f\u74ca\u6f3f\uff1a\u96d9\u65b9\u9152\u9189\u5404 \u22121\u3002","l.liar":"{a.S}\u8aaa\u8b0a\u88ab\u63ed\u7a7f\uff0c\u9152\u9189\u984d\u5916 +1\u3002","l.doubtok":"{a.S}\u8cea\u7591\u6210\u529f\uff01#{id} \u4e0d\u662f\u74ca\u6f3f\uff0c{o.S}\u88ab\u8feb\u81ea\u5df1\u559d\u4e0b\u3002","l.doubtfail":"{a.S}\u8cea\u7591\u5931\u6557\uff0c#{id} \u771f\u7684\u662f\u74ca\u6f3f\u3002{a.S}\u88ab\u8feb\u559d\u4e0b\uff0c\u4e0d\u56de\u8840\u3001\u6c92\u6709\u984d\u5916\u884c\u52d5\u3002","l.discard":"{a.S}\u96a8\u6a5f\u68c4\u6389\u4e00\u4ef6\u9053\u5177\uff1a{item}\u3002","l.rot":"\u5713\u684c\u65cb\u8f49\u4e86\u4e00\u500b\u4f4d\u7f6e\u3002","l.skip":"{a.S}\u9189\u5f97\u8df3\u904e\u9019\u6b21\u884c\u52d5\u3002","l.pay":"BONUS +{n} \u9ede\u5df2\u5165\u5e33\uff1a{label}\u3002","pay.a1":"\u6490\u904e\u7b2c\u4e00\u5e55","pay.a2":"\u6490\u904e\u7b2c\u4e8c\u5e55","pay.a3":"\u6490\u904e\u7b2c\u4e09\u5e55","pay.win":"\u8d0f\u5f97\u9019\u5834\u665a\u5bb4","l.cupsout":"\u9152\u676f\u559d\u5b8c\u4e86\uff0c\u96d9\u65b9\u9152\u9189\u5404 \u22121\u3002","l.tie":"\u7b2c\u4e09\u5e55\u7d50\u675f\uff0c\u751f\u547d\u76f8\u540c\uff01\u9032\u5165 3 \u5206\u9418\u5ef6\u9577\u8cfd\u3002","l.ot":"\u5ef6\u9577\u8cfd\u63db\u4e0b\u4e00\u8f2a\u9152\u676f\u3002","l.otend":"\u5ef6\u9577\u8cfd\u6642\u9593\u5230\uff01\u6bd4\u8f03\u751f\u547d\u3002","e.win":"\u4f60\u8d0f\u4e86\u9019\u5834\u665a\u5bb4\uff01","e.lose":"\u838a\u5bb6\u8d0f\u4e86\u9019\u5834\u665a\u5bb4\u3002","e.draw":"\u751f\u547d\u76f8\u540c\uff0c\u5e73\u624b\u3002","l.begin":"\u665a\u5bb4\u958b\u59cb\u3002\u4f60\u5148\u884c\u52d5\u3002","l.quit":"\u4f60\u653e\u68c4\u4e86\u9019\u4e00\u5c40\u3002","h.win":"\u4f60\u8d0f\u4e86\uff01","h.quit":"\u4f60\u653e\u68c4\u4e86\u9019\u4e00\u5c40\u3002","h.lose":"\u838a\u5bb6\u8d0f\u4e86\u3002","h.draw":"\u5e73\u624b\u3002","h.earned":"\u672c\u5c40\u5171\u5165\u5e33 {n} \u9ede\u3002","h.none":"\u9019\u4e00\u5c40\u6c92\u6709\u984d\u5916\u6210\u5c31\u734e\u52f5\u3002","u.cup":"\u9152\u676f #{id}{info}{claim}","u.known":"\uff0c\u4f60\u77e5\u9053\u7684\u60c5\u5831\uff1a{label}","u.unknown":"\uff0c\u5167\u5bb9\u672a\u77e5","u.claimed":"\uff0c\u9280\u84cb\u5ba3\u7a31\u662f\u74ca\u6f3f","u.noitems":"\u6c92\u6709\u9053\u5177","u.dopen":"\u838a\u5bb6\u7684\u9053\u5177\uff08\u5df2\u516c\u958b\uff09","u.dhid":"\u838a\u5bb6\u7684\u9053\u5177\uff08{n} \u4ef6\uff0c\u5167\u5bb9\u672a\u77e5\uff09","u.scentnote":"\u805e\u9999\uff1a{ids} \u5171\u6709 {n} \u676f\u5371\u96aa\u9152{maybe}\u3002","u.maybe":"\uff08\u53ef\u80fd\u662f\u5e7b\u89ba\uff09","u.seen":"\u4f60\u7684\u624b\u724c\u5df2\u88ab\u838a\u5bb6\u770b\u898b\u3002","u.hp":"\u751f\u547d {a}/{b}","u.dr":"\u9152\u9189 {a}/{b}{tip}","u.tipsy":"\uff08\u9189\u610f\u4e0a\u982d\uff09","u.items":"\u9053\u5177 {n}","u.comp":"\u672c\u5e55\u539f\u914d\uff1a\u5287\u6bd2 {a}\u3001\u74ca\u6f3f {b}\u3001\u771f\u8a00\u6c34 {c} \u00b7 \u684c\u4e0a\u9084\u6709 {n} \u676f\u9152 \u00b7 \u5df2\u559d\u51fa\uff1a\u5287\u6bd2 {x}\u3001\u74ca\u6f3f {y}\u3001\u771f\u8a00\u6c34 {z}{w}","u.compwater":"\u3001\u6e05\u6c34 {w}","u.compidle":"\u6bcf\u5e55\u958b\u59cb\u6642\u516c\u958b\u5404\u7a2e\u9152\u7684\u676f\u6578\u3002","u.cups":"\u684c\u4e0a\u9084\u6709 {n} \u676f\u9152","u.cwin":"\u4f60\u8d0f\u4e86","u.close":"\u838a\u5bb6\u8d0f\u4e86","u.cdraw":"\u5e73\u624b","u.again":"\u518d\u6309\u6309\u9215\u4f86\u4e00\u5834","u.press":"\u6309\u4e0b\u958b\u59cb","u.yourturn":"\u8f2a\u5230\u4f60","u.hostturn":"\u8f2a\u5230\u838a\u5bb6","u.over":"\u9019\u4e00\u5834\u7d50\u675f\u4e86\u3002","u.pressgo":"\u6309\u300c\u958b\u59cb\u665a\u5bb4\u300d","u.pending":"\u838a\u5bb6\u84cb\u4e0a\u4e86\u9280\u84cb\uff0c\u7b49\u4f60\u6c7a\u5b9a\u3002","u.think":"\u838a\u5bb6\u601d\u8003\u4e2d\u2026","u.decreed":"\u4f60\u88ab\u52f8\u9152\u4ee4\u6307\u5b9a\uff1a\u9019\u6b21\u53ea\u80fd\u81ea\u5df1\u559d\u3002","u.selected":"\u5df2\u9078 #{id}\uff1a\u6c7a\u5b9a\u600e\u9ebc\u8655\u7406\u9019\u676f\u9152\u3002","u.selfirst":"\u5148\u9ede\u9078\u4e00\u676f\u9152\uff0c\u518d\u6c7a\u5b9a\u600e\u9ebc\u8655\u7406\u5b83\u3002","u.advon":"\u9032\u968e\u6a21\u5f0f\uff1a\u9280\u84cb\u5439\u725b\uff08\u958b\uff09","u.advoff":"\u9032\u968e\u6a21\u5f0f\uff1a\u9280\u84cb\u5439\u725b\uff08\u95dc\uff09","u.soundon":"\u97f3\u6548\uff1a\u958b","u.soundoff":"\u97f3\u6548\uff1a\u95dc","u.claimq":"\u838a\u5bb6\u5ba3\u7a31 #{id} \u662f\u74ca\u6f3f\u3002\u4f60\u8981\u76f8\u4fe1\u4e26\u559d\u4e0b\uff0c\u9084\u662f\u8cea\u7591\uff1f","u.going":"\u665a\u5bb4\u9032\u884c\u4e2d","u.goagain":"\u518d\u8fa6\u4e00\u5834","u.go":"\u958b\u59cb\u665a\u5bb4","u.quitarm":"\u518d\u6309\u4e00\u6b21\u78ba\u8a8d\u653e\u68c4","u.quit":"\u653e\u68c4\u672c\u5c40","u.notstarted":"\u672a\u958b\u59cb","u.pts":"{n} \u9ede","u.wins":"{n} \u5834","u.pickfirst":"\u8acb\u5148\u9ede\u9078\u4e00\u676f\u9152\u3002","u.startadv":"\u665a\u5bb4\u958b\u59cb\uff01\u5148\u9ede\u9078\u4e00\u676f\u9152\uff0c\u518d\u6c7a\u5b9a\u81ea\u5df1\u559d\u3001\u656c\u7d66\u838a\u5bb6\uff0c\u6216\u84cb\u4e0a\u9280\u84cb\u9a19\u4ed6\u3002","u.start":"\u665a\u5bb4\u958b\u59cb\uff01\u5148\u9ede\u9078\u4e00\u676f\u9152\uff0c\u518d\u6c7a\u5b9a\u81ea\u5df1\u559d\u6216\u656c\u7d66\u838a\u5bb6\u3002","u.bonusmsg":"BONUS +{n} \u9ede\u5df2\u5165\u5e33\uff1a{label}\u3002","v.host":"\u838a\u5bb6","v.you":"\u4f60","v.self":"\u81ea\u5df1\u559d\u4e0b","v.toast":"\u76f4\u63a5\u656c\u7d66\u838a\u5bb6","v.silver":"\u9280\u84cb\u5ba3\u7a31\u662f\u74ca\u6f3f","v.believe":"\u76f8\u4fe1\u4e26\u559d\u4e0b","v.doubt":"\u8cea\u7591","v.table":"\u5713\u684c\u4e0a\u7684\u9152\u676f\uff0c\u9ede\u9078\u4e00\u676f","v.myitems":"\u4f60\u7684\u9053\u5177","v.log":"\u4e8b\u4ef6\u7d00\u9304\uff08\u6700\u65b0\u5728\u4e0a\uff09","v.panel":"\u6700\u5f8c\u7684\u665a\u9910\u64cd\u4f5c","v.progress":"\u76ee\u524d\u9032\u5ea6","v.bonus":"\u672c\u5c40 BONUS","v.winsl":"\u52dd\u5834","v.msg":"\u838a\u5bb6\u5df2\u7d93\u5165\u5e2d\u3002\u958b\u59cb\u5f8c\u5148\u9078\u4e00\u676f\u9152\uff0c\u518d\u6c7a\u5b9a\u81ea\u5df1\u559d\u6216\u656c\u7d66\u838a\u5bb6\u3002","v.hint":"\u5148\u9ede\u9078\u5713\u684c\u4e0a\u7684\u9152\u676f\uff08\u6216\u6309\u6578\u5b57\u9375\uff09\uff0c\u518d\u6309\u4e0b\u65b9\u884c\u52d5\u3002\u9053\u5177\u8981\u9078\u676f\u6642\uff0c\u6c92\u9078\u676f\u4e0d\u6703\u6d88\u8017\u3002\u5287\u6bd2\u6703\u6263\u8840\uff0c\u74ca\u6f3f\u56de\u8840\u4e26\u518d\u884c\u52d5\uff0c\u771f\u8a00\u6c34\u6703\u516c\u958b\u624b\u724c\u3002\u9152\u9189 3 \u4ee5\u4e0a\u6642\u60c5\u5831\u53ef\u80fd\u662f\u5e7b\u89ba\u3002","v.rulesT":"\u73a9\u6cd5\u8207\u9ede\u6578","v.r1":"\u57fa\u790e\u7248\u6c92\u6709\u9280\u84cb\u5439\u725b\uff0c\u53ea\u6709\u81ea\u5df1\u559d\u3001\u76f4\u63a5\u656c\u9152\u8207\u9053\u5177\uff1b\u6253\u958b\u300c\u9032\u968e\u6a21\u5f0f\u300d\u624d\u6703\u51fa\u73fe\u9280\u84cb\u5ba3\u7a31\u8207\u8cea\u7591\uff0c\u4e0b\u9762\u63d0\u5230\u9280\u84cb\u7684\u898f\u5247\u90fd\u53ea\u9069\u7528\u65bc\u9032\u968e\u6a21\u5f0f\u3002","v.r2":"\u4f60\u548c\u838a\u5bb6\u5404\u6709 5 \u9ede\u751f\u547d\uff0c\u8f2a\u6d41\u8655\u7406\u684c\u4e0a\u4f86\u8def\u4e0d\u660e\u7684\u9152\u676f\u3002\u6bcf\u5e55\u958b\u59cb\u6642\u516c\u958b\u5404\u7a2e\u9152\u7684\u676f\u6578\uff0c\u4f46\u4e0d\u516c\u958b\u54ea\u4e00\u676f\u662f\u54ea\u7a2e\uff1a\u7b2c\u4e00\u5e55 4 \u676f\uff08\u5287\u6bd2 2\u3001\u74ca\u6f3f 1\u3001\u771f\u8a00\u6c34 1\uff09\uff0c\u7b2c\u4e8c\u5e55 6 \u676f\uff08\u5287\u6bd2 3\u3001\u74ca\u6f3f 2\u3001\u771f\u8a00\u6c34 1\uff09\uff0c\u7b2c\u4e09\u5e55 8 \u676f\uff08\u5287\u6bd2 4\u3001\u74ca\u6f3f 2\u3001\u771f\u8a00\u6c34 2\uff09\u3002\u6bcf\u5e55\u96d9\u65b9\u5404\u62bd\u9053\u5177\uff082\u30013\u30014 \u4ef6\uff09\uff0c\u9053\u5177\u6700\u591a\u6301\u6709 4 \u4ef6\uff0c\u6c92\u7528\u5b8c\u7684\u6703\u7559\u5230\u4e0b\u4e00\u5e55\u3002","v.r3":"\u8f2a\u5230\u4f60\u6642\u53ef\u4ee5\u5148\u7528\u9053\u5177\uff0c\u518d\u9078\u4e00\u676f\uff1a\u81ea\u5df1\u559d\u4e0b\u3001\u76f4\u63a5\u656c\u7d66\u838a\u5bb6\uff08\u4ed6\u4e00\u5b9a\u8981\u559d\uff0c\u4f60\u4fdd\u6709\u56de\u5408\uff0c\u9664\u975e\u4ed6\u559d\u5230\u74ca\u6f3f\uff09\uff0c\u6216\u84cb\u4e0a\u9280\u84cb\u5ba3\u7a31\u90a3\u676f\u662f\u74ca\u6f3f\u3002\u838a\u5bb6\u53ef\u4ee5\u76f8\u4fe1\u4e26\u559d\u4e0b\uff0c\u6216\u8cea\u7591\u3002\u8cea\u7591\u6210\u529f\uff0c\u8aaa\u8b0a\u7684\u4eba\u81ea\u5df1\u559d\u4e0b\u4e26\u591a\u9189 1\uff0c\u56de\u5408\u4ea4\u7d66\u8cea\u7591\u7684\u4eba\uff1b\u8cea\u7591\u5931\u6557\uff08\u90a3\u676f\u771f\u7684\u662f\u666e\u901a\u74ca\u6f3f\uff09\uff0c\u8cea\u7591\u7684\u4eba\u88ab\u8feb\u559d\u4e0b\u3001\u4e0d\u56de\u8840\u3001\u4e0d\u80fd\u518d\u884c\u52d5\uff0c\u9084\u8981\u96a8\u6a5f\u68c4\u6389\u4e00\u4ef6\u9053\u5177\uff0c\u56de\u5408\u4ea4\u56de\u656c\u9152\u7684\u4eba\u3002\u6bcf\u6b21\u9280\u84cb\u884c\u52d5\u5f8c\uff0c\u5713\u684c\u6703\u8f49\u4e00\u500b\u4f4d\u7f6e\uff0c\u676f\u5b50\u7684\u7de8\u865f\u548c\u5167\u5bb9\u8ddf\u8457\u676f\u5b50\u8d70\u3002","v.r4":"\u5287\u6bd2\u8b93\u98f2\u7528\u8005\u5931\u53bb 1 \u9ede\u751f\u547d\uff1b\u74ca\u6f3f\u56de\u5fa9 1 \u9ede\u751f\u547d\u4e26\u518d\u884c\u52d5\u4e00\u6b21\uff08\u6bcf\u5e55\u6bcf\u4eba\u6700\u591a\u56de\u8840 2 \u6b21\uff09\uff1b\u771f\u8a00\u6c34\u6703\u516c\u958b\u98f2\u7528\u8005\u7684\u5168\u90e8\u624b\u724c\uff0c\u6c92\u6709\u624b\u724c\u6642\u6539\u70ba\u96a8\u6a5f\u516c\u958b\u684c\u4e0a\u4e00\u676f\u3002\u6bcf\u559d\u4e00\u676f\uff0c\u9152\u9189\u52a0 1\u3002\u9152\u9189 3 \u5230 4 \u6642\uff0c\u9280\u91dd\u548c\u805e\u9999\u6709\u4e00\u534a\u6a5f\u7387\u986f\u793a\u932f\u8aa4\u60c5\u5831\uff0c\u5287\u6bd2\u4e5f\u6703\u591a\u6263 1 \u9ede\u3002\u9152\u9189\u5230 5 \u6703\u9189\u5012\u7ffb\u684c\uff1a\u9152\u9189\u6b78\u96f6\u3001\u56de\u5fa9 1 \u9ede\u751f\u547d\u3001\u8df3\u904e\u81ea\u5df1\u7684\u4e0b\u4e00\u6b21\u884c\u52d5\uff0c\u684c\u4e0a\u6240\u6709\u9152\u676f\u91cd\u65b0\u6d17\u724c\uff0c\u5df2\u77e5\u60c5\u5831\u5168\u90e8\u4f5c\u5ee2\u3002\u6bcf\u5e55\u7d50\u675f\u96d9\u65b9\u9152\u9189\u5404\u6e1b 1\u3002","v.r5":"\u5341\u7a2e\u9053\u5177\uff1a\u9280\u91dd\uff08\u67e5\u770b\u4e00\u676f\uff09\u3001\u805e\u9999\uff08\u6578\u5169\u676f\u88e1\u7684\u5371\u96aa\u9152\uff09\u3001\u9192\u9152\u85e5\uff08\u56de 1 \u8840\u3001\u9152\u9189\u6e1b 2\uff0c\u7528\u5f8c\u672c\u56de\u5408\u4e0d\u80fd\u518d\u7528\u9053\u5177\uff09\u3001\u70c8\u9152\u647b\u96dc\uff08\u4e0b\u4e00\u676f\u5287\u6bd2\u56fa\u5b9a 2 \u9ede\u3001\u74ca\u6f3f\u52a0\u500d\uff09\u3001\u5077\u5929\u63db\u65e5\uff08\u5287\u6bd2\u3001\u74ca\u6f3f\u3001\u771f\u8a00\u6c34\u4f9d\u5e8f\u8f2a\u66ff\uff09\u3001\u52f8\u9152\u4ee4\uff08\u838a\u5bb6\u4e0b\u6b21\u884c\u52d5\u5fc5\u9808\u81ea\u5df1\u559d\uff09\u3001\u4e7e\u676f\uff01\uff08\u4f60\u548c\u838a\u5bb6\u5404\u559d\u4e00\u6b21\u540c\u4e00\u676f\uff09\u3001\u8f49\u76e4\uff08\u5168\u90e8\u91cd\u65b0\u6d17\u724c\uff09\u3001\u6fc3\u7e2e\u6bd2\u7c89\uff08\u5287\u6bd2\u8b8a\u96d9\u500d\u3001\u74ca\u6f3f\u8b8a\u6bd2\u74ca\u6f3f\uff09\u3001\u7a00\u91cb\u51b0\u584a\uff08\u96d9\u500d\u5287\u6bd2\u8b8a\u5287\u6bd2\u3001\u5287\u6bd2\u8b8a\u6e05\u6c34\u3001\u6bd2\u74ca\u6f3f\u8b8a\u74ca\u6f3f\uff09\u3002\u540c\u540d\u9053\u5177\u6bcf\u56de\u5408\u6700\u591a\u7528\u4e00\u6b21\u3002","v.r6":"\u4efb\u4e00\u65b9\u751f\u547d\u6b78\u96f6\u5c31\u8f38\u3002\u7b2c\u4e09\u5e55\u7d50\u675f\u6642\u751f\u547d\u8f03\u9ad8\u7684\u7372\u52dd\uff1b\u751f\u547d\u76f8\u540c\u9032\u5165 3 \u5206\u9418\u5ef6\u9577\u8cfd\uff08\u6bcf\u8f2a 5 \u676f\uff1a\u5287\u6bd2 3\u3001\u771f\u8a00\u6c34 2\uff09\uff0c\u6642\u9593\u5230\u6bd4\u751f\u547d\uff0c\u4ecd\u76f8\u540c\u70ba\u5e73\u624b\u3002\u838a\u5bb6\u4e0d\u6703\u5077\u770b\u4f60\u7684\u624b\u724c\uff0c\u4e5f\u4e0d\u77e5\u9053\u4f60\u67e5\u5230\u4e86\u4ec0\u9ebc\u3002","v.r7":"BONUS \u70ba\u56fa\u5b9a\u734e\u52f5\u3001\u7acb\u5373\u5165\u5e33\uff1a\u6490\u904e\u7b2c\u4e00\u5e55 +1 \u9ede\u3001\u6490\u904e\u7b2c\u4e8c\u5e55 +2 \u9ede\u3001\u6490\u904e\u7b2c\u4e09\u5e55 +3 \u9ede\u3001\u8d0f\u5f97\u9019\u5834\u665a\u5bb4 +2 \u9ede\uff1b\u6bcf\u9805\u6bcf\u5c40\u53ea\u767c\u4e00\u6b21\uff0c\u5168\u62ff\u6700\u591a 8 \u9ede\u3002\u5206\u6578\u4e0d\u76f4\u63a5\u63db\u9ede\u6578\uff0c\u7d50\u679c\u53d6\u6c7a\u65bc\u5224\u65b7\u3001\u8a18\u61b6\u8207\u6a5f\u7387\uff0c\u6c92\u6709\u4efb\u4f55\u4e0b\u6ce8\u3002\u5df2\u5165\u5e33\u7684\u9ede\u6578\u4e0d\u6703\u56e0\u70ba\u4e4b\u5f8c\u8f38\u6389\u800c\u6536\u56de\u3002","v.r8":"\u5207\u63db\u904a\u6232\u6216\u80cc\u666f\u5206\u9801\u6703\u66ab\u505c\uff0c\u56de\u4f86\u5f8c\u7e7c\u7e8c\u3002\u91cd\u65b0\u6574\u7406\u6703\u653e\u68c4\u672c\u5c40\uff0c\u5df2\u5165\u5e33\u7684\u9ede\u6578\u6703\u4fdd\u7559\u3002\u52dd\u5834\u4fdd\u5b58\u5728\u700f\u89bd\u5668\u4e2d\uff1b\u9ede\u6578\u8207\u5176\u4ed6\u904a\u6232\u5171\u7528\uff0c\u6c92\u6709\u73fe\u91d1\u50f9\u503c\u3002","v.use":"\u4f7f\u7528","v.close":"\u95dc\u9589","v.lang":"\u8a9e\u8a00"}};
   /* ---------- The Last Banquet: turn-based bluffing duel against the host; fixed BONUS per act survived and for the win ---------- */
   var bqBusy=false,bqStake=0,bqSay=function(){};
   (function(){
 'use strict';
-var HP_MAX=5,DR_MAX=5,HAND_MAX=4,HEAL_CAP=2,OT_SECONDS=180,LOG_KEEP=60,LOG_SHOW=10;
+var HP_MAX=5,DR_MAX=5,HAND_MAX=4,HEAL_CAP=2,OT_SECONDS=180,LOG_KEEP=60;
 var BONUS={a1:1,a2:2,a3:3,win:2};      // fixed points, each paid once per round, never taken back
 var ACTS=[null,
- {name:'第一幕：試探',poison:2,nectar:1,truth:1,draw:2},
- {name:'第二幕：博弈',poison:3,nectar:2,truth:1,draw:3},
- {name:'第三幕：死鬥',poison:4,nectar:2,truth:2,draw:4},
- {name:'延長賽：猝死',poison:3,nectar:0,truth:2,draw:2}];
-var SHORT=['','第一幕','第二幕','第三幕','延長賽'];
-var TNAME={poison:'劇毒',poison2:'雙倍劇毒',nectar:'瓊漿',pnectar:'毒瓊漿',truth:'真言水',water:'清水',safe:'無毒',danger:'有毒'};
+ {poison:2,nectar:1,truth:1,draw:2},
+ {poison:3,nectar:2,truth:1,draw:3},
+ {poison:4,nectar:2,truth:2,draw:4},
+ {poison:3,nectar:0,truth:2,draw:2}];
+/* ---------- language: English by default, six in-game languages (table generated from tools/banquet_i18n.py) ---------- */
+var LANGS=['en','es','de','ja','ko','zh'],LANG='en';
+try{var savedLang=localStorage.getItem('deep-sea-banquet-lang');if(savedLang&&BQ_I18N[savedLang])LANG=savedLang}catch(e){}
+function tr(k,p){
+ var row=BQ_I18N[LANG],s=row&&row[k]!=null?row[k]:BQ_I18N.en[k];if(s==null)return k;
+ return s.replace(/\{([A-Za-z.]+)\}/g,function(m,name){
+  var parts=name.split('.');
+  if(parts.length===2&&p&&p[parts[0]]&&/^[SODN]$/.test(parts[1]))return tr('who.'+p[parts[0]]+'.'+parts[1]);
+  var v=p?p[name]:undefined;if(v==null)return m;v=String(v);
+  return v.charAt(0)==='@'?tr(v.slice(1)):v;
+ });
+}
+var tn=function(t){return tr('ty.'+t)},iname=function(k){return tr('it.'+k+'.n')},idesc=function(k){return tr('it.'+k+'.d')};
+var actName=function(n){return tr('act.'+n)},actShort=function(n){return tr('act.s'+n)};
 var TICON={poison:'☠',poison2:'☠☠',nectar:'✚',pnectar:'☠✚',truth:'◉',water:'○',safe:'✓',danger:'!'};
-var ITEMS={
- needle:{name:'銀針',cup:1,desc:'選一杯，查看酒種。'},
- scent:{name:'聞香',cup:1,desc:'選一杯，數它和下一杯的危險酒。'},
- sober:{name:'醒酒藥',desc:'回 1 血、酒醉 −2，之後本回合不能再用道具。'},
- liquor:{name:'烈酒摻雜',desc:'下一杯：劇毒固定 2 點、瓊漿加倍。'},
- change:{name:'偷天換日',cup:1,desc:'劇毒→瓊漿→真言水→劇毒。'},
- decree:{name:'勸酒令',desc:'對方下次行動必須自己喝。'},
- cheers:{name:'乾杯！',cup:1,desc:'你和對方各喝一次同一杯。'},
- spin:{name:'轉盤',desc:'全部酒杯重新洗牌，情報作廢。'},
- powder:{name:'濃縮毒粉',cup:1,desc:'劇毒傷害 +1；瓊漿變毒瓊漿。'},
- ice:{name:'稀釋冰塊',cup:1,desc:'雙倍劇毒−1；劇毒變清水；毒瓊漿變瓊漿。'}};
+var ITEMS={needle:{cup:1},scent:{cup:1},sober:{},liquor:{},change:{cup:1},decree:{},cheers:{cup:1},spin:{},powder:{cup:1},ice:{cup:1}};
 var IKEYS=Object.keys(ITEMS);
 var STIMG={poison:'poison',poison2:'poison',nectar:'nectar',pnectar:'pnectar',truth:'truth',water:'water'};
 function iconImg(src,cls){var i=document.createElement('img');i.className=cls;i.src='games/banquet/assets/'+src+'.webp';i.alt='';i.decoding='async';i.draggable=false;return i}
 function txt(t){var e=document.createElement('span');e.textContent=t;return e}
 function stIcon(t,cls){return STIMG[t]?iconImg('st-'+STIMG[t],cls):null}
-var SAY={p:'你',d:'莊家'};
 var E=null,analytics=null,wins=0,quitArm=0,ADV=false,MUTED=false;
 try{wins=+localStorage.getItem('deep-sea-banquet-best')||0;ADV=localStorage.getItem('deep-sea-banquet-adv')==='1';MUTED=localStorage.getItem('deep-sea-banquet-mute')==='1'}catch(e){}
 var opp=function(s){return s==='p'?'d':'p'};
@@ -19127,7 +19279,10 @@ function fresh(){
   log:[],result:null,ot:OT_SECONDS,aiT:1,paid:{},earned:0,v:0,fx:[],fxT:0};
 }
 fresh();
-function log(t){E.log.push(t);if(E.log.length>LOG_KEEP)E.log.shift();E.v++}
+function log(k,p){E.log.push({k:k,p:p||{}});if(E.log.length>LOG_KEEP)E.log.shift();E.v++}
+function logm(parts){E.log.push({m:parts});if(E.log.length>LOG_KEEP)E.log.shift();E.v++}
+function logText(e){return e.m?e.m.map(function(x){return tr(x[0],x[1])}).join(tr('sep')):tr(e.k,e.p)}
+var idList=function(a){return a.map(function(x){return '#'+x}).join(', ')};
 var cupOf=function(id){for(var i=0;i<E.cups.length;i++)if(E.cups[i].id===id)return E.cups[i];return null};
 var dangerous=function(t){return t==='poison'||t==='poison2'||t==='pnectar'};
 var baseKind=function(t){return t==='poison2'?'poison':t==='pnectar'?'nectar':t};
@@ -19146,7 +19301,7 @@ function deal(n){
  E.act=n;E.comp={poison:a.poison,nectar:a.nectar,truth:a.truth};E.out={poison:0,nectar:0,truth:0,water:0};
  E.heals={p:0,d:0};wipeInfo();E.seen={p:false,d:false};E.sel=0;
  ['p','d'].forEach(function(s){for(var k=0;k<a.draw&&E.hand[s].length<HAND_MAX;k++)E.hand[s].push(pick(IKEYS))});
- log(a.name+'開始。桌上還有 '+E.cups.length+' 杯酒，雙方各抽道具。');
+ log('l.start',{act:'@act.'+n,n:E.cups.length});
 }
 function putKnown(side,id,t,maybe){E.known[side][id]={t:t,maybe:!!maybe}}
 function drunkMid(side){return E.dr[side]>=3&&E.dr[side]<=4}
@@ -19158,30 +19313,30 @@ function targetOk(key,cup){
  return true;
 }
 function canUse(side,key){
- if(E.phase!=='play'||E.turn!==side||E.pending)return '現在不能使用道具。';
- if(E.hand[side].indexOf(key)<0)return '沒有這件道具。';
- if(E.lock)return '用過醒酒藥後，本回合不能再用道具。';
- if(E.used[key])return '同名道具每回合只能用一次。';
- if(key==='decree'&&E.decree[opp(side)])return '對方已經被勸酒令指定了。';
- if(key==='cheers'&&E.decree[side])return '被勸酒令指定，只能自己喝。';
- if(key==='scent'&&!E.cups.length)return '桌上沒有酒杯。';
+ if(E.phase!=='play'||E.turn!==side||E.pending)return tr('cu.now');
+ if(E.hand[side].indexOf(key)<0)return tr('cu.none');
+ if(E.lock)return tr('cu.lock');
+ if(E.used[key])return tr('cu.once');
+ if(key==='decree'&&E.decree[opp(side)])return tr('cu.decreed');
+ if(key==='cheers'&&E.decree[side])return tr('cu.cheers');
+ if(key==='scent'&&!E.cups.length)return tr('cu.nocup');
  return '';
 }
 function takeItem(side,key){var i=E.hand[side].indexOf(key);if(i>=0)E.hand[side].splice(i,1);E.used[key]=1;SFX.item()}
 function useItem(side,key,cupId){
  var why=canUse(side,key);if(why)return{ok:false,msg:why};
  var def=ITEMS[key],cup=def.cup?cupOf(cupId):null;
- if(def.cup&&!cup)return{ok:false,msg:'請先點選一杯酒，再使用“'+def.name+'”。'};
- if(cup&&!targetOk(key,cup))return{ok:false,msg:'“'+def.name+'”不能用在這種酒上，道具沒有消耗。'};
- var who=SAY[side],o=opp(side),i,t;
+ if(def.cup&&!cup)return{ok:false,msg:tr('it.pick',{item:'@it.'+key+'.n'})};
+ if(cup&&!targetOk(key,cup))return{ok:false,msg:tr('it.bad',{item:'@it.'+key+'.n'})};
+ var o=opp(side),i,t;
  takeItem(side,key);
  switch(key){
   case 'needle':{
    var shown=cup.t,maybe=drunkMid(side);
    if(maybe&&rnd()<.5){var pool=['poison','nectar','truth'].filter(function(x){return x!==cup.t});shown=pick(pool)}
    putKnown(side,cup.id,shown,maybe);if(side==='p')E.publicScan++;
-   log(who+'使用銀針，查看了 #'+cup.id+'。');
-   return{ok:true,msg:side==='p'?'銀針顯示 #'+cup.id+' 是“'+TNAME[shown]+'”'+(maybe?'（酒醉中，可能是幻覺）':'')+'。':''};}
+   log('l.needle',{a:side,id:cup.id});
+   return{ok:true,msg:side==='p'?tr('m.needle',{id:cup.id,type:'@ty.'+shown,maybe:maybe?tr('m.maybe'):''}):''};}
   case 'scent':{
    var i0=E.cups.indexOf(cup),nx=E.cups[(i0+1)%E.cups.length],ids=nx&&nx!==cup?[cup.id,nx.id]:[cup.id];
    var real=ids.reduce(function(n,id){return n+(dangerous(cupOf(id).t)?1:0)},0),n=real,maybe2=drunkMid(side);
@@ -19189,25 +19344,25 @@ function useItem(side,key,cupId){
    E.notes[side].push({ids:ids,n:n,maybe:maybe2});if(side==='p')E.publicScan++;
    if(!maybe2&&n===0)ids.forEach(function(id){if(!E.known[side][id]||!E.known[side][id].t||E.known[side][id].t==='danger')putKnown(side,id,'safe',false)});
    if(!maybe2&&n===ids.length)ids.forEach(function(id){if(!E.known[side][id]||E.known[side][id].t==='safe')putKnown(side,id,'danger',false)});
-   log(who+'使用聞香，嗅了 '+ids.map(function(x){return '#'+x}).join(', ')+'。');
+   log('l.scent',{a:side,ids:idList(ids)});
    return{ok:true,msg:''};}
   case 'sober':
    E.hp[side]=Math.min(HP_MAX,E.hp[side]+1);E.dr[side]=Math.max(0,E.dr[side]-2);E.lock=true;
-   log(who+'喝下醒酒藥：回復 1 點生命，酒醉 −2。');return{ok:true,msg:''};
-  case 'liquor':E.liquor=true;log(who+'使用烈酒摻雜：下一杯的效果加強。');return{ok:true,msg:''};
-  case 'decree':E.decree[o]=true;log(who+'使用勸酒令。下次行動被迫自己喝，對象：'+SAY[o]+'。');return{ok:true,msg:''};
-  case 'spin':reshuffle();log(who+'轉動轉盤：所有酒杯重新洗牌，已知情報作廢。');return{ok:true,msg:''};
+   log('l.sober',{a:side});return{ok:true,msg:''};
+  case 'liquor':E.liquor=true;log('l.liquor',{a:side});return{ok:true,msg:''};
+  case 'decree':E.decree[o]=true;log('l.decree',{a:side,o:o});return{ok:true,msg:''};
+  case 'spin':reshuffle();log('l.spin',{a:side});return{ok:true,msg:''};
   case 'change':{
    var from=cup.t,to=from==='poison'?'nectar':from==='nectar'?'truth':'poison',had=E.known[side][cup.id];
    cup.t=to;forget(cup.id);if(had&&had.t&&!had.maybe)putKnown(side,cup.id,to,false);
-   log(who+'對 #'+cup.id+' 使用偷天換日。');return{ok:true,msg:''};}
+   log('l.change',{a:side,id:cup.id});return{ok:true,msg:''};}
   case 'powder':
-   cup.t=cup.t==='poison'?'poison2':'pnectar';forget(cup.id);log(who+'對 #'+cup.id+' 撒下濃縮毒粉。');return{ok:true,msg:''};
+   cup.t=cup.t==='poison'?'poison2':'pnectar';forget(cup.id);log('l.powder',{a:side,id:cup.id});return{ok:true,msg:''};
   case 'ice':
-   cup.t=cup.t==='poison2'?'poison':cup.t==='poison'?'water':'nectar';forget(cup.id);log(who+'對 #'+cup.id+' 丟入稀釋冰塊。');return{ok:true,msg:''};
+   cup.t=cup.t==='poison2'?'poison':cup.t==='poison'?'water':'nectar';forget(cup.id);log('l.ice',{a:side,id:cup.id});return{ok:true,msg:''};
   case 'cheers':{
    var big=E.liquor;E.liquor=false;
-   log(who+'發動乾杯！：雙方各喝一次 #'+cup.id+'。');
+   log('l.cheers',{a:side,id:cup.id});
    removeCup(cup);
    var r1=drinkEffect(side,cup,{src:side,big:big}),r2=drinkEffect(o,cup,{src:o,big:big});
    if(checkEnd())return{ok:true,msg:'',ends:true};
@@ -19229,27 +19384,27 @@ function heal(side,n,o){
 }
 // Resolves one drink. The cup must already be off the table. src is whoever's drunkenness makes poison hit harder.
 function drinkEffect(side,cup,o){
- var t=cup.t,other=opp(side),bonus=drunkMid(o.src||side)?1:0,extra=false,who=SAY[side],text=who+'喝下 #'+cup.id+'：'+TNAME[t]+'。';
+ var t=cup.t,other=opp(side),bonus=drunkMid(o.src||side)?1:0,extra=false,parts=[['l.drank',{a:side,id:cup.id,type:'@ty.'+t}]];
  E.fx.push({k:'reveal',s:side,t:t,by:o.src||side});E.fxT=Math.min(1.4,(E.fxT||0)+.9);
- if(t==='poison'||t==='poison2'){var dmg=(o.big||t==='poison2')?2:1;dmg+=bonus;hurt(side,dmg);E.fx.push({k:'hit',s:side,n:dmg});text+=' '+who+'失去 '+dmg+' 點生命。'}
+ if(t==='poison'||t==='poison2'){var dmg=(o.big||t==='poison2')?2:1;dmg+=bonus;hurt(side,dmg);E.fx.push({k:'hit',s:side,n:dmg});parts.push(['l.lose',{x:side,n:dmg}])}
  else if(t==='nectar'||t==='pnectar'){
-  var h=heal(side,o.big?2:1,o);if(h>0)E.fx.push({k:'heal',s:side,n:h});text+=h>0?' '+who+'回復 '+h+' 點生命。':(o.noHeal?' 沒有回血。':' 回血次數已達本幕上限。');
-  if(t==='pnectar'){var d2=o.big?2:1;hurt(other,d2);E.fx.push({k:'hit',s:other,n:d2});text+=' '+SAY[other]+'失去 '+d2+' 點生命。'}
-  if(!o.noExtra){extra=true;text+=' '+who+'可以再行動一次。'}
+  var h=heal(side,o.big?2:1,o);if(h>0)E.fx.push({k:'heal',s:side,n:h});parts.push(h>0?['l.heal',{a:side,n:h}]:(o.noHeal?['l.noheal']:['l.healcap']));
+  if(t==='pnectar'){var d2=o.big?2:1;hurt(other,d2);E.fx.push({k:'hit',s:other,n:d2});parts.push(['l.lose',{x:other,n:d2}])}
+  if(!o.noExtra){extra=true;parts.push(['l.again',{a:side}])}
  }else if(t==='truth'){
-  if(E.hand[side].length){E.seen[side]=true;text+=' 公開手牌：'+who+'。'}
-  else if(E.cups.length){var c=pick(E.cups);putKnown(other,c.id,c.t,false);text+=' 隨機公開了桌上 #'+c.id+'。'}
+  if(E.hand[side].length){E.seen[side]=true;parts.push(['l.reveal',{a:side}])}
+  else if(E.cups.length){var c=pick(E.cups);putKnown(other,c.id,c.t,false);parts.push(['l.rand',{id:c.id}])}
  }
  E.dr[side]=Math.min(DR_MAX,E.dr[side]+1);
- if(bonus&&(t==='poison'||t==='poison2'))text+=' 酒醉讓劇毒更痛。';
- log(text);
+ if(bonus&&(t==='poison'||t==='poison2'))parts.push(['l.drunkhurt']);
+ logm(parts);
  return{extra:extra,type:t};
 }
 function resolveFaints(){
  ['p','d'].forEach(function(s){
   if(E.dr[s]>=DR_MAX&&E.hp[s]>0){
    E.dr[s]=0;E.hp[s]=Math.min(HP_MAX,E.hp[s]+1);E.skip[s]=true;reshuffle();E.fx.push({k:'faint',s:s});E.fxT=Math.min(1.8,(E.fxT||0)+.8);
-   log(SAY[s]+'醉倒翻桌：酒醉歸零、回復 1 點生命、跳過下一次行動，酒杯重新洗牌。');
+   log('l.faint',{a:s});
   }});
 }
 
@@ -19257,14 +19412,14 @@ function resolveFaints(){
 function selfDrink(side,id){
  var cup=cupOf(id);if(E.phase!=='play'||E.turn!==side||E.pending||!cup)return false;
  var big=E.liquor;E.liquor=false;E.decree[side]=false;
- log(SAY[side]+'選擇自己喝 #'+cup.id+'。');removeCup(cup);
+ log('l.self',{a:side,id:cup.id});removeCup(cup);
  var r=drinkEffect(side,cup,{src:side,big:big});
  if(checkEnd())return true;finish(r.extra?side:opp(side),r.extra);return true;
 }
 function toast(side,id){
  var cup=cupOf(id);if(E.phase!=='play'||E.turn!==side||E.pending||!cup||E.decree[side])return false;
  var v=opp(side),big=E.liquor;E.liquor=false;
- log(SAY[side]+'把 #'+cup.id+' 直接敬給'+SAY[v]+'。');removeCup(cup);
+ log('l.offer',{a:side,o:v,id:cup.id});removeCup(cup);
  var r=drinkEffect(v,cup,{src:side,big:big});
  if(checkEnd())return true;finish(r.extra?v:side,r.extra);return true;
 }
@@ -19272,7 +19427,7 @@ function claim(side,id){
  var cup=cupOf(id);if(E.phase!=='play'||E.turn!==side||E.pending||!cup||E.decree[side])return false;
  var big=E.liquor;E.liquor=false;E.claims[side]++;
  E.pending={from:side,to:opp(side),id:cup.id,big:big};E.aiT=.7;
- log(SAY[side]+'把 #'+cup.id+' 蓋上銀蓋，宣稱是瓊漿，敬給'+SAY[opp(side)]+'。');
+ log('l.claim',{a:side,o:opp(side),id:cup.id});
  return true;
 }
 function respond(believe){
@@ -19281,30 +19436,30 @@ function respond(believe){
  if(!truthful)E.lies[a]++;
  removeCup(cup);var next,extra=false;
  if(believe){
-  log(SAY[b]+'選擇相信，喝下 #'+cup.id+'。');
-  if(truthful){E.dr.p=Math.max(0,E.dr.p-1);E.dr.d=Math.max(0,E.dr.d-1);log('那杯真的是瓊漿：雙方酒醉各 −1。')}
+  log('l.believe',{a:b,id:cup.id});
+  if(truthful){E.dr.p=Math.max(0,E.dr.p-1);E.dr.d=Math.max(0,E.dr.d-1);log('l.truenectar')}
   var r=drinkEffect(b,cup,{src:a,big:pd.big});
-  if(!truthful&&E.hp[b]>0){E.dr[a]=Math.min(DR_MAX,E.dr[a]+1);log(SAY[a]+'說謊被揭穿，酒醉額外 +1。')}
+  if(!truthful&&E.hp[b]>0){E.dr[a]=Math.min(DR_MAX,E.dr[a]+1);log('l.liar',{a:a})}
   extra=!!r.extra;next=extra?b:a;
  }else if(!truthful){
-  log(SAY[b]+'質疑成功！#'+cup.id+' 不是瓊漿，'+SAY[a]+'被迫自己喝下。');
+  log('l.doubtok',{a:b,o:a,id:cup.id});
   drinkEffect(a,cup,{src:a,big:pd.big,noExtra:true});
-  if(E.hp[a]>0){E.dr[a]=Math.min(DR_MAX,E.dr[a]+1);log(SAY[a]+'說謊被揭穿，酒醉額外 +1。')}
+  if(E.hp[a]>0){E.dr[a]=Math.min(DR_MAX,E.dr[a]+1);log('l.liar',{a:a})}
   next=b;
  }else{
-  log(SAY[b]+'質疑失敗，#'+cup.id+' 真的是瓊漿。'+SAY[b]+'被迫喝下，不回血、沒有額外行動。');
+  log('l.doubtfail',{a:b,id:cup.id});
   drinkEffect(b,cup,{src:a,noHeal:true,noExtra:true});
-  if(E.hand[b].length){var di=Math.floor(rnd()*E.hand[b].length),gone=E.hand[b].splice(di,1)[0];log(SAY[b]+'隨機棄掉一件道具：'+ITEMS[gone].name+'。')}
+  if(E.hand[b].length){var di=Math.floor(rnd()*E.hand[b].length),gone=E.hand[b].splice(di,1)[0];log('l.discard',{a:b,item:'@it.'+gone+'.n'})}
   next=a;
  }
- rotateTable();if(E.cups.length>1)log('圓桌旋轉了一個位置。');
+ rotateTable();if(E.cups.length>1)log('l.rot');
  if(checkEnd())return true;finish(next,extra);return true;
 }
 
 /* ---------- turn flow, acts, ending ---------- */
 function beginTurn(side,keep){
  if(!keep){E.used={};E.lock=false}
- if(E.skip[side]){E.skip[side]=false;log(SAY[side]+'醉得跳過這次行動。');var o=opp(side);E.turn=o;E.extra=false;return beginTurn(o,false)}
+ if(E.skip[side]){E.skip[side]=false;log('l.skip',{a:side});var o=opp(side);E.turn=o;E.extra=false;return beginTurn(o,false)}
  E.turn=side;E.sel=0;E.aiT=.6+rnd()*.5;E.v++;
 }
 function finish(next,extra){
@@ -19313,20 +19468,20 @@ function finish(next,extra){
  if(E.cups.length===0){endAct();if(E.phase!=='play')return}
  E.extra=!!extra;beginTurn(next,!!extra);
 }
-function pay(key,label){
+function pay(key,label){/* label is a translation key */
  if(E.paid[key])return;E.paid[key]=1;var n=BONUS[key];E.earned+=n;S.balance+=n;save();renderAll();
  if(analytics)AN.progress(analytics,{stage:E.act,step:E.act,score:E.hp.p,bonus_points:n,total_bonus_points:E.earned});
- log('BONUS +'+n+' 點已入帳：'+label+'。');say('BONUS +'+n+' 點已入帳：'+label+'。','win');
+ log('l.pay',{n:n,label:'@'+label});say('u.bonusmsg',{n:n,label:'@'+label},'win');
 }
 function endAct(){
  var n=E.act;
- if(n<=3)pay('a'+n,n===1?'撐過第一幕':n===2?'撐過第二幕':'撐過第三幕');
+ if(n<=3)pay('a'+n,'pay.a'+n);
  E.dr.p=Math.max(0,E.dr.p-1);E.dr.d=Math.max(0,E.dr.d-1);E.liquor=false;
- if(n<3){log('酒杯喝完了，雙方酒醉各 −1。');deal(n+1);return}
+ if(n<3){log('l.cupsout');deal(n+1);return}
  if(n===3){
   if(E.hp.p!==E.hp.d){endGame(E.hp.p>E.hp.d?'p':'d','life');return}
-  log('第三幕結束，生命相同！進入 3 分鐘延長賽。');E.ot=OT_SECONDS;deal(4);return}
- log('延長賽換下一輪酒杯。');deal(4);
+  log('l.tie');E.ot=OT_SECONDS;deal(4);return}
+ log('l.ot');deal(4);
 }
 function checkEnd(){
  if(E.phase!=='play')return true;
@@ -19337,13 +19492,13 @@ function checkEnd(){
 function endGame(w,why){
  if(E.phase==='over')return;
  E.phase='over';E.pending=null;E.result={w:w,why:why};
- if(w==='p'){pay('win','贏得這場晚宴');wins++;try{localStorage.setItem('deep-sea-banquet-best',wins)}catch(e){}}
- log(w==='p'?'你贏了這場晚宴！':w==='d'?'莊家贏了這場晚宴。':'生命相同，平手。');
+ if(w==='p'){pay('win','pay.win');wins++;try{localStorage.setItem('deep-sea-banquet-best',wins)}catch(e){}}
+ log(w==='p'?'e.win':w==='d'?'e.lose':'e.draw');
  var res=E.earned>0?'complete':'loss';
  if(analytics){AN.end(analytics,E.earned,res,{score:E.hp.p,step:E.act,stage:E.act});analytics=null}
  bqBusy=false;save();renderAll();
- var head=w==='p'?'你贏了！':w==='d'?(why==='quit'?'你放棄了這一局。':'莊家贏了。'):'平手。';
- say(head+(E.earned>0?'本局共入帳 '+fmt(E.earned)+' 點。':'這一局沒有額外成就獎勵。'),E.earned>0||w==='p'?'win':'lose');
+ var head=w==='p'?'h.win':w==='d'?(why==='quit'?'h.quit':'h.lose'):'h.draw';
+ say([head,E.earned>0?'h.earned':'h.none'],{n:fmt(E.earned)},E.earned>0||w==='p'?'win':'lose');
 }
 
 /* ---------- host AI: only public information, its own scans and what the player has revealed ---------- */
@@ -19449,7 +19604,7 @@ function tick(dt){
  if(E.phase!=='play')return;
  if(E.act===4){
   E.ot-=dt;
-  if(E.ot<=0){E.ot=0;log('延長賽時間到！比較生命。');endGame(E.hp.p>E.hp.d?'p':E.hp.p<E.hp.d?'d':'draw','time');return}
+  if(E.ot<=0){E.ot=0;log('l.otend');endGame(E.hp.p>E.hp.d?'p':E.hp.p<E.hp.d?'d':'draw','time');return}
  }
  if(E.fxT>0){E.fxT-=dt;if(E.fxT>0)return}
  if(E.pending?E.pending.to==='d':E.turn==='d'){E.aiT-=dt;if(E.aiT<=0){E.aiT=.55+rnd()*.45;aiStep()}}
@@ -19496,18 +19651,20 @@ function setCls(el,name,on){var c=(' '+el.className+' ');var has=c.indexOf(' '+n
 function restart(el,name,ms){setCls(el,name,false);void el.offsetWidth;setCls(el,name,true);if(ms)setTimeout(function(){setCls(el,name,false)},ms)}
 
 /* ---------- interface ---------- */
-var $v=$('view-banquet'),cupEls={},lastLogV=-1,lastLogLen=-1;
+var $v=$('view-banquet'),cupEls={};
 var CUP_SVG='<span class="bq-gob" aria-hidden="true"><img class="bq-gob-n" src="games/banquet/assets/cup-normal.webp" alt="" draggable="false"><img class="bq-gob-s" src="games/banquet/assets/cup-selected.webp" alt="" draggable="false"></span>';
 var shown=function(){return!$v.hidden&&!document.hidden};
-function say(t,kind){var m=$('bq-msg');m.textContent=t;m.className='msg'+(kind?' '+kind:'')}
-bqSay=say;
+var SAYST={k:'v.msg',p:null,kind:''};
+function showSay(){var m=$('bq-msg'),k=SAYST.k,text=Array.isArray(k)?k.map(function(x){return tr(x,SAYST.p)}).join(tr('sep')):tr(k,SAYST.p);m.textContent=text;m.className='msg'+(SAYST.kind?' '+SAYST.kind:'')}
+function say(k,p,kind){SAYST={k:k,p:p||null,kind:kind||''};showSay()}
+bqSay=function(t,kind){say(t,null,kind)};
 function put(el,text){if(el.__bq!==text){el.__bq=text;el.textContent=text}}
 function putAttr(el,name,text){var key='__a'+name;if(el[key]!==text){el[key]=text;el.setAttribute(name,text)}}
 function hearts(n){var s='';for(var i=0;i<HP_MAX;i++)s+=i<n?'♥':'♡';return s}
 function mmss(sec){var s=Math.max(0,Math.ceil(sec));return Math.floor(s/60)+':'+('0'+s%60).slice(-2)}
 function kLabel(side,c){
  var k=E.known[side][c.id];if(!k||!k.t)return'';
- return TICON[k.t]+' '+TNAME[k.t]+(k.maybe?'?':'');
+ return TICON[k.t]+' '+tn(k.t)+(k.maybe?'?':'');
 }
 function renderCups(){
  var n=E.cups.length,live=E.phase==='play',mine=live&&E.turn==='p'&&!E.pending,seen={};
@@ -19522,40 +19679,57 @@ function renderCups(){
   if(el.className!==cls)el.className=cls;
   put(el.children[1],String(c.id));put(el.children[2],label);
   putAttr(el,'aria-pressed',E.sel===c.id?'true':'false');
-  putAttr(el,'aria-label','酒杯 #'+c.id+(label?'，你知道的情報：'+label:'，內容未知')+(E.pending&&E.pending.id===c.id?'，銀蓋宣稱是瓊漿':''));
+  putAttr(el,'aria-label',tr('u.cup',{id:c.id,info:label?tr('u.known',{label:label}):tr('u.unknown'),claim:E.pending&&E.pending.id===c.id?tr('u.claimed'):''}));
   el.disabled=!mine;
  });
  Object.keys(cupEls).forEach(function(id){if(!seen[id]){cupEls[id].remove();delete cupEls[id]}});
 }
+var itemOpen='';
 function renderHand(){
- var box=$('bq-hand'),mine=E.phase==='play'&&E.turn==='p'&&!E.pending,list=E.hand.p,sig=list.join(',')+'|'+mine+'|'+E.lock+'|'+Object.keys(E.used).join(',')+'|'+E.decree.d+'|'+E.cups.length+'|'+E.sel;
+ var box=$('bq-hand'),mine=E.phase==='play'&&E.turn==='p'&&!E.pending,list=E.hand.p,sig=LANG+'|'+list.join(',')+'|'+mine+'|'+E.lock+'|'+Object.keys(E.used).join(',')+'|'+E.decree.d+'|'+E.cups.length+'|'+E.sel+'|'+itemOpen;
  if(box.__sig===sig)return;box.__sig=sig;box.textContent='';
- if(!list.length){var p=document.createElement('p');p.className='bq-empty';p.textContent='沒有道具';box.appendChild(p);return}
+ var wrap=$('bq-hand-box');if(wrap)wrap.hidden=!list.length&&E.phase!=='play';
+ if(itemOpen&&list.indexOf(itemOpen)<0)itemOpen='';
+ if(!list.length){var p=document.createElement('p');p.className='bq-empty';p.textContent=tr('u.noitems');box.appendChild(p);renderDetail(null,false);return}
+ var seenKey={};
  list.forEach(function(key){
-  var def=ITEMS[key],why=mine?canUse('p',key):'現在不是你的回合。',b=document.createElement('button');
-  b.type='button';b.className='bq-item'+(why?' is-off':'')+(def.cup&&!E.sel&&!why?' needs-cup':'');b.setAttribute('aria-disabled',why?'true':'false');
-  var nm=document.createElement('b');nm.textContent=def.name;var ds=document.createElement('small');ds.textContent=def.desc+(def.cup?'（需先選杯）':'');
-  var tx=document.createElement('span');tx.className='bq-item-tx';tx.appendChild(nm);tx.appendChild(ds);b.appendChild(iconImg('item-'+key,'bq-item-ic'));b.appendChild(tx);
-  b.addEventListener('click',function(){playerItem(key)});box.appendChild(b);
+  var def=ITEMS[key],why=mine?canUse('p',key):tr('cu.turn'),b=document.createElement('button');
+  b.type='button';b.className='bq-slot'+(why?' is-off':'')+(itemOpen===key?' is-open':'')+(def.cup&&!E.sel&&!why?' needs-cup':'');b.setAttribute('aria-pressed',itemOpen===key?'true':'false');
+  b.title=iname(key);b.appendChild(iconImg('item-'+key,'bq-slot-ic'));
+  var nm=document.createElement('span');nm.className='bq-slot-n';nm.textContent=iname(key);b.appendChild(nm);
+  b.addEventListener('click',function(){itemOpen=itemOpen===key?'':key;SFX.pick();E.v++;render()});
+  box.appendChild(b);
  });
+ renderDetail(itemOpen||null,mine);
+}
+function renderDetail(key,mine){
+ var d=$('bq-detail');if(!d)return;
+ if(!key){d.hidden=true;return}
+ d.hidden=false;d.textContent='';
+ var def=ITEMS[key],why=mine?canUse('p',key):tr('cu.turn'),head=document.createElement('div');head.className='bq-detail-h';
+ head.appendChild(iconImg('item-'+key,'bq-detail-ic'));
+ var tx=document.createElement('div');tx.className='bq-detail-t';var nm=document.createElement('b');nm.textContent=iname(key);var ds=document.createElement('span');ds.textContent=idesc(key)+(def.cup?' '+tr('it.needcup'):'');
+ tx.appendChild(nm);tx.appendChild(ds);head.appendChild(tx);d.appendChild(head);
+ var row=document.createElement('div');row.className='bq-row';
+ var use=document.createElement('button');use.type='button';use.className='bq-btn';use.textContent=tr('v.use');use.disabled=!!why||E.fxT>0;
+ use.addEventListener('click',function(){var k=itemOpen;playerItem(k);if(!E.hand.p||E.hand.p.indexOf(k)<0){itemOpen='';E.v++;render()}});
+ var cl=document.createElement('button');cl.type='button';cl.className='bq-btn bq-ghost';cl.textContent=tr('v.close');
+ cl.addEventListener('click',function(){itemOpen='';E.v++;render()});
+ row.appendChild(use);row.appendChild(cl);d.appendChild(row);
+ if(why){var w=document.createElement('p');w.className='bq-why';w.textContent=why;d.appendChild(w)}
 }
 function renderDealerHand(){
  var t=$('bq-dhand-t'),box=$('bq-dhand'),n=E.hand.d.length,seenNow=E.seen.d,sig=n+'|'+seenNow+'|'+(seenNow?E.hand.d.join(','):'');
- put(t,seenNow?'莊家的道具（已公開）':'莊家的道具（'+n+' 件，內容未知）');
+ sig=LANG+'|'+sig;put(t,seenNow?tr('u.dopen'):tr('u.dhid',{n:n}));
  if(box.__sig===sig)return;box.__sig=sig;box.textContent='';
- if(!n){var p=document.createElement('p');p.className='bq-empty';p.textContent='沒有道具';box.appendChild(p);return}
- E.hand.d.forEach(function(key){var s=document.createElement('span');s.className='bq-back'+(seenNow?' is-open':'');if(seenNow){s.appendChild(iconImg('item-'+key,'bq-back-ic'));s.title=ITEMS[key].name}else s.textContent='?';box.appendChild(s)});
-}
-function renderLog(){
- if(lastLogV===E.v&&lastLogLen===E.log.length)return;lastLogV=E.v;lastLogLen=E.log.length;
- var ol=$('bq-log');ol.textContent='';
- E.log.slice(-LOG_SHOW).reverse().forEach(function(t){var li=document.createElement('li');li.textContent=t;ol.appendChild(li)});
+ if(!n){var p=document.createElement('p');p.className='bq-empty';p.textContent=tr('u.noitems');box.appendChild(p);return}
+ E.hand.d.forEach(function(key){var s=document.createElement('span');s.className='bq-back'+(seenNow?' is-open':'');if(seenNow){s.appendChild(iconImg('item-'+key,'bq-back-ic'));s.title=iname(key)}else s.textContent='?';box.appendChild(s)});
 }
 function renderNotes(){
  var box=$('bq-notes'),lines=[];
- E.notes.p.forEach(function(n){lines.push('聞香：'+n.ids.map(function(x){return '#'+x}).join(', ')+' 共有 '+n.n+' 杯危險酒'+(n.maybe?'（可能是幻覺）':'')+'。')});
- if(E.seen.p&&E.phase==='play')lines.push('你的手牌已被莊家看見。');
- var sig=lines.join('|');if(box.__sig===sig)return;box.__sig=sig;box.textContent='';
+ E.notes.p.forEach(function(n){lines.push(tr('u.scentnote',{ids:idList(n.ids),n:n.n,maybe:n.maybe?tr('u.maybe'):''}))});
+ if(E.seen.p&&E.phase==='play')lines.push(tr('u.seen'));
+ var sig=LANG+lines.join('|');if(box.__sig===sig)return;box.__sig=sig;box.textContent='';
  lines.forEach(function(t){var p=document.createElement('p');p.textContent=t;box.appendChild(p)});
 }
 function renderChips(){
@@ -19563,8 +19737,8 @@ function renderChips(){
  if(live||E.phase==='over')['poison','nectar','truth'].forEach(function(t){
   var left=Math.max(0,E.comp[t]-E.out[t]);if(E.comp[t])list.push({t:t,left:left,all:E.comp[t]});
  });
- var sig=list.map(function(x){return x.t+x.left+'/'+x.all}).join('|');if(box.__sig===sig)return;box.__sig=sig;box.textContent='';
- list.forEach(function(x){var c=document.createElement('span');c.className='bq-chip t-'+x.t+(x.left?'':' is-gone');var ci=stIcon(x.t,'bq-chip-ic');if(ci)c.appendChild(ci);c.appendChild(txt(TNAME[x.t]+' ×'+x.left));box.appendChild(c)});
+ var sig=LANG+list.map(function(x){return x.t+x.left+'/'+x.all}).join('|');if(box.__sig===sig)return;box.__sig=sig;box.textContent='';
+ list.forEach(function(x){var c=document.createElement('span');c.className='bq-chip t-'+x.t+(x.left?'':' is-gone');var ci=stIcon(x.t,'bq-chip-ic');if(ci)c.appendChild(ci);c.appendChild(txt(tn(x.t)+' ×'+x.left));box.appendChild(c)});
 }
 var fxPlayed=0,overPlayed=false,hbT=0,lastTurnKey='',poseT=0,poseTok=0;
 function setPose(name,dur){poseTok++;poseT=dur||0;$('bq-dealerbox').dataset.pose=name}
@@ -19577,7 +19751,7 @@ function playFx(){
  var rv=$('bq-reveal'),st=$('bq-stage'),dl=$('bq-dealerbox'),fl=$('bq-flash');
  list.forEach(function(f){
   if(f.k==='reveal'){
-   rv.textContent='';var ri=stIcon(f.t,'bq-reveal-ic');if(ri)rv.appendChild(ri);rv.appendChild(txt(TNAME[f.t]));rv.className='bq-reveal t-'+f.t;restart(rv,'is-on',1500);
+   rv.textContent='';var ri=stIcon(f.t,'bq-reveal-ic');if(ri)rv.appendChild(ri);rv.appendChild(txt(tn(f.t)));rv.className='bq-reveal t-'+f.t;restart(rv,'is-on',1500);
    if(f.s==='d')setPose(f.by==='p'?'caught':'drink',1.3);else if(f.by==='d')setPose('reach',1.3);
    if(f.by==='p')restart($('bq-hands'),f.s==='d'?'is-push':'is-lift',900);
    SFX.lift();setTimeout(function(){f.t==='poison'||f.t==='poison2'?SFX.poison():f.t==='nectar'||f.t==='pnectar'?SFX.nectar():f.t==='truth'?SFX.truth():SFX.water()},380);
@@ -19594,40 +19768,40 @@ function playFx(){
 function render(){
  var live=E.phase==='play',over=E.phase==='over';
  playFx();
- put($('bq-act'),!E.act?'晚宴尚未開始':E.act===4?ACTS[4].name+' '+mmss(E.ot):ACTS[E.act].name);
+ put($('bq-act'),!E.act?tr('act.none'):E.act===4?actName(4)+' '+mmss(E.ot):actName(E.act));
  ['p','d'].forEach(function(s){
-  put($('bq-hp-'+s),hearts(E.hp[s]));put($('bq-hp-'+s+'-t'),'生命 '+E.hp[s]+'/'+HP_MAX);
-  put($('bq-dr-'+s),'酒醉 '+E.dr[s]+'/'+DR_MAX+(E.dr[s]>=3?'（醉意上頭）':''));
-  put($('bq-items-'+s),'道具 '+E.hand[s].length);
+  put($('bq-hp-'+s),hearts(E.hp[s]));put($('bq-hp-'+s+'-t'),tr('u.hp',{a:E.hp[s],b:HP_MAX}));
+  put($('bq-dr-'+s),tr('u.dr',{a:E.dr[s],b:DR_MAX,tip:E.dr[s]>=3?tr('u.tipsy'):''}));
+  put($('bq-items-'+s),tr('u.items',{n:E.hand[s].length}));
   var box=$('bq-side-'+s),cls='bq-side bq-side-'+s+(live&&E.turn===s?' is-turn':'')+(E.dr[s]>=3?' is-drunk':'');if(box.className!==cls)box.className=cls;
  });
  var oc=E.out;
  renderChips();
- put($('bq-comp'),live||over?'本幕原配：劇毒 '+E.comp.poison+'、瓊漿 '+E.comp.nectar+'、真言水 '+E.comp.truth+' · 桌上還有 '+E.cups.length+' 杯酒 · 已喝出：劇毒 '+oc.poison+'、瓊漿 '+oc.nectar+'、真言水 '+oc.truth+(oc.water?'、清水 '+oc.water:''):'每幕開始時公開各種酒的杯數。');
- put($('bq-center-1'),!E.act?'晚宴尚未開始':over?(E.result.w==='p'?'你贏了':E.result.w==='d'?'莊家贏了':'平手'):'桌上還有 '+E.cups.length+' 杯酒');
- put($('bq-center-2'),over?'到右側再來一場':live?(E.turn==='p'?'輪到你':'輪到莊家'):'按右側開始');
- renderCups();renderHand();renderDealerHand();renderLog();renderNotes();
+ put($('bq-comp'),live||over?tr('u.comp',{a:E.comp.poison,b:E.comp.nectar,c:E.comp.truth,n:E.cups.length,x:oc.poison,y:oc.nectar,z:oc.truth,w:oc.water?tr('u.compwater',{w:oc.water}):''}):tr('u.compidle'));
+ put($('bq-center-1'),!E.act?tr('act.none'):over?(E.result.w==='p'?tr('u.cwin'):E.result.w==='d'?tr('u.close'):tr('u.cdraw')):tr('u.cups',{n:E.cups.length}));
+ put($('bq-center-2'),over?tr('u.again'):live?(E.turn==='p'?tr('u.yourturn'):tr('u.hostturn')):tr('u.press'));
+ renderCups();renderHand();renderDealerHand();renderNotes();
  var mine=live&&E.turn==='p'&&!E.pending,sel=E.sel?cupOf(E.sel):null,pend=live&&E.pending&&E.pending.to==='p';
  var turn=$('bq-turn');
- put(turn,!live?(over?'這一場結束了。':'按右側「開始晚宴」'):pend?'莊家蓋上了銀蓋，等你決定。':E.turn==='d'?'莊家思考中…':E.decree.p?'你被勸酒令指定：這次只能自己喝。':sel?'已選 #'+sel.id+'：決定怎麼處理這杯酒。':'先點選一杯酒，再決定怎麼處理它。');
+ put(turn,!live?(over?tr('u.over'):tr('u.pressgo')):pend?tr('u.pending'):E.turn==='d'?tr('u.think'):E.decree.p?tr('u.decreed'):sel?tr('u.selected',{id:sel.id}):tr('u.selfirst'));
  $('bq-act-row').hidden=!mine;
  var forced=E.decree.p;
  $('bq-self').disabled=!sel||E.fxT>0;$('bq-toast').disabled=!sel||forced||E.fxT>0;$('bq-silver').disabled=!sel||forced||E.fxT>0;$('bq-silver').hidden=!ADV;
- $('bq-adv').disabled=bqBusy;put($('bq-adv'),ADV?'進階模式：銀蓋吹牛（開）':'進階模式：銀蓋吹牛（關）');putAttr($('bq-adv'),'aria-pressed',ADV?'true':'false');
- put($('bq-mute'),MUTED?'音效：關':'音效：開');putAttr($('bq-mute'),'aria-pressed',MUTED?'true':'false');
+ $('bq-adv').disabled=bqBusy;put($('bq-adv'),ADV?tr('u.advon'):tr('u.advoff'));putAttr($('bq-adv'),'aria-pressed',ADV?'true':'false');
+ put($('bq-mute'),MUTED?tr('u.soundoff'):tr('u.soundon'));putAttr($('bq-mute'),'aria-pressed',MUTED?'true':'false');
  var dl=$('bq-dealerbox'),dcls='bq-dealer-box'+(live&&(E.turn==='d'||(E.pending&&E.pending.to==='d'))?' is-think':'')+(over&&E.result.w==='p'?' is-dead':'')+(dl.className.indexOf('is-hurt')>=0?' is-hurt':'');
  if(dl.className!==dcls)dl.className=dcls;
- var tk=$('bq-ticker'),last=E.log.length?E.log[E.log.length-1]:'';if(tk.__v!==E.v){tk.__v=E.v;tk.textContent=last;restart(tk,'is-in',0)}
+ var tk=$('bq-ticker'),last=E.log.length?logText(E.log[E.log.length-1]):'';if(tk.__v!==E.v+LANG){tk.__v=E.v+LANG;tk.textContent=last;restart(tk,'is-in',0)}
  setCls($('bq-stage'),'is-low',live&&E.hp.p<=1);setCls($('bq-stage'),'is-mine',mine&&!(E.fxT>0));
  if(over&&!overPlayed){overPlayed=true;E.result.w==='p'?SFX.win():SFX.lose();setPose(E.result.w==='p'?'hurt':E.result.w==='d'?'victory':'idle',1e9)}
  if(!over&&overPlayed){overPlayed=false;setPose('idle',0)}
  setCls($('bq-hands'),'is-ready',mine&&!!E.sel&&!(E.fxT>0));
  var pr=$('bq-prompt');pr.hidden=!pend;
- if(pend)put($('bq-prompt-t'),'莊家宣稱 #'+E.pending.id+' 是瓊漿。你要相信並喝下，還是質疑？');
- var go=$('bq-go');go.disabled=bqBusy;put(go,bqBusy?'晚宴進行中':over?'再辦一場':'開始晚宴');
- $('bq-quit').hidden=!bqBusy;put($('bq-quit'),quitArm>0?'再按一次確認放棄':'放棄本局');
- put($('bq-stage-t'),!E.act?'未開始':SHORT[E.act]);
- put($('bq-bonus'),E.earned+' 點');put($('bq-best'),wins+' 場');
+ if(pend)put($('bq-prompt-t'),tr('u.claimq',{id:E.pending.id}));
+ var go=$('bq-go');go.disabled=bqBusy;put(go,bqBusy?tr('u.going'):over?tr('u.goagain'):tr('u.go'));
+ $('bq-quit').hidden=!bqBusy;put($('bq-quit'),quitArm>0?tr('u.quitarm'):tr('u.quit'));
+ put($('bq-stage-t'),!E.act?tr('u.notstarted'):actShort(E.act));
+ put($('bq-bonus'),tr('u.pts',{n:E.earned}));put($('bq-best'),tr('u.wins',{n:wins}));
 }
 function pickCup(id){
  if(E.phase!=='play'||E.turn!=='p'||E.pending||!cupOf(id))return;
@@ -19636,14 +19810,14 @@ function pickCup(id){
 function playerItem(key){
  if(E.phase!=='play'||E.fxT>0)return;
  var r=useItem('p',key,E.sel);
- if(!r.ok){say(r.msg,'lose');render();return}
- if(r.msg)say(r.msg,'win');
+ if(!r.ok){say(r.msg,null,'lose');render();return}
+ if(r.msg)say(r.msg,null,'win');
  if(!cupOf(E.sel))E.sel=0;render();
 }
 function playerAct(kind){
  if(E.phase!=='play'||E.turn!=='p'||E.pending||E.fxT>0)return;
  if(kind==='claim'&&!ADV)return;
- if(!E.sel){say('請先點選一杯酒。','lose');return}
+ if(!E.sel){say('u.pickfirst',null,'lose');return}
  var id=E.sel;E.sel=0;
  if(kind==='self')selfDrink('p',id);else if(kind==='toast')toast('p',id);else claim('p',id);
  render();
@@ -19652,15 +19826,15 @@ function playerRespond(believe){if(E.fxT>0)return;if(E.pending&&E.pending.to==='
 function start(){
  if(bqBusy)return;
  var amount=ENTRY_FEE;
- if(amount>S.balance){say(LOW_MSG,'lose');return}
+ if(amount>S.balance){say(LOW_MSG,null,'lose');return}
  analytics=AN.start('banquet',amount);bqStake=amount;bqBusy=true;save();renderAll();
- fresh();E.phase='play';quitArm=0;log('晚宴開始。你先行動。');deal(1);beginTurn('p',false);
- say(ADV?'晚宴開始！先點選一杯酒，再決定自己喝、敬給莊家，或蓋上銀蓋騙他。':'晚宴開始！先點選一杯酒，再決定自己喝或敬給莊家。');SFX.start();setPose('idle',0);render();$('bq-stage').focus({preventScroll:true});
+ fresh();E.phase='play';quitArm=0;log('l.begin');deal(1);beginTurn('p',false);
+ say(ADV?'u.startadv':'u.start');SFX.start();setPose('idle',0);render();$('bq-stage').focus({preventScroll:true});
 }
 function quit(){
  if(!bqBusy)return;
  if(quitArm<=0){quitArm=4;render();return}
- quitArm=0;log('你放棄了這一局。');endGame('d','quit');render();
+ quitArm=0;log('l.quit');endGame('d','quit');render();
 }
 $('bq-go').addEventListener('click',start);
 $('bq-quit').addEventListener('click',quit);
@@ -19685,6 +19859,28 @@ function loop(t){
 addEventListener('blur',function(){last=performance.now()});
 document.addEventListener('visibilitychange',function(){last=performance.now()});
 window.addEventListener('hashchange',function(){last=performance.now()});
+/* ---------- language / fonts ---------- */
+var FONTS={base:'family=Cinzel:wght@500;700&family=Cormorant+Garamond:wght@500;600;700',ja:'family=Noto+Serif+JP:wght@500;700',ko:'family=Noto+Serif+KR:wght@500;700',zh:'family=Noto+Serif+TC:wght@500;700'},fontDone={};
+function loadFont(key){
+ if(fontDone[key]||!FONTS[key]||!document.head||!document.createElement)return;fontDone[key]=1;
+ try{var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?'+FONTS[key]+'&display=swap';document.head.appendChild(l)}catch(e){}
+}
+function applyLang(){
+ var st=$('bq-stage'),lg=LANG==='zh'?'zh-Hant':LANG;if(st.setAttribute)st.setAttribute('lang',lg);if($v.setAttribute)$v.setAttribute('lang',lg);
+ loadFont('base');if(FONTS[LANG])loadFont(LANG);
+ if(document.querySelectorAll&&$v.querySelectorAll){
+  Array.prototype.forEach.call($v.querySelectorAll('[data-bq]'),function(e){e.textContent=tr(e.getAttribute('data-bq'))});
+  Array.prototype.forEach.call($v.querySelectorAll('[data-bq-aria]'),function(e){e.setAttribute('aria-label',tr(e.getAttribute('data-bq-aria')))});
+ }
+ var sel=$('bq-lang');if(sel)sel.value=LANG;
+ showSay();E.v++;
+}
+function setLang(l){
+ if(!BQ_I18N[l])return;LANG=l;try{localStorage.setItem('deep-sea-banquet-lang',l)}catch(e){}
+ applyLang();render();
+}
+{var langSel=$('bq-lang');if(langSel&&langSel.addEventListener)langSel.addEventListener('change',function(){setLang(langSel.value)})}
+applyLang();
 render();requestAnimationFrame(loop);
   })();
   /* ---------- Frontier Islands ---------- */
