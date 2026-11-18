@@ -1,10 +1,12 @@
   /* ---------- Don't Peek: wind the music box while spirits strike; lean away, cover the screen, hold still ---------- */
   var peekBusy=false,peekStake=0,peekSay=function(){};
   (function(){
+const FB='"Alegreya Sans","Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif',FD='Cinzel,"Alegreya Sans","Noto Sans TC","PingFang TC",serif',MINSZ=14;
+try{[['Cinzel',700,'cinzel-latin-700'],['Cinzel',800,'cinzel-latin-800'],['Alegreya Sans',500,'alegreya-sans-latin-500'],['Alegreya Sans',700,'alegreya-sans-latin-700'],['Alegreya Sans',800,'alegreya-sans-latin-800']].forEach(f=>{const ff=new FontFace(f[0],'url(games/peek/assets/fonts/'+f[2]+'.woff2)',{weight:String(f[1])});document.fonts.add(ff);ff.load().catch(()=>{})})}catch(e){}
 const c=$('peek-canvas'),g=c.getContext('2d'),W=800,H=450,CX=400,OL='#120d0a';
 const BASE_RATE=2;                         // % of the corridor covered per second: the runner keeps jogging by itself
 const MILE_EVENTS=2,MILE_REWARD=2,WIN_REWARD=5; // fixed BONUS: survive 2 spirits +2, reach the exit and open the box +5, each once per round
-const FIRST_GAP=9;                         // safe seconds before the first spirit
+const FIRST_GAP=6;                         // safe seconds before the first spirit
 const GAP_NEAR=7,GAP_FAR=4,BREATH_EVERY=3,BREATH_EXTRA=3; // gap between spirits shrinks from 7s to 4s by 80% progress; every 3rd dodge earns a longer breather
 const UNLOCK_TWINS=2,UNLOCK_WALKER=3;     // spirits unlock by dodges this round: eye first, then giggles, then the night watchman
 const EASY_EYES=2,EYE_EASY_WARN=3.5;      // the first two red eyes give a longer warning
@@ -40,11 +42,11 @@ let wx=0,lastWx=-1,prevWxT=-1,evK='',R=()=>Math.random(),L=null,lvl=0,lives=3,ck
 try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-save')||'{}');maxLvl=o.m||1;ck=1;lives=o.l||3;noDrop=o.n||0;healTen=o.h==null?-1:o.h;lvDeaths=o.d||{};seen=o.s||{};runTop=o.r||maxLvl}catch(e){}
 const rnd=(a,b)=>a+R()*(b-a);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-function tx(s,x,y,sz,col,al){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign=al||'center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-24);g.fillStyle=col;g.fillText(s,x,y,W-24)}
+function tx(s,x,y,sz,col,al){sz=Math.max(sz,MINSZ);g.font='800 '+sz+'px '+(sz>=26&&!/\d/.test(s)?FD:FB);g.textAlign=al||'center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-24);g.fillStyle=col;g.fillText(s,x,y,W-24)}
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();if(f){g.fillStyle=f;g.fill()}if(lw){g.lineWidth=lw;g.strokeStyle=OL;g.stroke()}};
 let shieldFx=0,st='ready',prog,tilt,gapT,ev,survived,lastType,directorUsed,score,why,rec,flash,shake,tt=0,last=0,fxs=[],lampOut=0;
 let keys={l:0,r:0,cover:0,pick:0},gs=new Map(),hideWant=0,tapPick=0,dbl=0,tapT=-9,touchT=-9,lt=0,breath=1,spots={'-1':[],'1':[]},spotsAll=false,pendType=null,pendSide=1,itemTap=0,headDown=false,torchTap=0,chainN=0,lastTap=-9,tapQ=[],pendWait=0,breathOff=false,tutDone=false,gyro={on:false,tilt:0,down:false};
-let tut=null,bag,drops,dropT,camp,campNext,openFx,pickHeld=0,sc=0,scrolls=0,audioOk=false,assist=false,lowScare=false,MASTER=.7,chirpT=0;
+let scareT=0,scareMax=1,tut=null,bag,drops,dropT,camp,campNext,openFx,pickHeld=0,sc=0,scrolls=0,audioOk=false,assist=false,lowScare=false,MASTER=.7,chirpT=0;
 try{scrolls=+localStorage.getItem('deep-sea-peek-scrolls')||0}catch(e){}
 try{tutDone=localStorage.getItem('deep-sea-peek-tut2')==='1'}catch(e){}
 try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-opts')||'{}');assist=!!o.a;lowScare=!!o.l;captions=!!o.c;if(typeof o.m==='number')AMB=clamp(o.m,0,1);if(typeof o.v==='number')MASTER=clamp(o.v,0,1)}catch(e){}
@@ -121,7 +123,7 @@ function ui(){
  setText('peek-prog',L?'第 '+lvl+' 關':Math.floor(prog)+'%');setText('peek-spirits',survived+' 次襲擊');setText('peek-best',best+'%');setText('peek-codex',Object.keys(CAUSES).filter(k=>deaths[k]>0).length+' / '+Object.keys(CAUSES).length);setText('peek-dodges',dodgesTotal+' 次');
  setText('peek-lvl',L?lvl+' / 100':'自由跑');setText('peek-lives',L?String(lives):'—');
  const lv=wantLevel();
- $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'逃跑中 · 別回頭':(st==='ready'?'開始 ':'再開 ')+(lv?'第 '+lv+' 關':'自由跑'));
+ $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'逃跑中 · 別回頭':(st==='ready'?'開始 ':'再試 ')+(lv?'第 '+lv+' 關':'自由跑'));
 }
 function fx(s,x,y,col){fxs.push({s,x,y,col,t:0})}
 function end(kind,reason){
@@ -129,11 +131,12 @@ function end(kind,reason){
  if(tut&&kind==='dead'){tutFail();return}
  if(kind==='dead'&&bag.charm>0){bag.charm--;shieldFx=1;fx('護身符擋下了這一次',CX,118,'#9fe8ff');ev=null;gapT=Math.max(nextGap(),4);flash=lowScare?.1:.3;return}
  deathEv=ev?{type:ev.type,side:ev.side,boss:!!ev.boss}:null;
- st=kind==='won'?'won':'over';why=reason||'';lostAll=false;
+ st=kind==='won'?'won':'over';try{window.__gp&&window.__gp(false)}catch(e){}why=reason||'';lostAll=false;
  const p=Math.floor(prog);rec=!L&&!practice&&p>best;
  if(rec){best=p;try{localStorage.setItem('deep-sea-peek-best',best)}catch(e){}}
  if(kind==='dead'){
-  flash=lowScare?.15:.5;shake=lowScare?0:.5;
+  flash=lowScare?.15:.5;shake=lowScare?0:.5;scareMax=scareT=lowScare?.45:1.05;
+  if(!lowScare){tone(62,.7,.55,0,'sawtooth',28);tone(1900,.3,.22,0,'square',240);tone(420,.5,.18,0,'sawtooth',90)}else tone(120,.3,.15,0,'sine',60);
   if(!practice&&!daily){deaths[reason]=(deaths[reason]||0)+1;try{localStorage.setItem('deep-sea-peek-deaths',JSON.stringify(deaths))}catch(e){}mark('flick');
    if(L){lvDeaths[lvl]=(lvDeaths[lvl]||0)+1;lives--;if(lives<=0){lostAll=true;lives=3;lvDeaths={};runTop=ck}sv();if(lostAll&&hasLv)lvUI.value=ck}}}
  if(kind==='won'&&L&&!practice&&!daily){
@@ -178,7 +181,7 @@ function drawTutUI(){
   if(s.ty==='eye'&&ev&&!ev.fake&&ev.phase==='judge'){const safe=-ev.side,x=CX+safe*150;tx(safe<0?'◀◀':'▶▶',x+safe*Math.abs(Math.sin(tt*5))*14,275,46,'#ffd98a')}
   else if(s.ty==='walker'&&itemsUp()){const f=ev.phase==='judge'?1:clamp((ITEM_SHOW-ev.t)/1.2,0,1);[-1,1].forEach(sd=>{if(ev.items[sd]===ITEM_OF.hush){g.beginPath();g.arc(CX+sd*(540-300*f),310,60+7*Math.sin(tt*6),0,7);g.stroke()}})}
   else if(s.ty==='pick')drops.forEach(d=>{if(d.z<0)return;const q=1-d.z;g.beginPath();g.arc(CX+d.side*(90+(SIDE+30-90)*q),300+95*q,40+90*q*.4+6*Math.sin(tt*6),0,7);g.stroke()})}
- RR(W-146,H-42,132,28,8,'rgba(18,13,10,.7)');tx('跳過教學',W-80,H-22,13,'#cfcfcf');
+ btnImg(W-150,H-46,132,32,'跳過教學',false,15);
  g.restore()}
 function startEvent(){
  if(L&&L.left<=0&&!L.forceFake){gapT=99;return}
@@ -241,7 +244,7 @@ function allClear(){[0,110,220,330].forEach(d=>later(()=>tone(3100+Math.random()
 function update(dt){
  tt+=dt;
  if(openFx){openFx.t-=dt;if(openFx.t<=0)openFx=null}
- if(shieldFx>0)shieldFx=Math.max(0,shieldFx-dt*1.4);if(flash>0)flash-=dt;if(shake>0)shake-=dt;fxs.forEach(f=>f.t+=dt);fxs=fxs.filter(f=>f.t<.9);
+ if(shieldFx>0)shieldFx=Math.max(0,shieldFx-dt*1.4);if(flash>0)flash-=dt;if(shake>0)shake-=dt;if(scareT>0)scareT-=dt;fxs.forEach(f=>f.t+=dt);fxs=fxs.filter(f=>f.t<.9);
  if(st!=='run')return;
  const I=inputs();
  const covered=I.cover,aim=hideOK(I.tilt);
@@ -466,8 +469,8 @@ function drawCamp(){
  else tx('歇一口氣……',CX,128,24,'#f1d9a6')}
 /* centred text with wrapping by character count (CJK is one em wide, so no measureText needed) */
 function wrapLines(s,sz,wd){const I=typeof window!=='undefined'&&window.deepSeaI18n;if(I&&I.getLanguage&&I.getLanguage()==='en'){const per=Math.max(6,Math.floor(wd/(sz*.52))),o=[];let cur='';I.text(s).split(' ').forEach(w=>{if(cur&&(cur+' '+w).length>per){o.push(cur);cur=w}else cur=cur?cur+' '+w:w});if(cur)o.push(cur);return o.slice(0,12)}const n=Math.max(2,Math.floor(wd/sz)),o=[];for(let i=0;i<s.length&&o.length<12;i+=n)o.push(s.slice(i,i+n));return o}
-function txp(s,x,y,sz,col,mw){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.fillStyle=col;g.fillText(s,x,y,mw||W-24)}   // plain text for parchment
-function txd(s,x,y,sz,col,wd,maxL){g.font='700 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.fillStyle=col;wrapLines(s,sz,wd).slice(0,maxL||12).forEach((ln,i)=>g.fillText(ln,x,y+i*(sz+4)))}
+function txp(s,x,y,sz,col,mw){sz=Math.max(sz,MINSZ);g.font='800 '+sz+'px '+FB;g.textAlign='center';g.fillStyle=col;g.fillText(s,x,y,mw||W-24)}   // plain text for parchment
+function txd(s,x,y,sz,col,wd,maxL){sz=Math.max(sz,MINSZ);g.font='700 '+sz+'px '+FB;g.textAlign='center';g.fillStyle=col;wrapLines(s,sz,wd).slice(0,maxL||12).forEach((ln,i)=>g.fillText(ln,x,y+i*(sz+4)))}
 /* ---- headphone check card (first screen) ---- */
 const HP={x:CX-220,y:56,w:440};
 function hpRect(k){
@@ -514,10 +517,12 @@ function hud(I,lamp){
  if(L&&seedCode)tx('種子 '+seedCode,W-10,H-6,11,'rgba(241,217,166,.6)','right')}
 /* ---- end-of-round buttons (retry / listen again / codex / later) ---- */
 let endBtns=[];
+function btnImg(x,y,w,h,label,dis,sz){const fb=art('ui-frame-btn');g.save();if(dis)g.globalAlpha=.4;const pad=Math.min(8,h*.14);if(fb)g.drawImage(fb,x-pad,y-pad,w+pad*2,h+pad*2);else RR(x,y,w,h,8,'#5a4228',2);txp(label,x+w/2,y+h/2+(sz||16)*.35,sz||16,'#f6dfa8',w-14);g.restore()}
 function btnRow(items){
- endBtns=[];const w=148,gap=8,n=items.length,x0=CX-(n*w+(n-1)*gap)/2,y=H-62;
- items.forEach((it,i)=>{const x=x0+i*(w+gap);endBtns.push([x,y,w,40,it[1]]);RR(x,y,w,40,10,'#5a4228',3);tx(it[0],x+w/2,y+27,16,'#f1d9a6')})}
+ endBtns=[];const w=156,h=58,gap=2,n=items.length,x0=CX-(n*w+(n-1)*gap)/2,y=H-72,fb=art('ui-frame-btn');
+ items.forEach((it,i)=>{const x=x0+i*(w+gap);endBtns.push([x+8,y+8,w-16,h-16,it[1]]);if(fb)g.drawImage(fb,x,y,w,h);else RR(x,y,w,h,10,'#5a4228',3);txp(it[0],x+w/2,y+h/2+6,17,'#f6dfa8',w-34)})}
 function deathClick(e){
+ if(st==='over'&&scareT>0)return true;
  const p=cxy(e);
  for(const b of endBtns)if(p[0]>=b[0]&&p[0]<=b[0]+b[2]&&p[1]>=b[1]&&p[1]<=b[1]+b[3]){doAct(b[4]);return true}
  return false}
@@ -557,30 +562,36 @@ function shareCard(t){
  if(bg){const h=630,w=bg.naturalWidth*h/bg.naturalHeight;x.drawImage(bg,600-w/2,0,w,h)}
  x.fillStyle='rgba(8,10,14,.62)';x.fillRect(0,0,1200,630);
  if(gh&&st!=='won'){const h=420,w=gh.naturalWidth*h/gh.naturalHeight;x.globalAlpha=.85;x.drawImage(gh,880-w/2,150,w,h);x.globalAlpha=1}
- x.textAlign='left';x.fillStyle='#e8c675';x.font='800 64px "Noto Sans TC",system-ui,sans-serif';x.fillText('別看 Don\'t Peek',60,110);
- x.fillStyle='#f1d9a6';x.font='700 34px "Noto Sans TC",system-ui,sans-serif';
+ x.textAlign='left';x.fillStyle='#e8c675';x.font='800 64px '+FB;x.fillText('別看 Don\'t Peek',60,110);
+ x.fillStyle='#f1d9a6';x.font='700 34px '+FB;
  wrapLines(t.replace(/^《[^》]*》/,''),34,720).forEach((ln,i)=>x.fillText(ln,60,200+i*48));
- x.fillStyle='rgba(241,217,166,.7)';x.font='600 24px "Noto Sans TC",system-ui,sans-serif';x.fillText('yachun0728.github.io 的深海遊戲廳',60,590);
+ x.fillStyle='rgba(241,217,166,.7)';x.font='600 24px '+FB;x.fillText('yachun0728.github.io 的深海遊戲廳',60,590);
  cv.toBlob(b=>{if(!b)return;const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='dont-peek-'+(seedCode||'free')+'.png';a.click()})}
 const KILLER={bog:'ghost-bog',crawl:'ghost-crawler',magma:'ghost-magma',flick:'guide-flick',howl:'ghost-howler',white:'ghost-whiteout',eye:'ghost-leafling',twins:'ghost-thorn',walkerLate:'ghost-wraith',walkerMove:'ghost-wraith',gale:'ghost-gale',hollowLate:'ghost-hollow',hollowMove:'ghost-hollow',reach:'ghost-reacher',bell:'ghost-bellkeeper',glass:'ghost-glassface',ash:'ghost-ash'};
 const RULE_FULL={eye:'落葉堆在哪一邊，那邊就有東西。紅光亮起時，躲進另一側並撐滿 3 秒。',twins:'鳥群飛走後，敲擊聲從一邊傳來。躲進敲擊的另一側；躲在敲擊那一側一定會死。',walkerLate:'蟲鳴停了，左右會各出現一件道具。靜林鬼怕燈籠：點燈籠那一側。',walkerMove:'點錯道具打不退牠。這類鬼各怕一件道具，要記住。',gale:'風向反了，拖行聲從一邊靠近。躲進風來的那一側，頂住 2 秒。',hollowLate:'首領空殼出現時左右各有一件道具，點符紙那一側。',hollowMove:'點錯道具打不退牠。空殼怕符紙。',reach:'土面鼓起、泥水冒泡的那一邊會伸出手。躲進另一側，撐住 2 秒。',bell:'鐘響三下。第三下之後要往下滑低頭，一直低著頭，直到鐘聲散去才抬頭。',breath:'躲藏處不能躲太久。視野邊緣變暗就是快憋不住了，鬼過去之後就出來。',bog:'水面冒泡，一道長條陰影浮上來。牠抓住你之前，連點畫面兩下掙脫。',crawl:'冰面裂縫一路延伸到腳邊。咯吱聲最急的那一刻，點一下畫面。',magma:'地面發紅，哪一邊冒煙，熔岩蟲就從那邊鑽出。躲進另一側，撐住 2 秒；牠可能折返。',flick:'成群的假螢火往你飄來。點畫面下方的火把，牠們就散了；沒有火把，躲進另一側。',howl:'風聲裡夾著 2 到 3 聲嚎叫。等牠停下，照同樣的間隔點畫面。',white:'暴雪蓋住畫面，哪一邊閃光，哪裡就是雪洞。躲進閃光那一側，撐住 2 秒；牠可能折返。',glass:'畫面起霧，一張臉貼近，左右各有一件道具。玻璃臉怕鐵鎚：點鐵鎚那一側。',ash:'天色變暗，鴉群飛過，翅膀聲拍動。左右各有一件道具，灰燼鴉群怕水桶：點水桶那一側。'};
+function drawScare(){
+ const p=clamp(1-scareT/scareMax,0,1),im=art(KILLER[why]||'ghost-wraith'),big=lowScare?.7:1;
+ g.fillStyle='rgba(8,4,3,'+(.35+.55*p)+')';g.fillRect(0,0,W,H);
+ if(im){const e=p*p,sz=(H*.55+H*1.15*e)*big,jx=lowScare?0:(Math.random()-.5)*26*e,jy=lowScare?0:(Math.random()-.5)*20*e;floatImg(im,CX+jx,H*.56+jy,sz,1)}
+ const vg=g.createRadialGradient(CX,H/2,H*.25,CX,H/2,W*.62);vg.addColorStop(0,'rgba(120,0,0,0)');vg.addColorStop(1,'rgba(120,0,0,'+(.35+.5*p)+')');g.fillStyle=vg;g.fillRect(0,0,W,H);
+ if(!lowScare&&p>.86){g.fillStyle='rgba(255,255,255,'+(.9*(1-(p-.86)/.14))+')';g.fillRect(0,0,W,H)}}
 function drawDeath(){
  g.fillStyle='rgba(18,13,10,.8)';g.fillRect(0,0,W,H);
  const bn=art('ui-banner'),cd=art('ui-card'),n=deaths[why]||1;
  if(bn)g.drawImage(bn,CX-210,8,420,82);else RR(CX-210,8,420,82,10,'#3a2c1c',3);
  txp((lostAll?'生命用完　':'你死了　')+(L?'第 '+lvl+' 關':'停在 '+Math.floor(prog)+'%'),CX+25,58,24,'#3a2812');
- const xs=[CX-300,CX+130],kw=170,kh=198,ky=100;
+ const kw=196,kh=246,ky=88,xs=[22,W-22-kw];
  for(let i=0;i<2;i++){
   const x=xs[i];if(cd)g.drawImage(cd,x,ky,kw,kh);else RR(x,ky,kw,kh,10,'#3a2c1c',3);
-  const im=art(i?(why==='flick'?'item-torch':'guide-flick'):KILLER[why]||'ghost-wraith');if(im)floatImg(im,x+kw*.49,ky+kh*.34,kw*.38,1);
+  const im=art(i?(why==='flick'?'item-torch':'guide-flick'):KILLER[why]||'ghost-wraith');if(im)floatImg(im,x+kw*.49,ky+kh*.28,kw*.33,1);
   const body=i?TIPS[why]||'':causeText(why);
-  txd(body,x+kw/2,ky+kh*.6,11,'#2a1a0c',kw*.6,5)}
+  txd(body,x+kw/2,ky+kh*.6,14,'#2a1a0c',kw*.64,5)}
  tx('剩餘生命 '+(L?lives:'—'),CX,ky+34,20,'#ffd98a');
  tx('躲過 '+survived+' 次襲擊',CX,ky+66,16,'#f1d9a6');
  if(lostAll)txd('整輪重來：回到第 1 關',CX,ky+96,15,'#ffb347',200,2);
  else if(L&&L.ease)txd('小螢多給你 0.3 秒預警，少來一次襲擊。',CX,ky+96,13,'#cfe8ff',200,3);
- txd(n<=1?RULE_FULL[why]||'':FLICK_TIPS[['eye','twins','walkerLate','walkerMove','gale','hollowLate','hollowMove','reach','bell','breath','bog','crawl','magma','flick','howl','white','glass','ash'].indexOf(why)]||'',CX,ky+130,13,'#cfe8ff',210,5);
- if(rec)tx('新紀錄！',CX,ky+190,16,'#ffd98a');
+ txd(n<=1?RULE_FULL[why]||'':FLICK_TIPS[['eye','twins','walkerLate','walkerMove','gale','hollowLate','hollowMove','reach','bell','breath','bog','crawl','magma','flick','howl','white','glass','ash'].indexOf(why)]||'',CX,ky+130,14,'#cfe8ff',236,5);
+ if(rec)tx('新紀錄！',CX,ky+226,16,'#ffd98a');
  if(n>=3)tx('多次失敗：可以開輔助標記，或到圖鑑聽一次、練習。',CX,ky+kh+20,14,'#ffd98a');
  const row=[['立刻重試','retry'],['再聽一次','listen'],['看鬼圖鑑','dex'],['稍後再學','later']];if(n>=3&&!assist)row.splice(3,0,['開輔助標記','assist']);
  btnRow(row)}
@@ -623,7 +634,7 @@ const dexPages=()=>{const out=[],ch=a=>{for(let i=0;i<a.length;i+=12)out.push(a.
 let dexPg=0;
 const dexGo=n=>{const pg=dexPages();dexPg=(dexPg+n+pg.length)%pg.length;dexSel=DEX.indexOf(pg[dexPg][0])};
 const DEXB=[[372,392,118,38,'聽一次'],[500,392,118,38,'練習'],[628,392,118,38,'關閉']],DEXP=[[40,396,92,32,'上一頁'],[222,396,92,32,'下一頁']];
-function txl(s,x,y,sz,col,wd,maxL){g.font='700 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='left';g.fillStyle=col;const ls=wrapLines(s,sz,wd).slice(0,maxL||12);ls.forEach((ln,i)=>g.fillText(ln,x,y+i*(sz+5)));return y+ls.length*(sz+5)}
+function txl(s,x,y,sz,col,wd,maxL){sz=Math.max(sz,MINSZ);g.font='700 '+sz+'px '+FB;g.textAlign='left';g.fillStyle=col;const ls=wrapLines(s,sz,wd).slice(0,maxL||12);ls.forEach((ln,i)=>g.fillText(ln,x,y+i*(sz+5)));return y+ls.length*(sz+5)}
 function drawDex(){
  g.fillStyle='#06060a';g.fillRect(0,0,W,H);
  const fr=art('ui-codex');if(fr)g.drawImage(fr,DEXF.x,DEXF.y,432*DK,DEXF.h);
@@ -635,15 +646,15 @@ function drawDex(){
   if(DEX.indexOf(d)===dexSel){g.strokeStyle='#ffd98a';g.lineWidth=3;g.beginPath();g.arc(p[0],p[1],27*DK*1.2+2,0,7);g.stroke()}
   if(got){if(im)floatImg(im,p[0],p[1],46,1);else txp(d.id==='nib'?'🐾':'?',p[0],p[1]+6,20,'#e8e0d0')}
   else txp('？',p[0],p[1]+7,22,'#5a5a66')});
- RR(366,10,424,430,12,'rgba(34,26,20,.96)',3);
+ RR(366,10,424,430,12,'rgba(26,18,10,.96)',3);g.save();g.strokeStyle='#8a6428';g.lineWidth=2;g.beginPath();g.roundRect(370,14,416,422,10);g.stroke();g.restore();
  const d=DEX[dexSel],got=!!seen[d.id];
  if(got){const im=d.img?art(d.img):null;if(im)floatImg(im,430,80,96,1);
   txl(d.name,490,50,22,'#ffd98a',290,2);
   const n=d.type?deathsOf(d.type):0;if(d.type)txl('被牠打倒 '+n+' 次',490,84,14,'#cfe8ff',290,1);
   let y=150;y=txl('線索：'+d.clue,384,y,15,'#f1d9a6',390,3)+6;if(d.judge)y=txl('判斷：'+d.judge,384,y,15,'#f1d9a6',390,2)+6;txl('應對：'+d.act,384,y,15,'#ffd98a',390,3)}
  else{txl('？？？',490,60,24,'#8a8a96',290,1);txl('還沒遇見。繼續往前走，遇到之後這裡會記下線索和解法。',384,150,15,'#c9c0b0',390,3)}
- DEXP.forEach(b=>{RR(b[0],b[1],b[2],b[3],8,'#5a4228',2);tx(b[4],b[0]+b[2]/2,b[1]+22,14,'#f1d9a6')});tx((dexPg+1)+' / '+pgs.length,DEXF.x+216*DK,DEXF.y+413,14,'#e8e0d0');
- DEXB.forEach((b,i)=>{const dis=(i<2&&!(got&&d.type));RR(b[0],b[1],b[2],b[3],10,dis?'rgba(90,66,40,.35)':'#5a4228',3);tx(b[4],b[0]+b[2]/2,b[1]+26,16,dis?'rgba(241,217,166,.4)':'#f1d9a6')})}
+ DEXP.forEach(b=>btnImg(b[0],b[1],b[2],b[3],b[4],false,15));tx((dexPg+1)+' / '+pgs.length,DEXF.x+216*DK,DEXF.y+413,14,'#e8e0d0');
+ DEXB.forEach((b,i)=>{const dis=(i<2&&!(got&&d.type));btnImg(b[0],b[1],b[2],b[3],b[4],dis,17)})}
 function dexClick(e){
  const p=cxy(e);
  const cur=dexPages()[dexPg]||[];
@@ -675,7 +686,7 @@ function howCards(y,w,al){   // three parchment cards: icon in the window, two s
   if(bg)g.drawImage(bg,x,y,w,h);else RR(x,y,w,h,10,'#d9c08a',2);
   const wx=x+w*.31,wy=y+h*.18,ww=w*.38,wh=h*.33,ims=d[0].map(art).filter(Boolean),slot=ww/Math.max(1,d[0].length);
   ims.forEach((im,k)=>{const sc=Math.min((slot-4)/im.naturalWidth,(wh-8)/im.naturalHeight),iw=im.naturalWidth*sc,ih=im.naturalHeight*sc;g.drawImage(im,wx+slot*k+(slot-iw)/2,wy+(wh-ih)/2,iw,ih)});
-  if(d[3]){g.font='800 '+w*.14+'px system-ui,sans-serif';g.textAlign='center';g.fillStyle='#e8c675';g.fillText('◀',wx-w*.04,wy+wh*.62);g.fillText('▶',wx+ww+w*.04,wy+wh*.62)}
+  if(d[3]){g.font='800 '+w*.14+'px '+FB;g.textAlign='center';g.fillStyle='#e8c675';g.fillText('◀',wx-w*.04,wy+wh*.62);g.fillText('▶',wx+ww+w*.04,wy+wh*.62)}
   txp(d[1],x+w/2,y+h*.67,w*.115,'#3a2812',w*.64);txp(d[2],x+w/2,y+h*.82,w*.09,'#3a2812',w*.64)});
  g.restore()}
 function drawHead(){   // head down: the road rushes by under your feet and a long shadow slides over you
@@ -725,7 +736,7 @@ function draw(){
    howCards(146,170,1);
    tx('選好關卡，按右邊的「開始」',CX,388,20,'#ffd98a');tx('電腦：← → 躲或選道具　F 撿　手機：左右滑、點一下',CX,414,14,'rgba(241,217,166,.75)')}}
  else if(st==='won')drawWon();
- else if(st==='over')drawDeath();
+ else if(st==='over'){if(scareT>0)drawScare();else drawDeath()}
  if(dex)drawDex()}
 function start(){
  if(st==='run')return;
@@ -735,7 +746,7 @@ function start(){
  analytics=AN.start('peek',amount);peekStake=amount;peekBusy=true;save();renderAll();
  practice=nextPractice;nextPractice='';daily=forceLvl===null&&!practice&&dailyOn();lvl=practice?0:daily?dailyLvl():wantLevel();L=lvl>0?levelCfg(lvl,(lvDeaths[lvl]||0)>=2):null;
  tut=null;if(!tutDone&&!practice&&!daily&&lvl<=1&&forceLvl===null){tut={i:0,fails:0,n:0};lvl=0;L=null}
- reset();earned=0;st='run';last=performance.now();applyLevel();if(L)mark('flick');dex=false;endBtns=[];
+ reset();earned=0;st='run';try{window.__gp&&window.__gp(true)}catch(e){}last=performance.now();applyLevel();if(L)mark('flick');dex=false;endBtns=[];
  if(!L)say(practice?'練習：不扣生命，也不發點。':'開始逃跑。別回頭。');ui();c.focus();
 }
 const shown=()=>!$('view-peek').hidden&&!document.hidden;

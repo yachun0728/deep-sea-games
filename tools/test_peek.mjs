@@ -148,8 +148,8 @@ check('Spirits unlock by dodges this round: eye only, then giggles, then the nig
   const f=fixture();f.F.start();const seen=n=>{const t=new Set();for(let i=0;i<200;i++){f.F.ev('ev=null;lastType=""');f.F.ev('survived='+n);f.F.ev('startEvent()');t.add(f.ev('ev.type'))}return [...t].sort().join()};
   assert.equal(seen(0),'eye');assert.equal(seen(1),'eye');assert.equal(seen(2),'eye,twins');assert.equal(seen(3),'eye,twins,walker');assert.equal(seen(4),'eye,twins,walker');
 });
-check('The first two red eyes warn for 3.5 s, later ones for 2.5 s; the safe start is 9 s',()=>{
-  const f=fixture();f.F.start();assert.equal(f.ev('gapT'),9);
+check('The first two red eyes warn for 3.5 s, later ones for 2.5 s; the safe start is 6 s',()=>{
+  const f=fixture();f.F.start();assert.equal(f.ev('gapT'),6);
   f.F.ev('ev=null;lastType="";survived=0;eyeSeen=0;startEvent()');assert.equal(f.ev('ev.warn'),3.5);
   f.F.ev('ev=null;lastType="";startEvent()');assert.equal(f.ev('ev.warn'),3.5);
   f.F.ev('ev=null;lastType="";startEvent()');assert.equal(f.ev('ev.warn'),2.5);
@@ -295,7 +295,7 @@ check('Level cannot end before all its attacks are used; checkpoint and daily ru
   assert.equal(d.ev('st'),'over');assert.equal(d.ev('lives'),3);
 });
 check('Every screen draws: ready, death with buttons, won, codex, share text',()=>{
-  const f=fixture();f.F.ev('forceLvl=3;maxLvl=5;audioOk=true');f.F.draw();f.F.start();f.spirit('twins',-1,'judge');f.F.ev('ev.t=1.5;tilt=-1');f.run(2);f.F.draw();assert.ok(f.ev('endBtns.length')>=4);
+  const f=fixture();f.F.ev('forceLvl=3;maxLvl=5;audioOk=true');f.F.draw();f.F.start();f.spirit('twins',-1,'judge');f.F.ev('ev.t=1.5;tilt=-1');f.run(2);f.F.draw();for(let i=0;i<30;i++)f.F.update(.05);f.F.draw();assert.ok(f.ev('endBtns.length')>=4);
   f.F.ev('dex=true;seen={leafling:1,knocker:1};draw()');f.F.ev('dexSel=1;draw();dex=false');assert.ok(f.ev('shareText()').includes('第 3 關'));
   f.F.ev('st="won";draw();st="ready";audioOk=false;draw()');
 });
@@ -312,6 +312,11 @@ check('Tutorial: a new player is taught hide, item and pickup; mistakes cannot k
   assert.equal(f.ev('tut'),null);assert.equal(f.ev('tutDone'),true);assert.equal(f.ev('st'),'run');assert.equal(f.ev('lvl'),f.ev('wantLevel()'),'the tutorial hands over to the chosen stage');assert.equal(f.ev('survived'),0);
   assert.equal(f.storage.get('deep-sea-peek-tut2'),'1');
   const again=fixture();again.F.start();assert.equal(again.ev('tut'),null);
+});
+check('Dying plays a jump scare first; the death card cannot be clicked until it ends',()=>{
+  const f=fixture();f.F.start();f.F.ev('gapT=999');f.spirit('eye',1);f.F.ev("end('dead','eye')");
+  assert.equal(f.ev('st'),'over');assert.ok(f.ev('scareT')>.9,'scareT '+f.ev('scareT'));f.F.draw();
+  for(let i=0;i<30;i++)f.F.update(.05);assert.ok(f.ev('scareT')<=0);f.F.draw();
 });
 console.log(results.length+' peek checks passed');
 }
