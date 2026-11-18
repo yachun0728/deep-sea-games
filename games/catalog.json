@@ -279,5 +279,12 @@
     "view": "games/breakout/view.html",
     "card": "games/breakout/card.html",
     "icon": "games/breakout/icon.svg"
+  },
+  {
+    "id": "pet-walk",
+    "logic": "games/pet-walk/game.js",
+    "view": "games/pet-walk/view.html",
+    "card": "games/pet-walk/card.html",
+    "icon": "games/pet-walk/icon.svg"
   }
 ]
