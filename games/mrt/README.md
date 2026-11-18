@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#mrt`　分類：技巧闖關　狀態：顯示中
+- 網址：`#mrt`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「看小動作猜誰要下車，一階一階往上搶座位。」｜每局 10 點 · 8 階挑戰
 - 追蹤名稱（GA4 `game_name`）：捷運搶位，`game_id` 為 `mrt`
 - 檔案：`games/mrt/card.html`、`games/mrt/game.js`、`games/mrt/icon.svg`、`games/mrt/original.html`、`games/mrt/style.css`、`games/mrt/view.html`；`game.js` 共 52 行、3.2 KB

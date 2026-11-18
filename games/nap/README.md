@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#nap`　分類：技巧闖關　狀態：顯示中
+- 網址：`#nap`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。」｜每局 10 點 · 按住反應
 - 追蹤名稱（GA4 `game_name`）：偷睡大師，`game_id` 為 `nap`
 - 檔案：`games/nap/card.html`、`games/nap/game.js`、`games/nap/icon.svg`、`games/nap/view.html`；`game.js` 共 458 行、24.9 KB

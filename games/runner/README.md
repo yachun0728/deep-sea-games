@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#runner`　分類：技巧闖關　狀態：顯示中
+- 網址：`#runner`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「點左、點右換道，避開一路上的障礙。」｜每局 10 點 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：閃避跑酷，`game_id` 為 `runner`
 - 檔案：`games/runner/card.html`、`games/runner/game.js`、`games/runner/icon.svg`、`games/runner/view.html`；`game.js` 共 118 行、8.6 KB

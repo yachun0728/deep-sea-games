@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#peek`　分類：技巧闖關　狀態：顯示中
+- 網址：`#peek`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「轉動八音盒發條，躲開盒子裡的東西，燈滅前蓋住螢幕。」｜每局 10 點 · 聽聲反應
 - 追蹤名稱（GA4 `game_name`）：別看，`game_id` 為 `peek`
 - 檔案：`games/peek/card.html`、`games/peek/game.js`、`games/peek/icon.svg`、`games/peek/view.html`；`game.js` 共 203 行、16.1 KB
