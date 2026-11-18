@@ -131,6 +131,14 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 無盡天數、固定入場10點。每局一次start；第1～5天擊敗大魔王各送一次progress（stage為天數、step為處理件數、score、bonus_points=2、total_bonus_points），同一天不重送。加班（碰到下班線）只送一次end：有入帳為complete、否則loss，payout_points為本局已入帳BONUS，結束不再發點，附stage、score、step、weapon_level。正常離頁由本款capture階段pagehide先送abandoned並帶已入帳總額；BFCache persisted不結束。暫停（切遊戲、背景、失焦）不另送事件，有效時間沿用共用的可見／聚焦判定。未驗證GA4後台收件。
 
+## 數字吞噬、鏡像雙子、影子接力（eat-smaller、mirror-twins、shadow-relay）
+
+關卡制、固定入場10點，一局內可自由選關重玩。扣款時一次start；每次過關送一次progress（stage為關卡、step為本局過關次數、bonus_points為本次入帳，同局同關重複或已達10點上限時為0、total_bonus_points）。按「結束本局」送一次end：result為complete，payout_points為本局已入帳BONUS，附step。正常離頁由本款capture階段pagehide先送abandoned並帶已入帳總額；BFCache persisted不結束。數字吞噬與影子接力切走畫面暫停時送progress(phase:pause)、繼續時resume；鏡像雙子為回合制不送暫停。未驗證GA4後台收件。
+
+## 一筆畫守城（one-line-defense）
+
+無盡、固定入場10點。每局一次start；教學後每撐過30秒送一次progress（stage為第幾個30秒、step為秒數、bonus_points=2、total_bonus_points），最多5次。核心被攻破送一次end：有入帳為complete、否則loss，payout_points為已入帳BONUS，附score、step（存活秒數）、combo。離頁abandoned與暫停處理同上。未驗證GA4後台收件。
+
 ## 時序修復（dream）
 
 無限關卡、固定入場10點，沒有點數獎勵。每局一次start；過關progress帶stage、score（完成關數）、reversals（本關已反轉次數）並暫停有效時間，下一關resume。失敗end為loss、payout_points=0，不送multiplier或cashout；正常離頁由共用層送abandoned，BFCache沿用暫停／恢復。未驗證GA4後台收件。
@@ -141,8 +149,8 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 ## 荒島遠征（frontier）
 
-首次建立遠征 `game_start entry_points=0`（免費）；已保存資格後新關、重試或重新載入以 `entry_points=0` 開啟新的嘗試。每關完成 `game_progress checkpoint=1` 及 `game_end complete`，生命歸零 `loss`；無點數獎勵，end payout_points固定0。進度附stage、chapter、mission、step（擊敗數）；升級也回報progress。離開遊戲／背景／失焦暫停progress，按繼續resume；正常pagehide在共用處理前結束abandoned，BFCache不提前結束。沒有另載tag。正式站與GA4後台收件尚未驗收。
+首次建立遠征 `game_start entry_points=10`；已保存資格後新關、重試或重新載入以 `entry_points=0` 開啟新的嘗試。每關完成 `game_progress checkpoint=1` 及 `game_end complete`，生命歸零 `loss`；無點數獎勵，end payout_points固定0。進度附stage、chapter、mission、step（擊敗數）；升級也回報progress。離開遊戲／背景／失焦暫停progress，按繼續resume；正常pagehide在共用處理前結束abandoned，BFCache不提前結束。沒有另載tag。正式站與GA4後台收件尚未驗收。
 
-## 平台獎勵與外觀事件（2026-11-18）
+## 免費遊玩改版（2026-11-18）
 
-新增 `platform_points_earned`（`reward_kind`=`play_time`／`daily_complete`、`reward_points`，`game_name` 為來源遊戲）與 `cosmetic_redeemed`（`item_id`、`spent_points`）。`points_reset` 已不再送出。全站遊戲 `game_start` 的 `entry_points`／`stake_points` 為 0；`net_points` 即本局 BONUS 入帳。造型頁 `#wardrobe` 不送 `game_view`，離開遊戲時僅結算有效時間。
+所有已上架遊戲entry_points=0，免費重試與補給extra_points=0；game_id與game_name及回合生命周期不變。Reef Blaster結束以complete記錄已入帳固定獎勵，移除cashout/multiplier參數。平台依現有有效時間判定給固定遊玩與每日完成獎勵，另送platform_points_earned（reward_kind=play_time或daily_complete、reward_points）；外觀兌換送cosmetic_redeemed（item_id、spent_points）。這些獎勵不再次加入game_end的payout，避免把原遊戲里程碑與平台獎勵混算。不傳玩家姓名或本機收藏內容，不新增Google tag。正式GA4後台未驗收。

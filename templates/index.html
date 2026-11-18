@@ -16,9 +16,14 @@
 {{include:games/dive/style.css}}
 {{include:games/mrt/style.css}}
 {{include:games/pancake/style.css}}
+{{include:games/rocket-chair/style.css}}
 {{include:games/ocean-link/style.css}}
 {{include:games/last-hair/style.css}}
-{{include:games/office-shoot/style.css}}{{include:games/mermaid/style.css}}
+{{include:games/office-shoot/style.css}}
+{{include:games/eat-smaller/style.css}}
+{{include:games/mirror-twins/style.css}}
+{{include:games/shadow-relay/style.css}}
+{{include:games/one-line-defense/style.css}}{{include:games/mermaid/style.css}}
 {{include:games/banquet/style.css}}
 {{include:games/frontier/style.css}}
 {{include:platform/wardrobe.css}}
@@ -42,6 +47,7 @@
   <details class="game-picker" id="game-picker"><summary><span>切換遊戲</span><span id="picker-current">壓潰深度</span><span class="picker-chevron" aria-hidden="true">⌄</span></summary><nav class="tabs" aria-label="遊戲">
     <a href="#lobby" id="tab-lobby">遊戲大廳<small>Lobby</small></a>
     <a href="#wardrobe" id="tab-wardrobe">我的造型<small>My Wardrobe</small></a>
+    <a href="#wardrobe" id="tab-wardrobe">我的造型<small>My Wardrobe</small></a>
     <a href="#crash" id="tab-crash" aria-current="page">壓潰深度<small>Crash</small></a>
     <a href="#mines" id="tab-mines">踩地雷<small>Mines</small></a>
     <a href="#plinko" id="tab-plinko">落珠<small>Plinko</small></a>
@@ -63,13 +69,13 @@
     <a href="#cat" id="tab-cat">屋頂貓貓<small>Rooftop Cat</small></a>
     <a href="#bird" id="tab-bird">便便鳥大戰狼群<small>Poop Bird</small></a>
     <a href="#frog" id="tab-frog">青蛙吃蟲<small>Frog Snack</small></a>
-    <a href="#ocean-link" id="tab-ocean-link">深海連連看<small>Ocean Link</small></a><a href="#clock-out" id="tab-clock-out">下班保衛戰<small>Clock Out</small></a><a href="#peek" id="tab-peek">別看<small>Don’t Peek</small></a><a href="#pet-walk" id="tab-pet-walk">小灰出門<small>Pet Walkies</small></a><a href="#office-shoot" id="tab-office-shoot">拒絕加班<small>No Overtime!</small></a><a href="#mermaid" id="tab-mermaid">人魚接龍<small>Mermaid Spider</small></a><a href="#breakout" id="tab-breakout">打磚塊<small>Breakout</small></a>
+    <a href="#ocean-link" id="tab-ocean-link">深海連連看<small>Ocean Link</small></a><a href="#clock-out" id="tab-clock-out">下班保衛戰<small>Clock Out</small></a><a href="#peek" id="tab-peek">別看<small>Don’t Peek</small></a><a href="#pet-walk" id="tab-pet-walk">小灰出門<small>Pet Walkies</small></a><a href="#office-shoot" id="tab-office-shoot">拒絕加班<small>No Overtime!</small></a><a href="#eat-smaller" id="tab-eat-smaller">數字吞噬<small>Number Gulp</small></a><a href="#mirror-twins" id="tab-mirror-twins">鏡像雙子<small>Mirror Twins</small></a><a href="#shadow-relay" id="tab-shadow-relay">影子接力<small>Shadow Relay</small></a><a href="#one-line-defense" id="tab-one-line-defense">一筆畫守城<small>One-Line Defense</small></a><a href="#mermaid" id="tab-mermaid">人魚接龍<small>Mermaid Spider</small></a><a href="#breakout" id="tab-breakout">打磚塊<small>Breakout</small></a>
     <a href="#nap" id="tab-nap">偷睡大師<small>Nap Master</small></a><a href="#pudding" id="tab-pudding">布丁突圍<small>Pudding Dash</small></a><a href="#mosquito" id="tab-mosquito">血壓上升<small>Midnight Mosquito</small></a><a href="#banquet" id="tab-banquet">最後的晚餐<small>The Last Banquet</small></a><a href="#last-hair" id="tab-last-hair">尊嚴保衛戰<small>The Last Hair</small></a>
     <a href="#frontier" id="tab-frontier">荒島遠征<small>Frontier Islands</small></a><a href="#blaster" id="tab-blaster">深海火線<small>Reef Blaster</small></a>
     <a href="#reaper" id="tab-reaper">死神打工<small>Reaper Shift</small></a>
     <a href="#dive" id="tab-dive">一口氣探險<small>One Breath Dive</small></a>
     <a href="#mrt" id="tab-mrt">捷運搶位<small>MRT Seat Grab</small></a>
-    <a href="#pancake" id="tab-pancake">泡麵煎餅翻面<small>Noodle Pancake</small></a>
+    <a href="#pancake" id="tab-pancake">泡麵煎餅翻面<small>Noodle Pancake</small></a><a href="#rocket-chair" id="tab-rocket-chair">社畜要下班<small>Roar Through the Ceiling</small></a>
     <a href="#skybuilder" id="tab-skybuilder">蓋樓大師<small>Sky Builder</small></a>
     <a href="#carp" id="tab-carp">鯉魚躍龍門<small>Carp Leap</small></a>
     <a href="#rider" id="tab-rider">外送員大戰惡犬<small>Rider vs Dogs</small></a>
@@ -80,12 +86,16 @@
 
 {{include:templates/lobby.html}}{{include:platform/wardrobe.html}}{{include:games/frontier/view.html}}{{include:games/crash/view.html}}{{include:games/mines/view.html}}{{include:games/plinko/view.html}}{{include:games/merge/view.html}}{{include:games/dice/view.html}}{{include:games/limbo/view.html}}{{include:games/hilo/view.html}}{{include:games/keno/view.html}}{{include:games/wheel/view.html}}{{include:games/tower/view.html}}{{include:games/crossing/view.html}}{{include:games/dream/view.html}}{{include:games/runner/view.html}}{{include:games/elevator/view.html}}{{include:games/sneak/view.html}}{{include:games/fishing/view.html}}{{include:games/campaign/view.html}}{{include:games/boba/view.html}}{{include:games/cat/view.html}}{{include:games/bird/view.html}}{{include:games/frog/view.html}}{{include:games/nap/view.html}}{{include:games/reaper/view.html}}{{include:games/blaster/view.html}}{{include:games/skybuilder/view.html}}
 {{include:games/dive/view.html}}
-{{include:games/ocean-link/view.html}}{{include:games/mrt/view.html}}{{include:games/pancake/view.html}}{{include:games/clock-out/view.html}}{{include:games/peek/view.html}}{{include:games/pet-walk/view.html}}{{include:games/office-shoot/view.html}}{{include:games/mermaid/view.html}}{{include:games/breakout/view.html}}{{include:games/last-hair/view.html}}{{include:games/carp/view.html}}{{include:games/rider/view.html}}{{include:games/boss/view.html}}{{include:games/thief/view.html}}{{include:games/baby/view.html}}{{include:games/pudding/view.html}}{{include:games/mosquito/view.html}}{{include:games/banquet/view.html}}
+{{include:games/ocean-link/view.html}}{{include:games/mrt/view.html}}{{include:games/pancake/view.html}}{{include:games/rocket-chair/view.html}}{{include:games/clock-out/view.html}}{{include:games/peek/view.html}}{{include:games/pet-walk/view.html}}{{include:games/office-shoot/view.html}}{{include:games/eat-smaller/view.html}}{{include:games/mirror-twins/view.html}}{{include:games/shadow-relay/view.html}}{{include:games/one-line-defense/view.html}}{{include:games/mermaid/view.html}}{{include:games/breakout/view.html}}{{include:games/last-hair/view.html}}{{include:games/carp/view.html}}{{include:games/rider/view.html}}{{include:games/boss/view.html}}{{include:games/thief/view.html}}{{include:games/baby/view.html}}{{include:games/pudding/view.html}}{{include:games/mosquito/view.html}}{{include:games/banquet/view.html}}
 </div>
 
 <script type="application/json" id="boba-source">{{json:games/boba/original.html}}</script>
 <script type="application/json" id="dive-source">{{json:games/dive/original.html}}</script>
 <script type="application/json" id="mrt-source">{{json:games/mrt/original.html}}</script>
+<script type="application/json" id="eat-smaller-source">{{json:games/eat-smaller/original.html}}</script>
+<script type="application/json" id="mirror-twins-source">{{json:games/mirror-twins/original.html}}</script>
+<script type="application/json" id="shadow-relay-source">{{json:games/shadow-relay/original.html}}</script>
+<script type="application/json" id="one-line-defense-source">{{json:games/one-line-defense/original.html}}</script>
 <script type="application/json" id="arcade-english">{{include:locales/en.json}}</script>
 <script id="arcade-i18n">{{include:js/i18n.js}}</script>
 <script id="game-runtime">{{include:js/runtime.js}}</script>

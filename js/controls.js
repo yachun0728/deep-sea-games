@@ -19,3 +19,4 @@
   document.querySelectorAll('[data-auto]').forEach(function (b) {
     b.addEventListener('click', function () { elAuto.value = Number(b.dataset.auto).toFixed(2); });
   });
+

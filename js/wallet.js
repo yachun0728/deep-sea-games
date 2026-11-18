@@ -9,3 +9,7 @@
     } catch (e) {}
     lastSavedBalance = S.balance;
   }
+  // Legacy regeneration keys remain readable; no passive or offline points after free-play migration.
+  function regenTick(now) { return false; }
+  function regenUI() { var el=document.getElementById('regen-hint'); if(el)el.textContent='免費遊玩，點數可兌換外觀'; }
+  function regenStart() { regenUI(); }

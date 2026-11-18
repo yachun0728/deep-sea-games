@@ -39,6 +39,7 @@
 
 **餘額檢查**
 - L35 `blUI`：`$('bl-retry').disabled=BL.phase!=='lost'||S.balance<blRetryFee();`
+- L36 `blUI`：`$('bl-retry-info').textContent='保留 Lv.'+BL.weapon+' 武器，恢復 3 心，從第 '+BL.stage+' 關第一波重來。'+(S.balance<blRetryFee(…`
 - L67 `blStart`：`if(stake>S.balance){blSay(LOW_MSG,'lose');`
 - L74 `blRetry`：`if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點。','lose');`
 
@@ -51,7 +52,7 @@
 - L27 `blTracking`：`else if(BL.active)AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills},true);`
 - L69 `blStart`：`BL.analytics=AN.start('blaster',stake);`
 - L76 `blRetry`：`BL.analytics=AN.start('blaster',cost,{stage:BL.stage,entry_kind:'stage_retry',retry_count:BL.retries});`
-- L81 `blCash`：`AN.end(BL.analytics,BL.attemptEarned,'cashout',{stage:BL.cleared,score:BL.kills,multiplier:BL.stake?BL.attemp…`
+- L81 `blCash`：`AN.end(BL.analytics,BL.attemptEarned,'complete',{stage:BL.cleared,score:BL.kills,weapon_level:BL.weapon});`
 - L86 `blHurt`：`AN.end(BL.analytics,BL.attemptEarned,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`
 - L93 `blClear`：`AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills,bonus_points:bonus,total_bonus_points:BL.earned,weapo…`
 - L391 `blSuspend`：`AN.end(BL.analytics,BL.attemptEarned,'abandoned',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});`

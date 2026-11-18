@@ -21,6 +21,7 @@
   }else{
    var events=[],A=window.deepSeaAnalytics;['start','progress','resume','end'].forEach(function(k){var fn=A[k];A[k]=function(){events.push({k:k,args:Array.from(arguments)});return fn.apply(A,arguments);};});
    var before=balance();click('ft-go');click('ft-go');await wait();assert(balance()===before,'Double start charges exactly once');assert(events.filter(function(e){return e.k==='start';}).length===1,'One start event per attempt');
+   click('ft-shop-toggle');await wait();assert(!document.getElementById('ft-shop').hidden,'Equipment and trading drawer opens inside game');click('ft-shop-close');await wait();assert(document.getElementById('ft-shop').hidden,'Drawer closes without restarting');
    assert(document.getElementById('ft-map').children.length===50,'All 50 stage buttons exist');
    var w=t.world(),tm=w.time,x=w.p.x;document.getElementById('ft-canvas').focus();document.getElementById('ft-canvas').dispatchEvent(new KeyboardEvent('keydown',{key:'d',bubbles:true}));await wait(220);document.getElementById('ft-canvas').dispatchEvent(new KeyboardEvent('keyup',{key:'d',bubbles:true}));assert(w.p.x>x+10,'Keyboard movement updates player position');
    I.setLanguage('zh-Hant');await wait();I.setLanguage('en');await wait();assert(balance()===before&&t.world()===w,'Live language switch preserves world and points');assert(!untranslated().length,'English UI covers live and hidden labels: '+JSON.stringify(untranslated()));
@@ -44,13 +45,13 @@
     var q=t.create(level),cfg=q.cfg;
     assert(q.nodes.some(function(n){return n.x<530&&n.kind==='stone';})&&q.nodes.some(function(n){return n.x<530&&n.kind==='wood';}),'Stage '+level+' has accessible renewable supplies');
     q.p.x=q.buildings[5].x;q.p.y=q.buildings[5].y;q.bank.wood=q.bank.stone=10000;q.p.inv=1000;tick(q,2);assert(!q.buildings[5].built,'Stage '+level+' beacon rejects premature completion');
-    neutral(q);assert(build(q,'bridge'),'Stage '+level+' bridge construction completes');
+    q.raidAt=1e6;q.camps.forEach(function(c){c.hp=0;});neutral(q);['house','market','mill'].concat(cfg.chapter>0?['depot']:[]).forEach(function(k){build(q,k);});q.camps.forEach(function(c){c.hp=0;});assert(build(q,'bridge'),'Stage '+level+' bridge construction completes');
     if(cfg.mission==='rescue'){q.p.x=q.cages[0].x;q.p.y=q.cages[0].y;tick(q,.1);q.p.x=q.cages[1].x;q.p.y=q.cages[1].y;tick(q,.1);}
     if(cfg.mission==='defend'){build(q,'tower');for(var n=0;n<1900&&!t.goal(q);n++){neutral(q);tick(q,.05);}}
-    assert(t.goal(q),'Stage '+level+' objective is completable');assert(build(q,'beacon')&&q.phase==='clear','Stage '+level+' completes via construction');
+    assert(t.goal(q),'Stage '+level+' objective is completable');assert(build(q,'beacon')&&q.phase==='play'&&t.leave(q)&&q.phase==='clear','Stage '+level+' completes via construction');
    }
    var q=t.create(1);q.nodes=[{x:100,y:320,kind:'stone',left:6,cool:0,respawn:0}];q.p.x=100;q.p.y=320;tick(q,5);assert(q.bag.stone===6,'Harvesting transfers finite node yield');q.p.x=400;tick(q,16);assert(q.nodes[0].left===6,'Exhausted resources regenerate');q.bag.wood=18;q.p.x=100;q.p.y=320;tick(q,8);assert(q.bag.wood+q.bag.stone===24,'Pack capacity is enforced');q.p.x=180;q.p.y=450;tick(q,.1);assert(!q.bag.wood&&!q.bag.stone&&q.bank.wood===18,'Camp deposits carried resources');
-   q.bank.wood=20;q.bank.stone=13;assert(t.upgrade(q,'blade')&&q.tech.blade===1&&q.bank.wood===0&&q.bank.stone===0,'Upgrade deducts exact wood and stone cost');assert(!t.upgrade(q,'blade'),'Unaffordable upgrade is rejected');q.p.hp=30;tick(q,8);assert(Math.abs(q.p.hp-65)<.01&&q.heal===0,'Camp healing is capped at 35 per stage');
+   q.coins=25;q.bank.wood=20;q.bank.stone=13;assert(t.upgrade(q,'blade')&&q.tech.blade===1&&q.coins===0&&q.bank.wood===20&&q.bank.stone===13,'Upgrade deducts exact gold, keeping resources');assert(!t.upgrade(q,'blade'),'Unaffordable upgrade is rejected');q.p.hp=30;tick(q,8);assert(Math.abs(q.p.hp-65)<.01&&q.heal===0,'Camp healing is capped at 35 per stage');
    q=t.create(50);q.buildings[3].built=true;q.p.x=900;q.p.y=450;var hp=q.p.hp;tick(q,45);assert(q.phase==='dead'&&q.p.hp===0,'Standing still in late combat is lethal');
    q=t.create(1);q.enemies=[];q.time=10000;tick(q,.1);assert(q.phase==='play'&&q.threat===4,'Night pressure is capped without a timeout loss');
    q=t.create(10);q.enemies=[q.enemies.find(function(e){return e.type==='boss';})];q.buildings[3].built=true;q.p.x=1040;q.p.y=450;q.p.attack=100;var hp=q.p.hp;tick(q,.5);assert(q.p.hp===hp,'Boss warning deals no early damage');tick(q,3);assert(q.p.hp<hp,'Boss telegraphed strike deals damage');

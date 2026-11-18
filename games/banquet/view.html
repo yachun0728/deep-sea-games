@@ -1,17 +1,24 @@
   <section class="view" id="view-banquet" hidden>
     <div class="console"><div class="bq-stage" id="bq-stage" tabindex="-1">
-      <div class="bq-lamp" aria-hidden="true"></div>
+      <div class="bq-lamp" aria-hidden="true"></div><div class="bq-curtain bq-curtain-l" aria-hidden="true"></div><div class="bq-curtain bq-curtain-r" aria-hidden="true"></div>
       <p class="bq-act" id="bq-act">第一幕：試探</p>
-      <div class="bq-dealer-box" id="bq-dealerbox">
-        <svg class="bq-dealer" id="bq-dealer" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><path d="M8 120c2-26 20-40 52-40s50 14 52 40z" fill="#0b0f0d"/><path d="M52 78l8 12 8-12" fill="#d9d4c3"/><path d="M30 34h60l-6-26H36z" fill="#050706"/><rect x="24" y="32" width="72" height="7" rx="2" fill="#050706"/><ellipse cx="60" cy="58" rx="24" ry="26" fill="#cfcab8"/><ellipse cx="60" cy="58" rx="24" ry="26" fill="none" stroke="#050706" stroke-width="2"/><path d="M42 54l12 3M78 54l-12 3" stroke="#050706" stroke-width="3" stroke-linecap="round"/><ellipse class="bq-eye" cx="49" cy="58" rx="4" ry="2" fill="#ff3b30"/><ellipse class="bq-eye" cx="71" cy="58" rx="4" ry="2" fill="#ff3b30"/><path d="M48 76q12 6 24 0" fill="none" stroke="#050706" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <div class="bq-dealer-box" id="bq-dealerbox" data-pose="idle">
+        <div class="bq-dealer-imgs" aria-hidden="true">
+          <img class="bq-pose bq-p-idle" src="games/banquet/assets/dealer-idle.webp" alt="" draggable="false">
+          <img class="bq-pose bq-p-reach" src="games/banquet/assets/dealer-reach.webp" alt="" draggable="false">
+          <img class="bq-pose bq-p-drink" src="games/banquet/assets/dealer-drink.webp" alt="" draggable="false">
+          <img class="bq-pose bq-p-caught" src="games/banquet/assets/dealer-caught.webp" alt="" draggable="false">
+          <img class="bq-pose bq-p-hurt" src="games/banquet/assets/dealer-hurt.webp" alt="" draggable="false">
+          <img class="bq-pose bq-p-victory" src="games/banquet/assets/dealer-victory.webp" alt="" draggable="false">
+        </div>
         <div class="bq-side bq-side-d" id="bq-side-d"><b>莊家</b><span class="bq-hearts" id="bq-hp-d" aria-hidden="true"></span><span id="bq-hp-d-t">生命 5/5</span><span id="bq-dr-d">酒醉 0/5</span><span id="bq-items-d">道具 0</span></div>
       </div>
       <div class="bq-chips" id="bq-chips" aria-hidden="true"></div>
       <p class="bq-comp" id="bq-comp"></p>
-      <div class="bq-table-wrap"><div class="bq-table" id="bq-table" role="group" aria-label="圓桌上的酒杯，點選一杯">
+      <div class="bq-table-wrap"><span class="bq-candle bq-candle-l" aria-hidden="true"><i></i></span><span class="bq-candle bq-candle-r" aria-hidden="true"><i></i></span><div class="bq-table" id="bq-table" role="group" aria-label="圓桌上的酒杯，點選一杯">
         <div class="bq-center" id="bq-center"><p id="bq-center-1">晚宴尚未開始</p><p id="bq-center-2"></p></div>
         <div class="bq-reveal" id="bq-reveal" aria-hidden="true"></div>
-      </div></div>
+      </div><img class="bq-hands" id="bq-hands" src="games/banquet/assets/hands.webp" alt="" aria-hidden="true" draggable="false"></div>
       <p class="bq-ticker" id="bq-ticker" aria-hidden="true"></p>
       <div class="bq-side bq-side-p" id="bq-side-p"><b>你</b><span class="bq-hearts" id="bq-hp-p" aria-hidden="true"></span><span id="bq-hp-p-t">生命 5/5</span><span id="bq-dr-p">酒醉 0/5</span><span id="bq-items-p">道具 0</span></div>
       <div class="bq-prompt" id="bq-prompt" hidden>

@@ -39,13 +39,17 @@ check('Not enough points: nothing is deducted and no round starts',()=>{
 check('Start deducts the entry fee once even when clicked twice',()=>{
   const f=fixture();f.F.start();f.F.start();assert.equal(f.wallet.balance,500-fee);assert.equal(f.count('start'),1);assert.equal(f.storage.get('crush-depth-balance'),String(500-fee));assert.equal(f.busy(),true);assert.equal(f.events[0][1],'peek');
 });
-check('Winding needs a held crank; it fills 3% per second',()=>{
-  const f=fixture();f.F.start();f.F.ev('gapT=999');f.run(2);assert.equal(f.ev('prog'),0);
-  f.hold('wind');f.run(5);assert.ok(Math.abs(f.ev('prog')-5*f.ev('WIND_RATE'))<.3,'prog '+f.ev('prog'));assert.equal(f.ev('WIND_RATE'),3);
+check('The runner jogs by itself at 2% per second; holding Sprint doubles it to 4%',()=>{
+  const f=fixture();f.F.start();f.F.ev('gapT=999');f.run(5);assert.ok(Math.abs(f.ev('prog')-5*f.ev('BASE_RATE'))<.3,'prog '+f.ev('prog'));assert.equal(f.ev('BASE_RATE'),2);
+  const p0=f.ev('prog');f.hold('wind');f.run(5);assert.ok(Math.abs(f.ev('prog')-p0-5*f.ev('WIND_RATE'))<.3,'prog '+f.ev('prog'));assert.equal(f.ev('WIND_RATE'),4);
 });
-check('The crank does not turn while the box is tilted or the screen is covered',()=>{
-  const f=fixture();f.F.start();f.F.ev('gapT=999');f.hold('wind');f.hold('l');f.run(1);const tilted=f.ev('prog');f.run(2);
-  assert.ok(tilted<1&&f.ev('prog')-tilted<.001,'tilted prog '+f.ev('prog'));
+check('While sprinting the next attack comes twice as fast',()=>{
+  const f=fixture();f.F.start();f.F.ev('gapT=20');f.run(4);const jog=f.ev('gapT');f.F.ev('gapT=20');f.hold('wind');f.run(4);const spr=f.ev('gapT');
+  assert.ok(Math.abs((20-jog)-4)<.2,'jog '+jog);assert.ok(Math.abs((20-spr)-8)<.3,'sprint '+spr);
+});
+check('Sprinting pins you to the middle (no leaning); covering the screen stops the run',()=>{
+  const f=fixture();f.F.start();f.F.ev('gapT=999');f.hold('wind');f.hold('l');f.run(1);assert.ok(Math.abs(f.ev('tilt'))<.001,'tilt '+f.ev('tilt'));
+  f.hold('wind',0);f.run(1);assert.ok(f.ev('tilt')<-.5,'tilt '+f.ev('tilt'));
   f.hold('l',0);f.hold('cover');f.F.ev('tilt=0');const before=f.ev('prog');f.run(2);assert.equal(f.ev('prog'),before);
 });
 check('Peeping Eye: leaning away for the 3 second beam survives',()=>{
@@ -97,7 +101,7 @@ check('Dying after the 2-spirit bonus keeps the bonus and reports it once',()=>{
 });
 check('Best progress and cause counts are saved; a lower run does not overwrite the best',()=>{
   const f=fixture(500,60);f.F.start();f.F.ev('gapT=999;prog=70');f.spirit('eye',1);f.run(10);
-  assert.equal(f.storage.get('deep-sea-peek-best'),'70');assert.deepEqual(JSON.parse(f.storage.get('deep-sea-peek-deaths')),{eye:1});
+  assert.equal(f.storage.get('deep-sea-peek-best'),String(Math.floor(f.ev('prog'))));assert.ok(f.ev('prog')>=70);assert.deepEqual(JSON.parse(f.storage.get('deep-sea-peek-deaths')),{eye:1});
   const g=fixture(500,90);g.F.start();g.F.ev('prog=40');g.spirit('eye',1);g.run(10);assert.equal(g.storage.get('deep-sea-peek-best'),'90');
 });
 check('Once past 85% the director may add one early ambush, and only once per round',()=>{
@@ -137,15 +141,13 @@ check('Gap between spirits shrinks with progress and every third dodge gives a l
   f.F.ev('prog=0;survived=1');assert.equal(f.ev('nextGap()'),7);f.F.ev('prog=80;survived=1');assert.equal(f.ev('nextGap()'),4);
   f.F.ev('prog=0;survived=3');assert.equal(f.ev('nextGap()'),10);f.F.ev('prog=80;survived=3');assert.equal(f.ev('nextGap()'),7);
 });
-check('Total dodges and the death codex are stored; a quick tap on the run button explains hold-to-run',()=>{
+check('Total dodges and the death codex are stored; the codex counts distinct causes',()=>{
   const f=fixture();f.F.start();f.spirit('eye',1);f.hold('l');f.run(7);assert.equal(f.storage.get('deep-sea-peek-dodges'),'1');
-  f.F.ev('tilt=0');const c=f.el('peek-canvas');c.handlers.pointerdown({pointerId:9,clientX:340,clientY:520,button:0,preventDefault(){}});c.handlers.pointerup({pointerId:9});
-  assert.ok(f.ev('toast')>0);assert.ok(f.el('peek-msg').textContent.includes('按住'));
-  f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 4');assert.equal(f.el('peek-dodges').textContent,'1 次');
+  f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 4');assert.equal(f.el('peek-dodges').textContent,'1 次');
 });
-check('Running scrolls the corridor and progress, but not while leaning on the wall or covered',()=>{
-  const f=fixture();f.F.start();f.F.ev('gapT=999');f.hold('wind');f.run(1);assert.ok(f.ev('run')>1.4);const r1=f.ev('run');
-  f.F.ev('tilt=0.9;keys.r=1');f.run(1);assert.equal(f.ev('run'),r1);f.F.ev('keys.r=0;tilt=0');f.hold('cover');f.run(1);assert.equal(f.ev('run'),r1);
+check('The corridor scrolls by itself, faster when sprinting, and stops while covered',()=>{
+  const f=fixture();f.F.start();f.F.ev('gapT=999');f.run(1);const r0=f.ev('run');assert.ok(r0>1.3);f.hold('wind');f.run(1);const r1=f.ev('run');assert.ok(r1-r0>2.4);
+  f.hold('wind',0);f.hold('cover');f.run(1);assert.equal(f.ev('run'),r1);
 });
 check('Every element id in the Don’t Peek view is unique across all game views and templates (a clash made the start button dead)',()=>{
   const ids=new Map(),files=[...fs.readdirSync(new URL('games/',root)).filter(d=>fs.existsSync(new URL('games/'+d+'/view.html',root))).map(d=>'games/'+d+'/view.html'),'templates/index.html','templates/lobby.html'];

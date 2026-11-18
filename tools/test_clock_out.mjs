@@ -57,7 +57,7 @@ check('A cleared wave outside a paid round gives nothing',()=>{
 });
 check('A second round pays its own BONUS again and is still free',()=>{
   const f=fixture();f.C.begin();f.clear(5);f.clear(8);f.C.ev('resetGame()');f.C.begin();
-  assert.equal(f.wallet.balance,500-fee+10);assert.equal(f.count('start'),2);f.clear(5);assert.equal(f.wallet.balance,500-fee+13);
+  assert.equal(f.wallet.balance,510-fee*2);assert.equal(f.count('start'),2);f.clear(5);assert.equal(f.wallet.balance,510-fee*2+3);
 });
 check('Best score is saved only when beaten and never touches the wallet',()=>{
   const f=fixture(500,100);f.C.begin();f.C.ev('G.killScore=50;G.waveScoreTotal=30');f.C.ev("gameOver('san')");assert.equal(f.storage.get('deep-sea-clock-out-best'),'100');
