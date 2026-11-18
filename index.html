@@ -12680,8 +12680,8 @@ const cxy=e=>{const r=c.getBoundingClientRect();
  if(isRot())return[(e.clientY-r.top)*W/(r.height||W),(r.left+r.width-e.clientX)*H/(r.width||H)];   // stage turned 90deg for portrait phones
  return[(e.clientX-r.left)*W/(r.width||W),(e.clientY-r.top)*H/(r.height||H)]};
 function giveItem(k){
- if(k==='torch'){bag.torch=Math.min(3,bag.torch+1);fx('火把 +1',CX,150,'#ffb347')}
- else if(k==='charm'){bag.charm=Math.min(2,bag.charm+1);fx('護身符 +1',CX,150,'#7fe8ff')}
+ if(k==='torch'){bag.torch=Math.min(3,bag.torch+1);fx('img:item-torch',CX,150)}
+ else if(k==='charm'){bag.charm=Math.min(2,bag.charm+1);fx('img:item-charm',CX,150)}
  else if(k==='chest'){giveItem('torch');giveItem('charm');return}
  else if(k==='rook'){giveItem(R()<.5?'torch':'charm');return}
  else{scrolls++;try{localStorage.setItem('deep-sea-peek-scrolls',scrolls)}catch(e){}fx(k==='nib'?'Nib 塞給你一卷軸':'撿到舊卷軸',CX,150,'#e8c675')}
@@ -12703,7 +12703,7 @@ function updateCamp(dt){
  if(camp.state==='pick'){
   if(camp.choice<0&&camp.t>CAMP_PICK_MAX)camp.choice=1;
   if(camp.choice>=0){giveItem(CAMP_CARDS[camp.choice]);camp.state='rest';camp.rest=CAMP_REST;camp.t=0}}
- else{camp.rest-=dt;if(camp.rest<=0){if(L&&!practice&&!daily&&lives<3&&healTen!==((lvl-1)/10|0)){lives++;healTen=((lvl-1)/10|0);sv();fx('生命 +1',CX,150,'#7fe8ff')}camp=null;campNext=L?999:campNext+CAMP_EVERY;gapT=Math.max(gapT,4)}}}
+ else{camp.rest-=dt;if(camp.rest<=0){if(L&&!practice&&!daily&&lives<3&&healTen!==((lvl-1)/10|0)){lives++;healTen=((lvl-1)/10|0);sv();fx('img:env-campfire',CX,150)}camp=null;campNext=L?999:campNext+CAMP_EVERY;gapT=Math.max(gapT,4)}}}
 function campTap(e){
  if(!camp||camp.state!=='pick')return;
  const p=cxy(e);CARDS_X.forEach((x,i)=>{if(p[0]>=x&&p[0]<=x+CARD_W&&p[1]>=CARD_Y&&p[1]<=CARD_Y+CARD_H)camp.choice=i})}
@@ -12807,7 +12807,7 @@ function drawDrops(){
   if(d.k==='nib'){g.fillStyle='#6b4a32';g.beginPath();g.ellipse(x,y,sz*.3,sz*.22,0,0,7);g.fill();g.fillStyle='#e8d8b8';g.beginPath();g.arc(x-sz*.1,y-sz*.05,3,0,7);g.arc(x+sz*.1,y-sz*.05,3,0,7);g.fill()}
   else if(im)floatImg(im,x,y,sz,1);else{g.fillStyle=d.k==='torch'?'#ffb347':d.k==='charm'?'#7fe8ff':'#e8c675';g.beginPath();g.arc(x,y,sz*.3,0,7);g.fill()}
   g.restore();
-  if(near)tx('點一下撿',x,y-sz/2-6,15,'#ffd98a')})}
+  })}
 function drawCamp(){
  g.fillStyle='rgba(6,6,10,.55)';g.fillRect(0,0,W,H);
  const cf=art('env-campfire'),rk=art('npc-rook');
@@ -12849,7 +12849,7 @@ function drawHeadphone(){
 const CAPS={eye:['（左邊的落葉沙沙作響）','（右邊的落葉沙沙作響）'],twins:['（左邊傳來敲擊聲）','（右邊傳來敲擊聲）'],walker:['（蟲鳴停了……左右出現了道具）','（蟲鳴停了……左右出現了道具）'],gale:['（風向反了，拖行聲從左邊靠近）','（風向反了，拖行聲從右邊靠近）'],reach:['（左邊的泥水在冒泡）','（右邊的泥水在冒泡）'],bell:['（遠處傳來鐘聲）','（遠處傳來鐘聲）'],bog:['（水面冒著泡）','（水面冒著泡）'],crawl:['（冰面咯吱作響）','（冰面咯吱作響）'],magma:['（左邊冒著煙）','（右邊冒著煙）'],white:['（左邊閃著白光）','（右邊閃著白光）'],flick:['（螢火飄過來了）','（螢火飄過來了）'],howl:['（遠處傳來嚎叫）','（遠處傳來嚎叫）']};
 const capText=d=>(CAPS[d.type]||['',''])[d.side<0?0:1];
 function hud(I,lamp){
- const bn=art('ui-banner'),bw=420,bh=82,title=(L?'第 '+lvl+' 關':(practice?'練習　':'自由跑　')+Math.floor(prog)+'%'),bar=!L;
+ const bn=art('ui-banner'),bw=420,bh=82,title=(L?'第 '+lvl+' 關':(practice?'練習':'自由跑　'+Math.floor(prog)+'%')),bar=!L;
  if(bn){g.drawImage(bn,10,8,bw,bh);
   const x0=10+bw*.2,wd=bw*.73;if(bar)RR(x0,8+bh*.32,wd,bh*.34,6,'rgba(60,40,20,.35)');if(bar&&prog>0)RR(x0,8+bh*.32,Math.max(12,wd*prog/100),bh*.34,6,prog>=85?'#c4472f':'#b98a2c');
   tx(title,x0+wd/2,8+bh*.6,17,'#f6e7c0')}
@@ -13071,7 +13071,7 @@ function draw(){
  if(st==='run'&&L)drawWeather();
  if(st==='run'&&!camp)drawHide();
  if(ev&&ev.type==='walker'&&ev.phase==='warn'&&ev.t<3.5){g.fillStyle='rgba(200,230,255,'+(.05+.18*(1-ev.t/3.5))+')';g.fillRect(0,0,W,H)}
- fxs.forEach(f=>{g.globalAlpha=1-f.t/.9;tx(f.s,f.x,f.y-f.t*40,22,f.col);g.globalAlpha=1});
+ fxs.forEach(f=>{if(f.s.startsWith('img:')){const im=art(f.s.slice(4));if(im)floatImg(im,f.x,f.y-f.t*40,80+24*f.t,1-f.t/.9)}else{g.globalAlpha=1-f.t/.9;tx(f.s,f.x,f.y-f.t*40,22,f.col);g.globalAlpha=1}});
  g.restore();
  if(st==='run'&&headDown&&ev&&ev.type==='bell')drawHead()
  if(st==='run'&&camp){drawCamp();hud(I,lamp)}
