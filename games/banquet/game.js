@@ -24,6 +24,10 @@ var ITEMS={
  powder:{name:'濃縮毒粉',cup:1,desc:'劇毒傷害 +1；瓊漿變毒瓊漿。'},
  ice:{name:'稀釋冰塊',cup:1,desc:'雙倍劇毒−1；劇毒變清水；毒瓊漿變瓊漿。'}};
 var IKEYS=Object.keys(ITEMS);
+var STIMG={poison:'poison',poison2:'poison',nectar:'nectar',pnectar:'pnectar',truth:'truth',water:'water'};
+function iconImg(src,cls){var i=document.createElement('img');i.className=cls;i.src='games/banquet/assets/'+src+'.webp';i.alt='';i.decoding='async';i.draggable=false;return i}
+function txt(t){var e=document.createElement('span');e.textContent=t;return e}
+function stIcon(t,cls){return STIMG[t]?iconImg('st-'+STIMG[t],cls):null}
 var SAY={p:'你',d:'莊家'};
 var E=null,analytics=null,wins=0,quitArm=0,ADV=false,MUTED=false;
 try{wins=+localStorage.getItem('deep-sea-banquet-best')||0;ADV=localStorage.getItem('deep-sea-banquet-adv')==='1';MUTED=localStorage.getItem('deep-sea-banquet-mute')==='1'}catch(e){}
@@ -446,7 +450,7 @@ function renderHand(){
   var def=ITEMS[key],why=mine?canUse('p',key):'現在不是你的回合。',b=document.createElement('button');
   b.type='button';b.className='bq-item'+(why?' is-off':'')+(def.cup&&!E.sel&&!why?' needs-cup':'');b.setAttribute('aria-disabled',why?'true':'false');
   var nm=document.createElement('b');nm.textContent=def.name;var ds=document.createElement('small');ds.textContent=def.desc+(def.cup?'（需先選杯）':'');
-  b.appendChild(nm);b.appendChild(ds);
+  var tx=document.createElement('span');tx.className='bq-item-tx';tx.appendChild(nm);tx.appendChild(ds);b.appendChild(iconImg('item-'+key,'bq-item-ic'));b.appendChild(tx);
   b.addEventListener('click',function(){playerItem(key)});box.appendChild(b);
  });
 }
@@ -455,7 +459,7 @@ function renderDealerHand(){
  put(t,seenNow?'莊家的道具（已公開）':'莊家的道具（'+n+' 件，內容未知）');
  if(box.__sig===sig)return;box.__sig=sig;box.textContent='';
  if(!n){var p=document.createElement('p');p.className='bq-empty';p.textContent='沒有道具';box.appendChild(p);return}
- E.hand.d.forEach(function(key){var s=document.createElement('span');s.className='bq-back'+(seenNow?' is-open':'');s.textContent=seenNow?ITEMS[key].name:'?';box.appendChild(s)});
+ E.hand.d.forEach(function(key){var s=document.createElement('span');s.className='bq-back'+(seenNow?' is-open':'');if(seenNow){s.appendChild(iconImg('item-'+key,'bq-back-ic'));s.title=ITEMS[key].name}else s.textContent='?';box.appendChild(s)});
 }
 function renderLog(){
  if(lastLogV===E.v&&lastLogLen===E.log.length)return;lastLogV=E.v;lastLogLen=E.log.length;
@@ -475,7 +479,7 @@ function renderChips(){
   var left=Math.max(0,E.comp[t]-E.out[t]);if(E.comp[t])list.push({t:t,left:left,all:E.comp[t]});
  });
  var sig=list.map(function(x){return x.t+x.left+'/'+x.all}).join('|');if(box.__sig===sig)return;box.__sig=sig;box.textContent='';
- list.forEach(function(x){var c=document.createElement('span');c.className='bq-chip t-'+x.t+(x.left?'':' is-gone');c.textContent=TICON[x.t]+' '+TNAME[x.t]+' ×'+x.left;box.appendChild(c)});
+ list.forEach(function(x){var c=document.createElement('span');c.className='bq-chip t-'+x.t+(x.left?'':' is-gone');var ci=stIcon(x.t,'bq-chip-ic');if(ci)c.appendChild(ci);c.appendChild(txt(TNAME[x.t]+' ×'+x.left));box.appendChild(c)});
 }
 var fxPlayed=0,overPlayed=false,hbT=0,lastTurnKey='',poseT=0,poseTok=0;
 function setPose(name,dur){poseTok++;poseT=dur||0;$('bq-dealerbox').dataset.pose=name}
@@ -488,7 +492,7 @@ function playFx(){
  var rv=$('bq-reveal'),st=$('bq-stage'),dl=$('bq-dealerbox'),fl=$('bq-flash');
  list.forEach(function(f){
   if(f.k==='reveal'){
-   rv.textContent=TICON[f.t]+' '+TNAME[f.t];rv.className='bq-reveal t-'+f.t;restart(rv,'is-on',1500);
+   rv.textContent='';var ri=stIcon(f.t,'bq-reveal-ic');if(ri)rv.appendChild(ri);rv.appendChild(txt(TNAME[f.t]));rv.className='bq-reveal t-'+f.t;restart(rv,'is-on',1500);
    if(f.s==='d')setPose(f.by==='p'?'caught':'drink',1.3);else if(f.by==='d')setPose('reach',1.3);
    if(f.by==='p')restart($('bq-hands'),f.s==='d'?'is-push':'is-lift',900);
    SFX.lift();setTimeout(function(){f.t==='poison'||f.t==='poison2'?SFX.poison():f.t==='nectar'||f.t==='pnectar'?SFX.nectar():f.t==='truth'?SFX.truth():SFX.water()},380);
