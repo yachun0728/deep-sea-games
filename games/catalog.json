@@ -295,6 +295,28 @@
     "icon": "games/office-shoot/icon.svg"
   },
   {
+    "id": "ocean-link",
+    "logic": "games/ocean-link/game.js",
+    "view": "games/ocean-link/view.html",
+    "card": "games/ocean-link/card.html",
+    "icon": "games/ocean-link/icon.svg",
+    "style": "games/ocean-link/style.css"
+  },
+  {
+    "id": "banquet",
+    "logic": "games/banquet/game.js",
+    "view": "games/banquet/view.html",
+    "card": "games/banquet/card.html",
+    "icon": "games/banquet/icon.svg"
+  },
+  {
+    "id": "mermaid",
+    "logic": "games/mermaid/game.js",
+    "view": "games/mermaid/view.html",
+    "card": "games/mermaid/card.html",
+    "icon": "games/mermaid/icon.svg"
+  },
+  {
     "id": "eat-smaller",
     "logic": "games/eat-smaller/game.js",
     "view": "games/eat-smaller/view.html",

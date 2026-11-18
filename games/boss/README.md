@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#boss`　分類：技巧闖關　狀態：顯示中
+- 網址：`#boss`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「遲到了！跳過障礙，別被胖老闆追上。」｜每局 10 點 · 辦公室逃亡
 - 追蹤名稱（GA4 `game_name`）：胖老闆追人，`game_id` 為 `boss`
 - 檔案：`games/boss/card.html`、`games/boss/game.js`、`games/boss/icon.svg`、`games/boss/view.html`；`game.js` 共 177 行、12.6 KB

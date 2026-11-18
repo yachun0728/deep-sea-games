@@ -4,12 +4,12 @@
 
 ## 概覽
 
-- 網址：`#eat-smaller`　分類：技巧闖關　狀態：顯示中
+- 網址：`#eat-smaller`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「吃掉比你小的數字、躲開比你大的，剛好變成目標數字就過關。」｜每局 10 點 · 8 關
 - 追蹤名稱（GA4 `game_name`）：數字吞噬，`game_id` 為 `eat-smaller`
 - 檔案：`games/eat-smaller/card.html`、`games/eat-smaller/game.js`、`games/eat-smaller/icon.svg`、`games/eat-smaller/original.html`、`games/eat-smaller/style.css`、`games/eat-smaller/view.html`；`game.js` 共 62 行、5.4 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「40. 數字吞噬 Number Gulp（eat-smaller）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「42. 數字吞噬 Number Gulp（eat-smaller）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 

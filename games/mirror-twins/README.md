@@ -4,12 +4,12 @@
 
 ## 概覽
 
-- 網址：`#mirror-twins`　分類：技巧闖關　狀態：顯示中
+- 網址：`#mirror-twins`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「同時操控兩位太空人，其中一位左右相反，一起走進傳送艙。」｜每局 10 點 · 10 關
 - 追蹤名稱（GA4 `game_name`）：鏡像雙子，`game_id` 為 `mirror-twins`
 - 檔案：`games/mirror-twins/card.html`、`games/mirror-twins/game.js`、`games/mirror-twins/icon.svg`、`games/mirror-twins/original.html`、`games/mirror-twins/style.css`、`games/mirror-twins/view.html`；`game.js` 共 62 行、5.4 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「41. 鏡像雙子 Mirror Twins（mirror-twins）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「43. 鏡像雙子 Mirror Twins（mirror-twins）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 

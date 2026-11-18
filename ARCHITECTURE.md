@@ -51,6 +51,8 @@ deep-sea-games/
 │   ├── test_pudding.mjs      布丁突圍行為測試（可選 Node.js）
 │   ├── test_peek.mjs         別看行為測試（可選 Node.js）
 │   ├── test_mosquito.mjs     血壓上升行為測試（可選 Node.js）
+│   ├── test_banquet.mjs      最後的晚餐行為測試（可選 Node.js）
+│   ├── test_mermaid.mjs      人魚接龍行為測試（可選 Node.js）
 │   ├── test_last_hair.mjs    尊嚴保衛戰行為測試（可選 Node.js）
 │   ├── test_pet_walk.mjs     小灰出門行為測試（可選 Node.js）
 │   └── test_office_shoot.mjs 拒絕加班行為測試（可選 Node.js）
@@ -95,7 +97,7 @@ flowchart TD
 | dice / limbo / hilo | D / L / HL |
 | keno / wheel / tower / crossing | KE / WL / TW / CR |
 | dream / elevator / fishing / campaign / reaper / blaster | DR / EQ / FI / CP / RP / BL |
-| runner / sneak / cat / bird / frog / nap / clock-out / pudding / peek / mosquito / last-hair / pet-walk / office-shoot | runnerBusy / sneakBusy / catBusy / birdBusy / frogBusy / napBusy / clockBusy / puddingBusy / peekBusy / mqBusy / hairBusy / petBusy / otBusy，各自內層 IIFE（last-hair 即尊嚴保衛戰）|
+| runner / sneak / cat / bird / frog / nap / clock-out / pudding / peek / mosquito / last-hair / pet-walk / office-shoot / banquet / mermaid | runnerBusy / sneakBusy / catBusy / birdBusy / frogBusy / napBusy / clockBusy / puddingBusy / peekBusy / mqBusy / hairBusy / petBusy / otBusy / bqBusy / mmBusy，各自內層 IIFE（last-hair 即尊嚴保衛戰）|
 | carp / rider / boss / thief / baby | carpBusy / riderBusy / bossBusy / thiefBusy / babyBusy，各自內層 IIFE（由獨立頁面改編，共用 G 物件與造型解鎖流程）|
 | boba | BOBA、deepSeaBoba；original.html 為子頁 |
 | dive | DIVE、deepSeaDive；original.html 為子頁（一口氣探險） |
@@ -120,7 +122,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 
 ## 資料與錢包
 
-預設餘額 `START_BALANCE=500`，踩地雷與每日挖礦不扣點，其餘遊戲依入場說明扣 `ENTRY_FEE=10`（js/config.js；餘額不足提示統一用 `LOW_MSG`），共用最低投入 `MIN_BET=10` 仍供隱藏的機率遊戲使用。餘額低於 `REGEN_CAP=100` 時，js/wallet.js 的 `regenTick` 每分鐘加 1 點（`REGEN_MS`），以牆上時鐘計算，含頁面關閉期間；`regenStart` 在 bootstrap 啟動 1 秒計時與回到分頁時的補算。讀取餘額以 parseInt 並檢查有限且非負；各投入欄位的讀取／取整方式並非完全一致，修改時應核對對應函式。
+預設餘額 `START_BALANCE=500`，踩地雷、打磚塊、Ocean Link 與每日挖礦等免費遊戲不扣點，付費遊戲依入場說明扣 `ENTRY_FEE=10`（js/config.js；餘額不足提示統一用 `LOW_MSG`），共用最低投入 `MIN_BET=10` 仍供隱藏的機率遊戲使用。餘額低於 `REGEN_CAP=100` 時，js/wallet.js 的 `regenTick` 每分鐘加 1 點（`REGEN_MS`），以牆上時鐘計算，含頁面關閉期間；`regenStart` 在 bootstrap 啟動 1 秒計時與回到分頁時的補算。讀取餘額以 parseInt 並檢查有限且非負；各投入欄位的讀取／取整方式並非完全一致，修改時應核對對應函式。
 
 | localStorage Key | 用途 |
 | --- | --- |
@@ -145,7 +147,11 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `deep-sea-clock-out-best` | 下班保衛戰最高分；新增於 2026-11-17 |
 | `deep-sea-peek-best` | 別看最佳進度（百分比整數）；新增於 2026-11-17 |
 | `deep-sea-peek-deaths` | 別看各死因次數（JSON 物件）；新增於 2026-11-17 |
+| `deep-sea-peek-dodges` | 別看累計躲過襲擊次數（整數）；新增於 2026-11-18 |
 | `deep-sea-last-hair-best` / `-deaths` / `-swap` / `-sound` | 尊嚴保衛戰最遠距離、最近死亡位置與原因、左右手對調、音效開關；新增於 2026-11-17 |
+| `deep-sea-banquet-best` | 最後的晚餐贏局次數；新增於 2026-11-18 |
+| `deep-sea-banquet-adv` / `deep-sea-banquet-mute` | 最後的晚餐「進階模式」與「靜音」開關（1／0）；新增於 2026-11-18 |
+| `deep-sea-mermaid-best` | 人魚接龍（JSON：`best` 依難度 1／2／4 的最高分、`mode` 上次選的難度）；新增於 2026-11-18 |
 | `deep-sea-mosquito-best` | 血壓上升最高吸血百分比（一位小數）；新增於 2026-11-17 |
 | `deep-sea-pet-walk-save` | 小灰出門存檔（JSON：最高分、出門次數、物資、事件與物資圖鑑、上次事件）；新增於 2026-11-17 |
 | `deep-sea-office-shoot-best` | 拒絕加班最佳績效（整數）；新增於 2026-11-18 |
@@ -235,3 +241,7 @@ KE.active涵蓋免費挖掘，使用現有syncBalance／save入帳；可用時�
 時序修復為固定入場10點、無限關卡的停針挑戰，沒有點數獎勵或領回。drDifficulty限制目標寬度與速度，drAdvance管理預告反轉及暫停；第11關起最多一次、第21關起最多兩次。保留既有狀態與ID，不新增儲存Key。hot.snapshot不將本局入場費加回餘額；每局單次扣款與start，過關progress、續關resume、失敗end且payout_points=0。
 
 深海火線（2026-11-17 玩法大改）：改為自由左右移動（BL.target／BL.keys，拖曳、按住按鈕與鍵盤；移除三條航道）；武器為「形態」BL.form（7 種），每累計 36 波暫停彈出三選一（BL.picks／BL.sinceCard，phase 'pick'，不計時、不扣款、離頁記 abandoned），開局固定脈衝彈、不再有掉落的武器箱；火力等級只在過關與王戰 +1。出怪改為隨進度漸增的每波怪數（blWavePlan，5 個欄位 1～5 隻），一關約 3 倍長（54 波起），新增水雷、礁石、噴墨烏賊與每5關的深海巨獸（BL.ink）；不新增儲存Key，扣點、重玩費、里程碑與GA4生命週期不變。數值與公式見 GAME_RULES.md 第22節。tools/test_blaster.mjs 為 Node 行為測試。
+
+## Ocean Link
+
+`#ocean-link` 透過 `games/ocean-link/view.html`、`style.css`、`card.html` 與 `icon.svg` 接入靜態組合，列於免費懷舊分類。點擊遊戲區會啟用全螢幕並免費開局。`game.js` 在共用 runtime 內管理畫面、遠征、錢包及追蹤，並在其閉包內組合 `board.js`（關卡設定、路徑、移動與保證可解的發牌）及 `tiles.js`（64 種圖案）。全螢幕使用 Fullscreen API，若無法啟用則使用有安全區邊距的固定版面。新增 `deep-sea-ocean-link-best-v1`，以 JSON 物件分開記錄簡單、標準與挑戰的最高通關關卡；共用餘額沿用既有儲存。
