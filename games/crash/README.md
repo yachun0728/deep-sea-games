@@ -54,7 +54,7 @@
 ## 平台共用相依
 
 - 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`fx`、`reduceMotion`、`C`、`rollCrash`、`elGo`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
-- `js/bootstrap.js` 會呼叫：`resize`、`seedSnow`、`startBetting`
+- `js/bootstrap.js` 會呼叫：`renderAll`、`resize`、`seedSnow`
 - `js/controls.js` 會呼叫：`mainAction`、`renderGo`
 - `js/navigation.js` 會呼叫：`resize`
 - 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
