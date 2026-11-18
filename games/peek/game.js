@@ -510,7 +510,8 @@ function playCue(d){
   :[[0,70,.08,.1,0,'sine'],[.6,70,.08,.1,0,'sine'],[1.2,70,.08,.1,0,'sine']];
  seq.forEach(q=>later(()=>tone(q[1],q[2],q[3],q[4],q[5],q[6]),q[0]*1000));
  say('再聽一次：'+capText(d)+(d.type==='eye'?'　然後紅光射出。':d.type==='twins'?'　之後要躲進另一側。':d.type==='gale'?'　要躲進風來的那一側。':d.type==='reach'?'　要躲進另一側。':d.type==='bell'?'　第三下之後要低頭，直到鐘聲散去。':d.type==='bog'?'　要連點兩下。':d.type==='crawl'?'　要在裂縫到腳邊時點一下。':d.type==='magma'?'　要躲進沒冒煙的一側。':d.type==='white'?'　要躲進閃光的一側。':d.type==='flick'?'　要點亮火把，或躲進另一側。':d.type==='howl'?'　要照牠的節奏點。':'　要點對牠怕的道具。'))}
-const shareText=()=>'《別看 Don\'t Peek》'+(L?'第 '+lvl+' 關':'自由跑')+(seedCode?'・種子 '+seedCode:'')+'：躲過 '+survived+' 次襲擊，'+(st==='won'?'衝出去了！':(CAUSES[why]||'').replace(/^死因 #\d+ /,'')+'。');
+const causeText=k=>{const I=typeof window!=='undefined'&&window.deepSeaI18n;let t=CAUSES[k]||'';if(I&&I.text)t=I.text(t);return t.replace(/^(死因|Cause) #\d+:? ?/,'')};   // translate the whole line first, then drop the numbering
+const shareText=()=>'《別看 Don\'t Peek》'+(L?'第 '+lvl+' 關':'自由跑')+(seedCode?'・種子 '+seedCode:'')+'：躲過 '+survived+' 次襲擊，'+(st==='won'?'衝出去了！':causeText(why)+'。');
 function share(){
  const t=shareText();
  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t);say('已複製分享文字：'+t,'win')}else say(t,'win')}catch(e){say(t,'win')}
@@ -537,7 +538,7 @@ function drawDeath(){
  for(let i=0;i<2;i++){
   const x=xs[i];if(cd)g.drawImage(cd,x,ky,kw,kh);else RR(x,ky,kw,kh,10,'#3a2c1c',3);
   const im=art(i?(why==='flick'?'item-torch':'guide-flick'):KILLER[why]||'ghost-wraith');if(im)floatImg(im,x+kw*.49,ky+kh*.34,kw*.38,1);
-  const body=i?TIPS[why]||'':(CAUSES[why]||'').replace(/^死因 #\d+ /,'');
+  const body=i?TIPS[why]||'':causeText(why);
   txd(body,x+kw/2,ky+kh*.6,11,'#2a1a0c',kw*.6,5)}
  tx('剩餘生命 '+(L?lives:'—'),CX,ky+34,20,'#ffd98a');
  tx('躲過 '+survived+' 次襲擊',CX,ky+66,16,'#f1d9a6');
