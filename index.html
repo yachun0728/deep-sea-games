@@ -1876,18 +1876,18 @@ body.ol-expanded { overflow: hidden; }
     <details class="rules"><summary>玩法與點數</summary><p>每局免費。一天分 8 波（09:00 到 16:00），每波之前先在 6×6 的抽屜裡擺放橡皮筋、咖啡杯、釘書機、螢光筆、耳機、印章、碎紙機，再開工。電子郵件、文件、會議、報告、急件會沿著桌面走向你的座位，漏掉一個就扣理智，理智歸零或被老闆走到桌前就結束。每波完成理智回復 2 點。</p><p>每一種工具剋制不同的敵人，咖啡杯和螢光筆放在旁邊還會加強相鄰的攻擊工具。同種同等級的工具可以合成，最高 3 級。會議會鎖住最近的攻擊工具，放一個耳機在旁邊就不會被鎖。</p><p>BONUS 是固定獎勵：撐過第 5 波立刻入帳 3 點，通關第 8 波擊退老闆再入帳 7 點，每局各只發一次，兩項都拿到累計獲得 10 點。獎勵當場入帳，之後輸掉也不會收回；中途離開或重新整理，已入帳的保留，分數只是顯示用，不直接換點數。這是操作與擺放策略遊戲，結果取決於你的擺法與操作。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。最高分保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-peek" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="peek-canvas" tabindex="0" width="400" height="560" aria-label="別看：按住奔跑，抱著八音盒衝向出口；紅光和笑聲來襲時往反方向靠牆，燈滅前蓋住螢幕並保持不動"></canvas></div>
+    <div class="console"><div class="sneak-stage"><canvas id="peek-canvas" tabindex="0" width="400" height="560" aria-label="別看：自動奔跑逃向出口，按住衝刺跑更快；紅光和笑聲來襲時往反方向靠牆，燈滅前蓋住螢幕並保持不動"></canvas></div>
       <div class="side"><section class="panel" aria-label="別看操作">
         <dl class="stats"><div><dt>逃跑進度</dt><dd id="peek-prog">0%</dd></div><div><dt>躲過襲擊</dt><dd id="peek-spirits">0 次襲擊</dd></div><div><dt>最佳進度</dt><dd id="peek-best">0%</dd></div></dl>
         <dl class="stats"><div><dt>死因圖鑑</dt><dd id="peek-codex">0 / 4</dd></div><div><dt>累計躲過</dt><dd id="peek-dodges">0 次</dd></div></dl>
         <div class="field"><label>遊玩費用</label><p class="runner-fee">免費</p><input id="peek-amount" type="hidden" value="0"></div>
         <button class="go" id="peek-go" type="button" data-mode="bet">免費開始逃跑</button>
         <button class="go" id="peek-gyro" type="button" data-mode="surface">啟用體感（手機）</button>
-        <p class="msg" id="peek-msg" aria-live="polite">有東西在追你。開始後開始，按住「奔跑」，抱著八音盒衝向出口。</p>
-        <p class="hint">按住 <kbd>W</kbd> 或畫面右下「奔跑」不放（點一下沒用）；<kbd>A</kbd>／<kbd>D</kbd> 或「靠左」「靠右」換邊；按住 <kbd>空白鍵</kbd> 或「蓋住」把螢幕蓋起來。紅光來了往反方向靠牆，笑聲來了往笑聲的反方向靠牆，燈要滅了就蓋住螢幕不要動。貼著牆時跑不動。建議戴耳機。</p>
+        <p class="msg" id="peek-msg" aria-live="polite">有東西在追你。開始後自動奔跑，按住「衝刺」跑更快。</p>
+        <p class="hint">按住 <kbd>W</kbd> 或畫面右下「衝刺」跑更快（衝刺時不能靠牆）；<kbd>A</kbd>／<kbd>D</kbd> 或「靠左」「靠右」換邊；按住 <kbd>空白鍵</kbd> 或「蓋住」把螢幕蓋起來。紅光來了往反方向靠牆，笑聲來了往笑聲的反方向靠牆，燈要滅了就蓋住螢幕不要動。建議戴耳機。</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法與點數</summary><p>每局免費。按住「奔跑」，抱著八音盒在夜間走廊裡往出口跑，距離跑滿 100% 就衝出去、盒子打開過關。人貼著牆或蓋住螢幕時跑不動，所以每次襲擊都會讓進度停下來。開局有 9 秒安全時間，之後襲擊的間隔會隨進度縮短。</p><p>走廊裡有三種東西，依你這一局躲過的次數登場：一開始只有窺視之眼，牆上的眼珠先轉動，接著射出紅光，要往反方向靠牆撐滿 3 秒；躲過 2 次後，雙子怨靈會加入，先在單邊耳朵發出笑聲，接著要往笑聲的反方向靠牆，往笑聲那邊靠就會死；躲過 3 次後，無頭巡夜人加入，腳步聲從走廊盡頭慢慢靠近，燈閃三下就熄滅，熄滅前一定要蓋住螢幕，並保持不動直到腳步聲遠去。進度超過 85% 時，有機會再多來一次突襲。</p><p>固定獎勵：躲過 2 次襲擊，獲得 2 點；衝出出口打開盒子，獲得 5 點。每項每局只發一次，當場入帳，之後死亡也不會收回；每局最多 7 點。分數、最佳進度、死因圖鑑與累計躲過次數只是顯示用，不直接換點數。這是操作與反應遊戲，結果取決於你的動作。</p><p>手機可按「啟用體感」，用傾斜手機代替靠左靠右，把手機螢幕朝下代替蓋住螢幕；不支援的瀏覽器會自動改用按鈕。畫面含閃爍燈光，不適合者請勿遊玩。切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最佳進度、死因與累計躲過次數保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+    <details class="rules"><summary>玩法與點數</summary><p>每局免費。你抱著八音盒在夜間走廊裡自動往出口跑，按住「衝刺」可以跑得兩倍快，距離跑滿 100% 就衝出去、盒子打開過關。衝刺時身體會被固定在走廊中間，不能靠牆，所以鬼來之前要記得放開；蓋住螢幕時會停下來。開局有 9 秒安全時間，之後襲擊的間隔會隨進度縮短。</p><p>走廊裡有三種東西，依你這一局躲過的次數登場：一開始只有窺視之眼，牆上的眼珠先轉動，接著射出紅光，要往反方向靠牆撐滿 3 秒；躲過 2 次後，雙子怨靈會加入，先在單邊耳朵發出笑聲，接著要往笑聲的反方向靠牆，往笑聲那邊靠就會死；躲過 3 次後，無頭巡夜人加入，腳步聲從走廊盡頭慢慢靠近，燈閃三下就熄滅，熄滅前一定要蓋住螢幕，並保持不動直到腳步聲遠去。進度超過 85% 時，有機會再多來一次突襲。</p><p>固定獎勵：躲過 2 次襲擊，獲得 2 點；衝出出口打開盒子，獲得 5 點。每項每局只發一次，當場入帳，之後死亡也不會收回；每局最多 7 點。分數、最佳進度、死因圖鑑與累計躲過次數只是顯示用，不直接換點數。這是操作與反應遊戲，結果取決於你的動作。</p><p>手機可按「啟用體感」，用傾斜手機代替靠左靠右，把手機螢幕朝下代替蓋住螢幕；不支援的瀏覽器會自動改用按鈕。畫面含閃爍燈光，不適合者請勿遊玩。切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最佳進度、死因與累計躲過次數保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-pet-walk" hidden>
     <div class="console"><div class="sneak-stage"><canvas id="pw-canvas" tabindex="0" width="400" height="560" aria-label="小灰出門：點一下走一步，按住連續走，路上會遇到隨機事件和轉盤，走滿 60 步回家寫日記"></canvas></div>
@@ -6187,7 +6187,18 @@ body.ol-expanded { overflow: hidden; }
   "已免費補充咖啡。": "Coffee refilled for free.",
   "這局加班了，可免費再玩。": "Overtime this round. Play again for free.",
   "經典小遊戲 · 不限次數": "Classic Mini Games · Unlimited play",
-  "所有遊戲免費開玩。遊玩與成就獎勵可兌換平台外觀；點數沒有現金價值。": "All games are free. Earn play and achievement rewards to redeem platform cosmetics. Points have no cash value."
+  "所有遊戲免費開玩。遊玩與成就獎勵可兌換平台外觀；點數沒有現金價值。": "All games are free. Earn play and achievement rewards to redeem platform cosmetics. Points have no cash value.",
+  "別看：自動奔跑逃向出口，按住衝刺跑更快；紅光和笑聲來襲時往反方向靠牆，燈滅前蓋住螢幕並保持不動": "Don’t Peek: you run toward the exit on your own and holding Sprint makes you faster; lean to the opposite wall when the red beam or the giggling comes, and cover the screen and stay still before the light goes out",
+  "有東西在追你。扣點後開始，自動奔跑，按住「衝刺」跑更快。": "Something is chasing you. Start, and you run on your own; hold “Sprint” to go faster.",
+  "或畫面右下「衝刺」跑更快（衝刺時不能靠牆）；": " or the “Sprint” button at the bottom right to go faster (you cannot lean while sprinting); ",
+  "或「蓋住」把螢幕蓋起來。紅光來了往反方向靠牆，笑聲來了往笑聲的反方向靠牆，燈要滅了就蓋住螢幕不要動。建議戴耳機。": " or “Cover” to cover the screen. When the red beam comes, lean to the opposite wall; when you hear giggling, lean to the wall away from it; when the light is about to go out, cover the screen and stay still. Headphones recommended.",
+  "每局固定扣 10 點。你抱著八音盒在夜間走廊裡自動往出口跑，按住「衝刺」可以跑得兩倍快，距離跑滿 100% 就衝出去、盒子打開過關。衝刺時身體會被固定在走廊中間，不能靠牆，所以鬼來之前要記得放開；蓋住螢幕時會停下來。開局有 9 秒安全時間，之後襲擊的間隔會隨進度縮短。": "Each round costs 10 points. You run down a night corridor toward the exit on your own, holding the music box; hold “Sprint” to go twice as fast, and when the distance reaches 100% you break out and the box opens. While sprinting you are pinned to the middle of the corridor and cannot lean, so let go before a ghost arrives; covering the screen makes you stop. You get 9 safe seconds at the start, and attacks come closer together as you progress.",
+  "自動奔跑，按住「衝刺」跑更快": "You run on your own; hold “Sprint” to go faster",
+  "自動奔跑中！按住「衝刺」跑更快（衝刺時不能靠牆）": "Running on your own! Hold “Sprint” to go faster (you cannot lean while sprinting)",
+  "牆上有東西在轉動眼珠……放開「衝刺」！": "Something on the wall is rolling its eyes… let go of “Sprint”!",
+  "有笑聲貼著耳朵……放開「衝刺」，不要往聲音那邊靠": "Giggling right by your ear… let go of “Sprint” and do not lean toward the sound",
+  "有東西在追你。開始後自動奔跑，按住「衝刺」跑更快。": "Something is chasing you. Once you start you run on your own; hold “Sprint” to go faster.",
+  "每局免費。你抱著八音盒在夜間走廊裡自動往出口跑，按住「衝刺」可以跑得兩倍快，距離跑滿 100% 就衝出去、盒子打開過關。衝刺時身體會被固定在走廊中間，不能靠牆，所以鬼來之前要記得放開；蓋住螢幕時會停下來。開局有 9 秒安全時間，之後襲擊的間隔會隨進度縮短。": "Each round is free. You run down a night corridor toward the exit on your own, holding the music box; hold “Sprint” to go twice as fast, and when the distance reaches 100% you break out and the box opens. While sprinting you are pinned to the middle of the corridor and cannot lean, so let go before a ghost arrives; covering the screen makes you stop. You get 9 safe seconds at the start, and attacks come closer together as you progress."
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -11353,8 +11364,8 @@ resetGame();ui();draw();requestAnimationFrame(frame);
   var peekBusy=false,peekStake=0,peekSay=function(){};
   (function(){
 const c=$('peek-canvas'),g=c.getContext('2d'),W=400,H=560,OL='#120d0a';
-const WIND_RATE=3;                         // % of the music-box spring wound per second while cranking
-const WIND_MAX_TILT=.35;                   // cranking only works while the box is nearly level
+const SPRINT_GAP=2;                        // while sprinting the next attack comes this many times sooner, so speed is paid for with pressure
+const BASE_RATE=2,WIND_RATE=4;             // % of the corridor covered per second: the runner keeps jogging by itself, holding Sprint doubles it
 const MILE_EVENTS=2,MILE_REWARD=2,WIN_REWARD=5; // fixed BONUS: survive 2 spirits +2, reach the exit and open the box +5, each once per round
 const FIRST_GAP=9;                         // safe seconds before the first spirit
 const GAP_NEAR=7,GAP_FAR=4,BREATH_EVERY=3,BREATH_EXTRA=3; // gap between spirits shrinks from 7s to 4s by 80% progress; every 3rd dodge earns a longer breather
@@ -11368,10 +11379,10 @@ const TWIN={warn:2.5,judge:1.5,away:.6,toward:.3}; // lean away from the giggle 
 const WALK={warn:6,judge:4,still:.3};      // cover before the light goes out, stay covered and still
 const TYPES=['eye','twins','walker'];
 const CAUSES={eye:'死因 #1 對視：紅光鎖定你時，你沒有往反方向躲',twins:'死因 #2 回頭：笑聲在哪邊，你就往哪邊看',walkerLate:'死因 #3 慢半拍：燈滅的時候你還沒蓋住螢幕',walkerMove:'死因 #4 手賤：腳步聲還沒走遠你就動了'};
-const BTN=[[8,492,90,56,'靠左'],[106,492,90,56,'靠右'],[204,492,90,56,'蓋住'],[302,492,90,56,'奔跑']];
+const BTN=[[8,492,90,56,'靠左'],[106,492,90,56,'靠右'],[204,492,90,56,'蓋住'],[302,492,90,56,'衝刺']];
 let best=0,deaths={};try{best=+localStorage.getItem('deep-sea-peek-best')||0}catch(e){}
 try{deaths=JSON.parse(localStorage.getItem('deep-sea-peek-deaths')||'{}')||{}}catch(e){deaths={}}
-let analytics=null,earned=0,dodgesTotal=0,run=0,ph=0,toast=0,eyeSeen=0;try{dodgesTotal=+localStorage.getItem('deep-sea-peek-dodges')||0}catch(e){}
+let analytics=null,earned=0,dodgesTotal=0,run=0,ph=0,eyeSeen=0;try{dodgesTotal=+localStorage.getItem('deep-sea-peek-dodges')||0}catch(e){}
 const ptrT=new Map();
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -11379,7 +11390,7 @@ function tx(s,x,y,sz,col,al){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();if(f){g.fillStyle=f;g.fill()}if(lw){g.lineWidth=lw;g.strokeStyle=OL;g.stroke()}};
 let st='ready',prog,tilt,gapT,ev,survived,lastType,directorUsed,score,why,rec,flash,shake,tt=0,last=0,fxs=[],lampOut=0;
 let keys={l:0,r:0,cover:0,wind:0},btn=[0,0,0,0],ptrs=new Map(),gyro={on:false,tilt:0,down:false};
-function reset(){eyeSeen=0;run=0;ph=0;toast=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0}
+function reset(){eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0}
 reset();
 /* ---- audio: stereo cues, so headphones help; silent if the browser has no Web Audio ---- */
 let ac=null;
@@ -11439,16 +11450,14 @@ function update(dt){
  tt+=dt;
  if(flash>0)flash-=dt;if(shake>0)shake-=dt;fxs.forEach(f=>f.t+=dt);fxs=fxs.filter(f=>f.t<.9);
  if(st!=='run')return;
- if(toast>0)toast-=dt;
  const I=inputs();
- if(gyro.on)tilt=I.tilt;else tilt+=clamp(I.tilt-tilt,-TILT_SPEED*dt,TILT_SPEED*dt);
- const covered=I.cover;
- const running=I.wind&&!covered&&Math.abs(tilt)<=WIND_MAX_TILT;
- if(running){prog=Math.min(100,prog+WIND_RATE*dt);run+=dt*1.6}
- ph+=dt*(running?13:2.5);
+ const covered=I.cover,sprint=I.wind&&!covered,aim=sprint?0:I.tilt;   // sprinting pins you to the middle: you cannot lean while sprinting
+ if(gyro.on)tilt=aim;else tilt+=clamp(aim-tilt,-TILT_SPEED*dt,TILT_SPEED*dt);
+ if(!covered){prog=Math.min(100,prog+(sprint?WIND_RATE:BASE_RATE)*dt);run+=dt*(sprint?2.6:1.5)}
+ ph+=dt*(covered?2.5:sprint?15:9);
  if(prog>=100){score+=500;pay(WIN_REWARD,'盒子打開了！');end('won');return}
  if(!directorUsed&&prog>=DIRECTOR_AT){directorUsed=true;if(!ev&&Math.random()<DIRECTOR_P)gapT=Math.min(gapT,rnd(1,3))}
- if(!ev){gapT-=dt;if(gapT<=0)startEvent();return}
+ if(!ev){gapT-=dt*(sprint?SPRINT_GAP:1);if(gapT<=0)startEvent();return}
  ev.t-=dt;ev.el=(ev.el||0)+dt;
  const away=tilt*-ev.side;   // positive when leaning away from the spirit's side
  if(ev.type==='eye'){
@@ -11493,9 +11502,9 @@ function drawCorridor(lamp){
  g.fillStyle=gl;g.fillRect(dx,dy,dw,d.b-dy);
  g.fillStyle='rgba(255,230,160,'+(.18*lamp)+')';g.fillRect(dx-dw*.3,dy-dw*.1,dw*1.6,d.b-dy+dw*.1)}
 function drawRunner(){
- const x=200+clamp(tilt,-1,1)*105,y=470,run1=st==='run'&&(keys.wind||btn[3]||ptrs.size>0),bob=Math.abs(Math.sin(ph))*(run1?5:1);
+ const x=200+clamp(tilt,-1,1)*105,y=470,spr=st==='run'&&(keys.wind||btn[3]||ptrs.size>0),jog=st==='run'&&!inputs().cover,bob=Math.abs(Math.sin(ph))*(spr?6:jog?3.5:1);
  g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(x,y+4,34,9,0,0,7);g.fill();
- const sw=Math.sin(ph)*(run1?15:3);
+ const sw=Math.sin(ph)*(spr?16:jog?10:3);
  RR(x-21,y-46+(sw>0?-Math.abs(sw)*.6:0),16,46,6,'#35405a',3);RR(x+5,y-46+(sw<0?-Math.abs(sw)*.6:0),16,46,6,'#35405a',3);
  RR(x-24,y-104-bob,48,62,12,'#6b8fb8',3);
  g.strokeStyle=OL;g.lineWidth=11;g.lineCap='round';g.beginPath();g.moveTo(x-22,y-92-bob);g.lineTo(x-30,y-62-bob+sw*.5);g.stroke();g.beginPath();g.moveTo(x+22,y-92-bob);g.lineTo(x+30,y-62-bob-sw*.5);g.stroke();
@@ -11541,11 +11550,11 @@ function draw(){
  tx('距離出口',16,50,15,'#f1d9a6','left');tx(Math.floor(prog)+'%',W-16,50,15,'#f1d9a6','right');
  let hint='';
  if(st==='run'){
-  if(ev&&ev.type==='eye')hint=ev.phase==='warn'?'牆上有東西在轉動眼珠……':'往反方向靠牆！躲開紅光！';
-  else if(ev&&ev.type==='twins')hint=ev.phase==='warn'?'有笑聲貼著耳朵……不要往聲音那邊靠':'往笑聲的反方向靠牆！';
+  if(ev&&ev.type==='eye')hint=ev.phase==='warn'?'牆上有東西在轉動眼珠……放開「衝刺」！':'往反方向靠牆！躲開紅光！';
+  else if(ev&&ev.type==='twins')hint=ev.phase==='warn'?'有笑聲貼著耳朵……放開「衝刺」，不要往聲音那邊靠':'往笑聲的反方向靠牆！';
   else if(ev&&ev.type==='walker')hint=ev.phase==='warn'?'走廊盡頭有腳步聲。燈滅前蓋住螢幕！':'蓋住不要動，等腳步聲遠去……';
-  else if(prog<25&&!I.wind)hint='用手指「按住」下方「奔跑」（點一下沒用）';
-  if(toast>0&&!hint)hint='要「按住不放」才會跑！';if(hint)tx(hint,200,80,17,'#ffd98a')}
+  else if(prog<25&&!I.wind)hint='自動奔跑中！按住「衝刺」跑更快（衝刺時不能靠牆）';
+  if(hint)tx(hint,200,80,17,'#ffd98a')}
  if(st==='run')drawButtons();
  if(cov){g.fillStyle='rgba(0,0,0,.96)';g.fillRect(0,0,W,H);tx('（螢幕蓋住了）',200,280,18,'#4a3a2a');drawButtons()}
  else if(st==='run'&&lamp<=0){g.fillStyle='rgba(0,0,0,.93)';g.fillRect(0,0,W,H);tx('燈滅了。有什麼東西走過來了……',200,280,18,'#6a4a3a')}
@@ -11553,7 +11562,7 @@ function draw(){
  if(st!=='run'){
   g.fillStyle='rgba(18,13,10,.72)';g.fillRect(0,0,W,H);
   if(st==='ready'){tx('別看',200,150,52,'#e8c675');tx('禁忌寶盒・夜逃',200,190,22,'#f1d9a6');
-   tx('按住「奔跑」，抱著八音盒衝向出口',200,250,18,'#f1d9a6');tx('紅光來了：往反方向靠牆',200,284,18,'#f1d9a6');tx('笑聲來了：往笑聲的反方向靠牆',200,314,18,'#f1d9a6');tx('燈要滅了：蓋住螢幕，不要動',200,344,18,'#f1d9a6');tx('建議戴耳機。到操作區免費開始',200,420,20,'#ffd98a')}
+   tx('自動奔跑，按住「衝刺」跑更快',200,250,18,'#f1d9a6');tx('紅光來了：往反方向靠牆',200,284,18,'#f1d9a6');tx('笑聲來了：往笑聲的反方向靠牆',200,314,18,'#f1d9a6');tx('燈要滅了：蓋住螢幕，不要動',200,344,18,'#f1d9a6');tx('建議戴耳機。到操作區免費開始',200,420,20,'#ffd98a')}
   else if(st==='won'){tx('衝出去了',200,190,40,'#ffd98a');tx('別看裡面。',200,250,28,'#ff6a4d');tx('躲過 '+survived+' 次襲擊',200,310,20,'#f1d9a6');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'',200,350,22,'#ffd98a');tx('到操作區再開一次',200,420,20,'#f1d9a6')}
   else{tx('你死了',200,160,40,'#ff6a4d');tx(CAUSES[why]||'',200,215,15,'#f1d9a6');tx(Math.floor(prog)+'%',200,290,60,'#ffd98a');tx('躲過 '+survived+' 次襲擊',200,330,20,'#f1d9a6');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'躲過 '+MILE_EVENTS+' 次才有點數',200,368,20,earned>0?'#ffd98a':'#f1d9a6');if(rec)tx('新紀錄！',200,402,20,'#ffd98a');tx('到操作區再開一次',200,450,20,'#f1d9a6')}}
 }
@@ -11577,7 +11586,7 @@ c.addEventListener('pointerdown',e=>{
  if(st!=='run'){say(st==='ready'?'先按「免費開始逃跑」。':'這一局已結算。按「免費再開一次」開始新的一局。');return}
  if(!shown())return;e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(x){}
  ptrs.set(e.pointerId,region(e));ptrT.set(e.pointerId,performance.now());syncPtrs()});
-const upPtr=e=>{if(st==='run'&&ptrs.get(e.pointerId)===3&&performance.now()-(ptrT.get(e.pointerId)||0)<250){toast=1.6;say('要「按住不放」才會跑，點一下沒用。')}ptrs.delete(e.pointerId);ptrT.delete(e.pointerId);syncPtrs()};
+const upPtr=e=>{ptrs.delete(e.pointerId);ptrT.delete(e.pointerId);syncPtrs()};
 c.addEventListener('pointerup',upPtr);c.addEventListener('pointercancel',upPtr);c.addEventListener('lostpointercapture',upPtr);
 c.addEventListener('contextmenu',e=>e.preventDefault());
 const KEYMAP={a:'l',A:'l',ArrowLeft:'l',d:'r',D:'r',ArrowRight:'r',' ':'cover',w:'wind',W:'wind',ArrowUp:'wind'};
