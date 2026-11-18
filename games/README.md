@@ -45,3 +45,4 @@
 | [打磚塊 Breakout](breakout/README.md) | `#breakout` | 免費懷舊 | 顯示 | 228 行 | 移動擋板反彈小球，打光磚塊一關闖過一關。 |
 | [小灰出門 Pet Walkies](pet-walk/README.md) | `#pet-walk` | 技巧闖關 | 顯示 | 1104 行 | 一鍵帶小灰散步，路上撞見野狗、河鯊和幸運轉盤。 |
 | [最後的晚餐 The Last Banquet](banquet/README.md) | `#banquet` | 技巧闖關 | 顯示 | 594 行 | 與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。 |
+| [人魚接龍 Mermaid Spider](mermaid/README.md) | `#mermaid` | 技巧闖關 | 顯示 | 287 行 | 牌背是美人魚的蜘蛛接龍，排滿 K 到 A 收成珍珠。 |

@@ -54,7 +54,7 @@
 ## 平台共用相依
 
 - 直接使用的共用名稱：`S`、`AN`、`save`、`fmt`、`syncBalance`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
-- `js/bootstrap.js` 會呼叫：`buildBoard`、`renderMines`
+- `js/bootstrap.js` 會呼叫：`renderMines`
 - `js/controls.js` 會呼叫：`mSay`、`renderMines`
 - 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`M`
 
