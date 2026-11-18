@@ -29,7 +29,7 @@ function frontierWorld(level,tech,coins){
  var cfg=frontierPlan(level),seed=level*1973;
  function rand(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}
  var flip=level%2?-1:1,offset=(level%3-1)*35;
- var w={version:1,level:level,cfg:cfg,tech:frontierTech(tech),offer:null,coins:Math.max(0,Number(coins)||0),siege:{wave:0,next:cfg.war?100:40},fighters:[],failure:"",workers:[],supplies:[],drops:[],raids:0,raidAt:75,depotReady:false,settled:false,time:0,phase:'play',p:{x:180,y:450,hp:100,inv:0,attack:0,dash:0,dx:1,dy:0},bag:{wood:0,stone:0},bank:{wood:0,stone:0},nodes:[],enemies:[],shots:[],effects:[],kills:0,rescued:0,hold:0,wave:0,waveAt:0,heal:35,worker:0,threat:0,
+ var w={version:1,level:level,cfg:cfg,tech:frontierTech(tech),offer:null,coins:Math.max(0,Number(coins)||0),siege:{wave:0,next:cfg.war?Math.max(80,100-Math.floor(level*.4)):40},fighters:[],failure:"",workers:[],supplies:[],drops:[],raids:0,raidAt:75,depotReady:false,settled:false,time:0,phase:'play',p:{x:180,y:450,hp:100,inv:0,attack:0,dash:0,dx:1,dy:0},bag:{wood:0,stone:0},bank:{wood:0,stone:0},nodes:[],enemies:[],shots:[],effects:[],kills:0,rescued:0,hold:0,wave:0,waveAt:0,heal:35,worker:0,threat:0,
  buildings:[{kind:'camp',x:180,y:450,built:true,wood:0,stone:0},{kind:'mill',x:320,y:450+flip*230,built:false,wood:cfg.wood,stone:0},{kind:'forge',x:330,y:450-flip*230,built:false,wood:12,stone:cfg.stone},{kind:'bridge',x:590,y:450,built:false,wood:cfg.wood+10,stone:cfg.stone},{kind:'tower',x:860,y:450+offset,built:false,wood:cfg.wood,stone:cfg.stone+6,cd:0},{kind:'beacon',x:1090,y:450-offset,built:false,wood:cfg.wood,stone:cfg.stone}],cages:[{x:880,y:180,open:false},{x:1020,y:700,open:false}]};
  w.buildings.push(
  {kind:'house',x:185,y:620,built:false,wood:16,stone:4,hp:140,maxHp:140},
@@ -46,7 +46,8 @@ function frontierWorld(level,tech,coins){
   w.buildings[2].kind='warehouse';w.buildings[2].wood=20+level;w.buildings[2].stone=10+level;
   w.buildings=w.buildings.filter(function(b){return b.kind!=='market'&&b.kind!=='depot';});
   w.enemyBase={x:cfg.width-110,y:cfg.height/2,hp:cfg.enemyHp,maxHp:cfg.enemyHp,cool:3};
-  for(var gi=0;gi<cfg.guards;gi++)w.fighters.push({x:240+gi%4*26,y:500+Math.floor(gi/4)*30,hp:100+cfg.chapter*20,max:100+cfg.chapter*20,attack:0,role:'guard'});}
+  // Guards are no longer given at the start: the hero trains them at the barracks (cap = cfg.guards).
+ }
  w.cages[1].x=cfg.width-180;w.cages[1].y=cfg.height-170;
  w.buildings.forEach(function(b){b.hp=b.hp||180;b.maxHp=b.maxHp||180;b.repair=0;});
  w.camps=[];
@@ -174,7 +175,7 @@ function frontierSiege(w,dt){
  w.siege.next-=dt;
  if(w.siege.next<=0&&w.enemies.filter(function(e){return e.hp>0;}).length<65){
   w.siege.wave++;w.siege.next=w.cfg.war?Math.max(14,w.cfg.waveGap-w.siege.wave*.7):(w.siege.wave>=w.cfg.assaultWaves?w.cfg.waveGap+10:w.cfg.waveGap);
-  var count=Math.min(w.cfg.war?40:18,3+w.cfg.chapter*2+Math.floor(w.siege.wave*(w.cfg.war?1.5:1)));
+  var count=Math.min(w.cfg.war?40:18,(w.cfg.war?3+Math.floor(w.level/4):3)+w.cfg.chapter*2+Math.floor(w.siege.wave*(w.cfg.war?1.6:1)));
   for(var i=0;i<count;i++){var side=(i+w.siege.wave)%3,x=side===0?65:side===1?400:frontierBuilt(w,'bridge')?w.cfg.width-75:470,y=side===1?65:80+(i*83+w.siege.wave*41)%(w.cfg.height-160);frontierSpawn(w,x,y,i+w.siege.wave);var enemy=w.enemies[w.enemies.length-1];enemy.raider=true;enemy.assault=true;enemy.wave=true;if(w.cfg.war){var mul=1+.13*w.siege.wave;enemy.hp*=mul;enemy.max*=mul;}}
  }
  var barracks=w.buildings.find(function(b){return b.kind==='barracks';});

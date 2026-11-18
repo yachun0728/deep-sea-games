@@ -119,9 +119,9 @@ ok(model.frontierRecruitCost(w).wood===10&&model.frontierRecruitCost(w).stone===
  ok(model.frontierRecruit(w)&&!model.frontierRecruit(w)&&barracks.queue===1,'only one warrior is in training at a time and it is paid up front');
  for(let n=0;n<16;n++){tick(w,3.1);model.frontierRecruit(w);}tick(w,3.1);ok(model.frontierAttackers(w).length===12&&model.frontierFighterCap(w)===12,'attack warrior cap is twelve and warriors arrive one by one');
  // walking next to the barracks trains warriors by itself
- {let w=create(1);let barracks;w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');barracks.built=true;w.bank.wood=w.bank.stone=500;w.p.x=barracks.x;w.p.y=barracks.y;tick(w,30);ok(model.frontierAttackers(w).length>=5,'standing at the barracks auto-trains warriors');
+ {let w=create(1);let barracks;w.cfg.guards=0;w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');barracks.built=true;w.bank.wood=w.bank.stone=500;w.p.x=barracks.x;w.p.y=barracks.y;tick(w,30);ok(model.frontierAttackers(w).length>=5,'standing at the barracks auto-trains warriors');
  w.p.x=100;w.p.y=100;const hired=model.frontierAttackers(w).length+barracks.queue;tick(w,10);ok(model.frontierAttackers(w).length+barracks.queue===hired,'no training when the hero is away');
- w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');barracks.built=true;w.bank.wood=w.bank.stone=0;w.p.x=barracks.x;w.p.y=barracks.y;tick(w,10);ok(model.frontierAttackers(w).length===0&&!barracks.queue,'no materials, no warriors');w.bank.wood=w.bank.stone=25;tick(w,10);ok(model.frontierAttackers(w).length===2&&w.bank.wood===5&&w.bank.stone===5,'25 of each pays for exactly two warriors');}
+ w=create(1);w.cfg.guards=0;w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');barracks.built=true;w.bank.wood=w.bank.stone=0;w.p.x=barracks.x;w.p.y=barracks.y;tick(w,10);ok(model.frontierAttackers(w).length===0&&!barracks.queue,'no materials, no warriors');w.bank.wood=w.bank.stone=25;tick(w,10);ok(model.frontierAttackers(w).length===2&&w.bank.wood===5&&w.bank.stone===5,'25 of each pays for exactly two warriors');}
  // fighters march on the base, damage it slowly, and the base hurts them only a little
  const start=w.enemyBase.hp;let fighterHp=w.fighters[0].max;w.p.x=barracks.x;w.p.y=barracks.y;w.p.inv=1e6;
  tick(w,40);ok(w.enemyBase.hp<start,'fighters attack the enemy base');ok((start-w.enemyBase.hp)/(12*40)<4,'each warrior attacks slowly');
@@ -156,13 +156,16 @@ ok(model.frontierRecruitCost(w).wood===10&&model.frontierRecruitCost(w).stone===
   w.tech=model.frontierTech({tool:8,blade:8,pack:7});w.offer=null;ok(model.frontierDraw(w).join()==='pack','maxed upgrades are never offered');w.tech=model.frontierTech({tool:8,blade:8,pack:8});ok(model.frontierDraw(w).length===0,'nothing is offered once everything is maxed');
   let total=0;for(let n=0;n<24;n++)total+=30+n*36;ok(total<12000&&total>9000,'maxing everything takes a long run (about the whole 50 stages)');
   w=create(1);w.coins=500;tick(w,.1);ok(w.offer&&w.coins===470,'only one card is offered at a time');}
+ // difficulty ramps with the stage: bigger first waves, earlier arrival, yet stage 1 stays gentle
+ {const first=lv=>{const x=create(lv);x.enemies=[];x.siege.next=.01;model.frontierSiege(x,.02);return {n:x.enemies.length,t:model.frontierWorld(lv).siege.next};};
+  const a1=first(1),a20=first(20),a40=first(40);ok(a1.n<=6&&a20.n>a1.n+5&&a40.n>a20.n+5,'first waves get much bigger with the stage number');ok(a1.t===100&&a40.t<a1.t&&a40.t>=80,'later stages get their first wave a little earlier');}
  // every stage is an enemy-base stage; defences and attackers scale with the region
  for(const [lv,towers,guards,cap] of [[1,2,2,12],[10,2,2,12],[11,3,4,16],[25,4,6,20],[41,6,10,28],[50,6,10,28]]){
-  w=create(lv);ok(w.cfg.war&&w.enemyBase&&w.buildings.filter(b=>b.kind==='tower').length===towers&&w.fighters.filter(f=>f.role==='guard').length===guards&&model.frontierFighterCap(w)===cap&&!w.buildings.some(b=>b.kind==='beacon'),`stage ${lv}: ${towers} towers, ${guards} guards, attacker cap ${cap}`);
+  w=create(lv);ok(w.cfg.war&&w.enemyBase&&w.buildings.filter(b=>b.kind==='tower').length===towers&&w.cfg.guards===guards&&w.fighters.length===0&&model.frontierFighterCap(w)===cap&&!w.buildings.some(b=>b.kind==='beacon'),`stage ${lv}: ${towers} towers, guard cap ${guards}, no free guards, attacker cap ${cap}`);
   ok(w.buildings.filter(b=>b.kind==='barracks').every(b=>b.x>678),`stage ${lv}: only the barracks across the bridge exists`);
  }
  // guards defend the home base and never march on the enemy
- w=create(21);w.siege.next=1e6;w.enemies=[];w.p.x=100;w.p.y=100;w.p.inv=1e6;tick(w,20);ok(w.fighters.filter(f=>f.role==='guard').every(f=>Math.hypot(f.x-w.buildings[0].x,f.y-w.buildings[0].y)<200),'guards stay at the home base');
+ w=create(21);w.siege.next=1e6;w.enemies=[];w.p.x=100;w.p.y=100;w.p.inv=1e6;for(let g=0;g<4;g++)w.fighters.push({x:w.buildings[0].x+60,y:w.buildings[0].y+40,hp:120,max:120,attack:0,role:'guard'});tick(w,20);ok(w.fighters.filter(f=>f.role==='guard').every(f=>Math.hypot(f.x-w.buildings[0].x,f.y-w.buildings[0].y)<200),'guards stay at the home base');
  w.enemies.push({x:w.buildings[0].x+120,y:w.buildings[0].y,type:'melee',hp:60,max:60,state:'walk',t:0,cool:99,tx:0,ty:0,hit:false,counted:false,wave:false,radius:17});tick(w,6);ok(w.enemies.every(e=>e.hp<=0||e.hp<60),'guards fight monsters near the base');
  const hut=w.buildings.find(b=>b.kind==='barracks');hut.built=true;w.fighters=w.fighters.filter(f=>f.role!=='guard');tick(w,40);ok(w.fighters.filter(f=>f.role==='guard').length===0,'guards are not replaced while the hero is away from the barracks');
  w.nodes=[];w.bag.wood=w.bag.stone=0;w.bank.wood=w.bank.stone=0;w.p.x=hut.x;w.p.y=hut.y;tick(w,3.5);ok(w.fighters.filter(f=>f.role==='guard').length===0,'no materials, no new guard');
