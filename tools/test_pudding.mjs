@@ -44,8 +44,22 @@ check('Start deducts the entry fee once even when clicked twice, then opens the 
   const f=fixture();f.F.start();f.F.start();assert.equal(f.wallet.balance,500-fee);assert.equal(f.count('start'),1);assert.equal(f.storage.get('crush-depth-balance'),String(500-fee));assert.equal(f.busy(),true);
   assert.deepEqual(f.events[0],['start','pudding',fee]);assert.equal(f.ev('ph'),'forge');assert.equal(f.ev('seg'),1);
 });
-check('Camp offers one blade, one spear and one shield piece',()=>{
-  const f=fixture();f.F.start();assert.deepEqual(f.ev('cards.map(c=>c.type).sort()'),['b','d','m']);
+check('Camps 1-2 offer only blade and spear pieces; shield pieces appear from segment 3',()=>{
+  const f=fixture();f.F.start();assert.deepEqual(f.F.ev('cards.map(c=>c.type).sort()'),['b','m']);
+  f.skipAndGo();f.clearSeg();f.step(20);assert.equal(f.F.ev('seg'),2);assert.deepEqual(f.F.ev('cards.map(c=>c.type).sort()'),['b','m']);
+  f.skipAndGo();f.clearSeg();f.step(20);assert.equal(f.F.ev('seg'),3);assert.deepEqual(f.F.ev('cards.map(c=>c.type).sort()'),['b','d','m']);
+});
+check('Counters: shield soldiers resist blades and break on spears; cavalry is barely slowed and knocked back further',()=>{
+  const f=fixture();f.F.start();f.skipAndGo();f.F.ev('spawnT=99;px=200');
+  const hit=(t,kind)=>{f.F.ev("const c=weaponCells(200).find(c=>c.t==='"+kind+"');enemies=[{t:'"+t+"',x:c.cx,y:c.cy,hp:100,maxHp:100,speed:0,flash:0,slow:false,spearCd:"+(kind==='m'?0:99)+"}]");
+    const y0=f.F.ev('enemies[0].y');f.step(1);return {dmg:100-f.F.ev('enemies[0].hp'),moved:y0-f.F.ev('enemies[0].y')}};
+  const inf=hit('inf','m'),sh=hit('shield','m'),cav=hit('cav','m');
+  assert.ok(sh.dmg>inf.dmg,'spear breaks shield soldiers');assert.ok(cav.moved>inf.moved,'spear knocks cavalry back further');
+  const ib=hit('inf','b'),sb=hit('shield','b');assert.ok(sb.dmg<ib.dmg*.6,'blades are weak against shield soldiers');
+  f.F.ev("const c=weaponCells(200).find(c=>c.t==='b');enemies=[{t:'cav',x:c.cx,y:c.cy,hp:100,maxHp:100,speed:100,flash:0,slow:false,spearCd:99},{t:'inf',x:c.cx,y:c.cy,hp:100,maxHp:100,speed:100,flash:0,slow:false,spearCd:99}]");
+  f.step(1);   // the first frame sets the slow flag, the second frame moves slowed
+  const yc=f.F.ev('enemies[0].y'),yi=f.F.ev('enemies[1].y');f.step(1);
+  assert.ok((f.F.ev('enemies[0].y')-yc)>(f.F.ev('enemies[1].y')-yi)*1.4,'blades slow infantry more than cavalry');
 });
 check('Starting weapon: blade 8/s, spear 6, no guard; clusters of 3+ count extra',()=>{
   const f=fixture();assert.equal(f.ev('stats.bladeDps'),8);assert.equal(f.ev('stats.spear'),6);assert.equal(f.ev('stats.guard'),0);
@@ -83,7 +97,7 @@ check('Blades cut and slow, spears stab once with knock-back, both score on a ki
   f.F.ev("const b=weaponCells(200).find(c=>c.t==='b');enemies=[{t:'inf',x:b.cx,y:b.cy,hp:100,maxHp:100,speed:0,flash:0,slow:false,spearCd:99}]");
   f.step(1);const hp=f.ev('enemies[0].hp');assert.ok(hp<100&&hp>99.5,'blade dps per frame');assert.equal(f.ev('enemies[0].slow'),true);
   f.F.ev("const m=weaponCells(200).find(c=>c.t==='m');enemies=[{t:'inf',x:m.cx,y:m.cy,hp:100,maxHp:100,speed:0,flash:0,slow:false,spearCd:0}]");
-  const y0=f.ev('enemies[0].y');f.step(1);const h1=f.ev('enemies[0].hp');assert.ok(h1<=94&&h1>93,'spear burst 6 plus a little blade');assert.equal(y0-f.ev('enemies[0].y'),22);
+  const y0=f.ev('enemies[0].y');f.step(1);const h1=f.ev('enemies[0].hp');assert.ok(h1<=94&&h1>93,'spear burst 6 plus a little blade');assert.equal(y0-f.ev('enemies[0].y'),14);
   f.step(1);assert.ok(f.ev('enemies[0].hp')>h1-1,'stab is on cooldown');   // only blade time-damage after the stab
   f.F.ev("const b=weaponCells(200).find(c=>c.t==='b');enemies=[{t:'inf',x:b.cx,y:b.cy,hp:.01,maxHp:5,speed:0,flash:0,slow:false,spearCd:99}]");
   f.step(1);assert.equal(f.ev('enemies.length'),0);assert.equal(f.ev('score'),10);assert.equal(f.ev('streak'),1);

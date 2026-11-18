@@ -4136,7 +4136,13 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
   "點擊已解鎖事件可回味劇情|Tap unlocked events to read story": "Tap unlocked events to read story",
   "每趟固定扣 10 點。小灰自己走在路上，一趟 60 步，分成平原、水域、山地三段，每段 20 步。每隔幾步會遇到隨機事件：撿東西、遇到野狗、河鯊、落石，或踩上幸運轉盤。走滿 60 步時，門口還有最後一次轉盤。部分事件可以二選一，例如用頭撞開鐵櫃，或用繩索撬開；拿罐頭換一次轉盤，或跟著野狗一起吠。": "Each trip costs a fixed 10 points. Gray walks along the road for 60 steps, split into plains, waters and mountains, 20 steps each. Every few steps a random event appears: picking up loot, stray dogs, a river shark, falling rocks, or a lucky wheel. After step 60 there is one last wheel at the door. Some events offer a choice, such as headbutting a locker open or prying it with rope, or trading a can for a wheel spin or barking back at the dogs.",
   "3 個 AI 字詞碎片化成好運，前 3 次轉盤運氣變好|3 AI word shards became luck: your first 3 spins are luckier": "3 AI word shards became luck: your first 3 spins are luckier",
-  "到家門口了，門前有一個幸運轉盤。最後轉一次，再進門！|Almost home. A lucky wheel by the door: one last spin before going in!": "Almost home. A lucky wheel by the door: one last spin before going in!"
+  "到家門口了，門前有一個幸運轉盤。最後轉一次，再進門！|Almost home. A lucky wheel by the door: one last spin before going in!": "Almost home. A lucky wheel by the door: one last spin before going in!",
+  "◀　按住下方左右移動　▶": "◀  Hold the bottom to move  ▶",
+  "怕矛": "Weak to spear",
+  "戳・擊退・破盾": "Stab · knockback · breaks shields",
+  "持續砍・減速": "Cuts over time · slows",
+  "擋箭・減傷": "Blocks arrows · less damage",
+  "選碎片→點格子→鍛造　白框＝連3格加成　盾兵怕矛": "Pick piece → tap grid → forge  White box = 3+ cluster bonus  Shield soldiers fear spears"
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -12269,7 +12275,9 @@ const SEGS=8,SEG_TIME=16,SPAWN_STOP=13,FIRST_SPAWN=.8,CAV_WARN=.6,ARROW_SPEED=42
 const SPEED_MUL={inf:1,cav:1.7,shield:.7},HURT={inf:10,cav:15,shield:12,arrow:8,pass:3},KILL={inf:10,cav:15,shield:20};
 const SEG_SCORE=100,WIN_SCORE=500,CALM_SCORE=5,STREAK_STEP=8,STREAK_HEAL=5,SEG_HEAL=10;
 const SEG_REWARD=1,WIN_REWARD=2;      // fixed points credited for each cleared segment, and once more for clearing all eight (8+2 = the 10-point entry fee)
-const BLADE_DPS=4,SPEAR_BURST=3,SPEAR_CD=.5,SPEAR_KNOCK=22,BLADE_SLOW=.5,GUARD_PER=.05,GUARD_MAX=.6;
+const BLADE_DPS=4,SPEAR_BURST=3,SPEAR_CD=.5,SPEAR_KNOCK=14,BLADE_SLOW=.5,GUARD_PER=.05,GUARD_MAX=.6;
+const CAV_SLOW=.8,SHIELD_BLADE=.5,SHIELD_SPEAR=1.3,CAV_KNOCK=1.5,SHIELD_FROM=3;   // counters: blades barely slow cavalry, shield soldiers resist blades and break on spears; shield pieces are offered from segment 3
+const HP_MUL=1.2;   // global enemy HP multiplier, tuned with the bot simulation after the counters were added
 const SPAWN_X=[80,320],START_CELLS={b:[[1,3],[1,2]],m:[[2,3],[2,2]],d:[]};
 // Per segment (1-8): spawn interval [min,max] s, base speed px/s, HP of infantry / cavalry / shield, spawn weights [infantry,cavalry,shield,archer].
 const LV=[
@@ -12281,6 +12289,7 @@ const LV=[
  {iv:[.6,.94],base:140,hp:{inf:16,cav:13,shield:29},w:[30,25,20,25]},
  {iv:[.55,.89],base:150,hp:{inf:19,cav:16,shield:35},w:[30,25,25,20]},
  {iv:[.51,.85],base:160,hp:{inf:22,cav:19,shield:42},w:[25,25,30,20]}];
+const CARD_HINT={b:'持續砍・減速',m:'戳・擊退・破盾',d:'擋箭・減傷'};
 const TYPES={b:{n:'刃',f:'#e53935',d:'#8e1c1a'},m:{n:'矛',f:'#1e88e5',d:'#0d47a1'},d:{n:'盾',f:'#fdd835',d:'#a58b00'}};
 // Puzzle pieces: cell offsets [x,y], weight in the random draw.
 const SHAPES=[{c:[[0,0]],w:2},{c:[[0,0],[1,0]],w:3},{c:[[0,0],[1,0],[2,0]],w:3},{c:[[0,0],[0,1],[1,1]],w:3},{c:[[0,0],[1,0],[0,1],[1,1]],w:2},{c:[[0,0],[1,0],[2,0],[3,0]],w:1},{c:[[0,0],[0,1],[0,2],[1,2]],w:2},{c:[[0,0],[1,0],[2,0],[1,1]],w:2}];
@@ -12291,6 +12300,7 @@ const rnd=(a,b)=>a+Math.random()*(b-a);
 function wpick(ws){let t=0;for(const w of ws)t+=w;let r=Math.random()*t;for(let i=0;i<ws.length;i++){r-=ws[i];if(r<0)return i}return ws.length-1}
 const RR=(x,y,w,h,r)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()};
 function tx(s,x,y,sz,col,al,plain){g.font=(plain?'600 ':'800 ')+sz+'px '+FONT;g.textAlign=al||'center';g.textBaseline='middle';g.lineJoin='round';if(!plain){g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-30)}g.fillStyle=col;g.fillText(s,x,y,W-30)}
+const cardX=i=>20+(3-cards.length)*62+124*i;
 const inRect=(x,y,rx,ry,w,h)=>x>=rx&&x<rx+w&&y>=ry&&y<ry+h;
 // ---- weapon grid ----
 const emptyGrid=()=>[0,1,2,3].map(()=>[null,null,null,null]);
@@ -12343,7 +12353,7 @@ function end(reason){
 // ---- forge (camp) ----
 function enterForge(){
  ph='forge';forgeCount++;stats=computeStats(grid);
- const order=['b','m','d'];for(let i=2;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
+ const order=seg>=SHIELD_FROM?['b','m','d']:['b','m'];for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
  cards=order.map(t=>({type:t,cells:SHAPES[wpick(SHAPES.map(s=>s.w))].c.map(p=>p.slice())}));
  sel=-1;ghost=null;fPhase='edit';fT=0;flashCells=[];flashT=0;clearInput();
 }
@@ -12359,14 +12369,14 @@ function forgeConfirm(){
 function forgeSkip(){if(fPhase!=='edit')return;cards=[];sel=-1;ghost=null;fPhase='banner';fT=.8}
 function forgeTap(x,y){
  if(fPhase!=='edit')return;
- for(let i=0;i<cards.length;i++)if(inRect(x,y,20+124*i,384,112,90)){sel=i;clampGhost();return}
+ for(let i=0;i<cards.length;i++)if(inRect(x,y,cardX(i),384,112,90)){sel=i;clampGhost();return}
  if(inRect(x,y,GX,GY,GC*4,GC*4)){if(sel<0)return;const d=dims(cards[sel].cells);ghost={x:Math.min(Math.floor((x-GX)/GC),4-d.w),y:Math.min(Math.floor((y-GY)/GC),4-d.h)};return}
  if(inRect(x,y,20,490,110,50))forgeRotate();else if(inRect(x,y,145,490,110,50))forgeConfirm();else if(inRect(x,y,270,490,110,50))forgeSkip();
 }
 // ---- run ----
 function weaponCells(x){const out=[];for(let r=0;r<4;r++)for(let q=0;q<4;q++)if(grid[r][q])out.push({t:grid[r][q],w:stats.cw[r][q],cx:x-2*CELL+q*CELL+CELL/2,cy:WTOP+r*CELL+CELL/2});return out}
 const touches=(e,cl)=>Math.abs(e.x-cl.cx)<(EW+CELL)/2&&Math.abs(e.y-cl.cy)<(EH+CELL)/2;
-function makeEnemy(kind,x,lv){return{t:kind,x,y:-30,hp:lv.hp[kind],maxHp:lv.hp[kind],speed:lv.base*SPEED_MUL[kind],flash:0,slow:false,spearCd:0}}
+function makeEnemy(kind,x,lv){const hp=Math.round(lv.hp[kind]*HP_MUL);return{t:kind,x,y:-30,hp,maxHp:hp,speed:lv.base*SPEED_MUL[kind],flash:0,slow:false,spearCd:0}}
 function spawn(lv){
  const kind=['inf','cav','shield','archer'][wpick(lv.w)];
  let x=rnd(SPAWN_X[0],SPAWN_X[1]);if(Math.abs(x-lastX)<50)x=rnd(SPAWN_X[0],SPAWN_X[1]);lastX=x;
@@ -12409,15 +12419,16 @@ function updateRun(dt){
  for(const a of archers){a.t+=dt;if(!a.fired&&a.t>=1){a.fired=true;arrows.push({x:a.x,y:80})}}
  archers=archers.filter(a=>a.t<1.3);
  moveHero(dt);
- for(const e of enemies){e.y+=e.speed*(e.slow?BLADE_SLOW:1)*dt;e.slow=false;if(e.spearCd>0)e.spearCd-=dt}
+ for(const e of enemies){e.y+=e.speed*(e.slow?(e.t==='cav'?CAV_SLOW:BLADE_SLOW):1)*dt;e.slow=false;if(e.spearCd>0)e.spearCd-=dt}
  for(const a of arrows)a.y+=ARROW_SPEED*dt;
  // weapon contact: blades cut over time and slow, spears stab once and knock back, shields stop arrows
  const cells=weaponCells(px);
  for(const e of enemies){
   let dps=0,burst=0;
   for(const cl of cells){if(cl.t==='d'||!touches(e,cl))continue;if(cl.t==='b')dps+=BLADE_DPS*cl.w;else if(e.spearCd<=0)burst+=SPEAR_BURST*cl.w}
+  if(e.t==='shield'){dps*=SHIELD_BLADE;burst*=SHIELD_SPEAR}
   if(dps>0){e.hp-=dps*dt;e.flash=.08;e.slow=true}
-  if(burst>0){e.hp-=burst;e.flash=.08;e.spearCd=SPEAR_CD;e.y-=SPEAR_KNOCK;fl('-'+Math.round(burst),e.x,e.y-20,'#fff')}
+  if(burst>0){e.hp-=burst;e.flash=.08;e.spearCd=SPEAR_CD;e.y-=SPEAR_KNOCK*(e.t==='cav'?CAV_KNOCK:1);fl('-'+Math.round(burst),e.x,e.y-20,'#fff')}
   if(e.hp<=0&&!e.dead)kill(e);
  }
  enemies=enemies.filter(e=>!e.dead);
@@ -12531,7 +12542,7 @@ function drawRun(){
  for(const a of archers)if(a.t>=.2&&a.t<1){g.fillStyle='rgba(255,0,0,'+(Math.floor(tt/.1)%2?.45:.15)+')';g.fillRect(a.x-20,70,40,430)}
  for(const w of warns)tx('!',w.x,24,30,'#ff1744');
  for(const a of archers)drawArcher(a);
- for(const e of enemies)drawEnemy(e);
+ for(const e of enemies){drawEnemy(e);if(e.t==='shield')tx('怕矛',e.x,e.y-30,11,'#ffd54f')}
  for(const a of arrows){g.fillStyle='#ffeb3b';g.fillRect(a.x-3,a.y-15,6,24);g.beginPath();g.moveTo(a.x-6,a.y+9);g.lineTo(a.x+6,a.y+9);g.lineTo(a.x,a.y+20);g.fill()}
  for(const d of dying){const k=Math.max(0,d.life/.15);g.globalAlpha=k;drawEnemyBody(d.t,d.x,d.y,.4+.6*k);g.fillStyle='rgba(255,255,255,.8)';RR(d.x-27,d.y-20,54,40,10);g.fill();g.globalAlpha=1}
  const sh=hurtT>0?Math.sin(tt*80)*3:0;
@@ -12543,6 +12554,7 @@ function drawRun(){
  g.fillStyle='#333';g.fillRect(16,80,W-32,6);g.fillStyle='#ffd54f';g.fillRect(16,80,(W-32)*Math.min(1,rt/SEG_TIME),6);
  if(streak>=2)tx('x'+streak,W-16,120,22,'#fff1c1','right');
  if(seg===1&&rt<4)tx('按住 ←→ / AD，或按住畫面，讓武器碰到敵人',W/2,520,13,'#fff','center');
+ else{g.globalAlpha=.3;tx('◀　按住下方左右移動　▶',W/2,536,12,'#fff','center',true);g.globalAlpha=1}
  if(redT>0){g.fillStyle='rgba(255,0,0,.4)';g.fillRect(0,0,W,40)}
  if(sub==='clear'){g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,0,W,H);tx(banner,W/2,280,32,'#fff1c1')}
 }
@@ -12564,17 +12576,17 @@ function drawForge(){
  line(345,[['刃每秒',v=>String(v.bladeDps),'bladeDps'],['矛突刺',v=>String(v.spear),'spear']]);
  line(363,[['減傷',v=>Math.round(v.guard*100)+'%','guard'],['寬',v=>v.width+'格','width'],['長',v=>v.length+'格','length']]);
  for(let i=0;i<cards.length;i++){
-  const cd=cards[i],cx=20+124*i;g.fillStyle='#3b3344';RR(cx,384,112,90,12);g.fill();
+  const cd=cards[i],cx=cardX(i);g.fillStyle='#3b3344';RR(cx,384,112,90,12);g.fill();
   if(sel===i){g.strokeStyle='#ffd54f';g.lineWidth=4;RR(cx,384,112,90,12);g.stroke()}
   const d=dims(cd.cells),cs=16,ox=cx+56-d.w*cs/2,oy=422-d.h*cs/2;
   for(const[dx,dy]of cd.cells){g.fillStyle=TYPES[cd.type].f;g.fillRect(ox+dx*cs,oy+dy*cs,cs,cs);g.strokeStyle=TYPES[cd.type].d;g.lineWidth=2;g.strokeRect(ox+dx*cs+1,oy+dy*cs+1,cs-2,cs-2)}
-  tx(TYPES[cd.type].n,cx+56,462,14,'#fff1c1');
+  tx(TYPES[cd.type].n,cx+56,454,14,'#fff1c1');tx(CARD_HINT[cd.type],cx+56,468,10,'#bdbdbd','center',true);
  }
  const can=fPhase==='edit'&&sel>=0&&!!ghost;
  g.fillStyle='#4a5a78';RR(20,490,110,50,12);g.fill();tx('旋轉',75,515,20,'#fff');
  g.fillStyle=can?'#ffb300':'#555';RR(145,490,110,50,12);g.fill();tx('鍛造！',200,515,20,can?'#3e2723':'#999','center',true);
  g.fillStyle='#666';RR(270,490,110,50,12);g.fill();tx('跳過',325,515,20,'#fff');
- if(forgeCount===1)tx('選碎片 → 點格子放 → 按鍛造　（格子上方＝武器前方）',W/2,552,12,'#9e9e9e','center',true);
+ if(forgeCount<=2)tx('選碎片→點格子→鍛造　白框＝連3格加成　盾兵怕矛',W/2,551,12,'#9e9e9e','center',true);
  if(fPhase==='banner'){g.fillStyle='rgba(0,0,0,.5)';g.fillRect(0,0,W,H);tx('第 '+seg+' 段　出發！',W/2,280,32,'#fff1c1')}
 }
 function drawOver(){

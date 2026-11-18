@@ -2588,5 +2588,11 @@
   "點擊已解鎖事件可回味劇情|Tap unlocked events to read story": "Tap unlocked events to read story",
   "每趟固定扣 10 點。小灰自己走在路上，一趟 60 步，分成平原、水域、山地三段，每段 20 步。每隔幾步會遇到隨機事件：撿東西、遇到野狗、河鯊、落石，或踩上幸運轉盤。走滿 60 步時，門口還有最後一次轉盤。部分事件可以二選一，例如用頭撞開鐵櫃，或用繩索撬開；拿罐頭換一次轉盤，或跟著野狗一起吠。": "Each trip costs a fixed 10 points. Gray walks along the road for 60 steps, split into plains, waters and mountains, 20 steps each. Every few steps a random event appears: picking up loot, stray dogs, a river shark, falling rocks, or a lucky wheel. After step 60 there is one last wheel at the door. Some events offer a choice, such as headbutting a locker open or prying it with rope, or trading a can for a wheel spin or barking back at the dogs.",
   "3 個 AI 字詞碎片化成好運，前 3 次轉盤運氣變好|3 AI word shards became luck: your first 3 spins are luckier": "3 AI word shards became luck: your first 3 spins are luckier",
-  "到家門口了，門前有一個幸運轉盤。最後轉一次，再進門！|Almost home. A lucky wheel by the door: one last spin before going in!": "Almost home. A lucky wheel by the door: one last spin before going in!"
+  "到家門口了，門前有一個幸運轉盤。最後轉一次，再進門！|Almost home. A lucky wheel by the door: one last spin before going in!": "Almost home. A lucky wheel by the door: one last spin before going in!",
+  "◀　按住下方左右移動　▶": "◀  Hold the bottom to move  ▶",
+  "怕矛": "Weak to spear",
+  "戳・擊退・破盾": "Stab · knockback · breaks shields",
+  "持續砍・減速": "Cuts over time · slows",
+  "擋箭・減傷": "Blocks arrows · less damage",
+  "選碎片→點格子→鍛造　白框＝連3格加成　盾兵怕矛": "Pick piece → tap grid → forge  White box = 3+ cluster bonus  Shield soldiers fear spears"
 }
