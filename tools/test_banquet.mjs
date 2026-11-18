@@ -310,6 +310,16 @@ check('A drink queues a reveal beat: the host and the player wait for it, and it
   f.B.render();assert.equal(f.E().fx.length,0);
   f.B.tick(1);f.ev('E.aiT=0');f.B.tick(.1);assert.ok(f.E().cups.length<2||f.E().pending);
 });
+check('The dealer pose follows the action: self-drink, toast to the player, forced drink, hurt, and the final pose',()=>{
+  const pose=f=>f.el('bq-dealerbox').dataset.pose;
+  let f=started();f.scene({cups:['water','water','water'],turn:'d'});f.B.selfDrink('d',1);f.B.render();assert.equal(pose(f),'drink');
+  f=started();f.scene({cups:['water','water','water'],turn:'d'});f.B.toast('d',1);f.B.render();assert.equal(pose(f),'reach');
+  f=started();f.scene({cups:['water','water','water']});f.B.toast('p',1);f.B.render();assert.equal(pose(f),'caught');
+  f=started();f.scene({cups:['poison','water','water'],hp:{p:2,d:5}});f.B.selfDrink('p',1);f.B.render();f.B.loop(1000);f.B.loop(1100);assert.ok(['idle','victory','drink','reach','caught'].includes(pose(f)));
+  f=started();f.scene({cups:['poison','water'],hp:{p:5,d:1}});f.B.toast('p',1);f.B.render();assert.equal(pose(f),'hurt');
+  f=started();f.scene({cups:['poison','water'],hp:{p:1,d:5}});f.B.selfDrink('p',1);f.B.render();assert.equal(pose(f),'victory');
+  f.B.start();f.B.render();assert.equal(pose(f),'idle');
+});
 const isRun=process.argv.includes('--balance');
 if(isRun){
   // Informational: win rates of simple player policies against the host (1000 games each).

@@ -16,3 +16,5 @@
 - 尚未推送、尚未確認正式部署；正式網址預期仍為既有GitHub Pages／Cloudflare專案。GA4後台未收件驗收，新增platform_points_earned與cosmetic_redeemed未聲稱已建立報表定義。
 
 回復只針對本發布提交及對應產出；保留deep-sea-wardrobe-v1與deep-sea-frontier-v1供之後新版讀取，舊版忽略，不以清除玩家資料回復。
+
+後續整合 origin/main 1c1d777（最後的晚餐v3），重新產生衝突的遊戲說明與部署產出；19項Python測試、49項晚宴v3行為檢查及組合後script／JSON解析再次通過。
