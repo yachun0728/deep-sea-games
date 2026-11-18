@@ -114,11 +114,11 @@ model.frontierClassic=false;
  ok(!model.frontierRecruit(w),'cannot recruit before the barracks exists');
  w.p.x=barracks.x;w.p.y=barracks.y;tick(w,12);ok(barracks.built,'barracks builds across the bridge');
  w.bank.wood=w.bank.stone=0;w.bag.wood=60;w.bag.stone=40;ok(model.frontierRecruit(w)&&w.bag.wood===60-model.frontierRecruitCost(w).wood,'warriors can be trained from the carried bag');w.bank.wood=w.bank.stone=10000;barracks.queue=0;
- for(let n=0;n<8;n++)model.frontierRecruit(w);ok(barracks.queue===6&&model.frontierFighterCap(w)===6,'fighter cap is six');
- tick(w,2*6+1);ok(w.fighters.length===6,'barracks trains fighters one by one');
+ for(let n=0;n<15;n++)model.frontierRecruit(w);ok(barracks.queue===12&&model.frontierFighterCap(w)===12,'attack warrior cap is twelve');
+ tick(w,2*12+1);ok(w.fighters.length===12,'barracks trains fighters one by one');
  // fighters march on the base, damage it slowly, and the base hurts them only a little
  const start=w.enemyBase.hp;let fighterHp=w.fighters[0].max;w.p.x=barracks.x;w.p.y=barracks.y;w.p.inv=1e6;
- tick(w,40);ok(w.enemyBase.hp<start,'fighters attack the enemy base');ok(start-w.enemyBase.hp<start*.35,'fighters attack slowly');
+ tick(w,40);ok(w.enemyBase.hp<start,'fighters attack the enemy base');ok((start-w.enemyBase.hp)/(12*40)<4,'each warrior attacks slowly');
  ok(w.fighters.some(f=>f.hp<f.max)&&w.fighters.every(f=>f.hp>0||true),'enemy base hurts fighters');
  const dps=w.fighters.reduce((n,f)=>n+(f.max-f.hp),0)/40;ok(dps<10,'enemy base attack stays weak');
  // victory
@@ -128,7 +128,17 @@ model.frontierClassic=false;
  w.enemies.push({x:tower.x+30,y:tower.y,type:'melee',hp:99999,max:99999,state:'walk',t:0,cool:0,tx:0,ty:0,hit:false,counted:false,wave:true,radius:17,raider:true,assault:true});
  w.p.x=900;w.p.y=700;tick(w,12);ok(tower.hp<towerHp&&w.phase==='play','monsters attack the tower');
  // later stages keep the beacon rules
- w=create(11);ok(!w.cfg.war&&w.buildings.some(b=>b.kind==='beacon')&&!w.enemyBase,'stage 11 keeps the beacon rules');
+ // every stage is an enemy-base stage; defences and attackers scale with the region
+ for(const [lv,towers,guards,cap] of [[1,2,0,12],[10,2,0,12],[11,3,2,16],[25,4,4,20],[41,6,8,28],[50,6,8,28]]){
+  w=create(lv);ok(w.cfg.war&&w.enemyBase&&w.buildings.filter(b=>b.kind==='tower').length===towers&&w.fighters.filter(f=>f.role==='guard').length===guards&&model.frontierFighterCap(w)===cap&&!w.buildings.some(b=>b.kind==='beacon'),`stage ${lv}: ${towers} towers, ${guards} guards, attacker cap ${cap}`);
+  ok(w.buildings.filter(b=>b.kind==='barracks').every(b=>b.x>678),`stage ${lv}: only the barracks across the bridge exists`);
+ }
+ // guards defend the home base and never march on the enemy
+ w=create(21);w.siege.next=1e6;w.enemies=[];w.p.x=100;w.p.y=100;w.p.inv=1e6;tick(w,20);ok(w.fighters.filter(f=>f.role==='guard').every(f=>Math.hypot(f.x-w.buildings[0].x,f.y-w.buildings[0].y)<200),'guards stay at the home base');
+ w.enemies.push({x:w.buildings[0].x+120,y:w.buildings[0].y,type:'melee',hp:60,max:60,state:'walk',t:0,cool:99,tx:0,ty:0,hit:false,counted:false,wave:false,radius:17});tick(w,6);ok(w.enemies.every(e=>e.hp<=0||e.hp<60),'guards fight monsters near the base');
+ w.fighters=w.fighters.filter(f=>f.role!=='guard');tick(w,26);ok(w.fighters.filter(f=>f.role==='guard').length===1,'a fallen guard is replaced over time');
+ // saves from the earlier one-tower version gain the missing towers and a base garrison
+ w=create(4);const stale=JSON.parse(JSON.stringify(w));stale.buildings=stale.buildings.filter((b,i,a)=>b.kind!=='tower'||a.findIndex(x=>x.kind==='tower')===i);const fixed=model.frontierMigrate(stale);ok(fixed.buildings.filter(b=>b.kind==='tower').length===2,'migration adds the missing tower');
 }
 
 console.log(`PASS: ${checks} Frontier model and adapter assertions`);
