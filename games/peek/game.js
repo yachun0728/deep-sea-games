@@ -109,7 +109,7 @@ function ui(){
  setText('peek-prog',Math.floor(prog)+'%');setText('peek-spirits',survived+' 次襲擊');setText('peek-best',best+'%');setText('peek-codex',Object.keys(CAUSES).filter(k=>deaths[k]>0).length+' / '+Object.keys(CAUSES).length);setText('peek-dodges',dodgesTotal+' 次');
  setText('peek-lvl',L?lvl+' / 100':'自由跑');setText('peek-lives',L?String(lives):'—');
  const lv=wantLevel();
- $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'逃跑中 · 別回頭':(st==='ready'?'免費開始':'免費再開')+(lv?'第 '+lv+' 關':'自由跑'));
+ $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'逃跑中 · 別回頭':(st==='ready'?'開始':'再開')+(lv?'第 '+lv+' 關':'自由跑'));
 }
 function fx(s,x,y,col){fxs.push({s,x,y,col,t:0})}
 function end(kind,reason){
@@ -340,7 +340,7 @@ function hpRect(k){
 function hpClick(e){
  const p=cxy(e),inR=r=>p[0]>=r[0]&&p[0]<=r[0]+r[2]&&p[1]>=r[1]&&p[1]<=r[1]+r[3];
  if(inR(hpRect('spk'))){audioInit();tone(660,.18,.08,-1,'sine');setTimeout(()=>tone(660,.18,.08,1,'sine'),320);say('先左耳、再右耳各一聲。聽得到就按勾勾。');return true}
- if(inR(hpRect('ok'))){audioInit();audioOk=true;say('耳機確認完成。按「免費開始逃跑」。');return true}
+ if(inR(hpRect('ok'))){audioInit();audioOk=true;say('耳機確認完成。按「開始逃跑」。');return true}
  return false}
 function drawHeadphone(){
  const im=art('ui-headphone'),h=HP.w*432/578;
@@ -399,7 +399,7 @@ function doAct(a){
  if(a==='retry'||a==='next')start();
  else if(a==='listen')playCue(deathEv);
  else if(a==='dex'){dex=true;dexSel=0}
- else if(a==='later'){st='ready';reset();endBtns=[];say('慢慢來。選好關卡再按「免費開始」。')}
+ else if(a==='later'){st='ready';reset();endBtns=[];say('慢慢來。選好關卡再按「開始」。')}
  else if(a==='assist'){assist=true;optSave();const el=$('peek-assist');if(el)el.checked=true;say('已開啟輔助標記。','win')}
  else if(a==='share')share()}
 const later=(f,ms)=>{try{setTimeout(f,ms)}catch(e){f()}};
@@ -527,7 +527,7 @@ function draw(){
    tx('別看',CX,86,56,'#e8c675');tx('Don\'t Peek　禁忌寶盒・夜逃',CX,124,20,'#f1d9a6');
    tx(lc?'第 '+lv+' 關・'+WORLD_NAME[lc.wi]+'・'+KIND_NAME[lc.kind]+'　生命 '+lives:'自由跑（沒有關卡和生命）',CX,168,22,'#ffd98a');
    tx('自動奔跑。落葉堆起來、敲樹枝：往反方向靠。風向反了：迎著風靠。',CX,214,17,'#f1d9a6');tx('蟲鳴停了、燈在閃：蓋住螢幕不要動。路邊的東西靠近時按「撿」。',CX,244,17,'#f1d9a6');
-   tx('電腦：A／D 靠邊　空白鍵蓋住　W 衝刺　F 撿　手機：按鈕或「啟用體感」',CX,290,15,'#f1d9a6');tx('到右邊操作區選關卡，按「免費開始」',CX,360,21,'#ffd98a')}}
+   tx('電腦：A／D 靠邊　空白鍵蓋住　W 衝刺　F 撿　手機：按鈕或「啟用體感」',CX,290,15,'#f1d9a6');tx('到右邊操作區選關卡，按「開始」',CX,360,21,'#ffd98a')}}
  else if(st==='won')drawWon();
  else if(st==='over')drawDeath();
  if(dex)drawDex()}
@@ -551,7 +551,7 @@ $('peek-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
  if(dex){dexClick(e);return}
- if(st!=='run'){if(st==='ready'&&!audioOk&&shown()&&hpClick(e))return;if(st!=='ready'&&shown()&&deathClick(e))return;say(st==='ready'?'先按「免費開始逃跑」。':'這一局已結算。按「免費再開一次」開始新的一局。');return}
+ if(st!=='run'){if(st==='ready'&&!audioOk&&shown()&&hpClick(e))return;if(st!=='ready'&&shown()&&deathClick(e))return;say(st==='ready'?'先按「開始逃跑」。':'這一局已結算。按「再開一次」開始新的一局。');return}
  if(!shown())return;e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(x){}
  if(camp){campTap(e);return}
  ptrs.set(e.pointerId,region(e));ptrT.set(e.pointerId,performance.now());syncPtrs()});

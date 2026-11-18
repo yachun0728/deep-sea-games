@@ -15,20 +15,20 @@
       ROCKET.active=true;ROCKET.extra=0;
       ROCKET.analytics=AN.start('rocket-chair',fee,free?{entry_kind:'free_pass'}:undefined);
 
-      rocketUI('免費遊玩與咖啡補給。');return true;
+      rocketUI('可用點數購買咖啡補給。');return true;
     },
     spend:function(source,n){
       n=Math.floor(Number(n)||0);
       if(!rocketValid(source)||!ROCKET.active||n<0)return false;
 
       AN.progress(ROCKET.analytics,{phase:'free_coffee',extra_points:0});
-      rocketUI('已免費補充咖啡。');return true;
+      rocketUI('已補充咖啡。');return true;
     },
     finish:function(source,data){
       if(!rocketValid(source)||!ROCKET.active)return;ROCKET.active=false;
       var early=Math.max(0,Math.min(600,Math.floor(Number(data&&data.early)||0)));
       AN.end(ROCKET.analytics,0,'complete',{score:early,cleared:data&&data.cleared?1:0,extra_spent_points:ROCKET.extra});
-      rocketUI(data&&data.cleared?'提早 '+early+' 分鐘下班，可免費再玩。':'這局加班了，可免費再玩。');
+      rocketUI(data&&data.cleared?'提早 '+early+' 分鐘下班，可再玩。':'這局加班了，可再玩。');
     },
     touch:function(source){if(rocketValid(source)&&AN.interact)AN.interact();}
   };

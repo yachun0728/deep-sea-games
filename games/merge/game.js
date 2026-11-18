@@ -19,8 +19,8 @@
     $('mg-max').textContent = G.active || G.over ? String(max) : '—';
     $('mg-best').textContent = fmt(G.best);
     document.querySelectorAll('[data-dir]').forEach(function (b) { b.disabled = !G.active; });
-    if (G.active) { elGGo.dataset.mode = 'cancel'; elGGo.innerHTML = '放棄重開<small>免費</small>'; }
-    else { elGGo.dataset.mode = 'bet'; elGGo.innerHTML = (G.over ? '再玩一局' : '開始一局') + '<small>免費</small>'; }
+    if (G.active) { elGGo.dataset.mode = 'cancel'; elGGo.innerHTML = '放棄重開'; }
+    else { elGGo.dataset.mode = 'bet'; elGGo.innerHTML = (G.over ? '再玩一局' : '開始一局') + ''; }
   }
   function mgSpawn() {
     var empty = []; G.grid.forEach(function (v, i) { if (!v) empty.push(i); });
@@ -43,7 +43,7 @@
     G.grid = []; for (var i = 0; i < 16; i++) G.grid.push(0);
     G.score = 0; G.active = true; G.over = false; G.fresh = {};
     mgSpawn(); mgSpawn();
-    gSay('免費開始養珠。');
+    gSay('開始養珠。');
     syncBalance(); mgRender();
   }
   function mgMove(dir) {

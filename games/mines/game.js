@@ -44,7 +44,7 @@
     $('mines-flag').textContent = M.flagMode ? '⚑ 插旗模式（點此改翻格）' : '翻格模式（點此改插旗）';
     $('mines-level').textContent = M.size + '×' + M.size + ' · ' + M.mines + ' 雷';
     elMGo.disabled = M.active; elMGo.dataset.mode = M.active ? 'playing' : 'start';
-    elMGo.innerHTML = M.active ? '找出全部安全格' : (M.over ? '再玩一局' : '開始踩地雷') + '<small>免費遊玩 · 不限次數</small>';
+    elMGo.innerHTML = M.active ? '找出全部安全格' : (M.over ? '再玩一局' : '開始踩地雷') + '<small>不限次數</small>';
   }
   function mineStage() {
     N = M.size * M.size;

@@ -88,8 +88,8 @@
       ['tool','blade','pack'].forEach(function(k,i){var n=w.tech[k],limit=frontierUpgradeLimit(w,k),cost=frontierUpgradeCost(w,k);set('ft-'+k,['採集工具','戰鬥武器','背包容量'][i]+' Lv.'+n+'/'+limit+(n>=limit?' · MAX':' · 金幣 '+cost));$('ft-'+k).disabled=!world||paused||!frontierNear(w.p,w.buildings[0],100)||n>=limit;});
       overlay.hidden=!!world&&!paused&&w.phase==='play';
       if(!overlay.hidden){
-        var title='荒島遠征',message='五大區域，五十場考驗。建立據點，穿越危險地帶。\n\n本關任務\n'+stageList(steps)+warTip(w),button='免費開始遠征';
-        if(world){if(w.phase==='dead'){title=w.failure==='base'?'大本營失守':'遠征失敗';message='科技升級保留。調整建造順序，利用預告閃避攻擊。\n\n本關任務\n'+stageList(steps)+warTip(w);button='免費重試當關';}else if(w.phase==='clear'){title=w.level===50?'五十關全破！':w.cfg.war?'對手大本營已摧毀':'燈塔已點亮';message='科技已保存，下一關將建立新的據點。';button=w.level===50?'重遊群島 · 免費':'下一關 · 免費';}else{title='遠征已暫停';message='進度已保留，準備好再繼續。\n\n本關任務\n'+stageList(steps)+warTip(w);button='繼續遠征 · 免費';}}
+        var title='荒島遠征',message='五大區域，五十場考驗。建立據點，穿越危險地帶。\n\n本關任務\n'+stageList(steps)+warTip(w),button='開始遠征';
+        if(world){if(w.phase==='dead'){title=w.failure==='base'?'大本營失守':'遠征失敗';message='科技升級保留。調整建造順序，利用預告閃避攻擊。\n\n本關任務\n'+stageList(steps)+warTip(w);button='重試當關';}else if(w.phase==='clear'){title=w.level===50?'五十關全破！':w.cfg.war?'對手大本營已摧毀':'燈塔已點亮';message='科技已保存，下一關將建立新的據點。';button=w.level===50?'重遊群島':'下一關';}else{title='遠征已暫停';message='進度已保留，準備好再繼續。\n\n本關任務\n'+stageList(steps)+warTip(w);button='繼續遠征';}}
         set('ft-title',title);if(!transientMessage)set('ft-message',message);set('ft-go',button);
       }updateMap();
     }

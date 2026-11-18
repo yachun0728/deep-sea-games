@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#blaster`　分類：跑酷動作　狀態：顯示中
-- 大廳卡片：「七種武器三選一，闖過水雷、礁石與深海巨獸。」｜免費遊玩 · 無盡 · 每10關+1點
+- 大廳卡片：「七種武器三選一，闖過水雷、礁石與深海巨獸。」｜立即開玩 · 無盡 · 每10關+1點
 - 追蹤名稱（GA4 `game_name`）：深海火線，`game_id` 為 `blaster`
 - 檔案：`games/blaster/card.html`、`games/blaster/game.js`、`games/blaster/icon.svg`、`games/blaster/style.css`、`games/blaster/view.html`；`game.js` 共 394 行、36.6 KB
 

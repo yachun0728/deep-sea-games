@@ -6,7 +6,7 @@
   function mtCleared(){try{var b=JSON.parse(localStorage.getItem('mirrorTwins.stars'))||{};return Object.keys(b).filter(function(k){return Number(b[k])>0;}).length;}catch(_){return mtStored();}}
   function mtUI(){
     $('mt-cleared').textContent=MIRR.cleared;$('mt-pay').textContent=MIRR.earned+' / '+MIRR_CAP;$('mt-best').textContent=Math.min(MIRR_LEVELS,mtCleared())+' / '+MIRR_LEVELS;
-    $('mt-go').disabled=MIRR.active;$('mt-go').textContent=MIRR.active?'本局進行中 · 在左側選關':'免費開始一局';$('mt-end').hidden=!MIRR.active;
+    $('mt-go').disabled=MIRR.active;$('mt-go').textContent=MIRR.active?'本局進行中 · 在左側選關':'開始一局';$('mt-end').hidden=!MIRR.active;
   }
   function mtValid(source){return source===$('mt-frame').contentWindow;}
   window.deepSeaMirrorTwins={
@@ -16,7 +16,7 @@
       if(AN.interact)AN.interact();
       MIRR.active=true;MIRR.stake=ENTRY_FEE;MIRR.earned=0;MIRR.paid={};MIRR.cleared=0;MIRR.analytics=AN.start('mirror-twins',ENTRY_FEE);
       save();renderAll();mtUI();
-      mtSay('免費遊玩，本局開始。在左側選一關；每關第一次通過 BONUS +2 點，最多 10 點。|Free play, round started. Pick a stage on the left; each stage’s first clear gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
+      mtSay('本局開始。在左側選一關；每關第一次通過 BONUS +2 點，最多 10 點。|Free play, round started. Pick a stage on the left; each stage’s first clear gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
       return true;
     },
     clear:function(source,level){
@@ -56,6 +56,6 @@
   });
   $('mt-end').addEventListener('click',mtFinish);
   window.addEventListener('arcade-languagechange',function(){if(MIRR.msg)mtSay(MIRR.msg.text,MIRR.msg.kind,MIRR.msg.params);});
-  mtSay('每局免費。按「免費開始一局」或直接在左側點一關開始。|Each round costs a fixed 10 pts. Press “Pay & start a round” or just pick a stage on the left.');
+  mtSay('按「開始一局」或直接在左側點一關開始。|Each round costs a fixed 10 pts. Press “Pay & start a round” or just pick a stage on the left.');
   mtUI();
 

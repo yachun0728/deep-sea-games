@@ -9,7 +9,7 @@ const bonusAt=m=>{for(const t of MILESTONES)if(t[0]===m)return t[1];return m>END
 const nextMilestone=d=>{for(const t of MILESTONES)if(t[0]>d)return t;return [ENDLESS_FROM+(Math.floor((d-ENDLESS_FROM)/ENDLESS_STEP)+1)*ENDLESS_STEP,ENDLESS_BONUS]};
 const prevMilestone=d=>{let p=0;for(const t of MILESTONES)if(t[0]<=d)p=t[0];if(d>=ENDLESS_FROM)p=ENDLESS_FROM+Math.floor((d-ENDLESS_FROM)/ENDLESS_STEP)*ENDLESS_STEP;return p};
 let best=0;try{const n=Number(localStorage.getItem('chayne'));if(Number.isFinite(n))best=Math.max(0,n)}catch(e){}
-const texts={best:'最佳',near:'擦身而過！',title:'深海潛行',tap:'免費開始挑戰',crash:'撞上障礙',rec:'新紀錄！',left:n=>'距離紀錄還差 '+n+' m'};const T=k=>texts[k];
+const texts={best:'最佳',near:'擦身而過！',title:'深海潛行',tap:'開始挑戰',crash:'撞上障礙',rec:'新紀錄！',left:n=>'距離紀錄還差 '+n+' m'};const T=k=>texts[k];
 let runnerAnalytics=null,earned=0,awarded=0,pops=[];
 let st='ready',dist=0,px=0,tl=0,v=V0,obs=[],nextAt=15,lastGap=0,flash=0,shake=0,last=0,lastD=0,rec=false;
 const perspective=z=>F/(F+z);
@@ -20,7 +20,7 @@ function remember(){lastD=Math.floor(dist);rec=lastD>best;if(rec){best=lastD;try
 function runnerUI(){
  const d=Math.floor(dist),nx=nextMilestone(d);
  $('rn-distance').textContent=d+' m';$('rn-best').textContent=best+' m';$('rn-next').textContent=nx[0]+' m · +'+nx[1];$('rn-speed').textContent=(v/20).toFixed(1)+'×';
- $('rn-go').disabled=st==='run';$('rn-go').textContent=st==='run'?'潛行中 · 只需左右換道':'免費開始潛行';
+ $('rn-go').disabled=st==='run';$('rn-go').textContent=st==='run'?'潛行中 · 只需左右換道':'開始潛行';
  document.querySelectorAll('[data-run]').forEach(b=>b.disabled=st!=='run');
 }
 function award(m,b){

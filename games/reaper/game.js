@@ -17,7 +17,7 @@
     var L=rpLevel(),nx=rpNext(RP.good);
     $('rp-level').textContent='第 '+L+' 班';$('rp-progress').textContent=(RP.good%RP_PER)+' / '+RP_PER;$('rp-lives').textContent=RP.lives+' / 3';$('rp-score').textContent=RP.total+' 位';$('rp-best').textContent=RP.best+' 位';
     $('rp-next').textContent=nx[0]+' 位 · +'+nx[1];$('rp-amount').disabled=RP.active;
-    $('rp-go').textContent=RP.phase==='run'?'揮鐮接走':'免費開始值班';$('rp-go').disabled=RP.phase==='run'&&RP.cd>0;
+    $('rp-go').textContent=RP.phase==='run'?'揮鐮接走':'開始值班';$('rp-go').disabled=RP.phase==='run'&&RP.cd>0;
     $('rp-go').dataset.mode=RP.phase==='run'?'surface':'bet';
     $('rp-difficulty').textContent=L<4?'綠色通行證全程可見':L<7?'通行證靠近金色區域時會淡去':'通行證會提早淡去，先記住誰該放行';
   }
@@ -93,7 +93,7 @@
     if(RP.phase!=='run'){
       g.fillStyle='rgba(14,10,26,.88)';g.fillRect(24,135,352,225);g.textAlign='center';g.fillStyle=RP.phase==='over'?'#ff8a80':'#e4f2f3';g.font='600 28px system-ui';g.fillText(RP.phase==='ready'?'死神打工':'實習結束了！',W/2,186,W-40);
       g.font='15px system-ui';g.fillStyle='#b4acc9';g.fillText(RP.phase==='ready'?'冥界人手不足，你是新來的實習生':'處理了 '+RP.good+' 位靈魂 · 接走 '+RP.total+' 位',W/2,225,W-40);
-      g.fillStyle='#6cc58f';g.fillText('看見綠色光環，讓他通過就好',W/2,261);g.fillStyle=RP.phase==='over'&&RP.earned>0?'#f2c14e':'#f2c14e';g.font='600 17px system-ui';g.fillText(RP.phase==='ready'?'到操作區免費開始值班':RP.earned>0?'本局獎勵 +'+RP.earned+' 點':'這一局沒有獎勵',W/2,312);
+      g.fillStyle='#6cc58f';g.fillText('看見綠色光環，讓他通過就好',W/2,261);g.fillStyle=RP.phase==='over'&&RP.earned>0?'#f2c14e':'#f2c14e';g.font='600 17px system-ui';g.fillText(RP.phase==='ready'?'到操作區開始值班':RP.earned>0?'本局獎勵 +'+RP.earned+' 點':'這一局沒有獎勵',W/2,312);
     }
   }
   $('rp-go').addEventListener('click',rpAct);

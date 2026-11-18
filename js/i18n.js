@@ -23,7 +23,7 @@
       result = text.slice(0, text.indexOf(trimmed)) + dictionary[trimmed] + text.slice(text.indexOf(trimmed) + trimmed.length);
     } else {
       result = text.replace(/礦區第\s*(\d+)\s*列第\s*(\d+)\s*格/g, 'Mine row $1, cell $2')
-        .replace(/免費重玩第\s*(\d+)\s*關/g, 'Free retry · Stage $1')
+        .replace(/重玩第\s*(\d+)\s*關/g, 'Free retry · Stage $1')
         .replace(/重玩第\s*(\d+)\s*關（扣\s*(\d+)\s*點）/g, 'Retry stage $1 ($2 pts)')
         .replace(/第\s*(\d+)\s*(關|班|隊|條|層|道|格|列|階|段|晚|站)/g, function (_, n, unit) { return numbered[unit] + ' ' + n + ' ' + unit; })
         .replace(phrases, function (match) { return dictionary[match]; });

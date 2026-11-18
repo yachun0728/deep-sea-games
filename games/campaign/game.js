@@ -87,7 +87,7 @@
     $('cp-miss').style.color=CP.miss>=3?'var(--crush)':'';
     cpText('cp-signal',sig[1]);$('cp-signal').dataset.state=sig[0];
     $('cp-amount').disabled=CP.active;$('cp-go').disabled=live;
-    cpText('cp-go',live?'拉票中 · 安靜區按住靜音':CP.phase==='ready'?'免費出發拉票':'免費再跑一趟');
+    cpText('cp-go',live?'拉票中 · 安靜區按住靜音':CP.phase==='ready'?'出發拉票':'再跑一趟');
     $('cp-hold').disabled=!live;cpText('cp-hold',CP.hold?'靜音中 · 放開廣播':'按住靜音 · 放開廣播');
   }
   function cpStart(){

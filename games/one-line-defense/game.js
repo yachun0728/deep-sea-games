@@ -5,7 +5,7 @@
   function olBest(){try{return Math.max(0,Math.floor(Number(JSON.parse(localStorage.getItem('oneLine.best')))||0));}catch(_){return 0;}}
   function olUI(){
     $('od-score').textContent=fmt(ONEL.score);$('od-pay').textContent=ONEL.earned+' / '+ONEL_BONUS*ONEL_MARKS;$('od-best').textContent=fmt(olBest());
-    $('od-go').disabled=ONEL.active;$('od-go').textContent=ONEL.active?'守城中 · 在左側畫線':'免費開始守城';
+    $('od-go').disabled=ONEL.active;$('od-go').textContent=ONEL.active?'守城中 · 在左側畫線':'開始守城';
   }
   function olValid(source){return source===$('od-frame').contentWindow;}
   window.deepSeaOneLine={
@@ -15,7 +15,7 @@
       if(AN.interact)AN.interact();
       ONEL.active=true;ONEL.stake=ENTRY_FEE;ONEL.earned=0;ONEL.marks={};ONEL.score=0;ONEL.time=0;ONEL.analytics=AN.start('one-line-defense',ENTRY_FEE);
       save();renderAll();olUI();
-      olSay('免費遊玩。在左側拖曳畫線擋住敵人；每撐過 30 秒 BONUS +2 點，最多 10 點。|Free play. Drag on the left to draw lines and block enemies; every 30 seconds survived gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
+      olSay('在左側拖曳畫線擋住敵人；每撐過 30 秒 BONUS +2 點，最多 10 點。|Free play. Drag on the left to draw lines and block enemies; every 30 seconds survived gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
       return true;
     },
     bonus:function(source,mark){
@@ -53,6 +53,6 @@
     if(w.startOneLinePlatformRound())$('od-frame').focus();
   });
   window.addEventListener('arcade-languagechange',function(){if(ONEL.msg)olSay(ONEL.msg.text,ONEL.msg.kind,ONEL.msg.params);});
-  olSay('每局免費。按「免費開始守城」或遊戲裡的「開始」開局。|Each game costs a fixed 10 pts. Press “Pay & defend” or “Start” in the game.');
+  olSay('按「開始守城」或遊戲裡的「開始」開局。|Each game costs a fixed 10 pts. Press “Pay & defend” or “Start” in the game.');
   olUI();
 

@@ -5,9 +5,9 @@
 ## 概覽
 
 - 網址：`#cat`　分類：跑酷動作　狀態：顯示中
-- 大廳卡片：「無盡跑酷，看你能跑多遠。」｜免費遊玩 · 無盡挑戰
+- 大廳卡片：「無盡跑酷，看你能跑多遠。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：屋頂貓貓，`game_id` 為 `cat`
-- 檔案：`games/cat/card.html`、`games/cat/game.js`、`games/cat/icon.svg`、`games/cat/view.html`；`game.js` 共 124 行、9.0 KB
+- 檔案：`games/cat/card.html`、`games/cat/game.js`、`games/cat/icon.svg`、`games/cat/view.html`；`game.js` 共 124 行、8.9 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「19. Rooftop Cat（cat）」（下方「規則摘要」已複製）
 

@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#one-line-defense`　分類：時機操作　狀態：顯示中
-- 大廳卡片：「只能畫一條線擋住湧向核心的敵人，線越長消失越快。」｜免費遊玩 · 最佳分數
+- 大廳卡片：「只能畫一條線擋住湧向核心的敵人，線越長消失越快。」｜立即開玩 · 最佳分數
 - 追蹤名稱（GA4 `game_name`）：一筆畫守城，`game_id` 為 `one-line-defense`
 - 檔案：`games/one-line-defense/card.html`、`games/one-line-defense/game.js`、`games/one-line-defense/icon.svg`、`games/one-line-defense/original.html`、`games/one-line-defense/style.css`、`games/one-line-defense/view.html`；`game.js` 共 59 行、4.8 KB
 

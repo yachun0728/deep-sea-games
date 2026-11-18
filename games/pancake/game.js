@@ -14,20 +14,20 @@
       PANCAKE.active=true;PANCAKE.extra=0;PANCAKE.free=free;
       PANCAKE.analytics=AN.start('pancake',fee,free?{entry_kind:'free_pass'}:undefined);
       if(fee){save();renderAll();}
-      pancakeUI('免費遊玩，泡麵補給也免費。');return true;
+      pancakeUI('泡麵已補給。');return true;
     },
     spend:function(source,n){
       n=Math.floor(Number(n)||0);
       if(!pancakeValid(source)||!PANCAKE.active||n<0)return false;
 
       AN.progress(PANCAKE.analytics,{phase:'free_noodles',extra_points:0});
-      pancakeUI('已免費補充泡麵。');return true;
+      pancakeUI('已補充泡麵。');return true;
     },
     finish:function(source,data){
       if(!pancakeValid(source)||!PANCAKE.active)return;PANCAKE.active=false;
       var served=Math.max(0,Math.min(1000,Math.floor(Number(data&&data.served)||0)));
       AN.end(PANCAKE.analytics,0,'complete',{score:served,cleared:data&&data.passed?1:0,extra_spent_points:PANCAKE.extra});
-      pancakeUI('本局煎好 '+served+' 片，可免費再玩。');
+      pancakeUI('本局煎好 '+served+' 片，可再玩。');
     },
     progress:function(source,served){if(pancakeValid(source)&&PANCAKE.active)AN.progress(PANCAKE.analytics,{step:Math.max(0,Math.floor(Number(served)||0))});},
     pause:function(source){if(pancakeValid(source)&&PANCAKE.active)AN.progress(PANCAKE.analytics,{phase:'revive'},true);},

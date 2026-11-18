@@ -6,7 +6,7 @@
   function srCleared(){try{var b=JSON.parse(localStorage.getItem('shadowRelay.bests'))||{};return Object.keys(b).filter(function(k){return isFinite(Number(b[k]));}).length;}catch(_){return srStored();}}
   function srUI(){
     $('sr-cleared').textContent=SHAD.cleared;$('sr-pay').textContent=SHAD.earned+' / '+SHAD_CAP;$('sr-best').textContent=Math.min(SHAD_LEVELS,srCleared())+' / '+SHAD_LEVELS;
-    $('sr-go').disabled=SHAD.active;$('sr-go').textContent=SHAD.active?'本局進行中 · 在左側選關':'免費開始一局';$('sr-end').hidden=!SHAD.active;
+    $('sr-go').disabled=SHAD.active;$('sr-go').textContent=SHAD.active?'本局進行中 · 在左側選關':'開始一局';$('sr-end').hidden=!SHAD.active;
   }
   function srValid(source){return source===$('sr-frame').contentWindow;}
   window.deepSeaShadowRelay={
@@ -16,7 +16,7 @@
       if(AN.interact)AN.interact();
       SHAD.active=true;SHAD.stake=ENTRY_FEE;SHAD.earned=0;SHAD.paid={};SHAD.cleared=0;SHAD.analytics=AN.start('shadow-relay',ENTRY_FEE);
       save();renderAll();srUI();
-      srSay('免費遊玩，本局開始。在左側選一關；每關第一次通過 BONUS +2 點，最多 10 點。|Free play, round started. Pick a stage on the left; each stage’s first clear gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
+      srSay('本局開始。在左側選一關；每關第一次通過 BONUS +2 點，最多 10 點。|Free play, round started. Pick a stage on the left; each stage’s first clear gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
       return true;
     },
     clear:function(source,level){
@@ -56,6 +56,6 @@
   });
   $('sr-end').addEventListener('click',srFinish);
   window.addEventListener('arcade-languagechange',function(){if(SHAD.msg)srSay(SHAD.msg.text,SHAD.msg.kind,SHAD.msg.params);});
-  srSay('每局免費。按「免費開始一局」或直接在左側點一關開始。|Each round costs a fixed 10 pts. Press “Pay & start a round” or just pick a stage on the left.');
+  srSay('按「開始一局」或直接在左側點一關開始。|Each round costs a fixed 10 pts. Press “Pay & start a round” or just pick a stage on the left.');
   srUI();
 

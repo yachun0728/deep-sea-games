@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#clock-out`　分類：益智策略　狀態：顯示中
-- 大廳卡片：「擺好辦公用品擋住一波波工作，撐到 17:00 打卡下班。」｜免費遊玩 · 背包塔防
+- 大廳卡片：「擺好辦公用品擋住一波波工作，撐到 17:00 打卡下班。」｜立即開玩 · 背包塔防
 - 追蹤名稱（GA4 `game_name`）：下班保衛戰，`game_id` 為 `clock-out`
 - 檔案：`games/clock-out/card.html`、`games/clock-out/game.js`、`games/clock-out/icon.svg`、`games/clock-out/view.html`；`game.js` 共 1096 行、43.3 KB
 

@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#eat-smaller`　分類：益智策略　狀態：顯示中
-- 大廳卡片：「吃掉比你小的數字、躲開比你大的，剛好變成目標數字就過關。」｜免費遊玩 · 8 關
+- 大廳卡片：「吃掉比你小的數字、躲開比你大的，剛好變成目標數字就過關。」｜立即開玩 · 8 關
 - 追蹤名稱（GA4 `game_name`）：數字吞噬，`game_id` 為 `eat-smaller`
 - 檔案：`games/eat-smaller/card.html`、`games/eat-smaller/game.js`、`games/eat-smaller/icon.svg`、`games/eat-smaller/original.html`、`games/eat-smaller/style.css`、`games/eat-smaller/view.html`；`game.js` 共 62 行、5.3 KB
 
