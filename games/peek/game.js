@@ -215,7 +215,11 @@ function lampLevel(){
  const r=ev.t;if(r<1.5){return Math.floor((1.5-r)*4)%2?.15:1}   // flickers three times just before it goes out
  return 1}
 /* ---- items, campfire, options (landscape 800x450, first person) ---- */
-const cxy=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)*W/(r.width||W),(e.clientY-r.top)*H/(r.height||H)]};
+const stageEl=c.parentNode||{};
+const isRot=()=>!!(stageEl.classList&&stageEl.classList.contains('peek-rot'));
+const cxy=e=>{const r=c.getBoundingClientRect();
+ if(isRot())return[(e.clientY-r.top)*W/(r.height||W),(r.left+r.width-e.clientX)*H/(r.width||H)];   // stage turned 90deg for portrait phones
+ return[(e.clientX-r.left)*W/(r.width||W),(e.clientY-r.top)*H/(r.height||H)]};
 function giveItem(k){
  if(k==='torch'){bag.torch=Math.min(3,bag.torch+1);fx('火把 +1',CX,150,'#ffb347')}
  else if(k==='charm'){bag.charm=Math.min(2,bag.charm+1);fx('護身符 +1',CX,150,'#7fe8ff')}
@@ -543,9 +547,10 @@ function start(){
 }
 const shown=()=>!$('view-peek').hidden&&!document.hidden;
 function region(e){
- const r=c.getBoundingClientRect(),x=(e.clientX-r.left)*W/(r.width||W),y=(e.clientY-r.top)*H/(r.height||H);
+ const p=cxy(e),x=p[0],y=p[1],by=BTN[0][1];
  for(let i=0;i<BTN.length;i++){const b=BTN[i];if(x>=b[0]&&x<=b[0]+b[2]&&y>=b[1]&&y<=b[1]+b[3])return i}
- return y<BTN[0][1]?3:-1}
+ if(y>=by-34){let bi=-1,bd=1e9;BTN.forEach((b,i)=>{const d=Math.abs(x-(b[0]+b[2]/2));if(d<bd){bd=d;bi=i}});return bi}   // fat-finger band: the nearest button wins
+ return y<by?3:-1}
 function syncPtrs(){btn=[0,0,0,0,0];ptrs.forEach(i=>{if(i>=0)btn[i]=1})}
 $('peek-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
@@ -570,6 +575,18 @@ document.addEventListener('visibilitychange',()=>{last=performance.now();clearIn
 window.addEventListener('hashchange',()=>{last=performance.now();clearInput()});
 /* ---- optional phone motion: lean the phone, turn it face down to cover ---- */
 function onOrient(e){if(e.gamma===null||e.gamma===undefined)return;gyro.tilt=clamp(e.gamma/30,-1,1);gyro.down=Math.abs(e.beta||0)>145}
+/* ---- landscape fullscreen for phones: real fullscreen where allowed, otherwise turn the stage 90deg ---- */
+const fsB=$('peek-full'),fsX=$('peek-fsx');
+function fsOff(){if(stageEl.classList){stageEl.classList.remove('peek-fs','peek-rot')}if(fsX)fsX.hidden=true;if(fsB)fsB.textContent='橫向全螢幕';try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen()}catch(x){}}
+function fsOn(){
+ if(!stageEl.classList)return;stageEl.classList.add('peek-fs');if(fsX)fsX.hidden=false;if(fsB)fsB.textContent='退出全螢幕';
+ const portrait=window.innerHeight>window.innerWidth;let ok=false;
+ try{if(stageEl.requestFullscreen){const p=stageEl.requestFullscreen();if(p&&p.catch)p.catch(()=>{});ok=true}}catch(x){}
+ try{if(ok&&screen.orientation&&screen.orientation.lock){screen.orientation.lock('landscape').catch(()=>{portrait&&stageEl.classList.add('peek-rot')});return}}catch(x){}
+ if(portrait)stageEl.classList.add('peek-rot')}
+if(fsB)fsB.addEventListener('click',()=>{stageEl.classList&&stageEl.classList.contains('peek-fs')?fsOff():fsOn()});
+if(fsX)fsX.addEventListener('click',fsOff);
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&stageEl.classList&&stageEl.classList.contains('peek-fs')&&!stageEl.classList.contains('peek-rot'))fsOff()});
 const gb=$('peek-gyro');
 if(gb)gb.addEventListener('click',()=>{
  if(gyro.on){gyro.on=false;window.removeEventListener('deviceorientation',onOrient);window.removeEventListener('devicemotion',onMotion);gb.textContent='啟用體感（手機）';return}

@@ -4311,5 +4311,7 @@
   "（左邊傳來敲擊聲）": "(knocking from the left)",
   "（右邊傳來敲擊聲）": "(knocking from the right)",
   "（風向反了，拖行聲從左邊靠近）": "(the wind reversed; dragging approaches from the left)",
-  "（風向反了，拖行聲從右邊靠近）": "(the wind reversed; dragging approaches from the right)"
+  "（風向反了，拖行聲從右邊靠近）": "(the wind reversed; dragging approaches from the right)",
+  "橫向全螢幕": "Landscape fullscreen",
+  "退出全螢幕": "Exit fullscreen"
 }

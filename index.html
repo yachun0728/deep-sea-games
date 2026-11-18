@@ -466,6 +466,13 @@ body.game-view-scroll-lock { overflow: hidden; }
   background: var(--abyss);
 }
 
+.sneak-stage{position:relative}
+.peek-fsx{position:absolute;top:8px;right:8px;z-index:3;min-height:44px;padding:0 14px;border:1px solid #d6a24e;border-radius:10px;background:rgba(18,13,10,.8);color:#f1d9a6;font:700 14px system-ui,sans-serif}
+.sneak-stage.peek-fs{position:fixed;inset:0;z-index:9999;width:auto;border:0;border-radius:0;background:#050805}
+.sneak-stage.peek-fs canvas{width:min(100vw,177.7vh);max-height:100vh}
+.sneak-stage.peek-rot{inset:auto;top:0;left:100vw;width:100vh;height:100vw;transform-origin:top left;transform:rotate(90deg)}
+.sneak-stage.peek-rot canvas{width:min(100vh,177.7vw);max-height:100vw}
+
 /* Compact mobile app chrome; gameplay keeps the full available width. */
 .mobile-page-tools,.mobile-scroll-pad{display:none}
 @media(max-width:880px){
@@ -2056,7 +2063,7 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與點數</summary><p>每局免費。一天分 8 波（09:00 到 16:00），每波之前先在 6×6 的抽屜裡擺放橡皮筋、咖啡杯、釘書機、螢光筆、耳機、印章、碎紙機，再開工。電子郵件、文件、會議、報告、急件會沿著桌面走向你的座位，漏掉一個就扣理智，理智歸零或被老闆走到桌前就結束。每波完成理智回復 2 點。</p><p>每一種工具剋制不同的敵人，咖啡杯和螢光筆放在旁邊還會加強相鄰的攻擊工具。同種同等級的工具可以合成，最高 3 級。會議會鎖住最近的攻擊工具，放一個耳機在旁邊就不會被鎖。</p><p>BONUS 是固定獎勵：撐過第 5 波立刻入帳 3 點，通關第 8 波擊退老闆再入帳 7 點，每局各只發一次，兩項都拿到累計獲得 10 點。獎勵當場入帳，之後輸掉也不會收回；中途離開或重新整理，已入帳的保留，分數只是顯示用，不直接換點數。這是操作與擺放策略遊戲，結果取決於你的擺法與操作。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。最高分保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-peek" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="peek-canvas" tabindex="0" width="800" height="450" aria-label="別看：自動奔跑逃向出口，按住衝刺跑更快；落葉堆起來或有東西敲樹枝時往反方向靠，燈滅前蓋住螢幕並保持不動"></canvas></div>
+    <div class="console"><div class="sneak-stage"><canvas id="peek-canvas" tabindex="0" width="800" height="450" aria-label="別看：自動奔跑逃向出口，按住衝刺跑更快；落葉堆起來或有東西敲樹枝時往反方向靠，燈滅前蓋住螢幕並保持不動"></canvas><button type="button" id="peek-fsx" class="peek-fsx" hidden>退出全螢幕</button></div>
       <div class="side"><section class="panel" aria-label="別看操作">
         <dl class="stats"><div><dt>逃跑進度</dt><dd id="peek-prog">0%</dd></div><div><dt>躲過襲擊</dt><dd id="peek-spirits">0 次襲擊</dd></div><div><dt>最佳進度</dt><dd id="peek-best">0%</dd></div></dl>
         <dl class="stats"><div><dt>目前關卡</dt><dd id="peek-lvl">自由跑</dd></div><div><dt>生命</dt><dd id="peek-lives">—</dd></div></dl>
@@ -2066,6 +2073,7 @@ html.frontier-immersive{overflow:hidden}
         <button class="go" id="peek-go" type="button" data-mode="bet">免費開始逃跑</button>
         <button class="go" id="peek-dex" type="button" data-mode="surface">鬼圖鑑與練習</button>
         <button class="go" id="peek-share" type="button" data-mode="surface">分享結果卡</button>
+        <button class="go" id="peek-full" type="button" data-mode="surface">橫向全螢幕</button>
         <button class="go" id="peek-gyro" type="button" data-mode="surface">啟用體感（手機）</button>
         <p class="msg" id="peek-msg" aria-live="polite">有東西在追你。開始後自動奔跑，按住「衝刺」跑更快。</p>
         <p class="hint">橫式畫面。按住 <kbd>W</kbd> 或「衝刺」跑更快（衝刺時不能靠邊）；<kbd>A</kbd>／<kbd>D</kbd> 或「靠左」「靠右」換邊；按住 <kbd>空白鍵</kbd> 或「蓋住」把螢幕蓋起來；路邊有東西靠近時按 <kbd>F</kbd> 或「撿」（手機可搖一搖）。落葉堆在哪邊，就往另一邊靠；鳥群飛走、有東西敲樹枝，往敲擊的反方向靠；蟲鳴停了、路燈在閃，就蓋住螢幕不要動。每跑 20% 會遇到營火，可三選一帶走一樣東西。建議戴耳機。</p>
@@ -6689,7 +6697,9 @@ html.frontier-immersive{overflow:hidden}
   "（左邊傳來敲擊聲）": "(knocking from the left)",
   "（右邊傳來敲擊聲）": "(knocking from the right)",
   "（風向反了，拖行聲從左邊靠近）": "(the wind reversed; dragging approaches from the left)",
-  "（風向反了，拖行聲從右邊靠近）": "(the wind reversed; dragging approaches from the right)"
+  "（風向反了，拖行聲從右邊靠近）": "(the wind reversed; dragging approaches from the right)",
+  "橫向全螢幕": "Landscape fullscreen",
+  "退出全螢幕": "Exit fullscreen"
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -12066,7 +12076,11 @@ function lampLevel(){
  const r=ev.t;if(r<1.5){return Math.floor((1.5-r)*4)%2?.15:1}   // flickers three times just before it goes out
  return 1}
 /* ---- items, campfire, options (landscape 800x450, first person) ---- */
-const cxy=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)*W/(r.width||W),(e.clientY-r.top)*H/(r.height||H)]};
+const stageEl=c.parentNode||{};
+const isRot=()=>!!(stageEl.classList&&stageEl.classList.contains('peek-rot'));
+const cxy=e=>{const r=c.getBoundingClientRect();
+ if(isRot())return[(e.clientY-r.top)*W/(r.height||W),(r.left+r.width-e.clientX)*H/(r.width||H)];   // stage turned 90deg for portrait phones
+ return[(e.clientX-r.left)*W/(r.width||W),(e.clientY-r.top)*H/(r.height||H)]};
 function giveItem(k){
  if(k==='torch'){bag.torch=Math.min(3,bag.torch+1);fx('火把 +1',CX,150,'#ffb347')}
  else if(k==='charm'){bag.charm=Math.min(2,bag.charm+1);fx('護身符 +1',CX,150,'#7fe8ff')}
@@ -12394,9 +12408,10 @@ function start(){
 }
 const shown=()=>!$('view-peek').hidden&&!document.hidden;
 function region(e){
- const r=c.getBoundingClientRect(),x=(e.clientX-r.left)*W/(r.width||W),y=(e.clientY-r.top)*H/(r.height||H);
+ const p=cxy(e),x=p[0],y=p[1],by=BTN[0][1];
  for(let i=0;i<BTN.length;i++){const b=BTN[i];if(x>=b[0]&&x<=b[0]+b[2]&&y>=b[1]&&y<=b[1]+b[3])return i}
- return y<BTN[0][1]?3:-1}
+ if(y>=by-34){let bi=-1,bd=1e9;BTN.forEach((b,i)=>{const d=Math.abs(x-(b[0]+b[2]/2));if(d<bd){bd=d;bi=i}});return bi}   // fat-finger band: the nearest button wins
+ return y<by?3:-1}
 function syncPtrs(){btn=[0,0,0,0,0];ptrs.forEach(i=>{if(i>=0)btn[i]=1})}
 $('peek-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
@@ -12421,6 +12436,18 @@ document.addEventListener('visibilitychange',()=>{last=performance.now();clearIn
 window.addEventListener('hashchange',()=>{last=performance.now();clearInput()});
 /* ---- optional phone motion: lean the phone, turn it face down to cover ---- */
 function onOrient(e){if(e.gamma===null||e.gamma===undefined)return;gyro.tilt=clamp(e.gamma/30,-1,1);gyro.down=Math.abs(e.beta||0)>145}
+/* ---- landscape fullscreen for phones: real fullscreen where allowed, otherwise turn the stage 90deg ---- */
+const fsB=$('peek-full'),fsX=$('peek-fsx');
+function fsOff(){if(stageEl.classList){stageEl.classList.remove('peek-fs','peek-rot')}if(fsX)fsX.hidden=true;if(fsB)fsB.textContent='橫向全螢幕';try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen()}catch(x){}}
+function fsOn(){
+ if(!stageEl.classList)return;stageEl.classList.add('peek-fs');if(fsX)fsX.hidden=false;if(fsB)fsB.textContent='退出全螢幕';
+ const portrait=window.innerHeight>window.innerWidth;let ok=false;
+ try{if(stageEl.requestFullscreen){const p=stageEl.requestFullscreen();if(p&&p.catch)p.catch(()=>{});ok=true}}catch(x){}
+ try{if(ok&&screen.orientation&&screen.orientation.lock){screen.orientation.lock('landscape').catch(()=>{portrait&&stageEl.classList.add('peek-rot')});return}}catch(x){}
+ if(portrait)stageEl.classList.add('peek-rot')}
+if(fsB)fsB.addEventListener('click',()=>{stageEl.classList&&stageEl.classList.contains('peek-fs')?fsOff():fsOn()});
+if(fsX)fsX.addEventListener('click',fsOff);
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&stageEl.classList&&stageEl.classList.contains('peek-fs')&&!stageEl.classList.contains('peek-rot'))fsOff()});
 const gb=$('peek-gyro');
 if(gb)gb.addEventListener('click',()=>{
  if(gyro.on){gyro.on=false;window.removeEventListener('deviceorientation',onOrient);window.removeEventListener('devicemotion',onMotion);gb.textContent='啟用體感（手機）';return}
