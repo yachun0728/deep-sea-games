@@ -257,3 +257,7 @@ KE.active涵蓋免費挖掘，使用現有syncBalance／save入帳；可用時�
 ENTRY_FEE=0，已上架遊戲移除扣款，iframe以開局成功布林值通訊，不再以正金額判斷成功。js/wallet.js保留舊STORE與回點時間鍵，停用自然回點；玩家餘額不重設。platform/wardrobe.js放在導航前、同一runtime IIFE內，bootstrap讀取餘額後初始化。大廳details與頁首入口呈現平台角色，三槽帽／服裝／跟隨配件不接入遊戲能力。
 
 AN.tick只在原有可見聚焦且engaged的有效時間呼叫deepSeaProgress.active一次；end以有效時間與結果呼叫complete。新Key deep-sea-wardrobe-v1含version、owned、equipped、day、playMs、playPaid、completed；合法舊錢包原樣讀取，沒有原資料遷移。收藏寫入失敗不扣款；損壞收藏不清除，顯示錯誤。兌換與平台獎勵使用單頁queue，支援時加Web Locks，操作前重讀配額與餘額，避免連點重發／重扣；claim／收藏與wallet為兩個localStorage鍵，不宣稱交易原子性或防作弊，異常關機仍可能少發獎勵或少扣一次兌換費。回復本版只回復來源並重建，保留新Key，舊版忽略。
+
+## 全體點數歸零（2026-11-18 一次性）
+
+依使用者指示，所有玩家的共用餘額 `crush-depth-balance` 在載入時一次性歸零：`deep-sea-balance-zero-v1` 標記尚未為 `1` 時，將餘額設為 0 並寫入標記，之後照常讀取（歸零後賺到的點數會保留，不會再歸零）。造型收藏 `deep-sea-wardrobe-v1` 不受影響。頁首第一次畫面的預載腳本也依標記顯示，不會先閃出舊點數。回復方式：移除 `js/wallet.js` 的歸零區塊（已歸零的點數無法恢復）。測試：`node tools/test_balance_zero.mjs`。

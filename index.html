@@ -1001,7 +1001,7 @@ body.ol-expanded { overflow: hidden; }
     </div>
     <div class="header-tools"><button type="button" id="open-wardrobe" class="wardrobe-open"><span class="wardrobe-preview" id="wardrobe-mini" aria-hidden="true"></span>我的造型</button><div class="language-switch" role="group" aria-label="Language / 語言" data-i18n-ignore><button type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button><button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button></div><div class="wallet-box"><div class="wallet">
       <span class="label" data-i18n-ignore>BONUS</span>
-      <span class="amount" id="balance">0</span><span class="unit">點</span><script>try{var b=parseInt(localStorage.getItem('crush-depth-balance'),10);if(isFinite(b)&&b>=0)document.getElementById('balance').textContent=b.toLocaleString('zh-TW')}catch(e){}</script>
+      <span class="amount" id="balance">0</span><span class="unit">點</span><script>try{var b=parseInt(localStorage.getItem('crush-depth-balance'),10);if(localStorage.getItem('deep-sea-balance-zero-v1')==='1'&&isFinite(b)&&b>=0)document.getElementById('balance').textContent=b.toLocaleString('zh-TW')}catch(e){}</script>
     </div></div></div>
   </header>
 
@@ -6464,9 +6464,16 @@ body.ol-expanded { overflow: hidden; }
     lastSavedBalance = S.balance;
     try { localStorage.setItem(STORE, String(S.balance)); } catch (e) {}
   }
+  // One-time reset (2026-11-18): everyone starts again from 0 points. The marker keeps it from running twice,
+  // and the wardrobe collection (deep-sea-wardrobe-v1) is not touched.
+  var ZERO_KEY = 'deep-sea-balance-zero-v1';
   function load() {
     try {
-      var v = parseInt(localStorage.getItem(STORE), 10); if (isFinite(v) && v >= 0) S.balance = v;
+      if (localStorage.getItem(ZERO_KEY) !== '1') {
+        S.balance = 0; localStorage.setItem(STORE, '0'); localStorage.setItem(ZERO_KEY, '1');
+      } else {
+        var v = parseInt(localStorage.getItem(STORE), 10); if (isFinite(v) && v >= 0) S.balance = v;
+      }
     } catch (e) {}
     lastSavedBalance = S.balance;
   }
