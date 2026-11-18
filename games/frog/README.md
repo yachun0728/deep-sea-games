@@ -7,7 +7,7 @@
 - 網址：`#frog`　分類：技巧闖關　狀態：顯示中
 - 大廳卡片：「對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。」｜每局 10 點 · 一鍵反應
 - 追蹤名稱（GA4 `game_name`）：青蛙吃蟲，`game_id` 為 `frog`
-- 檔案：`games/frog/card.html`、`games/frog/game.js`、`games/frog/icon.svg`、`games/frog/view.html`；`game.js` 共 165 行、11.9 KB
+- 檔案：`games/frog/card.html`、`games/frog/game.js`、`games/frog/icon.svg`、`games/frog/view.html`；`game.js` 共 166 行、12.2 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「26. 青蛙吃蟲 Frog Snack（frog）」（下方「規則摘要」已複製）
 
@@ -22,31 +22,32 @@
 - L6 常數：`HIT`、`PERFECT`
 - L7 常數：`FROG_REWARD`、`REWARD_EVERY`
 - L8 常數：`HEARTS`、`FULL`、`EAT_FOOD`、`PERFECT_FOOD`、`WARN_S`
-- L11 常數：`COLS`
+- L9 常數：`MISS_FOOD_LV1`、`MISS_FOOD`、`LEVEL_FOOD`
+- L12 常數：`COLS`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rnd` L14、`O` L15、`C` L16、`F` L17、`RR` L18、`tx` L19、`level` L21、`cfg` L22、`newBug` L23、`reset` L26、`say` L29、`setText` L31、`ui` L32、`fx` L37、`end` L38、`calm` L48、`press` L49、`update` L68、`drawBug` L85、`drawFrog` L98、`draw` L112、`start` L142、`shown` L149、`loop` L162
+`rnd` L15、`O` L16、`C` L17、`F` L18、`RR` L19、`tx` L20、`level` L22、`cfg` L23、`newBug` L24、`reset` L27、`say` L30、`setText` L32、`ui` L33、`fx` L38、`end` L39、`calm` L49、`press` L50、`update` L69、`drawBug` L86、`drawFrog` L99、`draw` L113、`start` L143、`shown` L150、`loop` L163
 
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L146 `start`：`S.balance-=amount;`
+- L147 `start`：`S.balance-=amount;`
 
 **入帳（領回／獎勵）**
-- L64 `press`：`S.balance+=FROG_REWARD;`
+- L65 `press`：`S.balance+=FROG_REWARD;`
 
 **餘額檢查**
-- L145 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L146 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L42 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:pts,step:eaten,stage:level()});`
-- L65 `press`：`AN.progress(analytics,{stage:level(),step:eaten,score:pts,bonus_points:FROG_REWARD});`
-- L146 `start`：`analytics=AN.start('frog',amount);`
+- L43 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:pts,step:eaten,stage:level()});`
+- L66 `press`：`AN.progress(analytics,{stage:level(),step:eaten,score:pts,bonus_points:FROG_REWARD});`
+- L147 `start`：`analytics=AN.start('frog',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -64,9 +65,9 @@
 
 定位：`frogBusy` 所在 IIFE。單鍵時機遊戲（原型為敲高跟鞋）：8 隻蟲疊成一座塔，黃色箭頭在最底下兩隻蟲之間（畫布 y 412～500）等速來回。按空白鍵或點畫面時，箭頭與最底下那隻蟲中心（y 478）的距離 ≤16 畫素算命中，≤6 畫素算 PERFECT；命中就吃掉最底下那隻，整疊下移一格並從上方補一隻。
 
-- 沒對準（MISS）：不扣愛心，連擊歸零，停頓 0.35 秒。
+- 沒對準（MISS）：不扣愛心，連擊歸零，停頓 0.35 秒，並扣飽食（Lv.1 扣 2、Lv.2 起扣 4），避免狂按也能存活。
 - 生氣的蟲（粉紅色、有眉毛）只在最底下三格計時：平靜 → 閃黃警告 0.5 秒 → 紅色帶刺（攻擊）→ 回到平靜，一直循環。紅色時命中算被螫：扣 1 顆愛心（共 3 顆）、連擊歸零、停頓 0.6 秒，那隻蟲留在原地並回到平靜。警告時吃掉另加 5 分。不會連續生成三隻生氣的蟲。
-- 飽食 100 起算，每秒下降；一般命中 +8、PERFECT +12，上限 100。
+- 飽食 100 起算，每秒下降；一般命中 +8、PERFECT +12，上限 100；每升一級（吃滿 10 隻）再回復 10。
 - 分數：一般 10、PERFECT 20，乘上連擊倍率（吃之前的連擊 0～4 為 ×1、5～14 為 ×2、15 以上 ×3）。分數與連擊只顯示，不換點數。
 - 結束：愛心歸零或飽食歸零。
 

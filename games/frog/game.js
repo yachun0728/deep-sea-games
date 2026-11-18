@@ -6,6 +6,7 @@ const BW=100,BH=44,TX=280,SLOTS=8,TY=GY-BH/2,AIM_TOP=GY-BH*2,AIM_BOT=GY,AIM_X=18
 const HIT=16,PERFECT=6;              // distance (px) from the bottom bug's centre that still counts
 const FROG_REWARD=1,REWARD_EVERY=10; // points credited each time another 10 bugs are eaten
 const HEARTS=3,FULL=100,EAT_FOOD=8,PERFECT_FOOD=12,WARN_S=.5;
+const MISS_FOOD_LV1=2,MISS_FOOD=4,LEVEL_FOOD=10; // a missed tongue costs fullness (gentler on level 1); every level-up refills a little
 // Per level (1-10): aim speed px/s, chance a new bug is an angry one, calm seconds [min,max], attack seconds, fullness lost per second.
 const LV=[[141,0,0,0,0,5],[157,.15,2,3,.8,5.7],[173,.2,1.8,2.8,.9,6.4],[189,.25,1.6,2.6,1,7.1],[204,.3,1.4,2.4,1.1,7.8],[220,.35,1.2,2.2,1.2,8.5],[236,.4,1,2,1.3,9.2],[251,.45,.9,1.8,1.4,9.9],[267,.5,.8,1.6,1.5,10.6],[283,.55,.7,1.4,1.6,11.3]];
 const COLS=['#8bc34a','#ffb74d','#64b5f6','#ba68c8'];
@@ -50,7 +51,7 @@ function press(){
  if(st!=='run'||lock>0)return;
  tongueT=.12;tongueY=aimY;
  const d=Math.abs(aimY-TY),b=bugs[0];
- if(d>HIT){combo=0;lock=.35;wob=.2;fx('MISS',TX,aimY-10,'#cfd8dc');return}
+ if(d>HIT){combo=0;lock=.35;wob=.2;food=Math.max(0,food-(level()===1?MISS_FOOD_LV1:MISS_FOOD));fx('MISS',TX,aimY-10,'#cfd8dc');return}
  if(b.state==='attack'){
   hearts--;combo=0;lock=.6;calm(b);dizzy=.6;if(!reduceMotion){flash=.15;shake=.3}
   fx('被螫了！',TX,TY-30,'#ff5d8f');
@@ -61,9 +62,9 @@ function press(){
  bugs.shift();bugs.push(newBug());dropT=.1;lock=.1;sq=.3;
  fx((perfect?'PERFECT +':'+')+gain,TX,TY-30,perfect?'#ffd23f':'#fff1c1');
  if(eaten%REWARD_EVERY===0){
-  earned+=FROG_REWARD;S.balance+=FROG_REWARD;save();renderAll();lvlT=.8;
+  earned+=FROG_REWARD;S.balance+=FROG_REWARD;food=Math.min(FULL,food+LEVEL_FOOD);save();renderAll();lvlT=.8;
   AN.progress(analytics,{stage:level(),step:eaten,score:pts,bonus_points:FROG_REWARD});
-  say('吃滿 '+eaten+' 隻！+'+FROG_REWARD+' 點已入帳，蟲子變得更兇了。','win')}
+  say('吃滿 '+eaten+' 隻！+'+FROG_REWARD+' 點已入帳，飽食回復一些，蟲子變得更兇了。','win')}
 }
 function update(dt){
  tt+=dt;sq*=.8;
