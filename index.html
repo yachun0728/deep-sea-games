@@ -15,7 +15,7 @@
     w.gtag('config',ID,{allow_google_signals:false,allow_ad_personalization_signals:false,debug_mode:debug});
     var tag=d.createElement('script');tag.async=true;tag.src='https://www.googletagmanager.com/gtag/js?id='+ID;d.head.appendChild(tag);
   }
-  var names={blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看'};
+  var names={'ocean-link':'深海連連看',blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看'};
   var rounds={},current='',seq=0,bucket=0,last=performance.now(),inputAt=last,visible=!d.hidden,focused=d.hasFocus?d.hasFocus():true,suspended=false;
   var tabToken=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
   function emit(event,game,params){
@@ -586,6 +586,170 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
 .mrt-stage{min-width:0;display:flex;justify-content:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#000}.mrt-stage iframe{display:block;width:min(100%,480px);height:min(860px,calc(100svh - 150px));min-height:600px;border:0;background:#000}
 .pancake-platform-bar{display:flex;align-items:center;justify-content:space-between;gap:12px}.pancake-platform-bar p{margin:0}.pancake-platform-bar .chip{padding:9px 12px;white-space:nowrap}.pancake-stage{display:flex;justify-content:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#0d0b0a}.pancake-stage iframe{display:block;width:min(100%,430px);height:min(860px,calc(100svh - 150px));min-height:600px;border:0;background:#0d0b0a;touch-action:none}
 
+#ol-stage {
+  --ol-cell: 30px;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #285968;
+  border-radius: 20px;
+  color: #e6fffa;
+  background: radial-gradient(ellipse at top, #17485b, #081f30 70%);
+}
+#ol-stage [hidden] { display: none !important; }
+.ol-toolbar { display: grid; gap: 8px; width: 100%; text-align: center; }
+.ol-heading h2 { margin: 0; font-size: clamp(20px, 4vw, 32px); color: #91f7de; }
+.ol-toolbar p, .ol-rules p { margin: 0; }
+.ol-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; }
+.ol-actions button, .ol-actions select {
+  min-height: 34px;
+  padding: 4px 8px;
+  border: 1px solid #528c9f;
+  border-radius: 8px;
+  background: #12394b;
+  color: inherit;
+  font: inherit;
+  touch-action: manipulation;
+}
+#ol-go { background: #96f4d7; color: #09242a; font-weight: 700; }
+.ol-actions button:disabled { opacity: .55; }
+#ol-msg { min-height: 1.3em; color: #ffe7a2; }
+#ol-game-area {
+  position: relative;
+  width: max-content;
+  min-width: min(320px, calc(100vw - 40px));
+  min-height: 104px;
+  max-width: 100%;
+}
+#ol-board-actions { position: absolute; inset: 0; z-index: 2; }
+#ol-board-actions #ol-full {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: rgba(5, 28, 43, .66);
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 0 1px 4px #061b29;
+  cursor: pointer;
+}
+#ol-stage.ol-native-full #ol-game-area, #ol-stage.ol-expanded #ol-game-area { display: contents; }
+#ol-playfield { position: relative; width: max-content; }
+#ol-board {
+  display: grid;
+  --ol-edge: calc(var(--ol-cell) * var(--ol-edge-ratio));
+  grid-template-columns: var(--ol-edge) repeat(var(--ol-cols), var(--ol-cell)) var(--ol-edge);
+  grid-template-rows: var(--ol-edge) repeat(var(--ol-rows), var(--ol-cell)) var(--ol-edge);
+  border-radius: 12px;
+  background: #061b29;
+}
+#ol-board.ol-transposed { grid-auto-flow: column; }
+#ol-board > * { min-width: 0; min-height: 0; }
+#ol-board .ol-tile, #ol-board .ol-reef { margin: .5px; border-radius: 15%; }
+#ol-board .ol-tile {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: #dbf9f2;
+  color: #143548;
+  font: calc(var(--ol-cell) * .88)/1 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+#ol-board .ol-tile:focus-visible { outline: 2px solid #fff; z-index: 1; }
+#ol-board .ol-tile[aria-pressed="true"] { background: #ffe291; }
+#ol-board .ol-tile.ol-hint { background: #8bffb4; }
+#ol-board .ol-reef { background: repeating-linear-gradient(135deg, #395967 0 3px, #234451 3px 6px); }
+#ol-trace { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+#ol-trace polyline { fill: none; stroke: #fff0a3; stroke-width: .13; stroke-linecap: round; stroke-linejoin: round; }
+.ol-rules { width: min(100%, 640px); font-size: 13px; color: #c5e6e6; }
+.ol-rules p { margin-top: 6px; }
+#ol-stage.ol-native-full, #ol-stage.ol-expanded {
+  overflow: auto;
+  align-content: start;
+  overscroll-behavior: contain;
+  padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right))
+           max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+}
+#ol-stage.ol-expanded { position: fixed; inset: 0; z-index: 10000; border-radius: 0; }
+body.ol-expanded { overflow: hidden; }
+@media (max-width: 600px) {
+  #ol-stage { padding: 8px 2px; }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  #ol-stage { grid-template-columns: minmax(135px, 1fr) auto; align-items: start; }
+  #ol-game-area { min-width: min(320px, 40vw); }
+  .ol-toolbar { align-self: center; }
+  .ol-rules { grid-column: 1 / -1; }
+}
+
+#ol-clock { font-size: 14px; }
+#ol-time {
+  color: #91f7de;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+#ol-stage.ol-board-focus {
+  gap: 4px;
+  border: 0;
+  padding: max(2px, env(safe-area-inset-top)) max(2px, env(safe-area-inset-right))
+           max(2px, env(safe-area-inset-bottom)) max(2px, env(safe-area-inset-left));
+}
+#ol-stage.ol-board-focus .ol-heading,
+#ol-stage.ol-board-focus .ol-rules,
+#ol-stage.ol-board-focus .ol-actions label,
+#ol-stage.ol-board-focus #ol-mode,
+#ol-stage.ol-board-focus #ol-count,
+#ol-stage.ol-board-focus #ol-record { display: none; }
+#ol-stage.ol-board-focus .ol-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: 12px;
+}
+#ol-stage.ol-board-focus #ol-msg { font-size: 11px; line-height: 1.15; }
+#ol-stage.ol-board-focus #ol-time { font-size: 17px; }
+#ol-stage.ol-board-focus .ol-actions button { min-height: 32px; padding: 3px 6px; }
+@media (orientation: landscape) {
+  #ol-stage.ol-board-focus {
+    grid-template-columns: 96px auto;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+  }
+  #ol-stage.ol-board-focus .ol-toolbar,
+  #ol-stage.ol-board-focus .ol-actions { flex-direction: column; }
+}
+
+#ol-result {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 8px;
+  width: min(100%, 480px);
+  min-height: min(260px, 56vh);
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #528c9f;
+  border-radius: 18px;
+  background: #103748;
+}
+#ol-result h3, #ol-result p { margin: 0; }
+.ol-result-icon { font-size: 34px; line-height: 1.15; }
+#ol-result-time {
+  display: block;
+  color: #91f7de;
+  font-size: clamp(28px, 7vmin, 42px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+@media (orientation: landscape) {
+  #ol-stage.ol-board-focus.ol-showing-result { grid-template-columns: minmax(96px, auto) minmax(200px, 480px); }
+}
+
 .sneak-stage #lh-canvas{width:min(100%,400px,calc(80vh * 400 / 720));height:auto;aspect-ratio:400/720;max-height:none;object-fit:fill}
 
 .sneak-stage #os-canvas{width:min(100%,450px,calc(80vh * 450 / 800));height:auto;aspect-ratio:450/800;max-height:none;object-fit:fill}
@@ -629,7 +793,7 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
     <a href="#cat" id="tab-cat">屋頂貓貓<small>Rooftop Cat</small></a>
     <a href="#bird" id="tab-bird">便便鳥大戰狼群<small>Poop Bird</small></a>
     <a href="#frog" id="tab-frog">青蛙吃蟲<small>Frog Snack</small></a>
-    <a href="#clock-out" id="tab-clock-out">下班保衛戰<small>Clock Out</small></a><a href="#peek" id="tab-peek">別看<small>Don’t Peek</small></a><a href="#pet-walk" id="tab-pet-walk">小灰出門<small>Pet Walkies</small></a><a href="#office-shoot" id="tab-office-shoot">拒絕加班<small>No Overtime!</small></a><a href="#breakout" id="tab-breakout">打磚塊<small>Breakout</small></a>
+    <a href="#ocean-link" id="tab-ocean-link">深海連連看<small>Ocean Link</small></a><a href="#clock-out" id="tab-clock-out">下班保衛戰<small>Clock Out</small></a><a href="#peek" id="tab-peek">別看<small>Don’t Peek</small></a><a href="#pet-walk" id="tab-pet-walk">小灰出門<small>Pet Walkies</small></a><a href="#office-shoot" id="tab-office-shoot">拒絕加班<small>No Overtime!</small></a><a href="#breakout" id="tab-breakout">打磚塊<small>Breakout</small></a>
     <a href="#nap" id="tab-nap">偷睡大師<small>Nap Master</small></a><a href="#pudding" id="tab-pudding">布丁突圍<small>Pudding Dash</small></a><a href="#mosquito" id="tab-mosquito">血壓上升<small>Midnight Mosquito</small></a><a href="#last-hair" id="tab-last-hair">尊嚴保衛戰<small>The Last Hair</small></a>
     <a href="#blaster" id="tab-blaster">深海火線<small>Reef Blaster</small></a>
     <a href="#reaper" id="tab-reaper">死神打工<small>Reaper Shift</small></a>
@@ -649,7 +813,17 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
 </div>
 
   <section class="view lobby-view" id="view-lobby" aria-label="遊戲大廳">
-<svg class="lobby-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-blaster" viewBox="0 0 96 96"><path d="M27 9v77M68 9v77" stroke="#326475" stroke-width="2" stroke-dasharray="4 5"/><path d="m47 53 21 29-21-6-21 6z" fill="#62e6d2"/><rect x="44" y="48" width="6" height="14" rx="3" fill="#ffe1a0"/><path d="M47 38v-9" stroke="#ffb638" stroke-width="5" stroke-linecap="round"/><circle cx="47" cy="16" r="13" fill="#b8a4f4"/><circle cx="43" cy="15" r="3" fill="#163e50"/><circle cx="52" cy="15" r="3" fill="#163e50"/><rect x="69" y="38" width="22" height="22" rx="6" fill="#ffb638"/><path d="m81 42-7 9h5l-1 6 8-10h-5z" fill="#694d24"/></symbol>
+<svg class="lobby-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-ocean-link" viewBox="0 0 96 96">
+  <path d="M28 53v23h42V49" fill="none" stroke="#66e8c2" stroke-width="6" stroke-linejoin="round"/>
+  <rect x="9" y="23" width="38" height="38" rx="10" fill="#9bf4dc"/>
+  <rect x="51" y="12" width="38" height="38" rx="10" fill="#9bf4dc"/>
+  <g fill="#266181">
+    <path d="m17 42 7-6a10 10 0 1 1 0 12z"/>
+    <path d="m59 31 7-6a10 10 0 1 1 0 12z"/>
+  </g>
+  <g fill="#fff"><circle cx="33" cy="40" r="2"/><circle cx="75" cy="29" r="2"/></g>
+</symbol>
+<symbol id="icon-blaster" viewBox="0 0 96 96"><path d="M27 9v77M68 9v77" stroke="#326475" stroke-width="2" stroke-dasharray="4 5"/><path d="m47 53 21 29-21-6-21 6z" fill="#62e6d2"/><rect x="44" y="48" width="6" height="14" rx="3" fill="#ffe1a0"/><path d="M47 38v-9" stroke="#ffb638" stroke-width="5" stroke-linecap="round"/><circle cx="47" cy="16" r="13" fill="#b8a4f4"/><circle cx="43" cy="15" r="3" fill="#163e50"/><circle cx="52" cy="15" r="3" fill="#163e50"/><rect x="69" y="38" width="22" height="22" rx="6" fill="#ffb638"/><path d="m81 42-7 9h5l-1 6 8-10h-5z" fill="#694d24"/></symbol>
 <symbol id="icon-clock-out" viewBox="0 0 96 96"><rect x="10" y="58" width="76" height="24" rx="5" fill="#8d6e63"/><rect x="16" y="62" width="30" height="16" rx="3" fill="#a1887f"/><rect x="50" y="62" width="30" height="16" rx="3" fill="#a1887f"/><circle cx="48" cy="34" r="24" fill="#fff8e1" stroke="#37474f" stroke-width="4"/><path d="M48 34V20M48 34l11 7" stroke="#37474f" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="34" r="3" fill="#e53935"/><rect x="64" y="8" width="22" height="22" rx="2" fill="#ffd54f" transform="rotate(8 75 19)"/><path d="M68 16h14M68 22h10" stroke="#8d6e63" stroke-width="2.5" stroke-linecap="round" transform="rotate(8 75 19)"/></symbol><symbol id="icon-mosquito" viewBox="0 0 96 96"><path d="M6 84h84" stroke="#5a6a9a" stroke-width="6" stroke-linecap="round"/><ellipse cx="44" cy="52" rx="20" ry="9" fill="rgba(210,225,255,.65)" stroke="#9fb4ff" stroke-width="2" transform="rotate(-28 44 52)"/><ellipse cx="30" cy="48" rx="19" ry="12" fill="#c62840" stroke="#1b1b2f" stroke-width="3"/><ellipse cx="54" cy="50" rx="12" ry="8" fill="#2b2b33" stroke="#1b1b2f" stroke-width="3"/><circle cx="68" cy="48" r="7" fill="#2b2b33" stroke="#1b1b2f" stroke-width="3"/><circle cx="70" cy="46" r="2.4" fill="#ff5a5a"/><path d="M74 51 90 66" stroke="#1b1b2f" stroke-width="3" stroke-linecap="round"/><path d="M48 58 44 74M56 58 56 76M62 56 68 72" stroke="#1b1b2f" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-peek" viewBox="0 0 96 96"><rect width="96" height="96" rx="0" fill="none"/><rect x="14" y="44" width="68" height="36" rx="6" fill="#b8863b" stroke="#120d0a" stroke-width="3"/><path d="M12 44 L16 30 H80 L84 44 Z" fill="#d6a24e" stroke="#120d0a" stroke-width="3" stroke-linejoin="round"/><circle cx="34" cy="62" r="6" fill="#8a6226"/><circle cx="54" cy="62" r="6" fill="#8a6226"/><path d="M82 62h8" stroke="#e8c675" stroke-width="4" stroke-linecap="round"/><circle cx="91" cy="62" r="4" fill="#e8c675"/><ellipse cx="48" cy="37" rx="9" ry="5" fill="#2a0505"/><circle cx="48" cy="37" r="3.4" fill="#ff2a2a"/><path d="M48 37 L30 8 L66 8 Z" fill="#ff3030" opacity=".28"/><path d="M20 20q6-8 12 0" stroke="#dfe6ff" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/></symbol><symbol id="icon-pet-walk" viewBox="0 0 96 96"><rect x="0" y="66" width="96" height="30" fill="#59616a"/><path d="M0 66h96" stroke="#3a424a" stroke-width="3"/><circle cx="42" cy="46" r="26" fill="#8d99a6" stroke="#2b3138" stroke-width="4"/><path d="M50 21q6-9 2-17" fill="none" stroke="#2b3138" stroke-width="3.5" stroke-linecap="round"/><circle cx="52" cy="4" r="4.5" fill="#f2a93b"/><ellipse cx="33" cy="42" rx="5" ry="7" fill="#1b1b24"/><ellipse cx="51" cy="42" rx="5" ry="7" fill="#1b1b24"/><circle cx="33" cy="42" r="3.5" fill="#ffc23d"/><circle cx="51" cy="42" r="3.5" fill="#ffc23d"/><path d="M37 55q5 5 10 0" fill="none" stroke="#2b3138" stroke-width="2.5" stroke-linecap="round"/><path d="M70 74l6-8 6 8M76 66v-14" stroke="#f2a93b" stroke-width="3.5" stroke-linecap="round" fill="none"/></symbol>
 <symbol id="icon-office-shoot" viewBox="0 0 96 96"><rect width="48" height="96" fill="#1c3b44"/><rect x="48" width="48" height="96" fill="#2e2638"/><path d="M46 0h4v72h-4z" fill="#ffd43b" opacity=".55"/><rect x="58" y="10" width="26" height="32" rx="3" fill="#e9ecef" stroke="#1b1b24" stroke-width="3"/><path d="M63 19h16M63 25h16M63 31h11" stroke="#868e96" stroke-width="2.5" stroke-linecap="round"/><rect x="8" y="16" width="30" height="20" rx="4" fill="#8fe3ff" opacity=".85" stroke="#1b1b24" stroke-width="3"/><path d="M23 20v12M17 26h12" stroke="#1b1b24" stroke-width="3" stroke-linecap="round"/><circle cx="71" cy="54" r="3.5" fill="#4d8dff"/><circle cx="71" cy="64" r="3.5" fill="#4d8dff"/><path d="M0 74h96" stroke="#ff4d5e" stroke-width="3" stroke-dasharray="7 5"/><rect y="76" width="96" height="20" fill="#14161c"/><ellipse cx="71" cy="86" rx="15" ry="9" fill="#3d4a63" stroke="#1b1b24" stroke-width="3"/><circle cx="71" cy="84" r="7" fill="#2a1f1a"/><rect x="69" y="66" width="4" height="12" rx="1.5" fill="#e8ecf2"/></symbol><symbol id="icon-breakout" viewBox="0 0 96 96"><rect x="10" y="12" width="20" height="10" rx="3" fill="#ff766b"/><rect x="34" y="12" width="20" height="10" rx="3" fill="#ffc857"/><rect x="58" y="12" width="20" height="10" rx="3" fill="#62e6d2"/><rect x="10" y="26" width="20" height="10" rx="3" fill="#ffc857"/><rect x="58" y="26" width="20" height="10" rx="3" fill="#ff766b"/><circle cx="48" cy="58" r="7" fill="#f4fbff"/><path d="m44 52-8-10" stroke="#f4fbff" stroke-width="3" stroke-linecap="round" opacity=".5"/><rect x="26" y="78" width="44" height="9" rx="4.5" fill="#62e6d2"/></symbol>
 <symbol id="icon-last-hair" viewBox="0 0 96 96"><rect x="0" y="66" width="96" height="30" fill="#9aa0a8"/><path d="M6 24h26M2 36h20M64 20h28M70 32h22" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity=".8"/><rect x="26" y="62" width="44" height="34" rx="10" fill="#2f3b57"/><path d="M42 62h12l-6 16z" fill="#f5f5f5"/><path d="M46 64h4l1 14-3 4-3-4z" fill="#c62828"/><circle cx="48" cy="44" r="22" fill="#f1c9a0"/><circle cx="40" cy="43" r="4" fill="#fff"/><circle cx="56" cy="43" r="4" fill="#fff"/><circle cx="40" cy="44" r="2" fill="#222"/><circle cx="56" cy="44" r="2" fill="#222"/><path d="M41 54q7 5 14 0" stroke="#222" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M38 24q-8-10-18-8M48 22q2-12 14-16M58 24q10-6 22 2" stroke="#1d1610" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="70" cy="30" r="2.5" fill="#4fc3f7"/></symbol>
@@ -663,7 +837,14 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
 </a></section>
     <div class="lobby-section-heading" id="lobby-games"><div><p class="lobby-eyebrow">PICK YOUR NEXT ADVENTURE</p><h2>遊戲大廳 <span id="lobby-count">28 款遊戲</span></h2></div><p>選一款，開始你的下一局。</p></div>
     <div class="lobby-filters" role="group" aria-label="篩選遊戲類型"><button type="button" data-lobby-filter="all" aria-pressed="true">全部 <span>29</span></button><button type="button" data-lobby-filter="skill" aria-pressed="false">技巧闖關 <span>27</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false">免費懷舊 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false">機率挑戰 <span>0</span></button></div>
-    <div class="lobby-grid"><a class="game-card" href="#office-shoot" data-game-category="skill" aria-label="遊玩拒絕加班：自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-office-shoot"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-office-shoot"></use></svg></div><h3>拒絕加班</h3><p class="game-card-en">No Overtime!</p><p class="game-card-description">自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。</p><div class="game-card-footer"><span>每局 10 點</span><span>自動射擊</span></div></a>
+    <div class="lobby-grid"><a class="game-card" href="#ocean-link" data-game-category="retro" aria-label="免費遊玩深海連連看，配對圖案闖關並獲得獎勵。">
+  <div class="game-card-top"><span class="game-card-category">免費懷舊</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div>
+  <div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-ocean-link"></use></svg></div>
+  <h3>深海連連看</h3><p class="game-card-en">Ocean Link</p>
+  <p class="game-card-description">把相同的圖案連起來，穿越礁石與移動棋盤。</p>
+  <div class="game-card-footer"><span>免費 · 不限次數</span><span>配對解謎</span></div>
+</a>
+<a class="game-card" href="#office-shoot" data-game-category="skill" aria-label="遊玩拒絕加班：自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-office-shoot"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-office-shoot"></use></svg></div><h3>拒絕加班</h3><p class="game-card-en">No Overtime!</p><p class="game-card-description">自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。</p><div class="game-card-footer"><span>每局 10 點</span><span>自動射擊</span></div></a>
 <a class="game-card" href="#pet-walk" data-game-category="skill" aria-label="遊玩小灰出門：點一下走一步，路上遇到隨機事件和轉盤，走滿 60 步回家。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-pet-walk"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-pet-walk"></use></svg></div><h3>小灰出門</h3><p class="game-card-en">Pet Walkies</p><p class="game-card-description">一鍵帶小灰散步，路上撞見野狗、河鯊和幸運轉盤。</p><div class="game-card-footer"><span>每趟 10 點</span><span>一鍵散步</span></div></a>
 <a class="game-card" href="#peek" data-game-category="skill" aria-label="遊玩別看：轉動八音盒發條，躲開盒子裡的東西，燈滅前蓋住螢幕。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-peek"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-peek"></use></svg></div><h3>別看</h3><p class="game-card-en">Don’t Peek</p><p class="game-card-description">轉動八音盒發條，躲開盒子裡的東西，燈滅前蓋住螢幕。</p><div class="game-card-footer"><span>每局 10 點</span><span>聽聲反應</span></div></a><a class="game-card" href="#mosquito" data-game-category="skill" aria-label="遊玩血壓上升：深夜當蚊子，吸飽血再從窗戶逃走，別把睡著的人吵醒。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mosquito"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mosquito"></use></svg></div><h3>血壓上升</h3><p class="game-card-en">Midnight Mosquito</p><p class="game-card-description">深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。</p><div class="game-card-footer"><span>每局 10 點</span><span>按住吸血</span></div></a>
 <a class="game-card" href="#last-hair" data-game-category="skill" aria-label="遊玩尊嚴保衛戰：頂著最後三根頭髮，在強風中走完 500 公尺去面試。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">技巧闖關</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-last-hair"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-last-hair"></use></svg></div><h3>尊嚴保衛戰</h3><p class="game-card-en">The Last Hair</p><p class="game-card-description">頂著最後三根頭髮，在強風中走完 500 公尺去面試。</p><div class="game-card-footer"><span>每局 10 點</span><span>雙拇指操作</span></div></a>
@@ -1364,6 +1545,54 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
   </section>
 
 
+<section class="view" id="view-ocean-link" hidden>
+  <div id="ol-stage">
+    <header class="ol-toolbar">
+      <div class="ol-heading">
+        <h2>Ocean Link</h2>
+        <p id="ol-rule">深海連連看</p>
+      </div>
+      <p id="ol-clock" hidden><span id="ol-clock-label">用時</span> <time id="ol-time" aria-labelledby="ol-clock-label" datetime="PT0S">00:00</time></p>
+      <div class="ol-actions" id="ol-toolbar-actions">
+        <label for="ol-mode">模式</label>
+        <select id="ol-mode">
+          <option value="easy">簡單 · 6 × 8</option>
+          <option value="standard" selected>標準 · 14 × 18</option>
+          <option value="challenge">挑戰 · 16 × 26</option>
+        </select>
+        <button id="ol-go" type="button" hidden>開始遠征</button>
+        <button id="ol-hint" type="button" disabled>提示</button>
+      </div>
+      <p id="ol-count" hidden><span>關卡</span> <b id="ol-level">1</b>/10 · <span>剩餘配對</span> <b id="ol-left">0</b> · BONUS <b id="ol-bonus">0</b></p>
+      <p id="ol-record"><span>最高通關</span> <b id="ol-best">0</b>/10</p>
+      <p id="ol-msg" role="status"></p>
+    </header>
+    <div id="ol-game-area">
+      <div class="ol-actions" id="ol-board-actions">
+        <button id="ol-full" type="button" aria-pressed="false">點一下全螢幕開始</button>
+      </div>
+      <div id="ol-playfield" hidden>
+        <div id="ol-board" role="group" aria-label="連連看棋盤"></div>
+        <svg id="ol-trace" aria-hidden="true"><polyline></polyline></svg>
+      </div>
+    </div>
+    <section id="ol-result" aria-labelledby="ol-result-title" hidden>
+      <span class="ol-result-icon" aria-hidden="true">🏆</span>
+      <h3 id="ol-result-title" tabindex="-1">恭喜通關！</h3>
+      <p><span>已完成關卡</span> <b id="ol-result-level">1</b>/10</p>
+      <p><span>累計用時</span> <time id="ol-result-time" datetime="PT0S">00:00</time></p>
+      <p id="ol-result-reward" hidden>已獲得 5 點。</p>
+      <div id="ol-result-actions" class="ol-actions"></div>
+    </section>
+    <details class="ol-rules" open>
+      <summary>玩法與獎勵</summary>
+      <p>點選相同的兩張圖案。連線只能水平或垂直、最多轉彎兩次，可以繞過棋盤外框。礁石會擋住連線與移動。</p>
+      <p>簡單模式有較大的圖案，所有關卡都是經典配對，適合初學者。</p>
+      <p>免費遊玩，每次遠征連闖 10 關。第 3、6、10 關各送 5 點，每關限領一次，每次遠征最多 15 點。</p>
+      <p>提示免費。無法再配對時，剩餘圖案會自動洗牌。手機建議橫放；可用全螢幕放大棋盤。</p>
+    </details>
+  </div>
+</section>
   <section class="view" id="view-mrt" hidden>
     <div class="console"><div class="mrt-stage"><iframe id="mr-frame" title="捷運搶位 MRT Seat Grab"></iframe></div>
       <div class="side"><section class="panel" aria-label="捷運搶位操作">
@@ -4340,7 +4569,115 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
   "顧問|Consultant": "Consultant",
   "點一下畫面或按空白鍵繼續上班|Tap the screen or press Space to resume": "Tap the screen or press Space to resume",
   "🔴 開會中|🔴 IN A MEETING": "🔴 IN A MEETING",
-  "本局 BONUS 點數": "BONUS pts this shift"
+  "本局 BONUS 點數": "BONUS pts this shift",
+  "深海連連看": "Ocean Link",
+  "免費遊玩深海連連看，配對圖案闖關並獲得獎勵。": "Play Ocean Link for free, match tiles, and earn rewards.",
+  "把相同的圖案連起來，穿越礁石與移動棋盤。": "Connect matching tiles across reefs and shifting boards.",
+  "配對解謎": "Matching puzzle",
+  "模式": "Mode",
+  "簡單 · 6 × 8": "Easy · 6 × 8",
+  "簡單模式有較大的圖案，所有關卡都是經典配對，適合初學者。": "Easy mode has larger tiles and classic matching in every stage, ideal for beginners.",
+  "恭喜通關！": "Congratulations! Stage cleared!",
+  "恭喜完成遠征！": "Congratulations! Expedition complete!",
+  "已完成關卡": "Stages cleared",
+  "累計用時": "Total time",
+  "已獲得 5 點。": "You earned 5 points.",
+  "標準 · 14 × 18": "Standard · 14 × 18",
+  "挑戰 · 16 × 26": "Challenge · 16 × 26",
+  "開始遠征": "Start expedition",
+  "提示": "Hint",
+  "全螢幕": "Fullscreen",
+  "點一下全螢幕開始": "Tap to play fullscreen",
+  "離開全螢幕": "Exit fullscreen",
+  "剩餘配對": "Pairs left",
+  "玩法與獎勵": "Rules and rewards",
+  "連連看棋盤": "Ocean Link board",
+  "點選相同的兩張圖案。連線只能水平或垂直、最多轉彎兩次，可以繞過棋盤外框。礁石會擋住連線與移動。": "Select two matching tiles. Connect them horizontally or vertically with up to two turns. Paths can go around the edge. Reefs block links and movement.",
+  "免費遊玩，每次遠征連闖 10 關。第 3、6、10 關各送 5 點，每關限領一次，每次遠征最多 15 點。": "Play 10 stages per free expedition. Clear stages 3, 6, and 10 to earn 5 points each, once per stage and up to 15 points per expedition.",
+  "提示免費。無法再配對時，剩餘圖案會自動洗牌。手機建議橫放；可用全螢幕放大棋盤。": "Hints are free. If no links remain, the board reshuffles automatically. On phones, rotate to landscape and use fullscreen for a larger board.",
+  "經典消除": "Classic matching",
+  "向左移動": "Shift left",
+  "向下移動": "Shift down",
+  "向右移動": "Shift right",
+  "向上移動": "Shift up",
+  "礁石障礙": "Reef obstacles",
+  "礁石與左移": "Reefs and left shift",
+  "礁石與下移": "Reefs and down shift",
+  "選兩張相同的圖案。": "Select two matching tiles.",
+  "遠征完成！所有關卡已通過。": "Expedition complete! You cleared all stages.",
+  "遠征已結束。": "Expedition ended.",
+  "關卡完成！已獲得 5 點。": "Stage cleared! You earned 5 points.",
+  "關卡完成！": "Stage cleared!",
+  "這兩張圖案之間沒有可用路線。": "There is no clear path between those tiles.",
+  "配對成功。": "Match found.",
+  "沒有可配對的圖案，已自動洗牌。": "No links remained. The board has been reshuffled.",
+  "已標出一組可連線的圖案。": "A linkable pair is highlighted.",
+  "最高通關": "Best stage cleared",
+  "章魚": "Octopus",
+  "魷魚": "Squid",
+  "螃蟹": "Crab",
+  "龍蝦": "Lobster",
+  "小蝦": "Shrimp",
+  "河豚": "Pufferfish",
+  "熱帶魚": "Tropical fish",
+  "海豚": "Dolphin",
+  "鯨魚": "Whale",
+  "鯊魚": "Shark",
+  "海豹": "Seal",
+  "海龜": "Sea turtle",
+  "貝殼": "Seashell",
+  "企鵝": "Penguin",
+  "鱷魚": "Crocodile",
+  "星星": "Star",
+  "船錨": "Anchor",
+  "快艇": "Motorboat",
+  "帆船": "Sailboat",
+  "獨木舟": "Canoe",
+  "小島": "Island",
+  "火山": "Volcano",
+  "彩虹": "Rainbow",
+  "太陽": "Sun",
+  "月亮": "Moon",
+  "白雲": "Cloud",
+  "閃電": "Lightning",
+  "西瓜": "Watermelon",
+  "鳳梨": "Pineapple",
+  "草莓": "Strawberry",
+  "葡萄": "Grapes",
+  "奇異果": "Kiwi",
+  "香蕉": "Banana",
+  "櫻桃": "Cherries",
+  "椰子": "Coconut",
+  "玉米": "Corn",
+  "紅蘿蔔": "Carrot",
+  "蘑菇": "Mushroom",
+  "酪梨": "Avocado",
+  "漢堡": "Burger",
+  "披薩": "Pizza",
+  "甜甜圈": "Donut",
+  "杯子蛋糕": "Cupcake",
+  "霜淇淋": "Soft serve",
+  "爆米花": "Popcorn",
+  "飯糰": "Rice ball",
+  "炸蝦": "Fried shrimp",
+  "狐狸": "Fox",
+  "熊貓": "Panda",
+  "無尾熊": "Koala",
+  "青蛙": "Frog",
+  "兔子": "Rabbit",
+  "貓頭鷹": "Owl",
+  "蝴蝶": "Butterfly",
+  "蜜蜂": "Bee",
+  "瓢蟲": "Ladybug",
+  "蝸牛": "Snail",
+  "鸚鵡": "Parrot",
+  "紅鶴": "Flamingo",
+  "向日葵": "Sunflower",
+  "仙人掌": "Cactus",
+  "幸運草": "Clover",
+  "鬱金香": "Tulip",
+  "下一關": "Next stage",
+  "龍頭": "Dragon"
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -4356,7 +4693,7 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
   // Numeric sample labels are exact matches only; matching "1 關" inside "21 關…" would corrupt a live sentence.
   var keys = Object.keys(dictionary).filter(function (key) { return !/^\d/.test(key); }).sort(function (a, b) { return b.length - a.length; });
   var phrases = new RegExp(keys.map(function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|'), 'g');
-  var names = ['Deep Sea Arcade','Crush Depth','Minesweeper','Pearl Drop','Pearl Merge','Sonar Dice','Deep Probe','High Tide','Gold Digger','Compass','Ascent','Reef Run','Dream Repair Shop','Dodge Run','Queue Cutter','Sneak Out','Fishing','Campaign Truck','Boba Straw','Rooftop Cat','Poop Bird vs Wolves','Reaper Shift','Reef Blaster','Sky Builder','Carp Leap','Rider vs Dogs','Chubby Boss','Fruit Thief Cat','Baby Bath Escape','Frog Snack','Nap Master','One Breath Dive','MRT Seat Grab','Noodle Pancake','Pudding Dash','Clock Out','Midnight Mosquito','Don’t Peek','Pet Walkies','No Overtime!','The Last Hair','Breakout'];
+  var names = ['Deep Sea Arcade','Crush Depth','Minesweeper','Pearl Drop','Pearl Merge','Sonar Dice','Deep Probe','High Tide','Gold Digger','Compass','Ascent','Reef Run','Dream Repair Shop','Dodge Run','Queue Cutter','Sneak Out','Fishing','Campaign Truck','Boba Straw','Rooftop Cat','Poop Bird vs Wolves','Reaper Shift','Reef Blaster','Sky Builder','Carp Leap','Rider vs Dogs','Chubby Boss','Fruit Thief Cat','Baby Bath Escape','Frog Snack','Nap Master','One Breath Dive','MRT Seat Grab','Noodle Pancake','Pudding Dash','Clock Out','Midnight Mosquito','Don’t Peek','Pet Walkies','No Overtime!','The Last Hair','Breakout','Ocean Link'];
   var numbered = { '關': 'Stage', '班': 'Shift', '隊': 'Queue', '條': 'Fish', '層': 'Floor', '道': 'Crossing', '格': 'Cell', '列': 'Row', '階': 'Tier', '段': 'Segment', '晚': 'Night', '站': 'Station' };
 
   function english(value) {
@@ -4856,6 +5193,7 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
   });
   $('reset').addEventListener('click', function () {
     var note = function (t) { diveSay(t); carpSay(t); riderSay(t); bossSay(t); thiefSay(t); babySay(t); mrtSay(t); blSay(t); sbSay(t); rpSay(t); catSay(t); birdSay(t); frogSay(t); puddingSay(t); clockSay(t); mqSay(t); peekSay(t); napSay(t); hairSay(t); petSay(t); otSay(t); bobaUI(t); pancakeUI(t); fiSay(t); $('sk-msg').textContent=t; eqSay(t); drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
+    if (oceanLinkBusy) { $('ol-msg').textContent = '這一局結束後才能重設點數。'; return; }
     if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.active || WL.pending || TW.active || CR.active || DR.active || runnerBusy || EQ.active || sneakBusy || FI.active || BOBA.active || catBusy || birdBusy || frogBusy || puddingBusy || clockBusy || mqBusy || peekBusy || napBusy || hairBusy || petBusy || otBusy || RP.active || BL.active || DIVE.active || MRT.active || PANCAKE.active || carpBusy || riderBusy || bossBusy || thiefBusy || babyBusy) { note('這一局結束後才能重設點數。'); return; }
     AN.points(START_BALANCE-S.balance); S.balance = START_BALANCE; save(); note('點數已重設為 ' + fmt(START_BALANCE) + '。'); renderAll(); renderMines();
   });
@@ -14461,6 +14799,567 @@ window.addEventListener('hashchange',()=>{releaseInput();last=performance.now()}
 function loop(t){const dt=Math.min(.05,Math.max(0,(t-last)/1000)||0);last=t;if(shown()){tick(dt);ui();draw()}requestAnimationFrame(loop)}
 ui();draw();requestAnimationFrame(loop);
   })();
+  /* ---------- Ocean Link ---------- */
+  let oceanLinkBusy = false;
+  const oceanLinkRoute = (function () {
+    let rows = 14, cols = 18, stride = cols + 2;
+  const tiles = [
+    ['🐙','章魚'], ['🦑','魷魚'], ['🦀','螃蟹'], ['🦞','龍蝦'],
+    ['🦐','小蝦'], ['🐡','河豚'], ['🐠','熱帶魚'], ['🐬','海豚'],
+    ['🐳','鯨魚'], ['🦈','鯊魚'], ['🦭','海豹'], ['🐢','海龜'],
+    ['🐚','貝殼'], ['🐧','企鵝'], ['🐊','鱷魚'], ['🐲','龍頭'],
+    ['⭐','星星'], ['⚓','船錨'], ['🛥️','快艇'], ['⛵','帆船'],
+    ['🛶','獨木舟'], ['🏝️','小島'], ['🌋','火山'], ['🌈','彩虹'],
+    ['☀️','太陽'], ['🌙','月亮'], ['☁️','白雲'], ['⚡','閃電'],
+    ['🍉','西瓜'], ['🍍','鳳梨'], ['🍓','草莓'], ['🍇','葡萄'],
+    ['🥝','奇異果'], ['🍌','香蕉'], ['🍒','櫻桃'], ['🥥','椰子'],
+    ['🌽','玉米'], ['🥕','紅蘿蔔'], ['🍄','蘑菇'], ['🥑','酪梨'],
+    ['🍔','漢堡'], ['🍕','披薩'], ['🍩','甜甜圈'], ['🧁','杯子蛋糕'],
+    ['🍦','霜淇淋'], ['🍿','爆米花'], ['🍙','飯糰'], ['🍤','炸蝦'],
+    ['🦊','狐狸'], ['🐼','熊貓'], ['🐨','無尾熊'], ['🐸','青蛙'],
+    ['🐰','兔子'], ['🦉','貓頭鷹'], ['🦋','蝴蝶'], ['🐝','蜜蜂'],
+    ['🐞','瓢蟲'], ['🐌','蝸牛'], ['🦜','鸚鵡'], ['🦩','紅鶴'],
+    ['🌻','向日葵'], ['🌵','仙人掌'], ['🍀','幸運草'], ['🌷','鬱金香']
+  ];
+  // Included inside Ocean Link's runtime closure.
+  const levels = [
+    ['經典消除', null, 0], ['經典消除', null, 0],
+    ['向左移動', 'left', 0], ['向下移動', 'down', 0],
+    ['礁石障礙', null, 3], ['礁石障礙', null, 5],
+    ['向右移動', 'right', 0], ['向上移動', 'up', 0],
+    ['礁石與左移', 'left', 5], ['礁石與下移', 'down', 7]
+  ];
+
+  function linkPath(board, start, end) {
+    if (start === end || board[start] <= 0 || board[end] <= 0) return null;
+    const x = start % stride, y = Math.floor(start / stride);
+    const u = end % stride, v = Math.floor(end / stride);
+    function clear(ax, ay, bx, by) {
+      const dx = Math.sign(bx - ax), dy = Math.sign(by - ay);
+      while (ax !== bx || ay !== by) {
+        ax += dx;
+        ay += dy;
+        const cell = ay * stride + ax;
+        if (cell !== end && cell !== start && board[cell] !== 0) return false;
+      }
+      return true;
+    }
+
+    if ((x === u || y === v) && clear(x, y, u, v)) return [[x, y], [u, v]];
+    function offsets(a, b, size) {
+      const range = Array.from({length: size}, (_, index) => index);
+      const distance = index => Math.abs(index - a) + Math.abs(index - b);
+      return range.sort((first, second) => distance(first) - distance(second));
+    }
+
+    // Try two bends, including degenerate paths with zero or one bend.
+    for (const col of offsets(x, u, stride)) {
+      if (clear(x, y, col, y) && clear(col, y, col, v) && clear(col, v, u, v)) {
+        return [[x, y], [col, y], [col, v], [u, v]];
+      }
+    }
+    for (const row of offsets(y, v, rows + 2)) {
+      if (clear(x, y, x, row) && clear(x, row, u, row) && clear(u, row, u, v)) {
+        return [[x, y], [x, row], [u, row], [u, v]];
+      }
+    }
+    return null;
+  }
+
+  function lines(vertical) {
+    return Array.from({length: vertical ? cols : rows}, (_, line) =>
+      Array.from({length: vertical ? rows : cols}, (_, offset) =>
+        vertical ? (offset + 1) * stride + line + 1 : (line + 1) * stride + offset + 1));
+  }
+
+  function slide(board, direction) {
+    if (!direction) return;
+    for (const cells of lines(direction === 'up' || direction === 'down')) {
+      if (direction === 'right' || direction === 'down') cells.reverse();
+      let write = 0;
+      cells.forEach((cell, read) => {
+        if (board[cell] === -1) write = read + 1;
+        else if (board[cell] > 0) {
+          const tile = board[cell];
+          board[cell] = 0;
+          board[cells[write++]] = tile;
+        }
+      });
+    }
+  }
+
+  function shuffle(items) {
+    for (let index = items.length - 1; index > 0; index--) {
+      const other = Math.floor(Math.random() * (index + 1));
+      [items[index], items[other]] = [items[other], items[index]];
+    }
+    return items;
+  }
+
+  function reefBoard(count) {
+    const board = Array(stride * (rows + 2)).fill(0);
+    const blocks = [];
+    for (let y = 3; y < rows; y += 2) {
+      for (let x = 3; x < cols; x += 2) blocks.push(y * stride + x);
+    }
+    for (const cell of shuffle(blocks).slice(0, count)) {
+      for (const offset of [0, 1, stride, stride + 1]) board[cell + offset] = -1;
+    }
+    return board;
+  }
+
+  function deal(layout, symbols, direction) {
+    const board = layout.map(value => value === -1 ? -1 : 0);
+    const strips = lines(direction === 'up' || direction === 'down');
+    const slots = strips.flatMap(cells => cells.filter((cell, index) =>
+      index % 2 === 0 && board[cell] === 0).map(cell =>
+        [cell, cell + (cells[1] - cells[0])]));
+    // IDs follow the pieces through each simulated slide. Translate IDs back
+    // to starting positions only after a complete legal removal sequence.
+    for (const [a, b] of shuffle(slots).slice(0, symbols.length)) {
+      board[a] = a;
+      board[b] = b;
+    }
+    const work = board.slice(), solution = [], moves = [];
+    for (const cells of strips) {
+      while (cells.some(cell => work[cell] > 0)) {
+        const a = cells.find(cell => work[cell] > 0);
+        const run = cells.slice(cells.indexOf(a));
+        const wall = run.findIndex(cell => work[cell] === -1);
+        const candidates = (wall < 0 ? run : run.slice(0, wall)).filter(cell => work[cell] > 0);
+        // Nest links along exposed edges. Every segment retains an even tile
+        // count. The first two always connect straight if a longer link fails.
+        const options = candidates.slice(0, 12).filter((_, index) => index % 2 === 1);
+        const b = shuffle(options).find(cell => linkPath(work, a, cell));
+        solution.push([work[a], work[b]]);
+        moves.push([a, b]);
+        work[a] = work[b] = 0;
+        slide(work, direction);
+      }
+    }
+    shuffle(symbols.slice()).forEach((symbol, index) => {
+      const [a, b] = solution[index];
+      board[a] = board[b] = symbol;
+    });
+    return {board, moves};
+  }
+
+  function findPair(board) {
+    const seen = new Map();
+    for (let cell = 0; cell < board.length; cell++) {
+      const symbol = board[cell];
+      if (symbol <= 0) continue;
+      const matches = seen.get(symbol) || [];
+      for (const other of matches) {
+        if (linkPath(board, other, cell)) return [other, cell];
+      }
+      matches.push(cell);
+      seen.set(symbol, matches);
+    }
+    return null;
+  }
+
+    const stage = $('ol-stage'), playfield = $('ol-playfield'), grid = $('ol-board');
+    const go = $('ol-go'), mode = $('ol-mode'), hint = $('ol-hint');
+    const full = $('ol-full'), trace = $('ol-trace'), line = trace.querySelector('polyline');
+    const clock = $('ol-clock'), clockValue = $('ol-time');
+    const resultPanel = $('ol-result'), resultTitle = $('ol-result-title');
+    const edge = 0.3;
+    const dimensions = {easy: [6, 8], standard: [14, 18], challenge: [16, 26]};
+    const easyRule = [levels[0][0], null, 0];
+    const easyGlyphs = new Set(['🐙', '🦀', '🐢', '🐧', '⭐', '⚓', '🌈', '🍉', '🍓', '🍌', '🍄', '🦋']);
+    const bonuses = new Map([[3, 5], [6, 5], [10, 5]]);
+    const bestKey = 'deep-sea-ocean-link-best-v1';
+    let level = 1, remaining = 0, paid = 0, board = [], selected = -1;
+    let round = null, between = false, traceTimer = 0, locked = false, moves = [];
+
+    let segmentStartedAt = null, elapsedMs = 0, clockTimer = 0;
+    let transposed = false, activePath = null;
+
+    function updateClock() {
+      const runningMs = segmentStartedAt === null ? 0 : Math.max(0, Date.now() - segmentStartedAt);
+      const elapsed = Math.floor((elapsedMs + runningMs) / 1000);
+      const dateTime = 'PT' + elapsed + 'S';
+      if (clockValue.dateTime === dateTime) return;
+      const twoDigits = value => String(value).padStart(2, '0');
+      clockValue.textContent = twoDigits(Math.floor(elapsed / 60)) + ':' + twoDigits(elapsed % 60);
+      clockValue.dateTime = dateTime;
+    }
+
+    function resumeClock() {
+      segmentStartedAt = Date.now();
+      updateClock();
+      clockTimer = setInterval(updateClock, 250);
+    }
+
+    function pauseClock() {
+      if (segmentStartedAt === null) return;
+      elapsedMs += Math.max(0, Date.now() - segmentStartedAt);
+      segmentStartedAt = null;
+      clearInterval(clockTimer);
+      updateClock();
+    }
+
+    function hideResult() {
+      resultPanel.hidden = true;
+      stage.classList.remove('ol-showing-result');
+      hint.before(go);
+      clock.hidden = false;
+    }
+
+    function showResult(reward, finished) {
+      playfield.hidden = true;
+      clock.hidden = true;
+      resultTitle.textContent = finished ? '恭喜完成遠征！' : '恭喜通關！';
+      $('ol-result-level').textContent = level;
+      $('ol-result-time').textContent = clockValue.textContent;
+      $('ol-result-time').dateTime = clockValue.dateTime;
+      $('ol-result-reward').hidden = !reward;
+      $('ol-result-actions').appendChild(go);
+      resultPanel.hidden = false;
+      go.hidden = false;
+      stage.classList.add('ol-showing-result');
+      resultTitle.focus();
+    }
+
+    function say(message) { $('ol-msg').textContent = message; }
+
+    function sizeBoard() {
+      if (playfield.hidden || $('view-ocean-link').hidden) return;
+      const view = window.visualViewport;
+      const height = view ? view.height : window.innerHeight;
+      const style = getComputedStyle(stage);
+      const usableWidth = stage.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+      const landscape = matchMedia('(orientation: landscape) and (max-height: 540px)').matches;
+      const focused = stage.classList.contains('ol-board-focus');
+      const toolbar = stage.querySelector('.ol-toolbar');
+      const paddingHeight = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+      const gap = parseFloat(style.gap);
+      const side = focused && matchMedia('(orientation: landscape)').matches;
+      transposed = focused && matchMedia('(orientation: portrait) and (max-width: 600px)').matches;
+      const displayCols = transposed ? rows : cols;
+      const displayRows = transposed ? cols : rows;
+      grid.classList.toggle('ol-transposed', transposed);
+      grid.style.setProperty('--ol-cols', displayCols);
+      grid.style.setProperty('--ol-rows', displayRows);
+      trace.setAttribute('viewBox', '0 0 ' + (displayCols + 2 * edge) + ' ' + (displayRows + 2 * edge));
+      drawTrace();
+      const width = usableWidth - (side ? 96 + gap : !focused && landscape ? 147 : 0);
+      const availableHeight = height - paddingHeight - (side ? 2 : toolbar.offsetHeight + gap + 2);
+      const tall = focused ? availableHeight / (displayRows + 2 * edge)
+        : landscape ? (height - 30) / (rows + 2 * edge) : mode.value === 'easy' ? 64 : 38;
+      stage.style.setProperty('--ol-cell', Math.max(1, Math.min(width / (displayCols + 2 * edge), tall)) + 'px');
+    }
+
+    function paint(focus) {
+      const fragment = document.createDocumentFragment();
+      board.forEach((value, cell) => {
+        const node = document.createElement(value > 0 ? 'button' : 'span');
+        if (value > 0) {
+          const [glyph, name] = tiles[value - 1];
+          node.type = 'button';
+          node.dataset.cell = cell;
+          node.className = 'ol-tile';
+          node.textContent = glyph;
+          node.setAttribute('aria-label', name);
+          node.setAttribute('aria-pressed', String(cell === selected));
+        } else if (value < 0) {
+          node.className = 'ol-reef';
+          node.title = '礁石';
+        } else node.setAttribute('aria-hidden', 'true');
+        fragment.appendChild(node);
+      });
+      grid.replaceChildren(fragment);
+      $('ol-left').textContent = remaining;
+      if (focus) (grid.querySelector('button') || go).focus({preventScroll: true});
+    }
+
+    function bestStages() {
+      try { return JSON.parse(localStorage.getItem(bestKey)) || {}; }
+      catch (_) { return {}; }
+    }
+
+    function showRecord() {
+      $('ol-best').textContent = Math.min(levels.length, Math.max(0, Number(bestStages()[mode.value]) || 0));
+    }
+
+    function updateButtons() {
+      mode.disabled = oceanLinkBusy;
+      go.hidden = !between && resultPanel.hidden;
+      hint.disabled = !oceanLinkBusy || between;
+      $('ol-count').hidden = !oceanLinkBusy;
+      $('ol-bonus').textContent = paid;
+      const expanded = full.getAttribute('aria-pressed') === 'true';
+      stage.classList.toggle('ol-board-focus', oceanLinkBusy && expanded);
+      if (!expanded) full.textContent = '點一下全螢幕開始';
+    }
+
+    function drawTrace() {
+      if (!activePath) return;
+      const center = (index, count) => index === 0 ? edge / 2
+        : index === count + 1 ? count + 1.5 * edge : index - .5 + edge;
+      line.setAttribute('points', activePath.map(([x, y]) => {
+        const horizontal = center(x, cols), vertical = center(y, rows);
+        return transposed ? vertical + ',' + horizontal : horizontal + ',' + vertical;
+      }).join(' '));
+    }
+
+    function clearTrace() {
+      clearTimeout(traceTimer);
+      activePath = null;
+      line.removeAttribute('points');
+      locked = false;
+    }
+
+    function stageRule() {
+      return mode.value === 'easy' ? easyRule : levels[level - 1];
+    }
+
+    function dealLevel() {
+      const [rule, direction, reefs] = stageRule();
+      const layout = reefBoard(reefs);
+      remaining = (rows * cols - reefs * 4) / 2;
+      const symbols = shuffle(tiles.flatMap(([glyph], index) =>
+        mode.value !== 'easy' || easyGlyphs.has(glyph) ? [index + 1] : []));
+      if (mode.value === 'easy') symbols.length = level <= 3 ? 6 : level <= 6 ? 8 : 12;
+      const bag = Array.from({length: remaining}, (_, index) => symbols[index % symbols.length]);
+      ({board, moves} = deal(layout, bag, direction));
+      selected = -1;
+      between = false;
+      hideResult();
+      clearTrace();
+      $('ol-rule').textContent = rule;
+      $('ol-level').textContent = level;
+      $('ol-left').textContent = remaining;
+      grid.style.setProperty('--ol-edge-ratio', edge);
+      playfield.hidden = false;
+      updateButtons();
+      sizeBoard();
+      paint(true);
+      say('選兩張相同的圖案。');
+    }
+
+    function params(extra = {}) {
+      return {stage: level, step: level - Number(remaining > 0), mode: mode.value,
+        total_bonus_points: paid, ...extra};
+    }
+
+    function start() {
+      if ($('view-ocean-link').hidden) return;
+      if (oceanLinkBusy) {
+        if (!between) return;
+        level++;
+        dealLevel();
+        resumeClock();
+        AN.resume(round, params());
+        return;
+      }
+      [rows, cols] = dimensions[mode.value];
+      stride = cols + 2;
+      level = 1;
+      paid = 0;
+      go.textContent = '下一關';
+      oceanLinkBusy = true;
+      elapsedMs = 0;
+      dealLevel();
+      resumeClock();
+      round = AN.start('ocean-link', 0, params());
+    }
+
+    function end(result) {
+      if (!oceanLinkBusy) return;
+      oceanLinkBusy = false;
+      pauseClock();
+      hideResult();
+      AN.end(round, paid, result, params());
+      round = null;
+      between = false;
+      clearTrace();
+      playfield.hidden = true;
+      grid.replaceChildren();
+      go.textContent = '開始遠征';
+      $('ol-rule').textContent = '深海連連看';
+      updateButtons();
+      say(result === 'win' ? '遠征完成！所有關卡已通過。' : '遠征已結束。');
+      if (!$('view-ocean-link').hidden && result !== 'win') full.focus({preventScroll: true});
+    }
+
+    function completeLevel() {
+      pauseClock();
+      try {
+        const best = bestStages();
+        if (!(best[mode.value] >= level)) {
+          localStorage.setItem(bestKey, JSON.stringify({...best, [mode.value]: level}));
+        }
+      } catch (_) {}
+      showRecord();
+      const reward = bonuses.get(level) || 0;
+      if (reward) {
+        paid += reward;
+        S.balance += reward;
+        save();
+        renderAll();
+      }
+      AN.progress(round, params({bonus_points: reward}), level < levels.length);
+      if (level === levels.length) {
+        end('win');
+        showResult(reward, true);
+        return;
+      }
+      between = true;
+      updateButtons();
+      say(reward ? '關卡完成！已獲得 5 點。' : '關卡完成！');
+      showResult(reward, false);
+    }
+
+    function recover() {
+      const counts = new Map();
+      for (const symbol of board) if (symbol > 0) counts.set(symbol, (counts.get(symbol) || 0) + 1);
+      const bag = [];
+      for (const [symbol, count] of counts) {
+        for (let index = 0; index < count / 2; index++) bag.push(symbol);
+      }
+      ({board, moves} = deal(board, bag, stageRule()[1]));
+    }
+
+    function pick(event) {
+      const tile = event.target.closest('button[data-cell]');
+      if (!tile || !oceanLinkBusy || between || locked || $('view-ocean-link').hidden) return;
+      const cell = Number(tile.dataset.cell), previous = selected;
+      if (previous === cell || previous < 0 || board[previous] !== board[cell]) {
+        if (previous >= 0) grid.children[previous].setAttribute('aria-pressed', 'false');
+        selected = previous === cell ? -1 : cell;
+        tile.setAttribute('aria-pressed', String(selected === cell));
+        if (!tile.classList.contains('ol-hint')) clearHint();
+        return;
+      }
+      const path = linkPath(board, previous, cell);
+      if (!path) {
+        clearHint();
+        say('這兩張圖案之間沒有可用路線。');
+        return;
+      }
+      const followPlan = moves.length && moves[0].includes(previous) && moves[0].includes(cell);
+      if (followPlan) moves.shift();
+      else moves = [];
+      activePath = path;
+      drawTrace();
+      locked = true;
+      const keyboard = event.detail === 0;
+      function matchTiles() {
+        clearTrace();
+        if (!oceanLinkBusy) return;
+        board[previous] = board[cell] = 0;
+        selected = -1;
+        remaining--;
+        slide(board, stageRule()[1]);
+        let message = '配對成功。';
+        if (remaining && !moves.length && !findPair(board)) {
+          recover();
+          message = '沒有可配對的圖案，已自動洗牌。';
+        }
+        paint(keyboard && remaining > 0);
+        if (remaining) say(message);
+        else completeLevel();
+      }
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) matchTiles();
+      else traceTimer = setTimeout(matchTiles, 105);
+    }
+
+    function clearHint() {
+      grid.querySelectorAll('.ol-hint').forEach(node => node.classList.remove('ol-hint'));
+    }
+
+    function showHint() {
+      if (hint.disabled || locked || $('view-ocean-link').hidden) return;
+      const pair = moves[0] || findPair(board);
+      if (!pair) return;
+      if (selected >= 0) grid.children[selected].setAttribute('aria-pressed', 'false');
+      selected = -1;
+      clearHint();
+      pair.forEach(cell => grid.children[cell].classList.add('ol-hint'));
+      say('已標出一組可連線的圖案。');
+    }
+
+    function setExpanded(expanded) {
+      stage.classList.toggle('ol-expanded', expanded);
+      document.body.classList.toggle('ol-expanded', expanded);
+      syncFull();
+    }
+
+    function syncFull() {
+      const native = document.fullscreenElement === stage;
+      stage.classList.toggle('ol-native-full', native);
+      const expanded = native || stage.classList.contains('ol-expanded');
+      const leaving = !expanded && full.getAttribute('aria-pressed') === 'true';
+      full.setAttribute('aria-pressed', String(expanded));
+      if (expanded) full.textContent = '離開全螢幕';
+      const boardActions = $('ol-board-actions');
+      const controls = expanded ? $('ol-toolbar-actions') : boardActions;
+      const restoreFocus = document.activeElement === full;
+      if (full.parentElement !== controls) controls.appendChild(full);
+      boardActions.hidden = expanded;
+      if (restoreFocus) full.focus({preventScroll: true});
+      if (leaving) end('abandoned');
+      updateButtons();
+      sizeBoard();
+    }
+
+    async function toggleFull() {
+      if (stage.classList.contains('ol-expanded')) { setExpanded(false); return; }
+      if (document.fullscreenElement === stage) {
+        await document.exitFullscreen().catch(() => {});
+        return;
+      }
+      try {
+        if (typeof stage.requestFullscreen === 'function') {
+          await stage.requestFullscreen();
+          if ($('view-ocean-link').hidden && document.fullscreenElement === stage) await document.exitFullscreen();
+          return;
+        }
+      } catch (_) {}
+      if (!$('view-ocean-link').hidden) setExpanded(true);
+    }
+
+    mode.addEventListener('change', showRecord);
+    go.addEventListener('click', () => {
+      if (!oceanLinkBusy && full.getAttribute('aria-pressed') === 'false') full.click();
+      else start();
+    });
+    hint.addEventListener('click', showHint);
+    grid.addEventListener('click', pick);
+    full.addEventListener('click', () => {
+      const starting = !oceanLinkBusy && full.getAttribute('aria-pressed') === 'false';
+      toggleFull();
+      if (starting) start();
+    });
+    document.addEventListener('fullscreenchange', syncFull);
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && stage.classList.contains('ol-expanded')) {
+        setExpanded(false);
+        full.focus({preventScroll: true});
+      }
+    });
+    window.addEventListener('resize', sizeBoard);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', sizeBoard);
+    if (window.ResizeObserver) {
+      const observer = new ResizeObserver(sizeBoard);
+      observer.observe(stage);
+      observer.observe(stage.querySelector('.ol-toolbar'));
+    }
+    document.addEventListener('visibilitychange', () => { if (oceanLinkBusy && !document.hidden) updateClock(); });
+    window.addEventListener('pageshow', () => { if (oceanLinkBusy) updateClock(); });
+    window.addEventListener('pagehide', event => { if (!event.persisted) end('abandoned'); }, {capture: true});
+
+    return function routeOceanLink(active) {
+      if (active) { sizeBoard(); showRecord(); }
+      else {
+        end('abandoned');
+        if (stage.classList.contains('ol-expanded')) setExpanded(false);
+        if (document.fullscreenElement === stage) document.exitFullscreen().catch(() => {});
+      }
+    };
+  })();
   /* ---------- lobby navigation and category filters ---------- */
   var lobbyScroll=0,lastView='';
   document.querySelectorAll('[data-lobby-filter]').forEach(function(button){button.addEventListener('click',function(){
@@ -14481,7 +15380,7 @@ ui();draw();requestAnimationFrame(loop);
   $('lobby-explore').addEventListener('click',function(){if($('lobby-games').scrollIntoView)$('lobby-games').scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});});
 
   /* ---------- tabs ---------- */
-  var VIEWS = { blaster: '深海火線 <span>Reef Blaster</span>', lobby: '深海遊戲廳 <span>Deep Sea Arcade</span>', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>' };
+  var VIEWS = { 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: '深海遊戲廳 <span>Deep Sea Arcade</span>', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>' };
   function route() {
     var v = location.hash.slice(1);
     // Hidden games keep their code but cannot be opened by link; show the lobby and correct the address.
@@ -14493,6 +15392,7 @@ ui();draw();requestAnimationFrame(loop);
       $('view-' + k).hidden = k !== v;
       if (k === v) $('tab-' + k).setAttribute('aria-current', 'page'); else $('tab-' + k).removeAttribute('aria-current');
     });
+    oceanLinkRoute(v==='ocean-link');
     bobaRoute(v==='boba');diveRoute(v==='dive');mrtRoute(v==='mrt');pancakeRoute(v==='pancake');
     DR.last=performance.now();EQ.last=performance.now();
     AN.view(v);

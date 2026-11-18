@@ -45,3 +45,4 @@
 | [打磚塊 Breakout](breakout/README.md) | `#breakout` | 免費懷舊 | 顯示 | 228 行 | 移動擋板反彈小球，打光磚塊一關闖過一關。 |
 | [小灰出門 Pet Walkies](pet-walk/README.md) | `#pet-walk` | 技巧闖關 | 顯示 | 1104 行 | 一鍵帶小灰散步，路上撞見野狗、河鯊和幸運轉盤。 |
 | [拒絕加班 No Overtime!](office-shoot/README.md) | `#office-shoot` | 技巧闖關 | 顯示 | 1178 行 | 自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。 |
+| [深海連連看 Ocean Link](ocean-link/README.md) | `#ocean-link` | 免費懷舊 | 顯示 | 407 行 | 把相同的圖案連起來，穿越礁石與移動棋盤。 |

@@ -134,3 +134,7 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 ## 時序修復（dream）
 
 無限關卡、固定入場10點，沒有點數獎勵。每局一次start；過關progress帶stage、score（完成關數）、reversals（本關已反轉次數）並暫停有效時間，下一關resume。失敗end為loss、payout_points=0，不送multiplier或cashout；正常離頁由共用層送abandoned，BFCache沿用暫停／恢復。未驗證GA4後台收件。
+
+## Ocean Link 深海連連看
+
+`game_id=ocean-link`，`game_name=深海連連看`。每次免費開始遠征時發一次 start（`entry_points=0`），關卡完成送 progress（含 `stage`、`step`、`bonus_points`、`total_bonus_points` 與 `mode`），等待下一關時暫停有效時間，下一關送 resume。`mode` 可為 `easy`、`standard` 或 `challenge`。第 10 關完成送 win；離開全螢幕、路由離開或非 BFCache 離頁送 abandoned。end 的 `payout_points` 為這次遠征已實際入帳的總點數，非 BFCache 離頁在共用 pagehide 結束處理前送出。背景與失焦沿用共用時間追蹤。
