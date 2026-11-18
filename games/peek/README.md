@@ -7,7 +7,7 @@
 - 網址：`#peek`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，點對牠怕的道具。」｜立即開玩 · 聽聲反應
 - 追蹤名稱（GA4 `game_name`）：別看，`game_id` 為 `peek`
-- 檔案：`games/peek/card.html`、`games/peek/game.js`、`games/peek/icon.svg`、`games/peek/view.html`；`game.js` 共 787 行、88.6 KB
+- 檔案：`games/peek/card.html`、`games/peek/game.js`、`games/peek/icon.svg`、`games/peek/view.html`；`game.js` 共 798 行、90.2 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「34. 別看 Don’t Peek（peek）」（下方「規則摘要」已複製）
 
@@ -17,26 +17,26 @@
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`EYE`（L14）、`BOG`（L18）、`ART`（L24）、`BP`（L70）、`HP`（L472）、`peekBusy`（L2）
-- L5 常數：`BASE_RATE`
-- L6 常數：`MILE_EVENTS`、`MILE_REWARD`、`WIN_REWARD`
-- L7 常數：`FIRST_GAP`
-- L8 常數：`GAP_NEAR`、`GAP_FAR`、`BREATH_EVERY`、`BREATH_EXTRA`
-- L9 常數：`UNLOCK_TWINS`、`UNLOCK_WALKER`
-- L10 常數：`EASY_EYES`、`EYE_EASY_WARN`
-- L11 常數：`SOUND_LEAD`
-- L12 常數：`DIRECTOR_AT`、`DIRECTOR_P`
-- L13 常數：`TILT_SPEED`
-- L14 常數：`EYE`
-- L15 常數：`TWIN`
-- L16 常數：`REACH`
-- L17 常數：`BELL`
-- L18 常數：`BOG`、`CRAWL`、`HOWL`、`FLICKG`、`NEWG`
-- …另有 33 行常數宣告，請直接搜尋大寫名稱
+- 狀態物件／進行中旗標：`EYE`（L16）、`BOG`（L20）、`ART`（L26）、`BP`（L72）、`HP`（L475）、`peekBusy`（L2）
+- L4 常數：`MINSZ`
+- L7 常數：`BASE_RATE`
+- L8 常數：`MILE_EVENTS`、`MILE_REWARD`、`WIN_REWARD`
+- L9 常數：`FIRST_GAP`
+- L10 常數：`GAP_NEAR`、`GAP_FAR`、`BREATH_EVERY`、`BREATH_EXTRA`
+- L11 常數：`UNLOCK_TWINS`、`UNLOCK_WALKER`
+- L12 常數：`EASY_EYES`、`EYE_EASY_WARN`
+- L13 常數：`SOUND_LEAD`
+- L14 常數：`DIRECTOR_AT`、`DIRECTOR_P`
+- L15 常數：`TILT_SPEED`
+- L16 常數：`EYE`
+- L17 常數：`TWIN`
+- L18 常數：`REACH`
+- L19 常數：`BELL`
+- …另有 34 行常數宣告，請直接搜尋大寫名稱
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`needOf` L19、`passesOf` L20、`art` L25、`rnd` L41、`clamp` L42、`tx` L43、`RR` L44、`mulberry` L63、`deathsOf` L64、`levelCfg` L65、`wpick` L77、`dailyOn` L81、`dailyLvl` L82、`wantLevel` L83、`sv` L87、`mark` L88、`applyLevel` L89、`reset` L105、`audioInit` L109、`tone` L110、`say` L116、`setText` L118、`ui` L119、`fx` L126、`end` L127、`pay` L148、`pickPool` L153、`tutHelp` L161、`tutFail` L162、`tutOk` L163、`tutEnd` L167、`tutTick` L168、`drawTutUI` L172、`startEvent` L183、`sol` L199、`okS` L200、`nextGap` L213、`survive` L218、`inputs` L226、`gestCover` L229、`spotAt` L230、`hideOK` L231、`genSpots` L232、`ensureSpot` L233、`swipe` L234、`wkWhy` L235、`itemsUp` L236、`setHead` L237、`tap` L238、`passEnd` L239、`allClear` L240、`update` L241、`lampLevel` L311、`isRot` L314、`cxy` L315、`giveItem` L318、`spawnDrop` L327、`collect` L328、`updateDrops` L329、`canPick` L337、`startCamp` L338、`updateCamp` L339、`campTap` L345、`optSave` L348、`drawWorld` L359、`one` L363、`drawExit` L370、`sprite` L374、`floatImg` L375、`blob` L376、`drawSpirits` L377、`drawEvItems` L436、`drawDrops` L441、`drawCamp` L449、`wrapLines` L468、`txp` L469、`txd` L470、`hpRect` L473、`hpClick` L476、`drawHeadphone` L481、`capText` L489、`hud` L490、`btnRow` L517、`deathClick` L520、`doAct` L524、`later` L531、`playCue` L532、`causeText` L548、`shareText` L549、`share` L550、`shareCard` L554、`drawDeath` L567、`drawWon` L587、`dexPos` L621、`dexPages` L622、`dexGo` L624、`txl` L626、`drawDex` L627、`dexClick` L647、`practiceStart` L657、`drawSpots` L659、`drawHide` L666、`howCards` L670、`drawHead` L681、`drawWeather` L686、`draw` L700、`start` L730、`shown` L741、`upPtr` L752、`clearInput` L761、`onOrient` L766、`fsOff` L769、`fsOn` L770、`go` L782、`loop` L784
+`needOf` L21、`passesOf` L22、`art` L27、`rnd` L43、`clamp` L44、`tx` L45、`RR` L46、`mulberry` L65、`deathsOf` L66、`levelCfg` L67、`wpick` L79、`dailyOn` L83、`dailyLvl` L84、`wantLevel` L85、`sv` L89、`mark` L90、`applyLevel` L91、`reset` L107、`audioInit` L111、`tone` L112、`say` L118、`setText` L120、`ui` L121、`fx` L128、`end` L129、`pay` L151、`pickPool` L156、`tutHelp` L164、`tutFail` L165、`tutOk` L166、`tutEnd` L170、`tutTick` L171、`drawTutUI` L175、`startEvent` L186、`sol` L202、`okS` L203、`nextGap` L216、`survive` L221、`inputs` L229、`gestCover` L232、`spotAt` L233、`hideOK` L234、`genSpots` L235、`ensureSpot` L236、`swipe` L237、`wkWhy` L238、`itemsUp` L239、`setHead` L240、`tap` L241、`passEnd` L242、`allClear` L243、`update` L244、`lampLevel` L314、`isRot` L317、`cxy` L318、`giveItem` L321、`spawnDrop` L330、`collect` L331、`updateDrops` L332、`canPick` L340、`startCamp` L341、`updateCamp` L342、`campTap` L348、`optSave` L351、`drawWorld` L362、`one` L366、`drawExit` L373、`sprite` L377、`floatImg` L378、`blob` L379、`drawSpirits` L380、`drawEvItems` L439、`drawDrops` L444、`drawCamp` L452、`wrapLines` L471、`txp` L472、`txd` L473、`hpRect` L476、`hpClick` L479、`drawHeadphone` L484、`capText` L492、`hud` L493、`btnImg` L520、`btnRow` L521、`deathClick` L524、`doAct` L529、`later` L536、`playCue` L537、`causeText` L553、`shareText` L554、`share` L555、`shareCard` L559、`drawScare` L572、`drawDeath` L578、`drawWon` L598、`dexPos` L632、`dexPages` L633、`dexGo` L635、`txl` L637、`drawDex` L638、`dexClick` L658、`practiceStart` L668、`drawSpots` L670、`drawHide` L677、`howCards` L681、`drawHead` L692、`drawWeather` L697、`draw` L711、`start` L741、`shown` L752、`upPtr` L763、`clearInput` L772、`onOrient` L777、`fsOff` L780、`fsOn` L781、`go` L793、`loop` L795
 
 ## 錢包與結算接點
 
@@ -44,19 +44,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L150 `pay`：`S.balance+=n;`
+- L153 `pay`：`S.balance+=n;`
 
 **餘額檢查**
-- L733 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L744 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L142 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p,level:lvl,seed:seedCode…`
-- L151 `pay`：`AN.progress(analytics,{stage:Math.floor(prog),step:survived,score:score,bonus_points:n});`
-- L735 `start`：`analytics=AN.start('peek',amount);`
+- L145 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p,level:lvl,seed:seedCode…`
+- L154 `pay`：`AN.progress(analytics,{stage:Math.floor(prog),step:survived,score:score,bonus_points:n});`
+- L746 `start`：`analytics=AN.start('peek',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

@@ -7,7 +7,8 @@ The game runs without the arcade platform: no wallet, no points, no analytics.
 import json, os, re, shutil, sys, zipfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, 'dist', 'itch-peek')
+CG = '--crazygames' in sys.argv
+OUT = os.path.join(ROOT, 'dist', 'crazygames-peek' if CG else 'itch-peek')
 
 
 def read(p):
@@ -68,6 +69,12 @@ dictionary = json.dumps(keep, ensure_ascii=False)
 css = read('css/base.css') + read('css/arcade.css') + read('css/i18n.css')
 i18n = read('js/i18n.js')
 
+CGJS = r"""
+  var sdk=null,want=false;
+  window.__gp=function(on){want=on;try{if(!sdk)return;if(on)sdk.game.gameplayStart();else sdk.game.gameplayStop()}catch(e){}};
+  document.addEventListener('visibilitychange',function(){try{if(!sdk)return;if(document.hidden)sdk.game.gameplayStop();else if(want)sdk.game.gameplayStart()}catch(e){}});
+  (function(){var t=setInterval(function(){if(window.CrazyGames&&window.CrazyGames.SDK){clearInterval(t);var S2=window.CrazyGames.SDK;Promise.resolve(S2.init()).then(function(){sdk=S2;if(want)sdk.game.gameplayStart()}).catch(function(){})}},100);setTimeout(function(){clearInterval(t)},10000)})();
+"""
 shim = r"""
 (function(){
   var $=function(id){return document.getElementById(id)};
@@ -78,6 +85,7 @@ shim = r"""
   window.fmt=function(n){return String(n)};
   window.AN={start:function(){return {}},progress:function(){},end:function(){}};
   try{localStorage.setItem('deep-sea-language-v1','en')}catch(e){}
+  __CGSHIM__
 })();
 """
 
@@ -104,6 +112,21 @@ html[lang="en"] .t-zh{{display:none}}
 #view-peek .field:has(#peek-assist) label{{display:inline-flex!important;width:auto!important;margin:0!important;gap:6px;align-items:center}}
 #view-peek .field:has(#peek-assist) input[type=range]{{width:90px!important}}
 #view-peek .field:has(#peek-assist) label{{flex-direction:row!important}}
+@font-face{{font-family:Cinzel;font-weight:700;src:url(assets/fonts/cinzel-latin-700.woff2) format("woff2")}}
+@font-face{{font-family:Cinzel;font-weight:800;src:url(assets/fonts/cinzel-latin-800.woff2) format("woff2")}}
+@font-face{{font-family:"Alegreya Sans";font-weight:500;src:url(assets/fonts/alegreya-sans-latin-500.woff2) format("woff2")}}
+@font-face{{font-family:"Alegreya Sans";font-weight:700;src:url(assets/fonts/alegreya-sans-latin-700.woff2) format("woff2")}}
+@font-face{{font-family:"Alegreya Sans";font-weight:800;src:url(assets/fonts/alegreya-sans-latin-800.woff2) format("woff2")}}
+body,button,input{{font-family:"Alegreya Sans","Noto Sans TC",system-ui,sans-serif}}
+body{{background:radial-gradient(ellipse at 50% 0,#1a120a 0,#080604 70%) fixed;color:#f1d9a6}}
+#view-peek .sneak-stage{{border:3px solid #6b4a1f!important;box-shadow:0 0 0 2px #1a110a,0 12px 40px rgba(0,0,0,.7);border-radius:6px}}
+#view-peek .side .go{{font-family:"Alegreya Sans",sans-serif;font-weight:800;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:#f6dfa8;background:linear-gradient(#4a3320,#2a1b0f)!important;border:2px solid #b8893a!important;border-radius:6px;box-shadow:inset 0 1px 0 rgba(255,225,160,.25),0 3px 8px rgba(0,0,0,.6);text-shadow:0 1px 0 #120a05;cursor:pointer}}
+#view-peek .side .go:hover{{background:linear-gradient(#5d4228,#35230f)!important;border-color:#e8c675!important}}
+#view-peek .side .go:active{{transform:translateY(1px)}}
+#view-peek .field:has(#peek-assist) label{{color:#d9bf88}}
+#view-peek .field:has(#peek-assist){{font-size:15px;font-weight:500;opacity:.9;color:#d9bf88}}
+#view-peek input[type=checkbox]{{accent-color:#b8893a;width:16px;height:16px}}
+#view-peek input[type=range]{{accent-color:#b8893a}}
 </style>
 </head>
 <body>
@@ -111,13 +134,14 @@ html[lang="en"] .t-zh{{display:none}}
 <div class="itch-top"><h1 data-i18n-ignore>Don't Peek</h1></div>
 {view}
 </div>
+{sdk}
 <script type="application/json" id="arcade-english">{dictionary}</script>
 <script>{shim}</script>
 <script>{i18n}</script>
 <script>{game}</script>
 </body>
 </html>
-""".format(css=css, view=view, dictionary=dictionary.replace('</', '<\\/'), shim=shim, i18n=i18n, game=game)
+""".format(css=css, view=view, dictionary=dictionary.replace('</', '<\\/'), shim=shim.replace('__CGSHIM__', CGJS if CG else ''), sdk=('<script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>' if CG else ''), i18n=i18n, game=game)
 
 shutil.rmtree(OUT, ignore_errors=True)
 os.makedirs(os.path.join(OUT, 'assets'))
@@ -126,11 +150,12 @@ with open(os.path.join(OUT, 'index.html'), 'w', encoding='utf-8') as f:
 used = set(re.findall(r"assets/([a-z0-9-]+\.webp)", game)) | set(
     k + '.webp' for k in re.findall(r"'((?:bg|env|ghost|guide|item|npc|prop|spot|ui|fx)-[a-z-]+)'", game))
 src_dir = os.path.join(ROOT, 'games', 'peek', 'assets')
+shutil.copytree(os.path.join(src_dir, 'fonts'), os.path.join(OUT, 'assets', 'fonts'))
 n = 0
 for name in sorted(os.listdir(src_dir)):
     if name.endswith('.webp'):
         shutil.copy(os.path.join(src_dir, name), os.path.join(OUT, 'assets', name)); n += 1
-zip_path = os.path.join(ROOT, 'dist', 'dont-peek-html5.zip')
+zip_path = os.path.join(ROOT, 'dist', 'dont-peek-crazygames.zip' if CG else 'dont-peek-html5.zip')
 with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as z:
     for dp, _, files in os.walk(OUT):
         for fn in files:
