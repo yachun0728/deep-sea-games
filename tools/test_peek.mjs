@@ -20,7 +20,7 @@ export function fixture(balance=500,savedBest=null,random=Math.random){
   const sandbox={document:{hidden:false,addEventListener(){}},window:{addEventListener(){}},addEventListener(name,fn){(listeners[name]??=[]).push(fn);},Number,Math:math,String,JSON,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fmt:n=>String(n),AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
   sandbox.globalThis=sandbox;
   const ctx=vm.createContext(sandbox);vm.runInContext(source,ctx);
-  const F=sandbox.__peek;
+  const F=sandbox.__peek;F.ev('spotsAll=true;breathOff=true');
   const start0=F.start;F.start=()=>{start0();if(F.ev('st')==='run'&&!F.noCampOff)F.ev('campNext=999')};   // most tests run past 20% without wanting the campfire
   const f={F,el,events,storage,wallet:sandbox.S,ev:F.ev,busy:()=>vm.runInContext('peekBusy',ctx),key:e=>{for(const fn of listeners.keydown||[])fn(e);},keyup:e=>{for(const fn of listeners.keyup||[])fn(e);},
     count:type=>events.filter(e=>e[0]===type).length,
@@ -28,7 +28,7 @@ export function fixture(balance=500,savedBest=null,random=Math.random){
     run(sec){for(let t=0;t<sec&&F.ev('st')==='run';t+=.05)F.update(.05);},
     // Put a spirit directly into play (no random choice) and keep the next random one far away.
     spirit(type,side,phase='warn'){F.ev(`ev={type:${JSON.stringify(type)},side:${side},phase:${JSON.stringify(phase)},t:${type==='walker'?6:2.5},bad:0,ok:false,snd:0};gapT=999`);},
-    hold(k,v=1){F.ev(`keys.${k}=${v}`);}};
+    hold(k,v=1){F.ev(`keys.${k}=${v}`);},tick(ms){now+=ms;}};
   return f;
 }
 function check(name,fn){fn();results.push(name);}
@@ -116,12 +116,26 @@ check('Keys only work while the view is shown and a round is running',()=>{
   f.el('view-peek').hidden=false;k=e(' ');f.key(k);assert.equal(f.ev('keys.cover'),1);assert.equal(k.done,true);
   f.keyup({key:' '});assert.equal(f.ev('keys.cover'),0);k=e('a');f.key(k);assert.equal(f.ev('keys.l'),1);k=e('d');f.key(k);assert.equal(f.ev('keys.r'),1);
 });
-check('Screen buttons and multi-touch map to tilt, cover and crank',()=>{
-  const f=fixture();f.F.start();const c=f.el('peek-canvas');
-  c.handlers.pointerdown({pointerId:1,clientX:50,clientY:410,button:0,preventDefault(){}});c.handlers.pointerdown({pointerId:2,clientX:700,clientY:410,button:0,preventDefault(){}});
-  assert.equal(JSON.stringify(f.ev('btn')),JSON.stringify([1,0,0,1,0]));c.handlers.pointerup({pointerId:1});assert.equal(JSON.stringify(f.ev('btn')),JSON.stringify([0,0,0,1,0]));
-  c.handlers.pointerdown({pointerId:3,clientX:580,clientY:410,button:0,preventDefault(){}});assert.equal(JSON.stringify(f.ev('btn')),JSON.stringify([0,0,1,1,0]));
-  c.handlers.pointerdown({pointerId:4,clientX:400,clientY:200,button:0,preventDefault(){}});c.handlers.pointerup({pointerId:2});assert.equal(JSON.stringify(f.ev('btn')),JSON.stringify([0,0,1,1,0]));
+check('Gestures: swipe hides into a spot, tap comes out, hold closes the eyes, tap picks up',()=>{
+  const f=fixture();f.F.start();f.F.ev('spotsAll=false;gapT=999;spots={"-1":[],"1":[]}');const c=f.el('peek-canvas'),pd=(id,x,y)=>c.handlers.pointerdown({pointerId:id,clientX:x,clientY:y,button:0,preventDefault(){}}),mv=(id,x,y)=>c.handlers.pointermove({pointerId:id,clientX:x,clientY:y}),up=id=>c.handlers.pointerup({pointerId:id});
+  pd(1,400,200);mv(1,300,200);up(1);assert.equal(f.ev('hideWant'),0);   // no spot on that side: nothing happens
+  f.F.ev('spots[-1]=[[0,99]]');pd(1,400,200);mv(1,300,200);up(1);assert.equal(f.ev('hideWant'),-1);
+  pd(2,400,200);up(2);assert.equal(f.ev('hideWant'),0);   // a tap comes out
+  pd(3,400,200);assert.equal(f.ev('inputs().cover'),false);f.tick(300);assert.equal(f.ev('inputs().cover'),true);up(3);assert.equal(f.ev('inputs().cover'),false);
+  f.F.ev('drops=[{k:"torch",side:1,z:.2}]');pd(4,400,200);up(4);f.F.update(.05);assert.equal(f.ev('bag.torch'),1);
+});
+check('Hiding costs breath: too long in a spot is fatal, leaving refills it',()=>{
+  const f=fixture();f.F.start();f.F.ev('breathOff=false;spotsAll=true;gapT=999;hideWant=1');f.run(3);assert.ok(f.ev('breath')<.6,'breath '+f.ev('breath'));
+  f.F.ev('hideWant=0');f.run(3);assert.equal(f.ev('breath'),1);f.F.ev('hideWant=1');f.run(6);assert.equal(f.ev('why'),'breath');
+});
+check('Every attack gets a usable hiding spot on its safe side',()=>{
+  for(const ty of ['eye','twins','gale','reach']){const f=fixture();f.F.ev('spotsAll=false;forceLvl=24;maxLvl=24;runTop=24');f.F.start();f.F.ev('spots={"-1":[],"1":[]};L.pool=["'+ty+'"];gapT=0;L.left=3');f.F.update(.05);
+    const side=f.ev('ev.side'),need=ty==='gale'?side:-side;assert.equal(f.ev('spots['+need+'].some(w=>w[0]<=lt+.8&&w[1]>=lt+3)'),true,ty)}
+});
+check('Knocker on later levels comes back for a second pass; surviving both counts once',()=>{
+  const f=fixture();f.F.ev('forceLvl=9;maxLvl=9;runTop=9');f.F.start();
+  f.F.ev("ev={type:'twins',side:1,phase:'judge',t:1.5,warn:2.5,el:3,bad:0,ok:false,snd:0,passes:2,pass:1};gapT=999");f.hold('l');f.run(1.6);assert.equal(f.ev('ev.phase'),'gap');assert.equal(f.ev('survived'),0);
+  f.run(1.2);assert.equal(f.ev('ev.phase'),'warn');f.run(1);assert.equal(f.ev('ev.phase'),'judge');f.run(2);assert.equal(f.ev('survived'),1);
 });
 check('Phone motion: leaning the phone sets the tilt and a face-down phone counts as covered',()=>{
   const f=fixture();f.F.start();f.F.ev('gyro.on=true;gyro.tilt=-.8;gyro.down=false');f.F.ev('gapT=999');f.F.update(.05);assert.equal(f.ev('tilt'),-.8);
@@ -144,7 +158,7 @@ check('Gap between spirits shrinks with progress and every third dodge gives a l
 });
 check('Total dodges and the death codex are stored; the codex counts distinct causes',()=>{
   const f=fixture();f.F.start();f.spirit('eye',1);f.hold('l');f.run(7);assert.equal(f.storage.get('deep-sea-peek-dodges'),'1');
-  f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 9');assert.equal(f.el('peek-dodges').textContent,'1 次');
+  f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 10');assert.equal(f.el('peek-dodges').textContent,'1 次');
 });
 check('The corridor scrolls by itself, faster when sprinting, and stops while covered',()=>{
   const f=fixture();f.F.start();f.F.ev('gapT=999');f.run(1);const r0=f.ev('run');assert.ok(r0>1.3);f.hold('wind');f.run(1);const r1=f.ev('run');assert.ok(r1-r0>2.4);
