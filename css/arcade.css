@@ -394,3 +394,10 @@ body.game-view-scroll-lock { overflow: hidden; }
   padding-block: 4px;
   background: var(--abyss);
 }
+
+.sneak-stage{position:relative}
+.peek-fsx{position:absolute;top:8px;right:8px;z-index:3;min-height:44px;padding:0 14px;border:1px solid #d6a24e;border-radius:10px;background:rgba(18,13,10,.8);color:#f1d9a6;font:700 14px system-ui,sans-serif}
+.sneak-stage.peek-fs{position:fixed;inset:0;z-index:9999;width:auto;border:0;border-radius:0;background:#050805}
+.sneak-stage.peek-fs canvas{width:min(100vw,177.7vh);max-height:100vh}
+.sneak-stage.peek-rot{inset:auto;top:0;left:100vw;width:100vh;height:100vw;transform-origin:top left;transform:rotate(90deg)}
+.sneak-stage.peek-rot canvas{width:min(100vh,177.7vw);max-height:100vw}
