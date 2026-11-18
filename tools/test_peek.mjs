@@ -144,7 +144,7 @@ check('Gap between spirits shrinks with progress and every third dodge gives a l
 });
 check('Total dodges and the death codex are stored; the codex counts distinct causes',()=>{
   const f=fixture();f.F.start();f.spirit('eye',1);f.hold('l');f.run(7);assert.equal(f.storage.get('deep-sea-peek-dodges'),'1');
-  f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 7');assert.equal(f.el('peek-dodges').textContent,'1 次');
+  f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 9');assert.equal(f.el('peek-dodges').textContent,'1 次');
 });
 check('The corridor scrolls by itself, faster when sprinting, and stops while covered',()=>{
   const f=fixture();f.F.start();f.F.ev('gapT=999');f.run(1);const r0=f.ev('run');assert.ok(r0>1.3);f.hold('wind');f.run(1);const r1=f.ev('run');assert.ok(r1-r0>2.4);
@@ -175,7 +175,7 @@ check('A charm absorbs one deadly mistake; a pickup needs the item to be near',(
 });
 check('Level table: buffer, learn, boss and difficulty ramp follow the ten-level sawtooth',()=>{
   const f=fixture(),c=n=>JSON.parse(f.ev(`JSON.stringify((({l,wi,k,kind,left,plan,pool,fixed,fakeP,chainP})=>({l,wi,k,kind,left,plan,pool,fixed,fakeP,chainP}))(levelCfg(${n})))`));
-  assert.equal(c(1).kind,'safe');assert.equal(c(1).left,0);assert.equal(c(1).fixed,true);assert.equal(c(2).kind,'safe');assert.equal(c(3).kind,'safe');assert.equal(c(4).kind,'learn');assert.deepEqual(c(4).pool,['eye']);assert.deepEqual(c(8).pool,['twins']);assert.equal(c(30).kind,'boss');assert.equal(c(22).kind,'normal');
+  assert.equal(c(1).kind,'safe');assert.equal(c(1).left,0);assert.equal(c(1).fixed,true);assert.equal(c(2).kind,'safe');assert.equal(c(3).kind,'safe');assert.equal(c(4).kind,'learn');assert.deepEqual(c(4).pool,['eye']);assert.deepEqual(c(8).pool,['twins']);assert.equal(c(30).kind,'boss');assert.equal(c(22).kind,'learn');assert.deepEqual(c(22).pool,['reach']);assert.deepEqual(c(23).pool,['bell']);assert.equal(c(24).kind,'normal');
   assert.equal(c(5).kind,'safe');assert.equal(c(15).kind,'review');assert.equal(c(15).left,1);assert.equal(c(12).kind,'learn');assert.deepEqual(c(12).pool,['walker']);assert.deepEqual(c(16).pool,['gale']);
   assert.equal(c(9).kind,'peak');assert.equal(c(10).kind,'boss');assert.deepEqual(c(10).plan,['eye','twins','hollow']);assert.equal(c(30).plan.at(-1),'hollow');assert.ok(c(30).plan.includes('gale'));
   assert.equal(c(21).wi,1);assert.equal(c(100).wi,4);assert.equal(c(99).left,8);assert.ok(c(9).left<c(29).left&&c(29).left<c(89).left);
@@ -186,6 +186,17 @@ check('Weather comes from the level pool and never repeats on consecutive levels
   for(let l=2;l<=100;l++){f.F.ev("st='over';forceLvl="+l+";maxLvl=100;runTop=100");f.F.start();assert.equal(f.ev('L.l'),l);const w=f.ev('wx'),pool=JSON.parse(f.ev('JSON.stringify(L.wxp)'));assert.ok(pool.includes(w),'level '+l+' weather');if(pool.length>1&&l>2)assert.notEqual(w,f.ev('prevWxT'),'repeat at '+l);f.F.ev('prevWxT=wx')}
   const ev=l=>{const g=fixture();g.F.ev('forceLvl='+l+';maxLvl=100;runTop=100');g.F.start();return g.ev('evK')};
   assert.equal(ev(3),'nib');assert.equal(ev(13),'chest');assert.equal(ev(14),'');
+});
+check('Reacher: lean away for 2 s survives; leaning toward the bulge or staying put is fatal',()=>{
+  const f=fixture();f.F.ev('forceLvl=22;maxLvl=22;runTop=22');f.F.start();
+  f.spirit('reach',1,'judge');f.F.ev('ev.t=2;tilt=-1');f.hold('l');f.run(3);assert.equal(f.ev('survived'),1);f.hold('l',0);
+  f.spirit('reach',1,'judge');f.F.ev('ev.t=2;tilt=0');f.run(3);assert.equal(f.ev('why'),'reach');
+});
+check('Bellkeeper: three tolls, then touching anything in the next 1.5 s is fatal; staying still survives',()=>{
+  const f=fixture();f.F.ev('forceLvl=23;maxLvl=23;runTop=23');f.F.start();
+  f.F.ev("ev={type:'bell',side:1,phase:'warn',t:2.7,warn:2.7,el:0,bad:0,rung:0,fake:false};gapT=999");f.run(2.9);assert.equal(f.ev('ev.phase'),'judge');assert.equal(f.ev('ev.rung'),2);f.run(2);assert.equal(f.ev('survived'),1);assert.equal(f.ev('st'),'run');
+  f.F.ev("ev={type:'bell',side:1,phase:'warn',t:2.7,warn:2.7,el:0,bad:0,rung:0,fake:false};gapT=999");f.run(2.8);f.hold('cover');f.run(1);assert.equal(f.ev('why'),'bell');
+  const g=fixture();g.F.ev('forceLvl=23;maxLvl=23;runTop=23');g.F.start();assert.ok(JSON.parse(g.ev('JSON.stringify(L.pool)')).includes('bell'));
 });
 check('A safe level has only harmless false cues; clearing it pays once and unlocks the next level',()=>{
   const f=fixture(500,null,()=>.3);f.F.ev('forceLvl=1');f.F.ev('maxLvl=1');f.F.start();assert.equal(f.ev('L.l'),1);f.hold('wind');f.run(200);

@@ -7,7 +7,7 @@
 - 網址：`#peek`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，燈滅前蓋住螢幕。」｜免費遊玩 · 聽聲反應
 - 追蹤名稱（GA4 `game_name`）：別看，`game_id` 為 `peek`
-- 檔案：`games/peek/card.html`、`games/peek/game.js`、`games/peek/icon.svg`、`games/peek/view.html`；`game.js` 共 617 行、58.5 KB
+- 檔案：`games/peek/card.html`、`games/peek/game.js`、`games/peek/icon.svg`、`games/peek/view.html`；`game.js` 共 641 行、62.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「34. 別看 Don’t Peek（peek）」（下方「規則摘要」已複製）
 
@@ -17,7 +17,7 @@
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`EYE`（L15）、`ART`（L20）、`HP`（L348）、`peekBusy`（L2）
+- 狀態物件／進行中旗標：`EYE`（L15）、`ART`（L22）、`HP`（L368）、`peekBusy`（L2）
 - L5 常數：`SPRINT_GAP`
 - L6 常數：`BASE_RATE`、`WIND_RATE`
 - L7 常數：`MILE_EVENTS`、`MILE_REWARD`、`WIN_REWARD`
@@ -30,13 +30,13 @@
 - L14 常數：`TILT_SPEED`
 - L15 常數：`EYE`
 - L16 常數：`TWIN`
-- L17 常數：`WALK`
-- L18 常數：`TYPES`
-- …另有 29 行常數宣告，請直接搜尋大寫名稱
+- L17 常數：`REACH`
+- L18 常數：`BELL`
+- …另有 31 行常數宣告，請直接搜尋大寫名稱
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`art` L21、`rnd` L37、`clamp` L38、`tx` L39、`RR` L40、`mulberry` L58、`deathsOf` L59、`levelCfg` L60、`wpick` L71、`dailyOn` L75、`dailyLvl` L76、`wantLevel` L77、`sv` L81、`mark` L82、`applyLevel` L83、`reset` L99、`audioInit` L103、`tone` L104、`say` L110、`setText` L112、`ui` L113、`fx` L120、`end` L121、`pay` L141、`pickPool` L146、`startEvent` L149、`nextGap` L166、`survive` L171、`inputs` L177、`update` L180、`lampLevel` L218、`isRot` L225、`cxy` L226、`giveItem` L229、`spawnDrop` L236、`collect` L237、`updateDrops` L238、`canPick` L246、`startCamp` L247、`updateCamp` L248、`campTap` L254、`onMotion` L257、`optSave` L261、`drawWorld` L272、`one` L276、`sprite` L282、`floatImg` L283、`blob` L284、`drawSpirits` L285、`drawDrops` L311、`drawCamp` L319、`wrapLines` L338、`txp` L339、`txd` L340、`drawButtons` L341、`hpRect` L349、`hpClick` L352、`drawHeadphone` L357、`capText` L364、`hud` L365、`btnRow` L403、`deathClick` L406、`doAct` L410、`later` L417、`playCue` L418、`shareText` L426、`share` L427、`shareCard` L431、`drawDeath` L444、`drawWon` L464、`dexPos` L488、`txl` L490、`drawDex` L491、`dexClick` L509、`practiceStart` L517、`drawWeather` L518、`draw` L528、`start` L557、`shown` L567、`region` L568、`syncPtrs` L573、`upPtr` L582、`clearInput` L591、`onOrient` L596、`fsOff` L599、`fsOn` L600、`go` L612、`loop` L614
+`art` L23、`rnd` L39、`clamp` L40、`tx` L41、`RR` L42、`mulberry` L60、`deathsOf` L61、`levelCfg` L62、`wpick` L73、`dailyOn` L77、`dailyLvl` L78、`wantLevel` L79、`sv` L83、`mark` L84、`applyLevel` L85、`reset` L101、`audioInit` L105、`tone` L106、`say` L112、`setText` L114、`ui` L115、`fx` L122、`end` L123、`pay` L143、`pickPool` L148、`startEvent` L151、`nextGap` L168、`survive` L173、`inputs` L179、`update` L182、`lampLevel` L228、`isRot` L235、`cxy` L236、`giveItem` L239、`spawnDrop` L246、`collect` L247、`updateDrops` L248、`canPick` L256、`startCamp` L257、`updateCamp` L258、`campTap` L264、`onMotion` L267、`optSave` L271、`drawWorld` L282、`one` L286、`sprite` L292、`floatImg` L293、`blob` L294、`drawSpirits` L295、`drawDrops` L331、`drawCamp` L339、`wrapLines` L358、`txp` L359、`txd` L360、`drawButtons` L361、`hpRect` L369、`hpClick` L372、`drawHeadphone` L377、`capText` L384、`hud` L385、`btnRow` L425、`deathClick` L428、`doAct` L432、`later` L439、`playCue` L440、`shareText` L450、`share` L451、`shareCard` L455、`drawDeath` L468、`drawWon` L488、`dexPos` L512、`txl` L514、`drawDex` L515、`dexClick` L533、`practiceStart` L541、`drawWeather` L542、`draw` L552、`start` L581、`shown` L591、`region` L592、`syncPtrs` L597、`upPtr` L606、`clearInput` L615、`onOrient` L620、`fsOff` L623、`fsOn` L624、`go` L636、`loop` L638
 
 ## 錢包與結算接點
 
@@ -44,19 +44,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L143 `pay`：`S.balance+=n;`
+- L145 `pay`：`S.balance+=n;`
 
 **餘額檢查**
-- L560 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L584 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L135 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p,level:lvl,seed:seedCode…`
-- L144 `pay`：`AN.progress(analytics,{stage:Math.floor(prog),step:survived,score:score,bonus_points:n});`
-- L562 `start`：`analytics=AN.start('peek',amount);`
+- L137 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p,level:lvl,seed:seedCode…`
+- L146 `pay`：`AN.progress(analytics,{stage:Math.floor(prog),step:survived,score:score,bonus_points:n});`
+- L586 `start`：`analytics=AN.start('peek',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
