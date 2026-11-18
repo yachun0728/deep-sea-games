@@ -301,6 +301,7 @@ check('Every screen draws: ready, death with buttons, won, codex, share text',()
 });
 check('Tutorial: a new player is taught hide, item and pickup; mistakes cannot kill; it ends in stage 1; returning players skip it',()=>{
   const f=fixture(500,null,Math.random,true);f.F.start();
+  assert.equal(f.ev('introP'),1);f.F.draw();f.run(3);assert.equal(f.ev('ev'),null,'nothing happens during the intro pages');f.F.ev('introNext()');f.F.draw();f.F.ev('introNext()');f.F.draw();f.F.ev('introNext()');assert.equal(f.ev('introP'),0);
   assert.equal(f.ev('st'),'run');assert.equal(f.ev('tut&&tut.i'),0);assert.equal(f.ev('L'),null);
   const upTo=(cond,sec)=>{for(let t=0;t<sec&&!f.ev(cond);t+=.05)f.F.update(.05)};
   f.F.ev('gapT=0');upTo('ev&&ev.phase==="judge"',8);assert.equal(f.ev('ev.type'),'eye');

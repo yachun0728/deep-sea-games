@@ -4870,5 +4870,22 @@
   "落葉在哪邊就躲另一邊，紅光亮時才躲。": "Hide opposite the leaves, and only while the light is red.",
   "憋氣": "Breath",
   "現在！往另一側滑（或按住 ← →）躲進去，撐滿 3 秒。": "Now! Swipe (or hold ← →) to the other side and stay hidden for 3 seconds.",
-  "再試": "Retry"
+  "再試": "Retry",
+  "電腦鍵盤": "Keyboard",
+  "手機觸控": "Touch",
+  "按住躲藏": "Hold to hide",
+  "左右滑並按住": "Swipe and hold",
+  "選燈籠那一側": "Lantern side",
+  "點燈籠那一側": "Tap lantern side",
+  "撿起": "Pick up",
+  "點一下道具": "Tap the item",
+  "怎麼玩：躲起來": "How to play: hide",
+  "鬼來襲時，往遠離牠的另一側躲進樹或棺材，撐到牠離開。躲太久會喘不過氣，所以只在需要時躲。": "When a ghost strikes, hide on the side away from it, in a tree or coffin, until it leaves. Hide too long and you run out of breath, so hide only when needed.",
+  "有些鬼怕道具": "Some ghosts fear items",
+  "左右會各出現一件道具。點牠怕的那一側，點錯就會被抓到。第一隻怕燈籠。": "An item appears on each side. Choose the one the ghost fears; the wrong one gets you caught. The first one fears the lantern.",
+  "撿東西、戴耳機": "Pick things up, wear headphones",
+  "路邊的東西可以撿，有些能救命。聲音會告訴你方向，戴耳機更容易聽出左右。": "Items by the road can be picked up, and some save your life. Sounds tell you the direction; headphones make left and right easier to hear.",
+  "撿起 / 火把": "Pick up / Torch",
+  "開始練習": "Start practice",
+  "撿東西、聽聲音": "Items and sound"
 }
