@@ -4887,5 +4887,12 @@
   "路邊的東西可以撿，有些能救命。聲音會告訴你方向，戴耳機更容易聽出左右。": "Items by the road can be picked up, and some save your life. Sounds tell you the direction; headphones make left and right easier to hear.",
   "撿起 / 火把": "Pick up / Torch",
   "開始練習": "Start practice",
-  "撿東西、聽聲音": "Items and sound"
+  "撿東西、聽聲音": "Items and sound",
+  "死因 #19 巨像：最後一步踩在哪一邊，你沒有躲進另一側": "Cause #19 Colossus: you did not hide on the side opposite its last step",
+  "下次：腳步左右交替，只看最後一步，躲進另一側。": "Next time: the footsteps alternate. Only the last one counts; hide on the other side.",
+  "巨像的腳步左右交替。只看最後一步踩在哪一邊，躲進相反的另一側，撐住。共有兩輪，第二輪多一步。": "The Colossus steps left and right in turn. Only the last step counts: hide on the opposite side and hold. There are two rounds, and the second has one more step.",
+  "巨像 Colossus（最終首領）": "Colossus (final boss)",
+  "地面一步一步震動，腳步聲左右交替靠近。": "The ground shakes step by step; footsteps close in, alternating left and right.",
+  "最後一步踩在哪一邊？": "Which side did the last step land on?",
+  "躲進最後一步的另一側，撐住；共兩輪，第二輪多一步。": "Hide on the side opposite the last step and hold; two rounds, the second has one more step."
 }
