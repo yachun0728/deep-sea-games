@@ -12516,7 +12516,7 @@ function ui(){
  setText('peek-prog',L?'第 '+lvl+' 關':Math.floor(prog)+'%');setText('peek-spirits',survived+' 次襲擊');setText('peek-best',best+'%');setText('peek-codex',Object.keys(CAUSES).filter(k=>deaths[k]>0).length+' / '+Object.keys(CAUSES).length);setText('peek-dodges',dodgesTotal+' 次');
  setText('peek-lvl',L?lvl+' / 100':'自由跑');setText('peek-lives',L?String(lives):'—');
  const lv=wantLevel();
- $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'逃跑中 · 別回頭':(st==='ready'?'開始':'再開')+(lv?'第 '+lv+' 關':'自由跑'));
+ $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'逃跑中 · 別回頭':(st==='ready'?'開始 ':'再開 ')+(lv?'第 '+lv+' 關':'自由跑'));
 }
 function fx(s,x,y,col){fxs.push({s,x,y,col,t:0})}
 function end(kind,reason){
@@ -12828,7 +12828,7 @@ function drawCamp(){
  else tx('歇一口氣……',CX,128,24,'#f1d9a6')}
 /* centred text with wrapping by character count (CJK is one em wide, so no measureText needed) */
 function wrapLines(s,sz,wd){const I=typeof window!=='undefined'&&window.deepSeaI18n;if(I&&I.getLanguage&&I.getLanguage()==='en'){const per=Math.max(6,Math.floor(wd/(sz*.52))),o=[];let cur='';I.text(s).split(' ').forEach(w=>{if(cur&&(cur+' '+w).length>per){o.push(cur);cur=w}else cur=cur?cur+' '+w:w});if(cur)o.push(cur);return o.slice(0,12)}const n=Math.max(2,Math.floor(wd/sz)),o=[];for(let i=0;i<s.length&&o.length<12;i+=n)o.push(s.slice(i,i+n));return o}
-function txp(s,x,y,sz,col){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.fillStyle=col;g.fillText(s,x,y,W-24)}   // plain text for parchment
+function txp(s,x,y,sz,col,mw){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.fillStyle=col;g.fillText(s,x,y,mw||W-24)}   // plain text for parchment
 function txd(s,x,y,sz,col,wd,maxL){g.font='700 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.fillStyle=col;wrapLines(s,sz,wd).slice(0,maxL||12).forEach((ln,i)=>g.fillText(ln,x,y+i*(sz+4)))}
 /* ---- headphone check card (first screen) ---- */
 const HP={x:CX-220,y:56,w:440};
@@ -12843,8 +12843,9 @@ function hpClick(e){
 function drawHeadphone(){
  const im=art('ui-headphone'),h=HP.w*432/578;
  if(im)g.drawImage(im,HP.x,HP.y,HP.w,h);else RR(HP.x,HP.y,HP.w,h,14,'#3a2c1c',3);
- txp('戴上耳機更容易躲',CX,HP.y+h*.40,26,'#3a2812');
- txd('建議開啟聲音遊玩；戴耳機能更容易聽出森林裡的方向與細節。按喇叭試聽左右各一聲，再按勾勾。',CX,HP.y+h*.50,16,'#3a2812',HP.w*.58,4);
+ const en=typeof window!=='undefined'&&window.deepSeaI18n&&window.deepSeaI18n.getLanguage&&window.deepSeaI18n.getLanguage()==='en';
+ txp('戴上耳機更容易躲',CX,HP.y+h*.40,en?19:26,'#3a2812',HP.w*.6);
+ txd('建議開啟聲音遊玩；戴耳機能更容易聽出森林裡的方向與細節。按喇叭試聽左右各一聲，再按勾勾。',CX,HP.y+h*.47,en?13:16,'#3a2812',HP.w*.6,en?7:4);
  for(const k of ['spk','ok']){const r=hpRect(k);if(!im){RR(r[0],r[1],r[2],r[3],8,'#5a4228',2);tx(k==='spk'?'聲音':'確認',r[0]+r[2]/2,r[1]+r[3]*.7,16,'#f1d9a6')}}}
 const CAPS={eye:['（左邊的落葉沙沙作響）','（右邊的落葉沙沙作響）'],twins:['（左邊傳來敲擊聲）','（右邊傳來敲擊聲）'],walker:['（蟲鳴停了……左右出現了道具）','（蟲鳴停了……左右出現了道具）'],gale:['（風向反了，拖行聲從左邊靠近）','（風向反了，拖行聲從右邊靠近）'],reach:['（左邊的泥水在冒泡）','（右邊的泥水在冒泡）'],bell:['（遠處傳來鐘聲）','（遠處傳來鐘聲）'],bog:['（水面冒著泡）','（水面冒著泡）'],crawl:['（冰面咯吱作響）','（冰面咯吱作響）'],magma:['（左邊冒著煙）','（右邊冒著煙）'],white:['（左邊閃著白光）','（右邊閃著白光）'],flick:['（螢火飄過來了）','（螢火飄過來了）'],howl:['（遠處傳來嚎叫）','（遠處傳來嚎叫）']};
 const capText=d=>(CAPS[d.type]||['',''])[d.side<0?0:1];
@@ -13036,7 +13037,7 @@ function howCards(y,w,al){   // three parchment cards: icon in the window, two s
   const wx=x+w*.31,wy=y+h*.18,ww=w*.38,wh=h*.33,ims=d[0].map(art).filter(Boolean),slot=ww/Math.max(1,d[0].length);
   ims.forEach((im,k)=>{const sc=Math.min((slot-4)/im.naturalWidth,(wh-8)/im.naturalHeight),iw=im.naturalWidth*sc,ih=im.naturalHeight*sc;g.drawImage(im,wx+slot*k+(slot-iw)/2,wy+(wh-ih)/2,iw,ih)});
   if(d[3]){g.font='800 '+w*.14+'px system-ui,sans-serif';g.textAlign='center';g.fillStyle='#e8c675';g.fillText('◀',wx-w*.04,wy+wh*.62);g.fillText('▶',wx+ww+w*.04,wy+wh*.62)}
-  txp(d[1],x+w/2,y+h*.67,w*.115,'#3a2812');txp(d[2],x+w/2,y+h*.82,w*.09,'#3a2812')});
+  txp(d[1],x+w/2,y+h*.67,w*.115,'#3a2812',w*.64);txp(d[2],x+w/2,y+h*.82,w*.09,'#3a2812',w*.64)});
  g.restore()}
 function drawTut(){
  if(lt>9){tutDone=true;try{localStorage.setItem('deep-sea-peek-tut','1')}catch(e){}return}
