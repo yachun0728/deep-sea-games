@@ -8,7 +8,7 @@ const fee=Number(fs.readFileSync(new URL('js/config.js',root),'utf8').match(/ENT
 const hookAt='ui();draw();requestAnimationFrame(loop);';
 assert.ok(raw.includes(hookAt),'test hook anchor missing');
 // Expose the closure to the test only; the shipped source is not changed.
-const source=raw.replace(hookAt,'globalThis.__peek={update,start,draw,ev:code=>eval(code)};'+hookAt);
+const source="'use strict';\n"+raw.replace(hookAt,'globalThis.__peek={update,start,draw,ev:code=>eval(code)};'+hookAt);
 const results=[];
 export function fixture(balance=500,savedBest=null,random=Math.random){
   let now=1000;
