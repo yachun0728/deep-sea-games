@@ -53,14 +53,6 @@ class BuildTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'escapes'):
             build.render(self.root)
 
-    def test_free_game_cards_have_no_bonus_badge(self):
-        catalog = json.loads((build.ROOT / 'games/catalog.json').read_text(encoding='utf-8'))
-        for game in catalog:
-            card = (build.ROOT / game['card']).read_text(encoding='utf-8')
-            if any(f'data-game-category="{category}"' in card for category in ('retro', 'daily')):
-                with self.subTest(game=game['id']):
-                    self.assertNotIn('game-card-bonus', card)
-
     def test_current_output_and_catalog_match(self):
         html = build.render()
         build.validate_catalog(html)

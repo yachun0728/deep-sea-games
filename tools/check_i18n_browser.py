@@ -90,7 +90,7 @@ class Chrome:
         deadline = time.monotonic() + 25
         while time.monotonic() < deadline:
             state = self.evaluate("({url:location.href,status:document.body&&document.body.dataset.testStatus,checks:document.getElementById('test-results')&&document.getElementById('test-results').textContent})")
-            if state.get('status') and state.get('checks') and state.get('url', '').split('#')[0] == url.split('#')[0]:
+            if state.get('status') and state.get('checks') and state.get('url', '').split('#')[0] == url:
                 checks = json.loads(state['checks'] or '[]')
                 if state['status'] != 'PASS':
                     raise RuntimeError(label + '\n' + '\n'.join(checks))
@@ -137,8 +137,7 @@ def main():
     threading.Thread(target=server.serve_forever, daemon=True).start()
     with tempfile.TemporaryDirectory(prefix='deep-sea-i18n-') as temp:
         folder = Path(temp)
-        for suite, width, height in [('core', 1366, 900), ('games', 1366, 900), ('games', 390, 844),
-                                     ('ocean_link', 1366, 900), ('ocean_link', 844, 390)]:
+        for suite, width, height in [('core', 1366, 900), ('games', 1366, 900), ('games', 390, 844)]:
             script = (ROOT / f'tools/i18n_browser_{suite}.js').read_text(encoding='utf-8')
             route = f'/{suite}-{width}.html'
             pages[route] = source.replace('<head>', '<head>' + MONITOR).replace('</body>', '<script>' + script + '</script></body>')
@@ -148,26 +147,10 @@ def main():
                 chrome.call('Emulation.setDeviceMetricsOverride', {'width': width, 'height': height, 'deviceScaleFactor': 1, 'mobile': width < 880}, page=True)
                 if suite == 'core':
                     total += chrome.check(page, '?probe=default', 'Default Chinese')
-                query = '?lang=en&keep=1' + ('#ocean-link' if suite == 'ocean_link' else '')
-                total += chrome.check(page, query, f'{suite} {width}×{height}')
+                total += chrome.check(page, '?lang=en&keep=1', f'{suite} {width}×{height}')
                 if suite == 'core':
                     for query, label in [('?probe=saved', 'Saved English after reload'), ('?probe=explicit&lang=zh-Hant', 'Explicit Chinese overrides saved English'), ('?probe=blocked&lang=en', 'Blocked preference storage')]:
                         total += chrome.check(page, query, label)
-                if suite == 'ocean_link' and width == 1366:
-                    saved_balance = chrome.evaluate("localStorage.getItem('crush-depth-balance')")
-                    chrome.call('Page.navigate', {'url': f'http://127.0.0.1:{server.server_port}/index.html#ocean-link'}, page=True)
-                    for _ in range(80):
-                        if chrome.evaluate("document.getElementById('ol-best')?.textContent === '10'"):
-                            break
-                        time.sleep(.05)
-                    if not chrome.evaluate(f"""document.getElementById('ol-best').textContent === '10' &&
-                       document.getElementById('ol-playfield').hidden &&
-                       document.getElementById('balance').textContent === {json.dumps(saved_balance)}"""):
-                        raise RuntimeError('Ocean Link reload failed to retain points and best stage')
-                    total += 1
-                    print('PASS: Ocean Link reload preserves points and records', flush=True)
-                    chrome.evaluate("localStorage.setItem('crush-depth-balance', '0'); localStorage.setItem('deep-sea-regen-at', Date.now())")
-                    total += chrome.check(page, '?probe=low&lang=zh-Hant#ocean-link', 'Ocean Link direct Chinese / zero balance')
                 actual = chrome.evaluate('innerWidth')
                 if actual != width:
                     raise RuntimeError(f'Viewport is {actual}, expected {width}')

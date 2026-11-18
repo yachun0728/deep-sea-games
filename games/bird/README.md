@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#bird`　分類：跑酷動作　狀態：顯示中
+- 網址：`#bird`　分類：技巧闖關　狀態：顯示中
 - 大廳卡片：「跳過仙人掌和狼群，用便便把狼王打跑。」｜每局 10 點 · 狼王挑戰
 - 追蹤名稱（GA4 `game_name`）：便便鳥大戰狼群，`game_id` 為 `bird`
 - 檔案：`games/bird/card.html`、`games/bird/game.js`、`games/bird/icon.svg`、`games/bird/view.html`；`game.js` 共 190 行、12.9 KB

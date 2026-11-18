@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#dive`　分類：益智策略　狀態：顯示中
+- 網址：`#dive`　分類：技巧闖關　狀態：顯示中
 - 大廳卡片：「選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。」｜每局 10 點 · 最佳分數
 - 追蹤名稱（GA4 `game_name`）：一口氣探險，`game_id` 為 `dive`
 - 檔案：`games/dive/card.html`、`games/dive/game.js`、`games/dive/icon.svg`、`games/dive/original.html`、`games/dive/style.css`、`games/dive/view.html`；`game.js` 共 54 行、3.4 KB
