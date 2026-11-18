@@ -4603,5 +4603,6 @@
   "木材石頭背包各 +5": "Wood and stone bag +5 each",
   "木材背包 +5": "Wood bag +5",
   "石頭背包 +5": "Stone bag +5",
-  "背包的木材或石頭已滿：去蓋建築或訓練戰士": "Bag is full of wood or stone: go build or train warriors"
+  "背包的木材或石頭已滿：去蓋建築或訓練戰士": "Bag is full of wood or stone: go build or train warriors",
+  "提示：箭塔會守護大本營，但也會被怪攻擊，受損後靠近用木材修復。主角不能攻擊對手大本營，只有戰士可以。木材廠、採石場、倉庫蓋好後會增加背包容量。工人小屋的村民會自動砍樹採石，把資源丟在地上，走過去就能撿起來。": "Tip: the tower guards your base but monsters will attack it; repair it with wood when damaged. The hero cannot attack the enemy stronghold; only warriors can. The lumber mill, quarry and warehouse raise your bag capacity once built. Villagers from the workers' cottage chop and mine on their own and leave the resources on the ground for you to pick up."
 }

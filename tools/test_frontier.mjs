@@ -134,8 +134,13 @@ ok(model.frontierRecruitCost(w).wood===10&&model.frontierRecruitCost(w).stone===
  w.enemies.push({x:tower.x+30,y:tower.y,type:'melee',hp:99999,max:99999,state:'walk',t:0,cool:0,tx:0,ty:0,hit:false,counted:false,wave:true,radius:17,raider:true,assault:true});
  w.p.x=900;w.p.y=700;tick(w,12);ok(tower.hp<towerHp&&w.phase==='play','monsters attack the tower');
  // later stages keep the beacon rules
+ // villagers chop and mine, but only leave piles on the ground for the hero
+ {let w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;w.p.x=100;w.p.y=100;w.nodes=w.nodes.slice(0,0).concat([{x:300,y:480,kind:'wood',left:6,cool:0,respawn:0},{x:340,y:520,kind:'wood',left:6,cool:0,respawn:0}]);
+  ok(w.workers.length===0,'no villagers before the house exists');w.buildings.find(b=>b.kind==='house').built=true;tick(w,40);
+  ok(w.workers.length===2&&w.supplies.some(d=>d.kind==='wood'&&d.amount>0),'the house brings two villagers who leave wood piles on the ground');ok(w.bank.wood===0&&w.workers.every(a=>a.wood+a.stone===0),'villagers never carry or bank resources');
+  const piled=w.supplies.reduce((n,d)=>n+d.amount,0);w.p.x=w.supplies[0].x;w.p.y=w.supplies[0].y;tick(w,1);ok(w.bag.wood>0&&w.supplies.reduce((n,d)=>n+d.amount,0)<piled,'the hero picks the piles up');}
  // the bag is the only storage; buildings only raise its capacity
- {let w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;ok(!w.buildings.some(b=>['house','market','depot','forge'].includes(b.kind))&&w.buildings.some(b=>b.kind==='warehouse'),'war stages have a warehouse and no village economy');
+ {let w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;ok(!w.buildings.some(b=>['market','depot','forge'].includes(b.kind))&&w.buildings.some(b=>b.kind==='warehouse')&&w.buildings.some(b=>b.kind==='house'),'war stages have a house and a warehouse but no market, depot or forge');
   ok(model.frontierCapacity(w,'wood')===24&&model.frontierCapacity(w,'stone')===24,'base bag capacity is 24 of each');
   w.buildings.find(b=>b.kind==='mill').built=true;ok(model.frontierCapacity(w,'wood')===29&&model.frontierCapacity(w,'stone')===24,'the lumber mill adds 5 wood capacity');
   w.buildings.find(b=>b.kind==='quarry').built=true;ok(model.frontierCapacity(w,'stone')===29,'the quarry adds 5 stone capacity');

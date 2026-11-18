@@ -42,9 +42,9 @@ function frontierWorld(level,tech,coins){
  w.buildings[5].x=cfg.width-110;w.buildings[5].y=cfg.height/2;
  if(cfg.war){w.buildings.splice(5,1);var spots=[[300,375],[300,525],[360,285],[360,615],[250,245],[250,655]];w.buildings[4].x=spots[0][0];w.buildings[4].y=spots[0][1];w.buildings[4].wood=12+level*2;w.buildings[4].stone=6+level;
   for(var ti=1;ti<cfg.towers;ti++)w.buildings.push({kind:'tower',x:spots[ti][0],y:spots[ti][1],built:false,wood:12+level*2,stone:6+level,hp:180,maxHp:180,cd:0});
-  // The bag is the only storage: the forge slot becomes a warehouse and the village economy buildings are dropped.
+  // The bag is the only storage: the forge slot becomes a warehouse; villagers (house) chop and mine but only leave piles on the ground.
   w.buildings[2].kind='warehouse';w.buildings[2].wood=20+level;w.buildings[2].stone=10+level;
-  w.buildings=w.buildings.filter(function(b){return b.kind!=='house'&&b.kind!=='market'&&b.kind!=='depot';});
+  w.buildings=w.buildings.filter(function(b){return b.kind!=='market'&&b.kind!=='depot';});
   w.enemyBase={x:cfg.width-110,y:cfg.height/2,hp:cfg.enemyHp,maxHp:cfg.enemyHp,cool:3};
   for(var gi=0;gi<cfg.guards;gi++)w.fighters.push({x:240+gi%4*26,y:500+Math.floor(gi/4)*30,hp:100+cfg.chapter*20,max:100+cfg.chapter*20,attack:0,role:'guard'});}
  w.cages[1].x=cfg.width-180;w.cages[1].y=cfg.height-170;
@@ -119,6 +119,17 @@ function frontierWorkers(w,dt){
  while(w.workers.length<count)w.workers.push({x:180,y:600,wood:0,stone:0,target:-1,t:0,mode:'wood'});
  w.workers.forEach(function(a,i){
   if(i>=count)return;a.mode=roles[i];a.t-=dt;
+  if(w.cfg.war){
+   var node0=w.nodes[a.target];
+   if(!node0||node0.left<=0||node0.kind!==a.mode){var best0=Infinity;a.target=-1;w.nodes.forEach(function(n,j){if(n.left<=0||n.kind!==a.mode||n.x>530&&!frontierBuilt(w,'bridge'))return;var d=Math.hypot(a.x-n.x,a.y-n.y);if(d<best0){best0=d;a.target=j;}});node0=w.nodes[a.target];}
+   if(!node0)return;
+   if(!frontierNear(a,node0,30)){frontierWorkerMove(a,node0,dt);return;}
+   if(a.t<=0){var take0=Math.min(node0.left,1+Math.floor(w.tech.tool/3));node0.left-=take0;node0.respawn=14;
+    var pile=w.supplies.find(function(d){return d.kind===a.mode&&Math.hypot(d.x-node0.x,d.y-node0.y)<40&&d.amount<40;});
+    if(pile)pile.amount+=take0;else w.supplies.push({x:node0.x+12,y:node0.y+10,kind:a.mode,amount:take0,wait:0});
+    a.t=frontierBuilt(w,'mill')&&a.mode==='wood'||frontierBuilt(w,'quarry')&&a.mode==='stone'?.8:1.2;w.effects.push({x:node0.x,y:node0.y,t:.3,kind:node0.kind,gain:take0,empty:node0.left===0});}
+   return;
+  }
   var depots=w.buildings.filter(function(b){return b.built&&b.hp>0&&(b.kind==='camp'||b.kind==='depot');});
   var home=depots.slice().sort(function(b,c){return Math.hypot(a.x-b.x,a.y-b.y)-Math.hypot(a.x-c.x,a.y-c.y);})[0];
   if(!home)return;
