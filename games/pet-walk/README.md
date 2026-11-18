@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#pet-walk`　分類：技巧闖關　狀態：顯示中
+- 網址：`#pet-walk`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「一鍵帶小灰散步，路上撞見野狗、河鯊和幸運轉盤。」｜每趟 10 點 · 一鍵散步
 - 追蹤名稱（GA4 `game_name`）：小灰出門，`game_id` 為 `pet-walk`
 - 檔案：`games/pet-walk/card.html`、`games/pet-walk/game.js`、`games/pet-walk/icon.svg`、`games/pet-walk/view.html`；`game.js` 共 1104 行、55.5 KB

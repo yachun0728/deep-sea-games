@@ -288,6 +288,21 @@
     "icon": "games/pet-walk/icon.svg"
   },
   {
+    "id": "office-shoot",
+    "logic": "games/office-shoot/game.js",
+    "view": "games/office-shoot/view.html",
+    "card": "games/office-shoot/card.html",
+    "icon": "games/office-shoot/icon.svg"
+  },
+  {
+    "id": "ocean-link",
+    "logic": "games/ocean-link/game.js",
+    "view": "games/ocean-link/view.html",
+    "card": "games/ocean-link/card.html",
+    "icon": "games/ocean-link/icon.svg",
+    "style": "games/ocean-link/style.css"
+  },
+  {
     "id": "banquet",
     "logic": "games/banquet/game.js",
     "view": "games/banquet/view.html",

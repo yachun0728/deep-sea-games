@@ -103,6 +103,10 @@ python3 -m http.server 8765
 
 修改 `games/pet-walk/` 時可在有 Node.js 的環境執行 `node tools/test_pet_walk.mjs`，驗證單次扣款、不能重複開始、每段 20 步 BONUS +1 點各只發一次、整趟淨支出 7 點、轉盤與分數不給點、終點轉盤、二選一事件空白鍵自動選預設、結束只結算一次、存檔壞資料回復與英文模式不出現中文字。
 
+## 拒絕加班行為檢查
+
+修改 `games/office-shoot/` 時可在有 Node.js 的環境執行 `node tools/test_office_shoot.mjs`，驗證不足點數不扣款、單次扣款、第 1～5 天擊敗魔王各 +2 點只發一次（最多 10 點）、第 6 天起不給點、加班結束只結算一次且不扣回、離頁 abandoned 帶已入帳點數、暫停、按鍵只在本款畫面作用與英文模式畫布不出現中文字。
+
 ## 中英文版本
 
 頁首「繁中／EN」可即時切換大廳、遊戲操作、規則、動態提示與 Canvas 文字，保留目前遊戲及點數。珍奶內嵌原版已使用英文，保留原畫面。可分享 `index.html?lang=en#lobby`，或以 `index.html?lang=en#dream` 直接開啟英文遊戲；中文網址使用 `?lang=zh-Hant`。語言偏好保存在此瀏覽器，明確網址參數優先，不跨裝置同步。

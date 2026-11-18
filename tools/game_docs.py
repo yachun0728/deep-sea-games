@@ -174,7 +174,7 @@ def render_game(info: dict) -> str:
     funcs = info['funcs']
     zh, en = info['zh']
     status = '已隱藏（catalog 的 `hidden`；大廳、選單與網址都進不去，程式碼仍會組合與初始化）' if game.get('hidden') else '顯示中'
-    category = {'skill': '技巧闖關', 'chance': '機率挑戰', 'retro': '免費懷舊', 'daily': '每日免費補給'}.get(info['category'], info['category'])
+    category = {'skill': '技巧闖關', 'run': '跑酷動作', 'stealth': '潛行偷閒', 'timing': '時機操作', 'puzzle': '益智策略', 'chance': '機率挑戰', 'retro': '免費懷舊', 'daily': '每日免費補給'}.get(info['category'], info['category'])
     lines = [f'# {zh} {en}（{gid}）', '',
              '> 這份檔案由 `python3 tools/game_docs.py` 從原始碼自動產生，請勿手改；修改遊戲後重新執行。'
              '先讀這份找到位置，再只打開需要的函式範圍，不必掃整支 `game.js`。', '',
@@ -239,7 +239,7 @@ def render_index(infos: list[dict]) -> str:
              '| 遊戲 | hash | 分類 | 狀態 | game.js | 說明 |', '| --- | --- | --- | --- | --- | --- |']
     for info in infos:
         gid, (zh, en) = info['game']['id'], info['zh']
-        category = {'skill': '技巧闖關', 'chance': '機率挑戰', 'retro': '免費懷舊', 'daily': '每日免費補給'}.get(info['category'], info['category'])
+        category = {'skill': '技巧闖關', 'run': '跑酷動作', 'stealth': '潛行偷閒', 'timing': '時機操作', 'puzzle': '益智策略', 'chance': '機率挑戰', 'retro': '免費懷舊', 'daily': '每日免費補給'}.get(info['category'], info['category'])
         state = '隱藏' if info['game'].get('hidden') else '顯示'
         lines.append(f'| [{zh} {en}]({gid}/README.md) | `#{gid}` | {category} | {state} | {info["logic"].count(chr(10)) + 1} 行 | {info["description"]} |')
     return '\n'.join(lines) + '\n'

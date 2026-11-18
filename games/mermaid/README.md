@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#mermaid`　分類：技巧闖關　狀態：顯示中
+- 網址：`#mermaid`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「牌背是美人魚的蜘蛛接龍，排滿 K 到 A 收成珍珠。」｜每局 10 點 · 策略接龍
 - 追蹤名稱（GA4 `game_name`）：人魚接龍，`game_id` 為 `mermaid`
 - 檔案：`games/mermaid/card.html`、`games/mermaid/game.js`、`games/mermaid/icon.svg`、`games/mermaid/style.css`、`games/mermaid/view.html`；`game.js` 共 287 行、20.6 KB

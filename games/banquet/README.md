@@ -4,12 +4,12 @@
 
 ## 概覽
 
-- 網址：`#banquet`　分類：技巧闖關　狀態：顯示中
+- 網址：`#banquet`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。」｜每局 10 點 · 心理博弈
 - 追蹤名稱（GA4 `game_name`）：最後的晚餐，`game_id` 為 `banquet`
 - 檔案：`games/banquet/card.html`、`games/banquet/game.js`、`games/banquet/icon.svg`、`games/banquet/style.css`、`games/banquet/view.html`；`game.js` 共 594 行、36.2 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「39. 最後的晚餐 The Last Banquet（banquet）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「41. 最後的晚餐 The Last Banquet（banquet）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 

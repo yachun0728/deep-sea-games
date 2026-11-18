@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#merge`　分類：技巧闖關　狀態：顯示中
+- 網址：`#merge`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「滑動合併珍珠，養出更大的數字。」｜每局 10 點 · 滑動合併
 - 追蹤名稱（GA4 `game_name`）：養珠，`game_id` 為 `merge`
 - 檔案：`games/merge/card.html`、`games/merge/game.js`、`games/merge/icon.svg`、`games/merge/view.html`；`game.js` 共 90 行、5.0 KB

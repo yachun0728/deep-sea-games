@@ -8,16 +8,71 @@ function chinese(view){var texts=[];var walker=(view.ownerDocument||document).cr
 try {
  await wait();
  if(matchMedia('(max-width:880px)').matches)assert(innerWidth===390&&document.documentElement.scrollWidth<=390,'English lobby fits a true 390px viewport');
- var games={mines:'mines-go',breakout:'br-go',merge:'mg-go',dream:'dr-go',runner:'rn-go',elevator:'eq-go',sneak:'sk-go',fishing:'fi-go',campaign:'cp-go',cat:'ct-go',bird:'pb-go',reaper:'rp-go',blaster:'bl-go',skybuilder:'sb-go',carp:'carp-go',rider:'rider-go',boss:'boss-go',thief:'thief-go',baby:'baby-go',frog:'fg-go',nap:'np-go',mosquito:'mq-go','last-hair':'lh-go','pet-walk':'pw-go',mermaid:'mm-go',banquet:'bq-go'};
+ var games={'ocean-link':'ol-full',mines:'mines-go',breakout:'br-go',merge:'mg-go',dream:'dr-go',runner:'rn-go',elevator:'eq-go',sneak:'sk-go',fishing:'fi-go',campaign:'cp-go',cat:'ct-go',bird:'pb-go',reaper:'rp-go',blaster:'bl-go',skybuilder:'sb-go',carp:'carp-go',rider:'rider-go',boss:'boss-go',thief:'thief-go',baby:'baby-go',frog:'fg-go',nap:'np-go',mosquito:'mq-go','last-hair':'lh-go','pet-walk':'pw-go','office-shoot':'os-go',mermaid:'mm-go',banquet:'bq-go'};
  for(var id of Object.keys(games)){
   location.hash=id;await wait();
   var button=document.getElementById(games[id]),view=document.getElementById('view-'+id),before=balance();
+  if(id==='ocean-link'){
+    document.getElementById('ol-stage').requestFullscreen=undefined;
+    var area=document.getElementById('ol-game-area').getBoundingClientRect();
+    var corners=[[area.left+5,area.top+5],[area.right-5,area.bottom-5]];
+    assert(button.textContent==='Tap to play fullscreen'&&corners.every(function(point){
+      return document.elementFromPoint(point[0],point[1])===button;
+    }),'Tapping either corner of the game area targets fullscreen');
+  }
   button.click();await wait();
-  assert(balance()===before-(id==='mines'||id==='breakout'?0:10),id+': start charged once');
+  assert(balance()===before-(id==='mines'||id==='breakout'||id==='ocean-link'?0:10),id+': start has the correct entry fee');
   var charged=balance(),hash=location.hash;
   i.setLanguage('zh-Hant');await wait();i.setLanguage('en');await wait();
   assert(balance()===charged&&location.hash===hash,id+': language switch preserves balance and route');
   assert(!chinese(view).length,id+': live labels translated '+JSON.stringify(chinese(view)));
+  if(id==='ocean-link'){
+    var grid=document.getElementById('ol-board');
+    assert(grid.querySelectorAll('.ol-tile').length===252,'Ocean Link standard board has 252 tiles');
+    assert(!Array.from(grid.querySelectorAll('[aria-label]')).some(tile=>/[\u3400-\u9fff]/.test(tile.getAttribute('aria-label'))),'Ocean Link tile labels are localized');
+    document.getElementById('ol-hint').click();await wait();
+    assert(grid.querySelectorAll('.ol-hint').length===2,'Ocean Link shows exactly two hint tiles');
+    assert(document.getElementById('ol-msg').textContent==='A linkable pair is highlighted.','Ocean Link hint feedback is localized');
+    assert(grid.getBoundingClientRect().right<=innerWidth,'Ocean Link board fits the viewport');
+    if(innerWidth===390){
+      var stage=document.getElementById('ol-stage'), tile=grid.querySelector('.ol-tile');
+      var pairs=document.getElementById('ol-left').textContent;
+      var rect=grid.getBoundingClientRect(), clock=document.getElementById('ol-clock');
+      assert(button.parentElement.id==='ol-toolbar-actions'&&stage.classList.contains('ol-board-focus')&&
+        rect.right<=390&&rect.bottom<=innerHeight,'Portrait fallback fits and exit stays in the top controls');
+      assert(grid.classList.contains('ol-transposed')&&getComputedStyle(grid).gridTemplateColumns.split(' ').length===16,
+        'Ocean Link portrait reflows the short edge horizontally');
+      var neighbor=tile.nextElementSibling;
+      assert(neighbor.getBoundingClientRect().top>tile.getBoundingClientRect().top&&
+        neighbor.getBoundingClientRect().left===tile.getBoundingClientRect().left,'Portrait layout transposes the actual tiles');
+      assert(clock.getBoundingClientRect().bottom<=rect.top,'Ocean Link portrait clock stays above the focused board');
+      var hinted=grid.querySelectorAll('.ol-hint'), svg=document.getElementById('ol-trace');
+      var reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      hinted[0].click();hinted[1].click();
+      if(!reduceMotion){
+        var points=svg.querySelector('polyline').points;
+        assert([points.getItem(0),points.getItem(points.numberOfItems-1)].every(function(point,index){
+          var projected=new DOMPoint(point.x,point.y).matrixTransform(svg.getScreenCTM()), bounds=hinted[index].getBoundingClientRect();
+          return Math.abs(projected.x-(bounds.left+bounds.width/2))<1&&Math.abs(projected.y-(bounds.top+bounds.height/2))<1;
+        }),'Transposed link endpoints still meet the selected tiles');
+      }
+      await wait(130);
+      assert(Number(document.getElementById('ol-left').textContent)===Number(pairs)-1,'Portrait focused mode accepts a real match');
+    }
+    button.click();await wait();
+    assert(!grid.querySelector('.ol-tile')&&button.parentElement.id==='ol-board-actions',
+      'One click exits fullscreen and immediately ends the expedition');
+    assert(document.getElementById('ol-msg').textContent==='Expedition ended.','Ocean Link ending feedback is localized');
+    if(innerWidth===390){
+      document.getElementById('ol-mode').value='challenge';
+      button.click();await wait();
+      var style=getComputedStyle(grid), longBoard=grid.getBoundingClientRect();
+      assert(style.gridTemplateColumns.split(' ').length===18&&style.gridTemplateRows.split(' ').length===28&&
+        grid.querySelectorAll('.ol-tile').length===416&&longBoard.bottom<=innerHeight,
+        'Ocean Link portrait challenge fits a 16-column by 26-row board');
+      document.getElementById('ol-full').click();
+    }
+  }
   if(id==='mines'){
     var flag=document.getElementById('mines-flag'),board=document.getElementById('board'),tile=board.querySelector('button');
     assert(flag.getBoundingClientRect().bottom<=board.getBoundingClientRect().top,'Flag switch is above the minefield');

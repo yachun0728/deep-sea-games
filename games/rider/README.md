@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#rider`　分類：技巧闖關　狀態：顯示中
+- 網址：`#rider`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「巷子裡閃狗送餐，餐涼之前送越多越好。」｜每局 10 點 · 閃避送餐
 - 追蹤名稱（GA4 `game_name`）：外送員大戰惡犬，`game_id` 為 `rider`
 - 檔案：`games/rider/card.html`、`games/rider/game.js`、`games/rider/icon.svg`、`games/rider/view.html`；`game.js` 共 179 行、13.4 KB
