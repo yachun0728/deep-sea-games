@@ -4828,5 +4828,12 @@
   "點對的道具": "Tap the right item",
   "點一下撿起": "Tap to pick up",
   "選好關卡，按右邊的「開始」": "Pick a level, then press Start on the right",
-  "電腦：← → 躲或選道具　F 撿　手機：左右滑、點一下": "Computer: ← → to hide or pick an item, F to pick up. Phone: swipe sideways, tap."
+  "電腦：← → 躲或選道具　F 撿　手機：左右滑、點一下": "Computer: ← → to hide or pick an item, F to pick up. Phone: swipe sideways, tap.",
+  "提示：箭塔會守護大本營，但也會被怪攻擊，受損後靠近用木材修復。主角不能攻擊對手大本營，只有戰士可以。守備營在大本營旁訓練守衛，橋東的戰士營訓練進攻戰士，站在戰士營、守備營或工人小屋旁可花資源升級，最高到滿級；敵人偶爾會來攻擊戰士營，最多把它打回最低級。木材廠、採石場、倉庫蓋好後會增加背包容量。工人小屋的村民會自動砍樹採石，把資源丟在地上，走過去就能撿起來。": "Tip: the tower guards your base but monsters will attack it; repair it with wood when damaged. The hero cannot attack the enemy stronghold; only warriors can. The guard house trains guards beside your base and the barracks across the bridge trains attack warriors; stand next to the barracks, guard house or workers' cottage to spend resources on upgrades up to the top level. Enemies sometimes attack the barracks but can only knock it down to the lowest level. The lumber mill, quarry and warehouse raise your bag capacity once built. Villagers from the workers' cottage chop and mine on their own and leave the resources on the ground for you to pick up.",
+  "升級": "Upgrade",
+  "守備營": "Guard house",
+  "下一關起，工人小屋可以再升一級！": "From the next stage the workers' cottage can be upgraded one more level!",
+  "新解鎖：工人小屋現在可以升到 Lv.": "Unlocked: the workers' cottage can now reach Lv.",
+  "關起可再升級": " can be upgraded again",
+  "！村民更多、採集更快。": "! More villagers and faster gathering."
 }
