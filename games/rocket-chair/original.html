@@ -47,7 +47,7 @@ body{position:fixed;inset:0}
 /* 首頁 */
 #s-title{justify-content:space-between;background:none;pointer-events:none}
 #s-title button{pointer-events:auto}
-.t-top{margin-top:calc(46px + env(safe-area-inset-top));display:flex;flex-direction:column;align-items:center;gap:4px}
+.t-top{margin-top:calc(26px + env(safe-area-inset-top));display:flex;flex-direction:column;align-items:center;gap:4px}
 .t-bot{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:8px}
 #logo{display:flex;flex-direction:column;align-items:center;line-height:1.05;transform:rotate(-3deg)}
 #logo .l1{font-size:min(58px,14.5vw);font-weight:900;color:var(--ink);letter-spacing:4px;
@@ -55,7 +55,7 @@ body{position:fixed;inset:0}
 #logo .l2{font-size:min(48px,12vw);font-weight:900;color:var(--accent);letter-spacing:5px;margin-top:4px;transform:rotate(2deg);
   text-shadow:0 3px 0 var(--ink),3px 0 0 var(--ink),-3px 0 0 var(--ink),0 -3px 0 var(--ink),3px 3px 0 var(--ink),-3px 3px 0 var(--ink),3px -3px 0 var(--ink),-3px -3px 0 var(--ink),5px 7px 0 var(--ink)}
 #t-sub{font-size:15px;font-weight:800;margin-top:10px;background:#fff;padding:2px 10px}
-#mute{position:absolute;top:calc(10px + env(safe-area-inset-top));right:12px;z-index:25;width:44px;height:44px;padding:0;border:none;background:none;cursor:pointer}
+#mute{position:absolute;top:calc(10px + env(safe-area-inset-top));right:2px;z-index:25;width:44px;height:44px;padding:0;border:none;background:none;cursor:pointer}
 #mute svg{display:block;width:100%;height:100%}
 #mute:active{transform:translateY(2px)}
 #mute .slash{opacity:0}#mute.muted .waves{opacity:0}#mute.muted .slash{opacity:1}
@@ -1436,7 +1436,7 @@ function renderTitleBg(c, t) {
     }
     // 主角從破洞往上衝（放大 1.5 倍）
     const k = r.h / 1919 * 1.25;
-    c.save(); c.translate(W / 2, r.y + r.h * 0.66 - Math.sin(t * 1.6) * 10); c.scale(k * 3.3, k * 3.3);
+    c.save(); c.translate(W / 2, r.y + r.h * 0.75 - Math.sin(t * 1.6) * 10); c.scale(k * 3.3, k * 3.3);
     drawHero(c, { flame: 0.75 + Math.sin(t * 9) * 0.1, face: 'yell' }); c.restore();
   }
 }
