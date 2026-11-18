@@ -4,10 +4,10 @@
 
 ## 概覽
 
-- 網址：`#mrt`　分類：技巧闖關　狀態：顯示中
-- 大廳卡片：「看小動作猜誰要下車，一階一階往上搶座位。」｜每局 10 點 · 8 階挑戰
+- 網址：`#mrt`　分類：益智策略　狀態：顯示中
+- 大廳卡片：「看小動作猜誰要下車，一階一階往上搶座位。」｜免費遊玩 · 8 階挑戰
 - 追蹤名稱（GA4 `game_name`）：捷運搶位，`game_id` 為 `mrt`
-- 檔案：`games/mrt/card.html`、`games/mrt/game.js`、`games/mrt/icon.svg`、`games/mrt/original.html`、`games/mrt/style.css`、`games/mrt/view.html`；`game.js` 共 52 行、3.2 KB
+- 檔案：`games/mrt/card.html`、`games/mrt/game.js`、`games/mrt/icon.svg`、`games/mrt/original.html`、`games/mrt/style.css`、`games/mrt/view.html`；`game.js` 共 52 行、3.1 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「24. 捷運搶位（mrt）」（下方「規則摘要」已複製）
 
@@ -27,7 +27,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L18 `mrtValid`：`S.balance-=amount;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
@@ -54,7 +54,7 @@
 
 ## 平台共用相依
 
-- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`ENTRY_FEE`、`LOW_MSG`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/controls.js` 會呼叫：`mrtSay`
 - `js/navigation.js` 會呼叫：`mrtRoute`
 - 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`MRT`

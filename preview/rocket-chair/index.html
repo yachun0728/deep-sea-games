@@ -47,15 +47,15 @@ body{position:fixed;inset:0}
 /* 首頁 */
 #s-title{justify-content:space-between;background:none;pointer-events:none}
 #s-title button{pointer-events:auto}
-.t-top{margin-top:calc(46px + env(safe-area-inset-top));display:flex;flex-direction:column;align-items:center;gap:4px}
+.t-top{margin-top:calc(26px + env(safe-area-inset-top));display:flex;flex-direction:column;align-items:center;gap:4px}
 .t-bot{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:8px}
 #logo{display:flex;flex-direction:column;align-items:center;line-height:1.05;transform:rotate(-3deg)}
-#logo .l1{font-size:48px;font-weight:900;color:var(--ink);letter-spacing:4px;
+#logo .l1{font-size:min(58px,14.5vw);font-weight:900;color:var(--ink);letter-spacing:4px;
   text-shadow:0 3px 0 #fff,3px 0 0 #fff,-3px 0 0 #fff,0 -3px 0 #fff,3px 3px 0 #fff,-3px 3px 0 #fff,3px -3px 0 #fff,-3px -3px 0 #fff}
-#logo .l2{font-size:40px;font-weight:900;color:var(--accent);letter-spacing:5px;margin-top:4px;transform:rotate(2deg);
+#logo .l2{font-size:min(48px,12vw);font-weight:900;color:var(--accent);letter-spacing:5px;margin-top:4px;transform:rotate(2deg);
   text-shadow:0 3px 0 var(--ink),3px 0 0 var(--ink),-3px 0 0 var(--ink),0 -3px 0 var(--ink),3px 3px 0 var(--ink),-3px 3px 0 var(--ink),3px -3px 0 var(--ink),-3px -3px 0 var(--ink),5px 7px 0 var(--ink)}
 #t-sub{font-size:15px;font-weight:800;margin-top:10px;background:#fff;padding:2px 10px}
-#mute{position:absolute;top:calc(10px + env(safe-area-inset-top));right:12px;z-index:25;width:44px;height:44px;padding:0;border:none;background:none;cursor:pointer}
+#mute{position:absolute;top:calc(10px + env(safe-area-inset-top));right:2px;z-index:25;width:44px;height:44px;padding:0;border:none;background:none;cursor:pointer}
 #mute svg{display:block;width:100%;height:100%}
 #mute:active{transform:translateY(2px)}
 #mute .slash{opacity:0}#mute.muted .waves{opacity:0}#mute.muted .slash{opacity:1}
@@ -314,7 +314,12 @@ async function copyText(text) {
     document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); return ok;
   } catch (e) { return false; }
 }
-function cleanUrl() { return location.origin + location.pathname; }
+/* 平台橋接：嵌在 deep-sea-games 大廳時，扣點／追蹤交給大廳（window.parent.deepSeaRocket） */
+const HOST = (() => { try { return window.parent !== window ? window.parent.deepSeaRocket || null : null; } catch (_) { return null; } })();
+function cleanUrl() {
+  if (HOST) { try { const l = window.parent.location; return l.origin + l.pathname + '#rocket-chair'; } catch (_) {} }
+  return location.origin + location.pathname;
+}
 function clockMin(str) { const [h, m] = str.split(':').map(Number); return h * 60 + m; }
 function fmtClock(mins) { const h = Math.floor(mins / 60), m = Math.floor(mins % 60); return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0'); }
 
@@ -367,6 +372,7 @@ const Wallet = {
     lsSet(this.STORE, String(this.bal)); lsSet(this.REGEN_KEY, String(this.regenAt));
   },
   tick(now = Date.now()) {
+    if (HOST) { try { const b = Math.floor(Number(HOST.balance())); if (isFinite(b) && b !== this.bal) { this.bal = this.last = b; return true; } } catch (_) {} return false; }
     const v = parseInt(lsGet(this.STORE), 10); if (isFinite(v) && v >= 0 && v !== this.bal) { this.bal = v; this.last = v; }
     if (this.bal >= this.REGEN_CAP) { this.regenAt = now; return false; }
     if (now < this.regenAt) this.regenAt = now;
@@ -376,7 +382,9 @@ const Wallet = {
     this.regenAt = this.bal >= this.REGEN_CAP ? now : this.regenAt + mins * this.REGEN_MS;
     this.save(); return true;
   },
-  spend(n) { if (this.bal < n) return false; this.bal -= n; this.save(); return true; },
+  spend(n) {
+    if (HOST) { let ok = false; try { ok = !!HOST.spend(window, n); } catch (_) {} this.tick(); return ok; }
+    if (this.bal < n) return false; this.bal -= n; this.save(); return true; },
   freeLeftMs() { const t = Number(lsGet(this.FREE_KEY)); return Math.max(0, (isFinite(t) ? t : 0) - Date.now()); },
   isFree() { return this.freeLeftMs() > 0; },
   grantFree(min) { lsSet(this.FREE_KEY, String(Date.now() + min * 60000)); },
@@ -550,8 +558,13 @@ function initFloorObs(k) {
 /* =========================================================
    遊戲流程
    ========================================================= */
+function hostFinish(g) {
+  if (!HOST || !g || g.hostDone) return;
+  g.hostDone = true;
+  try { HOST.finish(window, { cleared: !!g.cleared, early: g.cleared ? g.early || 0 : 0, floors: g.broken || 0 }); } catch (_) {}
+}
 function goTitle() {
-  Mic.stop(); G = null; scene = null; appState = 'title'; showScreen('s-title'); camB = -40;
+  hostFinish(G); Mic.stop(); G = null; scene = null; appState = 'title'; showScreen('s-title'); camB = -40;
 }
 function onStartClick() {
   ensureAudio(); Snd.click();
@@ -642,7 +655,13 @@ function startGame() {
   ensureAudio();
   if (needPoints(null)) { Mic.stop(); return; }
   let paid = 0;
-  if (!Wallet.isFree() && CONFIG.entryFee > 0) { if (!Wallet.spend(CONFIG.entryFee)) { needPoints(null); return; } paid = CONFIG.entryFee; }
+  if (HOST) {
+    const free = Wallet.isFree();
+    let ok = false; try { ok = !!HOST.start(window); } catch (_) {}
+    Wallet.tick();
+    if (!ok) { needPoints(null); return; }
+    paid = free ? 0 : CONFIG.entryFee;
+  } else if (!Wallet.isFree() && CONFIG.entryFee > 0) { if (!Wallet.spend(CONFIG.entryFee)) { needPoints(null); return; } paid = CONFIG.entryFee; }
   G = newGame(); G.paid = paid; G.obs = initFloorObs(0);
   particles = []; floaters = []; camB = -40; scene = null;
   Roar.raw = 0; Roar.smooth = 0; Roar.hist = []; Touch.holding = false; Touch.keyHold = false;
@@ -772,7 +791,7 @@ function cardsOf(g) {
 }
 function showResult() {
   scene = null; Mic.stop();
-  const g = G; lastResult = g;
+  const g = G; lastResult = g; hostFinish(g);
   $('r-head').innerHTML = g.cleared ? (g.early > 0 ? `你提早了 <b>${g.early} 分鐘</b>下班！` : '剛好 18:00，準時下班！') : '今天也準時……<br>不，加班了。';
   $('r-title').innerHTML = `稱號<br><b>${rankOf(g)}</b>`;
   const stats = [
@@ -1018,7 +1037,7 @@ for (const [k, src] of Object.entries(IMG_SRC)) { const im = new Image(); im.src
 const ready = (im) => im && im.complete && im.naturalWidth > 0;
 // 主角火箭椅圖：427×720，原點在水桶底部中間；兩支立可白噴嘴的位置（像素）
 const HERO = { w: 427, h: 720, ox: 214, nl: 133, nr: 295, ny: 701 };
-const HERO_K = 150 / HERO.h;   // 世界單位：主角＋椅子高 150
+const HERO_K = 150 * 1.2 / HERO.h;   // 世界單位：主角＋椅子高 180（放大 1.2 倍）
 
 /* =========================================================
    繪圖工具（線稿風：白底、黑墨線）
@@ -1417,7 +1436,7 @@ function renderTitleBg(c, t) {
     }
     // 主角從破洞往上衝（放大 1.5 倍）
     const k = r.h / 1919 * 1.25;
-    c.save(); c.translate(W / 2, r.y + r.h * 0.66 - Math.sin(t * 1.6) * 10); c.scale(k * 3.3, k * 3.3);
+    c.save(); c.translate(W / 2, r.y + r.h * 0.75 - Math.sin(t * 1.6) * 10); c.scale(k * 3.3, k * 3.3);
     drawHero(c, { flame: 0.75 + Math.sin(t * 9) * 0.1, face: 'yell' }); c.restore();
   }
 }
@@ -1604,6 +1623,18 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 window.addEventListener('pagehide', () => Mic.stop());
+/* 大廳切到別的遊戲／回大廳：關麥克風並暫停 */
+window.setRocketPlatformActive = function (active) {
+  if (active) { resize(); return; }
+  Mic.stop();
+  if (appState === 'play') pauseGame();
+  else if (appState === 'calib') { CAL = null; goMode(); }
+};
+if (HOST) {
+  let lastTouch = 0;
+  const touch = () => { const t = Date.now(); if (t - lastTouch > 3000) { lastTouch = t; try { HOST.touch(window); } catch (_) {} } };
+  ['pointerdown', 'keydown', 'touchstart'].forEach(ev => window.addEventListener(ev, touch, { capture: true, passive: true }));
+}
 
 function checkRotate() {
   const land = IS_MOBILE && window.innerWidth > window.innerHeight;

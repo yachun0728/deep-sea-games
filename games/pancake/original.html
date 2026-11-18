@@ -165,7 +165,7 @@ body{position:fixed;inset:0}
     <p id="revive-sub"></p>
     <div class="wallet-pill" id="revive-wallet"></div>
     <button class="btn" id="btn-free">狂煎中！免費補 3 包</button>
-    <button class="btn" id="btn-ad">看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎，不扣點數</span></button>
+    <button class="btn" id="btn-ad">看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎，免費數</span></button>
     <button class="btn sec" id="btn-buy">用 30 點換 5 包泡麵</button>
     <p class="small" id="buy-note"></p>
     <button class="btn ghost" id="btn-sleep">不煮了，去睡覺</button>
@@ -177,7 +177,7 @@ body{position:fixed;inset:0}
     <h2 class="ol-crust">點數不夠開火了…</h2>
     <div class="wallet-pill" id="low-wallet"></div>
     <p class="small">每局需要 10 點。低於 100 點時每分鐘會自動回 1 點。</p>
-    <button class="btn" id="btn-low-ad">看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎，不扣點數</span></button>
+    <button class="btn" id="btn-low-ad">看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎，免費數</span></button>
     <button class="btn ghost" id="btn-low-back">先等等，回首頁</button>
   </div>
 
@@ -261,11 +261,11 @@ const CONFIG = {
   fakeAdSeconds: 5,
 
   // 點數（跟 deep-sea-games 大廳共用同一個餘額）
-  entryFee: 10,               // 每局開火扣幾點（跟大廳每局 10 點一致）；設 0 = 不收
-  buyNoodlesCost: 30,         // 用幾點換泡麵
+  entryFee: 0,               // 每局開火扣幾點（跟大廳免費遊玩一致）；設 0 = 不收
+  buyNoodlesCost: 0,         // 用幾點換泡麵
   buyNoodlesAmount: 5,        // 換幾包
-  adFreeMinutes: 30,          // 看完廣告後，幾分鐘內不扣點數（開局免費、泡麵免費補）
-  freeRefillLives: 3,         // 不扣點時間內，泡麵用完可以免費補幾包
+  adFreeMinutes: 30,          // 看完廣告後，幾分鐘內免費數（開局免費、泡麵免費補）
+  freeRefillLives: 3,         // 免費時間內，泡麵用完可以免費補幾包
 };
 const TRACK_ENDPOINT = '';
 const GAME_ID = 'noodle_pancake';
@@ -308,7 +308,7 @@ async function copyText(text) {
     document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); return ok;
   } catch (e) { return false; }
 }
-/* 平台橋接：嵌在 deep-sea-games 裡時，扣點／追蹤交給大廳（window.parent.deepSeaPancake） */
+/* 平台橋接：嵌在 deep-sea-games 裡時，免費／追蹤交給大廳（window.parent.deepSeaPancake） */
 function pancakeHost() { try { return window.parent !== window ? window.parent.deepSeaPancake || null : null; } catch (_) { return null; } }
 const HOST = pancakeHost();
 function cleanUrl() {
@@ -388,15 +388,7 @@ if (HOST) {
   Wallet.spend = function (n) { const ok = HOST.spend(window, n); this.bal = HOST.balance(); return ok; };
 }
 function fmtMs(ms) { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
-function walletText() {
-  if (Wallet.isFree()) return `狂煎時間 ${fmtMs(Wallet.freeLeftMs())}・不扣點`;
-  let t = `餘額 <b>${Wallet.bal}</b> 點` + (CONFIG.entryFee ? `・每局 ${CONFIG.entryFee} 點` : '');
-  if (!HOST && Wallet.bal < Wallet.REGEN_CAP) {
-    const s = Math.max(1, Math.min(60, Math.ceil((Wallet.REGEN_MS - (Date.now() - Wallet.regenAt)) / 1000)));
-    t += `<br><span class="w-sub">下一點 ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}・回到 ${Wallet.REGEN_CAP} 點為止</span>`;
-  }
-  return t;
-}
+function walletText() { return '免費遊玩 · 泡麵補給免費'; }
 function renderWallet() {
   const html = walletText();
   for (const id of ['t-wallet', 'revive-wallet', 'r-wallet', 'low-wallet']) { const el = $(id); if (el && el.innerHTML !== html) el.innerHTML = html; }
@@ -2009,7 +2001,7 @@ function renderReviveButtons() {
   $('btn-free').classList.toggle('hidden', !free);
   $('btn-ad').classList.toggle('hidden', free);
   const b = $('btn-buy');
-  b.innerHTML = `用 ${CONFIG.buyNoodlesCost} 點換 ${CONFIG.buyNoodlesAmount} 包泡麵`;
+  b.innerHTML = `免費補充 ${CONFIG.buyNoodlesAmount} 包泡麵`;
   b.classList.toggle('dim', Wallet.bal < CONFIG.buyNoodlesCost);
 }
 function resumeWithLives(n, msg) {
@@ -2019,7 +2011,7 @@ function resumeWithLives(n, msg) {
   toast(msg);
   newPancake();
 }
-// 看廣告 → 30 分鐘不扣點（開局免費、泡麵用完免費補）
+// 看廣告 → 30 分鐘免費（開局免費、泡麵用完免費補）
 let adCtx = null;
 function startAd(from) {
   track('fake_ad_click', { pancakes: G ? G.served : 0, from, balance: Wallet.bal });
@@ -2041,7 +2033,7 @@ $('btn-buy').addEventListener('click', () => {
   }
   track('points_buy', { pancakes: G.served, cost: CONFIG.buyNoodlesCost, noodles: CONFIG.buyNoodlesAmount, balance: Wallet.bal });
   renderWallet();
-  resumeWithLives(CONFIG.buyNoodlesAmount, `-${CONFIG.buyNoodlesCost} 點，泡麵 +${CONFIG.buyNoodlesAmount}包`);
+  resumeWithLives(CONFIG.buyNoodlesAmount, `免費補給，泡麵 +${CONFIG.buyNoodlesAmount}包`);
 });
 $('btn-sleep').addEventListener('click', () => { Snd.click(); G.ended = true; showResult(); });
 function updateAd(dt) {
@@ -2051,8 +2043,8 @@ function updateAd(dt) {
     Wallet.grantFree(CONFIG.adFreeMinutes);
     track('fake_ad_complete', { pancakes: G ? G.served : 0, from: adCtx.from, free_minutes: CONFIG.adFreeMinutes });
     const from = adCtx.from; adCtx = null;
-    if (from === 'revive') resumeWithLives(CONFIG.freeRefillLives, `接下來 ${CONFIG.adFreeMinutes} 分鐘不扣點，泡麵補滿`);
-    else { toast(`接下來 ${CONFIG.adFreeMinutes} 分鐘不扣點`); const n = lowNext; lowNext = null; if (n) n(); else { appState = 'title'; showScreen('s-title'); } }
+    if (from === 'revive') resumeWithLives(CONFIG.freeRefillLives, `接下來 ${CONFIG.adFreeMinutes} 分鐘免費，泡麵補滿`);
+    else { toast(`接下來 ${CONFIG.adFreeMinutes} 分鐘免費`); const n = lowNext; lowNext = null; if (n) n(); else { appState = 'title'; showScreen('s-title'); } }
   }
 }
 // 點數不足

@@ -197,6 +197,13 @@
     "icon": "games/pancake/icon.svg"
   },
   {
+    "id": "rocket-chair",
+    "logic": "games/rocket-chair/game.js",
+    "view": "games/rocket-chair/view.html",
+    "card": "games/rocket-chair/card.html",
+    "icon": "games/rocket-chair/icon.svg"
+  },
+  {
     "id": "skybuilder",
     "logic": "games/skybuilder/game.js",
     "view": "games/skybuilder/view.html",
@@ -288,10 +295,68 @@
     "icon": "games/pet-walk/icon.svg"
   },
   {
+    "id": "office-shoot",
+    "logic": "games/office-shoot/game.js",
+    "view": "games/office-shoot/view.html",
+    "card": "games/office-shoot/card.html",
+    "icon": "games/office-shoot/icon.svg"
+  },
+  {
+    "id": "ocean-link",
+    "logic": "games/ocean-link/game.js",
+    "view": "games/ocean-link/view.html",
+    "card": "games/ocean-link/card.html",
+    "icon": "games/ocean-link/icon.svg",
+    "style": "games/ocean-link/style.css"
+  },
+  {
     "id": "banquet",
     "logic": "games/banquet/game.js",
     "view": "games/banquet/view.html",
     "card": "games/banquet/card.html",
     "icon": "games/banquet/icon.svg"
+  },
+  {
+    "id": "mermaid",
+    "logic": "games/mermaid/game.js",
+    "view": "games/mermaid/view.html",
+    "card": "games/mermaid/card.html",
+    "icon": "games/mermaid/icon.svg"
+  },
+  {
+    "id": "eat-smaller",
+    "logic": "games/eat-smaller/game.js",
+    "view": "games/eat-smaller/view.html",
+    "card": "games/eat-smaller/card.html",
+    "icon": "games/eat-smaller/icon.svg"
+  },
+  {
+    "id": "mirror-twins",
+    "logic": "games/mirror-twins/game.js",
+    "view": "games/mirror-twins/view.html",
+    "card": "games/mirror-twins/card.html",
+    "icon": "games/mirror-twins/icon.svg"
+  },
+  {
+    "id": "shadow-relay",
+    "logic": "games/shadow-relay/game.js",
+    "view": "games/shadow-relay/view.html",
+    "card": "games/shadow-relay/card.html",
+    "icon": "games/shadow-relay/icon.svg"
+  },
+  {
+    "id": "one-line-defense",
+    "logic": "games/one-line-defense/game.js",
+    "view": "games/one-line-defense/view.html",
+    "card": "games/one-line-defense/card.html",
+    "icon": "games/one-line-defense/icon.svg"
+  },
+  {
+    "id": "frontier",
+    "logic": "games/frontier/game.js",
+    "view": "games/frontier/view.html",
+    "card": "games/frontier/card.html",
+    "icon": "games/frontier/icon.svg",
+    "style": "games/frontier/style.css"
   }
 ]

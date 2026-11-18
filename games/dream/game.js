@@ -65,7 +65,7 @@
     if(DR.phase==='passed'){DR.stage++;drRound();return;}
     var amount=ENTRY_FEE;
     if(amount>S.balance){drSay(LOW_MSG,'lose');return;}
-    DR.analytics=AN.start('dream',amount);DR.stake=amount;DR.stage=1;DR.wins=0;DR.active=true;S.balance-=amount;save();renderAll();drRound();
+    DR.analytics=AN.start('dream',amount);DR.stake=amount;DR.stage=1;DR.wins=0;DR.active=true;save();renderAll();drRound();
   }
   $('dr-go').addEventListener('click',drAction);
   drCanvas.addEventListener('pointerdown',function(e){if(DR.phase==='spinning'){e.preventDefault();drAction();}});

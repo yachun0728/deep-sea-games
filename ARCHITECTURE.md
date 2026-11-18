@@ -38,6 +38,7 @@ deep-sea-games/
 │   ├── README.md             所有遊戲的索引，同樣自動產生
 │   ├── boba/original.html    額外：珍奶原始完整子頁
 │   ├── dive/、mrt/           另含 original.html（原始完整子頁）與 style.css（限定該遊戲的平台外框樣式）
+│   ├── eat-smaller/、mirror-twins/、shadow-relay/、one-line-defense/  同上，srcdoc 子頁＋style.css
 │   └── pancake/original.html 額外：泡麵煎餅子頁（iframe src 載入）與 assets/ 圖片、style.css
 ├── tools/
 │   ├── build.py              Python 標準函式庫靜態組合／檢查
@@ -51,8 +52,10 @@ deep-sea-games/
 │   ├── test_peek.mjs         別看行為測試（可選 Node.js）
 │   ├── test_mosquito.mjs     血壓上升行為測試（可選 Node.js）
 │   ├── test_banquet.mjs      最後的晚餐行為測試（可選 Node.js）
+│   ├── test_mermaid.mjs      人魚接龍行為測試（可選 Node.js）
 │   ├── test_last_hair.mjs    尊嚴保衛戰行為測試（可選 Node.js）
-│   └── test_pet_walk.mjs     小灰出門行為測試（可選 Node.js）
+│   ├── test_pet_walk.mjs     小灰出門行為測試（可選 Node.js）
+│   └── test_office_shoot.mjs 拒絕加班行為測試（可選 Node.js）
 ├── dodge-run.html            舊網址 → index.html#runner
 ├── dream-repair.html         舊網址 → index.html#dream
 └── .gitignore                忽略 .claude/、crush-depth.html 與 Python 暫存
@@ -94,11 +97,13 @@ flowchart TD
 | dice / limbo / hilo | D / L / HL |
 | keno / wheel / tower / crossing | KE / WL / TW / CR |
 | dream / elevator / fishing / campaign / reaper / blaster | DR / EQ / FI / CP / RP / BL |
-| runner / sneak / cat / bird / frog / nap / clock-out / pudding / peek / mosquito / last-hair / pet-walk / banquet | runnerBusy / sneakBusy / catBusy / birdBusy / frogBusy / napBusy / clockBusy / puddingBusy / peekBusy / mqBusy / hairBusy / petBusy / bqBusy，各自內層 IIFE（last-hair 即尊嚴保衛戰）|
+| runner / sneak / cat / bird / frog / nap / clock-out / pudding / peek / mosquito / last-hair / pet-walk / office-shoot / banquet / mermaid | runnerBusy / sneakBusy / catBusy / birdBusy / frogBusy / napBusy / clockBusy / puddingBusy / peekBusy / mqBusy / hairBusy / petBusy / otBusy / bqBusy / mmBusy，各自內層 IIFE（last-hair 即尊嚴保衛戰）|
 | carp / rider / boss / thief / baby | carpBusy / riderBusy / bossBusy / thiefBusy / babyBusy，各自內層 IIFE（由獨立頁面改編，共用 G 物件與造型解鎖流程）|
 | boba | BOBA、deepSeaBoba；original.html 為子頁 |
 | dive | DIVE、deepSeaDive；original.html 為子頁（一口氣探險） |
 | mrt | MRT、deepSeaMrt；original.html 為子頁（捷運搶位） |
+| eat-smaller / mirror-twins / shadow-relay | EATS／deepSeaEatSmaller、MIRR／deepSeaMirrorTwins、SHAD／deepSeaShadowRelay；original.html 為子頁（數字吞噬／鏡像雙子／影子接力，關卡制，一局內每關首通 +2 點） |
+| one-line-defense | ONEL、deepSeaOneLine；original.html 為子頁（一筆畫守城，每撐過 30 秒 +2 點） |
 | pancake | PANCAKE、deepSeaPancake；original.html 為以 iframe src 載入的子頁，圖片在 assets/ |
 
 ### 隱藏遊戲
@@ -117,7 +122,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 
 ## 資料與錢包
 
-預設餘額 `START_BALANCE=500`，踩地雷與每日挖礦不扣點，其餘遊戲依入場說明扣 `ENTRY_FEE=10`（js/config.js；餘額不足提示統一用 `LOW_MSG`），共用最低投入 `MIN_BET=10` 仍供隱藏的機率遊戲使用。餘額低於 `REGEN_CAP=100` 時，js/wallet.js 的 `regenTick` 每分鐘加 1 點（`REGEN_MS`），以牆上時鐘計算，含頁面關閉期間；`regenStart` 在 bootstrap 啟動 1 秒計時與回到分頁時的補算。讀取餘額以 parseInt 並檢查有限且非負；各投入欄位的讀取／取整方式並非完全一致，修改時應核對對應函式。
+預設餘額 `START_BALANCE=500`，踩地雷、打磚塊、Ocean Link 與每日挖礦等免費遊戲不扣點，付費遊戲依入場說明扣 `ENTRY_FEE=10`（js/config.js；餘額不足提示統一用 `LOW_MSG`），共用最低投入 `MIN_BET=10` 仍供隱藏的機率遊戲使用。餘額低於 `REGEN_CAP=100` 時，js/wallet.js 的 `regenTick` 每分鐘加 1 點（`REGEN_MS`），以牆上時鐘計算，含頁面關閉期間；`regenStart` 在 bootstrap 啟動 1 秒計時與回到分頁時的補算。讀取餘額以 parseInt 並檢查有限且非負；各投入欄位的讀取／取整方式並非完全一致，修改時應核對對應函式。
 
 | localStorage Key | 用途 |
 | --- | --- |
@@ -146,8 +151,10 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `deep-sea-last-hair-best` / `-deaths` / `-swap` / `-sound` | 尊嚴保衛戰最遠距離、最近死亡位置與原因、左右手對調、音效開關；新增於 2026-11-17 |
 | `deep-sea-banquet-best` | 最後的晚餐贏局次數；新增於 2026-11-18 |
 | `deep-sea-banquet-adv` / `deep-sea-banquet-mute` | 最後的晚餐「進階模式」與「靜音」開關（1／0）；新增於 2026-11-18 |
+| `deep-sea-mermaid-best` | 人魚接龍（JSON：`best` 依難度 1／2／4 的最高分、`mode` 上次選的難度）；新增於 2026-11-18 |
 | `deep-sea-mosquito-best` | 血壓上升最高吸血百分比（一位小數）；新增於 2026-11-17 |
 | `deep-sea-pet-walk-save` | 小灰出門存檔（JSON：最高分、出門次數、物資、事件與物資圖鑑、上次事件）；新增於 2026-11-17 |
+| `deep-sea-office-shoot-best` | 拒絕加班最佳績效（整數）；新增於 2026-11-18 |
 | `deep-sea-nap-best` | 偷睡大師最高分；新增於 2026-11-17 |
 | `reaper` | Reaper 最佳正常靈魂處理總數 |
 | `deep-sea-blaster-best` | 深海火線最佳通關數（無關卡上限，沿用既有數值格式） |
@@ -163,6 +170,10 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `straw_game_today` | 珍奶當日紀錄 `{d,n}` |
 | `diveBestScore` | 一口氣探險最佳分數（子頁寫入，同源；舊 `diveBestMult` 保留不讀） |
 | `mrtBestTier` | 捷運搶位最佳階數（子頁寫入，同源；舊 `mrtBestMult` 保留不讀） |
+| `eatSmaller.unlocked` / `eatSmaller.bests` | 數字吞噬已解鎖關數、每關最佳秒數（JSON，子頁寫入）；新增於 2026-11-18，沿用原版 Key |
+| `mirrorTwins.unlocked` / `mirrorTwins.stars` | 鏡像雙子已解鎖關數、每關最佳星等（JSON，子頁寫入）；新增於 2026-11-18 |
+| `shadowRelay.unlocked` / `shadowRelay.bests` | 影子接力已解鎖關數、每關最佳秒數（JSON，子頁寫入）；新增於 2026-11-18 |
+| `oneLine.best` / `oneLine.tutDone` | 一筆畫守城最佳分數、教學已完成（JSON，子頁寫入）；新增於 2026-11-18 |
 | `deep-sea-free-until` | 泡麵煎餅看示範廣告後的免扣點截止時間（毫秒時間戳）；新增於 2026-11-17，只有泡麵煎餅讀取 |
 | `noodle_pancake_events` | 泡麵煎餅本機事件紀錄，上限 3,000 筆 |
 | `mini_player_id` | 泡麵煎餅（及之後的小遊戲）本機玩家識別值，不送 GA4 |
@@ -230,3 +241,17 @@ KE.active涵蓋免費挖掘，使用現有syncBalance／save入帳；可用時�
 時序修復為固定入場10點、無限關卡的停針挑戰，沒有點數獎勵或領回。drDifficulty限制目標寬度與速度，drAdvance管理預告反轉及暫停；第11關起最多一次、第21關起最多兩次。保留既有狀態與ID，不新增儲存Key。hot.snapshot不將本局入場費加回餘額；每局單次扣款與start，過關progress、續關resume、失敗end且payout_points=0。
 
 深海火線（2026-11-17 玩法大改）：改為自由左右移動（BL.target／BL.keys，拖曳、按住按鈕與鍵盤；移除三條航道）；武器為「形態」BL.form（7 種），每累計 36 波暫停彈出三選一（BL.picks／BL.sinceCard，phase 'pick'，不計時、不扣款、離頁記 abandoned），開局固定脈衝彈、不再有掉落的武器箱；火力等級只在過關與王戰 +1。出怪改為隨進度漸增的每波怪數（blWavePlan，5 個欄位 1～5 隻），一關約 3 倍長（54 波起），新增水雷、礁石、噴墨烏賊與每5關的深海巨獸（BL.ink）；不新增儲存Key，扣點、重玩費、里程碑與GA4生命週期不變。數值與公式見 GAME_RULES.md 第22節。tools/test_blaster.mjs 為 Node 行為測試。
+
+## Ocean Link
+
+`#ocean-link` 透過 `games/ocean-link/view.html`、`style.css`、`card.html` 與 `icon.svg` 接入靜態組合，列於免費懷舊分類。點擊遊戲區會啟用全螢幕並免費開局。`game.js` 在共用 runtime 內管理畫面、遠征、錢包及追蹤，並在其閉包內組合 `board.js`（關卡設定、路徑、移動與保證可解的發牌）及 `tiles.js`（64 種圖案）。全螢幕使用 Fullscreen API，若無法啟用則使用有安全區邊距的固定版面。新增 `deep-sea-ocean-link-best-v1`，以 JSON 物件分開記錄簡單、標準與挑戰的最高通關關卡；共用餘額沿用既有儲存。
+
+## 荒島遠征（frontier）
+
+`games/frontier/game.js` 在共享runtime內建立獨立閉包，內含純模擬 `world.js` 與Canvas繪圖 `draw.js`；view、card、style、icon依現有靜態include接入。`frontierRoute`暫停離開畫面，`frontierBusy`供重設防護；hot.snapshot無待退本金，不新增返還。新Key `deep-sea-frontier-v1`儲存完整當關、科技、通關及一次付費資格；不改舊Key／格式。未有資料時初始化，回復舊程式可保留新Key。存檔schema異常時保留可辨識的付費資格與最高通關，重建當關；讀取失敗不清除資料。不是跨分頁交易或伺服器帳戶。關卡參數與限制見GAME_RULES第42節。
+
+## 免費平台、遊玩獎勵與紙娃娃（2026-11-18）
+
+ENTRY_FEE=0，已上架遊戲移除扣款，iframe以開局成功布林值通訊，不再以正金額判斷成功。js/wallet.js保留舊STORE與回點時間鍵，停用自然回點；玩家餘額不重設。platform/wardrobe.js放在導航前、同一runtime IIFE內，bootstrap讀取餘額後初始化。大廳details與頁首入口呈現平台角色，三槽帽／服裝／跟隨配件不接入遊戲能力。
+
+AN.tick只在原有可見聚焦且engaged的有效時間呼叫deepSeaProgress.active一次；end以有效時間與結果呼叫complete。新Key deep-sea-wardrobe-v1含version、owned、equipped、day、playMs、playPaid、completed；合法舊錢包原樣讀取，沒有原資料遷移。收藏寫入失敗不扣款；損壞收藏不清除，顯示錯誤。兌換與平台獎勵使用單頁queue，支援時加Web Locks，操作前重讀配額與餘額，避免連點重發／重扣；claim／收藏與wallet為兩個localStorage鍵，不宣稱交易原子性或防作弊，異常關機仍可能少發獎勵或少扣一次兌換費。回復本版只回復來源並重建，保留新Key，舊版忽略。

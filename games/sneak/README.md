@@ -4,8 +4,8 @@
 
 ## 概覽
 
-- 網址：`#sneak`　分類：技巧闖關　狀態：顯示中
-- 大廳卡片：「按住偷溜，老闆回頭前趕快裝忙。」｜每局 10 點 · 無盡挑戰
+- 網址：`#sneak`　分類：潛行偷閒　狀態：顯示中
+- 大廳卡片：「按住偷溜，老闆回頭前趕快裝忙。」｜免費遊玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：偷偷下班，`game_id` 為 `sneak`
 - 檔案：`games/sneak/card.html`、`games/sneak/game.js`、`games/sneak/icon.svg`、`games/sneak/view.html`；`game.js` 共 116 行、10.4 KB
 
@@ -27,7 +27,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L63 `start`：`S.balance-=amount;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L41 `award`：`S.balance+=b;`

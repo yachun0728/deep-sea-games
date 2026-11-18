@@ -3,13 +3,13 @@
       <div class="side"><section class="panel" aria-label="偷偷下班操作">
         <dl class="stats"><div><dt>目前關卡</dt><dd id="sk-stage">1 關</dd></div><div><dt>下班進度</dt><dd id="sk-progress">0%</dd></div><div><dt>最佳紀錄</dt><dd id="sk-best">0 關</dd></div><div><dt>下一個獎勵</dt><dd id="sk-next">完成 9 關 · +3</dd></div></dl>
         <div class="queue-watch" id="sk-signal" role="status" aria-live="polite" data-state="away">等待開始</div><p class="hint" id="sk-difficulty"></p>
-        <div class="field"><label>每局入場</label><p class="runner-fee">10 <small>點</small></p><input id="sk-amount" type="hidden" value="10"></div>
-        <button class="go" id="sk-go" type="button" data-mode="bet">扣點開始下班</button>
+        <div class="field"><label>遊玩費用</label><p class="runner-fee">免費</p><input id="sk-amount" type="hidden" value="0"></div>
+        <button class="go" id="sk-go" type="button" data-mode="bet">免費開始下班</button>
         <button class="chip sneak-hold" id="sk-hold" type="button" disabled>按住前進 · 放開裝忙</button>
         <p class="msg" id="sk-msg" aria-live="polite">保留原版辦公室畫面。按住前進、放開裝忙，走到出口就自動進入下一關，沒有終點。</p>
         <p class="hint">也可按住 <kbd>空白鍵</kbd>、<kbd>→</kbd> 或 <kbd>D</kbd> 前進。</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法、難度與點數</summary><p>每局固定扣 10 點。按住遊戲畫面、前進按鈕或空白鍵就走路，放開即站定假裝工作。老闆回頭時繼續走就被抓，這一局結束。</p><p>沒有終點：走到出口立刻進入下一關，直到被抓為止。第一關需實際移動 6 秒，每關增加 2 秒，第十關起固定為 24 秒。之後老闆回頭更頻繁，警示時間由約 0.66 秒逐步縮短，最短 0.25 秒；第三關起警示可能是假動作。第四關起老闆有機會跳過警示直接回頭（機率由 15% 逐步增加，最高 50%），直接回頭有約 0.34 秒的反應時間，之後每關縮短 0.01 秒，最短 0.22 秒；先警示再回頭的反應時間由約 0.15 秒逐步縮短，最短 0.12 秒。</p><p>通關數累計到特定關數時，獎勵點數當場入帳，之後被抓也不會收回：9 關 +3、11 關 +7（累計 10 點，剛好回本）、13 關 +15、16 關 +30，之後每多 3 關 +40。這是固定點數，沒有倍率。這些關數刻意設得很高，一般玩家大約能通過 5 關。</p><p>切換遊戲、背景分頁或視窗失焦會停止前進；切換遊戲與背景分頁會暫停。重新整理會放棄本局，已入帳的點數會保留。點數共用，免費重設僅供測試。</p></details>
+    <details class="rules"><summary>玩法、難度與點數</summary><p>每局免費。按住遊戲畫面、前進按鈕或空白鍵就走路，放開即站定假裝工作。老闆回頭時繼續走就被抓，這一局結束。</p><p>沒有終點：走到出口立刻進入下一關，直到被抓為止。第一關需實際移動 6 秒，每關增加 2 秒，第十關起固定為 24 秒。之後老闆回頭更頻繁，警示時間由約 0.66 秒逐步縮短，最短 0.25 秒；第三關起警示可能是假動作。第四關起老闆有機會跳過警示直接回頭（機率由 15% 逐步增加，最高 50%），直接回頭有約 0.34 秒的反應時間，之後每關縮短 0.01 秒，最短 0.22 秒；先警示再回頭的反應時間由約 0.15 秒逐步縮短，最短 0.12 秒。</p><p>通關數累計到特定關數時，獎勵點數當場入帳，之後被抓也不會收回：9 關 +3、11 關 +7（累計 10 點，累計獲得）、13 關 +15、16 關 +30，之後每多 3 關 +40。這是固定點數，沒有倍率。這些關數刻意設得很高，一般玩家大約能通過 5 關。</p><p>切換遊戲、背景分頁或視窗失焦會停止前進；切換遊戲與背景分頁會暫停。重新整理會放棄本局，已入帳的點數會保留。點數共用，免費重設僅供測試。</p></details>
   </section>
 

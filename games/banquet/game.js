@@ -141,7 +141,7 @@ function heal(side,n,o){
 // Resolves one drink. The cup must already be off the table. src is whoever's drunkenness makes poison hit harder.
 function drinkEffect(side,cup,o){
  var t=cup.t,other=opp(side),bonus=drunkMid(o.src||side)?1:0,extra=false,who=SAY[side],text=who+'喝下 #'+cup.id+'：'+TNAME[t]+'。';
- E.fx.push({k:'reveal',s:side,t:t});E.fxT=Math.min(1.4,(E.fxT||0)+.9);
+ E.fx.push({k:'reveal',s:side,t:t,by:o.src||side});E.fxT=Math.min(1.4,(E.fxT||0)+.9);
  if(t==='poison'||t==='poison2'){var dmg=(o.big||t==='poison2')?2:1;dmg+=bonus;hurt(side,dmg);E.fx.push({k:'hit',s:side,n:dmg});text+=' '+who+'失去 '+dmg+' 點生命。'}
  else if(t==='nectar'||t==='pnectar'){
   var h=heal(side,o.big?2:1,o);if(h>0)E.fx.push({k:'heal',s:side,n:h});text+=h>0?' '+who+'回復 '+h+' 點生命。':(o.noHeal?' 沒有回血。':' 回血次數已達本幕上限。');
@@ -254,7 +254,7 @@ function endGame(w,why){
  if(analytics){AN.end(analytics,E.earned,res,{score:E.hp.p,step:E.act,stage:E.act});analytics=null}
  bqBusy=false;save();renderAll();
  var head=w==='p'?'你贏了！':w==='d'?(why==='quit'?'你放棄了這一局。':'莊家贏了。'):'平手。';
- say(head+(E.earned>0?'本局共入帳 '+fmt(E.earned)+' 點。':'這一局沒有點數。'),E.earned>0||w==='p'?'win':'lose');
+ say(head+(E.earned>0?'本局共入帳 '+fmt(E.earned)+' 點。':'這一局沒有額外成就獎勵。'),E.earned>0||w==='p'?'win':'lose');
 }
 
 /* ---------- host AI: only public information, its own scans and what the player has revealed ---------- */
@@ -426,8 +426,9 @@ function renderCups(){
   var el=cupEls[c.id];seen[c.id]=1;
   if(!el){el=document.createElement('button');el.type='button';el.className='bq-cup';el.dataset.id=c.id;el.innerHTML=CUP_SVG+'<span class="bq-num"></span><span class="bq-tag"></span>';
    el.addEventListener('click',function(){pickCup(+el.dataset.id)});$('bq-table').appendChild(el);cupEls[c.id]=el}
-  var ang=-Math.PI/2+i*2*Math.PI/Math.max(1,n),x=50+39*Math.cos(ang),y=50+39*Math.sin(ang);
-  el.style.left=x+'%';el.style.top=y+'%';
+  var ang=-Math.PI/2+i*2*Math.PI/Math.max(1,n),x=50+41*Math.cos(ang),y=50+37*Math.sin(ang),sc=(.8+.4*y/100).toFixed(2);
+  el.style.left=x+'%';el.style.top=y+'%';el.style.zIndex=String(Math.round(y));
+  if(el.style.setProperty)el.style.setProperty('--s',sc);
   var k=E.known.p[c.id],label=kLabel('p',c),cls='bq-cup'+(E.sel===c.id?' is-sel':'')+(k&&k.t?' is-known t-'+k.t:'')+(E.pending&&E.pending.id===c.id?' is-claim':'');
   if(el.className!==cls)el.className=cls;
   put(el.children[1],String(c.id));put(el.children[2],label);
@@ -476,7 +477,9 @@ function renderChips(){
  var sig=list.map(function(x){return x.t+x.left+'/'+x.all}).join('|');if(box.__sig===sig)return;box.__sig=sig;box.textContent='';
  list.forEach(function(x){var c=document.createElement('span');c.className='bq-chip t-'+x.t+(x.left?'':' is-gone');c.textContent=TICON[x.t]+' '+TNAME[x.t]+' ×'+x.left;box.appendChild(c)});
 }
-var fxPlayed=0,overPlayed=false,hbT=0,lastTurnKey='';
+var fxPlayed=0,overPlayed=false,hbT=0,lastTurnKey='',poseT=0,poseTok=0;
+function setPose(name,dur){poseTok++;poseT=dur||0;$('bq-dealerbox').dataset.pose=name}
+function laterPose(name,dur,ms){var tok=poseTok;setTimeout(function(){if(tok===poseTok)setPose(name,dur)},ms)}
 function floatNum(side,text,cls){
  var host=$('bq-side-'+side),n=document.createElement('span');n.className='bq-float '+cls;n.textContent=text;host.appendChild(n);setTimeout(function(){n.remove()},1300);
 }
@@ -486,13 +489,16 @@ function playFx(){
  list.forEach(function(f){
   if(f.k==='reveal'){
    rv.textContent=TICON[f.t]+' '+TNAME[f.t];rv.className='bq-reveal t-'+f.t;restart(rv,'is-on',1500);
+   if(f.s==='d')setPose(f.by==='p'?'caught':'drink',1.3);else if(f.by==='d')setPose('reach',1.3);
+   if(f.by==='p')restart($('bq-hands'),f.s==='d'?'is-push':'is-lift',900);
    SFX.lift();setTimeout(function(){f.t==='poison'||f.t==='poison2'?SFX.poison():f.t==='nectar'||f.t==='pnectar'?SFX.nectar():f.t==='truth'?SFX.truth():SFX.water()},380);
   }else if(f.k==='hit'){
    floatNum(f.s,'−'+f.n,'is-hit');restart(st,'is-shake',500);restart(fl,'is-red',600);if(f.s==='d')restart(dl,'is-hurt',600);
+   laterPose(f.s==='d'?'hurt':'victory',1.6,650);
   }else if(f.k==='heal'){
    floatNum(f.s,'+'+f.n,'is-heal');restart(fl,'is-green',700);
   }else if(f.k==='faint'){
-   restart(st,'is-flip',1000);SFX.faint();
+   restart(st,'is-flip',1000);SFX.faint();setPose(f.s==='d'?'hurt':'victory',1.8);
   }
  });
 }
@@ -514,7 +520,7 @@ function render(){
  renderCups();renderHand();renderDealerHand();renderLog();renderNotes();
  var mine=live&&E.turn==='p'&&!E.pending,sel=E.sel?cupOf(E.sel):null,pend=live&&E.pending&&E.pending.to==='p';
  var turn=$('bq-turn');
- put(turn,!live?(over?'這一場結束了。':'按右側「扣點開始晚宴」'):pend?'莊家蓋上了銀蓋，等你決定。':E.turn==='d'?'莊家思考中…':E.decree.p?'你被勸酒令指定：這次只能自己喝。':sel?'已選 #'+sel.id+'：決定怎麼處理這杯酒。':'先點選一杯酒，再決定怎麼處理它。');
+ put(turn,!live?(over?'這一場結束了。':'按右側「免費開始晚宴」'):pend?'莊家蓋上了銀蓋，等你決定。':E.turn==='d'?'莊家思考中…':E.decree.p?'你被勸酒令指定：這次只能自己喝。':sel?'已選 #'+sel.id+'：決定怎麼處理這杯酒。':'先點選一杯酒，再決定怎麼處理它。');
  $('bq-act-row').hidden=!mine;
  var forced=E.decree.p;
  $('bq-self').disabled=!sel||E.fxT>0;$('bq-toast').disabled=!sel||forced||E.fxT>0;$('bq-silver').disabled=!sel||forced||E.fxT>0;$('bq-silver').hidden=!ADV;
@@ -524,12 +530,13 @@ function render(){
  if(dl.className!==dcls)dl.className=dcls;
  var tk=$('bq-ticker'),last=E.log.length?E.log[E.log.length-1]:'';if(tk.__v!==E.v){tk.__v=E.v;tk.textContent=last;restart(tk,'is-in',0)}
  setCls($('bq-stage'),'is-low',live&&E.hp.p<=1);setCls($('bq-stage'),'is-mine',mine&&!(E.fxT>0));
- if(over&&!overPlayed){overPlayed=true;E.result.w==='p'?SFX.win():SFX.lose()}
- if(!over)overPlayed=false;
+ if(over&&!overPlayed){overPlayed=true;E.result.w==='p'?SFX.win():SFX.lose();setPose(E.result.w==='p'?'hurt':E.result.w==='d'?'victory':'idle',1e9)}
+ if(!over&&overPlayed){overPlayed=false;setPose('idle',0)}
+ setCls($('bq-hands'),'is-ready',mine&&!!E.sel&&!(E.fxT>0));
  var pr=$('bq-prompt');pr.hidden=!pend;
  if(pend)put($('bq-prompt-t'),'莊家宣稱 #'+E.pending.id+' 是瓊漿。你要相信並喝下，還是質疑？');
- var go=$('bq-go');go.disabled=bqBusy;put(go,bqBusy?'晚宴進行中':over?'扣點再辦一場':'扣點開始晚宴');
- $('bq-quit').hidden=!bqBusy;put($('bq-quit'),quitArm>0?'再按一次確認放棄':'放棄本局（不退點）');
+ var go=$('bq-go');go.disabled=bqBusy;put(go,bqBusy?'晚宴進行中':over?'免費再辦一場':'免費開始晚宴');
+ $('bq-quit').hidden=!bqBusy;put($('bq-quit'),quitArm>0?'再按一次確認放棄':'放棄本局');
  put($('bq-stage-t'),!E.act?'未開始':SHORT[E.act]);
  put($('bq-bonus'),E.earned+' 點');put($('bq-best'),wins+' 場');
 }
@@ -557,9 +564,9 @@ function start(){
  if(bqBusy)return;
  var amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
- analytics=AN.start('banquet',amount);bqStake=amount;bqBusy=true;S.balance-=amount;save();renderAll();
+ analytics=AN.start('banquet',amount);bqStake=amount;bqBusy=true;save();renderAll();
  fresh();E.phase='play';quitArm=0;log('晚宴開始。你先行動。');deal(1);beginTurn('p',false);
- say(ADV?'晚宴開始！先點選一杯酒，再決定自己喝、敬給莊家，或蓋上銀蓋騙他。':'晚宴開始！先點選一杯酒，再決定自己喝或敬給莊家。');SFX.start();render();$('bq-stage').focus({preventScroll:true});
+ say(ADV?'晚宴開始！先點選一杯酒，再決定自己喝、敬給莊家，或蓋上銀蓋騙他。':'晚宴開始！先點選一杯酒，再決定自己喝或敬給莊家。');SFX.start();setPose('idle',0);render();$('bq-stage').focus({preventScroll:true});
 }
 function quit(){
  if(!bqBusy)return;
@@ -583,7 +590,7 @@ addEventListener('keydown',function(e){
 var last=0;
 function loop(t){
  var dt=Math.min(.1,Math.max(0,(t-last)/1000)||0);last=t;
- if(shown()){if(quitArm>0){quitArm-=dt;if(quitArm<=0){quitArm=0}}tick(dt);render();if(E.phase==='play'&&E.hp.p<=1){hbT-=dt;if(hbT<=0){hbT=1.1;SFX.beat()}}}
+ if(shown()){if(quitArm>0){quitArm-=dt;if(quitArm<=0){quitArm=0}}if(poseT>0&&poseT<1e8){poseT-=dt;if(poseT<=0)setPose('idle',0)}tick(dt);render();if(E.phase==='play'&&E.hp.p<=1){hbT-=dt;if(hbT<=0){hbT=1.1;SFX.beat()}}}
  requestAnimationFrame(loop);
 }
 addEventListener('blur',function(){last=performance.now()});

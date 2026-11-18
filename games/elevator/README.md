@@ -4,8 +4,8 @@
 
 ## 概覽
 
-- 網址：`#elevator`　分類：技巧闖關　狀態：顯示中
-- 大廳卡片：「趁乘客背對你，偷偷往前插一位。」｜每局 10 點 · 無盡挑戰
+- 網址：`#elevator`　分類：潛行偷閒　狀態：顯示中
+- 大廳卡片：「趁乘客背對你，偷偷往前插一位。」｜免費遊玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：插隊大師，`game_id` 為 `elevator`
 - 檔案：`games/elevator/card.html`、`games/elevator/game.js`、`games/elevator/icon.svg`、`games/elevator/view.html`；`game.js` 共 129 行、12.4 KB
 
@@ -27,7 +27,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L57 `eqAction`：`S.balance-=stake;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L32 `eqAward`：`S.balance+=b;`

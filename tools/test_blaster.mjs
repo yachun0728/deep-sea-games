@@ -35,7 +35,7 @@ check('Clearing nine stages then losing or exiting never awards partial points',
 });
 check('Milestone rewards are not paid twice on exit and a new paid round resets progress',()=>{
   const f=fixture();f.run('blGo()');for(let stage=1;stage<=10;stage++){f.run('blClear()');if(stage<10)f.run('blGo()');}
-  assert.equal(f.events.filter(e=>e[0]==='end').length,0);f.run('blCash()');const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],1);assert.equal(end[3],'cashout');assert.equal(end[4].multiplier,1/fee);assert.equal(f.storage.get('crush-depth-balance'),String(1000-fee+1));f.run('blCash();blClear()');assert.equal(f.wallet.balance,1000-fee+1);f.run('blGo();blHurt();blHurt();blHurt()');assert.equal(f.wallet.balance,1000-fee*2+1);assert.equal(f.state.cleared,0);
+  assert.equal(f.events.filter(e=>e[0]==='end').length,0);f.run('blCash()');const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],1);assert.equal(end[3],'complete');assert.equal(end[4].multiplier,undefined);assert.equal(f.storage.get('crush-depth-balance'),String(1000-fee+1));f.run('blCash();blClear()');assert.equal(f.wallet.balance,1000-fee+1);f.run('blGo();blHurt();blHurt();blHurt()');assert.equal(f.wallet.balance,1000-fee*2+1);assert.equal(f.state.cleared,0);
 });
 check('Three hits lose the entire round with one loss event',()=>{
   const f=fixture();f.run('blGo();blHurt();blHurt();blHurt();blHurt();blCash()');assert.equal(f.wallet.balance,1000-fee);assert.equal(f.state.lives,0);assert.equal(f.state.active,false);assert.equal(f.events.filter(e=>e[0]==='end').length,1);assert.equal(f.events.find(e=>e[0]==='end')[3],'loss');
@@ -99,32 +99,32 @@ check('Seven weapon silhouettes differ and every monster renderer executes',()=>
   for(const type of ['octo','crab','ray','eel','turtle','jelly','mini','mine','rock','squid'])f.run(`blDrawMonster(blEnemy(1,200,'${type}',20))`);
   f.run("BL.bossSpawned=true;blBossSpawn();BL.ink=[{x:80,y:300,vy:300,r:13,beam:false},{x:200,y:300,vy:300,r:30,beam:true}];blDraw()");
 });
-check('Retry fees scale from one to five; replay keeps the current stage and weapon with three hearts',()=>{
+check('Retries are free at every stage; replay keeps the current stage and weapon with three hearts',()=>{
   const f=fixture();f.run('blGo();BL.stage=7;BL.cleared=6;BL.weapon=18;BL.wave=20;BL.enemies=[blEnemy(1,400,"octo",20)];blHurt();blHurt();blHurt()');
-  assert.equal(f.el('bl-go').hidden,true);assert.equal(f.el('bl-retry').hidden,false);assert.match(f.el('bl-retry').textContent,/第 7 關.*4 點/);const before=f.wallet.balance;f.run('blGo()');assert.equal(f.state.stage,7);assert.equal(f.wallet.balance,before);f.run('blRetry();blRetry()');assert.equal(f.wallet.balance,before-4);assert.equal(f.state.stage,7);assert.equal(f.state.cleared,6);assert.equal(f.state.weapon,18);assert.equal(f.state.lives,3);assert.equal(f.state.wave,0);assert.equal(f.state.enemies.length,0);assert.equal(f.state.bullets.length,0);assert.equal(f.state.retries,1);assert.equal(f.el('bl-retry').hidden,true);assert.equal(f.events.filter(e=>e[0]==='start').length,2);assert.equal(f.events.filter(e=>e[0]==='start')[1][3].stage,7);
-  for(let stage=1;stage<=10;stage++)assert.equal(f.run(`BL.stage=${stage};blRetryFee()`),Math.min(5,Math.ceil(stage/2)));
+  assert.equal(f.el('bl-go').hidden,true);assert.equal(f.el('bl-retry').hidden,false);assert.match(f.el('bl-retry').textContent,/免費重玩第 7 關/);const before=f.wallet.balance;f.run('blGo()');assert.equal(f.state.stage,7);assert.equal(f.wallet.balance,before);f.run('blRetry();blRetry()');assert.equal(f.wallet.balance,before);assert.equal(f.state.stage,7);assert.equal(f.state.cleared,6);assert.equal(f.state.weapon,18);assert.equal(f.state.lives,3);assert.equal(f.state.wave,0);assert.equal(f.state.enemies.length,0);assert.equal(f.state.bullets.length,0);assert.equal(f.state.retries,1);assert.equal(f.el('bl-retry').hidden,true);assert.equal(f.events.filter(e=>e[0]==='start').length,2);assert.equal(f.events.filter(e=>e[0]==='start')[1][3].stage,7);
+  for(let stage=1;stage<=10;stage++)assert.equal(f.run(`BL.stage=${stage};blRetryFee()`),0);
 });
-check('Insufficient retry funds do not alter failed state, weapon or wallet',()=>{
-  const f=fixture();f.run('blGo();BL.stage=10;BL.weapon=25;blHurt();blHurt();blHurt()');f.wallet.balance=4;f.run('blRetry()');assert.equal(f.wallet.balance,4);assert.equal(f.state.phase,'lost');assert.equal(f.state.stage,10);assert.equal(f.state.weapon,25);assert.equal(f.events.filter(e=>e[0]==='start').length,1);
+check('Zero-balance retry preserves stage and weapon',()=>{
+  const f=fixture();f.run('blGo();BL.stage=10;BL.weapon=25;blHurt();blHurt();blHurt()');f.wallet.balance=0;f.run('blRetry()');assert.equal(f.wallet.balance,0);assert.equal(f.state.phase,'run');assert.equal(f.state.stage,10);assert.equal(f.state.weapon,25);assert.equal(f.events.filter(e=>e[0]==='start').length,2);
 });
 check('Replaying stage ten awards only one point and cannot farm rewards after completion',()=>{
-  const f=fixture();f.run('blGo();BL.stage=10;BL.cleared=9;blHurt();blHurt();blHurt();blRetry();blClear();blRetry();blCash();blClear()');assert.equal(f.wallet.balance,1000-fee-5+1);assert.equal(f.state.phase,'cashed');const ends=f.events.filter(e=>e[0]==='end');assert.equal(ends.length,2);assert.equal(ends[0][2],0);assert.equal(ends[1][2],1);assert.equal(ends[1][3],'cashout');assert.equal(ends[1][4].multiplier,1/5);
+  const f=fixture();f.run('blGo();BL.stage=10;BL.cleared=9;blHurt();blHurt();blHurt();blRetry();blClear();blRetry();blCash();blClear()');assert.equal(f.wallet.balance,1000-fee+1);assert.equal(f.state.phase,'cashed');const ends=f.events.filter(e=>e[0]==='end');assert.equal(ends.length,2);assert.equal(ends[0][2],0);assert.equal(ends[1][2],1);assert.equal(ends[1][3],'complete');assert.equal(ends[1][4].multiplier,undefined);
 });
 check('Endless progression crosses stages 10 and 20, immediately awards each milestone once',()=>{
   const f=fixture();f.run('blGo()');
   for(let stage=1;stage<=25;stage++){assert.equal(f.state.stage,stage);f.run('blClear();blClear()');assert.equal(f.state.phase,'cleared');assert.equal(f.wallet.balance,1000-fee+Math.floor(stage/10));if(stage<25)f.run('blGo()');}
   assert.equal(f.state.earned,2);assert.equal(f.events.filter(e=>e[0]==='end').length,0);assert.equal(f.events.filter(e=>e[0]==='progress'&&e[2]?.bonus_points>0).length,2);f.run('blCash();blCash()');assert.equal(f.wallet.balance,1000-fee+2);assert.equal(f.events.find(e=>e[0]==='end')[2],2);
 });
-check('Death and paid replay beyond stage ten preserve earned rewards and only report new attempt rewards',()=>{
+check('Death and free replay beyond stage ten preserve earned rewards and only report new attempt rewards',()=>{
   const f=fixture();f.run('blGo()');for(let stage=1;stage<=20;stage++){f.run('blClear();blGo()');}
-  assert.equal(f.state.stage,21);f.run('BL.weapon=45;blHurt();blHurt();blHurt()');assert.equal(f.wallet.balance,1000-fee+2);assert.equal(f.el('bl-pay').textContent,'2 點');assert.match(f.el('bl-retry').textContent,/第 21 關.*5 點/);assert.equal(f.events.find(e=>e[0]==='end')[2],2);
-  f.run('blRetry();blRetry()');assert.equal(f.wallet.balance,1000-fee+2-5);assert.equal(f.state.stage,21);assert.equal(f.state.weapon,45);assert.equal(f.state.lives,3);assert.equal(f.state.earned,2);assert.equal(f.state.attemptEarned,0);
+  assert.equal(f.state.stage,21);f.run('BL.weapon=45;blHurt();blHurt();blHurt()');assert.equal(f.wallet.balance,1000-fee+2);assert.equal(f.el('bl-pay').textContent,'2 點');assert.match(f.el('bl-retry').textContent,/免費重玩第 21 關/);assert.equal(f.events.find(e=>e[0]==='end')[2],2);
+  f.run('blRetry();blRetry()');assert.equal(f.wallet.balance,1000-fee+2);assert.equal(f.state.stage,21);assert.equal(f.state.weapon,45);assert.equal(f.state.lives,3);assert.equal(f.state.earned,2);assert.equal(f.state.attemptEarned,0);
   for(let stage=21;stage<=30;stage++){f.run('blClear()');if(stage<30)f.run('blGo()');}
-  assert.equal(f.wallet.balance,1000-fee+3-5);assert.equal(f.state.earned,3);f.run('blCash()');const ends=f.events.filter(e=>e[0]==='end');assert.equal(ends.length,2);assert.equal(ends[1][2],1);
+  assert.equal(f.wallet.balance,1000-fee+3);assert.equal(f.state.earned,3);f.run('blCash()');const ends=f.events.filter(e=>e[0]==='end');assert.equal(ends.length,2);assert.equal(ends[1][2],1);
 });
-check('High-stage replay is always five points, waves stay bounded and difficulty keeps increasing',()=>{
+check('High-stage replay is always free, waves stay bounded and difficulty keeps increasing',()=>{
   const f=fixture();let speed=0,health=0;
-  for(const stage of [10,11,20,100,1000]){f.state.stage=stage;const config=f.run('blStageConfig(BL.stage)');assert.equal(f.run('blRetryFee()'),5);assert(config.waves<=180);assert(config.speed>speed);speed=config.speed;const hp=f.run('blHealth()');assert(hp>health);health=hp;assert(Number.isFinite(config.speed)&&Number.isFinite(hp));}
+  for(const stage of [10,11,20,100,1000]){f.state.stage=stage;const config=f.run('blStageConfig(BL.stage)');assert.equal(f.run('blRetryFee()'),0);assert(config.waves<=180);assert(config.speed>speed);speed=config.speed;const hp=f.run('blHealth()');assert(hp>health);health=hp;assert(Number.isFinite(config.speed)&&Number.isFinite(hp));}
   f.run('blUI()');assert.equal(f.el('bl-stage').textContent,'第 1000 關');
 });
 check('Best stage values above ten remain compatible with the existing storage key',()=>{

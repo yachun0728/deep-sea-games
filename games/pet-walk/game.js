@@ -105,7 +105,7 @@ const DIARY3=[T('總之，今天很值得。|All in all, a good day.'),T('總之
 const TX={
   title:T('小灰出門|Pet Walkies'),
   sub:T('點一下走一步，按住連續走|Tap to step. Hold to keep walking.'),
-  start:T('按「扣點出門」出發|Press "Pay & go" to start'),again2:T('再走一趟：按「扣點出門」|Walk again: press "Pay & go"'),
+  start:T('按「免費出門」出發|Press "Go for a walk" to start'),again2:T('再走一趟：按「免費出門」|Walk again: press "Go for a walk"'),
   best:T('最高分 {n}|Best {n}'),score:T('分數 {n}|Score {n}'),
   dex:T('圖鑑|Collection'),back:T('返回|Back'),save:T('存成圖片|Save image'),
   diaryTitle:T('今天的日記|Today\'s diary'),loot:T('物資分 {n}|Loot {n}'),newEntries:T('新圖鑑 +5 × {k}|New entries +5 × {k}'),
@@ -1057,7 +1057,7 @@ function ui(){
   setText('pw-score',live?(G.trip.loot+CONFIG.newEntryBonus*G.trip.newCount)+' 分':'—');
   setText('pw-best',G.save.best+' 分');
   const b=$('pw-go');b.disabled=petBusy;
-  setText('pw-go',petBusy?'散步中':'扣點出門');
+  setText('pw-go',petBusy?'散步中':'免費出門');
 }
 const SEG_MSG=['走完第 1 段，BONUS +1 點已入帳。','走完第 2 段，BONUS +1 點已入帳。','走完第 3 段，BONUS +1 點已入帳。'];
 function segmentDone(seg,t){
@@ -1079,7 +1079,7 @@ function begin(){
   if(petBusy)return;
   if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');return;}
   analytics=AN.start('pet-walk',ENTRY_FEE);petStake=ENTRY_FEE;petBusy=true;earned=0;paid={};
-  S.balance-=ENTRY_FEE;save();renderAll();
+  save();renderAll();
   startTrip();
   say('出門囉！每走完 20 步，BONUS +1 點。');ui();
   try{cv.focus();}catch(e){}

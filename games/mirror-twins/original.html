@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#060817">
+<title>鏡像雙子</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#060817; --panel:rgba(14,18,42,.95); --line:#2f3a72; --text:#e8ecff; --mute:rgba(232,236,255,.62); --mute2:rgba(232,236,255,.4);
+    --blue:#2a8cff; --orange:#ff9a1f; --red:#ff3b6b; --cyan:#7fd4ff; --amber:#ffcf4a;
+    --font:"Noto Sans TC",-apple-system,"PingFang TC",system-ui,sans-serif;
+    --mono:"Orbitron","Noto Sans TC",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;color:var(--text);font-family:var(--font);overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-font-smoothing:antialiased;
+    background-color:var(--bg);
+    background-image:
+      radial-gradient(1px 1px at 12% 18%,rgba(255,255,255,.8),transparent),radial-gradient(1px 1px at 78% 12%,rgba(255,255,255,.7),transparent),
+      radial-gradient(1.5px 1.5px at 33% 72%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 90% 64%,rgba(255,255,255,.6),transparent),
+      radial-gradient(1px 1px at 55% 40%,rgba(255,255,255,.5),transparent),radial-gradient(1.5px 1.5px at 8% 88%,rgba(255,255,255,.6),transparent),
+      radial-gradient(1px 1px at 66% 90%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 45% 8%,rgba(255,255,255,.6),transparent),
+      radial-gradient(ellipse at 75% 15%,rgba(110,70,200,.28),transparent 55%),radial-gradient(ellipse at 15% 85%,rgba(30,120,220,.22),transparent 55%)}
+  button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+  b{font-weight:700}
+  .num{font-variant-numeric:tabular-nums}
+  #app{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:12px}
+  .bar{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+  .lbl{font-size:11px;letter-spacing:.2em;color:var(--mute)}
+  .name{font-size:22px;font-weight:900;margin-top:2px;letter-spacing:.06em}
+  .moves{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--cyan)}
+  .icon-btn{width:36px;height:36px;border-radius:10px;background:rgba(127,212,255,.08);border:1px solid rgba(127,212,255,.3);color:var(--cyan);display:inline-flex;align-items:center;justify-content:center;font-size:15px;margin-left:5px}
+  .icon-btn:hover{background:rgba(127,212,255,.18)}
+  canvas#cv{display:block;border-radius:14px;box-shadow:0 0 0 1px var(--line),0 0 50px rgba(42,140,255,.18),0 30px 80px rgba(0,0,0,.6)}
+  .legend{display:flex;gap:16px;font-size:13px;color:var(--mute);align-items:center;justify-content:center;flex-wrap:wrap}
+  .legend i{font-style:normal}
+  .legend b{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin-right:6px}
+  .pad{display:none;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(2,52px);gap:8px}
+  .pad button{border-radius:12px;background:rgba(127,212,255,.08);border:1px solid rgba(127,212,255,.3);color:var(--cyan);font-size:20px}
+  .pad button:active{background:rgba(127,212,255,.25)}
+  @media (pointer:coarse){.pad{display:grid}.kbd{display:none}}
+  .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(4,6,18,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:16px;z-index:10}
+  .overlay.show{display:flex}
+  .card{position:relative;width:min(460px,100%);background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px 24px 24px;text-align:center;box-shadow:0 0 60px rgba(42,140,255,.12),0 30px 80px rgba(0,0,0,.6)}
+  .card::before,.card::after{content:"";position:absolute;width:22px;height:22px;border:2px solid var(--cyan);opacity:.7}
+  .card::before{top:8px;left:8px;border-right:0;border-bottom:0;border-radius:6px 0 0 0}
+  .card::after{bottom:8px;right:8px;border-left:0;border-top:0;border-radius:0 0 6px 0}
+  .card h1{font-size:32px;font-weight:900;letter-spacing:.14em;text-shadow:0 0 24px rgba(127,212,255,.45)}
+  .card h2{font-size:26px;font-weight:900;letter-spacing:.08em}
+  .sub{color:var(--mute);font-size:14px;line-height:1.7;margin-top:10px}
+  .rules{text-align:left;margin:18px 0 6px;display:grid;gap:10px;font-size:14px;line-height:1.55}
+  .rules div{display:flex;gap:10px;align-items:flex-start}
+  .sq{flex:none;width:18px;height:18px;border-radius:5px;margin-top:2px}
+  .btn{display:inline-block;margin-top:18px;padding:11px 28px;border-radius:10px;background:var(--blue);color:#fff;font-weight:700;font-size:16px;letter-spacing:.08em;box-shadow:0 0 24px rgba(42,140,255,.45)}
+  .btn:hover{filter:brightness(1.12)}
+  .btn.ghost{background:transparent;box-shadow:none;border:1px solid var(--line);color:var(--text);padding:8px 18px;font-size:14px;margin-top:10px}
+  .levels{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:18px}
+  .levels button{aspect-ratio:1;border-radius:10px;background:rgba(127,212,255,.06);border:1px solid var(--line);font-family:var(--mono);font-weight:700;font-size:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+  .levels button small{font-size:9px;letter-spacing:1px;color:var(--amber);font-family:var(--font)}
+  .levels button:hover:not(:disabled){background:rgba(127,212,255,.16);border-color:var(--cyan)}
+  .levels button:disabled{opacity:.3;cursor:default}
+  .stars{font-size:36px;letter-spacing:8px;color:var(--amber);margin-top:10px;text-shadow:0 0 18px rgba(255,207,74,.6)}
+  .stars .off{color:rgba(232,236,255,.14);text-shadow:none}
+  .plat{margin-top:14px;padding:9px 12px;border:1px dashed rgba(127,212,255,.45);border-radius:10px;font-size:13px;line-height:1.55;color:var(--text);background:rgba(127,212,255,.07)}
+  .bonus{margin-top:10px;font-size:16px;font-weight:700;color:var(--amber)}
+  .bonus:empty{display:none}
+  #toast{position:fixed;left:50%;top:18%;transform:translate(-50%,-50%);font-size:20px;font-weight:900;letter-spacing:.1em;color:var(--red);text-shadow:0 0 20px rgba(255,59,107,.6);opacity:0;pointer-events:none;transition:opacity .2s;z-index:5;white-space:nowrap}
+  /* 平台內嵌：說明卡比畫面高時可在浮層內捲動，不裁掉標題 */
+  .overlay{overflow-y:auto;align-items:flex-start;touch-action:pan-y;overscroll-behavior:contain}
+  .overlay .card{margin:auto}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="bar" id="bar">
+    <div><div class="lbl" id="lvLabel"></div><div class="name" id="lvName">—</div></div>
+    <div style="text-align:right">
+      <div class="lbl" data-t="movesLbl"></div>
+      <div><span class="moves num" id="moves">0</span> <small class="num" style="color:var(--mute);font-size:18px" id="par">/ 0</small>
+        <button class="icon-btn" id="btnUndo" data-tt="undo">↶</button><button class="icon-btn" id="btnRestart" data-tt="restart">↻</button><button class="icon-btn" id="btnMenu" data-tt="menu">☰</button></div>
+    </div>
+  </div>
+  <canvas id="cv"></canvas>
+  <div class="legend kbd"><span><b style="background:var(--blue)"></b><i data-t="lgBlue"></i></span><span><b style="background:var(--orange)"></b><i data-t="lgOrange"></i></span><span data-t="lgKeys"></span></div>
+  <div class="pad" id="pad">
+    <button data-k="z">↶</button><button data-k="up">▲</button><button data-k="r">↻</button>
+    <button data-k="left">◀</button><button data-k="down">▼</button><button data-k="right">▶</button>
+  </div>
+</div>
+<div id="toast"></div>
+
+<div class="overlay show" id="ovMenu">
+  <div class="card">
+    <h1 data-t="title"></h1>
+    <div class="sub" data-t="intro"></div>
+    <div class="rules">
+      <div><span class="sq" style="background:var(--blue)"></span><span data-t="r1"></span></div>
+      <div><span class="sq" style="background:var(--orange)"></span><span data-t="r2"></span></div>
+      <div><span class="sq" style="border:2px solid var(--cyan);box-shadow:0 0 8px rgba(127,212,255,.6)"></span><span data-t="r3"></span></div>
+      <div><span class="sq" style="background:#5a4a72;border-radius:40% 55% 45% 60%"></span><span data-t="r4"></span></div>
+      <div><span class="sq" style="background:#2a0f1c;border:2px solid var(--red);border-radius:50%;box-shadow:0 0 8px rgba(255,59,107,.7)"></span><span data-t="r5"></span></div>
+    </div>
+    <div class="plat" id="platNote" hidden></div>
+    <div class="levels" id="levels"></div>
+  </div>
+</div>
+
+<div class="overlay" id="ovWin">
+  <div class="card">
+    <h2 id="winTitle" data-t="cleared"></h2>
+    <div class="stars" id="stars"></div>
+    <div class="sub" id="winSub"></div>
+    <div class="bonus" id="winBonus"></div>
+    <button class="btn" id="btnNext"></button>
+    <div><button class="btn ghost" id="btnRetry" data-t="retry"></button> <button class="btn ghost" id="btnWinMenu" data-t="pick"></button></div>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+// ---------- 語言：字串寫成「中文|English」，語言跟隨 Deep Sea Arcade 頁首切換 ----------
+function lang() { try { const i = window.parent !== window && window.parent.deepSeaI18n; return i && i.getLanguage() === 'en' ? 'en' : 'zh'; } catch (e) { return 'zh'; } }
+function Lx(s, p) {
+  const k = s.indexOf('|'); let t = k < 0 ? s : lang() === 'en' ? s.slice(k + 1) : s.slice(0, k);
+  t = t.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  return p ? t.replace(/\{(\w+)\}/g, (_, n) => p[n] != null ? p[n] : '') : t;
+}
+const TX = {
+  movesLbl: '步數 / 最少|Moves / Best', undo: '上一步 (Z)|Undo (Z)', restart: '重來 (R)|Restart (R)', menu: '選單 (Esc)|Menu (Esc)',
+  lgBlue: '藍色：照你按的方向走|Blue: moves the way you press', lgOrange: '橘色：左右相反|Orange: left and right flipped', lgKeys: '方向鍵移動 · Z 上一步 · R 重來|Arrow keys move · Z undo · R restart',
+  title: '鏡像雙子|Mirror Twins', intro: '一次操控兩位太空人，但其中一位的左右是反的。|Control two astronauts at once, but one of them has left and right reversed.',
+  r1: '藍色太空人：照你按的方向走。|Blue astronaut: moves in the direction you press.',
+  r2: '橘色太空人：上下一樣，**左右相反**。|Orange astronaut: same up and down, but **left and right are reversed**.',
+  r3: '兩位太空人**同時**站進自己顏色的傳送艙（發光的框）才算過關。|Both astronauts must stand in their own colour’s teleporter (the glowing frame) **at the same time** to clear the stage.',
+  r4: '撞到小行星的那位會停住，另一個照樣走。這就是讓它們錯開的唯一方法。|Whoever bumps into an asteroid stays put while the other keeps moving. That’s the only way to pull them apart.',
+  r5: '雷射地雷：誰踩到都算失敗，會自動退回上一步。|Laser mines: if either one steps on one, that move fails and is undone automatically.',
+  cleared: '過關！|Stage cleared!', retry: '再挑戰最少步數|Try for fewest moves', pick: '選關|Stages',
+};
+function applyStatic() {
+  document.querySelectorAll('[data-t]').forEach(el => { el.innerHTML = Lx(TX[el.dataset.t]); });
+  document.querySelectorAll('[data-tt]').forEach(el => { el.title = Lx(TX[el.dataset.tt]); el.setAttribute('aria-label', el.title); });
+}
+
+// # 小行星（牆）· . 地板 · ^ 雷射地雷 · A/B 起點 · a/b 傳送艙（藍 / 橘）
+const LEVELS = [
+  { name: '照鏡子|Mirror Image', rows: ['#########', '#a..#..b#', '#...#...#', '#...#...#', '#A..#..B#', '#########'] },
+  { name: '靠牆|Against the Wall', rows: ['#########', '#..a#b..#', '#...#...#', '#...#...#', '#A..#B..#', '#########'] },
+  { name: '雷射地雷|Laser Mines', rows: ['########', '#.^#...#', '#.^..#a#', '#.##.b##', '###...^#', '#.^.AB.#', '########'] },
+  { name: '同一個房間|Same Room', rows: ['########', '#.B.a.^#', '##..#..#', '#b...A.#', '###....#', '###.##.#', '########'] },
+  { name: '繞路|Detour', rows: ['########', '#.^....#', '##A...^#', '#b#.a..#', '#.#.^#.#', '#.B#...#', '########'] },
+  { name: '卡位|Blocking', rows: ['#########', '###^.#^a#', '#.BA#...#', '#....##.#', '#b......#', '#..^.^###', '##..#.###', '#########'] },
+  { name: '迷宮|Maze', rows: ['#########', '#A#.^#..#', '#...^.#.#', '#.^#^...#', '#..#..#.#', '#b.#..aB#', '#.....#.#', '#########'] },
+  { name: '刺叢|Thicket', rows: ['#########', '#B#.A.^.#', '#.^..####', '#..b....#', '#.......#', '##.##.^.#', '#.^..^.a#', '#########'] },
+  { name: '分道揚鑣|Parting Ways', rows: ['##########', '#^#...####', '#.A##.^#.#', '#^.##....#', '#.a.##.^b#', '###....^.#', '#..B#^#..#', '##########'] },
+  { name: '最後的鏡子|The Last Mirror', rows: ['##########', '#...##...#', '#.^#.^##.#', '#^.^^....#', '#B...A.b##', '#.^......#', '#.......a#', '##########'] },
+];
+
+// ---------- 規則（同一份邏輯也拿來算最少步數） ----------
+function parse(rows) {
+  const h = rows.length, w = rows[0].length, L = { w, h, g: [] };
+  for (let y = 0; y < h; y++) {
+    L.g.push([]);
+    for (let x = 0; x < w; x++) {
+      let c = rows[y][x];
+      if (c === 'A') { L.A = [x, y]; c = '.'; }
+      if (c === 'B') { L.B = [x, y]; c = '.'; }
+      if (c === 'a') L.ga = [x, y];
+      if (c === 'b') L.gb = [x, y];
+      L.g[y].push(c);
+    }
+  }
+  return L;
+}
+const tile = (L, x, y) => (y < 0 || y >= L.h || x < 0 || x >= L.w) ? '#' : L.g[y][x];
+const eq = (p, q) => p[0] === q[0] && p[1] === q[1];
+const mv = (L, p, dx, dy) => { const n = [p[0] + dx, p[1] + dy]; return tile(L, n[0], n[1]) === '#' ? p : n; };
+function step(L, a, b, dx, dy) {
+  let na = mv(L, a, dx, dy), nb = mv(L, b, -dx, dy);
+  if (eq(na, nb)) { na = a; nb = b; }                 // 搶同一格：都不動
+  else if (eq(na, b) && eq(nb, a)) { na = a; nb = b; } // 互換位置：都不動
+  else if (eq(na, b) && eq(nb, b)) { na = a; }         // 對方沒動，被擋住
+  else if (eq(nb, a) && eq(na, a)) { nb = b; }
+  const dead = tile(L, na[0], na[1]) === '^' || tile(L, nb[0], nb[1]) === '^';
+  const win = !dead && eq(na, L.ga) && eq(nb, L.gb);
+  return { a: na, b: nb, dead, win };
+}
+const DIRS = [[0, -1], [0, 1], [-1, 0], [1, 0]];
+function solve(L) {
+  const key = (a, b) => a + '|' + b;
+  const seen = new Set([key(L.A, L.B)]);
+  let q = [[L.A, L.B]], depth = 0;
+  while (q.length) {
+    depth++; const nq = [];
+    for (const [a, b] of q) for (const [dx, dy] of DIRS) {
+      const r = step(L, a, b, dx, dy);
+      if (r.dead) continue;
+      const k = key(r.a, r.b); if (seen.has(k)) continue; seen.add(k);
+      if (r.win) return depth;
+      nq.push([r.a, r.b]);
+    }
+    q = nq;
+  }
+  return Infinity;
+}
+
+// ---------- 儲存 ----------
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('mirrorTwins.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('mirrorTwins.' + k, JSON.stringify(v)); } catch (e) {} }
+};
+let unlocked = store.get('unlocked', 1);
+let bestStars = store.get('stars', {});
+
+// ---------- Deep Sea Arcade 平台：免費與 BONUS 由父頁 deepSeaMirrorTwins 處理；單獨開啟時是不免費的示範 ----------
+function host() { try { return window.parent !== window ? window.parent.deepSeaMirrorTwins || null : null; } catch (e) { return null; } }
+let roundOn = false, earned = 0, platformVisible = true;
+function ensureRound() {
+  const h = host();
+  if (!h || roundOn) return true;
+  if (!(h.start(window) > 0)) return false;
+  roundOn = true; earned = 0; renderNote();
+  return true;
+}
+function renderNote() {
+  const el = document.getElementById('platNote');
+  if (!host()) { el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = roundOn
+    ? Lx('本局進行中：每關第一次通過 BONUS +2 點（已得 {e} / 10）。卡住了可以直接重來，不另免費。|Round in progress: +2 BONUS pts the first time you clear each stage ({e} / 10 earned). Stuck? Restart freely at no extra cost.', { e: earned })
+    : Lx('點一關就會扣 10 點開始一局；本局每過一關 BONUS +2 點，最多 10 點。|Picking a stage starts a round for 10 pts; each stage you clear in the round gives a +2 pt BONUS, up to 10 pts.');
+}
+function touch() { const h = host(); if (h && roundOn && h.touch) h.touch(window); }
+
+// ---------- 狀態 ----------
+let lvIndex = 0, L, par = 0, a, b, history = [], moves = 0, state = 'menu';
+let anim = null, queue = [], deadFlash = 0, winT = 0, bump = { a: null, b: null, t: 0 };
+
+function loadLevel(i) {
+  lvIndex = i; L = parse(LEVELS[i].rows); par = solve(L);
+  resetRun();
+  renderLabels();
+  resize();
+}
+function resetRun() {
+  a = L.A.slice(); b = L.B.slice(); history = []; moves = 0; anim = null; queue = []; deadFlash = 0; winT = 0;
+  updHud();
+}
+function updHud() {
+  document.getElementById('moves').textContent = moves;
+  document.getElementById('par').textContent = '/ ' + par;
+}
+
+function tryMove(dx, dy) {
+  if (state !== 'play') return;
+  if (anim) { if (queue.length < 2) queue.push([dx, dy]); return; }
+  const r = step(L, a, b, dx, dy);
+  const blockedA = eq(r.a, a), blockedB = eq(r.b, b);
+  if (blockedA && blockedB) { bump = { a: [dx, dy], b: [-dx, dy], t: 1 }; return; }
+  history.push([a, b, moves]);
+  anim = { fa: a, fb: b, ta: r.a, tb: r.b, t: 0, dead: r.dead, win: r.win };
+  bump = { a: blockedA ? [dx, dy] : null, b: blockedB ? [-dx, dy] : null, t: blockedA || blockedB ? 1 : 0 };
+  a = r.a; b = r.b; moves++; updHud();
+}
+function finishAnim() {
+  const an = anim; anim = null;
+  if (an.dead) {
+    deadFlash = 1; toast(Lx('踩到雷射地雷了|Stepped on a laser mine'));
+    state = 'dead';
+    setTimeout(() => { undo(true); state = 'play'; }, 550);
+    queue = [];
+    return;
+  }
+  if (an.win) { win(); return; }
+  if (queue.length) tryMove(...queue.shift());
+}
+function undo(force) {
+  if (!force && (state !== 'play' || anim)) return;
+  const h = history.pop(); if (!h) return;
+  a = h[0]; b = h[1]; moves = h[2]; updHud();
+}
+function win() {
+  state = 'win'; winT = 0;
+  const stars = moves <= par ? 3 : moves <= Math.ceil(par * 1.5) ? 2 : 1;
+  if ((bestStars[lvIndex] || 0) < stars) { bestStars[lvIndex] = stars; store.set('stars', bestStars); }
+  if (lvIndex + 2 > unlocked) { unlocked = Math.min(LEVELS.length, lvIndex + 2); store.set('unlocked', unlocked); }
+  const h = host(), got = h && roundOn ? Math.max(0, Math.floor(Number(h.clear(window, lvIndex)) || 0)) : 0;
+  earned += got;
+  document.getElementById('stars').innerHTML = [1, 2, 3].map(s => `<span class="${s <= stars ? '' : 'off'}">★</span>`).join('');
+  winView = { moves, par, got };
+  renderWin();
+  document.getElementById('btnRetry').style.display = moves <= par ? 'none' : '';
+  setTimeout(() => show('ovWin'), 500);
+}
+let winView = null;
+function renderWin() {
+  if (!winView) return;
+  const v = winView;
+  document.getElementById('winSub').textContent = v.moves <= v.par ? Lx('{m} 步，最少步數！|{m} moves, the fewest possible!', { m: v.moves }) : Lx('{m} 步（最少 {p} 步）|{m} moves (fewest: {p})', { m: v.moves, p: v.par });
+  document.getElementById('winBonus').textContent = v.got ? Lx('BONUS +{p} 點已入帳|BONUS +{p} pts added', { p: v.got }) : '';
+  document.getElementById('btnNext').textContent = lvIndex + 1 < LEVELS.length ? Lx('下一關|Next stage') : Lx('全部通關！回選單|All cleared! Back to menu');
+}
+function renderLabels() {
+  document.getElementById('lvLabel').textContent = Lx('第 {n} 關|Stage {n}', { n: lvIndex + 1 });
+  document.getElementById('lvName').textContent = Lx(LEVELS[lvIndex].name);
+}
+let toastT;
+function toast(m) { const el = document.getElementById('toast'); el.textContent = m; el.style.opacity = 1; clearTimeout(toastT); toastT = setTimeout(() => el.style.opacity = 0, 800); }
+
+// ---------- 輸入 ----------
+const KEYMAP = { arrowup: [0, -1], w: [0, -1], arrowdown: [0, 1], s: [0, 1], arrowleft: [-1, 0], a: [-1, 0], arrowright: [1, 0], d: [1, 0],
+  up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+function press(k) {
+  if (KEYMAP[k]) tryMove(...KEYMAP[k]);
+  else if (k === 'z' || k === 'backspace') undo();
+  else if (k === 'r') { if (state === 'play' || state === 'dead') { state = 'play'; resetRun(); } }
+}
+window.addEventListener('keydown', e => {
+  touch();
+  const k = e.key.toLowerCase();
+  if (k.startsWith('arrow') || k === ' ' || k === 'backspace') e.preventDefault();
+  if (k === 'escape') return openMenu();
+  if ((k === 'enter' || k === ' ') && state === 'win') return next();
+  if (e.repeat && !KEYMAP[k] && k !== 'z') return;
+  press(k);
+});
+document.querySelectorAll('#pad button').forEach(btn => btn.addEventListener('pointerdown', e => { e.preventDefault(); press(btn.dataset.k); }));
+// 滑動
+let sw = null;
+const cvEl = document.getElementById('cv');
+cvEl.addEventListener('pointerdown', e => { touch(); sw = { x: e.clientX, y: e.clientY }; });
+cvEl.addEventListener('pointerup', e => {
+  if (!sw) return; const dx = e.clientX - sw.x, dy = e.clientY - sw.y; sw = null;
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+  if (Math.abs(dx) > Math.abs(dy)) tryMove(Math.sign(dx), 0); else tryMove(0, Math.sign(dy));
+});
+
+// ---------- 畫面 ----------
+const ctx = cvEl.getContext('2d');
+let CELL = 48, dpr = 1;
+function resize() {
+  if (!L) return;
+  const coarse = matchMedia('(pointer:coarse)').matches;
+  const availW = window.innerWidth - 24, availH = window.innerHeight - (coarse ? 250 : 140);
+  CELL = Math.max(22, Math.min(64, Math.floor(Math.min(availW / L.w, availH / L.h))));
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cvEl.style.width = L.w * CELL + 'px'; cvEl.style.height = L.h * CELL + 'px';
+  cvEl.width = Math.round(L.w * CELL * dpr); cvEl.height = Math.round(L.h * CELL * dpr);
+  document.getElementById('bar').style.width = Math.max(300, L.w * CELL) + 'px';
+}
+window.addEventListener('resize', resize);
+// ---------- 畫面（太空雙星） ----------
+const ease = t => 1 - Math.pow(1 - t, 3);
+const TWIN = { a: { suit: '#2a8cff', rgb: '42,140,255', dark: '#0b3a80' }, b: { suit: '#ff9a1f', rgb: '255,154,31', dark: '#7a3d00' } };
+function srand(seed) { let s = seed >>> 0 || 1; return () => (s = Math.imul(s ^ (s >>> 15), 2246822519) + 0x9e3779b9 >>> 0) / 4294967296; }
+let starField = null, starKey = '';
+function rrp(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function drawStars(Wd, Hd, now) {
+  const key = Wd + 'x' + Hd;
+  if (key !== starKey) {
+    starKey = key; const R = srand(Wd * 7 + Hd);
+    starField = Array.from({ length: Math.round(Wd * Hd / 500) }, () => ({ x: R() * Wd, y: R() * Hd, r: R() < .1 ? 1.4 : .8, ph: R() * 6.28 }));
+  }
+  for (const s of starField) {
+    ctx.globalAlpha = .35 + .35 * Math.sin(now / 600 + s.ph);
+    ctx.fillStyle = '#fff'; ctx.fillRect(s.x, s.y, s.r, s.r);
+  }
+  ctx.globalAlpha = 1;
+}
+function asteroid(cx, cy, rad, seed) {
+  const R = srand(seed), n = 9, pts = [];
+  for (let i = 0; i < n; i++) { const a = i / n * 6.2832 + R() * .3; pts.push([cx + Math.cos(a) * rad * (.82 + R() * .2), cy + Math.sin(a) * rad * (.82 + R() * .2)]); }
+  const path = () => { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); };
+  path(); ctx.fillStyle = '#4a3e5e'; ctx.fill();
+  // 受光面
+  ctx.save(); path(); ctx.clip();
+  ctx.fillStyle = '#6b5a86'; ctx.beginPath(); ctx.arc(cx - rad * .35, cy - rad * .35, rad * .8, 0, 6.2832); ctx.fill();
+  ctx.fillStyle = '#4a3e5e'; ctx.beginPath(); ctx.arc(cx - rad * .15, cy - rad * .1, rad * .78, 0, 6.2832); ctx.fill();
+  // 坑洞
+  ctx.fillStyle = '#382e4a';
+  for (let k = 0; k < 3; k++) { ctx.beginPath(); ctx.arc(cx + (R() - .5) * rad, cy + (R() - .5) * rad, rad * (.1 + R() * .12), 0, 6.2832); ctx.fill(); }
+  ctx.restore();
+  path(); ctx.strokeStyle = 'rgba(160,140,200,.35)'; ctx.lineWidth = 1; ctx.stroke();
+}
+function draw(now) {
+  if (!L) return;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const C = CELL, Wd = L.w * C, Hd = L.h * C;
+  ctx.fillStyle = '#080b1e'; ctx.fillRect(0, 0, Wd, Hd);
+  drawStars(Wd, Hd, now);
+  // 地板：太空站金屬板
+  for (let y = 0; y < L.h; y++) for (let x = 0; x < L.w; x++) {
+    if (L.g[y][x] === '#') continue;
+    const px = x * C, py = y * C;
+    ctx.fillStyle = '#161c3d'; ctx.fillRect(px, py, C, C);
+    ctx.strokeStyle = '#27315f'; ctx.lineWidth = 1; ctx.strokeRect(px + 1.5, py + 1.5, C - 3, C - 3);
+    ctx.fillStyle = '#2f3a72';
+    const m = C * .12, rv = Math.max(1, C * .03);
+    for (const [ox, oy] of [[m, m], [C - m, m], [m, C - m], [C - m, C - m]]) { ctx.beginPath(); ctx.arc(px + ox, py + oy, rv, 0, 6.2832); ctx.fill(); }
+  }
+  const pulse = .5 + .5 * Math.sin(now / 260);
+  for (let y = 0; y < L.h; y++) for (let x = 0; x < L.w; x++) {
+    const t = L.g[y][x], px = x * C, py = y * C, cx = px + C / 2, cy = py + C / 2;
+    if (t === '#') {
+      let near = false;
+      for (let oy = -1; oy <= 1; oy++) for (let ox = -1; ox <= 1; ox++) if (tile(L, x + ox, y + oy) !== '#') near = true;
+      if (near) asteroid(cx, cy, C * .52, x * 131 + y * 71 + 7);
+    } else if (t === '^') {
+      // 雷射地雷
+      ctx.strokeStyle = `rgba(255,59,107,${.25 + .45 * pulse})`; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(cx, cy, C * (.28 + .05 * pulse), 0, 6.2832); ctx.stroke();
+      ctx.fillStyle = '#2a0f1c'; ctx.beginPath(); ctx.arc(cx, cy, C * .2, 0, 6.2832); ctx.fill();
+      ctx.strokeStyle = '#ff3b6b'; ctx.lineWidth = 2; ctx.beginPath();
+      for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2 + Math.PI / 4; ctx.moveTo(cx + Math.cos(a) * C * .2, cy + Math.sin(a) * C * .2); ctx.lineTo(cx + Math.cos(a) * C * .3, cy + Math.sin(a) * C * .3); }
+      ctx.stroke();
+      ctx.save(); ctx.shadowColor = '#ff3b6b'; ctx.shadowBlur = 12;
+      ctx.fillStyle = '#ff3b6b'; ctx.beginPath(); ctx.arc(cx, cy, C * (.08 + .025 * pulse), 0, 6.2832); ctx.fill(); ctx.restore();
+    } else if (t === 'a' || t === 'b') {
+      // 傳送艙：發光框 + 往上的光柱
+      const c = TWIN[t], m = C * .12;
+      const beam = ctx.createLinearGradient(0, py + C - m, 0, py + m);
+      beam.addColorStop(0, `rgba(${c.rgb},${.35 + .2 * pulse})`); beam.addColorStop(1, `rgba(${c.rgb},0)`);
+      ctx.fillStyle = beam; rrp(px + m, py + m, C - 2 * m, C - 2 * m, C * .14); ctx.fill();
+      ctx.save(); ctx.shadowColor = c.suit; ctx.shadowBlur = 10 + 8 * pulse;
+      ctx.strokeStyle = c.suit; ctx.lineWidth = 2.5; rrp(px + m, py + m, C - 2 * m, C - 2 * m, C * .14); ctx.stroke(); ctx.restore();
+      ctx.fillStyle = c.suit; ctx.globalAlpha = .9;
+      ctx.fillRect(px + C * .3, py + C - m - 3, C * .4, 3); ctx.globalAlpha = 1;
+    }
+  }
+  let pa = a, pb = b;
+  if (anim) {
+    const k = ease(Math.min(1, anim.t));
+    pa = [anim.fa[0] + (anim.ta[0] - anim.fa[0]) * k, anim.fa[1] + (anim.ta[1] - anim.fa[1]) * k];
+    pb = [anim.fb[0] + (anim.tb[0] - anim.fb[0]) * k, anim.fb[1] + (anim.tb[1] - anim.fb[1]) * k];
+  }
+  const bumpOff = d => d && bump.t > 0 ? Math.sin((1 - bump.t) * Math.PI) * .12 : 0;
+  drawTwin(pa, TWIN.a, bump.a, bumpOff(bump.a), false, now);
+  drawTwin(pb, TWIN.b, bump.b, bumpOff(bump.b), true, now);
+  if (deadFlash > 0) { ctx.fillStyle = `rgba(255,59,107,${deadFlash * .25})`; ctx.fillRect(0, 0, Wd, Hd); }
+  if (state === 'win') { winT = Math.min(1, winT + .03); ctx.fillStyle = `rgba(190,230,255,${.4 * (1 - winT)})`; ctx.fillRect(0, 0, Wd, Hd); }
+}
+// 太空人：白色頭盔 + 彩色面罩；橘色那隻的面罩反光、胸前記號都是左右相反的
+function drawTwin(p, c, bd, off, mirrored, now) {
+  const C = CELL;
+  let x = p[0], y = p[1];
+  if (bd) { x += bd[0] * off; y += bd[1] * off; }
+  const cx = x * C + C / 2, bob = Math.sin(now / 420 + (mirrored ? 1.7 : 0)) * C * .03, cy = y * C + C / 2 + bob, s = C * .78, f = mirrored ? -1 : 1;
+  // 腳下的光暈
+  ctx.fillStyle = `rgba(${c.rgb},.28)`;
+  ctx.beginPath(); ctx.ellipse(cx, y * C + C * .9, s * .32, s * .07, 0, 0, 6.2832); ctx.fill();
+  // 背包
+  ctx.fillStyle = '#8f98c2'; rrp(cx - f * s * .38 - s * .1, cy - s * .02, s * .2, s * .3, s * .05); ctx.fill();
+  // 身體與腿
+  ctx.fillStyle = c.suit;
+  ctx.fillRect(cx - s * .2, cy + s * .3, s * .14, s * .14); ctx.fillRect(cx + s * .06, cy + s * .3, s * .14, s * .14);
+  ctx.fillStyle = '#e8ecff'; rrp(cx - s * .28, cy, s * .56, s * .36, s * .12); ctx.fill();
+  ctx.fillStyle = c.suit; ctx.fillRect(cx - s * .28, cy + s * .2, s * .56, s * .06);
+  // 胸前記號：藍色 → ，橘色 ↔
+  ctx.strokeStyle = c.dark; ctx.lineWidth = Math.max(1.4, s * .035); ctx.lineCap = 'round'; ctx.beginPath();
+  const ey = cy + s * .1, w = s * .1;
+  if (mirrored) { ctx.moveTo(cx - w, ey); ctx.lineTo(cx + w, ey); ctx.moveTo(cx - w + 3, ey - 3); ctx.lineTo(cx - w, ey); ctx.lineTo(cx - w + 3, ey + 3); ctx.moveTo(cx + w - 3, ey - 3); ctx.lineTo(cx + w, ey); ctx.lineTo(cx + w - 3, ey + 3); }
+  else { ctx.moveTo(cx - w, ey); ctx.lineTo(cx + w, ey); ctx.moveTo(cx + w - 3, ey - 3); ctx.lineTo(cx + w, ey); ctx.lineTo(cx + w - 3, ey + 3); }
+  ctx.stroke();
+  // 頭盔
+  const hy = cy - s * .14, hr = s * .3;
+  ctx.fillStyle = '#e8ecff'; ctx.beginPath(); ctx.arc(cx, hy, hr, 0, 6.2832); ctx.fill();
+  ctx.strokeStyle = 'rgba(8,11,30,.25)'; ctx.lineWidth = 1; ctx.stroke();
+  // 面罩
+  ctx.save(); ctx.shadowColor = c.suit; ctx.shadowBlur = 10;
+  ctx.fillStyle = c.suit; ctx.beginPath(); ctx.ellipse(cx + f * s * .03, hy + s * .01, hr * .72, hr * .55, 0, 0, 6.2832); ctx.fill(); ctx.restore();
+  ctx.fillStyle = c.dark; ctx.globalAlpha = .35; ctx.beginPath(); ctx.ellipse(cx + f * s * .03, hy + s * .06, hr * .62, hr * .32, 0, 0, Math.PI); ctx.fill(); ctx.globalAlpha = 1;
+  ctx.fillStyle = 'rgba(255,255,255,.85)';
+  ctx.beginPath(); ctx.ellipse(cx + f * hr * .3, hy - hr * .2, hr * .16, hr * .1, f * -.5, 0, 6.2832); ctx.fill();
+  // 天線
+  ctx.strokeStyle = '#c3cae8'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(cx - f * hr * .5, hy - hr * .8); ctx.lineTo(cx - f * hr * .7, hy - hr * 1.25); ctx.stroke();
+  ctx.fillStyle = c.suit; ctx.beginPath(); ctx.arc(cx - f * hr * .7, hy - hr * 1.25, 2.4, 0, 6.2832); ctx.fill();
+}
+
+// ---------- 迴圈 ----------
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  if (!platformVisible) { requestAnimationFrame(frame); return; }
+  if (anim) { anim.t += dt / .11; if (anim.t >= 1) finishAnim(); }
+  if (bump.t > 0) bump.t = Math.max(0, bump.t - dt / .18);
+  if (deadFlash > 0) deadFlash = Math.max(0, deadFlash - dt * 2);
+  draw(now);
+  requestAnimationFrame(frame);
+}
+
+// ---------- 介面 ----------
+function show(id) { document.querySelectorAll('.overlay').forEach(o => o.classList.toggle('show', o.id === id)); }
+function openMenu() {
+  state = 'menu';
+  renderMenu(); renderNote();
+  show('ovMenu');
+}
+function renderMenu() {
+  const box = document.getElementById('levels'); box.innerHTML = '';
+  LEVELS.forEach((lv, i) => {
+    const btn = document.createElement('button');
+    const st = bestStars[i] || 0;
+    btn.innerHTML = (i + 1) + `<small>${st ? '★'.repeat(st) : '&nbsp;'}</small>`;
+    btn.disabled = i >= unlocked;
+    btn.onclick = () => { if (ensureRound()) start(i); };
+    box.appendChild(btn);
+  });
+}
+function start(i) { loadLevel(i); show(null); state = 'play'; }
+function next() { if (lvIndex + 1 < LEVELS.length) start(lvIndex + 1); else openMenu(); }
+document.getElementById('btnNext').onclick = next;
+document.getElementById('btnRetry').onclick = () => start(lvIndex);
+document.getElementById('btnWinMenu').onclick = openMenu;
+document.getElementById('btnMenu').onclick = openMenu;
+document.getElementById('btnUndo').onclick = () => undo();
+document.getElementById('btnRestart').onclick = () => press('r');
+
+// 父頁介面：右側按鈕開局、切換畫面、結束本局
+window.startMirrorPlatformRound = () => { if (roundOn) return roundOn; if (ensureRound()) openMenu(); return roundOn; };
+window.setMirrorPlatformActive = v => { platformVisible = !!v; last = performance.now(); if (platformVisible) resize(); };
+window.endMirrorPlatformRound = () => { roundOn = false; earned = 0; openMenu(); };
+
+function relang() {
+  applyStatic(); renderLabels(); renderNote(); renderWin(); renderMenu();
+}
+try { window.parent.addEventListener('arcade-languagechange', relang); } catch (e) {}
+applyStatic();
+loadLevel(0);
+openMenu();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

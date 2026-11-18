@@ -68,7 +68,7 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const live=st==='run';
  setText('pd-seg','第 '+seg+'/'+SEGS+' 段');setText('pd-score',String(score));setText('pd-best',best+' 分');
- $('pd-amount').disabled=puddingBusy;$('pd-go').disabled=live;setText('pd-go',live?'突圍中':st==='over'?'扣點再突圍一次':'扣點開始突圍');
+ $('pd-amount').disabled=puddingBusy;$('pd-go').disabled=live;setText('pd-go',live?'突圍中':st==='over'?'免費再突圍一次':'免費開始突圍');
 }
 const fl=(s,x,y,col)=>floats.push({s,x,y,col,t:0});
 function end(reason){
@@ -79,7 +79,7 @@ function end(reason){
  if(rec){best=score;try{localStorage.setItem('deep-sea-pudding-best',best)}catch(e){}}
  AN.end(analytics,earned,reason==='win'||earned>0?'complete':'loss',{score:score,step:seg,stage:seg});puddingBusy=false;save();renderAll();
  if(reason==='win')say('成功護送布丁到援軍橋！本局共入帳 '+fmt(earned)+' 點。','win');
- else if(!earned)say('布丁哭了，撐到第 '+seg+' 段。這一局沒有點數。','lose');
+ else if(!earned)say('布丁哭了，撐到第 '+seg+' 段。這一局沒有額外成就獎勵。','lose');
  else say('布丁哭了，撐到第 '+seg+' 段，本局共入帳 '+fmt(earned)+' 點。','win');
  ui();
 }
@@ -333,7 +333,7 @@ function drawOver(){
   tx('布丁大哭',W/2,110,38,'#ff5d8f');tx('追兵循聲追來……',W/2,155,18,'#fff1c1');
   tx('分數 '+score,W/2,230,30,'#fff1c1');tx('撐到第 '+seg+' 段',W/2,275,20,'#fff1c1');
  }
- tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'這一局沒有點數',W/2,why==='win'?372:318,22,earned>0?'#ffd23f':'#fff1c1');
+ tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'這一局沒有額外成就獎勵',W/2,why==='win'?372:318,22,earned>0?'#ffd23f':'#fff1c1');
  if(rec)tx('新紀錄！',W/2,why==='win'?410:352,20,'#ffd23f');
  tx('到操作區再突圍一次',W/2,470,20,'#fff1c1');
 }
@@ -342,7 +342,7 @@ function drawReady(){
  g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
  tx('布丁突圍',W/2,150,42,'#ffd23f');tx('背著小王子殺出重圍',W/2,200,20,'#fff1c1');
  tx('每段先拼武器碎片，再往前衝',W/2,250,19,'#fff1c1');tx('武器的形狀就是打擊範圍',W/2,280,19,'#fff1c1');tx('按住 ←→ / AD 或按住畫面移動',W/2,310,19,'#fff1c1');
- tx('到操作區扣點開始',W/2,372,24,'#ffd23f');
+ tx('到操作區免費開始',W/2,372,24,'#ffd23f');
 }
 function draw(){
  if(st==='ready')drawReady();else if(st==='over')drawOver();else if(ph==='forge')drawForge();else drawRun();
@@ -352,7 +352,7 @@ function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
- analytics=AN.start('pudding',amount);puddingStake=amount;puddingBusy=true;S.balance-=amount;save();renderAll();
+ analytics=AN.start('pudding',amount);puddingStake=amount;puddingBusy=true;save();renderAll();
  reset();earned=0;st='run';last=performance.now();enterForge();say('第 1 段營帳：選一塊碎片拼進武器格子，再出發。');ui();c.focus();
 }
 const shown=()=>!$('view-pudding').hidden&&!document.hidden;
@@ -360,7 +360,7 @@ const ptX=e=>{const rc=c.getBoundingClientRect();return(e.clientX-rc.left)*W/(rc
 $('pd-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
- if(st!=='run'){say(st==='over'?'這一局已結算。按「扣點再突圍一次」開始新的一局。':'先按「扣點開始突圍」。');return}
+ if(st!=='run'){say(st==='over'?'這一局已結算。按「免費再突圍一次」開始新的一局。':'先按「免費開始突圍」。');return}
  if(!shown())return;e.preventDefault();c.focus();
  if(ph==='forge')forgeTap(ptX(e),ptY(e));
  else if(sub==='play'){ptr=ptX(e);try{c.setPointerCapture(e.pointerId)}catch(err){}}
