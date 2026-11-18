@@ -27,6 +27,7 @@ const CONFIG = {
     { from: 250, to: 400, name: '高架橋風口',   mag: 0.90, flip: [2.0, 3.0], crowd: 0.35, updraft: false },
     { from: 400, to: 500, name: '帝國大廈廣場', mag: 0.80, flip: [2.2, 2.8], crowd: 0.6,  updraft: true  }
   ],
+  calm:  { at: [250], len: 16, mag: 0.3 },   // 路段交界的喘息：風力降到 0.3、不排新事件（約 2.7 秒）
   greet: { win: 2.4, need: 1.2, every: [6.5, 8.5] },
   flyer: { tele: 0.8, lock: 2.0, every: [9, 12] },
   drip:  { tele: 0.9, hit: 40, shielded: 8, every: [6, 9] },
@@ -48,7 +49,7 @@ function createGame(rng) {
     tilt: 0, cramp: 0, crampLock: 0, crampLocked: false,
     pressing: false, pressLock: 0,
     sweat: 0, sideEye: 0, slowT: 0, timeScale: 1, slowmoT: 0,
-    wind: 0, windDir: 1, flipIn: C.firstGrace, tele: null, E: 0, zoneIdx: 0,
+    wind: 0, windDir: 1, flipIn: C.firstGrace, tele: null, E: 0, zoneIdx: 0, calmOn: false,
     hairs: [0, 1, 2].map(i => ({ alive: true, glue: 100, root: 100, k: C.hairK[i] })),
     ev: { greet: null, flyer: null, drip: null, vortex: null, look: null },
     timers: { greet: rr(C.greet.every) * 0.6, flyer: rr(C.flyer.every) * 0.6, drip: rr(C.drip.every) * 0.5, vortex: rr(C.vortex.every) * 0.7 },
@@ -86,7 +87,11 @@ function createGame(rng) {
     const zi = zoneAt(g.dist); const zone = C.zones[zi];
     if (zi !== g.zoneIdx) { g.zoneIdx = zi; g.flipIn = Math.min(g.flipIn, 1.2); emit('zone', { zone: zi }); }
     const ramp = Math.min(1, g.t / C.firstGrace);
+    const calm = C.calm.at.some(a => g.dist >= a && g.dist < a + C.calm.len);
+    if (calm && !g.calmOn) emit('calm');
+    g.calmOn = calm;
     let mag = zone.mag * ramp, vort = g.ev.vortex;
+    if (calm) mag = Math.min(mag, C.calm.mag);
     g.flipIn -= dt;
     if (vort && vort.started) {
       mag = C.vortex.mag; vort.flipT -= dt;
@@ -99,7 +104,7 @@ function createGame(rng) {
 
     // 3. 事件排程
     const e = g.ev;
-    if (!anyMajor()) {
+    if (!anyMajor() && !calm) {
       if (zi === 1) {
         g.timers.greet -= dt; g.timers.flyer -= dt;
         if (g.timers.greet <= 0) { e.greet = { t: C.greet.win, wave: 0 }; g.timers.greet = rr(C.greet.every); emit('greetStart'); }
@@ -278,6 +283,7 @@ function handleEvents(){
    case'greetFail':SFX.bad();vib(30);addFloat('被當成怪人…',200,190,'#ff8a80',24,1.3);break;
    case'embarrassed':SFX.bad();vib([30,30,30]);addFloat('社死！腳步變慢',200,190,'#ff8a80',26,1.6);break;
    case'greetStart':case'flyerTele':case'dripTele':case'vortexTele':case'lookTele':SFX.warn();break;
+   case'calm':addFloat('風停了…喘口氣',200,272,'#a5d6a7',18,2.2);break;
    case'zone':tipText=TIPS[e.zone];tipT=4.5;addFloat(game.config.zones[e.zone].name,200,222,'#fff',22,2);break;
    case'finish':SFX.win();end(true);break;
    case'dead':SFX.lose();end(false);break;
