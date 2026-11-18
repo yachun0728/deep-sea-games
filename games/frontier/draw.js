@@ -103,12 +103,7 @@ function paint(){
  }});});
  w.supplies.forEach(function(d){objects.push({y:d.y,draw:function(){ftEllipse(d.x,d.y+3,15,6,'#173d3c44');if(ftSprite(d.kind==='wood'?5:4,d.x,d.y,38)){text(String(d.amount),d.x,d.y-25,11,'#fff3bf');return;}if(d.kind==='wood'){for(var j=0;j<3;j++){ctx.fillStyle=j%2?'#c18b52':'#aa7044';ctx.fillRect(d.x-11+j*3,d.y-6-j*4,18,5);point(d.x-11+j*3,d.y-4-j*4,3,'#edc78e');}}else{ftPoly([[d.x-12,d.y],[d.x-8,d.y-13],[d.x+3,d.y-18],[d.x+13,d.y-6],[d.x+9,d.y+3]],'#a6c2c5');ftPoly([[d.x-8,d.y-13],[d.x+3,d.y-18],[d.x+6,d.y-7]],'#e1e9df');}text(String(d.amount),d.x,d.y-25,11,'#fff3bf');}});});
  w.workers.forEach(function(a,i){objects.push({y:a.y,draw:function(){if(ftSprite(a.t>.5?1:0,a.x,a.y+Math.sin(w.time*12+i)*1.1,65)){if(a.wood+a.stone)ftSprite(a.wood?5:4,a.x-14,a.y-5,27);return;}ftEllipse(a.x,a.y+5,12,5,'#143f3c44');ctx.fillStyle=i%3===2?'#7c8fa3':'#b07b51';ctx.fillRect(a.x-8,a.y-19,16,21);point(a.x,a.y-27,9,'#efc59b');ftEllipse(a.x,a.y-33,13,4,'#d6c387');ctx.fillStyle='#423f36';ctx.fillRect(a.x-7,a.y+2,5,6);ctx.fillRect(a.x+2,a.y+2,5,6);if(a.wood+a.stone){ctx.fillStyle=a.wood?'#c69764':'#a8c3c6';ctx.fillRect(a.x-15,a.y-18,10,17);}else if(a.t>.25){ctx.strokeStyle='#e5dac3';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(a.x+8,a.y-12);ctx.lineTo(a.x+20,a.y-28);ctx.stroke();}}});});
- if(w.enemyBase){var eb=w.enemyBase;objects.push({y:eb.y+16,draw:function(){var x=eb.x,y=eb.y,alive=eb.hp>0;ftEllipse(x+3,y+10,70,22,'#143c3944');
-  ctx.fillStyle=alive?'#7b4a47':'#4e5350';ctx.beginPath();ctx.roundRect(x-52,y-52,104,60,4);ctx.fill();
-  ctx.fillStyle=alive?'#5b3436':'#3f4543';[-52,34].forEach(function(dx){ctx.fillRect(x+dx,y-82,18,38);ctx.fillRect(x+dx-3,y-86,24,8);});
-  ftPoly([[x-30,y-52],[x,y-92],[x+30,y-52]],alive?'#8a3f3b':'#555a57');ctx.fillStyle='#2b1a1c';ctx.fillRect(x-9,y-26,18,34);
-  if(alive){ctx.fillStyle='#ffc08f';ctx.fillRect(x-40,y-34,8,9);ctx.fillRect(x+32,y-34,8,9);text('對手大本營',x,y+30,13,'#ffbe9f');ctx.fillStyle='#472f34';ctx.fillRect(x-45,y-98,90,7);ctx.fillStyle='#e9a086';ctx.fillRect(x-45,y-98,90*Math.max(0,eb.hp/eb.maxHp),7);}
-  else text('已摧毀',x,y+30,13,'#d6d0b8');}});}
+ if(w.enemyBase){var eb=w.enemyBase;objects.push({y:eb.y+16,draw:function(){ftEnemyFortress(eb,w);}});}
  w.camps.forEach(function(c){objects.push({y:c.y,draw:function(){ftPoly([[c.x-35,c.y],[c.x,c.y-60],[c.x+35,c.y]],c.hp>0?'#86504a':'#4e5350');if(c.hp>0){text('敵營',c.x,c.y+20,12,'#ffbe9f');ctx.fillStyle='#472f34';ctx.fillRect(c.x-30,c.y-70,60,5);ctx.fillStyle='#e9a086';ctx.fillRect(c.x-30,c.y-70,60*c.hp/c.maxHp,5);}}});});
  w.drops.forEach(function(d){ftEllipse(d.x,d.y+5,10,4,'#163f3a33');point(d.x,d.y-5+Math.sin(w.time*4)*3,8,'#ecc56b','#fff0af');text(String(d.amount),d.x,d.y-20,11);});
  w.fighters.forEach(function(a){objects.push({y:a.y,draw:function(){if(ftWarrior&&ftWarrior.complete&&ftWarrior.naturalWidth){ctx.drawImage(ftWarrior,a.x-54,a.y-76,108,82);}else{ftSprite(0,a.x,a.y,75);text('⚔',a.x+16,a.y-30,20,'#a7f0e0');}ctx.fillStyle='#163e37';ctx.fillRect(a.x-16,a.y+5,32,3);ctx.fillStyle='#8ee7ba';ctx.fillRect(a.x-16,a.y+5,32*a.hp/a.max,3);}});});
@@ -118,6 +113,28 @@ function paint(){
  if(w.bag.wood+w.bag.stone>=frontierCapacity(w)){ctx.textAlign='center';ctx.font='600 12px system-ui';ctx.fillStyle='#ffe4a4';ctx.fillText('背包已滿：回營地或投入建築',rect.width/2,rect.height-92,rect.width-30);}
 }
 
+var ftTinted={};
+// The enemy stronghold is the player's own camp art, recoloured: multiply by a tint, then restore the sprite's alpha.
+function ftTintedCamp(x,y,size,tint,key){
+ if(!ftAtlas||!ftAtlas.complete||!ftAtlas.naturalWidth||typeof document==='undefined')return false;
+ var cell=ftAtlas.naturalWidth/4,c=ftTinted[key];
+ if(!c||c.width!==cell){c=document.createElement('canvas');c.width=c.height=cell;var g=c.getContext('2d');g.drawImage(ftAtlas,2*cell,cell,cell,cell,0,0,cell,cell);g.globalCompositeOperation='multiply';g.fillStyle=tint;g.fillRect(0,0,cell,cell);g.globalCompositeOperation='destination-in';g.drawImage(ftAtlas,2*cell,cell,cell,cell,0,0,cell,cell);ftTinted[key]=c;}
+ ctx.drawImage(c,x-size/2,y-size*.89,size,size);return true;
+}
+function ftEnemyFortress(eb,w){
+ var ratio=Math.max(0,eb.hp/eb.maxHp),alive=eb.hp>0,t=w.time,x=eb.x,y=eb.y+34;
+ ftEllipse(x+3,y+6,58,17,'#143c3944');
+ if(!ftTintedCamp(x,y,170,alive?'#ff6f6a':'#5a5a5a',alive?'enemy':'ruin')){ftBuilding({kind:'camp',x:x,y:y,built:true,hp:1,maxHp:1,wood:0,stone:0},w);}
+ if(!alive){text('已摧毀',x,y+22,13,'#d6d0b8');for(var e=0;e<5;e++)point(x-44+e*22+Math.sin(t*3+e)*4,y-14-((t*18+e*13)%40),2.5,'#ffb06a88');return;}
+ // red pennant over the tent, cracks and fire as it takes damage
+ ctx.strokeStyle='#4a2a24';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x+46,y-86);ctx.lineTo(x+46,y-134);ctx.stroke();ftPoly([[x+46,y-134],[x+78,y-124+Math.sin(t*5)*3],[x+46,y-112]],'#d24b3f');
+ if(ratio<.55)[-30,22,-4].forEach(function(fx,n){var h=12+Math.sin(t*10+n)*4,fy=y-42-n*18;ftPoly([[x+fx-8,fy],[x+fx,fy-h-10],[x+fx+8,fy]],'#ff8a3d');ftPoly([[x+fx-3,fy],[x+fx,fy-h],[x+fx+3,fy]],'#ffd27d');});
+ if(ratio<.3)for(var q=0;q<5;q++)point(x-30+q*15+Math.sin(t*2+q)*5,y-90-((t*16+q*17)%46),4+q%2,'#2f2a2a66');
+ var bx=x,by=y-170;
+ ctx.fillStyle='#2a1719e6';ctx.beginPath();ctx.roundRect(bx-62,by-4,124,22,6);ctx.fill();
+ ctx.fillStyle='#472f34';ctx.fillRect(bx-54,by+10,108,5);ctx.fillStyle=ratio>.5?'#e9a086':ratio>.25?'#f0b14e':'#f26a4f';ctx.fillRect(bx-54,by+10,108*ratio,5);
+ text('對手大本營 '+Math.ceil(ratio*100)+'%',bx,by+7,11,'#ffd2bd');
+}
 function ftBuilding(b,w){
  var x=b.x,y=b.y,colors={camp:'#d8b778',house:'#a5c8b5',market:'#dcb269',quarry:'#a6bac1',mill:'#79b6aa',forge:'#b78165',depot:'#95b8a0',tower:'#7d9c9e',beacon:'#e4ce8a'};
  var sprite={barracks:6,camp:6,house:6,market:7,quarry:6,mill:8,forge:9,depot:6,tower:10,beacon:11}[b.kind];

@@ -139,3 +139,4 @@ html.frontier-immersive{overflow:hidden}
 #view-frontier .ft-main:has(#ft-overlay:not([hidden])) .ft-resource,#view-frontier .ft-main:has(#ft-overlay:not([hidden])) .ft-touch{visibility:hidden;pointer-events:none}
 #view-frontier #ft-message,#view-frontier #ft-checklist{white-space:pre-line}
 #view-frontier .ft-overlay #ft-message{text-align:left;max-width:360px;line-height:1.7}
+#view-frontier #ft-train{grid-column:1/-1;background:#e7ca8e;color:#143b34;font-weight:700}#view-frontier #ft-train[hidden]{display:none}

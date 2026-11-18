@@ -104,13 +104,16 @@ model.frontierClassic=false;
  let tower=w.buildings[4],barracks=w.buildings.find(b=>b.kind==='barracks');
  ok(tower.kind==='tower'&&tower.x<400&&Math.hypot(tower.x-w.buildings[0].x,tower.y-w.buildings[0].y)<200,'tower stands beside the home base');
  ok(barracks&&barracks.x>678,'barracks is across the bridge');
- w.enemies=[];w.siege.next=1e6;w.bank.wood=w.bank.stone=10000;ok(tower.built&&tower.hp===tower.maxHp,'a tower already guards the home base');
+ w.enemies=[];w.siege.next=1e6;w.bank.wood=w.bank.stone=10000;const towers=w.buildings.filter(b=>b.kind==='tower');ok(towers.length===2&&towers.every(b=>!b.built&&b.x<400),'two unbuilt towers stand beside the home base');
+ for(const b of towers){w.p.x=b.x;w.p.y=b.y;tick(w,12);}ok(towers.every(b=>b.built),'both towers can be built without the bridge');
+ w.enemies=[{x:towers[1].x+120,y:towers[1].y,type:'melee',hp:500,max:500,state:'walk',t:0,cool:99,tx:0,ty:0,hit:false,counted:false,wave:false,radius:17}];w.p.x=100;w.p.y=100;w.p.inv=1e6;const before=w.enemies[0].hp;tick(w,3);ok(w.enemies[0].hp<before,'built towers shoot nearby monsters');w.enemies=[];
  // the hero cannot damage the enemy base
  w.buildings[3].built=true;w.p.x=w.enemyBase.x-40;w.p.y=w.enemyBase.y;w.p.inv=1e6;const full=w.enemyBase.hp;tick(w,6);ok(w.enemyBase.hp===full&&w.phase==='play','hero cannot attack the enemy base');
  // fighters can only be trained at the barracks and cap at six
  w=create(1);w.enemies=[];w.siege.next=1e6;w.bank.wood=w.bank.stone=10000;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');
  ok(!model.frontierRecruit(w),'cannot recruit before the barracks exists');
  w.p.x=barracks.x;w.p.y=barracks.y;tick(w,12);ok(barracks.built,'barracks builds across the bridge');
+ w.bank.wood=w.bank.stone=0;w.bag.wood=60;w.bag.stone=40;ok(model.frontierRecruit(w)&&w.bag.wood===60-model.frontierRecruitCost(w).wood,'warriors can be trained from the carried bag');w.bank.wood=w.bank.stone=10000;barracks.queue=0;
  for(let n=0;n<8;n++)model.frontierRecruit(w);ok(barracks.queue===6&&model.frontierFighterCap(w)===6,'fighter cap is six');
  tick(w,2*6+1);ok(w.fighters.length===6,'barracks trains fighters one by one');
  // fighters march on the base, damage it slowly, and the base hurts them only a little
@@ -121,7 +124,7 @@ model.frontierClassic=false;
  // victory
  w.enemyBase.hp=1;w.fighters.forEach(f=>{f.hp=f.max;});tick(w,10);ok(w.enemyBase.hp===0&&w.phase==='clear','destroying the enemy base clears the stage');
  // raiders attack the tower and can break it
- w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;tower=w.buildings[4];const towerHp=tower.hp;
+ w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;tower=w.buildings[4];tower.built=true;const towerHp=tower.hp;
  w.enemies.push({x:tower.x+30,y:tower.y,type:'melee',hp:99999,max:99999,state:'walk',t:0,cool:0,tx:0,ty:0,hit:false,counted:false,wave:true,radius:17,raider:true,assault:true});
  w.p.x=900;w.p.y=700;tick(w,12);ok(tower.hp<towerHp&&w.phase==='play','monsters attack the tower');
  // later stages keep the beacon rules
