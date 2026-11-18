@@ -87,6 +87,7 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 | dive / 一口氣探險 | 固定10 | 一般遊戲：分數（珍珠＋層數×2）與最佳紀錄，無點數返還 |
 | mrt / 捷運搶位 | 固定10 | 一般遊戲：搶座位階數與最佳紀錄，無點數返還 |
 | pancake / 泡麵煎餅翻面 Noodle Pancake | 固定10 | 煎片數挑戰，無點數返還；局中可用30點換5包泡麵 |
+| rocket-chair / 社畜要下班 Roar Through the Ceiling | 固定10 | 提早下班分鐘數挑戰，無點數返還；會議時間用完可用30點買咖啡續命 |
 
 ## 1. Crush Depth（crash）
 
@@ -324,6 +325,14 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 - 不煮了：直接結算。
 
 結算（過關、放棄或大廳的「結束本局」）只送一次 `finish`，game_end 為 complete、payout_points=0，附 `score`（煎好片數）、`cleared`、`extra_spent_points`。重新整理放棄回合、不退款。
+
+## 25b. 社畜要下班 Roar Through the Ceiling（rocket-chair）
+
+定位：`games/rocket-chair/original.html`（獨立子頁，以 iframe `src` 載入，圖片在 `games/rocket-chair/assets/`）、`games/rocket-chair/game.js` 的 `ROCKET`、`deepSeaRocket`。子頁可單獨開啟（自己讀寫同一個餘額 Key），嵌入大廳時扣點與 GA4 交給父頁；iframe 需 `allow="microphone"`。
+
+玩法：對著手機大吼，音量換成火箭椅推力往上飛；短而突然的大吼觸發衝刺，速度夠快才撞破天花板。共 5 層（業務部、財務部、會議室、茶水間、頂樓前），18:00 主管會議結束前衝出頂樓就過關，提早的分鐘數就是成績。另有小聲模式（哼歌就能飛）與按住螢幕模式。麥克風只在遊玩中開啟，切到背景或大廳別的分頁就關閉並暫停。
+
+點數：選好模式開局時父頁 `start` 扣固定10點並送 game_start；看過示範廣告的30分鐘內（`deep-sea-free-until`）不扣點。會議時間用完可：用30點買特濃咖啡（父頁 `spend`，送 `game_progress` 的 `phase=buy_coffee`）、看5秒示範廣告延長20秒（每局1次），或放棄。結算只送一次 `finish`，game_end 為 complete、payout_points=0，附 `score`（提早分鐘數）、`cleared`、`extra_spent_points`。沒有點數返還，重新整理放棄回合、不退款。
 
 ## 26. 青蛙吃蟲 Frog Snack（frog）
 

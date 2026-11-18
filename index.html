@@ -15,7 +15,7 @@
     w.gtag('config',ID,{allow_google_signals:false,allow_ad_personalization_signals:false,debug_mode:debug});
     var tag=d.createElement('script');tag.async=true;tag.src='https://www.googletagmanager.com/gtag/js?id='+ID;d.head.appendChild(tag);
   }
-  var names={'ocean-link':'深海連連看',blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班','eat-smaller':'數字吞噬','mirror-twins':'鏡像雙子','shadow-relay':'影子接力','one-line-defense':'一筆畫守城',mermaid:'人魚接龍',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看',banquet:'最後的晚餐'};
+  var names={'ocean-link':'深海連連看',blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班','eat-smaller':'數字吞噬','mirror-twins':'鏡像雙子','shadow-relay':'影子接力','one-line-defense':'一筆畫守城',mermaid:'人魚接龍',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面','rocket-chair':'社畜要下班',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看',banquet:'最後的晚餐'};
   var rounds={},current='',seq=0,bucket=0,last=performance.now(),inputAt=last,visible=!d.hidden,focused=d.hasFocus?d.hasFocus():true,suspended=false;
   var tabToken=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
   function emit(event,game,params){
@@ -586,6 +586,8 @@ html[lang="en"] .hint,html[lang="en"] .rules{overflow-wrap:break-word}
 .mrt-stage{min-width:0;display:flex;justify-content:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#000}.mrt-stage iframe{display:block;width:min(100%,480px);height:min(860px,calc(100svh - 150px));min-height:600px;border:0;background:#000}
 .pancake-platform-bar{display:flex;align-items:center;justify-content:space-between;gap:12px}.pancake-platform-bar p{margin:0}.pancake-platform-bar .chip{padding:9px 12px;white-space:nowrap}.pancake-stage{display:flex;justify-content:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#0d0b0a}.pancake-stage iframe{display:block;width:min(100%,430px);height:min(860px,calc(100svh - 150px));min-height:600px;border:0;background:#0d0b0a;touch-action:none}
 
+.rocket-chair-platform-bar p{margin:0}.rocket-chair-stage{display:flex;justify-content:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#fff}.rocket-chair-stage iframe{display:block;width:min(100%,430px);height:min(860px,calc(100svh - 150px));min-height:600px;border:0;background:#fff;touch-action:none}
+
 #ol-stage {
   --ol-cell: 30px;
   display: grid;
@@ -977,7 +979,7 @@ body.ol-expanded { overflow: hidden; }
     <a href="#reaper" id="tab-reaper">死神打工<small>Reaper Shift</small></a>
     <a href="#dive" id="tab-dive">一口氣探險<small>One Breath Dive</small></a>
     <a href="#mrt" id="tab-mrt">捷運搶位<small>MRT Seat Grab</small></a>
-    <a href="#pancake" id="tab-pancake">泡麵煎餅翻面<small>Noodle Pancake</small></a>
+    <a href="#pancake" id="tab-pancake">泡麵煎餅翻面<small>Noodle Pancake</small></a><a href="#rocket-chair" id="tab-rocket-chair">社畜要下班<small>Roar Through the Ceiling</small></a>
     <a href="#skybuilder" id="tab-skybuilder">蓋樓大師<small>Sky Builder</small></a>
     <a href="#carp" id="tab-carp">鯉魚躍龍門<small>Carp Leap</small></a>
     <a href="#rider" id="tab-rider">外送員大戰惡犬<small>Rider vs Dogs</small></a>
@@ -1010,7 +1012,8 @@ body.ol-expanded { overflow: hidden; }
 <symbol id="icon-mermaid" viewBox="0 0 96 96"><circle cx="48" cy="48" r="46" fill="#0f4c6b"/><path d="M10 70q19-9 38 0t38 0v26H10z" fill="#0a2e4a"/><rect x="21" y="14" width="40" height="56" rx="6" fill="#3d1f6e" stroke="#f2c46d" stroke-width="2" transform="rotate(-10 41 42)"/><rect x="35" y="16" width="40" height="56" rx="6" fill="#fff9ef" stroke="#8a6ad0" stroke-width="1.5" transform="rotate(8 55 44)"/><g transform="translate(46 28) rotate(8 10 20) scale(.62)" color="#7c3aed"><path d="M12.5 13C7 21 8.5 33 13 40c3-3 4-8 3.5-14zM27.5 13C33 21 31.5 33 27 40c-3-3-4-8-3.5-14z" fill="currentColor"/><path d="M15 29h10c0 5-2 8-5 11-3-3-5-6-5-11z" fill="#12b5c5"/><path d="M20 40c-3 1-7 4-9 9 4-.5 7-2 9-4 2 2 5 3.5 9 4-2-5-6-8-9-9z" fill="currentColor"/><path d="M17 31q3 1.6 6 0M17.4 34q2.6 1.4 5.2 0" stroke="#fff" stroke-opacity=".6" stroke-width=".9" fill="none" stroke-linecap="round"/><path d="M16.5 22h7l1.2 7h-9.4z" fill="#ffd9b8"/><path d="M15.6 26.4c1.4 2.4 3.4 2.6 4.4 1 1 1.6 3 1.4 4.4-1-1.6-1.6-3.2-2.4-4.4-2.4s-2.8.8-4.4 2.4z" fill="#f6c453" stroke="#c98a14" stroke-width=".6"/><circle cx="20" cy="14" r="6.6" fill="#ffd9b8"/><path d="M13.2 14.6c-.6-6 3.2-9 6.8-9s7.4 3 6.8 9c-1.2-2.8-3.4-4.6-6.8-5-3.4.4-5.6 2.2-6.8 5z" fill="currentColor"/><circle cx="17.4" cy="14.8" r=".9" fill="#2b2140"/><circle cx="22.6" cy="14.8" r=".9" fill="#2b2140"/><path d="M18.4 17.6q1.6 1.4 3.2 0" stroke="#c0485f" stroke-width=".9" fill="none" stroke-linecap="round"/><path d="M17.5 6.4l1.2-2.6 1.3 1.6 1.3-1.6 1.2 2.6z" fill="#f6c453"/></g><circle cx="20" cy="76" r="4" fill="#bfeaf2" opacity=".7"/><circle cx="76" cy="82" r="3" fill="#bfeaf2" opacity=".7"/><circle cx="28" cy="86" r="2.2" fill="#fff" opacity=".6"/></symbol><symbol id="icon-breakout" viewBox="0 0 96 96"><rect x="10" y="12" width="20" height="10" rx="3" fill="#ff766b"/><rect x="34" y="12" width="20" height="10" rx="3" fill="#ffc857"/><rect x="58" y="12" width="20" height="10" rx="3" fill="#62e6d2"/><rect x="10" y="26" width="20" height="10" rx="3" fill="#ffc857"/><rect x="58" y="26" width="20" height="10" rx="3" fill="#ff766b"/><circle cx="48" cy="58" r="7" fill="#f4fbff"/><path d="m44 52-8-10" stroke="#f4fbff" stroke-width="3" stroke-linecap="round" opacity=".5"/><rect x="26" y="78" width="44" height="9" rx="4.5" fill="#62e6d2"/></symbol>
 <symbol id="icon-last-hair" viewBox="0 0 96 96"><rect x="0" y="66" width="96" height="30" fill="#9aa0a8"/><path d="M6 24h26M2 36h20M64 20h28M70 32h22" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity=".8"/><rect x="26" y="62" width="44" height="34" rx="10" fill="#2f3b57"/><path d="M42 62h12l-6 16z" fill="#f5f5f5"/><path d="M46 64h4l1 14-3 4-3-4z" fill="#c62828"/><circle cx="48" cy="44" r="22" fill="#f1c9a0"/><circle cx="40" cy="43" r="4" fill="#fff"/><circle cx="56" cy="43" r="4" fill="#fff"/><circle cx="40" cy="44" r="2" fill="#222"/><circle cx="56" cy="44" r="2" fill="#222"/><path d="M41 54q7 5 14 0" stroke="#222" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M38 24q-8-10-18-8M48 22q2-12 14-16M58 24q10-6 22 2" stroke="#1d1610" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="70" cy="30" r="2.5" fill="#4fc3f7"/></symbol>
 <symbol id="icon-crash" viewBox="0 0 96 96"><path d="M18 24l10 8M65 65l12 9M74 19v17m-6-6 6 6 6-6" stroke="#62e6d2" stroke-width="4" stroke-linecap="round"/><g transform="rotate(27 48 48)"><rect x="17" y="34" width="63" height="32" rx="16" fill="#ffb638"/><path d="M39 34v-9h16v9M18 47H9v11h14" fill="#d5912a"/><circle cx="55" cy="50" r="10" fill="#164755" stroke="#fff0c2" stroke-width="4"/><circle cx="52" cy="47" r="3" fill="#62e6d2"/></g></symbol><symbol id="icon-mines" viewBox="0 0 96 96"><circle cx="45" cy="48" r="22" fill="#ff766b"/><g stroke="#ff766b" stroke-width="6" stroke-linecap="round"><path d="M45 17v10m0 42v10M14 48h10m42 0h10M23 26l8 8m29 29 7 7M23 70l8-8m29-29 7-7"/></g><circle cx="38" cy="41" r="6" fill="#ffc4b3"/><circle cx="72" cy="73" r="13" fill="#62e6d2"/><path d="m65 74 5 4 8-10" fill="none" stroke="#0a2a3b" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-plinko" viewBox="0 0 96 96"><path d="M15 72h66v12H15z" fill="#ffb638"/><path d="M37 73v10m22-10v10" stroke="#72562a" stroke-width="3"/><g fill="#85b4c0"><circle cx="48" cy="30" r="4"/><circle cx="35" cy="44" r="4"/><circle cx="61" cy="44" r="4"/><circle cx="22" cy="58" r="4"/><circle cx="48" cy="58" r="4"/><circle cx="74" cy="58" r="4"/></g><path d="m45 13 10 17-11 13 10 13" fill="none" stroke="#62e6d2" stroke-width="3" stroke-dasharray="3 4"/><circle cx="47" cy="13" r="8" fill="#e3fff6"/></symbol><symbol id="icon-merge" viewBox="0 0 96 96"><g fill="#123c4b" stroke="#326475" stroke-width="2"><rect x="12" y="12" width="32" height="32" rx="10"/><rect x="52" y="12" width="32" height="32" rx="10"/><rect x="12" y="52" width="32" height="32" rx="10"/></g><circle cx="28" cy="28" r="11" fill="#8db0b9"/><circle cx="68" cy="28" r="11" fill="#62e6d2"/><circle cx="28" cy="68" r="11" fill="#ffb638"/><circle cx="68" cy="68" r="21" fill="#a8a0ed"/><g font-family="system-ui" font-weight="800" fill="#082333" text-anchor="middle"><text x="28" y="33" font-size="14">2</text><text x="68" y="33" font-size="14">4</text><text x="28" y="73" font-size="14">8</text><text x="68" y="75" font-size="22">16</text></g></symbol><symbol id="icon-dice" viewBox="0 0 96 96"><circle cx="48" cy="48" r="37" fill="none" stroke="#326475" stroke-width="2"/><path d="M48 9v9m39 30h-9M48 87v-9M9 48h9" stroke="#62e6d2" stroke-width="3"/><rect x="24" y="24" width="48" height="48" rx="13" fill="#62e6d2" transform="rotate(-12 48 48)"/><g fill="#0a2a3b"><circle cx="35" cy="39" r="4"/><circle cx="48" cy="48" r="4"/><circle cx="61" cy="57" r="4"/></g></symbol><symbol id="icon-limbo" viewBox="0 0 96 96"><path d="M48 10v29" stroke="#b6d8de" stroke-width="3" stroke-dasharray="4 4"/><path d="m48 31 18 20-18 29-18-29z" fill="#ffb638"/><path d="m48 35 9 16-9 22-9-22z" fill="#ffe1a0"/><path d="M15 69q33 20 66 0M19 80q29 15 58 0" fill="none" stroke="#62e6d2" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-hilo" viewBox="0 0 96 96"><rect x="13" y="20" width="44" height="58" rx="8" fill="#e4f2f3" transform="rotate(-13 35 49)"/><rect x="41" y="14" width="44" height="62" rx="8" fill="#ffb638" transform="rotate(9 63 45)"/><path d="m53 42 12-12 11 12M65 30v28" fill="none" stroke="#483619" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="m22 54 8 8 8-8" fill="none" stroke="#145263" stroke-width="4" stroke-linecap="round"/></symbol><symbol id="icon-keno" viewBox="0 0 96 96"><path d="M12 76 30 47 52 59 72 35 85 76Z" fill="#665036"/><path d="m32 69 7-16h19l7 16Z" fill="#ffcf54"/><path d="m25 18 45 44" stroke="#b98a58" stroke-width="9" stroke-linecap="round"/><path d="M40 14Q67 5 82 34L61 25Z" fill="#a6d4df"/><path d="m76 52 3 7 7 3-7 3-3 7-3-7-7-3 7-3Z" fill="#9af3eb"/></symbol><symbol id="icon-wheel" viewBox="0 0 96 96"><circle cx="48" cy="48" r="34" fill="#123c4b" stroke="#ffb638" stroke-width="5"/><circle cx="48" cy="48" r="24" fill="none" stroke="#326475" stroke-width="2"/><path d="M48 6v14m0 56v14M6 48h14m56 0h14" stroke="#e4f2f3" stroke-width="3"/><path d="m62 21-8 33-20 21 8-33z" fill="#ff766b"/><path d="m62 21-20 21 12 12z" fill="#62e6d2"/><circle cx="48" cy="48" r="5" fill="#e4f2f3"/></symbol><symbol id="icon-tower" viewBox="0 0 96 96"><g fill="#164755" stroke="#326475" stroke-width="2"><rect x="13" y="64" width="70" height="17" rx="5"/><rect x="22" y="40" width="52" height="17" rx="5"/><rect x="31" y="16" width="34" height="17" rx="5"/></g><g fill="#62e6d2"><circle cx="28" cy="72" r="5"/><circle cx="48" cy="48" r="5"/><circle cx="48" cy="24" r="5"/></g><path d="m76 50 8-10 8 10M84 41v22" fill="none" stroke="#ffb638" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-crossing" viewBox="0 0 96 96"><path d="M14 70h68M19 26h58" stroke="#326475" stroke-width="3" stroke-dasharray="6 6"/><g fill="#62e6d2"><ellipse cx="47" cy="51" rx="23" ry="19"/><circle cx="75" cy="47" r="11"/><ellipse cx="32" cy="31" rx="7" ry="10" transform="rotate(-35 32 31)"/><ellipse cx="34" cy="71" rx="7" ry="10" transform="rotate(35 34 71)"/></g><ellipse cx="47" cy="51" rx="16" ry="14" fill="#297a6e"/><path d="m47 38 9 7v10l-9 8-9-8V45z" fill="none" stroke="#a6f4d9" stroke-width="2"/><circle cx="78" cy="44" r="2.5" fill="#082333"/><path d="m24 50-12-5v12z" fill="#62e6d2"/></symbol><symbol id="icon-dream" viewBox="0 0 96 96"><circle cx="48" cy="49" r="32" fill="#113041" stroke="#326475" stroke-width="6"/><path d="M66 23a32 32 0 0 1 13 33" fill="none" stroke="#62e6d2" stroke-width="8" stroke-linecap="round"/><path d="M48 29v20l17 13" fill="none" stroke="#ffb638" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="49" r="5" fill="#ffb638"/><path d="m16 15 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#b3a3ee"/></symbol><symbol id="icon-runner" viewBox="0 0 96 96"><path d="m34 11-24 75h76L62 11z" fill="#164755"/><path d="m43 20-8 57m19-57 8 57" stroke="#62e6d2" stroke-width="2" stroke-dasharray="5 6"/><rect x="22" y="50" width="19" height="24" rx="3" fill="#ff766b"/><rect x="56" y="27" width="15" height="18" rx="3" fill="#ff766b"/><path d="m50 79 15-17m-13 0h13v13" fill="none" stroke="#ffb638" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="icon-elevator" viewBox="0 0 96 96"><g><path d="M19 59v20m10-20v20" stroke="#6b9ac4" stroke-width="6" stroke-linecap="round"/><path d="M14 41h20v25H14z" fill="#6b9ac4"/><circle cx="24" cy="29" r="11" fill="#2b2118"/></g><g><path d="M45 59v20m10-20v20" stroke="#a78bfa" stroke-width="6" stroke-linecap="round"/><path d="M40 41h20v25H40z" fill="#a78bfa"/><circle cx="50" cy="29" r="11" fill="#f5d0a9"/><path d="M50 18a11 11 0 0 0 0 22z" fill="#2b2118"/><text x="50" y="13" text-anchor="middle" font-family="system-ui" font-size="20" font-weight="700" fill="#ffb638">?</text></g><g><path d="M74 65v16m10-16v16" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="M69 46h20v26H69z" fill="#ffb638"/><circle cx="79" cy="34" r="11" fill="#2b2118"/><path d="m73 10 6 10 6-10z" fill="#e4f2f3"/></g></symbol><symbol id="icon-sneak" viewBox="0 0 96 96"><rect x="62" y="15" width="26" height="65" rx="3" fill="#8d7254"/><rect x="68" y="21" width="14" height="10" rx="2" fill="#62e6d2"/><circle cx="69" cy="53" r="2" fill="#ffb638"/><path d="M23 61 14 82m21-21 9 19" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="M18 37h21v27H18z" fill="#ffb638"/><circle cx="29" cy="25" r="11" fill="#f5d0a9"/><path d="m40 47 13-8" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="m45 12 3-7 3 7m-3-7v13" fill="none" stroke="#ff766b" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-fishing" viewBox="0 0 96 96"><path d="M14 19q22-8 31 1v24" fill="none" stroke="#d6bd8e" stroke-width="3"/><path d="M45 44v5q0 7 8 6" fill="none" stroke="#e4f2f3" stroke-width="2"/><path d="m70 59 17-14v28z" fill="#ffb638"/><ellipse cx="47" cy="60" rx="29" ry="20" fill="#ffb638"/><path d="M38 43v34M51 41v38" stroke="#fff0c2" stroke-width="5"/><circle cx="30" cy="55" r="6" fill="#fff"/><circle cx="28" cy="55" r="3" fill="#082333"/><path d="M12 86q8-7 16 0t16 0t16 0t16 0" fill="none" stroke="#62e6d2" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-campaign" viewBox="0 0 96 96"><path d="M24 46V30l22-9v25z" fill="#62e6d2"/><path d="M54 19q8 9 0 19M62 12q14 16 0 33" fill="none" stroke="#62e6d2" stroke-width="3.5" stroke-linecap="round"/><rect x="10" y="44" width="52" height="28" rx="5" fill="#ffb638"/><path d="M62 52h13l9 10v10H62z" fill="#d5912a"/><rect x="66" y="56" width="10" height="8" rx="2" fill="#164755"/><path d="M18 54h34M18 62h22" stroke="#72562a" stroke-width="3" stroke-linecap="round"/><circle cx="27" cy="74" r="8" fill="#082333" stroke="#e4f2f3" stroke-width="3"/><circle cx="68" cy="74" r="8" fill="#082333" stroke="#e4f2f3" stroke-width="3"/></symbol><symbol id="icon-boba" viewBox="0 0 96 96"><path d="m60 8-9 33" stroke="#ff9dbb" stroke-width="9" stroke-linecap="round"/><path d="m24 31 8 52h35l8-52z" fill="#e9bd91" stroke="#ffd0df" stroke-width="3"/><path d="M28 45h43l-5 35H34z" fill="#d89d74"/><ellipse cx="49" cy="31" rx="27" ry="8" fill="#ffe9f0" stroke="#ff9dbb" stroke-width="3"/><g fill="#6b3f2f"><circle cx="39" cy="72" r="5"/><circle cx="51" cy="74" r="5"/><circle cx="61" cy="69" r="5"/><circle cx="45" cy="63" r="5"/></g><g fill="#7a4a3c"><circle cx="39" cy="49" r="2.5"/><circle cx="58" cy="49" r="2.5"/></g><path d="M44 54q5 6 10 0" fill="none" stroke="#7a4a3c" stroke-width="2.5" stroke-linecap="round"/></symbol><symbol id="icon-cat" viewBox="0 0 96 96"><rect x="6" y="64" width="46" height="26" fill="#ff5d8f"/><rect x="2" y="60" width="54" height="8" fill="#7b2cbf"/><rect x="64" y="74" width="30" height="16" fill="#ff5d8f"/><rect x="60" y="70" width="38" height="8" fill="#7b2cbf"/><path d="M60 62q8-24 24-30" fill="none" stroke="#fff1c1" stroke-width="3" stroke-dasharray="4 5" stroke-linecap="round"/><path d="M28 40q-15-3-11-20" fill="none" stroke="#ff9f1c" stroke-width="6" stroke-linecap="round"/><ellipse cx="42" cy="40" rx="17" ry="12" fill="#ff9f1c"/><path d="M34 50v9M48 50v9" stroke="#ff9f1c" stroke-width="5" stroke-linecap="round"/><path d="M47 22l2-14 10 10zM60 17l9-11 2 16z" fill="#ff9f1c"/><circle cx="58" cy="29" r="13" fill="#ff9f1c"/><circle cx="54" cy="28" r="4" fill="#fff"/><circle cx="64" cy="28" r="4" fill="#fff"/><circle cx="55" cy="28" r="1.8" fill="#1b1b2f"/><circle cx="65" cy="28" r="1.8" fill="#1b1b2f"/><circle cx="69" cy="34" r="2.2" fill="#ff5d8f"/></symbol><symbol id="icon-bird" viewBox="0 0 96 96"><path d="M6 80h84" stroke="#f72585" stroke-width="6" stroke-linecap="round"/><path d="M22 46 5 36l4 19z" fill="#00b4d8"/><circle cx="38" cy="48" r="22" fill="#4cc9f0"/><ellipse cx="41" cy="56" rx="13" ry="10" fill="#caf0f8"/><circle cx="46" cy="42" r="7" fill="#fff"/><circle cx="48" cy="42" r="3.2" fill="#1b1b2f"/><path d="M57 44l19 5-19 5z" fill="#ffbe0b"/><circle cx="33" cy="24" r="4" fill="#f72585"/><circle cx="42" cy="22" r="4" fill="#f72585"/><path d="M33 70v9M43 70v9" stroke="#ff9f1c" stroke-width="5" stroke-linecap="round"/><ellipse cx="77" cy="73" rx="13" ry="7" fill="#8d5524"/><ellipse cx="77" cy="64" rx="9" ry="6" fill="#8d5524"/><ellipse cx="77" cy="57" rx="5.5" ry="4.5" fill="#8d5524"/></symbol><symbol id="icon-frog" viewBox="0 0 96 96"><path d="M6 84h84" stroke="#7cb342" stroke-width="6" stroke-linecap="round"/><rect x="56" y="58" width="34" height="18" rx="9" fill="#8bc34a"/><rect x="56" y="38" width="34" height="18" rx="9" fill="#d32f2f"/><rect x="56" y="18" width="34" height="18" rx="9" fill="#ffb74d"/><circle cx="64" cy="66" r="3" fill="#fff"/><circle cx="64" cy="46" r="3" fill="#fff"/><circle cx="64" cy="26" r="3" fill="#fff"/><path d="M38 62 58 67" stroke="#ff6f91" stroke-width="6" stroke-linecap="round"/><ellipse cx="26" cy="62" rx="22" ry="19" fill="#4caf50"/><circle cx="16" cy="42" r="9" fill="#4caf50"/><circle cx="34" cy="42" r="9" fill="#4caf50"/><circle cx="16" cy="42" r="5" fill="#fff"/><circle cx="34" cy="42" r="5" fill="#fff"/><circle cx="18" cy="42" r="2.4" fill="#1b1b2f"/><circle cx="36" cy="42" r="2.4" fill="#1b1b2f"/><ellipse cx="28" cy="68" rx="13" ry="9" fill="#c8e6c9"/></symbol><symbol id="icon-nap" viewBox="0 0 96 96"><rect x="4" y="62" width="88" height="24" rx="6" fill="#8d6e63"/><rect x="4" y="56" width="88" height="10" rx="4" fill="#a1887f"/><rect x="60" y="34" width="28" height="22" rx="4" fill="#263238"/><rect x="64" y="38" width="20" height="14" rx="2" fill="#4dd0e1"/><rect x="12" y="50" width="38" height="9" rx="4" fill="#5c6bc0"/><circle cx="34" cy="46" r="12" fill="#f1c9a0"/><path d="M22 43a12 12 0 0 1 24 0z" fill="#3e2723"/><path d="M27 48q3 3 6 0M35 48q3 3 6 0" stroke="#4e342e" stroke-width="2" fill="none" stroke-linecap="round"/><text x="50" y="32" font-size="18" font-weight="800" fill="#b39ddb" font-family="sans-serif">Z</text><text x="64" y="20" font-size="13" font-weight="800" fill="#ce93d8" font-family="sans-serif">z</text><rect x="70" y="4" width="14" height="26" rx="5" fill="#37474f" opacity="0"/><circle cx="14" cy="16" r="7" fill="#f1c9a0"/><rect x="8" y="23" width="12" height="14" rx="3" fill="#37474f"/><rect x="13" y="25" width="2.5" height="8" fill="#d32f2f"/><text x="24" y="22" font-size="18" font-weight="800" fill="#d32f2f" font-family="sans-serif">!</text></symbol>
-<symbol id="icon-reaper" viewBox="0 0 96 96"><path d="M23 78 31 36Q44 15 57 36l9 42z" fill="#171426"/><circle cx="44" cy="33" r="16" fill="#171426"/><g fill="#ffb638"><circle cx="38" cy="33" r="3"/><circle cx="50" cy="33" r="3"/></g><path d="m59 78 12-52" stroke="#8b7a5a" stroke-width="5" stroke-linecap="round"/><path d="M66 28q18-13 24 13-11-8-24-7" fill="#cfd6e6"/><path d="M10 55q0-13 11-13t11 13v21l-6-4-6 4-5-4-5 4z" fill="#dfe9ff"/><g fill="#1b1630"><circle cx="17" cy="54" r="2"/><circle cx="25" cy="54" r="2"/></g><ellipse cx="21" cy="33" rx="10" ry="3" fill="none" stroke="#6cc58f" stroke-width="3"/></symbol><symbol id="icon-dive" viewBox="0 0 96 96"><circle cx="48" cy="52" r="36" fill="#0d4a7a" stroke="#6be3f5" stroke-width="3"/><path d="M16 42q16-7 32 0t32 0" fill="none" stroke="#6be3f5" stroke-width="3" stroke-linecap="round" opacity=".55"/><rect x="25" y="46" width="46" height="22" rx="10" fill="#f5c26b" stroke="#10283d" stroke-width="3"/><rect x="30" y="50" width="16" height="14" rx="6" fill="#9fe8f7"/><rect x="50" y="50" width="16" height="14" rx="6" fill="#9fe8f7"/><path d="M71 56h6V26" fill="none" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/><g fill="#d8f7ff"><circle cx="77" cy="17" r="4"/><circle cx="67" cy="11" r="3"/><circle cx="84" cy="7" r="2.5"/></g><circle cx="40" cy="78" r="4.5" fill="#fff8e6" stroke="#f5c26b" stroke-width="2"/><circle cx="54" cy="80" r="3.5" fill="#fff8e6" stroke="#f5c26b" stroke-width="2"/></symbol><symbol id="icon-mrt" viewBox="0 0 96 96"><path d="M30 80l-9 10M66 80l9 10" stroke="#9aa3ad" stroke-width="4" stroke-linecap="round"/><rect x="18" y="10" width="60" height="70" rx="15" fill="#e9eef3" stroke="#4f8cff" stroke-width="3"/><rect x="26" y="20" width="44" height="28" rx="7" fill="#10203f"/><path d="M38 44V31a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v8h10a3 3 0 0 1 3 3v2z" fill="#4a8cff"/><path d="M26 56h44" stroke="#4f8cff" stroke-width="5"/><circle cx="32" cy="68" r="5" fill="#f5c26b"/><circle cx="64" cy="68" r="5" fill="#f5c26b"/><path d="M42 68h12" stroke="#9aa3ad" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-pancake" viewBox="0 0 96 96"><path d="M14 66 4 86" stroke="#8a4a1e" stroke-width="9" stroke-linecap="round"/><circle cx="52" cy="48" r="38" fill="#2b2b31" stroke="#5a5a63" stroke-width="3"/><circle cx="52" cy="48" r="27" fill="#ffc21a" opacity=".55"/><circle cx="52" cy="48" r="22" fill="#e9a640" stroke="#8a4a1e" stroke-width="2"/><circle cx="52" cy="48" r="16" fill="#86c94a"/><path d="M38 55c6-8 12 4 18-4s10 2 12-4" fill="none" stroke="#a8301a" stroke-width="4" stroke-linecap="round"/><path d="M37 46c6-8 12 4 18-4s10 2 12-4" fill="none" stroke="#fbfaf3" stroke-width="4" stroke-linecap="round"/><g fill="none" stroke="#3f9a1a" stroke-width="2.5"><circle cx="50" cy="44" r="2.5"/><circle cx="57" cy="50" r="2.5"/><circle cx="46" cy="52" r="2.5"/></g><path d="M74 14q-4-6 0-10M84 20q-4-6 0-10" fill="none" stroke="#cfe0ff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/></symbol><symbol id="icon-skybuilder" viewBox="0 0 96 96"><rect x="0" y="82" width="96" height="14" fill="#7bd88f"/><rect x="24" y="64" width="48" height="20" rx="3" fill="#a8dadc" stroke="#2b2d42" stroke-width="3"/><rect x="28" y="44" width="46" height="20" rx="3" fill="#ffe28a" stroke="#2b2d42" stroke-width="3"/><rect x="26" y="26" width="44" height="18" rx="3" fill="#ffb4a2" stroke="#2b2d42" stroke-width="3"/><path d="M20 26L48 6l28 20z" fill="#e63946" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><rect x="34" y="50" width="10" height="10" rx="2" fill="#fff7c2"/><rect x="54" y="50" width="10" height="10" rx="2" fill="#fff7c2"/><rect x="34" y="70" width="10" height="10" rx="2" fill="#fff7c2"/><rect x="54" y="70" width="10" height="10" rx="2" fill="#fff7c2"/><path d="M84 0v26M84 6H56" stroke="#ffb703" stroke-width="4" fill="none"/></symbol>
+<symbol id="icon-reaper" viewBox="0 0 96 96"><path d="M23 78 31 36Q44 15 57 36l9 42z" fill="#171426"/><circle cx="44" cy="33" r="16" fill="#171426"/><g fill="#ffb638"><circle cx="38" cy="33" r="3"/><circle cx="50" cy="33" r="3"/></g><path d="m59 78 12-52" stroke="#8b7a5a" stroke-width="5" stroke-linecap="round"/><path d="M66 28q18-13 24 13-11-8-24-7" fill="#cfd6e6"/><path d="M10 55q0-13 11-13t11 13v21l-6-4-6 4-5-4-5 4z" fill="#dfe9ff"/><g fill="#1b1630"><circle cx="17" cy="54" r="2"/><circle cx="25" cy="54" r="2"/></g><ellipse cx="21" cy="33" rx="10" ry="3" fill="none" stroke="#6cc58f" stroke-width="3"/></symbol><symbol id="icon-dive" viewBox="0 0 96 96"><circle cx="48" cy="52" r="36" fill="#0d4a7a" stroke="#6be3f5" stroke-width="3"/><path d="M16 42q16-7 32 0t32 0" fill="none" stroke="#6be3f5" stroke-width="3" stroke-linecap="round" opacity=".55"/><rect x="25" y="46" width="46" height="22" rx="10" fill="#f5c26b" stroke="#10283d" stroke-width="3"/><rect x="30" y="50" width="16" height="14" rx="6" fill="#9fe8f7"/><rect x="50" y="50" width="16" height="14" rx="6" fill="#9fe8f7"/><path d="M71 56h6V26" fill="none" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/><g fill="#d8f7ff"><circle cx="77" cy="17" r="4"/><circle cx="67" cy="11" r="3"/><circle cx="84" cy="7" r="2.5"/></g><circle cx="40" cy="78" r="4.5" fill="#fff8e6" stroke="#f5c26b" stroke-width="2"/><circle cx="54" cy="80" r="3.5" fill="#fff8e6" stroke="#f5c26b" stroke-width="2"/></symbol><symbol id="icon-mrt" viewBox="0 0 96 96"><path d="M30 80l-9 10M66 80l9 10" stroke="#9aa3ad" stroke-width="4" stroke-linecap="round"/><rect x="18" y="10" width="60" height="70" rx="15" fill="#e9eef3" stroke="#4f8cff" stroke-width="3"/><rect x="26" y="20" width="44" height="28" rx="7" fill="#10203f"/><path d="M38 44V31a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v8h10a3 3 0 0 1 3 3v2z" fill="#4a8cff"/><path d="M26 56h44" stroke="#4f8cff" stroke-width="5"/><circle cx="32" cy="68" r="5" fill="#f5c26b"/><circle cx="64" cy="68" r="5" fill="#f5c26b"/><path d="M42 68h12" stroke="#9aa3ad" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-pancake" viewBox="0 0 96 96"><path d="M14 66 4 86" stroke="#8a4a1e" stroke-width="9" stroke-linecap="round"/><circle cx="52" cy="48" r="38" fill="#2b2b31" stroke="#5a5a63" stroke-width="3"/><circle cx="52" cy="48" r="27" fill="#ffc21a" opacity=".55"/><circle cx="52" cy="48" r="22" fill="#e9a640" stroke="#8a4a1e" stroke-width="2"/><circle cx="52" cy="48" r="16" fill="#86c94a"/><path d="M38 55c6-8 12 4 18-4s10 2 12-4" fill="none" stroke="#a8301a" stroke-width="4" stroke-linecap="round"/><path d="M37 46c6-8 12 4 18-4s10 2 12-4" fill="none" stroke="#fbfaf3" stroke-width="4" stroke-linecap="round"/><g fill="none" stroke="#3f9a1a" stroke-width="2.5"><circle cx="50" cy="44" r="2.5"/><circle cx="57" cy="50" r="2.5"/><circle cx="46" cy="52" r="2.5"/></g><path d="M74 14q-4-6 0-10M84 20q-4-6 0-10" fill="none" stroke="#cfe0ff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/></symbol><symbol id="icon-rocket-chair" viewBox="0 0 96 96"><rect x="4" y="2" width="88" height="92" rx="16" fill="#fff"/><path d="M37 70q-3 12 2 22q4-9 2-22zM59 70q-3 12 2 22q4-9 2-22z" fill="#e8502e" stroke="#1d1b1a" stroke-width="2" stroke-linejoin="round"/><rect x="34" y="58" width="8" height="14" rx="2" fill="#fff" stroke="#1d1b1a" stroke-width="2.5"/><rect x="56" y="58" width="8" height="14" rx="2" fill="#fff" stroke="#1d1b1a" stroke-width="2.5"/><path d="M40 56h18l-2 16H42z" fill="#a9d8ee" stroke="#1d1b1a" stroke-width="2.5" stroke-linejoin="round"/><rect x="30" y="50" width="38" height="7" rx="3" fill="#1d1b1a"/><rect x="33" y="22" width="32" height="30" rx="5" fill="#1d1b1a"/><circle cx="49" cy="20" r="9" fill="#fff" stroke="#1d1b1a" stroke-width="2.5"/><path d="M40 16q9-9 18 0q-4-3-9-3t-9 3z" fill="#1d1b1a"/><ellipse cx="49" cy="24" rx="3" ry="3.5" fill="#1d1b1a"/><path d="M47 30h4l-1 14h-2z" fill="#e8502e"/><path d="M14 18l6 4M12 30h7M80 18l-6 4M84 30h-7" stroke="#1d1b1a" stroke-width="2.5" stroke-linecap="round"/><path d="M22 8l3 6M74 8l-3 6" stroke="#e8502e" stroke-width="2.5" stroke-linecap="round"/></symbol>
+<symbol id="icon-skybuilder" viewBox="0 0 96 96"><rect x="0" y="82" width="96" height="14" fill="#7bd88f"/><rect x="24" y="64" width="48" height="20" rx="3" fill="#a8dadc" stroke="#2b2d42" stroke-width="3"/><rect x="28" y="44" width="46" height="20" rx="3" fill="#ffe28a" stroke="#2b2d42" stroke-width="3"/><rect x="26" y="26" width="44" height="18" rx="3" fill="#ffb4a2" stroke="#2b2d42" stroke-width="3"/><path d="M20 26L48 6l28 20z" fill="#e63946" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><rect x="34" y="50" width="10" height="10" rx="2" fill="#fff7c2"/><rect x="54" y="50" width="10" height="10" rx="2" fill="#fff7c2"/><rect x="34" y="70" width="10" height="10" rx="2" fill="#fff7c2"/><rect x="54" y="70" width="10" height="10" rx="2" fill="#fff7c2"/><path d="M84 0v26M84 6H56" stroke="#ffb703" stroke-width="4" fill="none"/></symbol>
 <symbol id="icon-carp" viewBox="0 0 96 96"><rect y="70" width="96" height="26" fill="#219ebc"/><path d="M0 70q12-9 24 0t24 0 24 0 24 0" fill="none" stroke="#bde0fe" stroke-width="4"/><path d="M26 40L8 24v32z" fill="#d00000" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><ellipse cx="50" cy="40" rx="27" ry="17" fill="#ff6b35" stroke="#2b2d42" stroke-width="3"/><path d="M42 26l8-13 9 13z" fill="#d00000" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><ellipse cx="52" cy="46" rx="16" ry="7" fill="#ffe8d6"/><circle cx="66" cy="35" r="5" fill="#fff" stroke="#2b2d42" stroke-width="2"/><circle cx="67" cy="35" r="2.3" fill="#2b2d42"/><path d="M80 30l8-10M82 36l10-2" stroke="#2b2d42" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-rider" viewBox="0 0 96 96"><rect y="76" width="96" height="20" fill="#5c5c7a"/><circle cx="26" cy="68" r="11" fill="#333" stroke="#2b2d42" stroke-width="3"/><circle cx="68" cy="68" r="11" fill="#333" stroke="#2b2d42" stroke-width="3"/><path d="M26 68l12-24h20l10 24" fill="#ffd166" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><rect x="6" y="28" width="30" height="26" rx="5" fill="#e63946" stroke="#2b2d42" stroke-width="3"/><rect x="42" y="26" width="16" height="22" rx="5" fill="#2ec4b6" stroke="#2b2d42" stroke-width="3"/><circle cx="52" cy="16" r="9" fill="#f5cba7" stroke="#2b2d42" stroke-width="3"/><path d="M43 14a9 9 0 0118 0z" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3"/></symbol><symbol id="icon-boss" viewBox="0 0 96 96"><rect y="78" width="96" height="18" fill="#6d597a"/><ellipse cx="44" cy="56" rx="34" ry="24" fill="#3d405b" stroke="#2b2d42" stroke-width="3"/><ellipse cx="50" cy="58" rx="20" ry="17" fill="#f1faee" stroke="#2b2d42" stroke-width="3"/><path d="M48 32h14l4 24-10 8-8-8z" fill="#e63946" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><circle cx="56" cy="22" r="15" fill="#f5cba7" stroke="#2b2d42" stroke-width="3"/><circle cx="50" cy="20" r="3" fill="#fff"/><circle cx="62" cy="20" r="3" fill="#fff"/><path d="M48 14l8 3M64 14l-8 3" stroke="#2b2d42" stroke-width="3" stroke-linecap="round"/><ellipse cx="56" cy="31" rx="6" ry="4" fill="#7a1c1c"/></symbol><symbol id="icon-thief" viewBox="0 0 96 96"><rect width="96" height="96" fill="none"/><circle cx="30" cy="70" r="12" fill="#e63946" stroke="#2b2d42" stroke-width="3"/><circle cx="52" cy="74" r="10" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3"/><circle cx="72" cy="70" r="11" fill="#7bd88f" stroke="#2b2d42" stroke-width="3"/><path d="M22 36l4-20 14 12zM58 28l14-12 4 20z" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><circle cx="48" cy="42" r="24" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3"/><circle cx="39" cy="38" r="4" fill="#2b2d42"/><circle cx="57" cy="38" r="4" fill="#2b2d42"/><circle cx="48" cy="48" r="3.5" fill="#ff5d8f"/><path d="M34 48l-12-3M34 52l-12 3M62 48l12-3M62 52l12 3" stroke="#2b2d42" stroke-width="2.5" stroke-linecap="round"/></symbol><symbol id="icon-baby" viewBox="0 0 96 96"><rect y="78" width="96" height="18" fill="#c08552"/><rect x="26" y="52" width="44" height="30" rx="12" fill="#a0c4ff" stroke="#2b2d42" stroke-width="3"/><rect x="26" y="66" width="44" height="14" rx="6" fill="#fff" stroke="#2b2d42" stroke-width="3"/><circle cx="48" cy="34" r="22" fill="#f5cba7" stroke="#2b2d42" stroke-width="3"/><path d="M40 14a8 8 0 018-6 8 8 0 018 6" fill="none" stroke="#ffd6a5" stroke-width="5" stroke-linecap="round"/><circle cx="41" cy="34" r="3.5" fill="#2b2d42"/><circle cx="56" cy="34" r="3.5" fill="#2b2d42"/><ellipse cx="48" cy="44" rx="6" ry="4" fill="#ff8fab" stroke="#2b2d42" stroke-width="2"/></symbol><symbol id="icon-pudding" viewBox="0 0 96 96"><path d="M6 86h84" stroke="#b79b6b" stroke-width="6" stroke-linecap="round"/><rect x="52" y="22" width="14" height="14" fill="#e53935" stroke="#1b1b2f" stroke-width="2.5"/><rect x="52" y="36" width="14" height="14" fill="#e53935" stroke="#1b1b2f" stroke-width="2.5"/><rect x="66" y="36" width="14" height="14" fill="#1e88e5" stroke="#1b1b2f" stroke-width="2.5"/><rect x="66" y="50" width="14" height="14" fill="#1e88e5" stroke="#1b1b2f" stroke-width="2.5"/><rect x="52" y="50" width="14" height="14" fill="#fdd835" stroke="#1b1b2f" stroke-width="2.5"/><rect x="14" y="48" width="30" height="34" rx="8" fill="#eef2f8" stroke="#1b1b2f" stroke-width="3"/><rect x="14" y="52" width="30" height="7" fill="#d32f2f"/><circle cx="29" cy="36" r="10" fill="#f1c9a0" stroke="#1b1b2f" stroke-width="3"/><path d="M25 27l4-12 4 12z" fill="#d32f2f"/><circle cx="45" cy="42" r="8" fill="#ffe0bd" stroke="#1b1b2f" stroke-width="2.5"/><circle cx="43" cy="41" r="1.4" fill="#1b1b2f"/><circle cx="48" cy="41" r="1.4" fill="#1b1b2f"/><path d="M42.5 45.5q2.5 2.5 5 0" stroke="#1b1b2f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M18 56l24 14" stroke="#d32f2f" stroke-width="4" stroke-linecap="round"/></symbol></defs></svg><div class="lobby-hero"><div class="lobby-hero-copy"><p class="lobby-eyebrow"><span></span> DEEP SEA ARCADE</p><h2>今天，想潛進<br>哪一場冒險？</h2><p class="lobby-intro">從偷偷下班到深海釣魚，挑一款就開玩。<br>同一個點數錢包，挑選不同的心跳。</p><button class="lobby-hero-link" id="lobby-explore" type="button">探索全部遊戲 <span aria-hidden="true">↓</span></button></div><div class="lobby-hero-art" aria-hidden="true"><div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div><span class="hero-bubble bubble-one"></span><span class="hero-bubble bubble-two"></span><span class="hero-bubble bubble-three"></span><div class="hero-sub"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crash"></use></svg></div><div class="hero-fish"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-fishing"></use></svg></div><div class="hero-clock"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dream"></use></svg></div><div class="hero-turtle"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crossing"></use></svg></div><span class="hero-art-label">DIVE INTO PLAY</span></div></div>
     <section class="daily-supply" aria-label="每日免費補給"><a class="game-card" href="#keno" id="gold-float" title="每日免費挖礦" aria-describedby="gold-daily-status" data-game-category="daily" aria-label="每日免費挖金礦：每天免費3次，每次挖5格，最多獲得30點">
   <div class="gold-banner-art" aria-hidden="true"><svg viewBox="0 0 96 96" focusable="false"><use href="#icon-keno"></use></svg><span id="gold-free-badge">3</span></div>
@@ -1019,7 +1022,8 @@ body.ol-expanded { overflow: hidden; }
 </a></section>
     <div class="lobby-section-heading" id="lobby-games"><div><p class="lobby-eyebrow">PICK YOUR NEXT ADVENTURE</p><h2>遊戲大廳 <span id="lobby-count">28 款遊戲</span></h2></div><p>選一款，開始你的下一局。</p></div>
     <div class="lobby-filters" role="group" aria-label="篩選遊戲類型"><button type="button" data-lobby-filter="all" aria-pressed="true">全部 <span>30</span></button><button type="button" data-lobby-filter="run" aria-pressed="false">跑酷動作 <span>0</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false">潛行偷閒 <span>0</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false">時機操作 <span>0</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false">益智策略 <span>0</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false">免費懷舊 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false">機率挑戰 <span>0</span></button></div>
-    <div class="lobby-grid"><a class="game-card" href="#ocean-link" data-game-category="retro" aria-label="免費遊玩深海連連看，配對圖案闖關並獲得獎勵。">
+    <div class="lobby-grid"><a class="game-card" href="#rocket-chair" data-game-category="timing" aria-label="遊玩社畜要下班：對著手機大吼讓火箭椅往上衝，撞破 5 層天花板提早下班，每局10點"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-rocket-chair"></use></svg></div><h3>社畜要下班</h3><p class="game-card-en">Roar Through the Ceiling</p><p class="game-card-description">對著手機大吼，火箭椅一路撞破天花板提早下班。</p><div class="game-card-footer"><span>每局 10 點</span><span>只扣入場點數</span></div></a>
+<a class="game-card" href="#ocean-link" data-game-category="retro" aria-label="免費遊玩深海連連看，配對圖案闖關並獲得獎勵。">
   <div class="game-card-top"><span class="game-card-category">免費懷舊</span><span class="game-card-arrow" aria-hidden="true">↗</span></div>
   <div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-ocean-link"></use></svg></div>
   <h3>深海連連看</h3><p class="game-card-en">Ocean Link</p>
@@ -1797,6 +1801,11 @@ body.ol-expanded { overflow: hidden; }
     <div class="pancake-platform-bar"><p class="hint">每局扣 10 點，沒有點數獎勵；按遊戲裡的「開火」或「再煎一次」才扣點。泡麵用完可用 30 點換 5 包，或看示範廣告後 30 分鐘不扣點。</p><button class="chip" id="pancake-finish" type="button" disabled>結束本局</button></div>
     <p class="msg" id="pancake-msg" aria-live="polite">半夜偷煮泡麵煎餅：晃手機讓煎餅滑動，外圈變金黃就往上甩翻面。沒有動作感應時可用手指玩。</p>
     <div class="pancake-stage"><iframe id="pancake-frame" title="泡麵煎餅翻面 Noodle Pancake" allow="accelerometer; gyroscope; magnetometer; autoplay; clipboard-write; web-share"></iframe></div>
+  </section>
+  <section class="view" id="view-rocket-chair" hidden>
+    <div class="rocket-chair-platform-bar"><p class="hint">每局扣 10 點，沒有點數獎勵；按遊戲裡選好模式開始時才扣點。會議時間用完可用 30 點買特濃咖啡續命，或看示範廣告延長一次。</p></div>
+    <p class="msg" id="rocket-chair-msg" aria-live="polite">對著手機大吼讓火箭椅往上衝，撞破 5 層天花板提早下班。不方便出聲可以選按住螢幕。</p>
+    <div class="rocket-chair-stage"><iframe id="rocket-chair-frame" title="社畜要下班 Roar Through the Ceiling" allow="microphone; autoplay; clipboard-write; web-share"></iframe></div>
   </section>
   <section class="view" id="view-clock-out" hidden>
     <div class="console"><div class="sneak-stage"><canvas id="co-canvas" tabindex="0" width="400" height="560" aria-label="下班保衛戰：在抽屜格子裡擺放辦公用品當防線，點戰場丟便利貼，撐到 17:00 打卡下班"></canvas></div>
@@ -5481,7 +5490,164 @@ body.ol-expanded { overflow: hidden; }
   "雷射地雷|Laser Mines": "Laser Mines",
   "雷射地雷：誰踩到都算失敗，會自動退回上一步。|Laser mines: if either one steps on one, that move fails and is undone automatically.": "Laser mines: if either one steps on one, that move fails and is undone automatically.",
   "靠牆|Against the Wall": "Against the Wall",
-  "點一關就會扣 10 點開始一局；本局每過一關 BONUS +2 點，最多 10 點。|Picking a stage starts a round for 10 pts; each stage you clear in the round gives a +2 pt BONUS, up to 10 pts.": "Picking a stage starts a round for 10 pts; each stage you clear in the round gives a +2 pt BONUS, up to 10 pts."
+  "點一關就會扣 10 點開始一局；本局每過一關 BONUS +2 點，最多 10 點。|Picking a stage starts a round for 10 pts; each stage you clear in the round gives a +2 pt BONUS, up to 10 pts.": "Picking a stage starts a round for 10 pts; each stage you clear in the round gives a +2 pt BONUS, up to 10 pts.",
+  "1F 業務部": "1F Sales",
+  "2F 財務部": "2F Finance",
+  "3F 會議室": "3F Meeting Room",
+  "3F 會議室的投影機光束": "the 3F meeting room projector beam",
+  "4F 茶水間": "4F Pantry",
+  "5F 頂樓前": "5F Below the Roof",
+  "」\n你們部門誰最會落跑？": "”\nWho in your team escapes best?",
+  "・開局不扣點": " · free entry",
+  "下一點 0:": "Next point 0:",
+  "下班火箭": "Clock-Out Rocket",
+  "下班！": "Off work!",
+  "不方便出聲？用按的玩": "Can’t be loud? Play by holding",
+  "不要說是我說的": "Don’t say I told you",
+  "不，加班了。": "No, overtime again.",
+  "主管又開始講了，趕快繼續衝": "The boss is talking again. Keep flying!",
+  "主管的會議延長": "Boss’s meeting extended",
+  "主管的會議延長 20 秒（每局 1 次）": "Extend the boss’s meeting by 20s (once per run)",
+  "主管要開完會了！": "The boss’s meeting is almost over!",
+  "主管還在開會，趕快回來": "The boss is still in the meeting. Come back quickly",
+  "之後 30 分鐘開局不扣點": "Free entry for the next 30 minutes",
+  "事件 JSON 已複製": "Event JSON copied",
+  "今天也沒辦法提早下班。": "No leaving early today either.",
+  "今天也準時……": "Clocking out on time again…",
+  "他們兩個……": "Those two…",
+  "你提早了": "You left",
+  "你衝到了": "You reached",
+  "你要去哪？": "Where are you going?",
+  "停": "Stop",
+  "先躲一下": "Hide for a moment",
+  "免費時間": "Free time",
+  "全公司最安靜的落跑": "Quietest escape in the office",
+  "再吼一次": "Roar again",
+  "分鐘": " min",
+  "分鐘下班\n稱號：「": " minutes early\nTitle: “",
+  "分鐘下班，沒有點數獎勵。再玩一次會重新扣": " minutes early. No point rewards. Playing again costs another ",
+  "分鐘開局不扣點": " minutes of free entry",
+  "剛好 18:00，準時下班！": "18:00 sharp, off on time!",
+  "加班之王": "King of Overtime",
+  "匯出事件": "Export events",
+  "卡在": "Stuck at",
+  "原來大家都想提早下班。": "Turns out everyone wants to leave early.",
+  "叮": "Ding",
+  "可以到瀏覽器設定允許麥克風，或先用按的玩": "Allow the microphone in browser settings, or play by holding for now",
+  "吼了": "Roared",
+  "吼破天花板": "Roar Through the Ceiling",
+  "吼聲讓全公司都知道你要落跑": "Your roar told the whole office you were escaping",
+  "咚！": "Bonk!",
+  "哼歌往上飛，突然大聲一下衝刺": "Hum to fly up; get loud suddenly to dash",
+  "回首頁": "Home",
+  "在同一層彈回來": "bounces back on the same floor",
+  "在捷運上也能玩，哼歌就能飛": "Playable on the metro: just hum to fly",
+  "報帳單請在今天交齊": "Expense reports due today",
+  "大吼一聲就能衝": "One roar and you dash",
+  "大吼一聲試試看！": "Try a big roar!",
+  "好像沒聽到，再一次！": "Didn’t catch that. Again!",
+  "好想下班……": "I want to go home…",
+  "對著手機大吼往上飛，短吼一聲衝刺": "Roar at your phone to fly up; a short roar dashes",
+  "對著手機大吼讓火箭椅往上衝，撞破 5 層天花板提早下班。不方便出聲可以選按住螢幕。": "Roar at your phone to launch the rocket chair through 5 ceilings and leave work early. Can’t be loud? Choose hold-to-fly.",
+  "對著手機大吼，火箭椅一路撞破天花板提早下班。": "Roar at your phone and blast your rocket chair through the ceilings to leave early.",
+  "對著手機大吼，衝破 5 層樓": "Roar at your phone to break through 5 floors",
+  "對著手機大吼，點火！": "Roar at your phone to ignite!",
+  "對著手機大聲一點": "Louder at your phone",
+  "小聲模式・點火": "Quiet mode · Ignite",
+  "小聲模式過關": "Cleared in quiet mode",
+  "小聲模式：之後輕輕哼歌就能飛": "Quiet mode: a soft hum is enough to fly",
+  "層天花板": " ceilings",
+  "已複製成績，貼給同事吧": "Result copied. Send it to your coworkers",
+  "往頂樓": "to the roof",
+  "快速點兩下衝刺，就能撞破天花板！": "Double-tap quickly to dash through the ceiling!",
+  "想玩第 2 關？": "Want level 2?",
+  "我對著手機大吼，坐著火箭椅提早了": "I roared at my phone and rode a rocket chair out of work",
+  "我跟你講喔": "Let me tell you",
+  "把手機轉回直的再繼續": "Turn your phone upright to continue",
+  "按住螢幕往上飛，快速點兩下衝刺": "Hold the screen to fly up; double-tap to dash",
+  "按住飛了": "Held to fly",
+  "掉": "Drop",
+  "推力減半！": "Thrust halved!",
+  "提早": "Early by",
+  "撞破天花板": "Ceilings broken",
+  "放棄，乖乖留下": "Give up and stay",
+  "最大吼聲": "Loudest roar",
+  "會議再拖": "Meeting drags on",
+  "會議剩": "Meeting left",
+  "會議剩 5 分鐘": "5 minutes of meeting left",
+  "會議延長": "Meeting extended",
+  "本月業績": "Monthly sales",
+  "校準完成！": "Calibration done!",
+  "樓的天花板": "F ceiling",
+  "欸你有空嗎？": "Hey, got a minute?",
+  "欸你知道嗎": "Hey, did you know",
+  "欸你知道嗎……": "Hey, did you know…",
+  "正在聽聽辦公室有多吵": "Listening to how noisy the office is",
+  "正常模式・點火": "Normal mode · Ignite",
+  "每局扣 10 點，沒有點數獎勵；按遊戲裡選好模式開始時才扣點。會議時間用完可用 30 點買特濃咖啡續命，或看示範廣告延長一次。": "Each run costs 10 pts with no point rewards; points are charged only when you pick a mode in the game. When the meeting runs out you can buy an extra-strong coffee for 30 pts, or watch a demo ad once to extend it.",
+  "每局需要": "Each run needs",
+  "水桶": "Water jug",
+  "沒有拿到麥克風權限": "No microphone permission",
+  "準備落跑": "Get ready to escape",
+  "準備點火……": "Preparing ignition…",
+  "準時下班族": "On-Time Clocker",
+  "灑水中": "Sprinklers on",
+  "特濃咖啡": "Extra-strong coffee",
+  "特濃咖啡，喝！": "Extra-strong coffee, gulp!",
+  "用你最大的聲音，等一下就是這麼大聲才衝得快": "Use your loudest voice. That’s how loud you need to be to dash",
+  "用按的": "By holding",
+  "用按的玩": "Play by holding",
+  "直接失敗": "Fail now",
+  "直接過關": "Clear now",
+  "看 5 秒示範廣告": "Watch a 5-second demo ad",
+  "示範廣告": "Demo ad",
+  "社畜要下班": "Roar Through the Ceiling",
+  "社畜要下班 Roar Through the Ceiling": "Roar Through the Ceiling",
+  "社畜要下班 吼破天花板": "Roar Through the Ceiling",
+  "秒內推力加倍": "s of double thrust",
+  "秒推力加倍": "s of double thrust",
+  "秒！": "s!",
+  "秒（每局 1 次）": "s (once per run)",
+  "秒，": "s, ",
+  "秒，接下來": "s, then ",
+  "稱號": "Title",
+  "突然大吼一聲，就能撞破天花板！": "Roar suddenly to smash through the ceiling!",
+  "立可白": "Correction pen",
+  "第 2 關還在準備中": "Level 2 is still in the works",
+  "第四季目標": "Q4 targets",
+  "繼續落跑": "Keep escaping",
+  "聽說……": "I heard…",
+  "自由了——！": "Free at last!",
+  "落跑專家": "Escape Expert",
+  "落跑新手": "Escape Rookie",
+  "衝": "Dash",
+  "衝刺": "Dashes",
+  "被拉進會議……": "Pulled into a meeting…",
+  "被拉進會議，開到晚上 9 點": "Pulled into a meeting until 9 p.m.",
+  "被砸了": "Got hit",
+  "被財務部的報帳單埋住": "Buried in Finance’s expense reports",
+  "複製失敗": "Copy failed",
+  "複製失敗，請手動截圖": "Copy failed. Please take a screenshot",
+  "複製失敗，請手動複製網址列": "Copy failed. Please copy the address bar",
+  "請安靜 2 秒": "Stay quiet for 2 seconds",
+  "請把手機轉回直的": "Please turn your phone upright",
+  "請用 Safari / Chrome 開啟": "Please open in Safari / Chrome",
+  "輕輕哼一聲試試看！": "Try a soft hum!",
+  "這不是真的廣告": "This is not a real ad",
+  "這局加班了，沒有點數獎勵。再玩一次會重新扣": "Overtime this run. No point rewards. Playing again costs another ",
+  "這局已經看過了": "Already used this run",
+  "這裡讀不到麥克風": "Can’t access the microphone here",
+  "遊戲先暫停": "Game paused",
+  "遊玩社畜要下班：對著手機大吼讓火箭椅往上衝，撞破 5 層天花板提早下班，每局10點": "Play Roar Through the Ceiling: roar at your phone to launch the rocket chair through 5 ceilings and leave early. 10 pts per run",
+  "飛": "Fly",
+  "點。提早下班的分鐘數不換點數。": " pts. Minutes saved don’t convert to points.",
+  "點・每局": " pts · per run ",
+  "點一下跳過": "Tap to skip",
+  "點換一杯特濃咖啡": " pts for an extra-strong coffee",
+  "點數不夠": "Not enough points",
+  "點買特濃咖啡。": " pts for an extra-strong coffee.",
+  "（降噪耳機開到最大）": "(noise-cancelling headphones at max)",
+  "，還差": ", short by "
 }</script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
 (function () {
@@ -5995,7 +6161,7 @@ body.ol-expanded { overflow: hidden; }
     b.addEventListener('click', function () { elAuto.value = Number(b.dataset.auto).toFixed(2); });
   });
   $('reset').addEventListener('click', function () {
-    var note = function (t) { diveSay(t); carpSay(t); riderSay(t); bossSay(t); thiefSay(t); babySay(t); mrtSay(t); blSay(t); sbSay(t); rpSay(t); catSay(t); birdSay(t); frogSay(t); puddingSay(t); clockSay(t); mqSay(t); bqSay(t); peekSay(t); napSay(t); hairSay(t); petSay(t); otSay(t); mmSay(t); esSay(t); mtSay(t); srSay(t); olSay(t); bobaUI(t); pancakeUI(t); fiSay(t); $('sk-msg').textContent=t; eqSay(t); drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
+    var note = function (t) { diveSay(t); carpSay(t); riderSay(t); bossSay(t); thiefSay(t); babySay(t); mrtSay(t); blSay(t); sbSay(t); rpSay(t); catSay(t); birdSay(t); frogSay(t); puddingSay(t); clockSay(t); mqSay(t); bqSay(t); peekSay(t); napSay(t); hairSay(t); petSay(t); otSay(t); mmSay(t); esSay(t); mtSay(t); srSay(t); olSay(t); bobaUI(t); pancakeUI(t); rocketUI(t); fiSay(t); $('sk-msg').textContent=t; eqSay(t); drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
     if (oceanLinkBusy) { $('ol-msg').textContent = '這一局結束後才能重設點數。'; return; }
     if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.active || WL.pending || TW.active || CR.active || DR.active || runnerBusy || EQ.active || sneakBusy || FI.active || BOBA.active || catBusy || birdBusy || frogBusy || puddingBusy || clockBusy || mqBusy || bqBusy || peekBusy || napBusy || hairBusy || petBusy || otBusy || mmBusy || EATS.active || MIRR.active || SHAD.active || ONEL.active || RP.active || BL.active || DIVE.active || MRT.active || PANCAKE.active || carpBusy || riderBusy || bossBusy || thiefBusy || babyBusy) { note('這一局結束後才能重設點數。'); return; }
     AN.points(START_BALANCE-S.balance); S.balance = START_BALANCE; save(); note('點數已重設為 ' + fmt(START_BALANCE) + '。'); renderAll(); renderMines();
@@ -9305,6 +9471,47 @@ ui();draw(0);requestAnimationFrame(loop);
     if(frame.contentWindow&&frame.contentWindow.setPancakePlatformActive)frame.contentWindow.setPancakePlatformActive(active);
   }
   $('pancake-finish').addEventListener('click',function(){var frame=$('pancake-frame');if(PANCAKE.active&&frame.contentWindow&&frame.contentWindow.finishPancakePlatformRound)frame.contentWindow.finishPancakePlatformRound();});
+
+  /* ---------- Roar Through the Ceiling (rocket-chair): isolated iframe page (games/rocket-chair/original.html), fee-only shared wallet ---------- */
+  var ROCKET={active:false,fee:ENTRY_FEE,analytics:null,loaded:false,extra:0};
+  var ROCKET_FREE_KEY='deep-sea-free-until'; // 看完示範廣告後的免扣點截止時間（毫秒）
+  function rocketFreeLeft(){try{var t=Number(localStorage.getItem(ROCKET_FREE_KEY));return isFinite(t)?Math.max(0,t-Date.now()):0;}catch(e){return 0;}}
+  function rocketUI(text){if(text)$('rocket-chair-msg').textContent=text;}
+  function rocketValid(source){return source===$('rocket-chair-frame').contentWindow;}
+  window.deepSeaRocket={
+    balance:function(){return S.balance;},
+    start:function(source){
+      if(!rocketValid(source)||$('view-rocket-chair').hidden)return false;
+      if(ROCKET.active)AN.end(ROCKET.analytics,0,'abandoned',{extra_spent_points:ROCKET.extra});
+      ROCKET.active=false;
+      var free=rocketFreeLeft()>0,fee=free?0:ROCKET.fee;
+      if(S.balance<fee){rocketUI(LOW_MSG);return false;}
+      if(AN.interact)AN.interact();
+      ROCKET.active=true;ROCKET.extra=0;
+      ROCKET.analytics=AN.start('rocket-chair',fee,free?{entry_kind:'free_pass'}:undefined);
+      if(fee){S.balance-=fee;save();renderAll();}
+      rocketUI(free?'看廣告的免扣點時間內，本局不扣點。':'已扣 '+fee+' 點。提早下班的分鐘數不換點數。');return true;
+    },
+    spend:function(source,n){
+      n=Math.floor(Number(n)||0);
+      if(!rocketValid(source)||!ROCKET.active||n<=0||S.balance<n)return false;
+      S.balance-=n;ROCKET.extra+=n;save();renderAll();
+      AN.progress(ROCKET.analytics,{phase:'buy_coffee',extra_points:n});
+      rocketUI('已扣 '+n+' 點買特濃咖啡。');return true;
+    },
+    finish:function(source,data){
+      if(!rocketValid(source)||!ROCKET.active)return;ROCKET.active=false;
+      var early=Math.max(0,Math.min(600,Math.floor(Number(data&&data.early)||0)));
+      AN.end(ROCKET.analytics,0,'complete',{score:early,cleared:data&&data.cleared?1:0,extra_spent_points:ROCKET.extra});
+      rocketUI(data&&data.cleared?'提早 '+early+' 分鐘下班，沒有點數獎勵。再玩一次會重新扣 '+ROCKET.fee+' 點。':'這局加班了，沒有點數獎勵。再玩一次會重新扣 '+ROCKET.fee+' 點。');
+    },
+    touch:function(source){if(rocketValid(source)&&AN.interact)AN.interact();}
+  };
+  function rocketRoute(active){
+    var frame=$('rocket-chair-frame');
+    if(active&&!ROCKET.loaded){ROCKET.loaded=true;frame.src='games/rocket-chair/original.html';}
+    if(frame.contentWindow&&frame.contentWindow.setRocketPlatformActive)frame.contentWindow.setRocketPlatformActive(active);
+  }
   /* Move the existing buttons on mobile; never duplicate their wallet or game handlers. */
   (function(){
     if(!window.matchMedia||!window.MutationObserver)return;
@@ -17351,7 +17558,7 @@ render();requestAnimationFrame(loop);
   $('lobby-explore').addEventListener('click',function(){if($('lobby-games').scrollIntoView)$('lobby-games').scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});});
 
   /* ---------- tabs ---------- */
-  var VIEWS = { 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: '深海遊戲廳 <span>Deep Sea Arcade</span>', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', 'eat-smaller': '數字吞噬 <span>Number Gulp</span>', 'mirror-twins': '鏡像雙子 <span>Mirror Twins</span>', 'shadow-relay': '影子接力 <span>Shadow Relay</span>', 'one-line-defense': '一筆畫守城 <span>One-Line Defense</span>', mermaid: '人魚接龍 <span>Mermaid Spider</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
+  var VIEWS = { 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: '深海遊戲廳 <span>Deep Sea Arcade</span>', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', 'rocket-chair': '社畜要下班 <span>Roar Through the Ceiling</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', 'eat-smaller': '數字吞噬 <span>Number Gulp</span>', 'mirror-twins': '鏡像雙子 <span>Mirror Twins</span>', 'shadow-relay': '影子接力 <span>Shadow Relay</span>', 'one-line-defense': '一筆畫守城 <span>One-Line Defense</span>', mermaid: '人魚接龍 <span>Mermaid Spider</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
   function route() {
     var v = location.hash.slice(1);
     // Hidden games keep their code but cannot be opened by link; show the lobby and correct the address.
@@ -17364,7 +17571,7 @@ render();requestAnimationFrame(loop);
       if (k === v) $('tab-' + k).setAttribute('aria-current', 'page'); else $('tab-' + k).removeAttribute('aria-current');
     });
     oceanLinkRoute(v==='ocean-link');
-    bobaRoute(v==='boba');diveRoute(v==='dive');mrtRoute(v==='mrt');pancakeRoute(v==='pancake');esRoute(v==='eat-smaller');mtRoute(v==='mirror-twins');srRoute(v==='shadow-relay');olRoute(v==='one-line-defense');
+    bobaRoute(v==='boba');diveRoute(v==='dive');mrtRoute(v==='mrt');pancakeRoute(v==='pancake');rocketRoute(v==='rocket-chair');esRoute(v==='eat-smaller');mtRoute(v==='mirror-twins');srRoute(v==='shadow-relay');olRoute(v==='one-line-defense');
     DR.last=performance.now();EQ.last=performance.now();
     AN.view(v);
     $('game-name').innerHTML = VIEWS[v];

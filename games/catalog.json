@@ -197,6 +197,13 @@
     "icon": "games/pancake/icon.svg"
   },
   {
+    "id": "rocket-chair",
+    "logic": "games/rocket-chair/game.js",
+    "view": "games/rocket-chair/view.html",
+    "card": "games/rocket-chair/card.html",
+    "icon": "games/rocket-chair/icon.svg"
+  },
+  {
     "id": "skybuilder",
     "logic": "games/skybuilder/game.js",
     "view": "games/skybuilder/view.html",
