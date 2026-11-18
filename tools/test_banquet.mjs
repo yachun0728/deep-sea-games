@@ -53,8 +53,8 @@ const started=(balance=500,random=Math.random)=>{const f=fixture(balance,random)
 function check(name,fn){fn();results.push(name);}
 const isMain=process.argv[1]&&fs.realpathSync(process.argv[1])===fs.realpathSync(new URL(import.meta.url));
 if(isMain){
-check('Not enough points: nothing is deducted and no round starts',()=>{
-  const f=fixture(fee-1);f.B.start();assert.equal(f.wallet.balance,fee-1);assert.equal(f.busy(),false);assert.equal(f.count('start'),0);assert.equal(f.ev('E.phase'),'ready');
+check('Free entry: a zero balance can start a round and nothing is deducted',()=>{
+  const f=fixture(0);f.B.start();assert.equal(f.wallet.balance,0);assert.equal(f.busy(),true);assert.equal(f.count('start'),1);
 });
 check('Start deducts the entry fee once even when clicked twice, and tracks one round',()=>{
   const f=fixture();f.B.start();f.B.start();assert.equal(f.wallet.balance,500-fee);assert.equal(f.count('start'),1);assert.equal(f.storage.get('crush-depth-balance'),String(500-fee));assert.equal(f.busy(),true);assert.deepEqual(f.events[0].slice(1),['banquet',fee]);

@@ -37,8 +37,8 @@ function fixture(balance=500,{saved=null,lang='zh'}={}){
 function check(name,fn){fn();results.push(name);}
 const reseed=(f,n)=>f.ev('rng=mulberry32('+n+')');
 
-check('Not enough points: nothing is deducted and no trip starts',()=>{
-  const f=fixture(fee-1);f.C.begin();assert.equal(f.wallet.balance,fee-1);assert.equal(f.busy(),false);assert.equal(f.count('start'),0);assert.equal(f.G.mode,'TITLE');
+check('Free entry: a zero balance can start a trip and nothing is deducted',()=>{
+  const f=fixture(0);f.C.begin();assert.equal(f.wallet.balance,0);assert.equal(f.busy(),true);assert.equal(f.count('start'),1);
 });
 check('Start deducts exactly once, calls AN.start once, and repeat clicks do nothing',()=>{
   const f=fixture(500);f.C.begin();f.C.begin();f.C.begin();
@@ -119,9 +119,8 @@ check('Keys only work while the pet-walk view is shown, and not on buttons or in
   k=e('INPUT');f.key(k);assert.equal(k.done,undefined);
   k=e('CANVAS');f.key(k);assert.equal(k.done,true);
 });
-check('Reset guard, wallet snapshot and analytics name include pet-walk',()=>{
+check('Wallet snapshot and analytics name include pet-walk',()=>{
   const read=p=>fs.readFileSync(new URL(p,root),'utf8');
-  assert.ok(/petBusy\s*\|\|/.test(read('js/controls.js'))&&read('js/controls.js').includes('petSay(t)'));
   assert.ok(read('js/bootstrap.js').includes('(petBusy ? petStake : 0)'));
   assert.ok(read('js/analytics.js').includes("'pet-walk':'小灰出門'"));
   assert.ok(read('games/catalog.json').includes('"id": "pet-walk"'));

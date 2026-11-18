@@ -23,7 +23,7 @@
       return;
     }
     assert(document.documentElement.lang==='en','English query selects English');
-    assert(document.getElementById('reset').textContent.trim()==='Reset to 500','Header translated');
+    assert(!document.getElementById('reset')&&!document.getElementById('regen-hint'),'Reset button and regen hint removed');
     assert(!/[\u3400-\u9fff]/.test(document.getElementById('view-lobby').innerText),'Lobby has no untranslated Chinese');
     assert(document.querySelectorAll('.game-card[data-game-hidden]').length===8,'Eight hidden games remain hidden');
     var untranslated=[];
@@ -38,7 +38,7 @@
     location.hash='dream'; await settle();
     assert(document.title==='Dream Repair Shop','Direct hash title translated without duplicate subtitle');
     click('dr-go');await settle();
-    assert(Number(document.getElementById('balance').textContent.replace(/,/g,''))===before-10,'English Start charges exactly ten points');
+    assert(Number(document.getElementById('balance').textContent.replace(/,/g,''))===before,'English Start is free and charges nothing');
     var paid=localStorage.getItem('crush-depth-balance'),oldHash=location.hash;
     assert(analytics.start===1,'English Start creates exactly one analytics round');
     var lifecycle=JSON.stringify(analytics);

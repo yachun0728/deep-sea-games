@@ -70,7 +70,7 @@
 
 - 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`fx`、`ENTRY_FEE`、`LOW_MSG`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/navigation.js` 會呼叫：`shown`
-- 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`peekBusy`
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 

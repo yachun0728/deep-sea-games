@@ -48,9 +48,8 @@ function fixture(balance=500,{lang='zh-Hant',best=null}={}){
 }
 function check(name,fn){fn();results.push(name);}
 
-check('Not enough points: nothing is deducted and no shift starts',()=>{
-  const f=fixture(fee-1);f.begin();assert.equal(f.wallet.balance,fee-1);assert.equal(f.busy(),false);assert.equal(f.count('start'),0);assert.equal(f.ev('state'),'menu');
-  assert.equal(f.el('os-msg').textContent,'insufficient');
+check('Free entry: a zero balance can start a shift and nothing is deducted',()=>{
+  const f=fixture(0);f.begin();assert.equal(f.wallet.balance,0);assert.equal(f.busy(),true);assert.equal(f.count('start'),1);
 });
 check('Start deducts the fixed entry fee once even when clicked twice',()=>{
   const f=fixture();f.begin();f.begin();assert.equal(f.wallet.balance,500-fee);assert.equal(f.count('start'),1);assert.deepEqual(f.events[0],['start','office-shoot',fee]);

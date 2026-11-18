@@ -25,8 +25,8 @@ function fixture(balance=500,savedBest=null){
     clear(w){C.ev('G.wi='+(w-1)+";G.state='WAVE'");C.ev('waveClear()');}};
 }
 function check(name,fn){fn();results.push(name);}
-check('Not enough points: nothing is deducted and no round starts',()=>{
-  const f=fixture(fee-1);f.C.begin();assert.equal(f.wallet.balance,fee-1);assert.equal(f.busy(),false);assert.equal(f.count('start'),0);
+check('Free entry: a zero balance can start a round and nothing is deducted',()=>{
+  const f=fixture(0);f.C.begin();assert.equal(f.wallet.balance,0);assert.equal(f.busy(),true);assert.equal(f.count('start'),1);
 });
 check('Start deducts the entry fee once even when clicked twice',()=>{
   const f=fixture();f.C.begin();f.C.begin();assert.equal(f.wallet.balance,500-fee);assert.equal(f.count('start'),1);assert.equal(f.storage.get('crush-depth-balance'),String(500-fee));assert.equal(f.busy(),true);assert.deepEqual(f.events[0].slice(1),['clock-out',fee]);assert.equal(f.ev('G.state'),'BUILD');
@@ -55,7 +55,7 @@ check('Boss reaching the desk ends the round as a loss',()=>{
 check('A cleared wave outside a paid round gives nothing',()=>{
   const f=fixture();f.clear(5);assert.equal(f.wallet.balance,500);assert.equal(f.count('progress'),0);
 });
-check('A second round pays its own BONUS again and is charged again',()=>{
+check('A second round pays its own BONUS again and is still free',()=>{
   const f=fixture();f.C.begin();f.clear(5);f.clear(8);f.C.ev('resetGame()');f.C.begin();
   assert.equal(f.wallet.balance,510-fee*2);assert.equal(f.count('start'),2);f.clear(5);assert.equal(f.wallet.balance,510-fee*2+3);
 });

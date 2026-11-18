@@ -66,7 +66,6 @@
   "BONUS：200m、500m、900m 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵與入場費無關；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。": "BONUS: Reach 200 m, 500 m and 900 m to earn 5 points at each milestone, credited immediately. Each milestone can be earned once per round, up to 15 points total. Rewards are independent of the entry fee. Failure or refreshing does not remove credited rewards; no extra points are paid at the end. Score and distance are for comparison only. These thresholds have not yet been calibrated through extensive playtesting.",
   "BONUS：300分、700分、1,300分 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵與入場費無關；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。": "BONUS: Reach scores of 300, 700 and 1,300 to earn 5 points at each milestone, credited immediately. Each milestone can be earned once per round, up to 15 points total. Rewards are independent of the entry fee. Failure or refreshing does not remove credited rewards; no extra points are paid at the end. Score and distance are for comparison only. These thresholds have not yet been calibrated through extensive playtesting.",
   "DREAM REPAIR / 時序修復": "DREAM REPAIR",
-  "Demo · 虛擬點數": "Demo · Virtual points",
   "IT 工程師": "IT Engineer",
   "Lv.1 脈衝": "Lv.1 Pulse",
   "Lv.13 光槍": "Lv.13 Beam",
@@ -749,8 +748,6 @@
   "深海火線操作": "Reef Blaster controls",
   "深海火線：自動射擊，點左半邊或右半邊換道瞄準怪物與拾取武器": "Reef Blaster: auto-fire; tap left or right to change lanes, aim at monsters and collect weapons",
   "深海跑酷：點左半邊或右半邊換道": "Deep Sea Run: tap the left or right half to switch lanes",
-  "深海遊戲廳": "Deep Sea Arcade",
-  "深海遊戲廳 Deep Sea Arcade": "Deep Sea Arcade",
   "深海釣手": "Fishing",
   "深海釣手：按住收線、放開卸力，把魚拉上岸": "Fishing: hold to reel, release to ease tension and land the fish",
   "深海魚王": "Deep Sea Fish King",
@@ -3873,7 +3870,7 @@
   "免費": "Free",
   "免費遊玩，點數可兌換外觀": "Play free · Redeem points for cosmetics",
   "免費玩遊戲，收集新造型": "Play free. Collect new looks.",
-  "我的造型": "My Look",
+  "我的造型": "My Wardrobe",
   "我的冒險造型": "My Adventure Look",
   "我的平台角色": "My platform avatar",
   "我的角色與外觀商店": "My Avatar & Cosmetic Shop",
@@ -4039,5 +4036,7 @@
   "出售數量": "Quantity to sell",
   "金幣": "Gold",
   "前線分倉": "Frontier depot",
-  "只要移動角色，就會自動採集、建造與攻擊。電腦可用 WASD／方向鍵；手機拖曳搖桿，或點地面前往。": "Move to gather, build and attack automatically. Use WASD / arrow keys, drag the joystick, or tap the ground to walk there."
+  "只要移動角色，就會自動採集、建造與攻擊。電腦可用 WASD／方向鍵；手機拖曳搖桿，或點地面前往。": "Move to gather, build and attack automatically. Use WASD / arrow keys, drag the joystick, or tap the ground to walk there.",
+  "餘額不足。": "Not enough points.",
+  "免費遊玩，沒有入場費。": "Free to play, no entry fee."
 }

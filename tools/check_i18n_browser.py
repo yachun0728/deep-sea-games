@@ -90,7 +90,7 @@ class Chrome:
         deadline = time.monotonic() + 25
         while time.monotonic() < deadline:
             state = self.evaluate("({url:location.href,status:document.body&&document.body.dataset.testStatus,checks:document.getElementById('test-results')&&document.getElementById('test-results').textContent})")
-            if state.get('status') and state.get('checks') and state.get('url', '').split('#')[0] == url.split('#')[0]:
+            if state.get('status') and state.get('checks') and state.get('url', '').split('#')[0].split('?')[0] == url.split('#')[0].split('?')[0]:
                 checks = json.loads(state['checks'] or '[]')
                 if state['status'] != 'PASS':
                     raise RuntimeError(label + '\n' + '\n'.join(checks))
@@ -176,6 +176,7 @@ def main():
                     total += chrome.check(page, '?probe=reload#frontier', f'Frontier reload {width}')
                     chrome.evaluate("localStorage.removeItem('deep-sea-frontier-v1');localStorage.setItem('crush-depth-balance','0');localStorage.setItem('deep-sea-regen-at',Date.now())")
                     total += chrome.check(page, '?probe=low&lang=zh-Hant#frontier', f'Frontier zero balance {width}')
+                chrome.evaluate("var r=document.getElementById('test-results');if(r)r.remove();")  # the long result list itself can widen a mobile viewport
                 actual = chrome.evaluate('innerWidth')
                 if actual != width:
                     raise RuntimeError(f'Viewport is {actual}, expected {width}')

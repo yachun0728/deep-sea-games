@@ -46,7 +46,7 @@
     var r=rounds[id];if(!r)return;tick(performance.now());flush();delete rounds[id];if(w.deepSeaProgress)w.deepSeaProgress.complete(r.game,result,r.activeMs);
     emit('game_end',r.game,Object.assign({round_id:id,stage:r.stage,step:r.step,result:result,stake_points:r.stake,payout_points:payout,net_points:payout-r.stake,round_active_seconds:Math.round(r.activeMs)/1000,round_elapsed_seconds:Math.round(performance.now()-r.started)/1000},params||{}));
   }
-  function view(game){if(game==='lobby'){tick(performance.now());flush();current='';emit('lobby_view','');return;}if(!names[game]||game===current)return;tick(performance.now());flush();current=game;emit('game_view',game);}
+  function view(game){if(game==='wardrobe'){tick(performance.now());flush();current='';return;}if(game==='lobby'){tick(performance.now());flush();current='';emit('lobby_view','');return;}if(!names[game]||game===current)return;tick(performance.now());flush();current=game;emit('game_view',game);}
   function interaction(){tick(performance.now());inputAt=performance.now();focused=d.hasFocus?d.hasFocus():true;}
   ['pointerdown','keydown','touchstart'].forEach(function(type){d.addEventListener(type,interaction,{capture:true,passive:true});});
   d.addEventListener('visibilitychange',function(){tick(performance.now());flush();visible=!d.hidden;if(visible)inputAt=performance.now();});
@@ -67,7 +67,7 @@ body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
 img { max-width: 100%; }
 [hidden] { display: none !important; }
 </style>
-<title>深海遊戲廳 Deep Sea Arcade</title>
+<title>TiCATiCA Games</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <style>
 /* Layout: a dive console. The sea (canvas) takes the wide left column and the curve runs downward;
@@ -264,7 +264,6 @@ input[type="range"] { width: 100%; margin: 0; accent-color: var(--lamp); }
 .brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 h1 { font-family: var(--font-display); font-weight: 700; font-size: 26px; letter-spacing: .02em; margin: 0; line-height: 1.2; }
 h1 span { color: var(--lamp); }
-.demo-tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 1px 10px; white-space: nowrap; }
 .wallet { display: flex; align-items: baseline; gap: 10px; }
 .wallet .label { color: var(--muted); font-size: 13px; }
 .wallet .amount { font-family: var(--font-display); font-weight: 600; font-size: 22px; font-variant-numeric: tabular-nums; }
@@ -430,7 +429,7 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
   .wrap:not(.is-lobby) .brand-home{gap:7px;min-width:0}
   .wrap:not(.is-lobby) .brand-home-icon{width:25px;height:25px}
   .wrap:not(.is-lobby) .brand-home h1{min-width:0;margin:0;font-size:16px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .wrap:not(.is-lobby) .brand-home h1 span,.wrap:not(.is-lobby) .demo-tag,.wrap:not(.is-lobby) .wallet .label,.wrap:not(.is-lobby) .regen-hint{display:none}
+  .wrap:not(.is-lobby) .brand-home h1 span,.wrap:not(.is-lobby) .wallet .label,.wrap:not(.is-lobby) .regen-hint{display:none}
   .wrap:not(.is-lobby) .wallet-box{min-width:0;max-width:145px}
   .wrap:not(.is-lobby) .wallet{gap:4px;white-space:nowrap}
   .wrap:not(.is-lobby) .wallet .amount{font-size:19px;line-height:1.3}
@@ -985,10 +984,10 @@ body.ol-expanded { overflow: hidden; }
 @media(max-width:600px){#view-frontier .ft-optional-dash{display:none}#view-frontier .ft-mission{font-size:10px;padding:5px 10px}#view-frontier .ft-resource{font-size:10px;padding:6px 10px}#view-frontier .ft-resource button{min-height:32px;font-size:10px;padding:5px 8px}#view-frontier .ft-main:fullscreen .ft-top,#view-frontier .ft-main.ft-immersive .ft-top{padding:5px 10px}#view-frontier .ft-status{font-size:13px}#view-frontier .ft-shop{bottom:95px}}
 @media(prefers-reduced-motion:reduce){#view-frontier button{transition:none}}
 
-.wardrobe-hub{margin:24px 0;border:1px solid #5bada93b;border-radius:20px;background:linear-gradient(120deg,#102d36,#173c40);overflow:hidden;color:#e0eee8}
-.wardrobe-hub summary{cursor:pointer;padding:20px 24px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-weight:700}.wardrobe-hub summary span+span{font-size:12px;font-weight:400;color:#9ec9bf}
+.wardrobe-hub{margin:0;border:1px solid #5bada93b;border-radius:20px;background:linear-gradient(120deg,#102d36,#173c40);overflow:hidden;color:#e0eee8}
+.wardrobe-head{padding:20px 24px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-weight:700}.wardrobe-head h2{margin:0;font-size:inherit}.wardrobe-head span{font-size:12px;font-weight:400;color:#9ec9bf}
 .wardrobe-layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:24px;padding:0 24px 24px}.wardrobe-profile{text-align:center;border-radius:16px;background:#ffffff08;padding:20px}.wardrobe-avatar{height:220px}.wardrobe-avatar svg{height:100%;max-width:100%}.wardrobe-hub p{font-size:12px;line-height:1.8;color:#adcec2}.wardrobe-hub h3{font-size:16px}.wardrobe-slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.wardrobe-hub button{font:inherit;background:#275257;color:#e0eee8;border:1px solid #55968c;border-radius:8px;min-height:40px;padding:9px 12px;cursor:pointer}.wardrobe-hub button:disabled{opacity:.45;cursor:default}.wardrobe-slots button{font-size:11px;padding:7px}.wardrobe-items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.wardrobe-item{background:#ffffff09;border:1px solid #ffffff14;border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:9px}.wardrobe-item h4{margin:0;font-size:14px}.wardrobe-item p{margin:0}.wardrobe-icon{font-size:30px}.wardrobe-item button{margin-top:auto;font-size:12px}.wardrobe-preview{width:36px;height:36px;display:inline-flex;vertical-align:middle}.wardrobe-preview svg{width:100%;height:100%}.wardrobe-earn{margin-bottom:18px}.wardrobe-open{background:#143f48;color:#c8e7da;border:1px solid #396967;border-radius:9px;padding:4px 9px;display:flex;align-items:center;gap:6px;cursor:pointer;font:inherit}
-@media(max-width:880px){.wardrobe-layout{grid-template-columns:minmax(0,1fr);padding:0 14px 18px;gap:14px}.wardrobe-items{grid-template-columns:repeat(2,minmax(0,1fr))}.wardrobe-hub summary{padding:18px 14px}.wardrobe-avatar{height:190px}.wardrobe-open{font-size:11px}.wardrobe-preview{height:25px;width:25px}}
+@media(max-width:880px){.wardrobe-layout{grid-template-columns:minmax(0,1fr);padding:0 14px 18px;gap:14px}.wardrobe-items{grid-template-columns:repeat(2,minmax(0,1fr))}.wardrobe-head{padding:18px 14px}.wardrobe-avatar{height:190px}.wardrobe-open{font-size:11px}.wardrobe-preview{height:25px;width:25px}}
 
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3316258522775901"
@@ -998,19 +997,19 @@ body.ol-expanded { overflow: hidden; }
 <div class="wrap is-lobby" id="site-shell">
   <header class="top">
     <div class="brand">
-      <a class="brand-home" href="#lobby" aria-label="返回遊戲大廳" title="返回遊戲大廳"><svg class="brand-home-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9" fill="#123c4b" stroke="#326475"/><path d="m8 15 8-7 8 7v10h-6v-7h-4v7H8z" fill="none" stroke="#62e6d2" stroke-width="1.8" stroke-linejoin="round"/></svg><h1 id="game-name" tabindex="-1">深海遊戲廳 <span>Deep Sea Arcade</span></h1></a>
-      <span class="demo-tag">Demo · 虛擬點數</span>
+      <a class="brand-home" href="#lobby" aria-label="返回遊戲大廳" title="返回遊戲大廳"><svg class="brand-home-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9" fill="#123c4b" stroke="#326475"/><path d="m8 15 8-7 8 7v10h-6v-7h-4v7H8z" fill="none" stroke="#62e6d2" stroke-width="1.8" stroke-linejoin="round"/></svg><h1 id="game-name" tabindex="-1">TiCATiCA <span>Games</span></h1></a>
     </div>
     <div class="header-tools"><button type="button" id="open-wardrobe" class="wardrobe-open"><span class="wardrobe-preview" id="wardrobe-mini" aria-hidden="true"></span>我的造型</button><div class="language-switch" role="group" aria-label="Language / 語言" data-i18n-ignore><button type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button><button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button></div><div class="wallet-box"><div class="wallet">
-      <span class="label">餘額</span>
-      <span class="amount" id="balance">500</span><span class="unit">點</span>
-      <button class="link-btn" id="reset" type="button">重設為 500</button>
-    </div><p class="regen-hint" id="regen-hint">免費遊玩，點數可兌換外觀</p></div></div>
+      <span class="label" data-i18n-ignore>BONUS</span>
+      <span class="amount" id="balance">0</span><span class="unit">點</span><script>try{var b=parseInt(localStorage.getItem('crush-depth-balance'),10);if(isFinite(b)&&b>=0)document.getElementById('balance').textContent=b.toLocaleString('zh-TW')}catch(e){}</script>
+    </div></div></div>
   </header>
 
   <div class="game-toolbar"><a class="back-lobby" href="#lobby"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m14 6-6 6 6 6M8 12h12"/></svg>遊戲大廳</a>
   <details class="game-picker" id="game-picker"><summary><span>切換遊戲</span><span id="picker-current">壓潰深度</span><span class="picker-chevron" aria-hidden="true">⌄</span></summary><nav class="tabs" aria-label="遊戲">
     <a href="#lobby" id="tab-lobby">遊戲大廳<small>Lobby</small></a>
+    <a href="#wardrobe" id="tab-wardrobe">我的造型<small>My Wardrobe</small></a>
+    <a href="#wardrobe" id="tab-wardrobe">我的造型<small>My Wardrobe</small></a>
     <a href="#crash" id="tab-crash" hidden aria-current="page">壓潰深度<small>Crash</small></a>
     <a href="#mines" id="tab-mines">踩地雷<small>Mines</small></a>
     <a href="#plinko" id="tab-plinko" hidden>落珠<small>Plinko</small></a>
@@ -1080,15 +1079,8 @@ body.ol-expanded { overflow: hidden; }
   <div class="gold-banner-copy"><span class="game-card-category">每日免費補給</span><h3>每天挖點好運氣</h3><p class="game-card-en">Daily Gold Mine</p><p class="game-card-description">免費挖金礦拿點數，再去挑戰喜歡的小遊戲。</p><p id="gold-daily-status" aria-live="polite">每天免費 3 次 · 每次挖 5 格 · 每日最多 30 點</p><div class="game-card-footer"><span>免費 · 免費</span><span>台灣時間午夜重置</span></div></div>
   <span class="gold-banner-cta" id="gold-daily-cta">免費挖一次 <span aria-hidden="true">↗</span></span>
 </a></section>
-<section class="wardrobe-hub" id="wardrobe-hub" aria-label="角色與外觀商店">
-  <details id="wardrobe-panel"><summary><span>我的角色與外觀商店</span><span id="wardrobe-summary">免費玩遊戲，收集新造型</span></summary>
-  <div class="wardrobe-layout"><div class="wardrobe-profile"><div id="wardrobe-avatar" class="wardrobe-avatar"></div><h3>我的冒險造型</h3><p>外觀不影響遊戲能力，兌換後永久擁有。</p><div class="wardrobe-slots"><button type="button" data-wardrobe-default="hat">卸下帽子</button><button type="button" data-wardrobe-default="jacket">基本服裝</button><button type="button" data-wardrobe-default="friend">收起配件</button></div><p id="wardrobe-message" aria-live="polite"></p></div>
-  <div class="wardrobe-store"><div class="wardrobe-earn"><h3>玩出你的收藏</h3><p>有效遊玩每分鐘 2 點，每日最多 60 點；背景、選單、暫停及閒置超過 60 秒不計。每款遊戲每日首次完成至少 10 秒有效遊玩的回合，再獲得 5 點；原有技能與里程碑獎勵另外保留。</p><p id="wardrobe-daily"></p></div><div id="wardrobe-items" class="wardrobe-items"></div></div></div>
-  </details>
-</section>
-
-    <div class="lobby-section-heading" id="lobby-games"><div><p class="lobby-eyebrow">PICK YOUR NEXT ADVENTURE</p><h2>遊戲大廳 <span id="lobby-count">28 款遊戲</span></h2></div><p>選一款，開始你的下一局。</p></div>
-    <div class="lobby-filters" role="group" aria-label="篩選遊戲類型"><button type="button" data-lobby-filter="all" aria-pressed="true">全部 <span>30</span></button><button type="button" data-lobby-filter="run" aria-pressed="false">跑酷動作 <span>0</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false">潛行偷閒 <span>0</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false">時機操作 <span>0</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false">益智策略 <span>0</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false">經典小遊戲 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false">機率挑戰 <span>0</span></button></div>
+    <div class="lobby-section-heading" id="lobby-games"><div><p class="lobby-eyebrow">PICK YOUR NEXT ADVENTURE</p><h2>遊戲大廳 <span id="lobby-count">41 款遊戲</span></h2></div><p>選一款，開始你的下一局。</p></div>
+    <div class="lobby-filters" role="group" aria-label="篩選遊戲類型"><button type="button" data-lobby-filter="all" aria-pressed="true">全部 <span>41</span></button><button type="button" data-lobby-filter="run" aria-pressed="false">跑酷動作 <span>11</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false">潛行偷閒 <span>8</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false">時機操作 <span>9</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false">益智策略 <span>10</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false">經典小遊戲 <span>3</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false" hidden>機率挑戰 <span>0</span></button></div>
     <div class="lobby-grid"><a class="game-card" href="#frontier" data-game-category="puzzle" aria-label="遊玩荒島遠征：五十關採集、建造與戰鬥冒險"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#icon-frontier"></use></svg></div><h3>荒島遠征</h3><p class="game-card-en">Frontier Islands</p><p class="game-card-description">砍出道路，建立據點，挑戰五大區域與五十關考驗。</p><div class="game-card-footer"><span>遠征與續玩皆免費</span><span>50 關 · 自動存檔</span></div></a>
 <a class="game-card" href="#rocket-chair" data-game-category="timing" aria-label="遊玩社畜要下班：對著手機大吼讓火箭椅往上衝，撞破 5 層天花板提早下班，免費遊玩"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-rocket-chair"></use></svg></div><h3>社畜要下班</h3><p class="game-card-en">Roar Through the Ceiling</p><p class="game-card-description">對著手機大吼，火箭椅一路撞破天花板提早下班。</p><div class="game-card-footer"><span>免費遊玩</span><span>不限次數</span></div></a>
 <a class="game-card" href="#ocean-link" data-game-category="retro" aria-label="免費遊玩深海連連看，配對圖案闖關並獲得獎勵。">
@@ -1114,6 +1106,11 @@ body.ol-expanded { overflow: hidden; }
 <a class="game-card" href="#mines" data-game-category="retro" aria-label="遊玩踩地雷：低中高難度或自訂棋盤，免費重溫經典踩地雷。"><div class="game-card-top"><span class="game-card-category">經典小遊戲</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mines"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mines"></use></svg></div><h3>踩地雷</h3><p class="game-card-en">Minesweeper</p><p class="game-card-description">低中高難度或自訂棋盤，免費重溫經典踩地雷。</p><div class="game-card-footer"><span>免費 · 不限次數</span><span>推理排雷</span></div></a><a class="game-card" href="#plinko" hidden data-game-hidden data-game-category="chance" aria-label="遊玩落珠：投下珍珠，看它穿過釘陣落在哪一格。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-plinko"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-plinko"></use></svg></div><h3>落珠</h3><p class="game-card-en">Pearl Drop</p><p class="game-card-description">投下珍珠，看它穿過釘陣落在哪一格。</p><div class="game-card-footer"><span>10 點起</span><span>落點倍率</span></div></a><a class="game-card" href="#dice" hidden data-game-hidden data-game-category="chance" aria-label="遊玩測深：設定聲納讀數範圍，等待海底回音。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-dice"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dice"></use></svg></div><h3>測深</h3><p class="game-card-en">Sonar Dice</p><p class="game-card-description">設定聲納讀數範圍，等待海底回音。</p><div class="game-card-footer"><span>10 點起</span><span>範圍預測</span></div></a><a class="game-card" href="#limbo" hidden data-game-hidden data-game-category="chance" aria-label="遊玩探底：選定目標倍率，看看探測錘能到多深。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-limbo"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-limbo"></use></svg></div><h3>探底</h3><p class="game-card-en">Deep Probe</p><p class="game-card-description">選定目標倍率，看看探測錘能到多深。</p><div class="game-card-footer"><span>10 點起</span><span>目標倍率</span></div></a><a class="game-card" href="#hilo" hidden data-game-hidden data-game-category="chance" aria-label="遊玩漲退：猜下一張牌更高或更低，連猜累積。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-hilo"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-hilo"></use></svg></div><h3>漲退</h3><p class="game-card-en">High Tide</p><p class="game-card-description">猜下一張牌更高或更低，連猜累積。</p><div class="game-card-footer"><span>10 點起</span><span>高低猜牌</span></div></a><a class="game-card" href="#wheel" hidden data-game-hidden data-game-category="chance" aria-label="遊玩羅盤：轉動深海羅盤，等待指針停下。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-wheel"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-wheel"></use></svg></div><h3>羅盤</h3><p class="game-card-en">Compass</p><p class="game-card-description">轉動深海羅盤，等待指針停下。</p><div class="game-card-footer"><span>10 點起</span><span>轉盤挑戰</span></div></a><a class="game-card" href="#tower" hidden data-game-hidden data-game-category="chance" aria-label="遊玩浮升：挑選安全的氣泡，一層一層往上浮。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-tower"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-tower"></use></svg></div><h3>浮升</h3><p class="game-card-en">Ascent</p><p class="game-card-description">挑選安全的氣泡，一層一層往上浮。</p><div class="game-card-footer"><span>10 點起</span><span>逐層冒險</span></div></a><a class="game-card" href="#crossing" hidden data-game-hidden data-game-category="chance" aria-label="遊玩橫渡：帶小海龜穿越暗流，決定何時收手。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-crossing"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crossing"></use></svg></div><h3>橫渡</h3><p class="game-card-en">Reef Run</p><p class="game-card-description">帶小海龜穿越暗流，決定何時收手。</p><div class="game-card-footer"><span>10 點起</span><span>逐步闖關</span></div></a><a class="game-card" href="#pudding" data-game-category="run" aria-label="遊玩布丁突圍：拼出武器，背著小王子殺出重圍。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-pudding"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-pudding"></use></svg></div><h3>布丁突圍</h3><p class="game-card-en">Pudding Dash</p><p class="game-card-description">拼出武器，背著小王子殺出重圍。</p><div class="game-card-footer"><span>免費遊玩</span><span>拼武器闖關</span></div></a></div>
     <p class="lobby-footnote">所有遊戲免費開玩。遊玩與成就獎勵可兌換平台外觀；點數沒有現金價值。</p>
   </section>
+<section class="view" id="view-wardrobe" hidden><div class="wardrobe-hub" id="wardrobe-hub" aria-label="角色與外觀商店">
+  <div class="wardrobe-head"><h2>我的角色與外觀商店</h2><span id="wardrobe-summary">免費玩遊戲，收集新造型</span></div>
+  <div class="wardrobe-layout"><div class="wardrobe-profile"><div id="wardrobe-avatar" class="wardrobe-avatar"></div><h3>我的冒險造型</h3><p>外觀不影響遊戲能力，兌換後永久擁有。</p><div class="wardrobe-slots"><button type="button" data-wardrobe-default="hat">卸下帽子</button><button type="button" data-wardrobe-default="jacket">基本服裝</button><button type="button" data-wardrobe-default="friend">收起配件</button></div><p id="wardrobe-message" aria-live="polite"></p></div>
+  <div class="wardrobe-store"><div class="wardrobe-earn"><h3>玩出你的收藏</h3><p>有效遊玩每分鐘 2 點，每日最多 60 點；背景、選單、暫停及閒置超過 60 秒不計。每款遊戲每日首次完成至少 10 秒有效遊玩的回合，再獲得 5 點；原有技能與里程碑獎勵另外保留。</p><p id="wardrobe-daily"></p></div><div id="wardrobe-items" class="wardrobe-items"></div></div></div>
+  </div></section>
 <section class="view" id="view-frontier" hidden><div class="ft-layout"><div class="ft-main" id="ft-main">
 <div class="ft-top"><span class="ft-eyebrow">FRONTIER / 50 STAGES</span><button type="button" id="ft-full">全螢幕</button></div><div class="ft-status"><strong id="ft-zone">翠葉群島</strong><span id="ft-level">1 / 50</span><span id="ft-health">♥ 100</span></div><p id="ft-objective" class="ft-objective" aria-live="polite">建立據點，清除守衛，點亮燈塔。</p>
 <div class="ft-mission"><span id="ft-checklist"></span><span id="ft-warning"></span></div><div class="ft-stage" id="ft-stage"><canvas id="ft-canvas" width="900" height="650" tabindex="0" aria-label="荒島遠征：移動採集、靠近建造、閃避攻擊"></canvas><div id="ft-overlay" class="ft-overlay"><span class="ft-eyebrow">GATHER · BUILD · SURVIVE</span><h2 id="ft-title">荒島遠征</h2><p id="ft-message">五大區域，五十場考驗。建立據點，穿越危險地帶。</p><button type="button" id="ft-go">免費開始遠征</button></div><div class="ft-touch"><div id="ft-stick" role="group" aria-label="拖曳搖桿移動"><span id="ft-knob"></span></div><button type="button" id="ft-dash" class="ft-optional-dash">衝刺</button></div></div>
@@ -2279,7 +2276,6 @@ body.ol-expanded { overflow: hidden; }
   "BONUS：200m、500m、900m 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵與入場費無關；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。": "BONUS: Reach 200 m, 500 m and 900 m to earn 5 points at each milestone, credited immediately. Each milestone can be earned once per round, up to 15 points total. Rewards are independent of the entry fee. Failure or refreshing does not remove credited rewards; no extra points are paid at the end. Score and distance are for comparison only. These thresholds have not yet been calibrated through extensive playtesting.",
   "BONUS：300分、700分、1,300分 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵與入場費無關；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。": "BONUS: Reach scores of 300, 700 and 1,300 to earn 5 points at each milestone, credited immediately. Each milestone can be earned once per round, up to 15 points total. Rewards are independent of the entry fee. Failure or refreshing does not remove credited rewards; no extra points are paid at the end. Score and distance are for comparison only. These thresholds have not yet been calibrated through extensive playtesting.",
   "DREAM REPAIR / 時序修復": "DREAM REPAIR",
-  "Demo · 虛擬點數": "Demo · Virtual points",
   "IT 工程師": "IT Engineer",
   "Lv.1 脈衝": "Lv.1 Pulse",
   "Lv.13 光槍": "Lv.13 Beam",
@@ -2962,8 +2958,6 @@ body.ol-expanded { overflow: hidden; }
   "深海火線操作": "Reef Blaster controls",
   "深海火線：自動射擊，點左半邊或右半邊換道瞄準怪物與拾取武器": "Reef Blaster: auto-fire; tap left or right to change lanes, aim at monsters and collect weapons",
   "深海跑酷：點左半邊或右半邊換道": "Deep Sea Run: tap the left or right half to switch lanes",
-  "深海遊戲廳": "Deep Sea Arcade",
-  "深海遊戲廳 Deep Sea Arcade": "Deep Sea Arcade",
   "深海釣手": "Fishing",
   "深海釣手：按住收線、放開卸力，把魚拉上岸": "Fishing: hold to reel, release to ease tension and land the fish",
   "深海魚王": "Deep Sea Fish King",
@@ -6086,7 +6080,7 @@ body.ol-expanded { overflow: hidden; }
   "免費": "Free",
   "免費遊玩，點數可兌換外觀": "Play free · Redeem points for cosmetics",
   "免費玩遊戲，收集新造型": "Play free. Collect new looks.",
-  "我的造型": "My Look",
+  "我的造型": "My Wardrobe",
   "我的冒險造型": "My Adventure Look",
   "我的平台角色": "My platform avatar",
   "我的角色與外觀商店": "My Avatar & Cosmetic Shop",
@@ -6252,7 +6246,9 @@ body.ol-expanded { overflow: hidden; }
   "出售數量": "Quantity to sell",
   "金幣": "Gold",
   "前線分倉": "Frontier depot",
-  "只要移動角色，就會自動採集、建造與攻擊。電腦可用 WASD／方向鍵；手機拖曳搖桿，或點地面前往。": "Move to gather, build and attack automatically. Use WASD / arrow keys, drag the joystick, or tap the ground to walk there."
+  "只要移動角色，就會自動採集、建造與攻擊。電腦可用 WASD／方向鍵；手機拖曳搖桿，或點地面前往。": "Move to gather, build and attack automatically. Use WASD / arrow keys, drag the joystick, or tap the ground to walk there.",
+  "餘額不足。": "Not enough points.",
+  "免費遊玩，沒有入場費。": "Free to play, no entry fee."
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -6268,7 +6264,7 @@ body.ol-expanded { overflow: hidden; }
   // Numeric sample labels are exact matches only; matching "1 關" inside "21 關…" would corrupt a live sentence.
   var keys = Object.keys(dictionary).filter(function (key) { return !/^\d/.test(key); }).sort(function (a, b) { return b.length - a.length; });
   var phrases = new RegExp(keys.map(function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|'), 'g');
-  var names = ['Deep Sea Arcade','Crush Depth','Minesweeper','Pearl Drop','Pearl Merge','Sonar Dice','Deep Probe','High Tide','Gold Digger','Compass','Ascent','Reef Run','Dream Repair Shop','Dodge Run','Queue Cutter','Sneak Out','Fishing','Campaign Truck','Boba Straw','Rooftop Cat','Poop Bird vs Wolves','Reaper Shift','Reef Blaster','Sky Builder','Carp Leap','Rider vs Dogs','Chubby Boss','Fruit Thief Cat','Baby Bath Escape','Frog Snack','Nap Master','One Breath Dive','MRT Seat Grab','Noodle Pancake','Pudding Dash','Clock Out','Midnight Mosquito','Don’t Peek','Pet Walkies','No Overtime!','Number Gulp','Mirror Twins','Shadow Relay','One-Line Defense','Mermaid Spider','The Last Hair','The Last Banquet','Breakout','Ocean Link'];
+  var names = ['My Wardrobe','Deep Sea Arcade','Crush Depth','Minesweeper','Pearl Drop','Pearl Merge','Sonar Dice','Deep Probe','High Tide','Gold Digger','Compass','Ascent','Reef Run','Dream Repair Shop','Dodge Run','Queue Cutter','Sneak Out','Fishing','Campaign Truck','Boba Straw','Rooftop Cat','Poop Bird vs Wolves','Reaper Shift','Reef Blaster','Sky Builder','Carp Leap','Rider vs Dogs','Chubby Boss','Fruit Thief Cat','Baby Bath Escape','Frog Snack','Nap Master','One Breath Dive','MRT Seat Grab','Noodle Pancake','Pudding Dash','Clock Out','Midnight Mosquito','Don’t Peek','Pet Walkies','No Overtime!','Number Gulp','Mirror Twins','Shadow Relay','One-Line Defense','Mermaid Spider','The Last Hair','The Last Banquet','Breakout','Ocean Link'];
   var numbered = { '關': 'Stage', '班': 'Shift', '隊': 'Queue', '條': 'Fish', '層': 'Floor', '道': 'Crossing', '格': 'Cell', '列': 'Row', '階': 'Tier', '段': 'Segment', '晚': 'Night', '站': 'Station' };
 
   function english(value) {
@@ -6280,6 +6276,7 @@ body.ol-expanded { overflow: hidden; }
       result = text.slice(0, text.indexOf(trimmed)) + dictionary[trimmed] + text.slice(text.indexOf(trimmed) + trimmed.length);
     } else {
       result = text.replace(/礦區第\s*(\d+)\s*列第\s*(\d+)\s*格/g, 'Mine row $1, cell $2')
+        .replace(/免費重玩第\s*(\d+)\s*關/g, 'Free retry · Stage $1')
         .replace(/重玩第\s*(\d+)\s*關（扣\s*(\d+)\s*點）/g, 'Retry stage $1 ($2 pts)')
         .replace(/第\s*(\d+)\s*(關|班|隊|條|層|道|格|列|階|段|晚|站)/g, function (_, n, unit) { return numbered[unit] + ' ' + n + ' ' + unit; })
         .replace(phrases, function (match) { return dictionary[match]; });
@@ -6442,9 +6439,9 @@ body.ol-expanded { overflow: hidden; }
   'use strict';
   var AN=window.deepSeaAnalytics||{start:function(){return null;},progress:function(){},resume:function(){},end:function(){},view:function(){},points:function(){}};
   var K = 0.12;                 // multiplier growth: m = e^(K·秒)
-  var BET_MS = 6000, REST_MS = 3200, MIN_BET = 10, START_BALANCE = 500;
-  var ENTRY_FEE = 0, REGEN_CAP = 100, REGEN_MS = 60000;   // Free entry; points are earned through play and achievements.
-  var LOW_MSG = '餘額不足，每局需要 ' + ENTRY_FEE + ' 點。低於 ' + REGEN_CAP + ' 點時每分鐘會自動回 1 點。';
+  var BET_MS = 6000, REST_MS = 3200, MIN_BET = 10, START_BALANCE = 0;
+  var ENTRY_FEE = 0;   // free entry; points are earned through play and achievements
+  var LOW_MSG = '餘額不足。';
   var STORE = 'crush-depth-balance';
   var $ = function (id) { return document.getElementById(id); };
   var sea = $('sea'), cv = $('cv'), ctx = cv.getContext('2d');
@@ -6462,19 +6459,16 @@ body.ol-expanded { overflow: hidden; }
   function fmt(n) { return Math.round(n).toLocaleString('zh-TW'); }
   function fx(m) { return m.toFixed(2); }
   function rollCrash() { var r = Math.random(); return Math.min(1000, Math.max(1, Math.floor(97 / (1 - r)) / 100)); }
-  var REGEN_KEY = 'deep-sea-regen-at', regenAt = Date.now(), lastSavedBalance = START_BALANCE;
+  var lastSavedBalance = START_BALANCE;
   function save() {
-    // A spend that takes the balance below the cap starts the regeneration clock at that moment.
-    if (lastSavedBalance >= REGEN_CAP && S.balance < REGEN_CAP) regenAt = Date.now();
     lastSavedBalance = S.balance;
-    try { localStorage.setItem(STORE, String(S.balance)); localStorage.setItem(REGEN_KEY, String(regenAt)); } catch (e) {}
+    try { localStorage.setItem(STORE, String(S.balance)); } catch (e) {}
   }
   function load() {
     try {
       var v = parseInt(localStorage.getItem(STORE), 10); if (isFinite(v) && v >= 0) S.balance = v;
-      var t = Number(localStorage.getItem(REGEN_KEY)); if (isFinite(t) && t > 0) regenAt = t;
     } catch (e) {}
-    lastSavedBalance = S.balance; regenTick(Date.now());
+    lastSavedBalance = S.balance;
   }
   // Legacy regeneration keys remain readable; no passive or offline points after free-play migration.
   function regenTick(now) { return false; }
@@ -6746,13 +6740,6 @@ body.ol-expanded { overflow: hidden; }
   });
   document.querySelectorAll('[data-auto]').forEach(function (b) {
     b.addEventListener('click', function () { elAuto.value = Number(b.dataset.auto).toFixed(2); });
-  });
-  $('reset').addEventListener('click', function () {
-    if(frontierBusy){document.getElementById('ft-storage').textContent='這一局結束後才能重設點數。';return;}
-    var note = function (t) { diveSay(t); carpSay(t); riderSay(t); bossSay(t); thiefSay(t); babySay(t); mrtSay(t); blSay(t); sbSay(t); rpSay(t); catSay(t); birdSay(t); frogSay(t); puddingSay(t); clockSay(t); mqSay(t); bqSay(t); peekSay(t); napSay(t); hairSay(t); petSay(t); otSay(t); mmSay(t); esSay(t); mtSay(t); srSay(t); olSay(t); bobaUI(t); pancakeUI(t); rocketUI(t); fiSay(t); $('sk-msg').textContent=t; eqSay(t); drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
-    if (oceanLinkBusy) { $('ol-msg').textContent = '這一局結束後才能重設點數。'; return; }
-    if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.active || WL.pending || TW.active || CR.active || DR.active || runnerBusy || EQ.active || sneakBusy || FI.active || BOBA.active || catBusy || birdBusy || frogBusy || puddingBusy || clockBusy || mqBusy || bqBusy || peekBusy || napBusy || hairBusy || petBusy || otBusy || mmBusy || EATS.active || MIRR.active || SHAD.active || ONEL.active || RP.active || BL.active || DIVE.active || MRT.active || PANCAKE.active || carpBusy || riderBusy || bossBusy || thiefBusy || babyBusy) { note('這一局結束後才能重設點數。'); return; }
-    AN.points(START_BALANCE-S.balance); S.balance = START_BALANCE; save(); note('點數已重設為 ' + fmt(START_BALANCE) + '。'); renderAll(); renderMines();
   });
 
   /* ---------- Mines: classic puzzle ---------- */
@@ -9594,7 +9581,7 @@ ui();draw(0);requestAnimationFrame(loop);
   function blRetry(){
     if(BL.active||BL.phase!=='lost')return;
     var cost=blRetryFee();
-    if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點；可等待平台自動回點。','lose');return;}
+    if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點。','lose');return;}
     BL.stake=cost;BL.spent+=cost;BL.retries++;BL.attemptEarned=0;BL.lives=3;BL.active=true;BL.tracked=false;
     BL.analytics=AN.start('blaster',cost,{stage:BL.stage,entry_kind:'stage_retry',retry_count:BL.retries});save();renderAll();blRound();
   }
@@ -18555,7 +18542,7 @@ function ftBuilding(b,w){
  window.deepSeaWardrobe={
   init:function(){ready=true;try{data=read();paint();}catch(e){data=fresh();paint();message('收藏讀取失敗，原資料已保留。');}},
   refresh:function(){if(ready)try{data=read();paint();}catch(e){}},
-  open:function(){location.hash='lobby';$('wardrobe-panel').open=true;requestAnimationFrame(function(){$('wardrobe-hub').scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});});}
+  open:function(){location.hash='wardrobe';}
  };
  items.forEach(function(item){var card=document.createElement('article');card.className='wardrobe-item';card.innerHTML='<span class="wardrobe-icon" aria-hidden="true">'+item.icon+'</span><h4>'+item.name+'</h4><p>'+({hat:'帽子',jacket:'服裝',friend:'跟隨配件'}[item.slot])+'</p><button type="button" id="wardrobe-buy-'+item.id+'"></button>';$('wardrobe-items').appendChild(card);$('wardrobe-buy-'+item.id).addEventListener('click',function(){purchase(item.id);});});
  document.querySelectorAll('[data-wardrobe-default]').forEach(function(b){b.addEventListener('click',function(){locked(function(d){d.equipped[b.dataset.wardrobeDefault]=null;write(d);paint();});});});
@@ -18582,7 +18569,7 @@ function ftBuilding(b,w){
   $('lobby-explore').addEventListener('click',function(){if($('lobby-games').scrollIntoView)$('lobby-games').scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});});
 
   /* ---------- tabs ---------- */
-  var VIEWS = { frontier: '荒島遠征 <span>Frontier Islands</span>', 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: '深海遊戲廳 <span>Deep Sea Arcade</span>', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', 'rocket-chair': '社畜要下班 <span>Roar Through the Ceiling</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', 'eat-smaller': '數字吞噬 <span>Number Gulp</span>', 'mirror-twins': '鏡像雙子 <span>Mirror Twins</span>', 'shadow-relay': '影子接力 <span>Shadow Relay</span>', 'one-line-defense': '一筆畫守城 <span>One-Line Defense</span>', mermaid: '人魚接龍 <span>Mermaid Spider</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
+  var VIEWS = { wardrobe: '我的造型 <span>My Wardrobe</span>', frontier: '荒島遠征 <span>Frontier Islands</span>', 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: 'TiCATiCA <span>Games</span>', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', 'rocket-chair': '社畜要下班 <span>Roar Through the Ceiling</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', 'eat-smaller': '數字吞噬 <span>Number Gulp</span>', 'mirror-twins': '鏡像雙子 <span>Mirror Twins</span>', 'shadow-relay': '影子接力 <span>Shadow Relay</span>', 'one-line-defense': '一筆畫守城 <span>One-Line Defense</span>', mermaid: '人魚接龍 <span>Mermaid Spider</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
   function route() {
     var v = location.hash.slice(1);
     // Hidden games keep their code but cannot be opened by link; show the lobby and correct the address.
@@ -18614,13 +18601,13 @@ function ftBuilding(b,w){
   if (window.ResizeObserver) new ResizeObserver(resize).observe(sea); else window.addEventListener('resize', resize);
 
   function start(data) {
-    load(); regenStart(); window.deepSeaWardrobe.init();
+    load(); window.deepSeaWardrobe.init();
     if (data && typeof data.balance === 'number') S.balance = data.balance;
     S.history = data && Array.isArray(data.history) ? data.history : Array.from({ length: 12 }, rollCrash);
     buildBoard(); renderMines(); pkSetup(); pkUI(); mgBuild(); mgRender(); dUI(); lUI(); hUI(); keBuild(); keUI(); whSetup(); whUI(); twUI(); crUI(); route();
     resize(); seedSnow();
-    startBetting(performance.now());
-    requestAnimationFrame(frame);
+    // The hidden probability games (Crash, Plinko...) are not opened; their loop is not started so the lobby stays still.
+    renderAll();
   }
   var hot = window.claude && window.claude.hot;
   if (hot && hot.snapshot) hot.snapshot(function () { return { balance: S.balance + (S.bet && !S.bet.out && S.phase !== 'crashed' ? S.bet.amount : 0) + P.balls.reduce(function (s, b) { return s + b.bet; }, 0) + D.pending + L.pending + (HL.active ? HL.bet : 0) + WL.pending + (TW.active ? TW.bet : 0) + (CR.active ? CR.bet : 0) + (EQ.active ? EQ.stake : 0) + (sneakBusy ? sneakStake : 0) + (FI.active ? FI.stake : 0) + (CP.active ? CP.stake : 0) + (BOBA.active ? BOBA.fee : 0) + (PANCAKE.active && !PANCAKE.free ? PANCAKE.fee : 0) + (catBusy ? catStake : 0) + (birdBusy ? birdStake : 0) + (frogBusy ? frogStake : 0) + (puddingBusy ? puddingStake : 0) + (clockBusy ? clockStake : 0) + (peekBusy ? peekStake : 0) + (napBusy ? napStake : 0) + (hairBusy ? hairStake : 0) + (mqBusy ? mqStake : 0) + (bqBusy ? bqStake : 0) + (petBusy ? petStake : 0) + (otBusy ? otStake : 0) + (mmBusy ? mmStake : 0) + (EATS.active ? EATS.stake : 0) + (MIRR.active ? MIRR.stake : 0) + (SHAD.active ? SHAD.stake : 0) + (ONEL.active ? ONEL.stake : 0) + (RP.active ? RP.stake : 0) + (BL.active ? BL.stake : 0) + (DIVE.active ? DIVE.stake : 0) + (MRT.active ? MRT.stake : 0) + (carpBusy ? carpStake : 0) + (riderBusy ? riderStake : 0) + (bossBusy ? bossStake : 0) + (thiefBusy ? thiefStake : 0) + (babyBusy ? babyStake : 0), history: S.history }; });

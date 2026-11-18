@@ -36,7 +36,32 @@ def render(root: Path = ROOT, entry: str = 'templates/index.html') -> str:
 
         return DIRECTIVE.sub(replace, text)
 
-    return apply_hidden(expand(entry), root)
+    return bake_lobby(apply_hidden(expand(entry), root))
+
+
+def bake_lobby(html: str) -> str:
+    """Write the final lobby counts and filter chips into the static HTML.
+
+    The runtime computes the same values, but only after the large script runs; baking them in stops the
+    lobby from visibly changing a moment after the first paint.
+    """
+    if '<div class="lobby-grid">' not in html:
+        return html
+    start = html.index('<div class="lobby-grid">')
+    end = html.index('<p class="lobby-footnote">', start)
+    cards = re.findall(r'<a class="game-card" href="#[a-z0-9-]+"( hidden data-game-hidden)?[^>]*?data-game-category="([a-z]+)"', html[start:end])
+    shown = [category for hidden, category in cards if not hidden]
+    total = len(shown)
+    html, n = re.subn(r'(<span id="lobby-count">)[^<]*(</span>)', lambda m: f'{m.group(1)}{total} 款遊戲{m.group(2)}', html, count=1)
+    if n != 1:
+        raise ValueError('Lobby count element not found')
+
+    def chip(match):
+        key = match.group(1)
+        count = total if key == 'all' else shown.count(key)
+        return (f'<button type="button" data-lobby-filter="{key}" aria-pressed="{match.group(2)}"{" hidden" if count == 0 else ""}>'
+                f'{match.group(3)}<span>{count}</span></button>')
+    return re.sub(r'<button type="button" data-lobby-filter="([a-z]+)" aria-pressed="(true|false)">([^<]*)<span>\d+</span></button>', chip, html)
 
 
 def apply_hidden(html: str, root: Path = ROOT) -> str:
@@ -82,7 +107,7 @@ def validate_catalog(html: str, root: Path = ROOT) -> None:
             if html.count(marker) != 1:
                 raise ValueError(f'Expected one {marker}')
     views = re.findall(r'id="view-([a-z0-9-]+)"', html)
-    if set(views) != set(ids) | {'lobby'}:
+    if set(views) != set(ids) | {'lobby', 'wardrobe'}:  # platform pages besides the games
         raise ValueError('Catalog and rendered views differ')
 
 

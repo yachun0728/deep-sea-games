@@ -43,7 +43,7 @@
     var r=rounds[id];if(!r)return;tick(performance.now());flush();delete rounds[id];if(w.deepSeaProgress)w.deepSeaProgress.complete(r.game,result,r.activeMs);
     emit('game_end',r.game,Object.assign({round_id:id,stage:r.stage,step:r.step,result:result,stake_points:r.stake,payout_points:payout,net_points:payout-r.stake,round_active_seconds:Math.round(r.activeMs)/1000,round_elapsed_seconds:Math.round(performance.now()-r.started)/1000},params||{}));
   }
-  function view(game){if(game==='lobby'){tick(performance.now());flush();current='';emit('lobby_view','');return;}if(!names[game]||game===current)return;tick(performance.now());flush();current=game;emit('game_view',game);}
+  function view(game){if(game==='wardrobe'){tick(performance.now());flush();current='';return;}if(game==='lobby'){tick(performance.now());flush();current='';emit('lobby_view','');return;}if(!names[game]||game===current)return;tick(performance.now());flush();current=game;emit('game_view',game);}
   function interaction(){tick(performance.now());inputAt=performance.now();focused=d.hasFocus?d.hasFocus():true;}
   ['pointerdown','keydown','touchstart'].forEach(function(type){d.addEventListener(type,interaction,{capture:true,passive:true});});
   d.addEventListener('visibilitychange',function(){tick(performance.now());flush();visible=!d.hidden;if(visible)inputAt=performance.now();});

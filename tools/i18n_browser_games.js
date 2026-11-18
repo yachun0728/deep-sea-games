@@ -92,7 +92,7 @@ try {
     assert(button.closest('.side')&&i.sourceText(button)===sourceLabel,'Live Stop action returns to its original panel after the label fixture');
   }
  }
- for(var game of [{id:'dive',frame:'dv-frame',button:'dv-go'},{id:'mrt',frame:'mr-frame',button:'mr-go'},{id:'pancake',frame:'pancake-frame',button:'btn-touch'},{id:'eat-smaller',frame:'es-frame',button:'es-go'},{id:'mirror-twins',frame:'mt-frame',button:'mt-go'},{id:'shadow-relay',frame:'sr-frame',button:'sr-go'},{id:'one-line-defense',frame:'ol-frame',button:'ol-go'}]){
+ for(var game of [{id:'dive',frame:'dv-frame',button:'dv-go'},{id:'mrt',frame:'mr-frame',button:'mr-go'},{id:'pancake',frame:'pancake-frame',button:'btn-touch'},{id:'eat-smaller',frame:'es-frame',button:'es-go'},{id:'mirror-twins',frame:'mt-frame',button:'mt-go'},{id:'shadow-relay',frame:'sr-frame',button:'sr-go'},{id:'one-line-defense',frame:'od-frame',button:'od-go'}]){
    location.hash=game.id;await wait(250);
    var frame=document.getElementById(game.frame),doc=frame.contentDocument;
    assert(doc&&doc.body,game.id+': same-origin iframe loads');
@@ -100,7 +100,7 @@ try {
    var before=balance();
    if(game.id==='pancake')doc.getElementById(game.button).click();else document.getElementById(game.button).click();
    await wait();
-   assert(balance()===before-10,game.id+': iframe start charges exactly ten points');
+   assert(balance()===before,game.id+': iframe start is free and charges nothing');
    var paid=balance();i.setLanguage('zh-Hant');await wait();i.setLanguage('en');await wait();
    assert(balance()===paid,game.id+': iframe switching preserves balance');
    assert(!chinese(doc.body).length,game.id+': live iframe labels translated '+JSON.stringify(chinese(doc.body)));

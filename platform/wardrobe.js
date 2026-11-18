@@ -66,7 +66,7 @@
  window.deepSeaWardrobe={
   init:function(){ready=true;try{data=read();paint();}catch(e){data=fresh();paint();message('收藏讀取失敗，原資料已保留。');}},
   refresh:function(){if(ready)try{data=read();paint();}catch(e){}},
-  open:function(){location.hash='lobby';$('wardrobe-panel').open=true;requestAnimationFrame(function(){$('wardrobe-hub').scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});});}
+  open:function(){location.hash='wardrobe';}
  };
  items.forEach(function(item){var card=document.createElement('article');card.className='wardrobe-item';card.innerHTML='<span class="wardrobe-icon" aria-hidden="true">'+item.icon+'</span><h4>'+item.name+'</h4><p>'+({hat:'帽子',jacket:'服裝',friend:'跟隨配件'}[item.slot])+'</p><button type="button" id="wardrobe-buy-'+item.id+'"></button>';$('wardrobe-items').appendChild(card);$('wardrobe-buy-'+item.id).addEventListener('click',function(){purchase(item.id);});});
  document.querySelectorAll('[data-wardrobe-default]').forEach(function(b){b.addEventListener('click',function(){locked(function(d){d.equipped[b.dataset.wardrobeDefault]=null;write(d);paint();});});});
