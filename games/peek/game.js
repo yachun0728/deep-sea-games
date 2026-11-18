@@ -629,12 +629,20 @@ function drawHide(){
  const h=Math.abs(tilt);
  if(h>.2){const sd=tilt<0?-1:1,gr=g.createLinearGradient(CX+sd*W/2,0,CX-sd*W*.1,0);gr.addColorStop(0,'rgba(8,10,6,'+(.85*h)+')');gr.addColorStop(1,'rgba(8,10,6,0)');g.fillStyle=gr;g.fillRect(0,0,W,H)}
  if(breath<.999){const gr=g.createRadialGradient(CX,225,120,CX,225,520);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,'+(.9*(1-breath))+')');g.fillStyle=gr;g.fillRect(0,0,W,H)}}
+function howCards(y,w,al){   // three parchment cards: icon in the window, two short lines underneath
+ const h=w*216/186,gap=w*.1,x0=CX-(3*w+2*gap)/2,bg=art('ui-card'),
+  defs=[[['spot-tree'],'左右滑','躲進樹或棺材',1],[['item-lantern','item-hammer'],'鬼來了','點對的道具',0],[['item-torch'],'路邊有東西','點一下撿起',0]];
+ g.save();g.globalAlpha=al;
+ defs.forEach((d,i)=>{const x=x0+i*(w+gap);
+  if(bg)g.drawImage(bg,x,y,w,h);else RR(x,y,w,h,10,'#d9c08a',2);
+  const wx=x+w*.31,wy=y+h*.18,ww=w*.38,wh=h*.33,ims=d[0].map(art).filter(Boolean),slot=ww/Math.max(1,d[0].length);
+  ims.forEach((im,k)=>{const sc=Math.min((slot-4)/im.naturalWidth,(wh-8)/im.naturalHeight),iw=im.naturalWidth*sc,ih=im.naturalHeight*sc;g.drawImage(im,wx+slot*k+(slot-iw)/2,wy+(wh-ih)/2,iw,ih)});
+  if(d[3]){g.font='800 '+w*.14+'px system-ui,sans-serif';g.textAlign='center';g.fillStyle='#e8c675';g.fillText('◀',wx-w*.04,wy+wh*.62);g.fillText('▶',wx+ww+w*.04,wy+wh*.62)}
+  txp(d[1],x+w/2,y+h*.67,w*.115,'#3a2812');txp(d[2],x+w/2,y+h*.82,w*.09,'#3a2812')});
+ g.restore()}
 function drawTut(){
  if(lt>9){tutDone=true;try{localStorage.setItem('deep-sea-peek-tut','1')}catch(e){}return}
- RR(CX-270,246,540,112,12,'rgba(12,9,6,.74)',2);
- tx('左右滑：躲進路邊的躲藏處（憋氣有限，別躲太久）',CX,280,17,'#f1d9a6');
- tx('鬼出現、左右冒出道具：點對那一側的道具　點一下：撿東西',CX,310,17,'#f1d9a6');
- tx('電腦：← → 躲，道具出現時 ← → 選道具　F 撿',CX,340,14,'rgba(241,217,166,.7)')}
+ howCards(268,112,clamp(Math.min(lt/.6,(9-lt)/1),0,1))}
 function drawHead(){   // head down: the road rushes by under your feet and a long shadow slides over you
  g.save();g.fillStyle='rgba(6,5,4,.92)';g.fillRect(0,0,W,H);
  const sp=run*140;for(let i=0;i<14;i++){const y=140+((i*47+sp*(.4+i*.07))%310),w=60+i*14,x=(i*211+sp*.3)%W;g.fillStyle='rgba(70,60,50,'+(.12+i*.02)+')';g.fillRect(x,y,w,3)}
@@ -675,10 +683,10 @@ function draw(){
   g.fillStyle='rgba(18,13,10,.72)';g.fillRect(0,0,W,H);
   if(!audioOk)drawHeadphone();
   else{const lv=wantLevel(),lc=lv?levelCfg(lv,(lvDeaths[lv]||0)>=2):null;
-   tx('別看',CX,86,56,'#e8c675');tx('Don\'t Peek　禁忌寶盒・夜逃',CX,124,20,'#f1d9a6');
-   tx(lc?'第 '+lv+' 關・'+WORLD_NAME[lc.wi]+'・'+KIND_NAME[lc.kind]+'　生命 '+lives:'自由跑（沒有關卡和生命）',CX,168,22,'#ffd98a');
-   tx('自動奔跑。落葉堆起來、敲樹枝：左右滑，躲進另一側。風向反了：躲進風來的那一側。',CX,214,17,'#f1d9a6');tx('蟲鳴停了、左右冒出道具：點對鬼怕的那一件。路邊的東西靠近時點一下撿起。',CX,244,17,'#f1d9a6');
-   tx('電腦：← → 躲或選道具　F 撿　手機：左右滑、點一下，或「啟用體感」',CX,290,15,'#f1d9a6');tx('到右邊操作區選關卡，按「開始」',CX,360,21,'#ffd98a')}}
+   tx('別看',CX,70,52,'#e8c675');tx('Don\'t Peek　禁忌寶盒・夜逃',CX,98,17,'#f1d9a6');
+   tx(lc?'第 '+lv+' 關・'+WORLD_NAME[lc.wi]+'・'+KIND_NAME[lc.kind]+'　生命 '+lives:'自由跑（沒有關卡和生命）',CX,130,20,'#ffd98a');
+   howCards(146,170,1);
+   tx('選好關卡，按右邊的「開始」',CX,388,20,'#ffd98a');tx('電腦：← → 躲或選道具　F 撿　手機：左右滑、點一下',CX,414,14,'rgba(241,217,166,.75)')}}
  else if(st==='won')drawWon();
  else if(st==='over')drawDeath();
  if(dex)drawDex()}
