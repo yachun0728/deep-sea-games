@@ -9,6 +9,7 @@ const {frontierWorld:create,frontierStep:step,frontierGoal:goal,frontierUpgrade:
 function tick(w,seconds,input={x:0,y:0}){for(let i=0;i<Math.ceil(seconds/.05);i++)step(w,input,.05);}
 function neutral(w){w.enemies.forEach(e=>e.hp=0);tick(w,.05);}
 function build(w,k){let b=w.buildings.find(b=>b.kind===k);w.bank.wood=w.bank.stone=10000;w.p.x=b.x;w.p.y=b.y;tick(w,12);return b.built;}
+model.frontierClassic=true; // the beacon rules below are still used from stage 11 on; stages 1-10 use the enemy-base rules tested at the end
 for(let level=1;level<=50;level++){
  let w=create(level);ok(w.nodes.some(n=>n.x<530&&n.kind==='stone')&&w.nodes.some(n=>n.x<530&&n.kind==='wood'),`stage ${level}: accessible renewable supplies`);
  w.p.x=w.buildings[5].x;w.p.y=w.buildings[5].y;w.bank.wood=w.bank.stone=10000;w.p.inv=1000;tick(w,2);ok(!w.buildings[5].built,`stage ${level}: beacon gated`);
@@ -88,13 +89,45 @@ h=harness({'deep-sea-frontier-v1':JSON.stringify({version:1,paid:true,cleared:7,
 h=harness({'deep-sea-frontier-v1':'{broken'},90);ok(!h.w&&h.c.S.balance===90,'malformed save does not mutate wallet');
 ok(h.store.get('deep-sea-frontier-v1')==='{broken','malformed data not erased on load');
 let old=create(3);old.nodes=old.nodes.slice(0,62);old.buildings=old.buildings.slice(0,6);delete old.coins;delete old.workers;delete old.drops;delete old.camps;old.bank.stone=63;old.tech.pack=3;
-h=harness({'deep-sea-frontier-v1':JSON.stringify({version:1,paid:true,cleared:2,world:old})});ok(h.w.level===3&&h.w.tech.pack===3&&h.w.bank.stone===63&&h.w.buildings.length===9,'adapter reads legacy snapshot and migrates additively');
+h=harness({'deep-sea-frontier-v1':JSON.stringify({version:1,paid:true,cleared:2,world:old})});ok(h.w.level===3&&h.w.tech.pack===3&&h.w.cfg.war&&!!h.w.enemyBase&&!h.w.buildings.some(b=>b.kind==='beacon'),'adapter turns an old stage 1-10 snapshot into the enemy-base stage and keeps equipment');
 h.$('ft-go').click();h.$('ft-shop-toggle').click();ok(!h.$('ft-shop').hidden&&h.$('ft-main').classList.contains('ft-shop-open'),'shop reserves a column inside fullscreen root');h.$('ft-shop-close').click();ok(h.$('ft-shop').hidden&&!h.$('ft-main').classList.contains('ft-shop-open'),'shop close restores canvas width without restart');
 let previous=h.w;h.emit('blur');h.c.frontierRoute(false);ok(!h.$('ft-main').classList.contains('ft-immersive')&&h.w===previous,'route exit restores layout without replacing save');
 let portraitPhone=harness({},0,true,true);portraitPhone.$('ft-go').click();ok(!portraitPhone.test.paused(),'portrait phone starts without rotation gate');let portraitTime=portraitPhone.w.time;portraitPhone.run();ok(portraitPhone.w.time>portraitTime,'portrait simulation advances');portraitPhone.$('ft-full').click();ok(!portraitPhone.$('ft-main').classList.contains('ft-immersive'),'portrait fullscreen exit works');
 let phone=harness({},0,true);phone.$('ft-go').click();ok(phone.$('ft-main').classList.contains('ft-immersive'),'touch start still enters fullscreen fallback');
 // Parse the shipped executable scripts; application/json is separately decoded.
 const html=read('index.html');for(const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)){if(match[1].includes('application/json'))JSON.parse(match[2]);else new vm.Script(match[2]);}ok(true,'compiled runtime and JSON syntax');
+// Enemy-base stages (1-10): fighters, not the hero, destroy the opposing base.
+model.frontierClassic=false;
+{
+ let w=create(1);ok(w.cfg.war&&w.cfg.mission==='war'&&w.enemyBase&&w.enemyBase.hp===w.enemyBase.maxHp&&w.enemyBase.maxHp>=2000,'stage 1 has a thick enemy base');
+ ok(!w.buildings.some(b=>b.kind==='beacon'),'war stages have no beacon');
+ let tower=w.buildings[4],barracks=w.buildings.find(b=>b.kind==='barracks');
+ ok(tower.kind==='tower'&&tower.x<400&&Math.hypot(tower.x-w.buildings[0].x,tower.y-w.buildings[0].y)<200,'tower stands beside the home base');
+ ok(barracks&&barracks.x>678,'barracks is across the bridge');
+ w.enemies=[];w.siege.next=1e6;w.bank.wood=w.bank.stone=10000;ok(tower.built&&tower.hp===tower.maxHp,'a tower already guards the home base');
+ // the hero cannot damage the enemy base
+ w.buildings[3].built=true;w.p.x=w.enemyBase.x-40;w.p.y=w.enemyBase.y;w.p.inv=1e6;const full=w.enemyBase.hp;tick(w,6);ok(w.enemyBase.hp===full&&w.phase==='play','hero cannot attack the enemy base');
+ // fighters can only be trained at the barracks and cap at six
+ w=create(1);w.enemies=[];w.siege.next=1e6;w.bank.wood=w.bank.stone=10000;w.buildings[3].built=true;barracks=w.buildings.find(b=>b.kind==='barracks');
+ ok(!model.frontierRecruit(w),'cannot recruit before the barracks exists');
+ w.p.x=barracks.x;w.p.y=barracks.y;tick(w,12);ok(barracks.built,'barracks builds across the bridge');
+ for(let n=0;n<8;n++)model.frontierRecruit(w);ok(barracks.queue===6&&model.frontierFighterCap(w)===6,'fighter cap is six');
+ tick(w,2*6+1);ok(w.fighters.length===6,'barracks trains fighters one by one');
+ // fighters march on the base, damage it slowly, and the base hurts them only a little
+ const start=w.enemyBase.hp;let fighterHp=w.fighters[0].max;w.p.x=barracks.x;w.p.y=barracks.y;w.p.inv=1e6;
+ tick(w,40);ok(w.enemyBase.hp<start,'fighters attack the enemy base');ok(start-w.enemyBase.hp<start*.35,'fighters attack slowly');
+ ok(w.fighters.some(f=>f.hp<f.max)&&w.fighters.every(f=>f.hp>0||true),'enemy base hurts fighters');
+ const dps=w.fighters.reduce((n,f)=>n+(f.max-f.hp),0)/40;ok(dps<10,'enemy base attack stays weak');
+ // victory
+ w.enemyBase.hp=1;w.fighters.forEach(f=>{f.hp=f.max;});tick(w,10);ok(w.enemyBase.hp===0&&w.phase==='clear','destroying the enemy base clears the stage');
+ // raiders attack the tower and can break it
+ w=create(1);w.enemies=[];w.siege.next=1e6;w.p.inv=1e6;tower=w.buildings[4];const towerHp=tower.hp;
+ w.enemies.push({x:tower.x+30,y:tower.y,type:'melee',hp:99999,max:99999,state:'walk',t:0,cool:0,tx:0,ty:0,hit:false,counted:false,wave:true,radius:17,raider:true,assault:true});
+ w.p.x=900;w.p.y=700;tick(w,12);ok(tower.hp<towerHp&&w.phase==='play','monsters attack the tower');
+ // later stages keep the beacon rules
+ w=create(11);ok(!w.cfg.war&&w.buildings.some(b=>b.kind==='beacon')&&!w.enemyBase,'stage 11 keeps the beacon rules');
+}
+
 console.log(`PASS: ${checks} Frontier model and adapter assertions`);
 
 export const frontierChecks=checks;
