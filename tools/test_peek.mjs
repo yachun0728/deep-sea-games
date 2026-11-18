@@ -204,7 +204,7 @@ check('Gale must be met by leaning toward the reversed wind; boss Hollow is a lo
 check('Boss level runs its fixed plan, saves a checkpoint and adds a life',()=>{
   const f=fixture();f.F.ev('forceLvl=10;maxLvl=10;lives=3');f.F.start();assert.equal(f.ev('L.plan.length'),4);
   const seq=[];for(let i=0;i<4;i++){f.F.ev('ev=null;startEvent()');seq.push(f.ev('ev.boss?"hollow":ev.type'))}assert.deepEqual(seq,['eye','twins','walker','hollow']);
-  const g=fixture();g.F.ev('forceLvl=10;maxLvl=10;lives=3');g.F.start();g.F.ev('ev=null;gapT=999;prog=99.9;L.left=0');g.hold('wind');g.run(1);assert.equal(g.ev('st'),'won');assert.equal(g.ev('ck'),11);assert.equal(g.ev('lives'),4);assert.equal(g.ev('maxLvl'),11);
+  const g=fixture();g.F.ev('forceLvl=10;maxLvl=10;lives=3');g.F.start();g.F.ev('ev=null;gapT=999;prog=99.9;L.left=0');g.hold('wind');g.run(1);assert.equal(g.ev('st'),'won');assert.equal(g.ev('ck'),1);assert.equal(g.ev('lives'),4);assert.equal(g.ev('maxLvl'),11);
 });
 check('Fixed-seed levels repeat exactly; seed code is shown for the others',()=>{
   const run=()=>{const f=fixture(500,null,()=>.9);f.F.ev('forceLvl=10;maxLvl=10');f.F.start();return f.ev('seedCode')+'|'+[0,1,2,3].map(()=>{f.F.ev('ev=null;startEvent()');return f.ev('ev.side')}).join()};

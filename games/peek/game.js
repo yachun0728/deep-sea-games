@@ -33,7 +33,7 @@ try{deaths=JSON.parse(localStorage.getItem('deep-sea-peek-deaths')||'{}')||{}}ca
 let analytics=null,earned=0,dodgesTotal=0,run=0,ph=0,eyeSeen=0;try{dodgesTotal=+localStorage.getItem('deep-sea-peek-dodges')||0}catch(e){}
 const ptrT=new Map();
 let R=()=>Math.random(),L=null,lvl=0,lives=3,ck=1,maxLvl=1,noDrop=0,healTen=-1,lvDeaths={},seen={},runTop=1,daily=false,seed=0,seedCode='',rB=BASE_RATE,rW=WIND_RATE,practice='',nextPractice='',forceLvl=null,dex=false,dexSel=0,assistHid=0,deathEv=null,guarantee=false,dropped=false,scared=false,nibT=0,lostAll=false,captions=false,AMB=.6;
-try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-save')||'{}');maxLvl=o.m||1;ck=o.c||1;lives=o.l||3;noDrop=o.n||0;healTen=o.h==null?-1:o.h;lvDeaths=o.d||{};seen=o.s||{};runTop=o.r||maxLvl}catch(e){}
+try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-save')||'{}');maxLvl=o.m||1;ck=1;lives=o.l||3;noDrop=o.n||0;healTen=o.h==null?-1:o.h;lvDeaths=o.d||{};seen=o.s||{};runTop=o.r||maxLvl}catch(e){}
 const rnd=(a,b)=>a+R()*(b-a);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function tx(s,x,y,sz,col,al){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign=al||'center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-24);g.fillStyle=col;g.fillText(s,x,y,W-24)}
@@ -126,11 +126,11 @@ function end(kind,reason){
   if(!practice&&!daily){deaths[reason]=(deaths[reason]||0)+1;try{localStorage.setItem('deep-sea-peek-deaths',JSON.stringify(deaths))}catch(e){}mark('flick');
    if(L){lvDeaths[lvl]=(lvDeaths[lvl]||0)+1;lives--;if(lives<=0){lostAll=true;lives=3;lvDeaths={};runTop=ck}sv();if(lostAll&&hasLv)lvUI.value=ck}}}
  if(kind==='won'&&L&&!practice&&!daily){
-  if(L.kind==='boss'){ck=Math.min(100,lvl+1);lives=Math.min(5,lives+1)}
+  if(L.kind==='boss')lives=Math.min(5,lives+1)
   maxLvl=Math.min(100,Math.max(maxLvl,lvl+1));runTop=Math.max(runTop,Math.min(100,lvl+1));noDrop=dropped?0:noDrop+1;delete lvDeaths[lvl];sv();if(hasLv)lvUI.value=Math.min(100,lvl+1)}
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p,level:lvl,seed:seedCode,retry_assist:assistHid});peekBusy=false;save();renderAll();
  if(kind==='won')say((L?'第 '+lvl+' 關通關。':'衝出出口，盒子打開了。別看裡面。')+(earned>0?'本局共入帳 '+fmt(earned)+' 點。':''),'win');
- else if(!earned)say(CAUSES[reason]+'。'+(L?(lostAll?'生命用完，回到存檔點第 '+ck+' 關。':'剩下 '+lives+' 條命。'):'這一局沒有額外成就獎勵。'),'lose');
+ else if(!earned)say(CAUSES[reason]+'。'+(L?(lostAll?'生命用完，整輪重來，回到第 1 關。':'剩下 '+lives+' 條命。'):'這一局沒有額外成就獎勵。'),'lose');
  else say(CAUSES[reason]+'。本局共入帳 '+fmt(earned)+' 點。','win');
  ui();
 }
@@ -448,7 +448,7 @@ function drawDeath(){
   txd(body,x+kw/2,ky+kh*.6,11,'#2a1a0c',kw*.6,5)}
  tx('剩餘生命 '+(L?lives:'—'),CX,ky+34,20,'#ffd98a');
  tx('躲過 '+survived+' 次襲擊',CX,ky+66,16,'#f1d9a6');
- if(lostAll)txd('回到存檔點：第 '+ck+' 關',CX,ky+96,15,'#ffb347',200,2);
+ if(lostAll)txd('整輪重來：回到第 1 關',CX,ky+96,15,'#ffb347',200,2);
  else if(L&&L.ease)txd('小螢多給你 0.3 秒預警，少來一次襲擊。',CX,ky+96,13,'#cfe8ff',200,3);
  txd(n<=1?RULE_FULL[why]||'':FLICK_TIPS[['eye','twins','walkerLate','walkerMove','gale','hollowLate','hollowMove'].indexOf(why)]||'',CX,ky+130,13,'#cfe8ff',210,5);
  if(rec)tx('新紀錄！',CX,ky+190,16,'#ffd98a');
@@ -460,7 +460,7 @@ function drawWon(){
  tx('衝出去了',CX,110,48,'#ffd98a');tx('別看裡面。',CX,168,28,'#ff6a4d');
  tx((L?'第 '+lvl+' 關通關　':'')+'躲過 '+survived+' 次襲擊',CX,218,20,'#f1d9a6');
  if(earned>0)tx('本局入帳 '+fmt(earned)+' 點',CX,252,20,'#ffd98a');
- if(L&&L.kind==='boss')tx('存檔完成：下次從第 '+ck+' 關開始，生命 +1（現在 '+lives+'）',CX,292,18,'#7fe8ff');
+ if(L&&L.kind==='boss')tx('首領倒下：生命 +1（現在 '+lives+'）',CX,292,18,'#7fe8ff');
  else if(L)tx('下一關：第 '+Math.min(100,lvl+1)+' 關',CX,292,18,'#f1d9a6');
  if(L&&lvl>=100)tx('你走出了整座森林。',CX,330,22,'#ffd98a');
  btnRow([[L&&lvl<100?'下一關':'再玩一次','next'],['分享結果卡','share'],['看鬼圖鑑','dex']])}
