@@ -61,3 +61,10 @@ Integrated on origin/main 78f0a23 to preserve the latest TiCATiCA name, BONUS la
 ## Discoverable fullscreen help
 
 Opening mobile hint now starts expanded. A persistent named Fullscreen guide button opens a separate guide above the rotation prompt and pauses play; closing retains the same paused world. Manual Chrome 390px check confirmed opening and readable instructions. Node adapter/model 356 assertions and all 19 Python tests passed. Actual iPhone toolbar actions remain unverified.
+
+## Portrait-first update (Mac verification)
+
+- Removed landscape lock and rotation gate. Node model/adapter: 357 assertions pass; all 19 Python tests pass; generated build and diff checks pass.
+- Chrome viewport 390×844: starts playing without rotate prompt; canvas 388×842 fills frame. Screenshot /tmp/frontier-portrait-preview.jpg.
+- Chrome viewport 320×568: no horizontal overflow, canvas 318×566; shop bounds x=9..311, y=59..427. Shop opens/closes, pause and fullscreen exit remain available. This is browser viewport testing, not real iPhone Safari acceptance.
+- Catalog hidden=true retained; player storage and gameplay rules unchanged.

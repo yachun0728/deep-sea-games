@@ -6,7 +6,6 @@
     {{include:games/frontier/draw.js}}
     var canvas=$('ft-canvas'),ctx=canvas.getContext('2d'),world=null;
     var paid=false,cleared=0,paused=true,round=null,visible=false,last=0,saveAt=0,uiAt=0,pendingLevel=0;
-    var orientationLocked=false;
     var keys={},stick={x:0,y:0,id:null},dash=false,walkTarget=null,viewCamera=null;
     var zones=['翠葉群島','斷崖海岸','荊棘森林','寒霜高地','熔火遺跡'];
     var labels={camp:'營地',mill:'木材廠',forge:'鐵匠鋪',bridge:'橋樑',tower:'箭塔',beacon:'燈塔',barracks:'戰士小屋',house:'工人小屋',market:'市集',quarry:'採石場',depot:'前線分倉'};
@@ -43,7 +42,7 @@
       else if(world.phase==='dead')world=frontierWorld(world.level,Object.assign({},world.tech),world.coins);
       else if(world.phase==='clear')world=frontierWorld(world.level===50?1:world.level+1,Object.assign({},world.tech),world.coins);
       if(!fresh){if(round)AN.resume(round,params());else round=AN.start('frontier',0,params());}
-      paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});syncOrientation();
+      paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});syncViewport();
     }
     function selectLevel(n){if(!paid||n>Math.min(50,cleared+1))return;pause();pendingLevel=n;set('ft-select-label','前往關卡 '+n+'？');$('ft-select').hidden=false;}
     function updateMap(){Array.from($('ft-map').children).forEach(function(b,i){b.disabled=!paid||i+1>Math.min(50,cleared+1);var cl=(i+1<=cleared?'ft-done ':'')+(world&&world.level===i+1?'ft-current':'');if(b.className!==cl)b.className=cl;var current=world&&world.level===i+1?'step':'false';if(b.getAttribute('aria-current')!==current)b.setAttribute('aria-current',current);});}
@@ -85,33 +84,24 @@
     function isHandheld(){return !!(window.matchMedia&&(window.matchMedia('(max-width: 600px)').matches||window.matchMedia('(pointer: coarse)').matches&&window.matchMedia('(max-width: 1100px)').matches));}
     function autoScreen(){if(isHandheld())enterScreen();}
     function screenClass(active){if(document.documentElement){if(active)document.documentElement.classList.add('frontier-immersive');else document.documentElement.classList.remove('frontier-immersive');}}
-    function syncOrientation(){
-      var main=$('ft-main'),touch=isHandheld(),vv=window.visualViewport;
+    function syncViewport(){
+      var main=$('ft-main'),vv=window.visualViewport;
       if(main.style.setProperty){main.style.setProperty('--ft-visible-height',(vv?vv.height:window.innerHeight)+'px');main.style.setProperty('--ft-visible-top',(vv?vv.offsetTop:0)+'px');}
       if(window.innerHeight&&window.innerWidth>window.innerHeight&&window.innerHeight<=500)main.classList.add('ft-short');else main.classList.remove('ft-short');
-      var rotate=!!(visible&&touch&&(document.fullscreenElement||main.classList.contains('ft-immersive'))&&window.matchMedia('(orientation: portrait)').matches);
-      $('ft-rotate').hidden=!rotate;if(rotate)pause();
-    }
-    function requestLandscape(){
-      if(!isHandheld())return;
-      var orientation=window.screen&&window.screen.orientation;
-      if(orientation&&orientation.lock){try{var locked=orientation.lock('landscape');if(locked&&locked.then)locked.then(function(){if(document.fullscreenElement||$('ft-main').classList.contains('ft-immersive'))orientationLocked=true;else if(orientation.unlock)orientation.unlock();syncOrientation();},syncOrientation);}catch(e){syncOrientation();}}
-      else syncOrientation();
     }
     function enterScreen(){
-      var main=$('ft-main');screenClass(true);syncOrientation();if(document.fullscreenElement||main.classList.contains('ft-immersive')){requestLandscape();return;}
-      function fallback(){main.classList.add('ft-immersive');syncOrientation();requestLandscape();}
-      if(main.requestFullscreen){try{var result=main.requestFullscreen();if(result&&result.then)result.then(requestLandscape,fallback);}catch(e){fallback();}}
+      var main=$('ft-main');screenClass(true);syncViewport();if(document.fullscreenElement||main.classList.contains('ft-immersive')){return;}
+      function fallback(){main.classList.add('ft-immersive');syncViewport();}
+      if(main.requestFullscreen){try{var result=main.requestFullscreen();if(result&&result.then)result.then(syncViewport,fallback);}catch(e){fallback();}}
       else fallback();
     }
-    function exitScreen(){if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(function(){});$('ft-main').classList.remove('ft-immersive');if(orientationLocked&&window.screen&&window.screen.orientation&&window.screen.orientation.unlock)window.screen.orientation.unlock();orientationLocked=false;screenClass(false);$('ft-rotate').hidden=true;}
-    if(window.visualViewport){window.visualViewport.addEventListener('resize',syncOrientation);window.visualViewport.addEventListener('scroll',syncOrientation);}
-    window.addEventListener('resize',syncOrientation);window.addEventListener('orientationchange',syncOrientation);
-    document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement&&!$('ft-main').classList.contains('ft-immersive')){if(orientationLocked&&window.screen&&window.screen.orientation&&window.screen.orientation.unlock)window.screen.orientation.unlock();orientationLocked=false;screenClass(false);}syncOrientation();});
+    function exitScreen(){if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(function(){});$('ft-main').classList.remove('ft-immersive');screenClass(false);}
+    if(window.visualViewport){window.visualViewport.addEventListener('resize',syncViewport);window.visualViewport.addEventListener('scroll',syncViewport);}
+    window.addEventListener('resize',syncViewport);window.addEventListener('orientationchange',syncViewport);
+    document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement&&!$('ft-main').classList.contains('ft-immersive')){screenClass(false);}syncViewport();});
     $('ft-browser-open').addEventListener('click',function(){pause();$('ft-browser-guide').hidden=false;$('ft-browser-guide-close').focus();});
     $('ft-browser-guide-close').addEventListener('click',function(){$('ft-browser-guide').hidden=true;$('ft-browser-open').focus();});
     $('ft-browser-tip-close').addEventListener('click',function(){$('ft-browser-tip').hidden=true;});
-    $('ft-rotate-exit').addEventListener('click',exitScreen);
     $('ft-full').addEventListener('click',function(){if(document.fullscreenElement||$('ft-main').classList.contains('ft-immersive'))exitScreen();else enterScreen();});
     $('ft-stage').addEventListener('click',function(e){if(e.target!==canvas&&!(e.target.closest&&e.target.closest('#ft-overlay')))return;if(e.target.closest&&e.target.closest('button,summary,details,a,#ft-browser-tip'))return;if(paused){start();}});
     canvas.addEventListener('pointerdown',function(e){if(paused)return;var r=canvas.getBoundingClientRect();if(viewCamera)walkTarget={x:(e.clientX-r.left)/viewCamera.scale+viewCamera.left,y:(e.clientY-r.top)/viewCamera.scale+viewCamera.top};if(walkTarget&&walkTarget.x>552&&walkTarget.x<678){walkTarget.x=walkTarget.x<615?530:700;}AN.interact();});

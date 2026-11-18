@@ -70,7 +70,8 @@ function paint(){
  var w=world||preview,rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
  var dpr=Math.min(2,window.devicePixelRatio||1),cw=Math.round(rect.width*dpr),ch=Math.round(rect.height*dpr);if(canvas.width!==cw||canvas.height!==ch){canvas.width=cw;canvas.height=ch;}
  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,rect.width,rect.height);
- var scale=Math.max(rect.width/(rect.width<600?480:1000),Math.min(1.1,rect.height/520)),vw=rect.width/scale,vh=rect.height/scale;
+ var portrait=rect.width<=600&&rect.height>rect.width;
+ var scale=portrait?Math.min(rect.width/480,rect.height/660):Math.max(rect.width/1000,Math.min(1.1,rect.height/520)),vw=rect.width/scale,vh=rect.height/scale;
  var cx=Math.max(vw/2,Math.min(w.cfg.width-vw/2,w.p.x)),cy=Math.max(vh/2,Math.min(w.cfg.height-vh/2,w.p.y));if(vw>w.cfg.width)cx=w.cfg.width/2;if(vh>w.cfg.height)cy=w.cfg.height/2;viewCamera={left:cx-vw/2,top:cy-vh/2,scale:scale};
  ctx.scale(scale,scale);ctx.translate(vw/2-cx,vh/2-cy);
  var palette=[['#244e4b','#8cae70','#426e4e'],['#264c60','#a3aa78','#6d8655'],['#273e42','#718658','#3b5b49'],['#344e65','#b1c4c2','#668b88'],['#382f3c','#8f7965','#534a50']][w.cfg.chapter];
