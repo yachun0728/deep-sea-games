@@ -4076,5 +4076,8 @@
   "訓練戰士": "Train warrior",
   "訓練戰士 · 🪵": "Train warrior · 🪵",
   "需要戰士小屋、足夠材料與空位": "Approach an operational barracks with enough stored materials and a free army slot.",
-  "第 11 關起可蓋戰士小屋，消耗倉庫木材與石材訓練戰士，自動保護大本營。大本營血量歸零就會失敗。": "From stage 11, build barracks and spend stored wood and stone to train warriors who defend HQ automatically. You lose when HQ health reaches zero."
+  "第 11 關起可蓋戰士小屋，消耗倉庫木材與石材訓練戰士，自動保護大本營。大本營血量歸零就會失敗。": "From stage 11, build barracks and spend stored wood and stone to train warriors who defend HQ automatically. You lose when HQ health reaches zero.",
+  "全螢幕教學": "Fullscreen guide",
+  "關閉教學": "Close guide",
+  "關閉教學後，按「繼續遠征」回到遊戲。": "After closing this guide, select Resume expedition to return to the game."
 }

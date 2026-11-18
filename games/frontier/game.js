@@ -108,6 +108,8 @@
     if(window.visualViewport){window.visualViewport.addEventListener('resize',syncOrientation);window.visualViewport.addEventListener('scroll',syncOrientation);}
     window.addEventListener('resize',syncOrientation);window.addEventListener('orientationchange',syncOrientation);
     document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement&&!$('ft-main').classList.contains('ft-immersive')){if(orientationLocked&&window.screen&&window.screen.orientation&&window.screen.orientation.unlock)window.screen.orientation.unlock();orientationLocked=false;screenClass(false);}syncOrientation();});
+    $('ft-browser-open').addEventListener('click',function(){pause();$('ft-browser-guide').hidden=false;$('ft-browser-guide-close').focus();});
+    $('ft-browser-guide-close').addEventListener('click',function(){$('ft-browser-guide').hidden=true;$('ft-browser-open').focus();});
     $('ft-browser-tip-close').addEventListener('click',function(){$('ft-browser-tip').hidden=true;});
     $('ft-rotate-exit').addEventListener('click',exitScreen);
     $('ft-full').addEventListener('click',function(){if(document.fullscreenElement||$('ft-main').classList.contains('ft-immersive'))exitScreen();else enterScreen();});

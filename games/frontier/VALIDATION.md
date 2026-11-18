@@ -57,3 +57,7 @@ Integrated on origin/main 78f0a23 to preserve the latest TiCATiCA name, BONUS la
 - Manual Chrome 390px: expanded mobile help displays the three Safari instructions; closing hides it and keeps the start button available. Expanding help does not start a round.
 - Short landscape styles and visualViewport sizing implemented; real iPhone Safari toolbar transitions and home-screen launch remain unverified. Browser hint only explains actions; it cannot hide native browser controls.
 - No changes to platform balance or Lobby sources in this update. Frontier remains free and does not grant or deduct platform points.
+
+## Discoverable fullscreen help
+
+Opening mobile hint now starts expanded. A persistent named Fullscreen guide button opens a separate guide above the rotation prompt and pauses play; closing retains the same paused world. Manual Chrome 390px check confirmed opening and readable instructions. Node adapter/model 356 assertions and all 19 Python tests passed. Actual iPhone toolbar actions remain unverified.
