@@ -26,7 +26,7 @@
       steps.push([frontierBuilt(w,'beacon'),'點亮燈塔（走到東側燈塔投入材料）']);
       return steps;
     }
-    function warTip(w){return w.cfg.war?'\n\n提示：箭塔會守護大本營，但也會被怪攻擊，受損後靠近用木材修復。主角不能攻擊對手大本營，只有戰士可以。木材廠、採石場、倉庫蓋好後會增加背包容量。':'';}
+    function warTip(w){return w.cfg.war?'\n\n提示：箭塔會守護大本營，但也會被怪攻擊，受損後靠近用木材修復。主角不能攻擊對手大本營，只有戰士可以。木材廠、採石場、倉庫蓋好後會增加背包容量。工人小屋的村民會自動砍樹採石，把資源丟在地上，走過去就能撿起來。':'';}
     var cardsShown='';
     function renderCards(w){
       var offer=world&&world.offer,box=$('ft-cards');
