@@ -141,6 +141,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `deep-sea-clock-out-best` | 下班保衛戰最高分；新增於 2026-11-17 |
 | `deep-sea-peek-best` | 別看最佳進度（百分比整數）；新增於 2026-11-17 |
 | `deep-sea-peek-deaths` | 別看各死因次數（JSON 物件）；新增於 2026-11-17 |
+| `deep-sea-peek-dodges` | 別看累計躲過襲擊次數（整數）；新增於 2026-11-18 |
 | `deep-sea-last-hair-best` / `-deaths` / `-swap` / `-sound` | 尊嚴保衛戰最遠距離、最近死亡位置與原因、左右手對調、音效開關；新增於 2026-11-17 |
 | `deep-sea-mosquito-best` | 血壓上升最高吸血百分比（一位小數）；新增於 2026-11-17 |
 | `deep-sea-pet-walk-save` | 小灰出門存檔（JSON：最高分、出門次數、物資、事件與物資圖鑑、上次事件）；新增於 2026-11-17 |
