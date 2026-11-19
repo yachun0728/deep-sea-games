@@ -7,7 +7,7 @@
 - 網址：`#tetris`　分類：免費懷舊　狀態：顯示中
 - 大廳卡片：「經典落塊消行，旋轉、牆踢與暫存都有。」｜立即開玩 · 最高分
 - 追蹤名稱（GA4 `game_name`）：俄羅斯方塊，`game_id` 為 `tetris`
-- 檔案：`games/tetris/card.html`、`games/tetris/game.js`、`games/tetris/icon.svg`、`games/tetris/original.html`、`games/tetris/style.css`、`games/tetris/view.html`；`game.js` 共 50 行、3.7 KB
+- 檔案：`games/tetris/card.html`、`games/tetris/cover.webp`、`games/tetris/game.js`、`games/tetris/icon.svg`、`games/tetris/original.html`、`games/tetris/style.css`、`games/tetris/view.html`；`game.js` 共 50 行、3.7 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「47. 俄羅斯方塊 Tetris（tetris）」（下方「規則摘要」已複製）
 
