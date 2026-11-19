@@ -6,8 +6,8 @@ AFTER UPDATE OF checkpoint_score ON ranked_boards
 WHEN NEW.checkpoint_score IS NOT NULL
  AND (OLD.checkpoint_score IS NULL OR NEW.checkpoint_score > OLD.checkpoint_score)
 BEGIN
-    INSERT INTO player_best_scores (game_id, player_id, score)
+    INSERT INTO game_leaderboard (game_id, player_id, score)
     VALUES (NEW.game_id, NEW.player_id, NEW.checkpoint_score)
     ON CONFLICT (game_id, player_id) DO UPDATE SET score = excluded.score
-    WHERE excluded.score > player_best_scores.score;
+    WHERE excluded.score > game_leaderboard.score;
 END;
