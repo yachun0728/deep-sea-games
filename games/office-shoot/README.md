@@ -69,6 +69,7 @@
 
 - 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`C`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/controls.js` 會呼叫：`fmt`
+- `js/member.js` 會呼叫：`fmt`
 - 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`otBusy`
 
 ## 規則摘要（取自 GAME_RULES.md）

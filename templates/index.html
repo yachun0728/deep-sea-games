@@ -5,11 +5,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>{{include:css/base.css}}</style>
-<title>深海遊戲廳 Deep Sea Arcade</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<title>TICATICA GAMES</title>
+<link rel="icon" type="image/png" href="images/favicon.png?v=3">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
 <style>{{include:css/arcade.css}}
 {{include:css/mobile-navigation.css}}
 {{include:css/i18n.css}}
+{{include:css/ticatica.css}}
 {{include:games/blaster/style.css}}
 {{include:games/mines/style.css}}
 {{include:games/keno/style.css}}
@@ -28,21 +31,22 @@
 </style>
 </head>
 <body>
+{{include:templates/brand-symbols.html}}
 <div class="wrap is-lobby" id="site-shell">
   <header class="top">
     <div class="brand">
-      <a class="brand-home" href="#lobby" aria-label="返回遊戲大廳" title="返回遊戲大廳"><svg class="brand-home-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9" fill="#123c4b" stroke="#326475"/><path d="m8 15 8-7 8 7v10h-6v-7h-4v7H8z" fill="none" stroke="#62e6d2" stroke-width="1.8" stroke-linejoin="round"/></svg><h1 id="game-name" tabindex="-1">深海遊戲廳 <span>Deep Sea Arcade</span></h1></a>
+      <a class="brand-home" href="#lobby" aria-label="返回遊戲大廳" title="返回遊戲大廳"><span class="brand-word" data-i18n-ignore><img src="images/ticatica-logo.png?v=2" alt="TICATICA GAMES" width="900" height="233" decoding="async"></span><h1 id="game-name" tabindex="-1">TICATICA GAMES</h1></a>
       <span class="demo-tag">Demo · 虛擬點數</span>
     </div>
+    <div class="top-center"><a class="top-feature" href="#keno"><span class="top-feature-icon" aria-hidden="true"><i class="fa-solid fa-gem" aria-hidden="true"></i></span>每日挖礦</a></div>
     <div class="header-tools"><div class="language-switch" role="group" aria-label="Language / 語言" data-i18n-ignore><button type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button><button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button></div><div class="wallet-box"><div class="wallet">
-      <span class="label">餘額</span>
+      <i class="fa-solid fa-coins wallet-coin" aria-hidden="true"></i><span class="label">餘額</span>
       <span class="amount" id="balance">500</span><span class="unit">點</span>
-      <button class="link-btn" id="reset" type="button">重設為 500</button>
-    </div><p class="regen-hint" id="regen-hint">低於 100 點時，每分鐘回 1 點</p></div></div>
+    </div></div><button class="top-icon-btn" type="button" aria-label="通知" title="通知"><i class="fa-solid fa-bell" aria-hidden="true"></i></button><div class="account"><button class="member-link" id="account-toggle" type="button" aria-expanded="false" aria-controls="account-menu" aria-label="帳戶" title="帳戶"><i class="fa-solid fa-user" aria-hidden="true"></i><i class="fa-solid fa-chevron-up account-chev" aria-hidden="true"></i></button><div class="account-menu" id="account-menu" hidden><a class="account-head" href="#member"><span class="account-name" data-i18n-ignore>Chloe</span><span class="account-sub"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>Demo · 虛擬點數</span><i class="fa-solid fa-chevron-right account-arrow" aria-hidden="true"></i></a><div class="account-points"><div class="account-points-row"><span>點數餘額</span><span><span id="account-balance">500</span> 點</span></div><div class="account-bar"><span id="account-bar"></span></div><p class="regen-hint" id="regen-hint">低於 100 點時，每分鐘回 1 點</p></div><nav class="account-links" aria-label="帳戶"><a href="#member"><i class="fa-solid fa-user" aria-hidden="true"></i>會員中心</a><a href="#lobby" id="account-board"><i class="fa-solid fa-trophy" aria-hidden="true"></i>排行榜</a><hr><button type="button" id="account-reset"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i>重設為 500</button><button type="button" id="account-settings"><i class="fa-solid fa-gear" aria-hidden="true"></i>設定</button><hr><button type="button" class="account-logout" id="account-logout"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>登出</button></nav></div></div></div>
   </header>
 
-  <div class="game-toolbar"><a class="back-lobby" href="#lobby"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m14 6-6 6 6 6M8 12h12"/></svg>遊戲大廳</a>
-  <details class="game-picker" id="game-picker"><summary><span>切換遊戲</span><span id="picker-current">壓潰深度</span><span class="picker-chevron" aria-hidden="true">⌄</span></summary><nav class="tabs" aria-label="遊戲">
+  <div class="game-toolbar"><a class="back-lobby" href="#lobby"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i>遊戲大廳</a>
+  <details class="game-picker" id="game-picker"><summary><span>切換遊戲</span><span id="picker-current">壓潰深度</span><i class="fa-solid fa-chevron-down picker-chevron" aria-hidden="true"></i></summary><nav class="tabs" aria-label="遊戲">
     <a href="#lobby" id="tab-lobby">遊戲大廳<small>Lobby</small></a>
     <a href="#crash" id="tab-crash" aria-current="page">壓潰深度<small>Crash</small></a>
     <a href="#mines" id="tab-mines">踩地雷<small>Mines</small></a>
@@ -80,7 +84,7 @@
     <a href="#baby" id="tab-baby">寶寶逃洗澡<small>Baby Bath Escape</small></a>
   </nav></details>{{include:templates/mobile-navigation.html}}</div>
 
-{{include:templates/lobby.html}}{{include:games/crash/view.html}}{{include:games/mines/view.html}}{{include:games/plinko/view.html}}{{include:games/merge/view.html}}{{include:games/dice/view.html}}{{include:games/limbo/view.html}}{{include:games/hilo/view.html}}{{include:games/keno/view.html}}{{include:games/wheel/view.html}}{{include:games/tower/view.html}}{{include:games/crossing/view.html}}{{include:games/dream/view.html}}{{include:games/runner/view.html}}{{include:games/elevator/view.html}}{{include:games/sneak/view.html}}{{include:games/fishing/view.html}}{{include:games/campaign/view.html}}{{include:games/boba/view.html}}{{include:games/cat/view.html}}{{include:games/bird/view.html}}{{include:games/frog/view.html}}{{include:games/nap/view.html}}{{include:games/reaper/view.html}}{{include:games/blaster/view.html}}{{include:games/skybuilder/view.html}}
+{{include:templates/lobby.html}}{{include:templates/member.html}}{{include:games/crash/view.html}}{{include:games/mines/view.html}}{{include:games/plinko/view.html}}{{include:games/merge/view.html}}{{include:games/dice/view.html}}{{include:games/limbo/view.html}}{{include:games/hilo/view.html}}{{include:games/keno/view.html}}{{include:games/wheel/view.html}}{{include:games/tower/view.html}}{{include:games/crossing/view.html}}{{include:games/dream/view.html}}{{include:games/runner/view.html}}{{include:games/elevator/view.html}}{{include:games/sneak/view.html}}{{include:games/fishing/view.html}}{{include:games/campaign/view.html}}{{include:games/boba/view.html}}{{include:games/cat/view.html}}{{include:games/bird/view.html}}{{include:games/frog/view.html}}{{include:games/nap/view.html}}{{include:games/reaper/view.html}}{{include:games/blaster/view.html}}{{include:games/skybuilder/view.html}}
 {{include:games/dive/view.html}}
 {{include:games/ocean-link/view.html}}{{include:games/mrt/view.html}}{{include:games/pancake/view.html}}{{include:games/rocket-chair/view.html}}{{include:games/clock-out/view.html}}{{include:games/peek/view.html}}{{include:games/pet-walk/view.html}}{{include:games/office-shoot/view.html}}{{include:games/eat-smaller/view.html}}{{include:games/mirror-twins/view.html}}{{include:games/shadow-relay/view.html}}{{include:games/one-line-defense/view.html}}{{include:games/mermaid/view.html}}{{include:games/breakout/view.html}}{{include:games/last-hair/view.html}}{{include:games/carp/view.html}}{{include:games/rider/view.html}}{{include:games/boss/view.html}}{{include:games/thief/view.html}}{{include:games/baby/view.html}}{{include:games/pudding/view.html}}{{include:games/mosquito/view.html}}{{include:games/banquet/view.html}}
 </div>
