@@ -374,5 +374,13 @@
     "card": "games/market-desk/card.html",
     "icon": "games/market-desk/icon.svg",
     "style": "games/market-desk/style.css"
+  },
+  {
+    "id": "on-pitch",
+    "logic": "games/on-pitch/game.js",
+    "view": "games/on-pitch/view.html",
+    "card": "games/on-pitch/card.html",
+    "icon": "games/on-pitch/icon.svg",
+    "style": "games/on-pitch/style.css"
   }
 ]
