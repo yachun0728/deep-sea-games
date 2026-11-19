@@ -4897,10 +4897,10 @@
   "躲進最後一步的另一側，撐住；共兩輪，第二輪多一步。": "Hide on the side opposite the last step and hold; two rounds, the second has one more step.",
   "背後有東西追上來！連點螢幕（或按 F／Enter）拉開距離。": "Something is chasing you from behind! Tap the screen (or press F / Enter) to pull ahead.",
   "連點！拉開距離": "Tap fast! Pull ahead",
-  "死因 #20 尾隨者：它從背後追上來，你沒有連點拉開距離，或沒有躲開撲擊": "Cause #20 Tail: it ran you down from behind; you did not keep tapping to stay ahead, or did not dodge its lunge",
+  "死因 #20 Dread：它從背後追上來，你沒有連點拉開距離，或沒有躲開撲擊": "Cause #20 Dread: it ran you down from behind; you did not keep tapping to stay ahead, or did not dodge its lunge",
   "下次：聽到背後的腳步，連點螢幕（或按 F／Enter）拉開距離；它撲來時躲進另一側。": "Next time: when you hear footsteps behind you, tap fast (or press F / Enter) to pull ahead; when it lunges, hide on the other side.",
-  "尾隨者從背後追來：腳步越來越急時連點螢幕（電腦按 F 或 Enter），讓距離條不要見底；最後它從一側撲來，躲進另一側。": "Tail chases you from behind. As the footsteps speed up, tap the screen (F or Enter on a keyboard) so the distance bar never runs out. At the end it lunges from one side: hide on the other.",
-  "尾隨者 Tail": "Tail",
+  "Dread從背後追來：腳步越來越急時連點螢幕（電腦按 F 或 Enter），讓距離條不要見底；最後它從一側撲來，躲進另一側。": "Dread chases you from behind. As the footsteps speed up, tap the screen (F or Enter on a keyboard) so the distance bar never runs out. At the end it lunges from one side: hide on the other.",
+  "Dread": "Dread",
   "背後傳來腳步聲，越來越急。": "Footsteps behind you, faster and faster.",
   "牠在追你。": "It is chasing you.",
   "連點螢幕（電腦按 F 或 Enter）拉開距離，最後牠從一側撲來，躲進另一側。": "Tap the screen (F or Enter on a keyboard) to pull ahead; at the end it lunges from one side, so hide on the other."
