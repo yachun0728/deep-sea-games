@@ -5,7 +5,7 @@ export async function getLeaderboard(db, gameId) {
     `SELECT scores.player_id AS playerId, players.display_name AS displayName, scores.score, scores.recorded_at AS recordedAt
        FROM game_leaderboard AS scores JOIN players ON players.id = scores.player_id
       WHERE scores.game_id = ?
-      ORDER BY scores.score DESC, scores.recorded_at, scores.player_id
+      ORDER BY scores.score DESC, scores.recorded_at, scores.score_order, scores.player_id
       LIMIT ?`,
   ).bind(gameId, LEADERBOARD_LIMIT).all();
   return results;
@@ -16,7 +16,7 @@ export async function getLeaderboardFeed(db) {
     `SELECT scores.game_id AS gameId, scores.player_id AS playerId,
             players.display_name AS displayName, scores.score, scores.recorded_at AS recordedAt
        FROM game_leaderboard AS scores JOIN players ON players.id = scores.player_id
-      ORDER BY scores.game_id, scores.score DESC, scores.recorded_at, scores.player_id`,
+      ORDER BY scores.game_id, scores.score DESC, scores.recorded_at, scores.score_order, scores.player_id`,
   ).all();
   const games = new Map();
   for (const { gameId, ...entry } of results) {

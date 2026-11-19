@@ -98,6 +98,19 @@ class LeaderboardRetentionTests(unittest.TestCase):
         self.assertEqual(self.db.execute("SELECT COUNT(*) FROM player_best_scores").fetchone(), (0,))
         self.assertNotEqual(self.scores()[0][2], '2026-01-01T00:00:00.000Z')
 
+    def test_same_millisecond_keeps_first_to_reach_score(self):
+        self.migrate()
+        self.db.executescript((MIGRATIONS / '0007_ranked_board_checkpoints.sql').read_text())
+        self.db.executescript((MIGRATIONS / '0008_leaderboard_tie_order.sql').read_text())
+        self.add('p00', 5)
+        self.add('p10', 10)
+        self.db.execute("UPDATE game_leaderboard SET score = 10 WHERE player_id = 'p00'")
+        self.db.execute("UPDATE game_leaderboard SET recorded_at = '2026-01-01T00:00:00.000Z'")
+        order = self.db.execute(
+            'SELECT player_id FROM game_leaderboard ORDER BY score DESC, recorded_at, score_order'
+        ).fetchall()
+        self.assertEqual(order, [('p10',), ('p00',)])
+
 
 if __name__ == '__main__':
     unittest.main()
