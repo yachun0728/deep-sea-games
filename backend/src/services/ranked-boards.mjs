@@ -5,6 +5,7 @@ import blockDropRules from '../../../shared/block-drop-rules.js';
 import reaperRules from '../../../shared/reaper-rules.cjs';
 import sneakRules from '../../../shared/sneak-rules.cjs';
 import skybuilderRules from '../../../shared/skybuilder-rules.cjs';
+import marketDeskRules from '../../../shared/market-desk-rules.cjs';
 import timedReplay from '../../../shared/timed-replay.cjs';
 import catRules from '../../../shared/cat-rules.cjs';
 import runnerRules from '../../../shared/runner-rules.cjs';
@@ -31,6 +32,17 @@ function timedBoard(engine) {
   };
 }
 const boards = new Map([
+  ['market-desk', {
+    create: () => ({seed: newSeed(), score: null}),
+    accepts: marketDeskRules.accepts,
+    apply: (state, actions) => {
+      const order = marketDeskRules.deck(timedReplay.seeded(state.seed));
+      state.score = marketDeskRules.replay(order, actions);
+      return state.score !== null;
+    },
+    score: state => state.score,
+    visible: ({seed, score}) => ({seed, score}),
+  }],
   ['elevator', timedBoard(elevatorRules)],
   ['fishing', timedBoard(fishingRules)],
   ['cat', timedBoard(catRules)],

@@ -422,3 +422,29 @@ html[lang="en"] #site-shell:has(#tab-market-desk[aria-current]) #game-name > spa
   #view-market-desk .market-finale:not([hidden]) .market-finale-scene { animation: market-finale-fade .55s ease-out both; }
 }
 @keyframes market-finale-fade { from { opacity: .25; } to { opacity: 1; } }
+
+#view-market-desk .market-finale-summary .market-final-revenue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 5px 10px;
+  color: var(--ink);
+}
+#view-market-desk #mk-final-revenue {
+  color: var(--closing-accent);
+  font: 800 clamp(1.45rem, 4vw, 2.1rem) ui-monospace, monospace;
+}
+#view-market-desk #mk-rank-retry {
+  margin: 3px 0 8px;
+  min-height: 44px;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #202a37;
+  color: var(--ink);
+  cursor: pointer;
+}
+#view-market-desk #mk-rank-board { margin-top: 10px; }
+#view-market-desk #mk-rank-list { margin: 6px 0 0; padding-inline-start: 24px; }
+#view-market-desk #mk-rank-list li { padding: 4px 0; border-bottom: 1px solid var(--line); }
+#view-market-desk #mk-rank-list strong { float: inline-end; margin-inline-start: 8px; color: var(--closing-accent); }

@@ -17,16 +17,87 @@
       const saved = Number(localStorage.getItem(bestKey));
       if (Number.isInteger(saved) && saved >= 0 && saved <= 100) best = saved;
     } catch (_) {}
-    let deck = [], answers = [], score = 0, focus = 100, round = null;
+    let deck = [], answers = [], actions = [], score = 0, focus = 100, round = null;
     let phase = 'intro';
     let focusLoss = 0, settleTimer = null, outcome = '';
-    const openingIndex = 1000;
+    const openingIndex = marketDeskRules.OPENING_INDEX;
     const openingTape = [937, 956, 944, 973, 991, 975, 984, 962, 979, 993, 981, 1008, 996, 1003, openingIndex];
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let closes = [], market = openingIndex, marketMove = 0, streak = 0, soundEnabled = false, audio;
     const exchange = $('mk-exchange');
     const chart = $('mk-chart');
     const formatter = new Intl.NumberFormat('en-US');
+    const rankDetails = $('mk-rank-board');
+    let rankRound, nextRankRound, preparingRank, submission;
+    let leaderboardRequest = 0;
+    function money(amount) { return 'NT$' + formatter.format(amount); }
+    function prepareRankedRound() {
+      if (preparingRank || nextRankRound || location.protocol === 'file:') return;
+      preparingRank = import('./frontend/services/api.mjs')
+        .then(api => api.startBoardRound('market-desk', AbortSignal.timeout(4000)))
+        .then(ticket => { nextRankRound = ticket; })
+        .catch(() => {})
+        .finally(() => { preparingRank = null; });
+    }
+    function renderRankStatus() {
+      $('mk-rank-status').textContent = local(submission?.message ?? '這一局可在本機遊玩。');
+      $('mk-rank-retry').hidden = !submission?.retry;
+    }
+    async function sendRankedRound(entry) {
+      if (!entry || entry.sending || entry.done) return;
+      entry.sending = true;
+      entry.retry = false;
+      entry.message = '正在驗證排行榜成績…';
+      if (entry === submission) renderRankStatus();
+      try {
+        const api = await import('./frontend/services/api.mjs');
+        const response = await api.moveBoardRound(entry.ticket.token, entry.move, AbortSignal.timeout(10000));
+        entry.done = true;
+        entry.message = response.state.score === entry.revenue ? '成績已送到排行榜。' : '排行榜成績未能送出。';
+        if (entry === submission && rankDetails.open) loadRankings();
+      } catch (error) {
+        entry.retry = error.retryable !== false;
+        entry.done = !entry.retry;
+        entry.message = '排行榜成績未能送出。';
+      } finally {
+        entry.sending = false;
+        if (entry === submission) renderRankStatus();
+      }
+    }
+    function submitRankedRound() {
+      if (!rankRound) return;
+      submission = {
+        ticket: rankRound,
+        move: {id: rankRound.id, gameId: 'market-desk', revision: rankRound.revision, action: actions.slice()},
+        revenue: marketDeskRules.revenue(closes.at(-1))
+      };
+      sendRankedRound(submission);
+    }
+    async function loadRankings() {
+      const request = ++leaderboardRequest;
+      const status = $('mk-rank-board-status');
+      const list = $('mk-rank-list');
+      list.replaceChildren();
+      status.textContent = '載入排行榜中…';
+      try {
+        const api = await import('./frontend/services/api.mjs');
+        const result = await api.createApiClient(api.arcadeApiOrigin()).leaderboard('market-desk', AbortSignal.timeout(5000));
+        if (request !== leaderboardRequest) return;
+        list.replaceChildren(...result.entries.map(entry => {
+          const item = document.createElement('li');
+          const name = document.createElement('span');
+          name.textContent = entry.displayName || '訪客';
+          if (entry.displayName) name.setAttribute('data-i18n-ignore', '');
+          const amount = document.createElement('strong');
+          amount.textContent = money(entry.score);
+          item.append(name, amount);
+          return item;
+        }));
+        status.textContent = result.entries.length ? '' : '目前尚無排行榜紀錄。';
+      } catch {
+        if (request === leaderboardRequest) status.textContent = '目前無法載入排行榜。';
+      }
+    }
     const character = $('mk-character');
     const portrait = $('mk-portrait');
     let portraitsPreloaded = false;
@@ -155,8 +226,9 @@
         bar.className = index >= answers.length ? '' : answers[index] ? 'market-pass' : 'market-miss';
       });
       if (phase === 'case' || reviewing) {
-        const event = deck[day - 1];
-        const [headline, clue, explanation, bestAction] = event;
+        const caseId = deck[day - 1];
+        const [headline, clue, explanation] = cases[caseId];
+        const [bestAction] = marketDeskRules.cases[caseId];
         $('mk-headline').textContent = local(headline);
         $('mk-clue').textContent = local(clue);
         if (reviewing) {
@@ -195,6 +267,8 @@
         close >= market + 100 ? 'triumph' : 'steady';
       const [tag, title, epilogue, art] = endings[result];
       $('mk-finish').dataset.result = result;
+      $('mk-final-revenue').textContent = money(marketDeskRules.revenue(close));
+      renderRankStatus();
       const image = $('mk-ending-art');
       const path = portraitPath(art);
       if (image.getAttribute('src') !== path) image.src = path;
@@ -211,12 +285,14 @@
     }
     function start() {
       if (round !== null || (phase !== 'intro' && phase !== 'finish') || view.hidden) return;
-      deck = cases.slice();
-      for (let i = deck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [deck[i], deck[j]] = [deck[j], deck[i]];
-      }
+      rankRound = nextRankRound;
+      nextRankRound = null;
+      prepareRankedRound();
+      deck = marketDeskRules.deck(rankRound ? timedReplay.seeded(rankRound.state.seed) : Math.random);
       answers = [];
+      actions = [];
+      submission = null;
+      rankDetails.open = false;
       closes = [];
       market = openingIndex;
       marketMove = 0;
@@ -243,20 +319,14 @@
     function reveal(action) {
       settleTimer = null;
       if (phase !== 'settling' || view.hidden) return;
-      const [, , , bestAction, dailyMarketMove] = deck[answers.length];
-      const correct = action === bestAction;
-      const latePublish = bestAction === 0 && action === 1;
-      marketMove = dailyMarketMove;
+      const result = marketDeskRules.judge(deck[answers.length], action, focus, streak);
+      const {correct, delta} = result;
+      ({focus, streak, focusLoss, outcome, marketMove} = result);
       market *= 1 + marketMove / 100;
-      outcome = correct ? 'correct' : latePublish ? (marketMove > 0 ? 'missed' : 'flat') : 'lost';
       answers.push(correct);
+      actions.push(action);
       if (correct) score += 5;
-      focusLoss = correct ? 0 : Math.min(18, focus);
-      focus = Math.min(100, focus + (correct ? 4 : -focusLoss));
-      streak = correct ? streak + 1 : 0;
       const previous = closes.at(-1) ?? openingIndex;
-      // Today's fictional benchmark belongs to the case. Only A-Ze's confidence reacts to the choice.
-      const delta = correct ? 24 + Math.min(streak - 1, 4) * 7 : latePublish ? (marketMove > 0 ? 8 : 0) : -47;
       closes.push(previous + delta);
       paintChart();
       if (lifeAt(previous).id !== lifeAt(closes.at(-1)).id) {
@@ -282,6 +352,7 @@
         }
         AN.end(round, 0, focus === 0 ? 'lose' : 'win', params());
         round = null;
+        submitRankedRound();
       } else {
         phase = 'case';
       }
@@ -296,6 +367,7 @@
 
     marketDeskRoute = function (active) {
       if (active) {
+        prepareRankedRound();
         if (!portraitsPreloaded) {
           portraitsPreloaded = true;
           lifeStages.forEach(function (stage) {
@@ -347,6 +419,8 @@
         button.disabled = false;
       }
     });
+    $('mk-rank-retry').addEventListener('click', () => sendRankedRound(submission));
+    rankDetails.addEventListener('toggle', () => { if (rankDetails.open) loadRankings(); });
     paintChart();
     window.addEventListener('arcade-languagechange', render);
     render();

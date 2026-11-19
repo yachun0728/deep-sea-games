@@ -2284,6 +2284,32 @@ html[lang="en"] #site-shell:has(#tab-market-desk[aria-current]) #game-name > spa
   #view-market-desk .market-finale:not([hidden]) .market-finale-scene { animation: market-finale-fade .55s ease-out both; }
 }
 @keyframes market-finale-fade { from { opacity: .25; } to { opacity: 1; } }
+
+#view-market-desk .market-finale-summary .market-final-revenue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 5px 10px;
+  color: var(--ink);
+}
+#view-market-desk #mk-final-revenue {
+  color: var(--closing-accent);
+  font: 800 clamp(1.45rem, 4vw, 2.1rem) ui-monospace, monospace;
+}
+#view-market-desk #mk-rank-retry {
+  margin: 3px 0 8px;
+  min-height: 44px;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #202a37;
+  color: var(--ink);
+  cursor: pointer;
+}
+#view-market-desk #mk-rank-board { margin-top: 10px; }
+#view-market-desk #mk-rank-list { margin: 6px 0 0; padding-inline-start: 24px; }
+#view-market-desk #mk-rank-list li { padding: 4px 0; border-bottom: 1px solid var(--line); }
+#view-market-desk #mk-rank-list strong { float: inline-end; margin-inline-start: 8px; color: var(--closing-accent); }
 #view-frontier{--ft-ink:#e9eddc;--ft-line:#ffffff1a;--ft-gold:#efce8b;color:var(--ft-ink)}
 #view-frontier .ft-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px;align-items:start}
 #view-frontier .ft-main{min-width:0;background:#142c2c;border:1px solid var(--ft-line);border-radius:20px;overflow:hidden;box-shadow:0 20px 60px #0003}
@@ -2706,8 +2732,16 @@ html.frontier-immersive{overflow:hidden}
         <img id="mk-ending-art" alt="" decoding="async">
       </div>
       <div class="market-finale-summary">
+        <p class="market-final-revenue">最終營收 <strong id="mk-final-revenue"></strong></p>
         <p id="mk-result"></p>
         <p id="mk-final-market"></p>
+        <p id="mk-rank-status" role="status"></p>
+        <button type="button" id="mk-rank-retry" hidden>重送成績</button>
+        <details id="mk-rank-board">
+          <summary>訪客排行榜</summary>
+          <p id="mk-rank-board-status" role="status"></p>
+          <ol id="mk-rank-list"></ol>
+        </details>
       </div>
     </section>
   </div>
@@ -9048,7 +9082,10 @@ html.frontier-immersive{overflow:hidden}
   "穩健收官": "Steady finish",
   "報告準時送出。阿澤把桌面清空，在夕陽下喝完最後一口咖啡。": "The report goes out on time. A-Ze clears his desk and finishes his coffee in the sunset.",
   "第 {0} 天・提早結束": "Day {0} · Run ended early",
-  "二十天・收盤結算": "Day 20 · Final close"
+  "二十天・收盤結算": "Day 20 · Final close",
+  "最終營收": "Final revenue",
+  "重送成績": "Retry submission",
+  "訪客排行榜": "Guest leaderboard"
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -24146,7 +24183,7 @@ function ftBuilding(b,w){
     link.append(memberIcon(gameId), name);
     game.appendChild(link);
     best.className = 'board-best';
-    best.textContent = entry.score.toLocaleString('zh-TW');
+    best.textContent = (gameId === 'market-desk' ? 'NT$' : '') + entry.score.toLocaleString('zh-TW');
     if (entry.recordedAt) {
       var recordedAt = new Date(entry.recordedAt);
       if (Number.isFinite(recordedAt.getTime())) {
@@ -24252,31 +24289,78 @@ function ftBuilding(b,w){
       setTimeout(function () { var board = document.querySelector('.lobby-board'); if (board && board.scrollIntoView) board.scrollIntoView({ block: 'start' }); }, 60);
     });
   })();
+const marketDeskRules = (() => {
+  const OPENING_INDEX = 1000;
+  // Best action and benchmark percent, aligned with the translated case text.
+  const cases = [
+    [1, 3.2], [2, 4.6], [0, 5.8], [1, -2.1], [1, 2.5], [2, -1.9], [0, -2.8],
+    [1, 3.3], [0, 4.1], [0, -2.7], [1, 3.6], [2, -2.3], [2, 2.9], [0, 3.7],
+    [1, -2.4], [0, 4.3], [0, 6.1], [2, -1.7], [0, 4.9], [2, 4.4]
+  ];
+  function deck(random) {
+    const order = cases.map((_, index) => index);
+    for (let i = order.length - 1; i > 0; i--) {
+      const j = Math.floor(random() * (i + 1));
+      [order[i], order[j]] = [order[j], order[i]];
+    }
+    return order;
+  }
+  function judge(caseId, action, focus, streak) {
+    const [bestAction, marketMove] = cases[caseId];
+    const correct = action === bestAction;
+    const late = bestAction === 0 && action === 1;
+    const focusLoss = correct ? 0 : Math.min(18, focus);
+    const delta = correct ? 24 + Math.min(streak, 4) * 7 : late ? (marketMove > 0 ? 8 : 0) : -47;
+    return {
+      correct, delta, marketMove, focusLoss,
+      focus: Math.min(100, focus + (correct ? 4 : -focusLoss)),
+      streak: correct ? streak + 1 : 0,
+      outcome: correct ? 'correct' : late ? (marketMove > 0 ? 'missed' : 'flat') : 'lost'
+    };
+  }
+  function accepts(actions) {
+    return Array.isArray(actions) && actions.length > 0 && actions.length <= cases.length &&
+      actions.every(action => Number.isInteger(action) && action >= 0 && action <= 2);
+  }
+  function revenue(index) { return index * 100; }
+  function replay(order, actions) {
+    let focus = 100, streak = 0, index = OPENING_INDEX;
+    for (let day = 0; day < actions.length; day++) {
+      const result = judge(order[day], actions[day], focus, streak);
+      ({focus, streak} = result);
+      index += result.delta;
+      if (!focus || day === order.length - 1) return day === actions.length - 1 ? revenue(index) : null;
+    }
+    return null;
+  }
+  return { OPENING_INDEX, cases, deck, judge, accepts, revenue, replay };
+})();
+if (typeof module !== 'undefined') module.exports = marketDeskRules;
   var marketDeskRoute;
   (function () {
-        // Each case has a headline, a clue, an explanation, the supported action, and the fictional market change in percent.
+        // Each case has a headline, a clue and an explanation. Keep the order aligned with shared/market-desk-rules.cjs.
     // Actions: 0 publish, 1 hold, 2 flag.
     const cases = [
-      ["早餐店的外星訂單","阿姨說兒子看過訂單，拿出的照片只有一份空白採購單。","空白採購單無法證明訂單存在，先找獨立來源。",1,3.2],
-      ["超跑老師的長生不老藥","直播主保證療效，要求觀眾把驗證碼傳給他的助理。","索取驗證碼是帳號遭盜用的警訊，應立即示警。",2,4.6],
-      ["ETF 募集大排長龍","發行方公告募集總額，第二份公開資料可核對金額；社群則稱它保證每月賺錢。","可刊登已核對的募集金額，保證獲利沒有證據。",0,5.8],
-      ["股東會送露營椅","轉傳圖把去年股東會日期裁掉，聲稱今年還會送同款。","舊圖無法確認今年的贈品，應等待今年公告。",1,-2.1],
-      ["九點零五分的奇蹟","群組聲稱成交量破紀錄，貼出的數字卻是未成交的委託量。","委託量和成交量是兩回事，先核對實際成交。",1,2.5],
-      ["語氣太溫柔的營業員","來電聲稱需要補款，要求匯到一個私人帳戶，而且別掛電話。","私人收款帳戶和催促匯款都是警訊，應立即示警。",2,-1.9],
-      ["看盤軟體全線當機","券商狀態頁與客服都確認行動登入故障，但網頁版仍可登入。","可報導已確認的行動登入故障，並交代影響範圍。",0,-2.8],
-      ["颱風夜的休市謠言","群組流傳標有明天日期的截圖，交易所當日公告仍寫「待通知」。","截圖和官方資訊不一致，先等待正式公告。",1,3.3],
-      ["季底尾盤神秘買盤","收盤資料證實尾盤成交放大，來源沒有揭露下單身分。","可報導成交增加；買盤身分仍未知。",0,4.1],
-      ["飆股被關禁閉","交易所公告列出公司代號、處置開始日和撮合間隔。","公告可核對，可刊登這三項具體資訊。",0,-2.7],
-      ["計程車上的製程大師","司機給你一張號稱晶片設計圖的照片，圖角印著「教學示意」。","示意圖無法證明製程突破，先找可核實的資料。",1,3.6],
-      ["股票群組的神秘助理","助理聲稱替券商開戶，卻要求安裝陌生網站提供的遠端控制軟體。","冒名開戶加上遠端控制要求，應立即提醒讀者。",2,-2.3],
-      ["月餅禮盒裡的登入連結","禮券 QR 碼連到仿冒登入頁，頁面網址和券商官方網址不同。","仿冒登入頁可能竊取帳密，值得立即示警。",2,2.9],
-      ["銀行的夢幻活存廣告","官方條款確認優惠只適用首月，而且只有小額存款適用。","可刊登活動資訊，標題須交代期限和額度。",0,3.7],
-      ["水餃股的神秘併購","網友說兩位老闆同桌吃飯，拿不出交易文件或雙方聲明。","一頓飯無法證明併購，應等待佐證。",1,-2.4],
-      ["庫藏股公告出爐","公開公告列出預計買回股數與期間；實際買回數量尚未公布。","可刊登已宣布的計畫，並註明執行結果仍未知。",0,4.3],
-      ["手搖飲食安風波","稽查公告和廠商聲明列出相同的回收批次，並公布受影響的門市。未受影響的批次仍正常販售。","可即時刊登已核對的回收批次和門市，避免讓讀者誤以為所有產品都要下架。",0,6.1],
-      ["橘貓踩出神祕股票代號","鍵盤留下「6666」，貓還踩到一封要求輸入網銀密碼的假通知。","該通報有明確的帳密竊取跡象，應立即示警。",2,-1.7],
-      ["水餃公司改名 AI 量子科技","公司公告證實更名，報表上的主要營收仍是冷凍食品。","可報導更名與現有營收來源；名稱無法證明轉型完成。",0,4.9],
-      ["迷因鯨魚重出江湖","帳號發文要求先付款解鎖「保證獲利」名單；官方帳號否認關聯。","冒名收費加上保證獲利話術，應立即示警。",2,4.4]
+      ["早餐店的外星訂單","阿姨說兒子看過訂單，拿出的照片只有一份空白採購單。","空白採購單無法證明訂單存在，先找獨立來源。"],
+      ["超跑老師的長生不老藥","直播主保證療效，要求觀眾把驗證碼傳給他的助理。","索取驗證碼是帳號遭盜用的警訊，應立即示警。"],
+      ["ETF 募集大排長龍","發行方公告募集總額，第二份公開資料可核對金額；社群則稱它保證每月賺錢。","可刊登已核對的募集金額，保證獲利沒有證據。"],
+      ["股東會送露營椅","轉傳圖把去年股東會日期裁掉，聲稱今年還會送同款。","舊圖無法確認今年的贈品，應等待今年公告。"],
+      ["九點零五分的奇蹟","群組聲稱成交量破紀錄，貼出的數字卻是未成交的委託量。","委託量和成交量是兩回事，先核對實際成交。"],
+      ["語氣太溫柔的營業員","來電聲稱需要補款，要求匯到一個私人帳戶，而且別掛電話。","私人收款帳戶和催促匯款都是警訊，應立即示警。"],
+      ["看盤軟體全線當機","券商狀態頁與客服都確認行動登入故障，但網頁版仍可登入。","可報導已確認的行動登入故障，並交代影響範圍。"],
+      ["颱風夜的休市謠言","群組流傳標有明天日期的截圖，交易所當日公告仍寫「待通知」。","截圖和官方資訊不一致，先等待正式公告。"],
+      ["季底尾盤神秘買盤","收盤資料證實尾盤成交放大，來源沒有揭露下單身分。","可報導成交增加；買盤身分仍未知。"],
+      ["飆股被關禁閉","交易所公告列出公司代號、處置開始日和撮合間隔。","公告可核對，可刊登這三項具體資訊。"],
+      ["計程車上的製程大師","司機給你一張號稱晶片設計圖的照片，圖角印著「教學示意」。","示意圖無法證明製程突破，先找可核實的資料。"],
+      ["股票群組的神秘助理","助理聲稱替券商開戶，卻要求安裝陌生網站提供的遠端控制軟體。","冒名開戶加上遠端控制要求，應立即提醒讀者。"],
+      ["月餅禮盒裡的登入連結","禮券 QR 碼連到仿冒登入頁，頁面網址和券商官方網址不同。","仿冒登入頁可能竊取帳密，值得立即示警。"],
+      ["銀行的夢幻活存廣告","官方條款確認優惠只適用首月，而且只有小額存款適用。","可刊登活動資訊，標題須交代期限和額度。"],
+      ["水餃股的神秘併購","網友說兩位老闆同桌吃飯，拿不出交易文件或雙方聲明。","一頓飯無法證明併購，應等待佐證。"],
+      ["庫藏股公告出爐","公開公告列出預計買回股數與期間；實際買回數量尚未公布。","可刊登已宣布的計畫，並註明執行結果仍未知。"],
+      ["手搖飲食安風波","稽查公告和廠商聲明列出相同的回收批次，並公布受影響的門市。未受影響的批次仍正常販售。","可即時刊登已核對的回收批次和門市，避免讓讀者誤以為所有產品都要下架。"],
+      ["橘貓踩出神祕股票代號","鍵盤留下「6666」，貓還踩到一封要求輸入網銀密碼的假通知。","該通報有明確的帳密竊取跡象，應立即示警。"],
+      ["水餃公司改名 AI 量子科技","公司公告證實更名，報表上的主要營收仍是冷凍食品。","可報導更名與現有營收來源；名稱無法證明轉型完成。"],
+      ["迷因鯨魚重出江湖","帳號發文要求先付款解鎖「保證獲利」名單；官方帳號否認關聯。","冒名收費加上保證獲利話術，應立即示警。"]
     ];
 
     const bestKey = 'deep-sea-market-desk-best';
@@ -24295,16 +24379,87 @@ function ftBuilding(b,w){
       const saved = Number(localStorage.getItem(bestKey));
       if (Number.isInteger(saved) && saved >= 0 && saved <= 100) best = saved;
     } catch (_) {}
-    let deck = [], answers = [], score = 0, focus = 100, round = null;
+    let deck = [], answers = [], actions = [], score = 0, focus = 100, round = null;
     let phase = 'intro';
     let focusLoss = 0, settleTimer = null, outcome = '';
-    const openingIndex = 1000;
+    const openingIndex = marketDeskRules.OPENING_INDEX;
     const openingTape = [937, 956, 944, 973, 991, 975, 984, 962, 979, 993, 981, 1008, 996, 1003, openingIndex];
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let closes = [], market = openingIndex, marketMove = 0, streak = 0, soundEnabled = false, audio;
     const exchange = $('mk-exchange');
     const chart = $('mk-chart');
     const formatter = new Intl.NumberFormat('en-US');
+    const rankDetails = $('mk-rank-board');
+    let rankRound, nextRankRound, preparingRank, submission;
+    let leaderboardRequest = 0;
+    function money(amount) { return 'NT$' + formatter.format(amount); }
+    function prepareRankedRound() {
+      if (preparingRank || nextRankRound || location.protocol === 'file:') return;
+      preparingRank = import('./frontend/services/api.mjs')
+        .then(api => api.startBoardRound('market-desk', AbortSignal.timeout(4000)))
+        .then(ticket => { nextRankRound = ticket; })
+        .catch(() => {})
+        .finally(() => { preparingRank = null; });
+    }
+    function renderRankStatus() {
+      $('mk-rank-status').textContent = local(submission?.message ?? '這一局可在本機遊玩。');
+      $('mk-rank-retry').hidden = !submission?.retry;
+    }
+    async function sendRankedRound(entry) {
+      if (!entry || entry.sending || entry.done) return;
+      entry.sending = true;
+      entry.retry = false;
+      entry.message = '正在驗證排行榜成績…';
+      if (entry === submission) renderRankStatus();
+      try {
+        const api = await import('./frontend/services/api.mjs');
+        const response = await api.moveBoardRound(entry.ticket.token, entry.move, AbortSignal.timeout(10000));
+        entry.done = true;
+        entry.message = response.state.score === entry.revenue ? '成績已送到排行榜。' : '排行榜成績未能送出。';
+        if (entry === submission && rankDetails.open) loadRankings();
+      } catch (error) {
+        entry.retry = error.retryable !== false;
+        entry.done = !entry.retry;
+        entry.message = '排行榜成績未能送出。';
+      } finally {
+        entry.sending = false;
+        if (entry === submission) renderRankStatus();
+      }
+    }
+    function submitRankedRound() {
+      if (!rankRound) return;
+      submission = {
+        ticket: rankRound,
+        move: {id: rankRound.id, gameId: 'market-desk', revision: rankRound.revision, action: actions.slice()},
+        revenue: marketDeskRules.revenue(closes.at(-1))
+      };
+      sendRankedRound(submission);
+    }
+    async function loadRankings() {
+      const request = ++leaderboardRequest;
+      const status = $('mk-rank-board-status');
+      const list = $('mk-rank-list');
+      list.replaceChildren();
+      status.textContent = '載入排行榜中…';
+      try {
+        const api = await import('./frontend/services/api.mjs');
+        const result = await api.createApiClient(api.arcadeApiOrigin()).leaderboard('market-desk', AbortSignal.timeout(5000));
+        if (request !== leaderboardRequest) return;
+        list.replaceChildren(...result.entries.map(entry => {
+          const item = document.createElement('li');
+          const name = document.createElement('span');
+          name.textContent = entry.displayName || '訪客';
+          if (entry.displayName) name.setAttribute('data-i18n-ignore', '');
+          const amount = document.createElement('strong');
+          amount.textContent = money(entry.score);
+          item.append(name, amount);
+          return item;
+        }));
+        status.textContent = result.entries.length ? '' : '目前尚無排行榜紀錄。';
+      } catch {
+        if (request === leaderboardRequest) status.textContent = '目前無法載入排行榜。';
+      }
+    }
     const character = $('mk-character');
     const portrait = $('mk-portrait');
     let portraitsPreloaded = false;
@@ -24433,8 +24588,9 @@ function ftBuilding(b,w){
         bar.className = index >= answers.length ? '' : answers[index] ? 'market-pass' : 'market-miss';
       });
       if (phase === 'case' || reviewing) {
-        const event = deck[day - 1];
-        const [headline, clue, explanation, bestAction] = event;
+        const caseId = deck[day - 1];
+        const [headline, clue, explanation] = cases[caseId];
+        const [bestAction] = marketDeskRules.cases[caseId];
         $('mk-headline').textContent = local(headline);
         $('mk-clue').textContent = local(clue);
         if (reviewing) {
@@ -24473,6 +24629,8 @@ function ftBuilding(b,w){
         close >= market + 100 ? 'triumph' : 'steady';
       const [tag, title, epilogue, art] = endings[result];
       $('mk-finish').dataset.result = result;
+      $('mk-final-revenue').textContent = money(marketDeskRules.revenue(close));
+      renderRankStatus();
       const image = $('mk-ending-art');
       const path = portraitPath(art);
       if (image.getAttribute('src') !== path) image.src = path;
@@ -24489,12 +24647,14 @@ function ftBuilding(b,w){
     }
     function start() {
       if (round !== null || (phase !== 'intro' && phase !== 'finish') || view.hidden) return;
-      deck = cases.slice();
-      for (let i = deck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [deck[i], deck[j]] = [deck[j], deck[i]];
-      }
+      rankRound = nextRankRound;
+      nextRankRound = null;
+      prepareRankedRound();
+      deck = marketDeskRules.deck(rankRound ? timedReplay.seeded(rankRound.state.seed) : Math.random);
       answers = [];
+      actions = [];
+      submission = null;
+      rankDetails.open = false;
       closes = [];
       market = openingIndex;
       marketMove = 0;
@@ -24521,20 +24681,14 @@ function ftBuilding(b,w){
     function reveal(action) {
       settleTimer = null;
       if (phase !== 'settling' || view.hidden) return;
-      const [, , , bestAction, dailyMarketMove] = deck[answers.length];
-      const correct = action === bestAction;
-      const latePublish = bestAction === 0 && action === 1;
-      marketMove = dailyMarketMove;
+      const result = marketDeskRules.judge(deck[answers.length], action, focus, streak);
+      const {correct, delta} = result;
+      ({focus, streak, focusLoss, outcome, marketMove} = result);
       market *= 1 + marketMove / 100;
-      outcome = correct ? 'correct' : latePublish ? (marketMove > 0 ? 'missed' : 'flat') : 'lost';
       answers.push(correct);
+      actions.push(action);
       if (correct) score += 5;
-      focusLoss = correct ? 0 : Math.min(18, focus);
-      focus = Math.min(100, focus + (correct ? 4 : -focusLoss));
-      streak = correct ? streak + 1 : 0;
       const previous = closes.at(-1) ?? openingIndex;
-      // Today's fictional benchmark belongs to the case. Only A-Ze's confidence reacts to the choice.
-      const delta = correct ? 24 + Math.min(streak - 1, 4) * 7 : latePublish ? (marketMove > 0 ? 8 : 0) : -47;
       closes.push(previous + delta);
       paintChart();
       if (lifeAt(previous).id !== lifeAt(closes.at(-1)).id) {
@@ -24560,6 +24714,7 @@ function ftBuilding(b,w){
         }
         AN.end(round, 0, focus === 0 ? 'lose' : 'win', params());
         round = null;
+        submitRankedRound();
       } else {
         phase = 'case';
       }
@@ -24574,6 +24729,7 @@ function ftBuilding(b,w){
 
     marketDeskRoute = function (active) {
       if (active) {
+        prepareRankedRound();
         if (!portraitsPreloaded) {
           portraitsPreloaded = true;
           lifeStages.forEach(function (stage) {
@@ -24625,6 +24781,8 @@ function ftBuilding(b,w){
         button.disabled = false;
       }
     });
+    $('mk-rank-retry').addEventListener('click', () => sendRankedRound(submission));
+    rankDetails.addEventListener('toggle', () => { if (rankDetails.open) loadRankings(); });
     paintChart();
     window.addEventListener('arcade-languagechange', render);
     render();
