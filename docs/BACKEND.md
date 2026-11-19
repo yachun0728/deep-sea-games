@@ -14,9 +14,9 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 | `GET /api/v1/health` | 確認 Worker 可查詢已套用 migration 的 D1 |
 | `POST /api/v1/players` | 建立訪客，回傳 `id` 與一次性顯示的 bearer token |
 | `GET /api/v1/me` | 使用 bearer token 查詢玩家 ID 與帳本餘額，初始為 0 |
-| `GET /api/v1/leaderboard?gameId=mines` | 查詢指定遊戲至多 50 筆最佳紀錄，依分數降序、上榜時間升序、玩家 ID 排序；回傳 `playerId`、`displayName`、`score` 與 `recordedAt`（UTC ISO 8601，舊紀錄可為 null） |
+| `GET /api/v1/leaderboard?gameId=mines` | 查詢指定遊戲至多 50 筆最佳紀錄，依分數降序、上榜時間升序、寫入順序、玩家 ID 排序；回傳 `playerId`、`displayName`、`score` 與 `recordedAt`（UTC ISO 8601，舊紀錄可為 null） |
 
-`frontend/services/api.mjs` 提供上述 API 的前端呼叫介面。資料庫保存 token 的雜湊。點數帳本以玩家 ID 和事件 ID 作為唯一鍵，排行榜保存每位玩家在各遊戲的最佳紀錄。點數錢包仍使用既有 localStorage。青蛙吃蟲使用單獨的瀏覽器 Key 保存訪客憑證。清除網站資料或更換瀏覽器會建立新的訪客身分。
+`frontend/services/api.mjs` 提供上述 API 的前端呼叫介面。資料庫保存 token 的雜湊。點數帳本以玩家 ID 和事件 ID 作為唯一鍵，公開榜每款保留前 50 筆，訪客只寫公開榜。點數錢包仍使用既有 localStorage。青蛙吃蟲使用單獨的瀏覽器 Key 保存訪客憑證。清除網站資料或更換瀏覽器會建立新的訪客身分。
 
 `backend/wrangler.jsonc` 包含正式 D1 binding 與 Worker 公開路由。使用 `--local` 時，Wrangler 仍使用獨立的本機資料。根目錄的 Wrangler 設定供原有靜態站使用。[Cloudflare D1 開始使用指南](https://developers.cloudflare.com/d1/get-started/)
 
@@ -64,7 +64,7 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 
 ## 榜單時間與每款前 50 筆
 
-`0006_leaderboard_top_50.sql` 在 D1 接受新上榜紀錄或個人進步時，以 UTC 記錄時間。大廳顯示台北時間；相同分數先達成者優先，同毫秒再依玩家 ID。舊資料缺少時間時維持空值，同分排在已記時紀錄之前，避免假造時間或將舊成績移到同分隊尾。
+`0006_leaderboard_top_50.sql` 在 D1 接受新上榜紀錄或個人進步時，以 UTC 記錄時間。大廳顯示台北時間；相同分數先達成者優先，同毫秒以 `0008` 的 `score_order` 寫入順序判定。舊資料缺少時間時維持空值，同分排在已記時紀錄之前，避免假造時間或將舊成績移到同分隊尾。
 
 `player_best_scores` 保留給有登入的帳戶，訪客不寫入。公開 API 讀取 `game_leaderboard`，每款最多 50 筆，每位訪客同一款最多一筆。對局本身仍由各遊戲資料表保存，供驗證重送。
 
@@ -95,3 +95,5 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 俄羅斯方塊（Block Drop）沿用 `tetris` ID。父頁使用已驗證來源的 iframe bridge 申請訪客回合及記錄固定步進操作；Worker 與子頁共用七袋、SRS、鎖定與消行規則，只以自然終局重算的分數排行。子頁單獨開啟仍可遊玩並保存原本本機紀錄。
 
 便便鳥大戰狼群記錄跳躍按下／放開與投射物，Worker 用種子重算障礙、狼王與終局距離。兩款都只寫 `game_leaderboard`，沿用十分鐘、6,000 筆操作上限與同回合防重送驗證。
+
+新增遊戲的預設串接要求與 PR 驗收紀錄見 [新增遊戲必接訪客排行榜](../README.md#新增遊戲必接訪客排行榜)。
