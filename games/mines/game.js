@@ -6,12 +6,14 @@
   function mSay(text, cls) { elMMsg.textContent = text; elMMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
   // Shared wallet refresh is also used by the other games.
   function syncBalance() { elBal.textContent = fmt(S.balance); save(); renderGo(); }
-  function mineNeighbors(i) {
-    var result = [];
-    for (var j = 0; j < N; j++) if (j !== i && Math.abs(Math.floor(j / M.size) - Math.floor(i / M.size)) <= 1 && Math.abs(j % M.size - i % M.size) <= 1) result.push(j);
-    return result;
+  var mineRound = null, minePending = null, mineSending = false, mineStarting = false;
+  function mineNumber(i) { return mineRound ? Number(mineRound.visible[i]) : minesRules.number(M,i); }
+  function mineRankStatus(text, retry) {
+    var status = $('mines-rank-status');
+    status.textContent = text;
+    status.hidden = !text;
+    $('mines-rank-retry').hidden = !retry;
   }
-  function mineNumber(i) { return mineNeighbors(i).filter(function (j) { return M.layout[j]; }).length; }
   function buildBoard() {
     try { var best = Number(localStorage.getItem('deep-sea-mines-best')); M.best = Number.isSafeInteger(best) && best >= 0 && best <= 22 ? best : 0; M.bestLevel = Number(localStorage.getItem('deep-sea-mines-level-best')) || 0; } catch (e) {}
     elBoard.innerHTML = ''; tiles = [];
@@ -32,40 +34,52 @@
       var flagArt = '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M30 10v42" stroke="#293b46" stroke-width="5" stroke-linecap="round"/><path d="M29 10 51 18 29 29Z" fill="#ed654d" stroke="#a93428" stroke-width="2" stroke-linejoin="round"/><path d="m20 52 10-7 13 7Z" fill="#344d48"/><path d="M16 55h34" stroke="#344d48" stroke-width="4" stroke-linecap="round"/></svg>';
       var text = shown ? (M.layout[i] ? mineArt : number ? String(number) : '') : M.flags[i] ? flagArt : '';
       b.className = 'tile' + (shown ? (M.layout[i] ? ' mine' : ' revealed number-' + number) : M.flags[i] ? ' flagged' : ' covered');
-      b.innerHTML = text; b.disabled = !M.active || M.checkpoint || (!!M.open[i] && !number);
+      b.innerHTML = text; b.disabled = !M.active || M.checkpoint || !!minePending || (!!M.open[i] && !number);
       b.setAttribute('aria-label', '第 ' + (Math.floor(i / M.size) + 1) + ' 列第 ' + (i % M.size + 1) + ' 格，' + (shown ? M.layout[i] ? '地雷' : '周圍 ' + number + ' 顆雷' : M.flags[i] ? '已插旗' : '未翻開'));
     });
     $('mines-left').textContent = (N - M.mines - M.picks) + ' 格';
     $('mines-flags').textContent = M.flags.filter(Boolean).length + ' / ' + M.mines;
     $('mines-best').textContent = (N - M.mines) + ' 格';
-    ['mines-difficulty','mines-size','mines-bombs'].forEach(function(id){$(id).disabled=M.active;});
-    $('mines-flag').disabled = !M.active || M.checkpoint;
+    ['mines-difficulty','mines-size','mines-bombs'].forEach(function(id){$(id).disabled=M.active||mineStarting;});
+    $('mines-flag').disabled = !M.active || M.checkpoint || !!minePending;
     $('mines-flag').setAttribute('aria-pressed', String(M.flagMode));
     $('mines-flag').textContent = M.flagMode ? '⚑ 插旗模式（點此改翻格）' : '翻格模式（點此改插旗）';
     $('mines-level').textContent = M.size + '×' + M.size + ' · ' + M.mines + ' 雷';
-    elMGo.disabled = M.active; elMGo.dataset.mode = M.active ? 'playing' : 'start';
+    elMGo.disabled = M.active || mineStarting; elMGo.dataset.mode = M.active ? 'playing' : 'start';
     elMGo.innerHTML = M.active ? '找出全部安全格' : (M.over ? '再玩一局' : '開始踩地雷') + '<small>不限次數</small>';
   }
-  function mineStage() {
-    N = M.size * M.size;
-    M.over = false; M.layout = []; M.open = []; M.flags = []; M.picks = 0; M.ready = false; M.flagMode = false; M.checkpoint = false;
-    {
-      var pool = []; for (var n = 0; n < N; n++) pool.push(n);
-      for (var j = pool.length - 1; j > 0; j--) { var r = Math.floor(Math.random() * (j + 1)), tmp = pool[j]; pool[j] = pool[r]; pool[r] = tmp; }
-      pool.slice(0, M.mines).forEach(function (n) { M.layout[n] = true; }); M.ready = true;
-    }
+  function beginMines(size, bombs, round) {
+    mineRound = round;
+    N = size * size;
+    Object.assign(M, round ? {size:size,mines:bombs,layout:[],open:[],flags:[],picks:0,result:null}
+      : minesRules.create(size,bombs));
+    M.active = true; M.over = false; M.level = 1; M.flagMode = false; M.checkpoint = false;
+    M.analytics = AN.start('mines', 0);
     buildBoard(); renderMines();
     mSay('棋盤：' + M.size + '×' + M.size + '，' + M.mines + ' 顆雷，第一格也可能踩雷。');
   }
-  function startMines() {
-    if (M.active) return;
+  async function startMines() {
+    if (M.active || mineStarting) return;
     var mode=$('mines-difficulty').value, spec=M_PRESETS[mode];
     var size=spec?spec[0]:Number($('mines-size').value), bombs=spec?spec[1]:Number($('mines-bombs').value);
     if(!Number.isInteger(size)||size<2||size>10||!Number.isInteger(bombs)||bombs<1||bombs>size*size-1){mSay('請輸入 2～10 的棋盤邊長，地雷數須為 1～N×N−1 的整數。','lose');return;}
-    M.size=size;M.mines=bombs;
-    M.level = 1; M.active = true; M.over = false; M.layout = []; M.open = []; M.flags = []; M.picks = 0; M.ready = false; M.flagMode = false;
-    M.analytics = AN.start('mines', 0);
-    mineStage();
+    if (typeof location==='undefined' || location.protocol==='file' || size!==5 || bombs!==3) {
+      mineRankStatus('');
+      beginMines(size,bombs,null);
+      return;
+    }
+    mineStarting = true;
+    mineRankStatus('正在準備訪客排行…');
+    renderMines();
+    var round = null;
+    try {
+      var api = await import('./frontend/services/api.mjs');
+      round = await api.startMinesRound(AbortSignal.timeout(4000));
+    } catch {}
+    mineStarting = false;
+    if ($('view-mines').hidden) { mineRankStatus(''); renderMines(); return; }
+    mineRankStatus(round ? '本局將列入訪客排行。' : '這一局可在本機遊玩。');
+    beginMines(size,bombs,round);
   }
   function mineFinish(won) {
     if (!M.active || M.checkpoint) return;
@@ -75,38 +89,66 @@
     mSay(won ? '排雷成功！可以再玩一局，或選擇其他難度。' : '踩到地雷！調整難度或再試一次吧。',won?'win':'lose');
   }
 
-  function mineFlag(i) {
-    if (!M.active || M.checkpoint || M.open[i] || i < 0 || i >= N) return;
-    if (!M.flags[i] && M.flags.filter(Boolean).length >= M.mines) { mSay('旗子數不能超過 ' + M.mines + ' 面。'); return; }
-    M.flags[i] = !M.flags[i]; renderMines();
+  function mineUpdateProgress(previousPicks) {
+    if (M.size === 5 && M.mines === 3 && M.picks > M.best) {
+      M.best = M.picks;
+      try { localStorage.setItem('deep-sea-mines-best', String(M.best)); } catch (e) {}
+    }
+    if (M.result) mineFinish(M.result === 'win');
+    else if (M.picks !== previousPicks) {
+      AN.progress(M.analytics, {stage: M.level, step: M.picks, score: M.picks});
+      mSay('已找到 ' + M.picks + ' 格安全區；根據數字判斷，再翻下一格。');
+    }
   }
-  function pick(i) {
-    if (!M.active || M.checkpoint || i < 0 || i >= N) return;
-    var queue;
-    if (M.open[i]) {
-      var number = mineNumber(i), neighbors = mineNeighbors(i);
-      if (!number || neighbors.filter(function (n) { return !!M.flags[n]; }).length !== number) return;
-      queue = neighbors.filter(function (n) { return !M.open[n] && !M.flags[n]; });
-      if (!queue.length) return;
-      var bomb = queue.find(function (n) { return M.layout[n]; });
-      if (bomb !== undefined) { M.open[bomb] = true; mineFinish(false); renderMines(); return; }
-    } else {
-      if (M.flagMode) { mineFlag(i); return; }
-      if (M.flags[i]) return;
-      if (M.layout[i]) { M.open[i] = true; mineFinish(false); renderMines(); return; }
-      queue = [i];
-    }
-    while (queue.length) {
-      var cell = queue.pop();
-      if (M.open[cell] || M.flags[cell] || M.layout[cell]) continue;
-      M.open[cell] = true; M.picks++;
-      if (!mineNumber(cell)) queue = queue.concat(mineNeighbors(cell));
-    }
-    if (M.size === 5 && M.mines === 3 && M.picks > M.best) { M.best = M.picks; try { localStorage.setItem('deep-sea-mines-best', String(M.best)); } catch (e) {} }
-    if (M.picks === N - M.mines) mineFinish(true);
-    else { AN.progress(M.analytics, {stage: M.level, step: M.picks, score: M.picks}); mSay('已找到 ' + M.picks + ' 格安全區；根據數字判斷，再翻下一格。'); }
+
+  async function sendMineMove() {
+    if (!minePending || mineSending) return;
+    mineSending = true;
+    mineRankStatus('正在驗證排雷操作…');
     renderMines();
+    try {
+      var api = await import('./frontend/services/api.mjs');
+      var next = await api.moveMinesRound(mineRound.token, minePending, AbortSignal.timeout(8000));
+      var previousPicks = M.picks;
+      Object.assign(mineRound, next);
+      M.picks = next.picks;
+      M.result = next.result;
+      M.layout = next.visible.map(cell => cell === 'mine');
+      M.flags = next.visible.map(cell => cell === 'flag');
+      M.open = next.visible.map(cell => Number.isInteger(cell) || cell === 'mine');
+      minePending = null;
+      if (next.flagLimit) mSay('旗子數不能超過 ' + M.mines + ' 面。');
+      mineUpdateProgress(previousPicks);
+      mineRankStatus(next.result ? '成績已送到排行榜。' : '本局將列入訪客排行。');
+    } catch (error) {
+      if (error.retryable === false) {
+        minePending = null;
+        M.active = false; M.over = false;
+        AN.end(M.analytics, 0, 'abandoned', {step:M.picks,board_size:M.size,mine_count:M.mines});
+        mineRankStatus('排行榜回合已中斷，請再開一局。');
+      } else mineRankStatus('排雷操作未能送出。', true);
+    } finally {
+      mineSending = false;
+      renderMines();
+    }
   }
+
+  function mineMove(action, cell) {
+    if (!M.active || M.checkpoint || minePending) return;
+    if (mineRound) {
+      minePending = {id:mineRound.id,revision:mineRound.revision,action:action,cell:cell};
+      sendMineMove();
+      return;
+    }
+    var previousPicks = M.picks;
+    var result = minesRules.move(M,action,cell);
+    if (result === 'flag-limit') mSay('旗子數不能超過 ' + M.mines + ' 面。');
+    else if (result) { mineUpdateProgress(previousPicks); renderMines(); }
+  }
+
+  function mineFlag(i) { mineMove('flag',i); }
+  function pick(i) { mineMove(M.flagMode&&!M.open[i]?'flag':'open',i); }
+  $('mines-rank-retry').addEventListener('click',sendMineMove);
   elMGo.addEventListener('click', startMines);
   $('mines-flag').addEventListener('click', function () { if (!M.active) return; M.flagMode = !M.flagMode; renderMines(); });
 

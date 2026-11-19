@@ -32,3 +32,25 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 - 重播驗證可排除直接填分、過早送出和不符合遊戲規則的操作時間。已知種子可被用來編排合法的自動操作，因此這不是人類遊玩的證明。
 
 部署這版時先套用第三個 D1 migration，再部署 Worker，最後發布前端。回退時可先回退前端，再回退 Worker，保留既有回合及排行榜資料。
+
+## 踩地雷訪客成績
+
+- `POST /api/v1/mines/rounds` 用既有訪客 bearer token 開立標準 5×5／3 雷棋盤。
+- `POST /api/v1/mines/rounds/move` 接收 `{id,revision,action,cell}`。`action` 為 `open` 或 `flag`，`cell` 為 0～24。Worker 回傳遮蔽後的棋盤、已翻安全格與結果，未翻的地雷保留在伺服器。相同版本與動作重送時回傳已套用的棋盤，其他過期版本拒絕。
+- `0004_mines_ranked_rounds.sql` 在同次寫入結算及更新 `best_scores`，以已翻安全格數降序，同分依玩家 ID。回合限 30 分鐘、500 次有效操作。其他棋盤維持本機玩法。
+- 部署順序為 `0004`、Worker、前端。回退前端再回退 Worker，可保留 `mines_rounds` 與榜單資料。
+
+## 既有遊戲的串接分組
+
+截至這一批，共 42 款可見項目。完成狀態以正式部署與實測分開記錄。
+
+| 狀態或分組 | 遊戲 ID | 串接方向 |
+| --- | --- | --- |
+| 已正式發布 | frog | Worker 重播 |
+| 已通過本機 D1，待發布 | mines | Worker 管理棋盤 |
+| 回合制與解謎，待串接 | merge、ocean-link、mermaid、banquet、frontier | 依各款動作與關卡狀態定義伺服器驗證 |
+| 即時操作與反應，待串接 | dream、runner、elevator、sneak、fishing、campaign、cat、bird、nap、reaper、blaster、skybuilder、carp、rider、boss、thief、baby、pudding、clock-out、peek、mosquito、last-hair、breakout、pet-walk、office-shoot | 逐款核對時鐘、輸入及隨機性再重播 |
+| 同來源 iframe，待串接 | boba、dive、mrt、pancake、rocket-chair、eat-smaller、mirror-twins、shadow-relay、one-line-defense | 保留父子頁生命週期，增設必要橋接與 Worker 驗證 |
+| 每日免費補給 | keno | 隨機補給與配額，不列競賽榜 |
+
+隱藏中的遊戲依既有改造與上架流程處理。新版遊戲上線前須完成 [訪客排行榜檢查](../RELEASE_CHECKLIST.md#訪客排行榜)。

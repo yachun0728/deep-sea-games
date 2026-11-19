@@ -1,6 +1,7 @@
 import { API, GAME_ID } from '../../../shared/api.mjs';
 import { createPlayer, findPlayer } from '../services/players.mjs';
 import { finishFrogRound, readFrogProof, startFrogRound } from '../services/frog.mjs';
+import { applyMinesMove, readMinesMove, startMinesRound } from '../services/mines.mjs';
 import { getBalance } from '../services/points.mjs';
 import { getLeaderboard } from '../services/leaderboard.mjs';
 
@@ -34,6 +35,15 @@ const routes = new Map([
     const proof = await readFrogProof(request);
     if (!proof) return json({ error: 'invalid_proof' }, 400);
     const result = await finishFrogRound(db, player.id, proof);
+    return result.error ? json({ error: result.error }, result.status) : json(result);
+  })]],
+  [API.minesStart, ['POST', withPlayer(async (_request, db, player) => {
+    return json(await startMinesRound(db, player.id), 201);
+  })]],
+  [API.minesMove, ['POST', withPlayer(async (request, db, player) => {
+    const move = await readMinesMove(request);
+    if (!move) return json({ error: 'invalid_move' }, 400);
+    const result = await applyMinesMove(db, player.id, move);
     return result.error ? json({ error: result.error }, result.status) : json(result);
   })]],
   [API.leaderboard, ['GET', async (_request, db, url) => {

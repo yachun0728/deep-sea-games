@@ -33,6 +33,8 @@ export function createApiClient(baseUrl) {
     createPlayer: signal => request(API.players, { method: 'POST', signal }),
     getPlayer: token => request(API.me, authorized('GET', token)),
     leaderboard: (gameId, signal) => request(API.leaderboard, { signal }, { gameId }),
+    startMines: (token, signal) => request(API.minesStart, authorized('POST', token, signal)),
+    moveMines: (token, move, signal) => request(API.minesMove, authorized('POST', token, signal, move)),
     startFrog: (token, signal) => request(API.frogStart, authorized('POST', token, signal)),
     finishFrog: (token, proof, signal) => request(API.frogFinish, authorized('POST', token, signal, proof)),
   };
@@ -55,16 +57,28 @@ async function ensureGuest(api, signal, rejected) {
     ? navigator.locks.request(GUEST_KEY, { signal }, load) : load();
 }
 
-export async function startFrogRound(signal) {
+async function startGuestRound(method, signal) {
   const api = createApiClient(arcadeApiOrigin());
   let token = await ensureGuest(api, signal);
   try {
-    return { ...await api.startFrog(token, signal), token };
+    return { ...await api[method](token, signal), token };
   } catch (error) {
     if (error.status !== 401) throw error;
     token = await ensureGuest(api, signal, token);
-    return { ...await api.startFrog(token, signal), token };
+    return { ...await api[method](token, signal), token };
   }
+}
+
+export function startFrogRound(signal) {
+  return startGuestRound('startFrog', signal);
+}
+
+export function startMinesRound(signal) {
+  return startGuestRound('startMines', signal);
+}
+
+export function moveMinesRound(token, move, signal) {
+  return createApiClient(arcadeApiOrigin()).moveMines(token, move, signal);
 }
 
 export function finishFrogRound({ id, token, ticks, presses }, signal) {
