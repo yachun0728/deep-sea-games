@@ -20,6 +20,10 @@
     icon.setAttribute('viewBox', '0 0 96 96'); icon.setAttribute('aria-hidden', 'true'); use.setAttribute('href', '#icon-' + id); icon.appendChild(use); return icon;
   }
   var boardRequest = null;
+  var boardTimer = null;
+  var boardSnapshot = null;
+  var RECENT_GAMES_LIMIT = 10;
+  var BOARD_REFRESH_MS = 30000;
   var boardRetry = $('board-retry');
 
   var boardTime = new Intl.DateTimeFormat('sv-SE', {
@@ -27,7 +31,7 @@
     hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
   });
 
-  function boardRow(gameId, entry) {
+  function boardRow(gameId, entry, lastPlayedAt) {
     var row = document.createElement('tr');
     var player = row.insertCell(), game = row.insertCell(), best = row.insertCell();
     player.className = 'board-player';
@@ -45,13 +49,13 @@
     game.appendChild(link);
     best.className = 'board-best';
     best.textContent = (gameId === 'market-desk' ? 'NT$' : '') + entry.score.toLocaleString('zh-TW');
-    if (entry.recordedAt) {
-      var recordedAt = new Date(entry.recordedAt);
-      if (Number.isFinite(recordedAt.getTime())) {
+    if (lastPlayedAt) {
+      var lastPlayed = new Date(lastPlayedAt);
+      if (Number.isFinite(lastPlayed.getTime())) {
         var time = document.createElement('time');
-        time.dateTime = entry.recordedAt;
-        time.textContent = boardTime.format(recordedAt);
-        best.appendChild(time);
+        time.dateTime = lastPlayedAt;
+        time.textContent = boardTime.format(lastPlayed);
+        game.appendChild(time);
       }
     }
     return row;
@@ -69,8 +73,7 @@
     var request = new AbortController();
     boardRequest = request;
     var body = $('board-rows');
-    body.replaceChildren();
-    boardStatus('載入排行榜中…');
+    if (!body.children.length) boardStatus('載入排行榜中…');
     var timeout = setTimeout(function () { request.abort(); }, 10000);
     try {
       var module = await import('./frontend/services/api.mjs');
@@ -79,14 +82,17 @@
       if (boardRequest !== request) return;
       var visibleGames = new Set(Array.from(document.querySelectorAll('.lobby-grid .game-card:not([data-game-hidden])'),
         function (card) { return card.hash.slice(1); }));
-      var rows = result.games.filter(function (game) {
+      var recent = result.games.filter(function (game) {
         return visibleGames.has(game.gameId) && Object.hasOwn(VIEWS, game.gameId) && game.entries.length;
-      }).map(function (game) {
-        // The feed orders each game's scores highest first, with a stable tie-break.
-        return boardRow(game.gameId, game.entries[0]);
+      }).slice(0, RECENT_GAMES_LIMIT).map(function (game) {
+        return [game.gameId, game.entries[0], game.lastPlayedAt];
       });
-      body.replaceChildren(...rows);
-      boardStatus(rows.length ? '' : '目前尚無排行榜紀錄。');
+      var snapshot = JSON.stringify(recent);
+      if (snapshot !== boardSnapshot) {
+        body.replaceChildren(...recent.map(function (game) { return boardRow(...game); }));
+        boardSnapshot = snapshot;
+      }
+      boardStatus(recent.length ? '' : '目前尚無排行榜紀錄。');
     } catch (error) {
       if (boardRequest === request) boardStatus('目前無法載入排行榜。', true);
     } finally {
@@ -95,15 +101,24 @@
     }
   }
 
+  function refreshVisibleBoard() {
+    if (boardTimer === null || document.hidden || boardRequest || $('board-rows').contains(document.activeElement)) return;
+    boardLoad();
+  }
+
   function boardRoute(on) {
+    clearInterval(boardTimer);
+    boardTimer = null;
     if (!on) {
       if (boardRequest) boardRequest.abort();
       boardRequest = null;
       return;
     }
     boardLoad();
+    boardTimer = setInterval(refreshVisibleBoard, BOARD_REFRESH_MS);
   }
 
+  document.addEventListener('visibilitychange', refreshVisibleBoard);
   boardRetry.addEventListener('click', boardLoad);
 
   function memberRender() {
