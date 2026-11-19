@@ -7,7 +7,7 @@
 - 網址：`#boba`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「抓準力道插吸管，原版粉紅珍奶小遊戲。」｜立即開玩 · 只扣入場點數
 - 追蹤名稱（GA4 `game_name`）：插珍奶，`game_id` 為 `boba`
-- 檔案：`games/boba/card.html`、`games/boba/game.js`、`games/boba/icon.svg`、`games/boba/original.html`、`games/boba/view.html`；`game.js` 共 28 行、2.1 KB
+- 檔案：`games/boba/card.html`、`games/boba/cover.webp`、`games/boba/game.js`、`games/boba/icon.svg`、`games/boba/original.html`、`games/boba/view.html`；`game.js` 共 28 行、2.1 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「18. 珍奶插吸管（boba）」（下方「規則摘要」已複製）
 

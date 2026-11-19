@@ -358,5 +358,13 @@
     "card": "games/frontier/card.html",
     "icon": "games/frontier/icon.svg",
     "style": "games/frontier/style.css"
+  },
+  {
+    "id": "tetris",
+    "logic": "games/tetris/game.js",
+    "view": "games/tetris/view.html",
+    "card": "games/tetris/card.html",
+    "icon": "games/tetris/icon.svg",
+    "style": "games/tetris/style.css"
   }
 ]

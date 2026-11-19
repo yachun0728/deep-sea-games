@@ -40,7 +40,7 @@
 | [寶寶逃洗澡 Baby Bath Escape](baby/README.md) | `#baby` | 跑酷動作 | 顯示 | 180 行 | 跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。 |
 | [布丁突圍 Pudding Dash](pudding/README.md) | `#pudding` | 跑酷動作 | 顯示 | 386 行 | 拼出武器，背著小王子殺出重圍。 |
 | [下班保衛戰 Clock Out](clock-out/README.md) | `#clock-out` | 益智策略 | 顯示 | 1096 行 | 擺好辦公用品擋住一波波工作，撐到 17:00 打卡下班。 |
-| [別看 Don’t Peek](peek/README.md) | `#peek` | 潛行偷閒 | 顯示 | 927 行 | 抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，點對牠怕的道具。 |
+| [別看 Don’t Peek](peek/README.md) | `#peek` | 潛行偷閒 | 顯示 | 941 行 | 抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，點對牠怕的道具。 |
 | [血壓上升 Midnight Mosquito](mosquito/README.md) | `#mosquito` | 潛行偷閒 | 顯示 | 437 行 | 深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。 |
 | [尊嚴保衛戰 The Last Hair](last-hair/README.md) | `#last-hair` | 潛行偷閒 | 顯示 | 585 行 | 頂著最後三根頭髮，在強風中走完 500 公尺去面試。 |
 | [打磚塊 Breakout](breakout/README.md) | `#breakout` | 免費懷舊 | 顯示 | 228 行 | 移動擋板反彈小球，打光磚塊一關闖過一關。 |
@@ -54,3 +54,4 @@
 | [影子接力 Shadow Relay](shadow-relay/README.md) | `#shadow-relay` | 益智策略 | 顯示 | 62 行 | 影子會照你的路線重走，讓它點亮燈籠，別被它追上。 |
 | [一筆畫守城 One-Line Defense](one-line-defense/README.md) | `#one-line-defense` | 時機操作 | 顯示 | 59 行 | 只能畫一條線擋住湧向核心的敵人，線越長消失越快。 |
 | [荒島遠征 Frontier Islands](frontier/README.md) | `#frontier` | 益智策略 | 顯示 | 152 行 | 砍出道路，建立據點，挑戰五大區域與五十關考驗。 |
+| [俄羅斯方塊 Tetris](tetris/README.md) | `#tetris` | 免費懷舊 | 顯示 | 50 行 | 經典落塊消行，旋轉、牆踢與暫存都有。 |

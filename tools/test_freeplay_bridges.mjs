@@ -1,6 +1,6 @@
 import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';
 const root=new URL('../',import.meta.url);let checks=0;
-const names={boba:['deepSeaBoba','boba-frame'],pancake:['deepSeaPancake','pancake-frame'],dive:['deepSeaDive','dv-frame'],mrt:['deepSeaMrt','mr-frame'],'rocket-chair':['deepSeaRocket','rocket-chair-frame'],'eat-smaller':['deepSeaEatSmaller','es-frame'],'mirror-twins':['deepSeaMirrorTwins','mt-frame'],'shadow-relay':['deepSeaShadowRelay','sr-frame'],'one-line-defense':['deepSeaOneLine','ol-frame']};
+const names={boba:['deepSeaBoba','boba-frame'],pancake:['deepSeaPancake','pancake-frame'],dive:['deepSeaDive','dv-frame'],mrt:['deepSeaMrt','mr-frame'],'rocket-chair':['deepSeaRocket','rocket-chair-frame'],'eat-smaller':['deepSeaEatSmaller','es-frame'],'mirror-twins':['deepSeaMirrorTwins','mt-frame'],'shadow-relay':['deepSeaShadowRelay','sr-frame'],'one-line-defense':['deepSeaOneLine','ol-frame'],tetris:['deepSeaTetris','tt-frame']};
 for(const [name,[apiName,frameId]] of Object.entries(names)){
  const elements=new Map(),events=[],source=fs.readFileSync(new URL('games/'+name+'/game.js',root),'utf8');
  const el=id=>{if(!elements.has(id))elements.set(id,{textContent:'',hidden:false,disabled:false,className:'',style:{},dataset:{},contentWindow:{},addEventListener(){},setAttribute(){}});return elements.get(id);};
