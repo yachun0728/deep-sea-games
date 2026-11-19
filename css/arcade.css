@@ -401,8 +401,8 @@ body.game-view-scroll-lock { overflow: hidden; }
 .sneak-stage.peek-fs canvas{width:min(100vw,177.7vh);max-height:100vh}
 .sneak-stage.peek-rot{inset:auto;top:0;left:100vw;width:100vh;height:100vw;transform-origin:top left;transform:rotate(90deg)}
 .sneak-stage.peek-rot canvas{width:min(100vh,177.7vw);max-height:100vw}
-.game-icon-peek{position:relative;width:132px;height:120px;margin:2px 0 8px;border-radius:18px;background:radial-gradient(ellipse at 50% 40%,rgba(214,52,36,.55),rgba(60,14,12,.7) 50%,rgba(8,12,18,0) 78%)}
-.game-icon-peek img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.65)) drop-shadow(0 0 8px rgba(255,60,40,.35));animation:peek-breath 3.6s ease-in-out infinite}
-@keyframes peek-breath{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.04);filter:drop-shadow(0 8px 12px rgba(0,0,0,.7)) drop-shadow(0 0 16px rgba(255,70,45,.6))}}
+.game-icon-peek{position:relative;width:120px;height:120px;margin:2px 0 8px;border-radius:18px;background:radial-gradient(ellipse at 50% 40%,rgba(232,170,80,.42),rgba(70,36,14,.6) 50%,rgba(8,12,18,0) 78%)}
+.game-icon-peek img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.65)) drop-shadow(0 0 8px rgba(255,190,100,.3));animation:peek-breath 3.6s ease-in-out infinite}
+@keyframes peek-breath{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.04);filter:drop-shadow(0 8px 12px rgba(0,0,0,.7)) drop-shadow(0 0 16px rgba(255,200,110,.55))}}
 .game-card-ver{font-variant-numeric:lining-nums;letter-spacing:.02em}
 @media(prefers-reduced-motion:reduce){.game-icon-peek img{animation:none}}

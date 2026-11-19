@@ -253,7 +253,7 @@ check('The version tag matches on the lobby card, the side panel and in the game
   const ver=raw.match(/PEEK_VER='([^']+)'/)[1];
   assert.ok(fs.readFileSync(new URL('games/peek/card.html',root),'utf8').includes(ver));
   assert.ok(fs.readFileSync(new URL('games/peek/view.html',root),'utf8').includes(ver));
-  assert.ok(fs.readFileSync(new URL('games/peek/card.html',root),'utf8').includes('ghost-colossus'));
+  assert.ok(fs.readFileSync(new URL('games/peek/card.html',root),'utf8').includes('npc-nib'));
 });
 check('Dying is permanent: no lives, the whole run starts over from level 1',()=>{
   const f=fixture();f.F.ev('forceLvl=3;maxLvl=3;runTop=3;ck=1');f.F.start();
