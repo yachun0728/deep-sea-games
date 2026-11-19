@@ -86,7 +86,22 @@ def apply_card_art(html: str, root: Path = ROOT) -> str:
         # no cover yet: the card shows the game's own lobby icon, image only
         return f'{match.group(0)} data-art="icon"'
     # hidden games are never shown, so they keep their `hidden data-game-hidden` right after href
-    return re.sub(r'<a class="game-card" href="#([a-z0-9-]+)"(?! hidden data-game-hidden)', art, html)
+    html = re.sub(r'<a class="game-card" href="#([a-z0-9-]+)"(?! hidden data-game-hidden)', art, html)
+
+    # Sidebar "popular games" squares use the same art as the cards: the cover, else the card's own icon.
+    def quick(match):
+        gid = match.group(1)
+        cover = root / 'games' / gid / 'cover.webp'
+        if cover.is_file():
+            inner = f'<img src="games/{gid}/cover.webp?v={version(cover)}" alt="" loading="lazy" decoding="async">'
+        else:
+            card = re.search(r'<a class="game-card" href="#%s".*?<div class="game-card-icon[^"]*">(.*?)</div>' % re.escape(gid), html, re.S)
+            if not card:
+                return match.group(0)
+            inner = card.group(1)
+        opening = match.group(0)[:match.start(3) - match.start(0)]
+        return f'{opening}{inner}</a>'
+    return re.sub(r'<a class="side-quick-item" href="#([a-z0-9-]+)"([^>]*)>(.*?)</a>', quick, html, flags=re.S)
 
 
 def apply_hidden(html: str, root: Path = ROOT) -> str:
