@@ -60,6 +60,7 @@
 
 </script>
 <meta charset="utf-8">
+<meta name="leaderboard-api-origin" content="https://deep-sea-games-api.yachun0728.workers.dev">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>
 :root { padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); }
@@ -751,7 +752,11 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 .board-table svg{width:28px;height:28px;flex:none;border-radius:6px;background:var(--tc-active)}
 .board-best{font-weight:600;color:var(--tc-accent)}
 .board-empty{margin:12px 0 0;padding:14px;border-radius:6px;background:var(--tc-surface);color:var(--tc-muted);text-align:center}
-.board-note{margin:10px 0 0;color:var(--tc-faint);font-size:12px}
+#board-game,#board-retry{background:var(--tc-surface);color:#fff;border:1px solid var(--tc-line);border-radius:6px;padding:8px 10px;font:inherit}
+#board-game{min-width:0;max-width:58%}
+#board-retry{display:block;margin:10px auto 0;cursor:pointer}
+#board-retry[hidden],#board-status[hidden]{display:none}
+.board-player{overflow-wrap:anywhere}
 
 /* ---------- member centre ---------- */
 .member-view{gap:var(--tc-gap)}
@@ -918,11 +923,8 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 @media(max-width:880px){.top-icon-btn{width:34px;height:34px}}
 /* account menu logout */
 .account-links .account-logout,.account-links .account-logout svg{color:#ff5a5f}
-/* live leaderboard */
+/* Player and game columns */
 .board-player{color:#fff}
-.board-table tbody tr.is-new{animation:board-in .45s ease-out}
-@keyframes board-in{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
-@media(prefers-reduced-motion:reduce){.board-table tbody tr.is-new{animation:none}}
 .board-table th:nth-child(2),.board-table td:nth-child(2){display:table-cell}
 @media(max-width:700px){.board-table td:nth-child(2) span{display:none}}
 
@@ -2121,7 +2123,20 @@ html.frontier-immersive{overflow:hidden}
 <a class="game-card" href="#carp" data-art="icon" data-game-category="timing" aria-label="遊玩鯉魚躍龍門：蓄力起跳，越過一道道石瀑。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-carp"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-carp"></use></svg></div><h3>鯉魚躍龍門</h3><p class="game-card-en">Carp Leap</p><p class="game-card-description">蓄力起跳，越過一道道石瀑。</p><div class="game-card-footer"><span>立即開玩</span><span>蓄力跳躍</span></div></a><a class="game-card" href="#rider" data-art="icon" data-game-category="run" aria-label="遊玩外送員大戰惡犬：巷子裡閃狗送餐，餐涼之前送越多越好。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-rider"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-rider"></use></svg></div><h3>外送員大戰惡犬</h3><p class="game-card-en">Rider vs Dogs</p><p class="game-card-description">巷子裡閃狗送餐，餐涼之前送越多越好。</p><div class="game-card-footer"><span>立即開玩</span><span>閃避送餐</span></div></a><a class="game-card" href="#boss" data-art="icon" data-game-category="run" aria-label="遊玩胖老闆追人：遲到了！跳過障礙，別被胖老闆追上。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-boss"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-boss"></use></svg></div><h3>胖老闆追人</h3><p class="game-card-en">Chubby Boss Chase</p><p class="game-card-description">遲到了！跳過障礙，別被胖老闆追上。</p><div class="game-card-footer"><span>立即開玩</span><span>辦公室逃亡</span></div></a><a class="game-card" href="#thief" data-art="icon" data-game-category="run" aria-label="遊玩偷水果的貓：換道、跳籃子，偷水果躲開老闆娘。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-thief"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-thief"></use></svg></div><h3>偷水果的貓</h3><p class="game-card-en">Fruit Thief Cat</p><p class="game-card-description">換道、跳籃子，偷水果躲開老闆娘。</p><div class="game-card-footer"><span>立即開玩</span><span>市場追逐</span></div></a><a class="game-card" href="#baby" data-art="icon" data-game-category="run" aria-label="遊玩寶寶逃洗澡：跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。無盡挑戰，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-baby"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-baby"></use></svg></div><h3>寶寶逃洗澡</h3><p class="game-card-en">Baby Bath Escape</p><p class="game-card-description">跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。</p><div class="game-card-footer"><span>立即開玩</span><span>居家逃亡</span></div></a><a class="game-card" href="#skybuilder" data-art="icon" data-game-category="timing" aria-label="遊玩蓋樓大師：用起重機一層一層疊高樓，挑戰高度紀錄，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-skybuilder"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-skybuilder"></use></svg></div><h3>蓋樓大師</h3><p class="game-card-en">Sky Builder</p><p class="game-card-description">抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。</p><div class="game-card-footer"><span>立即開玩</span><span>高度挑戰</span></div></a>
 <a class="game-card" href="#frog" data-art="icon" data-game-category="timing" aria-label="遊玩青蛙吃蟲：對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-frog"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-frog"></use></svg></div><h3>青蛙吃蟲</h3><p class="game-card-en">Frog Snack</p><p class="game-card-description">對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。</p><div class="game-card-footer"><span>立即開玩</span><span>一鍵反應</span></div></a><a class="game-card" href="#pancake" data-art="icon" data-game-category="timing" aria-label="遊玩泡麵煎餅翻面：晃手機煎泡麵煎餅，金黃時往上甩翻面"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-pancake"></use></svg></div><h3>泡麵煎餅翻面</h3><p class="game-card-en">Noodle Pancake</p><p class="game-card-description">半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。</p><div class="game-card-footer"><span>立即開玩</span><span>只扣入場點數</span></div></a><a class="game-card" href="#mrt" data-art="icon" data-game-category="puzzle" aria-label="遊玩捷運搶位：看線索猜誰要下車，搶到座位階數升一階。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mrt"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mrt"></use></svg></div><h3>捷運搶位</h3><p class="game-card-en">MRT Seat Grab</p><p class="game-card-description">看小動作猜誰要下車，一階一階往上搶座位。</p><div class="game-card-footer"><span>立即開玩</span><span>8 階挑戰</span></div></a><a class="game-card" href="#dive" data-art="icon" data-game-category="puzzle" aria-label="遊玩一口氣探險：選路線往下潛，在氧氣用完前上浮。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-dive"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dive"></use></svg></div><h3>一口氣探險</h3><p class="game-card-en">One Breath Dive</p><p class="game-card-description">選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。</p><div class="game-card-footer"><span>立即開玩</span><span>最佳分數</span></div></a><a class="game-card" href="#blaster" data-art="icon" data-game-category="run" aria-label="遊玩深海火線：自由移動自動射擊，三選一武器擊退怪物"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-blaster"></use></svg></div><h3>深海火線</h3><p class="game-card-en">Reef Blaster</p><p class="game-card-description">七種武器三選一，闖過水雷、礁石與深海巨獸。</p><div class="game-card-footer"><span>立即開玩</span><span>無盡 · 每10關+1點</span></div></a>
 <a class="game-card" href="#reaper" data-art="icon" data-game-category="stealth" aria-label="遊玩死神打工：接走普通靈魂，放行綠色通行證有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-reaper"></use></svg></div><h3>死神打工</h3><p class="game-card-en">Reaper Shift</p><p class="game-card-description">普通靈魂要接走，綠色通行證要放行。</p><div class="game-card-footer"><span>立即開玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#cat" data-art="icon" data-game-category="run" aria-label="遊玩屋頂貓貓：無盡跑酷，看你能跑多遠。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-cat"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-cat"></use></svg></div><h3>屋頂貓貓</h3><p class="game-card-en">Rooftop Cat</p><p class="game-card-description">無盡跑酷，看你能跑多遠。</p><div class="game-card-footer"><span>立即開玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#bird" data-art="icon" data-game-category="run" aria-label="遊玩便便鳥大戰狼群：跳過仙人掌和狼群，用便便把狼王打跑。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-bird"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-bird"></use></svg></div><h3>便便鳥大戰狼群</h3><p class="game-card-en">Poop Bird vs Wolves</p><p class="game-card-description">跳過仙人掌和狼群，用便便把狼王打跑。</p><div class="game-card-footer"><span>立即開玩</span><span>狼王挑戰</span></div></a><a class="game-card" href="#boba" data-art="icon" data-game-category="timing" aria-label="遊玩插珍奶：抓準力道把吸管插進珍奶"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-boba"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-boba"></use></svg></div><h3>插珍奶</h3><p class="game-card-en">Boba Straw</p><p class="game-card-description">抓準力道插吸管，原版粉紅珍奶小遊戲。</p><div class="game-card-footer"><span>立即開玩</span><span>只扣入場點數</span></div></a><a class="game-card" href="#campaign" data-art="icon" data-game-category="stealth" aria-label="遊玩宣傳車：繞市區拉票，經過學校、醫院、豪宅要按住靜音。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-campaign"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-campaign"></use></svg></div><h3>宣傳車</h3><p class="game-card-en">Campaign Truck</p><p class="game-card-description">繞市區拉票，經過學校、醫院、豪宅要按住靜音。</p><div class="game-card-footer"><span>立即開玩</span><span>無盡 · 越開越快</span></div></a><a class="game-card" href="#fishing" data-art="icon" data-game-category="timing" aria-label="遊玩深海釣手：按住收線、放開卸力，把大魚拉上岸。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-fishing"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-fishing"></use></svg></div><h3>深海釣手</h3><p class="game-card-en">Fishing</p><p class="game-card-description">按住收線、放開卸力，把大魚拉上岸。</p><div class="game-card-footer"><span>立即開玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#sneak" data-art="icon" data-game-category="stealth" aria-label="遊玩偷偷下班：按住偷溜，老闆回頭前趕快裝忙。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-sneak"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-sneak"></use></svg></div><h3>偷偷下班</h3><p class="game-card-en">Sneak Out</p><p class="game-card-description">按住偷溜，老闆回頭前趕快裝忙。</p><div class="game-card-footer"><span>立即開玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#elevator" data-art="icon" data-game-category="stealth" aria-label="遊玩插隊大師：趁乘客背對你，偷偷往前插一位。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-elevator"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-elevator"></use></svg></div><h3>插隊大師</h3><p class="game-card-en">Queue Cutter</p><p class="game-card-description">趁乘客背對你，偷偷往前插一位。</p><div class="game-card-footer"><span>立即開玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#runner" data-art="icon" data-game-category="run" aria-label="遊玩閃避跑酷：點左、點右換道，避開一路上的障礙。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-runner"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-runner"></use></svg></div><h3>閃避跑酷</h3><p class="game-card-en">Dodge Run</p><p class="game-card-description">點左、點右換道，避開一路上的障礙。</p><div class="game-card-footer"><span>立即開玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#dream" data-art="icon" data-game-category="timing" aria-label="遊玩時序修復：抓準時機，讓指針停在青綠色區域。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-dream"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dream"></use></svg></div><h3>時序修復</h3><p class="game-card-en">Dream Repair Shop</p><p class="game-card-description">抓準時機，讓指針停在青綠色區域。</p><div class="game-card-footer"><span>立即開玩</span><span>無限關卡</span></div></a><a class="game-card" href="#mines" data-art="icon" data-game-category="retro" aria-label="遊玩踩地雷：低中高難度或自訂棋盤，重溫經典踩地雷。"><div class="game-card-top"><span class="game-card-category">經典小遊戲</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mines"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mines"></use></svg></div><h3>踩地雷</h3><p class="game-card-en">Minesweeper</p><p class="game-card-description">低中高難度或自訂棋盤，重溫經典踩地雷。</p><div class="game-card-footer"><span>不限次數</span><span>推理排雷</span></div></a><a class="game-card" href="#merge" data-art="icon" data-game-category="puzzle" aria-label="遊玩養珠：滑動合併珍珠，養出更大的數字。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-merge"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-merge"></use></svg></div><h3>養珠</h3><p class="game-card-en">Pearl Merge</p><p class="game-card-description">滑動合併珍珠，養出更大的數字。</p><div class="game-card-footer"><span>立即開玩</span><span>滑動合併</span></div></a><a class="game-card" href="#crash" hidden data-game-hidden data-game-category="chance" aria-label="遊玩壓潰深度：隨潛艇一起下潛，在壓潰前上浮。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-crash"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crash"></use></svg></div><h3>壓潰深度</h3><p class="game-card-en">Crush Depth</p><p class="game-card-description">隨潛艇一起下潛，在壓潰前上浮。</p><div class="game-card-footer"><span>10 點起</span><span>隨時上浮</span></div></a><a class="game-card" href="#plinko" hidden data-game-hidden data-game-category="chance" aria-label="遊玩落珠：投下珍珠，看它穿過釘陣落在哪一格。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-plinko"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-plinko"></use></svg></div><h3>落珠</h3><p class="game-card-en">Pearl Drop</p><p class="game-card-description">投下珍珠，看它穿過釘陣落在哪一格。</p><div class="game-card-footer"><span>10 點起</span><span>落點倍率</span></div></a><a class="game-card" href="#dice" hidden data-game-hidden data-game-category="chance" aria-label="遊玩測深：設定聲納讀數範圍，等待海底回音。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-dice"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-dice"></use></svg></div><h3>測深</h3><p class="game-card-en">Sonar Dice</p><p class="game-card-description">設定聲納讀數範圍，等待海底回音。</p><div class="game-card-footer"><span>10 點起</span><span>範圍預測</span></div></a><a class="game-card" href="#limbo" hidden data-game-hidden data-game-category="chance" aria-label="遊玩探底：選定目標倍率，看看探測錘能到多深。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-limbo"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-limbo"></use></svg></div><h3>探底</h3><p class="game-card-en">Deep Probe</p><p class="game-card-description">選定目標倍率，看看探測錘能到多深。</p><div class="game-card-footer"><span>10 點起</span><span>目標倍率</span></div></a><a class="game-card" href="#hilo" hidden data-game-hidden data-game-category="chance" aria-label="遊玩漲退：猜下一張牌更高或更低，連猜累積。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-hilo"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-hilo"></use></svg></div><h3>漲退</h3><p class="game-card-en">High Tide</p><p class="game-card-description">猜下一張牌更高或更低，連猜累積。</p><div class="game-card-footer"><span>10 點起</span><span>高低猜牌</span></div></a><a class="game-card" href="#wheel" hidden data-game-hidden data-game-category="chance" aria-label="遊玩羅盤：轉動深海羅盤，等待指針停下。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-wheel"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-wheel"></use></svg></div><h3>羅盤</h3><p class="game-card-en">Compass</p><p class="game-card-description">轉動深海羅盤，等待指針停下。</p><div class="game-card-footer"><span>10 點起</span><span>轉盤挑戰</span></div></a><a class="game-card" href="#tower" hidden data-game-hidden data-game-category="chance" aria-label="遊玩浮升：挑選安全的氣泡，一層一層往上浮。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-tower"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-tower"></use></svg></div><h3>浮升</h3><p class="game-card-en">Ascent</p><p class="game-card-description">挑選安全的氣泡，一層一層往上浮。</p><div class="game-card-footer"><span>10 點起</span><span>逐層冒險</span></div></a><a class="game-card" href="#crossing" hidden data-game-hidden data-game-category="chance" aria-label="遊玩橫渡：帶小海龜穿越暗流，決定何時收手。"><div class="game-card-top"><span class="game-card-category">機率挑戰</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-crossing"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-crossing"></use></svg></div><h3>橫渡</h3><p class="game-card-en">Reef Run</p><p class="game-card-description">帶小海龜穿越暗流，決定何時收手。</p><div class="game-card-footer"><span>10 點起</span><span>逐步闖關</span></div></a></div></section>
-    <section class="lobby-board" aria-labelledby="board-title"><div class="lobby-row-head"><h2 id="board-title"><i class="fa-solid fa-trophy side-head-icon" aria-hidden="true"></i>排行榜</h2></div><div class="board-panel"><table class="board-table"><thead><tr><th scope="col">玩家</th><th scope="col">遊戲</th><th scope="col">最佳紀錄</th></tr></thead><tbody id="board-rows"></tbody></table><p class="board-empty" id="board-empty">還沒有紀錄，玩一局就會出現在這裡。</p></div></section>
+    <section class="lobby-board" aria-labelledby="board-title">
+      <div class="lobby-row-head">
+        <h2 id="board-title"><i class="fa-solid fa-trophy side-head-icon" aria-hidden="true"></i>排行榜</h2>
+        <select id="board-game" aria-label="選擇排行榜遊戲"></select>
+      </div>
+      <div class="board-panel">
+        <table class="board-table">
+          <thead><tr><th scope="col">玩家</th><th scope="col">遊戲</th><th scope="col">最佳紀錄</th></tr></thead>
+          <tbody id="board-rows"></tbody>
+        </table>
+        <p class="board-empty" id="board-status" role="status"></p>
+        <button type="button" id="board-retry" hidden>重新載入排行榜</button>
+      </div>
+    </section>
 
   </section>
 
@@ -2749,6 +2764,8 @@ html.frontier-immersive{overflow:hidden}
         <input id="fg-amount" type="hidden" value="0">
         <button class="go" id="fg-go" type="button" data-mode="bet">開始吃蟲</button>
         <p class="msg" id="fg-msg" aria-live="polite">青蛙餓了！開始後開始，箭頭掃到最底下那隻蟲的中間就按下去。</p>
+        <p id="fg-rank-status" role="status" hidden></p>
+        <button type="button" id="fg-rank-retry" hidden>重送排行榜成績</button>
         <p class="hint">按 <kbd>空白鍵</kbd> 或點一下畫面吐舌頭。箭頭要對準最底下那隻蟲的中間才吃得到。蟲子閃黃色是警告，變成紅色帶刺時不能吃，等牠變回粉紅色再吃。</p>
       </section></div>
     </div>
@@ -8219,6 +8236,19 @@ html.frontier-immersive{overflow:hidden}
   "登出": "Log out",
   "通知": "Notifications",
   "搜尋": "Search",
+  "訪客": "Guest",
+  "選擇排行榜遊戲": "Select a leaderboard game",
+  "重新載入排行榜": "Retry leaderboard",
+  "載入排行榜中…": "Loading leaderboard…",
+  "這款遊戲尚無排行榜紀錄。": "No leaderboard records for this game yet.",
+  "目前無法載入排行榜。": "Unable to load the leaderboard right now.",
+  "正在準備訪客排行…": "Preparing guest leaderboard…",
+  "這一局可在本機遊玩。": "This round can be played locally.",
+  "本局將列入訪客排行。": "This round counts toward the guest leaderboard.",
+  "正在驗證排行榜成績…": "Verifying leaderboard score…",
+  "成績已送到排行榜。": "Score submitted to the leaderboard.",
+  "排行榜成績未能送出。": "Unable to submit the leaderboard score.",
+  "重送排行榜成績": "Retry score submission",
   "可以兌換：": "Ready to redeem: ",
   "下一個外觀：": "Next cosmetic: ",
   "（還差": " (need",
@@ -10760,90 +10790,217 @@ function loop(t){const dt=Math.min(.05,Math.max(0,(t-last)/1000)||0);last=t;if(!
 ui();draw();requestAnimationFrame(loop);
   })();
 
+// Shared by the classic browser runtime and the Worker replay verifier.
+const frogRules = (() => {
+  const STEP_MS = 10;
+  const MAX_TICKS = 60000;
+  const REWARD_EVERY = 10;
+  const SLOTS = 8, AIM_TOP = 412, AIM_BOT = 500, TY = 478;
+  const HIT = 16, HEARTS = 3, FULL = 100;
+  // Aim speed, angry-bug chance, calm range, attack duration, hunger per second.
+  const levels = [
+    [141, 0, 0, 0, 0, 5], [157, .15, 2, 3, .8, 5.7],
+    [173, .2, 1.8, 2.8, .9, 6.4], [189, .25, 1.6, 2.6, 1, 7.1],
+    [204, .3, 1.4, 2.4, 1.1, 7.8], [220, .35, 1.2, 2.2, 1.2, 8.5],
+    [236, .4, 1, 2, 1.3, 9.2], [251, .45, .9, 1.8, 1.4, 9.9],
+    [267, .5, .8, 1.6, 1.5, 10.6], [283, .55, .7, 1.4, 1.6, 11.3],
+  ];
+  const colors = ['#8bc34a', '#ffb74d', '#64b5f6', '#ba68c8'];
+  const level = state => Math.min(10, Math.floor(state.eaten / REWARD_EVERY) + 1);
+  const config = state => levels[level(state) - 1];
+  const bug = (angry, col) => ({ angry, col, state: 'calm', t: 0, live: false });
+
+  function seededRandom(seed) {
+    return () => {
+      seed = (seed + 0x6d2b79f5) | 0;
+      let value = Math.imul(seed ^ (seed >>> 15), seed | 1);
+      value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+      return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function create(random = Math.random) {
+    return {
+      random, bugs: Array.from({ length: SLOTS }, (_, i) => bug(false, colors[i % colors.length])),
+      aimY: AIM_TOP, aimDir: 1, hearts: HEARTS, food: FULL,
+      eaten: 0, pts: 0, combo: 0, lock: 0, reason: '',
+    };
+  }
+
+  function calm(state, target) {
+    const [, , min, max] = config(state);
+    target.state = 'calm';
+    target.t = (min || 2) + state.random() * ((max || 3) - (min || 2));
+  }
+
+  function press(state) {
+    if (state.reason || state.lock > 0) return;
+    const distance = Math.abs(state.aimY - TY);
+    const target = state.bugs[0];
+    if (distance > HIT) {
+      state.combo = 0;
+      state.lock = .35;
+      state.food = Math.max(0, state.food - (level(state) === 1 ? 2 : 4));
+      return { kind: 'miss' };
+    }
+    if (target.state === 'attack') {
+      state.hearts--;
+      state.combo = 0;
+      state.lock = .6;
+      calm(state, target);
+      if (state.hearts <= 0) state.reason = 'sting';
+      return { kind: 'sting' };
+    }
+
+    const perfect = distance <= 6;
+    const multiplier = state.combo >= 15 ? 3 : state.combo >= 5 ? 2 : 1;
+    const gain = (perfect ? 20 : 10) * multiplier + (target.state === 'warn' ? 5 : 0);
+    state.pts += gain;
+    state.food = Math.min(FULL, state.food + (perfect ? 12 : 8));
+    state.combo++;
+    state.eaten++;
+    state.bugs.shift();
+    const twoAngry = state.bugs.slice(-2).every(item => item.angry);
+    state.bugs.push(bug(!twoAngry && state.random() < config(state)[1],
+      colors[Math.floor(state.random() * colors.length)]));
+    state.lock = .1;
+    const milestone = state.eaten % REWARD_EVERY === 0;
+    if (milestone) state.food = Math.min(FULL, state.food + 10);
+    return { kind: 'eat', gain, perfect, milestone };
+  }
+
+  function step(state, dt) {
+    if (state.reason) return;
+    if (state.lock > 0) state.lock -= dt;
+    const [speed, , , , attack, hunger] = config(state);
+    state.food -= hunger * dt;
+    if (state.food <= 0) {
+      state.food = 0;
+      state.reason = 'hunger';
+      return;
+    }
+    state.aimY += state.aimDir * speed * dt;
+    if (state.aimY >= AIM_BOT) {
+      state.aimY = AIM_BOT;
+      state.aimDir = -1;
+    } else if (state.aimY <= AIM_TOP) {
+      state.aimY = AIM_TOP;
+      state.aimDir = 1;
+    }
+    for (let i = 0; i < 3; i++) {
+      const target = state.bugs[i];
+      if (!target.angry) continue;
+      if (!target.live) {
+        target.live = true;
+        calm(state, target);
+        continue;
+      }
+      target.t -= dt;
+      if (target.t > 0) continue;
+      if (target.state === 'calm') {
+        target.state = 'warn';
+        target.t = .5;
+      } else if (target.state === 'warn') {
+        target.state = 'attack';
+        target.t = attack || 1;
+      } else calm(state, target);
+    }
+  }
+
+  function replay(seed, ticks, presses) {
+    if (!Number.isInteger(ticks) || ticks < 1 || ticks > MAX_TICKS ||
+        !Array.isArray(presses) || presses.length > Math.ceil(MAX_TICKS / 10)) return null;
+    const state = create(seededRandom(seed));
+    let cursor = 0;
+    for (let tick = 0; tick <= ticks; tick++) {
+      if (presses[cursor] === tick) {
+        if (!press(state)) return null;
+        cursor++;
+      }
+      if (state.reason) {
+        return tick === ticks && cursor === presses.length
+          ? { score: state.pts, eaten: state.eaten } : null;
+      }
+      if (tick < ticks) step(state, STEP_MS / 1000);
+    }
+    return null;
+  }
+
+  return { STEP_MS, MAX_TICKS, REWARD_EVERY, SLOTS, AIM_TOP, AIM_BOT, TY, HIT,
+    HEARTS, FULL, level, create, seededRandom, press, step, replay };
+})();
+if (typeof module !== 'undefined') module.exports = frogRules;
   /* ---------- Frog Snack: timing game; the aim bobs over the bottom bug, eat it when centred, never while it is red ---------- */
   var frogBusy=false,frogStake=0,frogSay=function(){};
   (function(){
 const c=$('fg-canvas'),g=c.getContext('2d'),W=400,H=560,GY=500,OL='#1b1b2f';
-const BW=100,BH=44,TX=280,SLOTS=8,TY=GY-BH/2,AIM_TOP=GY-BH*2,AIM_BOT=GY,AIM_X=180,FX=88,FY=462;
-const HIT=16,PERFECT=6;              // distance (px) from the bottom bug's centre that still counts
-const FROG_REWARD=1,REWARD_EVERY=10; // points credited each time another 10 bugs are eaten
-const HEARTS=3,FULL=100,EAT_FOOD=8,PERFECT_FOOD=12,WARN_S=.5;
-const MISS_FOOD_LV1=2,MISS_FOOD=4,LEVEL_FOOD=10; // a missed tongue costs fullness (gentler on level 1); every level-up refills a little
-// Per level (1-10): aim speed px/s, chance a new bug is an angry one, calm seconds [min,max], attack seconds, fullness lost per second.
-const LV=[[141,0,0,0,0,5],[157,.15,2,3,.8,5.7],[173,.2,1.8,2.8,.9,6.4],[189,.25,1.6,2.6,1,7.1],[204,.3,1.4,2.4,1.1,7.8],[220,.35,1.2,2.2,1.2,8.5],[236,.4,1,2,1.3,9.2],[251,.45,.9,1.8,1.4,9.9],[267,.5,.8,1.6,1.5,10.6],[283,.55,.7,1.4,1.6,11.3]];
-const COLS=['#8bc34a','#ffb74d','#64b5f6','#ba68c8'];
+const BW=100,BH=44,TX=280,AIM_X=180,FX=88,FY=462;
+const {STEP_MS,MAX_TICKS,REWARD_EVERY,SLOTS,TY,HIT,HEARTS,FULL}=frogRules;
+const FROG_REWARD=1;
 let best=0;try{best=+localStorage.getItem('deep-sea-frog-best')||0}catch(e){}
 let analytics=null,earned=0;
-const rnd=(a,b)=>a+Math.random()*(b-a);
 const O=(f,w)=>{g.fillStyle=f;g.fill();g.lineWidth=w||3;g.strokeStyle=OL;g.lineJoin='round';g.stroke()};
 const C=(x,y,r,f,w)=>{g.beginPath();g.arc(x,y,r,0,7);O(f,w||3)};
 const F=(x,y,r,f)=>{g.fillStyle=f;g.beginPath();g.arc(x,y,r,0,7);g.fill()};
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();O(f,lw||3)};
 function tx(s,x,y,sz,col,al){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign=al||'center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-30);g.fillStyle=col;g.fillText(s,x,y,W-30)}
-let st='ready',bugs=[],aimY,aimDir,hearts,food,eaten,pts,combo,lock,tongueT,tongueY,dropT,wob,shake,flash,dizzy,sq,lvlT,fxs=[],tt=0,rec=false,last=0,why='';
-const level=()=>Math.min(10,Math.floor(eaten/REWARD_EVERY)+1);
-const cfg=()=>LV[level()-1];
-function newBug(){
- const n=bugs.length,two=n>=2&&bugs[n-1].angry&&bugs[n-2].angry;   // never three angry bugs in a row
- return{angry:!two&&Math.random()<cfg()[1],state:'calm',t:0,live:false,col:COLS[(Math.random()*COLS.length)|0]}}
-function reset(){bugs=[];for(let i=0;i<SLOTS;i++)bugs.push({angry:false,state:'calm',t:0,live:false,col:COLS[i%COLS.length]});
- aimY=AIM_TOP;aimDir=1;hearts=HEARTS;food=FULL;eaten=0;pts=0;combo=0;lock=0;tongueT=0;tongueY=TY;dropT=0;wob=0;shake=0;flash=0;dizzy=0;sq=0;lvlT=0;fxs=[];why=''}
+let st='ready',state=frogRules.create(),tongueT,tongueY,dropT,wob,shake,flash,dizzy,sq,lvlT,fxs=[],tt=0,rec=false,last=0,why='';
+let rankRound=null,rankProof=null,rankStarting=false,rankGeneration=0,tick=0,carry=0;
+const level=()=>frogRules.level(state);
+function reset(random){state=frogRules.create(random);carry=0;tick=0;tongueT=0;tongueY=TY;dropT=0;wob=0;shake=0;flash=0;dizzy=0;sq=0;lvlT=0;fxs=[];why=''}
 reset();
 function say(text,kind){$('fg-msg').textContent=text;$('fg-msg').className='msg'+(kind?' '+kind:'')}
 frogSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
 function ui(){
  const live=st==='run';
- setText('fg-eaten',eaten+' 隻');setText('fg-level','Lv.'+level());setText('fg-best',best+' 隻');
- $('fg-amount').disabled=frogBusy;$('fg-go').disabled=live;setText('fg-go',live?'進食中 · 按空白鍵吃蟲':st==='over'?'再吃一次':'開始吃蟲');
+ setText('fg-eaten',state.eaten+' 隻');setText('fg-level','Lv.'+level());setText('fg-best',best+' 隻');
+ $('fg-amount').disabled=frogBusy;$('fg-go').disabled=live||rankStarting;setText('fg-go',live?'進食中 · 按空白鍵吃蟲':st==='over'?'再吃一次':'開始吃蟲');
 }
 function fx(s,x,y,col){fxs.push({s,x,y,col,t:0})}
 function end(reason){
  if(st!=='run')return;
- st='over';why=reason;rec=eaten>best;
- if(rec){best=eaten;try{localStorage.setItem('deep-sea-frog-best',best)}catch(e){}}
- AN.end(analytics,earned,earned>0?'complete':'loss',{score:pts,step:eaten,stage:level()});frogBusy=false;save();renderAll();
+ st='over';why=reason;rec=state.eaten>best;
+ if(rec){best=state.eaten;try{localStorage.setItem('deep-sea-frog-best',best)}catch(e){}}
+ AN.end(analytics,earned,earned>0?'complete':'loss',{score:state.pts,step:state.eaten,stage:level()});frogBusy=false;save();renderAll();
  const head=reason==='hunger'?'青蛙餓昏了。':'青蛙被螫暈了。';
- if(!earned)say(head+'吃了 '+eaten+' 隻，這一局沒有額外成就獎勵。','lose');
- else say(head+'吃了 '+eaten+' 隻，本局共入帳 '+fmt(earned)+' 點。','win');
+ if(!earned)say(head+'吃了 '+state.eaten+' 隻，這一局沒有額外成就獎勵。','lose');
+ else say(head+'吃了 '+state.eaten+' 隻，本局共入帳 '+fmt(earned)+' 點。','win');
+ if(rankRound){
+  rankProof={...rankRound,ticks:tick};
+  rankRound=null;
+  uploadRank(rankProof);
+ }
  ui();
 }
-function calm(b){b.state='calm';b.t=rnd(cfg()[2]||2,cfg()[3]||3)}
 function press(){
- if(st!=='run'||lock>0)return;
- tongueT=.12;tongueY=aimY;
- const d=Math.abs(aimY-TY),b=bugs[0];
- if(d>HIT){combo=0;lock=.35;wob=.2;food=Math.max(0,food-(level()===1?MISS_FOOD_LV1:MISS_FOOD));fx('MISS',TX,aimY-10,'#cfd8dc');return}
- if(b.state==='attack'){
-  hearts--;combo=0;lock=.6;calm(b);dizzy=.6;if(!reduceMotion){flash=.15;shake=.3}
+ if(st!=='run')return;
+ const outcome=frogRules.press(state);
+ if(!outcome)return;
+ if(rankRound)rankRound.presses.push(tick);
+ tongueT=.12;tongueY=state.aimY;
+ if(outcome.kind==='miss'){wob=.2;fx('MISS',TX,state.aimY-10,'#cfd8dc');return}
+ if(outcome.kind==='sting'){
+  dizzy=.6;if(!reduceMotion){flash=.15;shake=.3}
   fx('被螫了！',TX,TY-30,'#ff5d8f');
-  if(hearts<=0)end('sting');else say('紅色帶刺的蟲不能吃！還剩 '+hearts+' 顆愛心。','lose');
-  return}
- const perfect=d<=PERFECT,mult=combo>=15?3:combo>=5?2:1,gain=(perfect?20:10)*mult+(b.state==='warn'?5:0);
- pts+=gain;food=Math.min(FULL,food+(perfect?PERFECT_FOOD:EAT_FOOD));combo++;eaten++;
- bugs.shift();bugs.push(newBug());dropT=.1;lock=.1;sq=.3;
- fx((perfect?'PERFECT +':'+')+gain,TX,TY-30,perfect?'#ffd23f':'#fff1c1');
- if(eaten%REWARD_EVERY===0){
-  earned+=FROG_REWARD;S.balance+=FROG_REWARD;food=Math.min(FULL,food+LEVEL_FOOD);save();renderAll();lvlT=.8;
-  AN.progress(analytics,{stage:level(),step:eaten,score:pts,bonus_points:FROG_REWARD});
-  say('吃滿 '+eaten+' 隻！+'+FROG_REWARD+' 點已入帳，飽食回復一些，蟲子變得更兇了。','win')}
+  if(state.reason)end(state.reason);else say('紅色帶刺的蟲不能吃！還剩 '+state.hearts+' 顆愛心。','lose');
+  return;
+ }
+ dropT=.1;sq=.3;
+ fx((outcome.perfect?'PERFECT +':'+')+outcome.gain,TX,TY-30,outcome.perfect?'#ffd23f':'#fff1c1');
+ if(outcome.milestone){
+  earned+=FROG_REWARD;S.balance+=FROG_REWARD;save();renderAll();lvlT=.8;
+  AN.progress(analytics,{stage:level(),step:state.eaten,score:state.pts,bonus_points:FROG_REWARD});
+  say('吃滿 '+state.eaten+' 隻！+'+FROG_REWARD+' 點已入帳，飽食回復一些，蟲子變得更兇了。','win');
+ }
 }
 function update(dt){
  tt+=dt;sq*=.8;
  if(tongueT>0)tongueT-=dt;if(dropT>0)dropT-=dt;if(wob>0)wob-=dt;if(shake>0)shake-=dt;if(flash>0)flash-=dt;if(dizzy>0)dizzy-=dt;if(lvlT>0)lvlT-=dt;
  fxs.forEach(f=>f.t+=dt);fxs=fxs.filter(f=>f.t<.6);
  if(st!=='run')return;
- if(lock>0)lock-=dt;
- const L=cfg();
- food-=L[5]*dt;if(food<=0){food=0;end('hunger');return}
- aimY+=aimDir*L[0]*dt;
- if(aimY>=AIM_BOT){aimY=AIM_BOT;aimDir=-1}else if(aimY<=AIM_TOP){aimY=AIM_TOP;aimDir=1}
- for(let i=0;i<3;i++){const b=bugs[i];if(!b.angry)continue;
-  if(!b.live){b.live=true;calm(b);continue}
-  b.t-=dt;if(b.t>0)continue;
-  if(b.state==='calm'){b.state='warn';b.t=WARN_S}
-  else if(b.state==='warn'){b.state='attack';b.t=L[4]||1}
-  else calm(b)}
+ frogRules.step(state,dt);
+ if(state.reason)end(state.reason);
 }
 function drawBug(b,x,y){
  const atk=b.state==='attack',warn=b.state==='warn';
@@ -10881,34 +11038,71 @@ function draw(){
  g.strokeStyle=OL;g.lineWidth=4;g.beginPath();g.moveTo(-20,GY);g.lineTo(W+20,GY);g.stroke();
  g.beginPath();g.ellipse(FX,GY+6,62,12,0,0,7);O('#388e3c');
  const slide=dropT>0?BH*(dropT/.1):0;
- for(let i=SLOTS-1;i>=0;i--)drawBug(bugs[i],TX+wx*(1+i*.25),TY-BH*i-slide);
- g.strokeStyle='rgba(255,210,63,.55)';g.lineWidth=2;g.setLineDash([6,6]);g.beginPath();g.moveTo(AIM_X+12,aimY);g.lineTo(TX+BW/2+6,aimY);g.stroke();g.setLineDash([]);
+ for(let i=SLOTS-1;i>=0;i--)drawBug(state.bugs[i],TX+wx*(1+i*.25),TY-BH*i-slide);
+ g.strokeStyle='rgba(255,210,63,.55)';g.lineWidth=2;g.setLineDash([6,6]);g.beginPath();g.moveTo(AIM_X+12,state.aimY);g.lineTo(TX+BW/2+6,state.aimY);g.stroke();g.setLineDash([]);
  g.strokeStyle='rgba(27,27,47,.35)';g.lineWidth=2;g.beginPath();g.moveTo(TX+BW/2+10,TY-HIT);g.lineTo(TX+BW/2+18,TY-HIT);g.lineTo(TX+BW/2+18,TY+HIT);g.lineTo(TX+BW/2+10,TY+HIT);g.stroke();
  drawFrog();
  if(tongueT>0){g.lineCap='round';g.strokeStyle=OL;g.lineWidth=13;g.beginPath();g.moveTo(FX+30,FY);g.lineTo(TX-BW/2+12,tongueY);g.stroke();g.strokeStyle='#ff6f91';g.lineWidth=8;g.stroke()}
- g.beginPath();g.moveTo(AIM_X+12,aimY);g.lineTo(AIM_X-6,aimY-10);g.lineTo(AIM_X-6,aimY+10);g.closePath();O('#ffd23f',3);
+ g.beginPath();g.moveTo(AIM_X+12,state.aimY);g.lineTo(AIM_X-6,state.aimY-10);g.lineTo(AIM_X-6,state.aimY+10);g.closePath();O('#ffd23f',3);
  fxs.forEach(f=>{g.globalAlpha=1-f.t/.6;tx(f.s,f.x,f.y-f.t*60,22,f.col);g.globalAlpha=1});
- if(combo>=2&&st==='run')tx('x'+combo,FX,FY-62,24,combo>=15?'#ff5d8f':combo>=5?'#ffd23f':'#fff1c1');
+ if(state.combo>=2&&st==='run')tx('x'+state.combo,FX,FY-62,24,state.combo>=15?'#ff5d8f':state.combo>=5?'#ffd23f':'#fff1c1');
  g.restore();
- for(let i=0;i<HEARTS;i++){const hx=24+i*28,on=i<hearts;g.beginPath();g.moveTo(hx,46);g.bezierCurveTo(hx-18,32,hx-8,18,hx,28);g.bezierCurveTo(hx+8,18,hx+18,32,hx,46);g.closePath();O(on?'#e63946':'#9aa0a6',3)}
- tx(String(pts),W/2,50,36,'#fff1c1');tx('Lv.'+level(),W-16,44,18,'#fff1c1','right');
+ for(let i=0;i<HEARTS;i++){const hx=24+i*28,on=i<state.hearts;g.beginPath();g.moveTo(hx,46);g.bezierCurveTo(hx-18,32,hx-8,18,hx,28);g.bezierCurveTo(hx+8,18,hx+18,32,hx,46);g.closePath();O(on?'#e63946':'#9aa0a6',3)}
+ tx(String(state.pts),W/2,50,36,'#fff1c1');tx('Lv.'+level(),W-16,44,18,'#fff1c1','right');
  RR(16,62,W-32,14,7,'#333',3);
- if(food>0){const low=food<20,fc=food>50?'#7cb342':food>=20?'#ffd23f':'#e63946';if(!low||reduceMotion||Math.floor(tt*6)%2){g.fillStyle=fc;g.beginPath();g.rect(18,64,(W-36)*food/FULL,10);g.fill()}}
+ if(state.food>0){const low=state.food<20,fc=state.food>50?'#7cb342':state.food>=20?'#ffd23f':'#e63946';if(!low||reduceMotion||Math.floor(tt*6)%2){g.fillStyle=fc;g.beginPath();g.rect(18,64,(W-36)*state.food/FULL,10);g.fill()}}
  tx('飽食',38,94,13,'#fff1c1');
  if(lvlT>0&&st==='run')tx('LEVEL UP  +'+FROG_REWARD+' 點',W/2,150,26,'#ffd23f');
  if(flash>0){g.fillStyle='rgba(230,57,70,.35)';g.fillRect(0,0,W,H)}
  if(st!=='run'){
   g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
   if(st==='ready'){tx('青蛙吃蟲',W/2,190,36,'#ffd23f');tx('箭頭對準最底下那隻蟲的中間',W/2,244,19,'#fff1c1');tx('按空白鍵或點畫面吐舌頭',W/2,274,19,'#fff1c1');tx('紅色帶刺的蟲不能吃！',W/2,304,19,'#ff5d8f');tx('到操作區開始',W/2,360,24,'#ffd23f')}
-  else{tx(why==='hunger'?'餓昏了…':'被螫暈了！',W/2,176,32,'#ff5d8f');tx(eaten+' 隻',W/2,240,50,'#fff1c1');tx('分數 '+pts+'　到達 Lv.'+level(),W/2,280,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'沒吃滿 '+REWARD_EVERY+' 隻，沒有點數',W/2,316,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,350,20,'#ffd23f');tx('到操作區再吃一次',W/2,396,20,'#fff1c1')}}
+  else{tx(why==='hunger'?'餓昏了…':'被螫暈了！',W/2,176,32,'#ff5d8f');tx(state.eaten+' 隻',W/2,240,50,'#fff1c1');tx('分數 '+state.pts+'　到達 Lv.'+level(),W/2,280,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'沒吃滿 '+REWARD_EVERY+' 隻，沒有點數',W/2,316,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,350,20,'#ffd23f');tx('到操作區再吃一次',W/2,396,20,'#fff1c1')}}
 }
-function start(){
- if(st==='run')return;
+function begin(round){
  const amount=ENTRY_FEE;
- if(amount>S.balance){say(LOW_MSG,'lose');return;}
+ rankRound=round;
  analytics=AN.start('frog',amount);frogStake=amount;frogBusy=true;save();renderAll();
- reset();earned=0;rec=false;st='run';last=performance.now();say('開吃！箭頭掃到最底下那隻蟲的中間就按，紅色帶刺的先忍住。');ui();c.focus();
+ reset(round?frogRules.seededRandom(round.seed):undefined);earned=0;rec=false;st='run';last=performance.now();
+ say('開吃！箭頭掃到最底下那隻蟲的中間就按，紅色帶刺的先忍住。');ui();c.focus();
 }
+function rankStatus(text,retry=false){
+ const status=$('fg-rank-status');
+ status.hidden=!text;
+ status.textContent=text;
+ $('fg-rank-retry').hidden=!retry;
+}
+async function start(){
+ if(st==='run'||rankStarting)return;
+ if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');return}
+ if(typeof location==='undefined'||location.protocol==='file:'){begin(null);return}
+ rankStarting=true;
+ const generation=++rankGeneration;
+ rankProof=null;
+ rankStatus('正在準備訪客排行…');
+ ui();
+ let round=null;
+ try{
+  const api=await import('./frontend/services/api.mjs');
+  round=await api.startFrogRound(AbortSignal.timeout(4000));
+  round.presses=[];
+ }catch(error){round=null}
+ finally{rankStarting=false;ui()}
+ if(generation!==rankGeneration||!shown()){rankStatus('');return}
+ rankStatus(round?'本局將列入訪客排行。':'這一局可在本機遊玩。');
+ begin(round);
+}
+async function uploadRank(proof){
+ rankStatus('正在驗證排行榜成績…');
+ try{
+  const api=await import('./frontend/services/api.mjs');
+  await api.finishFrogRound(proof,AbortSignal.timeout(10000));
+  if(rankProof===proof){rankProof=null;rankStatus('成績已送到排行榜。')}
+ }catch(error){
+  if(rankProof===proof)rankStatus('排行榜成績未能送出。',error.retryable!==false);
+ }
+}
+$('fg-rank-retry').addEventListener('click',()=>{if(rankProof)uploadRank(rankProof)});
 const shown=()=>!$('view-frog').hidden&&!document.hidden;
 $('fg-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
@@ -10921,8 +11115,27 @@ addEventListener('keydown',e=>{
  if(e.key===' '){e.preventDefault();if(!e.repeat)press()}});
 addEventListener('blur',()=>{last=performance.now()});
 document.addEventListener('visibilitychange',()=>{last=performance.now()});
-window.addEventListener('hashchange',()=>{last=performance.now()});
-function loop(t){const dt=Math.min(.05,Math.max(0,(t-last)/1000)||0);last=t;if(shown()){update(dt);ui();draw()}requestAnimationFrame(loop)}
+window.addEventListener('hashchange',()=>{last=performance.now();if(rankStarting&&location.hash!=='#frog'){rankGeneration++;rankStatus('')}});
+function loop(t){
+ const elapsed=Math.min(50,Math.max(0,t-last)||0);
+ last=t;
+ if(shown()){
+  if(rankRound&&st==='run'){
+   carry+=elapsed;
+   while(carry>=STEP_MS&&st==='run'){
+    carry-=STEP_MS;
+    tick++;
+    update(STEP_MS/1000);
+    if(rankRound&&tick>=MAX_TICKS){
+     rankRound=null;
+     rankStatus('這一局可在本機遊玩。');
+    }
+   }
+  }else update(elapsed/1000);
+  ui();draw();
+ }
+ requestAnimationFrame(loop);
+}
 ui();draw();requestAnimationFrame(loop);
   })();
   /* ---------- Nap Master: hold to sleep while the boss patrols; let go when "!" appears; thrown trash can knock the boss out ---------- */
@@ -21620,31 +21833,86 @@ function ftBuilding(b,w){
     var icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
     icon.setAttribute('viewBox', '0 0 96 96'); icon.setAttribute('aria-hidden', 'true'); use.setAttribute('href', '#icon-' + id); icon.appendChild(use); return icon;
   }
-  // Lobby leaderboard: only this device's records exist (no server), shown as the guest player's bests.
-  // Placeholder live leaderboard (no server yet): random sample rows, a new one slides in every few seconds.
-  var BOARD_PLAYERS = ['NeonCat', 'PixelRunner', 'BlueFin', 'LuckyDuck', 'BaldEagle', 'TowerKid', 'HopHop', 'NightOwl', 'Mochi88', 'RetroFox', 'Kiwi_07', 'StarDust', 'Ducky', 'Tofu', 'Zed'];
-  var BOARD_GAMES = [['rocket-chair', 5], ['office-shoot', 12], ['mermaid', 3000], ['banquet', 12], ['last-hair', 500], ['skybuilder', 40], ['frog', 120], ['peek', 100], ['nap', 900], ['blaster', 30], ['clock-out', 2400], ['pudding', 1800]];
-  var boardTimer = 0;
-  function boardPick(list) { return list[Math.floor(Math.random() * list.length)]; }
-  function boardRow() {
-    var g = boardPick(BOARD_GAMES), tr = document.createElement('tr'), player = document.createElement('td'), game = document.createElement('td'), link = document.createElement('a'), name = document.createElement('span'), best = document.createElement('td');
-    player.textContent = boardPick(BOARD_PLAYERS); player.className = 'board-player'; player.setAttribute('data-i18n-ignore', '');
-    link.href = '#' + g[0]; name.textContent = memberGameName(g[0]); link.appendChild(memberIcon(g[0])); link.appendChild(name); game.appendChild(link);
-    best.textContent = Math.max(1, Math.round(g[1] * (0.3 + Math.random() * 0.7))).toLocaleString('zh-TW'); best.className = 'board-best';
-    tr.appendChild(player); tr.appendChild(game); tr.appendChild(best); return tr;
+  var boardRequest = null;
+  var boardGame = $('board-game');
+  var boardRetry = $('board-retry');
+
+  function boardRow(gameId, entry) {
+    var row = document.createElement('tr');
+    var player = row.insertCell(), game = row.insertCell(), best = row.insertCell();
+    player.className = 'board-player';
+    if (entry.displayName) {
+      player.setAttribute('data-i18n-ignore', '');
+      player.textContent = entry.displayName;
+    } else {
+      player.textContent = '訪客';
+    }
+
+    var link = document.createElement('a'), name = document.createElement('span');
+    link.href = '#' + gameId;
+    name.textContent = memberGameName(gameId);
+    link.append(memberIcon(gameId), name);
+    game.appendChild(link);
+    best.className = 'board-best';
+    best.textContent = entry.score.toLocaleString('zh-TW');
+    return row;
   }
-  function boardTick() {
-    if (document.hidden || $('view-lobby').hidden) return;
-    var body = $('board-rows'), tr = boardRow();
-    tr.className = 'is-new'; body.insertBefore(tr, body.firstChild);
-    while (body.children.length > 8) body.removeChild(body.lastChild);
+
+  function boardStatus(message, retry) {
+    var status = $('board-status');
+    status.textContent = message;
+    status.hidden = !message;
+    boardRetry.hidden = !retry;
   }
-  function boardRender() {
+
+  async function boardLoad() {
+    if (boardRequest) boardRequest.abort();
+    var request = new AbortController();
+    boardRequest = request;
+    var gameId = boardGame.value;
     var body = $('board-rows');
-    if (!body.children.length) for (var i = 0; i < 8; i++) body.appendChild(boardRow());
-    $('board-empty').hidden = true;
-    if (!boardTimer) boardTimer = setInterval(boardTick, 1500);
+    body.replaceChildren();
+    boardStatus('載入排行榜中…');
+    var timeout = setTimeout(function () { request.abort(); }, 10000);
+    try {
+      var module = await import('./frontend/services/api.mjs');
+      var result = await module.createApiClient(module.arcadeApiOrigin()).leaderboard(gameId, request.signal);
+      if (boardRequest !== request) return;
+      if (result.gameId !== gameId || !Array.isArray(result.entries)) throw new Error('invalid_leaderboard');
+
+      var rows = result.entries.map(function (entry) { return boardRow(gameId, entry); });
+      body.replaceChildren(...rows);
+      boardStatus(rows.length ? '' : '這款遊戲尚無排行榜紀錄。');
+    } catch (error) {
+      if (boardRequest === request) boardStatus('目前無法載入排行榜。', true);
+    } finally {
+      clearTimeout(timeout);
+      if (boardRequest === request) boardRequest = null;
+    }
   }
+
+  function boardRoute(on) {
+    if (!on) {
+      if (boardRequest) boardRequest.abort();
+      boardRequest = null;
+      return;
+    }
+    if (!boardGame.options.length) {
+      document.querySelectorAll('.lobby-grid .game-card:not([data-game-hidden])').forEach(function (card) {
+        var gameId = card.hash.slice(1);
+        if (Object.hasOwn(VIEWS, gameId)) boardGame.add(new Option(memberGameName(gameId), gameId));
+      });
+      if (Array.from(boardGame.options).some(function (option) { return option.value === 'frog'; })) {
+        boardGame.value = 'frog';
+      }
+    }
+    if (boardGame.value) boardLoad();
+    else boardStatus('這款遊戲尚無排行榜紀錄。');
+  }
+
+  boardGame.addEventListener('change', boardLoad);
+  boardRetry.addEventListener('click', boardLoad);
+
   function memberRender() {
     memberSync();
     var list = $('member-records'), rows = memberRecords();
@@ -21826,7 +22094,7 @@ function ftBuilding(b,w){
     if (!member && !VIEWS[v]) v = 'lobby';
     if (fullscreenView && fullscreenView !== $('view-' + v)) leaveGameFullscreen();
     if(lastView==='lobby'&&v!=='lobby')lobbyScroll=window.scrollY||0;
-    $('site-shell').classList.toggle('is-lobby',v==='lobby');$('site-shell').classList.toggle('is-member',member);$('view-member').hidden=!member;memberRoute(member);if(v==='lobby')boardRender();
+    $('site-shell').classList.toggle('is-lobby',v==='lobby');$('site-shell').classList.toggle('is-member',member);$('view-member').hidden=!member;memberRoute(member);if(v!==lastView)boardRoute(v==='lobby');
     Object.keys(VIEWS).forEach(function (k) {
       $('view-' + k).hidden = k !== v;
       if (k === v) $('tab-' + k).setAttribute('aria-current', 'page'); else $('tab-' + k).removeAttribute('aria-current');

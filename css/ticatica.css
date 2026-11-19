@@ -199,7 +199,11 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 .board-table svg{width:28px;height:28px;flex:none;border-radius:6px;background:var(--tc-active)}
 .board-best{font-weight:600;color:var(--tc-accent)}
 .board-empty{margin:12px 0 0;padding:14px;border-radius:6px;background:var(--tc-surface);color:var(--tc-muted);text-align:center}
-.board-note{margin:10px 0 0;color:var(--tc-faint);font-size:12px}
+#board-game,#board-retry{background:var(--tc-surface);color:#fff;border:1px solid var(--tc-line);border-radius:6px;padding:8px 10px;font:inherit}
+#board-game{min-width:0;max-width:58%}
+#board-retry{display:block;margin:10px auto 0;cursor:pointer}
+#board-retry[hidden],#board-status[hidden]{display:none}
+.board-player{overflow-wrap:anywhere}
 
 /* ---------- member centre ---------- */
 .member-view{gap:var(--tc-gap)}
@@ -366,11 +370,8 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 @media(max-width:880px){.top-icon-btn{width:34px;height:34px}}
 /* account menu logout */
 .account-links .account-logout,.account-links .account-logout svg{color:#ff5a5f}
-/* live leaderboard */
+/* Player and game columns */
 .board-player{color:#fff}
-.board-table tbody tr.is-new{animation:board-in .45s ease-out}
-@keyframes board-in{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
-@media(prefers-reduced-motion:reduce){.board-table tbody tr.is-new{animation:none}}
 .board-table th:nth-child(2),.board-table td:nth-child(2){display:table-cell}
 @media(max-width:700px){.board-table td:nth-child(2) span{display:none}}
 

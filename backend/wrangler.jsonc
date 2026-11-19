@@ -1,0 +1,18 @@
+{
+  "name": "deep-sea-games-api",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": true,
+  "preview_urls": false,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "deep-sea-games-prod",
+      "database_id": "b7f70a40-00e2-4d4e-a1ed-670e652b80ac",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "FRONTEND_ORIGIN": "https://yachun0728.github.io,https://ticaticagames.com,https://www.ticaticagames.com"
+  }
+}

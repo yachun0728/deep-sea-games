@@ -2,13 +2,15 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
+import frogRules from '../shared/frog-rules.cjs';
 const root=new URL('../',import.meta.url);
+const rules=fs.readFileSync(new URL('shared/frog-rules.cjs',root),'utf8');
 const raw=fs.readFileSync(new URL('games/frog/game.js',root),'utf8');
 const fee=Number(fs.readFileSync(new URL('js/config.js',root),'utf8').match(/ENTRY_FEE\s*=\s*(\d+)/)[1]);
 const hookAt='ui();draw();requestAnimationFrame(loop);';
 assert.ok(raw.includes(hookAt),'test hook anchor missing');
 // Expose the closure to the test only; the shipped source is not changed.
-const source=raw.replace(hookAt,'globalThis.__frog={press,update,start,draw,ev:code=>eval(code)};'+hookAt);
+const source=raw.replace(hookAt,'globalThis.__frog={press,update,start,draw,ev:code=>{const {AIM_TOP,AIM_BOT}=frogRules;return eval(code)}};'+hookAt);
 const results=[];
 export function fixture(balance=500,savedBest=null,random=Math.random){
   let now=1000;
@@ -19,11 +21,11 @@ export function fixture(balance=500,savedBest=null,random=Math.random){
   const math=Object.create(Math);math.random=random;
   const sandbox={document:{hidden:false,addEventListener(){}},window:{addEventListener(){}},addEventListener(name,fn){(listeners[name]??=[]).push(fn);},Number,Math:math,String,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fmt:n=>String(n),AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
   sandbox.globalThis=sandbox;
-  const ctx=vm.createContext(sandbox);vm.runInContext(source,ctx);
+  const ctx=vm.createContext(sandbox);vm.runInContext(rules+'\n'+source,ctx);
   const F=sandbox.__frog;
   return {F,el,events,storage,wallet:sandbox.S,ev:F.ev,busy:()=>vm.runInContext('frogBusy',ctx),key:e=>{for(const fn of listeners.keydown||[])fn(e);},
     // Put the aim exactly on the bottom bug, clear the input lock, then press.
-    eat(){F.ev('aimY=TY;lock=0');F.press();},
+    eat(){F.ev('state.aimY=TY;state.lock=0');F.press();},
     count:type=>events.filter(e=>e[0]===type).length};
 }
 function check(name,fn){fn();results.push(name);}
@@ -36,45 +38,45 @@ check('Start deducts the entry fee once even when clicked twice',()=>{
   const f=fixture();f.F.start();f.F.start();assert.equal(f.wallet.balance,500-fee);assert.equal(f.count('start'),1);assert.equal(f.storage.get('crush-depth-balance'),String(500-fee));assert.equal(f.busy(),true);assert.deepEqual(f.events[0].slice(1),['frog',fee]);
 });
 check('Pressing before a round starts does nothing',()=>{
-  const f=fixture();f.eat();assert.equal(f.ev('eaten'),0);assert.equal(f.wallet.balance,500);
+  const f=fixture();f.eat();assert.equal(f.ev('state.eaten'),0);assert.equal(f.wallet.balance,500);
 });
 check('A centred press eats the bottom bug; the stack stays at 8 and fullness is capped',()=>{
-  const f=fixture();f.F.start();f.eat();assert.equal(f.ev('eaten'),1);assert.equal(f.ev('bugs.length'),8);assert.equal(f.ev('food'),100);assert.equal(f.ev('pts'),20);assert.equal(f.ev('combo'),1);
+  const f=fixture();f.F.start();f.eat();assert.equal(f.ev('state.eaten'),1);assert.equal(f.ev('state.bugs.length'),8);assert.equal(f.ev('state.food'),100);assert.equal(f.ev('state.pts'),20);assert.equal(f.ev('state.combo'),1);
 });
 check('Edge of the hit window counts as a normal eat, one pixel further is a miss',()=>{
-  const f=fixture();f.F.start();f.F.ev('aimY=TY+HIT;lock=0');f.F.press();assert.equal(f.ev('eaten'),1);assert.equal(f.ev('pts'),10);
-  f.F.ev('aimY=TY-HIT-1;lock=0');f.F.press();assert.equal(f.ev('eaten'),1);assert.equal(f.ev('combo'),0);assert.equal(f.ev('hearts'),3);assert.equal(f.ev('lock'),.35);
+  const f=fixture();f.F.start();f.F.ev('state.aimY=TY+HIT;state.lock=0');f.F.press();assert.equal(f.ev('state.eaten'),1);assert.equal(f.ev('state.pts'),10);
+  f.F.ev('state.aimY=TY-HIT-1;state.lock=0');f.F.press();assert.equal(f.ev('state.eaten'),1);assert.equal(f.ev('state.combo'),0);assert.equal(f.ev('state.hearts'),3);assert.equal(f.ev('state.lock'),.35);
 });
 check('A miss costs fullness: 2 on level 1, 4 from level 2, never below 0',()=>{
-  const f=fixture();f.F.start();f.F.ev('food=50;aimY=AIM_TOP;lock=0');f.F.press();assert.equal(f.ev('food'),48);
-  f.F.ev('eaten=10;food=50;lock=0;aimY=AIM_TOP');f.F.press();assert.equal(f.ev('food'),46);
-  f.F.ev('food=1;lock=0;aimY=AIM_TOP');f.F.press();assert.equal(f.ev('food'),0);
+  const f=fixture();f.F.start();f.F.ev('state.food=50;state.aimY=AIM_TOP;state.lock=0');f.F.press();assert.equal(f.ev('state.food'),48);
+  f.F.ev('state.eaten=10;state.food=50;state.lock=0;state.aimY=AIM_TOP');f.F.press();assert.equal(f.ev('state.food'),46);
+  f.F.ev('state.food=1;state.lock=0;state.aimY=AIM_TOP');f.F.press();assert.equal(f.ev('state.food'),0);
 });
 check('Reaching a new level refills 10 fullness (capped at 100)',()=>{
-  const f=fixture();f.F.start();f.F.ev('eaten=9;food=50;bugs[0].state="calm";bugs[0].angry=false');f.eat();assert.equal(f.ev('eaten'),10);assert.equal(f.ev("food"),50+12+10);
-  f.F.ev('eaten=19;food=99;bugs[0].state="calm";bugs[0].angry=false');f.eat();assert.equal(f.ev('food'),100);
+  const f=fixture();f.F.start();f.F.ev('state.eaten=9;state.food=50;state.bugs[0].state="calm";state.bugs[0].angry=false');f.eat();assert.equal(f.ev('state.eaten'),10);assert.equal(f.ev("state.food"),50+12+10);
+  f.F.ev('state.eaten=19;state.food=99;state.bugs[0].state="calm";state.bugs[0].angry=false');f.eat();assert.equal(f.ev('state.food'),100);
 });
 check('Input is ignored while locked after a miss',()=>{
-  const f=fixture();f.F.start();f.F.ev('aimY=AIM_TOP;lock=0');f.F.press();f.F.ev('aimY=TY');f.F.press();assert.equal(f.ev('eaten'),0);
+  const f=fixture();f.F.start();f.F.ev('state.aimY=AIM_TOP;state.lock=0');f.F.press();f.F.ev('state.aimY=TY');f.F.press();assert.equal(f.ev('state.eaten'),0);
 });
 check('Combo multiplier uses the combo before the eat: x2 from the 6th, x3 from the 16th',()=>{
-  const f=fixture();f.F.start();let prev=0;const gains=[];for(let i=0;i<16;i++){f.F.ev('food=100');f.eat();gains.push(f.ev('pts')-prev);prev=f.ev('pts');}
+  const f=fixture();f.F.start();let prev=0;const gains=[];for(let i=0;i<16;i++){f.F.ev('state.food=100');f.eat();gains.push(f.ev('state.pts')-prev);prev=f.ev('state.pts');}
   assert.equal(gains[4],20);assert.equal(gains[5],40);assert.equal(gains[14],40);assert.equal(gains[15],60);
 });
 check('Eating a red bug costs one heart, keeps the bug and calms it; a warning bug gives +5',()=>{
-  const f=fixture();f.F.start();f.F.ev("bugs[0].angry=true;bugs[0].live=true;bugs[0].state='attack';bugs[0].t=1");f.eat();
-  assert.equal(f.ev('hearts'),2);assert.equal(f.ev('eaten'),0);assert.equal(f.ev('bugs[0].state'),'calm');assert.equal(f.ev('lock'),.6);
-  f.F.ev("bugs[0].state='warn';bugs[0].t=.5");f.eat();assert.equal(f.ev('eaten'),1);assert.equal(f.ev('pts'),25);
+  const f=fixture();f.F.start();f.F.ev("state.bugs[0].angry=true;state.bugs[0].live=true;state.bugs[0].state='attack';state.bugs[0].t=1");f.eat();
+  assert.equal(f.ev('state.hearts'),2);assert.equal(f.ev('state.eaten'),0);assert.equal(f.ev('state.bugs[0].state'),'calm');assert.equal(f.ev('state.lock'),.6);
+  f.F.ev("state.bugs[0].state='warn';state.bugs[0].t=.5");f.eat();assert.equal(f.ev('state.eaten'),1);assert.equal(f.ev('state.pts'),25);
 });
 check('Three stings end the round once as a loss with no payout',()=>{
-  const f=fixture();f.F.start();for(let i=0;i<5;i++){f.F.ev("bugs[0].angry=true;bugs[0].state='attack';bugs[0].t=1");f.eat();}
+  const f=fixture();f.F.start();for(let i=0;i<5;i++){f.F.ev("state.bugs[0].angry=true;state.bugs[0].state='attack';state.bugs[0].t=1");f.eat();}
   assert.equal(f.ev('st'),'over');assert.equal(f.busy(),false);assert.equal(f.count('end'),1);const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],0);assert.equal(end[3],'loss');assert.equal(f.wallet.balance,500-fee);
 });
 check('Every 10 bugs pays 1 point once, and the end reports the total without paying again',()=>{
-  const f=fixture();f.F.start();for(let i=0;i<25;i++){f.F.ev('food=100;for(const b of bugs){b.angry=false;b.state="calm"}');f.eat();}
-  assert.equal(f.ev('eaten'),25);assert.equal(f.wallet.balance,500-fee+2);assert.equal(f.count('progress'),2);assert.equal(f.storage.get('crush-depth-balance'),String(500-fee+2));
+  const f=fixture();f.F.start();for(let i=0;i<25;i++){f.F.ev('state.food=100;for(const b of state.bugs){b.angry=false;b.state="calm"}');f.eat();}
+  assert.equal(f.ev('state.eaten'),25);assert.equal(f.wallet.balance,500-fee+2);assert.equal(f.count('progress'),2);assert.equal(f.storage.get('crush-depth-balance'),String(500-fee+2));
   assert.deepEqual({...f.events.find(e=>e[0]==='progress')[2]},{stage:2,step:10,score:f.events.find(e=>e[0]==='progress')[2].score,bonus_points:1});
-  f.F.ev('food=.01');f.F.update(.05);assert.equal(f.ev('st'),'over');const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],2);assert.equal(end[3],'complete');assert.equal(end[4].step,25);
+  f.F.ev('state.food=.01');f.F.update(.05);assert.equal(f.ev('st'),'over');const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],2);assert.equal(end[3],'complete');assert.equal(end[4].step,25);
   f.eat();f.F.update(.05);assert.equal(f.wallet.balance,500-fee+2);assert.equal(f.count('end'),1);assert.equal(f.storage.get('deep-sea-frog-best'),'25');
 });
 check('Doing nothing starves the frog in 20 seconds at level 1',()=>{
@@ -82,32 +84,49 @@ check('Doing nothing starves the frog in 20 seconds at level 1',()=>{
   assert.ok(Math.abs(t-20)<.2,'starved after '+t);assert.equal(f.events.find(e=>e[0]==='end')[3],'loss');
 });
 check('The aim stays inside its track and reverses at both ends',()=>{
-  const f=fixture();f.F.start();let lo=1e9,hi=-1e9;for(let i=0;i<200;i++){f.F.ev('food=100');f.F.update(.05);lo=Math.min(lo,f.ev('aimY'));hi=Math.max(hi,f.ev('aimY'));}
+  const f=fixture();f.F.start();let lo=1e9,hi=-1e9;for(let i=0;i<200;i++){f.F.ev('state.food=100');f.F.update(.05);lo=Math.min(lo,f.ev('state.aimY'));hi=Math.max(hi,f.ev('state.aimY'));}
   assert.equal(lo,f.ev('AIM_TOP'));assert.equal(hi,f.ev('AIM_BOT'));
 });
 check('Level 1 never spawns angry bugs; later levels never spawn three in a row',()=>{
-  const f=fixture();f.F.start();for(let i=0;i<9;i++){f.F.ev('food=100');f.eat();}assert.equal(f.ev('bugs.some(b=>b.angry)'),false);
-  const g=fixture(500,null,()=>0);g.F.start();g.F.ev('eaten=95');for(let i=0;i<40;i++){g.F.ev('food=100;hearts=3;for(const b of bugs)b.state="calm"');g.eat();}
-  const flags=g.ev('bugs.map(b=>b.angry?1:0).join("")');assert.ok(flags.includes('1'));assert.ok(!flags.includes('111'),flags);
+  const f=fixture();f.F.start();for(let i=0;i<9;i++){f.F.ev('state.food=100');f.eat();}assert.equal(f.ev('state.bugs.some(b=>b.angry)'),false);
+  const g=fixture(500,null,()=>0);g.F.start();g.F.ev('state.eaten=95');for(let i=0;i<40;i++){g.F.ev('state.food=100;state.hearts=3;for(const b of state.bugs)b.state="calm"');g.eat();}
+  const flags=g.ev('state.bugs.map(b=>b.angry?1:0).join("")');assert.ok(flags.includes('1'));assert.ok(!flags.includes('111'),flags);
 });
 check('An angry bug cycles calm, warning, attack, calm only in the bottom three slots',()=>{
-  const f=fixture();f.F.start();f.F.ev('eaten=10;bugs[1].angry=true;bugs[5].angry=true');const seen=[];
-  for(let i=0;i<200;i++){f.F.ev('food=100');f.F.update(.05);const s=f.ev('bugs[1].state');if(seen[seen.length-1]!==s)seen.push(s);}
-  assert.deepEqual(seen.slice(0,4),['calm','warn','attack','calm']);assert.equal(f.ev('bugs[5].state'),'calm');assert.equal(f.ev('bugs[5].live'),false);
+  const f=fixture();f.F.start();f.F.ev('state.eaten=10;state.bugs[1].angry=true;state.bugs[5].angry=true');const seen=[];
+  for(let i=0;i<200;i++){f.F.ev('state.food=100');f.F.update(.05);const s=f.ev('state.bugs[1].state');if(seen[seen.length-1]!==s)seen.push(s);}
+  assert.deepEqual(seen.slice(0,4),['calm','warn','attack','calm']);assert.equal(f.ev('state.bugs[5].state'),'calm');assert.equal(f.ev('state.bugs[5].live'),false);
 });
 check('A new paid round resets progress; the best record only goes up',()=>{
-  const f=fixture(500,30);f.F.start();for(let i=0;i<3;i++)f.eat();f.F.ev('food=.01');f.F.update(.05);assert.equal(f.storage.get('deep-sea-frog-best'),'30');
-  f.F.start();assert.equal(f.ev('eaten'),0);assert.equal(f.ev('hearts'),3);assert.equal(f.wallet.balance,500-fee*2);assert.equal(f.count('start'),2);
+  const f=fixture(500,30);f.F.start();for(let i=0;i<3;i++)f.eat();f.F.ev('state.food=.01');f.F.update(.05);assert.equal(f.storage.get('deep-sea-frog-best'),'30');
+  f.F.start();assert.equal(f.ev('state.eaten'),0);assert.equal(f.ev('state.hearts'),3);assert.equal(f.wallet.balance,500-fee*2);assert.equal(f.count('start'),2);
 });
 check('Space only works while the frog view is shown and a round is running',()=>{
   const f=fixture();const e=()=>({key:' ',repeat:false,target:{tagName:'CANVAS'},preventDefault(){this.done=true;}});
   let k=e();f.key(k);assert.equal(k.done,undefined);
-  f.F.start();f.F.ev('aimY=TY;lock=0');f.el('view-frog').hidden=true;k=e();f.key(k);assert.equal(f.ev('eaten'),0);assert.equal(k.done,undefined);
-  f.el('view-frog').hidden=false;k=e();f.key(k);assert.equal(f.ev('eaten'),1);assert.equal(k.done,true);
-  f.F.ev('aimY=TY;lock=0');k=e();k.repeat=true;f.key(k);assert.equal(f.ev('eaten'),1);
+  f.F.start();f.F.ev('state.aimY=TY;state.lock=0');f.el('view-frog').hidden=true;k=e();f.key(k);assert.equal(f.ev('state.eaten'),0);assert.equal(k.done,undefined);
+  f.el('view-frog').hidden=false;k=e();f.key(k);assert.equal(f.ev('state.eaten'),1);assert.equal(k.done,true);
+  f.F.ev('state.aimY=TY;state.lock=0');k=e();k.repeat=true;f.key(k);assert.equal(f.ev('state.eaten'),1);
 });
 check('Drawing runs in every state without throwing',()=>{
-  const f=fixture();f.F.draw();f.F.start();f.F.ev("eaten=10;bugs[0].angry=true;bugs[0].state='attack';bugs[1].angry=true;bugs[1].state='warn';tongueT=.1;lvlT=.5;combo=6");f.F.draw();f.F.ev('food=.01');f.F.update(.05);f.F.draw();
+  const f=fixture();f.F.draw();f.F.start();f.F.ev("state.eaten=10;state.bugs[0].angry=true;state.bugs[0].state='attack';state.bugs[1].angry=true;state.bugs[1].state='warn';tongueT=.1;lvlT=.5;state.combo=6");f.F.draw();f.F.ev('state.food=.01');f.F.update(.05);f.F.draw();
+});
+check('The ranked replay derives the score and requires a natural end at the submitted tick',()=>{
+  const state=frogRules.create(frogRules.seededRandom(42));
+  const presses=[];
+  let ticks=0;
+  while(!state.reason){
+    if(presses.length<2&&state.lock<=0&&Math.abs(state.aimY-frogRules.TY)<5){
+      presses.push(ticks);
+      frogRules.press(state);
+    }
+    frogRules.step(state,frogRules.STEP_MS/1000);
+    ticks++;
+  }
+  assert.deepEqual(frogRules.replay(42,ticks,presses),{score:40,eaten:2});
+  assert.equal(frogRules.replay(42,ticks-1,presses),null);
+  assert.equal(frogRules.replay(42,ticks+1,presses),null);
+  assert.equal(frogRules.replay(42,ticks,[presses[0],presses[0]+1]),null);
 });
 console.log(results.length+' frog checks passed');
 }
