@@ -1025,8 +1025,9 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 .game-view-controls a,.game-view-controls button{min-height:38px;border:0;border-radius:6px;background:var(--tc-surface);color:#fff;font:500 13px var(--tc-font)}
 .game-view-controls a:hover,.game-view-controls button:hover{background:var(--tc-active)}
 .game-view-controls button[aria-pressed="true"]{background:var(--tc-primary)}
-.view:is(:fullscreen,.game-view-expanded){background:var(--tc-bg)!important}
+.view:is(:fullscreen,.game-view-expanded){background:var(--tc-bg)!important;margin:0!important;border:0!important;border-radius:0!important;max-width:none!important}
 .view:is(:fullscreen,.game-view-expanded)>.game-view-controls{background:var(--tc-bg)}
+@media(max-width:1020px){.view:is(:fullscreen,.game-view-expanded){padding-top:calc(max(8px,env(safe-area-inset-top)) + 50px)!important}.view:is(:fullscreen,.game-view-expanded)>.game-view-controls{position:fixed!important;top:max(8px,env(safe-area-inset-top))!important;right:max(8px,env(safe-area-inset-right));left:auto;z-index:1001;display:flex;gap:8px;margin:0;padding:0!important;background:none!important}}
 
 /* banners hidden for now; sidebar popular games use the new object art */
 .lobby-banners{display:none!important}
@@ -22215,6 +22216,14 @@ function ftBuilding(b,w){
       if (fullscreenPending) return;
       if (fullscreenView === view) { leaveGameFullscreen(); return; }
       if (view.hidden) return;
+      // Phones: always cover the whole screen with the game, then also try browser fullscreen.
+      if (window.matchMedia && matchMedia('(max-width: 1020px)').matches) {
+        fullscreenView = view;
+        view.classList.add('game-view-expanded');
+        syncGameFullscreen();
+        try { if (view.requestFullscreen) view.requestFullscreen().catch(function(){}); } catch (_) {}
+        return;
+      }
       fullscreenPending = view;
       try {
         if (view.requestFullscreen) {

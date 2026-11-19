@@ -72,6 +72,14 @@
       if (fullscreenPending) return;
       if (fullscreenView === view) { leaveGameFullscreen(); return; }
       if (view.hidden) return;
+      // Phones: always cover the whole screen with the game, then also try browser fullscreen.
+      if (window.matchMedia && matchMedia('(max-width: 1020px)').matches) {
+        fullscreenView = view;
+        view.classList.add('game-view-expanded');
+        syncGameFullscreen();
+        try { if (view.requestFullscreen) view.requestFullscreen().catch(function(){}); } catch (_) {}
+        return;
+      }
       fullscreenPending = view;
       try {
         if (view.requestFullscreen) {
