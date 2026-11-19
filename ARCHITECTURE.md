@@ -176,7 +176,6 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `mirrorTwins.unlocked` / `mirrorTwins.stars` | 鏡像雙子已解鎖關數、每關最佳星等（JSON，子頁寫入）；新增於 2026-11-18 |
 | `shadowRelay.unlocked` / `shadowRelay.bests` | 影子接力已解鎖關數、每關最佳秒數（JSON，子頁寫入）；新增於 2026-11-18 |
 | `oneLine.best` / `oneLine.tutDone` | 一筆畫守城最佳分數、教學已完成（JSON，子頁寫入）；新增於 2026-11-18 |
-| `ticatica-sidebar-collapsed` | 大廳左側選單是否收合（1／0），只影響畫面；新增於 2026-11-18，缺少時展開 |
 | `deep-sea-free-until` | 泡麵煎餅看示範廣告後的免扣點截止時間（毫秒時間戳）；新增於 2026-11-17，只有泡麵煎餅讀取 |
 | `noodle_pancake_events` | 泡麵煎餅本機事件紀錄，上限 3,000 筆 |
 | `mini_player_id` | 泡麵煎餅（及之後的小遊戲）本機玩家識別值，不送 GA4 |

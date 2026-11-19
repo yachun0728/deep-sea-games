@@ -48,9 +48,7 @@ def bake_lobby(html: str) -> str:
     if '<div class="lobby-grid">' not in html:
         return html
     start = html.index('<div class="lobby-grid">')
-    end = html.find('<p class="lobby-footnote">', start)
-    if end < 0:  # the redesigned lobby has no footnote; the grid's section ends instead
-        end = html.index('</section>', start)
+    end = html.index('<p class="lobby-footnote">', start)
     cards = re.findall(r'<a class="game-card" href="#[a-z0-9-]+"( hidden data-game-hidden)?[^>]*?data-game-category="([a-z]+)"', html[start:end])
     shown = [category for hidden, category in cards if not hidden]
     total = len(shown)
@@ -109,7 +107,7 @@ def validate_catalog(html: str, root: Path = ROOT) -> None:
             if html.count(marker) != 1:
                 raise ValueError(f'Expected one {marker}')
     views = re.findall(r'id="view-([a-z0-9-]+)"', html)
-    if set(views) != set(ids) | {'lobby', 'wardrobe', 'member'}:  # platform pages besides the games
+    if set(views) != set(ids) | {'lobby', 'wardrobe'}:  # platform pages besides the games
         raise ValueError('Catalog and rendered views differ')
 
 
