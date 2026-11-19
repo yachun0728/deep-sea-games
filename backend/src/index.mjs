@@ -16,7 +16,7 @@ export default {
       if (crossOrigin) {
         response.headers.set('Access-Control-Allow-Origin', origin);
         response.headers.set('Access-Control-Allow-Methods', 'GET, POST');
-        response.headers.set('Access-Control-Allow-Headers', 'Authorization');
+        response.headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
       }
       return response;
     } catch {

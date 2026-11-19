@@ -4981,5 +4981,12 @@
   "重新載入排行榜": "Retry leaderboard",
   "載入排行榜中…": "Loading leaderboard…",
   "這款遊戲尚無排行榜紀錄。": "No leaderboard records for this game yet.",
-  "目前無法載入排行榜。": "Unable to load the leaderboard right now."
+  "目前無法載入排行榜。": "Unable to load the leaderboard right now.",
+  "正在準備訪客排行…": "Preparing guest leaderboard…",
+  "這一局可在本機遊玩。": "This round can be played locally.",
+  "本局將列入訪客排行。": "This round counts toward the guest leaderboard.",
+  "正在驗證排行榜成績…": "Verifying leaderboard score…",
+  "成績已送到排行榜。": "Score submitted to the leaderboard.",
+  "排行榜成績未能送出。": "Unable to submit the leaderboard score.",
+  "重送排行榜成績": "Retry score submission"
 }

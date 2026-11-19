@@ -2,6 +2,8 @@ export const API = Object.freeze({
   health: '/api/v1/health',
   players: '/api/v1/players',
   me: '/api/v1/me',
+  frogStart: '/api/v1/frog/rounds',
+  frogFinish: '/api/v1/frog/rounds/finish',
   leaderboard: '/api/v1/leaderboard',
 });
 

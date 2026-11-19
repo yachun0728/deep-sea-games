@@ -31,9 +31,7 @@
       player.setAttribute('data-i18n-ignore', '');
       player.textContent = entry.displayName;
     } else {
-      var guest = document.createElement('span');
-      guest.textContent = '訪客';
-      player.append(guest, ' ' + entry.playerId.slice(0, 8));
+      player.textContent = '訪客';
     }
 
     var link = document.createElement('a'), name = document.createElement('span');
@@ -63,11 +61,8 @@
     boardStatus('載入排行榜中…');
     var timeout = setTimeout(function () { request.abort(); }, 10000);
     try {
-      var config = document.querySelector('meta[name="leaderboard-api-origin"]').content.trim();
-      var loopback = ['localhost', '127.0.0.1'].includes(location.hostname);
-      var origin = config || (loopback ? 'http://' + location.hostname + ':8787' : location.origin);
       var module = await import('./frontend/services/api.mjs');
-      var result = await module.createApiClient(origin).leaderboard(gameId, request.signal);
+      var result = await module.createApiClient(module.arcadeApiOrigin()).leaderboard(gameId, request.signal);
       if (boardRequest !== request) return;
       if (result.gameId !== gameId || !Array.isArray(result.entries)) throw new Error('invalid_leaderboard');
 
