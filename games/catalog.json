@@ -390,5 +390,13 @@
     "card": "games/on-pitch/card.html",
     "icon": "games/on-pitch/icon.svg",
     "style": "games/on-pitch/style.css"
+  },
+  {
+    "id": "book-sort",
+    "logic": "games/book-sort/game.js",
+    "view": "games/book-sort/view.html",
+    "card": "games/book-sort/card.html",
+    "icon": "games/book-sort/icon.svg",
+    "style": "games/book-sort/style.css"
   }
 ]

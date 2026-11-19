@@ -1,0 +1,32 @@
+  <section class="view" id="view-book-sort" hidden>
+    <div class="console"><div class="bs-stage" id="bs-stage">
+      <div class="bs-says"><span class="bs-avatar" aria-hidden="true">🐱</span><p class="bs-bubble" id="bs-tip" aria-live="polite">集滿 5 本同色書就會自動封箱，最底下的書也看得一清二楚。</p></div>
+      <div class="bs-boxes" id="bs-boxes" aria-label="書箱：點一個箱子拿起頂部同色書，再點另一個箱子疊放"></div>
+      <div class="bs-modal" id="bs-modal" hidden>
+        <div class="bs-modal-card" role="dialog" aria-labelledby="bs-modal-title">
+          <div class="bs-modal-cat" aria-hidden="true">😻</div>
+          <h3 id="bs-modal-title">書本全部封箱完成！</h3>
+          <p id="bs-modal-quote"></p>
+          <dl class="bs-modal-stats"><div><dt>總移動步數</dt><dd id="bs-final-moves">0</dd></div><div><dt>整理評級</dt><dd id="bs-final-rating">★★★</dd></div></dl>
+          <button class="go" id="bs-next" type="button">前往下一關</button>
+        </div>
+      </div>
+    </div>
+      <div class="side"><section class="panel" aria-label="貓咪疊書舖操作">
+        <dl class="stats"><div><dt>目前關卡</dt><dd id="bs-level-text">第 1 關</dd></div><div><dt>移動步數</dt><dd id="bs-moves">0</dd></div><div><dt>最佳步數</dt><dd id="bs-best">—</dd></div></dl>
+        <div class="field"><label for="bs-level">選擇關卡</label><select id="bs-level"><option value="1">第 1 關（3 色／5 箱）</option><option value="2">第 2 關（4 色／6 箱）</option><option value="3">第 3 關（5 色／7 箱）</option><option value="4">第 4 關（6 色／8 箱）</option><option value="5">第 5 關（8 色／10 箱）</option><option value="random">隨機挑戰關卡</option></select></div>
+        <div class="field"><label>遊玩費用</label><p class="runner-fee">免費</p></div>
+        <div class="bs-actions">
+          <button class="chip" id="bs-undo" type="button" disabled>撤銷上一步</button>
+          <button class="chip" id="bs-hint" type="button">提示移動</button>
+          <button class="chip" id="bs-restart" type="button">重新開始</button>
+          <button class="chip" id="bs-add" type="button">加一個臨時紙箱</button>
+          <button class="chip" id="bs-random" type="button">隨機關卡</button>
+          <button class="chip" id="bs-sound" type="button" aria-pressed="true" aria-label="音效">音效：開</button>
+        </div>
+        <p class="msg" id="bs-msg" aria-live="polite">點一個箱子拿起頂部同色書，再點另一個箱子疊放。</p>
+        <p class="hint">只能把書疊在同色書上方或空箱裡，一次會搬走頂部連續的同色書。每個關卡都保證有解，卡住時可以撤銷、提示，或用一次臨時紙箱周轉。</p>
+      </section></div>
+    </div>
+    <details class="rules"><summary>玩法與點數</summary><p>每局免費，不扣點也沒有點數獎勵。把所有書依顏色整理進紙箱：點選一個箱子拿起頂部連續的同色書，再點另一個箱子疊放。目標箱必須是空箱，或頂部書本顏色相同並且還有空位。每個箱子最多放 5 本，集滿 5 本同色書就會自動封箱。所有書都封箱就過關。</p><p>每本書的書脊都有獨立的符號，方便色盲玩家辨識。共有 5 個固定關卡，之後可以挑戰隨機關卡，每個隨機關卡都經過檢查保證有解。每關有一次臨時紙箱，撤銷和提示不限次數。整理評級依步數計算，最佳步數依關卡保存在這個瀏覽器中。</p></details>
+  </section>
