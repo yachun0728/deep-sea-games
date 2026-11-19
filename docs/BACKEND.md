@@ -7,7 +7,7 @@ npx wrangler@4 d1 migrations apply DB --local --config backend/wrangler.jsonc
 npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN:http://127.0.0.1:8765
 ```
 
-`FRONTEND_ORIGIN` 是允許跨來源呼叫的完整 origin。除錯前端時可在另一個終端執行 `python3 -m http.server 8765 --bind 127.0.0.1`。使用 `http://127.0.0.1:8765` 開大廳。當前端在 `127.0.0.1` 或 `localhost` 時，排行榜預設連同一主機的 8787 埠。這組指令允許的前端 origin 是 `http://127.0.0.1:8765`。
+`FRONTEND_ORIGIN` 是允許跨來源呼叫的完整 origin，可用逗號分隔多個正式網址。除錯前端時可在另一個終端執行 `python3 -m http.server 8765 --bind 127.0.0.1`。使用 `http://127.0.0.1:8765` 開大廳。當前端在 `127.0.0.1` 或 `localhost` 時，排行榜預設連同一主機的 8787 埠。這組指令允許的前端 origin 是 `http://127.0.0.1:8765`。
 
 | 方法與路徑 | 行為 |
 | --- | --- |

@@ -4,7 +4,8 @@ export default {
   async fetch(request, env) {
     const origin = request.headers.get('Origin');
     const crossOrigin = origin && origin !== new URL(request.url).origin;
-    if (crossOrigin && origin !== env.FRONTEND_ORIGIN) {
+    const allowedOrigins = (env.FRONTEND_ORIGIN ?? '').split(',').map(value => value.trim());
+    if (crossOrigin && !allowedOrigins.includes(origin)) {
       return json({ error: 'origin_not_allowed' }, 403, { Vary: 'Origin' });
     }
 
