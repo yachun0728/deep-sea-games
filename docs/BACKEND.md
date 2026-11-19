@@ -48,9 +48,9 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 | --- | --- | --- |
 | 已正式發布 | frog | Worker 重播 |
 | 已正式發布 | mines | Worker 管理棋盤 |
-| 已接入，待整批發布 | merge、ocean-link | 養珠由 Worker 管理棋盤；深海連連看由 Worker 驗證每關配對 |
+| 已接入，待整批發布 | merge、ocean-link、dream、runner | Worker 管理棋盤或重播玩家輸入 |
 | 回合制與解謎，待串接 | mermaid、banquet、frontier | 依各款動作與關卡狀態定義伺服器驗證 |
-| 即時操作與反應，待串接 | dream、runner、elevator、sneak、fishing、campaign、cat、bird、nap、reaper、blaster、skybuilder、carp、rider、boss、thief、baby、pudding、clock-out、peek、mosquito、last-hair、breakout、pet-walk、office-shoot | 逐款核對時鐘、輸入及隨機性再重播 |
+| 即時操作與反應，待串接 | elevator、sneak、fishing、campaign、cat、bird、nap、reaper、blaster、skybuilder、carp、rider、boss、thief、baby、pudding、clock-out、peek、mosquito、last-hair、breakout、pet-walk、office-shoot | 逐款核對時鐘、輸入及隨機性再重播 |
 | 同來源 iframe，待串接 | boba、dive、mrt、pancake、rocket-chair、eat-smaller、mirror-twins、shadow-relay、one-line-defense | 保留父子頁生命週期，增設必要橋接與 Worker 驗證 |
 | 每日免費補給 | keno | 隨機補給與配額，不列競賽榜 |
 
@@ -75,3 +75,13 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 簡單模式的 6×8 棋盤使用排行榜。Worker 為每關發出亂數種子，依 24 組配對重播路徑、消除與洗牌。每次驗證成功才發下一關種子並以通關數更新公開榜。同分依達成時間排序。標準和挑戰模式仍保存各自的本機紀錄，既有提示、獎勵與 GA4 流程不變。
 
 沿用棋盤對局 API。開局的 `gameId` 為 `ocean-link`，動作為依序編碼的 24 組配對，`a * 80 + b` 表示一組。套用 `0007_ranked_board_checkpoints.sql` 後，回合可在終局前更新已驗證的關卡紀錄，與公開榜同次入帳。回退時先回退前端與 Worker，保留資料表欄位及既有紀錄。
+
+## 時序修復訪客成績
+
+沿用棋盤對局 API，以 `dream` 開局。每關由 Worker 發種子，瀏覽器送出停針時的 10 毫秒步數。Worker 檢查步數未超過伺服器經過時間，重播指針及反轉，驗證命中才更新通過關卡數。失手結束本局；同一停針請求可重送。排行榜關卡最多考慮每關 120 秒的遊戲時間，超過仍可本機繼續。允許按同樣規則自動操作的可能性，與青蛙吃蟲相同。
+
+大廳輪播以 `GET /api/v1/leaderboard/feed` 一次讀取各款已有已驗證成績的公開榜，再依大廳可見遊戲篩選。單款查詢端點維持原契約。
+
+## 閃避跑酷訪客成績
+
+沿用棋盤對局 API，以 `runner` 開局。Worker 發出障礙種子，結束時客戶端送出固定 10 毫秒步進數與各次換道。Worker 重算障礙、換道插值與碰撞，只有在指定步數確實碰撞才以整數公尺更新公開榜。每局可驗證最多十分鐘及 6,000 筆換道，超過仍可本機遊玩。里程碑點數維持原有本機流程。

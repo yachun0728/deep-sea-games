@@ -8,6 +8,7 @@ export const API = Object.freeze({
   minesMove: '/api/v1/mines/rounds/move',
   boardStart: '/api/v1/boards/rounds',
   boardMove: '/api/v1/boards/rounds/move',
+  leaderboardFeed: '/api/v1/leaderboard/feed',
   leaderboard: '/api/v1/leaderboard',
 });
 

@@ -1,3 +1,5 @@
+import runnerRules from '../../../shared/runner-rules.cjs';
+import dreamRules from '../../../shared/dream-rules.cjs';
 import oceanLink from '../../../games/ocean-link/board.js';
 import mergeRules from '../../../shared/merge-rules.cjs';
 
@@ -13,6 +15,34 @@ const boards = new Map([
     apply: (state, action) => mergeRules.move(state, action, random),
     score: state => state.over ? state.score : null,
     visible: state => state,
+  }],
+  ['dream', {
+    create: () => ({stage: 1, completed: 0, seed: newSeed(), issuedAt: Date.now(), lost: false}),
+    accepts: action => Number.isInteger(action) && action >= 0 && action <= dreamRules.MAX_TICKS,
+    apply: (state, ticks) => {
+      if (ticks * dreamRules.STEP_MS > Date.now() - state.issuedAt) return false;
+      state.lost = !dreamRules.adjudicate(state.stage, state.seed, ticks);
+      if (!state.lost) {
+        state.completed = state.stage++;
+        state.seed = newSeed();
+        state.issuedAt = Date.now();
+      }
+      return true;
+    },
+    score: state => state.lost ? state.completed : null,
+    checkpoint: state => !state.lost ? state.completed : null,
+    visible: state => ({stage: state.stage, completed: state.completed, seed: state.seed, lost: state.lost}),
+  }],
+  ['runner', {
+    create: () => ({seed: newSeed(), issuedAt: Date.now(), distance: null}),
+    accepts: runnerRules.accepts,
+    apply: (state, action) => {
+      if (action[0] * runnerRules.STEP_MS > Date.now() - state.issuedAt) return false;
+      state.distance = runnerRules.replay(state.seed, action);
+      return state.distance !== null;
+    },
+    score: state => state.distance,
+    visible: ({seed, distance}) => ({seed, distance}),
   }],
   ['ocean-link', {
     create: () => ({level: 1, completed: 0, seed: newSeed()}),
@@ -43,7 +73,7 @@ export async function readBoardCommand(request, isMove) {
       const { done, value } = await reader.read();
       if (done) break;
       bytes += value.byteLength;
-      if (bytes > 512) {
+      if (bytes > 48 * 1024) {
         await reader.cancel();
         return null;
       }

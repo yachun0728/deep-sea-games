@@ -19,9 +19,6 @@
     var icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
     icon.setAttribute('viewBox', '0 0 96 96'); icon.setAttribute('aria-hidden', 'true'); use.setAttribute('href', '#icon-' + id); icon.appendChild(use); return icon;
   }
-  // Leaderboard: every game with server-verified scores, merged into one table. Add a game here once
-  // its scores are verified by the backend (backend/src/routes/api.mjs).
-  var BOARD_GAMES = ['frog', 'mines'];
   var BOARD_ROWS = 8, BOARD_TICK = 2500;
   var boardRequest = null, boardTimer = 0, boardPool = [], boardTurn = 0, boardCursor = {};
   var boardRetry = $('board-retry');
@@ -90,11 +87,13 @@
     try {
       var module = await import('./frontend/services/api.mjs');
       var client = module.createApiClient(module.arcadeApiOrigin());
-      var games = BOARD_GAMES.filter(function (id) { return Object.hasOwn(VIEWS, id); });
-      var results = await Promise.all(games.map(function (id) { return client.leaderboard(id, request.signal); }));
+      var result = await client.leaderboardFeed(request.signal);
       if (boardRequest !== request) return;
-      boardPool = results.filter(function (r) { return r && Array.isArray(r.entries) && r.entries.length; })
-        .map(function (r) { return { gameId: r.gameId, entries: r.entries }; });
+      var visibleGames = new Set(Array.from(document.querySelectorAll('.lobby-grid .game-card:not([data-game-hidden])'),
+        function (card) { return card.hash.slice(1); }));
+      boardPool = result.games.filter(function (game) {
+        return visibleGames.has(game.gameId) && Object.hasOwn(VIEWS, game.gameId) && game.entries.length;
+      });
       boardTurn = 0; boardCursor = {};
       // start with every game's scores together, highest first
       var all = [];

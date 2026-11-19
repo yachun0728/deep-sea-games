@@ -32,6 +32,7 @@ export function createApiClient(baseUrl) {
     health: () => request(API.health),
     createPlayer: signal => request(API.players, { method: 'POST', signal }),
     getPlayer: token => request(API.me, authorized('GET', token)),
+    leaderboardFeed: signal => request(API.leaderboardFeed, { signal }),
     leaderboard: (gameId, signal) => request(API.leaderboard, { signal }, { gameId }),
     startMines: (token, signal) => request(API.minesStart, authorized('POST', token, signal)),
     moveMines: (token, move, signal) => request(API.minesMove, authorized('POST', token, signal, move)),

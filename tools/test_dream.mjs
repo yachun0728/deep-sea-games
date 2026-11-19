@@ -2,6 +2,8 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
+import rules from '../shared/dream-rules.cjs';
+const shared=fs.readFileSync(new URL('../shared/dream-rules.cjs',import.meta.url),'utf8');
 const source=fs.readFileSync(new URL('../games/dream/game.js',import.meta.url),'utf8');
 function fixture(balance=100){
  let now=0;const elements=new Map(),events=[];
@@ -9,7 +11,7 @@ function fixture(balance=100){
  const el=id=>{if(!elements.has(id))elements.set(id,{hidden:false,dataset:{},addEventListener(){},getContext:()=>drawing});return elements.get(id)};
  const document={hidden:false,focused:true,hasFocus(){return this.focused},addEventListener(){}};
  const ctx={Math,performance:{now:()=>now},document,window:{addEventListener(){}},requestAnimationFrame(){},$:el,C:{},ENTRY_FEE:0,LOW_MSG:'low',S:{balance},save(){},renderAll(){},AN:{start:()=>{events.push(['start']);return 'r'},resume:(...a)=>events.push(['resume',...a]),progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
- vm.createContext(ctx);vm.runInContext(source,ctx);return {ctx,el,events,step(dt){now+=dt*1000;ctx.drAdvance(now)}};
+ vm.createContext(ctx);vm.runInContext(shared+'\n'+source,ctx);return {ctx,el,events,step(dt){now+=dt*1000;ctx.drAdvance(now)}};
 }
 let f=fixture(-1);f.ctx.drAction();assert.equal(f.events.length,0);assert.equal(f.ctx.S.balance,-1);
 f=fixture();f.ctx.drAction();f.ctx.drAction();assert.equal(f.ctx.S.balance,100);assert.equal(f.events.filter(e=>e[0]==='start').length,1);assert.equal(f.events.filter(e=>e[0]==='end').length,1);
@@ -23,4 +25,11 @@ for(const [stage,limit] of [[10,0],[11,1],[20,1],[21,2]]){
 f=fixture();f.ctx.drAction();f.ctx.DR.stage=21;f.ctx.drRound();f.ctx.DR.reverseAt=0;f.ctx.DR.angle=f.ctx.DR.target;f.step(.01);assert.equal(f.ctx.DR.warning,0);f.ctx.DR.angle=f.ctx.DR.target+Math.PI;f.step(.01);assert(f.ctx.DR.warning>0);
 for(const mode of ['route','background','focus']){const before=[f.ctx.DR.angle,f.ctx.DR.warning,f.ctx.DR.elapsed];if(mode==='route')f.el('view-dream').hidden=true;if(mode==='background')f.ctx.document.hidden=true;if(mode==='focus')f.ctx.document.focused=false;f.step(60);assert.deepEqual([f.ctx.DR.angle,f.ctx.DR.warning,f.ctx.DR.elapsed],before);f.el('view-dream').hidden=false;f.ctx.document.hidden=false;f.ctx.document.focused=true;f.step(.01)}
 assert(!/drCash|drMultiplier|S.balance\s*\+=/.test(source));
+for(const seed of [0,1,123,0xffffffff]){
+ assert.equal(rules.adjudicate(1,seed,0),false);
+ assert.equal(rules.adjudicate(1,seed,196),true);
+ const initial=rules.seeded(seed), state=rules.start(25,initial);
+ for(let i=0;i<300;i++)rules.advance(state,rules.STEP_MS/1000,initial);
+ assert.equal(rules.adjudicate(25,seed,300),rules.hit(state));
+}
 console.log('PASS: entry, single loss, 100 stages, difficulty caps/plateaus, warned reversals, spacing/target guard, pause, zero payouts');

@@ -3,17 +3,19 @@
   var drCanvas=$('dr-canvas'), drCtx=drCanvas.getContext('2d');
   var runnerBusy=false;
   function drSay(text, cls){$('dr-msg').textContent=text;$('dr-msg').className='msg'+(cls?' '+cls:'');}
-  var DR_MIN_WIDTH=24*Math.PI/180, DR_MAX_SPEED=2.4, DR_WARNING=.5, DR_GUARD=.25;
-  function drDistance(a,b){return Math.abs(Math.atan2(Math.sin(a-b),Math.cos(a-b)));}
-  function drDifficulty(stage){
-    // Hold difficulty while introducing the first and second reversal.
-    var n=stage-1-Math.min(3,Math.max(0,stage-11))-Math.min(3,Math.max(0,stage-21));
-    return {width:Math.max(DR_MIN_WIDTH,(80-Math.min(n,4)*5-Math.max(0,Math.min(n-4,10))*2.5-Math.max(0,n-14))*Math.PI/180),speed:Math.min(DR_MAX_SPEED,1.6+n*.035)};
+  var drDifficulty=dreamRules.difficulty, drDistance=dreamRules.distance;
+  var dreamRound=null, dreamPending=null, dreamStarting=false, dreamSending=false;
+  var dreamTicks=0, dreamCarry=0, dreamRandom=Math.random;
+  function dreamStatus(text,retry){
+    var status=$('dr-rank-status');
+    status.hidden=!text;status.textContent=text;
+    $('dr-rank-retry').hidden=!retry;
   }
   function drUI(){
     $('dr-stage').textContent='第 '+DR.stage+' 關';
     $('dr-amount').disabled=DR.active;
     $('dr-go').textContent=DR.phase==='spinning'?'停針':DR.phase==='passed'?'挑戰下一關':DR.phase==='lost'?'再挑戰一次':'開始修復';
+    $('dr-go').disabled=dreamStarting||!!dreamPending;
     $('dr-go').dataset.mode=DR.phase==='spinning'?'surface':'start';
     drDraw();
   }
@@ -31,42 +33,102 @@
   }
   function drRound(){
     AN.resume(DR.analytics,{stage:DR.stage});DR.phase='spinning';
-    var difficulty=drDifficulty(DR.stage);DR.width=difficulty.width;DR.speed=difficulty.speed;
-    DR.target=Math.random()*Math.PI*2;DR.angle=(DR.target+Math.PI)%(Math.PI*2);
-    DR.direction=1;DR.elapsed=0;DR.reversals=0;DR.reverseLimit=DR.stage>=21?2:DR.stage>=11?1:0;
-    DR.reverseAt=1.5+Math.random();DR.warning=0;DR.last=performance.now();
+    dreamRandom=dreamRound?dreamRules.seeded(dreamRound.state.seed):Math.random;
+    dreamTicks=0;dreamCarry=0;
+    Object.assign(DR,dreamRules.start(DR.stage,dreamRandom));
+    DR.last=performance.now();
     drSay(DR.reverseLimit?'留意中心燈與文字：反轉前會先提示，仍可隨時停針。':'按停針、點儀表或空白鍵，讓指針停在青綠色區域。');drUI();
   }
   function drPlaying(){return DR.phase==='spinning'&&!$('view-dream').hidden&&!document.hidden&&(!document.hasFocus||document.hasFocus());}
   function drAdvance(now){
-    // Small simulation steps keep warning duration and target protection consistent across frame rates.
-    var remaining=drPlaying()?Math.min(.1,Math.max(0,now-DR.last)/1000):0;DR.last=now;
-    while(remaining>0){
-      var dt=Math.min(remaining,.01);remaining-=dt;DR.elapsed+=dt;
-      DR.angle=((DR.angle+DR.direction*DR.speed*dt)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
-      var distance=drDistance(DR.angle,DR.target),safe=distance>DR.width/2+DR.speed*DR_GUARD;
-      if(DR.warning>0){
-        if(!safe){DR.warning=0;DR.reverseAt=DR.elapsed+.3;}
-        else{DR.warning-=dt;if(DR.warning<=0){DR.warning=0;DR.direction*=-1;DR.reversals++;DR.reverseAt=DR.elapsed+1.5+Math.random();drSay('指針已反轉，抓準目標區停針。');}}
-      }else if(DR.reversals<DR.reverseLimit&&DR.elapsed>=DR.reverseAt&&distance>DR.width/2+DR.speed*(DR_WARNING+DR_GUARD)){
-        DR.warning=DR_WARNING;drSay('注意！中心燈閃爍，0.5 秒後指針反轉。');
+    var elapsed=drPlaying()?Math.min(100,Math.max(0,now-DR.last)):0;
+    DR.last=now;
+    function advance(dt){
+      var notice=dreamRules.advance(DR,dt,dreamRandom);
+      if(notice==='reverse')drSay('指針已反轉，抓準目標區停針。');
+      if(notice==='warning')drSay('注意！中心燈閃爍，0.5 秒後指針反轉。');
+    }
+    if(dreamRound){
+      dreamCarry+=elapsed;
+      while(dreamCarry>=dreamRules.STEP_MS){
+        dreamCarry-=dreamRules.STEP_MS;
+        advance(dreamRules.STEP_MS/1000);
+        if(++dreamTicks>dreamRules.MAX_TICKS){
+          dreamRound=null;
+          dreamStatus('這一局可在本機遊玩。');
+          break;
+        }
       }
+      return;
+    }
+    var remaining=elapsed/1000;
+    while(remaining>0){
+      var dt=Math.min(remaining,.01);remaining-=dt;
+      advance(dt);
     }
   }
+  async function sendDreamStop(){
+    if(!dreamPending||dreamSending)return;
+    dreamSending=true;
+    dreamStatus('正在驗證排行榜成績…');
+    drUI();
+    try{
+      var api=await import('./frontend/services/api.mjs');
+      var next=await api.moveBoardRound(dreamRound.token,dreamPending,AbortSignal.timeout(10000));
+      if(next.revision===dreamPending.revision||next.state.completed!==DR.wins||next.state.lost!==(DR.phase==='lost')){
+        dreamRound=null;
+        dreamStatus('排行榜成績未能送出。');
+      }else{
+        Object.assign(dreamRound,next);
+        dreamStatus('成績已送到排行榜。');
+      }
+      dreamPending=null;
+    }catch(error){
+      if(error.retryable===false){dreamPending=null;dreamRound=null}
+      dreamStatus('排行榜成績未能送出。',!!dreamPending);
+    }finally{
+      dreamSending=false;
+      drUI();
+    }
+  }
+  function beginDream(amount, ranked){
+    dreamRound=ranked;
+    DR.analytics=AN.start('dream',amount);DR.stake=amount;DR.stage=1;DR.wins=0;DR.active=true;save();renderAll();drRound();
+  }
+  async function startDream(amount){
+    if(typeof location==='undefined'||location.protocol==='file:'){beginDream(amount,null);return}
+    dreamStarting=true;
+    dreamStatus('正在準備訪客排行…');
+    drUI();
+    var ranked=null;
+    try{
+      var api=await import('./frontend/services/api.mjs');
+      ranked=await api.startBoardRound('dream',AbortSignal.timeout(4000));
+    }catch{}
+    dreamStarting=false;
+    if($('view-dream').hidden){dreamStatus('');drUI();return}
+    dreamStatus(ranked?'本局將列入訪客排行。':'這一局可在本機遊玩。');
+    beginDream(amount,ranked);
+  }
   function drAction(){
+    if(dreamStarting||dreamPending)return;
     if($('view-dream').hidden||document.hidden||document.hasFocus&&!document.hasFocus())return;
     if(DR.phase==='spinning'){
       drAdvance(performance.now());
-      var delta=Math.abs(Math.atan2(Math.sin(DR.angle-DR.target),Math.cos(DR.angle-DR.target)));
-      if(delta<=DR.width/2){DR.wins++;DR.phase='passed';DR.warning=0;AN.progress(DR.analytics,{stage:DR.stage,score:DR.wins,reversals:DR.reversals},true);drSay('第 '+DR.stage+' 關修復成功！準備好就挑戰下一關。','win');}
+      if(dreamRules.hit(DR)){DR.wins++;DR.phase='passed';DR.warning=0;AN.progress(DR.analytics,{stage:DR.stage,score:DR.wins,reversals:DR.reversals},true);drSay('第 '+DR.stage+' 關修復成功！準備好就挑戰下一關。','win');}
       else{DR.phase='lost';DR.active=false;DR.warning=0;AN.end(DR.analytics,0,'loss',{stage:DR.stage,score:DR.wins});drSay('錯過目標區，本局完成 '+DR.wins+' 關。再挑戰一次吧！','lose');}
+      if(dreamRound){
+        dreamPending={gameId:'dream',id:dreamRound.id,revision:dreamRound.revision,action:dreamTicks};
+        sendDreamStop();
+      }
       drUI();return;
     }
     if(DR.phase==='passed'){DR.stage++;drRound();return;}
     var amount=ENTRY_FEE;
     if(amount>S.balance){drSay(LOW_MSG,'lose');return;}
-    DR.analytics=AN.start('dream',amount);DR.stake=amount;DR.stage=1;DR.wins=0;DR.active=true;save();renderAll();drRound();
+    startDream(amount);
   }
+  $('dr-rank-retry').addEventListener('click',sendDreamStop);
   $('dr-go').addEventListener('click',drAction);
   drCanvas.addEventListener('pointerdown',function(e){if(DR.phase==='spinning'){e.preventDefault();drAction();}});
   document.addEventListener('keydown',function(e){if($('view-dream').hidden||e.code!=='Space'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;var tag=(e.target.tagName||'').toLowerCase();if(['input','button','a','summary'].indexOf(tag)>=0)return;e.preventDefault();if(DR.phase==='spinning')drAction();});
