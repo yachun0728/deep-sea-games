@@ -4,10 +4,11 @@ import assert from 'node:assert/strict';
 const root=new URL('../',import.meta.url);
 function fixture(storage={}){
  const elements={},events=[];let day='2026-11-17';
- function element(){return {style:{},dataset:{},children:[],disabled:false,textContent:'',innerHTML:'',addEventListener(){},setAttribute(){},appendChild(b){this.children.push(b);}};}
- const c={$:id=>elements[id]??=element(),window:{addEventListener(){}},navigator:{},setInterval(){},document:{createElement:element,addEventListener(){},hidden:false},S:{balance:Number(storage.wallet??500)},STORE:'wallet',ENTRY_FEE:10,LOW_MSG:'不足',fmt:String,elBal:element(),save(){storage.wallet=String(c.S.balance);},renderGo(){},localStorage:{getItem:k=>storage[k]??null,setItem:(k,v)=>storage[k]=v},AN:{start:(...a)=>{events.push(['start',...a]);return events.length;},progress:(...a)=>events.push(['progress',...a]),resume:(...a)=>events.push(['resume',...a]),end:(...a)=>events.push(['end',...a])}};
- vm.createContext(c);for(const game of ['mines','keno'])vm.runInContext(fs.readFileSync(new URL(`games/${game}/game.js`,root),'utf8'),c);
- c.keDay=()=>day;c.buildBoard();c.renderMines();c.keBuild();c.keUI();return {c,storage,events,elements,setDay:d=>day=d};
+ function element(){return {style:{},dataset:{},children:[],disabled:false,textContent:'',innerHTML:'',listeners:{},addEventListener(type,fn){this.listeners[type]=fn;},setAttribute(){},appendChild(b){this.children.push(b);}};}
+ const timers=new Map();let timerId=0;
+ const c={setTimeout(fn){timers.set(++timerId,fn);return timerId;},clearTimeout(id){timers.delete(id);},$:id=>elements[id]??=element(),window:{addEventListener(){}},navigator:{},setInterval(){},document:{createElement:element,addEventListener(){},hidden:false},S:{balance:Number(storage.wallet??500)},STORE:'wallet',ENTRY_FEE:10,LOW_MSG:'不足',fmt:String,elBal:element(),save(){storage.wallet=String(c.S.balance);},renderGo(){},localStorage:{getItem:k=>storage[k]??null,setItem:(k,v)=>storage[k]=v},AN:{start:(...a)=>{events.push(['start',...a]);return events.length;},progress:(...a)=>events.push(['progress',...a]),resume:(...a)=>events.push(['resume',...a]),end:(...a)=>events.push(['end',...a])}};
+ vm.createContext(c);vm.runInContext(fs.readFileSync(new URL('shared/mines-rules.cjs',root),'utf8'),c);for(const game of ['mines','keno'])vm.runInContext(fs.readFileSync(new URL(`games/${game}/game.js`,root),'utf8'),c);
+ c.keDay=()=>day;c.buildBoard();c.renderMines();c.keBuild();c.keUI();return {c,storage,events,elements,timers,setDay:d=>day=d};
 }
 const f=fixture(),{c,events,storage}=f;
 c.S.balance=0;c.$('mines-difficulty').value='low';c.startMines();c.startMines();assert.equal(c.S.balance,0);assert.equal(events.filter(e=>e[0]==='start').length,1);
@@ -46,10 +47,32 @@ const bad=fixture();bad.c.localStorage.setItem=()=>{throw Error('blocked');};bad
 
 console.log('PASS: Mines difficulty presets, custom size and mine bounds, maximum-density wins, first-click mine loss, zero-balance free starts, daily free quotas, reload continuation, cross-tab duplicate prevention, daily reset, reward cap and storage failures.');
 
-// Chord opened numbers only when adjacent flags match, including in flag mode.
+// Chord opened numbers only when adjacent flags match, including correct/wrong flags.
 function chordFixture(){const f=fixture();const c=f.c;c.$('mines-difficulty').value='custom';c.$('mines-size').value=3;c.$('mines-bombs').value=1;c.startMines();c.M.layout=Array(9).fill(false);c.M.layout[0]=true;c.pick(4);return f;}
 let chord=chordFixture();let cc=chord.c;const previous=cc.M.picks;cc.pick(4);assert.equal(cc.M.picks,previous);assert.equal(cc.M.active,true);assert.equal(chord.elements.board.children.at(-5).disabled,false);
-cc.mineFlag(0);cc.M.flagMode=true;cc.pick(4);assert.equal(cc.M.active,false);assert.equal(cc.M.picks,8);assert.equal(chord.events.filter(e=>e[0]==='end').length,1);assert.equal(chord.events.at(-1)[3],'complete');cc.pick(4);assert.equal(chord.events.filter(e=>e[0]==='end').length,1);
+cc.mineFlag(0);cc.pick(4);assert.equal(cc.M.active,false);assert.equal(cc.M.picks,8);assert.equal(chord.events.filter(e=>e[0]==='end').length,1);assert.equal(chord.events.at(-1)[3],'complete');cc.pick(4);assert.equal(chord.events.filter(e=>e[0]==='end').length,1);
 chord=chordFixture();cc=chord.c;cc.mineFlag(1);cc.pick(4);assert.equal(cc.M.active,false);assert.equal(chord.events.at(-1)[3],'loss');assert.equal(cc.M.open[0],true);assert.equal(chord.events.filter(e=>e[0]==='end').length,1);
 assert.equal(cc.S.balance,500);
-console.log('PASS: chord flag-count guard, opened-number interaction, correct flags/flood/win, flag mode, wrong flags/loss, single settlement and free balance');
+console.log('PASS: chord flag-count guard, opened-number interaction, correct flags/flood/win, wrong flags/loss, single settlement and free balance');
+
+// Preview follows presets/custom inputs without starting a round or touching the wallet.
+const preview=fixture(); const pc=preview.c;
+for(const [mode,size,bombs] of [['low',5,3],['medium',8,10],['high',10,20]]){
+ pc.$('mines-difficulty').value=mode;pc.mineSettings();
+ assert.equal(pc.M.size,size);assert.equal(pc.N,size*size);assert.equal(pc.M.mines,bombs);
+ assert.equal(pc.$('mines-left').textContent,(size*size-bombs)+' 格');assert.equal(pc.M.active,false);
+}
+pc.$('mines-difficulty').value='custom';pc.$('mines-size').value=4;pc.$('mines-bombs').value=5;pc.mineSettings();assert.equal(pc.N,16);assert.equal(pc.M.mines,5);assert.equal(preview.events.length,0);
+const input=fixture();const ic=input.c;ic.$('mines-difficulty').value='medium';ic.startMines();
+let target=ic.tiles[0],actions=[];ic.mineFlag=n=>actions.push(['flag',n]);ic.pick=n=>actions.push(['open',n]);
+const event={pointerType:'touch',button:0,isPrimary:true,pointerId:1,clientX:0,clientY:0,preventDefault(){}};
+function fire(type,extra={}){target.listeners[type]({...event,...extra});}
+function hold(){const pending=[...input.timers.values()];input.timers.clear();pending.forEach(fn=>fn());}
+fire('pointerdown');fire('pointerup');fire('click');assert.deepEqual(actions,[['open',0]]);actions=[];
+fire('pointerdown');hold();fire('pointerup');fire('click');assert.deepEqual(actions,[['flag',0]]);
+fire('contextmenu');assert.equal(actions.length,1);actions=[];
+fire('pointerdown');fire('pointermove',{clientX:20});hold();fire('click');assert.equal(actions.length,0);
+fire('pointerdown');fire('pointercancel');hold();assert.equal(actions.length,0);
+fire('pointerdown',{pointerType:'mouse',button:2});fire('contextmenu');assert.deepEqual(actions,[['flag',0]]);actions=[];
+fire('keydown',{key:'f',repeat:false});assert.deepEqual(actions,[['flag',0]]);
+console.log('PASS: difficulty preview, no preview round, short tap, long press without reveal, no duplicate context flag, scroll/cancel, right-click and keyboard flag');

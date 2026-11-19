@@ -4,3 +4,7 @@ crush-depth.html
 __pycache__/
 *.pyc
 dist/
+
+.wrangler/
+.dev.vars
+.dev.vars.*

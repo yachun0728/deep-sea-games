@@ -64,6 +64,10 @@ deep-sea-games/
 
 `.claude/launch.json` 與 crush-depth.html 為既有被忽略的本機檔案，不是可編輯主來源。沒有 package.json、npm 框架、伺服器端模組或 games 以外的隱藏遊戲框架。
 
+## 大廳排行榜與後端
+
+`js/member.js` 用 `frontend/services/api.mjs` 查詢所選遊戲的 D1 前 20 筆最佳紀錄，並重用原本的玩家、遊戲、最佳紀錄表格。會員中心和錢包繼續讀取原有的本機資料。青蛙吃蟲用雲端訪客 ID 保存排行榜分數，前端與 Worker 共用 `shared/frog-rules.cjs` 的玩法判定。D1 保存已驗證回合，並在同次寫入更新個人最佳分數。Worker 入口、D1 migrations 與部署設定位於 `backend/`，API 契約位於 `shared/api.mjs`。見 [後端開發](docs/BACKEND.md)。
+
 ## 組合方式與責任邊界
 
 `python3 tools/build.py` 從 templates/index.html 遞迴展開 `{{include:專案相對路徑}}`，不自動加換行或改寫程式。`{{json:games/<id>/original.html}}`（boba、dive、mrt）將子頁序列化為 JSON 並跳脫 `<`，保留原 srcdoc 橋接流程。相對路徑皆從專案根目錄解析；工具拒絕循環引用與越界路徑。`--check` 不寫檔，檢查產出與遊戲 catalog 是否一致。

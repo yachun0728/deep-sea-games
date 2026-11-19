@@ -33,8 +33,6 @@
 #view-mines .tile.mine { background: #f1a38b; border-color: #cc6754; box-shadow: inset 0 2px 4px #9c3e3a44; }
 #view-mines .tile svg { width: 72%; height: 72%; display: block; }
 #view-mines .tile:focus-visible { outline: 3px solid #ffe08c; outline-offset: 2px; }
-#view-mines #mines-flag { width: 100%; min-height: 44px; white-space: normal; }
-#view-mines #mines-flag[aria-pressed="true"] { color: #ffe0a5; border-color: #ed8f69; background: #533c30; }
 
 #view-mines .board-wrap { overflow-x: auto; display: block; }
 #view-mines .board { margin: auto; width: 100%; max-width: 560px; }
@@ -42,12 +40,11 @@
 
 #view-mines select, #view-mines #mines-custom input { width:100%; min-height:44px; padding:8px; border:1px solid var(--line); border-radius:8px; background:var(--panel-2); color:var(--fg); font:inherit; }
 
-/* Keep the original flag control visible immediately above the board. */
 #view-mines .mines-stage{min-width:0}
 #view-mines .mines-board-tools{display:flex;margin-bottom:10px}
-#view-mines #mines-flag{font-weight:700;border:1px solid var(--glow);color:var(--glow);background:var(--panel);padding:10px 14px}
-#view-mines #mines-flag:disabled{opacity:.65}
-#view-mines #mines-flag[aria-pressed="true"]{color:#ffe0a5;border-color:#ed8f69;background:#533c30}
 
 #view-mines .mines-board-tools{flex-direction:column;gap:6px}
 #view-mines .mines-chord-hint{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+#view-mines .mines-settings{margin-bottom:16px}
+#view-mines .mines-input-hint{margin:0;font-size:13px;line-height:1.6}
+#view-mines .tile{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;touch-action:pan-x pan-y}
