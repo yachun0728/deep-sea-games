@@ -50,6 +50,8 @@ let keys={l:0,r:0,cover:0,pick:0},gs=new Map(),hideWant=0,tapPick=0,dbl=0,tapT=-
 let introP=0,introBtns=[],scareT=0,scareMax=1,tut=null,bag,drops,dropT,camp,campNext,openFx,pickHeld=0,sc=0,scrolls=0,audioOk=false,assist=false,lowScare=false,MASTER=.7,chirpT=0,hk=0,hkSd=1,scareSnap=null,bT=0,hbT=0,stT=0;
 try{scrolls=+localStorage.getItem('deep-sea-peek-scrolls')||0}catch(e){}
 try{tutDone=localStorage.getItem('deep-sea-peek-tut2')==='1'}catch(e){}
+let tutSeen=false,tutAlways=true;try{tutAlways=localStorage.getItem('deep-sea-peek-tut-always')!=='0'}catch(e){}   // the tutorial opens every new run (with a Skip button); a saved flag can switch that off
+const needTut=()=>tutAlways?!tutSeen:!tutDone;
 try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-opts')||'{}');assist=!!o.a;lowScare=!!o.l;captions=!!o.c;if(typeof o.m==='number')AMB=clamp(o.m,0,1);if(typeof o.v==='number')MASTER=clamp(o.v,0,1)}catch(e){}
 /* ---- levels: 100 levels in 5 worlds, a ten-level sawtooth with buffer levels and a boss every tenth (v0.5 section 5) ---- */
 const WORLD_BASE=[1,1.15,1.3,1.45,1.6],WORLD_NAME=['森林','墓地','沼澤','雪原','火山'];
@@ -111,7 +113,8 @@ function applyLevel(){
  campNext=L.k===5&&L.kind!=='boss'?50:999;
  guarantee=noDrop>=3||L.l===41||L.l===42;dropT=L.kind==='safe'?rnd(3,5):rnd(5,8);
  evK=L.evf==='n'?'nib':L.evf==='c'?'chest':L.evf==='r'&&R()<.3?'rook':'';nibT=evK?rnd(8,22):0;
- wx=L.wxp[(R()*L.wxp.length)|0];if(L.wxp.length>1&&wx===lastWx)wx=L.wxp.find(x=>x!==lastWx);lastWx=wx;
+ {let wp=L.wxp;if(!L.fixed&&L.kind!=='boss'&&L.kind!=='learn'){const all=[...new Set(LVT.slice(L.wi*20+1,L.wi*20+21).flatMap(e=>e?e[1]:[]))].filter(x=>L.t>=.5||(x!==5&&x!==7));if(all.length>1)wp=all}   // ordinary levels draw from every weather their world uses, so the same level is not always the same rain
+ wx=wp[(R()*wp.length)|0];if(wp.length>1&&wx===lastWx)wx=wp.find(x=>x!==lastWx);lastWx=wx}
  assistHid=L.ease?1:0;
  say('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'：'+KIND_NAME[L.kind]+(L.fixed?'（固定種子）':'')+'。'+WORLD_RULE[L.wi]+(L.ease?'小螢多給你 0.3 秒預警，少來一次襲擊。':''))}
 function reset(){shieldFx=0;torchTap=0;tapQ=[];headDown=false;itemTap=0;pendType=null;hideWant=0;tapPick=0;lt=0;breath=1;hk=0;scareSnap=null;gs.clear();eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0,chest:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;sc=0;rB=BASE_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
@@ -156,7 +159,7 @@ function ui(){
  $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'逃跑中 · 別回頭':(st==='ready'?'開始 ':'再試 ')+(lv?'第 '+lv+' 關':'自由跑'));
 }
 function fx(s,x,y,col){fxs.push({s,x,y,col,t:0})}
-function end(kind,reason){
+function end(kind,reason){tutSeen=false;
  if(st!=='run')return;
  if(tut&&kind==='dead'){tutFail();return}
  if(kind==='dead'&&bag.charm>0){bag.charm--;shieldFx=1;fx('護身符擋下了這一次',CX,118,'#9fe8ff');ev=null;gapT=Math.max(nextGap(),4);flash=lowScare?.1:.3;return}
@@ -201,7 +204,7 @@ function tutOk(){fx('很好！',CX,118,'#9fe8ff');ev=null;pendType=null;tut.i++;
  if(tut.i>=TUT.length){tutEnd();return}
  gapT=TUT[tut.i].ty==='pick'?99:1.2;
  if(TUT[tut.i].ty==='pick'){tut.n=bag.torch;drops.length=0}}
-function tutEnd(){tut=null;tutDone=true;try{localStorage.setItem('deep-sea-peek-tut2','1')}catch(e){}st='ready';ev=null;fxs=[];clearInput();start()}
+function tutEnd(){tut=null;tutDone=true;tutSeen=true;try{localStorage.setItem('deep-sea-peek-tut2','1')}catch(e){}st='ready';ev=null;fxs=[];clearInput();start()}
 function tutTick(){dropT=999;nibT=0;campNext=999;prog=Math.min(prog,40);
  if(TUT[tut.i].ty==='pick'&&!ev){if(bag.torch>tut.n){tutOk();return true}
   if(!drops.some(d=>d.z>=0)){drops.push({k:'torch',side:R()<.5?-1:1,z:.6})}}
@@ -592,7 +595,7 @@ function hpRect(k){
 function hpClick(e){
  const p=cxy(e),inR=r=>p[0]>=r[0]&&p[0]<=r[0]+r[2]&&p[1]>=r[1]&&p[1]<=r[1]+r[3];
  if(inR(hpRect('spk'))){audioInit();tone(660,.18,.08,-1,'sine');setTimeout(()=>tone(660,.18,.08,1,'sine'),320);say('先左耳、再右耳各一聲。聽得到就按勾勾。');return true}
- if(inR(hpRect('ok'))){audioInit();audioOk=true;if(!tutDone){start();return true}say('耳機確認完成。按「開始逃跑」。');return true}
+ if(inR(hpRect('ok'))){audioInit();audioOk=true;if(needTut()){start();return true}say('耳機確認完成。按「開始逃跑」。');return true}
  return false}
 function drawHeadphone(){
  const im=art('ui-headphone'),h=HP.w*432/578;
@@ -880,7 +883,7 @@ function start(){
  audioInit();audioOk=true;
  analytics=AN.start('peek',amount);peekStake=amount;peekBusy=true;save();renderAll();
  practice=nextPractice;nextPractice='';daily=forceLvl===null&&!practice&&dailyOn();lvl=practice?0:daily?dailyLvl():wantLevel();L=lvl>0?levelCfg(lvl,(lvDeaths[lvl]||0)>=2):null;
- tut=null;if(!tutDone&&!practice&&!daily&&lvl<=1&&forceLvl===null){tut={i:0,fails:0,n:0};introP=1;lvl=0;L=null}
+ tut=null;if(needTut()&&!practice&&!daily&&lvl<=1&&forceLvl===null){tut={i:0,fails:0,n:0};introP=1;lvl=0;L=null}
  reset();earned=0;st='run';try{window.__gp&&window.__gp(true)}catch(e){}last=performance.now();applyLevel();if(L)mark('flick');dex=false;endBtns=[];
  if(!L)say(practice?'練習：不扣生命，也不發點。':'開始逃跑。別回頭。');ui();c.focus();
 }

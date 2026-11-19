@@ -12,7 +12,7 @@ const source="'use strict';\n"+raw.replace(hookAt,'globalThis.__peek={update,sta
 const results=[];
 export function fixture(balance=500,savedBest=null,random=Math.random,newPlayer=false){
   let now=1000;
-  const elements=new Map(),storage=new Map([...(savedBest===null?[]:[['deep-sea-peek-best',String(savedBest)]]),...(newPlayer?[]:[['deep-sea-peek-tut2','1']])]),events=[];
+  const elements=new Map(),storage=new Map([...(savedBest===null?[]:[['deep-sea-peek-best',String(savedBest)]]),...(newPlayer?[]:[['deep-sea-peek-tut2','1'],['deep-sea-peek-tut-always','0']])]),events=[];
   const drawing=new Proxy({},{get:(t,k)=>k in t?t[k]:(k==='createRadialGradient'||k==='createLinearGradient')?()=>({addColorStop(){}}):()=>{},set:(t,k,v)=>{t[k]=v;return true;}});
   function el(id){if(!elements.has(id))elements.set(id,{hidden:false,value:'10',textContent:'',className:'',dataset:{},style:{},disabled:false,handlers:{},focus(){},getContext:()=>drawing,getBoundingClientRect:()=>({left:0,top:0,width:800,height:450}),addEventListener(type,fn){this.handlers[type]=fn;}});return elements.get(id);}
   const listeners={};
@@ -200,7 +200,7 @@ check('Level table: buffer, learn, boss and difficulty ramp follow the ten-level
 });
 check('Weather comes from the level pool and never repeats on consecutive levels; events follow the table',()=>{
   const f=fixture();
-  for(let l=2;l<=100;l++){f.F.ev("st='over';forceLvl="+l+";maxLvl=100;runTop=100");f.F.start();assert.equal(f.ev('L.l'),l);const w=f.ev('wx'),pool=JSON.parse(f.ev('JSON.stringify(L.wxp)'));assert.ok(pool.includes(w),'level '+l+' weather');if(pool.length>1&&l>2)assert.notEqual(w,f.ev('prevWxT'),'repeat at '+l);f.F.ev('prevWxT=wx')}
+  for(let l=2;l<=100;l++){f.F.ev("st='over';forceLvl="+l+";maxLvl=100;runTop=100");f.F.start();assert.equal(f.ev('L.l'),l);const w=f.ev('wx'),pool=JSON.parse(f.ev('JSON.stringify(L.wxp)'));const stay=f.ev("L.fixed||L.kind==='boss'||L.kind==='learn'"),world=JSON.parse(f.ev('JSON.stringify([...new Set(LVT.slice(L.wi*20+1,L.wi*20+21).flatMap(e=>e?e[1]:[]))])'));assert.ok(stay?pool.includes(w):world.includes(w),'level '+l+' weather');if(pool.length>1&&l>2)assert.notEqual(w,f.ev('prevWxT'),'repeat at '+l);f.F.ev('prevWxT=wx')}
   const ev=l=>{const g=fixture();g.F.ev('forceLvl='+l+';maxLvl=100;runTop=100');g.F.start();return g.ev('evK')};
   assert.equal(ev(3),'nib');assert.equal(ev(13),'chest');assert.equal(ev(14),'');
 });
@@ -356,6 +356,11 @@ check('Clearing a level rolls straight into the next one (no result page); level
   const g=fixture();g.F.ev('forceLvl=5;maxLvl=5;runTop=5;ck=5');g.F.start();g.F.ev('forceLvl=null');assert.equal(g.ev('lvl'),5);
   g.F.ev('ev=null;gapT=999;prog=99.9;L.left=0');g.run(1);assert.equal(g.ev('st'),'run');assert.equal(g.ev('lvl'),6);assert.equal(g.ev('maxLvl'),6);
   const h=fixture();h.F.ev('forceLvl=100;maxLvl=100');h.F.start();h.F.ev('ev=null;gapT=999;prog=99.9;L.left=0');h.run(1);assert.equal(h.ev('st'),'won');
+});
+check('The tutorial opens on every new run (Skip ends it), but not between levels',()=>{
+  const f=fixture(500,null,Math.random,true);f.F.ev('forceLvl=null');f.F.start();assert.ok(f.ev('introP')||f.ev('tut'),'first run shows the tutorial');
+  f.F.ev('introP=0;tutEnd()');assert.equal(f.ev('tut'),null);assert.equal(f.ev('st'),'run');
+  f.F.ev("end('dead','eye')");f.run(3);f.F.ev("st='ready'");f.F.start();assert.ok(f.ev('introP')||f.ev('tut'),'after dying the next run shows it again');
 });
 console.log(results.length+' peek checks passed');
 }
