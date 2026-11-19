@@ -50,6 +50,8 @@ let keys={l:0,r:0,cover:0,pick:0},gs=new Map(),hideWant=0,tapPick=0,dbl=0,tapT=-
 let introP=0,introBtns=[],scareT=0,scareMax=1,tut=null,bag,drops,dropT,camp,campNext,openFx,pickHeld=0,sc=0,scrolls=0,audioOk=false,assist=false,lowScare=false,MASTER=.7,chirpT=0,hk=0,hkSd=1,scareSnap=null,bT=0,hbT=0,stT=0;
 try{scrolls=+localStorage.getItem('deep-sea-peek-scrolls')||0}catch(e){}
 try{tutDone=localStorage.getItem('deep-sea-peek-tut2')==='1'}catch(e){}
+let tutSeen=false,tutAlways=true;try{tutAlways=localStorage.getItem('deep-sea-peek-tut-always')!=='0'}catch(e){}   // the tutorial opens every new run (with a Skip button); a saved flag can switch that off
+const needTut=()=>tutAlways?!tutSeen:!tutDone;
 try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-opts')||'{}');assist=!!o.a;lowScare=!!o.l;captions=!!o.c;if(typeof o.m==='number')AMB=clamp(o.m,0,1);if(typeof o.v==='number')MASTER=clamp(o.v,0,1)}catch(e){}
 /* ---- levels: 100 levels in 5 worlds, a ten-level sawtooth with buffer levels and a boss every tenth (v0.5 section 5) ---- */
 const WORLD_BASE=[1,1.15,1.3,1.45,1.6],WORLD_NAME=['森林','墓地','沼澤','雪原','火山'];
@@ -111,7 +113,8 @@ function applyLevel(){
  campNext=L.k===5&&L.kind!=='boss'?50:999;
  guarantee=noDrop>=3||L.l===41||L.l===42;dropT=L.kind==='safe'?rnd(3,5):rnd(5,8);
  evK=L.evf==='n'?'nib':L.evf==='c'?'chest':L.evf==='r'&&R()<.3?'rook':'';nibT=evK?rnd(8,22):0;
- wx=L.wxp[(R()*L.wxp.length)|0];if(L.wxp.length>1&&wx===lastWx)wx=L.wxp.find(x=>x!==lastWx);lastWx=wx;
+ {let wp=L.wxp;if(!L.fixed&&L.kind!=='boss'&&L.kind!=='learn'){const all=[...new Set(LVT.slice(L.wi*20+1,L.wi*20+21).flatMap(e=>e?e[1]:[]))].filter(x=>L.t>=.5||(x!==5&&x!==7));if(all.length>1)wp=all}   // ordinary levels draw from every weather their world uses, so the same level is not always the same rain
+ wx=wp[(R()*wp.length)|0];if(wp.length>1&&wx===lastWx)wx=wp.find(x=>x!==lastWx);lastWx=wx}
  assistHid=L.ease?1:0;
  say('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'：'+KIND_NAME[L.kind]+(L.fixed?'（固定種子）':'')+'。'+WORLD_RULE[L.wi]+(L.ease?'小螢多給你 0.3 秒預警，少來一次襲擊。':''))}
 function reset(){shieldFx=0;torchTap=0;tapQ=[];headDown=false;itemTap=0;pendType=null;hideWant=0;tapPick=0;lt=0;breath=1;hk=0;scareSnap=null;gs.clear();eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0,chest:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;sc=0;rB=BASE_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
@@ -156,7 +159,7 @@ function ui(){
  $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'逃跑中 · 別回頭':(st==='ready'?'開始 ':'再試 ')+(lv?'第 '+lv+' 關':'自由跑'));
 }
 function fx(s,x,y,col){fxs.push({s,x,y,col,t:0})}
-function end(kind,reason){
+function end(kind,reason){tutSeen=false;
  if(st!=='run')return;
  if(tut&&kind==='dead'){tutFail();return}
  if(kind==='dead'&&bag.charm>0){bag.charm--;shieldFx=1;fx('護身符擋下了這一次',CX,118,'#9fe8ff');ev=null;gapT=Math.max(nextGap(),4);flash=lowScare?.1:.3;return}
@@ -178,6 +181,9 @@ function end(kind,reason){
  else if(!earned)say(CAUSES[reason]+'。'+(L?'你死了，整輪重來，回到第 1 關。':'這一局沒有額外成就獎勵。'),'lose');
  else say(CAUSES[reason]+'。本局共入帳 '+fmt(earned)+' 點。','win');
  ui();
+ if(kind==='won'&&L&&!practice&&!daily&&forceLvl===null&&lvl<100){   // no result page between levels: roll straight into the next one and announce the new terrain
+  const pw=L.wi;forceLvl=lvl+1;start();forceLvl=null;
+  if(st==='run'&&L){fx('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'・'+KIND_NAME[L.kind],CX,150,'#e8c675');if(L.wi!==pw)fx('地形改變',CX,118,'#ffd98a')}}
 }
 function pay(n,text){
  if(practice||daily||(L&&lvl<maxLvl)){say(text+'。','win');return}   // practice and replays of cleared levels pay nothing
@@ -198,7 +204,7 @@ function tutOk(){fx('很好！',CX,118,'#9fe8ff');ev=null;pendType=null;tut.i++;
  if(tut.i>=TUT.length){tutEnd();return}
  gapT=TUT[tut.i].ty==='pick'?99:1.2;
  if(TUT[tut.i].ty==='pick'){tut.n=bag.torch;drops.length=0}}
-function tutEnd(){tut=null;tutDone=true;try{localStorage.setItem('deep-sea-peek-tut2','1')}catch(e){}st='ready';ev=null;fxs=[];clearInput();start()}
+function tutEnd(){tut=null;tutDone=true;tutSeen=true;try{localStorage.setItem('deep-sea-peek-tut2','1')}catch(e){}st='ready';ev=null;fxs=[];clearInput();start()}
 function tutTick(){dropT=999;nibT=0;campNext=999;prog=Math.min(prog,40);
  if(TUT[tut.i].ty==='pick'&&!ev){if(bag.torch>tut.n){tutOk();return true}
   if(!drops.some(d=>d.z>=0)){drops.push({k:'torch',side:R()<.5?-1:1,z:.6})}}
@@ -589,7 +595,7 @@ function hpRect(k){
 function hpClick(e){
  const p=cxy(e),inR=r=>p[0]>=r[0]&&p[0]<=r[0]+r[2]&&p[1]>=r[1]&&p[1]<=r[1]+r[3];
  if(inR(hpRect('spk'))){audioInit();tone(660,.18,.08,-1,'sine');setTimeout(()=>tone(660,.18,.08,1,'sine'),320);say('先左耳、再右耳各一聲。聽得到就按勾勾。');return true}
- if(inR(hpRect('ok'))){audioInit();audioOk=true;if(!tutDone){start();return true}say('耳機確認完成。按「開始逃跑」。');return true}
+ if(inR(hpRect('ok'))){audioInit();audioOk=true;if(needTut()){start();return true}say('耳機確認完成。按「開始逃跑」。');return true}
  return false}
 function drawHeadphone(){
  const im=art('ui-headphone'),h=HP.w*432/578;
@@ -856,13 +862,20 @@ function draw(){
   g.fillStyle='rgba(18,13,10,.72)';g.fillRect(0,0,W,H);
   if(!audioOk)drawHeadphone();
   else{const lv=wantLevel(),lc=lv?levelCfg(lv,(lvDeaths[lv]||0)>=2):null;
-   tx('別看',CX,70,52,'#e8c675');tx('Don\'t Peek　禁忌寶盒・夜逃',CX,98,17,'#f1d9a6');
-   tx(lc?'第 '+lv+' 關・'+WORLD_NAME[lc.wi]+'・'+KIND_NAME[lc.kind]+'':'自由跑（沒有關卡和生命）',CX,130,20,'#ffd98a');
-   howCards(146,170,1);
-   tx('選好關卡，按右邊的「開始」',CX,388,20,'#ffd98a');tx(PEEK_VER,14,H-12,14,'rgba(241,217,166,.55)','left');tx('電腦：← → 躲或選道具　F 撿　手機：左右滑、點一下',CX,414,14,'rgba(241,217,166,.75)')}}
+   tx('別看',CX,58,50,'#e8c675');tx('Don\'t Peek　禁忌寶盒・夜逃',CX,86,16,'#f1d9a6');
+   tx(lc?'第 '+lv+' 關・'+WORLD_NAME[lc.wi]+'・'+KIND_NAME[lc.kind]+'':'自由跑（沒有關卡和生命）',CX,118,19,'#ffd98a');
+   drawStartBtn();
+   howCards(298,108,1);tx(PEEK_VER,14,H-12,14,'rgba(241,217,166,.55)','left');tx('電腦：← → 躲　1–4／T 用道具　F 撿',W-14,H-12,13,'rgba(241,217,166,.7)','right')}}
  else if(st==='won')drawWon();
  else if(st==='over'){if(scareT>0)drawScare();else drawDeath()}
  if(dex)drawDex()}
+const startRect=()=>[CX-135,150,270,66];
+function drawStartBtn(){const [x,y,w,h]=startRect(),pr=.5+.5*Math.sin(tt*3);
+ g.save();g.shadowColor='rgba(255,200,110,'+(.35+.25*pr)+')';g.shadowBlur=18+10*pr;
+ const gr=g.createLinearGradient(0,y,0,y+h);gr.addColorStop(0,'#5d4228');gr.addColorStop(1,'#2a1b0f');RR(x,y,w,h,14,gr,0);g.restore();
+ g.save();g.strokeStyle='#e2b95c';g.lineWidth=3;g.beginPath();g.moveTo(x+14,y);g.arcTo(x+w,y,x+w,y+h,14);g.arcTo(x+w,y+h,x,y+h,14);g.arcTo(x,y+h,x,y,14);g.arcTo(x,y,x+w,y,14);g.closePath();g.stroke();g.restore();
+ tx('開始',CX,y+h/2+11,34,'#f6dfa8')}
+const inStart=e=>{const p=cxy(e),r=startRect();return p[0]>=r[0]&&p[0]<=r[0]+r[2]&&p[1]>=r[1]&&p[1]<=r[1]+r[3]};
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
@@ -870,7 +883,7 @@ function start(){
  audioInit();audioOk=true;
  analytics=AN.start('peek',amount);peekStake=amount;peekBusy=true;save();renderAll();
  practice=nextPractice;nextPractice='';daily=forceLvl===null&&!practice&&dailyOn();lvl=practice?0:daily?dailyLvl():wantLevel();L=lvl>0?levelCfg(lvl,(lvDeaths[lvl]||0)>=2):null;
- tut=null;if(!tutDone&&!practice&&!daily&&lvl<=1&&forceLvl===null){tut={i:0,fails:0,n:0};introP=1;lvl=0;L=null}
+ tut=null;if(needTut()&&!practice&&!daily&&lvl<=1&&forceLvl===null){tut={i:0,fails:0,n:0};introP=1;lvl=0;L=null}
  reset();earned=0;st='run';try{window.__gp&&window.__gp(true)}catch(e){}last=performance.now();applyLevel();if(L)mark('flick');dex=false;endBtns=[];
  if(!L)say(practice?'練習：不扣生命，也不發點。':'開始逃跑。別回頭。');ui();c.focus();
 }
@@ -880,7 +893,7 @@ c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
  if(dex){dexClick(e);return}
  if(introP){introClick(e);return}
- if(st!=='run'){if(st==='ready'&&!audioOk&&shown()&&hpClick(e))return;if(st!=='ready'&&shown()&&deathClick(e))return;say(st==='ready'?'先按「開始逃跑」。':'這一局已結算。按「再開一次」開始新的一局。');return}
+ if(st!=='run'){if(st==='ready'&&!audioOk&&shown()&&hpClick(e))return;if(st==='ready'&&audioOk&&!introP&&shown()&&inStart(e)){start();return}if(st!=='ready'&&shown()&&deathClick(e))return;say(st==='ready'?'先按中間的「開始」。':'這一局已結算。按「再開一次」開始新的一局。');return}
  if(!shown())return;e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(x){}
  if(tut){const q=cxy(e);if(q[0]>W-150&&q[1]>H-46){tutEnd();return}}
  if(camp){campTap(e);return}
@@ -891,6 +904,7 @@ c.addEventListener('pointerup',upPtr);c.addEventListener('pointercancel',upPtr);
 c.addEventListener('contextmenu',e=>e.preventDefault());
 const KEYMAP={t:'torch',T:'torch',a:'l',A:'l',ArrowLeft:'l',d:'r',D:'r',ArrowRight:'r',' ':'cover',f:'pick',F:'pick',s:'down',S:'down',ArrowDown:'down',ArrowUp:'up'};
 addEventListener('keydown',e=>{
+ if(st==='ready'&&audioOk&&!introP&&!dex&&shown()&&e.key==='Enter'&&!['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName)){e.preventDefault();start();return}
  if(introP&&shown()){if(['Enter',' ','ArrowRight'].includes(e.key)){e.preventDefault();introNext()}return}
  if(!shown()||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;
  if(camp&&camp.state==='pick'&&'123'.includes(e.key)&&e.key){camp.choice=+e.key-1;e.preventDefault();return}
