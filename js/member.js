@@ -19,8 +19,7 @@
     var icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
     icon.setAttribute('viewBox', '0 0 96 96'); icon.setAttribute('aria-hidden', 'true'); use.setAttribute('href', '#icon-' + id); icon.appendChild(use); return icon;
   }
-  var BOARD_ROWS = 8, BOARD_TICK = 2500;
-  var boardRequest = null, boardTimer = 0, boardPool = [], boardTurn = 0, boardCursor = {};
+  var boardRequest = null;
   var boardRetry = $('board-retry');
 
   var boardTime = new Intl.DateTimeFormat('sv-SE', {
@@ -65,19 +64,8 @@
     boardRetry.hidden = !retry;
   }
 
-  // Each tick, the next game (round robin) puts its next best score at the top of the table.
-  function boardTick() {
-    if (document.hidden || $('view-lobby').hidden || !boardPool.length) return;
-    var pick = boardPool[boardTurn % boardPool.length]; boardTurn++;
-    var i = boardCursor[pick.gameId] || 0; boardCursor[pick.gameId] = (i + 1) % pick.entries.length;
-    var body = $('board-rows'), row = boardRow(pick.gameId, pick.entries[i]);
-    row.className = 'is-new'; body.insertBefore(row, body.firstChild);
-    while (body.children.length > BOARD_ROWS) body.removeChild(body.lastChild);
-  }
-
   async function boardLoad() {
     if (boardRequest) boardRequest.abort();
-    clearInterval(boardTimer); boardTimer = 0;
     var request = new AbortController();
     boardRequest = request;
     var body = $('board-rows');
@@ -91,17 +79,14 @@
       if (boardRequest !== request) return;
       var visibleGames = new Set(Array.from(document.querySelectorAll('.lobby-grid .game-card:not([data-game-hidden])'),
         function (card) { return card.hash.slice(1); }));
-      boardPool = result.games.filter(function (game) {
+      var rows = result.games.filter(function (game) {
         return visibleGames.has(game.gameId) && Object.hasOwn(VIEWS, game.gameId) && game.entries.length;
+      }).map(function (game) {
+        // The feed orders each game's scores highest first, with a stable tie-break.
+        return boardRow(game.gameId, game.entries[0]);
       });
-      boardTurn = 0; boardCursor = {};
-      // start with every game's scores together, highest first
-      var all = [];
-      boardPool.forEach(function (g) { g.entries.forEach(function (e) { all.push({ gameId: g.gameId, entry: e }); }); });
-      all.sort(function (x, y) { return y.entry.score - x.entry.score; });
-      body.replaceChildren.apply(body, all.slice(0, BOARD_ROWS).map(function (x) { return boardRow(x.gameId, x.entry); }));
-      boardStatus(all.length ? '' : '目前尚無排行榜紀錄。');
-      if (all.length) boardTimer = setInterval(boardTick, BOARD_TICK);
+      body.replaceChildren(...rows);
+      boardStatus(rows.length ? '' : '目前尚無排行榜紀錄。');
     } catch (error) {
       if (boardRequest === request) boardStatus('目前無法載入排行榜。', true);
     } finally {
@@ -114,7 +99,6 @@
     if (!on) {
       if (boardRequest) boardRequest.abort();
       boardRequest = null;
-      clearInterval(boardTimer); boardTimer = 0;
       return;
     }
     boardLoad();
