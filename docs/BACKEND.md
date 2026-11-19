@@ -49,9 +49,9 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 | 已正式發布 | frog | Worker 重播 |
 | 已正式發布 | mines | Worker 管理棋盤 |
 | 已接入，待整批發布 | merge、ocean-link、dream、runner、cat、skybuilder、sneak、reaper、bird、tetris、elevator、fishing | Worker 管理棋盤或重播玩家輸入 |
-| 回合制與解謎，待串接 | mermaid、banquet、frontier | 依各款動作與關卡狀態定義伺服器驗證 |
+| 回合制與解謎，待串接 | mermaid、banquet | 依各款動作與關卡狀態定義伺服器驗證 |
 | 即時操作與反應，待串接 | campaign、nap、blaster、carp、rider、boss、thief、baby、pudding、clock-out、peek、mosquito、last-hair、breakout、pet-walk、office-shoot | 逐款核對時鐘、輸入及隨機性再重播 |
-| 同來源 iframe，待串接 | boba、dive、mrt、pancake、rocket-chair、eat-smaller、mirror-twins、shadow-relay、one-line-defense | 保留父子頁生命週期，增設必要橋接與 Worker 驗證 |
+| 同來源 iframe，待串接 | boba、dive、mrt、pancake、eat-smaller、mirror-twins、shadow-relay、one-line-defense | 保留父子頁生命週期，增設必要橋接與 Worker 驗證 |
 | 每日免費補給 | keno | 隨機補給與配額，不列競賽榜 |
 
 隱藏中的遊戲依既有改造與上架流程處理。新版遊戲上線前須完成 [訪客排行榜檢查](../RELEASE_CHECKLIST.md#訪客排行榜)。
@@ -99,6 +99,12 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 便便鳥大戰狼群記錄跳躍按下／放開與投射物，Worker 用種子重算障礙、狼王與終局距離。兩款都只寫 `game_leaderboard`，沿用十分鐘、6,000 筆操作上限與同回合防重送驗證。
 
 新增遊戲的預設串接要求與 PR 驗收紀錄見 [新增遊戲必接訪客排行榜](../README.md#新增遊戲必接訪客排行榜)。
+
+## Frontier Islands 與 Roar Through the Ceiling 訪客成績
+
+- `frontier` 使用既有棋盤 API，Worker 持有完整遠征世界。每段最多 400 個 50 毫秒步數與 1,600 個操作，驗證移動、建造、選卡、訓練與關卡轉移。以已完成島數（0～50）寫公開榜，島嶼完成時 checkpoint，戰敗時結算。可在同一訪客身分恢復最後已驗證狀態；傳輸回合到期後從驗證快照建立新回合。排行進度獨立於既有本機存檔。斷線時暫停並保留待重送請求，伺服器已收件的相同版本可安全重試。
+- `rocket-chair` 使用共用種子規則，記錄量化推力（0～1.2，精度 0.01）、觸控／語音模式、衝刺、一次廣告續命與咖啡續命，按固定 10 毫秒步數重播。Worker 由樓層、耗時與障礙罰時重算提早下班分鐘數；離局或未通關為 0。麥克風音訊與校準錄音不傳給 Worker，驗證的是合法輸入下的遊戲結果。
+- 延用 `0007` checkpoint 與 `0008` 排序，無新增 D1 migration。兩款都沿用訪客公開榜前 50 筆與同分最早達成的排序。
 便便鳥大戰狼群記錄跳躍按下／放開與投射物，Worker 用種子重算障礙、狼王與終局距離。兩款都只寫 `game_leaderboard`，沿用十分鐘、6,000 筆操作上限與同回合防重送驗證。
 
 ### 收盤之前

@@ -1,3 +1,8 @@
+function frontierRandom(w){
+ if(!Number.isInteger(w.rankSeed))return Math.random();
+ w.rankSeed=(Math.imul(w.rankSeed,1664525)+1013904223)>>>0;
+ return w.rankSeed/4294967296;
+}
 // Simulation stays in the game's closure; the model never touches points or tracking.
 var frontierClassic=false; // tests can switch the first region back to the beacon rules
 function frontierPlan(level){
@@ -16,7 +21,7 @@ function frontierFighterHp(w){return 100+w.cfg.chapter*20+(w.tech.warrior||0)*15
 function frontierPickCost(w){var picks=0;for(var k in w.tech)picks+=w.tech[k]|0;return 30+picks*36;}
 function frontierDraw(w){
  var pool=FRONTIER_CARDS.filter(function(c){return (w.tech[c.key]|0)<c.max;}),out=[];
- while(out.length<3&&pool.length){var i=Math.floor(Math.random()*pool.length);out.push(pool.splice(i,1)[0].id);}
+ while(out.length<3&&pool.length){var i=Math.floor(frontierRandom(w)*pool.length);out.push(pool.splice(i,1)[0].id);}
  return out;
 }
 function frontierChoose(w,index){
@@ -290,3 +295,5 @@ function frontierStep(w,input,dt){
  if(c.chapter>=2&&p.x>690){var cycle=w.time%9,hx=800+Math.floor(w.time/9)%3*120,hy=240+Math.floor(w.time/9)%2*360;if(cycle>7.2&&Math.hypot(p.x-hx,p.y-hy)<70)frontierDamage(w,10+c.chapter*2);}
  w.effects=w.effects.filter(function(e){e.t-=dt;return e.t>0;});w.enemies=w.enemies.filter(function(e){return e.hp>0||!e.counted;});w.drops=w.drops.filter(function(d){if(frontierNear(p,d,65)){w.coins+=d.amount;return false;}return true;});if(w.drops.length>90){var extra=w.drops.splice(90);extra.forEach(function(d){w.drops[0].amount+=d.amount;});}if(w.effects.length>70)w.effects.splice(0,w.effects.length-70);
 }
+
+if(typeof module!=='undefined')module.exports={frontierWorld,frontierStep,frontierChoose,frontierUpgrade,frontierSell,frontierLeave,frontierUpgradeHut,frontierRecruit};

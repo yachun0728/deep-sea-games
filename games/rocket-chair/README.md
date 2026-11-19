@@ -7,13 +7,13 @@
 - 網址：`#rocket-chair`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「對著手機大吼，火箭椅一路撞破天花板提早下班。」｜立即開玩 · 不限次數
 - 追蹤名稱（GA4 `game_name`）：社畜要下班，`game_id` 為 `rocket-chair`
-- 檔案：`games/rocket-chair/card.html`、`games/rocket-chair/cover.webp`、`games/rocket-chair/game.js`、`games/rocket-chair/icon.svg`、`games/rocket-chair/original.html`、`games/rocket-chair/style.css`、`games/rocket-chair/view.html`；`game.js` 共 44 行、2.5 KB
+- 檔案：`games/rocket-chair/card.html`、`games/rocket-chair/cover.webp`、`games/rocket-chair/game.js`、`games/rocket-chair/icon.svg`、`games/rocket-chair/original.html`、`games/rocket-chair/style.css`、`games/rocket-chair/view.html`；`game.js` 共 50 行、3.1 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「25b. 社畜要下班 Roar Through the Ceiling（rocket-chair）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-rocket-chair`、`rocket-chair-msg`、`rocket-chair-frame`
+`view-rocket-chair`、`rocket-chair-msg`、`rocket-chair-frame`、`rocket-chair-rank-status`、`rocket-chair-rank-retry`
 
 ## 狀態與常數
 
@@ -24,28 +24,28 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rocketFreeLeft` L6、`rocketUI` L7、`rocketValid` L8、`rocketRoute` L39
+`rocketFreeLeft` L6、`rocketUI` L7、`rocketValid` L8、`rocketRoute` L45
 
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L27 `rocketValid`：`S.balance-=n;`
+- L32 `rocketValid`：`S.balance-=n;`
 
 **入帳（領回／獎勵）**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **餘額檢查**
-- L14 `rocketValid`：`if(S.balance<fee){rocketUI(LOW_MSG);`
-- L26 `rocketValid`：`if(S.balance<n){rocketUI('點數不夠，需要 '+n+' 點。');`
+- L19 `rocketValid`：`if(S.balance<fee){rocketUI(LOW_MSG);`
+- L31 `rocketValid`：`if(S.balance<n){rocketUI('點數不夠，需要 '+n+' 點。');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L17 `rocketValid`：`ROCKET.analytics=AN.start('rocket-chair',fee,free?{entry_kind:'free_pass'}:undefined);`
-- L28 `rocketValid`：`AN.progress(ROCKET.analytics,{phase:'coffee',extra_points:n});`
-- L34 `rocketValid`：`AN.end(ROCKET.analytics,0,'complete',{score:early,cleared:data&&data.cleared?1:0,extra_spent_points:ROCKET.ex…`
+- L22 `rocketValid`：`ROCKET.analytics=AN.start('rocket-chair',fee,free?{entry_kind:'free_pass'}:undefined);`
+- L33 `rocketValid`：`AN.progress(ROCKET.analytics,{phase:'coffee',extra_points:n});`
+- L40 `rocketValid`：`AN.end(ROCKET.analytics,0,'complete',{score:early,cleared:data&&data.cleared?1:0,extra_spent_points:ROCKET.ex…`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -60,6 +60,10 @@
 - 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
+
+- 訪客排行榜以完成五層後的「提早下班分鐘數」計分，未通關為 0。Worker 以伺服器種子、每 10 毫秒的正規化推力輸入、衝刺與合法續命重播物理及障礙，計算成績。音訊留在瀏覽器，僅傳量化後的操作值。
+- 本局結束後送出公開榜，重送沿用同回合版本；排行榜每款保留前 50 筆，大廳只顯示最高分，同分先達到者優先。
+
 
 定位：`games/rocket-chair/original.html`（獨立子頁，以 iframe `src` 載入，圖片在 `games/rocket-chair/assets/`）、`games/rocket-chair/game.js` 的 `ROCKET`、`deepSeaRocket`。子頁可單獨開啟（自己讀寫同一個餘額 Key），嵌入大廳時扣點與 GA4 交給父頁；iframe 需 `allow="microphone"`。
 

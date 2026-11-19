@@ -5278,5 +5278,10 @@
   "點一下繼續": "Tap to resume",
   "點一下繼續（會重新開啟麥克風）": "Tap to resume (microphone turns back on)",
   "最近 10 款有排行活動的遊戲": "10 games with the latest ranked activity",
-  "遊戲／最近活動": "Game / Last played"
+  "遊戲／最近活動": "Game / Last played",
+  "排行榜遠征": "Ranked expedition",
+  "繼續原存檔": "Continue local save",
+  "排行遠征從第一島依序前進。": "Ranked expeditions progress from the first island in order.",
+  "排行榜仍在處理上一局，請稍後再試。": "The leaderboard is still processing your previous round. Please try again shortly.",
+  "排行榜遠征保留已驗證進度；可隨時切回原存檔。": "Ranked expeditions keep verified progress. You can return to your local save at any time."
 }

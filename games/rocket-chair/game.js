@@ -6,7 +6,12 @@
   function rocketFreeLeft(){try{var t=Number(localStorage.getItem(ROCKET_FREE_KEY));return isFinite(t)?Math.max(0,t-Date.now()):0;}catch(e){return 0;}}
   function rocketUI(text){if(text)$('rocket-chair-msg').textContent=text;}
   function rocketValid(source){return source===$('rocket-chair-frame').contentWindow;}
+  var rocketRank=timedLeaderboard('rocket-chair','rocket-chair',rocketChairRules.inputCount,function(){});
   window.deepSeaRocket={
+    prepare:function(source){if(!rocketValid(source))return Promise.resolve(null);if(rocketRank.busy())return Promise.reject(new Error('rank_busy'));return new Promise(function(resolve){rocketRank.start(function(random){resolve(random);},function(){resolve(null);});});},
+    record:function(source,code){if(rocketValid(source))rocketRank.record(code);},
+    update:function(source,ms,active,step){if(rocketValid(source))rocketRank.update(ms,active,step);},
+
     balance:function(){return S.balance;},
     start:function(source){
       if(!rocketValid(source)||$('view-rocket-chair').hidden||ROCKET.active)return false;
@@ -31,6 +36,7 @@
     finish:function(source,data){
       if(!rocketValid(source)||!ROCKET.active)return;ROCKET.active=false;
       var early=Math.max(0,Math.min(600,Math.floor(Number(data&&data.early)||0)));
+      rocketRank.finish(early,true);
       AN.end(ROCKET.analytics,0,'complete',{score:early,cleared:data&&data.cleared?1:0,extra_spent_points:ROCKET.extra});
       rocketUI(data&&data.cleared?'提早 '+early+' 分鐘下班，可再玩。':'這局加班了，可再玩。');
     },

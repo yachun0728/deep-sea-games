@@ -2472,6 +2472,8 @@ html.frontier-immersive{overflow:hidden}
 #view-frontier .ft-notice{position:absolute;z-index:35;top:132px;left:50%;transform:translateX(-50%);max-width:calc(100% - 28px);margin:0;padding:8px 14px;border:1px solid #e6c581;border-radius:12px;background:#4a3b1ee6;color:#ffe9b4;font-size:13px;line-height:1.5;text-align:center;pointer-events:none}
 #view-frontier .ft-notice[hidden]{display:none}
 
+#view-frontier .ft-rank-controls{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px}#view-frontier .ft-rank-controls p{margin:0;font-size:13px;color:var(--muted)}
+
 .wardrobe-hub{margin:0;border:1px solid #5bada93b;border-radius:20px;background:linear-gradient(120deg,#102d36,#173c40);overflow:hidden;color:#e0eee8}
 .wardrobe-head{padding:20px 24px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-weight:700}.wardrobe-head h2{margin:0;font-size:inherit}.wardrobe-head span{font-size:12px;font-weight:400;color:#9ec9bf}
 .wardrobe-layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:24px;padding:0 24px 24px}.wardrobe-profile{text-align:center;border-radius:16px;background:#ffffff08;padding:20px}.wardrobe-avatar{height:220px}.wardrobe-avatar svg{height:100%;max-width:100%}.wardrobe-hub p{font-size:12px;line-height:1.8;color:#adcec2}.wardrobe-hub h3{font-size:16px}.wardrobe-slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.wardrobe-hub button{font:inherit;background:#275257;color:#e0eee8;border:1px solid #55968c;border-radius:8px;min-height:40px;padding:9px 12px;cursor:pointer}.wardrobe-hub button:disabled{opacity:.45;cursor:default}.wardrobe-slots button{font-size:11px;padding:7px}.wardrobe-items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.wardrobe-item{background:#ffffff09;border:1px solid #ffffff14;border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:9px}.wardrobe-item h4{margin:0;font-size:14px}.wardrobe-item p{margin:0}.wardrobe-icon{font-size:30px}.wardrobe-item button{margin-top:auto;font-size:12px}.wardrobe-preview{width:36px;height:36px;display:inline-flex;vertical-align:middle}.wardrobe-preview svg{width:100%;height:100%}.wardrobe-earn{margin-bottom:18px}.wardrobe-open{background:#143f48;color:#c8e7da;border:1px solid #396967;border-radius:9px;padding:4px 9px;display:flex;align-items:center;gap:6px;cursor:pointer;font:inherit}
@@ -2756,7 +2758,8 @@ html.frontier-immersive{overflow:hidden}
     </section>
   </div>
 </section>
-<section class="view" id="view-frontier" hidden><div class="ft-layout"><div class="ft-main" id="ft-main">
+<section class="view" id="view-frontier" hidden>
+<div class="ft-rank-controls"><p>排行榜遠征保留已驗證進度；可隨時切回原存檔。</p><button id="ft-ranked" type="button">排行榜遠征</button><button id="ft-local" type="button">繼續原存檔</button><p id="ft-rank-status" role="status"></p><button id="ft-rank-retry" type="button" hidden>重送排行榜成績</button></div><div class="ft-layout"><div class="ft-main" id="ft-main">
 <div class="ft-top"><span class="ft-eyebrow">FRONTIER / 50 STAGES</span><div class="ft-status"><strong id="ft-zone">翠葉群島</strong><span id="ft-level">1 / 50</span><span id="ft-health">♥ 100</span><span id="ft-base-health"></span></div><button type="button" id="ft-journal" aria-expanded="false" aria-controls="ft-task-details">任務</button><button type="button" id="ft-full">全螢幕</button></div><span id="ft-assault" class="ft-assault"></span><p id="ft-objective" class="ft-objective" aria-live="polite">建立據點，清除守衛，點亮燈塔。</p>
 <div class="ft-mission" id="ft-task-details" hidden><span id="ft-checklist"></span><span id="ft-warning"></span><span id="ft-hauling"></span><span id="ft-army"></span><span id="ft-journal-stock"></span></div><div class="ft-stage" id="ft-stage"><canvas id="ft-canvas" width="900" height="650" tabindex="0" aria-label="荒島遠征：移動採集、靠近建造、閃避攻擊"></canvas><section id="ft-cards" class="ft-cards" aria-live="polite" hidden><h3 id="ft-cards-title">金幣湊滿了！選一張強化卡</h3><div class="ft-card-row"><button type="button" id="ft-card-0" class="ft-card"><strong id="ft-card-0-name"></strong><em id="ft-card-0-lv"></em><span id="ft-card-0-desc"></span></button><button type="button" id="ft-card-1" class="ft-card"><strong id="ft-card-1-name"></strong><em id="ft-card-1-lv"></em><span id="ft-card-1-desc"></span></button><button type="button" id="ft-card-2" class="ft-card"><strong id="ft-card-2-name"></strong><em id="ft-card-2-lv"></em><span id="ft-card-2-desc"></span></button></div></section><p id="ft-notice" class="ft-notice" aria-live="polite" hidden></p><div id="ft-overlay" class="ft-overlay"><span class="ft-eyebrow">GATHER · BUILD · SURVIVE</span><h2 id="ft-title">荒島遠征</h2><p id="ft-message">五大區域，五十場考驗。建立據點，穿越危險地帶。</p><button type="button" id="ft-go">開始遠征</button></div><div class="ft-touch"><div id="ft-stick" role="group" aria-label="拖曳搖桿移動"><span id="ft-knob"></span></div><button type="button" id="ft-dash" class="ft-optional-dash">衝刺</button></div></div>
 <div class="ft-resource"><span id="ft-bag">背包</span><span id="ft-stock">倉庫</span><span id="ft-troops"></span><span id="ft-coins">金幣 0</span><span id="ft-workers">工人 0</span><button type="button" id="ft-hut-up" hidden>升級</button><button type="button" id="ft-home">返回營地</button><button type="button" id="ft-shop-toggle" hidden aria-expanded="false" aria-controls="ft-shop">交易與裝備</button><button type="button" id="ft-pause">暫停</button><button type="button" id="ft-next" hidden>前往下一島</button></div>
@@ -3546,7 +3549,8 @@ html.frontier-immersive{overflow:hidden}
     <div class="rocket-chair-platform-bar"><p class="hint">沒有點數獎勵。會議時間用完可用 5 點買特濃咖啡續命，或看示範廣告延長一次。</p></div>
     <p class="msg" id="rocket-chair-msg" aria-live="polite">對著手機大吼讓火箭椅往上衝，撞破 5 層天花板提早下班。不方便出聲可以選按住螢幕。</p>
     <div class="rocket-chair-stage"><iframe id="rocket-chair-frame" title="社畜要下班 Roar Through the Ceiling" allow="microphone; autoplay; clipboard-write; web-share"></iframe></div>
-  </section>
+  <p id="rocket-chair-rank-status" role="status" hidden></p><button id="rocket-chair-rank-retry" type="button" hidden>重送排行榜成績</button>
+</section>
   <section class="view" id="view-clock-out" hidden>
     <div class="console"><div class="sneak-stage"><canvas id="co-canvas" tabindex="0" width="400" height="560" aria-label="下班保衛戰：在抽屜格子裡擺放辦公用品當防線，點戰場丟便利貼，撐到 17:00 打卡下班"></canvas></div>
       <div class="side"><section class="panel" aria-label="下班保衛戰操作">
@@ -9188,7 +9192,12 @@ html.frontier-immersive{overflow:hidden}
   "點一下繼續": "Tap to resume",
   "點一下繼續（會重新開啟麥克風）": "Tap to resume (microphone turns back on)",
   "最近 10 款有排行活動的遊戲": "10 games with the latest ranked activity",
-  "遊戲／最近活動": "Game / Last played"
+  "遊戲／最近活動": "Game / Last played",
+  "排行榜遠征": "Ranked expedition",
+  "繼續原存檔": "Continue local save",
+  "排行遠征從第一島依序前進。": "Ranked expeditions progress from the first island in order.",
+  "排行榜仍在處理上一局，請稍後再試。": "The leaderboard is still processing your previous round. Please try again shortly.",
+  "排行榜遠征保留已驗證進度；可隨時切回原存檔。": "Ranked expeditions keep verified progress. You can return to your local save at any time."
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -14157,6 +14166,323 @@ if (typeof module !== 'undefined') module.exports = reaperRules;
     if(frame.contentWindow&&frame.contentWindow.setPancakePlatformActive)frame.contentWindow.setPancakePlatformActive(active);
   }
   $('pancake-finish').addEventListener('click',function(){var frame=$('pancake-frame');if(PANCAKE.active&&frame.contentWindow&&frame.contentWindow.finishPancakePlatformRound)frame.contentWindow.finishPancakePlatformRound();});
+const rocketChairRules=(()=>{
+const CONFIG = {
+  // 時間
+  meetingSeconds: 60,          // 主管會議倒數
+  startClock: '16:30',
+  offClock: '18:00',
+
+  // 吼聲
+  ambientMargin: 1.3,          // 環境噪音乘上多少當作 0
+  quietModeScale: 0.4,         // 小聲模式的最大聲基準 = 校準最大聲 × 這個數
+  roarCurve: 0.5,              // 音量換算吼聲值的曲線（0.5 = 開根號，小聲的人比較好飛）
+  smoothing: 0.2,
+  levelFall: 0.15,
+  levelHover: 0.35,
+  levelFast: 0.7,
+
+  // 推力
+  gravity: 500,
+  thrustMax: 900,
+  drag: 1.6,                   // 空氣阻力（決定最高速度）
+  burstJumpFrom: 0.3,
+  burstJumpTo: 0.8,
+  burstWindow: 0.15,           // 秒
+  burstImpulse: 650,
+  burstDuration: 0.6,          // 衝刺時不受重力／阻力影響的秒數
+  burstCooldown: 1.5,
+
+  // 天花板
+  ceilingBreakSpeed: 600,      // 速度超過多少才撞得破（衝刺才達得到）
+  ceilingBounce: 200,
+  breakExitSpeed: 220,         // 撞破天花板後的速度上限
+
+  // 障礙
+  grabSeconds: 1,
+  grabClockPenalty: 3,         // 分鐘
+  grabPull: 120,
+  handInterval: 1.5,           // 左右輪流伸手的間隔
+  handLaneGap: 3.0,            // 同一排兩次伸手至少隔幾秒
+  paperWaveInterval: 2.6,
+  paperFallDistance: 320,      // 報帳單從天花板掉多遠就散開
+  paperKnock: 300,
+  meetingSecondsStuck: 2,
+  beamPeriod: 4.4,             // 投影機光束來回一趟幾秒
+  beamSweep: 240,              // 光束左右掃多遠
+  beamHalfWidth: 50,           // 光斑半寬
+  meetingClockPenalty: 5,
+  gossipStickSeconds: 1,
+  gossipInterval: 1.25,
+  sprinklerThrustRatio: 0.5,
+  hitInvuln: 1.4,
+
+  // 備案
+  touchHoldLevel: 0.6,
+  touchIdleLevel: 0.2,         // 用按的玩：放手時慢慢下降
+  doubleTapSeconds: 0.32,
+
+  // 麥克風
+  micCheckSeconds: 1.5,
+
+  // 點數／續命
+  entryFee: 0,
+  adExtendSeconds: 20,
+  adContinuePerGame: 1,
+  fakeAdSeconds: 5,
+  adFreeMinutes: 30,
+  coffeeCost: 5,
+  coffeeExtendSeconds: 15,
+  coffeeBoostSeconds: 10,
+};
+
+const VW = 400, FH = 820, SLAB = 34, FLOORS = 5, CH = 146, CHW = 34;
+const LANES = [[290, 470, 640], [], [300, 560], [230, 420, 610], [250, 520]];
+
+function create(random=Math.random,event=()=>{}){
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),lerp=(a,b,t)=>a+(b-a)*t;
+const rand=(a,b)=>a+random()*(b-a);
+const easeOut=t=>1-Math.pow(1-clamp(t,0,1),3);
+let inputMode='voice',appState='play',raw=0,steps=0,finished=false;
+const INK='#1d1b1a',particles=[],FLOOR_INFO=[{name:'1F 業務部'},{name:'2F 財務部'},{name:'3F 會議室'},{name:'4F 茶水間'},{name:'5F 頂樓前'}];
+const Snd=new Proxy({},{get:(_,key)=>(...args)=>event('sound',{key,args})});
+const track=(name,data)=>event('track',{name,data}),vibrate=()=>{},shake=(...args)=>event('shake',args),floatText=(...args)=>event('float',args);
+const Roar={smooth:0,hist:[]};
+let G;
+function clockMin(str) { const [h, m] = str.split(':').map(Number); return h * 60 + m; }
+function newGame() {
+  return {
+    y: 0, v: 0, floor: 0, ft: 0, elapsed: 0, penalty: 0, meetingTotal: CONFIG.meetingSeconds,
+    stuck: null, invuln: 0, burstLeft: 0, cooldown: 0, coffeeLeft: 0, mist: false,
+    bounces: [0, 0, 0, 0, 0], broken: 0, bursts: 0, roarSec: 0, peakRms: 0,
+    beamHit: false, paperHits: 0, adUsed: 0, coffeeCount: 0, extraSpent: 0,
+    obs: null, hintShown: false, hintT: 0, startHintT: 3.5, cleared: false, done: false,
+    face: 'normal', arms: 'down', paid: 0, quiet: inputMode === 'voice_quiet', mode: inputMode,
+  };
+}
+function initFloorObs(k) {
+  const O = { k, t: 0, list: [], next: 0.6, side: 0, lastLane: -1 };
+  if (k === 2) O.beams = LANES[2].map((y, i) => ({ y: k * FH + y, phase: i * 1.9, period: CONFIG.beamPeriod + i * 0.6 }));
+  if (k === 4) O.zones = LANES[4].map((y, i) => ({ y: k * FH + y, h: 130, period: 3.6, on: 2.0, phase: i * 1.7 }));
+  return O;
+}
+function tryBurst() {
+  if (!G || appState !== 'play' || G.stuck || G.cooldown > 0) return false;
+  G.v = Math.max(G.v, 0) + CONFIG.burstImpulse; G.burstLeft = CONFIG.burstDuration; G.cooldown = CONFIG.burstCooldown;
+  G.bursts++; shake(0.35, 5); Snd.burst(); vibrate(40);
+  track('burst', { floor: G.floor + 1 });
+  event('burstParticles');
+  return true;
+}
+function hitObstacle(kind, ref) {
+  if (G.invuln > 0 || G.stuck) return;
+  track('obstacle_hit', { floor: G.floor + 1, kind });
+  vibrate(60);
+  if (kind === 'hand') {
+    if (ref && G.obs) { G.obs.used = G.obs.used || {}; G.obs.used[ref.y] = true; }
+    G.stuck = { kind, t: 0, dur: CONFIG.grabSeconds, ref }; G.penalty += CONFIG.grabClockPenalty; G.v = 0;
+    floatText('+' + CONFIG.grabClockPenalty + ' 分鐘', VW / 2 + 60, G.y + 140); floatText('欸你有空嗎？', VW / 2, G.y + 175, INK, 18);
+    Snd.grab();
+  } else if (kind === 'paper') {
+    G.paperHits++; G.v = -CONFIG.paperKnock; G.y = Math.max(G.floor * FH, G.y - 30); G.burstLeft = 0;
+    G.stuck = { kind, t: 0, dur: 0.35 }; floatText('啪！', VW / 2 + 50, G.y + 130); shake(0.25, 4); Snd.paper();
+    event('paperParticles');
+
+  } else if (kind === 'beam') {
+    G.beamHit = true; G.stuck = { kind, t: 0, dur: CONFIG.meetingSecondsStuck, ref }; G.penalty += CONFIG.meetingClockPenalty; G.v = 0;
+    floatText('+' + CONFIG.meetingClockPenalty + ' 分鐘', VW / 2 + 60, G.y + 140); floatText('被拉進會議……', VW / 2, G.y + 175, INK, 18);
+    Snd.meeting();
+  } else if (kind === 'gossip') {
+    G.stuck = { kind, t: 0, dur: CONFIG.gossipStickSeconds, ref }; G.v = 0;
+    if (ref) ref.stuck = true;
+    floatText('欸你知道嗎……', VW / 2, G.y + 170, INK, 18); Snd.pop();
+  }
+  G.invuln = G.stuck.dur + CONFIG.hitInvuln;
+  G.burstLeft = 0;
+}
+function thrustFor(l) {
+  const pts = [[0, 0], [CONFIG.levelFall, 380], [CONFIG.levelHover, 520], [CONFIG.levelFast, 800], [1, CONFIG.thrustMax]];
+  if (l >= 1) return CONFIG.thrustMax;
+  for (let i = 1; i < pts.length; i++) if (l <= pts[i][0]) { const [a, fa] = pts[i - 1], [b, fb] = pts[i]; return lerp(fa, fb, (l - a) / (b - a)); }
+  return CONFIG.thrustMax;
+}
+function updatePlay(dt) {
+  const level = inputLevel(dt);
+  if (appState !== 'play') return;
+  G.elapsed += dt; G.ft += dt;
+  if (level > CONFIG.levelHover) G.roarSec += dt;
+  G.invuln = Math.max(0, G.invuln - dt); G.cooldown = Math.max(0, G.cooldown - dt);
+  G.coffeeLeft = Math.max(0, G.coffeeLeft - dt); G.hintT = Math.max(0, G.hintT - dt); G.startHintT = Math.max(0, G.startHintT - dt);
+  const base = G.floor * FH, ceilY = (G.floor + 1) * FH - SLAB;
+
+  updateObstacles(dt);
+
+  if (G.stuck) {
+    const s = G.stuck; s.t += dt;
+    if (s.kind === 'hand') G.y = Math.max(base, G.y - CONFIG.grabPull * dt / s.dur);
+    else if (s.kind === 'paper') { G.v -= CONFIG.gravity * dt; G.y = Math.max(base, G.y + G.v * dt); }
+    else if (s.kind === 'beam') G.y = Math.max(base, G.y - 20 * dt);
+    if (s.t >= s.dur) { if (s.ref) s.ref.dead = true; G.stuck = null; G.v = Math.min(G.v, 0); }
+  } else {
+    let thrust = thrustFor(level);
+    if (G.coffeeLeft > 0 && thrust > CONFIG.gravity) thrust = CONFIG.gravity + (thrust - CONFIG.gravity) * 2;
+    if (G.mist) thrust *= CONFIG.sprinklerThrustRatio;
+    if (G.burstLeft > 0) { G.burstLeft -= dt; }
+    else G.v += (thrust - CONFIG.gravity - CONFIG.drag * G.v) * dt;
+    G.y += G.v * dt;
+  }
+  if (G.y < base) { G.y = base; if (G.v < 0) G.v = 0; }
+
+  // 天花板
+  if (G.y + CH > ceilY) {
+    if (G.v >= CONFIG.ceilingBreakSpeed) breakCeiling();
+    else {
+      G.y = ceilY - CH; G.v = -CONFIG.ceilingBounce; G.burstLeft = 0;
+      G.bounces[G.floor]++; Snd.bonk(); shake(0.15, 3); floatText('咚！', VW / 2 - 60, ceilY - 20, INK, 24);
+      track('ceiling', { floor: G.floor + 1, result: 'bounce' });
+      if (!G.hintShown) { G.hintShown = true; G.hintT = 3.2; }
+    }
+  }
+
+  // 表情
+  G.arms = 'down';
+  if (G.stuck) G.face = { hand: 'scared', paper: 'ouch', beam: 'daze', gossip: 'awk' }[G.stuck.kind];
+  else if (G.burstLeft > 0) G.face = 'yell';
+  else if (G.mist) G.face = 'wet';
+  else if (G.meetingTotal - G.elapsed < 10) G.face = 'panic';
+  else G.face = 'normal';
+
+  if (G.meetingTotal - G.elapsed <= 0) timeUp();
+}
+function breakCeiling() {
+  const ceilY = (G.floor + 1) * FH - SLAB;
+  track('ceiling', { floor: G.floor + 1, result: 'break' });
+  G.broken++; Snd.crash(); shake(0.45, 9); vibrate(80);event('ceilingParticles',ceilY);
+
+  G.floor++; G.ft = 0;
+  G.burstLeft = 0; G.v = Math.min(G.v, CONFIG.breakExitSpeed);   // 撞破樓板會被卡一下，不會直接飛過整層
+  if (G.floor >= FLOORS) { levelClear(); return; }
+  G.obs = initFloorObs(G.floor);
+  floatText(FLOOR_INFO[G.floor].name, VW / 2, G.y + 200, INK, 26);
+}
+function chairOverlap(y1, y2, halfW, cx) {
+  return y2 > G.y + 6 && y1 < G.y + CH - 4 && Math.abs(cx - VW / 2) < halfW + CHW;
+}
+function updateObstacles(dt) {
+  const O = G.obs; if (!O) return; O.t += dt;
+  const k = G.floor, base = k * FH, ceilY = (k + 1) * FH - SLAB;
+  if (k === 0) {            // 1F：「欸你有空嗎？」的手
+    O.next -= dt;
+    if (O.next <= 0) {
+      O.next = CONFIG.handInterval;
+      // 只從火箭椅前方、還沒抓過人的那一排伸手
+      // 同一排至少隔 handLaneGap 秒才再伸，留空檔讓玩家通過
+      O.used = O.used || {}; O.laneT = O.laneT || {};
+      const lane = LANES[0].map(v => base + v).find(ly => ly - 16 > G.y + CH - 40 && !O.used[ly]);
+      if (lane !== undefined && O.t - (O.laneT[lane] ?? -99) >= CONFIG.handLaneGap) { O.list.push({ side: O.side, y: lane, t: 0 }); O.laneT[lane] = O.t; }
+      O.side ^= 1;
+    }
+    for (const h of O.list) {
+      if (!(G.stuck && G.stuck.ref === h)) h.t += dt;
+      h.reach = h.t < 0.35 ? h.t / 0.35 * 0.12 : h.t < 0.6 ? lerp(0.12, 1, easeOut((h.t - 0.35) / 0.25)) : h.t < 1.0 ? 1 : lerp(1, 0, (h.t - 1.0) / 0.3);
+      if (h.reach > 0.6 && !h.dead) {
+        const tipX = h.side === 0 ? 14 + h.reach * 226 : VW - 14 - h.reach * 226;
+        const touching = h.side === 0 ? tipX > VW / 2 - CHW : tipX < VW / 2 + CHW;
+        if (touching && chairOverlap(h.y - 16, h.y + 16, 0, VW / 2)) hitObstacle('hand', h);
+      }
+    }
+    O.list = O.list.filter(h => h.t < 1.3);
+  } else if (k === 1) {     // 2F：報帳單雪崩
+    O.next -= dt;
+    if (O.next <= 0) {
+      O.next = CONFIG.paperWaveInterval;
+      const n = 3;
+      for (let i = 0; i < n; i++) {
+        const delay = i * 0.22;
+        O.list.push({ x: VW / 2 + rand(-18, 18), y: ceilY - 14, vy: -60, warn: 0.6 + delay, endY: ceilY - CONFIG.paperFallDistance, rot: rand(-.2, .2) });
+      }
+      O.list.push({ x: rand(60, 110), y: ceilY - 14, vy: -60, warn: 0.6, endY: ceilY - CONFIG.paperFallDistance, rot: rand(-.3, .3), deco: true });
+      O.list.push({ x: rand(290, 340), y: ceilY - 14, vy: -60, warn: 0.8, endY: ceilY - CONFIG.paperFallDistance, rot: rand(-.3, .3), deco: true });
+    }
+    for (const p of O.list) {
+      if (p.warn > 0) { p.warn -= dt; continue; }
+      p.vy -= 1300 * dt; p.y += p.vy * dt;
+      if (!p.deco && !p.dead && chairOverlap(p.y - 18, p.y + 18, 36, p.x)) { p.dead = true; hitObstacle('paper'); }
+      if (p.y < p.endY && !p.dead) {
+        p.dead = true;event('sheetParticles',{x:p.x,y:p.y});
+
+      }
+    }
+    O.list = O.list.filter(p => !p.dead);
+  } else if (k === 2) {     // 3F：投影機光束
+    for (const b of O.beams) {
+      b.x = VW / 2 + CONFIG.beamSweep * Math.sin((O.t + b.phase) * Math.PI * 2 / b.period);
+      if (!G.stuck && chairOverlap(b.y - 28, b.y + 28, CONFIG.beamHalfWidth, b.x)) hitObstacle('beam', null);
+    }
+  } else if (k === 3) {     // 4F：八卦對話泡泡
+    O.next -= dt;
+    if (O.next <= 0) {
+      O.next = CONFIG.gossipInterval;
+      let li = Math.floor(random() * 3); if (li === O.lastLane) li = (li + 1) % 3; O.lastLane = li;
+      const side = random() < .5 ? 0 : 1;
+      const lines = ['欸你知道嗎', '聽說……', '他們兩個……', '我跟你講喔', '不要說是我說的'];
+      O.list.push({ y: base + LANES[3][li], x: side === 0 ? -70 : VW + 70, vx: (side === 0 ? 1 : -1) * rand(70, 105), text: lines[Math.floor(random() * lines.length)], wob: rand(0, 6) });
+    }
+    for (const b of O.list) {
+      if (b.stuck) { b.x = lerp(b.x, VW / 2 + 40, dt * 8); b.y = lerp(b.y, G.y + 140, dt * 8); continue; }
+      b.x += b.vx * dt;
+      if (!b.dead && chairOverlap(b.y - 26, b.y + 26, 56, b.x)) hitObstacle('gossip', b);
+    }
+    O.list = O.list.filter(b => !b.dead && b.x > -120 && b.x < VW + 120);
+  } else if (k === 4) {     // 5F：消防灑水器
+    G.mist = false;
+    for (const z of O.zones) {
+      const ph = (O.t + z.phase) % z.period;
+      z.state = ph < z.on ? 'on' : ph > z.period - 0.5 ? 'warn' : 'off';
+      const cy = G.y + CH / 2;
+      if (z.state === 'on' && cy > z.y - z.h / 2 && cy < z.y + z.h / 2) {
+        if (!z.wasIn) { z.wasIn = true; track('obstacle_hit', { floor: 5, kind: 'sprinkler' }); Snd.splash(); floatText('推力減半！', VW / 2, G.y + 170, INK, 18); }
+        G.mist = true;
+      } else if (!(cy > z.y - z.h / 2 && cy < z.y + z.h / 2)) z.wasIn = false;
+    }
+  }
+}
+function inputLevel(dt){
+ const level=Math.min(raw,1.2);
+ const smoothing=G.mode==='touch'?.35:CONFIG.smoothing;
+ Roar.smooth+=(level-Roar.smooth)*(1-Math.pow(1-smoothing,dt*60));
+ if(G.mode!=='touch'){
+  Roar.hist.push({t:G.elapsed,v:level});
+  while(Roar.hist.length&&Roar.hist[0].t<G.elapsed-CONFIG.burstWindow)Roar.hist.shift();
+  if(level>=CONFIG.burstJumpTo&&Roar.hist.some(h=>h.v<CONFIG.burstJumpFrom)&&tryBurst())Roar.hist=[];
+ }
+ return Roar.smooth;
+}
+function levelClear(){
+ if(G.done)return;
+ G.done=true;G.cleared=true;G.early=Math.max(0,clockMin(CONFIG.offClock)-clockMin(CONFIG.startClock)-(Math.floor(G.elapsed)+G.penalty));
+ event('clear');
+}
+function timeUp(){if(G.done)return;G.done=true;G.early=0;event('timeout');}
+G=newGame();G.obs=initFloorObs(0);
+return {game:G,input(code){
+ if(finished||!Number.isInteger(code)||code<0||code>126)return false;
+ if(code===126){finished=true;if(!G.cleared)G.early=0;return true;}
+ if(code===124||code===125){
+  if(!G.done||G.cleared)return false;
+  if(code===124){if(G.adUsed>=CONFIG.adContinuePerGame)return false;G.adUsed++;G.meetingTotal+=CONFIG.adExtendSeconds;}
+  else{G.coffeeCount++;G.meetingTotal+=CONFIG.coffeeExtendSeconds;G.coffeeLeft=CONFIG.coffeeBoostSeconds;}
+  G.done=false;G.stuck=null;G.invuln=1.2;G.v=0;return true;
+ }
+ if(G.done)return false;
+ if(code===122||code===123){if(steps)return false;G.mode=code===122?'touch':'voice';G.quiet=code===123;return true;}
+ if(code===121)return tryBurst();
+ raw=code/100;return true;
+},advance(dt){if(!G.done){steps++;updatePlay(dt)}},get level(){return Roar.smooth},get dead(){return finished},get score(){return G.early||0}};
+}
+return {CONFIG,create,inputCount:127,input:(s,c)=>s.input(c),advance:(s,dt)=>s.advance(dt),score:s=>s.score};
+})();
+if(typeof module!=='undefined')module.exports=rocketChairRules;
 
   /* ---------- Roar Through the Ceiling (rocket-chair): isolated iframe page (games/rocket-chair/original.html), fee-only shared wallet ---------- */
   var ROCKET={active:false,fee:ENTRY_FEE,analytics:null,loaded:false,extra:0};
@@ -14165,7 +14491,12 @@ if (typeof module !== 'undefined') module.exports = reaperRules;
   function rocketFreeLeft(){try{var t=Number(localStorage.getItem(ROCKET_FREE_KEY));return isFinite(t)?Math.max(0,t-Date.now()):0;}catch(e){return 0;}}
   function rocketUI(text){if(text)$('rocket-chair-msg').textContent=text;}
   function rocketValid(source){return source===$('rocket-chair-frame').contentWindow;}
+  var rocketRank=timedLeaderboard('rocket-chair','rocket-chair',rocketChairRules.inputCount,function(){});
   window.deepSeaRocket={
+    prepare:function(source){if(!rocketValid(source))return Promise.resolve(null);if(rocketRank.busy())return Promise.reject(new Error('rank_busy'));return new Promise(function(resolve){rocketRank.start(function(random){resolve(random);},function(){resolve(null);});});},
+    record:function(source,code){if(rocketValid(source))rocketRank.record(code);},
+    update:function(source,ms,active,step){if(rocketValid(source))rocketRank.update(ms,active,step);},
+
     balance:function(){return S.balance;},
     start:function(source){
       if(!rocketValid(source)||$('view-rocket-chair').hidden||ROCKET.active)return false;
@@ -14190,6 +14521,7 @@ if (typeof module !== 'undefined') module.exports = reaperRules;
     finish:function(source,data){
       if(!rocketValid(source)||!ROCKET.active)return;ROCKET.active=false;
       var early=Math.max(0,Math.min(600,Math.floor(Number(data&&data.early)||0)));
+      rocketRank.finish(early,true);
       AN.end(ROCKET.analytics,0,'complete',{score:early,cleared:data&&data.cleared?1:0,extra_spent_points:ROCKET.extra});
       rocketUI(data&&data.cleared?'提早 '+early+' 分鐘下班，可再玩。':'這局加班了，可再玩。');
     },
@@ -24449,7 +24781,12 @@ render();requestAnimationFrame(loop);
   var frontierBusy=false,frontierRoute;
   (function(){
     'use strict';
-    // Simulation stays in the game's closure; the model never touches points or tracking.
+    function frontierRandom(w){
+ if(!Number.isInteger(w.rankSeed))return Math.random();
+ w.rankSeed=(Math.imul(w.rankSeed,1664525)+1013904223)>>>0;
+ return w.rankSeed/4294967296;
+}
+// Simulation stays in the game's closure; the model never touches points or tracking.
 var frontierClassic=false; // tests can switch the first region back to the beacon rules
 function frontierPlan(level){
  var c=Math.floor((level-1)/10),n=(level-1)%10;
@@ -24467,7 +24804,7 @@ function frontierFighterHp(w){return 100+w.cfg.chapter*20+(w.tech.warrior||0)*15
 function frontierPickCost(w){var picks=0;for(var k in w.tech)picks+=w.tech[k]|0;return 30+picks*36;}
 function frontierDraw(w){
  var pool=FRONTIER_CARDS.filter(function(c){return (w.tech[c.key]|0)<c.max;}),out=[];
- while(out.length<3&&pool.length){var i=Math.floor(Math.random()*pool.length);out.push(pool.splice(i,1)[0].id);}
+ while(out.length<3&&pool.length){var i=Math.floor(frontierRandom(w)*pool.length);out.push(pool.splice(i,1)[0].id);}
  return out;
 }
 function frontierChoose(w,index){
@@ -24742,6 +25079,58 @@ function frontierStep(w,input,dt){
  w.effects=w.effects.filter(function(e){e.t-=dt;return e.t>0;});w.enemies=w.enemies.filter(function(e){return e.hp>0||!e.counted;});w.drops=w.drops.filter(function(d){if(frontierNear(p,d,65)){w.coins+=d.amount;return false;}return true;});if(w.drops.length>90){var extra=w.drops.splice(90);extra.forEach(function(d){w.drops[0].amount+=d.amount;});}if(w.effects.length>70)w.effects.splice(0,w.effects.length-70);
 }
 
+if(typeof module!=='undefined')module.exports={frontierWorld,frontierStep,frontierChoose,frontierUpgrade,frontierSell,frontierLeave,frontierUpgradeHut,frontierRecruit};
+
+    const frontierRules=(()=>{
+const model=typeof module!=='undefined'?require('../games/frontier/world.js'):{frontierWorld,frontierStep,frontierChoose,frontierUpgrade,frontierSell,frontierLeave,frontierUpgradeHut,frontierRecruit};
+const {frontierWorld:createWorld,frontierStep:step,frontierChoose:choose,frontierUpgrade:upgrade,frontierSell:sell,frontierLeave:leave,frontierUpgradeHut:upgradeHut,frontierRecruit:recruit}=model;
+const INPUTS=1100,STEP=.05,MAX_TICKS=400;
+function create(seed){
+ const world=createWorld(1);world.rankSeed=seed;
+ return {world,completed:0,elapsed:0,x:0,y:0,dash:false,dead:false};
+}
+function input(s,code){
+ if(!Number.isInteger(code)||code<0||code>=INPUTS||s.dead)return false;
+ const w=s.world;
+ if(code<882){const dir=Math.floor(code/2);s.x=(Math.floor(dir/21)-10)/10;s.y=(dir%21-10)/10;s.dash=!!(code%2);return true;}
+ if(code<=884)return choose(w,code-882);
+ if(code===885)return recruit(w);
+ if(code===886){
+  if(w.phase!=='clear'&&!leave(w))return false;
+  s.completed=Math.max(s.completed,w.level);
+  if(w.level===50){s.dead=true;return true;}
+  const next=createWorld(w.level+1,w.tech,w.coins);next.rankSeed=w.rankSeed;s.world=next;
+  s.x=s.y=0;s.dash=false;return true;
+ }
+ if(code<=889)return upgrade(w,['tool','blade','pack'][code-887]);
+ if(code<=892)return upgradeHut(w,['house','guardhouse','barracks'][code-890]);
+ const sale=code-893;if(sale>=200)return false;
+ return !!sell(w,sale<100?'wood':'stone',sale%100+1);
+}
+function advance(s){
+ step(s.world,{x:s.x,y:s.y,dash:s.dash},STEP);s.dash=false;s.elapsed++;
+ if(s.world.phase==='dead')s.dead=true;
+}
+function accepts(action){
+ if(!Array.isArray(action)||!Number.isInteger(action[0])||action[0]<0||action[0]>MAX_TICKS||action.length>1601)return false;
+ let last=-1;
+ return action.slice(1).every(code=>{
+  const tick=Math.floor(code/INPUTS);
+  const ok=Number.isSafeInteger(code)&&code>=0&&tick>=last&&tick<=action[0];last=tick;return ok;
+ });
+}
+function apply(state,[ticks,...actions]){
+ let cursor=0;
+ for(let tick=0;tick<=ticks;tick++){
+  while(Math.floor(actions[cursor]/INPUTS)===tick)if(!input(state,actions[cursor++]%INPUTS))return false;
+  if(tick<ticks){if(state.dead)return false;advance(state);}
+ }
+ return cursor===actions.length;
+}
+return {create,input,advance,accepts,apply,INPUTS,STEP};
+})();
+if(typeof module!=='undefined')module.exports=frontierRules;
+
     // Cropped production art, separate from the concept board. Geometric fallback keeps slow/offline loads playable.
 var ftWarrior=typeof Image==='function'?new Image():null;if(ftWarrior)ftWarrior.src='games/frontier/art/warrior.png';
 var ftAtlas=typeof Image==='function'?new Image():null;
@@ -24923,6 +25312,52 @@ function ftBuilding(b,w){
       return steps;
     }
     function warTip(w){return w.cfg.war?'\n\n提示：箭塔會守護大本營，但也會被怪攻擊，受損後靠近用木材修復。主角不能攻擊對手大本營，只有戰士可以。守備營在大本營旁訓練守衛，橋東的戰士營訓練進攻戰士，站在戰士營、守備營或工人小屋旁可花資源升級，最高到滿級；敵人偶爾會來攻擊戰士營，最多把它打回最低級。木材廠、採石場、倉庫蓋好後會增加背包容量。工人小屋的村民會自動砍樹採石，把資源丟在地上，走過去就能撿起來。':'';}
+
+    var ranking=null,rankStarting=false,rankSending=false,rankActions=[],rankTicks=0,rankCarry=0,rankDirection=-1,rankPending=null,localJourney=null;
+    function rankStatus(message,retry){set('ft-rank-status',message);$('ft-rank-retry').hidden=!retry;}
+    function recordRank(code){if(ranking)rankActions.push(rankTicks*frontierRules.INPUTS+code);}
+    async function uploadRank(){
+      if(!ranking||rankSending)return;
+      if(!rankPending){
+        if(!rankTicks&&!rankActions.length)return;
+        rankPending={id:ranking.id,gameId:'frontier',revision:ranking.revision,action:[rankTicks,...rankActions]};
+      }
+      rankSending=true;
+      var resume=!paused;paused=true;rankStatus('正在驗證排行榜成績…');
+      try{
+        var api=await import('./frontend/services/api.mjs');
+        var next=await api.moveBoardRound(ranking.token,rankPending,AbortSignal.timeout(15000));
+        if(next.revision!==ranking.revision+1)throw new Error('invalid_replay');
+        ranking.revision=next.revision;ranking.serverState=next.state;
+        rankActions=[];rankTicks=0;rankPending=null;
+        rankStatus(next.state.completed?'成績已送到排行榜。':'本局將列入訪客排行。');
+        if(resume&&visible&&!document.hidden&&world.phase==='play')paused=false;
+      }catch(error){rankStatus('排行榜成績未能送出。',true);}
+      finally{rankSending=false;last=performance.now();update();}
+    }
+    async function startRanked(){
+      if(rankStarting||rankSending||rankPending)return;
+      if(ranking){if(paused)start();return;}
+      pause();endRound('abandoned');rankStarting=true;rankStatus('正在準備訪客排行…');
+      try{
+        var api=await import('./frontend/services/api.mjs');
+        var next=await api.startBoardRound('frontier',AbortSignal.timeout(10000));
+        if(!localJourney)localJourney={world:world,paid:paid,cleared:cleared};
+        ranking=next;ranking.serverState=next.state;ranking.sim=next.state;
+        world=next.state.world;cleared=next.state.completed;paid=true;
+        rankActions=[];rankTicks=0;rankPending=null;rankDirection=-1;rankCarry=0;
+        round=AN.start('frontier',0,params());paused=false;frontierBusy=true;
+        release();last=performance.now();rankStatus('本局將列入訪客排行。');update();
+      }catch(error){rankStatus('排行榜成績未能送出。',true);}
+      finally{rankStarting=false;}
+    }
+    $('ft-ranked').addEventListener('click',startRanked);
+    $('ft-rank-retry').addEventListener('click',function(){if(ranking)uploadRank();else startRanked();});
+    $('ft-local').addEventListener('click',async function(){
+      pause();await uploadRank();if(rankPending)return;endRound('abandoned');
+      if(localJourney){world=localJourney.world;paid=localJourney.paid;cleared=localJourney.cleared;localJourney=null;}
+      ranking=null;paused=true;rankStatus('');update();
+    });
     var noticeTimer=0;
     function showNotice(text){var box=$('ft-notice');set('ft-notice',text);box.hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(function(){box.hidden=true;},10000);}
     var cardsShown='';
@@ -24954,12 +25389,14 @@ function ftBuilding(b,w){
         if(paid&&!world){var keep=w&&w.tech&&['tool','blade','pack'].every(function(k){return Number.isInteger(w.tech[k])&&w.tech[k]>=0&&w.tech[k]<=8;})?{tool:w.tech.tool,blade:w.tech.blade,pack:w.tech.pack}:undefined,gold=w&&Number.isFinite(w.coins)?Math.max(0,Math.min(1e6,Math.floor(w.coins))):0,lvl=w&&Number.isInteger(w.level)&&w.level>=1&&w.level<=Math.min(50,cleared+1)?w.level:Math.min(50,cleared+1);world=frontierWorld(lvl,keep,gold);set('ft-storage','存檔內容不完整，已保留遠征資格與通關紀錄，重建當關。');}
       }catch(e){set('ft-storage','無法讀取存檔；請確認瀏覽器允許本機儲存。');}
     }
-    function persist(){if(!paid||!world)return true;try{localStorage.setItem('deep-sea-frontier-v1',JSON.stringify({version:1,paid:true,cleared:cleared,world:world}));set('ft-storage','進度已儲存');return true;}catch(e){set('ft-storage','無法儲存進度，請勿關閉此頁。');return false;}}
+    function persist(){if(ranking)return true;if(!paid||!world)return true;try{localStorage.setItem('deep-sea-frontier-v1',JSON.stringify({version:1,paid:true,cleared:cleared,world:world}));set('ft-storage','進度已儲存');return true;}catch(e){set('ft-storage','無法儲存進度，請勿關閉此頁。');return false;}}
     function params(){return {stage:world.level,step:world.kills,chapter:world.cfg.chapter+1,mission:world.cfg.mission};}
     function release(){keys={};stick.x=stick.y=0;stick.id=null;dash=false;walkTarget=null;$('ft-knob').style.transform='';}
     function endRound(result){if(round){AN.end(round,0,result,params());round=null;}}
-    function pause(){if(!world||paused||world.phase!=='play')return;paused=true;frontierBusy=!!round;release();AN.progress(round,params(),true);persist();update();}
+    function pause(){if(!world||paused||world.phase!=='play')return;paused=true;frontierBusy=!!round;release();AN.progress(round,params(),true);persist();update();if(ranking)uploadRank();}
     function start(){
+      if(rankStarting||rankSending||rankPending)return;
+      if(ranking&&world.phase==='clear'){world=ranking.serverState.world;ranking.sim=ranking.serverState;cleared=ranking.sim.completed;rankDirection=-1;rankCarry=0;}
       if(!visible||document.hidden||!paused&&world&&world.phase==='play')return;
       autoScreen();if(!paid)loadFrontier();
       var fresh=false;
@@ -24973,7 +25410,7 @@ function ftBuilding(b,w){
       if(world.level>10&&(world.level-1)%10===0&&world.time<1)showNotice('新解鎖：工人小屋現在可以升到 Lv.'+world.cfg.houseMax+'！村民更多、採集更快。');
       paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});syncViewport();
     }
-    function selectLevel(n){if(!paid||n>Math.min(50,cleared+1))return;pause();pendingLevel=n;set('ft-select-label','前往關卡 '+n+'？');$('ft-select').hidden=false;}
+    function selectLevel(n){if(ranking){rankStatus('排行遠征從第一島依序前進。');return;}if(!paid||n>Math.min(50,cleared+1))return;pause();pendingLevel=n;set('ft-select-label','前往關卡 '+n+'？');$('ft-select').hidden=false;}
     function updateMap(){Array.from($('ft-map').children).forEach(function(b,i){b.disabled=!paid||i+1>Math.min(50,cleared+1);var cl=(i+1<=cleared?'ft-done ':'')+(world&&world.level===i+1?'ft-current':'');if(b.className!==cl)b.className=cl;var current=world&&world.level===i+1?'step':'false';if(b.getAttribute('aria-current')!==current)b.setAttribute('aria-current',current);});}
     function update(){
       var w=world||preview,overlay=$('ft-overlay');var cost=frontierRecruitCost(w),barracks=w.buildings.find(function(b){return b.kind==='barracks';});set('ft-recruit','訓練戰士 · 🪵 '+cost.wood+' ◆ '+cost.stone+' · '+frontierAttackers(w).length+'/'+frontierFighterCap(w));$('ft-recruit').disabled=!world||paused||!barracks||!barracks.built||barracks.hp<=0||!frontierNear(w.p,barracks,110);set('ft-troops','戰士 '+frontierAttackers(w).length+'/'+frontierFighterCap(w)+((barracks&&barracks.queue)?' +1':'')+' · 守衛 '+(w.fighters.length-frontierAttackers(w).length)+'/'+(w.cfg.guards||0));var upKinds=['barracks','guardhouse','house'],upB=world&&!paused?upKinds.map(function(k){return w.buildings.find(function(b){return b.kind===k;});}).find(function(b){return b&&b.built&&b.hp>0&&frontierNear(w.p,b,110);}):null;
@@ -24995,15 +25432,23 @@ function ftBuilding(b,w){
       }updateMap();
     }
     var transientMessage=false;
-    function finishStage(){if(world.phase==='clear'){cleared=Math.max(cleared,world.level);AN.progress(round,params(),true);endRound('complete');}else endRound('loss');paused=true;frontierBusy=false;release();persist();update();}
+    function finishStage(){if(world.phase==='clear'){if(ranking)recordRank(886);cleared=Math.max(cleared,world.level);AN.progress(round,params(),true);endRound('complete');}else endRound('loss');paused=true;frontierBusy=false;release();persist();update();if(ranking)uploadRank();}
     function frame(now){if(visible){if(world&&!paused&&world.phase==='play'){
       var x=stick.x+(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),y=stick.y+(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
       if(x||y)walkTarget=null;
       if(walkTarget&&!x&&!y){var destination=frontierWaypoint(world.p,walkTarget);var distance=Math.hypot(destination.x-world.p.x,destination.y-world.p.y);if(distance>8){x=(destination.x-world.p.x)/distance;y=(destination.y-world.p.y)/distance;}else if(destination===walkTarget)walkTarget=null;}
-      frontierStep(world,{x:x,y:y,dash:dash},Math.min(.05,(now-last)/1000));dash=false;if(world.phase!=='play')finishStage();else if(now-saveAt>5000){persist();saveAt=now;}
+      if(ranking){
+        var qx=Math.round(Math.max(-1,Math.min(1,x))*10),qy=Math.round(Math.max(-1,Math.min(1,y))*10),code=((qx+10)*21+qy+10)*2+Number(dash);
+        if(code!==rankDirection||dash){recordRank(code);frontierRules.input(ranking.sim,code);rankDirection=code;}
+        rankCarry+=Math.min(.05,Math.max(0,(now-last)/1000));
+        while(rankCarry>=.05&&world.phase==='play'){
+          rankCarry-=.05;frontierRules.advance(ranking.sim);rankTicks++;
+          if(rankTicks>=200){uploadRank();break;}
+        }
+      }else frontierStep(world,{x:x,y:y,dash:dash},Math.min(.05,(now-last)/1000));dash=false;if(world.phase!=='play')finishStage();else if(now-saveAt>5000){persist();saveAt=now;}
     }if(now-uiAt>180){update();uiAt=now;}paint();}last=now;requestAnimationFrame(frame);}
     $('ft-go').addEventListener('click',function(){transientMessage=false;start();if(!world)transientMessage=true;});$('ft-pause').addEventListener('click',function(){if(paused)start();else pause();});
-    ['tool','blade','pack'].forEach(function(k){$('ft-'+k).addEventListener('click',function(){if(world&&!paused){var ok=frontierUpgrade(world,k);set('ft-upgrade',ok?'升級完成':'材料不足，或需要回到營地。');if(ok){AN.progress(round,params(),false);persist();}update();}});});
+    ['tool','blade','pack'].forEach(function(k){$('ft-'+k).addEventListener('click',function(){if(world&&!paused){var ok=frontierUpgrade(world,k);set('ft-upgrade',ok?'升級完成':'材料不足，或需要回到營地。');if(ok){recordRank(887+['tool','blade','pack'].indexOf(k));AN.progress(round,params(),false);persist();}update();}});});
     $('ft-select-yes').addEventListener('click',function(){if(!pendingLevel)return;endRound('restart');world=frontierWorld(pendingLevel,world?Object.assign({},world.tech):undefined,world?world.coins:0);pendingLevel=0;$('ft-select').hidden=true;paused=true;frontierBusy=false;persist();update();});$('ft-select-no').addEventListener('click',function(){pendingLevel=0;$('ft-select').hidden=true;});
     for(var n=1;n<=50;n++){var b=document.createElement('button');b.type='button';b.textContent=n;b.dataset.level=n;b.addEventListener('click',function(){selectLevel(Number(this.dataset.level));});$('ft-map').appendChild(b);}
     document.addEventListener('keydown',function(e){var k=e.key.toLowerCase();if(!visible||paused||(e.target.closest&&e.target.closest('input,select,textarea,button'))||!['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))return;e.preventDefault();keys[k]=true;if(k===' '&&!e.repeat)dash=true;AN.interact();});document.addEventListener('keyup',function(e){delete keys[e.key.toLowerCase()];});
@@ -25035,11 +25480,11 @@ function ftBuilding(b,w){
     $('ft-journal').addEventListener('click',function(){var open=$('ft-task-details').hidden;$('ft-task-details').hidden=!open;this.setAttribute('aria-expanded',String(open));release();});
     $('ft-shop-toggle').addEventListener('click',function(){showShop($('ft-shop').hidden);});
     $('ft-shop-close').addEventListener('click',function(){showShop(false);});
-    ['wood','stone'].forEach(function(k){$('ft-sell-'+k).addEventListener('click',function(){if(!world||paused)return;var sold=frontierSell(world,k,Number($('ft-sale-count').value||10));set('ft-upgrade',sold?'交易完成':'需要市集、倉庫材料與靠近市集');if(sold)persist();update();});});
-    for(var ci=0;ci<3;ci++)(function(n){$('ft-card-'+n).addEventListener('click',function(){if(world&&frontierChoose(world,n)){persist();update();$('ft-canvas').focus({preventScroll:true});}});})(ci);
-    $('ft-hut-up').addEventListener('click',function(){if(world&&!paused&&frontierUpgradeHut(world,this.dataset.kind)){persist();update();}});
-    $('ft-recruit').addEventListener('click',function(){if(world&&!paused){var recruited=frontierRecruit(world);set('ft-upgrade',recruited?'戰士訓練中':'需要戰士小屋、足夠材料與空位');if(recruited)persist();update();}});
-    $('ft-next').addEventListener('click',function(){if(world&&!paused&&frontierLeave(world))finishStage();});
+    ['wood','stone'].forEach(function(k){$('ft-sell-'+k).addEventListener('click',function(){if(!world||paused)return;var sold=frontierSell(world,k,Number($('ft-sale-count').value||10));set('ft-upgrade',sold?'交易完成':'需要市集、倉庫材料與靠近市集');if(sold){recordRank(893+(k==='stone'?100:0)+Math.max(1,Math.min(100,Number($('ft-sale-count').value||10)))-1);persist();}update();});});
+    for(var ci=0;ci<3;ci++)(function(n){$('ft-card-'+n).addEventListener('click',function(){if(world&&(!ranking||!paused&&!rankPending&&!rankSending)&&frontierChoose(world,n)){recordRank(882+n);persist();update();$('ft-canvas').focus({preventScroll:true});}});})(ci);
+    $('ft-hut-up').addEventListener('click',function(){if(world&&!paused&&frontierUpgradeHut(world,this.dataset.kind)){recordRank(890+['house','guardhouse','barracks'].indexOf(this.dataset.kind));persist();update();}});
+    $('ft-recruit').addEventListener('click',function(){if(world&&!paused){var recruited=frontierRecruit(world);set('ft-upgrade',recruited?'戰士訓練中':'需要戰士小屋、足夠材料與空位');if(recruited){recordRank(885);persist();}update();}});
+    $('ft-next').addEventListener('click',function(){if(world&&!paused&&frontierLeave(world)){finishStage();}});
     $('ft-home').addEventListener('click',function(){if(world&&!paused){walkTarget={x:180,y:450};AN.interact();}});
     document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});window.addEventListener('blur',pause);window.addEventListener('pagehide',function(e){pause();if(!e.persisted)endRound('abandoned');},{capture:true});
     frontierRoute=function(active){if(!active){pause();exitScreen();}visible=active;if(active){update();paint();}};
