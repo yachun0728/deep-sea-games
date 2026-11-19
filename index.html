@@ -15,7 +15,7 @@
     w.gtag('config',ID,{allow_google_signals:false,allow_ad_personalization_signals:false,debug_mode:debug});
     var tag=d.createElement('script');tag.async=true;tag.src='https://www.googletagmanager.com/gtag/js?id='+ID;d.head.appendChild(tag);
   }
-  var names={'market-desk':'收盤之前',frontier:'荒島遠征','ocean-link':'深海連連看',blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班','eat-smaller':'數字吞噬','mirror-twins':'鏡像雙子','shadow-relay':'影子接力','one-line-defense':'一筆畫守城',mermaid:'人魚接龍',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面','rocket-chair':'社畜要下班',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看',banquet:'最後的晚餐',tetris:'俄羅斯方塊'};
+  var names={'market-desk':'收盤之前',frontier:'荒島遠征','ocean-link':'深海連連看',blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班','eat-smaller':'數字吞噬','mirror-twins':'鏡像雙子','shadow-relay':'影子接力','one-line-defense':'一筆畫守城',mermaid:'人魚接龍',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面','rocket-chair':'社畜要下班',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看',banquet:'最後的晚餐',tetris:'俄羅斯方塊','on-pitch':'不准跑調'};
   var rounds={},current='',seq=0,bucket=0,last=performance.now(),inputAt=last,visible=!d.hidden,focused=d.hasFocus?d.hasFocus():true,suspended=false;
   var tabToken=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
   function emit(event,game,params){
@@ -1426,6 +1426,7 @@ body.ol-expanded { overflow: hidden; }
 @media(max-width:880px){.mm-stage{padding-bottom:20px}}
 @media(prefers-reduced-motion:reduce){.mm-card{transition:none}.mm-card.hint{animation:none}}
 .tt-stage{min-width:0;display:flex;flex-direction:column;align-items:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#0d1016}.tt-stage iframe{display:block;width:100%;height:min(780px,calc(100svh - 150px));min-height:560px;border:0;background:#0d1016}
+.sneak-stage #op-canvas{width:min(100%,400px,calc(80vh * 400 / 720));height:auto;aspect-ratio:400/720;max-height:none;object-fit:fill}#view-on-pitch .seg-row{margin-top:10px}#view-on-pitch #op-mic-test{width:100%;margin-top:8px}
 
 /* The Last Banquet (banquet): all selectors are scoped to .bq-*. Dark, grainy, CRT-lit table in the spirit of low-light horror card rooms. */
 .bq-stage{--bq-ink:#f2e6d0;--bq-dim:#bfa98c;--bq-amber:#e6c277;--bq-red:#e0392f;--bq-green:#f0cf84;--bq-line:#3f5a4a;--bq-head:"Cinzel","Noto Serif TC",Georgia,serif;--bq-body:"Cormorant Garamond","Noto Serif TC",Georgia,serif;font-size:17px;
@@ -2519,7 +2520,7 @@ html.frontier-immersive{overflow:hidden}
     <a href="#cat" id="tab-cat">屋頂貓貓<small>Rooftop Cat</small></a>
     <a href="#bird" id="tab-bird">便便鳥大戰狼群<small>Poop Bird</small></a>
     <a href="#frog" id="tab-frog">青蛙吃蟲<small>Frog Snack</small></a>
-    <a href="#ocean-link" id="tab-ocean-link">深海連連看<small>Ocean Link</small></a><a href="#clock-out" id="tab-clock-out">下班保衛戰<small>Clock Out</small></a><a href="#peek" id="tab-peek">別看<small>Don’t Peek</small></a><a href="#pet-walk" id="tab-pet-walk">小灰出門<small>Pet Walkies</small></a><a href="#office-shoot" id="tab-office-shoot">拒絕加班<small>No Overtime!</small></a><a href="#eat-smaller" id="tab-eat-smaller">數字吞噬<small>Number Gulp</small></a><a href="#mirror-twins" id="tab-mirror-twins">鏡像雙子<small>Mirror Twins</small></a><a href="#shadow-relay" id="tab-shadow-relay">影子接力<small>Shadow Relay</small></a><a href="#one-line-defense" id="tab-one-line-defense">一筆畫守城<small>One-Line Defense</small></a><a href="#mermaid" id="tab-mermaid">人魚接龍<small>Mermaid Spider</small></a><a href="#tetris" id="tab-tetris">俄羅斯方塊<small>Block Drop</small></a><a href="#breakout" id="tab-breakout">打磚塊<small>Breakout</small></a>
+    <a href="#ocean-link" id="tab-ocean-link">深海連連看<small>Ocean Link</small></a><a href="#clock-out" id="tab-clock-out">下班保衛戰<small>Clock Out</small></a><a href="#peek" id="tab-peek">別看<small>Don’t Peek</small></a><a href="#pet-walk" id="tab-pet-walk">小灰出門<small>Pet Walkies</small></a><a href="#office-shoot" id="tab-office-shoot">拒絕加班<small>No Overtime!</small></a><a href="#eat-smaller" id="tab-eat-smaller">數字吞噬<small>Number Gulp</small></a><a href="#mirror-twins" id="tab-mirror-twins">鏡像雙子<small>Mirror Twins</small></a><a href="#shadow-relay" id="tab-shadow-relay">影子接力<small>Shadow Relay</small></a><a href="#one-line-defense" id="tab-one-line-defense">一筆畫守城<small>One-Line Defense</small></a><a href="#mermaid" id="tab-mermaid">人魚接龍<small>Mermaid Spider</small></a><a href="#tetris" id="tab-tetris">俄羅斯方塊<small>Block Drop</small></a><a href="#on-pitch" id="tab-on-pitch">不准跑調<small>Stay On Pitch</small></a><a href="#breakout" id="tab-breakout">打磚塊<small>Breakout</small></a>
     <a href="#nap" id="tab-nap">偷睡大師<small>Nap Master</small></a><a href="#pudding" id="tab-pudding">布丁突圍<small>Pudding Dash</small></a><a href="#mosquito" id="tab-mosquito">血壓上升<small>Midnight Mosquito</small></a><a href="#banquet" id="tab-banquet">最後的晚餐<small>The Last Banquet</small></a><a href="#last-hair" id="tab-last-hair">尊嚴保衛戰<small>The Last Hair</small></a>
     <a href="#market-desk" id="tab-market-desk">收盤之前<small>Closing Call</small></a>
     <a href="#frontier" id="tab-frontier">荒島遠征<small>Frontier Islands</small></a><a href="#blaster" id="tab-blaster">深海火線<small>Reef Blaster</small></a>
@@ -2565,6 +2566,7 @@ html.frontier-immersive{overflow:hidden}
 <symbol id="icon-shadow-relay" viewBox="0 0 96 96"><circle cx="48" cy="50" r="38" fill="#f0b46a" stroke="#8a5a2e" stroke-width="4"/><circle cx="48" cy="42" r="22" fill="#fbdca6" opacity=".7"/><path d="M74 12v6" stroke="#1b1b2f" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="74" cy="28" rx="8" ry="10" fill="#e0452f" stroke="#1b1b2f" stroke-width="2.5"/><path d="M70 18h8M70 38h8" stroke="#1b1b2f" stroke-width="3" stroke-linecap="round"/><g fill="#1b1b2f" opacity=".35"><circle cx="30" cy="56" r="11"/><path d="M22 51l2-14 6 9zM32 46l6-9 2 14zM41 53l11 4-11 5z"/></g><g fill="#1b1b2f"><circle cx="52" cy="58" r="11"/><path d="M44 53l2-14 6 9zM54 48l6-9 2 14zM63 55l11 4-11 5z"/></g><circle cx="56" cy="55" r="2.6" fill="#ff6b6b"/><path d="M50 69l-5 12M28 67l-5 12" stroke="#1b1b2f" stroke-width="2.5" stroke-linecap="round"/></symbol>
 <symbol id="icon-one-line-defense" viewBox="0 0 96 96"><circle cx="48" cy="54" r="20" fill="#2f4a3a" stroke="#1b1b2f" stroke-width="3"/><circle cx="48" cy="54" r="14" fill="none" stroke="#bfe8a8" stroke-width="3"/><path d="M39 62V49h4v4h3v-6h4v6h3v-4h4v13z" fill="#bfe8a8" stroke="#1b1b2f" stroke-width="2" stroke-linejoin="round"/><path d="M14 36Q46 14 82 34" fill="none" stroke="#6be3f5" stroke-width="6" stroke-linecap="round"/><circle cx="82" cy="34" r="5" fill="#f5c26b" stroke="#1b1b2f" stroke-width="2.5"/><path d="M20 8l10 10M30 8 20 18M60 4l9 9M69 4l-9 9M8 76l9 9M17 76l-9 9M78 78l9 9M87 78l-9 9" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/></symbol>
 <symbol id="icon-mermaid" viewBox="0 0 96 96"><circle cx="48" cy="48" r="46" fill="#0f4c6b"/><path d="M10 70q19-9 38 0t38 0v26H10z" fill="#0a2e4a"/><rect x="21" y="14" width="40" height="56" rx="6" fill="#3d1f6e" stroke="#f2c46d" stroke-width="2" transform="rotate(-10 41 42)"/><rect x="35" y="16" width="40" height="56" rx="6" fill="#fff9ef" stroke="#8a6ad0" stroke-width="1.5" transform="rotate(8 55 44)"/><g transform="translate(46 28) rotate(8 10 20) scale(.62)" color="#7c3aed"><path d="M12.5 13C7 21 8.5 33 13 40c3-3 4-8 3.5-14zM27.5 13C33 21 31.5 33 27 40c-3-3-4-8-3.5-14z" fill="currentColor"/><path d="M15 29h10c0 5-2 8-5 11-3-3-5-6-5-11z" fill="#12b5c5"/><path d="M20 40c-3 1-7 4-9 9 4-.5 7-2 9-4 2 2 5 3.5 9 4-2-5-6-8-9-9z" fill="currentColor"/><path d="M17 31q3 1.6 6 0M17.4 34q2.6 1.4 5.2 0" stroke="#fff" stroke-opacity=".6" stroke-width=".9" fill="none" stroke-linecap="round"/><path d="M16.5 22h7l1.2 7h-9.4z" fill="#ffd9b8"/><path d="M15.6 26.4c1.4 2.4 3.4 2.6 4.4 1 1 1.6 3 1.4 4.4-1-1.6-1.6-3.2-2.4-4.4-2.4s-2.8.8-4.4 2.4z" fill="#f6c453" stroke="#c98a14" stroke-width=".6"/><circle cx="20" cy="14" r="6.6" fill="#ffd9b8"/><path d="M13.2 14.6c-.6-6 3.2-9 6.8-9s7.4 3 6.8 9c-1.2-2.8-3.4-4.6-6.8-5-3.4.4-5.6 2.2-6.8 5z" fill="currentColor"/><circle cx="17.4" cy="14.8" r=".9" fill="#2b2140"/><circle cx="22.6" cy="14.8" r=".9" fill="#2b2140"/><path d="M18.4 17.6q1.6 1.4 3.2 0" stroke="#c0485f" stroke-width=".9" fill="none" stroke-linecap="round"/><path d="M17.5 6.4l1.2-2.6 1.3 1.6 1.3-1.6 1.2 2.6z" fill="#f6c453"/></g><circle cx="20" cy="76" r="4" fill="#bfeaf2" opacity=".7"/><circle cx="76" cy="82" r="3" fill="#bfeaf2" opacity=".7"/><circle cx="28" cy="86" r="2.2" fill="#fff" opacity=".6"/></symbol><symbol id="icon-tetris" viewBox="0 0 96 96"><rect x="14" y="10" width="68" height="76" rx="6" fill="#10141c" stroke="#222a38" stroke-width="3"/><g stroke="#10141c" stroke-width="1.5"><rect x="22" y="34" width="14" height="14" fill="#b77fd3"/><rect x="36" y="34" width="14" height="14" fill="#b77fd3"/><rect x="50" y="34" width="14" height="14" fill="#b77fd3"/><rect x="36" y="20" width="14" height="14" fill="#b77fd3"/><rect x="22" y="72" width="14" height="14" fill="#5b9bf0"/><rect x="22" y="58" width="14" height="14" fill="#5b9bf0"/><rect x="36" y="72" width="14" height="14" fill="#6fcf97"/><rect x="50" y="72" width="14" height="14" fill="#6fcf97"/><rect x="50" y="58" width="14" height="14" fill="#6fcf97"/><rect x="64" y="72" width="14" height="14" fill="#f2c94c"/><rect x="64" y="58" width="14" height="14" fill="#f2c94c"/><rect x="36" y="58" width="14" height="14" fill="#eb6b6b"/></g></symbol>
+<symbol id="icon-on-pitch" viewBox="0 0 96 96"><rect x="6" y="8" width="84" height="80" rx="10" fill="#0d151d" stroke="#26343f" stroke-width="3"/><g><rect x="58" y="14" width="14" height="22" fill="#3c4b5a"/><rect x="58" y="52" width="14" height="30" fill="#3c4b5a"/><rect x="58" y="36" width="14" height="16" fill="none" stroke="#ffd27a" stroke-width="2.5"/></g><g stroke="#0d151d" stroke-width="1.5"><rect x="12" y="68" width="6" height="14" rx="2" fill="#e0554f"/><rect x="20" y="64" width="6" height="18" rx="2" fill="#f08a3c"/><rect x="28" y="60" width="6" height="22" rx="2" fill="#f2c94c"/><rect x="36" y="56" width="6" height="26" rx="2" fill="#7bc96f"/></g><circle cx="38" cy="38" r="12" fill="#a9b4c0" stroke="#2b3138" stroke-width="3"/><circle cx="34" cy="37" r="3.2" fill="#ffd27a"/><circle cx="42" cy="37" r="3.2" fill="#ffd27a"/><path d="M33 43q5 4 10 0" fill="none" stroke="#2b3138" stroke-width="2" stroke-linecap="round"/><path d="M46 38q4 0 6-3M46 42q6 0 9-5" fill="none" stroke="#ffd27a" stroke-width="2.4" stroke-linecap="round"/></symbol>
 <symbol id="icon-breakout" viewBox="0 0 96 96"><rect x="10" y="12" width="20" height="10" rx="3" fill="#ff766b"/><rect x="34" y="12" width="20" height="10" rx="3" fill="#ffc857"/><rect x="58" y="12" width="20" height="10" rx="3" fill="#62e6d2"/><rect x="10" y="26" width="20" height="10" rx="3" fill="#ffc857"/><rect x="58" y="26" width="20" height="10" rx="3" fill="#ff766b"/><circle cx="48" cy="58" r="7" fill="#f4fbff"/><path d="m44 52-8-10" stroke="#f4fbff" stroke-width="3" stroke-linecap="round" opacity=".5"/><rect x="26" y="78" width="44" height="9" rx="4.5" fill="#62e6d2"/></symbol>
 <symbol id="icon-last-hair" viewBox="0 0 96 96"><rect x="0" y="66" width="96" height="30" fill="#9aa0a8"/><path d="M6 24h26M2 36h20M64 20h28M70 32h22" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity=".8"/><rect x="26" y="62" width="44" height="34" rx="10" fill="#2f3b57"/><path d="M42 62h12l-6 16z" fill="#f5f5f5"/><path d="M46 64h4l1 14-3 4-3-4z" fill="#c62828"/><circle cx="48" cy="44" r="22" fill="#f1c9a0"/><circle cx="40" cy="43" r="4" fill="#fff"/><circle cx="56" cy="43" r="4" fill="#fff"/><circle cx="40" cy="44" r="2" fill="#222"/><circle cx="56" cy="44" r="2" fill="#222"/><path d="M41 54q7 5 14 0" stroke="#222" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M38 24q-8-10-18-8M48 22q2-12 14-16M58 24q10-6 22 2" stroke="#1d1610" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="70" cy="30" r="2.5" fill="#4fc3f7"/></symbol>
 <symbol id="icon-crash" viewBox="0 0 96 96"><path d="M18 24l10 8M65 65l12 9M74 19v17m-6-6 6 6 6-6" stroke="#62e6d2" stroke-width="4" stroke-linecap="round"/><g transform="rotate(27 48 48)"><rect x="17" y="34" width="63" height="32" rx="16" fill="#ffb638"/><path d="M39 34v-9h16v9M18 47H9v11h14" fill="#d5912a"/><circle cx="55" cy="50" r="10" fill="#164755" stroke="#fff0c2" stroke-width="4"/><circle cx="52" cy="47" r="3" fill="#62e6d2"/></g></symbol><symbol id="icon-mines" viewBox="0 0 96 96"><circle cx="45" cy="48" r="22" fill="#ff766b"/><g stroke="#ff766b" stroke-width="6" stroke-linecap="round"><path d="M45 17v10m0 42v10M14 48h10m42 0h10M23 26l8 8m29 29 7 7M23 70l8-8m29-29 7-7"/></g><circle cx="38" cy="41" r="6" fill="#ffc4b3"/><circle cx="72" cy="73" r="13" fill="#62e6d2"/><path d="m65 74 5 4 8-10" fill="none" stroke="#0a2a3b" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-plinko" viewBox="0 0 96 96"><path d="M15 72h66v12H15z" fill="#ffb638"/><path d="M37 73v10m22-10v10" stroke="#72562a" stroke-width="3"/><g fill="#85b4c0"><circle cx="48" cy="30" r="4"/><circle cx="35" cy="44" r="4"/><circle cx="61" cy="44" r="4"/><circle cx="22" cy="58" r="4"/><circle cx="48" cy="58" r="4"/><circle cx="74" cy="58" r="4"/></g><path d="m45 13 10 17-11 13 10 13" fill="none" stroke="#62e6d2" stroke-width="3" stroke-dasharray="3 4"/><circle cx="47" cy="13" r="8" fill="#e3fff6"/></symbol><symbol id="icon-merge" viewBox="0 0 96 96"><g fill="#123c4b" stroke="#326475" stroke-width="2"><rect x="12" y="12" width="32" height="32" rx="10"/><rect x="52" y="12" width="32" height="32" rx="10"/><rect x="12" y="52" width="32" height="32" rx="10"/></g><circle cx="28" cy="28" r="11" fill="#8db0b9"/><circle cx="68" cy="28" r="11" fill="#62e6d2"/><circle cx="28" cy="68" r="11" fill="#ffb638"/><circle cx="68" cy="68" r="21" fill="#a8a0ed"/><g font-family="system-ui" font-weight="800" fill="#082333" text-anchor="middle"><text x="28" y="33" font-size="14">2</text><text x="68" y="33" font-size="14">4</text><text x="28" y="73" font-size="14">8</text><text x="68" y="75" font-size="22">16</text></g></symbol><symbol id="icon-dice" viewBox="0 0 96 96"><circle cx="48" cy="48" r="37" fill="none" stroke="#326475" stroke-width="2"/><path d="M48 9v9m39 30h-9M48 87v-9M9 48h9" stroke="#62e6d2" stroke-width="3"/><rect x="24" y="24" width="48" height="48" rx="13" fill="#62e6d2" transform="rotate(-12 48 48)"/><g fill="#0a2a3b"><circle cx="35" cy="39" r="4"/><circle cx="48" cy="48" r="4"/><circle cx="61" cy="57" r="4"/></g></symbol><symbol id="icon-limbo" viewBox="0 0 96 96"><path d="M48 10v29" stroke="#b6d8de" stroke-width="3" stroke-dasharray="4 4"/><path d="m48 31 18 20-18 29-18-29z" fill="#ffb638"/><path d="m48 35 9 16-9 22-9-22z" fill="#ffe1a0"/><path d="M15 69q33 20 66 0M19 80q29 15 58 0" fill="none" stroke="#62e6d2" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-hilo" viewBox="0 0 96 96"><rect x="13" y="20" width="44" height="58" rx="8" fill="#e4f2f3" transform="rotate(-13 35 49)"/><rect x="41" y="14" width="44" height="62" rx="8" fill="#ffb638" transform="rotate(9 63 45)"/><path d="m53 42 12-12 11 12M65 30v28" fill="none" stroke="#483619" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="m22 54 8 8 8-8" fill="none" stroke="#145263" stroke-width="4" stroke-linecap="round"/></symbol><symbol id="icon-keno" viewBox="0 0 96 96"><path d="M12 76 30 47 52 59 72 35 85 76Z" fill="#665036"/><path d="m32 69 7-16h19l7 16Z" fill="#ffcf54"/><path d="m25 18 45 44" stroke="#b98a58" stroke-width="9" stroke-linecap="round"/><path d="M40 14Q67 5 82 34L61 25Z" fill="#a6d4df"/><path d="m76 52 3 7 7 3-7 3-3 7-3-7-7-3 7-3Z" fill="#9af3eb"/></symbol><symbol id="icon-wheel" viewBox="0 0 96 96"><circle cx="48" cy="48" r="34" fill="#123c4b" stroke="#ffb638" stroke-width="5"/><circle cx="48" cy="48" r="24" fill="none" stroke="#326475" stroke-width="2"/><path d="M48 6v14m0 56v14M6 48h14m56 0h14" stroke="#e4f2f3" stroke-width="3"/><path d="m62 21-8 33-20 21 8-33z" fill="#ff766b"/><path d="m62 21-20 21 12 12z" fill="#62e6d2"/><circle cx="48" cy="48" r="5" fill="#e4f2f3"/></symbol><symbol id="icon-tower" viewBox="0 0 96 96"><g fill="#164755" stroke="#326475" stroke-width="2"><rect x="13" y="64" width="70" height="17" rx="5"/><rect x="22" y="40" width="52" height="17" rx="5"/><rect x="31" y="16" width="34" height="17" rx="5"/></g><g fill="#62e6d2"><circle cx="28" cy="72" r="5"/><circle cx="48" cy="48" r="5"/><circle cx="48" cy="24" r="5"/></g><path d="m76 50 8-10 8 10M84 41v22" fill="none" stroke="#ffb638" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-crossing" viewBox="0 0 96 96"><path d="M14 70h68M19 26h58" stroke="#326475" stroke-width="3" stroke-dasharray="6 6"/><g fill="#62e6d2"><ellipse cx="47" cy="51" rx="23" ry="19"/><circle cx="75" cy="47" r="11"/><ellipse cx="32" cy="31" rx="7" ry="10" transform="rotate(-35 32 31)"/><ellipse cx="34" cy="71" rx="7" ry="10" transform="rotate(35 34 71)"/></g><ellipse cx="47" cy="51" rx="16" ry="14" fill="#297a6e"/><path d="m47 38 9 7v10l-9 8-9-8V45z" fill="none" stroke="#a6f4d9" stroke-width="2"/><circle cx="78" cy="44" r="2.5" fill="#082333"/><path d="m24 50-12-5v12z" fill="#62e6d2"/></symbol><symbol id="icon-dream" viewBox="0 0 96 96"><circle cx="48" cy="49" r="32" fill="#113041" stroke="#326475" stroke-width="6"/><path d="M66 23a32 32 0 0 1 13 33" fill="none" stroke="#62e6d2" stroke-width="8" stroke-linecap="round"/><path d="M48 29v20l17 13" fill="none" stroke="#ffb638" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="49" r="5" fill="#ffb638"/><path d="m16 15 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#b3a3ee"/></symbol><symbol id="icon-runner" viewBox="0 0 96 96"><path d="m34 11-24 75h76L62 11z" fill="#164755"/><path d="m43 20-8 57m19-57 8 57" stroke="#62e6d2" stroke-width="2" stroke-dasharray="5 6"/><rect x="22" y="50" width="19" height="24" rx="3" fill="#ff766b"/><rect x="56" y="27" width="15" height="18" rx="3" fill="#ff766b"/><path d="m50 79 15-17m-13 0h13v13" fill="none" stroke="#ffb638" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="icon-elevator" viewBox="0 0 96 96"><g><path d="M19 59v20m10-20v20" stroke="#6b9ac4" stroke-width="6" stroke-linecap="round"/><path d="M14 41h20v25H14z" fill="#6b9ac4"/><circle cx="24" cy="29" r="11" fill="#2b2118"/></g><g><path d="M45 59v20m10-20v20" stroke="#a78bfa" stroke-width="6" stroke-linecap="round"/><path d="M40 41h20v25H40z" fill="#a78bfa"/><circle cx="50" cy="29" r="11" fill="#f5d0a9"/><path d="M50 18a11 11 0 0 0 0 22z" fill="#2b2118"/><text x="50" y="13" text-anchor="middle" font-family="system-ui" font-size="20" font-weight="700" fill="#ffb638">?</text></g><g><path d="M74 65v16m10-16v16" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="M69 46h20v26H69z" fill="#ffb638"/><circle cx="79" cy="34" r="11" fill="#2b2118"/><path d="m73 10 6 10 6-10z" fill="#e4f2f3"/></g></symbol><symbol id="icon-sneak" viewBox="0 0 96 96"><rect x="62" y="15" width="26" height="65" rx="3" fill="#8d7254"/><rect x="68" y="21" width="14" height="10" rx="2" fill="#62e6d2"/><circle cx="69" cy="53" r="2" fill="#ffb638"/><path d="M23 61 14 82m21-21 9 19" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="M18 37h21v27H18z" fill="#ffb638"/><circle cx="29" cy="25" r="11" fill="#f5d0a9"/><path d="m40 47 13-8" stroke="#ffb638" stroke-width="6" stroke-linecap="round"/><path d="m45 12 3-7 3 7m-3-7v13" fill="none" stroke="#ff766b" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-fishing" viewBox="0 0 96 96"><path d="M14 19q22-8 31 1v24" fill="none" stroke="#d6bd8e" stroke-width="3"/><path d="M45 44v5q0 7 8 6" fill="none" stroke="#e4f2f3" stroke-width="2"/><path d="m70 59 17-14v28z" fill="#ffb638"/><ellipse cx="47" cy="60" rx="29" ry="20" fill="#ffb638"/><path d="M38 43v34M51 41v38" stroke="#fff0c2" stroke-width="5"/><circle cx="30" cy="55" r="6" fill="#fff"/><circle cx="28" cy="55" r="3" fill="#082333"/><path d="M12 86q8-7 16 0t16 0t16 0t16 0" fill="none" stroke="#62e6d2" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-campaign" viewBox="0 0 96 96"><path d="M24 46V30l22-9v25z" fill="#62e6d2"/><path d="M54 19q8 9 0 19M62 12q14 16 0 33" fill="none" stroke="#62e6d2" stroke-width="3.5" stroke-linecap="round"/><rect x="10" y="44" width="52" height="28" rx="5" fill="#ffb638"/><path d="M62 52h13l9 10v10H62z" fill="#d5912a"/><rect x="66" y="56" width="10" height="8" rx="2" fill="#164755"/><path d="M18 54h34M18 62h22" stroke="#72562a" stroke-width="3" stroke-linecap="round"/><circle cx="27" cy="74" r="8" fill="#082333" stroke="#e4f2f3" stroke-width="3"/><circle cx="68" cy="74" r="8" fill="#082333" stroke="#e4f2f3" stroke-width="3"/></symbol><symbol id="icon-boba" viewBox="0 0 96 96"><path d="m60 8-9 33" stroke="#ff9dbb" stroke-width="9" stroke-linecap="round"/><path d="m24 31 8 52h35l8-52z" fill="#e9bd91" stroke="#ffd0df" stroke-width="3"/><path d="M28 45h43l-5 35H34z" fill="#d89d74"/><ellipse cx="49" cy="31" rx="27" ry="8" fill="#ffe9f0" stroke="#ff9dbb" stroke-width="3"/><g fill="#6b3f2f"><circle cx="39" cy="72" r="5"/><circle cx="51" cy="74" r="5"/><circle cx="61" cy="69" r="5"/><circle cx="45" cy="63" r="5"/></g><g fill="#7a4a3c"><circle cx="39" cy="49" r="2.5"/><circle cx="58" cy="49" r="2.5"/></g><path d="M44 54q5 6 10 0" fill="none" stroke="#7a4a3c" stroke-width="2.5" stroke-linecap="round"/></symbol><symbol id="icon-cat" viewBox="0 0 96 96"><rect x="6" y="64" width="46" height="26" fill="#ff5d8f"/><rect x="2" y="60" width="54" height="8" fill="#7b2cbf"/><rect x="64" y="74" width="30" height="16" fill="#ff5d8f"/><rect x="60" y="70" width="38" height="8" fill="#7b2cbf"/><path d="M60 62q8-24 24-30" fill="none" stroke="#fff1c1" stroke-width="3" stroke-dasharray="4 5" stroke-linecap="round"/><path d="M28 40q-15-3-11-20" fill="none" stroke="#ff9f1c" stroke-width="6" stroke-linecap="round"/><ellipse cx="42" cy="40" rx="17" ry="12" fill="#ff9f1c"/><path d="M34 50v9M48 50v9" stroke="#ff9f1c" stroke-width="5" stroke-linecap="round"/><path d="M47 22l2-14 10 10zM60 17l9-11 2 16z" fill="#ff9f1c"/><circle cx="58" cy="29" r="13" fill="#ff9f1c"/><circle cx="54" cy="28" r="4" fill="#fff"/><circle cx="64" cy="28" r="4" fill="#fff"/><circle cx="55" cy="28" r="1.8" fill="#1b1b2f"/><circle cx="65" cy="28" r="1.8" fill="#1b1b2f"/><circle cx="69" cy="34" r="2.2" fill="#ff5d8f"/></symbol><symbol id="icon-bird" viewBox="0 0 96 96"><path d="M6 80h84" stroke="#f72585" stroke-width="6" stroke-linecap="round"/><path d="M22 46 5 36l4 19z" fill="#00b4d8"/><circle cx="38" cy="48" r="22" fill="#4cc9f0"/><ellipse cx="41" cy="56" rx="13" ry="10" fill="#caf0f8"/><circle cx="46" cy="42" r="7" fill="#fff"/><circle cx="48" cy="42" r="3.2" fill="#1b1b2f"/><path d="M57 44l19 5-19 5z" fill="#ffbe0b"/><circle cx="33" cy="24" r="4" fill="#f72585"/><circle cx="42" cy="22" r="4" fill="#f72585"/><path d="M33 70v9M43 70v9" stroke="#ff9f1c" stroke-width="5" stroke-linecap="round"/><ellipse cx="77" cy="73" rx="13" ry="7" fill="#8d5524"/><ellipse cx="77" cy="64" rx="9" ry="6" fill="#8d5524"/><ellipse cx="77" cy="57" rx="5.5" ry="4.5" fill="#8d5524"/></symbol><symbol id="icon-frog" viewBox="0 0 96 96"><path d="M6 84h84" stroke="#7cb342" stroke-width="6" stroke-linecap="round"/><rect x="56" y="58" width="34" height="18" rx="9" fill="#8bc34a"/><rect x="56" y="38" width="34" height="18" rx="9" fill="#d32f2f"/><rect x="56" y="18" width="34" height="18" rx="9" fill="#ffb74d"/><circle cx="64" cy="66" r="3" fill="#fff"/><circle cx="64" cy="46" r="3" fill="#fff"/><circle cx="64" cy="26" r="3" fill="#fff"/><path d="M38 62 58 67" stroke="#ff6f91" stroke-width="6" stroke-linecap="round"/><ellipse cx="26" cy="62" rx="22" ry="19" fill="#4caf50"/><circle cx="16" cy="42" r="9" fill="#4caf50"/><circle cx="34" cy="42" r="9" fill="#4caf50"/><circle cx="16" cy="42" r="5" fill="#fff"/><circle cx="34" cy="42" r="5" fill="#fff"/><circle cx="18" cy="42" r="2.4" fill="#1b1b2f"/><circle cx="36" cy="42" r="2.4" fill="#1b1b2f"/><ellipse cx="28" cy="68" rx="13" ry="9" fill="#c8e6c9"/></symbol><symbol id="icon-nap" viewBox="0 0 96 96"><rect x="4" y="62" width="88" height="24" rx="6" fill="#8d6e63"/><rect x="4" y="56" width="88" height="10" rx="4" fill="#a1887f"/><rect x="60" y="34" width="28" height="22" rx="4" fill="#263238"/><rect x="64" y="38" width="20" height="14" rx="2" fill="#4dd0e1"/><rect x="12" y="50" width="38" height="9" rx="4" fill="#5c6bc0"/><circle cx="34" cy="46" r="12" fill="#f1c9a0"/><path d="M22 43a12 12 0 0 1 24 0z" fill="#3e2723"/><path d="M27 48q3 3 6 0M35 48q3 3 6 0" stroke="#4e342e" stroke-width="2" fill="none" stroke-linecap="round"/><text x="50" y="32" font-size="18" font-weight="800" fill="#b39ddb" font-family="sans-serif">Z</text><text x="64" y="20" font-size="13" font-weight="800" fill="#ce93d8" font-family="sans-serif">z</text><rect x="70" y="4" width="14" height="26" rx="5" fill="#37474f" opacity="0"/><circle cx="14" cy="16" r="7" fill="#f1c9a0"/><rect x="8" y="23" width="12" height="14" rx="3" fill="#37474f"/><rect x="13" y="25" width="2.5" height="8" fill="#d32f2f"/><text x="24" y="22" font-size="18" font-weight="800" fill="#d32f2f" font-family="sans-serif">!</text></symbol>
@@ -2578,7 +2580,7 @@ html.frontier-immersive{overflow:hidden}
   <div class="gold-banner-copy"><span class="game-card-category">每日補給</span><h3>每天挖點好運氣</h3><p class="game-card-en">Daily Gold Mine</p><p class="game-card-description">挖金礦拿點數，再去挑戰喜歡的小遊戲。</p><p id="gold-daily-status" aria-live="polite">每天 3 次 · 每次挖 5 格 · 每日最多 30 點</p><div class="game-card-footer"><span>不限次數</span><span>台灣時間午夜重置</span></div></div>
   <span class="gold-banner-cta" id="gold-daily-cta">挖一次 <span aria-hidden="true">↗</span></span>
 </a></section>
-    <section class="lobby-games" aria-labelledby="lobby-games-title"><div class="lobby-row-head" id="lobby-games"><h2 id="lobby-games-title"><i class="fa-solid fa-table-cells-large side-head-icon" aria-hidden="true"></i>遊戲 <span id="lobby-count">43 款遊戲</span></h2><button type="button" class="row-all" id="lobby-show-all">查看全部</button></div><div class="lobby-tabs-row"><div class="lobby-filters tab-filters" role="group" aria-label="遊戲分類"><button type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div><label class="top-search"><input id="lobby-search" type="search" placeholder="搜尋" aria-label="搜尋遊戲" autocomplete="off"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></label></div>
+    <section class="lobby-games" aria-labelledby="lobby-games-title"><div class="lobby-row-head" id="lobby-games"><h2 id="lobby-games-title"><i class="fa-solid fa-table-cells-large side-head-icon" aria-hidden="true"></i>遊戲 <span id="lobby-count">44 款遊戲</span></h2><button type="button" class="row-all" id="lobby-show-all">查看全部</button></div><div class="lobby-tabs-row"><div class="lobby-filters tab-filters" role="group" aria-label="遊戲分類"><button type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div><label class="top-search"><input id="lobby-search" type="search" placeholder="搜尋" aria-label="搜尋遊戲" autocomplete="off"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></label></div>
     <div class="lobby-grid"><a class="game-card" href="#market-desk" data-art="cover" style="--cover:url(games/market-desk/cover.webp?v=b1c91ed6)" data-game-category="puzzle" aria-label="遊玩收盤之前：20 天台股查證挑戰">
   <div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div>
   <div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-market-desk"></use></svg></div>
@@ -2593,6 +2595,7 @@ html.frontier-immersive{overflow:hidden}
 <a class="game-card" href="#shadow-relay" data-art="cover" style="--cover:url(games/shadow-relay/cover.webp?v=1b1c5a28)" data-game-category="puzzle" aria-label="遊玩影子接力：影子會照你的路線重走，讓它點亮燈籠，別被它追上。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-shadow-relay"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-shadow-relay"></use></svg></div><h3>影子接力</h3><p class="game-card-en">Shadow Relay</p><p class="game-card-description">影子會照你的路線重走，讓它點亮燈籠，別被它追上。</p><div class="game-card-footer"><span>立即開玩</span><span>8 關</span></div></a>
 <a class="game-card" href="#one-line-defense" data-art="cover" style="--cover:url(games/one-line-defense/cover.webp?v=1cc9f71f)" data-game-category="timing" aria-label="遊玩一筆畫守城：只能畫一條線擋住湧向核心的敵人，線越長消失越快。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-one-line-defense"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-one-line-defense"></use></svg></div><h3>一筆畫守城</h3><p class="game-card-en">One-Line Defense</p><p class="game-card-description">只能畫一條線擋住湧向核心的敵人，線越長消失越快。</p><div class="game-card-footer"><span>立即開玩</span><span>最佳分數</span></div></a>
 <a class="game-card" href="#mermaid" data-art="icon" data-game-category="puzzle" aria-label="遊玩人魚接龍：牌背是美人魚的蜘蛛接龍，把牌排成 K 到 A 收成珍珠。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mermaid"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mermaid"></use></svg></div><h3>人魚接龍</h3><p class="game-card-en">Mermaid Spider</p><p class="game-card-description">牌背是美人魚的蜘蛛接龍，排滿 K 到 A 收成珍珠。</p><div class="game-card-footer"><span>立即開玩</span><span>策略接龍</span></div></a><a class="game-card" href="#tetris" data-art="cover" style="--cover:url(games/tetris/cover.webp?v=ff760bda)" data-game-category="retro" aria-label="遊玩俄羅斯方塊：經典落塊消行，支援 SRS 旋轉、牆踢與暫存。免費遊玩。"><div class="game-card-top"><span class="game-card-category">經典小遊戲</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-tetris"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-tetris"></use></svg></div><h3>俄羅斯方塊</h3><p class="game-card-en">Block Drop</p><p class="game-card-description">經典落塊消行，旋轉、牆踢與暫存都有。</p><div class="game-card-footer"><span>立即開玩</span><span>最高分</span></div></a>
+<a class="game-card" href="#on-pitch" data-art="icon" data-game-category="timing" aria-label="遊玩不准跑調：用嗓音唱出牆上缺口的音，音準到了才能穿牆。免費遊玩。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-on-pitch"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-on-pitch"></use></svg></div><h3>不准跑調</h3><p class="game-card-en">Stay On Pitch</p><p class="game-card-description">對著麥克風唱出缺口的音，音準對了才能穿牆。</p><div class="game-card-footer"><span>立即開玩</span><span>聲控挑戰</span></div></a>
 <a class="game-card" href="#banquet" data-art="cover" style="--cover:url(games/banquet/cover.webp?v=c872f4ba)" data-game-category="puzzle" aria-label="遊玩最後的晚餐：記憶、機率與道具的心理博弈，在陰暗的餐桌上自己喝或敬給莊家。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-banquet"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-banquet"></use></svg></div><h3>最後的晚餐</h3><p class="game-card-en">The Last Banquet</p><p class="game-card-description">與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。</p><div class="game-card-footer"><span>立即開玩</span><span>心理博弈</span></div></a>
 <a class="game-card" href="#ocean-link" data-art="cover" style="--cover:url(games/ocean-link/cover.webp?v=16f8e3e8)" data-game-category="retro" aria-label="遊玩深海連連看，配對圖案闖關並獲得獎勵。">
   <div class="game-card-top"><span class="game-card-category">經典小遊戲</span><span class="game-card-arrow" aria-hidden="true">↗</span></div>
@@ -3697,6 +3700,20 @@ html.frontier-immersive{overflow:hidden}
       </section></div>
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>經典俄羅斯方塊：七種方塊用 7-bag 洗牌隨機出現，旋轉採用 SRS 規則並支援牆踢。把一整排填滿就會消除，一次消越多行得分越高，每消除 10 行升一級，方塊掉得更快。可以把方塊暫存起來，每放下一塊才能再暫存一次。方塊堆到頂端放不下就結束。</p><p>這款遊戲免費遊玩，沒有 BONUS，分數、行數與等級只是你的成績，不換點數；沒有任何下注或倍率返還。每款遊戲每天第一次完整玩過一局（至少 10 秒），會依平台固定規則領到完成獎勵。</p><p>切換遊戲或背景分頁會暫停，回來後按「繼續」。重新整理會放棄本局。最高分保存在這個瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+  </section>
+  <section class="view" id="view-on-pitch" hidden>
+    <div class="console"><div class="sneak-stage"><canvas id="op-canvas" tabindex="0" width="400" height="720" aria-label="不准跑調：對著麥克風唱出牆上缺口的音（C D E F G A B），音準到了才能穿過去；也可以改用螢幕琴鍵練習"></canvas></div>
+      <div class="side"><section class="panel" aria-label="不准跑調操作">
+        <dl class="stats"><div><dt>目前關卡</dt><dd id="op-level" data-i18n-ignore>1-1</dd></div><div><dt>本局分數</dt><dd id="op-score" data-i18n-ignore>0</dd></div><div><dt>累計星數</dt><dd id="op-stars" data-i18n-ignore>0 / 60</dd></div></dl>
+        <button class="go" id="op-go" type="button" data-mode="start">開始遊戲</button>
+        <p class="msg" id="op-msg" aria-live="polite" data-i18n-ignore></p>
+        <div class="seg-row" role="group" aria-label="輸入方式"><button class="seg" id="op-in-mic" type="button" aria-pressed="true">麥克風</button><button class="seg" id="op-in-key" type="button" aria-pressed="false">螢幕琴鍵（練習）</button></div>
+        <div class="seg-row" role="group" aria-label="八度規則"><button class="seg" id="op-oct-any" type="button" aria-pressed="true">任何八度</button><button class="seg" id="op-oct-strict" type="button" aria-pressed="false">嚴格第 4 八度</button></div>
+        <button class="seg" id="op-mic-test" type="button">測試麥克風</button>
+        <p class="hint">用嗓音、哼歌或吹口哨唱出牆上缺口的音，音準進到範圍並撐住一小段時間就算通過；唱錯或沒唱到會失去一顆愛心，三顆用完就失敗。建議戴耳機：喇叭播出的參考音會被麥克風收到（播音時已暫停偵測）。電腦也可以用鍵盤 C D E F G A B（或 1～7）練習；畫面上的 ❚❚ 或 Esc 暫停。</p>
+      </section></div>
+    </div>
+    <details class="rules"><summary>玩法與點數</summary><p>你是一顆往前滑行的小機器人，前面不斷出現有缺口的牆，缺口高度對應 C D E F G A B 七個音（第 4 八度）。對著麥克風唱出那個音，讓音高落在容許誤差內並撐住 0.2～0.25 秒，就能穿過缺口；過牆時間內沒唱準會失去一顆愛心，共 3 顆。通過時依誤差給「完美／好／過」並累積連續分數。</p><p>共 5 個世界、每個 4 關，外加無盡模式：世界 1 全提示（缺口高度、音名、顏色、參考音）；世界 2 唱出小星星等公版旋律；世界 3 把缺口高度藏起來；世界 4 只剩顏色閃現；世界 5 逐步拿掉提示，靠記憶與絕對音準。越後面的世界容許誤差越小（±45 → ±30 音分）。預設「任何八度」：只看音名，高八度或低八度都算；也可切成嚴格第 4 八度。</p><p>這款遊戲免費遊玩，沒有 BONUS，分數與星數只是你的成績，不換點數；沒有任何下注或倍率返還。每款遊戲每天第一次完整玩過一局（至少 10 秒），會依平台固定規則領到完成獎勵。</p><p>麥克風只在遊戲中即時分析音高，不錄音、不上傳；切換分頁、離開本頁或按暫停會立刻關閉麥克風。星數與設定保存在這個瀏覽器中。</p></details>
   </section>
   <section class="view" id="view-breakout" hidden>
     <div class="console"><div class="sneak-stage"><canvas id="br-canvas" tabindex="0" width="400" height="520" aria-label="打磚塊：左右移動擋板接住小球，打光所有磚塊就能過關，三顆球用完就結束"></canvas></div>
@@ -9085,7 +9102,84 @@ html.frontier-immersive{overflow:hidden}
   "二十天・收盤結算": "Day 20 · Final close",
   "最終營收": "Final revenue",
   "重送成績": "Retry submission",
-  "訪客排行榜": "Guest leaderboard"
+  "訪客排行榜": "Guest leaderboard",
+  "Boss：只給音名": "Boss: name only",
+  "Boss：小星星（看不見）": "Boss: Twinkle (hidden)",
+  "Boss：連續 12 音不重複": "Boss: 12 notes, no repeats",
+  "Boss：音階上下行": "Boss: scale up and down",
+  "C、G 兩階": "C and G",
+  "下一關 ▶": "Next level ▶",
+  "不准跑調": "Stay On Pitch",
+  "不准跑調操作": "Stay On Pitch controls",
+  "不准跑調：對著麥克風唱出牆上缺口的音（C D E F G A B），音準到了才能穿過去；也可以改用螢幕琴鍵練習": "Stay On Pitch: sing the note in the wall gap (C D E F G A B) into the microphone to pass through; or practice with the on-screen keys",
+  "世界": "World",
+  "任何八度": "Any octave",
+  "任何八度皆可": "Any octave works",
+  "你是一顆往前滑行的小機器人，前面不斷出現有缺口的牆，缺口高度對應 C D E F G A B 七個音（第 4 八度）。對著麥克風唱出那個音，讓音高落在容許誤差內並撐住 0.2～0.25 秒，就能穿過缺口；過牆時間內沒唱準會失去一顆愛心，共 3 顆。通過時依誤差給「完美／好／過」並累積連續分數。": "You are a little robot gliding forward while walls with a gap keep arriving. The height of the gap matches one of seven notes, C D E F G A B (octave 4). Sing that note into the microphone, keep your pitch within the tolerance and hold it for 0.2–0.25 seconds to slip through. If you have not hit the note by the time the wall passes, you lose one of your 3 hearts. A pass is graded Perfect, Good or OK by how close you were, and passes in a row build your combo score.",
+  "偵測：": "Heard: ",
+  "偵測：（沒有穩定的聲音）": "Heard: (no steady sound)",
+  "全提示": "All cues",
+  "八度規則": "Octave rule",
+  "共 5 個世界、每個 4 關，外加無盡模式：世界 1 全提示（缺口高度、音名、顏色、參考音）；世界 2 唱出小星星等公版旋律；世界 3 把缺口高度藏起來；世界 4 只剩顏色閃現；世界 5 逐步拿掉提示，靠記憶與絕對音準。越後面的世界容許誤差越小（±45 → ±30 音分）。預設「任何八度」：只看音名，高八度或低八度都算；也可切成嚴格第 4 八度。": "There are 5 worlds of 4 levels each, plus an endless mode. World 1 gives every cue (gap height, note name, color and a reference tone); World 2 has you sing public-domain tunes such as Twinkle Twinkle; World 3 hides the gap height; World 4 leaves only a color flash; World 5 removes cues step by step so you rely on memory and absolute pitch. Later worlds allow less error (±45 down to ±30 cents). By default “Any octave” only checks the note name, so a higher or lower octave counts; you can switch to strict octave 4.",
+  "共通過": "Walls passed",
+  "只剩標籤": "Labels only",
+  "只剩顏色": "Colors only",
+  "只靠耳朵": "Ears only",
+  "唱旋律": "Sing a tune",
+  "嚴格第 4 八度": "Strict octave 4",
+  "回選單": "Back to menu",
+  "失敗": "Failed",
+  "失誤": "Miss",
+  "好": "Good",
+  "完美": "Perfect",
+  "對著麥克風唱出缺口的音，音準對了才能穿牆。": "Sing the note in the gap into your microphone. Hit the pitch to pass through the wall.",
+  "小星星": "Twinkle Twinkle",
+  "小聲、哼歌、吹口哨也可以": "Humming or whistling works too",
+  "干擾音": "Distractor",
+  "按「開始遊戲」或點畫面上的關卡開始。第一次會要求麥克風權限。|Press Start or tap a level. The first time asks for microphone access.": "Press Start or tap a level. The first time asks for microphone access.",
+  "最高連續": "Best combo",
+  "歡樂頌": "Ode to Joy",
+  "此瀏覽器不支援麥克風（需要 https 或 localhost）": "This browser has no microphone support (needs https or localhost)",
+  "測試麥克風": "Test microphone",
+  "準備…對著麥克風唱出缺口的音": "Ready… sing the note in the gap",
+  "準備…按下缺口對應的琴鍵": "Ready… press the key for the gap",
+  "無盡": "Endless",
+  "無盡模式（世界 5 規則）": "Endless (World 5 rules)",
+  "無盡結束": "Endless over",
+  "瑪莉有隻小綿羊": "Mary Had a Little Lamb",
+  "用嗓音、哼歌或吹口哨唱出牆上缺口的音，音準進到範圍並撐住一小段時間就算通過；唱錯或沒唱到會失去一顆愛心，三顆用完就失敗。建議戴耳機：喇叭播出的參考音會被麥克風收到（播音時已暫停偵測）。電腦也可以用鍵盤 C D E F G A B（或 1～7）練習；畫面上的 ❚❚ 或 Esc 暫停。": "Sing, hum or whistle the note in the wall gap. Get your pitch into range and hold it briefly to pass; a wrong or missed note costs a heart, and you fail when all three are gone. Headphones help: the reference tone from your speakers can be picked up by the microphone (detection pauses while a tone plays). On a computer you can also practice with the keys C D E F G A B (or 1–7); pause with ❚❚ on screen or Esc.",
+  "用聲音爬七階　C D E F G A B": "Climb seven steps with your voice",
+  "看不見階梯": "Hidden steps",
+  "第 {id} 關開始：唱出缺口的音。|Level {id}: sing the note in the gap.": "Level {id}: sing the note in the gap.",
+  "累計星數": "Total stars",
+  "絕對音準": "Perfect pitch",
+  "練習模式：按畫面琴鍵（或電腦鍵 C D E F G A B）": "Practice: tap the keys (or press C D E F G A B)",
+  "聲控挑戰": "Voice challenge",
+  "螢幕琴鍵（練習）": "On-screen keys (practice)",
+  "認識七階": "Meet the notes",
+  "輸入方式": "Input method",
+  "這款遊戲免費遊玩，沒有 BONUS，分數與星數只是你的成績，不換點數；沒有任何下注或倍率返還。每款遊戲每天第一次完整玩過一局（至少 10 秒），會依平台固定規則領到完成獎勵。": "This game is free to play and has no BONUS. Score and stars are only your results and never turn into points; there is no betting or multiplier payout. The first time you finish a round of each game each day (at least 10 seconds), you receive the platform’s fixed completion reward.",
+  "這關失敗了：{sc} 分。再試一次，或換個關卡。|Level failed: {sc} points. Try again or pick another level.": "Level failed: {sc} points. Try again or pick another level.",
+  "連續 ×": "Combo ×",
+  "遊戲中 · 在畫面操作": "Playing · use the screen",
+  "遊玩不准跑調：用嗓音唱出牆上缺口的音，音準到了才能穿牆。免費遊玩。": "Play Stay On Pitch: sing the note in the wall gap and hit the pitch to pass through. Free to play.",
+  "過": "OK",
+  "過關！得 {sc} 分、{st} 顆星。|Cleared! {sc} points, {st} stars.": "Cleared! {sc} points, {st} stars.",
+  "關閉麥克風": "Turn off microphone",
+  "隨機 C E G": "Random C E G",
+  "隨機七音": "Random 7 notes",
+  "隨機五音": "Random 5 notes",
+  "靠記憶": "From memory",
+  "面": "walls",
+  "音名閃現": "Name flash",
+  "音階上行": "Scale up",
+  "顏色閃現": "Color flash",
+  "麥克風": "Microphone",
+  "麥克風只在遊戲中即時分析音高，不錄音、不上傳；切換分頁、離開本頁或按暫停會立刻關閉麥克風。星數與設定保存在這個瀏覽器中。": "The microphone is only analyzed live for pitch during play; nothing is recorded or uploaded. Switching tabs, leaving this page or pausing turns the microphone off immediately. Stars and settings are saved in this browser.",
+  "麥克風無法使用，已改用螢幕琴鍵。": "Microphone unavailable. Switched to on-screen keys.",
+  "麥克風無法使用：": "Microphone unavailable: ",
+  "點一下繼續": "Tap to resume",
+  "點一下繼續（會重新開啟麥克風）": "Tap to resume (microphone turns back on)"
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -20357,6 +20451,888 @@ if (typeof module !== 'undefined') module.exports = blockDropRules;
   window.addEventListener('arcade-languagechange',function(){if(TET.msg)ttSay(TET.msg.text,TET.msg.kind,TET.msg.params);});
   ttSay('按「開始遊戲」或在遊戲畫面按 Enter 開局。|Press “Start” or Enter in the game to begin.');
   ttUI();
+  /* ---------- 不准跑調 Stay On Pitch：麥克風音高判定；免費入場，沒有 BONUS；分數與星數只是成績，不換點數 ---------- */
+  function opRoute(active){ if(window.deepSeaOnPitch)window.deepSeaOnPitch.route(active); }
+(function(){
+/*CORE_START*/
+// ===== 核心：偵測器與遊戲邏輯（不碰 DOM，可在 Node 測試）=====
+const NOTE_KEYS = 'CDEFGAB';
+const SEMI = [0,2,4,5,7,9,11];
+const SOLF = ['Do','Re','Mi','Fa','Sol','La','Si'];
+const NOTE_HZ = SEMI.map(s => 440*Math.pow(2,(60+s-69)/12));
+const PC_NAMES = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const mod = (a,n) => ((a%n)+n)%n;
+function hzToMidi(f){ return 69+12*Math.log2(f/440); }
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+// YIN 音高偵測。buf: Float32Array 時域資料；回傳 {hz, clarity} 或 null
+function detectPitch(buf, sr){
+  const N = buf.length;
+  let sum = 0;
+  for (let i=0;i<N;i++) sum += buf[i]*buf[i];
+  const rms = Math.sqrt(sum/N);
+  if (rms < 0.008) return null;
+  const tauMin = Math.max(2, Math.floor(sr/1200));
+  const tauMax = Math.min(Math.floor(sr/70), (N>>1)-1);
+  const W = N - tauMax;
+  const d = new Float32Array(tauMax+1);
+  for (let tau=1; tau<=tauMax; tau++){
+    let s = 0;
+    for (let j=0;j<W;j++){ const x = buf[j]-buf[j+tau]; s += x*x; }
+    d[tau] = s;
+  }
+  const cm = new Float32Array(tauMax+1);
+  cm[0] = 1;
+  let run = 0;
+  for (let tau=1; tau<=tauMax; tau++){
+    run += d[tau];
+    cm[tau] = run > 0 ? d[tau]*tau/run : 1;
+  }
+  const thr = 0.15;
+  let tauE = -1;
+  for (let tau=tauMin; tau<=tauMax; tau++){
+    if (cm[tau] < thr){
+      while (tau+1<=tauMax && cm[tau+1] < cm[tau]) tau++;
+      tauE = tau; break;
+    }
+  }
+  if (tauE < 0) return null;
+  let t = tauE;
+  if (t>1 && t<tauMax){
+    const a=cm[t-1], b=cm[t], c=cm[t+1];
+    const den = a - 2*b + c;
+    if (den !== 0) t = t + (a - c)/(2*den);
+  }
+  return { hz: sr/t, clarity: 1 - cm[tauE] };
+}
+
+function seq(str){ return str.split('').map(c => NOTE_KEYS.indexOf(c)); }
+function randSeq(rng, pool, n){
+  const out = []; let last = -1;
+  while (out.length < n){
+    const p = pool[Math.floor(rng()*pool.length)];
+    if (p === last) continue;
+    out.push(p); last = p;
+  }
+  return out;
+}
+
+function makeLevels(){
+  const CUE_FULL = { height:true,  label:'always', color:'always', tone:'target', toneOff:-1.5 };
+  const CUE_W3   = { height:false, label:'always', color:'always', tone:'target', toneOff:-1.5 };
+  const CUE_W4   = { height:false, label:'none',   color:'flash',  tone:'target', toneOff:-1.5, flashOff:-1.5 };
+  const worlds = [
+    { name:'認識七階',   tol:45, hold:0.20, win:1.4, gap:2.6, cues:CUE_FULL },
+    { name:'唱旋律',     tol:40, hold:0.25, win:1.2, gap:2.2, cues:CUE_FULL },
+    { name:'看不見階梯', tol:40, hold:0.25, win:1.1, gap:2.0, cues:CUE_W3 },
+    { name:'只靠耳朵',   tol:35, hold:0.25, win:1.0, gap:2.0, cues:CUE_W4 },
+    { name:'絕對音準',   tol:30, hold:0.25, win:1.0, gap:2.4, cues:null }
+  ];
+  const W5 = [
+    { height:false, label:'flash', color:'always', tone:null, flashOff:-1.5 },
+    { height:false, label:'none',  color:'flash',  tone:null, flashOff:-1.5 },
+    { height:false, label:'flash', color:'none',   tone:'distractor', toneOff:-2.0, flashOff:-1.3 },
+    { height:false, label:'flash', color:'none',   tone:null, flashOff:-2.0 }
+  ];
+  const names = [
+    ['C、G 兩階','C E G','音階上行','Boss：音階上下行'],
+    ['小星星','瑪莉有隻小綿羊','歡樂頌','Boss：Jingle Bells'],
+    ['隨機 C E G','隨機五音','隨機七音','Boss：小星星（看不見）'],
+    ['隨機 C E G','隨機五音','隨機七音','Boss：連續 12 音不重複'],
+    ['音名閃現','顏色閃現','干擾音','Boss：只給音名']
+  ];
+  const lv = [];
+  for (let w=0; w<5; w++){
+    for (let l=0; l<4; l++){
+      const seed = w*10+l+1, rng = mulberry32(seed*7919);
+      let notes;
+      if (w===0) notes = [seq('CGCGGCGC'), seq('CEGECGEGCE'), seq('CDEFGAB'), seq('CDEFGABBAGFEDCGC')][l];
+      else if (w===1) notes = [seq('CCGGAAGFFEEDDC'), seq('EDCDEEEDDDEGG'), seq('EEFGGFEDCCDEEDD'), seq('EEEEEEEGCDEFFFFFEE')][l];
+      else if (w===2 || w===3){
+        if (w===2 && l===3) notes = seq('CCGGAAGFFEEDDC');
+        else if (w===3 && l===3) notes = randSeq(rng,[0,1,2,3,4,5,6],12);
+        else notes = randSeq(rng, [[0,2,4],[0,1,2,4,5],[0,1,2,3,4,5,6]][l], 8+l*2);
+      } else notes = randSeq(rng,[0,1,2,3,4,5,6],10);
+      const cues = worlds[w].cues || W5[l];
+      lv.push({ id:(w+1)+'-'+(l+1), w:w, l:l, worldName:worlds[w].name, title:names[w][l],
+        notes:notes, tol:worlds[w].tol, hold:worlds[w].hold, win:worlds[w].win, gap:worlds[w].gap,
+        cues:cues, seed:seed, rowLabels: w<3 });
+    }
+  }
+  return lv;
+}
+function endlessLevel(){
+  return { id:'∞', w:4, l:0, worldName:'無盡', title:'無盡', notes:[], tol:30, hold:0.25, win:1.0, gap:2.4,
+    cues:{ height:false, label:'flash', color:'none', tone:null, flashOff:-1.5 }, seed:99, rowLabels:false, endless:true };
+}
+
+function createGame(level, opts){
+  opts = opts || {};
+  const strict = opts.octave === 'strict';
+  const rng = mulberry32((level.seed||1)*131);
+  const g = { level:level, strict:strict, t:0, lives:3, score:0, combo:0, maxCombo:0, walls:[], events:[],
+    flash:null, state:'play', stars:0, passes:0, tol:level.tol,
+    stats:{perfect:0,good:0,ok:0,fail:0}, view:{voice:false,p:null,cents:null,nearest:null,centsNear:0} };
+  const buf = [];
+  function addWall(note, arrive){
+    const w = { note:note, arrive:arrive, passed:false, judged:false, run:0, sum:0, grade:null,
+      toneDone:false, flashDone:false, distract:null };
+    if (level.cues.tone === 'distractor'){
+      let d; do { d = Math.floor(rng()*7); } while (d === note);
+      w.distract = d;
+    }
+    g.walls.push(w);
+  }
+  let lastNote = -1;
+  function addEndless(){
+    let n; do { n = Math.floor(rng()*7); } while (n === lastNote);
+    lastNote = n;
+    const last = g.walls.length ? g.walls[g.walls.length-1].arrive + level.gap : 3.5;
+    addWall(n, last);
+  }
+  if (level.endless){ for (let i=0;i<4;i++) addEndless(); }
+  else level.notes.forEach((n,i) => addWall(n, 3.5 + i*level.gap));
+
+  g.step = function(dt, hz){
+    if (g.state !== 'play') return;
+    g.t += dt;
+    const c = level.cues;
+    if (hz) buf.push({ t:g.t, m:hzToMidi(hz) });
+    while (buf.length && buf[0].t < g.t - 0.12) buf.shift();
+    let m = null;
+    if (buf.length){
+      const arr = buf.map(x => x.m).sort((a,b)=>a-b);
+      m = arr[arr.length>>1];
+    }
+    const active = g.walls.find(w => !w.judged && g.t >= w.arrive && g.t <= w.arrive + level.win);
+    const tw = active || g.walls.find(w => !w.judged);
+    const v = g.view;
+    if (m !== null){
+      const pr = m - 60;
+      let p;
+      if (strict) p = pr;
+      else { const tc = tw ? SEMI[tw.note] : 5.5; p = tc + (mod(pr - tc + 6, 12) - 6); }
+      v.voice = true; v.p = p;
+      const rn = Math.round(pr);
+      v.nearest = mod(rn,12); v.centsNear = (pr - rn)*100;
+    } else { v.voice = false; v.p = null; v.cents = null; v.nearest = null; }
+    // 提示事件
+    g.walls.forEach(w => {
+      if (!w.judged){
+        if (c.tone && !w.toneDone && g.t >= w.arrive + c.toneOff){
+          w.toneDone = true;
+          g.events.push({ type:'tone', note: c.tone==='distractor' ? w.distract : w.note });
+        }
+        if (c.flashOff !== undefined && !w.flashDone && g.t >= w.arrive + c.flashOff){
+          w.flashDone = true;
+          g.flash = { note:w.note, t0:g.t, dur:0.5 };
+        }
+      }
+    });
+    // 判定
+    if (active){
+      let d = null;
+      if (m !== null){
+        d = (m - 60 - SEMI[active.note]) * 100;
+        if (!strict) d = mod(d + 600, 1200) - 600;
+      }
+      v.cents = d;
+      if (d !== null && Math.abs(d) <= g.tol){
+        active.run += dt; active.sum += Math.abs(d)*dt;
+        if (!active.passed && active.run >= level.hold){
+          active.passed = true;
+          const avg = active.sum / active.run;
+          let grade = 'ok', pts = 40;
+          if (avg <= 10){ grade = 'perfect'; pts = 100; }
+          else if (avg <= 25){ grade = 'good'; pts = 70; }
+          const mult = (1 + Math.min(0.5, 0.1*Math.floor(g.combo/5))) * (strict ? 1.5 : 1);
+          g.score += Math.round(pts*mult);
+          g.combo++; g.maxCombo = Math.max(g.maxCombo, g.combo);
+          g.stats[grade]++; g.passes++;
+          active.grade = grade;
+          g.events.push({ type:'pass', grade:grade });
+          if (level.endless) g.tol = Math.max(15, 30 - 5*Math.floor(g.passes/10));
+        }
+      } else { active.run = 0; active.sum = 0; }
+    }
+    g.walls.forEach(w => {
+      if (!w.judged && g.t > w.arrive + level.win){
+        w.judged = true;
+        if (!w.passed){
+          g.lives--; g.combo = 0; g.stats.fail++;
+          g.events.push({ type:'fail' });
+        }
+      }
+    });
+    if (level.endless){
+      while (g.walls.filter(w => !w.judged).length < 4) addEndless();
+    }
+    if (g.lives <= 0){ g.state = 'over'; return; }
+    if (!level.endless){
+      const last = g.walls[g.walls.length-1];
+      if (g.walls.every(w => w.judged) && g.t > last.arrive + level.win + 0.4){
+        g.state = 'clear';
+        g.stars = g.stats.fail === 0 ? 3 : (g.stats.fail <= 2 ? 2 : 1);
+      }
+    }
+  };
+  return g;
+}
+/*CORE_END*/const W = 400, H = 720;
+const FONT = '"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif';
+const EN = () => !!(window.deepSeaI18n && window.deepSeaI18n.getLanguage && window.deepSeaI18n.getLanguage() === 'en');
+const T = (zh, en) => EN() ? en : zh;
+const TITLE_EN = { 'C、G 兩階':'C and G','C E G':'C E G','音階上行':'Scale up','Boss：音階上下行':'Boss: scale up and down','小星星':'Twinkle Twinkle','瑪莉有隻小綿羊':'Mary Had a Little Lamb','歡樂頌':'Ode to Joy','Boss：Jingle Bells':'Boss: Jingle Bells','隨機 C E G':'Random C E G','隨機五音':'Random 5 notes','隨機七音':'Random 7 notes','Boss：小星星（看不見）':'Boss: Twinkle (hidden)','Boss：連續 12 音不重複':'Boss: 12 notes, no repeats','音名閃現':'Name flash','顏色閃現':'Color flash','干擾音':'Distractor','Boss：只給音名':'Boss: name only','無盡':'Endless' };
+const LT = lv => EN() ? (TITLE_EN[lv.title] || lv.title) : lv.title;
+const THEME = {
+  noteColors: ['#e0554f','#f08a3c','#f2c94c','#7bc96f','#3fb6b0','#4a82d8','#9a6bd6'],
+  noteShapes: ['circle','triangle','square','diamond','hex','star','cross'],
+  amber: '#f0a830', amberHi:'#ffd27a', grey:'#8d99a6',
+  txt:'#eaf0f6', dim:'#8d99a6'
+};
+const STEP_H = 64, BASE_Y = 518, CHAR_X = 96, SPEED = 200;
+const rowY = i => BASE_Y - STEP_H*i - STEP_H/2;
+
+const cv = $('op-canvas');
+const cx = cv.getContext('2d');
+let ratio = 1;
+(function sizeCanvas(){ const dpr = Math.min(window.devicePixelRatio||1, 2); cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr); ratio = dpr; })();
+
+// 存檔
+const SAVE_KEY = 'on-pitch-v1';
+let prefs = { stars:{}, input:'mic', octave:'any' };
+try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); if (s) prefs = Object.assign(prefs, s); } catch(e){}
+function persist(){ try { localStorage.setItem(SAVE_KEY, JSON.stringify(prefs)); } catch(e){} }
+
+const LEVELS = makeLevels();
+const OP = { active:false, starting:false, resuming:false, analytics:null, sel:0, score:0, msg:null };
+let scene = 'menu';          // menu | play | pause | result
+let game = null, level = null;
+let msg = '', msgUntil = 0;
+function toast(t){ msg = t; msgUntil = performance.now() + 3500; }
+
+// ---- 音訊 ----
+let actx = null, muteUntil = 0;
+function ensureCtx(){
+  if (!actx){ const AC = window.AudioContext || window.webkitAudioContext; actx = new AC(); }
+  if (actx.state === 'suspended') actx.resume();
+  return actx;
+}
+function playTone(note){
+  const c = ensureCtx(), now = c.currentTime;
+  const o = c.createOscillator(), g = c.createGain();
+  o.type = 'triangle'; o.frequency.value = NOTE_HZ[note];
+  g.gain.setValueAtTime(0.0001, now);
+  g.gain.exponentialRampToValueAtTime(0.25, now+0.03);
+  g.gain.setValueAtTime(0.25, now+0.3);
+  g.gain.exponentialRampToValueAtTime(0.0001, now+0.4);
+  o.connect(g); g.connect(c.destination);
+  o.start(now); o.stop(now+0.42);
+  muteUntil = performance.now() + 400 + 150;   // 播音時暫停偵測，避免麥克風收回喇叭聲
+}
+function playTick(kind){
+  const c = ensureCtx(), now = c.currentTime;
+  const len = Math.floor(c.sampleRate*(kind==='fail'?0.2:0.07));
+  const b = c.createBuffer(1,len,c.sampleRate), d = b.getChannelData(0);
+  for (let i=0;i<len;i++) d[i] = (Math.random()*2-1)*(1-i/len);
+  const s = c.createBufferSource(); s.buffer = b;
+  const f = c.createBiquadFilter(); f.type = kind==='fail' ? 'lowpass' : 'highpass';
+  f.frequency.value = kind==='fail' ? 500 : 3500;
+  const g = c.createGain(); g.gain.value = 0.15;
+  s.connect(f); f.connect(g); g.connect(c.destination); s.start(now);
+  muteUntil = Math.max(muteUntil, performance.now() + 250);
+}
+
+// ---- 麥克風 ----
+const Mic = {
+  ready:false, stream:null, an:null, buf:null, last:null, lastT:0,
+  async start(){
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error(T('此瀏覽器不支援麥克風（需要 https 或 localhost）', 'This browser has no microphone support (needs https or localhost)'));
+    const c = ensureCtx();
+    this.stream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:false, noiseSuppression:false, autoGainControl:false } });
+    const src = c.createMediaStreamSource(this.stream);
+    this.an = c.createAnalyser(); this.an.fftSize = 2048;
+    src.connect(this.an);                       // 不接到 destination，避免回授
+    this.buf = new Float32Array(2048);
+    this.ready = true;
+  },
+  stop(){ if (this.stream) this.stream.getTracks().forEach(t => t.stop()); this.stream = null; this.ready = false; },
+  read(now){
+    if (!this.ready) return null;
+    if (now - this.lastT < 24) return this.last;     // 約 40 次／秒，省電
+    this.lastT = now;
+    this.an.getFloatTimeDomainData(this.buf);
+    const r = detectPitch(this.buf, actx.sampleRate);
+    this.last = (r && r.clarity >= 0.8) ? r.hz : null;
+    return this.last;
+  }
+};
+
+// ---- 螢幕鍵盤（練習模式／麥克風失效的退路）----
+const keysDown = {};     // 索引 -> true
+const ptrKey = {};       // pointerId -> 索引
+function keyHz(){
+  let idx = -1;
+  for (let i=0;i<7;i++) if (keysDown[i]) idx = i;
+  return idx >= 0 ? NOTE_HZ[idx] : null;
+}
+window.addEventListener('keydown', e => {
+  if (!opShown() || scene !== 'play' || e.ctrlKey || e.metaKey || e.altKey) return;
+  const i = NOTE_KEYS.toLowerCase().indexOf(e.key.toLowerCase());
+  const n = parseInt(e.key,10);
+  if (e.key.length===1 && i >= 0) keysDown[i] = true;
+  else if (n >= 1 && n <= 7) keysDown[n-1] = true;
+});
+window.addEventListener('keyup', e => {
+  if (!opShown()) return;
+  const i = NOTE_KEYS.toLowerCase().indexOf(e.key.toLowerCase());
+  const n = parseInt(e.key,10);
+  if (e.key.length===1 && i >= 0) keysDown[i] = false;
+  else if (n >= 1 && n <= 7) keysDown[n-1] = false;
+});
+
+function getHz(now){
+  if (prefs.input === 'key') return keyHz();
+  return Mic.read(now);
+}
+
+// ---- 流程 ----
+let fx = { hurt:0, happy:0, popups:[] };
+let heroS = 2.5;
+async function ensureMic(){
+  if (prefs.input === 'mic' && !Mic.ready){
+    try { await Mic.start(); }
+    catch(e){
+      toast(T('麥克風無法使用，已改用螢幕琴鍵。', 'Microphone unavailable. Switched to on-screen keys.'));
+      prefs.input = 'key'; persist(); opUI();
+    }
+  }
+}
+async function startLevel(lv){
+  if (OP.active || OP.starting) return;
+  if (ENTRY_FEE > S.balance){ opSay(LOW_MSG, 'lose'); return; }
+  OP.starting = true; opUI();
+  ensureCtx();
+  await ensureMic();
+  OP.starting = false;
+  if (!opShown()){ Mic.stop(); opUI(); return; }
+  level = lv; OP.sel = Math.max(0, LEVELS.indexOf(lv)); if (lv.endless) OP.sel = LEVELS.length;
+  game = createGame(lv, { octave: prefs.octave });
+  fx = { hurt:0, happy:0, popups:[] };
+  heroS = 2.5; scene = 'play';
+  OP.active = true; OP.score = 0;
+  if (AN.interact) AN.interact();
+  OP.analytics = AN.start('on-pitch', ENTRY_FEE, { stage: lv.w + 1, step: 0 });
+  opSay('第 {id} 關開始：唱出缺口的音。|Level {id}: sing the note in the gap.', '', { id: lv.id });
+  opUI();
+}
+function endRound(result, extra){
+  if (!OP.active) return;
+  const a = OP.analytics; OP.active = false; OP.analytics = null;
+  AN.end(a, 0, result, extra);
+  opUI();
+}
+function pauseRound(){
+  if (scene !== 'play') return;
+  scene = 'pause'; Object.keys(keysDown).forEach(k => keysDown[k] = false);
+  if (prefs.input === 'mic') Mic.stop();
+  if (OP.analytics) AN.progress(OP.analytics, { phase:'pause' }, true);
+  opUI();
+}
+async function resumeRound(){
+  if (scene !== 'pause' || OP.resuming) return;
+  OP.resuming = true;
+  await ensureMic();
+  OP.resuming = false;
+  if (scene !== 'pause' || !opShown()) return;
+  scene = 'play'; muteUntil = performance.now() + 300;
+  if (OP.analytics) AN.resume(OP.analytics);
+  opUI();
+}
+function leaveToMenu(){
+  if (OP.active) endRound('abandoned', { score: game ? game.score : 0 });
+  scene = 'menu'; opUI();
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden){ pauseRound(); if (scene !== 'play') Mic.stop(); } });
+
+// ---- 輸入 ----
+let buttons = [];
+function toLogical(e){
+  const r = cv.getBoundingClientRect();
+  return { x:(e.clientX - r.left)/r.width*W, y:(e.clientY - r.top)/r.height*H };
+}
+cv.addEventListener('pointerdown', e => {
+  e.preventDefault();
+  const p = toLogical(e);
+  ensureCtx();
+  if (scene === 'play' && prefs.input === 'key'){
+    for (let i=0;i<7;i++){
+      const kx = 20 + i*52;
+      if (p.x>=kx && p.x<=kx+48 && p.y>=566 && p.y<=700){ keysDown[i] = true; ptrKey[e.pointerId] = i; try{cv.setPointerCapture(e.pointerId);}catch(_){ } return; }
+    }
+  }
+  for (let i=buttons.length-1;i>=0;i--){
+    const b = buttons[i];
+    if (p.x>=b.x && p.x<=b.x+b.w && p.y>=b.y && p.y<=b.y+b.h){ b.fn(); return; }
+  }
+  if (scene === 'pause') resumeRound();
+});
+function releasePtr(e){
+  if (e.pointerId in ptrKey){ keysDown[ptrKey[e.pointerId]] = false; delete ptrKey[e.pointerId]; }
+}
+cv.addEventListener('pointerup', releasePtr);
+cv.addEventListener('pointercancel', releasePtr);
+
+// ================= 繪圖工具 =================
+function shape(kind, x, y, r){
+  cx.beginPath();
+  if (kind==='circle') cx.arc(x,y,r,0,Math.PI*2);
+  else if (kind==='square') cx.rect(x-r*0.85,y-r*0.85,r*1.7,r*1.7);
+  else if (kind==='triangle'){ cx.moveTo(x,y-r); cx.lineTo(x+r,y+r*0.85); cx.lineTo(x-r,y+r*0.85); cx.closePath(); }
+  else if (kind==='diamond'){ cx.moveTo(x,y-r); cx.lineTo(x+r,y); cx.lineTo(x,y+r); cx.lineTo(x-r,y); cx.closePath(); }
+  else if (kind==='hex'){ for(let i=0;i<6;i++){ const a=Math.PI/3*i; cx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a)); } cx.closePath(); }
+  else if (kind==='star'){ for(let i=0;i<10;i++){ const a=-Math.PI/2+Math.PI/5*i, rr=i%2?r*0.45:r; cx.lineTo(x+rr*Math.cos(a),y+rr*Math.sin(a)); } cx.closePath(); }
+  else if (kind==='cross'){ const t=r*0.35; cx.moveTo(x-t,y-r); cx.lineTo(x+t,y-r); cx.lineTo(x+t,y-t); cx.lineTo(x+r,y-t); cx.lineTo(x+r,y+t); cx.lineTo(x+t,y+t); cx.lineTo(x+t,y+r); cx.lineTo(x-t,y+r); cx.lineTo(x-t,y+t); cx.lineTo(x-r,y+t); cx.lineTo(x-r,y-t); cx.lineTo(x-t,y-t); cx.closePath(); }
+  cx.fill();
+}
+function heart(x, y, s){
+  cx.beginPath();
+  cx.moveTo(x, y+s*0.9);
+  cx.bezierCurveTo(x-s*1.7, y-s*0.1, x-s*0.8, y-s*1.25, x, y-s*0.45);
+  cx.bezierCurveTo(x+s*0.8, y-s*1.25, x+s*1.7, y-s*0.1, x, y+s*0.9);
+  cx.fill();
+}
+// 文字：opt.shadow 發光陰影、opt.stroke 描邊
+function text(t, x, y, size, color, align, weight, opt){
+  opt = opt || {};
+  cx.font = size + 'px ' + FONT;
+  cx.textAlign = align || 'center'; cx.textBaseline = 'middle';
+  cx.save();
+  if (opt.shadow){ cx.shadowColor = opt.shadow; cx.shadowBlur = opt.blur || 10; cx.shadowOffsetY = opt.dy || 0; }
+  if (opt.stroke){ cx.lineJoin = 'round'; cx.lineWidth = opt.sw || 4; cx.strokeStyle = opt.stroke; cx.strokeText(t, x, y); }
+  cx.fillStyle = color || THEME.txt;
+  cx.fillText(t, x, y);
+  cx.restore();
+}
+function rrect(x,y,w,h,r){
+  cx.beginPath(); cx.moveTo(x+r,y); cx.arcTo(x+w,y,x+w,y+h,r); cx.arcTo(x+w,y+h,x,y+h,r); cx.arcTo(x,y+h,x,y,r); cx.arcTo(x,y,x+w,y,r); cx.closePath();
+}
+// 面板：漸層底、陰影、細邊框、頂部高光
+function panel(x, y, w, h, r, o){
+  o = o || {};
+  cx.save();
+  if (o.shadow){ cx.shadowColor = 'rgba(0,0,0,0.5)'; cx.shadowBlur = o.shadow; cx.shadowOffsetY = 4; }
+  const g = cx.createLinearGradient(0, y, 0, y+h);
+  g.addColorStop(0, o.c1 || '#26343f'); g.addColorStop(1, o.c2 || '#18222b');
+  cx.fillStyle = g; rrect(x,y,w,h,r); cx.fill();
+  cx.restore();
+  cx.save(); rrect(x,y,w,h,r); cx.clip();
+  const hg = cx.createLinearGradient(0,y,0,y+Math.min(h,18));
+  hg.addColorStop(0,'rgba(255,255,255,0.10)'); hg.addColorStop(1,'rgba(255,255,255,0)');
+  cx.fillStyle = hg; cx.fillRect(x,y,w,Math.min(h,18));
+  cx.restore();
+  cx.strokeStyle = o.stroke || 'rgba(255,255,255,0.10)'; cx.lineWidth = o.sw || 1.2;
+  rrect(x+0.6,y+0.6,w-1.2,h-1.2,r); cx.stroke();
+}
+function button(x,y,w,h,label,fn,opt){
+  opt = opt || {};
+  const r = opt.r || 12;
+  if (opt.active) panel(x,y,w,h,r,{ c1:'#ffd27a', c2:'#e8981c', stroke:'rgba(255,255,255,0.5)', shadow:8 });
+  else panel(x,y,w,h,r,{ c1: opt.c1||'#2b3a47', c2: opt.c2||'#1c2731', stroke: opt.stroke, sw: opt.stroke?2:1.2, shadow:6 });
+  text(label, x+w/2, y+h/2+1, opt.size||16, opt.active ? '#2a1a00' : (opt.color||THEME.txt));
+  buttons.push({x:x,y:y,w:w,h:h,fn:fn});
+}
+function noteName(i){ return NOTE_KEYS[i]; }
+function stars(cx0, cy0, n, total, r, gap){
+  for (let k=0;k<total;k++){
+    const on = k < n;
+    cx.save();
+    if (on){ cx.shadowColor = THEME.amber; cx.shadowBlur = 8; }
+    cx.fillStyle = on ? THEME.amberHi : '#34414d';
+    shape('star', cx0 + (k-(total-1)/2)*gap, cy0, r);
+    cx.restore();
+  }
+}
+
+// ================= 背景（深海：光束＋氣泡）=================
+const bubbles = [];
+for (let i=0;i<22;i++) bubbles.push({ x:Math.random()*W, y:Math.random()*H, r:1.5+Math.random()*4, v:8+Math.random()*18, ph:Math.random()*6 });
+let gdt = 0.016;
+function drawBackground(){
+  const g = cx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#13202c'); g.addColorStop(0.55,'#0d151d'); g.addColorStop(1,'#080c11');
+  cx.fillStyle = g; cx.fillRect(0,0,W,H);
+  // 光束
+  [[60,90],[190,70],[300,110]].forEach((r,i) => {
+    const gr = cx.createLinearGradient(0,0,0,H*0.75);
+    gr.addColorStop(0,'rgba(120,190,220,0.07)'); gr.addColorStop(1,'rgba(120,190,220,0)');
+    cx.fillStyle = gr; cx.beginPath();
+    cx.moveTo(r[0],0); cx.lineTo(r[0]+r[1],0); cx.lineTo(r[0]+r[1]-120,H*0.75); cx.lineTo(r[0]-150,H*0.75); cx.closePath(); cx.fill();
+  });
+  // 氣泡
+  const tt = performance.now()/1000;
+  bubbles.forEach(b => {
+    b.y -= b.v*gdt; if (b.y < -10){ b.y = H+10; b.x = Math.random()*W; }
+    const x = b.x + Math.sin(tt*0.8 + b.ph)*6;
+    cx.strokeStyle = 'rgba(170,215,235,0.16)'; cx.lineWidth = 1;
+    cx.beginPath(); cx.arc(x,b.y,b.r,0,Math.PI*2); cx.stroke();
+    cx.fillStyle = 'rgba(170,215,235,0.05)'; cx.fill();
+  });
+}
+
+// ================= 遊戲畫面 =================
+function drawHero(x, y, mood, hold){
+  const r = 26;
+  cx.save();
+  cx.fillStyle = 'rgba(0,0,0,0.3)'; cx.beginPath(); cx.ellipse(x+3,y+r+8,r*0.9,6,0,0,Math.PI*2); cx.fill();
+  cx.restore();
+  if (hold > 0){
+    cx.save(); cx.shadowColor = THEME.amber; cx.shadowBlur = 12;
+    cx.strokeStyle = THEME.amberHi; cx.lineWidth = 5; cx.lineCap = 'round';
+    cx.beginPath(); cx.arc(x,y,r+9,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.min(1,hold)); cx.stroke(); cx.restore();
+  }
+  cx.strokeStyle = '#a9b4c0'; cx.lineWidth = 3; cx.lineCap = 'round';
+  cx.beginPath(); cx.moveTo(x,y-r); cx.quadraticCurveTo(x+2,y-r-10,x+7,y-r-14); cx.stroke();
+  cx.save(); cx.shadowColor = THEME.amber; cx.shadowBlur = 10;
+  cx.fillStyle = THEME.amberHi; cx.beginPath(); cx.arc(x+7,y-r-16,4.5,0,7); cx.fill(); cx.restore();
+  const body = cx.createRadialGradient(x-8,y-10,4,x,y,r+4);
+  body.addColorStop(0, mood==='hurt' ? '#d79b96' : '#c3ccd6'); body.addColorStop(1, mood==='hurt' ? '#9a5a56' : '#6f7c8a');
+  cx.fillStyle = body; cx.beginPath(); cx.arc(x,y,r,0,Math.PI*2); cx.fill();
+  cx.fillStyle = '#0d141b'; cx.beginPath(); cx.arc(x-9,y-3,8.5,0,7); cx.arc(x+9,y-3,8.5,0,7); cx.fill();
+  cx.save(); cx.shadowColor = THEME.amber; cx.shadowBlur = 8;
+  cx.fillStyle = mood==='hurt' ? '#ff8a80' : THEME.amberHi;
+  cx.beginPath(); cx.arc(x-9,y-3,4.5,0,7); cx.arc(x+9,y-3,4.5,0,7); cx.fill(); cx.restore();
+  cx.fillStyle = '#fff'; cx.beginPath(); cx.arc(x-10.5,y-5,1.4,0,7); cx.arc(x+7.5,y-5,1.4,0,7); cx.fill();
+  cx.strokeStyle = '#0d141b'; cx.lineWidth = 2.5; cx.lineCap = 'round'; cx.beginPath();
+  if (mood==='happy') cx.arc(x,y+6,7,0.1*Math.PI,0.9*Math.PI);
+  else if (mood==='hurt') cx.arc(x,y+14,6,1.15*Math.PI,1.85*Math.PI);
+  else { cx.moveTo(x-5,y+11); cx.lineTo(x+5,y+11); }
+  cx.stroke();
+}
+function drawSteps(lv){
+  for (let i=0;i<7;i++){
+    const y = rowY(i) - STEP_H/2;
+    const col = THEME.noteColors[i];
+    const g = cx.createLinearGradient(0,0,W,0);
+    g.addColorStop(0, col+'26'); g.addColorStop(0.5, 'rgba(255,255,255,0.03)'); g.addColorStop(1, 'rgba(255,255,255,0.015)');
+    cx.fillStyle = g; cx.fillRect(0,y,W,STEP_H);
+    cx.fillStyle = col+'88'; cx.fillRect(0,y,4,STEP_H);
+    cx.fillStyle = 'rgba(255,255,255,0.06)'; cx.fillRect(0,y,W,1);
+    if (lv.rowLabels){
+      panel(10, rowY(i)-15, 56, 30, 15, { c1:'rgba(10,16,22,0.8)', c2:'rgba(10,16,22,0.8)', stroke: col+'aa' });
+      cx.fillStyle = col; shape(THEME.noteShapes[i], 26, rowY(i), 7.5);
+      text(noteName(i), 44, rowY(i)+1, 16, THEME.txt, 'left');
+    }
+  }
+  cx.fillStyle = 'rgba(255,255,255,0.1)'; cx.fillRect(0,BASE_Y,W,1.5);
+}
+function drawWall(w, g, lv){
+  const fx0 = CHAR_X + (w.arrive - g.t)*SPEED;
+  const thick = lv.win*SPEED;
+  if (fx0 > W+10 || fx0+thick < -10) return;
+  const top = rowY(6) - STEP_H/2, bot = BASE_Y;
+  const c = lv.cues;
+  const c1 = w.passed ? '#3c8a60' : (w.judged ? '#8a4a47' : '#3c4b5a');
+  const c2 = w.passed ? '#24573c' : (w.judged ? '#552c2a' : '#222d38');
+  const gy = rowY(w.note) - STEP_H/2;
+  const open = c.height || w.passed;
+  function body(y0,y1){
+    if (y1 <= y0) return;
+    const gr = cx.createLinearGradient(fx0,0,fx0+thick,0);
+    gr.addColorStop(0,c1); gr.addColorStop(1,c2);
+    cx.fillStyle = gr; cx.fillRect(fx0,y0,thick,y1-y0);
+    // 磚紋
+    cx.strokeStyle = 'rgba(255,255,255,0.05)'; cx.lineWidth = 1;
+    for (let yy=y0+16; yy<y1; yy+=32){ cx.beginPath(); cx.moveTo(fx0,yy); cx.lineTo(fx0+thick,yy); cx.stroke(); }
+  }
+  if (open){ body(top, gy); body(gy+STEP_H, bot); } else body(top, bot);
+  // 前緣警示條
+  cx.save(); cx.beginPath();
+  if (open){ cx.rect(fx0,top,8,gy-top); cx.rect(fx0,gy+STEP_H,8,bot-(gy+STEP_H)); } else cx.rect(fx0,top,8,bot-top);
+  cx.clip();
+  cx.fillStyle = '#d99a2b'; cx.fillRect(fx0,top,8,bot-top);
+  cx.strokeStyle = '#1a2128'; cx.lineWidth = 4;
+  for (let yy=top-8; yy<bot+8; yy+=14){ cx.beginPath(); cx.moveTo(fx0-2,yy+10); cx.lineTo(fx0+10,yy-2); cx.stroke(); }
+  cx.restore();
+  // 缺口發光
+  if (open){
+    cx.save();
+    cx.shadowColor = w.passed ? '#6fe0a0' : THEME.amber; cx.shadowBlur = w.judged && !w.passed ? 0 : 16;
+    cx.strokeStyle = w.passed ? '#8af0b8' : THEME.amberHi; cx.lineWidth = 2.5;
+    cx.strokeRect(fx0+1.5, gy+1.5, thick-3, STEP_H-3);
+    cx.restore();
+  }
+  // 牆上標籤（膠囊）
+  const showLabel = c.label==='always', showColor = c.color==='always';
+  if ((showLabel || showColor) && !w.judged){
+    const cxm = Math.min(Math.max(fx0+thick/2, 130), 340);
+    const cym = c.height ? rowY(w.note) : (top+bot)/2;
+    const pw = (showLabel && showColor) ? 128 : (showLabel ? 100 : 44);
+    panel(cxm-pw/2, cym-17, pw, 34, 17, { c1:'rgba(8,12,17,0.88)', c2:'rgba(8,12,17,0.88)', stroke: THEME.noteColors[w.note]+'cc', sw:1.6 });
+    if (showColor){ cx.fillStyle = THEME.noteColors[w.note]; shape(THEME.noteShapes[w.note], cxm-pw/2+20, cym, 10); }
+    if (showLabel) text(noteName(w.note)+' '+SOLF[w.note], cxm+(showColor?10:0), cym+1, 18, '#fff');
+  } else if (!open && !w.judged){
+    text('?', Math.min(Math.max(fx0+thick/2, 130), 340), (top+bot)/2, 56, 'rgba(255,255,255,0.10)');
+  }
+}
+function drawHUD(g, lv){
+  panel(8, 8, W-16, 40, 14, { c1:'rgba(14,22,30,0.82)', c2:'rgba(10,16,22,0.82)', shadow:8 });
+  for (let i=0;i<3;i++){
+    cx.save();
+    if (i < g.lives){ cx.shadowColor = '#ff6b6b'; cx.shadowBlur = 8; }
+    cx.fillStyle = i < g.lives ? '#ff6b7a' : '#33404b';
+    heart(30+i*26, 28, 9);
+    cx.restore();
+  }
+  text(lv.id+'  '+LT(lv), W/2+4, 29, 13, '#c8d2dc');
+  text(String(g.score), W-20, 29, 20, THEME.amberHi, 'right', 0, { shadow:'rgba(240,168,48,0.5)', blur:8 });
+  if (g.combo >= 2){
+    panel(W-100, 54, 92, 22, 11, { c1:'rgba(240,168,48,0.9)', c2:'rgba(214,132,20,0.9)', stroke:'rgba(255,255,255,0.4)' });
+    text(T('連續 ×', 'Combo ×')+g.combo, W-54, 66, 12, '#2a1a00');
+  }
+  // 提示橫幅（閃現線索）
+  const f = g.flash;
+  if (f && g.t < f.t0 + f.dur){
+    const c = lv.cues, k = Math.min(1, (g.t - f.t0)/0.12);
+    const sc = 0.8 + 0.2*k;
+    cx.save(); cx.translate(W/2, 112); cx.scale(sc, sc); cx.globalAlpha = Math.min(1, k*1.3);
+    panel(-96, -34, 192, 68, 18, { c1:'rgba(10,16,22,0.92)', c2:'rgba(10,16,22,0.92)', stroke:THEME.amber, sw:2, shadow:18 });
+    const showC = c.color==='flash' || c.color==='always', showL = c.label==='flash';
+    if (showC){ cx.fillStyle = THEME.noteColors[f.note]; shape(THEME.noteShapes[f.note], showL?-52:0, 0, 20); }
+    if (showL) text(noteName(f.note)+' '+SOLF[f.note], showC?14:0, 1, 26, '#fff');
+    cx.restore();
+  }
+  if (g.t < 2.2) text(prefs.input==='mic' ? T('準備…對著麥克風唱出缺口的音', 'Ready… sing the note in the gap') : T('準備…按下缺口對應的琴鍵', 'Ready… press the key for the gap'), W/2, 160, 14, '#c8d2dc', 'center', 0, { stroke:'rgba(0,0,0,0.6)', sw:4 });
+  // 即時音高讀數（膠囊）
+  const v = g.view;
+  if (v.voice){
+    const c = Math.round(v.centsNear);
+    const label = PC_NAMES[v.nearest]+'  '+(c>=0?'+':'')+c+'¢';
+    const py = Math.max(88, Math.min(heroY()+52, 536));
+    panel(CHAR_X-36, py-12, 72, 24, 12, { c1:'rgba(10,16,22,0.8)', c2:'rgba(10,16,22,0.8)', stroke:'rgba(255,255,255,0.15)' });
+    text(label, CHAR_X, py+1, 12, Math.abs(c) <= 15 ? '#9be39b' : '#c8d2dc');
+  }
+}
+function semiToStep(p){
+  const A = [0,2,4,5,7,9,11,12];
+  if (p <= 0) return p*0.5;
+  if (p >= 12) return 7 + (p-12)*0.5;
+  for (let i=0;i<7;i++) if (p <= A[i+1]) return i + (p-A[i])/(A[i+1]-A[i]);
+  return 7;
+}
+let heroTarget = -0.5;
+function heroY(){ return rowY(Math.max(-0.4, Math.min(6.3, heroS))); }
+
+function drawKeys(){
+  panel(8, 540, W-16, 170, 18, { c1:'rgba(14,22,30,0.85)', c2:'rgba(8,12,17,0.9)' });
+  for (let i=0;i<7;i++){
+    const kx = 20 + i*52, down = !!keysDown[i], oy = down ? 3 : 0;
+    const col = THEME.noteColors[i];
+    cx.fillStyle = 'rgba(0,0,0,0.45)'; rrect(kx,572+4,48,128,10); cx.fill();
+    const g = cx.createLinearGradient(0,566+oy,0,694+oy);
+    g.addColorStop(0, down ? '#ffffff' : lighten(col)); g.addColorStop(1, down ? '#e0e6ec' : col);
+    cx.fillStyle = g; rrect(kx,566+oy,48,128,10); cx.fill();
+    cx.strokeStyle = 'rgba(255,255,255,0.35)'; cx.lineWidth = 1.2; rrect(kx+0.6,566.6+oy,46.8,126.8,10); cx.stroke();
+    cx.fillStyle = 'rgba(16,22,29,0.85)'; shape(THEME.noteShapes[i], kx+24, 612+oy, 8);
+    text(noteName(i), kx+24, 650+oy, 22, '#10161d');
+  }
+  text(T('練習模式：按畫面琴鍵（或電腦鍵 C D E F G A B）', 'Practice: tap the keys (or press C D E F G A B)'), W/2, 553, 12, THEME.dim);
+}
+function lighten(hex){
+  const n = parseInt(hex.slice(1),16);
+  const r = Math.min(255,(n>>16)+55), g = Math.min(255,((n>>8)&255)+55), b = Math.min(255,(n&255)+55);
+  return 'rgb('+r+','+g+','+b+')';
+}
+function drawPlay(dt){
+  const g = game, lv = level;
+  drawBackground(); drawSteps(lv);
+  g.walls.forEach(w => drawWall(w, g, lv));
+  if (g.view.voice) heroTarget = semiToStep(g.view.p);
+  else heroTarget = -0.5;
+  if (g.view.voice) heroS += (heroTarget - heroS)*Math.min(1, dt*14);
+  else heroS = Math.max(heroTarget, heroS - dt*3);
+  const active = g.walls.find(w => !w.judged && g.t >= w.arrive && g.t <= w.arrive + lv.win);
+  const hold = active && !active.passed ? active.run/lv.hold : 0;
+  const mood = fx.hurt>0 ? 'hurt' : (fx.happy>0 ? 'happy' : 'idle');
+  drawHero(CHAR_X, heroY(), mood, hold);
+  drawHUD(g, lv);
+  if (scene === 'play') button(10, 54, 40, 24, '❚❚', pauseRound, { size:11, r:8 });
+  fx.popups = fx.popups.filter(p => (p.life -= dt) > 0);
+  fx.popups.forEach(p => {
+    cx.globalAlpha = Math.min(1, p.life*2);
+    text(p.t, CHAR_X+74, heroY() - (1-p.life)*40, 24, p.c, 'center', 0, { stroke:'rgba(0,0,0,0.65)', sw:5 });
+    cx.globalAlpha = 1;
+  });
+  if (prefs.input === 'key') drawKeys();
+  else {
+    panel(8, 548, W-16, 56, 14, { c1:'rgba(14,22,30,0.7)', c2:'rgba(8,12,17,0.7)' });
+    text(prefs.octave==='strict' ? T('嚴格第 4 八度', 'Strict: octave 4 only') : T('任何八度皆可', 'Any octave works'), W/2, 566, 13, '#c8d2dc');
+    text(T('小聲、哼歌、吹口哨也可以', 'Humming or whistling works too'), W/2, 588, 12, THEME.dim);
+  }
+}
+function drawPause(){
+  cx.fillStyle = 'rgba(4,8,12,0.7)'; cx.fillRect(0,0,W,H);
+  panel(50, 250, 300, 190, 22, { shadow:24 });
+  text(T('暫停中', 'Paused'), W/2, 292, 30, THEME.amberHi, 'center', 0, { shadow:'rgba(240,168,48,0.5)' });
+  text(prefs.input==='mic' ? T('點一下繼續（會重新開啟麥克風）', 'Tap to resume (microphone turns back on)') : T('點一下繼續', 'Tap to resume'), W/2, 332, 13, '#c8d2dc');
+  button(110, 366, 180, 48, T('回選單', 'Back to menu'), leaveToMenu, { size:16 });
+}
+function gradeText(g){ return { perfect:T('完美','Perfect'), good:T('好','Good'), ok:T('過','OK') }[g]; }
+function drawResult(){
+  const g = game, win = g.state==='clear';
+  drawBackground();
+  panel(24, 90, W-48, 440, 26, { shadow:30, stroke: win ? 'rgba(123,201,111,0.5)' : 'rgba(255,138,128,0.4)', sw:2 });
+  text(win ? T('過關！','Cleared!') : (level.endless ? T('無盡結束','Endless over') : T('失敗','Failed')), W/2, 148, 42, win ? '#9be39b' : '#ff8a80', 'center', 0, { shadow: win ? 'rgba(123,201,111,0.6)' : 'rgba(255,100,90,0.5)', blur:16 });
+  text(level.id+'　'+LT(level), W/2, 198, 16, '#c8d2dc');
+  if (win) stars(W/2, 256, g.stars, 3, 22, 54);
+  panel(54, 296, W-108, 96, 16, { c1:'#1a2530', c2:'#121a22' });
+  text(String(g.score), W/2, 330, 34, THEME.amberHi, 'center', 0, { shadow:'rgba(240,168,48,0.5)' });
+  text(T('分數','Score'), W/2, 364, 12, THEME.dim);
+  const rows = [[T('完美','Perfect'),g.stats.perfect,'#ffe27a'],[T('好','Good'),g.stats.good,'#9be39b'],[T('過','OK'),g.stats.ok,'#c8d2dc'],[T('失誤','Miss'),g.stats.fail,'#ff8a80']];
+  rows.forEach((r,i) => {
+    const x = 70 + i*87;
+    text(String(r[1]), x, 428, 24, r[2]);
+    text(r[0], x, 456, 12, THEME.dim);
+  });
+  text(T('最高連續 ','Best combo ')+g.maxCombo+(level.endless?T('　共通過 '+g.passes+' 面','　Walls passed '+g.passes):''), W/2, 494, 13, THEME.dim);
+  button(40, 560, 150, 52, T('再玩一次','Retry'), () => startLevel(level.endless ? endlessLevel() : level), { size:17 });
+  button(210, 560, 150, 52, T('回選單','Menu'), leaveToMenu, { size:17 });
+  if (win && !level.endless){
+    const idx = LEVELS.indexOf(level);
+    if (idx < LEVELS.length-1) button(40, 628, 320, 54, T('下一關 ▶','Next level ▶'), () => startLevel(LEVELS[idx+1]), { size:18, active:true });
+  }
+}
+function drawMenu(now){
+  drawBackground();
+  text(T('不准跑調', 'Stay On Pitch'), W/2, 40, EN() ? 34 : 38, THEME.amberHi, 'center', 0, { shadow:'rgba(240,168,48,0.55)', blur:18, stroke:'rgba(0,0,0,0.5)', sw:5 });
+  for (let i=0;i<7;i++){
+    const bx = W/2 - 7*9 + i*18, bh = 6 + i*2.4;
+    cx.fillStyle = THEME.noteColors[i]; rrect(bx, 80-bh, 13, bh, 3); cx.fill();
+  }
+  text(T('用聲音爬七階　C D E F G A B', 'Climb seven steps with your voice'), W/2, 98, 12, THEME.dim);
+  const names = EN() ? ['Meet the notes','Sing a tune','Hidden steps','Ears only','Perfect pitch'] : ['認識七階','唱旋律','看不見階梯','只靠耳朵','絕對音準'];
+  const hints = EN() ? ['All cues','All cues','Labels only','Colors only','From memory'] : ['全提示','全提示','只剩標籤','只剩顏色','靠記憶'];
+  const accent = [THEME.noteColors[3], THEME.noteColors[4], THEME.noteColors[5], THEME.noteColors[6], THEME.noteColors[0]];
+  for (let w=0; w<5; w++){
+    const y = 112 + w*62;
+    panel(8, y, W-16, 56, 14, { shadow:6, c1:'#212e39', c2:'#161f28' });
+    cx.fillStyle = accent[w]; rrect(8, y+8, 4, 40, 2); cx.fill();
+    text(T('世界 ', 'World ')+(w+1), 22, y+19, 16, THEME.txt, 'left');
+    text(names[w], 22, y+37, 11, '#c8d2dc', 'left');
+    text(hints[w], 22, y+50, 9, THEME.dim, 'left');
+    for (let l=0; l<4; l++){
+      const lv = LEVELS[w*4+l], st = prefs.stars[lv.id]||0;
+      const bx = 128 + l*66;
+      button(bx, y+5, 60, 34, lv.id, () => startLevel(lv), { size:15, r:10, stroke: st ? 'rgba(240,168,48,0.8)' : null });
+      stars(bx+30, y+48, st, 3, 4.5, 14);
+    }
+  }
+  button(70, 426, 322, 40, T('無盡模式（世界 5 規則）', 'Endless (World 5 rules)'), () => startLevel(endlessLevel()), { size:15, c1:'#3a2a1a', c2:'#271b10', stroke:'rgba(240,168,48,0.6)' });
+  if (Mic.ready){
+    const hz = Mic.read(now);
+    if (hz){
+      const m = hzToMidi(hz) - 60, rn = Math.round(m), c = Math.round((m-rn)*100);
+      text(T('偵測：','Heard: ')+PC_NAMES[mod(rn,12)]+'  '+(c>=0?'+':'')+c+'¢　（'+Math.round(hz)+' Hz）', W/2, 500, 16, THEME.amberHi, 'center', 0, { shadow:'rgba(240,168,48,0.4)' });
+    } else text(T('偵測：（沒有穩定的聲音）','Heard: (no steady sound)'), W/2, 500, 14, THEME.dim);
+  }
+}
+
+let last = performance.now(), lastTouch = 0;
+function frame(){
+  requestAnimationFrame(frame);
+  const now = performance.now();
+  if (!opShown()){ last = now; return; }
+  const dt = Math.min(0.05, (now - last)/1000); last = now; gdt = dt;
+  buttons = [];
+  cx.setTransform(ratio,0,0,ratio,0,0);
+  if (scene === 'play'){
+    let hz = getHz(now);
+    if (now < muteUntil) hz = null;
+    if (hz && now - lastTouch > 1000){ lastTouch = now; if (AN.interact) AN.interact(); }
+    game.step(dt, hz);
+    OP.score = game.score;
+    fx.hurt = Math.max(0, fx.hurt - dt); fx.happy = Math.max(0, fx.happy - dt);
+    game.events.splice(0).forEach(ev => {
+      if (ev.type==='tone') playTone(ev.note);
+      else if (ev.type==='pass'){ playTick('pass'); fx.happy = 0.5; if (AN.interact) AN.interact(); fx.popups.push({ t:gradeText(ev.grade), c: ev.grade==='perfect'?'#ffe27a':(ev.grade==='good'?'#9be39b':'#c8d2dc'), life:0.8 }); }
+      else if (ev.type==='fail'){ playTick('fail'); fx.hurt = 0.6; if (AN.interact) AN.interact(); fx.popups.push({ t:T('失誤','Miss'), c:'#ff8a80', life:0.8 }); if (navigator.vibrate) navigator.vibrate(60); }
+    });
+    drawPlay(dt);
+    if (game.state !== 'play'){
+      const win = game.state === 'clear', idx = LEVELS.indexOf(level);
+      if (win && idx >= 0){ prefs.stars[level.id] = Math.max(prefs.stars[level.id]||0, game.stars); persist(); }
+      OP.sel = win && idx >= 0 ? Math.min(idx + 1, LEVELS.length) : (idx >= 0 ? idx : LEVELS.length);
+      scene = 'result';
+      const st = game.stats;
+      endRound('complete', { score: game.score, step: st.perfect + st.good + st.ok, level: idx + 1, cleared: win ? 1 : 0, stars: win ? game.stars : 0 });
+      opSay(win ? '過關！得 {sc} 分、{st} 顆星。|Cleared! {sc} points, {st} stars.' : '這關失敗了：{sc} 分。再試一次，或換個關卡。|Level failed: {sc} points. Try again or pick another level.', win ? 'win' : 'lose', { sc: game.score, st: game.stars });
+    }
+  } else if (scene === 'pause'){
+    drawPlay(0); drawPause();
+  } else if (scene === 'result'){
+    drawResult();
+  } else {
+    drawMenu(now);
+  }
+  if (now < msgUntil){
+    panel(16, 640, 368, 58, 14, { c1:'rgba(10,16,22,0.95)', c2:'rgba(10,16,22,0.95)', stroke:'rgba(240,168,48,0.6)', shadow:14 });
+    const lines = msg.match(/.{1,24}/g) || [msg];
+    lines.slice(0,2).forEach((s,i) => text(s, W/2, 658+i*20, 13, '#fff'));
+  }
+}
+requestAnimationFrame(frame);
+
+// ================= 平台接線 =================
+function opShown(){ return !$('view-on-pitch').hidden && !document.hidden; }
+function opSay(text, kind, params){
+  OP.msg = { text:text, kind:kind||'', params:params };
+  const el = $('op-msg'); el.textContent = opL(text, params); el.className = 'msg' + (kind ? ' ' + kind : '');
+}
+function opL(s, p){
+  const i = window.deepSeaI18n, en = !!(i && i.getLanguage() === 'en'), k = s.indexOf('|');
+  const t = k < 0 ? (en ? i.text(s) : s) : (en ? s.slice(k+1) : s.slice(0,k));
+  return p ? t.replace(/\{(\w+)\}/g, (_, n) => p[n] != null ? p[n] : '') : t;
+}
+function opUI(){
+  const total = Object.keys(prefs.stars).reduce((s, k) => s + (prefs.stars[k]||0), 0);
+  const cur = OP.sel >= LEVELS.length ? '∞' : (LEVELS[OP.sel] || LEVELS[0]).id;
+  $('op-level').textContent = cur; $('op-score').textContent = fmt(OP.score); $('op-stars').textContent = total + ' / ' + LEVELS.length * 3;
+  const busy = OP.active || OP.starting;
+  $('op-go').disabled = busy; $('op-go').textContent = busy ? '遊戲中 · 在畫面操作' : '開始遊戲';
+  [['op-in-mic', prefs.input === 'mic'], ['op-in-key', prefs.input === 'key'], ['op-oct-any', prefs.octave === 'any'], ['op-oct-strict', prefs.octave === 'strict']].forEach(p => {
+    const b = $(p[0]); b.setAttribute('aria-pressed', p[1] ? 'true' : 'false'); b.disabled = busy;
+  });
+  $('op-mic-test').disabled = busy || prefs.input !== 'mic';
+  $('op-mic-test').textContent = Mic.ready ? '關閉麥克風' : '測試麥克風';
+}
+function onRoute(active){
+  if (!active){ pauseRound(); Mic.stop(); if (scene === 'result') scene = 'menu'; }
+  else { OP.resuming = false; }
+  opUI();
+}
+$('op-go').addEventListener('click', () => {
+  if (OP.active || OP.starting) return;
+  startLevel(OP.sel >= LEVELS.length ? endlessLevel() : (LEVELS[OP.sel] || LEVELS[0]));
+  $('op-canvas').focus();
+});
+[['op-in-mic','input','mic'],['op-in-key','input','key'],['op-oct-any','octave','any'],['op-oct-strict','octave','strict']].forEach(p => {
+  $(p[0]).addEventListener('click', () => { if (OP.active) return; prefs[p[1]] = p[2]; if (p[1] === 'input' && p[2] === 'key') Mic.stop(); persist(); opUI(); });
+});
+$('op-mic-test').addEventListener('click', async () => {
+  if (OP.active) return;
+  if (Mic.ready){ Mic.stop(); opUI(); return; }
+  try { ensureCtx(); await Mic.start(); }
+  catch(e){ toast(T('麥克風無法使用：', 'Microphone unavailable: ') + (e.message||e.name)); }
+  opUI();
+});
+// 先於共用離頁處理結束，讓 abandoned 帶上已有的分數
+window.addEventListener('pagehide', e => { if (!e.persisted && OP.active && OP.analytics){ const a = OP.analytics; OP.analytics = null; OP.active = false; AN.end(a, 0, 'abandoned', { score: OP.score }); } }, true);
+window.addEventListener('arcade-languagechange', () => { if (OP.msg) opSay(OP.msg.text, OP.msg.kind, OP.msg.params); });
+window.deepSeaOnPitch = { route: onRoute, state: () => ({ scene, level, game, active: OP.active, sel: OP.sel, prefs }), core: { createGame:createGame, makeLevels:makeLevels, detectPitch:detectPitch } };
+opSay('按「開始遊戲」或點畫面上的關卡開始。第一次會要求麥克風權限。|Press Start or tap a level. The first time asks for microphone access.');
+opUI();
+
+})();
   /* ---------- 鯉魚躍龍門: endless runner adapted from a standalone page; fixed score milestones award bonus points immediately ---------- */
   var carpBusy=false,carpStake=0,carpSay=function(){};
   (function(){
@@ -24820,7 +25796,7 @@ if (typeof module !== 'undefined') module.exports = marketDeskRules;
   $('lobby-explore').addEventListener('click',function(){if($('lobby-games').scrollIntoView)$('lobby-games').scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});});
 
   /* ---------- tabs ---------- */
-  var VIEWS = { 'market-desk': '收盤之前 <span>Closing Call</span>', wardrobe: '我的造型 <span>My Wardrobe</span>', frontier: '荒島遠征 <span>Frontier Islands</span>', 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: 'TICATICA GAMES', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', 'rocket-chair': '社畜要下班 <span>Roar Through the Ceiling</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', 'eat-smaller': '數字吞噬 <span>Number Gulp</span>', 'mirror-twins': '鏡像雙子 <span>Mirror Twins</span>', 'shadow-relay': '影子接力 <span>Shadow Relay</span>', 'one-line-defense': '一筆畫守城 <span>One-Line Defense</span>', mermaid: '人魚接龍 <span>Mermaid Spider</span>', tetris: '俄羅斯方塊 <span>Block Drop</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
+  var VIEWS = { 'market-desk': '收盤之前 <span>Closing Call</span>', wardrobe: '我的造型 <span>My Wardrobe</span>', frontier: '荒島遠征 <span>Frontier Islands</span>', 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: 'TICATICA GAMES', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', 'rocket-chair': '社畜要下班 <span>Roar Through the Ceiling</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', 'eat-smaller': '數字吞噬 <span>Number Gulp</span>', 'mirror-twins': '鏡像雙子 <span>Mirror Twins</span>', 'shadow-relay': '影子接力 <span>Shadow Relay</span>', 'one-line-defense': '一筆畫守城 <span>One-Line Defense</span>', mermaid: '人魚接龍 <span>Mermaid Spider</span>', tetris: '俄羅斯方塊 <span>Block Drop</span>', 'on-pitch': '不准跑調 <span>Stay On Pitch</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
   /* ---------- collapsible lobby sidebar (per-browser preference only) ---------- */
   (function(){
     var KEY='ticatica-sidebar-collapsed',button=$('side-toggle'),collapsed=false;
@@ -24941,7 +25917,7 @@ if (typeof module !== 'undefined') module.exports = marketDeskRules;
     oceanLinkRoute(v==='ocean-link');
     frontierRoute(v==='frontier');
     marketDeskRoute(v==='market-desk');
-    bobaRoute(v==='boba');diveRoute(v==='dive');mrtRoute(v==='mrt');pancakeRoute(v==='pancake');rocketRoute(v==='rocket-chair');esRoute(v==='eat-smaller');mtRoute(v==='mirror-twins');srRoute(v==='shadow-relay');olRoute(v==='one-line-defense');ttRoute(v==='tetris');
+    bobaRoute(v==='boba');diveRoute(v==='dive');mrtRoute(v==='mrt');pancakeRoute(v==='pancake');rocketRoute(v==='rocket-chair');esRoute(v==='eat-smaller');mtRoute(v==='mirror-twins');srRoute(v==='shadow-relay');olRoute(v==='one-line-defense');ttRoute(v==='tetris');opRoute(v==='on-pitch');
     DR.last=performance.now();EQ.last=performance.now();
     // The member centre is not a game: analytics treats it like the lobby so no game_view is recorded.
     AN.view(member?'lobby':v);

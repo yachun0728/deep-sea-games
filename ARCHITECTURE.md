@@ -55,6 +55,7 @@ deep-sea-games/
 │   ├── banquet_i18n.py       最後的晚餐六語系字串來源，產生 games/banquet/i18n.js
 │   ├── test_mermaid.mjs      人魚接龍行為測試（可選 Node.js）
 │   ├── test_tetris.mjs       俄羅斯方塊行為測試（父頁橋接＋子頁流程，可選 Node.js）
+│   ├── test_on_pitch.mjs     不准跑調行為測試（免費開局、單次結算、暫停／離頁、英文畫面，可選 Node.js）
 │   ├── test_last_hair.mjs    尊嚴保衛戰行為測試（可選 Node.js）
 │   ├── test_pet_walk.mjs     小灰出門行為測試（可選 Node.js）
 │   └── test_office_shoot.mjs 拒絕加班行為測試（可選 Node.js）
@@ -111,6 +112,7 @@ flowchart TD
 | eat-smaller / mirror-twins / shadow-relay | EATS／deepSeaEatSmaller、MIRR／deepSeaMirrorTwins、SHAD／deepSeaShadowRelay；original.html 為子頁（數字吞噬／鏡像雙子／影子接力，關卡制，一局內每關首通 +2 點） |
 | one-line-defense | ONEL、deepSeaOneLine；original.html 為子頁（一筆畫守城，每撐過 30 秒 +2 點） |
 | tetris | TET、deepSeaTetris；original.html 為 srcdoc 子頁（俄羅斯方塊，免費、無 BONUS，成績不換點數） |
+| on-pitch | OP（內部狀態在 game.js 自己的 IIFE 內）、deepSeaOnPitch；畫面直接用 `#op-canvas`（400×720），不使用 iframe。免費、無 BONUS，成績不換點數；麥克風音高偵測（YIN）核心 `createGame` 為純邏輯 |
 | pancake | PANCAKE、deepSeaPancake；original.html 為以 iframe src 載入的子頁，圖片在 assets/ |
 
 ### 隱藏遊戲
@@ -183,6 +185,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `shadowRelay.unlocked` / `shadowRelay.bests` | 影子接力已解鎖關數、每關最佳秒數（JSON，子頁寫入）；新增於 2026-11-18 |
 | `tetris-best` | 俄羅斯方塊最高分（整數字串，子頁寫入）；新增於 2026-11-19 |
 | `tetris-ctl` | 俄羅斯方塊手機操作模式（`gesture` 或 `buttons`，子頁寫入）；新增於 2026-11-19 |
+| `on-pitch-v1` | 不准跑調存檔（JSON：`stars` 各關最高星數、`input` 為 `mic` 或 `key`、`octave` 為 `any` 或 `strict`）；新增於 2026-11-19 |
 | `oneLine.best` / `oneLine.tutDone` | 一筆畫守城最佳分數、教學已完成（JSON，子頁寫入）；新增於 2026-11-18 |
 | `ticatica-sidebar-collapsed` | 大廳左側選單是否收合（1／0），只影響畫面；新增於 2026-11-18，缺少時展開 |
 | `deep-sea-free-until` | 泡麵煎餅看示範廣告後的免扣點截止時間（毫秒時間戳）；新增於 2026-11-17，只有泡麵煎餅讀取 |
