@@ -52,6 +52,7 @@ deep-sea-games/
 │   ├── test_peek.mjs         別看行為測試（可選 Node.js）
 │   ├── test_mosquito.mjs     血壓上升行為測試（可選 Node.js）
 │   ├── test_banquet.mjs      最後的晚餐行為測試（可選 Node.js）
+│   ├── banquet_i18n.py       最後的晚餐六語系字串來源，產生 games/banquet/i18n.js
 │   ├── test_mermaid.mjs      人魚接龍行為測試（可選 Node.js）
 │   ├── test_last_hair.mjs    尊嚴保衛戰行為測試（可選 Node.js）
 │   ├── test_pet_walk.mjs     小灰出門行為測試（可選 Node.js）
@@ -150,6 +151,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `deep-sea-peek-dodges` | 別看累計躲過襲擊次數（整數）；新增於 2026-11-18 |
 | `deep-sea-last-hair-best` / `-deaths` / `-swap` / `-sound` | 尊嚴保衛戰最遠距離、最近死亡位置與原因、左右手對調、音效開關；新增於 2026-11-17 |
 | `deep-sea-banquet-best` | 最後的晚餐贏局次數；新增於 2026-11-18 |
+| `deep-sea-banquet-lang` | 最後的晚餐遊戲內語言（en／es／de／ja／ko／zh，預設 en）；新增於 2026-11-19 |
 | `deep-sea-banquet-adv` / `deep-sea-banquet-mute` | 最後的晚餐「進階模式」與「靜音」開關（1／0）；新增於 2026-11-18 |
 | `deep-sea-mermaid-best` | 人魚接龍（JSON：`best` 依難度 1／2／4 的最高分、`mode` 上次選的難度）；新增於 2026-11-18 |
 | `deep-sea-mosquito-best` | 血壓上升最高吸血百分比（一位小數）；新增於 2026-11-17 |
