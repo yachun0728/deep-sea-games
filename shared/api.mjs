@@ -1,0 +1,9 @@
+export const API = Object.freeze({
+  health: '/api/v1/health',
+  players: '/api/v1/players',
+  me: '/api/v1/me',
+  leaderboard: '/api/v1/leaderboard',
+});
+
+export const GAME_ID = /^[a-z][a-z0-9-]{0,63}$/;
+export const LEADERBOARD_LIMIT = 20;

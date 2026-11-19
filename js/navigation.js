@@ -135,7 +135,7 @@
     if (!member && !VIEWS[v]) v = 'lobby';
     if (fullscreenView && fullscreenView !== $('view-' + v)) leaveGameFullscreen();
     if(lastView==='lobby'&&v!=='lobby')lobbyScroll=window.scrollY||0;
-    $('site-shell').classList.toggle('is-lobby',v==='lobby');$('site-shell').classList.toggle('is-member',member);$('view-member').hidden=!member;memberRoute(member);if(v==='lobby')boardRender();
+    $('site-shell').classList.toggle('is-lobby',v==='lobby');$('site-shell').classList.toggle('is-member',member);$('view-member').hidden=!member;memberRoute(member);if(v!==lastView)boardRoute(v==='lobby');
     Object.keys(VIEWS).forEach(function (k) {
       $('view-' + k).hidden = k !== v;
       if (k === v) $('tab-' + k).setAttribute('aria-current', 'page'); else $('tab-' + k).removeAttribute('aria-current');

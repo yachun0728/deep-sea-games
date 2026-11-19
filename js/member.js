@@ -19,31 +19,88 @@
     var icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
     icon.setAttribute('viewBox', '0 0 96 96'); icon.setAttribute('aria-hidden', 'true'); use.setAttribute('href', '#icon-' + id); icon.appendChild(use); return icon;
   }
-  // Lobby leaderboard: only this device's records exist (no server), shown as the guest player's bests.
-  // Placeholder live leaderboard (no server yet): random sample rows, a new one slides in every few seconds.
-  var BOARD_PLAYERS = ['NeonCat', 'PixelRunner', 'BlueFin', 'LuckyDuck', 'BaldEagle', 'TowerKid', 'HopHop', 'NightOwl', 'Mochi88', 'RetroFox', 'Kiwi_07', 'StarDust', 'Ducky', 'Tofu', 'Zed'];
-  var BOARD_GAMES = [['rocket-chair', 5], ['office-shoot', 12], ['mermaid', 3000], ['banquet', 12], ['last-hair', 500], ['skybuilder', 40], ['frog', 120], ['peek', 100], ['nap', 900], ['blaster', 30], ['clock-out', 2400], ['pudding', 1800]];
-  var boardTimer = 0;
-  function boardPick(list) { return list[Math.floor(Math.random() * list.length)]; }
-  function boardRow() {
-    var g = boardPick(BOARD_GAMES), tr = document.createElement('tr'), player = document.createElement('td'), game = document.createElement('td'), link = document.createElement('a'), name = document.createElement('span'), best = document.createElement('td');
-    player.textContent = boardPick(BOARD_PLAYERS); player.className = 'board-player'; player.setAttribute('data-i18n-ignore', '');
-    link.href = '#' + g[0]; name.textContent = memberGameName(g[0]); link.appendChild(memberIcon(g[0])); link.appendChild(name); game.appendChild(link);
-    best.textContent = Math.max(1, Math.round(g[1] * (0.3 + Math.random() * 0.7))).toLocaleString('zh-TW'); best.className = 'board-best';
-    tr.appendChild(player); tr.appendChild(game); tr.appendChild(best); return tr;
+  var boardRequest = null;
+  var boardGame = $('board-game');
+  var boardRetry = $('board-retry');
+
+  function boardRow(gameId, entry) {
+    var row = document.createElement('tr');
+    var player = row.insertCell(), game = row.insertCell(), best = row.insertCell();
+    player.className = 'board-player';
+    if (entry.displayName) {
+      player.setAttribute('data-i18n-ignore', '');
+      player.textContent = entry.displayName;
+    } else {
+      var guest = document.createElement('span');
+      guest.textContent = '訪客';
+      player.append(guest, ' ' + entry.playerId.slice(0, 8));
+    }
+
+    var link = document.createElement('a'), name = document.createElement('span');
+    link.href = '#' + gameId;
+    name.textContent = memberGameName(gameId);
+    link.append(memberIcon(gameId), name);
+    game.appendChild(link);
+    best.className = 'board-best';
+    best.textContent = entry.score.toLocaleString('zh-TW');
+    return row;
   }
-  function boardTick() {
-    if (document.hidden || $('view-lobby').hidden) return;
-    var body = $('board-rows'), tr = boardRow();
-    tr.className = 'is-new'; body.insertBefore(tr, body.firstChild);
-    while (body.children.length > 8) body.removeChild(body.lastChild);
+
+  function boardStatus(message, retry) {
+    var status = $('board-status');
+    status.textContent = message;
+    status.hidden = !message;
+    boardRetry.hidden = !retry;
   }
-  function boardRender() {
+
+  async function boardLoad() {
+    if (boardRequest) boardRequest.abort();
+    var request = new AbortController();
+    boardRequest = request;
+    var gameId = boardGame.value;
     var body = $('board-rows');
-    if (!body.children.length) for (var i = 0; i < 8; i++) body.appendChild(boardRow());
-    $('board-empty').hidden = true;
-    if (!boardTimer) boardTimer = setInterval(boardTick, 1500);
+    body.replaceChildren();
+    boardStatus('載入排行榜中…');
+    var timeout = setTimeout(function () { request.abort(); }, 10000);
+    try {
+      var config = document.querySelector('meta[name="leaderboard-api-origin"]').content.trim();
+      var loopback = ['localhost', '127.0.0.1'].includes(location.hostname);
+      var origin = config || (loopback ? 'http://' + location.hostname + ':8787' : location.origin);
+      var module = await import('./frontend/services/api.mjs');
+      var result = await module.createApiClient(origin).leaderboard(gameId, request.signal);
+      if (boardRequest !== request) return;
+      if (result.gameId !== gameId || !Array.isArray(result.entries)) throw new Error('invalid_leaderboard');
+
+      var rows = result.entries.map(function (entry) { return boardRow(gameId, entry); });
+      body.replaceChildren(...rows);
+      boardStatus(rows.length ? '' : '這款遊戲尚無排行榜紀錄。');
+    } catch (error) {
+      if (boardRequest === request) boardStatus('目前無法載入排行榜。', true);
+    } finally {
+      clearTimeout(timeout);
+      if (boardRequest === request) boardRequest = null;
+    }
   }
+
+  function boardRoute(on) {
+    if (!on) {
+      if (boardRequest) boardRequest.abort();
+      boardRequest = null;
+      return;
+    }
+    if (!boardGame.options.length) {
+      document.querySelectorAll('.lobby-grid .game-card:not([data-game-hidden])').forEach(function (card) {
+        var gameId = card.hash.slice(1);
+        if (Object.hasOwn(VIEWS, gameId)) boardGame.add(new Option(memberGameName(gameId), gameId));
+      });
+    }
+    if (boardGame.value) boardLoad();
+    else boardStatus('這款遊戲尚無排行榜紀錄。');
+  }
+
+  boardGame.addEventListener('change', boardLoad);
+  boardRetry.addEventListener('click', boardLoad);
+
   function memberRender() {
     memberSync();
     var list = $('member-records'), rows = memberRecords();
