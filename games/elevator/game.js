@@ -7,20 +7,17 @@ function eqBonusAt(n){for(var i=0;i<EQ_MILESTONES.length;i++)if(EQ_MILESTONES[i]
 function eqNext(n){for(var i=0;i<EQ_MILESTONES.length;i++)if(EQ_MILESTONES[i][0]>n)return EQ_MILESTONES[i];return [EQ_ENDLESS_FROM+(Math.floor((n-EQ_ENDLESS_FROM)/EQ_ENDLESS_STEP)+1)*EQ_ENDLESS_STEP,EQ_ENDLESS_BONUS];}
   var eqCanvas=$('eq-canvas'),eqCtx=eqCanvas.getContext('2d');
   try{var qb=Number(localStorage.getItem('deep-sea-queue-best'));if(Number.isFinite(qb))EQ.best=Math.max(0,Math.floor(qb));}catch(e){}
-  function eqRand(a,b){return a+Math.random()*(b-a);}
-  function eqFactor(){return Math.max(.3,1-.1*(EQ.stage-1));}
-  function eqRest(i){return Math.max(.8,(eqRand(3.5,7.5)-i*.12)*eqFactor());}
-  function eqLookChance(){return Math.min(.95,.7+.02*(EQ.stage-1));}
-  function eqCount(){return Math.min(30,10+2*(EQ.stage-1));}
+  var eqRank=timedLeaderboard('elevator','eq',elevatorRules.inputCount,eqUI);
+  function eqCount(){return elevatorRules.count(EQ);}
   function eqTotal(){return EQ.total;}
-  function eqRound(){AN.resume(EQ.analytics,{stage:EQ.stage,step:0});EQ.passed=0;EQ.phase='waiting';EQ.moving=0;EQ.last=performance.now();EQ.people=Array.from({length:eqCount()},function(_,i){return {index:i,state:'safe',time:eqRand(1.2,6.5)};});}
+  function eqRound(){AN.resume(EQ.analytics,{stage:EQ.stage,step:0});EQ.last=performance.now();}
   function eqSay(text,kind){$('eq-msg').textContent=text;$('eq-msg').className='msg'+(kind?' '+kind:'');}
   function eqRemember(){if(eqTotal()>EQ.best){EQ.best=eqTotal();try{localStorage.setItem('deep-sea-queue-best',String(EQ.best));}catch(e){}}}
   function eqUI(){
     var nx=eqNext(EQ.total);
     $('eq-progress').textContent=EQ.passed+' / '+eqCount();$('eq-remaining').textContent=(eqCount()-EQ.passed)+' 人';
     $('eq-best').textContent=EQ.best+' 人';$('eq-stage').textContent='第 '+EQ.stage+' 隊';$('eq-total').textContent=eqTotal()+' 人';$('eq-next').textContent=nx[0]+' 人 · +'+nx[1];$('eq-amount').disabled=EQ.active;
-    $('eq-go').textContent=EQ.active?(EQ.phase==='moving'?'正在插隊…':'往前插一位'):'開始排隊';$('eq-go').disabled=EQ.phase==='moving';
+    $('eq-go').textContent=EQ.active?(EQ.phase==='moving'?'正在插隊…':'往前插一位'):'開始排隊';$('eq-go').disabled=EQ.phase==='moving'||eqRank.busy();
     $('eq-go').dataset.mode=EQ.active?'surface':'bet';
     var ahead=EQ.people.slice(EQ.passed),look=ahead.filter(p=>p.state==='look').length,warn=ahead.filter(p=>p.state==='warn').length;
     var watchText=!EQ.active?(EQ.phase==='ready'?'尚未開始':'本局已結束'):look?'回頭注視 '+look+' 人':warn?'警示 '+warn+' 人 · 可能隨時轉頭':'前方乘客都背對你';
@@ -28,37 +25,40 @@ function eqNext(n){for(var i=0;i<EQ_MILESTONES.length;i++)if(EQ_MILESTONES[i][0]
     $('eq-watch').dataset.state=look?'look':warn?'warn':'safe';
     document.querySelectorAll('[data-eq-step]').forEach(function(b){b.setAttribute('aria-current',Number(b.dataset.eqStep)===EQ.passed?'step':'false');});
   }
-  function eqLose(){if(!EQ.active)return;AN.end(EQ.analytics,EQ.earned,EQ.earned>0?'complete':'loss',{stage:EQ.stage,step:EQ.passed});EQ.active=false;EQ.phase='caught';EQ.moving=0;eqRemember();eqSay('被發現插隊！本局共插過 '+EQ.total+' 人，'+(EQ.earned>0?'入帳 '+fmt(EQ.earned)+' 點。':'這一局沒有獎勵。'),EQ.earned>0?'win':'lose');eqUI();}
+  function eqLose(onInput){if(!EQ.active)return;AN.end(EQ.analytics,EQ.earned,EQ.earned>0?'complete':'loss',{stage:EQ.stage,step:EQ.passed});EQ.active=false;EQ.phase='caught';EQ.moving=0;eqRank.finish(EQ.total,onInput);eqRemember();eqSay('被發現插隊！本局共插過 '+EQ.total+' 人，'+(EQ.earned>0?'入帳 '+fmt(EQ.earned)+' 點。':'這一局沒有獎勵。'),EQ.earned>0?'win':'lose');eqUI();}
   function eqAward(n,b){EQ.earned+=b;S.balance+=b;save();renderAll();AN.progress(EQ.analytics,{stage:EQ.stage,step:n,bonus_points:b});EQ.pops.push({n:n,b:b,age:0});if(EQ.pops.length>3)EQ.pops.shift();eqSay('累計插過 '+n+' 人！獎勵 +'+b+' 點已入帳，本局累計 +'+EQ.earned+' 點。','win');}
-  // Process every gaze change and movement end in time order, even on a slow frame.
-  function eqStep(dt){
-    while(dt>1e-8&&EQ.active){
-      var ahead=EQ.people.slice(EQ.passed),slice=dt;
-      ahead.forEach(function(p){slice=Math.min(slice,Math.max(0,p.time));});
-      if(EQ.phase==='moving')slice=Math.min(slice,EQ.moving);
-      ahead.forEach(function(p){p.time-=slice;});if(EQ.phase==='moving')EQ.moving-=slice;dt-=slice;
-      ahead.forEach(function(p){if(p.time>1e-8)return;
-        if(p.state==='safe'){p.state='warn';p.time=eqRand(.18,1.3);}
-        else if(p.state==='warn'){if(Math.random()<eqLookChance()){p.state='look';p.time=eqRand(.4,.8);}else{p.state='safe';p.time=eqRest(p.index);}}
-        else{p.state='safe';p.time=eqRest(p.index);}
-      });
-      if(EQ.phase==='moving'&&ahead.some(function(p){return p.state==='look';})){eqLose();return;}
-      if(EQ.phase==='moving'&&EQ.moving<=1e-8){EQ.passed++;EQ.total++;AN.progress(EQ.analytics,{stage:EQ.stage,step:EQ.passed},EQ.passed===eqCount());EQ.phase='waiting';EQ.moving=0;eqRemember();var bn=eqBonusAt(EQ.total);if(bn)eqAward(EQ.total,bn);else eqSay('已插過 '+EQ.total+' 人。觀察乘客，再插下一位。','win');if(EQ.passed===eqCount()){EQ.stage++;eqRound();eqSay('到隊首了！第 '+EQ.stage+' 隊：前方 '+eqCount()+' 人，乘客轉頭更頻繁。','win');eqUI();return;}}
+  function eqEvent(event){
+    if(event==='caught'){eqLose(false);return;}
+    if(event==='next'){
+      eqRound();
+      eqSay('到隊首了！第 '+EQ.stage+' 隊：前方 '+eqCount()+' 人，乘客轉頭更頻繁。','win');
+      eqUI();
+      return;
     }
+    AN.progress(EQ.analytics,{stage:EQ.stage,step:EQ.passed},EQ.passed===eqCount());
+    eqRemember();
+    var bonus=eqBonusAt(EQ.total);
+    if(bonus)eqAward(EQ.total,bonus);else eqSay('已插過 '+EQ.total+' 人。觀察乘客，再插下一位。','win');
   }
-  function eqSync(now){var dt=Math.max(0,(now-EQ.last)/1000);EQ.last=now;if(EQ.active&&!$('view-elevator').hidden&&!document.hidden)eqStep(dt);}
+  function eqSync(now){var dt=Math.max(0,now-EQ.last);EQ.last=now;if(EQ.active&&!$('view-elevator').hidden&&!document.hidden)eqRank.update(dt,()=>EQ.active,step=>elevatorRules.advance(EQ,step));}
   function eqAction(){
+    if(eqRank.busy())return;
     var wasActive=EQ.active;eqSync(performance.now());
     if(wasActive&&!EQ.active)return;
     if(!EQ.active){
       var stake=ENTRY_FEE;
       if(stake>S.balance){eqSay(LOW_MSG,'lose');return;}
-      EQ.analytics=AN.start('elevator',stake);EQ.stake=stake;EQ.stage=1;EQ.total=0;EQ.earned=0;EQ.pops=[];EQ.active=true;eqRound();
-      save();renderAll();eqSay('先觀察乘客，再點一下往前插一位。沒有終點，隊伍越來越長、乘客越來越常轉頭，被發現才結束。');eqUI();return;
+      eqRank.start(function(random){
+        EQ.analytics=AN.start('elevator',stake);EQ.stake=stake;EQ.stage=1;EQ.total=0;EQ.earned=0;EQ.pops=[];EQ.active=true;
+        elevatorRules.create(random||Math.random,eqEvent,EQ);eqRound();
+        save();renderAll();eqSay('先觀察乘客，再點一下往前插一位。沒有終點，隊伍越來越長、乘客越來越常轉頭，被發現才結束。');eqUI();
+      },eqUI);
+      return;
     }
-    if(EQ.phase!=='waiting')return;
-    if(EQ.people.slice(EQ.passed).some(function(p){return p.state==='look';})){eqLose();return;}
-    EQ.phase='moving';EQ.duration=.4+EQ.passed*.012;EQ.moving=EQ.duration;eqSay('正在移動，這段時間被乘客回頭看見也會失敗。');eqUI();
+    if(!elevatorRules.input(EQ,0))return;
+    eqRank.record(0);
+    if(EQ.dead){eqLose(true);return;}
+    eqSay('正在移動，這段時間被乘客回頭看見也會失敗。');eqUI();
   }
   // Side-view characters and hopping motion adapted from the original Queue Cutter.
   function eqPerson(x,y,color,state,isPlayer,alpha){

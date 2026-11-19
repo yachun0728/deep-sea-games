@@ -1,0 +1,160 @@
+import elevatorRules from '../../../shared/elevator-rules.cjs';
+import fishingRules from '../../../shared/fishing-rules.cjs';
+import birdRules from '../../../shared/bird-rules.cjs';
+import blockDropRules from '../../../shared/block-drop-rules.js';
+import reaperRules from '../../../shared/reaper-rules.cjs';
+import sneakRules from '../../../shared/sneak-rules.cjs';
+import skybuilderRules from '../../../shared/skybuilder-rules.cjs';
+import timedReplay from '../../../shared/timed-replay.cjs';
+import catRules from '../../../shared/cat-rules.cjs';
+import runnerRules from '../../../shared/runner-rules.cjs';
+import dreamRules from '../../../shared/dream-rules.cjs';
+import oceanLink from '../../../games/ocean-link/board.js';
+import mergeRules from '../../../shared/merge-rules.cjs';
+
+const LIFETIME_MS = 2 * 60 * 60 * 1000;
+const MAX_REVISIONS = 16384;
+const ID = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
+const random = () => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
+const newSeed = () => crypto.getRandomValues(new Uint32Array(1))[0];
+function timedBoard(engine) {
+  return {
+    create: () => ({seed: newSeed(), issuedAt: Date.now(), score: null}),
+    accepts: action => timedReplay.accepts(action, engine.inputCount),
+    apply: (state, action) => {
+      if ((action[0] - 1) * timedReplay.STEP_MS > Date.now() - state.issuedAt) return false;
+      state.score = timedReplay.verify(engine, state.seed, action);
+      return state.score !== null;
+    },
+    score: state => state.score,
+    visible: ({seed, score}) => ({seed, score}),
+  };
+}
+const boards = new Map([
+  ['elevator', timedBoard(elevatorRules)],
+  ['fishing', timedBoard(fishingRules)],
+  ['cat', timedBoard(catRules)],
+  ['bird', timedBoard(birdRules)],
+  ['tetris', timedBoard(blockDropRules)],
+  ['reaper', timedBoard(reaperRules)],
+  ['sneak', timedBoard(sneakRules)],
+  ['skybuilder', timedBoard(skybuilderRules)],
+  ['merge', {
+    create: () => mergeRules.create(random),
+    accepts: action => mergeRules.directions.includes(action),
+    apply: (state, action) => mergeRules.move(state, action, random),
+    score: state => state.over ? state.score : null,
+    visible: state => state,
+  }],
+  ['dream', {
+    create: () => ({stage: 1, completed: 0, seed: newSeed(), issuedAt: Date.now(), lost: false}),
+    accepts: action => Number.isInteger(action) && action >= 0 && action <= dreamRules.MAX_TICKS,
+    apply: (state, ticks) => {
+      if (ticks * dreamRules.STEP_MS > Date.now() - state.issuedAt) return false;
+      state.lost = !dreamRules.adjudicate(state.stage, state.seed, ticks);
+      if (!state.lost) {
+        state.completed = state.stage++;
+        state.seed = newSeed();
+        state.issuedAt = Date.now();
+      }
+      return true;
+    },
+    score: state => state.lost ? state.completed : null,
+    checkpoint: state => !state.lost ? state.completed : null,
+    visible: state => ({stage: state.stage, completed: state.completed, seed: state.seed, lost: state.lost}),
+  }],
+  ['runner', {
+    create: () => ({seed: newSeed(), issuedAt: Date.now(), distance: null}),
+    accepts: runnerRules.accepts,
+    apply: (state, action) => {
+      if (action[0] * runnerRules.STEP_MS > Date.now() - state.issuedAt) return false;
+      state.distance = runnerRules.replay(state.seed, action);
+      return state.distance !== null;
+    },
+    score: state => state.distance,
+    visible: ({seed, distance}) => ({seed, distance}),
+  }],
+  ['ocean-link', {
+    create: () => ({level: 1, completed: 0, seed: newSeed()}),
+    accepts: action => Array.isArray(action) && action.length === 24 &&
+      action.every(pair => Number.isInteger(pair) && pair >= 0 && pair < 6400),
+    apply: (state, action) => {
+      if (!oceanLink.verifyOceanLinkLevel(state.level, state.seed, action)) return false;
+      state.completed = state.level;
+      if (state.level < 10) {
+        state.level++;
+        state.seed = newSeed();
+      }
+      return true;
+    },
+    score: state => state.completed === 10 ? state.completed : null,
+    checkpoint: state => state.completed < 10 ? state.completed : null,
+    visible: state => state,
+  }],
+]);
+
+export async function readBoardCommand(request, isMove) {
+  const reader = request.body?.getReader();
+  if (!reader) return null;
+  try {
+    const decoder = new TextDecoder();
+    let text = '', bytes = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      bytes += value.byteLength;
+      if (bytes > 48 * 1024) {
+        await reader.cancel();
+        return null;
+      }
+      text += decoder.decode(value, { stream: true });
+    }
+    const command = JSON.parse(text + decoder.decode());
+    const game = boards.get(command?.gameId);
+    if (!game || Object.keys(command).length !== (isMove ? 4 : 1)) return null;
+    if (isMove && (typeof command.id !== 'string' || !ID.test(command.id) ||
+        !Number.isInteger(command.revision) || command.revision < 0 ||
+        command.revision > MAX_REVISIONS || !game.accepts(command.action))) return null;
+    return command;
+  } catch {
+    return null;
+  } finally {
+    reader.releaseLock();
+  }
+}
+
+export async function startRankedBoard(db, playerId, gameId) {
+  const id = crypto.randomUUID(), game = boards.get(gameId), state = game.create();
+  await db.prepare(
+    'INSERT INTO ranked_boards (id, player_id, game_id, started_at, state) VALUES (?, ?, ?, ?, ?)',
+  ).bind(id, playerId, gameId, Date.now(), JSON.stringify(state)).run();
+  return { id, revision: 0, state: game.visible(state) };
+}
+
+export async function moveRankedBoard(db, playerId, { gameId, id, revision, action }) {
+  const game = boards.get(gameId);
+  const select = db.prepare(
+    'SELECT started_at, revision, last_action, state, score FROM ranked_boards WHERE id = ? AND player_id = ? AND game_id = ?',
+  ).bind(id, playerId, gameId);
+  const prior = await select.first();
+  if (!prior) return { error: 'round_not_found', status: 404 };
+
+  const actionKey = typeof action === 'string' ? action : JSON.stringify(action);
+  const isRetry = row => row?.revision === revision + 1 && row.last_action === actionKey;
+  const response = row => ({ id, revision: row.revision, state: game.visible(JSON.parse(row.state)) });
+  if (isRetry(prior)) return response(prior);
+  if (prior.revision !== revision || prior.score !== null) return { error: 'stale_move', status: 409 };
+  if (revision >= MAX_REVISIONS || Date.now() - prior.started_at > LIFETIME_MS) {
+    return { error: 'round_expired', status: 410 };
+  }
+
+  const state = JSON.parse(prior.state);
+  if (!game.apply(state, action)) return response(prior);
+
+  const saved = await db.prepare(
+    'UPDATE ranked_boards SET state = ?, revision = revision + 1, last_action = ?, score = ?, checkpoint_score = ? WHERE id = ? AND player_id = ? AND game_id = ? AND revision = ? AND score IS NULL RETURNING revision, state',
+  ).bind(JSON.stringify(state), actionKey, game.score(state), game.checkpoint?.(state) ?? null, id, playerId, gameId, revision).first();
+  if (saved) return response(saved);
+  const current = await select.first();
+  return isRetry(current) ? response(current) : { error: 'stale_move', status: 409 };
+}

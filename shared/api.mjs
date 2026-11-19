@@ -6,8 +6,11 @@ export const API = Object.freeze({
   frogFinish: '/api/v1/frog/rounds/finish',
   minesStart: '/api/v1/mines/rounds',
   minesMove: '/api/v1/mines/rounds/move',
+  boardStart: '/api/v1/boards/rounds',
+  boardMove: '/api/v1/boards/rounds/move',
+  leaderboardFeed: '/api/v1/leaderboard/feed',
   leaderboard: '/api/v1/leaderboard',
 });
 
 export const GAME_ID = /^[a-z][a-z0-9-]{0,63}$/;
-export const LEADERBOARD_LIMIT = 20;
+export const LEADERBOARD_LIMIT = 50;

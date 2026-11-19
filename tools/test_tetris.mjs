@@ -1,5 +1,6 @@
 // 俄羅斯方塊行為測試：父頁橋接（免費、單次開始／結算、暫停、離頁）與子頁遊戲流程。無需 npm 套件。
 import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';
+import rules from '../shared/block-drop-rules.js';
 const root=new URL('../',import.meta.url);let checks=0;const ok=(c,m)=>{assert.ok(c,m);checks++;};const eq=(a,b,m)=>{assert.equal(a,b,m);checks++;};
 
 // ---------- 父頁橋接 ----------
@@ -10,7 +11,7 @@ const root=new URL('../',import.meta.url);let checks=0;const ok=(c,m)=>{assert.o
   const S={balance:0};
   const ctx={$:el,window:win,localStorage:{getItem:k=>k==='tetris-best'?'1200':null},S,ENTRY_FEE:0,LOW_MSG:'low',fmt:n=>String(n),save(){},renderAll(){},
     AN:{interact(){},start:(...a)=>{events.push(['start',...a]);return 'r1';},end:(...a)=>events.push(['end',...a]),progress:(...a)=>events.push(['progress',...a]),resume:(...a)=>events.push(['resume',...a])}};
-  vm.createContext(ctx);vm.runInContext(fs.readFileSync(new URL('games/tetris/game.js',root),'utf8'),ctx);
+  vm.createContext(ctx);vm.runInContext(['shared/timed-replay.cjs','js/timed-leaderboard.js','shared/block-drop-rules.js','games/tetris/game.js'].map(file=>fs.readFileSync(new URL(file,root),'utf8')).join('\n'),ctx);
   const api=win.deepSeaTetris,frame=el('tt-frame').contentWindow;
   ok(api,'bridge available');
   eq(el('tt-best').textContent,'1200','best score read from the original localStorage key');
@@ -41,7 +42,7 @@ const root=new URL('../',import.meta.url);let checks=0;const ok=(c,m)=>{assert.o
   const docHandlers={},winHandlers={};let rafCb=null;
   const document={getElementById:node,querySelectorAll:()=>[],documentElement:{lang:'',style:{}},title:'',hidden:false,addEventListener:(t,f)=>{docHandlers[t]=f;}};
   const parentWin={deepSeaI18n:{getLanguage:()=> 'en'},addEventListener(){},
-    deepSeaTetris:{start:()=>{calls.push('start');return true;},finish:(w,d)=>calls.push(['finish',d]),pause:()=>calls.push('pause'),resume:()=>calls.push('resume'),touch:()=>{}}};
+    deepSeaTetris:{rules,start:()=>{calls.push('start');return true;},finish:(w,d)=>calls.push(['finish',d]),pause:()=>calls.push('pause'),resume:()=>calls.push('resume'),touch:()=>{}}};
   const win={parent:parentWin,addEventListener:(t,f)=>{winHandlers[t]=f;}};
   const sandbox={window:win,document,getComputedStyle:()=>({getPropertyValue:()=> ''}),localStorage:{getItem:k=>store[k]??null,setItem:(k,v)=>{store[k]=v;}},
     performance:{now:()=>t},requestAnimationFrame:f=>{rafCb=f;return 1;},Math,Array,Object,String,Number,parseInt,Date,console};

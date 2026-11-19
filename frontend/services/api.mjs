@@ -32,9 +32,12 @@ export function createApiClient(baseUrl) {
     health: () => request(API.health),
     createPlayer: signal => request(API.players, { method: 'POST', signal }),
     getPlayer: token => request(API.me, authorized('GET', token)),
+    leaderboardFeed: signal => request(API.leaderboardFeed, { signal }),
     leaderboard: (gameId, signal) => request(API.leaderboard, { signal }, { gameId }),
     startMines: (token, signal) => request(API.minesStart, authorized('POST', token, signal)),
     moveMines: (token, move, signal) => request(API.minesMove, authorized('POST', token, signal, move)),
+    startBoard: (token, signal, gameId) => request(API.boardStart, authorized('POST', token, signal, {gameId})),
+    moveBoard: (token, move, signal) => request(API.boardMove, authorized('POST', token, signal, move)),
     startFrog: (token, signal) => request(API.frogStart, authorized('POST', token, signal)),
     finishFrog: (token, proof, signal) => request(API.frogFinish, authorized('POST', token, signal, proof)),
   };
@@ -57,15 +60,15 @@ async function ensureGuest(api, signal, rejected) {
     ? navigator.locks.request(GUEST_KEY, { signal }, load) : load();
 }
 
-async function startGuestRound(method, signal) {
+async function startGuestRound(method, signal, gameId) {
   const api = createApiClient(arcadeApiOrigin());
   let token = await ensureGuest(api, signal);
   try {
-    return { ...await api[method](token, signal), token };
+    return { ...await api[method](token, signal, gameId), token };
   } catch (error) {
     if (error.status !== 401) throw error;
     token = await ensureGuest(api, signal, token);
-    return { ...await api[method](token, signal), token };
+    return { ...await api[method](token, signal, gameId), token };
   }
 }
 
@@ -79,6 +82,14 @@ export function startMinesRound(signal) {
 
 export function moveMinesRound(token, move, signal) {
   return createApiClient(arcadeApiOrigin()).moveMines(token, move, signal);
+}
+
+export function startBoardRound(gameId, signal) {
+  return startGuestRound('startBoard', signal, gameId);
+}
+
+export function moveBoardRound(token, move, signal) {
+  return createApiClient(arcadeApiOrigin()).moveBoard(token, move, signal);
 }
 
 export function finishFrogRound({ id, token, ticks, presses }, signal) {

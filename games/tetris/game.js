@@ -1,14 +1,27 @@
   /* ---------- Block Drop（俄羅斯方塊）: srcdoc 子頁；免費入場，沒有 BONUS；分數與行數只是成績，不換點數 ---------- */
   var TET={active:false,score:0,lines:0,analytics:null,loaded:false,msg:null};
+  var tetrisRank=timedLeaderboard('tetris','tt',blockDropRules.inputCount,ttUI);
   function ttL(s,p){var i=window.deepSeaI18n,en=!!(i&&i.getLanguage()==='en'),k=s.indexOf('|'),t=k<0?(en?i.text(s):s):(en?s.slice(k+1):s.slice(0,k));return p?t.replace(/\{(\w+)\}/g,function(_,n){return p[n]!=null?p[n]:'';}):t;}
   function ttSay(text,kind,params){TET.msg={text:text,kind:kind||'',params:params};var el=$('tt-msg');el.textContent=ttL(text,params);el.className='msg'+(kind?' '+kind:'');}
   function ttBest(){try{return Math.max(0,Math.floor(Number(localStorage.getItem('tetris-best'))||0));}catch(_){return 0;}}
   function ttUI(){
     $('tt-score').textContent=fmt(TET.score);$('tt-lines').textContent=TET.lines;$('tt-best').textContent=fmt(Math.max(ttBest(),TET.score));
-    $('tt-go').disabled=TET.active;$('tt-go').textContent=TET.active?'遊戲中 · 在左側操作':'開始遊戲';
+    $('tt-go').disabled=TET.active||tetrisRank.busy();$('tt-go').textContent=TET.active?'遊戲中 · 在左側操作':'開始遊戲';
   }
   function ttValid(source){return source===$('tt-frame').contentWindow;}
   window.deepSeaTetris={
+    rules:blockDropRules,
+    prepare:function(source,ready,cancel){
+      if(!ttValid(source)||$('view-tetris').hidden||TET.active||tetrisRank.busy())return false;
+      tetrisRank.start(ready,cancel);
+      return true;
+    },
+    advance:function(source,dt,active,step){
+      if(ttValid(source)&&TET.active)tetrisRank.update(dt,active,seconds=>step(seconds*1000));
+    },
+    record:function(source,code){
+      if(ttValid(source)&&TET.active)tetrisRank.record(code);
+    },
     start:function(source){
       if(!ttValid(source)||$('view-tetris').hidden||TET.active)return 0;
       if(ENTRY_FEE>S.balance){ttSay(LOW_MSG,'lose');return 0;}
@@ -24,7 +37,7 @@
       TET.active=false;TET.score=score;TET.lines=lines;
       AN.end(TET.analytics,0,'complete',{score:score,step:lines,level:level});TET.analytics=null;
       ttSay('遊戲結束：{sc} 分、消除 {ln} 行、等級 {lv}。|Game over: {sc} points, {ln} lines, level {lv}.','',{sc:fmt(score),ln:lines,lv:level});
-      ttUI();return 0;
+      tetrisRank.finish(score,data?.endedOnInput===true);ttUI();return 0;
     },
     pause:function(source){if(ttValid(source)&&TET.active)AN.progress(TET.analytics,{phase:'pause'},true);},
     resume:function(source){if(ttValid(source)&&TET.active)AN.resume(TET.analytics);},

@@ -3,6 +3,8 @@
   const oceanLinkRoute = (function () {
     let rows = 14, cols = 18, stride = cols + 2;
 {{include:games/ocean-link/tiles.js}}{{include:games/ocean-link/board.js}}
+    let rules = oceanLinkBoard(rows, cols);
+    const {levels} = rules;
     const stage = $('ol-stage'), playfield = $('ol-playfield'), grid = $('ol-board');
     const go = $('ol-go'), mode = $('ol-mode'), hint = $('ol-hint');
     const full = $('ol-full'), trace = $('ol-trace'), line = trace.querySelector('polyline');
@@ -15,6 +17,8 @@
     const bonuses = new Map([[3, 5], [6, 5], [10, 5]]);
     const bestKey = 'deep-sea-ocean-link-best-v1';
     let level = 1, remaining = 0, paid = 0, board = [], selected = -1;
+    let ranked = null, rankedLevel = null, rankStarting = false, rankSending = false, rankPending = null;
+    let rankActions = [];
     let round = null, between = false, traceTimer = 0, locked = false, moves = [];
 
     let segmentStartedAt = null, elapsedMs = 0, clockTimer = 0;
@@ -128,7 +132,8 @@
     }
 
     function updateButtons() {
-      mode.disabled = oceanLinkBusy;
+      mode.disabled = oceanLinkBusy || rankStarting;
+      go.disabled = !!rankPending;
       go.hidden = !between && resultPanel.hidden;
       hint.disabled = !oceanLinkBusy || between;
       $('ol-count').hidden = !oceanLinkBusy;
@@ -161,13 +166,15 @@
 
     function dealLevel() {
       const [rule, direction, reefs] = stageRule();
-      const layout = reefBoard(reefs);
+      const layout = rules.reefBoard(reefs);
       remaining = (rows * cols - reefs * 4) / 2;
-      const symbols = shuffle(tiles.flatMap(([glyph], index) =>
+      const symbols = rules.shuffle(tiles.flatMap(([glyph], index) =>
         mode.value !== 'easy' || easyGlyphs.has(glyph) ? [index + 1] : []));
       if (mode.value === 'easy') symbols.length = level <= 3 ? 6 : level <= 6 ? 8 : 12;
       const bag = Array.from({length: remaining}, (_, index) => symbols[index % symbols.length]);
-      ({board, moves} = deal(layout, bag, direction));
+      rankActions = [];
+      rankedLevel = ranked ? oceanLinkRankedLevel(level, ranked.state.seed) : null;
+      ({board, moves} = rankedLevel || rules.deal(layout, bag, direction));
       selected = -1;
       between = false;
       hideResult();
@@ -188,8 +195,43 @@
         total_bonus_points: paid, ...extra};
     }
 
-    function start() {
-      if ($('view-ocean-link').hidden) return;
+    function rankStatus(message, retry = false) {
+      const status = $('ol-rank-status');
+      status.hidden = !message;
+      status.textContent = message;
+      $('ol-rank-retry').hidden = !retry;
+    }
+
+    async function submitLevel() {
+      if (rankSending || !rankPending) return;
+      rankSending = true;
+      rankStatus('正在驗證排行榜成績…');
+      const submission = rankPending;
+      try {
+        const api = await import('./frontend/services/api.mjs');
+        const next = await api.moveBoardRound(submission.token, submission.move, AbortSignal.timeout(10000));
+        if (next.revision === submission.move.revision) {
+          ranked = null;
+          rankStatus('排行榜成績未能送出。');
+        } else {
+          Object.assign(ranked, next);
+          rankStatus('成績已送到排行榜。');
+        }
+        rankPending = null;
+      } catch (error) {
+        if (error.retryable === false) {
+          ranked = null;
+          rankPending = null;
+        }
+        rankStatus('排行榜成績未能送出。', !!rankPending);
+      } finally {
+        rankSending = false;
+        updateButtons();
+      }
+    }
+
+    async function start() {
+      if ($('view-ocean-link').hidden || rankStarting || rankPending) return;
       if (oceanLinkBusy) {
         if (!between) return;
         level++;
@@ -198,7 +240,27 @@
         AN.resume(round, params());
         return;
       }
+      ranked = null;
+      rankStatus('');
+      if (mode.value === 'easy' && location.protocol !== 'file:') {
+        rankStarting = true;
+        rankStatus('正在準備訪客排行…');
+        updateButtons();
+        try {
+          const api = await import('./frontend/services/api.mjs');
+          ranked = await api.startBoardRound('ocean-link', AbortSignal.timeout(4000));
+        } catch {}
+        rankStarting = false;
+        if ($('view-ocean-link').hidden || full.getAttribute('aria-pressed') === 'false') {
+          ranked = null;
+          rankStatus('');
+          updateButtons();
+          return;
+        }
+        rankStatus(ranked ? '本局將列入訪客排行。' : '這一局可在本機遊玩。');
+      }
       [rows, cols] = dimensions[mode.value];
+      rules = oceanLinkBoard(rows, cols);
       stride = cols + 2;
       level = 1;
       paid = 0;
@@ -230,6 +292,13 @@
 
     function completeLevel() {
       pauseClock();
+      if (ranked) {
+        rankPending = {
+          token: ranked.token,
+          move: {gameId: 'ocean-link', id: ranked.id, revision: ranked.revision, action: rankActions},
+        };
+        submitLevel();
+      }
       try {
         const best = bestStages();
         if (!(best[mode.value] >= level)) {
@@ -257,13 +326,7 @@
     }
 
     function recover() {
-      const counts = new Map();
-      for (const symbol of board) if (symbol > 0) counts.set(symbol, (counts.get(symbol) || 0) + 1);
-      const bag = [];
-      for (const [symbol, count] of counts) {
-        for (let index = 0; index < count / 2; index++) bag.push(symbol);
-      }
-      ({board, moves} = deal(board, bag, stageRule()[1]));
+      ({board, moves} = rankedLevel ? rankedLevel.recover(board) : rules.recover(board, stageRule()[1]));
     }
 
     function pick(event) {
@@ -277,7 +340,7 @@
         if (!tile.classList.contains('ol-hint')) clearHint();
         return;
       }
-      const path = linkPath(board, previous, cell);
+      const path = rules.linkPath(board, previous, cell);
       if (!path) {
         clearHint();
         say('這兩張圖案之間沒有可用路線。');
@@ -293,12 +356,13 @@
       function matchTiles() {
         clearTrace();
         if (!oceanLinkBusy) return;
+        if (ranked) rankActions.push(previous * 80 + cell);
         board[previous] = board[cell] = 0;
         selected = -1;
         remaining--;
-        slide(board, stageRule()[1]);
+        rules.slide(board, stageRule()[1]);
         let message = '配對成功。';
-        if (remaining && !moves.length && !findPair(board)) {
+        if (remaining && !moves.length && !rules.findPair(board)) {
           recover();
           message = '沒有可配對的圖案，已自動洗牌。';
         }
@@ -316,7 +380,7 @@
 
     function showHint() {
       if (hint.disabled || locked || $('view-ocean-link').hidden) return;
-      const pair = moves[0] || findPair(board);
+      const pair = moves[0] || rules.findPair(board);
       if (!pair) return;
       if (selected >= 0) grid.children[selected].setAttribute('aria-pressed', 'false');
       selected = -1;
@@ -371,6 +435,7 @@
       else start();
     });
     hint.addEventListener('click', showHint);
+    $('ol-rank-retry').addEventListener('click', submitLevel);
     grid.addEventListener('click', pick);
     full.addEventListener('click', () => {
       const starting = !oceanLinkBusy && full.getAttribute('aria-pressed') === 'false';

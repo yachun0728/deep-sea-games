@@ -19,12 +19,13 @@
     var icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
     icon.setAttribute('viewBox', '0 0 96 96'); icon.setAttribute('aria-hidden', 'true'); use.setAttribute('href', '#icon-' + id); icon.appendChild(use); return icon;
   }
-  // Leaderboard: every game with server-verified scores, merged into one table. Add a game here once
-  // its scores are verified by the backend (backend/src/routes/api.mjs).
-  var BOARD_GAMES = ['frog', 'mines'];
-  var BOARD_ROWS = 8, BOARD_TICK = 2500;
-  var boardRequest = null, boardTimer = 0, boardPool = [], boardTurn = 0, boardCursor = {};
+  var boardRequest = null;
   var boardRetry = $('board-retry');
+
+  var boardTime = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+  });
 
   function boardRow(gameId, entry) {
     var row = document.createElement('tr');
@@ -44,6 +45,15 @@
     game.appendChild(link);
     best.className = 'board-best';
     best.textContent = entry.score.toLocaleString('zh-TW');
+    if (entry.recordedAt) {
+      var recordedAt = new Date(entry.recordedAt);
+      if (Number.isFinite(recordedAt.getTime())) {
+        var time = document.createElement('time');
+        time.dateTime = entry.recordedAt;
+        time.textContent = boardTime.format(recordedAt);
+        best.appendChild(time);
+      }
+    }
     return row;
   }
 
@@ -54,19 +64,8 @@
     boardRetry.hidden = !retry;
   }
 
-  // Each tick, the next game (round robin) puts its next best score at the top of the table.
-  function boardTick() {
-    if (document.hidden || $('view-lobby').hidden || !boardPool.length) return;
-    var pick = boardPool[boardTurn % boardPool.length]; boardTurn++;
-    var i = boardCursor[pick.gameId] || 0; boardCursor[pick.gameId] = (i + 1) % pick.entries.length;
-    var body = $('board-rows'), row = boardRow(pick.gameId, pick.entries[i]);
-    row.className = 'is-new'; body.insertBefore(row, body.firstChild);
-    while (body.children.length > BOARD_ROWS) body.removeChild(body.lastChild);
-  }
-
   async function boardLoad() {
     if (boardRequest) boardRequest.abort();
-    clearInterval(boardTimer); boardTimer = 0;
     var request = new AbortController();
     boardRequest = request;
     var body = $('board-rows');
@@ -76,19 +75,18 @@
     try {
       var module = await import('./frontend/services/api.mjs');
       var client = module.createApiClient(module.arcadeApiOrigin());
-      var games = BOARD_GAMES.filter(function (id) { return Object.hasOwn(VIEWS, id); });
-      var results = await Promise.all(games.map(function (id) { return client.leaderboard(id, request.signal); }));
+      var result = await client.leaderboardFeed(request.signal);
       if (boardRequest !== request) return;
-      boardPool = results.filter(function (r) { return r && Array.isArray(r.entries) && r.entries.length; })
-        .map(function (r) { return { gameId: r.gameId, entries: r.entries }; });
-      boardTurn = 0; boardCursor = {};
-      // start with every game's scores together, highest first
-      var all = [];
-      boardPool.forEach(function (g) { g.entries.forEach(function (e) { all.push({ gameId: g.gameId, entry: e }); }); });
-      all.sort(function (x, y) { return y.entry.score - x.entry.score; });
-      body.replaceChildren.apply(body, all.slice(0, BOARD_ROWS).map(function (x) { return boardRow(x.gameId, x.entry); }));
-      boardStatus(all.length ? '' : '目前尚無排行榜紀錄。');
-      if (all.length) boardTimer = setInterval(boardTick, BOARD_TICK);
+      var visibleGames = new Set(Array.from(document.querySelectorAll('.lobby-grid .game-card:not([data-game-hidden])'),
+        function (card) { return card.hash.slice(1); }));
+      var rows = result.games.filter(function (game) {
+        return visibleGames.has(game.gameId) && Object.hasOwn(VIEWS, game.gameId) && game.entries.length;
+      }).map(function (game) {
+        // The feed orders each game's scores highest first, with a stable tie-break.
+        return boardRow(game.gameId, game.entries[0]);
+      });
+      body.replaceChildren(...rows);
+      boardStatus(rows.length ? '' : '目前尚無排行榜紀錄。');
     } catch (error) {
       if (boardRequest === request) boardStatus('目前無法載入排行榜。', true);
     } finally {
@@ -101,7 +99,6 @@
     if (!on) {
       if (boardRequest) boardRequest.abort();
       boardRequest = null;
-      clearInterval(boardTimer); boardTimer = 0;
       return;
     }
     boardLoad();

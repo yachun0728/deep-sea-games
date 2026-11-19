@@ -1,4 +1,6 @@
-  // Included inside Ocean Link's runtime closure.
+// Shared rules for the browser and Worker.
+function oceanLinkBoard(rows, cols, random = Math.random) {
+  const stride = cols + 2;
   const levels = [
     ['經典消除', null, 0], ['經典消除', null, 0],
     ['向左移動', 'left', 0], ['向下移動', 'down', 0],
@@ -67,7 +69,7 @@
 
   function shuffle(items) {
     for (let index = items.length - 1; index > 0; index--) {
-      const other = Math.floor(Math.random() * (index + 1));
+      const other = Math.floor(random() * (index + 1));
       [items[index], items[other]] = [items[other], items[index]];
     }
     return items;
@@ -135,3 +137,45 @@
     }
     return null;
   }
+
+  function recover(board, direction) {
+    const counts = new Map();
+    for (const symbol of board) if (symbol > 0) counts.set(symbol, (counts.get(symbol) || 0) + 1);
+    const bag = [];
+    for (const [symbol, count] of counts) {
+      for (let index = 0; index < count / 2; index++) bag.push(symbol);
+    }
+    return deal(board, bag, direction);
+  }
+  return {levels, deal, slide, reefBoard, findPair, linkPath, shuffle, recover};
+}
+
+function oceanLinkRankedLevel(level, seed) {
+  const random = () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let value = Math.imul(seed ^ (seed >>> 15), seed | 1);
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+  };
+  const rules = oceanLinkBoard(6, 8, random);
+  const symbols = rules.shuffle([1, 3, 12, 14, 17, 18, 24, 29, 31, 34, 39, 53]);
+  symbols.length = level <= 3 ? 6 : level <= 6 ? 8 : 12;
+  const bag = Array.from({length:24}, (_, i) => symbols[i % symbols.length]);
+  return {...rules.deal(rules.reefBoard(0), bag, null), recover: board => rules.recover(board, null)};
+}
+
+function verifyOceanLinkLevel(level, seed, actions) {
+  const {linkPath, findPair} = oceanLinkBoard(6, 8);
+  const start = oceanLinkRankedLevel(level, seed);
+  let {board, moves} = start;
+  for (let i = 0; i < actions.length; i++) {
+    const a = Math.floor(actions[i] / 80), b = actions[i] % 80;
+    if (!(board[a] > 0) || board[a] !== board[b] || !linkPath(board, a, b)) return false;
+    if (moves.length && moves[0].includes(a) && moves[0].includes(b)) moves.shift();
+    else moves = [];
+    board[a] = board[b] = 0;
+    if (i + 1 < actions.length && !moves.length && !findPair(board)) ({board, moves} = start.recover(board));
+  }
+  return !board.some(symbol => symbol > 0);
+}
+if (typeof module !== 'undefined') module.exports = {oceanLinkBoard, oceanLinkRankedLevel, verifyOceanLinkLevel};

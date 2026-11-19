@@ -5,72 +5,49 @@ const c=$('pb-canvas'),g=c.getContext('2d'),W=400,H=560,GY=440,BX=90,OL='#1b1b2f
 const BOSS_REWARD=1;   // points credited the moment an alpha wolf is beaten; distance pays nothing
 let best=0;try{best=+localStorage.getItem('deep-sea-bird-best')||0}catch(e){}
 let analytics=null,earned=0;
-const rnd=(a,b)=>a+Math.random()*(b-a),cl=(x,a,b)=>Math.max(a,Math.min(b,x));
+const cl=(x,a,b)=>Math.max(a,Math.min(b,x));
 const O=(f,w)=>{g.fillStyle=f;g.fill();g.lineWidth=w||4;g.strokeStyle=OL;g.lineJoin='round';g.stroke()};
 const C=(x,y,r,f,w)=>{g.beginPath();g.arc(x,y,r,0,7);O(f,w||3)};
 const F=(x,y,r,f)=>{g.fillStyle=f;g.beginPath();g.arc(x,y,r,0,7);g.fill()};
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();O(f,lw||3)};
 function tx(s,x,y,sz,col){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-30);g.fillStyle=col;g.fillText(s,x,y,W-30)}
-const CH=[40,88,150],CW=[26,34,44],WS=[.65,1.7];
-let st='ready',by,vy,on,buf,hold=false,hid=-1,jc,boost,obs,proj,dist,v,nextAt,cnt,lb,boss,eggs,fxs,tt=0,sq=0,shake=0,rec=false,last=0,pcd=0,warnT=0;
-function reset(){by=GY;vy=0;on=true;buf=0;jc=0;boost=0;obs=[];proj=[];dist=0;v=290;nextAt=450;cnt=0;lb=-1;boss=false;eggs=0;fxs=[];sq=0;shake=0;pcd=0;warnT=0}
-reset();
-const score=()=>Math.floor(dist/60);
+const CW=[26,34,44];
+let st='ready',bird=birdRules.create(),hid=-1,fxs=[],tt=0,shake=0,rec=false,last=0;
+const birdRank=timedLeaderboard('bird','pb',birdRules.inputCount,ui);
+const score=()=>birdRules.score(bird);
 function say(text,kind){$('pb-msg').textContent=text;$('pb-msg').className='msg'+(kind?' '+kind:'')}
 birdSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
 function ui(){
  const s=score(),live=st==='run';
- setText('pb-score',s+' m');setText('pb-boss',eggs+' 隻');setText('pb-best',best+' m');
- $('pb-amount').disabled=birdBusy;$('pb-go').disabled=live;setText('pb-go',live?'奔跑中 · 點畫面跳躍':st==='over'?'再跑一次':'開始奔跑');
+ setText('pb-score',s+' m');setText('pb-boss',bird.eggs+' 隻');setText('pb-best',best+' m');
+ $('pb-amount').disabled=birdBusy;$('pb-go').disabled=live||birdRank.busy();setText('pb-go',live?'奔跑中 · 點畫面跳躍':st==='over'?'再跑一次':'開始奔跑');
 }
 function die(){
  if(st!=='run')return;
- st='over';hold=false;shake=reduceMotion?0:.35;const s=score();rec=s>best;
+ st='over';shake=reduceMotion?0:.35;const s=score();rec=s>best;
  if(rec){best=s;try{localStorage.setItem('deep-sea-bird-best',best)}catch(e){}}
- AN.end(analytics,earned,earned>0?'complete':'loss',{score:s,bosses:eggs});birdBusy=false;save();renderAll();
+ AN.end(analytics,earned,earned>0?'complete':'loss',{score:s,bosses:bird.eggs});birdBusy=false;save();renderAll();
  if(!earned)say('跑了 '+s+' 公尺，這一局沒有額外成就獎勵。','lose');
- else say('跑了 '+s+' 公尺、擊退 '+eggs+' 隻狼王，本局共入帳 '+fmt(earned)+' 點。','win');
+ else say('跑了 '+s+' 公尺、擊退 '+bird.eggs+' 隻狼王，本局共入帳 '+fmt(earned)+' 點。','win');
+ birdRank.finish(s);
  ui();
 }
-function jump(){
-if(on){vy=-600;on=false;jc=1;sq=-.25}
-else if(jc===1){vy=-560;jc=2;boost=.45;sq=-.2}
-else buf=.12}
-function shoot(){if(st!=='run'||pcd>0)return;pcd=.3;proj.push({x:BX+28,y:by-30})}
-function spawn(){
-const pool=['c0','w0'];if(cnt>=3)pool.push('c1');if(cnt>=6)pool.push('w1');if(cnt>=9)pool.push('c2');
-const t=pool[(Math.random()*pool.length)|0],k=t[0],s=+t[1];
-if(k==='c')obs.push({k:'c',s,x:W+40,y:GY,h:CH[s]});
-else obs.push({k:'w',s,x:W+40,y:GY,sc:WS[s],dead:0,vy:0,a:0});
-cnt++;nextAt=dist+rnd(300,420)+(s>0?60:0)}
-function hitRect(x1,y1,x2,y2){const nx=cl(BX,x1,x2),ny=cl(by-22,y1,y2);return Math.hypot(BX-nx,by-22-ny)<16}
 function update(dt){
-tt+=dt;sq*=.86;if(shake>0)shake-=dt;
-fxs.forEach(f=>f.t+=dt);fxs=fxs.filter(f=>f.t<.8);
-if(st!=='run')return;
-if(warnT>0)warnT-=dt;if(pcd>0)pcd-=dt;
-v=Math.min(450,290+dist*.01);dist+=v*dt;
-const bossDue=cnt>0&&cnt%8===0&&lb!==cnt;
-if(!boss){
-if(bossDue){if(!obs.some(o=>!o.dead)){boss=true;lb=cnt;obs.push({k:'a',x:W+220,y:GY,sc:2,hp:3,dead:0,vy:0,a:0,hit:0});warnT=1.3;AN.progress(analytics,{stage:eggs+1,step:score(),phase:'alpha'})}}
-else if(dist>=nextAt)spawn()}
-if(buf>0)buf-=dt;
-const slow=hold&&jc===2&&boost>0&&vy<0;
-if(slow)boost-=dt;
-vy+=(slow?1300:2300)*dt;by+=vy*dt;
-if(by>=GY){by=GY;vy=0;jc=0;if(buf>0){buf=0;vy=-600;jc=1;sq=-.25;on=false}else{if(!on)sq=.25;on=true}}else on=false;
-for(const o of obs){
-if(o.dead){o.x+=140*dt;o.y+=o.vy*dt;o.vy+=1800*dt;o.a+=dt*8;continue}
-if(o.k==='c'){o.x-=v*dt;if(hitRect(o.x+3,GY-o.h+4,o.x+CW[o.s]-3,GY)){die();return}}
-else if(o.k==='w'){o.x-=(v+110)*dt;if(hitRect(o.x-10*o.sc,o.y-54*o.sc,o.x+64*o.sc,o.y)){die();return}}
-else{o.x-=(v+45)*dt;if(o.hit>0)o.hit-=dt;if(hitRect(o.x-20,o.y-400,o.x+128,o.y)){die();return}}}
-for(const p of proj){p.x+=650*dt;
-for(const a of obs){if(a.k!=='a'||a.dead||p.dead)continue;
-if(p.x>=a.x-20&&p.x<=a.x+128&&p.y>a.y-120&&p.y<a.y){p.dead=1;a.hp--;a.x+=55;a.hit=.2;shake=reduceMotion?0:.12;fxs.push({x:a.x,y:a.y-90,t:0,s:'啪！'});
-if(a.hp<=0){a.dead=1;a.vy=-420;boss=false;nextAt=dist+380;eggs++;earned+=BOSS_REWARD;S.balance+=BOSS_REWARD;save();renderAll();AN.progress(analytics,{step:score(),score:score(),bosses:eggs,bonus_points:BOSS_REWARD});fxs.push({x:W/2,y:200,t:0,s:'救回一顆蛋！ +'+BOSS_REWARD+' 點'});say('擊退狼王！救回第 '+eggs+' 顆蛋，+'+BOSS_REWARD+' 點已入帳。','win')}}}}
-proj=proj.filter(p=>!p.dead&&p.x<W+30);
-obs=obs.filter(o=>o.x>-220&&o.x<W+500&&o.y<H+200)}
+ tt+=dt;if(shake>0)shake-=dt;
+ fxs.forEach(f=>{f.t+=dt});fxs=fxs.filter(f=>f.t<.8);
+ if(st!=='run')return;
+ bird.advance(dt);
+ if(bird.dead)die();
+}
+function birdEvent(event,alpha){
+ if(event==='alpha'){AN.progress(analytics,{stage:bird.eggs+1,step:score(),phase:'alpha'});return}
+ if(event==='hit'){shake=reduceMotion?0:.12;fxs.push({x:alpha.x,y:alpha.y-90,t:0,s:'啪！'});return}
+ earned+=BOSS_REWARD;S.balance+=BOSS_REWARD;save();renderAll();
+ AN.progress(analytics,{step:score(),score:score(),bosses:bird.eggs,bonus_points:BOSS_REWARD});
+ fxs.push({x:W/2,y:200,t:0,s:'救回一顆蛋！ +'+BOSS_REWARD+' 點'});
+ say('擊退狼王！救回第 '+bird.eggs+' 顆蛋，+'+BOSS_REWARD+' 點已入帳。','win');
+}
 function drawPoop(x,y,s,rot){
 g.save();g.translate(x,y);if(rot)g.rotate(rot);g.scale(s,s);const w=4/s;
 g.beginPath();g.ellipse(0,-12,34,18,0,0,7);O('#8d5524',w);
@@ -126,13 +103,13 @@ g.save();g.translate(ox,0);
 g.fillStyle='#ffb703';g.fillRect(-20,0,W+40,H);
 C(300,130,56,'#fb5607',4);C(300,130,32,'#ffd166',3);
 g.fillStyle='#f48c06';
-for(let i=0;i<6;i++){const x=((i*170-dist*.2)%1020+1020)%1020-200;g.beginPath();g.ellipse(x+100,GY,140,80,0,Math.PI,0);g.fill()}
+for(let i=0;i<6;i++){const x=((i*170-bird.dist*.2)%1020+1020)%1020-200;g.beginPath();g.ellipse(x+100,GY,140,80,0,Math.PI,0);g.fill()}
 g.fillStyle='#7209b7';g.fillRect(-20,GY,W+40,H-GY);
 g.fillStyle='#f72585';g.fillRect(-20,GY,W+40,16);
 g.strokeStyle=OL;g.lineWidth=4;g.beginPath();g.moveTo(-20,GY);g.lineTo(W+20,GY);g.stroke();
 g.fillStyle='#9d4edd';
-for(let i=0;i<8;i++){const x=((i*70-dist)%560+560)%560-80;g.fillRect(x,GY+44+(i%3)*22,26,8)}
-for(const o of obs){
+for(let i=0;i<8;i++){const x=((i*70-bird.dist)%560+560)%560-80;g.fillRect(x,GY+44+(i%3)*22,26,8)}
+for(const o of bird.obs){
 if(o.k==='c'){drawCactus(o);label(o.x+CW[o.s]/2,GY-o.h,o.s,0)}
 else{
 g.save();g.translate(o.x+(o.hit>0&&!reduceMotion?Math.random()*8-4:0),o.y);g.scale(o.sc,o.sc);
@@ -141,30 +118,36 @@ drawWolf(tt,o.k==='a'?'#8d99ae':'#adb5bd',o.k==='a');g.restore();
 if(!o.dead){
 if(o.k==='w')label(o.x+27*o.sc,o.y-80*o.sc,o.s,0);
 else{label(o.x+60,o.y-200,0,1);for(let i=0;i<3;i++)C(o.x+30+i*28,o.y-218,8,i<o.hp?'#e63946':'#fff1c1',3)}}}}
-proj.forEach(p=>drawPoop(p.x,p.y+14,.4,tt*10));
-g.save();g.translate(BX,by);g.scale(1+sq*.4,1-sq*.4);drawBird(!on);g.restore();
+bird.proj.forEach(p=>drawPoop(p.x,p.y+14,.4,tt*10));
+g.save();g.translate(BX,bird.by);g.scale(1+bird.sq*.4,1-bird.sq*.4);drawBird(!bird.on);g.restore();
 fxs.forEach(f=>{g.globalAlpha=1-f.t/.8;tx(f.s,f.x,f.y-f.t*50,24,'#ffd23f');g.globalAlpha=1});
 g.restore();
 const s=score();
 tx(s+' m',W/2,62,40,'#fff1c1');
-drawEgg(24,40);tx('x'+eggs,56,48,20,'#fff1c1');
+drawEgg(24,40);tx('x'+bird.eggs,56,48,20,'#fff1c1');
 tx('最佳 '+best+' m',W-70,34,16,'#fff1c1');
-if(warnT>0&&st==='run')tx('狼王來了！快丟便便',W/2,150,26,'#ff5d8f');
-C(PB.x,PB.y,PB.r,pcd>0?'#d9c9a3':'#fff1c1',4);drawPoop(PB.x,PB.y+20,.5);
-if(pcd>0){g.strokeStyle='#ff5d8f';g.lineWidth=5;g.beginPath();g.arc(PB.x,PB.y,PB.r+7,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-pcd/.3));g.stroke()}
+if(bird.warnT>0&&st==='run')tx('狼王來了！快丟便便',W/2,150,26,'#ff5d8f');
+C(PB.x,PB.y,PB.r,bird.pcd>0?'#d9c9a3':'#fff1c1',4);drawPoop(PB.x,PB.y+20,.5);
+if(bird.pcd>0){g.strokeStyle='#ff5d8f';g.lineWidth=5;g.beginPath();g.arc(PB.x,PB.y,PB.r+7,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-bird.pcd/.3));g.stroke()}
 if(st!=='run'){
 g.fillStyle='rgba(27,27,47,.55)';g.fillRect(0,0,W,H);
 if(st==='ready'){tx('便便鳥大戰狼群',W/2,200,32,'#ffd23f');tx('狼群偷走了你的蛋！',W/2,252,19,'#fff1c1');tx('躲開障礙，再賞狼王一坨！',W/2,282,19,'#fff1c1');tx('到操作區開始',W/2,340,24,'#ffd23f')}
-else{tx('哎喲！被撞到了',W/2,180,32,'#ff5d8f');tx(s+' m',W/2,244,50,'#fff1c1');tx('擊退狼王：'+eggs+' 隻',W/2,284,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'沒打贏狼王，沒有點數',W/2,320,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,352,20,'#ffd23f');tx('到操作區再跑一次',W/2,396,20,'#fff1c1')}}}
+else{tx('哎喲！被撞到了',W/2,180,32,'#ff5d8f');tx(s+' m',W/2,244,50,'#fff1c1');tx('擊退狼王：'+bird.eggs+' 隻',W/2,284,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'沒打贏狼王，沒有點數',W/2,320,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,352,20,'#ffd23f');tx('到操作區再跑一次',W/2,396,20,'#fff1c1')}}}
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
- analytics=AN.start('bird',amount);birdStake=amount;birdBusy=true;save();renderAll();
- reset();earned=0;rec=false;hold=false;hid=-1;st='run';last=performance.now();say('出發！看障礙上方的標記決定點幾下，狼王出現就丟便便。');ui();c.focus();
+ birdRank.start(random=>{
+  bird=birdRules.create(random||Math.random,birdEvent);
+  analytics=AN.start('bird',amount);birdStake=amount;birdBusy=true;save();renderAll();
+  earned=0;fxs=[];shake=0;rec=false;hid=-1;st='run';last=performance.now();say('出發！看障礙上方的標記決定點幾下，狼王出現就丟便便。');ui();c.focus();
+ });
 }
 function pos(e){const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}}
-function down(id){if(st!=='run'||$('view-bird').hidden||document.hidden)return false;hid=id;hold=true;jump();return true}
+function input(action){if(st==='run'&&bird.input(action)){birdRank.record(action);return true}return false}
+function down(id){if(st!=='run'||$('view-bird').hidden||document.hidden)return false;hid=id;return input(0)}
+function release(){input(1)}
+function shoot(){input(2)}
 $('pb-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
 if(e.button!==undefined&&e.button!==0)return;
@@ -173,17 +156,21 @@ if($('view-bird').hidden||document.hidden)return;e.preventDefault();c.focus();
 const p=pos(e);
 if(Math.hypot(p.x-PB.x,p.y-PB.y)<PB.r+10){shoot();return}
 down(e.pointerId)});
-['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,e=>{if(e.pointerId===hid)hold=false}));
+['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,e=>{if(e.pointerId===hid)release()}));
 c.addEventListener('contextmenu',e=>e.preventDefault());
 addEventListener('keydown',e=>{
 if($('view-bird').hidden||document.hidden||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;
 if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();if(!e.repeat)down(-2)}
 else if(e.key==='x'||e.key==='X'||e.key==='ArrowDown'||e.key==='p'||e.key==='P'){e.preventDefault();shoot()}});
-addEventListener('keyup',e=>{if((e.key===' '||e.key==='ArrowUp')&&hid===-2)hold=false});
-addEventListener('blur',()=>{hold=false;last=performance.now()});
-document.addEventListener('visibilitychange',()=>{hold=false;last=performance.now()});
-window.addEventListener('hashchange',()=>{hold=false;last=performance.now()});
-function loop(t){const dt=Math.min(.05,Math.max(0,(t-last)/1000)||0);last=t;if(!$('view-bird').hidden&&!document.hidden){update(dt);ui();draw()}requestAnimationFrame(loop)}
+addEventListener('keyup',e=>{if((e.key===' '||e.key==='ArrowUp')&&hid===-2)release()});
+addEventListener('blur',()=>{release();last=performance.now()});
+document.addEventListener('visibilitychange',()=>{release();last=performance.now()});
+window.addEventListener('hashchange',()=>{release();last=performance.now()});
+function loop(t){
+ const ms=Math.min(.05,Math.max(0,(t-last)/1000||0))*1000;last=t;
+ if(!$('view-bird').hidden&&!document.hidden){birdRank.update(ms,()=>st==='run',update);ui();draw()}
+ requestAnimationFrame(loop);
+}
 ui();draw();requestAnimationFrame(loop);
   })();
 
