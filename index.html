@@ -8211,7 +8211,9 @@ html.frontier-immersive{overflow:hidden}
   "設定": "Settings",
   "登出": "Log out",
   "通知": "Notifications",
-  "搜尋": "Search"
+  "搜尋": "Search",
+  "先按中間的「開始」。": "Press Start in the middle first.",
+  "電腦：← → 躲　1–4／T 用道具　F 撿": "Keyboard: ← → hide · 1–4 / T use item · F pick up"
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -14233,13 +14235,20 @@ function draw(){
   g.fillStyle='rgba(18,13,10,.72)';g.fillRect(0,0,W,H);
   if(!audioOk)drawHeadphone();
   else{const lv=wantLevel(),lc=lv?levelCfg(lv,(lvDeaths[lv]||0)>=2):null;
-   tx('別看',CX,70,52,'#e8c675');tx('Don\'t Peek　禁忌寶盒・夜逃',CX,98,17,'#f1d9a6');
-   tx(lc?'第 '+lv+' 關・'+WORLD_NAME[lc.wi]+'・'+KIND_NAME[lc.kind]+'':'自由跑（沒有關卡和生命）',CX,130,20,'#ffd98a');
-   howCards(146,170,1);
-   tx('選好關卡，按右邊的「開始」',CX,388,20,'#ffd98a');tx(PEEK_VER,14,H-12,14,'rgba(241,217,166,.55)','left');tx('電腦：← → 躲或選道具　F 撿　手機：左右滑、點一下',CX,414,14,'rgba(241,217,166,.75)')}}
+   tx('別看',CX,58,50,'#e8c675');tx('Don\'t Peek　禁忌寶盒・夜逃',CX,86,16,'#f1d9a6');
+   tx(lc?'第 '+lv+' 關・'+WORLD_NAME[lc.wi]+'・'+KIND_NAME[lc.kind]+'':'自由跑（沒有關卡和生命）',CX,118,19,'#ffd98a');
+   drawStartBtn();
+   howCards(298,108,1);tx(PEEK_VER,14,H-12,14,'rgba(241,217,166,.55)','left');tx('電腦：← → 躲　1–4／T 用道具　F 撿',W-14,H-12,13,'rgba(241,217,166,.7)','right')}}
  else if(st==='won')drawWon();
  else if(st==='over'){if(scareT>0)drawScare();else drawDeath()}
  if(dex)drawDex()}
+const startRect=()=>[CX-135,150,270,66];
+function drawStartBtn(){const [x,y,w,h]=startRect(),pr=.5+.5*Math.sin(tt*3);
+ g.save();g.shadowColor='rgba(255,200,110,'+(.35+.25*pr)+')';g.shadowBlur=18+10*pr;
+ const gr=g.createLinearGradient(0,y,0,y+h);gr.addColorStop(0,'#5d4228');gr.addColorStop(1,'#2a1b0f');RR(x,y,w,h,14,gr,0);g.restore();
+ g.save();g.strokeStyle='#e2b95c';g.lineWidth=3;g.beginPath();g.moveTo(x+14,y);g.arcTo(x+w,y,x+w,y+h,14);g.arcTo(x+w,y+h,x,y+h,14);g.arcTo(x,y+h,x,y,14);g.arcTo(x,y,x+w,y,14);g.closePath();g.stroke();g.restore();
+ tx('開始',CX,y+h/2+11,34,'#f6dfa8')}
+const inStart=e=>{const p=cxy(e),r=startRect();return p[0]>=r[0]&&p[0]<=r[0]+r[2]&&p[1]>=r[1]&&p[1]<=r[1]+r[3]};
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
@@ -14257,7 +14266,7 @@ c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
  if(dex){dexClick(e);return}
  if(introP){introClick(e);return}
- if(st!=='run'){if(st==='ready'&&!audioOk&&shown()&&hpClick(e))return;if(st!=='ready'&&shown()&&deathClick(e))return;say(st==='ready'?'先按「開始逃跑」。':'這一局已結算。按「再開一次」開始新的一局。');return}
+ if(st!=='run'){if(st==='ready'&&!audioOk&&shown()&&hpClick(e))return;if(st==='ready'&&audioOk&&!introP&&shown()&&inStart(e)){start();return}if(st!=='ready'&&shown()&&deathClick(e))return;say(st==='ready'?'先按中間的「開始」。':'這一局已結算。按「再開一次」開始新的一局。');return}
  if(!shown())return;e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(x){}
  if(tut){const q=cxy(e);if(q[0]>W-150&&q[1]>H-46){tutEnd();return}}
  if(camp){campTap(e);return}
@@ -14268,6 +14277,7 @@ c.addEventListener('pointerup',upPtr);c.addEventListener('pointercancel',upPtr);
 c.addEventListener('contextmenu',e=>e.preventDefault());
 const KEYMAP={t:'torch',T:'torch',a:'l',A:'l',ArrowLeft:'l',d:'r',D:'r',ArrowRight:'r',' ':'cover',f:'pick',F:'pick',s:'down',S:'down',ArrowDown:'down',ArrowUp:'up'};
 addEventListener('keydown',e=>{
+ if(st==='ready'&&audioOk&&!introP&&!dex&&shown()&&e.key==='Enter'&&!['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName)){e.preventDefault();start();return}
  if(introP&&shown()){if(['Enter',' ','ArrowRight'].includes(e.key)){e.preventDefault();introNext()}return}
  if(!shown()||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;
  if(camp&&camp.state==='pick'&&'123'.includes(e.key)&&e.key){camp.choice=+e.key-1;e.preventDefault();return}

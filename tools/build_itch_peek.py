@@ -105,7 +105,7 @@ html[lang="en"] .t-zh{{display:none}}
 #view-peek .console{{background:none!important;border:0!important;padding:0!important}}
 #view-peek .side{{width:100%;margin-top:10px}}
 #view-peek .side .panel{{display:flex!important;flex-direction:row!important;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;background:none;border:0;box-shadow:none;padding:0}}
-#view-peek .stats,#view-peek .hint,#view-peek .rules,#peek-share,#peek-gyro,#peek-full,#view-peek .field:has(#peek-level){{display:none!important}}
+#view-peek .stats,#view-peek .hint,#view-peek .rules,#peek-go,#peek-dex,#peek-share,#peek-gyro,#peek-full,#view-peek .field:has(#peek-level){{display:none!important}}
 #view-peek .side .go{{width:auto!important;min-width:150px;flex:none;margin:0;padding:10px 20px;min-height:0}}
 #view-peek .msg{{display:none}}
 #view-peek .field:has(#peek-assist){{flex:1 1 100%;display:flex!important;flex-direction:row!important;flex-wrap:wrap;justify-content:center;gap:6px 18px;font-size:12px;opacity:.75}}
