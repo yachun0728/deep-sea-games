@@ -1,4 +1,4 @@
-  /* ---------- Tetris（俄羅斯方塊）: srcdoc 子頁；免費入場，沒有 BONUS；分數與行數只是成績，不換點數 ---------- */
+  /* ---------- Block Drop（俄羅斯方塊）: srcdoc 子頁；免費入場，沒有 BONUS；分數與行數只是成績，不換點數 ---------- */
   var TET={active:false,score:0,lines:0,analytics:null,loaded:false,msg:null};
   function ttL(s,p){var i=window.deepSeaI18n,en=!!(i&&i.getLanguage()==='en'),k=s.indexOf('|'),t=k<0?(en?i.text(s):s):(en?s.slice(k+1):s.slice(0,k));return p?t.replace(/\{(\w+)\}/g,function(_,n){return p[n]!=null?p[n]:'';}):t;}
   function ttSay(text,kind,params){TET.msg={text:text,kind:kind||'',params:params};var el=$('tt-msg');el.textContent=ttL(text,params);el.className='msg'+(kind?' '+kind:'');}

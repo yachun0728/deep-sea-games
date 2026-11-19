@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><title>俄羅斯方塊 Tetris</title><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><title>俄羅斯方塊 Block Drop</title><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
   /* Layout: hold / stats on the left, board in the middle, next / keys on the right.
@@ -221,20 +221,20 @@
     '30': [[0,0],[1,0],[-2,0],[1,-2],[-2,1]],
     '03': [[0,0],[-1,0],[2,0],[-1,2],[2,-1]]
   };
-  const BANNERS = [['', ''], ['單行消除', 'Single'], ['雙行消除', 'Double'], ['三行消除', 'Triple'], ['四行消除！', 'Tetris!']];
+  const BANNERS = [['', ''], ['單行消除', 'Single'], ['雙行消除', 'Double'], ['三行消除', 'Triple'], ['四行消除！', 'Quad!']];
   const POINTS = [0, 100, 300, 500, 800];
 
   const $ = id => document.getElementById(id);
 
   // ---------- Deep Sea Arcade: language + platform bridge ----------
   // The parent page (deepSeaTetris) owns free entry, GA4 round tracking and pause/resume bookkeeping.
-  // Opened on its own, this file still plays as a plain Tetris.
+  // Opened on its own, this file still plays as a plain falling-block game.
   function lang() { try { const i = window.parent !== window && window.parent.deepSeaI18n; return i && i.getLanguage() === 'en' ? 'en' : 'zh'; } catch (e) { return 'zh'; } }
   const T = (zh, en) => (lang() === 'en' ? en : zh);
   function host() { try { return window.parent !== window ? window.parent.deepSeaTetris || null : null; } catch (e) { return null; } }
   let platformVisible = true, roundOn = false;
   const L = {
-    title: ['俄羅斯方塊', 'Tetris'], tag: ['SRS 旋轉 · 7-bag 隨機 · 牆踢', 'SRS rotation · 7-bag · wall kicks'],
+    title: ['俄羅斯方塊', 'Block Drop'], tag: ['SRS 旋轉 · 7-bag 隨機 · 牆踢', 'SRS rotation · 7-bag · wall kicks'],
     hold: ['暫存', 'Hold'], next: ['下一個', 'Next'], keys: ['按鍵', 'Controls'],
     score: ['分數', 'Score'], level: ['等級', 'Level'], lines: ['消除行數', 'Lines'], best: ['最高分', 'Best'],
     k_move: ['移動', 'Move'], k_rot: ['旋轉', 'Rotate'], k_ccw: ['逆轉', 'Rotate back'], k_soft: ['軟降', 'Soft drop'],
@@ -243,7 +243,7 @@
   function applyLang() {
     const en = lang() === 'en';
     document.documentElement.lang = en ? 'en' : 'zh-Hant';
-    document.title = en ? 'Tetris' : '俄羅斯方塊';
+    document.title = en ? 'Block Drop' : '俄羅斯方塊';
     document.querySelectorAll('[data-i]').forEach(el => { const v = L[el.dataset.i]; if (v) el.textContent = v[en ? 1 : 0]; });
     const tb = $('touchbar'); if (tb) tb.setAttribute('aria-label', en ? 'Touch controls' : '觸控按鈕');
     renderOverlay();
