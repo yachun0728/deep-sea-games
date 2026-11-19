@@ -139,6 +139,10 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 無盡、固定入場10點。每局一次start；教學後每撐過30秒送一次progress（stage為第幾個30秒、step為秒數、bonus_points=2、total_bonus_points），最多5次。核心被攻破送一次end：有入帳為complete、否則loss，payout_points為已入帳BONUS，附score、step（存活秒數）、combo。離頁abandoned與暫停處理同上。未驗證GA4後台收件。
 
+## 俄羅斯方塊（tetris）
+
+無盡、免費、沒有 BONUS。每局一次start（entry_points=0）；暫停送progress（phase=pause、checkpoint=1）並停止有效時間，繼續送resume。頂端放不下送一次end：result為complete、payout_points=0，附score、step（消除行數）、level。正常離頁由pagehide送abandoned；BFCache persisted不結束。
+
 ## 時序修復（dream）
 
 無限關卡、固定入場10點，沒有點數獎勵。每局一次start；過關progress帶stage、score（完成關數）、reversals（本關已反轉次數）並暫停有效時間，下一關resume。失敗end為loss、payout_points=0，不送multiplier或cashout；正常離頁由共用層送abandoned，BFCache沿用暫停／恢復。未驗證GA4後台收件。
