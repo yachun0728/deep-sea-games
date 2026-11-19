@@ -48,9 +48,9 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 | --- | --- | --- |
 | 已正式發布 | frog | Worker 重播 |
 | 已正式發布 | mines | Worker 管理棋盤 |
-| 已接入，待整批發布 | merge、ocean-link、dream、runner、cat、skybuilder、sneak、reaper、bird、tetris | Worker 管理棋盤或重播玩家輸入 |
+| 已接入，待整批發布 | merge、ocean-link、dream、runner、cat、skybuilder、sneak、reaper、bird、tetris、elevator、fishing | Worker 管理棋盤或重播玩家輸入 |
 | 回合制與解謎，待串接 | mermaid、banquet、frontier | 依各款動作與關卡狀態定義伺服器驗證 |
-| 即時操作與反應，待串接 | elevator、fishing、campaign、nap、blaster、carp、rider、boss、thief、baby、pudding、clock-out、peek、mosquito、last-hair、breakout、pet-walk、office-shoot | 逐款核對時鐘、輸入及隨機性再重播 |
+| 即時操作與反應，待串接 | campaign、nap、blaster、carp、rider、boss、thief、baby、pudding、clock-out、peek、mosquito、last-hair、breakout、pet-walk、office-shoot | 逐款核對時鐘、輸入及隨機性再重播 |
 | 同來源 iframe，待串接 | boba、dive、mrt、pancake、rocket-chair、eat-smaller、mirror-twins、shadow-relay、one-line-defense | 保留父子頁生命週期，增設必要橋接與 Worker 驗證 |
 | 每日免費補給 | keno | 隨機補給與配額，不列競賽榜 |
 

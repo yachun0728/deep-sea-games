@@ -1,3 +1,5 @@
+import elevatorRules from '../../../shared/elevator-rules.cjs';
+import fishingRules from '../../../shared/fishing-rules.cjs';
 import birdRules from '../../../shared/bird-rules.cjs';
 import blockDropRules from '../../../shared/block-drop-rules.js';
 import reaperRules from '../../../shared/reaper-rules.cjs';
@@ -29,6 +31,8 @@ function timedBoard(engine) {
   };
 }
 const boards = new Map([
+  ['elevator', timedBoard(elevatorRules)],
+  ['fishing', timedBoard(fishingRules)],
   ['cat', timedBoard(catRules)],
   ['bird', timedBoard(birdRules)],
   ['tetris', timedBoard(blockDropRules)],

@@ -2703,6 +2703,8 @@ html.frontier-immersive{overflow:hidden}
       <p>累計插過的人數達到特定數量時，獎勵點數當場入帳，之後被發現也不會收回：40 人 +3、55 人 +7（累計 10 點，累計獲得）、70 人 +15、90 人 +30，之後每多 20 人 +40。這是固定點數，沒有倍率。這些人數刻意設得很高，一般玩家大約能插過 25 人。</p>
       <p>切換遊戲或背景分頁會暫停。重新整理會放棄本局，已入帳的點數會保留。點數與其他遊戲共用，沒有現金價值。</p>
     </details>
+    <p id="eq-rank-status" role="status" hidden></p>
+    <button id="eq-rank-retry" type="button" hidden>重送排行榜成績</button>
   </section>
 
   <section class="view" id="view-sneak" hidden>
@@ -2734,6 +2736,8 @@ html.frontier-immersive{overflow:hidden}
       </section></div>
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>按住收線可以拉近魚，但張力會上升；放開可卸力，但魚會逐漸游遠。平穩時可收線，水花變大時要準備卸力；猛烈掙扎時硬拉會快速提高張力，疲累時收線最有效。</p><p>沒有終點：每釣上一條，下一條魚馬上上鉤，直到斷線或脫鉤這一局才結束。魚越大，距離越遠、掙扎越久，硬拉的張力也上升更快；約第 20 條之後難度不再增加。張力達 100 就斷線；低於或等於 8 持續 1.2 秒會脫鉤。拖時間、等待與放線都沒有幫助。</p><p>釣到特定條數時，獎勵點數當場入帳，之後斷線也不會收回：10 條 +3、12 條 +7（累計 10 點，累計獲得）、14 條 +15、17 條 +30，之後每多 3 條 +40。這是固定點數，沒有倍率。這些條數刻意設得很高，一般玩家大約釣 8 條左右。</p><p>切換遊戲或背景分頁會暫停並放開收線，回來需要重新按住。視窗失焦會放開收線。重新整理會放棄本局，已入帳的點數會保留。點數與其他遊戲共用。</p></details>
+    <p id="fi-rank-status" role="status" hidden></p>
+    <button id="fi-rank-retry" type="button" hidden>重送排行榜成績</button>
   </section>
 
   <section class="view" id="view-campaign" hidden>
@@ -10439,134 +10443,6 @@ function loop(t){
 document.addEventListener('visibilitychange',()=>{last=performance.now()});window.addEventListener('hashchange',()=>{last=performance.now()});
 runnerUI();draw();requestAnimationFrame(loop);
   })();
-  /* ---------- Elevator Queue: endless queues; milestone bonuses are credited to the shared wallet when reached ---------- */
-  var EQ={active:false,phase:'ready',stage:1,passed:0,total:0,earned:0,pops:[],stake:0,people:[],moving:0,last:0,show:0,best:0};
-// Every cleared queue leads straight to a longer, faster one. Milestones count total people passed
-// and were calibrated with a state-machine simulation (see GAME_RULES.md).
-var EQ_MILESTONES=[[40,3],[55,7],[70,15],[90,30]],EQ_ENDLESS_FROM=90,EQ_ENDLESS_STEP=20,EQ_ENDLESS_BONUS=40;
-function eqBonusAt(n){for(var i=0;i<EQ_MILESTONES.length;i++)if(EQ_MILESTONES[i][0]===n)return EQ_MILESTONES[i][1];return n>EQ_ENDLESS_FROM&&(n-EQ_ENDLESS_FROM)%EQ_ENDLESS_STEP===0?EQ_ENDLESS_BONUS:0;}
-function eqNext(n){for(var i=0;i<EQ_MILESTONES.length;i++)if(EQ_MILESTONES[i][0]>n)return EQ_MILESTONES[i];return [EQ_ENDLESS_FROM+(Math.floor((n-EQ_ENDLESS_FROM)/EQ_ENDLESS_STEP)+1)*EQ_ENDLESS_STEP,EQ_ENDLESS_BONUS];}
-  var eqCanvas=$('eq-canvas'),eqCtx=eqCanvas.getContext('2d');
-  try{var qb=Number(localStorage.getItem('deep-sea-queue-best'));if(Number.isFinite(qb))EQ.best=Math.max(0,Math.floor(qb));}catch(e){}
-  function eqRand(a,b){return a+Math.random()*(b-a);}
-  function eqFactor(){return Math.max(.3,1-.1*(EQ.stage-1));}
-  function eqRest(i){return Math.max(.8,(eqRand(3.5,7.5)-i*.12)*eqFactor());}
-  function eqLookChance(){return Math.min(.95,.7+.02*(EQ.stage-1));}
-  function eqCount(){return Math.min(30,10+2*(EQ.stage-1));}
-  function eqTotal(){return EQ.total;}
-  function eqRound(){AN.resume(EQ.analytics,{stage:EQ.stage,step:0});EQ.passed=0;EQ.phase='waiting';EQ.moving=0;EQ.last=performance.now();EQ.people=Array.from({length:eqCount()},function(_,i){return {index:i,state:'safe',time:eqRand(1.2,6.5)};});}
-  function eqSay(text,kind){$('eq-msg').textContent=text;$('eq-msg').className='msg'+(kind?' '+kind:'');}
-  function eqRemember(){if(eqTotal()>EQ.best){EQ.best=eqTotal();try{localStorage.setItem('deep-sea-queue-best',String(EQ.best));}catch(e){}}}
-  function eqUI(){
-    var nx=eqNext(EQ.total);
-    $('eq-progress').textContent=EQ.passed+' / '+eqCount();$('eq-remaining').textContent=(eqCount()-EQ.passed)+' 人';
-    $('eq-best').textContent=EQ.best+' 人';$('eq-stage').textContent='第 '+EQ.stage+' 隊';$('eq-total').textContent=eqTotal()+' 人';$('eq-next').textContent=nx[0]+' 人 · +'+nx[1];$('eq-amount').disabled=EQ.active;
-    $('eq-go').textContent=EQ.active?(EQ.phase==='moving'?'正在插隊…':'往前插一位'):'開始排隊';$('eq-go').disabled=EQ.phase==='moving';
-    $('eq-go').dataset.mode=EQ.active?'surface':'bet';
-    var ahead=EQ.people.slice(EQ.passed),look=ahead.filter(p=>p.state==='look').length,warn=ahead.filter(p=>p.state==='warn').length;
-    var watchText=!EQ.active?(EQ.phase==='ready'?'尚未開始':'本局已結束'):look?'回頭注視 '+look+' 人':warn?'警示 '+warn+' 人 · 可能隨時轉頭':'前方乘客都背對你';
-    if($('eq-watch').textContent!==watchText)$('eq-watch').textContent=watchText;
-    $('eq-watch').dataset.state=look?'look':warn?'warn':'safe';
-    document.querySelectorAll('[data-eq-step]').forEach(function(b){b.setAttribute('aria-current',Number(b.dataset.eqStep)===EQ.passed?'step':'false');});
-  }
-  function eqLose(){if(!EQ.active)return;AN.end(EQ.analytics,EQ.earned,EQ.earned>0?'complete':'loss',{stage:EQ.stage,step:EQ.passed});EQ.active=false;EQ.phase='caught';EQ.moving=0;eqRemember();eqSay('被發現插隊！本局共插過 '+EQ.total+' 人，'+(EQ.earned>0?'入帳 '+fmt(EQ.earned)+' 點。':'這一局沒有獎勵。'),EQ.earned>0?'win':'lose');eqUI();}
-  function eqAward(n,b){EQ.earned+=b;S.balance+=b;save();renderAll();AN.progress(EQ.analytics,{stage:EQ.stage,step:n,bonus_points:b});EQ.pops.push({n:n,b:b,age:0});if(EQ.pops.length>3)EQ.pops.shift();eqSay('累計插過 '+n+' 人！獎勵 +'+b+' 點已入帳，本局累計 +'+EQ.earned+' 點。','win');}
-  // Process every gaze change and movement end in time order, even on a slow frame.
-  function eqStep(dt){
-    while(dt>1e-8&&EQ.active){
-      var ahead=EQ.people.slice(EQ.passed),slice=dt;
-      ahead.forEach(function(p){slice=Math.min(slice,Math.max(0,p.time));});
-      if(EQ.phase==='moving')slice=Math.min(slice,EQ.moving);
-      ahead.forEach(function(p){p.time-=slice;});if(EQ.phase==='moving')EQ.moving-=slice;dt-=slice;
-      ahead.forEach(function(p){if(p.time>1e-8)return;
-        if(p.state==='safe'){p.state='warn';p.time=eqRand(.18,1.3);}
-        else if(p.state==='warn'){if(Math.random()<eqLookChance()){p.state='look';p.time=eqRand(.4,.8);}else{p.state='safe';p.time=eqRest(p.index);}}
-        else{p.state='safe';p.time=eqRest(p.index);}
-      });
-      if(EQ.phase==='moving'&&ahead.some(function(p){return p.state==='look';})){eqLose();return;}
-      if(EQ.phase==='moving'&&EQ.moving<=1e-8){EQ.passed++;EQ.total++;AN.progress(EQ.analytics,{stage:EQ.stage,step:EQ.passed},EQ.passed===eqCount());EQ.phase='waiting';EQ.moving=0;eqRemember();var bn=eqBonusAt(EQ.total);if(bn)eqAward(EQ.total,bn);else eqSay('已插過 '+EQ.total+' 人。觀察乘客，再插下一位。','win');if(EQ.passed===eqCount()){EQ.stage++;eqRound();eqSay('到隊首了！第 '+EQ.stage+' 隊：前方 '+eqCount()+' 人，乘客轉頭更頻繁。','win');eqUI();return;}}
-    }
-  }
-  function eqSync(now){var dt=Math.max(0,(now-EQ.last)/1000);EQ.last=now;if(EQ.active&&!$('view-elevator').hidden&&!document.hidden)eqStep(dt);}
-  function eqAction(){
-    var wasActive=EQ.active;eqSync(performance.now());
-    if(wasActive&&!EQ.active)return;
-    if(!EQ.active){
-      var stake=ENTRY_FEE;
-      if(stake>S.balance){eqSay(LOW_MSG,'lose');return;}
-      EQ.analytics=AN.start('elevator',stake);EQ.stake=stake;EQ.stage=1;EQ.total=0;EQ.earned=0;EQ.pops=[];EQ.active=true;eqRound();
-      save();renderAll();eqSay('先觀察乘客，再點一下往前插一位。沒有終點，隊伍越來越長、乘客越來越常轉頭，被發現才結束。');eqUI();return;
-    }
-    if(EQ.phase!=='waiting')return;
-    if(EQ.people.slice(EQ.passed).some(function(p){return p.state==='look';})){eqLose();return;}
-    EQ.phase='moving';EQ.duration=.4+EQ.passed*.012;EQ.moving=EQ.duration;eqSay('正在移動，這段時間被乘客回頭看見也會失敗。');eqUI();
-  }
-  // Side-view characters and hopping motion adapted from the original Queue Cutter.
-  function eqPerson(x,y,color,state,isPlayer,alpha){
-    var g=eqCtx;g.save();g.globalAlpha=alpha;
-    g.fillStyle='rgba(0,0,0,.16)';g.beginPath();g.ellipse(x,y+3,14,4,0,0,Math.PI*2);g.fill();
-    g.strokeStyle=color;g.lineWidth=6;g.lineCap='round';g.beginPath();g.moveTo(x-6,y-20);g.lineTo(x-6,y);g.moveTo(x+6,y-20);g.lineTo(x+6,y);g.stroke();
-    g.fillStyle=color;g.fillRect(x-14,y-58,28,40);
-    var hy=y-74;g.fillStyle=state==='safe'?'#2b2118':'#f5d0a9';g.beginPath();g.arc(x,hy,14,0,Math.PI*2);g.fill();
-    if(state==='warn'){
-      g.fillStyle='#2b2118';g.beginPath();g.arc(x,hy,14,-Math.PI/2,Math.PI/2);g.fill();
-      g.fillStyle='#ffcf66';g.font='700 27px system-ui';g.textAlign='center';g.fillText('?',x,hy-23);
-    }
-    if(state==='look'){
-      g.fillStyle='#fff';g.beginPath();g.arc(x-9,hy-2,4,0,Math.PI*2);g.arc(x-1,hy-2,4,0,Math.PI*2);g.fill();
-      g.fillStyle='#191a24';g.beginPath();g.arc(x-10,hy-2,2,0,Math.PI*2);g.arc(x-2,hy-2,2,0,Math.PI*2);g.fill();
-      g.strokeStyle='#2b2118';g.lineWidth=2.5;g.beginPath();g.moveTo(x-14,hy-11);g.lineTo(x-6,hy-7);g.moveTo(x-1,hy-7);g.lineTo(x+5,hy-11);g.stroke();
-      g.strokeStyle='#ff756f';g.lineWidth=2.5;g.beginPath();g.arc(x,hy,18,0,Math.PI*2);g.stroke();
-    }
-    if(isPlayer){g.fillStyle='#fff5d9';g.beginPath();g.moveTo(x-8,hy-34);g.lineTo(x+8,hy-34);g.lineTo(x,hy-22);g.closePath();g.fill();}
-    g.restore();
-  }
-  function eqDraw(){
-    var g=eqCtx,W=520,H=580,FY=420,SP=36,count=eqCount(),cols=count>10?Math.ceil(count/2):10;
-    function spot(n){return count<=10||n<=cols?{x:70+n*SP,y:FY}:{x:70+(2*cols+1-n)*SP,y:FY-120};}
-    var f=EQ.phase==='moving'?1-EQ.moving/EQ.duration:0;
-    // Smooth camera motion keeps the player at the left as the queue slides past.
-    var travel=0;
-    g.clearRect(0,0,W,H);g.fillStyle='#2e3350';g.fillRect(0,0,W,FY);g.fillStyle='#1d2036';g.fillRect(0,FY,W,H-FY);
-    g.strokeStyle='#414762';g.lineWidth=1;g.beginPath();g.moveTo(0,205);g.lineTo(W,205);g.stroke();
-    g.fillStyle='#343b59';g.fillRect(28,225,70,68);g.strokeStyle='#586781';g.strokeRect(28,225,70,68);g.fillStyle='#8db0b9';g.font='11px system-ui';g.textAlign='center';g.fillText('請依序排隊',63,254);g.fillText('深海升降艙',63,275);
-    g.strokeStyle='#2a2e4a';g.lineWidth=2;
-    for(var k=-1;k<11;k++){var lx=k*60-(travel*SP)%60;g.beginPath();g.moveTo(lx,FY);g.lineTo(lx-40,H);g.stroke();}
-    var end=spot(count+1),doorX=end.x,doorY=end.y;g.save();g.translate(0,doorY-FY);
-    g.fillStyle='#4a5a7a';g.fillRect(doorX-29,FY-140,58,140);g.fillStyle='#202b42';g.fillRect(doorX-21,FY-119,42,119);
-    g.fillStyle=EQ.passed===count?'#a2e4c2':'#ffcf66';g.fillRect(doorX-17,FY-132,34,8);
-    if(EQ.passed<10){g.strokeStyle='#8297b0';g.lineWidth=2;g.beginPath();g.moveTo(doorX,FY-118);g.lineTo(doorX,FY);g.stroke();}
-    g.fillStyle='#dce5ef';g.font='600 12px system-ui';g.textAlign='center';g.fillText('電梯',doorX,FY-151);g.restore();
-    var palette=['#6b9ac4','#c47f6b','#7fb08a','#a78bfa','#d98aa8','#8aa2b8'];
-    var people=EQ.people.length?EQ.people:Array.from({length:count},function(_,i){return {index:i,state:'safe'};});
-    people.forEach(function(p,i){var point=spot(i+1),x=point.x,passed=i<EQ.passed;
-      eqPerson(x,point.y,palette[i%palette.length],passed?'safe':p.state,false,passed?.28:1);
-    });
-    var hop=EQ.phase==='moving'?Math.sin(Math.PI*f)*18:0;
-    var from=spot(EQ.passed),to=spot(EQ.passed+1),playerX=from.x+(to.x-from.x)*f,playerY=from.y+(to.y-from.y)*f;
-    eqPerson(playerX,playerY-hop,'#f2c14e',EQ.phase==='caught'?'look':'safe',true,1);
-    g.fillStyle='#f5df9f';g.font='600 13px system-ui';g.textAlign='center';g.fillText('你',playerX,playerY+30);
-    g.textAlign='left';g.fillStyle='#e9edf6';g.font='600 23px system-ui';g.fillText('Queue Cutter',24,38);
-    g.textAlign='right';g.font='600 17px system-ui';g.fillStyle='#a5b4cb';g.fillText('第 '+EQ.stage+' 隊 · '+EQ.passed+' / '+count+' · 本局 +'+EQ.earned+' 點',W-24,38);
-    g.fillStyle='#1d2036';g.fillRect(24,55,W-48,7);g.fillStyle='#f2c14e';g.fillRect(24,55,(W-48)*EQ.passed/count,7);
-    var ahead=people.slice(EQ.passed),look=ahead.some(function(p){return p.state==='look';}),warn=ahead.some(function(p){return p.state==='warn';});
-    g.textAlign='center';g.font='19px system-ui';g.fillStyle='#e4e8f1';g.fillText('前面還有 '+(eqCount()-EQ.passed)+' 位乘客',W/2,105);
-    g.font='600 17px system-ui';g.fillStyle=look?'#ff8a80':warn?'#ffcf66':'#a2e4c2';
-    g.fillText(!EQ.active?'觀察表情，偷偷向前一步':look?'有人回頭了，先別動！':warn?'出現「？」了，小心隨時回頭':'大家都背對你，找機會往前插',W/2,141);
-    g.fillStyle='#a5b4cb';g.font='13px system-ui';g.fillText('點一下插過一人 · 白色箭頭是你',W/2,517);
-    EQ.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=200-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#f2c14e';g.font='700 38px system-ui';g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#e9edf6';g.font='600 17px system-ui';g.fillText('累計插過 '+p.n+' 人里程碑',W/2,py+28);g.globalAlpha=1;});
-    if(EQ.phase==='caught'){
-      g.fillStyle='rgba(24,28,48,.93)';g.fillRect(50,180,420,100);g.fillStyle='#ff8a80';g.font='600 25px system-ui';g.fillText('「喂，排隊去！」',W/2,219);
-      g.font='16px system-ui';g.fillStyle='#e9edf6';g.fillText('被發現了 · 累計插過 '+eqTotal()+' 人'+(EQ.earned>0?' · 入帳 +'+fmt(EQ.earned)+' 點':''),W/2,254);
-    }
-  }
-  $('eq-go').addEventListener('click',eqAction);
-  eqCanvas.addEventListener('pointerdown',function(e){if(!EQ.active)return;e.preventDefault();eqAction();});
-  document.addEventListener('keydown',function(e){if($('view-elevator').hidden||document.hidden||e.code!=='Space'||e.repeat||e.ctrlKey||e.altKey||e.metaKey)return;if(['INPUT','BUTTON','A','SUMMARY'].indexOf(e.target.tagName)>=0)return;e.preventDefault();if(EQ.active)eqAction();});
-  document.addEventListener('visibilitychange',function(){EQ.last=performance.now();});
-  function eqLoop(now){eqSync(now);EQ.pops.forEach(function(p){p.age+=.016;});EQ.pops=EQ.pops.filter(function(p){return p.age<2.2;});if(!$('view-elevator').hidden&&!document.hidden){eqUI();eqDraw();}requestAnimationFrame(eqLoop);}
-  eqUI();eqDraw();requestAnimationFrame(eqLoop);
-
 const timedReplay = (() => {
   const STEP_MS = 10, MAX_TICKS = 60000, MAX_INPUTS = 6000;
   function seeded(seed) {
@@ -10681,6 +10557,197 @@ if (typeof module !== 'undefined') module.exports = timedReplay;
     $(prefix + '-rank-retry').addEventListener('click', send);
     return { start, record, update, finish, busy: () => starting || sending };
   }
+const elevatorRules = (() => {
+  const count = state => Math.min(30,10+2*(state.stage-1));
+  function create(random = Math.random, event = () => {}, EQ = {stage:1,total:0}) {
+  function eqRand(a,b){return a+random()*(b-a);}
+  function eqFactor(){return Math.max(.3,1-.1*(EQ.stage-1));}
+  function eqRest(i){return Math.max(.8,(eqRand(3.5,7.5)-i*.12)*eqFactor());}
+  function eqLookChance(){return Math.min(.95,.7+.02*(EQ.stage-1));}
+
+    function reset() {
+      EQ.passed = 0;
+      EQ.phase = 'waiting';
+      EQ.moving = 0;
+      EQ.dead = false;
+      EQ.people = Array.from({length:count(EQ)}, (_, index) => ({index,state:'safe',time:eqRand(1.2,6.5)}));
+    }
+    function input(action) {
+      if (action !== 0 || EQ.dead || EQ.phase !== 'waiting') return false;
+      if (EQ.people.slice(EQ.passed).some(person => person.state === 'look')) {
+        EQ.dead = true;
+        return true;
+      }
+      EQ.phase = 'moving';
+      EQ.duration = EQ.moving = .4 + EQ.passed * .012;
+      return true;
+    }
+    // Process every gaze change and movement end in time order, even on a slow frame.
+    function eqStep(dt){
+      while(dt>1e-8&&!EQ.dead){
+        var ahead=EQ.people.slice(EQ.passed),slice=dt;
+        ahead.forEach(function(p){slice=Math.min(slice,Math.max(0,p.time));});
+        if(EQ.phase==='moving')slice=Math.min(slice,EQ.moving);
+        ahead.forEach(function(p){p.time-=slice;});if(EQ.phase==='moving')EQ.moving-=slice;dt-=slice;
+        ahead.forEach(function(p){if(p.time>1e-8)return;
+          if(p.state==='safe'){p.state='warn';p.time=eqRand(.18,1.3);}
+          else if(p.state==='warn'){if(random()<eqLookChance()){p.state='look';p.time=eqRand(.4,.8);}else{p.state='safe';p.time=eqRest(p.index);}}
+          else{p.state='safe';p.time=eqRest(p.index);}
+        });
+        if(EQ.phase==='moving'&&ahead.some(function(p){return p.state==='look';})){EQ.dead=true;event('caught');return;}
+        if(EQ.phase==='moving'&&EQ.moving<=1e-8) {
+          EQ.passed++;
+          EQ.total++;
+          EQ.phase='waiting';
+          EQ.moving=0;
+          event('passed');
+          if (EQ.passed===count(EQ)) {
+            EQ.stage++;
+            reset();
+            event('next');
+            return;
+          }
+        }
+      }
+    }
+
+    reset();
+    EQ.advance = eqStep;
+    EQ.input = input;
+    return EQ;
+  }
+  return {inputCount:1, count, create, input:(state, action) => state.input(action),
+    advance:(state, dt) => state.advance(dt), score:state => state.total};
+})();
+if (typeof module !== 'undefined') module.exports = elevatorRules;
+  /* ---------- Elevator Queue: endless queues; milestone bonuses are credited to the shared wallet when reached ---------- */
+  var EQ={active:false,phase:'ready',stage:1,passed:0,total:0,earned:0,pops:[],stake:0,people:[],moving:0,last:0,show:0,best:0};
+// Every cleared queue leads straight to a longer, faster one. Milestones count total people passed
+// and were calibrated with a state-machine simulation (see GAME_RULES.md).
+var EQ_MILESTONES=[[40,3],[55,7],[70,15],[90,30]],EQ_ENDLESS_FROM=90,EQ_ENDLESS_STEP=20,EQ_ENDLESS_BONUS=40;
+function eqBonusAt(n){for(var i=0;i<EQ_MILESTONES.length;i++)if(EQ_MILESTONES[i][0]===n)return EQ_MILESTONES[i][1];return n>EQ_ENDLESS_FROM&&(n-EQ_ENDLESS_FROM)%EQ_ENDLESS_STEP===0?EQ_ENDLESS_BONUS:0;}
+function eqNext(n){for(var i=0;i<EQ_MILESTONES.length;i++)if(EQ_MILESTONES[i][0]>n)return EQ_MILESTONES[i];return [EQ_ENDLESS_FROM+(Math.floor((n-EQ_ENDLESS_FROM)/EQ_ENDLESS_STEP)+1)*EQ_ENDLESS_STEP,EQ_ENDLESS_BONUS];}
+  var eqCanvas=$('eq-canvas'),eqCtx=eqCanvas.getContext('2d');
+  try{var qb=Number(localStorage.getItem('deep-sea-queue-best'));if(Number.isFinite(qb))EQ.best=Math.max(0,Math.floor(qb));}catch(e){}
+  var eqRank=timedLeaderboard('elevator','eq',elevatorRules.inputCount,eqUI);
+  function eqCount(){return elevatorRules.count(EQ);}
+  function eqTotal(){return EQ.total;}
+  function eqRound(){AN.resume(EQ.analytics,{stage:EQ.stage,step:0});EQ.last=performance.now();}
+  function eqSay(text,kind){$('eq-msg').textContent=text;$('eq-msg').className='msg'+(kind?' '+kind:'');}
+  function eqRemember(){if(eqTotal()>EQ.best){EQ.best=eqTotal();try{localStorage.setItem('deep-sea-queue-best',String(EQ.best));}catch(e){}}}
+  function eqUI(){
+    var nx=eqNext(EQ.total);
+    $('eq-progress').textContent=EQ.passed+' / '+eqCount();$('eq-remaining').textContent=(eqCount()-EQ.passed)+' 人';
+    $('eq-best').textContent=EQ.best+' 人';$('eq-stage').textContent='第 '+EQ.stage+' 隊';$('eq-total').textContent=eqTotal()+' 人';$('eq-next').textContent=nx[0]+' 人 · +'+nx[1];$('eq-amount').disabled=EQ.active;
+    $('eq-go').textContent=EQ.active?(EQ.phase==='moving'?'正在插隊…':'往前插一位'):'開始排隊';$('eq-go').disabled=EQ.phase==='moving'||eqRank.busy();
+    $('eq-go').dataset.mode=EQ.active?'surface':'bet';
+    var ahead=EQ.people.slice(EQ.passed),look=ahead.filter(p=>p.state==='look').length,warn=ahead.filter(p=>p.state==='warn').length;
+    var watchText=!EQ.active?(EQ.phase==='ready'?'尚未開始':'本局已結束'):look?'回頭注視 '+look+' 人':warn?'警示 '+warn+' 人 · 可能隨時轉頭':'前方乘客都背對你';
+    if($('eq-watch').textContent!==watchText)$('eq-watch').textContent=watchText;
+    $('eq-watch').dataset.state=look?'look':warn?'warn':'safe';
+    document.querySelectorAll('[data-eq-step]').forEach(function(b){b.setAttribute('aria-current',Number(b.dataset.eqStep)===EQ.passed?'step':'false');});
+  }
+  function eqLose(onInput){if(!EQ.active)return;AN.end(EQ.analytics,EQ.earned,EQ.earned>0?'complete':'loss',{stage:EQ.stage,step:EQ.passed});EQ.active=false;EQ.phase='caught';EQ.moving=0;eqRank.finish(EQ.total,onInput);eqRemember();eqSay('被發現插隊！本局共插過 '+EQ.total+' 人，'+(EQ.earned>0?'入帳 '+fmt(EQ.earned)+' 點。':'這一局沒有獎勵。'),EQ.earned>0?'win':'lose');eqUI();}
+  function eqAward(n,b){EQ.earned+=b;S.balance+=b;save();renderAll();AN.progress(EQ.analytics,{stage:EQ.stage,step:n,bonus_points:b});EQ.pops.push({n:n,b:b,age:0});if(EQ.pops.length>3)EQ.pops.shift();eqSay('累計插過 '+n+' 人！獎勵 +'+b+' 點已入帳，本局累計 +'+EQ.earned+' 點。','win');}
+  function eqEvent(event){
+    if(event==='caught'){eqLose(false);return;}
+    if(event==='next'){
+      eqRound();
+      eqSay('到隊首了！第 '+EQ.stage+' 隊：前方 '+eqCount()+' 人，乘客轉頭更頻繁。','win');
+      eqUI();
+      return;
+    }
+    AN.progress(EQ.analytics,{stage:EQ.stage,step:EQ.passed},EQ.passed===eqCount());
+    eqRemember();
+    var bonus=eqBonusAt(EQ.total);
+    if(bonus)eqAward(EQ.total,bonus);else eqSay('已插過 '+EQ.total+' 人。觀察乘客，再插下一位。','win');
+  }
+  function eqSync(now){var dt=Math.max(0,now-EQ.last);EQ.last=now;if(EQ.active&&!$('view-elevator').hidden&&!document.hidden)eqRank.update(dt,()=>EQ.active,step=>elevatorRules.advance(EQ,step));}
+  function eqAction(){
+    if(eqRank.busy())return;
+    var wasActive=EQ.active;eqSync(performance.now());
+    if(wasActive&&!EQ.active)return;
+    if(!EQ.active){
+      var stake=ENTRY_FEE;
+      if(stake>S.balance){eqSay(LOW_MSG,'lose');return;}
+      eqRank.start(function(random){
+        EQ.analytics=AN.start('elevator',stake);EQ.stake=stake;EQ.stage=1;EQ.total=0;EQ.earned=0;EQ.pops=[];EQ.active=true;
+        elevatorRules.create(random||Math.random,eqEvent,EQ);eqRound();
+        save();renderAll();eqSay('先觀察乘客，再點一下往前插一位。沒有終點，隊伍越來越長、乘客越來越常轉頭，被發現才結束。');eqUI();
+      },eqUI);
+      return;
+    }
+    if(!elevatorRules.input(EQ,0))return;
+    eqRank.record(0);
+    if(EQ.dead){eqLose(true);return;}
+    eqSay('正在移動，這段時間被乘客回頭看見也會失敗。');eqUI();
+  }
+  // Side-view characters and hopping motion adapted from the original Queue Cutter.
+  function eqPerson(x,y,color,state,isPlayer,alpha){
+    var g=eqCtx;g.save();g.globalAlpha=alpha;
+    g.fillStyle='rgba(0,0,0,.16)';g.beginPath();g.ellipse(x,y+3,14,4,0,0,Math.PI*2);g.fill();
+    g.strokeStyle=color;g.lineWidth=6;g.lineCap='round';g.beginPath();g.moveTo(x-6,y-20);g.lineTo(x-6,y);g.moveTo(x+6,y-20);g.lineTo(x+6,y);g.stroke();
+    g.fillStyle=color;g.fillRect(x-14,y-58,28,40);
+    var hy=y-74;g.fillStyle=state==='safe'?'#2b2118':'#f5d0a9';g.beginPath();g.arc(x,hy,14,0,Math.PI*2);g.fill();
+    if(state==='warn'){
+      g.fillStyle='#2b2118';g.beginPath();g.arc(x,hy,14,-Math.PI/2,Math.PI/2);g.fill();
+      g.fillStyle='#ffcf66';g.font='700 27px system-ui';g.textAlign='center';g.fillText('?',x,hy-23);
+    }
+    if(state==='look'){
+      g.fillStyle='#fff';g.beginPath();g.arc(x-9,hy-2,4,0,Math.PI*2);g.arc(x-1,hy-2,4,0,Math.PI*2);g.fill();
+      g.fillStyle='#191a24';g.beginPath();g.arc(x-10,hy-2,2,0,Math.PI*2);g.arc(x-2,hy-2,2,0,Math.PI*2);g.fill();
+      g.strokeStyle='#2b2118';g.lineWidth=2.5;g.beginPath();g.moveTo(x-14,hy-11);g.lineTo(x-6,hy-7);g.moveTo(x-1,hy-7);g.lineTo(x+5,hy-11);g.stroke();
+      g.strokeStyle='#ff756f';g.lineWidth=2.5;g.beginPath();g.arc(x,hy,18,0,Math.PI*2);g.stroke();
+    }
+    if(isPlayer){g.fillStyle='#fff5d9';g.beginPath();g.moveTo(x-8,hy-34);g.lineTo(x+8,hy-34);g.lineTo(x,hy-22);g.closePath();g.fill();}
+    g.restore();
+  }
+  function eqDraw(){
+    var g=eqCtx,W=520,H=580,FY=420,SP=36,count=eqCount(),cols=count>10?Math.ceil(count/2):10;
+    function spot(n){return count<=10||n<=cols?{x:70+n*SP,y:FY}:{x:70+(2*cols+1-n)*SP,y:FY-120};}
+    var f=EQ.phase==='moving'?1-EQ.moving/EQ.duration:0;
+    // Smooth camera motion keeps the player at the left as the queue slides past.
+    var travel=0;
+    g.clearRect(0,0,W,H);g.fillStyle='#2e3350';g.fillRect(0,0,W,FY);g.fillStyle='#1d2036';g.fillRect(0,FY,W,H-FY);
+    g.strokeStyle='#414762';g.lineWidth=1;g.beginPath();g.moveTo(0,205);g.lineTo(W,205);g.stroke();
+    g.fillStyle='#343b59';g.fillRect(28,225,70,68);g.strokeStyle='#586781';g.strokeRect(28,225,70,68);g.fillStyle='#8db0b9';g.font='11px system-ui';g.textAlign='center';g.fillText('請依序排隊',63,254);g.fillText('深海升降艙',63,275);
+    g.strokeStyle='#2a2e4a';g.lineWidth=2;
+    for(var k=-1;k<11;k++){var lx=k*60-(travel*SP)%60;g.beginPath();g.moveTo(lx,FY);g.lineTo(lx-40,H);g.stroke();}
+    var end=spot(count+1),doorX=end.x,doorY=end.y;g.save();g.translate(0,doorY-FY);
+    g.fillStyle='#4a5a7a';g.fillRect(doorX-29,FY-140,58,140);g.fillStyle='#202b42';g.fillRect(doorX-21,FY-119,42,119);
+    g.fillStyle=EQ.passed===count?'#a2e4c2':'#ffcf66';g.fillRect(doorX-17,FY-132,34,8);
+    if(EQ.passed<10){g.strokeStyle='#8297b0';g.lineWidth=2;g.beginPath();g.moveTo(doorX,FY-118);g.lineTo(doorX,FY);g.stroke();}
+    g.fillStyle='#dce5ef';g.font='600 12px system-ui';g.textAlign='center';g.fillText('電梯',doorX,FY-151);g.restore();
+    var palette=['#6b9ac4','#c47f6b','#7fb08a','#a78bfa','#d98aa8','#8aa2b8'];
+    var people=EQ.people.length?EQ.people:Array.from({length:count},function(_,i){return {index:i,state:'safe'};});
+    people.forEach(function(p,i){var point=spot(i+1),x=point.x,passed=i<EQ.passed;
+      eqPerson(x,point.y,palette[i%palette.length],passed?'safe':p.state,false,passed?.28:1);
+    });
+    var hop=EQ.phase==='moving'?Math.sin(Math.PI*f)*18:0;
+    var from=spot(EQ.passed),to=spot(EQ.passed+1),playerX=from.x+(to.x-from.x)*f,playerY=from.y+(to.y-from.y)*f;
+    eqPerson(playerX,playerY-hop,'#f2c14e',EQ.phase==='caught'?'look':'safe',true,1);
+    g.fillStyle='#f5df9f';g.font='600 13px system-ui';g.textAlign='center';g.fillText('你',playerX,playerY+30);
+    g.textAlign='left';g.fillStyle='#e9edf6';g.font='600 23px system-ui';g.fillText('Queue Cutter',24,38);
+    g.textAlign='right';g.font='600 17px system-ui';g.fillStyle='#a5b4cb';g.fillText('第 '+EQ.stage+' 隊 · '+EQ.passed+' / '+count+' · 本局 +'+EQ.earned+' 點',W-24,38);
+    g.fillStyle='#1d2036';g.fillRect(24,55,W-48,7);g.fillStyle='#f2c14e';g.fillRect(24,55,(W-48)*EQ.passed/count,7);
+    var ahead=people.slice(EQ.passed),look=ahead.some(function(p){return p.state==='look';}),warn=ahead.some(function(p){return p.state==='warn';});
+    g.textAlign='center';g.font='19px system-ui';g.fillStyle='#e4e8f1';g.fillText('前面還有 '+(eqCount()-EQ.passed)+' 位乘客',W/2,105);
+    g.font='600 17px system-ui';g.fillStyle=look?'#ff8a80':warn?'#ffcf66':'#a2e4c2';
+    g.fillText(!EQ.active?'觀察表情，偷偷向前一步':look?'有人回頭了，先別動！':warn?'出現「？」了，小心隨時回頭':'大家都背對你，找機會往前插',W/2,141);
+    g.fillStyle='#a5b4cb';g.font='13px system-ui';g.fillText('點一下插過一人 · 白色箭頭是你',W/2,517);
+    EQ.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=200-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#f2c14e';g.font='700 38px system-ui';g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#e9edf6';g.font='600 17px system-ui';g.fillText('累計插過 '+p.n+' 人里程碑',W/2,py+28);g.globalAlpha=1;});
+    if(EQ.phase==='caught'){
+      g.fillStyle='rgba(24,28,48,.93)';g.fillRect(50,180,420,100);g.fillStyle='#ff8a80';g.font='600 25px system-ui';g.fillText('「喂，排隊去！」',W/2,219);
+      g.font='16px system-ui';g.fillStyle='#e9edf6';g.fillText('被發現了 · 累計插過 '+eqTotal()+' 人'+(EQ.earned>0?' · 入帳 +'+fmt(EQ.earned)+' 點':''),W/2,254);
+    }
+  }
+  $('eq-go').addEventListener('click',eqAction);
+  eqCanvas.addEventListener('pointerdown',function(e){if(!EQ.active)return;e.preventDefault();eqAction();});
+  document.addEventListener('keydown',function(e){if($('view-elevator').hidden||document.hidden||e.code!=='Space'||e.repeat||e.ctrlKey||e.altKey||e.metaKey)return;if(['INPUT','BUTTON','A','SUMMARY'].indexOf(e.target.tagName)>=0)return;e.preventDefault();if(EQ.active)eqAction();});
+  document.addEventListener('visibilitychange',function(){EQ.last=performance.now();});
+  function eqLoop(now){eqSync(now);EQ.pops.forEach(function(p){p.age+=.016;});EQ.pops=EQ.pops.filter(function(p){return p.age<2.2;});if(!$('view-elevator').hidden&&!document.hidden){eqUI();eqDraw();}requestAnimationFrame(eqLoop);}
+  eqUI();eqDraw();requestAnimationFrame(eqLoop);
+
 const sneakRules = (() => {
   const levelCap = state => Math.min(state.lv, 10);
   const score = state => state.score;
@@ -10874,6 +10941,55 @@ function loop(t){sync(t);if(!$('view-sneak').hidden&&!document.hidden){if(shake>
 ui();draw();requestAnimationFrame(loop);
   })();
 
+const fishingRules = (() => {
+  function create(random = Math.random, event = () => {}, state = {landed:0, clock:0}) {
+    const hardness = () => Math.min(state.number, 20);
+    const rand = (min, max) => min + random() * (max - min);
+    function reset() {
+      state.number = state.landed + 1;
+      state.distance = state.start = 18 + hardness() * 2;
+      state.tension = 45;
+      state.slack = 0;
+      state.mode = 'calm';
+      state.timer = rand(2.1, 3.2);
+      state.hold = state.dead = false;
+    }
+    function fiNextMode(){
+      if(state.mode==='calm'){state.mode=random()<.18?'tired':'warn';state.timer=state.mode==='tired'?rand(1.4,2):Math.max(.28,.65-hardness()*.035);}
+      else if(state.mode==='warn'){state.mode='struggle';state.timer=rand(.85,1.4)+hardness()*.045;}
+      else if(state.mode==='struggle'){state.mode='tired';state.timer=rand(1.2,2.1);}
+      else{state.mode='calm';state.timer=Math.max(.8,rand(1.8,3.1)-hardness()*.07);}
+    }
+    function fiStep(dt){
+      // Small time slices preserve line-break and slack detection on delayed frames.
+      while(dt>1e-8&&!state.dead){
+        var step=Math.min(dt,.02,Math.max(0,state.timer));
+        if(step<=1e-8){fiNextMode();continue;}
+        var hard=hardness(),rate,drift;
+        if(state.hold){rate=state.mode==='struggle'?34+hard*2:state.mode==='warn'?13+hard*.5:state.mode==='tired'?4+hard*.15:9+hard*.6;
+          drift=state.mode==='struggle'?.5+hard*.05:state.mode==='warn'?-1.2:state.mode==='tired'?-3.1:-(2.2-hard*.025);
+        }else{rate=state.mode==='struggle'?-8:state.mode==='tired'?-13:-11;drift=state.mode==='struggle'?1.45+hard*.07:state.mode==='tired'?.45:.75+hard*.06;}
+        state.tension=Math.max(0,state.tension+rate*step);state.distance=Math.max(0,Math.min(state.start*1.8,state.distance+drift*step));state.clock+=step;state.timer-=step;dt-=step;
+        state.slack=state.tension<=8?state.slack+step:0;
+        if(state.tension>=100-1e-8){state.tension=100;state.dead=true;event('break');return;}
+        if(state.slack>=1.2-1e-8){state.dead=true;event('slack');return;}
+        if(state.distance<=1e-8){state.landed++;event('land');reset();event('next');return;}
+        if(state.timer<=1e-8)fiNextMode();
+      }
+    }
+
+    reset();
+    state.advance = fiStep;
+    return state;
+  }
+  function input(state, action) {
+    if (state.dead || (action !== 0 && action !== 1) || state.hold === (action === 0)) return false;
+    state.hold = action === 0;
+    return true;
+  }
+  return {inputCount:2, create, input, advance:(state, dt) => state.advance(dt), score:state => state.landed};
+})();
+if (typeof module !== 'undefined') module.exports = fishingRules;
   /* ---------- Fishing: endless catch; milestone bonuses are credited to the shared wallet when reached ---------- */
   var FI={active:false,phase:'ready',landed:0,stake:0,earned:0,pops:[],number:1,distance:20,start:20,tension:45,slack:0,mode:'calm',timer:3,hold:false,last:0,clock:0,best:0};
   // Milestones count landed fish; calibrated with a controller-bot simulation (see GAME_RULES.md).
@@ -10881,20 +10997,20 @@ var FI_MILESTONES=[[10,3],[12,7],[14,15],[17,30]],FI_ENDLESS_FROM=17,FI_ENDLESS_
 function fiBonusAt(n){for(var i=0;i<FI_MILESTONES.length;i++)if(FI_MILESTONES[i][0]===n)return FI_MILESTONES[i][1];return n>FI_ENDLESS_FROM&&(n-FI_ENDLESS_FROM)%FI_ENDLESS_STEP===0?FI_ENDLESS_BONUS:0;}
 function fiNextMilestone(n){for(var i=0;i<FI_MILESTONES.length;i++)if(FI_MILESTONES[i][0]>n)return FI_MILESTONES[i];return [FI_ENDLESS_FROM+(Math.floor((n-FI_ENDLESS_FROM)/FI_ENDLESS_STEP)+1)*FI_ENDLESS_STEP,FI_ENDLESS_BONUS];}
 function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+' 代';}
-function fiHard(){return Math.min(FI.number,20);}
   var FI_NAMES=['小丑魚','藍雀鯛','小河豚','彩虹魚','海鱸','鮪魚','鬼頭刀','旗魚','巨型石斑','深海魚王'];
   var fishingCanvas=$('fi-canvas'),fishingCtx=fishingCanvas.getContext('2d'),fishingPointers=new Set(),fishingKeys=new Set();
   try{var fb=Number(localStorage.getItem('deep-sea-fishing-best'));if(Number.isFinite(fb))FI.best=Math.max(0,Math.floor(fb));}catch(e){}
   function fiText(id,value){var el=$(id);if(el.textContent!==value)el.textContent=value;}
   function fiSay(text,kind){fiText('fi-msg',text);$('fi-msg').className='msg'+(kind?' '+kind:'');}
-  function fiRand(a,b){return a+Math.random()*(b-a);}
-    function fiRelease(){fishingPointers.clear();fishingKeys.clear();FI.hold=false;}
+  var fiRank=timedLeaderboard('fishing','fi',fishingRules.inputCount,fiUI);
+  function fiHold(hold){var action=hold?0:1;if(fishingRules.input(FI,action))fiRank.record(action);}
+  function fiRelease(){fishingPointers.clear();fishingKeys.clear();fiHold(false);}
   function fiRemember(){if(FI.landed>FI.best){FI.best=FI.landed;try{localStorage.setItem('deep-sea-fishing-best',String(FI.best));}catch(e){}}}
   function fiUI(){
     var nx=fiNextMilestone(FI.landed);
     fiText('fi-number','第 '+FI.number+' 條');fiText('fi-distance',Math.max(0,FI.distance).toFixed(1)+' m');fiText('fi-best',FI.best+' 條');fiText('fi-next','釣到 '+nx[0]+' 條 · +'+nx[1]);
     $('fi-amount').disabled=FI.active;
-    $('fi-go').disabled=FI.phase==='fishing';fiText('fi-go',FI.phase==='fishing'?'拉鋸中 · 按住收線':'下竿');
+    $('fi-go').disabled=FI.phase==='fishing'||fiRank.busy();fiText('fi-go',FI.phase==='fishing'?'拉鋸中 · 按住收線':'下竿');
     $('fi-hold').disabled=FI.phase!=='fishing';fiText('fi-hold',FI.hold?'收線中 · 放開卸力':'按住收線 · 放開卸力');
     var tension=Math.max(0,Math.min(100,FI.tension));$('fi-tension-fill').style.width=tension+'%';
     var danger=tension>=88||tension<=8,warn=tension>75||tension<20;
@@ -10906,47 +11022,33 @@ function fiHard(){return Math.min(FI.number,20);}
     fiText('fi-name',fiFishName(FI.number));
   }
   function fiRound(first){
-    FI.number=FI.landed+1;AN.resume(FI.analytics,{stage:FI.number});FI.distance=18+fiHard()*2;FI.start=FI.distance;FI.tension=45;FI.slack=0;FI.mode='calm';FI.timer=fiRand(2.1,3.2);FI.phase='fishing';FI.last=performance.now();fiRelease();
+    AN.resume(FI.analytics,{stage:FI.number});FI.phase='fishing';FI.last=performance.now();fiRelease();
     if(first)fiSay('第 '+FI.number+' 條 '+fiFishName(FI.number)+' 上鉤了！按住收線，掙扎時放開；線太鬆也可能脫鉤。沒有終點，魚會一條接一條。');fiUI();fishingCanvas.focus();
   }
   function fiStart(){
-    if(FI.phase==='fishing')return;
+    if(FI.phase==='fishing'||fiRank.busy())return;
     var stake=ENTRY_FEE;
     if(stake>S.balance){fiSay(LOW_MSG,'lose');return;}
-    FI.analytics=AN.start('fishing',stake);FI.stake=stake;FI.landed=0;FI.earned=0;FI.pops=[];FI.active=true;save();renderAll();fiRound(true);
+    fiRank.start(function(random){
+      FI.analytics=AN.start('fishing',stake);FI.stake=stake;FI.landed=0;FI.earned=0;FI.pops=[];FI.active=true;
+      save();renderAll();
+      fishingRules.create(random||Math.random,function(event){
+        if(event==='land')fiLand();
+        else if(event==='next')fiRound(false);
+        else fiLose(event==='break'?'魚線斷了！':'魚線太鬆，魚脫鉤了！');
+      },FI);
+      fiRound(true);
+    },fiUI);
   }
-  function fiLose(reason){if(FI.phase!=='fishing')return;AN.end(FI.analytics,FI.earned,FI.earned>0?'complete':'loss',{stage:FI.number,landed_fish:FI.landed});FI.active=false;FI.phase='lost';fiRelease();fiSay(reason+' 本局釣到 '+FI.landed+' 條，'+(FI.earned>0?'共入帳 '+fmt(FI.earned)+' 點。':'這一局沒有獎勵。'),FI.earned>0?'win':'lose');fiUI();}
+  function fiLose(reason){if(FI.phase!=='fishing')return;AN.end(FI.analytics,FI.earned,FI.earned>0?'complete':'loss',{stage:FI.number,landed_fish:FI.landed});FI.active=false;FI.phase='lost';fiRelease();fiRank.finish(FI.landed);fiSay(reason+' 本局釣到 '+FI.landed+' 條，'+(FI.earned>0?'共入帳 '+fmt(FI.earned)+' 點。':'這一局沒有獎勵。'),FI.earned>0?'win':'lose');fiUI();}
   function fiAward(n,b){FI.earned+=b;S.balance+=b;save();renderAll();AN.progress(FI.analytics,{stage:n,landed_fish:n,bonus_points:b});FI.pops.push({n:n,b:b,age:0});if(FI.pops.length>3)FI.pops.shift();fiSay('釣到第 '+n+' 條！獎勵 +'+b+' 點已入帳，本局累計 +'+FI.earned+' 點。','win');}
   function fiLand(){
     if(FI.phase!=='fishing')return;
-    var name=fiFishName(FI.number);FI.landed++;AN.progress(FI.analytics,{stage:FI.number,landed_fish:FI.landed},true);fiRemember();
+    var name=fiFishName(FI.number);AN.progress(FI.analytics,{stage:FI.number,landed_fish:FI.landed},true);fiRemember();
     var b=fiBonusAt(FI.landed);if(b)fiAward(FI.landed,b);else fiSay('釣到 '+name+'！下一條馬上上鉤。','win');
-    FI.flash=1;fiRound(false);
+    FI.flash=1;
   }
-  function fiNextMode(){
-    if(FI.mode==='calm'){FI.mode=Math.random()<.18?'tired':'warn';FI.timer=FI.mode==='tired'?fiRand(1.4,2):Math.max(.28,.65-fiHard()*.035);}
-    else if(FI.mode==='warn'){FI.mode='struggle';FI.timer=fiRand(.85,1.4)+fiHard()*.045;}
-    else if(FI.mode==='struggle'){FI.mode='tired';FI.timer=fiRand(1.2,2.1);}
-    else{FI.mode='calm';FI.timer=Math.max(.8,fiRand(1.8,3.1)-fiHard()*.07);}
-  }
-  function fiStep(dt){
-    // Small time slices preserve line-break and slack detection on delayed frames.
-    while(dt>1e-8&&FI.phase==='fishing'){
-      var step=Math.min(dt,.02,Math.max(0,FI.timer));
-      if(step<=1e-8){fiNextMode();continue;}
-      var hard=fiHard(),rate,drift;
-      if(FI.hold){rate=FI.mode==='struggle'?34+hard*2:FI.mode==='warn'?13+hard*.5:FI.mode==='tired'?4+hard*.15:9+hard*.6;
-        drift=FI.mode==='struggle'?.5+hard*.05:FI.mode==='warn'?-1.2:FI.mode==='tired'?-3.1:-(2.2-hard*.025);
-      }else{rate=FI.mode==='struggle'?-8:FI.mode==='tired'?-13:-11;drift=FI.mode==='struggle'?1.45+hard*.07:FI.mode==='tired'?.45:.75+hard*.06;}
-      FI.tension=Math.max(0,FI.tension+rate*step);FI.distance=Math.max(0,Math.min(FI.start*1.8,FI.distance+drift*step));FI.clock+=step;FI.timer-=step;dt-=step;
-      FI.slack=FI.tension<=8?FI.slack+step:0;
-      if(FI.tension>=100-1e-8){FI.tension=100;fiLose('魚線斷了！');return;}
-      if(FI.slack>=1.2-1e-8){fiLose('魚線太鬆，魚脫鉤了！');return;}
-      if(FI.distance<=1e-8){fiLand();return;}
-      if(FI.timer<=1e-8)fiNextMode();
-    }
-  }
-  function fiSync(now){var dt=Math.max(0,(now-FI.last)/1000);FI.last=now;if(!$('view-fishing').hidden&&!document.hidden)fiStep(dt);}
+  function fiSync(now){var dt=Math.max(0,(now-FI.last)/1000);FI.last=now;if(FI.phase==='fishing'&&!$('view-fishing').hidden&&!document.hidden)fiRank.update(dt*1000,()=>FI.phase==='fishing',step=>fishingRules.advance(FI,step));}
   function fiDraw(){
     var g=fishingCtx,W=520,H=560,t=FI.clock,water=198;
     g.clearRect(0,0,W,H);var sky=g.createLinearGradient(0,0,0,water);sky.addColorStop(0,'#0c2230');sky.addColorStop(1,'#1c5361');g.fillStyle=sky;g.fillRect(0,0,W,water);
@@ -10973,12 +11075,12 @@ function fiHard(){return Math.min(FI.number,20);}
       g.fillStyle='rgba(5,22,32,.88)';g.fillRect(48,389,424,103);g.fillStyle=FI.phase==='lost'?'#ff6f61':'#62e6d2';g.font='600 25px system-ui';g.fillText(FI.phase==='ready'?'準備釣一條大魚？':'魚逃走了！',W/2,430);g.fillStyle='#e4f2f3';g.font='15px system-ui';g.fillText(FI.phase==='ready'?'先下竿，再按住畫面開始收線':'本局釣到 '+FI.landed+' 條'+(FI.earned>0?' · 入帳 +'+FI.earned+' 點':''),W/2,465);
     }
   }
-  function fiPress(e){if(e.button!==undefined&&e.button!==0)return;if(FI.phase!=='fishing'||$('view-fishing').hidden||document.hidden)return;e.preventDefault();fiSync(performance.now());if(FI.phase!=='fishing')return;fishingCanvas.focus();fishingPointers.add(e.pointerId);FI.hold=true;try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}fiUI();}
-  function fiLift(e){fiSync(performance.now());fishingPointers.delete(e.pointerId);FI.hold=fishingPointers.size>0||fishingKeys.size>0;}
+  function fiPress(e){if(e.button!==undefined&&e.button!==0)return;if(FI.phase!=='fishing'||$('view-fishing').hidden||document.hidden)return;e.preventDefault();fiSync(performance.now());if(FI.phase!=='fishing')return;fishingCanvas.focus();fishingPointers.add(e.pointerId);fiHold(true);try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}fiUI();}
+  function fiLift(e){fiSync(performance.now());fishingPointers.delete(e.pointerId);fiHold(fishingPointers.size>0||fishingKeys.size>0);}
   [fishingCanvas,$('fi-hold')].forEach(function(el){el.addEventListener('pointerdown',fiPress);['pointerup','pointercancel','lostpointercapture'].forEach(function(type){el.addEventListener(type,fiLift);});});
   $('fi-go').addEventListener('click',fiStart);
-  addEventListener('keydown',function(e){if($('view-fishing').hidden||document.hidden||FI.phase!=='fishing'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;if(['INPUT','BUTTON','A','SUMMARY'].indexOf(e.target.tagName)>=0)return;if(e.code==='Space'){e.preventDefault();fiSync(performance.now());if(FI.phase==='fishing'){fishingKeys.add(e.code);FI.hold=true;}}});
-  addEventListener('keyup',function(e){if(e.code!=='Space')return;if(!$('view-fishing').hidden)e.preventDefault();fiSync(performance.now());fishingKeys.delete(e.code);FI.hold=fishingPointers.size>0||fishingKeys.size>0;});
+  addEventListener('keydown',function(e){if($('view-fishing').hidden||document.hidden||FI.phase!=='fishing'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;if(['INPUT','BUTTON','A','SUMMARY'].indexOf(e.target.tagName)>=0)return;if(e.code==='Space'){e.preventDefault();fiSync(performance.now());if(FI.phase==='fishing'){fishingKeys.add(e.code);fiHold(true);}}});
+  addEventListener('keyup',function(e){if(e.code!=='Space')return;if(!$('view-fishing').hidden)e.preventDefault();fiSync(performance.now());fishingKeys.delete(e.code);fiHold(fishingPointers.size>0||fishingKeys.size>0);});
   addEventListener('blur',function(){fiRelease();FI.last=performance.now();});
   document.addEventListener('visibilitychange',function(){fiRelease();FI.last=performance.now();});
   window.addEventListener('hashchange',function(){fiRelease();FI.last=performance.now();});

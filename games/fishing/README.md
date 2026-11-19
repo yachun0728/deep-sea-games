@@ -7,23 +7,23 @@
 - 網址：`#fishing`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「按住收線、放開卸力，把大魚拉上岸。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：深海釣手，`game_id` 為 `fishing`
-- 檔案：`games/fishing/card.html`、`games/fishing/game.js`、`games/fishing/icon.svg`、`games/fishing/view.html`；`game.js` 共 113 行、13.0 KB
+- 檔案：`games/fishing/card.html`、`games/fishing/game.js`、`games/fishing/icon.svg`、`games/fishing/view.html`；`game.js` 共 99 行、11.8 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「16. Fishing（fishing）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-fishing`、`fi-canvas`、`fi-number`、`fi-distance`、`fi-best`、`fi-next`、`fi-name`、`fi-signal`、`fi-tension-label`、`fi-tension-value`、`fi-tension`、`fi-tension-fill`、`fi-slack`、`fi-amount`、`fi-go`、`fi-hold`、`fi-msg`
+`view-fishing`、`fi-canvas`、`fi-number`、`fi-distance`、`fi-best`、`fi-next`、`fi-name`、`fi-signal`、`fi-tension-label`、`fi-tension-value`、`fi-tension`、`fi-tension-fill`、`fi-slack`、`fi-amount`、`fi-go`、`fi-hold`、`fi-msg`、`fi-rank-status`、`fi-rank-retry`
 
 ## 狀態與常數
 
 - 狀態物件／進行中旗標：`FI`（L2）
 - L4 常數：`FI_MILESTONES`、`FI_ENDLESS_FROM`、`FI_ENDLESS_STEP`、`FI_ENDLESS_BONUS`
-- L9 常數：`FI_NAMES`
+- L8 常數：`FI_NAMES`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`fiBonusAt` L5、`fiNextMilestone` L6、`fiFishName` L7、`fiHard` L8、`fiText` L12、`fiSay` L13、`fiRand` L14、`fiRelease` L15、`fiRemember` L16、`fiUI` L17、`fiRound` L32、`fiStart` L36、`fiLose` L42、`fiAward` L43、`fiLand` L44、`fiNextMode` L50、`fiStep` L56、`fiSync` L73、`fiDraw` L74、`fiPress` L100、`fiLift` L101、`fiLoop` L109
+`fiBonusAt` L5、`fiNextMilestone` L6、`fiFishName` L7、`fiText` L11、`fiSay` L12、`fiHold` L14、`fiRelease` L15、`fiRemember` L16、`fiUI` L17、`fiRound` L32、`fiStart` L36、`fiLose` L51、`fiAward` L52、`fiLand` L53、`fiSync` L59、`fiDraw` L60、`fiPress` L86、`fiLift` L87、`fiLoop` L95
 
 ## 錢包與結算接點
 
@@ -31,7 +31,7 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L43 `fiAward`：`S.balance+=b;`
+- L52 `fiAward`：`S.balance+=b;`
 
 **餘額檢查**
 - L39 `fiStart`：`if(stake>S.balance){fiSay(LOW_MSG,'lose');`
@@ -42,10 +42,10 @@
 ## 追蹤（GA4）
 
 - L33 `fiRound`：`AN.resume(FI.analytics,{stage:FI.number});`
-- L40 `fiStart`：`FI.analytics=AN.start('fishing',stake);`
-- L42 `fiLose`：`AN.end(FI.analytics,FI.earned,FI.earned>0?'complete':'loss',{stage:FI.number,landed_fish:FI.landed});`
-- L43 `fiAward`：`AN.progress(FI.analytics,{stage:n,landed_fish:n,bonus_points:b});`
-- L46 `fiLand`：`AN.progress(FI.analytics,{stage:FI.number,landed_fish:FI.landed},true);`
+- L41 `fiStart`：`FI.analytics=AN.start('fishing',stake);`
+- L51 `fiLose`：`AN.end(FI.analytics,FI.earned,FI.earned>0?'complete':'loss',{stage:FI.number,landed_fish:FI.landed});`
+- L52 `fiAward`：`AN.progress(FI.analytics,{stage:n,landed_fish:n,bonus_points:b});`
+- L55 `fiLand`：`AN.progress(FI.analytics,{stage:FI.number,landed_fish:FI.landed},true);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

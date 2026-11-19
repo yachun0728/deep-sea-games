@@ -1,3 +1,5 @@
+import elevator from '../shared/elevator-rules.cjs';
+import fishing from '../shared/fishing-rules.cjs';
 import assert from 'node:assert/strict';
 import replay from '../shared/timed-replay.cjs';
 import bird from '../shared/bird-rules.cjs';
@@ -24,6 +26,8 @@ function simulate(engine, seed, inputs) {
 }
 
 for (const [engine, inputs] of [
+  [elevator, new Map([[0, [0]], [43, [0]], [300, [0]]])],
+  [fishing, new Map([[0, [0]], [120, [1]]])],
   [bird, new Map([[12, [2]], [45, [0]], [60, [1]]])],
   [blockDrop, new Map(Array.from({length:32}, (_, i) => [i * 25, [blockDrop.pressCode('hard')]]))],
   [cat, new Map([[12, [0]], [25, [1]]])],
@@ -50,4 +54,4 @@ const instantEnd = {
 };
 assert.equal(replay.verify(instantEnd, 42, [1,0]), 10);
 assert.equal(replay.verify(instantEnd, 42, [1,0,0]), null);
-console.log('PASS: six shared timed rule engines, terminal ticks, input ordering and invalid transitions');
+console.log('PASS: eight shared timed rule engines, terminal ticks, input ordering and invalid transitions');

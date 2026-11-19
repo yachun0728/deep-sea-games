@@ -7,13 +7,13 @@
 - 網址：`#elevator`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「趁乘客背對你，偷偷往前插一位。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：插隊大師，`game_id` 為 `elevator`
-- 檔案：`games/elevator/card.html`、`games/elevator/game.js`、`games/elevator/icon.svg`、`games/elevator/view.html`；`game.js` 共 129 行、12.4 KB
+- 檔案：`games/elevator/card.html`、`games/elevator/game.js`、`games/elevator/icon.svg`、`games/elevator/view.html`；`game.js` 共 129 行、11.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「14. Queue Cutter（elevator）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-elevator`、`eq-canvas`、`eq-progress`、`eq-remaining`、`eq-stage`、`eq-total`、`eq-best`、`eq-next`、`eq-watch`、`eq-amount`、`eq-go`、`eq-msg`
+`view-elevator`、`eq-canvas`、`eq-progress`、`eq-remaining`、`eq-stage`、`eq-total`、`eq-best`、`eq-next`、`eq-watch`、`eq-amount`、`eq-go`、`eq-msg`、`eq-rank-status`、`eq-rank-retry`
 
 ## 狀態與常數
 
@@ -22,7 +22,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`eqBonusAt` L6、`eqNext` L7、`eqRand` L10、`eqFactor` L11、`eqRest` L12、`eqLookChance` L13、`eqCount` L14、`eqTotal` L15、`eqRound` L16、`eqSay` L17、`eqRemember` L18、`eqUI` L19、`eqLose` L31、`eqAward` L32、`eqStep` L34、`eqSync` L49、`eqAction` L50、`eqPerson` L64、`eqDraw` L83、`spot` L85、`eqLoop` L126
+`eqBonusAt` L6、`eqNext` L7、`eqCount` L11、`eqTotal` L12、`eqRound` L13、`eqSay` L14、`eqRemember` L15、`eqUI` L16、`eqLose` L28、`eqAward` L29、`eqEvent` L30、`eqSync` L43、`eqAction` L44、`eqPerson` L64、`eqDraw` L83、`spot` L85、`eqLoop` L126
 
 ## 錢包與結算接點
 
@@ -30,21 +30,21 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L32 `eqAward`：`S.balance+=b;`
+- L29 `eqAward`：`S.balance+=b;`
 
 **餘額檢查**
-- L55 `eqAction`：`if(stake>S.balance){eqSay(LOW_MSG,'lose');`
+- L50 `eqAction`：`if(stake>S.balance){eqSay(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L16 `eqRound`：`AN.resume(EQ.analytics,{stage:EQ.stage,step:0});`
-- L31 `eqLose`：`AN.end(EQ.analytics,EQ.earned,EQ.earned>0?'complete':'loss',{stage:EQ.stage,step:EQ.passed});`
-- L32 `eqAward`：`AN.progress(EQ.analytics,{stage:EQ.stage,step:n,bonus_points:b});`
-- L46 `eqStep`：`AN.progress(EQ.analytics,{stage:EQ.stage,step:EQ.passed},EQ.passed===eqCount());`
-- L56 `eqAction`：`EQ.analytics=AN.start('elevator',stake);`
+- L13 `eqRound`：`AN.resume(EQ.analytics,{stage:EQ.stage,step:0});`
+- L28 `eqLose`：`AN.end(EQ.analytics,EQ.earned,EQ.earned>0?'complete':'loss',{stage:EQ.stage,step:EQ.passed});`
+- L29 `eqAward`：`AN.progress(EQ.analytics,{stage:EQ.stage,step:n,bonus_points:b});`
+- L38 `eqEvent`：`AN.progress(EQ.analytics,{stage:EQ.stage,step:EQ.passed},EQ.passed===eqCount());`
+- L52 `eqAction`：`EQ.analytics=AN.start('elevator',stake);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
