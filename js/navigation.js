@@ -173,6 +173,8 @@
     var controls = gameViewControls[id];
     if (!controls || id === 'mines' || id === 'market-desk') return;
     card.addEventListener('click', function(event) {
+      // Fullscreen on open is for phones only; desktop opens the game page normally.
+      if (!(window.matchMedia && matchMedia('(max-width: 1020px)').matches)) return;
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey ||
           event.shiftKey || event.altKey) return;
       event.preventDefault();
@@ -184,6 +186,7 @@
   });
   $('mines-go').addEventListener('click', function() {
     var controls = gameViewControls.mines;
+    if (!(window.matchMedia && matchMedia('(max-width: 1020px)').matches)) return;
     if (M.active && controls.button.getAttribute('aria-pressed') !== 'true') controls.button.click();
   });
   window.addEventListener('hashchange', function() {

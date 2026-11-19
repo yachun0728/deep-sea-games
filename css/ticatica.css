@@ -537,3 +537,10 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 @keyframes board-in{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.board-table tbody tr.is-new{animation:none}}
 .lobby-games .lobby-tabs-row{margin-bottom:20px}
+/* popular games: 2 x 2 */
+.side-quick{grid-template-columns:repeat(2,1fr)}
+.side-quick .side-quick-item:nth-child(n+5){display:none}
+/* fullscreen is phone-only: no fullscreen button on desktop */
+@media(min-width:1021px){.view>.game-view-controls button{display:none}}
+/* phone fullscreen: only the game, no descriptions or extra notes */
+@media(max-width:1020px){.view:is(:fullscreen,.game-view-expanded) :is(details.rules,.side .hint,.side .msg,.fishing-ladder,.mobile-scroll-pad,.bl-reward-note,.bl-evolution-row,.reaper-legend,[class$="-platform-bar"] .hint){display:none!important}.view:is(:fullscreen,.game-view-expanded)>p:not([role="status"]){display:none!important}}
