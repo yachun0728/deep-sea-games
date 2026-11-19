@@ -4988,5 +4988,9 @@
   "正在驗證排行榜成績…": "Verifying leaderboard score…",
   "成績已送到排行榜。": "Score submitted to the leaderboard.",
   "排行榜成績未能送出。": "Unable to submit the leaderboard score.",
-  "重送排行榜成績": "Retry score submission"
+  "重送排行榜成績": "Retry score submission",
+  "可以兌換：": "Ready to redeem: ",
+  "下一個外觀：": "Next cosmetic: ",
+  "（還差": " (need",
+  "外觀已全部收藏": "All cosmetics collected"
 }

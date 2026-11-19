@@ -121,6 +121,13 @@
     var button = $('account-toggle'), menu = $('account-menu'), timer = 0;
     function sync() {
       $('account-balance').textContent = fmt(S.balance);
+      // bar = progress toward the cheapest cosmetic not owned yet
+      var goal = window.deepSeaWardrobe && window.deepSeaWardrobe.nextGoal ? window.deepSeaWardrobe.nextGoal() : null;
+      $('account-bar').parentNode.hidden = !goal;
+      if (goal) {
+        $('account-bar').style.width = Math.min(100, S.balance / goal.price * 100) + '%';
+        $('account-goal').textContent = S.balance >= goal.price ? '可以兌換：' + goal.name : '下一個外觀：' + goal.name + '（還差 ' + fmt(goal.price - S.balance) + ' 點）';
+      } else $('account-goal').textContent = '外觀已全部收藏';
     }
     function setOpen(open) {
       menu.hidden = !open; button.setAttribute('aria-expanded', open ? 'true' : 'false');

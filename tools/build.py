@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -36,7 +37,7 @@ def render(root: Path = ROOT, entry: str = 'templates/index.html') -> str:
 
         return DIRECTIVE.sub(replace, text)
 
-    return bake_lobby(apply_hidden(expand(entry), root))
+    return apply_card_art(bake_lobby(apply_hidden(expand(entry), root)), root)
 
 
 def bake_lobby(html: str) -> str:
@@ -64,6 +65,43 @@ def bake_lobby(html: str) -> str:
         return (f'<button type="button" data-lobby-filter="{key}" aria-pressed="{match.group(2)}"{" hidden" if count == 0 else ""}>'
                 f'{match.group(3)}<span>{count}</span></button>')
     return re.sub(r'<button type="button" data-lobby-filter="([a-z]+)" aria-pressed="(true|false)">([^<]*)<span>\d+</span></button>', chip, html)
+
+
+def apply_card_art(html: str, root: Path = ROOT) -> str:
+    """Give each lobby card its artwork (see GAME_ICON_SPEC.md).
+
+    games/<id>/cover.webp  -> the whole card is that image (only the BONUS tag stays on top);
+    no cover yet            -> the game's original lobby icon fills the card (image only).
+    Attributes go after href so the catalog checks still find `class="game-card" href="#id"`.
+    """
+    def version(path: Path) -> str:
+        # content hash, so a replaced image gets a new URL and browsers stop showing the old one
+        return hashlib.sha1(path.read_bytes()).hexdigest()[:8]
+
+    def art(match):
+        gid = match.group(1)
+        cover = root / 'games' / gid / 'cover.webp'
+        if cover.is_file():
+            return f'{match.group(0)} data-art="cover" style="--cover:url(games/{gid}/cover.webp?v={version(cover)})"'
+        # no cover yet: the card shows the game's own lobby icon, image only
+        return f'{match.group(0)} data-art="icon"'
+    # hidden games are never shown, so they keep their `hidden data-game-hidden` right after href
+    html = re.sub(r'<a class="game-card" href="#([a-z0-9-]+)"(?! hidden data-game-hidden)', art, html)
+
+    # Sidebar "popular games" squares use the same art as the cards: the cover, else the card's own icon.
+    def quick(match):
+        gid = match.group(1)
+        cover = root / 'games' / gid / 'cover.webp'
+        if cover.is_file():
+            inner = f'<img src="games/{gid}/cover.webp?v={version(cover)}" alt="" loading="lazy" decoding="async">'
+        else:
+            card = re.search(r'<a class="game-card" href="#%s".*?<div class="game-card-icon[^"]*">(.*?)</div>' % re.escape(gid), html, re.S)
+            if not card:
+                return match.group(0)
+            inner = card.group(1)
+        opening = match.group(0)[:match.start(3) - match.start(0)]
+        return f'{opening}{inner}</a>'
+    return re.sub(r'<a class="side-quick-item" href="#([a-z0-9-]+)"([^>]*)>(.*?)</a>', quick, html, flags=re.S)
 
 
 def apply_hidden(html: str, root: Path = ROOT) -> str:
