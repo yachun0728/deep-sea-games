@@ -1083,6 +1083,10 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
   .top .header-tools{gap:6px}
   .top .language-switch button{padding:4px 7px;font-size:11px}
 }
+/* leaderboard: newest rotating row slides in */
+.board-table tbody tr.is-new{animation:board-in .45s ease-out}
+@keyframes board-in{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.board-table tbody tr.is-new{animation:none}}
 
 #view-blaster .bl-stage{display:grid;place-items:center;min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#061c2c}
 #bl-canvas{display:block;width:min(100%,400px);height:auto;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -2133,7 +2137,6 @@ html.frontier-immersive{overflow:hidden}
     <section class="lobby-board" aria-labelledby="board-title">
       <div class="lobby-row-head">
         <h2 id="board-title"><i class="fa-solid fa-trophy side-head-icon" aria-hidden="true"></i>排行榜</h2>
-        <select id="board-game" aria-label="選擇排行榜遊戲"></select>
       </div>
       <div class="board-panel">
         <table class="board-table">
@@ -8277,7 +8280,8 @@ html.frontier-immersive{overflow:hidden}
   "點一下翻格；手機長按插旗／取消，電腦按滑鼠右鍵。鍵盤按 F 也可插旗。": "Tap to reveal. Touch and hold to flag or unflag; right-click on desktop. Keyboard: press F on a cell.",
   "地雷在開局時隨機配置，第一格也可能踩雷。數字為周圍八格雷數，空白區自動展開，手機長按格子插旗或取消，電腦使用滑鼠右鍵；鍵盤聚焦格子後按 F 也可插旗。翻開全部安全格就獲勝，踩雷則結束。當地雷數為 N×N−1 時只有一格安全，只有翻到唯一的安全格才獲勝。": "Mines are placed randomly at the start; the first cell can contain a mine. Numbers show mines in the eight neighboring cells. Blank areas expand automatically. Touch and hold a cell to flag or unflag, or right-click on desktop. With keyboard focus on a cell, press F to flag. Reveal every safe cell to win; a mine ends the round. With N×N−1 mines, there is only one safe cell, and revealing it wins.",
   "翻開全部": "Reveal all",
-  "格安全區就過關。第一格也可能踩雷。": "safe cells to win. The first cell may contain a mine."
+  "格安全區就過關。第一格也可能踩雷。": "safe cells to win. The first cell may contain a mine.",
+  "目前尚無排行榜紀錄。": "No leaderboard scores yet."
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -22003,8 +22007,11 @@ function ftBuilding(b,w){
     var icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
     icon.setAttribute('viewBox', '0 0 96 96'); icon.setAttribute('aria-hidden', 'true'); use.setAttribute('href', '#icon-' + id); icon.appendChild(use); return icon;
   }
-  var boardRequest = null;
-  var boardGame = $('board-game');
+  // Leaderboard: every game with server-verified scores, merged into one table. Add a game here once
+  // its scores are verified by the backend (backend/src/routes/api.mjs).
+  var BOARD_GAMES = ['frog', 'mines'];
+  var BOARD_ROWS = 8, BOARD_TICK = 2500;
+  var boardRequest = null, boardTimer = 0, boardPool = [], boardTurn = 0, boardCursor = {};
   var boardRetry = $('board-retry');
 
   function boardRow(gameId, entry) {
@@ -22035,24 +22042,41 @@ function ftBuilding(b,w){
     boardRetry.hidden = !retry;
   }
 
+  // Each tick, the next game (round robin) puts its next best score at the top of the table.
+  function boardTick() {
+    if (document.hidden || $('view-lobby').hidden || !boardPool.length) return;
+    var pick = boardPool[boardTurn % boardPool.length]; boardTurn++;
+    var i = boardCursor[pick.gameId] || 0; boardCursor[pick.gameId] = (i + 1) % pick.entries.length;
+    var body = $('board-rows'), row = boardRow(pick.gameId, pick.entries[i]);
+    row.className = 'is-new'; body.insertBefore(row, body.firstChild);
+    while (body.children.length > BOARD_ROWS) body.removeChild(body.lastChild);
+  }
+
   async function boardLoad() {
     if (boardRequest) boardRequest.abort();
+    clearInterval(boardTimer); boardTimer = 0;
     var request = new AbortController();
     boardRequest = request;
-    var gameId = boardGame.value;
     var body = $('board-rows');
     body.replaceChildren();
     boardStatus('載入排行榜中…');
     var timeout = setTimeout(function () { request.abort(); }, 10000);
     try {
       var module = await import('./frontend/services/api.mjs');
-      var result = await module.createApiClient(module.arcadeApiOrigin()).leaderboard(gameId, request.signal);
+      var client = module.createApiClient(module.arcadeApiOrigin());
+      var games = BOARD_GAMES.filter(function (id) { return Object.hasOwn(VIEWS, id); });
+      var results = await Promise.all(games.map(function (id) { return client.leaderboard(id, request.signal); }));
       if (boardRequest !== request) return;
-      if (result.gameId !== gameId || !Array.isArray(result.entries)) throw new Error('invalid_leaderboard');
-
-      var rows = result.entries.map(function (entry) { return boardRow(gameId, entry); });
-      body.replaceChildren(...rows);
-      boardStatus(rows.length ? '' : '這款遊戲尚無排行榜紀錄。');
+      boardPool = results.filter(function (r) { return r && Array.isArray(r.entries) && r.entries.length; })
+        .map(function (r) { return { gameId: r.gameId, entries: r.entries }; });
+      boardTurn = 0; boardCursor = {};
+      // start with every game's scores together, highest first
+      var all = [];
+      boardPool.forEach(function (g) { g.entries.forEach(function (e) { all.push({ gameId: g.gameId, entry: e }); }); });
+      all.sort(function (x, y) { return y.entry.score - x.entry.score; });
+      body.replaceChildren.apply(body, all.slice(0, BOARD_ROWS).map(function (x) { return boardRow(x.gameId, x.entry); }));
+      boardStatus(all.length ? '' : '目前尚無排行榜紀錄。');
+      if (all.length) boardTimer = setInterval(boardTick, BOARD_TICK);
     } catch (error) {
       if (boardRequest === request) boardStatus('目前無法載入排行榜。', true);
     } finally {
@@ -22065,22 +22089,12 @@ function ftBuilding(b,w){
     if (!on) {
       if (boardRequest) boardRequest.abort();
       boardRequest = null;
+      clearInterval(boardTimer); boardTimer = 0;
       return;
     }
-    if (!boardGame.options.length) {
-      document.querySelectorAll('.lobby-grid .game-card:not([data-game-hidden])').forEach(function (card) {
-        var gameId = card.hash.slice(1);
-        if (Object.hasOwn(VIEWS, gameId)) boardGame.add(new Option(memberGameName(gameId), gameId));
-      });
-      if (Array.from(boardGame.options).some(function (option) { return option.value === 'frog'; })) {
-        boardGame.value = 'frog';
-      }
-    }
-    if (boardGame.value) boardLoad();
-    else boardStatus('這款遊戲尚無排行榜紀錄。');
+    boardLoad();
   }
 
-  boardGame.addEventListener('change', boardLoad);
   boardRetry.addEventListener('click', boardLoad);
 
   function memberRender() {

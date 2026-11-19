@@ -5007,5 +5007,6 @@
   "點一下翻格；手機長按插旗／取消，電腦按滑鼠右鍵。鍵盤按 F 也可插旗。": "Tap to reveal. Touch and hold to flag or unflag; right-click on desktop. Keyboard: press F on a cell.",
   "地雷在開局時隨機配置，第一格也可能踩雷。數字為周圍八格雷數，空白區自動展開，手機長按格子插旗或取消，電腦使用滑鼠右鍵；鍵盤聚焦格子後按 F 也可插旗。翻開全部安全格就獲勝，踩雷則結束。當地雷數為 N×N−1 時只有一格安全，只有翻到唯一的安全格才獲勝。": "Mines are placed randomly at the start; the first cell can contain a mine. Numbers show mines in the eight neighboring cells. Blank areas expand automatically. Touch and hold a cell to flag or unflag, or right-click on desktop. With keyboard focus on a cell, press F to flag. Reveal every safe cell to win; a mine ends the round. With N×N−1 mines, there is only one safe cell, and revealing it wins.",
   "翻開全部": "Reveal all",
-  "格安全區就過關。第一格也可能踩雷。": "safe cells to win. The first cell may contain a mine."
+  "格安全區就過關。第一格也可能踩雷。": "safe cells to win. The first cell may contain a mine.",
+  "目前尚無排行榜紀錄。": "No leaderboard scores yet."
 }
