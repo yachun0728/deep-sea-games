@@ -7,7 +7,7 @@
         <button type="button" class="market-sound" id="mk-sound" aria-pressed="false">音效</button>
       </div>
     </header>
-    <div class="market-status">
+    <div class="market-status" id="mk-status">
       <section class="market-character" id="mk-character" data-life="starter" aria-labelledby="mk-life-title">
         <img id="mk-portrait" src="games/market-desk/art/starter.webp" alt="" width="480" height="740" decoding="async" loading="lazy">
         <div class="market-character-copy" aria-live="polite">
@@ -42,7 +42,7 @@
         <div class="market-chart-footer"><span>開盤</span><span>收盤</span></div>
       </section>
     </div>
-    <div class="market-layout">
+    <div class="market-layout" id="mk-layout">
       <div class="market-paper">
         <div id="mk-intro">
           <h3>辭職後的第一張市場週報</h3>
@@ -69,13 +69,6 @@
             <button type="button" id="mk-next"></button>
           </div>
         </div>
-        <div id="mk-finish" hidden>
-          <h3 id="mk-ending" tabindex="-1"></h3>
-          <p id="mk-epilogue"></p>
-          <p id="mk-result"></p>
-          <p id="mk-final-market"></p>
-          <button type="button" id="mk-replay">再寫一份報告</button>
-        </div>
       </div>
       <aside class="market-brief">
         <dl><div><dt>查證分數</dt><dd id="mk-score">0</dd></div><div><dt>最佳紀錄</dt><dd id="mk-best">0</dd></div></dl>
@@ -84,5 +77,23 @@
         <details><summary>查證規則</summary><p>有可核對的資訊就刊登；缺乏佐證就暫緩；遇到冒名或索取帳密就示警。</p><p>正確加 5 分並回復 4 專注力，最高 100；錯誤扣 18 專注力。專注力歸零或做完 20 天即結束。免費遊玩。</p></details>
       </aside>
     </div>
+    <section class="market-finale" id="mk-finish" hidden aria-labelledby="mk-ending">
+      <div class="market-finale-bar">
+        <p id="mk-ending-status"></p>
+        <button type="button" id="mk-replay">下一輪</button>
+      </div>
+      <div class="market-finale-scene">
+        <div class="market-finale-copy">
+          <p class="market-ending-tag" id="mk-ending-tag"></p>
+          <h3 id="mk-ending" tabindex="-1"></h3>
+          <p id="mk-epilogue"></p>
+        </div>
+        <img id="mk-ending-art" alt="" decoding="async">
+      </div>
+      <div class="market-finale-summary">
+        <p id="mk-result"></p>
+        <p id="mk-final-market"></p>
+      </div>
+    </section>
   </div>
 </section>

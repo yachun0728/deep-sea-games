@@ -7,13 +7,13 @@
 - 網址：`#market-desk`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「20 個交易日，從台股怪新聞裡挖出可信的消息。」｜免費 · 不限次數 · 消息查證
 - 追蹤名稱（GA4 `game_name`）：收盤之前，`game_id` 為 `market-desk`
-- 檔案：`games/market-desk/card.html`、`games/market-desk/cases.js`、`games/market-desk/cover.webp`、`games/market-desk/game.js`、`games/market-desk/icon.svg`、`games/market-desk/style.css`、`games/market-desk/view.html`；`game.js` 共 334 行、15.2 KB
+- 檔案：`games/market-desk/card.html`、`games/market-desk/cases.js`、`games/market-desk/cover.webp`、`games/market-desk/game.js`、`games/market-desk/icon.svg`、`games/market-desk/style.css`、`games/market-desk/view.html`；`game.js` 共 354 行、16.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「49. 收盤之前 Closing Call（market-desk）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-market-desk`、`mk-day`、`mk-sound`、`mk-character`、`mk-portrait`、`mk-life-title`、`mk-life-story`、`mk-exchange`、`mk-index-label`、`mk-index`、`mk-change`、`mk-market-index`、`mk-market-change`、`mk-risk`、`mk-focus`、`mk-risk-meter`、`mk-risk-warning`、`mk-chart`、`mk-axis`、`mk-intro`、`mk-go`、`mk-case`、`mk-headline`、`mk-clue`、`mk-actions`、`mk-settling`、`mk-review`、`mk-reveal`、`mk-result-move`、`mk-life-shift`、`mk-verdict`、`mk-market-recap`、`mk-feedback`、`mk-next`、`mk-finish`、`mk-ending`、`mk-epilogue`、`mk-result`、`mk-final-market`、`mk-replay`、`mk-score`、`mk-best`、`mk-tape-label`、`mk-tape`
+`view-market-desk`、`mk-day`、`mk-sound`、`mk-status`、`mk-character`、`mk-portrait`、`mk-life-title`、`mk-life-story`、`mk-exchange`、`mk-index-label`、`mk-index`、`mk-change`、`mk-market-index`、`mk-market-change`、`mk-risk`、`mk-focus`、`mk-risk-meter`、`mk-risk-warning`、`mk-chart`、`mk-axis`、`mk-layout`、`mk-intro`、`mk-go`、`mk-case`、`mk-headline`、`mk-clue`、`mk-actions`、`mk-settling`、`mk-review`、`mk-reveal`、`mk-result-move`、`mk-life-shift`、`mk-verdict`、`mk-market-recap`、`mk-feedback`、`mk-next`、`mk-score`、`mk-best`、`mk-tape-label`、`mk-tape`、`mk-finish`、`mk-ending-status`、`mk-replay`、`mk-ending-tag`、`mk-ending`、`mk-epilogue`、`mk-ending-art`、`mk-result`、`mk-final-market`
 
 ## 狀態與常數
 
@@ -21,7 +21,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`lifeAt` L39、`portraitPath` L42、`paintCharacter` L45、`playBell` L64、`signedPercent` L82、`paintChart` L85、`percent` L95、`local` L122、`params` L125、`render` L128、`start` L197、`choose` L217、`reveal` L228、`next` L258
+`lifeAt` L41、`portraitPath` L44、`paintCharacter` L47、`playBell` L66、`signedPercent` L84、`paintChart` L87、`percent` L97、`local` L124、`params` L127、`render` L130、`renderFinale` L188、`start` L212、`choose` L232、`reveal` L243、`next` L273
 
 ## 錢包與結算接點
 
@@ -39,10 +39,10 @@
 
 ## 追蹤（GA4）
 
-- L213 `start`：`round = AN.start('market-desk', 0, params());`
-- L254 `reveal`：`AN.progress(round, params(), false);`
-- L268 `next`：`AN.end(round, 0, focus === 0 ? 'lose' : 'win', params());`
-- L290 `next`：`AN.end(round, 0, 'abandoned', params());`
+- L228 `start`：`round = AN.start('market-desk', 0, params());`
+- L269 `reveal`：`AN.progress(round, params(), false);`
+- L283 `next`：`AN.end(round, 0, focus === 0 ? 'lose' : 'win', params());`
+- L310 `next`：`AN.end(round, 0, 'abandoned', params());`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -60,13 +60,14 @@
 
 - 免費益智遊戲。玩家辭職後以 20 個交易日完成一份虛構市場查證報告。首版從原企劃改寫 20 個台股事件，每局打散順序。
 - 每日閱讀新聞與線索，選擇刊登可核對的事實、暫緩未獲佐證的消息，或針對明確詐騙跡象示警。事件有固定答案，選擇後可閱讀判斷理由。
-- 初始專注力 100。答對加 5 分並回復 4 專注力（上限 100），答錯扣 18 專注力。答完第 20 天或專注力歸零時查看結局。專注力歸零為「提早收工」；完成 20 天時，90 分起為「台股查證王牌」，70～89 分為「可靠的市場編輯」，其餘為「還在磨筆的菜鳥」。
+- 初始專注力 100。答對加 5 分並回復 4 專注力（上限 100），答錯扣 18 專注力。答完第 20 天或專注力歸零時查看結局。專注力歸零為「提早收工」。完成 20 天時，信心指數與開局差距在 40 以內為平收、低於開局超過 40 為失利。信心領先大盤至少 100 指數點時走大勝結局，追平大盤或領先較少時穩健收官。
 - 報告最高 100 分，結局確認時記錄本機最高分。離開遊戲或重新整理會結束當局。開局、選擇、結束均無平台點數交易或 BONUS。
 - 每天收盤以紅漲綠跌的 K 線展示虛構信心指數。阿澤信心指數從 1,000 起算。答對上升、連對時漲幅增加；暫緩已核實可刊登的資訊會依當天大盤小幅上揚或持平，其餘錯誤會下跌。信心指數不參與分數或點數結算。可自行開啟收盤音效。
 - 送出判斷後，盤面短暫顯示收盤撮合，再揭曉當日結果。啟用減少動態效果時立即揭曉。專注力剩 18 以下會提示再答錯一次即出局。
 - 劇情場景隨虛構信心指數在五個階段切換。1,090 起搬進新辦公室，1,230 起升至頂樓；960 以下開始靠泡麵過日子，860 以下進入低潮。場景隨後續表現可升可降，重玩從一般辦公桌開始。場景僅供敘事呈現。
 - 五種處境各有獨立插畫。跨越門檻時有短場景切換，收盤結果會標示升級或下滑，減少動態效果時直接換圖。手機遊戲卡直接開啟單欄直式配置；遊戲內的展開鍵只在頁內展開。
-- 虛構大盤從 1,000 起算，每題走勢固定且不受玩家選項影響。完成 20 天、阿澤信心指數未低於開局但落後大盤時，觸發「牛市裡的慢半拍」，並顯示兩者累計百分比。
+- 虛構大盤從 1,000 起算，每題走勢固定且不受玩家選項影響。完成 20 天、阿澤信心指數較開局上升超過 40、但落後大盤時，觸發「牛市裡的慢半拍」，並顯示兩者累計百分比。
+- 結局獨立呈現最後一幕和累計成績，上方「下一輪」直接開始新一局。
 
 ## 修改檢查清單
 

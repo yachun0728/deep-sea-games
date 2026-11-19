@@ -331,3 +331,94 @@ html[lang="en"] #site-shell:has(#tab-market-desk[aria-current]) #game-name > spa
 #view-market-desk #mk-market-change { color: var(--move); }
 #view-market-desk [data-move="mixed"] { --move: var(--amber); }
 #view-market-desk .market-reveal .market-market-recap { color: var(--muted); font-size: .84rem; }
+
+#view-market-desk .market-finale {
+  --closing-accent: #a7baff;
+  grid-column: 1 / -1;
+  scroll-margin-top: 84px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #080d16;
+}
+#view-market-desk .market-finale[data-result="triumph"] { --closing-accent: #ffce73; }
+#view-market-desk .market-finale:is([data-result="loss"], [data-result="exhausted"]) { --closing-accent: #8ccabb; }
+#view-market-desk .market-finale[data-result="even"] { --closing-accent: #d2dbe6; }
+#view-market-desk .market-finale-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px clamp(14px, 3vw, 30px);
+  border-bottom: 1px solid var(--line);
+}
+#view-market-desk .market-finale-bar p {
+  margin: 0;
+  color: var(--closing-accent);
+  font: 750 .85rem ui-monospace, monospace;
+}
+#view-market-desk #mk-replay {
+  flex: none;
+  min-height: 48px;
+  padding: 8px 18px;
+  border: 1px solid var(--amber);
+  border-radius: 8px;
+  background: var(--amber);
+  color: #261b09;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+#view-market-desk #mk-replay:hover { background: #ffdf9d; }
+#view-market-desk .market-finale-scene {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-items: center;
+  min-height: 330px;
+}
+#view-market-desk .market-finale-scene img {
+  position: absolute;
+  z-index: -1;
+  right: 0;
+  top: 0;
+  width: 56%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 43%;
+  mask-image: linear-gradient(to right, transparent, #000 32%);
+}
+#view-market-desk .market-finale-copy { max-width: 61%; padding: clamp(20px, 5vw, 58px); }
+#view-market-desk .market-finale-copy .market-ending-tag {
+  margin: 0 0 7px;
+  color: var(--closing-accent);
+  font-size: .86rem;
+  font-weight: 800;
+}
+#view-market-desk .market-finale-copy h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.85rem, 5vw, 3.65rem);
+  line-height: 1.12;
+}
+#view-market-desk #mk-ending:focus { outline: none; }
+#view-market-desk .market-finale-copy p { color: #d3dbe4; line-height: 1.65; margin: 12px 0 0; }
+#view-market-desk .market-finale-summary { padding: 13px clamp(14px, 3vw, 30px); border-top: 1px solid var(--line); }
+#view-market-desk .market-finale-summary p { margin: 4px 0; color: var(--muted); line-height: 1.5; }
+@media (min-width: 1021px) and (orientation: landscape) and (pointer: fine) {
+  #view-market-desk .market-shell:has(> .market-finale:not([hidden])) { width: 100%; max-width: 1020px; }
+  #view-market-desk .market-finale-copy { max-width: 55%; }
+}
+@media (max-width: 1020px), (pointer: coarse) {
+  #view-market-desk .market-finale-scene { min-height: 0; padding-top: clamp(120px, 46vw, 220px); }
+  #view-market-desk .market-finale-scene img {
+    width: 100%;
+    height: clamp(185px, 60vw, 285px);
+    mask-image: linear-gradient(to bottom, #000 56%, transparent);
+  }
+  #view-market-desk .market-finale-copy { max-width: none; padding: 16px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #view-market-desk .market-finale:not([hidden]) .market-finale-scene { animation: market-finale-fade .55s ease-out both; }
+}
+@keyframes market-finale-fade { from { opacity: .25; } to { opacity: 1; } }

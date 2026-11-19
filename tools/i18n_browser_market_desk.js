@@ -117,13 +117,20 @@
       }
       assert(text('mk-ending') === 'Closing Call Ace' && localStorage.getItem('deep-sea-market-desk-best') === '100',
         'Perfect report shows the top ending and saves the record');
+      const finale = get('mk-finish');
+      const replayButton = get('mk-replay');
+      assert(finale.dataset.result === 'triumph' && get('mk-status').hidden && get('mk-layout').hidden &&
+        text('mk-ending-status') === 'Day 20 · Final close' && text('mk-replay') === 'Next run' &&
+        replayButton.getBoundingClientRect().bottom <= get('mk-ending').getBoundingClientRect().top,
+        'A big finish replaces the game desk and puts Next run above the ending');
       assert(rounds.filter(event => event[0] === 'progress').length === 20 &&
         rounds.filter(event => event[0] === 'end').length === 1 && rounds.at(-1)[3] === 'win', 'A completed run tracks one end');
       i18n.setLanguage('zh-Hant');
-      assert(text('mk-ending') === '台股查證王牌' && text('mk-result').includes('100 / 100'), 'Completed result translates to Chinese');
+      assert(text('mk-ending') === '台股查證王牌' && text('mk-replay') === '下一輪' && text('mk-result').includes('100 / 100'), 'Completed result translates to Chinese');
       i18n.setLanguage('en');
       start('mk-replay');
-      assert(text('mk-index') === '1,000' && character.dataset.life === 'starter' && !character.dataset.shift,
+      assert(finale.hidden && text('mk-day') === 'Day 1 / 20' && text('mk-score') === '0' &&
+        text('mk-index') === '1,000' && character.dataset.life === 'starter' && !character.dataset.shift,
         'Replay resets both the index and the character scene');
       for (const [index, answer] of actions.slice(0, 6).entries()) {
         buttons[answer === 0 ? 2 : (answer + 1) % buttons.length].click();
@@ -149,7 +156,8 @@
         }
         get('mk-next').click();
       }
-      assert(text('mk-ending') === 'The Desk Goes Dark' && text('mk-focus') === '0' && rounds.at(-1)[3] === 'lose',
+      assert(text('mk-ending') === 'The Desk Goes Dark' && finale.dataset.result === 'exhausted' &&
+        text('mk-ending-status') === 'Day 6 · Run ended early' && text('mk-focus') === '0' && rounds.at(-1)[3] === 'lose',
         'Six errors exhaust focus and end the run');
       if (reducedMotion) {
         start('mk-replay');
@@ -175,6 +183,21 @@
         assert(text('mk-ending') === 'Left behind in a bull market' &&
           text('mk-final-market').includes('Fictional market +43.59%') && text('mk-score') === '70',
           'The benchmark is independent of choices, and underperformance gets a distinct ending');
+        const finalePaths = [
+          {misses: [0, 1, 4, 7, 10, 13, 16], result: 'even', tag: 'Flat finish'},
+          {misses: [0, 1, 4, 7, 10, 13, 16, 19], result: 'loss', tag: 'Finished down'},
+          {misses: [0, 1, 2, 5], result: 'steady', tag: 'Steady finish'}
+        ];
+        for (const path of finalePaths) {
+          start('mk-replay');
+          for (const [index, action] of actions.entries()) {
+            buttons[path.misses.includes(index) ? (action === 0 ? 2 : 0) : action].click();
+            await waitForClose();
+            get('mk-next').click();
+          }
+          assert(finale.dataset.result === path.result && text('mk-ending-tag') === path.tag &&
+            text('mk-ending-status') === 'Day 20 · Final close', path.tag + ' receives a dedicated final scene');
+        }
       }
       start('mk-replay');
       if (!reducedMotion) buttons[actions[0]].click();

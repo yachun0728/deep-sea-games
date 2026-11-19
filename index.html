@@ -2193,6 +2193,97 @@ html[lang="en"] #site-shell:has(#tab-market-desk[aria-current]) #game-name > spa
 #view-market-desk #mk-market-change { color: var(--move); }
 #view-market-desk [data-move="mixed"] { --move: var(--amber); }
 #view-market-desk .market-reveal .market-market-recap { color: var(--muted); font-size: .84rem; }
+
+#view-market-desk .market-finale {
+  --closing-accent: #a7baff;
+  grid-column: 1 / -1;
+  scroll-margin-top: 84px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #080d16;
+}
+#view-market-desk .market-finale[data-result="triumph"] { --closing-accent: #ffce73; }
+#view-market-desk .market-finale:is([data-result="loss"], [data-result="exhausted"]) { --closing-accent: #8ccabb; }
+#view-market-desk .market-finale[data-result="even"] { --closing-accent: #d2dbe6; }
+#view-market-desk .market-finale-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px clamp(14px, 3vw, 30px);
+  border-bottom: 1px solid var(--line);
+}
+#view-market-desk .market-finale-bar p {
+  margin: 0;
+  color: var(--closing-accent);
+  font: 750 .85rem ui-monospace, monospace;
+}
+#view-market-desk #mk-replay {
+  flex: none;
+  min-height: 48px;
+  padding: 8px 18px;
+  border: 1px solid var(--amber);
+  border-radius: 8px;
+  background: var(--amber);
+  color: #261b09;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+#view-market-desk #mk-replay:hover { background: #ffdf9d; }
+#view-market-desk .market-finale-scene {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-items: center;
+  min-height: 330px;
+}
+#view-market-desk .market-finale-scene img {
+  position: absolute;
+  z-index: -1;
+  right: 0;
+  top: 0;
+  width: 56%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 43%;
+  mask-image: linear-gradient(to right, transparent, #000 32%);
+}
+#view-market-desk .market-finale-copy { max-width: 61%; padding: clamp(20px, 5vw, 58px); }
+#view-market-desk .market-finale-copy .market-ending-tag {
+  margin: 0 0 7px;
+  color: var(--closing-accent);
+  font-size: .86rem;
+  font-weight: 800;
+}
+#view-market-desk .market-finale-copy h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.85rem, 5vw, 3.65rem);
+  line-height: 1.12;
+}
+#view-market-desk #mk-ending:focus { outline: none; }
+#view-market-desk .market-finale-copy p { color: #d3dbe4; line-height: 1.65; margin: 12px 0 0; }
+#view-market-desk .market-finale-summary { padding: 13px clamp(14px, 3vw, 30px); border-top: 1px solid var(--line); }
+#view-market-desk .market-finale-summary p { margin: 4px 0; color: var(--muted); line-height: 1.5; }
+@media (min-width: 1021px) and (orientation: landscape) and (pointer: fine) {
+  #view-market-desk .market-shell:has(> .market-finale:not([hidden])) { width: 100%; max-width: 1020px; }
+  #view-market-desk .market-finale-copy { max-width: 55%; }
+}
+@media (max-width: 1020px), (pointer: coarse) {
+  #view-market-desk .market-finale-scene { min-height: 0; padding-top: clamp(120px, 46vw, 220px); }
+  #view-market-desk .market-finale-scene img {
+    width: 100%;
+    height: clamp(185px, 60vw, 285px);
+    mask-image: linear-gradient(to bottom, #000 56%, transparent);
+  }
+  #view-market-desk .market-finale-copy { max-width: none; padding: 16px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #view-market-desk .market-finale:not([hidden]) .market-finale-scene { animation: market-finale-fade .55s ease-out both; }
+}
+@keyframes market-finale-fade { from { opacity: .25; } to { opacity: 1; } }
 #view-frontier{--ft-ink:#e9eddc;--ft-line:#ffffff1a;--ft-gold:#efce8b;color:var(--ft-ink)}
 #view-frontier .ft-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px;align-items:start}
 #view-frontier .ft-main{min-width:0;background:#142c2c;border:1px solid var(--ft-line);border-radius:20px;overflow:hidden;box-shadow:0 20px 60px #0003}
@@ -2531,7 +2622,7 @@ html.frontier-immersive{overflow:hidden}
         <button type="button" class="market-sound" id="mk-sound" aria-pressed="false">音效</button>
       </div>
     </header>
-    <div class="market-status">
+    <div class="market-status" id="mk-status">
       <section class="market-character" id="mk-character" data-life="starter" aria-labelledby="mk-life-title">
         <img id="mk-portrait" src="games/market-desk/art/starter.webp" alt="" width="480" height="740" decoding="async" loading="lazy">
         <div class="market-character-copy" aria-live="polite">
@@ -2566,7 +2657,7 @@ html.frontier-immersive{overflow:hidden}
         <div class="market-chart-footer"><span>開盤</span><span>收盤</span></div>
       </section>
     </div>
-    <div class="market-layout">
+    <div class="market-layout" id="mk-layout">
       <div class="market-paper">
         <div id="mk-intro">
           <h3>辭職後的第一張市場週報</h3>
@@ -2593,13 +2684,6 @@ html.frontier-immersive{overflow:hidden}
             <button type="button" id="mk-next"></button>
           </div>
         </div>
-        <div id="mk-finish" hidden>
-          <h3 id="mk-ending" tabindex="-1"></h3>
-          <p id="mk-epilogue"></p>
-          <p id="mk-result"></p>
-          <p id="mk-final-market"></p>
-          <button type="button" id="mk-replay">再寫一份報告</button>
-        </div>
       </div>
       <aside class="market-brief">
         <dl><div><dt>查證分數</dt><dd id="mk-score">0</dd></div><div><dt>最佳紀錄</dt><dd id="mk-best">0</dd></div></dl>
@@ -2608,6 +2692,24 @@ html.frontier-immersive{overflow:hidden}
         <details><summary>查證規則</summary><p>有可核對的資訊就刊登；缺乏佐證就暫緩；遇到冒名或索取帳密就示警。</p><p>正確加 5 分並回復 4 專注力，最高 100；錯誤扣 18 專注力。專注力歸零或做完 20 天即結束。免費遊玩。</p></details>
       </aside>
     </div>
+    <section class="market-finale" id="mk-finish" hidden aria-labelledby="mk-ending">
+      <div class="market-finale-bar">
+        <p id="mk-ending-status"></p>
+        <button type="button" id="mk-replay">下一輪</button>
+      </div>
+      <div class="market-finale-scene">
+        <div class="market-finale-copy">
+          <p class="market-ending-tag" id="mk-ending-tag"></p>
+          <h3 id="mk-ending" tabindex="-1"></h3>
+          <p id="mk-epilogue"></p>
+        </div>
+        <img id="mk-ending-art" alt="" decoding="async">
+      </div>
+      <div class="market-finale-summary">
+        <p id="mk-result"></p>
+        <p id="mk-final-market"></p>
+      </div>
+    </section>
   </div>
 </section>
 <section class="view" id="view-frontier" hidden><div class="ft-layout"><div class="ft-main" id="ft-main">
@@ -8930,7 +9032,23 @@ html.frontier-immersive{overflow:hidden}
   "在棋盤上：左右滑動移動 · 點一下旋轉 · 快速下滑落底 · 快速上滑暫存": "On the board: drag to move · tap to rotate · flick down to drop · flick up to hold",
   "改用手勢": "Use gestures",
   "改用按鈕": "Use buttons",
-  "電腦：方向鍵左右移動、上或 X 旋轉、Z 逆轉、下軟降、空白鍵硬降、C 暫存、P 暫停。手機：在棋盤上左右滑動移動、點一下旋轉、慢慢下拖軟降、快速下滑落底、快速上滑或點「暫存」格暫存；標題列可切換成按鈕操作。": "Computer: Left/Right to move, Up or X to rotate, Z to rotate back, Down to soft drop, Space to hard drop, C to hold, P to pause. Phone: drag left/right on the board to move, tap to rotate, drag slowly down to soft drop, flick down to hard drop, flick up or tap the Hold box to hold; use the switch in the title bar to change to buttons."
+  "電腦：方向鍵左右移動、上或 X 旋轉、Z 逆轉、下軟降、空白鍵硬降、C 暫存、P 暫停。手機：在棋盤上左右滑動移動、點一下旋轉、慢慢下拖軟降、快速下滑落底、快速上滑或點「暫存」格暫存；標題列可切換成按鈕操作。": "Computer: Left/Right to move, Up or X to rotate, Z to rotate back, Down to soft drop, Space to hard drop, C to hold, P to pause. Phone: drag left/right on the board to move, tap to rotate, drag slowly down to soft drop, flick down to hard drop, flick up or tap the Hold box to hold; use the switch in the title bar to change to buttons.",
+  "下一輪": "Next run",
+  "提前出局": "Early exit",
+  "最後一盞螢幕熄了。阿澤把這一輪沒寫完的報告存成草稿，拉下鐵門。": "The last monitor goes dark. A-Ze saves the unfinished report as a draft and pulls down the shutters.",
+  "收盤失利": "Finished down",
+  "帶著虧損收工": "Closing at a loss",
+  "撐到最後一聲鐘響，報告已經交出去。阿澤把下個月的預算重新算了一遍，晚餐還是泡麵。": "The bell rings and the report is in. A-Ze runs next month’s budget again. It’s instant noodles for dinner.",
+  "平盤收尾": "Flat finish",
+  "忙了二十天，回到原點": "Twenty days back to square one",
+  "打包好最後一份報告，阿澤算了算，差不多打平。今晚照舊走去巷口吃飯。": "After filing his last report, A-Ze adds it all up. He’s roughly where he started and heads to his usual dinner spot.",
+  "落後大盤": "Behind the market",
+  "大勝收官": "Big finish",
+  "最後一份報告登上財經週刊封面。阿澤在新辦公室關掉行情，留下一整面台北夜景。": "His final report makes the cover of the financial weekly. A-Ze switches off the ticker and takes in the Taipei skyline from his new office.",
+  "穩健收官": "Steady finish",
+  "報告準時送出。阿澤把桌面清空，在夕陽下喝完最後一口咖啡。": "The report goes out on time. A-Ze clears his desk and finishes his coffee in the sunset.",
+  "第 {0} 天・提早結束": "Day {0} · Run ended early",
+  "二十天・收盤結算": "Day 20 · Final close"
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -24164,12 +24282,14 @@ function ftBuilding(b,w){
     const bestKey = 'deep-sea-market-desk-best';
     const view = $('view-market-desk');
     const labels = ['刊登已核實資訊', '暫緩，等待佐證', '示警，提醒讀者'];
-    const endings = [
-      ['提早收工', '查證桌熄燈了。隔壁早餐店還在聊外星訂單，你決定先補個眠。'],
-      ['台股查證王牌', '你的報告上了財經週刊封面。早餐店阿姨把刊登更正的那一期貼在菜單旁。'],
-      ['可靠的市場編輯', '讀者把你的報告存在收藏夾。下次群組再傳明牌，他們會先來問你要來源。'],
-      ['還在磨筆的菜鳥', '報告趕上截稿，但編輯貼了整排便條紙。字最多的一張只寫了兩個字：來源？'],
-    ];
+    const endings = {
+      exhausted: ['提前出局', '提早收工', '最後一盞螢幕熄了。阿澤把這一輪沒寫完的報告存成草稿，拉下鐵門。', 'crisis'],
+      loss: ['收盤失利', '帶著虧損收工', '撐到最後一聲鐘響，報告已經交出去。阿澤把下個月的預算重新算了一遍，晚餐還是泡麵。', 'strained'],
+      even: ['平盤收尾', '忙了二十天，回到原點', '打包好最後一份報告，阿澤算了算，差不多打平。今晚照舊走去巷口吃飯。', 'starter'],
+      lagged: ['落後大盤', '牛市裡的慢半拍', '阿澤的報告有起色。同業都在慶祝搬進新辦公室，他卻把慶功晚餐換成了便利商店便當。', 'starter'],
+      triumph: ['大勝收官', '台股查證王牌', '最後一份報告登上財經週刊封面。阿澤在新辦公室關掉行情，留下一整面台北夜景。', 'penthouse'],
+      steady: ['穩健收官', '可靠的市場編輯', '報告準時送出。阿澤把桌面清空，在夕陽下喝完最後一口咖啡。', 'rising']
+    };
     let best = 0;
     try {
       const saved = Number(localStorage.getItem(bestKey));
@@ -24199,13 +24319,13 @@ function ftBuilding(b,w){
     function lifeAt(index) {
       return lifeStages.find(function (life) { return index >= life.min; });
     }
-    function portraitPath(stage) {
-      return 'games/market-desk/art/' + stage.id + '.webp';
+    function portraitPath(id) {
+      return 'games/market-desk/art/' + id + '.webp';
     }
     function paintCharacter() {
       const stage = lifeAt(closes.at(-1) ?? openingIndex);
       character.dataset.life = stage.id;
-      const path = portraitPath(stage);
+      const path = portraitPath(stage.id);
       if (portrait.getAttribute('src') !== path) portrait.src = path;
       const title = local(stage.title);
       const story = local(stage.story);
@@ -24293,6 +24413,8 @@ function ftBuilding(b,w){
       $('mk-intro').hidden = phase !== 'intro';
       $('mk-case').hidden = phase === 'intro' || finished;
       $('mk-finish').hidden = !finished;
+      $('mk-status').hidden = finished;
+      $('mk-layout').hidden = finished;
       $('mk-actions').hidden = reviewing || settling;
       $('mk-settling').hidden = !settling;
       exchange.classList.toggle('market-matching', settling);
@@ -24339,20 +24461,31 @@ function ftBuilding(b,w){
             local('查看結局') : local('下一個交易日');
         }
       }
-      if (finished) {
-        const close = closes.at(-1);
-        const lagged = focus > 0 && close >= openingIndex && close < market;
-        const [title, epilogue] = lagged ?
-          ['牛市裡的慢半拍', '阿澤的報告有起色。同業都在慶祝搬進新辦公室，他卻把慶功晚餐換成了便利商店便當。'] :
-          endings[focus === 0 ? 0 : score >= 90 ? 1 : score >= 70 ? 2 : 3];
-        $('mk-ending').textContent = local(title);
-        $('mk-epilogue').textContent = local(epilogue);
-        $('mk-result').textContent = local(
-          '你完成了 {0} 天的查證，答對 {1} 題，報告分數 {2} / 100。',
-          answers.length, score / 5, score);
-        $('mk-final-market').textContent = local('累計表現：阿澤信心 {0} ／ 虛構大盤 {1}',
-          signedPercent(100 * (close / openingIndex - 1)), signedPercent(100 * (market / openingIndex - 1)));
-      }
+      if (finished) renderFinale();
+    }
+    function renderFinale() {
+      const close = closes.at(-1);
+      const difference = close - openingIndex;
+      const result = focus === 0 ? 'exhausted' :
+        Math.abs(difference) <= 40 ? 'even' :
+        difference < 0 ? 'loss' :
+        close < market ? 'lagged' :
+        close >= market + 100 ? 'triumph' : 'steady';
+      const [tag, title, epilogue, art] = endings[result];
+      $('mk-finish').dataset.result = result;
+      const image = $('mk-ending-art');
+      const path = portraitPath(art);
+      if (image.getAttribute('src') !== path) image.src = path;
+      $('mk-ending-status').textContent = focus === 0 ?
+        local('第 {0} 天・提早結束', answers.length) : local('二十天・收盤結算');
+      $('mk-ending-tag').textContent = local(tag);
+      $('mk-ending').textContent = local(title);
+      $('mk-epilogue').textContent = local(epilogue);
+      $('mk-result').textContent = local(
+        '你完成了 {0} 天的查證，答對 {1} 題，報告分數 {2} / 100。',
+        answers.length, score / 5, score);
+      $('mk-final-market').textContent = local('累計表現：阿澤信心 {0} ／ 虛構大盤 {1}',
+        signedPercent(100 * difference / openingIndex), signedPercent(100 * (market / openingIndex - 1)));
     }
     function start() {
       if (round !== null || (phase !== 'intro' && phase !== 'finish') || view.hidden) return;
@@ -24431,7 +24564,12 @@ function ftBuilding(b,w){
         phase = 'case';
       }
       render();
-      $(phase === 'finish' ? 'mk-ending' : 'mk-headline').focus();
+      if (phase === 'finish') {
+        $('mk-finish').scrollIntoView({block: 'start'});
+        $('mk-ending').focus({preventScroll: true});
+      } else {
+        $('mk-headline').focus();
+      }
     }
 
     marketDeskRoute = function (active) {
@@ -24439,7 +24577,7 @@ function ftBuilding(b,w){
         if (!portraitsPreloaded) {
           portraitsPreloaded = true;
           lifeStages.forEach(function (stage) {
-            if (stage.id !== 'starter') new Image().src = portraitPath(stage);
+            if (stage.id !== 'starter') new Image().src = portraitPath(stage.id);
           });
         }
         return;

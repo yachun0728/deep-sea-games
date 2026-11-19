@@ -4,12 +4,14 @@
     const bestKey = 'deep-sea-market-desk-best';
     const view = $('view-market-desk');
     const labels = ['刊登已核實資訊', '暫緩，等待佐證', '示警，提醒讀者'];
-    const endings = [
-      ['提早收工', '查證桌熄燈了。隔壁早餐店還在聊外星訂單，你決定先補個眠。'],
-      ['台股查證王牌', '你的報告上了財經週刊封面。早餐店阿姨把刊登更正的那一期貼在菜單旁。'],
-      ['可靠的市場編輯', '讀者把你的報告存在收藏夾。下次群組再傳明牌，他們會先來問你要來源。'],
-      ['還在磨筆的菜鳥', '報告趕上截稿，但編輯貼了整排便條紙。字最多的一張只寫了兩個字：來源？'],
-    ];
+    const endings = {
+      exhausted: ['提前出局', '提早收工', '最後一盞螢幕熄了。阿澤把這一輪沒寫完的報告存成草稿，拉下鐵門。', 'crisis'],
+      loss: ['收盤失利', '帶著虧損收工', '撐到最後一聲鐘響，報告已經交出去。阿澤把下個月的預算重新算了一遍，晚餐還是泡麵。', 'strained'],
+      even: ['平盤收尾', '忙了二十天，回到原點', '打包好最後一份報告，阿澤算了算，差不多打平。今晚照舊走去巷口吃飯。', 'starter'],
+      lagged: ['落後大盤', '牛市裡的慢半拍', '阿澤的報告有起色。同業都在慶祝搬進新辦公室，他卻把慶功晚餐換成了便利商店便當。', 'starter'],
+      triumph: ['大勝收官', '台股查證王牌', '最後一份報告登上財經週刊封面。阿澤在新辦公室關掉行情，留下一整面台北夜景。', 'penthouse'],
+      steady: ['穩健收官', '可靠的市場編輯', '報告準時送出。阿澤把桌面清空，在夕陽下喝完最後一口咖啡。', 'rising']
+    };
     let best = 0;
     try {
       const saved = Number(localStorage.getItem(bestKey));
@@ -39,13 +41,13 @@
     function lifeAt(index) {
       return lifeStages.find(function (life) { return index >= life.min; });
     }
-    function portraitPath(stage) {
-      return 'games/market-desk/art/' + stage.id + '.webp';
+    function portraitPath(id) {
+      return 'games/market-desk/art/' + id + '.webp';
     }
     function paintCharacter() {
       const stage = lifeAt(closes.at(-1) ?? openingIndex);
       character.dataset.life = stage.id;
-      const path = portraitPath(stage);
+      const path = portraitPath(stage.id);
       if (portrait.getAttribute('src') !== path) portrait.src = path;
       const title = local(stage.title);
       const story = local(stage.story);
@@ -133,6 +135,8 @@
       $('mk-intro').hidden = phase !== 'intro';
       $('mk-case').hidden = phase === 'intro' || finished;
       $('mk-finish').hidden = !finished;
+      $('mk-status').hidden = finished;
+      $('mk-layout').hidden = finished;
       $('mk-actions').hidden = reviewing || settling;
       $('mk-settling').hidden = !settling;
       exchange.classList.toggle('market-matching', settling);
@@ -179,20 +183,31 @@
             local('查看結局') : local('下一個交易日');
         }
       }
-      if (finished) {
-        const close = closes.at(-1);
-        const lagged = focus > 0 && close >= openingIndex && close < market;
-        const [title, epilogue] = lagged ?
-          ['牛市裡的慢半拍', '阿澤的報告有起色。同業都在慶祝搬進新辦公室，他卻把慶功晚餐換成了便利商店便當。'] :
-          endings[focus === 0 ? 0 : score >= 90 ? 1 : score >= 70 ? 2 : 3];
-        $('mk-ending').textContent = local(title);
-        $('mk-epilogue').textContent = local(epilogue);
-        $('mk-result').textContent = local(
-          '你完成了 {0} 天的查證，答對 {1} 題，報告分數 {2} / 100。',
-          answers.length, score / 5, score);
-        $('mk-final-market').textContent = local('累計表現：阿澤信心 {0} ／ 虛構大盤 {1}',
-          signedPercent(100 * (close / openingIndex - 1)), signedPercent(100 * (market / openingIndex - 1)));
-      }
+      if (finished) renderFinale();
+    }
+    function renderFinale() {
+      const close = closes.at(-1);
+      const difference = close - openingIndex;
+      const result = focus === 0 ? 'exhausted' :
+        Math.abs(difference) <= 40 ? 'even' :
+        difference < 0 ? 'loss' :
+        close < market ? 'lagged' :
+        close >= market + 100 ? 'triumph' : 'steady';
+      const [tag, title, epilogue, art] = endings[result];
+      $('mk-finish').dataset.result = result;
+      const image = $('mk-ending-art');
+      const path = portraitPath(art);
+      if (image.getAttribute('src') !== path) image.src = path;
+      $('mk-ending-status').textContent = focus === 0 ?
+        local('第 {0} 天・提早結束', answers.length) : local('二十天・收盤結算');
+      $('mk-ending-tag').textContent = local(tag);
+      $('mk-ending').textContent = local(title);
+      $('mk-epilogue').textContent = local(epilogue);
+      $('mk-result').textContent = local(
+        '你完成了 {0} 天的查證，答對 {1} 題，報告分數 {2} / 100。',
+        answers.length, score / 5, score);
+      $('mk-final-market').textContent = local('累計表現：阿澤信心 {0} ／ 虛構大盤 {1}',
+        signedPercent(100 * difference / openingIndex), signedPercent(100 * (market / openingIndex - 1)));
     }
     function start() {
       if (round !== null || (phase !== 'intro' && phase !== 'finish') || view.hidden) return;
@@ -271,7 +286,12 @@
         phase = 'case';
       }
       render();
-      $(phase === 'finish' ? 'mk-ending' : 'mk-headline').focus();
+      if (phase === 'finish') {
+        $('mk-finish').scrollIntoView({block: 'start'});
+        $('mk-ending').focus({preventScroll: true});
+      } else {
+        $('mk-headline').focus();
+      }
     }
 
     marketDeskRoute = function (active) {
@@ -279,7 +299,7 @@
         if (!portraitsPreloaded) {
           portraitsPreloaded = true;
           lifeStages.forEach(function (stage) {
-            if (stage.id !== 'starter') new Image().src = portraitPath(stage);
+            if (stage.id !== 'starter') new Image().src = portraitPath(stage.id);
           });
         }
         return;

@@ -5180,5 +5180,21 @@
   "在棋盤上：左右滑動移動 · 點一下旋轉 · 快速下滑落底 · 快速上滑暫存": "On the board: drag to move · tap to rotate · flick down to drop · flick up to hold",
   "改用手勢": "Use gestures",
   "改用按鈕": "Use buttons",
-  "電腦：方向鍵左右移動、上或 X 旋轉、Z 逆轉、下軟降、空白鍵硬降、C 暫存、P 暫停。手機：在棋盤上左右滑動移動、點一下旋轉、慢慢下拖軟降、快速下滑落底、快速上滑或點「暫存」格暫存；標題列可切換成按鈕操作。": "Computer: Left/Right to move, Up or X to rotate, Z to rotate back, Down to soft drop, Space to hard drop, C to hold, P to pause. Phone: drag left/right on the board to move, tap to rotate, drag slowly down to soft drop, flick down to hard drop, flick up or tap the Hold box to hold; use the switch in the title bar to change to buttons."
+  "電腦：方向鍵左右移動、上或 X 旋轉、Z 逆轉、下軟降、空白鍵硬降、C 暫存、P 暫停。手機：在棋盤上左右滑動移動、點一下旋轉、慢慢下拖軟降、快速下滑落底、快速上滑或點「暫存」格暫存；標題列可切換成按鈕操作。": "Computer: Left/Right to move, Up or X to rotate, Z to rotate back, Down to soft drop, Space to hard drop, C to hold, P to pause. Phone: drag left/right on the board to move, tap to rotate, drag slowly down to soft drop, flick down to hard drop, flick up or tap the Hold box to hold; use the switch in the title bar to change to buttons.",
+  "下一輪": "Next run",
+  "提前出局": "Early exit",
+  "最後一盞螢幕熄了。阿澤把這一輪沒寫完的報告存成草稿，拉下鐵門。": "The last monitor goes dark. A-Ze saves the unfinished report as a draft and pulls down the shutters.",
+  "收盤失利": "Finished down",
+  "帶著虧損收工": "Closing at a loss",
+  "撐到最後一聲鐘響，報告已經交出去。阿澤把下個月的預算重新算了一遍，晚餐還是泡麵。": "The bell rings and the report is in. A-Ze runs next month’s budget again. It’s instant noodles for dinner.",
+  "平盤收尾": "Flat finish",
+  "忙了二十天，回到原點": "Twenty days back to square one",
+  "打包好最後一份報告，阿澤算了算，差不多打平。今晚照舊走去巷口吃飯。": "After filing his last report, A-Ze adds it all up. He’s roughly where he started and heads to his usual dinner spot.",
+  "落後大盤": "Behind the market",
+  "大勝收官": "Big finish",
+  "最後一份報告登上財經週刊封面。阿澤在新辦公室關掉行情，留下一整面台北夜景。": "His final report makes the cover of the financial weekly. A-Ze switches off the ticker and takes in the Taipei skyline from his new office.",
+  "穩健收官": "Steady finish",
+  "報告準時送出。阿澤把桌面清空，在夕陽下喝完最後一口咖啡。": "The report goes out on time. A-Ze clears his desk and finishes his coffee in the sunset.",
+  "第 {0} 天・提早結束": "Day {0} · Run ended early",
+  "二十天・收盤結算": "Day 20 · Final close"
 }
