@@ -5036,7 +5036,6 @@
   "等級": "Level",
   "軟降": "Soft drop",
   "逆轉": "Rotate back",
-  "方向鍵左右移動、上或 X 旋轉、Z 逆轉、下軟降、空白鍵硬降、C 暫存、P 暫停；手機用下方按鈕。": "Left/Right to move, Up or X to rotate, Z to rotate back, Down to soft drop, Space to hard drop, C to hold, P to pause. On phones use the buttons below.",
   "經典俄羅斯方塊：七種方塊用 7-bag 洗牌隨機出現，旋轉採用 SRS 規則並支援牆踢。把一整排填滿就會消除，一次消越多行得分越高，每消除 10 行升一級，方塊掉得更快。可以把方塊暫存起來，每放下一塊才能再暫存一次。方塊堆到頂端放不下就結束。": "Classic falling-block puzzle: the seven pieces come out in a shuffled 7-bag order, rotation follows the SRS rules and supports wall kicks. Fill a whole row to clear it; clearing more rows at once scores more, and every 10 lines raises the level so pieces fall faster. You can hold a piece, but only once per dropped piece. The game ends when the stack reaches the top and no piece fits.",
   "經典落塊消行，旋轉、牆踢與暫存都有。": "Classic falling blocks with SRS rotation, wall kicks and hold.",
   "行 · 等級": "lines · Level",
@@ -5177,5 +5176,9 @@
   "阿澤的報告有起色。同業都在慶祝搬進新辦公室，他卻把慶功晚餐換成了便利商店便當。": "A-Ze’s reporting improved. His peers are celebrating their new offices, and he swaps his celebratory dinner for a convenience-store meal.",
   "累計表現：阿澤信心 {0} ／ 虛構大盤 {1}": "Total: A-Ze’s confidence {0} / Fictional market {1}",
   "稽查公告和廠商聲明列出相同的回收批次，並公布受影響的門市。未受影響的批次仍正常販售。": "The inspection and company notices agree on the recalled batch and affected stores. Other batches are still on shelves.",
-  "可即時刊登已核對的回收批次和門市，避免讓讀者誤以為所有產品都要下架。": "Publish the verified recall now and name the affected batch and stores so readers know what is still safe to buy."
+  "可即時刊登已核對的回收批次和門市，避免讓讀者誤以為所有產品都要下架。": "Publish the verified recall now and name the affected batch and stores so readers know what is still safe to buy.",
+  "在棋盤上：左右滑動移動 · 點一下旋轉 · 快速下滑落底 · 快速上滑暫存": "On the board: drag to move · tap to rotate · flick down to drop · flick up to hold",
+  "改用手勢": "Use gestures",
+  "改用按鈕": "Use buttons",
+  "電腦：方向鍵左右移動、上或 X 旋轉、Z 逆轉、下軟降、空白鍵硬降、C 暫存、P 暫停。手機：在棋盤上左右滑動移動、點一下旋轉、慢慢下拖軟降、快速下滑落底、快速上滑或點「暫存」格暫存；標題列可切換成按鈕操作。": "Computer: Left/Right to move, Up or X to rotate, Z to rotate back, Down to soft drop, Space to hard drop, C to hold, P to pause. Phone: drag left/right on the board to move, tap to rotate, drag slowly down to soft drop, flick down to hard drop, flick up or tap the Hold box to hold; use the switch in the title bar to change to buttons."
 }
