@@ -7,7 +7,7 @@
 - 網址：`#pancake`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。」｜立即開玩 · 只扣入場點數
 - 追蹤名稱（GA4 `game_name`）：泡麵煎餅翻面，`game_id` 為 `pancake`
-- 檔案：`games/pancake/card.html`、`games/pancake/game.js`、`games/pancake/icon.svg`、`games/pancake/original.html`、`games/pancake/style.css`、`games/pancake/view.html`；`game.js` 共 43 行、3.0 KB
+- 檔案：`games/pancake/card.html`、`games/pancake/cover.webp`、`games/pancake/game.js`、`games/pancake/icon.svg`、`games/pancake/original.html`、`games/pancake/style.css`、`games/pancake/view.html`；`game.js` 共 43 行、3.0 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「25. 泡麵煎餅翻面 Noodle Pancake（pancake）」（下方「規則摘要」已複製）
 
