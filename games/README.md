@@ -5,7 +5,7 @@
 | 遊戲 | hash | 分類 | 狀態 | game.js | 說明 |
 | --- | --- | --- | --- | --- | --- |
 | [壓潰深度 Crush Depth](crash/README.md) | `#crash` | 機率挑戰 | 隱藏 | 235 行 | 隨潛艇一起下潛，在壓潰前上浮。 |
-| [踩地雷 Minesweeper](mines/README.md) | `#mines` | 免費懷舊 | 顯示 | 165 行 | 低中高難度或自訂棋盤，重溫經典踩地雷。 |
+| [踩地雷 Minesweeper](mines/README.md) | `#mines` | 免費懷舊 | 顯示 | 189 行 | 低中高難度或自訂棋盤，重溫經典踩地雷。 |
 | [落珠 Pearl Drop](plinko/README.md) | `#plinko` | 機率挑戰 | 隱藏 | 133 行 | 投下珍珠，看它穿過釘陣落在哪一格。 |
 | [養珠 Pearl Merge](merge/README.md) | `#merge` | 益智策略 | 顯示 | 90 行 | 滑動合併珍珠，養出更大的數字。 |
 | [測深 Sonar Dice](dice/README.md) | `#dice` | 機率挑戰 | 隱藏 | 65 行 | 設定聲納讀數範圍，等待海底回音。 |

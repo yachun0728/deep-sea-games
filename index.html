@@ -1138,8 +1138,6 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 #view-mines .tile.mine { background: #f1a38b; border-color: #cc6754; box-shadow: inset 0 2px 4px #9c3e3a44; }
 #view-mines .tile svg { width: 72%; height: 72%; display: block; }
 #view-mines .tile:focus-visible { outline: 3px solid #ffe08c; outline-offset: 2px; }
-#view-mines #mines-flag { width: 100%; min-height: 44px; white-space: normal; }
-#view-mines #mines-flag[aria-pressed="true"] { color: #ffe0a5; border-color: #ed8f69; background: #533c30; }
 
 #view-mines .board-wrap { overflow-x: auto; display: block; }
 #view-mines .board { margin: auto; width: 100%; max-width: 560px; }
@@ -1147,15 +1145,14 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 
 #view-mines select, #view-mines #mines-custom input { width:100%; min-height:44px; padding:8px; border:1px solid var(--line); border-radius:8px; background:var(--panel-2); color:var(--fg); font:inherit; }
 
-/* Keep the original flag control visible immediately above the board. */
 #view-mines .mines-stage{min-width:0}
 #view-mines .mines-board-tools{display:flex;margin-bottom:10px}
-#view-mines #mines-flag{font-weight:700;border:1px solid var(--glow);color:var(--glow);background:var(--panel);padding:10px 14px}
-#view-mines #mines-flag:disabled{opacity:.65}
-#view-mines #mines-flag[aria-pressed="true"]{color:#ffe0a5;border-color:#ed8f69;background:#533c30}
 
 #view-mines .mines-board-tools{flex-direction:column;gap:6px}
 #view-mines .mines-chord-hint{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+#view-mines .mines-settings{margin-bottom:16px}
+#view-mines .mines-input-hint{margin:0;font-size:13px;line-height:1.6}
+#view-mines .tile{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;touch-action:pan-x pan-y}
 
 #view-keno .kboard { grid-template-columns: repeat(6, minmax(44px, 1fr)); min-width: 294px; max-width: 480px; margin: auto; gap: 6px; }
 #view-keno .keno-stage { overflow-x: auto; background: radial-gradient(ellipse at top,#534538,#1a211f); }
@@ -2227,11 +2224,12 @@ html.frontier-immersive{overflow:hidden}
   </section>
 
   <section class="view" id="view-mines" hidden>
-    <div class="console"><div class="mines-stage"><div class="mines-board-tools" role="group" aria-label="翻格與插旗"><button class="chip" id="mines-flag" type="button" aria-pressed="false" disabled>翻格模式（點此改插旗）</button><p class="mines-chord-hint">插旗數等於數字時，點數字快開周圍；旗子插錯仍會踩雷。</p></div><div class="board-wrap"><div class="board" id="board" role="group" aria-label="5 乘 5 排雷棋盤"></div></div></div>
+    <section class="panel mines-settings" aria-label="踩地雷設定">        <div class="field"><label for="mines-difficulty">難度</label><select id="mines-difficulty"><option value="low">低 · 5×5／3 雷</option><option value="medium">中 · 8×8／10 雷</option><option value="high">高 · 10×10／20 雷</option><option value="custom">自訂棋盤與地雷</option></select></div>
+        <div id="mines-custom" hidden><div class="field"><label for="mines-size">棋盤邊長 N（2～10）</label><input id="mines-size" type="number" min="2" max="10" step="1" value="5" inputmode="numeric"></div><div class="field"><label for="mines-bombs" id="mines-bomb-limit">地雷數：1～24（N×N−1）</label><input id="mines-bombs" type="number" min="1" max="24" step="1" value="3" inputmode="numeric"></div></div></section>
+    <div class="console"><div class="mines-stage"><div class="mines-board-tools" role="group" aria-label="翻格與插旗"><p class="mines-input-hint">點一下翻格；手機長按插旗／取消，電腦按滑鼠右鍵。鍵盤按 F 也可插旗。</p><p class="mines-chord-hint">插旗數等於數字時，點數字快開周圍；旗子插錯仍會踩雷。</p></div><div class="board-wrap"><div class="board" id="board" role="group" aria-label="5 乘 5 排雷棋盤"></div></div></div>
       <div class="side"><section class="panel" aria-label="踩地雷操作">
         <p>經典小遊戲 · 不限次數</p>
-        <div class="field"><label for="mines-difficulty">難度</label><select id="mines-difficulty"><option value="low">低 · 5×5／3 雷</option><option value="medium">中 · 8×8／10 雷</option><option value="high">高 · 10×10／20 雷</option><option value="custom">自訂棋盤與地雷</option></select></div>
-        <div id="mines-custom" hidden><div class="field"><label for="mines-size">棋盤邊長 N（2～10）</label><input id="mines-size" type="number" min="2" max="10" step="1" value="5" inputmode="numeric"></div><div class="field"><label for="mines-bombs" id="mines-bomb-limit">地雷數：1～24（N×N−1）</label><input id="mines-bombs" type="number" min="1" max="24" step="1" value="3" inputmode="numeric"></div></div><p id="mines-level">5×5 · 3 雷</p>
+<p id="mines-level">5×5 · 3 雷</p>
         <dl class="stats"><div><dt>剩餘安全格</dt><dd id="mines-left">22 格</dd></div><div><dt>已插旗</dt><dd id="mines-flags">0 / 3</dd></div><div><dt>安全格總數</dt><dd id="mines-best">22 格</dd></div></dl>
         <button class="go" id="mines-go" type="button" data-mode="start">開始踩地雷</button>
         <p class="msg" id="mines-msg" aria-live="polite">翻開全部 22 格安全區就過關。第一格也可能踩雷。</p>
@@ -2239,7 +2237,7 @@ html.frontier-immersive{overflow:hidden}
         <button type="button" id="mines-rank-retry" hidden>重送排雷操作</button>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法說明</summary><p>選擇低（5×5、3 雷）、中（8×8、10 雷）、高（10×10、20 雷），或自訂 N×N 棋盤。N 為 2～10 的整數，地雷數為 1～N×N−1；進行中不能更改設定，每局結束後可重新選擇。</p><p>地雷在開局時隨機配置，第一格也可能踩雷。數字為周圍八格雷數，空白區自動展開，可切換插旗模式或右鍵插旗。翻開全部安全格就獲勝，踩雷則結束。當地雷數為 N×N−1 時只有一格安全，只有翻到唯一的安全格才獲勝。</p><p>不限次數，另依平台規則累積遊玩點數；大棋盤可水平捲動。重新整理會放棄本局，可隨時重新開始。</p></details>
+    <details class="rules"><summary>玩法說明</summary><p>選擇低（5×5、3 雷）、中（8×8、10 雷）、高（10×10、20 雷），或自訂 N×N 棋盤。N 為 2～10 的整數，地雷數為 1～N×N−1；進行中不能更改設定，每局結束後可重新選擇。</p><p>地雷在開局時隨機配置，第一格也可能踩雷。數字為周圍八格雷數，空白區自動展開，手機長按格子插旗或取消，電腦使用滑鼠右鍵；鍵盤聚焦格子後按 F 也可插旗。翻開全部安全格就獲勝，踩雷則結束。當地雷數為 N×N−1 時只有一格安全，只有翻到唯一的安全格才獲勝。</p><p>不限次數，另依平台規則累積遊玩點數；大棋盤可水平捲動。重新整理會放棄本局，可隨時重新開始。</p></details>
 </section>
   <section class="view" id="view-plinko" hidden>
     <div class="console">
@@ -8268,7 +8266,12 @@ html.frontier-immersive{overflow:hidden}
   "正在驗證排雷操作…": "Verifying move…",
   "排行榜回合已中斷，請再開一局。": "The ranked round ended. Start a new round.",
   "排雷操作未能送出。": "Unable to submit the move.",
-  "重送排雷操作": "Retry move"
+  "重送排雷操作": "Retry move",
+  "踩地雷設定": "Minesweeper settings",
+  "點一下翻格；手機長按插旗／取消，電腦按滑鼠右鍵。鍵盤按 F 也可插旗。": "Tap to reveal. Touch and hold to flag or unflag; right-click on desktop. Keyboard: press F on a cell.",
+  "地雷在開局時隨機配置，第一格也可能踩雷。數字為周圍八格雷數，空白區自動展開，手機長按格子插旗或取消，電腦使用滑鼠右鍵；鍵盤聚焦格子後按 F 也可插旗。翻開全部安全格就獲勝，踩雷則結束。當地雷數為 N×N−1 時只有一格安全，只有翻到唯一的安全格才獲勝。": "Mines are placed randomly at the start; the first cell can contain a mine. Numbers show mines in the eight neighboring cells. Blank areas expand automatically. Touch and hold a cell to flag or unflag, or right-click on desktop. With keyboard focus on a cell, press F to flag. Reveal every safe cell to win; a mine ends the round. With N×N−1 mines, there is only one safe cell, and revealing it wins.",
+  "翻開全部": "Reveal all",
+  "格安全區就過關。第一格也可能踩雷。": "safe cells to win. The first cell may contain a mine."
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -8837,7 +8840,7 @@ if (typeof module !== 'undefined') module.exports = minesRules;
   /* ---------- Mines: classic puzzle ---------- */
   var N = 25;
   var M_PRESETS = {low:[5,3],medium:[8,10],high:[10,20]};
-  var M = { active: false, over: false, mines: 3, layout: [], open: [], flags: [], picks: 0, flagMode: false, ready: false, best: 0, level: 1, size: 5, checkpoint: false, bestLevel: 0 };
+  var M = { active: false, over: false, mines: 3, layout: [], open: [], flags: [], picks: 0, ready: false, best: 0, level: 1, size: 5, checkpoint: false, bestLevel: 0 };
   var elBoard = $('board'), elMGo = $('mines-go'), elMMsg = $('mines-msg'), tiles = [];
   function mSay(text, cls) { elMMsg.textContent = text; elMMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
   // Shared wallet refresh is also used by the other games.
@@ -8850,7 +8853,29 @@ if (typeof module !== 'undefined') module.exports = minesRules;
     status.hidden = !text;
     $('mines-rank-retry').hidden = !retry;
   }
+  var cancelMinePress = function(){};
+  function bindMineTile(button, cell) {
+    var timer=null, pointer=null, x=0, y=0, blocked=false, touch=false;
+    function cancel(){if(timer!==null)clearTimeout(timer);timer=null;pointer=null;}
+    button.addEventListener('pointerdown',function(e){
+      cancelMinePress(); cancel(); blocked=false; touch=e.pointerType==='touch'||e.pointerType==='pen';
+      if(!touch||e.button!==0||e.isPrimary===false||!M.active||M.open[cell]||minePending)return;
+      pointer=e.pointerId;x=e.clientX;y=e.clientY;cancelMinePress=cancel;
+      timer=setTimeout(function(){timer=null;blocked=true;mineFlag(cell);},500);
+    });
+    button.addEventListener('pointermove',function(e){if(pointer===e.pointerId&&Math.hypot(e.clientX-x,e.clientY-y)>10){blocked=true;cancel();}});
+    button.addEventListener('pointerup',cancel);
+    button.addEventListener('pointerleave',function(){if(pointer!==null){blocked=true;cancel();}});
+    button.addEventListener('pointercancel',function(){blocked=true;cancel();});
+    button.addEventListener('lostpointercapture',cancel);
+    button.addEventListener('click',function(e){if(blocked){blocked=false;e.preventDefault();return;}pick(cell);});
+    button.addEventListener('contextmenu',function(e){e.preventDefault();if(!touch){cancel();mineFlag(cell);}});
+    button.addEventListener('keydown',function(e){if(e.key.toLowerCase()==='f'&&!e.repeat){e.preventDefault();mineFlag(cell);}});
+  }
+  window.addEventListener('blur',function(){cancelMinePress();});
+  document.addEventListener('visibilitychange',function(){if(document.hidden)cancelMinePress();});
   function buildBoard() {
+    cancelMinePress();
     try { var best = Number(localStorage.getItem('deep-sea-mines-best')); M.best = Number.isSafeInteger(best) && best >= 0 && best <= 22 ? best : 0; M.bestLevel = Number(localStorage.getItem('deep-sea-mines-level-best')) || 0; } catch (e) {}
     elBoard.innerHTML = ''; tiles = [];
     elBoard.style.gridTemplateColumns = 'repeat(' + M.size + ', minmax(44px, 1fr))';
@@ -8858,8 +8883,7 @@ if (typeof module !== 'undefined') module.exports = minesRules;
     elBoard.setAttribute('aria-label', M.size + ' 乘 ' + M.size + ' 排雷棋盤');
     for (var i = 0; i < N; i++) {
       var b = document.createElement('button'); b.type = 'button'; b.className = 'tile';
-      b.addEventListener('click', pick.bind(null, i));
-      b.addEventListener('contextmenu', (function (n) { return function (e) { e.preventDefault(); mineFlag(n); }; })(i));
+      bindMineTile(b, i);
       elBoard.appendChild(b); tiles.push(b);
     }
   }
@@ -8877,9 +8901,6 @@ if (typeof module !== 'undefined') module.exports = minesRules;
     $('mines-flags').textContent = M.flags.filter(Boolean).length + ' / ' + M.mines;
     $('mines-best').textContent = (N - M.mines) + ' 格';
     ['mines-difficulty','mines-size','mines-bombs'].forEach(function(id){$(id).disabled=M.active||mineStarting;});
-    $('mines-flag').disabled = !M.active || M.checkpoint || !!minePending;
-    $('mines-flag').setAttribute('aria-pressed', String(M.flagMode));
-    $('mines-flag').textContent = M.flagMode ? '⚑ 插旗模式（點此改翻格）' : '翻格模式（點此改插旗）';
     $('mines-level').textContent = M.size + '×' + M.size + ' · ' + M.mines + ' 雷';
     elMGo.disabled = M.active || mineStarting; elMGo.dataset.mode = M.active ? 'playing' : 'start';
     elMGo.innerHTML = M.active ? '找出全部安全格' : (M.over ? '再玩一局' : '開始踩地雷') + '<small>不限次數</small>';
@@ -8889,7 +8910,7 @@ if (typeof module !== 'undefined') module.exports = minesRules;
     N = size * size;
     Object.assign(M, round ? {size:size,mines:bombs,layout:[],open:[],flags:[],picks:0,result:null}
       : minesRules.create(size,bombs));
-    M.active = true; M.over = false; M.level = 1; M.flagMode = false; M.checkpoint = false;
+    M.active = true; M.over = false; M.level = 1; M.checkpoint = false;
     M.analytics = AN.start('mines', 0);
     buildBoard(); renderMines();
     mSay('棋盤：' + M.size + '×' + M.size + '，' + M.mines + ' 顆雷，第一格也可能踩雷。');
@@ -8983,20 +9004,26 @@ if (typeof module !== 'undefined') module.exports = minesRules;
   }
 
   function mineFlag(i) { mineMove('flag',i); }
-  function pick(i) { mineMove(M.flagMode&&!M.open[i]?'flag':'open',i); }
+  function pick(i) { mineMove('open',i); }
   $('mines-rank-retry').addEventListener('click',sendMineMove);
   elMGo.addEventListener('click', startMines);
-  $('mines-flag').addEventListener('click', function () { if (!M.active) return; M.flagMode = !M.flagMode; renderMines(); });
 
   function mineSettings(){
+    if(M.active||mineStarting)return;
     var mode=$('mines-difficulty').value,spec=M_PRESETS[mode];
     $('mines-custom').hidden=!!spec;
     if(spec){$('mines-size').value=spec[0];$('mines-bombs').value=spec[1];}
     var size=Number($('mines-size').value),max=Number.isInteger(size)&&size>=2&&size<=10?size*size-1:99;
     $('mines-bombs').max=max;$('mines-bomb-limit').textContent='地雷數：1～'+max+'（N×N−1）';
+    var bombs=Number($('mines-bombs').value);
+    if(Number.isInteger(size)&&size>=2&&size<=10&&Number.isInteger(bombs)&&bombs>=1&&bombs<size*size){
+      mineRound=null;N=size*size;Object.assign(M,{size:size,mines:bombs,layout:[],open:[],flags:[],picks:0,over:false,result:null});
+      buildBoard();renderMines();mSay('翻開全部 '+(N-bombs)+' 格安全區就過關。第一格也可能踩雷。');
+    }
   }
   $('mines-difficulty').addEventListener('change',function(){if(!M.active)mineSettings();});
   $('mines-size').addEventListener('input',function(){if(!M.active)mineSettings();});
+  $('mines-bombs').addEventListener('input',function(){if(!M.active)mineSettings();});
   mineSettings();
   /* ---------- Plinko ---------- */
   var RISK = { low: { c: 0.5, p: 2 }, mid: { c: 0.4, p: 4 }, high: { c: 0.2, p: 6 } };
