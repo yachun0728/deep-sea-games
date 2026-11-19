@@ -3,6 +3,7 @@
   (function(){
     'use strict';
     {{include:games/frontier/world.js}}
+    {{include:shared/frontier-rules.cjs}}
     {{include:games/frontier/draw.js}}
     var canvas=$('ft-canvas'),ctx=canvas.getContext('2d'),world=null;
     var paid=false,cleared=0,paused=true,round=null,visible=false,last=0,saveAt=0,uiAt=0,pendingLevel=0;
@@ -27,6 +28,52 @@
       return steps;
     }
     function warTip(w){return w.cfg.war?'\n\n提示：箭塔會守護大本營，但也會被怪攻擊，受損後靠近用木材修復。主角不能攻擊對手大本營，只有戰士可以。守備營在大本營旁訓練守衛，橋東的戰士營訓練進攻戰士，站在戰士營、守備營或工人小屋旁可花資源升級，最高到滿級；敵人偶爾會來攻擊戰士營，最多把它打回最低級。木材廠、採石場、倉庫蓋好後會增加背包容量。工人小屋的村民會自動砍樹採石，把資源丟在地上，走過去就能撿起來。':'';}
+
+    var ranking=null,rankStarting=false,rankSending=false,rankActions=[],rankTicks=0,rankCarry=0,rankDirection=-1,rankPending=null,localJourney=null;
+    function rankStatus(message,retry){set('ft-rank-status',message);$('ft-rank-retry').hidden=!retry;}
+    function recordRank(code){if(ranking)rankActions.push(rankTicks*frontierRules.INPUTS+code);}
+    async function uploadRank(){
+      if(!ranking||rankSending)return;
+      if(!rankPending){
+        if(!rankTicks&&!rankActions.length)return;
+        rankPending={id:ranking.id,gameId:'frontier',revision:ranking.revision,action:[rankTicks,...rankActions]};
+      }
+      rankSending=true;
+      var resume=!paused;paused=true;rankStatus('正在驗證排行榜成績…');
+      try{
+        var api=await import('./frontend/services/api.mjs');
+        var next=await api.moveBoardRound(ranking.token,rankPending,AbortSignal.timeout(15000));
+        if(next.revision!==ranking.revision+1)throw new Error('invalid_replay');
+        ranking.revision=next.revision;ranking.serverState=next.state;
+        rankActions=[];rankTicks=0;rankPending=null;
+        rankStatus(next.state.completed?'成績已送到排行榜。':'本局將列入訪客排行。');
+        if(resume&&visible&&!document.hidden&&world.phase==='play')paused=false;
+      }catch(error){rankStatus('排行榜成績未能送出。',true);}
+      finally{rankSending=false;last=performance.now();update();}
+    }
+    async function startRanked(){
+      if(rankStarting||rankSending||rankPending)return;
+      if(ranking){if(paused)start();return;}
+      pause();endRound('abandoned');rankStarting=true;rankStatus('正在準備訪客排行…');
+      try{
+        var api=await import('./frontend/services/api.mjs');
+        var next=await api.startBoardRound('frontier',AbortSignal.timeout(10000));
+        if(!localJourney)localJourney={world:world,paid:paid,cleared:cleared};
+        ranking=next;ranking.serverState=next.state;ranking.sim=next.state;
+        world=next.state.world;cleared=next.state.completed;paid=true;
+        rankActions=[];rankTicks=0;rankPending=null;rankDirection=-1;rankCarry=0;
+        round=AN.start('frontier',0,params());paused=false;frontierBusy=true;
+        release();last=performance.now();rankStatus('本局將列入訪客排行。');update();
+      }catch(error){rankStatus('排行榜成績未能送出。',true);}
+      finally{rankStarting=false;}
+    }
+    $('ft-ranked').addEventListener('click',startRanked);
+    $('ft-rank-retry').addEventListener('click',function(){if(ranking)uploadRank();else startRanked();});
+    $('ft-local').addEventListener('click',async function(){
+      pause();await uploadRank();if(rankPending)return;endRound('abandoned');
+      if(localJourney){world=localJourney.world;paid=localJourney.paid;cleared=localJourney.cleared;localJourney=null;}
+      ranking=null;paused=true;rankStatus('');update();
+    });
     var noticeTimer=0;
     function showNotice(text){var box=$('ft-notice');set('ft-notice',text);box.hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(function(){box.hidden=true;},10000);}
     var cardsShown='';
@@ -58,12 +105,14 @@
         if(paid&&!world){var keep=w&&w.tech&&['tool','blade','pack'].every(function(k){return Number.isInteger(w.tech[k])&&w.tech[k]>=0&&w.tech[k]<=8;})?{tool:w.tech.tool,blade:w.tech.blade,pack:w.tech.pack}:undefined,gold=w&&Number.isFinite(w.coins)?Math.max(0,Math.min(1e6,Math.floor(w.coins))):0,lvl=w&&Number.isInteger(w.level)&&w.level>=1&&w.level<=Math.min(50,cleared+1)?w.level:Math.min(50,cleared+1);world=frontierWorld(lvl,keep,gold);set('ft-storage','存檔內容不完整，已保留遠征資格與通關紀錄，重建當關。');}
       }catch(e){set('ft-storage','無法讀取存檔；請確認瀏覽器允許本機儲存。');}
     }
-    function persist(){if(!paid||!world)return true;try{localStorage.setItem('deep-sea-frontier-v1',JSON.stringify({version:1,paid:true,cleared:cleared,world:world}));set('ft-storage','進度已儲存');return true;}catch(e){set('ft-storage','無法儲存進度，請勿關閉此頁。');return false;}}
+    function persist(){if(ranking)return true;if(!paid||!world)return true;try{localStorage.setItem('deep-sea-frontier-v1',JSON.stringify({version:1,paid:true,cleared:cleared,world:world}));set('ft-storage','進度已儲存');return true;}catch(e){set('ft-storage','無法儲存進度，請勿關閉此頁。');return false;}}
     function params(){return {stage:world.level,step:world.kills,chapter:world.cfg.chapter+1,mission:world.cfg.mission};}
     function release(){keys={};stick.x=stick.y=0;stick.id=null;dash=false;walkTarget=null;$('ft-knob').style.transform='';}
     function endRound(result){if(round){AN.end(round,0,result,params());round=null;}}
-    function pause(){if(!world||paused||world.phase!=='play')return;paused=true;frontierBusy=!!round;release();AN.progress(round,params(),true);persist();update();}
+    function pause(){if(!world||paused||world.phase!=='play')return;paused=true;frontierBusy=!!round;release();AN.progress(round,params(),true);persist();update();if(ranking)uploadRank();}
     function start(){
+      if(rankStarting||rankSending||rankPending)return;
+      if(ranking&&world.phase==='clear'){world=ranking.serverState.world;ranking.sim=ranking.serverState;cleared=ranking.sim.completed;rankDirection=-1;rankCarry=0;}
       if(!visible||document.hidden||!paused&&world&&world.phase==='play')return;
       autoScreen();if(!paid)loadFrontier();
       var fresh=false;
@@ -77,7 +126,7 @@
       if(world.level>10&&(world.level-1)%10===0&&world.time<1)showNotice('新解鎖：工人小屋現在可以升到 Lv.'+world.cfg.houseMax+'！村民更多、採集更快。');
       paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});syncViewport();
     }
-    function selectLevel(n){if(!paid||n>Math.min(50,cleared+1))return;pause();pendingLevel=n;set('ft-select-label','前往關卡 '+n+'？');$('ft-select').hidden=false;}
+    function selectLevel(n){if(ranking){rankStatus('排行遠征從第一島依序前進。');return;}if(!paid||n>Math.min(50,cleared+1))return;pause();pendingLevel=n;set('ft-select-label','前往關卡 '+n+'？');$('ft-select').hidden=false;}
     function updateMap(){Array.from($('ft-map').children).forEach(function(b,i){b.disabled=!paid||i+1>Math.min(50,cleared+1);var cl=(i+1<=cleared?'ft-done ':'')+(world&&world.level===i+1?'ft-current':'');if(b.className!==cl)b.className=cl;var current=world&&world.level===i+1?'step':'false';if(b.getAttribute('aria-current')!==current)b.setAttribute('aria-current',current);});}
     function update(){
       var w=world||preview,overlay=$('ft-overlay');var cost=frontierRecruitCost(w),barracks=w.buildings.find(function(b){return b.kind==='barracks';});set('ft-recruit','訓練戰士 · 🪵 '+cost.wood+' ◆ '+cost.stone+' · '+frontierAttackers(w).length+'/'+frontierFighterCap(w));$('ft-recruit').disabled=!world||paused||!barracks||!barracks.built||barracks.hp<=0||!frontierNear(w.p,barracks,110);set('ft-troops','戰士 '+frontierAttackers(w).length+'/'+frontierFighterCap(w)+((barracks&&barracks.queue)?' +1':'')+' · 守衛 '+(w.fighters.length-frontierAttackers(w).length)+'/'+(w.cfg.guards||0));var upKinds=['barracks','guardhouse','house'],upB=world&&!paused?upKinds.map(function(k){return w.buildings.find(function(b){return b.kind===k;});}).find(function(b){return b&&b.built&&b.hp>0&&frontierNear(w.p,b,110);}):null;
@@ -99,15 +148,23 @@
       }updateMap();
     }
     var transientMessage=false;
-    function finishStage(){if(world.phase==='clear'){cleared=Math.max(cleared,world.level);AN.progress(round,params(),true);endRound('complete');}else endRound('loss');paused=true;frontierBusy=false;release();persist();update();}
+    function finishStage(){if(world.phase==='clear'){if(ranking)recordRank(886);cleared=Math.max(cleared,world.level);AN.progress(round,params(),true);endRound('complete');}else endRound('loss');paused=true;frontierBusy=false;release();persist();update();if(ranking)uploadRank();}
     function frame(now){if(visible){if(world&&!paused&&world.phase==='play'){
       var x=stick.x+(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),y=stick.y+(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
       if(x||y)walkTarget=null;
       if(walkTarget&&!x&&!y){var destination=frontierWaypoint(world.p,walkTarget);var distance=Math.hypot(destination.x-world.p.x,destination.y-world.p.y);if(distance>8){x=(destination.x-world.p.x)/distance;y=(destination.y-world.p.y)/distance;}else if(destination===walkTarget)walkTarget=null;}
-      frontierStep(world,{x:x,y:y,dash:dash},Math.min(.05,(now-last)/1000));dash=false;if(world.phase!=='play')finishStage();else if(now-saveAt>5000){persist();saveAt=now;}
+      if(ranking){
+        var qx=Math.round(Math.max(-1,Math.min(1,x))*10),qy=Math.round(Math.max(-1,Math.min(1,y))*10),code=((qx+10)*21+qy+10)*2+Number(dash);
+        if(code!==rankDirection||dash){recordRank(code);frontierRules.input(ranking.sim,code);rankDirection=code;}
+        rankCarry+=Math.min(.05,Math.max(0,(now-last)/1000));
+        while(rankCarry>=.05&&world.phase==='play'){
+          rankCarry-=.05;frontierRules.advance(ranking.sim);rankTicks++;
+          if(rankTicks>=200){uploadRank();break;}
+        }
+      }else frontierStep(world,{x:x,y:y,dash:dash},Math.min(.05,(now-last)/1000));dash=false;if(world.phase!=='play')finishStage();else if(now-saveAt>5000){persist();saveAt=now;}
     }if(now-uiAt>180){update();uiAt=now;}paint();}last=now;requestAnimationFrame(frame);}
     $('ft-go').addEventListener('click',function(){transientMessage=false;start();if(!world)transientMessage=true;});$('ft-pause').addEventListener('click',function(){if(paused)start();else pause();});
-    ['tool','blade','pack'].forEach(function(k){$('ft-'+k).addEventListener('click',function(){if(world&&!paused){var ok=frontierUpgrade(world,k);set('ft-upgrade',ok?'升級完成':'材料不足，或需要回到營地。');if(ok){AN.progress(round,params(),false);persist();}update();}});});
+    ['tool','blade','pack'].forEach(function(k){$('ft-'+k).addEventListener('click',function(){if(world&&!paused){var ok=frontierUpgrade(world,k);set('ft-upgrade',ok?'升級完成':'材料不足，或需要回到營地。');if(ok){recordRank(887+['tool','blade','pack'].indexOf(k));AN.progress(round,params(),false);persist();}update();}});});
     $('ft-select-yes').addEventListener('click',function(){if(!pendingLevel)return;endRound('restart');world=frontierWorld(pendingLevel,world?Object.assign({},world.tech):undefined,world?world.coins:0);pendingLevel=0;$('ft-select').hidden=true;paused=true;frontierBusy=false;persist();update();});$('ft-select-no').addEventListener('click',function(){pendingLevel=0;$('ft-select').hidden=true;});
     for(var n=1;n<=50;n++){var b=document.createElement('button');b.type='button';b.textContent=n;b.dataset.level=n;b.addEventListener('click',function(){selectLevel(Number(this.dataset.level));});$('ft-map').appendChild(b);}
     document.addEventListener('keydown',function(e){var k=e.key.toLowerCase();if(!visible||paused||(e.target.closest&&e.target.closest('input,select,textarea,button'))||!['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))return;e.preventDefault();keys[k]=true;if(k===' '&&!e.repeat)dash=true;AN.interact();});document.addEventListener('keyup',function(e){delete keys[e.key.toLowerCase()];});
@@ -139,11 +196,11 @@
     $('ft-journal').addEventListener('click',function(){var open=$('ft-task-details').hidden;$('ft-task-details').hidden=!open;this.setAttribute('aria-expanded',String(open));release();});
     $('ft-shop-toggle').addEventListener('click',function(){showShop($('ft-shop').hidden);});
     $('ft-shop-close').addEventListener('click',function(){showShop(false);});
-    ['wood','stone'].forEach(function(k){$('ft-sell-'+k).addEventListener('click',function(){if(!world||paused)return;var sold=frontierSell(world,k,Number($('ft-sale-count').value||10));set('ft-upgrade',sold?'交易完成':'需要市集、倉庫材料與靠近市集');if(sold)persist();update();});});
-    for(var ci=0;ci<3;ci++)(function(n){$('ft-card-'+n).addEventListener('click',function(){if(world&&frontierChoose(world,n)){persist();update();$('ft-canvas').focus({preventScroll:true});}});})(ci);
-    $('ft-hut-up').addEventListener('click',function(){if(world&&!paused&&frontierUpgradeHut(world,this.dataset.kind)){persist();update();}});
-    $('ft-recruit').addEventListener('click',function(){if(world&&!paused){var recruited=frontierRecruit(world);set('ft-upgrade',recruited?'戰士訓練中':'需要戰士小屋、足夠材料與空位');if(recruited)persist();update();}});
-    $('ft-next').addEventListener('click',function(){if(world&&!paused&&frontierLeave(world))finishStage();});
+    ['wood','stone'].forEach(function(k){$('ft-sell-'+k).addEventListener('click',function(){if(!world||paused)return;var sold=frontierSell(world,k,Number($('ft-sale-count').value||10));set('ft-upgrade',sold?'交易完成':'需要市集、倉庫材料與靠近市集');if(sold){recordRank(893+(k==='stone'?100:0)+Math.max(1,Math.min(100,Number($('ft-sale-count').value||10)))-1);persist();}update();});});
+    for(var ci=0;ci<3;ci++)(function(n){$('ft-card-'+n).addEventListener('click',function(){if(world&&(!ranking||!paused&&!rankPending&&!rankSending)&&frontierChoose(world,n)){recordRank(882+n);persist();update();$('ft-canvas').focus({preventScroll:true});}});})(ci);
+    $('ft-hut-up').addEventListener('click',function(){if(world&&!paused&&frontierUpgradeHut(world,this.dataset.kind)){recordRank(890+['house','guardhouse','barracks'].indexOf(this.dataset.kind));persist();update();}});
+    $('ft-recruit').addEventListener('click',function(){if(world&&!paused){var recruited=frontierRecruit(world);set('ft-upgrade',recruited?'戰士訓練中':'需要戰士小屋、足夠材料與空位');if(recruited){recordRank(885);persist();}update();}});
+    $('ft-next').addEventListener('click',function(){if(world&&!paused&&frontierLeave(world)){finishStage();}});
     $('ft-home').addEventListener('click',function(){if(world&&!paused){walkTarget={x:180,y:450};AN.interact();}});
     document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});window.addEventListener('blur',pause);window.addEventListener('pagehide',function(e){pause();if(!e.persisted)endRound('abandoned');},{capture:true});
     frontierRoute=function(active){if(!active){pause();exitScreen();}visible=active;if(active){update();paint();}};

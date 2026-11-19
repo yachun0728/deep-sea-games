@@ -7,8 +7,8 @@ for(const [name,[apiName,frameId]] of Object.entries(names)){
  const i={text:s=>s,getLanguage:()=> 'zh-Hant'},window={deepSeaI18n:i,addEventListener(){}};
  const c={$:el,window,document:{hidden:false,addEventListener(){}},localStorage:{getItem:()=>null,setItem(){}},S:{balance:0},ENTRY_FEE:0,LOW_MSG:'low',fmt:n=>String(n),save(){},renderAll(){},AN:{interact(){},start:(...a)=>{events.push(['start',...a]);return 'round';},end:(...a)=>events.push(['end',...a]),progress(){},resume(){}}};
  vm.createContext(c);
- if(name==='tetris'){
-  for(const file of ['shared/timed-replay.cjs','js/timed-leaderboard.js','shared/block-drop-rules.js']){
+ if(name==='tetris'||name==='rocket-chair'){
+  for(const file of ['shared/timed-replay.cjs','js/timed-leaderboard.js',name==='tetris'?'shared/block-drop-rules.js':'shared/rocket-chair-rules.js']){
    vm.runInContext(fs.readFileSync(new URL(file,root),'utf8'),c);
   }
  }

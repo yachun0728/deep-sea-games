@@ -5291,7 +5291,6 @@
   "❤ 一關有": "❤ You get",
   "一定": "must",
   "上再點一下 →": "again →",
-  "下一關 ▶": "Next ▶",
   "下一頁 ▶": "Next ▶",
   "不同顏色的區域": "differently colored regions",
   "不是": "not",
@@ -5384,5 +5383,10 @@
   "🦆 歡迎來到呱呱池塘！": "🦆 Welcome to Quack Pond!",
   "🧠 推理技巧 ①　只剩一格": "🧠 Trick 1 · Only one cell left",
   "🧠 推理技巧 ②　整個區域擠在同一行": "🧠 Trick 2 · A region stuck in one row",
-  "🧠 推理技巧 ③　假設法與連鎖": "🧠 Trick 3 · What-if and chain reactions"
+  "🧠 推理技巧 ③　假設法與連鎖": "🧠 Trick 3 · What-if and chain reactions",
+  "排行榜遠征": "Ranked expedition",
+  "繼續原存檔": "Continue local save",
+  "排行遠征從第一島依序前進。": "Ranked expeditions progress from the first island in order.",
+  "排行榜仍在處理上一局，請稍後再試。": "The leaderboard is still processing your previous round. Please try again shortly.",
+  "排行榜遠征保留已驗證進度；可隨時切回原存檔。": "Ranked expeditions keep verified progress. You can return to your local save at any time."
 }

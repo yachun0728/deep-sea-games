@@ -152,3 +152,5 @@ html.frontier-immersive{overflow:hidden}
 #view-frontier #ft-troops{white-space:nowrap;color:#bfe3c9;overflow:hidden;text-overflow:ellipsis}
 #view-frontier .ft-notice{position:absolute;z-index:35;top:132px;left:50%;transform:translateX(-50%);max-width:calc(100% - 28px);margin:0;padding:8px 14px;border:1px solid #e6c581;border-radius:12px;background:#4a3b1ee6;color:#ffe9b4;font-size:13px;line-height:1.5;text-align:center;pointer-events:none}
 #view-frontier .ft-notice[hidden]{display:none}
+
+#view-frontier .ft-rank-controls{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px}#view-frontier .ft-rank-controls p{margin:0;font-size:13px;color:var(--muted)}
