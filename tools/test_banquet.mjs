@@ -49,7 +49,7 @@ export function fixture(balance=500,random=Math.random,savedWins=null){
     logs:()=>f.ev('E.log.map(logText)')};
   return f;
 }
-const started=(balance=500,random=Math.random)=>{const f=fixture(balance,random);f.B.start();return f;};
+const started=(balance=500,random=Math.random)=>{const f=fixture(balance,random);f.B.start();f.ev('TELLS=false');return f;};
 function check(name,fn){fn();results.push(name);}
 const isMain=process.argv[1]&&fs.realpathSync(process.argv[1])===fs.realpathSync(new URL(import.meta.url));
 if(isMain){
@@ -308,7 +308,9 @@ check('A drink queues a reveal beat: the host and the player wait for it, and it
   f.ev('E.aiT=0');f.B.tick(.3);assert.equal(f.E().cups.length,2,'host moved during the reveal');
   f.B.playerItem('needle');assert.equal(f.E().hand.p.length,1,'player item accepted during the reveal');
   f.B.render();assert.equal(f.E().fx.length,0);
-  f.B.tick(1);f.ev('E.aiT=0');f.B.tick(.1);assert.ok(f.E().cups.length<2||f.E().pending);
+  f.B.tick(1);assert.equal(f.E().cups.length,2,'host still waits while the reveal is on screen');
+  f.B.tick(1.3);assert.ok(f.E().aiT>=.3||f.E().cups.length<2||f.E().pending,'a beat is left after the reveal before the host acts');
+  f.ev('E.aiT=0');f.B.tick(.1);assert.ok(f.E().cups.length<2||f.E().pending);
 });
 check('The dealer pose follows the action: self-drink, toast to the player, forced drink, hurt, and the final pose',()=>{
   const pose=f=>f.el('bq-dealerbox').dataset.pose;
@@ -348,5 +350,17 @@ check('Language defaults to English; all six languages resolve every key without
   f.ev("setLang('zh')");assert.ok(f.logs().some(x=>/[\u4e00-\u9fff]/.test(x)));
   f.ev("setLang('xx')");assert.equal(f.ev('LANG'),'zh');
   assert.equal(f.storage.get('deep-sea-banquet-lang'),'zh');
+});
+check('Cup numbers are gone from every line in every language, and the tell darkens the room before the host acts',()=>{
+  const f=started();
+  for(const lang of ['en','es','de','ja','ko','zh']){f.ev(`setLang('${lang}')`);
+    for(const k of ['l.needle','l.scent','l.change','l.powder','l.ice','l.cheers','l.drank','l.rand','l.self','l.offer','l.claim','l.believe','l.doubtok','l.doubtfail','u.cup','u.scentnote','u.claimq']){
+      const out=f.ev(`tr('${k}',{id:7,ids:'@u.twocups',a:'p',o:'d',n:1,type:'x',info:'',claim:'',maybe:''})`);
+      assert.ok(!/#|7/.test(out),`${lang} ${k}: ${out}`);}}
+  f.ev("setLang('en')");
+  f.scene({cups:['poison','water','water'],turn:'d'});f.ev("TELLS=true;drand=function(){return 0};E.tellDone=false;E.aiPlan={kind:'toast',cup:E.cups[0]};E.aiT=0");
+  f.B.tick(.05);
+  assert.ok(f.E().fx.some(x=>x.k==='dark'),'tell queued');assert.ok(f.E().fxT>2,'tell blocks the host for a beat');assert.equal(f.E().cups.length,3,'host has not acted yet');assert.ok(!f.E().pending);
+  f.B.tick(2.9);f.ev('E.aiT=0');f.B.tick(.05);assert.ok(f.E().pending||f.E().cups.length<3,'host acts after the room is relit');
 });
 if(isMain)console.log(`PASS: ${results.length} banquet checks`);

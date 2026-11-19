@@ -7,17 +7,17 @@
 - 網址：`#banquet`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。」｜立即開玩 · 心理博弈
 - 追蹤名稱（GA4 `game_name`）：最後的晚餐，`game_id` 為 `banquet`
-- 檔案：`games/banquet/card.html`、`games/banquet/game.js`、`games/banquet/i18n.js`、`games/banquet/icon.svg`、`games/banquet/style.css`、`games/banquet/view.html`；`game.js` 共 730 行、48.3 KB
+- 檔案：`games/banquet/card.html`、`games/banquet/game.js`、`games/banquet/i18n.js`、`games/banquet/icon.svg`、`games/banquet/style.css`、`games/banquet/view.html`；`game.js` 共 742 行、49.8 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「41. 最後的晚餐 The Last Banquet（banquet）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-banquet`、`bq-stage`、`bq-scene`、`bq-act`、`bq-center`、`bq-center-1`、`bq-center-2`、`bq-dealerbox`、`bq-side-d`、`bq-hp-d`、`bq-hp-d-t`、`bq-dr-d`、`bq-items-d`、`bq-dhand-t`、`bq-dhand`、`bq-table`、`bq-reveal`、`bq-hands`、`bq-chips`、`bq-comp`、`bq-menu`、`bq-menu-main`、`bq-m-start`、`bq-m-rules`、`bq-m-codex`、`bq-m-adv`、`bq-m-mute`、`bq-menu-rules`、`bq-m-back`、`bq-menu-codex`、`bq-cx-grid`、`bq-cx-card`、`bq-m-back2`、`bq-menu-intro`、`bq-intro-t`、`bq-intro-skip`、`bq-intro-next`、`bq-itemfx`、`bq-bubble`、`bq-bubble-t`、`bq-lang`、`bq-ticker`、`bq-side-p`、`bq-hp-p`、`bq-hp-p-t`、`bq-dr-p`、`bq-items-p`、`bq-prompt`、`bq-prompt-t`、`bq-believe`、`bq-doubt`、`bq-actions`、`bq-turn`、`bq-act-row`、`bq-self`、`bq-toast`、`bq-silver`、`bq-notes`、`bq-hand-box`、`bq-hand`、`bq-detail`、`bq-flash`、`bq-stage-t`、`bq-bonus`、`bq-best`、`bq-amount`、`bq-go`、`bq-quit`、`bq-home`、`bq-adv`、`bq-mute`、`bq-msg`
+`view-banquet`、`bq-stage`、`bq-scene`、`bq-act`、`bq-center`、`bq-center-1`、`bq-center-2`、`bq-dealerbox`、`bq-tgt-d`、`bq-side-d`、`bq-hp-d`、`bq-hp-d-t`、`bq-dr-d`、`bq-items-d`、`bq-dhand-t`、`bq-dhand`、`bq-table`、`bq-reveal`、`bq-hands`、`bq-tgt-p`、`bq-chips`、`bq-comp`、`bq-menu`、`bq-menu-main`、`bq-m-start`、`bq-m-rules`、`bq-m-codex`、`bq-m-adv`、`bq-m-mute`、`bq-menu-rules`、`bq-m-back`、`bq-menu-codex`、`bq-cx-grid`、`bq-cx-card`、`bq-m-back2`、`bq-menu-intro`、`bq-intro-t`、`bq-intro-skip`、`bq-intro-next`、`bq-dark`、`bq-itemfx`、`bq-bubble`、`bq-bubble-t`、`bq-lang`、`bq-ticker`、`bq-side-p`、`bq-hp-p`、`bq-hp-p-t`、`bq-dr-p`、`bq-items-p`、`bq-prompt`、`bq-prompt-t`、`bq-believe`、`bq-doubt`、`bq-actions`、`bq-turn`、`bq-act-row`、`bq-self`、`bq-toast`、`bq-silver`、`bq-notes`、`bq-hand-box`、`bq-hand`、`bq-detail`、`bq-flash`、`bq-stage-t`、`bq-bonus`、`bq-best`、`bq-amount`、`bq-go`、`bq-quit`、`bq-home`、`bq-adv`、`bq-mute`、`bq-msg`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`SFX`（L401）、`DLG`（L435）、`IFX`（L538）、`bqBusy`（L2）
+- 狀態物件／進行中旗標：`FL`（L50）、`SFX`（L407）、`DLG`（L443）、`IFX`（L545）、`bqBusy`（L2）
 - L5 常數：`HP_MAX`、`DR_MAX`、`HAND_MAX`、`HEAL_CAP`、`OT_SECONDS`、`LOG_KEEP`
 - L6 常數：`BONUS`
 - L7 常數：`ACTS`
@@ -27,16 +27,16 @@
 - L28 常數：`IKEYS`
 - L29 常數：`STIMG`
 - L33 常數：`ADV`、`MUTED`
-- L401 常數：`SFX`
-- L431 常數：`CUP_SVG`
-- L434 常數：`DPOOL`
-- L435 常數：`DLG`
-- L444 常數：`SAYST`
-- …另有 2 行常數宣告，請直接搜尋大寫名稱
+- L50 常數：`FLT`
+- L385 常數：`TELLS`
+- L407 常數：`SFX`
+- L439 常數：`CUP_SVG`
+- L442 常數：`DPOOL`
+- …另有 4 行常數宣告，請直接搜尋大寫名稱
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`tr` L15、`iconImg` L30、`txt` L31、`stIcon` L32、`shuffle` L37、`pick` L38、`fresh` L39、`log` L46、`logm` L47、`logText` L48、`forget` L55、`wipeInfo` L58、`reshuffle` L59、`rotateTable` L60、`deal` L61、`putKnown` L70、`drunkMid` L71、`targetOk` L73、`canUse` L79、`takeItem` L89、`useItem` L90、`useItem0` L91、`removeCup` L140、`hurt` L145、`heal` L146、`drinkEffect` L151、`resolveFaints` L169、`selfDrink` L178、`toast` L185、`claim` L192、`respond` L199、`beginTurn` L226、`finish` L231、`pay` L237、`endAct` L242、`checkEnd` L252、`endGame` L258、`aiEstimate` L271、`aiView` L278、`aiPickUnknown` L291、`aiPlan` L292、`aiHas` L315、`aiUse` L316、`aiItemStep` L317、`aiRespond` L338、`aiStep` L354、`tick` L369、`ac` L381、`tone` L387、`noise` L394、`setCls` L426、`restart` L427、`drand` L436、`dnow` L437、`showBubble` L438、`hideBubble` L440、`hostSay` L441、`showSay` L445、`say` L446、`put` L448、`putAttr` L449、`pips` L450、`hearts` L452、`mmss` L453、`kLabel` L454、`renderCups` L458、`renderHand` L477、`renderDetail` L494、`renderDealerHand` L510、`renderNotes` L517、`renderChips` L524、`setPose` L533、`laterPose` L534、`floatNum` L535、`fxItem` L539、`playFx` L564、`render` L584、`pickCup` L623、`playerItem` L627、`playerAct` L634、`playerRespond` L642、`start` L643、`quit` L651、`loop` L685、`loadFont` L695、`buildCodex` L699、`applyLang` L703、`setLang` L713、`fitStage` L718
+`tr` L15、`iconImg` L30、`txt` L31、`stIcon` L32、`shuffle` L37、`pick` L38、`fresh` L39、`log` L46、`logm` L47、`logText` L48、`flashCup` L51、`forget` L57、`wipeInfo` L60、`reshuffle` L61、`rotateTable` L62、`deal` L63、`putKnown` L72、`drunkMid` L73、`targetOk` L75、`canUse` L81、`takeItem` L91、`useItem` L92、`useItem0` L93、`removeCup` L143、`hurt` L148、`heal` L149、`drinkEffect` L154、`resolveFaints` L172、`selfDrink` L181、`toast` L188、`claim` L195、`respond` L202、`beginTurn` L229、`finish` L234、`pay` L240、`endAct` L245、`checkEnd` L255、`endGame` L261、`aiEstimate` L274、`aiView` L281、`aiPickUnknown` L294、`aiPlan` L295、`aiHas` L318、`aiUse` L319、`aiItemStep` L320、`aiRespond` L341、`aiStep` L357、`tick` L374、`ac` L387、`tone` L393、`noise` L400、`setCls` L434、`restart` L435、`drand` L444、`dnow` L445、`showBubble` L446、`hideBubble` L448、`hostSay` L449、`showSay` L453、`say` L454、`put` L456、`putAttr` L457、`pips` L458、`hearts` L460、`mmss` L461、`kLabel` L462、`renderCups` L466、`renderHand` L485、`renderDetail` L502、`renderDealerHand` L518、`renderNotes` L525、`renderChips` L531、`setPose` L540、`laterPose` L541、`floatNum` L542、`fxItem` L546、`playFx` L571、`render` L593、`pickCup` L633、`playerItem` L637、`playerAct` L643、`playerRespond` L651、`start` L652、`quit` L660、`loop` L697、`loadFont` L707、`buildCodex` L711、`applyLang` L715、`setLang` L725、`fitStage` L730
 
 ## 錢包與結算接點
 
@@ -44,19 +44,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L238 `pay`：`S.balance+=n;`
+- L241 `pay`：`S.balance+=n;`
 
 **餘額檢查**
-- L646 `start`：`if(amount>S.balance){say(LOW_MSG,null,'lose');`
+- L655 `start`：`if(amount>S.balance){say(LOW_MSG,null,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L239 `pay`：`if(analytics)AN.progress(analytics,{stage:E.act,step:E.act,score:E.hp.p,bonus_points:n,total_bonus_points:E.e…`
-- L264 `endGame`：`AN.end(analytics,E.earned,res,{score:E.hp.p,step:E.act,stage:E.act});`
-- L647 `start`：`analytics=AN.start('banquet',amount);`
+- L242 `pay`：`if(analytics)AN.progress(analytics,{stage:E.act,step:E.act,score:E.hp.p,bonus_points:n,total_bonus_points:E.e…`
+- L267 `endGame`：`AN.end(analytics,E.earned,res,{score:E.hp.p,step:E.act,stage:E.act});`
+- L656 `start`：`analytics=AN.start('banquet',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -96,6 +96,14 @@
 - 平衡（目前僅機器人模擬，沒有真人數據）：規格中未明說的規則採上述假設，需真人試玩再調整。
 
 - 使用道具時有第一視角動畫：道具從道具列（對手則從主持人）飛到桌面中央並顯示名稱，手抬起，再依道具播放特效，約 1 秒，點一下可跳過；播放期間暫停操作與 AI（不改規則數值）。選中的杯子不畫外框，只用發光與放大區分。
+
+- 選好杯子後，不再有「自己喝／敬給莊家」兩顆按鈕：莊家和你的手（或左下「YOU」面板）會發亮並標出字樣，點莊家＝敬給莊家，點自己＝自己喝（規則與可用條件不變；鍵盤與讀屏仍有隱藏的原按鈕）。揭曉結果（毒藥／蜜酒等）改為無框的字樣，固定在桌面上方，不隨桌子旋轉；揭曉播完（約 1.5 秒）後再留一小段停頓，才輪到對手下一步。
+
+- 記憶版（v7i）：酒杯不顯示編號；銀針／鼻聞等情報只在杯子上閃約 2.4 秒就消失（資料仍在內部，只是不畫），玩家要自己記住；真正洗牌時情報照舊清掉。紀錄與提示一律寫「那杯酒」，不再寫幾號（鍵盤 1–8 改成依桌面順序選杯）。之後會出「記號常駐」的簡單版。
+- 開場（第一次進遊戲）：黑畫面淡入、莊家說五句話（歡迎、這桌酒有毒有蜜有真話而他自己也不知道哪杯是哪杯、一起試、天亮還站著的人帶走宅邸的贈禮、「祝您好運」並露出邪笑），可跳過；之後進遊戲不再播放。
+- 莊家預告：莊家準備敬酒或吹牛時，約 70%（他自己認為杯子有毒）／25%（沒有）會先「熄燭」：房間變暗約 1.5 秒，再亮起一點暖光，才出手。只改時間，不改 AI 的決定，也不讀杯子內容（用獨立亂數 `drand`）。
+- 文字提示：只留畫面最上方一行「最近一件事」（誰對哪杯做了什麼；喝下的結果是公開的，銀針與鼻聞的結果不寫在這裡）；原本隱藏的訊息欄不再放銀針結果。
+- 節奏：莊家思考約 1.5–2.5 秒；揭曉字樣停留約 2.2 秒，之後再停約 0.8 秒才輪到下一步；轉桌約 1.8 秒。
 
 ## 修改檢查清單
 

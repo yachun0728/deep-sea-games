@@ -47,7 +47,7 @@
 | [小灰出門 Pet Walkies](pet-walk/README.md) | `#pet-walk` | 跑酷動作 | 顯示 | 1104 行 | 一鍵帶小灰散步，路上撞見野狗、河鯊和幸運轉盤。 |
 | [拒絕加班 No Overtime!](office-shoot/README.md) | `#office-shoot` | 跑酷動作 | 顯示 | 1178 行 | 自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。 |
 | [深海連連看 Ocean Link](ocean-link/README.md) | `#ocean-link` | 免費懷舊 | 顯示 | 407 行 | 把相同的圖案連起來，穿越礁石與移動棋盤。 |
-| [最後的晚餐 The Last Banquet](banquet/README.md) | `#banquet` | 益智策略 | 顯示 | 730 行 | 與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。 |
+| [最後的晚餐 The Last Banquet](banquet/README.md) | `#banquet` | 益智策略 | 顯示 | 742 行 | 與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。 |
 | [人魚接龍 Mermaid Spider](mermaid/README.md) | `#mermaid` | 益智策略 | 顯示 | 285 行 | 牌背是美人魚的蜘蛛接龍，排滿 K 到 A 收成珍珠。 |
 | [數字吞噬 Number Gulp](eat-smaller/README.md) | `#eat-smaller` | 益智策略 | 顯示 | 62 行 | 吃掉比你小的數字、躲開比你大的，剛好變成目標數字就過關。 |
 | [鏡像雙子 Mirror Twins](mirror-twins/README.md) | `#mirror-twins` | 益智策略 | 顯示 | 62 行 | 同時操控兩位太空人，其中一位左右相反，一起走進傳送艙。 |
