@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Quack Pond</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@400;600;800&family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1f3b4d; --paper:#fffaf0; --duck:#ffd93b; --orange:#ff9f1c; --bad:#e5484d;
+    --water:#8fd3e8; --water2:#cdeef7; --wood1:#d9a066; --wood2:#a9703a; --leaf:#6dbf73;
+    --font:"Chiron GoRound TC","Fredoka","Hiragino Maru Gothic ProN","jf-openhuninn","PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+  html,body{margin:0;min-height:100%;font-family:var(--font);color:var(--navy);font-weight:600}
+  body{
+    background:
+      radial-gradient(circle at 12% 18%, #ffffff55 0 38px, transparent 39px),
+      radial-gradient(circle at 12% 18%, transparent 0 52px, #ffffff44 53px 55px, transparent 56px),
+      radial-gradient(circle at 88% 70%, #ffffff55 0 50px, transparent 51px),
+      radial-gradient(circle at 88% 70%, transparent 0 68px, #ffffff44 69px 71px, transparent 72px),
+      radial-gradient(circle at 30% 92%, #ffffff44 0 30px, transparent 31px),
+      linear-gradient(180deg,var(--water2),var(--water));
+    background-attachment:fixed;
+  }
+  #app{max-width:560px;margin:0 auto;padding:14px 12px 28px;display:flex;flex-direction:column;align-items:center;gap:12px}
+
+  /* —— 通用元件 —— */
+  .card{background:var(--paper);border:3px solid var(--navy);border-radius:22px;box-shadow:0 6px 0 var(--navy)}
+  .pill{display:inline-flex;align-items:center;gap:6px;background:var(--paper);border:3px solid var(--navy);border-radius:999px;
+    padding:3px 14px;font-size:15px;font-weight:800;box-shadow:0 3px 0 var(--navy);font-variant-numeric:tabular-nums}
+  .pill.tag1{background:#c9f0c4}.pill.tag2{background:#ffe9a3}.pill.tag3{background:#ffc4b8}
+  .btn{font:inherit;font-weight:800;font-size:15px;color:var(--navy);background:var(--paper);border:3px solid var(--navy);
+    border-radius:16px;padding:8px 14px;box-shadow:0 4px 0 var(--navy);cursor:pointer;transition:transform .06s,box-shadow .06s;
+    display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  .btn:active{transform:translateY(4px);box-shadow:0 0 0 var(--navy)}
+  .btn.yellow{background:var(--duck)} .btn.orange{background:var(--orange);color:#fff;text-shadow:0 2px 0 #0003}
+  .btn.blue{background:#a9e0f2} .btn.off{opacity:.45;pointer-events:none}
+  .btn svg{width:18px;height:18px}
+
+  /* —— 標題列 —— */
+  header{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .logo{display:flex;align-items:center;gap:8px}
+  .logo svg{width:44px;height:44px;filter:drop-shadow(0 3px 0 #1f3b4d55)}
+  h1{font-size:26px;margin:0;font-weight:800;letter-spacing:1px;line-height:1}
+  h1 small{display:block;font-family:"Fredoka",var(--font);font-size:12px;font-weight:700;opacity:.6;letter-spacing:2px;margin-top:3px}
+  .stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+  .hud{width:100%;display:flex;align-items:center;justify-content:space-between}
+  .hearts{display:flex;gap:4px}
+  .heart{width:34px;height:34px;filter:drop-shadow(0 3px 0 #1f3b4d66)}
+  .heart.full use{fill:var(--bad)} .heart.empty use{fill:#d9d2c3}
+  .heart.lose{animation:lose .5s}
+  @keyframes lose{0%{transform:scale(1)}30%{transform:scale(1.5) rotate(-12deg)}100%{transform:scale(1)}}
+  .rule{font-size:13.5px;line-height:1.55;text-align:center;padding:8px 14px;width:100%}
+
+  /* —— 棋盤 —— */
+  .frame{width:min(94vw,520px);padding:11px;border:3px solid var(--navy);border-radius:26px;box-shadow:0 7px 0 var(--navy);
+    background:repeating-linear-gradient(90deg,var(--wood1) 0 22px,#cf9559 22px 24px);position:relative}
+  .frame::before,.frame::after{content:"";position:absolute;width:9px;height:9px;border-radius:50%;background:var(--wood2);border:2px solid var(--navy)}
+  .frame::before{left:7px;top:7px}.frame::after{right:7px;top:7px}
+  #board{width:100%;aspect-ratio:1;display:grid;border:3px solid var(--navy);border-radius:12px;overflow:hidden;background:#fff;touch-action:manipulation}
+  #board.shake{animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  .cell{position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:filter .1s}
+  .cell:active{filter:brightness(.9)}
+  .cell svg{width:80%;height:80%;pointer-events:none}
+  .cell svg.xm{width:46%;height:46%;opacity:.75}
+  .cell.auto svg.xm{opacity:.22}
+  .cell.wrong{background-image:repeating-linear-gradient(45deg,#e5484d44 0 6px,transparent 6px 12px)}
+  .cell.wrong svg.xm{opacity:1}
+  .pop{animation:pop .22s ease-out}
+  @keyframes pop{0%{transform:scale(.2)}70%{transform:scale(1.18)}100%{transform:scale(1)}}
+
+  .bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .footer-bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:2px}
+
+  /* —— 彈窗 —— */
+  .overlay{position:fixed;inset:0;background:#10283666;display:none;align-items:center;justify-content:center;z-index:20;padding:14px}
+  .overlay.show{display:flex}
+  .modal{max-width:460px;width:100%;max-height:92vh;overflow:auto;padding:22px 20px 20px;text-align:center;animation:pop .28s}
+  .modal h2{margin:4px 0 8px;font-size:24px;font-weight:800}
+  .modal p{margin:8px 0;line-height:1.65;font-size:15px}
+  .modal .big{width:96px;height:96px}
+  .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+  .stars{display:flex;justify-content:center;gap:6px;margin:6px 0}
+  .stars svg{width:42px;height:42px;filter:drop-shadow(0 3px 0 #1f3b4d66)}
+  .stars .on use{fill:var(--duck);stroke:var(--navy);stroke-width:5} .stars .off use{fill:#e3dccb;stroke:#b9b09b;stroke-width:5}
+
+  /* —— 選關 —— */
+  .lvgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+  .lvhead{grid-column:1/-1;text-align:left;font-weight:800;font-size:14px;margin-top:8px;padding-left:2px}
+  .lvbtn{font:inherit;font-weight:800;font-size:15px;aspect-ratio:1;border:3px solid var(--navy);border-radius:14px;background:#fff;color:var(--navy);
+    box-shadow:0 3px 0 var(--navy);cursor:pointer;position:relative;padding:0}
+  .lvbtn:active{transform:translateY(3px);box-shadow:none}
+  .lvbtn.done{background:#c9f0c4} .lvbtn.cur{background:var(--duck)}
+  .lvbtn.lock{background:#d9d2c3;color:#8e8671;box-shadow:none;cursor:not-allowed}
+  .lvbtn i{position:absolute;bottom:1px;left:0;right:0;font-style:normal;font-size:9px;letter-spacing:-1px;color:#d28b00}
+
+  /* —— 教學 —— */
+  .mini{display:inline-grid;border:3px solid var(--navy);border-radius:8px;overflow:hidden;background:#fff}
+  .mini .mc{width:34px;height:34px;display:flex;align-items:center;justify-content:center;position:relative}
+  .mini .mc svg{width:78%;height:78%}
+  .mini .mc svg.xm{width:46%;height:46%;opacity:.8}
+  .mini .mc.hl::after{content:"";position:absolute;inset:2px;border:3px dashed var(--bad);border-radius:6px}
+  .mini .mc.badc{background-image:repeating-linear-gradient(45deg,#e5484d55 0 5px,transparent 5px 10px)}
+  .minis{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+  .minis figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12.5px;max-width:130px;line-height:1.4}
+  .minis figure.good figcaption{color:#1d7a35} .minis figure.bad figcaption{color:var(--bad)}
+  .dots{display:flex;gap:7px;justify-content:center;margin-top:12px}
+  .dots b{width:11px;height:11px;border-radius:50%;background:#d9d2c3;border:2px solid var(--navy)}
+  .dots b.on{background:var(--duck)}
+  .tut-body{text-align:left}
+  .tut-body h3{font-size:19px;margin:2px 0 6px;text-align:center}
+  .tut-body ol,.tut-body ul{padding-left:22px;margin:8px 0;line-height:1.7;font-size:15px}
+  .tut-body .center{text-align:center}
+  .kbd{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;width:26px;height:26px;border:2px solid var(--navy);border-radius:7px;background:#fff;margin:0 2px}
+  .kbd svg{width:16px;height:16px}
+  .note{background:#fff3c4;border:2px dashed var(--navy);border-radius:12px;padding:8px 12px;font-size:13.5px;line-height:1.55;margin-top:10px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="duck" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="89" rx="30" ry="5" fill="#0000001f"/>
+      <path d="M18 62c0-16 12-24 26-24 6 0 10 2 14 6 4-8 8-10 8-10l-2 14c6 4 12 10 12 14 0 12-12 22-30 22S18 74 18 62z" fill="#ffd93b" stroke="#1f3b4d" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="62" cy="30" r="18" fill="#ffd93b" stroke="#1f3b4d" stroke-width="4"/>
+      <path d="M76 30c8-1 14 2 14 5s-6 5-14 5z" fill="#ff8a1f" stroke="#1f3b4d" stroke-width="3.5" stroke-linejoin="round"/>
+      <circle cx="64" cy="26" r="3.4" fill="#1f3b4d"/><circle cx="65.2" cy="24.8" r="1.1" fill="#fff"/>
+      <path d="M30 62c6 8 20 8 26-2" fill="none" stroke="#1f3b4d" stroke-width="3.5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="heart" viewBox="0 0 32 32"><path d="M16 28S3 19.5 3 11.2C3 7 6.2 4.5 9.6 4.5c2.6 0 4.8 1.5 6.4 3.9 1.6-2.4 3.8-3.9 6.4-3.9C25.8 4.5 29 7 29 11.2 29 19.5 16 28 16 28z" stroke="#1f3b4d" stroke-width="2.6" stroke-linejoin="round"/></symbol>
+    <symbol id="xmark" viewBox="0 0 20 20"><path d="M4 4L16 16M16 4L4 16" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></symbol>
+    <symbol id="star" viewBox="0 0 50 50"><path d="M25 4l6.2 13.2 14.3 1.8-10.5 9.9 2.7 14.2L25 35.9 12.3 43.1 15 28.9 4.5 19l14.3-1.8z" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<div id="app">
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 100 100"><use href="#duck"/></svg>
+      <h1><span id="ttl"></span><small id="sub"></small></h1>
+    </div>
+    <div class="stats"><span class="pill" id="time">0:00</span></div>
+  </header>
+
+  <div class="hud">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span class="pill" id="lv">第 1 關</span>
+      <span class="pill" id="tag">輕鬆</span>
+    </div>
+    <div class="hearts" id="hearts"></div>
+  </div>
+
+  <div class="frame"><div id="board"></div></div>
+
+  <div class="bar">
+    <button class="btn" id="undo"></button>
+    <button class="btn yellow" id="hint"></button>
+    <button class="btn" id="reset"></button>
+  </div>
+  <div class="footer-bar">
+    <button class="btn blue" id="tutBtn"></button>
+    <button class="btn blue" id="menuBtn"></button>
+    <button class="btn" id="mute">🔊</button>
+    <button class="btn" id="langBtn">🌐</button>
+  </div>
+</div>
+
+<!-- 過關 -->
+<div class="overlay" id="win"><div class="card modal">
+  <svg class="big" viewBox="0 0 100 100"><use href="#duck"/></svg>
+  <h2 id="winTitle"></h2>
+  <div class="stars" id="winStars"></div>
+  <p id="winInfo"></p>
+  <div class="row"><button class="btn" id="winMenu"></button><button class="btn orange" id="next"></button></div>
+</div></div>
+
+<!-- 失敗 -->
+<div class="overlay" id="over"><div class="card modal">
+  <svg class="big" viewBox="0 0 100 100" style="opacity:.55;filter:grayscale(.6)"><use href="#duck"/></svg>
+  <h2 id="overTitle"></h2>
+  <p id="overText"></p>
+  <div class="row"><button class="btn" id="overMenu"></button><button class="btn orange" id="retry"></button></div>
+</div></div>
+
+<!-- 選關 -->
+<div class="overlay" id="menu"><div class="card modal">
+  <h2 id="menuTitle"></h2>
+  <p id="menuSub" style="font-size:13px;opacity:.75;margin:0"></p>
+  <div class="lvgrid" id="lvgrid"></div>
+  <div class="row"><button class="btn" id="menuClose"></button></div>
+</div></div>
+
+<!-- 教學 -->
+<div class="overlay" id="tut"><div class="card modal">
+  <div class="tut-body" id="tutBody"></div>
+  <div class="dots" id="tutDots"></div>
+  <div class="row">
+    <button class="btn" id="tutPrev"></button>
+    <button class="btn orange" id="tutNext"></button>
+  </div>
+</div></div>
+
+<script>
+const LEVELS=["5|0002200122333323333244444|02413|1|5","5|0001101111111221322233342|02413|1|5","5|0000201022333223334233442|31402|1|5","5|2220312233112231222314223|30241|1|5","5|1101111112331423334234444|20413|1|5","5|2021122214222444244344444|13042|1|5","5|0001100111022230233302433|03142|2|8","5|0000012000222222242344433|30241|2|8","5|1110011233212332222324223|30241|2|8","5|1000011100111203322234442|41302|2|11","5|0001102211222413224444444|14203|2|14","5|0211122113222134423344443|03142|2|17","5|1110011113221334413344333|42031|2|20","5|0000011200122223322233224|20314|2|23","6|122022122222122222333222333324335444|304152|1|6","6|111000113033133233133333333343335555|503142|1|6","6|111044115444115224355544555554555555|314052|1|6","6|100000110002110042350042555544555554|315042|1|6","6|111120111222111224133224333244335555|503142|1|6","6|110000111100211300222330243333244353|520314|1|6","6|000000011050031250333550334500355550|513024|1|6","6|201113221133224435244335444445445555|130425|1|6","6|222220122220532222533324533544555555|503142|1|6","6|330002310022344422344422444222444445|314025|1|6","6|100000111000112223442233444223444445|302415|1|6","6|100000111111112111122332142222444522|502413|1|6","6|033333033321333222333322333544335554|053142|1|6","6|000000000111000221033221033241335441|053142|1|6","6|402111442221344225334455534555555555|153024|1|6","6|002111002133022133022333224335222235|031425|1|6","6|444000440011422000424530444550455500|351402|2|9","6|220333230311233333535535545535555555|250413|2|9","6|012222011122333422334442334422334445|024135|2|15","6|021111023314223444223344253344555334|041352|2|15","6|111000551010251110555330555444555555|420351|2|21","6|110003111103122333122333144333444453|302514|2|24","6|111000111000111122413332443322445322|415302|2|24","6|100233112233411233444333445533455553|203514|2|24","6|330022133222333242532242532244555244|305142|2|24","6|000111011112000122000322444552445552|025314|2|30","6|012222111122444112433322444332445552|025314|2|33","6|111100133222332222333344353554355554|403152|2|33","6|003221303221333222533344535544555544|053142|2|36","6|222000112203222223222223244333225533|402513|2|42","7|3322011322244132222413332444333444455334445563333|4631502|1|7","7|0003441000344123334443333444333344433533443336644|1603524|1|7","7|3111120313112233322243333224322224432555543255644|6130524|1|7","7|0000441022441144244414422443444444444545556455555|3526140|1|7","7|1333320133332211333225534442555444455544445556444|6052413|1|7","7|1101111111111131144213311455311445536145556666555|2051463|1|7","7|0000000000330100223330022233005433305556335566633|0625314|1|7","7|2233330233310023330052223305244330524443554464455|6403152|1|7","7|0000011000333102000310033331033334605533660553666|0613524|1|7","7|0000000120040322204330000443440044445044464444466|3026415|1|7","7|2211103423111342331134333133444333355433635544663|5316204|1|7","7|0022222222211122222112222311242233344425354446555|0524163|1|7","7|0022111222221122224112252431225443325543335555633|0625314|1|7","7|5001111511113351213335111333554443355464335566663|1426305|1|7","7|0000222310002233222243322224333344436335443665554|3150642|2|10","7|2222110222111022244432224333444433354444335444633|6315204|2|10","7|1113022113333211133321333445136444533664553366444|4061352|2|10","7|1100000111420011142203344200354420045444404444640|6250314|2|13","7|1100000111100033110243114444411444444444556644555|4250361|2|13","7|1100022111112214111124433112444412246566224666662|4163025|2|13","7|1111000111111013121203332220333422235442223344466|4250316|2|13","7|2220111222011524211152423355443355544455554644445|3524061|2|16","7|0111222011221101121110111131114153361115336661333|0635241|2|16","7|1100000111010022111102113000211330455130045333644|5203614|2|16","7|0001111223111123333312333331243336124365614466666|2503146|2|16","7|0222111332221132222213325511333511433555543665444|0531642|2|19","7|0000000130022213300026300555634455566666556666555|4061352|2|22","7|2221110222213366222336224233644443366453356645555|6425130|2|22","7|1100022111322213332521333552333452233345553365555|4061352|2|25","7|0001111000001130422113344441333344435444443544446|2530416|2|25","7|1000222110002233622223662222366664266556625556622|3160524|2|25","7|2201111244114124444436454443645555364444556666455|2406153|2|25","7|0222111222211144222354422335444455544655554465555|0635142|2|28","7|0033333033333162223116662333466656344665666666666|1635042|2|31","7|0000311442031142233314255531445533365555556555555|3625140|2|34","7|0000000102220012242001244203224225324442556644225|3046251|2|34","7|0111111111331114332214433551443555144444554444665|0253164|2|37","7|0000001001111100133220333322035344203555443356644|0361524|2|40","7|0011111231331123133352333335222344523335552336666|1502463|2|46","7|3110000311000030002043300244533044453554465555446|3140526|2|49","8|1444400514000005144032554443333544445355444653574466555744477777|60531427|1|8","8|2113333022134433222344432533433325444333255443675554666755544477|72053146|2|17","8|3330000132222011322000413330004133334444633347756644447766444777|36204715|2|17","8|0000333310333333100333324033733344437735466337556633377766337777|30752614|2|17","8|4411102241110022444100024444333244447722445577224445576244477762|51740263|2|17","8|1122230012223333422233334243333544436355666663566666636667666666|70352641|2|20","8|1111002312211223112222231111123311412255164112251641115516417155|50362714|2|20","8|2222000011122200322220003322000034420500343205503336755533377755|71402635|2|20","8|2202111152223111525534115554341155544441575476415744764157777666|27146053|2|20","8|2222310022223113222233332233333342233333555556335555566377555566|75240361|2|23","8|0002222213000222130222223304244277044442777544447555546477777766|20715364|2|26","8|0211333302211113226631132663333326664355266663352666737766667777|03164725|2|35","8|0033311133333121334431227374455577744456774455567774666677777666|05713642|2|38","8|1300004413004444130444423354464473544666755444667566666677777666|50714263|2|38","8|1111000015510000155122201151336614553356775555567775557677777776|50641372|2|41","8|0222222202322221523622245336424455364444656644746666677467777744|07426135|2|47","8|0000000010100333111033233313332333334522344445553464444536647777|30614725|2|47","8|0000111100031331020313336223333364433553646655336665553366677555|37162504|2|50","8|0000002210000023100022235000222350055433555544665555466655577766|20475163|2|53","8|7440022174440221744222557443325574442257777725576672277777777777|47531602|2|56","8|0000001130003111300031123330311243333122444466524777667247777772|35720641|2|11","8|0011111322223313266663336666655366645553666655556667775577777775|16073524|2|11","8|0333333303311332333344325333433353344443553444335334463355746633|04736152|2|11","8|1111033314212233142223334422333344423335447222356677275567777755|40362715|2|14","8|0000333300014433206144336064433366644577666475576664777767777777|13074625|2|14","8|1222222011222200155222001152223345555663776566637666663377766663|71460352|2|17","8|0011111143122222433222224433322544377255433772256666755566677775|02641735|2|17","8|0261111122661113226661332664553326645555265556652665667526666775|04163725|2|17","8|0001222301111123313322233433223334322235333223356333333566633755|24631705|2|17","8|4444444011444400133462067354666677544446755544467777466677777766|70514263|2|17","8|4440444442404144424443334553336344566663445555664455656677776666|35170462|2|17","8|3311110033111111331211113314141434444444346474553666775533337775|75302614|2|20","8|2000000022004011322441143544441455444444555554445555546457556666|47205361|2|20","8|1110022211112222113122441333324411334444133345443366655566665577|30417526|2|20","8|0000222413300024533322245353333455566664556666675777776777777777|20537164|2|20","8|2200000012000003120230031222330366443333655553336666535566555557|60352417|2|23","8|0000000000040111244444112224443154444466555644465556666656666776|27064135|2|23","8|0000001100001011330111123333117734433337647733576477375766777777|24731605|2|23","8|2222220022211400232334465333344653344466553444465444466654666667|63024157|2|23","8|4422200514222225442255554222553544423335462227554627275577777777|50362714|2|23","8|1000000011110030111103321111337711113347155533471665577755557777|20746315|2|23","8|2233000022333011223330314223333342332333622225536666555366665557|46130527|2|26","8|3310055531110555332204553324444566245445664455456664455566665575|41305726|2|26","8|1112004412222044333224443352224435544444335554443355444644444746|40316275|2|26","8|0000333324400331240073334440733547477335477733554667377744677777|37052614|2|26","8|0000000010000220130400221304000644440666447000654477766644777766|40613752|2|26","8|2211111022211111222231112222314122222444255222465556624677666666|75246130|2|26","8|0111111101111133221441432111444326674433266777556666677766666777|03174625|2|32","8|0000000011044422000004420300042233334422334444556346666566666755|20714635|2|32","8|2220000022202313552223335544434375544444755666667555555677777766|46253170|2|35","8|1111122011112222113112254337125544771555677775756667777777777777|73620514|2|35","8|0000222202222221006222110662223346622233666553336766677767777777|17360425|2|41","8|0000000122000011222066332226666354666666555555565555566657777666|46071352|2|44","8|0000001100011111023131110233331105534414553334445335444655557777|26135074|2|56","8|2111110022111130221711332117733327777437557773375766733757777777|63175024|3|51","9|000000033000020133002223333000003533040005533040505563445575566444575555555555885|062513847|1|9","9|110222222133333322533332228533332228533336428553666488533336688577766668577668888|207461538|1|9","9|111111004211533304215535304115335304115555344611533334665577774655557774665555578|620473158|2|12","9|000003333122200033442403033444463337444463777455663377555666777566677777588888877|402731586|2|15","9|112223003122223333222222333422233333442233333448222533488655533488777553888877533|704816352|2|18","9|220466611624463115624463115664663355644463335644666355646666375666666675688886775|261538074|2|21","9|111110007112111137622221637666624637688624667586664667887666667877777777887777777|642750381|2|21","9|222222200162330000662233333665235553655335554655555544666655444776655848766655888|702485316|2|24","9|000000333222000113262400133664411133644666333666556333666666333667688883666888833|470813526|2|24","9|000000000002212020002222224503322244503332847503362887503662287553362887555888888|146270385|2|24","9|100222222112232222553333222555534442565554542665655552666667555666777758666677558|206475138|2|27","9|220000003240001033240500003745500003745550603755850663777888868787888888888888888|350814726|2|27","9|001111113211114113211114413111444433114433337144466577644466778646666678666668888|130826475|2|27","9|000111111001111441231314411333374444557777466557777776577777666588878686888888886|250361847|2|30","9|222222210332221111332322641333333644353633644556666644566666674566666774555688777|852071364|2|30","9|322000011332001001322201111333444418557777448555787478657787778557887888577788888|483162057|2|33","9|440000000413322220453222200453335220455555520444557720454566722455556727555588777|716203584|2|36","9|311111120331441120351146122355546112555446662555666666576688666776686666788888866|857042613|2|39","9|111000000551110020511120222515222233515442223555442222754442226754744222777777888|524731806|2|45","9|001111115222222155824422155884423335844444555887555588887688888877688888888888888|064725318|2|60","9|333111202333312222343344224344444444444454444644455545664445545844747555888777755|746038152|1|9","9|000021111000222111002222111022231111424431111424433335424476355444776665777776855|172408536|2|12","9|000044444022771144022274444222374774226377744266355777226665767222666667266668666|061374285|2|12","9|000001111000111112003111522003333552333433352366335555366633335366333337368888877|047536182|2|18","9|022244441004224411004244441034444444534444444555664447566666477886664447888884447|073162584|2|18","9|022222111222244131222644431266666433256664444256888484266688487668888487688888888|062751384|2|18","9|120000004123304444122333444125533444225444464555544466557744446577447466587777446|702463851|2|18","9|411122600441222663444662633474666636474466636577666636577788666778888868788888888|825730614|2|21","9|111111000111551110211555500555553340666655340667755577667777777888888877888888888|620574183|2|21","9|222220044222221114222622244322662447552666447852666647866666777866676777888677777|574061382|2|21","9|222210000221110030221244433222244443244444453246644553246644433244673333444633388|530816247|2|21","9|000000000200000110202777133222771113277777433277544443277446663227446633222288333|170863524|2|21","9|444444000441443002411343022414333000444430000433335555473333356373338388333388888|627305814|2|21","9|333111102311144442331111442333411444344444477664554777644774447687777777687777777|738264051|2|24","9|100222222111552233446555233466665533446555533666665337666688877668688877668888777|206815374|2|24","9|001111111011111113001101223000003233577403333577777736777888836777888838778888888|147530826|2|24","9|001118888021133338023338888022333338000334388005344488666666888677777788666677888|031752468|2|27","9|330000003133333333113533234133555234131155444111155554165555444166575488166664448|306275148|2|27","9|222203111222233151222223351422333551422266655666666655666666557666666657666688855|461307285|2|27","9|000166662030133662330336622533333622534333662555377666775378886777377788777778888|137520846|2|30","9|200331111223311111223111111223334111223534441233535544336555547885557557888857777|160475283|2|30","9|111000000131100000331002220331012440331112244331152264333755664377775544333777584|305184627|2|30","9|777800002711800032718888332788883333788333344758888664758686666788666666888866666|428571603|2|30","9|311110222313110222333112222333112244333311244553361244556666677555677777666666668|536170248|2|33","9|111000002111002002111112022114112223144452333444552222447566266447556666777786666|605813724|2|33","9|110004444111500444155500244155530246115555446115885446155855776115857776188855777|306472851|2|33","9|110000043144444443122424443122224433115244426115242226115222666175222777777777778|304752618|2|36","9|022114445221111455222211455724444435726664635726666655728866665778555565888855555|042758613|2|39","9|022222222003322311333323341333333441333335411333555111733351116773355555333338885|074263815|2|48","9|222220555221100555231555565233355465444444465447774465747744665777744688744444488|530248617|2|63","9|210111111211113331221133331244113331224413111522443336582244666588286667558888667|241730685|3|29","9|022222221223333111223333331333333311444444313777455333776675555776778855777777885|081635247|3|41","9|000111122311112222333332322444433332444445552444445552444655522444666577444446888|027415386|3|41","9|110000222311500222344555552344455555644455555666655555668775555668877575688887775|528036174|3|47","9|220011113520111313524443333554446633555546666575446868876666888877686668888888888|371840526|3|52","9|223333001222443331222444433222444333244444433224553333267577733767777883777788883|680724135|3|56","9|033111122333311112333312222331111442644444422644444475664644475866666477888666667|046158372|3|59","9|000222222002221122002231124022233554000663554000677577000677777008777777088777777|052486371|3|61","9|333022222330022241320222244322222244332524444335555444366644444366664474887777774|385064271|3|62","9|002244444002222411633322445636334445666636455686666555886866667886887777888888877|074168253|3|64","9|222011111232211144232214444331111444111114444155611444555661174588666674888888777|362081475|3|67"];
+const TOTAL=LEVELS.length;
+const PALETTE=['#bfe3f2','#ffe9a8','#c9e8b4','#f8c9c9','#d9c8f0','#ffd6a5','#b8e6df','#f3d1e8','#e0dcc0'];
+const $=id=>document.getElementById(id);
+
+// ---------- 存檔 ----------
+function load(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+let progress=load('qp_progress',{max:1,stars:{}});
+
+
+// ---------- 語言 ----------
+const I18N={
+  en:{ttl:'Quack Pond',sub:'DUCK LOGIC PUZZLE',undo:'↶ Undo',hint:'💡 Hint',reset:'↻ Reset',tut:'📖 How to play',menu:'🗺 Levels',lang:'🌐 中文',
+    winTitle:'Quack! Cleared!',next:'Next ▶',levels:'Levels',overTitle:'The ducks flew away…',
+    overText:'You ran out of hearts.<br>Think about which cell is really safe, then try again!',retry:'Try again',
+    menuTitle:'Select level',menuSub:'Clear a level to unlock the next one',close:'Close',
+    lvl:(n,N)=>'Level '+n+' · '+N+'×'+N,tiers:['','Easy','Medium','Hard'],pond:N=>N+'×'+N+' Pond',
+    time:ms=>'Time '+ms,allClear:'  — All levels cleared, congrats!',
+    back:'◀ Back',nextPage:'Next ▶',go:"Let's play! 🦆",doc:'Quack Pond'},
+  zh:{ttl:'呱呱池塘',sub:'QUACK POND',undo:'↶ 復原',hint:'💡 提示',reset:'↻ 重來',tut:'📖 教學',menu:'🗺 選關',lang:'🌐 English',
+    winTitle:'呱！過關！',next:'下一關 ▶',levels:'選關',overTitle:'鴨子們嚇跑了…',
+    overText:'3 顆愛心都用完了。<br>想一想哪一格才是對的，再來一次！',retry:'再試一次',
+    menuTitle:'選擇關卡',menuSub:'通關後解鎖下一關',close:'關閉',
+    lvl:(n,N)=>'第 '+n+' 關 · '+N+'×'+N,tiers:['','輕鬆','進階','燒腦'],pond:N=>N+'×'+N+' 池塘',
+    time:ms=>'用時 '+ms,allClear:'　— 全部通關，恭喜！',
+    back:'◀ 上一頁',nextPage:'下一頁 ▶',go:'開始玩！🦆',doc:'呱呱池塘 Quack Pond'}
+};
+let lang=load('qp_lang','en');
+const t=k=>I18N[lang][k];
+function applyLang(){
+  document.documentElement.lang=lang==='zh'?'zh-Hant':'en';
+  document.title=t('doc');
+  $('ttl').textContent=t('ttl');$('sub').textContent=t('sub');
+  $('undo').innerHTML=t('undo');$('reset').innerHTML=t('reset');
+  $('hint').innerHTML=t('hint')+' <span id="hintN">'+hints+'</span>';
+  $('tutBtn').innerHTML=t('tut');$('menuBtn').innerHTML=t('menu');$('langBtn').innerHTML=t('lang');
+  $('winTitle').textContent=t('winTitle');$('next').textContent=t('next');$('winMenu').textContent=t('levels');
+  $('overTitle').textContent=t('overTitle');$('overText').innerHTML=t('overText');
+  $('retry').textContent=t('retry');$('overMenu').textContent=t('levels');
+  $('menuTitle').textContent=t('menuTitle');$('menuSub').textContent=t('menuSub');$('menuClose').textContent=t('close');
+  $('tutPrev').textContent=t('back');
+  if(L){
+    $('lv').textContent=t('lvl')(level,L.N);
+    const tg=$('tag');tg.textContent=t('tiers')[L.tier];tg.className='pill tag'+L.tier;
+  }
+  if($('tut').classList.contains('show'))renderTut();
+  if($('menu').classList.contains('show'))openMenu(true);
+}
+
+// ---------- 關卡 ----------
+function parseLevel(lv){
+  const[N,reg,sol,tier]=LEVELS[lv-1].split('|');
+  const n=+N,grid=[];
+  for(let r=0;r<n;r++)grid.push([...reg.slice(r*n,r*n+n)].map(Number));
+  return{N:n,reg:grid,sol:[...sol].map(Number),tier:+tier};
+}
+
+// ---------- 狀態 ----------
+let level=1,L=null,marks=null,wrong=new Set(),hearts=3,hints=3,hist=[],t0=0,timerId=null,state='play',muted=false;
+// marks：0 空 / 1 筆記✕ / 2 鴨子 / 3 確定不是鴨（自動✕） / 4 放錯的格子
+
+// ---------- 音效 ----------
+let AC=null;
+function ac(){AC=AC||new(window.AudioContext||window.webkitAudioContext)();return AC}
+function quack(n=1){
+  if(muted)return;
+  try{const a=ac();
+    for(let i=0;i<n;i++){
+      const t=a.currentTime+i*0.22,o=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();
+      o.type='sawtooth';o.frequency.setValueAtTime(420,t);o.frequency.exponentialRampToValueAtTime(260,t+.12);
+      f.type='bandpass';f.frequency.value=900;f.Q.value=1.2;
+      g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.25,t+.015);g.gain.exponentialRampToValueAtTime(.001,t+.16);
+      o.connect(f);f.connect(g);g.connect(a.destination);o.start(t);o.stop(t+.18);
+    }}catch(e){}
+}
+function tick(){
+  if(muted)return;
+  try{const a=ac(),t=a.currentTime,o=a.createOscillator(),g=a.createGain();
+    o.frequency.value=700;g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.001,t+.05);
+    o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+.06);}catch(e){}
+}
+function buzz(){
+  if(muted)return;
+  try{const a=ac(),t=a.currentTime,o=a.createOscillator(),g=a.createGain();
+    o.type='square';o.frequency.setValueAtTime(180,t);o.frequency.exponentialRampToValueAtTime(90,t+.25);
+    g.gain.setValueAtTime(.14,t);g.gain.exponentialRampToValueAtTime(.001,t+.28);
+    o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+.3);}catch(e){}
+}
+
+// ---------- 共用：格子樣式 ----------
+const LINE='3px solid #1f3b4d',THIN='1px solid #ffffff99';
+function cellStyle(reg,N,r,c){
+  const g=reg[r][c];
+  const bd=(dr,dc)=>{const a=r+dr,b=c+dc;return(a<0||b<0||a>=N||b>=N)?'0':(reg[a][b]!==g?LINE:THIN)};
+  return 'background-color:'+PALETTE[g%PALETTE.length]+';border-top:'+bd(-1,0)+';border-bottom:'+bd(1,0)+';border-left:'+bd(0,-1)+';border-right:'+bd(0,1);
+}
+const DUCK='<svg viewBox="0 0 100 100"><use href="#duck"/></svg>';
+const XM='<svg class="xm" viewBox="0 0 20 20" style="color:#1f3b4d"><use href="#xmark"/></svg>';
+const XM_RED='<svg class="xm" viewBox="0 0 20 20" style="color:#e5484d"><use href="#xmark"/></svg>';
+
+// ---------- 開始關卡 ----------
+function startLevel(lv){
+  level=Math.min(Math.max(1,lv),TOTAL);
+  L=parseLevel(level);
+  marks=Array.from({length:L.N},()=>new Array(L.N).fill(0));
+  wrong=new Set();hearts=3;hints=3;hist=[];state='play';
+  closeAll();
+  save('qp_level',level);
+  applyLang();$('hint').classList.remove('off');
+  t0=Date.now();clearInterval(timerId);
+  timerId=setInterval(()=>{if(state==='play')$('time').textContent=fmt(Date.now()-t0)},500);
+  $('time').textContent='0:00';
+  renderHearts();render();
+}
+function fmt(ms){const s=Math.floor(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+
+function renderHearts(lostIdx=-1){
+  let h='';
+  for(let i=0;i<3;i++)h+='<svg class="heart '+(i<hearts?'full':'empty')+(i===lostIdx?' lose':'')+'" viewBox="0 0 32 32"><use href="#heart"/></svg>';
+  $('hearts').innerHTML=h;
+}
+
+function render(popCell){
+  const N=L.N,B=$('board');
+  B.style.gridTemplateColumns='repeat('+N+',1fr)';
+  B.style.gridTemplateRows='repeat('+N+',1fr)';
+  let html='';
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+    const m=marks[r][c];
+    const cls='cell'+(m===3?' auto':'')+(m===4?' wrong':'');
+    let inner='';
+    if(m===1||m===3)inner=XM;else if(m===4)inner=XM_RED;else if(m===2)inner=DUCK;
+    html+='<div class="'+cls+'" data-r="'+r+'" data-c="'+c+'" style="'+cellStyle(L.reg,N,r,c)+'">'+inner+'</div>';
+  }
+  B.innerHTML=html;
+  if(popCell){
+    const el=B.querySelector('.cell[data-r="'+popCell[0]+'"][data-c="'+popCell[1]+'"] svg');
+    if(el)el.classList.add('pop');
+  }
+}
+
+function autoX(r,c){
+  const N=L.N,g=L.reg[r][c];
+  for(let a=0;a<N;a++)for(let b=0;b<N;b++){
+    if(marks[a][b]!==0&&marks[a][b]!==1)continue;
+    if(a===r||b===c||L.reg[a][b]===g||(Math.abs(a-r)<=1&&Math.abs(b-c)<=1))marks[a][b]=3;
+  }
+}
+function snap(){hist.push(marks.map(r=>r.slice()));if(hist.length>200)hist.shift()}
+function duckCount(){let n=0;for(const row of marks)for(const v of row)if(v===2)n++;return n}
+
+function placeDuck(r,c){
+  snap();marks[r][c]=2;autoX(r,c);
+  quack(1);render([r,c]);
+  if(duckCount()===L.N)win();
+}
+
+function loseHeart(r,c){
+  marks[r][c]=4;wrong.add(r+','+c);
+  hearts--;buzz();
+  render();renderHearts(hearts);
+  const B=$('board');B.classList.remove('shake');void B.offsetWidth;B.classList.add('shake');
+  if(hearts<=0){state='over';setTimeout(()=>show('over'),500)}
+}
+
+$('board').addEventListener('click',e=>{
+  const el=e.target.closest('.cell');if(!el||state!=='play')return;
+  const r=+el.dataset.r,c=+el.dataset.c,v=marks[r][c];
+  if(v===0){snap();marks[r][c]=1;tick();render()}
+  else if(v===1){
+    if(L.sol[r]===c)placeDuck(r,c);else loseHeart(r,c);
+  }
+});
+
+$('undo').onclick=()=>{
+  if(state!=='play'||!hist.length)return;
+  marks=hist.pop();
+  for(const k of wrong){const[r,c]=k.split(',').map(Number);marks[r][c]=4}
+  render();
+};
+$('reset').onclick=()=>{
+  if(state!=='play')return;
+  marks=Array.from({length:L.N},()=>new Array(L.N).fill(0));
+  for(const k of wrong){const[r,c]=k.split(',').map(Number);marks[r][c]=4}
+  hist=[];render();
+};
+$('hint').onclick=()=>{
+  if(state!=='play'||hints<=0)return;
+  const miss=[];
+  for(let r=0;r<L.N;r++)if(marks[r][L.sol[r]]!==2)miss.push(r);
+  if(!miss.length)return;
+  const r=miss[Math.floor(Math.random()*miss.length)];
+  hints--;$('hintN').textContent=hints;if(hints<=0)$('hint').classList.add('off');
+  placeDuck(r,L.sol[r]);
+};
+$('langBtn').onclick=()=>{lang=lang==='en'?'zh':'en';save('qp_lang',lang);applyLang()};
+$('mute').onclick=()=>{muted=!muted;$('mute').textContent=muted?'🔇':'🔊';save('qp_muted',muted)};
+
+// ---------- 彈窗 ----------
+function show(id){$(id).classList.add('show')}
+function closeAll(){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'))}
+
+function win(){
+  state='won';
+  const ms=Date.now()-t0,stars=hearts;
+  const old=progress.stars[level]||0;
+  if(stars>old)progress.stars[level]=stars;
+  progress.max=Math.max(progress.max,Math.min(level+1,TOTAL));
+  save('qp_progress',progress);
+  let s='';for(let i=0;i<3;i++)s+='<svg class="'+(i<stars?'on':'off')+'" viewBox="0 0 50 50"><use href="#star"/></svg>';
+  $('winStars').innerHTML=s;
+  $('winInfo').textContent=t('time')(fmt(ms))+(level>=TOTAL?t('allClear'):'');
+  $('next').style.display=level>=TOTAL?'none':'';
+  quack(3);
+  setTimeout(()=>show('win'),400);
+}
+$('next').onclick=()=>startLevel(level+1);
+$('winMenu').onclick=()=>{closeAll();openMenu()};
+$('retry').onclick=()=>startLevel(level);
+$('overMenu').onclick=()=>{closeAll();openMenu()};
+
+// ---------- 選關 ----------
+function openMenu(keep){
+  let html='',lastN=0;
+  for(let i=1;i<=TOTAL;i++){
+    const n=+LEVELS[i-1].split('|')[0];
+    if(n!==lastN){html+='<div class="lvhead">'+t('pond')(n)+'</div>';lastN=n}
+    const locked=i>progress.max,st=progress.stars[i]||0;
+    const cls='lvbtn'+(locked?' lock':'')+(st?' done':'')+(i===level?' cur':'');
+    html+='<button class="'+cls+'" data-lv="'+i+'">'+(locked?'🔒':i)+(st?'<i>'+'★'.repeat(st)+'</i>':'')+'</button>';
+  }
+  $('lvgrid').innerHTML=html;
+  show('menu');
+  if(!keep){const cur=$('lvgrid').querySelector('.cur');if(cur)cur.scrollIntoView({block:'center'});}
+}
+$('lvgrid').addEventListener('click',e=>{
+  const b=e.target.closest('.lvbtn');if(!b||b.classList.contains('lock'))return;
+  startLevel(+b.dataset.lv);
+});
+$('menuBtn').onclick=openMenu;
+$('menuClose').onclick=closeAll;
+
+// ---------- 教學 ----------
+const REG4=[[0,0,1,1],[0,0,1,1],[2,3,3,1],[2,2,3,3]];   // 示範盤面（解：(0,1)(1,3)(2,0)(3,2)）
+const REG_T1=[[0,0,0,1],[0,2,2,1],[3,3,2,1],[3,3,3,1]];
+const REG_T2=[[0,0,0,0],[1,1,2,2],[3,3,2,2],[3,3,2,2]];
+
+// marks 字串：'.' 空 'x' ✕ 'd' 鴨 'D' 錯誤的鴨(紅底)；hl：要圈起來的格子
+function mini(reg,rows,hl=[]){
+  const N=reg.length;let h='<div class="mini" style="grid-template-columns:repeat('+N+',auto)">';
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+    const ch=rows[r][c],isH=hl.some(p=>p[0]===r&&p[1]===c);
+    h+='<div class="mc'+(isH?' hl':'')+(ch==='D'?' badc':'')+'" style="'+cellStyle(reg,N,r,c)+'">'+
+      (ch==='x'?XM:(ch==='d'||ch==='D')?DUCK:'')+'</div>';
+  }
+  return h+'</div>';
+}
+function fig(board,cap,cls=''){return '<figure class="'+cls+'">'+board+'<figcaption>'+cap+'</figcaption></figure>'}
+function autoRows(reg,r0,c0){
+  const N=reg.length,rows=[];
+  for(let r=0;r<N;r++){let s='';for(let c=0;c<N;c++){
+    if(r===r0&&c===c0)s+='d';
+    else s+=(r===r0||c===c0||reg[r][c]===reg[r0][c0]||(Math.abs(r-r0)<=1&&Math.abs(c-c0)<=1))?'x':'.';
+  }rows.push(s)}
+  return rows;
+}
+const kb=(sym)=>'<span class="kbd"><svg viewBox="0 0 20 20" style="color:#1f3b4d"><use href="#'+sym+'"/></svg></span>';
+
+const TUT={
+en:[
+  ()=>'<h3>🦆 Welcome to Quack Pond!</h3>'+
+    '<p class="center">The pond is split into <b>colored regions</b>.<br>Your job: <b>place the ducks</b> so each one sits in a safe spot.</p>'+
+    '<div class="minis">'+fig(mini(REG4,['.d..','...d','d...','..d.']),'A finished 4×4 pond','good')+'</div>'+
+    '<p class="center">Every puzzle has <b>exactly one</b> answer and needs <b>no guessing</b> — just logic.</p>',
+  ()=>'<h3>📜 Three rules</h3>'+
+    '<ol><li>Exactly <b>1 duck</b> in every <b>row and column</b>.</li>'+
+    '<li>Exactly <b>1 duck</b> in every <b>colored region</b>.</li>'+
+    "<li>Ducks <b>can't touch</b> each other — not even diagonally.</li></ol>"+
+    '<div class="minis">'+
+      fig(mini(REG4,['.D.D','....','....','....']),'2 in one row ✗','bad')+
+      fig(mini(REG4,['..D.','....','...D','....']),'2 in one color ✗','bad')+
+      fig(mini(REG4,['....','.D..','..D.','....']),'Touching diagonally ✗','bad')+
+    '</div>',
+  ()=>'<h3>👆 How to play</h3>'+
+    '<ol>'+
+    '<li>Tap an empty cell → marks a '+kb('xmark')+' (your <b>note</b> for "no duck here". Free, no penalty).</li>'+
+    '<li>Tap the '+kb('xmark')+' again → <b>place a duck</b> 🦆.</li>'+
+    '<li>A correct duck <b>auto-fades ✕</b> into its row, column, region and the 8 cells around it.</li>'+
+    '<li>A <b>wrong</b> duck costs 1 <span style="color:#e5484d">❤</span> and the cell turns red.</li>'+
+    '</ol>'+
+    '<div class="note">❤ You get <b>3 hearts</b> per level. Lose them all and the level fails.<br>More hearts left = more stars ★★★<br>💡 Hint: 3 per level. It places a correct duck for free.</div>',
+  ()=>'<h3>🧠 Trick 1 · Only one cell left</h3>'+
+    '<div class="minis">'+fig(mini(REG_T1,['...x','...x','....','...x'],[[2,3]]),'Every other cell in this region is ✕. Only the circled one is left','good')+'</div>'+
+    '<p>If a region (or a row / column) has <b>only one open cell</b>, the duck must be there!<br><span style="opacity:.75">Tip: start with the smallest regions.</span></p>',
+  ()=>'<h3>🧠 Trick 2 · A region stuck in one row</h3>'+
+    '<div class="minis">'+fig(mini(REG_T2,['....','....','....','....'],[[1,0],[1,1]]),'This region only has these 2 cells, both in row 2')+
+      fig(mini(REG_T2,['....','..xx','....','....']),'So no other cell in row 2 can hold a duck → ✕','good')+'</div>'+
+    "<p>This region's duck <b>must</b> be in row 2, which uses up that row's only duck. Every other cell in the row can be crossed out.<br>Same idea for a region stuck in one <b>column</b>.</p>",
+  ()=>'<h3>🧠 Trick 3 · What-if and chain reactions</h3>'+
+    '<div class="minis">'+fig(mini(REG_T2,autoRows(REG_T2,1,1)),'If a duck goes here: its row, column, region and all 8 neighbors are ✕')+'</div>'+
+    '<p>When unsure, ask: <b>"If I put a duck here, does some region / row / column run out of spots?"</b><br>If yes, this cell can\'t hold a duck → ✕.<br>More ✕ means fewer choices, and it chains until the puzzle is solved!</p>'+
+    '<div class="note">Later levels combine tricks, like 2 regions squeezed into 2 rows. Ready? 🦆</div>',
+],
+zh:[
+  ()=>'<h3>🦆 歡迎來到呱呱池塘！</h3>'+
+    '<p class="center">池塘被分成好幾塊<b>不同顏色的區域</b>。<br>你的任務：<b>把鴨子放進池塘</b>，每隻都要待在安全的位置。</p>'+
+    '<div class="minis">'+fig(mini(REG4,['.d..','...d','d...','..d.']),'這就是一個完成的 4×4 池塘','good')+'</div>'+
+    '<p class="center">每一關的答案都<b>只有一種</b>，而且完全不用亂猜，靠推理就能解開。</p>',
+  ()=>'<h3>📜 三條規則</h3>'+
+    '<ol><li><b>每一行、每一列</b>都要剛好 <b>1 隻</b>鴨子。</li>'+
+    '<li><b>每個顏色區域</b>也要剛好 <b>1 隻</b>鴨子。</li>'+
+    '<li>鴨子之間<b>不能相鄰</b>，連斜角碰到也不行。</li></ol>'+
+    '<div class="minis">'+
+      fig(mini(REG4,['.D.D','....','....','....']),'同一行 2 隻 ✗','bad')+
+      fig(mini(REG4,['..D.','....','...D','....']),'同一個顏色 2 隻 ✗','bad')+
+      fig(mini(REG4,['....','.D..','..D.','....']),'斜角相鄰 ✗','bad')+
+    '</div>',
+  ()=>'<h3>👆 怎麼操作</h3>'+
+    '<ol>'+
+    '<li>點空格一下 → 標上 '+kb('xmark')+'（這是你的<b>筆記</b>，表示「這裡沒有鴨」，不會扣血）。</li>'+
+    '<li>在 '+kb('xmark')+' 上再點一下 → <b>放下鴨子</b> 🦆。</li>'+
+    '<li>鴨子放對了，同行、同列、同區域和周圍一圈會<b>自動變淡 ✕</b>，不用自己標。</li>'+
+    '<li>鴨子<b>放錯</b>會扣 1 顆 <span style="color:#e5484d">❤</span>，那格會變成紅色 ✕。</li>'+
+    '</ol>'+
+    '<div class="note">❤ 一關有 <b>3 顆愛心</b>，全部扣光就失敗，要重新挑戰。<br>剩越多愛心，過關星星越多 ★★★<br>💡「提示」每關 3 次，會直接幫你放對一隻，不扣血。</div>',
+  ()=>'<h3>🧠 推理技巧 ①　只剩一格</h3>'+
+    '<div class="minis">'+fig(mini(REG_T1,['...x','...x','....','...x'],[[2,3]]),'右邊這個區域，其他格都打 ✕，只剩圈起來那一格','good')+'</div>'+
+    '<p>某個區域（或某一行、某一列）如果<b>只剩 1 個空格</b>，鴨子就一定在那裡！<br><span style="opacity:.75">小訣竅：先看最小的區域，通常最快有突破。</span></p>',
+  ()=>'<h3>🧠 推理技巧 ②　整個區域擠在同一行</h3>'+
+    '<div class="minis">'+fig(mini(REG_T2,['....','....','....','....'],[[1,0],[1,1]]),'圈起來的區域只有這 2 格，都在第 2 行')+
+      fig(mini(REG_T2,['....','..xx','....','....']),'所以第 2 行其他格都不可能有鴨 → 打 ✕','good')+'</div>'+
+    '<p>這個區域的鴨子<b>一定</b>落在第 2 行，那麼這一行的名額就被它用掉了，同一行的其他格都可以打 ✕。<br>同理，整個區域擠在同一<b>列</b>也一樣。</p>',
+  ()=>'<h3>🧠 推理技巧 ③　假設法與連鎖</h3>'+
+    '<div class="minis">'+fig(mini(REG_T2,autoRows(REG_T2,1,1)),'假設這裡有鴨：同行、同列、同區域、周圍 8 格全部 ✕')+'</div>'+
+    '<p>不確定時可以問自己：「<b>如果這格放鴨子，會不會害某個區域／行／列沒位置放？</b>」<br>如果會，這格就一定<b>不是</b>鴨子 → 打 ✕。<br>✕ 越多，剩下的選擇越少，一路連鎖下去就解開了！</p>'+
+    '<div class="note">高階關卡還會出現「2 個區域一起擠在 2 行」之類的組合推理，慢慢你就會看出來。準備好了嗎？🦆</div>',
+]};
+let tutPage=0;
+function renderTut(){
+  const P=TUT[lang];$('tutBody').innerHTML=P[tutPage]();
+  $('tutDots').innerHTML=P.map((_,i)=>'<b class="'+(i===tutPage?'on':'')+'"></b>').join('');
+  $('tutPrev').style.visibility=tutPage===0?'hidden':'visible';
+  $('tutNext').textContent=tutPage===P.length-1?t('go'):t('nextPage');
+}
+function openTut(){tutPage=0;renderTut();show('tut')}
+$('tutBtn').onclick=openTut;
+$('tutPrev').onclick=()=>{if(tutPage>0){tutPage--;renderTut()}};
+$('tutNext').onclick=()=>{if(tutPage<TUT[lang].length-1){tutPage++;renderTut()}else{$('tut').classList.remove('show');save('qp_seen',true)}};
+
+// ---------- 啟動 ----------
+muted=load('qp_muted',false);$('mute').textContent=muted?'🔇':'🔊';
+startLevel(Math.min(load('qp_level',1),progress.max));
+if(!load('qp_seen',false))openTut();
+</script>
+</body>
+</html>
