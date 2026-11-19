@@ -2374,7 +2374,7 @@ html.frontier-immersive{overflow:hidden}
     <div class="console"><div class="sneak-stage"><canvas id="peek-canvas" tabindex="0" width="800" height="450" aria-label="別看：自動奔跑逃向出口；左右滑躲進路邊的躲藏處，有道具時點左右半邊，點一下撿東西；聽見前兆再決定怎麼躲"></canvas><button type="button" id="peek-fsx" class="peek-fsx" hidden>退出全螢幕</button></div>
       <div class="side"><section class="panel" aria-label="別看操作">
         <dl class="stats"><div><dt>逃跑進度</dt><dd id="peek-prog">0%</dd></div><div><dt>躲過襲擊</dt><dd id="peek-spirits">0 次襲擊</dd></div><div><dt>最佳進度</dt><dd id="peek-best">0%</dd></div></dl>
-        <dl class="stats"><div><dt>目前關卡</dt><dd id="peek-lvl">自由跑</dd></div><div><dt>生命</dt><dd id="peek-lives">—</dd></div></dl>
+        <dl class="stats"><div><dt>目前關卡</dt><dd id="peek-lvl">自由跑</dd></div></dl>
         <dl class="stats"><div><dt>死因圖鑑</dt><dd id="peek-codex">0 / 18</dd></div><div><dt>累計躲過</dt><dd id="peek-dodges">0 次</dd></div></dl>
         <div class="field"><label>關卡（0＝自由跑，1–100）<input id="peek-level" data-lv="1" type="number" min="0" max="100" value="1"></label><label>種子碼（可留空）<input id="peek-seed" type="text" maxlength="8" autocomplete="off"></label><label><input id="peek-daily" type="checkbox"> 每日挑戰（用今天的種子）</label></div>
         <input id="peek-amount" type="hidden" value="0">
@@ -5688,7 +5688,7 @@ html.frontier-immersive{overflow:hidden}
   "現在不是你的回合。": "It is not your turn.",
   "現在不能使用道具。": "You cannot use items right now.",
   "瓊漿": "Nectar",
-  "生命": "HP",
+  "生命": "Lives",
   "生命 5/5": "HP 5/5",
   "生命相同，平手。": "Equal HP: a draw.",
   "用過醒酒藥後，本回合不能再用道具。": "After the Sober Pill, no more items this turn.",
@@ -7598,7 +7598,31 @@ html.frontier-immersive{overflow:hidden}
   "背後傳來腳步聲，越來越急。": "Footsteps behind you, faster and faster.",
   "牠在追你。": "It is chasing you.",
   "連點螢幕（電腦按 F 或 Enter）拉開距離，最後牠從一側撲來，躲進另一側。": "Tap the screen (F or Enter on a keyboard) to pull ahead; at the end it lunges from one side, so hide on the other.",
-  "身後": "Behind"
+  "身後": "Behind",
+  "Flick 收下寶箱，放過了你": "Flick takes the chest and lets you go",
+  "Nib 收下寶箱，留下兩卷軸": "Nib takes the chest and leaves two scrolls",
+  "丟向葉下客、敲枝者、靜林鬼，燒掉牠們": "Throw at the Leafling, the Knocker or the Hush to burn them",
+  "丟向葉下客、敲枝者、靜林鬼，燒掉牠們；對其他鬼沒用。": "Throw at the Leafling, the Knocker or the Hush to burn them. It does nothing to other ghosts.",
+  "你死了，整輪重來，回到第 1 關。": "You died. The whole run starts over from level 1.",
+  "卷軸 +1": "Scroll +1",
+  "卷軸對牠沒用": "The scroll does nothing to this one",
+  "卷軸燒掉了牠": "The scroll burned it",
+  "寶箱要送給 Flick 或 Nib": "Give the chest to Flick or Nib",
+  "從第 1 關重來": "Start over from level 1",
+  "沒有卷軸": "No scrolls",
+  "沒有寶箱": "No chests",
+  "沒有火把": "No torches",
+  "沒有護身符": "No charm",
+  "營火旁的裝飾。": "A decoration by the campfire.",
+  "現在不需要火把": "No need for a torch right now",
+  "自動擋下一次致命失誤": "Automatically blocks one fatal mistake",
+  "護身符會自動擋下一次致命失誤": "The charm automatically blocks one fatal mistake",
+  "身上帶著 3 卷以上舊卷軸時，會出現在營火旁。": "Appears by the campfire while you carry 3 or more old scrolls.",
+  "送給 Flick 或 Nib，牠們會放過你": "Give it to Flick or Nib and they will spare you",
+  "這一輪結束了": "This run is over",
+  "點一下火把：下次襲擊多 0.6 秒並標出方向": "Tap the torch: 0.6 s more warning before the next attack, and it marks the direction",
+  "點一下火把：下次襲擊多 0.6 秒預警並標出方向。": "Tap the torch: 0.6 s more warning before the next attack, and it marks the direction.",
+  "點火把，或把寶箱送給牠；都沒有就躲進另一側。": "Light a torch or give it a chest; with neither, hide on the other side."
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -12765,8 +12789,8 @@ resetGame();ui();draw();requestAnimationFrame(frame);
   /* ---------- Don't Peek: wind the music box while spirits strike; lean away, cover the screen, hold still ---------- */
   var peekBusy=false,peekStake=0,peekSay=function(){};
   (function(){
-const FB='"Alegreya Sans","Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif',FD='Cinzel,"Alegreya Sans","Noto Sans TC","PingFang TC",serif',MINSZ=14;
-try{[['Cinzel',700,'cinzel-latin-700'],['Cinzel',800,'cinzel-latin-800'],['Alegreya Sans',500,'alegreya-sans-latin-500'],['Alegreya Sans',700,'alegreya-sans-latin-700'],['Alegreya Sans',800,'alegreya-sans-latin-800']].forEach(f=>{const ff=new FontFace(f[0],'url(games/peek/assets/fonts/'+f[2]+'.woff2)',{weight:String(f[1])});document.fonts.add(ff);ff.load().catch(()=>{})})}catch(e){}
+const FB='Spectral,"Songti TC","Noto Serif TC","PMingLiU","Noto Serif CJK TC",serif',FD='Cinzel,Spectral,"Songti TC","Noto Serif TC","PMingLiU",serif',MINSZ=14;   // Spectral has lining numerals (a 0 looks like a 0) and a serif Chinese fallback so both scripts match
+try{[['Cinzel',700,'cinzel-latin-700'],['Cinzel',800,'cinzel-latin-800'],['Spectral',600,'spectral-latin-600'],['Spectral',700,'spectral-latin-700'],['Spectral',800,'spectral-latin-800']].forEach(f=>{const ff=new FontFace(f[0],'url(games/peek/assets/fonts/'+f[2]+'.woff2)',{weight:String(f[1])});document.fonts.add(ff);ff.load().catch(()=>{})})}catch(e){}
 const c=$('peek-canvas'),g=c.getContext('2d'),W=800,H=450,CX=400,OL='#120d0a';
 const BASE_RATE=2;                         // % of the corridor covered per second: the runner keeps jogging by itself
 const MILE_EVENTS=2,MILE_REWARD=2,WIN_REWARD=5; // fixed BONUS: survive 2 spirits +2, reach the exit and open the box +5, each once per round
@@ -12793,7 +12817,7 @@ const SIDE=230,PICK_AT=.3,DROP_EVERY=[7,11],CAMP_EVERY=20,CAMP_REST=3,CAMP_WIN=3
 const CARD_W=170,CARD_H=198,CARD_Y=146,CARDS_X=[CX-285,CX-85,CX+115];
 const CAMP_CARDS=['torch','charm','scroll'];
 const ITEM_NAME={torch:'火把',charm:'護身符',scroll:'舊卷軸',nib:'Nib',chest:'寶箱',rook:'旅人 Rook'};
-const ITEM_DESC={torch:'下次襲擊多 0.6 秒並標出方向',charm:'擋下一次致命失誤',scroll:'每集滿 3 卷 +1 命（上限 5），並掛上骷髏燈籠',nib:'無害的小傢伙，偷偷塞給你一卷軸',chest:'火把 +1、護身符 +1',rook:'旅人分你一樣：火把或護身符'};
+const ITEM_DESC={torch:'點一下火把：下次襲擊多 0.6 秒並標出方向',charm:'自動擋下一次致命失誤',scroll:'丟向葉下客、敲枝者、靜林鬼，燒掉牠們',nib:'無害的小傢伙，偷偷塞給你一卷軸',chest:'送給 Flick 或 Nib，牠們會放過你',rook:'旅人分你一樣：火把或護身符'};
 const FLICK_TIPS=['小螢：腳邊的落葉聚成一堆，就躲進另一側。','小螢：鳥群突然飛走，是有東西在敲樹枝。','小螢：蟲鳴停了。左右各有一件道具，點牠怕的那一件。','小螢：不同的鬼怕不同的道具：燈籠、符紙、鐵鎚、水桶。','小螢：風向反了。拖行聲從哪邊來，就躲進那一邊。','小螢：首領怕符紙，點符紙那一側。','小螢：首領怕符紙，點符紙那一側。','小螢：土面鼓起的那邊會伸出手，躲進另一邊。','小螢：鐘響三下。第三下之後往下滑低頭，一直低著頭，直到鐘聲散去。','小螢：躲太久會被發現。視野變暗就快憋不住了，鬼過去就出來。','小螢：水冒泡了。快速連點兩下！','小螢：冰在裂開。裂縫到腳邊的那一刻，點一下。','小螢：煙在哪邊，就躲進另一邊。','小螢：那些螢火是假的。點下方的火把，沒火把就躲進另一側。','小螢：記住嚎叫的節奏，等牠停了再點。','小螢：哪邊閃光，就躲進哪邊的雪洞。','小螢：起霧了，有張臉貼過來。點鐵鎚。','小螢：天暗了，鴉群在拍翅。點水桶。'];
 const CAUSES={eye:'死因 #1 葉下客：落葉聚在哪一邊，你沒有躲進另一側',twins:'死因 #2 敲枝者：敲擊聲在哪一邊，你就躲進哪一邊',walkerLate:'死因 #3 靜林鬼：你沒有及時點起道具',walkerMove:'死因 #4 靜林鬼：你點錯了道具',gale:'死因 #5 逆風客：風反著吹的時候，你沒有躲進風來的那一側',hollowLate:'死因 #6 空殼：你沒有及時點起道具',hollowMove:'死因 #7 空殼：你點錯了道具',reach:'死因 #8 墳手：土面鼓起的那一邊，你沒有躲進另一側',bell:'死因 #9 守墓鐘：第三下鐘響之後，你沒有一直低著頭',breath:'死因 #10 Dread 追上了：你躲太久，牠從背後找到你了',bog:'死因 #11 泥沼拖行者：水面冒泡時，你沒有連點兩下',crawl:'死因 #12 冰縫行者：裂縫爬到腳邊時，你沒有點一下',magma:'死因 #13 熔岩蟲：冒煙的那一邊，你沒有躲進另一側',flick:'死因 #14 螢火騙子：假螢火飄來時，你沒有點亮火把',howl:'死因 #15 雪嚎者：嚎叫的節奏，你沒有照著點對',white:'死因 #16 白幕：雪洞閃光的那一側，你沒有躲進去',glass:'死因 #17 玻璃臉：你沒有及時點鐵鎚，或點錯了道具',ash:'死因 #18 灰燼鴉群：你沒有及時點水桶，或點錯了道具',colossus:'死因 #19 巨像：最後一步踩在哪一邊，你沒有躲進另一側',tail:'死因 #20 Dread：它從背後追上來，你沒有連點拉開距離，或沒有躲開撲擊'};
 const TIPS={tail:'下次：聽到背後的腳步，連點螢幕（或按 F／Enter）拉開距離；它撲來時躲進另一側。',colossus:'下次：腳步左右交替，只看最後一步，躲進另一側。',eye:'下次：落葉聚在哪邊，就躲進另一邊，撐滿 3 秒。',twins:'下次：鳥群飛走、敲擊聲響起時，躲進敲擊的另一側。',walkerLate:'下次：左右各出現一件道具，要在牠逼近前點對的那一件（靜林鬼怕燈籠）。',walkerMove:'下次：看清楚兩件道具，牠怕的是燈籠（第一次遇到只會出現一件）。',gale:'下次：風向反了、拖行聲靠近時，躲進風來的那一側。',hollowLate:'下次：空殼怕符紙，牠逼近前點符紙那一側。',hollowMove:'下次：空殼怕符紙，不是燈籠。',reach:'下次：泥水冒泡、土面鼓起時，躲進另一邊並撐住 2 秒。',bell:'下次：鐘響三下，第三下之後往下滑低頭，低著頭直到鐘聲散去。',breath:'下次：躲著的時候背後的腳步會越來越近，在 Dread 追上來之前出來。',bog:'下次：水面冒泡、長條陰影浮起時，連點畫面兩下。',crawl:'下次：冰面裂縫延伸、咯吱聲變急時，在裂縫到腳邊的那一刻點一下畫面。',magma:'下次：地面發紅、一側冒煙時，躲進沒冒煙的那一側。',flick:'下次：很多螢火飄過來時，點畫面下方的火把；沒有火把就躲進另一側。',howl:'下次：聽清楚嚎叫的節奏，等牠停了，照同樣的間隔點畫面。',white:'下次：畫面一片白、一側閃光時，躲進閃光的那一側（雪洞）。',glass:'下次：畫面起霧、一張臉貼近時，點鐵鎚那一側。',ash:'下次：天色變暗、鴉群飛過、有拍翅聲時，點水桶那一側。'};
@@ -12806,7 +12830,7 @@ let wx=0,lastWx=-1,prevWxT=-1,evK='',R=()=>Math.random(),L=null,lvl=0,lives=3,ck
 try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-save')||'{}');maxLvl=o.m||1;ck=1;lives=o.l||3;noDrop=o.n||0;healTen=o.h==null?-1:o.h;lvDeaths=o.d||{};seen=o.s||{};runTop=o.r||maxLvl}catch(e){}
 const rnd=(a,b)=>a+R()*(b-a);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-function tx(s,x,y,sz,col,al){sz=Math.max(sz,MINSZ);g.font='800 '+sz+'px '+(sz>=26&&!/\d/.test(s)?FD:FB);g.textAlign=al||'center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-24);g.fillStyle=col;g.fillText(s,x,y,W-24)}
+function tx(s,x,y,sz,col,al){sz=Math.max(sz,MINSZ);g.font='700 '+sz+'px '+(sz>=26&&!/\d/.test(s)?FD:FB);g.textAlign=al||'center';g.lineJoin='round';g.lineWidth=sz/6.5;g.strokeStyle=OL;g.strokeText(s,x,y,W-24);g.fillStyle=col;g.fillText(s,x,y,W-24)}
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();if(f){g.fillStyle=f;g.fill()}if(lw){g.lineWidth=lw;g.strokeStyle=OL;g.stroke()}};
 let shieldFx=0,st='ready',prog,tilt,gapT,ev,survived,lastType,directorUsed,score,why,rec,flash,shake,tt=0,last=0,fxs=[],lampOut=0;
 let keys={l:0,r:0,cover:0,pick:0},gs=new Map(),hideWant=0,tapPick=0,dbl=0,tapT=-9,touchT=-9,lt=0,breath=1,spots={'-1':[],'1':[]},spotsAll=false,pendType=null,pendSide=1,itemTap=0,headDown=false,torchTap=0,chainN=0,lastTap=-9,tapQ=[],pendWait=0,breathOff=false,tutDone=false,gyro={on:false,tilt:0,down:false};
@@ -12877,7 +12901,7 @@ function applyLevel(){
  wx=L.wxp[(R()*L.wxp.length)|0];if(L.wxp.length>1&&wx===lastWx)wx=L.wxp.find(x=>x!==lastWx);lastWx=wx;
  assistHid=L.ease?1:0;
  say('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'：'+KIND_NAME[L.kind]+(L.fixed?'（固定種子）':'')+'。'+WORLD_RULE[L.wi]+(L.ease?'小螢多給你 0.3 秒預警，少來一次襲擊。':''))}
-function reset(){shieldFx=0;torchTap=0;tapQ=[];headDown=false;itemTap=0;pendType=null;hideWant=0;tapPick=0;lt=0;breath=1;hk=0;scareSnap=null;gs.clear();eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;sc=0;rB=BASE_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
+function reset(){shieldFx=0;torchTap=0;tapQ=[];headDown=false;itemTap=0;pendType=null;hideWant=0;tapPick=0;lt=0;breath=1;hk=0;scareSnap=null;gs.clear();eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0,chest:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;sc=0;rB=BASE_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
 reset();
 /* ---- audio: stereo cues, so headphones help; silent if the browser has no Web Audio ---- */
 let ac=null;
@@ -12914,7 +12938,7 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const live=st==='run';
  setText('peek-prog',L?'第 '+lvl+' 關':Math.floor(prog)+'%');setText('peek-spirits',survived+' 次襲擊');setText('peek-best',best+'%');setText('peek-codex',Object.keys(CAUSES).filter(k=>deaths[k]>0).length+' / '+Object.keys(CAUSES).length);setText('peek-dodges',dodgesTotal+' 次');
- setText('peek-lvl',L?lvl+' / 100':'自由跑');setText('peek-lives',L?String(lives):'—');
+ setText('peek-lvl',L?lvl+' / 100':'自由跑');
  const lv=wantLevel();
  $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'逃跑中 · 別回頭':(st==='ready'?'開始 ':'再試 ')+(lv?'第 '+lv+' 關':'自由跑'));
 }
@@ -12933,13 +12957,12 @@ function end(kind,reason){
   const boom=()=>{flash=lowScare?.15:.5;shake=lowScare?0:.5;if(!lowScare){tone(62,.7,.55,0,'sawtooth',28);tone(1900,.3,.22,0,'square',240);tone(420,.5,.18,0,'sawtooth',90)}else tone(120,.3,.15,0,'sine',60)};
   if(scareSnap){nburst(300,1800,.45,.5,6000,.8);tone(90,.5,.2,0,'sine',40);setTimeout(()=>{if(st==='over')boom()},650)}else boom();
   if(!practice&&!daily){deaths[reason]=(deaths[reason]||0)+1;try{localStorage.setItem('deep-sea-peek-deaths',JSON.stringify(deaths))}catch(e){}mark('flick');
-   if(L){lvDeaths[lvl]=(lvDeaths[lvl]||0)+1;lives--;if(lives<=0){lostAll=true;lives=3;lvDeaths={};runTop=ck}sv();if(lostAll&&hasLv)lvUI.value=ck}}}
+   if(L){lvDeaths[lvl]=(lvDeaths[lvl]||0)+1;lostAll=true;runTop=ck;sv();if(hasLv)lvUI.value=ck}}}   // permadeath: no lives, the whole run starts over
  if(kind==='won'&&L&&!practice&&!daily){
-  if(L.kind==='boss')lives=Math.min(5,lives+1)
   maxLvl=Math.min(100,Math.max(maxLvl,lvl+1));runTop=Math.max(runTop,Math.min(100,lvl+1));noDrop=dropped?0:noDrop+1;delete lvDeaths[lvl];sv();if(hasLv)lvUI.value=Math.min(100,lvl+1)}
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p,level:lvl,seed:seedCode,retry_assist:assistHid});peekBusy=false;save();renderAll();
  if(kind==='won')say((L?'第 '+lvl+' 關通關。':'衝出出口，盒子打開了。別看裡面。')+(earned>0?'本局共入帳 '+fmt(earned)+' 點。':''),'win');
- else if(!earned)say(CAUSES[reason]+'。'+(L?(lostAll?'生命用完，整輪重來，回到第 1 關。':'剩下 '+lives+' 條命。'):'這一局沒有額外成就獎勵。'),'lose');
+ else if(!earned)say(CAUSES[reason]+'。'+(L?'你死了，整輪重來，回到第 1 關。':'這一局沒有額外成就獎勵。'),'lose');
  else say(CAUSES[reason]+'。本局共入帳 '+fmt(earned)+' 點。','win');
  ui();
 }
@@ -13033,8 +13056,7 @@ function startEvent(){
  {const need=needOf(type,ev.side);if(need&&spotsAll)ensureSpot(need,lt+.6,lt+warn+({eye:3,twins:1.5,gale:2,reach:2}[type]||0)+2.2*(ev.passes-1)+1)}
  if(L&&!fake)L.left--;
  if(type==='walker'&&!fake){const keys0=Object.keys(ITEM_OF).filter(k=>k!==gh),firstTime=!!tut||!seen[({hush:'hush',hollow:'hollow',glass:'glassface',ash:'ash'})[gh]];ev.items={};ev.items[side]=ITEM_OF[gh];ev.items[-side]=firstTime?null:ITEM_OF[keys0[(R()*keys0.length)|0]]}
- lastType=type;mark(gh==='glass'?'glassface':gh==='ash'?'ash':col?'colossus':tl?'tail':boss?'hollow':type==='eye'?'leafling':type==='twins'?'knocker':type==='walker'?'hush':type==='reach'?'reacher':type==='bell'?'bellkeeper':type==='bog'?'bog':type==='flick'?'flickghost':type==='howl'?'howler':type==='crawl'?'crawler':type==='white'?'whiteout':type==='magma'?'magma':'gale');
- if(bag.torch>0&&!fake&&!tut){bag.torch--;ev.warn+=.6;ev.t+=.6;ev.torch=true;fx('火把：多 0.6 秒預警',CX,118,'#ffb347')}}   // a torch buys 0.6s of extra warning and lights the side it comes from
+ lastType=type;mark(gh==='glass'?'glassface':gh==='ash'?'ash':col?'colossus':tl?'tail':boss?'hollow':type==='eye'?'leafling':type==='twins'?'knocker':type==='walker'?'hush':type==='reach'?'reacher':type==='bell'?'bellkeeper':type==='bog'?'bog':type==='flick'?'flickghost':type==='howl'?'howler':type==='crawl'?'crawler':type==='white'?'whiteout':type==='magma'?'magma':'gale');}   // the torch is no longer automatic: the player taps it (useItem)
 function nextGap(){
  if(L)return Math.max(2.5,L.gap+rnd(-1,1));
  let g=GAP_NEAR+(GAP_FAR-GAP_NEAR)*clamp(prog/80,0,1)+rnd(-1,1);
@@ -13061,7 +13083,38 @@ const wkWhy=k=>ev.gh==='glass'?'glass':ev.gh==='ash'?'ash':(ev.boss?'hollow':'wa
 function itemsUp(){return !!(ev&&ev.type==='walker'&&ev.items&&(ev.phase==='judge'||(ev.phase==='warn'&&ev.t<=ITEM_SHOW)))}
 function setHead(v){headDown=!!v&&!!ev&&ev.type==='bell'&&!ev.fake}
 function tailPush(){if(ev&&ev.type==='tail'&&ev.phase==='chase'){ev.d=Math.min(1,ev.d+TAIL.gain);tone(170,.04,.05,0,'square',110)}}
-function tap(x,y){tailPush();const n=performance.now();lastTap=tt;tapQ.push(tt);if(tapQ.length>8)tapQ.shift();if(n-tapT<350&&tapT>=0){dbl=1;tapT=-9}else tapT=n;if(ev&&ev.type==='flick'&&ev.phase==='judge'&&bag.torch>0&&(y==null?false:y>320)){torchTap=1;return}if(headDown){headDown=false;return}if(itemsUp()&&x!=null){itemTap=x<CX?-1:1;return}if(canPick()){tapPick=1;return}if(hideWant){hideWant=0;return}}
+const BURN_GH=['hush'];
+const burnable=()=>!!(ev&&!ev.fake&&!ev.boss&&!ev.col&&(ev.type==='eye'||ev.type==='twins'||ev.gh==='hush')&&(ev.phase==='warn'||ev.phase==='judge'));
+const nibNear=()=>drops.find(d=>d.k==='nib'&&d.z>=0&&d.z<.7);
+const flickLive=()=>!!(ev&&ev.type==='flick'&&(ev.phase==='warn'||ev.phase==='judge'));
+const slotUsable=i=>i===0?bag.torch>0&&!!ev&&((ev.type==='flick'&&ev.phase==='judge')||(ev.phase==='warn'&&!ev.torch&&ev.type!=='tail'&&!ev.col)):i===2?scrolls>0&&burnable():i===3?bag.chest>0&&(flickLive()||!!nibNear()):false;
+const slotXY=i=>[W-38-(3-i)*60,44];
+function drawScrollIcon(x,y){g.fillStyle='#e8d8b0';RR(x-15,y-9,30,18,4,'#e8d8b0');g.fillStyle='#c9b27a';g.beginPath();g.ellipse(x-15,y,4,9,0,0,7);g.ellipse(x+15,y,4,9,0,0,7);g.fill();g.fillStyle='#a02f2a';g.beginPath();g.arc(x,y,5,0,7);g.fill()}
+function drawSlots(){   // four item slots, top right: tap one (or press 1-4) to use it. Glows when it can be used right now
+ const defs=[[bag.torch,'item-torch'],[bag.charm,'item-charm'],[scrolls,''],[bag.chest,'item-chest']];
+ defs.forEach((d,i)=>{const [x,y]=slotXY(i),n=d[0],use=slotUsable(i);
+  g.save();g.globalAlpha=n>0?1:.4;g.fillStyle='rgba(10,12,16,.75)';g.beginPath();g.arc(x,y,26,0,7);g.fill();
+  g.lineWidth=use?3.5:2;g.strokeStyle=use?'rgba(255,217,138,'+(.65+.35*Math.sin(tt*7))+')':'rgba(150,115,60,.85)';g.stroke();
+  if(d[1]){const im=art(d[1]);if(im)floatImg(im,x,y,40,1)}else drawScrollIcon(x,y);
+  g.restore();
+  tx(String(n),x+19,y+30,14,n>0?'#fff':'#9aa')})}
+function useItem(i){
+ if(st!=='run'||camp||introP)return;
+ const say1=(t,c)=>fx(t,CX,118,c||'#cfcfcf');
+ if(i===0){if(bag.torch<=0){say1('沒有火把');return}
+  if(ev&&ev.type==='flick'&&ev.phase==='judge'){torchTap=1;return}
+  if(ev&&ev.phase==='warn'&&!ev.torch&&ev.type!=='tail'&&!ev.col){bag.torch--;ev.warn+=.6;ev.t+=.6;ev.torch=true;say1('火把：多 0.6 秒預警','#ffb347');return}
+  say1('現在不需要火把');return}
+ if(i===1){say1(bag.charm>0?'護身符會自動擋下一次致命失誤':'沒有護身符','#9fe8ff');return}
+ if(i===2){if(scrolls<=0){say1('沒有卷軸');return}
+  if(burnable()){scrolls--;try{localStorage.setItem('deep-sea-peek-scrolls',scrolls)}catch(e){}say1('卷軸燒掉了牠','#ff9a4d');flash=lowScare?0:.25;survive();return}
+  say1('卷軸對牠沒用');return}
+ if(i===3){if(bag.chest<=0){say1('沒有寶箱');return}
+  if(flickLive()){bag.chest--;say1('Flick 收下寶箱，放過了你','#ffd98a');survive();return}
+  const nb=nibNear();if(nb){nb.z=-1;bag.chest--;scrolls=Math.min(5,scrolls+2);try{localStorage.setItem('deep-sea-peek-scrolls',scrolls)}catch(e){}say1('Nib 收下寶箱，留下兩卷軸','#ffd98a');return}
+  say1('寶箱要送給 Flick 或 Nib')}}
+function tap(x,y){if(x!=null&&y!=null&&st==='run'&&!camp){for(let i=0;i<4;i++){const q=slotXY(i);if(Math.hypot(x-q[0],y-q[1])<32){useItem(i);return}}}
+ tailPush();const n=performance.now();lastTap=tt;tapQ.push(tt);if(tapQ.length>8)tapQ.shift();if(n-tapT<350&&tapT>=0){dbl=1;tapT=-9}else tapT=n;if(ev&&ev.type==='flick'&&ev.phase==='judge'&&bag.torch>0&&(y==null?false:y>320)){torchTap=1;return}if(headDown){headDown=false;return}if(itemsUp()&&x!=null){itemTap=x<CX?-1:1;return}if(canPick()){tapPick=1;return}if(hideWant){hideWant=0;return}}
 function colPlan(){   // footsteps alternate left/right; the last one lands on ev.side. Round 2 has one more step
  const n=ev.pass===1?4:5,last=ev.side;ev.steps=[];ev.si=0;for(let i=0;i<n;i++)ev.steps.push([.6+i*.85,(n-1-i)%2?-last:last]);ev.warn=ev.t=.6+n*.85+.5;ev.el=0}
 function passEnd(){if(ev.pass<ev.passes){ev.pass++;ev.phase='gap';ev.t=1;ev.ok=false;ev.bad=0;ev.snd=0}else if(L&&L.l>=41&&!ev.fakeBack&&R()<.25){ev.fakeBack=true;ev.phase='gap';ev.t=1.6;ev.snd=0}else survive()}
@@ -13157,11 +13210,9 @@ const cxy=e=>{const r=c.getBoundingClientRect();
 function giveItem(k){
  if(k==='torch'){bag.torch=Math.min(3,bag.torch+1);fx('img:item-torch',CX,150)}
  else if(k==='charm'){bag.charm=Math.min(2,bag.charm+1);fx('img:item-charm',CX,150)}
- else if(k==='chest'){giveItem('torch');giveItem('charm');return}
+ else if(k==='chest'){bag.chest=Math.min(2,bag.chest+1);fx('img:item-chest',CX,150)}
  else if(k==='rook'){giveItem(R()<.5?'torch':'charm');return}
- else{scrolls++;try{localStorage.setItem('deep-sea-peek-scrolls',scrolls)}catch(e){}fx(k==='nib'?'Nib 塞給你一卷軸':'撿到舊卷軸',CX,150,'#e8c675');
-  if(scrolls%3===0){if(L&&!practice&&!daily){lives=Math.min(5,lives+1);sv();fx('三卷湊齊：+1 命',CX,118,'#ffd98a')}else{bag.charm=Math.min(2,bag.charm+1);fx('三卷湊齊：+1 護身符',CX,118,'#ffd98a')}}
-  else fx('卷軸 '+scrolls%3+'/3',CX,118,'#e8c675')}
+ else{scrolls=Math.min(5,scrolls+1);try{localStorage.setItem('deep-sea-peek-scrolls',scrolls)}catch(e){}fx(k==='nib'?'Nib 塞給你一卷軸':'撿到舊卷軸',CX,150,'#e8c675');fx('卷軸 +1',CX,118,'#e8c675')}
  mark(k==='nib'?'nib':k)}
 function spawnDrop(kind){const r=R();dropped=true;drops.push({k:kind||(r<.4?'torch':r<.7?'charm':'scroll'),side:R()<.5?-1:1,z:1});mark(kind==='rook'?'rook':kind==='chest'?'chest':'flick')}
 function collect(d){d.z=-1;giveItem(d.k);say('撿到'+ITEM_NAME[d.k]+'：'+ITEM_DESC[d.k]+'。','win')}
@@ -13180,7 +13231,7 @@ function updateCamp(dt){
  if(camp.state==='pick'){
   if(camp.choice<0&&camp.t>CAMP_PICK_MAX)camp.choice=1;
   if(camp.choice>=0){giveItem(CAMP_CARDS[camp.choice]);camp.state='rest';camp.rest=CAMP_REST;camp.t=0}}
- else{camp.rest-=dt;if(camp.rest<=0){if(L&&!practice&&!daily&&lives<3&&healTen!==((lvl-1)/10|0)){lives++;healTen=((lvl-1)/10|0);sv();fx('img:env-campfire',CX,150)}camp=null;campNext=L?999:campNext+CAMP_EVERY;gapT=Math.max(gapT,4)}}}
+ else{camp.rest-=dt;if(camp.rest<=0){camp=null;campNext=L?999:campNext+CAMP_EVERY;gapT=Math.max(gapT,4)}}}
 function campTap(e){
  if(!camp||camp.state!=='pick')return;
  const p=cxy(e);CARDS_X.forEach((x,i)=>{if(p[0]>=x&&p[0]<=x+CARD_W&&p[1]>=CARD_Y&&p[1]<=CARD_Y+CARD_H)camp.choice=i})}
@@ -13315,8 +13366,8 @@ function drawCamp(){
  else tx('歇一口氣……',CX,128,24,'#f1d9a6')}
 /* centred text with wrapping by character count (CJK is one em wide, so no measureText needed) */
 function wrapLines(s,sz,wd){const I=typeof window!=='undefined'&&window.deepSeaI18n;if(I&&I.getLanguage&&I.getLanguage()==='en'){const per=Math.max(6,Math.floor(wd/(sz*.52))),o=[];let cur='';I.text(s).split(' ').forEach(w=>{if(cur&&(cur+' '+w).length>per){o.push(cur);cur=w}else cur=cur?cur+' '+w:w});if(cur)o.push(cur);return o.slice(0,12)}const n=Math.max(2,Math.floor(wd/sz)),o=[];for(let i=0;i<s.length&&o.length<12;i+=n)o.push(s.slice(i,i+n));return o}
-function txp(s,x,y,sz,col,mw){sz=Math.max(sz,MINSZ);g.font='800 '+sz+'px '+FB;g.textAlign='center';g.fillStyle=col;g.fillText(s,x,y,mw||W-24)}   // plain text for parchment
-function txd(s,x,y,sz,col,wd,maxL){sz=Math.max(sz,MINSZ);g.font='700 '+sz+'px '+FB;g.textAlign='center';g.fillStyle=col;wrapLines(s,sz,wd).slice(0,maxL||12).forEach((ln,i)=>g.fillText(ln,x,y+i*(sz+4)))}
+function txp(s,x,y,sz,col,mw){sz=Math.max(sz,MINSZ);g.font='700 '+sz+'px '+FB;g.textAlign='center';g.fillStyle=col;g.fillText(s,x,y,mw||W-24)}   // plain text for parchment
+function txd(s,x,y,sz,col,wd,maxL){sz=Math.max(sz,MINSZ);g.font='600 '+sz+'px '+FB;g.textAlign='center';g.fillStyle=col;wrapLines(s,sz,wd).slice(0,maxL||12).forEach((ln,i)=>g.fillText(ln,x,y+i*(sz+4)))}
 /* ---- headphone check card (first screen) ---- */
 const HP={x:CX-220,y:56,w:440};
 function hpRect(k){
@@ -13337,20 +13388,14 @@ function drawHeadphone(){
 const CAPS={eye:['（左邊的落葉沙沙作響）','（右邊的落葉沙沙作響）'],twins:['（左邊傳來敲擊聲）','（右邊傳來敲擊聲）'],walker:['（蟲鳴停了……左右出現了道具）','（蟲鳴停了……左右出現了道具）'],gale:['（風向反了，拖行聲從左邊靠近）','（風向反了，拖行聲從右邊靠近）'],reach:['（左邊的泥水在冒泡）','（右邊的泥水在冒泡）'],bell:['（遠處傳來鐘聲）','（遠處傳來鐘聲）'],bog:['（水面冒著泡）','（水面冒著泡）'],crawl:['（冰面咯吱作響）','（冰面咯吱作響）'],magma:['（左邊冒著煙）','（右邊冒著煙）'],white:['（左邊閃著白光）','（右邊閃著白光）'],flick:['（螢火飄過來了）','（螢火飄過來了）'],howl:['（遠處傳來嚎叫）','（遠處傳來嚎叫）']};
 const capText=d=>(CAPS[d.type]||['',''])[d.side<0?0:1];
 function hud(I,lamp){
- const bn=art('ui-banner'),bw=420,bh=82,title=(L?'第 '+lvl+' 關':(tut?'教學':practice?'練習':'自由跑　'+Math.floor(prog)+'%')),bar=!L&&!tut;
- if(bn){g.drawImage(bn,10,8,bw,bh);
-  const x0=10+bw*.2,wd=bw*.73;if(bar)RR(x0,8+bh*.32,wd,bh*.34,6,'rgba(60,40,20,.35)');if(bar&&prog>0)RR(x0,8+bh*.32,Math.max(12,wd*prog/100),bh*.34,6,prog>=85?'#c4472f':'#b98a2c');
-  tx(title,x0+wd/2,8+bh*.6,17,'#f6e7c0')}
- else{if(bar)RR(16,14,W-32,14,7,'rgba(255,255,255,.12)');if(bar&&prog>0)RR(16,14,Math.max(16,(W-32)*prog/100),14,7,prog>=85?'#ff6a4d':'#e8c675');tx(title,16,50,15,'#f1d9a6','left')}
- const lv=art('ui-lives');
- if(lv){const lw=300,k=lw/578,sy=112,sh=190,lx=W-lw-10,ly=14;g.drawImage(lv,0,sy,578,sh,lx,ly,lw,sh*k);
-  const oy=ly+(.49*432-sy)*k+4,fr=[.42,.61,.805];
-  if(L){fr.forEach((f,i)=>{if(lives<=i){g.fillStyle='rgba(10,12,16,.78)';g.beginPath();g.arc(lx+lw*f,oy-4,19,0,7);g.fill()}});
-   tx('生命'+(lives>3?' +'+(lives-3):''),lx+lw*.61,ly+sh*k+12,12,'#f1d9a6')}
-  else{const vals=[bag.torch,bag.charm,scrolls%3+'/3'];fr.forEach((f,i)=>tx(String(vals[i]),lx+lw*f,oy,i===2?13:16,(i===2?scrolls%3:vals[i])?'#fff':'#789'));
-   tx('火把',lx+lw*.42,ly+sh*k+12,12,'#f1d9a6');tx('護身符',lx+lw*.61,ly+sh*k+12,12,'#f1d9a6');tx('卷軸',lx+lw*.805,ly+sh*k+12,12,'#f1d9a6')}}
- else tx(L?'生命 '+lives:'火把'+bag.torch+' 護身符'+bag.charm+' 卷軸'+scrolls%3+'/3',W-16,50,15,'#f1d9a6','right');
- if(L)tx('火把 '+bag.torch+'　護身符 '+bag.charm+'　卷軸 '+scrolls%3+'/3',16,108,13,'#f1d9a6','left');
+ const bn=art('ui-banner'),bw=270,bh=53,by=14,title=(L?'第 '+lvl+' 關':(tut?'教學':practice?'練習':'自由跑　'+Math.floor(prog)+'%'));
+ if(!tut){g.fillStyle='rgba(0,0,0,.5)';g.fillRect(0,0,W,6);   // progress: one thin line along the top edge instead of a bar inside the banner
+  const pw=W*clamp(prog,0,100)/100;if(pw>0){const gr=g.createLinearGradient(0,0,W,0);gr.addColorStop(0,'#8a6420');gr.addColorStop(.7,'#c9a14a');gr.addColorStop(1,'#c4472f');g.save();g.beginPath();g.rect(0,0,pw,6);g.clip();g.fillStyle=gr;g.fillRect(0,0,W,6);g.restore();
+   const hg=g.createRadialGradient(pw,3,0,pw,3,16);hg.addColorStop(0,prog>=85?'rgba(255,120,90,.9)':'rgba(255,220,140,.85)');hg.addColorStop(1,'rgba(255,200,120,0)');g.fillStyle=hg;g.fillRect(pw-16,0,32,22)}
+  g.fillStyle='rgba(0,0,0,.55)';[.25,.5,.75].forEach(f=>g.fillRect(W*f-1,0,2,6))}
+ if(bn){g.drawImage(bn,10,by,bw,bh);tx(title,10+bw*.565,by+bh*.62,17,'#f6e7c0')}
+ else tx(title,16,by+30,15,'#f1d9a6','left');
+ drawSlots();
  if((captions||tutHelp())&&ev&&!ev.fake)tx(capText(ev),CX,176,16,'#cfe8ff');
  if(ev&&(assist||ev.torch||tutHelp())){   // assist mode / torch: mark the dangerous side and the safe side
   if(ev.torch&&!ev.fake){g.save();g.fillStyle='rgba(255,170,70,'+(.05+.025*Math.sin(tt*7))+')';g.fillRect(0,0,W,H);g.restore()}   // torchlight: a warm flicker over the whole scene
@@ -13433,28 +13478,27 @@ function drawDeath(){
  g.fillStyle='rgba(18,13,10,.8)';g.fillRect(0,0,W,H);
  const bn=art('ui-banner'),cd=art('ui-card'),n=deaths[why]||1;
  if(bn)g.drawImage(bn,CX-210,8,420,82);else RR(CX-210,8,420,82,10,'#3a2c1c',3);
- txp((lostAll?'生命用完　':'你死了　')+(L?'第 '+lvl+' 關':'停在 '+Math.floor(prog)+'%'),CX+25,58,24,'#3a2812');
+ txp('你死了　'+(L?'第 '+lvl+' 關':'停在 '+Math.floor(prog)+'%'),CX+25,58,24,'#3a2812');
  const kw=196,kh=246,ky=88,xs=[22,W-22-kw];
  for(let i=0;i<2;i++){
   const x=xs[i];if(cd)g.drawImage(cd,x,ky,kw,kh);else RR(x,ky,kw,kh,10,'#3a2c1c',3);
   const im=art(i?(why==='flick'?'item-torch':'guide-flick'):KILLER[why]||'ghost-wraith');if(im)floatImg(im,x+kw*.49,ky+kh*.28,kw*.33,1);
   const body=i?TIPS[why]||'':causeText(why);
   txd(body,x+kw/2,ky+kh*.6,14,'#2a1a0c',kw*.64,5)}
- tx('剩餘生命 '+(L?lives:'—'),CX,ky+34,20,'#ffd98a');
+ tx('這一輪結束了',CX,ky+34,20,'#ffd98a');
  tx('躲過 '+survived+' 次襲擊',CX,ky+66,16,'#f1d9a6');
  if(lostAll)txd('整輪重來：回到第 1 關',CX,ky+96,15,'#ffb347',200,2);
  else if(L&&L.ease)txd('小螢多給你 0.3 秒預警，少來一次襲擊。',CX,ky+96,13,'#cfe8ff',200,3);
  txd(n<=1?RULE_FULL[why]||'':FLICK_TIPS[['eye','twins','walkerLate','walkerMove','gale','hollowLate','hollowMove','reach','bell','breath','bog','crawl','magma','flick','howl','white','glass','ash'].indexOf(why)]||'',CX,ky+130,14,'#cfe8ff',236,5);
  if(rec)tx('新紀錄！',CX,ky+226,16,'#ffd98a');
  if(n>=3)tx('多次失敗：可以開輔助標記，或到圖鑑聽一次、練習。',CX,ky+kh+20,14,'#ffd98a');
- const row=[['立刻重試','retry'],['再聽一次','listen'],['看鬼圖鑑','dex'],['稍後再學','later']];if(n>=3&&!assist)row.splice(3,0,['開輔助標記','assist']);
+ const row=[[L?'從第 1 關重來':'再跑一次','retry'],['再聽一次','listen'],['看鬼圖鑑','dex'],['稍後再學','later']];if(n>=3&&!assist)row.splice(3,0,['開輔助標記','assist']);
  btnRow(row)}
 function drawWon(){
  g.fillStyle='rgba(18,13,10,.72)';g.fillRect(0,0,W,H);
  tx('衝出去了',CX,110,48,'#ffd98a');tx('別看裡面。',CX,168,28,'#ff6a4d');
  tx((L?'第 '+lvl+' 關通關　':'')+'躲過 '+survived+' 次襲擊',CX,218,20,'#f1d9a6');
  if(earned>0)tx('本局入帳 '+fmt(earned)+' 點',CX,252,20,'#ffd98a');
- if(L&&L.kind==='boss')tx('首領倒下：生命 +1（現在 '+lives+'）',CX,292,18,'#7fe8ff');
  else if(L)tx('下一關：第 '+Math.min(100,lvl+1)+' 關',CX,292,18,'#f1d9a6');
  if(L&&lvl>=100)tx('你走出了整座森林。',CX,330,22,'#ffd98a');
  btnRow([[L&&lvl<100?'下一關':'再玩一次','next'],['分享結果卡','share'],['看鬼圖鑑','dex']])}
@@ -13472,7 +13516,7 @@ const DEX=[
  {id:'colossus',ghost:1,img:'ghost-colossus',name:'巨像 Colossus（最終首領）',type:'colossus',clue:'地面一步一步震動，腳步聲左右交替靠近。',judge:'最後一步踩在哪一邊？',act:'躲進最後一步的另一側，撐住；共兩輪，第二輪多一步。'},
  {id:'tail',ghost:1,img:'ghost-dread',name:'Dread',type:'tail',clue:'背後傳來腳步聲，越來越急。',judge:'牠在追你。',act:'連點螢幕（電腦按 F 或 Enter）拉開距離，最後牠從一側撲來，躲進另一側。'},
  {id:'bog',ghost:1,img:'ghost-bog',name:'泥沼拖行者 Bog',type:'bog',clue:'水面冒泡，一道長條陰影浮上來。',judge:'牠抓住你之前。',act:'連點畫面兩下。'},
- {id:'flickghost',ghost:1,img:'guide-flick',name:'螢火騙子 Flick',type:'flick',clue:'成群的螢火往你飄來，但那些光是假的。',judge:'真正的光在你手上。',act:'點畫面下方的火把；沒有火把就躲進另一側。'},
+ {id:'flickghost',ghost:1,img:'guide-flick',name:'螢火騙子 Flick',type:'flick',clue:'成群的螢火往你飄來，但那些光是假的。',judge:'真正的光在你手上。',act:'點火把，或把寶箱送給牠；都沒有就躲進另一側。'},
  {id:'howler',ghost:1,img:'ghost-howler',name:'雪嚎者 Howler',type:'howl',clue:'風聲中夾著 2 到 3 聲有節奏的嚎叫。',judge:'牠在教你一段節奏。',act:'等牠停了，照同樣的間隔點畫面。'},
  {id:'crawler',ghost:1,img:'ghost-crawler',name:'冰縫行者 Crawler',type:'crawl',clue:'冰面裂縫延伸，咯吱聲越來越急。',judge:'裂縫到腳邊的那一刻。',act:'點一下畫面。'},
  {id:'whiteout',ghost:1,img:'ghost-whiteout',name:'白幕 Whiteout',type:'white',clue:'畫面一片白，一側閃光。',judge:'閃光的地方是雪洞。',act:'躲進閃光那一側，撐住 2 秒；牠可能折返。'},
@@ -13480,17 +13524,17 @@ const DEX=[
  {id:'flick',img:'guide-flick',name:'小螢 Flick',clue:'友方的螢火蟲，會在死亡後告訴你剛才漏掉了什麼。',judge:'牠不是鬼。',act:'多看牠的提示。'},
  {id:'rook',img:'npc-rook',name:'旅人 Rook',clue:'在營火旁出現。',judge:'牠不追你。',act:'營火邊三選一，帶走一樣東西。'},
  {id:'nib',img:'npc-nib',name:'Nib',clue:'偶爾跑過路邊的無害小傢伙，出現率約五十分之一。',judge:'牠不會傷害你。',act:'靠近時點一下撿起，牠會留點小禮物。'},
- {id:'torch',img:'item-torch',name:'火把 Torch',clue:'路邊或營火的道具。',judge:'',act:'下次襲擊多 0.6 秒預警並標出方向。'},
+ {id:'torch',img:'item-torch',name:'火把 Torch',clue:'路邊或營火的道具。',judge:'',act:'點一下火把：下次襲擊多 0.6 秒預警並標出方向。'},
  {id:'charm',img:'item-charm',name:'護身符 Charm',clue:'路邊或營火的道具，掉落保底較低。',judge:'',act:'擋下一次致命失誤。'},
- {id:'scroll',img:'item-chest',name:'舊卷軸 Scroll',clue:'收藏品。',judge:'',act:'每集滿 3 卷 +1 命（上限 5）；自由跑改給 1 個護身符。'},
- {id:'lantern',img:'prop-skull-lantern',name:'骷髏燈籠',clue:'收集 3 卷舊卷軸後出現在營火旁。',judge:'',act:'三卷湊齊的紀念，營火旁的裝飾。'}];
+ {id:'scroll',img:'item-chest',name:'舊卷軸 Scroll',clue:'收藏品。',judge:'',act:'丟向葉下客、敲枝者、靜林鬼，燒掉牠們；對其他鬼沒用。'},
+ {id:'lantern',img:'prop-skull-lantern',name:'骷髏燈籠',clue:'身上帶著 3 卷以上舊卷軸時，會出現在營火旁。',judge:'',act:'營火旁的裝飾。'}];
 const DEXF={x:14,y:5,h:440},DK=DEXF.h/578,DCX=[95,175,256,337],DCY=[190,273,355];
 const dexPos=j=>[DEXF.x+DCX[j%4]*DK,DEXF.y+DCY[(j/4)|0]*DK];
 const dexPages=()=>{const out=[],ch=a=>{for(let i=0;i<a.length;i+=12)out.push(a.slice(i,i+12))};ch(DEX.filter(d=>d.ghost));ch(DEX.filter(d=>!d.ghost));return out};   // 12 slots per page: ghosts first, then NPCs and items
 let dexPg=0;
 const dexGo=n=>{const pg=dexPages();dexPg=(dexPg+n+pg.length)%pg.length;dexSel=DEX.indexOf(pg[dexPg][0])};
 const DEXB=[[372,392,118,38,'聽一次'],[500,392,118,38,'練習'],[628,392,118,38,'關閉']],DEXP=[[40,396,92,32,'上一頁'],[222,396,92,32,'下一頁']];
-function txl(s,x,y,sz,col,wd,maxL){sz=Math.max(sz,MINSZ);g.font='700 '+sz+'px '+FB;g.textAlign='left';g.fillStyle=col;const ls=wrapLines(s,sz,wd).slice(0,maxL||12);ls.forEach((ln,i)=>g.fillText(ln,x,y+i*(sz+5)));return y+ls.length*(sz+5)}
+function txl(s,x,y,sz,col,wd,maxL){sz=Math.max(sz,MINSZ);g.font='600 '+sz+'px '+FB;g.textAlign='left';g.fillStyle=col;const ls=wrapLines(s,sz,wd).slice(0,maxL||12);ls.forEach((ln,i)=>g.fillText(ln,x,y+i*(sz+5)));return y+ls.length*(sz+5)}
 function drawDex(){
  g.fillStyle='#06060a';g.fillRect(0,0,W,H);
  const fr=art('ui-codex');if(fr)g.drawImage(fr,DEXF.x,DEXF.y,432*DK,DEXF.h);
@@ -13530,17 +13574,13 @@ function drawSpots(){
   const x=CX+sd*(520-220*f),sz=120+120*f;   // slides in from the edge and grows as you run up to it
   if(im)sprite(im,x,400,sz*1.6,a);
   else{g.save();g.globalAlpha=a;g.fillStyle=col;g.strokeStyle='rgba(255,217,138,.35)';g.lineWidth=2;g.beginPath();g.ellipse(x,392,sz*.6,sz*.38,0,Math.PI,0);g.fill();g.stroke();g.restore()}}))}
-const HIDE_LEAVES=(()=>{const r=mulberry(31),a=[];for(let i=0;i<26;i++)a.push([r()*W,50+r()*(H-90),22+r()*44,8+r()*17,r()*Math.PI,r()*6]);return a})();
-function drawHide(){   // first person inside the spot: a bush leaves only small leaf-shaped gaps, a coffin is pitch black; the cover slides in from the side you turned to
+function drawHide(){   // first person inside the spot: pitch black (bush and coffin alike for now); the cover slides in from the side you turned to, and slides back out when you leave
  const k=hk;if(k<.01)return;
- const e=k*k*(3-2*k),sd=hkSd,wi=L?L.wi:clamp(Math.floor(prog/20),0,4),coffin=wi===1||wi===4,sway=Math.sin(tt*1.7)*2*e+(breath<.5?Math.sin(tt*14)*(1-breath)*2:0);
+ const e=k*k*(3-2*k),sd=hkSd,sway=Math.sin(tt*1.7)*2*e+(breath<.5?Math.sin(tt*14)*(1-breath)*2:0);
  g.save();g.translate(sd*(1-e)*(W+80)+sway,0);
- if(coffin){g.fillStyle='#000';g.fillRect(-120,-120,W+240,H+240)}
- else{
-  g.beginPath();g.rect(-120,-120,W+240,H+240);
-  HIDE_LEAVES.forEach(([x,y,rx,ry,rot,ph])=>{const m=e*(1+.12*Math.sin(tt*1.4+ph)),a=rx*m,b=ry*m;g.moveTo(x+a*Math.cos(rot),y+a*Math.sin(rot));g.ellipse(x,y,a,b,rot,0,Math.PI*2)});
-  g.fillStyle='rgba(3,8,3,.985)';g.fill('evenodd');
-  g.strokeStyle='rgba(70,110,45,.35)';g.lineWidth=1.5;HIDE_LEAVES.forEach(([x,y,rx,ry,rot,ph])=>{const m=e*(1+.12*Math.sin(tt*1.4+ph));g.beginPath();g.ellipse(x,y,rx*m+1.5,ry*m+1.5,rot,0,Math.PI*2);g.stroke()})}   // the lit rim of each leaf gap
+ g.fillStyle='#000';g.fillRect(-120,-120,W+240,H+240);
+ {const ga=.24*e*(.82+.18*Math.sin(tt*2.2)),ed=(x0,y0,x1,y1,x,y,w,h)=>{const gr=g.createLinearGradient(x0,y0,x1,y1);gr.addColorStop(0,'rgba(150,158,165,'+ga+')');gr.addColorStop(1,'rgba(150,158,165,0)');g.fillStyle=gr;g.fillRect(x,y,w,h)};   // a faint glow around all four edges: light leaking in past the cover, so the player knows the game is fine
+  ed(0,0,0,38,0,0,W,38);ed(0,H,0,H-38,0,H-38,W,38);ed(0,0,38,0,0,0,38,H);ed(W,0,W-38,0,W-38,0,38,H)}
  g.restore();
  const sm=g.createLinearGradient(0,0,0,H);sm.addColorStop(0,'rgba(0,0,0,.55)');sm.addColorStop(.12,'rgba(0,0,0,0)');sm.addColorStop(.88,'rgba(0,0,0,0)');sm.addColorStop(1,'rgba(0,0,0,.55)');g.fillStyle=sm;g.fillRect(0,0,W,H);
  if(breath<.999){const gr=g.createRadialGradient(CX,225,120,CX,225,520);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,'+(.9*(1-breath))+')');g.fillStyle=gr;g.fillRect(0,0,W,H)}}
@@ -13604,7 +13644,7 @@ function draw(){
   if(!audioOk)drawHeadphone();
   else{const lv=wantLevel(),lc=lv?levelCfg(lv,(lvDeaths[lv]||0)>=2):null;
    tx('別看',CX,70,52,'#e8c675');tx('Don\'t Peek　禁忌寶盒・夜逃',CX,98,17,'#f1d9a6');
-   tx(lc?'第 '+lv+' 關・'+WORLD_NAME[lc.wi]+'・'+KIND_NAME[lc.kind]+'　生命 '+lives:'自由跑（沒有關卡和生命）',CX,130,20,'#ffd98a');
+   tx(lc?'第 '+lv+' 關・'+WORLD_NAME[lc.wi]+'・'+KIND_NAME[lc.kind]+'':'自由跑（沒有關卡和生命）',CX,130,20,'#ffd98a');
    howCards(146,170,1);
    tx('選好關卡，按右邊的「開始」',CX,388,20,'#ffd98a');tx('電腦：← → 躲或選道具　F 撿　手機：左右滑、點一下',CX,414,14,'rgba(241,217,166,.75)')}}
  else if(st==='won')drawWon();
@@ -13642,7 +13682,8 @@ addEventListener('keydown',e=>{
  if(!shown()||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;
  if(camp&&camp.state==='pick'&&'123'.includes(e.key)&&e.key){camp.choice=+e.key-1;e.preventDefault();return}
  if((e.key==='f'||e.key==='F'||e.key==='Enter')&&!e.repeat)tailPush();
- const k=KEYMAP[e.key];if(!k)return;e.preventDefault();touchT=tt;if(k==='torch'){if(ev&&ev.type==='flick'&&ev.phase==='judge'&&bag.torch>0)torchTap=1;return}if(k==='down'){setHead(true);return}if(k==='up'){headDown=false;return}keys[k]=1;if((k==='l'||k==='r')&&itemsUp())itemTap=k==='l'?-1:1});
+ if(!camp&&'1234'.includes(e.key)&&e.key.length===1){useItem(+e.key-1);e.preventDefault();return}
+ const k=KEYMAP[e.key];if(!k)return;e.preventDefault();touchT=tt;if(k==='torch'){useItem(0);return}if(k==='down'){setHead(true);return}if(k==='up'){headDown=false;return}keys[k]=1;if((k==='l'||k==='r')&&itemsUp())itemTap=k==='l'?-1:1});
 addEventListener('keyup',e=>{const k=KEYMAP[e.key];if(k)keys[k]=0});
 function clearInput(){headDown=false;keys={l:0,r:0,cover:0,pick:0};gs.clear();hideWant=0}
 addEventListener('blur',()=>{last=performance.now();clearInput()});

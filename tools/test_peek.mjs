@@ -249,10 +249,20 @@ check('A safe level has only harmless false cues; clearing it pays once and unlo
   assert.equal(f.ev('st'),'won');assert.equal(f.ev('lives'),3);assert.equal(f.ev('maxLvl'),2);assert.equal(f.wallet.balance,500+5);
   f.F.ev('forceLvl=1');f.F.start();f.run(200);assert.equal(f.ev('st'),'won');assert.equal(f.wallet.balance,505);   // replay: no second payout
 });
-check('Dying in a level costs a life; running out sends you back to the checkpoint',()=>{
-  const f=fixture();f.F.ev('forceLvl=3;maxLvl=3;ck=1');f.F.start();
-  for(let i=0;i<3;i++){f.spirit('twins',1,'judge');f.F.ev('ev.t=1.5;tilt=1');f.run(2);assert.equal(f.ev('st'),'over');if(i<2){assert.equal(f.ev('lives'),2-i);assert.equal(f.ev('lostAll'),false);f.F.ev('forceLvl=3');f.F.start()}}
-  assert.equal(f.ev('lostAll'),true);assert.equal(f.ev('lives'),3);assert.equal(f.ev('lvDeaths[3]'),undefined);
+check('Dying is permanent: no lives, the whole run starts over from level 1',()=>{
+  const f=fixture();f.F.ev('forceLvl=3;maxLvl=3;runTop=3;ck=1');f.F.start();
+  f.spirit('twins',1,'judge');f.F.ev('ev.t=1.5;tilt=1');f.run(2);assert.equal(f.ev('st'),'over');
+  assert.equal(f.ev('lostAll'),true);assert.equal(f.ev('runTop'),1);assert.equal(f.ev('lvDeaths[3]'),1);
+});
+check('Items are used by hand: torch adds warning only when tapped, scroll burns leaf/branch/hush ghosts, a chest is given to Flick or Nib',()=>{
+  let f=fixture();f.F.start();f.F.ev('bag.torch=1;gapT=999');f.spirit('eye',1);assert.equal(f.ev('bag.torch'),1,'no automatic torch');
+  f.F.ev('useItem(0)');assert.equal(f.ev('bag.torch'),0);assert.equal(f.ev('ev.torch'),true);
+  f=fixture();f.F.start();f.F.ev('scrolls=2');f.spirit('eye',1,'judge');f.F.ev('tap(582+120,44)');assert.equal(f.ev('scrolls'),1);assert.equal(f.ev('survived'),1);
+  f=fixture();f.F.start();f.F.ev('scrolls=2');f.spirit('gale',1,'judge');f.F.ev('useItem(2)');assert.equal(f.ev('scrolls'),2);assert.equal(f.ev('survived'),0);
+  f=fixture();f.F.start();f.F.ev('scrolls=2');f.spirit('twins',1,'warn');f.F.ev('useItem(2)');assert.equal(f.ev('survived'),1);
+  f=fixture();f.F.start();f.F.ev('bag.chest=1;scrolls=0');f.spirit('flick',1,'judge');f.F.ev('useItem(3)');assert.equal(f.ev('bag.chest'),0);assert.equal(f.ev('survived'),1);
+  f=fixture();f.F.start();f.F.ev('bag.chest=1;scrolls=0;ev=null;gapT=999;drops=[{k:"nib",side:1,z:.3}]');f.F.ev('useItem(3)');assert.equal(f.ev('bag.chest'),0);assert.equal(f.ev('scrolls'),2);
+  f=fixture();f.F.start();f.F.ev('gapT=999;ev=null;drops=[]');f.F.ev('giveItem("chest")');assert.equal(f.ev('bag.chest'),1);f.F.ev('giveItem("scroll")');assert.equal(f.ev('scrolls')>=1,true);
 });
 check('After two deaths on a level the next try gets 0.3 s more warning and one attack fewer, and says so',()=>{
   const f=fixture();f.F.ev('lvDeaths={7:2};forceLvl=7;maxLvl=7');f.F.start();assert.equal(f.ev('assistHid'),1);assert.equal(f.ev('L.ease'),true);
@@ -267,7 +277,7 @@ check('Gale must be met by leaning toward the reversed wind; boss Hollow is a lo
 check('Boss level runs its fixed plan, saves a checkpoint and adds a life',()=>{
   const f=fixture();f.F.ev('forceLvl=10;maxLvl=10;lives=3');f.F.start();assert.equal(f.ev('L.plan.length'),3);
   const seq=[];for(let i=0;i<3;i++){f.F.ev('ev=null;startEvent()');seq.push(f.ev('ev.boss?"hollow":ev.type'))}assert.deepEqual(seq,['eye','twins','hollow']);
-  const g=fixture();g.F.ev('forceLvl=10;maxLvl=10;lives=3');g.F.start();g.F.ev('ev=null;gapT=999;prog=99.9;L.left=0');g.run(1);assert.equal(g.ev('st'),'won');assert.equal(g.ev('ck'),1);assert.equal(g.ev('lives'),4);assert.equal(g.ev('maxLvl'),11);
+  const g=fixture();g.F.ev('forceLvl=10;maxLvl=10;lives=3');g.F.start();g.F.ev('ev=null;gapT=999;prog=99.9;L.left=0');g.run(1);assert.equal(g.ev('st'),'won');assert.equal(g.ev('ck'),1);assert.equal(g.ev('lives'),3);assert.equal(g.ev('maxLvl'),11);
 });
 check('Fixed-seed levels repeat exactly; seed code is shown for the others',()=>{
   const run=()=>{const f=fixture(500,null,()=>.9);f.F.ev('forceLvl=10;maxLvl=10');f.F.start();return f.ev('seedCode')+'|'+[0,1,2].map(()=>{f.F.ev('ev=null;startEvent()');return f.ev('ev.side')}).join()};
