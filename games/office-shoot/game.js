@@ -1052,7 +1052,7 @@ function render(){
       {t:LF('第 1～{d} 天每準時下班一次 BONUS +{n} 點|Clock out on days 1–{d}: BONUS +{n} pts each',{d:BONUS_DAYS,n:BONUS_PER_DAY}),c:'#ffe066',b:1,gap:34},
       {t:L('裝備進化：|Gear: ')+WEAPONS.map(wName).join(' → '),s:11,c:'#a9b3c6',gap:28},
       {t:best?LF('最佳績效 {n}|Best score {n}',{n:best.toLocaleString()}):'',s:14,c:'#7dffa1'},
-    ],L('按「扣點開始上班」開始|Press "Pay & clock in" to start'),H*.3);
+    ],L('按「開始上班」開始|Press "Clock in" to start'),H*.3);
   }else if(state==='over'&&overT>.6){
     drawOverlay(L(OVER_T[overTitle]),'#ff5f6d',[
       {t:LF('績效  {n}|Score  {n}',{n:score.toLocaleString()}),b:1,s:26,gap:40},
@@ -1062,7 +1062,7 @@ function render(){
       {t:curBoss&&phase==='boss'?LF('被「{b}」留下來加班|Kept late by {b}',{b:bName(curBoss)}):'',c:'#ff9aa8',gap:40},
       {t:LF('本局 BONUS 已入帳 {n} 點|BONUS credited this shift: {n} pts',{n:earned}),c:'#ffe066',b:1},
       {t:L(OVER_Q[overQuip]),c:'#a9b3c6',s:14},
-    ],overT>1.1?L('按「扣點再上一次班」再挑戰|Press "Pay & clock in again" to retry'):'');
+    ],overT>1.1?L('按「再上一次班」再挑戰|Press "Clock in again" to retry'):'');
   }else if(state==='play'&&paused){
     drawOverlay(L('暫停中|Paused'),'#8fe3d8',[{t:L('點一下畫面或按空白鍵繼續上班|Tap the screen or press Space to resume'),b:1}],'');
   }
@@ -1092,7 +1092,7 @@ cv.addEventListener('pointerdown',e=>{
   if(e.pointerType==='mouse'&&e.button!==0)return;
   e.preventDefault();initAudio();const pt=toLocal(e);
   if(pt.y<TOP&&pt.x>W-42){muted=!muted;return;}
-  if(state!=='play'){say(state==='over'?'這一局已結算。按「扣點再上一次班」開始新的一局。|This shift is settled. Press "Pay & clock in again" for a new one.':'先按「扣點開始上班」。|Press "Pay & clock in" first.');return;}
+  if(state!=='play'){say(state==='over'?'這一局已結算。按「再上一次班」開始新的一局。|This shift is settled. Press "Clock in again" for a new one.':'先按「開始上班」。|Press "Clock in" first.');return;}
   try{cv.focus();}catch(_){}
   if(paused){paused=false;last=null;return;}
   if(e.pointerType==='mouse'){p.tx=pt.x;}
@@ -1114,7 +1114,7 @@ window.addEventListener('hashchange',pauseNow);
 // ====== 平台：單次扣款、固定 BONUS、單次結算 ======
 var $v=$('view-office-shoot'),analytics=null,earned=0,paidDays={};
 // 訊息與數值欄位標記 data-i18n-ignore，每格依目前語言從「中文|English」輸出；按鈕沿用大廳翻譯層
-let msg={text:'扣點後開始上班：擊敗第 1～{d} 天的大魔王，每天 BONUS +{n} 點。|Pay to start your shift: beat the boss on days 1–{d} for BONUS +{n} pts each.',kind:'',params:{d:BONUS_DAYS,n:BONUS_PER_DAY}};
+let msg={text:'開始後開始上班：擊敗第 1～{d} 天的大魔王，每天 BONUS +{n} 點。|Start your shift for free: beat the boss on days 1–{d} for BONUS +{n} pts each.',kind:'',params:{d:BONUS_DAYS,n:BONUS_PER_DAY}};
 function msgText(){const t=msg.text;if(t.indexOf('|')>=0)return LF(t,msg.params||{});return lang==='en'&&window.deepSeaI18n?window.deepSeaI18n.text(t):t;}
 function say(text,kind,params){msg={text:String(text),kind:kind||'',params};renderMsg();}
 function renderMsg(){const m=$('os-msg'),v=msgText(),c='msg'+(msg.kind?' '+msg.kind:'');if(m.textContent!==v)m.textContent=v;if(m.className!==c)m.className=c;}
@@ -1128,7 +1128,7 @@ function ui(){
   setText('os-best',best.toLocaleString());
   setText('os-pay',earned+' / '+BONUS_PER_DAY*BONUS_DAYS);
   const b=$('os-go');b.disabled=live;
-  setText('os-go',live?'上班中':state==='over'?'扣點再上一次班':'扣點開始上班');
+  setText('os-go',live?'上班中':state==='over'?'再上一次班':'開始上班');
   renderMsg();
 }
 // 擊敗第 1～BONUS_DAYS 天的大魔王：每天固定 +BONUS_PER_DAY 點，每天每局只發一次
@@ -1152,7 +1152,7 @@ function begin(){
   if(otBusy)return;
   if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');return;}
   analytics=AN.start('office-shoot',ENTRY_FEE);otBusy=true;otStake=ENTRY_FEE;earned=0;paidDays={};
-  S.balance-=ENTRY_FEE;save();renderAll();
+  save();renderAll();
   reset();clearInput();paused=false;state='play';last=null;initAudio();
   say('上班囉！擊敗第 1～{d} 天的大魔王，每天 BONUS +{n} 點。|Shift started! Beat the boss on days 1–{d} for BONUS +{n} pts each.','',{d:BONUS_DAYS,n:BONUS_PER_DAY});
   ui();try{cv.focus();}catch(_){}

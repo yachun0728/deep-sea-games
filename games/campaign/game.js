@@ -87,14 +87,14 @@
     $('cp-miss').style.color=CP.miss>=3?'var(--crush)':'';
     cpText('cp-signal',sig[1]);$('cp-signal').dataset.state=sig[0];
     $('cp-amount').disabled=CP.active;$('cp-go').disabled=live;
-    cpText('cp-go',live?'拉票中 · 安靜區按住靜音':CP.phase==='ready'?'扣點出發拉票':'扣點再跑一趟');
+    cpText('cp-go',live?'拉票中 · 安靜區按住靜音':CP.phase==='ready'?'出發拉票':'再跑一趟');
     $('cp-hold').disabled=!live;cpText('cp-hold',CP.hold?'靜音中 · 放開廣播':'按住靜音 · 放開廣播');
   }
   function cpStart(){
     if(CP.phase==='run')return;
     var stake=ENTRY_FEE;
     if(stake>S.balance){cpSay(LOW_MSG,'lose');return;}
-    CP.analytics=AN.start('campaign',stake);CP.stake=stake;CP.active=true;S.balance-=stake;save();renderAll();
+    CP.analytics=AN.start('campaign',stake);CP.stake=stake;CP.active=true;save();renderAll();
     cpCity();CP.dist=0;CP.votes=CP_START;CP.miss=0;CP.floats=[];CP.pops=[];CP.earned=0;CP.awarded=0;CP.phase='run';CP.last=performance.now();cpRelease();
     cpSay('出發！沒有終點，越開越快。放開讓喇叭廣播，前方出現紅色的學校、醫院、豪宅時按住靜音；在一般路段靜音太久也算失誤。');cpUI();campaignCanvas.focus();
   }

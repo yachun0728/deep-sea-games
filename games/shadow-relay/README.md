@@ -5,9 +5,9 @@
 ## 概覽
 
 - 網址：`#shadow-relay`　分類：益智策略　狀態：顯示中
-- 大廳卡片：「影子會照你的路線重走，讓它點亮燈籠，別被它追上。」｜每局 10 點 · 8 關
+- 大廳卡片：「影子會照你的路線重走，讓它點亮燈籠，別被它追上。」｜立即開玩 · 8 關
 - 追蹤名稱（GA4 `game_name`）：影子接力，`game_id` 為 `shadow-relay`
-- 檔案：`games/shadow-relay/card.html`、`games/shadow-relay/game.js`、`games/shadow-relay/icon.svg`、`games/shadow-relay/original.html`、`games/shadow-relay/style.css`、`games/shadow-relay/view.html`；`game.js` 共 62 行、5.4 KB
+- 檔案：`games/shadow-relay/card.html`、`games/shadow-relay/game.js`、`games/shadow-relay/icon.svg`、`games/shadow-relay/original.html`、`games/shadow-relay/style.css`、`games/shadow-relay/view.html`；`game.js` 共 62 行、5.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「44. 影子接力 Shadow Relay（shadow-relay）」（下方「規則摘要」已複製）
 
@@ -27,7 +27,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L18 `srValid`：`S.balance-=ENTRY_FEE;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L26 `srValid`：`S.balance+=got;`
@@ -35,7 +35,7 @@
 **餘額檢查**
 - L15 `srValid`：`if(ENTRY_FEE>S.balance){srSay(LOW_MSG,'lose');`
 
-- 入場費常數 `ENTRY_FEE` 在本檔出現 6 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
+- 入場費常數 `ENTRY_FEE` 在本檔出現 4 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
@@ -57,9 +57,8 @@
 ## 平台共用相依
 
 - 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`ENTRY_FEE`、`LOW_MSG`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
-- `js/controls.js` 會呼叫：`srSay`
 - `js/navigation.js` 會呼叫：`srRoute`
-- 「重設為 500 點」進行中防護（`js/controls.js`）：無法判斷（沒有偵測到狀態名稱）
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 

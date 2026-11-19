@@ -5,9 +5,9 @@
 ## 概覽
 
 - 網址：`#last-hair`　分類：潛行偷閒　狀態：顯示中
-- 大廳卡片：「頂著最後三根頭髮，在強風中走完 500 公尺去面試。」｜每局 10 點 · 雙拇指操作
+- 大廳卡片：「頂著最後三根頭髮，在強風中走完 500 公尺去面試。」｜立即開玩 · 雙拇指操作
 - 追蹤名稱（GA4 `game_name`）：尊嚴保衛戰，`game_id` 為 `last-hair`
-- 檔案：`games/last-hair/card.html`、`games/last-hair/game.js`、`games/last-hair/icon.svg`、`games/last-hair/style.css`、`games/last-hair/view.html`；`game.js` 共 584 行、42.0 KB
+- 檔案：`games/last-hair/card.html`、`games/last-hair/game.js`、`games/last-hair/icon.svg`、`games/last-hair/style.css`、`games/last-hair/view.html`；`game.js` 共 585 行、42.0 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「36. 尊嚴保衛戰 The Last Hair（last-hair）」（下方「規則摘要」已複製）
 
@@ -41,7 +41,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L517 `start`：`S.balance-=amount;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L269 `milestones`：`S.balance+=pts;`
@@ -71,7 +71,7 @@
 
 - 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`、`C`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/navigation.js` 會呼叫：`shown`
-- 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`hairBusy`
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 

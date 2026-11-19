@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#ocean-link`　分類：免費懷舊　狀態：顯示中
-- 大廳卡片：「把相同的圖案連起來，穿越礁石與移動棋盤。」｜免費 · 不限次數 · 配對解謎
+- 大廳卡片：「把相同的圖案連起來，穿越礁石與移動棋盤。」｜不限次數 · 配對解謎
 - 追蹤名稱（GA4 `game_name`）：深海連連看，`game_id` 為 `ocean-link`
 - 檔案：`games/ocean-link/board.js`、`games/ocean-link/card.html`、`games/ocean-link/game.js`、`games/ocean-link/icon.svg`、`games/ocean-link/style.css`、`games/ocean-link/tiles.js`、`games/ocean-link/view.html`；`game.js` 共 407 行、15.8 KB
 
@@ -54,7 +54,7 @@
 
 - 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - 共用檔沒有直接呼叫本遊戲的函式。
-- 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`oceanLinkBusy`
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 

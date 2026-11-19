@@ -350,5 +350,13 @@
     "view": "games/one-line-defense/view.html",
     "card": "games/one-line-defense/card.html",
     "icon": "games/one-line-defense/icon.svg"
+  },
+  {
+    "id": "frontier",
+    "logic": "games/frontier/game.js",
+    "view": "games/frontier/view.html",
+    "card": "games/frontier/card.html",
+    "icon": "games/frontier/icon.svg",
+    "style": "games/frontier/style.css"
   }
 ]

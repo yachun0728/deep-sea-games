@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 const root=new URL('../',import.meta.url);
-const raw=fs.readFileSync(new URL('games/banquet/game.js',root),'utf8');
+const raw=fs.readFileSync(new URL('games/banquet/i18n.js',root),'utf8')+'\n'+fs.readFileSync(new URL('games/banquet/game.js',root),'utf8');
 const fee=Number(fs.readFileSync(new URL('js/config.js',root),'utf8').match(/ENTRY_FEE\s*=\s*(\d+)/)[1]);
 const hookAt='render();requestAnimationFrame(loop);';
 assert.ok(raw.includes(hookAt),'test hook anchor missing');
@@ -46,15 +46,15 @@ export function fixture(balance=500,random=Math.random,savedWins=null){
       f.ev('E.comp={poison:9,nectar:9,truth:9};E.out={poison:0,nectar:0,truth:0,water:0}');
     },
     E:()=>JSON.parse(JSON.stringify(f.ev('E'))),
-    logs:()=>f.ev('E.log.slice()')};
+    logs:()=>f.ev('E.log.map(logText)')};
   return f;
 }
 const started=(balance=500,random=Math.random)=>{const f=fixture(balance,random);f.B.start();return f;};
 function check(name,fn){fn();results.push(name);}
 const isMain=process.argv[1]&&fs.realpathSync(process.argv[1])===fs.realpathSync(new URL(import.meta.url));
 if(isMain){
-check('Not enough points: nothing is deducted and no round starts',()=>{
-  const f=fixture(fee-1);f.B.start();assert.equal(f.wallet.balance,fee-1);assert.equal(f.busy(),false);assert.equal(f.count('start'),0);assert.equal(f.ev('E.phase'),'ready');
+check('Free entry: a zero balance can start a round and nothing is deducted',()=>{
+  const f=fixture(0);f.B.start();assert.equal(f.wallet.balance,0);assert.equal(f.busy(),true);assert.equal(f.count('start'),1);
 });
 check('Start deducts the entry fee once even when clicked twice, and tracks one round',()=>{
   const f=fixture();f.B.start();f.B.start();assert.equal(f.wallet.balance,500-fee);assert.equal(f.count('start'),1);assert.equal(f.storage.get('crush-depth-balance'),String(500-fee));assert.equal(f.busy(),true);assert.deepEqual(f.events[0].slice(1),['banquet',fee]);
@@ -106,7 +106,7 @@ check('A knocked-out player cannot be revived by a faint; HP 0 ends the game imm
 check('Items that need a cup do nothing and are not consumed without a selected cup',()=>{
   const f=started();f.scene({hand:{p:['needle','scent','change','cheers','powder','ice'],d:[]}});
   for(const k of['needle','scent','change','cheers','powder','ice']){const r=f.B.useItem('p',k,0);assert.equal(r.ok,false);}
-  assert.equal(f.E().hand.p.length,6);f.ev('E.sel=0');f.B.playerItem('needle');assert.equal(f.E().hand.p.length,6);assert.match(f.el('bq-msg').textContent,/先點選一杯酒/);
+  assert.equal(f.E().hand.p.length,6);f.ev('E.sel=0');f.B.playerItem('needle');assert.equal(f.E().hand.p.length,6);assert.match(f.el('bq-msg').textContent,/Select a cup first/);
 });
 check('Needle shows the true type normally; at Drunk 3-4 it may lie and says so',()=>{
   const f=started();f.scene({cups:['poison','nectar'],hand:{p:['needle'],d:[]}});f.B.useItem('p','needle',1);assert.deepEqual(f.E().known.p[1],{t:'poison',maybe:false});
@@ -195,11 +195,11 @@ check('The host can use the silver lid on the player: the player answers and the
 check('Silver lid is ignored when it is not that side\'s turn or the cup is gone',()=>{
   const f=started();f.scene({cups:['water','water']});assert.equal(f.B.claim('d',1),false);assert.equal(f.B.claim('p',9),false);f.B.claim('p',1);assert.equal(f.B.claim('p',2),false);assert.equal(f.B.selfDrink('p',2),false);
 });
-check('Finishing an act pays its BONUS once, lowers Drunk by 1 and deals the next act; the win pays +2; the total can never reach the entry fee',()=>{
+check('Finishing an act pays its BONUS once, lowers Drunk by 1 and deals the next act; the win pays +2; free play retains all fixed rewards',()=>{
   const f=started();f.scene({cups:['water'],dr:{p:2,d:0}});f.ev('E.hand.p=["needle"]');f.B.selfDrink('p',1);let e=f.E();assert.equal(e.act,2);assert.equal(e.paid.a1,1);assert.equal(f.wallet.balance,500-fee+1);assert.equal(e.dr.p,2);assert.ok(e.hand.p.includes('needle'));
   f.ev('E.cups=[{id:1,t:"water"}];E.turn="p"');f.B.selfDrink('p',1);assert.equal(f.E().act,3);assert.equal(f.wallet.balance,500-fee+3);
   f.ev('E.cups=[{id:1,t:"water"}];E.turn="p";E.hp.p=4;E.hp.d=2');f.B.selfDrink('p',1);e=f.E();assert.equal(e.phase,'over');assert.equal(e.result.w,'p');assert.equal(e.result.why,'life');assert.equal(f.wallet.balance,500-fee+8);assert.equal(f.count('end'),1);assert.equal(f.events.find(x=>x[0]==='end')[2],8);assert.equal(f.busy(),false);assert.equal(f.storage.get('deep-sea-banquet-best'),'1');
-  assert.ok(8<fee);
+  assert.equal(fee,0);
 });
 check('Reaching HP 0 ends the game at once, pays the win only to the player, and a second end call changes nothing',()=>{
   const f=started();f.scene({cups:['poison','water'],hp:{p:5,d:1}});f.B.toast('p',1);let e=f.E();assert.equal(e.phase,'over');assert.equal(e.result.w,'p');assert.equal(f.wallet.balance,500-fee+2);f.B.endGame('p','hp');f.B.endGame('d','hp');assert.equal(f.wallet.balance,500-fee+2);assert.equal(f.count('end'),1);
@@ -234,7 +234,7 @@ check('Host AI decisions do not depend on hidden cup contents (same public info,
   for(let seed=1;seed<=40;seed++){
     const outs=new Set();
     for(const t of[['poison','water'],['nectar','water'],['truth','poison']]){let s=seed*104729;const rnd=()=>{s=(s*16807)%2147483647;return s/2147483647;};
-      const f=started(500,rnd);f.scene({cups:[t[0],t[1],'water'],turn:'p'});f.ev('E.comp={poison:2,nectar:1,truth:1};E.pending={from:"p",to:"d",id:1,big:false}');f.B.aiRespond();outs.add(f.E().log.some(l=>l.includes('質疑'))?'doubt':'believe');}
+      const f=started(500,rnd);f.scene({cups:[t[0],t[1],'water'],turn:'p'});f.ev('E.comp={poison:2,nectar:1,truth:1};E.pending={from:"p",to:"d",id:1,big:false}');f.B.aiRespond();outs.add(f.E().log.some(l=>l.k==='l.doubtok'||l.k==='l.doubtfail')?'doubt':'believe');}
     assert.equal(outs.size,1);
   }
 });
@@ -245,15 +245,15 @@ check('Host AI follows a decree, uses the Sober pill when drunk, and uses its ow
 });
 check('Host AI challenges silver-lid claims 40-60% of the time on average with no info, and more when a claim is known to be false',()=>{
   let doubts=0;const N=600;
-  for(let i=0;i<N;i++){const f=started();f.scene({cups:['poison','nectar','water','water','poison','truth'],turn:'p'});f.ev('E.comp={poison:3,nectar:2,truth:1};E.pending={from:"p",to:"d",id:1,big:false};E.claims.p=3;E.lies.p=1');f.B.aiRespond();if(f.E().log.some(l=>l.includes('質疑')))doubts++;}
+  for(let i=0;i<N;i++){const f=started();f.scene({cups:['poison','nectar','water','water','poison','truth'],turn:'p'});f.ev('E.comp={poison:3,nectar:2,truth:1};E.pending={from:"p",to:"d",id:1,big:false};E.claims.p=3;E.lies.p=1');f.B.aiRespond();if(f.E().log.some(l=>l.k==='l.doubtok'||l.k==='l.doubtfail'))doubts++;}
   const rate=doubts/N;assert.ok(rate>.25&&rate<.8,'challenge rate '+rate);
-  let known=0;for(let i=0;i<200;i++){const f=started();f.scene({cups:['poison','water'],turn:'p'});f.ev('E.known.d[1]={t:"poison",maybe:false};E.pending={from:"p",to:"d",id:1,big:false}');f.B.aiRespond();if(f.E().log.some(l=>l.includes('質疑')))known++;}
+  let known=0;for(let i=0;i<200;i++){const f=started();f.scene({cups:['poison','water'],turn:'p'});f.ev('E.known.d[1]={t:"poison",maybe:false};E.pending={from:"p",to:"d",id:1,big:false}');f.B.aiRespond();if(f.E().log.some(l=>l.k==='l.doubtok'||l.k==='l.doubtfail'))known++;}
   assert.ok(known/200>.85);
 });
 check('Pressing a cup selects it only on the player\'s turn; keys 1-8 select only while visible; the action row follows the turn',()=>{
   const f=started();f.scene({cups:['water','water']});f.B.render();assert.equal(f.el('bq-act-row').hidden,false);f.B.pickCup(2);assert.equal(f.ev('E.sel'),2);f.B.pickCup(2);assert.equal(f.ev('E.sel'),0);
   f.key({key:'1',target:{tagName:'BODY'},preventDefault(){}});assert.equal(f.ev('E.sel'),1);f.doc.hidden=true;f.key({key:'2',target:{tagName:'BODY'},preventDefault(){}});assert.equal(f.ev('E.sel'),1);f.doc.hidden=false;
-  f.ev('E.sel=0;E.turn="d"');f.B.render();assert.equal(f.el('bq-act-row').hidden,true);assert.equal(f.el('bq-turn').textContent,'莊家思考中…');f.B.pickCup(1);assert.equal(f.ev('E.sel'),0);
+  f.ev('E.sel=0;E.turn="d"');f.B.render();assert.equal(f.el('bq-act-row').hidden,true);assert.equal(f.el('bq-turn').textContent,'The Host is thinking…');f.B.pickCup(1);assert.equal(f.ev('E.sel'),0);
 });
 check('Forfeit needs a second press; after it the round is over, nothing more is paid and the reset guard is released',()=>{
   const f=started();f.B.quit();assert.equal(f.busy(),true);assert.equal(f.ev('E.phase'),'play');f.B.quit();assert.equal(f.busy(),false);assert.equal(f.ev('E.phase'),'over');assert.equal(f.wallet.balance,500-fee);assert.equal(f.count('end'),1);
@@ -267,7 +267,7 @@ check('The round-wide reset guard flag is set while playing and the DOM never ca
 });
 check('Log lines never reveal a cup that is still on the table (needle, scent, spin and doubt logs)',()=>{
   const f=started();f.scene({cups:['poison','nectar','water'],hand:{p:['needle','scent'],d:[]}});f.B.useItem('p','needle',1);f.B.useItem('p','scent',2);
-  const last=f.logs().slice(-2).join('|');assert.ok(!/劇毒|瓊漿|清水|真言水/.test(last),last);
+  const last=f.logs().slice(-2).join('|');assert.ok(!/Poison|Nectar|Water/.test(last),last);
 });
 check('Full games: 3000 host-vs-random-player rounds always end, keep every value in range, never overpay BONUS and keep the wallet exact',()=>{
   const wins={p:0,d:0,draw:0};let acts={1:0,2:0,3:0,4:0};
@@ -310,6 +310,16 @@ check('A drink queues a reveal beat: the host and the player wait for it, and it
   f.B.render();assert.equal(f.E().fx.length,0);
   f.B.tick(1);f.ev('E.aiT=0');f.B.tick(.1);assert.ok(f.E().cups.length<2||f.E().pending);
 });
+check('The dealer pose follows the action: self-drink, toast to the player, forced drink, hurt, and the final pose',()=>{
+  const pose=f=>f.el('bq-dealerbox').dataset.pose;
+  let f=started();f.scene({cups:['water','water','water'],turn:'d'});f.B.selfDrink('d',1);f.B.render();assert.equal(pose(f),'drink');
+  f=started();f.scene({cups:['water','water','water'],turn:'d'});f.B.toast('d',1);f.B.render();assert.equal(pose(f),'reach');
+  f=started();f.scene({cups:['water','water','water']});f.B.toast('p',1);f.B.render();assert.equal(pose(f),'caught');
+  f=started();f.scene({cups:['poison','water','water'],hp:{p:2,d:5}});f.B.selfDrink('p',1);f.B.render();f.B.loop(1000);f.B.loop(1100);assert.ok(['idle','victory','drink','reach','caught'].includes(pose(f)));
+  f=started();f.scene({cups:['poison','water'],hp:{p:5,d:1}});f.B.toast('p',1);f.B.render();assert.equal(pose(f),'hurt');
+  f=started();f.scene({cups:['poison','water'],hp:{p:1,d:5}});f.B.selfDrink('p',1);f.B.render();assert.equal(pose(f),'victory');
+  f.B.start();f.B.render();assert.equal(pose(f),'idle');
+});
 const isRun=process.argv.includes('--balance');
 if(isRun){
   // Informational: win rates of simple player policies against the host (1000 games each).
@@ -321,4 +331,22 @@ if(isRun){
 }
 }
 export {results};
+check('Title menu shows before the first banquet and hides once it starts',()=>{const f=fixture();f.ev('render()');assert.equal(f.el('bq-menu').hidden,false);f.B.start();f.ev('render()');assert.equal(f.el('bq-menu').hidden,true);});
+check('Language defaults to English; all six languages resolve every key without leftover tokens and keep the same log entries',()=>{
+  const f=started();assert.equal(f.ev('LANG'),'en');
+  f.scene({cups:['poison','nectar','truth','water'],turn:'p',hand:{p:['needle','scent'],d:['spin']}});
+  f.B.pickCup(1);f.B.selfDrink('p',1);
+  const keys=f.ev('Object.keys(BQ_I18N.en)'),langs=f.ev('LANGS');assert.equal(JSON.stringify(langs),'["en","es","de","ja","ko","zh"]');
+  const logsBefore=JSON.stringify(f.ev('E.log'));
+  for(const l of langs){
+    f.ev(`setLang('${l}')`);assert.equal(f.ev('LANG'),l);
+    for(const k of keys.filter(x=>x!=='sep')){const t=f.ev(`tr(${JSON.stringify(k)},{a:'p',o:'d',x:'d',id:3,n:2,ids:'#1',type:'@ty.poison',item:'@it.needle.n',label:'@pay.a1',act:'@act.1',maybe:'',info:'',claim:'',tip:'',w:'',a:'p'})`);assert.ok(typeof t==='string'&&t.length>0,l+':'+k);assert.ok(!/\{[A-Za-z.]+\}/.test(t.replace(/\{(a|b|c|x|y|z)\}/g,'')),l+':'+k+':'+t);}
+    assert.equal(JSON.stringify(f.ev('E.log')),logsBefore,'switching language must not touch stored log entries');
+    assert.ok(f.logs().every(x=>x.length>0));
+  }
+  f.ev("setLang('en')");assert.ok(f.logs().some(x=>/Poison|Nectar|Truth Water|Water/.test(x)));
+  f.ev("setLang('zh')");assert.ok(f.logs().some(x=>/[\u4e00-\u9fff]/.test(x)));
+  f.ev("setLang('xx')");assert.equal(f.ev('LANG'),'zh');
+  assert.equal(f.storage.get('deep-sea-banquet-lang'),'zh');
+});
 if(isMain)console.log(`PASS: ${results.length} banquet checks`);

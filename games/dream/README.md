@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#dream`　分類：時機操作　狀態：顯示中
-- 大廳卡片：「抓準時機，讓指針停在青綠色區域。」｜每局 10 點 · 無限關卡
+- 大廳卡片：「抓準時機，讓指針停在青綠色區域。」｜立即開玩 · 無限關卡
 - 追蹤名稱（GA4 `game_name`）：時序修復，`game_id` 為 `dream`
 - 檔案：`games/dream/card.html`、`games/dream/game.js`、`games/dream/icon.svg`、`games/dream/view.html`；`game.js` 共 79 行、6.6 KB
 
@@ -27,7 +27,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L68 `drAction`：`S.balance-=amount;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
@@ -54,8 +54,8 @@
 ## 平台共用相依
 
 - 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`ENTRY_FEE`、`LOW_MSG`、`C`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
-- `js/controls.js` 會呼叫：`drSay`
-- 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`DR`、`runnerBusy`
+- 共用檔沒有直接呼叫本遊戲的函式。
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 

@@ -143,7 +143,7 @@ const store = {
 };
 let best = store.get('best', 0);
 
-// ---------- Deep Sea Arcade 平台：扣點、BONUS 與暫停由父頁 deepSeaOneLine 處理；單獨開啟時是不扣點的示範 ----------
+// ---------- Deep Sea Arcade 平台：免費、BONUS 與暫停由父頁 deepSeaOneLine 處理；單獨開啟時是不免費的示範 ----------
 const BONUS_EVERY = 30, BONUS_MARKS = 5;
 function host() { try { return window.parent !== window ? window.parent.deepSeaOneLine || null : null; } catch (e) { return null; } }
 let roundOn = false, earned = 0, marks = 0, platformVisible = true;

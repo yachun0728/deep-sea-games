@@ -166,7 +166,7 @@ body{position:fixed;inset:0}
     <h2 class="ol">點數不夠</h2>
     <p>每局需要 <span id="low-fee"></span> 點</p>
     <div id="low-wallet" class="pill"></div>
-    <button class="btn" id="btn-low-ad">看 5 秒示範廣告<span class="btn-sub">之後 30 分鐘開局不扣點</span></button>
+    <button class="btn" id="btn-low-ad">看 5 秒示範廣告<span class="btn-sub">之後 30 分鐘狂煎</span></button>
     <button class="btn ghost" id="btn-low-back">回首頁</button>
   </div>
 
@@ -253,12 +253,12 @@ const CONFIG = {
   micCheckSeconds: 1.5,
 
   // 點數／續命
-  entryFee: 10,
+  entryFee: 0,
   adExtendSeconds: 20,
   adContinuePerGame: 1,
   fakeAdSeconds: 5,
   adFreeMinutes: 30,
-  coffeeCost: 30,
+  coffeeCost: 5,
   coffeeExtendSeconds: 15,
   coffeeBoostSeconds: 10,
 };
@@ -314,7 +314,7 @@ async function copyText(text) {
     document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); return ok;
   } catch (e) { return false; }
 }
-/* 平台橋接：嵌在 deep-sea-games 大廳時，扣點／追蹤交給大廳（window.parent.deepSeaRocket） */
+/* 平台橋接：嵌在 deep-sea-games 大廳時，免費／追蹤交給大廳（window.parent.deepSeaRocket） */
 const HOST = (() => { try { return window.parent !== window ? window.parent.deepSeaRocket || null : null; } catch (_) { return null; } })();
 function cleanUrl() {
   if (HOST) { try { const l = window.parent.location; return l.origin + l.pathname + '#rocket-chair'; } catch (_) {} }
@@ -390,15 +390,7 @@ const Wallet = {
   grantFree(min) { lsSet(this.FREE_KEY, String(Date.now() + min * 60000)); },
   canStart() { return this.isFree() || this.bal >= CONFIG.entryFee; },
 };
-function walletText() {
-  if (Wallet.isFree()) { const s = Math.ceil(Wallet.freeLeftMs() / 1000); return `免費時間 ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}・開局不扣點`; }
-  let t = `餘額 <b>${Wallet.bal}</b> 點・每局 ${CONFIG.entryFee} 點`;
-  if (Wallet.bal < Wallet.REGEN_CAP) {
-    const s = Math.max(1, Math.min(60, Math.ceil((Wallet.REGEN_MS - (Date.now() - Wallet.regenAt)) / 1000)));
-    t += `<br><span class="w-sub">下一點 0:${String(s % 60).padStart(2, '0')}・回到 ${Wallet.REGEN_CAP} 點為止</span>`;
-  }
-  return t;
-}
+function walletText() { return '免費遊玩 · 咖啡補給免費'; }
 function renderWallet() {
   const html = walletText();
   for (const id of ['t-wallet', 'mode-wallet', 'revive-wallet', 'r-wallet', 'low-wallet']) { const el = $(id); if (el && el.innerHTML !== html) el.innerHTML = html; }
@@ -757,7 +749,7 @@ function renderRevive() {
   const adLeft = G.adUsed < CONFIG.adContinuePerGame;
   $('btn-ad').disabled = !adLeft;
   $('ad-sub').textContent = adLeft ? `主管的會議延長 ${CONFIG.adExtendSeconds} 秒（每局 1 次）` : '這局已經看過了';
-  $('btn-coffee').innerHTML = `用 ${CONFIG.coffeeCost} 點換一杯特濃咖啡<span class="btn-sub">會議再拖 ${CONFIG.coffeeExtendSeconds} 秒，接下來 ${CONFIG.coffeeBoostSeconds} 秒推力加倍</span>`;
+  $('btn-coffee').innerHTML = `領取一杯特濃咖啡<span class="btn-sub">會議再拖 ${CONFIG.coffeeExtendSeconds} 秒，接下來 ${CONFIG.coffeeBoostSeconds} 秒推力加倍</span>`;
   $('btn-coffee').classList.toggle('dim', Wallet.bal < CONFIG.coffeeCost);
 }
 function reviveContinue() {
@@ -834,7 +826,7 @@ function adDone() {
     $('pause-title').textContent = `會議延長 ${CONFIG.adExtendSeconds} 秒！`;
     $('pause-desc').textContent = '主管又開始講了，趕快繼續衝';
   } else {
-    toast(`接下來 ${CONFIG.adFreeMinutes} 分鐘開局不扣點`);
+    toast(`接下來 ${CONFIG.adFreeMinutes} 分鐘開局不免費`);
     const n = lowNext; lowNext = null; if (n) n(); else goMode();
   }
 }

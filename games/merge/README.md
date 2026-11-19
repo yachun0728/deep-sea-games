@@ -5,9 +5,9 @@
 ## 概覽
 
 - 網址：`#merge`　分類：益智策略　狀態：顯示中
-- 大廳卡片：「滑動合併珍珠，養出更大的數字。」｜每局 10 點 · 滑動合併
+- 大廳卡片：「滑動合併珍珠，養出更大的數字。」｜立即開玩 · 滑動合併
 - 追蹤名稱（GA4 `game_name`）：養珠，`game_id` 為 `merge`
-- 檔案：`games/merge/card.html`、`games/merge/game.js`、`games/merge/icon.svg`、`games/merge/view.html`；`game.js` 共 90 行、5.0 KB
+- 檔案：`games/merge/card.html`、`games/merge/game.js`、`games/merge/icon.svg`、`games/merge/view.html`；`game.js` 共 90 行、4.9 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「4. Pearl Merge（merge）」（下方「規則摘要」已複製）
 
@@ -27,7 +27,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L42 `mgStart`：`S.balance -= MG_FEE;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
@@ -54,8 +54,7 @@
 
 - 直接使用的共用名稱：`S`、`AN`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`syncBalance`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/bootstrap.js` 會呼叫：`mgBuild`、`mgRender`
-- `js/controls.js` 會呼叫：`gSay`
-- 「重設為 500 點」進行中防護（`js/controls.js`）：**未涵蓋**：進行中按「重設」仍可能生效
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 

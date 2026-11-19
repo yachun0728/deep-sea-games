@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#breakout`　分類：免費懷舊　狀態：顯示中
-- 大廳卡片：「移動擋板反彈小球，打光磚塊一關闖過一關。」｜免費 · 不限次數 · 反應闖關
+- 大廳卡片：「移動擋板反彈小球，打光磚塊一關闖過一關。」｜不限次數 · 反應闖關
 - 追蹤名稱（GA4 `game_name`）：打磚塊，`game_id` 為 `breakout`
 - 檔案：`games/breakout/card.html`、`games/breakout/game.js`、`games/breakout/icon.svg`、`games/breakout/view.html`；`game.js` 共 228 行、14.3 KB
 
@@ -57,7 +57,7 @@
 
 - 直接使用的共用名稱：`S`、`AN`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - 共用檔沒有直接呼叫本遊戲的函式。
-- 「重設為 500 點」進行中防護（`js/controls.js`）：無法判斷（沒有偵測到狀態名稱）
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 

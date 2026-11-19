@@ -67,7 +67,6 @@
     var button = $('account-toggle'), menu = $('account-menu'), timer = 0;
     function sync() {
       $('account-balance').textContent = fmt(S.balance);
-      $('account-bar').style.width = Math.min(100, S.balance / REGEN_CAP * 100) + '%';
     }
     function setOpen(open) {
       menu.hidden = !open; button.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -82,6 +81,4 @@
     $('account-board').addEventListener('click', function () {
       setTimeout(function () { var board = document.querySelector('.lobby-board'); if (board && board.scrollIntoView) board.scrollIntoView({ block: 'start' }); }, 60);
     });
-    // Reuses the existing reset button so its in-progress guards and analytics stay the only reset path.
-    $('account-reset').addEventListener('click', function () { $('reset').click(); sync(); });
   })();

@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#runner`　分類：跑酷動作　狀態：顯示中
-- 大廳卡片：「點左、點右換道，避開一路上的障礙。」｜每局 10 點 · 無盡挑戰
+- 大廳卡片：「點左、點右換道，避開一路上的障礙。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：閃避跑酷，`game_id` 為 `runner`
 - 檔案：`games/runner/card.html`、`games/runner/game.js`、`games/runner/icon.svg`、`games/runner/view.html`；`game.js` 共 118 行、8.6 KB
 
@@ -29,7 +29,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L35 `start`：`S.balance-=ENTRY_FEE;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L27 `award`：`S.balance+=b;`
@@ -37,7 +37,7 @@
 **餘額檢查**
 - L34 `start`：`if(S.balance<ENTRY_FEE){note(LOW_MSG,'lose');`
 
-- 入場費常數 `ENTRY_FEE` 在本檔出現 5 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
+- 入場費常數 `ENTRY_FEE` 在本檔出現 2 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
@@ -55,8 +55,8 @@
 ## 平台共用相依
 
 - 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
-- `js/controls.js` 會呼叫：`note`
-- 「重設為 500 點」進行中防護（`js/controls.js`）：無法判斷（沒有偵測到狀態名稱）
+- 共用檔沒有直接呼叫本遊戲的函式。
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 

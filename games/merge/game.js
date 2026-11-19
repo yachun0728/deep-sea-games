@@ -19,8 +19,8 @@
     $('mg-max').textContent = G.active || G.over ? String(max) : '—';
     $('mg-best').textContent = fmt(G.best);
     document.querySelectorAll('[data-dir]').forEach(function (b) { b.disabled = !G.active; });
-    if (G.active) { elGGo.dataset.mode = 'cancel'; elGGo.innerHTML = '放棄重開<small>再扣 ' + MG_FEE + ' 點</small>'; }
-    else { elGGo.dataset.mode = 'bet'; elGGo.innerHTML = (G.over ? '再玩一局' : '開始一局') + '<small>扣 ' + MG_FEE + ' 點</small>'; }
+    if (G.active) { elGGo.dataset.mode = 'cancel'; elGGo.innerHTML = '放棄重開'; }
+    else { elGGo.dataset.mode = 'bet'; elGGo.innerHTML = (G.over ? '再玩一局' : '開始一局') + ''; }
   }
   function mgSpawn() {
     var empty = []; G.grid.forEach(function (v, i) { if (!v) empty.push(i); });
@@ -39,11 +39,11 @@
   function mgStart() {
     if (S.balance < MG_FEE) { gSay(LOW_MSG, 'lose'); return; }
     if(G.active)AN.end(G.analytics,0,'restart',{score:G.score});
-    G.analytics=AN.start('merge',MG_FEE); S.balance -= MG_FEE;
+    G.analytics=AN.start('merge',MG_FEE);
     G.grid = []; for (var i = 0; i < 16; i++) G.grid.push(0);
     G.score = 0; G.active = true; G.over = false; G.fresh = {};
     mgSpawn(); mgSpawn();
-    gSay('已扣 ' + MG_FEE + ' 點，開始養珠。');
+    gSay('開始養珠。');
     syncBalance(); mgRender();
   }
   function mgMove(dir) {

@@ -103,8 +103,7 @@
           el('ol-full').parentElement.id === 'ol-toolbar-actions', mode + ' one tap starts the game in fullscreen');
         assert(balance() === before && el('ol-left').textContent === String(rows * cols / 2), mode + ' starts once with the requested dimensions');
         assert(Number(getComputedStyle(grid).gridTemplateColumns.split(' ').length) === cols + 2, mode + ' renders both outer side lanes');
-        click('reset');
-        assert(balance() === before && el('ol-msg').textContent.includes('才能重設'), 'Reset is blocked during ' + mode);
+        assert(!el('reset'), 'No point reset control during ' + mode);
         assert(seconds() === 0, mode + ' new expedition begins at zero');
         clockOffset += 3000;
         window.dispatchEvent(new PageTransitionEvent('pageshow', {persisted: true}));

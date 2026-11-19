@@ -1,38 +1,22 @@
-  var REGEN_KEY = 'deep-sea-regen-at', regenAt = Date.now(), lastSavedBalance = START_BALANCE;
+  var lastSavedBalance = START_BALANCE;
   function save() {
-    // A spend that takes the balance below the cap starts the regeneration clock at that moment.
-    if (lastSavedBalance >= REGEN_CAP && S.balance < REGEN_CAP) regenAt = Date.now();
     lastSavedBalance = S.balance;
-    try { localStorage.setItem(STORE, String(S.balance)); localStorage.setItem(REGEN_KEY, String(regenAt)); } catch (e) {}
+    try { localStorage.setItem(STORE, String(S.balance)); } catch (e) {}
   }
+  // One-time reset (2026-11-18): everyone starts again from 0 points. The marker keeps it from running twice,
+  // and the wardrobe collection (deep-sea-wardrobe-v1) is not touched.
+  var ZERO_KEY = 'deep-sea-balance-zero-v1';
   function load() {
     try {
-      var v = parseInt(localStorage.getItem(STORE), 10); if (isFinite(v) && v >= 0) S.balance = v;
-      var t = Number(localStorage.getItem(REGEN_KEY)); if (isFinite(t) && t > 0) regenAt = t;
+      if (localStorage.getItem(ZERO_KEY) !== '1') {
+        S.balance = 0; localStorage.setItem(STORE, '0'); localStorage.setItem(ZERO_KEY, '1');
+      } else {
+        var v = parseInt(localStorage.getItem(STORE), 10); if (isFinite(v) && v >= 0) S.balance = v;
+      }
     } catch (e) {}
-    lastSavedBalance = S.balance; regenTick(Date.now());
+    lastSavedBalance = S.balance;
   }
-  // +1 point per full minute while below the cap, by wall-clock time (it also counts while the page was closed).
-  function regenTick(now) {
-    if (S.balance >= REGEN_CAP) { regenAt = now; return false; }
-    if (now < regenAt) regenAt = now;
-    var mins = Math.floor((now - regenAt) / REGEN_MS);
-    if (mins < 1) return false;
-    S.balance += Math.min(mins, REGEN_CAP - S.balance);
-    regenAt = S.balance >= REGEN_CAP ? now : regenAt + mins * REGEN_MS;
-    save(); return true;
-  }
-  function regenUI() {
-    var el = document.getElementById('regen-hint'); if (!el) return;
-    var text = '低於 ' + REGEN_CAP + ' 點時，每分鐘回 1 點';
-    if (S.balance < REGEN_CAP) {
-      var s = Math.max(1, Math.min(60, Math.ceil((REGEN_MS - (Date.now() - regenAt)) / 1000)));
-      text = '下一點 ' + Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60) + ' · 回到 ' + REGEN_CAP + ' 點為止';
-    }
-    if (el.textContent !== text) el.textContent = text;
-  }
-  function regenStart() {
-    var step = function () { if (regenTick(Date.now())) renderAll(); regenUI(); };
-    document.addEventListener('visibilitychange', function () { if (!document.hidden) step(); });
-    setInterval(step, 1000); regenUI();
-  }
+  // Legacy regeneration keys remain readable; no passive or offline points after free-play migration.
+  function regenTick(now) { return false; }
+  function regenUI() { var el=document.getElementById('regen-hint'); if(el)el.textContent='點數可兌換外觀'; }
+  function regenStart() { regenUI(); }

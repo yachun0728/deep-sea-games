@@ -314,7 +314,7 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const live=st==='run';
  setText('mq-blood',mo.blood.toFixed(1)+'%');setText('mq-alert',Math.floor(mo.alert)+'%');setText('mq-best',best.toFixed(1)+'%');
- $('mq-amount').disabled=mqBusy;$('mq-go').disabled=live;setText('mq-go',live?'出動中 · 放開上升、按住下降':st==='over'?'扣點再來一隻':'扣點開始吸血');
+ $('mq-amount').disabled=mqBusy;$('mq-go').disabled=live;setText('mq-go',live?'出動中 · 放開上升、按住下降':st==='over'?'再來一隻':'開始吸血');
 }
 function pay(n){
  earned+=n;paidCount++;S.balance+=n;save();renderAll();
@@ -334,8 +334,8 @@ function finish(kind){
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:Math.round(result.blood),step:paidCount,stage:1});mqBusy=false;save();renderAll();
  const pct=result.blood.toFixed(1);
  if(kind==='won')say('吸飽了！成功飛出窗戶，本局共入帳 '+fmt(earned)+' 點。','win');
- else if(kind==='escaped'){if(earned)say('死裡逃生！只吸到 '+pct+'%，沒有過關，本局共入帳 '+fmt(earned)+' 點。','win');else say('死裡逃生！只吸到 '+pct+'%，沒有過關，這一局沒有點數。','lose')}
- else{if(earned)say('被拍扁了。吸飽度 '+pct+'%，本局共入帳 '+fmt(earned)+' 點。','win');else say('被拍扁了。吸飽度 '+pct+'%，這一局沒有點數。','lose')}
+ else if(kind==='escaped'){if(earned)say('死裡逃生！只吸到 '+pct+'%，沒有過關，本局共入帳 '+fmt(earned)+' 點。','win');else say('死裡逃生！只吸到 '+pct+'%，沒有過關，這一局沒有額外成就獎勵。','lose')}
+ else{if(earned)say('被拍扁了。吸飽度 '+pct+'%，本局共入帳 '+fmt(earned)+' 點。','win');else say('被拍扁了。吸飽度 '+pct+'%，這一局沒有額外成就獎勵。','lose')}
  ui();
 }
 function handleEvents(){
@@ -368,7 +368,7 @@ function drawOverlay(){
   text('血壓上升',240,130,54,'#ff5a5a','center','#200');text('深夜蚊子大作戰',240,184,26,'#ffd6d6','center','#200');
   const ins=['放開：蚊子往上飄','按住：往下俯衝','降落在皮膚上，按住就吸血','吸越多越重、越飛不動','吸滿 100% 才能從窗戶破洞逃出去','別把他吵醒，被拍扁是你太貪心'];
   for(let i=0;i<ins.length;i++)text(ins[i],240,250+i*30,18,'#e8e8f4');
-  text('到操作區扣點開始',240,560,24,'#ffd23f','center','#000');
+  text('到操作區開始',240,560,24,'#ffd23f','center','#000');
   return}
  if(st!=='over'||!result)return;
  const r=result;
@@ -387,7 +387,7 @@ function drawOverlay(){
   text('死裡逃生',240,270,48,'#9ec3ff','center','#012');
   text('但你只吸到 '+r.blood.toFixed(1)+'%，餓著肚子逃走',240,340,20,'#dce8ff');
  }
- text(earned>0?'本局入帳 '+fmt(earned)+' 點':'這一局沒有點數',240,468,22,earned>0?'#ffd23f':'#fff1c1');
+ text(earned>0?'本局入帳 '+fmt(earned)+' 點':'這一局沒有額外成就獎勵',240,468,22,earned>0?'#ffd23f':'#fff1c1');
  if(rec)text('新紀錄！',240,502,20,'#ffd23f');
  text('到操作區再玩一次',240,560,20,'#fff1c1');
 }
@@ -410,7 +410,7 @@ function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
- analytics=AN.start('mosquito',amount);mqStake=amount;mqBusy=true;S.balance-=amount;save();renderAll();
+ analytics=AN.start('mosquito',amount);mqStake=amount;mqBusy=true;save();renderAll();
  mo=mqNew(Math.random);earned=0;paid=[false,false,false];winPaid=false;paidCount=0;rec=false;result=null;splat=[];shake=0;flash=0;hintText='';releaseInput();
  st='run';last=performance.now();say('出動！放開上升、按住下降，降落在皮膚上按住吸血。');ui();cv.focus();
 }
@@ -418,7 +418,7 @@ const shown=()=>!$('view-mosquito').hidden&&!document.hidden;
 $('mq-go').addEventListener('click',start);
 cv.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
- if(st!=='run'){say(st==='over'?'這一局已結算。按「扣點再來一隻」開始新的一局。':'先按「扣點開始吸血」。');return}
+ if(st!=='run'){say(st==='over'?'這一局已結算。按「再來一隻」開始新的一局。':'先按「開始吸血」。');return}
  if(!shown())return;e.preventDefault();cv.focus();try{cv.setPointerCapture(e.pointerId)}catch(_){}
  ptrs.add(e.pointerId)});
 const endPointer=e=>{ptrs.delete(e.pointerId)};

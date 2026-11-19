@@ -7,7 +7,7 @@
   .wrap:not(.is-lobby) .brand-home{gap:7px;min-width:0}
   .wrap:not(.is-lobby) .brand-home-icon{width:25px;height:25px}
   .wrap:not(.is-lobby) .brand-home h1{min-width:0;margin:0;font-size:16px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .wrap:not(.is-lobby) .brand-home h1 span,.wrap:not(.is-lobby) .demo-tag,.wrap:not(.is-lobby) .wallet .label,.wrap:not(.is-lobby) .regen-hint{display:none}
+  .wrap:not(.is-lobby) .brand-home h1 span,.wrap:not(.is-lobby) .wallet .label,.wrap:not(.is-lobby) .regen-hint{display:none}
   .wrap:not(.is-lobby) .wallet-box{min-width:0;max-width:145px}
   .wrap:not(.is-lobby) .wallet{gap:4px;white-space:nowrap}
   .wrap:not(.is-lobby) .wallet .amount{font-size:19px;line-height:1.3}

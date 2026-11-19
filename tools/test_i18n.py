@@ -99,7 +99,7 @@ def js_literals(source):
 def source_texts():
     """Audit static text and literal fragments used by the existing concatenated game UI."""
     found = set()
-    for folder in ('templates', 'games', 'js'):
+    for folder in ('templates', 'games', 'js', 'platform'):
         for path in (ROOT / folder).rglob('*'):
             if path.suffix not in ('.html', '.js') or path.name == 'i18n.js':
                 continue
@@ -138,10 +138,10 @@ class LocalizationTests(unittest.TestCase):
     def test_embedded_dictionary_cannot_close_script(self):
         self.assertNotIn('</script', (ROOT / 'locales/en.json').read_text().lower())
 
-    def test_boba_accessibility_fee_matches_the_display(self):
+    def test_boba_card_has_no_fee_wording(self):
         source = (ROOT / 'games/boba/card.html').read_text()
-        self.assertIn('每局10點', source)
-        self.assertIn('每局 10 點', source)
+        self.assertNotIn('免費', source)
+        self.assertNotIn('每局 10 點', source)
 
 
 if __name__ == '__main__':

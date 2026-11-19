@@ -19,10 +19,4 @@
   document.querySelectorAll('[data-auto]').forEach(function (b) {
     b.addEventListener('click', function () { elAuto.value = Number(b.dataset.auto).toFixed(2); });
   });
-  $('reset').addEventListener('click', function () {
-    var note = function (t) { diveSay(t); carpSay(t); riderSay(t); bossSay(t); thiefSay(t); babySay(t); mrtSay(t); blSay(t); sbSay(t); rpSay(t); catSay(t); birdSay(t); frogSay(t); puddingSay(t); clockSay(t); mqSay(t); bqSay(t); peekSay(t); napSay(t); hairSay(t); petSay(t); otSay(t); mmSay(t); esSay(t); mtSay(t); srSay(t); olSay(t); bobaUI(t); pancakeUI(t); rocketUI(t); fiSay(t); $('sk-msg').textContent=t; eqSay(t); drSay(t); $('rn-msg').textContent=t; say(t); mSay(t); pSay(t); gSay(t); dSay(t); lSay(t); hSay(t); kSay(t); wSay(t); tSay(t); rSay(t); };
-    if (oceanLinkBusy) { $('ol-msg').textContent = '這一局結束後才能重設點數。'; return; }
-    if ((S.bet && S.phase !== 'crashed' && !S.bet.out) || M.active || P.balls.length || D.pending || L.pending || HL.active || KE.active || WL.pending || TW.active || CR.active || DR.active || runnerBusy || EQ.active || sneakBusy || FI.active || BOBA.active || catBusy || birdBusy || frogBusy || puddingBusy || clockBusy || mqBusy || bqBusy || peekBusy || napBusy || hairBusy || petBusy || otBusy || mmBusy || EATS.active || MIRR.active || SHAD.active || ONEL.active || RP.active || BL.active || DIVE.active || MRT.active || PANCAKE.active || carpBusy || riderBusy || bossBusy || thiefBusy || babyBusy) { note('這一局結束後才能重設點數。'); return; }
-    AN.points(START_BALANCE-S.balance); S.balance = START_BALANCE; save(); note('點數已重設為 ' + fmt(START_BALANCE) + '。'); renderAll(); renderMines();
-  });
 

@@ -55,8 +55,7 @@
 
 - 直接使用的共用名稱：`S`、`AN`、`fmt`、`fx`、`MIN_BET`、`syncBalance`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/bootstrap.js` 會呼叫：`hUI`
-- `js/controls.js` 會呼叫：`hSay`
-- 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`HL`
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 

@@ -1,7 +1,7 @@
   <section class="view" id="view-mines" hidden>
     <div class="console"><div class="mines-stage"><div class="mines-board-tools" role="group" aria-label="翻格與插旗"><button class="chip" id="mines-flag" type="button" aria-pressed="false" disabled>翻格模式（點此改插旗）</button><p class="mines-chord-hint">插旗數等於數字時，點數字快開周圍；旗子插錯仍會踩雷。</p></div><div class="board-wrap"><div class="board" id="board" role="group" aria-label="5 乘 5 排雷棋盤"></div></div></div>
       <div class="side"><section class="panel" aria-label="踩地雷操作">
-        <p>免費懷舊遊戲 · 不限次數</p>
+        <p>經典小遊戲 · 不限次數</p>
         <div class="field"><label for="mines-difficulty">難度</label><select id="mines-difficulty"><option value="low">低 · 5×5／3 雷</option><option value="medium">中 · 8×8／10 雷</option><option value="high">高 · 10×10／20 雷</option><option value="custom">自訂棋盤與地雷</option></select></div>
         <div id="mines-custom" hidden><div class="field"><label for="mines-size">棋盤邊長 N（2～10）</label><input id="mines-size" type="number" min="2" max="10" step="1" value="5" inputmode="numeric"></div><div class="field"><label for="mines-bombs" id="mines-bomb-limit">地雷數：1～24（N×N−1）</label><input id="mines-bombs" type="number" min="1" max="24" step="1" value="3" inputmode="numeric"></div></div><p id="mines-level">5×5 · 3 雷</p>
         <dl class="stats"><div><dt>剩餘安全格</dt><dd id="mines-left">22 格</dd></div><div><dt>已插旗</dt><dd id="mines-flags">0 / 3</dd></div><div><dt>安全格總數</dt><dd id="mines-best">22 格</dd></div></dl>
@@ -9,5 +9,5 @@
         <p class="msg" id="mines-msg" aria-live="polite">翻開全部 22 格安全區就過關。第一格也可能踩雷。</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法說明</summary><p>選擇低（5×5、3 雷）、中（8×8、10 雷）、高（10×10、20 雷），或自訂 N×N 棋盤。N 為 2～10 的整數，地雷數為 1～N×N−1；進行中不能更改設定，每局結束後可重新選擇。</p><p>地雷在開局時隨機配置，第一格也可能踩雷。數字為周圍八格雷數，空白區自動展開，可切換插旗模式或右鍵插旗。翻開全部安全格就獲勝，踩雷則結束。當地雷數為 N×N−1 時只有一格安全，只有翻到唯一的安全格才獲勝。</p><p>完全免費、不限次數，不扣點也不發點；大棋盤可水平捲動。重新整理會放棄本局，可隨時免費重新開始。</p></details>
+    <details class="rules"><summary>玩法說明</summary><p>選擇低（5×5、3 雷）、中（8×8、10 雷）、高（10×10、20 雷），或自訂 N×N 棋盤。N 為 2～10 的整數，地雷數為 1～N×N−1；進行中不能更改設定，每局結束後可重新選擇。</p><p>地雷在開局時隨機配置，第一格也可能踩雷。數字為周圍八格雷數，空白區自動展開，可切換插旗模式或右鍵插旗。翻開全部安全格就獲勝，踩雷則結束。當地雷數為 N×N−1 時只有一格安全，只有翻到唯一的安全格才獲勝。</p><p>不限次數，另依平台規則累積遊玩點數；大棋盤可水平捲動。重新整理會放棄本局，可隨時重新開始。</p></details>
 </section>

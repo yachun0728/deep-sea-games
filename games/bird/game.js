@@ -22,14 +22,14 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const s=score(),live=st==='run';
  setText('pb-score',s+' m');setText('pb-boss',eggs+' 隻');setText('pb-best',best+' m');
- $('pb-amount').disabled=birdBusy;$('pb-go').disabled=live;setText('pb-go',live?'奔跑中 · 點畫面跳躍':st==='over'?'扣點再跑一次':'扣點開始奔跑');
+ $('pb-amount').disabled=birdBusy;$('pb-go').disabled=live;setText('pb-go',live?'奔跑中 · 點畫面跳躍':st==='over'?'再跑一次':'開始奔跑');
 }
 function die(){
  if(st!=='run')return;
  st='over';hold=false;shake=reduceMotion?0:.35;const s=score();rec=s>best;
  if(rec){best=s;try{localStorage.setItem('deep-sea-bird-best',best)}catch(e){}}
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:s,bosses:eggs});birdBusy=false;save();renderAll();
- if(!earned)say('跑了 '+s+' 公尺，這一局沒有點數。','lose');
+ if(!earned)say('跑了 '+s+' 公尺，這一局沒有額外成就獎勵。','lose');
  else say('跑了 '+s+' 公尺、擊退 '+eggs+' 隻狼王，本局共入帳 '+fmt(earned)+' 點。','win');
  ui();
 }
@@ -154,13 +154,13 @@ C(PB.x,PB.y,PB.r,pcd>0?'#d9c9a3':'#fff1c1',4);drawPoop(PB.x,PB.y+20,.5);
 if(pcd>0){g.strokeStyle='#ff5d8f';g.lineWidth=5;g.beginPath();g.arc(PB.x,PB.y,PB.r+7,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-pcd/.3));g.stroke()}
 if(st!=='run'){
 g.fillStyle='rgba(27,27,47,.55)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx('便便鳥大戰狼群',W/2,200,32,'#ffd23f');tx('狼群偷走了你的蛋！',W/2,252,19,'#fff1c1');tx('躲開障礙，再賞狼王一坨！',W/2,282,19,'#fff1c1');tx('到操作區扣點開始',W/2,340,24,'#ffd23f')}
+if(st==='ready'){tx('便便鳥大戰狼群',W/2,200,32,'#ffd23f');tx('狼群偷走了你的蛋！',W/2,252,19,'#fff1c1');tx('躲開障礙，再賞狼王一坨！',W/2,282,19,'#fff1c1');tx('到操作區開始',W/2,340,24,'#ffd23f')}
 else{tx('哎喲！被撞到了',W/2,180,32,'#ff5d8f');tx(s+' m',W/2,244,50,'#fff1c1');tx('擊退狼王：'+eggs+' 隻',W/2,284,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'沒打贏狼王，沒有點數',W/2,320,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,352,20,'#ffd23f');tx('到操作區再跑一次',W/2,396,20,'#fff1c1')}}}
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
- analytics=AN.start('bird',amount);birdStake=amount;birdBusy=true;S.balance-=amount;save();renderAll();
+ analytics=AN.start('bird',amount);birdStake=amount;birdBusy=true;save();renderAll();
  reset();earned=0;rec=false;hold=false;hid=-1;st='run';last=performance.now();say('出發！看障礙上方的標記決定點幾下，狼王出現就丟便便。');ui();c.focus();
 }
 function pos(e){const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}}
@@ -168,7 +168,7 @@ function down(id){if(st!=='run'||$('view-bird').hidden||document.hidden)return f
 $('pb-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
 if(e.button!==undefined&&e.button!==0)return;
-if(st!=='run'){say(st==='over'?'這一局已結算。按「扣點再跑一次」開始新的一局。':'先按「扣點開始奔跑」。');return}
+if(st!=='run'){say(st==='over'?'這一局已結算。按「再跑一次」開始新的一局。':'先按「開始奔跑」。');return}
 if($('view-bird').hidden||document.hidden)return;e.preventDefault();c.focus();
 const p=pos(e);
 if(Math.hypot(p.x-PB.x,p.y-PB.y)<PB.r+10){shoot();return}

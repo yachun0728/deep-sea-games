@@ -5,9 +5,9 @@
 ## 概覽
 
 - 網址：`#dive`　分類：益智策略　狀態：顯示中
-- 大廳卡片：「選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。」｜每局 10 點 · 最佳分數
+- 大廳卡片：「選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。」｜立即開玩 · 最佳分數
 - 追蹤名稱（GA4 `game_name`）：一口氣探險，`game_id` 為 `dive`
-- 檔案：`games/dive/card.html`、`games/dive/game.js`、`games/dive/icon.svg`、`games/dive/original.html`、`games/dive/style.css`、`games/dive/view.html`；`game.js` 共 54 行、3.4 KB
+- 檔案：`games/dive/card.html`、`games/dive/game.js`、`games/dive/icon.svg`、`games/dive/original.html`、`games/dive/style.css`、`games/dive/view.html`；`game.js` 共 54 行、3.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「23. 一口氣探險（dive）」（下方「規則摘要」已複製）
 
@@ -27,7 +27,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L18 `diveValid`：`S.balance-=amount;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
@@ -53,9 +53,8 @@
 ## 平台共用相依
 
 - 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
-- `js/controls.js` 會呼叫：`diveSay`
 - `js/navigation.js` 會呼叫：`diveRoute`
-- 「重設為 500 點」進行中防護（`js/controls.js`）：無法判斷（沒有偵測到狀態名稱）
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 

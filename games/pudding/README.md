@@ -5,9 +5,9 @@
 ## 概覽
 
 - 網址：`#pudding`　分類：跑酷動作　狀態：顯示中
-- 大廳卡片：「拼出武器，背著小王子殺出重圍。」｜每局 10 點 · 拼武器闖關
+- 大廳卡片：「拼出武器，背著小王子殺出重圍。」｜立即開玩 · 拼武器闖關
 - 追蹤名稱（GA4 `game_name`）：布丁突圍，`game_id` 為 `pudding`
-- 檔案：`games/pudding/card.html`、`games/pudding/game.js`、`games/pudding/icon.svg`、`games/pudding/view.html`；`game.js` 共 386 行、26.9 KB
+- 檔案：`games/pudding/card.html`、`games/pudding/game.js`、`games/pudding/icon.svg`、`games/pudding/view.html`；`game.js` 共 386 行、26.8 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「27. 布丁突圍 Pudding Dash（pudding）」（下方「規則摘要」已複製）
 
@@ -40,7 +40,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L355 `start`：`S.balance-=amount;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L77 `end`：`S.balance+=WIN_REWARD}`
@@ -68,7 +68,7 @@
 
 - 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/navigation.js` 會呼叫：`shown`
-- 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`puddingBusy`
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 

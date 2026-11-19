@@ -90,7 +90,7 @@ function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('carp-score',G.score()+UNIT);setText('carp-best',best+UNIT);setText('carp-pay',fmt(paid)+' 點');
  setText('carp-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('carp-amount').disabled=carpBusy;$('carp-go').disabled=live;setText('carp-go',live?'挑戰中 · 按住蓄力':st==='over'?'扣點再躍一次':'扣點開始躍龍門');
+ $('carp-amount').disabled=carpBusy;$('carp-go').disabled=live;setText('carp-go',live?'挑戰中 · 按住蓄力':st==='over'?'再躍一次':'開始躍龍門');
  document.querySelectorAll('[data-carp-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-carp-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -117,12 +117,12 @@ function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
- analytics=AN.start('carp',amount);carpStake=amount;carpBusy=true;S.balance-=amount;save();renderAll();
+ analytics=AN.start('carp',amount);carpStake=amount;carpBusy=true;save();renderAll();
  G.reset();paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx(T('title'),W/2,170,32,'#ffd23f');tx(T('s1'),W/2,218,17,'#fff');tx(T('s2'),W/2,244,17,'#fff');tx('右側扣點開始',W/2,312,24,'#ffd23f')}
+if(st==='ready'){tx(T('title'),W/2,170,32,'#ffd23f');tx(T('s1'),W/2,218,17,'#fff');tx(T('s2'),W/2,244,17,'#fff');tx('右側開始',W/2,312,24,'#ffd23f')}
 else{tx(T(G.msg),W/2,130,28,'#ff7a7a');tx(String(G.score()),W/2,205,52,'#fff');if(G.extra)tx(G.extra(),W/2,240,17,'#fff');if(rec)tx('新紀錄！',W/2,272,20,'#ffd23f');if(unl.length)tx('已解鎖：'+unl.map(k=>k.n).join('、'),W/2,300,17,'#6cf0a8');tx(paid>0?'BONUS 已入帳 +'+paid+' 點':'這一局沒有 BONUS',W/2,336,20,paid>0?'#ffd23f':'#fff');tx('右側可以再玩一次',W/2,382,18,'#fff')}
 const n=G.skins.length;
 G.skins.forEach((k,i)=>{const x=W/2+(i-(n-1)/2)*72,lk=best<k.need;
@@ -138,7 +138,7 @@ c.addEventListener('pointerdown',e=>{
  if(st!=='run'){
   const n=G.skins.length;
   if(Math.abs(p.y-CHY)<32){for(let i=0;i<n;i++)if(Math.abs(p.x-(W/2+(i-(n-1)/2)*72))<32){if(best>=G.skins[i].need)pick(i);return}}
-  say(st==='over'?'這一局已結束。按「扣點再躍一次」開始新的一局。':'先按「扣點開始躍龍門」。');return}
+  say(st==='over'?'這一局已結束。按「再躍一次」開始新的一局。':'先按「開始躍龍門」。');return}
  e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(_){}
  G.down(p)});
 ['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,e=>{if(st==='run'&&G.up)G.up({id:e.pointerId})}));

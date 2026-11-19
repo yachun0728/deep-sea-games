@@ -16,7 +16,7 @@ function ui(){
   setText('co-san',live?G.san+' / '+CONFIG.maxSan:'—');
   setText('co-best',best+' 分');
   var b=$('co-go');b.disabled=live;
-  setText('co-go',live?'上班中 · 守住座位':'扣點開始上班');
+  setText('co-go',live?'上班中 · 守住座位':'開始上班');
 }
 function pay(n,label,wave){
   if(paid[wave])return;paid[wave]=true;
@@ -36,14 +36,14 @@ function clockFinish(res){
   AN.end(analytics,earned,result,{score:G.score,step:G.wi+1,stage:G.wi+1});analytics=null;
   save();renderAll();
   if(res==='win')say('通關！本局共入帳 '+fmt(earned)+' 點。','win');
-  else say(earned>0?'加班到天亮。'+WV[G.wi+1]+'倒下，本局共入帳 '+fmt(earned)+' 點。':'加班到天亮。'+WV[G.wi+1]+'倒下，這一局沒有點數。','lose');
+  else say(earned>0?'加班到天亮。'+WV[G.wi+1]+'倒下，本局共入帳 '+fmt(earned)+' 點。':'加班到天亮。'+WV[G.wi+1]+'倒下，這一局沒有額外成就獎勵。','lose');
   ui();
 }
 function begin(){
   if(clockBusy)return;
   if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');return;}
   analytics=AN.start('clock-out',ENTRY_FEE);clockStake=ENTRY_FEE;clockBusy=true;earned=0;paid={};
-  S.balance-=ENTRY_FEE;save();renderAll();
+  save();renderAll();
   resetGame();startGame();
   say('開工！第 5 波完成 +3 點，通關再 +7 點。');ui();$('co-canvas').focus();
 }
@@ -335,7 +335,7 @@ window.addEventListener('keydown',function(ev){
 });
 
 function handleTap(x,y){
-  if(G.state==='TITLE'){ say('先按右側「扣點開始上班」。'); return; }
+  if(G.state==='TITLE'){ say('先按右側「開始上班」。'); return; }
   if(G.state==='WIN'||G.state==='GAMEOVER'){
     if(G.endTimer>=0.6){ resetGame(); ui(); }
     return;
@@ -1034,7 +1034,7 @@ function draw(){
     ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.fillRect(0,0,W,H);
     text('下班保衛戰',200,200,32,'#fff','center',true,'#000');
     text('守住座位，撐到 17:00',200,236,16,'#fff','center');
-    text('按「扣點開始上班」',200,300,18,'#ffd54f','center',true);
+    text('按「開始上班」',200,300,18,'#ffd54f','center',true);
     text('最高分 '+best,200,340,14,'#bdbdbd','center');
     return;
   }
@@ -1070,7 +1070,7 @@ function draw(){
       if(G.newBest) text('NEW BEST!',200,326,20,'#ff9800','center',true);
       text('最高分 '+best,200,360,14,'#bdbdbd','center');
     }
-    if(G.endTimer>=0.6) text('點一下回到標題，再按「扣點開始上班」',200,500,14,'#ffd54f','center');
+    if(G.endTimer>=0.6) text('點一下回到標題，再按「開始上班」',200,500,14,'#ffd54f','center');
   }
 }
 

@@ -2,11 +2,11 @@
     <div class="console"><div class="sneak-stage"><canvas id="pw-canvas" tabindex="0" width="400" height="560" aria-label="小灰出門：點一下走一步，按住連續走，路上會遇到隨機事件和轉盤，走滿 60 步回家寫日記"></canvas></div>
       <div class="side"><section class="panel" aria-label="小灰出門操作">
         <dl class="stats"><div><dt>步數</dt><dd id="pw-steps">— / 60</dd></div><div><dt>本趟分數</dt><dd id="pw-score">—</dd></div><div><dt>最高分</dt><dd id="pw-best">0 分</dd></div></dl>
-        <div class="field"><label>每趟入場</label><p class="runner-fee">10 <small>點</small></p></div>
-        <button class="go" id="pw-go" type="button" data-mode="bet">扣點出門</button>
-        <p class="msg" id="pw-msg" aria-live="polite">扣點後出發：每走完 20 步 BONUS +1 點，一趟最多 3 點。</p>
+        
+        <button class="go" id="pw-go" type="button" data-mode="bet">出門</button>
+        <p class="msg" id="pw-msg" aria-live="polite">開始後出發：每走完 20 步 BONUS +1 點，一趟最多 3 點。</p>
         <p class="hint">點一下走一步，按住連續走；空白鍵也可以。遇到二選一事件時，點按鈕選擇，不選就用空白鍵或等一下，會自動選預設那個。轉盤轉動時再按一下停止，抓準亮起的時機好運加成。</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法與點數</summary><p>每趟固定扣 10 點。小灰自己走在路上，一趟 60 步，分成平原、水域、山地三段，每段 20 步。每隔幾步會遇到隨機事件：撿東西、遇到野狗、河鯊、落石，或踩上幸運轉盤。走滿 60 步時，門口還有最後一次轉盤。部分事件可以二選一，例如用頭撞開鐵櫃，或用繩索撬開；拿罐頭換一次轉盤，或跟著野狗一起吠。</p><p>BONUS 是固定獎勵：每走完一段 20 步立刻入帳 1 點，一趟最多 3 點，每段只發一次。所以走完整趟是 10 點入場、3 點 BONUS，淨支出 7 點，不是回本遊戲。獎勵當場入帳，不會收回；中途離開或重新整理，已入帳的保留，已扣的入場點數不退回。轉盤、物資與分數只是顯示用，不換點數。這是反應與探索收集遊戲，沒有任何機率下注。</p><p>走完 60 步會寫一篇小灰的日記，並累積圖鑑：每個新事件、稀有事件與物資第一次出現加 5 分。切換遊戲或背景分頁會暫停，回來後繼續。圖鑑與最高分保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+    <details class="rules"><summary>玩法與點數</summary><p>小灰自己走在路上，一趟 60 步，分成平原、水域、山地三段，每段 20 步。每隔幾步會遇到隨機事件：撿東西、遇到野狗、河鯊、落石，或踩上幸運轉盤。走滿 60 步時，門口還有最後一次轉盤。部分事件可以二選一，例如用頭撞開鐵櫃，或用繩索撬開；拿罐頭換一次轉盤，或跟著野狗一起吠。</p><p>BONUS 是固定獎勵：每走完一段 20 步立刻入帳 1 點，一趟最多 3 點，每段只發一次。走完整趟最多獲得 3 點 BONUS。獎勵當場入帳，不會收回；中途離開或重新整理，已入帳的保留，轉盤、物資與分數只是顯示用，不直接換點數。這是反應與探索收集遊戲，沒有任何機率下注。</p><p>走完 60 步會寫一篇小灰的日記，並累積圖鑑：每個新事件、稀有事件與物資第一次出現加 5 分。切換遊戲或背景分頁會暫停，回來後繼續。圖鑑與最高分保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>

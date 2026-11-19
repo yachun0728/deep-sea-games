@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#reaper`　分類：潛行偷閒　狀態：顯示中
-- 大廳卡片：「普通靈魂要接走，綠色通行證要放行。」｜每局 10 點 · 無盡挑戰
+- 大廳卡片：「普通靈魂要接走，綠色通行證要放行。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：死神打工，`game_id` 為 `reaper`
 - 檔案：`games/reaper/card.html`、`games/reaper/game.js`、`games/reaper/icon.svg`、`games/reaper/view.html`；`game.js` 共 107 行、10.9 KB
 
@@ -28,7 +28,7 @@
 ## 錢包與結算接點
 
 **扣款（開始一局）**
-- L29 `rpStart`：`S.balance-=stake;`
+- （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
 - L33 `rpAward`：`S.balance+=b;`
@@ -54,8 +54,8 @@
 ## 平台共用相依
 
 - 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`fx`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
-- `js/controls.js` 會呼叫：`rpSay`
-- 「重設為 500 點」進行中防護（`js/controls.js`）：已涵蓋：`RP`
+- 共用檔沒有直接呼叫本遊戲的函式。
+- 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
 
