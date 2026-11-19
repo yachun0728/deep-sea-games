@@ -6,7 +6,13 @@ for(const [name,[apiName,frameId]] of Object.entries(names)){
  const el=id=>{if(!elements.has(id))elements.set(id,{textContent:'',hidden:false,disabled:false,className:'',style:{},dataset:{},contentWindow:{},addEventListener(){},setAttribute(){}});return elements.get(id);};
  const i={text:s=>s,getLanguage:()=> 'zh-Hant'},window={deepSeaI18n:i,addEventListener(){}};
  const c={$:el,window,document:{hidden:false,addEventListener(){}},localStorage:{getItem:()=>null,setItem(){}},S:{balance:0},ENTRY_FEE:0,LOW_MSG:'low',fmt:n=>String(n),save(){},renderAll(){},AN:{interact(){},start:(...a)=>{events.push(['start',...a]);return 'round';},end:(...a)=>events.push(['end',...a]),progress(){},resume(){}}};
- vm.createContext(c);vm.runInContext(source,c);
+ vm.createContext(c);
+ if(name==='tetris'){
+  for(const file of ['shared/timed-replay.cjs','js/timed-leaderboard.js','shared/block-drop-rules.js']){
+   vm.runInContext(fs.readFileSync(new URL(file,root),'utf8'),c);
+  }
+ }
+ vm.runInContext(source,c);
  let api=window[apiName];if(!api)api=Object.entries(window).find(([key,value])=>key.startsWith('deepSea')&&value&&typeof value.start==='function')?.[1];
  assert.ok(api,name+' bridge available');checks++;
  const genuine=el(frameId).contentWindow;

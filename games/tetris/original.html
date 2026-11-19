@@ -187,43 +187,11 @@
 </main>
 
 <script>
-(() => {
-  const COLS = 10, ROWS = 20, CELL = 30, MINI = 20;
-  const LOCK_MS = 500, MAX_RESETS = 15, CLEAR_MS = 220, DAS = 150, ARR = 40;
+function runBlockDrop(rules) {
+  const {COLS, ROWS, CLEAR_MS, SHAPES, emptyBoard} = rules;
+  const CELL = 30, MINI = 20;
   const COLORS = { I: '#4fc3d9', O: '#f2c94c', T: '#b77fd3', S: '#6fcf97', Z: '#eb6b6b', J: '#5b9bf0', L: '#f2994a' };
-  const SHAPES = {
-    I: [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
-    O: [[1,1],[1,1]],
-    T: [[0,1,0],[1,1,1],[0,0,0]],
-    S: [[0,1,1],[1,1,0],[0,0,0]],
-    Z: [[1,1,0],[0,1,1],[0,0,0]],
-    J: [[1,0,0],[1,1,1],[0,0,0]],
-    L: [[0,0,1],[1,1,1],[0,0,0]]
-  };
-  // SRS wall kicks, written as [dx, dy] with y pointing up; keys are "from" + "to" rotation.
-  const KICK_JLSTZ = {
-    '01': [[0,0],[-1,0],[-1,1],[0,-2],[-1,-2]],
-    '10': [[0,0],[1,0],[1,-1],[0,2],[1,2]],
-    '12': [[0,0],[1,0],[1,-1],[0,2],[1,2]],
-    '21': [[0,0],[-1,0],[-1,1],[0,-2],[-1,-2]],
-    '23': [[0,0],[1,0],[1,1],[0,-2],[1,-2]],
-    '32': [[0,0],[-1,0],[-1,-1],[0,2],[-1,2]],
-    '30': [[0,0],[-1,0],[-1,-1],[0,2],[-1,2]],
-    '03': [[0,0],[1,0],[1,1],[0,-2],[1,-2]]
-  };
-  const KICK_I = {
-    '01': [[0,0],[-2,0],[1,0],[-2,-1],[1,2]],
-    '10': [[0,0],[2,0],[-1,0],[2,1],[-1,-2]],
-    '12': [[0,0],[-1,0],[2,0],[-1,2],[2,-1]],
-    '21': [[0,0],[1,0],[-2,0],[1,-2],[-2,1]],
-    '23': [[0,0],[2,0],[-1,0],[2,1],[-1,-2]],
-    '32': [[0,0],[-2,0],[1,0],[-2,-1],[1,2]],
-    '30': [[0,0],[1,0],[-2,0],[1,-2],[-2,1]],
-    '03': [[0,0],[-1,0],[2,0],[-1,2],[2,-1]]
-  };
   const BANNERS = [['', ''], ['單行消除', 'Single'], ['雙行消除', 'Double'], ['三行消除', 'Triple'], ['四行消除！', 'Quad!']];
-  const POINTS = [0, 100, 300, 500, 800];
-
   const $ = id => document.getElementById(id);
 
   // ---------- Deep Sea Arcade: language + platform bridge ----------
@@ -261,19 +229,17 @@
   const hx = setup($('hold'), 96, 62);
   const nx = setup($('next'), 96, 186);
 
-  // ---------- state ----------
-  let board, cur, queue = [], holdType = null, canHold = true;
-  let score = 0, lines = 0, level = 1, best = 0;
-  let state = 'ready'; // ready | play | paused | over
-  let gT = 0, lockT = 0, lockResets = 0, lowestY = 0;
-  let clearRows = null, clearT = 0;
-  const held = { left: false, right: false, down: false };
-  let dir = null, dasT = 0, arrT = 0;
-
+  let best = 0;
+  let state = 'ready', starting = false;
+  function makeModel(random) {
+    return rules.createModel(random, {
+      onStats: updateStats,
+      onPreview: drawPreview,
+      onClear: count => showBanner(T(BANNERS[count][0], BANNERS[count][1])),
+    });
+  }
+  let model = makeModel(Math.random);
   try { best = parseInt(localStorage.getItem('tetris-best') || '0', 10) || 0; } catch (e) {}
-
-  const emptyBoard = () => Array.from({ length: ROWS }, () => new Array(COLS).fill(null));
-  board = emptyBoard();
 
   // A fixed half-built stack so the first screen shows a board that looks in use.
   const demo = (() => {
@@ -290,134 +256,28 @@
     return b;
   })();
 
-  // ---------- piece helpers ----------
-  function rot(m, d) {
-    const n = m.length;
-    return m.map((row, y) => row.map((_, x) => (d > 0 ? m[n - 1 - x][y] : m[x][n - 1 - y])));
-  }
-  function collide(m, px, py) {
-    for (let r = 0; r < m.length; r++) {
-      for (let c = 0; c < m.length; c++) {
-        if (!m[r][c]) continue;
-        const x = px + c, y = py + r;
-        if (x < 0 || x >= COLS || y >= ROWS) return true;
-        if (y >= 0 && board[y][x]) return true;
-      }
-    }
-    return false;
-  }
-  const grounded = () => collide(cur.m, cur.x, cur.y + 1);
-
-  function shuffle(a) {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-  function fillQueue() {
-    while (queue.length < 7) queue.push(...shuffle(['I', 'O', 'T', 'S', 'Z', 'J', 'L']));
-  }
-
-  function spawn(type) {
-    const m = SHAPES[type].map(r => r.slice());
-    cur = { type, m, rot: 0, x: Math.floor((COLS - m.length) / 2), y: type === 'I' ? -1 : 0 };
-    gT = 0; lockT = 0; lockResets = 0; lowestY = cur.y;
-    if (collide(cur.m, cur.x, cur.y)) endGame();
-  }
-  function spawnNext() {
-    fillQueue();
-    spawn(queue.shift());
-    fillQueue();
-    drawPreview();
-  }
-
-  function noteMoved() {
-    if (cur.y > lowestY) { lowestY = cur.y; lockResets = 0; }
-    if (grounded() && lockResets < MAX_RESETS) { lockT = 0; lockResets++; }
-  }
-  function tryMove(dx, dy) {
-    if (!cur || collide(cur.m, cur.x + dx, cur.y + dy)) return false;
-    cur.x += dx; cur.y += dy;
-    noteMoved();
-    return true;
-  }
-  function tryRotate(d) {
-    if (!cur || cur.type === 'O') return false;
-    const from = cur.rot, to = (from + d + 4) % 4;
-    const m = rot(cur.m, d);
-    const table = (cur.type === 'I' ? KICK_I : KICK_JLSTZ)[String(from) + String(to)];
-    for (const [dx, dy] of table) {
-      if (!collide(m, cur.x + dx, cur.y - dy)) {
-        cur.m = m; cur.rot = to; cur.x += dx; cur.y -= dy;
-        noteMoved();
-        return true;
-      }
-    }
-    return false;
-  }
-  function hardDrop() {
-    if (!cur) return;
-    let n = 0;
-    while (!collide(cur.m, cur.x, cur.y + 1)) { cur.y++; n++; }
-    score += n * 2;
-    lockPiece();
-  }
-  function doHold() {
-    if (!cur || !canHold) return;
-    canHold = false;
-    const t = cur.type;
-    if (holdType) { const h = holdType; holdType = t; spawn(h); drawPreview(); }
-    else { holdType = t; spawnNext(); }
-  }
-
-  function lockPiece() {
-    let out = false;
-    for (let r = 0; r < cur.m.length; r++) {
-      for (let c = 0; c < cur.m.length; c++) {
-        if (!cur.m[r][c]) continue;
-        const y = cur.y + r, x = cur.x + c;
-        if (y < 0) out = true; else board[y][x] = cur.type;
-      }
-    }
-    canHold = true;
-    if (out) { cur = null; endGame(); return; }
-    const full = [];
-    for (let y = 0; y < ROWS; y++) if (board[y].every(Boolean)) full.push(y);
-    if (full.length) {
-      score += POINTS[full.length] * level;
-      lines += full.length;
-      level = Math.floor(lines / 10) + 1;
-      clearRows = full; clearT = 0; cur = null;
-      showBanner(T(BANNERS[full.length][0], BANNERS[full.length][1]));
-      updateStats();
-    } else {
-      updateStats();
-      spawnNext();
-    }
-  }
-  function finishClear() {
-    board = board.filter((_, i) => !clearRows.includes(i));
-    while (board.length < ROWS) board.unshift(new Array(COLS).fill(null));
-    clearRows = null;
-    spawnNext();
-  }
-
-  // ---------- game flow ----------
   function start() {
+    if (starting || state === 'play' || state === 'paused' || !platformVisible) return false;
     const h = host();
-    if (h && !h.start(window)) return;
-    roundOn = !!h;
-    board = emptyBoard();
-    score = 0; lines = 0; level = 1;
-    queue = []; holdType = null; canHold = true; clearRows = null;
-    state = 'play';
-    $('overlay').hidden = true;
-    spawnNext();
-    updateStats();
+    const open = random => {
+      starting = false;
+      if (!platformVisible || h && !h.start(window)) return;
+      roundOn = !!h;
+      model = makeModel(random || Math.random);
+      state = 'play';
+      $('overlay').hidden = true;
+      last = performance.now();
+      model.start();
+    };
+    if (h && h.prepare) {
+      starting = true;
+      if (!h.prepare(window, open, () => { starting = false; })) { starting = false; return false; }
+    } else open(null);
+    return true;
   }
   let ovKind = 'ready';
   function renderOverlay() {
+    const {score, lines, level} = model;
     const t = $('ovTitle'), p = $('ovText'), s = $('ovScore'), b = $('ovBtn');
     s.hidden = true;
     if (ovKind === 'ready') {
@@ -442,9 +302,9 @@
     renderOverlay();
     $('overlay').hidden = false;
   }
-  function endGame() {
+  function endGame(endedOnInput) {
     state = 'over';
-    cur = null;
+    const {score, lines, level} = model;
     if (score > best) {
       best = score;
       try { localStorage.setItem('tetris-best', String(best)); } catch (e) {}
@@ -452,77 +312,38 @@
     updateStats();
     showOverlay('over');
     const h = host();
-    if (h && roundOn) { roundOn = false; h.finish(window, { score, lines, level }); }
+    if (h && roundOn) { roundOn = false; h.finish(window, { score, lines, level, endedOnInput }); }
   }
   function pause() {
     if (state !== 'play') return;
-    state = 'paused';
     releaseAll();
+    state = 'paused';
     showOverlay('paused');
     const h = host(); if (h && roundOn && h.pause) h.pause(window);
   }
   function resume() {
     if (state !== 'paused') return;
     state = 'play';
+    last = performance.now();
     $('overlay').hidden = true;
     const h = host(); if (h && roundOn && h.resume) h.resume(window);
   }
 
-  const gravityMs = lv => Math.max(1, Math.pow(0.8 - (Math.min(lv, 30) - 1) * 0.007, Math.min(lv, 30) - 1) * 1000);
-
-  function update(dt) {
-    if (clearRows) {
-      clearT += dt;
-      if (clearT >= CLEAR_MS) finishClear();
-      return;
-    }
-    if (!cur) return;
-    if (dir && held[dir]) {
-      dasT += dt;
-      if (dasT >= DAS) {
-        arrT += dt;
-        while (arrT >= ARR) {
-          arrT -= ARR;
-          if (!tryMove(dir === 'left' ? -1 : 1, 0)) { arrT = 0; break; }
-        }
-      }
-    }
-    const speed = gravityMs(level);
-    const eff = held.down ? Math.max(1, Math.min(speed, 40)) : speed;
-    gT += dt;
-    while (gT >= eff) {
-      gT -= eff;
-      if (!tryMove(0, 1)) { gT = 0; break; }
-      if (held.down) { score += 1; updateStats(); }
-    }
-    if (grounded()) {
-      lockT += dt;
-      if (lockT >= LOCK_MS) lockPiece();
-    } else {
-      lockT = 0;
-    }
+  function input(code) {
+    if (code < 0 || !model.input(code)) return;
+    const h = host();
+    if (h && roundOn && h.record) h.record(window, code);
+    if (model.dead) endGame(true);
   }
-
-  // ---------- input ----------
-  function press(a) {
+  function press(action) {
     const h = host(); if (h && roundOn && h.touch) h.touch(window);
-    if (state === 'paused') { if (a === 'pause') resume(); return; }
+    if (state === 'paused') { if (action === 'pause') resume(); return; }
     if (state !== 'play') return;
-    if (a === 'left' || a === 'right') {
-      held[a] = true; dir = a; dasT = 0; arrT = 0;
-      tryMove(a === 'left' ? -1 : 1, 0);
-    } else if (a === 'down') {
-      held.down = true;
-    } else if (a === 'cw') tryRotate(1);
-    else if (a === 'ccw') tryRotate(-1);
-    else if (a === 'hard') hardDrop();
-    else if (a === 'hold') doHold();
-    else if (a === 'pause') pause();
+    if (action === 'pause') pause();
+    else input(rules.pressCode(action));
   }
-  function release(a) {
-    if (!(a in held)) return;
-    held[a] = false;
-    if (a === dir) { dir = held.left ? 'left' : held.right ? 'right' : null; dasT = 0; arrT = 0; }
+  function release(action) {
+    if (state === 'play') input(rules.releaseCode(action));
   }
   function releaseAll() { release('left'); release('right'); release('down'); }
 
@@ -580,6 +401,7 @@
     }));
   }
   function drawPreview() {
+    const {holdType, canHold, queue} = model;
     hx.clearRect(0, 0, 96, 62);
     if (holdType) drawMini(hx, holdType, 0, 0, 96, 62, canHold ? 1 : .35);
     nx.clearRect(0, 0, 96, 186);
@@ -587,6 +409,7 @@
   }
 
   function render() {
+    const {board, cur, clearRows, clearT, collide} = model;
     const W = COLS * CELL, H = ROWS * CELL;
     bx.fillStyle = C.board;
     bx.fillRect(0, 0, W, H);
@@ -627,6 +450,7 @@
   }
 
   function updateStats() {
+    const {score, level, lines} = model;
     $('score').textContent = score.toLocaleString('en-US');
     $('level').textContent = level;
     $('lines').textContent = lines;
@@ -640,25 +464,42 @@
     el.classList.add('show');
   }
 
-  window.startTetrisPlatformRound = () => { if (state === 'play' || state === 'paused') return false; start(); return state === 'play'; };
+  window.startTetrisPlatformRound = start;
   window.setTetrisPlatformActive = v => { platformVisible = !!v; last = performance.now(); if (!platformVisible) pause(); };
   try { window.parent.addEventListener('arcade-languagechange', applyLang); } catch (e) {}
 
   // ---------- boot ----------
   applyLang();
-  fillQueue();
+  model.fillQueue();
   drawPreview();
   updateStats();
   let last = performance.now();
   function frame(t) {
-    const dt = Math.min(100, t - last);
+    const dt = Math.min(100, Math.max(0, t - last));
     last = t;
     if (!platformVisible) { requestAnimationFrame(frame); return; }
-    if (state === 'play') update(dt);
+    if (state === 'play') {
+      const advance = ms => {
+        model.advance(ms);
+        if (model.dead) endGame(false);
+      };
+      const h = host();
+      if (h && roundOn && h.advance) h.advance(window, dt, () => state === 'play', advance);
+      else advance(dt);
+    }
     render();
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+}
+(() => {
+  let rules;
+  try { rules = window.parent !== window && window.parent.deepSeaTetris?.rules; } catch (_) {}
+  if (rules) { runBlockDrop(rules); return; }
+  const script = document.createElement('script');
+  script.src = '../../shared/block-drop-rules.js';
+  script.onload = () => runBlockDrop(blockDropRules);
+  document.head.appendChild(script);
 })();
 </script>
 

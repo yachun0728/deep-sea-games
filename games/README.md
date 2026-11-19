@@ -23,7 +23,7 @@
 | [宣傳車 Campaign Truck](campaign/README.md) | `#campaign` | 潛行偷閒 | 顯示 | 250 行 | 繞市區拉票，經過學校、醫院、豪宅要按住靜音。 |
 | [插珍奶 Boba Straw](boba/README.md) | `#boba` | 時機操作 | 顯示 | 28 行 | 抓準力道插吸管，原版粉紅珍奶小遊戲。 |
 | [屋頂貓貓 Rooftop Cat](cat/README.md) | `#cat` | 跑酷動作 | 顯示 | 125 行 | 無盡跑酷，看你能跑多遠。 |
-| [便便鳥大戰狼群 Poop Bird vs Wolves](bird/README.md) | `#bird` | 跑酷動作 | 顯示 | 190 行 | 跳過仙人掌和狼群，用便便把狼王打跑。 |
+| [便便鳥大戰狼群 Poop Bird vs Wolves](bird/README.md) | `#bird` | 跑酷動作 | 顯示 | 177 行 | 跳過仙人掌和狼群，用便便把狼王打跑。 |
 | [青蛙吃蟲 Frog Snack](frog/README.md) | `#frog` | 時機操作 | 顯示 | 209 行 | 對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。 |
 | [偷睡大師 Nap Master](nap/README.md) | `#nap` | 潛行偷閒 | 顯示 | 459 行 | 趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。 |
 | [死神打工 Reaper Shift](reaper/README.md) | `#reaper` | 潛行偷閒 | 顯示 | 107 行 | 普通靈魂要接走，綠色通行證要放行。 |
@@ -54,4 +54,4 @@
 | [影子接力 Shadow Relay](shadow-relay/README.md) | `#shadow-relay` | 益智策略 | 顯示 | 62 行 | 影子會照你的路線重走，讓它點亮燈籠，別被它追上。 |
 | [一筆畫守城 One-Line Defense](one-line-defense/README.md) | `#one-line-defense` | 時機操作 | 顯示 | 59 行 | 只能畫一條線擋住湧向核心的敵人，線越長消失越快。 |
 | [荒島遠征 Frontier Islands](frontier/README.md) | `#frontier` | 益智策略 | 顯示 | 152 行 | 砍出道路，建立據點，挑戰五大區域與五十關考驗。 |
-| [俄羅斯方塊 Block Drop](tetris/README.md) | `#tetris` | 免費懷舊 | 顯示 | 50 行 | 經典落塊消行，旋轉、牆踢與暫存都有。 |
+| [俄羅斯方塊 Block Drop](tetris/README.md) | `#tetris` | 免費懷舊 | 顯示 | 63 行 | 經典落塊消行，旋轉、牆踢與暫存都有。 |

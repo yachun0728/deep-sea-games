@@ -1,3 +1,5 @@
+import birdRules from '../../../shared/bird-rules.cjs';
+import blockDropRules from '../../../shared/block-drop-rules.js';
 import reaperRules from '../../../shared/reaper-rules.cjs';
 import sneakRules from '../../../shared/sneak-rules.cjs';
 import skybuilderRules from '../../../shared/skybuilder-rules.cjs';
@@ -28,6 +30,8 @@ function timedBoard(engine) {
 }
 const boards = new Map([
   ['cat', timedBoard(catRules)],
+  ['bird', timedBoard(birdRules)],
+  ['tetris', timedBoard(blockDropRules)],
   ['reaper', timedBoard(reaperRules)],
   ['sneak', timedBoard(sneakRules)],
   ['skybuilder', timedBoard(skybuilderRules)],

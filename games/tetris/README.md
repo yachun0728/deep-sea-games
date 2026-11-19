@@ -7,13 +7,13 @@
 - 網址：`#tetris`　分類：免費懷舊　狀態：顯示中
 - 大廳卡片：「經典落塊消行，旋轉、牆踢與暫存都有。」｜立即開玩 · 最高分
 - 追蹤名稱（GA4 `game_name`）：俄羅斯方塊，`game_id` 為 `tetris`
-- 檔案：`games/tetris/card.html`、`games/tetris/cover.webp`、`games/tetris/game.js`、`games/tetris/icon.svg`、`games/tetris/original.html`、`games/tetris/style.css`、`games/tetris/view.html`；`game.js` 共 50 行、3.7 KB
+- 檔案：`games/tetris/card.html`、`games/tetris/cover.webp`、`games/tetris/game.js`、`games/tetris/icon.svg`、`games/tetris/original.html`、`games/tetris/style.css`、`games/tetris/view.html`；`game.js` 共 63 行、4.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「47. 俄羅斯方塊 Block Drop（tetris）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-tetris`、`tt-frame`、`tt-score`、`tt-lines`、`tt-best`、`tt-go`、`tt-msg`
+`view-tetris`、`tt-frame`、`tt-score`、`tt-lines`、`tt-best`、`tt-go`、`tt-msg`、`tt-rank-status`、`tt-rank-retry`
 
 ## 狀態與常數
 
@@ -22,7 +22,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`ttL` L3、`ttSay` L4、`ttBest` L5、`ttUI` L6、`ttValid` L10、`ttRoute` L35
+`ttL` L4、`ttSay` L5、`ttBest` L6、`ttUI` L7、`ttValid` L11、`ttRoute` L48
 
 ## 錢包與結算接點
 
@@ -33,18 +33,18 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **餘額檢查**
-- L14 `ttValid`：`if(ENTRY_FEE>S.balance){ttSay(LOW_MSG,'lose');`
+- L27 `ttValid`：`if(ENTRY_FEE>S.balance){ttSay(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 2 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L16 `ttValid`：`TET.analytics=AN.start('tetris',ENTRY_FEE);`
-- L25 `ttValid`：`AN.end(TET.analytics,0,'complete',{score:score,step:lines,level:level});`
-- L29 `ttValid`：`if(ttValid(source)&&TET.active)AN.progress(TET.analytics,{phase:'pause'},true);`
-- L30 `ttValid`：`if(ttValid(source)&&TET.active)AN.resume(TET.analytics);`
-- L34 `ttValid`：`AN.end(TET.analytics,0,'abandoned',{score:TET.score});`
+- L29 `ttValid`：`TET.analytics=AN.start('tetris',ENTRY_FEE);`
+- L38 `ttValid`：`AN.end(TET.analytics,0,'complete',{score:score,step:lines,level:level});`
+- L42 `ttValid`：`if(ttValid(source)&&TET.active)AN.progress(TET.analytics,{phase:'pause'},true);`
+- L43 `ttValid`：`if(ttValid(source)&&TET.active)AN.resume(TET.analytics);`
+- L47 `ttValid`：`AN.end(TET.analytics,0,'abandoned',{score:TET.score});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -69,7 +69,7 @@
 - 子頁單獨開啟（無父頁）時是一般的俄羅斯方塊示範。
 - 儲存：沿用原版 Key `tetris-best`（最高分，整數字串）；新增於 2026-11-19。
 - 語言：子頁以 `data-i` 屬性＋`L` 字典與 `T(中文, English)` 依父頁 `deepSeaI18n` 目前語言輸出，並在 `arcade-languagechange` 時重繪；父頁訊息 `tt-msg` 與數值欄位標記 `data-i18n-ignore`；`locales/en.json` 補齊卡片、規則與子頁字串。
-- 排行榜：尚未串接。指標預定為分數（高者優先），上線前需接訪客身分與 Worker 驗證，見 RELEASE_CHECKLIST.md 的訪客排行榜；在此之前不顯示榜單。
+- 排行榜：平台對局的 Worker 依開局種子和 iframe 操作時間重播 7-bag、SRS、暫存與落塊，驗證自然終局後以分數排名（高者優先）；最多驗證十分鐘。獨立子頁維持本機遊玩。
 - 測試：`node tools/test_tetris.mjs`（父頁橋接與子頁流程）與 `node tools/test_freeplay_bridges.mjs`。
 
 ## 修改檢查清單

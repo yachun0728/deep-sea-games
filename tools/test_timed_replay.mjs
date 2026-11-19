@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import replay from '../shared/timed-replay.cjs';
+import bird from '../shared/bird-rules.cjs';
+import blockDrop from '../shared/block-drop-rules.js';
 import cat from '../shared/cat-rules.cjs';
 import skybuilder from '../shared/skybuilder-rules.cjs';
 import reaper from '../shared/reaper-rules.cjs';
@@ -13,6 +15,7 @@ function simulate(engine, seed, inputs) {
     for (const action of inputs.get(tick) ?? []) {
       assert.ok(engine.input(state, action));
       actions.push(tick * engine.inputCount + action);
+      if (state.dead) return {state, proof: [tick + 1, ...actions]};
     }
     engine.advance(state, replay.STEP_MS / 1000, random);
     if (state.dead) return {state, proof: [tick + 1, ...actions]};
@@ -21,6 +24,8 @@ function simulate(engine, seed, inputs) {
 }
 
 for (const [engine, inputs] of [
+  [bird, new Map([[12, [2]], [45, [0]], [60, [1]]])],
+  [blockDrop, new Map(Array.from({length:32}, (_, i) => [i * 25, [blockDrop.pressCode('hard')]]))],
   [cat, new Map([[12, [0]], [25, [1]]])],
   [skybuilder, new Map([[0, [0]], [94, [0]]])],
   [sneak, new Map([[0, [0]]])],
@@ -45,4 +50,4 @@ const instantEnd = {
 };
 assert.equal(replay.verify(instantEnd, 42, [1,0]), 10);
 assert.equal(replay.verify(instantEnd, 42, [1,0,0]), null);
-console.log('PASS: four shared timed rule engines, terminal ticks, input ordering and invalid transitions');
+console.log('PASS: six shared timed rule engines, terminal ticks, input ordering and invalid transitions');

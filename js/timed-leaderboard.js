@@ -12,7 +12,7 @@
       tick = 0; carry = 0; actions = [];
       callback(rank ? timedReplay.seeded(rank.state.seed) : null);
     }
-    async function start(callback) {
+    async function start(callback, cancel) {
       if (starting || sending) return;
       pending = null;
       if (typeof location === 'undefined' || location.protocol === 'file:') {
@@ -28,7 +28,7 @@
         rank = await api.startBoardRound(gameId, AbortSignal.timeout(4000));
       } catch {}
       starting = false;
-      if ($('view-' + gameId).hidden) { status(''); refresh(); return; }
+      if ($('view-' + gameId).hidden) { status(''); refresh(); cancel?.(); return; }
       status(rank ? '本局將列入訪客排行。' : '這一局可在本機遊玩。');
       begin(rank, callback);
     }
