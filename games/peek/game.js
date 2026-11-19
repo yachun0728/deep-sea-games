@@ -1,6 +1,7 @@
   /* ---------- Don't Peek: wind the music box while spirits strike; lean away, cover the screen, hold still ---------- */
   var peekBusy=false,peekStake=0,peekSay=function(){};
   (function(){
+const PEEK_VER='v0.9 · 11/19';   // bump this with every update: it shows on the lobby card, the side panel and the start screen, so you can tell the new version is live
 const FB='Spectral,"Songti TC","Noto Serif TC","PMingLiU","Noto Serif CJK TC",serif',FD='Cinzel,Spectral,"Songti TC","Noto Serif TC","PMingLiU",serif',MINSZ=14;   // Spectral has lining numerals (a 0 looks like a 0) and a serif Chinese fallback so both scripts match
 try{[['Cinzel',700,'cinzel-latin-700'],['Cinzel',800,'cinzel-latin-800'],['Spectral',600,'spectral-latin-600'],['Spectral',700,'spectral-latin-700'],['Spectral',800,'spectral-latin-800']].forEach(f=>{const ff=new FontFace(f[0],'url(games/peek/assets/fonts/'+f[2]+'.woff2)',{weight:String(f[1])});document.fonts.add(ff);ff.load().catch(()=>{})})}catch(e){}
 const c=$('peek-canvas'),g=c.getContext('2d'),W=800,H=450,CX=400,OL='#120d0a';
@@ -858,7 +859,7 @@ function draw(){
    tx('別看',CX,70,52,'#e8c675');tx('Don\'t Peek　禁忌寶盒・夜逃',CX,98,17,'#f1d9a6');
    tx(lc?'第 '+lv+' 關・'+WORLD_NAME[lc.wi]+'・'+KIND_NAME[lc.kind]+'':'自由跑（沒有關卡和生命）',CX,130,20,'#ffd98a');
    howCards(146,170,1);
-   tx('選好關卡，按右邊的「開始」',CX,388,20,'#ffd98a');tx('電腦：← → 躲或選道具　F 撿　手機：左右滑、點一下',CX,414,14,'rgba(241,217,166,.75)')}}
+   tx('選好關卡，按右邊的「開始」',CX,388,20,'#ffd98a');tx(PEEK_VER,14,H-12,14,'rgba(241,217,166,.55)','left');tx('電腦：← → 躲或選道具　F 撿　手機：左右滑、點一下',CX,414,14,'rgba(241,217,166,.75)')}}
  else if(st==='won')drawWon();
  else if(st==='over'){if(scareT>0)drawScare();else drawDeath()}
  if(dex)drawDex()}
