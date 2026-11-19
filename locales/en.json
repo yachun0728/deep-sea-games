@@ -1,4 +1,10 @@
 {
+"插旗": "Flag",
+"按「插旗」後，點格子即可插旗或取消；再按一次恢復翻格。": "Turn on Flag to tap cells to place or remove flags. Turn it off to reveal cells.",
+  "排雷成功！": "Board cleared!",
+  "踩到地雷！": "You hit a mine!",
+  "地雷在開局時隨機配置，第一格也可能踩雷。數字為周圍八格雷數，空白區自動展開。翻開全部安全格就獲勝。": "Mines are placed at random, so the first move can hit a mine. Numbers count neighboring mines and empty areas open automatically. Reveal every safe cell to win.",
+  "5×5／3 雷通關會列入訪客排行。大棋盤可水平捲動，重新整理會放棄本局。": "Clear a 5×5 board with 3 mines to rank. Scroll sideways on larger boards. Reloading ends the round.",
   "% · 渡過後": "% · Crossed: ",
   "% · 猜中": "% · Correct: ",
   "+15 點": "+15 pts",

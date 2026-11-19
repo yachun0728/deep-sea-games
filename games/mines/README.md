@@ -7,13 +7,13 @@
 - 網址：`#mines`　分類：免費懷舊　狀態：顯示中
 - 大廳卡片：「低中高難度或自訂棋盤，重溫經典踩地雷。」｜不限次數 · 推理排雷
 - 追蹤名稱（GA4 `game_name`）：踩地雷，`game_id` 為 `mines`
-- 檔案：`games/mines/VALIDATION.md`、`games/mines/card.html`、`games/mines/cover.webp`、`games/mines/game.js`、`games/mines/icon.svg`、`games/mines/style.css`、`games/mines/view.html`；`game.js` 共 189 行、11.0 KB
+- 檔案：`games/mines/VALIDATION.md`、`games/mines/card.html`、`games/mines/cover.webp`、`games/mines/game.js`、`games/mines/icon.svg`、`games/mines/style.css`、`games/mines/view.html`；`game.js` 共 195 行、10.7 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「2. Mines（mines）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-mines`、`mines-difficulty`、`mines-custom`、`mines-size`、`mines-bomb-limit`、`mines-bombs`、`board`、`mines-level`、`mines-left`、`mines-flags`、`mines-best`、`mines-go`、`mines-msg`、`mines-rank-status`、`mines-rank-retry`
+`view-mines`、`mines-difficulty`、`mines-custom`、`mines-size`、`mines-bomb-limit`、`mines-bombs`、`mines-left`、`mines-flags`、`mines-mode`、`mines-go`、`board`、`mines-msg`、`mines-rank-status`、`mines-rank-retry`
 
 ## 狀態與常數
 
@@ -22,7 +22,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`mSay` L6、`syncBalance` L8、`mineNumber` L10、`mineRankStatus` L11、`bindMineTile` L18、`cancel` L20、`buildBoard` L38、`renderMines` L51、`beginMines` L70、`startMines` L80、`mineFinish` L103、`mineUpdateProgress` L111、`sendMineMove` L123、`mineMove` L154、`mineFlag` L167、`pick` L168、`mineSettings` L172
+`mSay` L6、`syncBalance` L8、`mineNumber` L10、`mineRankStatus` L11、`bindMineTile` L18、`cancel` L20、`buildBoard` L38、`renderMines` L57、`beginMines` L74、`startMines` L86、`mineFinish` L109、`mineUpdateProgress` L117、`sendMineMove` L129、`mineMove` L160、`mineFlag` L173、`pick` L174、`mineSettings` L178
 
 ## 錢包與結算接點
 
@@ -40,10 +40,10 @@
 
 ## 追蹤（GA4）
 
-- L76 `beginMines`：`M.analytics = AN.start('mines', 0);`
-- L107 `mineFinish`：`AN.end(M.analytics, 0, won ? 'complete' : 'loss', {step:M.picks,board_size:M.size,mine_count:M.mines});`
-- L118 `mineUpdateProgress`：`AN.progress(M.analytics, {stage: M.level, step: M.picks, score: M.picks});`
-- L145 `sendMineMove`：`AN.end(M.analytics, 0, 'abandoned', {step:M.picks,board_size:M.size,mine_count:M.mines});`
+- L82 `beginMines`：`M.analytics = AN.start('mines', 0);`
+- L113 `mineFinish`：`AN.end(M.analytics, 0, won ? 'complete' : 'loss', {step:M.picks,board_size:M.size,mine_count:M.mines});`
+- L124 `mineUpdateProgress`：`AN.progress(M.analytics, {stage: M.level, step: M.picks, score: M.picks});`
+- L151 `sendMineMove`：`AN.end(M.analytics, 0, 'abandoned', {step:M.picks,board_size:M.size,mine_count:M.mines});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

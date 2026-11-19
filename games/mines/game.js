@@ -40,7 +40,7 @@
     try { var best = Number(localStorage.getItem('deep-sea-mines-best')); M.best = Number.isSafeInteger(best) && best >= 0 && best <= 22 ? best : 0; M.bestLevel = Number(localStorage.getItem('deep-sea-mines-level-best')) || 0; } catch (e) {}
     elBoard.innerHTML = ''; tiles = [];
     elBoard.style.gridTemplateColumns = 'repeat(' + M.size + ', minmax(44px, 1fr))';
-    elBoard.style.minWidth = (M.size * 49) + 'px';
+    elBoard.style.minWidth = (M.size * 44 + (M.size - 1) * 6) + 'px';
     elBoard.setAttribute('aria-label', M.size + ' 乘 ' + M.size + ' 排雷棋盤');
     for (var i = 0; i < N; i++) {
       var b = document.createElement('button'); b.type = 'button'; b.className = 'tile';
@@ -48,6 +48,12 @@
       elBoard.appendChild(b); tiles.push(b);
     }
   }
+  var mineFlagMode = false;
+  $('mines-mode').addEventListener('click',function(){
+    cancelMinePress();
+    mineFlagMode = !mineFlagMode;
+    $('mines-mode').setAttribute('aria-pressed',String(mineFlagMode));
+  });
   function renderMines() {
     tiles.forEach(function (b, i) {
       var shown = M.open[i] || (!mineRound && M.over);
@@ -59,15 +65,15 @@
       b.innerHTML = text; b.disabled = !M.active || M.checkpoint || !!minePending || (!!M.open[i] && !number);
       b.setAttribute('aria-label', '第 ' + (Math.floor(i / M.size) + 1) + ' 列第 ' + (i % M.size + 1) + ' 格，' + (shown ? M.layout[i] ? '地雷' : '周圍 ' + number + ' 顆雷' : M.flags[i] ? '已插旗' : '未翻開'));
     });
-    $('mines-left').textContent = (N - M.mines - M.picks) + ' 格';
+    $('mines-left').textContent = String(N - M.mines - M.picks);
     $('mines-flags').textContent = M.flags.filter(Boolean).length + ' / ' + M.mines;
-    $('mines-best').textContent = (N - M.mines) + ' 格';
     ['mines-difficulty','mines-size','mines-bombs'].forEach(function(id){$(id).disabled=M.active||mineStarting;});
-    $('mines-level').textContent = M.size + '×' + M.size + ' · ' + M.mines + ' 雷';
     elMGo.disabled = M.active || mineStarting; elMGo.dataset.mode = M.active ? 'playing' : 'start';
-    elMGo.innerHTML = M.active ? '找出全部安全格' : (M.over ? '再玩一局' : '開始踩地雷') + '<small>不限次數</small>';
+    elMGo.textContent = M.active ? '找出全部安全格' : (M.over ? '再玩一局' : '開始');
   }
   function beginMines(size, bombs, round) {
+    mineFlagMode = false;
+    $('mines-mode').setAttribute('aria-pressed','false');
     mineRound = round;
     N = size * size;
     Object.assign(M, round ? {size:size,mines:bombs,layout:[],open:[],flags:[],picks:0,result:null}
@@ -75,7 +81,7 @@
     M.active = true; M.over = false; M.level = 1; M.checkpoint = false;
     M.analytics = AN.start('mines', 0);
     buildBoard(); renderMines();
-    mSay('棋盤：' + M.size + '×' + M.size + '，' + M.mines + ' 顆雷，第一格也可能踩雷。');
+    mSay('');
   }
   async function startMines() {
     if (M.active || mineStarting) return;
@@ -97,7 +103,7 @@
     } catch {}
     mineStarting = false;
     if ($('view-mines').hidden) { mineRankStatus(''); renderMines(); return; }
-    mineRankStatus(round ? '本局將列入訪客排行。' : '這一局可在本機遊玩。');
+    mineRankStatus(round ? '' : '這一局可在本機遊玩。');
     beginMines(size,bombs,round);
   }
   function mineFinish(won) {
@@ -105,7 +111,7 @@
     M.over = true;
     M.active = false; M.checkpoint = false;
     AN.end(M.analytics, 0, won ? 'complete' : 'loss', {step:M.picks,board_size:M.size,mine_count:M.mines});
-    mSay(won ? '排雷成功！可以再玩一局，或選擇其他難度。' : '踩到地雷！調整難度或再試一次吧。',won?'win':'lose');
+    mSay(won ? '排雷成功！' : '踩到地雷！',won?'win':'lose');
   }
 
   function mineUpdateProgress(previousPicks) {
@@ -116,14 +122,14 @@
     if (M.result) mineFinish(M.result === 'win');
     else if (M.picks !== previousPicks) {
       AN.progress(M.analytics, {stage: M.level, step: M.picks, score: M.picks});
-      mSay('已找到 ' + M.picks + ' 格安全區；根據數字判斷，再翻下一格。');
+      mSay('');
     }
   }
 
   async function sendMineMove() {
     if (!minePending || mineSending) return;
     mineSending = true;
-    mineRankStatus('正在驗證排雷操作…');
+    mineRankStatus('');
     renderMines();
     try {
       var api = await import('./frontend/services/api.mjs');
@@ -137,7 +143,7 @@
       minePending = null;
       if (next.flagLimit) mSay('旗子數不能超過 ' + M.mines + ' 面。');
       mineUpdateProgress(previousPicks);
-      mineRankStatus(next.result === 'win' ? '成績已送到排行榜。' : next.result === 'loss' ? '' : '本局將列入訪客排行。');
+      mineRankStatus(next.result === 'win' ? '成績已送到排行榜。' : '');
     } catch (error) {
       if (error.retryable === false) {
         minePending = null;
@@ -165,7 +171,7 @@
   }
 
   function mineFlag(i) { mineMove('flag',i); }
-  function pick(i) { mineMove('open',i); }
+  function pick(i) { mineMove(mineFlagMode && !M.open[i] ? 'flag' : 'open',i); }
   $('mines-rank-retry').addEventListener('click',sendMineMove);
   elMGo.addEventListener('click', startMines);
 
@@ -179,7 +185,7 @@
     var bombs=Number($('mines-bombs').value);
     if(Number.isInteger(size)&&size>=2&&size<=10&&Number.isInteger(bombs)&&bombs>=1&&bombs<size*size){
       mineRound=null;N=size*size;Object.assign(M,{size:size,mines:bombs,layout:[],open:[],flags:[],picks:0,over:false,result:null});
-      buildBoard();renderMines();mSay('翻開全部 '+(N-bombs)+' 格安全區就過關。第一格也可能踩雷。');
+      buildBoard();renderMines();mSay('');mineRankStatus('');
     }
   }
   $('mines-difficulty').addEventListener('change',function(){if(!M.active)mineSettings();});

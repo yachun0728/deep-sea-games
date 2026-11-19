@@ -60,7 +60,7 @@ const preview=fixture(); const pc=preview.c;
 for(const [mode,size,bombs] of [['low',5,3],['medium',8,10],['high',10,20]]){
  pc.$('mines-difficulty').value=mode;pc.mineSettings();
  assert.equal(pc.M.size,size);assert.equal(pc.N,size*size);assert.equal(pc.M.mines,bombs);
- assert.equal(pc.$('mines-left').textContent,(size*size-bombs)+' 格');assert.equal(pc.M.active,false);
+ assert.equal(pc.$('mines-left').textContent,String(size*size-bombs));assert.equal(pc.M.active,false);
 }
 pc.$('mines-difficulty').value='custom';pc.$('mines-size').value=4;pc.$('mines-bombs').value=5;pc.mineSettings();assert.equal(pc.N,16);assert.equal(pc.M.mines,5);assert.equal(preview.events.length,0);
 const input=fixture();const ic=input.c;ic.$('mines-difficulty').value='medium';ic.startMines();

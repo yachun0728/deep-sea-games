@@ -75,8 +75,12 @@ try {
   }
   if(id==='mines'){
     var board=document.getElementById('board'),tile=board.querySelector('button'),settings=document.querySelector('.mines-settings');
-    assert(!document.getElementById('mines-flag'),'No flag mode switch remains');
-    assert(settings.getBoundingClientRect().bottom<=board.getBoundingClientRect().top,'Difficulty settings are above the board');
+    assert(document.getElementById('mines-mode').getAttribute('aria-pressed')==='false','Flag mode starts off');
+    if(matchMedia('(max-width:880px)').matches) {
+      assert(settings.getBoundingClientRect().bottom<=board.getBoundingClientRect().top,'Mobile difficulty settings are above the board');
+      assert(board.getBoundingClientRect().bottom<=innerHeight,'Default Minesweeper board fits the first mobile screen');
+    }
+    assert(!view.querySelector('.rules').open,'Minesweeper instructions are collapsed by default');
     tile.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerType:'touch',pointerId:1,isPrimary:true,button:0,clientX:10,clientY:10}));
     await new Promise(function(resolve){setTimeout(resolve,550)});
     tile.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerType:'touch',pointerId:1}));tile.click();await wait();
@@ -84,7 +88,7 @@ try {
     tile.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerType:'mouse',button:2}));
     tile.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true}));await wait();
     assert(!tile.classList.contains('flagged'),'Desktop right-click removes flag');
-    assert(!/10/.test(view.querySelector('.mobile-stage-note').textContent),'Free Minesweeper does not show a ten-point entry hint');
+    assert(button.closest('.mines-actions')&&!button.querySelector('small'),'Minesweeper uses a single action without an entry hint');
   }
   if(matchMedia('(max-width:880px)').matches)assert(innerWidth===390&&document.documentElement.scrollWidth<=390,id+': English game fits a true 390px viewport');
   if(matchMedia('(max-width:880px)').matches&&id==='dream'){
