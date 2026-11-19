@@ -88,6 +88,9 @@
         var gameId = card.hash.slice(1);
         if (Object.hasOwn(VIEWS, gameId)) boardGame.add(new Option(memberGameName(gameId), gameId));
       });
+      if (Array.from(boardGame.options).some(function (option) { return option.value === 'frog'; })) {
+        boardGame.value = 'frog';
+      }
     }
     if (boardGame.value) boardLoad();
     else boardStatus('這款遊戲尚無排行榜紀錄。');
