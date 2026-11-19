@@ -745,9 +745,19 @@ function drawSpots(){
   const x=CX+sd*(520-220*f),sz=120+120*f;   // slides in from the edge and grows as you run up to it
   if(im)sprite(im,x,400,sz*1.6,a);
   else{g.save();g.globalAlpha=a;g.fillStyle=col;g.strokeStyle='rgba(255,217,138,.35)';g.lineWidth=2;g.beginPath();g.ellipse(x,392,sz*.6,sz*.38,0,Math.PI,0);g.fill();g.stroke();g.restore()}}))}
-function drawHide(){
- const h=Math.abs(tilt);
- if(h>.2){const sd=tilt<0?-1:1,gr=g.createLinearGradient(CX+sd*W/2,0,CX-sd*W*.1,0);gr.addColorStop(0,'rgba(8,10,6,'+(.85*h)+')');gr.addColorStop(1,'rgba(8,10,6,0)');g.fillStyle=gr;g.fillRect(0,0,W,H)}
+const HIDE_SLITS=[[-250,26],[-150,18],[-62,32],[34,20],[128,36],[236,24]],HIDE_GRAIN=(()=>{const r=mulberry(77),a=[];for(let i=0;i<46;i++)a.push([r()*W,r()*H*.5,40+r()*220,r()*.5+.15]);return a})();
+function drawHide(){   // DOORS-style closet: you are inside, it is almost black, and you only see the world through a few thin slits in the door
+ const h=Math.abs(tilt),k=clamp((h-.15)/.6,0,1);
+ if(k<=0)return;
+ const sd=tilt<0?-1:1,sway=Math.sin(tt*1.7)*2*k+(breath<.5?Math.sin(tt*14)*(1-breath)*2:0),cx=CX-sd*24;
+ g.save();g.translate(sway,0);
+ g.beginPath();g.rect(-20,-20,W+40,H+40);
+ HIDE_SLITS.forEach(([dx,w])=>{const ww=w*k*(1+.08*Math.sin(tt*2+dx));g.rect(cx+dx-ww/2,58,ww,H-92)});
+ g.fillStyle='rgba(5,4,3,'+(.93+.05*k)+')';g.fill('evenodd');   // the door: opaque everywhere except the slits
+ g.fillStyle='rgba(60,40,25,.18)';HIDE_GRAIN.forEach(a=>g.fillRect(a[0],a[1],1.2,a[2]*a[3]*2));   // faint wood grain on the inside of the door
+ g.globalAlpha=.5*k;g.fillStyle='#1a120b';HIDE_SLITS.forEach(([dx,w])=>{g.fillRect(cx+dx-w*k/2-2,58,1.5,H-92);g.fillRect(cx+dx+w*k/2+.5,58,1.5,H-92)});g.globalAlpha=1;   // lit edge of each slit
+ g.restore();
+ const sm=g.createLinearGradient(0,0,0,H);sm.addColorStop(0,'rgba(0,0,0,.6)');sm.addColorStop(.12,'rgba(0,0,0,0)');sm.addColorStop(.88,'rgba(0,0,0,0)');sm.addColorStop(1,'rgba(0,0,0,.6)');g.fillStyle=sm;g.fillRect(0,0,W,H);
  if(breath<.999){const gr=g.createRadialGradient(CX,225,120,CX,225,520);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,'+(.9*(1-breath))+')');g.fillStyle=gr;g.fillRect(0,0,W,H)}}
 function howCards(y,w,al){   // three parchment cards: icon in the window, two short lines underneath
  const h=w*216/186,gap=w*.1,x0=CX-(3*w+2*gap)/2,bg=art('ui-card'),
