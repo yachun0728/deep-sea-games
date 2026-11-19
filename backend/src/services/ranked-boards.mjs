@@ -1,3 +1,5 @@
+import frontierRules from '../../../shared/frontier-rules.cjs';
+import rocketChairRules from '../../../shared/rocket-chair-rules.js';
 import elevatorRules from '../../../shared/elevator-rules.cjs';
 import fishingRules from '../../../shared/fishing-rules.cjs';
 import birdRules from '../../../shared/bird-rules.cjs';
@@ -31,6 +33,19 @@ function timedBoard(engine) {
   };
 }
 const boards = new Map([
+ ['frontier',{
+  create:()=>({...frontierRules.create(newSeed()),issuedAt:Date.now()}),
+  accepts:frontierRules.accepts,
+  apply:(state,action)=>{
+   if((state.elapsed+action[0]) * 50 > Date.now()-state.issuedAt+100)return false;
+   return frontierRules.apply(state,action);
+  },
+  score:state=>state.dead?state.completed:null,
+  checkpoint:state=>state.completed>0?state.completed:null,
+  visible:state=>state,
+ }],
+
+ ['rocket-chair',timedBoard(rocketChairRules)],
   ['elevator', timedBoard(elevatorRules)],
   ['fishing', timedBoard(fishingRules)],
   ['cat', timedBoard(catRules)],
@@ -124,7 +139,19 @@ export async function readBoardCommand(request, isMove) {
 }
 
 export async function startRankedBoard(db, playerId, gameId) {
-  const id = crypto.randomUUID(), game = boards.get(gameId), state = game.create();
+  const id = crypto.randomUUID(), game = boards.get(gameId);
+  let state;
+  if(gameId==='frontier'){
+    const previous=await db.prepare('SELECT id,revision,state,started_at FROM ranked_boards WHERE player_id=? AND game_id=? AND score IS NULL ORDER BY started_at DESC LIMIT 1').bind(playerId,gameId).first();
+    if(previous){
+      state=JSON.parse(previous.state);
+      if(Date.now()-previous.started_at<LIFETIME_MS)return {id:previous.id,revision:previous.revision,state:game.visible(state)};
+      // A renewed transport round carries only the previously verified simulation.
+      state.elapsed=0;
+      state.issuedAt=Date.now();
+    }
+  }
+  state ??= game.create();
   await db.prepare(
     'INSERT INTO ranked_boards (id, player_id, game_id, started_at, state) VALUES (?, ?, ?, ?, ?)',
   ).bind(id, playerId, gameId, Date.now(), JSON.stringify(state)).run();

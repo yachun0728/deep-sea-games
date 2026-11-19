@@ -10,7 +10,7 @@
  function neutral(w){w.enemies.forEach(function(e){e.hp=0;});tick(w,.05);}
  function build(w,k){var b=w.buildings.find(function(b){return b.kind===k;});w.bank.wood=w.bank.stone=10000;w.p.x=b.x;w.p.y=b.y;tick(w,12);return b.built;}
  try{
-  await wait();assert(!!t,'Test adapter only exists in the instrumented page');
+  await wait();assert(document.getElementById('ft-ranked').textContent==='Ranked expedition','Ranked expedition entry is translated');assert(document.getElementById('ft-local').textContent==='Continue local save','Local save entry is translated');assert(!!t,'Test adapter only exists in the instrumented page');
   Array.from(document.scripts).forEach(function(s){if(s.src)return;if(s.type==='application/json')JSON.parse(s.textContent);else new Function(s.textContent);});assert(true,'All executable scripts parse and JSON scripts decode');
   assert(location.hash==='#frontier'&&!document.getElementById('view-frontier').hidden,'Direct hash opens Frontier');
   var probe=new URLSearchParams(location.search).get('probe');

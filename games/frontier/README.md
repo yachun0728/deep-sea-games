@@ -7,13 +7,13 @@
 - 網址：`#frontier`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「砍出道路，建立據點，挑戰五大區域與五十關考驗。」｜遠征與續玩不限次數 · 50 關 · 自動存檔
 - 追蹤名稱（GA4 `game_name`）：荒島遠征，`game_id` 為 `frontier`
-- 檔案：`games/frontier/AGENTS.md`、`games/frontier/ART_DIRECTION.md`、`games/frontier/VALIDATION.md`、`games/frontier/card.html`、`games/frontier/cover.webp`、`games/frontier/draw.js`、`games/frontier/game.js`、`games/frontier/icon.svg`、`games/frontier/style.css`、`games/frontier/view.html`、`games/frontier/world.js`；`game.js` 共 152 行、24.4 KB
+- 檔案：`games/frontier/AGENTS.md`、`games/frontier/ART_DIRECTION.md`、`games/frontier/VALIDATION.md`、`games/frontier/card.html`、`games/frontier/cover.webp`、`games/frontier/draw.js`、`games/frontier/game.js`、`games/frontier/icon.svg`、`games/frontier/style.css`、`games/frontier/view.html`、`games/frontier/world.js`；`game.js` 共 209 行、28.5 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「46. 荒島遠征 Frontier Islands（frontier）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-frontier`、`ft-main`、`ft-zone`、`ft-level`、`ft-health`、`ft-base-health`、`ft-journal`、`ft-full`、`ft-assault`、`ft-objective`、`ft-task-details`、`ft-checklist`、`ft-warning`、`ft-hauling`、`ft-army`、`ft-journal-stock`、`ft-stage`、`ft-canvas`、`ft-cards`、`ft-cards-title`、`ft-card-0`、`ft-card-0-name`、`ft-card-0-lv`、`ft-card-0-desc`、`ft-card-1`、`ft-card-1-name`、`ft-card-1-lv`、`ft-card-1-desc`、`ft-card-2`、`ft-card-2-name`、`ft-card-2-lv`、`ft-card-2-desc`、`ft-notice`、`ft-overlay`、`ft-title`、`ft-message`、`ft-go`、`ft-stick`、`ft-knob`、`ft-dash`、`ft-bag`、`ft-stock`、`ft-troops`、`ft-coins`、`ft-workers`、`ft-hut-up`、`ft-home`、`ft-shop-toggle`、`ft-pause`、`ft-next`、`ft-shop`、`ft-shop-close`、`ft-sale-count`、`ft-building-effects`、`ft-recruit`、`ft-sell-wood`、`ft-sell-stone`、`ft-tool`、`ft-blade`、`ft-pack`、`ft-upgrade`、`ft-storage`、`ft-record`、`ft-map`、`ft-select`、`ft-select-label`、`ft-select-yes`、`ft-select-no`
+`view-frontier`、`ft-ranked`、`ft-local`、`ft-rank-status`、`ft-rank-retry`、`ft-main`、`ft-zone`、`ft-level`、`ft-health`、`ft-base-health`、`ft-journal`、`ft-full`、`ft-assault`、`ft-objective`、`ft-task-details`、`ft-checklist`、`ft-warning`、`ft-hauling`、`ft-army`、`ft-journal-stock`、`ft-stage`、`ft-canvas`、`ft-cards`、`ft-cards-title`、`ft-card-0`、`ft-card-0-name`、`ft-card-0-lv`、`ft-card-0-desc`、`ft-card-1`、`ft-card-1-name`、`ft-card-1-lv`、`ft-card-1-desc`、`ft-card-2`、`ft-card-2-name`、`ft-card-2-lv`、`ft-card-2-desc`、`ft-notice`、`ft-overlay`、`ft-title`、`ft-message`、`ft-go`、`ft-stick`、`ft-knob`、`ft-dash`、`ft-bag`、`ft-stock`、`ft-troops`、`ft-coins`、`ft-workers`、`ft-hut-up`、`ft-home`、`ft-shop-toggle`、`ft-pause`、`ft-next`、`ft-shop`、`ft-shop-close`、`ft-sale-count`、`ft-building-effects`、`ft-recruit`、`ft-sell-wood`、`ft-sell-stone`、`ft-tool`、`ft-blade`、`ft-pack`、`ft-upgrade`、`ft-storage`、`ft-record`、`ft-map`、`ft-select`、`ft-select-label`、`ft-select-yes`、`ft-select-no`
 
 ## 狀態與常數
 
@@ -21,7 +21,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`stageSteps` L13、`warTip` L29、`showNotice` L31、`renderCards` L33、`stageList` L43、`set` L45、`safeNumbers` L46、`validShape` L47、`loadFrontier` L48、`persist` L61、`params` L62、`release` L63、`endRound` L64、`pause` L65、`start` L66、`selectLevel` L80、`updateMap` L81、`update` L82、`finishStage` L102、`frame` L103、`moveStick` L114、`isHandheld` L117、`autoScreen` L118、`screenClass` L119、`syncViewport` L120、`enterScreen` L125、`fallback` L127、`exitScreen` L131、`showShop` L138
+`stageSteps` L14、`warTip` L30、`rankStatus` L33、`recordRank` L34、`uploadRank` L35、`startRanked` L54、`showNotice` L78、`renderCards` L80、`stageList` L90、`set` L92、`safeNumbers` L93、`validShape` L94、`loadFrontier` L95、`persist` L108、`params` L109、`release` L110、`endRound` L111、`pause` L112、`start` L113、`selectLevel` L129、`updateMap` L130、`update` L131、`finishStage` L151、`frame` L152、`moveStick` L171、`isHandheld` L174、`autoScreen` L175、`screenClass` L176、`syncViewport` L177、`enterScreen` L182、`fallback` L184、`exitScreen` L188、`showShop` L195
 
 ## 錢包與結算接點
 
@@ -39,13 +39,14 @@
 
 ## 追蹤（GA4）
 
-- L64 `endRound`：`AN.end(round,0,result,params());`
-- L65 `pause`：`AN.progress(round,params(),true);`
-- L72 `start`：`round=AN.start('frontier',0,params());`
-- L76 `start`：`if(round)AN.resume(round,params());`
-- L76 `start`：`else round=AN.start('frontier',0,params());`
-- L102 `finishStage`：`AN.progress(round,params(),true);`
-- L110 `frame`：`AN.progress(round,params(),false);`
+- L65 `startRanked`：`round=AN.start('frontier',0,params());`
+- L111 `endRound`：`AN.end(round,0,result,params());`
+- L112 `pause`：`AN.progress(round,params(),true);`
+- L121 `start`：`round=AN.start('frontier',0,params());`
+- L125 `start`：`if(round)AN.resume(round,params());`
+- L125 `start`：`else round=AN.start('frontier',0,params());`
+- L151 `finishStage`：`AN.progress(round,params(),true);`
+- L167 `frame`：`AN.progress(round,params(),false);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -60,6 +61,11 @@
 - 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
+
+- 「排行榜遠征」以依序完成的島嶼數計分（0～50），從第一島的標準世界開始。Worker 重播移動、採集建造、選卡、訓練與關卡結算，每段驗證成功後保存遠征狀態，通關立即更新公開榜。
+- 既有本機存檔可透過「繼續原存檔」遊玩；排行遠征保存已驗證進度，重新開啟後可從伺服器續玩。舊本機進度可繼續遊玩；加入排行榜須從可驗證的遠征開始。
+- 訪客只寫公開榜，每款前 50 筆。大廳每款只顯示最高通關島數，同分先達到者優先。
+
 
 五區各十關，共50關；同一模擬規則以關卡種子產生不同資源與敵人位置，木材廠與鐵匠鋪上下交替，箭塔與燈塔位置偏移。不是50張手繪地圖。每區任務順序為建設、救援、討伐、守點、精英、救援、守點、討伐、精英、首領。完成任務、小屋、市集、木材廠，以及第二區起的前線分倉，並清除所有敵營後才能修復燈塔；建好後可留島採集，按「前往下一島」才結束當關。建設關需擊敗 ceil(守衛數×0.65)，討伐關全部擊敗；救援兩人需清除附近130距離內敵人；守點須建箭塔、存活指定秒數並清除所有增援；精英／首領需擊敗指定大怪。
 

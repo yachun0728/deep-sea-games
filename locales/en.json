@@ -5196,5 +5196,10 @@
   "穩健收官": "Steady finish",
   "報告準時送出。阿澤把桌面清空，在夕陽下喝完最後一口咖啡。": "The report goes out on time. A-Ze clears his desk and finishes his coffee in the sunset.",
   "第 {0} 天・提早結束": "Day {0} · Run ended early",
-  "二十天・收盤結算": "Day 20 · Final close"
+  "二十天・收盤結算": "Day 20 · Final close",
+  "排行榜遠征": "Ranked expedition",
+  "繼續原存檔": "Continue local save",
+  "排行遠征從第一島依序前進。": "Ranked expeditions progress from the first island in order.",
+  "排行榜仍在處理上一局，請稍後再試。": "The leaderboard is still processing your previous round. Please try again shortly.",
+  "排行榜遠征保留已驗證進度；可隨時切回原存檔。": "Ranked expeditions keep verified progress. You can return to your local save at any time."
 }
