@@ -249,6 +249,12 @@ check('A safe level has only harmless false cues; clearing it pays once and unlo
   assert.equal(f.ev('st'),'won');assert.equal(f.ev('lives'),3);assert.equal(f.ev('maxLvl'),2);assert.equal(f.wallet.balance,500+5);
   f.F.ev('forceLvl=1');f.F.start();f.run(200);assert.equal(f.ev('st'),'won');assert.equal(f.wallet.balance,505);   // replay: no second payout
 });
+check('The version tag matches on the lobby card, the side panel and in the game',()=>{
+  const ver=raw.match(/PEEK_VER='([^']+)'/)[1];
+  assert.ok(fs.readFileSync(new URL('games/peek/card.html',root),'utf8').includes(ver));
+  assert.ok(fs.readFileSync(new URL('games/peek/view.html',root),'utf8').includes(ver));
+  assert.ok(fs.readFileSync(new URL('games/peek/card.html',root),'utf8').includes('npc-nib'));
+});
 check('Dying is permanent: no lives, the whole run starts over from level 1',()=>{
   const f=fixture();f.F.ev('forceLvl=3;maxLvl=3;runTop=3;ck=1');f.F.start();
   f.spirit('twins',1,'judge');f.F.ev('ev.t=1.5;tilt=1');f.run(2);assert.equal(f.ev('st'),'over');
