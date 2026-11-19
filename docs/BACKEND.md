@@ -151,3 +151,10 @@ const next = await moveMinesRound(round.token, {
 2026-11-19，本機 Worker + 暫存 D1 驗證上述十款開局、合法終局、榜單讀回與重送。為縮短測試等待，測試腳本只在本機資料庫調整 issuedAt，重播引擎使用真實規則逐步運算。桌面與 390px 的遊戲翻譯、切換語言、版面及初始化檢查通過。全站 i18n 執行仍因宴會遊戲既有漏翻中止，針對十款的手機測試最後遇到舊頁首錢包定位斷言失敗。實體手機、正式站自然終局與 GA4 後台尚未驗收。
 
 其餘尚待接入的競賽遊戲包含 blaster、boba、dive、mrt、pancake、pudding、clock-out、peek、breakout、pet-walk、office-shoot、banquet、eat-smaller、mirror-twins、shadow-relay、one-line-defense、quack-pond、on-pitch。book-sort 已由獨立 SDK 模組接入。
+
+
+## 已串接遊戲的榜單顯示
+
+Frontier Islands 需由「訪客排行挑戰」啟動可驗證遠征，島嶼完成後提交檢查點。既有本機遠征進度保留。Roar Through the Ceiling 於回合完成後提交重播。兩款的遊戲下方提供可展開的單款排行榜，空資料時顯示空榜提示。大廳只呈現近期有排行活動的遊戲。
+
+Closing Call 開局會等待訪客排行回合準備完成，避免快速點擊時錯過已預取的回合。回合取得失敗時顯示本機遊玩狀態。單款排行榜位於遊戲的結算區。

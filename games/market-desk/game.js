@@ -28,16 +28,17 @@
     const chart = $('mk-chart');
     const formatter = new Intl.NumberFormat('en-US');
     const rankDetails = $('mk-rank-board');
-    let rankRound, nextRankRound, preparingRank, submission;
+    let rankRound, nextRankRound, preparingRank, submission, rankStarting = false;
     let leaderboardRequest = 0;
     function money(amount) { return 'NT$' + formatter.format(amount); }
     function prepareRankedRound() {
-      if (preparingRank || nextRankRound || location.protocol === 'file:') return;
+      if (preparingRank || nextRankRound || location.protocol === 'file:') return preparingRank;
       preparingRank = import('./frontend/services/api.mjs')
         .then(api => api.startBoardRound('market-desk', AbortSignal.timeout(4000)))
         .then(ticket => { nextRankRound = ticket; })
         .catch(() => {})
         .finally(() => { preparingRank = null; });
+      return preparingRank;
     }
     function renderRankStatus() {
       $('mk-rank-status').textContent = local(submission?.message ?? '這一局可在本機遊玩。');
@@ -283,8 +284,16 @@
       $('mk-final-market').textContent = local('累計表現：阿澤信心 {0} ／ 虛構大盤 {1}',
         signedPercent(100 * difference / openingIndex), signedPercent(100 * (market / openingIndex - 1)));
     }
-    function start() {
-      if (round !== null || (phase !== 'intro' && phase !== 'finish') || view.hidden) return;
+    async function start() {
+      if (rankStarting || round !== null || (phase !== 'intro' && phase !== 'finish') || view.hidden) return;
+      rankStarting = true;
+      $('mk-go').disabled = true;
+      $('mk-replay').disabled = true;
+      await prepareRankedRound();
+      rankStarting = false;
+      $('mk-go').disabled = false;
+      $('mk-replay').disabled = false;
+      if (view.hidden) return;
       rankRound = nextRankRound;
       nextRankRound = null;
       prepareRankedRound();

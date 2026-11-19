@@ -52,6 +52,7 @@
 
 - 直接使用的共用名稱：`S`、`AN`、`fmt`、`fx`、`MIN_BET`、`reduceMotion`、`rollCrash`、`syncBalance`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/bootstrap.js` 會呼叫：`lUI`
+- `js/timed-leaderboard.js` 會呼叫：`step`
 - 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）

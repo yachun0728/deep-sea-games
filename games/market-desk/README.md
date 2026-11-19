@@ -7,7 +7,7 @@
 - 網址：`#market-desk`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「20 個交易日，從台股怪新聞裡挖出可信的消息。」｜免費 · 不限次數 · 消息查證
 - 追蹤名稱（GA4 `game_name`）：收盤之前，`game_id` 為 `market-desk`
-- 檔案：`games/market-desk/card.html`、`games/market-desk/cases.js`、`games/market-desk/cover.webp`、`games/market-desk/game.js`、`games/market-desk/icon.svg`、`games/market-desk/style.css`、`games/market-desk/view.html`；`game.js` 共 428 行、19.6 KB
+- 檔案：`games/market-desk/card.html`、`games/market-desk/cases.js`、`games/market-desk/cover.webp`、`games/market-desk/game.js`、`games/market-desk/icon.svg`、`games/market-desk/style.css`、`games/market-desk/view.html`；`game.js` 共 437 行、19.9 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「49. 收盤之前 Closing Call（market-desk）」（下方「規則摘要」已複製）
 
@@ -21,7 +21,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`money` L33、`prepareRankedRound` L34、`renderRankStatus` L42、`sendRankedRound` L46、`submitRankedRound` L67、`loadRankings` L76、`lifeAt` L112、`portraitPath` L115、`paintCharacter` L118、`playBell` L137、`signedPercent` L155、`paintChart` L158、`percent` L168、`local` L195、`params` L198、`render` L201、`renderFinale` L260、`start` L286、`choose` L308、`reveal` L319、`next` L343
+`money` L33、`prepareRankedRound` L34、`renderRankStatus` L43、`sendRankedRound` L47、`submitRankedRound` L68、`loadRankings` L77、`lifeAt` L113、`portraitPath` L116、`paintCharacter` L119、`playBell` L138、`signedPercent` L156、`paintChart` L159、`percent` L169、`local` L196、`params` L199、`render` L202、`renderFinale` L261、`start` L287、`choose` L317、`reveal` L328、`next` L352
 
 ## 錢包與結算接點
 
@@ -39,10 +39,10 @@
 
 ## 追蹤（GA4）
 
-- L304 `start`：`round = AN.start('market-desk', 0, params());`
-- L339 `reveal`：`AN.progress(round, params(), false);`
-- L353 `next`：`AN.end(round, 0, focus === 0 ? 'lose' : 'win', params());`
-- L382 `next`：`AN.end(round, 0, 'abandoned', params());`
+- L313 `start`：`round = AN.start('market-desk', 0, params());`
+- L348 `reveal`：`AN.progress(round, params(), false);`
+- L362 `next`：`AN.end(round, 0, focus === 0 ? 'lose' : 'win', params());`
+- L391 `next`：`AN.end(round, 0, 'abandoned', params());`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
