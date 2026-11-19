@@ -1,7 +1,7 @@
   /* ---------- Mines: classic puzzle ---------- */
   var N = 25;
   var M_PRESETS = {low:[5,3],medium:[8,10],high:[10,20]};
-  var M = { active: false, over: false, mines: 3, layout: [], open: [], flags: [], picks: 0, flagMode: false, ready: false, best: 0, level: 1, size: 5, checkpoint: false, bestLevel: 0 };
+  var M = { active: false, over: false, mines: 3, layout: [], open: [], flags: [], picks: 0, ready: false, best: 0, level: 1, size: 5, checkpoint: false, bestLevel: 0 };
   var elBoard = $('board'), elMGo = $('mines-go'), elMMsg = $('mines-msg'), tiles = [];
   function mSay(text, cls) { elMMsg.textContent = text; elMMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
   // Shared wallet refresh is also used by the other games.
@@ -14,7 +14,29 @@
     status.hidden = !text;
     $('mines-rank-retry').hidden = !retry;
   }
+  var cancelMinePress = function(){};
+  function bindMineTile(button, cell) {
+    var timer=null, pointer=null, x=0, y=0, blocked=false, touch=false;
+    function cancel(){if(timer!==null)clearTimeout(timer);timer=null;pointer=null;}
+    button.addEventListener('pointerdown',function(e){
+      cancelMinePress(); cancel(); blocked=false; touch=e.pointerType==='touch'||e.pointerType==='pen';
+      if(!touch||e.button!==0||e.isPrimary===false||!M.active||M.open[cell]||minePending)return;
+      pointer=e.pointerId;x=e.clientX;y=e.clientY;cancelMinePress=cancel;
+      timer=setTimeout(function(){timer=null;blocked=true;mineFlag(cell);},500);
+    });
+    button.addEventListener('pointermove',function(e){if(pointer===e.pointerId&&Math.hypot(e.clientX-x,e.clientY-y)>10){blocked=true;cancel();}});
+    button.addEventListener('pointerup',cancel);
+    button.addEventListener('pointerleave',function(){if(pointer!==null){blocked=true;cancel();}});
+    button.addEventListener('pointercancel',function(){blocked=true;cancel();});
+    button.addEventListener('lostpointercapture',cancel);
+    button.addEventListener('click',function(e){if(blocked){blocked=false;e.preventDefault();return;}pick(cell);});
+    button.addEventListener('contextmenu',function(e){e.preventDefault();if(!touch){cancel();mineFlag(cell);}});
+    button.addEventListener('keydown',function(e){if(e.key.toLowerCase()==='f'&&!e.repeat){e.preventDefault();mineFlag(cell);}});
+  }
+  window.addEventListener('blur',function(){cancelMinePress();});
+  document.addEventListener('visibilitychange',function(){if(document.hidden)cancelMinePress();});
   function buildBoard() {
+    cancelMinePress();
     try { var best = Number(localStorage.getItem('deep-sea-mines-best')); M.best = Number.isSafeInteger(best) && best >= 0 && best <= 22 ? best : 0; M.bestLevel = Number(localStorage.getItem('deep-sea-mines-level-best')) || 0; } catch (e) {}
     elBoard.innerHTML = ''; tiles = [];
     elBoard.style.gridTemplateColumns = 'repeat(' + M.size + ', minmax(44px, 1fr))';
@@ -22,8 +44,7 @@
     elBoard.setAttribute('aria-label', M.size + ' 乘 ' + M.size + ' 排雷棋盤');
     for (var i = 0; i < N; i++) {
       var b = document.createElement('button'); b.type = 'button'; b.className = 'tile';
-      b.addEventListener('click', pick.bind(null, i));
-      b.addEventListener('contextmenu', (function (n) { return function (e) { e.preventDefault(); mineFlag(n); }; })(i));
+      bindMineTile(b, i);
       elBoard.appendChild(b); tiles.push(b);
     }
   }
@@ -41,9 +62,6 @@
     $('mines-flags').textContent = M.flags.filter(Boolean).length + ' / ' + M.mines;
     $('mines-best').textContent = (N - M.mines) + ' 格';
     ['mines-difficulty','mines-size','mines-bombs'].forEach(function(id){$(id).disabled=M.active||mineStarting;});
-    $('mines-flag').disabled = !M.active || M.checkpoint || !!minePending;
-    $('mines-flag').setAttribute('aria-pressed', String(M.flagMode));
-    $('mines-flag').textContent = M.flagMode ? '⚑ 插旗模式（點此改翻格）' : '翻格模式（點此改插旗）';
     $('mines-level').textContent = M.size + '×' + M.size + ' · ' + M.mines + ' 雷';
     elMGo.disabled = M.active || mineStarting; elMGo.dataset.mode = M.active ? 'playing' : 'start';
     elMGo.innerHTML = M.active ? '找出全部安全格' : (M.over ? '再玩一局' : '開始踩地雷') + '<small>不限次數</small>';
@@ -53,7 +71,7 @@
     N = size * size;
     Object.assign(M, round ? {size:size,mines:bombs,layout:[],open:[],flags:[],picks:0,result:null}
       : minesRules.create(size,bombs));
-    M.active = true; M.over = false; M.level = 1; M.flagMode = false; M.checkpoint = false;
+    M.active = true; M.over = false; M.level = 1; M.checkpoint = false;
     M.analytics = AN.start('mines', 0);
     buildBoard(); renderMines();
     mSay('棋盤：' + M.size + '×' + M.size + '，' + M.mines + ' 顆雷，第一格也可能踩雷。');
@@ -147,18 +165,24 @@
   }
 
   function mineFlag(i) { mineMove('flag',i); }
-  function pick(i) { mineMove(M.flagMode&&!M.open[i]?'flag':'open',i); }
+  function pick(i) { mineMove('open',i); }
   $('mines-rank-retry').addEventListener('click',sendMineMove);
   elMGo.addEventListener('click', startMines);
-  $('mines-flag').addEventListener('click', function () { if (!M.active) return; M.flagMode = !M.flagMode; renderMines(); });
 
   function mineSettings(){
+    if(M.active||mineStarting)return;
     var mode=$('mines-difficulty').value,spec=M_PRESETS[mode];
     $('mines-custom').hidden=!!spec;
     if(spec){$('mines-size').value=spec[0];$('mines-bombs').value=spec[1];}
     var size=Number($('mines-size').value),max=Number.isInteger(size)&&size>=2&&size<=10?size*size-1:99;
     $('mines-bombs').max=max;$('mines-bomb-limit').textContent='地雷數：1～'+max+'（N×N−1）';
+    var bombs=Number($('mines-bombs').value);
+    if(Number.isInteger(size)&&size>=2&&size<=10&&Number.isInteger(bombs)&&bombs>=1&&bombs<size*size){
+      mineRound=null;N=size*size;Object.assign(M,{size:size,mines:bombs,layout:[],open:[],flags:[],picks:0,over:false,result:null});
+      buildBoard();renderMines();mSay('翻開全部 '+(N-bombs)+' 格安全區就過關。第一格也可能踩雷。');
+    }
   }
   $('mines-difficulty').addEventListener('change',function(){if(!M.active)mineSettings();});
   $('mines-size').addEventListener('input',function(){if(!M.active)mineSettings();});
+  $('mines-bombs').addEventListener('input',function(){if(!M.active)mineSettings();});
   mineSettings();
