@@ -42,8 +42,7 @@
       assert(true, 'Executable scripts parse as JavaScript and data scripts parse as JSON');
 
       const source = await fetch('games/ocean-link/board.js').then(response => response.text());
-      const engine = new Function('rows', 'cols', 'const stride = cols + 2;' + source +
-        'return {levels, deal, slide, reefBoard, findPair, linkPath};');
+      const engine = new Function(source + '\nreturn oceanLinkBoard;')();
       const small = engine(4, 4);
       const cell = (x, y) => y * 6 + x;
       const sample = Array(36).fill(0);

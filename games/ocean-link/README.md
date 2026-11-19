@@ -7,13 +7,13 @@
 - 網址：`#ocean-link`　分類：免費懷舊　狀態：顯示中
 - 大廳卡片：「把相同的圖案連起來，穿越礁石與移動棋盤。」｜不限次數 · 配對解謎
 - 追蹤名稱（GA4 `game_name`）：深海連連看，`game_id` 為 `ocean-link`
-- 檔案：`games/ocean-link/board.js`、`games/ocean-link/card.html`、`games/ocean-link/game.js`、`games/ocean-link/icon.svg`、`games/ocean-link/style.css`、`games/ocean-link/tiles.js`、`games/ocean-link/view.html`；`game.js` 共 407 行、15.8 KB
+- 檔案：`games/ocean-link/board.js`、`games/ocean-link/card.html`、`games/ocean-link/game.js`、`games/ocean-link/icon.svg`、`games/ocean-link/style.css`、`games/ocean-link/tiles.js`、`games/ocean-link/view.html`；`game.js` 共 472 行、18.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「40. 深海連連看 Ocean Link（ocean-link）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-ocean-link`、`ol-stage`、`ol-rule`、`ol-clock`、`ol-clock-label`、`ol-time`、`ol-toolbar-actions`、`ol-mode`、`ol-go`、`ol-hint`、`ol-count`、`ol-level`、`ol-left`、`ol-bonus`、`ol-record`、`ol-best`、`ol-msg`、`ol-game-area`、`ol-board-actions`、`ol-full`、`ol-playfield`、`ol-board`、`ol-trace`、`ol-result`、`ol-result-title`、`ol-result-level`、`ol-result-time`、`ol-result-reward`、`ol-result-actions`
+`view-ocean-link`、`ol-stage`、`ol-rule`、`ol-clock`、`ol-clock-label`、`ol-time`、`ol-toolbar-actions`、`ol-mode`、`ol-go`、`ol-hint`、`ol-count`、`ol-level`、`ol-left`、`ol-bonus`、`ol-record`、`ol-best`、`ol-msg`、`ol-rank-status`、`ol-rank-retry`、`ol-game-area`、`ol-board-actions`、`ol-full`、`ol-playfield`、`ol-board`、`ol-trace`、`ol-result`、`ol-result-title`、`ol-result-level`、`ol-result-time`、`ol-result-reward`、`ol-result-actions`
 
 ## 狀態與常數
 
@@ -21,7 +21,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`updateClock` L23、`twoDigits` L28、`resumeClock` L33、`pauseClock` L39、`hideResult` L47、`showResult` L54、`say` L69、`sizeBoard` L71、`paint` L98、`bestStages` L121、`showRecord` L126、`updateButtons` L130、`drawTrace` L141、`center` L143、`clearTrace` L151、`stageRule` L158、`dealLevel` L162、`params` L186、`start` L191、`end` L213、`completeLevel` L231、`recover` L259、`pick` L269、`matchTiles` L293、`clearHint` L313、`showHint` L317、`setExpanded` L328、`syncFull` L334、`toggleFull` L352、`routeOceanLink` L398
+`updateClock` L27、`twoDigits` L32、`resumeClock` L37、`pauseClock` L43、`hideResult` L51、`showResult` L58、`say` L73、`sizeBoard` L75、`paint` L102、`bestStages` L125、`showRecord` L130、`updateButtons` L134、`drawTrace` L146、`center` L148、`clearTrace` L156、`stageRule` L163、`dealLevel` L167、`params` L193、`rankStatus` L198、`submitLevel` L205、`start` L233、`end` L275、`completeLevel` L293、`recover` L328、`pick` L332、`matchTiles` L356、`clearHint` L377、`showHint` L381、`setExpanded` L392、`syncFull` L398、`toggleFull` L416、`routeOceanLink` L463
 
 ## 錢包與結算接點
 
@@ -29,7 +29,7 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L243 `completeLevel`：`S.balance += reward;`
+- L312 `completeLevel`：`S.balance += reward;`
 
 **餘額檢查**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
@@ -39,10 +39,10 @@
 
 ## 追蹤（GA4）
 
-- L198 `start`：`AN.resume(round, params());`
-- L210 `start`：`round = AN.start('ocean-link', 0, params());`
-- L218 `end`：`AN.end(round, paid, result, params());`
-- L247 `completeLevel`：`AN.progress(round, params({bonus_points: reward}), level < levels.length);`
+- L240 `start`：`AN.resume(round, params());`
+- L272 `start`：`round = AN.start('ocean-link', 0, params());`
+- L280 `end`：`AN.end(round, paid, result, params());`
+- L316 `completeLevel`：`AN.progress(round, params({bonus_points: reward}), level < levels.length);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -71,6 +71,8 @@
 | 31–40 | 混合區，組合方向、礁石與高密度配對 |
 
 遠征計時從開局開始，切換全螢幕及關卡進行中的背景停留會持續累計。每關完成時停表，顯示恭喜畫面及累計用時，按下一關才恢復累計；遠征結束後保留完成時間，下一次開始時歸零。計時沒有倒數或逾時判定。放大模式優先使用可用空間顯示棋盤，手機直式將短邊排在水平方向，放大每塊圖案，並把計時與操作放在棋盤上方。橫式將計時與操作放在旁邊。旋轉只調整顯示方向，保留當前棋局與計時。點擊遊戲區任一位置可進入全螢幕，離開全螢幕的按鈕位於上方控制列。
+
+訪客榜使用簡單 6×8 棋盤，以已驗證通關數排行。Worker 每關重播 24 次配對，驗證成功後才更新 D1 的個人最佳及公開榜。標準與挑戰模式維持現有本機紀錄。
 
 ## 修改檢查清單
 

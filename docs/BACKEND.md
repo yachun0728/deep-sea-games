@@ -48,8 +48,8 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 | --- | --- | --- |
 | 已正式發布 | frog | Worker 重播 |
 | 已正式發布 | mines | Worker 管理棋盤 |
-| 已接入養珠，待發布 | merge | Worker 管理棋盤 |
-| 回合制與解謎，待串接 | ocean-link、mermaid、banquet、frontier | 依各款動作與關卡狀態定義伺服器驗證 |
+| 已接入，待整批發布 | merge、ocean-link | 養珠由 Worker 管理棋盤；深海連連看由 Worker 驗證每關配對 |
+| 回合制與解謎，待串接 | mermaid、banquet、frontier | 依各款動作與關卡狀態定義伺服器驗證 |
 | 即時操作與反應，待串接 | dream、runner、elevator、sneak、fishing、campaign、cat、bird、nap、reaper、blaster、skybuilder、carp、rider、boss、thief、baby、pudding、clock-out、peek、mosquito、last-hair、breakout、pet-walk、office-shoot | 逐款核對時鐘、輸入及隨機性再重播 |
 | 同來源 iframe，待串接 | boba、dive、mrt、pancake、rocket-chair、eat-smaller、mirror-twins、shadow-relay、one-line-defense | 保留父子頁生命週期，增設必要橋接與 Worker 驗證 |
 | 每日免費補給 | keno | 隨機補給與配額，不列競賽榜 |
@@ -69,3 +69,9 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 `player_best_scores` 保存每位玩家在各遊戲的個人最佳。公開 API 讀取 `game_leaderboard`，每款最多 50 筆。刷新的個人最佳與公開榜同步更新；掉出前 50 名仍保留個人紀錄。對局本身仍由各遊戲資料表保存，供驗證重送。
 
 `0006` 將既有 `best_scores` 改名為 `player_best_scores`，保留所有個人紀錄，再以每款前 50 筆初始化公開榜。原名稱暫時以唯讀 view 保留，既有 Worker 可在切換期間繼續查榜。先套用 D1 migration，再部署新版 Worker 與前端。
+
+## 深海連連看訪客成績
+
+簡單模式的 6×8 棋盤使用排行榜。Worker 為每關發出亂數種子，依 24 組配對重播路徑、消除與洗牌。每次驗證成功才發下一關種子並以通關數更新個人最佳及公開榜。同分依達成時間排序。標準和挑戰模式仍保存各自的本機紀錄，既有提示、獎勵與 GA4 流程不變。
+
+沿用棋盤對局 API。開局的 `gameId` 為 `ocean-link`，動作為依序編碼的 24 組配對，`a * 80 + b` 表示一組。套用 `0007_ranked_board_checkpoints.sql` 後，回合可在終局前更新已驗證的關卡紀錄，與個人最佳及公開榜同次入帳。回退時先回退前端與 Worker，保留資料表欄位及既有紀錄。

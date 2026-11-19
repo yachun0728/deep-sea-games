@@ -61,6 +61,28 @@ class LeaderboardRetentionTests(unittest.TestCase):
             "SELECT score FROM best_scores WHERE game_id = 'frog' AND player_id = 'p05'"
         ).fetchone(), (5,))
 
+    def test_ranked_checkpoints_update_both_tables_before_the_round_ends(self):
+        self.migrate()
+        self.db.executescript((MIGRATIONS / '0007_ranked_board_checkpoints.sql').read_text())
+        self.db.execute(
+            "INSERT INTO ranked_boards (id, player_id, game_id, started_at, state)"
+            " VALUES ('o','p00','ocean-link',1,'{}')"
+        )
+        self.db.execute("UPDATE ranked_boards SET checkpoint_score = 1 WHERE id = 'o'")
+        rank = self.scores('ocean-link')[0]
+        self.assertEqual(rank[:2], ('p00', 1))
+        self.assertIsNotNone(rank[2])
+        self.assertEqual(self.db.execute(
+            "SELECT score FROM ranked_boards WHERE id = 'o'"
+        ).fetchone(), (None,))
+        self.db.execute("UPDATE ranked_boards SET checkpoint_score = 1 WHERE id = 'o'")
+        self.assertEqual(self.scores('ocean-link'), [rank])
+        self.db.execute("UPDATE ranked_boards SET checkpoint_score = NULL, score = 10 WHERE id = 'o'")
+        self.assertEqual(self.scores('ocean-link')[0][:2], ('p00', 10))
+        self.assertEqual(self.db.execute(
+            "SELECT score FROM player_best_scores WHERE game_id = 'ocean-link' AND player_id = 'p00'"
+        ).fetchone(), (10,))
+
     def test_existing_round_triggers_timestamp_and_only_improvements_refresh(self):
         self.migrate()
         self.db.execute("INSERT INTO frog_rounds (id, player_id, seed, started_at) VALUES ('f','p00',1,1)")

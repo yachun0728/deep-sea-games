@@ -1,15 +1,34 @@
+import oceanLink from '../../../games/ocean-link/board.js';
 import mergeRules from '../../../shared/merge-rules.cjs';
 
 const LIFETIME_MS = 2 * 60 * 60 * 1000;
 const MAX_REVISIONS = 16384;
 const ID = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
 const random = () => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
+const newSeed = () => crypto.getRandomValues(new Uint32Array(1))[0];
 const boards = new Map([
   ['merge', {
     create: () => mergeRules.create(random),
     accepts: action => mergeRules.directions.includes(action),
     apply: (state, action) => mergeRules.move(state, action, random),
     score: state => state.over ? state.score : null,
+    visible: state => state,
+  }],
+  ['ocean-link', {
+    create: () => ({level: 1, completed: 0, seed: newSeed()}),
+    accepts: action => Array.isArray(action) && action.length === 24 &&
+      action.every(pair => Number.isInteger(pair) && pair >= 0 && pair < 6400),
+    apply: (state, action) => {
+      if (!oceanLink.verifyOceanLinkLevel(state.level, state.seed, action)) return false;
+      state.completed = state.level;
+      if (state.level < 10) {
+        state.level++;
+        state.seed = newSeed();
+      }
+      return true;
+    },
+    score: state => state.completed === 10 ? state.completed : null,
+    checkpoint: state => state.completed < 10 ? state.completed : null,
     visible: state => state,
   }],
 ]);
@@ -60,7 +79,8 @@ export async function moveRankedBoard(db, playerId, { gameId, id, revision, acti
   const prior = await select.first();
   if (!prior) return { error: 'round_not_found', status: 404 };
 
-  const isRetry = row => row?.revision === revision + 1 && row.last_action === action;
+  const actionKey = typeof action === 'string' ? action : JSON.stringify(action);
+  const isRetry = row => row?.revision === revision + 1 && row.last_action === actionKey;
   const response = row => ({ id, revision: row.revision, state: game.visible(JSON.parse(row.state)) });
   if (isRetry(prior)) return response(prior);
   if (prior.revision !== revision || prior.score !== null) return { error: 'stale_move', status: 409 };
@@ -72,8 +92,8 @@ export async function moveRankedBoard(db, playerId, { gameId, id, revision, acti
   if (!game.apply(state, action)) return response(prior);
 
   const saved = await db.prepare(
-    'UPDATE ranked_boards SET state = ?, revision = revision + 1, last_action = ?, score = ? WHERE id = ? AND player_id = ? AND game_id = ? AND revision = ? AND score IS NULL RETURNING revision, state',
-  ).bind(JSON.stringify(state), action, game.score(state), id, playerId, gameId, revision).first();
+    'UPDATE ranked_boards SET state = ?, revision = revision + 1, last_action = ?, score = ?, checkpoint_score = ? WHERE id = ? AND player_id = ? AND game_id = ? AND revision = ? AND score IS NULL RETURNING revision, state',
+  ).bind(JSON.stringify(state), actionKey, game.score(state), game.checkpoint?.(state) ?? null, id, playerId, gameId, revision).first();
   if (saved) return response(saved);
   const current = await select.first();
   return isRetry(current) ? response(current) : { error: 'stale_move', status: 409 };
