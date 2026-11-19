@@ -12,4 +12,4 @@ export const API = Object.freeze({
 });
 
 export const GAME_ID = /^[a-z][a-z0-9-]{0,63}$/;
-export const LEADERBOARD_LIMIT = 20;
+export const LEADERBOARD_LIMIT = 50;

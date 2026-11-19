@@ -23,6 +23,11 @@
   var boardGame = $('board-game');
   var boardRetry = $('board-retry');
 
+  var boardTime = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+  });
+
   function boardRow(gameId, entry) {
     var row = document.createElement('tr');
     var player = row.insertCell(), game = row.insertCell(), best = row.insertCell();
@@ -41,6 +46,15 @@
     game.appendChild(link);
     best.className = 'board-best';
     best.textContent = entry.score.toLocaleString('zh-TW');
+    if (entry.recordedAt) {
+      var recordedAt = new Date(entry.recordedAt);
+      if (Number.isFinite(recordedAt.getTime())) {
+        var time = document.createElement('time');
+        time.dateTime = entry.recordedAt;
+        time.textContent = boardTime.format(recordedAt);
+        best.appendChild(time);
+      }
+    }
     return row;
   }
 

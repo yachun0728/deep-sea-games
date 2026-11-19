@@ -14,7 +14,7 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 | `GET /api/v1/health` | 確認 Worker 可查詢已套用 migration 的 D1 |
 | `POST /api/v1/players` | 建立訪客，回傳 `id` 與一次性顯示的 bearer token |
 | `GET /api/v1/me` | 使用 bearer token 查詢玩家 ID 與帳本餘額，初始為 0 |
-| `GET /api/v1/leaderboard?gameId=mines` | 查詢指定遊戲至多 20 筆最佳紀錄，依分數降序，同分依玩家 ID 排序；回傳 `playerId`、`displayName` 與 `score` |
+| `GET /api/v1/leaderboard?gameId=mines` | 查詢指定遊戲至多 50 筆最佳紀錄，依分數降序、上榜時間升序、玩家 ID 排序；回傳 `playerId`、`displayName`、`score` 與 `recordedAt`（UTC ISO 8601，舊紀錄可為 null） |
 
 `frontend/services/api.mjs` 提供上述 API 的前端呼叫介面。資料庫保存 token 的雜湊。點數帳本以玩家 ID 和事件 ID 作為唯一鍵，排行榜保存每位玩家在各遊戲的最佳紀錄。點數錢包仍使用既有 localStorage。青蛙吃蟲使用單獨的瀏覽器 Key 保存訪客憑證。清除網站資料或更換瀏覽器會建立新的訪客身分。
 
@@ -37,7 +37,7 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 
 - `POST /api/v1/mines/rounds` 用既有訪客 bearer token 開立標準 5×5／3 雷棋盤。
 - `POST /api/v1/mines/rounds/move` 接收 `{id,revision,action,cell}`。`action` 為 `open` 或 `flag`，`cell` 為 0～24。Worker 回傳遮蔽後的棋盤、已翻安全格與結果，未翻的地雷保留在伺服器。相同版本與動作重送時回傳已套用的棋盤，其他過期版本拒絕。
-- `0004_mines_ranked_rounds.sql` 在同次寫入結算及更新 `best_scores`，以已翻安全格數降序，同分依玩家 ID。回合限 30 分鐘、500 次有效操作。其他棋盤維持本機玩法。
+- `0004_mines_ranked_rounds.sql` 在同次寫入結算及更新 `best_scores`，以已翻安全格數降序，同分先達成者優先。回合限 30 分鐘、500 次有效操作。其他棋盤維持本機玩法。
 - 部署順序為 `0004`、Worker、前端。回退前端再回退 Worker，可保留 `mines_rounds` 與榜單資料。
 
 ## 既有遊戲的串接分組
@@ -61,3 +61,11 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 - `POST /api/v1/boards/rounds` 接收 `{gameId:"merge"}`，以訪客 bearer token 取得新棋盤。
 - `POST /api/v1/boards/rounds/move` 接收 `{gameId,id,revision,action}`。養珠的 `action` 為 `left`、`right`、`up` 或 `down`。Worker 套用移動及生成新珍珠；沒有合法移動才結算。
 - `0005_ranked_boards.sql` 在同次寫入更新回合與較高的個人最佳分數。回合限兩小時、16,384 次有效操作；同版本與動作可重送。其他遊戲使用這個 API 前須各自註冊及驗證規則。上線先套用 `0005`，再部署 Worker、最後發布前端。
+
+## 榜單時間與每款前 50 筆
+
+`0006_leaderboard_top_50.sql` 在 D1 接受新上榜紀錄或個人進步時，以 UTC 記錄時間。大廳顯示台北時間；相同分數先達成者優先，同毫秒再依玩家 ID。舊資料缺少時間時維持空值，同分排在已記時紀錄之前，避免假造時間或將舊成績移到同分隊尾。
+
+每個遊戲的 `best_scores` 最多 50 筆，每位玩家同一款最多一筆。未達門檻的成績不佔榜單空間。回合本身仍由各遊戲資料表保存，供驗證重送；榜單上限獨立於回合保存期限。
+
+套用 `0006` 後會移除既有榜單中每款第 51 名以後的資料。有歷史資料的環境可先匯出 `best_scores`，以供需要還原時使用。先套用 D1 migration，再部署使用 `recordedAt` 的 Worker 與前端。
