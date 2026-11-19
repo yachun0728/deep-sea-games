@@ -4,6 +4,8 @@ export const API = Object.freeze({
   me: '/api/v1/me',
   frogStart: '/api/v1/frog/rounds',
   frogFinish: '/api/v1/frog/rounds/finish',
+  minesStart: '/api/v1/mines/rounds',
+  minesMove: '/api/v1/mines/rounds/move',
   leaderboard: '/api/v1/leaderboard',
 });
 
