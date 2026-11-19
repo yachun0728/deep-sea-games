@@ -1073,6 +1073,16 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 .account-goal{margin:0 0 4px;color:#fff;font-size:13px}
 .account-points .regen-hint{color:var(--tc-muted)}
 @media(prefers-reduced-motion:reduce){.account-bar span{transition:none}}
+/* mobile header: language switch is back (compact), wallet stays in the account menu */
+@media(max-width:1020px){
+  .top .language-switch{display:inline-flex!important;flex:none}
+  .top .language-switch button{min-height:28px;padding:4px 8px;font-size:12px}
+}
+@media(max-width:420px){
+  .top .brand-word img{height:24px}
+  .top .header-tools{gap:6px}
+  .top .language-switch button{padding:4px 7px;font-size:11px}
+}
 
 #view-blaster .bl-stage{display:grid;place-items:center;min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#061c2c}
 #bl-canvas{display:block;width:min(100%,400px);height:auto;touch-action:none;user-select:none;-webkit-user-select:none}
