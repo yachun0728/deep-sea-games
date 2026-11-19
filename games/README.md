@@ -54,3 +54,4 @@
 | [影子接力 Shadow Relay](shadow-relay/README.md) | `#shadow-relay` | 益智策略 | 顯示 | 62 行 | 影子會照你的路線重走，讓它點亮燈籠，別被它追上。 |
 | [一筆畫守城 One-Line Defense](one-line-defense/README.md) | `#one-line-defense` | 時機操作 | 顯示 | 59 行 | 只能畫一條線擋住湧向核心的敵人，線越長消失越快。 |
 | [荒島遠征 Frontier Islands](frontier/README.md) | `#frontier` | 益智策略 | 顯示 | 152 行 | 砍出道路，建立據點，挑戰五大區域與五十關考驗。 |
+| [俄羅斯方塊 Tetris](tetris/README.md) | `#tetris` | 免費懷舊 | 顯示 | 50 行 | 經典落塊消行，旋轉、牆踢與暫存都有。 |

@@ -85,6 +85,7 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 | mirror-twins / 鏡像雙子 Mirror Twins | 固定10 | 10 關；同數字吞噬：本局每關第一次通過 +2 點（最多 10 點）；星等與步數不給點 |
 | shadow-relay / 影子接力 Shadow Relay | 固定10 | 8 關；同數字吞噬：本局每關第一次通過 +2 點（最多 10 點）；時間與失敗次數不給點 |
 | one-line-defense / 一筆畫守城 One-Line Defense | 固定10 | 無盡；教學後每撐過 30 秒 +2 點當場入帳（30～150 秒各一次，最多 10 點，剛好回本）；核心被攻破結束不扣回，分數與連擊不給點 |
+| tetris / 俄羅斯方塊 Tetris | 免費 | 無盡；沒有 BONUS，分數、行數與等級不給點；平台固定完成獎勵依全站規則 |
 | nap / 偷睡大師 Nap Master | 固定10 | 共10關；每過1關 +1 點當場入帳，10關全過共10點，被炒魷魚不另結算，分數不給點 |
 | carp / 鯉魚躍龍門 Carp Leap | 固定10 | 無盡；10／20／35 道各立即入帳 BONUS 5 點，每個里程碑當局一次，失敗不另結算 |
 | rider / 外送員大戰惡犬 Rider vs Dogs | 固定10 | 無盡；300／700／1,300 分各立即入帳 BONUS 5 點，每個里程碑當局一次，失敗不另結算 |
@@ -658,6 +659,20 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 - 語言：子頁字串寫成「中文|English」單一字面量，`Lx()` 依父頁 `window.deepSeaI18n` 的目前語言輸出並在 `arcade-languagechange` 時重繪（粗體以 `**` 標記，避免翻譯測試把句子拆成短 key）；`locales/en.json` 以完整字串當 key。父頁訊息 `*-msg` 與數值欄位標記 `data-i18n-ignore` 由遊戲自行輸出，按鈕、規則與卡片沿用顯示層翻譯。單獨開啟子頁時維持中文。
 - 重設 500 點：本局進行中會被擋下並顯示提示；重設不算 BONUS。
 - 平衡：沿用原版數值；能否穩定撐過 30～150 秒（影響 BONUS 期望值）待真人測試。
+
+## 47. 俄羅斯方塊 Tetris（tetris）
+
+定位：父頁 `games/tetris/game.js`（`TET`、`window.deepSeaTetris`），子頁 `games/tetris/original.html` 以 srcdoc 載入。2026-11-19 由使用者提供的單檔 HTML 接入平台，保留原玩法：10×20 棋盤、7-bag 隨機、SRS 旋轉與牆踢、暫存（每塊一次）、幽靈方塊、鎖定延遲 500 ms（最多重置 15 次）、DAS／ARR 連按。計分：消 1／2／3／4 行得 100／300／500／800 × 等級，軟降每格 +1、硬降每格 +2；每消 10 行升一級。分數、行數與等級只是成績。
+
+- 入場：免費（全站 `ENTRY_FEE=0`）。右側「開始遊戲」、子頁「開始遊戲」「再來一局」與 Enter 都走子頁 `start` → `deepSeaTetris.start(window)`；回傳 0 不開局。進行中右側按鈕停用，重複點擊不會再開一局。
+- BONUS：沒有。不換點數，沒有下注或倍率返還。每款遊戲每天第一次完整玩過一局（至少 10 秒有效時間）的平台完成獎勵由 `AN.end` 的 `complete` 觸發，與成績無關。
+- 結算：頂端放不下時子頁 `endGame` 呼叫一次 `finish({score,lines,level})`，父頁送一次 `AN.end`（payout 0、result `complete`，附 `score`、`step`＝行數、`level`）。正常離頁由 capture 階段 `pagehide` 先送 `abandoned`；BFCache persisted 不結束。
+- 暫停：按 P／Esc、視窗失焦、分頁隱藏或切到別的遊戲畫面都會暫停並顯示「繼續」，送 `AN.progress`（`phase:pause`）與 `AN.resume`。
+- 子頁單獨開啟（無父頁）時是一般的俄羅斯方塊示範。
+- 儲存：沿用原版 Key `tetris-best`（最高分，整數字串）；新增於 2026-11-19。
+- 語言：子頁以 `data-i` 屬性＋`L` 字典與 `T(中文, English)` 依父頁 `deepSeaI18n` 目前語言輸出，並在 `arcade-languagechange` 時重繪；父頁訊息 `tt-msg` 與數值欄位標記 `data-i18n-ignore`；`locales/en.json` 補齊卡片、規則與子頁字串。
+- 排行榜：尚未串接。指標預定為分數（高者優先），上線前需接訪客身分與 Worker 驗證，見 RELEASE_CHECKLIST.md 的訪客排行榜；在此之前不顯示榜單。
+- 測試：`node tools/test_tetris.mjs`（父頁橋接與子頁流程）與 `node tools/test_freeplay_bridges.mjs`。
 
 ## 文件維護與驗證界線
 
