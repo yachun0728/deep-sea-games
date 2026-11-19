@@ -147,6 +147,10 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 免費、沒有 BONUS。每次開始一個關卡就一次start（entry_points=0，stage＝世界 1～5）；暫停（按 ❚❚、Esc、切走分頁或離開本頁）送progress（phase=pause、checkpoint=1）並停止有效時間，點畫面繼續送resume。過關或三顆愛心用完送一次end：result為complete、payout_points=0，附score、step（通過的牆數）、level（1～20，無盡為 0）、cleared（1／0）、stars；從暫停回選單或正常離頁送abandoned。因為遊戲只用聲音操作，每次通過／失誤與每秒偵測到聲音時會呼叫 `AN.interact()`，避免 60 秒沒有點擊被當成閒置。
 
+## 呱呱池塘（quack-pond）
+
+免費邏輯謎題、無 BONUS。每關一次 start（entry_points=0）；正確放置一隻鴨子送一次 progress（step=已放鴨數）。關卡完成送 end：win→result=complete、loss→result=loss、離開→result=abandoned；附 level（1–200）與 stars（0–3，hearts 剩餘數）、payout_points=0。pagehide 由共用層送 abandoned；BFCache persisted 不結束。未驗證 GA4 後台收件。
+
 ## 時序修復（dream）
 
 無限關卡、固定入場10點，沒有點數獎勵。每局一次start；過關progress帶stage、score（完成關數）、reversals（本關已反轉次數）並暫停有效時間，下一關resume。失敗end為loss、payout_points=0，不送multiplier或cashout；正常離頁由共用層送abandoned，BFCache沿用暫停／恢復。未驗證GA4後台收件。
