@@ -55,5 +55,6 @@
 | [一筆畫守城 One-Line Defense](one-line-defense/README.md) | `#one-line-defense` | 時機操作 | 顯示 | 59 行 | 只能畫一條線擋住湧向核心的敵人，線越長消失越快。 |
 | [荒島遠征 Frontier Islands](frontier/README.md) | `#frontier` | 益智策略 | 顯示 | 209 行 | 砍出道路，建立據點，挑戰五大區域與五十關考驗。 |
 | [俄羅斯方塊 Block Drop](tetris/README.md) | `#tetris` | 免費懷舊 | 顯示 | 63 行 | 經典落塊消行，旋轉、牆踢與暫存都有。 |
+| [呱呱池塘 Quack Pond](quack-pond/README.md) | `#quack-pond` | 益智策略 | 顯示 | 61 行 | 每行、每列、每個顏色區域各放一隻鴨子，而且不能相鄰。 |
 | [收盤之前 Closing Call](market-desk/README.md) | `#market-desk` | 益智策略 | 顯示 | 428 行 | 20 個交易日，從台股怪新聞裡挖出可信的消息。 |
 | [不准跑調 Stay On Pitch](on-pitch/README.md) | `#on-pitch` | 時機操作 | 顯示 | 883 行 | 對著麥克風唱出缺口的音，音準對了才能穿牆。 |

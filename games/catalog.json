@@ -368,6 +368,14 @@
     "style": "games/tetris/style.css"
   },
   {
+    "id": "quack-pond",
+    "logic": "games/quack-pond/game.js",
+    "view": "games/quack-pond/view.html",
+    "card": "games/quack-pond/card.html",
+    "icon": "games/quack-pond/icon.svg",
+    "style": "games/quack-pond/style.css"
+  },
+  {
     "id": "market-desk",
     "logic": "games/market-desk/game.js",
     "view": "games/market-desk/view.html",

@@ -95,7 +95,7 @@ try {
     assert(button.closest('.side')&&i.sourceText(button)===sourceLabel,'Live Stop action returns to its original panel after the label fixture');
   }
  }
- for(var game of [{id:'dive',frame:'dv-frame',button:'dv-go'},{id:'mrt',frame:'mr-frame',button:'mr-go'},{id:'pancake',frame:'pancake-frame',button:'btn-touch'},{id:'eat-smaller',frame:'es-frame',button:'es-go'},{id:'mirror-twins',frame:'mt-frame',button:'mt-go'},{id:'shadow-relay',frame:'sr-frame',button:'sr-go'},{id:'one-line-defense',frame:'od-frame',button:'od-go'},{id:'tetris',frame:'tt-frame',button:'tt-go'}]){
+ for(var game of [{id:'dive',frame:'dv-frame',button:'dv-go'},{id:'mrt',frame:'mr-frame',button:'mr-go'},{id:'pancake',frame:'pancake-frame',button:'btn-touch'},{id:'eat-smaller',frame:'es-frame',button:'es-go'},{id:'mirror-twins',frame:'mt-frame',button:'mt-go'},{id:'shadow-relay',frame:'sr-frame',button:'sr-go'},{id:'one-line-defense',frame:'od-frame',button:'od-go'},{id:'tetris',frame:'tt-frame',button:'tt-go'},{id:'quack-pond',frame:'qp-frame',button:'qp-go'}]){
    location.hash=game.id;await wait(250);
    var frame=document.getElementById(game.frame),doc=frame.contentDocument;
    assert(doc&&doc.body,game.id+': same-origin iframe loads');
