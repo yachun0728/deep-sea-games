@@ -7,27 +7,23 @@
 - 網址：`#book-sort`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「把書依顏色疊進紙箱，集滿 5 本同色自動封箱。」｜免費遊玩 · 分類整理
 - 追蹤名稱（GA4 `game_name`）：貓咪疊書舖，`game_id` 為 `book-sort`
-- 檔案：`games/book-sort/card.html`、`games/book-sort/game.js`、`games/book-sort/icon.svg`、`games/book-sort/style.css`、`games/book-sort/view.html`；`game.js` 共 247 行、16.8 KB
+- 檔案：`games/book-sort/card.html`、`games/book-sort/game.js`、`games/book-sort/icon.svg`、`games/book-sort/ranking.js`、`games/book-sort/style.css`、`games/book-sort/view.html`；`game.js` 共 236 行、14.4 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「50. 貓咪疊書舖 Cat Book Stack（book-sort）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-book-sort`、`bs-stage`、`bs-tip`、`bs-boxes`、`bs-modal`、`bs-modal-title`、`bs-modal-quote`、`bs-final-moves`、`bs-final-rating`、`bs-next`、`bs-level-text`、`bs-moves`、`bs-best`、`bs-level`、`bs-undo`、`bs-hint`、`bs-restart`、`bs-add`、`bs-random`、`bs-sound`、`bs-msg`
+`view-book-sort`、`bs-stage`、`bs-title`、`bs-level-text`、`bs-moves`、`bs-menu`、`bs-level`、`bs-campaign-options`、`bs-best`、`bs-restart`、`bs-add`、`bs-random`、`bs-sound`、`bs-ranking`、`bs-rank-status`、`bs-rank-retry`、`bs-rank-board-status`、`bs-rank-list`、`bs-tip`、`bs-boxes`、`bs-undo`、`bs-hint`、`bs-modal`、`bs-modal-title`、`bs-modal-quote`、`bs-final-moves`、`bs-final-rating`、`bs-next`
 
 ## 狀態與常數
 
 - 狀態物件／進行中旗標：（game.js 內沒有偵測到；可能定義在共用檔，見 ARCHITECTURE.md）
-- L3 常數：`CAP`、`BEST_KEY`、`GAME_ID`
-- L4 常數：`BOOKS`
-- L13 常數：`COLORS`
-- L14 常數：`CATS`
-- L15 常數：`QUOTES`
-- L16 常數：`LEVELS`
+- L3 常數：`BEST_KEY`、`GAME_ID`
+- L5 常數：`QUOTES`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`isFull` L23、`topCount` L24、`canMove` L25、`moveCountOf` L29、`applyMove` L30、`solved` L33、`legalMoves` L34、`keyOf` L50、`solve` L51、`dfs` L53、`scramble` L63、`randomLevel` L72、`rate` L79、`g` L82、`I` L83、`T` L84、`saveStore` L89、`say` L101、`paintSay` L102、`bestFor` L103、`trackEnd` L104、`load` L108、`ui` L117、`describe` L124、`render` L129、`shake` L158、`sparkles` L159、`click` L165、`doMove` L178、`win` L204、`findHint` L215
+`g` L7、`I` L8、`T` L9、`readScores` L14、`highestUnlocked` L21、`saveBest` L28、`say` L47、`paintSay` L48、`bestFor` L49、`trackEnd` L50、`updateLevelPicker` L54、`load` L63、`ui` L79、`describe` L86、`render` L91、`shake` L125、`sparkles` L126、`click` L132、`doMove` L145、`win` L172、`findHint` L186、`closeMenu` L214
 
 ## 錢包與結算接點
 
@@ -45,9 +41,9 @@
 
 ## 追蹤（GA4）
 
-- L106 `trackEnd`：`AN.end(round,0,result,{step:moves,stage:level})}catch(_){}`
-- L194 `doMove`：`round=AN.start(GAME_ID,0,{stage:level})}catch(_){round=null}}`
-- L201 `doMove`：`AN.progress(round,{stage:level,step:moves})}catch(_){}}`
+- L52 `trackEnd`：`AN.end(round,0,result,{step:moves,stage:level})}catch(_){}`
+- L162 `doMove`：`round=AN.start(GAME_ID,0,{stage:level})}catch(_){round=null}}`
+- L169 `doMove`：`AN.progress(round,{stage:level,step:moves})}catch(_){}}`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -66,10 +62,9 @@
 定位：`games/book-sort/game.js`（純 DOM，無畫布，IIFE 內自成一體）。2026-11-19 由使用者提供單檔 HTML 小遊戲後整理上架，分類為益智策略。完全免費：不扣入場費、沒有點數獎勵，不讀寫 `S.balance`、`save()`、`renderAll()`，也不需要 `hot.snapshot` 或重設防護；沒有任何下注、倍率或領回。
 
 - 規則：每箱最多 5 本，點一個箱子拿起頂部連續同色書，再點另一個箱子；目標必須是空箱，或頂部同色且有空位，一次最多搬滿目標空位（超出的留在原箱）。集滿 5 本同色自動封箱（封箱狀態由「滿 5 本且同色」推導，不另存），封箱後不可再動。所有非空箱都封箱即過關。
-- 關卡：5 個固定關卡（3／4／5／6／8 色，各有 2 個空箱）＋隨機關卡。隨機關卡以合法逆向打亂產生，並用深度優先解題器（`solve`，節點上限 30000）檢查有解、且開場沒有已封箱的箱子，失敗最多重試 40 次，仍失敗則退回固定關卡。每關一次臨時紙箱，撤銷與提示不限次數；撤銷會一併還原臨時紙箱。
-- 提示：以解題器回傳目前盤面的第一步；解不出來時退回貪心評分。
-- 評級：步數 ≤ 色數×3＋4 為三星，≤ ×3＋12 為二星，其餘一星；僅顯示用。
-- 儲存：`deep-sea-book-sort-best`（JSON：固定關卡編號 → 最少步數；隨機關卡不記錄）。新增於 2026-11-19。
+- 關卡：前 5 關維持固定盤面，第 6、11、21 關起分別有 9、10、11 色，第 36 關起只有 1 個起始空箱。後續關卡以編號作種子產生可解盤面，維持最高難度。另有 6 色隨機挑戰。每局可加一次臨時紙箱，撤銷可還原，提示不限次數。
+- 評級與紀錄：固定關和隨機挑戰維持原評級。進階關以生成時找到的解法步數為三星門檻。沿用 `deep-sea-book-sort-best` 保存編號關卡的最少步數，從最高已通關編號推算下一關。
+- 訪客排行榜：透過新版 SDK 開立綁定關卡的訪客回合，Worker 重播未撤銷的合法搬書與臨時箱操作。以最高通關編號排名，同分依既有伺服器順序。隨機挑戰不入榜，離線保留本機紀錄。
 - 追蹤：`AN.start('book-sort', 0, {stage})` 在每個關卡嘗試的第一步才送出；過關送 `complete`，重新開始、切換關卡、離開本款頁面送 `abandoned`，各只送一次；每步送一次 `AN.progress`。入帳與扣點皆為 0。
 - 英文：全部介面字串都有 `locales/en.json` 條目；動態字串以 `{0}` 樣板經 `deepSeaI18n.text` 組合，並在 `arcade-languagechange` 事件時重新繪製；`names` 加入 `Cat Book Stack`。書脊符號為每色獨立圖示，色盲可辨識。
 - 測試：`node tools/test_book_sort.mjs`（預設關卡每色 5 本且有解、搬運規則、隨機關卡有解、原始碼不碰錢包）。DOM、動畫與多語系需在瀏覽器實測。

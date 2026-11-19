@@ -1,4 +1,13 @@
 {
+  "語言": "Language",
+  "繁體中文": "Traditional Chinese",
+  "繁中": "ZH",
+  "進階關卡": "Advanced stages",
+  "先玩 5 個固定關卡，之後可以一直挑戰新的編號關卡。第 6、11、21 關增加書籍顏色，第 36 關起只剩一個起始空箱。每關都有解、可加一次臨時紙箱，撤銷和提示不限次數。書脊符號可用來辨認不同顏色。最高解鎖關卡和最佳步數會保存在這個瀏覽器中。": "Start with five fixed stages, then keep playing new numbered stages. More book colors appear at stages 6, 11 and 21. From stage 36 onward, you start with just one empty box. Every stage is solvable and offers one spare box plus unlimited undo and hints. Spine symbols help distinguish the colors. Your highest unlocked stage and best move counts are saved in this browser.",
+  "重試上傳": "Retry upload",
+  "紫梅歷史": "Plum History",
+  "石墨建築": "Graphite Architecture",
+  "橄欖遊記": "Olive Travelogues",
 "插旗": "Flag",
 "按「插旗」後，點格子即可插旗或取消；再按一次恢復翻格。": "Turn on Flag to tap cells to place or remove flags. Turn it off to reveal cells.",
   "排雷成功！": "Board cleared!",

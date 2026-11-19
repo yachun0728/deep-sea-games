@@ -1,1 +1,27 @@
-<symbol id="icon-book-sort" viewBox="0 0 96 96"><circle cx="48" cy="48" r="46" fill="#f6efe2"/><path d="M4 66h88a46 46 0 0 1-88 0z" fill="#c89d6c"/><path d="M26 22l6 11 8-5-3 11H59l-3-11 8 5 6-11v26a8 8 0 0 1-8 8H34a8 8 0 0 1-8-8z" fill="#f2b36a" stroke="#785028" stroke-width="2.4" stroke-linejoin="round"/><circle cx="41" cy="41" r="2.4" fill="#4a3525"/><circle cx="55" cy="41" r="2.4" fill="#4a3525"/><path d="M45 47q3 3 6 0" stroke="#4a3525" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M24 52h48v36a4 4 0 0 1-4 4H28a4 4 0 0 1-4-4z" fill="#d9aa73" stroke="#785028" stroke-width="2.6" stroke-linejoin="round"/><rect x="29" y="57" width="38" height="7" rx="2" fill="#c94646"/><rect x="29" y="66" width="38" height="7" rx="2" fill="#356394"/><rect x="29" y="75" width="38" height="7" rx="2" fill="#438555"/><path d="M33 59.500v3M33 68.500v3M33 77.500v3" stroke="#fff4d6" stroke-opacity=".6" stroke-width="1.6" stroke-linecap="round"/><rect x="60" y="58" width="5" height="5" rx="1" fill="#fdfbf7" opacity=".85"/></symbol>
+<symbol id="icon-book-sort" viewBox="0 0 96 96">
+  <rect x="2" y="2" width="92" height="92" rx="19" fill="#204a43" stroke="#f1bb6d" stroke-width="3"/>
+  <path d="M10 67V42a38 34 0 0 1 76 0v25z" fill="#fae2b7"/>
+  <path d="M20 46V30m12 9V18m32 19V18m12 27V30" fill="none" stroke="#e8bd87" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M11 60q37-9 74 0v7H11z" fill="#e3b579"/>
+  <path d="M18 32q4-1 5-5 1 4 5 5-4 1-5 5-1-4-5-5zm51 3q5-1 6-6 1 5 6 6-5 1-6 6-1-5-6-6z" fill="#fff8dd"/>
+  <use href="#book-sort-cat" x="23" y="10" width="50" height="45" color="#f1a75e"/>
+  <path d="m17 48 13-7h37l12 7-8 8H25z" fill="#ad6841" stroke="#69432e" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="m22 47-8-4 12-6 9 6m38 4 9-4-12-6-9 6" fill="#e9b374" stroke="#69432e" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M24 49h47v18H24z" fill="#d79859" stroke="#69432e" stroke-width="1.8"/>
+  <path d="m71 49 7-3v18l-7 3z" fill="#b77648" stroke="#69432e" stroke-width="1.8" stroke-linejoin="round"/>
+  <rect x="29" y="51" width="34" height="6" rx="1.6" fill="#a94347"/>
+  <rect x="28" y="58" width="37" height="6" rx="1.6" fill="#427c72"/>
+  <path d="M33 53v2m0 5v2m23-8h4m-4 7h6" fill="none" stroke="#fce6be" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M36 45q-1-5 4-5 4 0 4 5m10 0q0-5 4-5 5 0 4 5" fill="#f5bd7a" stroke="#69432e" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M10 69h76" stroke="#f1bb6d" stroke-width="1.2" stroke-linecap="round"/>
+  <text x="48" y="79" fill="#fff4d9" font-family="system-ui, sans-serif" font-size="10" font-weight="800" letter-spacing=".4" text-anchor="middle">CAT BOOK<tspan x="48" y="89"> STACK</tspan></text>
+</symbol>
+<symbol id="book-sort-cat" viewBox="0 0 56 50">
+  <path d="M10 23 8 7Q8 3 12 5L23 12Q28 11 33 12L44 5Q48 3 48 7L46 23Q51 29 49 36Q46 46 28 46Q10 46 7 36Q5 29 10 23Z" fill="currentColor" stroke="#69432e" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="m12 10 8 5-7 5zm32 0-8 5 7 5z" fill="#eea391"/>
+  <path d="M24 13l2 7m6-7-2 7M9 28l7 2m31-2-7 2" fill="none" stroke="#69432e" stroke-opacity=".48" stroke-width="2" stroke-linecap="round"/>
+  <path d="M17 36q0-5 6-5 3-3 5-3t5 3q6 0 6 5 0 7-11 7t-11-7" fill="#fff0d6"/>
+  <path d="M17 28q3-4 6 0m10 0q3-4 6 0m-16 8q3 3 5-1 2 4 5 1" fill="none" stroke="#563528" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M25.5 32h5L28 35z" fill="#ad6052" stroke="#ad6052" stroke-width="1" stroke-linejoin="round"/>
+  <path d="m13 34-9-1m9 4-8 2m38-5 9-1m-9 4 8 2" fill="none" stroke="#69432e" stroke-width="1.5" stroke-linecap="round"/>
+</symbol>

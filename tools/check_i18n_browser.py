@@ -137,7 +137,7 @@ def main():
     threading.Thread(target=server.serve_forever, daemon=True).start()
     with tempfile.TemporaryDirectory(prefix='deep-sea-i18n-') as temp:
         folder = Path(temp)
-        for suite, width, height in [('book_sort', 1366, 900), ('book_sort', 390, 844), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('core', 1366, 900), ('games', 1366, 900), ('games', 390, 844),
+        for suite, width, height in [('book_sort', 1366, 900), ('book_sort', 390, 844), ('book_sort', 844, 390), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('core', 1366, 900), ('games', 1366, 900), ('games', 390, 844),
                                      ('ocean_link', 1366, 900), ('ocean_link', 844, 390), ('frontier', 1366, 900), ('frontier', 390, 844), ('frontier', 844, 390)]:
             script = (ROOT / f'tools/i18n_browser_{suite}.js').read_text(encoding='utf-8')
             route = f'/{suite}-{width}.html'
@@ -158,6 +158,11 @@ def main():
                 if suite == 'book_sort':
                     query += '#book-sort'
                 total += chrome.check(page, query, f'{suite} {width}×{height}')
+                if suite == 'book_sort':
+                    if width == 1366:
+                        total += chrome.check(page, '?probe=campaign-next&lang=en#book-sort', 'Stage 5 advances to stage 6')
+                    chrome.evaluate("localStorage.setItem('deep-sea-book-sort-best', JSON.stringify({35:67}))")
+                    total += chrome.check(page, '?probe=campaign-resume&lang=en#book-sort', f'Advanced progression {width}×{height}')
                 if suite == 'market_desk':
                     total += chrome.check(page, '?probe=saved#market-desk', 'Market Desk saved language and score')
                     total += chrome.check(page, '?probe=chinese&lang=zh-Hant#market-desk', 'Market Desk direct Chinese')

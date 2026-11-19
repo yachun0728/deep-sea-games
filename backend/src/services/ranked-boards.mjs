@@ -1,3 +1,5 @@
+import bookSortRules from '../../../shared/book-sort-rules.cjs';
+import { verifiesBookSortScore } from './book-sort-scores.mjs';
 import frontierRules from '../../../shared/frontier-rules.cjs';
 import rocketChairRules from '../../../shared/rocket-chair-rules.js';
 import elevatorRules from '../../../shared/elevator-rules.cjs';
@@ -34,6 +36,18 @@ function timedBoard(engine) {
   };
 }
 const boards = new Map([
+  ['book-sort', {
+    create: stage => ({ stage, issuedAt: Date.now(), score: null }),
+    accepts: action => Array.isArray(action) && action.length > 0 && action.length <= 4096,
+    apply: (state, action) => {
+      if (bookSortRules.rankedBookMinimumMs(action) > Date.now() - state.issuedAt
+        || !verifiesBookSortScore(state.stage, action)) return false;
+      state.score = state.stage;
+      return true;
+    },
+    score: state => state.score,
+    visible: ({stage, score}) => ({stage, score}),
+  }],
  ['frontier',{
   create:()=>({...frontierRules.create(newSeed()),issuedAt:Date.now()}),
   accepts:frontierRules.accepts,
@@ -138,7 +152,10 @@ export async function readBoardCommand(request, isMove) {
     }
     const command = JSON.parse(text + decoder.decode());
     const game = boards.get(command?.gameId);
-    if (!game || Object.keys(command).length !== (isMove ? 4 : 1)) return null;
+    if (!game) return null;
+    const bookSortStart = !isMove && command.gameId === 'book-sort';
+    if (Object.keys(command).length !== (isMove ? 4 : bookSortStart ? 2 : 1)) return null;
+    if (bookSortStart && (!Number.isSafeInteger(command.stage) || command.stage < 1)) return null;
     if (isMove && (typeof command.id !== 'string' || !ID.test(command.id) ||
         !Number.isInteger(command.revision) || command.revision < 0 ||
         command.revision > MAX_REVISIONS || !game.accepts(command.action))) return null;
@@ -150,7 +167,7 @@ export async function readBoardCommand(request, isMove) {
   }
 }
 
-export async function startRankedBoard(db, playerId, gameId) {
+export async function startRankedBoard(db, playerId, gameId, stage) {
   const id = crypto.randomUUID(), game = boards.get(gameId);
   let state;
   if(gameId==='frontier'){
@@ -163,7 +180,7 @@ export async function startRankedBoard(db, playerId, gameId) {
       state.issuedAt=Date.now();
     }
   }
-  state ??= game.create();
+  state ??= game.create(stage);
   await db.prepare(
     'INSERT INTO ranked_boards (id, player_id, game_id, started_at, state) VALUES (?, ?, ?, ?, ?)',
   ).bind(id, playerId, gameId, Date.now(), JSON.stringify(state)).run();

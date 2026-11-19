@@ -36,7 +36,7 @@ export function createApiClient(baseUrl) {
     leaderboard: (gameId, signal) => request(API.leaderboard, { signal }, { gameId }),
     startMines: (token, signal) => request(API.minesStart, authorized('POST', token, signal)),
     moveMines: (token, move, signal) => request(API.minesMove, authorized('POST', token, signal, move)),
-    startBoard: (token, signal, gameId) => request(API.boardStart, authorized('POST', token, signal, {gameId})),
+    startBoard: (token, signal, gameId, settings) => request(API.boardStart, authorized('POST', token, signal, {...settings,gameId})),
     moveBoard: (token, move, signal) => request(API.boardMove, authorized('POST', token, signal, move)),
     startFrog: (token, signal) => request(API.frogStart, authorized('POST', token, signal)),
     finishFrog: (token, proof, signal) => request(API.frogFinish, authorized('POST', token, signal, proof)),
@@ -60,15 +60,15 @@ async function ensureGuest(api, signal, rejected) {
     ? navigator.locks.request(GUEST_KEY, { signal }, load) : load();
 }
 
-async function startGuestRound(method, signal, gameId) {
+async function startGuestRound(method, signal, gameId, settings) {
   const api = createApiClient(arcadeApiOrigin());
   let token = await ensureGuest(api, signal);
   try {
-    return { ...await api[method](token, signal, gameId), token };
+    return { ...await api[method](token, signal, gameId, settings), token };
   } catch (error) {
     if (error.status !== 401) throw error;
     token = await ensureGuest(api, signal, token);
-    return { ...await api[method](token, signal, gameId), token };
+    return { ...await api[method](token, signal, gameId, settings), token };
   }
 }
 
@@ -84,8 +84,8 @@ export function moveMinesRound(token, move, signal) {
   return createApiClient(arcadeApiOrigin()).moveMines(token, move, signal);
 }
 
-export function startBoardRound(gameId, signal) {
-  return startGuestRound('startBoard', signal, gameId);
+export function startBoardRound(gameId, signal, settings) {
+  return startGuestRound('startBoard', signal, gameId, settings);
 }
 
 export function moveBoardRound(token, move, signal) {

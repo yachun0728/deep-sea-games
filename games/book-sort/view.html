@@ -1,10 +1,50 @@
   <section class="view" id="view-book-sort" hidden>
-    <div class="console"><div class="bs-stage" id="bs-stage">
-      <div class="bs-says"><span class="bs-avatar" aria-hidden="true">🐱</span><p class="bs-bubble" id="bs-tip" aria-live="polite">集滿 5 本同色書就會自動封箱，最底下的書也看得一清二楚。</p></div>
-      <div class="bs-boxes" id="bs-boxes" aria-label="書箱：點一個箱子拿起頂部同色書，再點另一個箱子疊放"></div>
+    <div class="bs-stage" id="bs-stage">
+      <header class="bs-toolbar">
+        <div class="bs-bar">
+          <a class="bs-control bs-home" href="#lobby" aria-label="返回遊戲大廳" title="返回遊戲大廳"><span aria-hidden="true">←</span></a>
+          <div class="bs-heading">
+            <h2 id="bs-title" tabindex="-1">貓咪疊書舖</h2>
+            <div class="bs-status"><strong id="bs-level-text">第 1 關</strong><span><span>移動步數</span> <b id="bs-moves">0</b></span></div>
+          </div>
+          <details class="bs-menu" id="bs-menu">
+            <summary class="bs-control" aria-label="遊戲選單" title="遊戲選單"><span aria-hidden="true">⋯</span></summary>
+            <div class="bs-menu-panel">
+              <div class="field"><label for="bs-level">選擇關卡</label><select id="bs-level"><option value="1">第 1 關（3 色／5 箱）</option><option value="2">第 2 關（4 色／6 箱）</option><option value="3">第 3 關（5 色／7 箱）</option><option value="4">第 4 關（6 色／8 箱）</option><option value="5">第 5 關（8 色／10 箱）</option><optgroup id="bs-campaign-options" label="進階關卡" hidden></optgroup><option value="random">隨機挑戰關卡</option></select></div>
+              <dl class="bs-best"><dt>最佳步數</dt><dd id="bs-best">—</dd></dl>
+              <div class="bs-menu-actions">
+                <button class="bs-control" id="bs-restart" type="button">重新開始</button>
+                <button class="bs-control" id="bs-add" type="button">加一個臨時紙箱</button>
+                <button class="bs-control" id="bs-random" type="button">隨機關卡</button>
+                <button class="bs-control" id="bs-sound" type="button" aria-pressed="true" aria-label="音效">音效：開</button>
+              </div>
+              <div class="bs-language" role="group" aria-label="語言">
+                <button class="bs-control" type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button>
+                <button class="bs-control" type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button>
+              </div>
+              <details class="rules" id="bs-ranking">
+                <summary>排行榜</summary>
+                <p id="bs-rank-status" role="status"></p>
+                <button class="bs-control" id="bs-rank-retry" type="button" hidden>重試上傳</button>
+                <p id="bs-rank-board-status" role="status"></p>
+                <ol id="bs-rank-list"></ol>
+              </details>
+              <details class="rules"><summary>玩法與點數</summary><p>每局免費，不扣點也沒有點數獎勵。把所有書依顏色整理進紙箱：點選一個箱子拿起頂部連續的同色書，再點另一個箱子疊放。目標箱必須是空箱，或頂部書本顏色相同並且還有空位。每個箱子最多放 5 本，集滿 5 本同色書就會自動封箱。所有書都封箱就過關。</p><p>先玩 5 個固定關卡，之後可以一直挑戰新的編號關卡。第 6、11、21 關增加書籍顏色，第 36 關起只剩一個起始空箱。每關都有解、可加一次臨時紙箱，撤銷和提示不限次數。書脊符號可用來辨認不同顏色。最高解鎖關卡和最佳步數會保存在這個瀏覽器中。</p></details>
+            </div>
+          </details>
+        </div>
+        <div class="bs-says"><span class="bs-avatar" aria-hidden="true"><svg viewBox="0 0 56 50" focusable="false"><use href="#book-sort-cat"></use></svg></span><p class="bs-bubble" id="bs-tip" aria-live="polite">集滿 5 本同色書就會自動封箱，最底下的書也看得一清二楚。</p></div>
+      </header>
+      <div class="bs-table">
+        <div class="bs-boxes" id="bs-boxes" aria-label="書箱：點一個箱子拿起頂部同色書，再點另一個箱子疊放"></div>
+      </div>
+      <div class="bs-actions">
+        <button class="bs-control" id="bs-undo" type="button" disabled>撤銷上一步</button>
+        <button class="bs-control" id="bs-hint" type="button">提示移動</button>
+      </div>
       <div class="bs-modal" id="bs-modal" hidden>
         <div class="bs-modal-card" role="dialog" aria-labelledby="bs-modal-title">
-          <div class="bs-modal-cat" aria-hidden="true">😻</div>
+          <div class="bs-modal-cat" aria-hidden="true"><svg viewBox="0 0 56 50" focusable="false"><use href="#book-sort-cat"></use></svg></div>
           <h3 id="bs-modal-title">書本全部封箱完成！</h3>
           <p id="bs-modal-quote"></p>
           <dl class="bs-modal-stats"><div><dt>總移動步數</dt><dd id="bs-final-moves">0</dd></div><div><dt>整理評級</dt><dd id="bs-final-rating">★★★</dd></div></dl>
@@ -12,21 +52,4 @@
         </div>
       </div>
     </div>
-      <div class="side"><section class="panel" aria-label="貓咪疊書舖操作">
-        <dl class="stats"><div><dt>目前關卡</dt><dd id="bs-level-text">第 1 關</dd></div><div><dt>移動步數</dt><dd id="bs-moves">0</dd></div><div><dt>最佳步數</dt><dd id="bs-best">—</dd></div></dl>
-        <div class="field"><label for="bs-level">選擇關卡</label><select id="bs-level"><option value="1">第 1 關（3 色／5 箱）</option><option value="2">第 2 關（4 色／6 箱）</option><option value="3">第 3 關（5 色／7 箱）</option><option value="4">第 4 關（6 色／8 箱）</option><option value="5">第 5 關（8 色／10 箱）</option><option value="random">隨機挑戰關卡</option></select></div>
-        <div class="field"><label>遊玩費用</label><p class="runner-fee">免費</p></div>
-        <div class="bs-actions">
-          <button class="chip" id="bs-undo" type="button" disabled>撤銷上一步</button>
-          <button class="chip" id="bs-hint" type="button">提示移動</button>
-          <button class="chip" id="bs-restart" type="button">重新開始</button>
-          <button class="chip" id="bs-add" type="button">加一個臨時紙箱</button>
-          <button class="chip" id="bs-random" type="button">隨機關卡</button>
-          <button class="chip" id="bs-sound" type="button" aria-pressed="true" aria-label="音效">音效：開</button>
-        </div>
-        <p class="msg" id="bs-msg" aria-live="polite">點一個箱子拿起頂部同色書，再點另一個箱子疊放。</p>
-        <p class="hint">只能把書疊在同色書上方或空箱裡，一次會搬走頂部連續的同色書。每個關卡都保證有解，卡住時可以撤銷、提示，或用一次臨時紙箱周轉。</p>
-      </section></div>
-    </div>
-    <details class="rules"><summary>玩法與點數</summary><p>每局免費，不扣點也沒有點數獎勵。把所有書依顏色整理進紙箱：點選一個箱子拿起頂部連續的同色書，再點另一個箱子疊放。目標箱必須是空箱，或頂部書本顏色相同並且還有空位。每個箱子最多放 5 本，集滿 5 本同色書就會自動封箱。所有書都封箱就過關。</p><p>每本書的書脊都有獨立的符號，方便色盲玩家辨識。共有 5 個固定關卡，之後可以挑戰隨機關卡，每個隨機關卡都經過檢查保證有解。每關有一次臨時紙箱，撤銷和提示不限次數。整理評級依步數計算，最佳步數依關卡保存在這個瀏覽器中。</p></details>
   </section>
