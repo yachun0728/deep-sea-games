@@ -110,7 +110,20 @@
   .touch button:active { background: var(--line); }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-  @media (max-width: 639px), (pointer: coarse) { .touch { display: grid; } }
+  .hdr-actions { display: none; gap: 8px; align-items: center; }
+  .hdr-actions button {
+    background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 6px;
+    padding: 6px 12px; font: 700 12px var(--font-ui); cursor: pointer; touch-action: manipulation;
+    user-select: none; -webkit-user-select: none; min-height: 34px;
+  }
+  .hdr-actions button:active { background: var(--line); }
+  /* Touch UI: swipe / tap right on the board by default; the six buttons are an opt-in fallback. */
+  @media (max-width: 639px), (pointer: coarse) {
+    .hdr-actions { display: flex; }
+    body:not(.btnmode) #board, body:not(.btnmode) .boardwrap { touch-action: none; }
+    body.btnmode .touch { display: grid; }
+    body:not(.btnmode) .hold { cursor: pointer; }
+  }
   @media (max-width: 639px) {
     .game {
       grid-template-columns: minmax(0, 1fr) 100px;
@@ -129,6 +142,10 @@
   <header>
     <h1 data-i="title">俄羅斯方塊</h1>
     <span class="tag" data-i="tag">SRS 旋轉 · 7-bag 隨機 · 牆踢</span>
+    <div class="hdr-actions" id="hdrActions">
+      <button type="button" id="pauseBtn" data-i="k_pause">暫停</button>
+      <button type="button" id="modeBtn">改用按鈕</button>
+    </div>
   </header>
 
   <section class="game">
@@ -200,7 +217,7 @@ function runBlockDrop(rules) {
   function lang() { try { const i = window.parent !== window && window.parent.deepSeaI18n; return i && i.getLanguage() === 'en' ? 'en' : 'zh'; } catch (e) { return 'zh'; } }
   const T = (zh, en) => (lang() === 'en' ? en : zh);
   function host() { try { return window.parent !== window ? window.parent.deepSeaTetris || null : null; } catch (e) { return null; } }
-  let platformVisible = true, roundOn = false;
+  let platformVisible = true, roundOn = false, ctlReady = false;
   const L = {
     title: ['俄羅斯方塊', 'Block Drop'], tag: ['SRS 旋轉 · 7-bag 隨機 · 牆踢', 'SRS rotation · 7-bag · wall kicks'],
     hold: ['暫存', 'Hold'], next: ['下一個', 'Next'], keys: ['按鍵', 'Controls'],
@@ -214,6 +231,7 @@ function runBlockDrop(rules) {
     document.title = en ? 'Block Drop' : '俄羅斯方塊';
     document.querySelectorAll('[data-i]').forEach(el => { const v = L[el.dataset.i]; if (v) el.textContent = v[en ? 1 : 0]; });
     const tb = $('touchbar'); if (tb) tb.setAttribute('aria-label', en ? 'Touch controls' : '觸控按鈕');
+    if (ctlReady) setCtl(ctl, false);
     renderOverlay();
   }
   const css = getComputedStyle(document.documentElement);
@@ -282,7 +300,9 @@ function runBlockDrop(rules) {
     s.hidden = true;
     if (ovKind === 'ready') {
       t.textContent = T('準備好了嗎', 'Ready?');
-      p.textContent = T('按 Enter 或點下方按鈕開始', 'Press Enter or click the button to start');
+      p.textContent = touchUI() && ctl === 'gesture'
+        ? T('在棋盤上：左右滑動移動 · 點一下旋轉 · 快速下滑落底 · 快速上滑暫存', 'On the board: drag to move · tap to rotate · flick down to drop · flick up to hold')
+        : T('按 Enter 或點下方按鈕開始', 'Press Enter or click the button to start');
       b.textContent = T('開始遊戲', 'Start');
     } else if (ovKind === 'paused') {
       t.textContent = T('已暫停', 'Paused');
@@ -378,6 +398,60 @@ function runBlockDrop(rules) {
     if (state === 'paused') resume(); else start();
   });
 
+  // ---------- touch: gestures on the board (default) or the six buttons ----------
+  function touchUI() { try { return !!(window.matchMedia && window.matchMedia('(max-width: 639px), (pointer: coarse)').matches); } catch (e) { return false; } }
+  let ctl = 'gesture';
+  try { const v = localStorage.getItem('tetris-ctl'); if (v === 'buttons' || v === 'gesture') ctl = v; } catch (e) {}
+  function setCtl(v, save) {
+    ctl = v;
+    if (save) { try { localStorage.setItem('tetris-ctl', v); } catch (e) {} }
+    document.body.classList.toggle('btnmode', v === 'buttons');
+    $('modeBtn').textContent = v === 'buttons' ? T('改用手勢', 'Use gestures') : T('改用按鈕', 'Use buttons');
+    if (state === 'ready') renderOverlay();
+  }
+  $('modeBtn').addEventListener('click', () => { releaseAll(); setCtl(ctl === 'gesture' ? 'buttons' : 'gesture', true); });
+  $('pauseBtn').addEventListener('click', () => { if (state === 'play') pause(); });
+
+  const G = { id: null, x: 0, y: 0, ax: 0, ay: 0, t: 0, moved: false };
+  const gestureOn = () => ctl === 'gesture' && state === 'play' && !!model.cur && !model.clearRows;
+  let softOn = false;
+  const softSet = on => { if (on === softOn) return; softOn = on; if (on) press('down'); else release('down'); };
+  const step1 = a => { press(a); release(a); };
+  const cellPx = () => { const r = $('board').getBoundingClientRect(); return (r && r.width ? r.width : COLS * CELL) / COLS; };
+  const board$ = $('board');
+  board$.addEventListener('pointerdown', e => {
+    if (!gestureOn() || G.id !== null) return;
+    e.preventDefault();
+    G.id = e.pointerId; G.x = G.ax = e.clientX; G.y = G.ay = e.clientY; G.t = performance.now(); G.moved = false;
+    try { board$.setPointerCapture(e.pointerId); } catch (err) {}
+    const h = host(); if (h && roundOn && h.touch) h.touch(window);
+  });
+  board$.addEventListener('pointermove', e => {
+    if (e.pointerId !== G.id) return;
+    if (!gestureOn()) { G.id = null; softSet(false); return; }
+    e.preventDefault();
+    const c = cellPx(), step = c * 0.85;
+    if (Math.hypot(e.clientX - G.x, e.clientY - G.y) > 12) G.moved = true;
+    while (e.clientX - G.ax >= step) { G.ax += step; step1('right'); }
+    while (G.ax - e.clientX >= step) { G.ax -= step; step1('left'); }
+    // holding the finger lower than where it started = soft drop (the model speeds up while 'down' is held)
+    const dy = e.clientY - G.y, dx = e.clientX - G.x;
+    softSet(dy > step * 1.2 && dy > Math.abs(dx));
+  });
+  const endGesture = e => {
+    if (e.pointerId !== G.id) return;
+    const dt = performance.now() - G.t, dx = e.clientX - G.x, dy = e.clientY - G.y, c = cellPx();
+    const moved = G.moved; G.id = null; softSet(false);
+    if (e.type === 'pointercancel' || !gestureOn()) return;
+    if (!moved && dt < 350) press('cw');
+    else if (dy < -c * 2.2 && Math.abs(dy) > Math.abs(dx) * 1.5 && dt < 450) press('hold');
+    else if (dy > c * 2.5 && dy > Math.abs(dx) * 1.5 && dt < 260) press('hard');
+  };
+  board$.addEventListener('pointerup', endGesture);
+  board$.addEventListener('pointercancel', endGesture);
+  board$.addEventListener('contextmenu', e => e.preventDefault());
+  $('hold').addEventListener('pointerdown', e => { if (ctl === 'gesture' && touchUI() && state === 'play') { e.preventDefault(); press('hold'); } });
+
   // ---------- drawing ----------
   function cell(ctx, x, y, s, color, alpha) {
     ctx.globalAlpha = alpha == null ? 1 : alpha;
@@ -464,11 +538,13 @@ function runBlockDrop(rules) {
     el.classList.add('show');
   }
 
+  if (window.__TETRIS_TEST__) window.__tetris = () => ({ x: model.cur && model.cur.x, y: model.cur && model.cur.y, rot: model.cur && model.cur.rot, type: model.cur && model.cur.type, hold: model.holdType, score: model.score, ctl });
   window.startTetrisPlatformRound = start;
   window.setTetrisPlatformActive = v => { platformVisible = !!v; last = performance.now(); if (!platformVisible) pause(); };
   try { window.parent.addEventListener('arcade-languagechange', applyLang); } catch (e) {}
 
   // ---------- boot ----------
+  ctlReady = true;
   applyLang();
   model.fillQueue();
   drawPreview();

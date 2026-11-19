@@ -38,12 +38,13 @@ const root=new URL('../',import.meta.url);let checks=0;const ok=(c,m)=>{assert.o
   const calls=[],store={};
   const mkCtx=()=>new Proxy({},{get:(t,k)=>k in t?t[k]:(()=>{}),set:(t,k,v)=>{t[k]=v;return true;}});
   const nodes=new Map();
-  const node=id=>{if(!nodes.has(id))nodes.set(id,{id,textContent:'',hidden:false,style:{},dataset:{},classList:{add(){},remove(){}},offsetWidth:0,width:0,height:0,getContext:mkCtx,addEventListener(){},setAttribute(){}});return nodes.get(id);};
+  const nodeHandlers={};
+  const node=id=>{if(!nodes.has(id))nodes.set(id,{id,textContent:'',hidden:false,style:{},dataset:{},classList:{add(){},remove(){},toggle(){}},offsetWidth:0,width:0,height:0,getContext:mkCtx,addEventListener(type,f){nodeHandlers[id+':'+type]=f;},setAttribute(){},setPointerCapture(){},getBoundingClientRect:()=>({left:0,top:0,width:300,height:600})});return nodes.get(id);};
   const docHandlers={},winHandlers={};let rafCb=null;
-  const document={getElementById:node,querySelectorAll:()=>[],documentElement:{lang:'',style:{}},title:'',hidden:false,addEventListener:(t,f)=>{docHandlers[t]=f;}};
+  const document={body:{classList:{toggle(){},add(){},remove(){}}},getElementById:node,querySelectorAll:()=>[],documentElement:{lang:'',style:{}},title:'',hidden:false,addEventListener:(t,f)=>{docHandlers[t]=f;}};
   const parentWin={deepSeaI18n:{getLanguage:()=> 'en'},addEventListener(){},
     deepSeaTetris:{rules,start:()=>{calls.push('start');return true;},finish:(w,d)=>calls.push(['finish',d]),pause:()=>calls.push('pause'),resume:()=>calls.push('resume'),touch:()=>{}}};
-  const win={parent:parentWin,addEventListener:(t,f)=>{winHandlers[t]=f;}};
+  const win={parent:parentWin,__TETRIS_TEST__:true,matchMedia:()=>({matches:true}),addEventListener:(t,f)=>{winHandlers[t]=f;}};
   const sandbox={window:win,document,getComputedStyle:()=>({getPropertyValue:()=> ''}),localStorage:{getItem:k=>store[k]??null,setItem:(k,v)=>{store[k]=v;}},
     performance:{now:()=>t},requestAnimationFrame:f=>{rafCb=f;return 1;},Math,Array,Object,String,Number,parseInt,Date,console};
   let t=0;
@@ -72,5 +73,43 @@ const root=new URL('../',import.meta.url);let checks=0;const ok=(c,m)=>{assert.o
   key('Enter');eq(calls.filter(c=>c==='start').length,2,'second round asks the host once more');
   // hidden platform view pauses the round
   win.setTetrisPlatformActive(false);ok(calls.filter(c=>c==='pause').length>=2,'leaving the view pauses');
+
+  // ---------- 手機手勢 ----------
+  win.setTetrisPlatformActive(true);
+  const st=()=>win.__tetris();
+  const ptr=(type,x,y,id=1)=>{const f=nodeHandlers['board:'+type];if(f)f({type,pointerId:id,clientX:x,clientY:y,preventDefault(){}});else throw new Error('no handler '+type);};
+  const freshRound=()=>{win.setTetrisPlatformActive(true);if(!['play'].includes('play'))return;};
+  // a clean round: go through Enter if the previous one is over/paused
+  if(node('overlay').hidden===false){key('Enter');}
+  eq(st().ctl,'gesture','gestures are the default on touch devices');
+  let s0=st();
+  // drag right by ~2.4 cells (step is 0.85 cell = 25.5 px) -> exactly 2 columns
+  t+=1000;ptr('pointerdown',100,300);t+=50;ptr('pointermove',130,302);ptr('pointermove',161,303);t+=50;ptr('pointerup',161,303);
+  eq(st().x-s0.x,2,'dragging right moves the piece 2 columns');eq(st().rot,s0.rot,'a drag does not rotate');
+  // drag left by ~1.2 cells -> 1 column
+  s0=st();t+=1000;ptr('pointerdown',200,300);t+=60;ptr('pointermove',176,300);ptr('pointermove',170,300);t+=60;ptr('pointerup',170,300);
+  eq(st().x-s0.x,-1,'dragging left moves the piece 1 column');
+  // tap rotates (O never changes)
+  s0=st();t+=1000;ptr('pointerdown',150,300);t+=80;ptr('pointerup',150,300);
+  eq(st().rot,s0.type==='O'?s0.rot:(s0.rot+1)%4,'a tap rotates clockwise');
+  // slow drag down: soft drop, +1 point per row, no hard drop
+  s0=st();t+=1000;ptr('pointerdown',150,100);t+=200;ptr('pointermove',150,127);ptr('pointermove',150,153);ptr('pointermove',150,179);ptr('pointermove',150,179);frame(16);frame(100);frame(100);frame(100);const y1=st().y;ptr('pointerup',150,179);
+  ok(st().score>s0.score,'holding the finger lower soft-drops and scores');ok(st().y>s0.y,'the piece moved down');eq(st().type,s0.type,'slow drag does not lock the piece');
+  const yAfter=st().y;frame(16);frame(40);ok(st().y-yAfter<=1,'releasing the finger stops the fast fall');
+  // flick up holds
+  s0=st();t+=1000;ptr('pointerdown',150,400);t+=60;ptr('pointermove',150,350);ptr('pointermove',150,300);t+=60;ptr('pointerup',150,300);
+  eq(st().hold,s0.type,'a quick upward flick holds the piece');
+  // flick down hard-drops (score jumps by 2 per row dropped, a new piece spawns)
+  const sc0=Number(String(node('score').textContent).replace(/,/g,''));
+  t+=1000;ptr('pointerdown',150,100);t+=40;ptr('pointermove',150,160);ptr('pointermove',150,220);t+=40;ptr('pointerup',150,220);
+  ok(Number(String(node('score').textContent).replace(/,/g,''))>sc0+10,'a quick downward flick hard-drops');
+  // buttons mode turns the board gestures off
+  nodeHandlers['modeBtn:click']();eq(st().ctl,'buttons','mode switch works');
+  s0=st();t+=1000;ptr('pointerdown',100,300);ptr('pointermove',200,300);ptr('pointerup',200,300);
+  eq(st().x,s0.x,'board gestures are ignored in button mode');
+  eq(store['tetris-ctl'],'buttons','the choice is remembered');
+  nodeHandlers['modeBtn:click']();eq(st().ctl,'gesture','switch back to gestures');
+  // pause button
+  const before=calls.filter(c=>c==='pause').length;nodeHandlers['pauseBtn:click']();ok(calls.filter(c=>c==='pause').length>before,'the pause button pauses and reports it');
 }
 console.log('PASS: '+checks+' tetris checks');

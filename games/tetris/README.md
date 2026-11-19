@@ -66,6 +66,7 @@
 - BONUS：沒有。不換點數，沒有下注或倍率返還。每款遊戲每天第一次完整玩過一局（至少 10 秒有效時間）的平台完成獎勵由 `AN.end` 的 `complete` 觸發，與成績無關。
 - 結算：頂端放不下時子頁 `endGame` 呼叫一次 `finish({score,lines,level})`，父頁送一次 `AN.end`（payout 0、result `complete`，附 `score`、`step`＝行數、`level`）。正常離頁由 capture 階段 `pagehide` 先送 `abandoned`；BFCache persisted 不結束。
 - 暫停：按 P／Esc、視窗失焦、分頁隱藏或切到別的遊戲畫面都會暫停並顯示「繼續」，送 `AN.progress`（`phase:pause`）與 `AN.resume`。
+- 觸控：手機（`pointer: coarse` 或寬度 ≤ 639 px）預設手勢操作——在棋盤上左右滑動每約 0.85 格移 1 格、慢慢下拖軟降（每格 +1 分）、點一下順時針旋轉、250 ms 內下滑超過 2.5 格硬降、450 ms 內上滑超過 2.2 格暫存，也可點「暫存」格；標題列有「暫停」鈕與「改用按鈕／改用手勢」切換，選擇存在 `tetris-ctl`（`gesture`／`buttons`），按鈕模式會顯示下方六顆按鈕並停用棋盤手勢。鍵盤操作不變。
 - 子頁單獨開啟（無父頁）時是一般的俄羅斯方塊示範。
 - 儲存：沿用原版 Key `tetris-best`（最高分，整數字串）；新增於 2026-11-19。
 - 語言：子頁以 `data-i` 屬性＋`L` 字典與 `T(中文, English)` 依父頁 `deepSeaI18n` 目前語言輸出，並在 `arcade-languagechange` 時重繪；父頁訊息 `tt-msg` 與數值欄位標記 `data-i18n-ignore`；`locales/en.json` 補齊卡片、規則與子頁字串。
