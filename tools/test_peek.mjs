@@ -161,7 +161,7 @@ check('Gap between spirits shrinks with progress and every third dodge gives a l
 });
 check('Total dodges and the death codex are stored; the codex counts distinct causes',()=>{
   const f=fixture();f.F.start();f.spirit('eye',1);f.hold('l');f.run(7);assert.equal(f.storage.get('deep-sea-peek-dodges'),'1');
-  f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 18');assert.equal(f.el('peek-dodges').textContent,'1 次');
+  f.F.ev('tilt=0');f.F.update(.05);f.F.ev('keys.l=0');f.spirit('eye',1);f.run(10);assert.equal(f.ev('why'),'eye');f.F.ev('ui()');assert.equal(f.el('peek-codex').textContent,'1 / 20');assert.equal(f.el('peek-dodges').textContent,'1 次');
 });
 check('The corridor scrolls by itself and stops while covered',()=>{
   const f=fixture();f.F.start();f.F.ev('gapT=999');f.run(1);const r0=f.ev('run');assert.ok(r0>1.3);f.run(1);const r1=f.ev('run');assert.ok(r1-r0>1.3);
@@ -318,6 +318,23 @@ check('Dying plays a jump scare first; the death card cannot be clicked until it
   const f=fixture();f.F.start();f.F.ev('gapT=999');f.spirit('eye',1);f.F.ev("end('dead','eye')");
   assert.equal(f.ev('st'),'over');assert.ok(f.ev('scareT')>.9,'scareT '+f.ev('scareT'));f.F.draw();
   for(let i=0;i<30;i++)f.F.update(.05);assert.ok(f.ev('scareT')<=0);f.F.draw();
+});
+check('Colossus (level 100): footsteps alternate and only the last one counts; hide opposite for two rounds; hiding on the last step dies',()=>{
+  const mk=()=>{const f=fixture(500,null,()=>.3);f.F.ev('forceLvl=100;maxLvl=100;runTop=100');f.F.start();f.F.ev("gapT=999;ev=null;pendType='colossus';startEvent()");return f};
+  const f=mk();assert.equal(f.ev('ev.col'),true);assert.equal(f.ev('ev.passes'),2);
+  const steps=JSON.parse(f.ev('JSON.stringify(ev.steps)')),side=f.ev('ev.side');assert.equal(steps.length,4);assert.equal(steps[3][1],side);for(let i=1;i<steps.length;i++)assert.notEqual(steps[i][1],steps[i-1][1]);
+  const key=side===1?'l':'r';   // hide opposite the final step
+  f.hold(key);f.run(20);assert.equal(f.ev('survived'),1,'two rounds survived; why='+f.ev('why'));assert.equal(f.ev('st'),'run');
+  const g2=mk();const bad=g2.ev('ev.side')===1?'r':'l';g2.hold(bad);g2.run(12);assert.equal(g2.ev('why'),'colossus');
+  assert.ok(g2.ev("CAUSES.colossus").length>0);
+});
+check('Tail (boss from behind): mash to stay ahead, then hide away from the lunge; no mashing or wrong side dies',()=>{
+  const mk=()=>{const f=fixture(500,null,()=>.3);f.F.ev('forceLvl=75;maxLvl=100;runTop=100');f.F.start();f.F.ev("gapT=999;ev=null;pendType='tail';startEvent()");return f};
+  const f=mk();assert.equal(f.ev("ev.type"),'tail');const side=f.ev('ev.side'),key=side===1?'l':'r';
+  f.run(3.2);assert.equal(f.ev("ev.phase"),'chase');for(let t=0;t<6.2&&f.ev("ev&&ev.phase==='chase'");t+=.05){if(Math.round(t*20)%7===0)f.F.ev('tailPush()');f.F.update(.05)}
+  assert.equal(f.ev("ev.phase"),'judge','survived the chase, d='+f.ev('ev.d'));f.hold(key);f.run(3);assert.equal(f.ev('survived'),1,'why='+f.ev('why'));
+  const g2=mk();g2.run(3.2);g2.run(6);assert.equal(g2.ev('why'),'tail','no mashing = caught');
+  const g3=mk();const s3=g3.ev('ev.side');g3.run(3.2);for(let t=0;t<6.2&&g3.ev("ev&&ev.phase==='chase'");t+=.05){if(Math.round(t*20)%7===0)g3.F.ev('tailPush()');g3.F.update(.05)}g3.hold(s3===1?'r':'l');g3.run(3);assert.equal(g3.ev('why'),'tail','hiding on the lunge side dies');
 });
 console.log(results.length+' peek checks passed');
 }
