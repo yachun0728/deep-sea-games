@@ -103,7 +103,7 @@ function tryBurst() {
   G.v = Math.max(G.v, 0) + CONFIG.burstImpulse; G.burstLeft = CONFIG.burstDuration; G.cooldown = CONFIG.burstCooldown;
   G.bursts++; shake(0.35, 5); Snd.burst(); vibrate(40);
   track('burst', { floor: G.floor + 1 });
-
+  event('burstParticles');
   return true;
 }
 function hitObstacle(kind, ref) {
@@ -118,6 +118,7 @@ function hitObstacle(kind, ref) {
   } else if (kind === 'paper') {
     G.paperHits++; G.v = -CONFIG.paperKnock; G.y = Math.max(G.floor * FH, G.y - 30); G.burstLeft = 0;
     G.stuck = { kind, t: 0, dur: 0.35 }; floatText('啪！', VW / 2 + 50, G.y + 130); shake(0.25, 4); Snd.paper();
+    event('paperParticles');
 
   } else if (kind === 'beam') {
     G.beamHit = true; G.stuck = { kind, t: 0, dur: CONFIG.meetingSecondsStuck, ref }; G.penalty += CONFIG.meetingClockPenalty; G.v = 0;
@@ -188,7 +189,7 @@ function updatePlay(dt) {
 function breakCeiling() {
   const ceilY = (G.floor + 1) * FH - SLAB;
   track('ceiling', { floor: G.floor + 1, result: 'break' });
-  G.broken++; Snd.crash(); shake(0.45, 9); vibrate(80);
+  G.broken++; Snd.crash(); shake(0.45, 9); vibrate(80);event('ceilingParticles',ceilY);
 
   G.floor++; G.ft = 0;
   G.burstLeft = 0; G.v = Math.min(G.v, CONFIG.breakExitSpeed);   // 撞破樓板會被卡一下，不會直接飛過整層
@@ -240,7 +241,7 @@ function updateObstacles(dt) {
       p.vy -= 1300 * dt; p.y += p.vy * dt;
       if (!p.deco && !p.dead && chairOverlap(p.y - 18, p.y + 18, 36, p.x)) { p.dead = true; hitObstacle('paper'); }
       if (p.y < p.endY && !p.dead) {
-        p.dead = true;
+        p.dead = true;event('sheetParticles',{x:p.x,y:p.y});
 
       }
     }

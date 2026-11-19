@@ -574,7 +574,15 @@ function rocketEvent(type,data){
  else if(type==='track')track(data.name,data.data);
  else if(type==='shake')shake(...data);
  else if(type==='float')floatText(...data);
- else if(type==='clear'){G.done=false;levelClear();}
+ else if(type==='burstParticles'){
+  for(let i=0;i<14;i++)particles.push({kind:'spark',x:VW/2+rand(-20,20),y:G.y,vx:rand(-80,80),vy:rand(-300,-120),life:rand(.3,.6),size:rand(3,6)});
+ }else if(type==='paperParticles'){
+  for(let i=0;i<8;i++)particles.push({kind:'sheet',x:VW/2+rand(-30,30),y:G.y+120,vx:rand(-160,160),vy:rand(-40,160),life:1.2,rot:rand(0,6),vr:rand(-6,6),size:14});
+ }else if(type==='ceilingParticles'){
+  for(let i=0;i<26;i++)particles.push({kind:'chunk',x:VW/2+rand(-60,60),y:data+rand(0,SLAB),vx:rand(-260,260),vy:rand(-100,380),life:rand(.8,1.4),rot:rand(0,6),vr:rand(-8,8),size:rand(6,16)});
+ }else if(type==='sheetParticles'){
+  for(let i=0;i<5;i++)particles.push({kind:'sheet',x:data.x+rand(-20,20),y:data.y,vx:rand(-120,120),vy:rand(-60,60),life:1,rot:rand(0,6),vr:rand(-6,6),size:12});
+ }else if(type==='clear'){G.done=false;levelClear();}
  else if(type==='timeout'){G.done=false;timeUp();}
 }
 function rankedRocketStep(dt){

@@ -7,13 +7,13 @@
 - 網址：`#market-desk`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「20 個交易日，從台股怪新聞裡挖出可信的消息。」｜免費 · 不限次數 · 消息查證
 - 追蹤名稱（GA4 `game_name`）：收盤之前，`game_id` 為 `market-desk`
-- 檔案：`games/market-desk/card.html`、`games/market-desk/cases.js`、`games/market-desk/cover.webp`、`games/market-desk/game.js`、`games/market-desk/icon.svg`、`games/market-desk/style.css`、`games/market-desk/view.html`；`game.js` 共 354 行、16.3 KB
+- 檔案：`games/market-desk/card.html`、`games/market-desk/cases.js`、`games/market-desk/cover.webp`、`games/market-desk/game.js`、`games/market-desk/icon.svg`、`games/market-desk/style.css`、`games/market-desk/view.html`；`game.js` 共 428 行、19.6 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「49. 收盤之前 Closing Call（market-desk）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-market-desk`、`mk-day`、`mk-sound`、`mk-status`、`mk-character`、`mk-portrait`、`mk-life-title`、`mk-life-story`、`mk-exchange`、`mk-index-label`、`mk-index`、`mk-change`、`mk-market-index`、`mk-market-change`、`mk-risk`、`mk-focus`、`mk-risk-meter`、`mk-risk-warning`、`mk-chart`、`mk-axis`、`mk-layout`、`mk-intro`、`mk-go`、`mk-case`、`mk-headline`、`mk-clue`、`mk-actions`、`mk-settling`、`mk-review`、`mk-reveal`、`mk-result-move`、`mk-life-shift`、`mk-verdict`、`mk-market-recap`、`mk-feedback`、`mk-next`、`mk-score`、`mk-best`、`mk-tape-label`、`mk-tape`、`mk-finish`、`mk-ending-status`、`mk-replay`、`mk-ending-tag`、`mk-ending`、`mk-epilogue`、`mk-ending-art`、`mk-result`、`mk-final-market`
+`view-market-desk`、`mk-day`、`mk-sound`、`mk-status`、`mk-character`、`mk-portrait`、`mk-life-title`、`mk-life-story`、`mk-exchange`、`mk-index-label`、`mk-index`、`mk-change`、`mk-market-index`、`mk-market-change`、`mk-risk`、`mk-focus`、`mk-risk-meter`、`mk-risk-warning`、`mk-chart`、`mk-axis`、`mk-layout`、`mk-intro`、`mk-go`、`mk-case`、`mk-headline`、`mk-clue`、`mk-actions`、`mk-settling`、`mk-review`、`mk-reveal`、`mk-result-move`、`mk-life-shift`、`mk-verdict`、`mk-market-recap`、`mk-feedback`、`mk-next`、`mk-score`、`mk-best`、`mk-tape-label`、`mk-tape`、`mk-finish`、`mk-ending-status`、`mk-replay`、`mk-ending-tag`、`mk-ending`、`mk-epilogue`、`mk-ending-art`、`mk-final-revenue`、`mk-result`、`mk-final-market`、`mk-rank-status`、`mk-rank-retry`、`mk-rank-board`、`mk-rank-board-status`、`mk-rank-list`
 
 ## 狀態與常數
 
@@ -21,7 +21,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`lifeAt` L41、`portraitPath` L44、`paintCharacter` L47、`playBell` L66、`signedPercent` L84、`paintChart` L87、`percent` L97、`local` L124、`params` L127、`render` L130、`renderFinale` L188、`start` L212、`choose` L232、`reveal` L243、`next` L273
+`money` L33、`prepareRankedRound` L34、`renderRankStatus` L42、`sendRankedRound` L46、`submitRankedRound` L67、`loadRankings` L76、`lifeAt` L112、`portraitPath` L115、`paintCharacter` L118、`playBell` L137、`signedPercent` L155、`paintChart` L158、`percent` L168、`local` L195、`params` L198、`render` L201、`renderFinale` L260、`start` L286、`choose` L308、`reveal` L319、`next` L343
 
 ## 錢包與結算接點
 
@@ -39,10 +39,10 @@
 
 ## 追蹤（GA4）
 
-- L228 `start`：`round = AN.start('market-desk', 0, params());`
-- L269 `reveal`：`AN.progress(round, params(), false);`
-- L283 `next`：`AN.end(round, 0, focus === 0 ? 'lose' : 'win', params());`
-- L310 `next`：`AN.end(round, 0, 'abandoned', params());`
+- L304 `start`：`round = AN.start('market-desk', 0, params());`
+- L339 `reveal`：`AN.progress(round, params(), false);`
+- L353 `next`：`AN.end(round, 0, focus === 0 ? 'lose' : 'win', params());`
+- L382 `next`：`AN.end(round, 0, 'abandoned', params());`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -68,6 +68,7 @@
 - 五種處境各有獨立插畫。跨越門檻時有短場景切換，收盤結果會標示升級或下滑，減少動態效果時直接換圖。手機遊戲卡直接開啟單欄直式配置；遊戲內的展開鍵只在頁內展開。
 - 虛構大盤從 1,000 起算，每題走勢固定且不受玩家選項影響。完成 20 天、阿澤信心指數較開局上升超過 40、但落後大盤時，觸發「牛市裡的慢半拍」，並顯示兩者累計百分比。
 - 結局獨立呈現最後一幕和累計成績，上方「下一輪」直接開始新一局。
+- 最終營收是虛構金額，開局為 NT$100,000，每個信心指數點對應 NT$100。完成 20 天或專注力歸零時，將該局最終金額提交訪客排行榜。金額從高到低，同分先達成者優先。虛構大盤、查證分數及平台點數不納入排名。
 
 ## 修改檢查清單
 

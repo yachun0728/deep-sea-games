@@ -44,7 +44,7 @@
     link.append(memberIcon(gameId), name);
     game.appendChild(link);
     best.className = 'board-best';
-    best.textContent = entry.score.toLocaleString('zh-TW');
+    best.textContent = (gameId === 'market-desk' ? 'NT$' : '') + entry.score.toLocaleString('zh-TW');
     if (entry.recordedAt) {
       var recordedAt = new Date(entry.recordedAt);
       if (Number.isFinite(recordedAt.getTime())) {
