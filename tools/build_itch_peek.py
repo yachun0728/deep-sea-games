@@ -114,13 +114,13 @@ html[lang="en"] .t-zh{{display:none}}
 #view-peek .field:has(#peek-assist) label{{flex-direction:row!important}}
 @font-face{{font-family:Cinzel;font-weight:700;src:url(assets/fonts/cinzel-latin-700.woff2) format("woff2")}}
 @font-face{{font-family:Cinzel;font-weight:800;src:url(assets/fonts/cinzel-latin-800.woff2) format("woff2")}}
-@font-face{{font-family:"Alegreya Sans";font-weight:500;src:url(assets/fonts/alegreya-sans-latin-500.woff2) format("woff2")}}
-@font-face{{font-family:"Alegreya Sans";font-weight:700;src:url(assets/fonts/alegreya-sans-latin-700.woff2) format("woff2")}}
-@font-face{{font-family:"Alegreya Sans";font-weight:800;src:url(assets/fonts/alegreya-sans-latin-800.woff2) format("woff2")}}
-body,button,input{{font-family:"Alegreya Sans","Noto Sans TC",system-ui,sans-serif}}
+@font-face{{font-family:Spectral;font-weight:600;src:url(assets/fonts/spectral-latin-600.woff2) format("woff2")}}
+@font-face{{font-family:Spectral;font-weight:700;src:url(assets/fonts/spectral-latin-700.woff2) format("woff2")}}
+@font-face{{font-family:Spectral;font-weight:800;src:url(assets/fonts/spectral-latin-800.woff2) format("woff2")}}
+body,button,input{{font-family:Spectral,"Songti TC","Noto Serif TC",serif}}
 body{{background:radial-gradient(ellipse at 50% 0,#1a120a 0,#080604 70%) fixed;color:#f1d9a6}}
 #view-peek .sneak-stage{{border:3px solid #6b4a1f!important;box-shadow:0 0 0 2px #1a110a,0 12px 40px rgba(0,0,0,.7);border-radius:6px}}
-#view-peek .side .go{{font-family:"Alegreya Sans",sans-serif;font-weight:800;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:#f6dfa8;background:linear-gradient(#4a3320,#2a1b0f)!important;border:2px solid #b8893a!important;border-radius:6px;box-shadow:inset 0 1px 0 rgba(255,225,160,.25),0 3px 8px rgba(0,0,0,.6);text-shadow:0 1px 0 #120a05;cursor:pointer}}
+#view-peek .side .go{{font-family:Spectral,serif;font-weight:800;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:#f6dfa8;background:linear-gradient(#4a3320,#2a1b0f)!important;border:2px solid #b8893a!important;border-radius:6px;box-shadow:inset 0 1px 0 rgba(255,225,160,.25),0 3px 8px rgba(0,0,0,.6);text-shadow:0 1px 0 #120a05;cursor:pointer}}
 #view-peek .side .go:hover{{background:linear-gradient(#5d4228,#35230f)!important;border-color:#e8c675!important}}
 #view-peek .side .go:active{{transform:translateY(1px)}}
 #view-peek .field:has(#peek-assist) label{{color:#d9bf88}}

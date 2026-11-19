@@ -41,11 +41,11 @@
 .bq-chip.is-gone{opacity:.28;text-decoration:line-through}
 .bq-chip.t-poison{color:#d17bff}.bq-chip.t-nectar{color:#ffd23f}.bq-chip.t-truth{color:#6fd3ff}
 .bq-comp{margin:0;font-size:11px;color:var(--bq-dim)}
-.bq-stage.is-flip .bq-table{animation:bq-spin 1s cubic-bezier(.5,0,.3,1)}
+.bq-stage.is-flip .bq-table{animation:bq-spin 1.8s cubic-bezier(.45,0,.25,1)}
 .bq-center{position:absolute;right:14px;top:12px;z-index:6;max-width:44%;text-align:right;pointer-events:none;text-shadow:0 0 6px #000,0 0 10px #000}
 .bq-center p{margin:2px 0;font-size:12px;color:var(--bq-dim)}.bq-center p:first-child{font-weight:700;font-size:14px;color:var(--bq-ink)}
-.bq-reveal{position:absolute;left:50%;top:50%;z-index:6;transform:translate(-50%,-50%) scale(.6);padding:10px 18px;border:2px solid currentColor;border-radius:4px;background:rgba(0,0,0,.88);font:700 26px var(--bq-head);letter-spacing:.08em;white-space:nowrap;opacity:0;pointer-events:none}
-.bq-reveal.is-on{animation:bq-pop 1.5s ease-out}
+.bq-reveal{position:absolute;left:50%;top:56%;z-index:14;transform:translate(-50%,-50%) scale(.6);padding:18px 44px;border:0;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,.35) 60%,transparent);font:700 26px var(--bq-head);letter-spacing:.08em;white-space:nowrap;opacity:0;pointer-events:none}
+.bq-reveal.is-on{animation:bq-pop 2.2s ease-out}
 .bq-reveal.t-poison,.bq-reveal.t-poison2{color:#d17bff;text-shadow:0 0 14px #b13cff}.bq-reveal.t-nectar,.bq-reveal.t-pnectar{color:#ffd23f;text-shadow:0 0 14px #ffb300}
 .bq-reveal.t-truth{color:#6fd3ff;text-shadow:0 0 14px #19a7ff}.bq-reveal.t-water{color:#aab8c2}
 .bq-cup{position:absolute;width:72px;height:124px;margin:-110px 0 0 -36px;padding:0;border:2px solid transparent;border-radius:8px;background:transparent;color:#d7c8b2;cursor:pointer;
@@ -394,3 +394,39 @@
 @keyframes ifx-spin{0%{opacity:0;transform:rotate(0) scale(.4)}30%{opacity:1}100%{opacity:0;transform:rotate(300deg) scale(1.2)}}
 .bq-stage.is-itemfx .bq-hand-box{opacity:.3}
 @media(prefers-reduced-motion:reduce){.bq-itemfx.on,.bq-ifx-item,.bq-ifx-n,.bq-ifx-eff,.bq-ifx-eff i{animation-duration:.01s;animation-delay:0s}}
+
+/* v7h: pick the drink target by tapping the Host or yourself (the two buttons stay for keyboard/screen readers, visually hidden) */
+#view-banquet #bq-self,#view-banquet #bq-toast{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0;white-space:nowrap}
+.bq-tgt{position:absolute;z-index:9;display:block;padding:0;border:0;background:transparent;cursor:default;pointer-events:none;font:inherit;color:inherit}
+.bq-tgt-d{left:50%;top:0;width:28%;height:80%;transform:translateX(-50%);z-index:4}
+.bq-tgt-p{left:50%;bottom:0;width:min(38%,360px);height:16%;transform:translateX(-50%)}
+.bq-tgt-cap{position:absolute;left:50%;transform:translateX(-50%);padding:4px 12px;border:1px solid var(--bq-amber);border-radius:999px;background:rgba(6,20,17,.88);color:#ffe9b0;font:700 13px var(--bq-head);letter-spacing:.04em;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+.bq-tgt-d .bq-tgt-cap{top:46%}
+.bq-tgt-p .bq-tgt-cap{top:-30px}
+.bq-stage.is-tgt-d .bq-tgt-d,.bq-stage.is-tgt-p .bq-tgt-p,.bq-stage.is-tgt-p .bq-side-p{pointer-events:auto;cursor:pointer}
+.bq-stage.is-tgt-d .bq-tgt-d .bq-tgt-cap,.bq-stage.is-tgt-p .bq-tgt-p .bq-tgt-cap{opacity:1}
+.bq-stage.is-tgt-d .bq-dealer-imgs{animation:bq-tgt-glow 1.5s ease-in-out infinite}
+.bq-stage.is-tgt-p .bq-hands,.bq-stage.is-tgt-p .bq-side-p{animation:bq-tgt-glow 1.5s ease-in-out infinite}
+.bq-stage.is-tgt-d:has(.bq-tgt-d:hover) .bq-dealer-imgs,.bq-stage.is-tgt-p:has(.bq-tgt-p:hover) .bq-hands{filter:brightness(1.4) drop-shadow(0 0 22px rgba(255,214,130,.95));animation:none}
+@keyframes bq-tgt-glow{0%,100%{filter:brightness(1) drop-shadow(0 0 0 rgba(255,214,130,0))}50%{filter:brightness(1.22) drop-shadow(0 0 16px rgba(255,214,130,.8))}}
+@media(prefers-reduced-motion:reduce){.bq-stage.is-tgt-d .bq-dealer-imgs,.bq-stage.is-tgt-p .bq-hands,.bq-stage.is-tgt-p .bq-side-p{animation:none;filter:brightness(1.18) drop-shadow(0 0 12px rgba(255,214,130,.7))}}
+@media(max-width:819px){.bq-tgt-d .bq-tgt-cap{top:auto;bottom:6%}.bq-tgt-p{height:22%;width:60%}}
+
+/* v7i: no cup numbers; results flash for ~2.4 s and are gone, so the player has to remember */
+.bq-num{display:none}
+.bq-cup.is-flash .bq-tag{position:absolute;left:50%;top:-26px;transform:translateX(-50%);z-index:3;padding:2px 10px;border:1px solid var(--bq-amber);border-radius:999px;background:rgba(6,20,17,.92);font-size:12px;color:#ffe9b0;animation:bq-flashout 2.4s ease both}
+@keyframes bq-flashout{0%{opacity:0;transform:translate(-50%,6px)}12%{opacity:1;transform:translate(-50%,0)}78%{opacity:1}100%{opacity:0}}
+/* the host's tell: the candles go out, the room dims, then he relights them */
+.bq-dark{position:absolute;inset:0;z-index:13;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 50% 38%,rgba(0,0,0,.5),rgba(0,0,0,.94) 72%)}
+.bq-dark.is-on{animation:bq-dark 2.8s ease both}
+.bq-dark::after{content:"";position:absolute;left:50%;top:44%;width:150px;height:150px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(rgba(255,196,110,.85),transparent 70%);opacity:0}
+.bq-dark.is-on::after{animation:bq-flare 2.8s ease both}
+@keyframes bq-dark{0%{opacity:0}16%{opacity:1}58%{opacity:1}72%{opacity:.8}100%{opacity:0}}
+@keyframes bq-flare{0%,56%{opacity:0;transform:translate(-50%,-50%) scale(.4)}66%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.4)}}
+/* opening: fade up from black, slow push-in, dim for the host's last line */
+.bq-menu.is-open::after{content:"";position:absolute;inset:0;z-index:40;background:#000;pointer-events:none;animation:bq-openfade 2.4s ease forwards}
+@keyframes bq-openfade{0%{opacity:1}35%{opacity:1}100%{opacity:0}}
+.bq-menu.is-open .bq-menu-dealer{animation:bq-openin 3.2s ease both}
+@keyframes bq-openin{from{transform:scale(1.08) translateY(10px)}to{transform:none}}
+.bq-menu.is-dim{filter:brightness(.76) saturate(.85);transition:filter 1.2s ease}
+@media(prefers-reduced-motion:reduce){.bq-dark.is-on,.bq-dark.is-on::after,.bq-menu.is-open::after,.bq-menu.is-open .bq-menu-dealer{animation:none}.bq-dark.is-on{opacity:.8}}

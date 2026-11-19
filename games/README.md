@@ -40,14 +40,14 @@
 | [寶寶逃洗澡 Baby Bath Escape](baby/README.md) | `#baby` | 跑酷動作 | 顯示 | 180 行 | 跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。 |
 | [布丁突圍 Pudding Dash](pudding/README.md) | `#pudding` | 跑酷動作 | 顯示 | 386 行 | 拼出武器，背著小王子殺出重圍。 |
 | [下班保衛戰 Clock Out](clock-out/README.md) | `#clock-out` | 益智策略 | 顯示 | 1096 行 | 擺好辦公用品擋住一波波工作，撐到 17:00 打卡下班。 |
-| [別看 Don’t Peek](peek/README.md) | `#peek` | 潛行偷閒 | 顯示 | 909 行 | 抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，點對牠怕的道具。 |
+| [別看 Don’t Peek](peek/README.md) | `#peek` | 潛行偷閒 | 顯示 | 926 行 | 抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，點對牠怕的道具。 |
 | [血壓上升 Midnight Mosquito](mosquito/README.md) | `#mosquito` | 潛行偷閒 | 顯示 | 437 行 | 深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。 |
 | [尊嚴保衛戰 The Last Hair](last-hair/README.md) | `#last-hair` | 潛行偷閒 | 顯示 | 585 行 | 頂著最後三根頭髮，在強風中走完 500 公尺去面試。 |
 | [打磚塊 Breakout](breakout/README.md) | `#breakout` | 免費懷舊 | 顯示 | 228 行 | 移動擋板反彈小球，打光磚塊一關闖過一關。 |
 | [小灰出門 Pet Walkies](pet-walk/README.md) | `#pet-walk` | 跑酷動作 | 顯示 | 1104 行 | 一鍵帶小灰散步，路上撞見野狗、河鯊和幸運轉盤。 |
 | [拒絕加班 No Overtime!](office-shoot/README.md) | `#office-shoot` | 跑酷動作 | 顯示 | 1178 行 | 自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。 |
 | [深海連連看 Ocean Link](ocean-link/README.md) | `#ocean-link` | 免費懷舊 | 顯示 | 407 行 | 把相同的圖案連起來，穿越礁石與移動棋盤。 |
-| [最後的晚餐 The Last Banquet](banquet/README.md) | `#banquet` | 益智策略 | 顯示 | 730 行 | 與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。 |
+| [最後的晚餐 The Last Banquet](banquet/README.md) | `#banquet` | 益智策略 | 顯示 | 742 行 | 與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。 |
 | [人魚接龍 Mermaid Spider](mermaid/README.md) | `#mermaid` | 益智策略 | 顯示 | 285 行 | 牌背是美人魚的蜘蛛接龍，排滿 K 到 A 收成珍珠。 |
 | [數字吞噬 Number Gulp](eat-smaller/README.md) | `#eat-smaller` | 益智策略 | 顯示 | 62 行 | 吃掉比你小的數字、躲開比你大的，剛好變成目標數字就過關。 |
 | [鏡像雙子 Mirror Twins](mirror-twins/README.md) | `#mirror-twins` | 益智策略 | 顯示 | 62 行 | 同時操控兩位太空人，其中一位左右相反，一起走進傳送艙。 |
