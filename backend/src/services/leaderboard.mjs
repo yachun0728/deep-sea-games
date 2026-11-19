@@ -14,14 +14,17 @@ export async function getLeaderboard(db, gameId) {
 export async function getLeaderboardFeed(db) {
   const { results } = await db.prepare(
     `SELECT scores.game_id AS gameId, scores.player_id AS playerId,
-            players.display_name AS displayName, scores.score, scores.recorded_at AS recordedAt
+            players.display_name AS displayName, scores.score, scores.recorded_at AS recordedAt,
+            activity.last_played_at AS lastPlayedAt
        FROM game_leaderboard AS scores JOIN players ON players.id = scores.player_id
-      ORDER BY scores.game_id, scores.score DESC, scores.recorded_at, scores.score_order, scores.player_id`,
+       LEFT JOIN leaderboard_activity AS activity ON activity.game_id = scores.game_id
+      ORDER BY activity.last_played_at DESC, scores.game_id, scores.score DESC,
+               scores.recorded_at, scores.score_order, scores.player_id`,
   ).all();
   const games = new Map();
-  for (const { gameId, ...entry } of results) {
-    if (!games.has(gameId)) games.set(gameId, []);
-    games.get(gameId).push(entry);
+  for (const { gameId, lastPlayedAt, ...entry } of results) {
+    if (!games.has(gameId)) games.set(gameId, {gameId, lastPlayedAt, entries: []});
+    games.get(gameId).entries.push(entry);
   }
-  return Array.from(games, ([gameId, entries]) => ({gameId, entries}));
+  return Array.from(games.values());
 }

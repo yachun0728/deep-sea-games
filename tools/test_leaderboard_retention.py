@@ -98,6 +98,47 @@ class LeaderboardRetentionTests(unittest.TestCase):
         self.assertEqual(self.db.execute("SELECT COUNT(*) FROM player_best_scores").fetchone(), (0,))
         self.assertNotEqual(self.scores()[0][2], '2026-01-01T00:00:00.000Z')
 
+    def test_activity_updates_without_improving_or_replaying_a_score(self):
+        self.migrate()
+        for version in ('0007', '0008'):
+            self.db.executescript(next(MIGRATIONS.glob(version + '_*.sql')).read_text())
+        self.add('p00', 40, 'frog')
+        initial = '2026-01-01T00:00:00.000Z'
+        self.db.execute("UPDATE game_leaderboard SET recorded_at = ? WHERE game_id = 'frog'", (initial,))
+        self.db.executescript((MIGRATIONS / '0009_leaderboard_activity.sql').read_text())
+        def last_played(game):
+            row = self.db.execute(
+                'SELECT last_played_at FROM leaderboard_activity WHERE game_id = ?', (game,)
+            ).fetchone()
+            return row[0] if row else None
+
+        self.assertEqual(last_played('frog'), initial)
+        self.db.execute("INSERT INTO frog_rounds (id, player_id, seed, started_at) VALUES ('f','p00',1,2)")
+        self.assertEqual(last_played('frog'), initial)
+        self.db.execute("UPDATE frog_rounds SET score = 2 WHERE id = 'f'")
+        self.assertNotEqual(last_played('frog'), initial)
+        self.assertEqual(self.scores()[0], ('p00', 40, initial))
+
+        self.db.execute("UPDATE leaderboard_activity SET last_played_at = ? WHERE game_id = 'frog'", (initial,))
+        self.db.execute("UPDATE frog_rounds SET score = 2 WHERE id = 'f'")
+        self.assertEqual(last_played('frog'), initial)
+
+        self.db.execute("INSERT INTO mines_rounds (id, player_id, started_at, board) VALUES ('m','p01',1,'{}')")
+        self.assertIsNone(last_played('mines'))
+        self.db.execute("UPDATE mines_rounds SET score = 0 WHERE id = 'm'")
+        self.assertIsNotNone(last_played('mines'))
+
+        self.db.execute("INSERT INTO ranked_boards (id, player_id, game_id, started_at, state) "
+                        "VALUES ('b','p02','ocean-link',1,'{}')")
+        self.assertIsNone(last_played('ocean-link'))
+        self.db.execute("UPDATE ranked_boards SET checkpoint_score = 1 WHERE id = 'b'")
+        self.assertIsNotNone(last_played('ocean-link'))
+        self.db.execute("UPDATE leaderboard_activity SET last_played_at = ? WHERE game_id = 'ocean-link'", (initial,))
+        self.db.execute("UPDATE ranked_boards SET checkpoint_score = 1 WHERE id = 'b'")
+        self.assertEqual(last_played('ocean-link'), initial)
+        self.db.execute("UPDATE ranked_boards SET checkpoint_score = NULL, score = 10 WHERE id = 'b'")
+        self.assertNotEqual(last_played('ocean-link'), initial)
+
     def test_same_millisecond_keeps_first_to_reach_score(self):
         self.migrate()
         self.db.executescript((MIGRATIONS / '0007_ranked_board_checkpoints.sql').read_text())

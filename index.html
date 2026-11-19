@@ -751,7 +751,8 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 .board-table a{display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none;font-weight:500}
 .board-table svg{width:28px;height:28px;flex:none;border-radius:6px;background:var(--tc-active)}
 .board-best{font-weight:600;color:var(--tc-accent)}
-.board-best time{display:block;margin-top:3px;color:var(--tc-muted);font-size:11px;font-weight:400;white-space:nowrap}
+.board-recent-label{margin:0;color:var(--tc-muted);font-size:13px;text-align:right}
+.board-table time{display:block;margin-top:3px;color:var(--tc-muted);font-size:11px;font-weight:400;white-space:nowrap}
 .board-empty{margin:12px 0 0;padding:14px;border-radius:6px;background:var(--tc-surface);color:var(--tc-muted);text-align:center}
 #board-game,#board-retry{background:var(--tc-surface);color:#fff;border:1px solid var(--tc-line);border-radius:6px;padding:8px 10px;font:inherit}
 #board-game{min-width:0;max-width:58%}
@@ -927,7 +928,12 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 /* Player and game columns */
 .board-player{color:#fff}
 .board-table th:nth-child(2),.board-table td:nth-child(2){display:table-cell}
-@media(max-width:700px){.board-table td:nth-child(2) span{display:none}}
+@media(max-width:700px){
+  .board-table a{gap:5px;overflow-wrap:anywhere}
+  .board-table svg{width:21px;height:21px}
+  .board-table td,.board-table th{padding-inline:6px}
+  .board-table time{white-space:normal}
+}
 
 /* ---------- game side panels and start buttons follow the site skin ---------- */
 .view:not(.lobby-view):not(.member-view) .side,.view:not(.lobby-view):not(.member-view) .panel{--panel:var(--tc-side);--panel-2:var(--tc-surface);--line:var(--tc-line);--fg:#fff;--muted:var(--tc-muted);--lamp:var(--tc-accent);--font-display:var(--tc-font)}
@@ -2616,10 +2622,11 @@ html.frontier-immersive{overflow:hidden}
     <section class="lobby-board" aria-labelledby="board-title">
       <div class="lobby-row-head">
         <h2 id="board-title"><i class="fa-solid fa-trophy side-head-icon" aria-hidden="true"></i>排行榜</h2>
+        <p class="board-recent-label">最近 10 款有排行活動的遊戲</p>
       </div>
       <div class="board-panel">
         <table class="board-table">
-          <thead><tr><th scope="col">玩家</th><th scope="col">遊戲</th><th scope="col">最佳紀錄</th></tr></thead>
+          <thead><tr><th scope="col">玩家</th><th scope="col">遊戲／最近活動</th><th scope="col">最佳紀錄</th></tr></thead>
           <tbody id="board-rows"></tbody>
         </table>
         <p class="board-empty" id="board-status" role="status"></p>
@@ -9179,7 +9186,9 @@ html.frontier-immersive{overflow:hidden}
   "麥克風無法使用，已改用螢幕琴鍵。": "Microphone unavailable. Switched to on-screen keys.",
   "麥克風無法使用：": "Microphone unavailable: ",
   "點一下繼續": "Tap to resume",
-  "點一下繼續（會重新開啟麥克風）": "Tap to resume (microphone turns back on)"
+  "點一下繼續（會重新開啟麥克風）": "Tap to resume (microphone turns back on)",
+  "最近 10 款有排行活動的遊戲": "10 games with the latest ranked activity",
+  "遊戲／最近活動": "Game / Last played"
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -25135,6 +25144,10 @@ function ftBuilding(b,w){
     icon.setAttribute('viewBox', '0 0 96 96'); icon.setAttribute('aria-hidden', 'true'); use.setAttribute('href', '#icon-' + id); icon.appendChild(use); return icon;
   }
   var boardRequest = null;
+  var boardTimer = null;
+  var boardSnapshot = null;
+  var RECENT_GAMES_LIMIT = 10;
+  var BOARD_REFRESH_MS = 30000;
   var boardRetry = $('board-retry');
 
   var boardTime = new Intl.DateTimeFormat('sv-SE', {
@@ -25142,7 +25155,7 @@ function ftBuilding(b,w){
     hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
   });
 
-  function boardRow(gameId, entry) {
+  function boardRow(gameId, entry, lastPlayedAt) {
     var row = document.createElement('tr');
     var player = row.insertCell(), game = row.insertCell(), best = row.insertCell();
     player.className = 'board-player';
@@ -25160,13 +25173,13 @@ function ftBuilding(b,w){
     game.appendChild(link);
     best.className = 'board-best';
     best.textContent = (gameId === 'market-desk' ? 'NT$' : '') + entry.score.toLocaleString('zh-TW');
-    if (entry.recordedAt) {
-      var recordedAt = new Date(entry.recordedAt);
-      if (Number.isFinite(recordedAt.getTime())) {
+    if (lastPlayedAt) {
+      var lastPlayed = new Date(lastPlayedAt);
+      if (Number.isFinite(lastPlayed.getTime())) {
         var time = document.createElement('time');
-        time.dateTime = entry.recordedAt;
-        time.textContent = boardTime.format(recordedAt);
-        best.appendChild(time);
+        time.dateTime = lastPlayedAt;
+        time.textContent = boardTime.format(lastPlayed);
+        game.appendChild(time);
       }
     }
     return row;
@@ -25184,8 +25197,7 @@ function ftBuilding(b,w){
     var request = new AbortController();
     boardRequest = request;
     var body = $('board-rows');
-    body.replaceChildren();
-    boardStatus('載入排行榜中…');
+    if (!body.children.length) boardStatus('載入排行榜中…');
     var timeout = setTimeout(function () { request.abort(); }, 10000);
     try {
       var module = await import('./frontend/services/api.mjs');
@@ -25194,14 +25206,17 @@ function ftBuilding(b,w){
       if (boardRequest !== request) return;
       var visibleGames = new Set(Array.from(document.querySelectorAll('.lobby-grid .game-card:not([data-game-hidden])'),
         function (card) { return card.hash.slice(1); }));
-      var rows = result.games.filter(function (game) {
+      var recent = result.games.filter(function (game) {
         return visibleGames.has(game.gameId) && Object.hasOwn(VIEWS, game.gameId) && game.entries.length;
-      }).map(function (game) {
-        // The feed orders each game's scores highest first, with a stable tie-break.
-        return boardRow(game.gameId, game.entries[0]);
+      }).slice(0, RECENT_GAMES_LIMIT).map(function (game) {
+        return [game.gameId, game.entries[0], game.lastPlayedAt];
       });
-      body.replaceChildren(...rows);
-      boardStatus(rows.length ? '' : '目前尚無排行榜紀錄。');
+      var snapshot = JSON.stringify(recent);
+      if (snapshot !== boardSnapshot) {
+        body.replaceChildren(...recent.map(function (game) { return boardRow(...game); }));
+        boardSnapshot = snapshot;
+      }
+      boardStatus(recent.length ? '' : '目前尚無排行榜紀錄。');
     } catch (error) {
       if (boardRequest === request) boardStatus('目前無法載入排行榜。', true);
     } finally {
@@ -25210,15 +25225,24 @@ function ftBuilding(b,w){
     }
   }
 
+  function refreshVisibleBoard() {
+    if (boardTimer === null || document.hidden || boardRequest || $('board-rows').contains(document.activeElement)) return;
+    boardLoad();
+  }
+
   function boardRoute(on) {
+    clearInterval(boardTimer);
+    boardTimer = null;
     if (!on) {
       if (boardRequest) boardRequest.abort();
       boardRequest = null;
       return;
     }
     boardLoad();
+    boardTimer = setInterval(refreshVisibleBoard, BOARD_REFRESH_MS);
   }
 
+  document.addEventListener('visibilitychange', refreshVisibleBoard);
   boardRetry.addEventListener('click', boardLoad);
 
   function memberRender() {
