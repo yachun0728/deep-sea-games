@@ -66,6 +66,6 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 
 `0006_leaderboard_top_50.sql` 在 D1 接受新上榜紀錄或個人進步時，以 UTC 記錄時間。大廳顯示台北時間；相同分數先達成者優先，同毫秒再依玩家 ID。舊資料缺少時間時維持空值，同分排在已記時紀錄之前，避免假造時間或將舊成績移到同分隊尾。
 
-每個遊戲的 `best_scores` 最多 50 筆，每位玩家同一款最多一筆。未達門檻的成績不佔榜單空間。回合本身仍由各遊戲資料表保存，供驗證重送；榜單上限獨立於回合保存期限。
+`player_best_scores` 保存每位玩家在各遊戲的個人最佳。公開 API 讀取 `game_leaderboard`，每款最多 50 筆。刷新的個人最佳與公開榜同步更新；掉出前 50 名仍保留個人紀錄。對局本身仍由各遊戲資料表保存，供驗證重送。
 
-套用 `0006` 後會移除既有榜單中每款第 51 名以後的資料。有歷史資料的環境可先匯出 `best_scores`，以供需要還原時使用。先套用 D1 migration，再部署使用 `recordedAt` 的 Worker 與前端。
+`0006` 將既有 `best_scores` 改名為 `player_best_scores`，保留所有個人紀錄，再以每款前 50 筆初始化公開榜。原名稱暫時以唯讀 view 保留，既有 Worker 可在切換期間繼續查榜。先套用 D1 migration，再部署新版 Worker 與前端。
