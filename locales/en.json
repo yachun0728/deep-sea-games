@@ -4353,7 +4353,7 @@
   "遠處的鐘敲了三下。": "A distant bell tolls three times.",
   "下次：泥水冒泡、土面鼓起時，躲進另一邊並撐住 2 秒。": "Next time: when mud bubbles and the ground bulges, hide on the other side and hold for 2 seconds.",
   "下次：落葉聚在哪邊，就躲進另一邊，撐滿 3 秒。": "Next time: hide on the opposite side from where the leaves gather, and hold for the full 3 seconds.",
-  "下次：躲藏有時間限制。鬼經過後就出來，別一直躲在裡面。": "Next time: hiding has a time limit. Come out once the ghost has passed; do not stay inside.",
+  "下次：躲著的時候背後的腳步會越來越近，在 Dread 追上來之前出來。": "Next time: while you hide, the footsteps behind you get closer. Come out before Dread catches up.",
   "下次：風向反了、拖行聲靠近時，躲進風來的那一側。": "Next time: when the wind reverses and dragging gets closer, hide on the side the wind comes from.",
   "下次：鳥群飛走、敲擊聲響起時，躲進敲擊的另一側。": "Next time: when the birds fly off and the knocking starts, hide on the side opposite the knocking.",
   "之後要躲進另一側。": " Afterward, hide on the opposite side.",
@@ -4369,7 +4369,7 @@
   "左右滑：躲進路邊的躲藏處（憋氣有限，別躲太久）": "Swipe left or right: hide in a spot by the road (your breath is limited, do not hide too long)",
   "按住畫面：閉眼（蓋住螢幕）　點一下：撿東西或離開躲藏處": "Hold the screen: close your eyes (cover the screen)   Tap: pick up or leave your hiding spot",
   "死因 #1 葉下客：落葉聚在哪一邊，你沒有躲進另一側": "Cause #1 Leafling: you did not hide on the opposite side from where the leaves gathered",
-  "死因 #10 憋氣太久：你躲得太久，被發現了": "Cause #10 Out of breath: you hid too long and were found",
+  "死因 #10 Dread 追上了：你躲太久，牠從背後找到你了": "Cause #10 Dread caught up: you hid too long and it found you from behind",
   "死因 #2 敲枝者：敲擊聲在哪一邊，你就躲進哪一邊": "Cause #2 Knocker: you hid on the side where the knocking was",
   "死因 #5 逆風客：風反著吹的時候，你沒有躲進風來的那一側": "Cause #5 Gale: when the wind reversed, you did not hide on the side it came from",
   "死因 #8 墳手：土面鼓起的那一邊，你沒有躲進另一側": "Cause #8 Reacher: you did not hide on the opposite side from the bulging ground",
@@ -4381,7 +4381,7 @@
   "要躲進另一側。": " Hide on the other side.",
   "要躲進風來的那一側。": " Hide on the side the wind comes from.",
   "路邊有東西！靠近時點一下撿起（電腦：F）": "Something by the road! Tap to pick it up when you are close (PC: F)",
-  "躲藏處不能躲太久。視野邊緣變暗就是快憋不住了，鬼過去之後就出來。": "You cannot stay in a hiding spot for long. When the edges of your vision darken you are running out of breath; come out once the ghost has passed.",
+  "Dread 一直在背後追你。躲藏時牠會越逼越近，腳步越來越急就快被找到了，鬼過去之後就出來。": "Dread is always chasing you from behind. While you hide it closes in; when the footsteps speed up you are about to be found, so come out once the ghost has passed.",
   "躲這邊": "Hide here",
   "躲進另一側，撐住！": "Hide on the other side and hold on!",
   "躲進另一側，撐滿 3 秒。": "Hide on the other side and hold for the full 3 seconds.",
@@ -4903,5 +4903,6 @@
   "Dread": "Dread",
   "背後傳來腳步聲，越來越急。": "Footsteps behind you, faster and faster.",
   "牠在追你。": "It is chasing you.",
-  "連點螢幕（電腦按 F 或 Enter）拉開距離，最後牠從一側撲來，躲進另一側。": "Tap the screen (F or Enter on a keyboard) to pull ahead; at the end it lunges from one side, so hide on the other."
+  "連點螢幕（電腦按 F 或 Enter）拉開距離，最後牠從一側撲來，躲進另一側。": "Tap the screen (F or Enter on a keyboard) to pull ahead; at the end it lunges from one side, so hide on the other.",
+  "身後": "Behind"
 }
