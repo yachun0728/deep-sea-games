@@ -7,24 +7,24 @@
 - 網址：`#baby`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。」｜立即開玩 · 居家逃亡
 - 追蹤名稱（GA4 `game_name`）：寶寶逃洗澡，`game_id` 為 `baby`
-- 檔案：`games/baby/card.html`、`games/baby/game.js`、`games/baby/icon.svg`、`games/baby/view.html`；`game.js` 共 180 行、13.1 KB
+- 檔案：`games/baby/card.html`、`games/baby/game.js`、`games/baby/icon.svg`、`games/baby/view.html`；`game.js` 共 167 行、12.5 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「31. 寶寶逃洗澡 Baby Bath Escape（baby）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-baby`、`baby-canvas`、`baby-score`、`baby-best`、`baby-amount`、`baby-pay`、`baby-next`、`baby-go`、`baby-msg`
+`view-baby`、`baby-canvas`、`baby-score`、`baby-best`、`baby-amount`、`baby-pay`、`baby-next`、`baby-go`、`baby-msg`、`baby-rank-status`、`baby-rank-retry`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`KM`（L166）、`babyBusy`（L2）
+- 狀態物件／進行中旗標：`KM`（L153）、`babyBusy`（L2）
 - L5 常數：`MILESTONES`、`BONUS`、`KEY`、`SKEY`、`UNIT`
 - L25 常數：`PXL`
-- L100 常數：`CHY`
+- L85 常數：`CHY`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rnd` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L15、`acc` L16、`wail` L30、`spawn` L33、`bg` L55、`drawObs` L63、`mom` L69、`baby` L79、`SK` L100、`T` L101、`ST` L102、`pick` L104、`release` L105、`say` L106、`setText` L108、`ui` L109、`awardBonus` L116、`die` L126、`start` L136、`overlay` L143、`bonusDraw` L153、`pos` L154、`loop` L173
+`rnd` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L15、`acc` L16、`syncModel` L29、`control` L30、`bg` L40、`drawObs` L48、`mom` L54、`baby` L64、`SK` L85、`T` L86、`ST` L87、`pick` L89、`release` L90、`say` L91、`setText` L93、`ui` L94、`awardBonus` L101、`die` L111、`start` L121、`overlay` L130、`bonusDraw` L140、`pos` L141、`loop` L160
 
 ## 錢包與結算接點
 
@@ -32,19 +32,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L120 `awardBonus`：`S.balance+=BONUS;`
+- L105 `awardBonus`：`S.balance+=BONUS;`
 
 **餘額檢查**
-- L139 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L124 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L121 `awardBonus`：`AN.progress(analytics,{step:s,score:s,milestone:m,bonus_points:BONUS,total_bonus_points:paid});`
-- L132 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
-- L140 `start`：`analytics=AN.start('baby',amount);`
+- L106 `awardBonus`：`AN.progress(analytics,{step:s,score:s,milestone:m,bonus_points:BONUS,total_bonus_points:paid});`
+- L117 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
+- L126 `start`：`analytics=AN.start('baby',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

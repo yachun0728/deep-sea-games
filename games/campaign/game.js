@@ -12,24 +12,16 @@
   try{var cpb=Number(localStorage.getItem('deep-sea-campaign-best'));if(Number.isFinite(cpb))CP.best=Math.max(0,cpb);}catch(e){}
   function cpText(id,value){var el=$(id);if(el.textContent!==value)el.textContent=value;}
   function cpSay(text,kind){cpText('cp-msg',text);$('cp-msg').className='msg'+(kind?' '+kind:'');}
-  function cpRelease(){campaignPointers.clear();campaignKeys.clear();CP.hold=false;}
+  var cpRank=timedLeaderboard('campaign','cp',2,cpUI);
+  function cpHold(held){var code=held?0:1;if(campaignRules.input(CP,code))cpRank.record(code);}
+  function cpRelease(){campaignPointers.clear();campaignKeys.clear();cpHold(false);}
   function cpSpeed(){return Math.min(CP_VMAX,CP_V0+CP_VK*CP.dist);}
   function cpPassed(){return CP.cleared+CP.idx;}
-  // Endless street: buildings are generated just ahead of the truck. The first two are ordinary and quiet buildings never come three in a row.
-  function cpMake(){
-    var quiet=['學校','醫院','豪宅'],normal=['住宅','商店','公寓','市場','公園','廟口','夜市'],n=CP.n++,pq=Math.min(CP_PQMAX,CP_PQ0+CP_PQK*n),isQ=n>=2&&CP.qrun<2&&Math.random()<pq,name;
-    CP.qrun=isQ?CP.qrun+1:0;
-    name=isQ?quiet[Math.floor(Math.random()*3)]:normal[Math.floor(Math.random()*7)];
-    var k=CP_KINDS[name],x=CP.nx;CP.nx=x+k.w+CP_GAP;
-    CP.lots.push({name:name,quiet:!!k.quiet,w:k.w,h:k.h,x0:x,x1:x+k.w,seed:n,tot:0,noisy:0,flash:-9,good:true});
-  }
-  function cpEnsure(){while(CP.lots.length<CP.idx+14)cpMake();}
-  function cpCity(){CP.lots=[];CP.n=0;CP.qrun=0;CP.nx=CP_LEAD;CP.cleared=0;CP.idx=0;cpEnsure();}
   function cpFloat(lot,text,kind){CP.floats.push({x:(lot.x0+lot.x1)/2,y:CP_GROUND-lot.h-44,text:text,kind:kind,t:CP.clock});if(CP.floats.length>8)CP.floats.shift();}
   function cpRemember(){if(CP.votes>CP.best){CP.best=CP.votes;try{localStorage.setItem('deep-sea-campaign-best',String(CP.best));}catch(e){}}}
   function cpLose(reason){
     AN.end(CP.analytics,CP.earned,CP.earned>0?'complete':'loss',{step:cpPassed(),votes:CP.votes,misses:CP.miss});
-    CP.active=false;CP.phase='lost';cpRelease();cpRemember();
+    CP.active=false;CP.phase='lost';cpRelease();cpRemember();cpRank.finish(CP.votes);
     cpSay(reason+' 累計 '+CP_MAX_MISS+' 次失誤，被檢舉落選。最終 '+fmt(CP.votes)+' 票，'+(CP.earned>0?'本局共入帳 '+fmt(CP.earned)+' 點。':'這一局沒有獎勵。'),CP.earned>0?'win':'lose');cpUI();
   }
   function cpMilestones(){
@@ -40,36 +32,6 @@
       CP.pops.push({v:nx[0],b:b,age:0});if(CP.pops.length>3)CP.pops.shift();
       cpSay('得票達 '+fmt(nx[0])+'！獎勵 +'+b+' 點已入帳，本局累計 +'+CP.earned+' 點。','win');
       nx=cpNextMilestone(CP.awarded);
-    }
-  }
-  function cpSettle(lot){
-    var frac=lot.tot>0?lot.noisy/lot.tot:0;lot.flash=CP.clock;
-    if(lot.quiet){
-      if(frac>CP_NOISE_LIMIT){
-        CP.miss++;CP.votes=Math.max(0,CP.votes-CP_PENALTY);lot.good=false;cpFloat(lot,'吵到'+lot.name+' −'+CP_PENALTY,'bad');
-        if(CP.miss>=CP_MAX_MISS){cpLose('吵到安靜區了。');return;}
-      }else{CP.votes+=CP_QUIET;lot.good=true;cpFloat(lot,'安靜通過 +'+CP_QUIET,'good');}
-    }else{
-      var gain=Math.round(CP_GAIN*frac/10)*10;CP.votes+=gain;
-      if(frac<CP_NEGLECT){CP.miss++;lot.good=false;cpFloat(lot,'沒宣傳到'+(gain>0?' +'+gain:''),'bad');if(CP.miss>=CP_MAX_MISS){cpLose('一般路段靜音太久，沒有拉到票。');return;}}
-      else{lot.good=true;cpFloat(lot,'+'+gain+' 票','gain');}
-    }
-    cpMilestones();
-  }
-  function cpStep(dt){
-    // Small slices keep zone entry and exit accurate on delayed frames.
-    while(dt>1e-8&&CP.phase==='run'){
-      var step=Math.min(dt,.012),v=cpSpeed();
-      CP.dist+=v*step;CP.clock+=step;CP.wheel+=v*step/12;dt-=step;
-      CP.pops.forEach(function(p){p.age+=step;});CP.pops=CP.pops.filter(function(p){return p.age<2.2;});
-      var wx=CP.dist+CP_TRUCK;
-      while(CP.idx<CP.lots.length&&wx>=CP.lots[CP.idx].x1){
-        cpSettle(CP.lots[CP.idx]);if(CP.phase!=='run')return;
-        CP.idx++;if(cpPassed()%15===0)AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss});
-        if(CP.idx>40){CP.lots.splice(0,20);CP.idx-=20;CP.cleared+=20;}
-        cpEnsure();
-      }
-      if(CP.idx<CP.lots.length){var lot=CP.lots[CP.idx];if(wx>=lot.x0){lot.tot+=step;if(!CP.hold)lot.noisy+=step;}}
     }
   }
   function cpSignal(){
@@ -86,19 +48,26 @@
     cpText('cp-best',fmt(CP.best));
     $('cp-miss').style.color=CP.miss>=3?'var(--crush)':'';
     cpText('cp-signal',sig[1]);$('cp-signal').dataset.state=sig[0];
-    $('cp-amount').disabled=CP.active;$('cp-go').disabled=live;
+    $('cp-amount').disabled=CP.active;$('cp-go').disabled=live||cpRank.busy();
     cpText('cp-go',live?'拉票中 · 安靜區按住靜音':CP.phase==='ready'?'出發拉票':'再跑一趟');
     $('cp-hold').disabled=!live;cpText('cp-hold',CP.hold?'靜音中 · 放開廣播':'按住靜音 · 放開廣播');
   }
   function cpStart(){
-    if(CP.phase==='run')return;
+    if(CP.phase==='run'||cpRank.busy())return;
     var stake=ENTRY_FEE;
     if(stake>S.balance){cpSay(LOW_MSG,'lose');return;}
+    cpRank.start(function(random){
     CP.analytics=AN.start('campaign',stake);CP.stake=stake;CP.active=true;save();renderAll();
-    cpCity();CP.dist=0;CP.votes=CP_START;CP.miss=0;CP.floats=[];CP.pops=[];CP.earned=0;CP.awarded=0;CP.phase='run';CP.last=performance.now();cpRelease();
+    campaignRules.create(random||Math.random,function(event,data){
+      if(event==='lost')cpLose(data);
+      else if(event==='settled')cpMilestones();
+      else if(event==='progress')AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss});
+      else if(event==='float')cpFloat(data.lot,data.text,data.kind);
+    },CP);CP.floats=[];CP.pops=[];CP.earned=0;CP.awarded=0;CP.phase='run';CP.last=performance.now();cpRelease();
     cpSay('出發！沒有終點，越開越快。放開讓喇叭廣播，前方出現紅色的學校、醫院、豪宅時按住靜音；在一般路段靜音太久也算失誤。');cpUI();campaignCanvas.focus();
+    },cpUI);
   }
-  function cpSync(now){var dt=Math.max(0,(now-CP.last)/1000);CP.last=now;if(!$('view-campaign').hidden&&!document.hidden)cpStep(dt);}
+  function cpSync(now){var dt=Math.max(0,(now-CP.last)/1000);CP.last=now;if(CP.phase==='run'&&!$('view-campaign').hidden&&!document.hidden)cpRank.update(dt*1000,()=>CP.phase==='run',step=>campaignRules.advance(CP,step));}
 
   /* drawing helpers */
   function cpRR(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
@@ -234,16 +203,16 @@
     }
     g.textBaseline='alphabetic';g.textAlign='left';
   }
-  function cpPress(e){if(e.button!==undefined&&e.button!==0)return;if(CP.phase!=='run'||$('view-campaign').hidden||document.hidden)return;e.preventDefault();cpSync(performance.now());if(CP.phase!=='run')return;campaignCanvas.focus();campaignPointers.add(e.pointerId);CP.hold=true;try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}cpUI();}
-  function cpLift(e){cpSync(performance.now());campaignPointers.delete(e.pointerId);CP.hold=campaignPointers.size>0||campaignKeys.size>0;}
+  function cpPress(e){if(e.button!==undefined&&e.button!==0)return;if(CP.phase!=='run'||$('view-campaign').hidden||document.hidden)return;e.preventDefault();cpSync(performance.now());if(CP.phase!=='run')return;campaignCanvas.focus();campaignPointers.add(e.pointerId);cpHold(true);try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}cpUI();}
+  function cpLift(e){cpSync(performance.now());campaignPointers.delete(e.pointerId);cpHold(campaignPointers.size>0||campaignKeys.size>0);}
   [campaignCanvas,$('cp-hold')].forEach(function(el){el.addEventListener('pointerdown',cpPress);['pointerup','pointercancel','lostpointercapture'].forEach(function(type){el.addEventListener(type,cpLift);});el.addEventListener('contextmenu',function(e){e.preventDefault();});});
   $('cp-go').addEventListener('click',cpStart);
-  addEventListener('keydown',function(e){if($('view-campaign').hidden||document.hidden||CP.phase!=='run'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;if(['INPUT','BUTTON','A','SUMMARY'].indexOf(e.target.tagName)>=0)return;if(e.code==='Space'){e.preventDefault();cpSync(performance.now());if(CP.phase==='run'){campaignKeys.add(e.code);CP.hold=true;}}});
-  addEventListener('keyup',function(e){if(e.code!=='Space')return;if(!$('view-campaign').hidden)e.preventDefault();cpSync(performance.now());campaignKeys.delete(e.code);CP.hold=campaignPointers.size>0||campaignKeys.size>0;});
+  addEventListener('keydown',function(e){if($('view-campaign').hidden||document.hidden||CP.phase!=='run'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;if(['INPUT','BUTTON','A','SUMMARY'].indexOf(e.target.tagName)>=0)return;if(e.code==='Space'){e.preventDefault();cpSync(performance.now());if(CP.phase==='run'){campaignKeys.add(e.code);cpHold(true);}}});
+  addEventListener('keyup',function(e){if(e.code!=='Space')return;if(!$('view-campaign').hidden)e.preventDefault();cpSync(performance.now());campaignKeys.delete(e.code);cpHold(campaignPointers.size>0||campaignKeys.size>0);});
   addEventListener('blur',function(){cpRelease();CP.last=performance.now();});
   document.addEventListener('visibilitychange',function(){cpRelease();CP.last=performance.now();});
   window.addEventListener('hashchange',function(){cpRelease();CP.last=performance.now();});
   function cpLoop(now){cpSync(now);if(!$('view-campaign').hidden&&!document.hidden){cpUI();cpDraw();}requestAnimationFrame(cpLoop);}
-  cpCity();cpUI();cpDraw();requestAnimationFrame(cpLoop);
+  campaignRules.create(Math.random, null, CP);CP.phase='ready';cpUI();cpDraw();requestAnimationFrame(cpLoop);
 
 

@@ -24,34 +24,19 @@ G.I={bs:n=>'最高 '+n,tap:'',title:"寶寶逃洗澡！",s1:"媽媽拿著浴巾�
 G.skins=[{need:0,n:'藍尿布寶寶',c:['#a0c4ff','#ffd6a5'],a:0},{need:200,n:'兔耳寶寶',c:['#ffc8dd','#ffafcc'],a:1},{need:500,n:'生日寶寶',c:['#b7e4c7','#74c69d'],a:3},{need:1000,n:'搗蛋之王',c:['#ffd23f','#ff9f1c'],a:2}];
 const GY=440,PXL=170;
 let dist,v,gap,py,vy,on,crawl,cid,obs,nextAt,stun,fx,charge,mstun,bots,rings;
-G.reset=()=>{dist=0;v=260;gap=150;py=GY;vy=0;on=true;crawl=false;obs=[];nextAt=450;stun=0;fx=[];charge=0;mstun=0;bots=0;rings=[]};
-G.score=()=>Math.floor(dist/60);
+let model=babyRules.create(),heldBy;
+const rank=timedLeaderboard('baby','baby',5,ui);
+function syncModel(){({dist,v,gap,py,vy,on,crawl,cid,obs,nextAt,stun,fx,charge,mstun,bots,rings}=model.snapshot());const next=model.snapshot().shake;if(next)shake=next;}
+function control(code){if(!babyRules.input(model,code))return;rank.record(code);syncModel();}
+G.reset=()=>{model=babyRules.create();syncModel();};
+G.score=()=>model.score();
 G.extra=()=>T('bt')(bots);
-function wail(){if(charge<=0||mstun>0)return;charge--;mstun=2.2;gap=Math.min(220,gap+50);shake=reduceMotion?0:.3;rings.push({t:0})}
-G.down=p=>{if(Math.hypot(p.x-340,p.y-505)<50)wail();else if(p.x<200){if(on){vy=-600;on=false}}else{crawl=true;cid=p.id}};
-G.up=p=>{if(p.id===cid)crawl=false};
-function spawn(){
-const t=['l','c','s'][(Math.random()*3)|0];
-obs.push({t,x:W+40});
-if(Math.random()<.45)obs.push({t:'b',x:W+40+(t==='s'?40:6),hi:t!=='s'});
-nextAt=dist+rnd(320,460)-Math.min(110,dist*.01)}
-G.update=dt=>{
-v=Math.min(430,260+dist*.01);dist+=v*dt;
-if(mstun>0){mstun-=dt;gap=Math.min(220,gap+v*.5*dt)}else gap-=(6+dist*.003)*dt;
-if(stun>0)stun-=dt;
-rings.forEach(r=>r.t+=dt);rings=rings.filter(r=>r.t<.7);
-if(dist>=nextAt)spawn();
-vy+=2300*dt;py+=vy*dt;if(py>=GY){py=GY;vy=0;on=true}else on=false;
-const cr=crawl&&on,top=py-(cr?24:46);
-for(const o of obs){
-o.x-=(o.t==='c'?v+120:v)*dt;
-if(o.t==='b'){const iy=o.hi?GY-70:GY-16;if(!o.g&&Math.hypot(o.x-PXL,iy-(py-(cr?12:23)))<28){o.g=1;bots++;charge=Math.min(3,charge+1);fx.push({s:'+',x:PXL,y:py-80,t:0})}}
-else if(stun<=0){
-const r=o.t==='l'?[o.x,GY-30,o.x+30,GY]:o.t==='c'?[o.x,GY-28,o.x+42,GY]:[o.x,GY-100,o.x+80,GY-34];
-if(PXL+10>r[0]&&PXL-10<r[2]&&py>r[1]&&top<r[3]){gap-=60;stun=.9;shake=reduceMotion?0:.25}}}
-obs=obs.filter(o=>o.x>-120&&!o.g);
-fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
-if(gap<=0)die('caught')};
+G.down=p=>{
+ const code=Math.hypot(p.x-340,p.y-505)<50?2:p.x<200?0:1;
+ control(code);heldBy=p.id;
+};
+G.up=p=>{if(p.id===heldBy){control(3);heldBy=undefined;}};
+G.update=dt=>{babyRules.advance(model,dt);syncModel();if(model.dead)die(model.dead);};
 function bg(){
 g.fillStyle='#ffc8dd';g.fillRect(-20,0,W+40,GY);
 for(let i=0;i<12;i++)for(let j=0;j<5;j++){const x=((i*50-dist*.3)%600+600)%600-50;F(x+(j%2)*25,30+j*70,6,'#ffafcc')}
@@ -102,7 +87,7 @@ const T=k=>G.I[k];
 const ST=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 best=+ST(KEY)||0;skin=+ST(SKEY)||0;if(!G.skins[skin]||best<G.skins[skin].need)skin=0;
 function pick(i){skin=i;try{localStorage.setItem(SKEY,i)}catch(e){}}
-function release(){crawl=false;}
+function release(){if(st==='run')control(4);heldBy=undefined;}
 function say(text,kind){$('baby-msg').textContent=text;$('baby-msg').className='msg'+(kind?' '+kind:'')}
 babySay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
@@ -110,7 +95,7 @@ function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('baby-score',G.score()+UNIT);setText('baby-best',best+UNIT);setText('baby-pay',fmt(paid)+' 點');
  setText('baby-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('baby-amount').disabled=babyBusy;$('baby-go').disabled=live;setText('baby-go',live?'逃跑中 · 跳躍／爬行':st==='over'?'再逃一次':'開始逃跑');
+ $('baby-amount').disabled=babyBusy;$('baby-go').disabled=live||rank.busy();setText('baby-go',live?'逃跑中 · 跳躍／爬行':st==='over'?'再逃一次':'開始逃跑');
  document.querySelectorAll('[data-baby-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-baby-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -126,7 +111,7 @@ function awardBonus(){
 function die(m){
  if(st!=='run')return;
  st='over';G.msg=m;shake=reduceMotion?0:.35;release();
- const s=G.score();rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
+ const s=G.score();rank.finish(s);rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
  if(rec){best=s;try{localStorage.setItem(KEY,best)}catch(e){}}
  if(unl.length)pick(G.skins.indexOf(unl[unl.length-1]));
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});babyBusy=false;renderAll();
@@ -134,11 +119,13 @@ function die(m){
  ui();
 }
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('baby',amount);babyStake=amount;babyBusy=true;save();renderAll();
- G.reset();paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=babyRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ },ui);
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
@@ -172,7 +159,7 @@ window.addEventListener('hashchange',()=>{release();last=performance.now()});
 $('baby-go').addEventListener('click',start);
 function loop(ts){const dt=Math.min(.05,Math.max(0,(ts-last)/1000)||0);last=ts;
  if(!V.hidden&&!document.hidden){tt+=dt;if(shake>0)shake-=dt;bpop.forEach(p=>p.age+=dt);bpop=bpop.filter(p=>p.age<1.8);
-  if(st==='run'){G.update(dt);if(st==='run')awardBonus()}
+  if(st==='run')rank.update(dt*1000,()=>st==='run',step=>{G.update(step);if(st==='run')awardBonus()})
   G.draw();bonusDraw();if(st!=='run')overlay();ui()}
  requestAnimationFrame(loop)}
 G.reset();ui();G.draw();overlay();requestAnimationFrame(loop);

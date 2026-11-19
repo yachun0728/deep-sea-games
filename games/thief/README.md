@@ -7,24 +7,24 @@
 - 網址：`#thief`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「換道、跳籃子，偷水果躲開老闆娘。」｜立即開玩 · 市場追逐
 - 追蹤名稱（GA4 `game_name`）：偷水果的貓，`game_id` 為 `thief`
-- 檔案：`games/thief/card.html`、`games/thief/game.js`、`games/thief/icon.svg`、`games/thief/view.html`；`game.js` 共 178 行、12.8 KB
+- 檔案：`games/thief/card.html`、`games/thief/game.js`、`games/thief/icon.svg`、`games/thief/view.html`；`game.js` 共 166 行、12.1 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「30. 偷水果的貓 Fruit Thief Cat（thief）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-thief`、`thief-canvas`、`thief-score`、`thief-best`、`thief-amount`、`thief-pay`、`thief-next`、`thief-go`、`thief-msg`
+`view-thief`、`thief-canvas`、`thief-score`、`thief-best`、`thief-amount`、`thief-pay`、`thief-next`、`thief-go`、`thief-msg`、`thief-rank-status`、`thief-rank-retry`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`KM`（L164）、`thiefBusy`（L2）
+- 狀態物件／進行中旗標：`KM`（L152）、`thiefBusy`（L2）
 - L5 常數：`MILESTONES`、`BONUS`、`KEY`、`SKEY`、`UNIT`
 - L25 常數：`CYT`
-- L98 常數：`CHY`
+- L84 常數：`CHY`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rnd` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L15、`acc` L16、`hurt` L31、`spawnRow` L32、`bg` L54、`item` L59、`cat` L64、`granny` L76、`SK` L98、`T` L99、`ST` L100、`pick` L102、`release` L103、`say` L104、`setText` L106、`ui` L107、`awardBonus` L114、`die` L124、`start` L134、`overlay` L141、`bonusDraw` L151、`pos` L152、`loop` L171
+`rnd` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L15、`acc` L16、`syncModel` L29、`control` L30、`bg` L40、`item` L45、`cat` L50、`granny` L62、`SK` L84、`T` L85、`ST` L86、`pick` L88、`release` L89、`say` L90、`setText` L92、`ui` L93、`awardBonus` L100、`die` L110、`start` L120、`overlay` L129、`bonusDraw` L139、`pos` L140、`loop` L159
 
 ## 錢包與結算接點
 
@@ -32,19 +32,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L118 `awardBonus`：`S.balance+=BONUS;`
+- L104 `awardBonus`：`S.balance+=BONUS;`
 
 **餘額檢查**
-- L137 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L123 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L119 `awardBonus`：`AN.progress(analytics,{step:s,score:s,milestone:m,bonus_points:BONUS,total_bonus_points:paid});`
-- L130 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
-- L138 `start`：`analytics=AN.start('thief',amount);`
+- L105 `awardBonus`：`AN.progress(analytics,{step:s,score:s,milestone:m,bonus_points:BONUS,total_bonus_points:paid});`
+- L116 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
+- L125 `start`：`analytics=AN.start('thief',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

@@ -24,32 +24,19 @@ G.I={bs:n=>'最高 '+n,tap:'',title:"胖老闆追人！",s1:"你遲到了，大�
 G.skins=[{need:0,n:'新進員工',c:['#4cc9f0','#1d3557'],a:0},{need:200,n:'IT 工程師',c:['#ffb703','#fb8500'],a:1},{need:500,n:'逃跑總監',c:['#e63946','#9d0208'],a:4},{need:1000,n:'截稿超人',c:['#ffd23f','#e76f51'],a:2}];
 const GY=440,PXL=170;
 let dist,v,gap,fat,py,vy,on,slide,sid,obs,nextAt,stun,fx;
-G.reset=()=>{dist=0;v=300;gap=150;fat=0;py=GY;vy=0;on=true;slide=false;obs=[];nextAt=500;stun=0;fx=[]};
-G.score=()=>Math.floor(dist/60);
+let model=bossRules.create(),heldBy;
+const rank=timedLeaderboard('boss','boss',5,ui);
+function syncModel(){({dist,v,gap,fat,py,vy,on,slide,sid,obs,nextAt,stun,fx}=model.snapshot());const next=model.snapshot().shake;if(next)shake=next;}
+function control(code){if(!bossRules.input(model,code))return;rank.record(code);syncModel();}
+G.reset=()=>{model=bossRules.create();syncModel();};
+G.score=()=>model.score();
 G.extra=()=>T('fat')(fat);
-G.down=p=>{if(Math.hypot(p.x-340,p.y-505)<50){slide=true;sid=p.id}else if(on){vy=-640;on=false}};
-G.up=p=>{if(p.id===sid)slide=false};
-function spawn(){
-const t=['t','b','h'][(Math.random()*3)|0],x=W+40;
-obs.push({t,x});
-if(Math.random()<.5)obs.push(t==='h'?{t:'k',x:x+40}:{t:'d',x:x+8});
-nextAt=dist+rnd(330,470)-Math.min(120,dist*.01)}
-G.update=dt=>{
-v=Math.min(470,300+dist*.012);dist+=v*dt;
-gap=Math.min(220,gap-(5+fat*4+(v-300)*.03)*dt);
-if(stun>0)stun-=dt;
-if(dist>=nextAt)spawn();
-vy+=2300*dt;py+=vy*dt;if(py>=GY){py=GY;vy=0;on=true}else on=false;
-const ph=slide&&on?26:54,top=py-ph;
-for(const o of obs){o.x-=v*dt;
-if(o.t==='d'||o.t==='k'){const iy=o.t==='d'?GY-100:GY-18;
-if(!o.g&&Math.hypot(o.x-PXL,iy-(py-ph/2))<28){o.g=1;if(o.t==='d'){fat++;gap+=45;fx.push({s:'+',x:PXL,y:py-80,t:0})}else gap+=80}}
-else if(stun<=0){
-const r=o.t==='t'?[o.x,GY-38,o.x+34,GY]:o.t==='b'?[o.x,GY-52,o.x+26,GY]:[o.x,GY-120,o.x+90,GY-40];
-if(PXL+10>r[0]&&PXL-10<r[2]&&py>r[1]&&top<r[3]){gap-=60;stun=.9;shake=reduceMotion?0:.25}}}
-obs=obs.filter(o=>o.x>-120&&!o.g);
-fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
-if(gap<=0)die('caught')};
+G.down=p=>{
+ const code=Math.hypot(p.x-340,p.y-505)<50?2:0;
+ control(code);heldBy=p.id;
+};
+G.up=p=>{if(p.id===heldBy){control(3);heldBy=undefined;}};
+G.update=dt=>{bossRules.advance(model,dt);syncModel();if(model.dead)die(model.dead);};
 function bg(){
 g.fillStyle='#a0c4ff';g.fillRect(-20,0,W+40,GY);
 for(let i=0;i<4;i++){const x=((i*170-dist*.12)%680+680)%680-120;RR(x,60,110,140,10,'#ffe8a3',3);L2(x+55,60,x+55,200,3);L2(x,130,x+110,130,3)}
@@ -99,7 +86,7 @@ const T=k=>G.I[k];
 const ST=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 best=+ST(KEY)||0;skin=+ST(SKEY)||0;if(!G.skins[skin]||best<G.skins[skin].need)skin=0;
 function pick(i){skin=i;try{localStorage.setItem(SKEY,i)}catch(e){}}
-function release(){slide=false;}
+function release(){if(st==='run')control(4);heldBy=undefined;}
 function say(text,kind){$('boss-msg').textContent=text;$('boss-msg').className='msg'+(kind?' '+kind:'')}
 bossSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
@@ -107,7 +94,7 @@ function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('boss-score',G.score()+UNIT);setText('boss-best',best+UNIT);setText('boss-pay',fmt(paid)+' 點');
  setText('boss-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('boss-amount').disabled=bossBusy;$('boss-go').disabled=live;setText('boss-go',live?'逃跑中 · 跳躍／滑行':st==='over'?'再逃一次':'開始逃跑');
+ $('boss-amount').disabled=bossBusy;$('boss-go').disabled=live||rank.busy();setText('boss-go',live?'逃跑中 · 跳躍／滑行':st==='over'?'再逃一次':'開始逃跑');
  document.querySelectorAll('[data-boss-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-boss-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -123,7 +110,7 @@ function awardBonus(){
 function die(m){
  if(st!=='run')return;
  st='over';G.msg=m;shake=reduceMotion?0:.35;release();
- const s=G.score();rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
+ const s=G.score();rank.finish(s);rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
  if(rec){best=s;try{localStorage.setItem(KEY,best)}catch(e){}}
  if(unl.length)pick(G.skins.indexOf(unl[unl.length-1]));
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});bossBusy=false;renderAll();
@@ -131,11 +118,13 @@ function die(m){
  ui();
 }
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('boss',amount);bossStake=amount;bossBusy=true;save();renderAll();
- G.reset();paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=bossRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ },ui);
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
@@ -169,7 +158,7 @@ window.addEventListener('hashchange',()=>{release();last=performance.now()});
 $('boss-go').addEventListener('click',start);
 function loop(ts){const dt=Math.min(.05,Math.max(0,(ts-last)/1000)||0);last=ts;
  if(!V.hidden&&!document.hidden){tt+=dt;if(shake>0)shake-=dt;bpop.forEach(p=>p.age+=dt);bpop=bpop.filter(p=>p.age<1.8);
-  if(st==='run'){G.update(dt);if(st==='run')awardBonus()}
+  if(st==='run')rank.update(dt*1000,()=>st==='run',step=>{G.update(step);if(st==='run')awardBonus()})
   G.draw();bonusDraw();if(st!=='run')overlay();ui()}
  requestAnimationFrame(loop)}
 G.reset();ui();G.draw();overlay();requestAnimationFrame(loop);

@@ -8,7 +8,8 @@ const fee=Number(fs.readFileSync(new URL('js/config.js',root),'utf8').match(/ENT
 const hookAt='ui();draw(0);requestAnimationFrame(loop);';
 assert.ok(raw.includes(hookAt),'test hook anchor missing');
 // Expose the closure to the test only; the shipped source is not changed.
-const source=raw.replace(hookAt,'globalThis.__nap={start,update:dt=>{const input={sleep:sleepHeld(),throwEdge:false};G.update(dt,input);handleEvents()},ev:code=>eval(code)};'+hookAt);
+const rules=fs.readFileSync(new URL('shared/nap-rules.cjs',root),'utf8');
+const source=rules+'\n'+raw.replace(hookAt,'globalThis.__nap={start,update:dt=>{const input={sleep:sleepHeld(),throwEdge:false};G.update(dt,input);handleEvents()},ev:code=>eval(code)};'+hookAt);
 const results=[];
 export function fixture(balance=500,savedBest=null,random=Math.random){
   let now=1000;
@@ -17,7 +18,7 @@ export function fixture(balance=500,savedBest=null,random=Math.random){
   function el(id){if(!elements.has(id))elements.set(id,{hidden:false,value:'10',textContent:'',className:'',dataset:{},style:{},disabled:false,handlers:{},focus(){},getContext:()=>drawing,getBoundingClientRect:()=>({left:0,top:0,width:400,height:560}),addEventListener(type,fn){this.handlers[type]=fn;}});return elements.get(id);}
   const listeners={};
   const math=Object.create(Math);math.random=random;
-  const sandbox={document:{hidden:false,addEventListener(){}},window:{addEventListener(){}},addEventListener(name,fn){(listeners[name]??=[]).push(fn);},Number,Math:math,String,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fmt:n=>String(n),AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
+  const sandbox={timedLeaderboard:()=>({busy:()=>false,start:callback=>callback(null),record(){},finish(){}}),document:{hidden:false,addEventListener(){}},window:{addEventListener(){}},addEventListener(name,fn){(listeners[name]??=[]).push(fn);},Number,Math:math,String,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fmt:n=>String(n),AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
   sandbox.globalThis=sandbox;
   const ctx=vm.createContext(sandbox);vm.runInContext(source,ctx);
   const F=sandbox.__nap;

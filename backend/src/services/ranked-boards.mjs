@@ -1,5 +1,15 @@
+import mermaidRules from '../../../shared/mermaid-rules.cjs';
+import lasthairRules from '../../../shared/last-hair-rules.cjs';
+import mosquitoRules from '../../../shared/mosquito-rules.cjs';
+import campaignRules from '../../../shared/campaign-rules.cjs';
+import babyRules from '../../../shared/baby-rules.cjs';
+import thiefRules from '../../../shared/thief-rules.cjs';
+import bossRules from '../../../shared/boss-rules.cjs';
+import riderRules from '../../../shared/rider-rules.cjs';
+import napRules from '../../../shared/nap-rules.cjs';
 import bookSortRules from '../../../shared/book-sort-rules.cjs';
 import { verifiesBookSortScore } from './book-sort-scores.mjs';
+import carpRules from '../../../shared/carp-rules.cjs';
 import frontierRules from '../../../shared/frontier-rules.cjs';
 import rocketChairRules from '../../../shared/rocket-chair-rules.js';
 import elevatorRules from '../../../shared/elevator-rules.cjs';
@@ -36,6 +46,16 @@ function timedBoard(engine) {
   };
 }
 const boards = new Map([
+  ['mermaid', timedBoard(mermaidRules)],
+  ['last-hair', timedBoard(lasthairRules)],
+  ['mosquito', timedBoard(mosquitoRules)],
+  ['campaign', timedBoard(campaignRules)],
+  ['baby', timedBoard(babyRules)],
+  ['thief', timedBoard(thiefRules)],
+  ['boss', timedBoard(bossRules)],
+  ['rider', timedBoard(riderRules)],
+  ['nap', timedBoard(napRules)],
+  ['carp', timedBoard(carpRules)],
   ['book-sort', {
     create: stage => ({ stage, issuedAt: Date.now(), score: null }),
     accepts: action => Array.isArray(action) && action.length > 0 && action.length <= 4096,

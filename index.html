@@ -3567,7 +3567,8 @@ html.frontier-immersive{overflow:hidden}
       </section></div>
     </div>
     <details class="rules"><summary>玩法、計票與點數</summary><p>宣傳車沿著街道自動往右開，沒有終點：車速從約每秒 300 像素起跳，並持續加快到約 800（約 2.7 倍），建築越來越快閃過。街上的學校、醫院、豪宅是安靜區，以紅色標示並在路面畫出紅色區段；一開始約三成是安靜區，越往後越多，最多約六成，但不會連續出現三棟。</p><p>前方的建築會提早出現在畫面右側，畫面上方的「接下來」也會列出接著要經過的六棟。放開時喇叭廣播、按住時靜音。經過一般建築：依廣播時間比例得票，全程廣播得 200 票；但若廣播不到 30% 的時間（靜音太久），算沒有宣傳到，記一次失誤。經過安靜區：有 70% 以上的時間保持靜音就算安靜通過，得 100 票；否則算吵到，扣 400 票並記一次失誤。累計 5 次失誤就落選，這一局結束。</p><p>開局有 200 票。得票累計到特定數量時，獎勵點數當場入帳，之後落選也不會收回：8,000 票 +3、10,000 票 +7（累計 10 點，累計獲得）、12,000 票 +15、15,000 票 +30，之後每多 3,000 票 +40。這是固定點數，沒有倍率；每個里程碑一局只入帳一次，即使票數被扣掉再回升也不會重複。這些票數刻意設得很高，一般玩家大約會在 4,000～6,000 票落選。</p><p>切換遊戲或背景分頁會暫停並放開靜音，回來需要重新按住。重新整理會放棄本局，已入帳的點數會保留。點數與其他遊戲共用，沒有現金價值。</p></details>
-  </section>
+  <p id="cp-rank-status" role="status" hidden></p><button id="cp-rank-retry" type="button" hidden>重送排行榜成績</button>
+</section>
 
   <section class="view" id="view-boba" hidden>
     <div class="boba-platform-bar"><p class="hint">沒有額外成就獎勵。</p><button class="chip" id="boba-finish" type="button" disabled>結束本局</button></div>
@@ -3629,7 +3630,8 @@ html.frontier-immersive{overflow:hidden}
       </section></div>
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>你在辦公桌前，主管在走道來回巡邏。按住睡覺鍵累積睡意，睡意條滿了就過關，共 10 關。主管回頭前，頭上會先冒出紅色「!」；他盯著你的時候，如果你還在睡、剛放開還沒醒、或正在丟垃圾，就會被抓，扣一顆考績，睡意也會被扣掉一部分。考績扣完就被炒魷魚，這一局結束。</p><p>丟垃圾可以砸主管，每個垃圾扣他 1 點血；垃圾有數量限制，會慢慢補。血量歸零他會暈倒幾秒，暈倒時你睡得更快、不會被抓。但每被砸一次，主管下一次回頭會提早一點，亂丟會讓他更快轉過來。從第 3 關起，「!」有時只是虛驚一場；從第 5 關起，他看完一次可能再回頭瞪你一次。</p><p>每過 1 關獲得 1 點，當場入帳，之後結束也不會收回；10 關全過共 10 點。分數只是顯示用，不直接換點數。這是操作技巧遊戲，結果取決於你放開按鈕的時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最高分保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  </section>
+  <p id="np-rank-status" role="status" hidden></p><button id="np-rank-retry" type="button" hidden>重送排行榜成績</button>
+</section>
   <section class="view" id="view-reaper" hidden>
     <div class="console"><div class="reaper-stage"><canvas id="rp-canvas" width="400" height="560" tabindex="0" aria-label="死神打工：普通靈魂經過金色區域時接走，帶綠色通行證的靈魂要放行"></canvas></div>
       <div class="side"><section class="panel" aria-label="死神打工操作">
@@ -3924,7 +3926,8 @@ html.frontier-immersive{overflow:hidden}
       </section></div>
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>牌桌有 10 列牌，共 104 張，牌背是美人魚。把牌放在比它大 1 的牌上面（不用同花色），同花色且由大到小連續的牌可以一起搬。把同一花色的 K 到 A 排滿 13 張，這一串會自動收成一顆珍珠。收集滿 8 顆珍珠就通關。牌堆點一下會在每一列各發一張，發牌前每一列都要有牌。</p><p>難度分三種：淺灘只有 1 種花色，珊瑚礁 2 種，深海 4 種。難度要在開始前選好，開始後不能更換。悔棋和指路不限次數，但每步（含悔棋）會讓分數少 1 分，每收成一顆珍珠加 100 分；分數只是顯示用，不直接換點數。</p><p>每收成一顆珍珠，BONUS +1 點當場入帳；珊瑚礁和深海通關時再加 2 點，只發一次。所以最多入帳：淺灘 8 點，珊瑚礁與深海 10 點，沒有任何下注或倍率。悔棋後再收同一顆珍珠不會重複發點。這是操作與推理的接龍遊戲。</p><p>放棄本局後，已入帳的點數會保留。重新整理會放棄本局，最高分依難度分別保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  </section>
+  <p id="mm-rank-status" role="status" hidden></p><button id="mm-rank-retry" type="button" hidden>重送排行榜成績</button>
+</section>
   <section class="view" id="view-book-sort" hidden>
     <div class="bs-stage" id="bs-stage">
       <header class="bs-toolbar">
@@ -4041,7 +4044,8 @@ html.frontier-immersive{overflow:hidden}
       </section></div>
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>佐藤只剩 3 根頭髮，要在強風中走完 500 公尺去面試。把脖子歪向風來的那一邊可以減少受風；按住壓頭則大幅擋風，並讓髮膠慢慢回復。三根頭髮各有髮膠（黃條）和髮根（紅條），髮膠先流失，之後髮根才會掉，掉光一根就「啵」地飛走，三根全掉光就面試取消。剩的頭髮越少，走得越慢。</p><p>歪頭超過 85% 滿格連續 3 秒，脖子會抽筋、僵直 2 秒。壓頭會累積手汗，手汗滿了就壓不住；壓頭時路人會側目，側目滿格會社死，腳步變慢並被迫放下手 1.5 秒。四個路段各有不同事件：商店街的打招呼（放開手 1.2 秒才算揮手）與傳單（手被佔住 2 秒）、高架橋的滴水（壓住頭可擋）與鴿子亂流、帝國大廈廣場的下沉氣流與面試官回頭（此時壓頭會被側目）。每個事件都有預警。</p><p>抵達 100、250、400、500 公尺，分別立即入帳 1、2、3、4 點，每個里程碑每局只發一次，全部達成共 10 點；頭髮掉光不會收回已入帳的點數，結局與頭髮根數只影響稱號，不給點數。距離只是紀錄，不直接換點數。這是操作技巧遊戲，沒有任何倍率。</p><p>切換遊戲或背景分頁會暫停，回來後點一下畫面繼續。重新整理會放棄本局，已入帳的點數會保留。最遠紀錄、死亡位置與操作設定保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  </section>
+  <p id="lh-rank-status" role="status" hidden></p><button id="lh-rank-retry" type="button" hidden>重送排行榜成績</button>
+</section>
   <section class="view" id="view-carp" hidden>
     <div class="console"><div class="sneak-stage"><canvas id="carp-canvas" tabindex="0" width="400" height="560" aria-label="鯉魚躍龍門：按住蓄力、放開起跳，越過石瀑，別撞到石頭和魚鉤"></canvas></div>
       <div class="side"><section class="panel" aria-label="鯉魚躍龍門操作">
@@ -4055,6 +4059,8 @@ html.frontier-immersive{overflow:hidden}
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="BONUS 里程碑"><span data-carp-tier="10"><b>10 道 BONUS</b>+5 點</span><span data-carp-tier="20"><b>20 道 BONUS</b>+5 點</span><span data-carp-tier="35"><b>35 道 BONUS</b>+5 點</span></div>
     <details class="rules"><summary>玩法、里程碑與點數</summary><p>沒有終點，玩到失敗為止。鯉魚自動逆流前進，按住畫面（或空白鍵）蓄力、放開起跳，力道越大跳得越高。跳太低會撞到石頭，跳太高會被魚鉤鉤住；左側力量條上的綠色區域是下一個障礙適合的力度。每成功越過一道瀑布得 1 分，速度與難度隨進度慢慢提高。</p><p>BONUS：10道、20道、35道 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵採固定門檻；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，最佳紀錄與已解鎖造型保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+    <p id="carp-rank-status" role="status" hidden></p>
+    <button id="carp-rank-retry" type="button" hidden>重送排行榜成績</button>
   </section>
 
   <section class="view" id="view-rider" hidden>
@@ -4070,7 +4076,8 @@ html.frontier-immersive{overflow:hidden}
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="BONUS 里程碑"><span data-rider-tier="300"><b>300 分 BONUS</b>+5 點</span><span data-rider-tier="700"><b>700 分 BONUS</b>+5 點</span><span data-rider-tier="1300"><b>1,300 分 BONUS</b>+5 點</span></div>
     <details class="rules"><summary>玩法、里程碑與點數</summary><p>沒有終點，玩到失敗為止。訂單溫度會一直下降，降到 0 這一局就結束。點左半邊跳過坑洞和狗；按住右半邊加速（油量有限，不加速時會慢慢回復）；點右下角喇叭可以嚇跑前方的狗（有冷卻時間）。到客人家門口的綠色區域，放開加速約半秒才算送達，送達得 20 分並回溫；沒送到會扣溫度，撞到狗或坑洞也會讓訂單變涼。分數＝前進距離（每 50 單位 1 分）＋送達訂單數 × 20。</p><p>BONUS：300分、700分、1,300分 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵採固定門檻；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，最佳紀錄與已解鎖造型保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  </section>
+  <p id="rider-rank-status" role="status" hidden></p><button id="rider-rank-retry" type="button" hidden>重送排行榜成績</button>
+</section>
 
   <section class="view" id="view-boss" hidden>
     <div class="console"><div class="sneak-stage"><canvas id="boss-canvas" tabindex="0" width="400" height="560" aria-label="胖老闆追人：點畫面跳躍、按住滑行鍵鑽過 DEADLINE 布條，逃離滾著追來的胖老闆"></canvas></div>
@@ -4085,7 +4092,8 @@ html.frontier-immersive{overflow:hidden}
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="BONUS 里程碑"><span data-boss-tier="200"><b>200 m BONUS</b>+5 點</span><span data-boss-tier="500"><b>500 m BONUS</b>+5 點</span><span data-boss-tier="900"><b>900 m BONUS</b>+5 點</span></div>
     <details class="rules"><summary>玩法、里程碑與點數</summary><p>沒有終點，玩到失敗為止。老闆從後面追來，和你的距離縮到 0 就被抓住、這一局結束。點畫面跳過椅子和垃圾桶；按住右下角滑行鍵可以鑽過 DEADLINE 布條。撞到障礙會被老闆拉近；吃到甜甜圈會把老闆推遠，但老闆吃得越多就越大、追得越快；咖啡放在布條下面，滑進去拿可以拉開距離。每前進 60 單位算 1 公尺。</p><p>BONUS：200m、500m、900m 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵採固定門檻；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，最佳紀錄與已解鎖造型保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  </section>
+  <p id="boss-rank-status" role="status" hidden></p><button id="boss-rank-retry" type="button" hidden>重送排行榜成績</button>
+</section>
 
   <section class="view" id="view-thief" hidden>
     <div class="console"><div class="sneak-stage"><canvas id="thief-canvas" tabindex="0" width="400" height="560" aria-label="偷水果的貓：點左右邊緣換道、點中間跳過竹籃，偷水果並躲開老闆娘的拖鞋"></canvas></div>
@@ -4100,7 +4108,8 @@ html.frontier-immersive{overflow:hidden}
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="BONUS 里程碑"><span data-thief-tier="150"><b>150 分 BONUS</b>+5 點</span><span data-thief-tier="400"><b>400 分 BONUS</b>+5 點</span><span data-thief-tier="800"><b>800 分 BONUS</b>+5 點</span></div>
     <details class="rules"><summary>玩法、里程碑與點數</summary><p>沒有終點，玩到失敗為止。三條跑道，老闆娘從下方追來，和你的距離縮到 0 就被抓住、這一局結束。點畫面左邊或右邊換道，點中間跳過竹籃（跳起時拿不到東西）；撞到竹籃或被拖鞋打中會被拉近。撿水果加 5 分，但每顆都讓貓變重變慢（最多 5 顆）；吃魚能讓貓變輕。分數＝前進距離（每 50 單位 1 分）＋水果數 × 5。</p><p>BONUS：150分、400分、800分 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵採固定門檻；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，最佳紀錄與已解鎖造型保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  </section>
+  <p id="thief-rank-status" role="status" hidden></p><button id="thief-rank-retry" type="button" hidden>重送排行榜成績</button>
+</section>
 
   <section class="view" id="view-baby" hidden>
     <div class="console"><div class="sneak-stage"><canvas id="baby-canvas" tabindex="0" width="400" height="560" aria-label="寶寶逃洗澡：點左半邊跳躍、按住右半邊低頭爬行、按大哭鍵讓媽媽停住，逃離洗澡"></canvas></div>
@@ -4115,7 +4124,8 @@ html.frontier-immersive{overflow:hidden}
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="BONUS 里程碑"><span data-baby-tier="200"><b>200 m BONUS</b>+5 點</span><span data-baby-tier="500"><b>500 m BONUS</b>+5 點</span><span data-baby-tier="900"><b>900 m BONUS</b>+5 點</span></div>
     <details class="rules"><summary>玩法、里程碑與點數</summary><p>沒有終點，玩到失敗為止。媽媽從後面追來，和你的距離縮到 0 就被抓去洗澡、這一局結束。點左半邊跳過樂高和玩具車；按住右半邊低頭爬行，可以鑽過櫃子。撞到障礙會被媽媽拉近。撿奶瓶可累積哭聲（最多 3 次），按右下角大哭鍵會讓媽媽停住約 2 秒並拉開距離。媽媽會越跑越快。每前進 60 單位算 1 公尺。</p><p>BONUS：200m、500m、900m 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵採固定門檻；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，最佳紀錄與已解鎖造型保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  </section>
+  <p id="baby-rank-status" role="status" hidden></p><button id="baby-rank-retry" type="button" hidden>重送排行榜成績</button>
+</section>
 
   <section class="view" id="view-pudding" hidden>
     <div class="console"><div class="sneak-stage"><canvas id="pd-canvas" tabindex="0" width="400" height="560" aria-label="布丁突圍：每段先把拼圖碎片拼進武器格子，再按住左右鍵或按住畫面移動阿鋼，讓武器碰到敵人，護送小王子布丁到援軍橋"></canvas></div>
@@ -4140,7 +4150,8 @@ html.frontier-immersive{overflow:hidden}
       </section></div>
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>你是深夜的一隻蚊子，要在睡著的人身上吸滿血，再從左上角窗戶的破洞逃出去。放開空白鍵蚊子往上飄，按住往下俯衝；降落在臉頰、手臂或腳上，持續按住就開始吸血，放開就起飛。降落時速度太快，蚊子會折斷口器、暈眩 1 秒。</p><p>吸得越多，蚊子越重，上升越慢、俯衝越快。警覺值會隨著飛行與吸血上升：臉最快也最吵，腳最慢最安靜，靠近耳朵飛和飛到高處也會更吵。吸血進度到 90% 以後，警覺值上升速度減半。</p><p>睡著的人有三種方式拍死你。吸血時皮膚出現紅色波紋，1.2 秒後巨手會抓下來，要立刻放開飛走。棉被隆起代表要翻身，翻身時畫面下方會全部被壓到，要先往上飛。警覺值滿了會開燈，2 秒內飛進左上角窗戶的破洞才能逃生，但沒吸滿就逃走不算過關。</p><p>固定獎勵：吸血進度每達 25%、50%、75%，分別立即入帳 1、2、3 點；吸滿 100% 並成功飛出窗戶，再入帳 4 點，每局最多 10 點。每個門檻每局只入帳一次，被拍扁後已入帳的點數不會收回，結束時也不會另外結算。吸血百分比與最佳紀錄只是記錄，不直接換點數。這是操作技巧遊戲，結果取決於你的時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最佳紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  </section>
+  <p id="mq-rank-status" role="status" hidden></p><button id="mq-rank-retry" type="button" hidden>重送排行榜成績</button>
+</section>
   <section class="view" id="view-banquet" data-i18n-ignore hidden>
     <div class="console"><div class="bq-stage" id="bq-stage" tabindex="-1" lang="en">
 
@@ -12413,6 +12424,72 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
   fiUI();fiDraw();requestAnimationFrame(fiLoop);
 
 
+const campaignRules=(()=>{
+function create(random=Math.random,event=()=>{},CP={}) {
+  var CP_START=200,CP_GAIN=200,CP_QUIET=100,CP_PENALTY=400,CP_MAX_MISS=5,CP_NOISE_LIMIT=.3,CP_NEGLECT=.3;
+  // The truck starts fast and keeps accelerating up to a cap; quiet zones get more frequent as the street goes on.
+  var CP_V0=300,CP_VK=.06,CP_VMAX=800,CP_TRUCK=150,CP_GAP=26,CP_LEAD=430,CP_GROUND=330,CP_PQ0=.35,CP_PQK=.004,CP_PQMAX=.6;
+  // Milestones count votes and were calibrated with a mute-timing simulation (see GAME_RULES.md).
+  var CP_MILESTONES=[[8000,3],[10000,7],[12000,15],[15000,30]],CP_ENDLESS_FROM=15000,CP_ENDLESS_STEP=3000,CP_ENDLESS_BONUS=40;
+  function cpNextMilestone(v){for(var i=0;i<CP_MILESTONES.length;i++)if(CP_MILESTONES[i][0]>v)return CP_MILESTONES[i];return [CP_ENDLESS_FROM+(Math.floor((v-CP_ENDLESS_FROM)/CP_ENDLESS_STEP)+1)*CP_ENDLESS_STEP,CP_ENDLESS_BONUS];}
+  var CP_KINDS={'學校':{w:220,h:150,quiet:true},'醫院':{w:190,h:184,quiet:true},'豪宅':{w:210,h:150,quiet:true},'住宅':{w:170,h:158},'公寓':{w:160,h:178},'商店':{w:150,h:112},'市場':{w:200,h:104},'夜市':{w:200,h:122},'公園':{w:190,h:112},'廟口':{w:190,h:150}};
+  function cpSpeed(){return Math.min(CP_VMAX,CP_V0+CP_VK*CP.dist);}
+  function cpPassed(){return CP.cleared+CP.idx;}
+  // Endless street: buildings are generated just ahead of the truck. The first two are ordinary and quiet buildings never come three in a row.
+  function cpMake(){
+    var quiet=['學校','醫院','豪宅'],normal=['住宅','商店','公寓','市場','公園','廟口','夜市'],n=CP.n++,pq=Math.min(CP_PQMAX,CP_PQ0+CP_PQK*n),isQ=n>=2&&CP.qrun<2&&random()<pq,name;
+    CP.qrun=isQ?CP.qrun+1:0;
+    name=isQ?quiet[Math.floor(random()*3)]:normal[Math.floor(random()*7)];
+    var k=CP_KINDS[name],x=CP.nx;CP.nx=x+k.w+CP_GAP;
+    CP.lots.push({name:name,quiet:!!k.quiet,w:k.w,h:k.h,x0:x,x1:x+k.w,seed:n,tot:0,noisy:0,flash:-9,good:true});
+  }
+  function cpEnsure(){while(CP.lots.length<CP.idx+14)cpMake();}
+  function cpCity(){CP.lots=[];CP.n=0;CP.qrun=0;CP.nx=CP_LEAD;CP.cleared=0;CP.idx=0;cpEnsure();}
+  function cpSettle(lot){
+    var frac=lot.tot>0?lot.noisy/lot.tot:0;lot.flash=CP.clock;
+    if(lot.quiet){
+      if(frac>CP_NOISE_LIMIT){
+        CP.miss++;CP.votes=Math.max(0,CP.votes-CP_PENALTY);lot.good=false;cpFloat(lot,'吵到'+lot.name+' −'+CP_PENALTY,'bad');
+        if(CP.miss>=CP_MAX_MISS){cpLose('吵到安靜區了。');return;}
+      }else{CP.votes+=CP_QUIET;lot.good=true;cpFloat(lot,'安靜通過 +'+CP_QUIET,'good');}
+    }else{
+      var gain=Math.round(CP_GAIN*frac/10)*10;CP.votes+=gain;
+      if(frac<CP_NEGLECT){CP.miss++;lot.good=false;cpFloat(lot,'沒宣傳到'+(gain>0?' +'+gain:''),'bad');if(CP.miss>=CP_MAX_MISS){cpLose('一般路段靜音太久，沒有拉到票。');return;}}
+      else{lot.good=true;cpFloat(lot,'+'+gain+' 票','gain');}
+    }
+    event('settled');
+  }
+  function cpStep(dt){
+    // Small slices keep zone entry and exit accurate on delayed frames.
+    while(dt>1e-8&&CP.phase==='run'){
+      var step=Math.min(dt,.012),v=cpSpeed();
+      CP.dist+=v*step;CP.clock+=step;CP.wheel+=v*step/12;dt-=step;
+      CP.pops.forEach(function(p){p.age+=step;});CP.pops=CP.pops.filter(function(p){return p.age<2.2;});
+      var wx=CP.dist+CP_TRUCK;
+      while(CP.idx<CP.lots.length&&wx>=CP.lots[CP.idx].x1){
+        cpSettle(CP.lots[CP.idx]);if(CP.phase!=='run')return;
+        CP.idx++;if(cpPassed()%15===0)event('progress');
+        if(CP.idx>40){CP.lots.splice(0,20);CP.idx-=20;CP.cleared+=20;}
+        cpEnsure();
+      }
+      if(CP.idx<CP.lots.length){var lot=CP.lots[CP.idx];if(wx>=lot.x0){lot.tot+=step;if(!CP.hold)lot.noisy+=step;}}
+    }
+  }
+
+function cpFloat(lot,text,kind){event('float',{lot,text,kind});}
+function cpLose(reason){CP.dead=true;CP.phase='lost';event('lost',reason);}
+Object.assign(CP,{dist:0,votes:CP_START,miss:0,clock:0,wheel:0,pops:[],hold:false,phase:'run',dead:false});
+cpCity();
+CP.advance=cpStep;
+return CP;
+}
+function input(state,code){
+if(state.dead||(code!==0&&code!==1)||state.hold===(code===0))return false;
+state.hold=code===0;return true;
+}
+return {create,inputCount:2,input,advance:(state,dt)=>state.advance(dt),score:state=>state.votes};
+})();
+if(typeof module!=='undefined')module.exports=campaignRules;
   /* ---------- Campaign Truck: endless street, hold to mute past quiet zones; milestone vote bonuses are credited when reached ---------- */
   var CP={active:false,phase:'ready',stake:0,dist:0,votes:200,miss:0,hold:false,last:0,clock:0,best:0,lots:[],idx:0,floats:[],pops:[],earned:0,awarded:0,wheel:0,n:0,qrun:0,nx:0,cleared:0};
   var CP_START=200,CP_GAIN=200,CP_QUIET=100,CP_PENALTY=400,CP_MAX_MISS=5,CP_NOISE_LIMIT=.3,CP_NEGLECT=.3;
@@ -12427,24 +12504,16 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
   try{var cpb=Number(localStorage.getItem('deep-sea-campaign-best'));if(Number.isFinite(cpb))CP.best=Math.max(0,cpb);}catch(e){}
   function cpText(id,value){var el=$(id);if(el.textContent!==value)el.textContent=value;}
   function cpSay(text,kind){cpText('cp-msg',text);$('cp-msg').className='msg'+(kind?' '+kind:'');}
-  function cpRelease(){campaignPointers.clear();campaignKeys.clear();CP.hold=false;}
+  var cpRank=timedLeaderboard('campaign','cp',2,cpUI);
+  function cpHold(held){var code=held?0:1;if(campaignRules.input(CP,code))cpRank.record(code);}
+  function cpRelease(){campaignPointers.clear();campaignKeys.clear();cpHold(false);}
   function cpSpeed(){return Math.min(CP_VMAX,CP_V0+CP_VK*CP.dist);}
   function cpPassed(){return CP.cleared+CP.idx;}
-  // Endless street: buildings are generated just ahead of the truck. The first two are ordinary and quiet buildings never come three in a row.
-  function cpMake(){
-    var quiet=['學校','醫院','豪宅'],normal=['住宅','商店','公寓','市場','公園','廟口','夜市'],n=CP.n++,pq=Math.min(CP_PQMAX,CP_PQ0+CP_PQK*n),isQ=n>=2&&CP.qrun<2&&Math.random()<pq,name;
-    CP.qrun=isQ?CP.qrun+1:0;
-    name=isQ?quiet[Math.floor(Math.random()*3)]:normal[Math.floor(Math.random()*7)];
-    var k=CP_KINDS[name],x=CP.nx;CP.nx=x+k.w+CP_GAP;
-    CP.lots.push({name:name,quiet:!!k.quiet,w:k.w,h:k.h,x0:x,x1:x+k.w,seed:n,tot:0,noisy:0,flash:-9,good:true});
-  }
-  function cpEnsure(){while(CP.lots.length<CP.idx+14)cpMake();}
-  function cpCity(){CP.lots=[];CP.n=0;CP.qrun=0;CP.nx=CP_LEAD;CP.cleared=0;CP.idx=0;cpEnsure();}
   function cpFloat(lot,text,kind){CP.floats.push({x:(lot.x0+lot.x1)/2,y:CP_GROUND-lot.h-44,text:text,kind:kind,t:CP.clock});if(CP.floats.length>8)CP.floats.shift();}
   function cpRemember(){if(CP.votes>CP.best){CP.best=CP.votes;try{localStorage.setItem('deep-sea-campaign-best',String(CP.best));}catch(e){}}}
   function cpLose(reason){
     AN.end(CP.analytics,CP.earned,CP.earned>0?'complete':'loss',{step:cpPassed(),votes:CP.votes,misses:CP.miss});
-    CP.active=false;CP.phase='lost';cpRelease();cpRemember();
+    CP.active=false;CP.phase='lost';cpRelease();cpRemember();cpRank.finish(CP.votes);
     cpSay(reason+' 累計 '+CP_MAX_MISS+' 次失誤，被檢舉落選。最終 '+fmt(CP.votes)+' 票，'+(CP.earned>0?'本局共入帳 '+fmt(CP.earned)+' 點。':'這一局沒有獎勵。'),CP.earned>0?'win':'lose');cpUI();
   }
   function cpMilestones(){
@@ -12455,36 +12524,6 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
       CP.pops.push({v:nx[0],b:b,age:0});if(CP.pops.length>3)CP.pops.shift();
       cpSay('得票達 '+fmt(nx[0])+'！獎勵 +'+b+' 點已入帳，本局累計 +'+CP.earned+' 點。','win');
       nx=cpNextMilestone(CP.awarded);
-    }
-  }
-  function cpSettle(lot){
-    var frac=lot.tot>0?lot.noisy/lot.tot:0;lot.flash=CP.clock;
-    if(lot.quiet){
-      if(frac>CP_NOISE_LIMIT){
-        CP.miss++;CP.votes=Math.max(0,CP.votes-CP_PENALTY);lot.good=false;cpFloat(lot,'吵到'+lot.name+' −'+CP_PENALTY,'bad');
-        if(CP.miss>=CP_MAX_MISS){cpLose('吵到安靜區了。');return;}
-      }else{CP.votes+=CP_QUIET;lot.good=true;cpFloat(lot,'安靜通過 +'+CP_QUIET,'good');}
-    }else{
-      var gain=Math.round(CP_GAIN*frac/10)*10;CP.votes+=gain;
-      if(frac<CP_NEGLECT){CP.miss++;lot.good=false;cpFloat(lot,'沒宣傳到'+(gain>0?' +'+gain:''),'bad');if(CP.miss>=CP_MAX_MISS){cpLose('一般路段靜音太久，沒有拉到票。');return;}}
-      else{lot.good=true;cpFloat(lot,'+'+gain+' 票','gain');}
-    }
-    cpMilestones();
-  }
-  function cpStep(dt){
-    // Small slices keep zone entry and exit accurate on delayed frames.
-    while(dt>1e-8&&CP.phase==='run'){
-      var step=Math.min(dt,.012),v=cpSpeed();
-      CP.dist+=v*step;CP.clock+=step;CP.wheel+=v*step/12;dt-=step;
-      CP.pops.forEach(function(p){p.age+=step;});CP.pops=CP.pops.filter(function(p){return p.age<2.2;});
-      var wx=CP.dist+CP_TRUCK;
-      while(CP.idx<CP.lots.length&&wx>=CP.lots[CP.idx].x1){
-        cpSettle(CP.lots[CP.idx]);if(CP.phase!=='run')return;
-        CP.idx++;if(cpPassed()%15===0)AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss});
-        if(CP.idx>40){CP.lots.splice(0,20);CP.idx-=20;CP.cleared+=20;}
-        cpEnsure();
-      }
-      if(CP.idx<CP.lots.length){var lot=CP.lots[CP.idx];if(wx>=lot.x0){lot.tot+=step;if(!CP.hold)lot.noisy+=step;}}
     }
   }
   function cpSignal(){
@@ -12501,19 +12540,26 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
     cpText('cp-best',fmt(CP.best));
     $('cp-miss').style.color=CP.miss>=3?'var(--crush)':'';
     cpText('cp-signal',sig[1]);$('cp-signal').dataset.state=sig[0];
-    $('cp-amount').disabled=CP.active;$('cp-go').disabled=live;
+    $('cp-amount').disabled=CP.active;$('cp-go').disabled=live||cpRank.busy();
     cpText('cp-go',live?'拉票中 · 安靜區按住靜音':CP.phase==='ready'?'出發拉票':'再跑一趟');
     $('cp-hold').disabled=!live;cpText('cp-hold',CP.hold?'靜音中 · 放開廣播':'按住靜音 · 放開廣播');
   }
   function cpStart(){
-    if(CP.phase==='run')return;
+    if(CP.phase==='run'||cpRank.busy())return;
     var stake=ENTRY_FEE;
     if(stake>S.balance){cpSay(LOW_MSG,'lose');return;}
+    cpRank.start(function(random){
     CP.analytics=AN.start('campaign',stake);CP.stake=stake;CP.active=true;save();renderAll();
-    cpCity();CP.dist=0;CP.votes=CP_START;CP.miss=0;CP.floats=[];CP.pops=[];CP.earned=0;CP.awarded=0;CP.phase='run';CP.last=performance.now();cpRelease();
+    campaignRules.create(random||Math.random,function(event,data){
+      if(event==='lost')cpLose(data);
+      else if(event==='settled')cpMilestones();
+      else if(event==='progress')AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss});
+      else if(event==='float')cpFloat(data.lot,data.text,data.kind);
+    },CP);CP.floats=[];CP.pops=[];CP.earned=0;CP.awarded=0;CP.phase='run';CP.last=performance.now();cpRelease();
     cpSay('出發！沒有終點，越開越快。放開讓喇叭廣播，前方出現紅色的學校、醫院、豪宅時按住靜音；在一般路段靜音太久也算失誤。');cpUI();campaignCanvas.focus();
+    },cpUI);
   }
-  function cpSync(now){var dt=Math.max(0,(now-CP.last)/1000);CP.last=now;if(!$('view-campaign').hidden&&!document.hidden)cpStep(dt);}
+  function cpSync(now){var dt=Math.max(0,(now-CP.last)/1000);CP.last=now;if(CP.phase==='run'&&!$('view-campaign').hidden&&!document.hidden)cpRank.update(dt*1000,()=>CP.phase==='run',step=>campaignRules.advance(CP,step));}
 
   /* drawing helpers */
   function cpRR(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
@@ -12649,17 +12695,17 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
     }
     g.textBaseline='alphabetic';g.textAlign='left';
   }
-  function cpPress(e){if(e.button!==undefined&&e.button!==0)return;if(CP.phase!=='run'||$('view-campaign').hidden||document.hidden)return;e.preventDefault();cpSync(performance.now());if(CP.phase!=='run')return;campaignCanvas.focus();campaignPointers.add(e.pointerId);CP.hold=true;try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}cpUI();}
-  function cpLift(e){cpSync(performance.now());campaignPointers.delete(e.pointerId);CP.hold=campaignPointers.size>0||campaignKeys.size>0;}
+  function cpPress(e){if(e.button!==undefined&&e.button!==0)return;if(CP.phase!=='run'||$('view-campaign').hidden||document.hidden)return;e.preventDefault();cpSync(performance.now());if(CP.phase!=='run')return;campaignCanvas.focus();campaignPointers.add(e.pointerId);cpHold(true);try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}cpUI();}
+  function cpLift(e){cpSync(performance.now());campaignPointers.delete(e.pointerId);cpHold(campaignPointers.size>0||campaignKeys.size>0);}
   [campaignCanvas,$('cp-hold')].forEach(function(el){el.addEventListener('pointerdown',cpPress);['pointerup','pointercancel','lostpointercapture'].forEach(function(type){el.addEventListener(type,cpLift);});el.addEventListener('contextmenu',function(e){e.preventDefault();});});
   $('cp-go').addEventListener('click',cpStart);
-  addEventListener('keydown',function(e){if($('view-campaign').hidden||document.hidden||CP.phase!=='run'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;if(['INPUT','BUTTON','A','SUMMARY'].indexOf(e.target.tagName)>=0)return;if(e.code==='Space'){e.preventDefault();cpSync(performance.now());if(CP.phase==='run'){campaignKeys.add(e.code);CP.hold=true;}}});
-  addEventListener('keyup',function(e){if(e.code!=='Space')return;if(!$('view-campaign').hidden)e.preventDefault();cpSync(performance.now());campaignKeys.delete(e.code);CP.hold=campaignPointers.size>0||campaignKeys.size>0;});
+  addEventListener('keydown',function(e){if($('view-campaign').hidden||document.hidden||CP.phase!=='run'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;if(['INPUT','BUTTON','A','SUMMARY'].indexOf(e.target.tagName)>=0)return;if(e.code==='Space'){e.preventDefault();cpSync(performance.now());if(CP.phase==='run'){campaignKeys.add(e.code);cpHold(true);}}});
+  addEventListener('keyup',function(e){if(e.code!=='Space')return;if(!$('view-campaign').hidden)e.preventDefault();cpSync(performance.now());campaignKeys.delete(e.code);cpHold(campaignPointers.size>0||campaignKeys.size>0);});
   addEventListener('blur',function(){cpRelease();CP.last=performance.now();});
   document.addEventListener('visibilitychange',function(){cpRelease();CP.last=performance.now();});
   window.addEventListener('hashchange',function(){cpRelease();CP.last=performance.now();});
   function cpLoop(now){cpSync(now);if(!$('view-campaign').hidden&&!document.hidden){cpUI();cpDraw();}requestAnimationFrame(cpLoop);}
-  cpCity();cpUI();cpDraw();requestAnimationFrame(cpLoop);
+  campaignRules.create(Math.random, null, CP);CP.phase='ready';cpUI();cpDraw();requestAnimationFrame(cpLoop);
 
 
   /* ---------- Boba Straw: original isolated screen, fee-only shared wallet ---------- */
@@ -13481,10 +13527,7 @@ function loop(t){
 }
 ui();draw();requestAnimationFrame(loop);
   })();
-  /* ---------- Nap Master: hold to sleep while the boss patrols; let go when "!" appears; thrown trash can knock the boss out ---------- */
-  var napBusy=false,napStake=0,napSay=function(){};
-  (function(){
-// ===== 全部數值集中在這裡 =====
+const napRules = (() => {
 const CONFIG = {
 W:400, H:560,
 hearts:3, heartRestore:[4,7],           // 考績（命）；第 4、7 關開始時回 1 顆
@@ -13654,12 +13697,41 @@ g.update = function(dt,input){
 return g;
 }
 
+
+function create(random) {
+  const state=createGame(random);
+  state.startRun();
+  state.held=false;
+  state.throwPending=false;
+  Object.defineProperty(state,'dead',{get:()=>state.state==='WIN'||state.state==='OVER'});
+  return state;
+}
+function input(state,code) {
+  if(state.dead)return false;
+  if(code===2){if(state.throwPending)return false;state.throwPending=true;return true;}
+  if(code!==0&&code!==1||state.held===(code===0))return false;
+  state.held=code===0;
+  return true;
+}
+function advance(state,dt) {
+  state.update(dt,{sleep:state.held,throwEdge:state.throwPending});
+  state.throwPending=false;
+}
+return {createGame,create,input,advance,inputCount:3,score:state=>state.score};
+})();
+if(typeof module!=='undefined')module.exports=napRules;
+  /* ---------- Nap Master: hold to sleep while the boss patrols; let go when "!" appears; thrown trash can knock the boss out ---------- */
+  var napBusy=false,napStake=0,napSay=function(){};
+  (function(){
+// ===== 全部數值集中在這裡 =====
+const createGame=napRules.createGame;
 const c=$('np-canvas'),ctx=c.getContext('2d'),W=400,H=560;
 const NAP_REWARD=1;                       // points credited each time a level is cleared (fixed milestone, no multiplier)
 const BTN_SLEEP={x:10,y:482,w:250,h:68},BTN_THROW={x:270,y:482,w:120,h:68};
 const FONT='"Noto Sans TC",system-ui,sans-serif';
 let best=0;try{best=+localStorage.getItem('deep-sea-nap-best')||0}catch(e){}
 let analytics=null,earned=0,st='ready',G=createGame(),why='',rec=false,tt=0,last=0;
+const rank=timedLeaderboard('nap','np',napRules.inputCount,ui);
 const floats=[],pointers=new Map(),keys=new Set();
 let throwEdge=false,shake=0,flashRed=0,flashWhite=0;
 const inRect=(p,r)=>p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+r.h;
@@ -13672,13 +13744,13 @@ function ui(){
  const live=st==='run';
  let hearts='';for(let i=0;i<G.cfg.hearts;i++)hearts+=i<G.hearts?'♥':'♡';
  setText('np-level','第 '+G.level+' 關');setText('np-hearts',hearts);setText('np-best',best+' 分');
- $('np-amount').disabled=napBusy;$('np-go').disabled=live;setText('np-go',live?'偷睡中 · 按住睡覺':st==='over'?'再玩一次':'開始偷睡');
+ $('np-amount').disabled=napBusy;$('np-go').disabled=live||rank.busy();setText('np-go',live?'偷睡中 · 按住睡覺':st==='over'?'再玩一次':'開始偷睡');
 }
 function addFloat(x,y,text,color,size,life){floats.push({x:x,y:y,text:text,color:color,size:size||18,life:life||.9,max:life||.9})}
 function end(win){
  if(st!=='run')return;
  st='over';why=win?'win':'fired';clearInput();
- const score=G.score;rec=score>best;
+ const score=G.score;rank.finish(score);rec=score>best;
  if(rec){best=score;try{localStorage.setItem('deep-sea-nap-best',best)}catch(e){}}
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:earned,stage:G.level});napBusy=false;save();renderAll();
  if(win)say('10 關全部睡過，主管毫不知情！本局共入帳 '+fmt(earned)+' 點。','win');
@@ -13901,12 +13973,14 @@ function draw(dt){
  shake=Math.max(0,shake-dt);flashRed=Math.max(0,flashRed-dt);flashWhite=Math.max(0,flashWhite-dt);
 }
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('nap',amount);napStake=amount;napBusy=true;save();renderAll();
- G=createGame();G.startRun();earned=0;rec=false;why='';floats.length=0;clearInput();shake=0;flashRed=0;flashWhite=0;
+ G=napRules.create(random||Math.random);earned=0;rec=false;why='';floats.length=0;clearInput();shake=0;flashRed=0;flashWhite=0;
  st='run';last=performance.now();say('開始偷睡！按住睡覺鍵累積睡意，看到「!」立刻放開。');ui();c.focus();
+ },ui);
 }
 const shown=()=>!$('view-nap').hidden&&!document.hidden;
 const toLocal=e=>{const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H}};
@@ -13934,7 +14008,13 @@ function loop(t){
  const dt=Math.min(.05,Math.max(0,(t-last)/1000)||0);last=t;
  if(shown()){
   tt+=dt;
-  if(st==='run'){const input={sleep:sleepHeld(),throwEdge:throwEdge};throwEdge=false;G.update(dt,input);handleEvents()}
+  if(st==='run'){
+   const held=sleepHeld();
+   if(G.held!==held){const code=held?0:1;napRules.input(G,code);rank.record(code);}
+   if(throwEdge&&napRules.input(G,2))rank.record(2);
+   throwEdge=false;
+   rank.update(dt*1000,()=>st==='run',step=>{napRules.advance(G,step);handleEvents()});
+  }
   ui();draw(dt)}
  requestAnimationFrame(loop)}
 ui();draw(0);requestAnimationFrame(loop);
@@ -17589,10 +17669,7 @@ ui();draw();requestAnimationFrame(loop);
     }
     buildLevel(); serve(); ui(); draw(); requestAnimationFrame(loop);
   })();
-  /* ---------- The Last Hair: slide the neck to lean into the wind, hold to press the hair down; reach the interview with at least one hair ---------- */
-  var hairBusy=false,hairStake=0,hairSay=function(){};
-  (function(){
-// ===== 全部數值集中在 CONFIG =====
+const hairRules=(()=>{
 const CONFIG = {
   goal: 500,
   baseSpeed: 6.0,                 // 公尺/秒
@@ -17792,6 +17869,19 @@ function rankOf(g) {
 }
 
 
+
+function create(random){const s=createGame(random);s.control=200;Object.defineProperty(s,'dead',{get:()=>s.state.over});return s;}
+function input(s,code){if(s.dead||!Number.isInteger(code)||code<0||code>=402||s.control===code)return false;s.control=code;return true;}
+function advance(s,dt){s.update(dt,{tilt:(Math.floor(s.control/2)-100)/100,press:!!(s.control%2)});}
+return {create,input,inputCount:402,advance,score:s=>Math.floor(s.state.dist),CONFIG,clamp,createGame,rankOf};
+
+})();
+if(typeof module!=="undefined")module.exports=hairRules;
+  /* ---------- The Last Hair: slide the neck to lean into the wind, hold to press the hair down; reach the interview with at least one hair ---------- */
+  var hairBusy=false,hairStake=0,hairSay=function(){};
+  (function(){
+// ===== 全部數值集中在 CONFIG =====
+const {CONFIG,clamp,createGame,rankOf}=hairRules;
 const c=$('lh-canvas'),ctx=c.getContext('2d'),W=400,H=720,SCENE_H=482,PX=18;
 const DPR=Math.min(2,Math.max(1,window.devicePixelRatio||1));
 c.width=Math.round(W*DPR);c.height=Math.round(H*DPR);
@@ -17813,6 +17903,7 @@ try{best=+localStorage.getItem('deep-sea-last-hair-best')||0}catch(e){}
 try{deaths=JSON.parse(localStorage.getItem('deep-sea-last-hair-deaths')||'[]');if(!Array.isArray(deaths))deaths=[]}catch(e){deaths=[]}
 try{swap=localStorage.getItem('deep-sea-last-hair-swap')==='1';soundOn=localStorage.getItem('deep-sea-last-hair-sound')!=='0'}catch(e){}
 const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const rank=timedLeaderboard('last-hair','lh',hairRules.inputCount,ui);
 let analytics=null,earned=0,rewarded=0,st='ready',paused=false,game=createGame(),g=game.state,idle=createGame(function(){return .5}).state,rec=false,time=0,last=0,tipT=0,tipText='',flapAcc=0,endAt=0,causeText='';
 const idleG=idle;
 const input={tilt:0,press:false},ptrs=new Map(),floats=[],flyHairs=[],streaks=[],ups=[],hs=[{},{},{}];
@@ -17829,7 +17920,7 @@ function aliveN(){return g.hairs.filter(h=>h.alive).length}
 function ui(){
  const live=st==='run';
  setText('lh-dist',Math.floor(live||st==='over'?g.dist:0)+' m');setText('lh-hairs',(live||st==='over'?aliveN():3)+' / 3');setText('lh-best',best.toFixed(0)+' m');
- $('lh-amount').disabled=hairBusy;$('lh-go').disabled=live;setText('lh-go',live?'逆風前進中':st==='over'?'再玩一次':'開始出門');
+ $('lh-amount').disabled=hairBusy;$('lh-go').disabled=live||rank.busy();setText('lh-go',live?'逆風前進中':st==='over'?'再玩一次':'開始出門');
 }
 // ---- audio / haptics ----
 let ac=null;
@@ -17849,6 +17940,7 @@ function end(won){
   rec=g.deathDist>best;if(rec){best=g.deathDist;lsSet('deep-sea-last-hair-best',best.toFixed(1))}
   deaths.push({d:+g.deathDist.toFixed(1),c:causeText});if(deaths.length>12)deaths.shift();lsSet('deep-sea-last-hair-deaths',JSON.stringify(deaths));
  }
+ rank.finish(Math.floor(g.dist));
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:Math.floor(g.dist),step:earned,stage:Math.min(4,rewarded+1)});hairBusy=false;save();renderAll();
  if(won)say(WIN_MSG[aliveN()]+' '+fmt(earned)+' 點。','win');
  else if(earned)say('頭髮掉光了。倒在 '+Math.floor(g.deathDist)+' 公尺，本局共入帳 '+fmt(earned)+' 點。','win');
@@ -18102,12 +18194,14 @@ function recomputePress(){let n=0;ptrs.forEach(v=>{if(v==='press')n++});input.pr
 function clearInput(){ptrs.clear();input.press=false;input.tilt=0;kbL=kbR=kbPress=false}
 function pauseNow(){if(st==='run'&&!paused){paused=true;clearInput()}last=performance.now()}
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('last-hair',amount);hairBusy=true;hairStake=amount;save();renderAll();
- game=createGame();g=game.state;earned=0;rewarded=0;rec=false;floats.length=0;flyHairs.length=0;hs.forEach(h=>{h.init=false});clearInput();paused=false;
+ game=hairRules.create(random||Math.random);g=game.state;earned=0;rewarded=0;rec=false;floats.length=0;flyHairs.length=0;hs.forEach(h=>{h.init=false});clearInput();paused=false;
  tipText=TIPS[0];tipT=4.5;st='run';last=performance.now();say('出門了！左手滑脖子迎風歪頭，右手按住壓頭，走完 500 公尺。');ui();c.focus();
+ },ui);
 }
 $('lh-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
@@ -18162,7 +18256,11 @@ function loop(t){
   time+=dt;
   if(st==='run'&&!paused){
    tipT=Math.max(0,tipT-dt);
-   game.update(dt,{tilt:input.tilt,press:input.press||kbPress});
+   const code=(Math.round(clamp(input.tilt,-1,1)*100)+100)*2+Number(input.press||kbPress);
+   if(game.control!==code){hairRules.input(game,code);rank.record(code);}
+   rank.update(dt*1000,()=>st==='run'&&!paused,step=>{hairRules.advance(game,step);
+   if(!g.over||g.won)milestones();
+   handleEvents();});
    if(!g.over)milestones();else if(g.won)milestones();
    if(g.E>.35){flapT+=dt;if(flapT>.16){flapT=0;SFX.flap()}}
    handleEvents();
@@ -20694,15 +20792,8 @@ ui();render();requestAnimationFrame(frame);
   olSay('按「開始守城」或遊戲裡的「開始」開局。|Each game costs a fixed 10 pts. Press “Pay & defend” or “Start” in the game.');
   olUI();
 
-  /* ---------- Mermaid Spider: Spider Solitaire with mermaid cards; every finished K→A run is a pearl worth a fixed +1 point ---------- */
-  var mmBusy=false,mmStake=0,mmSay=function(){};
-  (function(){
-const BEST_KEY='deep-sea-mermaid-best';
-const RUN_POINTS=1,CLEAR_BONUS=2,TOTAL_RUNS=8;
+const mermaidRules=(()=>{
 const MODES={1:{suits:[3]},2:{suits:[3,2]},4:{suits:[0,1,2,3]}};
-const RANK=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'];
-const BACK_SVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140"><defs><pattern id="s" width="14" height="10" patternUnits="userSpaceOnUse"><path d="M0 10a7 7 0 0 1 14 0M-7 5a7 7 0 0 1 14 0M7 5a7 7 0 0 1 14 0" fill="none" stroke="#34568a" stroke-width="1.2"/></pattern></defs><rect width="100" height="140" rx="6" fill="#f3e9d0"/><rect x="5" y="5" width="90" height="130" rx="3" fill="#1f3556"/><rect x="5" y="5" width="90" height="130" rx="3" fill="url(#s)"/><rect x="9" y="9" width="82" height="122" rx="2" fill="none" stroke="#f3e9d0" stroke-width="1"/><ellipse cx="50" cy="70" rx="27" ry="40" fill="#f3e9d0"/><ellipse cx="50" cy="70" rx="23" ry="36" fill="none" stroke="#1f3556" stroke-width="1.4"/><path d="M50 38c-9 8-12 19-8 33 2 7 5 11 8 14 3-3 6-7 8-14 4-14 1-25-8-33z" fill="#c4473a"/><path d="M50 85c-8 2-14 8-16 16 7-1 12-4 16-8 4 4 9 7 16 8-2-8-8-14-16-16z" fill="#1f3556"/><path d="M44 52q6 3 12 0M43.5 60q6.500 3 13 0M44 68q6 3 12 0M45 76q5 2.600 10 0" stroke="#f3e9d0" stroke-width="1.100" fill="none" stroke-linecap="round"/><path d="M50 18l3 4-3 4-3-4zM50 114l3 4-3 4-3-4zM16 70l3 4-3 4-3-4zM84 70l3 4-3 4-3-4z" fill="#d9a21a"/></svg>';
-// ===== 牌局邏輯（不碰畫面）=====
 function shuffle(a,r){for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
 function createGame(mode,r){
  r=r||Math.random;const suits=MODES[mode].suits,copies=8/suits.length,deck=[];let id=0;
@@ -20772,7 +20863,44 @@ function findHint(g){
  let best=null;
  for(const m of allMoves(g)){const s=scoreMove(g,m);if(!best||s>best.s)best={from:m.from,idx:m.idx,to:m.to,s:s}}
  return best}
+
+function create(random=Math.random){
+ const state=createGame(1,random);state.random=random;state.dead=false;return state;
+}
+function input(s,code){
+ if(s.dead||!Number.isInteger(code)||code<0||code>=10406)return false;
+ if(code===3||code===4){
+  if(s.moves||s.mode!==1)return false;
+  Object.assign(s,createGame(code===3?2:4,s.random));return true;
+ }
+ if(code===2){s.dead=true;return true;}
+ let result;
+ if(code===0)result=deal(s);
+ else if(code===1)result=undo(s);
+ else{
+  const packed=code-5,from=Math.floor(packed/1040),idx=Math.floor(packed%1040/10),to=packed%10;
+  result=move(s,from,idx,to);
+ }
+ if(s.done===8)s.dead=true;
+ return !!result;
+}
+return {create,inputCount:10406,input,advance:()=>{},score:s=>s.score,
+shuffle,createGame,snap,pushHistory,undo,flipTop,runStart,canDrop,completeRun,sweep,move,canDeal,deal,allMoves,chainLen,scoreMove,findHint};
+})();
+if(typeof module!=='undefined')module.exports=mermaidRules;
+  /* ---------- Mermaid Spider: Spider Solitaire with mermaid cards; every finished K→A run is a pearl worth a fixed +1 point ---------- */
+  var mmBusy=false,mmStake=0,mmSay=function(){};
+  (function(){
+const BEST_KEY='deep-sea-mermaid-best';
+const RUN_POINTS=1,CLEAR_BONUS=2,TOTAL_RUNS=8;
+const MODES={1:{suits:[3]},2:{suits:[3,2]},4:{suits:[0,1,2,3]}};
+const RANK=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const BACK_SVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140"><defs><pattern id="s" width="14" height="10" patternUnits="userSpaceOnUse"><path d="M0 10a7 7 0 0 1 14 0M-7 5a7 7 0 0 1 14 0M7 5a7 7 0 0 1 14 0" fill="none" stroke="#34568a" stroke-width="1.2"/></pattern></defs><rect width="100" height="140" rx="6" fill="#f3e9d0"/><rect x="5" y="5" width="90" height="130" rx="3" fill="#1f3556"/><rect x="5" y="5" width="90" height="130" rx="3" fill="url(#s)"/><rect x="9" y="9" width="82" height="122" rx="2" fill="none" stroke="#f3e9d0" stroke-width="1"/><ellipse cx="50" cy="70" rx="27" ry="40" fill="#f3e9d0"/><ellipse cx="50" cy="70" rx="23" ry="36" fill="none" stroke="#1f3556" stroke-width="1.4"/><path d="M50 38c-9 8-12 19-8 33 2 7 5 11 8 14 3-3 6-7 8-14 4-14 1-25-8-33z" fill="#c4473a"/><path d="M50 85c-8 2-14 8-16 16 7-1 12-4 16-8 4 4 9 7 16 8-2-8-8-14-16-16z" fill="#1f3556"/><path d="M44 52q6 3 12 0M43.5 60q6.500 3 13 0M44 68q6 3 12 0M45 76q5 2.600 10 0" stroke="#f3e9d0" stroke-width="1.100" fill="none" stroke-linecap="round"/><path d="M50 18l3 4-3 4-3-4zM50 114l3 4-3 4-3-4zM16 70l3 4-3 4-3-4zM84 70l3 4-3 4-3-4z" fill="#d9a21a"/></svg>';
+// ===== 牌局邏輯（不碰畫面）=====
+const {shuffle,createGame,snap,pushHistory,undo,flipTop,runStart,canDrop,completeRun,sweep,move,canDeal,deal,allMoves,chainLen,scoreMove,findHint}=mermaidRules;
 // ===== 畫面與點數 =====
+let rankLast=0;
+const rank=timedLeaderboard('mermaid','mm',mermaidRules.inputCount,ui);
 let G=null,st='idle',mode=1,analytics=null,earned=0,maxDone=0,bonusPaid=false,sel=null,hint=null,hintTimer=0,drag=null,lockUntil=0,quitArm=false,quitTimer=0,lastResult=null;
 const store={best:{},mode:1};
 try{const s=JSON.parse(localStorage.getItem(BEST_KEY)||'null');if(s&&typeof s==='object'){if(s.best&&typeof s.best==='object')store.best=s.best;if(MODES[s.mode])store.mode=Number(s.mode)}}catch(e){}
@@ -20855,7 +20983,7 @@ function runFx(f){
 function ui(){
  const live=st==='run';
  setText('mm-pearls',(G?G.done:0)+' / '+TOTAL_RUNS);setText('mm-score',G?String(G.score):'—');setText('mm-best',bestFor(mode)+' 分');
- const go=$('mm-go');go.disabled=live;setText('mm-go',live?'牌局進行中':st==='over'?'再玩一次':'發牌');
+ const go=$('mm-go');go.disabled=live||rank.busy();setText('mm-go',live?'牌局進行中':st==='over'?'再玩一次':'發牌');
  const q=$('mm-quit');q.hidden=!live;setText('mm-quit',quitArm?'再按一次確認放棄':'放棄本局');
  $('mm-undo').disabled=!live||!G||!G.history.length;$('mm-hint').disabled=!live;
  stockBtn.disabled=!live||!G||!G.stock.length;setText('mm-stock-count',String(G?Math.ceil(G.stock.length/10):5));
@@ -20865,7 +20993,8 @@ function ui(){
  cover.hidden=live;
  if(st==='over'&&lastResult){setText('mm-cover-title',lastResult.win?'全部珍珠收集完成！':'本局結束');
   setText('mm-cover-text',lastResult.win?'人魚為你唱歌。本局共入帳 '+earned+' 點。':'收集了 '+lastResult.done+' 顆珍珠，本局共入帳 '+earned+' 點。')}
- else{setText('mm-cover-title','人魚接龍');setText('mm-cover-text','把牌排成 K 到 A 的同花色序列，收集 8 顆珍珠。')}}
+ else{setText('mm-cover-title','人魚接龍');setText('mm-cover-text','把牌排成 K 到 A 的同花色序列，收集 8 顆珍珠。');
+ }}
 function pay(n){
  earned+=n;S.balance+=n;save();renderAll();
  AN.progress(analytics,{stage:G.done,step:earned,score:G.score,bonus_points:n})}
@@ -20884,6 +21013,8 @@ function afterAction(newIds){
  ui()}
 function end(win){
  if(st!=='run')return;
+ if(!win)rank.record(2);
+ rank.finish(G.score,true);
  st='over';mmBusy=false;sel=null;clearHint();quitArm=false;clearTimeout(quitTimer);drag=null;
  const rec=G.done>0&&G.score>bestFor(mode);if(rec){store.best[mode]=G.score;saveStore()}
  lastResult={win:win,done:G.done};
@@ -20893,16 +21024,19 @@ function end(win){
  else say('本局結束，共入帳 '+earned+' 點。','lose');
  ui()}
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('mermaid',ENTRY_FEE);mmStake=ENTRY_FEE;mmBusy=true;save();renderAll();
- buildBoard();G=createGame(mode);earned=0;maxDone=0;bonusPaid=false;sel=null;clearHint();drag=null;lastResult=null;quitArm=false;
+ buildBoard();G=mermaidRules.create(random||Math.random);if(mode!==1){const code=mode===2?3:4;mermaidRules.input(G,code);rank.record(code);}rankLast=performance.now();earned=0;maxDone=0;bonusPaid=false;sel=null;clearHint();drag=null;lastResult=null;quitArm=false;
  st='run';ui();render();
- say('發牌囉！把牌從大排到小，同花色排滿 K 到 A 就收成珍珠。')}
+ say('發牌囉！把牌從大排到小，同花色排滿 K 到 A 就收成珍珠。');
+ },ui);}
 function locked(){return performance.now()<lockUntil}
 // 操作
 function doMove(from,idx,to){
  if(!move(G,from,idx,to))return false;
+ rank.record(5+from*1040+idx*10+to);
  afterAction();return true}
 function tapColumn(c,idx){
  if(sel){
@@ -20950,11 +21084,11 @@ stockBtn.addEventListener('click',()=>{
  if(st!=='run'||locked())return;
  if(!G.stock.length){say('牌堆已經發完了。','lose');return}
  if(!canDeal(G)){say('每一列都要有牌才能發牌，先把牌放進空列。','lose');return}
- const ids=deal(G);afterAction(ids);
+ const ids=deal(G);rank.record(0);afterAction(ids);
  if(st==='run')say('浪花湧來，每一列多了一張牌。')});
 $('mm-undo').addEventListener('click',()=>{
  if(st!=='run'||locked()||!G.history.length)return;
- undo(G);sel=null;clearHint();render();ui();say('時間倒流了一步。')});
+ undo(G);rank.record(1);sel=null;clearHint();render();ui();say('時間倒流了一步。')});
 $('mm-hint').addEventListener('click',()=>{
  if(st!=='run'||locked())return;
  const h=findHint(G);clearHint();sel=null;
@@ -20975,6 +21109,11 @@ document.querySelectorAll('.mm-mode').forEach(b=>b.addEventListener('click',()=>
 if(window.ResizeObserver)new ResizeObserver(()=>{if(G)render()}).observe(board);
 window.addEventListener('resize',()=>{if(G)render()});
 window.addEventListener('hashchange',()=>{drag=null;if(G)requestAnimationFrame(render)});
+function rankedClock(now){
+ if(st==='run'&&!document.hidden&&!$('view-mermaid').hidden)rank.update(Math.max(0,now-rankLast),()=>st==='run',()=>{});
+ rankLast=now;requestAnimationFrame(rankedClock);
+}
+requestAnimationFrame(rankedClock);
 ui();layoutIdle();
 function layoutIdle(){metrics()}
   })();
@@ -22650,13 +22789,83 @@ opUI();
   window.addEventListener('arcade-languagechange',function(){if(QP.msg)qpSay(QP.msg.text,QP.msg.kind,QP.msg.params);});
   qpSay('在左側選關或直接開始；點空格標 ✕，再點放鴨子。|Pick a level on the left or just start: tap a cell for ✕, tap again for a duck.');
   qpUI();
+const carpRules = (() => {
+  const W = 400, GY = 430, PXL = 110, WW = 54;
+  function create(random = Math.random) {
+    return {random, dist:0, py:GY, vy:0, on:true, hold:false, ch:0, obs:[],
+      nextAt:420, cleared:0, fx:[], dead:null};
+  }
+  function input(state, action) {
+    if (state.dead) return false;
+    if (action === 0 && state.on && !state.hold) {
+      state.hold = true;
+      state.ch = 0;
+      return true;
+    }
+    if (!state.hold) return false;
+    if (action === 1) {
+      state.hold = false;
+      state.vy = -Math.sqrt(2 * 2200 * (40 + 170 * state.ch));
+      state.on = false;
+      return true;
+    }
+    if (action === 2) {
+      state.hold = false;
+      state.ch = 0;
+      return true;
+    }
+    return false;
+  }
+  function advance(s, dt) {
+    const speed = 280 + Math.min(120, s.cleared * 3);
+    s.dist += speed * dt;
+    if (s.dist >= s.nextAt) {
+      const heights = s.cleared < 4 ? [60, 110] : [60, 110, 160];
+      const h = heights[Math.floor(s.random() * heights.length)];
+      s.obs.push({x:W+50,h,hb:h+130-Math.min(40,s.cleared*2),d:0});
+      s.nextAt = s.dist + 400 + s.random() * 100;
+    }
+    if (s.hold) s.ch = Math.min(1, s.ch + dt / .9);
+    s.vy += 2200 * dt;
+    s.py += s.vy * dt;
+    if (s.py >= GY) {
+      if (!s.on) s.fx.push({s:'~',x:PXL,y:GY-10,t:0});
+      s.py = GY;
+      s.vy = 0;
+      s.on = true;
+    } else {
+      s.on = false;
+    }
+    for (const obstacle of s.obs) {
+      obstacle.x -= speed * dt;
+      if (PXL+14 > obstacle.x && PXL-14 < obstacle.x+WW && s.py > GY-obstacle.h) {
+        s.dead = 'hit';
+        return;
+      }
+      if (Math.abs(PXL-(obstacle.x+WW/2)) < 22 && s.py-28 < GY-obstacle.hb) {
+        s.dead = 'hook';
+        return;
+      }
+      if (!obstacle.d && obstacle.x+WW < PXL-14) {
+        obstacle.d = 1;
+        s.cleared++;
+        s.fx.push({s:'+1',x:PXL,y:s.py-50,t:0});
+      }
+    }
+    s.obs = s.obs.filter(obstacle => obstacle.x > -90);
+    for (const effect of s.fx) effect.t += dt;
+    s.fx = s.fx.filter(effect => effect.t < .8);
+  }
+  return {GY,PXL,WW,inputCount:3,create,input,advance,score: state => state.cleared};
+})();
+if (typeof module !== 'undefined') module.exports = carpRules;
   /* ---------- 鯉魚躍龍門: endless runner adapted from a standalone page; fixed score milestones award bonus points immediately ---------- */
   var carpBusy=false,carpStake=0,carpSay=function(){};
   (function(){
 const c=$('carp-canvas'),g=c.getContext('2d'),W=400,H=560,OL='#2b2d42',G={};
 const MILESTONES=[10, 20, 35],BONUS=5,KEY='deep-sea-carp-best',SKEY='deep-sea-carp-skin',UNIT=' 道';
 let analytics=null,paid=0,awarded=new Set(),bpop=[];
-const rnd=(a,b)=>a+Math.random()*(b-a),cl=(x,a,b)=>Math.max(a,Math.min(b,x));
+const cl=(x,a,b)=>Math.max(a,Math.min(b,x));
 const O=(f,w)=>{g.fillStyle=f;g.fill();g.lineWidth=w||3;g.strokeStyle=OL;g.lineJoin='round';g.stroke()};
 const C=(x,y,r,f,w)=>{g.beginPath();g.arc(x,y,r,0,7);O(f,w)};
 const E=(x,y,rx,ry,f,w)=>{g.beginPath();g.ellipse(x,y,rx,ry,0,0,7);O(f,w)};
@@ -22674,29 +22883,17 @@ else E(0,-8,13,4,'#ffe27a',3);
 g.restore()}
 G.I={bs:n=>'最高 '+n,tap:'',title:"鯉魚躍龍門",s1:"鯉魚逆流而上，要變成龍！",s2:"按住蓄力，放開起跳。別撞到石頭和魚鉤。",hit:"撞到石頭了！",hook:"被魚鉤鉤住了！",cl:n=>'已越過 '+n+' 道瀑布'};
 G.skins=[{need:0,n:'紅鯉魚',c:['#ff6b35','#d00000'],a:0},{need:15,n:'派對鯉魚',c:['#ff9f1c','#e36414'],a:3},{need:40,n:'金鯉魚',c:['#ffd23f','#f77f00'],a:4},{need:80,n:'化龍鯉魚',c:['#2ec4b6','#7209b7'],a:2}];
-const GY=430,PXL=110,WW=54;
-let dist,v,py,vy,on,hold,hid,ch,obs,nextAt,cleared,fx;
-G.reset=()=>{dist=0;v=280;py=GY;vy=0;on=true;hold=false;ch=0;obs=[];nextAt=420;cleared=0;fx=[]};
-G.score=()=>cleared;
-G.extra=()=>T('cl')(cleared);
-G.down=p=>{if(on&&!hold){hold=true;hid=p.id;ch=0}};
-G.up=p=>{if(hold&&p.id===hid){hold=false;vy=-Math.sqrt(2*2200*(40+170*ch));on=false}};
-function spawn(){
-const h=(cleared<4?[60,110]:[60,110,160])[(Math.random()*(cleared<4?2:3))|0];
-obs.push({x:W+50,h,hb:h+130-Math.min(40,cleared*2),d:0});
-nextAt=dist+rnd(400,500)}
-G.update=dt=>{
-v=280+Math.min(120,cleared*3);dist+=v*dt;
-if(dist>=nextAt)spawn();
-if(hold)ch=Math.min(1,ch+dt/.9);
-vy+=2200*dt;py+=vy*dt;if(py>=GY){if(!on)fx.push({s:'~',x:PXL,y:GY-10,t:0});py=GY;vy=0;on=true}else on=false;
-for(const o of obs){o.x-=v*dt;
-if(PXL+14>o.x&&PXL-14<o.x+WW&&py>GY-o.h){die('hit');return}
-if(Math.abs(PXL-(o.x+WW/2))<22&&py-28<GY-o.hb){die('hook');return}
-if(!o.d&&o.x+WW<PXL-14){o.d=1;cleared++;fx.push({s:'+1',x:PXL,y:py-50,t:0})}}
-obs=obs.filter(o=>o.x>-90);
-fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8)};
+const {GY,PXL,WW}=carpRules;
+let model=carpRules.create();
+const rank=timedLeaderboard('carp','carp',carpRules.inputCount,ui);
+let heldBy;
+G.score=()=>model.cleared;
+G.extra=()=>T('cl')(model.cleared);
+function control(action){if(carpRules.input(model,action)){rank.record(action);return true}return false}
+G.down=p=>{if(control(0))heldBy=p.id};
+G.up=p=>{if(p.id===heldBy&&control(1))heldBy=undefined};
 function bg(){
+const {dist}=model;
 const sg=g.createLinearGradient(0,0,0,GY);sg.addColorStop(0,'#8ecae6');sg.addColorStop(1,'#ffe8d6');g.fillStyle=sg;g.fillRect(-20,0,W+40,GY);
 g.fillStyle='#4d908e';for(let i=0;i<4;i++){const x=((i*200-dist*.08)%800+800)%800-200;P([[x,GY],[x+120,GY-250],[x+260,GY]],'#4d908e',3)}
 for(let i=0;i<6;i++){const x=((i*110-dist*.25)%660+660)%660-60;g.fillStyle='rgba(255,255,255,.75)';g.fillRect(x,GY-330+(i%3)*30,12,260)}
@@ -22710,6 +22907,7 @@ g.fillStyle='rgba(255,255,255,.75)';g.fillRect(o.x+WW,GY-o.h,9,o.h);
 const cx=o.x+WW/2;
 L2(cx,0,cx,GY-o.hb-16,3,'#fff');g.beginPath();g.arc(cx-7,GY-o.hb-8,9,Math.PI*1.9,Math.PI*1.1,true);g.strokeStyle=OL;g.lineWidth=4;g.stroke();F(cx+3,GY-o.hb-18,3,'#ff8fab')}
 function carp(){
+const {vy,on,hold,ch,py}=model;
 const k=SK(),r=cl(vy/900,-.6,.6),sq=on&&hold?1-ch*.15:1;
 g.save();g.translate(PXL,py-16);g.rotate(r);g.scale(1,sq);
 P([[-18,0],[-42,-14],[-36,0],[-42,14]],k.c[1],3);
@@ -22720,6 +22918,7 @@ C(14,-4,6,'#fff',2);F(16,-4,2.6,OL);
 g.strokeStyle=OL;g.lineWidth=2.5;g.beginPath();g.moveTo(24,2);g.quadraticCurveTo(36,0,38,10);g.moveTo(24,5);g.quadraticCurveTo(34,10,32,18);g.stroke();
 acc(k.a,6,-20,.8);g.restore()}
 G.draw=()=>{
+const {obs,fx,ch}=model;
 const ox=shake>0?(Math.random()-.5)*10:0;g.save();g.translate(ox,0);
 bg();obs.forEach(wall);carp();g.restore();
 fx.forEach(f=>{g.globalAlpha=1-f.t/.8;tx(f.s,f.x,f.y-f.t*50,26,'#ffd23f');g.globalAlpha=1});
@@ -22734,7 +22933,7 @@ const T=k=>G.I[k];
 const ST=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 best=+ST(KEY)||0;skin=+ST(SKEY)||0;if(!G.skins[skin]||best<G.skins[skin].need)skin=0;
 function pick(i){skin=i;try{localStorage.setItem(SKEY,i)}catch(e){}}
-function release(){hold=false;ch=0;}
+function release(){if(st==='run')control(2);heldBy=undefined;}
 function say(text,kind){$('carp-msg').textContent=text;$('carp-msg').className='msg'+(kind?' '+kind:'')}
 carpSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
@@ -22742,7 +22941,7 @@ function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('carp-score',G.score()+UNIT);setText('carp-best',best+UNIT);setText('carp-pay',fmt(paid)+' 點');
  setText('carp-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('carp-amount').disabled=carpBusy;$('carp-go').disabled=live;setText('carp-go',live?'挑戰中 · 按住蓄力':st==='over'?'再躍一次':'開始躍龍門');
+ $('carp-amount').disabled=carpBusy;$('carp-go').disabled=live||rank.busy();setText('carp-go',live?'挑戰中 · 按住蓄力':st==='over'?'再躍一次':'開始躍龍門');
  document.querySelectorAll('[data-carp-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-carp-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -22758,7 +22957,7 @@ function awardBonus(){
 function die(m){
  if(st!=='run')return;
  st='over';G.msg=m;shake=reduceMotion?0:.35;release();
- const s=G.score();rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
+ const s=G.score();rank.finish(s);rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
  if(rec){best=s;try{localStorage.setItem(KEY,best)}catch(e){}}
  if(unl.length)pick(G.skins.indexOf(unl[unl.length-1]));
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});carpBusy=false;renderAll();
@@ -22766,11 +22965,13 @@ function die(m){
  ui();
 }
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('carp',amount);carpStake=amount;carpBusy=true;save();renderAll();
- G.reset();paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=carpRules.create(random||Math.random);heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ },ui);
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
@@ -22804,11 +23005,58 @@ window.addEventListener('hashchange',()=>{release();last=performance.now()});
 $('carp-go').addEventListener('click',start);
 function loop(ts){const dt=Math.min(.05,Math.max(0,(ts-last)/1000)||0);last=ts;
  if(!V.hidden&&!document.hidden){tt+=dt;if(shake>0)shake-=dt;bpop.forEach(p=>p.age+=dt);bpop=bpop.filter(p=>p.age<1.8);
-  if(st==='run'){G.update(dt);if(st==='run')awardBonus()}
+  if(st==='run')rank.update(dt*1000,()=>st==='run',step=>{carpRules.advance(model,step);if(model.dead)die(model.dead);else awardBonus()})
   G.draw();bonusDraw();if(st!=='run')overlay();ui()}
  requestAnimationFrame(loop)}
-G.reset();ui();G.draw();overlay();requestAnimationFrame(loop);
+ui();G.draw();overlay();requestAnimationFrame(loop);
   })();
+const riderRules = (() => {
+  function create(random=Math.random) {
+    const G={}, W=400,H=560,reduceMotion=false;
+    const rnd=(a,b)=>a+random()*(b-a),cl=(x,a,b)=>Math.max(a,Math.min(b,x));
+    const T=()=>()=>'',die=reason=>{dead=reason};
+    let dead=false,shake=0;
+const GY=440,PXL=130;
+let dist,v,hot,py,vy,on,gas,hold,hid,hcool,obs,nextAt,nextHouse,stun,fx,deliv,boosting;
+G.reset=()=>{dist=0;v=290;hot=100;py=GY;vy=0;on=true;gas=100;hold=false;hcool=0;obs=[];nextAt=450;nextHouse=800;stun=0;fx=[];deliv=0;boosting=false};
+G.score=()=>Math.floor(dist/50)+deliv*20;
+G.extra=()=>T('dl')(deliv);
+function honk(){if(hcool>0)return;hcool=1;fx.push({s:T('bip'),x:PXL+40,y:py-110,t:0});obs.forEach(o=>{if(o.t==='dog'&&o.x>PXL&&o.x<PXL+280)o.fl=1})}
+G.down=p=>{if(Math.hypot(p.x-340,p.y-505)<50)honk();else if(p.x<200){if(on){vy=-620;on=false}}else{hold=true;hid=p.id}};
+G.up=p=>{if(p.id===hid)hold=false};
+function hurt(n){hot-=n;stun=.8;shake=reduceMotion?0:.25;fx.push({s:'-'+n,x:PXL,y:py-100,t:0})}
+G.update=dt=>{
+v=Math.min(430,290+dist*.01);boosting=hold&&gas>4;gas=cl(gas+(boosting?-38:14)*dt,0,100);
+const sp=v*(boosting?1.45:1);dist+=sp*dt;hot-=(3.2+dist*.0003)*dt;
+if(hcool>0)hcool-=dt;if(stun>0)stun-=dt;
+if(dist>=nextAt){obs.push(random()<.5?{t:'p',x:W+40}:{t:'dog',x:W+40,fl:0});nextAt=dist+rnd(320,460)}
+if(dist>=nextHouse){obs.push({t:'h',x:W+120,tm:0,dn:0});nextHouse=dist+rnd(900,1200)}
+vy+=2300*dt;py+=vy*dt;if(py>=GY){py=GY;vy=0;on=true}else on=false;
+for(const o of obs){
+if(o.t==='h'){o.x-=sp*dt;
+if(Math.abs(PXL-o.x)<100&&!boosting&&!o.dn){o.tm+=dt;if(o.tm>=.45){o.dn=1;hot=Math.min(100,hot+35);deliv++;fx.push({s:'+20',x:PXL,y:py-110,t:0})}}
+if(o.x<PXL-110&&!o.dn&&!o.ms){o.ms=1;hot-=15;fx.push({s:T('bom'),x:PXL,y:py-110,t:0})}}
+else if(o.t==='dog'){if(o.fl)o.x+=200*dt;else o.x-=(sp+110)*dt;
+if(stun<=0&&!o.h&&!o.fl&&Math.abs(o.x-PXL)<30&&py>GY-34){o.h=1;hurt(20)}}
+else{o.x-=sp*dt;if(stun<=0&&!o.h&&py>=GY-4&&Math.abs(o.x+28-PXL)<30){o.h=1;hurt(15)}}}
+obs=obs.filter(o=>o.x>-160&&o.x<W+520);
+fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
+if(hot<=0)die('cold')};
+
+    G.reset();
+    return {input(code){
+      if(dead||!Number.isInteger(code)||code<0||code>4)return false;
+      if(code===4){hold=false;return true;}
+      if(code===3){G.up?.({id:1});return true;}
+      const points=[[40,300],[240,300],[340,505]];
+      G.down({x:points[code][0],y:points[code][1],id:1});
+      return true;
+    },advance:dt=>G.update(dt),score:()=>G.score(),
+      get dead(){return dead},snapshot:()=>({dist,v,hot,py,vy,on,gas,hold,hid,hcool,obs,nextAt,nextHouse,stun,fx,deliv,boosting,shake})};
+  }
+  return {create,inputCount:5,input:(state,code)=>state.input(code),advance:(state,dt)=>state.advance(dt),score:state=>state.score()};
+})();
+if(typeof module!=='undefined')module.exports=riderRules;
   /* ---------- 外送員大戰惡犬: endless runner adapted from a standalone page; fixed score milestones award bonus points immediately ---------- */
   var riderBusy=false,riderStake=0,riderSay=function(){};
   (function(){
@@ -22835,30 +23083,19 @@ G.I={bs:n=>'最高 '+n,tap:'',title:"外送員大戰惡犬！",s1:"熱騰騰的�
 G.skins=[{need:0,n:'菜鳥外送員',c:['#2ec4b6','#ff9f1c'],a:0},{need:300,n:'西瓜安全帽',c:['#7bd88f','#e63946'],a:1},{need:800,n:'派對外送員',c:['#ff5d8f','#ffd23f'],a:3},{need:1600,n:'外送之王',c:['#ffd23f','#e63946'],a:2}];
 const GY=440,PXL=130;
 let dist,v,hot,py,vy,on,gas,hold,hid,hcool,obs,nextAt,nextHouse,stun,fx,deliv,boosting;
-G.reset=()=>{dist=0;v=290;hot=100;py=GY;vy=0;on=true;gas=100;hold=false;hcool=0;obs=[];nextAt=450;nextHouse=800;stun=0;fx=[];deliv=0;boosting=false};
-G.score=()=>Math.floor(dist/50)+deliv*20;
+let model=riderRules.create(),heldBy;
+const rank=timedLeaderboard('rider','rider',5,ui);
+function syncModel(){({dist,v,hot,py,vy,on,gas,hold,hid,hcool,obs,nextAt,nextHouse,stun,fx,deliv,boosting}=model.snapshot());const next=model.snapshot().shake;if(next)shake=next;}
+function control(code){if(!riderRules.input(model,code))return;rank.record(code);syncModel();}
+G.reset=()=>{model=riderRules.create();syncModel();};
+G.score=()=>model.score();
 G.extra=()=>T('dl')(deliv);
-function honk(){if(hcool>0)return;hcool=1;fx.push({s:T('bip'),x:PXL+40,y:py-110,t:0});obs.forEach(o=>{if(o.t==='dog'&&o.x>PXL&&o.x<PXL+280)o.fl=1})}
-G.down=p=>{if(Math.hypot(p.x-340,p.y-505)<50)honk();else if(p.x<200){if(on){vy=-620;on=false}}else{hold=true;hid=p.id}};
-G.up=p=>{if(p.id===hid)hold=false};
-function hurt(n){hot-=n;stun=.8;shake=reduceMotion?0:.25;fx.push({s:'-'+n,x:PXL,y:py-100,t:0})}
-G.update=dt=>{
-v=Math.min(430,290+dist*.01);boosting=hold&&gas>4;gas=cl(gas+(boosting?-38:14)*dt,0,100);
-const sp=v*(boosting?1.45:1);dist+=sp*dt;hot-=(3.2+dist*.0003)*dt;
-if(hcool>0)hcool-=dt;if(stun>0)stun-=dt;
-if(dist>=nextAt){obs.push(Math.random()<.5?{t:'p',x:W+40}:{t:'dog',x:W+40,fl:0});nextAt=dist+rnd(320,460)}
-if(dist>=nextHouse){obs.push({t:'h',x:W+120,tm:0,dn:0});nextHouse=dist+rnd(900,1200)}
-vy+=2300*dt;py+=vy*dt;if(py>=GY){py=GY;vy=0;on=true}else on=false;
-for(const o of obs){
-if(o.t==='h'){o.x-=sp*dt;
-if(Math.abs(PXL-o.x)<100&&!boosting&&!o.dn){o.tm+=dt;if(o.tm>=.45){o.dn=1;hot=Math.min(100,hot+35);deliv++;fx.push({s:'+20',x:PXL,y:py-110,t:0})}}
-if(o.x<PXL-110&&!o.dn&&!o.ms){o.ms=1;hot-=15;fx.push({s:T('bom'),x:PXL,y:py-110,t:0})}}
-else if(o.t==='dog'){if(o.fl)o.x+=200*dt;else o.x-=(sp+110)*dt;
-if(stun<=0&&!o.h&&!o.fl&&Math.abs(o.x-PXL)<30&&py>GY-34){o.h=1;hurt(20)}}
-else{o.x-=sp*dt;if(stun<=0&&!o.h&&py>=GY-4&&Math.abs(o.x+28-PXL)<30){o.h=1;hurt(15)}}}
-obs=obs.filter(o=>o.x>-160&&o.x<W+520);
-fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
-if(hot<=0)die('cold')};
+G.down=p=>{
+ const code=Math.hypot(p.x-340,p.y-505)<50?2:p.x<200?0:1;
+ control(code);heldBy=p.id;
+};
+G.up=p=>{if(p.id===heldBy){control(3);heldBy=undefined;}};
+G.update=dt=>{riderRules.advance(model,dt);syncModel();if(model.dead)die(model.dead);};
 function bg(){
 const sg=g.createLinearGradient(0,0,0,GY);sg.addColorStop(0,'#6a4c93');sg.addColorStop(1,'#ff9a8b');g.fillStyle=sg;g.fillRect(-20,0,W+40,GY);
 for(let i=0;i<8;i++){const x=((i*90-dist*.15)%720+720)%720-100,h=120+(i*53)%90;g.fillStyle='#3d2c5e';g.fillRect(x,GY-h,70,h);g.fillStyle='#ffd166';for(let r=0;r<3;r++)g.fillRect(x+12,GY-h+14+r*30,10,14),g.fillRect(x+42,GY-h+14+r*30,10,14)}
@@ -22912,7 +23149,7 @@ const T=k=>G.I[k];
 const ST=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 best=+ST(KEY)||0;skin=+ST(SKEY)||0;if(!G.skins[skin]||best<G.skins[skin].need)skin=0;
 function pick(i){skin=i;try{localStorage.setItem(SKEY,i)}catch(e){}}
-function release(){hold=false;}
+function release(){if(st==='run')control(4);heldBy=undefined;}
 function say(text,kind){$('rider-msg').textContent=text;$('rider-msg').className='msg'+(kind?' '+kind:'')}
 riderSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
@@ -22920,7 +23157,7 @@ function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('rider-score',G.score()+UNIT);setText('rider-best',best+UNIT);setText('rider-pay',fmt(paid)+' 點');
  setText('rider-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('rider-amount').disabled=riderBusy;$('rider-go').disabled=live;setText('rider-go',live?'送餐中 · 跳躍／加速':st==='over'?'再送一次':'開始送餐');
+ $('rider-amount').disabled=riderBusy;$('rider-go').disabled=live||rank.busy();setText('rider-go',live?'送餐中 · 跳躍／加速':st==='over'?'再送一次':'開始送餐');
  document.querySelectorAll('[data-rider-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-rider-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -22936,7 +23173,7 @@ function awardBonus(){
 function die(m){
  if(st!=='run')return;
  st='over';G.msg=m;shake=reduceMotion?0:.35;release();
- const s=G.score();rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
+ const s=G.score();rank.finish(s);rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
  if(rec){best=s;try{localStorage.setItem(KEY,best)}catch(e){}}
  if(unl.length)pick(G.skins.indexOf(unl[unl.length-1]));
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});riderBusy=false;renderAll();
@@ -22944,11 +23181,13 @@ function die(m){
  ui();
 }
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('rider',amount);riderStake=amount;riderBusy=true;save();renderAll();
- G.reset();paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=riderRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ },ui);
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
@@ -22982,11 +23221,60 @@ window.addEventListener('hashchange',()=>{release();last=performance.now()});
 $('rider-go').addEventListener('click',start);
 function loop(ts){const dt=Math.min(.05,Math.max(0,(ts-last)/1000)||0);last=ts;
  if(!V.hidden&&!document.hidden){tt+=dt;if(shake>0)shake-=dt;bpop.forEach(p=>p.age+=dt);bpop=bpop.filter(p=>p.age<1.8);
-  if(st==='run'){G.update(dt);if(st==='run')awardBonus()}
+  if(st==='run')rank.update(dt*1000,()=>st==='run',step=>{G.update(step);if(st==='run')awardBonus()})
   G.draw();bonusDraw();if(st!=='run')overlay();ui()}
  requestAnimationFrame(loop)}
 G.reset();ui();G.draw();overlay();requestAnimationFrame(loop);
   })();
+const bossRules = (() => {
+  function create(random=Math.random) {
+    const G={}, W=400,H=560,reduceMotion=false;
+    const rnd=(a,b)=>a+random()*(b-a),cl=(x,a,b)=>Math.max(a,Math.min(b,x));
+    const T=()=>()=>'',die=reason=>{dead=reason};
+    let dead=false,shake=0;
+const GY=440,PXL=170;
+let dist,v,gap,fat,py,vy,on,slide,sid,obs,nextAt,stun,fx;
+G.reset=()=>{dist=0;v=300;gap=150;fat=0;py=GY;vy=0;on=true;slide=false;obs=[];nextAt=500;stun=0;fx=[]};
+G.score=()=>Math.floor(dist/60);
+G.extra=()=>T('fat')(fat);
+G.down=p=>{if(Math.hypot(p.x-340,p.y-505)<50){slide=true;sid=p.id}else if(on){vy=-640;on=false}};
+G.up=p=>{if(p.id===sid)slide=false};
+function spawn(){
+const t=['t','b','h'][(random()*3)|0],x=W+40;
+obs.push({t,x});
+if(random()<.5)obs.push(t==='h'?{t:'k',x:x+40}:{t:'d',x:x+8});
+nextAt=dist+rnd(330,470)-Math.min(120,dist*.01)}
+G.update=dt=>{
+v=Math.min(470,300+dist*.012);dist+=v*dt;
+gap=Math.min(220,gap-(5+fat*4+(v-300)*.03)*dt);
+if(stun>0)stun-=dt;
+if(dist>=nextAt)spawn();
+vy+=2300*dt;py+=vy*dt;if(py>=GY){py=GY;vy=0;on=true}else on=false;
+const ph=slide&&on?26:54,top=py-ph;
+for(const o of obs){o.x-=v*dt;
+if(o.t==='d'||o.t==='k'){const iy=o.t==='d'?GY-100:GY-18;
+if(!o.g&&Math.hypot(o.x-PXL,iy-(py-ph/2))<28){o.g=1;if(o.t==='d'){fat++;gap+=45;fx.push({s:'+',x:PXL,y:py-80,t:0})}else gap+=80}}
+else if(stun<=0){
+const r=o.t==='t'?[o.x,GY-38,o.x+34,GY]:o.t==='b'?[o.x,GY-52,o.x+26,GY]:[o.x,GY-120,o.x+90,GY-40];
+if(PXL+10>r[0]&&PXL-10<r[2]&&py>r[1]&&top<r[3]){gap-=60;stun=.9;shake=reduceMotion?0:.25}}}
+obs=obs.filter(o=>o.x>-120&&!o.g);
+fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
+if(gap<=0)die('caught')};
+
+    G.reset();
+    return {input(code){
+      if(dead||!Number.isInteger(code)||code<0||code>4)return false;
+      if(code===4){slide=false;return true;}
+      if(code===3){G.up?.({id:1});return true;}
+      const points=[[40,300],[200,300],[340,505]];
+      G.down({x:points[code][0],y:points[code][1],id:1});
+      return true;
+    },advance:dt=>G.update(dt),score:()=>G.score(),
+      get dead(){return dead},snapshot:()=>({dist,v,gap,fat,py,vy,on,slide,sid,obs,nextAt,stun,fx,shake})};
+  }
+  return {create,inputCount:5,input:(state,code)=>state.input(code),advance:(state,dt)=>state.advance(dt),score:state=>state.score()};
+})();
+if(typeof module!=='undefined')module.exports=bossRules;
   /* ---------- 胖老闆追人: endless runner adapted from a standalone page; fixed score milestones award bonus points immediately ---------- */
   var bossBusy=false,bossStake=0,bossSay=function(){};
   (function(){
@@ -23013,32 +23301,19 @@ G.I={bs:n=>'最高 '+n,tap:'',title:"胖老闆追人！",s1:"你遲到了，大�
 G.skins=[{need:0,n:'新進員工',c:['#4cc9f0','#1d3557'],a:0},{need:200,n:'IT 工程師',c:['#ffb703','#fb8500'],a:1},{need:500,n:'逃跑總監',c:['#e63946','#9d0208'],a:4},{need:1000,n:'截稿超人',c:['#ffd23f','#e76f51'],a:2}];
 const GY=440,PXL=170;
 let dist,v,gap,fat,py,vy,on,slide,sid,obs,nextAt,stun,fx;
-G.reset=()=>{dist=0;v=300;gap=150;fat=0;py=GY;vy=0;on=true;slide=false;obs=[];nextAt=500;stun=0;fx=[]};
-G.score=()=>Math.floor(dist/60);
+let model=bossRules.create(),heldBy;
+const rank=timedLeaderboard('boss','boss',5,ui);
+function syncModel(){({dist,v,gap,fat,py,vy,on,slide,sid,obs,nextAt,stun,fx}=model.snapshot());const next=model.snapshot().shake;if(next)shake=next;}
+function control(code){if(!bossRules.input(model,code))return;rank.record(code);syncModel();}
+G.reset=()=>{model=bossRules.create();syncModel();};
+G.score=()=>model.score();
 G.extra=()=>T('fat')(fat);
-G.down=p=>{if(Math.hypot(p.x-340,p.y-505)<50){slide=true;sid=p.id}else if(on){vy=-640;on=false}};
-G.up=p=>{if(p.id===sid)slide=false};
-function spawn(){
-const t=['t','b','h'][(Math.random()*3)|0],x=W+40;
-obs.push({t,x});
-if(Math.random()<.5)obs.push(t==='h'?{t:'k',x:x+40}:{t:'d',x:x+8});
-nextAt=dist+rnd(330,470)-Math.min(120,dist*.01)}
-G.update=dt=>{
-v=Math.min(470,300+dist*.012);dist+=v*dt;
-gap=Math.min(220,gap-(5+fat*4+(v-300)*.03)*dt);
-if(stun>0)stun-=dt;
-if(dist>=nextAt)spawn();
-vy+=2300*dt;py+=vy*dt;if(py>=GY){py=GY;vy=0;on=true}else on=false;
-const ph=slide&&on?26:54,top=py-ph;
-for(const o of obs){o.x-=v*dt;
-if(o.t==='d'||o.t==='k'){const iy=o.t==='d'?GY-100:GY-18;
-if(!o.g&&Math.hypot(o.x-PXL,iy-(py-ph/2))<28){o.g=1;if(o.t==='d'){fat++;gap+=45;fx.push({s:'+',x:PXL,y:py-80,t:0})}else gap+=80}}
-else if(stun<=0){
-const r=o.t==='t'?[o.x,GY-38,o.x+34,GY]:o.t==='b'?[o.x,GY-52,o.x+26,GY]:[o.x,GY-120,o.x+90,GY-40];
-if(PXL+10>r[0]&&PXL-10<r[2]&&py>r[1]&&top<r[3]){gap-=60;stun=.9;shake=reduceMotion?0:.25}}}
-obs=obs.filter(o=>o.x>-120&&!o.g);
-fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
-if(gap<=0)die('caught')};
+G.down=p=>{
+ const code=Math.hypot(p.x-340,p.y-505)<50?2:0;
+ control(code);heldBy=p.id;
+};
+G.up=p=>{if(p.id===heldBy){control(3);heldBy=undefined;}};
+G.update=dt=>{bossRules.advance(model,dt);syncModel();if(model.dead)die(model.dead);};
 function bg(){
 g.fillStyle='#a0c4ff';g.fillRect(-20,0,W+40,GY);
 for(let i=0;i<4;i++){const x=((i*170-dist*.12)%680+680)%680-120;RR(x,60,110,140,10,'#ffe8a3',3);L2(x+55,60,x+55,200,3);L2(x,130,x+110,130,3)}
@@ -23088,7 +23363,7 @@ const T=k=>G.I[k];
 const ST=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 best=+ST(KEY)||0;skin=+ST(SKEY)||0;if(!G.skins[skin]||best<G.skins[skin].need)skin=0;
 function pick(i){skin=i;try{localStorage.setItem(SKEY,i)}catch(e){}}
-function release(){slide=false;}
+function release(){if(st==='run')control(4);heldBy=undefined;}
 function say(text,kind){$('boss-msg').textContent=text;$('boss-msg').className='msg'+(kind?' '+kind:'')}
 bossSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
@@ -23096,7 +23371,7 @@ function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('boss-score',G.score()+UNIT);setText('boss-best',best+UNIT);setText('boss-pay',fmt(paid)+' 點');
  setText('boss-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('boss-amount').disabled=bossBusy;$('boss-go').disabled=live;setText('boss-go',live?'逃跑中 · 跳躍／滑行':st==='over'?'再逃一次':'開始逃跑');
+ $('boss-amount').disabled=bossBusy;$('boss-go').disabled=live||rank.busy();setText('boss-go',live?'逃跑中 · 跳躍／滑行':st==='over'?'再逃一次':'開始逃跑');
  document.querySelectorAll('[data-boss-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-boss-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -23112,7 +23387,7 @@ function awardBonus(){
 function die(m){
  if(st!=='run')return;
  st='over';G.msg=m;shake=reduceMotion?0:.35;release();
- const s=G.score();rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
+ const s=G.score();rank.finish(s);rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
  if(rec){best=s;try{localStorage.setItem(KEY,best)}catch(e){}}
  if(unl.length)pick(G.skins.indexOf(unl[unl.length-1]));
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});bossBusy=false;renderAll();
@@ -23120,11 +23395,13 @@ function die(m){
  ui();
 }
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('boss',amount);bossStake=amount;bossBusy=true;save();renderAll();
- G.reset();paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=bossRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ },ui);
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
@@ -23158,11 +23435,61 @@ window.addEventListener('hashchange',()=>{release();last=performance.now()});
 $('boss-go').addEventListener('click',start);
 function loop(ts){const dt=Math.min(.05,Math.max(0,(ts-last)/1000)||0);last=ts;
  if(!V.hidden&&!document.hidden){tt+=dt;if(shake>0)shake-=dt;bpop.forEach(p=>p.age+=dt);bpop=bpop.filter(p=>p.age<1.8);
-  if(st==='run'){G.update(dt);if(st==='run')awardBonus()}
+  if(st==='run')rank.update(dt*1000,()=>st==='run',step=>{G.update(step);if(st==='run')awardBonus()})
   G.draw();bonusDraw();if(st!=='run')overlay();ui()}
  requestAnimationFrame(loop)}
 G.reset();ui();G.draw();overlay();requestAnimationFrame(loop);
   })();
+const thiefRules = (() => {
+  function create(random=Math.random) {
+    const G={}, W=400,H=560,reduceMotion=false;
+    const rnd=(a,b)=>a+random()*(b-a),cl=(x,a,b)=>Math.max(a,Math.min(b,x));
+    const T=()=>()=>'',die=reason=>{dead=reason};
+    let dead=false,shake=0;
+const LX=[105,200,295],CYT=430,fc=['#e63946','#ff9f1c','#7bd88f'];
+let dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx;
+G.reset=()=>{dist=0;v=280;L=0;fruits=0;gb=130;lane=1;cx=200;jt=0;stun=0;rows=[];slips=[];warn=[];nextRow=120;nextSlip=2.5;fx=[]};
+G.score=()=>Math.floor(dist/50)+fruits*5;
+G.extra=()=>T('fr')(fruits);
+G.down=p=>{if(p.x<133)lane=Math.max(0,lane-1);else if(p.x>267)lane=Math.min(2,lane+1);else if(jt<=0)jt=.55};
+function hurt(n){gb-=n;stun=.8;shake=reduceMotion?0:.25;L=Math.max(0,L-2);fx.push({s:'-'+n,x:cx,y:CYT-40,t:0})}
+function spawnRow(){
+const free=(random()*3)|0;
+for(let l=0;l<3;l++){
+if(l===free){const r=random();if(r<.65)rows.push({t:'f',l,y:-30,c:(random()*3)|0});else if(L>=3||r<.75)rows.push({t:'x',l,y:-30})}
+else if(random()<(dist>400?.75:.45))rows.push({t:'b',l,y:-30,c:(random()*3)|0})}}
+G.update=dt=>{
+v=Math.min(420,280+dist*.02)*(1-.07*L);dist+=v*dt;
+gb=Math.min(170,gb-(4+L*5+dist*.002)*dt);
+cx+=(LX[lane]-cx)*Math.min(1,dt*14);
+if(jt>0)jt-=dt;if(stun>0)stun-=dt;
+if(dist>=nextRow){nextRow=dist+rnd(190,250);spawnRow()}
+nextSlip-=dt;if(nextSlip<=0){nextSlip=Math.max(1.8,rnd(3,5.5)-dist*.0005);warn.push({l:(random()*3)|0,t:.8})}
+warn.forEach(w=>{w.t-=dt;if(w.t<=0){w.d=1;slips.push({l:w.l,y:H+30})}});warn=warn.filter(w=>!w.d);
+slips.forEach(s=>{s.y-=760*dt;if(!s.h&&stun<=0&&Math.abs(s.y-CYT)<22&&Math.abs(LX[s.l]-cx)<28){s.h=1;hurt(80)}});slips=slips.filter(s=>s.y>-40);
+const air=jt>0;
+for(const r of rows){r.y+=v*dt;
+const near=Math.abs(r.y-CYT)<26&&Math.abs(LX[r.l]-cx)<30;
+if(r.t==='b'){if(!air&&stun<=0&&!r.h&&near){r.h=1;hurt(50)}}
+else if(!r.g&&!air&&near){r.g=1;if(r.t==='f'){if(L<5){L++;fruits++}}else{L=0;gb+=30}}}
+rows=rows.filter(r=>r.y<H+40&&!r.g);
+fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
+if(gb<=0)die('caught')};
+
+    G.reset();
+    return {input(code){
+      if(dead||!Number.isInteger(code)||code<0||code>4)return false;
+      if(code===4){return true;}
+      if(code===3){G.up?.({id:1});return true;}
+      const points=[[40,300],[200,300],[340,505]];
+      G.down({x:points[code][0],y:points[code][1],id:1});
+      return true;
+    },advance:dt=>G.update(dt),score:()=>G.score(),
+      get dead(){return dead},snapshot:()=>({dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx,shake})};
+  }
+  return {create,inputCount:5,input:(state,code)=>state.input(code),advance:(state,dt)=>state.advance(dt),score:state=>state.score()};
+})();
+if(typeof module!=='undefined')module.exports=thiefRules;
   /* ---------- 偷水果的貓: endless runner adapted from a standalone page; fixed score milestones award bonus points immediately ---------- */
   var thiefBusy=false,thiefStake=0,thiefSay=function(){};
   (function(){
@@ -23189,33 +23516,19 @@ G.I={bs:n=>'最高 '+n,tap:'',title:"偷水果的貓",s1:"小貓偷了水果，�
 G.skins=[{need:0,n:'調皮橘貓',c:['#ff9f1c','#e36414'],a:0},{need:150,n:'白糰子',c:['#f1faee','#a8dadc'],a:1},{need:400,n:'忍者貓',c:['#5e548e','#231942'],a:3},{need:800,n:'市場貓王',c:['#ffd23f','#e76f51'],a:2}];
 const LX=[105,200,295],CYT=430,fc=['#e63946','#ff9f1c','#7bd88f'];
 let dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx;
-G.reset=()=>{dist=0;v=280;L=0;fruits=0;gb=130;lane=1;cx=200;jt=0;stun=0;rows=[];slips=[];warn=[];nextRow=120;nextSlip=2.5;fx=[]};
-G.score=()=>Math.floor(dist/50)+fruits*5;
+let model=thiefRules.create(),heldBy;
+const rank=timedLeaderboard('thief','thief',5,ui);
+function syncModel(){({dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx}=model.snapshot());const next=model.snapshot().shake;if(next)shake=next;}
+function control(code){if(!thiefRules.input(model,code))return;rank.record(code);syncModel();}
+G.reset=()=>{model=thiefRules.create();syncModel();};
+G.score=()=>model.score();
 G.extra=()=>T('fr')(fruits);
-G.down=p=>{if(p.x<133)lane=Math.max(0,lane-1);else if(p.x>267)lane=Math.min(2,lane+1);else if(jt<=0)jt=.55};
-function hurt(n){gb-=n;stun=.8;shake=reduceMotion?0:.25;L=Math.max(0,L-2);fx.push({s:'-'+n,x:cx,y:CYT-40,t:0})}
-function spawnRow(){
-const free=(Math.random()*3)|0;
-for(let l=0;l<3;l++){
-if(l===free){const r=Math.random();if(r<.65)rows.push({t:'f',l,y:-30,c:(Math.random()*3)|0});else if(L>=3||r<.75)rows.push({t:'x',l,y:-30})}
-else if(Math.random()<(dist>400?.75:.45))rows.push({t:'b',l,y:-30,c:(Math.random()*3)|0})}}
-G.update=dt=>{
-v=Math.min(420,280+dist*.02)*(1-.07*L);dist+=v*dt;
-gb=Math.min(170,gb-(4+L*5+dist*.002)*dt);
-cx+=(LX[lane]-cx)*Math.min(1,dt*14);
-if(jt>0)jt-=dt;if(stun>0)stun-=dt;
-if(dist>=nextRow){nextRow=dist+rnd(190,250);spawnRow()}
-nextSlip-=dt;if(nextSlip<=0){nextSlip=Math.max(1.8,rnd(3,5.5)-dist*.0005);warn.push({l:(Math.random()*3)|0,t:.8})}
-warn.forEach(w=>{w.t-=dt;if(w.t<=0){w.d=1;slips.push({l:w.l,y:H+30})}});warn=warn.filter(w=>!w.d);
-slips.forEach(s=>{s.y-=760*dt;if(!s.h&&stun<=0&&Math.abs(s.y-CYT)<22&&Math.abs(LX[s.l]-cx)<28){s.h=1;hurt(80)}});slips=slips.filter(s=>s.y>-40);
-const air=jt>0;
-for(const r of rows){r.y+=v*dt;
-const near=Math.abs(r.y-CYT)<26&&Math.abs(LX[r.l]-cx)<30;
-if(r.t==='b'){if(!air&&stun<=0&&!r.h&&near){r.h=1;hurt(50)}}
-else if(!r.g&&!air&&near){r.g=1;if(r.t==='f'){if(L<5){L++;fruits++}}else{L=0;gb+=30}}}
-rows=rows.filter(r=>r.y<H+40&&!r.g);
-fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
-if(gb<=0)die('caught')};
+G.down=p=>{
+ const code=Math.hypot(p.x-340,p.y-505)<50?2:p.x<133?0:p.x>267?2:1;
+ control(code);heldBy=p.id;
+};
+G.up=p=>{if(p.id===heldBy){control(3);heldBy=undefined;}};
+G.update=dt=>{thiefRules.advance(model,dt);syncModel();if(model.dead)die(model.dead);};
 function bg(){
 g.fillStyle='#f4a261';g.fillRect(-20,0,W+40,H);
 for(let i=0;i<14;i++){const y=((i*50+dist)%700+700)%700-60;g.fillStyle='#e76f51';g.fillRect(50,y,300,3)}
@@ -23265,7 +23578,7 @@ const T=k=>G.I[k];
 const ST=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 best=+ST(KEY)||0;skin=+ST(SKEY)||0;if(!G.skins[skin]||best<G.skins[skin].need)skin=0;
 function pick(i){skin=i;try{localStorage.setItem(SKEY,i)}catch(e){}}
-function release(){}
+function release(){if(st==='run')control(4);heldBy=undefined;}
 function say(text,kind){$('thief-msg').textContent=text;$('thief-msg').className='msg'+(kind?' '+kind:'')}
 thiefSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
@@ -23273,7 +23586,7 @@ function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('thief-score',G.score()+UNIT);setText('thief-best',best+UNIT);setText('thief-pay',fmt(paid)+' 點');
  setText('thief-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('thief-amount').disabled=thiefBusy;$('thief-go').disabled=live;setText('thief-go',live?'逃跑中 · 換道／跳躍':st==='over'?'再偷一次':'開始偷水果');
+ $('thief-amount').disabled=thiefBusy;$('thief-go').disabled=live||rank.busy();setText('thief-go',live?'逃跑中 · 換道／跳躍':st==='over'?'再偷一次':'開始偷水果');
  document.querySelectorAll('[data-thief-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-thief-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -23289,7 +23602,7 @@ function awardBonus(){
 function die(m){
  if(st!=='run')return;
  st='over';G.msg=m;shake=reduceMotion?0:.35;release();
- const s=G.score();rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
+ const s=G.score();rank.finish(s);rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
  if(rec){best=s;try{localStorage.setItem(KEY,best)}catch(e){}}
  if(unl.length)pick(G.skins.indexOf(unl[unl.length-1]));
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});thiefBusy=false;renderAll();
@@ -23297,11 +23610,13 @@ function die(m){
  ui();
 }
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('thief',amount);thiefStake=amount;thiefBusy=true;save();renderAll();
- G.reset();paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=thiefRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ },ui);
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
@@ -23335,11 +23650,62 @@ window.addEventListener('hashchange',()=>{release();last=performance.now()});
 $('thief-go').addEventListener('click',start);
 function loop(ts){const dt=Math.min(.05,Math.max(0,(ts-last)/1000)||0);last=ts;
  if(!V.hidden&&!document.hidden){tt+=dt;if(shake>0)shake-=dt;bpop.forEach(p=>p.age+=dt);bpop=bpop.filter(p=>p.age<1.8);
-  if(st==='run'){G.update(dt);if(st==='run')awardBonus()}
+  if(st==='run')rank.update(dt*1000,()=>st==='run',step=>{G.update(step);if(st==='run')awardBonus()})
   G.draw();bonusDraw();if(st!=='run')overlay();ui()}
  requestAnimationFrame(loop)}
 G.reset();ui();G.draw();overlay();requestAnimationFrame(loop);
   })();
+const babyRules = (() => {
+  function create(random=Math.random) {
+    const G={}, W=400,H=560,reduceMotion=false;
+    const rnd=(a,b)=>a+random()*(b-a),cl=(x,a,b)=>Math.max(a,Math.min(b,x));
+    const T=()=>()=>'',die=reason=>{dead=reason};
+    let dead=false,shake=0;
+const GY=440,PXL=170;
+let dist,v,gap,py,vy,on,crawl,cid,obs,nextAt,stun,fx,charge,mstun,bots,rings;
+G.reset=()=>{dist=0;v=260;gap=150;py=GY;vy=0;on=true;crawl=false;obs=[];nextAt=450;stun=0;fx=[];charge=0;mstun=0;bots=0;rings=[]};
+G.score=()=>Math.floor(dist/60);
+G.extra=()=>T('bt')(bots);
+function wail(){if(charge<=0||mstun>0)return;charge--;mstun=2.2;gap=Math.min(220,gap+50);shake=reduceMotion?0:.3;rings.push({t:0})}
+G.down=p=>{if(Math.hypot(p.x-340,p.y-505)<50)wail();else if(p.x<200){if(on){vy=-600;on=false}}else{crawl=true;cid=p.id}};
+G.up=p=>{if(p.id===cid)crawl=false};
+function spawn(){
+const t=['l','c','s'][(random()*3)|0];
+obs.push({t,x:W+40});
+if(random()<.45)obs.push({t:'b',x:W+40+(t==='s'?40:6),hi:t!=='s'});
+nextAt=dist+rnd(320,460)-Math.min(110,dist*.01)}
+G.update=dt=>{
+v=Math.min(430,260+dist*.01);dist+=v*dt;
+if(mstun>0){mstun-=dt;gap=Math.min(220,gap+v*.5*dt)}else gap-=(6+dist*.003)*dt;
+if(stun>0)stun-=dt;
+rings.forEach(r=>r.t+=dt);rings=rings.filter(r=>r.t<.7);
+if(dist>=nextAt)spawn();
+vy+=2300*dt;py+=vy*dt;if(py>=GY){py=GY;vy=0;on=true}else on=false;
+const cr=crawl&&on,top=py-(cr?24:46);
+for(const o of obs){
+o.x-=(o.t==='c'?v+120:v)*dt;
+if(o.t==='b'){const iy=o.hi?GY-70:GY-16;if(!o.g&&Math.hypot(o.x-PXL,iy-(py-(cr?12:23)))<28){o.g=1;bots++;charge=Math.min(3,charge+1);fx.push({s:'+',x:PXL,y:py-80,t:0})}}
+else if(stun<=0){
+const r=o.t==='l'?[o.x,GY-30,o.x+30,GY]:o.t==='c'?[o.x,GY-28,o.x+42,GY]:[o.x,GY-100,o.x+80,GY-34];
+if(PXL+10>r[0]&&PXL-10<r[2]&&py>r[1]&&top<r[3]){gap-=60;stun=.9;shake=reduceMotion?0:.25}}}
+obs=obs.filter(o=>o.x>-120&&!o.g);
+fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
+if(gap<=0)die('caught')};
+
+    G.reset();
+    return {input(code){
+      if(dead||!Number.isInteger(code)||code<0||code>4)return false;
+      if(code===4){crawl=false;return true;}
+      if(code===3){G.up?.({id:1});return true;}
+      const points=[[40,300],[240,300],[340,505]];
+      G.down({x:points[code][0],y:points[code][1],id:1});
+      return true;
+    },advance:dt=>G.update(dt),score:()=>G.score(),
+      get dead(){return dead},snapshot:()=>({dist,v,gap,py,vy,on,crawl,cid,obs,nextAt,stun,fx,charge,mstun,bots,rings,shake})};
+  }
+  return {create,inputCount:5,input:(state,code)=>state.input(code),advance:(state,dt)=>state.advance(dt),score:state=>state.score()};
+})();
+if(typeof module!=='undefined')module.exports=babyRules;
   /* ---------- 寶寶逃洗澡: endless runner adapted from a standalone page; fixed score milestones award bonus points immediately ---------- */
   var babyBusy=false,babyStake=0,babySay=function(){};
   (function(){
@@ -23366,34 +23732,19 @@ G.I={bs:n=>'最高 '+n,tap:'',title:"寶寶逃洗澡！",s1:"媽媽拿著浴巾�
 G.skins=[{need:0,n:'藍尿布寶寶',c:['#a0c4ff','#ffd6a5'],a:0},{need:200,n:'兔耳寶寶',c:['#ffc8dd','#ffafcc'],a:1},{need:500,n:'生日寶寶',c:['#b7e4c7','#74c69d'],a:3},{need:1000,n:'搗蛋之王',c:['#ffd23f','#ff9f1c'],a:2}];
 const GY=440,PXL=170;
 let dist,v,gap,py,vy,on,crawl,cid,obs,nextAt,stun,fx,charge,mstun,bots,rings;
-G.reset=()=>{dist=0;v=260;gap=150;py=GY;vy=0;on=true;crawl=false;obs=[];nextAt=450;stun=0;fx=[];charge=0;mstun=0;bots=0;rings=[]};
-G.score=()=>Math.floor(dist/60);
+let model=babyRules.create(),heldBy;
+const rank=timedLeaderboard('baby','baby',5,ui);
+function syncModel(){({dist,v,gap,py,vy,on,crawl,cid,obs,nextAt,stun,fx,charge,mstun,bots,rings}=model.snapshot());const next=model.snapshot().shake;if(next)shake=next;}
+function control(code){if(!babyRules.input(model,code))return;rank.record(code);syncModel();}
+G.reset=()=>{model=babyRules.create();syncModel();};
+G.score=()=>model.score();
 G.extra=()=>T('bt')(bots);
-function wail(){if(charge<=0||mstun>0)return;charge--;mstun=2.2;gap=Math.min(220,gap+50);shake=reduceMotion?0:.3;rings.push({t:0})}
-G.down=p=>{if(Math.hypot(p.x-340,p.y-505)<50)wail();else if(p.x<200){if(on){vy=-600;on=false}}else{crawl=true;cid=p.id}};
-G.up=p=>{if(p.id===cid)crawl=false};
-function spawn(){
-const t=['l','c','s'][(Math.random()*3)|0];
-obs.push({t,x:W+40});
-if(Math.random()<.45)obs.push({t:'b',x:W+40+(t==='s'?40:6),hi:t!=='s'});
-nextAt=dist+rnd(320,460)-Math.min(110,dist*.01)}
-G.update=dt=>{
-v=Math.min(430,260+dist*.01);dist+=v*dt;
-if(mstun>0){mstun-=dt;gap=Math.min(220,gap+v*.5*dt)}else gap-=(6+dist*.003)*dt;
-if(stun>0)stun-=dt;
-rings.forEach(r=>r.t+=dt);rings=rings.filter(r=>r.t<.7);
-if(dist>=nextAt)spawn();
-vy+=2300*dt;py+=vy*dt;if(py>=GY){py=GY;vy=0;on=true}else on=false;
-const cr=crawl&&on,top=py-(cr?24:46);
-for(const o of obs){
-o.x-=(o.t==='c'?v+120:v)*dt;
-if(o.t==='b'){const iy=o.hi?GY-70:GY-16;if(!o.g&&Math.hypot(o.x-PXL,iy-(py-(cr?12:23)))<28){o.g=1;bots++;charge=Math.min(3,charge+1);fx.push({s:'+',x:PXL,y:py-80,t:0})}}
-else if(stun<=0){
-const r=o.t==='l'?[o.x,GY-30,o.x+30,GY]:o.t==='c'?[o.x,GY-28,o.x+42,GY]:[o.x,GY-100,o.x+80,GY-34];
-if(PXL+10>r[0]&&PXL-10<r[2]&&py>r[1]&&top<r[3]){gap-=60;stun=.9;shake=reduceMotion?0:.25}}}
-obs=obs.filter(o=>o.x>-120&&!o.g);
-fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
-if(gap<=0)die('caught')};
+G.down=p=>{
+ const code=Math.hypot(p.x-340,p.y-505)<50?2:p.x<200?0:1;
+ control(code);heldBy=p.id;
+};
+G.up=p=>{if(p.id===heldBy){control(3);heldBy=undefined;}};
+G.update=dt=>{babyRules.advance(model,dt);syncModel();if(model.dead)die(model.dead);};
 function bg(){
 g.fillStyle='#ffc8dd';g.fillRect(-20,0,W+40,GY);
 for(let i=0;i<12;i++)for(let j=0;j<5;j++){const x=((i*50-dist*.3)%600+600)%600-50;F(x+(j%2)*25,30+j*70,6,'#ffafcc')}
@@ -23444,7 +23795,7 @@ const T=k=>G.I[k];
 const ST=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 best=+ST(KEY)||0;skin=+ST(SKEY)||0;if(!G.skins[skin]||best<G.skins[skin].need)skin=0;
 function pick(i){skin=i;try{localStorage.setItem(SKEY,i)}catch(e){}}
-function release(){crawl=false;}
+function release(){if(st==='run')control(4);heldBy=undefined;}
 function say(text,kind){$('baby-msg').textContent=text;$('baby-msg').className='msg'+(kind?' '+kind:'')}
 babySay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
@@ -23452,7 +23803,7 @@ function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('baby-score',G.score()+UNIT);setText('baby-best',best+UNIT);setText('baby-pay',fmt(paid)+' 點');
  setText('baby-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('baby-amount').disabled=babyBusy;$('baby-go').disabled=live;setText('baby-go',live?'逃跑中 · 跳躍／爬行':st==='over'?'再逃一次':'開始逃跑');
+ $('baby-amount').disabled=babyBusy;$('baby-go').disabled=live||rank.busy();setText('baby-go',live?'逃跑中 · 跳躍／爬行':st==='over'?'再逃一次':'開始逃跑');
  document.querySelectorAll('[data-baby-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-baby-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -23468,7 +23819,7 @@ function awardBonus(){
 function die(m){
  if(st!=='run')return;
  st='over';G.msg=m;shake=reduceMotion?0:.35;release();
- const s=G.score();rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
+ const s=G.score();rank.finish(s);rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
  if(rec){best=s;try{localStorage.setItem(KEY,best)}catch(e){}}
  if(unl.length)pick(G.skins.indexOf(unl[unl.length-1]));
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});babyBusy=false;renderAll();
@@ -23476,11 +23827,13 @@ function die(m){
  ui();
 }
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('baby',amount);babyStake=amount;babyBusy=true;save();renderAll();
- G.reset();paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=babyRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ },ui);
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
@@ -23514,7 +23867,7 @@ window.addEventListener('hashchange',()=>{release();last=performance.now()});
 $('baby-go').addEventListener('click',start);
 function loop(ts){const dt=Math.min(.05,Math.max(0,(ts-last)/1000)||0);last=ts;
  if(!V.hidden&&!document.hidden){tt+=dt;if(shake>0)shake-=dt;bpop.forEach(p=>p.age+=dt);bpop=bpop.filter(p=>p.age<1.8);
-  if(st==='run'){G.update(dt);if(st==='run')awardBonus()}
+  if(st==='run')rank.update(dt*1000,()=>st==='run',step=>{G.update(step);if(st==='run')awardBonus()})
   G.draw();bonusDraw();if(st!=='run')overlay();ui()}
  requestAnimationFrame(loop)}
 G.reset();ui();G.draw();overlay();requestAnimationFrame(loop);
@@ -23904,15 +24257,7 @@ window.addEventListener('hashchange',()=>{last=performance.now();clearInput()});
 function loop(t){const dt=Math.min(.05,Math.max(0,(t-last)/1000)||0);last=t;if(shown()){update(dt);ui();draw()}requestAnimationFrame(loop)}
 ui();draw();requestAnimationFrame(loop);
   })();
-  /* ---------- Midnight Mosquito: hold to dive, let go to rise; land on skin and keep holding to suck blood while the sleeper's alertness climbs ---------- */
-  var mqBusy=false,mqStake=0,mqSay=function(){};
-  (function(){
-const cv=$('mq-canvas'),g=cv.getContext('2d'),W=480,H=720;
-// Fixed BONUS (points are credited the moment the milestone is reached; each once per round, never taken back).
-const MQ_REWARDS=[[25,1],[50,2],[75,3]],MQ_WIN_REWARD=4;
-let best=0;try{best=+localStorage.getItem('deep-sea-mosquito-best')||0}catch(e){}
-let analytics=null,earned=0,paid=[false,false,false],winPaid=false,paidCount=0;
-// ---- game rules (pure logic) ----
+const mosquitoRules=(()=>{
   var MQC = {
     W: 480, H: 720, R: 7, wallL: 22, wallR: 458, ceiling: 34,
     vx: 120, panicVx: 220, steer: 7,
@@ -24066,6 +24411,23 @@ let analytics=null,earned=0,paid=[false,false,false],winPaid=false,paidCount=0;
       if (q.light.t <= 0) mqKill(q, 'light', 'light');
     }
   }
+
+function create(random) {const s=mqNew(random);s.held=false;Object.defineProperty(s,'dead',{get:()=>s.state!=='play'});return s;}
+function input(s,code){if(s.dead||(code!==0&&code!==1)||s.held===(code===0))return false;s.held=code===0;return true;}
+return {create,input,inputCount:2,advance:(s,dt)=>mqStep(s,dt,s.held),score:s=>Math.round(s.blood),MQC,MQZ,BLANKET_Y,mqNew,mqStep,mqSurface,mqInWin};
+
+})();
+if(typeof module!=="undefined")module.exports=mosquitoRules;
+  /* ---------- Midnight Mosquito: hold to dive, let go to rise; land on skin and keep holding to suck blood while the sleeper's alertness climbs ---------- */
+  var mqBusy=false,mqStake=0,mqSay=function(){};
+  (function(){
+const cv=$('mq-canvas'),g=cv.getContext('2d'),W=480,H=720;
+// Fixed BONUS (points are credited the moment the milestone is reached; each once per round, never taken back).
+const MQ_REWARDS=[[25,1],[50,2],[75,3]],MQ_WIN_REWARD=4;
+let best=0;try{best=+localStorage.getItem('deep-sea-mosquito-best')||0}catch(e){}
+let analytics=null,earned=0,paid=[false,false,false],winPaid=false,paidCount=0;
+// ---- game rules (pure logic) ----
+const {MQC,MQZ,BLANKET_Y,mqNew,mqStep,mqSurface,mqInWin}=mosquitoRules;
 // ---- drawing ----
   var FONT = "'Noto Sans TC','PingFang TC','Microsoft JhengHei',system-ui,sans-serif";
   function rr(x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
@@ -24209,6 +24571,7 @@ let analytics=null,earned=0,paid=[false,false,false],winPaid=false,paidCount=0;
     return '';
   }
 
+const rank=timedLeaderboard('mosquito','mq',mosquitoRules.inputCount,ui);
 let st='ready',mo=mqNew(Math.random),tt=0,last=0,overT=0,rec=false,shake=0,flash=0,hintText='',splat=[],result=null;
 const CAUSE={face:'死因：被抓癢的手拍扁（臉頰）',arm:'死因：被抓癢的手拍扁（手臂）',foot:'死因：被抓癢的手拍扁（腳）',roll:'死因：被翻身壓死',light:'死因：燈亮後被電蚊拍打中'};
 const ptrs=new Set();let keyHeld=false;
@@ -24220,7 +24583,7 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const live=st==='run';
  setText('mq-blood',mo.blood.toFixed(1)+'%');setText('mq-alert',Math.floor(mo.alert)+'%');setText('mq-best',best.toFixed(1)+'%');
- $('mq-amount').disabled=mqBusy;$('mq-go').disabled=live;setText('mq-go',live?'出動中 · 放開上升、按住下降':st==='over'?'再來一隻':'開始吸血');
+ $('mq-amount').disabled=mqBusy;$('mq-go').disabled=live||rank.busy();setText('mq-go',live?'出動中 · 放開上升、按住下降':st==='over'?'再來一隻':'開始吸血');
 }
 function pay(n){
  earned+=n;paidCount++;S.balance+=n;save();renderAll();
@@ -24232,6 +24595,7 @@ function checkMilestones(){
 }
 function finish(kind){
  if(st!=='run')return;
+ rank.finish(Math.round(mo.blood));
  st='over';overT=0;releaseInput();
  const r=mo.result||{blood:mo.blood};
  result={kind:kind,blood:r.blood,cause:r.cause||'',part:r.part||'',time:r.time||mo.t};
@@ -24262,7 +24626,11 @@ function handleEvents(){
 function tick(dt){
  tt+=dt;
  if(shake>0)shake=Math.max(0,shake-dt*1.5);if(flash>0)flash=Math.max(0,flash-dt*2.5);
- if(st==='run'){mqStep(mo,dt,held());checkMilestones();handleEvents();hintText=st==='run'?computeHint(mo):''}
+ if(st==='run'){
+   if(mo.held!==held()){const code=held()?0:1;mosquitoRules.input(mo,code);rank.record(code);}
+   rank.update(dt*1000,()=>st==='run',step=>{mosquitoRules.advance(mo,step);checkMilestones();handleEvents();});
+   hintText=st==='run'?computeHint(mo):'';
+ }
  else if(st==='over'){
   overT+=dt;
   for(const s of splat){s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=400*dt;s.vx*=.96}
@@ -24313,12 +24681,14 @@ function draw(){
  drawOverlay();
 }
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
+ rank.start(random=>{
  analytics=AN.start('mosquito',amount);mqStake=amount;mqBusy=true;save();renderAll();
- mo=mqNew(Math.random);earned=0;paid=[false,false,false];winPaid=false;paidCount=0;rec=false;result=null;splat=[];shake=0;flash=0;hintText='';releaseInput();
+ mo=mosquitoRules.create(random||Math.random);earned=0;paid=[false,false,false];winPaid=false;paidCount=0;rec=false;result=null;splat=[];shake=0;flash=0;hintText='';releaseInput();
  st='run';last=performance.now();say('出動！放開上升、按住下降，降落在皮膚上按住吸血。');ui();cv.focus();
+ },ui);
 }
 const shown=()=>!$('view-mosquito').hidden&&!document.hidden;
 $('mq-go').addEventListener('click',start);

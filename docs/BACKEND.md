@@ -129,3 +129,25 @@ const next = await moveMinesRound(round.token, {
 ### 收盤之前
 
 使用棋盤對局 API 開 market-desk 訪客回合。Worker 發種子，客戶端結局送出最多 20 個選項（0 刊登、1 暫緩、2 示警）。共享規則重播至第 20 天或專注力歸零，再將最終信心指數乘 100 存為整數 NT$。中途離開和未結束的操作序列不入榜。沿用現有對局期限、版本、訪客授權、重試及 D1 排序，不需要新 migration。部署先更新 Worker，再發布靜態前端；回退可還原前端與 Worker，保留已存的排行榜資料。
+
+## 首頁更新與快取
+
+根目錄的 `_headers` 要求首頁、HTML 與 SDK 檔案每次重新驗證快取。部署時連同靜態資產一起發布，玩家從首頁開啟即可取得目前版本。
+
+
+## 新增的共用 SDK 驗證器
+
+鯉魚躍龍門、偷睡大師、外送員、胖老闆、偷水果、寶寶逃洗澡、宣傳車、蚊子、最後一根頭髮與人魚接龍使用既有 `timedLeaderboard`，透過 `startBoardRound` 和 `moveBoardRound` 送出固定時間步進與操作。Worker 與前端共用 `shared/<game>-rules.cjs` 計算終局。單局驗證上限沿用十分鐘與 6,000 次輸入，超過上限仍可本機遊玩。
+
+此批驗證器使用既有棋盤 API 與公開榜。每日挖礦屬每日補給，排行榜接入需另訂與點數分離的競賽指標。
+
+## 靜態入口快取
+
+根目錄 `_headers` 要求首頁、HTML、共用 SDK 與 shared 資源使用 `Cache-Control: no-cache, must-revalidate`。瀏覽器下次導覽會重新驗證。已開啟的頁面繼續保留目前遊戲狀態，重新導覽時讀取更新。
+
+
+### 本批驗證紀錄
+
+2026-11-19，本機 Worker + 暫存 D1 驗證上述十款開局、合法終局、榜單讀回與重送。為縮短測試等待，測試腳本只在本機資料庫調整 issuedAt，重播引擎使用真實規則逐步運算。桌面與 390px 的遊戲翻譯、切換語言、版面及初始化檢查通過。全站 i18n 執行仍因宴會遊戲既有漏翻中止，針對十款的手機測試最後遇到舊頁首錢包定位斷言失敗。實體手機、正式站自然終局與 GA4 後台尚未驗收。
+
+其餘尚待接入的競賽遊戲包含 blaster、boba、dive、mrt、pancake、pudding、clock-out、peek、breakout、pet-walk、office-shoot、banquet、eat-smaller、mirror-twins、shadow-relay、one-line-defense、quack-pond、on-pitch。book-sort 已由獨立 SDK 模組接入。

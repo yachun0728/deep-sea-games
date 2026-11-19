@@ -9,7 +9,7 @@ const hookAt='ui();draw(0);requestAnimationFrame(loop);';
 assert.ok(raw.includes(hookAt),'test hook anchor missing');
 // Expose the closure to the test only; the shipped source is not changed.
 const hook=`globalThis.__lh={loop,start,ev:code=>{const v=eval(code);return v&&typeof v==="object"?"@@"+JSON.stringify(v):v;}};`;
-const source=raw.replace(hookAt,()=>hook+hookAt);
+const source=fs.readFileSync(new URL('shared/last-hair-rules.cjs',root),'utf8')+'\n'+raw.replace(hookAt,()=>hook+hookAt);
 const results=[];
 export function fixture(balance=500,savedBest=null){
   let now=1000;
@@ -17,7 +17,7 @@ export function fixture(balance=500,savedBest=null){
   const drawing=new Proxy({},{get:(t,k)=>k==='measureText'?()=>({width:10}):k==='createLinearGradient'||k==='createRadialGradient'?()=>({addColorStop(){}}):k in t?t[k]:()=>{},set:(t,k,v)=>{t[k]=v;return true;}});
   function el(id){if(!elements.has(id))elements.set(id,{hidden:false,value:'10',textContent:'',className:'',dataset:{},style:{},disabled:false,width:0,height:0,handlers:{},focus(){},setPointerCapture(){},getContext:()=>drawing,getBoundingClientRect:()=>({left:0,top:0,width:400,height:720}),addEventListener(type,fn){this.handlers[type]=fn;}});return elements.get(id);}
   const listeners={};
-  const sandbox={document:{hidden:false,addEventListener(){}},window:{devicePixelRatio:1,addEventListener(){}},navigator:{},addEventListener(name,fn){(listeners[name]??=[]).push(fn);},Number,Math,String,JSON,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fmt:n=>String(n),AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
+  const sandbox={timedLeaderboard:()=>({busy:()=>false,start:callback=>callback(null),record(){},finish(){},update:(ms,active,step)=>step(ms/1000)}),document:{hidden:false,addEventListener(){}},window:{devicePixelRatio:1,addEventListener(){}},navigator:{},addEventListener(name,fn){(listeners[name]??=[]).push(fn);},Number,Math,String,JSON,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fmt:n=>String(n),AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
   sandbox.globalThis=sandbox;
   const ctx=vm.createContext(sandbox);vm.runInContext(`var hairBusy=false,hairStake=0,hairSay=function(){};`,ctx);vm.runInContext(source,ctx);
   const rawEv=sandbox.__lh.ev,ev=c=>{const v=rawEv(c);return typeof v==='string'&&v.startsWith('@@')?JSON.parse(v.slice(2)):v;};

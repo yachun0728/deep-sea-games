@@ -24,30 +24,19 @@ G.I={bs:n=>'最高 '+n,tap:'',title:"外送員大戰惡犬！",s1:"熱騰騰的�
 G.skins=[{need:0,n:'菜鳥外送員',c:['#2ec4b6','#ff9f1c'],a:0},{need:300,n:'西瓜安全帽',c:['#7bd88f','#e63946'],a:1},{need:800,n:'派對外送員',c:['#ff5d8f','#ffd23f'],a:3},{need:1600,n:'外送之王',c:['#ffd23f','#e63946'],a:2}];
 const GY=440,PXL=130;
 let dist,v,hot,py,vy,on,gas,hold,hid,hcool,obs,nextAt,nextHouse,stun,fx,deliv,boosting;
-G.reset=()=>{dist=0;v=290;hot=100;py=GY;vy=0;on=true;gas=100;hold=false;hcool=0;obs=[];nextAt=450;nextHouse=800;stun=0;fx=[];deliv=0;boosting=false};
-G.score=()=>Math.floor(dist/50)+deliv*20;
+let model=riderRules.create(),heldBy;
+const rank=timedLeaderboard('rider','rider',5,ui);
+function syncModel(){({dist,v,hot,py,vy,on,gas,hold,hid,hcool,obs,nextAt,nextHouse,stun,fx,deliv,boosting}=model.snapshot());const next=model.snapshot().shake;if(next)shake=next;}
+function control(code){if(!riderRules.input(model,code))return;rank.record(code);syncModel();}
+G.reset=()=>{model=riderRules.create();syncModel();};
+G.score=()=>model.score();
 G.extra=()=>T('dl')(deliv);
-function honk(){if(hcool>0)return;hcool=1;fx.push({s:T('bip'),x:PXL+40,y:py-110,t:0});obs.forEach(o=>{if(o.t==='dog'&&o.x>PXL&&o.x<PXL+280)o.fl=1})}
-G.down=p=>{if(Math.hypot(p.x-340,p.y-505)<50)honk();else if(p.x<200){if(on){vy=-620;on=false}}else{hold=true;hid=p.id}};
-G.up=p=>{if(p.id===hid)hold=false};
-function hurt(n){hot-=n;stun=.8;shake=reduceMotion?0:.25;fx.push({s:'-'+n,x:PXL,y:py-100,t:0})}
-G.update=dt=>{
-v=Math.min(430,290+dist*.01);boosting=hold&&gas>4;gas=cl(gas+(boosting?-38:14)*dt,0,100);
-const sp=v*(boosting?1.45:1);dist+=sp*dt;hot-=(3.2+dist*.0003)*dt;
-if(hcool>0)hcool-=dt;if(stun>0)stun-=dt;
-if(dist>=nextAt){obs.push(Math.random()<.5?{t:'p',x:W+40}:{t:'dog',x:W+40,fl:0});nextAt=dist+rnd(320,460)}
-if(dist>=nextHouse){obs.push({t:'h',x:W+120,tm:0,dn:0});nextHouse=dist+rnd(900,1200)}
-vy+=2300*dt;py+=vy*dt;if(py>=GY){py=GY;vy=0;on=true}else on=false;
-for(const o of obs){
-if(o.t==='h'){o.x-=sp*dt;
-if(Math.abs(PXL-o.x)<100&&!boosting&&!o.dn){o.tm+=dt;if(o.tm>=.45){o.dn=1;hot=Math.min(100,hot+35);deliv++;fx.push({s:'+20',x:PXL,y:py-110,t:0})}}
-if(o.x<PXL-110&&!o.dn&&!o.ms){o.ms=1;hot-=15;fx.push({s:T('bom'),x:PXL,y:py-110,t:0})}}
-else if(o.t==='dog'){if(o.fl)o.x+=200*dt;else o.x-=(sp+110)*dt;
-if(stun<=0&&!o.h&&!o.fl&&Math.abs(o.x-PXL)<30&&py>GY-34){o.h=1;hurt(20)}}
-else{o.x-=sp*dt;if(stun<=0&&!o.h&&py>=GY-4&&Math.abs(o.x+28-PXL)<30){o.h=1;hurt(15)}}}
-obs=obs.filter(o=>o.x>-160&&o.x<W+520);
-fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
-if(hot<=0)die('cold')};
+G.down=p=>{
+ const code=Math.hypot(p.x-340,p.y-505)<50?2:p.x<200?0:1;
+ control(code);heldBy=p.id;
+};
+G.up=p=>{if(p.id===heldBy){control(3);heldBy=undefined;}};
+G.update=dt=>{riderRules.advance(model,dt);syncModel();if(model.dead)die(model.dead);};
 function bg(){
 const sg=g.createLinearGradient(0,0,0,GY);sg.addColorStop(0,'#6a4c93');sg.addColorStop(1,'#ff9a8b');g.fillStyle=sg;g.fillRect(-20,0,W+40,GY);
 for(let i=0;i<8;i++){const x=((i*90-dist*.15)%720+720)%720-100,h=120+(i*53)%90;g.fillStyle='#3d2c5e';g.fillRect(x,GY-h,70,h);g.fillStyle='#ffd166';for(let r=0;r<3;r++)g.fillRect(x+12,GY-h+14+r*30,10,14),g.fillRect(x+42,GY-h+14+r*30,10,14)}
@@ -101,7 +90,7 @@ const T=k=>G.I[k];
 const ST=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 best=+ST(KEY)||0;skin=+ST(SKEY)||0;if(!G.skins[skin]||best<G.skins[skin].need)skin=0;
 function pick(i){skin=i;try{localStorage.setItem(SKEY,i)}catch(e){}}
-function release(){hold=false;}
+function release(){if(st==='run')control(4);heldBy=undefined;}
 function say(text,kind){$('rider-msg').textContent=text;$('rider-msg').className='msg'+(kind?' '+kind:'')}
 riderSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
@@ -109,7 +98,7 @@ function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('rider-score',G.score()+UNIT);setText('rider-best',best+UNIT);setText('rider-pay',fmt(paid)+' 點');
  setText('rider-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('rider-amount').disabled=riderBusy;$('rider-go').disabled=live;setText('rider-go',live?'送餐中 · 跳躍／加速':st==='over'?'再送一次':'開始送餐');
+ $('rider-amount').disabled=riderBusy;$('rider-go').disabled=live||rank.busy();setText('rider-go',live?'送餐中 · 跳躍／加速':st==='over'?'再送一次':'開始送餐');
  document.querySelectorAll('[data-rider-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-rider-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -125,7 +114,7 @@ function awardBonus(){
 function die(m){
  if(st!=='run')return;
  st='over';G.msg=m;shake=reduceMotion?0:.35;release();
- const s=G.score();rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
+ const s=G.score();rank.finish(s);rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
  if(rec){best=s;try{localStorage.setItem(KEY,best)}catch(e){}}
  if(unl.length)pick(G.skins.indexOf(unl[unl.length-1]));
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});riderBusy=false;renderAll();
@@ -133,11 +122,13 @@ function die(m){
  ui();
 }
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('rider',amount);riderStake=amount;riderBusy=true;save();renderAll();
- G.reset();paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=riderRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ },ui);
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
@@ -171,7 +162,7 @@ window.addEventListener('hashchange',()=>{release();last=performance.now()});
 $('rider-go').addEventListener('click',start);
 function loop(ts){const dt=Math.min(.05,Math.max(0,(ts-last)/1000)||0);last=ts;
  if(!V.hidden&&!document.hidden){tt+=dt;if(shake>0)shake-=dt;bpop.forEach(p=>p.age+=dt);bpop=bpop.filter(p=>p.age<1.8);
-  if(st==='run'){G.update(dt);if(st==='run')awardBonus()}
+  if(st==='run')rank.update(dt*1000,()=>st==='run',step=>{G.update(step);if(st==='run')awardBonus()})
   G.draw();bonusDraw();if(st!=='run')overlay();ui()}
  requestAnimationFrame(loop)}
 G.reset();ui();G.draw();overlay();requestAnimationFrame(loop);

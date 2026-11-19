@@ -7,13 +7,13 @@
 - 網址：`#campaign`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「繞市區拉票，經過學校、醫院、豪宅要按住靜音。」｜立即開玩 · 無盡 · 越開越快
 - 追蹤名稱（GA4 `game_name`）：宣傳車，`game_id` 為 `campaign`
-- 檔案：`games/campaign/card.html`、`games/campaign/game.js`、`games/campaign/icon.svg`、`games/campaign/view.html`；`game.js` 共 250 行、23.6 KB
+- 檔案：`games/campaign/card.html`、`games/campaign/game.js`、`games/campaign/icon.svg`、`games/campaign/view.html`；`game.js` 共 219 行、21.9 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「17. Campaign（campaign）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-campaign`、`cp-canvas`、`cp-votes`、`cp-miss`、`cp-lap`、`cp-signal`、`cp-amount`、`cp-best`、`cp-next`、`cp-go`、`cp-hold`、`cp-msg`
+`view-campaign`、`cp-canvas`、`cp-votes`、`cp-miss`、`cp-lap`、`cp-signal`、`cp-amount`、`cp-best`、`cp-next`、`cp-go`、`cp-hold`、`cp-msg`、`cp-rank-status`、`cp-rank-retry`
 
 ## 狀態與常數
 
@@ -26,7 +26,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`cpNextMilestone` L8、`cpText` L13、`cpSay` L14、`cpRelease` L15、`cpSpeed` L16、`cpPassed` L17、`cpMake` L19、`cpEnsure` L26、`cpCity` L27、`cpFloat` L28、`cpRemember` L29、`cpLose` L30、`cpMilestones` L35、`cpSettle` L45、`cpStep` L59、`cpSignal` L75、`cpUI` L83、`cpStart` L93、`cpSync` L101、`cpRR` L104、`cpBox` L105、`cpWindows` L106、`cpBuilding` L107、`cpTruck` L172、`cpDraw` L184、`cpPress` L237、`cpLift` L238、`cpLoop` L246
+`cpNextMilestone` L8、`cpText` L13、`cpSay` L14、`cpHold` L16、`cpRelease` L17、`cpSpeed` L18、`cpPassed` L19、`cpFloat` L20、`cpRemember` L21、`cpLose` L22、`cpMilestones` L27、`cpSignal` L37、`cpUI` L45、`cpStart` L55、`cpSync` L70、`cpRR` L73、`cpBox` L74、`cpWindows` L75、`cpBuilding` L76、`cpTruck` L141、`cpDraw` L153、`cpPress` L206、`cpLift` L207、`cpLoop` L215
 
 ## 錢包與結算接點
 
@@ -34,20 +34,20 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L38 `cpMilestones`：`S.balance+=b;`
+- L30 `cpMilestones`：`S.balance+=b;`
 
 **餘額檢查**
-- L96 `cpStart`：`if(stake>S.balance){cpSay(LOW_MSG,'lose');`
+- L58 `cpStart`：`if(stake>S.balance){cpSay(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L31 `cpLose`：`AN.end(CP.analytics,CP.earned,CP.earned>0?'complete':'loss',{step:cpPassed(),votes:CP.votes,misses:CP.miss});`
-- L39 `cpMilestones`：`AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss,bonus_points:b});`
-- L68 `cpStep`：`if(cpPassed()%15===0)AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss});`
-- L97 `cpStart`：`CP.analytics=AN.start('campaign',stake);`
+- L23 `cpLose`：`AN.end(CP.analytics,CP.earned,CP.earned>0?'complete':'loss',{step:cpPassed(),votes:CP.votes,misses:CP.miss});`
+- L31 `cpMilestones`：`AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss,bonus_points:b});`
+- L60 `cpStart`：`CP.analytics=AN.start('campaign',stake);`
+- L64 `cpStart`：`else if(event==='progress')AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

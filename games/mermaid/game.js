@@ -7,76 +7,10 @@ const MODES={1:{suits:[3]},2:{suits:[3,2]},4:{suits:[0,1,2,3]}};
 const RANK=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 const BACK_SVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140"><defs><pattern id="s" width="14" height="10" patternUnits="userSpaceOnUse"><path d="M0 10a7 7 0 0 1 14 0M-7 5a7 7 0 0 1 14 0M7 5a7 7 0 0 1 14 0" fill="none" stroke="#34568a" stroke-width="1.2"/></pattern></defs><rect width="100" height="140" rx="6" fill="#f3e9d0"/><rect x="5" y="5" width="90" height="130" rx="3" fill="#1f3556"/><rect x="5" y="5" width="90" height="130" rx="3" fill="url(#s)"/><rect x="9" y="9" width="82" height="122" rx="2" fill="none" stroke="#f3e9d0" stroke-width="1"/><ellipse cx="50" cy="70" rx="27" ry="40" fill="#f3e9d0"/><ellipse cx="50" cy="70" rx="23" ry="36" fill="none" stroke="#1f3556" stroke-width="1.4"/><path d="M50 38c-9 8-12 19-8 33 2 7 5 11 8 14 3-3 6-7 8-14 4-14 1-25-8-33z" fill="#c4473a"/><path d="M50 85c-8 2-14 8-16 16 7-1 12-4 16-8 4 4 9 7 16 8-2-8-8-14-16-16z" fill="#1f3556"/><path d="M44 52q6 3 12 0M43.5 60q6.500 3 13 0M44 68q6 3 12 0M45 76q5 2.600 10 0" stroke="#f3e9d0" stroke-width="1.100" fill="none" stroke-linecap="round"/><path d="M50 18l3 4-3 4-3-4zM50 114l3 4-3 4-3-4zM16 70l3 4-3 4-3-4zM84 70l3 4-3 4-3-4z" fill="#d9a21a"/></svg>';
 // ===== 牌局邏輯（不碰畫面）=====
-function shuffle(a,r){for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
-function createGame(mode,r){
- r=r||Math.random;const suits=MODES[mode].suits,copies=8/suits.length,deck=[];let id=0;
- for(const s of suits)for(let k=0;k<copies;k++)for(let n=1;n<=13;n++)deck.push({id:id++,suit:s,rank:n});
- shuffle(deck,r);
- const g={mode:mode,cols:[],stock:[],done:0,doneSuits:[],moves:0,score:500,history:[],fx:[]};
- let p=0;for(let c=0;c<10;c++){const n=c<4?6:5;g.cols.push({cards:deck.slice(p,p+n),hidden:n-1});p+=n}
- g.stock=deck.slice(p);return g}
-function snap(g){return{cols:g.cols.map(c=>({cards:c.cards.slice(),hidden:c.hidden})),stock:g.stock.slice(),done:g.done,doneSuits:g.doneSuits.slice(),moves:g.moves,score:g.score}}
-function pushHistory(g){g.history.push(snap(g));if(g.history.length>400)g.history.shift()}
-function undo(g){const s=g.history.pop();if(!s)return false;g.cols=s.cols;g.stock=s.stock;g.done=s.done;g.doneSuits=s.doneSuits;g.moves=s.moves;g.score=Math.max(0,s.score-1);return true}
-function flipTop(col){if(!col.cards.length)col.hidden=0;else if(col.hidden>=col.cards.length)col.hidden=col.cards.length-1}
-function runStart(col,idx){
- const cs=col.cards;if(idx<col.hidden||idx<0||idx>=cs.length)return false;
- for(let i=idx;i<cs.length-1;i++)if(cs[i].suit!==cs[i+1].suit||cs[i].rank!==cs[i+1].rank+1)return false;
- return true}
-function canDrop(g,from,idx,to){
- if(from===to||!g.cols[from]||!g.cols[to])return false;
- const src=g.cols[from];if(!runStart(src,idx))return false;
- const dst=g.cols[to];if(!dst.cards.length)return true;
- return dst.cards[dst.cards.length-1].rank===src.cards[idx].rank+1}
-function completeRun(col){
- const cs=col.cards,n=cs.length;if(n<13||n-13<col.hidden||cs[n-1].rank!==1||cs[n-13].rank!==13)return false;
- for(let i=n-13;i<n-1;i++)if(cs[i].suit!==cs[i+1].suit||cs[i].rank!==cs[i+1].rank+1)return false;
- return true}
-function sweep(g,c){
- const col=g.cols[c];
- while(completeRun(col)){
-  const cards=col.cards.splice(col.cards.length-13);
-  g.done++;g.doneSuits.push(cards[0].suit);g.score+=100;flipTop(col);
-  g.fx.push({t:'run',col:c,n:g.done,suit:cards[0].suit,cards:cards})}}
-function move(g,from,idx,to){
- if(!canDrop(g,from,idx,to))return false;
- pushHistory(g);
- const src=g.cols[from],dst=g.cols[to];
- const run=src.cards.splice(idx);for(const card of run)dst.cards.push(card);
- g.moves++;g.score=Math.max(0,g.score-1);
- flipTop(src);sweep(g,to);return true}
-function canDeal(g){return g.stock.length>0&&g.cols.every(c=>c.cards.length>0)}
-function deal(g){
- if(!canDeal(g))return false;
- pushHistory(g);
- const ids=[];
- for(let c=0;c<10;c++){const card=g.stock.pop();g.cols[c].cards.push(card);ids.push(card.id)}
- g.moves++;g.score=Math.max(0,g.score-1);
- for(let c=0;c<10;c++)sweep(g,c);
- return ids}
-function allMoves(g){
- const out=[];
- for(let f=0;f<10;f++){
-  const col=g.cols[f],cs=col.cards;if(!cs.length)continue;
-  let lo=cs.length-1;while(lo-1>=col.hidden&&cs[lo-1].suit===cs[lo].suit&&cs[lo-1].rank===cs[lo].rank+1)lo--;
-  for(let idx=lo;idx<cs.length;idx++)for(let t=0;t<10;t++)if(canDrop(g,f,idx,t))out.push({from:f,idx:idx,to:t})}
- return out}
-function chainLen(col){
- const cs=col.cards;let n=0;
- for(let i=cs.length-1;i>=col.hidden;i--){n++;if(i-1<col.hidden||cs[i-1].suit!==cs[i].suit||cs[i-1].rank!==cs[i].rank+1)break}
- return n}
-function scoreMove(g,m){
- const src=g.cols[m.from],dst=g.cols[m.to],cs=src.cards,mv=cs[m.idx],len=cs.length-m.idx,dtop=dst.cards[dst.cards.length-1];
- let s=len*.5;
- if(dtop){if(dtop.suit===mv.suit){s+=30;if(chainLen(dst)+len>=13&&cs[cs.length-1].rank===1)s+=200}else s+=4}else s-=12;
- if(m.idx===src.hidden)s+=src.hidden>0?25:(dtop?8:0);
- else{const under=cs[m.idx-1];if(under.suit===mv.suit&&under.rank===mv.rank+1)s-=35}
- return s}
-function findHint(g){
- let best=null;
- for(const m of allMoves(g)){const s=scoreMove(g,m);if(!best||s>best.s)best={from:m.from,idx:m.idx,to:m.to,s:s}}
- return best}
+const {shuffle,createGame,snap,pushHistory,undo,flipTop,runStart,canDrop,completeRun,sweep,move,canDeal,deal,allMoves,chainLen,scoreMove,findHint}=mermaidRules;
 // ===== 畫面與點數 =====
+let rankLast=0;
+const rank=timedLeaderboard('mermaid','mm',mermaidRules.inputCount,ui);
 let G=null,st='idle',mode=1,analytics=null,earned=0,maxDone=0,bonusPaid=false,sel=null,hint=null,hintTimer=0,drag=null,lockUntil=0,quitArm=false,quitTimer=0,lastResult=null;
 const store={best:{},mode:1};
 try{const s=JSON.parse(localStorage.getItem(BEST_KEY)||'null');if(s&&typeof s==='object'){if(s.best&&typeof s.best==='object')store.best=s.best;if(MODES[s.mode])store.mode=Number(s.mode)}}catch(e){}
@@ -159,7 +93,7 @@ function runFx(f){
 function ui(){
  const live=st==='run';
  setText('mm-pearls',(G?G.done:0)+' / '+TOTAL_RUNS);setText('mm-score',G?String(G.score):'—');setText('mm-best',bestFor(mode)+' 分');
- const go=$('mm-go');go.disabled=live;setText('mm-go',live?'牌局進行中':st==='over'?'再玩一次':'發牌');
+ const go=$('mm-go');go.disabled=live||rank.busy();setText('mm-go',live?'牌局進行中':st==='over'?'再玩一次':'發牌');
  const q=$('mm-quit');q.hidden=!live;setText('mm-quit',quitArm?'再按一次確認放棄':'放棄本局');
  $('mm-undo').disabled=!live||!G||!G.history.length;$('mm-hint').disabled=!live;
  stockBtn.disabled=!live||!G||!G.stock.length;setText('mm-stock-count',String(G?Math.ceil(G.stock.length/10):5));
@@ -169,7 +103,8 @@ function ui(){
  cover.hidden=live;
  if(st==='over'&&lastResult){setText('mm-cover-title',lastResult.win?'全部珍珠收集完成！':'本局結束');
   setText('mm-cover-text',lastResult.win?'人魚為你唱歌。本局共入帳 '+earned+' 點。':'收集了 '+lastResult.done+' 顆珍珠，本局共入帳 '+earned+' 點。')}
- else{setText('mm-cover-title','人魚接龍');setText('mm-cover-text','把牌排成 K 到 A 的同花色序列，收集 8 顆珍珠。')}}
+ else{setText('mm-cover-title','人魚接龍');setText('mm-cover-text','把牌排成 K 到 A 的同花色序列，收集 8 顆珍珠。');
+ }}
 function pay(n){
  earned+=n;S.balance+=n;save();renderAll();
  AN.progress(analytics,{stage:G.done,step:earned,score:G.score,bonus_points:n})}
@@ -188,6 +123,8 @@ function afterAction(newIds){
  ui()}
 function end(win){
  if(st!=='run')return;
+ if(!win)rank.record(2);
+ rank.finish(G.score,true);
  st='over';mmBusy=false;sel=null;clearHint();quitArm=false;clearTimeout(quitTimer);drag=null;
  const rec=G.done>0&&G.score>bestFor(mode);if(rec){store.best[mode]=G.score;saveStore()}
  lastResult={win:win,done:G.done};
@@ -197,16 +134,19 @@ function end(win){
  else say('本局結束，共入帳 '+earned+' 點。','lose');
  ui()}
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('mermaid',ENTRY_FEE);mmStake=ENTRY_FEE;mmBusy=true;save();renderAll();
- buildBoard();G=createGame(mode);earned=0;maxDone=0;bonusPaid=false;sel=null;clearHint();drag=null;lastResult=null;quitArm=false;
+ buildBoard();G=mermaidRules.create(random||Math.random);if(mode!==1){const code=mode===2?3:4;mermaidRules.input(G,code);rank.record(code);}rankLast=performance.now();earned=0;maxDone=0;bonusPaid=false;sel=null;clearHint();drag=null;lastResult=null;quitArm=false;
  st='run';ui();render();
- say('發牌囉！把牌從大排到小，同花色排滿 K 到 A 就收成珍珠。')}
+ say('發牌囉！把牌從大排到小，同花色排滿 K 到 A 就收成珍珠。');
+ },ui);}
 function locked(){return performance.now()<lockUntil}
 // 操作
 function doMove(from,idx,to){
  if(!move(G,from,idx,to))return false;
+ rank.record(5+from*1040+idx*10+to);
  afterAction();return true}
 function tapColumn(c,idx){
  if(sel){
@@ -254,11 +194,11 @@ stockBtn.addEventListener('click',()=>{
  if(st!=='run'||locked())return;
  if(!G.stock.length){say('牌堆已經發完了。','lose');return}
  if(!canDeal(G)){say('每一列都要有牌才能發牌，先把牌放進空列。','lose');return}
- const ids=deal(G);afterAction(ids);
+ const ids=deal(G);rank.record(0);afterAction(ids);
  if(st==='run')say('浪花湧來，每一列多了一張牌。')});
 $('mm-undo').addEventListener('click',()=>{
  if(st!=='run'||locked()||!G.history.length)return;
- undo(G);sel=null;clearHint();render();ui();say('時間倒流了一步。')});
+ undo(G);rank.record(1);sel=null;clearHint();render();ui();say('時間倒流了一步。')});
 $('mm-hint').addEventListener('click',()=>{
  if(st!=='run'||locked())return;
  const h=findHint(G);clearHint();sel=null;
@@ -279,6 +219,11 @@ document.querySelectorAll('.mm-mode').forEach(b=>b.addEventListener('click',()=>
 if(window.ResizeObserver)new ResizeObserver(()=>{if(G)render()}).observe(board);
 window.addEventListener('resize',()=>{if(G)render()});
 window.addEventListener('hashchange',()=>{drag=null;if(G)requestAnimationFrame(render)});
+function rankedClock(now){
+ if(st==='run'&&!document.hidden&&!$('view-mermaid').hidden)rank.update(Math.max(0,now-rankLast),()=>st==='run',()=>{});
+ rankLast=now;requestAnimationFrame(rankedClock);
+}
+requestAnimationFrame(rankedClock);
 ui();layoutIdle();
 function layoutIdle(){metrics()}
   })();

@@ -7,28 +7,25 @@
 - 網址：`#mosquito`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。」｜立即開玩 · 按住吸血
 - 追蹤名稱（GA4 `game_name`）：血壓上升，`game_id` 為 `mosquito`
-- 檔案：`games/mosquito/card.html`、`games/mosquito/cover.webp`、`games/mosquito/game.js`、`games/mosquito/icon.svg`、`games/mosquito/view.html`；`game.js` 共 437 行、24.4 KB
+- 檔案：`games/mosquito/card.html`、`games/mosquito/cover.webp`、`games/mosquito/game.js`、`games/mosquito/icon.svg`、`games/mosquito/view.html`；`game.js` 共 293 行、18.7 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「35. 血壓上升 Midnight Mosquito（mosquito）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-mosquito`、`mq-canvas`、`mq-blood`、`mq-alert`、`mq-best`、`mq-amount`、`mq-go`、`mq-msg`
+`view-mosquito`、`mq-canvas`、`mq-blood`、`mq-alert`、`mq-best`、`mq-amount`、`mq-go`、`mq-msg`、`mq-rank-status`、`mq-rank-retry`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`MQC`（L10）、`mqBusy`（L2）
+- 狀態物件／進行中旗標：`mqBusy`（L2）
 - L6 常數：`MQ_REWARDS`、`MQ_WIN_REWARD`
-- L10 常數：`MQC`
-- L22 常數：`MQZ`
-- L27 常數：`BLANKET_Y`
-- L164 常數：`FONT`
-- L173 常數：`SKIN`、`SKIN_D`
-- L307 常數：`CAUSE`
+- L12 常數：`FONT`
+- L21 常數：`SKIN`、`SKIN_D`
+- L156 常數：`CAUSE`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`mqSurface` L29、`mqInWin` L36、`mqNew` L38、`mqPush` L51、`mqKill` L53、`mqStep` L60、`rr` L165、`text` L166、`lerp` L171、`bloodColor` L172、`drawRoom` L175、`drawHuman` L196、`drawMosquito` L246、`drawSwatter` L272、`drawBar` L282、`drawHUD` L284、`computeHint` L296、`held` L309、`releaseInput` L310、`say` L311、`setText` L313、`ui` L314、`pay` L319、`checkMilestones` L323、`finish` L327、`handleEvents` L341、`tick` L356、`drawOverlay` L365、`draw` L394、`start` L409、`shown` L417、`endPointer` L424、`loop` L434
+`rr` L13、`text` L14、`lerp` L19、`bloodColor` L20、`drawRoom` L23、`drawHuman` L44、`drawMosquito` L94、`drawSwatter` L120、`drawBar` L130、`drawHUD` L132、`computeHint` L144、`held` L158、`releaseInput` L159、`say` L160、`setText` L162、`ui` L163、`pay` L168、`checkMilestones` L172、`finish` L176、`handleEvents` L191、`tick` L206、`drawOverlay` L219、`draw` L248、`start` L263、`shown` L273、`endPointer` L280、`loop` L290
 
 ## 錢包與結算接點
 
@@ -36,19 +33,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L320 `pay`：`S.balance+=n;`
+- L169 `pay`：`S.balance+=n;`
 
 **餘額檢查**
-- L412 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L266 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L321 `pay`：`AN.progress(analytics,{stage:1,step:paidCount,score:Math.round(mo.blood),bonus_points:n,total_bonus_points:ea…`
-- L334 `finish`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:Math.round(result.blood),step:paidCount,stage:1});`
-- L413 `start`：`analytics=AN.start('mosquito',amount);`
+- L170 `pay`：`AN.progress(analytics,{stage:1,step:paidCount,score:Math.round(mo.blood),bonus_points:n,total_bonus_points:ea…`
+- L184 `finish`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:Math.round(result.blood),step:paidCount,stage:1});`
+- L268 `start`：`analytics=AN.start('mosquito',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

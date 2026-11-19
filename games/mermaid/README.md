@@ -7,17 +7,17 @@
 - 網址：`#mermaid`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「牌背是美人魚的蜘蛛接龍，排滿 K 到 A 收成珍珠。」｜立即開玩 · 策略接龍
 - 追蹤名稱（GA4 `game_name`）：人魚接龍，`game_id` 為 `mermaid`
-- 檔案：`games/mermaid/card.html`、`games/mermaid/game.js`、`games/mermaid/icon.svg`、`games/mermaid/style.css`、`games/mermaid/view.html`；`game.js` 共 285 行、18.8 KB
+- 檔案：`games/mermaid/card.html`、`games/mermaid/game.js`、`games/mermaid/icon.svg`、`games/mermaid/style.css`、`games/mermaid/view.html`；`game.js` 共 230 行、15.7 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「40. 人魚接龍 Mermaid Spider（mermaid）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-mermaid`、`mm-su0`、`mm-su1`、`mm-su2`、`mm-su3`、`mm-art-q`、`mm-art-k`、`mm-art-j`、`mm-stage`、`mm-bubble`、`mm-info`、`mm-stock`、`mm-stock-count`、`mm-slots`、`mm-undo`、`mm-hint`、`mm-board`、`mm-cover`、`mm-cover-title`、`mm-cover-text`、`mm-pearls`、`mm-score`、`mm-best`、`mm-go`、`mm-quit`、`mm-msg`
+`view-mermaid`、`mm-su0`、`mm-su1`、`mm-su2`、`mm-su3`、`mm-art-q`、`mm-art-k`、`mm-art-j`、`mm-stage`、`mm-bubble`、`mm-info`、`mm-stock`、`mm-stock-count`、`mm-slots`、`mm-undo`、`mm-hint`、`mm-board`、`mm-cover`、`mm-cover-title`、`mm-cover-text`、`mm-pearls`、`mm-score`、`mm-best`、`mm-go`、`mm-quit`、`mm-msg`、`mm-rank-status`、`mm-rank-retry`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`M`（L91）、`mmBusy`（L2）
+- 狀態物件／進行中旗標：`M`（L25）、`mmBusy`（L2）
 - L4 常數：`BEST_KEY`
 - L5 常數：`RUN_POINTS`、`CLEAR_BONUS`、`TOTAL_RUNS`
 - L6 常數：`MODES`
@@ -26,7 +26,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`shuffle` L10、`createGame` L11、`snap` L18、`pushHistory` L19、`undo` L20、`flipTop` L21、`runStart` L22、`canDrop` L26、`completeRun` L31、`sweep` L35、`move` L41、`canDeal` L48、`deal` L49、`allMoves` L57、`chainLen` L64、`scoreMove` L68、`findHint` L75、`saveStore` L84、`bestFor` L85、`say` L92、`setText` L94、`metrics` L95、`colX` L100、`colY` L101、`need` L103、`relPos` L109、`cardEl` L110、`render` L118、`updateSlots` L145、`buildBoard` L147、`runFx` L150、`ui` L159、`pay` L173、`clearHint` L176、`afterAction` L177、`end` L189、`start` L199、`locked` L206、`doMove` L208、`tapColumn` L211、`colAtX` L219、`finishDrag` L239、`layoutIdle` L283
+`saveStore` L18、`bestFor` L19、`say` L26、`setText` L28、`metrics` L29、`colX` L34、`colY` L35、`need` L37、`relPos` L43、`cardEl` L44、`render` L52、`updateSlots` L79、`buildBoard` L81、`runFx` L84、`ui` L93、`pay` L108、`clearHint` L111、`afterAction` L112、`end` L124、`start` L136、`locked` L145、`doMove` L147、`tapColumn` L151、`colAtX` L159、`finishDrag` L179、`rankedClock` L222、`layoutIdle` L228
 
 ## 錢包與結算接點
 
@@ -34,19 +34,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L174 `pay`：`S.balance+=n;`
+- L109 `pay`：`S.balance+=n;`
 
 **餘額檢查**
-- L201 `start`：`if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');`
+- L138 `start`：`if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 3 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L175 `pay`：`AN.progress(analytics,{stage:G.done,step:earned,score:G.score,bonus_points:n})}`
-- L194 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:G.score,step:G.done,stage:G.done});`
-- L202 `start`：`analytics=AN.start('mermaid',ENTRY_FEE);`
+- L110 `pay`：`AN.progress(analytics,{stage:G.done,step:earned,score:G.score,bonus_points:n})}`
+- L131 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:G.score,step:G.done,stage:G.done});`
+- L140 `start`：`analytics=AN.start('mermaid',ENTRY_FEE);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

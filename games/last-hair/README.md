@@ -7,36 +7,35 @@
 - 網址：`#last-hair`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「頂著最後三根頭髮，在強風中走完 500 公尺去面試。」｜立即開玩 · 雙拇指操作
 - 追蹤名稱（GA4 `game_name`）：尊嚴保衛戰，`game_id` 為 `last-hair`
-- 檔案：`games/last-hair/card.html`、`games/last-hair/cover.webp`、`games/last-hair/game.js`、`games/last-hair/icon.svg`、`games/last-hair/style.css`、`games/last-hair/view.html`；`game.js` 共 585 行、42.0 KB
+- 檔案：`games/last-hair/card.html`、`games/last-hair/cover.webp`、`games/last-hair/game.js`、`games/last-hair/icon.svg`、`games/last-hair/style.css`、`games/last-hair/view.html`；`game.js` 共 395 行、32.6 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「36. 尊嚴保衛戰 The Last Hair（last-hair）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-last-hair`、`lh-canvas`、`lh-dist`、`lh-hairs`、`lh-best`、`lh-amount`、`lh-go`、`lh-msg`
+`view-last-hair`、`lh-canvas`、`lh-dist`、`lh-hairs`、`lh-best`、`lh-amount`、`lh-go`、`lh-msg`、`lh-rank-status`、`lh-rank-retry`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`SFX`（L248）、`hairBusy`（L2）
-- L5 常數：`CONFIG`
-- L204 常數：`SCENE_H`
-- L205 常數：`DPR`
-- L207 常數：`FONT`
-- L208 常數：`REWARDS`
-- L209 常數：`RANK_ORDER`
-- L210 常數：`RANKS`
-- L216 常數：`CAUSE`
-- L217 常數：`WIN_MSG`
-- L218 常數：`HAIR_LEFT`
-- L219 常數：`TIPS`
-- L248 常數：`SFX`
-- L298 常數：`SKY`
-- L341 常數：`SKIN`
-- …另有 1 行常數宣告，請直接搜尋大寫名稱
+- 狀態物件／進行中旗標：`SFX`（L51）、`hairBusy`（L2）
+- L6 常數：`SCENE_H`
+- L7 常數：`DPR`
+- L9 常數：`FONT`
+- L10 常數：`REWARDS`
+- L11 常數：`RANK_ORDER`
+- L12 常數：`RANKS`
+- L18 常數：`CAUSE`
+- L19 常數：`WIN_MSG`
+- L20 常數：`HAIR_LEFT`
+- L21 常數：`TIPS`
+- L51 常數：`SFX`
+- L102 常數：`SKY`
+- L145 常數：`SKIN`
+- L269 常數：`TOGGLES`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`clamp` L39、`createGame` L41、`rr` L45、`emit` L60、`aliveCount` L61、`zoneAt` L62、`anyMajor` L63、`update` L65、`rankOf` L193、`lsSet` L224、`lerp` L231、`hash` L232、`padBox` L233、`say` L234、`setText` L236、`aliveN` L237、`ui` L238、`audioInit` L245、`tone` L246、`vib` L247、`addFloat` L249、`end` L251、`milestones` L267、`handleEvents` L275、`txt` L294、`rrect` L295、`bar` L296、`mix` L297、`skyAt` L299、`rgb` L300、`layer` L301、`drawScene` L306、`drawStreaks` L336、`drawHair` L342、`drawMan` L360、`drawEventsWorld` L395、`bannerList` L402、`drawHUD` L414、`drawControls` L436、`wrapC` L458、`TOGGLES` L465、`drawReady` L466、`drawOver` L478、`draw` L495、`shown` L507、`toLocal` L508、`clampT` L509、`recomputePress` L510、`clearInput` L511、`pauseNow` L512、`start` L513、`endPointer` L550、`loop` L568
+`lsSet` L26、`lerp` L34、`hash` L35、`padBox` L36、`say` L37、`setText` L39、`aliveN` L40、`ui` L41、`audioInit` L48、`tone` L49、`vib` L50、`addFloat` L52、`end` L54、`milestones` L71、`handleEvents` L79、`txt` L98、`rrect` L99、`bar` L100、`mix` L101、`skyAt` L103、`rgb` L104、`layer` L105、`drawScene` L110、`drawStreaks` L140、`drawHair` L146、`drawMan` L164、`drawEventsWorld` L199、`bannerList` L206、`drawHUD` L218、`drawControls` L240、`wrapC` L262、`TOGGLES` L269、`drawReady` L270、`drawOver` L282、`draw` L299、`shown` L311、`toLocal` L312、`clampT` L313、`recomputePress` L314、`clearInput` L315、`pauseNow` L316、`start` L317、`endPointer` L356、`loop` L374
 
 ## 錢包與結算接點
 
@@ -44,19 +43,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L269 `milestones`：`S.balance+=pts;`
+- L73 `milestones`：`S.balance+=pts;`
 
 **餘額檢查**
-- L516 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L320 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L261 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:Math.floor(g.dist),step:earned,stage:Math.min(4,rew…`
-- L270 `milestones`：`AN.progress(analytics,{stage:rewarded,step:earned,score:Math.floor(g.dist),bonus_points:pts,total_bonus_point…`
-- L517 `start`：`analytics=AN.start('last-hair',amount);`
+- L65 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:Math.floor(g.dist),step:earned,stage:Math.min(4,rew…`
+- L74 `milestones`：`AN.progress(analytics,{stage:rewarded,step:earned,score:Math.floor(g.dist),bonus_points:pts,total_bonus_point…`
+- L322 `start`：`analytics=AN.start('last-hair',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

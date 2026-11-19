@@ -7,25 +7,24 @@
 - 網址：`#nap`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。」｜立即開玩 · 按住反應
 - 追蹤名稱（GA4 `game_name`）：偷睡大師，`game_id` 為 `nap`
-- 檔案：`games/nap/card.html`、`games/nap/game.js`、`games/nap/icon.svg`、`games/nap/view.html`；`game.js` 共 459 行、24.9 KB
+- 檔案：`games/nap/card.html`、`games/nap/game.js`、`games/nap/icon.svg`、`games/nap/view.html`；`game.js` 共 300 行、17.9 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「32. 偷睡大師 Nap Master（nap）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-nap`、`np-canvas`、`np-level`、`np-hearts`、`np-best`、`np-amount`、`np-go`、`np-msg`
+`view-nap`、`np-canvas`、`np-level`、`np-hearts`、`np-best`、`np-amount`、`np-go`、`np-msg`、`np-rank-status`、`np-rank-retry`
 
 ## 狀態與常數
 
 - 狀態物件／進行中旗標：`napBusy`（L2）
-- L5 常數：`CONFIG`
-- L175 常數：`NAP_REWARD`
-- L176 常數：`BTN_SLEEP`、`BTN_THROW`
-- L177 常數：`FONT`
+- L7 常數：`NAP_REWARD`
+- L8 常數：`BTN_SLEEP`、`BTN_THROW`
+- L9 常數：`FONT`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`createGame` L31、`rnd` L34、`emit` L41、`guilty` L42、`beginLevel` L48、`finish` L59、`startWarn` L66、`startWatch` L71、`backToPatrol` L74、`updateBoss` L77、`hitBoss` L104、`tryThrow` L111、`caught` L117、`step` L126、`inRect` L182、`sleepHeld` L183、`clearInput` L184、`say` L185、`setText` L187、`ui` L188、`addFloat` L194、`end` L195、`handleEvents` L206、`rrect` L229、`circ` L232、`line` L233、`tx` L234、`drawBackground` L238、`drawBoss` L245、`drawDesk` L287、`drawPlayer` L300、`drawProjectiles` L328、`drawHUD` L337、`drawButtons` L347、`tipFor` L358、`drawOverlay` L373、`draw` L404、`start` L420、`shown` L428、`toLocal` L429、`endPointer` L439、`loop` L450
+`inRect` L15、`sleepHeld` L16、`clearInput` L17、`say` L18、`setText` L20、`ui` L21、`addFloat` L27、`end` L28、`handleEvents` L39、`rrect` L62、`circ` L65、`line` L66、`tx` L67、`drawBackground` L71、`drawBoss` L78、`drawDesk` L120、`drawPlayer` L133、`drawProjectiles` L161、`drawHUD` L170、`drawButtons` L180、`tipFor` L191、`drawOverlay` L206、`draw` L237、`start` L253、`shown` L263、`toLocal` L264、`endPointer` L274、`loop` L285
 
 ## 錢包與結算接點
 
@@ -33,19 +32,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L218 `handleEvents`：`S.balance+=NAP_REWARD;`
+- L51 `handleEvents`：`S.balance+=NAP_REWARD;`
 
 **餘額檢查**
-- L423 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L256 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L200 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:earned,stage:G.level});`
-- L219 `handleEvents`：`AN.progress(analytics,{stage:G.level,step:earned,score:G.score,bonus_points:NAP_REWARD});`
-- L424 `start`：`analytics=AN.start('nap',amount);`
+- L33 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:earned,stage:G.level});`
+- L52 `handleEvents`：`AN.progress(analytics,{stage:G.level,step:earned,score:G.score,bonus_points:NAP_REWARD});`
+- L258 `start`：`analytics=AN.start('nap',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -55,7 +54,7 @@
 
 ## 平台共用相依
 
-- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`、`C`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/navigation.js` 會呼叫：`shown`
 - 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 

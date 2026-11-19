@@ -24,33 +24,19 @@ G.I={bs:n=>'最高 '+n,tap:'',title:"偷水果的貓",s1:"小貓偷了水果，�
 G.skins=[{need:0,n:'調皮橘貓',c:['#ff9f1c','#e36414'],a:0},{need:150,n:'白糰子',c:['#f1faee','#a8dadc'],a:1},{need:400,n:'忍者貓',c:['#5e548e','#231942'],a:3},{need:800,n:'市場貓王',c:['#ffd23f','#e76f51'],a:2}];
 const LX=[105,200,295],CYT=430,fc=['#e63946','#ff9f1c','#7bd88f'];
 let dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx;
-G.reset=()=>{dist=0;v=280;L=0;fruits=0;gb=130;lane=1;cx=200;jt=0;stun=0;rows=[];slips=[];warn=[];nextRow=120;nextSlip=2.5;fx=[]};
-G.score=()=>Math.floor(dist/50)+fruits*5;
+let model=thiefRules.create(),heldBy;
+const rank=timedLeaderboard('thief','thief',5,ui);
+function syncModel(){({dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx}=model.snapshot());const next=model.snapshot().shake;if(next)shake=next;}
+function control(code){if(!thiefRules.input(model,code))return;rank.record(code);syncModel();}
+G.reset=()=>{model=thiefRules.create();syncModel();};
+G.score=()=>model.score();
 G.extra=()=>T('fr')(fruits);
-G.down=p=>{if(p.x<133)lane=Math.max(0,lane-1);else if(p.x>267)lane=Math.min(2,lane+1);else if(jt<=0)jt=.55};
-function hurt(n){gb-=n;stun=.8;shake=reduceMotion?0:.25;L=Math.max(0,L-2);fx.push({s:'-'+n,x:cx,y:CYT-40,t:0})}
-function spawnRow(){
-const free=(Math.random()*3)|0;
-for(let l=0;l<3;l++){
-if(l===free){const r=Math.random();if(r<.65)rows.push({t:'f',l,y:-30,c:(Math.random()*3)|0});else if(L>=3||r<.75)rows.push({t:'x',l,y:-30})}
-else if(Math.random()<(dist>400?.75:.45))rows.push({t:'b',l,y:-30,c:(Math.random()*3)|0})}}
-G.update=dt=>{
-v=Math.min(420,280+dist*.02)*(1-.07*L);dist+=v*dt;
-gb=Math.min(170,gb-(4+L*5+dist*.002)*dt);
-cx+=(LX[lane]-cx)*Math.min(1,dt*14);
-if(jt>0)jt-=dt;if(stun>0)stun-=dt;
-if(dist>=nextRow){nextRow=dist+rnd(190,250);spawnRow()}
-nextSlip-=dt;if(nextSlip<=0){nextSlip=Math.max(1.8,rnd(3,5.5)-dist*.0005);warn.push({l:(Math.random()*3)|0,t:.8})}
-warn.forEach(w=>{w.t-=dt;if(w.t<=0){w.d=1;slips.push({l:w.l,y:H+30})}});warn=warn.filter(w=>!w.d);
-slips.forEach(s=>{s.y-=760*dt;if(!s.h&&stun<=0&&Math.abs(s.y-CYT)<22&&Math.abs(LX[s.l]-cx)<28){s.h=1;hurt(80)}});slips=slips.filter(s=>s.y>-40);
-const air=jt>0;
-for(const r of rows){r.y+=v*dt;
-const near=Math.abs(r.y-CYT)<26&&Math.abs(LX[r.l]-cx)<30;
-if(r.t==='b'){if(!air&&stun<=0&&!r.h&&near){r.h=1;hurt(50)}}
-else if(!r.g&&!air&&near){r.g=1;if(r.t==='f'){if(L<5){L++;fruits++}}else{L=0;gb+=30}}}
-rows=rows.filter(r=>r.y<H+40&&!r.g);
-fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
-if(gb<=0)die('caught')};
+G.down=p=>{
+ const code=Math.hypot(p.x-340,p.y-505)<50?2:p.x<133?0:p.x>267?2:1;
+ control(code);heldBy=p.id;
+};
+G.up=p=>{if(p.id===heldBy){control(3);heldBy=undefined;}};
+G.update=dt=>{thiefRules.advance(model,dt);syncModel();if(model.dead)die(model.dead);};
 function bg(){
 g.fillStyle='#f4a261';g.fillRect(-20,0,W+40,H);
 for(let i=0;i<14;i++){const y=((i*50+dist)%700+700)%700-60;g.fillStyle='#e76f51';g.fillRect(50,y,300,3)}
@@ -100,7 +86,7 @@ const T=k=>G.I[k];
 const ST=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 best=+ST(KEY)||0;skin=+ST(SKEY)||0;if(!G.skins[skin]||best<G.skins[skin].need)skin=0;
 function pick(i){skin=i;try{localStorage.setItem(SKEY,i)}catch(e){}}
-function release(){}
+function release(){if(st==='run')control(4);heldBy=undefined;}
 function say(text,kind){$('thief-msg').textContent=text;$('thief-msg').className='msg'+(kind?' '+kind:'')}
 thiefSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
@@ -108,7 +94,7 @@ function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('thief-score',G.score()+UNIT);setText('thief-best',best+UNIT);setText('thief-pay',fmt(paid)+' 點');
  setText('thief-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('thief-amount').disabled=thiefBusy;$('thief-go').disabled=live;setText('thief-go',live?'逃跑中 · 換道／跳躍':st==='over'?'再偷一次':'開始偷水果');
+ $('thief-amount').disabled=thiefBusy;$('thief-go').disabled=live||rank.busy();setText('thief-go',live?'逃跑中 · 換道／跳躍':st==='over'?'再偷一次':'開始偷水果');
  document.querySelectorAll('[data-thief-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-thief-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -124,7 +110,7 @@ function awardBonus(){
 function die(m){
  if(st!=='run')return;
  st='over';G.msg=m;shake=reduceMotion?0:.35;release();
- const s=G.score();rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
+ const s=G.score();rank.finish(s);rec=s>best;unl=G.skins.filter(k=>k.need>best&&k.need<=s);
  if(rec){best=s;try{localStorage.setItem(KEY,best)}catch(e){}}
  if(unl.length)pick(G.skins.indexOf(unl[unl.length-1]));
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});thiefBusy=false;renderAll();
@@ -132,11 +118,13 @@ function die(m){
  ui();
 }
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('thief',amount);thiefStake=amount;thiefBusy=true;save();renderAll();
- G.reset();paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=thiefRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ },ui);
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
@@ -170,7 +158,7 @@ window.addEventListener('hashchange',()=>{release();last=performance.now()});
 $('thief-go').addEventListener('click',start);
 function loop(ts){const dt=Math.min(.05,Math.max(0,(ts-last)/1000)||0);last=ts;
  if(!V.hidden&&!document.hidden){tt+=dt;if(shake>0)shake-=dt;bpop.forEach(p=>p.age+=dt);bpop=bpop.filter(p=>p.age<1.8);
-  if(st==='run'){G.update(dt);if(st==='run')awardBonus()}
+  if(st==='run')rank.update(dt*1000,()=>st==='run',step=>{G.update(step);if(st==='run')awardBonus()})
   G.draw();bonusDraw();if(st!=='run')overlay();ui()}
  requestAnimationFrame(loop)}
 G.reset();ui();G.draw();overlay();requestAnimationFrame(loop);
