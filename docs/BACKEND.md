@@ -42,16 +42,16 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 
 ## 既有遊戲的串接分組
 
-截至這一批，共 42 款可見項目。完成狀態以正式部署與實測分開記錄。
+截至這一批，共 43 款可見項目。完成狀態以正式部署與實測分開記錄。
 
 | 狀態或分組 | 遊戲 ID | 串接方向 |
 | --- | --- | --- |
 | 已正式發布 | frog | Worker 重播 |
 | 已正式發布 | mines | Worker 管理棋盤 |
-| 已接入，待整批發布 | merge、ocean-link、dream、runner | Worker 管理棋盤或重播玩家輸入 |
+| 已接入，待整批發布 | merge、ocean-link、dream、runner、cat、skybuilder、sneak、reaper | Worker 管理棋盤或重播玩家輸入 |
 | 回合制與解謎，待串接 | mermaid、banquet、frontier | 依各款動作與關卡狀態定義伺服器驗證 |
-| 即時操作與反應，待串接 | elevator、sneak、fishing、campaign、cat、bird、nap、reaper、blaster、skybuilder、carp、rider、boss、thief、baby、pudding、clock-out、peek、mosquito、last-hair、breakout、pet-walk、office-shoot | 逐款核對時鐘、輸入及隨機性再重播 |
-| 同來源 iframe，待串接 | boba、dive、mrt、pancake、rocket-chair、eat-smaller、mirror-twins、shadow-relay、one-line-defense | 保留父子頁生命週期，增設必要橋接與 Worker 驗證 |
+| 即時操作與反應，待串接 | elevator、fishing、campaign、bird、nap、blaster、carp、rider、boss、thief、baby、pudding、clock-out、peek、mosquito、last-hair、breakout、pet-walk、office-shoot | 逐款核對時鐘、輸入及隨機性再重播 |
+| 同來源 iframe，待串接 | boba、dive、mrt、pancake、rocket-chair、eat-smaller、mirror-twins、shadow-relay、one-line-defense、tetris | 保留父子頁生命週期，增設必要橋接與 Worker 驗證 |
 | 每日免費補給 | keno | 隨機補給與配額，不列競賽榜 |
 
 隱藏中的遊戲依既有改造與上架流程處理。新版遊戲上線前須完成 [訪客排行榜檢查](../RELEASE_CHECKLIST.md#訪客排行榜)。
@@ -85,3 +85,7 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 ## 閃避跑酷訪客成績
 
 沿用棋盤對局 API，以 `runner` 開局。Worker 發出障礙種子，結束時客戶端送出固定 10 毫秒步進數與各次換道。Worker 重算障礙、換道插值與碰撞，只有在指定步數確實碰撞才以整數公尺更新公開榜。每局可驗證最多十分鐘及 6,000 筆換道，超過仍可本機遊玩。里程碑點數維持原有本機流程。
+
+## 屋頂貓貓、蓋樓大師、偷偷下班與死神打工訪客成績
+
+四款沿用棋盤對局 API，使用固定 10 毫秒步進及共用重播驗證。屋頂貓貓記錄跳躍按下／放開，Worker 依種子重算屋頂、碰撞與整數距離。蓋樓大師記錄吊鉤放手，Worker 重算落點、傾斜、倒塌及終局樓層數。偷偷下班記錄按住／放開，Worker 重算老闆轉身、發現時機和完成關卡數。死神打工記錄揮鐮，Worker 重算靈魂、冷卻、誤接、漏接與最終接走數。四款只接受自然終局，驗證上限為十分鐘和 6,000 筆操作。里程碑點數和瀏覽器既有紀錄沿用原本流程，驗證成績只寫公開榜。

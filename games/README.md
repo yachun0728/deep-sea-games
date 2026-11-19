@@ -18,11 +18,11 @@
 | [時序修復 Dream Repair Shop](dream/README.md) | `#dream` | 時機操作 | 顯示 | 141 行 | 抓準時機，讓指針停在青綠色區域。 |
 | [閃避跑酷 Dodge Run](runner/README.md) | `#runner` | 跑酷動作 | 顯示 | 184 行 | 點左、點右換道，避開一路上的障礙。 |
 | [插隊大師 Queue Cutter](elevator/README.md) | `#elevator` | 潛行偷閒 | 顯示 | 129 行 | 趁乘客背對你，偷偷往前插一位。 |
-| [偷偷下班 Sneak Out](sneak/README.md) | `#sneak` | 潛行偷閒 | 顯示 | 116 行 | 按住偷溜，老闆回頭前趕快裝忙。 |
+| [偷偷下班 Sneak Out](sneak/README.md) | `#sneak` | 潛行偷閒 | 顯示 | 125 行 | 按住偷溜，老闆回頭前趕快裝忙。 |
 | [深海釣手 Fishing](fishing/README.md) | `#fishing` | 時機操作 | 顯示 | 113 行 | 按住收線、放開卸力，把大魚拉上岸。 |
 | [宣傳車 Campaign Truck](campaign/README.md) | `#campaign` | 潛行偷閒 | 顯示 | 250 行 | 繞市區拉票，經過學校、醫院、豪宅要按住靜音。 |
 | [插珍奶 Boba Straw](boba/README.md) | `#boba` | 時機操作 | 顯示 | 28 行 | 抓準力道插吸管，原版粉紅珍奶小遊戲。 |
-| [屋頂貓貓 Rooftop Cat](cat/README.md) | `#cat` | 跑酷動作 | 顯示 | 124 行 | 無盡跑酷，看你能跑多遠。 |
+| [屋頂貓貓 Rooftop Cat](cat/README.md) | `#cat` | 跑酷動作 | 顯示 | 125 行 | 無盡跑酷，看你能跑多遠。 |
 | [便便鳥大戰狼群 Poop Bird vs Wolves](bird/README.md) | `#bird` | 跑酷動作 | 顯示 | 190 行 | 跳過仙人掌和狼群，用便便把狼王打跑。 |
 | [青蛙吃蟲 Frog Snack](frog/README.md) | `#frog` | 時機操作 | 顯示 | 209 行 | 對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。 |
 | [偷睡大師 Nap Master](nap/README.md) | `#nap` | 潛行偷閒 | 顯示 | 459 行 | 趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。 |
@@ -32,7 +32,7 @@
 | [捷運搶位 MRT Seat Grab](mrt/README.md) | `#mrt` | 益智策略 | 顯示 | 52 行 | 看小動作猜誰要下車，一階一階往上搶座位。 |
 | [泡麵煎餅翻面 Noodle Pancake](pancake/README.md) | `#pancake` | 時機操作 | 顯示 | 43 行 | 半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。 |
 | [社畜要下班 Roar Through the Ceiling](rocket-chair/README.md) | `#rocket-chair` | 時機操作 | 顯示 | 44 行 | 對著手機大吼，火箭椅一路撞破天花板提早下班。 |
-| [蓋樓大師 Sky Builder](skybuilder/README.md) | `#skybuilder` | 時機操作 | 顯示 | 156 行 | 抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。 |
+| [蓋樓大師 Sky Builder](skybuilder/README.md) | `#skybuilder` | 時機操作 | 顯示 | 163 行 | 抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。 |
 | [鯉魚躍龍門 Carp Leap](carp/README.md) | `#carp` | 時機操作 | 顯示 | 160 行 | 蓄力起跳，越過一道道石瀑。 |
 | [外送員大戰惡犬 Rider vs Dogs](rider/README.md) | `#rider` | 跑酷動作 | 顯示 | 179 行 | 巷子裡閃狗送餐，餐涼之前送越多越好。 |
 | [胖老闆追人 Chubby Boss](boss/README.md) | `#boss` | 跑酷動作 | 顯示 | 177 行 | 遲到了！跳過障礙，別被胖老闆追上。 |

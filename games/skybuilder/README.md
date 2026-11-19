@@ -7,26 +7,25 @@
 - 網址：`#skybuilder`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。」｜立即開玩 · 高度挑戰
 - 追蹤名稱（GA4 `game_name`）：蓋樓大師，`game_id` 為 `skybuilder`
-- 檔案：`games/skybuilder/card.html`、`games/skybuilder/game.js`、`games/skybuilder/icon.svg`、`games/skybuilder/view.html`；`game.js` 共 156 行、11.6 KB
+- 檔案：`games/skybuilder/card.html`、`games/skybuilder/game.js`、`games/skybuilder/icon.svg`、`games/skybuilder/view.html`；`game.js` 共 163 行、10.7 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「20. Sky Builder（skybuilder）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-skybuilder`、`sb-canvas`、`sb-floors`、`sb-score`、`sb-best`、`sb-amount`、`sb-pay`、`sb-next`、`sb-go`、`sb-msg`
+`view-skybuilder`、`sb-canvas`、`sb-floors`、`sb-score`、`sb-best`、`sb-amount`、`sb-pay`、`sb-next`、`sb-go`、`sb-msg`、`sb-rank-status`、`sb-rank-retry`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`COL`（L15）、`PTS`（L16）、`sbBusy`（L2）
+- 狀態物件／進行中旗標：`COL`（L15）、`sbBusy`（L2）
 - L4 常數：`BASE`
 - L5 常數：`MILESTONES`、`BONUS`
 - L14 常數：`PAL`
 - L15 常數：`COL`
-- L16 常數：`PTS`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rnd` L9、`O` L10、`C` L11、`RR` L12、`tx` L13、`rate` L17、`reset` L19、`Ht` L21、`floors` L22、`hook` L23、`burst` L24、`say` L25、`setText` L27、`ui` L28、`end` L35、`awardBonus` L44、`land` L55、`update` L66、`floor` L82、`roof` L95、`crane` L96、`draw` L105、`start` L135、`act` L142、`loop` L153
+`rnd` L9、`O` L10、`C` L11、`RR` L12、`tx` L13、`Ht` L17、`floors` L18、`hook` L19、`burst` L21、`say` L22、`setText` L24、`ui` L25、`end` L32、`awardBonus` L42、`update` L53、`floor` L78、`roof` L91、`crane` L92、`draw` L101、`start` L131、`act` L143、`loop` L156
 
 ## 錢包與結算接點
 
@@ -34,20 +33,20 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L49 `awardBonus`：`S.balance+=BONUS;`
+- L47 `awardBonus`：`S.balance+=BONUS;`
 
 **餘額檢查**
-- L138 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L134 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L39 `end`：`AN.end(analytics,paid,'loss',{score:sc,floors:n,total_bonus_points:paid});`
-- L50 `awardBonus`：`AN.progress(analytics,{step:n,score:sc,floors:n,milestone,bonus_points:BONUS,total_bonus_points:paid});`
-- L139 `start`：`analytics=AN.start('skybuilder',amount);`
-- L151 `act`：`AN.end(analytics,paid,'abandoned',{score:sc,floors:floors(),total_bonus_points:paid});`
+- L36 `end`：`AN.end(analytics,paid,'loss',{score:tower.sc,floors:n,total_bonus_points:paid});`
+- L48 `awardBonus`：`AN.progress(analytics,{step:n,score:tower.sc,floors:n,milestone,bonus_points:BONUS,total_bonus_points:paid});`
+- L138 `start`：`analytics=AN.start('skybuilder',amount);`
+- L154 `act`：`AN.end(analytics,paid,'abandoned',{score:tower.sc,floors:floors(),total_bonus_points:paid});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -66,6 +65,8 @@
 定位：`sbBusy` 所在 IIFE（改編自使用者提供的 TowerBuilding.html，已移除多語切換，僅繁中）。起重機吊著樓層擺盪，點畫面／空白鍵／↓ 放下。落點偏差 a 像素評級：≤4 Perfect、≤12 Great、≤24 Good、≤38 Average、≤56 Poor、其餘 Fail（失手，直接結束）。分數 `100/70/50/30/10`，連續 Perfect 另加 `25×(連擊-1)`；偏差使樓傾斜 `+d×0.34`度，Perfect 回正 4°、Great 回正 1.5°，傾斜超過 45° 倒塌。分數只供比較，不入帳。
 
 顯示層數 floors＝已疊成的樓層數（不含地基）。每局固定入場 10 點；穩定達到 10、20、30 層，各立即送固定 BONUS 5 點，每個門檻當局只發一次，最多 15 點；造成倒塌的樓層不計獎勵。沒有下注、返還倍率或領回，獎勵不依入場費計算。失手／倒塌結束不另入帳，也不扣回已得獎勵。最佳層數沿用 `deep-sea-skybuilder-best`。切換遊戲或背景分頁時暫停；重新整理放棄本局，已扣點不退、已入帳獎勵保留。大廳貼上「✦ BONUS」。
+
+訪客榜以終局樓層數排名。Worker 重播吊鉤放手、堆疊、傾斜及倒塌。 最多驗證十分鐘的遊戲時間。
 
 ## 修改檢查清單
 

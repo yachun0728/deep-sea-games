@@ -7,22 +7,22 @@
 - 網址：`#cat`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「無盡跑酷，看你能跑多遠。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：屋頂貓貓，`game_id` 為 `cat`
-- 檔案：`games/cat/card.html`、`games/cat/game.js`、`games/cat/icon.svg`、`games/cat/view.html`；`game.js` 共 124 行、8.9 KB
+- 檔案：`games/cat/card.html`、`games/cat/game.js`、`games/cat/icon.svg`、`games/cat/view.html`；`game.js` 共 125 行、8.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「19. Rooftop Cat（cat）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-cat`、`ct-canvas`、`ct-score`、`ct-best`、`ct-next`、`ct-amount`、`ct-go`、`ct-msg`
+`view-cat`、`ct-canvas`、`ct-score`、`ct-best`、`ct-next`、`ct-amount`、`ct-go`、`ct-msg`、`ct-rank-status`、`ct-rank-retry`
 
 ## 狀態與常數
 
 - 狀態物件／進行中旗標：`catBusy`（L2）
-- L7 常數：`MILESTONES`、`ENDLESS_FROM`、`ENDLESS_STEP`、`ENDLESS_BONUS`、`LADDER`、`COYOTE`
+- L7 常數：`MILESTONES`、`ENDLESS_FROM`、`ENDLESS_STEP`、`ENDLESS_BONUS`、`LADDER`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`bonusAt` L8、`nextMilestone` L9、`rnd` L12、`O` L13、`C` L14、`F` L15、`tx` L16、`reset` L18、`fill` L19、`score` L21、`say` L22、`setText` L24、`award` L25、`ui` L31、`die` L38、`jump` L47、`update` L48、`drawCat` L65、`leg` L67、`draw` L79、`start` L103、`down` L110、`loop` L120
+`bonusAt` L8、`nextMilestone` L9、`O` L12、`C` L13、`F` L14、`tx` L15、`score` L18、`say` L19、`setText` L21、`award` L22、`ui` L28、`die` L35、`update` L45、`drawCat` L54、`leg` L56、`draw` L68、`start` L92、`down` L103、`release` L107、`loop` L117
 
 ## 錢包與結算接點
 
@@ -30,19 +30,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L26 `award`：`S.balance+=b;`
+- L23 `award`：`S.balance+=b;`
 
 **餘額檢查**
-- L106 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L95 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L27 `award`：`AN.progress(analytics,{step:m,score:m,bonus_points:b});`
-- L42 `die`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:s});`
-- L107 `start`：`analytics=AN.start('cat',amount);`
+- L24 `award`：`AN.progress(analytics,{step:m,score:m,bonus_points:b});`
+- L39 `die`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:s});`
+- L98 `start`：`analytics=AN.start('cat',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -79,6 +79,8 @@
 | 新手 | 6% | 0% | 0% | 0% | 0% |
 
 中位數約：一般 100 m（約 30 秒）、不錯 290 m、技術好 540 m。此外一個固定節奏的腳本在正式參數下的測試副本跑到過 415 m。這些數字只是起點，應以正式站的 `game_end` score 分布（GA4）重新校準；調整時只改 `MILESTONES` 與難度常數。重新整理會放棄本局但已入帳的獎勵保留；最佳紀錄 `deep-sea-cat-best` 不變。
+
+訪客榜以終局整數距離排名。Worker 重播跳躍按下／放開與屋頂碰撞。 最多驗證十分鐘的遊戲時間。
 
 ## 修改檢查清單
 

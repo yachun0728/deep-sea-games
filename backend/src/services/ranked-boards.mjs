@@ -1,3 +1,8 @@
+import reaperRules from '../../../shared/reaper-rules.cjs';
+import sneakRules from '../../../shared/sneak-rules.cjs';
+import skybuilderRules from '../../../shared/skybuilder-rules.cjs';
+import timedReplay from '../../../shared/timed-replay.cjs';
+import catRules from '../../../shared/cat-rules.cjs';
 import runnerRules from '../../../shared/runner-rules.cjs';
 import dreamRules from '../../../shared/dream-rules.cjs';
 import oceanLink from '../../../games/ocean-link/board.js';
@@ -8,7 +13,24 @@ const MAX_REVISIONS = 16384;
 const ID = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
 const random = () => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
 const newSeed = () => crypto.getRandomValues(new Uint32Array(1))[0];
+function timedBoard(engine) {
+  return {
+    create: () => ({seed: newSeed(), issuedAt: Date.now(), score: null}),
+    accepts: action => timedReplay.accepts(action, engine.inputCount),
+    apply: (state, action) => {
+      if ((action[0] - 1) * timedReplay.STEP_MS > Date.now() - state.issuedAt) return false;
+      state.score = timedReplay.verify(engine, state.seed, action);
+      return state.score !== null;
+    },
+    score: state => state.score,
+    visible: ({seed, score}) => ({seed, score}),
+  };
+}
 const boards = new Map([
+  ['cat', timedBoard(catRules)],
+  ['reaper', timedBoard(reaperRules)],
+  ['sneak', timedBoard(sneakRules)],
+  ['skybuilder', timedBoard(skybuilderRules)],
   ['merge', {
     create: () => mergeRules.create(random),
     accepts: action => mergeRules.directions.includes(action),

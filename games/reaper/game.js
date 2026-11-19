@@ -1,23 +1,20 @@
   /* ---------- Reaper Shift: endless shifts; milestone bonuses are credited to the shared wallet when reached ---------- */
-  var RP={active:false,phase:'ready',stake:0,analytics:null,lives:3,total:0,good:0,resolved:0,spawned:0,ghosts:[],fx:[],pops:[],gap:.6,speed:126,zone:28,cd:0,sw:0,belt:0,flash:0,message:'',shake:0,last:0,best:0,focused:true,earned:0};
-  // Every 10 correct decisions is one shift (level); each shift is faster with a narrower gold zone and more green passes.
-  // Milestones count correct decisions and were calibrated with a noisy-player simulation (see GAME_RULES.md).
-  var RP_PER=10,RP_VK=12,RP_VMAX=300,RP_ZK=.9,RP_ZMIN=15,RP_PPMAX=.5;
+  var RP=Object.assign(reaperRules.create(),{active:false,phase:'ready',stake:0,analytics:null,fx:[],pops:[],sw:0,belt:0,flash:0,message:'',shake:0,last:0,best:0,focused:true,earned:0});
+  var reaperRank=timedLeaderboard('reaper','rp',reaperRules.inputCount,rpUI), reaperRandom=Math.random;
+  var RP_PER=10;
   var RP_MILESTONES=[[120,3],[150,7],[200,15],[260,30]],RP_ENDLESS_FROM=260,RP_ENDLESS_STEP=50,RP_ENDLESS_BONUS=40;
   function rpBonusAt(n){for(var i=0;i<RP_MILESTONES.length;i++)if(RP_MILESTONES[i][0]===n)return RP_MILESTONES[i][1];return n>RP_ENDLESS_FROM&&(n-RP_ENDLESS_FROM)%RP_ENDLESS_STEP===0?RP_ENDLESS_BONUS:0;}
   function rpNext(n){for(var i=0;i<RP_MILESTONES.length;i++)if(RP_MILESTONES[i][0]>n)return RP_MILESTONES[i];return [RP_ENDLESS_FROM+(Math.floor((n-RP_ENDLESS_FROM)/RP_ENDLESS_STEP)+1)*RP_ENDLESS_STEP,RP_ENDLESS_BONUS];}
-  function rpLevel(){return 1+Math.floor(RP.good/RP_PER);}
+  function rpLevel(){return reaperRules.level(RP);}
   var reaperCanvas=$('rp-canvas'),reaperCtx=reaperCanvas.getContext('2d');
   try{var rb=Number(localStorage.getItem('reaper'));if(Number.isFinite(rb))RP.best=Math.max(0,Math.floor(rb));}catch(_){}
-  function rpRand(a,b){return a+Math.random()*(b-a);}
   function rpSay(text,kind){$('rp-msg').textContent=text;$('rp-msg').className='msg'+(kind?' '+kind:'');}
   function rpRemember(){if(RP.total>RP.best){RP.best=RP.total;try{localStorage.setItem('reaper',String(RP.best));}catch(_){}}}
-  function rpParams(){var L=rpLevel();RP.speed=Math.min(RP_VMAX,110+RP_VK*L);RP.zone=Math.max(RP_ZMIN,29-RP_ZK*(L-1));}
   function rpUI(){
     var L=rpLevel(),nx=rpNext(RP.good);
     $('rp-level').textContent='第 '+L+' 班';$('rp-progress').textContent=(RP.good%RP_PER)+' / '+RP_PER;$('rp-lives').textContent=RP.lives+' / 3';$('rp-score').textContent=RP.total+' 位';$('rp-best').textContent=RP.best+' 位';
     $('rp-next').textContent=nx[0]+' 位 · +'+nx[1];$('rp-amount').disabled=RP.active;
-    $('rp-go').textContent=RP.phase==='run'?'揮鐮接走':'開始值班';$('rp-go').disabled=RP.phase==='run'&&RP.cd>0;
+    $('rp-go').textContent=RP.phase==='run'?'揮鐮接走':'開始值班';$('rp-go').disabled=reaperRank.busy()||RP.phase==='run'&&RP.cd>0;
     $('rp-go').dataset.mode=RP.phase==='run'?'surface':'bet';
     $('rp-difficulty').textContent=L<4?'綠色通行證全程可見':L<7?'通行證靠近金色區域時會淡去':'通行證會提早淡去，先記住誰該放行';
   }
@@ -25,9 +22,12 @@
     if(RP.phase==='run')return;
     var stake=ENTRY_FEE;
     if(stake>S.balance){rpSay(LOW_MSG,'lose');return;}
-    RP.stake=stake;RP.lives=3;RP.total=0;RP.good=0;RP.resolved=0;RP.spawned=0;RP.ghosts=[];RP.fx=[];RP.pops=[];RP.gap=.6;RP.cd=0;RP.sw=0;RP.flash=0;RP.shake=0;RP.earned=0;RP.active=true;
-    RP.analytics=AN.start('reaper',stake);save();renderAll();rpParams();
-    RP.phase='run';RP.last=performance.now();rpSay('普通靈魂要接走，綠色通行證要放行。沒有終點，越來越快，三顆心用完才結束。');rpUI();reaperCanvas.focus();
+    reaperRank.start(random=>{
+      reaperRandom=random||Math.random;
+      Object.assign(RP,reaperRules.create(),{stake,fx:[],pops:[],sw:0,flash:0,shake:0,earned:0,active:true});
+      RP.analytics=AN.start('reaper',stake);save();renderAll();
+      RP.phase='run';RP.last=performance.now();rpSay('普通靈魂要接走，綠色通行證要放行。沒有終點，越來越快，三顆心用完才結束。');rpUI();reaperCanvas.focus();
+    });
   }
   function rpAward(n,b){
     RP.earned+=b;S.balance+=b;save();renderAll();
@@ -35,40 +35,40 @@
     RP.pops.push({n:n,b:b,age:0});if(RP.pops.length>3)RP.pops.shift();
     rpSay('處理了 '+n+' 位靈魂！獎勵 +'+b+' 點已入帳，本局累計 +'+RP.earned+' 點。','win');
   }
-  function rpGood(){RP.good++;rpParams();var b=rpBonusAt(RP.good);if(b)rpAward(RP.good,b);}
-  function rpStrike(message){
-    if(RP.phase!=='run')return;RP.lives--;RP.flash=1.1;RP.message=message;RP.shake=reduceMotion?0:.35;
-    if(RP.lives<=0){
-      RP.active=false;RP.phase='over';rpRemember();AN.end(RP.analytics,RP.earned,RP.earned>0?'complete':'loss',{step:RP.good,score:RP.total});save();renderAll();
+  function rpEvent(event, endedOnInput){
+    if(event.kind==='capture'||event.kind==='pass'){
+      if(event.kind==='capture'){RP.fx.push({x:event.x,y:328,t:0});rpRemember();}
+      var bonus=rpBonusAt(event.good);if(bonus)rpAward(event.good,bonus);
+      return;
+    }
+    var message=event.kind==='permit'?'接到帶通行證的靈魂，應該放行！':'漏接普通靈魂了！';
+    RP.flash=1.1;RP.message=message;RP.shake=reduceMotion?0:.35;
+    if(RP.dead){
+      RP.active=false;RP.phase='over';rpRemember();
+      AN.end(RP.analytics,RP.earned,RP.earned>0?'complete':'loss',{step:RP.good,score:RP.total});save();renderAll();
       rpSay(message+' 三顆心用完，處理了 '+RP.good+' 位靈魂，'+(RP.earned>0?'本局共入帳 '+fmt(RP.earned)+' 點。':'這一局沒有獎勵。'),RP.earned>0?'win':'lose');
+      reaperRank.finish(RP.total,endedOnInput);
     }else rpSay(message+' 剩餘 '+RP.lives+' 顆心。','lose');
     rpUI();
   }
-  function rpSpawn(){
-    var L=rpLevel(),pp=Math.min(RP_PPMAX,.18+L*.012);
-    RP.ghosts.push({x:-30,d:RP.spawned>0&&Math.random()<pp,m:false});RP.spawned++;
-    RP.gap=Math.max(.5,rpRand(1.1,1.7)-(L-1)*.065);
-  }
   function rpStep(dt){
     while(dt>1e-8&&RP.phase==='run'){
-      var step=Math.min(dt,.02);dt-=step;RP.cd=Math.max(0,RP.cd-step);RP.sw=Math.max(0,RP.sw-step);RP.flash=Math.max(0,RP.flash-step);RP.shake=Math.max(0,RP.shake-step);RP.belt+=RP.speed*step;
+      var step=Math.min(dt,.02);dt-=step;
+      RP.sw=Math.max(0,RP.sw-step);RP.flash=Math.max(0,RP.flash-step);RP.shake=Math.max(0,RP.shake-step);RP.belt+=RP.speed*step;
       RP.fx.forEach(function(f){f.t+=step;f.y-=140*step;});RP.fx=RP.fx.filter(function(f){return f.t<.6;});
       RP.pops.forEach(function(p){p.age+=step;});RP.pops=RP.pops.filter(function(p){return p.age<2.2;});
-      RP.gap-=step;if(RP.gap<=0)rpSpawn();
-      for(var i=0;i<RP.ghosts.length;i++){
-        var ghost=RP.ghosts[i];ghost.x+=RP.speed*step;
-        if(!ghost.m&&ghost.x>200+RP.zone+10){ghost.m=true;RP.resolved++;if(!ghost.d)rpStrike('漏接普通靈魂了！');else rpGood();if(RP.phase!=='run')return;}
-      }
-      RP.ghosts=RP.ghosts.filter(function(o){return o.x<440;});
+      reaperRules.advance(RP,step,reaperRandom,event=>rpEvent(event,false));
     }
   }
-  function rpSync(now){var dt=Math.max(0,(now-RP.last)/1000);RP.last=now;if(!$('view-reaper').hidden&&!document.hidden&&RP.focused)rpStep(dt);}
+  function rpSync(now){
+    var ms=Math.max(0,now-RP.last);RP.last=now;
+    if(!$('view-reaper').hidden&&!document.hidden&&RP.focused)reaperRank.update(ms,()=>RP.phase==='run',rpStep);
+  }
   function rpAct(){
     if(RP.phase!=='run'){rpStart();return;}
     rpSync(performance.now());if(RP.phase!=='run'||RP.cd>0)return;
-    RP.cd=.35;RP.sw=.18;
-    var candidate=null;RP.ghosts.forEach(function(o){if(!o.m&&Math.abs(o.x-200)<=RP.zone&&(!candidate||Math.abs(o.x-200)<Math.abs(candidate.x-200)))candidate=o;});
-    if(candidate){candidate.m=true;RP.resolved++;RP.ghosts=RP.ghosts.filter(function(o){return o!==candidate;});if(candidate.d)rpStrike('接到帶通行證的靈魂，應該放行！');else{RP.total++;RP.fx.push({x:candidate.x,y:328,t:0});rpRemember();rpGood();}}
+    reaperRank.record(0);RP.sw=.18;
+    reaperRules.input(RP,0,event=>rpEvent(event,true));
     rpUI();
   }
   function rpGhost(x,y,d,a,ha){
