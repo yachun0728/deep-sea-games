@@ -6,6 +6,8 @@ export const API = Object.freeze({
   frogFinish: '/api/v1/frog/rounds/finish',
   minesStart: '/api/v1/mines/rounds',
   minesMove: '/api/v1/mines/rounds/move',
+  boardStart: '/api/v1/boards/rounds',
+  boardMove: '/api/v1/boards/rounds/move',
   leaderboard: '/api/v1/leaderboard',
 });
 

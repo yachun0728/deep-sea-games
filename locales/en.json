@@ -4996,5 +4996,8 @@
   "正在驗證排雷操作…": "Verifying move…",
   "排行榜回合已中斷，請再開一局。": "The ranked round ended. Start a new round.",
   "排雷操作未能送出。": "Unable to submit the move.",
-  "重送排雷操作": "Retry move"
+  "重送排雷操作": "Retry move",
+  "正在驗證遊戲操作…": "Verifying game move…",
+  "遊戲操作未能送出。": "Unable to submit the game move.",
+  "重送遊戲操作": "Retry game move"
 }

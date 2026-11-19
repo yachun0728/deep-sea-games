@@ -2,6 +2,7 @@
   var MG_FEE = ENTRY_FEE, BEST = 'pearl-merge-best';
   var G = { grid: [0, 0, 2, 0, 0, 4, 2, 0, 8, 4, 0, 0, 32, 16, 2, 0], score: 0, best: 0, active: false, over: false, fresh: {} };
   var elMg = $('mg'), elGGo = $('mg-go'), elGMsg = $('mg-msg'), cells = [];
+  var mergeRound = null, mergePending = null, mergeStarting = false, mergeSending = false;
   try { var gb = parseInt(localStorage.getItem(BEST), 10); if (isFinite(gb) && gb > 0) G.best = gb; } catch (e) {}
 
   function gSay(text, cls) { elGMsg.textContent = text; elGMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
@@ -18,56 +19,97 @@
     $('mg-score').textContent = fmt(G.score);
     $('mg-max').textContent = G.active || G.over ? String(max) : '—';
     $('mg-best').textContent = fmt(G.best);
-    document.querySelectorAll('[data-dir]').forEach(function (b) { b.disabled = !G.active; });
+    document.querySelectorAll('[data-dir]').forEach(function (b) { b.disabled = !G.active || !!mergePending; });
+    elGGo.disabled = mergeStarting || mergeSending;
     if (G.active) { elGGo.dataset.mode = 'cancel'; elGGo.innerHTML = '放棄重開'; }
     else { elGGo.dataset.mode = 'bet'; elGGo.innerHTML = (G.over ? '再玩一局' : '開始一局') + ''; }
   }
-  function mgSpawn() {
-    var empty = []; G.grid.forEach(function (v, i) { if (!v) empty.push(i); });
-    if (!empty.length) return;
-    var i = empty[Math.floor(Math.random() * empty.length)];
-    G.grid[i] = Math.random() < 0.9 ? 2 : 4; G.fresh[i] = 1;
+  function mergeStatus(text, retry) {
+    var status = $('mg-rank-status');
+    status.textContent = text;
+    status.hidden = !text;
+    $('mg-rank-retry').hidden = !retry;
   }
-  function mgCanMove() {
-    for (var i = 0; i < 16; i++) {
-      if (!G.grid[i]) return true;
-      if (i % 4 < 3 && G.grid[i] === G.grid[i + 1]) return true;
-      if (i < 12 && G.grid[i] === G.grid[i + 4]) return true;
-    }
-    return false;
-  }
-  function mgStart() {
-    if (S.balance < MG_FEE) { gSay(LOW_MSG, 'lose'); return; }
-    if(G.active)AN.end(G.analytics,0,'restart',{score:G.score});
-    G.analytics=AN.start('merge',MG_FEE);
-    G.grid = []; for (var i = 0; i < 16; i++) G.grid.push(0);
-    G.score = 0; G.active = true; G.over = false; G.fresh = {};
-    mgSpawn(); mgSpawn();
+  function beginMerge(round) {
+    mergeRound = round;
+    if (G.active) AN.end(G.analytics,0,'restart',{score:G.score});
+    G.analytics = AN.start('merge',MG_FEE);
+    Object.assign(G, round ? round.state : mergeRules.create());
+    G.fresh = Object.fromEntries(G.grid.flatMap((tile, i) => tile ? [[i,1]] : []));
+    G.active = true;
     gSay('開始養珠。');
-    syncBalance(); mgRender();
-  }
-  function mgMove(dir) {
-    if (!G.active) return;
-    var moved = false, before = Math.max.apply(null, G.grid);
-    for (var a = 0; a < 4; a++) {
-      var idxs = [], b;
-      for (b = 0; b < 4; b++) idxs.push(dir === 'left' ? a * 4 + b : dir === 'right' ? a * 4 + 3 - b : dir === 'up' ? b * 4 + a : (3 - b) * 4 + a);
-      var vals = idxs.map(function (i) { return G.grid[i]; }).filter(Boolean), out = [], merged = {};
-      for (b = 0; b < vals.length; b++) {
-        if (vals[b] === vals[b + 1]) { out.push(vals[b] * 2); G.score += vals[b] * 2; merged[out.length - 1] = 1; b++; }
-        else out.push(vals[b]);
-      }
-      while (out.length < 4) out.push(0);
-      idxs.forEach(function (gi, p) { if (G.grid[gi] !== out[p]) moved = true; G.grid[gi] = out[p]; if (merged[p]) G.fresh[gi] = 1; });
-    }
-    if (!moved) { G.fresh = {}; return; }
-    mgSpawn();
-    if (G.score > G.best) { G.best = G.score; try { localStorage.setItem(BEST, String(G.best)); } catch (e) {} }
-    var max = Math.max.apply(null, G.grid);
-    if (!mgCanMove()) { AN.end(G.analytics,0,'complete',{score:G.score}); G.active = false; G.over = true; gSay('盤面滿了，這一局結束：' + fmt(G.score) + ' 分，最大珍珠 ' + max + '。', 'lose'); }
-    else if (max > before && max >= 128) gSay('養出 ' + max + ' 的珍珠了！', 'win');
+    syncBalance();
     mgRender();
   }
+  async function mgStart() {
+    if (mergeStarting || mergeSending) return;
+    if (S.balance < MG_FEE) { gSay(LOW_MSG, 'lose'); return; }
+    mergePending = null;
+    if (typeof location === 'undefined' || location.protocol === 'file:') { beginMerge(null); return; }
+
+    mergeStarting = true;
+    mergeStatus('正在準備訪客排行…');
+    mgRender();
+    var round = null;
+    try {
+      var api = await import('./frontend/services/api.mjs');
+      round = await api.startBoardRound('merge',AbortSignal.timeout(4000));
+    } catch {}
+    mergeStarting = false;
+    if ($('view-merge').hidden) { mergeStatus(''); mgRender(); return; }
+    mergeStatus(round ? '本局將列入訪客排行。' : '這一局可在本機遊玩。');
+    beginMerge(round);
+  }
+  function updateMerge(before) {
+    if (G.score > G.best) { G.best = G.score; try { localStorage.setItem(BEST, String(G.best)); } catch (e) {} }
+    var max = Math.max(...G.grid);
+    if (G.over) {
+      AN.end(G.analytics,0,'complete',{score:G.score});
+      G.active = false;
+      gSay('盤面滿了，這一局結束：' + fmt(G.score) + ' 分，最大珍珠 ' + max + '。', 'lose');
+    } else if (max > before && max >= 128) gSay('養出 ' + max + ' 的珍珠了！', 'win');
+    mgRender();
+  }
+  async function sendMergeMove() {
+    if (!mergePending || mergeSending) return;
+    mergeSending = true;
+    mergeStatus('正在驗證遊戲操作…');
+    mgRender();
+    try {
+      var api = await import('./frontend/services/api.mjs');
+      var next = await api.moveBoardRound(mergeRound.token,mergePending,AbortSignal.timeout(8000));
+      var changed = next.revision !== mergeRound.revision;
+      var before = Math.max(...G.grid);
+      Object.assign(mergeRound,next);
+      if (changed) Object.assign(G,next.state);
+      mergePending = null;
+      mergeStatus(next.state.over ? '成績已送到排行榜。' : '本局將列入訪客排行。');
+      if (changed) updateMerge(before);
+    } catch (error) {
+      if (error.retryable === false) {
+        mergePending = null;
+        G.active = false;
+        AN.end(G.analytics,0,'abandoned',{score:G.score});
+        mergeStatus('排行榜回合已中斷，請再開一局。');
+        mgRender();
+      } else mergeStatus('遊戲操作未能送出。',true);
+    } finally {
+      mergeSending = false;
+      elGGo.disabled = false;
+      document.querySelectorAll('[data-dir]').forEach(function (button) { button.disabled = !G.active || !!mergePending; });
+    }
+  }
+  function mgMove(dir) {
+    if (!G.active || mergePending || mergeStarting || $('view-merge').hidden) return;
+    if (mergeRound) {
+      mergePending = {gameId:'merge',id:mergeRound.id,revision:mergeRound.revision,action:dir};
+      sendMergeMove();
+      return;
+    }
+    var before = Math.max(...G.grid);
+    if (mergeRules.move(G,dir)) updateMerge(before);
+  }
+  $('mg-rank-retry').addEventListener('click',sendMergeMove);
   elGGo.addEventListener('click', mgStart);
   document.querySelectorAll('[data-dir]').forEach(function (b) { b.addEventListener('click', function () { mgMove(b.dataset.dir); }); });
   document.addEventListener('keydown', function (e) {

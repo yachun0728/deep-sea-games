@@ -2,6 +2,7 @@ import { API, GAME_ID } from '../../../shared/api.mjs';
 import { createPlayer, findPlayer } from '../services/players.mjs';
 import { finishFrogRound, readFrogProof, startFrogRound } from '../services/frog.mjs';
 import { applyMinesMove, readMinesMove, startMinesRound } from '../services/mines.mjs';
+import { moveRankedBoard, readBoardCommand, startRankedBoard } from '../services/ranked-boards.mjs';
 import { getBalance } from '../services/points.mjs';
 import { getLeaderboard } from '../services/leaderboard.mjs';
 
@@ -44,6 +45,17 @@ const routes = new Map([
     const move = await readMinesMove(request);
     if (!move) return json({ error: 'invalid_move' }, 400);
     const result = await applyMinesMove(db, player.id, move);
+    return result.error ? json({ error: result.error }, result.status) : json(result);
+  })]],
+  [API.boardStart, ['POST', withPlayer(async (request, db, player) => {
+    const command = await readBoardCommand(request, false);
+    return command ? json(await startRankedBoard(db, player.id, command.gameId), 201)
+      : json({ error: 'invalid_game' }, 400);
+  })]],
+  [API.boardMove, ['POST', withPlayer(async (request, db, player) => {
+    const command = await readBoardCommand(request, true);
+    if (!command) return json({ error: 'invalid_move' }, 400);
+    const result = await moveRankedBoard(db, player.id, command);
     return result.error ? json({ error: result.error }, result.status) : json(result);
   })]],
   [API.leaderboard, ['GET', async (_request, db, url) => {

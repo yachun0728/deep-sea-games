@@ -47,10 +47,17 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 | 狀態或分組 | 遊戲 ID | 串接方向 |
 | --- | --- | --- |
 | 已正式發布 | frog | Worker 重播 |
-| 已通過本機 D1，待發布 | mines | Worker 管理棋盤 |
-| 回合制與解謎，待串接 | merge、ocean-link、mermaid、banquet、frontier | 依各款動作與關卡狀態定義伺服器驗證 |
+| 已正式發布 | mines | Worker 管理棋盤 |
+| 已接入養珠，待發布 | merge | Worker 管理棋盤 |
+| 回合制與解謎，待串接 | ocean-link、mermaid、banquet、frontier | 依各款動作與關卡狀態定義伺服器驗證 |
 | 即時操作與反應，待串接 | dream、runner、elevator、sneak、fishing、campaign、cat、bird、nap、reaper、blaster、skybuilder、carp、rider、boss、thief、baby、pudding、clock-out、peek、mosquito、last-hair、breakout、pet-walk、office-shoot | 逐款核對時鐘、輸入及隨機性再重播 |
 | 同來源 iframe，待串接 | boba、dive、mrt、pancake、rocket-chair、eat-smaller、mirror-twins、shadow-relay、one-line-defense | 保留父子頁生命週期，增設必要橋接與 Worker 驗證 |
 | 每日免費補給 | keno | 隨機補給與配額，不列競賽榜 |
 
 隱藏中的遊戲依既有改造與上架流程處理。新版遊戲上線前須完成 [訪客排行榜檢查](../RELEASE_CHECKLIST.md#訪客排行榜)。
+
+## 養珠訪客成績
+
+- `POST /api/v1/boards/rounds` 接收 `{gameId:"merge"}`，以訪客 bearer token 取得新棋盤。
+- `POST /api/v1/boards/rounds/move` 接收 `{gameId,id,revision,action}`。養珠的 `action` 為 `left`、`right`、`up` 或 `down`。Worker 套用移動及生成新珍珠；沒有合法移動才結算。
+- `0005_ranked_boards.sql` 在同次寫入更新回合與較高的個人最佳分數。回合限兩小時、16,384 次有效操作；同版本與動作可重送。其他遊戲使用這個 API 前須各自註冊及驗證規則。上線先套用 `0005`，再部署 Worker、最後發布前端。
