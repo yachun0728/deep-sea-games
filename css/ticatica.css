@@ -473,3 +473,7 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 .game-view-controls button[aria-pressed="true"]{background:var(--tc-primary)}
 .view:is(:fullscreen,.game-view-expanded){background:var(--tc-bg)!important}
 .view:is(:fullscreen,.game-view-expanded)>.game-view-controls{background:var(--tc-bg)}
+
+/* banners hidden for now; sidebar popular games use the new object art */
+.lobby-banners{display:none!important}
+.side-quick-item img{width:80%;height:80%;object-fit:contain;display:block}
