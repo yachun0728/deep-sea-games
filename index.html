@@ -1064,6 +1064,13 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 .side-quick-item{overflow:hidden}
 .side-quick-item svg,.side-quick-item img{width:84%;height:84%;object-fit:contain;display:block}
 .side-quick-item img[src*="cover.webp"]{width:100%;height:100%;object-fit:cover}
+/* account menu: progress toward the next cosmetic */
+.account-bar{height:6px;margin:10px 0 8px;border-radius:99px;background:var(--tc-active);overflow:hidden}
+.account-bar[hidden]{display:none}
+.account-bar span{display:block;height:100%;width:0;border-radius:inherit;background:var(--tc-primary);transition:width .3s}
+.account-goal{margin:0 0 4px;color:#fff;font-size:13px}
+.account-points .regen-hint{color:var(--tc-muted)}
+@media(prefers-reduced-motion:reduce){.account-bar span{transition:none}}
 
 #view-blaster .bl-stage{display:grid;place-items:center;min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#061c2c}
 #bl-canvas{display:block;width:min(100%,400px);height:auto;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -2010,7 +2017,7 @@ html.frontier-immersive{overflow:hidden}
     <div class="header-tools"><button type="button" id="open-wardrobe" hidden class="wardrobe-open"><span class="wardrobe-preview" id="wardrobe-mini" aria-hidden="true"></span>我的造型</button><div class="language-switch" role="group" aria-label="Language / 語言" data-i18n-ignore><button type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button><button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button></div><div class="wallet-box"><div class="wallet">
       <i class="fa-solid fa-coins wallet-coin" aria-hidden="true"></i><span class="label">餘額</span>
       <span class="amount" id="balance">0</span><span class="unit">點</span><script>try{var b=parseInt(localStorage.getItem('crush-depth-balance'),10);if(localStorage.getItem('deep-sea-balance-zero-v1')==='1'&&isFinite(b)&&b>=0)document.getElementById('balance').textContent=b.toLocaleString('zh-TW')}catch(e){}</script>
-    </div></div><button class="top-icon-btn" type="button" aria-label="通知" title="通知"><i class="fa-solid fa-bell" aria-hidden="true"></i></button><div class="account"><button class="member-link" id="account-toggle" type="button" aria-expanded="false" aria-controls="account-menu" aria-label="帳戶" title="帳戶"><i class="fa-solid fa-user" aria-hidden="true"></i></button><div class="account-menu" id="account-menu" hidden><a class="account-head" href="#member"><span class="account-name" data-i18n-ignore>Chloe</span><span class="account-sub"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>Demo · 虛擬點數</span><i class="fa-solid fa-chevron-right account-arrow" aria-hidden="true"></i></a><div class="account-points"><div class="account-points-row"><span>點數餘額</span><span><span id="account-balance">0</span> 點</span></div><p class="regen-hint">點數可兌換外觀</p></div><nav class="account-links" aria-label="帳戶"><a href="#member"><i class="fa-solid fa-user" aria-hidden="true"></i>會員中心</a><a href="#wardrobe"><i class="fa-solid fa-shirt" aria-hidden="true"></i>我的造型</a><a href="#lobby" id="account-board"><i class="fa-solid fa-trophy" aria-hidden="true"></i>排行榜</a><hr><button type="button" id="account-settings"><i class="fa-solid fa-gear" aria-hidden="true"></i>設定</button><hr><button type="button" class="account-logout" id="account-logout"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>登出</button></nav></div></div></div>
+    </div></div><button class="top-icon-btn" type="button" aria-label="通知" title="通知"><i class="fa-solid fa-bell" aria-hidden="true"></i></button><div class="account"><button class="member-link" id="account-toggle" type="button" aria-expanded="false" aria-controls="account-menu" aria-label="帳戶" title="帳戶"><i class="fa-solid fa-user" aria-hidden="true"></i></button><div class="account-menu" id="account-menu" hidden><a class="account-head" href="#member"><span class="account-name" data-i18n-ignore>Chloe</span><span class="account-sub"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>Demo · 虛擬點數</span><i class="fa-solid fa-chevron-right account-arrow" aria-hidden="true"></i></a><div class="account-points"><div class="account-points-row"><span>點數餘額</span><span><span id="account-balance">0</span> 點</span></div><div class="account-bar"><span id="account-bar"></span></div><p class="account-goal" id="account-goal"></p></div><nav class="account-links" aria-label="帳戶"><a href="#member"><i class="fa-solid fa-user" aria-hidden="true"></i>會員中心</a><a href="#wardrobe"><i class="fa-solid fa-shirt" aria-hidden="true"></i>我的造型</a><a href="#lobby" id="account-board"><i class="fa-solid fa-trophy" aria-hidden="true"></i>排行榜</a><hr><button type="button" id="account-settings"><i class="fa-solid fa-gear" aria-hidden="true"></i>設定</button><hr><button type="button" class="account-logout" id="account-logout"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>登出</button></nav></div></div></div>
   </header>
 
   <div class="game-toolbar"><a class="back-lobby" href="#lobby"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i>遊戲大廳</a>
@@ -8211,7 +8218,11 @@ html.frontier-immersive{overflow:hidden}
   "設定": "Settings",
   "登出": "Log out",
   "通知": "Notifications",
-  "搜尋": "Search"
+  "搜尋": "Search",
+  "可以兌換：": "Ready to redeem: ",
+  "下一個外觀：": "Next cosmetic: ",
+  "（還差": " (need",
+  "外觀已全部收藏": "All cosmetics collected"
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -21579,7 +21590,9 @@ function ftBuilding(b,w){
  window.deepSeaWardrobe={
   init:function(){ready=true;try{data=read();paint();}catch(e){data=fresh();paint();message('收藏讀取失敗，原資料已保留。');}},
   refresh:function(){if(ready)try{data=read();paint();}catch(e){}},
-  open:function(){location.hash='wardrobe';}
+  open:function(){location.hash='wardrobe';},
+  // read-only: the next unowned item (cheapest first), for the header points bar
+  nextGoal:function(){var owned=[];try{owned=read().owned;}catch(e){}var left=items.filter(function(x){return owned.indexOf(x.id)<0;}).sort(function(a,b){return a.price-b.price;});return left[0]?{name:left[0].name,price:left[0].price}:null;}
  };
  items.forEach(function(item){var card=document.createElement('article');card.className='wardrobe-item';card.innerHTML='<i class="fa-solid '+item.icon+' wardrobe-icon" aria-hidden="true"></i><h4>'+item.name+'</h4><p>'+({hat:'帽子',jacket:'服裝',friend:'跟隨配件'}[item.slot])+'</p><button type="button" id="wardrobe-buy-'+item.id+'"></button>';$('wardrobe-items').appendChild(card);$('wardrobe-buy-'+item.id).addEventListener('click',function(){purchase(item.id);});});
  document.querySelectorAll('[data-wardrobe-default]').forEach(function(b){b.addEventListener('click',function(){locked(function(d){d.equipped[b.dataset.wardrobeDefault]=null;write(d);paint();});});});
@@ -21654,6 +21667,13 @@ function ftBuilding(b,w){
     var button = $('account-toggle'), menu = $('account-menu'), timer = 0;
     function sync() {
       $('account-balance').textContent = fmt(S.balance);
+      // bar = progress toward the cheapest cosmetic not owned yet
+      var goal = window.deepSeaWardrobe && window.deepSeaWardrobe.nextGoal ? window.deepSeaWardrobe.nextGoal() : null;
+      $('account-bar').parentNode.hidden = !goal;
+      if (goal) {
+        $('account-bar').style.width = Math.min(100, S.balance / goal.price * 100) + '%';
+        $('account-goal').textContent = S.balance >= goal.price ? '可以兌換：' + goal.name : '下一個外觀：' + goal.name + '（還差 ' + fmt(goal.price - S.balance) + ' 點）';
+      } else $('account-goal').textContent = '外觀已全部收藏';
     }
     function setOpen(open) {
       menu.hidden = !open; button.setAttribute('aria-expanded', open ? 'true' : 'false');

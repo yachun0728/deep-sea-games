@@ -512,3 +512,10 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 .side-quick-item{overflow:hidden}
 .side-quick-item svg,.side-quick-item img{width:84%;height:84%;object-fit:contain;display:block}
 .side-quick-item img[src*="cover.webp"]{width:100%;height:100%;object-fit:cover}
+/* account menu: progress toward the next cosmetic */
+.account-bar{height:6px;margin:10px 0 8px;border-radius:99px;background:var(--tc-active);overflow:hidden}
+.account-bar[hidden]{display:none}
+.account-bar span{display:block;height:100%;width:0;border-radius:inherit;background:var(--tc-primary);transition:width .3s}
+.account-goal{margin:0 0 4px;color:#fff;font-size:13px}
+.account-points .regen-hint{color:var(--tc-muted)}
+@media(prefers-reduced-motion:reduce){.account-bar span{transition:none}}

@@ -66,7 +66,9 @@
  window.deepSeaWardrobe={
   init:function(){ready=true;try{data=read();paint();}catch(e){data=fresh();paint();message('收藏讀取失敗，原資料已保留。');}},
   refresh:function(){if(ready)try{data=read();paint();}catch(e){}},
-  open:function(){location.hash='wardrobe';}
+  open:function(){location.hash='wardrobe';},
+  // read-only: the next unowned item (cheapest first), for the header points bar
+  nextGoal:function(){var owned=[];try{owned=read().owned;}catch(e){}var left=items.filter(function(x){return owned.indexOf(x.id)<0;}).sort(function(a,b){return a.price-b.price;});return left[0]?{name:left[0].name,price:left[0].price}:null;}
  };
  items.forEach(function(item){var card=document.createElement('article');card.className='wardrobe-item';card.innerHTML='<i class="fa-solid '+item.icon+' wardrobe-icon" aria-hidden="true"></i><h4>'+item.name+'</h4><p>'+({hat:'帽子',jacket:'服裝',friend:'跟隨配件'}[item.slot])+'</p><button type="button" id="wardrobe-buy-'+item.id+'"></button>';$('wardrobe-items').appendChild(card);$('wardrobe-buy-'+item.id).addEventListener('click',function(){purchase(item.id);});});
  document.querySelectorAll('[data-wardrobe-default]').forEach(function(b){b.addEventListener('click',function(){locked(function(d){d.equipped[b.dataset.wardrobeDefault]=null;write(d);paint();});});});
