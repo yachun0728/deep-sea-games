@@ -33,12 +33,31 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 
 部署這版時先套用第三個 D1 migration，再部署 Worker，最後發布前端。回退時可先回退前端，再回退 Worker，保留既有回合及排行榜資料。
 
-## 踩地雷訪客成績
+## 使用 SDK 加入排行榜
 
-- `POST /api/v1/mines/rounds` 用既有訪客 bearer token 開立標準 5×5／3 雷棋盤。
-- `POST /api/v1/mines/rounds/move` 接收 `{id,revision,action,cell}`。`action` 為 `open` 或 `flag`，`cell` 為 0～24。Worker 回傳遮蔽後的棋盤、已翻安全格與結果，未翻的地雷保留在伺服器。相同版本與動作重送時回傳已套用的棋盤，其他過期版本拒絕。
-- `0004_mines_ranked_rounds.sql` 在同次寫入結算及更新 `best_scores`，以已翻安全格數降序，同分先達成者優先。回合限 30 分鐘、500 次有效操作。其他棋盤維持本機玩法。
-- 部署順序為 `0004`、Worker、前端。回退前端再回退 Worker，可保留 `mines_rounds` 與榜單資料。
+1. 在既有開局和結算接上 `frontend/services/api.mjs`。SDK 使用共用訪客身分及正式 API 網址。通用回合使用 `startBoardRound(gameId, signal)` 和 `moveBoardRound(token, move, signal)`，可參照深海連連看或 `js/timed-leaderboard.js` 的實際呼叫。
+2. 在 Worker 註冊該遊戲的對局驗證，從合法操作計算成績。大廳會從公開排行榜 feed 讀取分數。單款名次可用 `createApiClient(arcadeApiOrigin()).leaderboard(gameId)`。
+3. 用本機 Worker 和 D1 跑一局，確認合法結算入榜，直接填分與重送依契約處理。新增遊戲的顯示及發布驗收見 [新增遊戲必接訪客排行榜](../README.md#新增遊戲必接訪客排行榜)。
+
+### 踩地雷訪客成績
+
+踩地雷使用同一支 SDK 的專用介面。
+
+```js
+import { startMinesRound, moveMinesRound } from './frontend/services/api.mjs';
+
+const round = await startMinesRound(signal);
+const next = await moveMinesRound(round.token, {
+  id: round.id,
+  revision: round.revision,
+  action: 'open',
+  cell: 0,
+}, signal);
+```
+
+每步使用最新回傳的 `revision`。`open` 用於翻格和快開，`flag` 切換旗子。Worker 在標準 5×5／3 雷棋盤判定每步，回應中只含已翻開的安全格數字、玩家旗子及回合狀態。勝負後也不傳雷位。相同版本及動作可安全重送。
+
+只有通關才使用既有 D1 trigger 更新訪客榜。標準棋盤通關為 22 分，既有榜單保留。回合限 30 分鐘、500 次有效操作，其他棋盤在本機遊玩。本次沿用正式 D1 表與 triggers，可先部署 Worker 再發布前端，無新增 migration。
 
 ## 既有遊戲的串接分組
 

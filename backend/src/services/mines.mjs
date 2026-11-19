@@ -7,8 +7,8 @@ const random = () => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
 
 function snapshot(id, revision, board, flagLimit = false) {
   const visible = Array.from({ length: board.size ** 2 }, (_, cell) => {
-    if (!board.result && !board.open[cell]) return board.flags[cell] ? 'flag' : null;
-    return board.layout[cell] ? 'mine' : minesRules.number(board, cell);
+    if (board.open[cell] && !board.layout[cell]) return minesRules.number(board, cell);
+    return board.flags[cell] ? 'flag' : null;
   });
   return { id, revision, visible, picks: board.picks, result: board.result, flagLimit };
 }
@@ -71,12 +71,13 @@ export async function applyMinesMove(db, playerId, move) {
   }
 
   const board = JSON.parse(prior.board);
+  if (board.result) return { error: 'stale_move', status: 409 };
   const outcome = minesRules.move(board, action, cell);
   if (outcome !== true) return snapshot(id, revision, board, outcome === 'flag-limit');
 
   const saved = await db.prepare(
     'UPDATE mines_rounds SET board = ?, revision = revision + 1, last_move = ?, score = ? WHERE id = ? AND player_id = ? AND revision = ? AND score IS NULL RETURNING board, revision',
-  ).bind(JSON.stringify(board), key, board.result ? board.picks : null, id, playerId, revision).first();
+  ).bind(JSON.stringify(board), key, board.result === 'win' ? board.picks : null, id, playerId, revision).first();
   if (saved) return response(saved);
   const current = await query.first();
   return isRetry(current) ? response(current) : { error: 'stale_move', status: 409 };

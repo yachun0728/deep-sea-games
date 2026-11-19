@@ -68,7 +68,7 @@ python3 -m http.server 8765
 6. 用正常操作完成至少一局，核對畫面分數、Worker 結算、D1 紀錄、單款 API 與大廳最高分。驗證同分先到、較低分、重送、偽造分數、錯誤訪客、非法操作、空榜及網路失敗。完成桌面與 390px、繁中與英文、直接 hash、離頁與背景恢復檢查。
 7. PR 附遊戲 ID、驗證器位置、計分規則、測試指令與結果、migration 需求、未驗證事項及回復方式。依序套用需要的 D1 migration、部署 Worker、部署前端，再用正式站實際對局確認。
 
-驗收細項見 [訪客排行榜上線檢查](RELEASE_CHECKLIST.md#訪客排行榜)，現有 API 與範例見 [後端說明](docs/BACKEND.md)。`tools/build.py` 目前檢查來源組合與 catalog，排行榜串接須由上架者依本節完成並實測。
+驗收細項見 [訪客排行榜上線檢查](RELEASE_CHECKLIST.md#訪客排行榜)，接入步驟與踩地雷程式碼範例見 [使用 SDK 加入排行榜](docs/BACKEND.md#使用-sdk-加入排行榜)。`tools/build.py` 目前檢查來源組合與 catalog，排行榜串接須由上架者依本節完成並實測。
 
 ## 來源拆分的驗證與回復
 
