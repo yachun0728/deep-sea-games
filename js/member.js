@@ -19,8 +19,11 @@
     var icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
     icon.setAttribute('viewBox', '0 0 96 96'); icon.setAttribute('aria-hidden', 'true'); use.setAttribute('href', '#icon-' + id); icon.appendChild(use); return icon;
   }
-  var boardRequest = null;
-  var boardGame = $('board-game');
+  // Leaderboard: every game with server-verified scores, merged into one table. Add a game here once
+  // its scores are verified by the backend (backend/src/routes/api.mjs).
+  var BOARD_GAMES = ['frog', 'mines'];
+  var BOARD_ROWS = 8, BOARD_TICK = 2500;
+  var boardRequest = null, boardTimer = 0, boardPool = [], boardTurn = 0, boardCursor = {};
   var boardRetry = $('board-retry');
 
   function boardRow(gameId, entry) {
@@ -51,24 +54,41 @@
     boardRetry.hidden = !retry;
   }
 
+  // Each tick, the next game (round robin) puts its next best score at the top of the table.
+  function boardTick() {
+    if (document.hidden || $('view-lobby').hidden || !boardPool.length) return;
+    var pick = boardPool[boardTurn % boardPool.length]; boardTurn++;
+    var i = boardCursor[pick.gameId] || 0; boardCursor[pick.gameId] = (i + 1) % pick.entries.length;
+    var body = $('board-rows'), row = boardRow(pick.gameId, pick.entries[i]);
+    row.className = 'is-new'; body.insertBefore(row, body.firstChild);
+    while (body.children.length > BOARD_ROWS) body.removeChild(body.lastChild);
+  }
+
   async function boardLoad() {
     if (boardRequest) boardRequest.abort();
+    clearInterval(boardTimer); boardTimer = 0;
     var request = new AbortController();
     boardRequest = request;
-    var gameId = boardGame.value;
     var body = $('board-rows');
     body.replaceChildren();
     boardStatus('載入排行榜中…');
     var timeout = setTimeout(function () { request.abort(); }, 10000);
     try {
       var module = await import('./frontend/services/api.mjs');
-      var result = await module.createApiClient(module.arcadeApiOrigin()).leaderboard(gameId, request.signal);
+      var client = module.createApiClient(module.arcadeApiOrigin());
+      var games = BOARD_GAMES.filter(function (id) { return Object.hasOwn(VIEWS, id); });
+      var results = await Promise.all(games.map(function (id) { return client.leaderboard(id, request.signal); }));
       if (boardRequest !== request) return;
-      if (result.gameId !== gameId || !Array.isArray(result.entries)) throw new Error('invalid_leaderboard');
-
-      var rows = result.entries.map(function (entry) { return boardRow(gameId, entry); });
-      body.replaceChildren(...rows);
-      boardStatus(rows.length ? '' : '這款遊戲尚無排行榜紀錄。');
+      boardPool = results.filter(function (r) { return r && Array.isArray(r.entries) && r.entries.length; })
+        .map(function (r) { return { gameId: r.gameId, entries: r.entries }; });
+      boardTurn = 0; boardCursor = {};
+      // start with every game's scores together, highest first
+      var all = [];
+      boardPool.forEach(function (g) { g.entries.forEach(function (e) { all.push({ gameId: g.gameId, entry: e }); }); });
+      all.sort(function (x, y) { return y.entry.score - x.entry.score; });
+      body.replaceChildren.apply(body, all.slice(0, BOARD_ROWS).map(function (x) { return boardRow(x.gameId, x.entry); }));
+      boardStatus(all.length ? '' : '目前尚無排行榜紀錄。');
+      if (all.length) boardTimer = setInterval(boardTick, BOARD_TICK);
     } catch (error) {
       if (boardRequest === request) boardStatus('目前無法載入排行榜。', true);
     } finally {
@@ -81,22 +101,12 @@
     if (!on) {
       if (boardRequest) boardRequest.abort();
       boardRequest = null;
+      clearInterval(boardTimer); boardTimer = 0;
       return;
     }
-    if (!boardGame.options.length) {
-      document.querySelectorAll('.lobby-grid .game-card:not([data-game-hidden])').forEach(function (card) {
-        var gameId = card.hash.slice(1);
-        if (Object.hasOwn(VIEWS, gameId)) boardGame.add(new Option(memberGameName(gameId), gameId));
-      });
-      if (Array.from(boardGame.options).some(function (option) { return option.value === 'frog'; })) {
-        boardGame.value = 'frog';
-      }
-    }
-    if (boardGame.value) boardLoad();
-    else boardStatus('這款遊戲尚無排行榜紀錄。');
+    boardLoad();
   }
 
-  boardGame.addEventListener('change', boardLoad);
   boardRetry.addEventListener('click', boardLoad);
 
   function memberRender() {
