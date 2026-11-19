@@ -7,7 +7,7 @@
 - 網址：`#mosquito`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。」｜立即開玩 · 按住吸血
 - 追蹤名稱（GA4 `game_name`）：血壓上升，`game_id` 為 `mosquito`
-- 檔案：`games/mosquito/card.html`、`games/mosquito/game.js`、`games/mosquito/icon.svg`、`games/mosquito/view.html`；`game.js` 共 437 行、24.4 KB
+- 檔案：`games/mosquito/card.html`、`games/mosquito/cover.webp`、`games/mosquito/game.js`、`games/mosquito/icon.svg`、`games/mosquito/view.html`；`game.js` 共 437 行、24.4 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「35. 血壓上升 Midnight Mosquito（mosquito）」（下方「規則摘要」已複製）
 
