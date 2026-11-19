@@ -15,7 +15,7 @@
     w.gtag('config',ID,{allow_google_signals:false,allow_ad_personalization_signals:false,debug_mode:debug});
     var tag=d.createElement('script');tag.async=true;tag.src='https://www.googletagmanager.com/gtag/js?id='+ID;d.head.appendChild(tag);
   }
-  var names={frontier:'荒島遠征','ocean-link':'深海連連看',blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班','eat-smaller':'數字吞噬','mirror-twins':'鏡像雙子','shadow-relay':'影子接力','one-line-defense':'一筆畫守城',mermaid:'人魚接龍',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面','rocket-chair':'社畜要下班',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看',banquet:'最後的晚餐',tetris:'俄羅斯方塊'};
+  var names={'market-desk':'收盤之前',frontier:'荒島遠征','ocean-link':'深海連連看',blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班','eat-smaller':'數字吞噬','mirror-twins':'鏡像雙子','shadow-relay':'影子接力','one-line-defense':'一筆畫守城',mermaid:'人魚接龍',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面','rocket-chair':'社畜要下班',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看',banquet:'最後的晚餐',tetris:'俄羅斯方塊'};
   var rounds={},current='',seq=0,bucket=0,last=performance.now(),inputAt=last,visible=!d.hidden,focused=d.hasFocus?d.hasFocus():true,suspended=false;
   var tabToken=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
   function emit(event,game,params){
@@ -1854,6 +1854,339 @@ body.ol-expanded { overflow: hidden; }
 .bq-menu.is-dim{filter:brightness(.76) saturate(.85);transition:filter 1.2s ease}
 @media(prefers-reduced-motion:reduce){.bq-dark.is-on,.bq-dark.is-on::after,.bq-menu.is-open::after,.bq-menu.is-open .bq-menu-dealer{animation:none}.bq-dark.is-on{opacity:.8}}
 
+html[lang="en"] #site-shell:has(#tab-market-desk[aria-current]) #game-name > span { display: none; }
+
+#view-market-desk .market-shell {
+  --ink: #f2f4f6;
+  --muted: #a7b2c1;
+  --line: #2a3443;
+  --amber: #ffce73;
+  --up: #ff7079;
+  --down: #54e2a7;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: clamp(12px, 3vw, 28px);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  color: var(--ink);
+  background: #0e131d;
+}
+
+#view-market-desk .market-header, #view-market-desk .market-header-actions,
+#view-market-desk .market-quote, #view-market-desk .market-index {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#view-market-desk .market-header { justify-content: space-between; flex-wrap: wrap; margin-bottom: 14px; }
+#view-market-desk h2 { margin: 0; font-size: clamp(1.25rem, 3vw, 1.85rem); }
+#view-market-desk .market-day { color: var(--amber); font: 700 .82rem ui-monospace, monospace; }
+#view-market-desk .market-sound {
+  min-height: 40px;
+  padding: 6px 12px;
+  background: #202a37;
+  color: var(--ink);
+  border: 1px solid #415062;
+  border-radius: 8px;
+  font: inherit;
+  cursor: pointer;
+}
+#view-market-desk .market-sound[aria-pressed="true"] { background: var(--amber); border-color: var(--amber); color: #211808; }
+#view-market-desk :focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
+
+#view-market-desk .market-exchange {
+  --move: var(--ink);
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 75% 0%, #182432, transparent 60%), #080d16;
+  border: 1px solid #344359;
+  border-radius: 14px;
+  padding: clamp(12px, 2.4vw, 22px);
+  margin-bottom: 14px;
+}
+#view-market-desk [data-move="up"] { --move: var(--up); }
+#view-market-desk [data-move="down"] { --move: var(--down); }
+#view-market-desk .market-quote { justify-content: space-between; align-items: flex-start; gap: 12px 26px; }
+#view-market-desk .market-index { flex-wrap: wrap; align-items: baseline; gap: 3px 14px; }
+#view-market-desk .market-index p { flex-basis: 100%; margin: 0; color: var(--muted); font-size: .83rem; }
+#view-market-desk .market-index strong {
+  font: 800 clamp(2.15rem, 6vw, 4.4rem)/1 ui-monospace, monospace;
+  letter-spacing: -.08em;
+  color: var(--move);
+}
+#view-market-desk .market-change { color: var(--move); font: 700 clamp(.78rem, 2vw, 1rem) ui-monospace, monospace; white-space: nowrap; }
+#view-market-desk .market-risk {
+  flex: 0 1 200px;
+  min-width: 120px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 4px 8px;
+  color: var(--muted);
+  font-size: .83rem;
+}
+#view-market-desk .market-risk strong { color: var(--ink); font: 800 1rem ui-monospace, monospace; }
+#view-market-desk .market-risk meter { grid-column: 1 / -1; width: 100%; height: 13px; }
+#view-market-desk .market-risk meter::-webkit-meter-bar { background: #263143; border: 0; }
+#view-market-desk .market-risk meter::-webkit-meter-optimum-value { background: #80b0ff; }
+#view-market-desk .market-risk meter::-webkit-meter-suboptimum-value { background: var(--amber); }
+#view-market-desk .market-risk-low strong, #view-market-desk .market-risk span { color: var(--amber); }
+#view-market-desk .market-risk span { grid-column: 1 / -1; font-weight: 700; }
+
+#view-market-desk .market-plot { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; margin-top: 14px; }
+#view-market-desk .market-chart {
+  height: clamp(112px, 18vw, 220px);
+  display: flex;
+  gap: clamp(2px, .85vw, 11px);
+  padding-inline: 3px;
+  border-bottom: 1px solid #354255;
+  background:
+    repeating-linear-gradient(to right, #253042 0 1px, transparent 1px 10%),
+    repeating-linear-gradient(to top, #253042 0 1px, transparent 1px 25%);
+}
+#view-market-desk .market-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: var(--muted);
+  font: .73rem ui-monospace, monospace;
+}
+#view-market-desk .market-candle { flex: 1; min-width: 0; position: relative; }
+#view-market-desk .market-candle.market-up { color: var(--up); }
+#view-market-desk .market-candle.market-down { color: var(--down); }
+#view-market-desk .market-candle::before, #view-market-desk .market-candle::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+#view-market-desk .market-candle::before { left: calc(50% - 1px); width: 2px; bottom: var(--low); height: var(--wick); }
+#view-market-desk .market-candle::after { left: 15%; width: 70%; bottom: var(--body-low); height: max(2px, var(--body)); border-radius: 2px; }
+#view-market-desk .market-chart-footer { display: flex; justify-content: space-between; color: var(--muted); font: .72rem ui-monospace, monospace; padding-top: 6px; }
+
+#view-market-desk .market-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+#view-market-desk .market-paper, #view-market-desk .market-brief {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #151d29;
+  padding: clamp(14px, 2.5vw, 26px);
+}
+#view-market-desk .market-paper h3 { margin: 0; font-size: clamp(1.22rem, 3vw, 1.9rem); line-height: 1.25; }
+#view-market-desk .market-paper p { color: #d3dbe4; line-height: 1.55; margin: 10px 0 16px; }
+#view-market-desk .market-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+#view-market-desk .market-paper button {
+  min-height: 46px;
+  padding: 8px 13px;
+  border: 1px solid #ffce73;
+  border-radius: 8px;
+  background: var(--amber);
+  color: #261b09;
+  text-align: left;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+#view-market-desk .market-actions button { background: #1f2b3d; color: var(--ink); border-color: #42536a; }
+#view-market-desk .market-actions button:hover { border-color: var(--amber); background: #29374d; }
+
+#view-market-desk .market-settling {
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid #916d3a;
+  border-radius: 8px;
+  color: var(--amber);
+  background: #2e2518;
+  font-weight: 750;
+}
+#view-market-desk .market-reveal {
+  margin: 12px 0;
+  padding: 13px 16px;
+  border-left: 4px solid var(--move);
+  border-radius: 8px;
+  background: #0a111b;
+  box-shadow: inset 0 0 38px color-mix(in srgb, var(--move) 10%, transparent);
+}
+#view-market-desk .market-reveal strong { display: block; color: var(--move); font-size: clamp(1.1rem, 3vw, 1.42rem); }
+#view-market-desk .market-reveal p { margin: 6px 0 0; }
+#view-market-desk .market-reveal .market-result-move {
+  margin: 0 0 5px;
+  color: var(--move);
+  font: 850 clamp(1.9rem, 5vw, 3.25rem)/1.1 ui-monospace, monospace;
+  letter-spacing: -.06em;
+}
+#view-market-desk .market-brief dl { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 0 0 16px; }
+#view-market-desk .market-brief dt, #view-market-desk .market-tape-label { color: var(--muted); font-size: .8rem; }
+#view-market-desk .market-brief dd { margin: 0; font: 750 1.45rem ui-monospace, monospace; }
+#view-market-desk .market-tape { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 3px; margin: 7px 0 14px; }
+#view-market-desk .market-tape span { height: 16px; border-radius: 2px; background: #354255; }
+#view-market-desk .market-tape .market-pass { background: var(--up); }
+#view-market-desk .market-tape .market-miss { background: var(--down); height: 8px; align-self: end; }
+#view-market-desk details { color: #cdd7e4; font-size: .85rem; line-height: 1.55; }
+#view-market-desk summary { cursor: pointer; }
+#view-market-desk [hidden] { display: none; }
+
+@media (min-width: 1021px) and (orientation: landscape) and (pointer: fine) {
+  #view-market-desk .market-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 14px;
+  }
+  #view-market-desk .market-header { grid-column: 1 / -1; margin-bottom: 0; }
+  #view-market-desk .market-exchange { margin-bottom: 0; }
+  #view-market-desk .market-chart { height: clamp(130px, 15vw, 188px); }
+  #view-market-desk .market-actions { grid-template-columns: minmax(0, 1fr); }
+  #view-market-desk .market-quote { flex-wrap: wrap; }
+  #view-market-desk .market-risk { flex-basis: 100%; }
+}
+@media (max-width: 650px) {
+  #view-market-desk .market-actions { grid-template-columns: minmax(0, 1fr); }
+  #view-market-desk .market-quote { gap: 8px; }
+  #view-market-desk .market-risk { flex-basis: 122px; min-width: 104px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #view-market-desk .market-matching::after {
+    content: "";
+    position: absolute;
+    height: 2px;
+    inset: auto 0 0;
+    background: var(--amber);
+    transform-origin: left;
+    animation: market-match .48s linear both;
+  }
+  #view-market-desk .market-settled { animation: market-close-pulse .65s ease-out; }
+  #view-market-desk .market-settled .market-candle:last-child { animation: market-candle-pop .4s cubic-bezier(.15,.8,.3,1); }
+  #view-market-desk .market-reveal[data-move="up"] { animation: market-reveal-rise .42s ease-out; }
+  #view-market-desk .market-reveal[data-move="down"] { animation: market-reveal-jolt .36s ease-out; }
+}
+@keyframes market-match { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes market-close-pulse {
+  from { border-color: var(--move); box-shadow: inset 0 0 28px color-mix(in srgb, var(--move) 35%, transparent); }
+  to { box-shadow: inset 0 0 0 transparent; }
+}
+@keyframes market-candle-pop {
+  from { opacity: .25; transform: scaleY(.2); }
+  to { opacity: 1; transform: scaleY(1); }
+}
+@keyframes market-reveal-rise {
+  from { opacity: .3; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes market-reveal-jolt {
+  0% { transform: translateX(-5px); }
+  25% { transform: translateX(5px); }
+  50% { transform: translateX(-3px); }
+  75% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+#view-market-desk .market-character {
+  --life-accent: #a7baff;
+  --life-surface: #171e3a;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 44% minmax(0, 1fr);
+  align-items: center;
+  min-height: 156px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  border: 1px solid color-mix(in srgb, var(--life-accent) 36%, var(--line));
+  border-radius: 14px;
+  background: linear-gradient(105deg, #101622, var(--life-surface));
+}
+#view-market-desk .market-character[data-life="strained"] { --life-accent: #91cfca; --life-surface: #172f35; }
+#view-market-desk .market-character[data-life="crisis"] { --life-accent: #f8a599; --life-surface: #362029; }
+#view-market-desk .market-character[data-life="rising"] { --life-accent: #ffca87; --life-surface: #392832; }
+#view-market-desk .market-character[data-life="penthouse"] { --life-accent: #ffe4a3; --life-surface: #4a3521; }
+#view-market-desk .market-character img {
+  display: block;
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 49%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 42%;
+  mask-image: linear-gradient(to right, #000 83%, transparent);
+}
+#view-market-desk .market-character-copy { grid-column: 2; position: relative; padding: 13px clamp(10px, 2vw, 22px) 14px 10px; }
+#view-market-desk .market-character-name { color: var(--life-accent); margin: 0 0 4px; font-size: .78rem; font-weight: 750; }
+#view-market-desk .market-character h3 { margin: 0; font-size: clamp(1.08rem, 2.3vw, 1.7rem); line-height: 1.2; }
+#view-market-desk #mk-life-story { margin: 6px 0 0; color: #e0e4ee; font-size: .84rem; line-height: 1.45; }
+@media (max-width: 1020px), (pointer: coarse) {
+  #view-market-desk .market-shell { max-width: 500px; }
+  #view-market-desk .market-actions { grid-template-columns: minmax(0, 1fr); }
+  #view-market-desk .market-character { min-height: 128px; margin-bottom: 10px; }
+  #view-market-desk .market-plot { margin-top: 10px; }
+  #view-market-desk .market-chart { height: 86px; }
+  #view-market-desk .market-actions button { min-height: 48px; }
+}
+@media (min-width: 1021px) and (orientation: landscape) and (pointer: fine) {
+  #view-market-desk .market-character { grid-template-columns: min(40%, 206px) minmax(0, 1fr); }
+  #view-market-desk .market-character img { width: min(45%, 232px); object-position: 50% 18%; }
+}
+
+#view-market-desk .market-character[data-shift="up"], #view-market-desk .market-life-shift[data-shift="up"] { --shift-ink: #ffdd94; --shift-bg: #49351f; }
+#view-market-desk .market-character[data-shift="down"], #view-market-desk .market-life-shift[data-shift="down"] { --shift-ink: #a4dddb; --shift-bg: #163237; }
+#view-market-desk .market-reveal .market-life-shift {
+  width: fit-content;
+  max-width: 100%;
+  margin: 5px 0 7px;
+  padding: 4px 10px;
+  border: 1px solid var(--shift-ink);
+  border-radius: 5px;
+  background: var(--shift-bg);
+  color: var(--shift-ink);
+  font-size: .81rem;
+  font-weight: 800;
+}
+@media (prefers-reduced-motion: no-preference) {
+  #view-market-desk .market-character[data-shift]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--shift-bg);
+    animation: market-scene-curtain .76s ease-out both;
+  }
+  #view-market-desk .market-character[data-shift="down"]::after {
+    background: #0b141c;
+    animation-name: market-scene-curtain-down;
+  }
+  #view-market-desk .market-character[data-shift] img { animation: market-scene-portrait .76s ease-out both; }
+  #view-market-desk .market-life-shift:not([hidden]) { animation: market-scene-label .6s ease-out both; }
+}
+@keyframes market-scene-curtain {
+  0% { clip-path: inset(0 0 0 0); }
+  22% { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 0 100%); }
+}
+@keyframes market-scene-curtain-down {
+  0% { clip-path: inset(0 0 0 0); }
+  22% { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(100% 0 0 0); }
+}
+@keyframes market-scene-portrait {
+  from { transform: scale(1.12); }
+  to { transform: scale(1); }
+}
+@keyframes market-scene-label {
+  from { opacity: .25; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#view-market-desk .market-quote { flex-wrap: wrap; }
+#view-market-desk .market-benchmark {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 9px;
+  color: var(--muted);
+  font: .82rem ui-monospace, monospace;
+}
+#view-market-desk .market-benchmark strong { color: var(--ink); font-size: 1.08rem; }
+#view-market-desk #mk-market-change { color: var(--move); }
+#view-market-desk [data-move="mixed"] { --move: var(--amber); }
+#view-market-desk .market-reveal .market-market-recap { color: var(--muted); font-size: .84rem; }
 #view-frontier{--ft-ink:#e9eddc;--ft-line:#ffffff1a;--ft-gold:#efce8b;color:var(--ft-ink)}
 #view-frontier .ft-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px;align-items:start}
 #view-frontier .ft-main{min-width:0;background:#142c2c;border:1px solid var(--ft-line);border-radius:20px;overflow:hidden;box-shadow:0 20px 60px #0003}
@@ -2065,6 +2398,7 @@ html.frontier-immersive{overflow:hidden}
     <a href="#frog" id="tab-frog">青蛙吃蟲<small>Frog Snack</small></a>
     <a href="#ocean-link" id="tab-ocean-link">深海連連看<small>Ocean Link</small></a><a href="#clock-out" id="tab-clock-out">下班保衛戰<small>Clock Out</small></a><a href="#peek" id="tab-peek">別看<small>Don’t Peek</small></a><a href="#pet-walk" id="tab-pet-walk">小灰出門<small>Pet Walkies</small></a><a href="#office-shoot" id="tab-office-shoot">拒絕加班<small>No Overtime!</small></a><a href="#eat-smaller" id="tab-eat-smaller">數字吞噬<small>Number Gulp</small></a><a href="#mirror-twins" id="tab-mirror-twins">鏡像雙子<small>Mirror Twins</small></a><a href="#shadow-relay" id="tab-shadow-relay">影子接力<small>Shadow Relay</small></a><a href="#one-line-defense" id="tab-one-line-defense">一筆畫守城<small>One-Line Defense</small></a><a href="#mermaid" id="tab-mermaid">人魚接龍<small>Mermaid Spider</small></a><a href="#tetris" id="tab-tetris">俄羅斯方塊<small>Block Drop</small></a><a href="#breakout" id="tab-breakout">打磚塊<small>Breakout</small></a>
     <a href="#nap" id="tab-nap">偷睡大師<small>Nap Master</small></a><a href="#pudding" id="tab-pudding">布丁突圍<small>Pudding Dash</small></a><a href="#mosquito" id="tab-mosquito">血壓上升<small>Midnight Mosquito</small></a><a href="#banquet" id="tab-banquet">最後的晚餐<small>The Last Banquet</small></a><a href="#last-hair" id="tab-last-hair">尊嚴保衛戰<small>The Last Hair</small></a>
+    <a href="#market-desk" id="tab-market-desk">收盤之前<small>Closing Call</small></a>
     <a href="#frontier" id="tab-frontier">荒島遠征<small>Frontier Islands</small></a><a href="#blaster" id="tab-blaster">深海火線<small>Reef Blaster</small></a>
     <a href="#reaper" id="tab-reaper">死神打工<small>Reaper Shift</small></a>
     <a href="#dive" id="tab-dive">一口氣探險<small>One Breath Dive</small></a>
@@ -2084,7 +2418,13 @@ html.frontier-immersive{overflow:hidden}
 
 
   <section class="view lobby-view" id="view-lobby" aria-label="遊戲大廳">
-<svg class="lobby-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-frontier" viewBox="0 0 96 96"><path fill="#254e47" d="M8 65 26 48l48-6 15 24-22 17-39-3z"/><path fill="#8ac687" d="m8 60 19-17 46-7 16 24-23 17-38-3z"/><path fill="#bf9464" d="M32 39h6v26h-6z"/><path fill="#316b4e" d="m35 12-17 31h34z"/><path fill="#e9dfb4" d="M56 38h13v27H56z"/><path fill="#e9a25a" d="m52 40 10-16 12 16z"/><path stroke="#fff4cf" stroke-width="3" d="m62 11 0 11m8-6-5 7m-11-7 5 7"/></symbol>
+<svg class="lobby-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-market-desk" viewBox="0 0 96 96">
+  <rect x="12" y="16" width="72" height="64" rx="12" fill="#13282c" stroke="#88a49b" stroke-width="2"/>
+  <path d="M25 65h46M25 49h46M25 33h46" stroke="#3b5659" stroke-width="2"/>
+  <path d="m25 58 14-12 11 6" fill="none" stroke="#77d8aa" stroke-width="6" stroke-linecap="round"/>
+  <path d="m50 52 21-21m-12 0h12v12" fill="none" stroke="#ff857b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="icon-frontier" viewBox="0 0 96 96"><path fill="#254e47" d="M8 65 26 48l48-6 15 24-22 17-39-3z"/><path fill="#8ac687" d="m8 60 19-17 46-7 16 24-23 17-38-3z"/><path fill="#bf9464" d="M32 39h6v26h-6z"/><path fill="#316b4e" d="m35 12-17 31h34z"/><path fill="#e9dfb4" d="M56 38h13v27H56z"/><path fill="#e9a25a" d="m52 40 10-16 12 16z"/><path stroke="#fff4cf" stroke-width="3" d="m62 11 0 11m8-6-5 7m-11-7 5 7"/></symbol>
 <symbol id="icon-ocean-link" viewBox="0 0 96 96">
   <path d="M28 53v23h42V49" fill="none" stroke="#66e8c2" stroke-width="6" stroke-linejoin="round"/>
   <rect x="9" y="23" width="38" height="38" rx="10" fill="#9bf4dc"/>
@@ -2116,8 +2456,15 @@ html.frontier-immersive{overflow:hidden}
   <span class="gold-banner-cta" id="gold-daily-cta">挖一次 <span aria-hidden="true">↗</span></span>
 </a></section>
     <div class="lobby-tabs-row"><div class="lobby-filters tab-filters" role="group" aria-label="遊戲分類"><button type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div><label class="top-search"><input id="lobby-search" type="search" placeholder="搜尋" aria-label="搜尋遊戲" autocomplete="off"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></label></div>
-    <section class="lobby-games" aria-labelledby="lobby-games-title"><div class="lobby-row-head" id="lobby-games"><h2 id="lobby-games-title"><i class="fa-solid fa-table-cells-large side-head-icon" aria-hidden="true"></i>遊戲 <span id="lobby-count">42 款遊戲</span></h2><button type="button" class="row-all" id="lobby-show-all">查看全部</button></div>
-    <div class="lobby-grid"><a class="game-card" href="#frontier" data-art="cover" style="--cover:url(games/frontier/cover.webp?v=b3a4931c)" data-game-category="puzzle" aria-label="遊玩荒島遠征：五十關採集、建造與戰鬥冒險"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#icon-frontier"></use></svg></div><h3>荒島遠征</h3><p class="game-card-en">Frontier Islands</p><p class="game-card-description">砍出道路，建立據點，挑戰五大區域與五十關考驗。</p><div class="game-card-footer"><span>遠征與續玩不限次數</span><span>50 關 · 自動存檔</span></div></a>
+    <section class="lobby-games" aria-labelledby="lobby-games-title"><div class="lobby-row-head" id="lobby-games"><h2 id="lobby-games-title"><i class="fa-solid fa-table-cells-large side-head-icon" aria-hidden="true"></i>遊戲 <span id="lobby-count">43 款遊戲</span></h2><button type="button" class="row-all" id="lobby-show-all">查看全部</button></div>
+    <div class="lobby-grid"><a class="game-card" href="#market-desk" data-art="cover" style="--cover:url(games/market-desk/cover.webp?v=734f25ab)" data-game-category="puzzle" aria-label="遊玩收盤之前：20 天台股查證挑戰">
+  <div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div>
+  <div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-market-desk"></use></svg></div>
+  <h3>收盤之前</h3><p class="game-card-en">Closing Call</p>
+  <p class="game-card-description">20 個交易日，從台股怪新聞裡挖出可信的消息。</p>
+  <div class="game-card-footer"><span>免費 · 不限次數</span><span>消息查證</span></div>
+</a>
+<a class="game-card" href="#frontier" data-art="cover" style="--cover:url(games/frontier/cover.webp?v=b3a4931c)" data-game-category="puzzle" aria-label="遊玩荒島遠征：五十關採集、建造與戰鬥冒險"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#icon-frontier"></use></svg></div><h3>荒島遠征</h3><p class="game-card-en">Frontier Islands</p><p class="game-card-description">砍出道路，建立據點，挑戰五大區域與五十關考驗。</p><div class="game-card-footer"><span>遠征與續玩不限次數</span><span>50 關 · 自動存檔</span></div></a>
 <a class="game-card" href="#rocket-chair" data-art="cover" style="--cover:url(games/rocket-chair/cover.webp?v=3ccab053)" data-game-category="timing" aria-label="遊玩社畜要下班：對著手機大吼讓火箭椅往上衝，撞破 5 層天花板提早下班"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-rocket-chair"></use></svg></div><h3>社畜要下班</h3><p class="game-card-en">Roar Through the Ceiling</p><p class="game-card-description">對著手機大吼，火箭椅一路撞破天花板提早下班。</p><div class="game-card-footer"><span>立即開玩</span><span>不限次數</span></div></a>
 <a class="game-card" href="#eat-smaller" data-art="cover" style="--cover:url(games/eat-smaller/cover.webp?v=5fdc7434)" data-game-category="puzzle" aria-label="遊玩數字吞噬：吃掉比你小的數字，剛好變成目標數字就過關。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-eat-smaller"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-eat-smaller"></use></svg></div><h3>數字吞噬</h3><p class="game-card-en">Number Gulp</p><p class="game-card-description">吃掉比你小的數字、躲開比你大的，剛好變成目標數字就過關。</p><div class="game-card-footer"><span>立即開玩</span><span>8 關</span></div></a>
 <a class="game-card" href="#mirror-twins" data-art="cover" style="--cover:url(games/mirror-twins/cover.webp?v=268c863d)" data-game-category="puzzle" aria-label="遊玩鏡像雙子：同時操控兩位太空人，其中一位左右相反，一起走進傳送艙。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mirror-twins"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mirror-twins"></use></svg></div><h3>鏡像雙子</h3><p class="game-card-en">Mirror Twins</p><p class="game-card-description">同時操控兩位太空人，其中一位左右相反，一起走進傳送艙。</p><div class="game-card-footer"><span>立即開玩</span><span>10 關</span></div></a>
@@ -2170,6 +2517,94 @@ html.frontier-immersive{overflow:hidden}
   <div class="wardrobe-layout"><div class="wardrobe-profile"><div id="wardrobe-avatar" class="wardrobe-avatar"></div><h3>我的冒險造型</h3><p>外觀不影響遊戲能力，兌換後永久擁有。</p><div class="wardrobe-slots"><button type="button" data-wardrobe-default="hat">卸下帽子</button><button type="button" data-wardrobe-default="jacket">基本服裝</button><button type="button" data-wardrobe-default="friend">收起配件</button></div><p id="wardrobe-message" aria-live="polite"></p></div>
   <div class="wardrobe-store"><div class="wardrobe-earn"><h3>玩出你的收藏</h3><p>有效遊玩每分鐘 2 點，每日最多 60 點；背景、選單、暫停及閒置超過 60 秒不計。每款遊戲每日首次完成至少 10 秒有效遊玩的回合，再獲得 5 點；原有技能與里程碑獎勵另外保留。</p><p id="wardrobe-daily"></p></div><div id="wardrobe-items" class="wardrobe-items"></div></div></div>
   </div></section>
+<section class="view" id="view-market-desk">
+  <div class="market-shell">
+    <header class="market-header">
+      <h2>收盤之前</h2>
+      <div class="market-header-actions">
+        <span id="mk-day" class="market-day"></span>
+        <button type="button" class="market-sound" id="mk-sound" aria-pressed="false">音效</button>
+      </div>
+    </header>
+    <div class="market-status">
+      <section class="market-character" id="mk-character" data-life="starter" aria-labelledby="mk-life-title">
+        <img id="mk-portrait" src="games/market-desk/art/starter.webp" alt="" width="480" height="740" decoding="async" loading="lazy">
+        <div class="market-character-copy" aria-live="polite">
+          <p class="market-character-name">林阿澤</p>
+          <h3 id="mk-life-title">辭職第一天</h3>
+          <p id="mk-life-story">租來的小辦公桌，一杯咖啡，還有二十天證明自己。</p>
+        </div>
+      </section>
+      <section class="market-exchange" id="mk-exchange" aria-labelledby="mk-index-label">
+        <div class="market-quote">
+          <div class="market-index">
+            <p id="mk-index-label">阿澤信心指數</p>
+            <strong id="mk-index">1,000</strong>
+            <span id="mk-change" class="market-change">—</span>
+          </div>
+          <div class="market-benchmark">
+            <span>虛構大盤</span>
+            <strong id="mk-market-index">1,000</strong>
+            <span id="mk-market-change">—</span>
+          </div>
+          <div class="market-risk" id="mk-risk">
+            <label for="mk-risk-meter">專注力</label>
+            <strong id="mk-focus">100</strong>
+            <meter id="mk-risk-meter" min="0" max="100" low="36" optimum="100" value="100"></meter>
+            <span id="mk-risk-warning" hidden>再錯一次就出局</span>
+          </div>
+        </div>
+        <div class="market-plot" aria-hidden="true">
+          <div class="market-chart" id="mk-chart"></div>
+          <div class="market-axis" id="mk-axis"></div>
+        </div>
+        <div class="market-chart-footer"><span>開盤</span><span>收盤</span></div>
+      </section>
+    </div>
+    <div class="market-layout">
+      <div class="market-paper">
+        <div id="mk-intro">
+          <h3>辭職後的第一張市場週報</h3>
+          <p>你拿著年終獎金離開辦公室，給自己 20 個交易日做一份台股查證報告。從早餐店明牌到量子水餃，哪些資訊值得寫進報告？</p>
+          <button type="button" id="mk-go">開始第一天</button>
+        </div>
+        <div id="mk-case" hidden>
+          <h3 id="mk-headline" tabindex="-1"></h3>
+          <p id="mk-clue"></p>
+          <div id="mk-actions" class="market-actions">
+            <button type="button" data-market-action="0">刊登已核實資訊</button>
+            <button type="button" data-market-action="1">暫緩，等待佐證</button>
+            <button type="button" data-market-action="2">示警，提醒讀者</button>
+          </div>
+          <div id="mk-settling" class="market-settling" hidden role="status" tabindex="-1">收盤撮合中</div>
+          <div id="mk-review" hidden>
+            <div class="market-reveal" id="mk-reveal" role="status">
+              <p class="market-result-move" id="mk-result-move"></p>
+              <p class="market-life-shift" id="mk-life-shift" hidden></p>
+              <strong id="mk-verdict"></strong>
+              <p id="mk-market-recap" class="market-market-recap"></p>
+              <p id="mk-feedback"></p>
+            </div>
+            <button type="button" id="mk-next"></button>
+          </div>
+        </div>
+        <div id="mk-finish" hidden>
+          <h3 id="mk-ending" tabindex="-1"></h3>
+          <p id="mk-epilogue"></p>
+          <p id="mk-result"></p>
+          <p id="mk-final-market"></p>
+          <button type="button" id="mk-replay">再寫一份報告</button>
+        </div>
+      </div>
+      <aside class="market-brief">
+        <dl><div><dt>查證分數</dt><dd id="mk-score">0</dd></div><div><dt>最佳紀錄</dt><dd id="mk-best">0</dd></div></dl>
+        <p class="market-tape-label" id="mk-tape-label">每日查證紀錄</p>
+        <div id="mk-tape" class="market-tape" role="img"></div>
+        <details><summary>查證規則</summary><p>有可核對的資訊就刊登；缺乏佐證就暫緩；遇到冒名或索取帳密就示警。</p><p>正確加 5 分並回復 4 專注力，最高 100；錯誤扣 18 專注力。專注力歸零或做完 20 天即結束。免費遊玩。</p></details>
+      </aside>
+    </div>
+  </div>
+</section>
 <section class="view" id="view-frontier" hidden><div class="ft-layout"><div class="ft-main" id="ft-main">
 <div class="ft-top"><span class="ft-eyebrow">FRONTIER / 50 STAGES</span><div class="ft-status"><strong id="ft-zone">翠葉群島</strong><span id="ft-level">1 / 50</span><span id="ft-health">♥ 100</span><span id="ft-base-health"></span></div><button type="button" id="ft-journal" aria-expanded="false" aria-controls="ft-task-details">任務</button><button type="button" id="ft-full">全螢幕</button></div><span id="ft-assault" class="ft-assault"></span><p id="ft-objective" class="ft-objective" aria-live="polite">建立據點，清除守衛，點亮燈塔。</p>
 <div class="ft-mission" id="ft-task-details" hidden><span id="ft-checklist"></span><span id="ft-warning"></span><span id="ft-hauling"></span><span id="ft-army"></span><span id="ft-journal-stock"></span></div><div class="ft-stage" id="ft-stage"><canvas id="ft-canvas" width="900" height="650" tabindex="0" aria-label="荒島遠征：移動採集、靠近建造、閃避攻擊"></canvas><section id="ft-cards" class="ft-cards" aria-live="polite" hidden><h3 id="ft-cards-title">金幣湊滿了！選一張強化卡</h3><div class="ft-card-row"><button type="button" id="ft-card-0" class="ft-card"><strong id="ft-card-0-name"></strong><em id="ft-card-0-lv"></em><span id="ft-card-0-desc"></span></button><button type="button" id="ft-card-1" class="ft-card"><strong id="ft-card-1-name"></strong><em id="ft-card-1-lv"></em><span id="ft-card-1-desc"></span></button><button type="button" id="ft-card-2" class="ft-card"><strong id="ft-card-2-name"></strong><em id="ft-card-2-lv"></em><span id="ft-card-2-desc"></span></button></div></section><p id="ft-notice" class="ft-notice" aria-live="polite" hidden></p><div id="ft-overlay" class="ft-overlay"><span class="ft-eyebrow">GATHER · BUILD · SURVIVE</span><h2 id="ft-title">荒島遠征</h2><p id="ft-message">五大區域，五十場考驗。建立據點，穿越危險地帶。</p><button type="button" id="ft-go">開始遠征</button></div><div class="ft-touch"><div id="ft-stick" role="group" aria-label="拖曳搖桿移動"><span id="ft-knob"></span></div><button type="button" id="ft-dash" class="ft-optional-dash">衝刺</button></div></div>
@@ -8356,7 +8791,138 @@ html.frontier-immersive{overflow:hidden}
   "遊戲結束：{sc} 分、消除 {ln} 行、等級 {lv}。|Game over: {sc} points, {ln} lines, level {lv}.": "Game over: {sc} points, {ln} lines, level {lv}.",
   "遊玩俄羅斯方塊：經典落塊消行，支援 SRS 旋轉、牆踢與暫存。免費遊玩。": "Play Block Drop: classic falling blocks with SRS rotation, wall kicks and hold. Free to play.",
   "開始遊戲": "Start game",
-  "俄羅斯方塊 Block Drop": "Block Drop"
+  "俄羅斯方塊 Block Drop": "Block Drop",
+  "收盤之前": "Closing Call",
+  "遊玩收盤之前：20 天台股查證挑戰": "Play Closing Call, a 20-day fact-checking challenge",
+  "20 個交易日，從台股怪新聞裡挖出可信的消息。": "Spend 20 trading days fact-checking Taiwan market headlines.",
+  "消息查證": "Fact-checking",
+  "辭職後的第一張市場週報": "Your first market report after quitting",
+  "你拿著年終獎金離開辦公室，給自己 20 個交易日做一份台股查證報告。從早餐店明牌到量子水餃，哪些資訊值得寫進報告？": "You quit with your year-end bonus and give yourself 20 trading days to put together a market report. From breakfast-shop tips to quantum dumplings, what belongs in print?",
+  "開始第一天": "Start day one",
+  "刊登已核實資訊": "Publish verified details",
+  "暫緩，等待佐證": "Hold for more evidence",
+  "示警，提醒讀者": "Warn readers",
+  "再寫一份報告": "Write another report",
+  "查證分數": "Report score",
+  "專注力": "Focus",
+  "每日查證紀錄": "Daily fact-check record",
+  "查證規則": "How to play",
+  "有可核對的資訊就刊登；缺乏佐證就暫緩；遇到冒名或索取帳密就示警。": "Publish verified details, hold stories that lack evidence, and warn readers about impersonation or requests for credentials.",
+  "正確加 5 分並回復 4 專注力，最高 100；錯誤扣 18 專注力。專注力歸零或做完 20 天即結束。免費遊玩。": "A correct call earns 5 score and restores 4 focus, up to 100 focus. A wrong call costs 18 focus. The run ends at zero focus or after 20 days. Free to play.",
+  "早餐店的外星訂單": "An alien order with breakfast",
+  "阿姨說兒子看過訂單，拿出的照片只有一份空白採購單。": "The owner says her son saw the order. Her photo shows a blank purchase form.",
+  "空白採購單無法證明訂單存在，先找獨立來源。": "A blank form proves nothing. Look for an independent source.",
+  "超跑老師的長生不老藥": "An influencer sells immortality",
+  "直播主保證療效，要求觀眾把驗證碼傳給他的助理。": "The host guarantees a cure and asks viewers to send a login code to his assistant.",
+  "索取驗證碼是帳號遭盜用的警訊，應立即示警。": "Requests for login codes are a warning sign of account theft.",
+  "ETF 募集大排長龍": "The ETF queue wraps around the block",
+  "發行方公告募集總額，第二份公開資料可核對金額；社群則稱它保證每月賺錢。": "Two public records agree on the amount raised. Social posts promise monthly profits.",
+  "可刊登已核對的募集金額，保證獲利沒有證據。": "Publish the supported fundraising figure and leave out the profit promise.",
+  "股東會送露營椅": "A folding chair for shareholders",
+  "轉傳圖把去年股東會日期裁掉，聲稱今年還會送同款。": "A forwarded image crops out last year’s date and claims the chair is back.",
+  "舊圖無法確認今年的贈品，應等待今年公告。": "Last year’s image cannot confirm this year’s gift. Wait for a new notice.",
+  "九點零五分的奇蹟": "The 9:05 miracle",
+  "群組聲稱成交量破紀錄，貼出的數字卻是未成交的委託量。": "A group claims a trading-volume record, using the count of unfilled orders.",
+  "委託量和成交量是兩回事，先核對實際成交。": "Unfilled orders are not trades. Check the actual transactions first.",
+  "語氣太溫柔的營業員": "The unusually gentle broker",
+  "來電聲稱需要補款，要求匯到一個私人帳戶，而且別掛電話。": "The caller demands money in a personal account and insists you stay on the line.",
+  "私人收款帳戶和催促匯款都是警訊，應立即示警。": "A personal account and pressure to transfer money warrant a warning.",
+  "看盤軟體全線當機": "The trading app goes dark",
+  "券商狀態頁與客服都確認行動登入故障，但網頁版仍可登入。": "The broker’s status page and help desk confirm mobile login failed. Web login still works.",
+  "可報導已確認的行動登入故障，並交代影響範圍。": "Report the verified mobile outage and specify its scope.",
+  "颱風夜的休市謠言": "A typhoon and a market rumor",
+  "群組流傳標有明天日期的截圖，交易所當日公告仍寫「待通知」。": "A screenshot claims tomorrow’s session is canceled. The exchange says a decision is pending.",
+  "截圖和官方資訊不一致，先等待正式公告。": "Wait for the exchange to confirm whether trading will stop.",
+  "季底尾盤神秘買盤": "A quarter-end buying mystery",
+  "收盤資料證實尾盤成交放大，來源沒有揭露下單身分。": "Closing data confirms a jump in trading volume. The buyers are unidentified.",
+  "可報導成交增加；買盤身分仍未知。": "Publish the confirmed increase in volume and leave the buyers unnamed.",
+  "飆股被關禁閉": "A hot stock lands in detention",
+  "交易所公告列出公司代號、處置開始日和撮合間隔。": "The exchange notice lists a ticker, effective date, and matching interval.",
+  "公告可核對，可刊登這三項具體資訊。": "The notice supports publishing these three specific details.",
+  "計程車上的製程大師": "A chip expert in a taxi",
+  "司機給你一張號稱晶片設計圖的照片，圖角印著「教學示意」。": "The driver shows a supposed chip design. The corner reads “classroom illustration.”",
+  "示意圖無法證明製程突破，先找可核實的資料。": "A classroom diagram cannot establish a manufacturing breakthrough.",
+  "股票群組的神秘助理": "The mysterious chat assistant",
+  "助理聲稱替券商開戶，卻要求安裝陌生網站提供的遠端控制軟體。": "The assistant claims to open brokerage accounts and asks you to install remote-control software from an unfamiliar site.",
+  "冒名開戶加上遠端控制要求，應立即提醒讀者。": "A brokerage impersonation and remote-access request warrant a warning.",
+  "月餅禮盒裡的登入連結": "A login link in the mooncake box",
+  "禮券 QR 碼連到仿冒登入頁，頁面網址和券商官方網址不同。": "A voucher QR code opens a lookalike login page at a different address from the broker’s site.",
+  "仿冒登入頁可能竊取帳密，值得立即示警。": "The fake login page could steal credentials. Warn readers immediately.",
+  "銀行的夢幻活存廣告": "The bank’s dream savings offer",
+  "官方條款確認優惠只適用首月，而且只有小額存款適用。": "Official terms confirm the promotion applies only in month one and only up to a low balance cap.",
+  "可刊登活動資訊，標題須交代期限和額度。": "Publish the offer with its time and balance limits.",
+  "水餃股的神秘併購": "The dumpling-stock merger",
+  "網友說兩位老闆同桌吃飯，拿不出交易文件或雙方聲明。": "A poster says two executives shared dinner. There is no deal document or company statement.",
+  "一頓飯無法證明併購，應等待佐證。": "Dinner is not evidence of a deal. Wait for corroboration.",
+  "庫藏股公告出爐": "A buyback makes headlines",
+  "公開公告列出預計買回股數與期間；實際買回數量尚未公布。": "A public filing specifies the planned buyback size and dates. Execution figures are unavailable.",
+  "可刊登已宣布的計畫，並註明執行結果仍未知。": "Publish the announced plan and make clear execution is still unknown.",
+  "手搖飲食安風波": "A bubble tea safety scare",
+  "稽查公告列出受影響批次與回收門市，廠商也公布同一批次。": "An inspection notice lists the affected batch and recall locations. The company confirms that batch.",
+  "可刊登已核對的回收資訊，清楚列出影響範圍。": "Publish the verified recall with its scope clearly stated.",
+  "橘貓踩出神祕股票代號": "The orange cat types a stock ticker",
+  "鍵盤留下「6666」，貓還踩到一封要求輸入網銀密碼的假通知。": "The cat types “6666” and opens a fake notice that asks for online banking credentials.",
+  "該通報有明確的帳密竊取跡象，應立即示警。": "The notice attempts to collect banking credentials. Flag it.",
+  "水餃公司改名 AI 量子科技": "Dumpling maker becomes Quantum AI",
+  "公司公告證實更名，報表上的主要營收仍是冷凍食品。": "The company confirms the rebrand. Its filings still list frozen food as its main revenue source.",
+  "可報導更名與現有營收來源；名稱無法證明轉型完成。": "Publish the rebrand and the actual revenue mix. A name alone proves no pivot.",
+  "迷因鯨魚重出江湖": "A meme-stock whale resurfaces",
+  "帳號發文要求先付款解鎖「保證獲利」名單；官方帳號否認關聯。": "The account demands payment for a “guaranteed profit” list. The real account denies any connection.",
+  "冒名收費加上保證獲利話術，應立即示警。": "Paid impersonation and guaranteed-profit claims warrant a warning.",
+  "20 個交易日": "20 trading days",
+  "查看結局": "Read the ending",
+  "下一個交易日": "Next trading day",
+  "提早收工": "The Desk Goes Dark",
+  "台股查證王牌": "Closing Call Ace",
+  "可靠的市場編輯": "Trusted Market Editor",
+  "還在磨筆的菜鳥": "Rookie Reporter",
+  "第 {0} / {1} 天": "Day {0} / {1}",
+  "答對 {0} 題，共完成 {1} 天": "{0} correct, {1} days completed",
+  "判斷正確。加 5 分。 {0}": "Correct. +5 score. {0}",
+  "答錯，專注力扣 {0}。建議「{1}」。{2}": "Incorrect. Focus −{0}. Best action: {1}. {2}",
+  "你完成了 {0} 天的查證，答對 {1} 題，報告分數 {2} / 100。": "You covered {0} days and checked {1} cases correctly. Report score: {2} / 100.",
+  "查證桌熄燈了。隔壁早餐店還在聊外星訂單，你決定先補個眠。": "The desk goes dark. The breakfast shop is still talking about alien orders. You decide to catch up on sleep.",
+  "你的報告上了財經週刊封面。早餐店阿姨把刊登更正的那一期貼在菜單旁。": "Your report makes the cover of the market weekly. The breakfast shop pins the issue with the correction next to its menu.",
+  "讀者把你的報告存在收藏夾。下次群組再傳明牌，他們會先來問你要來源。": "Readers bookmark your report. Next time the group chat forwards a hot tip, they come to you for sources.",
+  "報告趕上截稿，但編輯貼了整排便條紙。字最多的一張只寫了兩個字：來源？": "Your report makes the deadline covered in sticky notes. The biggest one reads: Source?",
+  "虛構信心指數": "Fictional confidence index",
+  "收盤急拉・判斷正確": "Closing surge · Correct call",
+  "紅盤連發・連對 {0} 天": "Red streak · {0} correct in a row",
+  "警報・專注力耗盡": "Alert · Focus depleted",
+  "收盤跳水・查證失誤": "Closing plunge · Wrong call",
+  "音效": "Sound",
+  "開盤": "Open",
+  "收盤": "Close",
+  "收盤撮合中": "Matching closing orders…",
+  "再錯一次就出局": "One more miss ends the run",
+  "林阿澤": "A-Ze Lin",
+  "辭職第一天": "First day after quitting",
+  "租來的小辦公桌，一杯咖啡，還有二十天證明自己。": "A rented desk, a cup of coffee, and twenty days to prove himself.",
+  "頂樓辦公室": "Top-floor office",
+  "辦公室升級": "Office upgrade",
+  "皺襯衫已經送洗，阿澤今天在能看見夕陽的窗邊收盤。": "His crumpled shirt is at the cleaners. Tonight he closes by a window with a view of the sunset.",
+  "月底吃泡麵": "Instant noodles until payday",
+  "阿澤鬆開領帶。桌上的咖啡換成了泡麵，帳單還沒拆。": "A-Ze loosens his tie. Noodles have replaced coffee, and the bills are still sealed.",
+  "快撐不下去": "Running on empty",
+  "阿澤穿上白色訂製禮服，站在大理石桌前。整座台北都在腳下亮了起來。": "A-Ze puts on his white dinner jacket. Taipei lights up beneath his marble desk.",
+  "辦公室退租了。阿澤用紙箱當桌子，筆電是房裡唯一的光。": "The office lease is gone. A cardboard box is his desk, and his laptop is the only light.",
+  "處境升級：{0}": "Life upgrade: {0}",
+  "處境下滑：{0}": "Setback: {0}",
+  "阿澤信心指數": "A-Ze’s confidence index",
+  "虛構大盤": "Fictional market",
+  "大盤急漲・阿澤少跟到": "Market rally · A-Ze missed most of it",
+  "信心持平・刊登慢半拍": "Confidence flat · Late to publish",
+  "信心回落・查證失誤": "Confidence slips · Wrong call",
+  "信心連升・連對 {0} 天": "Confidence streak · {0} correct in a row",
+  "信心上揚・判斷正確": "Confidence rises · Correct call",
+  "阿澤信心小升 {0}，大盤卻漲了 {1}。": "A-Ze’s confidence rose {0}, but the market gained {1}.",
+  "阿澤信心 {0} ／ 虛構大盤 {1}": "A-Ze’s confidence {0} / Fictional market {1}",
+  "暫緩讓報導錯過時機，專注力扣 {0}。{1}": "Holding the story missed the moment. Focus −{0}. {1}",
+  "牛市裡的慢半拍": "Left behind in a bull market",
+  "阿澤的報告有起色。同業都在慶祝搬進新辦公室，他卻把慶功晚餐換成了便利商店便當。": "A-Ze’s reporting improved. His peers are celebrating their new offices, and he swaps his celebratory dinner for a convenience-store meal.",
+  "累計表現：阿澤信心 {0} ／ 虛構大盤 {1}": "Total: A-Ze’s confidence {0} / Fictional market {1}",
+  "稽查公告和廠商聲明列出相同的回收批次，並公布受影響的門市。未受影響的批次仍正常販售。": "The inspection and company notices agree on the recalled batch and affected stores. Other batches are still on shelves.",
+  "可即時刊登已核對的回收批次和門市，避免讓讀者誤以為所有產品都要下架。": "Publish the verified recall now and name the affected batch and stores so readers know what is still safe to buy."
 }
 </script>
 <script id="arcade-i18n">/* Presentation-only localization. Game state, storage and analytics keep their original values. */
@@ -8372,7 +8938,7 @@ html.frontier-immersive{overflow:hidden}
   // Numeric sample labels are exact matches only; matching "1 關" inside "21 關…" would corrupt a live sentence.
   var keys = Object.keys(dictionary).filter(function (key) { return !/^\d/.test(key); }).sort(function (a, b) { return b.length - a.length; });
   var phrases = new RegExp(keys.map(function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|'), 'g');
-  var names = ['My Wardrobe','Deep Sea Arcade','Crush Depth','Minesweeper','Pearl Drop','Pearl Merge','Sonar Dice','Deep Probe','High Tide','Gold Digger','Compass','Ascent','Reef Run','Dream Repair Shop','Dodge Run','Queue Cutter','Sneak Out','Fishing','Campaign Truck','Boba Straw','Rooftop Cat','Poop Bird vs Wolves','Reaper Shift','Reef Blaster','Sky Builder','Carp Leap','Rider vs Dogs','Chubby Boss','Fruit Thief Cat','Baby Bath Escape','Frog Snack','Nap Master','One Breath Dive','MRT Seat Grab','Noodle Pancake','Pudding Dash','Clock Out','Midnight Mosquito','Don’t Peek','Pet Walkies','No Overtime!','Number Gulp','Mirror Twins','Shadow Relay','One-Line Defense','Mermaid Spider','The Last Hair','The Last Banquet','Breakout','Ocean Link','Frontier Islands'];
+  var names = ['Closing Call','My Wardrobe','Deep Sea Arcade','Crush Depth','Minesweeper','Pearl Drop','Pearl Merge','Sonar Dice','Deep Probe','High Tide','Gold Digger','Compass','Ascent','Reef Run','Dream Repair Shop','Dodge Run','Queue Cutter','Sneak Out','Fishing','Campaign Truck','Boba Straw','Rooftop Cat','Poop Bird vs Wolves','Reaper Shift','Reef Blaster','Sky Builder','Carp Leap','Rider vs Dogs','Chubby Boss','Fruit Thief Cat','Baby Bath Escape','Frog Snack','Nap Master','One Breath Dive','MRT Seat Grab','Noodle Pancake','Pudding Dash','Clock Out','Midnight Mosquito','Don’t Peek','Pet Walkies','No Overtime!','Number Gulp','Mirror Twins','Shadow Relay','One-Line Defense','Mermaid Spider','The Last Hair','The Last Banquet','Breakout','Ocean Link','Frontier Islands'];
   var numbered = { '關': 'Stage', '班': 'Shift', '隊': 'Queue', '條': 'Fish', '層': 'Floor', '道': 'Crossing', '格': 'Cell', '列': 'Row', '階': 'Tier', '段': 'Segment', '晚': 'Night', '站': 'Station' };
 
   function english(value) {
@@ -23560,6 +24126,363 @@ function ftBuilding(b,w){
       setTimeout(function () { var board = document.querySelector('.lobby-board'); if (board && board.scrollIntoView) board.scrollIntoView({ block: 'start' }); }, 60);
     });
   })();
+  var marketDeskRoute;
+  (function () {
+        // Each case has a headline, a clue, an explanation, the supported action, and the fictional market change in percent.
+    // Actions: 0 publish, 1 hold, 2 flag.
+    const cases = [
+      ["早餐店的外星訂單","阿姨說兒子看過訂單，拿出的照片只有一份空白採購單。","空白採購單無法證明訂單存在，先找獨立來源。",1,3.2],
+      ["超跑老師的長生不老藥","直播主保證療效，要求觀眾把驗證碼傳給他的助理。","索取驗證碼是帳號遭盜用的警訊，應立即示警。",2,4.6],
+      ["ETF 募集大排長龍","發行方公告募集總額，第二份公開資料可核對金額；社群則稱它保證每月賺錢。","可刊登已核對的募集金額，保證獲利沒有證據。",0,5.8],
+      ["股東會送露營椅","轉傳圖把去年股東會日期裁掉，聲稱今年還會送同款。","舊圖無法確認今年的贈品，應等待今年公告。",1,-2.1],
+      ["九點零五分的奇蹟","群組聲稱成交量破紀錄，貼出的數字卻是未成交的委託量。","委託量和成交量是兩回事，先核對實際成交。",1,2.5],
+      ["語氣太溫柔的營業員","來電聲稱需要補款，要求匯到一個私人帳戶，而且別掛電話。","私人收款帳戶和催促匯款都是警訊，應立即示警。",2,-1.9],
+      ["看盤軟體全線當機","券商狀態頁與客服都確認行動登入故障，但網頁版仍可登入。","可報導已確認的行動登入故障，並交代影響範圍。",0,-2.8],
+      ["颱風夜的休市謠言","群組流傳標有明天日期的截圖，交易所當日公告仍寫「待通知」。","截圖和官方資訊不一致，先等待正式公告。",1,3.3],
+      ["季底尾盤神秘買盤","收盤資料證實尾盤成交放大，來源沒有揭露下單身分。","可報導成交增加；買盤身分仍未知。",0,4.1],
+      ["飆股被關禁閉","交易所公告列出公司代號、處置開始日和撮合間隔。","公告可核對，可刊登這三項具體資訊。",0,-2.7],
+      ["計程車上的製程大師","司機給你一張號稱晶片設計圖的照片，圖角印著「教學示意」。","示意圖無法證明製程突破，先找可核實的資料。",1,3.6],
+      ["股票群組的神秘助理","助理聲稱替券商開戶，卻要求安裝陌生網站提供的遠端控制軟體。","冒名開戶加上遠端控制要求，應立即提醒讀者。",2,-2.3],
+      ["月餅禮盒裡的登入連結","禮券 QR 碼連到仿冒登入頁，頁面網址和券商官方網址不同。","仿冒登入頁可能竊取帳密，值得立即示警。",2,2.9],
+      ["銀行的夢幻活存廣告","官方條款確認優惠只適用首月，而且只有小額存款適用。","可刊登活動資訊，標題須交代期限和額度。",0,3.7],
+      ["水餃股的神秘併購","網友說兩位老闆同桌吃飯，拿不出交易文件或雙方聲明。","一頓飯無法證明併購，應等待佐證。",1,-2.4],
+      ["庫藏股公告出爐","公開公告列出預計買回股數與期間；實際買回數量尚未公布。","可刊登已宣布的計畫，並註明執行結果仍未知。",0,4.3],
+      ["手搖飲食安風波","稽查公告和廠商聲明列出相同的回收批次，並公布受影響的門市。未受影響的批次仍正常販售。","可即時刊登已核對的回收批次和門市，避免讓讀者誤以為所有產品都要下架。",0,6.1],
+      ["橘貓踩出神祕股票代號","鍵盤留下「6666」，貓還踩到一封要求輸入網銀密碼的假通知。","該通報有明確的帳密竊取跡象，應立即示警。",2,-1.7],
+      ["水餃公司改名 AI 量子科技","公司公告證實更名，報表上的主要營收仍是冷凍食品。","可報導更名與現有營收來源；名稱無法證明轉型完成。",0,4.9],
+      ["迷因鯨魚重出江湖","帳號發文要求先付款解鎖「保證獲利」名單；官方帳號否認關聯。","冒名收費加上保證獲利話術，應立即示警。",2,4.4]
+    ];
+
+    const bestKey = 'deep-sea-market-desk-best';
+    const view = $('view-market-desk');
+    const labels = ['刊登已核實資訊', '暫緩，等待佐證', '示警，提醒讀者'];
+    const endings = [
+      ['提早收工', '查證桌熄燈了。隔壁早餐店還在聊外星訂單，你決定先補個眠。'],
+      ['台股查證王牌', '你的報告上了財經週刊封面。早餐店阿姨把刊登更正的那一期貼在菜單旁。'],
+      ['可靠的市場編輯', '讀者把你的報告存在收藏夾。下次群組再傳明牌，他們會先來問你要來源。'],
+      ['還在磨筆的菜鳥', '報告趕上截稿，但編輯貼了整排便條紙。字最多的一張只寫了兩個字：來源？'],
+    ];
+    let best = 0;
+    try {
+      const saved = Number(localStorage.getItem(bestKey));
+      if (Number.isInteger(saved) && saved >= 0 && saved <= 100) best = saved;
+    } catch (_) {}
+    let deck = [], answers = [], score = 0, focus = 100, round = null;
+    let phase = 'intro';
+    let focusLoss = 0, settleTimer = null, outcome = '';
+    const openingIndex = 1000;
+    const openingTape = [937, 956, 944, 973, 991, 975, 984, 962, 979, 993, 981, 1008, 996, 1003, openingIndex];
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let closes = [], market = openingIndex, marketMove = 0, streak = 0, soundEnabled = false, audio;
+    const exchange = $('mk-exchange');
+    const chart = $('mk-chart');
+    const formatter = new Intl.NumberFormat('en-US');
+    const character = $('mk-character');
+    const portrait = $('mk-portrait');
+    let portraitsPreloaded = false;
+    const lifeStages = [
+      { min: 1230, id: 'penthouse', title: '頂樓辦公室', story: '阿澤穿上白色訂製禮服，站在大理石桌前。整座台北都在腳下亮了起來。' },
+      { min: 1090, id: 'rising', title: '辦公室升級', story: '皺襯衫已經送洗，阿澤今天在能看見夕陽的窗邊收盤。' },
+      { min: 960, id: 'starter', title: '辭職第一天', story: '租來的小辦公桌，一杯咖啡，還有二十天證明自己。' },
+      { min: 860, id: 'strained', title: '月底吃泡麵', story: '阿澤鬆開領帶。桌上的咖啡換成了泡麵，帳單還沒拆。' },
+      { min: -Infinity, id: 'crisis', title: '快撐不下去', story: '辦公室退租了。阿澤用紙箱當桌子，筆電是房裡唯一的光。' }
+    ];
+
+    function lifeAt(index) {
+      return lifeStages.find(function (life) { return index >= life.min; });
+    }
+    function portraitPath(stage) {
+      return 'games/market-desk/art/' + stage.id + '.webp';
+    }
+    function paintCharacter() {
+      const stage = lifeAt(closes.at(-1) ?? openingIndex);
+      character.dataset.life = stage.id;
+      const path = portraitPath(stage);
+      if (portrait.getAttribute('src') !== path) portrait.src = path;
+      const title = local(stage.title);
+      const story = local(stage.story);
+      if ($('mk-life-title').textContent !== title) $('mk-life-title').textContent = title;
+      if ($('mk-life-story').textContent !== story) $('mk-life-story').textContent = story;
+      const shift = character.dataset.shift;
+      const badge = $('mk-life-shift');
+      badge.hidden = !shift;
+      if (shift) {
+        badge.dataset.shift = shift;
+        badge.textContent = local(shift === 'up' ? '處境升級：{0}' : '處境下滑：{0}', title);
+      }
+    }
+
+
+    function playBell(correct) {
+      if (!soundEnabled || !audio || audio.state !== 'running' || document.hidden) return;
+      const notes = correct ? [660, 880, 1175] : [196, 138];
+      notes.forEach(function (pitch, index) {
+        const time = audio.currentTime + index * 0.075;
+        const tone = audio.createOscillator();
+        const volume = audio.createGain();
+        tone.type = correct ? 'sine' : 'triangle';
+        tone.frequency.value = pitch;
+        volume.gain.setValueAtTime(0.001, time);
+        volume.gain.exponentialRampToValueAtTime(0.066, time + 0.018);
+        volume.gain.exponentialRampToValueAtTime(0.001, time + 0.16);
+        tone.connect(volume).connect(audio.destination);
+        tone.start(time);
+        tone.stop(time + 0.17);
+      });
+    }
+
+    function signedPercent(value) {
+      return (value > 0 ? '+' : value < 0 ? '−' : '') + Math.abs(value).toFixed(2) + '%';
+    }
+    function paintChart() {
+      const graph = [...openingTape, ...closes].slice(-20);
+      const ceiling = Math.ceil((Math.max(...graph) + 12) / 20) * 20;
+      const floor = Math.floor((Math.min(...graph) - 12) / 20) * 20;
+      const range = ceiling - floor;
+      $('mk-axis').replaceChildren(...[ceiling, Math.round((ceiling + floor) / 2), floor].map(function (value) {
+        const tick = document.createElement('span');
+        tick.textContent = formatter.format(value);
+        return tick;
+      }));
+      const percent = value => 100 * (value - floor) / range;
+      chart.replaceChildren(...graph.slice(1).map(function (close, index) {
+        const open = graph[index];
+        const candle = document.createElement('span');
+        candle.className = 'market-candle ' + (close >= open ? 'market-up' : 'market-down');
+        candle.style.setProperty('--low', percent(Math.min(close, open) - 9) + '%');
+        candle.style.setProperty('--wick', (100 * (Math.abs(close - open) + 18) / range) + '%');
+        candle.style.setProperty('--body-low', percent(Math.min(close, open)) + '%');
+        candle.style.setProperty('--body', (100 * Math.abs(close - open) / range) + '%');
+        return candle;
+      }));
+      const close = closes.at(-1) ?? openingIndex;
+      const previous = closes.at(-2) ?? openingIndex;
+      const delta = close - previous;
+      const sign = delta >= 0 ? '+' : '−';
+      exchange.dataset.move = !delta ? '' : delta > 0 ? 'up' : 'down';
+      $('mk-index').textContent = formatter.format(close);
+      const change = signedPercent(100 * delta / previous);
+      $('mk-change').textContent = !delta ? '—' : `${delta > 0 ? '▲' : '▼'} ${sign}${Math.abs(delta)} (${change})`;
+      $('mk-result-move').textContent = change;
+      $('mk-market-index').textContent = formatter.format(market);
+      const marketLabel = $('mk-market-change');
+      marketLabel.textContent = closes.length ? signedPercent(marketMove) : '—';
+      marketLabel.dataset.move = !marketMove ? '' : marketMove > 0 ? 'up' : 'down';
+    }
+
+
+    function local(text, ...values) {
+      return window.deepSeaI18n.text(text).replace(/\{(\d+)\}/g, function (_, index) { return values[index]; });
+    }
+    function params() {
+      return { stage: 1, step: answers.length, score: score };
+    }
+    function render() {
+      paintCharacter();
+      const reviewing = phase === 'review';
+      const settling = phase === 'settling';
+      const finished = phase === 'finish';
+      $('mk-intro').hidden = phase !== 'intro';
+      $('mk-case').hidden = phase === 'intro' || finished;
+      $('mk-finish').hidden = !finished;
+      $('mk-actions').hidden = reviewing || settling;
+      $('mk-settling').hidden = !settling;
+      exchange.classList.toggle('market-matching', settling);
+      $('mk-review').hidden = !reviewing;
+      const day = Math.min(cases.length, answers.length + (reviewing || finished ? 0 : 1));
+      $('mk-day').textContent = phase === 'intro' ? local('20 個交易日') :
+        local('第 {0} / {1} 天', day, cases.length);
+      $('mk-score').textContent = score;
+      $('mk-focus').textContent = focus;
+      $('mk-risk-meter').value = focus;
+      $('mk-risk').classList.toggle('market-risk-low', focus <= 36);
+      $('mk-risk-warning').hidden = focus === 0 || focus > 18;
+      $('mk-best').textContent = best;
+      $('mk-tape').setAttribute('aria-label', local('答對 {0} 題，共完成 {1} 天', score / 5, answers.length));
+      Array.from($('mk-tape').children).forEach(function (bar, index) {
+        bar.className = index >= answers.length ? '' : answers[index] ? 'market-pass' : 'market-miss';
+      });
+      if (phase === 'case' || reviewing) {
+        const event = deck[day - 1];
+        const [headline, clue, explanation, bestAction] = event;
+        $('mk-headline').textContent = local(headline);
+        $('mk-clue').textContent = local(clue);
+        if (reviewing) {
+          const correct = answers[day - 1];
+          const action = local(labels[bestAction]);
+          const verdict = {
+            missed: '大盤急漲・阿澤少跟到',
+            flat: '信心持平・刊登慢半拍',
+            lost: '信心回落・查證失誤'
+          };
+          $('mk-verdict').textContent = focus === 0 ? local('警報・專注力耗盡') : correct ?
+            (streak >= 2 ? local('信心連升・連對 {0} 天', streak) : local('信心上揚・判斷正確')) :
+            local(verdict[outcome]);
+          const change = $('mk-result-move').textContent;
+          $('mk-market-recap').textContent = outcome === 'missed' ?
+            local('阿澤信心小升 {0}，大盤卻漲了 {1}。', change, signedPercent(marketMove)) :
+            local('阿澤信心 {0} ／ 虛構大盤 {1}', change, signedPercent(marketMove));
+          $('mk-feedback').textContent = correct ?
+            local('判斷正確。加 5 分。 {0}', local(explanation)) :
+            outcome === 'missed' || outcome === 'flat' ?
+              local('暫緩讓報導錯過時機，專注力扣 {0}。{1}', focusLoss, local(explanation)) :
+              local('答錯，專注力扣 {0}。建議「{1}」。{2}', focusLoss, action, local(explanation));
+          $('mk-next').textContent = focus === 0 || day === cases.length ?
+            local('查看結局') : local('下一個交易日');
+        }
+      }
+      if (finished) {
+        const close = closes.at(-1);
+        const lagged = focus > 0 && close >= openingIndex && close < market;
+        const [title, epilogue] = lagged ?
+          ['牛市裡的慢半拍', '阿澤的報告有起色。同業都在慶祝搬進新辦公室，他卻把慶功晚餐換成了便利商店便當。'] :
+          endings[focus === 0 ? 0 : score >= 90 ? 1 : score >= 70 ? 2 : 3];
+        $('mk-ending').textContent = local(title);
+        $('mk-epilogue').textContent = local(epilogue);
+        $('mk-result').textContent = local(
+          '你完成了 {0} 天的查證，答對 {1} 題，報告分數 {2} / 100。',
+          answers.length, score / 5, score);
+        $('mk-final-market').textContent = local('累計表現：阿澤信心 {0} ／ 虛構大盤 {1}',
+          signedPercent(100 * (close / openingIndex - 1)), signedPercent(100 * (market / openingIndex - 1)));
+      }
+    }
+    function start() {
+      if (round !== null || (phase !== 'intro' && phase !== 'finish') || view.hidden) return;
+      deck = cases.slice();
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      answers = [];
+      closes = [];
+      market = openingIndex;
+      marketMove = 0;
+      streak = 0;
+      paintChart();
+      score = 0;
+      focus = 100;
+      phase = 'case';
+      round = AN.start('market-desk', 0, params());
+      render();
+      $('mk-headline').focus();
+    }
+    function choose(action) {
+      if (phase !== 'case' || view.hidden) return;
+      phase = 'settling';
+      render();
+      if (reduceMotion.matches) {
+        reveal(action);
+      } else {
+        $('mk-settling').focus({preventScroll: true});
+        settleTimer = setTimeout(function () { reveal(action); }, 480);
+      }
+    }
+    function reveal(action) {
+      settleTimer = null;
+      if (phase !== 'settling' || view.hidden) return;
+      const [, , , bestAction, dailyMarketMove] = deck[answers.length];
+      const correct = action === bestAction;
+      const latePublish = bestAction === 0 && action === 1;
+      marketMove = dailyMarketMove;
+      market *= 1 + marketMove / 100;
+      outcome = correct ? 'correct' : latePublish ? (marketMove > 0 ? 'missed' : 'flat') : 'lost';
+      answers.push(correct);
+      if (correct) score += 5;
+      focusLoss = correct ? 0 : Math.min(18, focus);
+      focus = Math.min(100, focus + (correct ? 4 : -focusLoss));
+      streak = correct ? streak + 1 : 0;
+      const previous = closes.at(-1) ?? openingIndex;
+      // Today's fictional benchmark belongs to the case. Only A-Ze's confidence reacts to the choice.
+      const delta = correct ? 24 + Math.min(streak - 1, 4) * 7 : latePublish ? (marketMove > 0 ? 8 : 0) : -47;
+      closes.push(previous + delta);
+      paintChart();
+      if (lifeAt(previous).id !== lifeAt(closes.at(-1)).id) {
+        character.dataset.shift = delta > 0 ? 'up' : 'down';
+      }
+      phase = 'review';
+      exchange.classList.add('market-settled');
+      $('mk-reveal').dataset.move = delta < 0 ? 'down' : correct ? 'up' : 'mixed';
+      playBell(correct);
+      AN.progress(round, params(), false);
+      render();
+      $('mk-next').focus({preventScroll: true});
+    }
+    function next() {
+      if (phase !== 'review' || view.hidden) return;
+      exchange.classList.remove('market-settled');
+      delete character.dataset.shift;
+      if (focus === 0 || answers.length === cases.length) {
+        phase = 'finish';
+        if (score > best) {
+          best = score;
+          try { localStorage.setItem(bestKey, String(best)); } catch (_) {}
+        }
+        AN.end(round, 0, focus === 0 ? 'lose' : 'win', params());
+        round = null;
+      } else {
+        phase = 'case';
+      }
+      render();
+      $(phase === 'finish' ? 'mk-ending' : 'mk-headline').focus();
+    }
+
+    marketDeskRoute = function (active) {
+      if (active) {
+        if (!portraitsPreloaded) {
+          portraitsPreloaded = true;
+          lifeStages.forEach(function (stage) {
+            if (stage.id !== 'starter') new Image().src = portraitPath(stage);
+          });
+        }
+        return;
+      }
+      if (round === null) return;
+      clearTimeout(settleTimer);
+      settleTimer = null;
+      AN.end(round, 0, 'abandoned', params());
+      round = null;
+      phase = 'intro';
+      exchange.classList.remove('market-settled');
+      delete character.dataset.shift;
+      answers = [];
+      closes = [];
+      market = openingIndex;
+      marketMove = 0;
+      streak = 0;
+      paintChart();
+      score = 0;
+      focus = 100;
+      render();
+    };
+
+    for (let i = 0; i < cases.length; i++) $('mk-tape').appendChild(document.createElement('span'));
+    $('mk-go').addEventListener('click', start);
+    $('mk-replay').addEventListener('click', start);
+    $('mk-next').addEventListener('click', next);
+    view.querySelectorAll('[data-market-action]').forEach(function (button) {
+      button.addEventListener('click', function () { choose(Number(button.dataset.marketAction)); });
+    });
+    $('mk-sound').addEventListener('click', async function () {
+      const button = this;
+      button.disabled = true;
+      try {
+        if (!soundEnabled) {
+          audio ??= new AudioContext();
+          await audio.resume();
+        }
+        soundEnabled = !soundEnabled;
+        button.setAttribute('aria-pressed', String(soundEnabled));
+      } catch (_) {
+        soundEnabled = false;
+        button.setAttribute('aria-pressed', 'false');
+      } finally {
+        button.disabled = false;
+      }
+    });
+    paintChart();
+    window.addEventListener('arcade-languagechange', render);
+    render();
+  })();
   /* ---------- lobby navigation and category filters ---------- */
   var lobbyScroll=0,lastView='';
   // Category buttons appear twice (sidebar and tab row); both stay in sync and combine with the name search.
@@ -23593,7 +24516,7 @@ function ftBuilding(b,w){
   $('lobby-explore').addEventListener('click',function(){if($('lobby-games').scrollIntoView)$('lobby-games').scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});});
 
   /* ---------- tabs ---------- */
-  var VIEWS = { wardrobe: '我的造型 <span>My Wardrobe</span>', frontier: '荒島遠征 <span>Frontier Islands</span>', 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: 'TICATICA GAMES', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', 'rocket-chair': '社畜要下班 <span>Roar Through the Ceiling</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', 'eat-smaller': '數字吞噬 <span>Number Gulp</span>', 'mirror-twins': '鏡像雙子 <span>Mirror Twins</span>', 'shadow-relay': '影子接力 <span>Shadow Relay</span>', 'one-line-defense': '一筆畫守城 <span>One-Line Defense</span>', mermaid: '人魚接龍 <span>Mermaid Spider</span>', tetris: '俄羅斯方塊 <span>Block Drop</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
+  var VIEWS = { 'market-desk': '收盤之前 <span>Closing Call</span>', wardrobe: '我的造型 <span>My Wardrobe</span>', frontier: '荒島遠征 <span>Frontier Islands</span>', 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: 'TICATICA GAMES', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', 'rocket-chair': '社畜要下班 <span>Roar Through the Ceiling</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', 'eat-smaller': '數字吞噬 <span>Number Gulp</span>', 'mirror-twins': '鏡像雙子 <span>Mirror Twins</span>', 'shadow-relay': '影子接力 <span>Shadow Relay</span>', 'one-line-defense': '一筆畫守城 <span>One-Line Defense</span>', mermaid: '人魚接龍 <span>Mermaid Spider</span>', tetris: '俄羅斯方塊 <span>Block Drop</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
   /* ---------- collapsible lobby sidebar (per-browser preference only) ---------- */
   (function(){
     var KEY='ticatica-sidebar-collapsed',button=$('side-toggle'),collapsed=false;
@@ -23634,12 +24557,13 @@ function ftBuilding(b,w){
       if (fullscreenPending) return;
       if (fullscreenView === view) { leaveGameFullscreen(); return; }
       if (view.hidden) return;
-      // Phones: always cover the whole screen with the game, then also try browser fullscreen.
-      if (window.matchMedia && matchMedia('(max-width: 1020px)').matches) {
+      // Expand the game inside the mobile viewport before considering native fullscreen.
+      if (window.matchMedia && (matchMedia('(max-width: 1020px)').matches ||
+          (id === 'market-desk' && matchMedia('(pointer: coarse)').matches))) {
         fullscreenView = view;
         view.classList.add('game-view-expanded');
         syncGameFullscreen();
-        try { if (view.requestFullscreen) view.requestFullscreen().catch(function(){}); } catch (_) {}
+        try { if (id !== 'market-desk' && view.requestFullscreen) view.requestFullscreen().catch(function(){}); } catch (_) {}
         return;
       }
       fullscreenPending = view;
@@ -23712,6 +24636,7 @@ function ftBuilding(b,w){
     });
     oceanLinkRoute(v==='ocean-link');
     frontierRoute(v==='frontier');
+    marketDeskRoute(v==='market-desk');
     bobaRoute(v==='boba');diveRoute(v==='dive');mrtRoute(v==='mrt');pancakeRoute(v==='pancake');rocketRoute(v==='rocket-chair');esRoute(v==='eat-smaller');mtRoute(v==='mirror-twins');srRoute(v==='shadow-relay');olRoute(v==='one-line-defense');ttRoute(v==='tetris');
     DR.last=performance.now();EQ.last=performance.now();
     // The member centre is not a game: analytics treats it like the lobby so no game_view is recorded.
@@ -23731,7 +24656,7 @@ function ftBuilding(b,w){
   document.querySelectorAll('.game-card:not([data-game-hidden])').forEach(function(card) {
     var id = card.hash.slice(1);
     var controls = gameViewControls[id];
-    if (!controls || id === 'mines') return;
+    if (!controls || id === 'mines' || id === 'market-desk') return;
     card.addEventListener('click', function(event) {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey ||
           event.shiftKey || event.altKey) return;

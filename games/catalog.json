@@ -366,5 +366,13 @@
     "card": "games/tetris/card.html",
     "icon": "games/tetris/icon.svg",
     "style": "games/tetris/style.css"
+  },
+  {
+    "id": "market-desk",
+    "logic": "games/market-desk/game.js",
+    "view": "games/market-desk/view.html",
+    "card": "games/market-desk/card.html",
+    "icon": "games/market-desk/icon.svg",
+    "style": "games/market-desk/style.css"
   }
 ]

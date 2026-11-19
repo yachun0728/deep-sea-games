@@ -275,3 +275,7 @@ AN.tick只在原有可見聚焦且engaged的有效時間呼叫deepSeaProgress.ac
 ## Frontier art and immersive HUD update
 
 Frontier draw.js uses two PNG atlases with vector fallback. Optional world.supplies is added by migration without replacing saved materials. The model handles source-debit-first resource pickup, worker hauling, building bonuses and equipment limits; rendering does not award resources. Handheld start/resume requests fullscreen and landscape; unsupported orientation lock uses a pause-and-rotate prompt. The frontier-immersive document class hides platform navigation only during this game's immersive session and is cleared on exit. Profile/wardrobe entry controls are temporarily hidden; data, rewards and storage keys remain intact.
+
+### 收盤之前
+
+`games/market-desk/` 的雙語案件由 `cases.js` 組合進遊戲邏輯。手動點選推進交易日，切換分頁保留當前狀態，路由離開時結束當局。專用儲存鍵 `deep-sea-market-desk-best` 保存結局確認時的最高查證分數（0～100），共用錢包無遊戲交易。
