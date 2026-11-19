@@ -178,6 +178,9 @@ function end(kind,reason){
  else if(!earned)say(CAUSES[reason]+'。'+(L?'你死了，整輪重來，回到第 1 關。':'這一局沒有額外成就獎勵。'),'lose');
  else say(CAUSES[reason]+'。本局共入帳 '+fmt(earned)+' 點。','win');
  ui();
+ if(kind==='won'&&L&&!practice&&!daily&&forceLvl===null&&lvl<100){   // no result page between levels: roll straight into the next one and announce the new terrain
+  const pw=L.wi;forceLvl=lvl+1;start();forceLvl=null;
+  if(st==='run'&&L){fx('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'・'+KIND_NAME[L.kind],CX,150,'#e8c675');if(L.wi!==pw)fx('地形改變',CX,118,'#ffd98a')}}
 }
 function pay(n,text){
  if(practice||daily||(L&&lvl<maxLvl)){say(text+'。','win');return}   // practice and replays of cleared levels pay nothing

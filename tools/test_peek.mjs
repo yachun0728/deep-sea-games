@@ -352,5 +352,10 @@ check('Tail (boss from behind): mash to stay ahead, then hide away from the lung
   const g2=mk();g2.run(3.2);g2.run(6);assert.equal(g2.ev('why'),'tail','no mashing = caught');
   const g3=mk();const s3=g3.ev('ev.side');g3.run(3.2);for(let t=0;t<6.2&&g3.ev("ev&&ev.phase==='chase'");t+=.05){if(Math.round(t*20)%7===0)g3.F.ev('tailPush()');g3.F.update(.05)}g3.hold(s3===1?'r':'l');g3.run(3);assert.equal(g3.ev('why'),'tail','hiding on the lunge side dies');
 });
+check('Clearing a level rolls straight into the next one (no result page); level 100 and replays still stop',()=>{
+  const g=fixture();g.F.ev('forceLvl=5;maxLvl=5;runTop=5;ck=5');g.F.start();g.F.ev('forceLvl=null');assert.equal(g.ev('lvl'),5);
+  g.F.ev('ev=null;gapT=999;prog=99.9;L.left=0');g.run(1);assert.equal(g.ev('st'),'run');assert.equal(g.ev('lvl'),6);assert.equal(g.ev('maxLvl'),6);
+  const h=fixture();h.F.ev('forceLvl=100;maxLvl=100');h.F.start();h.F.ev('ev=null;gapT=999;prog=99.9;L.left=0');h.run(1);assert.equal(h.ev('st'),'won');
+});
 console.log(results.length+' peek checks passed');
 }
