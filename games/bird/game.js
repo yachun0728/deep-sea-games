@@ -10,10 +10,16 @@ const O=(f,w)=>{g.fillStyle=f;g.fill();g.lineWidth=w||4;g.strokeStyle=OL;g.lineJ
 const C=(x,y,r,f,w)=>{g.beginPath();g.arc(x,y,r,0,7);O(f,w||3)};
 const F=(x,y,r,f)=>{g.fillStyle=f;g.beginPath();g.arc(x,y,r,0,7);g.fill()};
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();O(f,lw||3)};
-function tx(s,x,y,sz,col){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-30);g.fillStyle=col;g.fillText(s,x,y,W-30)}
+const displayFont='"Nunito","Noto Sans TC","PingFang TC",system-ui,sans-serif';
+function tx(s,x,y,sz,col){
+ g.save();g.font='900 '+sz+'px '+displayFont;g.textAlign='center';g.lineJoin='round';
+ g.lineWidth=Math.max(2,sz*.115);g.strokeStyle='#42241d';
+ g.strokeText(s,x,y+1,W-32);
+ g.fillStyle=col;g.fillText(s,x,y,W-32);g.restore();
+}
 const CW=[26,34,44];
 /* Art from the approved boards (games/bird/design/); the old canvas drawing stays as fallback until every file has loaded. */
-const ART_NAMES=['hero-run','hero-jump','hero-hit','hero-idle','wolf-runner','wolf-bruiser','wolf-leaper','alpha-normal','alpha-enraged','alpha-exhausted','alpha-hit','alpha-fall','cactus','barrel-cactus','bg-a','bg-b','bg-c','ground-a','ground-b','ground-c'];
+const ART_NAMES=['hero-run-v2','hero-jump-v2','hero-hit-v2','hero-idle-v2','wolf-runner','wolf-bruiser','wolf-leaper','alpha-normal','alpha-enraged','alpha-exhausted','alpha-hit','alpha-fall','cactus','barrel-cactus','bg-a','bg-b','bg-c','ground-a','ground-b','ground-c'];
 const art={};ART_NAMES.forEach(n=>{const i=new Image();i.src='./games/bird/art/'+n+'.webp';art[n]=i});
 let artOk=false;
 const artReady=()=>artOk||(artOk=ART_NAMES.every(n=>art[n].complete&&art[n].naturalWidth>0));
@@ -22,9 +28,19 @@ let biome=0,prevBiome=0,bfade=1,lastLv=0,streak=0;
 /* Phone full screen: the canvas is taller than 560 so it fills the screen; the world stays bottom-aligned, extra rows are sky. */
 const LIFT=90;let VH=H,fs=false;const fsq=matchMedia('(max-width:880px),(pointer:coarse) and (max-width:1100px)');
 function fit(){
- const ok=fsq.matches&&c.clientWidth>0&&c.clientHeight>0;
- const nv=ok?cl(Math.round(W*c.clientHeight/c.clientWidth),H,1000):H;
- fs=ok;if(c.height!==nv)c.height=nv;VH=nv;PB.y=VH-55}
+ const width=c.clientWidth,height=c.clientHeight;
+ if(!width||!height)return;
+ fs=fsq.matches;VH=fs?Math.max(H,Math.round(W*height/width)):H;PB.y=VH-55;
+ const dpr=Math.min(window.devicePixelRatio||1,3);
+ const pixelsWide=Math.round(width*dpr),pixelsHigh=Math.round(height*dpr);
+ if(c.width!==pixelsWide)c.width=pixelsWide;
+ if(c.height!==pixelsHigh)c.height=pixelsHigh;
+ g.setTransform(c.width/W,0,0,c.height/VH,0,0);
+ g.imageSmoothingQuality='high';
+}
+// Distance drives the gait so a planted foot travels with the track.
+const STRIDE=84,DUST_LIFE=.34;
+let gait=0,dust=[];
 let st='ready',bird=birdRules.create(),hid=-1,fxs=[],tt=0,shake=0,rec=false,last=0;
 const birdRank=timedLeaderboard('bird','pb',birdRules.inputCount,ui,null,{canvas:'pb-canvas'});
 const score=()=>birdRules.score(bird);
@@ -51,7 +67,9 @@ function update(dt){
  tt+=dt;if(shake>0)shake-=dt;if(bfade<1)bfade=Math.min(1,bfade+dt/1.2);
  fxs.forEach(f=>{f.t+=dt});fxs=fxs.filter(f=>f.t<.8);
  if(st!=='run')return;
+ const before=bird.dist,wasGrounded=bird.on;
  bird.advance(dt);
+ if(!reduceMotion)updateRunEffects(dt,bird.dist-before,wasGrounded);
  if(bird.level!==lastLv){lastLv=bird.level;streak=1}
  if(streak>0)streak=Math.max(0,streak-dt/1.2);
  if(bird.dead)die();
@@ -64,15 +82,44 @@ function birdEvent(event,alpha){
  fxs.push({x:W/2,y:200,t:0,s:'{{t:bird.msg.005}}'+BOSS_REWARD+' 點'});
  say('擊退狼王！救回第 '+bird.eggs+' 顆蛋，+'+BOSS_REWARD+' 點已入帳。','win');
 }
-function drawPoop(x,y,s,rot){
-g.save();g.translate(x,y);if(rot)g.rotate(rot);g.scale(s,s);const w=4/s;
-g.beginPath();g.ellipse(0,-12,34,18,0,0,7);O('#8d5524',w);
-g.beginPath();g.ellipse(0,-34,26,15,0,0,7);O('#8d5524',w);
-g.beginPath();g.ellipse(0,-52,17,12,0,0,7);O('#8d5524',w);
-g.beginPath();g.moveTo(-6,-60);g.quadraticCurveTo(0,-82,8,-62);g.closePath();O('#8d5524',w);
-C(-9,-34,5.5,'#fff',2/s);C(9,-34,5.5,'#fff',2/s);F(-8,-34,2.6,OL);F(10,-34,2.6,OL);
-g.strokeStyle=OL;g.lineWidth=2.5/s;g.beginPath();g.arc(0,-28,6,.2,Math.PI-.2);g.stroke();
-g.restore()}
+function drawPoop(x,y,s,rot=0){
+ g.save();g.translate(x,y);g.rotate(rot);g.scale(s,s);
+ const glaze=g.createLinearGradient(0,-65,0,0);
+ glaze.addColorStop(0,'#f6bb72');glaze.addColorStop(.5,'#a65b2b');glaze.addColorStop(1,'#66301e');
+ g.beginPath();g.moveTo(-24,-3);
+ g.bezierCurveTo(-42,-7,-38,-24,-23,-27);
+ g.bezierCurveTo(-30,-37,-21,-46,-12,-46);
+ g.bezierCurveTo(-16,-56,0,-57,3,-69);
+ g.bezierCurveTo(12,-68,17,-57,11,-50);
+ g.bezierCurveTo(27,-47,29,-34,21,-28);
+ g.bezierCurveTo(40,-23,42,-7,25,-3);
+ g.quadraticCurveTo(0,2,-24,-3);g.closePath();
+ g.fillStyle=glaze;g.fill();g.strokeStyle='#492316';g.lineWidth=4;g.lineJoin='round';g.stroke();
+ g.beginPath();g.moveTo(-22,-20);g.quadraticCurveTo(-13,-28,6,-23);
+ g.moveTo(-12,-38);g.quadraticCurveTo(-4,-43,6,-41);
+ g.strokeStyle='#ffc786';g.lineWidth=3.5;g.lineCap='round';g.stroke();g.restore();
+}
+function drawAttackButton(){
+ const {x,y,r}=PB;
+ const plate=g.createLinearGradient(x,y-r,x,y+r);
+ const cooling=bird.pcd>0;
+ plate.addColorStop(0,cooling?'#77574b':'#ffd27e');
+ plate.addColorStop(.16,cooling?'#634239':'#c78245');
+ plate.addColorStop(1,'#52281f');
+ g.save();
+ F(x,y+4,r+1,'rgba(57,26,19,.55)');
+ F(x,y,r,plate);
+ g.strokeStyle='#4a261c';g.lineWidth=3;g.stroke();
+ g.beginPath();g.arc(x,y,r-5,0,Math.PI*2);
+ g.strokeStyle=cooling?'#947560':'#ffca7c';g.lineWidth=2;g.stroke();
+ for(const side of [-1,1])F(x+side*(r-10),y,2.2,'#f2b477');
+ drawPoop(x,y+22,.64);
+ if(cooling){
+  g.beginPath();g.arc(x,y,r-4,-Math.PI/2,-Math.PI/2+Math.PI*2*cl(1-bird.pcd/.3,0,1));
+  g.strokeStyle='#ffe0a0';g.lineWidth=4;g.lineCap='round';g.stroke();
+ }
+ g.restore();
+}
 function drawBird(air){
 const sw=air?0:Math.sin(tt*18)*7;g.lineCap='round';
 const leg=(lx,d)=>{g.beginPath();g.moveTo(lx,-8);g.lineTo(lx+d,0);g.strokeStyle=OL;g.lineWidth=9;g.stroke();g.strokeStyle='#ff9f1c';g.lineWidth=4;g.stroke()};
@@ -97,7 +144,7 @@ C(8,-40,16,col);
 g.beginPath();g.ellipse(-8,-34,10,7,0,0,7);O('#e9ecef');F(-16,-38,3.5,OL);F(-8,-27,3,'#ff4d6d');
 C(6,-45,5,'#fff',2);F(4,-45,2.5,'#d00000');
 g.strokeStyle=OL;g.lineWidth=3;g.beginPath();g.moveTo(-3,-55);g.lineTo(13,-49);g.stroke();
-if(al){g.beginPath();g.moveTo(-4,-54);g.lineTo(-2,-70);g.lineTo(4,-61);g.lineTo(8,-74);g.lineTo(12,-61);g.lineTo(18,-70);g.lineTo(20,-54);g.closePath();O('#ffd23f',3);g.strokeStyle='#d00000';g.lineWidth=2.5;g.beginPath();g.moveTo(1,-52);g.lineTo(11,-38);g.stroke()}}
+if(al){g.beginPath();g.moveTo(-4,-54);g.lineTo(-2,-70);g.lineTo(4,-61);g.lineTo(8,-74);g.lineTo(12,-61);g.lineTo(18,-70);g.lineTo(20,-54);g.closePath();O('#ffcb64',3);g.strokeStyle='#d00000';g.lineWidth=2.5;g.beginPath();g.moveTo(1,-52);g.lineTo(11,-38);g.stroke()}}
 function drawCactus(o){
 const x=o.x,h=o.h,w=CW[o.s];
 RR(x,GY-h,w,h,w/2,'#06d6a0');
@@ -127,11 +174,69 @@ function drawWorld(){
   g.globalAlpha=1};
  if(bfade<1)layer(prevBiome,1);
  layer(biome,bfade<1?bfade:1)}
+function updateRunEffects(dt,distance,wasGrounded){
+ for(const puff of dust)puff.age+=dt;
+ dust=dust.filter(puff=>puff.age<DUST_LIFE);
+ if(!bird.on)return;
+ // On landing, start at contact and let subsequent steps alternate.
+ const previous=gait;
+ gait=wasGrounded?gait+distance:0;
+ if(!wasGrounded||Math.floor(gait/(STRIDE/2))!==Math.floor(previous/(STRIDE/2))){
+  dust.push({worldX:bird.dist+BX+(wasGrounded?24:0),age:0,landing:!wasGrounded});
+ }
+}
+function drawRunDust(){
+ const shades=['#ffd59a','#efb4b5','#ffc395'];
+ for(const puff of dust){
+  const life=puff.age/DUST_LIFE,x=puff.worldX-bird.dist;
+  const size=(puff.landing?1.35:1)*(0.65+life*.85);
+  g.globalAlpha=.46*(1-life)**2;
+  for(let i=0;i<3;i++){
+   F(x-i*(5+life*6),GY-3-life*(5+i*2),size*(3+i*1.8),shades[biome]);
+  }
+ }
+ g.globalAlpha=1;
+}
+function drawRunningLeg(phase,hipX,hipY,far){
+ // First half: plant and sweep backward. Second half: lift and swing forward.
+ const planted=phase<.5,t=planted?phase*2:(phase-.5)*2;
+ const ankleX=(planted?1-2*t:-Math.cos(t*Math.PI))*STRIDE/4;
+ const ankleY=-4-(planted?0:Math.sin(t*Math.PI)*14);
+ const kneeX=(hipX+ankleX)/2+5,kneeY=(hipY+ankleY)/2-2;
+ g.save();g.lineCap='round';g.lineJoin='round';
+ g.beginPath();g.moveTo(hipX,hipY);g.lineTo(kneeX,kneeY);g.lineTo(ankleX,ankleY);
+ g.strokeStyle='#773018';g.lineWidth=7;g.stroke();
+ g.strokeStyle=far?'#d36520':'#ff9c2d';g.lineWidth=4.2;g.stroke();
+ g.translate(ankleX,ankleY);
+ if(!planted)g.rotate(-Math.sin(t*Math.PI)*.62);
+ // Narrow ankle, a short rear toe and two forward toes readable at game scale.
+ g.beginPath();g.moveTo(-2,-4);g.quadraticCurveTo(1,-5,2,-3);
+ g.quadraticCurveTo(3,-1,6,-2);g.quadraticCurveTo(10,-5,12,-3);
+ g.quadraticCurveTo(14,-1,9,1);
+ g.quadraticCurveTo(15,-1,15,2);g.quadraticCurveTo(14,4,10,4);
+ g.lineTo(3,4);g.quadraticCurveTo(0,4,-1,2);
+ g.quadraticCurveTo(-5,5,-7,3);g.quadraticCurveTo(-8,1,-4,0);
+ g.quadraticCurveTo(-2,-1,-2,-4);g.closePath();
+ const toe=g.createLinearGradient(0,-4,0,4);
+ toe.addColorStop(0,far?'#e28127':'#ffc453');toe.addColorStop(1,far?'#a94113':'#da6a1c');
+ g.fillStyle=toe;g.fill();g.strokeStyle='#773018';g.lineWidth=1.25;g.stroke();
+ g.beginPath();g.moveTo(5,1);g.quadraticCurveTo(7,1,9,0);
+ g.strokeStyle=far?'#9a411b':'#bf5c20';g.lineWidth=.9;g.stroke();
+ g.restore();
+}
 function drawHero(){
- const run=st==='run',n=!run?(st==='over'?'hero-hit':'hero-idle'):(bird.on?'hero-run':'hero-jump');
- const h={'hero-run':64,'hero-jump':80,'hero-hit':72,'hero-idle':92}[n];
- const bob=n==='hero-run'&&!reduceMotion?-Math.abs(Math.sin(tt*14))*4:0;
- spr(n,n==='hero-run'?-2:0,bob,h)}
+ if(st==='run'&&bird.on){
+  const phase=reduceMotion?.17:gait%STRIDE/STRIDE;
+  const bob=reduceMotion?0:-Math.abs(Math.sin(phase*Math.PI*2))*2.5;
+  drawRunningLeg((phase+.5)%1,-1,-19+bob,true);
+  drawRunningLeg(phase,8,-18+bob,false);
+  spr('hero-run-v2',-2,-13+bob,54);
+  return;
+ }
+ if(st==='run')spr('hero-jump-v2',0,0,80);
+ else if(st==='over')spr('hero-hit-v2',0,0,72);
+ else spr('hero-idle-v2',0,0,92);
+}
 function drawWolfArt(o){
  const bob=reduceMotion?0:-Math.abs(Math.sin(tt*13+o.x*.05))*3;
  if(o.k==='a'){
@@ -170,9 +275,10 @@ if(A)drawWolfArt(o);else drawWolf(tt,o.k==='a'?'#8d99ae':'#adb5bd',o.k==='a');g.
 if(!o.dead){
 if(o.k==='w')label(o.x+27*o.sc,o.y-80*o.sc,o.s,0);
 else{label(o.x+60,o.y-200,0,1);for(let i=0;i<3;i++)C(o.x+30+i*28,o.y-218,8,i<o.hp?'#e63946':'#fff1c1',3)}}}}
+drawRunDust();
 bird.proj.forEach(p=>drawPoop(p.x,p.y+14,.4,tt*10));
 g.save();g.translate(BX,bird.by);g.scale(1+bird.sq*.4,1-bird.sq*.4);if(A)drawHero();else drawBird(!bird.on);g.restore();
-fxs.forEach(f=>{g.globalAlpha=1-f.t/.8;tx(f.s,f.x,f.y-f.t*50,24,'#ffd23f');g.globalAlpha=1});
+fxs.forEach(f=>{g.globalAlpha=1-f.t/.8;tx(f.s,f.x,f.y-f.t*50,24,'#ffcb64');g.globalAlpha=1});
 if(streak>0&&!reduceMotion){g.globalAlpha=.55*Math.min(1,streak*2);g.strokeStyle='#fff';g.lineWidth=2;g.lineCap='round';
 for(let i=0;i<9;i++){const y=-ex+((i*97+tt*700)%(VH-60))+20,x=((i*151-tt*1500)%520+520)%520-60;g.beginPath();g.moveTo(x,y);g.lineTo(x+70+i%3*30,y);g.stroke()}g.globalAlpha=1}
 g.restore();
@@ -180,13 +286,12 @@ const s=score();
 if(!fs){tx(s+' m',W/2,62,40,'#fff1c1');
 drawEgg(24,40);tx('x'+bird.eggs,56,48,20,'#fff1c1');
 tx('最佳 '+best+' m',W-70,34,16,'#fff1c1')}
-if(bird.warnT>0&&st==='run')tx('{{t:bird.msg.006}}',W/2,fs?ex+170:150,26,'#ff5d8f');
-if(!fs||st==='run'){C(PB.x,PB.y,PB.r,bird.pcd>0?'#d9c9a3':'#fff1c1',4);drawPoop(PB.x,PB.y+20,.5);
-if(bird.pcd>0){g.strokeStyle='#ff5d8f';g.lineWidth=5;g.beginPath();g.arc(PB.x,PB.y,PB.r+7,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-bird.pcd/.3));g.stroke()}}
+if(bird.warnT>0&&st==='run')tx('{{t:bird.msg.006}}',W/2,fs?ex+170:150,26,'#ff886a');
+if(st==='run')drawAttackButton();
 if(st!=='run'){
-g.fillStyle='rgba(27,27,47,.55)';g.fillRect(0,0,W,VH);
-if(st==='ready'){tx('{{t:bird.msg.007}}',W/2,200,32,'#ffd23f');tx('{{t:bird.msg.008}}',W/2,252,19,'#fff1c1');tx('{{t:bird.msg.009}}',W/2,282,19,'#fff1c1');tx('{{t:bird.msg.010}}',W/2,340,24,'#ffd23f')}
-else{tx('{{t:bird.msg.011}}',W/2,180,32,'#ff5d8f');tx(s+' m',W/2,244,50,'#fff1c1');tx('{{t:bird.msg.012}}'+bird.eggs+' 隻',W/2,284,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'{{t:bird.msg.013}}',W/2,320,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('{{t:bird.msg.014}}',W/2,352,20,'#ffd23f');tx('{{t:bird.msg.015}}',W/2,396,20,'#fff1c1')}}}
+g.fillStyle='rgba(44,26,36,.56)';g.fillRect(0,0,W,VH);
+if(st==='ready'){tx('{{t:bird.msg.007}}',W/2,200,32,'#ffcb64');tx('{{t:bird.msg.008}}',W/2,252,19,'#fff1c1');tx('{{t:bird.msg.009}}',W/2,282,19,'#fff1c1');tx('{{t:bird.msg.010}}',W/2,340,24,'#ffcb64')}
+else{tx('{{t:bird.msg.011}}',W/2,180,32,'#ff886a');tx(s+' m',W/2,244,50,'#fff1c1');tx('{{t:bird.msg.012}}'+bird.eggs+' 隻',W/2,284,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'{{t:bird.msg.013}}',W/2,320,22,earned>0?'#ffcb64':'#fff1c1');if(rec)tx('{{t:bird.msg.014}}',W/2,352,20,'#ffcb64');tx('{{t:bird.msg.015}}',W/2,396,20,'#fff1c1')}}}
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
@@ -194,7 +299,7 @@ function start(){
  birdRank.start(random=>{
   bird=birdRules.create(random||Math.random,birdEvent);
   analytics=AN.start('bird',amount);birdStake=amount;birdBusy=true;save();renderAll();
-  earned=0;fxs=[];shake=0;rec=false;hid=-1;biome=0;prevBiome=0;bfade=1;lastLv=0;streak=0;st='run';last=performance.now();say('{{t:bird.msg.016}}');ui();c.focus();
+  earned=0;fxs=[];dust=[];gait=0;shake=0;rec=false;hid=-1;biome=0;prevBiome=0;bfade=1;lastLv=0;streak=0;st='run';last=performance.now();say('{{t:bird.msg.016}}');ui();c.focus();
  });
 }
 function pos(e){const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*VH/r.height}}

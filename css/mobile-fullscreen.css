@@ -5,8 +5,7 @@
 #view-sneak{--ar:.6667;--hud:88px;--fs-bg:#1d2036}
 #view-fishing{--ar:.9286;--hud:140px;--fs-bg:#06263a}
 #view-dream{--ar:1.0833;--hud:52px;--fs-bg:#0b1a33}
-#view-cat{--ar:.7143;--hud:52px;--fs-bg:#12203a}
-#view-bird{--ar:.7143;--hud:0px;--fs-bg:#12203a}
+#view-bird,#view-cat{--ar:.7143;--hud:52px;--fs-bg:#12203a}
 #view-reaper{--ar:.7143;--hud:96px;--fs-bg:#1b1630}
 #view-elevator{--ar:.8966;--hud:132px;--fs-bg:#101d2e}
 #view-frog,#view-nap,#view-pudding,#view-clock-out,#view-carp{--ar:.7143;--hud:52px;--fs-bg:#12203a}
@@ -20,7 +19,6 @@
   .view:not([hidden]) .fs-game{position:fixed;inset:0;z-index:1200;display:block;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:calc(env(safe-area-inset-top) + var(--hud,52px)) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + var(--reserve,0px)) env(safe-area-inset-left);background:var(--fs-bg,#0b1626);overscroll-behavior:none;-webkit-touch-callout:none}
   .view:not([hidden]) .fs-game>:first-child{position:relative;display:flex;justify-content:center;align-items:flex-start;width:100%;height:100%;margin:0;border:0;border-radius:0;background:none;overflow:visible}
   .view:not([hidden]) .fs-game>:first-child canvas{width:min(100%,calc((100dvh - env(safe-area-inset-top) - var(--hud,52px) - env(safe-area-inset-bottom) - var(--reserve,0px)) * var(--ar,.6667)));height:auto;max-height:none;object-fit:fill}
-  #view-bird:not([hidden]) .fs-game .sneak-stage canvas{width:100%;height:100%}
   .view:not([hidden]) .fs-game>:first-child iframe{width:100%;height:100%;max-width:none;min-height:0;aspect-ratio:auto;border:0}
   .fs-game .panel>p:not([class]):not([id]){display:none}
   #view-breakout #br-pause:not(:disabled){position:absolute;z-index:4;right:calc(env(safe-area-inset-right) + 12px);bottom:calc(env(safe-area-inset-bottom) + 16px);min-width:64px;min-height:64px}
@@ -70,4 +68,36 @@
   #view-pancake .pancake-stage{flex:1;min-height:0;border:0;border-radius:0}
   #view-pancake .pancake-stage iframe{width:100%;height:100%;min-height:0;max-width:none}
   #view-pancake~.rules{display:none}
+}
+
+/* The bird canvas backing size follows display pixels. Its CSS size is independent. */
+#view-bird #pb-canvas{aspect-ratio:5/7;outline-offset:-3px}
+#pb-canvas:focus:not(:focus-visible){outline:none}
+#view-bird .stats,#view-bird .stats dd,#view-bird #pb-go{
+  font-family:"Nunito","Noto Sans TC","PingFang TC",system-ui,sans-serif;
+  font-weight:900;
+}
+#view-bird .stats dt{color:#ffda9c}
+#view-bird .stats dd{color:#fff3d8}
+#view-bird #pb-go:not(:disabled){
+  color:#42241d;background:linear-gradient(#ffdc8e,#ed9c43);
+  border:2px solid #854520;box-shadow:0 3px 0 #52281f;
+}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  #view-bird:not([hidden]) .fs-game .sneak-stage #pb-canvas{height:100%;aspect-ratio:auto}
+  #view-bird .fs-game{--fs-bg:#472a25}
+  #view-bird .stats>div{background:#623a2b;box-shadow:inset 0 0 0 1px #a76740}
+  #view-bird .fs-exit{background:#623a2b;border-color:#a76740;color:#fff3d8}
+  #view-bird .fs-game:has(.share-result:not([hidden])) .mobile-stage-actions{
+    left:12px;right:calc(50% + 4px);
+  }
+  #view-bird .fs-game:has(.share-result:not([hidden])) #pb-go:not(:disabled){width:100%;min-width:0;min-height:48px}
+  #view-bird .fs-game:has(.share-result:not([hidden])) .side #pb-go:not(:disabled){
+    left:12px;transform:none;width:calc(50% - 16px);
+  }
+  #view-bird .fs-game .share-result:not([hidden]){
+    left:calc(50% + 4px);transform:none;width:calc(50% - 16px);
+    border-color:#a76740;background:#623a2b;color:#fff3d8;
+  }
+  #view-bird .share-result i{color:#ffda9c}
 }

@@ -7,7 +7,7 @@
 - 網址：`#bird`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「跳過仙人掌和狼群，用便便把狼王打跑。」｜立即開玩 · 狼王挑戰
 - 追蹤名稱（GA4 `game_name`）：便便鳥大戰狼群，`game_id` 為 `bird`
-- 檔案：`games/bird/card.html`、`games/bird/cover.webp`、`games/bird/game.js`、`games/bird/icon.svg`、`games/bird/leaderboard.webp`、`games/bird/view.html`；`game.js` 共 231 行、15.2 KB
+- 檔案：`games/bird/card.html`、`games/bird/cover.webp`、`games/bird/game.js`、`games/bird/icon.svg`、`games/bird/leaderboard.webp`、`games/bird/view.html`；`game.js` 共 336 行、19.0 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「20. Poop Bird vs Wolves（bird）」（下方「規則摘要」已複製）
 
@@ -19,12 +19,13 @@
 
 - 狀態物件／進行中旗標：`birdBusy`（L2）
 - L5 常數：`BOSS_REWARD`
-- L16 常數：`ART_NAMES`
-- L23 常數：`LIFT`
+- L22 常數：`ART_NAMES`
+- L29 常數：`LIFT`
+- L42 常數：`STRIDE`、`DUST_LIFE`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`cl` L8、`O` L9、`C` L10、`F` L11、`RR` L12、`tx` L13、`artReady` L19、`spr` L20、`fit` L24、`score` L30、`say` L31、`setText` L33、`ui` L34、`die` L39、`update` L50、`birdEvent` L59、`drawPoop` L67、`drawBird` L76、`leg` L78、`drawWolf` L88、`drawCactus` L101、`label` L108、`drawEgg` L115、`drawWorld` L116、`layer` L118、`drawHero` L130、`drawWolfArt` L135、`drawCactusArt` L143、`draw` L148、`start` L190、`pos` L200、`input` L201、`down` L202、`release` L203、`shoot` L204、`loop` L223
+`cl` L8、`O` L9、`C` L10、`F` L11、`RR` L12、`tx` L14、`artReady` L25、`spr` L26、`fit` L30、`score` L46、`say` L47、`setText` L49、`ui` L50、`die` L55、`update` L66、`birdEvent` L77、`drawPoop` L85、`drawAttackButton` L102、`drawBird` L123、`leg` L125、`drawWolf` L135、`drawCactus` L148、`label` L155、`drawEgg` L162、`drawWorld` L163、`layer` L165、`updateRunEffects` L177、`drawRunDust` L188、`drawRunningLeg` L200、`drawHero` L227、`drawWolfArt` L240、`drawCactusArt` L248、`draw` L253、`start` L295、`pos` L305、`input` L306、`down` L307、`release` L308、`shoot` L309、`loop` L328
 
 ## 錢包與結算接點
 
@@ -32,20 +33,20 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L62 `birdEvent`：`S.balance+=BOSS_REWARD;`
+- L80 `birdEvent`：`S.balance+=BOSS_REWARD;`
 
 **餘額檢查**
-- L193 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L298 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L44 `die`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:s,bosses:bird.eggs});`
-- L60 `birdEvent`：`AN.progress(analytics,{stage:bird.eggs+1,step:score(),phase:'alpha'});`
-- L63 `birdEvent`：`AN.progress(analytics,{step:score(),score:score(),bosses:bird.eggs,bonus_points:BOSS_REWARD});`
-- L196 `start`：`analytics=AN.start('bird',amount);`
+- L60 `die`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:s,bosses:bird.eggs});`
+- L78 `birdEvent`：`AN.progress(analytics,{stage:bird.eggs+1,step:score(),phase:'alpha'});`
+- L81 `birdEvent`：`AN.progress(analytics,{step:score(),score:score(),bosses:bird.eggs,bonus_points:BOSS_REWARD});`
+- L301 `start`：`analytics=AN.start('bird',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
