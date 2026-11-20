@@ -347,10 +347,10 @@ const LANG_LABEL = { tw: '繁中', en: 'EN', cn: '简中' };
         timeoutSub: '時間到了。下次試試先排除明顯錯誤的選項。',
         finalCredits: '最終學分', statStages: '通關進度', statAcc: '答題正確率', statLife: '使用錦囊', statBonus: '本局 BONUS',
         stagesVal: '{0} / {1} 關', lifeVal: '{0} / 3 個', bonusVal: '{0} 點',
-        rankTitle: '訪客排行榜', rankNote: '依最終學分排序，同分先達成者在前。成績由伺服器重播驗證。', rankLoading: '載入排行榜中…',
-        rankEmpty: '目前還沒有排行榜紀錄。', rankFail: '目前無法載入排行榜。', close: '關閉', guest: '訪客', unit: '學分',
+        rankTitle: '訪客排行榜', rankNote: '依通過關數排序，同關數先達成者在前。成績由伺服器重播驗證。', rankLoading: '載入排行榜中…',
+        rankEmpty: '目前還沒有排行榜紀錄。', rankFail: '目前無法載入排行榜。', close: '關閉', guest: '訪客', unit: '學分', boardStage: '通過 {0} 關',
         rsLocal: '這一局只在本機遊玩，排行榜暫時連不上。', rsSending: '正在驗證排行榜成績…', rsDone: '成績已送到排行榜。',
-        rsFail: '排行榜成績未能送出。', rsRetry: '重新送出', rsZero: '沒有學分的局不會送上排行榜。',
+        rsFail: '排行榜成績未能送出。', rsRetry: '重新送出', rsZero: '沒有通過任何一關的局不會送上排行榜。',
         langName: '繁中'
       },
       en: {
@@ -388,10 +388,10 @@ const LANG_LABEL = { tw: '繁中', en: 'EN', cn: '简中' };
         timeoutSub: 'Time ran out. Next time, rule out the obvious wrong answers first.',
         finalCredits: 'Final credits', statStages: 'Stages cleared', statAcc: 'Accuracy', statLife: 'Lifelines used', statBonus: 'BONUS this run',
         stagesVal: '{0} / {1}', lifeVal: '{0} / 3', bonusVal: '{0} pt',
-        rankTitle: 'Guest leaderboard', rankNote: 'Ranked by final credits; ties go to whoever got there first. Scores are replay-verified by the server.', rankLoading: 'Loading leaderboard…',
-        rankEmpty: 'No leaderboard entries yet.', rankFail: 'The leaderboard can’t be loaded right now.', close: 'Close', guest: 'Guest', unit: 'credits',
+        rankTitle: 'Guest leaderboard', rankNote: 'Ranked by stages cleared; ties go to whoever got there first. Scores are replay-verified by the server.', rankLoading: 'Loading leaderboard…',
+        rankEmpty: 'No leaderboard entries yet.', rankFail: 'The leaderboard can’t be loaded right now.', close: 'Close', guest: 'Guest', unit: 'credits', boardStage: '{0} stages cleared',
         rsLocal: 'This run is local only; the leaderboard is unreachable.', rsSending: 'Verifying your leaderboard score…', rsDone: 'Score sent to the leaderboard.',
-        rsFail: 'The leaderboard score could not be sent.', rsRetry: 'Send again', rsZero: 'Runs with zero credits are not sent to the leaderboard.',
+        rsFail: 'The leaderboard score could not be sent.', rsRetry: 'Send again', rsZero: 'Runs that clear no stage are not sent to the leaderboard.',
         langName: 'EN'
       },
       cn: {
@@ -429,10 +429,10 @@ const LANG_LABEL = { tw: '繁中', en: 'EN', cn: '简中' };
         timeoutSub: '时间到了。下次试试先排除明显错误的选项。',
         finalCredits: '最终学分', statStages: '通关进度', statAcc: '答题正确率', statLife: '使用锦囊', statBonus: '本局 BONUS',
         stagesVal: '{0} / {1} 关', lifeVal: '{0} / 3 个', bonusVal: '{0} 点',
-        rankTitle: '访客排行榜', rankNote: '按最终学分排序，同分先达成者在前。成绩由服务器重放验证。', rankLoading: '加载排行榜中…',
-        rankEmpty: '目前还没有排行榜记录。', rankFail: '目前无法加载排行榜。', close: '关闭', guest: '访客', unit: '学分',
+        rankTitle: '访客排行榜', rankNote: '按通过关数排序，同关数先达成者在前。成绩由服务器重放验证。', rankLoading: '加载排行榜中…',
+        rankEmpty: '目前还没有排行榜记录。', rankFail: '目前无法加载排行榜。', close: '关闭', guest: '访客', unit: '学分', boardStage: '通过 {0} 关',
         rsLocal: '这一局只在本机游玩，排行榜暂时连不上。', rsSending: '正在验证排行榜成绩…', rsDone: '成绩已送到排行榜。',
-        rsFail: '排行榜成绩未能送出。', rsRetry: '重新送出', rsZero: '没有学分的局不会送上排行榜。',
+        rsFail: '排行榜成绩未能送出。', rsRetry: '重新送出', rsZero: '没有通过任何一关的局不会送上排行榜。',
         langName: '简中'
       }
     };

@@ -70,7 +70,7 @@
 - **BONUS（固定、與學分無關）：** 每局每關首次通過 +1 點，最多 10 點，答對當下入帳一次，結束與結束挑戰不再結算。不以學分換算點數：學分逐關倍增，換算會變成返還倍率，違反全站不得有博弈元素的原則。
 - 追蹤：`AN.start('academy', 0)`、每題 `progress`、結束 `complete`（至少通過一關）或 `loss`、離頁 `abandoned`，payout 為本局 BONUS。
 - 儲存：新 Key `deep-sea-academy-best`（最佳學分）與 `deep-sea-academy-prefs-v1`（語言、計時、音效）。
-- 排行榜：Worker 註冊 `academy`（`backend/src/services/ranked-boards.mjs`）。開局取得種子，前端與 Worker 共用狀態機；送出的操作碼為 0–4 選領域、5 隨機盲盒、10／11／12 錦囊、20–23 作答、24 超時、30 結束挑戰。Worker 重播並要求恰在最後一個操作結束，成績為最終學分（0 學分不送出）。同分先達成者在前。沿用訪客榜 `game_leaderboard`，無新 migration。已知限制：種子與題庫在前端，合法的自動作答無法排除，同青蛙吃蟲、收盤之前。
+- 排行榜：Worker 註冊 `academy`（`backend/src/services/ranked-boards.mjs`）。開局取得種子，前端與 Worker 共用狀態機；送出的操作碼為 0–4 選領域、5 隨機盲盒、10／11／12 錦囊、20–23 作答、24 超時、30 結束挑戰。Worker 重播並要求恰在最後一個操作結束，排行成績為通過的關數（0–10，不是學分；通過 0 關不送出）。同分先達成者在前。沿用訪客榜 `game_leaderboard`，無新 migration。已知限制：種子與題庫在前端，合法的自動作答無法排除，同青蛙吃蟲、收盤之前。
 - 題庫修訂：原稿多數正解在 B，已在三語題庫內重排為平均分布；移除第 99 題「本遊戲背後的技術」的不實描述。
 - 測試：`node tools/test_academy.mjs`（規則、題庫、Worker 指令）；`python3 tools/check_i18n_browser.py --suite academy`（桌面與 390px 流程、語言、BONUS 單次、離頁）。
 

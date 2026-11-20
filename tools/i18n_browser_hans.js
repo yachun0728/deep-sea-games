@@ -36,6 +36,13 @@
       var c=left(view);if(c)bad.push(ids[k]+':'+c);
     }
     assert(!bad.length,'Game views have no Traditional-only characters: '+bad.join(' '));
+    // text a game writes itself (data-i18n-ignore) converts too, and is restored when leaving Simplified
+    location.hash='#tetris';await settle(250);
+    var msg=document.getElementById('tt-msg');
+    assert(msg&&msg.textContent.indexOf('开始')>=0&&msg.textContent.indexOf('開始')<0,'Game-owned message is simplified: '+(msg&&msg.textContent));
+    i.setLanguage('zh-Hant');await settle();
+    assert(msg.textContent.indexOf('開始')>=0&&msg.textContent.indexOf('开始')<0,'Game-owned message is restored in Traditional: '+msg.textContent);
+    i.setLanguage('zh-Hans');await settle();
     assert(!errors.length,'No browser runtime errors: '+JSON.stringify(errors));
     document.body.dataset.testStatus='PASS';
   }catch(e){document.body.dataset.testStatus='FAIL';results.push(e.stack)}
