@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="145" height="118" viewBox="18 18 145 118"><defs>
+
+  <linearGradient id="truck" x2="0" y2="1"><stop stop-color="#fff5db"/><stop offset="1" stop-color="#efbd8d"/></linearGradient>
+  </defs> <g transform="translate(0 0)">
+  <g stroke="#2e2447" stroke-width="4.5" stroke-linejoin="round">
+   <path d="M108 72h24q4 0 6 4l20 25v19h-50z" fill="url(#truck)"/>
+   <rect x="23" y="60" width="89" height="60" rx="9" fill="url(#truck)"/>
+   <path d="M67 60l5-13h18l5 13" fill="#a88eae"/>
+   <path d="M60 39a6 6 0 0 1 6-6h16l24-9v30l-24-8H66a6 6 0 0 1-6-7z" fill="#ffdfa4"/>
+   <ellipse cx="106" cy="39" rx="5.5" ry="15" fill="#dc846d"/>
+  </g>
+  <path d="M118 79h13l12 16h-25z" fill="#404b75"/><path d="M120 81h8l-8 10z" fill="#9dc5d0"/>
+  <rect x="31" y="68" width="71" height="31" rx="6" fill="#c33e4a"/>
+  <path d="M43 83h14m24 0h9" stroke="#ffc880" stroke-width="3" stroke-linecap="round"/>
+  <path d="m69 75 2.6 5.5 6 .8-4.4 4.2 1 6-5.2-2.8-5.3 2.8 1-6-4.4-4.2 6-.8z" fill="#fff1be"/>
+  <path d="M24 106h133v7H24z" fill="#c54452"/><path d="M25 113h133v6H25z" fill="#3a5685"/>
+  <path d="M150 101h7v6h-7z" fill="#ffe8a0"/>
+  <g fill="#231b38"><circle cx="49" cy="120" r="13"/><circle cx="134" cy="120" r="13"/></g>
+  <g fill="#bea5be"><circle cx="49" cy="120" r="5"/><circle cx="134" cy="120" r="5"/></g>
+ </g>
+</svg>
