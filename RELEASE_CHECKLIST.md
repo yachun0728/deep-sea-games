@@ -72,6 +72,7 @@ git diff --check
 ## 6. 提交、推送與正式站確認
 
 - [ ] 有使用者提交／推送授權才發布。先 fetch 並比較遠端分支；遠端較新時保留其變更，禁止強推覆蓋。
+- [ ] 推送前檢查最新版：合併／rebase 最新 `origin/main` 後重新 build 並 `--check`；以 `git diff origin/main -- games/elevator/` 確認插隊封面與排行榜圖示（`queue-cutter-cover.webp`、`queue-cutter-leaderboard.webp`）及其他素材未被舊版覆蓋或還原。
 - [ ] 有其他未提交修改時，以乾淨暫存 checkout 或 worktree 整合授權內容；以實際要提交的版本重新組合及驗證，不能把髒工作樹的 index.html 直接夾帶上線。
 - [ ] 檢視 staged diff，確認只含授權來源、必要相依文件與同步產出；不提交 .DS_Store、暫存、個資或其他遊戲修改。
 - [ ] 推送後記錄 commit SHA 與分支；Git push 成功只代表遠端收到，不代表 GitHub Pages 已完成部署。
