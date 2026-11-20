@@ -163,7 +163,7 @@ def main():
                 chrome.call('Emulation.setDeviceMetricsOverride', {'width': width, 'height': height, 'deviceScaleFactor': 1, 'mobile': width < 880}, page=True)
                 if suite == 'core':
                     total += chrome.check(page, '?probe=default', 'Default Chinese')
-                query = ('?lang=zh-Hans&keep=1' if suite == 'hans' else '?lang=en&keep=1') + ('&preview=frontier' if suite == 'frontier' else '') + ('#ocean-link' if suite == 'ocean_link' else '#frontier' if suite == 'frontier' else '')
+                query = '?lang=en&keep=1' + ('&preview=frontier' if suite == 'frontier' else '') + ('#ocean-link' if suite == 'ocean_link' else '#frontier' if suite == 'frontier' else '')
                 if suite == 'outpost':
                     query += '#outpost'
                 if suite == 'market_desk':
