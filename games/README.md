@@ -17,12 +17,12 @@
 | [浮升 Ascent](tower/README.md) | `#tower` | 機率挑戰 | 隱藏 | 94 行 | 挑選安全的氣泡，一層一層往上浮。 |
 | [橫渡 Reef Run](crossing/README.md) | `#crossing` | 機率挑戰 | 隱藏 | 86 行 | 帶小海龜穿越暗流，決定何時收手。 |
 | [時序修復 Dream Repair Shop](dream/README.md) | `#dream` | 時機操作 | 顯示 | 141 行 | 抓準時機，讓指針停在青綠色區域。 |
-| [閃避跑酷 Dodge Run](runner/README.md) | `#runner` | 跑酷動作 | 顯示 | 184 行 | 點左、點右換道，避開一路上的障礙。 |
+| [閃避跑酷 Dodge Run](runner/README.md) | `#runner` | 跑酷動作 | 顯示 | 185 行 | 點左、點右換道，避開一路上的障礙。 |
 | [插隊大師 Queue Cutter](elevator/README.md) | `#elevator` | 潛行偷閒 | 顯示 | 129 行 | 趁乘客背對你，偷偷往前插一位。 |
 | [偷偷下班 Sneak Out](sneak/README.md) | `#sneak` | 潛行偷閒 | 顯示 | 125 行 | 按住偷溜，老闆回頭前趕快裝忙。 |
 | [深海釣手 Fishing](fishing/README.md) | `#fishing` | 時機操作 | 顯示 | 99 行 | 按住收線、放開卸力，把大魚拉上岸。 |
 | [宣傳車 Campaign Truck](campaign/README.md) | `#campaign` | 潛行偷閒 | 顯示 | 276 行 | 繞市區拉票，經過學校、醫院、豪宅要按住靜音。 |
-| [插珍奶 Boba Straw](boba/README.md) | `#boba` | 時機操作 | 顯示 | 28 行 | 抓準力道插吸管，原版粉紅珍奶小遊戲。 |
+| [插珍奶 Boba Straw](boba/README.md) | `#boba` | 時機操作 | 顯示 | 41 行 | 抓準力道插吸管，原版粉紅珍奶小遊戲。 |
 | [屋頂貓貓 Rooftop Cat](cat/README.md) | `#cat` | 跑酷動作 | 顯示 | 125 行 | 無盡跑酷，看你能跑多遠。 |
 | [便便鳥大戰狼群 Poop Bird vs Wolves](bird/README.md) | `#bird` | 跑酷動作 | 顯示 | 178 行 | 跳過仙人掌和狼群，用便便把狼王打跑。 |
 | [青蛙吃蟲 Frog Snack](frog/README.md) | `#frog` | 時機操作 | 顯示 | 209 行 | 對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。 |

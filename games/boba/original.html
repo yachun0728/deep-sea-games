@@ -207,24 +207,10 @@
 
 <script>
 /* ================== 可調參數 ================== */
-const CONFIG = {
-  startStraws: 3,
-  maxStraws: 5,
-  perfectStreakReward: 3,      // 連續幾次完美送一根吸管
-  sweetZoneStart: 0.30,        // 初始剛好區寬度
-  sweetZoneShrink: 0.015,
-  sweetZoneMin: 0.08,
-  barCycleStart: 1.2,          // 力道條 0→100 秒數
-  barCycleSpeedUp: 0.04,
-  barCycleMin: 0.45,
-  difficultyStepFrom: 5,       // 第幾杯之後改成階梯式變難
-  difficultyStepEvery: 5,      // 之後每幾杯變難一級
-  perfectToleranceRatio: 0.15,
-  specialCupFromLevel: 5,
-  specialCupChance: 0.30,
-  fakeAdSeconds: 5,
-  fakeAdPerGame: 1,
-};
+// Shared rules (round state machine, cup layout, scoring) come from the platform page; see shared/boba-rules.cjs.
+const R = (() => { try { return window.parent !== window && window.parent.deepSeaBoba && window.parent.deepSeaBoba.rules; } catch (_) { return null; } })();
+const CONFIG = R ? R.CONFIG : { maxStraws: 5, sweetZoneStart: 0.30, fakeAdSeconds: 5 };
+let rng = Math.random, starting = false;
 const TRACK_ENDPOINT = '';      // 填網址就會 POST 事件過去
 
 /* ================== 小工具 ================== */
@@ -243,12 +229,12 @@ const DEBUG = new URLSearchParams(location.search).get('debug') === '1';
 
 
 // Platform bridge: all original markup, styles and rendering remain unchanged.
-let bobaVisible=false,bobaFocused=true,bobaAdInterval=null;
+let bobaVisible=false,bobaFocused=true;
 function bobaHost(){try{return window.parent!==window?window.parent.deepSeaBoba:null}catch(_){return null}}
 function bobaCanRun(){return bobaVisible&&bobaFocused&&!document.hidden}
-function bobaCancelCharge(){stopHum();if(G.state==='charging'){setState('ready');G.power=0;}}
+function bobaCancelCharge(){stopHum();if(G.state==='charging')sendInput(R.CANCEL);}
 window.setBobaPlatformActive=function(active){bobaVisible=!!active;lastT=performance.now();if(!active){bobaCancelCharge();if(actx&&actx.state==='running')actx.suspend();}else{resize();if(actx&&!muted&&actx.state==='suspended')actx.resume().catch(()=>{});}};
-window.finishBobaPlatformRound=function(){if(!G.playing)return;hideAllScreens();showResult();};
+window.finishBobaPlatformRound=function(){endRound();};
 
 /* ================== 數據紀錄 ================== */
 const prevOpen = Number(LS.get(KEYS.lastOpen, 0)) || 0;
@@ -510,30 +496,20 @@ const G = {
 };
 const particles = [], floats = [];
 
-// 難度等級：前 5 杯每杯變難；第 5 杯之後改成每 5 杯才變難一級
-function difficultyLevel(N) {
-  const from = CONFIG.difficultyStepFrom, every = CONFIG.difficultyStepEvery;
-  if (N <= from) return N;
-  return from + Math.ceil((N - from) / every);
-}
-function makeCup(N) {
-  const D = difficultyLevel(N);
-  const w = Math.max(CONFIG.sweetZoneMin, CONFIG.sweetZoneStart - (D - 1) * CONFIG.sweetZoneShrink);
-  const T = Math.max(CONFIG.barCycleMin, CONFIG.barCycleStart - (D - 1) * CONFIG.barCycleSpeedUp);
-  let lo;
-  if (N <= 3) lo = clamp(0.55 + (0.30 - w) / 2, 0.10, 0.95 - w);   // 固定在 55%–85% 之間
-  else lo = rand(0.10, 0.95 - w);
-  let special = null;
-  if (N >= CONFIG.specialCupFromLevel && Math.random() < CONFIG.specialCupChance) special = ['thick', 'shaky', 'big'][Math.floor(Math.random() * 3)];
-  return { N, w, T, lo, baseLo: lo, special, hits: 0, pearls: makePearls(), hinted: false };
-}
 const SPECIAL_HINT = { thick: 'Extra-thick seal today', shaky: 'The barista has shaky hands', big: 'You ordered a 1000cc' };
 const SPECIAL_RULE = { thick: 'Stab twice in a row', shaky: 'Shaky hands: bar jitters', big: '1000cc: sweet spot moves' };
 
-function setState(s) { G.state = s; G.st = 0; }
-function enterCup() {
-  if (G.cup.special && !G.cup.hinted) { G.cup.hinted = true; setState('hint'); }
-  else setState('ready');
+// Round logic lives in the shared rules; the page only draws, plays sound and feeds inputs in.
+function sendInput(code) {
+  if (!G.playing || !R || !R.input(G, code)) return false;
+  const h = bobaHost(); if (h && h.record) h.record(window, code);
+  return true;
+}
+function endRound() {
+  if (!G.playing) return;
+  hideAllScreens();
+  sendInput(R.END);
+  showResult(true);
 }
 
 function todayGameNo() {
@@ -545,21 +521,28 @@ function todayGameNo() {
 }
 
 function startGame() {
-  if (G.playing || !bobaVisible) return;
-  const host=bobaHost();
-  if (!host || !host.start(window)) { toast('Not enough points. Check the platform wallet.'); return; }
-  Object.assign(G, {
-    playing: true, cups: 0, straws: CONFIG.startStraws, streak: 0, bursts: 0, perfects: 0, stains: [], adsUsed: 0,
-    startTime: Date.now(), power: 0, phase: 0, jitter: 0, chargeT: 0, lastResult: null, shake: 0,
-  });
-  particles.length = 0; floats.length = 0;
-  G.cup = makeCup(1);
-  $('mute').classList.add('hidden');   // 遊戲中不顯示音效按鈕
-  hideAllScreens();
-  resize();
-  setState('popin');
-  updateHUD();
-  track('game_start', { today_game: todayGameNo() });
+  if (G.playing || starting || !bobaVisible || !R) return;
+  const host = bobaHost();
+  const open = random => {
+    starting = false;
+    if (!bobaVisible) return;
+    if (!host || !host.start(window)) { toast('Not enough points. Check the platform wallet.'); return; }
+    rng = random || Math.random;
+    Object.assign(G, { playing: true, stains: [], startTime: Date.now(), shake: 0 });
+    particles.length = 0; floats.length = 0;
+    R.create(rng, G);
+    handleEvents();
+    $('mute').classList.add('hidden');   // 遊戲中不顯示音效按鈕
+    hideAllScreens();
+    resize();
+    updateHUD();
+    track('game_start', { today_game: todayGameNo() });
+    host.touch(window);
+  };
+  if (host && host.prepare) {
+    starting = true;
+    if (!host.prepare(window, open, () => { starting = false; })) starting = false;
+  } else open(null);
 }
 
 function hideAllScreens() { document.querySelectorAll('.screen').forEach(e => e.classList.remove('show')); }
@@ -588,15 +571,13 @@ function onPress(e) {
   if (e.cancelable) e.preventDefault();
   const host=bobaHost();if(host)host.touch(window);
   ac();
-  if (G.state !== 'ready') return;
-  G.state = 'charging'; G.st = 0; G.phase = 0; G.power = 0;
+  if (!sendInput(R.PRESS)) return;
   startHum();
 }
 function onRelease() {
   const host=bobaHost();if(host)host.touch(window);
-  if (G.state !== 'charging') return;
+  if (!sendInput(R.RELEASE)) return;
   stopHum();
-  setState('stab');
 }
 const gameEl = $('game');
 gameEl.addEventListener('touchstart', onPress, { passive: false });
@@ -615,60 +596,50 @@ document.addEventListener('gesturestart', e => e.preventDefault());
 document.addEventListener('dblclick', e => e.preventDefault());
 
 /* ================== 判定 ================== */
-function resolveStab() {
-  const c = G.cup, g = geo(c), p = G.power;
-  const lo = c.lo, hi = c.lo + c.w, center = lo + c.w / 2, tol = c.w * CONFIG.perfectToleranceRatio;
-  let r;
-  if (p < lo) r = 'bend';
-  else if (p > hi) r = 'burst';
-  else if (Math.abs(p - center) <= tol) r = 'perfect';
-  else r = 'success';
-  G.lastResult = r;
-  track('stab', { cups: G.cups, level: c.N, result: r, power: +p.toFixed(3), zone: [+lo.toFixed(3), +hi.toFixed(3)], special: c.special });
+function onStab(ev) {
+  const c = G.cup, g = geo(c), r = ev.result;
+  track('stab', { cups: G.cups - (ev.cupDone ? 1 : 0), level: ev.level, result: r, power: +ev.power.toFixed(3), zone: [+ev.lo.toFixed(3), +ev.hi.toFixed(3)], special: ev.special });
 
   const topY = g.sealY - 110 * g.s;
   if (r === 'bend' || r === 'burst') {
-    G.straws = Math.max(0, G.straws - 1); G.streak = 0; c.hits = 0;
     if (r === 'bend') {
       SFX.bend();
       addFloat('Pfft…', g.cx + 60 * g.s, g.sealY - 40 * g.s, 34 * g.s, '#c99a6a', 1.0);
-      setState('bend');
     } else {
-      G.bursts++;
       G.stains.push({ x: rand(0.2, 0.8), y: rand(0.3, 0.88), r: rand(0.07, 0.12), seed: Math.random() });
       SFX.burst(); explode(g); showSplash(); G.shake = 0.4;
       addFloat('BOOM!!', g.cx, topY, 64 * g.s, '#ff4f7f', 0.9);
-      setState('burst');
     }
   } else {
-    c.hits++;
-    const need = c.special === 'thick' ? 2 : 1;
     if (r === 'perfect') {
-      G.perfects++; G.streak++;
       SFX.perfect(); stars(g);
       addFloat('PERFECT!', g.cx, topY, 56 * g.s, '#ffb020', 1.1, true);
-      if (G.streak % CONFIG.perfectStreakReward === 0) {
-        if (G.straws < CONFIG.maxStraws) { G.straws++; SFX.reward(); addFloat('Perfect streak: +1 straw!', g.cx, topY + 60 * g.s, 24 * g.s, '#ff6f9c', 1.4); }
-        else addFloat('Straws full (max ' + CONFIG.maxStraws + ')', g.cx, topY + 60 * g.s, 18 * g.s, '#7a4a3c', 1.4);
-      }
+      if (ev.reward === 1) { SFX.reward(); addFloat('Perfect streak: +1 straw!', g.cx, topY + 60 * g.s, 24 * g.s, '#ff6f9c', 1.4); }
+      else if (ev.reward === 2) addFloat('Straws full (max ' + CONFIG.maxStraws + ')', g.cx, topY + 60 * g.s, 18 * g.s, '#7a4a3c', 1.4);
     } else {
-      G.streak = 0; SFX.pop();
+      SFX.pop();
       addFloat('POP!', g.cx + 50 * g.s, g.sealY - 50 * g.s, 44 * g.s, '#ff6f9c', 0.8);
     }
-    if (c.hits >= need) {G.cups++;const host=bobaHost();if(host)host.progress(window,G.cups);}
+    if (ev.cupDone) {const host=bobaHost();if(host)host.progress(window,G.cups);}
     else addFloat('Seal half broken! Again!', g.cx, g.sealY - 160 * g.s, 20 * g.s, '#c0607e', 1.2);
-    setState('success');
   }
   updateHUD();
 }
 
-function afterFail() {
-  if (G.straws <= 0) {
-    G.state = 'out';
-    track('out_of_straws', { cups: G.cups });
-    showRevive();
-  } else setState(G.lastResult === 'burst' ? 'popin' : 'reload');
+function handleEvents() {
+  for (const ev of G.events.splice(0)) {
+    if (ev.type === 'cup') G.cup.pearls = makePearls();
+    else if (ev.type === 'stab') onStab(ev);
+    else if (ev.type === 'out') { track('out_of_straws', { cups: G.cups }); showRevive(); }
+    else if (ev.type === 'ad-done') {
+      track('fake_ad_complete', { cups: G.cups });
+      hide('ad'); updateHUD(); toast('Got 1 new straw!');
+    }
+  }
 }
+
+
+
 
 /* ================== 特效 ================== */
 function addFloat(text, x, y, size, color, dur, pop = false) { floats.push({ text, x, y, size, color, dur, t: 0, pop }); }
@@ -712,41 +683,13 @@ function toast(msg, ms = 2000) {
 
 /* ================== 更新 ================== */
 function update(dt) {
-  G.st += dt;
-  const c = G.cup;
-  if (G.state === 'charging' && c) {
-    G.chargeT += dt;
-    G.phase += dt / c.T;
-    const x = G.phase % 2;
-    let p = x <= 1 ? x : 2 - x;           // 上升到頂再往下掉，來回擺動
-    if (c.special === 'shaky') {
-      G.jitterT -= dt;
-      if (G.jitterT <= 0) { G.jitterT = rand(0.04, 0.12); G.jitterTarget = rand(-0.05, 0.05); }
-      G.jitter = lerp(G.jitter, G.jitterTarget, clamp(dt * 25, 0, 1));
-      p += G.jitter;
-    }
-    if (c.special === 'big') c.lo = clamp(c.baseLo + 0.14 * Math.sin(G.chargeT * 2.3), 0.10, 0.95 - c.w);
-    G.power = clamp(p, 0, 1);
-    if (hum && actx) hum.o.frequency.setTargetAtTime(180 + 560 * G.power, actx.currentTime, 0.015);
-  }
-  switch (G.state) {
-    case 'hint': if (G.st >= 1.0) setState('ready'); break;
-    case 'stab': if (G.st >= 0.08) resolveStab(); break;
-    case 'bend': if (G.st >= 1.0) afterFail(); break;
-    case 'burst': if (G.st >= 0.9) afterFail(); break;
-    case 'success':
-      if (G.st >= 0.7) {
-        if (c.hits >= (c.special === 'thick' ? 2 : 1)) { G.slideSwapped = false; setState('slide'); }
-        else setState('reload');
-      }
-      break;
-    case 'slide':
-      if (G.st >= 0.25 && !G.slideSwapped) { G.slideSwapped = true; G.cup = makeCup(G.cups + 1); G.chargeT = 0; }
-      if (G.st >= 0.5) enterCup();
-      break;
-    case 'reload': if (G.st >= 0.35) setState('ready'); break;
-    case 'popin': if (G.st >= 0.4) enterCup(); break;
-  }
+  // The round state advances in the shared rules at a fixed step; the platform page counts the steps for the ranked proof.
+  const host = bobaHost(), step = seconds => R.advance(G, seconds, rng);
+  if (host && host.advance) host.advance(window, dt * 1000, () => bobaCanRun() && G.playing && !G.dead, step);
+  else step(dt);
+  handleEvents();
+  if (G.state === 'charging' && hum && actx) hum.o.frequency.setTargetAtTime(180 + 560 * G.power, actx.currentTime, 0.015);
+  if (G.state === 'out' && G.ad) $('adCount').textContent = Math.max(0, Math.ceil(CONFIG.fakeAdSeconds - G.adT));
   G.shake = Math.max(0, G.shake - dt);
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i];
@@ -968,27 +911,15 @@ function showRevive() {
   show('revive');
 }
 $('btnAd').addEventListener('click', () => {
-  if (G.adsUsed >= CONFIG.fakeAdPerGame) return;
+  if (!sendInput(R.AD)) return;
   SFX.click();
   track('fake_ad_click', { cups: G.cups });
   hide('revive'); show('ad');
-  let n = CONFIG.fakeAdSeconds; $('adCount').textContent = n;
-  const iv = bobaAdInterval = setInterval(() => {
-    if(!bobaCanRun())return;
-    n--; $('adCount').textContent = n;
-    if (n <= 0) {
-      clearInterval(iv);
-      G.adsUsed++; G.straws = Math.min(CONFIG.maxStraws, G.straws + 1);
-      track('fake_ad_complete', { cups: G.cups });
-      hide('ad'); updateHUD();
-      setState(G.lastResult === 'burst' ? 'popin' : 'reload');
-      toast('Got 1 new straw!');
-    }
-  }, 1000);
+  $('adCount').textContent = CONFIG.fakeAdSeconds;
 });
 $('btnBuy').addEventListener('click', () => { SFX.click(); track('fake_buy_click', { cups: G.cups }); show('buyMsg'); });
 $('btnBuyOk').addEventListener('click', () => { SFX.click(); hide('buyMsg'); });
-$('btnEnd').addEventListener('click', () => { SFX.click(); hide('revive'); showResult(); });
+$('btnEnd').addEventListener('click', () => { SFX.click(); hide('revive'); endRound(); });
 
 /* ================== 結算 ================== */
 function titleFor(n) {
@@ -1045,12 +976,11 @@ function startConfetti() {
   confettiRAF = requestAnimationFrame(step);
 }
 
-function showResult() {
-  if(bobaAdInterval!==null){clearInterval(bobaAdInterval);bobaAdInterval=null;}
+function showResult(endedOnInput = false) {
   G.playing = false; G.state = 'over';
   const best = getBest(), isNew = G.cups > best;
   if (isNew) LS.set(KEYS.best, String(G.cups));
-  const host=bobaHost();if(host)host.finish(window,{cups:G.cups,bursts:G.bursts,perfects:G.perfects});
+  const host=bobaHost();if(host)host.finish(window,{cups:G.cups,bursts:G.bursts,perfects:G.perfects,endedOnInput});
   track('game_over', { cups: G.cups, bursts: G.bursts, perfects: G.perfects, seconds: Math.round((Date.now() - G.startTime) / 1000) });
   $('resCups').textContent = G.cups;
   $('resUnit').textContent = G.cups === 1 ? 'cup' : 'cups';

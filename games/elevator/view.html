@@ -1,6 +1,6 @@
   <section class="view" id="view-elevator" hidden>
-    <div class="console">
-      <div class="queue-stage"><canvas id="eq-canvas" width="520" height="580" aria-label="{{t:elevator.view.26}}"></canvas></div>
+    <div class="console fs-game">
+      <div class="queue-stage"><canvas id="eq-canvas" width="520" height="580" aria-label="{{t:elevator.view.26}}"></canvas></div><button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
       <div class="side"><section class="panel" aria-label="{{t:elevator.view.27}}">
         <dl class="stats"><div><dt>{{t:elevator.view.01}}</dt><dd id="eq-progress">0 / 10</dd></div><div><dt>{{t:elevator.view.02}}</dt><dd id="eq-remaining">{{t:elevator.view.03}}</dd></div><div><dt>{{t:elevator.view.04}}</dt><dd id="eq-stage">{{t:elevator.view.05}}</dd></div></dl>
         <dl class="stats"><div><dt>{{t:elevator.view.06}}</dt><dd id="eq-total">{{t:elevator.view.07}}</dd></div><div><dt>{{t:elevator.view.08}}</dt><dd id="eq-best">{{t:elevator.view.07}}</dd></div><div><dt>{{t:elevator.view.09}}</dt><dd id="eq-next">{{t:elevator.view.10}}</dd></div></dl>
@@ -10,6 +10,7 @@
         <button class="go" id="eq-go" type="button" data-mode="bet">{{t:elevator.view.15}}</button>
         <p class="msg" id="eq-msg" aria-live="polite">{{t:elevator.view.16}}</p>
         <p class="hint">{{t:elevator.view.17}} <kbd>{{t:elevator.view.18}}</kbd>{{t:elevator.view.19}}</p>
+        <p id="eq-rank-status" role="status" hidden></p>    <button id="eq-rank-retry" type="button" hidden>{{t:elevator.view.25}}</button>
       </section></div>
     </div>
     <details class="rules"><summary>{{t:elevator.view.20}}</summary>
@@ -18,7 +19,5 @@
       <p>{{t:elevator.view.23}}</p>
       <p>{{t:elevator.view.24}}</p>
     </details>
-    <p id="eq-rank-status" role="status" hidden></p>
-    <button id="eq-rank-retry" type="button" hidden>{{t:elevator.view.25}}</button>
   </section>
 

@@ -38,3 +38,11 @@
     function resize(){groups.forEach(function(sync){sync();});}
     if(media.addEventListener)media.addEventListener('change',resize);else if(media.addListener)media.addListener(resize);
   })();
+
+  /* Full-screen games: the exit button returns to the lobby (same route as the header's back link). */
+  (function(){
+    document.addEventListener('click',function(e){
+      var b=e.target.closest&&e.target.closest('.fs-exit');
+      if(b)window.location.hash='lobby';
+    });
+  })();

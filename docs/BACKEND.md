@@ -137,6 +137,8 @@ const next = await moveMinesRound(round.token, {
 
 便便鳥大戰狼群記錄跳躍按下／放開與投射物，Worker 用種子重算障礙、狼王與終局距離。兩款都只寫 `game_leaderboard`，沿用十分鐘、6,000 筆操作上限與同回合防重送驗證。
 
+插珍奶（`boba`）以杯數排行：`shared/boba-rules.cjs` 在 Worker 與子頁共用，Worker 用種子重播按住／放開／取消／續命廣告／結束輸入，只接受以結束輸入收尾的回合；只寫 `game_leaderboard`，沿用十分鐘與 6,000 筆操作上限、同回合防重送。`game_names` 本來就有 `boba`，不需要新的 migration。
+
 新增遊戲的預設串接要求與 PR 驗收紀錄見 [新增遊戲必接訪客排行榜](../README.md#新增遊戲必接訪客排行榜)。
 
 ## Frontier Islands 與 Roar Through the Ceiling 訪客成績

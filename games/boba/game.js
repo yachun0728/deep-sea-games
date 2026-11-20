@@ -1,8 +1,21 @@
   /* ---------- Boba Straw: original isolated screen, fee-only shared wallet ---------- */
   var BOBA={active:false,fee:ENTRY_FEE,analytics:null,loaded:false};
+  var bobaRank=timedLeaderboard('boba','boba',bobaRules.inputCount,function(){bobaUI();});
   function bobaUI(text){$('boba-finish').disabled=!BOBA.active;if(text)$('boba-msg').textContent=text;}
   function bobaValid(source){return source===$('boba-frame').contentWindow;}
   window.deepSeaBoba={
+    rules:bobaRules,
+    prepare:function(source,ready,cancel){
+      if(!bobaValid(source)||$('view-boba').hidden||BOBA.active||bobaRank.busy())return false;
+      bobaRank.start(ready,cancel);
+      return true;
+    },
+    advance:function(source,ms,active,step){
+      if(bobaValid(source)&&BOBA.active)bobaRank.update(ms,active,step);
+    },
+    record:function(source,code){
+      if(bobaValid(source)&&BOBA.active)bobaRank.record(code);
+    },
     start:function(source){
       if(!bobaValid(source)||$('view-boba').hidden||BOBA.active)return false;
       if(S.balance<BOBA.fee){bobaUI(LOW_MSG);return false;}
@@ -11,7 +24,7 @@
     finish:function(source,data){
       if(!bobaValid(source)||!BOBA.active)return;BOBA.active=false;
       var cups=Math.max(0,Math.min(1000000,Math.floor(Number(data.cups)||0)));
-      AN.end(BOBA.analytics,0,'complete',{score:cups});bobaUI('本局完成 '+cups+' 杯。可再玩，遊玩獎勵依平台規則累積。');
+      AN.end(BOBA.analytics,0,'complete',{score:cups});bobaRank.finish(cups,data.endedOnInput===true);bobaUI('本局完成 '+cups+' 杯。可再玩，遊玩獎勵依平台規則累積。');
     },
     progress:function(source,cups){if(bobaValid(source)&&BOBA.active)AN.progress(BOBA.analytics,{step:Math.max(0,Math.floor(Number(cups)||0))});},
     pause:function(source){if(bobaValid(source)&&BOBA.active)AN.progress(BOBA.analytics,{phase:'revive'},true);},
