@@ -20,7 +20,7 @@
         if (typeof saved.sound === 'boolean') prefs.sound = saved.sound;
       }
     } catch (_) {}
-    function siteLang() { return window.deepSeaI18n && window.deepSeaI18n.getLanguage() === 'en' ? 'en' : 'tw'; }
+    function siteLang() { const l = window.deepSeaI18n && window.deepSeaI18n.getLanguage(); return l === 'en' ? 'en' : l === 'zh-Hans' ? 'cn' : 'tw'; }
     // 簡中只能在遊戲內選；站台語言是繁中或英文時，只有曾選過簡中才維持簡中。
     let lang = prefs.lang === 'cn' && siteLang() === 'tw' ? 'cn' : siteLang();
     function savePrefs() { try { localStorage.setItem(prefsKey, JSON.stringify(prefs)); } catch (_) {} }

@@ -37,13 +37,13 @@
     $('wh-rtp').textContent = (sum / n * 100).toFixed(1) + '%';
     $('wh-last').innerHTML = WL.last.map(function (m) { return '<span class="pill ' + (m === 0 ? 'low' : m >= 5 ? 'jackpot' : m >= 1.5 ? 'high' : '') + '">' + m + '×</span>'; }).join('') || '<span class="pill">尚未轉動</span>';
     elWGo.disabled = busy;
-    elWGo.innerHTML = busy ? '轉動中…' : '轉動羅盤<small>下注 ' + fmt(readWAmount()) + ' 點</small>';
+    elWGo.innerHTML = busy ? '{{t:wheel.msg.001}}' : '轉動羅盤<small>下注 ' + fmt(readWAmount()) + ' 點</small>';
   }
   function whSpin() {
     if (WL.pending) return;
     var a = readWAmount();
     if (a < MIN_BET) { wSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
-    if (a > S.balance) { wSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    if (a > S.balance) { wSay('{{t:wheel.msg.002}}', 'lose'); return; }
     var i = Math.floor(Math.random() * WL.n), m = WL.segs[i], deg = 360 / WL.n;
     // Slot i's centre sits (i + 0.5)·deg clockwise of the pointer, so the wheel must end that far short of a full turn.
     var stop = ((360 - (i + 0.5) * deg + (Math.random() - 0.5) * deg * 0.7) % 360 + 360) % 360;
@@ -52,7 +52,7 @@
     elWStage.classList.remove('win', 'lose');
     $('wh-hub').textContent = '…';
     elWheel.style.transform = 'rotate(' + WL.rot.toFixed(2) + 'deg)';
-    wSay('羅盤轉動中…');
+    wSay('{{t:wheel.msg.003}}');
     syncBalance(); whUI();
     setTimeout(function () {
       var pay = Math.floor(a * m);

@@ -23,7 +23,7 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const live=st==='run';
  setText('fg-eaten',state.eaten+' 隻');setText('fg-level','Lv.'+level());setText('fg-best',best+' 隻');
- $('fg-amount').disabled=frogBusy;$('fg-go').disabled=live||rankStarting;setText('fg-go',live?'進食中 · 按空白鍵吃蟲':st==='over'?'再吃一次':'開始吃蟲');
+ $('fg-amount').disabled=frogBusy;$('fg-go').disabled=live||rankStarting;setText('fg-go',live?'{{t:frog.msg.001}}':st==='over'?'{{t:frog.msg.002}}':'{{t:frog.msg.003}}');
 }
 function fx(s,x,y,col){fxs.push({s,x,y,col,t:0})}
 function end(reason){
@@ -31,7 +31,7 @@ function end(reason){
  st='over';why=reason;rec=state.eaten>best;
  if(rec){best=state.eaten;try{localStorage.setItem('deep-sea-frog-best',best)}catch(e){}}
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:state.pts,step:state.eaten,stage:level()});frogBusy=false;save();renderAll();
- const head=reason==='hunger'?'青蛙餓昏了。':'青蛙被螫暈了。';
+ const head=reason==='hunger'?'{{t:frog.msg.004}}':'{{t:frog.msg.005}}';
  if(!earned)say(head+'吃了 '+state.eaten+' 隻，這一局沒有額外成就獎勵。','lose');
  else say(head+'吃了 '+state.eaten+' 隻，本局共入帳 '+fmt(earned)+' 點。','win');
  if(rankRound){
@@ -50,7 +50,7 @@ function press(){
  if(outcome.kind==='miss'){wob=.2;fx('MISS',TX,state.aimY-10,'#cfd8dc');return}
  if(outcome.kind==='sting'){
   dizzy=.6;if(!reduceMotion){flash=.15;shake=.3}
-  fx('被螫了！',TX,TY-30,'#ff5d8f');
+  fx('{{t:frog.msg.006}}',TX,TY-30,'#ff5d8f');
   if(state.reason)end(state.reason);else say('紅色帶刺的蟲不能吃！還剩 '+state.hearts+' 顆愛心。','lose');
   return;
  }
@@ -119,20 +119,20 @@ function draw(){
  tx(String(state.pts),W/2,50,36,'#fff1c1');tx('Lv.'+level(),W-16,44,18,'#fff1c1','right');
  RR(16,62,W-32,14,7,'#333',3);
  if(state.food>0){const low=state.food<20,fc=state.food>50?'#7cb342':state.food>=20?'#ffd23f':'#e63946';if(!low||reduceMotion||Math.floor(tt*6)%2){g.fillStyle=fc;g.beginPath();g.rect(18,64,(W-36)*state.food/FULL,10);g.fill()}}
- tx('飽食',38,94,13,'#fff1c1');
+ tx('{{t:frog.msg.007}}',38,94,13,'#fff1c1');
  if(lvlT>0&&st==='run')tx('LEVEL UP  +'+FROG_REWARD+' 點',W/2,150,26,'#ffd23f');
  if(flash>0){g.fillStyle='rgba(230,57,70,.35)';g.fillRect(0,0,W,H)}
  if(st!=='run'){
   g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
-  if(st==='ready'){tx('青蛙吃蟲',W/2,190,36,'#ffd23f');tx('箭頭對準最底下那隻蟲的中間',W/2,244,19,'#fff1c1');tx('按空白鍵或點畫面吐舌頭',W/2,274,19,'#fff1c1');tx('紅色帶刺的蟲不能吃！',W/2,304,19,'#ff5d8f');tx('到操作區開始',W/2,360,24,'#ffd23f')}
-  else{tx(why==='hunger'?'餓昏了…':'被螫暈了！',W/2,176,32,'#ff5d8f');tx(state.eaten+' 隻',W/2,240,50,'#fff1c1');tx('分數 '+state.pts+'　到達 Lv.'+level(),W/2,280,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'沒吃滿 '+REWARD_EVERY+' 隻，沒有點數',W/2,316,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,350,20,'#ffd23f');tx('到操作區再吃一次',W/2,396,20,'#fff1c1')}}
+  if(st==='ready'){tx('{{t:frog.msg.008}}',W/2,190,36,'#ffd23f');tx('{{t:frog.msg.009}}',W/2,244,19,'#fff1c1');tx('{{t:frog.msg.010}}',W/2,274,19,'#fff1c1');tx('{{t:frog.msg.011}}',W/2,304,19,'#ff5d8f');tx('{{t:frog.msg.012}}',W/2,360,24,'#ffd23f')}
+  else{tx(why==='hunger'?'{{t:frog.msg.013}}':'{{t:frog.msg.014}}',W/2,176,32,'#ff5d8f');tx(state.eaten+' 隻',W/2,240,50,'#fff1c1');tx('分數 '+state.pts+'　到達 Lv.'+level(),W/2,280,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'沒吃滿 '+REWARD_EVERY+' 隻，沒有點數',W/2,316,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('{{t:frog.msg.015}}',W/2,350,20,'#ffd23f');tx('{{t:frog.msg.016}}',W/2,396,20,'#fff1c1')}}
 }
 function begin(round){
  const amount=ENTRY_FEE;
  rankRound=round;
  analytics=AN.start('frog',amount);frogStake=amount;frogBusy=true;save();renderAll();
  reset(round?frogRules.seededRandom(round.seed):undefined);earned=0;rec=false;st='run';last=performance.now();
- say('開吃！箭頭掃到最底下那隻蟲的中間就按，紅色帶刺的先忍住。');ui();c.focus();
+ say('{{t:frog.msg.017}}');ui();c.focus();
 }
 function rankStatus(text,retry=false){
  const status=$('fg-rank-status');
@@ -147,7 +147,7 @@ async function start(){
  rankStarting=true;
  const generation=++rankGeneration;
  rankProof=null;
- rankStatus('正在準備訪客排行…');
+ rankStatus('{{t:frog.msg.018}}');
  ui();
  let round=null;
  try{
@@ -157,17 +157,17 @@ async function start(){
  }catch(error){round=null}
  finally{rankStarting=false;ui()}
  if(generation!==rankGeneration||!shown()){rankStatus('');return}
- rankStatus(round?'本局將列入訪客排行。':'這一局可在本機遊玩。');
+ rankStatus(round?'{{t:frog.msg.019}}':'{{t:frog.msg.020}}');
  begin(round);
 }
 async function uploadRank(proof){
- rankStatus('正在驗證排行榜成績…');
+ rankStatus('{{t:frog.msg.021}}');
  try{
   const api=await import('./frontend/services/api.mjs');
   await api.finishFrogRound(proof,AbortSignal.timeout(10000));
-  if(rankProof===proof){rankProof=null;rankStatus('成績已送到排行榜。')}
+  if(rankProof===proof){rankProof=null;rankStatus('{{t:frog.msg.022}}')}
  }catch(error){
-  if(rankProof===proof)rankStatus('排行榜成績未能送出。',error.retryable!==false);
+  if(rankProof===proof)rankStatus('{{t:frog.msg.023}}',error.retryable!==false);
  }
 }
 $('fg-rank-retry').addEventListener('click',()=>{if(rankProof)uploadRank(rankProof)});
@@ -175,7 +175,7 @@ const shown=()=>!$('view-frog').hidden&&!document.hidden;
 $('fg-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
- if(st!=='run'){say(st==='over'?'這一局已結算。按「再吃一次」開始新的一局。':'先按「開始吃蟲」。');return}
+ if(st!=='run'){say(st==='over'?'{{t:frog.msg.024}}':'{{t:frog.msg.025}}');return}
  if(!shown())return;e.preventDefault();c.focus();press()});
 c.addEventListener('contextmenu',e=>e.preventDefault());
 addEventListener('keydown',e=>{
@@ -196,7 +196,7 @@ function loop(t){
     update(STEP_MS/1000);
     if(rankRound&&tick>=MAX_TICKS){
      rankRound=null;
-     rankStatus('這一局可在本機遊玩。');
+     rankStatus('{{t:frog.msg.020}}');
     }
    }
   }else update(elapsed/1000);

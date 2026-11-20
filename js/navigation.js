@@ -35,7 +35,7 @@
   /* ---------- collapsible lobby sidebar (per-browser preference only) ---------- */
   (function(){
     var KEY='ticatica-sidebar-collapsed',button=$('side-toggle'),collapsed=false;
-    function apply(){var label=collapsed?'展開選單':'收合選單';$('site-shell').classList.toggle('side-collapsed',collapsed);button.setAttribute('aria-expanded',collapsed?'false':'true');button.setAttribute('aria-label',label);button.title=label;}
+    function apply(){var label=collapsed?'{{t:navigation.msg.001}}':'{{t:navigation.msg.002}}';$('site-shell').classList.toggle('side-collapsed',collapsed);button.setAttribute('aria-expanded',collapsed?'false':'true');button.setAttribute('aria-label',label);button.title=label;}
     try{collapsed=localStorage.getItem(KEY)==='1';}catch(e){}
     apply();
     button.addEventListener('click',function(){collapsed=!collapsed;apply();try{localStorage.setItem(KEY,collapsed?'1':'0');}catch(e){}});
@@ -48,7 +48,7 @@
     var exit = document.createElement('a');
     exit.className = 'game-exit-link';
     exit.href = '#lobby';
-    exit.textContent = '返回遊戲大廳';
+    exit.textContent = '{{t:navigation.msg.003}}';
     var target = id === 'ocean-link' ? $('ol-toolbar-actions') :
       id === 'frontier' ? $('ft-main').querySelector('.ft-top') : $('view-' + id);
     target.prepend(exit);
@@ -78,9 +78,9 @@
     DR.last=performance.now();EQ.last=performance.now();
     // The member centre is not a game: analytics treats it like the lobby so no game_view is recorded.
     AN.view(member?'lobby':v);
-    var heading = member ? '會員中心' : VIEWS[v];
+    var heading = member ? '{{t:navigation.msg.004}}' : VIEWS[v];
     $('game-name').innerHTML = heading;
-    document.title=member?'會員中心 · TiCATiCA GAMES':v==='lobby'?'TiCATiCA GAMES':VIEWS[v].replace(/<[^>]*>/g,'').trim();
+    document.title=member?'{{t:navigation.msg.005}}':v==='lobby'?'TiCATiCA GAMES':VIEWS[v].replace(/<[^>]*>/g,'').trim();
     if(lastView&&lastView!==v){$('game-name').focus({preventScroll:true});if(window.scrollTo)window.scrollTo({top:v==='lobby'?lobbyScroll:0,behavior:'instant'});}
     lastView=v;
     $('picker-current').textContent=heading.replace(/<[^>]*>/g,'').trim();

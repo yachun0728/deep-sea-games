@@ -6,7 +6,7 @@
     start:function(source){
       if(!bobaValid(source)||$('view-boba').hidden||BOBA.active)return false;
       if(S.balance<BOBA.fee){bobaUI(LOW_MSG);return false;}
-      if(AN.interact)AN.interact();BOBA.active=true;BOBA.analytics=AN.start('boba',BOBA.fee);save();renderAll();bobaUI('持續遊玩可獲得平台點數。');return true;
+      if(AN.interact)AN.interact();BOBA.active=true;BOBA.analytics=AN.start('boba',BOBA.fee);save();renderAll();bobaUI('{{t:boba.msg.001}}');return true;
     },
     finish:function(source,data){
       if(!bobaValid(source)||!BOBA.active)return;BOBA.active=false;

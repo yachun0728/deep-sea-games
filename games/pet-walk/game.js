@@ -17,16 +17,16 @@ var analytics=null,earned=0,paid={},STEPS_PER_SEG=20;
 /* ====================== DATA ====================== */
 const T=s=>{const i=s.indexOf('|');return{zh:s.slice(0,i),en:s.slice(i+1)};};
 const ITEMS=[
-  {id:'itm_can',  n:T('罐頭|Can'),  ab:T('罐|Ca'),s:1},
-  {id:'itm_wood', n:T('木材|Wood'), ab:T('木|Wo'),s:1},
-  {id:'itm_stone',n:T('石頭|Stone'),ab:T('石|St'),s:1},
-  {id:'itm_scrap',n:T('廢鐵|Scrap'),ab:T('鐵|Sc'),s:1},
-  {id:'itm_cloth',n:T('布料|Cloth'),ab:T('布|Cl'),s:1},
-  {id:'itm_fish', n:T('魚乾|Fish'), ab:T('魚|Fi'),s:1},
-  {id:'itm_rope', n:T('繩索|Rope'), ab:T('繩|Ro'),s:3},
-  {id:'itm_battery',n:T('電池|Battery'),ab:T('電|Ba'),s:3},
-  {id:'itm_ore',  n:T('礦石|Ore'),  ab:T('礦|Or'),s:3},
-  {id:'itm_ai_word',n:T('AI 字詞碎片|AI word shard'),ab:T('字|AI'),s:10}
+  {id:'itm_can',  n:T('{{tb:pet-walk.say.001}}'),  ab:T('{{tb:pet-walk.say.002}}'),s:1},
+  {id:'itm_wood', n:T('{{tb:pet-walk.say.003}}'), ab:T('{{tb:pet-walk.say.004}}'),s:1},
+  {id:'itm_stone',n:T('{{tb:pet-walk.say.005}}'),ab:T('{{tb:pet-walk.say.006}}'),s:1},
+  {id:'itm_scrap',n:T('{{tb:pet-walk.say.007}}'),ab:T('{{tb:pet-walk.say.008}}'),s:1},
+  {id:'itm_cloth',n:T('{{tb:pet-walk.say.009}}'),ab:T('{{tb:pet-walk.say.010}}'),s:1},
+  {id:'itm_fish', n:T('{{tb:pet-walk.say.011}}'), ab:T('{{tb:pet-walk.say.012}}'),s:1},
+  {id:'itm_rope', n:T('{{tb:pet-walk.say.013}}'), ab:T('{{tb:pet-walk.say.014}}'),s:3},
+  {id:'itm_battery',n:T('{{tb:pet-walk.say.015}}'),ab:T('{{tb:pet-walk.say.016}}'),s:3},
+  {id:'itm_ore',  n:T('{{tb:pet-walk.say.017}}'),  ab:T('{{tb:pet-walk.say.018}}'),s:3},
+  {id:'itm_ai_word',n:T('{{tb:pet-walk.say.019}}'),ab:T('{{tb:pet-walk.say.020}}'),s:10}
 ];
 const ITEM={};ITEMS.forEach((o,i)=>{o.idx=i;ITEM[o.id]=o;});
 const IN=id=>ITEM[id].n;
@@ -35,7 +35,7 @@ const MATS=['itm_wood','itm_stone','itm_scrap','itm_cloth'];
 const UNCOMMON=['itm_rope','itm_battery','itm_ore'];
 
 const TERR=['plains','water','mountain'];
-const TERR_NAME={plains:T('平原|Plains'),water:T('水域|Waters'),mountain:T('山地|Mountains')};
+const TERR_NAME={plains:T('{{tb:pet-walk.say.021}}'),water:T('{{tb:pet-walk.say.022}}'),mountain:T('{{tb:pet-walk.say.023}}')};
 const TERR_STYLE={
   plains:{sky:'#3a424a',gnd:'#59616a',sil:'#2f353c'},
   water:{sky:'#34434d',gnd:'#46606f',sil:'#2a3640'},
@@ -47,82 +47,82 @@ const POOLS={
   mountain:{E01:22,E02:12,E09:18,E10:18,E11:15,E12:15}
 };
 const EVT={
- E01:{n:T('幸運轉盤|Lucky Wheel'),d:[T('路邊有個破舊的轉盤，小灰一腳踩了上去。|A beat-up wheel by the road. Gray steps right onto it.')],q:[T('命運在轉，我在看。|Fate is spinning. I\'m watching.')],
-  rd:T('轉盤上貼著一張「維修中」的紙條，小灰把紙條撕掉才開始轉。|A "Out of order" note is taped to the wheel. Gray tears it off before spinning.'),rq:T('規則是用來被撕的。|Rules are made to be torn.'),
-  dia:T('今天我轉了一次轉盤，結果我很滿意。|I spun the wheel today and I\'m pleased with the result.'),mem:T('上次那個轉盤，我還在想。|I\'m still thinking about that wheel.')},
- E02:{n:T('廢墟木箱|Ruined Crate'),d:[T('木箱半埋在雜物裡，小灰湊過去聞了三下。|A crate half-buried in junk. Gray sniffs it three times.')],q:[T('這個我聞過了，安全。|I sniffed it. It\'s safe.')],
-  rd:T('木箱打開，裡面跳出一隻戴著小帽子的鴿子，牠把帽子留下就飛走了。|The crate opens and a pigeon in a tiny hat pops out, leaves the hat, and flies off.'),rq:T('牠留下一頂帽子，我沒問。|It left a tiny hat. I didn\'t ask.'),
-  dia:T('今天聞了一個木箱，確認安全。|I sniffed a crate today and confirmed it was safe.'),mem:T('上次那個木箱，我還記得味道。|I still remember how that crate smelled.')},
- E03:{n:T('卡住的鐵櫃|Stuck Locker'),d:[T('鐵櫃的門卡死了，小灰退後三步，準備衝撞或撬開！|The locker door is jammed. Gray prepares to ram or pry it open!')],q:[T('專業的。|Professional.')],
-  rd:T('鐵櫃打開後，裡面是另一個鐵櫃，小灰又撞了一次。|The locker opens to reveal another locker. Gray headbutts again.'),rq:T('俄羅斯娃娃。|Nesting dolls.'),
-  dia:T('今天打開了一個鐵櫃，沒有人看到。|I forced a locker open today. Nobody saw.'),mem:T('上次那個鐵櫃，我的頭還有點痛。|My head still hurts from that locker.')},
- E04:{n:T('三隻野狗|Three Stray Dogs'),d:[T('三隻野狗圍了上來，眼神直勾勾盯著小灰的背包。|Three stray dogs close in, staring straight at Gray\'s pack.')],q:[T('牠們只是餓了，我也是。|They were just hungry. So am I.'),T('連野狗都嫌我們窮。|Even the dogs think we\'re broke.')],
-  rd:T('野狗排成一列向小灰敬禮，然後離開。|The dogs line up, salute Gray, and walk away.'),rq:T('牠們把我們當成長官了。|They think we\'re management.'),
-  dia:T('今天遇到三隻野狗，我們互相理解。|I met three stray dogs today. We understood each other.'),mem:T('上次那三隻野狗，我還記得牠們的眼神。|I still remember the way those dogs looked at me.')},
- E05:{n:T('機械師與扳手|The Mechanic and Wrench'),d:[T('機械師拍拍小灰的天線，她的 AI「扳手」繞著小灰轉了兩圈。|A mechanic pats Gray\'s antenna while her AI, Wrench, circles Gray twice.')],q:[T('她說我這型號很久沒見了。|She said they don\'t make my model anymore.')],
-  rd:T('扳手偷偷把小灰的天線染成粉紅色，說這樣訊號比較好。|Wrench quietly dyes Gray\'s antenna pink for "better reception."'),rq:T('她說這叫保養。|She said that\'s called maintenance.'),
-  dia:T('今天機械師說我是古董。|The mechanic called me an antique today.'),mem:T('上次扳手說我是古董，我還記得。|Wrench called me an antique. I haven\'t forgotten.')},
- E06:{n:T('河鯊探頭|Shark Pop-up'),d:[T('河鯊從水裡探出頭來，張大嘴巴！|A river shark pops out of the water, jaws wide open!')],q:[T('那是我們的魚！|That was OUR fish!'),T('那是天線，不是零食。|That\'s an antenna, not a snack.')],
-  rd:T('河鯊吐出來的不是魚，是一隻破皮鞋。|The shark spits out not a fish, but an old boot.'),rq:T('這不是等價交換。|That\'s not an even trade.'),
-  dia:T('今天跟河鯊交手了一番。我記得。|I had a run-in with the river shark today. I remember.'),mem:T('上次那隻河鯊，我還記得。|I haven\'t forgotten that river shark.')},
- E07:{n:T('漂流箱|Drift Box'),d:[T('一個神秘箱子漂到岸邊，小灰把它拖上岸。|A mysterious box drifts to shore. Gray drags it up.')],q:[T('它自己漂來的，不是我偷的。|It floated here on its own. I didn\'t steal it.')],
-  rd:T('漂流箱裡傳出有節奏的敲門聲。|Rhythmic knocking comes from inside the drift box.'),rq:T('裡面有人，我們假裝沒聽到。|Someone\'s inside. Let\'s pretend we didn\'t hear.'),
-  dia:T('今天撿到一個漂流箱，我發誓不是偷的。|I found a drift box today. I swear I didn\'t steal it.'),mem:T('上次那個漂流箱，真的不是我偷的。|That drift box last time? Really not stolen.')},
- E08:{n:T('老漁夫與浮標|The Old Fisher and Buoy'),d:[T('老漁夫朝小灰揮手，他的 AI「浮標」一直盯著小灰看。|The old fisher waves. His AI, Buoy, won\'t stop staring at Gray.')],q:[T('浮標又在看我了。|Buoy\'s staring at me again.')],
-  rd:T('浮標和小灰互瞪了 3 秒，誰也不眨眼。|Buoy and Gray stare at each other for 3 seconds. Neither blinks.'),rq:T('我沒輸，我只是沒贏。|I didn\'t lose. I just didn\'t win.'),
-  dia:T('今天浮標一直盯著我看。|Buoy kept staring at me today.'),mem:T('上次浮標盯著我看，今天不要再來了。|Buoy stared at me last time. Not again today.')},
- E09:{n:T('偽裝的岩殼蟹|The Disguised Crab'),d:[T('小灰對著一顆石頭自言自語，石頭突然開口了。|Gray is muttering to a rock when the rock suddenly answers.')],q:[T('這顆石頭比我會聊天。|This rock is a better talker than me.')],
-  rd:T('岩殼蟹偽裝成一顆很小的石頭，還是被小灰發現了。|The crab disguises itself as a tiny pebble. Gray finds it anyway.'),rq:T('牠偽裝成小石頭，還是被我發現了。|It disguised itself as a pebble. I still found it.'),
-  dia:T('今天我跟一顆石頭聊了很久，牠比我會聊。|I talked to a rock for a long time today. It\'s a better talker than me.'),mem:T('上次那顆石頭，還是比我會聊。|That rock from last time is still a better talker than me.')},
- E10:{n:T('小落石|Tiny Rockfall'),d:[T('山壁掉下一顆小石頭，正朝小灰的頭頂飛來！|A small rock falls from the cliff straight toward Gray\'s head!')],q:[T('沒事。我是故意的。|I\'m fine. I meant to do that.')],
-  rd:T('落下的小石頭在地上排成一個笑臉。|The fallen pebbles arrange themselves into a smiley face.'),rq:T('山在嘲笑我。|The mountain is laughing at me.'),
-  dia:T('今天有一顆石頭砸到我。我是故意的。|A rock hit my head today. I meant to do that.'),mem:T('上次那顆落石，我的頭還記得。|My head still remembers that rock.')},
- E11:{n:T('小灰的怪癖|Gray\'s Quirk'),d:[T('小灰停在路燈前說起話來。|Gray stops to talk to a streetlight.'),T('小灰追著自己的天線轉圈。|Gray chases its own antenna in circles.'),T('小灰邊走邊睡，撞上了牆。|Gray falls asleep walking and bumps into a wall.')],
-  q:[T('路燈，我有話要對你說。|Streetlight, I have something to tell you.'),T('它又在我後面了。|It\'s behind me again.'),T('我沒睡。我在閉著眼睛思考。|I wasn\'t sleeping. I was thinking with my eyes closed.')],
-  rd:T('小灰同時做了三件怪事：對路燈說話、追天線、邊走邊睡。|Gray does all three weird things at once: talks to a streetlight, chases its antenna, sleepwalks.'),rq:T('今天的我很忙。|Busy day for me.'),
-  dia:T('今天我做了一件奇怪的事，請不要問。|I did something strange today. Please don\'t ask.'),mem:T('上次那件怪事，請當作沒看到。|That weird thing last time — please pretend you didn\'t see it.')},
- E12:{n:T('雨和彩虹|Rain and Rainbow'),d:[T('下雨了，小灰頂著一片葉子當傘。雨停之後，天邊出現一道彩虹。|It rains. Gray holds a leaf overhead as an umbrella. After the rain, a rainbow appears.'),T('暴風雨來了，小灰的天線被吹歪了。雨停之後，天邊出現一道彩虹。|A storm hits and bends Gray\'s antenna. After the storm, a rainbow appears.')],
-  q:[T('我不怕。我只是有點濕。|I\'m not scared. Just slightly damp.'),T('看，運氣來了。|Look. Luck is coming.')],
-  rd:T('彩虹上站著一隻鴿子。|A pigeon is standing on the rainbow.'),rq:T('我不想知道。|I don\'t want to know.'),
-  dia:T('今天下雨，後來有彩虹，好運應該要來了。|It rained today, then a rainbow came. Luck should be on the way.'),mem:T('上次那場雨後有彩虹，今天也會有吧。|There was a rainbow after the rain last time. Maybe again today.')}
+ E01:{n:T('{{tb:pet-walk.say.024}}'),d:[T('{{tb:pet-walk.say.025}}')],q:[T('{{tb:pet-walk.say.026}}')],
+  rd:T('{{tb:pet-walk.say.027}}'),rq:T('{{tb:pet-walk.say.028}}'),
+  dia:T('{{tb:pet-walk.say.029}}'),mem:T('{{tb:pet-walk.say.030}}')},
+ E02:{n:T('{{tb:pet-walk.say.031}}'),d:[T('{{tb:pet-walk.say.032}}')],q:[T('{{tb:pet-walk.say.033}}')],
+  rd:T('{{tb:pet-walk.say.034}}'),rq:T('{{tb:pet-walk.say.035}}'),
+  dia:T('{{tb:pet-walk.say.036}}'),mem:T('{{tb:pet-walk.say.037}}')},
+ E03:{n:T('{{tb:pet-walk.say.038}}'),d:[T('{{tb:pet-walk.say.039}}')],q:[T('{{tb:pet-walk.say.040}}')],
+  rd:T('{{tb:pet-walk.say.041}}'),rq:T('{{tb:pet-walk.say.042}}'),
+  dia:T('{{tb:pet-walk.say.043}}'),mem:T('{{tb:pet-walk.say.044}}')},
+ E04:{n:T('{{tb:pet-walk.say.045}}'),d:[T('{{tb:pet-walk.say.046}}')],q:[T('{{tb:pet-walk.say.047}}'),T('{{tb:pet-walk.say.048}}')],
+  rd:T('{{tb:pet-walk.say.049}}'),rq:T('{{tb:pet-walk.say.050}}'),
+  dia:T('{{tb:pet-walk.say.051}}'),mem:T('{{tb:pet-walk.say.052}}')},
+ E05:{n:T('{{tb:pet-walk.say.053}}'),d:[T('{{tb:pet-walk.say.054}}')],q:[T('{{tb:pet-walk.say.055}}')],
+  rd:T('{{tb:pet-walk.say.056}}'),rq:T('{{tb:pet-walk.say.057}}'),
+  dia:T('{{tb:pet-walk.say.058}}'),mem:T('{{tb:pet-walk.say.059}}')},
+ E06:{n:T('{{tb:pet-walk.say.060}}'),d:[T('{{tb:pet-walk.say.061}}')],q:[T('{{tb:pet-walk.say.062}}'),T('{{tb:pet-walk.say.063}}')],
+  rd:T('{{tb:pet-walk.say.064}}'),rq:T('{{tb:pet-walk.say.065}}'),
+  dia:T('{{tb:pet-walk.say.066}}'),mem:T('{{tb:pet-walk.say.067}}')},
+ E07:{n:T('{{tb:pet-walk.say.068}}'),d:[T('{{tb:pet-walk.say.069}}')],q:[T('{{tb:pet-walk.say.070}}')],
+  rd:T('{{tb:pet-walk.say.071}}'),rq:T('{{tb:pet-walk.say.072}}'),
+  dia:T('{{tb:pet-walk.say.073}}'),mem:T('{{tb:pet-walk.say.074}}')},
+ E08:{n:T('{{tb:pet-walk.say.075}}'),d:[T('{{tb:pet-walk.say.076}}')],q:[T('{{tb:pet-walk.say.077}}')],
+  rd:T('{{tb:pet-walk.say.078}}'),rq:T('{{tb:pet-walk.say.079}}'),
+  dia:T('{{tb:pet-walk.say.080}}'),mem:T('{{tb:pet-walk.say.081}}')},
+ E09:{n:T('{{tb:pet-walk.say.082}}'),d:[T('{{tb:pet-walk.say.083}}')],q:[T('{{tb:pet-walk.say.084}}')],
+  rd:T('{{tb:pet-walk.say.085}}'),rq:T('{{tb:pet-walk.say.086}}'),
+  dia:T('{{tb:pet-walk.say.087}}'),mem:T('{{tb:pet-walk.say.088}}')},
+ E10:{n:T('{{tb:pet-walk.say.089}}'),d:[T('{{tb:pet-walk.say.090}}')],q:[T('{{tb:pet-walk.say.091}}')],
+  rd:T('{{tb:pet-walk.say.092}}'),rq:T('{{tb:pet-walk.say.093}}'),
+  dia:T('{{tb:pet-walk.say.094}}'),mem:T('{{tb:pet-walk.say.095}}')},
+ E11:{n:T('{{tb:pet-walk.say.096}}'),d:[T('{{tb:pet-walk.say.097}}'),T('{{tb:pet-walk.say.098}}'),T('{{tb:pet-walk.say.099}}')],
+  q:[T('{{tb:pet-walk.say.100}}'),T('{{tb:pet-walk.say.101}}'),T('{{tb:pet-walk.say.102}}')],
+  rd:T('{{tb:pet-walk.say.103}}'),rq:T('{{tb:pet-walk.say.104}}'),
+  dia:T('{{tb:pet-walk.say.105}}'),mem:T('{{tb:pet-walk.say.106}}')},
+ E12:{n:T('{{tb:pet-walk.say.107}}'),d:[T('{{tb:pet-walk.say.108}}'),T('{{tb:pet-walk.say.109}}')],
+  q:[T('{{tb:pet-walk.say.110}}'),T('{{tb:pet-walk.say.111}}')],
+  rd:T('{{tb:pet-walk.say.112}}'),rq:T('{{tb:pet-walk.say.113}}'),
+  dia:T('{{tb:pet-walk.say.114}}'),mem:T('{{tb:pet-walk.say.115}}')}
 };
 const EVENT_IDS=Object.keys(EVT);
 
 const CELLS=[
-  {w:20,lab:T('罐頭×1|Can×1'),col:'#59616a'},
-  {w:25,lab:T('材料×3|Mats×3'),col:'#6b747d'},
-  {w:10,lab:T('電池×1|Battery'),col:'#59616a'},
-  {w:12,lab:T('魚×2|Fish×2'),col:'#6b747d'},
-  {w:10,lab:T('再轉|Again'),col:'#59616a'},
-  {w:15,lab:T('空格|Empty'),col:'#6b747d'},
-  {w:6, lab:T('有事發生|Event!'),col:'#59616a'},
-  {w:2, lab:T('AI碎片|AI shard'),col:'#f2a93b'}
+  {w:20,lab:T('{{tb:pet-walk.say.116}}'),col:'#59616a'},
+  {w:25,lab:T('{{tb:pet-walk.say.117}}'),col:'#6b747d'},
+  {w:10,lab:T('{{tb:pet-walk.say.118}}'),col:'#59616a'},
+  {w:12,lab:T('{{tb:pet-walk.say.119}}'),col:'#6b747d'},
+  {w:10,lab:T('{{tb:pet-walk.say.120}}'),col:'#59616a'},
+  {w:15,lab:T('{{tb:pet-walk.say.121}}'),col:'#6b747d'},
+  {w:6, lab:T('{{tb:pet-walk.say.122}}'),col:'#59616a'},
+  {w:2, lab:T('{{tb:pet-walk.say.123}}'),col:'#f2a93b'}
 ];
 const BOOST_CELLS=[0,1,2,3,7];
-const QUIPS=[T('這格是裝飾。|This slot is decorative.'),T('這格是來湊數的。|This slot is here to fill space.'),T('恭喜，你得到了空氣。|Congratulations. You won air.')];
-const DIARY1=[T('今天又出門了，天氣普通。|Went out again today. Weather: average.'),T('今天走了六十步，有點累。|Sixty steps today. A little tired.'),T('今天出門，主人一直催我往前走。|Today my human kept urging me forward.')];
-const DIARY3=[T('總之，今天很值得。|All in all, a good day.'),T('總之，今天還行。|All in all, an okay day.'),T('總之，今天沒什麼收穫，但我不怪你。|All in all, a quiet day. But I don\'t blame you.')];
+const QUIPS=[T('{{tb:pet-walk.say.124}}'),T('{{tb:pet-walk.say.125}}'),T('{{tb:pet-walk.say.126}}')];
+const DIARY1=[T('{{tb:pet-walk.say.127}}'),T('{{tb:pet-walk.say.128}}'),T('{{tb:pet-walk.say.129}}')];
+const DIARY3=[T('{{tb:pet-walk.say.130}}'),T('{{tb:pet-walk.say.131}}'),T('{{tb:pet-walk.say.132}}')];
 const TX={
-  title:T('小灰出門|Pet Walkies'),
-  sub:T('點一下走一步，按住連續走|Tap to step. Hold to keep walking.'),
-  start:T('按「出門」出發|Press "Go for a walk" to start'),again2:T('再走一趟：按「出門」|Walk again: press "Go for a walk"'),
-  best:T('最高分 {n}|Best {n}'),score:T('分數 {n}|Score {n}'),
-  dex:T('圖鑑|Collection'),back:T('返回|Back'),save:T('存成圖片|Save image'),
-  diaryTitle:T('今天的日記|Today\'s diary'),loot:T('物資分 {n}|Loot {n}'),newEntries:T('新圖鑑 +5 × {k}|New entries +5 × {k}'),
-  total:T('總分 {n}|Total {n}'),newBest:T('NEW BEST!|NEW BEST!'),newTag:T('新圖鑑！|New entry!'),rare:T('★ 稀有|★ Rare'),
-  tapStop:T('按一下停止（抓準時機！）|Tap to stop (Time it!)'),perfect:T('★ 完美時機！好運加成！|★ PERFECT TIMING! Luck Up!'),
-  spinAgain:T('再轉一次！|Spin again!'),ahead:T('前方有事發生|Something\'s ahead'),
-  got:T('獲得 {x}|Got {x}'),lost:T('失去 {x}|Lost {x}'),shark:T('河鯊冒出來還你 魚 ×1！|The shark popped up & returned Fish ×1!'),
-  gave:T('給了 罐頭 ×1，換到一次轉盤|Gave Can ×1 for a spin'),nothing:T('什麼都沒有|Nothing'),
-  finale:T('到家門口了，門前有一個幸運轉盤。最後轉一次，再進門！|Almost home. A lucky wheel by the door: one last spin before going in!'),
-  charm:T('3 個 AI 字詞碎片化成好運，前 3 次轉盤運氣變好|3 AI word shards became luck: your first 3 spins are luckier'),
-  rainbow:T('彩虹！接下來 3 次轉盤運氣變好|Rainbow! Your next 3 spins are luckier'),
-  hint:T('點一下走一步，按住連續疾走|Tap to step. Hold to sprint!'),
-  tapCont:T('點任意處繼續|Tap anywhere to continue'),
-  unknown:T('？？？|???'),dexTitle:T('圖鑑 {n}/{m}|Collection {n}/{m}'),
-  dexTip:T('點擊已解鎖事件可回味劇情|Tap unlocked events to read story'),
-  footer:T('小灰出門 · Pet Walkies|Pet Walkies'),
-  homeSign:T('到家了！|HOME!')
+  title:T('{{tb:pet-walk.say.133}}'),
+  sub:T('{{tb:pet-walk.say.134}}'),
+  start:T('{{tb:pet-walk.say.135}}'),again2:T('{{tb:pet-walk.say.136}}'),
+  best:T('{{tb:pet-walk.say.137}}'),score:T('{{tb:pet-walk.say.138}}'),
+  dex:T('{{tb:pet-walk.say.139}}'),back:T('{{tb:pet-walk.say.140}}'),save:T('{{tb:pet-walk.say.141}}'),
+  diaryTitle:T('{{tb:pet-walk.say.142}}'),loot:T('{{tb:pet-walk.say.143}}'),newEntries:T('{{tb:pet-walk.say.144}}'),
+  total:T('{{tb:pet-walk.say.145}}'),newBest:T('NEW BEST!|NEW BEST!'),newTag:T('{{tb:pet-walk.say.146}}'),rare:T('{{tb:pet-walk.say.147}}'),
+  tapStop:T('{{tb:pet-walk.say.148}}'),perfect:T('{{tb:pet-walk.say.149}}'),
+  spinAgain:T('{{tb:pet-walk.say.150}}'),ahead:T('{{tb:pet-walk.say.151}}'),
+  got:T('{{tb:pet-walk.say.152}}'),lost:T('{{tb:pet-walk.say.153}}'),shark:T('{{tb:pet-walk.say.154}}'),
+  gave:T('{{tb:pet-walk.say.155}}'),nothing:T('{{tb:pet-walk.say.156}}'),
+  finale:T('{{tb:pet-walk.say.157}}'),
+  charm:T('{{tb:pet-walk.say.158}}'),
+  rainbow:T('{{tb:pet-walk.say.159}}'),
+  hint:T('{{tb:pet-walk.say.160}}'),
+  tapCont:T('{{tb:pet-walk.say.161}}'),
+  unknown:T('？？？|???'),dexTitle:T('{{tb:pet-walk.say.162}}'),
+  dexTip:T('{{tb:pet-walk.say.163}}'),
+  footer:T('{{tb:pet-walk.say.164}}'),
+  homeSign:T('{{tb:pet-walk.say.165}}')
 };
 
 /* ====================== RNG ====================== */
@@ -280,16 +280,16 @@ function triggerEvent(){
       // 二選一：用頭撞 vs 用繩索撬開
       ev.phase='choice';
       ev.choices=[
-        {id:'ram', label:T('用頭撞開|Headbutt'), enabled:true, def:true},
-        {id:'pry', label:T('繩索撬開 (需繩索×1)|Pry open (Rope×1)'), enabled:invOf('itm_rope')>0}
+        {id:'ram', label:T('{{tb:pet-walk.say.166}}'), enabled:true, def:true},
+        {id:'pry', label:T('{{tb:pet-walk.say.167}}'), enabled:invOf('itm_rope')>0}
       ];
       break;
     case'E04':
       // 二選一：餵罐頭換轉盤 vs 一起吠
       ev.phase='choice';
       ev.choices=[
-        {id:'feed', label:T('分罐頭×1 (換轉盤)|Give Can×1 (Wheel)'), enabled:invOf('itm_can')>0},
-        {id:'bark', label:T('跟著一起吠！|Bark back!') , enabled:true, def:true}
+        {id:'feed', label:T('{{tb:pet-walk.say.168}}'), enabled:invOf('itm_can')>0},
+        {id:'bark', label:T('{{tb:pet-walk.say.169}}') , enabled:true, def:true}
       ];
       break;
     case'E05':
@@ -310,8 +310,8 @@ function triggerEvent(){
       // 二選一：小心打開(轉盤) vs 用力踹開(直接拿材料)
       ev.phase='choice';
       ev.choices=[
-        {id:'open', label:T('小心打開 (轉盤)|Open carefully (Wheel)'), enabled:true, def:true},
-        {id:'kick', label:T('用力踹開 (直接拿材料)|Kick it open (Mats)'), enabled:true}
+        {id:'open', label:T('{{tb:pet-walk.say.170}}'), enabled:true, def:true},
+        {id:'kick', label:T('{{tb:pet-walk.say.171}}'), enabled:true}
       ];
       break;
     case'E08':
@@ -362,11 +362,11 @@ function resolveChoice(idx){
       G.shake=0.2;
       if(rng()<0.55){
         addItem(pick(MATS),2,ev,g);
-        ev.lines.push(L(T('野狗被氣勢嚇跑，留下了東西！|Dogs ran off & left loot!')));
+        ev.lines.push(L(T('{{tb:pet-walk.say.172}}')));
         ev.lines.push(gainLine(g));
       }else{
         ev.variant=1;
-        ev.lines.push(L(T('野狗跟著一起吠了三聲就走了。|The dogs barked back and left.')));
+        ev.lines.push(L(T('{{tb:pet-walk.say.173}}')));
       }
     }
   }else if(ev.id==='E07'){
@@ -942,7 +942,7 @@ function drawDex(){
   for(const id of EVENT_IDS){const de=G.save.dexEvents[id]||{};if(de.n)n++;if(de.r)n++;}
   for(const it of ITEMS)if(G.save.dexItems[it.id])n++;
   txt(tf(TX.dexTitle,{n,m:maxTotal}),200,26,'bold 20px sans-serif','#fff','center');
-  txt(L(T('●＝普通　◆＝稀有|● normal   ◆ rare')),200,44,'12px sans-serif','#8d99a6','center');
+  txt(L(T('{{tb:pet-walk.say.174}}')),200,44,'12px sans-serif','#8d99a6','center');
 
   EVENT_IDS.forEach((id,i)=>{
     const de=G.save.dexEvents[id]||{},y=52+i*22;
@@ -968,12 +968,12 @@ function drawDex(){
 
     let cy=120;
     if(de.n>0){
-      txt('● '+L(T('普通遭遇|Normal')),38,cy,'bold 13px sans-serif','#8bc34a','left');cy+=19;
+      txt('● '+L(T('{{tb:pet-walk.say.175}}')),38,cy,'bold 13px sans-serif','#8bc34a','left');cy+=19;
       for(const l of wrap(L(e.d[0]),320)){txt(l,38,cy,'14px sans-serif','#fff','left');cy+=19;}
       cy+=8;
     }
     if(de.r>0){
-      txt('◆ '+L(T('稀有遭遇|Rare')),38,cy,'bold 13px sans-serif','#f2a93b','left');cy+=19;
+      txt('◆ '+L(T('{{tb:pet-walk.say.176}}')),38,cy,'bold 13px sans-serif','#f2a93b','left');cy+=19;
       for(const l of wrap(L(e.rd),320)){txt(l,38,cy,'14px sans-serif','#fff','left');cy+=19;}
     }
     btn(BTN.dex.modalClose,L(TX.back));
@@ -1057,9 +1057,9 @@ function ui(){
   setText('pw-score',live?(G.trip.loot+CONFIG.newEntryBonus*G.trip.newCount)+' 分':'—');
   setText('pw-best',G.save.best+' 分');
   const b=$('pw-go');b.disabled=petBusy;
-  setText('pw-go',petBusy?'散步中':'出門');
+  setText('pw-go',petBusy?'{{t:pet-walk.msg.177}}':'{{t:pet-walk.msg.178}}');
 }
-const SEG_MSG=['走完第 1 段，BONUS +1 點已入帳。','走完第 2 段，BONUS +1 點已入帳。','走完第 3 段，BONUS +1 點已入帳。'];
+const SEG_MSG=['{{t:pet-walk.msg.179}}','{{t:pet-walk.msg.180}}','{{t:pet-walk.msg.181}}'];
 function segmentDone(seg,t){
   if(!petBusy||paid[seg])return;paid[seg]=true;
   earned+=1;S.balance+=1;save();renderAll();
@@ -1072,7 +1072,7 @@ function finishTrip(total){
   if(analytics)AN.end(analytics,earned,earned>0?'complete':'loss',{score:total,step:CONFIG.stepsPerTrip,stage:3});
   analytics=null;
   save();renderAll();
-  say(earned===3?'平安到家！本趟 BONUS 共入帳 3 點。':'平安到家！','win');
+  say(earned===3?'{{t:pet-walk.msg.182}}':'{{t:pet-walk.msg.183}}','win');
   ui();
 }
 function begin(){
@@ -1081,7 +1081,7 @@ function begin(){
   analytics=AN.start('pet-walk',ENTRY_FEE);petStake=ENTRY_FEE;petBusy=true;earned=0;paid={};
   save();renderAll();
   startTrip();
-  say('出門囉！每走完 20 步，BONUS +1 點。');ui();
+  say('{{t:pet-walk.msg.184}}');ui();
   try{cv.focus();}catch(e){}
 }
 $('pw-go').addEventListener('click',begin);

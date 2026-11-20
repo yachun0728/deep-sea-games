@@ -1,9 +1,10 @@
 // Optional behavior checks: node tools/test_nap.mjs (Node.js, no packages).
 import fs from 'node:fs';
+import {readSource} from './expand_ids.mjs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 const root=new URL('../',import.meta.url);
-const raw=fs.readFileSync(new URL('games/nap/game.js',root),'utf8');
+const raw=readSource('games/nap/game.js',root);
 const fee=Number(fs.readFileSync(new URL('js/config.js',root),'utf8').match(/ENTRY_FEE\s*=\s*(\d+)/)[1]);
 const hookAt='ui();draw(0);requestAnimationFrame(loop);';
 assert.ok(raw.includes(hookAt),'test hook anchor missing');

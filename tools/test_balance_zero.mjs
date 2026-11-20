@@ -1,8 +1,9 @@
 // Optional: node tools/test_balance_zero.mjs (no packages). One-time zero reset of the shared balance.
 import fs from 'node:fs';
+import {readSource} from './expand_ids.mjs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
-const source = fs.readFileSync(new URL('../js/wallet.js', import.meta.url), 'utf8');
+const source = readSource('../js/wallet.js',import.meta.url);
 function run(initial) {
   const store = new Map(Object.entries(initial));
   const localStorage = { getItem: k => (store.has(k) ? store.get(k) : null), setItem: (k, v) => store.set(k, String(v)) };

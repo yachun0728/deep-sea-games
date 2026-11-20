@@ -12,7 +12,7 @@
 
   var S = { phase: 'betting', phaseEnd: 0, t0: 0, crash: 1, m: 1, crashedAt: 0,
             balance: START_BALANCE, bet: null, queued: false, history: [], bots: [] };
-  var BOT_NAMES = ['燈籠魚', '老船長', '聲納手', '壓載艙', '潮汐', '珊瑚仔', '七號艇', '浮游生物'];
+  var BOT_NAMES = ['{{t:platform.msg.001}}', '{{t:platform.msg.002}}', '{{t:platform.msg.003}}', '{{t:platform.msg.004}}', '{{t:platform.msg.005}}', '{{t:platform.msg.006}}', '{{t:platform.msg.007}}', '{{t:platform.msg.008}}'];
   var W = 0, H = 0, lastFrame = 0, snow = [];
 
   function fmt(n) { return Math.round(n).toLocaleString('zh-TW'); }
@@ -26,7 +26,7 @@
   function checkAmount() {
     var a = readAmount();
     if (a < MIN_BET) { say('最低下注 ' + MIN_BET + ' 點。', 'lose'); return 0; }
-    if (a > S.balance) { say('餘額不足，請調低下注或重設點數。', 'lose'); return 0; }
+    if (a > S.balance) { say('{{t:platform.msg.009}}', 'lose'); return 0; }
     return a;
   }
 

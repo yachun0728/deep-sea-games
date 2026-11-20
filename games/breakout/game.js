@@ -40,8 +40,8 @@
       var live = st === 'run';
       setText('br-level', String(level)); setText('br-score', String(score)); setText('br-lives', String(lives));
       setText('br-best', String(best)); setText('br-best-level', String(bestLevel));
-      $('br-go').disabled = live; setText('br-go', live ? '遊戲進行中' : st === 'over' ? '再玩一次' : '開始打磚塊');
-      $('br-pause').disabled = !live; $('br-pause').setAttribute('aria-pressed', String(paused)); setText('br-pause', paused ? '繼續' : '暫停');
+      $('br-go').disabled = live; setText('br-go', live ? '{{t:breakout.msg.001}}' : st === 'over' ? '{{t:breakout.msg.002}}' : '{{t:breakout.msg.003}}');
+      $('br-pause').disabled = !live; $('br-pause').setAttribute('aria-pressed', String(paused)); setText('br-pause', paused ? '{{t:breakout.msg.004}}' : '{{t:breakout.msg.005}}');
     }
 
     function start() {
@@ -49,7 +49,7 @@
       analytics = AN.start('breakout', 0);
       st = 'run'; paused = false; level = 1; score = 0; lives = 3; bricksBroken = 0; recorded = false; padX = W / 2;
       buildLevel(); serve(); parts = []; pops = []; last = performance.now();
-      say('點畫面或按空白鍵發球。'); ui(); c.focus();
+      say('{{t:breakout.msg.006}}'); ui(); c.focus();
     }
     function finish() {
       if (st !== 'run') return;
@@ -63,11 +63,11 @@
     function launch() {
       if (st !== 'run' || paused || !serving) return;
       var a = (Math.random() - .5) * 0.9, sp = curSpeed(), b = balls[0];
-      b.vx = sp * Math.sin(a); b.vy = -sp * Math.cos(a); serving = false; say('加油！');
+      b.vx = sp * Math.sin(a); b.vy = -sp * Math.cos(a); serving = false; say('{{t:breakout.msg.007}}');
     }
     function togglePause() {
       if (st !== 'run') return;
-      paused = !paused; last = performance.now(); say(paused ? '已暫停。' : '繼續！'); ui();
+      paused = !paused; last = performance.now(); say(paused ? '{{t:breakout.msg.008}}' : '{{t:breakout.msg.009}}'); ui();
     }
 
     function dropChance(b) { return Math.random() < 0.14; }
@@ -79,8 +79,8 @@
       bricks.splice(bricks.indexOf(b), 1);
     }
     function applyDrop(d) {
-      if (d.type === 'W') { wideT = 12; pop('擋板加寬', padX, PY - 30, '#62e6d2'); }
-      else if (d.type === 'S') { slowT = 10; pop('球變慢', padX, PY - 30, '#6cc4ff'); }
+      if (d.type === 'W') { wideT = 12; pop('{{t:breakout.msg.010}}', padX, PY - 30, '#62e6d2'); }
+      else if (d.type === 'S') { slowT = 10; pop('{{t:breakout.msg.011}}', padX, PY - 30, '#6cc4ff'); }
       else {
         var src = balls[0];
         if (src && !serving) {
@@ -89,7 +89,7 @@
             balls.push({ x: src.x, y: src.y, vx: sp * Math.cos(ang), vy: sp * Math.sin(ang) });
           });
         }
-        pop('多球', padX, PY - 30, '#ffc857');
+        pop('{{t:breakout.msg.012}}', padX, PY - 30, '#ffc857');
       }
       score += 25;
     }
@@ -147,7 +147,7 @@
       if (!bricks.length) {
         score += 100; AN.progress(analytics, { stage: level, step: level, score: score, level: level });
         if (level >= bestLevel) bestLevel = level;
-        level++; buildLevel(); serve(); banner = 1.4; say('過關！準備下一關，點畫面發球。', 'win');
+        level++; buildLevel(); serve(); banner = 1.4; say('{{t:breakout.msg.013}}', 'win');
       }
     }
 
@@ -176,14 +176,14 @@
       pops.forEach(function (p) { g.globalAlpha = 1 - p.t; tx(p.s, p.x, p.y - p.t * 40, 18, p.c); g.globalAlpha = 1; });
       tx('關卡 ' + level, 12, 28, 18, '#ffc857', 'left'); tx('分數 ' + score, W / 2, 28, 18, '#ffffff');
       for (var i = 0; i < lives; i++) { g.beginPath(); g.arc(W - 20 - i * 18, 22, 6, 0, 7); g.fillStyle = '#fff'; g.fill(); }
-      if (st === 'run' && serving && !paused && banner <= 0) tx('點一下發球', W / 2, 330, 24, '#ffffff');
-      if (banner > 0) tx('過關！', W / 2, 300, 40, '#ffc857');
-      if (paused) { g.fillStyle = 'rgba(10,26,40,.6)'; g.fillRect(0, 0, W, H); tx('暫停', W / 2, 270, 40, '#ffffff'); tx('按 P 或「繼續」', W / 2, 310, 20, '#ffffff'); }
-      if (st === 'ready') { g.fillStyle = 'rgba(10,26,40,.55)'; g.fillRect(0, 0, W, H); tx('打磚塊', W / 2, 250, 38, '#ffc857'); tx('到操作區按開始', W / 2, 300, 22, '#ffffff'); }
+      if (st === 'run' && serving && !paused && banner <= 0) tx('{{t:breakout.msg.014}}', W / 2, 330, 24, '#ffffff');
+      if (banner > 0) tx('{{t:breakout.msg.015}}', W / 2, 300, 40, '#ffc857');
+      if (paused) { g.fillStyle = 'rgba(10,26,40,.6)'; g.fillRect(0, 0, W, H); tx('{{t:breakout.msg.005}}', W / 2, 270, 40, '#ffffff'); tx('{{t:breakout.msg.016}}', W / 2, 310, 20, '#ffffff'); }
+      if (st === 'ready') { g.fillStyle = 'rgba(10,26,40,.55)'; g.fillRect(0, 0, W, H); tx('{{t:breakout.msg.017}}', W / 2, 250, 38, '#ffc857'); tx('{{t:breakout.msg.018}}', W / 2, 300, 22, '#ffffff'); }
       if (st === 'over') {
-        g.fillStyle = 'rgba(10,26,40,.6)'; g.fillRect(0, 0, W, H); tx('遊戲結束', W / 2, 215, 32, '#ff8f80');
+        g.fillStyle = 'rgba(10,26,40,.6)'; g.fillRect(0, 0, W, H); tx('{{t:breakout.msg.019}}', W / 2, 215, 32, '#ff8f80');
         tx('關卡 ' + level, W / 2, 275, 40, '#ffffff'); tx('分數 ' + score, W / 2, 312, 22, '#ffffff');
-        if (recorded) tx('新紀錄！', W / 2, 348, 22, '#ffc857'); tx('到操作區再玩一次', W / 2, 400, 20, '#ffffff');
+        if (recorded) tx('{{t:breakout.msg.020}}', W / 2, 348, 22, '#ffc857'); tx('{{t:breakout.msg.021}}', W / 2, 400, 20, '#ffffff');
       }
     }
 
@@ -193,7 +193,7 @@
     c.addEventListener('pointerdown', function (e) {
       if (e.button !== undefined && e.button !== 0) return;
       if (st === 'run') { e.preventDefault(); c.focus(); moveTo(e.clientX); if (c.setPointerCapture) { try { c.setPointerCapture(e.pointerId); } catch (x) {} } launch(); }
-      else say(st === 'over' ? '這一局已結束。按「再玩一次」開始新的一局。' : '先按「開始打磚塊」。');
+      else say(st === 'over' ? '{{t:breakout.msg.022}}' : '{{t:breakout.msg.023}}');
     });
     c.addEventListener('pointermove', function (e) { if (st === 'run' && !paused && (e.pointerType !== 'mouse' || document.activeElement === c || e.buttons)) moveTo(e.clientX); });
     c.addEventListener('mousemove', function (e) { if (st === 'run' && !paused) moveTo(e.clientX); });

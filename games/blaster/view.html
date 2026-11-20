@@ -1,14 +1,14 @@
   <section class="view" id="view-blaster" hidden>
     <div class="bl-stage" id="bl-playfield">
       <div class="bl-board">
-        <canvas id="bl-canvas" width="400" height="600" tabindex="0" aria-label="深海火線：自動射擊，拖曳或用方向鍵在水域內自由移動"></canvas>
-        <button class="bl-launch" id="bl-go" type="button">開始出擊</button>
-        <button class="bl-exit" id="bl-exit" type="button" aria-label="退出遊戲">←</button>
-        <output class="bl-accessible" id="bl-lives" aria-label="剩餘潛艇">3 / 35</output>
+        <canvas id="bl-canvas" width="400" height="600" tabindex="0" aria-label="{{t:blaster.view.03}}"></canvas>
+        <button class="bl-launch" id="bl-go" type="button">{{t:blaster.view.01}}</button>
+        <button class="bl-exit" id="bl-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
+        <output class="bl-accessible" id="bl-lives" aria-label="{{t:blaster.view.05}}">3 / 35</output>
         <p class="bl-accessible" id="bl-msg" role="status"></p>
         <div class="bl-ranking-feedback">
           <p id="bl-rank-status" role="status" hidden></p>
-          <button id="bl-rank-retry" type="button" hidden>重送排行榜成績</button>
+          <button id="bl-rank-retry" type="button" hidden>{{t:blaster.view.02}}</button>
         </div>
         <deep-sea-leaderboard id="bl-leaderboard" game-id="blaster" hidden></deep-sea-leaderboard>
       </div>

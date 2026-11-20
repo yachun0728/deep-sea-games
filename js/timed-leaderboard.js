@@ -20,7 +20,7 @@
         return;
       }
       starting = true;
-      status('正在準備訪客排行…');
+      status('{{t:timed-leaderboard.msg.001}}');
       refresh();
       let rank = null;
       try {
@@ -29,12 +29,12 @@
       } catch {}
       starting = false;
       if ($('view-' + gameId).hidden) { status(''); refresh(); cancel?.(); return; }
-      status(rank ? '本局將列入訪客排行。' : '這一局可在本機遊玩。');
+      status(rank ? '{{t:timed-leaderboard.msg.002}}' : '{{t:timed-leaderboard.msg.003}}');
       begin(rank, callback);
     }
     function fallBack() {
       round = null;
-      status('這一局可在本機遊玩。');
+      status('{{t:timed-leaderboard.msg.003}}');
     }
     function record(input) {
       if (!round) return;
@@ -54,18 +54,18 @@
     async function send() {
       if (!pending || sending) return;
       sending = true;
-      status('正在驗證排行榜成績…');
+      status('{{t:timed-leaderboard.msg.004}}');
       refresh();
       try {
         const api = await import('./frontend/services/api.mjs');
         const next = await api.moveBoardRound(round.token, pending.move, AbortSignal.timeout(10000));
         const saved = next.state.score === pending.score;
-        status(saved ? '成績已送到排行榜。' : '排行榜成績未能送出。');
+        status(saved ? '{{t:timed-leaderboard.msg.005}}' : '{{t:timed-leaderboard.msg.006}}');
         if (saved) onSaved?.();
         pending = null;
       } catch (error) {
         if (error.retryable === false) pending = null;
-        status('排行榜成績未能送出。', !!pending);
+        status('{{t:timed-leaderboard.msg.006}}', !!pending);
       } finally {
         sending = false;
         refresh();

@@ -1,11 +1,12 @@
 // Optional behavior checks: node tools/test_frog.mjs (Node.js, no packages).
 import fs from 'node:fs';
+import {readSource} from './expand_ids.mjs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import frogRules from '../shared/frog-rules.cjs';
 const root=new URL('../',import.meta.url);
 const rules=fs.readFileSync(new URL('shared/frog-rules.cjs',root),'utf8');
-const raw=fs.readFileSync(new URL('games/frog/game.js',root),'utf8');
+const raw=readSource('games/frog/game.js',root);
 const fee=Number(fs.readFileSync(new URL('js/config.js',root),'utf8').match(/ENTRY_FEE\s*=\s*(\d+)/)[1]);
 const hookAt='ui();draw();requestAnimationFrame(loop);';
 assert.ok(raw.includes(hookAt),'test hook anchor missing');

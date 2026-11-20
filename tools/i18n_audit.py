@@ -9,7 +9,8 @@ sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent))
 from test_i18n import ROOT, source_texts  # noqa: E402
 from test_i18n_policy import EN_BANNED, ZH_BANNED  # noqa: E402
 
-dictionary = json.loads((ROOT / 'locales/en.json').read_text(encoding='utf-8'))
+import i18n_data  # noqa: E402
+dictionary = i18n_data.dictionary(ROOT)
 used = source_texts()
 stale = sorted(k for k in dictionary if k not in used)
 print(f'{len(dictionary)} entries, {len(used & dictionary.keys())} used by visible text, {len(stale)} not found in source')

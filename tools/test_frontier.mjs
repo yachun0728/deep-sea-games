@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
+import {expandIds} from './expand_ids.mjs';
 const root=new URL('../',import.meta.url),read=p=>fs.readFileSync(new URL(p,root),'utf8');
 const model={};vm.createContext(model);vm.runInContext(read('games/frontier/world.js'),model);
 let checks=0;const ok=(test,message)=>{assert.ok(test,message);checks++;};
@@ -75,7 +76,7 @@ function harness(seed={},balance=500,mobile=false,portrait=false){
  const AN={};['start','end','progress','resume','interact'].forEach(k=>AN[k]=(...args)=>{events.push({k,args});return k==='start'?'round-'+events.length:undefined;});
  const window={matchMedia:q=>({matches:mobile&&(!q.includes('orientation')||portrait)}),deepSeaI18n:{sourceText:e=>e.textContent},addEventListener(k,f){(listeners[k]||=[]).push(f);}};
  const c={$ ,S:{balance},AN,ENTRY_FEE:0,LOW_MSG:'low',save(){},renderAll(){},window,document,performance:{now:()=>now},requestAnimationFrame:f=>frame=f,localStorage:{getItem:k=>store.get(k)||null,setItem(k,v){if(failWrite)throw Error('storage blocked');store.set(k,v);}}};
- let game=read('games/frontier/game.js').replace(/\{\{include:([^}]+)\}\}/g,(_,p)=>read(p));
+ let game=expandIds(read('games/frontier/game.js')).replace(/\{\{include:([^}]+)\}\}/g,(_,p)=>read(p));
  game=game.replace('var preview=frontierWorld(1);','window.test={world:()=>world,finish:finishStage,persist:persist,paused:()=>paused};var preview=frontierWorld(1);');
  vm.createContext(c);vm.runInContext(game,c);c.frontierRoute(true);
  return {c,$,events,store,get w(){return window.test.world();},test:window.test,emit(k,e={}){(listeners[k]||[]).forEach(f=>f(e));},run(ms=50){now+=ms;frame(now);},fail(){failWrite=true;}};

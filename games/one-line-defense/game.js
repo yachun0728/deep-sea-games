@@ -5,7 +5,7 @@
   function olBest(){try{return Math.max(0,Math.floor(Number(JSON.parse(localStorage.getItem('oneLine.best')))||0));}catch(_){return 0;}}
   function olUI(){
     $('od-score').textContent=fmt(ONEL.score);$('od-pay').textContent=ONEL.earned+' / '+ONEL_BONUS*ONEL_MARKS;$('od-best').textContent=fmt(olBest());
-    $('od-go').disabled=ONEL.active;$('od-go').textContent=ONEL.active?'守城中 · 在左側畫線':'開始守城';
+    $('od-go').disabled=ONEL.active;$('od-go').textContent=ONEL.active?'{{t:one-line-defense.msg.001}}':'{{t:one-line-defense.msg.002}}';
   }
   function olValid(source){return source===$('od-frame').contentWindow;}
   window.deepSeaOneLine={
@@ -15,7 +15,7 @@
       if(AN.interact)AN.interact();
       ONEL.active=true;ONEL.stake=ENTRY_FEE;ONEL.earned=0;ONEL.marks={};ONEL.score=0;ONEL.time=0;ONEL.analytics=AN.start('one-line-defense',ENTRY_FEE);
       save();renderAll();olUI();
-      olSay('在左側拖曳畫線擋住敵人；每撐過 30 秒 BONUS +2 點，最多 10 點。|Drag on the left to draw lines and block enemies; every 30 seconds survived gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
+      olSay('{{tb:one-line-defense.say.003}}','',{fee:ENTRY_FEE});
       return true;
     },
     bonus:function(source,mark){
@@ -23,7 +23,7 @@
       mark=Math.floor(Number(mark));if(!(mark>=1&&mark<=ONEL_MARKS)||ONEL.marks[mark])return 0;
       ONEL.marks[mark]=true;ONEL.earned+=ONEL_BONUS;S.balance+=ONEL_BONUS;save();renderAll();
       AN.progress(ONEL.analytics,{stage:mark,step:mark*ONEL_EVERY,bonus_points:ONEL_BONUS,total_bonus_points:ONEL.earned});
-      olSay('撐過 {s} 秒，BONUS +{p} 點已入帳（本局 {e} / 10）。|{s} seconds survived: +{p} BONUS pts added ({e} / 10 this game).','win',{s:mark*ONEL_EVERY,p:ONEL_BONUS,e:ONEL.earned});
+      olSay('{{tb:one-line-defense.say.004}}','win',{s:mark*ONEL_EVERY,p:ONEL_BONUS,e:ONEL.earned});
       olUI();return ONEL_BONUS;
     },
     finish:function(source,data){
@@ -31,7 +31,7 @@
       var score=Math.max(0,Math.floor(Number(data&&data.score)||0)),time=Math.max(0,Math.floor(Number(data&&data.time)||0)),combo=Math.max(0,Math.floor(Number(data&&data.combo)||0));
       ONEL.active=false;ONEL.stake=0;ONEL.score=score;ONEL.time=time;
       AN.end(ONEL.analytics,ONEL.earned,ONEL.earned>0?'complete':'loss',{score:score,step:time,combo:combo});ONEL.analytics=null;
-      olSay('核心被攻破：{sc} 分、撐了 {t} 秒，本局 BONUS {e} 點。|The core has fallen: {sc} points, {t} seconds survived, {e} BONUS pts this game.',ONEL.earned>0?'win':'lose',{sc:fmt(score),t:time,e:ONEL.earned});
+      olSay('{{tb:one-line-defense.say.005}}',ONEL.earned>0?'win':'lose',{sc:fmt(score),t:time,e:ONEL.earned});
       olUI();return 0;
     },
     pause:function(source){if(olValid(source)&&ONEL.active)AN.progress(ONEL.analytics,{phase:'pause'},true);},
@@ -49,10 +49,10 @@
   $('od-go').addEventListener('click',function(){
     var w=$('od-frame').contentWindow;
     if(ONEL.active)return;
-    if(!w||!w.startOneLinePlatformRound){olSay('遊戲畫面還在載入，請稍候再試。','lose');return;}
+    if(!w||!w.startOneLinePlatformRound){olSay('{{t:one-line-defense.msg.006}}','lose');return;}
     if(w.startOneLinePlatformRound())$('od-frame').focus();
   });
   window.addEventListener('arcade-languagechange',function(){if(ONEL.msg)olSay(ONEL.msg.text,ONEL.msg.kind,ONEL.msg.params);});
-  olSay('按「開始守城」或遊戲裡的「開始」開局。|Press “Start defense” or “Start” in the game.');
+  olSay('{{tb:one-line-defense.say.007}}');
   olUI();
 

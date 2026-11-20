@@ -93,17 +93,17 @@ function runFx(f){
 function ui(){
  const live=st==='run';
  setText('mm-pearls',(G?G.done:0)+' / '+TOTAL_RUNS);setText('mm-score',G?String(G.score):'—');setText('mm-best',bestFor(mode)+' 分');
- const go=$('mm-go');go.disabled=live||rank.busy();setText('mm-go',live?'牌局進行中':st==='over'?'再玩一次':'發牌');
- const q=$('mm-quit');q.hidden=!live;setText('mm-quit',quitArm?'再按一次確認放棄':'放棄本局');
+ const go=$('mm-go');go.disabled=live||rank.busy();setText('mm-go',live?'{{t:mermaid.msg.001}}':st==='over'?'{{t:mermaid.msg.002}}':'{{t:mermaid.msg.003}}');
+ const q=$('mm-quit');q.hidden=!live;setText('mm-quit',quitArm?'{{t:mermaid.msg.004}}':'{{t:mermaid.msg.005}}');
  $('mm-undo').disabled=!live||!G||!G.history.length;$('mm-hint').disabled=!live;
  stockBtn.disabled=!live||!G||!G.stock.length;setText('mm-stock-count',String(G?Math.ceil(G.stock.length/10):5));
  stockBtn.style.visibility=G&&!G.stock.length?'hidden':'';
  setText('mm-info',live&&G?G.score+' · '+G.moves:'');
  document.querySelectorAll('.mm-mode').forEach(b=>{b.setAttribute('aria-pressed',String(Number(b.dataset.diff)===mode));b.disabled=live});
  cover.hidden=live;
- if(st==='over'&&lastResult){setText('mm-cover-title',lastResult.win?'全部珍珠收集完成！':'本局結束');
+ if(st==='over'&&lastResult){setText('mm-cover-title',lastResult.win?'{{t:mermaid.msg.006}}':'{{t:mermaid.msg.007}}');
   setText('mm-cover-text',lastResult.win?'人魚為你唱歌。本局共入帳 '+earned+' 點。':'收集了 '+lastResult.done+' 顆珍珠，本局共入帳 '+earned+' 點。')}
- else{setText('mm-cover-title','人魚接龍');setText('mm-cover-text','把牌排成 K 到 A 的同花色序列，收集 8 顆珍珠。');
+ else{setText('mm-cover-title','{{t:mermaid.msg.008}}');setText('mm-cover-text','{{t:mermaid.msg.009}}');
  }}
 function pay(n){
  earned+=n;S.balance+=n;save();renderAll();
@@ -119,7 +119,7 @@ function afterAction(newIds){
  if(G.done>=TOTAL_RUNS){
   if(G.mode!==1&&!bonusPaid){bonusPaid=true;pay(CLEAR_BONUS)}
   end(true);return}
- if(!allMoves(G).length&&!canDeal(G)&&!G.stock.length)say('沒有可以走的步了。悔棋換個走法，或放棄本局。','lose');
+ if(!allMoves(G).length&&!canDeal(G)&&!G.stock.length)say('{{t:mermaid.msg.010}}','lose');
  ui()}
 function end(win){
  if(st!=='run')return;
@@ -140,7 +140,7 @@ function start(){
  analytics=AN.start('mermaid',ENTRY_FEE);mmStake=ENTRY_FEE;mmBusy=true;save();renderAll();
  buildBoard();G=mermaidRules.create(random||Math.random);if(mode!==1){const code=mode===2?3:4;mermaidRules.input(G,code);rank.record(code);}rankLast=performance.now();earned=0;maxDone=0;bonusPaid=false;sel=null;clearHint();drag=null;lastResult=null;quitArm=false;
  st='run';ui();render();
- say('發牌囉！把牌從大排到小，同花色排滿 K 到 A 就收成珍珠。');
+ say('{{t:mermaid.msg.011}}');
  },ui);}
 function locked(){return performance.now()<lockUntil}
 // 操作
@@ -153,8 +153,8 @@ function tapColumn(c,idx){
   if(c===sel.from&&idx===sel.idx){sel=null;render();return}
   if(canDrop(G,sel.from,sel.idx,c)){doMove(sel.from,sel.idx,c);return}}
  if(idx!==null&&runStart(G.cols[c],idx)){sel={from:c,idx:idx};clearHint();render();return}
- if(sel){sel=null;say('這裡放不下：要放在比它大 1 的牌上面。','lose');render();return}
- if(idx!==null)say('這張牌現在不能搬：要同花色、由大到小連續的牌才能一起搬。');
+ if(sel){sel=null;say('{{t:mermaid.msg.012}}','lose');render();return}
+ if(idx!==null)say('{{t:mermaid.msg.013}}');
  render()}
 function colAtX(clientX){
  const b=board.getBoundingClientRect();return Math.floor((clientX-b.left-M.offX+M.gap/2)/(M.cw+M.gap))}
@@ -186,28 +186,28 @@ function finishDrag(e,cancel){
  let target=colAtX(cx);
  if(!(target>=0&&target<=9&&canDrop(G,d.c,d.idx,target))){const t2=colAtX(e.clientX);target=t2>=0&&t2<=9&&canDrop(G,d.c,d.idx,t2)?t2:-1}
  if(target>=0){doMove(d.c,d.idx,target)}
- else{say('這裡放不下：要放在比它大 1 的牌上面。','lose');render()}}
+ else{say('{{t:mermaid.msg.012}}','lose');render()}}
 board.addEventListener('pointerup',e=>finishDrag(e,false));
 board.addEventListener('pointercancel',e=>finishDrag(e,true));
 board.addEventListener('contextmenu',e=>e.preventDefault());
 stockBtn.addEventListener('click',()=>{
  if(st!=='run'||locked())return;
- if(!G.stock.length){say('牌堆已經發完了。','lose');return}
- if(!canDeal(G)){say('每一列都要有牌才能發牌，先把牌放進空列。','lose');return}
+ if(!G.stock.length){say('{{t:mermaid.msg.014}}','lose');return}
+ if(!canDeal(G)){say('{{t:mermaid.msg.015}}','lose');return}
  const ids=deal(G);rank.record(0);afterAction(ids);
- if(st==='run')say('浪花湧來，每一列多了一張牌。')});
+ if(st==='run')say('{{t:mermaid.msg.016}}')});
 $('mm-undo').addEventListener('click',()=>{
  if(st!=='run'||locked()||!G.history.length)return;
- undo(G);rank.record(1);sel=null;clearHint();render();ui();say('時間倒流了一步。')});
+ undo(G);rank.record(1);sel=null;clearHint();render();ui();say('{{t:mermaid.msg.017}}')});
 $('mm-hint').addEventListener('click',()=>{
  if(st!=='run'||locked())return;
  const h=findHint(G);clearHint();sel=null;
  if(!h||h.s<5){
-  if(canDeal(G)){hint={deal:true,from:-1,idx:0,to:-1};say('人魚低語：沒有好走的牌了，發牌試試。')}
-  else if(h){hint=h;say('人魚低語：只剩小調整了，先整理牌列。')}
-  else say('人魚低語：沒有可走的步了，悔棋換個走法吧。','lose')}
+  if(canDeal(G)){hint={deal:true,from:-1,idx:0,to:-1};say('{{t:mermaid.msg.018}}')}
+  else if(h){hint=h;say('{{t:mermaid.msg.019}}')}
+  else say('{{t:mermaid.msg.020}}','lose')}
  else{hint=h;const mv=G.cols[h.from].cards[h.idx],d=G.cols[h.to].cards;
-  say('試試把 '+RANK[mv.rank]+' 移到'+(d.length?' '+RANK[d[d.length-1].rank]:'空列'))}
+  say('試試把 '+RANK[mv.rank]+' 移到'+(d.length?' '+RANK[d[d.length-1].rank]:'{{t:mermaid.msg.021}}'))}
  render();hintTimer=setTimeout(()=>{hint=null;render()},3200)});
 $('mm-go').addEventListener('click',start);
 $('mm-quit').addEventListener('click',()=>{

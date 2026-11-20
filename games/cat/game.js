@@ -28,7 +28,7 @@ function award(m,b){
 function ui(){
  const s=score(),nx=nextMilestone(s),live=st==='run';
  setText('ct-score',s+' m');setText('ct-best',best+' m');setText('ct-next',nx[0]+' m · +'+nx[1]);
- $('ct-amount').disabled=catBusy;$('ct-go').disabled=live||catRank.busy();setText('ct-go',live?'奔跑中 · 點畫面跳躍':st==='over'?'再跑一次':'開始奔跑');
+ $('ct-amount').disabled=catBusy;$('ct-go').disabled=live||catRank.busy();setText('ct-go',live?'{{t:cat.msg.001}}':st==='over'?'{{t:cat.msg.002}}':'{{t:cat.msg.003}}');
  let tier=0;LADDER.forEach(m=>{if(s>=m)tier=m});
  document.querySelectorAll('[data-ct-tier]').forEach(el=>el.setAttribute('aria-current',st!=='ready'&&tier>0&&Number(el.dataset.ctTier)===tier?'step':'false'));
 }
@@ -83,12 +83,12 @@ const s=score(),nx=nextMilestone(s);
 tx(s+' m',W/2,62,40,'#fff1c1');
 if(st==='run')tx('下一個獎勵 '+nx[0]+' m · +'+nx[1]+' 點',W/2,92,15,'#9bfff0');
 tx('最佳 '+best+' m',W-70,34,16,'#ffd23f');
-tx('本局 +'+earned+' 點',70,34,16,earned>0?'#ffd23f':'#fff1c1');
+tx('{{t:cat.msg.004}}'+earned+' 點',70,34,16,earned>0?'#ffd23f':'#fff1c1');
 pops.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/2.2);const y=175-(reduceMotion?0:Math.min(1,p.age*3)*22);tx('+'+p.b+' 點',W/2,y,38,'#ffd23f');tx(p.m+' 公尺里程碑',W/2,y+28,17,'#fff1c1');g.globalAlpha=1});
 if(st!=='run'){
 g.fillStyle='rgba(27,27,47,.5)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx('屋頂貓貓',W/2,240,36,'#ffd23f');tx('到操作區開始',W/2,290,22,'#fff1c1')}
-else{tx('喵…摔下去了！',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(earned>0?'本局獎勵 +'+earned+' 點':'沒到 '+MILESTONES[0][0]+' 公尺，沒有獎勵',W/2,314,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,348,20,'#ffd23f');tx('到操作區再跑一次',W/2,392,20,'#fff1c1')}}}
+if(st==='ready'){tx('{{t:cat.msg.005}}',W/2,240,36,'#ffd23f');tx('{{t:cat.msg.006}}',W/2,290,22,'#fff1c1')}
+else{tx('{{t:cat.msg.007}}',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(earned>0?'{{t:cat.msg.008}}'+earned+' 點':'沒到 '+MILESTONES[0][0]+' 公尺，沒有獎勵',W/2,314,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('{{t:cat.msg.009}}',W/2,348,20,'#ffd23f');tx('{{t:cat.msg.010}}',W/2,392,20,'#fff1c1')}}}
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
@@ -97,7 +97,7 @@ function start(){
   catRandom=random||Math.random;cat=catRules.create(catRandom);
   analytics=AN.start('cat',amount);catStake=amount;catBusy=true;save();renderAll();
   shake=0;earned=0;awarded=0;pops=[];rec=false;st='run';last=performance.now();
-  say('出發！點畫面跳躍，按越久跳越高。到達里程碑會當場入帳點數。');ui();c.focus();
+  say('{{t:cat.msg.011}}');ui();c.focus();
  });
 }
 function down(){
@@ -106,7 +106,7 @@ function down(){
 }
 function release(){if(st==='run'&&catRules.input(cat,1))catRank.record(1)}
 $('ct-go').addEventListener('click',start);
-c.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;if(down()){e.preventDefault();c.focus()}else if(st!=='run')say(st==='over'?'這一局已結算。按「再跑一次」開始新的一局。':'先按「開始奔跑」。')});
+c.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;if(down()){e.preventDefault();c.focus()}else if(st!=='run')say(st==='over'?'{{t:cat.msg.012}}':'{{t:cat.msg.013}}')});
 ['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,release));
 c.addEventListener('contextmenu',e=>e.preventDefault());
 addEventListener('keydown',e=>{if($('view-cat').hidden||document.hidden||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();if(!e.repeat)down()}});

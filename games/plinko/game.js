@@ -35,7 +35,7 @@
   function pkDrop() {
     var a = readPAmount();
     if (a < MIN_BET) { pSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
-    if (a > S.balance) { pSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    if (a > S.balance) { pSay('{{t:plinko.msg.001}}', 'lose'); return; }
     if (P.balls.length >= MAX_BALLS) { pSay('水裡已經有 ' + MAX_BALLS + ' 顆珍珠，等它們落底再投。'); return; }
     var k = [], rights = 0;
     for (var r = 0; r < P.rows; r++) { k.push(rights); if (Math.random() < 0.5) rights++; }

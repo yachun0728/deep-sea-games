@@ -6,7 +6,7 @@
   function srCleared(){try{var b=JSON.parse(localStorage.getItem('shadowRelay.bests'))||{};return Object.keys(b).filter(function(k){return isFinite(Number(b[k]));}).length;}catch(_){return srStored();}}
   function srUI(){
     $('sr-cleared').textContent=SHAD.cleared;$('sr-pay').textContent=SHAD.earned+' / '+SHAD_CAP;$('sr-best').textContent=Math.min(SHAD_LEVELS,srCleared())+' / '+SHAD_LEVELS;
-    $('sr-go').disabled=SHAD.active;$('sr-go').textContent=SHAD.active?'本局進行中 · 在左側選關':'開始一局';$('sr-end').hidden=!SHAD.active;
+    $('sr-go').disabled=SHAD.active;$('sr-go').textContent=SHAD.active?'{{t:shadow-relay.msg.001}}':'{{t:shadow-relay.msg.002}}';$('sr-end').hidden=!SHAD.active;
   }
   function srValid(source){return source===$('sr-frame').contentWindow;}
   window.deepSeaShadowRelay={
@@ -16,7 +16,7 @@
       if(AN.interact)AN.interact();
       SHAD.active=true;SHAD.stake=ENTRY_FEE;SHAD.earned=0;SHAD.paid={};SHAD.cleared=0;SHAD.analytics=AN.start('shadow-relay',ENTRY_FEE);
       save();renderAll();srUI();
-      srSay('本局開始。在左側選一關；每關第一次通過 BONUS +2 點，最多 10 點。|Round started. Pick a stage on the left; each stage’s first clear gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
+      srSay('{{tb:shadow-relay.say.003}}','',{fee:ENTRY_FEE});
       return true;
     },
     clear:function(source,level){
@@ -25,9 +25,9 @@
       var got=0,repeat=!!SHAD.paid[level];SHAD.cleared++;
       if(!repeat&&SHAD.earned<SHAD_CAP){got=Math.min(SHAD_BONUS,SHAD_CAP-SHAD.earned);SHAD.paid[level]=true;SHAD.earned+=got;S.balance+=got;save();renderAll();}
       AN.progress(SHAD.analytics,{stage:level+1,step:SHAD.cleared,bonus_points:got,total_bonus_points:SHAD.earned});
-      if(got)srSay('第 {n} 關通過，BONUS +{p} 點已入帳（本局 {e} / 10）。|Stage {n} cleared: +{p} BONUS pts added ({e} / 10 this round).','win',{n:level+1,p:got,e:SHAD.earned});
-      else if(repeat)srSay('第 {n} 關通過。這關本局已經領過 BONUS，換一關試試。|Stage {n} cleared. You already got this stage’s BONUS this round; try another stage.','',{n:level+1});
-      else srSay('第 {n} 關通過。本局 BONUS 已達上限 10 點，可以繼續挑戰最佳時間。|Stage {n} cleared. This round’s BONUS is maxed at 10 pts; keep going for best times.','',{n:level+1});
+      if(got)srSay('{{tb:shadow-relay.say.004}}','win',{n:level+1,p:got,e:SHAD.earned});
+      else if(repeat)srSay('{{tb:shadow-relay.say.005}}','',{n:level+1});
+      else srSay('{{tb:shadow-relay.say.006}}','',{n:level+1});
       srUI();return got;
     },
     pause:function(source){if(srValid(source)&&SHAD.active)AN.progress(SHAD.analytics,{phase:'pause'},true);},
@@ -38,7 +38,7 @@
     if(!SHAD.active)return;
     SHAD.active=false;SHAD.stake=0;AN.end(SHAD.analytics,SHAD.earned,'complete',{step:SHAD.cleared});SHAD.analytics=null;
     var w=$('sr-frame').contentWindow;if(w&&w.endShadowPlatformRound)w.endShadowPlatformRound();
-    srSay('本局結束：通過 {c} 次，BONUS 共 {e} 點。|Round over: {c} clears, {e} BONUS pts in total.','',{c:SHAD.cleared,e:SHAD.earned});srUI();
+    srSay('{{tb:shadow-relay.say.007}}','',{c:SHAD.cleared,e:SHAD.earned});srUI();
   }
   // 先於共用離頁處理結束，讓 abandoned 帶上已入帳的 BONUS
   window.addEventListener('pagehide',function(e){if(!e.persisted&&SHAD.active&&SHAD.analytics){AN.end(SHAD.analytics,SHAD.earned,'abandoned',{step:SHAD.cleared});SHAD.analytics=null;SHAD.active=false;SHAD.stake=0;}},true);
@@ -51,11 +51,11 @@
   $('sr-go').addEventListener('click',function(){
     var w=$('sr-frame').contentWindow;
     if(SHAD.active)return;
-    if(!w||!w.startShadowPlatformRound){srSay('遊戲畫面還在載入，請稍候再試。','lose');return;}
+    if(!w||!w.startShadowPlatformRound){srSay('{{t:shadow-relay.msg.008}}','lose');return;}
     if(w.startShadowPlatformRound())$('sr-frame').focus();
   });
   $('sr-end').addEventListener('click',srFinish);
   window.addEventListener('arcade-languagechange',function(){if(SHAD.msg)srSay(SHAD.msg.text,SHAD.msg.kind,SHAD.msg.params);});
-  srSay('按「開始一局」或直接在左側點一關開始。|Press “Start a round” or just pick a stage on the left.');
+  srSay('{{tb:shadow-relay.say.009}}');
   srUI();
 

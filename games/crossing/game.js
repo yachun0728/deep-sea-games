@@ -29,15 +29,15 @@
     $('cr-p').textContent = (CR_P[CR.diff] * 100).toFixed(0) + '%';
     $('cr-pos').textContent = CR.active || CR.over ? CR.pos + ' / ' + CR_LANES : '—';
     $('cr-sub').textContent = CR.lost ? '在第 ' + CR.failAt + ' 道被暗流捲走' : CR.active ? '已渡過 ' + CR.pos + ' 道，還有 ' + (CR_LANES - CR.pos) + ' 道' :
-      CR.over ? (CR.failAt <= CR_LANES ? '平安上岸；暗流原本在第 ' + CR.failAt + ' 道' : '平安上岸；這一趟十二道都沒有暗流') : '小海龜要從左邊橫渡十二道海流';
-    if (!CR.active) { elCGo.dataset.mode = 'bet'; elCGo.disabled = false; elCGo.innerHTML = (CR.over ? '再來一局' : '開始') + '<small>下注 ' + fmt(readCAmount()) + ' 點</small>'; }
+      CR.over ? (CR.failAt <= CR_LANES ? '平安上岸；暗流原本在第 ' + CR.failAt + ' 道' : '{{t:crossing.msg.001}}') : '{{t:crossing.msg.002}}';
+    if (!CR.active) { elCGo.dataset.mode = 'bet'; elCGo.disabled = false; elCGo.innerHTML = (CR.over ? '{{t:crossing.msg.003}}' : '{{t:crossing.msg.004}}') + '<small>下注 ' + fmt(readCAmount()) + ' 點</small>'; }
     else if (CR.pos === 0) { elCGo.dataset.mode = 'done'; elCGo.disabled = true; elCGo.innerHTML = '先前進一道<small>渡過才能領回</small>'; }
     else { elCGo.dataset.mode = 'surface'; elCGo.disabled = false; elCGo.innerHTML = '領回<small>' + fmt(Math.floor(CR.bet * m)) + ' 點 · ' + fx(m) + '×</small>'; }
   }
   function crStart() {
     var a = readCAmount();
     if (a < MIN_BET) { rSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
-    if (a > S.balance) { rSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    if (a > S.balance) { rSay('{{t:crossing.msg.005}}', 'lose'); return; }
     var fail = 1; while (fail <= CR_LANES && Math.random() < CR_P[CR.diff]) fail++;   // first lane that hides the rip current; 13 = none
     S.balance -= a;
     CR.analytics=AN.start('crossing',a); CR.active = true; CR.over = false; CR.lost = false; CR.bet = a; CR.pos = 0; CR.failAt = fail;
@@ -49,7 +49,7 @@
   function crCash() {
     var m = crMult(CR.pos), pay = Math.floor(CR.bet * m);
     AN.end(CR.analytics,pay,'cashout',{step:CR.pos,multiplier:m}); S.balance += pay; CR.active = false; CR.over = true;
-    rSay((CR.pos === CR_LANES ? '渡完十二道了！' : '') + '在 ' + fx(m) + '× 領回 ' + fmt(pay) + ' 點（' + (pay >= CR.bet ? '+' : '−') + fmt(Math.abs(pay - CR.bet)) + '）。', pay >= CR.bet ? 'win' : 'lose');
+    rSay((CR.pos === CR_LANES ? '{{t:crossing.msg.006}}' : '') + '在 ' + fx(m) + '× 領回 ' + fmt(pay) + ' 點（' + (pay >= CR.bet ? '+' : '−') + fmt(Math.abs(pay - CR.bet)) + '）。', pay >= CR.bet ? 'win' : 'lose');
     syncBalance(); crUI();
   }
   function crStep() {
@@ -61,7 +61,7 @@
     }
     CR.pos++; AN.progress(CR.analytics,{step:CR.pos});
     if (CR.pos === CR_LANES) { crCash(); return; }
-    rSay('渡過第 ' + CR.pos + ' 道，目前 ' + fx(crMult(CR.pos)) + '×，可以領回或繼續前進。');
+    rSay('渡過第 ' + CR.pos + ' 道，目前 ' + fx(crMult(CR.pos)) + '{{t:crossing.msg.007}}');
     crUI();
   }
   elCStep.addEventListener('click', crStep);

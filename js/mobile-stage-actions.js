@@ -15,7 +15,7 @@
       var buttons=[].slice.call(side.querySelectorAll('button.go'));if(!buttons.length)return;
       var freeEntry=buttons.some(function(button){return button.id==='mines-go'||button.id==='br-go';});
       stage.classList.add('mobile-start-stage');
-      var tray=document.createElement('div');tray.className='mobile-stage-actions';tray.setAttribute('role','group');tray.setAttribute('aria-label','開始、續關與重玩');stage.appendChild(tray);
+      var tray=document.createElement('div');tray.className='mobile-stage-actions';tray.setAttribute('role','group');tray.setAttribute('aria-label','{{t:mobile-stage-actions.msg.001}}');stage.appendChild(tray);
       var records=buttons.map(function(button){
         var marker=document.createComment('original game action position'),wrapper=document.createElement('div');
         button.parentNode.insertBefore(marker,button);wrapper.className='mobile-stage-action';tray.appendChild(wrapper);return {button:button,marker:marker,wrapper:wrapper};

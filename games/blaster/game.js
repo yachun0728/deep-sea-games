@@ -41,7 +41,7 @@
     var launch=$('bl-go');
     launch.hidden=BL.phase!=='ready'&&BL.phase!=='lost';
     launch.disabled=blRank.busy();
-    launch.textContent=BL.phase==='lost'?'重新出擊':'開始出擊';
+    launch.textContent=BL.phase==='lost'?'{{t:blaster.msg.001}}':'{{t:blaster.msg.002}}';
     $('bl-playfield').classList.toggle('bl-immersive',BL.phase!=='ready');
     $('bl-leaderboard').hidden=BL.phase==='run'||BL.phase==='pick';
   }
@@ -59,7 +59,7 @@
     if(board)board.open=false;
     BL.phase='run';BL.wave=0;BL.clock=0;BL.scroll=0;BL.nextWave=.10;BL.shot=0;BL.enemies=[];BL.bullets=[];BL.fx=[];BL.ink=[];BL.gates=[];
     BL.target=BL.x=200;BL.targetY=BL.y=BL_SPAWN_Y;BL.dragging=null;blReleaseDirections();BL.flash=0;BL.last=performance.now();
-    blTracking();blSay('移動編隊，射擊數字區，閃避怪物與墨彈。');blUI();blCanvas.focus();
+    blTracking();blSay('{{t:blaster.msg.003}}');blUI();blCanvas.focus();
   }
   // Weapon choice cards: the fight pauses every BL_CARD_EVERY waves and resumes after the pick.
   // Cards only swap the weapon form (or heal); firepower level grows by +1 every 1,000 m and per boss.
@@ -81,15 +81,15 @@
       S.balance+=bonus;save();renderAll();
       AN.progress(BL.analytics,Object.assign(params,{bonus_points:bonus,total_bonus_points:BL.earned,weapon_form:BL.form}));
     }else if(type==='pick'){
-      blTracking();blSay('暫停選擇：從三張強化卡中選一張，戰鬥會接著繼續。','win');
+      blTracking();blSay('{{t:blaster.msg.004}}','win');
     }else if(type==='chosen'){
-      BL.last=performance.now();blTracking();blSay('強化完成，繼續出擊！');blCanvas.focus();
+      BL.last=performance.now();blTracking();blSay('{{t:blaster.msg.005}}');blCanvas.focus();
     }else if(type==='lost'){
       blFinish('loss');blRank.finish(Math.floor(BL.distance));
-      blSay('航行結束。可重新出擊。','lose');
+      blSay('{{t:blaster.msg.006}}','lose');
     }else if(type==='hurt')blSay('編隊受損！剩 '+BL.lives+' 艘潛艇。','lose');
     else if(type==='recruit')blSay('補員完成！編隊現有 '+BL.lives+' 艘潛艇。','win');
-    else if(type==='boss')blSay('深海巨獸現身！留意紅色警示區域，墨浪會沿區域衝下來。','lose');
+    else if(type==='boss')blSay('{{t:blaster.msg.007}}','lose');
     blUI();
   }
   function blInput(code){
@@ -229,11 +229,11 @@
       g.beginPath();g.arc(-13,30,2.5,0,7);g.arc(13,30,2.5,0,7);g.fill();
     }
   }
-  function blPickCard(card){var gun=card.type==='weapon'?BL_GUNS.filter(function(x){return x.kind===card.kind;})[0]:null;return {title:gun?gun.name:'救援潛艇',desc:gun?gun.desc:'補充 1 艘潛艇',color:gun?gun.color:'#ff958c'};}
+  function blPickCard(card){var gun=card.type==='weapon'?BL_GUNS.filter(function(x){return x.kind===card.kind;})[0]:null;return {title:gun?gun.name:'{{t:blaster.msg.008}}',desc:gun?gun.desc:'{{t:blaster.msg.009}}',color:gun?gun.color:'#ff958c'};}
   function blDrawPicks(){
-    var g=blCtx;g.fillStyle='rgba(4,18,29,.9)';g.fillRect(0,0,400,600);g.textAlign='center';g.fillStyle='#62e6d2';g.font='bold 26px system-ui';g.fillText('選擇強化',200,120);g.fillStyle='#e4f2f3';g.font='14px system-ui';g.fillText('戰鬥暫停，三選一',200,150);
-    BL.picks.forEach(function(card,i){var info=blPickCard(card),x=22+i*120;blRoundRect(x,190,116,300,14,'#113041');blRoundRect(x,190,116,8,4,info.color);g.fillStyle=info.color;g.font='bold 16px system-ui';g.fillText(info.title,x+58,250,100);g.fillStyle='#e4f2f3';g.font='12px system-ui';g.fillText(info.desc,x+58,290,100);g.fillStyle='#ffdc87';g.fillText('火力 Lv.'+BL.weapon,x+58,330,100);g.fillStyle='#9fc1ca';g.fillText('按 '+(i+1),x+58,470,100);});
-    g.fillStyle='#9fc1ca';g.font='13px system-ui';g.fillText('點選卡片，或按數字鍵 1 / 2 / 3',200,540);
+    var g=blCtx;g.fillStyle='rgba(4,18,29,.9)';g.fillRect(0,0,400,600);g.textAlign='center';g.fillStyle='#62e6d2';g.font='bold 26px system-ui';g.fillText('{{t:blaster.msg.010}}',200,120);g.fillStyle='#e4f2f3';g.font='14px system-ui';g.fillText('{{t:blaster.msg.011}}',200,150);
+    BL.picks.forEach(function(card,i){var info=blPickCard(card),x=22+i*120;blRoundRect(x,190,116,300,14,'#113041');blRoundRect(x,190,116,8,4,info.color);g.fillStyle=info.color;g.font='bold 16px system-ui';g.fillText(info.title,x+58,250,100);g.fillStyle='#e4f2f3';g.font='12px system-ui';g.fillText(info.desc,x+58,290,100);g.fillStyle='#ffdc87';g.fillText('{{t:blaster.msg.012}}'+BL.weapon,x+58,330,100);g.fillStyle='#9fc1ca';g.fillText('按 '+(i+1),x+58,470,100);});
+    g.fillStyle='#9fc1ca';g.font='13px system-ui';g.fillText('{{t:blaster.msg.013}}',200,540);
   }
   function blDraw(){
     var g=blCtx,w=400,h=600;g.clearRect(0,0,w,h);g.fillStyle='#061c2c';g.fillRect(0,0,w,h);
@@ -278,13 +278,13 @@
     });
     BL.bullets.forEach(blDrawBullet);BL.enemies.forEach(blDrawMonster);BL.ink.forEach(blDrawInk);blDrawPlayer();
     BL.fx.forEach(function(f){g.globalAlpha=Math.max(0,f.t/.45);g.fillStyle=f.color;if(f.ring){g.strokeStyle=f.color;g.lineWidth=2;g.beginPath();g.arc(f.x,f.y,f.ring*(reduceMotion?.8:1-f.t/.36),0,7);g.stroke();}else g.fillRect(f.x-2,f.y-2,4,4);});g.globalAlpha=1;
-    g.fillStyle='rgba(4,18,29,.9)';g.fillRect(0,0,400,54);g.font='bold 14px system-ui';g.fillStyle='#e4f2f3';g.textAlign='left';g.fillText(blMeters(BL.phase==='ready'?0:BL.distance),62,23);g.fillStyle='#ffb638';g.fillText(blWeapon().name+' Lv.'+BL.weapon,62,44);g.textAlign='right';g.fillStyle='#ff958c';g.fillText('編隊：'+BL.lives+' / '+BL_FLEET_MAX,384,25);g.fillStyle='#9fc1ca';g.font='12px system-ui';g.fillText((blStageConfig(BL.stage).speed*blPace()/10).toFixed(1)+' m/s',384,44);
+    g.fillStyle='rgba(4,18,29,.9)';g.fillRect(0,0,400,54);g.font='bold 14px system-ui';g.fillStyle='#e4f2f3';g.textAlign='left';g.fillText(blMeters(BL.phase==='ready'?0:BL.distance),62,23);g.fillStyle='#ffb638';g.fillText(blWeapon().name+' Lv.'+BL.weapon,62,44);g.textAlign='right';g.fillStyle='#ff958c';g.fillText('{{t:blaster.msg.014}}'+BL.lives+' / '+BL_FLEET_MAX,384,25);g.fillStyle='#9fc1ca';g.font='12px system-ui';g.fillText((blStageConfig(BL.stage).speed*blPace()/10).toFixed(1)+' m/s',384,44);
     if(BL.flash>0){g.fillStyle='rgba(255,111,97,'+(BL.flash*.6)+')';g.fillRect(0,0,w,h);}
     if(BL.phase==='pick')blDrawPicks();
     else if(BL.phase!=='run'||!blVisible()){
       g.fillStyle='rgba(4,18,29,.82)';g.fillRect(0,0,w,h);blRoundRect(28,180,344,222,18,'#113041');g.strokeStyle='#326475';g.lineWidth=1;g.strokeRect(40,194,320,194);
-      g.textAlign='center';g.fillStyle=BL.phase==='lost'?'#ff958c':'#62e6d2';g.font='bold 28px system-ui';g.fillText(BL.phase==='ready'?'深海火線':BL.phase==='lost'?'航行結束':'已暫停',200,236);
-      g.fillStyle='#e4f2f3';g.font='15px system-ui';g.fillText(BL.phase==='ready'?'自由移動，自動開火。':BL.phase==='lost'?blMeters(BL.distance):'回到遊戲後繼續',200,276);
+      g.textAlign='center';g.fillStyle=BL.phase==='lost'?'#ff958c':'#62e6d2';g.font='bold 28px system-ui';g.fillText(BL.phase==='ready'?'{{t:blaster.msg.015}}':BL.phase==='lost'?'{{t:blaster.msg.016}}':'{{t:blaster.msg.017}}',200,236);
+      g.fillStyle='#e4f2f3';g.font='15px system-ui';g.fillText(BL.phase==='ready'?'{{t:blaster.msg.018}}':BL.phase==='lost'?blMeters(BL.distance):'{{t:blaster.msg.019}}',200,276);
       g.fillStyle='#ffdc87';g.fillText('最佳距離 '+blMeters(BL.best),200,310);
     }
   }

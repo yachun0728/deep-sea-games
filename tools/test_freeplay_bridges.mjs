@@ -1,15 +1,16 @@
 import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';
+import {readSource} from './expand_ids.mjs';
 const root=new URL('../',import.meta.url);let checks=0;
 const names={boba:['deepSeaBoba','boba-frame'],pancake:['deepSeaPancake','pancake-frame'],dive:['deepSeaDive','dv-frame'],mrt:['deepSeaMrt','mr-frame'],'rocket-chair':['deepSeaRocket','rocket-chair-frame'],'eat-smaller':['deepSeaEatSmaller','es-frame'],'mirror-twins':['deepSeaMirrorTwins','mt-frame'],'shadow-relay':['deepSeaShadowRelay','sr-frame'],'one-line-defense':['deepSeaOneLine','ol-frame'],tetris:['deepSeaTetris','tt-frame'],'quack-pond':['deepSeaQuackPond','qp-frame']};
 for(const [name,[apiName,frameId]] of Object.entries(names)){
- const elements=new Map(),events=[],source=fs.readFileSync(new URL('games/'+name+'/game.js',root),'utf8');
+ const elements=new Map(),events=[],source=readSource('games/'+name+'/game.js',root);
  const el=id=>{if(!elements.has(id))elements.set(id,{textContent:'',hidden:false,disabled:false,className:'',style:{},dataset:{},contentWindow:{},addEventListener(){},setAttribute(){}});return elements.get(id);};
  const i={text:s=>s,getLanguage:()=> 'zh-Hant'},window={deepSeaI18n:i,addEventListener(){}};
  const c={$:el,window,document:{hidden:false,addEventListener(){}},localStorage:{getItem:()=>null,setItem(){}},S:{balance:0},ENTRY_FEE:0,LOW_MSG:'low',fmt:n=>String(n),save(){},renderAll(){},AN:{interact(){},start:(...a)=>{events.push(['start',...a]);return 'round';},end:(...a)=>events.push(['end',...a]),progress(){},resume(){}}};
  vm.createContext(c);
  if(name==='tetris'||name==='rocket-chair'){
   for(const file of ['shared/timed-replay.cjs','js/timed-leaderboard.js',name==='tetris'?'shared/block-drop-rules.js':'shared/rocket-chair-rules.js']){
-   vm.runInContext(fs.readFileSync(new URL(file,root),'utf8'),c);
+   vm.runInContext(readSource(file,root),c);
   }
  }
  vm.runInContext(source,c);

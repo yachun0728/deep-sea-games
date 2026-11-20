@@ -1,15 +1,15 @@
   <section class="view" id="view-dream" hidden>
     <div class="console">
-      <div class="timing-stage"><canvas id="dr-canvas" width="520" height="480" aria-label="時序修復：在青綠色目標區域停針"></canvas></div>
-      <div class="side"><section class="panel" aria-label="時序修復操作">
-        <dl class="stats"><div><dt>目前關卡</dt><dd id="dr-stage">第 1 關</dd></div></dl>
+      <div class="timing-stage"><canvas id="dr-canvas" width="520" height="480" aria-label="{{t:dream.view.13}}"></canvas></div>
+      <div class="side"><section class="panel" aria-label="{{t:dream.view.14}}">
+        <dl class="stats"><div><dt>{{t:dream.view.01}}</dt><dd id="dr-stage">{{t:dream.view.02}}</dd></div></dl>
         <input id="dr-amount" type="hidden" value="0">
-        <button class="go" id="dr-go" type="button" data-mode="start">開始修復</button>
-        <p class="msg" id="dr-msg" aria-live="polite">開始後指針開始旋轉，在青綠色區域按停針即可過關。</p>
+        <button class="go" id="dr-go" type="button" data-mode="start">{{t:dream.view.03}}</button>
+        <p class="msg" id="dr-msg" aria-live="polite">{{t:dream.view.04}}</p>
         <p id="dr-rank-status" role="status" hidden></p>
-        <button type="button" id="dr-rank-retry" hidden>重送排行榜成績</button>
-        <p class="hint">按「停針」、點擊儀表或按 <kbd>空白鍵</kbd>。過關後按「挑戰下一關」繼續，續關不限次數。</p>
+        <button type="button" id="dr-rank-retry" hidden>{{t:dream.view.05}}</button>
+        <p class="hint">{{t:dream.view.06}} <kbd>{{t:dream.view.07}}</kbd>{{t:dream.view.08}}</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法與點數</summary><p>續關不限次數，關卡沒有上限。指針停在青綠色區域就過關，錯過則本局結束；沒有額外成就獎勵，關卡成績不轉換成錢包點數。</p><p>目標範圍逐漸縮小，最低 24°；指針逐漸加速，最高每秒 2.4 弧度。第 11 關起每關最多反轉一次，第 21 關起最多兩次。反轉前中心燈閃爍並顯示文字至少 0.5 秒；接近目標區時延後反轉，兩次反轉至少間隔 1.5 秒，反轉不改速度。引入反轉的初期暫緩縮圈與加速。</p><p>切換遊戲、背景分頁或視窗失焦會暫停，返回可繼續；過關等待不計有效遊玩時間。重新整理會放棄本局，點數與其他遊戲共用，沒有現金價值。</p></details>
+    <details class="rules"><summary>{{t:dream.view.09}}</summary><p>{{t:dream.view.10}}</p><p>{{t:dream.view.11}}</p><p>{{t:dream.view.12}}</p></details>
   </section>

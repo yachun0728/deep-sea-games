@@ -20,8 +20,8 @@ else if(a===2)P([[-13,0],[-14,-16],[-7,-8],[0,-20],[7,-8],[14,-16],[13,0]],'#ffd
 else if(a===3){P([[-11,0],[0,-30],[11,0]],'#ff5d8f',3);C(0,-31,4,'#fff',2.5)}
 else E(0,-8,13,4,'#ffe27a',3);
 g.restore()}
-G.I={bs:n=>'最高 '+n,tap:'',title:"偷水果的貓",s1:"小貓偷了水果，老闆娘拿著拖鞋追來！",s2:"抱得越多得分越高，但跑得越慢。",caught:"被老闆娘抓住了！",fr:n=>'已偷 '+n+' 個水果',sh:['還給我！','偷東西的貓！','站住！']};
-G.skins=[{need:0,n:'調皮橘貓',c:['#ff9f1c','#e36414'],a:0},{need:150,n:'白糰子',c:['#f1faee','#a8dadc'],a:1},{need:400,n:'忍者貓',c:['#5e548e','#231942'],a:3},{need:800,n:'市場貓王',c:['#ffd23f','#e76f51'],a:2}];
+G.I={bs:n=>'最高 '+n,tap:'',title:"{{t:thief.msg.001}}",s1:"{{t:thief.msg.002}}",s2:"{{t:thief.msg.003}}",caught:"{{t:thief.msg.004}}",fr:n=>'已偷 '+n+' 個水果',sh:['{{t:thief.msg.005}}','{{t:thief.msg.006}}','{{t:thief.msg.007}}']};
+G.skins=[{need:0,n:'{{t:thief.msg.008}}',c:['#ff9f1c','#e36414'],a:0},{need:150,n:'{{t:thief.msg.009}}',c:['#f1faee','#a8dadc'],a:1},{need:400,n:'{{t:thief.msg.010}}',c:['#5e548e','#231942'],a:3},{need:800,n:'{{t:thief.msg.011}}',c:['#ffd23f','#e76f51'],a:2}];
 const LX=[105,200,295],CYT=430,fc=['#e63946','#ff9f1c','#7bd88f'];
 let dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx;
 let model=thiefRules.create(),heldBy;
@@ -93,8 +93,8 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('thief-score',G.score()+UNIT);setText('thief-best',best+UNIT);setText('thief-pay',fmt(paid)+' 點');
- setText('thief-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('thief-amount').disabled=thiefBusy;$('thief-go').disabled=live||rank.busy();setText('thief-go',live?'逃跑中 · 換道／跳躍':st==='over'?'再偷一次':'開始偷水果');
+ setText('thief-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'{{t:thief.msg.012}}');
+ $('thief-amount').disabled=thiefBusy;$('thief-go').disabled=live||rank.busy();setText('thief-go',live?'{{t:thief.msg.013}}':st==='over'?'{{t:thief.msg.014}}':'{{t:thief.msg.015}}');
  document.querySelectorAll('[data-thief-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-thief-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -114,7 +114,7 @@ function die(m){
  if(rec){best=s;try{localStorage.setItem(KEY,best)}catch(e){}}
  if(unl.length)pick(G.skins.indexOf(unl[unl.length-1]));
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});thiefBusy=false;renderAll();
- say('被老闆娘抓住了，本局 '+fmt(s)+UNIT+'。'+(paid?'BONUS 共 '+paid+' 點已入帳。':'這一局沒有 BONUS。'),paid?'win':'lose');
+ say('被老闆娘抓住了，本局 '+fmt(s)+UNIT+'。'+(paid?'BONUS 共 '+paid+' 點已入帳。':'{{t:thief.msg.016}}'),paid?'win':'lose');
  ui();
 }
 function start(){
@@ -123,13 +123,13 @@ function start(){
  if(amount>S.balance){say(LOW_MSG,'lose');return}
  rank.start(random=>{
  analytics=AN.start('thief',amount);thiefStake=amount;thiefBusy=true;save();renderAll();
- model=thiefRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=thiefRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('{{t:thief.msg.017}}');ui();c.focus();
  },ui);
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx(T('title'),W/2,170,32,'#ffd23f');tx(T('s1'),W/2,218,17,'#fff');tx(T('s2'),W/2,244,17,'#fff');tx('右側開始',W/2,312,24,'#ffd23f')}
-else{tx(T(G.msg),W/2,130,28,'#ff7a7a');tx(String(G.score()),W/2,205,52,'#fff');if(G.extra)tx(G.extra(),W/2,240,17,'#fff');if(rec)tx('新紀錄！',W/2,272,20,'#ffd23f');if(unl.length)tx('已解鎖：'+unl.map(k=>k.n).join('、'),W/2,300,17,'#6cf0a8');tx(paid>0?'BONUS 已入帳 +'+paid+' 點':'這一局沒有 BONUS',W/2,336,20,paid>0?'#ffd23f':'#fff');tx('右側可以再玩一次',W/2,382,18,'#fff')}
+if(st==='ready'){tx(T('title'),W/2,170,32,'#ffd23f');tx(T('s1'),W/2,218,17,'#fff');tx(T('s2'),W/2,244,17,'#fff');tx('{{t:thief.msg.018}}',W/2,312,24,'#ffd23f')}
+else{tx(T(G.msg),W/2,130,28,'#ff7a7a');tx(String(G.score()),W/2,205,52,'#fff');if(G.extra)tx(G.extra(),W/2,240,17,'#fff');if(rec)tx('{{t:thief.msg.019}}',W/2,272,20,'#ffd23f');if(unl.length)tx('{{t:thief.msg.020}}'+unl.map(k=>k.n).join('、'),W/2,300,17,'#6cf0a8');tx(paid>0?'{{t:thief.msg.021}}'+paid+' 點':'{{t:thief.msg.022}}',W/2,336,20,paid>0?'#ffd23f':'#fff');tx('{{t:thief.msg.023}}',W/2,382,18,'#fff')}
 const n=G.skins.length;
 G.skins.forEach((k,i)=>{const x=W/2+(i-(n-1)/2)*72,lk=best<k.need;
 C(x,CHY,24,lk?'#6c757d':k.c[0],3);
@@ -144,7 +144,7 @@ c.addEventListener('pointerdown',e=>{
  if(st!=='run'){
   const n=G.skins.length;
   if(Math.abs(p.y-CHY)<32){for(let i=0;i<n;i++)if(Math.abs(p.x-(W/2+(i-(n-1)/2)*72))<32){if(best>=G.skins[i].need)pick(i);return}}
-  say(st==='over'?'這一局已結束。按「再偷一次」開始新的一局。':'先按「開始偷水果」。');return}
+  say(st==='over'?'{{t:thief.msg.024}}':'{{t:thief.msg.025}}');return}
  e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(_){}
  G.down(p)});
 ['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,e=>{if(st==='run'&&G.up)G.up({id:e.pointerId})}));

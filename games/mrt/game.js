@@ -6,7 +6,7 @@
     MRT.best=Math.max(MRT.best,mrtBest());
     $('mr-tier').textContent=MRT.tier+' / '+MRT.max+' 階';$('mr-best').textContent=MRT.best+' 階';
     $('mr-go').disabled=MRT.active;
-    $('mr-go').textContent=MRT.active?'搭車中 · 在左側畫面操作':MRT.done?'再搭一次':'上車';
+    $('mr-go').textContent=MRT.active?'{{t:mrt.msg.001}}':MRT.done?'{{t:mrt.msg.002}}':'{{t:mrt.msg.003}}';
   }
   function mrtValid(source){return source===$('mr-frame').contentWindow;}
   window.deepSeaMrt={
@@ -16,7 +16,7 @@
       if(amount>S.balance){mrtSay(LOW_MSG,'lose');return 0;}
       if(AN.interact)AN.interact();
       MRT.active=true;MRT.stake=amount;MRT.tier=0;MRT.done=false;MRT.analytics=AN.start('mrt',amount);save();renderAll();mrtUI();
-      mrtSay('在左側畫面猜誰要下車、搶座位；體力歸零或搶滿 8 階就結束，遊玩點數依平台規則累積。');
+      mrtSay('{{t:mrt.msg.004}}');
       return true;
     },
     live:function(source,m,tier){
@@ -28,7 +28,7 @@
       var tier=Math.max(0,Math.min(MRT.max,Math.floor(Number(data&&data.tier)||0)));
       MRT.active=false;MRT.done=true;MRT.tier=tier;mrtUI();
       AN.end(MRT.analytics,0,tier>0?'complete':'loss',{score:tier});
-      mrtSay(tier>0?'本局搶到第 '+tier+' 階。':'沒有搶到座位。',tier>0?'win':'lose');
+      mrtSay(tier>0?'本局搶到第 '+tier+' 階。':'{{t:mrt.msg.005}}',tier>0?'win':'lose');
       return 0;
     },
     progress:function(source,round,tier){if(mrtValid(source)&&MRT.active)AN.progress(MRT.analytics,{stage:Math.max(1,Math.floor(Number(round)||1)),step:Math.max(0,Math.floor(Number(tier)||0))});},
@@ -44,7 +44,7 @@
   $('mr-go').addEventListener('click',function(){
     var w=$('mr-frame').contentWindow;
     if(MRT.active)return;
-    if(!w||!w.startMrtPlatformRound){mrtSay('遊戲畫面還在載入，請稍候再試。','lose');return;}
+    if(!w||!w.startMrtPlatformRound){mrtSay('{{t:mrt.msg.006}}','lose');return;}
     w.startMrtPlatformRound();
   });
   mrtUI();

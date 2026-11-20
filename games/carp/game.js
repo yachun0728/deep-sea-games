@@ -20,8 +20,8 @@ else if(a===2)P([[-13,0],[-14,-16],[-7,-8],[0,-20],[7,-8],[14,-16],[13,0]],'#ffd
 else if(a===3){P([[-11,0],[0,-30],[11,0]],'#ff5d8f',3);C(0,-31,4,'#fff',2.5)}
 else E(0,-8,13,4,'#ffe27a',3);
 g.restore()}
-G.I={bs:n=>'最高 '+n,tap:'',title:"鯉魚躍龍門",s1:"鯉魚逆流而上，要變成龍！",s2:"按住蓄力，放開起跳。別撞到石頭和魚鉤。",hit:"撞到石頭了！",hook:"被魚鉤鉤住了！",cl:n=>'已越過 '+n+' 道瀑布'};
-G.skins=[{need:0,n:'紅鯉魚',c:['#ff6b35','#d00000'],a:0},{need:15,n:'派對鯉魚',c:['#ff9f1c','#e36414'],a:3},{need:40,n:'金鯉魚',c:['#ffd23f','#f77f00'],a:4},{need:80,n:'化龍鯉魚',c:['#2ec4b6','#7209b7'],a:2}];
+G.I={bs:n=>'最高 '+n,tap:'',title:"{{t:carp.msg.001}}",s1:"{{t:carp.msg.002}}",s2:"{{t:carp.msg.003}}",hit:"{{t:carp.msg.004}}",hook:"{{t:carp.msg.005}}",cl:n=>'已越過 '+n+' 道瀑布'};
+G.skins=[{need:0,n:'{{t:carp.msg.006}}',c:['#ff6b35','#d00000'],a:0},{need:15,n:'{{t:carp.msg.007}}',c:['#ff9f1c','#e36414'],a:3},{need:40,n:'{{t:carp.msg.008}}',c:['#ffd23f','#f77f00'],a:4},{need:80,n:'{{t:carp.msg.009}}',c:['#2ec4b6','#7209b7'],a:2}];
 const {GY,PXL,WW}=carpRules;
 let model=carpRules.create();
 const rank=timedLeaderboard('carp','carp',carpRules.inputCount,ui);
@@ -79,8 +79,8 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('carp-score',G.score()+UNIT);setText('carp-best',best+UNIT);setText('carp-pay',fmt(paid)+' 點');
- setText('carp-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('carp-amount').disabled=carpBusy;$('carp-go').disabled=live||rank.busy();setText('carp-go',live?'挑戰中 · 按住蓄力':st==='over'?'再躍一次':'開始躍龍門');
+ setText('carp-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'{{t:carp.msg.010}}');
+ $('carp-amount').disabled=carpBusy;$('carp-go').disabled=live||rank.busy();setText('carp-go',live?'{{t:carp.msg.011}}':st==='over'?'{{t:carp.msg.012}}':'{{t:carp.msg.013}}');
  document.querySelectorAll('[data-carp-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-carp-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -100,7 +100,7 @@ function die(m){
  if(rec){best=s;try{localStorage.setItem(KEY,best)}catch(e){}}
  if(unl.length)pick(G.skins.indexOf(unl[unl.length-1]));
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});carpBusy=false;renderAll();
- say('鯉魚撞上障礙，這一局結束了，本局 '+fmt(s)+UNIT+'。'+(paid?'BONUS 共 '+paid+' 點已入帳。':'這一局沒有 BONUS。'),paid?'win':'lose');
+ say('鯉魚撞上障礙，這一局結束了，本局 '+fmt(s)+UNIT+'。'+(paid?'BONUS 共 '+paid+' 點已入帳。':'{{t:carp.msg.014}}'),paid?'win':'lose');
  ui();
 }
 function start(){
@@ -109,13 +109,13 @@ function start(){
  if(amount>S.balance){say(LOW_MSG,'lose');return}
  rank.start(random=>{
  analytics=AN.start('carp',amount);carpStake=amount;carpBusy=true;save();renderAll();
- model=carpRules.create(random||Math.random);heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=carpRules.create(random||Math.random);heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('{{t:carp.msg.015}}');ui();c.focus();
  },ui);
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx(T('title'),W/2,170,32,'#ffd23f');tx(T('s1'),W/2,218,17,'#fff');tx(T('s2'),W/2,244,17,'#fff');tx('右側開始',W/2,312,24,'#ffd23f')}
-else{tx(T(G.msg),W/2,130,28,'#ff7a7a');tx(String(G.score()),W/2,205,52,'#fff');if(G.extra)tx(G.extra(),W/2,240,17,'#fff');if(rec)tx('新紀錄！',W/2,272,20,'#ffd23f');if(unl.length)tx('已解鎖：'+unl.map(k=>k.n).join('、'),W/2,300,17,'#6cf0a8');tx(paid>0?'BONUS 已入帳 +'+paid+' 點':'這一局沒有 BONUS',W/2,336,20,paid>0?'#ffd23f':'#fff');tx('右側可以再玩一次',W/2,382,18,'#fff')}
+if(st==='ready'){tx(T('title'),W/2,170,32,'#ffd23f');tx(T('s1'),W/2,218,17,'#fff');tx(T('s2'),W/2,244,17,'#fff');tx('{{t:carp.msg.016}}',W/2,312,24,'#ffd23f')}
+else{tx(T(G.msg),W/2,130,28,'#ff7a7a');tx(String(G.score()),W/2,205,52,'#fff');if(G.extra)tx(G.extra(),W/2,240,17,'#fff');if(rec)tx('{{t:carp.msg.017}}',W/2,272,20,'#ffd23f');if(unl.length)tx('{{t:carp.msg.018}}'+unl.map(k=>k.n).join('、'),W/2,300,17,'#6cf0a8');tx(paid>0?'{{t:carp.msg.019}}'+paid+' 點':'{{t:carp.msg.020}}',W/2,336,20,paid>0?'#ffd23f':'#fff');tx('{{t:carp.msg.021}}',W/2,382,18,'#fff')}
 const n=G.skins.length;
 G.skins.forEach((k,i)=>{const x=W/2+(i-(n-1)/2)*72,lk=best<k.need;
 C(x,CHY,24,lk?'#6c757d':k.c[0],3);
@@ -130,7 +130,7 @@ c.addEventListener('pointerdown',e=>{
  if(st!=='run'){
   const n=G.skins.length;
   if(Math.abs(p.y-CHY)<32){for(let i=0;i<n;i++)if(Math.abs(p.x-(W/2+(i-(n-1)/2)*72))<32){if(best>=G.skins[i].need)pick(i);return}}
-  say(st==='over'?'這一局已結束。按「再躍一次」開始新的一局。':'先按「開始躍龍門」。');return}
+  say(st==='over'?'{{t:carp.msg.022}}':'{{t:carp.msg.023}}');return}
  e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(_){}
  G.down(p)});
 ['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,e=>{if(st==='run'&&G.up)G.up({id:e.pointerId})}));

@@ -1,17 +1,17 @@
   <section class="view" id="view-fishing" hidden>
-    <div class="console"><div class="fishing-stage"><canvas id="fi-canvas" width="520" height="560" tabindex="0" aria-label="深海釣手：按住收線、放開卸力，把魚拉上岸"></canvas></div>
-      <div class="side"><section class="panel" aria-label="釣魚操作">
-        <dl class="stats"><div><dt>挑戰第幾條</dt><dd id="fi-number">第 1 條</dd></div><div><dt>距離岸邊</dt><dd id="fi-distance">20.0 m</dd></div><div><dt>最佳紀錄</dt><dd id="fi-best">0 條</dd></div><div><dt>下一個獎勵</dt><dd id="fi-next">釣到 10 條 · +3</dd></div></dl>
-        <p class="fishing-name" id="fi-name">小丑魚</p><div class="queue-watch" id="fi-signal" role="status" aria-live="polite" data-state="calm">下竿後，觀察魚的動作</div>
-        <div class="field"><div class="fishing-tension-label"><label id="fi-tension-label">魚線張力</label><span id="fi-tension-value">45 / 100</span></div><div class="fishing-tension" id="fi-tension" role="progressbar" aria-labelledby="fi-tension-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45"><div id="fi-tension-fill"></div></div><p class="hint" id="fi-slack">張力 20～75 較穩定</p></div>
+    <div class="console"><div class="fishing-stage"><canvas id="fi-canvas" width="520" height="560" tabindex="0" aria-label="{{t:fishing.view.24}}"></canvas></div>
+      <div class="side"><section class="panel" aria-label="{{t:fishing.view.25}}">
+        <dl class="stats"><div><dt>{{t:fishing.view.01}}</dt><dd id="fi-number">{{t:fishing.view.02}}</dd></div><div><dt>{{t:fishing.view.03}}</dt><dd id="fi-distance">20.0 m</dd></div><div><dt>{{t:fishing.view.04}}</dt><dd id="fi-best">{{t:fishing.view.05}}</dd></div><div><dt>{{t:fishing.view.06}}</dt><dd id="fi-next">{{t:fishing.view.07}}</dd></div></dl>
+        <p class="fishing-name" id="fi-name">{{t:fishing.view.08}}</p><div class="queue-watch" id="fi-signal" role="status" aria-live="polite" data-state="calm">{{t:fishing.view.09}}</div>
+        <div class="field"><div class="fishing-tension-label"><label id="fi-tension-label">{{t:fishing.view.10}}</label><span id="fi-tension-value">45 / 100</span></div><div class="fishing-tension" id="fi-tension" role="progressbar" aria-labelledby="fi-tension-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45"><div id="fi-tension-fill"></div></div><p class="hint" id="fi-slack">{{t:fishing.view.11}}</p></div>
         <input id="fi-amount" type="hidden" value="0">
-        <button class="go" id="fi-go" type="button" data-mode="bet">下竿</button>
-        <button class="chip fishing-hold" id="fi-hold" type="button" disabled>按住收線 · 放開卸力</button>
-        <p class="msg" id="fi-msg" aria-live="polite">先下竿，再按住收線；掙扎時放開卸力，避免斷線。</p><p class="hint">可按住畫面、收線按鈕或 <kbd>空白鍵</kbd>。放太久魚會游遠，線太鬆可能脫鉤。</p>
+        <button class="go" id="fi-go" type="button" data-mode="bet">{{t:fishing.view.12}}</button>
+        <button class="chip fishing-hold" id="fi-hold" type="button" disabled>{{t:fishing.view.13}}</button>
+        <p class="msg" id="fi-msg" aria-live="polite">{{t:fishing.view.14}}</p><p class="hint">{{t:fishing.view.15}} <kbd>{{t:fishing.view.16}}</kbd>{{t:fishing.view.17}}</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法與點數</summary><p>按住收線可以拉近魚，但張力會上升；放開可卸力，但魚會逐漸游遠。平穩時可收線，水花變大時要準備卸力；猛烈掙扎時硬拉會快速提高張力，疲累時收線最有效。</p><p>沒有終點：每釣上一條，下一條魚馬上上鉤，直到斷線或脫鉤這一局才結束。魚越大，距離越遠、掙扎越久，硬拉的張力也上升更快；約第 20 條之後難度不再增加。張力達 100 就斷線；低於或等於 8 持續 1.2 秒會脫鉤。拖時間、等待與放線都沒有幫助。</p><p>釣到特定條數時，獎勵點數當場入帳，之後斷線也不會收回：10 條 +3、12 條 +7（累計 10 點，累計獲得）、14 條 +15、17 條 +30，之後每多 3 條 +40。這是固定點數，沒有倍率。這些條數刻意設得很高，一般玩家大約釣 8 條左右。</p><p>切換遊戲或背景分頁會暫停並放開收線，回來需要重新按住。視窗失焦會放開收線。重新整理會放棄本局，已入帳的點數會保留。點數與其他遊戲共用。</p></details>
+    <details class="rules"><summary>{{t:fishing.view.18}}</summary><p>{{t:fishing.view.19}}</p><p>{{t:fishing.view.20}}</p><p>{{t:fishing.view.21}}</p><p>{{t:fishing.view.22}}</p></details>
     <p id="fi-rank-status" role="status" hidden></p>
-    <button id="fi-rank-retry" type="button" hidden>重送排行榜成績</button>
+    <button id="fi-rank-retry" type="button" hidden>{{t:fishing.view.23}}</button>
   </section>
 

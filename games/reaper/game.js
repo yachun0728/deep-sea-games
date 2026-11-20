@@ -14,9 +14,9 @@
     var L=rpLevel(),nx=rpNext(RP.good);
     $('rp-level').textContent='第 '+L+' 班';$('rp-progress').textContent=(RP.good%RP_PER)+' / '+RP_PER;$('rp-lives').textContent=RP.lives+' / 3';$('rp-score').textContent=RP.total+' 位';$('rp-best').textContent=RP.best+' 位';
     $('rp-next').textContent=nx[0]+' 位 · +'+nx[1];$('rp-amount').disabled=RP.active;
-    $('rp-go').textContent=RP.phase==='run'?'揮鐮接走':'開始值班';$('rp-go').disabled=reaperRank.busy()||RP.phase==='run'&&RP.cd>0;
+    $('rp-go').textContent=RP.phase==='run'?'{{t:reaper.msg.001}}':'{{t:reaper.msg.002}}';$('rp-go').disabled=reaperRank.busy()||RP.phase==='run'&&RP.cd>0;
     $('rp-go').dataset.mode=RP.phase==='run'?'surface':'bet';
-    $('rp-difficulty').textContent=L<4?'綠色通行證全程可見':L<7?'通行證靠近金色區域時會淡去':'通行證會提早淡去，先記住誰該放行';
+    $('rp-difficulty').textContent=L<4?'{{t:reaper.msg.003}}':L<7?'{{t:reaper.msg.004}}':'{{t:reaper.msg.005}}';
   }
   function rpStart(){
     if(RP.phase==='run')return;
@@ -26,7 +26,7 @@
       reaperRandom=random||Math.random;
       Object.assign(RP,reaperRules.create(),{stake,fx:[],pops:[],sw:0,flash:0,shake:0,earned:0,active:true});
       RP.analytics=AN.start('reaper',stake);save();renderAll();
-      RP.phase='run';RP.last=performance.now();rpSay('普通靈魂要接走，綠色通行證要放行。沒有終點，越來越快，三顆心用完才結束。');rpUI();reaperCanvas.focus();
+      RP.phase='run';RP.last=performance.now();rpSay('{{t:reaper.msg.006}}');rpUI();reaperCanvas.focus();
     });
   }
   function rpAward(n,b){
@@ -41,12 +41,12 @@
       var bonus=rpBonusAt(event.good);if(bonus)rpAward(event.good,bonus);
       return;
     }
-    var message=event.kind==='permit'?'接到帶通行證的靈魂，應該放行！':'漏接普通靈魂了！';
+    var message=event.kind==='permit'?'{{t:reaper.msg.007}}':'{{t:reaper.msg.008}}';
     RP.flash=1.1;RP.message=message;RP.shake=reduceMotion?0:.35;
     if(RP.dead){
       RP.active=false;RP.phase='over';rpRemember();
       AN.end(RP.analytics,RP.earned,RP.earned>0?'complete':'loss',{step:RP.good,score:RP.total});save();renderAll();
-      rpSay(message+' 三顆心用完，處理了 '+RP.good+' 位靈魂，'+(RP.earned>0?'本局共入帳 '+fmt(RP.earned)+' 點。':'這一局沒有獎勵。'),RP.earned>0?'win':'lose');
+      rpSay(message+' 三顆心用完，處理了 '+RP.good+' 位靈魂，'+(RP.earned>0?'本局共入帳 '+fmt(RP.earned)+' 點。':'{{t:reaper.msg.009}}'),RP.earned>0?'win':'lose');
       reaperRank.finish(RP.total,endedOnInput);
     }else rpSay(message+' 剩餘 '+RP.lives+' 顆心。','lose');
     rpUI();
@@ -88,12 +88,12 @@
     for(var i=0;i<3;i++){g.beginPath();g.arc(24+i*26,58,8,0,Math.PI*2);if(i<RP.lives){g.fillStyle='#ff6f61';g.fill();}else{g.strokeStyle='#73596c';g.lineWidth=2;g.stroke();}}
     g.fillStyle='#f2c14e';g.textAlign='right';g.fillText('已接走 '+RP.total+' 位 · 本局 +'+RP.earned+' 點',W-16,60);
     if(RP.flash>0&&RP.phase==='run'){g.fillStyle='#ff8a80';g.textAlign='center';g.font='600 17px system-ui';g.fillText(RP.message,W/2,132,W-30);}
-    g.textAlign='center';g.fillStyle='#a8a0c2';g.font='13px system-ui';g.fillText('普通靈魂：接走　綠色通行證：放行',W/2,458);g.fillText(RP.cd>0?'鐮刀恢復中…':'點畫面或按空白鍵揮鐮',W/2,486);
+    g.textAlign='center';g.fillStyle='#a8a0c2';g.font='13px system-ui';g.fillText('{{t:reaper.msg.010}}',W/2,458);g.fillText(RP.cd>0?'{{t:reaper.msg.011}}':'{{t:reaper.msg.012}}',W/2,486);
     RP.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=210-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#f2c14e';g.font='700 38px system-ui';g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#e4f2f3';g.font='600 17px system-ui';g.fillText('處理 '+p.n+' 位里程碑',W/2,py+28);g.globalAlpha=1;});
     if(RP.phase!=='run'){
-      g.fillStyle='rgba(14,10,26,.88)';g.fillRect(24,135,352,225);g.textAlign='center';g.fillStyle=RP.phase==='over'?'#ff8a80':'#e4f2f3';g.font='600 28px system-ui';g.fillText(RP.phase==='ready'?'死神打工':'實習結束了！',W/2,186,W-40);
-      g.font='15px system-ui';g.fillStyle='#b4acc9';g.fillText(RP.phase==='ready'?'冥界人手不足，你是新來的實習生':'處理了 '+RP.good+' 位靈魂 · 接走 '+RP.total+' 位',W/2,225,W-40);
-      g.fillStyle='#6cc58f';g.fillText('看見綠色光環，讓他通過就好',W/2,261);g.fillStyle=RP.phase==='over'&&RP.earned>0?'#f2c14e':'#f2c14e';g.font='600 17px system-ui';g.fillText(RP.phase==='ready'?'到操作區開始值班':RP.earned>0?'本局獎勵 +'+RP.earned+' 點':'這一局沒有獎勵',W/2,312);
+      g.fillStyle='rgba(14,10,26,.88)';g.fillRect(24,135,352,225);g.textAlign='center';g.fillStyle=RP.phase==='over'?'#ff8a80':'#e4f2f3';g.font='600 28px system-ui';g.fillText(RP.phase==='ready'?'{{t:reaper.msg.013}}':'{{t:reaper.msg.014}}',W/2,186,W-40);
+      g.font='15px system-ui';g.fillStyle='#b4acc9';g.fillText(RP.phase==='ready'?'{{t:reaper.msg.015}}':'處理了 '+RP.good+' 位靈魂 · 接走 '+RP.total+' 位',W/2,225,W-40);
+      g.fillStyle='#6cc58f';g.fillText('{{t:reaper.msg.016}}',W/2,261);g.fillStyle=RP.phase==='over'&&RP.earned>0?'#f2c14e':'#f2c14e';g.font='600 17px system-ui';g.fillText(RP.phase==='ready'?'{{t:reaper.msg.017}}':RP.earned>0?'{{t:reaper.msg.018}}'+RP.earned+' 點':'{{t:reaper.msg.019}}',W/2,312);
     }
   }
   $('rp-go').addEventListener('click',rpAct);

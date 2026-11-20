@@ -6,7 +6,7 @@
   function esCleared(){try{var b=JSON.parse(localStorage.getItem('eatSmaller.bests'))||{};return Object.keys(b).filter(function(k){return isFinite(Number(b[k]));}).length;}catch(_){return esStored();}}
   function esUI(){
     $('es-cleared').textContent=EATS.cleared;$('es-pay').textContent=EATS.earned+' / '+EATS_CAP;$('es-best').textContent=Math.min(EATS_LEVELS,esCleared())+' / '+EATS_LEVELS;
-    $('es-go').disabled=EATS.active;$('es-go').textContent=EATS.active?'本局進行中 · 在左側選關':'開始一局';$('es-end').hidden=!EATS.active;
+    $('es-go').disabled=EATS.active;$('es-go').textContent=EATS.active?'{{t:eat-smaller.msg.001}}':'{{t:eat-smaller.msg.002}}';$('es-end').hidden=!EATS.active;
   }
   function esValid(source){return source===$('es-frame').contentWindow;}
   window.deepSeaEatSmaller={
@@ -16,7 +16,7 @@
       if(AN.interact)AN.interact();
       EATS.active=true;EATS.stake=ENTRY_FEE;EATS.earned=0;EATS.paid={};EATS.cleared=0;EATS.analytics=AN.start('eat-smaller',ENTRY_FEE);
       save();renderAll();esUI();
-      esSay('本局開始。在左側選一關；每關第一次通過 BONUS +2 點，最多 10 點。|Round started. Pick a stage on the left; each stage’s first clear gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
+      esSay('{{tb:eat-smaller.say.003}}','',{fee:ENTRY_FEE});
       return true;
     },
     clear:function(source,level){
@@ -25,9 +25,9 @@
       var got=0,repeat=!!EATS.paid[level];EATS.cleared++;
       if(!repeat&&EATS.earned<EATS_CAP){got=Math.min(EATS_BONUS,EATS_CAP-EATS.earned);EATS.paid[level]=true;EATS.earned+=got;S.balance+=got;save();renderAll();}
       AN.progress(EATS.analytics,{stage:level+1,step:EATS.cleared,bonus_points:got,total_bonus_points:EATS.earned});
-      if(got)esSay('第 {n} 關通過，BONUS +{p} 點已入帳（本局 {e} / 10）。|Stage {n} cleared: +{p} BONUS pts added ({e} / 10 this round).','win',{n:level+1,p:got,e:EATS.earned});
-      else if(repeat)esSay('第 {n} 關通過。這關本局已經領過 BONUS，換一關試試。|Stage {n} cleared. You already got this stage’s BONUS this round; try another stage.','',{n:level+1});
-      else esSay('第 {n} 關通過。本局 BONUS 已達上限 10 點，可以繼續挑戰最佳時間。|Stage {n} cleared. This round’s BONUS is maxed at 10 pts; keep going for best times.','',{n:level+1});
+      if(got)esSay('{{tb:eat-smaller.say.004}}','win',{n:level+1,p:got,e:EATS.earned});
+      else if(repeat)esSay('{{tb:eat-smaller.say.005}}','',{n:level+1});
+      else esSay('{{tb:eat-smaller.say.006}}','',{n:level+1});
       esUI();return got;
     },
     pause:function(source){if(esValid(source)&&EATS.active)AN.progress(EATS.analytics,{phase:'pause'},true);},
@@ -38,7 +38,7 @@
     if(!EATS.active)return;
     EATS.active=false;EATS.stake=0;AN.end(EATS.analytics,EATS.earned,'complete',{step:EATS.cleared});EATS.analytics=null;
     var w=$('es-frame').contentWindow;if(w&&w.endEatPlatformRound)w.endEatPlatformRound();
-    esSay('本局結束：通過 {c} 次，BONUS 共 {e} 點。|Round over: {c} clears, {e} BONUS pts in total.','',{c:EATS.cleared,e:EATS.earned});esUI();
+    esSay('{{tb:eat-smaller.say.007}}','',{c:EATS.cleared,e:EATS.earned});esUI();
   }
   // 先於共用離頁處理結束，讓 abandoned 帶上已入帳的 BONUS
   window.addEventListener('pagehide',function(e){if(!e.persisted&&EATS.active&&EATS.analytics){AN.end(EATS.analytics,EATS.earned,'abandoned',{step:EATS.cleared});EATS.analytics=null;EATS.active=false;EATS.stake=0;}},true);
@@ -51,11 +51,11 @@
   $('es-go').addEventListener('click',function(){
     var w=$('es-frame').contentWindow;
     if(EATS.active)return;
-    if(!w||!w.startEatPlatformRound){esSay('遊戲畫面還在載入，請稍候再試。','lose');return;}
+    if(!w||!w.startEatPlatformRound){esSay('{{t:eat-smaller.msg.008}}','lose');return;}
     if(w.startEatPlatformRound())$('es-frame').focus();
   });
   $('es-end').addEventListener('click',esFinish);
   window.addEventListener('arcade-languagechange',function(){if(EATS.msg)esSay(EATS.msg.text,EATS.msg.kind,EATS.msg.params);});
-  esSay('按「開始一局」或直接在左側點一關開始。|Press “Start a round” or just pick a stage on the left.');
+  esSay('{{tb:eat-smaller.say.009}}');
   esUI();
 

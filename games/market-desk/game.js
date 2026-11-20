@@ -3,14 +3,14 @@
     {{include:games/market-desk/cases.js}}
     const bestKey = 'deep-sea-market-desk-best';
     const view = $('view-market-desk');
-    const labels = ['刊登已核實資訊', '暫緩，等待佐證', '示警，提醒讀者'];
+    const labels = ['{{t:market-desk.msg.001}}', '{{t:market-desk.msg.002}}', '{{t:market-desk.msg.003}}'];
     const endings = {
-      exhausted: ['提前出局', '提早收工', '最後一盞螢幕熄了。阿澤把這一輪沒寫完的報告存成草稿，拉下鐵門。', 'crisis'],
-      loss: ['收盤失利', '帶著虧損收工', '撐到最後一聲鐘響，報告已經交出去。阿澤把下個月的預算重新算了一遍，晚餐還是泡麵。', 'strained'],
-      even: ['平盤收尾', '忙了二十天，回到原點', '打包好最後一份報告，阿澤算了算，差不多打平。今晚照舊走去巷口吃飯。', 'starter'],
-      lagged: ['落後大盤', '牛市裡的慢半拍', '阿澤的報告有起色。同業都在慶祝搬進新辦公室，他卻把慶功晚餐換成了便利商店便當。', 'starter'],
-      triumph: ['大勝收官', '台股查證王牌', '最後一份報告登上財經週刊封面。阿澤在新辦公室關掉行情，留下一整面台北夜景。', 'penthouse'],
-      steady: ['穩健收官', '可靠的市場編輯', '報告準時送出。阿澤把桌面清空，在夕陽下喝完最後一口咖啡。', 'rising']
+      exhausted: ['{{t:market-desk.msg.004}}', '{{t:market-desk.msg.005}}', '{{t:market-desk.msg.006}}', 'crisis'],
+      loss: ['{{t:market-desk.msg.007}}', '{{t:market-desk.msg.008}}', '{{t:market-desk.msg.009}}', 'strained'],
+      even: ['{{t:market-desk.msg.010}}', '{{t:market-desk.msg.011}}', '{{t:market-desk.msg.012}}', 'starter'],
+      lagged: ['{{t:market-desk.msg.013}}', '{{t:market-desk.msg.014}}', '{{t:market-desk.msg.015}}', 'starter'],
+      triumph: ['{{t:market-desk.msg.016}}', '{{t:market-desk.msg.017}}', '{{t:market-desk.msg.018}}', 'penthouse'],
+      steady: ['{{t:market-desk.msg.019}}', '{{t:market-desk.msg.020}}', '{{t:market-desk.msg.021}}', 'rising']
     };
     let best = 0;
     try {
@@ -41,25 +41,25 @@
       return preparingRank;
     }
     function renderRankStatus() {
-      $('mk-rank-status').textContent = local(submission?.message ?? '這一局可在本機遊玩。');
+      $('mk-rank-status').textContent = local(submission?.message ?? '{{t:market-desk.msg.022}}');
       $('mk-rank-retry').hidden = !submission?.retry;
     }
     async function sendRankedRound(entry) {
       if (!entry || entry.sending || entry.done) return;
       entry.sending = true;
       entry.retry = false;
-      entry.message = '正在驗證排行榜成績…';
+      entry.message = '{{t:market-desk.msg.023}}';
       if (entry === submission) renderRankStatus();
       try {
         const api = await import('./frontend/services/api.mjs');
         const response = await api.moveBoardRound(entry.ticket.token, entry.move, AbortSignal.timeout(10000));
         entry.done = true;
-        entry.message = response.state.score === entry.revenue ? '成績已送到排行榜。' : '排行榜成績未能送出。';
+        entry.message = response.state.score === entry.revenue ? '{{t:market-desk.msg.024}}' : '{{t:market-desk.msg.025}}';
         if (entry === submission && rankDetails.open) loadRankings();
       } catch (error) {
         entry.retry = error.retryable !== false;
         entry.done = !entry.retry;
-        entry.message = '排行榜成績未能送出。';
+        entry.message = '{{t:market-desk.msg.025}}';
       } finally {
         entry.sending = false;
         if (entry === submission) renderRankStatus();
@@ -79,7 +79,7 @@
       const status = $('mk-rank-board-status');
       const list = $('mk-rank-list');
       list.replaceChildren();
-      status.textContent = '載入排行榜中…';
+      status.textContent = '{{t:market-desk.msg.026}}';
       try {
         const api = await import('./frontend/services/api.mjs');
         const result = await api.createApiClient(api.arcadeApiOrigin()).leaderboard('market-desk', AbortSignal.timeout(5000));
@@ -87,27 +87,27 @@
         list.replaceChildren(...result.entries.map(entry => {
           const item = document.createElement('li');
           const name = document.createElement('span');
-          name.textContent = entry.displayName || '訪客';
+          name.textContent = entry.displayName || '{{t:market-desk.msg.027}}';
           if (entry.displayName) name.setAttribute('data-i18n-ignore', '');
           const amount = document.createElement('strong');
           amount.textContent = money(entry.score);
           item.append(name, amount);
           return item;
         }));
-        status.textContent = result.entries.length ? '' : '目前尚無排行榜紀錄。';
+        status.textContent = result.entries.length ? '' : '{{t:market-desk.msg.028}}';
       } catch {
-        if (request === leaderboardRequest) status.textContent = '目前無法載入排行榜。';
+        if (request === leaderboardRequest) status.textContent = '{{t:market-desk.msg.029}}';
       }
     }
     const character = $('mk-character');
     const portrait = $('mk-portrait');
     let portraitsPreloaded = false;
     const lifeStages = [
-      { min: 1230, id: 'penthouse', title: '頂樓辦公室', story: '阿澤穿上白色訂製禮服，站在大理石桌前。整座台北都在腳下亮了起來。' },
-      { min: 1090, id: 'rising', title: '辦公室升級', story: '皺襯衫已經送洗，阿澤今天在能看見夕陽的窗邊收盤。' },
-      { min: 960, id: 'starter', title: '辭職第一天', story: '租來的小辦公桌，一杯咖啡，還有二十天證明自己。' },
-      { min: 860, id: 'strained', title: '月底吃泡麵', story: '阿澤鬆開領帶。桌上的咖啡換成了泡麵，帳單還沒拆。' },
-      { min: -Infinity, id: 'crisis', title: '快撐不下去', story: '辦公室退租了。阿澤用紙箱當桌子，筆電是房裡唯一的光。' }
+      { min: 1230, id: 'penthouse', title: '{{t:market-desk.msg.030}}', story: '{{t:market-desk.msg.031}}' },
+      { min: 1090, id: 'rising', title: '{{t:market-desk.msg.032}}', story: '{{t:market-desk.msg.033}}' },
+      { min: 960, id: 'starter', title: '{{t:market-desk.msg.034}}', story: '{{t:market-desk.msg.035}}' },
+      { min: 860, id: 'strained', title: '{{t:market-desk.msg.036}}', story: '{{t:market-desk.msg.037}}' },
+      { min: -Infinity, id: 'crisis', title: '{{t:market-desk.msg.038}}', story: '{{t:market-desk.msg.039}}' }
     ];
 
     function lifeAt(index) {
@@ -130,7 +130,7 @@
       badge.hidden = !shift;
       if (shift) {
         badge.dataset.shift = shift;
-        badge.textContent = local(shift === 'up' ? '處境升級：{0}' : '處境下滑：{0}', title);
+        badge.textContent = local(shift === 'up' ? '{{t:market-desk.msg.040}}' : '{{t:market-desk.msg.041}}', title);
       }
     }
 
@@ -214,15 +214,15 @@
       exchange.classList.toggle('market-matching', settling);
       $('mk-review').hidden = !reviewing;
       const day = Math.min(cases.length, answers.length + (reviewing || finished ? 0 : 1));
-      $('mk-day').textContent = phase === 'intro' ? local('20 個交易日') :
-        local('第 {0} / {1} 天', day, cases.length);
+      $('mk-day').textContent = phase === 'intro' ? local('{{t:market-desk.msg.042}}') :
+        local('{{t:market-desk.msg.043}}', day, cases.length);
       $('mk-score').textContent = score;
       $('mk-focus').textContent = focus;
       $('mk-risk-meter').value = focus;
       $('mk-risk').classList.toggle('market-risk-low', focus <= 36);
       $('mk-risk-warning').hidden = focus === 0 || focus > 18;
       $('mk-best').textContent = best;
-      $('mk-tape').setAttribute('aria-label', local('答對 {0} 題，共完成 {1} 天', score / 5, answers.length));
+      $('mk-tape').setAttribute('aria-label', local('{{t:market-desk.msg.044}}', score / 5, answers.length));
       Array.from($('mk-tape').children).forEach(function (bar, index) {
         bar.className = index >= answers.length ? '' : answers[index] ? 'market-pass' : 'market-miss';
       });
@@ -236,24 +236,24 @@
           const correct = answers[day - 1];
           const action = local(labels[bestAction]);
           const verdict = {
-            missed: '大盤急漲・阿澤少跟到',
-            flat: '信心持平・刊登慢半拍',
-            lost: '信心回落・查證失誤'
+            missed: '{{t:market-desk.msg.045}}',
+            flat: '{{t:market-desk.msg.046}}',
+            lost: '{{t:market-desk.msg.047}}'
           };
-          $('mk-verdict').textContent = focus === 0 ? local('警報・專注力耗盡') : correct ?
-            (streak >= 2 ? local('信心連升・連對 {0} 天', streak) : local('信心上揚・判斷正確')) :
+          $('mk-verdict').textContent = focus === 0 ? local('{{t:market-desk.msg.048}}') : correct ?
+            (streak >= 2 ? local('{{t:market-desk.msg.049}}', streak) : local('{{t:market-desk.msg.050}}')) :
             local(verdict[outcome]);
           const change = $('mk-result-move').textContent;
           $('mk-market-recap').textContent = outcome === 'missed' ?
-            local('阿澤信心小升 {0}，大盤卻漲了 {1}。', change, signedPercent(marketMove)) :
-            local('阿澤信心 {0} ／ 虛構大盤 {1}', change, signedPercent(marketMove));
+            local('{{t:market-desk.msg.051}}', change, signedPercent(marketMove)) :
+            local('{{t:market-desk.msg.052}}', change, signedPercent(marketMove));
           $('mk-feedback').textContent = correct ?
-            local('判斷正確。加 5 分。 {0}', local(explanation)) :
+            local('{{t:market-desk.msg.053}}', local(explanation)) :
             outcome === 'missed' || outcome === 'flat' ?
-              local('暫緩讓報導錯過時機，專注力扣 {0}。{1}', focusLoss, local(explanation)) :
-              local('答錯，專注力扣 {0}。建議「{1}」。{2}', focusLoss, action, local(explanation));
+              local('{{t:market-desk.msg.054}}', focusLoss, local(explanation)) :
+              local('{{t:market-desk.msg.055}}', focusLoss, action, local(explanation));
           $('mk-next').textContent = focus === 0 || day === cases.length ?
-            local('查看結局') : local('下一個交易日');
+            local('{{t:market-desk.msg.056}}') : local('{{t:market-desk.msg.057}}');
         }
       }
       if (finished) renderFinale();
@@ -274,14 +274,14 @@
       const path = portraitPath(art);
       if (image.getAttribute('src') !== path) image.src = path;
       $('mk-ending-status').textContent = focus === 0 ?
-        local('第 {0} 天・提早結束', answers.length) : local('二十天・收盤結算');
+        local('{{t:market-desk.msg.058}}', answers.length) : local('{{t:market-desk.msg.059}}');
       $('mk-ending-tag').textContent = local(tag);
       $('mk-ending').textContent = local(title);
       $('mk-epilogue').textContent = local(epilogue);
       $('mk-result').textContent = local(
-        '你完成了 {0} 天的查證，答對 {1} 題，報告分數 {2} / 100。',
+        '{{t:market-desk.msg.060}}',
         answers.length, score / 5, score);
-      $('mk-final-market').textContent = local('累計表現：阿澤信心 {0} ／ 虛構大盤 {1}',
+      $('mk-final-market').textContent = local('{{t:market-desk.msg.061}}',
         signedPercent(100 * difference / openingIndex), signedPercent(100 * (market / openingIndex - 1)));
     }
     async function start() {

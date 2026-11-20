@@ -1,10 +1,11 @@
 // Optional logic checks: node tools/test_book_sort.mjs (Node.js, no packages). Covers the pure rules, not the DOM.
 import fs from 'node:fs';
+import {readSource} from './expand_ids.mjs';
 import B from '../shared/book-sort-rules.cjs';
 import { verifiesBookSortScore } from '../backend/src/services/book-sort-scores.mjs';
 import assert from 'node:assert/strict';
 const root=new URL('../',import.meta.url);
-const raw=fs.readFileSync(new URL('games/book-sort/game.js',root),'utf8');
+const raw=readSource('games/book-sort/game.js',root);
 const results=[];
 const check=(n,f)=>{f();results.push(n)};
 check('Every preset has exactly 5 books per color, no preset is already sealed, and each box fits',()=>{

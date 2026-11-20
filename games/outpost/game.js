@@ -3,7 +3,7 @@
     const board = $('outpost-board'), start = $('outpost-start'), message = $('outpost-message');
     const tools = Array.from(document.querySelectorAll('#view-outpost [data-device]'));
     const directions = Array.from(document.querySelectorAll('#view-outpost [data-direction]'));
-    const names = ['泡泡砲', '聲納塔', '脈衝線圈', '海流閘門'];
+    const names = ['{{t:outpost.msg.001}}', '{{t:outpost.msg.002}}', '{{t:outpost.msg.003}}', '{{t:outpost.msg.004}}'];
     const stagePicker = $('outpost-stage'), next = $('outpost-next');
     const stageKey = 'deep-sea-outpost-unlocked-v1';
     let unlocked = 1;
@@ -13,20 +13,20 @@
     } catch {}
     const guideKey = 'deep-sea-outpost-guide-v1', cannonCell = rules.COLS + 1, gateCell = rules.COLS - 1;
     const prompts = {
-      intro: '開始防守後，跟著亮框學會部署和換道。',
-      cannonTool: '先點下方亮框的「泡泡砲」。',
-      cannonPad: '點中路左數第二格。泡泡砲放好後會自動攻擊。',
-      gateTool: '接著點下方亮框的「海流閘門」。',
-      gatePad: '方向已選向下。點上路最右格，把閘門對準中路。',
-      waiting: '看上路右側。等敵人靠近，閘門就會亮起。',
-      pulse: '現在點上路亮起的閘門！看敵人被水流推進中路。',
+      intro: '{{t:outpost.msg.005}}',
+      cannonTool: '{{t:outpost.msg.006}}',
+      cannonPad: '{{t:outpost.msg.007}}',
+      gateTool: '{{t:outpost.msg.008}}',
+      gatePad: '{{t:outpost.msg.009}}',
+      waiting: '{{t:outpost.msg.010}}',
+      pulse: '{{t:outpost.msg.011}}',
     };
     let guide = 'intro';
     try { if (localStorage.getItem(guideKey) === '1') guide = ''; } catch {}
     const cells = [], layers = [], markers = new Map(), written = new WeakMap();
     let state = rules.create(), phase = 'ready', selected = 0, direction = 1;
     let best = 0, round, frameId, last, carry = 0;
-    let feedback = '開始後，先選設備再點空格部署。';
+    let feedback = '{{t:outpost.msg.012}}';
     try { best = Math.max(0, Number(localStorage.getItem(bestKey)) || 0); } catch {}
     const rank = timedLeaderboard(id, id, rules.inputCount, render);
     const active = () => phase === 'playing';
@@ -94,7 +94,7 @@
       next.disabled = rank.busy();
       $('outpost-rank').hidden = !ranked;
       $('outpost-best-stat').hidden = !ranked;
-      write($('outpost-stage-mode'), ranked ? '第一關成績列入訪客排行。' : '進階關卡 · 本機進度');
+      write($('outpost-stage-mode'), ranked ? '{{t:outpost.msg.013}}' : '{{t:outpost.msg.014}}');
       $('outpost-guide').hidden = !guide || !ranked;
       if (guide) write($('outpost-guide-text'), prompts[guide]);
       $('outpost-current').hidden = guide !== 'pulse' || !active();
@@ -109,7 +109,7 @@
       write($('outpost-best'), best);
       write($('outpost-score'), rules.score(state));
       write(message, feedback);
-      write(start, {ready: '開始防守', playing: '暫停防守', paused: '繼續防守', ended: '再守一次'}[phase]);
+      write(start, {ready: '{{t:outpost.msg.015}}', playing: '{{t:outpost.msg.016}}', paused: '{{t:outpost.msg.017}}', ended: '{{t:outpost.msg.018}}'}[phase]);
       start.disabled = rank.busy();
       $('outpost-direction').hidden = selected !== 3 || !active();
       tools.forEach((button, i) => {
@@ -134,9 +134,9 @@
           (device?.type === 0 || device?.type === 2) && !device.upgraded && state.energy >= rules.upgradeCost;
         button.dataset.ready = gate && !left && rules.gateTargets(state, cell).length > 0;
         write(button.firstElementChild, gate ? (device.direction < 0 ? '↑' : '↓') + (left || '') : device ? '' : '+');
-        const name = names[device?.type] || '空部署格';
-        const label = device?.upgraded ? name + ' · ' + '已升級' : button.dataset.upgradeReady === 'true' ?
-          name + ' · ' + '可升級' : name;
+        const name = names[device?.type] || '{{t:outpost.msg.019}}';
+        const label = device?.upgraded ? name + ' · ' + '{{t:outpost.msg.020}}' : button.dataset.upgradeReady === 'true' ?
+          name + ' · ' + '{{t:outpost.msg.021}}' : name;
         const location = String(Math.floor(cell / rules.COLS) + 1) + ' · ' + (cell % rules.COLS + 1);
         if (button.dataset.label !== label) {
           button.dataset.label = label;
@@ -183,24 +183,24 @@
       if (!active()) return;
       const device = state.devices[cell];
       if (state.stage > 1 && rules.wave(state) >= 2 && (device?.type === 0 || device?.type === 2)) {
-        feedback = rules.upgrade(state, cell) ? '火力已升級！' :
-          device.upgraded ? '這座塔已經升級。' : '升級需要 25 能源。';
+        feedback = rules.upgrade(state, cell) ? '{{t:outpost.msg.022}}' :
+          device.upgraded ? '{{t:outpost.msg.023}}' : '{{t:outpost.msg.024}}';
         render();
         return;
       }
       const action = device?.type === 3 ? 5 : selected === 3 && direction === 1 ? 4 : selected;
       const code = cell * 6 + action;
       if (!rules.input(state, code)) {
-        feedback = device?.type === 3 ? '等敵群靠近，並確認閘門冷卻完畢。' :
-          device ? '這格已有設備。' : state.energy < rules.costs[selected] ? '局內能源不足。' : '閘門必須朝向相鄰通道。';
+        feedback = device?.type === 3 ? '{{t:outpost.msg.025}}' :
+          device ? '{{t:outpost.msg.026}}' : state.energy < rules.costs[selected] ? '{{t:outpost.msg.027}}' : '{{t:outpost.msg.028}}';
       } else {
         if (state.stage === 1) rank.record(code);
-        feedback = action === 5 ? '敵群已換道！' : '設備已部署。';
+        feedback = action === 5 ? '{{t:outpost.msg.029}}' : '{{t:outpost.msg.030}}';
         if (guide === 'cannonPad') guide = 'gateTool';
         else if (guide === 'gatePad') guide = 'waiting';
         else if (guide === 'pulse') {
           endGuide();
-          feedback = '換道成功！接下來守住三條航道，直到倒數結束。';
+          feedback = '{{t:outpost.msg.031}}';
         }
       }
       render();
@@ -212,9 +212,9 @@
 
     function finish() {
       phase = 'ended';
-      feedback = state.won ? '研究站守住了！' : '研究站失守。';
+      feedback = state.won ? '{{t:outpost.msg.032}}' : '{{t:outpost.msg.033}}';
       const score = rules.score(state);
-      if (state.won && state.stage === rules.stageCount) feedback = '三十關全數守住！';
+      if (state.won && state.stage === rules.stageCount) feedback = '{{t:outpost.msg.034}}';
       if (state.won && state.stage === unlocked && unlocked < rules.stageCount) {
         unlocked++;
         try { localStorage.setItem(stageKey, String(unlocked)); } catch {}
@@ -244,7 +244,7 @@
         else step();
       }
       if (active() && rules.wave(state) !== previous) {
-        if (state.stage > 1 && rules.wave(state) === 2) feedback = '可升級了！點亮框的泡泡砲或脈衝線圈。';
+        if (state.stage > 1 && rules.wave(state) === 2) feedback = '{{t:outpost.msg.035}}';
         AN.progress(round, tracking());
       }
       render();
@@ -253,7 +253,7 @@
 
     function play(resuming) {
       phase = 'playing';
-      feedback = '先選設備再點空格。點已部署的閘門換道。';
+      feedback = '{{t:outpost.msg.036}}';
       if (resuming) AN.resume(round, tracking());
       else round = AN.start(id, 0, tracking());
       last = undefined;
@@ -265,7 +265,7 @@
       if (!active()) return;
       cancelAnimationFrame(frameId);
       phase = 'paused';
-      feedback = '防守已暫停。';
+      feedback = '{{t:outpost.msg.037}}';
       AN.progress(round, tracking(), true);
       render();
     }
@@ -294,7 +294,7 @@
       phase = 'ready';
       selected = 0;
       stagePicker.value = String(stage);
-      feedback = stage === 1 ? '開始後，先選設備再點空格部署。' : '第二波起，可點已部署的泡泡砲或脈衝線圈升級。';
+      feedback = stage === 1 ? '{{t:outpost.msg.012}}' : '{{t:outpost.msg.038}}';
       render();
     }
 

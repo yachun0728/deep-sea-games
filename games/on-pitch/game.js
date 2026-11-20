@@ -69,11 +69,11 @@ function makeLevels(){
   const CUE_W3   = { height:false, label:'always', color:'always', tone:'target', toneOff:-1.5 };
   const CUE_W4   = { height:false, label:'none',   color:'flash',  tone:'target', toneOff:-1.5, flashOff:-1.5 };
   const worlds = [
-    { name:'認識七階',   tol:45, hold:0.20, win:1.4, gap:2.6, cues:CUE_FULL },
-    { name:'唱旋律',     tol:40, hold:0.25, win:1.2, gap:2.2, cues:CUE_FULL },
-    { name:'看不見階梯', tol:40, hold:0.25, win:1.1, gap:2.0, cues:CUE_W3 },
-    { name:'只靠耳朵',   tol:35, hold:0.25, win:1.0, gap:2.0, cues:CUE_W4 },
-    { name:'絕對音準',   tol:30, hold:0.25, win:1.0, gap:2.4, cues:null }
+    { name:'{{t:on-pitch.msg.001}}',   tol:45, hold:0.20, win:1.4, gap:2.6, cues:CUE_FULL },
+    { name:'{{t:on-pitch.msg.002}}',     tol:40, hold:0.25, win:1.2, gap:2.2, cues:CUE_FULL },
+    { name:'{{t:on-pitch.msg.003}}', tol:40, hold:0.25, win:1.1, gap:2.0, cues:CUE_W3 },
+    { name:'{{t:on-pitch.msg.004}}',   tol:35, hold:0.25, win:1.0, gap:2.0, cues:CUE_W4 },
+    { name:'{{t:on-pitch.msg.005}}',   tol:30, hold:0.25, win:1.0, gap:2.4, cues:null }
   ];
   const W5 = [
     { height:false, label:'flash', color:'always', tone:null, flashOff:-1.5 },
@@ -82,11 +82,11 @@ function makeLevels(){
     { height:false, label:'flash', color:'none',   tone:null, flashOff:-2.0 }
   ];
   const names = [
-    ['C、G 兩階','C E G','音階上行','Boss：音階上下行'],
-    ['小星星','瑪莉有隻小綿羊','歡樂頌','Boss：Jingle Bells'],
-    ['隨機 C E G','隨機五音','隨機七音','Boss：小星星（看不見）'],
-    ['隨機 C E G','隨機五音','隨機七音','Boss：連續 12 音不重複'],
-    ['音名閃現','顏色閃現','干擾音','Boss：只給音名']
+    ['{{t:on-pitch.msg.006}}','C E G','{{t:on-pitch.msg.007}}','{{t:on-pitch.msg.008}}'],
+    ['{{t:on-pitch.msg.009}}','{{t:on-pitch.msg.010}}','{{t:on-pitch.msg.011}}','Boss：Jingle Bells'],
+    ['{{t:on-pitch.msg.012}}','{{t:on-pitch.msg.013}}','{{t:on-pitch.msg.014}}','{{t:on-pitch.msg.015}}'],
+    ['{{t:on-pitch.msg.012}}','{{t:on-pitch.msg.013}}','{{t:on-pitch.msg.014}}','{{t:on-pitch.msg.016}}'],
+    ['{{t:on-pitch.msg.017}}','{{t:on-pitch.msg.018}}','{{t:on-pitch.msg.019}}','{{t:on-pitch.msg.020}}']
   ];
   const lv = [];
   for (let w=0; w<5; w++){
@@ -109,7 +109,7 @@ function makeLevels(){
   return lv;
 }
 function endlessLevel(){
-  return { id:'∞', w:4, l:0, worldName:'無盡', title:'無盡', notes:[], tol:30, hold:0.25, win:1.0, gap:2.4,
+  return { id:'∞', w:4, l:0, worldName:'{{t:on-pitch.msg.021}}', title:'{{t:on-pitch.msg.021}}', notes:[], tol:30, hold:0.25, win:1.0, gap:2.4,
     cues:{ height:false, label:'flash', color:'none', tone:null, flashOff:-1.5 }, seed:99, rowLabels:false, endless:true };
 }
 
@@ -229,7 +229,7 @@ function createGame(level, opts){
 const FONT = '"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif';
 const EN = () => !!(window.deepSeaI18n && window.deepSeaI18n.getLanguage && window.deepSeaI18n.getLanguage() === 'en');
 const T = (zh, en) => EN() ? en : zh;
-const TITLE_EN = { 'C、G 兩階':'C and G','C E G':'C E G','音階上行':'Scale up','Boss：音階上下行':'Boss: scale up and down','小星星':'Twinkle Twinkle','瑪莉有隻小綿羊':'Mary Had a Little Lamb','歡樂頌':'Ode to Joy','Boss：Jingle Bells':'Boss: Jingle Bells','隨機 C E G':'Random C E G','隨機五音':'Random 5 notes','隨機七音':'Random 7 notes','Boss：小星星（看不見）':'Boss: Twinkle (hidden)','Boss：連續 12 音不重複':'Boss: 12 notes, no repeats','音名閃現':'Name flash','顏色閃現':'Color flash','干擾音':'Distractor','Boss：只給音名':'Boss: name only','無盡':'Endless' };
+const TITLE_EN = { '{{t:on-pitch.msg.006}}':'C and G','C E G':'C E G','{{t:on-pitch.msg.007}}':'Scale up','{{t:on-pitch.msg.008}}':'Boss: scale up and down','{{t:on-pitch.msg.009}}':'Twinkle Twinkle','{{t:on-pitch.msg.010}}':'Mary Had a Little Lamb','{{t:on-pitch.msg.011}}':'Ode to Joy','Boss：Jingle Bells':'Boss: Jingle Bells','{{t:on-pitch.msg.012}}':'Random C E G','{{t:on-pitch.msg.013}}':'Random 5 notes','{{t:on-pitch.msg.014}}':'Random 7 notes','{{t:on-pitch.msg.015}}':'Boss: Twinkle (hidden)','{{t:on-pitch.msg.016}}':'Boss: 12 notes, no repeats','{{t:on-pitch.msg.017}}':'Name flash','{{t:on-pitch.msg.018}}':'Color flash','{{t:on-pitch.msg.019}}':'Distractor','{{t:on-pitch.msg.020}}':'Boss: name only','{{t:on-pitch.msg.021}}':'Endless' };
 const LT = lv => EN() ? (TITLE_EN[lv.title] || lv.title) : lv.title;
 const THEME = {
   noteColors: ['#e0554f','#f08a3c','#f2c94c','#7bc96f','#3fb6b0','#4a82d8','#9a6bd6'],
@@ -294,7 +294,7 @@ function playTick(kind){
 const Mic = {
   ready:false, stream:null, an:null, buf:null, last:null, lastT:0,
   async start(){
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error(T('此瀏覽器不支援麥克風（需要 https 或 localhost）', 'This browser has no microphone support (needs https or localhost)'));
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error(T('{{t:on-pitch.msg.022}}', 'This browser has no microphone support (needs https or localhost)'));
     const c = ensureCtx();
     this.stream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:false, noiseSuppression:false, autoGainControl:false } });
     const src = c.createMediaStreamSource(this.stream);
@@ -350,7 +350,7 @@ async function ensureMic(){
   if (prefs.input === 'mic' && !Mic.ready){
     try { await Mic.start(); }
     catch(e){
-      toast(T('麥克風無法使用，已改用螢幕琴鍵。', 'Microphone unavailable. Switched to on-screen keys.'));
+      toast(T('{{t:on-pitch.msg.023}}', 'Microphone unavailable. Switched to on-screen keys.'));
       prefs.input = 'key'; persist(); opUI();
     }
   }
@@ -370,7 +370,7 @@ async function startLevel(lv){
   OP.active = true; OP.score = 0;
   if (AN.interact) AN.interact();
   OP.analytics = AN.start('on-pitch', ENTRY_FEE, { stage: lv.w + 1, step: 0 });
-  opSay('第 {id} 關開始：唱出缺口的音。|Level {id}: sing the note in the gap.', '', { id: lv.id });
+  opSay('{{tb:on-pitch.say.024}}', '', { id: lv.id });
   opUI();
 }
 function endRound(result, extra){
@@ -635,7 +635,7 @@ function drawHUD(g, lv){
   text(String(g.score), W-20, 29, 20, THEME.amberHi, 'right', 0, { shadow:'rgba(240,168,48,0.5)', blur:8 });
   if (g.combo >= 2){
     panel(W-100, 54, 92, 22, 11, { c1:'rgba(240,168,48,0.9)', c2:'rgba(214,132,20,0.9)', stroke:'rgba(255,255,255,0.4)' });
-    text(T('連續 ×', 'Combo ×')+g.combo, W-54, 66, 12, '#2a1a00');
+    text(T('{{t:on-pitch.msg.025}}', 'Combo ×')+g.combo, W-54, 66, 12, '#2a1a00');
   }
   // 提示橫幅（閃現線索）
   const f = g.flash;
@@ -649,7 +649,7 @@ function drawHUD(g, lv){
     if (showL) text(noteName(f.note)+' '+SOLF[f.note], showC?14:0, 1, 26, '#fff');
     cx.restore();
   }
-  if (g.t < 2.2) text(prefs.input==='mic' ? T('準備…對著麥克風唱出缺口的音', 'Ready… sing the note in the gap') : T('準備…按下缺口對應的琴鍵', 'Ready… press the key for the gap'), W/2, 160, 14, '#c8d2dc', 'center', 0, { stroke:'rgba(0,0,0,0.6)', sw:4 });
+  if (g.t < 2.2) text(prefs.input==='mic' ? T('{{t:on-pitch.msg.026}}', 'Ready… sing the note in the gap') : T('{{t:on-pitch.msg.027}}', 'Ready… press the key for the gap'), W/2, 160, 14, '#c8d2dc', 'center', 0, { stroke:'rgba(0,0,0,0.6)', sw:4 });
   // 即時音高讀數（膠囊）
   const v = g.view;
   if (v.voice){
@@ -683,7 +683,7 @@ function drawKeys(){
     cx.fillStyle = 'rgba(16,22,29,0.85)'; shape(THEME.noteShapes[i], kx+24, 612+oy, 8);
     text(noteName(i), kx+24, 650+oy, 22, '#10161d');
   }
-  text(T('練習模式：按畫面琴鍵（或電腦鍵 C D E F G A B）', 'Practice: tap the keys (or press C D E F G A B)'), W/2, 553, 12, THEME.dim);
+  text(T('{{t:on-pitch.msg.028}}', 'Practice: tap the keys (or press C D E F G A B)'), W/2, 553, 12, THEME.dim);
 }
 function lighten(hex){
   const n = parseInt(hex.slice(1),16);
@@ -713,52 +713,52 @@ function drawPlay(dt){
   if (prefs.input === 'key') drawKeys();
   else {
     panel(8, 548, W-16, 56, 14, { c1:'rgba(14,22,30,0.7)', c2:'rgba(8,12,17,0.7)' });
-    text(prefs.octave==='strict' ? T('嚴格第 4 八度', 'Strict: octave 4 only') : T('任何八度皆可', 'Any octave works'), W/2, 566, 13, '#c8d2dc');
-    text(T('小聲、哼歌、吹口哨也可以', 'Humming or whistling works too'), W/2, 588, 12, THEME.dim);
+    text(prefs.octave==='strict' ? T('{{t:on-pitch.msg.029}}', 'Strict: octave 4 only') : T('{{t:on-pitch.msg.030}}', 'Any octave works'), W/2, 566, 13, '#c8d2dc');
+    text(T('{{t:on-pitch.msg.031}}', 'Humming or whistling works too'), W/2, 588, 12, THEME.dim);
   }
 }
 function drawPause(){
   cx.fillStyle = 'rgba(4,8,12,0.7)'; cx.fillRect(0,0,W,H);
   panel(50, 250, 300, 190, 22, { shadow:24 });
-  text(T('暫停中', 'Paused'), W/2, 292, 30, THEME.amberHi, 'center', 0, { shadow:'rgba(240,168,48,0.5)' });
-  text(prefs.input==='mic' ? T('點一下繼續（會重新開啟麥克風）', 'Tap to resume (microphone turns back on)') : T('點一下繼續', 'Tap to resume'), W/2, 332, 13, '#c8d2dc');
-  button(110, 366, 180, 48, T('回選單', 'Back to menu'), leaveToMenu, { size:16 });
+  text(T('{{t:on-pitch.msg.032}}', 'Paused'), W/2, 292, 30, THEME.amberHi, 'center', 0, { shadow:'rgba(240,168,48,0.5)' });
+  text(prefs.input==='mic' ? T('{{t:on-pitch.msg.033}}', 'Tap to resume (microphone turns back on)') : T('{{t:on-pitch.msg.034}}', 'Tap to resume'), W/2, 332, 13, '#c8d2dc');
+  button(110, 366, 180, 48, T('{{t:on-pitch.msg.035}}', 'Back to menu'), leaveToMenu, { size:16 });
 }
-function gradeText(g){ return { perfect:T('完美','Perfect'), good:T('好','Good'), ok:T('過','OK') }[g]; }
+function gradeText(g){ return { perfect:T('{{t:on-pitch.msg.036}}','Perfect'), good:T('{{t:on-pitch.msg.037}}','Good'), ok:T('{{t:on-pitch.msg.038}}','OK') }[g]; }
 function drawResult(){
   const g = game, win = g.state==='clear';
   drawBackground();
   panel(24, 90, W-48, 440, 26, { shadow:30, stroke: win ? 'rgba(123,201,111,0.5)' : 'rgba(255,138,128,0.4)', sw:2 });
-  text(win ? T('過關！','Cleared!') : (level.endless ? T('無盡結束','Endless over') : T('失敗','Failed')), W/2, 148, 42, win ? '#9be39b' : '#ff8a80', 'center', 0, { shadow: win ? 'rgba(123,201,111,0.6)' : 'rgba(255,100,90,0.5)', blur:16 });
+  text(win ? T('{{t:on-pitch.msg.039}}','Cleared!') : (level.endless ? T('{{t:on-pitch.msg.040}}','Endless over') : T('{{t:on-pitch.msg.041}}','Failed')), W/2, 148, 42, win ? '#9be39b' : '#ff8a80', 'center', 0, { shadow: win ? 'rgba(123,201,111,0.6)' : 'rgba(255,100,90,0.5)', blur:16 });
   text(level.id+'　'+LT(level), W/2, 198, 16, '#c8d2dc');
   if (win) stars(W/2, 256, g.stars, 3, 22, 54);
   panel(54, 296, W-108, 96, 16, { c1:'#1a2530', c2:'#121a22' });
   text(String(g.score), W/2, 330, 34, THEME.amberHi, 'center', 0, { shadow:'rgba(240,168,48,0.5)' });
-  text(T('分數','Score'), W/2, 364, 12, THEME.dim);
-  const rows = [[T('完美','Perfect'),g.stats.perfect,'#ffe27a'],[T('好','Good'),g.stats.good,'#9be39b'],[T('過','OK'),g.stats.ok,'#c8d2dc'],[T('失誤','Miss'),g.stats.fail,'#ff8a80']];
+  text(T('{{t:on-pitch.msg.042}}','Score'), W/2, 364, 12, THEME.dim);
+  const rows = [[T('{{t:on-pitch.msg.036}}','Perfect'),g.stats.perfect,'#ffe27a'],[T('{{t:on-pitch.msg.037}}','Good'),g.stats.good,'#9be39b'],[T('{{t:on-pitch.msg.038}}','OK'),g.stats.ok,'#c8d2dc'],[T('{{t:on-pitch.msg.043}}','Miss'),g.stats.fail,'#ff8a80']];
   rows.forEach((r,i) => {
     const x = 70 + i*87;
     text(String(r[1]), x, 428, 24, r[2]);
     text(r[0], x, 456, 12, THEME.dim);
   });
   text(T('最高連續 ','Best combo ')+g.maxCombo+(level.endless?T('　共通過 '+g.passes+' 面','　Walls passed '+g.passes):''), W/2, 494, 13, THEME.dim);
-  button(40, 560, 150, 52, T('再玩一次','Retry'), () => startLevel(level.endless ? endlessLevel() : level), { size:17 });
-  button(210, 560, 150, 52, T('回選單','Menu'), leaveToMenu, { size:17 });
+  button(40, 560, 150, 52, T('{{t:on-pitch.msg.044}}','Retry'), () => startLevel(level.endless ? endlessLevel() : level), { size:17 });
+  button(210, 560, 150, 52, T('{{t:on-pitch.msg.035}}','Menu'), leaveToMenu, { size:17 });
   if (win && !level.endless){
     const idx = LEVELS.indexOf(level);
-    if (idx < LEVELS.length-1) button(40, 628, 320, 54, T('下一關 ▶','Next level ▶'), () => startLevel(LEVELS[idx+1]), { size:18, active:true });
+    if (idx < LEVELS.length-1) button(40, 628, 320, 54, T('{{t:on-pitch.msg.045}}','Next level ▶'), () => startLevel(LEVELS[idx+1]), { size:18, active:true });
   }
 }
 function drawMenu(now){
   drawBackground();
-  text(T('不准跑調', 'Stay On Pitch'), W/2, 40, EN() ? 34 : 38, THEME.amberHi, 'center', 0, { shadow:'rgba(240,168,48,0.55)', blur:18, stroke:'rgba(0,0,0,0.5)', sw:5 });
+  text(T('{{t:on-pitch.msg.046}}', 'Stay On Pitch'), W/2, 40, EN() ? 34 : 38, THEME.amberHi, 'center', 0, { shadow:'rgba(240,168,48,0.55)', blur:18, stroke:'rgba(0,0,0,0.5)', sw:5 });
   for (let i=0;i<7;i++){
     const bx = W/2 - 7*9 + i*18, bh = 6 + i*2.4;
     cx.fillStyle = THEME.noteColors[i]; rrect(bx, 80-bh, 13, bh, 3); cx.fill();
   }
-  text(T('用聲音爬七階　C D E F G A B', 'Climb seven steps with your voice'), W/2, 98, 12, THEME.dim);
-  const names = EN() ? ['Meet the notes','Sing a tune','Hidden steps','Ears only','Perfect pitch'] : ['認識七階','唱旋律','看不見階梯','只靠耳朵','絕對音準'];
-  const hints = EN() ? ['All cues','All cues','Labels only','Colors only','From memory'] : ['全提示','全提示','只剩標籤','只剩顏色','靠記憶'];
+  text(T('{{t:on-pitch.msg.047}}', 'Climb seven steps with your voice'), W/2, 98, 12, THEME.dim);
+  const names = EN() ? ['Meet the notes','Sing a tune','Hidden steps','Ears only','Perfect pitch'] : ['{{t:on-pitch.msg.001}}','{{t:on-pitch.msg.002}}','{{t:on-pitch.msg.003}}','{{t:on-pitch.msg.004}}','{{t:on-pitch.msg.005}}'];
+  const hints = EN() ? ['All cues','All cues','Labels only','Colors only','From memory'] : ['{{t:on-pitch.msg.048}}','{{t:on-pitch.msg.048}}','{{t:on-pitch.msg.049}}','{{t:on-pitch.msg.050}}','{{t:on-pitch.msg.051}}'];
   const accent = [THEME.noteColors[3], THEME.noteColors[4], THEME.noteColors[5], THEME.noteColors[6], THEME.noteColors[0]];
   for (let w=0; w<5; w++){
     const y = 112 + w*62;
@@ -774,13 +774,13 @@ function drawMenu(now){
       stars(bx+30, y+48, st, 3, 4.5, 14);
     }
   }
-  button(70, 426, 322, 40, T('無盡模式（世界 5 規則）', 'Endless (World 5 rules)'), () => startLevel(endlessLevel()), { size:15, c1:'#3a2a1a', c2:'#271b10', stroke:'rgba(240,168,48,0.6)' });
+  button(70, 426, 322, 40, T('{{t:on-pitch.msg.052}}', 'Endless (World 5 rules)'), () => startLevel(endlessLevel()), { size:15, c1:'#3a2a1a', c2:'#271b10', stroke:'rgba(240,168,48,0.6)' });
   if (Mic.ready){
     const hz = Mic.read(now);
     if (hz){
       const m = hzToMidi(hz) - 60, rn = Math.round(m), c = Math.round((m-rn)*100);
-      text(T('偵測：','Heard: ')+PC_NAMES[mod(rn,12)]+'  '+(c>=0?'+':'')+c+'¢　（'+Math.round(hz)+' Hz）', W/2, 500, 16, THEME.amberHi, 'center', 0, { shadow:'rgba(240,168,48,0.4)' });
-    } else text(T('偵測：（沒有穩定的聲音）','Heard: (no steady sound)'), W/2, 500, 14, THEME.dim);
+      text(T('{{t:on-pitch.msg.053}}','Heard: ')+PC_NAMES[mod(rn,12)]+'  '+(c>=0?'+':'')+c+'¢　（'+Math.round(hz)+' Hz）', W/2, 500, 16, THEME.amberHi, 'center', 0, { shadow:'rgba(240,168,48,0.4)' });
+    } else text(T('{{t:on-pitch.msg.054}}','Heard: (no steady sound)'), W/2, 500, 14, THEME.dim);
   }
 }
 
@@ -802,7 +802,7 @@ function frame(){
     game.events.splice(0).forEach(ev => {
       if (ev.type==='tone') playTone(ev.note);
       else if (ev.type==='pass'){ playTick('pass'); fx.happy = 0.5; if (AN.interact) AN.interact(); fx.popups.push({ t:gradeText(ev.grade), c: ev.grade==='perfect'?'#ffe27a':(ev.grade==='good'?'#9be39b':'#c8d2dc'), life:0.8 }); }
-      else if (ev.type==='fail'){ playTick('fail'); fx.hurt = 0.6; if (AN.interact) AN.interact(); fx.popups.push({ t:T('失誤','Miss'), c:'#ff8a80', life:0.8 }); if (navigator.vibrate) navigator.vibrate(60); }
+      else if (ev.type==='fail'){ playTick('fail'); fx.hurt = 0.6; if (AN.interact) AN.interact(); fx.popups.push({ t:T('{{t:on-pitch.msg.043}}','Miss'), c:'#ff8a80', life:0.8 }); if (navigator.vibrate) navigator.vibrate(60); }
     });
     drawPlay(dt);
     if (game.state !== 'play'){
@@ -812,7 +812,7 @@ function frame(){
       scene = 'result';
       const st = game.stats;
       endRound('complete', { score: game.score, step: st.perfect + st.good + st.ok, level: idx + 1, cleared: win ? 1 : 0, stars: win ? game.stars : 0 });
-      opSay(win ? '過關！得 {sc} 分、{st} 顆星。|Cleared! {sc} points, {st} stars.' : '這關失敗了：{sc} 分。再試一次，或換個關卡。|Level failed: {sc} points. Try again or pick another level.', win ? 'win' : 'lose', { sc: game.score, st: game.stars });
+      opSay(win ? '{{tb:on-pitch.say.055}}' : '{{tb:on-pitch.say.056}}', win ? 'win' : 'lose', { sc: game.score, st: game.stars });
     }
   } else if (scene === 'pause'){
     drawPlay(0); drawPause();
@@ -845,12 +845,12 @@ function opUI(){
   const cur = OP.sel >= LEVELS.length ? '∞' : (LEVELS[OP.sel] || LEVELS[0]).id;
   $('op-level').textContent = cur; $('op-score').textContent = fmt(OP.score); $('op-stars').textContent = total + ' / ' + LEVELS.length * 3;
   const busy = OP.active || OP.starting;
-  $('op-go').disabled = busy; $('op-go').textContent = busy ? '遊戲中 · 在畫面操作' : '開始遊戲';
+  $('op-go').disabled = busy; $('op-go').textContent = busy ? '{{t:on-pitch.msg.057}}' : '{{t:on-pitch.msg.058}}';
   [['op-in-mic', prefs.input === 'mic'], ['op-in-key', prefs.input === 'key'], ['op-oct-any', prefs.octave === 'any'], ['op-oct-strict', prefs.octave === 'strict']].forEach(p => {
     const b = $(p[0]); b.setAttribute('aria-pressed', p[1] ? 'true' : 'false'); b.disabled = busy;
   });
   $('op-mic-test').disabled = busy || prefs.input !== 'mic';
-  $('op-mic-test').textContent = Mic.ready ? '關閉麥克風' : '測試麥克風';
+  $('op-mic-test').textContent = Mic.ready ? '{{t:on-pitch.msg.059}}' : '{{t:on-pitch.msg.060}}';
 }
 function onRoute(active){
   if (!active){ pauseRound(); Mic.stop(); if (scene === 'result') scene = 'menu'; }
@@ -869,14 +869,14 @@ $('op-mic-test').addEventListener('click', async () => {
   if (OP.active) return;
   if (Mic.ready){ Mic.stop(); opUI(); return; }
   try { ensureCtx(); await Mic.start(); }
-  catch(e){ toast(T('麥克風無法使用：', 'Microphone unavailable: ') + (e.message||e.name)); }
+  catch(e){ toast(T('{{t:on-pitch.msg.061}}', 'Microphone unavailable: ') + (e.message||e.name)); }
   opUI();
 });
 // 先於共用離頁處理結束，讓 abandoned 帶上已有的分數
 window.addEventListener('pagehide', e => { if (!e.persisted && OP.active && OP.analytics){ const a = OP.analytics; OP.analytics = null; OP.active = false; AN.end(a, 0, 'abandoned', { score: OP.score }); } }, true);
 window.addEventListener('arcade-languagechange', () => { if (OP.msg) opSay(OP.msg.text, OP.msg.kind, OP.msg.params); });
 window.deepSeaOnPitch = { route: onRoute, state: () => ({ scene, level, game, active: OP.active, sel: OP.sel, prefs }), core: { createGame:createGame, makeLevels:makeLevels, detectPitch:detectPitch } };
-opSay('按「開始遊戲」或點畫面上的關卡開始。第一次會要求麥克風權限。|Press Start or tap a level. The first time asks for microphone access.');
+opSay('{{tb:on-pitch.say.062}}');
 opUI();
 
 })();

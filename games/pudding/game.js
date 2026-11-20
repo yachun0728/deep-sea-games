@@ -22,8 +22,8 @@ const LV=[
  {iv:[.6,.94],base:140,hp:{inf:16,cav:13,shield:29},w:[30,25,20,25]},
  {iv:[.55,.89],base:150,hp:{inf:19,cav:16,shield:35},w:[30,25,25,20]},
  {iv:[.51,.85],base:160,hp:{inf:22,cav:19,shield:42},w:[25,25,30,20]}];
-const CARD_HINT={b:'持續砍・減速',m:'戳・擊退・破盾',d:'擋箭・減傷'};
-const TYPES={b:{n:'刃',f:'#e53935',d:'#8e1c1a'},m:{n:'矛',f:'#1e88e5',d:'#0d47a1'},d:{n:'盾',f:'#fdd835',d:'#a58b00'}};
+const CARD_HINT={b:'{{t:pudding.msg.001}}',m:'{{t:pudding.msg.002}}',d:'{{t:pudding.msg.003}}'};
+const TYPES={b:{n:'{{t:pudding.msg.004}}',f:'#e53935',d:'#8e1c1a'},m:{n:'{{t:pudding.msg.005}}',f:'#1e88e5',d:'#0d47a1'},d:{n:'{{t:pudding.msg.006}}',f:'#fdd835',d:'#a58b00'}};
 // Puzzle pieces: cell offsets [x,y], weight in the random draw.
 const SHAPES=[{c:[[0,0]],w:2},{c:[[0,0],[1,0]],w:3},{c:[[0,0],[1,0],[2,0]],w:3},{c:[[0,0],[0,1],[1,1]],w:3},{c:[[0,0],[1,0],[0,1],[1,1]],w:2},{c:[[0,0],[1,0],[2,0],[3,0]],w:1},{c:[[0,0],[0,1],[0,2],[1,2]],w:2},{c:[[0,0],[1,0],[2,0],[1,1]],w:2}];
 const GX=96,GY=100,GC=52;           // forge grid on the canvas
@@ -68,7 +68,7 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const live=st==='run';
  setText('pd-seg','第 '+seg+'/'+SEGS+' 段');setText('pd-score',String(score));setText('pd-best',best+' 分');
- $('pd-amount').disabled=puddingBusy;$('pd-go').disabled=live;setText('pd-go',live?'突圍中':st==='over'?'再突圍一次':'開始突圍');
+ $('pd-amount').disabled=puddingBusy;$('pd-go').disabled=live;setText('pd-go',live?'{{t:pudding.msg.007}}':st==='over'?'{{t:pudding.msg.008}}':'{{t:pudding.msg.009}}');
 }
 const fl=(s,x,y,col)=>floats.push({s,x,y,col,t:0});
 function end(reason){
@@ -165,7 +165,7 @@ function updateRun(dt){
   if(e.hp<=0&&!e.dead)kill(e);
  }
  enemies=enemies.filter(e=>!e.dead);
- for(const a of arrows)for(const cl of cells)if(cl.t==='d'&&Math.abs(a.x-cl.cx)<3+CELL/2&&Math.abs(a.y-cl.cy)<15+CELL/2){a.dead=true;fl('擋！',a.x,a.y,'#fdd835');break}
+ for(const a of arrows)for(const cl of cells)if(cl.t==='d'&&Math.abs(a.x-cl.cx)<3+CELL/2&&Math.abs(a.y-cl.cy)<15+CELL/2){a.dead=true;fl('{{t:pudding.msg.010}}',a.x,a.y,'#fdd835');break}
  // hits on the hero: contact, arrow, then enemies that slip past
  for(const e of enemies)if(Math.abs(e.x-px)<=38&&Math.abs(e.y-PY)<=30){e.dead=true;hurt(HURT[e.t],'hit')}
  enemies=enemies.filter(e=>!e.dead);
@@ -185,7 +185,7 @@ function update(dt){
  if(st!=='run')return;
  if(ph==='forge'){
   if(fPhase==='delay'){fT-=dt;if(fT<=0){fPhase='banner';fT=.8}}
-  else if(fPhase==='banner'){fT-=dt;if(fT<=0){ph='run';resetRun();say('出發！按住 ←→ / AD 或按住畫面，讓武器碰到敵人。')}}
+  else if(fPhase==='banner'){fT-=dt;if(fT<=0){ph='run';resetRun();say('{{t:pudding.msg.011}}')}}
   return}
  updateRun(dt);
 }
@@ -258,7 +258,7 @@ function drawBar(y,h){
  g.fillStyle='#333';g.fillRect(16,y,W-32,h);
  let col=calm>60?'#66bb6a':calm>=30?'#fdd835':'#e53935';if(calm<30&&Math.floor(tt/.2)%2)col='#ff8a80';
  g.fillStyle=col;g.fillRect(16,y,(W-32)*calm/100,h);
- if(h>=16)tx('布丁安心',22,y+h/2+1,12,'#fff','left');
+ if(h>=16)tx('{{t:pudding.msg.012}}',22,y+h/2+1,12,'#fff','left');
 }
 function drawGrid(x0,y0,cs,gr,sc,flash){
  for(let r=0;r<4;r++)for(let q=0;q<4;q++){
@@ -275,7 +275,7 @@ function drawRun(){
  for(const a of archers)if(a.t>=.2&&a.t<1){g.fillStyle='rgba(255,0,0,'+(Math.floor(tt/.1)%2?.45:.15)+')';g.fillRect(a.x-20,70,40,430)}
  for(const w of warns)tx('!',w.x,24,30,'#ff1744');
  for(const a of archers)drawArcher(a);
- for(const e of enemies){drawEnemy(e);if(e.t==='shield')tx('怕矛',e.x,e.y-30,11,'#ffd54f')}
+ for(const e of enemies){drawEnemy(e);if(e.t==='shield')tx('{{t:pudding.msg.013}}',e.x,e.y-30,11,'#ffd54f')}
  for(const a of arrows){g.fillStyle='#ffeb3b';g.fillRect(a.x-3,a.y-15,6,24);g.beginPath();g.moveTo(a.x-6,a.y+9);g.lineTo(a.x+6,a.y+9);g.lineTo(a.x,a.y+20);g.fill()}
  for(const d of dying){const k=Math.max(0,d.life/.15);g.globalAlpha=k;drawEnemyBody(d.t,d.x,d.y,.4+.6*k);g.fillStyle='rgba(255,255,255,.8)';RR(d.x-27,d.y-20,54,40,10);g.fill();g.globalAlpha=1}
  const sh=hurtT>0?Math.sin(tt*80)*3:0;
@@ -286,8 +286,8 @@ function drawRun(){
  tx('第 '+seg+'/'+SEGS+' 段',16,58,16,'#fff1c1','left');tx(String(score),W/2,58,28,'#fff1c1');
  g.fillStyle='#333';g.fillRect(16,80,W-32,6);g.fillStyle='#ffd54f';g.fillRect(16,80,(W-32)*Math.min(1,rt/SEG_TIME),6);
  if(streak>=2)tx('x'+streak,W-16,120,22,'#fff1c1','right');
- if(seg===1&&rt<4)tx('按住 ←→ / AD，或按住畫面，讓武器碰到敵人',W/2,520,13,'#fff','center');
- else{g.globalAlpha=.3;tx('◀　按住下方左右移動　▶',W/2,536,12,'#fff','center',true);g.globalAlpha=1}
+ if(seg===1&&rt<4)tx('{{t:pudding.msg.014}}',W/2,520,13,'#fff','center');
+ else{g.globalAlpha=.3;tx('{{t:pudding.msg.015}}',W/2,536,12,'#fff','center',true);g.globalAlpha=1}
  if(redT>0){g.fillStyle='rgba(255,0,0,.4)';g.fillRect(0,0,W,40)}
  if(sub==='clear'){g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,0,W,H);tx(banner,W/2,280,32,'#fff1c1')}
 }
@@ -296,7 +296,7 @@ function drawForge(){
  tx('第 '+seg+' 段　營帳',W/2,28,24,'#fff1c1');drawBar(52,12);
  const pv=computeStats(previewGrid());
  drawGrid(GX,GY,GC,grid,stats.cs,flashT>0?flashCells:null);
- tx('前',GX-18,GY+8,12,'#9e9e9e','center',true);tx('↑',GX-18,GY+24,14,'#9e9e9e','center',true);
+ tx('{{t:pudding.msg.016}}',GX-18,GY+8,12,'#9e9e9e','center',true);tx('↑',GX-18,GY+24,14,'#9e9e9e','center',true);
  if(sel>=0&&ghost){const cd=cards[sel];for(const[dx,dy]of cd.cells){const cx=ghost.x+dx,cy=ghost.y+dy;g.globalAlpha=.6;g.fillStyle=TYPES[cd.type].f;g.fillRect(GX+cx*GC,GY+cy*GC,GC,GC);g.globalAlpha=1;if(grid[cy][cx]){g.strokeStyle='#fff';g.lineWidth=3;g.strokeRect(GX+cx*GC+2,GY+cy*GC+2,GC-4,GC-4)}}}
  const has=sel>=0&&!!ghost,cmp=(a,b)=>b>a?'#69f0ae':'#ff5252';
  function segs(y,list,size){
@@ -306,8 +306,8 @@ function drawForge(){
  for(const t of['b','m','d']){l1.push({t:TYPES[t].n+' '+stats.E[t],c:TYPES[t].f});if(has&&pv.E[t]!==stats.E[t])l1.push({t:'('+pv.E[t]+')',c:cmp(stats.E[t],pv.E[t])});if(t!=='d')l1.push({t:'　',c:'#fff'})}
  segs(326,l1,14);
  const line=(y,items)=>{const l=[];items.forEach((it,i)=>{l.push({t:it[0]+' '+it[1](stats),c:'#fff'});if(has&&Math.abs(pv[it[2]]-stats[it[2]])>1e-9)l.push({t:'('+it[1](pv)+')',c:cmp(stats[it[2]],pv[it[2]])});if(i<items.length-1)l.push({t:'　',c:'#fff'})});segs(y,l,13)};
- line(345,[['刃每秒',v=>String(v.bladeDps),'bladeDps'],['矛突刺',v=>String(v.spear),'spear']]);
- line(363,[['減傷',v=>Math.round(v.guard*100)+'%','guard'],['寬',v=>v.width+'格','width'],['長',v=>v.length+'格','length']]);
+ line(345,[['{{t:pudding.msg.017}}',v=>String(v.bladeDps),'bladeDps'],['{{t:pudding.msg.018}}',v=>String(v.spear),'spear']]);
+ line(363,[['{{t:pudding.msg.019}}',v=>Math.round(v.guard*100)+'%','guard'],['{{t:pudding.msg.020}}',v=>v.width+'{{t:pudding.msg.021}}','width'],['{{t:pudding.msg.022}}',v=>v.length+'{{t:pudding.msg.021}}','length']]);
  for(let i=0;i<cards.length;i++){
   const cd=cards[i],cx=cardX(i);g.fillStyle='#3b3344';RR(cx,384,112,90,12);g.fill();
   if(sel===i){g.strokeStyle='#ffd54f';g.lineWidth=4;RR(cx,384,112,90,12);g.stroke()}
@@ -316,33 +316,33 @@ function drawForge(){
   tx(TYPES[cd.type].n,cx+56,454,14,'#fff1c1');tx(CARD_HINT[cd.type],cx+56,468,10,'#bdbdbd','center',true);
  }
  const can=fPhase==='edit'&&sel>=0&&!!ghost;
- g.fillStyle='#4a5a78';RR(20,490,110,50,12);g.fill();tx('旋轉',75,515,20,'#fff');
- g.fillStyle=can?'#ffb300':'#555';RR(145,490,110,50,12);g.fill();tx('鍛造！',200,515,20,can?'#3e2723':'#999','center',true);
- g.fillStyle='#666';RR(270,490,110,50,12);g.fill();tx('跳過',325,515,20,'#fff');
- if(forgeCount<=2)tx('選碎片→點格子→鍛造　白框＝連3格加成　盾兵怕矛',W/2,551,12,'#9e9e9e','center',true);
+ g.fillStyle='#4a5a78';RR(20,490,110,50,12);g.fill();tx('{{t:pudding.msg.023}}',75,515,20,'#fff');
+ g.fillStyle=can?'#ffb300':'#555';RR(145,490,110,50,12);g.fill();tx('{{t:pudding.msg.024}}',200,515,20,can?'#3e2723':'#999','center',true);
+ g.fillStyle='#666';RR(270,490,110,50,12);g.fill();tx('{{t:pudding.msg.025}}',325,515,20,'#fff');
+ if(forgeCount<=2)tx('{{t:pudding.msg.026}}',W/2,551,12,'#9e9e9e','center',true);
  if(fPhase==='banner'){g.fillStyle='rgba(0,0,0,.5)';g.fillRect(0,0,W,H);tx('第 '+seg+' 段　出發！',W/2,280,32,'#fff1c1')}
 }
 function drawOver(){
  drawRoad(0);drawHero(px,PY,why==='win'?0:Math.PI/2,false);
  g.fillStyle='rgba(27,27,47,.7)';g.fillRect(0,0,W,H);
  if(why==='win'){
-  tx('援軍橋到了！',W/2,90,34,'#ffd23f');tx('援軍接應，布丁平安。',W/2,130,18,'#fff1c1');
-  [['擊殺分數',killScore],['段落分數',segScore],['通關獎勵',winBonus],['安心值獎勵',calmBonus]].forEach((rw,i)=>{tx(rw[0],100,190+i*32,18,'#fff1c1','left');tx(String(rw[1]),300,190+i*32,18,'#fff1c1','right')});
-  tx('總分',100,330,24,'#ffd23f','left');tx(String(score),300,330,24,'#ffd23f','right');
+  tx('{{t:pudding.msg.027}}',W/2,90,34,'#ffd23f');tx('{{t:pudding.msg.028}}',W/2,130,18,'#fff1c1');
+  [['{{t:pudding.msg.029}}',killScore],['{{t:pudding.msg.030}}',segScore],['{{t:pudding.msg.031}}',winBonus],['{{t:pudding.msg.032}}',calmBonus]].forEach((rw,i)=>{tx(rw[0],100,190+i*32,18,'#fff1c1','left');tx(String(rw[1]),300,190+i*32,18,'#fff1c1','right')});
+  tx('{{t:pudding.msg.033}}',100,330,24,'#ffd23f','left');tx(String(score),300,330,24,'#ffd23f','right');
  }else{
-  tx('布丁大哭',W/2,110,38,'#ff5d8f');tx('追兵循聲追來……',W/2,155,18,'#fff1c1');
+  tx('{{t:pudding.msg.034}}',W/2,110,38,'#ff5d8f');tx('{{t:pudding.msg.035}}',W/2,155,18,'#fff1c1');
   tx('分數 '+score,W/2,230,30,'#fff1c1');tx('撐到第 '+seg+' 段',W/2,275,20,'#fff1c1');
  }
- tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'這一局沒有額外成就獎勵',W/2,why==='win'?372:318,22,earned>0?'#ffd23f':'#fff1c1');
- if(rec)tx('新紀錄！',W/2,why==='win'?410:352,20,'#ffd23f');
- tx('到操作區再突圍一次',W/2,470,20,'#fff1c1');
+ tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'{{t:pudding.msg.036}}',W/2,why==='win'?372:318,22,earned>0?'#ffd23f':'#fff1c1');
+ if(rec)tx('{{t:pudding.msg.037}}',W/2,why==='win'?410:352,20,'#ffd23f');
+ tx('{{t:pudding.msg.038}}',W/2,470,20,'#fff1c1');
 }
 function drawReady(){
  drawRoad(0);drawHero(200,PY,0,false);drawWeaponWorld(200);
  g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
- tx('布丁突圍',W/2,150,42,'#ffd23f');tx('背著小王子殺出重圍',W/2,200,20,'#fff1c1');
- tx('每段先拼武器碎片，再往前衝',W/2,250,19,'#fff1c1');tx('武器的形狀就是打擊範圍',W/2,280,19,'#fff1c1');tx('按住 ←→ / AD 或按住畫面移動',W/2,310,19,'#fff1c1');
- tx('到操作區開始',W/2,372,24,'#ffd23f');
+ tx('{{t:pudding.msg.039}}',W/2,150,42,'#ffd23f');tx('{{t:pudding.msg.040}}',W/2,200,20,'#fff1c1');
+ tx('{{t:pudding.msg.041}}',W/2,250,19,'#fff1c1');tx('{{t:pudding.msg.042}}',W/2,280,19,'#fff1c1');tx('{{t:pudding.msg.043}}',W/2,310,19,'#fff1c1');
+ tx('{{t:pudding.msg.044}}',W/2,372,24,'#ffd23f');
 }
 function draw(){
  if(st==='ready')drawReady();else if(st==='over')drawOver();else if(ph==='forge')drawForge();else drawRun();
@@ -353,14 +353,14 @@ function start(){
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
  analytics=AN.start('pudding',amount);puddingStake=amount;puddingBusy=true;save();renderAll();
- reset();earned=0;st='run';last=performance.now();enterForge();say('第 1 段營帳：選一塊碎片拼進武器格子，再出發。');ui();c.focus();
+ reset();earned=0;st='run';last=performance.now();enterForge();say('{{t:pudding.msg.045}}');ui();c.focus();
 }
 const shown=()=>!$('view-pudding').hidden&&!document.hidden;
 const ptX=e=>{const rc=c.getBoundingClientRect();return(e.clientX-rc.left)*W/(rc.width||W)},ptY=e=>{const rc=c.getBoundingClientRect();return(e.clientY-rc.top)*H/(rc.height||H)};
 $('pd-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
- if(st!=='run'){say(st==='over'?'這一局已結算。按「再突圍一次」開始新的一局。':'先按「開始突圍」。');return}
+ if(st!=='run'){say(st==='over'?'{{t:pudding.msg.046}}':'{{t:pudding.msg.047}}');return}
  if(!shown())return;e.preventDefault();c.focus();
  if(ph==='forge')forgeTap(ptX(e),ptY(e));
  else if(sub==='play'){ptr=ptX(e);try{c.setPointerCapture(e.pointerId)}catch(err){}}

@@ -2,12 +2,12 @@
 (function(){
  var KEY='deep-sea-wardrobe-v1',ready=false,queue=Promise.resolve(),data=null;
  var items=[
-  {id:'explorer',slot:'hat',name:'探險家軟帽',price:80,icon:'fa-compass',color:'#d6b375'},
-  {id:'sailor',slot:'hat',name:'水手帽',price:120,icon:'fa-anchor',color:'#e6eee7'},
-  {id:'tide',slot:'jacket',name:'潮汐外套',price:160,icon:'fa-water',color:'#5faeb1'},
-  {id:'coral',slot:'jacket',name:'珊瑚外套',price:180,icon:'fa-shirt',color:'#e99c8c'},
-  {id:'robot',slot:'friend',name:'口袋機器人',price:240,icon:'fa-robot',color:'#b2dbd5'},
-  {id:'catfriend',slot:'friend',name:'跟隨小貓',price:260,icon:'fa-cat',color:'#e5b980'}
+  {id:'explorer',slot:'hat',name:'{{t:wardrobe.msg.001}}',price:80,icon:'fa-compass',color:'#d6b375'},
+  {id:'sailor',slot:'hat',name:'{{t:wardrobe.msg.002}}',price:120,icon:'fa-anchor',color:'#e6eee7'},
+  {id:'tide',slot:'jacket',name:'{{t:wardrobe.msg.003}}',price:160,icon:'fa-water',color:'#5faeb1'},
+  {id:'coral',slot:'jacket',name:'{{t:wardrobe.msg.004}}',price:180,icon:'fa-shirt',color:'#e99c8c'},
+  {id:'robot',slot:'friend',name:'{{t:wardrobe.msg.005}}',price:240,icon:'fa-robot',color:'#b2dbd5'},
+  {id:'catfriend',slot:'friend',name:'{{t:wardrobe.msg.006}}',price:260,icon:'fa-cat',color:'#e5b980'}
  ];
  function day(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
  function fresh(){return {version:1,owned:[],equipped:{hat:null,jacket:null,friend:null},day:day(),playMs:0,playPaid:0,completed:[]};}
@@ -22,7 +22,7 @@
  function message(t){$('wardrobe-message').textContent=t;}
  function locked(fn){
   queue=queue.catch(function(){}).then(function(){
-   var run=function(){try{data=read();return fn(data);}catch(e){message('無法儲存或讀取收藏，未完成兌換；請保留此頁並確認儲存權限。');}};
+   var run=function(){try{data=read();return fn(data);}catch(e){message('{{t:wardrobe.msg.007}}');}};
    return window.navigator&&navigator.locks?navigator.locks.request('deep-sea-wardrobe-wallet',run):run();
   });return queue;
  }
@@ -32,7 +32,7 @@
   if(n<=0)return;bank();
   // Claim first: storage failure cannot grant a reward repeatedly. Two storage keys are not atomic.
   write(d);S.balance+=n;save();renderAll();
-  if(AN.reward)AN.reward(kind,n,game);message('獲得平台點數 +'+n);paint();
+  if(AN.reward)AN.reward(kind,n,game);message('{{t:wardrobe.msg.008}}'+n);paint();
  }
  function avatar(d){
   var hat=items.find(function(x){return x.id===d.equipped.hat;}),coat=items.find(function(x){return x.id===d.equipped.jacket;}),friend=items.find(function(x){return x.id===d.equipped.friend;});
@@ -46,14 +46,14 @@
   var html=avatar(data);$('wardrobe-avatar').innerHTML=html;$('wardrobe-mini').innerHTML=html;
   $('wardrobe-daily').textContent='今日遊玩獎勵 '+data.playPaid+' / 60 點 · 完成獎勵 '+data.completed.length+' 款';
   $('wardrobe-summary').textContent='已收藏 '+data.owned.length+' / '+items.length+' 件';
-  items.forEach(function(item){var b=$('wardrobe-buy-'+item.id),owns=data.owned.includes(item.id),equipped=data.equipped[item.slot]===item.id;b.disabled=equipped;b.textContent=equipped?'已裝備':owns?'穿上':'兌換 · '+item.price+' 點';});
+  items.forEach(function(item){var b=$('wardrobe-buy-'+item.id),owns=data.owned.includes(item.id),equipped=data.equipped[item.slot]===item.id;b.disabled=equipped;b.textContent=equipped?'{{t:wardrobe.msg.009}}':owns?'{{t:wardrobe.msg.010}}':'兌換 · '+item.price+' 點';});
  }
  function purchase(id){return locked(function(d){
   var item=items.find(function(x){return x.id===id;});if(!item)return;
-  if(d.owned.includes(id)){d.equipped[item.slot]=id;write(d);message('已換上新造型');paint();return;}
-  bank();if(S.balance<item.price){message('點數不足，玩遊戲累積點數後再來。');return;}
+  if(d.owned.includes(id)){d.equipped[item.slot]=id;write(d);message('{{t:wardrobe.msg.011}}');paint();return;}
+  bank();if(S.balance<item.price){message('{{t:wardrobe.msg.012}}');return;}
   d.owned.push(id);d.equipped[item.slot]=id;write(d);S.balance-=item.price;save();renderAll();
-  if(AN.cosmetic)AN.cosmetic(id,item.price);message('兌換成功，已永久收藏');paint();
+  if(AN.cosmetic)AN.cosmetic(id,item.price);message('{{t:wardrobe.msg.013}}');paint();
  });}
  window.deepSeaProgress={
   active:function(game,ms){if(!ready||!game||!Number.isFinite(ms)||ms<=0)return;
@@ -64,13 +64,13 @@
   }
  };
  window.deepSeaWardrobe={
-  init:function(){ready=true;try{data=read();paint();}catch(e){data=fresh();paint();message('收藏讀取失敗，原資料已保留。');}},
+  init:function(){ready=true;try{data=read();paint();}catch(e){data=fresh();paint();message('{{t:wardrobe.msg.014}}');}},
   refresh:function(){if(ready)try{data=read();paint();}catch(e){}},
   open:function(){location.hash='wardrobe';},
   // read-only: the next unowned item (cheapest first), for the header points bar
   nextGoal:function(){var owned=[];try{owned=read().owned;}catch(e){}var left=items.filter(function(x){return owned.indexOf(x.id)<0;}).sort(function(a,b){return a.price-b.price;});return left[0]?{name:left[0].name,price:left[0].price}:null;}
  };
- items.forEach(function(item){var card=document.createElement('article');card.className='wardrobe-item';card.innerHTML='<i class="fa-solid '+item.icon+' wardrobe-icon" aria-hidden="true"></i><h4>'+item.name+'</h4><p>'+({hat:'帽子',jacket:'服裝',friend:'跟隨配件'}[item.slot])+'</p><button type="button" id="wardrobe-buy-'+item.id+'"></button>';$('wardrobe-items').appendChild(card);$('wardrobe-buy-'+item.id).addEventListener('click',function(){purchase(item.id);});});
+ items.forEach(function(item){var card=document.createElement('article');card.className='wardrobe-item';card.innerHTML='<i class="fa-solid '+item.icon+' wardrobe-icon" aria-hidden="true"></i><h4>'+item.name+'</h4><p>'+({hat:'{{t:wardrobe.msg.015}}',jacket:'{{t:wardrobe.msg.016}}',friend:'{{t:wardrobe.msg.017}}'}[item.slot])+'</p><button type="button" id="wardrobe-buy-'+item.id+'"></button>';$('wardrobe-items').appendChild(card);$('wardrobe-buy-'+item.id).addEventListener('click',function(){purchase(item.id);});});
  document.querySelectorAll('[data-wardrobe-default]').forEach(function(b){b.addEventListener('click',function(){locked(function(d){d.equipped[b.dataset.wardrobeDefault]=null;write(d);paint();});});});
  $('open-wardrobe').addEventListener('click',function(){window.deepSeaWardrobe.open();});
  window.addEventListener('storage',function(e){if(e.key===KEY||e.key===STORE)window.deepSeaWardrobe.refresh();});

@@ -4,7 +4,7 @@
 
 ## 概覽
 
-- 網址：`#keno`　分類：每日免費補給　狀態：顯示中
+- 網址：`#keno`　分類：每日補給　狀態：顯示中
 - 大廳卡片：「挖金礦拿點數，再去挑戰喜歡的小遊戲。」｜不限次數 · 台灣時間午夜重置
 - 追蹤名稱（GA4 `game_name`）：挖金礦，`game_id` 為 `keno`
 - 檔案：`games/keno/card.html`、`games/keno/game.js`、`games/keno/icon.svg`、`games/keno/style.css`、`games/keno/view.html`；`game.js` 共 76 行、7.4 KB

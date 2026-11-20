@@ -1,63 +1,63 @@
 <section class="view" id="view-market-desk">
   <div class="market-shell">
     <header class="market-header">
-      <h2>收盤之前</h2>
+      <h2>{{t:market-desk.view.01}}</h2>
       <div class="market-header-actions">
         <span id="mk-day" class="market-day"></span>
-        <button type="button" class="market-sound" id="mk-sound" aria-pressed="false">音效</button>
+        <button type="button" class="market-sound" id="mk-sound" aria-pressed="false">{{t:market-desk.view.02}}</button>
       </div>
     </header>
     <div class="market-status" id="mk-status">
       <section class="market-character" id="mk-character" data-life="starter" aria-labelledby="mk-life-title">
         <img id="mk-portrait" src="games/market-desk/art/starter.webp" alt="" width="480" height="740" decoding="async" loading="lazy">
         <div class="market-character-copy" aria-live="polite">
-          <p class="market-character-name">林阿澤</p>
-          <h3 id="mk-life-title">辭職第一天</h3>
-          <p id="mk-life-story">租來的小辦公桌，一杯咖啡，還有二十天證明自己。</p>
+          <p class="market-character-name">{{t:market-desk.view.03}}</p>
+          <h3 id="mk-life-title">{{t:market-desk.view.04}}</h3>
+          <p id="mk-life-story">{{t:market-desk.view.05}}</p>
         </div>
       </section>
       <section class="market-exchange" id="mk-exchange" aria-labelledby="mk-index-label">
         <div class="market-quote">
           <div class="market-index">
-            <p id="mk-index-label">阿澤信心指數</p>
+            <p id="mk-index-label">{{t:market-desk.view.06}}</p>
             <strong id="mk-index">1,000</strong>
             <span id="mk-change" class="market-change">—</span>
           </div>
           <div class="market-benchmark">
-            <span>虛構大盤</span>
+            <span>{{t:market-desk.view.07}}</span>
             <strong id="mk-market-index">1,000</strong>
             <span id="mk-market-change">—</span>
           </div>
           <div class="market-risk" id="mk-risk">
-            <label for="mk-risk-meter">專注力</label>
+            <label for="mk-risk-meter">{{t:market-desk.view.08}}</label>
             <strong id="mk-focus">100</strong>
             <meter id="mk-risk-meter" min="0" max="100" low="36" optimum="100" value="100"></meter>
-            <span id="mk-risk-warning" hidden>再錯一次就出局</span>
+            <span id="mk-risk-warning" hidden>{{t:market-desk.view.09}}</span>
           </div>
         </div>
         <div class="market-plot" aria-hidden="true">
           <div class="market-chart" id="mk-chart"></div>
           <div class="market-axis" id="mk-axis"></div>
         </div>
-        <div class="market-chart-footer"><span>開盤</span><span>收盤</span></div>
+        <div class="market-chart-footer"><span>{{t:market-desk.view.10}}</span><span>{{t:market-desk.view.11}}</span></div>
       </section>
     </div>
     <div class="market-layout" id="mk-layout">
       <div class="market-paper">
         <div id="mk-intro">
-          <h3>辭職後的第一張市場週報</h3>
-          <p>你拿著年終獎金離開辦公室，給自己 20 個交易日做一份台股查證報告。從早餐店明牌到量子水餃，哪些資訊值得寫進報告？</p>
-          <button type="button" id="mk-go">開始第一天</button>
+          <h3>{{t:market-desk.view.12}}</h3>
+          <p>{{t:market-desk.view.13}}</p>
+          <button type="button" id="mk-go">{{t:market-desk.view.14}}</button>
         </div>
         <div id="mk-case" hidden>
           <h3 id="mk-headline" tabindex="-1"></h3>
           <p id="mk-clue"></p>
           <div id="mk-actions" class="market-actions">
-            <button type="button" data-market-action="0">刊登已核實資訊</button>
-            <button type="button" data-market-action="1">暫緩，等待佐證</button>
-            <button type="button" data-market-action="2">示警，提醒讀者</button>
+            <button type="button" data-market-action="0">{{t:market-desk.view.15}}</button>
+            <button type="button" data-market-action="1">{{t:market-desk.view.16}}</button>
+            <button type="button" data-market-action="2">{{t:market-desk.view.17}}</button>
           </div>
-          <div id="mk-settling" class="market-settling" hidden role="status" tabindex="-1">收盤撮合中</div>
+          <div id="mk-settling" class="market-settling" hidden role="status" tabindex="-1">{{t:market-desk.view.18}}</div>
           <div id="mk-review" hidden>
             <div class="market-reveal" id="mk-reveal" role="status">
               <p class="market-result-move" id="mk-result-move"></p>
@@ -71,16 +71,16 @@
         </div>
       </div>
       <aside class="market-brief">
-        <dl><div><dt>查證分數</dt><dd id="mk-score">0</dd></div><div><dt>最佳紀錄</dt><dd id="mk-best">0</dd></div></dl>
-        <p class="market-tape-label" id="mk-tape-label">每日查證紀錄</p>
+        <dl><div><dt>{{t:market-desk.view.19}}</dt><dd id="mk-score">0</dd></div><div><dt>{{t:market-desk.view.20}}</dt><dd id="mk-best">0</dd></div></dl>
+        <p class="market-tape-label" id="mk-tape-label">{{t:market-desk.view.21}}</p>
         <div id="mk-tape" class="market-tape" role="img"></div>
-        <details><summary>查證規則</summary><p>有可核對的資訊就刊登；缺乏佐證就暫緩；遇到冒名或索取帳密就示警。</p><p>正確加 5 分並回復 4 專注力，最高 100；錯誤扣 18 專注力。專注力歸零或做完 20 天即結束。</p></details>
+        <details><summary>{{t:market-desk.view.22}}</summary><p>{{t:market-desk.view.23}}</p><p>{{t:market-desk.view.24}}</p></details>
       </aside>
     </div>
     <section class="market-finale" id="mk-finish" hidden aria-labelledby="mk-ending">
       <div class="market-finale-bar">
         <p id="mk-ending-status"></p>
-        <button type="button" id="mk-replay">下一輪</button>
+        <button type="button" id="mk-replay">{{t:market-desk.view.25}}</button>
       </div>
       <div class="market-finale-scene">
         <div class="market-finale-copy">
@@ -91,13 +91,13 @@
         <img id="mk-ending-art" alt="" decoding="async">
       </div>
       <div class="market-finale-summary">
-        <p class="market-final-revenue">最終營收 <strong id="mk-final-revenue"></strong></p>
+        <p class="market-final-revenue">{{t:market-desk.view.26}} <strong id="mk-final-revenue"></strong></p>
         <p id="mk-result"></p>
         <p id="mk-final-market"></p>
         <p id="mk-rank-status" role="status"></p>
-        <button type="button" id="mk-rank-retry" hidden>重送成績</button>
+        <button type="button" id="mk-rank-retry" hidden>{{t:market-desk.view.27}}</button>
         <details id="mk-rank-board">
-          <summary>訪客排行榜</summary>
+          <summary>{{t:market-desk.view.28}}</summary>
           <p id="mk-rank-board-status" role="status"></p>
           <ol id="mk-rank-list"></ol>
         </details>

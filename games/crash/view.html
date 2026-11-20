@@ -1,6 +1,6 @@
   <section class="view" id="view-crash" hidden>
-  <div class="history" aria-label="最近回合的壓潰倍率">
-    <span class="label">近期壓潰</span>
+  <div class="history" aria-label="{{t:crash.view.19}}">
+    <span class="label">{{t:crash.view.01}}</span>
     <div class="pills" id="pills"></div>
   </div>
 
@@ -9,47 +9,47 @@
       <canvas id="cv" aria-hidden="true"></canvas>
       <div class="readout">
         <div class="mult" id="mult">1.00<small>×</small></div>
-        <div class="sub-line" id="subline">準備下潛</div>
+        <div class="sub-line" id="subline">{{t:crash.view.02}}</div>
       </div>
     </div>
 
     <div class="side">
-      <section class="panel" aria-label="下注">
+      <section class="panel" aria-label="{{t:crash.view.06}}">
         <div class="field">
-          <label for="bet-amount">下注點數</label>
+          <label for="bet-amount">{{t:crash.view.03}}</label>
           <div class="input-row">
             <input id="bet-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
             <button class="chip" type="button" data-chip="half">½</button>
             <button class="chip" type="button" data-chip="double">2×</button>
-            <button class="chip" type="button" data-chip="max">全押</button>
+            <button class="chip" type="button" data-chip="max">{{t:crash.view.04}}</button>
           </div>
         </div>
         <div class="field">
-          <label for="auto-out">自動上浮倍率（選填）</label>
+          <label for="auto-out">{{t:crash.view.05}}</label>
           <div class="input-row">
-            <input id="auto-out" type="number" inputmode="decimal" min="1.01" step="0.1" placeholder="例如 2.00">
+            <input id="auto-out" type="number" inputmode="decimal" min="1.01" step="0.1" placeholder="{{t:crash.view.20}}">
             <button class="chip" type="button" data-auto="1.5">1.5×</button>
             <button class="chip" type="button" data-auto="2">2×</button>
             <button class="chip" type="button" data-auto="5">5×</button>
           </div>
         </div>
-        <button class="go" id="go" type="button" data-mode="bet">下注</button>
-        <p class="msg" id="msg" aria-live="polite">潛得越深倍率越高，在艇身壓潰前按下上浮。</p>
-        <p class="hint">也可以按 <kbd>空白鍵</kbd> 下注與上浮。</p>
+        <button class="go" id="go" type="button" data-mode="bet">{{t:crash.view.06}}</button>
+        <p class="msg" id="msg" aria-live="polite">{{t:crash.view.07}}</p>
+        <p class="hint">{{t:crash.view.08}} <kbd>{{t:crash.view.09}}</kbd> {{t:crash.view.10}}</p>
       </section>
 
-      <section class="panel crew" aria-label="本回合艇員">
-        <div class="crew-head"><h2>本回合艇員</h2><span>其他艇員為電腦模擬</span></div>
+      <section class="panel crew" aria-label="{{t:crash.view.11}}">
+        <div class="crew-head"><h2>{{t:crash.view.11}}</h2><span>{{t:crash.view.12}}</span></div>
         <ul id="crew"></ul>
       </section>
     </div>
   </div>
 
   <details class="rules">
-    <summary>玩法與機率</summary>
-    <p>每回合開始前有 6 秒下注時間。潛艇下潛後倍率從 1.00× 開始上升（每下潛 1,000 公尺加 1×），你在壓潰前按「上浮」就拿回「下注 × 當下倍率」；來不及上浮就失去這一注。</p>
-    <p>壓潰點在下潛前就已決定：<code>壓潰倍率 = max(1, 0.97 ÷ (1 − r))</code>，r 是 0 到 1 的均勻亂數。也就是有 3% 的回合會在 1.00× 立刻壓潰，長期期望回報約 97%，不論你選哪個上浮倍率都一樣。</p>
-    <p>這是純前端的示範，點數沒有任何現金價值，餘額只存在你的瀏覽器裡。</p>
+    <summary>{{t:crash.view.13}}</summary>
+    <p>{{t:crash.view.14}}</p>
+    <p>{{t:crash.view.15}}<code>{{t:crash.view.16}}</code>{{t:crash.view.17}}</p>
+    <p>{{t:crash.view.18}}</p>
   </details>
   </section>
 

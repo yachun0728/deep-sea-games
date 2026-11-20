@@ -1,11 +1,12 @@
 // Optional behavior checks: node tools/test_blaster.mjs (Node.js, no packages).
 import fs from 'node:fs';
+import {readSource} from './expand_ids.mjs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import replay from '../shared/timed-replay.cjs';
 import blasterEngine from '../shared/blaster-rules.cjs';
 const root=new URL('../',import.meta.url);
-const game=fs.readFileSync(new URL('games/blaster/game.js',root),'utf8');
+const game=readSource('games/blaster/game.js',root);
 const source=fs.readFileSync(new URL('shared/blaster-rules.cjs',root),'utf8')+'\n'+game;
 const flatFee=/var stake=ENTRY_FEE/.test(source);
 const fee=flatFee?Number(fs.readFileSync(new URL('js/config.js',root),'utf8').match(/ENTRY_FEE\s*=\s*(\d+)/)[1]):20;

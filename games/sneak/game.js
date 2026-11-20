@@ -8,8 +8,8 @@ function bonusAt(n){for(const m of MILESTONES)if(m[0]===n)return m[1];return n>E
 function nextMilestone(n){for(const m of MILESTONES)if(m[0]>n)return m;return [ENDLESS_FROM+(Math.floor((n-ENDLESS_FROM)/ENDLESS_STEP)+1)*ENDLESS_STEP,ENDLESS_BONUS]}
 const lvCap=()=>sneakRules.levelCap(sneaking);
 let best=0;try{const n=Number(localStorage.getItem('sneak'));if(Number.isFinite(n))best=Math.max(0,Math.floor(n))}catch(e){}
-const texts={lv:n=>'第 '+n+' 關',bs:n=>'最佳 '+n+' 關',title:'偷偷下班',tap:'到操作區開始',caught:'被抓住了！',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'新紀錄！',again:'到操作區重新開始',ok:'溜走了！'};const T=k=>texts[k];
-const quotes=['「你這是要去哪裡？」','「報告寫完了嗎就想走？」','「坐下，還有工作呢。」'];
+const texts={lv:n=>'第 '+n+' 關',bs:n=>'最佳 '+n+' 關',title:'{{t:sneak.msg.001}}',tap:'{{t:sneak.msg.002}}',caught:'{{t:sneak.msg.003}}',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'{{t:sneak.msg.004}}',again:'{{t:sneak.msg.005}}',ok:'{{t:sneak.msg.006}}'};const T=k=>texts[k];
+const quotes=['{{t:sneak.msg.007}}','{{t:sneak.msg.008}}','{{t:sneak.msg.009}}'];
 let sneakAnalytics=null;
 let prevBest=0,earned=0,pops=[],st='ready',sneaking=sneakRules.create(),flash=0,shake=0,last=0,rec=false,qi=0;
 let mouseHold=false,keyHold=false,sneakRandom=Math.random;
@@ -24,17 +24,17 @@ function ui(){
  const nx=nextMilestone(sneaking.score);
  $('sk-stage').textContent=sneaking.lv+' 關';$('sk-progress').textContent=Math.floor(sneaking.pr)+'%';$('sk-best').textContent=best+' 關';$('sk-next').textContent='完成 '+nx[0]+' 關 · +'+nx[1];
  $('sk-amount').disabled=sneakBusy;
- $('sk-go').disabled=st==='run'||sneakRank.busy();$('sk-go').textContent=st==='run'?'潛行中 · 按住前進':'開始下班';$('sk-hold').disabled=st!=='run';
- var signal=st!=='run'?(st==='dead'?'本局被抓住了':'等待開始'):sneaking.ph==='look'?'老闆回頭了！立刻放開':sneaking.ph==='warn'?'老闆有動靜，小心回頭':'老闆忙著工作';
+ $('sk-go').disabled=st==='run'||sneakRank.busy();$('sk-go').textContent=st==='run'?'{{t:sneak.msg.010}}':'{{t:sneak.msg.011}}';$('sk-hold').disabled=st!=='run';
+ var signal=st!=='run'?(st==='dead'?'{{t:sneak.msg.012}}':'{{t:sneak.msg.013}}'):sneaking.ph==='look'?'{{t:sneak.msg.014}}':sneaking.ph==='warn'?'{{t:sneak.msg.015}}':'{{t:sneak.msg.016}}';
  if($('sk-signal').textContent!==signal)$('sk-signal').textContent=signal;$('sk-signal').dataset.state=sneaking.ph;
- $('sk-difficulty').textContent='需移動約 '+(6+(lvCap()-1)*2)+' 秒 · '+(sneaking.lv>=4?'可能直接回頭':'回頭前會先警示');
+ $('sk-difficulty').textContent='需移動約 '+(6+(lvCap()-1)*2)+' 秒 · '+(sneaking.lv>=4?'{{t:sneak.msg.017}}':'{{t:sneak.msg.018}}');
 }
 function die(){
  if(st!=='run')return;
  AN.end(sneakAnalytics,earned,earned>0?'complete':'loss',{stage:sneaking.lv,progress_percent:Math.floor(sneaking.pr)});
  st='dead';sneakBusy=false;release();rec=sneaking.score>0&&sneaking.score>=best&&sneaking.score>prevBest;
  shake=reduceMotion?0:.4;qi=Math.floor(Math.random()*quotes.length);
- saySneak('被老闆發現！共通過 '+sneaking.score+' 關，'+(earned>0?'本局入帳 '+fmt(earned)+' 點。':'這一局沒有獎勵。'),earned>0?'win':'lose');
+ saySneak('被老闆發現！共通過 '+sneaking.score+' 關，'+(earned>0?'本局入帳 '+fmt(earned)+' 點。':'{{t:sneak.msg.019}}'),earned>0?'win':'lose');
  sneakRank.finish(sneaking.score);
  ui();
 }
@@ -67,7 +67,7 @@ function start(){
   sneakAnalytics=AN.start('sneak',amount);sneakStake=amount;sneakBusy=true;save();renderAll();
   rec=false;earned=0;pops=[];prevBest=best;flash=0;shake=0;release();
   AN.resume(sneakAnalytics,{stage:sneaking.lv});
-  saySneak('按住畫面或前進按鈕移動，放開就假裝工作。沒有終點，被老闆抓到才結束。');
+  saySneak('{{t:sneak.msg.020}}');
   st='run';last=performance.now();ui();c.focus();
  });
 }
@@ -98,7 +98,7 @@ g.textAlign='right';g.fillText(T('bs')(best),W-16,32);
 g.fillStyle='rgba(255,255,255,.2)';g.fillRect(16,44,W-32,6);g.fillStyle='#f2c14e';g.fillRect(16,44,(W-32)*Math.min(1,sneaking.pr/100),6);
 if(flash>0&&st==='run'){g.textAlign='center';g.fillStyle='#fff';g.font='600 28px system-ui,sans-serif';g.fillText(T('ok'),W/2,120)}
 pops.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/2.2);const py=210-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#f2c14e';g.font='700 38px system-ui,sans-serif';g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#fff';g.font='600 17px system-ui,sans-serif';g.fillText('完成 '+p.n+' 關里程碑',W/2,py+28);g.globalAlpha=1});
-if(earned>0&&st==='run'){g.textAlign='right';g.fillStyle='#f2c14e';g.font='600 16px system-ui,sans-serif';g.fillText('本局 +'+earned+' 點',W-16,68)}
+if(earned>0&&st==='run'){g.textAlign='right';g.fillStyle='#f2c14e';g.font='600 16px system-ui,sans-serif';g.fillText('{{t:sneak.msg.021}}'+earned+' 點',W-16,68)}
 if(st!=='run'){
 g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,0,W,H);g.textAlign='center';g.fillStyle='#fff';
 if(st==='ready'){g.font='600 32px system-ui,sans-serif';g.fillText(T('title'),W/2,270);g.font='18px system-ui,sans-serif';g.fillText(T('tap'),W/2,310)}
