@@ -7,7 +7,7 @@
 - 網址：`#runner`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「點左、點右換道，避開一路上的障礙。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：閃避跑酷，`game_id` 為 `runner`
-- 檔案：`games/runner/card.html`、`games/runner/game.js`、`games/runner/icon.svg`、`games/runner/view.html`；`game.js` 共 185 行、10.6 KB
+- 檔案：`games/runner/card.html`、`games/runner/game.js`、`games/runner/icon.svg`、`games/runner/style.css`、`games/runner/view.html`；`game.js` 共 282 行、13.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「13. Dodge Run（runner）」（下方「規則摘要」已複製）
 
@@ -18,12 +18,11 @@
 ## 狀態與常數
 
 - 狀態物件／進行中旗標：（game.js 內沒有偵測到；可能定義在共用檔，見 ARCHITECTURE.md）
-- L3 常數：`HOR`
-- L6 常數：`MILESTONES`、`ENDLESS_FROM`、`ENDLESS_STEP`、`ENDLESS_BONUS`
+- L7 常數：`MILESTONES`、`ENDLESS_FROM`、`ENDLESS_STEP`、`ENDLESS_BONUS`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`bonusAt` L7、`nextMilestone` L8、`prevMilestone` L9、`T` L11、`runStatus` L16、`perspective` L21、`note` L22、`remember` L23、`runnerUI` L24、`award` L30、`beginRun` L36、`start` L43、`sendRun` L61、`die` L79、`update` L91、`draw` L100、`X` L102、`quad` L103、`changeLane` L144、`L` L154、`loop` L161
+`bonusAt` L8、`nextMilestone` L9、`prevMilestone` L10、`T` L12、`runStatus` L17、`perspective` L22、`note` L23、`remember` L24、`runnerUI` L25、`award` L31、`beginRun` L37、`start` L44、`sendRun` L62、`die` L80、`update` L92、`loadArt` L110、`drawSprite` L117、`drawRunner` L125、`draw` L138、`X` L152、`Y` L153、`changeLane` L241、`L` L251、`loop` L258
 
 ## 錢包與結算接點
 
@@ -31,19 +30,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L31 `award`：`S.balance+=b;`
+- L32 `award`：`S.balance+=b;`
 
 **餘額檢查**
-- L45 `start`：`if(S.balance<ENTRY_FEE){note(LOW_MSG,'lose');`
+- L46 `start`：`if(S.balance<ENTRY_FEE){note(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 2 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L32 `award`：`AN.progress(runnerAnalytics,{step:m,distance:m,bonus_points:b});`
-- L39 `beginRun`：`runnerAnalytics=AN.start('runner',ENTRY_FEE);`
-- L81 `die`：`AN.end(runnerAnalytics,earned,earned>0?'complete':'loss',{distance:Math.floor(run.dist)});`
+- L33 `award`：`AN.progress(runnerAnalytics,{step:m,distance:m,bonus_points:b});`
+- L40 `beginRun`：`runnerAnalytics=AN.start('runner',ENTRY_FEE);`
+- L82 `die`：`AN.end(runnerAnalytics,earned,earned>0?'complete':'loss',{distance:Math.floor(run.dist)});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
