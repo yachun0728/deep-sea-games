@@ -7,7 +7,7 @@
 - 網址：`#outpost`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「扳動海流閘門，將敵群導入防守火網。」｜不限次數 · 分路塔防
 - 追蹤名稱（GA4 `game_name`）：深海前哨，`game_id` 為 `outpost`
-- 檔案：`games/outpost/card.html`、`games/outpost/game.js`、`games/outpost/icon.svg`、`games/outpost/style.css`、`games/outpost/view.html`；`game.js` 共 320 行、14.4 KB
+- 檔案：`games/outpost/card.html`、`games/outpost/cover.webp`、`games/outpost/game.js`、`games/outpost/icon.svg`、`games/outpost/style.css`、`games/outpost/view.html`；`game.js` 共 320 行、14.4 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「51. 深海前哨 Deep Sea Outpost（outpost）」（下方「規則摘要」已複製）
 
