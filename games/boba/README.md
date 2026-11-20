@@ -7,13 +7,13 @@
 - 網址：`#boba`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「抓準力道插吸管，原版粉紅珍奶小遊戲。」｜立即開玩 · 不限次數
 - 追蹤名稱（GA4 `game_name`）：插珍奶，`game_id` 為 `boba`
-- 檔案：`games/boba/card.html`、`games/boba/cover.webp`、`games/boba/game.js`、`games/boba/icon.svg`、`games/boba/original.html`、`games/boba/view.html`；`game.js` 共 28 行、2.1 KB
+- 檔案：`games/boba/card.html`、`games/boba/cover.webp`、`games/boba/game.js`、`games/boba/icon.svg`、`games/boba/original.html`、`games/boba/view.html`；`game.js` 共 41 行、2.7 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「18. 珍奶插吸管（boba）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-boba`、`boba-finish`、`boba-msg`、`boba-frame`
+`view-boba`、`boba-finish`、`boba-msg`、`boba-rank-status`、`boba-rank-retry`、`boba-frame`
 
 ## 狀態與常數
 
@@ -22,7 +22,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`bobaUI` L3、`bobaValid` L4、`bobaRoute` L21
+`bobaUI` L4、`bobaValid` L5、`bobaRoute` L34
 
 ## 錢包與結算接點
 
@@ -33,18 +33,18 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **餘額檢查**
-- L8 `bobaValid`：`if(S.balance<BOBA.fee){bobaUI(LOW_MSG);`
+- L21 `bobaValid`：`if(S.balance<BOBA.fee){bobaUI(LOW_MSG);`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L9 `bobaValid`：`BOBA.analytics=AN.start('boba',BOBA.fee);`
-- L14 `bobaValid`：`AN.end(BOBA.analytics,0,'complete',{score:cups});`
-- L16 `bobaValid`：`if(bobaValid(source)&&BOBA.active)AN.progress(BOBA.analytics,{step:Math.max(0,Math.floor(Number(cups)||0))});`
-- L17 `bobaValid`：`if(bobaValid(source)&&BOBA.active)AN.progress(BOBA.analytics,{phase:'revive'},true);`
-- L18 `bobaValid`：`if(bobaValid(source)&&BOBA.active)AN.resume(BOBA.analytics);`
+- L22 `bobaValid`：`BOBA.analytics=AN.start('boba',BOBA.fee);`
+- L27 `bobaValid`：`AN.end(BOBA.analytics,0,'complete',{score:cups});`
+- L29 `bobaValid`：`if(bobaValid(source)&&BOBA.active)AN.progress(BOBA.analytics,{step:Math.max(0,Math.floor(Number(cups)||0))});`
+- L30 `bobaValid`：`if(bobaValid(source)&&BOBA.active)AN.progress(BOBA.analytics,{phase:'revive'},true);`
+- L31 `bobaValid`：`if(bobaValid(source)&&BOBA.active)AN.resume(BOBA.analytics);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -63,6 +63,8 @@
 定位：`games/boba/original.html`、`games/boba/game.js` 的 `BOBA`、`deepSeaBoba`；boba-source 是組合後的資料容器。保留原始粉色畫面；按住蓄力並放開，在甜蜜區插入吸管。開始／重試固定扣10，開啟畫面或暫停恢復不扣費；沒有點數返還。初始3根吸管，上限5；失誤彎曲／爆杯消耗一根，連續3次 perfect補一根（不超上限）。厚杯需兩次命中，另有抖動與移動杯等變化。
 
 難度D在杯數N<=5時為N，之後為5+ceil((N-5)/5)；甜蜜區寬 max(.08,.30-(D-1)×.015)，週期 max(.45,1.2-(D-1)×.04)。無吸管時每局有一次模擬5秒廣告復活補一根；購買畫面也是示意，未串真實廣告或付款。杯數／本機事件與最佳紀錄不是共用點數。
+
+**訪客排行榜（杯數）**：排行指標是本局插中的杯數，高者在前。回合邏輯（杯子配置、蓄力條、判定、吸管、續命廣告）集中在 `shared/boba-rules.cjs`，以 10 毫秒固定步進運算；父頁 `deepSeaBoba` 提供 `rules`、`prepare`、`advance`、`record` 讓子頁沿用同一份規則，並由 `timedLeaderboard('boba','boba',…)` 向 Worker 申請種子、記錄輸入。操作碼：0 按住、1 放開、2 取消蓄力（切走分頁）、3 看廣告續命、4 結束本局；結束必須由輸入 4 結尾，Worker 用種子重播並確認步數不超過實際經過時間。杯子位置與手抖偏移改由種子決定（原本是 Math.random），畫面與難度數值不變；珍珠外觀與污漬仍是隨機。沒有連上後端時照常遊玩，只是不計排行。
 
 ## 修改檢查清單
 
