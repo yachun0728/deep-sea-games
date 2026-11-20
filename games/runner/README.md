@@ -7,7 +7,7 @@
 - 網址：`#runner`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「點左、點右換道，避開一路上的障礙。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：閃避跑酷，`game_id` 為 `runner`
-- 檔案：`games/runner/card.html`、`games/runner/game.js`、`games/runner/icon.svg`、`games/runner/style.css`、`games/runner/view.html`；`game.js` 共 292 行、13.7 KB
+- 檔案：`games/runner/card.html`、`games/runner/game.js`、`games/runner/icon.svg`、`games/runner/leaderboard.webp`、`games/runner/style.css`、`games/runner/view.html`；`game.js` 共 334 行、15.0 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「13. Dodge Run（runner）」（下方「規則摘要」已複製）
 
@@ -22,7 +22,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`bonusAt` L8、`nextMilestone` L9、`prevMilestone` L10、`T` L12、`runStatus` L17、`perspective` L22、`note` L23、`remember` L24、`runnerUI` L25、`award` L31、`beginRun` L37、`start` L44、`sendRun` L63、`die` L81、`update` L93、`loadArt` L111、`drawSprite` L118、`drawRunner` L126、`draw` L139、`X` L153、`Y` L154、`changeLane` L251、`L` L261、`loop` L268
+`bonusAt` L8、`nextMilestone` L9、`prevMilestone` L10、`T` L12、`runStatus` L17、`perspective` L22、`note` L23、`remember` L24、`runnerUI` L25、`award` L31、`beginRun` L37、`start` L44、`sendRun` L63、`die` L81、`update` L93、`loadArt` L111、`drawSprite` L118、`drawRunner` L126、`draw` L139、`X` L153、`Y` L154、`changeLane` L251、`L` L261、`canSteer` L268、`tapLane` L269、`steerSwipe` L273、`endSwipe` L282、`loop` L310
 
 ## 錢包與結算接點
 
@@ -58,7 +58,7 @@
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-定位：`runnerBusy` 所在 IIFE。無盡跑酷（2026-11-17 改為直到撞上障礙）：只需左／右切換三條跑道；一組兩個障礙留下安全道，安全道不與上一組相同，沒有跳躍／蹲下。沒有關卡與領回；初速 20 m/s，每跑滿 100 公尺增加 0.8 m/s（初速的 4%），最高 60 m/s，每排間距隨距離縮短（換道時間窗由約 2 秒縮至約 0.28 秒，見 `shared/runner-rules.cjs`）。免費開始。 每跑滿 1 公里的位置有黃色虛線標記。
+定位：`runnerBusy` 所在 IIFE。無盡跑酷（2026-11-17 改為直到撞上障礙）：往左或往右滑動可換一條跑道，也能點畫面左右半邊或用鍵盤按鍵切換三條跑道；一組兩個障礙留下安全道，安全道不與上一組相同，沒有跳躍／蹲下。沒有關卡與領回；初速 20 m/s，每跑滿 100 公尺增加 0.8 m/s（初速的 4%），最高 60 m/s，每排間距隨距離縮短（換道時間窗由約 2 秒縮至約 0.28 秒，見 `shared/runner-rules.cjs`）。免費開始。 每跑滿 1 公里的位置有黃色虛線標記。
 
 里程碑點數當場入帳（`award`，每局每個里程碑只一次），撞上後不扣回、不另結算：3,500m +3、4,500m +7（累計10點）、5,500m +15、6,500m +30，之後每多1,000m +40。里程碑以文字模擬（技巧不同的四種玩家）校準：一般玩家約跑3,000m，抵達3,500m約三成，4,500m不到1%；技巧好的玩家抵達4,500m約七成。尚無真人資料，上線後可用 GA4 `game_end` 的分數重新校準。大廳卡片只標示「✦ BONUS」。
 

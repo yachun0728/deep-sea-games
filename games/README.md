@@ -17,7 +17,7 @@
 | [浮升 Ascent](tower/README.md) | `#tower` | 機率挑戰 | 隱藏 | 94 行 | 挑選安全的氣泡，一層一層往上浮。 |
 | [橫渡 Reef Run](crossing/README.md) | `#crossing` | 機率挑戰 | 隱藏 | 86 行 | 帶小海龜穿越暗流，決定何時收手。 |
 | [時序修復 Dream Repair Shop](dream/README.md) | `#dream` | 時機操作 | 顯示 | 141 行 | 抓準時機，讓指針停在青綠色區域。 |
-| [閃避跑酷：深海快遞 Dodge Run](runner/README.md) | `#runner` | 跑酷動作 | 顯示 | 292 行 | 點左、點右換道，避開一路上的障礙。 |
+| [閃避跑酷：深海快遞 Dodge Run](runner/README.md) | `#runner` | 跑酷動作 | 顯示 | 334 行 | 點左、點右換道，避開一路上的障礙。 |
 | [插隊大師 Queue Cutter](elevator/README.md) | `#elevator` | 潛行偷閒 | 顯示 | 129 行 | 趁乘客背對你，偷偷往前插一位。 |
 | [偷偷下班 Sneak Out](sneak/README.md) | `#sneak` | 潛行偷閒 | 顯示 | 125 行 | 按住偷溜，老闆回頭前趕快裝忙。 |
 | [深海釣手 Fishing](fishing/README.md) | `#fishing` | 時機操作 | 顯示 | 99 行 | 按住收線、放開卸力，把大魚拉上岸。 |
