@@ -7,7 +7,7 @@ const academyRules = (() => {
   const DOMAINS = ['science', 'history', 'geography', 'sports_ent', 'daily_tech'];
   const PER_DOMAIN = 20;
   // 題號 1–100 的正確選項（0–3），每 20 題一個領域；題目文字見 games/academy/questions.js。
-  const ANSWERS = '1121111131111221120322111221121121111112132111212122212132221212220121221221211203111111212110111311'
+  const ANSWERS = '2003030221031121301023031133230110213303000311302100211232333011212200230221322202331302211133011220'
     .split('').map(Number);
   const BONUS_PER_STAGE = 1;
   // 操作碼：0–4 選領域、5 隨機盲盒；10 刪兩個錯誤選項、11 智囊提示、12 臨場換題；

@@ -324,7 +324,7 @@ const Wallet = {
   grantFree(min) { lsSet(this.FREE_KEY, String(Date.now() + min * 60000)); },
   canStart() { return this.isFree() || this.bal >= CONFIG.entryFee; },
 };
-function walletText() { return '免費遊玩 · 咖啡補給免費'; }
+function walletText() { return '咖啡補給不限次數'; }
 function renderWallet() {
   const html = walletText();
   for (const id of ['t-wallet', 'mode-wallet', 'revive-wallet', 'r-wallet', 'low-wallet']) { const el = $(id); if (el && el.innerHTML !== html) el.innerHTML = html; }
@@ -756,7 +756,7 @@ function adDone() {
     $('pause-title').textContent = `會議延長 ${CONFIG.adExtendSeconds} 秒！`;
     $('pause-desc').textContent = '主管又開始講了，趕快繼續衝';
   } else {
-    toast(`接下來 ${CONFIG.adFreeMinutes} 分鐘開局不免費`);
+    toast(`看完了，繼續衝！`);
     const n = lowNext; lowNext = null; if (n) n(); else goMode();
   }
 }

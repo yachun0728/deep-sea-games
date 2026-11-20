@@ -28,7 +28,7 @@
 | [青蛙吃蟲 Frog Snack](frog/README.md) | `#frog` | 時機操作 | 顯示 | 209 行 | 對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。 |
 | [偷睡大師 Nap Master](nap/README.md) | `#nap` | 潛行偷閒 | 顯示 | 300 行 | 趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。 |
 | [死神打工 Reaper Shift](reaper/README.md) | `#reaper` | 潛行偷閒 | 顯示 | 107 行 | 普通靈魂要接走，綠色通行證要放行。 |
-| [深海火線 Reef Blaster](blaster/README.md) | `#blaster` | 跑酷動作 | 顯示 | 670 行 | 帶領潛艇編隊航行，閃過怪潮和打不碎的硬礁。 |
+| [深海火線 Reef Blaster](blaster/README.md) | `#blaster` | 跑酷動作 | 顯示 | 343 行 | 帶領潛艇編隊航行，閃過怪潮和打不碎的硬礁。 |
 | [一口氣探險 One Breath Dive](dive/README.md) | `#dive` | 益智策略 | 顯示 | 54 行 | 選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。 |
 | [捷運搶位 MRT Seat Grab](mrt/README.md) | `#mrt` | 益智策略 | 顯示 | 52 行 | 看小動作猜誰要下車，一階一階往上搶座位。 |
 | [泡麵煎餅翻面 Noodle Pancake](pancake/README.md) | `#pancake` | 時機操作 | 顯示 | 43 行 | 半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。 |
@@ -60,3 +60,4 @@
 | [收盤之前 Closing Call](market-desk/README.md) | `#market-desk` | 益智策略 | 顯示 | 437 行 | 20 個交易日，從台股怪新聞裡挖出可信的消息。 |
 | [不准跑調 Stay On Pitch](on-pitch/README.md) | `#on-pitch` | 時機操作 | 顯示 | 883 行 | 對著麥克風唱出缺口的音，音準對了才能穿牆。 |
 | [貓咪疊書舖 Cat Book Stack](book-sort/README.md) | `#book-sort` | 益智策略 | 顯示 | 236 行 | 把書依顏色疊進紙箱，集滿 5 本同色自動封箱。 |
+| [百萬大學堂 Millionaire Academy](academy/README.md) | `#academy` | 益智策略 | 顯示 | 683 行 | 一百道百科題，自選領域闖十關，挑戰 1,000,000 學分。 |

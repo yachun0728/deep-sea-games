@@ -303,3 +303,5 @@ Frontier draw.js uses two PNG atlases with vector fallback. Optional world.suppl
 遊戲路由使用 `is-game` 隱藏共用的遊戲切換與畫面／操作工具列，提供精簡返回大廳連結。荒島遠征和深海連連看的返回入口放在遊戲內工具列，手機自動進入沉浸版面時仍可使用；深海火線、貓咪疊書舖與深海前哨使用各自的返回入口。
 
 深海前哨第二至第三十關共用同一模擬（第 4–30 關由 `outpost-rules.cjs` 內固定種子的產生器建立），解鎖進度另存 `deep-sea-outpost-unlocked-v1`。訪客排行榜的重播入口固定開第一關，舊成績仍使用同一套分數規則。其餘 29 關進度存於瀏覽器，沒有新增 D1 migration。
+
+《深海火線》的航行、碰撞、選卡和距離計算位於 `shared/blaster-rules.cjs`，同一規則由前端及排名 Worker 執行。前端以 `games/blaster/game.js` 接入畫布、點數和既有訪客 SDK。排行榜使用整數公尺，顯示於遊戲畫面內。

@@ -17,3 +17,13 @@
   }
   html:has(#view-blaster:not([hidden]) .bl-immersive){overflow:hidden}
 }
+
+#view-blaster .bl-ranking-feedback,#bl-leaderboard{position:absolute;left:6%;right:6%;text-align:center;color:#e6ffff}
+#view-blaster .bl-ranking-feedback{top:68%;font:500 13px system-ui}
+#view-blaster .bl-ranking-feedback p{margin:0}
+#view-blaster .bl-launch[hidden]~.bl-ranking-feedback{visibility:hidden}
+#bl-leaderboard{bottom:7%;z-index:1;pointer-events:none}
+#bl-leaderboard details{margin:0;padding:8px 12px;background:#0a273a;border:1px solid #4dbcae;border-radius:9px;pointer-events:auto}
+#bl-leaderboard details:not([open]){width:max-content;margin-inline:auto}
+#bl-leaderboard details[open]{max-height:min(45vh,250px);overflow:auto;overscroll-behavior:contain}
+#bl-leaderboard ol{text-align:left;margin:6px 0;padding-inline-start:26px}

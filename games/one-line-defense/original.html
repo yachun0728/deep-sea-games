@@ -151,7 +151,7 @@ function renderNote() {
   const el = document.getElementById('platNote');
   if (!host()) { el.hidden = true; return; }
   el.hidden = false;
-  el.innerHTML = Lx('每局扣 10 點開始；每撐過 30 秒 BONUS +2 點，最多 10 點（150 秒）。|Each game costs 10 pts; every 30 seconds survived gives a +2 pt BONUS, up to 10 pts (150 seconds).');
+  el.innerHTML = Lx('每撐過 30 秒 BONUS +2 點，最多 10 點（150 秒）。|Every 30 seconds survived gives a +2 pt BONUS, up to 10 pts (150 seconds).');
 }
 function touch() { const h = host(); if (h && roundOn && h.touch) h.touch(window); }
 

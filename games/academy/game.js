@@ -149,7 +149,8 @@
       }
     } catch (_) {}
     function siteLang() { return window.deepSeaI18n && window.deepSeaI18n.getLanguage() === 'en' ? 'en' : 'tw'; }
-    let lang = prefs.lang || siteLang();
+    // 簡中只能在遊戲內選；站台語言是繁中或英文時，只有曾選過簡中才維持簡中。
+    let lang = prefs.lang === 'cn' && siteLang() === 'tw' ? 'cn' : siteLang();
     function savePrefs() { try { localStorage.setItem(prefsKey, JSON.stringify(prefs)); } catch (_) {} }
     let best = 0;
     try {
@@ -169,7 +170,6 @@
     let paidStages = {}, bonusEarned = 0;
     let eliminated = [], hintShown = false, locked = -1, revealed = null, revealTimer = null;
     let deadline = 0, remaining = TIME_LIMIT * 1000, tickTimer = null, paused = false;
-    let finishReason = null;
     let rankRound = null, nextRankRound = null, preparingRank = null, submission = null, starting = false;
     let leaderboardRequest = 0;
 
@@ -331,7 +331,6 @@
       setText('ac-walk-no', t('walkNo')); setText('ac-walk-yes', t('walkYes'));
       setText('ac-rank-title', t('rankTitle')); setText('ac-rank-note', t('rankNote')); setText('ac-rank-close', t('close'));
       setText('ac-rank-btn', t('rankBtn')); setText('ac-walk-btn', t('walk')); setText('ac-retry', t('rsRetry'));
-      document.title = document.title; // 標題由站台路由管理
     }
     function renderLadder() {
       const items = rules.LADDER.map((amount, i) => {
@@ -413,7 +412,7 @@
       $('ac-timer').hidden = !asking;
       $('ac-lifelines').hidden = !asking || !!revealed;
       $('ac-options').hidden = !asking;
-      setText('ac-stage', intro ? t('stageIntro') : over ? t('stage', Math.max(1, Math.min(STAGES, state.cleared + (state.reason === 'champion' ? 0 : 1))), STAGES) : t('stage', state.stage, STAGES));
+      setText('ac-stage', intro ? t('stageIntro') : t('stage', state.stage, STAGES));
       setText('ac-credits', fmt(state ? state.credits : 0));
       const go = $('ac-go');
       go.hidden = !(intro || over);
@@ -483,7 +482,7 @@
       submission = null;
       paidStages = {};
       bonusEarned = 0;
-      eliminated = []; hintShown = false; locked = -1; revealed = null; finishReason = null;
+      eliminated = []; hintShown = false; locked = -1; revealed = null;
       phase = 'select';
       analytics = AN.start('academy', 0, params());
       render();
@@ -560,7 +559,6 @@
       stopTimer();
       phase = 'over';
       revealed = null;
-      finishReason = state.reason;
       if (state.credits > best) {
         best = state.credits;
         try { localStorage.setItem(bestKey, String(best)); } catch (_) {}
@@ -606,7 +604,6 @@
 
     academyRoute = function (active) {
       if (active) {
-        if (!siteSyncedOnce) { siteSyncedOnce = true; }
         prepareRankedRound();
         render();
         return;
@@ -614,7 +611,6 @@
       if (phase === 'ask' || phase === 'select') abandon();
       else if (phase === 'over') { phase = 'intro'; state = null; render(); }
     };
-    let siteSyncedOnce = false;
 
     // ---- 事件 ----
     $('ac-go').addEventListener('click', start);

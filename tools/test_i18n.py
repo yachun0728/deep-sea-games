@@ -96,12 +96,14 @@ def js_literals(source):
     return found
 
 
-def source_texts():
+def source_texts(skip=()):
     """Audit static text and literal fragments used by the existing concatenated game UI."""
     found = set()
     for folder in ('templates', 'games', 'js', 'platform'):
         for path in (ROOT / folder).rglob('*'):
             if path.suffix not in ('.html', '.js') or path.name == 'i18n.js':
+                continue
+            if any(part in skip for part in path.relative_to(ROOT).parts):
                 continue
             source = path.read_text(encoding='utf-8')
             if path.suffix == '.html':

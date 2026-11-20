@@ -2,8 +2,11 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
+import replay from '../shared/timed-replay.cjs';
+import blasterEngine from '../shared/blaster-rules.cjs';
 const root=new URL('../',import.meta.url);
-const source=fs.readFileSync(new URL('games/blaster/game.js',root),'utf8');
+const game=fs.readFileSync(new URL('games/blaster/game.js',root),'utf8');
+const source=fs.readFileSync(new URL('shared/blaster-rules.cjs',root),'utf8')+'\n'+game;
 const flatFee=/var stake=ENTRY_FEE/.test(source);
 const fee=flatFee?Number(fs.readFileSync(new URL('js/config.js',root),'utf8').match(/ENTRY_FEE\s*=\s*(\d+)/)[1]):20;
 const results=[];
@@ -12,7 +15,7 @@ function fixture(balance=1000,savedBest=null){
   const elements=new Map(),storage=new Map(savedBest===null?[]:[['deep-sea-blaster-best',String(savedBest)]]),events=[],drawCalls=[],drawing=new Proxy({createLinearGradient:()=>({addColorStop(){}})},{get:(t,k)=>k in t?t[k]:(...args)=>drawCalls.push([k,...args])});
   function el(id){if(!elements.has(id))elements.set(id,{hidden:false,value:'20',classList:{toggle(){}},textContent:'',className:'',dataset:{},style:{},disabled:false,handlers:{},focus(){},getContext:()=>drawing,getBoundingClientRect:()=>({left:0,top:0,width:400,height:600}),addEventListener(type,fn){this.handlers[type]=fn;}});return elements.get(id);}
   const document={hidden:false,hasFocus:()=>true,addEventListener(){}};const windowListeners={};
-  const sandbox={document,Image:class {naturalWidth=0;},window:{location:{hash:'#blaster'},addEventListener(name,fn){(windowListeners[name]??=[]).push(fn);}},Number,Math,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,v)},requestAnimationFrame(){},$:el,MIN_BET:10,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fx:n=>n.toFixed(2),AN:{start:(...args)=>{events.push(['start',...args]);return 'round';},resume:(...args)=>events.push(['resume',...args]),progress:(...args)=>events.push(['progress',...args]),end:(...args)=>events.push(['end',...args])}};
+  const sandbox={document,timedLeaderboard:()=>({busy:()=>false,start:callback=>callback(null),record(){},finish(){},update:(ms,active,step)=>step(ms/1000)}),Image:class {naturalWidth=0;},window:{location:{hash:'#blaster'},addEventListener(name,fn){(windowListeners[name]??=[]).push(fn);}},Number,Math,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,v)},requestAnimationFrame(){},$:el,MIN_BET:10,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fx:n=>n.toFixed(2),AN:{start:(...args)=>{events.push(['start',...args]);return 'round';},resume:(...args)=>events.push(['resume',...args]),progress:(...args)=>events.push(['progress',...args]),end:(...args)=>events.push(['end',...args])}};
   const ctx=vm.createContext(sandbox);vm.runInContext(source+'\nfunction blGo(){blStart();if(BL.phase===\'pick\'){var starter=BL.stage===1&&BL.wave===0&&BL.weapon===1;blChoose(0);if(starter)BL.form=\'pulse\';}}',ctx);
   return {ctx,el,events,storage,drawCalls,emitWindow:(name,e)=>{for(const fn of windowListeners[name]||[])fn(e);},run:s=>vm.runInContext(s,ctx),state:ctx.BL,wallet:sandbox.S,document,advance(ms){now+=ms;vm.runInContext('blSync(performance.now())',ctx);}};
 }
@@ -52,7 +55,7 @@ check('Firepower level scales damage and pellets follow the weapon form, not the
 check('Free movement: bounds, held keys and drag set the target within bounds; hidden, background and unfocused games pause',()=>{
   const f=fixture();f.run('blGo();blAim(0,532)');assert.equal(f.state.target,28);f.run('blAim(400,532)');assert.equal(f.state.target,372);
   f.run('BL.target=200;BL.x=200;BL.keys.l=true');f.advance(400);assert(f.state.x<200&&f.state.target<200);f.run('BL.keys.l=false;BL.keys.r=true');for(let i=0;i<60;i++)f.advance(50);assert.equal(f.state.target,372);assert(f.state.x>360);f.run('BL.keys.r=false');
-  const canvas=f.el('bl-canvas');canvas.handlers.pointerdown({clientX:60,clientY:480,pointerId:1,preventDefault(){}});assert.equal(f.state.target,60);canvas.handlers.pointermove({clientX:340,clientY:400,pointerId:1});assert.equal(f.state.target,340);assert.equal(f.state.targetY,400);canvas.handlers.pointerup({pointerId:1});canvas.handlers.pointermove({clientX:100,clientY:300,pointerId:1});assert.equal(f.state.target,340);
+  const canvas=f.el('bl-canvas');canvas.handlers.pointerdown({clientX:60,clientY:480,pointerId:1,preventDefault(){}});f.advance(16);assert.equal(f.state.target,60);canvas.handlers.pointermove({clientX:340,clientY:400,pointerId:1});f.advance(16);assert.equal(f.state.target,340);assert.equal(f.state.targetY,400);canvas.handlers.pointerup({pointerId:1});canvas.handlers.pointermove({clientX:100,clientY:300,pointerId:1});assert.equal(f.state.target,340);
   for(let i=0;i<30;i++)f.advance(50);assert(Math.abs(f.state.x-340)<2);f.run('BL.keys.l=true');f.emitWindow('blur',{});assert.equal(f.state.keys.l,false);
   for(const pause of ['hidden','background','focus']){f.el('view-blaster').hidden=pause==='hidden';f.document.hidden=pause==='background';f.state.focused=pause!=='focus';const before=f.state.clock;f.advance(1000);assert.equal(f.state.clock,before);}
   f.el('view-blaster').hidden=false;f.document.hidden=false;f.state.focused=true;f.advance(16);assert(f.state.clock>0);assert(f.events.some(e=>e[0]==='progress'&&e[3]===true));
@@ -300,6 +303,32 @@ check('In-board launch, replay and exit keep a single end event per attempt',()=
   assert.equal(f.ctx.window.location.hash,'lobby');assert.equal(f.state.phase,'ready');assert.equal(f.state.active,false);
   assert.equal(f.storage.get('deep-sea-blaster-distance-best'),'220');
   assert.deepEqual(f.events.filter(e=>e[0]==='end').map(e=>e[3]),['loss','abandoned']);
+});
+check('Guest proof replays a natural terminal run and ranks the integer distance',()=>{
+  const seed=42, engine=blasterEngine, model=engine.create(replay.seeded(seed));
+  const action=engine.aimCode(280,420);
+  assert.equal(engine.input(model,action),true);
+  let ticks=0;
+  while(!model.dead&&ticks<700){engine.advance(model,.01);ticks++;}
+  const distance=engine.score(model);
+  assert(model.dead&&distance>0);
+  assert(replay.accepts([ticks,action],engine.inputCount));
+  assert.equal(replay.verify(engine,seed,[ticks,action]),distance);
+  assert.equal(replay.verify(engine,seed,[ticks-1,action]),null);
+});
+check('Later recruitment barricades are tougher and old ranked rounds keep their armor',()=>{
+  const engine=blasterEngine;
+  const made=(version,distance,lives)=>{
+    const model=engine.create(replay.seeded(42),version);
+    model.BL.distance=distance;model.BL.lives=lives;model.blSpawnGates(1);
+    return model.BL.gates[0];
+  };
+  assert.equal(made(1,0,3).armor,21);
+  assert.equal(made(2,0,3).armor,30);
+  assert.equal(made(2,0,7).armor,50);
+  assert.equal(made(2,1500,7).armor,56);
+  assert.equal(made(2,100000,7).armor,68);
+  assert.equal(made(2,0,7).cap,5);
 });
 if(failures.length){console.error(failures.length+' check(s) failed');process.exitCode=1;}
 console.log(`PASS: ${results.length} Reef Blaster behavior checks`);

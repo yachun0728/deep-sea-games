@@ -406,5 +406,13 @@
     "card": "games/book-sort/card.html",
     "icon": "games/book-sort/icon.svg",
     "style": "games/book-sort/style.css"
+  },
+  {
+    "id": "academy",
+    "logic": "games/academy/game.js",
+    "view": "games/academy/view.html",
+    "card": "games/academy/card.html",
+    "icon": "games/academy/icon.svg",
+    "style": "games/academy/style.css"
   }
 ]

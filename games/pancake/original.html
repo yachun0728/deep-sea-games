@@ -164,7 +164,7 @@ body{position:fixed;inset:0}
     <h2 class="ol-crust">泡麵用完了…</h2>
     <p id="revive-sub"></p>
     <div class="wallet-pill" id="revive-wallet"></div>
-    <button class="btn" id="btn-free">狂煎中！免費補 3 包</button>
+    <button class="btn" id="btn-free">狂煎中！補 3 包</button>
     <button class="btn" id="btn-ad">看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎</span></button>
     <button class="btn sec" id="btn-buy">用 30 點換 5 包泡麵</button>
     <p class="small" id="buy-note"></p>
@@ -176,7 +176,7 @@ body{position:fixed;inset:0}
     <div class="art-icon" data-icon="coin"></div>
     <h2 class="ol-crust">點數不夠開火了…</h2>
     <div class="wallet-pill" id="low-wallet"></div>
-    <p class="small">沒有入場費。</p>
+    <p class="small"></p>
     <button class="btn" id="btn-low-ad">看 5 秒廣告<br><span class="btn-sub">接下來 30 分鐘狂煎</span></button>
     <button class="btn ghost" id="btn-low-back">先等等，回首頁</button>
   </div>
@@ -388,7 +388,7 @@ if (HOST) {
   Wallet.spend = function (n) { const ok = HOST.spend(window, n); this.bal = HOST.balance(); return ok; };
 }
 function fmtMs(ms) { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
-function walletText() { return '免費遊玩 · 泡麵補給免費'; }
+function walletText() { return '泡麵補給不限次數'; }
 function renderWallet() {
   const html = walletText();
   for (const id of ['t-wallet', 'revive-wallet', 'r-wallet', 'low-wallet']) { const el = $(id); if (el && el.innerHTML !== html) el.innerHTML = html; }
