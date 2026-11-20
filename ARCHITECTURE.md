@@ -238,6 +238,42 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 
 `js/mobile-stage-actions.js` 在880px以下將原有 `.side button.go` 移到遊戲畫面內，保留原 DOM 節點、id、click listener、disabled／hidden 與扣點／追蹤流程，不建立代理扣款按鈕。以註解節點記住原位置；進行中操作（surface／cancel或disabled）回原位置，待機／關後／死亡可操作按鈕顯示於畫面內。MutationObserver只觀察原按鈕狀態，沒有輪詢、沒有觸發click；回桌面即復位。遊戲中浮層收起，僅按鈕本身接收事件，不蓋住畫布觸控。原本畫面內已有開始按鈕的iframe遊戲維持不變。
 
+### 手機全螢幕版面（`css/mobile-fullscreen.css`，2026-11-20）
+
+適用：偷偷下班、深海釣手、閃避跑酷、時序修復、便便鳥大戰狼群、屋頂貓貓、死神打工、插隊大師（Canvas 遊戲），以及插珍奶（iframe）。條件是 `@media(max-width:880px),(pointer:coarse) and (max-width:1100px)`；桌面版維持原本兩欄版面，`.fs-exit` 退出鈕在桌面隱藏。玩法、扣點、追蹤、儲存都不在這份 CSS 的範圍。
+
+**結構（每款 `view.html` 都一樣）**
+
+- `<div class="console fs-game">`，第一個子元素是舞台（`.sneak-stage` 之類，內含 Canvas），緊接著 `<button class="fs-exit" aria-label="{{t:blaster.view.04}}">←</button>`。其後是原本的 `.side > .panel`。
+- 手機時 `.fs-game` 為 `position:fixed; inset:0`，`.side` 與 `.panel` 設成 `display:contents`，裡面的元素改成相對 `.fs-game` 絕對定位。因此**新元素要放進 `.panel`（或 `.fs-game`）裡**；放在 `.console` 外面的元素會被全螢幕蓋住、點不到（深海釣手、插隊大師的排行榜狀態／重試鈕就是這樣被移進面板的）。
+- 退出鈕的點擊由 `js/mobile-stage-actions.js` 末段的共用處理器導回 `#lobby`，不要每款各寫一份。
+- 每個 view 在 CSS 頂端設三個變數：`--ar`（Canvas 寬高比，例如 400×560 是 .7143）、`--hud`（畫面上方預留給 HUD 的 px 高度）、`--fs-bg`（畫面背景色，接近 Canvas 底色）。
+
+**版面規則（不要打破）**
+
+1. **HUD 不蓋 Canvas。** Canvas 自己會畫分數、距離，DOM 的統計條若疊在上面就會重疊、字糊成一團（實機截圖發生過）。做法是 `.fs-game` 的 `padding-top = safe-area-top + var(--hud)`，Canvas 寬度公式為 `min(100%, (100dvh - safe-top - var(--hud) - safe-bottom) × var(--ar))`，Canvas 因此排在 HUD 下面。`--hud` 依內容設：一列統計 52、兩列 96、統計＋狀態條 88、統計＋狀態條＋張力條 140、兩列＋狀態條 132。新增或改動統計列、狀態條時要同步調整。
+2. **Canvas 永遠等比例縮放**（`height:auto`），不可用 `width:100%;height:100%` 拉伸（閃避跑酷曾被拉伸變形）。
+3. **操作鈕統一固定在畫面下方**：開始鈕、按住／往前插／揮鐮這類動作鈕、結算後的分享成績、排行榜重試鈕，都在底部（`bottom: safe-bottom + 16px`），不要放在畫面中間。開始鈕由 `js/mobile-stage-actions.js` 搬進 `.mobile-stage-actions` 托盤，原規則把托盤放在舞台 68% 處會蓋住畫面內容，所以 `.fs-game` 內改為貼底；不要另建代理按鈕或複製扣點／開始流程。
+4. 不可點（`disabled`）的原始 `.go` 與閃避跑酷的左右鈕一律隱藏；否則會被排到畫面外。提示文字（`.hint`、規則、圖例、階梯表）與排行榜狀態文字在全螢幕時隱藏，只留 `.msg` 小提示條。
+5. 站內的「返回遊戲大廳」連結（`.game-exit-link`）在全螢幕時隱藏，改用 `.fs-exit`。
+6. 點擊範圍 ≥44px，退出鈕在左上，不被 HUD、按鈕或分享鈕蓋住。
+
+**插珍奶**：`#view-boba` 為 `fixed` 的欄位式版面，頂列只留左側退出鈕與結算後出現在右側的「分享成績」；「結束本局」鈕、提示、訊息與排行榜狀態文字都隱藏（失敗時才顯示一個小重試鈕）；iframe 填滿其下。不改子頁的畫面。
+
+**新增或改版一款全螢幕遊戲的步驟**
+
+1. `view.html` 依上述結構加 `fs-game` 與退出鈕，所有狀態、按鈕、排行榜狀態都在 `.panel` 內。
+2. 在 `css/mobile-fullscreen.css` 頂端加 `#view-<id>{--ar:…;--hud:…;--fs-bg:…}`。
+3. 執行 `python3 tools/game_docs.py`、`python3 tools/build.py`、`--check` 與單元測試。
+4. 驗證見下節；不要沿用上一款的數值而不實測。
+
+**驗證（本節的規則曾因只看縮小的視窗而歪掉）**
+
+- 在 iframe 容器中用實際手機尺寸（至少 390×844，另用約 430×760 模擬瀏覽器工具列佔掉高度），逐款看待機、遊玩中、結算畫面；不要只縮視窗。
+- 掃描每個可見按鈕：用 `elementFromPoint` 確認它在最上層、沒有彼此重疊、沒有超出畫面（可在 iframe 內以 JS 執行）。同時確認沒有畫面外的殘留按鈕或站內連結透出。
+- 結果分享按鈕（`js/result-share.js`）在回合結束後才建立，要實際玩完一局或模擬插入再檢查位置。
+- 優先採用使用者提供的實機截圖作為依據；模擬不能取代實機。
+
 ## 蓋樓大師（skybuilder）
 
 `games/skybuilder/` 是 TowerBuilding.html 的繁中整合，沿用共享 IIFE、錢包與追蹤。`sbBusy` 防止遊玩中重設；每局固定10點，10／20／30層各即時送固定5點BONUS，結束不重複入帳。最佳樓層使用新增的 `deep-sea-skybuilder-best`，不修改既有資料鍵；缺少時以0起算，回復程式時可保留此鍵。
