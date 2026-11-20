@@ -20,7 +20,7 @@ else if(a===2)P([[-13,0],[-14,-16],[-7,-8],[0,-20],[7,-8],[14,-16],[13,0]],'#ffd
 else if(a===3){P([[-11,0],[0,-30],[11,0]],'#ff5d8f',3);C(0,-31,4,'#fff',2.5)}
 else E(0,-8,13,4,'#ffe27a',3);
 g.restore()}
-G.I={bs:n=>'最高 '+n,tap:'',title:"{{t:baby.msg.001}}",s1:"{{t:baby.msg.002}}",s2:"{{t:baby.msg.003}}",caught:"{{t:baby.msg.004}}",bt:n=>'{{t:baby.msg.005}}'+n,sh:['{{t:baby.msg.006}}','{{t:baby.msg.007}}','{{t:baby.msg.008}}']};
+G.I={bs:n=>'最高 '+n,tap:'',title:"{{t:baby.msg.001}}",s1:"{{t:baby.msg.002}}",s2:"{{t:baby.msg.003}}",caught:"{{t:baby.msg.004}}",bt:n=>'{{t:baby.msg.005}}'+n,jump:'{{t:baby.msg.027}}',crawl:'{{t:baby.msg.028}}',cry:'{{t:baby.msg.029}}',sh:['{{t:baby.msg.006}}','{{t:baby.msg.007}}','{{t:baby.msg.008}}']};
 G.skins=[{need:0,n:'{{t:baby.msg.009}}',c:['#a0c4ff','#ffd6a5'],a:0},{need:200,n:'{{t:baby.msg.010}}',c:['#ffc8dd','#ffafcc'],a:1},{need:500,n:'{{t:baby.msg.011}}',c:['#b7e4c7','#74c69d'],a:3},{need:1000,n:'{{t:baby.msg.012}}',c:['#ffd23f','#ff9f1c'],a:2}];
 const GY=440,PXL=170;
 let dist,v,gap,py,vy,on,crawl,cid,obs,nextAt,stun,fx,charge,mstun,bots,rings;
@@ -31,12 +31,17 @@ function control(code){if(!babyRules.input(model,code))return;rank.record(code);
 G.reset=()=>{model=babyRules.create();syncModel();};
 G.score=()=>model.score();
 G.extra=()=>T('bt')(bots);
+const BTN={jump:[12,458,130,88],crawl:[152,458,130,88]},inBtn=(b,p)=>p.x>=b[0]-6&&p.x<=b[0]+b[2]+6&&p.y>=b[1]-6&&p.y<=b[1]+b[3]+6;
+let jf=0;
 G.down=p=>{
- const code=Math.hypot(p.x-340,p.y-505)<50?2:p.x<200?0:1;
- control(code);heldBy=p.id;
+ // cry button, then the CRAWL button (hold); everything else on screen is JUMP
+ const code=Math.hypot(p.x-340,p.y-505)<50?2:inBtn(BTN.crawl,p)?1:0;
+ if(code===1){if(heldBy!==undefined)return;heldBy=p.id}
+ if(code===0)jf=.16;
+ control(code);
 };
 G.up=p=>{if(p.id===heldBy){control(3);heldBy=undefined;}};
-G.update=dt=>{babyRules.advance(model,dt);syncModel();if(model.dead)die(model.dead);};
+G.update=dt=>{jf=Math.max(0,jf-dt);babyRules.advance(model,dt);syncModel();if(model.dead)die(model.dead);};
 function bg(){
 g.fillStyle='#ffc8dd';g.fillRect(-20,0,W+40,GY);
 for(let i=0;i<12;i++)for(let j=0;j<5;j++){const x=((i*50-dist*.3)%600+600)%600-50;F(x+(j%2)*25,30+j*70,6,'#ffafcc')}
@@ -79,8 +84,12 @@ fx.forEach(f=>{g.globalAlpha=1-f.t/.8;tx(f.s,f.x,f.y-f.t*50,26,'#ffd23f');g.glob
 tx(String(G.score())+' m',16,42,32,'#fff','left');tx(T('bs')(best),16,66,14,'#ffd23f','left');
 RR(16,78,W-32,10,5,'rgba(255,255,255,.3)',2);const r=cl(1-gap/220,0,1);if(r>0)RR(16,78,Math.max(10,(W-32)*r),10,5,r>.7?'#e63946':'#6cf0a8',2);
 if(st==='run'&&gap<110&&mstun<=0)tx(T('sh')[Math.floor(tt/1.4)%3],120,290,22,'#ff7a7a');
-C(340,505,44,'#fff1c1',4);for(let i=0;i<3;i++)C(318+i*22,545,6,i<charge?'#ff5d8f':'#ced4da',2);
-E(340,503,20,14,'#ff8fab',3);F(332,500,3,OL);F(348,500,3,OL);E(340,512,8,5,'#7a1c1c',2.5)};
+if(st==='run'){const bt=(b,l,on,col)=>{RR(b[0],b[1],b[2],b[3],18,on?'#ffd23f':col,4);tx(l,b[0]+b[2]/2,b[1]+b[3]/2+14,40,'#fff')};bt(BTN.jump,T('jump'),jf>0,'#8ecae6');bt(BTN.crawl,T('crawl'),crawl,'#ff8fab')}
+const ready=charge>0&&mstun<=0;
+if(ready){g.save();g.globalAlpha=.35+.25*Math.sin(tt*8);C(340,505,52,'#ff5d8f',0);g.restore()}
+g.save();g.globalAlpha=ready?1:.55;C(340,505,44,ready?'#fff1c1':'#dee2e6',4);
+E(340,497,20,14,ready?'#ff8fab':'#adb5bd',3);F(332,494,3,OL);F(348,494,3,OL);E(340,506,8,5,'#7a1c1c',2.5);g.restore();
+tx(T('cry'),340,533,16,'#fff');for(let i=0;i<3;i++)C(318+i*22,550,6,i<charge?'#ff5d8f':'#ced4da',2)};
 let st='ready',rec=false,unl=[],last=0,shake=0,skin=0,best=0,tt=0;
 const SK=()=>G.skins[skin],CHY=440,V=$('view-baby');
 const T=k=>G.I[k];
@@ -150,7 +159,7 @@ c.addEventListener('pointerdown',e=>{
  G.down(p)});
 ['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,e=>{if(st==='run'&&G.up)G.up({id:e.pointerId})}));
 c.addEventListener('contextmenu',e=>e.preventDefault());
-const KM={' ':[190,300],ArrowUp:[190,300],ArrowLeft:[40,300],ArrowRight:[360,300],ArrowDown:[350,505],x:[350,505]};
+const KM={' ':[190,300],ArrowUp:[190,300],ArrowLeft:[40,300],ArrowRight:[200,500],ArrowDown:[350,505],x:[350,505]};
 addEventListener('keydown',e=>{const m=KM[e.key];if(!m||V.hidden||document.hidden||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;e.preventDefault();if(e.repeat)return;G.down({x:m[0],y:m[1],id:'k'+e.key})});
 addEventListener('keyup',e=>{if(KM[e.key]&&st==='run'&&G.up&&!V.hidden)G.up({id:'k'+e.key})});
 addEventListener('blur',()=>{release();last=performance.now()});
