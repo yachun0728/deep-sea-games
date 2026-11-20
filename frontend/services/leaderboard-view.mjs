@@ -7,7 +7,14 @@ for (const gameId of ['frontier', 'rocket-chair', 'blaster']) {
   const details = document.createElement('details');
   details.className = 'rules game-leaderboard';
   const summary = document.createElement('summary');
-  summary.textContent = '排行榜';
+  // The game name comes localized from the API (data-i18n-ignore keeps the i18n runtime off it);
+  // '排行榜' stays a normal translatable text node, so the title reads "<gameName> 排行榜".
+  const title = document.createElement('span');
+  title.setAttribute('data-i18n-ignore', '');
+  const label = document.createElement('span');
+  label.textContent = '排行榜';
+  summary.append(title, label);
+  const setTitle = name => { title.textContent = name ? name + ' ' : ''; };
   const status = document.createElement('p');
   status.setAttribute('role', 'status');
   const list = document.createElement('ol');
@@ -24,6 +31,7 @@ for (const gameId of ['frontier', 'rocket-chair', 'blaster']) {
     try {
       const result = await api.leaderboard(gameId, AbortSignal.timeout(10000));
       if (request !== generation) return;
+      setTitle(result.gameName);
       list.replaceChildren(...result.entries.map(entry => {
         const row = document.createElement('li');
         const name = document.createElement('span');
@@ -39,6 +47,11 @@ for (const gameId of ['frontier', 'rocket-chair', 'blaster']) {
     }
   }
   details.addEventListener('toggle', refresh);
+  // The cached name is in the old language: drop it until the next load.
+  window.addEventListener('arcade-languagechange', () => {
+    setTitle('');
+    refresh();
+  });
   window.addEventListener('deep-sea-score-saved', event => {
     if (event.detail.gameId === gameId) refresh();
   });
