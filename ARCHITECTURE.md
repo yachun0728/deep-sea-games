@@ -40,7 +40,10 @@ deep-sea-games/
 │   ├── dive/、mrt/           另含 original.html（原始完整子頁）與 style.css（限定該遊戲的平台外框樣式）
 │   ├── eat-smaller/、mirror-twins/、shadow-relay/、one-line-defense/  同上，srcdoc 子頁＋style.css
 │   └── pancake/original.html 額外：泡麵煎餅子頁（iframe src 載入）與 assets/ 圖片、style.css
+├── preview/                  未上架遊戲骨架：<id>/index.html 獨立單檔、prototypes.json、index.html 預覽總覽（不進 catalog／大廳）
 ├── tools/
+│   ├── prototype.py          建立骨架、重建 preview/index.html、--check（noindex、不外洩到大廳）
+│   ├── test_prototype.py     骨架工具測試
 │   ├── build.py              Python 標準函式庫靜態組合／檢查
 │   ├── test_build.py         組合工具與來源一致性測試
 │   ├── game_docs.py          從原始碼產生各遊戲的 README.md（`--check` 檢查是否過期）
@@ -115,6 +118,10 @@ flowchart TD
 | on-pitch | OP（內部狀態在 game.js 自己的 IIFE 內）、deepSeaOnPitch；畫面直接用 `#op-canvas`（400×720），不使用 iframe。免費、無 BONUS，成績不換點數；麥克風音高偵測（YIN）核心 `createGame` 為純邏輯 |
 | quack-pond | QP、deepSeaQuackPond；200 關邏輯謎題（呱呱池塘），免費、無 BONUS |
 | pancake | PANCAKE、deepSeaPancake；original.html 為以 iframe src 載入的子頁，圖片在 assets/ |
+
+### 遊戲骨架與預覽區
+
+`preview/<id>/index.html` 是獨立單檔，不經 `tools/build.py`、不寫入 `games/catalog.json`、不接共用 runtime、錢包與 GA4，也不在大廳或選單出現；只靠網址進入，推送後為 `<站台網址>/preview/<id>/`。`preview/prototypes.json` 記錄各骨架狀態（prototype／playtest／graduated／dropped），`preview/index.html` 由 `tools/prototype.py index` 產生。上架時在 `games/<id>/` 重做正式版，不複製骨架程式。流程見 [prototype.md](docs/agent-guides/prototype.md)。
 
 ### 隱藏遊戲
 

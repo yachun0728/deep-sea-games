@@ -23,7 +23,7 @@
 ## 預覽位置（測試用）
 
 - 本機：`python3 -m http.server 8765`，開 `http://localhost:8765/preview/`（總覽）或 `/preview/<id>/`（直達）。手機實機用同網段電腦 IP 開同一路徑。
-- 線上：`preview/` 隨靜態站一起推送，位址為 `<站台網址>/preview/<id>/`。`_headers` 對 `/preview/*` 加 `X-Robots-Tag: noindex`，每頁也有 noindex meta；大廳與選單沒有任何連結，只靠網址進入。
+- 線上：`preview/` 隨靜態站一起推送，位址為 `https://yachun0728.github.io/deep-sea-games/preview/<id>/`（總覽 `/preview/`）。推送後約 1 分鐘部署完成，需實際開啟確認。每頁有 noindex meta（實際擋搜尋引擎的是這個）；`_headers` 也對 `/preview/*` 設 `X-Robots-Tag`，但 GitHub Pages 不讀 `_headers`，該標頭只在 Cloudflare 等會讀它的部署才生效（2026-11-20 已在 GitHub Pages 實測沒有此標頭）；大廳與選單沒有任何連結，只靠網址進入。
 - 交付時直接給使用者可點開的網址（含版本說明、適用裝置、要驗收的操作），先自己點開確認可開始遊玩，規則同 [release.md](release.md)「先提供可遊玩的驗收入口」。
 
 ## 推送骨架
