@@ -7,13 +7,13 @@
 - 網址：`#campaign`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「繞市區拉票，經過學校、醫院、豪宅要按住靜音。」｜立即開玩 · 無盡 · 越開越快
 - 追蹤名稱（GA4 `game_name`）：宣傳車，`game_id` 為 `campaign`
-- 檔案：`games/campaign/card.html`、`games/campaign/game.js`、`games/campaign/icon.svg`、`games/campaign/view.html`；`game.js` 共 219 行、21.9 KB
+- 檔案：`games/campaign/card.html`、`games/campaign/game.js`、`games/campaign/icon.svg`、`games/campaign/style.css`、`games/campaign/view.html`；`game.js` 共 276 行、29.1 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「17. Campaign（campaign）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-campaign`、`cp-canvas`、`cp-votes`、`cp-miss`、`cp-lap`、`cp-signal`、`cp-amount`、`cp-best`、`cp-next`、`cp-go`、`cp-hold`、`cp-msg`、`cp-rank-status`、`cp-rank-retry`
+`view-campaign`、`cp-stage`、`cp-canvas`、`cp-exit`、`cp-votes`、`cp-miss`、`cp-lap`、`cp-signal`、`cp-amount`、`cp-best`、`cp-next`、`cp-go`、`cp-hold`、`cp-msg`、`cp-rank-status`、`cp-rank-retry`
 
 ## 狀態與常數
 
@@ -23,10 +23,11 @@
 - L7 常數：`CP_MILESTONES`、`CP_ENDLESS_FROM`、`CP_ENDLESS_STEP`、`CP_ENDLESS_BONUS`
 - L9 常數：`CP_KINDS`
 - L10 常數：`CP_FONT`
+- L84 常數：`CP_PAL`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`cpNextMilestone` L8、`cpText` L13、`cpSay` L14、`cpHold` L16、`cpRelease` L17、`cpSpeed` L18、`cpPassed` L19、`cpFloat` L20、`cpRemember` L21、`cpLose` L22、`cpMilestones` L27、`cpSignal` L37、`cpUI` L45、`cpStart` L55、`cpSync` L70、`cpRR` L73、`cpBox` L74、`cpWindows` L75、`cpBuilding` L76、`cpTruck` L141、`cpDraw` L153、`cpPress` L206、`cpLift` L207、`cpLoop` L215
+`cpNextMilestone` L8、`cpText` L13、`cpSay` L14、`cpHold` L16、`cpRelease` L17、`cpSpeed` L18、`cpPassed` L19、`cpFloat` L20、`cpRemember` L21、`cpLose` L22、`cpMilestones` L27、`cpSignal` L37、`cpUI` L45、`cpStart` L55、`cpFit` L72、`cpSync` L80、`cpRR` L83、`cpC` L85、`cpBox` L86、`cpWindows` L87、`cpBuilding` L88、`cpTruck` L153、`cpDraw` L181、`cpPress` L263、`cpLift` L264、`cpLoop` L272
 
 ## 錢包與結算接點
 
@@ -57,7 +58,7 @@
 
 ## 平台共用相依
 
-- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`fx`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - 共用檔沒有直接呼叫本遊戲的函式。
 - 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 

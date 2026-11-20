@@ -1133,6 +1133,31 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
   html:has(#view-blaster:not([hidden]) .bl-immersive){overflow:hidden}
 }
 
+/* Campaign Truck: on phones the whole view is the game (no separate control area). Desktop keeps the console + side panel. */
+#view-campaign .cp-exit{display:none}
+@media(max-width:880px), (pointer:coarse) and (max-width:1100px){
+  html:has(#view-campaign:not([hidden])){overflow:hidden;overscroll-behavior:none}
+  #view-campaign:not([hidden]){position:fixed;inset:0;z-index:1200;box-sizing:border-box;margin:0;width:auto;max-width:none;height:100dvh;display:block;overflow:hidden;background:#1c1226;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  #view-campaign .console{display:block;position:absolute;inset:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);gap:0}
+  #view-campaign #cp-stage{position:absolute;inset:0;display:block;border:0;border-radius:0;background:#1c1226}
+  #view-campaign #cp-canvas{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:fill;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  #view-campaign .mobile-scroll-pad,#view-campaign .mobile-page-tools,#view-campaign .game-view-controls{display:none!important}
+  #view-campaign .cp-exit{display:block;position:absolute;left:10px;bottom:10px;z-index:4;width:44px;height:44px;border:1px solid rgba(255,241,220,.5);border-radius:12px;background:rgba(28,16,40,.78);color:#fff1dc;font:700 21px system-ui;cursor:pointer}
+  /* control sheet: only before the first run and after a loss; hidden (but still announced) while driving */
+  #view-campaign .side{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:14px 14px 18px 64px;background:linear-gradient(to top,rgba(28,16,40,.96) 70%,rgba(28,16,40,0))}
+  #view-campaign .side .panel{display:flex;flex-direction:column;gap:10px;padding:0;border:0;background:none;box-shadow:none}
+  #view-campaign .side .stats,#view-campaign .side .queue-watch,#view-campaign .side .hint,#view-campaign #cp-hold{display:none}
+  #view-campaign .side .msg{margin:0;font-size:13px;line-height:1.45;max-height:6.5em;overflow:auto}
+  #view-campaign #cp-go{min-height:52px;font-size:17px}
+  #view-campaign.cp-run .side,#view-campaign.cp-run .rules{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0;border:0;opacity:0;pointer-events:none}
+  #view-campaign .rules{position:absolute;right:10px;bottom:10px;z-index:4;width:min(calc(100% - 20px),420px);max-height:70dvh;overflow:auto;border:1px solid rgba(255,241,220,.35);border-radius:12px;background:rgba(28,16,40,.94);padding:10px 14px;font-size:13px}
+  #view-campaign .rules:not([open]){width:auto;padding:0 14px;display:flex;align-items:center;min-height:44px}
+  #view-campaign .rules summary{min-height:44px;display:flex;align-items:center;color:#fff1dc}
+  #view-campaign.cp-sheet .rules:not([open]){bottom:calc(10px + 56px + 118px)}
+  #view-campaign #cp-rank-status,#view-campaign #cp-rank-retry{position:absolute;z-index:4;left:70px;right:70px;bottom:14px;margin:0;text-align:center;font-size:12px}
+}
+
 #view-mines .board-wrap {
   background: linear-gradient(145deg, #374e45, #20372f);
   border: 1px solid #6d8672;
@@ -3748,7 +3773,7 @@ html.frontier-immersive{overflow:hidden}
   </section>
 
   <section class="view" id="view-campaign" hidden>
-    <div class="console"><div class="fishing-stage"><canvas id="cp-canvas" width="640" height="460" tabindex="0" aria-label="宣傳車：車子沿街往右開，經過學校、醫院、豪宅時按住畫面靜音"></canvas></div>
+    <div class="console"><div class="fishing-stage" id="cp-stage"><canvas id="cp-canvas" width="640" height="460" tabindex="0" aria-label="宣傳車：車子沿街往右開，經過學校、醫院、豪宅時按住畫面靜音"></canvas><button class="cp-exit" id="cp-exit" type="button" aria-label="退出遊戲">←</button></div>
       <div class="side"><section class="panel" aria-label="宣傳車操作">
         <dl class="stats"><div><dt>目前選票</dt><dd id="cp-votes">200</dd></div><div><dt>吵到安靜區</dt><dd id="cp-miss">0 / 5</dd></div><div><dt>已經過</dt><dd id="cp-lap">0 棟</dd></div></dl>
         <div class="queue-watch" id="cp-signal" role="status" aria-live="polite" data-state="safe">尚未出發</div>
@@ -12877,12 +12902,24 @@ if(typeof module!=='undefined')module.exports=campaignRules;
     cpSay('出發！沒有終點，越開越快。放開讓喇叭廣播，前方出現紅色的學校、醫院、豪宅時按住靜音；在一般路段靜音太久也算失誤。');cpUI();campaignCanvas.focus();
     },cpUI);
   }
+  // Phones: canvas is always 640 logical px wide and as tall as the screen needs; the 460px scene sits in the middle, sky above, mute pad below.
+  var cpFs=window.matchMedia('(max-width:880px), (pointer:coarse) and (max-width:1100px)'),cpDy=0,cpBoxKey='';
+  function cpFit(){
+    var st=$('cp-stage'),r=st.getBoundingClientRect(),hl=460;
+    if(cpFs.matches&&r.width>40&&r.height>40)hl=Math.max(460,Math.min(1240,Math.round(640*r.height/r.width)));
+    var key=cpFs.matches+':'+hl;if(key!==cpBoxKey){cpBoxKey=key;campaignCanvas.height=hl;}
+    cpDy=cpFs.matches?Math.round((hl-460)*.38):0;
+    var v=$('view-campaign');v.classList.toggle('cp-run',cpFs.matches&&CP.phase==='run');v.classList.toggle('cp-sheet',cpFs.matches&&CP.phase!=='run');
+  }
+  $('cp-exit').addEventListener('click',function(){cpRelease();window.location.hash='lobby';});
   function cpSync(now){var dt=Math.max(0,(now-CP.last)/1000);CP.last=now;if(CP.phase==='run'&&!$('view-campaign').hidden&&!document.hidden)cpRank.update(dt*1000,()=>CP.phase==='run',step=>campaignRules.advance(CP,step));}
 
   /* drawing helpers */
   function cpRR(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
-  function cpBox(g,x,y,w,h,color){g.fillStyle=color;g.fillRect(x,y,w,h);}
-  function cpWindows(g,x,y,cols,rows,cw,ch,gx,gy,seed,on,off){for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){g.fillStyle=((seed*7+r*3+c*5)%4)?on:off;g.fillRect(x+c*(cw+gx),y+r*(ch+gy),cw,ch);}}
+  var CP_PAL={'#1d4a5c':'#7a4e5e','#163a48':'#5a3a4c','#0f3040':'#3a2640','#0c2a36':'#2e1d33','#1a4152':'#6e4a5c','#235566':'#8a5a5c','#1f4b5b':'#7d5258','#e4f2f3':'#fff1dc','#1f5a4c':'#3f5a45','#cfe3e6':'#e8d8c8','#2b5872':'#7b5a73','#1f4257':'#4f3650','#356c85':'#946a80','#12303f':'#2a1b30','#9fc0c6':'#dcc6b8','#86a9b0':'#c7ab9f','#6f949c':'#a98f8a','#3d6a74':'#6e5260','#bfe6ee':'#ffe8b8','#e9fbff':'#fff3dc','#5d8c95':'#8c6f75','#f4ffff':'#fff8ec','#d3b9c0':'#d3b9c0','#1f6b5a':'#3f6b4d','#2a8a70':'#5c8a58','#8fe0b0':'#8fe0b0'};
+  function cpC(c){return CP_PAL[c]||c;}
+  function cpBox(g,x,y,w,h,color){g.fillStyle=cpC(color);g.fillRect(x,y,w,h);}
+  function cpWindows(g,x,y,cols,rows,cw,ch,gx,gy,seed,on,off){for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){g.fillStyle=cpC(((seed*7+r*3+c*5)%4)?on:off);g.fillRect(x+c*(cw+gx),y+r*(ch+gy),cw,ch);}}
   function cpBuilding(g,lot,x,t){
     var G=CP_GROUND,w=lot.w,h=lot.h,top=G-h,cx=x+w/2,i,warm='#ffd98a',dark='#0f3040';
     switch(lot.name){
@@ -12900,13 +12937,13 @@ if(typeof module!=='undefined')module.exports=campaignRules;
       cpBox(g,x+24,G-50,10,28,'#e8a64a');cpBox(g,x+40,G-44,12,22,'#c96a4b');break;
     case '市場':
       cpBox(g,x+6,G-44,w-12,44,'#1f4b5b');
-      for(i=0;i<3;i++){var mx=x+8+i*((w-16)/3),mw=(w-16)/3;g.fillStyle=i%2?'#ffb638':'#62e6d2';g.beginPath();g.moveTo(mx,top+44);g.lineTo(mx+mw/2,top);g.lineTo(mx+mw,top+44);g.closePath();g.fill();cpBox(g,mx+mw/2-2,top+44,4,18,'#8d7254');}
+      for(i=0;i<3;i++){var mx=x+8+i*((w-16)/3),mw=(w-16)/3;g.fillStyle=i%2?'#ffb638':'#8fe0b0';g.beginPath();g.moveTo(mx,top+44);g.lineTo(mx+mw/2,top);g.lineTo(mx+mw,top+44);g.closePath();g.fill();cpBox(g,mx+mw/2-2,top+44,4,18,'#8d7254');}
       for(i=0;i<8;i++){g.fillStyle=['#ff6f61','#ffb638','#9ad17a'][i%3];g.beginPath();g.arc(x+26+i*((w-52)/7),G-50,7,0,7);g.fill();}break;
     case '夜市':
       cpBox(g,x+10,G-62,78,62,'#235566');cpBox(g,x+w-88,G-62,78,62,'#1f4b5b');
-      for(i=0;i<6;i++){cpBox(g,x+6+i*14.3,G-80,14.5,18,i%2?'#e4f2f3':'#ff6f61');cpBox(g,x+w-92+i*14.3,G-80,14.5,18,i%2?'#e4f2f3':'#62e6d2');}
+      for(i=0;i<6;i++){cpBox(g,x+6+i*14.3,G-80,14.5,18,i%2?'#e4f2f3':'#ff6f61');cpBox(g,x+w-92+i*14.3,G-80,14.5,18,i%2?'#e4f2f3':'#8fe0b0');}
       g.globalAlpha=.85;cpBox(g,x+20,G-52,58,22,warm);cpBox(g,x+w-78,G-52,58,22,warm);g.globalAlpha=1;
-      g.strokeStyle='#8db0b9';g.lineWidth=1.5;g.beginPath();g.moveTo(x+4,top);g.quadraticCurveTo(cx,top+26,x+w-4,top);g.stroke();
+      g.strokeStyle='#d3b9c0';g.lineWidth=1.5;g.beginPath();g.moveTo(x+4,top);g.quadraticCurveTo(cx,top+26,x+w-4,top);g.stroke();
       for(i=1;i<8;i++){var u=i/8,lx=x+4+(w-8)*u,ly=top+26*4*u*(1-u)*.5+2;g.fillStyle=i%2?'#ffb638':'#ff6f61';g.beginPath();g.arc(lx,ly+7,6+(reduceMotion?0:Math.sin(t*3+i)*.6),0,7);g.fill();}break;
     case '公園':
       cpBox(g,x,G-8,w,8,'#1f5a4c');
@@ -12937,7 +12974,7 @@ if(typeof module!=='undefined')module.exports=campaignRules;
       g.beginPath();g.moveTo(x+4,G-22);g.lineTo(cx-22,G-22);g.moveTo(cx+22,G-22);g.lineTo(x+w-4,G-22);g.stroke();break;
     }
     var age=t-lot.flash;
-    if(age>=0&&age<.55){g.globalAlpha=.4*(1-age/.55);cpBox(g,x,top-10,w,h+10,lot.good?'#62e6d2':'#ff6f61');g.globalAlpha=1;}
+    if(age>=0&&age<.55){g.globalAlpha=.4*(1-age/.55);cpBox(g,x,top-10,w,h+10,lot.good?'#8fe0b0':'#ff6f61');g.globalAlpha=1;}
     // name plate; quiet buildings get a coral "keep quiet" sign
     g.textAlign='center';g.textBaseline='middle';
     if(lot.quiet){
@@ -12945,32 +12982,57 @@ if(typeof module!=='undefined')module.exports=campaignRules;
       g.fillStyle='#ff6f61';cpRR(g,cx-62,py-14,124,28,14);g.fill();g.beginPath();g.moveTo(cx-7,py+13);g.lineTo(cx,py+22);g.lineTo(cx+7,py+13);g.closePath();g.fill();
       g.fillStyle='#2a0f0b';g.font='700 15px '+CP_FONT;g.fillText(lot.name+' · 要安靜',cx,py+1);
     }else{
-      g.fillStyle='rgba(5,22,32,.7)';cpRR(g,cx-28,top-32,56,22,11);g.fill();g.fillStyle='#b9d3d9';g.font='600 14px '+CP_FONT;g.fillText(lot.name,cx,top-20);
+      g.fillStyle='rgba(28,16,40,.72)';cpRR(g,cx-28,top-32,56,22,11);g.fill();g.fillStyle='#f0dcd6';g.font='600 14px '+CP_FONT;g.fillText(lot.name,cx,top-20);
     }
   }
   function cpTruck(g,x,t,live){
-    var y=live&&!reduceMotion?Math.sin(t*20)*.9:0,i,muted=CP.hold&&live;
-    if(live&&!CP.hold){for(i=0;i<3;i++){var r=14+((t*60+i*17)%51);g.globalAlpha=Math.max(0,.9-r/66);g.strokeStyle='#62e6d2';g.lineWidth=3;g.beginPath();g.arc(x-12,346+y,reduceMotion?18+i*14:r,Math.PI*1.12,Math.PI*1.88);g.stroke();}g.globalAlpha=1;}
-    g.fillStyle='rgba(0,0,0,.28)';g.beginPath();g.ellipse(x,430,70,6,0,0,7);g.fill();
-    cpBox(g,x-60,322+y,3,36,'#cfe3e6');g.fillStyle='#62e6d2';g.beginPath();g.moveTo(x-57,322+y);g.lineTo(x-80,329+y+(reduceMotion?0:Math.sin(t*9)*2));g.lineTo(x-57,337+y);g.closePath();g.fill();
-    g.fillStyle='#ffb638';cpRR(g,x-64,356+y,88,52,7);g.fill();g.fillStyle='#fff4d6';cpRR(g,x-56,366+y,72,24,5);g.fill();
-    g.fillStyle='#8a4b00';g.font='700 14px '+CP_FONT;g.textAlign='center';g.textBaseline='middle';g.fillText('懇請支持',x-20,379+y);
-    g.fillStyle='#d5912a';cpRR(g,x+22,368+y,42,40,7);g.fill();g.fillStyle='#bfe6ee';cpRR(g,x+35,374+y,23,15,3);g.fill();cpBox(g,x+58,400+y,9,5,'#e4f2f3');cpBox(g,x-66,402+y,134,6,'#b9781f');
-    [[-34,354],[-2,354]].forEach(function(s){g.fillStyle=muted?'#6f8d95':'#e4f2f3';g.beginPath();g.moveTo(x+s[0]-7,s[1]+y+2);g.lineTo(x+s[0]-13,s[1]+y-13);g.lineTo(x+s[0]+13,s[1]+y-13);g.lineTo(x+s[0]+7,s[1]+y+2);g.closePath();g.fill();cpBox(g,x+s[0]-4,s[1]+y,8,4,'#8db0b9');});
-    if(muted){g.strokeStyle='#ff6f61';g.lineWidth=4;g.lineCap='round';g.beginPath();g.moveTo(x-48,360+y);g.lineTo(x+12,334+y);g.stroke();g.lineCap='butt';}
-    [[-36,418],[42,418]].forEach(function(wh){g.fillStyle='#051620';g.beginPath();g.arc(x+wh[0],wh[1],12,0,7);g.fill();g.fillStyle='#8db0b9';g.beginPath();g.arc(x+wh[0],wh[1],5,0,7);g.fill();g.strokeStyle='#8db0b9';g.lineWidth=2;g.beginPath();g.moveTo(x+wh[0]+Math.cos(CP.wheel)*10,wh[1]+Math.sin(CP.wheel)*10);g.lineTo(x+wh[0]-Math.cos(CP.wheel)*10,wh[1]-Math.sin(CP.wheel)*10);g.stroke();});
+    var y=live&&!reduceMotion?Math.sin(t*20)*.9:0,i,muted=CP.hold&&live,gold='#ffc247',red='#d93c36',blue='#2c5aa8',cream='#fff4de';
+    // sound rings spread from the roof horns while broadcasting
+    if(live&&!CP.hold){for(i=0;i<3;i++){var r=16+((t*60+i*17)%58);g.globalAlpha=Math.max(0,.85-r/76);g.strokeStyle=gold;g.lineWidth=3;g.lineCap='round';g.beginPath();g.arc(x-6,326+y,reduceMotion?20+i*14:r,Math.PI*1.1,Math.PI*1.9);g.stroke();g.lineCap='butt';}g.globalAlpha=1;}
+    // headlight cone on the road
+    var hl=g.createLinearGradient(x+68,392,x+230,392);hl.addColorStop(0,'rgba(255,226,150,.5)');hl.addColorStop(1,'rgba(255,226,150,0)');g.fillStyle=hl;g.beginPath();g.moveTo(x+66,388+y);g.lineTo(x+230,372);g.lineTo(x+230,430);g.lineTo(x+66,404+y);g.closePath();g.fill();
+    g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(x,431,76,7,0,0,7);g.fill();
+    // flag pole + swaying flag at the back
+    g.fillStyle='#e8d8c8';g.fillRect(x-70,306+y,3,60);var fl=reduceMotion?0:Math.sin(t*9)*3;g.fillStyle=red;g.beginPath();g.moveTo(x-67,308+y);g.quadraticCurveTo(x-84,310+y+fl,x-98,308+y+fl*1.4);g.lineTo(x-98,322+y+fl*1.4);g.quadraticCurveTo(x-84,324+y+fl,x-67,322+y);g.closePath();g.fill();g.fillStyle=blue;g.fillRect(x-98,308+y+fl*1.4,12,7);
+    // cargo box: cream body with a red/blue skirt
+    g.fillStyle=cream;cpRR(g,x-68,334+y,98,70,8);g.fill();g.fillStyle='rgba(120,70,90,.14)';g.fillRect(x-68,388+y,98,16);
+    g.fillStyle=red;g.fillRect(x-68,392+y,98,6);g.fillStyle=blue;g.fillRect(x-68,398+y,98,6);
+    // big banner board on the box side
+    g.fillStyle=red;cpRR(g,x-60,342+y,82,40,5);g.fill();g.strokeStyle=gold;g.lineWidth=2;cpRR(g,x-57,345+y,76,34,4);g.stroke();
+    g.fillStyle=gold;g.font='900 19px '+CP_FONT;g.textAlign='center';g.textBaseline='middle';g.fillText('懇請支持',x-19,363+y);
+    g.fillStyle='#fff4de';g.beginPath();for(i=0;i<5;i++){g.arc(x-50+i*8,350+y,1.6,0,7);g.closePath();}g.fill();
+    // cab
+    g.fillStyle=cream;g.beginPath();g.moveTo(x+30,350+y);g.lineTo(x+52,350+y);g.quadraticCurveTo(x+62,366+y,x+70,378+y);g.lineTo(x+70,404+y);g.lineTo(x+30,404+y);g.closePath();g.fill();
+    g.fillStyle='#3a4c70';g.beginPath();g.moveTo(x+35,356+y);g.lineTo(x+50,356+y);g.quadraticCurveTo(x+57,368+y,x+62,376+y);g.lineTo(x+35,376+y);g.closePath();g.fill();g.fillStyle='rgba(255,255,255,.28)';g.beginPath();g.moveTo(x+38,358+y);g.lineTo(x+44,358+y);g.lineTo(x+40,376+y);g.lineTo(x+35,376+y);g.closePath();g.fill();
+    g.fillStyle=red;g.fillRect(x+30,392+y,40,6);g.fillStyle=blue;g.fillRect(x+30,398+y,40,6);
+    g.fillStyle='#ffe6a0';cpRR(g,x+63,384+y,8,8,2);g.fill();g.fillStyle='#8a6a80';g.fillRect(x+66,402+y,9,5);
+    // roof rack with two horns
+    g.fillStyle='#4a3650';g.fillRect(x-58,328+y,76,5);
+    [-44,-8].forEach(function(hx){var hot=live&&!CP.hold;g.fillStyle=muted?'#8a7a88':'#d6d0cc';g.beginPath();g.moveTo(x+hx-6,328+y);g.lineTo(x+hx-12,312+y);g.lineTo(x+hx+14,308+y);g.lineTo(x+hx+8,328+y);g.closePath();g.fill();g.fillStyle=muted?'#5a4a5a':(hot?'#ffe08a':'#7a6a7a');g.beginPath();g.ellipse(x+hx+14,310+y,3.5,8.5,0,0,7);g.fill();g.fillStyle='#4a3650';g.fillRect(x+hx-3,326+y,6,4);});
+    if(muted){g.strokeStyle='#ff6f61';g.lineWidth=4;g.lineCap='round';g.beginPath();g.moveTo(x-54,336+y);g.lineTo(x+10,304+y);g.stroke();g.lineCap='butt';}
+    // wheels with arches
+    [[-38,416],[42,416]].forEach(function(wh){g.fillStyle='#2a1b30';g.beginPath();g.arc(x+wh[0],wh[1]-4,17,Math.PI,0);g.fill();g.fillStyle='#1c1226';g.beginPath();g.arc(x+wh[0],wh[1],13,0,7);g.fill();g.fillStyle='#b9a4aa';g.beginPath();g.arc(x+wh[0],wh[1],6,0,7);g.fill();g.strokeStyle='#6a4a62';g.lineWidth=2;g.beginPath();g.moveTo(x+wh[0]+Math.cos(CP.wheel)*10,wh[1]+Math.sin(CP.wheel)*10);g.lineTo(x+wh[0]-Math.cos(CP.wheel)*10,wh[1]-Math.sin(CP.wheel)*10);g.moveTo(x+wh[0]+Math.sin(CP.wheel)*10,wh[1]-Math.cos(CP.wheel)*10);g.lineTo(x+wh[0]-Math.sin(CP.wheel)*10,wh[1]+Math.cos(CP.wheel)*10);g.stroke();});
   }
   function cpDraw(){
-    var g=campaignCtx,W=640,H=460,G=CP_GROUND,live=CP.phase==='run',t=CP.clock,cam=CP.dist,i,x;
-    var sky=g.createLinearGradient(0,0,0,G);sky.addColorStop(0,'#071827');sky.addColorStop(1,'#155068');g.fillStyle=sky;g.fillRect(0,0,W,G);
-    g.fillStyle='#f3e9c6';g.beginPath();g.arc(560,140,22,0,7);g.fill();g.fillStyle='#0e3247';g.beginPath();g.arc(550,133,20,0,7);g.fill();
-    for(i=0;i<16;i++){g.globalAlpha=.35+.3*Math.sin(t*1.5+i*2.1);cpBox(g,(i*97+31)%W,104+(i*53)%110,2,2,'#e4f2f3');}g.globalAlpha=1;
-    // far skyline drifts slowly
-    var far=cam*.22,k0=Math.floor(far/74);
-    for(i=-1;i<10;i++){var k=k0+i,fh=60+((k*37)%7+7)%7*16;cpBox(g,k*74-far,G-fh,66,fh,'#0d3145');cpBox(g,k*74-far+10,G-fh+12,6,8,'rgba(255,217,138,.25)');cpBox(g,k*74-far+40,G-fh+30,6,8,'rgba(255,217,138,.18)');}
-    // street
-    cpBox(g,0,G,W,18,'#2b5568');cpBox(g,0,G+16,W,3,'#1b4354');cpBox(g,0,G+18,W,86,'#0e2836');cpBox(g,0,G+104,W,H-G-104,'#081c27');
-    for(x=-(cam%90);x<W;x+=90)cpBox(g,x,G+60,46,4,'rgba(228,242,243,.3)');
+    cpFit();var g=campaignCtx,W=640,H=460,Hl=campaignCanvas.height,dy=cpDy,fs=cpFs.matches,G=CP_GROUND,live=CP.phase==='run',t=CP.clock,cam=CP.dist,i,x;
+    g.clearRect(0,0,W,Hl);g.save();g.translate(0,dy);
+    var sky=g.createLinearGradient(0,-dy,0,G);sky.addColorStop(0,'#241f52');sky.addColorStop(.5,'#7b4a7e');sky.addColorStop(.82,'#e4846f');sky.addColorStop(1,'#ffc86e');g.fillStyle=sky;g.fillRect(0,-dy,W,G+dy);
+    for(i=0;i<14+Math.floor(dy/22);i++){var sty=((i*37)%(100+dy))-dy+8;g.globalAlpha=Math.max(0,.55-(sty+dy)/(330+dy)*.4)*(.7+.3*Math.sin(t*1.6+i*2.1));cpBox(g,(i*97+31)%W,sty,2,2,'#fff1dc');}g.globalAlpha=1;
+    var sun=g.createRadialGradient(470,G-34,4,470,G-34,210);sun.addColorStop(0,'rgba(255,244,200,.95)');sun.addColorStop(.12,'rgba(255,214,140,.7)');sun.addColorStop(1,'rgba(255,170,110,0)');g.fillStyle=sun;g.fillRect(0,-dy,W,G+dy);
+    g.fillStyle='#fff0c8';g.beginPath();g.arc(470,G-34,26,0,7);g.fill();
+    // soft clouds drift by themselves and a little with the street
+    [[90,128,92,13],[330,92,120,15],[560,160,80,11],[210,196,70,9]].forEach(function(c,ci){var cx=((c[0]-t*(5+ci*2)-cam*.04)%(W+240)+W+240)%(W+240)-120;g.fillStyle=ci%2?'rgba(255,196,170,.34)':'rgba(255,224,196,.28)';g.beginPath();g.ellipse(cx,c[1],c[2],c[3],0,0,7);g.ellipse(cx-c[2]*.38,c[1]+c[3]*.4,c[2]*.55,c[3]*.8,0,0,7);g.ellipse(cx+c[2]*.42,c[1]+c[3]*.35,c[2]*.5,c[3]*.75,0,0,7);g.fill();});
+    // distant hills, then two skyline layers moving at different speeds (parallax)
+    var hill=cam*.08;g.fillStyle='#6a4670';g.beginPath();g.moveTo(0,G);for(x=0;x<=W;x+=16)g.lineTo(x,G-70-Math.sin((x+hill)*.012)*26-Math.sin((x+hill)*.031)*10);g.lineTo(W,G);g.closePath();g.fill();
+    var far=cam*.16,k0=Math.floor(far/74);
+    for(i=-1;i<10;i++){var k=k0+i,fh=70+((k*37)%7+7)%7*14;cpBox(g,k*74-far,G-fh,66,fh,'#533a68');cpBox(g,k*74-far+8,G-fh+10,5,7,'rgba(255,214,140,.38)');cpBox(g,k*74-far+30,G-fh+28,5,7,'rgba(255,214,140,.26)');cpBox(g,k*74-far+48,G-fh+46,5,7,'rgba(255,214,140,.32)');}
+    var mid=cam*.34,m0=Math.floor(mid/58);
+    for(i=-1;i<12;i++){var m=m0+i,mh=44+((m*53)%6+6)%6*13,mx2=m*58-mid;cpBox(g,mx2,G-mh,52,mh,'#3d2a55');cpBox(g,mx2,G-mh,52,3,'#5a4272');for(var wy=G-mh+10;wy<G-8;wy+=16){if((m*7+wy)%3)cpBox(g,mx2+9,wy,6,8,'rgba(255,214,140,.55)');if((m*5+wy)%4>1)cpBox(g,mx2+32,wy,6,8,'rgba(255,214,140,.4)');}}
+    // street: warm sidewalk, curb, asphalt, painted dashes
+    cpBox(g,0,G,W,18,'#a98f90');cpBox(g,0,G+15,W,4,'#e2cbb6');cpBox(g,0,G+19,W,85,'#3b3345');var hs=Hl-dy,fgr=g.createLinearGradient(0,G+104,0,Math.max(hs,G+105));fgr.addColorStop(0,'#322a43');fgr.addColorStop(1,'#140e1d');g.fillStyle=fgr;g.fillRect(0,G+104,W,Math.max(0,hs-G-104));
+    if(hs>G+170){var ly=G+104+(hs-G-104)*.3;for(x=-((cam*1.6)%240);x<W;x+=240)cpBox(g,x,ly,120,7,'rgba(255,230,180,.22)');}
+    g.fillStyle='rgba(255,200,130,.12)';g.fillRect(0,G+19,W,12);
+    for(x=-(cam%90);x<W;x+=90)cpBox(g,x,G+62,46,4,'rgba(255,230,180,.45)');
     // quiet stretches painted on the road
     CP.lots.forEach(function(lot){
       var sx=lot.x0-cam;if(!lot.quiet||sx>W||sx+lot.w<0)return;
@@ -12980,38 +13042,58 @@ if(typeof module!=='undefined')module.exports=campaignRules;
     });
     CP.lots.forEach(function(lot){var sx=lot.x0-cam;if(sx<W+20&&sx+lot.w>-20)cpBuilding(g,lot,sx,t);});
     cpTruck(g,CP_TRUCK,t,live);
-    // street lamps in front make the speed readable
-    var near=cam*1.25;
-    for(x=-(near%330)-20;x<W+40;x+=330){cpBox(g,x,G-118,5,222,'#061520');cpBox(g,x-16,G-122,38,6,'#061520');g.globalAlpha=.16;g.fillStyle='#ffd98a';g.beginPath();g.moveTo(x-8,G-116);g.lineTo(x+14,G-116);g.lineTo(x+60,G+104);g.lineTo(x-54,G+104);g.closePath();g.fill();g.globalAlpha=1;cpBox(g,x-8,G-117,22,4,'#ffd98a');}
+    // power poles in front make the speed readable; campaign bunting is strung between them
+    var near=cam*1.25,pole0=-(near%330)-20,flagC=['#d93c36','#fff1dc','#2c5aa8','#ffc247'];
+    for(x=pole0-330;x<W+400;x+=330){
+      for(i=0;i<2;i++){var ax=x+3,bx=x+333,top0=G-112+i*14,sag=26;g.strokeStyle='rgba(28,18,38,.8)';g.lineWidth=1.4;g.beginPath();g.moveTo(ax,top0);g.quadraticCurveTo((ax+bx)/2,top0+sag*2,bx,top0);g.stroke();
+        if(i===0)for(var f=1;f<14;f++){var u=f/14,fx=ax+(bx-ax)*u,fy=top0+sag*4*u*(1-u),sw=reduceMotion?0:Math.sin(t*4+f*.9+x*.01)*1.6;g.fillStyle=flagC[f%4];g.beginPath();g.moveTo(fx-5,fy);g.lineTo(fx+5,fy);g.lineTo(fx+sw,fy+13);g.closePath();g.fill();}}
+      cpBox(g,x,G-122,6,226,'#1c1226');cpBox(g,x-18,G-114,42,5,'#1c1226');cpBox(g,x-12,G-104,30,4,'#1c1226');
+      g.globalAlpha=.14;g.fillStyle='#ffd98a';g.beginPath();g.moveTo(x-10,G-118);g.lineTo(x+16,G-118);g.lineTo(x+64,G+104);g.lineTo(x-58,G+104);g.closePath();g.fill();g.globalAlpha=1;cpBox(g,x-12,G-119,28,4,'#ffd98a');
+    }
+    g.restore();
+    // vignette + warm dusk wash
+    var vg=g.createRadialGradient(W/2,Hl*.55,Hl*.3,W/2,Hl*.55,Hl*.95);vg.addColorStop(0,'rgba(20,8,32,0)');vg.addColorStop(1,'rgba(20,8,32,.5)');g.fillStyle=vg;g.fillRect(0,0,W,Hl);
+    g.save();g.translate(0,dy);
     // floating results
     g.textAlign='center';g.textBaseline='middle';
-    CP.floats.forEach(function(f){var age=t-f.t;if(age<0||age>1.1)return;g.globalAlpha=Math.min(1,(1.1-age)*2);g.font='700 17px '+CP_FONT;g.fillStyle=f.kind==='bad'?'#ff6f61':f.kind==='good'?'#62e6d2':f.kind==='gain'?'#ffb638':'#8db0b9';g.lineWidth=5;g.strokeStyle='#051620';var sx=Math.max(70,Math.min(W-70,f.x-cam)),sy=Math.max(118,f.y-age*24);g.strokeText(f.text,sx,sy);g.fillText(f.text,sx,sy);});
+    CP.floats.forEach(function(f){var age=t-f.t;if(age<0||age>1.1)return;g.globalAlpha=Math.min(1,(1.1-age)*2);g.font='700 17px '+CP_FONT;g.fillStyle=f.kind==='bad'?'#ff6f61':f.kind==='good'?'#8fe0b0':f.kind==='gain'?'#ffb638':'#d3b9c0';g.lineWidth=5;g.strokeStyle='#1c1226';var sx=Math.max(70,Math.min(W-70,f.x-cam)),sy=Math.max(118,f.y-age*24);g.strokeText(f.text,sx,sy);g.fillText(f.text,sx,sy);});
     g.globalAlpha=1;
-    // HUD: votes, route progress and speed, strikes
-    cpBox(g,0,0,W,96,'rgba(5,22,32,.86)');cpBox(g,0,96,W,1,'#214658');
-    g.textAlign='left';g.fillStyle='#8db0b9';g.font='12px '+CP_FONT;g.fillText('目前選票',16,16);g.fillStyle='#e4f2f3';g.font='700 30px "Chakra Petch",'+CP_FONT;g.fillText(fmt(CP.votes),16,42);
+    g.restore();
+    // HUD: votes, route progress and speed, strikes (screen space)
+    cpBox(g,0,0,W,96,'rgba(28,16,40,.8)');cpBox(g,0,96,W,1,'#6a4a62');
+    g.textAlign='left';g.fillStyle='#d3b9c0';g.font='12px '+CP_FONT;g.fillText('目前選票',16,16);g.fillStyle='#e4f2f3';g.font='700 30px "Chakra Petch",'+CP_FONT;g.fillText(fmt(CP.votes),16,42);
     var prog=Math.max(0,Math.min(1,(cpSpeed()-CP_V0)/(CP_VMAX-CP_V0)));
-    g.textAlign='center';g.fillStyle='#8db0b9';g.font='12px '+CP_FONT;g.fillText('車速 '+(cpSpeed()/CP_V0).toFixed(1)+'× · 已過 '+cpPassed()+' 棟 · 本局 +'+CP.earned+' 點',W/2,16);
-    g.fillStyle='#113041';cpRR(g,200,32,240,10,5);g.fill();g.fillStyle='#ffb638';cpRR(g,200,32,Math.max(10,240*prog),10,5);g.fill();g.fillStyle='#62e6d2';cpBox(g,436,28,3,18,'#62e6d2');
-    g.textAlign='right';g.fillStyle='#8db0b9';g.font='12px '+CP_FONT;g.fillText('吵到 '+CP.miss+' / '+CP_MAX_MISS+' 次',W-16,16);
-    for(i=0;i<CP_MAX_MISS;i++){g.beginPath();g.arc(W-24-(CP_MAX_MISS-1-i)*24,40,8,0,7);if(i<CP.miss){g.fillStyle='#ff6f61';g.fill();}else{g.lineWidth=1.5;g.strokeStyle='#326475';g.stroke();}}
+    g.textAlign='center';g.fillStyle='#d3b9c0';g.font='12px '+CP_FONT;g.fillText('車速 '+(cpSpeed()/CP_V0).toFixed(1)+'× · 已過 '+cpPassed()+' 棟 · 本局 +'+CP.earned+' 點',W/2,16);
+    g.fillStyle='#3a2640';cpRR(g,200,32,240,10,5);g.fill();g.fillStyle='#ffc247';cpRR(g,200,32,Math.max(10,240*prog),10,5);g.fill();cpBox(g,436,28,3,18,'#ffc247');
+    g.textAlign='right';g.fillStyle='#d3b9c0';g.font='12px '+CP_FONT;g.fillText('吵到 '+CP.miss+' / '+CP_MAX_MISS+' 次',W-16,16);
+    for(i=0;i<CP_MAX_MISS;i++){g.beginPath();g.arc(W-24-(CP_MAX_MISS-1-i)*24,40,8,0,7);if(i<CP.miss){g.fillStyle='#ff6f61';g.fill();}else{g.lineWidth=1.5;g.strokeStyle='#8a6a80';g.stroke();}}
     // upcoming buildings
-    g.textAlign='left';g.fillStyle='#8db0b9';g.font='12px '+CP_FONT;g.fillText('接下來',16,75);
+    g.textAlign='left';g.fillStyle='#d3b9c0';g.font='12px '+CP_FONT;g.fillText('接下來',16,75);
     for(i=0;i<6;i++){var up=CP.lots[CP.idx+i],ux=66+i*95;if(!up)break;
-      g.fillStyle=up.quiet?'rgba(255,111,97,.22)':'#113041';cpRR(g,ux,62,84,26,13);g.fill();g.lineWidth=i===0?2:1;g.strokeStyle=up.quiet?'#ff6f61':i===0?'#8db0b9':'#2b5568';g.stroke();
-      g.fillStyle=up.quiet?'#ff9a8f':'#b9d3d9';g.font='600 13px '+CP_FONT;g.textAlign='center';g.fillText(up.quiet?up.name+' 靜':up.name,ux+42,76);
-      if(i<5){g.fillStyle='#326475';g.fillText('›',ux+89.5,75);}}
-    g.textAlign='center';g.fillStyle=live?(CP.hold?'#8db0b9':'#62e6d2'):'#8db0b9';g.font='600 14px '+CP_FONT;
-    g.fillText(live?(CP.hold?'靜音中 · 放開才會廣播':'廣播拉票中 · 紅色路段要按住'):'放開＝廣播拉票　按住＝靜音',W/2,H-13);
+      g.fillStyle=up.quiet?'rgba(255,111,97,.22)':'#3a2640';cpRR(g,ux,62,84,26,13);g.fill();g.lineWidth=i===0?2:1;g.strokeStyle=up.quiet?'#ff6f61':i===0?'#d3b9c0':'#6a4a62';g.stroke();
+      g.fillStyle=up.quiet?'#ff9a8f':'#f0dcd6';g.font='600 13px '+CP_FONT;g.textAlign='center';g.fillText(up.quiet?up.name+' 靜':up.name,ux+42,76);
+      if(i<5){g.fillStyle='#8a6a80';g.fillText('›',ux+89.5,75);}}
+    if(fs&&live){
+      // full-width mute pad: the whole lower screen is the thumb target
+      var sg=cpSignal(),warn=sg[0]!=='safe',ph=Math.min(150,Math.max(96,Math.round((Hl-460-dy)*.42))),py0=Hl-ph-70,pulse=reduceMotion?.5:(.5+.5*Math.sin(t*10));
+      g.fillStyle=CP.hold?'rgba(217,60,54,.9)':'rgba(255,194,71,.16)';cpRR(g,28,py0,W-56,ph,28);g.fill();
+      g.lineWidth=warn&&!CP.hold?4:2;g.strokeStyle=CP.hold?'#ffb4a8':(warn?'rgba(255,111,97,'+(.55+.45*pulse)+')':'rgba(255,194,71,.7)');cpRR(g,28,py0,W-56,ph,28);g.stroke();
+      g.textAlign='center';g.textBaseline='middle';g.fillStyle='#fff1dc';g.font='800 26px '+CP_FONT;g.fillText(CP.hold?'靜音中 · 放開廣播':'按住靜音 · 放開廣播',W/2,py0+ph/2-(ph>110?12:0));
+      if(ph>110){g.fillStyle=CP.hold?'#ffe3dc':'#d3b9c0';g.font='600 15px '+CP_FONT;g.fillText(CP.hold?'靜音中 · 放開才會廣播':'廣播拉票中 · 紅色路段要按住',W/2,py0+ph/2+22);}
+    }else if(!fs){
+    g.textAlign='center';g.fillStyle=live?(CP.hold?'#d3b9c0':'#8fe0b0'):'#d3b9c0';g.font='600 14px '+CP_FONT;
+    g.fillText(live?(CP.hold?'靜音中 · 放開才會廣播':'廣播拉票中 · 紅色路段要按住'):'放開＝廣播拉票　按住＝靜音',W/2,Hl-13);
+    }
+    g.save();g.translate(0,dy);
     CP.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=190-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#ffb638';g.font='700 38px '+CP_FONT;g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#e4f2f3';g.font='600 17px '+CP_FONT;g.fillText('得票 '+fmt(p.v)+' 里程碑',W/2,py+28);g.globalAlpha=1;});
     if(!live){
-      g.fillStyle='rgba(5,22,32,.9)';cpRR(g,150,150,340,104,12);g.fill();g.lineWidth=1;g.strokeStyle='#214658';g.stroke();
-      g.fillStyle=CP.phase==='lost'?'#ff6f61':'#62e6d2';g.font='700 24px '+CP_FONT;
+      g.fillStyle='rgba(28,16,40,.92)';cpRR(g,150,150,340,104,12);g.fill();g.lineWidth=1;g.strokeStyle='#6a4a62';g.stroke();
+      g.fillStyle=CP.phase==='lost'?'#ff6f61':'#8fe0b0';g.font='700 24px '+CP_FONT;
       g.fillText(CP.phase==='ready'?'準備出發拉票？':'被檢舉，落選了！',W/2,186);
       g.fillStyle='#e4f2f3';g.font='14px '+CP_FONT;
       g.fillText(CP.phase==='ready'?'紅色建築要按住靜音，其他路段放開廣播':'最終 '+fmt(CP.votes)+' 票 · 過了 '+cpPassed()+' 棟'+(CP.earned>0?' · 入帳 +'+fmt(CP.earned)+' 點':''),W/2,222);
     }
-    g.textBaseline='alphabetic';g.textAlign='left';
+    g.restore();g.textBaseline='alphabetic';g.textAlign='left';
   }
   function cpPress(e){if(e.button!==undefined&&e.button!==0)return;if(CP.phase!=='run'||$('view-campaign').hidden||document.hidden)return;e.preventDefault();cpSync(performance.now());if(CP.phase!=='run')return;campaignCanvas.focus();campaignPointers.add(e.pointerId);cpHold(true);try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}cpUI();}
   function cpLift(e){cpSync(performance.now());campaignPointers.delete(e.pointerId);cpHold(campaignPointers.size>0||campaignKeys.size>0);}

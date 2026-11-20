@@ -1,0 +1,24 @@
+/* Campaign Truck: on phones the whole view is the game (no separate control area). Desktop keeps the console + side panel. */
+#view-campaign .cp-exit{display:none}
+@media(max-width:880px), (pointer:coarse) and (max-width:1100px){
+  html:has(#view-campaign:not([hidden])){overflow:hidden;overscroll-behavior:none}
+  #view-campaign:not([hidden]){position:fixed;inset:0;z-index:1200;box-sizing:border-box;margin:0;width:auto;max-width:none;height:100dvh;display:block;overflow:hidden;background:#1c1226;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  #view-campaign .console{display:block;position:absolute;inset:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);gap:0}
+  #view-campaign #cp-stage{position:absolute;inset:0;display:block;border:0;border-radius:0;background:#1c1226}
+  #view-campaign #cp-canvas{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:fill;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  #view-campaign .mobile-scroll-pad,#view-campaign .mobile-page-tools,#view-campaign .game-view-controls{display:none!important}
+  #view-campaign .cp-exit{display:block;position:absolute;left:10px;bottom:10px;z-index:4;width:44px;height:44px;border:1px solid rgba(255,241,220,.5);border-radius:12px;background:rgba(28,16,40,.78);color:#fff1dc;font:700 21px system-ui;cursor:pointer}
+  /* control sheet: only before the first run and after a loss; hidden (but still announced) while driving */
+  #view-campaign .side{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:14px 14px 18px 64px;background:linear-gradient(to top,rgba(28,16,40,.96) 70%,rgba(28,16,40,0))}
+  #view-campaign .side .panel{display:flex;flex-direction:column;gap:10px;padding:0;border:0;background:none;box-shadow:none}
+  #view-campaign .side .stats,#view-campaign .side .queue-watch,#view-campaign .side .hint,#view-campaign #cp-hold{display:none}
+  #view-campaign .side .msg{margin:0;font-size:13px;line-height:1.45;max-height:6.5em;overflow:auto}
+  #view-campaign #cp-go{min-height:52px;font-size:17px}
+  #view-campaign.cp-run .side,#view-campaign.cp-run .rules{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0;border:0;opacity:0;pointer-events:none}
+  #view-campaign .rules{position:absolute;right:10px;bottom:10px;z-index:4;width:min(calc(100% - 20px),420px);max-height:70dvh;overflow:auto;border:1px solid rgba(255,241,220,.35);border-radius:12px;background:rgba(28,16,40,.94);padding:10px 14px;font-size:13px}
+  #view-campaign .rules:not([open]){width:auto;padding:0 14px;display:flex;align-items:center;min-height:44px}
+  #view-campaign .rules summary{min-height:44px;display:flex;align-items:center;color:#fff1dc}
+  #view-campaign.cp-sheet .rules:not([open]){bottom:calc(10px + 56px + 118px)}
+  #view-campaign #cp-rank-status,#view-campaign #cp-rank-retry{position:absolute;z-index:4;left:70px;right:70px;bottom:14px;margin:0;text-align:center;font-size:12px}
+}

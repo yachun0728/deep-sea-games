@@ -1,5 +1,5 @@
   <section class="view" id="view-campaign" hidden>
-    <div class="console"><div class="fishing-stage"><canvas id="cp-canvas" width="640" height="460" tabindex="0" aria-label="宣傳車：車子沿街往右開，經過學校、醫院、豪宅時按住畫面靜音"></canvas></div>
+    <div class="console"><div class="fishing-stage" id="cp-stage"><canvas id="cp-canvas" width="640" height="460" tabindex="0" aria-label="宣傳車：車子沿街往右開，經過學校、醫院、豪宅時按住畫面靜音"></canvas><button class="cp-exit" id="cp-exit" type="button" aria-label="退出遊戲">←</button></div>
       <div class="side"><section class="panel" aria-label="宣傳車操作">
         <dl class="stats"><div><dt>目前選票</dt><dd id="cp-votes">200</dd></div><div><dt>吵到安靜區</dt><dd id="cp-miss">0 / 5</dd></div><div><dt>已經過</dt><dd id="cp-lap">0 棟</dd></div></dl>
         <div class="queue-watch" id="cp-signal" role="status" aria-live="polite" data-state="safe">尚未出發</div>
