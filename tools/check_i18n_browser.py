@@ -139,12 +139,17 @@ def main():
     with tempfile.TemporaryDirectory(prefix='deep-sea-i18n-') as temp:
         folder = Path(temp)
         for suite, width, height in [('outpost', 1366, 900), ('outpost', 390, 844), ('book_sort', 1366, 900), ('book_sort', 390, 844), ('book_sort', 844, 390), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('academy', 1366, 900), ('academy', 390, 844), ('core', 1366, 900), ('hans', 1366, 900), ('hans', 390, 844), ('games', 1366, 900), ('games', 390, 844),
+                                     ('merge', 1366, 900), ('merge', 390, 844), ('merge', 320, 480),
                                      ('ocean_link', 1366, 900), ('ocean_link', 844, 390), ('frontier', 1366, 900), ('frontier', 390, 844), ('frontier', 844, 390)]:
             if args.suite and suite not in args.suite:
                 continue
             script = (ROOT / f'tools/i18n_browser_{suite}.js').read_text(encoding='utf-8')
             route = f'/{suite}-{width}.html'
             tested_source = source
+            if suite == 'merge':
+                hook = 'window.__mergeTest = {state: G, localStart: () => beginMerge(null)};'
+                tested_source = source.replace("  var swipe = null, elMgArea = elMg.closest('.mg-console');",
+                                               hook + "  var swipe = null, elMgArea = elMg.closest('.mg-console');")
             if suite == 'frontier':
                 hook = 'window.__frontierTest={world:function(){return world;},create:frontierWorld,step:frontierStep,plan:frontierPlan,goal:frontierGoal,upgrade:frontierUpgrade,leave:frontierLeave,finish:finishStage,persist:persist};'
                 tested_source = source.replace('var preview=frontierWorld(1);', hook+'var preview=frontierWorld(1);')
@@ -164,6 +169,8 @@ def main():
                 if suite == 'core':
                     total += chrome.check(page, '?probe=default', 'Default Chinese')
                 query = '?lang=en&keep=1' + ('&preview=frontier' if suite == 'frontier' else '') + ('#ocean-link' if suite == 'ocean_link' else '#frontier' if suite == 'frontier' else '')
+                if suite == 'merge':
+                    query += '#merge'
                 if suite == 'outpost':
                     query += '#outpost'
                 if suite == 'market_desk':
@@ -187,6 +194,25 @@ def main():
                 if suite == 'core':
                     for query, label in [('?probe=saved', 'Saved English after reload'), ('?probe=explicit&lang=zh-Hant', 'Explicit Chinese overrides saved English'), ('?probe=blocked&lang=en', 'Blocked preference storage')]:
                         total += chrome.check(page, query, label)
+                if suite == 'merge' and width == 390:
+                    chrome.evaluate("location.hash='merge'")
+                    for _ in range(50):
+                        if chrome.evaluate("!document.getElementById('view-merge').hidden"):
+                            break
+                        time.sleep(.05)
+                    chrome.evaluate("window.__mergeTest.localStart(); "
+                                    "window.__mergeTest.state.grid = [1024, 1024, ...Array(14).fill(0)];")
+                    for event, points in [('touchStart', [{'x': 260, 'y': 765}]),
+                                          ('touchMove', [{'x': 150, 'y': 765}]), ('touchEnd', [])]:
+                        chrome.call('Input.dispatchTouchEvent', {'type': event, 'touchPoints': points}, page=True)
+                    if chrome.evaluate("document.getElementById('mg-max').textContent") != '2048':
+                        raise RuntimeError('Swipe below the board did not merge the two 1024 pearls')
+                    total += 1
+                    print('PASS: Pearl Merge accepts a touch swipe below the board', flush=True)
+                    if args.screenshots:
+                        args.screenshots.mkdir(parents=True, exist_ok=True)
+                        capture = chrome.call('Page.captureScreenshot', {'format': 'png'}, page=True)
+                        (args.screenshots / 'merge-390.png').write_bytes(base64.b64decode(capture['data']))
                 if suite == 'ocean_link' and width == 1366:
                     saved_balance = chrome.evaluate("localStorage.getItem('crush-depth-balance')")
                     chrome.call('Page.navigate', {'url': f'http://127.0.0.1:{server.server_port}/index.html#ocean-link'}, page=True)

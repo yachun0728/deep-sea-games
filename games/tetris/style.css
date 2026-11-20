@@ -10,6 +10,6 @@
   #view-tetris .side .panel>:not(#tt-rank-status):not(#tt-rank-retry){display:none}
   #view-tetris #tt-rank-status{margin:0;padding:3px 9px;border-radius:99px;background:rgba(13,16,22,.85);color:#cfd8e6;font-size:11px;text-align:center}
   #view-tetris #tt-rank-retry{pointer-events:auto;min-height:44px}
-  #view-tetris .rules{display:none}
+  #view-tetris .rules,#view-tetris .mobile-stage-actions{display:none}
   html:has(#view-tetris:not([hidden])){overflow:hidden}
 }

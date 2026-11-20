@@ -35,7 +35,8 @@
     "logic": "games/merge/game.js",
     "view": "games/merge/view.html",
     "card": "games/merge/card.html",
-    "icon": "games/merge/icon.svg"
+    "icon": "games/merge/icon.svg",
+    "style": "games/merge/style.css"
   },
   {
     "id": "dice",

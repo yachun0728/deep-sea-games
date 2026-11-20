@@ -25,7 +25,11 @@ const db=fakeDb();
 // Merge: play locally from the seed, submit once at game over.
 const round=await startRankedBoard(db,'p','merge');
 const rng=replay.seeded(round.state.seed), game=merge.create(rng), acts=[];
-for(let i=0;!game.over&&i<20000;i++){const d=Math.floor(i/3)%4,dir=merge.directions[(d+i)%4];if(merge.move(game,dir,rng))acts.push(merge.directions.indexOf(dir));}
+const chooseMove=replay.seeded(2048);
+for(let i=0;!game.over&&i<20000;i++){
+ const directionIndex=Math.floor(chooseMove()*merge.directions.length);
+ if(merge.move(game,merge.directions[directionIndex],rng))acts.push(directionIndex);
+}
 assert.ok(game.over,'local game ends');
 assert.deepEqual(round.state.grid,merge.create(replay.seeded(round.state.seed)).grid,'client recreates the issued board');
 assert.equal(await readBoardCommand(new Request('http://x',{method:'POST',body:JSON.stringify({gameId:'merge',id:'00000000-0000-4000-8000-000000000000',revision:0,action:acts})}),true)!==null,true);

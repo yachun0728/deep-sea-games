@@ -7,7 +7,7 @@
 - 網址：`#skybuilder`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。」｜立即開玩 · 高度挑戰
 - 追蹤名稱（GA4 `game_name`）：蓋樓大師，`game_id` 為 `skybuilder`
-- 檔案：`games/skybuilder/card.html`、`games/skybuilder/game.js`、`games/skybuilder/icon.svg`、`games/skybuilder/view.html`；`game.js` 共 163 行、10.7 KB
+- 檔案：`games/skybuilder/card.html`、`games/skybuilder/cover.webp`、`games/skybuilder/game.js`、`games/skybuilder/icon.svg`、`games/skybuilder/leaderboard.webp`、`games/skybuilder/view.html`；`game.js` 共 163 行、10.7 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「20. Sky Builder（skybuilder）」（下方「規則摘要」已複製）
 

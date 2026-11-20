@@ -60,6 +60,15 @@
 
 最後用繁體中文簡短說明：修改檔案與目的、已執行的驗證及結果、尚未驗證的事項。不得把未執行的測試寫成通過。提交或推送只包含已授權且檢查過的內容；不要夾帶既有未提交修改。
 
+### 推送前必須檢查最新版（防止圖片或他人變更被蓋掉）
+
+2026-11-20 使用者指定：插隊（Queue Cutter，`games/elevator/queue-cutter-cover.webp`、`games/elevator/queue-cutter-leaderboard.webp`）的封面與排行榜圖示曾被舊版本覆蓋。每次推送前：
+
+1. `git fetch origin`，與 `origin/main` 及目標遠端分支比較；遠端較新時先合併或 rebase，保留對方變更，禁止強推。
+2. 合併後重新執行 `python3 tools/build.py` 與 `--check`，`index.html` 一律由最新來源重新組合，不沿用舊的產出或以自己的版本解衝突。
+3. 以 `git diff origin/main --stat` 與 `git diff origin/main -- games/elevator/` 核對：不得有未被授權的圖片／素材被還原或刪除；插隊兩張圖的內容須與遠端最新版一致，除非本次明確要改。
+4. 推送後在 PR 或回報中記錄已核對的遠端 commit SHA。
+
 ## 新增遊戲時的檢查清單
 
 新增遊戲必須先符合「全遊戲產品原則：不得有博弈元素」。新增遊戲操作順序見 [README.md](README.md)。在使用者授權新增遊戲時，核對大廳卡片／圖示／分類、`view-*`、`VIEWS`／標題、共用餘額、單次扣款與單次結算、路由與輸入釋放、GA4 遊戲名稱和回合追蹤、必要的重設防護。同步更新架構與玩法文件。不得在純文件任務中執行這些程式變更。
