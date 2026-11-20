@@ -7,7 +7,7 @@
 - 網址：`#sneak`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「按住偷溜，老闆回頭前趕快裝忙。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：偷偷下班，`game_id` 為 `sneak`
-- 檔案：`games/sneak/card.html`、`games/sneak/game.js`、`games/sneak/icon.svg`、`games/sneak/view.html`；`game.js` 共 125 行、10.0 KB
+- 檔案：`games/sneak/card.html`、`games/sneak/cover.webp`、`games/sneak/game.js`、`games/sneak/icon.svg`、`games/sneak/leaderboard.webp`、`games/sneak/style.css`、`games/sneak/view.html`；`game.js` 共 187 行、10.1 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「15. Sneak（sneak）」（下方「規則摘要」已複製）
 
@@ -18,11 +18,11 @@
 ## 狀態與常數
 
 - 狀態物件／進行中旗標：`sneakBusy`（L2）
-- L6 常數：`MILESTONES`、`ENDLESS_FROM`、`ENDLESS_STEP`、`ENDLESS_BONUS`
+- L7 常數：`MILESTONES`、`ENDLESS_FROM`、`ENDLESS_STEP`、`ENDLESS_BONUS`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`bonusAt` L7、`nextMilestone` L8、`lvCap` L9、`T` L11、`saySneak` L17、`remember` L18、`setHold` L19、`release` L22、`ui` L23、`die` L32、`award` L41、`nextStage` L42、`update` L51、`sync` L57、`start` L61、`draw` L74、`press` L113、`lift` L114、`loop` L121
+`bonusAt` L8、`nextMilestone` L9、`lvCap` L10、`T` L12、`saySneak` L18、`remember` L19、`setHold` L20、`release` L23、`ui` L24、`die` L35、`award` L44、`nextStage` L45、`update` L54、`sync` L60、`start` L64、`sprite` L83、`draw` L89、`press` L175、`lift` L176、`loop` L183
 
 ## 錢包與結算接點
 
@@ -30,22 +30,22 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L41 `award`：`S.balance+=b;`
+- L44 `award`：`S.balance+=b;`
 
 **餘額檢查**
-- L64 `start`：`if(amount>S.balance){saySneak(LOW_MSG,'lose');`
+- L67 `start`：`if(amount>S.balance){saySneak(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L34 `die`：`AN.end(sneakAnalytics,earned,earned>0?'complete':'loss',{stage:sneaking.lv,progress_percent:Math.floor(sneaki…`
-- L41 `award`：`AN.progress(sneakAnalytics,{stage:n,bonus_points:b});`
-- L43 `nextStage`：`AN.progress(sneakAnalytics,{stage:done},true);`
-- L48 `nextStage`：`AN.resume(sneakAnalytics,{stage:sneaking.lv});`
-- L67 `start`：`sneakAnalytics=AN.start('sneak',amount);`
-- L69 `start`：`AN.resume(sneakAnalytics,{stage:sneaking.lv});`
+- L37 `die`：`AN.end(sneakAnalytics,earned,earned>0?'complete':'loss',{stage:sneaking.lv,progress_percent:Math.floor(sneaki…`
+- L44 `award`：`AN.progress(sneakAnalytics,{stage:n,bonus_points:b});`
+- L46 `nextStage`：`AN.progress(sneakAnalytics,{stage:done},true);`
+- L51 `nextStage`：`AN.resume(sneakAnalytics,{stage:sneaking.lv});`
+- L70 `start`：`sneakAnalytics=AN.start('sneak',amount);`
+- L72 `start`：`AN.resume(sneakAnalytics,{stage:sneaking.lv});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

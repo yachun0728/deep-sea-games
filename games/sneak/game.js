@@ -1,14 +1,15 @@
-  /* ---------- Sneak Out: original office scene, endless levels with milestone bonuses credited when reached ---------- */
+  /* ---------- Sneak Out: retro office comic, endless levels with milestone bonuses credited when reached ---------- */
   var sneakBusy=false,sneakStake=0;
   (function(){
-const c=$('sk-canvas'),g=c.getContext('2d'),W=400,H=600;
+const c=$('sk-canvas'),g=c.getContext('2d'),W=400;
+const sneakConsole=c.closest('.sneak-console');
 // Milestones count completed levels; calibrated with a reaction-time simulation (see GAME_RULES.md).
 const MILESTONES=[[9,3],[11,7],[13,15],[16,30]],ENDLESS_FROM=16,ENDLESS_STEP=3,ENDLESS_BONUS=40;
 function bonusAt(n){for(const m of MILESTONES)if(m[0]===n)return m[1];return n>ENDLESS_FROM&&(n-ENDLESS_FROM)%ENDLESS_STEP===0?ENDLESS_BONUS:0}
 function nextMilestone(n){for(const m of MILESTONES)if(m[0]>n)return m;return [ENDLESS_FROM+(Math.floor((n-ENDLESS_FROM)/ENDLESS_STEP)+1)*ENDLESS_STEP,ENDLESS_BONUS]}
 const lvCap=()=>sneakRules.levelCap(sneaking);
 let best=0;try{const n=Number(localStorage.getItem('sneak'));if(Number.isFinite(n))best=Math.max(0,Math.floor(n))}catch(e){}
-const texts={lv:n=>'第 '+n+' 關',bs:n=>'最佳 '+n+' 關',title:'{{t:sneak.msg.001}}',tap:'{{t:sneak.msg.002}}',caught:'{{t:sneak.msg.003}}',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'{{t:sneak.msg.004}}',again:'{{t:sneak.msg.005}}',ok:'{{t:sneak.msg.006}}'};const T=k=>texts[k];
+const texts={title:'{{t:sneak.msg.001}}',tap:'{{t:sneak.msg.002}}',caught:'{{t:sneak.msg.003}}',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'{{t:sneak.msg.004}}',ok:'{{t:sneak.msg.006}}'};const T=k=>texts[k];
 const quotes=['{{t:sneak.msg.007}}','{{t:sneak.msg.008}}','{{t:sneak.msg.009}}'];
 let sneakAnalytics=null;
 let prevBest=0,earned=0,pops=[],st='ready',sneaking=sneakRules.create(),flash=0,shake=0,last=0,rec=false,qi=0;
@@ -21,8 +22,10 @@ function setHold(value){
 }
 function release(){mouseHold=false;keyHold=false;setHold(false)}
 function ui(){
+ sneakConsole.dataset.phase=st;
+ sneakConsole.style.setProperty('--sk-progress',Math.min(1,sneaking.pr/100));
  const nx=nextMilestone(sneaking.score);
- $('sk-stage').textContent=sneaking.lv+' 關';$('sk-progress').textContent=Math.floor(sneaking.pr)+'%';$('sk-best').textContent=best+' 關';$('sk-next').textContent='完成 '+nx[0]+' 關 · +'+nx[1];
+ $('sk-stage').textContent=sneaking.lv;$('sk-progress').textContent=Math.floor(sneaking.pr)+'%';$('sk-best').textContent=best;$('sk-next').textContent='完成 '+nx[0]+' 關 · +'+nx[1];
  $('sk-amount').disabled=sneakBusy;
  $('sk-go').disabled=st==='run'||sneakRank.busy();$('sk-go').textContent=st==='run'?'{{t:sneak.msg.010}}':'{{t:sneak.msg.011}}';$('sk-hold').disabled=st!=='run';
  var signal=st!=='run'?(st==='dead'?'{{t:sneak.msg.012}}':'{{t:sneak.msg.013}}'):sneaking.ph==='look'?'{{t:sneak.msg.014}}':sneaking.ph==='warn'?'{{t:sneak.msg.015}}':'{{t:sneak.msg.016}}';
@@ -71,43 +74,102 @@ function start(){
   st='run';last=performance.now();ui();c.focus();
  });
 }
+const art={};
+for(const name of ['rainy-office','step-a','step-b','work','away','warn','look']){
+ const image=new Image();
+ image.src='games/sneak/art/'+name+'.webp';
+ art[name]=image;
+}
+function sprite(name,x,y,height){
+ const image=art[name];
+ if(!image.naturalWidth)return;
+ const width=height*image.naturalWidth/image.naturalHeight;
+ g.drawImage(image,x-width/2,y-height,width,height);
+}
 function draw(){
-const ox=shake>0?(Math.random()-.5)*14:0;
-g.save();g.translate(ox,0);
-g.fillStyle='#2e3350';g.fillRect(-20,0,W+40,470);
-g.fillStyle='#1d2036';g.fillRect(-20,470,W+40,H-470);
-g.strokeStyle='#e8e4d8';g.lineWidth=3;g.beginPath();g.arc(80,100,30,0,7);g.stroke();
-g.beginPath();g.moveTo(80,100);g.lineTo(80,78);g.moveTo(80,100);g.lineTo(93,118);g.stroke();
-g.fillStyle='#5a4636';g.fillRect(230,338,140,34);
-const bx=300,hy=372-76*1.4,hr=17;
-g.fillStyle='#8c3b36';g.fillRect(bx-17,372-62*1.4,34,56);
-g.fillStyle=sneaking.ph==='away'?'#2b2118':'#f5d0a9';g.beginPath();g.arc(bx,hy,hr,0,7);g.fill();
-if(sneaking.ph==='warn'){g.fillStyle='#2b2118';g.beginPath();g.arc(bx,hy,hr,Math.PI*.5,Math.PI*1.5);g.fill();g.fillStyle='#f2c14e';g.font='700 34px system-ui,sans-serif';g.textAlign='center';g.fillText('!',bx,hy-28)}
-if(sneaking.ph==='look'){g.fillStyle='#fff';g.beginPath();g.arc(bx-6,hy-2,4,0,7);g.arc(bx+6,hy-2,4,0,7);g.fill();g.fillStyle='#000';g.beginPath();g.arc(bx-7,hy-2,2,0,7);g.arc(bx+5,hy-2,2,0,7);g.fill();g.strokeStyle='#2b2118';g.lineWidth=2.5;g.beginPath();g.moveTo(bx-11,hy-10);g.lineTo(bx-2,hy-6);g.moveTo(bx+11,hy-10);g.lineTo(bx+2,hy-6);g.stroke()}
-g.fillStyle='#7a5a3a';g.fillRect(352,320,44,220);
-g.fillStyle='#e8e4d8';g.font='600 12px system-ui,sans-serif';g.textAlign='center';g.fillText('EXIT',374,342);
-g.fillStyle='#f2c14e';g.beginPath();g.arc(360,440,3,0,7);g.fill();
-const x=34+sneaking.pr/100*300,y=540,sw=sneaking.hold&&st==='run'?Math.sin(sneaking.walk)*9:0;
-g.strokeStyle='#f2c14e';g.lineWidth=6;g.lineCap='round';g.beginPath();g.moveTo(x,y-28);g.lineTo(x-sw,y);g.moveTo(x,y-28);g.lineTo(x+sw,y);g.stroke();
-g.fillStyle='#f2c14e';g.fillRect(x-11,y-66,22,40);
-g.fillStyle='#f5d0a9';g.beginPath();g.arc(x,y-78,12,0,7);g.fill();
-g.restore();
-if(sneaking.ph==='look'&&st==='run'){g.fillStyle='rgba(226,75,74,.2)';g.fillRect(0,0,W,H)}
-g.fillStyle='#fff';g.font='600 20px system-ui,sans-serif';g.textAlign='left';g.fillText(T('lv')(sneaking.lv),16,32);
-g.textAlign='right';g.fillText(T('bs')(best),W-16,32);
-g.fillStyle='rgba(255,255,255,.2)';g.fillRect(16,44,W-32,6);g.fillStyle='#f2c14e';g.fillRect(16,44,(W-32)*Math.min(1,sneaking.pr/100),6);
-if(flash>0&&st==='run'){g.textAlign='center';g.fillStyle='#fff';g.font='600 28px system-ui,sans-serif';g.fillText(T('ok'),W/2,120)}
-pops.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/2.2);const py=210-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#f2c14e';g.font='700 38px system-ui,sans-serif';g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#fff';g.font='600 17px system-ui,sans-serif';g.fillText('完成 '+p.n+' 關里程碑',W/2,py+28);g.globalAlpha=1});
-if(earned>0&&st==='run'){g.textAlign='right';g.fillStyle='#f2c14e';g.font='600 16px system-ui,sans-serif';g.fillText('{{t:sneak.msg.021}}'+earned+' 點',W-16,68)}
-if(st!=='run'){
-g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,0,W,H);g.textAlign='center';g.fillStyle='#fff';
-if(st==='ready'){g.font='600 32px system-ui,sans-serif';g.fillText(T('title'),W/2,270);g.font='18px system-ui,sans-serif';g.fillText(T('tap'),W/2,310)}
-else{g.font='600 34px system-ui,sans-serif';g.fillText(T('caught'),W/2,215);
-g.font='18px system-ui,sans-serif';g.fillText(quotes[qi],W/2,252);
-g.fillText(T('reach')(100-Math.floor(sneaking.pr)),W/2,296);
-g.font='600 22px system-ui,sans-serif';g.fillText(T('done')(sneaking.score)+(earned>0?' · 入帳 +'+earned+' 點':''),W/2,336);
-if(rec){g.fillStyle='#f2c14e';g.font='18px system-ui,sans-serif';g.fillText(T('rec'),W/2,368)}
-g.fillStyle='#fff';g.font='18px system-ui,sans-serif';g.fillText(T('again'),W/2,420)}}}
+ const cssWidth=c.clientWidth||W,cssHeight=c.clientHeight||600;
+ const height=cssHeight*W/cssWidth;
+ const scale=Math.min(2,window.devicePixelRatio||1);
+ const pixelsWide=Math.round(cssWidth*scale),pixelsHigh=Math.round(cssHeight*scale);
+ if(c.width!==pixelsWide)c.width=pixelsWide;
+ if(c.height!==pixelsHigh)c.height=pixelsHigh;
+ g.setTransform(pixelsWide/W,0,0,pixelsHigh/height,0,0);
+ g.fillStyle='#0c1e2e';
+ g.fillRect(0,0,W,height);
+
+ const roomHeight=Math.min(570,height*.67);
+ const roomTop=Math.max(112,height*.72-roomHeight*.82);
+ const deskY=roomTop+roomHeight*.644, floorY=roomTop+roomHeight*.82;
+ const warning=sneaking.ph==='warn', looking=sneaking.ph==='look';
+ const room=art['rainy-office'];
+ const bossX=W*.709;
+ const playerX=32+sneaking.pr/100*340;
+ const walking=st==='run'&&sneaking.hold;
+ const step=reduceMotion||Math.floor(sneaking.walk/2)%2===0?'step-a':'step-b';
+
+ g.save();
+ if(shake>0)g.translate((Math.random()-.5)*8,0);
+ if(room.naturalWidth)g.drawImage(room,0,roomTop,W,roomHeight);
+ else{
+  g.fillStyle='#233a51';g.fillRect(0,roomTop,W,roomHeight*.77);
+  g.fillStyle='#a46e3c';g.fillRect(235,deskY,110,floorY-deskY);
+  g.fillStyle='#edbc65';g.fillRect(358,deskY-65,34,floorY-deskY+65);
+ }
+ sprite(sneaking.ph,bossX,deskY,roomHeight*.15);
+ g.fillStyle='#0b1425a0';
+ g.beginPath();g.ellipse(playerX,floorY-1,19,4,0,0,Math.PI*2);g.fill();
+ sprite(walking?step:'work',playerX,floorY,roomHeight*(walking?.21:.225));
+
+ if(warning||looking){
+  const markY=deskY-roomHeight*.165;
+  g.textAlign='center';g.textBaseline='middle';
+  g.font='italic 900 38px system-ui,sans-serif';
+  g.lineWidth=6;g.strokeStyle='#101521';
+  g.fillStyle=warning?'#ffbd55':'#ff7462';
+  g.strokeText(looking?'!!':'!',bossX+39,markY);
+  g.fillText(looking?'!!':'!',bossX+39,markY);
+ }
+ g.restore();
+
+ if(st==='run'){
+  g.textAlign='center';g.textBaseline='middle';
+  if(flash>0){
+   g.fillStyle='#081521ed';g.fillRect(90,roomTop+18,220,38);
+   g.fillStyle='#ffedc5';g.font='800 20px system-ui,sans-serif';
+   g.fillText(T('ok'),W/2,roomTop+37,204);
+  }
+  pops.forEach((p,index)=>{
+   g.globalAlpha=Math.max(0,1-p.age/2.2);
+   const y=floorY+24+index*24-(reduceMotion?0:Math.min(1,p.age*3)*16);
+   g.fillStyle='#091725';g.fillRect(78,y-11,244,22);
+   g.fillStyle='#ffbe55';g.font='800 16px system-ui,sans-serif';
+   g.fillText('{{t:sneak.msg.021}}'+p.b,W/2,y,224);
+  });
+  g.globalAlpha=1;
+  return;
+ }
+
+ g.fillStyle='#090e19a8';g.fillRect(0,0,W,height);
+ const center=height*.43;
+ g.save();
+ g.translate(W/2,center);
+ g.rotate(reduceMotion?0:-.035);
+ g.fillStyle='#ffedc5';g.strokeStyle='#121a24';g.lineWidth=4;
+ g.fillRect(-162,-45,324,st==='ready'?94:134);
+ g.strokeRect(-162,-45,324,st==='ready'?94:134);
+ g.textAlign='center';g.textBaseline='middle';
+ g.font='900 30px system-ui,sans-serif';g.fillStyle=st==='ready'?'#101b27':'#942d25';
+ g.fillText(st==='ready'?T('title'):T('caught'),0,-15,295);
+ g.font='700 15px system-ui,sans-serif';g.fillStyle='#1a2431';
+ if(st==='ready')g.fillText(T('tap'),0,19,290);
+ else{
+  g.fillText(quotes[qi],0,14,290);
+  g.fillText(T('reach')(100-Math.floor(sneaking.pr)),0,37,290);
+  g.fillText(T('done')(sneaking.score)+(earned>0?' · +'+earned:''),0,60,290);
+  if(rec)g.fillText(T('rec'),0,78,290);
+ }
+ g.restore();
+}
 
 $('sk-go').addEventListener('click',start);
 function press(e){if(e.button!==undefined&&e.button!==0)return;if(st!=='run'||$('view-sneak').hidden||document.hidden)return;e.preventDefault();sync(performance.now());if(st!=='run')return;c.focus();mouseHold=true;setHold(true);try{e.currentTarget.setPointerCapture(e.pointerId)}catch(_){}ui()}
