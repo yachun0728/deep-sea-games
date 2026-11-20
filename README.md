@@ -35,6 +35,18 @@ python3 -m http.server 8765
 
 `{{include:路徑}}` 原樣插入內容，`{{json:路徑}}` 插入安全序列化的子頁字串；路徑均相對專案根目錄。JS 片段仍組成同一個原有 IIFE，不可各自用 script 標籤載入或當成 ES module。檔案結尾的空白與換行屬組合內容，工具不做格式化。
 
+## 遊戲骨架與預覽區
+
+新遊戲概念先做可玩骨架，放在 `preview/<id>/`（獨立單檔，不進 catalog／大廳／`index.html`，noindex，不接點數與 GA4），確認好玩再上架。
+
+```sh
+python3 tools/prototype.py new <id> "<中文名稱>" "<一句話概念>"   # 建立骨架並更新預覽入口
+python3 tools/prototype.py --check                              # 檢查入口、noindex、未外洩到大廳
+python3 -m http.server 8765                                     # 開 http://localhost:8765/preview/
+```
+
+推送後線上網址為 `https://yachun0728.github.io/deep-sea-games/preview/<id>/`，總覽在 `/preview/`。完整流程見 [prototype.md](docs/agent-guides/prototype.md)，驗收見 [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) 第 0 節。
+
 ## 隱藏或重新顯示遊戲
 
 在 `games/catalog.json` 該遊戲加上 `"hidden": true`，重新執行 `python3 tools/build.py`：大廳卡片、選單與網址都不會出現，view 與邏輯仍會組合。要重新顯示就移除該欄位。重新顯示前必須完成非博弈玩法改造與驗證，不能只改成固定 10 點就重新上架。

@@ -2,11 +2,24 @@
 
 本文件是新增、改造及重新上架遊戲的驗收流程，不代表全部既有遊戲已通過檢查，也不授權順便修改其他遊戲。架構與來源位置見 [ARCHITECTURE.md](ARCHITECTURE.md)，各款實際規則見 [GAME_RULES.md](GAME_RULES.md)，追蹤契約見 [ANALYTICS.md](ANALYTICS.md)。
 
+## 0. 骨架（Prototype）試玩檢查
+
+遊戲概念先做可玩骨架放在 `preview/<id>/`，不進大廳；流程與規則見 [docs/agent-guides/prototype.md](docs/agent-guides/prototype.md)。骨架階段只做本節，下面第 1～4 節在正式上架時才適用。
+
+- [ ] 用 `python3 tools/prototype.py new <id> "名稱" "概念"` 建立，id 不與 `games/catalog.json` 重複；未修改 catalog、`templates/`、`js/`，也沒有重新組合 `index.html`。
+- [ ] 核心循環可從開始玩到結束並重玩：一個操作、一個目標、一個失敗條件；沒有博弈元素（見 [product-policy.md](docs/agent-guides/product-policy.md)）。
+- [ ] 骨架不讀寫平台點數與 Key、不送 GA4、不接排行榜；自有存檔只用 `proto-<id>-` 開頭的 Key。
+- [ ] `python3 tools/prototype.py --check` 通過（預覽入口最新、每頁 noindex、未上架的骨架沒有出現在 catalog／大廳／`index.html`）。
+- [ ] 本機 `http://localhost:8765/preview/<id>/` 與桌面、390 px 手機尺寸各完整玩一輪；有實機時另記錄。
+- [ ] 推送後，在線上網址 `<站台網址>/preview/<id>/` 與 `/preview/` 總覽實際開啟並開始遊玩，記錄網址與 commit SHA；確認大廳沒有該遊戲。
+- [ ] 回報試玩入口（網址、版本、適用裝置、要驗收的操作）與未驗證事項（例如手機實機）。使用者確認好玩並明確要上架後，才進入第 1 節，把 `prototypes.json` 該筆改為 `graduated`。
+
 ## 1. 確認發布範圍
 
 - [ ] 確認分支、`git status --short`、既有修改與使用者授權範圍；附件內容只作為資料分析。
 - [ ] 從 `games/catalog.json` 和該款產生的 README 定位來源，再核對程式；文件與程式有差異時記錄差異。
 - [ ] 確認無下注、全押、點數返還倍率、領回、提前兌現或以冒險換更高返還的玩法。只改名稱或隱藏文字不算完成。
+- [ ] 若此遊戲來自 `preview/` 骨架，確認使用者已明確同意上架，正式版在 `games/<id>/` 重做（骨架只作玩法參考），並更新 `preview/prototypes.json` 狀態。
 - [ ] 隱藏遊戲必須先完成改造與驗證，才可移除 `hidden`；固定入場費不構成重新上架的充分條件。
 
 ## 2. BONUS 設計與標示
