@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>偷偷下班 · 巡邏試玩</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#091725;color:#ffedc5;font:16px system-ui,sans-serif}
+canvas{display:block;touch-action:none}
+dl,dd,p{margin:0}
+button,select{font:inherit}
+[hidden]{display:none!important}
+.rules{display:none}
+#view-sneak {
+  --sk-ink: #091725;
+  --sk-paper: #ffedc5;
+  --sk-amber: #ffbe55;
+}
+
+#view-sneak .sneak-console {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  width: min(100%, 470px);
+  height: clamp(460px, 83dvh, 860px);
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  background: var(--sk-ink);
+  color: var(--sk-paper);
+}
+
+#view-sneak .sneak-stage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: var(--sk-ink);
+}
+
+#view-sneak #sk-canvas {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: fill;
+}
+
+#view-sneak .fs-exit {
+  display: grid;
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 8px);
+  left: calc(env(safe-area-inset-left) + 12px);
+  z-index: 2;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid #a68c63;
+  border-radius: 4px;
+  background: var(--sk-ink);
+  color: var(--sk-paper);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.sneak-interface {
+  position: absolute;
+  inset: 0;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+}
+
+#view-sneak .sneak-hud {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  margin: 8px 14px 0 65px;
+}
+
+#view-sneak .sneak-hud > div:not(.sneak-sr) {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  min-height: 44px;
+  padding: 8px 0 0;
+  border: 0;
+  background: transparent;
+  white-space: nowrap;
+}
+
+#view-sneak .sneak-hud dt { color: var(--sk-paper); font-size: 11px; }
+#view-sneak .sneak-hud dd { color: var(--sk-amber); font-size: clamp(14px, 4vw, 20px); font-weight: 800; }
+
+.sneak-progress {
+  height: 10px;
+  margin: 4px 14px 0;
+  padding: 2px;
+  border: 1px solid var(--sk-paper);
+  border-radius: 99px;
+}
+
+.sneak-progress::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--sk-amber);
+  transform-origin: left;
+  transform: scaleX(var(--sk-progress, 0));
+}
+
+#view-sneak #sk-signal {
+  align-self: center;
+  margin: 9px 14px 0;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--sk-ink);
+  color: var(--sk-paper);
+  font-weight: 750;
+}
+
+#view-sneak #sk-signal[data-state="warn"] { background: var(--sk-amber); color: var(--sk-ink); }
+#view-sneak #sk-signal[data-state="look"] { background: #9d3128; color: white; }
+
+#view-sneak .sneak-sr,
+#view-sneak #sk-difficulty,
+#view-sneak .sneak-interface > .hint,
+#view-sneak .game-exit-link,
+#view-sneak .mobile-scroll-pad {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+#view-sneak .sneak-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: auto 14px 12px;
+}
+
+#view-sneak .sneak-actions .msg,
+#view-sneak #sk-rank-status {
+  margin: 0;
+  color: var(--sk-paper);
+  text-align: center;
+  font-size: 13px;
+}
+
+#view-sneak .sneak-actions button {
+  min-height: 44px;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+#view-sneak .sneak-actions .go,
+#view-sneak .sneak-hold {
+  width: min(100%, 320px);
+  min-height: 56px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--sk-amber);
+  border-radius: 4px;
+  background: var(--sk-ink);
+  color: var(--sk-amber);
+  box-shadow: none;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+#view-sneak .sneak-actions .go { background: var(--sk-amber); color: var(--sk-ink); }
+#view-sneak .sneak-hold:active { background: var(--sk-amber); color: var(--sk-ink); }
+#view-sneak [data-phase="run"] #sk-go,
+#view-sneak .sneak-hold:disabled { display: none; }
+
+@media (max-width: 880px), (pointer: coarse) and (max-width: 1100px) {
+  html:has(#view-sneak:not([hidden])) { overflow: hidden; }
+  #view-sneak:not([hidden]) .sneak-console {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    width: 100%;
+    height: 100dvh;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+  }
+}
+
+#view-sneak [data-phase="run"] #sk-rank-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+#view-sneak .sneak-actions .msg:empty { display: none; }
+
+#view-sneak .sneak-console{height:100dvh}
+#view-sneak .preview-stage{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:14px}
+#view-sneak .preview-stage select{pointer-events:auto;color:inherit;background:#1b2e40;border:1px solid #a68c63;border-radius:4px;min-height:44px;padding:4px 8px}
+#view-sneak [data-phase="run"] .preview-stage{display:none}
+</style>
+</head>
+<body>
+  <section class="view" id="view-sneak">
+    <div class="console sneak-console"><div class="sneak-stage"><canvas id="sk-canvas" tabindex="0" width="400" height="600" aria-label="偷偷下班：按住前進。老闆回頭或同事走近時，放開假裝工作。"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
+      <section class="sneak-interface" aria-label="偷偷下班操作">
+        <dl class="stats sneak-hud"><div><dt>目前關卡</dt><dd id="sk-stage">1</dd></div><div class="sneak-sr"><dt>下班進度</dt><dd id="sk-progress">0%</dd></div><div><dt>最佳紀錄</dt><dd id="sk-best">0</dd></div><div class="sneak-sr"><dt>下一個獎勵</dt><dd id="sk-next">完成 9 關 · +3</dd></div></dl><div class="sneak-progress" aria-hidden="true"></div>
+        <div class="queue-watch" id="sk-signal" role="status" aria-live="polite" data-state="away">等待開始</div><p class="hint" id="sk-difficulty"></p>
+        <input id="sk-amount" type="hidden" value="0">
+        <div class="sneak-actions">
+        <label class="preview-stage">試玩起點
+          <select id="preview-level">
+            <option value="1">第 1 關 · 一般開局</option>
+            <option value="2">第 2 關 · 入口走廊</option>
+            <option value="3">第 3 關 · 老闆走回座位</option>
+            <option value="5">第 5 關 · 遮蔽物</option>
+            <option value="8">第 8 關 · 保全巡邏</option>
+            <option value="12">第 12 關 · 長空走廊</option>
+            <option value="13">第 13 關 · 同事密集</option>
+            <option value="14">第 14 關 · 快速折返</option>
+          </select>
+        </label>
+<button class="go" id="sk-go" type="button" data-mode="bet">開始下班</button>
+        <button class="chip sneak-hold" id="sk-hold" type="button" disabled>按住前進 · 放開裝忙</button>
+        <p class="msg" id="sk-msg" aria-live="polite">按住前進、放開裝忙。抵達出口就進入下一關。</p>
+        <p id="sk-rank-status" role="status" hidden></p><button id="sk-rank-retry" type="button" hidden>重送排行榜成績</button></div>
+        <p class="hint">也可按住 <kbd>空白鍵</kbd>、<kbd>→</kbd> 或 <kbd>D</kbd> 前進。</p>
+      </section>
+    </div>
+    <details class="rules"><summary>玩法、難度與點數</summary><p>按住遊戲畫面、前進按鈕或空白鍵前進。老闆回頭或同事走近時，放開假裝工作，被發現就結束。</p><p>關卡沒有上限。第一關直接從辦公區開始，第二關起先走過逐關加長的入口走廊。第三關起老闆會走回座位，坐下後有回頭警示。辦公區第一關需累積走 6 秒，第二關 11 秒，第三到第七關每關再加 4 秒，之後每關加 1 秒。第二關起有同事巡經，先亮黃色驚嘆號，轉紅時要站定。第四關起老闆可能直接回頭。第五關起可用遮蔽物躲過老闆，第八關起要避開保全的手電筒，第十二關起輪替不同的遮蔽物與巡邏配置。</p><p>通關達到 9、11、13、16 關時，分別獲得 3、7、15、30 點；之後每多通過 3 關再得 40 點。獎勵當場入帳。</p><p>切換遊戲、背景分頁或視窗失焦會停止前進；切換遊戲與背景分頁會暫停。重新整理會放棄本局，已入帳的點數會保留。點數共用。</p></details>
+  </section>
+
+
+<script>
+const sneakRules = (() => {
+  const levelCap = state => Math.min(state.lv, 10);
+  const score = state => state.score;
+  const rulesVersion = 5;
+  const entrySpeed = 64;
+  const entryDistance = state => state.version < 4 ? 0
+    : state.version === 4 ? 180+(state.lv-1)*14
+    : state.lv === 1 ? 0 : 180+(state.lv-2)*18;
+  const bossWalkTime = state => Math.max(1.15,1.85-(state.lv-3)*.045);
+  function bossWalk(state) {
+    if (state.ph !== 'leave' && state.ph !== 'return') return null;
+    const progress = Math.min(1, Math.max(0, 1-state.pt/bossWalkTime(state)));
+    return {progress, leaving:state.ph === 'leave'};
+  }
+  const inHallway = state => state.entry < entryDistance(state);
+  const routeProgress = state => 100*(state.entry+state.pr*3.4)/(entryDistance(state)+340);
+  const WALK_CHECKPOINTS = [[], [35], [28, 66], [22, 49, 75], [18, 46, 79], [27, 53, 82]];
+  const PATROLS = [
+    {cover:[[43,54]], patrol:[35,81], period:9},
+    {cover:[[18,30],[64,76]], patrol:[24,87], period:10},
+    {cover:[[30,42],[72,86]], patrol:[52,92], period:7},
+  ];
+  const EMPTY_ROUTE = {cover:[],patrol:null};
+  const COVER_ROUTE = {cover:[[30,42],[63,75]],patrol:null};
+  const stageLayout = state => state.version < 3 || state.lv < 5 ? EMPTY_ROUTE
+    : state.lv < 8 ? COVER_ROUTE
+    : state.lv < 12 ? PATROLS[1]
+    : PATROLS[(state.lv-12)%PATROLS.length];
+  const inCover = state => stageLayout(state).cover.some(([left,right]) => state.pr >= left && state.pr <= right);
+  function guard(state) {
+    const layout = stageLayout(state);
+    if (!layout.patrol || inHallway(state)) return null;
+    const leg = state.clock % layout.period / (layout.period/2);
+    const direction = leg < 1 ? 1 : -1;
+    const phase = leg % 1;
+    const [left,right] = layout.patrol;
+    const x = left+(right-left)*(direction === 1 ? phase : 1-phase);
+    const distance = (state.pr-x)*direction;
+    const active = phase >= .12;
+    return {x,direction,active,near:distance >= -3 && distance <= 28,
+      watching:active && distance >= -1 && distance <= 15};
+  }
+  const APPROACH = .95, PASSING = .65, LEAVING = .55;
+  const visitorDuration = APPROACH + PASSING + LEAVING;
+  const travelTime = state => state.version === 1 ? 6 + (levelCap(state)-1)*2
+    : state.lv === 1 ? 6 : 11 + Math.min(5,state.lv-2)*4 + Math.max(0,state.lv-7);
+  const fullTravelTime = state => travelTime(state)+entryDistance(state)/entrySpeed;
+  const checkpoints = state => {
+    if (state.version === 1) return WALK_CHECKPOINTS[0];
+    if (state.version >= 3 && state.lv >= 12 && (state.lv-12)%3 === 1) return [18,39,60,83];
+    const index = state.lv < 4 ? state.lv-1 : 3+(state.lv-4)%3;
+    return WALK_CHECKPOINTS[index];
+  };
+  const visitorApproaching = state => state.visitor !== null && state.visitor.age < APPROACH;
+  const visitorWatching = state => state.visitor !== null && state.visitor.age >= APPROACH && state.visitor.age < APPROACH+PASSING;
+  const between = (random, a, b) => a + random() * (b - a);
+  const awayTime = (state, random) => between(random, Math.max(.65,2.4-state.lv*.24),
+    Math.max(1.2,3.8-state.lv*.32));
+
+  function resetStage(state, random) {
+    Object.assign(state,{pr:0,ph:'away',pt:awayTime(state,random),fk:false,grace:0,hold:false,walk:0,visitor:null,visitorIndex:0,caughtBy:null,clock:0,entry:0,bossLooks:0});
+    if (state.version >= 5 && state.lv >= 3) {
+      state.ph = 'return';
+      state.pt = bossWalkTime(state);
+    }
+  }
+  function create(random = Math.random, version = rulesVersion, startLevel = 1) {
+    const state = {lv:startLevel,score:0,dead:false,version};
+    resetStage(state,random);
+    return state;
+  }
+  function input(state, action) {
+    const hold = action === 0;
+    if (hold === state.hold) return false;
+    state.hold = hold;
+    return true;
+  }
+  function nextPhase(state, random) {
+    const level = state.lv;
+    if (state.ph === 'leave') {
+      state.ph = 'return';
+      state.pt = bossWalkTime(state);
+    } else if (state.ph === 'return') {
+      state.ph = 'warn';
+      state.pt = Math.max(.5,.8-level*.035);
+      state.fk = false;
+    } else if (state.ph === 'away') {
+      const direct = level >= 4 && random() < (level === 4 ? .15 : Math.min(.5,.3+(level-5)*.03));
+      if (direct) {
+        state.ph = 'look';
+        state.pt = between(random,.9,1.5);
+        state.grace = Math.max(.22,.34-.01*(level-4));
+      } else {
+        state.ph = 'warn';
+        state.fk = level >= 3 && random() < .3;
+        state.pt = Math.max(.25,.75-level*.09);
+        state.grace = 0;
+      }
+    } else if (state.ph === 'warn' && !state.fk) {
+      state.ph = 'look';
+      state.pt = between(random,.8,1.3+level*.06);
+      state.grace = Math.max(.12,.16-.003*level);
+    } else if (state.version >= 5 && level >= 5 && state.ph === 'look' && ++state.bossLooks % 2 === 0) {
+      state.ph = 'leave';
+      state.pt = bossWalkTime(state);
+      state.grace = 0;
+    } else {
+      state.ph = 'away'; state.pt = awayTime(state,random); state.grace = 0;
+    }
+  }
+  function advance(state, dt, random) {
+    if (!state.dead && inHallway(state)) {
+      if (!state.hold) return;
+      const distance = entryDistance(state);
+      const travel = Math.min(dt, (distance-state.entry)/entrySpeed);
+      state.entry = Math.min(distance,state.entry+travel*entrySpeed);
+      if (distance-state.entry < 1e-8) state.entry = distance;
+      dt -= travel;
+      if (dt <= 1e-8) return;
+    }
+    const caught = () => {
+      if (!state.hold) return false;
+      if (visitorWatching(state)) state.caughtBy = 'visitor';
+      else if (guard(state)?.watching) state.caughtBy = 'guard';
+      else if (state.ph === 'look' && state.grace <= 1e-8 && !inCover(state)) state.caughtBy = 'boss';
+      return state.caughtBy !== null;
+    };
+    const route = checkpoints(state);
+    while (dt > 1e-8 && !state.dead) {
+      if (caught()) { state.dead = true; return 'caught'; }
+      const speed = 100/travelTime(state);
+      const checkpoint = route[state.visitorIndex];
+      if (!state.visitor && state.pr >= checkpoint-1e-8) {
+        state.visitor = {checkpoint,age:0,index:state.visitorIndex++};
+      }
+      const visitor = state.visitor;
+      const boundary = visitor && (visitor.age < APPROACH ? APPROACH :
+        visitor.age < APPROACH+PASSING ? APPROACH+PASSING : visitorDuration);
+      let step = Math.min(dt,state.pt);
+      if (visitor) step = Math.min(step,boundary-visitor.age);
+      else if (state.hold && checkpoint !== undefined) step = Math.min(step,(checkpoint-state.pr)/speed);
+      if (state.grace > 1e-8) step = Math.min(step,state.grace);
+      if (state.hold) {
+        step = Math.min(step,(100-state.pr)/speed);
+        state.pr = Math.min(100,state.pr+speed*step);
+        state.walk += step*12;
+      }
+      if (visitor) {
+        visitor.age = Math.min(boundary,visitor.age+step);
+        if (boundary-visitor.age < 1e-8) visitor.age = boundary;
+        if (visitor.age === visitorDuration) state.visitor = null;
+      }
+      state.clock += step;
+      state.pt -= step; state.grace = Math.max(0,state.grace-step); dt -= step;
+      if (state.pt <= 1e-8) nextPhase(state,random);
+      if (caught()) { state.dead = true; return 'caught'; }
+      if (state.pr >= 100-1e-8) {
+        const completed = state.lv++;
+        state.score++;
+        resetStage(state,random);
+        return completed;
+      }
+    }
+  }
+  return {rulesVersion, inputCount:2, create, input, advance, levelCap, score, travelTime, visitorApproaching, visitorWatching, visitorDuration, stageLayout, inCover, guard, entryDistance, inHallway, routeProgress, fullTravelTime, bossWalk};
+})();
+if (typeof module !== 'undefined') module.exports = sneakRules;
+
+</script>
+<script>
+(engine=>{
+  const $=id=>document.getElementById(id);
+  const menu=$('preview-level');
+  const query=new URLSearchParams(location.search);
+  let stage=Number(query.get('stage'))||1;
+  if(!Array.from(menu.options).some(option=>Number(option.value)===stage)) stage=1;
+  menu.value=String(stage);
+  menu.addEventListener('change',()=>{
+    query.set('stage',menu.value);
+    location.search=query.toString();
+  });
+  document.querySelector('.fs-exit').addEventListener('click',()=>location.reload());
+  const instructions={
+    2:'前段走廊可以一路走。進辦公區後，再留意老闆和路過的同事。',
+    3:'老闆走回座位時可以前進。看到回頭警示就準備停下。',
+    5:'走到檔案櫃後可避開老闆的視線。路過的同事仍可能發現你。',
+    8:'留意保全照地的方向。光束掃過時放開裝忙。',
+    12:'遮蔽物少，趁老闆與保全都沒在看時走過空走廊。',
+    13:'這關有四次同事巡經，記得在驚嘆號轉紅前放開。',
+    14:'保全折返得更快，注意光束轉向。'
+  };
+  if(instructions[stage])$('sk-msg').textContent=instructions[stage];
+  const sneakRules={...engine,create:(rng,version)=>engine.create(rng,version,stage)};
+  const practiceStorage={getItem:()=>null,setItem(){}};
+  const S={balance:0},ENTRY_FEE=0,LOW_MSG='',AN={start:()=>({}),end(){},progress(){},resume(){}};
+  const save=()=>{},renderAll=()=>{},fmt=n=>String(n);
+  const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const timedLeaderboard=()=>{
+    let carry=0;
+    return {
+      start(callback){carry=0;callback(Math.random)},record(){},finish(){},busy:()=>false,
+      update(ms,active,step){
+        if(!active())return;
+        carry+=Math.min(ms,100);
+        while(carry>=10&&active()){carry-=10;step(.01)}
+      }
+    };
+  };
+    /* ---------- Sneak Out: retro office comic, endless levels with milestone bonuses credited when reached ---------- */
+  var sneakBusy=false,sneakStake=0;
+  (function(){
+const c=$('sk-canvas'),g=c.getContext('2d'),W=400;
+const sneakConsole=c.closest('.sneak-console');
+// Milestones count completed levels; calibrated with a reaction-time simulation (see GAME_RULES.md).
+const MILESTONES=[[9,3],[11,7],[13,15],[16,30]],ENDLESS_FROM=16,ENDLESS_STEP=3,ENDLESS_BONUS=40;
+function bonusAt(n){for(const m of MILESTONES)if(m[0]===n)return m[1];return n>ENDLESS_FROM&&(n-ENDLESS_FROM)%ENDLESS_STEP===0?ENDLESS_BONUS:0}
+function nextMilestone(n){for(const m of MILESTONES)if(m[0]>n)return m;return [ENDLESS_FROM+(Math.floor((n-ENDLESS_FROM)/ENDLESS_STEP)+1)*ENDLESS_STEP,ENDLESS_BONUS]}
+let best=0;try{const n=Number(practiceStorage.getItem('sneak'));if(Number.isFinite(n))best=Math.max(0,Math.floor(n))}catch(e){}
+const texts={title:'偷偷下班',tap:'到操作區開始',caught:'被抓住了！',reach:n=>'離大門只差 '+n+'%',done:n=>'本局通過 '+n+' 關',rec:'新紀錄！',ok:'溜走了！'};const T=k=>texts[k];
+const quotes=['「你這是要去哪裡？」','「報告寫完了嗎就想走？」','「坐下，還有工作呢。」'];
+let sneakAnalytics=null;
+let prevBest=0,earned=0,pops=[],st='ready',sneaking=sneakRules.create(),flash=0,shake=0,last=0,rec=false,qi=0;
+let mouseHold=false,keyHold=false,sneakRandom=Math.random;
+const sneakRank=timedLeaderboard('sneak','sk',sneakRules.inputCount,ui);
+function saySneak(text,kind=''){$('sk-msg').textContent=text;$('sk-msg').className='msg'+(kind?' '+kind:'')}
+function remember(){if(sneaking.score>best){best=sneaking.score;try{practiceStorage.setItem('sneak',best)}catch(e){}}}
+function setHold(value){
+ if(st==='run'&&sneakRules.input(sneaking,value?0:1))sneakRank.record(value?0:1);
+}
+function release(){mouseHold=false;keyHold=false;setHold(false)}
+function ui(){
+ sneakConsole.dataset.phase=st;
+ const progress=sneakRules.routeProgress(sneaking);
+ sneakConsole.style.setProperty('--sk-progress',Math.min(1,progress/100));
+ const nx=nextMilestone(sneaking.score);
+ $('sk-stage').textContent=sneaking.lv;$('sk-progress').textContent=Math.floor(progress)+'%';$('sk-best').textContent=best;$('sk-next').textContent='完成 '+nx[0]+' 關 · +'+nx[1];
+ $('sk-amount').disabled=sneakBusy;
+ $('sk-go').disabled=st==='run'||sneakRank.busy();$('sk-go').textContent=st==='run'?'潛行中 · 按住前進':'開始下班';$('sk-hold').disabled=st!=='run';
+ const patrol=sneakRules.guard(sneaking);
+ const sheltered=sneakRules.inCover(sneaking);
+ const visitorAlert=sneakRules.visitorApproaching(sneaking);
+ const visitorWatching=sneakRules.visitorWatching(sneaking);
+ const hallway=sneakRules.inHallway(sneaking);
+ const bossLooking=sneaking.ph==='look'&&!sheltered;
+ const danger=visitorWatching||patrol?.watching||bossLooking;
+ const caution=visitorAlert||patrol?.near||(sneaking.ph==='warn'&&!sheltered);
+ const signal=st!=='run'?(st==='dead'?'本局被抓住了':'等待開始')
+   :hallway?'前段走廊 · 可以前進'
+   :visitorWatching?'同事經過 · 放開裝忙'
+   :patrol?.watching?'手電筒照過來了 · 放開'
+   :bossLooking?'老闆回頭了！立刻放開'
+   :visitorAlert?'同事走過來了'
+   :patrol?.near?'保全靠近 · 注意手電筒'
+   :sheltered?'在遮蔽物後 · 留意巡邏'
+   :sneaking.ph==='return'?'老闆走回座位 · 把握空檔'
+   :sneaking.ph==='leave'?'老闆離開座位 · 可以前進'
+   :caution?'老闆有動靜，小心回頭':'老闆忙著工作';
+ if($('sk-signal').textContent!==signal)$('sk-signal').textContent=signal;
+ $('sk-signal').dataset.state=danger?'look':caution?'warn':'away';
+ $('sk-difficulty').textContent='需移動約 '+Math.round(sneakRules.fullTravelTime(sneaking))+' 秒 · '+(sneaking.lv>=4?'可能直接回頭':'回頭前會先警示');
+}
+function die(){
+ if(st!=='run')return;
+ AN.end(sneakAnalytics,earned,earned>0?'complete':'loss',{stage:sneaking.lv,progress_percent:Math.floor(sneakRules.routeProgress(sneaking))});
+ st='dead';sneakBusy=false;release();rec=sneaking.score>0&&sneaking.score>=best&&sneaking.score>prevBest;
+ shake=reduceMotion?0:.4;qi=Math.floor(Math.random()*quotes.length);
+ saySneak((sneaking.caughtBy==='visitor'?'被路過的同事發現！':sneaking.caughtBy==='guard'?'被巡邏保全發現！':'被老闆發現！')+'共通過 '+sneaking.score+' 關，'+(earned>0?'本局入帳 '+fmt(earned)+' 點。':'這一局沒有獎勵。'),earned>0?'win':'lose');
+ sneakRank.finish(sneaking.score);
+ ui();
+}
+function award(n,b){earned+=b;S.balance+=b;save();renderAll();AN.progress(sneakAnalytics,{stage:n,bonus_points:b});pops.push({n:n,b:b,age:0});if(pops.length>3)pops.shift();saySneak('完成 '+n+' 關！獎勵 +'+b+' 點已入帳，本局累計 +'+earned+' 點。','win')}
+function nextStage(done){
+ remember();AN.progress(sneakAnalytics,{stage:done},true);
+ const bonus=bonusAt(sneaking.score);
+ saySneak('第 '+done+' 關溜走了！下一關馬上開始。','win');
+ flash=.8;shake=0;release();
+ AN.resume(sneakAnalytics,{stage:sneaking.lv});
+ ui();c.focus();
+}
+function update(dt){
+ if(st!=='run')return;
+ const event=sneakRules.advance(sneaking,dt,sneakRandom);
+ if(event==='caught')die();
+ else if(event)nextStage(event);
+}
+function sync(now){
+ const ms=Math.max(0,now-last);last=now;
+ if(!$('view-sneak').hidden&&!document.hidden)sneakRank.update(ms,()=>st==='run',update);
+}
+function start(){
+ if(st==='run')return;
+ const amount=ENTRY_FEE;
+ if(amount>S.balance){saySneak(LOW_MSG,'lose');return;}
+ sneakRank.start(random=>{
+  sneakRandom=random||Math.random;sneaking=sneakRules.create(sneakRandom);
+  sneakAnalytics=AN.start('sneak',amount);sneakStake=amount;sneakBusy=true;save();renderAll();
+  rec=false;earned=0;pops=[];prevBest=best;flash=0;shake=0;release();
+  AN.resume(sneakAnalytics,{stage:sneaking.lv});
+  saySneak('按住前進，放開裝忙。老闆回頭或同事經過時，記得停下。');
+  st='run';last=performance.now();ui();c.focus();
+ }, undefined, {rulesVersion:sneakRules.rulesVersion});
+}
+const art={};
+const bossSteps=['boss-walk-a','boss-walk-b','boss-walk-c','boss-walk-d'];
+for(const name of [...bossSteps,'boss-turn','boss-sit','rainy-office','step-a','step-shoe','work','away','warn','look','visitor-teal','visitor-rust']){
+ const image=new Image();
+ image.src='../../games/sneak/art/'+name+'.webp';
+ art[name]=image;
+}
+function sprite(name,x,y,height){
+ const image=art[name];
+ if(!image.naturalWidth)return;
+ const width=height*image.naturalWidth/image.naturalHeight;
+ g.drawImage(image,x-width/2,y-height,width,height);
+}
+// Positions are in the original walking sprite's 300 px coordinate space.
+const sneakStepLength=37;
+function drawSneakLeg(phase,hipX,far){
+ const planted=phase<.5, t=(phase%.5)*2;
+ const swing=(1-Math.cos(t*Math.PI))/2;
+ const ankleX=94+sneakStepLength*(planted?.5-t:swing-.5);
+ const lift=planted?0:Math.sin(t*Math.PI)**2*13;
+ const roll=.36+.30*(planted?(1-Math.cos(t*Math.PI))/2:(1+Math.cos(t*Math.PI))/2);
+ const ankleY=298-lift-(27*Math.sin(roll)-12*Math.cos(roll)+6);
+ const kneeX=(hipX+ankleX)/2+8,kneeY=(168+ankleY)/2-3;
+ g.lineJoin='round';
+ g.beginPath();
+ g.moveTo(hipX-17,142);g.quadraticCurveTo(hipX+6,140,hipX+15,168);
+ g.lineTo(kneeX+15,kneeY-5);g.quadraticCurveTo(kneeX+19,kneeY+4,kneeX+12,kneeY+13);
+ g.lineTo(ankleX+8,ankleY-2);g.quadraticCurveTo(ankleX,ankleY+3,ankleX-9,ankleY-2);
+ g.lineTo(kneeX-12,kneeY+8);g.quadraticCurveTo(kneeX-17,kneeY+1,kneeX-14,kneeY-6);
+ g.lineTo(hipX-20,184);g.closePath();
+ g.fillStyle=far?'#423b35':'#655b4d';g.fill();
+ g.strokeStyle='#171618';g.lineWidth=5;g.stroke();
+ g.beginPath();g.moveTo(hipX+4,179);g.lineTo(kneeX+4,kneeY-1);g.lineTo(kneeX-5,kneeY+8);
+ g.moveTo(kneeX+1,kneeY+17);g.lineTo(ankleX+3,ankleY-9);
+ g.strokeStyle=far?'#332b28':'#443b34';g.lineWidth=3;g.stroke();
+
+ const shoe=art['step-shoe'];
+ if(shoe.naturalWidth){
+  g.save();g.translate(ankleX,ankleY);g.rotate(roll);
+  if(far)g.filter='brightness(.77)';
+  g.drawImage(shoe,-13,-18,44,36);g.restore();
+  g.beginPath();g.moveTo(ankleX-5,ankleY-6);g.lineTo(ankleX+5,ankleY-6);
+  g.lineTo(ankleX+5,ankleY+1);g.quadraticCurveTo(ankleX,ankleY+4,ankleX-5,ankleY+1);
+  g.closePath();g.fillStyle=far?'#454039':'#6c6051';g.fill();
+  g.strokeStyle='#25201d';g.lineWidth=2;g.stroke();
+ }
+}
+function drawSneakingPlayer(x,y,height,walking,distance){
+ if(!walking){sprite('work',x,y,height);return}
+ const torso=art['step-a'];
+ if(!torso.naturalWidth)return;
+ const scale=height/300;
+ const phase=reduceMotion?.16:(distance/(2*sneakStepLength*scale))%1;
+ const dip=reduceMotion?0:Math.sin(phase*Math.PI*2)**2*2;
+ g.save();g.translate(x-torso.naturalWidth/2*scale,y-height);g.scale(scale,scale);
+ drawSneakLeg((phase+.5)%1,91,true);
+ drawSneakLeg(phase,101,false);
+ g.translate(0,dip);
+ // Preserve the original inked torso and bag, clipping away the old stride.
+ g.beginPath();g.moveTo(0,0);g.lineTo(torso.naturalWidth,0);g.lineTo(torso.naturalWidth,147);
+ g.lineTo(102,147);g.lineTo(92,151);g.lineTo(80,160);g.lineTo(73,184);g.lineTo(0,184);
+ g.closePath();g.clip();g.drawImage(torso,0,0);
+ g.restore();
+}
+function drawCoworker(floorY,roomHeight){
+ const v=sneaking.visitor;
+ if(!v||st==='ready')return;
+ const fraction=v.age/sneakRules.visitorDuration;
+ const x=32+v.checkpoint*3.4+94-fraction*155;
+ const y=floorY-18;
+ g.save();
+ g.globalAlpha=Math.min(1,fraction*8,(1-fraction)*8);
+ g.fillStyle='#0b1425a0';
+ g.beginPath();g.ellipse(x,y-2,17,3,0,0,Math.PI*2);g.fill();
+ const name=(sneaking.lv+v.index)%2===0?'visitor-teal':'visitor-rust';
+ const bob=reduceMotion?0:Math.abs(Math.sin(v.age*10))*2;
+ sprite(name,x,y-bob,roomHeight*.20);
+ const watching=sneakRules.visitorWatching(sneaking);
+ if(watching||sneakRules.visitorApproaching(sneaking)){
+  g.textAlign='center';g.textBaseline='middle';g.font='900 24px system-ui,sans-serif';
+  g.lineWidth=5;g.strokeStyle='#101521';g.fillStyle=watching?'#ff7462':'#ffbd55';
+  g.strokeText('!',x,y-roomHeight*.23);g.fillText('!',x,y-roomHeight*.23);
+ }
+ g.restore();
+}
+const routeX=progress=>32+progress*3.4;
+function drawCover(floorY,roomHeight,foreground){
+ const layout=sneakRules.stageLayout(sneaking);
+ for(const [start,end] of layout.cover){
+  const x=routeX(start),width=routeX(end)-x,high=roomHeight*.183;
+  const hiding=sneaking.pr>=start&&sneaking.pr<=end;
+  if(hiding!==foreground)continue;
+  g.save();g.globalAlpha=hiding?.74:1;
+  const top=floorY-high;
+  g.fillStyle='#354543';g.fillRect(x,top,width,high);
+  g.fillStyle='#7b876f';g.fillRect(x+3,top+3,width-6,high-8);
+  g.strokeStyle='#141e20';g.lineWidth=3;g.strokeRect(x,top,width,high);
+  for(let i=0;i<3;i++){
+   const y=top+5+i*(high-10)/3;
+   g.strokeRect(x+4,y,width-8,(high-10)/3);
+   g.fillStyle='#b4a482';g.fillRect(x+width/2-4,y+5,8,2);
+  }
+  g.restore();
+ }
+}
+function drawGuard(patrol,floorY,roomHeight){
+ if(!patrol)return;
+ const x=routeX(patrol.x),direction=patrol.direction;
+ const base=floorY-28;
+ const length=routeX(15)-routeX(0);
+ g.save();g.translate(x,base);g.scale(direction,1);
+ if(patrol.active){
+  const light=g.createLinearGradient(5,0,length,0);
+  light.addColorStop(0,'#ffc16a70');light.addColorStop(1,'#ffc16a12');
+  g.beginPath();g.moveTo(22*roomHeight/440,-12*roomHeight/440);
+  g.lineTo(length,1);g.lineTo(length,24);g.closePath();
+  g.fillStyle=light;g.fill();
+  g.strokeStyle=patrol.watching?'#ff7462':'#e6b873';g.lineWidth=1.5;g.stroke();
+ }
+ g.scale(roomHeight/440,roomHeight/440);
+ const stride=reduceMotion?4:Math.sin(sneaking.clock*11)*8;
+ g.lineCap='round';g.lineJoin='round';
+ g.beginPath();g.moveTo(-4,-23);g.lineTo(-4-stride,-3);g.lineTo(1-stride,-2);
+ g.moveTo(5,-23);g.lineTo(5+stride,-3);g.lineTo(11+stride,-2);
+ g.strokeStyle='#101922';g.lineWidth=9;g.stroke();
+ g.strokeStyle='#34495c';g.lineWidth=5;g.stroke();
+ g.beginPath();g.moveTo(-11,-22);g.lineTo(-9,-45);g.quadraticCurveTo(1,-52,10,-44);
+ g.lineTo(12,-21);g.closePath();g.fillStyle='#455e71';g.fill();g.strokeStyle='#111a22';g.lineWidth=3;g.stroke();
+ g.beginPath();g.ellipse(2,-54,8,10,0,0,Math.PI*2);
+ g.fillStyle='#d9ad7f';g.fill();g.stroke();
+ g.beginPath();g.moveTo(-8,-58);g.lineTo(-5,-66);g.lineTo(8,-66);g.lineTo(11,-59);g.lineTo(15,-57);g.lineTo(-8,-57);g.closePath();
+ g.fillStyle='#34495c';g.fill();g.stroke();
+ g.fillStyle='#e6bf74';g.fillRect(3,-43,4,5);
+ g.beginPath();g.moveTo(3,-39);g.lineTo(13,-27);g.lineTo(16,-14);
+ g.strokeStyle='#141e24';g.lineWidth=8;g.stroke();g.strokeStyle='#587282';g.lineWidth=5;g.stroke();
+ g.fillStyle='#14202a';g.fillRect(12,-16,11,7);
+ g.fillStyle='#ffe2a1';g.fillRect(21,-15,3,5);
+ g.restore();
+}
+function drawBoss(deskX,deskY,floorY,roomTop,roomHeight,room){
+ const walk=sneakRules.bossWalk(sneaking);
+ if(!walk){sprite(sneaking.ph,deskX,deskY,roomHeight*.15);return}
+
+ // The boss walks in the aisle, turns around the desk corner, then sits behind it.
+ const progress=walk.leaving?1-walk.progress:walk.progress;
+ const aisle=Math.min(1,progress/.49);
+ const corner=Math.max(0,Math.min(1,(progress-.49)/.21));
+ const behind=Math.max(0,Math.min(1,(progress-.70)/.17));
+ const x=deskX-102+aisle*42+corner*19+behind*41;
+ const feet=floorY-roomHeight*(.012+.069*corner);
+ const pose=progress>=.87?'boss-sit'
+   :progress>=.49&&progress<.70?'boss-turn'
+   :bossSteps[reduceMotion?1:Math.floor(walk.progress*12)%bossSteps.length];
+ const sitting=Math.max(0,Math.min(1,(progress-.92)/.08));
+ g.save();
+ g.globalAlpha=1-sitting;
+ if(walk.leaving&&bossSteps.includes(pose)){
+  g.translate(x,0);g.scale(-1,1);sprite(pose,0,feet,roomHeight*.275);
+ }else sprite(pose,x,feet,roomHeight*.275);
+ g.restore();
+
+ // Restore the desk front over the legs as the boss moves behind it.
+ if(room.naturalWidth){
+  const left=226,width=126,top=.643,height=.134;
+  g.drawImage(room,left/W*room.naturalWidth,top*room.naturalHeight,
+    width/W*room.naturalWidth,height*room.naturalHeight,
+    left,roomTop+top*roomHeight,width,height*roomHeight);
+ }
+ if(sitting>0){
+  g.save();g.globalAlpha=sitting;sprite('away',deskX,deskY,roomHeight*.15);g.restore();
+ }
+}
+function drawHallway(room,top,height,left){
+ if(left>=0||!room.naturalWidth)return;
+ const tile=200;
+ const sourceWidth=room.naturalWidth*tile/W;
+ for(let i=Math.ceil(-left/tile);i>0;i--){
+  const x=-i*tile;
+  g.save();g.translate(x+(i%2?tile:0),top);
+  if(i%2)g.scale(-1,1);
+  g.drawImage(room,0,0,sourceWidth,room.naturalHeight,0,0,tile,height);
+  g.restore();
+ }
+}
+function draw(){
+ const cssWidth=c.clientWidth||W,cssHeight=c.clientHeight||600;
+ const height=cssHeight*W/cssWidth;
+ const scale=Math.min(2,window.devicePixelRatio||1);
+ const pixelsWide=Math.round(cssWidth*scale),pixelsHigh=Math.round(cssHeight*scale);
+ if(c.width!==pixelsWide)c.width=pixelsWide;
+ if(c.height!==pixelsHigh)c.height=pixelsHigh;
+ g.setTransform(pixelsWide/W,0,0,pixelsHigh/height,0,0);
+ g.fillStyle='#0c1e2e';
+ g.fillRect(0,0,W,height);
+
+ const roomHeight=Math.min(570,height*.67);
+ const roomTop=Math.max(112,height*.72-roomHeight*.82);
+ const deskY=roomTop+roomHeight*.644, floorY=roomTop+roomHeight*.82;
+ const hallway=sneakRules.inHallway(sneaking);
+ const warning=!hallway&&sneaking.ph==='warn', looking=!hallway&&sneaking.ph==='look';
+ const room=art['rainy-office'];
+ const bossX=W*.709;
+ const entryLength=sneakRules.entryDistance(sneaking);
+ const distance=sneaking.entry+sneaking.pr*3.4;
+ const playerX=32-entryLength+distance;
+ const camera=Math.min(0,Math.max(-entryLength,playerX-120));
+ const walking=st==='run'&&sneaking.hold;
+
+ g.save();
+ if(shake>0)g.translate((Math.random()-.5)*8,0);
+ g.translate(-camera,0);
+ drawHallway(room,roomTop,roomHeight,camera);
+ if(room.naturalWidth)g.drawImage(room,0,roomTop,W,roomHeight);
+ else{
+  g.fillStyle='#233a51';g.fillRect(camera,roomTop,W-camera,roomHeight*.77);
+  g.fillStyle='#a46e3c';g.fillRect(235,deskY,110,floorY-deskY);
+  g.fillStyle='#edbc65';g.fillRect(358,deskY-65,34,floorY-deskY+65);
+ }
+ if(!hallway)drawBoss(bossX,deskY,floorY,roomTop,roomHeight,room);
+ drawGuard(sneakRules.guard(sneaking),floorY,roomHeight);
+ drawCoworker(floorY,roomHeight);
+ drawCover(floorY,roomHeight,false);
+ g.fillStyle='#0b1425a0';
+ g.beginPath();g.ellipse(playerX,floorY-1,19,4,0,0,Math.PI*2);g.fill();
+ drawSneakingPlayer(playerX,floorY,roomHeight*(walking?.21:.225),walking,distance);
+ drawCover(floorY,roomHeight,true);
+
+ if(warning||looking){
+  const markY=deskY-roomHeight*.165;
+  g.textAlign='center';g.textBaseline='middle';
+  g.font='italic 900 38px system-ui,sans-serif';
+  g.lineWidth=6;g.strokeStyle='#101521';
+  g.fillStyle=warning?'#ffbd55':'#ff7462';
+  g.strokeText(looking?'!!':'!',bossX+39,markY);
+  g.fillText(looking?'!!':'!',bossX+39,markY);
+ }
+ g.restore();
+
+ if(st==='run'){
+  g.textAlign='center';g.textBaseline='middle';
+  if(flash>0){
+   g.fillStyle='#081521ed';g.fillRect(90,roomTop+18,220,38);
+   g.fillStyle='#ffedc5';g.font='800 20px system-ui,sans-serif';
+   g.fillText(T('ok'),W/2,roomTop+37,204);
+  }
+  pops.forEach((p,index)=>{
+   g.globalAlpha=Math.max(0,1-p.age/2.2);
+   const y=floorY+24+index*24-(reduceMotion?0:Math.min(1,p.age*3)*16);
+   g.fillStyle='#091725';g.fillRect(78,y-11,244,22);
+   g.fillStyle='#ffbe55';g.font='800 16px system-ui,sans-serif';
+   g.fillText('本局 +'+p.b,W/2,y,224);
+  });
+  g.globalAlpha=1;
+  return;
+ }
+
+ g.fillStyle='#090e19a8';g.fillRect(0,0,W,height);
+ const center=height*.43;
+ g.save();
+ g.translate(W/2,center);
+ g.rotate(reduceMotion?0:-.035);
+ g.fillStyle='#ffedc5';g.strokeStyle='#121a24';g.lineWidth=4;
+ g.fillRect(-162,-45,324,st==='ready'?94:134);
+ g.strokeRect(-162,-45,324,st==='ready'?94:134);
+ g.textAlign='center';g.textBaseline='middle';
+ g.font='900 30px system-ui,sans-serif';g.fillStyle=st==='ready'?'#101b27':'#942d25';
+ g.fillText(st==='ready'?T('title'):T('caught'),0,-15,295);
+ g.font='700 15px system-ui,sans-serif';g.fillStyle='#1a2431';
+ if(st==='ready')g.fillText(T('tap'),0,19,290);
+ else{
+  g.fillText(quotes[qi],0,14,290);
+  g.fillText(T('reach')(100-Math.floor(sneakRules.routeProgress(sneaking))),0,37,290);
+  g.fillText(T('done')(sneaking.score)+(earned>0?' · +'+earned:''),0,60,290);
+  if(rec)g.fillText(T('rec'),0,78,290);
+ }
+ g.restore();
+}
+
+$('sk-go').addEventListener('click',start);
+function press(e){if(e.button!==undefined&&e.button!==0)return;if(st!=='run'||$('view-sneak').hidden||document.hidden)return;e.preventDefault();sync(performance.now());if(st!=='run')return;c.focus();mouseHold=true;setHold(true);try{e.currentTarget.setPointerCapture(e.pointerId)}catch(_){}ui()}
+function lift(){sync(performance.now());mouseHold=false;setHold(keyHold)}
+[c,$('sk-hold')].forEach(el=>{el.addEventListener('pointerdown',press);['pointerup','pointercancel','lostpointercapture'].forEach(type=>el.addEventListener(type,lift))});
+addEventListener('keydown',e=>{if($('view-sneak').hidden||document.hidden||st!=='run'||e.repeat||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;if([' ','ArrowRight','d'].includes(e.key)){e.preventDefault();sync(performance.now());if(st==='run'){keyHold=true;setHold(true);}}});
+addEventListener('keyup',e=>{if([' ','ArrowRight','d'].includes(e.key)){if(!$('view-sneak').hidden)e.preventDefault();sync(performance.now());keyHold=false;setHold(mouseHold)}});
+addEventListener('blur',()=>{release();last=performance.now()});
+document.addEventListener('visibilitychange',()=>{release();last=performance.now()});
+window.addEventListener('hashchange',()=>{release();last=performance.now()});
+function loop(t){sync(t);if(!$('view-sneak').hidden&&!document.hidden){if(shake>0)shake=Math.max(0,shake-.016);if(flash>0)flash=Math.max(0,flash-.016);pops.forEach(p=>p.age+=.016);pops=pops.filter(p=>p.age<2.2);ui();draw();}requestAnimationFrame(loop)}
+ui();draw();requestAnimationFrame(loop);
+  })();
+
+
+})(sneakRules);
+</script>
+</body>
+</html>
