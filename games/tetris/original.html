@@ -20,12 +20,16 @@
     background: var(--bg);
     color: var(--fg);
     font-family: var(--font-ui);
-    padding-block: 20px 28px;
-    padding-left: max(16px, env(safe-area-inset-left, 0px));
-    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 8px;
+    padding-left: max(12px, env(safe-area-inset-left, 0px));
+    padding-right: max(12px, env(safe-area-inset-right, 0px));
+    /* One screen, no scrollbar: the board height is derived from the frame height (--bh). */
+    box-sizing: border-box; height: 100vh; height: 100dvh; overflow: hidden;
+    --hd: 36px; --ctl: 0px;
+    --bh: min(620px, calc(100dvh - 24px - var(--hd) - var(--ctl)));
   }
-  .app { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
-  header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 16px; }
+  .app { max-width: 760px; height: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  header { flex: none; min-height: var(--hd); display: flex; justify-content: space-between; align-items: center; gap: 4px 16px; }
   h1 { margin: 0; font-size: 24px; font-weight: 900; letter-spacing: .06em; }
   .tag { font-size: 12px; color: var(--muted); letter-spacing: .04em; }
 
@@ -37,6 +41,7 @@
     grid-template-columns: 148px auto 148px;
     grid-template-rows: auto 1fr;
     grid-template-areas: "hold board next" "stats board keys";
+    flex: 1; min-height: 0; align-content: center;
   }
   .hold { grid-area: hold; }
   .next { grid-area: next; }
@@ -57,7 +62,7 @@
     line-height: 0;
     touch-action: manipulation;
   }
-  #board { display: block; height: min(74vh, 620px); width: auto; }
+  #board { display: block; height: var(--bh); width: auto; }
 
   .overlay {
     position: absolute; inset: 0;
@@ -98,16 +103,25 @@
   }
 
   .touch {
-    display: none; grid-template-columns: repeat(3, 1fr); gap: 8px;
-    width: 100%; max-width: 420px; margin: 0 auto;
+    display: none; flex: none; height: 116px; width: 100%; max-width: 420px; margin: 0 auto;
+    grid-template-columns: auto 1fr; align-items: center; gap: 8px;
   }
+  .dpad { display: grid; grid-template-columns: repeat(3, 54px); grid-template-rows: repeat(2, 54px); gap: 6px; }
+  .dpad .b-up { grid-column: 2; grid-row: 1; }
+  .dpad .b-left { grid-column: 1; grid-row: 2; }
+  .dpad .b-down { grid-column: 2; grid-row: 2; }
+  .dpad .b-right { grid-column: 3; grid-row: 2; }
+  .acts { display: flex; justify-content: flex-end; align-items: center; gap: 12px; min-width: 0; }
   .touch button {
-    min-height: 52px; background: var(--panel); color: var(--fg);
-    border: 1px solid var(--line); border-radius: 6px;
-    font: 700 16px var(--font-ui); cursor: pointer;
+    min-width: 44px; min-height: 44px; background: var(--panel); color: var(--fg);
+    border: 1px solid var(--line); border-radius: 10px;
+    font: 700 20px var(--font-ui); cursor: pointer; padding: 0;
     touch-action: manipulation; user-select: none; -webkit-user-select: none;
   }
-  .touch button:active { background: var(--line); }
+  .dpad button { width: 100%; height: 100%; }
+  .acts .hold-btn { width: 60px; height: 60px; border-radius: 50%; font-size: 13px; }
+  .acts .rot { width: 92px; height: 92px; border-radius: 50%; font-size: 16px; background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .touch button:active { background: var(--line); color: var(--fg); }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   .hdr-actions { display: none; gap: 8px; align-items: center; }
@@ -117,23 +131,31 @@
     user-select: none; -webkit-user-select: none; min-height: 34px;
   }
   .hdr-actions button:active { background: var(--line); }
+  .hdr-actions button { min-height: 44px; }
   /* Touch UI: swipe / tap right on the board by default; the six buttons are an opt-in fallback. */
   @media (max-width: 639px), (pointer: coarse) {
+    body { --hd: 44px; padding-block: 8px; }
+    body.btnmode { --ctl: 124px; }
+    body { --bh: min(calc(100dvh - 24px - var(--hd) - var(--ctl)), calc((100vw - 24px - 100px - 12px) * 2), 620px); }
     .hdr-actions { display: flex; }
     body:not(.btnmode) #board, body:not(.btnmode) .boardwrap { touch-action: none; }
     body.btnmode .touch { display: grid; }
     body:not(.btnmode) .hold { cursor: pointer; }
-  }
-  @media (max-width: 639px) {
+    .tag { display: none; }
+    h1 { font-size: 18px; }
+    body.embedded header { padding-left: 52px; } /* room for the platform's exit button */
     .game {
       grid-template-columns: minmax(0, 1fr) 100px;
       grid-template-rows: auto auto 1fr;
       grid-template-areas: "board hold" "board next" "board stats";
+      gap: 8px 10px; align-content: start; overflow: hidden; height: var(--bh); flex: none;
     }
     .keys { display: none; }
-    .boardwrap { justify-self: stretch; }
-    #board { width: 100%; height: auto; }
-    .stats dd { font-size: 19px; }
+    .boardwrap { justify-self: center; }
+    .panel { padding: 6px 8px; }
+    .panel h2 { margin-bottom: 4px; }
+    .stats dl { gap: 6px; }
+    .stats dd { font-size: 17px; margin-top: 0; }
   }
   @media (prefers-reduced-motion: reduce) { .banner.show { animation: none; opacity: 1; } }
 </style>
@@ -194,12 +216,16 @@
   </section>
 
   <div class="touch" aria-label="觸控按鈕" id="touchbar">
-    <button type="button" data-act="hold" data-i="hold">暫存</button>
-    <button type="button" data-act="cw" data-i="k_rot">旋轉</button>
-    <button type="button" data-act="hard" data-i="k_hard">硬降</button>
-    <button type="button" data-act="left">←</button>
-    <button type="button" data-act="down">↓</button>
-    <button type="button" data-act="right">→</button>
+    <div class="dpad">
+      <button type="button" class="b-up" data-act="hard" data-al="k_hard" aria-label="硬降">↑</button>
+      <button type="button" class="b-left" data-act="left" data-al="k_left" aria-label="左移">←</button>
+      <button type="button" class="b-down" data-act="down" data-al="k_soft" aria-label="軟降">↓</button>
+      <button type="button" class="b-right" data-act="right" data-al="k_right" aria-label="右移">→</button>
+    </div>
+    <div class="acts">
+      <button type="button" class="hold-btn" data-act="hold" data-i="hold">暫存</button>
+      <button type="button" class="rot" data-act="cw" data-i="k_rot">旋轉</button>
+    </div>
   </div>
 </main>
 
@@ -223,17 +249,19 @@ function runBlockDrop(rules) {
     hold: ['暫存', 'Hold'], next: ['下一個', 'Next'], keys: ['按鍵', 'Controls'],
     score: ['分數', 'Score'], level: ['等級', 'Level'], lines: ['消除行數', 'Lines'], best: ['最高分', 'Best'],
     k_move: ['移動', 'Move'], k_rot: ['旋轉', 'Rotate'], k_ccw: ['逆轉', 'Rotate back'], k_soft: ['軟降', 'Soft drop'],
-    k_hard: ['硬降', 'Hard drop'], k_space: ['空白鍵', 'Space'], k_hold: ['暫存', 'Hold'], k_pause: ['暫停', 'Pause']
+    k_hard: ['硬降', 'Hard drop'], k_left: ['左移', 'Move left'], k_right: ['右移', 'Move right'], k_space: ['空白鍵', 'Space'], k_hold: ['暫存', 'Hold'], k_pause: ['暫停', 'Pause']
   };
   function applyLang() {
     const en = lang() === 'en';
     document.documentElement.lang = en ? 'en' : 'zh-Hant';
     document.title = en ? 'Block Drop' : '俄羅斯方塊';
     document.querySelectorAll('[data-i]').forEach(el => { const v = L[el.dataset.i]; if (v) el.textContent = v[en ? 1 : 0]; });
+    document.querySelectorAll('[data-al]').forEach(el => { const v = L[el.dataset.al]; if (v) el.setAttribute('aria-label', v[en ? 1 : 0]); });
     const tb = $('touchbar'); if (tb) tb.setAttribute('aria-label', en ? 'Touch controls' : '觸控按鈕');
     if (ctlReady) setCtl(ctl, false);
     renderOverlay();
   }
+  try { if (window.parent !== window) document.body.classList.add('embedded'); } catch (e) {}
   const css = getComputedStyle(document.documentElement);
   const C = { board: css.getPropertyValue('--board').trim() || '#10141c', line: css.getPropertyValue('--line').trim() || '#222a38', fg: css.getPropertyValue('--fg').trim() || '#e7eaf0' };
 

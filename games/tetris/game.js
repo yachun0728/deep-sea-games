@@ -57,6 +57,7 @@
     if(!w||!w.startTetrisPlatformRound){ttSay('{{t:tetris.msg.005}}','lose');return;}
     if(w.startTetrisPlatformRound())$('tt-frame').focus();
   });
+  $('tt-exit').addEventListener('click',function(){window.location.hash='lobby';});
   window.addEventListener('arcade-languagechange',function(){if(TET.msg)ttSay(TET.msg.text,TET.msg.kind,TET.msg.params);});
   ttSay('{{tb:tetris.say.006}}');
   ttUI();
