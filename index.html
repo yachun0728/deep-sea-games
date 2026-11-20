@@ -1354,15 +1354,16 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 #view-campaign .cp-exit{display:none}
 @media(max-width:880px), (pointer:coarse) and (max-width:1100px){
   html:has(#view-campaign:not([hidden])){overflow:hidden;overscroll-behavior:none}
-  #view-campaign:not([hidden]){position:fixed;inset:0;z-index:1200;box-sizing:border-box;margin:0;width:auto;max-width:none;height:100dvh;display:block;overflow:hidden;background:#1c1226;
+  #view-campaign:not([hidden]){position:fixed;inset:0;z-index:1200;box-sizing:border-box;margin:0;border:0;border-radius:0;width:auto;max-width:none;height:100dvh;display:block;overflow:hidden;background:#1c1226;
     padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
   #view-campaign .console{display:block;position:absolute;inset:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);gap:0}
   #view-campaign #cp-stage{position:absolute;inset:0;display:block;border:0;border-radius:0;background:#1c1226}
   #view-campaign #cp-canvas{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:fill;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  #view-campaign #cp-canvas:focus{outline:none}
   #view-campaign .mobile-scroll-pad,#view-campaign .mobile-page-tools,#view-campaign .game-view-controls{display:none!important}
-  #view-campaign .cp-exit{display:block;position:absolute;left:10px;bottom:10px;z-index:4;width:44px;height:44px;border:1px solid rgba(255,241,220,.5);border-radius:12px;background:rgba(28,16,40,.78);color:#fff1dc;font:700 21px system-ui;cursor:pointer}
+  #view-campaign .cp-exit{display:block;position:absolute;left:10px;top:10px;z-index:4;width:44px;height:44px;border:1px solid rgba(255,241,220,.5);border-radius:12px;background:rgba(28,16,40,.78);color:#fff1dc;font:700 21px system-ui;cursor:pointer}
   /* control sheet: only before the first run and after a loss; hidden (but still announced) while driving */
-  #view-campaign .side{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:14px 14px 18px 64px;background:linear-gradient(to top,rgba(28,16,40,.96) 70%,rgba(28,16,40,0))}
+  #view-campaign .side{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:14px 14px 18px;background:linear-gradient(to top,rgba(28,16,40,.96) 70%,rgba(28,16,40,0))}
   #view-campaign .side .panel{display:flex;flex-direction:column;gap:10px;padding:0;border:0;background:none;box-shadow:none}
   #view-campaign .side .stats,#view-campaign .side .queue-watch,#view-campaign .side .hint,#view-campaign #cp-hold{display:none}
   #view-campaign .side .msg{margin:0;font-size:13px;line-height:1.45;max-height:6.5em;overflow:auto}
@@ -3468,7 +3469,7 @@ html.frontier-immersive{overflow:hidden}
   <span class="gold-banner-cta" id="gold-daily-cta">挖一次 <span aria-hidden="true">↗</span></span>
 </a></section>
     <section class="lobby-games" aria-labelledby="lobby-games-title"><div class="lobby-row-head" id="lobby-games"><h2 id="lobby-games-title"><i class="fa-solid fa-table-cells-large side-head-icon" aria-hidden="true"></i>遊戲 <span id="lobby-count">48 款遊戲</span></h2><button type="button" class="row-all" id="lobby-show-all">查看全部</button></div><div class="lobby-tabs-row"><div class="lobby-filters tab-filters" role="group" aria-label="遊戲分類"><button type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div><label class="top-search"><input id="lobby-search" type="search" placeholder="搜尋" aria-label="搜尋遊戲" autocomplete="off"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></label></div>
-    <div class="lobby-grid"><a class="game-card" href="#runner" data-art="icon" data-game-category="run" aria-label="遊玩閃避跑酷：深海快遞，點左、點右換道，避開一路上的障礙。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-runner"><img src="games/runner/art/lobby-icon.webp?v=2" width="256" height="256" alt="" loading="lazy" decoding="async"></div><h3>閃避跑酷：深海快遞</h3><p class="game-card-en">Dodge Run</p><p class="game-card-description">點左、點右換道，避開一路上的障礙。</p><div class="game-card-footer"><span>立即開玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#outpost" data-art="cover" style="--cover:url(games/outpost/cover.webp?v=3b0dbcea)" data-game-category="puzzle" aria-label="遊玩深海前哨"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-outpost"></use></svg></div><h3>深海前哨</h3><p class="game-card-en">Deep Sea Outpost</p><p class="game-card-description">扳動海流閘門，將敵群導入防守火網。</p><div class="game-card-footer"><span>不限次數</span><span>分路塔防</span></div></a>
+    <div class="lobby-grid"><a class="game-card" href="#runner" data-art="cover" style="--cover:url(games/runner/cover.webp?v=2f633cbe)" data-game-category="run" aria-label="遊玩閃避跑酷：深海快遞，點左、點右換道，避開一路上的障礙。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-runner"><img src="games/runner/art/lobby-icon.webp?v=2" width="256" height="256" alt="" loading="lazy" decoding="async"></div><h3>閃避跑酷：深海快遞</h3><p class="game-card-en">Dodge Run</p><p class="game-card-description">點左、點右換道，避開一路上的障礙。</p><div class="game-card-footer"><span>立即開玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#outpost" data-art="cover" style="--cover:url(games/outpost/cover.webp?v=3b0dbcea)" data-game-category="puzzle" aria-label="遊玩深海前哨"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-outpost"></use></svg></div><h3>深海前哨</h3><p class="game-card-en">Deep Sea Outpost</p><p class="game-card-description">扳動海流閘門，將敵群導入防守火網。</p><div class="game-card-footer"><span>不限次數</span><span>分路塔防</span></div></a>
 <a class="game-card" href="#blaster" data-art="cover" style="--cover:url(games/blaster/cover.webp?v=02d6206d)" data-game-category="run" aria-label="遊玩深海火線：自由移動自動射擊，三選一武器擊退怪物"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-blaster"></use></svg></div><h3>深海火線</h3><p class="game-card-en">Reef Blaster</p><p class="game-card-description">帶領潛艇編隊航行，閃過怪潮和打不碎的硬礁。</p><div class="game-card-footer"><span>立即開玩</span><span>無盡航行 · 每萬米+1點</span></div></a>
 <a class="game-card" href="#market-desk" data-art="cover" style="--cover:url(games/market-desk/cover.webp?v=b1c91ed6)" data-game-category="puzzle" aria-label="遊玩收盤之前：20 天台股查證挑戰">
   <div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div>
@@ -4435,10 +4436,10 @@ html.frontier-immersive{overflow:hidden}
         <dl class="stats"><div><dt>最佳得票</dt><dd id="cp-best">0</dd></div><div><dt>下一個獎勵</dt><dd id="cp-next">8,000 票 · +3</dd></div></dl>
         <button class="go" id="cp-go" type="button" data-mode="bet">出發拉票</button>
         <button class="chip fishing-hold" id="cp-hold" type="button" disabled>按住靜音 · 放開廣播</button>
-        <p class="msg" id="cp-msg" aria-live="polite">宣傳車沿街往右開，沒有終點，越開越快。平常放開讓喇叭廣播拉票，前方出現紅色的學校、醫院、豪宅時按住畫面靜音。</p><p class="hint">可按住畫面、靜音按鈕或 <kbd>空白鍵</kbd>。畫面上方的「接下來」會預告前面幾棟建築。吵到安靜區、或在一般路段靜音太久都算失誤，累計 5 次就落選。</p>
+        <p class="msg" id="cp-msg" aria-live="polite">宣傳車沿街往右開，沒有終點，越開越快。平常放開讓喇叭廣播拉票，前方出現學校、醫院或豪宅安靜區時按住畫面靜音。</p><p class="hint">可按住畫面、靜音按鈕或 <kbd>空白鍵</kbd>。畫面上方的「接下來」會預告前面幾棟建築。吵到安靜區、或在一般路段靜音太久都算失誤，累計 5 次就落選。</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法、計票與點數</summary><p>宣傳車沿著街道自動往右開，沒有終點：車速從約每秒 300 像素起跳，並持續加快到約 800（約 2.7 倍），建築越來越快閃過。街上的學校、醫院、豪宅是安靜區，以紅色標示並在路面畫出紅色區段；一開始約三成是安靜區，越往後越多，最多約六成，但不會連續出現三棟。</p><p>前方的建築會提早出現在畫面右側，畫面上方的「接下來」也會列出接著要經過的六棟。放開時喇叭廣播、按住時靜音。經過一般建築：依廣播時間比例得票，全程廣播得 200 票；但若廣播不到 30% 的時間（靜音太久），算沒有宣傳到，記一次失誤。經過安靜區：有 70% 以上的時間保持靜音就算安靜通過，得 100 票；否則算吵到，扣 400 票並記一次失誤。累計 5 次失誤就落選，這一局結束。</p><p>開局有 200 票。得票累計到特定數量時，獎勵點數當場入帳，之後落選也不會收回：8,000 票 +3、10,000 票 +7（累計 10 點，累計獲得）、12,000 票 +15、15,000 票 +30，之後每多 3,000 票 +40。這是固定點數，沒有倍率；每個里程碑一局只入帳一次，即使票數被扣掉再回升也不會重複。這些票數刻意設得很高，一般玩家大約會在 4,000～6,000 票落選。</p><p>切換遊戲或背景分頁會暫停並放開靜音，回來需要重新按住。重新整理會放棄本局，已入帳的點數會保留。點數與其他遊戲共用，沒有現金價值。</p></details>
+    <details class="rules"><summary>玩法、計票與點數</summary><p>宣傳車沿著街道自動往右開，沒有終點：車速從約每秒 300 像素起跳，並持續加快到約 800（約 2.7 倍）。學校、醫院、豪宅是安靜區，路面以斜線標出範圍。一開始約三成是安靜區，越往後越多，最多約六成，但不會連續出現三棟。</p><p>前方的建築會提早出現在畫面右側，畫面上方的「接下來」也會列出接著要經過的六棟。放開時喇叭廣播、按住時靜音。經過一般建築：依廣播時間比例得票，全程廣播得 200 票；但若廣播不到 30% 的時間（靜音太久），算沒有宣傳到，記一次失誤。經過安靜區：有 70% 以上的時間保持靜音就算安靜通過，得 100 票；否則算吵到，扣 400 票並記一次失誤。累計 5 次失誤就落選，這一局結束。</p><p>開局有 200 票。得票累計到特定數量時，獎勵點數當場入帳，之後落選也不會收回：8,000 票 +3、10,000 票 +7（累計 10 點，累計獲得）、12,000 票 +15、15,000 票 +30，之後每多 3,000 票 +40。這是固定點數，沒有倍率；每個里程碑一局只入帳一次，即使票數被扣掉再回升也不會重複。這些票數刻意設得很高，一般玩家大約會在 4,000～6,000 票落選。</p><p>切換遊戲或背景分頁會暫停並放開靜音，回來需要重新按住。重新整理會放棄本局，已入帳的點數會保留。點數與其他遊戲共用，沒有現金價值。</p></details>
   <p id="cp-rank-status" role="status" hidden></p><button id="cp-rank-retry" type="button" hidden>重送排行榜成績</button>
 </section>
 
@@ -8403,11 +8404,11 @@ html.frontier-immersive{overflow:hidden}
   "8,000 票 · +3": "8,000 votes · +3",
   "出發拉票": "Play · Campaign",
   "按住靜音 · 放開廣播": "Hold to mute · Release to broadcast",
-  "宣傳車沿街往右開，沒有終點，越開越快。平常放開讓喇叭廣播拉票，前方出現紅色的學校、醫院、豪宅時按住畫面靜音。": "The truck drives right and keeps speeding up. Release to broadcast for votes; hold to mute when red schools, hospitals or mansions approach.",
+  "宣傳車沿街往右開，沒有終點，越開越快。平常放開讓喇叭廣播拉票，前方出現學校、醫院或豪宅安靜區時按住畫面靜音。": "The truck drives right and keeps speeding up. Release to broadcast for votes. Hold to mute near quiet zones at schools, hospitals and mansions.",
   "可按住畫面、靜音按鈕或": "Hold the screen, the mute button or",
   "。畫面上方的「接下來」會預告前面幾棟建築。吵到安靜區、或在一般路段靜音太久都算失誤，累計 5 次就落選。": ". The Upcoming display previews the next buildings. Disturbing a quiet zone or staying muted too long on a normal street counts as a mistake. Five mistakes end your campaign.",
   "玩法、計票與點數": "Rules, votes and points",
-  "宣傳車沿著街道自動往右開，沒有終點：車速從約每秒 300 像素起跳，並持續加快到約 800（約 2.7 倍），建築越來越快閃過。街上的學校、醫院、豪宅是安靜區，以紅色標示並在路面畫出紅色區段；一開始約三成是安靜區，越往後越多，最多約六成，但不會連續出現三棟。": "The truck drives right endlessly, speeding up from about 300 to 800 pixels per second (about 2.7×). Schools, hospitals and mansions are quiet zones, marked in red on buildings and roads. Their share rises from about 30% to at most 60%, but three quiet buildings never occur consecutively.",
+  "宣傳車沿著街道自動往右開，沒有終點：車速從約每秒 300 像素起跳，並持續加快到約 800（約 2.7 倍）。學校、醫院、豪宅是安靜區，路面以斜線標出範圍。一開始約三成是安靜區，越往後越多，最多約六成，但不會連續出現三棟。": "The truck drives right endlessly, speeding up from about 300 to 800 pixels per second (about 2.7×). Schools, hospitals and mansions are quiet zones marked by diagonal stripes on the road. Their share rises from about 30% to at most 60%, with at most two quiet buildings in a row.",
   "前方的建築會提早出現在畫面右側，畫面上方的「接下來」也會列出接著要經過的六棟。放開時喇叭廣播、按住時靜音。經過一般建築：依廣播時間比例得票，全程廣播得 200 票；但若廣播不到 30% 的時間（靜音太久），算沒有宣傳到，記一次失誤。經過安靜區：有 70% 以上的時間保持靜音就算安靜通過，得 100 票；否則算吵到，扣 400 票並記一次失誤。累計 5 次失誤就落選，這一局結束。": "Buildings appear early on the right, and Upcoming lists the next six. Release to broadcast; hold to mute. Normal buildings award votes in proportion to broadcast time, up to 200 votes. Broadcasting for less than 30% counts as a missed campaign stop and one mistake. In quiet zones, staying muted for at least 70% awards 100 votes; otherwise you disturb the zone, lose 400 votes and receive one mistake. Five mistakes end the round.",
   "開局有 200 票。得票累計到特定數量時，獎勵點數當場入帳，之後落選也不會收回：8,000 票 +3、10,000 票 +7（累計 10 點，累計獲得）、12,000 票 +15、15,000 票 +30，之後每多 3,000 票 +40。這是固定點數，沒有倍率；每個里程碑一局只入帳一次，即使票數被扣掉再回升也不會重複。這些票數刻意設得很高，一般玩家大約會在 4,000～6,000 票落選。": "You start with 200 votes. Vote milestones award points immediately, kept after disqualification: 8,000 votes +3 points, 10,000 +7 (10 total), 12,000 +15, 15,000 +30, then +40 for every additional 3,000. These are fixed rewards, with no multiplier. Each milestone pays once per round; losing votes and regaining them does not pay again. Thresholds are deliberately high; a typical player is disqualified around 4,000–6,000 votes.",
   "切換遊戲或背景分頁會暫停並放開靜音，回來需要重新按住。重新整理會放棄本局，已入帳的點數會保留。點數與其他遊戲共用，沒有現金價值。": "Switching games or hiding the tab pauses play and releases mute; hold again when you return. Refreshing abandons the round but keeps credited points. Points are shared and have no cash value.",
@@ -9251,14 +9252,23 @@ html.frontier-immersive{overflow:hidden}
   "拉票中 · 安靜區按住靜音": "Campaigning · Hold in quiet zones",
   "再跑一趟": "Play · Run again",
   "靜音中 · 放開廣播": "Muted · Release to broadcast",
-  "出發！沒有終點，越開越快。放開讓喇叭廣播，前方出現紅色的學校、醫院、豪宅時按住靜音；在一般路段靜音太久也算失誤。": "Go! The truck keeps speeding up. Release to broadcast; hold to mute near red schools, hospitals and mansions. Muting too long on normal streets also counts as a mistake.",
+  "出發！沒有終點，越開越快。放開讓喇叭廣播，接近學校、醫院和豪宅安靜區時按住靜音。在一般路段靜音太久也算失誤。": "Go! The truck keeps speeding up. Release to broadcast and hold to mute near quiet zones at schools, hospitals and mansions. Muting too long on regular streets also counts as a mistake.",
   "懇請支持": "Please support us",
   "靜音中 · 放開才會廣播": "Muted · Release to broadcast",
-  "廣播拉票中 · 紅色路段要按住": "Broadcasting · Hold in red zones",
+  "廣播拉票中 · 安靜區要按住": "Broadcasting · Hold in quiet zones",
   "放開＝廣播拉票　按住＝靜音": "Release = broadcast | Hold = mute",
   "準備出發拉票？": "Ready to campaign?",
   "被檢舉，落選了！": "Reported and disqualified!",
-  "紅色建築要按住靜音，其他路段放開廣播": "Hold to mute at red buildings; release elsewhere to broadcast",
+  "安靜區按住靜音，其他路段放開廣播": "Hold to mute in quiet zones. Release elsewhere to broadcast.",
+  "失誤 {0}／{1}": "Mistakes {0}/{1}",
+  "已過 {0} 棟 · 車速 {1}×": "{0} buildings passed · Speed {1}×",
+  "下一棟：{0}": "Next {0}",
+  "{0} · 靜音中": "{0} · Muted",
+  "靜音中": "Muted",
+  "按住靜音": "Hold to mute",
+  "繼續按住 · 放開恢復廣播": "Keep holding · Release to broadcast",
+  "放開時廣播拉票": "Release to broadcast for votes",
+  "安靜區": "Quiet zone",
   "鯉魚逆流而上，要變成龍！": "Swim upstream and become a dragon!",
   "按住蓄力，放開起跳。別撞到石頭和魚鉤。": "Hold to charge, release to jump. Avoid rocks and hooks.",
   "撞到石頭了！": "Hit a rock!",
@@ -14112,16 +14122,16 @@ if(typeof module!=='undefined')module.exports=campaignRules;
       else if(event==='progress')AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss});
       else if(event==='float')cpFloat(data.lot,data.text,data.kind);
     },CP);CP.floats=[];CP.pops=[];CP.earned=0;CP.awarded=0;CP.phase='run';CP.last=performance.now();cpRelease();
-    cpSay('出發！沒有終點，越開越快。放開讓喇叭廣播，前方出現紅色的學校、醫院、豪宅時按住靜音；在一般路段靜音太久也算失誤。');cpUI();campaignCanvas.focus();
+    cpSay('出發！沒有終點，越開越快。放開讓喇叭廣播，接近學校、醫院和豪宅安靜區時按住靜音。在一般路段靜音太久也算失誤。');cpUI();campaignCanvas.focus();
     },cpUI);
   }
   // Phones: canvas is always 640 logical px wide and as tall as the screen needs; the 460px scene sits in the middle, sky above, mute pad below.
   var cpFs=window.matchMedia('(max-width:880px), (pointer:coarse) and (max-width:1100px)'),cpDy=0,cpBoxKey='';
   function cpFit(){
     var st=$('cp-stage'),r=st.getBoundingClientRect(),hl=460;
-    if(cpFs.matches&&r.width>40&&r.height>40)hl=Math.max(460,Math.min(1240,Math.round(640*r.height/r.width)));
+    if(cpFs.matches&&r.width>40&&r.height>40)hl=Math.max(460,Math.min(1600,Math.round(640*r.height/r.width)));
     var key=cpFs.matches+':'+hl;if(key!==cpBoxKey){cpBoxKey=key;campaignCanvas.height=hl;}
-    cpDy=cpFs.matches?Math.round((hl-460)*.38):0;
+    cpDy=cpFs.matches?Math.round((hl-460)*.61):0;
     var v=$('view-campaign');v.classList.toggle('cp-run',cpFs.matches&&CP.phase==='run');v.classList.toggle('cp-sheet',cpFs.matches&&CP.phase!=='run');
   }
   $('cp-exit').addEventListener('click',function(){cpRelease();window.location.hash='lobby';});
@@ -14174,6 +14184,13 @@ if(typeof module!=='undefined')module.exports=campaignRules;
       cpWindows(g,x+18,G-104,2,2,22,24,10,14,lot.seed,'#bfe6ee',dark);cpWindows(g,x+w-72,G-104,2,2,22,24,10,14,lot.seed+1,'#bfe6ee',dark);cpBox(g,cx-14,G-40,28,40,'#12303f');
       cpBox(g,x+14,top-22,3,52,'#cfe3e6');g.fillStyle='#ffb638';g.beginPath();g.moveTo(x+17,top-22);g.lineTo(x+42,top-15+(reduceMotion?0:Math.sin(t*5)*2));g.lineTo(x+17,top-7);g.closePath();g.fill();break;
     case '醫院':
+      if (cpFs.matches && cpMobileHospital.naturalWidth) {
+        g.drawImage(cpMobileHospital, x, G - 268, w, 268);
+        cpBox(g, cx-39, G-220, 78, 28, '#553b58');
+        g.font = '700 18px '+CP_FONT;g.fillStyle = '#fff0d8';g.textAlign = 'center';
+        g.textBaseline = 'middle';g.fillText(lot.name, cx, G-205, 73);
+        break;
+      }
       cpBox(g,x+8,top,w-16,h,'#9fc0c6');cpBox(g,x+8,top,22,h,'#86a9b0');cpBox(g,x+2,top-6,w-4,8,'#6f949c');
       cpWindows(g,x+42,top+58,4,3,22,20,10,12,lot.seed,'#e9fbff','#5d8c95');
       g.fillStyle='#f4ffff';g.beginPath();g.arc(cx+10,top+32,22,0,7);g.fill();cpBox(g,cx+4,top+16,12,32,'#ff6f61');cpBox(g,cx-6,top+26,32,12,'#ff6f61');
@@ -14188,9 +14205,17 @@ if(typeof module!=='undefined')module.exports=campaignRules;
     }
     var age=t-lot.flash;
     if(age>=0&&age<.55){g.globalAlpha=.4*(1-age/.55);cpBox(g,x,top-10,w,h+10,lot.good?'#8fe0b0':'#ff6f61');g.globalAlpha=1;}
-    // name plate; quiet buildings get a coral "keep quiet" sign
+    // Name plates identify the scrolling buildings and quiet zones.
     g.textAlign='center';g.textBaseline='middle';
     if(lot.quiet){
+      if (cpFs.matches) {
+        var signX = x + 10, signY = G - 43;
+        g.fillStyle = '#24483f';g.strokeStyle = '#a6f2cc';g.lineWidth = 2;
+        cpRR(g,signX,signY,97,32,8);g.fill();g.stroke();
+        g.fillStyle = '#dcffe9';g.font = '700 16px '+CP_FONT;
+        g.fillText('安靜區',signX+48.5,signY+16,88);
+        return;
+      }
       var near=CP.phase==='run'&&lot.x0-(CP.dist+CP_TRUCK)<260&&lot.x1>CP.dist+CP_TRUCK,py=top-34+(near&&!reduceMotion?Math.sin(t*9)*2:0);
       g.fillStyle='#ff6f61';cpRR(g,cx-62,py-14,124,28,14);g.fill();g.beginPath();g.moveTo(cx-7,py+13);g.lineTo(cx,py+22);g.lineTo(cx+7,py+13);g.closePath();g.fill();
       g.fillStyle='#2a0f0b';g.font='700 15px '+CP_FONT;g.fillText(lot.name+' · 要安靜',cx,py+1);
@@ -14226,13 +14251,122 @@ if(typeof module!=='undefined')module.exports=campaignRules;
     // wheels with arches
     [[-38,416],[42,416]].forEach(function(wh){g.fillStyle='#2a1b30';g.beginPath();g.arc(x+wh[0],wh[1]-4,17,Math.PI,0);g.fill();g.fillStyle='#1c1226';g.beginPath();g.arc(x+wh[0],wh[1],13,0,7);g.fill();g.fillStyle='#b9a4aa';g.beginPath();g.arc(x+wh[0],wh[1],6,0,7);g.fill();g.strokeStyle='#6a4a62';g.lineWidth=2;g.beginPath();g.moveTo(x+wh[0]+Math.cos(CP.wheel)*10,wh[1]+Math.sin(CP.wheel)*10);g.lineTo(x+wh[0]-Math.cos(CP.wheel)*10,wh[1]-Math.sin(CP.wheel)*10);g.moveTo(x+wh[0]+Math.sin(CP.wheel)*10,wh[1]-Math.cos(CP.wheel)*10);g.lineTo(x+wh[0]-Math.sin(CP.wheel)*10,wh[1]+Math.cos(CP.wheel)*10);g.stroke();});
   }
+  var cpMobileTruck = new Image(), cpMobileHospital = new Image();
+  cpMobileTruck.src = 'games/campaign/art/truck.svg';
+  cpMobileHospital.src = 'games/campaign/art/hospital.svg';
+
+  function cpMuteIcon(g, x, y, color) {
+    g.save();
+    g.translate(x, y);
+    g.strokeStyle = color;
+    g.lineWidth = 3;
+    g.lineCap = 'round';
+    g.lineJoin = 'round';
+    g.beginPath();
+    g.moveTo(0, 8);g.lineTo(7, 8);g.lineTo(17, 1);g.lineTo(17, 25);
+    g.lineTo(7, 18);g.lineTo(0, 18);g.closePath();
+    g.moveTo(24, 8);g.lineTo(33, 17);g.moveTo(33, 8);g.lineTo(24, 17);
+    g.stroke();
+    g.restore();
+  }
+
+  function cpMobileVehicle(g, t, live) {
+    if (!cpMobileTruck.naturalWidth) { cpTruck(g, CP_TRUCK, t, live); return; }
+    var x = CP_TRUCK, y = CP_GROUND + 99, bounce = live && !reduceMotion ? Math.sin(t * 20) : 0;
+    g.fillStyle = 'rgba(25,18,43,.62)';
+    g.beginPath();g.ellipse(x, y, 129, 13, 0, 0, Math.PI * 2);g.fill();
+    g.drawImage(cpMobileTruck, x - 135, y - 214 + bounce, 270, 220);
+    if (!live) return;
+    if (CP.hold) {
+      g.fillStyle = '#244d43';g.strokeStyle = '#a6f2cf';g.lineWidth = 2;
+      g.beginPath();g.arc(x + 56, y - 215, 27, 0, Math.PI * 2);g.fill();g.stroke();
+      cpMuteIcon(g, x + 40, y - 228, '#dcffeb');
+    } else {
+      g.lineCap = 'round';g.lineWidth = 4;g.strokeStyle = '#ffe2a0';
+      for (var r = 18; r <= 34; r += 16) {
+        g.beginPath();g.arc(x + 38, y - 175, r, -.72, .72);g.stroke();
+      }
+      g.lineCap = 'butt';
+    }
+  }
+
+  function cpMobileHud(g, height, live) {
+    var current = CP.lots[CP.idx], inside = current && CP.dist + CP_TRUCK >= current.x0;
+    var next = inside ? CP.lots[CP.idx + 1] : current;
+    var signal = cpSignal(), caution = signal[0] !== 'safe';
+    var ink = '#fff1d7', quiet = '#d6ffe8', warning = '#ffe0a4';
+    var padTop = height - Math.min(190, Math.round(height * .18));
+    g.textBaseline = 'middle';
+    g.textAlign = 'left';
+    g.font = '600 20px ' + CP_FONT;g.fillStyle = '#e7d4e2';
+    g.fillText('目前選票', 120, 32);
+    g.font = '800 48px ' + CP_FONT;g.fillStyle = ink;
+    g.fillText(fmt(CP.votes), 119, 72, 220);
+    g.textAlign = 'right';
+    g.font = '700 20px ' + CP_FONT;
+    g.fillText(cpMobileText('失誤 {0}／{1}', CP.miss, CP_MAX_MISS), 613, 32, 240);
+    for (var i = 0; i < CP_MAX_MISS; i++) {
+      g.beginPath();g.arc(487 + i * 29, 72, 9, 0, Math.PI * 2);
+      if (i < CP.miss) { g.fillStyle = '#ff9b8e';g.fill(); }
+      else { g.strokeStyle = '#b49ab5';g.lineWidth = 2;g.stroke(); }
+    }
+    cpBox(g, 26, 110, 588, 1, '#a988a8');
+    g.font = '600 18px ' + CP_FONT;g.fillStyle = '#eedbea';
+    g.textAlign = 'left';
+    g.fillText(cpMobileText('已過 {0} 棟 · 車速 {1}×', cpPassed(), (cpSpeed() / CP_V0).toFixed(1)), 27, 140, 315);
+    if (next) {
+      g.textAlign = 'right';
+      g.fillText(cpMobileText('下一棟：{0}', next.name), 613, 140, 252);
+    }
+    if (!live) return;
+    g.font = '700 19px ' + CP_FONT;g.textAlign = 'center';
+    var label = signal[1];
+    if (inside && current.quiet && CP.hold) {
+      label = cpMobileText('{0} · 靜音中', current.name);
+    }
+    var tagWidth = Math.max(200, Math.min(590, g.measureText(label).width + 54));
+    g.fillStyle = caution ? '#59432e' : '#25483f';
+    g.strokeStyle = caution ? '#ffc684' : '#a6f2cc';g.lineWidth = 2;
+    cpRR(g, (640 - tagWidth) / 2, 180, tagWidth, 50, 25);g.fill();g.stroke();
+    g.fillStyle = caution ? warning : quiet;
+    g.fillText(label, 320, 206, tagWidth - 30);
+    var pad = g.createLinearGradient(0, padTop, 0, height);
+    pad.addColorStop(0, 'rgba(90,210,177,0)');
+    pad.addColorStop(1, CP.hold ? 'rgba(90,210,177,.22)' : 'rgba(255,191,119,.15)');
+    g.fillStyle = pad;g.fillRect(0, padTop, 640, height - padTop);
+    g.strokeStyle = CP.hold ? '#a6e8ca' : '#f3c991';
+    g.lineWidth = 2;
+    var top = padTop + 18, bottom = height - 30;
+    g.beginPath();
+    g.moveTo(38, top+15);g.lineTo(38, top);g.lineTo(56, top);
+    g.moveTo(584, top);g.lineTo(602, top);g.lineTo(602, top+15);
+    g.moveTo(38, bottom-15);g.lineTo(38, bottom);g.lineTo(56, bottom);
+    g.moveTo(584, bottom);g.lineTo(602, bottom);g.lineTo(602, bottom-15);
+    g.stroke();
+    g.fillStyle = CP.hold ? quiet : ink;g.font = '800 34px ' + CP_FONT;
+    g.fillText(CP.hold ? '靜音中' : '按住靜音', 320, (top+bottom)/2-15, 500);
+    g.font = '600 19px ' + CP_FONT;
+    g.fillText(CP.hold ? '繼續按住 · 放開恢復廣播' : '放開時廣播拉票', 320, (top+bottom)/2+20, 500);
+  }
+
+  function cpMobileText(template, ...values) {
+    var i18n = window.deepSeaI18n;
+    return (i18n ? i18n.text(template) : template).replace(/\{(\d+)\}/g, (_, index) => {
+      var value = String(values[index]);
+      return i18n ? i18n.text(value) : value;
+    });
+  }
+
   function cpDraw(){
     cpFit();var g=campaignCtx,W=640,H=460,Hl=campaignCanvas.height,dy=cpDy,fs=cpFs.matches,G=CP_GROUND,live=CP.phase==='run',t=CP.clock,cam=CP.dist,i,x;
     g.clearRect(0,0,W,Hl);g.save();g.translate(0,dy);
     var sky=g.createLinearGradient(0,-dy,0,G);sky.addColorStop(0,'#241f52');sky.addColorStop(.5,'#7b4a7e');sky.addColorStop(.82,'#e4846f');sky.addColorStop(1,'#ffc86e');g.fillStyle=sky;g.fillRect(0,-dy,W,G+dy);
     for(i=0;i<14+Math.floor(dy/22);i++){var sty=((i*37)%(100+dy))-dy+8;g.globalAlpha=Math.max(0,.55-(sty+dy)/(330+dy)*.4)*(.7+.3*Math.sin(t*1.6+i*2.1));cpBox(g,(i*97+31)%W,sty,2,2,'#fff1dc');}g.globalAlpha=1;
-    var sun=g.createRadialGradient(470,G-34,4,470,G-34,210);sun.addColorStop(0,'rgba(255,244,200,.95)');sun.addColorStop(.12,'rgba(255,214,140,.7)');sun.addColorStop(1,'rgba(255,170,110,0)');g.fillStyle=sun;g.fillRect(0,-dy,W,G+dy);
-    g.fillStyle='#fff0c8';g.beginPath();g.arc(470,G-34,26,0,7);g.fill();
+    var sunY = G - (fs ? Math.min(400, Math.round((Hl - 250) * .36)) : 34);
+    var sun = g.createRadialGradient(470,sunY,4,470,sunY,210);
+    sun.addColorStop(0,'rgba(255,244,200,.95)');sun.addColorStop(.28,'rgba(255,214,140,.48)');sun.addColorStop(1,'rgba(255,170,110,0)');
+    g.fillStyle=sun;g.fillRect(0,-dy,W,G+dy);
+    g.fillStyle=fs?'#ffba79':'#fff0c8';g.beginPath();g.arc(470,sunY,fs?92:26,0,7);g.fill();
     // soft clouds drift by themselves and a little with the street
     [[90,128,92,13],[330,92,120,15],[560,160,80,11],[210,196,70,9]].forEach(function(c,ci){var cx=((c[0]-t*(5+ci*2)-cam*.04)%(W+240)+W+240)%(W+240)-120;g.fillStyle=ci%2?'rgba(255,196,170,.34)':'rgba(255,224,196,.28)';g.beginPath();g.ellipse(cx,c[1],c[2],c[3],0,0,7);g.ellipse(cx-c[2]*.38,c[1]+c[3]*.4,c[2]*.55,c[3]*.8,0,0,7);g.ellipse(cx+c[2]*.42,c[1]+c[3]*.35,c[2]*.5,c[3]*.75,0,0,7);g.fill();});
     // distant hills, then two skyline layers moving at different speeds (parallax)
@@ -14249,15 +14383,17 @@ if(typeof module!=='undefined')module.exports=campaignRules;
     // quiet stretches painted on the road
     CP.lots.forEach(function(lot){
       var sx=lot.x0-cam;if(!lot.quiet||sx>W||sx+lot.w<0)return;
-      g.save();g.beginPath();g.rect(sx,G+18,lot.w,86);g.clip();cpBox(g,sx,G+18,lot.w,86,'rgba(255,111,97,.2)');
-      g.strokeStyle='rgba(255,111,97,.38)';g.lineWidth=6;for(var hx=sx-90;hx<sx+lot.w;hx+=26){g.beginPath();g.moveTo(hx,G+104);g.lineTo(hx+86,G+18);g.stroke();}g.restore();
-      cpBox(g,sx,G+18,3,86,'#ff6f61');cpBox(g,sx+lot.w-3,G+18,3,86,'#ff6f61');
+      var depth=fs?124:86;
+      g.save();g.beginPath();g.rect(sx,G+18,lot.w,depth);g.clip();cpBox(g,sx,G+18,lot.w,depth,fs?'rgba(48,119,102,.50)':'rgba(255,111,97,.2)');
+      g.strokeStyle=fs?'rgba(172,249,213,.30)':'rgba(255,111,97,.38)';g.lineWidth=6;for(var hx=sx-depth;hx<sx+lot.w;hx+=26){g.beginPath();g.moveTo(hx,G+18+depth);g.lineTo(hx+depth,G+18);g.stroke();}g.restore();
+      cpBox(g,sx,G+18,3,depth,fs?'#9af0cb':'#ff6f61');cpBox(g,sx+lot.w-3,G+18,3,depth,fs?'#9af0cb':'#ff6f61');
     });
     CP.lots.forEach(function(lot){var sx=lot.x0-cam;if(sx<W+20&&sx+lot.w>-20)cpBuilding(g,lot,sx,t);});
-    cpTruck(g,CP_TRUCK,t,live);
+    if (fs) cpMobileVehicle(g,t,live);
+    else cpTruck(g,CP_TRUCK,t,live);
     // power poles in front make the speed readable; campaign bunting is strung between them
     var near=cam*1.25,pole0=-(near%330)-20,flagC=['#d93c36','#fff1dc','#2c5aa8','#ffc247'];
-    for(x=pole0-330;x<W+400;x+=330){
+    for(x=fs?W+400:pole0-330;x<W+400;x+=330){
       for(i=0;i<2;i++){var ax=x+3,bx=x+333,top0=G-112+i*14,sag=26;g.strokeStyle='rgba(28,18,38,.8)';g.lineWidth=1.4;g.beginPath();g.moveTo(ax,top0);g.quadraticCurveTo((ax+bx)/2,top0+sag*2,bx,top0);g.stroke();
         if(i===0)for(var f=1;f<14;f++){var u=f/14,fx=ax+(bx-ax)*u,fy=top0+sag*4*u*(1-u),sw=reduceMotion?0:Math.sin(t*4+f*.9+x*.01)*1.6;g.fillStyle=flagC[f%4];g.beginPath();g.moveTo(fx-5,fy);g.lineTo(fx+5,fy);g.lineTo(fx+sw,fy+13);g.closePath();g.fill();}}
       cpBox(g,x,G-122,6,226,'#1c1226');cpBox(g,x-18,G-114,42,5,'#1c1226');cpBox(g,x-12,G-104,30,4,'#1c1226');
@@ -14272,6 +14408,8 @@ if(typeof module!=='undefined')module.exports=campaignRules;
     CP.floats.forEach(function(f){var age=t-f.t;if(age<0||age>1.1)return;g.globalAlpha=Math.min(1,(1.1-age)*2);g.font='700 17px '+CP_FONT;g.fillStyle=f.kind==='bad'?'#ff6f61':f.kind==='good'?'#8fe0b0':f.kind==='gain'?'#ffb638':'#d3b9c0';g.lineWidth=5;g.strokeStyle='#1c1226';var sx=Math.max(70,Math.min(W-70,f.x-cam)),sy=Math.max(118,f.y-age*24);g.strokeText(f.text,sx,sy);g.fillText(f.text,sx,sy);});
     g.globalAlpha=1;
     g.restore();
+    if (fs) cpMobileHud(g,Hl,live);
+    else {
     // HUD: votes, route progress and speed, strikes (screen space)
     cpBox(g,0,0,W,96,'rgba(28,16,40,.8)');cpBox(g,0,96,W,1,'#6a4a62');
     g.textAlign='left';g.fillStyle='#d3b9c0';g.font='12px '+CP_FONT;g.fillText('目前選票',16,16);g.fillStyle='#e4f2f3';g.font='700 30px "Chakra Petch",'+CP_FONT;g.fillText(fmt(CP.votes),16,42);
@@ -14286,16 +14424,9 @@ if(typeof module!=='undefined')module.exports=campaignRules;
       g.fillStyle=up.quiet?'rgba(255,111,97,.22)':'#3a2640';cpRR(g,ux,62,84,26,13);g.fill();g.lineWidth=i===0?2:1;g.strokeStyle=up.quiet?'#ff6f61':i===0?'#d3b9c0':'#6a4a62';g.stroke();
       g.fillStyle=up.quiet?'#ff9a8f':'#f0dcd6';g.font='600 13px '+CP_FONT;g.textAlign='center';g.fillText(up.quiet?up.name+' 靜':up.name,ux+42,76);
       if(i<5){g.fillStyle='#8a6a80';g.fillText('›',ux+89.5,75);}}
-    if(fs&&live){
-      // full-width mute pad: the whole lower screen is the thumb target
-      var sg=cpSignal(),warn=sg[0]!=='safe',ph=Math.min(150,Math.max(96,Math.round((Hl-460-dy)*.42))),py0=Hl-ph-70,pulse=reduceMotion?.5:(.5+.5*Math.sin(t*10));
-      g.fillStyle=CP.hold?'rgba(217,60,54,.9)':'rgba(255,194,71,.16)';cpRR(g,28,py0,W-56,ph,28);g.fill();
-      g.lineWidth=warn&&!CP.hold?4:2;g.strokeStyle=CP.hold?'#ffb4a8':(warn?'rgba(255,111,97,'+(.55+.45*pulse)+')':'rgba(255,194,71,.7)');cpRR(g,28,py0,W-56,ph,28);g.stroke();
-      g.textAlign='center';g.textBaseline='middle';g.fillStyle='#fff1dc';g.font='800 26px '+CP_FONT;g.fillText(CP.hold?'靜音中 · 放開廣播':'按住靜音 · 放開廣播',W/2,py0+ph/2-(ph>110?12:0));
-      if(ph>110){g.fillStyle=CP.hold?'#ffe3dc':'#d3b9c0';g.font='600 15px '+CP_FONT;g.fillText(CP.hold?'靜音中 · 放開才會廣播':'廣播拉票中 · 紅色路段要按住',W/2,py0+ph/2+22);}
-    }else if(!fs){
-    g.textAlign='center';g.fillStyle=live?(CP.hold?'#d3b9c0':'#8fe0b0'):'#d3b9c0';g.font='600 14px '+CP_FONT;
-    g.fillText(live?(CP.hold?'靜音中 · 放開才會廣播':'廣播拉票中 · 紅色路段要按住'):'放開＝廣播拉票　按住＝靜音',W/2,Hl-13);
+    g.textAlign='center';g.fillStyle=live?(CP.hold?'#d3b9c0':'#8fe0b0'):'#d3b9c0';
+    g.font='600 14px '+CP_FONT;
+    g.fillText(live?(CP.hold?'靜音中 · 放開才會廣播':'廣播拉票中 · 安靜區要按住'):'放開＝廣播拉票　按住＝靜音',W/2,Hl-13);
     }
     g.save();g.translate(0,dy);
     CP.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=190-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#ffb638';g.font='700 38px '+CP_FONT;g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#e4f2f3';g.font='600 17px '+CP_FONT;g.fillText('得票 '+fmt(p.v)+' 里程碑',W/2,py+28);g.globalAlpha=1;});
@@ -14304,7 +14435,7 @@ if(typeof module!=='undefined')module.exports=campaignRules;
       g.fillStyle=CP.phase==='lost'?'#ff6f61':'#8fe0b0';g.font='700 24px '+CP_FONT;
       g.fillText(CP.phase==='ready'?'準備出發拉票？':'被檢舉，落選了！',W/2,186);
       g.fillStyle='#e4f2f3';g.font='14px '+CP_FONT;
-      g.fillText(CP.phase==='ready'?'紅色建築要按住靜音，其他路段放開廣播':'最終 '+fmt(CP.votes)+' 票 · 過了 '+cpPassed()+' 棟'+(CP.earned>0?' · 入帳 +'+fmt(CP.earned)+' 點':''),W/2,222);
+      g.fillText(CP.phase==='ready'?'安靜區按住靜音，其他路段放開廣播':'最終 '+fmt(CP.votes)+' 票 · 過了 '+cpPassed()+' 棟'+(CP.earned>0?' · 入帳 +'+fmt(CP.earned)+' 點':''),W/2,222);
     }
     g.restore();g.textBaseline='alphabetic';g.textAlign='left';
   }

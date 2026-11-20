@@ -1,0 +1,95 @@
+<svg font-family="PingFang TC, Noto Sans TC, sans-serif" xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" role="img" aria-labelledby="title">
+<title id="title">宣傳車｜390×844 手機遊玩設計稿</title>
+<defs>
+  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#2a204d"/><stop offset=".54" stop-color="#a25382"/><stop offset="1" stop-color="#ffc087"/></linearGradient>
+  <linearGradient id="road" x2="0" y2="1"><stop stop-color="#4e3a60"/><stop offset="1" stop-color="#211933"/></linearGradient>
+  <linearGradient id="brick" x2=".85" y2="1"><stop stop-color="#f1bb9e"/><stop offset="1" stop-color="#b2798d"/></linearGradient>
+  <linearGradient id="windows" x2=".8" y2="1"><stop stop-color="#ffe2a6"/><stop offset="1" stop-color="#e49c7c"/></linearGradient>
+  <linearGradient id="truck" x2="0" y2="1"><stop stop-color="#fff5db"/><stop offset="1" stop-color="#efbd8d"/></linearGradient>
+  <linearGradient id="touch" x2="0" y2="1"><stop stop-color="#8af5d1" stop-opacity=".03"/><stop offset="1" stop-color="#69dbc1" stop-opacity=".19"/></linearGradient>
+  <radialGradient id="sunGlow"><stop stop-color="#ffdcb0" stop-opacity=".75"/><stop offset="1" stop-color="#ffb98c" stop-opacity="0"/></radialGradient>
+  <pattern id="hatch" width="17" height="17" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><path d="M0 0v17" stroke="#b4ffe2" stroke-opacity=".16" stroke-width="3"/></pattern>
+  <g id="litWindow"><rect width="27" height="38" rx="5" fill="#684661"/><rect x="3" y="3" width="21" height="31" rx="3" fill="url(#windows)"/><path d="M14 4v29M4 18h19" stroke="#7b5263" stroke-width="2"/></g>
+  <g id="mute" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h5l6-5v14l-6-5H3zM18 9l6 6m0-6-6 6"/></g>
+</defs>
+<!-- Sky and street layers -->
+<path d="M0 0h390v570H0z" fill="url(#sky)"/>
+<circle cx="285" cy="309" r="113" fill="url(#sunGlow)"/>
+<circle cx="285" cy="309" r="56" fill="#ffba79"/>
+<path d="M0 321c47 2 82-16 120-12 25 2 55 14 79 15l-199 10zm232 5c48-2 88-19 158-12v7c-67-3-117 15-158 12z" fill="#ffc199" opacity=".66"/>
+<g fill="#fff0d4" opacity=".64"><circle cx="46" cy="229" r="1.3"/><circle cx="114" cy="196" r="1.5"/><circle cx="344" cy="209" r="1.4"/><circle cx="212" cy="240" r="1.1"/><path d="M292 210h8m-4-4v8" stroke="#fff0d4" stroke-width="1.3"/></g>
+<path d="M0 425v-47h22v-39h49v35h21v-30h37v74h21v-59h30v41h24v-48h44v79h27v-65h28v18h22v-57h23v25h31v43h11v99H0z" fill="#8f5879"/>
+<path d="M0 480v-60h22v-29h29v69h28v-72h22v-8h26v35h28v30h32v-33h44v48h28v-56h32v48h36v-69h34v38h29v88H0z" fill="#684566"/>
+<!-- Apartment and hospital -->
+<path d="M0 461l46-32 72 37v91H0z" fill="#a36b83" stroke="#4b3657" stroke-width="4"/>
+<path d="M-6 466l52-39 77 40" fill="none" stroke="#503754" stroke-width="8" stroke-linejoin="round"/>
+<rect x="30" y="469" width="35" height="26" rx="5" fill="#533b58"/><rect x="34" y="473" width="27" height="18" rx="2" fill="#efb382"/>
+<path d="M47.5 473v18" stroke="#a76b73" stroke-width="2"/>
+<path d="M73 553v-42a10 10 0 0 1 20 0v42" fill="#563851"/>
+<path d="M171 551V399l29-15v-26l73-38 77 38v26l28 15v152z" fill="#573954" stroke="#493451" stroke-width="5" stroke-linejoin="round"/>
+<path d="M184 541V404l26-14v-26l63-34 66 34v26l25 14v137z" fill="url(#brick)"/>
+<path d="M184 405l26-15h129l25 15z" fill="#ffcfaa"/>
+<path d="M210 365l63-34 66 34" fill="none" stroke="#ffceaa" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="242" y="359" width="63" height="24" rx="7" fill="#553b58"/>
+<text x="273.5" y="376" text-anchor="middle" fill="#fff0d8" font-size="13" font-weight="750">醫院</text>
+<use href="#litWindow" x="203" y="423"/><use href="#litWindow" x="316" y="423"/><use href="#litWindow" x="203" y="476"/><use href="#litWindow" x="316" y="476"/>
+<path d="M239 541v-44a34 34 0 0 1 68 0v44z" fill="#513c60"/>
+<path d="M246 541v-44a27 27 0 0 1 54 0v44z" fill="#7e7992"/>
+<path d="M273 472v68m-26-35h52" stroke="#4e3c59" stroke-width="3"/>
+<path d="M249 525l18-33v-16c-10 3-16 12-18 22zm33-2 16-29v16l-16 28z" fill="#dcbab0" opacity=".58"/>
+<path d="M228 543h91" stroke="#e5aa97" stroke-width="6" stroke-linecap="round"/>
+<!-- Sidewalk and hospital zone -->
+<path d="M0 549h390v42H0z" fill="#ba8192"/><path d="M0 557h390" stroke="#ecc29c" stroke-width="3"/><path d="M0 579h390" stroke="#664868" stroke-width="4"/>
+<path d="M0 590h390v254H0z" fill="url(#road)"/>
+<path d="M100 590h290v123H100z" fill="#285b54" opacity=".52"/><path d="M100 590h290v123H100z" fill="url(#hatch)"/>
+<path d="M100 590v123m0-121h290m-290 120h290" stroke="#9af0cb" stroke-width="2" opacity=".71"/>
+<path d="M0 685h390" stroke="#f7c697" stroke-width="4" stroke-opacity=".56" stroke-dasharray="32 20"/>
+<path d="M367 548v-91m-1 0q0-19-23-19h-10" fill="none" stroke="#4a3455" stroke-width="6" stroke-linecap="round"/>
+<path d="M322 440q0-9 12-9t12 9z" fill="#ffd693"/><path d="M327 443h14" stroke="#fce9b6" stroke-width="3" stroke-linecap="round"/>
+<path d="M132 565v-54" stroke="#65495f" stroke-width="5"/>
+<rect x="102" y="492" width="60" height="37" rx="8" fill="#24483f" stroke="#a6f2cc" stroke-width="2"/>
+<text x="132" y="516" text-anchor="middle" fill="#dcffe9" font-size="12" font-weight="750">安靜區</text>
+<!-- Vehicle in the active lane -->
+<ellipse cx="117" cy="662" rx="99" ry="12" fill="#1b1834" opacity=".62"/>
+<g transform="translate(16 635)">
+ <path d="M2 0h15m-23 10h13" stroke="#fbc681" stroke-width="3" stroke-linecap="round"/>
+ <g transform="translate(5 -120) scale(1.17)">
+  <g stroke="#2e2447" stroke-width="4.5" stroke-linejoin="round">
+   <path d="M108 72h24q4 0 6 4l20 25v19h-50z" fill="url(#truck)"/>
+   <rect x="23" y="60" width="89" height="60" rx="9" fill="url(#truck)"/>
+   <path d="M67 60l5-13h18l5 13" fill="#a88eae"/>
+   <path d="M60 39a6 6 0 0 1 6-6h16l24-9v30l-24-8H66a6 6 0 0 1-6-7z" fill="#ffdfa4"/>
+   <ellipse cx="106" cy="39" rx="5.5" ry="15" fill="#dc846d"/>
+  </g>
+  <path d="M118 79h13l12 16h-25z" fill="#404b75"/><path d="M120 81h8l-8 10z" fill="#9dc5d0"/>
+  <rect x="31" y="68" width="71" height="31" rx="6" fill="#c33e4a"/>
+  <path d="M43 83h14m24 0h9" stroke="#ffc880" stroke-width="3" stroke-linecap="round"/>
+  <path d="m69 75 2.6 5.5 6 .8-4.4 4.2 1 6-5.2-2.8-5.3 2.8 1-6-4.4-4.2 6-.8z" fill="#fff1be"/>
+  <path d="M24 106h133v7H24z" fill="#c54452"/><path d="M25 113h133v6H25z" fill="#3a5685"/>
+  <path d="M150 101h7v6h-7z" fill="#ffe8a0"/>
+  <g fill="#231b38"><circle cx="49" cy="120" r="13"/><circle cx="134" cy="120" r="13"/></g>
+  <g fill="#bea5be"><circle cx="49" cy="120" r="5"/><circle cx="134" cy="120" r="5"/></g>
+ </g>
+</g>
+<g transform="translate(144 525)" color="#cdffe4"><circle cx="18" cy="18" r="18" fill="#244d43" stroke="#a6f2cf" stroke-width="1.5"/><use href="#mute" transform="translate(7 8) scale(.8)"/></g>
+<!-- HUD and status -->
+<g font-family="PingFang TC, Noto Sans TC, sans-serif">
+ <rect x="16" y="45" width="46" height="46" rx="14" fill="#292041" stroke="#947d9a"/>
+ <path d="M45 68H33l6-6m-6 6 6 6" fill="none" stroke="#fff1da" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+ <text x="76" y="62" fill="#e7d4e2" font-size="12" font-weight="650">得票</text>
+ <text x="75" y="89" fill="#fff1d7" font-size="30" font-weight="800">3,620</text>
+ <text x="374" y="62" text-anchor="end" fill="#e7d4e2" font-size="12" font-weight="650">失誤 1／5</text>
+ <circle cx="282" cy="80" r="6" fill="#ff9b8e"/>
+ <path d="M300 74a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm18 0a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm18 0a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm18 0a6 6 0 1 0 0 12 6 6 0 0 0 0-12z" fill="none" stroke="#b49ab5" stroke-width="1.4"/>
+ <path d="M17 109h356" stroke="#b896ab" opacity=".46"/>
+ <text x="17" y="133" fill="#eedbea" font-size="12">已過 18 棟 · 車速 1.3×</text>
+ <text x="373" y="133" text-anchor="end" fill="#eedbea" font-size="12">下一棟：商店</text>
+ <rect x="119" y="173" width="152" height="37" rx="18.5" fill="#25483f" stroke="#a6f2cc"/>
+ <g transform="translate(130 183) scale(.73)" color="#dcffeb"><use href="#mute"/></g>
+ <text x="156" y="197" fill="#dcffeb" font-size="14" font-weight="750">醫院 · 靜音中</text>
+ <path d="M0 723q195-17 390 0v121H0z" fill="url(#touch)"/>
+ <path d="M26 744v-10h12m314 0h12v10m0 51v10h-12m-314 0H26v-10" fill="none" stroke="#b0f5d5" stroke-opacity=".66" stroke-width="2" stroke-linecap="round"/>
+ <text x="195" y="771" text-anchor="middle" fill="#d6ffe8" font-size="22" font-weight="800">靜音中</text>
+ <text x="195" y="795" text-anchor="middle" fill="#e0e6e4" font-size="13" font-weight="650">繼續按住 · 放開恢復廣播</text>
+</g>
+</svg>

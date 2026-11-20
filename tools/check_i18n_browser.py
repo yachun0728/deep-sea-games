@@ -139,6 +139,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix='deep-sea-i18n-') as temp:
         folder = Path(temp)
         for suite, width, height in [('outpost', 1366, 900), ('outpost', 390, 844), ('book_sort', 1366, 900), ('book_sort', 390, 844), ('book_sort', 844, 390), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('academy', 1366, 900), ('academy', 390, 844), ('core', 1366, 900), ('hans', 1366, 900), ('hans', 390, 844), ('games', 1366, 900), ('games', 390, 844),
+                                     ('campaign', 1366, 900), ('campaign', 390, 844), ('campaign', 320, 550),
                                      ('merge', 1366, 900), ('merge', 390, 844), ('merge', 320, 480),
                                      ('ocean_link', 1366, 900), ('ocean_link', 844, 390), ('frontier', 1366, 900), ('frontier', 390, 844), ('frontier', 844, 390)]:
             if args.suite and suite not in args.suite:
@@ -146,6 +147,23 @@ def main():
             script = (ROOT / f'tools/i18n_browser_{suite}.js').read_text(encoding='utf-8')
             route = f'/{suite}-{width}.html'
             tested_source = source
+            if suite == 'campaign':
+                anchor = "  campaignRules.create(Math.random, null, CP);CP.phase='ready';"
+                hook = '''window.__campaignTest = {
+                    phase: () => CP.phase, held: () => CP.hold, votes: () => CP.votes,
+                    hospital: () => {
+                        campaignRules.create(() => .4, null, CP);
+                        CP.lots[0].name = '醫院'; CP.lots[0].quiet = true;
+                        CP.dist = CP.lots[0].x0 - CP_TRUCK + 10;
+                        CP.last = performance.now();
+                    },
+                    turnOffUpdates: () => { cpRank.update = () => {}; },
+                    finish: () => cpLose('被檢舉落選'),
+                    artReady: () => cpMobileTruck.naturalWidth > 0 && cpMobileHospital.naturalWidth > 0
+                };
+                cpRank.start = callback => callback(() => .4);'''
+                assert anchor in tested_source
+                tested_source = tested_source.replace(anchor, hook + anchor)
             if suite == 'merge':
                 hook = 'window.__mergeTest = {state: G, localStart: () => beginMerge(null)};'
                 tested_source = source.replace("  var swipe = null, elMgArea = elMg.closest('.mg-console');",
@@ -169,6 +187,8 @@ def main():
                 if suite == 'core':
                     total += chrome.check(page, '?probe=default', 'Default Chinese')
                 query = '?lang=en&keep=1' + ('&preview=frontier' if suite == 'frontier' else '') + ('#ocean-link' if suite == 'ocean_link' else '#frontier' if suite == 'frontier' else '')
+                if suite == 'campaign':
+                    query += '#campaign'
                 if suite == 'merge':
                     query += '#merge'
                 if suite == 'outpost':
@@ -194,6 +214,14 @@ def main():
                 if suite == 'core':
                     for query, label in [('?probe=saved', 'Saved English after reload'), ('?probe=explicit&lang=zh-Hant', 'Explicit Chinese overrides saved English'), ('?probe=blocked&lang=en', 'Blocked preference storage')]:
                         total += chrome.check(page, query, label)
+                if suite == 'campaign' and width == 390 and args.screenshots:
+                    args.screenshots.mkdir(parents=True, exist_ok=True)
+                    chrome.evaluate("deepSeaI18n.setLanguage('zh-Hant'); location.hash='campaign'")
+                    time.sleep(.2)
+                    chrome.evaluate("window.__campaignTest.hospital(); document.getElementById('cp-canvas').dispatchEvent(new PointerEvent('pointerdown',{pointerId:1,button:0}));")
+                    time.sleep(.2)
+                    capture = chrome.call('Page.captureScreenshot', {'format': 'png'}, page=True)
+                    (args.screenshots / 'Campaign-Truck-Play-390.png').write_bytes(base64.b64decode(capture['data']))
                 if suite == 'merge' and width == 390:
                     chrome.evaluate("location.hash='merge'")
                     for _ in range(50):
