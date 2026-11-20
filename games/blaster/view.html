@@ -6,6 +6,11 @@
         <button class="bl-exit" id="bl-exit" type="button" aria-label="退出遊戲">←</button>
         <output class="bl-accessible" id="bl-lives" aria-label="剩餘潛艇">3 / 35</output>
         <p class="bl-accessible" id="bl-msg" role="status"></p>
+        <div class="bl-ranking-feedback">
+          <p id="bl-rank-status" role="status" hidden></p>
+          <button id="bl-rank-retry" type="button" hidden>重送排行榜成績</button>
+        </div>
+        <deep-sea-leaderboard id="bl-leaderboard" game-id="blaster" hidden></deep-sea-leaderboard>
       </div>
     </div>
   </section>

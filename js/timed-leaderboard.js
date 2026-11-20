@@ -1,4 +1,4 @@
-  function timedLeaderboard(gameId, prefix, inputCount, refresh) {
+  function timedLeaderboard(gameId, prefix, inputCount, refresh, onSaved) {
     let round, pending, starting = false, sending = false;
     let tick = 0, carry = 0, actions = [];
     function status(message, retry = false) {
@@ -12,7 +12,7 @@
       tick = 0; carry = 0; actions = [];
       callback(rank ? timedReplay.seeded(rank.state.seed) : null);
     }
-    async function start(callback, cancel) {
+    async function start(callback, cancel, settings) {
       if (starting || sending) return;
       pending = null;
       if (typeof location === 'undefined' || location.protocol === 'file:') {
@@ -25,7 +25,7 @@
       let rank = null;
       try {
         const api = await import('./frontend/services/api.mjs');
-        rank = await api.startBoardRound(gameId, AbortSignal.timeout(4000));
+        rank = await api.startBoardRound(gameId, AbortSignal.timeout(4000), settings);
       } catch {}
       starting = false;
       if ($('view-' + gameId).hidden) { status(''); refresh(); cancel?.(); return; }
@@ -59,7 +59,9 @@
       try {
         const api = await import('./frontend/services/api.mjs');
         const next = await api.moveBoardRound(round.token, pending.move, AbortSignal.timeout(10000));
-        status(next.state.score === pending.score ? '成績已送到排行榜。' : '排行榜成績未能送出。');
+        const saved = next.state.score === pending.score;
+        status(saved ? '成績已送到排行榜。' : '排行榜成績未能送出。');
+        if (saved) onSaved?.();
         pending = null;
       } catch (error) {
         if (error.retryable === false) pending = null;

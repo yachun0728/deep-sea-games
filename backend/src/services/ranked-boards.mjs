@@ -1,3 +1,4 @@
+import blasterRules from '../../../shared/blaster-rules.cjs';
 import mermaidRules from '../../../shared/mermaid-rules.cjs';
 import lasthairRules from '../../../shared/last-hair-rules.cjs';
 import mosquitoRules from '../../../shared/mosquito-rules.cjs';
@@ -48,8 +49,15 @@ function timedBoard(engine, rulesVersion) {
     visible: ({seed, score}) => ({seed, score}),
   };
 }
+const blasterV1 = timedBoard({...blasterRules, create: rng => blasterRules.create(rng, 1)}, 1);
+const blasterV2 = timedBoard(blasterRules, blasterRules.rulesVersion);
 const boards = new Map([
   ['outpost', timedBoard(outpostRules, 1)],
+  ['blaster', {
+    ...blasterV1,
+    create: version => (version === blasterRules.rulesVersion ? blasterV2 : blasterV1).create(),
+    apply: (state, action) => (state.rulesVersion === blasterRules.rulesVersion ? blasterV2 : blasterV1).apply(state, action),
+  }],
   ['mermaid', timedBoard(mermaidRules)],
   ['last-hair', timedBoard(lasthairRules)],
   ['mosquito', timedBoard(mosquitoRules)],
@@ -178,7 +186,9 @@ export async function readBoardCommand(request, isMove) {
     const game = boards.get(command?.gameId);
     if (!game) return null;
     const bookSortStart = !isMove && command.gameId === 'book-sort';
-    if (Object.keys(command).length !== (isMove ? 4 : bookSortStart ? 2 : 1)) return null;
+    const blasterVersionedStart = !isMove && command.gameId === 'blaster' && Object.hasOwn(command, 'rulesVersion');
+    if (Object.keys(command).length !== (isMove ? 4 : bookSortStart || blasterVersionedStart ? 2 : 1)) return null;
+    if (blasterVersionedStart && command.rulesVersion !== blasterRules.rulesVersion) return null;
     if (bookSortStart && (!Number.isSafeInteger(command.stage) || command.stage < 1)) return null;
     if (isMove && (typeof command.id !== 'string' || !ID.test(command.id) ||
         !Number.isInteger(command.revision) || command.revision < 0 ||
@@ -191,7 +201,7 @@ export async function readBoardCommand(request, isMove) {
   }
 }
 
-export async function startRankedBoard(db, playerId, gameId, stage) {
+export async function startRankedBoard(db, playerId, gameId, stage, rulesVersion) {
   const id = crypto.randomUUID(), game = boards.get(gameId);
   let state;
   if(gameId==='frontier'){
@@ -204,7 +214,7 @@ export async function startRankedBoard(db, playerId, gameId, stage) {
       state.issuedAt=Date.now();
     }
   }
-  state ??= game.create(stage);
+  state ??= game.create(gameId === 'blaster' ? rulesVersion : stage);
   await db.prepare(
     'INSERT INTO ranked_boards (id, player_id, game_id, started_at, state) VALUES (?, ?, ?, ?, ?)',
   ).bind(id, playerId, gameId, Date.now(), JSON.stringify(state)).run();

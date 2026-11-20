@@ -79,7 +79,7 @@
     AN.view(member?'lobby':v);
     var heading = member ? '會員中心' : VIEWS[v];
     $('game-name').innerHTML = heading;
-    document.title=member?'會員中心 · TICATICA GAMES':VIEWS[v].replace(/<[^>]*>/g,'').trim();
+    document.title=member?'會員中心 · TiCATiCA GAMES':v==='lobby'?'TiCATiCA GAMES':VIEWS[v].replace(/<[^>]*>/g,'').trim();
     if(lastView&&lastView!==v){$('game-name').focus({preventScroll:true});if(window.scrollTo)window.scrollTo({top:v==='lobby'?lobbyScroll:0,behavior:'instant'});}
     lastView=v;
     $('picker-current').textContent=heading.replace(/<[^>]*>/g,'').trim();
