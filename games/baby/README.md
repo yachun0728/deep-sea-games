@@ -7,7 +7,7 @@
 - 網址：`#baby`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。」｜立即開玩 · 居家逃亡
 - 追蹤名稱（GA4 `game_name`）：寶寶逃洗澡，`game_id` 為 `baby`
-- 檔案：`games/baby/card.html`、`games/baby/cover.webp`、`games/baby/game.js`、`games/baby/icon.svg`、`games/baby/view.html`；`game.js` 共 176 行、13.3 KB
+- 檔案：`games/baby/card.html`、`games/baby/cover.webp`、`games/baby/game.js`、`games/baby/icon.svg`、`games/baby/view.html`；`game.js` 共 175 行、13.2 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「31. 寶寶逃洗澡 Baby Bath Escape（baby）」（下方「規則摘要」已複製）
 
@@ -17,15 +17,15 @@
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`BTN`（L34）、`KM`（L162）、`babyBusy`（L2）
+- 狀態物件／進行中旗標：`KM`（L161）、`babyBusy`（L2）
 - L5 常數：`MILESTONES`、`BONUS`、`KEY`、`SKEY`、`UNIT`
 - L25 常數：`PXL`
-- L34 常數：`BTN`
-- L94 常數：`CHY`
+- L34 常數：`CRAWL`、`CRY`
+- L93 常數：`CHY`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rnd` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L15、`acc` L16、`syncModel` L29、`control` L30、`bg` L45、`drawObs` L53、`mom` L59、`baby` L69、`bt` L87、`SK` L94、`T` L95、`ST` L96、`pick` L98、`release` L99、`say` L100、`setText` L102、`ui` L103、`awardBonus` L110、`die` L120、`start` L130、`overlay` L139、`bonusDraw` L149、`pos` L150、`loop` L169
+`rnd` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L15、`acc` L16、`syncModel` L29、`control` L30、`bg` L43、`drawObs` L51、`mom` L57、`baby` L67、`SK` L93、`T` L94、`ST` L95、`pick` L97、`release` L98、`say` L99、`setText` L101、`ui` L102、`awardBonus` L109、`die` L119、`start` L129、`overlay` L138、`bonusDraw` L148、`pos` L149、`loop` L168
 
 ## 錢包與結算接點
 
@@ -33,19 +33,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L114 `awardBonus`：`S.balance+=BONUS;`
+- L113 `awardBonus`：`S.balance+=BONUS;`
 
 **餘額檢查**
-- L133 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L132 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L115 `awardBonus`：`AN.progress(analytics,{step:s,score:s,milestone:m,bonus_points:BONUS,total_bonus_points:paid});`
-- L126 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
-- L135 `start`：`analytics=AN.start('baby',amount);`
+- L114 `awardBonus`：`AN.progress(analytics,{step:s,score:s,milestone:m,bonus_points:BONUS,total_bonus_points:paid});`
+- L125 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
+- L134 `start`：`analytics=AN.start('baby',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -61,7 +61,7 @@
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-定位：`babyBusy` 所在 IIFE（改編自使用者提供的 BabyBath.html；原頁面的越／英／中語言切換移除，僅繁中；造型解鎖與選擇保留，存於 `deep-sea-baby-skin`）。與媽媽的距離縮到 0 即結束；點「跳」鈕跳（或點畫面上方任一處）、按住「趴」鈕爬行；奶瓶累積大哭（最多3次，媽媽停住約2.2秒並拉開距離）。分數＝floor(距離/60)。
+定位：`babyBusy` 所在 IIFE（改編自使用者提供的 BabyBath.html；原頁面的越／英／中語言切換移除，僅繁中；造型解鎖與選擇保留，存於 `deep-sea-baby-skin`）。與媽媽的距離縮到 0 即結束；點畫面任一處跳、按住右下角「趴」鈕爬行；奶瓶累積大哭（按「趴」鈕左邊的「大哭」鍵使用，沒有哭聲時為灰色）（最多3次，媽媽停住約2.2秒並拉開距離）。分數＝floor(距離/60)。
 
 每局固定入場 10 點，無終點。BONUS：200／500／900 m 三個里程碑，各立即入帳固定 5 點（單局最多 15 點），每個里程碑當局只發一次；達標判定在遊戲更新之後、且回合仍進行時，造成失敗的那一幀不計。獎勵與入場費無關，失敗或重新整理不扣回，結束時不另發點；`end.payout_points` 記錄本局已入帳總額。最佳紀錄存於 `deep-sea-baby-best`。里程碑門檻依原頁造型解鎖門檻設定，尚未經大量實測校準。切換遊戲或背景分頁時暫停，重新整理放棄本局、已扣點不退。
 
