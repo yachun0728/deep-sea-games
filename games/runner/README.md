@@ -7,7 +7,7 @@
 - 網址：`#runner`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「點左、點右換道，避開一路上的障礙。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：閃避跑酷，`game_id` 為 `runner`
-- 檔案：`games/runner/card.html`、`games/runner/game.js`、`games/runner/icon.svg`、`games/runner/leaderboard.webp`、`games/runner/style.css`、`games/runner/view.html`；`game.js` 共 334 行、15.0 KB
+- 檔案：`games/runner/card.html`、`games/runner/cover.webp`、`games/runner/game.js`、`games/runner/icon.svg`、`games/runner/leaderboard.webp`、`games/runner/style.css`、`games/runner/view.html`；`game.js` 共 334 行、15.0 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「13. Dodge Run（runner）」（下方「規則摘要」已複製）
 
