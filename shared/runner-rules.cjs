@@ -1,14 +1,19 @@
 const runnerRules = (() => {
   const STEP_MS = 10, MAX_TICKS = 60000;
   const V0 = 20, VMAX = 60, D1 = 1500;
+  const rulesVersion = 2, SPEED_INTERVAL = 100, SPEED_INCREMENT = .8;
   const lanes = [-1, 0, 1];
 
-  function create() {
-    return {dist: 0, px: 0, tl: 0, v: V0, obs: [], lastGap: 0, nextAt: 10, dead: false, near: false};
+  function create(version = rulesVersion) {
+    return {version, dist: 0, px: 0, tl: 0, v: V0, obs: [], lastGap: 0, nextAt: 10, dead: false, near: false};
   }
 
   function step(state, dt, random) {
-    state.v = Math.min(VMAX, V0 + state.dist * (1 / 250));
+    // Unversioned ranked sessions keep the original curve through settlement.
+    const increase = state.version === rulesVersion
+      ? Math.floor(state.dist / SPEED_INTERVAL) * SPEED_INCREMENT
+      : state.dist * (1 / 250);
+    state.v = Math.min(VMAX, V0 + increase);
     const distance = state.v * dt;
     state.dist += distance;
     state.px += (state.tl - state.px) * Math.min(1, dt * 16);
@@ -57,8 +62,8 @@ const runnerRules = (() => {
     return true;
   }
 
-  function replay(seed, [ticks, ...moves]) {
-    const state = create(), random = seeded(seed);
+  function replay(seed, [ticks, ...moves], version = rulesVersion) {
+    const state = create(version), random = seeded(seed);
     let cursor = 0;
     for (let tick = 0; tick < ticks; tick++) {
       if (Math.floor(moves[cursor] / 3) === tick) state.tl = moves[cursor++] % 3 - 1;
@@ -67,6 +72,6 @@ const runnerRules = (() => {
     }
     return null;
   }
-  return {STEP_MS, MAX_TICKS, create, step, seeded, accepts, replay};
+  return {rulesVersion, STEP_MS, MAX_TICKS, create, step, seeded, accepts, replay};
 })();
 if (typeof module !== 'undefined') module.exports = runnerRules;

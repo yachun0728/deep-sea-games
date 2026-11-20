@@ -1,4 +1,4 @@
-# 閃避跑酷 Dodge Run（runner）
+# 閃避跑酷：深海快遞 Dodge Run（runner）
 
 > 這份檔案由 `python3 tools/game_docs.py` 從原始碼自動產生，請勿手改；修改遊戲後重新執行。先讀這份找到位置，再只打開需要的函式範圍，不必掃整支 `game.js`。
 
@@ -7,7 +7,7 @@
 - 網址：`#runner`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「點左、點右換道，避開一路上的障礙。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：閃避跑酷，`game_id` 為 `runner`
-- 檔案：`games/runner/card.html`、`games/runner/game.js`、`games/runner/icon.svg`、`games/runner/style.css`、`games/runner/view.html`；`game.js` 共 282 行、13.3 KB
+- 檔案：`games/runner/card.html`、`games/runner/game.js`、`games/runner/icon.svg`、`games/runner/style.css`、`games/runner/view.html`；`game.js` 共 292 行、13.7 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「13. Dodge Run（runner）」（下方「規則摘要」已複製）
 
@@ -22,7 +22,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`bonusAt` L8、`nextMilestone` L9、`prevMilestone` L10、`T` L12、`runStatus` L17、`perspective` L22、`note` L23、`remember` L24、`runnerUI` L25、`award` L31、`beginRun` L37、`start` L44、`sendRun` L62、`die` L80、`update` L92、`loadArt` L110、`drawSprite` L117、`drawRunner` L125、`draw` L138、`X` L152、`Y` L153、`changeLane` L241、`L` L251、`loop` L258
+`bonusAt` L8、`nextMilestone` L9、`prevMilestone` L10、`T` L12、`runStatus` L17、`perspective` L22、`note` L23、`remember` L24、`runnerUI` L25、`award` L31、`beginRun` L37、`start` L44、`sendRun` L63、`die` L81、`update` L93、`loadArt` L111、`drawSprite` L118、`drawRunner` L126、`draw` L139、`X` L153、`Y` L154、`changeLane` L251、`L` L261、`loop` L268
 
 ## 錢包與結算接點
 
@@ -42,7 +42,7 @@
 
 - L33 `award`：`AN.progress(runnerAnalytics,{step:m,distance:m,bonus_points:b});`
 - L40 `beginRun`：`runnerAnalytics=AN.start('runner',ENTRY_FEE);`
-- L82 `die`：`AN.end(runnerAnalytics,earned,earned>0?'complete':'loss',{distance:Math.floor(run.dist)});`
+- L83 `die`：`AN.end(runnerAnalytics,earned,earned>0?'complete':'loss',{distance:Math.floor(run.dist)});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -58,9 +58,9 @@
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-定位：`runnerBusy` 所在 IIFE。無盡跑酷（2026-11-17 改為直到撞上障礙）：只需左／右切換三條跑道；一組兩個障礙留下安全道，安全道不與上一組相同，沒有跳躍／蹲下。沒有關卡與領回；速度 `min(60, 20+距離/250)`，每排間距隨距離縮短（時間窗由約2.0倍縮至約0.28倍速度，見 `windowAt`）。固定投入10。
+定位：`runnerBusy` 所在 IIFE。無盡跑酷（2026-11-17 改為直到撞上障礙）：只需左／右切換三條跑道；一組兩個障礙留下安全道，安全道不與上一組相同，沒有跳躍／蹲下。沒有關卡與領回；初速 20 m/s，每跑滿 100 公尺增加 0.8 m/s（初速的 4%），最高 60 m/s，每排間距隨距離縮短（換道時間窗由約 2 秒縮至約 0.28 秒，見 `shared/runner-rules.cjs`）。免費開始。 每跑滿 1 公里的位置有黃色虛線標記。
 
-里程碑點數當場入帳（`award`，每局每個里程碑只一次），撞上後不扣回、不另結算：3,500m +3、4,500m +7（累計10點，回本）、5,500m +15、6,500m +30，之後每多1,000m +40。里程碑以文字模擬（技巧不同的四種玩家）校準：一般玩家約跑3,000m，抵達3,500m約三成，4,500m不到1%；技巧好的玩家抵達4,500m約七成。尚無真人資料，上線後可用 GA4 `game_end` 的分數重新校準。大廳卡片只標示「✦ BONUS」。
+里程碑點數當場入帳（`award`，每局每個里程碑只一次），撞上後不扣回、不另結算：3,500m +3、4,500m +7（累計10點）、5,500m +15、6,500m +30，之後每多1,000m +40。里程碑以文字模擬（技巧不同的四種玩家）校準：一般玩家約跑3,000m，抵達3,500m約三成，4,500m不到1%；技巧好的玩家抵達4,500m約七成。尚無真人資料，上線後可用 GA4 `game_end` 的分數重新校準。大廳卡片只標示「✦ BONUS」。
 
 訪客榜按碰撞結束時的整數距離排名。Worker 依障礙種子和換道時間重播，確認碰撞與距離後才寫入公開榜。排行榜最多驗證十分鐘的遊戲時間。
 

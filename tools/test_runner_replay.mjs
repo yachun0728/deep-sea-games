@@ -1,6 +1,18 @@
 import assert from 'node:assert/strict';
 import rules from '../shared/runner-rules.cjs';
 
+// Cross a few speed thresholds without changing the legacy curve or speed cap.
+for (const [dist, speed] of [[99.99, 20], [100, 20.8], [199.99, 20.8], [200, 21.6], [4999.99, 59.2], [5000, 60], [5100, 60]]) {
+  const run = rules.create();
+  run.dist = dist;
+  rules.step(run, rules.STEP_MS / 1000, rules.seeded(0));
+  assert.equal(run.v, speed, `speed at ${dist} m`);
+}
+const legacy = rules.create(1);
+legacy.dist = 150;
+rules.step(legacy, rules.STEP_MS / 1000, rules.seeded(0));
+assert.equal(legacy.v, 20.6);
+
 for (const seed of [0, 1, 1234, 0xffffffff]) {
   const run = rules.create();
   const random = rules.seeded(seed);

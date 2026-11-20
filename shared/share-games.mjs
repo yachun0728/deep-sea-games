@@ -24,7 +24,7 @@ const TABLE = {
   baby: ['寶寶逃洗澡', 'Baby Bath Escape', 'score', METERS(['逃了', 'escaped'])],
   cat: ['屋頂貓貓', 'Rooftop Cat', 'score', METERS(['跑了', 'ran'])],
   'last-hair': ['尊嚴保衛戰', 'The Last Hair', 'score', METERS(['走了', 'made it'])],
-  runner: ['閃避跑酷', 'Dodge Run', 'distance', METERS(['跑了', 'ran'])],
+  runner: ['閃避跑酷：深海快遞', 'Dodge Run', 'distance', METERS(['跑了', 'ran'])],
   carp: ['鯉魚躍龍門', 'Carp Leap', 'score', { unit: ['道', 'falls'], result: ['跳過 {score} 道瀑布', 'leapt {score} waterfalls'] }],
   elevator: ['插隊大師', 'Queue Cutter', 'step', { unit: ['人', 'people'], result: ['插隊超過 {score} 人', 'cut past {score} people'] }],
   campaign: ['宣傳車', 'Campaign Truck', 'votes', { unit: ['票', 'votes'], result: ['拿下 {score} 票', 'won {score} votes'] }],

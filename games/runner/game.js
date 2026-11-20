@@ -24,7 +24,7 @@ function note(text,kind=''){$('rn-msg').textContent=text;$('rn-msg').className='
 function remember(){lastD=Math.floor(run.dist);rec=lastD>best;if(rec){best=lastD;try{localStorage.setItem('chayne',best)}catch(e){}}}
 function runnerUI(){
  const d=Math.floor(run.dist),nx=nextMilestone(d);
- $('rn-distance').textContent=d+' m';$('rn-best').textContent=best+' m';$('rn-next').textContent=nx[0]+' m · +'+nx[1];$('rn-speed').textContent=(run.v/20).toFixed(1)+'×';
+ $('rn-distance').textContent=d+' m';$('rn-best').textContent=best+' m';$('rn-next').textContent=nx[0]+' m · +'+nx[1];$('rn-speed').textContent=(run.v/20).toFixed(2)+'×';
  $('rn-go').disabled=st==='run'||runStarting||runSending;$('rn-go').textContent=st==='run'?'{{t:runner.msg.007}}':'{{t:runner.msg.008}}';
  document.querySelectorAll('[data-run]').forEach(b=>b.disabled=st!=='run');
 }
@@ -52,7 +52,8 @@ async function start(){
  let ranked=null;
  try{
   const api=await import('./frontend/services/api.mjs');
-  ranked=await api.startBoardRound('runner',AbortSignal.timeout(4000));
+  const session=await api.startBoardRound('runner',AbortSignal.timeout(4000),{rulesVersion:runnerRules.rulesVersion});
+  if(session.state.rulesVersion===runnerRules.rulesVersion)ranked=session;
  }catch{}
  runStarting=false;
  if($('view-runner').hidden){runStatus('');runnerUI();return}
@@ -173,11 +174,20 @@ function draw(){
   }
  }
  g.globalAlpha=1;
- const bestDepth=best-run.dist;
- if(best>0&&bestDepth>=0&&bestDepth<95){
-  const y=Y(bestDepth);
-  g.strokeStyle='#ffd185';g.lineWidth=2;
-  g.beginPath();g.moveTo(X(-1.45,bestDepth),y);g.lineTo(X(1.45,bestDepth),y);g.stroke();
+ // Mark whole kilometres on the road, independently of saved personal records.
+ const kilometre=Math.max(1,Math.ceil(run.dist/1000));
+ const markerDepth=kilometre*1000-run.dist;
+ if(markerDepth<95){
+  const y=Y(markerDepth),scale=perspective(markerDepth);
+  g.save();
+  g.globalAlpha=Math.min(1,(95-markerDepth)/35);
+  g.strokeStyle='#ffd185';g.lineWidth=1+3*scale;
+  g.setLineDash([12*scale,5*scale]);
+  g.beginPath();
+  g.moveTo(X(-1.4,markerDepth),y);
+  g.lineTo(X(1.4,markerDepth),y);
+  g.stroke();
+  g.restore();
  }
  for(const obstacle of run.obs.slice().sort((a,b)=>b.z-a.z)){
   if(obstacle.z< -1.5)continue;

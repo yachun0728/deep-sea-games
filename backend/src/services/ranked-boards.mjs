@@ -159,15 +159,16 @@ const boards = new Map([
     visible: state => ({stage: state.stage, completed: state.completed, seed: state.seed, lost: state.lost}),
   }],
   ['runner', {
-    create: () => ({seed: newSeed(), issuedAt: Date.now(), distance: null}),
+    rulesVersion: runnerRules.rulesVersion,
+    create: rulesVersion => ({seed: newSeed(), issuedAt: Date.now(), distance: null, rulesVersion}),
     accepts: runnerRules.accepts,
     apply: (state, action) => {
       if (action[0] * runnerRules.STEP_MS > Date.now() - state.issuedAt) return false;
-      state.distance = runnerRules.replay(state.seed, action);
+      state.distance = runnerRules.replay(state.seed, action, state.rulesVersion ?? 1);
       return state.distance !== null;
     },
     score: state => state.distance,
-    visible: ({seed, distance}) => ({seed, distance}),
+    visible: ({seed, distance, rulesVersion}) => ({seed, distance, rulesVersion}),
   }],
   ['ocean-link', {
     create: () => ({level: 1, completed: 0, seed: newSeed()}),
@@ -208,9 +209,10 @@ export async function readBoardCommand(request, isMove) {
     const game = boards.get(command?.gameId);
     if (!game) return null;
     const bookSortStart = !isMove && command.gameId === 'book-sort';
-    const blasterVersionedStart = !isMove && command.gameId === 'blaster' && Object.hasOwn(command, 'rulesVersion');
-    if (Object.keys(command).length !== (isMove ? 4 : bookSortStart || blasterVersionedStart ? 2 : 1)) return null;
-    if (blasterVersionedStart && command.rulesVersion !== blasterRules.rulesVersion) return null;
+    const rulesVersion = command.gameId === 'blaster' ? blasterRules.rulesVersion : game.rulesVersion;
+    const versionedStart = !isMove && rulesVersion !== undefined && Object.hasOwn(command, 'rulesVersion');
+    if (Object.keys(command).length !== (isMove ? 4 : bookSortStart || versionedStart ? 2 : 1)) return null;
+    if (versionedStart && command.rulesVersion !== rulesVersion) return null;
     if (bookSortStart && (!Number.isSafeInteger(command.stage) || command.stage < 1)) return null;
     if (isMove && (typeof command.id !== 'string' || !ID.test(command.id) ||
         !Number.isInteger(command.revision) || command.revision < 0 ||
@@ -236,7 +238,7 @@ export async function startRankedBoard(db, playerId, gameId, stage, rulesVersion
       state.issuedAt=Date.now();
     }
   }
-  state ??= game.create(gameId === 'blaster' ? rulesVersion : stage);
+  state ??= game.create(gameId === 'blaster' || game.rulesVersion !== undefined ? rulesVersion : stage);
   await db.prepare(
     'INSERT INTO ranked_boards (id, player_id, game_id, started_at, state) VALUES (?, ?, ?, ?, ?)',
   ).bind(id, playerId, gameId, Date.now(), JSON.stringify(state)).run();
