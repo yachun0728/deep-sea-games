@@ -29,7 +29,7 @@ const birdRules = (() => {
     sq*=.86;
     if(dead)return;
     if(warnT>0)warnT-=dt;if(pcd>0)pcd-=dt;
-    lvl=Math.floor(dist/3000);v=Math.min(500,290+lvl*20);dist+=v*dt;
+    lvl=Math.floor(dist/3000);v=Math.min(460,290+lvl*15);dist+=v*dt;
     const bossDue=cnt>0&&cnt%8===0&&lb!==cnt;
     if(!boss){
     if(bossDue){if(!obs.some(o=>!o.dead)){boss=true;lb=cnt;obs.push({k:'a',x:W+220,y:GY,sc:2,hp:3,dead:0,vy:0,a:0,hit:0});warnT=1.3;event('alpha')}}
