@@ -1,28 +1,20 @@
   <section class="view" id="view-merge" hidden>
-    <div class="console">
-      <div class="board-wrap">
+    <div class="console mg-console">
+      <div class="board-wrap mg-stage">
         <div class="mg idle" id="mg" role="group" aria-label="{{t:merge.view.15}}"></div>
       </div>
-      <div class="side">
+      <dl class="stats mg-hud">
+        <div><dt>{{t:merge.view.01}}</dt><dd id="mg-score">0</dd></div>
+        <div><dt>{{t:merge.view.02}}</dt><dd id="mg-max">—</dd></div>
+        <div><dt>{{t:merge.view.03}}</dt><dd id="mg-best">0</dd></div>
+      </dl>
+      <button class="mg-exit" id="mg-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
+      <div class="side mg-side">
         <section class="panel" aria-label="{{t:merge.view.16}}">
-          <dl class="stats">
-            <div><dt>{{t:merge.view.01}}</dt><dd id="mg-score">0</dd></div>
-            <div><dt>{{t:merge.view.02}}</dt><dd id="mg-max">—</dd></div>
-            <div><dt>{{t:merge.view.03}}</dt><dd id="mg-best">0</dd></div>
-          </dl>
-          <div class="field">
-            <label id="mg-dir-label">{{t:merge.view.04}}</label>
-            <div class="input-row dpad" role="group" aria-labelledby="mg-dir-label">
-              <button class="chip" type="button" data-dir="left" aria-label="{{t:merge.view.17}}">←</button>
-              <button class="chip" type="button" data-dir="up" aria-label="{{t:merge.view.18}}">↑</button>
-              <button class="chip" type="button" data-dir="down" aria-label="{{t:merge.view.19}}">↓</button>
-              <button class="chip" type="button" data-dir="right" aria-label="{{t:merge.view.20}}">→</button>
-            </div>
-          </div>
-          <button class="go" id="mg-go" type="button" data-mode="bet">{{t:merge.view.05}}</button>
           <p class="msg" id="mg-msg" aria-live="polite">{{t:merge.view.06}}</p>
-      <p id="mg-rank-status" role="status" hidden></p>
-      <button type="button" id="mg-rank-retry" hidden>{{t:merge.view.07}}</button>
+          <p id="mg-rank-status" role="status" hidden></p>
+          <button type="button" id="mg-rank-retry" hidden>{{t:merge.view.07}}</button>
+          <button class="go" id="mg-go" type="button" data-mode="bet">{{t:merge.view.05}}</button>
           <p class="hint">{{t:merge.view.08}} <kbd>{{t:merge.view.09}}</kbd>、<kbd>WASD</kbd>{{t:merge.view.10}}</p>
         </section>
       </div>

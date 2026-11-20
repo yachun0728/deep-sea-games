@@ -19,7 +19,7 @@
     $('mg-score').textContent = fmt(G.score);
     $('mg-max').textContent = G.active || G.over ? String(max) : '—';
     $('mg-best').textContent = fmt(G.best);
-    document.querySelectorAll('[data-dir]').forEach(function (b) { b.disabled = !G.active || !!mergePending; });
+    $('view-merge').classList.toggle('mg-playing', G.active);
     elGGo.disabled = mergeStarting || mergeSending;
     if (G.active) { elGGo.dataset.mode = 'cancel'; elGGo.innerHTML = '{{t:merge.msg.001}}'; }
     else { elGGo.dataset.mode = 'bet'; elGGo.innerHTML = (G.over ? '{{t:merge.msg.002}}' : '{{t:merge.msg.003}}') + ''; }
@@ -109,7 +109,7 @@
   }
   $('mg-rank-retry').addEventListener('click',sendMergeMove);
   elGGo.addEventListener('click', mgStart);
-  document.querySelectorAll('[data-dir]').forEach(function (b) { b.addEventListener('click', function () { mgMove(b.dataset.dir); }); });
+  $('mg-exit').addEventListener('click', function () { window.location.hash = 'lobby'; });
   document.addEventListener('keydown', function (e) {
     if ($('view-merge').hidden || !G.active || e.metaKey || e.ctrlKey || e.altKey) return;
     if ((e.target.tagName || '').toLowerCase() === 'input') return;
@@ -117,13 +117,13 @@
     var dir = map[e.code]; if (!dir) return;
     e.preventDefault(); mgMove(dir);
   });
-  var swipe = null;
-  elMg.addEventListener('pointerdown', function (e) { swipe = { x: e.clientX, y: e.clientY }; });
-  elMg.addEventListener('pointerup', function (e) {
+  var swipe = null, elMgArea = elMg.closest('.console');
+  elMgArea.addEventListener('pointerdown', function (e) { swipe = e.target.closest('button') ? null : { x: e.clientX, y: e.clientY }; });
+  elMgArea.addEventListener('pointerup', function (e) {
     if (!swipe) return;
     var dx = e.clientX - swipe.x, dy = e.clientY - swipe.y; swipe = null;
     if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
     mgMove(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
   });
-  elMg.addEventListener('pointercancel', function () { swipe = null; });
-
+  elMgArea.addEventListener('pointercancel', function () { swipe = null; });
+  ['dblclick', 'gesturestart', 'contextmenu'].forEach(function (n) { elMgArea.addEventListener(n, function (e) { e.preventDefault(); }); });

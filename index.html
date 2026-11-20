@@ -1664,6 +1664,33 @@ body:has(#view-book-sort:not([hidden])){overflow:hidden}
   #view-tetris .rules,#view-tetris .mobile-stage-actions{display:none}
   html:has(#view-tetris:not([hidden])){overflow:hidden}
 }
+#view-merge .mg-exit{display:none}
+#view-merge .console,#view-merge .mg{touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+#view-merge .mg-console{display:flex;flex-direction:column;align-items:stretch;max-width:460px;margin-inline:auto}
+#view-merge .mg-hud{order:-1;margin-bottom:12px}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  #view-merge:not([hidden]) .mg-console{position:fixed;inset:0;z-index:1200;display:flex;flex-direction:column;align-items:stretch;gap:0;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:calc(env(safe-area-inset-top) + 8px) calc(env(safe-area-inset-right) + 12px) calc(env(safe-area-inset-bottom) + 8px) calc(env(safe-area-inset-left) + 12px);background:var(--abyss);overscroll-behavior:none}
+  #view-merge .mg-exit{display:grid;place-items:center;position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 8px);left:calc(env(safe-area-inset-left) + 8px);width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);font:700 21px system-ui;cursor:pointer}
+  #view-merge .mg-hud{order:-1;margin:0 0 0 52px;min-height:44px;align-items:center}
+  #view-merge .mg-hud dt{font-size:11px}
+  #view-merge .mg-hud dd{font-size:18px}
+  #view-merge .mg-stage{flex:1;min-height:0;align-items:center;border:0;border-radius:0;padding:0;background:none}
+  #view-merge .mg{width:min(100%,calc(100dvh - 190px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));max-width:none;gap:6px}
+  #view-merge .mg.idle{opacity:.25}
+  #view-merge .mg-side{position:absolute;z-index:2;left:0;right:0;bottom:0;top:0;pointer-events:none;justify-content:flex-end;align-items:center;padding:0 16px calc(env(safe-area-inset-bottom) + 16px)}
+  #view-merge .mg-side .panel{width:100%;max-width:320px;padding:0;border:0;background:none;align-items:stretch;text-align:center}
+  #view-merge .mg-side .hint,#view-merge .rules{display:none}
+  #view-merge .mg-side .go{pointer-events:auto;min-height:48px}
+  #view-merge #mg-rank-retry{pointer-events:auto;min-height:44px}
+  #view-merge #mg-rank-status{margin:0;font-size:12px;color:var(--muted)}
+  #view-merge .mobile-scroll-pad{display:none}
+  #view-merge .mg-side .msg{text-shadow:0 1px 4px var(--abyss)}
+  /* 遊玩中：只留一個小小的重開鈕在底部，訊息淡淡一行 */
+  #view-merge.mg-playing .mg-side .go{min-height:44px;opacity:.75;font-size:14px}
+  #view-merge.mg-playing .mg-side .msg:not(.win),#view-merge.mg-playing #mg-rank-status{display:none}
+  #view-merge.mg-playing .mg-side .msg{min-height:0;font-size:13px}
+  html:has(#view-merge:not([hidden])){overflow:hidden}
+}
 .sneak-stage #op-canvas{width:min(100%,400px,calc(80vh * 400 / 720));height:auto;aspect-ratio:400/720;max-height:none;object-fit:fill}#view-on-pitch .seg-row{margin-top:10px}#view-on-pitch #op-mic-test{width:100%;margin-top:8px}
 
 .qp-stage{min-width:0;display:flex;flex-direction:column;align-items:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#2394cc}.qp-stage iframe{display:block;width:100%;height:min(820px,calc(100svh - 150px));min-height:560px;border:0;background:#2394cc}
@@ -3611,30 +3638,22 @@ html.frontier-immersive{overflow:hidden}
   </section>
 
   <section class="view" id="view-merge" hidden>
-    <div class="console">
-      <div class="board-wrap">
+    <div class="console mg-console">
+      <div class="board-wrap mg-stage">
         <div class="mg idle" id="mg" role="group" aria-label="4 乘 4 養珠盤"></div>
       </div>
-      <div class="side">
+      <dl class="stats mg-hud">
+        <div><dt>分數</dt><dd id="mg-score">0</dd></div>
+        <div><dt>最大珍珠</dt><dd id="mg-max">—</dd></div>
+        <div><dt>最佳分數</dt><dd id="mg-best">0</dd></div>
+      </dl>
+      <button class="mg-exit" id="mg-exit" type="button" aria-label="退出遊戲">←</button>
+      <div class="side mg-side">
         <section class="panel" aria-label="養珠">
-          <dl class="stats">
-            <div><dt>分數</dt><dd id="mg-score">0</dd></div>
-            <div><dt>最大珍珠</dt><dd id="mg-max">—</dd></div>
-            <div><dt>最佳分數</dt><dd id="mg-best">0</dd></div>
-          </dl>
-          <div class="field">
-            <label id="mg-dir-label">滑動方向</label>
-            <div class="input-row dpad" role="group" aria-labelledby="mg-dir-label">
-              <button class="chip" type="button" data-dir="left" aria-label="向左滑">←</button>
-              <button class="chip" type="button" data-dir="up" aria-label="向上滑">↑</button>
-              <button class="chip" type="button" data-dir="down" aria-label="向下滑">↓</button>
-              <button class="chip" type="button" data-dir="right" aria-label="向右滑">→</button>
-            </div>
-          </div>
-          <button class="go" id="mg-go" type="button" data-mode="bet">開始一局</button>
           <p class="msg" id="mg-msg" aria-live="polite">把相同數字的珍珠滑在一起，合併成更大的珍珠。</p>
-      <p id="mg-rank-status" role="status" hidden></p>
-      <button type="button" id="mg-rank-retry" hidden>重送遊戲操作</button>
+          <p id="mg-rank-status" role="status" hidden></p>
+          <button type="button" id="mg-rank-retry" hidden>重送遊戲操作</button>
+          <button class="go" id="mg-go" type="button" data-mode="bet">開始一局</button>
           <p class="hint">可以用 <kbd>方向鍵</kbd>、<kbd>WASD</kbd>，或在盤面上滑動。</p>
         </section>
       </div>
@@ -8334,7 +8353,6 @@ html.frontier-immersive{overflow:hidden}
   "重送成績": "Retry submission",
   "訪客排行榜": "Guest leaderboard",
   "最大珍珠": "Largest pearl",
-  "滑動方向": "Swipe direction",
   "把相同數字的珍珠滑在一起，合併成更大的珍珠。": "Slide matching pearls together to merge larger pearls.",
   "重送遊戲操作": "Retry game move",
   "可以用": "Use",
@@ -8345,10 +8363,6 @@ html.frontier-immersive{overflow:hidden}
   "盤面塞滿、而且沒有任何相鄰的相同珍珠時，這一局就結束。": "The round ends when the board is full and no neighboring pearls match.",
   "最佳分數只存在你的瀏覽器裡。": "Your best score is saved only in this browser.",
   "4 乘 4 養珠盤": "4 by 4 pearl board",
-  "向左滑": "Swipe left",
-  "向上滑": "Swipe up",
-  "向下滑": "Swipe down",
-  "向右滑": "Swipe right",
   "開始後發牌，把牌排成一整串收成珍珠。": "Deal, then line cards up into a full run to collect a pearl.",
   "悔棋": "Undo",
   "指路": "Hint",
@@ -11487,7 +11501,7 @@ if (typeof module !== 'undefined') module.exports = mergeRules;
     $('mg-score').textContent = fmt(G.score);
     $('mg-max').textContent = G.active || G.over ? String(max) : '—';
     $('mg-best').textContent = fmt(G.best);
-    document.querySelectorAll('[data-dir]').forEach(function (b) { b.disabled = !G.active || !!mergePending; });
+    $('view-merge').classList.toggle('mg-playing', G.active);
     elGGo.disabled = mergeStarting || mergeSending;
     if (G.active) { elGGo.dataset.mode = 'cancel'; elGGo.innerHTML = '放棄重開'; }
     else { elGGo.dataset.mode = 'bet'; elGGo.innerHTML = (G.over ? '再玩一局' : '開始一局') + ''; }
@@ -11577,7 +11591,7 @@ if (typeof module !== 'undefined') module.exports = mergeRules;
   }
   $('mg-rank-retry').addEventListener('click',sendMergeMove);
   elGGo.addEventListener('click', mgStart);
-  document.querySelectorAll('[data-dir]').forEach(function (b) { b.addEventListener('click', function () { mgMove(b.dataset.dir); }); });
+  $('mg-exit').addEventListener('click', function () { window.location.hash = 'lobby'; });
   document.addEventListener('keydown', function (e) {
     if ($('view-merge').hidden || !G.active || e.metaKey || e.ctrlKey || e.altKey) return;
     if ((e.target.tagName || '').toLowerCase() === 'input') return;
@@ -11585,16 +11599,16 @@ if (typeof module !== 'undefined') module.exports = mergeRules;
     var dir = map[e.code]; if (!dir) return;
     e.preventDefault(); mgMove(dir);
   });
-  var swipe = null;
-  elMg.addEventListener('pointerdown', function (e) { swipe = { x: e.clientX, y: e.clientY }; });
-  elMg.addEventListener('pointerup', function (e) {
+  var swipe = null, elMgArea = elMg.closest('.console');
+  elMgArea.addEventListener('pointerdown', function (e) { swipe = e.target.closest('button') ? null : { x: e.clientX, y: e.clientY }; });
+  elMgArea.addEventListener('pointerup', function (e) {
     if (!swipe) return;
     var dx = e.clientX - swipe.x, dy = e.clientY - swipe.y; swipe = null;
     if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
     mgMove(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
   });
-  elMg.addEventListener('pointercancel', function () { swipe = null; });
-
+  elMgArea.addEventListener('pointercancel', function () { swipe = null; });
+  ['dblclick', 'gesturestart', 'contextmenu'].forEach(function (n) { elMgArea.addEventListener(n, function (e) { e.preventDefault(); }); });
   /* ---------- Dice ---------- */
   var D = { mode: 'under', target: 50, pending: 0, last: [] };
   var elDGo = $('dc-go'), elDMsg = $('dc-msg'), elDAmt = $('dc-amount'), elDTarget = $('dc-target'), elDStage = $('dc-stage'), elDMarker = $('dc-marker');

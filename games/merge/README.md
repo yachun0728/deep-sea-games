@@ -7,13 +7,13 @@
 - 網址：`#merge`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「滑動合併珍珠，養出更大的數字。」｜立即開玩 · 滑動合併
 - 追蹤名稱（GA4 `game_name`）：養珠，`game_id` 為 `merge`
-- 檔案：`games/merge/card.html`、`games/merge/cover.webp`、`games/merge/game.js`、`games/merge/icon.svg`、`games/merge/view.html`；`game.js` 共 130 行、6.3 KB
+- 檔案：`games/merge/card.html`、`games/merge/cover.webp`、`games/merge/game.js`、`games/merge/icon.svg`、`games/merge/style.css`、`games/merge/view.html`；`game.js` 共 130 行、6.5 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「4. Pearl Merge（merge）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-merge`、`mg`、`mg-score`、`mg-max`、`mg-best`、`mg-dir-label`、`mg-go`、`mg-msg`、`mg-rank-status`、`mg-rank-retry`
+`view-merge`、`mg`、`mg-score`、`mg-max`、`mg-best`、`mg-exit`、`mg-msg`、`mg-rank-status`、`mg-rank-retry`、`mg-go`
 
 ## 狀態與常數
 
