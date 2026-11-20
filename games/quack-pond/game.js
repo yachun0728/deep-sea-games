@@ -28,6 +28,10 @@
       var result=data&&data.result,level=Math.max(1,Math.min(QP.total,Math.floor(Number(data&&data.level)||QP.level))),stars=Math.max(0,Math.min(3,Math.floor(Number(data&&data.stars)||0)));
       QP.active=false;QP.level=level;
       if(result==='win'){
+        import('./frontend/services/api.mjs').then(api=>api.submitPuzzleSolution('quack-pond',[level,...(data.columns||[])]))
+          .catch(()=>qpSay('排行榜成績未能送出。','lose'));
+        import('./frontend/services/api.mjs').then(api=>api.submitPuzzleSolution('quack-pond',[level,...(data.columns||[])]))
+          .catch(()=>qpSay('排行榜成績未能送出。','lose'));
         AN.end(QP.analytics,0,'complete',{score:level,step:stars});
         qpSay('{{tb:quack-pond.say.002}}','win',{lv:level,st:stars});
       }else if(result==='loss'){

@@ -7,35 +7,27 @@
 - 網址：`#on-pitch`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「對著麥克風唱出缺口的音，音準對了才能穿牆。」｜立即開玩 · 聲控挑戰
 - 追蹤名稱（GA4 `game_name`）：不准跑調，`game_id` 為 `on-pitch`
-- 檔案：`games/on-pitch/card.html`、`games/on-pitch/cover.webp`、`games/on-pitch/game.js`、`games/on-pitch/icon.svg`、`games/on-pitch/style.css`、`games/on-pitch/view.html`；`game.js` 共 883 行、42.7 KB
+- 檔案：`games/on-pitch/card.html`、`games/on-pitch/cover.webp`、`games/on-pitch/game.js`、`games/on-pitch/icon.svg`、`games/on-pitch/style.css`、`games/on-pitch/view.html`；`game.js` 共 669 行、34.5 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「50. 不准跑調 Stay On Pitch（on-pitch）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-on-pitch`、`op-canvas`、`op-level`、`op-score`、`op-stars`、`op-go`、`op-msg`、`op-in-mic`、`op-in-key`、`op-oct-any`、`op-oct-strict`、`op-mic-test`
+`view-on-pitch`、`op-canvas`、`op-level`、`op-score`、`op-stars`、`op-go`、`op-msg`、`op-in-mic`、`op-in-key`、`op-oct-any`、`op-oct-strict`、`op-mic-test`、`op-rank-status`、`op-rank-retry`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`OP`（L255）
-- L6 常數：`NOTE_KEYS`
-- L7 常數：`SEMI`
-- L8 常數：`SOLF`
-- L9 常數：`NOTE_HZ`
-- L10 常數：`PC_NAMES`
-- L68 常數：`CUE_FULL`
-- L69 常數：`CUE_W3`
-- L70 常數：`CUE_W4`
-- L229 常數：`FONT`
-- L232 常數：`TITLE_EN`
-- L234 常數：`THEME`
-- L240 常數：`STEP_H`、`BASE_Y`、`CHAR_X`、`SPEED`
-- L249 常數：`SAVE_KEY`
-- L254 常數：`LEVELS`
+- 狀態物件／進行中旗標：`OP`（L33）
+- L7 常數：`FONT`
+- L10 常數：`TITLE_EN`
+- L12 常數：`THEME`
+- L18 常數：`STEP_H`、`BASE_Y`、`CHAR_X`、`SPEED`
+- L27 常數：`SAVE_KEY`
+- L32 常數：`LEVELS`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`opRoute` L2、`mod` L11、`hzToMidi` L12、`mulberry32` L13、`detectPitch` L16、`seq` L56、`randSeq` L57、`makeLevels` L67、`endlessLevel` L111、`createGame` L116、`addWall` L124、`addEndless` L134、`EN` L230、`T` L231、`LT` L233、`rowY` L241、`sizeCanvas` L246、`persist` L252、`toast` L259、`ensureCtx` L263、`playTone` L268、`playTick` L280、`keyHz` L321、`getHz` L341、`ensureMic` L349、`startLevel` L358、`endRound` L376、`pauseRound` L382、`resumeRound` L389、`leaveToMenu` L399、`toLogical` L407、`releasePtr` L427、`shape` L434、`heart` L445、`text` L453、`rrect` L464、`panel` L468、`button` L484、`noteName` L492、`stars` L493、`drawBackground` L508、`drawHero` L531、`drawSteps` L559、`drawWall` L576、`body` L586、`drawHUD` L625、`semiToStep` L663、`heroY` L671、`drawKeys` L673、`lighten` L688、`drawPlay` L693、`drawPause` L720、`gradeText` L727、`drawResult` L728、`drawMenu` L752、`frame` L788、`opShown` L833、`opSay` L834、`opL` L838、`opUI` L843、`onRoute` L855
+`opRoute` L2、`EN` L8、`T` L9、`LT` L11、`rowY` L19、`sizeCanvas` L24、`persist` L30、`toast` L38、`ensureCtx` L42、`playTone` L47、`playTick` L59、`keyHz` L100、`getHz` L120、`ensureMic` L128、`startLevel` L137、`endRound` L159、`pauseRound` L165、`resumeRound` L172、`leaveToMenu` L182、`toLogical` L190、`releasePtr` L210、`shape` L217、`heart` L228、`text` L236、`rrect` L247、`panel` L251、`button` L267、`noteName` L275、`stars` L276、`drawBackground` L291、`drawHero` L314、`drawSteps` L342、`drawWall` L359、`body` L369、`drawHUD` L408、`semiToStep` L446、`heroY` L454、`drawKeys` L456、`lighten` L471、`drawPlay` L476、`drawPause` L503、`gradeText` L510、`drawResult` L511、`drawMenu` L535、`frame` L571、`opShown` L619、`opSay` L620、`opL` L624、`opUI` L629、`onRoute` L641
 
 ## 錢包與結算接點
 
@@ -46,18 +38,18 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **餘額檢查**
-- L360 `startLevel`：`if (ENTRY_FEE > S.balance){ opSay(LOW_MSG, 'lose');`
+- L139 `startLevel`：`if (ENTRY_FEE > S.balance){ opSay(LOW_MSG, 'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 2 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L372 `startLevel`：`OP.analytics = AN.start('on-pitch', ENTRY_FEE, { stage: lv.w + 1, step: 0 });`
-- L379 `endRound`：`AN.end(a, 0, result, extra);`
-- L386 `pauseRound`：`if (OP.analytics) AN.progress(OP.analytics, { phase:'pause' }, true);`
-- L396 `resumeRound`：`if (OP.analytics) AN.resume(OP.analytics);`
-- L876 `onRoute`：`AN.end(a, 0, 'abandoned', { score: OP.score });`
+- L155 `startLevel`：`OP.analytics = AN.start('on-pitch', ENTRY_FEE, { stage: lv.w + 1, step: 0 });`
+- L162 `endRound`：`AN.end(a, 0, result, extra);`
+- L169 `pauseRound`：`if (OP.analytics) AN.progress(OP.analytics, { phase:'pause' }, true);`
+- L179 `resumeRound`：`if (OP.analytics) AN.resume(OP.analytics);`
+- L662 `onRoute`：`AN.end(a, 0, 'abandoned', { score: OP.score });`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -72,6 +64,8 @@
 - 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
+
+**訪客排行榜**：分數＝Worker 以種子重播操作碼後的關卡分數（`shared/on-pitch-rules.cjs`，10 毫秒固定步進）。沒連上後端或麥克風不可用時改用螢幕琴鍵仍可玩，只是以重播為準。
 
 定位：`games/on-pitch/game.js`（自帶 IIFE，對外只有 `window.deepSeaOnPitch`），畫面為 `#op-canvas`（400×720，直接畫在父頁，不用 iframe，因為 iframe 需要額外授權麥克風）。2026-11-19 由聲控原型改寫接入平台。
 

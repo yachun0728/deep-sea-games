@@ -38,6 +38,7 @@ function fixture({ lang = 'zh', saved = { input: 'key' }, balance = 0, mic = 'de
   };
   sandbox.globalThis = sandbox;
   const ctx = vm.createContext(sandbox);
+  for (const file of ['shared/timed-replay.cjs', 'js/timed-leaderboard.js', 'shared/on-pitch-rules.cjs']) vm.runInContext(readSource(file, root), ctx);
   vm.runInContext(source, ctx);
   const api = win.deepSeaOnPitch;
   const keyHeld = {};

@@ -194,3 +194,11 @@ Closing Call 開局會等待訪客排行回合準備完成，避免快速點擊�
 ### 養珠排行榜換算
 
 `0011_merge_largest_pearl.sql` 將養珠公開榜改用 Worker 驗證後的終局棋盤最大值，回合資料仍保存累計分數。遷移會從既有已完成回合回填前 50 名，保留其他遊戲的榜單。舊回合沒有完局時間，歷史同值紀錄按對局寫入順序排序，顯示時間留空。新完局維持伺服器記錄時間與寫入順序。先套用 D1 migration 再發布前端。若要回復原排名，可用已保存的累計分數重建養珠榜，並還原 `0006` 的終局排名觸發器。
+
+## 益智與音準遊戲的訪客排行榜
+
+- **打磚塊（`breakout`）、不准跑調（`on-pitch`）** 沿用 `timedBoard`：`shared/breakout-rules.cjs`、`shared/on-pitch-rules.cjs` 由瀏覽器與 Worker 共用，以 10 毫秒固定步進重播操作碼，結束必須由輸入結尾。成績是重播後的分數，寫入 `game_leaderboard`。
+- **呱呱池塘（`quack-pond`）、鏡像雙子（`mirror-twins`）** 是關卡制：每過一關，客戶端用一個回合送出該關解答（呱呱池塘為每列皇冠欄位；鏡像雙子為移動方向序列），Worker 用 `puzzleBoard` 對照伺服器內的關卡資料驗證，通過後把 `lastCleared` 寫進回合狀態。分數是「已驗證的不同關卡數」，每關最多算一次。
+- `0014_verified_puzzle_stages.sql` 新增 `verified_puzzle_stages`（主鍵 `game_id, player_id, stage`，重複過同一關不會重複計分）與兩個 trigger：回合狀態出現 `lastCleared` 時登記關卡，登記後把該玩家的已驗證關卡數寫入 `game_leaderboard`（只在變高時更新），並更新 `leaderboard_activity`。既有的前 50 名與時間排序 trigger 照常運作。
+- 排行榜面板：`frontend/services/leaderboard-view.mjs` 的遊戲清單加入呱呱池塘與鏡像雙子。
+- 發布順序：先套用 `0014` migration，再部署 Worker，最後發布前端。回復時反向處理；`verified_puzzle_stages` 與 trigger 可保留。

@@ -1,3 +1,7 @@
+import onPitchRules from '../../../shared/on-pitch-rules.cjs';
+import breakoutRules from '../../../shared/breakout-rules.cjs';
+import quackPondRules from '../../../shared/quack-pond-rules.cjs';
+import mirrorTwinsRules from '../../../shared/mirror-twins-rules.cjs';
 import blasterRules from '../../../shared/blaster-rules.cjs';
 import mermaidRules from '../../../shared/mermaid-rules.cjs';
 import lasthairRules from '../../../shared/last-hair-rules.cjs';
@@ -63,7 +67,25 @@ const sneakBoards = new Map([
     version, timedBoard({...sneakRules, create: rng => sneakRules.create(rng, version)}, version),
   ]),
 ]);
+function puzzleBoard(rules) {
+  return {
+    create: () => ({ lastCleared: null }),
+    accepts: action => Array.isArray(action) && action.length <= 4097
+      && action.every(value => Number.isSafeInteger(value)),
+    apply: (state, action) => {
+      if (!rules.verify(action)) return false;
+      state.lastCleared = action[0];
+      return true;
+    },
+    score: () => null,
+    visible: state => state,
+  };
+}
 const boards = new Map([
+  ['on-pitch', timedBoard(onPitchRules)],
+  ['breakout', timedBoard(breakoutRules)],
+  ['quack-pond', puzzleBoard(quackPondRules)],
+  ['mirror-twins', puzzleBoard(mirrorTwinsRules)],
   ['outpost', timedBoard(outpostRules, 1)],
   ['blaster', {
     ...blasterV1,

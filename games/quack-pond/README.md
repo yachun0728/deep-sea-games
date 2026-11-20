@@ -7,7 +7,7 @@
 - 網址：`#quack-pond`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「每行、每列、每個顏色區域各放一隻鴨子，而且不能相鄰。」｜立即開玩 · 200 關
 - 追蹤名稱（GA4 `game_name`）：呱呱池塘，`game_id` 為 `quack-pond`
-- 檔案：`games/quack-pond/card.html`、`games/quack-pond/cover.webp`、`games/quack-pond/game.js`、`games/quack-pond/icon.svg`、`games/quack-pond/original.html`、`games/quack-pond/style.css`、`games/quack-pond/view.html`；`game.js` 共 61 行、4.5 KB
+- 檔案：`games/quack-pond/card.html`、`games/quack-pond/cover.webp`、`games/quack-pond/game.js`、`games/quack-pond/icon.svg`、`games/quack-pond/original.html`、`games/quack-pond/style.css`、`games/quack-pond/view.html`；`game.js` 共 65 行、4.9 KB
 
 ## 畫面元素（view.html 的 id）
 
@@ -19,7 +19,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`qpL` L3、`qpSay` L4、`qpStored` L5、`qpUI` L6、`qpValid` L10、`qpRoute` L47
+`qpL` L3、`qpSay` L4、`qpStored` L5、`qpUI` L6、`qpValid` L10、`qpRoute` L51
 
 ## 錢包與結算接點
 
@@ -39,12 +39,12 @@
 
 - L16 `qpValid`：`QP.analytics=AN.start('quack-pond',ENTRY_FEE);`
 - L24 `qpValid`：`AN.progress(QP.analytics,{stage:Math.max(1,Math.floor(Number(level)||QP.level)),step:QP.ducks});`
-- L31 `qpValid`：`AN.end(QP.analytics,0,'complete',{score:level,step:stars});`
-- L34 `qpValid`：`AN.end(QP.analytics,0,'loss',{score:level,step:QP.ducks});`
-- L37 `qpValid`：`AN.end(QP.analytics,0,'abandoned',{score:level,step:QP.ducks});`
-- L41 `qpValid`：`if(qpValid(source)&&QP.active)AN.progress(QP.analytics,{phase:'pause'},true);`
-- L42 `qpValid`：`if(qpValid(source)&&QP.active)AN.resume(QP.analytics);`
-- L46 `qpValid`：`AN.end(QP.analytics,0,'abandoned',{score:QP.level,step:QP.ducks});`
+- L35 `qpValid`：`AN.end(QP.analytics,0,'complete',{score:level,step:stars});`
+- L38 `qpValid`：`AN.end(QP.analytics,0,'loss',{score:level,step:QP.ducks});`
+- L41 `qpValid`：`AN.end(QP.analytics,0,'abandoned',{score:level,step:QP.ducks});`
+- L45 `qpValid`：`if(qpValid(source)&&QP.active)AN.progress(QP.analytics,{phase:'pause'},true);`
+- L46 `qpValid`：`if(qpValid(source)&&QP.active)AN.resume(QP.analytics);`
+- L50 `qpValid`：`AN.end(QP.analytics,0,'abandoned',{score:QP.level,step:QP.ducks});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
