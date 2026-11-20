@@ -7,7 +7,7 @@
 - 網址：`#on-pitch`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「對著麥克風唱出缺口的音，音準對了才能穿牆。」｜立即開玩 · 聲控挑戰
 - 追蹤名稱（GA4 `game_name`）：不准跑調，`game_id` 為 `on-pitch`
-- 檔案：`games/on-pitch/card.html`、`games/on-pitch/game.js`、`games/on-pitch/icon.svg`、`games/on-pitch/style.css`、`games/on-pitch/view.html`；`game.js` 共 883 行、42.7 KB
+- 檔案：`games/on-pitch/card.html`、`games/on-pitch/cover.webp`、`games/on-pitch/game.js`、`games/on-pitch/icon.svg`、`games/on-pitch/style.css`、`games/on-pitch/view.html`；`game.js` 共 883 行、42.7 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「50. 不准跑調 Stay On Pitch（on-pitch）」（下方「規則摘要」已複製）
 
