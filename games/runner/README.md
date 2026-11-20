@@ -7,7 +7,7 @@
 - 網址：`#runner`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「點左、點右換道，避開一路上的障礙。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：閃避跑酷，`game_id` 為 `runner`
-- 檔案：`games/runner/card.html`、`games/runner/game.js`、`games/runner/icon.svg`、`games/runner/view.html`；`game.js` 共 184 行、10.4 KB
+- 檔案：`games/runner/card.html`、`games/runner/game.js`、`games/runner/icon.svg`、`games/runner/view.html`；`game.js` 共 185 行、10.6 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「13. Dodge Run（runner）」（下方「規則摘要」已複製）
 
@@ -23,7 +23,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`bonusAt` L7、`nextMilestone` L8、`prevMilestone` L9、`T` L11、`runStatus` L16、`perspective` L21、`note` L22、`remember` L23、`runnerUI` L24、`award` L30、`beginRun` L36、`start` L43、`sendRun` L61、`die` L79、`update` L91、`draw` L100、`X` L102、`quad` L103、`changeLane` L144、`L` L154、`loop` L160
+`bonusAt` L7、`nextMilestone` L8、`prevMilestone` L9、`T` L11、`runStatus` L16、`perspective` L21、`note` L22、`remember` L23、`runnerUI` L24、`award` L30、`beginRun` L36、`start` L43、`sendRun` L61、`die` L79、`update` L91、`draw` L100、`X` L102、`quad` L103、`changeLane` L144、`L` L154、`loop` L161
 
 ## 錢包與結算接點
 

@@ -1,5 +1,5 @@
   <section class="view" id="view-fishing" hidden>
-    <div class="console"><div class="fishing-stage"><canvas id="fi-canvas" width="520" height="560" tabindex="0" aria-label="{{t:fishing.view.24}}"></canvas></div>
+    <div class="console fs-game"><div class="fishing-stage"><canvas id="fi-canvas" width="520" height="560" tabindex="0" aria-label="{{t:fishing.view.24}}"></canvas></div><button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
       <div class="side"><section class="panel" aria-label="{{t:fishing.view.25}}">
         <dl class="stats"><div><dt>{{t:fishing.view.01}}</dt><dd id="fi-number">{{t:fishing.view.02}}</dd></div><div><dt>{{t:fishing.view.03}}</dt><dd id="fi-distance">20.0 m</dd></div><div><dt>{{t:fishing.view.04}}</dt><dd id="fi-best">{{t:fishing.view.05}}</dd></div><div><dt>{{t:fishing.view.06}}</dt><dd id="fi-next">{{t:fishing.view.07}}</dd></div></dl>
         <p class="fishing-name" id="fi-name">{{t:fishing.view.08}}</p><div class="queue-watch" id="fi-signal" role="status" aria-live="polite" data-state="calm">{{t:fishing.view.09}}</div>
@@ -8,10 +8,9 @@
         <button class="go" id="fi-go" type="button" data-mode="bet">{{t:fishing.view.12}}</button>
         <button class="chip fishing-hold" id="fi-hold" type="button" disabled>{{t:fishing.view.13}}</button>
         <p class="msg" id="fi-msg" aria-live="polite">{{t:fishing.view.14}}</p><p class="hint">{{t:fishing.view.15}} <kbd>{{t:fishing.view.16}}</kbd>{{t:fishing.view.17}}</p>
+        <p id="fi-rank-status" role="status" hidden></p>    <button id="fi-rank-retry" type="button" hidden>{{t:fishing.view.23}}</button>
       </section></div>
     </div>
     <details class="rules"><summary>{{t:fishing.view.18}}</summary><p>{{t:fishing.view.19}}</p><p>{{t:fishing.view.20}}</p><p>{{t:fishing.view.21}}</p><p>{{t:fishing.view.22}}</p></details>
-    <p id="fi-rank-status" role="status" hidden></p>
-    <button id="fi-rank-retry" type="button" hidden>{{t:fishing.view.23}}</button>
   </section>
 
