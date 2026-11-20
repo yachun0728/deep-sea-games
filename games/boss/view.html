@@ -1,5 +1,5 @@
   <section class="view" id="view-boss" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="boss-canvas" tabindex="0" width="400" height="560" aria-label="{{t:boss.view.19}}"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="boss-canvas" tabindex="0" width="400" height="560" aria-label="{{t:boss.view.19}}"></canvas></div><button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
       <div class="side"><section class="panel" aria-label="{{t:boss.view.20}}">
         <dl class="stats"><div><dt>{{t:boss.view.01}}</dt><dd id="boss-score">0 m</dd></div><div><dt>{{t:boss.view.02}}</dt><dd id="boss-best">0 m</dd></div></dl>
         <input id="boss-amount" type="hidden" value="0">
@@ -7,10 +7,10 @@
         <button class="go" id="boss-go" type="button" data-mode="start">{{t:boss.view.07}}</button>
         <p class="msg" id="boss-msg" aria-live="polite">{{t:boss.view.08}}</p>
         <p class="hint">{{t:boss.view.09}} <kbd>{{t:boss.view.10}}</kbd>／<kbd>↑</kbd>{{t:boss.view.11}} <kbd>X</kbd>{{t:boss.view.12}}</p>
+        <p id="boss-rank-status" role="status" hidden></p><button id="boss-rank-retry" type="button" hidden>{{t:boss.view.18}}</button>
       </section></div>
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="{{t:boss.view.21}}"><span data-boss-tier="200"><b>200 m BONUS</b>{{t:boss.view.13}}</span><span data-boss-tier="500"><b>500 m BONUS</b>{{t:boss.view.13}}</span><span data-boss-tier="900"><b>900 m BONUS</b>{{t:boss.view.13}}</span></div>
     <details class="rules"><summary>{{t:boss.view.14}}</summary><p>{{t:boss.view.15}}</p><p>{{t:boss.view.16}}</p><p>{{t:boss.view.17}}</p></details>
-  <p id="boss-rank-status" role="status" hidden></p><button id="boss-rank-retry" type="button" hidden>{{t:boss.view.18}}</button>
 </section>
 

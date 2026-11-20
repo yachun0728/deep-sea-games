@@ -1163,14 +1163,24 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 #view-bird,#view-cat{--ar:.7143;--hud:52px;--fs-bg:#12203a}
 #view-reaper{--ar:.7143;--hud:96px;--fs-bg:#1b1630}
 #view-elevator{--ar:.8966;--hud:132px;--fs-bg:#101d2e}
+#view-frog,#view-nap,#view-pudding,#view-clock-out,#view-carp{--ar:.7143;--hud:52px;--fs-bg:#12203a}
+#view-skybuilder,#view-baby,#view-thief,#view-boss,#view-rider{--ar:.7143;--hud:96px;--fs-bg:#12203a}
+#view-carp{--hud:96px}
+#view-breakout{--ar:.7692;--hud:52px;--fs-bg:#0c1224}
+#view-mosquito{--ar:.6667;--hud:52px;--fs-bg:#0b1020}
+#view-dive,#view-mrt{--hud:52px;--reserve:72px;--fs-bg:#000}
 @media(max-width:880px),(pointer:coarse) and (max-width:1100px){
   html:has(.view:not([hidden]) .fs-game),html:has(#view-boba:not([hidden])){overflow:hidden}
-  .view:not([hidden]) .fs-game{position:fixed;inset:0;z-index:1200;display:block;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:calc(env(safe-area-inset-top) + var(--hud,52px)) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:var(--fs-bg,#0b1626);overscroll-behavior:none;-webkit-touch-callout:none}
+  .view:not([hidden]) .fs-game{position:fixed;inset:0;z-index:1200;display:block;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:calc(env(safe-area-inset-top) + var(--hud,52px)) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + var(--reserve,0px)) env(safe-area-inset-left);background:var(--fs-bg,#0b1626);overscroll-behavior:none;-webkit-touch-callout:none}
   .view:not([hidden]) .fs-game>:first-child{position:relative;display:flex;justify-content:center;align-items:flex-start;width:100%;height:100%;margin:0;border:0;border-radius:0;background:none;overflow:visible}
-  .view:not([hidden]) .fs-game>:first-child canvas{width:min(100%,calc((100dvh - env(safe-area-inset-top) - var(--hud,52px) - env(safe-area-inset-bottom)) * var(--ar,.6667)));height:auto;max-height:none;object-fit:fill}
+  .view:not([hidden]) .fs-game>:first-child canvas{width:min(100%,calc((100dvh - env(safe-area-inset-top) - var(--hud,52px) - env(safe-area-inset-bottom) - var(--reserve,0px)) * var(--ar,.6667)));height:auto;max-height:none;object-fit:fill}
+  .view:not([hidden]) .fs-game>:first-child iframe{width:100%;height:100%;max-width:none;min-height:0;aspect-ratio:auto;border:0}
+  .fs-game .panel>p:not([class]):not([id]){display:none}
+  #view-breakout #br-pause:not(:disabled){position:absolute;z-index:4;right:calc(env(safe-area-inset-right) + 12px);bottom:calc(env(safe-area-inset-bottom) + 16px);min-width:64px;min-height:64px}
+  #view-breakout #br-pause:disabled{display:none}
   .fs-game .fs-exit{display:grid;place-items:center;position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 8px);left:calc(env(safe-area-inset-left) + 8px);width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);font:700 21px system-ui;cursor:pointer}
   .fs-game .side,.fs-game .side .panel{display:contents}
-  .fs-game>.mobile-start-stage>.mobile-stage-actions{top:auto;bottom:calc(env(safe-area-inset-bottom) + 16px);transform:none}
+  .fs-game>.mobile-start-stage>.mobile-stage-actions{top:auto;bottom:calc(16px - var(--reserve,0px));transform:none}
   .fs-game .stats{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 8px);left:calc(env(safe-area-inset-left) + 60px);right:calc(env(safe-area-inset-right) + 8px);display:flex;gap:5px;margin:0;pointer-events:none}
   .fs-game .stats~.stats{top:calc(env(safe-area-inset-top) + 52px);left:calc(env(safe-area-inset-left) + 8px)}
   .fs-game .stats>div{flex:1;min-width:0;padding:3px 6px;border-radius:8px;background:rgba(5,12,24,.72)}
@@ -1181,7 +1191,7 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
   .fs-game .field{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 88px);left:calc(env(safe-area-inset-left) + 8px);right:calc(env(safe-area-inset-right) + 8px);margin:0;padding:4px 10px;border-radius:10px;background:rgba(5,12,24,.72);pointer-events:none}
   .fs-game .field .hint{display:none}
   .fs-game .msg{position:absolute;z-index:3;left:calc(env(safe-area-inset-left) + 12px);right:calc(env(safe-area-inset-right) + 12px);bottom:calc(env(safe-area-inset-bottom) + 92px);margin:0;padding:3px 10px;border-radius:12px;background:rgba(5,12,24,.78);color:#e8f2ff;font-size:12px;line-height:1.4;text-align:center;pointer-events:none}
-  .fs-game .msg:empty{display:none}
+  .fs-game .msg:empty,#view-dive .msg,#view-mrt .msg{display:none}
   .fs-game [class$="-hold"]{position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);min-height:64px;font-size:17px;touch-action:manipulation}
   .fs-game [class$="-hold"]:disabled{display:none}
   .fs-game .side .go:not(:disabled){position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);min-height:64px;font-size:17px;touch-action:manipulation}
@@ -1204,6 +1214,15 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
   #view-boba .boba-stage{flex:1;min-height:0;border:0;border-radius:0}
   #view-boba .boba-stage iframe{width:100%;height:100%;min-height:0}
   #view-boba~.rules{display:none}
+  #view-pancake:not([hidden]){position:fixed;inset:0;z-index:1200;display:flex;flex-direction:column;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:#1a1a2e;overscroll-behavior:none}
+  html:has(#view-pancake:not([hidden])){overflow:hidden}
+  #view-pancake>.game-exit-link,#view-pancake>.mobile-scroll-pad,#view-pancake .pancake-platform-bar .hint,#view-pancake .pancake-platform-bar .chip,#view-pancake #pancake-msg{display:none}
+  #view-pancake .pancake-platform-bar{flex:none;padding:6px 8px;gap:8px;background:#222244}
+  #view-pancake .fs-exit{display:grid;place-items:center;flex:none;width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);font:700 21px system-ui;cursor:pointer}
+  #view-pancake .share-result:not([hidden]){position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 6px);right:calc(env(safe-area-inset-right) + 8px);width:auto;min-height:44px;margin:0;padding:0 14px;white-space:nowrap}
+  #view-pancake .pancake-stage{flex:1;min-height:0;border:0;border-radius:0}
+  #view-pancake .pancake-stage iframe{width:100%;height:100%;min-height:0;max-width:none}
+  #view-pancake~.rules{display:none}
 }
 
 .game-icon-runner img {
@@ -4455,7 +4474,7 @@ html.frontier-immersive{overflow:hidden}
   </section>
 
   <section class="view" id="view-frog" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="fg-canvas" tabindex="0" width="400" height="560" aria-label="青蛙吃蟲：箭頭對準最底下那隻蟲時按空白鍵或點畫面吃掉牠，紅色帶刺的蟲不能吃"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="fg-canvas" tabindex="0" width="400" height="560" aria-label="青蛙吃蟲：箭頭對準最底下那隻蟲時按空白鍵或點畫面吃掉牠，紅色帶刺的蟲不能吃"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="青蛙吃蟲操作">
         <dl class="stats"><div><dt>本局吃掉</dt><dd id="fg-eaten">0 隻</dd></div><div><dt>目前等級</dt><dd id="fg-level">Lv.1</dd></div><div><dt>最佳紀錄</dt><dd id="fg-best">0 隻</dd></div></dl>
         <input id="fg-amount" type="hidden" value="0">
@@ -4469,17 +4488,17 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與點數</summary><p>蟲子疊成一座塔，黃色箭頭會在最底下兩隻蟲之間上下移動。箭頭對準最底下那隻蟲的中間時按空白鍵或點畫面，青蛙就會吃掉牠，整疊往下掉一格；對得越準分數越高。沒對準不扣愛心，但會停頓一下、連擊歸零，還會少一點飽食。</p><p>有眉毛的粉紅色蟲會生氣：先閃黃色警告半秒，再變成紅色帶刺。紅色的時候吃牠會被螫，扣一顆愛心；等牠變回粉紅色就可以吃。在閃黃色時搶先吃掉另外加分。</p><p>飽食條會一直下降，吃蟲才能補回來。愛心扣完或飽食歸零，這一局就結束。每吃滿 10 隻升一級，箭頭變快、生氣的蟲變多，飽食回復一些，並獲得 1 點，當場入帳，之後結束也不會收回。分數與連擊只是顯示用，不直接換點數。這是操作技巧遊戲，結果取決於按下的時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最佳紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-nap" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="np-canvas" tabindex="0" width="400" height="560" aria-label="偷睡大師：按住睡覺鍵累積睡意，主管頭上冒出驚嘆號時立刻放開；可以丟垃圾砸主管，血量歸零會暈倒"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="np-canvas" tabindex="0" width="400" height="560" aria-label="偷睡大師：按住睡覺鍵累積睡意，主管頭上冒出驚嘆號時立刻放開；可以丟垃圾砸主管，血量歸零會暈倒"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="偷睡大師操作">
         <dl class="stats"><div><dt>目前關卡</dt><dd id="np-level">第 1 關</dd></div><div><dt>考績</dt><dd id="np-hearts">♥♥♥</dd></div><div><dt>最高分</dt><dd id="np-best">0 分</dd></div></dl>
         <input id="np-amount" type="hidden" value="0">
         <button class="go" id="np-go" type="button" data-mode="bet">開始偷睡</button>
         <p class="msg" id="np-msg" aria-live="polite">主管在巡邏！開始後開始，按住睡覺鍵累積睡意，看到頭上冒出「!」就放開。</p>
         <p class="hint">按住 <kbd>空白鍵</kbd> 或畫面左下大按鈕睡覺，按 <kbd>J</kbd> 或右下按鈕丟垃圾。睡越久睡越深、睡意增加越快，但醒得也越慢。主管頭上冒出「!」時要立刻放開，否則會被抓。丟垃圾砸到主管血量歸零，他會暈倒，暈倒時可以安心睡。</p>
+        <p id="np-rank-status" role="status" hidden></p><button id="np-rank-retry" type="button" hidden>重送排行榜成績</button>
       </section></div>
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>你在辦公桌前，主管在走道來回巡邏。按住睡覺鍵累積睡意，睡意條滿了就過關，共 10 關。主管回頭前，頭上會先冒出紅色「!」；他盯著你的時候，如果你還在睡、剛放開還沒醒、或正在丟垃圾，就會被抓，扣一顆考績，睡意也會被扣掉一部分。考績扣完就被炒魷魚，這一局結束。</p><p>丟垃圾可以砸主管，每個垃圾扣他 1 點血；垃圾有數量限制，會慢慢補。血量歸零他會暈倒幾秒，暈倒時你睡得更快、不會被抓。但每被砸一次，主管下一次回頭會提早一點，亂丟會讓他更快轉過來。從第 3 關起，「!」有時只是虛驚一場；從第 5 關起，他看完一次可能再回頭瞪你一次。</p><p>每過 1 關獲得 1 點，當場入帳，之後結束也不會收回；10 關全過共 10 點。分數只是顯示用，不直接換點數。這是操作技巧遊戲，結果取決於你放開按鈕的時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最高分保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  <p id="np-rank-status" role="status" hidden></p><button id="np-rank-retry" type="button" hidden>重送排行榜成績</button>
 </section>
   <section class="view" id="view-reaper" hidden>
     <div class="console fs-game"><div class="reaper-stage"><canvas id="rp-canvas" width="400" height="560" tabindex="0" aria-label="死神打工：普通靈魂經過金色區域時接走，帶綠色通行證的靈魂要放行"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
@@ -4512,7 +4531,7 @@ html.frontier-immersive{overflow:hidden}
     </div>
   </section>
   <section class="view" id="view-skybuilder" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="sb-canvas" tabindex="0" width="400" height="560" aria-label="蓋樓大師：點一下從起重機放下樓層，疊得越準樓越穩，傾斜超過 45 度就會倒塌"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="sb-canvas" tabindex="0" width="400" height="560" aria-label="蓋樓大師：點一下從起重機放下樓層，疊得越準樓越穩，傾斜超過 45 度就會倒塌"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="蓋樓大師操作">
         <dl class="stats"><div><dt>本局層數</dt><dd id="sb-floors">0 層</dd></div><div><dt>本局分數</dt><dd id="sb-score">0</dd></div><div><dt>最佳層數</dt><dd id="sb-best">0 層</dd></div></dl>
         <input id="sb-amount" type="hidden" value="0">
@@ -4528,7 +4547,7 @@ html.frontier-immersive{overflow:hidden}
   </section>
 
   <section class="view" id="view-dive" hidden>
-    <div class="console"><div class="dive-stage"><iframe id="dv-frame" title="一口氣探險 One Breath Dive"></iframe></div>
+    <div class="console fs-game"><div class="dive-stage"><iframe id="dv-frame" title="一口氣探險 One Breath Dive"></iframe></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="一口氣探險操作">
         <dl class="stats"><div><dt>目前分數</dt><dd id="dv-score">0 分</dd></div><div><dt>目前深度</dt><dd id="dv-depth">0 m</dd></div><div><dt>最佳分數</dt><dd id="dv-best">0 分</dd></div></dl>
         <input id="dv-amount" type="hidden" value="0">
@@ -4592,7 +4611,7 @@ html.frontier-immersive{overflow:hidden}
   </div>
 </section>
   <section class="view" id="view-mrt" hidden>
-    <div class="console"><div class="mrt-stage"><iframe id="mr-frame" title="捷運搶位 MRT Seat Grab"></iframe></div>
+    <div class="console fs-game"><div class="mrt-stage"><iframe id="mr-frame" title="捷運搶位 MRT Seat Grab"></iframe></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="捷運搶位操作">
         <dl class="stats"><div><dt>本局階數</dt><dd id="mr-tier">0 / 8 階</dd></div><div><dt>最佳紀錄</dt><dd id="mr-best">0 階</dd></div></dl>
         <input id="mr-amount" type="hidden" value="0">
@@ -4605,7 +4624,7 @@ html.frontier-immersive{overflow:hidden}
   </section>
 
   <section class="view" id="view-pancake" hidden>
-    <div class="pancake-platform-bar"><p class="hint">開火、重玩與補充泡麵；持續遊玩可累積平台點數。</p><button class="chip" id="pancake-finish" type="button" disabled>結束本局</button></div>
+    <div class="pancake-platform-bar"><button class="fs-exit" type="button" aria-label="退出遊戲">←</button><p class="hint">開火、重玩與補充泡麵；持續遊玩可累積平台點數。</p><button class="chip" id="pancake-finish" type="button" disabled>結束本局</button></div>
     <p class="msg" id="pancake-msg" aria-live="polite">半夜偷煮泡麵煎餅：晃手機讓煎餅滑動，外圈變金黃就往上甩翻面。沒有動作感應時可用手指玩。</p>
     <div class="pancake-stage"><iframe id="pancake-frame" title="泡麵煎餅翻面 Noodle Pancake" allow="accelerometer; gyroscope; magnetometer; autoplay; clipboard-write; web-share"></iframe></div>
   </section>
@@ -4616,7 +4635,7 @@ html.frontier-immersive{overflow:hidden}
   <p id="rocket-chair-rank-status" role="status" hidden></p><button id="rocket-chair-rank-retry" type="button" hidden>重送排行榜成績</button>
 </section>
   <section class="view" id="view-clock-out" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="co-canvas" tabindex="0" width="400" height="560" aria-label="下班保衛戰：在抽屜格子裡擺放辦公用品當防線，點戰場丟便利貼，撐到 17:00 打卡下班"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="co-canvas" tabindex="0" width="400" height="560" aria-label="下班保衛戰：在抽屜格子裡擺放辦公用品當防線，點戰場丟便利貼，撐到 17:00 打卡下班"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="下班保衛戰操作">
         <dl class="stats"><div><dt>波次</dt><dd id="co-wave">— / 8</dd></div><div><dt>理智</dt><dd id="co-san">—</dd></div><div><dt>最高分</dt><dd id="co-best">0 分</dd></div></dl>
         
@@ -4858,7 +4877,7 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與成績</summary><p>池塘被分成不同顏色的區域。每一行、每一列、每個顏色區域都要放剛好 1 隻鴨子，而且鴨子之間不能相鄰，連斜角也不行。每一關只有一種答案，不用猜，靠推理就能解開。共 200 關，從 5×5 到 9×9，越後面越大越難。</p><p>剩越多愛心，過關星星越多（最多 3 顆）。通關後解鎖下一關，進度與星星保存在這個瀏覽器中。</p><p>這款遊戲沒有 BONUS，關卡與星星只是你的成績，不換點數；沒有任何下注或倍率返還。每款遊戲每天第一次完整玩過一局（至少 10 秒），會依平台固定規則領到完成獎勵。</p><p>切換遊戲或背景分頁會暫停，回來後自動繼續。重新整理會放棄本關。點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-breakout" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="br-canvas" tabindex="0" width="400" height="520" aria-label="打磚塊：左右移動擋板接住小球，打光所有磚塊就能過關，三顆球用完就結束"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="br-canvas" tabindex="0" width="400" height="520" aria-label="打磚塊：左右移動擋板接住小球，打光所有磚塊就能過關，三顆球用完就結束"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="打磚塊操作">
         <p>經典小遊戲 · 不限次數</p>
         <dl class="stats"><div><dt>目前關卡</dt><dd id="br-level">1</dd></div><div><dt>本局分數</dt><dd id="br-score">0</dd></div><div><dt>剩餘球數</dt><dd id="br-lives">3</dd></div><div><dt>最佳分數</dt><dd id="br-best">0</dd></div><div><dt>最高關卡</dt><dd id="br-best-level">0</dd></div></dl>
@@ -4884,7 +4903,7 @@ html.frontier-immersive{overflow:hidden}
   <p id="lh-rank-status" role="status" hidden></p><button id="lh-rank-retry" type="button" hidden>重送排行榜成績</button>
 </section>
   <section class="view" id="view-carp" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="carp-canvas" tabindex="0" width="400" height="560" aria-label="鯉魚躍龍門：按住蓄力、放開起跳，越過石瀑，別撞到石頭和魚鉤"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="carp-canvas" tabindex="0" width="400" height="560" aria-label="鯉魚躍龍門：按住蓄力、放開起跳，越過石瀑，別撞到石頭和魚鉤"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="鯉魚躍龍門操作">
         <dl class="stats"><div><dt>本局瀑布</dt><dd id="carp-score">0 道</dd></div><div><dt>最佳紀錄</dt><dd id="carp-best">0 道</dd></div></dl>
         <input id="carp-amount" type="hidden" value="0">
@@ -4892,16 +4911,15 @@ html.frontier-immersive{overflow:hidden}
         <button class="go" id="carp-go" type="button" data-mode="start">開始躍龍門</button>
         <p class="msg" id="carp-msg" aria-live="polite">開始後鯉魚開始逆流而上，沒有終點。按住蓄力、放開起跳，越過的瀑布越多，達成里程碑就送 BONUS。</p>
         <p class="hint">按住畫面（或 <kbd>空白鍵</kbd>）蓄力，放開起跳。跳太低會撞石頭，太高會被魚鉤鉤住。魚旁邊的力量條有綠色區域，標示下一個障礙適合的力度。每到里程碑，鯉魚會更像龍。</p>
+        <p id="carp-rank-status" role="status" hidden></p> <button id="carp-rank-retry" type="button" hidden>重送排行榜成績</button>
       </section></div>
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="BONUS 里程碑"><span data-carp-tier="10"><b>10 道 BONUS</b>+5 點</span><span data-carp-tier="20"><b>20 道 BONUS</b>+5 點</span><span data-carp-tier="35"><b>35 道 BONUS</b>+5 點</span></div>
     <details class="rules"><summary>玩法、里程碑與點數</summary><p>沒有終點，玩到失敗為止。鯉魚自動逆流前進，按住畫面（或空白鍵）蓄力、放開起跳，力道越大跳得越高。跳太低會撞到石頭，跳太高會被魚鉤鉤住；左側力量條上的綠色區域是下一個障礙適合的力度。每成功越過一道瀑布得 1 分，速度與難度隨進度慢慢提高。</p><p>BONUS：10道、20道、35道 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵採固定門檻；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，最佳紀錄與已解鎖造型保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-    <p id="carp-rank-status" role="status" hidden></p>
-    <button id="carp-rank-retry" type="button" hidden>重送排行榜成績</button>
   </section>
 
   <section class="view" id="view-rider" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="rider-canvas" tabindex="0" width="400" height="560" aria-label="外送員大戰惡犬：點左半邊跳躍、按住右半邊加速、按喇叭嚇跑狗，在餐涼之前送達訂單"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="rider-canvas" tabindex="0" width="400" height="560" aria-label="外送員大戰惡犬：點左半邊跳躍、按住右半邊加速、按喇叭嚇跑狗，在餐涼之前送達訂單"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="外送員大戰惡犬操作">
         <dl class="stats"><div><dt>本局分數</dt><dd id="rider-score">0 分</dd></div><div><dt>最佳紀錄</dt><dd id="rider-best">0 分</dd></div></dl>
         <input id="rider-amount" type="hidden" value="0">
@@ -4909,15 +4927,15 @@ html.frontier-immersive{overflow:hidden}
         <button class="go" id="rider-go" type="button" data-mode="start">開始送餐</button>
         <p class="msg" id="rider-msg" aria-live="polite">開始後開始送餐，沒有終點。跳過障礙、準時送達，分數達到里程碑就送 BONUS。</p>
         <p class="hint">點畫面左半邊（或 <kbd>空白鍵</kbd>／<kbd>↑</kbd>）跳過坑洞和狗；按住右半邊（或 <kbd>→</kbd>）加速，油用完就停；點右下角喇叭（或 <kbd>X</kbd>）嚇跑前方的狗。到有綠色區域的客人家門口，放開加速約半秒才算送達。送達能讓訂單回溫，撞到狗或坑洞會讓訂單快速變涼。</p>
+        <p id="rider-rank-status" role="status" hidden></p><button id="rider-rank-retry" type="button" hidden>重送排行榜成績</button>
       </section></div>
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="BONUS 里程碑"><span data-rider-tier="300"><b>300 分 BONUS</b>+5 點</span><span data-rider-tier="700"><b>700 分 BONUS</b>+5 點</span><span data-rider-tier="1300"><b>1,300 分 BONUS</b>+5 點</span></div>
     <details class="rules"><summary>玩法、里程碑與點數</summary><p>沒有終點，玩到失敗為止。訂單溫度會一直下降，降到 0 這一局就結束。點左半邊跳過坑洞和狗；按住右半邊加速（油量有限，不加速時會慢慢回復）；點右下角喇叭可以嚇跑前方的狗（有冷卻時間）。到客人家門口的綠色區域，放開加速約半秒才算送達，送達得 20 分並回溫；沒送到會扣溫度，撞到狗或坑洞也會讓訂單變涼。分數＝前進距離（每 50 單位 1 分）＋送達訂單數 × 20。</p><p>BONUS：300分、700分、1,300分 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵採固定門檻；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，最佳紀錄與已解鎖造型保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  <p id="rider-rank-status" role="status" hidden></p><button id="rider-rank-retry" type="button" hidden>重送排行榜成績</button>
 </section>
 
   <section class="view" id="view-boss" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="boss-canvas" tabindex="0" width="400" height="560" aria-label="胖老闆追人：點畫面跳躍、按住滑行鍵鑽過 DEADLINE 布條，逃離滾著追來的胖老闆"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="boss-canvas" tabindex="0" width="400" height="560" aria-label="胖老闆追人：點畫面跳躍、按住滑行鍵鑽過 DEADLINE 布條，逃離滾著追來的胖老闆"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="胖老闆追人操作">
         <dl class="stats"><div><dt>本局距離</dt><dd id="boss-score">0 m</dd></div><div><dt>最佳紀錄</dt><dd id="boss-best">0 m</dd></div></dl>
         <input id="boss-amount" type="hidden" value="0">
@@ -4925,15 +4943,15 @@ html.frontier-immersive{overflow:hidden}
         <button class="go" id="boss-go" type="button" data-mode="start">開始逃跑</button>
         <p class="msg" id="boss-msg" aria-live="polite">開始後開始逃跑，沒有終點。跳躍、滑行，跑得越遠越好，距離達到里程碑就送 BONUS。</p>
         <p class="hint">點畫面任意位置（或 <kbd>空白鍵</kbd>／<kbd>↑</kbd>）跳過椅子和垃圾桶；按住右下角滑行鍵（或 <kbd>X</kbd>）鑽過 DEADLINE 布條。甜甜圈能把老闆推遠，但他吃越多就越大越快。咖啡在布條下面，滑進去拿。</p>
+        <p id="boss-rank-status" role="status" hidden></p><button id="boss-rank-retry" type="button" hidden>重送排行榜成績</button>
       </section></div>
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="BONUS 里程碑"><span data-boss-tier="200"><b>200 m BONUS</b>+5 點</span><span data-boss-tier="500"><b>500 m BONUS</b>+5 點</span><span data-boss-tier="900"><b>900 m BONUS</b>+5 點</span></div>
     <details class="rules"><summary>玩法、里程碑與點數</summary><p>沒有終點，玩到失敗為止。老闆從後面追來，和你的距離縮到 0 就被抓住、這一局結束。點畫面跳過椅子和垃圾桶；按住右下角滑行鍵可以鑽過 DEADLINE 布條。撞到障礙會被老闆拉近；吃到甜甜圈會把老闆推遠，但老闆吃得越多就越大、追得越快；咖啡放在布條下面，滑進去拿可以拉開距離。每前進 60 單位算 1 公尺。</p><p>BONUS：200m、500m、900m 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵採固定門檻；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，最佳紀錄與已解鎖造型保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  <p id="boss-rank-status" role="status" hidden></p><button id="boss-rank-retry" type="button" hidden>重送排行榜成績</button>
 </section>
 
   <section class="view" id="view-thief" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="thief-canvas" tabindex="0" width="400" height="560" aria-label="偷水果的貓：點左右邊緣換道、點中間跳過竹籃，偷水果並躲開老闆娘的拖鞋"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="thief-canvas" tabindex="0" width="400" height="560" aria-label="偷水果的貓：點左右邊緣換道、點中間跳過竹籃，偷水果並躲開老闆娘的拖鞋"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="偷水果的貓操作">
         <dl class="stats"><div><dt>本局分數</dt><dd id="thief-score">0 分</dd></div><div><dt>最佳紀錄</dt><dd id="thief-best">0 分</dd></div></dl>
         <input id="thief-amount" type="hidden" value="0">
@@ -4941,15 +4959,15 @@ html.frontier-immersive{overflow:hidden}
         <button class="go" id="thief-go" type="button" data-mode="start">開始偷水果</button>
         <p class="msg" id="thief-msg" aria-live="polite">開始後開始逃跑，沒有終點。換道、跳躍、偷水果，分數達到里程碑就送 BONUS。</p>
         <p class="hint">點畫面左邊或右邊（或 <kbd>←</kbd>／<kbd>→</kbd>）換道，點中間（或 <kbd>空白鍵</kbd>）跳過竹籃。飛來的拖鞋會先出現驚嘆號，要換道閃開。水果加分但會讓貓變重變慢，吃魚能變輕。跳起來時拿不到東西。</p>
+        <p id="thief-rank-status" role="status" hidden></p><button id="thief-rank-retry" type="button" hidden>重送排行榜成績</button>
       </section></div>
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="BONUS 里程碑"><span data-thief-tier="150"><b>150 分 BONUS</b>+5 點</span><span data-thief-tier="400"><b>400 分 BONUS</b>+5 點</span><span data-thief-tier="800"><b>800 分 BONUS</b>+5 點</span></div>
     <details class="rules"><summary>玩法、里程碑與點數</summary><p>沒有終點，玩到失敗為止。三條跑道，老闆娘從下方追來，和你的距離縮到 0 就被抓住、這一局結束。點畫面左邊或右邊換道，點中間跳過竹籃（跳起時拿不到東西）；撞到竹籃或被拖鞋打中會被拉近。撿水果加 5 分，但每顆都讓貓變重變慢（最多 5 顆）；吃魚能讓貓變輕。分數＝前進距離（每 50 單位 1 分）＋水果數 × 5。</p><p>BONUS：150分、400分、800分 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵採固定門檻；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，最佳紀錄與已解鎖造型保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  <p id="thief-rank-status" role="status" hidden></p><button id="thief-rank-retry" type="button" hidden>重送排行榜成績</button>
 </section>
 
   <section class="view" id="view-baby" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="baby-canvas" tabindex="0" width="400" height="560" aria-label="寶寶逃洗澡：點左半邊跳躍、按住右半邊低頭爬行、按大哭鍵讓媽媽停住，逃離洗澡"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="baby-canvas" tabindex="0" width="400" height="560" aria-label="寶寶逃洗澡：點左半邊跳躍、按住右半邊低頭爬行、按大哭鍵讓媽媽停住，逃離洗澡"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="寶寶逃洗澡操作">
         <dl class="stats"><div><dt>本局距離</dt><dd id="baby-score">0 m</dd></div><div><dt>最佳紀錄</dt><dd id="baby-best">0 m</dd></div></dl>
         <input id="baby-amount" type="hidden" value="0">
@@ -4957,15 +4975,15 @@ html.frontier-immersive{overflow:hidden}
         <button class="go" id="baby-go" type="button" data-mode="start">開始逃跑</button>
         <p class="msg" id="baby-msg" aria-live="polite">開始後開始逃跑，沒有終點。跳躍、爬行、善用大哭，跑得越遠越好，距離達到里程碑就送 BONUS。</p>
         <p class="hint">點畫面左半邊（或 <kbd>空白鍵</kbd>／<kbd>↑</kbd>）跳過樂高和玩具車；按住右半邊（或 <kbd>→</kbd>）低頭爬過櫃子。撿奶瓶累積哭聲（最多 3 次），按右下角大哭鍵（或 <kbd>X</kbd>）讓媽媽搗耳朵停住。媽媽會越跑越快。</p>
+        <p id="baby-rank-status" role="status" hidden></p><button id="baby-rank-retry" type="button" hidden>重送排行榜成績</button>
       </section></div>
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="BONUS 里程碑"><span data-baby-tier="200"><b>200 m BONUS</b>+5 點</span><span data-baby-tier="500"><b>500 m BONUS</b>+5 點</span><span data-baby-tier="900"><b>900 m BONUS</b>+5 點</span></div>
     <details class="rules"><summary>玩法、里程碑與點數</summary><p>沒有終點，玩到失敗為止。媽媽從後面追來，和你的距離縮到 0 就被抓去洗澡、這一局結束。點左半邊跳過樂高和玩具車；按住右半邊低頭爬行，可以鑽過櫃子。撞到障礙會被媽媽拉近。撿奶瓶可累積哭聲（最多 3 次），按右下角大哭鍵會讓媽媽停住約 2 秒並拉開距離。媽媽會越跑越快。每前進 60 單位算 1 公尺。</p><p>BONUS：200m、500m、900m 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵採固定門檻；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。里程碑門檻尚未經大量實測校準。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，最佳紀錄與已解鎖造型保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  <p id="baby-rank-status" role="status" hidden></p><button id="baby-rank-retry" type="button" hidden>重送排行榜成績</button>
 </section>
 
   <section class="view" id="view-pudding" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="pd-canvas" tabindex="0" width="400" height="560" aria-label="布丁突圍：每段先把拼圖碎片拼進武器格子，再按住左右鍵或按住畫面移動阿鋼，讓武器碰到敵人，護送小王子布丁到援軍橋"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="pd-canvas" tabindex="0" width="400" height="560" aria-label="布丁突圍：每段先把拼圖碎片拼進武器格子，再按住左右鍵或按住畫面移動阿鋼，讓武器碰到敵人，護送小王子布丁到援軍橋"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="布丁突圍操作">
         <dl class="stats"><div><dt>目前進度</dt><dd id="pd-seg">第 1/8 段</dd></div><div><dt>本局分數</dt><dd id="pd-score">0</dd></div><div><dt>最佳紀錄</dt><dd id="pd-best">0 分</dd></div></dl>
         <input id="pd-amount" type="hidden" value="0">
@@ -4977,17 +4995,17 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與點數</summary><p>一局共 8 段路，每段開始前在營帳從 3 塊碎片（刃、矛、盾各一塊）選 1 塊，拼進 4×4 的武器格子，新碎片會直接蓋掉原本的格子。同色格子相連 3 格以上有加成。武器格子會真的出現在阿鋼前方，形狀就是打擊範圍：敵人碰到刃會持續掉血並被拖慢，碰到矛會被刺一下並彈開，盾會擋下弓兵的箭並減少布丁受到的驚嚇。</p><p>每段 16 秒，按住左右鍵或按住畫面移動阿鋼，讓武器碰到敵人。敵人撞到阿鋼、被箭射中，或從旁邊溜過去，都會讓布丁的安心值下降；連續打倒 8 隻敵人可回復一點安心值，每段結束也會回復。安心值歸零，布丁大哭，這一局結束。</p><p>每突破一段 +1 點，當場入帳；8 段全部突破再 +2 點（共 10 點，累計獲得）。結束時不收回已入帳的點數。分數只顯示，不直接換點數。這是操作技巧遊戲，結果取決於拼法與移動。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最佳紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-mosquito" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="mq-canvas" tabindex="0" width="480" height="720" aria-label="血壓上升：放開空白鍵上升，按住下降，降落在皮膚上按住吸血，吸滿後從左上角窗戶的破洞飛出去"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="mq-canvas" tabindex="0" width="480" height="720" aria-label="血壓上升：放開空白鍵上升，按住下降，降落在皮膚上按住吸血，吸滿後從左上角窗戶的破洞飛出去"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="血壓上升操作">
         <dl class="stats"><div><dt>本局吸血</dt><dd id="mq-blood">0.0%</dd></div><div><dt>警覺值</dt><dd id="mq-alert">0%</dd></div><div><dt>最佳紀錄</dt><dd id="mq-best">0.0%</dd></div></dl>
         <input id="mq-amount" type="hidden" value="0">
         <button class="go" id="mq-go" type="button" data-mode="bet">開始吸血</button>
         <p class="msg" id="mq-msg" aria-live="polite">蚊子準備出動！開始後開始，放開空白鍵上升、按住下降，降落在皮膚上按住吸血。</p>
         <p class="hint">按住 <kbd>空白鍵</kbd> 或按住畫面往下俯衝，放開就往上飄。降落在臉頰、手臂或腳上並持續按住就吸血，放開就起飛。吸越多越重、越飛不動。皮膚出現紅色波紋要立刻放開，棉被隆起要往上飛，警覺值滿了會開燈。</p>
+        <p id="mq-rank-status" role="status" hidden></p><button id="mq-rank-retry" type="button" hidden>重送排行榜成績</button>
       </section></div>
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>你是深夜的一隻蚊子，要在睡著的人身上吸滿血，再從左上角窗戶的破洞逃出去。放開空白鍵蚊子往上飄，按住往下俯衝；降落在臉頰、手臂或腳上，持續按住就開始吸血，放開就起飛。降落時速度太快，蚊子會折斷口器、暈眩 1 秒。</p><p>吸得越多，蚊子越重，上升越慢、俯衝越快。警覺值會隨著飛行與吸血上升：臉最快也最吵，腳最慢最安靜，靠近耳朵飛和飛到高處也會更吵。吸血進度到 90% 以後，警覺值上升速度減半。</p><p>睡著的人有三種方式拍死你。吸血時皮膚出現紅色波紋，1.2 秒後巨手會抓下來，要立刻放開飛走。棉被隆起代表要翻身，翻身時畫面下方會全部被壓到，要先往上飛。警覺值滿了會開燈，2 秒內飛進左上角窗戶的破洞才能逃生，但沒吸滿就逃走不算過關。</p><p>固定獎勵：吸血進度每達 25%、50%、75%，分別立即入帳 1、2、3 點；吸滿 100% 並成功飛出窗戶，再入帳 4 點，每局最多 10 點。每個門檻每局只入帳一次，被拍扁後已入帳的點數不會收回，結束時也不會另外結算。吸血百分比與最佳紀錄只是記錄，不直接換點數。這是操作技巧遊戲，結果取決於你的時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最佳紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  <p id="mq-rank-status" role="status" hidden></p><button id="mq-rank-retry" type="button" hidden>重送排行榜成績</button>
 </section>
   <section class="view" id="view-banquet" data-i18n-ignore hidden>
     <div class="console"><div class="bq-stage" id="bq-stage" tabindex="-1" lang="en">

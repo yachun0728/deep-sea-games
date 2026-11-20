@@ -21,7 +21,7 @@ function fixture(mobile=true,mode='bet',retry=false){
   let balance=1000,starts=0,retries=0;
   button.addEventListener('click',()=>{starts++;balance-=10;button.disabled=true;button.dataset.mode='surface';});
   retryButton.addEventListener('click',()=>{retries++;balance-=4;retryButton.hidden=true;button.hidden=false;button.disabled=true;});
-  const document={querySelectorAll:()=>[console],createElement:tag=>new Node(tag),createComment:()=>new Node('#comment')};
+  const document={addEventListener(){},querySelectorAll:()=>[console],createElement:tag=>new Node(tag),createComment:()=>new Node('#comment')};
   class Observer{constructor(fn){this.fn=fn;observers.push(this);}observe(){}}
   vm.runInNewContext(source,{window:{matchMedia:()=>media,MutationObserver:Observer},document,ENTRY_FEE:10});
   return {stage,side,button,retryButton,media,flush:()=>observers.forEach(o=>o.fn()),state:()=>({balance,starts,retries}),resize(value){media.matches=value;media.changed();}};

@@ -1,5 +1,5 @@
   <section class="view" id="view-carp" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="carp-canvas" tabindex="0" width="400" height="560" aria-label="{{t:carp.view.22}}"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="carp-canvas" tabindex="0" width="400" height="560" aria-label="{{t:carp.view.22}}"></canvas></div><button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
       <div class="side"><section class="panel" aria-label="{{t:carp.view.23}}">
         <dl class="stats"><div><dt>{{t:carp.view.01}}</dt><dd id="carp-score">{{t:carp.view.02}}</dd></div><div><dt>{{t:carp.view.03}}</dt><dd id="carp-best">{{t:carp.view.02}}</dd></div></dl>
         <input id="carp-amount" type="hidden" value="0">
@@ -7,11 +7,10 @@
         <button class="go" id="carp-go" type="button" data-mode="start">{{t:carp.view.08}}</button>
         <p class="msg" id="carp-msg" aria-live="polite">{{t:carp.view.09}}</p>
         <p class="hint">{{t:carp.view.10}} <kbd>{{t:carp.view.11}}</kbd>{{t:carp.view.12}}</p>
+        <p id="carp-rank-status" role="status" hidden></p> <button id="carp-rank-retry" type="button" hidden>{{t:carp.view.21}}</button>
       </section></div>
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="{{t:carp.view.24}}"><span data-carp-tier="10"><b>{{t:carp.view.13}}</b>{{t:carp.view.14}}</span><span data-carp-tier="20"><b>{{t:carp.view.15}}</b>{{t:carp.view.14}}</span><span data-carp-tier="35"><b>{{t:carp.view.16}}</b>{{t:carp.view.14}}</span></div>
     <details class="rules"><summary>{{t:carp.view.17}}</summary><p>{{t:carp.view.18}}</p><p>{{t:carp.view.19}}</p><p>{{t:carp.view.20}}</p></details>
-    <p id="carp-rank-status" role="status" hidden></p>
-    <button id="carp-rank-retry" type="button" hidden>{{t:carp.view.21}}</button>
   </section>
 
