@@ -1,7 +1,7 @@
 // node tools/test_telegram_bot.mjs (no packages). Telegram bot Worker: commands, languages, buttons, webhook secret.
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-import worker, { buildReply, languageFor, gameUrl, RANDOM_GAMES, SITE } from '../telegram-bot/src/index.mjs';
+import worker, { buildReply, languageFor, gameUrl, campaignFrom, RANDOM_GAMES, SITE } from '../telegram-bot/src/index.mjs';
 
 const root = new URL('../', import.meta.url);
 const catalog = JSON.parse(fs.readFileSync(new URL('games/catalog.json', root), 'utf8'));
@@ -36,8 +36,20 @@ assert.equal(languageFor('zh-CN'), 'en');
 assert.equal(languageFor('en'), 'en');
 assert.equal(languageFor('ja'), 'en');
 assert.equal(languageFor(undefined), 'en');
-assert.equal(gameUrl('', 'en'), SITE + '?lang=en');
-assert.equal(gameUrl('clock-out', 'zh-Hant'), SITE + '?lang=zh-Hant#clock-out');
+const UTM = 'utm_source=telegram&utm_medium=bot';
+assert.equal(gameUrl('', 'en'), SITE + '?lang=en&' + UTM + '&utm_campaign=organic');
+assert.equal(gameUrl('clock-out', 'zh-Hant', { campaign: 'ads_nov', content: 'random' }),
+  SITE + '?lang=zh-Hant&' + UTM + '&utm_campaign=ads_nov&utm_content=random#clock-out');
+
+// Deep-link channel: only Telegram-valid start parameters become utm_campaign.
+assert.equal(campaignFrom('/start'), 'organic');
+assert.equal(campaignFrom('/start ads_nov'), 'ads_nov');
+assert.equal(campaignFrom('/start@TicaticaBot channel-01'), 'channel-01');
+assert.equal(campaignFrom('/start  friend '), 'friend');
+assert.equal(campaignFrom('/start bad%20value'), 'organic');
+assert.equal(campaignFrom('/start ' + 'a'.repeat(65)), 'organic');
+assert.equal(campaignFrom('/start ' + 'a'.repeat(64)), 'a'.repeat(64));
+assert.equal(campaignFrom('/start 廣告'), 'organic');
 
 // Every command answers in the chat with the expected destination.
 const expected = { start: '', play: '', daily: '#keno', leaderboard: '#lobby' };
@@ -48,8 +60,19 @@ for (const [command, hash] of Object.entries(expected)) {
   const b = firstButton(reply);
   assert.ok(b.web_app, `${command} uses a web_app button in private chats`);
   assert.equal(new URL(b.web_app.url).hash, hash);
-  assert.equal(new URL(b.web_app.url).searchParams.get('lang'), 'zh-Hant');
+  const params = new URL(b.web_app.url).searchParams;
+  assert.equal(params.get('lang'), 'zh-Hant');
+  assert.equal(params.get('utm_source'), 'telegram');
+  assert.equal(params.get('utm_medium'), 'bot');
+  assert.equal(params.get('utm_campaign'), 'organic');
+  assert.equal(params.get('utm_content'), command);
 }
+const tagged = new URL(urlOf(firstButton(buildReply(msg('/start ads_nov'))))).searchParams;
+assert.equal(tagged.get('utm_campaign'), 'ads_nov');
+assert.equal(tagged.get('utm_content'), 'start');
+// The start tag is not remembered: other commands (even with arguments) stay organic.
+assert.equal(new URL(urlOf(firstButton(buildReply(msg('/play ads_nov'))))).searchParams.get('utm_campaign'), 'organic');
+assert.equal(new URL(urlOf(firstButton(buildReply(msg('/random'), () => 0)))).searchParams.get('utm_content'), 'random');
 const random = buildReply(msg('/random'), () => 0.999999);
 assert.equal(new URL(urlOf(firstButton(random))).hash, '#' + RANDOM_GAMES.at(-1)[0]);
 assert.ok(random.text.includes(RANDOM_GAMES.at(-1)[1]));
@@ -72,7 +95,7 @@ for (const lang of ['zh-hans', 'zh', 'fr']) {
 // Groups: plain url buttons, /cmd@Bot works, unknown commands stay silent.
 const group = buildReply(msg('/play@TicaticaBot', { type: 'supergroup' }));
 assert.equal(firstButton(group).web_app, undefined);
-assert.equal(firstButton(group).url, SITE + '?lang=zh-Hant');
+assert.equal(firstButton(group).url, SITE + '?lang=zh-Hant&' + UTM + '&utm_campaign=organic&utm_content=play');
 assert.equal(buildReply(msg('/other', { type: 'group' })), null);
 assert.equal(buildReply(msg('/other')).text, help.text);
 assert.equal(buildReply(msg('/PLAY extra')).text, buildReply(msg('/play')).text);

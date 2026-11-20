@@ -334,7 +334,7 @@ Frontier draw.js uses two PNG atlases with vector fallback. Optional world.suppl
 
 分享成績由 `js/result-share.js`（按鈕、截圖、回合狀態）、`frontend/services/share.mjs` 與 `share-card.mjs`（成績卡與對話框）、`shared/share-games.mjs`（各遊戲設定）及 API Worker 的 `backend/src/services/shares.mjs` 組成；主站 `site/worker.mjs` 只把 `/s/*` 轉給 API Worker。除挖金礦外所有可見遊戲皆已接入。詳見 [docs/BACKEND.md](docs/BACKEND.md#分享成績連結)。
 
-Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsignore`，不會當成網站檔案發布）。它只回覆 `/start`、`/play`、`/random`、`/daily`、`/leaderboard`、`/help` 的文字與開啟網站的按鈕，不讀寫 D1、錢包、排行榜或 GA4。設定步驟見 [telegram-bot/README.md](telegram-bot/README.md)。
+Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsignore`，不會當成網站檔案發布）。它只回覆 `/start`、`/play`、`/random`、`/daily`、`/leaderboard`、`/help` 的文字與開啟網站的按鈕，不讀寫 D1、錢包、排行榜或 GA4；按鈕連結帶 `utm_source=telegram`、`utm_medium=bot` 與 `/start` 深連結參數作為 `utm_campaign`，由網站原有 GA4 歸因。設定步驟見 [telegram-bot/README.md](telegram-bot/README.md)。
 
 ### 深海前哨
 

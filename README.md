@@ -94,7 +94,7 @@ python3 -m http.server 8765
 
 ## Telegram Bot 檢查
 
-修改 `telegram-bot/` 時可執行 `node tools/test_telegram_bot.mjs`，驗證六個指令的回覆與按鈕網址、繁中／簡中／英文對應、群組改用一般連結、未知指令在群組不回應、webhook secret 驗證，以及隨機推薦的遊戲仍為可見遊戲且名稱與 `games/README.md` 一致。無需 npm 套件。
+修改 `telegram-bot/` 時可執行 `node tools/test_telegram_bot.mjs`，驗證六個指令的回覆與按鈕網址、UTM 參數與 `/start` 深連結管道、繁中／簡中／英文對應、群組改用一般連結、未知指令在群組不回應、webhook secret 驗證，以及隨機推薦的遊戲仍為可見遊戲且名稱與 `games/README.md` 一致。無需 npm 套件。
 
 ## 遊戲上線與 BONUS 檢查
 
