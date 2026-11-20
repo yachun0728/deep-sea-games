@@ -72,7 +72,7 @@
       Object.assign(BL,blasterRules.state());BL.focused=focused;BL.best=best;BL.active=true;
       blRandom=random||Math.random;blPendingAim=null;blLastAim=-1;blLastKeys=0;
       BL.analytics=AN.start('blaster',stake);save();renderAll();blRound();
-    });
+    }, undefined, {rulesVersion:blasterRules.rulesVersion});
   }
   function blEvent(type,bonus){
     var params={stage:BL.stage,score:BL.kills,distance_m:Math.floor(BL.distance)};

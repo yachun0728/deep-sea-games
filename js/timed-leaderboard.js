@@ -12,7 +12,7 @@
       tick = 0; carry = 0; actions = [];
       callback(rank ? timedReplay.seeded(rank.state.seed) : null);
     }
-    async function start(callback, cancel) {
+    async function start(callback, cancel, settings) {
       if (starting || sending) return;
       pending = null;
       if (typeof location === 'undefined' || location.protocol === 'file:') {
@@ -25,7 +25,7 @@
       let rank = null;
       try {
         const api = await import('./frontend/services/api.mjs');
-        rank = await api.startBoardRound(gameId, AbortSignal.timeout(4000));
+        rank = await api.startBoardRound(gameId, AbortSignal.timeout(4000), settings);
       } catch {}
       starting = false;
       if ($('view-' + gameId).hidden) { status(''); refresh(); cancel?.(); return; }

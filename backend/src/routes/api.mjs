@@ -49,7 +49,7 @@ const routes = new Map([
   })]],
   [API.boardStart, ['POST', withPlayer(async (request, db, player) => {
     const command = await readBoardCommand(request, false);
-    return command ? json(await startRankedBoard(db, player.id, command.gameId, command.stage), 201)
+    return command ? json(await startRankedBoard(db, player.id, command.gameId, command.stage, command.rulesVersion), 201)
       : json({ error: 'invalid_game' }, 400);
   })]],
   [API.boardMove, ['POST', withPlayer(async (request, db, player) => {

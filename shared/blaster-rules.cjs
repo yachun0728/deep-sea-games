@@ -28,14 +28,14 @@ const blasterRules = (() => {
   var BL_COST={octo:1,crab:1.4,ray:1,eel:1.3,turtle:1.6,jelly:1.5,mine:1.1,rock:1.2,squid:1.6};
   var BL_UNLOCK={octo:1,ray:2,crab:2,mine:3,eel:3,turtle:4,rock:5,jelly:6,squid:7};
   // Commands 0–2 pick a card. The next 16 encode held directions; the rest encode a point.
-  const AIM_BASE=19, AIM_ROWS=151, inputCount=AIM_BASE+101*AIM_ROWS;
+  const rulesVersion=2, AIM_BASE=19, AIM_ROWS=151, inputCount=AIM_BASE+101*AIM_ROWS;
   function state(){return {active:false,phase:'run',stage:1,distance:0,nextHazard:1500,nextBoss:5000,earned:0,rewarded:0,analytics:null,lives:3,weapon:1,form:'pulse',picks:[],sinceCard:0,keys:{l:false,r:false,u:false,d:false},dragging:null,ink:[],gates:[],target:200,x:200,targetY:BL_SPAWN_Y,y:BL_SPAWN_Y,kills:0,wave:0,clock:0,scroll:0,nextWave:.10,shot:0,enemies:[],bullets:[],fx:[],last:0,focused:true,flash:0,best:0,serial:0,tracked:false};}
   function aimCode(x,y){
     const column=Math.max(0,Math.min(100,Math.round(x/4)));
     const row=Math.max(0,Math.min(150,Math.round(y/4)));
     return AIM_BASE+column*AIM_ROWS+row;
   }
-  function bind(BL,random,notify=()=>{},reduceMotion=true){
+  function bind(BL,random,notify=()=>{},reduceMotion=true,version=rulesVersion){
     function blShuffle(items){
       for(let i=items.length-1;i>0;i--){
         const j=Math.floor(random()*(i+1));
@@ -133,7 +133,7 @@ const blasterRules = (() => {
         return;
       }
       var penalty={x:left?266:134,y:-25,value:-[11,15,19,24][pair%4],half:134,group:pair};
-      var armor=9+4*BL.lives;
+      var armor=version===1?9+4*BL.lives:15+5*BL.lives+Math.min(18,3*Math.floor(BL.distance/750));
       BL.gates.push(
         {x:left?66:334,y:-25,value:[1,2,3,2][pair%4],half:66,cap:5,group:pair,armor:armor,maxArmor:armor,fallback:penalty},
         penalty
@@ -393,8 +393,8 @@ const blasterRules = (() => {
     return {BL,input,blWeapon,blStageConfig,blHealth,blPace,blAdvanceDistance,blOfferPicks,blChoose,blHurt,blChangeFleet,blEnemy,blWavePlan,blSpawn,blSpawnGates,blSpawnSwarm,blBossSpawn,blAdvanceBoss,blAdvanceEnemy,blDamage,blSegmentHit,blFleetWidth,blFleet,blFleetTouch,blClampX,blClampY,blReleaseDirections,blAim,blAdvanceFleet,blBurst,blGateContains,blAdvanceBullet,blEffect,blStep};
   }
   return {
-    state,bind,aimCode,inputCount,BL_FLEET_MAX,BL_GATE_HALF,BL_SPAWN_Y,BL_GUNS,BL_MOBS,BL_SLOTS,
-    create:random=>bind(state(),random),
+    state,bind,aimCode,inputCount,rulesVersion,BL_FLEET_MAX,BL_GATE_HALF,BL_SPAWN_Y,BL_GUNS,BL_MOBS,BL_SLOTS,
+    create:(random,version=rulesVersion)=>bind(state(),random,undefined,true,version),
     input:(model,code)=>model.input(code),
     advance:(model,step)=>{model.blStep(step);model.dead=model.BL.phase==='lost';},
     score:model=>Math.floor(model.BL.distance)

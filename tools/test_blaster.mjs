@@ -316,5 +316,19 @@ check('Guest proof replays a natural terminal run and ranks the integer distance
   assert.equal(replay.verify(engine,seed,[ticks,action]),distance);
   assert.equal(replay.verify(engine,seed,[ticks-1,action]),null);
 });
+check('Later recruitment barricades are tougher and old ranked rounds keep their armor',()=>{
+  const engine=blasterEngine;
+  const made=(version,distance,lives)=>{
+    const model=engine.create(replay.seeded(42),version);
+    model.BL.distance=distance;model.BL.lives=lives;model.blSpawnGates(1);
+    return model.BL.gates[0];
+  };
+  assert.equal(made(1,0,3).armor,21);
+  assert.equal(made(2,0,3).armor,30);
+  assert.equal(made(2,0,7).armor,50);
+  assert.equal(made(2,1500,7).armor,56);
+  assert.equal(made(2,100000,7).armor,68);
+  assert.equal(made(2,0,7).cap,5);
+});
 if(failures.length){console.error(failures.length+' check(s) failed');process.exitCode=1;}
 console.log(`PASS: ${results.length} Reef Blaster behavior checks`);
