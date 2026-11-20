@@ -7,3 +7,4 @@
 /.wrangler/
 .dev.vars*
 /site/
+/telegram-bot/
