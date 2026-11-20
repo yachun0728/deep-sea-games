@@ -7,7 +7,7 @@
 - 網址：`#campaign`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「繞市區拉票，經過學校、醫院、豪宅要按住靜音。」｜立即開玩 · 無盡 · 越開越快
 - 追蹤名稱（GA4 `game_name`）：宣傳車，`game_id` 為 `campaign`
-- 檔案：`games/campaign/card.html`、`games/campaign/cover.webp`、`games/campaign/game.js`、`games/campaign/icon.svg`、`games/campaign/style.css`、`games/campaign/view.html`；`game.js` 共 276 行、29.1 KB
+- 檔案：`games/campaign/card.html`、`games/campaign/cover.webp`、`games/campaign/game.js`、`games/campaign/icon.svg`、`games/campaign/style.css`、`games/campaign/view.html`；`game.js` 共 397 行、33.8 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「17. Campaign（campaign）」（下方「規則摘要」已複製）
 
@@ -27,7 +27,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`cpNextMilestone` L8、`cpText` L13、`cpSay` L14、`cpHold` L16、`cpRelease` L17、`cpSpeed` L18、`cpPassed` L19、`cpFloat` L20、`cpRemember` L21、`cpLose` L22、`cpMilestones` L27、`cpSignal` L37、`cpUI` L45、`cpStart` L55、`cpFit` L72、`cpSync` L80、`cpRR` L83、`cpC` L85、`cpBox` L86、`cpWindows` L87、`cpBuilding` L88、`cpTruck` L153、`cpDraw` L181、`cpPress` L263、`cpLift` L264、`cpLoop` L272
+`cpNextMilestone` L8、`cpText` L13、`cpSay` L14、`cpHold` L16、`cpRelease` L17、`cpSpeed` L18、`cpPassed` L19、`cpFloat` L20、`cpRemember` L21、`cpLose` L22、`cpMilestones` L27、`cpSignal` L37、`cpUI` L45、`cpStart` L55、`cpFit` L72、`cpSync` L80、`cpRR` L83、`cpC` L85、`cpBox` L86、`cpWindows` L87、`cpBuilding` L88、`cpTruck` L168、`cpMuteIcon` L200、`cpMobileVehicle` L215、`cpMobileHud` L235、`cpMobileText` L294、`cpDraw` L302、`cpPress` L384、`cpLift` L385、`cpLoop` L393
 
 ## 錢包與結算接點
 
