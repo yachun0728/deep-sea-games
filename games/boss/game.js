@@ -23,10 +23,10 @@ g.restore()}
 G.I={bs:n=>'最高 '+n,tap:'',title:"{{t:boss.msg.001}}",s1:"{{t:boss.msg.002}}",s2:"{{t:boss.msg.003}}",caught:"{{t:boss.msg.004}}",fat:n=>'老闆吃了 '+n+' 個甜甜圈',sh:['{{t:boss.msg.005}}','{{t:boss.msg.006}}','{{t:boss.msg.007}}']};
 G.skins=[{need:0,n:'{{t:boss.msg.008}}',c:['#4cc9f0','#1d3557'],a:0},{need:200,n:'{{t:boss.msg.009}}',c:['#ffb703','#fb8500'],a:1},{need:500,n:'{{t:boss.msg.010}}',c:['#e63946','#9d0208'],a:4},{need:1000,n:'{{t:boss.msg.011}}',c:['#ffd23f','#e76f51'],a:2}];
 const GY=440,PXL=170;
-let dist,v,gap,fat,py,vy,on,slide,sid,obs,nextAt,stun,fx;
+let dist,v,gap,fat,py,vy,on,slide,sid,obs,nextAt,stun,fx,misses;
 let model=bossRules.create(),heldBy,runTime=0;
-const rank=timedLeaderboard('boss','boss',5,ui);
-function syncModel(){({dist,v,gap,fat,py,vy,on,slide,sid,obs,nextAt,stun,fx}=model.snapshot());const next=model.snapshot().shake;if(next)shake=next;}
+const rank=timedLeaderboard('boss','boss',bossRules.inputCount,ui);
+function syncModel(){({dist,v,gap,fat,py,vy,on,slide,sid,obs,nextAt,stun,fx,misses}=model.snapshot());const next=model.snapshot().shake;if(next)shake=next;}
 function control(code){if(!bossRules.input(model,code))return;rank.record(code);syncModel();}
 G.reset=()=>{model=bossRules.create();runTime=0;syncModel();};
 G.score=()=>model.score();
@@ -247,7 +247,7 @@ bg();obs.forEach(drawObs);boss();emp();g.restore();
 fx.forEach(f=>{g.globalAlpha=1-f.t/.8;tx(f.s,f.x,f.y-f.t*50,26,'#ffd23f');g.globalAlpha=1});
 if(!mobileStage.matches){
   tx(G.score()+' m',16,42,26,'#fff0d6','left');
-  const gapFill=cl(1-gap/220,0,1);
+  const gapFill=misses/3;
   RR(16,57,W-32,8,4,'#59534b',1);
   if(gapFill>0)RR(16,57,Math.max(8,(W-32)*gapFill),8,4,'#e9aa63',1);
 }
@@ -264,7 +264,7 @@ bossSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
 function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
- $('boss-gap').value=cl(1-gap/220,0,1);
+ $('boss-gap').value=misses/3;
  setText('boss-score',G.score()+UNIT);setText('boss-best',best+UNIT);setText('boss-pay',fmt(paid)+' 點');
  setText('boss-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'{{t:boss.msg.012}}');
  $('boss-amount').disabled=bossBusy;$('boss-go').disabled=live||rank.busy();setText('boss-go',live?'{{t:boss.msg.013}}':st==='over'?'{{t:boss.msg.014}}':'{{t:boss.msg.015}}');
@@ -297,7 +297,7 @@ function start(){
  rank.start(random=>{
  analytics=AN.start('boss',amount);bossStake=amount;bossBusy=true;save();renderAll();
  model=bossRules.create(random||Math.random);runTime=0;syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('{{t:boss.msg.017}}');ui();c.focus();
- },ui);
+ },ui,{rulesVersion:bossRules.rulesVersion});
 }
 function paperText(text,x,y,size,color,weight=600,maxWidth=280){
   g.font=weight+' '+size+'px "Noto Sans TC","PingFang TC",system-ui,sans-serif';
@@ -322,6 +322,7 @@ function overlay(){
     paperText(T('title'),W/2,194,27,'#49332b',750);
     paperText(T('s1'),W/2,246,16,'#594239');
     paperText(T('s2'),W/2,275,16,'#594239');
+    paperText('{{t:boss.msg.026}}',W/2,300,13,'#8f4837');
   }else{
     paperText(T(G.msg),W/2,194,20,'#594239');
     paperText(G.score()+' m',W/2,255,37,'#49332b',750);

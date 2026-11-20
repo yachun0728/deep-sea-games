@@ -7,7 +7,7 @@
 - 網址：`#boss`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「遲到了！跳過障礙，別被胖老闆追上。」｜立即開玩 · 辦公室逃亡
 - 追蹤名稱（GA4 `game_name`）：胖老闆追人，`game_id` 為 `boss`
-- 檔案：`games/boss/card.html`、`games/boss/cover.webp`、`games/boss/game.js`、`games/boss/icon.svg`、`games/boss/leaderboard.webp`、`games/boss/view.html`；`game.js` 共 385 行、18.2 KB
+- 檔案：`games/boss/card.html`、`games/boss/cover.webp`、`games/boss/game.js`、`games/boss/icon.svg`、`games/boss/leaderboard.webp`、`games/boss/view.html`；`game.js` 共 386 行、18.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「29. 胖老闆追人 Chubby Boss Chase（boss）」（下方「規則摘要」已複製）
 
@@ -17,14 +17,14 @@
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`KM`（L371）、`bossBusy`（L2）
+- 狀態物件／進行中旗標：`KM`（L372）、`bossBusy`（L2）
 - L5 常數：`MILESTONES`、`BONUS`、`KEY`、`SKEY`、`UNIT`
 - L25 常數：`PXL`
 - L256 常數：`CHY`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rnd` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L15、`acc` L16、`syncModel` L29、`control` L30、`fitStage` L43、`overlayShift` L55、`bg` L57、`drawOfficeProp` L82、`drawObs` L88、`drawCycle` L148、`foot` L162、`leg` L176、`runner` L197、`boss` L229、`emp` L238、`SK` L256、`T` L257、`ST` L258、`pick` L260、`release` L261、`say` L262、`setText` L264、`ui` L265、`awardBonus` L273、`die` L283、`start` L293、`paperText` L302、`paper` L308、`overlay` L314、`bonusDraw` L349、`pos` L359、`loop` L378
+`rnd` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L15、`acc` L16、`syncModel` L29、`control` L30、`fitStage` L43、`overlayShift` L55、`bg` L57、`drawOfficeProp` L82、`drawObs` L88、`drawCycle` L148、`foot` L162、`leg` L176、`runner` L197、`boss` L229、`emp` L238、`SK` L256、`T` L257、`ST` L258、`pick` L260、`release` L261、`say` L262、`setText` L264、`ui` L265、`awardBonus` L273、`die` L283、`start` L293、`paperText` L302、`paper` L308、`overlay` L314、`bonusDraw` L350、`pos` L360、`loop` L379
 
 ## 錢包與結算接點
 
@@ -60,7 +60,7 @@
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-定位：`bossBusy` 所在 IIFE（改編自使用者提供的 BossRunning.html；原頁面的越／英／中語言切換移除，僅繁中；造型解鎖與選擇保留，存於 `deep-sea-boss-skin`）。與老闆的距離縮到 0 即結束；點畫面跳、按住滑行鍵鑽布條；甜甜圈推遠老闆（老闆越吃越大越快）。分數＝floor(距離/60)。
+定位：`bossBusy` 所在 IIFE（改編自使用者提供的 BossRunning.html；原頁面的越／英／中語言切換移除，僅繁中；造型解鎖與選擇保留，存於 `deep-sea-boss-skin`）。前兩次撞到障礙會讓老闆拉近，第三次即結束。點畫面跳、按住滑行鍵鑽布條。甜甜圈和咖啡仍會拉開距離，計入的失誤次數保留。分數＝floor(距離/60)。
 
 每局固定入場 10 點，無終點。BONUS：200／500／900 m 三個里程碑，各立即入帳固定 5 點（單局最多 15 點），每個里程碑當局只發一次；達標判定在遊戲更新之後、且回合仍進行時，造成失敗的那一幀不計。獎勵與入場費無關，失敗或重新整理不扣回，結束時不另發點；`end.payout_points` 記錄本局已入帳總額。最佳紀錄存於 `deep-sea-boss-best`。里程碑門檻依原頁造型解鎖門檻設定，尚未經大量實測校準。切換遊戲或背景分頁時暫停，重新整理放棄本局、已扣點不退。
 
