@@ -1301,6 +1301,58 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
   #view-rocket-chair~.rules{display:none}
 }
 
+/* Chubby Boss keeps its physics in a 400×560 world inside a full-bleed canvas. */
+#boss-gap{display:none}
+#boss-canvas:focus:not(:focus-visible){outline:none}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  #view-boss:not([hidden]) .fs-game{padding:0}
+  #view-boss:not([hidden]) .fs-game .sneak-stage #boss-canvas{
+    width:100%;height:100%;max-width:none;border:0;border-radius:0;touch-action:none;
+  }
+  #view-boss .fs-exit,#view-boss .stats>div{
+    background:#403934;border:1px solid #89735b;color:#fff0d6;
+  }
+  #view-boss .stats{align-items:stretch}
+  #view-boss .stats>div{padding:5px 8px}
+  #view-boss .stats dt{color:#f4d4ac}
+  #view-boss .stats dd{font-size:15px}
+  #view-boss .stats~.stats{display:none}
+  #view-boss #boss-gap{
+    display:block;position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 57px);
+    left:calc(env(safe-area-inset-left) + 12px);width:calc(100% - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));
+    height:6px;appearance:none;border:0;border-radius:6px;overflow:hidden;background:#5f5145;accent-color:#efac65;
+  }
+  #boss-gap::-webkit-progress-bar{background:#5f5145}
+  #boss-gap::-webkit-progress-value{background:#efac65}
+  #view-boss #boss-msg{
+    position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;
+  }
+  #view-boss .fs-game .mobile-stage-actions{
+    left:calc(env(safe-area-inset-left) + 12px);right:calc(env(safe-area-inset-right) + 12px);
+    bottom:calc(env(safe-area-inset-bottom) + 16px);
+  }
+  #view-boss .fs-game:has(.share-result:not([hidden])) .mobile-stage-actions{
+    right:calc(50% + 4px);
+  }
+  #view-boss #boss-go:not(:disabled),#view-boss .share-result:not([hidden]){
+    min-height:52px;font-size:15px;line-height:1.2;
+  }
+  #view-boss #boss-go:not(:disabled){
+    color:#3d2b21;border-color:#bc8d59;background:#f3ca91;
+  }
+  #view-boss .fs-game:has(.share-result:not([hidden])) .side #boss-go:not(:disabled){
+    left:calc(env(safe-area-inset-left) + 12px);right:calc(50% + 4px);width:auto;transform:none;
+  }
+  #view-boss .fs-game .share-result:not([hidden]){
+    left:calc(50% + 4px);right:calc(env(safe-area-inset-right) + 12px);
+    width:auto;transform:none;color:#ffebd2;border-color:#9b8068;background:#53453c;
+  }
+  #view-boss .share-result i{color:#f3ca91}
+}
+@media(max-width:880px){
+  #view-boss .mobile-stage-action>#boss-go:not(:disabled){width:100%;min-width:0;padding-inline:8px}
+}
+
 .game-icon-runner img {
   display:block;
   width:100%;
@@ -3737,7 +3789,8 @@ html.frontier-immersive{overflow:hidden}
 <symbol id="icon-frog" viewBox="0 0 96 96"><path d="M6 84h84" stroke="#7cb342" stroke-width="6" stroke-linecap="round"/><rect x="56" y="58" width="34" height="18" rx="9" fill="#8bc34a"/><rect x="56" y="38" width="34" height="18" rx="9" fill="#d32f2f"/><rect x="56" y="18" width="34" height="18" rx="9" fill="#ffb74d"/><circle cx="64" cy="66" r="3" fill="#fff"/><circle cx="64" cy="46" r="3" fill="#fff"/><circle cx="64" cy="26" r="3" fill="#fff"/><path d="M38 62 58 67" stroke="#ff6f91" stroke-width="6" stroke-linecap="round"/><ellipse cx="26" cy="62" rx="22" ry="19" fill="#4caf50"/><circle cx="16" cy="42" r="9" fill="#4caf50"/><circle cx="34" cy="42" r="9" fill="#4caf50"/><circle cx="16" cy="42" r="5" fill="#fff"/><circle cx="34" cy="42" r="5" fill="#fff"/><circle cx="18" cy="42" r="2.4" fill="#1b1b2f"/><circle cx="36" cy="42" r="2.4" fill="#1b1b2f"/><ellipse cx="28" cy="68" rx="13" ry="9" fill="#c8e6c9"/></symbol><symbol id="icon-nap" viewBox="0 0 96 96"><rect x="4" y="62" width="88" height="24" rx="6" fill="#8d6e63"/><rect x="4" y="56" width="88" height="10" rx="4" fill="#a1887f"/><rect x="60" y="34" width="28" height="22" rx="4" fill="#263238"/><rect x="64" y="38" width="20" height="14" rx="2" fill="#4dd0e1"/><rect x="12" y="50" width="38" height="9" rx="4" fill="#5c6bc0"/><circle cx="34" cy="46" r="12" fill="#f1c9a0"/><path d="M22 43a12 12 0 0 1 24 0z" fill="#3e2723"/><path d="M27 48q3 3 6 0M35 48q3 3 6 0" stroke="#4e342e" stroke-width="2" fill="none" stroke-linecap="round"/><text x="50" y="32" font-size="18" font-weight="800" fill="#b39ddb" font-family="sans-serif">Z</text><text x="64" y="20" font-size="13" font-weight="800" fill="#ce93d8" font-family="sans-serif">z</text><rect x="70" y="4" width="14" height="26" rx="5" fill="#37474f" opacity="0"/><circle cx="14" cy="16" r="7" fill="#f1c9a0"/><rect x="8" y="23" width="12" height="14" rx="3" fill="#37474f"/><rect x="13" y="25" width="2.5" height="8" fill="#d32f2f"/><text x="24" y="22" font-size="18" font-weight="800" fill="#d32f2f" font-family="sans-serif">!</text></symbol>
 <symbol id="icon-reaper" viewBox="0 0 96 96"><path d="M23 78 31 36Q44 15 57 36l9 42z" fill="#171426"/><circle cx="44" cy="33" r="16" fill="#171426"/><g fill="#ffb638"><circle cx="38" cy="33" r="3"/><circle cx="50" cy="33" r="3"/></g><path d="m59 78 12-52" stroke="#8b7a5a" stroke-width="5" stroke-linecap="round"/><path d="M66 28q18-13 24 13-11-8-24-7" fill="#cfd6e6"/><path d="M10 55q0-13 11-13t11 13v21l-6-4-6 4-5-4-5 4z" fill="#dfe9ff"/><g fill="#1b1630"><circle cx="17" cy="54" r="2"/><circle cx="25" cy="54" r="2"/></g><ellipse cx="21" cy="33" rx="10" ry="3" fill="none" stroke="#6cc58f" stroke-width="3"/></symbol><symbol id="icon-dive" viewBox="0 0 96 96"><circle cx="48" cy="52" r="36" fill="#0d4a7a" stroke="#6be3f5" stroke-width="3"/><path d="M16 42q16-7 32 0t32 0" fill="none" stroke="#6be3f5" stroke-width="3" stroke-linecap="round" opacity=".55"/><rect x="25" y="46" width="46" height="22" rx="10" fill="#f5c26b" stroke="#10283d" stroke-width="3"/><rect x="30" y="50" width="16" height="14" rx="6" fill="#9fe8f7"/><rect x="50" y="50" width="16" height="14" rx="6" fill="#9fe8f7"/><path d="M71 56h6V26" fill="none" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/><g fill="#d8f7ff"><circle cx="77" cy="17" r="4"/><circle cx="67" cy="11" r="3"/><circle cx="84" cy="7" r="2.5"/></g><circle cx="40" cy="78" r="4.5" fill="#fff8e6" stroke="#f5c26b" stroke-width="2"/><circle cx="54" cy="80" r="3.5" fill="#fff8e6" stroke="#f5c26b" stroke-width="2"/></symbol><symbol id="icon-mrt" viewBox="0 0 96 96"><path d="M30 80l-9 10M66 80l9 10" stroke="#9aa3ad" stroke-width="4" stroke-linecap="round"/><rect x="18" y="10" width="60" height="70" rx="15" fill="#e9eef3" stroke="#4f8cff" stroke-width="3"/><rect x="26" y="20" width="44" height="28" rx="7" fill="#10203f"/><path d="M38 44V31a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v8h10a3 3 0 0 1 3 3v2z" fill="#4a8cff"/><path d="M26 56h44" stroke="#4f8cff" stroke-width="5"/><circle cx="32" cy="68" r="5" fill="#f5c26b"/><circle cx="64" cy="68" r="5" fill="#f5c26b"/><path d="M42 68h12" stroke="#9aa3ad" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-pancake" viewBox="0 0 96 96"><path d="M14 66 4 86" stroke="#8a4a1e" stroke-width="9" stroke-linecap="round"/><circle cx="52" cy="48" r="38" fill="#2b2b31" stroke="#5a5a63" stroke-width="3"/><circle cx="52" cy="48" r="27" fill="#ffc21a" opacity=".55"/><circle cx="52" cy="48" r="22" fill="#e9a640" stroke="#8a4a1e" stroke-width="2"/><circle cx="52" cy="48" r="16" fill="#86c94a"/><path d="M38 55c6-8 12 4 18-4s10 2 12-4" fill="none" stroke="#a8301a" stroke-width="4" stroke-linecap="round"/><path d="M37 46c6-8 12 4 18-4s10 2 12-4" fill="none" stroke="#fbfaf3" stroke-width="4" stroke-linecap="round"/><g fill="none" stroke="#3f9a1a" stroke-width="2.5"><circle cx="50" cy="44" r="2.5"/><circle cx="57" cy="50" r="2.5"/><circle cx="46" cy="52" r="2.5"/></g><path d="M74 14q-4-6 0-10M84 20q-4-6 0-10" fill="none" stroke="#cfe0ff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/></symbol><symbol id="icon-rocket-chair" viewBox="0 0 96 96"><rect x="4" y="2" width="88" height="92" rx="16" fill="#fff"/><path d="M37 70q-3 12 2 22q4-9 2-22zM59 70q-3 12 2 22q4-9 2-22z" fill="#e8502e" stroke="#1d1b1a" stroke-width="2" stroke-linejoin="round"/><rect x="34" y="58" width="8" height="14" rx="2" fill="#fff" stroke="#1d1b1a" stroke-width="2.5"/><rect x="56" y="58" width="8" height="14" rx="2" fill="#fff" stroke="#1d1b1a" stroke-width="2.5"/><path d="M40 56h18l-2 16H42z" fill="#a9d8ee" stroke="#1d1b1a" stroke-width="2.5" stroke-linejoin="round"/><rect x="30" y="50" width="38" height="7" rx="3" fill="#1d1b1a"/><rect x="33" y="22" width="32" height="30" rx="5" fill="#1d1b1a"/><circle cx="49" cy="20" r="9" fill="#fff" stroke="#1d1b1a" stroke-width="2.5"/><path d="M40 16q9-9 18 0q-4-3-9-3t-9 3z" fill="#1d1b1a"/><ellipse cx="49" cy="24" rx="3" ry="3.5" fill="#1d1b1a"/><path d="M47 30h4l-1 14h-2z" fill="#e8502e"/><path d="M14 18l6 4M12 30h7M80 18l-6 4M84 30h-7" stroke="#1d1b1a" stroke-width="2.5" stroke-linecap="round"/><path d="M22 8l3 6M74 8l-3 6" stroke="#e8502e" stroke-width="2.5" stroke-linecap="round"/></symbol>
 <symbol id="icon-skybuilder" viewBox="0 0 96 96"><rect x="0" y="82" width="96" height="14" fill="#7bd88f"/><rect x="24" y="64" width="48" height="20" rx="3" fill="#a8dadc" stroke="#2b2d42" stroke-width="3"/><rect x="28" y="44" width="46" height="20" rx="3" fill="#ffe28a" stroke="#2b2d42" stroke-width="3"/><rect x="26" y="26" width="44" height="18" rx="3" fill="#ffb4a2" stroke="#2b2d42" stroke-width="3"/><path d="M20 26L48 6l28 20z" fill="#e63946" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><rect x="34" y="50" width="10" height="10" rx="2" fill="#fff7c2"/><rect x="54" y="50" width="10" height="10" rx="2" fill="#fff7c2"/><rect x="34" y="70" width="10" height="10" rx="2" fill="#fff7c2"/><rect x="54" y="70" width="10" height="10" rx="2" fill="#fff7c2"/><path d="M84 0v26M84 6H56" stroke="#ffb703" stroke-width="4" fill="none"/></symbol>
-<symbol id="icon-carp" viewBox="0 0 96 96"><rect y="70" width="96" height="26" fill="#219ebc"/><path d="M0 70q12-9 24 0t24 0 24 0 24 0" fill="none" stroke="#bde0fe" stroke-width="4"/><path d="M26 40L8 24v32z" fill="#d00000" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><ellipse cx="50" cy="40" rx="27" ry="17" fill="#ff6b35" stroke="#2b2d42" stroke-width="3"/><path d="M42 26l8-13 9 13z" fill="#d00000" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><ellipse cx="52" cy="46" rx="16" ry="7" fill="#ffe8d6"/><circle cx="66" cy="35" r="5" fill="#fff" stroke="#2b2d42" stroke-width="2"/><circle cx="67" cy="35" r="2.3" fill="#2b2d42"/><path d="M80 30l8-10M82 36l10-2" stroke="#2b2d42" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-rider" viewBox="0 0 96 96"><rect y="76" width="96" height="20" fill="#5c5c7a"/><circle cx="26" cy="68" r="11" fill="#333" stroke="#2b2d42" stroke-width="3"/><circle cx="68" cy="68" r="11" fill="#333" stroke="#2b2d42" stroke-width="3"/><path d="M26 68l12-24h20l10 24" fill="#ffd166" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><rect x="6" y="28" width="30" height="26" rx="5" fill="#e63946" stroke="#2b2d42" stroke-width="3"/><rect x="42" y="26" width="16" height="22" rx="5" fill="#2ec4b6" stroke="#2b2d42" stroke-width="3"/><circle cx="52" cy="16" r="9" fill="#f5cba7" stroke="#2b2d42" stroke-width="3"/><path d="M43 14a9 9 0 0118 0z" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3"/></symbol><symbol id="icon-boss" viewBox="0 0 96 96"><rect y="78" width="96" height="18" fill="#6d597a"/><ellipse cx="44" cy="56" rx="34" ry="24" fill="#3d405b" stroke="#2b2d42" stroke-width="3"/><ellipse cx="50" cy="58" rx="20" ry="17" fill="#f1faee" stroke="#2b2d42" stroke-width="3"/><path d="M48 32h14l4 24-10 8-8-8z" fill="#e63946" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><circle cx="56" cy="22" r="15" fill="#f5cba7" stroke="#2b2d42" stroke-width="3"/><circle cx="50" cy="20" r="3" fill="#fff"/><circle cx="62" cy="20" r="3" fill="#fff"/><path d="M48 14l8 3M64 14l-8 3" stroke="#2b2d42" stroke-width="3" stroke-linecap="round"/><ellipse cx="56" cy="31" rx="6" ry="4" fill="#7a1c1c"/></symbol><symbol id="icon-thief" viewBox="0 0 96 96"><rect width="96" height="96" fill="none"/><circle cx="30" cy="70" r="12" fill="#e63946" stroke="#2b2d42" stroke-width="3"/><circle cx="52" cy="74" r="10" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3"/><circle cx="72" cy="70" r="11" fill="#7bd88f" stroke="#2b2d42" stroke-width="3"/><path d="M22 36l4-20 14 12zM58 28l14-12 4 20z" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><circle cx="48" cy="42" r="24" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3"/><circle cx="39" cy="38" r="4" fill="#2b2d42"/><circle cx="57" cy="38" r="4" fill="#2b2d42"/><circle cx="48" cy="48" r="3.5" fill="#ff5d8f"/><path d="M34 48l-12-3M34 52l-12 3M62 48l12-3M62 52l12 3" stroke="#2b2d42" stroke-width="2.5" stroke-linecap="round"/></symbol><symbol id="icon-baby" viewBox="0 0 96 96"><rect y="78" width="96" height="18" fill="#c08552"/><rect x="26" y="52" width="44" height="30" rx="12" fill="#a0c4ff" stroke="#2b2d42" stroke-width="3"/><rect x="26" y="66" width="44" height="14" rx="6" fill="#fff" stroke="#2b2d42" stroke-width="3"/><circle cx="48" cy="34" r="22" fill="#f5cba7" stroke="#2b2d42" stroke-width="3"/><path d="M40 14a8 8 0 018-6 8 8 0 018 6" fill="none" stroke="#ffd6a5" stroke-width="5" stroke-linecap="round"/><circle cx="41" cy="34" r="3.5" fill="#2b2d42"/><circle cx="56" cy="34" r="3.5" fill="#2b2d42"/><ellipse cx="48" cy="44" rx="6" ry="4" fill="#ff8fab" stroke="#2b2d42" stroke-width="2"/></symbol><symbol id="icon-pudding" viewBox="0 0 96 96"><path d="M6 86h84" stroke="#b79b6b" stroke-width="6" stroke-linecap="round"/><rect x="52" y="22" width="14" height="14" fill="#e53935" stroke="#1b1b2f" stroke-width="2.5"/><rect x="52" y="36" width="14" height="14" fill="#e53935" stroke="#1b1b2f" stroke-width="2.5"/><rect x="66" y="36" width="14" height="14" fill="#1e88e5" stroke="#1b1b2f" stroke-width="2.5"/><rect x="66" y="50" width="14" height="14" fill="#1e88e5" stroke="#1b1b2f" stroke-width="2.5"/><rect x="52" y="50" width="14" height="14" fill="#fdd835" stroke="#1b1b2f" stroke-width="2.5"/><rect x="14" y="48" width="30" height="34" rx="8" fill="#eef2f8" stroke="#1b1b2f" stroke-width="3"/><rect x="14" y="52" width="30" height="7" fill="#d32f2f"/><circle cx="29" cy="36" r="10" fill="#f1c9a0" stroke="#1b1b2f" stroke-width="3"/><path d="M25 27l4-12 4 12z" fill="#d32f2f"/><circle cx="45" cy="42" r="8" fill="#ffe0bd" stroke="#1b1b2f" stroke-width="2.5"/><circle cx="43" cy="41" r="1.4" fill="#1b1b2f"/><circle cx="48" cy="41" r="1.4" fill="#1b1b2f"/><path d="M42.5 45.5q2.5 2.5 5 0" stroke="#1b1b2f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M18 56l24 14" stroke="#d32f2f" stroke-width="4" stroke-linecap="round"/></symbol></defs></svg>
+<symbol id="icon-carp" viewBox="0 0 96 96"><rect y="70" width="96" height="26" fill="#219ebc"/><path d="M0 70q12-9 24 0t24 0 24 0 24 0" fill="none" stroke="#bde0fe" stroke-width="4"/><path d="M26 40L8 24v32z" fill="#d00000" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><ellipse cx="50" cy="40" rx="27" ry="17" fill="#ff6b35" stroke="#2b2d42" stroke-width="3"/><path d="M42 26l8-13 9 13z" fill="#d00000" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><ellipse cx="52" cy="46" rx="16" ry="7" fill="#ffe8d6"/><circle cx="66" cy="35" r="5" fill="#fff" stroke="#2b2d42" stroke-width="2"/><circle cx="67" cy="35" r="2.3" fill="#2b2d42"/><path d="M80 30l8-10M82 36l10-2" stroke="#2b2d42" stroke-width="3" stroke-linecap="round"/></symbol><symbol id="icon-rider" viewBox="0 0 96 96"><rect y="76" width="96" height="20" fill="#5c5c7a"/><circle cx="26" cy="68" r="11" fill="#333" stroke="#2b2d42" stroke-width="3"/><circle cx="68" cy="68" r="11" fill="#333" stroke="#2b2d42" stroke-width="3"/><path d="M26 68l12-24h20l10 24" fill="#ffd166" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><rect x="6" y="28" width="30" height="26" rx="5" fill="#e63946" stroke="#2b2d42" stroke-width="3"/><rect x="42" y="26" width="16" height="22" rx="5" fill="#2ec4b6" stroke="#2b2d42" stroke-width="3"/><circle cx="52" cy="16" r="9" fill="#f5cba7" stroke="#2b2d42" stroke-width="3"/><path d="M43 14a9 9 0 0118 0z" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3"/></symbol><symbol id="icon-boss" viewBox="0 0 96 96"><image width="96" height="96" href="./games/boss/leaderboard.webp"/></symbol>
+<symbol id="icon-thief" viewBox="0 0 96 96"><rect width="96" height="96" fill="none"/><circle cx="30" cy="70" r="12" fill="#e63946" stroke="#2b2d42" stroke-width="3"/><circle cx="52" cy="74" r="10" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3"/><circle cx="72" cy="70" r="11" fill="#7bd88f" stroke="#2b2d42" stroke-width="3"/><path d="M22 36l4-20 14 12zM58 28l14-12 4 20z" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3" stroke-linejoin="round"/><circle cx="48" cy="42" r="24" fill="#ff9f1c" stroke="#2b2d42" stroke-width="3"/><circle cx="39" cy="38" r="4" fill="#2b2d42"/><circle cx="57" cy="38" r="4" fill="#2b2d42"/><circle cx="48" cy="48" r="3.5" fill="#ff5d8f"/><path d="M34 48l-12-3M34 52l-12 3M62 48l12-3M62 52l12 3" stroke="#2b2d42" stroke-width="2.5" stroke-linecap="round"/></symbol><symbol id="icon-baby" viewBox="0 0 96 96"><rect y="78" width="96" height="18" fill="#c08552"/><rect x="26" y="52" width="44" height="30" rx="12" fill="#a0c4ff" stroke="#2b2d42" stroke-width="3"/><rect x="26" y="66" width="44" height="14" rx="6" fill="#fff" stroke="#2b2d42" stroke-width="3"/><circle cx="48" cy="34" r="22" fill="#f5cba7" stroke="#2b2d42" stroke-width="3"/><path d="M40 14a8 8 0 018-6 8 8 0 018 6" fill="none" stroke="#ffd6a5" stroke-width="5" stroke-linecap="round"/><circle cx="41" cy="34" r="3.5" fill="#2b2d42"/><circle cx="56" cy="34" r="3.5" fill="#2b2d42"/><ellipse cx="48" cy="44" rx="6" ry="4" fill="#ff8fab" stroke="#2b2d42" stroke-width="2"/></symbol><symbol id="icon-pudding" viewBox="0 0 96 96"><path d="M6 86h84" stroke="#b79b6b" stroke-width="6" stroke-linecap="round"/><rect x="52" y="22" width="14" height="14" fill="#e53935" stroke="#1b1b2f" stroke-width="2.5"/><rect x="52" y="36" width="14" height="14" fill="#e53935" stroke="#1b1b2f" stroke-width="2.5"/><rect x="66" y="36" width="14" height="14" fill="#1e88e5" stroke="#1b1b2f" stroke-width="2.5"/><rect x="66" y="50" width="14" height="14" fill="#1e88e5" stroke="#1b1b2f" stroke-width="2.5"/><rect x="52" y="50" width="14" height="14" fill="#fdd835" stroke="#1b1b2f" stroke-width="2.5"/><rect x="14" y="48" width="30" height="34" rx="8" fill="#eef2f8" stroke="#1b1b2f" stroke-width="3"/><rect x="14" y="52" width="30" height="7" fill="#d32f2f"/><circle cx="29" cy="36" r="10" fill="#f1c9a0" stroke="#1b1b2f" stroke-width="3"/><path d="M25 27l4-12 4 12z" fill="#d32f2f"/><circle cx="45" cy="42" r="8" fill="#ffe0bd" stroke="#1b1b2f" stroke-width="2.5"/><circle cx="43" cy="41" r="1.4" fill="#1b1b2f"/><circle cx="48" cy="41" r="1.4" fill="#1b1b2f"/><path d="M42.5 45.5q2.5 2.5 5 0" stroke="#1b1b2f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M18 56l24 14" stroke="#d32f2f" stroke-width="4" stroke-linecap="round"/></symbol></defs></svg>
     <aside class="lobby-sidebar" aria-label="遊戲選單"><div class="side-top"><a class="side-logo" href="#lobby" data-i18n-ignore aria-label="TICATICA GAMES"><img src="images/ticatica-logo.png?v=2" alt="" width="900" height="233" decoding="async"></a><button type="button" class="side-toggle" id="side-toggle" aria-expanded="true" aria-label="收合選單" title="收合選單"><i class="fa-solid fa-bars" aria-hidden="true"></i></button></div><a class="side-feature" href="#keno" title="每日挖礦"><i class="fa-solid fa-gem side-head-icon" aria-hidden="true"></i><span>每日挖礦</span><span class="side-feature-art" aria-hidden="true"></span></a><div class="side-section side-section-quick"><div class="side-head"><i class="fa-solid fa-fire side-head-icon" aria-hidden="true"></i><span>熱門遊戲</span><button type="button" class="side-random" id="side-random"><i class="fa-solid fa-shuffle" aria-hidden="true"></i>隨機</button></div><div class="side-quick"><a class="side-quick-item" href="#rocket-chair" aria-label="社畜要下班" title="社畜要下班"><img src="games/rocket-chair/cover.webp?v=3ccab053" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#eat-smaller" aria-label="數字吞噬" title="數字吞噬"><img src="games/eat-smaller/cover.webp?v=5fdc7434" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#mirror-twins" aria-label="鏡像雙子" title="鏡像雙子"><img src="games/mirror-twins/cover.webp?v=268c863d" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#shadow-relay" aria-label="影子接力" title="影子接力"><img src="games/shadow-relay/cover.webp?v=1b1c5a28" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#ocean-link" aria-label="深海連連看" title="深海連連看"><img src="games/ocean-link/cover.webp?v=16f8e3e8" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#banquet" aria-label="最後的晚餐" title="最後的晚餐"><img src="games/banquet/cover.webp?v=c872f4ba" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#office-shoot" aria-label="拒絕加班" title="拒絕加班"><img src="games/office-shoot/cover.webp?v=5c8a8d4d" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#mermaid" aria-label="人魚接龍" title="人魚接龍"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mermaid"></use></svg></a></div></div><div class="side-section"><div class="side-head"><i class="fa-solid fa-bolt side-head-icon" aria-hidden="true"></i><span>遊戲分類</span></div><div class="lobby-filters side-filters" id="side-filters" role="group" aria-label="篩選遊戲類型"><button title="全部" type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button title="跑酷動作" type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button title="潛行偷閒" type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button title="時機操作" type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button title="益智策略" type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button title="經典小遊戲" type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button title="機率挑戰" type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div></div><div class="side-section"><div class="side-head"><i class="fa-solid fa-circle-info side-head-icon" aria-hidden="true"></i><span>其他資訊</span></div><nav class="side-links" aria-label="其他資訊"><a href="#member" title="會員中心"><i class="fa-solid fa-user" aria-hidden="true"></i><span>會員中心</span></a><a href="#keno" title="每日挖礦"><i class="fa-solid fa-gem" aria-hidden="true"></i><span>每日挖礦</span></a></nav></div></aside>
     <div class="lobby-banners"><div class="lobby-banner banner-welcome"><span class="banner-spark spark-a"></span><span class="banner-spark spark-b"></span><span class="banner-spark spark-c"></span><div class="banner-copy"><p class="lobby-eyebrow">TICATICA GAMES</p><h2>今天，想玩<br>哪一款？</h2><p class="lobby-intro">挑一款就開玩，同一個點數錢包。</p><button class="lobby-hero-link" id="lobby-explore" type="button">探索全部遊戲 <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button></div><svg class="banner-art" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-ocean-link"></use></svg></div><a class="lobby-banner banner-new" href="#rocket-chair"><span class="banner-spark spark-a"></span><span class="banner-spark spark-b"></span><span class="banner-spark spark-c"></span><div class="banner-copy"><p class="lobby-eyebrow">NEW GAME</p><h2>社畜要下班</h2><p class="lobby-intro">新遊戲上架，對著手機大吼衝破天花板。</p></div><svg class="banner-art" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-rocket-chair"></use></svg></a><a class="lobby-banner banner-free" href="#mines"><span class="banner-spark spark-a"></span><span class="banner-spark spark-b"></span><span class="banner-spark spark-c"></span><div class="banner-copy"><p class="lobby-eyebrow">FREE</p><h2>經典小遊戲</h2><p class="lobby-intro">踩地雷不限次數。</p></div><svg class="banner-art" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mines"></use></svg></a></div>
     <section class="daily-supply" aria-label="每日補給"><a class="game-card" href="#keno" data-art="icon" id="gold-float" title="每日挖礦" aria-describedby="gold-daily-status" data-game-category="daily" aria-label="每日挖金礦：每天 3 次，每次挖5格，最多獲得30點">
@@ -5221,6 +5274,7 @@ html.frontier-immersive{overflow:hidden}
     <div class="console fs-game"><div class="sneak-stage"><canvas id="boss-canvas" tabindex="0" width="400" height="560" aria-label="胖老闆追人：點畫面跳躍、按住滑行鍵鑽過 DEADLINE 布條，逃離滾著追來的胖老闆"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="胖老闆追人操作">
         <dl class="stats"><div><dt>本局距離</dt><dd id="boss-score">0 m</dd></div><div><dt>最佳紀錄</dt><dd id="boss-best">0 m</dd></div></dl>
+        <progress id="boss-gap" max="1" value="0" aria-hidden="true"></progress>
         <input id="boss-amount" type="hidden" value="0">
         <dl class="stats"><div><dt>✦ BONUS 已入帳</dt><dd id="boss-pay">0 點</dd></div><div><dt>下一個里程碑</dt><dd id="boss-next">200 m · +5 點</dd></div></dl>
         <button class="go" id="boss-go" type="button" data-mode="start">開始逃跑</button>
@@ -9490,8 +9544,8 @@ html.frontier-immersive{overflow:hidden}
   "店長搬來一個備用空紙箱了！好好利用它來周轉書本吧。": "The shop cat brought a spare empty box. Use it to shuffle books around.",
   "已生成全新的隨機關卡，祝你整理愉快！": "A brand-new random stage is ready. Happy sorting!",
   "胖老闆追人！": "Chubby Boss!",
-  "你遲到了，大肚子老闆滾著追來！": "You are late! The big boss is rolling after you!",
-  "跳躍、滑行，再用甜甜圈引開他。": "Jump, slide and distract him with donuts.",
+  "點畫面跳躍，跨過障礙。": "Tap the stage to jump over obstacles.",
+  "按住滑行鍵鑽過布條。": "Hold Slide to duck under banners.",
   "被老闆抓住了！": "Caught by the boss!",
   "又遲到？！": "Late again?!",
   "扣薪水！": "Salary deducted!",
@@ -9501,8 +9555,8 @@ html.frontier-immersive{overflow:hidden}
   "逃跑總監": "Escape Director",
   "截稿超人": "Deadline Hero",
   "逃跑中 · 跳躍／滑行": "Escaping · Jump / Slide",
-  "遊戲進行中": "Game in progress",
   "再玩一次": "Play again",
+  "遊戲進行中": "Game in progress",
   "點畫面或按空白鍵發球。": "Click or tap the board, or press Space, to serve.",
   "加油！": "Go!",
   "已暫停。": "Paused.",
@@ -26359,7 +26413,7 @@ const F=(x,y,r,f)=>{g.fillStyle=f;g.beginPath();g.arc(x,y,r,0,7);g.fill()};
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();O(f,lw)};
 const P=(a,f,w)=>{g.beginPath();a.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();O(f,w)};
 const L2=(x1,y1,x2,y2,w,col)=>{g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.strokeStyle=col||OL;g.lineWidth=w||3;g.lineCap='round';g.stroke()};
-function tx(s,x,y,sz,col,al){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign=al||'center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-30);g.fillStyle=col;g.fillText(s,x,y,W-30)}
+function tx(s,x,y,sz,col,al){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign=al||'center';g.lineJoin='round';g.lineWidth=Math.min(3,sz/8);g.strokeStyle=OL;g.strokeText(s,x,y,W-30);g.fillStyle=col;g.fillText(s,x,y,W-30)}
 function acc(a,x,y,s){
 if(!a)return;g.save();g.translate(x,y);g.scale(s,s);
 if(a===1){g.beginPath();g.arc(0,0,13,Math.PI,0);O('#e63946',3);RR(0,-3,20,5,2,'#e63946',2.5)}
@@ -26367,15 +26421,15 @@ else if(a===2)P([[-13,0],[-14,-16],[-7,-8],[0,-20],[7,-8],[14,-16],[13,0]],'#ffd
 else if(a===3){P([[-11,0],[0,-30],[11,0]],'#ff5d8f',3);C(0,-31,4,'#fff',2.5)}
 else E(0,-8,13,4,'#ffe27a',3);
 g.restore()}
-G.I={bs:n=>'最高 '+n,tap:'',title:"胖老闆追人！",s1:"你遲到了，大肚子老闆滾著追來！",s2:"跳躍、滑行，再用甜甜圈引開他。",caught:"被老闆抓住了！",fat:n=>'老闆吃了 '+n+' 個甜甜圈',sh:['又遲到？！','扣薪水！','站住！']};
+G.I={bs:n=>'最高 '+n,tap:'',title:"胖老闆追人！",s1:"點畫面跳躍，跨過障礙。",s2:"按住滑行鍵鑽過布條。",caught:"被老闆抓住了！",fat:n=>'老闆吃了 '+n+' 個甜甜圈',sh:['又遲到？！','扣薪水！','站住！']};
 G.skins=[{need:0,n:'新進員工',c:['#4cc9f0','#1d3557'],a:0},{need:200,n:'IT 工程師',c:['#ffb703','#fb8500'],a:1},{need:500,n:'逃跑總監',c:['#e63946','#9d0208'],a:4},{need:1000,n:'截稿超人',c:['#ffd23f','#e76f51'],a:2}];
 const GY=440,PXL=170;
 let dist,v,gap,fat,py,vy,on,slide,sid,obs,nextAt,stun,fx;
-let model=bossRules.create(),heldBy;
+let model=bossRules.create(),heldBy,runTime=0;
 const rank=timedLeaderboard('boss','boss',5,ui);
 function syncModel(){({dist,v,gap,fat,py,vy,on,slide,sid,obs,nextAt,stun,fx}=model.snapshot());const next=model.snapshot().shake;if(next)shake=next;}
 function control(code){if(!bossRules.input(model,code))return;rank.record(code);syncModel();}
-G.reset=()=>{model=bossRules.create();syncModel();};
+G.reset=()=>{model=bossRules.create();runTime=0;syncModel();};
 G.score=()=>model.score();
 G.extra=()=>T('fat')(fat);
 G.down=p=>{
@@ -26383,52 +26437,224 @@ G.down=p=>{
  control(code);heldBy=p.id;
 };
 G.up=p=>{if(p.id===heldBy){control(3);heldBy=undefined;}};
-G.update=dt=>{bossRules.advance(model,dt);syncModel();if(model.dead)die(model.dead);};
+G.update=dt=>{runTime+=dt;bossRules.advance(model,dt);syncModel();if(model.dead)die(model.dead);};
+const office = new Image();
+const mobileStage=matchMedia('(max-width:880px),(pointer:coarse) and (max-width:1100px)');
+let viewport={scale:1,x:0,y:0,left:0,top:0,width:W,height:H};
+function fitStage(){
+  const r=c.getBoundingClientRect();
+  if(!r.width||!r.height)return;
+  const scale=Math.min(r.width/W,r.height/H);
+  const x=(r.width-W*scale)/2,y=r.height-H*scale;
+  const density=Math.min(devicePixelRatio||1,2);
+  const width=Math.round(r.width*density),height=Math.round(r.height*density);
+  if(c.width!==width||c.height!==height){c.width=width;c.height=height;}
+  viewport={scale,x,y,left:-x/scale,top:-y/scale,width:r.width/scale,height:r.height/scale};
+  g.setTransform(scale*c.width/r.width,0,0,scale*c.height/r.height,
+    x*c.width/r.width,y*c.height/r.height);
+}
+function overlayShift(){return mobileStage.matches?cl(viewport.top,-74,0):0;}
+
 function bg(){
-g.fillStyle='#a0c4ff';g.fillRect(-20,0,W+40,GY);
-for(let i=0;i<4;i++){const x=((i*170-dist*.12)%680+680)%680-120;RR(x,60,110,140,10,'#ffe8a3',3);L2(x+55,60,x+55,200,3);L2(x,130,x+110,130,3)}
-for(let i=0;i<5;i++){const x=((i*140-dist*.4)%700+700)%700-100;RR(x,GY-110,110,110,8,'#bdb2ff',3);RR(x+20,GY-85,36,26,4,'#8ecae6',2.5)}
-g.fillStyle='#6d597a';g.fillRect(-20,GY,W+40,H-GY);g.fillStyle='#b56576';g.fillRect(-20,GY,W+40,14);
-for(let i=0;i<10;i++){const x=((i*60-dist)%600+600)%600-60;L2(x,GY+14,x-30,H,2,'#5a4a6a')}
-L2(-20,GY,W+20,GY,4)}
+  const {left,top,width}=viewport;
+  g.fillStyle='#29434a';
+  g.fillRect(left-12,top-12,width+24,H-top+24);
+  if(office.naturalWidth){
+    const height=H-top;
+    const tile=height*office.naturalWidth/office.naturalHeight;
+    const offset=dist*.24%tile;
+    for(let x=left-offset-tile;x<left+width+12;x+=tile){
+      g.drawImage(office,x,top-12,tile+.5,height+12);
+    }
+  }
+  g.fillStyle='#75685f';
+  g.fillRect(left-12,GY,width+24,3);
+  const shade=g.createLinearGradient(0,GY,0,H);
+  shade.addColorStop(0,'#716861');
+  shade.addColorStop(1,'#353b3d');
+  g.fillStyle=shade;
+  g.fillRect(left-12,GY+3,width+24,H-GY+12);
+  for(let x=left-dist%65;x<left+width+65;x+=65){
+    L2(x,GY+4,x-30,H,1,'#605a56');
+  }
+}
+const officeProps=new Image();
+officeProps.src='games/boss/art/office-props.webp';
+function drawOfficeProp(index,x,y,w,h){
+  if(!officeProps.naturalWidth)return false;
+  const cell=128;
+  g.drawImage(officeProps,index*cell,0,cell,cell,x,y,w,h);
+  return true;
+}
 function drawObs(o){
-const x=o.x;
-if(o.t==='t'){RR(x+4,GY-26,28,9,3,'#2ec4b6',2.5);RR(x+8,GY-40,10,18,3,'#2ec4b6',2.5);L2(x+18,GY-17,x+18,GY-6,3);L2(x+6,GY-5,x+30,GY-5,3);C(x+8,GY-4,3,'#333',1.5);C(x+28,GY-4,3,'#333',1.5)}
-else if(o.t==='b'){RR(x,GY-50,26,50,5,'#adb5bd',3);C(x+13,GY-54,8,'#fff',2)}
-else if(o.t==='h'){L2(x+10,0,x+10,GY-120,3);L2(x+80,0,x+80,GY-120,3);RR(x,GY-120,90,80,8,'#e63946',3);tx('DEADLINE',x+45,GY-74,15,'#fff')}
-else if(o.t==='d'){C(x,GY-100,12,'#ff8fab',3);F(x,GY-100,4,'#a0c4ff');F(x-6,GY-105,1.6,'#ffd23f')}
-else{RR(x-9,GY-26,18,20,4,'#fff',3);F(x,GY-24,6,'#6b4423');L2(x-3,GY-34,x-3,GY-28,2,'#fff')}}
+  const x=o.x;
+  if(o.t==='t'||o.t==='b'){
+    const width=o.t==='t'?34:26;
+    g.fillStyle='rgba(38,28,22,.29)';
+    g.beginPath();g.ellipse(x+width/2,GY+1,width*.56,2.5,0,0,Math.PI*2);g.fill();
+  }
+  if(o.t==='t'){
+    if(drawOfficeProp(0,x,GY-38,34,38))return;
+    RR(x,GY-37,34,37,3,'#c99b6b',2);
+    L2(x+2,GY-24,x+32,GY-24,2,'#97603e');
+    RR(x+10,GY-19,14,9,2,'#f1dfbd',1);
+  }else if(o.t==='b'){
+    if(drawOfficeProp(1,x,GY-52,26,52))return;
+    RR(x,GY-51,26,51,3,'#687877',2);
+    RR(x+4,GY-47,18,18,2,'#b8c3b8',1.5);
+    L2(x+8,GY-42,x+18,GY-42,2,'#415658');
+  }else if(o.t==='h'){
+    L2(x+3,GY-153,x+3,GY-116,1.5,'#a88c70');
+    L2(x+87,GY-153,x+87,GY-116,1.5,'#a88c70');
+    F(x+3,GY-153,2.2,'#d5af7e');F(x+87,GY-153,2.2,'#d5af7e');
+    if(drawOfficeProp(2,x,GY-120,90,80))return;
+    P([[x,GY-120],[x+24,GY-112],[x+64,GY-112],[x+90,GY-120],
+      [x+90,GY-48],[x+64,GY-40],[x+24,GY-40],[x,GY-48]],'#e8c79f',2);
+    L2(x+3,GY-55,x+23,GY-49,4,'#b44f42');
+    L2(x+24,GY-48,x+64,GY-48,4,'#b44f42');
+    L2(x+65,GY-49,x+87,GY-55,4,'#b44f42');
+  }else if(o.t==='d'){
+    if(drawOfficeProp(3,x-12,GY-112,24,24))return;
+    C(x,GY-100,12,'#d88e48',2);
+    F(x,GY-102,10,'#f18ba3');
+    C(x,GY-102,3.5,'#735443',1.5);
+    F(x-6,GY-106,1.5,'#ffe4a8');
+    F(x+6,GY-101,1.5,'#fff3e3');
+  }else{
+    const cup=g.createLinearGradient(x-9,0,x+9,0);
+    cup.addColorStop(0,'#8b624d');cup.addColorStop(.55,'#d4aa7b');cup.addColorStop(1,'#a77957');
+    g.fillStyle=cup;
+    g.beginPath();g.moveTo(x-9,GY-27);g.lineTo(x+9,GY-27);
+    g.lineTo(x+6,GY-9);g.quadraticCurveTo(x,GY-6,x-6,GY-9);g.closePath();g.fill();
+    g.fillStyle='#493d36';g.beginPath();g.roundRect(x-10,GY-29,20,5,2);g.fill();
+    g.fillStyle='#edce9c';g.fillRect(x-6,GY-21,12,5);
+  }
+}
+office.src='games/boss/art/office.webp';
+const bossTorso=new Image();
+bossTorso.src='games/boss/art/boss-run.webp';
+const employeeTorsos=G.skins.map((_,index)=>{
+  const image=new Image();
+  image.src='games/boss/art/employee-run'+(index?'-'+index:'')+'.webp';
+  return image;
+});
+
+const bossCycle=new Image();
+bossCycle.src='games/boss/art/boss-cycle.webp';
+const employeeCycles=G.skins.map((_,index)=>{
+  const image=new Image();
+  image.src='games/boss/art/employee-cycle'+(index?'-'+index:'')+'.webp';
+  return image;
+});
+function drawCycle(image,frame,x,scale,heavy){
+  if(!image.naturalWidth)return false;
+  const cell=128,size=88*scale;
+  g.fillStyle='rgba(39,34,30,.24)';
+  g.beginPath();
+  g.ellipse(x,GY+1,17*scale,3*scale,0,0,Math.PI*2);
+  g.fill();
+  g.drawImage(image,frame*cell,0,cell,cell,x-size/2,GY-size*113/cell,size,size);
+  if(!heavy)acc(SK().a,x+9,GY-72,.73);
+  return true;
+}
+
+// Shoe coordinates use the sole as their origin. The tail of the
+// stance phase pivots over the toe before the foot leaves the floor.
+function foot(phase){
+  const stance=.44;
+  if(phase<stance){
+    const step=phase/stance;
+    const push=cl((step-.68)/.32,0,1);
+    const angle=.52*push*push;
+    return [17-35*step,-9*Math.sin(angle),angle];
+  }
+  const swing=(phase-stance)/(1-stance);
+  const travel=swing*swing*(3-2*swing);
+  const lift=Math.sin(Math.PI*swing);
+  return [-18+35*travel,-9*Math.sin(.52)*(1-swing)-14*lift,
+    .52*(1-swing)-.48*lift];
+}
+function leg(hipX,hipY,[x,y,angle=0],color,shoe){
+  const ankleX=x+4*Math.sin(angle);
+  const ankleY=y-4*Math.cos(angle);
+  const dx=ankleX-hipX,dy=ankleY-hipY;
+  const length=Math.hypot(dx,dy);
+  // In side view, the knee bends forward and the heel folds back.
+  const bend=Math.sqrt(Math.max(0,17*17-length*length/4))/length;
+  const kneeX=hipX+dx/2+dy*bend,kneeY=hipY+dy/2-dx*bend;
+  g.beginPath();
+  g.moveTo(hipX,hipY);
+  g.lineTo(kneeX,kneeY);
+  g.lineTo(ankleX,ankleY);
+  g.lineJoin=g.lineCap='round';
+  g.strokeStyle=OL;g.lineWidth=10;g.stroke();
+  g.strokeStyle=color;g.lineWidth=7;g.stroke();
+  g.save();
+  g.translate(x,y);
+  g.rotate(angle);
+  RR(-5,-6,14,6,2,shoe,1.2);
+  g.restore();
+}
+function runner(heavy,x,y,scale,phase,airborne,sliding){
+  const k=SK(),defaultSkin=skin===0;
+  const pants=heavy?'#584841':defaultSkin?'#e0c7a2':k.c[1];
+  const farPants=heavy?'#433a39':defaultSkin?'#ac9479':k.c[1];
+  const swing=Math.sin(phase*Math.PI*2);
+  g.fillStyle=airborne?'rgba(39,34,30,.14)':'rgba(39,34,30,.24)';
+  g.beginPath();
+  g.ellipse(x,GY+1,(heavy?22:16)*scale,3*scale,0,0,Math.PI*2);
+  g.fill();
+  g.save();
+  g.translate(x,y);
+  g.scale(scale,scale);
+  if(sliding){
+    // Rotate around the torso and lower the whole pose within the slide hitbox.
+    g.translate(-26,-17);
+    g.rotate(1.43);
+  }
+  const hip=(sliding?-24:-29)+(airborne||sliding?0:1.3*Math.cos(phase*Math.PI*4));
+  const back=sliding?[-5,-7]:airborne?[-12,-7]:foot((phase+.5)%1);
+  const front=sliding?[9,-5]:airborne?[14,-12]:foot(phase);
+  leg(heavy?-8:-3,hip,back,farPants,heavy?'#383438':'#bfb3a2');
+  leg(heavy?7:2,hip,front,pants,heavy?'#403a3b':'#f2e4d1');
+  const torso=heavy?bossTorso:employeeTorsos[skin];
+  const height=heavy?49:44;
+  const width=torso.naturalWidth*height/(torso.naturalHeight||1);
+  g.translate(0,hip+2);
+  if(!airborne&&!sliding)g.rotate(swing*(heavy?.055:.08));
+  E(0,-1,heavy?19:8,heavy?5:4,pants,1.2);
+  if(width) g.drawImage(torso,-width*(heavy?.46:.42),-height,width,height);
+  if(!heavy)acc(k.a,9,-height,0.73);
+  g.restore();
+}
 function boss(){
-const s=Math.min(1.8,1+fat*.1),cx=PXL-gap-62*s,y=GY,sw=Math.sin(tt*14)*10*s;
-L2(cx-18*s,y-40*s,cx-18*s+sw,y,16*s,'#3d405b');L2(cx+18*s,y-40*s,cx+18*s-sw,y,16*s,'#3d405b');
-E(cx,y-86*s,62*s,54*s,'#3d405b',4);E(cx+10*s,y-80*s,38*s,36*s,'#f1faee',3);
-[-14,0,14].forEach(b=>F(cx+10*s,y-(80+b)*s,3*s,OL));
-P([[cx+2*s,y-120*s],[cx+22*s,y-120*s],[cx+28*s,y-72*s],[cx+12*s,y-62*s],[cx-4*s,y-72*s]],'#e63946',3);
-L2(cx+44*s,y-104*s,cx+74*s,y-134*s,12*s,'#3d405b');C(cx+78*s,y-138*s,9*s,'#f5cba7',3);
-C(cx+16*s,y-150*s,28*s,'#f5cba7',4);
-g.strokeStyle=OL;g.lineWidth=3;g.beginPath();g.arc(cx+16*s,y-160*s,17*s,Math.PI*1.1,Math.PI*1.9);g.stroke();
-C(cx+26*s,y-152*s,6*s,'#fff',2);C(cx+8*s,y-152*s,6*s,'#fff',2);F(cx+28*s,y-152*s,2.5*s,OL);F(cx+10*s,y-152*s,2.5*s,OL);
-L2(cx+20*s,y-162*s,cx+34*s,y-157*s,4);L2(cx+2*s,y-157*s,cx+14*s,y-162*s,4);
-E(cx+22*s,y-135*s,10*s,7*s,'#7a1c1c',2.5);E(cx+52*s,y-158*s,3*s,5*s,'#8ecae6',1.5)}
+  const scale=Math.min(2.05,1.35+fat*.1);
+  const farX=35*scale;
+  const nearX=PXL-34*scale;
+  const x=nearX+(farX-nearX)*cl(gap/220,0,1);
+  const phase=(dist/148+.27)%1;
+  const frame=(Math.floor(runTime/.09)+2)%8;
+  if(!drawCycle(bossCycle,frame,x,scale,true))runner(true,x,GY,scale,phase,false,false);
+}
 function emp(){
-if(stun>0&&Math.floor(tt*20)%2)return;
-const k=SK(),sl=slide&&on,sw=on?Math.sin(tt*20)*8:0;
-g.save();g.translate(PXL,py);if(sl){g.rotate(1.25);g.translate(8,-4)}
-L2(-6,-16,-6+(on?sw:-6),0,9,k.c[1]);L2(6,-16,6+(on?-sw:8),0,9,k.c[1]);
-RR(-12,-46,24,32,7,k.c[0],3);P([[-3,-44],[3,-44],[5,-26],[0,-22],[-5,-26]],'#e63946',2);
-C(0,-58,15,'#f5cba7',3);g.beginPath();g.arc(0,-62,15,Math.PI,0);O(k.c[1],3);
-C(6,-58,3,'#fff',1.5);F(7,-58,1.5,OL);
-acc(k.a,0,-76,1);g.restore()}
+  if(stun>0&&Math.floor(tt*20)%2)return;
+  const frame=Math.floor(runTime/.075)%8;
+  if(on&&!slide&&drawCycle(employeeCycles[skin],frame,PXL,1,false))return;
+  runner(false,PXL,py,1,(dist/114)%1,!on,slide&&on);
+}
 G.draw=()=>{
 const ox=shake>0?(Math.random()-.5)*10:0;g.save();g.translate(ox,0);
 bg();obs.forEach(drawObs);boss();emp();g.restore();
 fx.forEach(f=>{g.globalAlpha=1-f.t/.8;tx(f.s,f.x,f.y-f.t*50,26,'#ffd23f');g.globalAlpha=1});
-tx(G.score()+' m',16,42,32,'#fff','left');tx(T('bs')(best),16,66,14,'#ffd23f','left');
-RR(16,78,W-32,10,5,'rgba(255,255,255,.3)',2);const r=cl(1-gap/220,0,1);if(r>0)RR(16,78,Math.max(10,(W-32)*r),10,5,r>.7?'#e63946':'#6cf0a8',2);
-if(st==='run'&&gap<120)tx(T('sh')[Math.floor(tt/1.4)%3],130,300,22,'#ff7a7a');
-C(340,505,44,'#fff1c1',4);P([[324,494],[356,494],[340,520]],'#e63946',3)};
+if(!mobileStage.matches){
+  tx(G.score()+' m',16,42,26,'#fff0d6','left');
+  const gapFill=cl(1-gap/220,0,1);
+  RR(16,57,W-32,8,4,'#59534b',1);
+  if(gapFill>0)RR(16,57,Math.max(8,(W-32)*gapFill),8,4,'#e9aa63',1);
+}
+if(st==='run'){C(340,505,44,'rgba(32,48,53,.78)',3);L2(314,519,361,519,2,'#e7ceb3');L2(327,509,352,498,8,'#fff1d9');L2(327,509,318,511,4,'#fff1d9');L2(332,506,345,512,4,'#fff1d9');F(358,492,6,'#fff1d9')}};
 let st='ready',rec=false,unl=[],last=0,shake=0,skin=0,best=0,tt=0;
-const SK=()=>G.skins[skin],CHY=440,V=$('view-boss');
+const SK=()=>G.skins[skin],CHY=369,V=$('view-boss');
 const T=k=>G.I[k];
 const ST=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 best=+ST(KEY)||0;skin=+ST(SKEY)||0;if(!G.skins[skin]||best<G.skins[skin].need)skin=0;
@@ -26439,9 +26665,10 @@ bossSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
 function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
+ $('boss-gap').value=cl(1-gap/220,0,1);
  setText('boss-score',G.score()+UNIT);setText('boss-best',best+UNIT);setText('boss-pay',fmt(paid)+' 點');
  setText('boss-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('boss-amount').disabled=bossBusy;$('boss-go').disabled=live||rank.busy();setText('boss-go',live?'逃跑中 · 跳躍／滑行':st==='over'?'再逃一次':'開始逃跑');
+ $('boss-amount').disabled=bossBusy;$('boss-go').disabled=live||rank.busy();setText('boss-go',live?'逃跑中 · 跳躍／滑行':st==='over'?'再玩一次':'開始逃跑');
  document.querySelectorAll('[data-boss-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-boss-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -26470,27 +26697,73 @@ function start(){
  if(amount>S.balance){say(LOW_MSG,'lose');return}
  rank.start(random=>{
  analytics=AN.start('boss',amount);bossStake=amount;bossBusy=true;save();renderAll();
- model=bossRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=bossRules.create(random||Math.random);runTime=0;syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
  },ui);
 }
+function paperText(text,x,y,size,color,weight=600,maxWidth=280){
+  g.font=weight+' '+size+'px "Noto Sans TC","PingFang TC",system-ui,sans-serif';
+  g.textAlign='center';
+  g.fillStyle=color;
+  g.fillText(text,x,y,maxWidth);
+}
+function paper(x,y,w,h,tint){
+  g.fillStyle='rgba(39,27,21,.26)';
+  g.beginPath();g.roundRect(x+2,y+4,w,h,7);g.fill();
+  g.fillStyle=tint;
+  g.beginPath();g.roundRect(x,y,w,h,7);g.fill();
+}
 function overlay(){
-g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx(T('title'),W/2,170,32,'#ffd23f');tx(T('s1'),W/2,218,17,'#fff');tx(T('s2'),W/2,244,17,'#fff');tx('右側開始',W/2,312,24,'#ffd23f')}
-else{tx(T(G.msg),W/2,130,28,'#ff7a7a');tx(String(G.score()),W/2,205,52,'#fff');if(G.extra)tx(G.extra(),W/2,240,17,'#fff');if(rec)tx('新紀錄！',W/2,272,20,'#ffd23f');if(unl.length)tx('已解鎖：'+unl.map(k=>k.n).join('、'),W/2,300,17,'#6cf0a8');tx(paid>0?'BONUS 已入帳 +'+paid+' 點':'這一局沒有 BONUS',W/2,336,20,paid>0?'#ffd23f':'#fff');tx('右側可以再玩一次',W/2,382,18,'#fff')}
-const n=G.skins.length;
-G.skins.forEach((k,i)=>{const x=W/2+(i-(n-1)/2)*72,lk=best<k.need;
-C(x,CHY,24,lk?'#6c757d':k.c[0],3);
-if(!lk){g.fillStyle=k.c[1];g.beginPath();g.arc(x,CHY,21,.3,Math.PI-.3);g.fill();acc(k.a,x,CHY-14,.55)}else tx(String(k.need),x,CHY+7,17,'#fff');
-if(i===skin&&!lk){g.strokeStyle='#ffd23f';g.lineWidth=4;g.beginPath();g.arc(x,CHY,30,0,7);g.stroke()}});
-tx(SK().n,W/2,CHY+56,16,'#ffd23f')}
-function bonusDraw(){bpop.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/1.8);tx('BONUS +'+BONUS+' 點',W/2,170-Math.min(1,p.age*3)*20,34,'#ffd23f');tx(fmt(p.m)+UNIT+' 里程碑',W/2,198-Math.min(1,p.age*3)*20,16,'#fff');g.globalAlpha=1})}
-const pos=e=>{const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height,id:e.pointerId}};
+  g.save();
+  g.fillStyle='rgba(40,32,27,.22)';
+  g.fillRect(viewport.left,viewport.top,viewport.width,viewport.height);
+  g.translate(0,overlayShift());
+  paper(51,149,298,166,'#eee0c5');
+  g.fillStyle='#aa7457';g.fillRect(77,211,246,1);
+  if(st==='ready'){
+    paperText(T('title'),W/2,194,27,'#49332b',750);
+    paperText(T('s1'),W/2,246,16,'#594239');
+    paperText(T('s2'),W/2,275,16,'#594239');
+  }else{
+    paperText(T(G.msg),W/2,194,20,'#594239');
+    paperText(G.score()+' m',W/2,255,37,'#49332b',750);
+    if(rec)paperText('新紀錄！',W/2,284,14,'#8f4837',700);
+    if(paid>0)paperText('BONUS 已入帳 +'+paid+' 點',W/2,304,13,'#8f4837');
+    if(unl.length)paperText('已解鎖：'+unl.map(k=>k.n).join('、'),W/2,334,14,'#fff3df',700);
+  }
+  const n=G.skins.length;
+  G.skins.forEach((k,i)=>{
+    const x=W/2+(i-(n-1)/2)*72,locked=best<k.need;
+    paper(x-26,CHY-27,52,55,i===skin?'#eaca97':locked?'#c0b6a6':'#e7d9bf');
+    g.fillStyle=i===skin?'#a16547':'#8a7d6b';
+    g.fillRect(x-7,CHY-23,14,3);
+    const portrait=employeeTorsos[i];
+    if(!locked&&portrait.naturalWidth){
+      const sw=portrait.naturalWidth*.43,sh=portrait.naturalHeight*.5;
+      g.drawImage(portrait,portrait.naturalWidth*.38,0,sw,sh,x-14,CHY-15,28,31);
+      if(k.a)acc(k.a,x,CHY-9,.42);
+    }else paperText(k.need,x,CHY+9,15,'#534941',650,44);
+  });
+  paper(119,CHY+38,162,30,'#e8d6b9');
+  paperText(SK().n,W/2,CHY+58,14,'#594239',650,150);
+  g.restore();
+}
+function bonusDraw(){
+  bpop.forEach(p=>{
+    g.globalAlpha=Math.max(0,1-p.age/1.8);
+    const y=166-Math.min(1,p.age*3)*16;
+    paper(115,y-25,170,52,'#eee0c5');
+    paperText('BONUS +'+BONUS+' 點',W/2,y-3,16,'#874f38',750);
+    paperText(fmt(p.m)+UNIT+' 里程碑',W/2,y+16,13,'#594239');
+    g.globalAlpha=1;
+  });
+}
+const pos=e=>{const r=c.getBoundingClientRect();return{x:(e.clientX-r.left-viewport.x)/viewport.scale,y:(e.clientY-r.top-viewport.y)/viewport.scale,id:e.pointerId}};
 c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
  const p=pos(e);
  if(st!=='run'){
   const n=G.skins.length;
-  if(Math.abs(p.y-CHY)<32){for(let i=0;i<n;i++)if(Math.abs(p.x-(W/2+(i-(n-1)/2)*72))<32){if(best>=G.skins[i].need)pick(i);return}}
+  if(Math.abs(p.y-CHY-overlayShift())<32){for(let i=0;i<n;i++)if(Math.abs(p.x-(W/2+(i-(n-1)/2)*72))<32){if(best>=G.skins[i].need)pick(i);return}}
   say(st==='over'?'這一局已結束。按「再逃一次」開始新的一局。':'先按「開始逃跑」。');return}
  e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(_){}
  G.down(p)});
@@ -26506,7 +26779,7 @@ $('boss-go').addEventListener('click',start);
 function loop(ts){const dt=Math.min(.05,Math.max(0,(ts-last)/1000)||0);last=ts;
  if(!V.hidden&&!document.hidden){tt+=dt;if(shake>0)shake-=dt;bpop.forEach(p=>p.age+=dt);bpop=bpop.filter(p=>p.age<1.8);
   if(st==='run')rank.update(dt*1000,()=>st==='run',step=>{G.update(step);if(st==='run')awardBonus()})
-  G.draw();bonusDraw();if(st!=='run')overlay();ui()}
+  fitStage();G.draw();bonusDraw();if(st!=='run')overlay();ui()}
  requestAnimationFrame(loop)}
 G.reset();ui();G.draw();overlay();requestAnimationFrame(loop);
   })();

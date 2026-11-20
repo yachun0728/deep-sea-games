@@ -7,24 +7,24 @@
 - 網址：`#boss`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「遲到了！跳過障礙，別被胖老闆追上。」｜立即開玩 · 辦公室逃亡
 - 追蹤名稱（GA4 `game_name`）：胖老闆追人，`game_id` 為 `boss`
-- 檔案：`games/boss/card.html`、`games/boss/cover.webp`、`games/boss/game.js`、`games/boss/icon.svg`、`games/boss/view.html`；`game.js` 共 166 行、12.1 KB
+- 檔案：`games/boss/card.html`、`games/boss/cover.webp`、`games/boss/game.js`、`games/boss/icon.svg`、`games/boss/view.html`；`game.js` 共 385 行、18.2 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「29. 胖老闆追人 Chubby Boss Chase（boss）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-boss`、`boss-canvas`、`boss-score`、`boss-best`、`boss-amount`、`boss-pay`、`boss-next`、`boss-go`、`boss-msg`、`boss-rank-status`、`boss-rank-retry`
+`view-boss`、`boss-canvas`、`boss-score`、`boss-best`、`boss-gap`、`boss-amount`、`boss-pay`、`boss-next`、`boss-go`、`boss-msg`、`boss-rank-status`、`boss-rank-retry`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`KM`（L152）、`bossBusy`（L2）
+- 狀態物件／進行中旗標：`KM`（L371）、`bossBusy`（L2）
 - L5 常數：`MILESTONES`、`BONUS`、`KEY`、`SKEY`、`UNIT`
 - L25 常數：`PXL`
-- L84 常數：`CHY`
+- L256 常數：`CHY`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rnd` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L15、`acc` L16、`syncModel` L29、`control` L30、`bg` L40、`drawObs` L47、`boss` L54、`emp` L66、`SK` L84、`T` L85、`ST` L86、`pick` L88、`release` L89、`say` L90、`setText` L92、`ui` L93、`awardBonus` L100、`die` L110、`start` L120、`overlay` L129、`bonusDraw` L139、`pos` L140、`loop` L159
+`rnd` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L15、`acc` L16、`syncModel` L29、`control` L30、`fitStage` L43、`overlayShift` L55、`bg` L57、`drawOfficeProp` L82、`drawObs` L88、`drawCycle` L148、`foot` L162、`leg` L176、`runner` L197、`boss` L229、`emp` L238、`SK` L256、`T` L257、`ST` L258、`pick` L260、`release` L261、`say` L262、`setText` L264、`ui` L265、`awardBonus` L273、`die` L283、`start` L293、`paperText` L302、`paper` L308、`overlay` L314、`bonusDraw` L349、`pos` L359、`loop` L378
 
 ## 錢包與結算接點
 
@@ -32,19 +32,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L104 `awardBonus`：`S.balance+=BONUS;`
+- L277 `awardBonus`：`S.balance+=BONUS;`
 
 **餘額檢查**
-- L123 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L296 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L105 `awardBonus`：`AN.progress(analytics,{step:s,score:s,milestone:m,bonus_points:BONUS,total_bonus_points:paid});`
-- L116 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
-- L125 `start`：`analytics=AN.start('boss',amount);`
+- L278 `awardBonus`：`AN.progress(analytics,{step:s,score:s,milestone:m,bonus_points:BONUS,total_bonus_points:paid});`
+- L289 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
+- L298 `start`：`analytics=AN.start('boss',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
