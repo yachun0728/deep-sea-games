@@ -1114,7 +1114,7 @@ window.addEventListener('hashchange',pauseNow);
 // ====== 平台：單次扣款、固定 BONUS、單次結算 ======
 var $v=$('view-office-shoot'),analytics=null,earned=0,paidDays={};
 // 訊息與數值欄位標記 data-i18n-ignore，每格依目前語言從「中文|English」輸出；按鈕沿用大廳翻譯層
-let msg={text:'開始後開始上班：擊敗第 1～{d} 天的大魔王，每天 BONUS +{n} 點。|Start your shift for free: beat the boss on days 1–{d} for BONUS +{n} pts each.',kind:'',params:{d:BONUS_DAYS,n:BONUS_PER_DAY}};
+let msg={text:'開始後開始上班：擊敗第 1～{d} 天的大魔王，每天 BONUS +{n} 點。|Start your shift: beat the boss on days 1–{d} for BONUS +{n} pts each.',kind:'',params:{d:BONUS_DAYS,n:BONUS_PER_DAY}};
 function msgText(){const t=msg.text;if(t.indexOf('|')>=0)return LF(t,msg.params||{});return lang==='en'&&window.deepSeaI18n?window.deepSeaI18n.text(t):t;}
 function say(text,kind,params){msg={text:String(text),kind:kind||'',params};renderMsg();}
 function renderMsg(){const m=$('os-msg'),v=msgText(),c='msg'+(msg.kind?' '+msg.kind:'');if(m.textContent!==v)m.textContent=v;if(m.className!==c)m.className=c;}

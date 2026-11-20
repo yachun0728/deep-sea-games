@@ -28,7 +28,7 @@
           if(show){if(record.button.parentNode!==record.wrapper)record.wrapper.appendChild(record.button);shown=true;label=actionText(record.button);}
           else if(record.marker.parentNode&&record.button.parentNode!==record.marker.parentNode)record.marker.parentNode.insertBefore(record.button,record.marker.nextSibling);
         });
-        note.textContent='免費遊玩';
+        note.textContent='';
         note.hidden=!note.textContent;tray.hidden=!shown;
       }
       var observer=new window.MutationObserver(sync);

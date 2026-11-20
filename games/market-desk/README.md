@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#market-desk`　分類：益智策略　狀態：顯示中
-- 大廳卡片：「20 個交易日，從台股怪新聞裡挖出可信的消息。」｜免費 · 不限次數 · 消息查證
+- 大廳卡片：「20 個交易日，從台股怪新聞裡挖出可信的消息。」｜不限次數 · 消息查證
 - 追蹤名稱（GA4 `game_name`）：收盤之前，`game_id` 為 `market-desk`
 - 檔案：`games/market-desk/card.html`、`games/market-desk/cases.js`、`games/market-desk/cover.webp`、`games/market-desk/game.js`、`games/market-desk/icon.svg`、`games/market-desk/style.css`、`games/market-desk/view.html`；`game.js` 共 437 行、19.9 KB
 

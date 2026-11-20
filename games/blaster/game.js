@@ -123,7 +123,7 @@
     BL.y=blClampY(BL.y);BL.targetY=blClampY(BL.targetY);
     if(BL.lives<=0){
       BL.phase='lost';blFinish('loss');
-      blSay('航行結束。可免費重新出擊。','lose');
+      blSay('航行結束。可重新出擊。','lose');
     }else if(delta<0)blSay('編隊受損！剩 '+BL.lives+' 艘潛艇。','lose');
     else blSay('補員完成！編隊現有 '+BL.lives+' 艘潛艇。','win');
     blUI();

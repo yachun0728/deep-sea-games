@@ -15,7 +15,7 @@
       if(AN.interact)AN.interact();
       QP.active=true;QP.level=Math.max(1,Math.min(QP.total,Math.floor(Number(data&&data.level)||1)));QP.ducks=0;QP.analytics=AN.start('quack-pond',ENTRY_FEE);
       save();renderAll();qpUI();
-      qpSay('免費遊玩。第 {lv} 關開始，每行、每列、每個顏色區域各放一隻鴨子。|Free play. Level {lv} started: one duck in every row, column and colour region.','',{lv:QP.level});
+      qpSay('第 {lv} 關開始，每行、每列、每個顏色區域各放一隻鴨子。|Level {lv} started: one duck in every row, column and colour region.','',{lv:QP.level});
       return true;
     },
     progress:function(source,level,ducks){

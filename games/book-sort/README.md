@@ -5,7 +5,7 @@
 ## 概覽
 
 - 網址：`#book-sort`　分類：益智策略　狀態：顯示中
-- 大廳卡片：「把書依顏色疊進紙箱，集滿 5 本同色自動封箱。」｜免費遊玩 · 分類整理
+- 大廳卡片：「把書依顏色疊進紙箱，集滿 5 本同色自動封箱。」｜不限次數 · 分類整理
 - 追蹤名稱（GA4 `game_name`）：貓咪疊書舖，`game_id` 為 `book-sort`
 - 檔案：`games/book-sort/card.html`、`games/book-sort/game.js`、`games/book-sort/icon.svg`、`games/book-sort/ranking.js`、`games/book-sort/style.css`、`games/book-sort/view.html`；`game.js` 共 236 行、14.4 KB
 

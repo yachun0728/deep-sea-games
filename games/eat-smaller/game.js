@@ -16,7 +16,7 @@
       if(AN.interact)AN.interact();
       EATS.active=true;EATS.stake=ENTRY_FEE;EATS.earned=0;EATS.paid={};EATS.cleared=0;EATS.analytics=AN.start('eat-smaller',ENTRY_FEE);
       save();renderAll();esUI();
-      esSay('本局開始。在左側選一關；每關第一次通過 BONUS +2 點，最多 10 點。|Free play, round started. Pick a stage on the left; each stage’s first clear gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
+      esSay('本局開始。在左側選一關；每關第一次通過 BONUS +2 點，最多 10 點。|Round started. Pick a stage on the left; each stage’s first clear gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
       return true;
     },
     clear:function(source,level){
@@ -56,6 +56,6 @@
   });
   $('es-end').addEventListener('click',esFinish);
   window.addEventListener('arcade-languagechange',function(){if(EATS.msg)esSay(EATS.msg.text,EATS.msg.kind,EATS.msg.params);});
-  esSay('按「開始一局」或直接在左側點一關開始。|Each round costs a fixed 10 pts. Press “Pay & start a round” or just pick a stage on the left.');
+  esSay('按「開始一局」或直接在左側點一關開始。|Press “Start a round” or just pick a stage on the left.');
   esUI();
 

@@ -1,0 +1,110 @@
+<section class="view" id="view-academy" hidden data-i18n-ignore lang="zh-Hant">
+  <div class="ac-app" id="ac-app" data-phase="intro">
+    <header class="ac-hud">
+      <button class="ac-exit" id="ac-exit" type="button" data-t-aria="exit">←</button>
+      <div class="ac-hud-main">
+        <span class="ac-stage" id="ac-stage"></span>
+        <span class="ac-credits"><small data-t="credits"></small> <strong id="ac-credits">0</strong></span>
+      </div>
+      <div class="ac-timer" id="ac-timer" role="timer" hidden>
+        <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" class="ac-ring-bg"/><circle cx="24" cy="24" r="20" class="ac-ring" id="ac-ring"/></svg>
+        <span id="ac-time">30</span>
+      </div>
+      <button class="ac-lang" id="ac-lang" type="button"></button>
+    </header>
+    <ol class="ac-ladder" id="ac-ladder"></ol>
+
+    <main class="ac-main">
+      <section class="ac-screen ac-intro" id="ac-intro">
+        <div class="ac-crest" aria-hidden="true">🎓</div>
+        <p class="ac-tag" data-t="tag"></p>
+        <h2 data-t="title"></h2>
+        <p class="ac-lead" data-t="lead"></p>
+        <ul class="ac-rules">
+          <li><b data-t="rule1h"></b><span data-t="rule1"></span></li>
+          <li><b data-t="rule2h"></b><span data-t="rule2"></span></li>
+          <li><b data-t="rule3h"></b><span data-t="rule3"></span></li>
+          <li class="ac-bonus"><b>✦ BONUS</b><span data-t="rule4"></span></li>
+        </ul>
+        <p class="ac-best"><span data-t="best"></span> <strong id="ac-best">0</strong></p>
+        <div class="ac-settings" role="group" data-t-aria="settings">
+          <button type="button" class="ac-chip" id="ac-timer-toggle" aria-pressed="true"></button>
+          <button type="button" class="ac-chip" id="ac-sound" aria-pressed="true"></button>
+        </div>
+      </section>
+
+      <section class="ac-screen" id="ac-select" hidden>
+        <h3 class="ac-pick-title" id="ac-pick-title"></h3>
+        <p class="ac-note" data-t="pickNote"></p>
+        <div class="ac-domains" id="ac-domains"></div>
+      </section>
+
+      <section class="ac-screen ac-ask" id="ac-ask" hidden>
+        <p class="ac-domain-tag" id="ac-domain-tag"></p>
+        <h3 class="ac-question" id="ac-question" tabindex="-1"></h3>
+        <p class="ac-hint" id="ac-hint" hidden></p>
+        <div class="ac-feedback" id="ac-feedback" role="status" aria-live="polite" hidden>
+          <strong id="ac-fb-status"></strong>
+          <p id="ac-fb-exp"></p>
+        </div>
+      </section>
+
+      <section class="ac-screen ac-over" id="ac-over" hidden>
+        <div class="ac-crest" id="ac-over-icon" aria-hidden="true">🏅</div>
+        <p class="ac-rank-badge" id="ac-rank-badge"></p>
+        <h2 id="ac-over-title" tabindex="-1"></h2>
+        <p class="ac-lead" id="ac-over-sub"></p>
+        <div class="ac-final"><small data-t="finalCredits"></small><strong id="ac-final">0</strong></div>
+        <dl class="ac-stats">
+          <div><dt data-t="statStages"></dt><dd id="ac-stat-stages"></dd></div>
+          <div><dt data-t="statAcc"></dt><dd id="ac-stat-acc"></dd></div>
+          <div><dt data-t="statLife"></dt><dd id="ac-stat-life"></dd></div>
+          <div><dt data-t="statBonus"></dt><dd id="ac-stat-bonus"></dd></div>
+        </dl>
+        <p class="ac-rank-status" id="ac-rank-status" role="status"></p>
+      </section>
+    </main>
+
+    <footer class="ac-bottom">
+      <div class="ac-lifelines" id="ac-lifelines" hidden>
+        <button type="button" class="ac-life" id="ac-fifty" data-life="fifty"></button>
+        <button type="button" class="ac-life" id="ac-hint-btn" data-life="hint"></button>
+        <button type="button" class="ac-life" id="ac-swap" data-life="swap"></button>
+      </div>
+      <div class="ac-options" id="ac-options" hidden>
+        <button type="button" class="ac-opt" data-opt="0"><b>A</b><span></span></button>
+        <button type="button" class="ac-opt" data-opt="1"><b>B</b><span></span></button>
+        <button type="button" class="ac-opt" data-opt="2"><b>C</b><span></span></button>
+        <button type="button" class="ac-opt" data-opt="3"><b>D</b><span></span></button>
+      </div>
+      <div class="ac-actions" id="ac-actions">
+        <button type="button" class="ac-primary" id="ac-go"></button>
+        <button type="button" class="ac-secondary" id="ac-next" hidden></button>
+        <button type="button" class="ac-secondary" id="ac-walk-btn" hidden></button>
+        <button type="button" class="ac-secondary" id="ac-rank-btn"></button>
+        <button type="button" class="ac-secondary" id="ac-retry" hidden></button>
+      </div>
+    </footer>
+
+    <div class="ac-sheet" id="ac-walk" hidden role="dialog" aria-modal="true" aria-labelledby="ac-walk-title">
+      <div class="ac-card">
+        <h3 id="ac-walk-title"></h3>
+        <p id="ac-walk-text"></p>
+        <div class="ac-card-actions">
+          <button type="button" class="ac-secondary" id="ac-walk-no"></button>
+          <button type="button" class="ac-primary" id="ac-walk-yes"></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ac-sheet" id="ac-rank" hidden role="dialog" aria-modal="true" aria-labelledby="ac-rank-title">
+      <div class="ac-card">
+        <h3 id="ac-rank-title"></h3>
+        <p class="ac-note" id="ac-rank-note"></p>
+        <ol class="ac-rank-list" id="ac-rank-list"></ol>
+        <p class="ac-note" id="ac-rank-empty" role="status"></p>
+        <div class="ac-card-actions"><button type="button" class="ac-primary" id="ac-rank-close"></button></div>
+      </div>
+    </div>
+  </div>
+</section>

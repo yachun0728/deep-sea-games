@@ -28,7 +28,7 @@
       if(AN.interact)AN.interact();
       TET.active=true;TET.score=0;TET.lines=0;TET.analytics=AN.start('tetris',ENTRY_FEE);
       save();renderAll();ttUI();
-      ttSay('免費遊玩。方塊落到底前可以左右移動、旋轉或暫存。|Free play. Move, rotate or hold the piece before it locks.');
+      ttSay('方塊落到底前可以左右移動、旋轉或暫存。|Move, rotate or hold the piece before it locks.');
       return true;
     },
     finish:function(source,data){

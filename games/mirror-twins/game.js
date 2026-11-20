@@ -16,7 +16,7 @@
       if(AN.interact)AN.interact();
       MIRR.active=true;MIRR.stake=ENTRY_FEE;MIRR.earned=0;MIRR.paid={};MIRR.cleared=0;MIRR.analytics=AN.start('mirror-twins',ENTRY_FEE);
       save();renderAll();mtUI();
-      mtSay('本局開始。在左側選一關；每關第一次通過 BONUS +2 點，最多 10 點。|Free play, round started. Pick a stage on the left; each stage’s first clear gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
+      mtSay('本局開始。在左側選一關；每關第一次通過 BONUS +2 點，最多 10 點。|Round started. Pick a stage on the left; each stage’s first clear gives a +2 pt BONUS, up to 10 pts.','',{fee:ENTRY_FEE});
       return true;
     },
     clear:function(source,level){
@@ -56,6 +56,6 @@
   });
   $('mt-end').addEventListener('click',mtFinish);
   window.addEventListener('arcade-languagechange',function(){if(MIRR.msg)mtSay(MIRR.msg.text,MIRR.msg.kind,MIRR.msg.params);});
-  mtSay('按「開始一局」或直接在左側點一關開始。|Each round costs a fixed 10 pts. Press “Pay & start a round” or just pick a stage on the left.');
+  mtSay('按「開始一局」或直接在左側點一關開始。|Press “Start a round” or just pick a stage on the left.');
   mtUI();
 
