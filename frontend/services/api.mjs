@@ -46,6 +46,7 @@ export function createApiClient(baseUrl) {
     moveBoard: (token, move, signal) => request(API.boardMove, authorized('POST', token, signal, move)),
     startFrog: (token, signal) => request(API.frogStart, authorized('POST', token, signal)),
     finishFrog: (token, proof, signal) => request(API.frogFinish, authorized('POST', token, signal, proof)),
+    createShare: (token, share, signal) => request(API.shares, authorized('POST', token, signal, share)),
   };
 }
 

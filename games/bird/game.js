@@ -13,7 +13,7 @@ const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,
 function tx(s,x,y,sz,col){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-30);g.fillStyle=col;g.fillText(s,x,y,W-30)}
 const CW=[26,34,44];
 let st='ready',bird=birdRules.create(),hid=-1,fxs=[],tt=0,shake=0,rec=false,last=0;
-const birdRank=timedLeaderboard('bird','pb',birdRules.inputCount,ui);
+const birdRank=timedLeaderboard('bird','pb',birdRules.inputCount,ui,null,{canvas:'pb-canvas'});
 const score=()=>birdRules.score(bird);
 function say(text,kind){$('pb-msg').textContent=text;$('pb-msg').className='msg'+(kind?' '+kind:'')}
 birdSay=say;
@@ -25,6 +25,7 @@ function ui(){
 }
 function die(){
  if(st!=='run')return;
+ draw(); // final running frame, so the share card snapshot matches the result
  st='over';shake=reduceMotion?0:.35;const s=score();rec=s>best;
  if(rec){best=s;try{localStorage.setItem('deep-sea-bird-best',best)}catch(e){}}
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:s,bosses:bird.eggs});birdBusy=false;save();renderAll();

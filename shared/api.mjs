@@ -10,6 +10,7 @@ export const API = Object.freeze({
   boardMove: '/api/v1/boards/rounds/move',
   leaderboardFeed: '/api/v1/leaderboard/feed',
   leaderboard: '/api/v1/leaderboard',
+  shares: '/api/v1/shares',
 });
 
 export const GAME_ID = /^[a-z][a-z0-9-]{0,63}$/;

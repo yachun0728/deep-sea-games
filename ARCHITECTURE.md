@@ -294,6 +294,8 @@ Frontier draw.js uses two PNG atlases with vector fallback. Optional world.suppl
 
 貓咪疊書舖以 `shared/book-sort-rules.cjs` 共用編號盤面與搬書判定。全視窗遊戲右上選單接入既有訪客回合 SDK，由 Worker 驗證後更新訪客排行榜。
 
+分享成績由 `js/result-share.js`（按鈕、截圖、回合狀態）、`frontend/services/share.mjs` 與 `share-card.mjs`（成績卡與對話框）、`shared/share-games.mjs`（各遊戲設定）及 API Worker 的 `backend/src/services/shares.mjs` 組成；主站 `site/worker.mjs` 只把 `/s/*` 轉給 API Worker。除挖金礦外所有可見遊戲皆已接入。詳見 [docs/BACKEND.md](docs/BACKEND.md#分享成績連結)。
+
 ### 深海前哨
 
 `games/outpost/` 用 DOM 顯示三路棋盤與觸控部署。前端與 Worker 共用 `shared/outpost-rules.cjs`，每 10 ms 推進一次，僅記錄有效部署與閘門換道。背景、失焦及離開 hash 時暫停，返回手動繼續。最佳分數使用獨立鍵 `deep-sea-outpost-best-v1`。

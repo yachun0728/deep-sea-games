@@ -30,7 +30,10 @@
     tick(performance.now());inputAt=performance.now();
     var id=tabToken+'-'+(++seq),p=params||{};
     rounds[id]={game:game,stake:stake,engaged:true,activeMs:0,started:performance.now(),stage:p.stage||1,step:p.step||0};
-    emit('game_start',game,Object.assign({round_id:id,entry_points:stake,stage:1},p));return id;
+    emit('game_start',game,Object.assign({round_id:id,entry_points:stake,stage:1},p));
+    // Round hooks for result sharing; they never change what GA4 receives.
+    if(w.deepSeaRoundStart)try{w.deepSeaRoundStart(game);}catch(_){}
+    return id;
   }
   function progress(id,params,pause){
     var r=rounds[id];if(!r)return;tick(performance.now());var p=params||{};
@@ -42,6 +45,7 @@
   function end(id,payout,result,params){
     var r=rounds[id];if(!r)return;tick(performance.now());flush();delete rounds[id];if(w.deepSeaProgress)w.deepSeaProgress.complete(r.game,result,r.activeMs);
     emit('game_end',r.game,Object.assign({round_id:id,stage:r.stage,step:r.step,result:result,stake_points:r.stake,payout_points:payout,net_points:payout-r.stake,round_active_seconds:Math.round(r.activeMs)/1000,round_elapsed_seconds:Math.round(performance.now()-r.started)/1000},params||{}));
+    if(w.deepSeaRoundEnd)try{w.deepSeaRoundEnd(r.game,result,params||{});}catch(_){}
   }
   function view(game){if(game==='wardrobe'){tick(performance.now());flush();current='';return;}if(game==='lobby'){tick(performance.now());flush();current='';emit('lobby_view','');return;}if(!names[game]||game===current)return;tick(performance.now());flush();current=game;emit('game_view',game);}
   function interaction(){tick(performance.now());inputAt=performance.now();focused=d.hasFocus?d.hasFocus():true;}

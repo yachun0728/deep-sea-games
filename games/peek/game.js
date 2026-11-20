@@ -663,22 +663,8 @@ function playCue(d){
  seq.forEach(q=>later(()=>tone(q[1],q[2],q[3],q[4],q[5],q[6]),q[0]*1000));
  say('{{t:peek.msg.177}}'+capText(d)+(d.type==='eye'?'　然後紅光射出。':d.type==='twins'?'　之後要躲進另一側。':d.type==='gale'?'　要躲進風來的那一側。':d.type==='reach'?'　要躲進另一側。':d.type==='bell'?'　第三下之後要低頭，直到鐘聲散去。':d.type==='bog'?'　要連點兩下。':d.type==='crawl'?'　要在裂縫到腳邊時點一下。':d.type==='magma'?'　要躲進沒冒煙的一側。':d.type==='white'?'　要躲進閃光的一側。':d.type==='flick'?'　要點亮火把，或躲進另一側。':d.type==='howl'?'　要照牠的節奏點。':'　要點對牠怕的道具。'))}
 const causeText=k=>{const I=typeof window!=='undefined'&&window.deepSeaI18n;let t=CAUSES[k]||'';if(I&&I.text)t=I.text(t);return t.replace(/^(死因|Cause) #\d+:? ?/,'')};   // translate the whole line first, then drop the numbering
-const shareText=()=>'{{t:peek.msg.178}}'+(L?'第 '+lvl+' 關':'{{t:peek.msg.088}}')+(seedCode?'・種子 '+seedCode:'')+'：躲過 '+survived+' 次襲擊，'+(st==='won'?'{{t:peek.msg.179}}':causeText(why)+'。');
-function share(){
- const t=shareText();
- try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t);say('{{t:peek.msg.180}}'+t,'win')}else say(t,'win')}catch(e){say(t,'win')}
- try{shareCard(t)}catch(e){}}
-function shareCard(t){
- const cv=document.createElement('canvas');cv.width=1200;cv.height=630;const x=cv.getContext('2d'),bg=art('bg-'+WORLDS[L?L.wi:0]),gh=art(KILLER[why]||'ghost-wraith');
- x.fillStyle='#0b0f12';x.fillRect(0,0,1200,630);
- if(bg){const h=630,w=bg.naturalWidth*h/bg.naturalHeight;x.drawImage(bg,600-w/2,0,w,h)}
- x.fillStyle='rgba(8,10,14,.62)';x.fillRect(0,0,1200,630);
- if(gh&&st!=='won'){const h=420,w=gh.naturalWidth*h/gh.naturalHeight;x.globalAlpha=.85;x.drawImage(gh,880-w/2,150,w,h);x.globalAlpha=1}
- x.textAlign='left';x.fillStyle='#e8c675';x.font='800 64px '+FB;x.fillText('{{t:peek.msg.181}}',60,110);
- x.fillStyle='#f1d9a6';x.font='700 34px '+FB;
- wrapLines(t.replace(/^《[^》]*》/,''),34,720).forEach((ln,i)=>x.fillText(ln,60,200+i*48));
- x.fillStyle='rgba(241,217,166,.7)';x.font='600 24px '+FB;x.fillText('{{t:peek.msg.182}}',60,590);
- cv.toBlob(b=>{if(!b)return;const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='dont-peek-'+(seedCode||'free')+'.png';a.click()})}
+// Shared result card dialog (same as every other game); the round score comes from AN.end.
+function share(){resultShare.open('peek')}
 const KILLER={breath:'ghost-dread',tail:'ghost-dread',colossus:'ghost-colossus',bog:'ghost-bog',crawl:'ghost-crawler',magma:'ghost-magma',flick:'guide-flick',howl:'ghost-howler',white:'ghost-whiteout',eye:'ghost-leafling',twins:'ghost-thorn',walkerLate:'ghost-wraith',walkerMove:'ghost-wraith',gale:'ghost-gale',hollowLate:'ghost-hollow',hollowMove:'ghost-hollow',reach:'ghost-reacher',bell:'ghost-bellkeeper',glass:'ghost-glassface',ash:'ghost-ash'};
 const RULE_FULL={tail:'{{t:peek.msg.183}}',colossus:'{{t:peek.msg.184}}',eye:'{{t:peek.msg.185}}',twins:'{{t:peek.msg.186}}',walkerLate:'{{t:peek.msg.187}}',walkerMove:'{{t:peek.msg.188}}',gale:'{{t:peek.msg.189}}',hollowLate:'{{t:peek.msg.190}}',hollowMove:'{{t:peek.msg.191}}',reach:'{{t:peek.msg.192}}',bell:'{{t:peek.msg.193}}',breath:'{{t:peek.msg.194}}',bog:'{{t:peek.msg.195}}',crawl:'{{t:peek.msg.196}}',magma:'{{t:peek.msg.197}}',flick:'{{t:peek.msg.198}}',howl:'{{t:peek.msg.199}}',white:'{{t:peek.msg.200}}',glass:'{{t:peek.msg.201}}',ash:'{{t:peek.msg.202}}'};
 function drawScare(){

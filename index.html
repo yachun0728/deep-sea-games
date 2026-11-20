@@ -33,7 +33,10 @@
     tick(performance.now());inputAt=performance.now();
     var id=tabToken+'-'+(++seq),p=params||{};
     rounds[id]={game:game,stake:stake,engaged:true,activeMs:0,started:performance.now(),stage:p.stage||1,step:p.step||0};
-    emit('game_start',game,Object.assign({round_id:id,entry_points:stake,stage:1},p));return id;
+    emit('game_start',game,Object.assign({round_id:id,entry_points:stake,stage:1},p));
+    // Round hooks for result sharing; they never change what GA4 receives.
+    if(w.deepSeaRoundStart)try{w.deepSeaRoundStart(game);}catch(_){}
+    return id;
   }
   function progress(id,params,pause){
     var r=rounds[id];if(!r)return;tick(performance.now());var p=params||{};
@@ -45,6 +48,7 @@
   function end(id,payout,result,params){
     var r=rounds[id];if(!r)return;tick(performance.now());flush();delete rounds[id];if(w.deepSeaProgress)w.deepSeaProgress.complete(r.game,result,r.activeMs);
     emit('game_end',r.game,Object.assign({round_id:id,stage:r.stage,step:r.step,result:result,stake_points:r.stake,payout_points:payout,net_points:payout-r.stake,round_active_seconds:Math.round(r.activeMs)/1000,round_elapsed_seconds:Math.round(performance.now()-r.started)/1000},params||{}));
+    if(w.deepSeaRoundEnd)try{w.deepSeaRoundEnd(r.game,result,params||{});}catch(_){}
   }
   function view(game){if(game==='wardrobe'){tick(performance.now());flush();current='';return;}if(game==='lobby'){tick(performance.now());flush();current='';emit('lobby_view','');return;}if(!names[game]||game===current)return;tick(performance.now());flush();current=game;emit('game_view',game);}
   function interaction(){tick(performance.now());inputAt=performance.now();focused=d.hasFocus?d.hasFocus():true;}
@@ -1112,6 +1116,42 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 .game-exit-link:hover,.game-exit-link:focus-visible{color:#eafffa;text-decoration:underline}
 .game-exit-link span[aria-hidden]{font-size:1.25rem;line-height:1}
 #view-frontier .ft-top>.game-exit-link{grid-column:-2;grid-row:1}
+
+/* Result sharing: in-game share button and the result card dialog. */
+.share-result{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;margin-top:10px;padding:10px 16px;box-sizing:border-box;border:1px solid var(--tc-accent,#886cff);border-radius:8px;background:rgba(136,108,255,.12);color:#fff;font:600 16px/1.2 var(--tc-font,var(--font-body));cursor:pointer;transition:background .15s ease,transform .08s ease}
+.share-result[hidden]{display:none}
+.share-result i{color:var(--tc-accent,#886cff);font-size:17px}
+.share-result:hover:not(:disabled){background:rgba(136,108,255,.24)}
+.share-result:active:not(:disabled){transform:translateY(1px)}
+.share-result:disabled{opacity:.55;cursor:default}
+.share-result:focus-visible{outline:2px solid var(--tc-accent,#886cff);outline-offset:2px}
+
+.share-dialog{width:min(440px,calc(100vw - 32px));max-height:calc(100dvh - 32px);box-sizing:border-box;padding:20px;border:1px solid var(--tc-line,#292d35);border-radius:12px;background:var(--tc-side,#121418);color:var(--tc-text,#fff);font:14px/1.5 var(--tc-font,var(--font-body));overflow:auto}
+.share-dialog::backdrop{background:rgba(0,0,0,.72)}
+.share-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.share-dialog-head h2{margin:0;font:700 18px/1.3 var(--tc-font,var(--font-body))}
+.share-dialog-close{display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:6px;background:var(--tc-surface,#191c21);color:#fff;cursor:pointer}
+.share-dialog-close:hover{background:var(--tc-active,#313640)}
+.share-dialog-preview{display:grid;place-items:center;min-height:200px;border-radius:10px;background:var(--tc-bg,#0b0c0f);overflow:hidden}
+.share-dialog-preview img{display:block;width:100%;height:auto;max-height:min(52dvh,520px);object-fit:contain}
+.share-dialog-preview img[hidden],.share-dialog-making[hidden]{display:none}
+.share-dialog-making{margin:0;color:var(--tc-muted,#acb5c2)}
+.share-dialog-link{display:grid;grid-template-columns:1fr auto;gap:6px 8px;margin-top:14px}
+.share-dialog-link>span{grid-column:1/-1;color:var(--tc-muted,#acb5c2);font-size:12px}
+.share-dialog-link input{min-width:0;height:40px;box-sizing:border-box;padding:0 12px;border:1px solid var(--tc-line,#292d35);border-radius:6px;background:var(--tc-bg,#0b0c0f);color:#fff;font:500 13px var(--tc-font,var(--font-body))}
+.share-dialog button[data-action]:not(.share-dialog-close){display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 14px;border-radius:6px;font:600 14px/1.2 var(--tc-font,var(--font-body));cursor:pointer;white-space:nowrap}
+.share-dialog-link button{border:0;background:var(--tc-surface,#191c21);color:#fff}
+.share-dialog-link button:hover{background:var(--tc-active,#313640)}
+.share-dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.share-dialog-actions button{min-height:48px!important}
+.share-dialog-actions button[hidden]{display:none!important}
+.share-dialog-actions:has(button[hidden]){grid-template-columns:1fr}
+.share-dialog-primary{border:0;background:var(--tc-primary,#7717ff);color:#fff}
+.share-dialog-primary:hover:not(:disabled){filter:brightness(1.1)}
+.share-dialog-secondary{border:1px solid var(--tc-accent,#886cff);background:transparent;color:#fff}
+.share-dialog-secondary:hover:not(:disabled){background:rgba(136,108,255,.16)}
+.share-dialog button:disabled{opacity:.5;cursor:default}
+.share-dialog-note{min-height:21px;margin:10px 0 0;color:var(--tc-muted,#acb5c2);text-align:center}
 
 #view-blaster .bl-stage{display:grid;place-items:center;min-width:0}
 #view-blaster .bl-board{position:relative;width:min(100%,400px);aspect-ratio:2/3;overflow:hidden;border-radius:var(--radius);background:#061c2c}
@@ -9994,11 +10034,6 @@ html.frontier-immersive{overflow:hidden}
   "慢慢來。選好關卡再按「開始」。": "Take your time. Pick a level and press \"Start, \".",
   "已開啟輔助標記。": "Assist markers are on.",
   "再聽一次：": "Listen again:",
-  "《別看 Don't Peek》": "Don't Peek:",
-  "衝出去了！": "You made it out!",
-  "已複製分享文字：": "Share text copied:",
-  "別看 Don't Peek": "Don't Peek",
-  "yachun0728.github.io 的深海遊戲廳": "Deep Sea Arcade at yachun0728.github.io",
   "Dread從背後追來：腳步越來越急時連點螢幕（電腦按 F 或 Enter），讓距離條不要見底；最後它從一側撲來，躲進另一側。": "Dread chases you from behind. As the footsteps speed up, tap the screen (F or Enter on a keyboard) so the distance bar never runs out. At the end it lunges from one side: hide on the other.",
   "巨像的腳步左右交替。只看最後一步踩在哪一邊，躲進相反的另一側，撐住。共有兩輪，第二輪多一步。": "The Colossus steps left and right in turn. Only the last step counts: hide on the opposite side and hold. There are two rounds, and the second has one more step.",
   "落葉堆在哪一邊，那邊就有東西。紅光亮起時，躲進另一側並撐滿 3 秒。": "Wherever the leaves pile up, something is there. When the red light comes on, hide on the other side and hold for the full 3 seconds.",
@@ -10462,6 +10497,8 @@ html.frontier-immersive{overflow:hidden}
   "珊瑚仔": "Coral",
   "七號艇": "Sub Seven",
   "浮游生物": "Plankton",
+  "分享遊戲": "Share game",
+  "成績驗證中…": "Verifying score…",
   "探險家軟帽": "Explorer Hat",
   "水手帽": "Sailor Cap",
   "潮汐外套": "Tide Jacket",
@@ -12857,9 +12894,153 @@ const timedReplay = (() => {
   return {STEP_MS, MAX_TICKS, MAX_INPUTS, seeded, accepts, verify};
 })();
 if (typeof module !== 'undefined') module.exports = timedReplay;
-  function timedLeaderboard(gameId, prefix, inputCount, refresh, onSaved) {
+  /* ---------- Result sharing: one share button per game view, filled in when a round ends ----------
+     Games on timedLeaderboard report their score (and later the verified round) through
+     resultShare.offer/verify. Every other game is picked up from AN.end via deepSeaRoundEnd,
+     using the score parameter named in shared/share-games.mjs. */
+  var resultShare = (function(){
+    var IGNORED = ['abandoned', 'restart', 'cancelled'];
+    var rankGames = {}, states = {}, sdk = null;
+    function loadSdk(){
+      if (!sdk) sdk = import('./frontend/services/share.mjs').catch(function(){ sdk = null; return null; });
+      return sdk;
+    }
+    // Copy the largest canvas in the view (or a same-origin game iframe) before overlays are drawn.
+    function capture(gameId){
+      var view = $('view-' + gameId);
+      if (!view) return null;
+      var list = [].slice.call(view.querySelectorAll('canvas'));
+      [].forEach.call(view.querySelectorAll('iframe'), function(frame){
+        try { list = list.concat([].slice.call(frame.contentDocument.querySelectorAll('canvas'))); } catch (e) {}
+      });
+      var best = null;
+      list.forEach(function(c){ if (c.width >= 120 && c.height >= 120 && (!best || c.width * c.height > best.width * best.height)) best = c; });
+      if (!best) return null;
+      var copy = document.createElement('canvas');
+      copy.width = best.width; copy.height = best.height;
+      try { copy.getContext('2d').drawImage(best, 0, 0); } catch (e) { return null; }
+      return blank(copy) ? null : copy;
+    }
+    // A near-uniform frame (empty layer, not yet drawn) or an unexportable canvas makes a poor
+    // card picture; the card then shows the game's cover or icon instead.
+    function blank(canvas){
+      try {
+        var probe = document.createElement('canvas'); probe.width = probe.height = 24;
+        var g = probe.getContext('2d'); g.drawImage(canvas, 0, 0, 24, 24);
+        var d = g.getImageData(0, 0, 24, 24).data, n = d.length / 4, sum = 0, sq = 0;
+        for (var i = 0; i < d.length; i += 4) { var y = 0.3 * d[i] + 0.59 * d[i + 1] + 0.11 * d[i + 2]; sum += y; sq += y * y; }
+        var mean = sum / n;
+        return Math.sqrt(Math.max(0, sq / n - mean * mean)) < 10;
+      } catch (e) { return true; }
+    }
+    // Same spot as the leaderboard status: after the retry button, else after the game message.
+    function button(gameId){
+      var state = states[gameId];
+      if (state.button) return state.button;
+      var view = $('view-' + gameId);
+      if (!view) return null;
+      var own = $(gameId + '-share');
+      if (own && !own.classList.contains('share-result')) return null; // game keeps its own share button
+      var b = view.querySelector('.share-result');
+      if (!b) {
+        b = document.createElement('button');
+        b.type = 'button'; b.className = 'share-result'; b.hidden = true;
+        b.innerHTML = '<i class="fa-solid fa-share-nodes" aria-hidden="true"></i><span>分享成績</span>';
+        var anchor = view.querySelector('[id$="-rank-retry"]') || view.querySelector('.side .msg, [id$="-msg"], .msg');
+        if (anchor) anchor.insertAdjacentElement('afterend', b);
+        else {
+          var panel = view.querySelector('.side .panel'), rules = view.querySelector('details.rules');
+          if (panel) panel.appendChild(b); else if (rules) rules.insertAdjacentElement('beforebegin', b); else view.appendChild(b);
+        }
+      }
+      b.addEventListener('click', function(){ open(gameId); });
+      state.button = b;
+      return b;
+    }
+    function stateOf(gameId){ return states[gameId] || (states[gameId] = {offer: null, link: null, busy: false, button: null}); }
+    function render(gameId){
+      var state = stateOf(gameId), b = button(gameId);
+      if (!b) return;
+      var offer = state.offer;
+      b.hidden = !offer;
+      b.disabled = !!(offer && offer.pending) || state.busy;
+      b.querySelector('span').textContent = offer && offer.pending ? '成績驗證中…' : offer && offer.score != null ? '分享成績' : '分享遊戲';
+    }
+    function clear(gameId){
+      var state = stateOf(gameId);
+      state.offer = null; state.link = null; state.seq = (state.seq || 0) + 1;
+      if (state.button || $('view-' + gameId)) render(gameId);
+    }
+    // score: integer or null; pending: a leaderboard verification is in flight.
+    function offer(gameId, score, pending, snapshot){
+      var state = stateOf(gameId);
+      state.offeredAt = Date.now();
+      state.offer = {score: Number.isSafeInteger(score) && score >= 0 ? score : null, pending: !!pending, snapshot: snapshot || capture(gameId)};
+      state.link = null;
+      return loadSdk().then(function(m){ if (m && m.canShareGame(gameId)) render(gameId); });
+    }
+    // round: {roundId, token} when the Worker accepted the score; null when it did not.
+    function verify(gameId, score, round){
+      var state = stateOf(gameId);
+      if (!state.offer) return;
+      state.offer.pending = false;
+      state.offer.score = Number.isSafeInteger(score) && score >= 0 ? score : state.offer.score;
+      state.offer.round = round || null;
+      state.link = null;
+      render(gameId);
+    }
+    async function open(gameId){
+      var state = stateOf(gameId), target = state.offer;
+      if (!target || target.pending || state.busy) return;
+      state.busy = true; render(gameId);
+      try {
+        var m = await loadSdk();
+        if (!m || !m.canShareGame(gameId)) return;
+        var link = state.link;
+        if (!link) {
+          link = target.round
+            ? await m.createShareLink({gameId: gameId, roundId: target.round.roundId, token: target.round.token}, AbortSignal.timeout(8000)).catch(function(){ return m.inviteLink(gameId, target.score); })
+            : m.inviteLink(gameId, target.score);
+          if (state.offer === target) state.link = link;
+        }
+        await m.presentResult(gameId, link, {snapshot: target.snapshot});
+      } finally {
+        state.busy = false; render(gameId);
+      }
+    }
+    window.deepSeaRoundStart = function(gameId){ if (!rankGames[gameId]) clear(gameId); };
+    window.deepSeaRoundEnd = function(gameId, result, params){
+      if (IGNORED.indexOf(result) >= 0) return;
+      var state = stateOf(gameId), seq = state.seq = (state.seq || 0) + 1, snapshot = capture(gameId);
+      loadSdk().then(function(m){
+        if (!m || !m.canShareGame(gameId) || state.seq !== seq) return;
+        // Leaderboard games report their own score next to AN.end (before or after it); use
+        // the AN.end parameters only for rounds the leaderboard skipped (e.g. Outpost stages 2-30).
+        if (rankGames[gameId] && Date.now() - (state.offeredAt || 0) < 2000) return;
+        var value = Math.round(Number(params[m.SHARE_GAMES[gameId].param]));
+        offer(gameId, Number.isFinite(value) ? value : null, false, snapshot);
+      });
+    };
+    return {
+      ranked: function(gameId){ rankGames[gameId] = true; },
+      clear: clear, offer: offer, verify: verify, open: open, capture: capture,
+    };
+  })();
+  function timedLeaderboard(gameId, prefix, inputCount, refresh, onSaved, options = {}) {
     let round, pending, starting = false, sending = false;
     let tick = 0, carry = 0, actions = [];
+    // Result sharing: the score is offered when the round ends and upgraded once verified.
+    // Optional so this file still runs alone (unit tests load it without the share module).
+    const share = typeof resultShare === 'undefined' ? null : resultShare;
+    share?.ranked(gameId);
+    function capture() {
+      const source = options.canvas && $(options.canvas);
+      if (!source) return share?.capture(gameId) ?? null;
+      const copy = document.createElement('canvas');
+      copy.width = source.width; copy.height = source.height;
+      try { copy.getContext('2d').drawImage(source, 0, 0); } catch { return null; }
+      return copy;
+    }
     function status(message, retry = false) {
       const label = $(prefix + '-rank-status');
       label.hidden = !message;
@@ -12874,6 +13055,7 @@ if (typeof module !== 'undefined') module.exports = timedReplay;
     async function start(callback, cancel, settings) {
       if (starting || sending) return;
       pending = null;
+      share?.clear(gameId);
       if (typeof location === 'undefined' || location.protocol === 'file:') {
         begin(null, callback);
         return;
@@ -12912,27 +13094,33 @@ if (typeof module !== 'undefined') module.exports = timedReplay;
     }
     async function send() {
       if (!pending || sending) return;
+      const score = pending.score;
       sending = true;
       status('正在驗證排行榜成績…');
       refresh();
       try {
         const api = await import('./frontend/services/api.mjs');
-        const next = await api.moveBoardRound(round.token, pending.move, AbortSignal.timeout(10000));
+        const next = await api.moveBoardRound(pending.token, pending.move, AbortSignal.timeout(10000));
         const saved = next.state.score === pending.score;
         status(saved ? '成績已送到排行榜。' : '排行榜成績未能送出。');
+        share?.verify(gameId, score, saved ? {roundId: pending.move.id, token: pending.token} : null);
         if (saved) onSaved?.();
         pending = null;
       } catch (error) {
         if (error.retryable === false) pending = null;
         status('排行榜成績未能送出。', !!pending);
+        // Share as an unverified result for now; a successful retry upgrades the link.
+        share?.verify(gameId, score, null);
       } finally {
         sending = false;
         refresh();
       }
     }
     function finish(score, endedOnInput = false) {
-      if (!round) return;
-      pending = {score, move: {id: round.id, gameId, revision: round.revision, action: [tick + Number(endedOnInput), ...actions]}};
+      const snapshot = share && capture();
+      if (!round) { share?.offer(gameId, score, false, snapshot); return; }
+      share?.offer(gameId, score, true, snapshot);
+      pending = {score, token: round.token, move: {id: round.id, gameId, revision: round.revision, action: [tick + Number(endedOnInput), ...actions]}};
       send();
     }
     $(prefix + '-rank-retry').addEventListener('click', send);
@@ -14120,7 +14308,7 @@ const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,
 function tx(s,x,y,sz,col){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-30);g.fillStyle=col;g.fillText(s,x,y,W-30)}
 const CW=[26,34,44];
 let st='ready',bird=birdRules.create(),hid=-1,fxs=[],tt=0,shake=0,rec=false,last=0;
-const birdRank=timedLeaderboard('bird','pb',birdRules.inputCount,ui);
+const birdRank=timedLeaderboard('bird','pb',birdRules.inputCount,ui,null,{canvas:'pb-canvas'});
 const score=()=>birdRules.score(bird);
 function say(text,kind){$('pb-msg').textContent=text;$('pb-msg').className='msg'+(kind?' '+kind:'')}
 birdSay=say;
@@ -14132,6 +14320,7 @@ function ui(){
 }
 function die(){
  if(st!=='run')return;
+ draw(); // final running frame, so the share card snapshot matches the result
  st='over';shake=reduceMotion?0:.35;const s=score();rec=s>best;
  if(rec){best=s;try{localStorage.setItem('deep-sea-bird-best',best)}catch(e){}}
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:s,bosses:bird.eggs});birdBusy=false;save();renderAll();
@@ -18621,22 +18810,8 @@ function playCue(d){
  seq.forEach(q=>later(()=>tone(q[1],q[2],q[3],q[4],q[5],q[6]),q[0]*1000));
  say('再聽一次：'+capText(d)+(d.type==='eye'?'　然後紅光射出。':d.type==='twins'?'　之後要躲進另一側。':d.type==='gale'?'　要躲進風來的那一側。':d.type==='reach'?'　要躲進另一側。':d.type==='bell'?'　第三下之後要低頭，直到鐘聲散去。':d.type==='bog'?'　要連點兩下。':d.type==='crawl'?'　要在裂縫到腳邊時點一下。':d.type==='magma'?'　要躲進沒冒煙的一側。':d.type==='white'?'　要躲進閃光的一側。':d.type==='flick'?'　要點亮火把，或躲進另一側。':d.type==='howl'?'　要照牠的節奏點。':'　要點對牠怕的道具。'))}
 const causeText=k=>{const I=typeof window!=='undefined'&&window.deepSeaI18n;let t=CAUSES[k]||'';if(I&&I.text)t=I.text(t);return t.replace(/^(死因|Cause) #\d+:? ?/,'')};   // translate the whole line first, then drop the numbering
-const shareText=()=>'《別看 Don\'t Peek》'+(L?'第 '+lvl+' 關':'自由跑')+(seedCode?'・種子 '+seedCode:'')+'：躲過 '+survived+' 次襲擊，'+(st==='won'?'衝出去了！':causeText(why)+'。');
-function share(){
- const t=shareText();
- try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t);say('已複製分享文字：'+t,'win')}else say(t,'win')}catch(e){say(t,'win')}
- try{shareCard(t)}catch(e){}}
-function shareCard(t){
- const cv=document.createElement('canvas');cv.width=1200;cv.height=630;const x=cv.getContext('2d'),bg=art('bg-'+WORLDS[L?L.wi:0]),gh=art(KILLER[why]||'ghost-wraith');
- x.fillStyle='#0b0f12';x.fillRect(0,0,1200,630);
- if(bg){const h=630,w=bg.naturalWidth*h/bg.naturalHeight;x.drawImage(bg,600-w/2,0,w,h)}
- x.fillStyle='rgba(8,10,14,.62)';x.fillRect(0,0,1200,630);
- if(gh&&st!=='won'){const h=420,w=gh.naturalWidth*h/gh.naturalHeight;x.globalAlpha=.85;x.drawImage(gh,880-w/2,150,w,h);x.globalAlpha=1}
- x.textAlign='left';x.fillStyle='#e8c675';x.font='800 64px '+FB;x.fillText('別看 Don\'t Peek',60,110);
- x.fillStyle='#f1d9a6';x.font='700 34px '+FB;
- wrapLines(t.replace(/^《[^》]*》/,''),34,720).forEach((ln,i)=>x.fillText(ln,60,200+i*48));
- x.fillStyle='rgba(241,217,166,.7)';x.font='600 24px '+FB;x.fillText('yachun0728.github.io 的深海遊戲廳',60,590);
- cv.toBlob(b=>{if(!b)return;const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='dont-peek-'+(seedCode||'free')+'.png';a.click()})}
+// Shared result card dialog (same as every other game); the round score comes from AN.end.
+function share(){resultShare.open('peek')}
 const KILLER={breath:'ghost-dread',tail:'ghost-dread',colossus:'ghost-colossus',bog:'ghost-bog',crawl:'ghost-crawler',magma:'ghost-magma',flick:'guide-flick',howl:'ghost-howler',white:'ghost-whiteout',eye:'ghost-leafling',twins:'ghost-thorn',walkerLate:'ghost-wraith',walkerMove:'ghost-wraith',gale:'ghost-gale',hollowLate:'ghost-hollow',hollowMove:'ghost-hollow',reach:'ghost-reacher',bell:'ghost-bellkeeper',glass:'ghost-glassface',ash:'ghost-ash'};
 const RULE_FULL={tail:'Dread從背後追來：腳步越來越急時連點螢幕（電腦按 F 或 Enter），讓距離條不要見底；最後它從一側撲來，躲進另一側。',colossus:'巨像的腳步左右交替。只看最後一步踩在哪一邊，躲進相反的另一側，撐住。共有兩輪，第二輪多一步。',eye:'落葉堆在哪一邊，那邊就有東西。紅光亮起時，躲進另一側並撐滿 3 秒。',twins:'鳥群飛走後，敲擊聲從一邊傳來。躲進敲擊的另一側；躲在敲擊那一側一定會死。',walkerLate:'蟲鳴停了，左右會各出現一件道具。靜林鬼怕燈籠：點燈籠那一側。',walkerMove:'點錯道具打不退牠。這類鬼各怕一件道具，要記住。',gale:'風向反了，拖行聲從一邊靠近。躲進風來的那一側，頂住 2 秒。',hollowLate:'首領空殼出現時左右各有一件道具，點符紙那一側。',hollowMove:'點錯道具打不退牠。空殼怕符紙。',reach:'土面鼓起、泥水冒泡的那一邊會伸出手。躲進另一側，撐住 2 秒。',bell:'鐘響三下。第三下之後要往下滑低頭，一直低著頭，直到鐘聲散去才抬頭。',breath:'Dread 一直在背後追你。躲藏時牠會越逼越近，腳步越來越急就快被找到了，鬼過去之後就出來。',bog:'水面冒泡，一道長條陰影浮上來。牠抓住你之前，連點畫面兩下掙脫。',crawl:'冰面裂縫一路延伸到腳邊。咯吱聲最急的那一刻，點一下畫面。',magma:'地面發紅，哪一邊冒煙，熔岩蟲就從那邊鑽出。躲進另一側，撐住 2 秒；牠可能折返。',flick:'成群的假螢火往你飄來。點畫面下方的火把，牠們就散了；沒有火把，躲進另一側。',howl:'風聲裡夾著 2 到 3 聲嚎叫。等牠停下，照同樣的間隔點畫面。',white:'暴雪蓋住畫面，哪一邊閃光，哪裡就是雪洞。躲進閃光那一側，撐住 2 秒；牠可能折返。',glass:'畫面起霧，一張臉貼近，左右各有一件道具。玻璃臉怕鐵鎚：點鐵鎚那一側。',ash:'天色變暗，鴉群飛過，翅膀聲拍動。左右各有一件道具，灰燼鴉群怕水桶：點水桶那一側。'};
 function drawScare(){
