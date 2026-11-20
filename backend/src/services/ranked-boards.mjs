@@ -53,6 +53,12 @@ function timedBoard(engine, rulesVersion) {
 }
 const blasterV1 = timedBoard({...blasterRules, create: rng => blasterRules.create(rng, 1)}, 1);
 const blasterV2 = timedBoard(blasterRules, blasterRules.rulesVersion);
+const sneakBoards = new Map([
+  [undefined, timedBoard({...sneakRules, create: rng => sneakRules.create(rng, 1)})],
+  ...[2, 3, 4, sneakRules.rulesVersion].map(version => [
+    version, timedBoard({...sneakRules, create: rng => sneakRules.create(rng, version)}, version),
+  ]),
+]);
 const boards = new Map([
   ['outpost', timedBoard(outpostRules, 1)],
   ['blaster', {
@@ -123,7 +129,13 @@ const boards = new Map([
   ['bird', timedBoard(birdRules)],
   ['tetris', timedBoard(blockDropRules)],
   ['reaper', timedBoard(reaperRules)],
-  ['sneak', timedBoard(sneakRules)],
+  ['sneak', {
+    ...sneakBoards.get(undefined),
+    rulesVersion: sneakRules.rulesVersion,
+    supportedVersions: [2, 3, 4, sneakRules.rulesVersion],
+    create: version => sneakBoards.get(version).create(),
+    apply: (state, action) => sneakBoards.get(state.rulesVersion)?.apply(state, action) ?? false,
+  }],
   ['skybuilder', timedBoard(skybuilderRules)],
   ['merge', {
     // The client plays the whole game locally from this seed and sends every swipe once, at game over.
@@ -214,7 +226,7 @@ export async function readBoardCommand(request, isMove) {
     const rulesVersion = command.gameId === 'blaster' ? blasterRules.rulesVersion : game.rulesVersion;
     const versionedStart = !isMove && rulesVersion !== undefined && Object.hasOwn(command, 'rulesVersion');
     if (Object.keys(command).length !== (isMove ? 4 : bookSortStart || versionedStart ? 2 : 1)) return null;
-    if (versionedStart && command.rulesVersion !== rulesVersion) return null;
+    if (versionedStart && !((game.supportedVersions ?? [rulesVersion]).includes(command.rulesVersion))) return null;
     if (bookSortStart && (!Number.isSafeInteger(command.stage) || command.stage < 1)) return null;
     if (isMove && (typeof command.id !== 'string' || !ID.test(command.id) ||
         !Number.isInteger(command.revision) || command.revision < 0 ||

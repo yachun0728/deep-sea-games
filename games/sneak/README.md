@@ -7,7 +7,7 @@
 - 網址：`#sneak`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「按住偷溜，老闆回頭前趕快裝忙。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：偷偷下班，`game_id` 為 `sneak`
-- 檔案：`games/sneak/card.html`、`games/sneak/cover.webp`、`games/sneak/game.js`、`games/sneak/icon.svg`、`games/sneak/leaderboard.webp`、`games/sneak/style.css`、`games/sneak/view.html`；`game.js` 共 187 行、10.1 KB
+- 檔案：`games/sneak/card.html`、`games/sneak/cover.webp`、`games/sneak/game.js`、`games/sneak/icon.svg`、`games/sneak/leaderboard.webp`、`games/sneak/style.css`、`games/sneak/view.html`；`game.js` 共 387 行、19.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「15. Sneak（sneak）」（下方「規則摘要」已複製）
 
@@ -22,7 +22,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`bonusAt` L8、`nextMilestone` L9、`lvCap` L10、`T` L12、`saySneak` L18、`remember` L19、`setHold` L20、`release` L23、`ui` L24、`die` L35、`award` L44、`nextStage` L45、`update` L54、`sync` L60、`start` L64、`sprite` L83、`draw` L89、`press` L175、`lift` L176、`loop` L183
+`bonusAt` L8、`nextMilestone` L9、`T` L11、`saySneak` L17、`remember` L18、`setHold` L19、`release` L22、`ui` L23、`die` L54、`award` L63、`nextStage` L64、`update` L73、`sync` L79、`start` L83、`sprite` L103、`drawSneakLeg` L111、`drawSneakingPlayer` L143、`drawCoworker` L160、`routeX` L181、`drawCover` L182、`drawGuard` L201、`drawBoss` L235、`drawHallway` L268、`draw` L280、`press` L375、`lift` L376、`loop` L383
 
 ## 錢包與結算接點
 
@@ -30,22 +30,22 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L44 `award`：`S.balance+=b;`
+- L63 `award`：`S.balance+=b;`
 
 **餘額檢查**
-- L67 `start`：`if(amount>S.balance){saySneak(LOW_MSG,'lose');`
+- L86 `start`：`if(amount>S.balance){saySneak(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L37 `die`：`AN.end(sneakAnalytics,earned,earned>0?'complete':'loss',{stage:sneaking.lv,progress_percent:Math.floor(sneaki…`
-- L44 `award`：`AN.progress(sneakAnalytics,{stage:n,bonus_points:b});`
-- L46 `nextStage`：`AN.progress(sneakAnalytics,{stage:done},true);`
-- L51 `nextStage`：`AN.resume(sneakAnalytics,{stage:sneaking.lv});`
-- L70 `start`：`sneakAnalytics=AN.start('sneak',amount);`
-- L72 `start`：`AN.resume(sneakAnalytics,{stage:sneaking.lv});`
+- L56 `die`：`AN.end(sneakAnalytics,earned,earned>0?'complete':'loss',{stage:sneaking.lv,progress_percent:Math.floor(sneakR…`
+- L63 `award`：`AN.progress(sneakAnalytics,{stage:n,bonus_points:b});`
+- L65 `nextStage`：`AN.progress(sneakAnalytics,{stage:done},true);`
+- L70 `nextStage`：`AN.resume(sneakAnalytics,{stage:sneaking.lv});`
+- L89 `start`：`sneakAnalytics=AN.start('sneak',amount);`
+- L91 `start`：`AN.resume(sneakAnalytics,{stage:sneaking.lv});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -61,11 +61,15 @@
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-定位：`sneakBusy` 所在 IIFE。無盡下班（2026-11-17 改為直到被抓）：按住畫面／按鈕或Space、右鍵方向／D往出口走，放開裝忙。第n關需累積 `6+2×(min(n,10)-1)` 秒移動時間（第10關起固定24秒），走到出口立刻進下一關，沒有領回。主管有背對、警示與轉頭；第3關起有30%假警示，第4關起可能直接轉頭（第4關15%，之後每關+3%，最高50%）。反應時間：直接轉頭約 `max(.22, .34-.01(n-4))` 秒，警示後轉頭約 `max(.12, .16-.003n)` 秒（此版比舊版寬鬆，因舊版直接轉頭僅.18秒幾乎無法反應）；轉頭期間繼續移動被抓。後關背對與警示時間縮短。離開或背景時釋放移動。
+定位：按住畫面、前進按鈕、空白鍵、右方向鍵或 D 前進，放開裝忙。抵達出口就進入下一關，沒有關卡上限。第一關直接從辦公區開始，第二關起先走過捲動的入口走廊。第二關入口長 180 個畫布單位，之後每關加 18 單位，移動速度為每秒 64 單位。進入辦公區後，老闆、同事與保全才開始各自的行動。辦公區第一關需要累積移動 6 秒，第二關 11 秒，第三至第七關每關多 4 秒，第八關起每關多 1 秒。進度條包含走廊和辦公區。
 
-里程碑以通過關數計，點數當場入帳、不扣回：9關 +3、11關 +7（累計10點，回本）、13關 +15、16關 +30，之後每多3關 +40。以反應時間模擬校準：平均玩家約通過5關，技巧好者約11～12關，達13關約三成以下。大廳卡片只標示「✦ BONUS」。
+第二關有一位同事經過，第三關兩次，第四關起通常三次，巡經位置隨關卡輪替；部分第十二關以後的配置有四次。到達該關巡經位置後，同事以黃色驚嘆號預告 0.95 秒，接著紅色 0.65 秒，繼續走就被發現；其後 0.55 秒離場，可以前進。第三關開始，主管在玩家進入辦公區後走回座位，坐下時先給回頭警示。第五關起每兩次回頭後會離座並走回來。走動期間主管不判定抓人，其餘警示、假警示、直接回頭和反應時間沿用原規則。離開或切到背景時釋放移動。
 
-訪客榜按終局完成關卡數排行。Worker 依種子重播按住與放開，核對老闆回頭和抓到的時機。最多驗證十分鐘的遊戲時間。
+第五關起，站在檔案櫃後可擋老闆的視線，仍須留意同事。第八關起保全來回巡邏，折返時暫停照射；被光束掃到時繼續移動會被發現。第十二關起輪替三種遮蔽物、保全路徑及同事巡經配置。
+
+里程碑按通過關數計，點數當場入帳：9 關 +3、11 關 +7、13 關 +15、16 關 +30，之後每多 3 關 +40。
+
+訪客榜依終局通過關數排行。Worker 依種子與回合規則版本重播按住及放開。舊對局沿用舊版距離與主管判定，新版會驗證同事巡經。單局超過十分鐘可繼續遊玩，該局轉為本機成績。
 
 ## 修改檢查清單
 
