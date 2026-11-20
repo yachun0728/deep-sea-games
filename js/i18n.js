@@ -61,7 +61,31 @@
     return result;
   }
   function translate(value) { return language === 'en' ? english(value) : language === 'zh-Hans' ? simplified(value) : String(value); }
-  function excluded(node) { var el = node.nodeType === 1 ? node : node.parentElement; return !el || !!el.closest(ignored); }
+  // data-i18n-ignore marks text a game localizes itself (it only knows zh and en), so Simplified Chinese still converts it,
+  // except scripts and text in another language (language buttons, lang="ja", ...).
+  var keepAsIs = 'script,style,noscript,.language-switch,[lang]:not([lang^="zh"])';
+  function excluded(node) {
+    var el = node.nodeType === 1 ? node : node.parentElement;
+    if (!el) return true;
+    var hit = el.closest(ignored);
+    if (!hit) return false;
+    return !(language === 'zh-Hans' && !hit.matches('script,style,noscript') && !el.closest(keepAsIs));
+  }
+  // Leaving Simplified Chinese: put converted text inside ignored subtrees back (the normal pass skips them).
+  function restoreIgnored(doc) {
+    var walker = doc.createTreeWalker(doc.documentElement, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT), node;
+    while ((node = walker.nextNode())) {
+      if (node.nodeType === 3) {
+        var saved = records.get(node);
+        if (saved && node.nodeValue === saved.rendered) { node.nodeValue = saved.source; records.delete(node); }
+      } else {
+        var attrs = attributeRecords.get(node);
+        if (attrs) attributes.forEach(function (name) {
+          if (attrs[name] && node.getAttribute(name) === attrs[name].rendered) { node.setAttribute(name, attrs[name].source); delete attrs[name]; }
+        });
+      }
+    }
+  }
   function original(node) {
     var saved = records.get(node);
     return saved && node.nodeValue === saved.rendered ? saved.source : node.nodeValue;
@@ -136,9 +160,13 @@
       visit(doc);
     } catch (e) { /* Cross-origin frames are deliberately left untouched. */ }
   }
-  function refresh() {
+  function refresh(previous) {
     observer.disconnect();
     document.documentElement.lang = language;
+    if (previous === 'zh-Hans' && language !== 'zh-Hans') {
+      restoreIgnored(document);
+      document.querySelectorAll('iframe').forEach(function (frame) { try { if (frame.contentDocument && frame.contentDocument.documentElement) restoreIgnored(frame.contentDocument); } catch (e) {} });
+    }
     visit(document);
     document.querySelectorAll('iframe').forEach(localizeFrame);
     document.querySelectorAll('[data-language]').forEach(function (button) { button.setAttribute('aria-pressed', String(button.dataset.language === language)); });
@@ -146,6 +174,7 @@
   }
   function setLanguage(next) {
     if (languages.indexOf(next) < 0) return;
+    var previous = language;
     language = next;
     try { localStorage.setItem(preferenceKey, next); } catch (e) {}
     try {
@@ -153,7 +182,7 @@
       url.searchParams.set('lang', next);
       history.replaceState(history.state, '', url.href);
     } catch (e) {}
-    refresh();
+    refresh(previous);
     window.dispatchEvent(new CustomEvent('arcade-languagechange', { detail: { language: language } }));
   }
   try { var stored = localStorage.getItem(preferenceKey); if (languages.indexOf(stored) >= 0) language = stored; } catch (e) {}
