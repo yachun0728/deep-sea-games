@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>胖老闆追人｜跑步動畫預覽</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; background: #0b1424; color: #f5e9d5; font: 15px system-ui, sans-serif; }
+main { width: min(100%, 390px); min-height: 844px; margin: auto; background: #13223a; }
+header { height: 96px; padding: 16px; display: flex; flex-direction: column; justify-content: center; gap: 5px; }
+h1 { font-size: 20px; margin: 0; }
+canvas { display: block; width: 100%; height: auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px; }
+button { font: inherit; color: inherit; background: #233856; border: 1px solid #536981; border-radius: 8px; min-height: 44px; padding: 8px 12px; cursor: pointer; flex: 1; }
+button[aria-pressed="true"] { background: #655039; }
+output { display: block; padding: 0 16px 16px; }
+</style>
+</head>
+<body>
+<main>
+<header><h1>胖老闆追人</h1><span>員工與老闆的 8 格跑步循環</span></header>
+<canvas width="400" height="560" aria-label="員工往右跑，胖老闆從左後方追"></canvas>
+<div class="controls">
+<button id="play" type="button" disabled>暫停</button>
+<button id="slow" type="button" aria-pressed="false" disabled>半速</button>
+<button id="next" type="button" disabled>下一格</button>
+</div>
+<output id="frames">載入角色素材中</output>
+</main>
+<script type="module">
+const canvas = document.querySelector('canvas');
+const ctx = canvas.getContext('2d');
+const play = document.querySelector('#play');
+const slow = document.querySelector('#slow');
+const next = document.querySelector('#next');
+const frames = document.querySelector('#frames');
+const ground = 440;
+const employeeStep = 75;
+const bossStep = 90;
+let elapsed = 0;
+let previous = 0;
+let bossElapsed = bossStep * 2;
+let playing = true;
+let halfSpeed = false;
+
+function load(src) {
+  const image = new Image();
+  image.src = src;
+  return image.decode().then(() => image);
+}
+
+function drawBackground(office) {
+  const width = canvas.height * office.width / office.height;
+  const scroll = elapsed * .075 % width;
+  for (let x = -scroll; x < canvas.width; x += width) {
+    ctx.drawImage(office, x, 0, width + 1, canvas.height);
+  }
+  const floor = ctx.createLinearGradient(0, ground, 0, canvas.height);
+  floor.addColorStop(0, '#716861');
+  floor.addColorStop(1, '#353b3d');
+  ctx.fillStyle = floor;
+  ctx.fillRect(0, ground, canvas.width, canvas.height - ground);
+}
+
+function drawRunner(sheet, frame, x, scale) {
+  const size = 128;
+  ctx.fillStyle = '#29221e45';
+  ctx.beginPath();
+  ctx.ellipse(x, ground + 1, 17 * scale, 3 * scale, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.drawImage(sheet, frame * size, 0, size, size,
+    x - 44 * scale, ground - 88 * (113 / 128) * scale, 88 * scale, 88 * scale);
+}
+
+function setPlaying(value) {
+  playing = value;
+  play.textContent = playing ? '暫停' : '播放';
+}
+
+try {
+  const [office, boss, employee] = await Promise.all([
+    load('../../games/boss/art/office.webp'), load('../../games/boss/art/boss-cycle.webp'), load('../../games/boss/art/employee-cycle.webp')
+  ]);
+  for (const control of [play, slow, next]) control.disabled = false;
+  play.onclick = () => setPlaying(!playing);
+  slow.onclick = () => {
+    halfSpeed = !halfSpeed;
+    slow.setAttribute('aria-pressed', String(halfSpeed));
+  };
+  next.onclick = () => {
+    setPlaying(false);
+    elapsed = (Math.floor(elapsed / employeeStep) + 1) * employeeStep;
+    bossElapsed = (Math.floor(bossElapsed / bossStep) + 1) * bossStep;
+  };
+
+  function tick(now) {
+    if (playing && previous) {
+      const delta = Math.min(now - previous, 40) * (halfSpeed ? .5 : 1);
+      elapsed += delta;
+      bossElapsed += delta;
+    }
+    previous = now;
+    const employeeFrame = Math.floor(elapsed / employeeStep) % 8;
+    const bossFrame = Math.floor(bossElapsed / bossStep) % 8;
+    drawBackground(office);
+    drawRunner(boss, bossFrame, 76, 1.35);
+    drawRunner(employee, employeeFrame, 170, 1);
+    frames.textContent = `員工 ${employeeFrame + 1}/8　胖老闆 ${bossFrame + 1}/8`;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+} catch (error) {
+  frames.textContent = '角色素材載入失敗，請重新整理。';
+  console.error(error);
+}
+</script>
+</body>
+</html>

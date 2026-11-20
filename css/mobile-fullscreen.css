@@ -150,3 +150,55 @@
   #view-rocket-chair .rocket-chair-stage iframe{width:100%;height:100%;min-height:0;max-width:none}
   #view-rocket-chair~.rules{display:none}
 }
+
+/* Chubby Boss keeps its physics in a 400×560 world inside a full-bleed canvas. */
+#boss-gap{display:none}
+#boss-canvas:focus:not(:focus-visible){outline:none}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  #view-boss:not([hidden]) .fs-game{padding:0}
+  #view-boss:not([hidden]) .fs-game .sneak-stage #boss-canvas{
+    width:100%;height:100%;max-width:none;border:0;border-radius:0;touch-action:none;
+  }
+  #view-boss .fs-exit,#view-boss .stats>div{
+    background:#403934;border:1px solid #89735b;color:#fff0d6;
+  }
+  #view-boss .stats{align-items:stretch}
+  #view-boss .stats>div{padding:5px 8px}
+  #view-boss .stats dt{color:#f4d4ac}
+  #view-boss .stats dd{font-size:15px}
+  #view-boss .stats~.stats{display:none}
+  #view-boss #boss-gap{
+    display:block;position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 57px);
+    left:calc(env(safe-area-inset-left) + 12px);width:calc(100% - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));
+    height:6px;appearance:none;border:0;border-radius:6px;overflow:hidden;background:#5f5145;accent-color:#efac65;
+  }
+  #boss-gap::-webkit-progress-bar{background:#5f5145}
+  #boss-gap::-webkit-progress-value{background:#efac65}
+  #view-boss #boss-msg{
+    position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;
+  }
+  #view-boss .fs-game .mobile-stage-actions{
+    left:calc(env(safe-area-inset-left) + 12px);right:calc(env(safe-area-inset-right) + 12px);
+    bottom:calc(env(safe-area-inset-bottom) + 16px);
+  }
+  #view-boss .fs-game:has(.share-result:not([hidden])) .mobile-stage-actions{
+    right:calc(50% + 4px);
+  }
+  #view-boss #boss-go:not(:disabled),#view-boss .share-result:not([hidden]){
+    min-height:52px;font-size:15px;line-height:1.2;
+  }
+  #view-boss #boss-go:not(:disabled){
+    color:#3d2b21;border-color:#bc8d59;background:#f3ca91;
+  }
+  #view-boss .fs-game:has(.share-result:not([hidden])) .side #boss-go:not(:disabled){
+    left:calc(env(safe-area-inset-left) + 12px);right:calc(50% + 4px);width:auto;transform:none;
+  }
+  #view-boss .fs-game .share-result:not([hidden]){
+    left:calc(50% + 4px);right:calc(env(safe-area-inset-right) + 12px);
+    width:auto;transform:none;color:#ffebd2;border-color:#9b8068;background:#53453c;
+  }
+  #view-boss .share-result i{color:#f3ca91}
+}
+@media(max-width:880px){
+  #view-boss .mobile-stage-action>#boss-go:not(:disabled){width:100%;min-width:0;padding-inline:8px}
+}
