@@ -1,0 +1,92 @@
+.game-icon-runner img {
+  display:block;
+  width:100%;
+  height:100%;
+  border-radius:inherit;
+}
+
+#view-runner {
+  --fs-bg:#123b59;
+  --hud:0px;
+  --runner-cream:#fff1cb;
+  --runner-ink:#10283e;
+}
+#view-runner #rn-canvas { aspect-ratio:2/3; }
+#view-runner #rn-canvas:focus:not(:focus-visible) { outline:0; }
+
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px) {
+  #view-runner:not([hidden]) .fs-game .runner-stage canvas {
+    width:100%;
+    height:100%;
+  }
+
+  #view-runner .runner-stage > .mobile-stage-actions {
+    top:68%;
+    bottom:auto;
+    transform:translateY(-50%);
+  }
+
+  #view-runner .fs-exit {
+    top:calc(env(safe-area-inset-top) + 9px);
+    left:calc(env(safe-area-inset-left) + 11px);
+    background:var(--runner-cream);
+    color:var(--runner-ink);
+    border:2px solid var(--runner-ink);
+    border-radius:50%;
+    box-shadow:0 2px 0 var(--runner-ink);
+    font-size:25px;
+  }
+
+  #view-runner .stats {
+    top:calc(env(safe-area-inset-top) + 9px);
+    left:env(safe-area-inset-left);
+    right:env(safe-area-inset-right);
+    display:grid;
+    grid-template-columns:1fr 1.6fr 1fr;
+    grid-template-rows:auto;
+    align-items:center;
+    gap:0;
+    padding:0 11px;
+    color:var(--runner-cream);
+    text-shadow:0 2px 3px #10283e;
+  }
+  #view-runner .stats > div { background:none; padding:0; text-align:center; }
+  #view-runner .stats > :first-child { grid-column:2; grid-row:1; }
+  #view-runner .stats > :nth-child(2) { grid-column:3; grid-row:1; text-align:right; }
+  #view-runner .stats dd { color:inherit; font:700 17px/1.05 Georgia,serif; }
+  #view-runner .stats #rn-distance { font-size:clamp(26px,8.8vw,38px); }
+  #view-runner .stats dt { color:inherit; font-size:10px; }
+  #view-runner .stats > :first-child > dt,
+  #view-runner .stats > :nth-child(3),
+  #view-runner .stats ~ .stats,
+  #view-runner #rn-msg:not(.win):not(.lose) {
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    overflow:hidden;
+    clip-path:inset(50%);
+  }
+
+  #view-runner #rn-go {
+    border:2px solid var(--runner-ink);
+    background:#ffc767;
+    color:var(--runner-ink);
+    box-shadow:0 4px 0 var(--runner-ink);
+  }
+  #view-runner #rn-msg.win,
+  #view-runner #rn-msg.lose {
+    bottom:calc(env(safe-area-inset-bottom) + 8px);
+    background:#122e43;
+    color:var(--runner-cream);
+  }
+}
+
+@media(min-width:881px) and (pointer:coarse) and (max-width:1100px) {
+  #view-runner .fs-game .side #rn-go:not(:disabled) {
+    top:68%;
+    bottom:auto;
+    min-height:48px;
+    transform:translate(-50%,-50%);
+  }
+}

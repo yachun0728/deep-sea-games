@@ -12,7 +12,8 @@ class GameNamesMigrationTests(unittest.TestCase):
     def setUp(self):
         db = sqlite3.connect(':memory:')
         self.addCleanup(db.close)
-        db.executescript((ROOT / 'backend/migrations/0010_game_names.sql').read_text())
+        for migration in sorted((ROOT / 'backend/migrations').glob('*_game_names*.sql')):
+            db.executescript(migration.read_text())
         self.rows = {r[0]: r[1:] for r in db.execute('SELECT * FROM game_names')}
 
     def test_every_catalog_game_has_all_names_matching_cards(self):

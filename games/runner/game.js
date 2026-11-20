@@ -1,6 +1,7 @@
   /* ---------- Dodge Run: endless lane dodging; milestone bonuses are credited to the shared wallet when reached ---------- */
   (function(){
-const c=$('rn-canvas'),g=c.getContext('2d'),W=400,H=600,HOR=230,LW=130,F=5;
+const c=$('rn-canvas'),g=c.getContext('2d'),W=400,LW=118,F=16;
+const fullScreen=matchMedia('(max-width:880px),(pointer:coarse) and (max-width:1100px)');
 // Difficulty: speed climbs slowly, while the time between two rows (the window to change lanes) shrinks to a floor.
 // Milestones are far apart; the curve and distances were calibrated with a noisy-player simulation (see GAME_RULES.md).
 const MILESTONES=[[3500,3],[4500,7],[5500,15],[6500,30]],ENDLESS_FROM=6500,ENDLESS_STEP=1000,ENDLESS_BONUS=40;
@@ -23,7 +24,7 @@ function note(text,kind=''){$('rn-msg').textContent=text;$('rn-msg').className='
 function remember(){lastD=Math.floor(run.dist);rec=lastD>best;if(rec){best=lastD;try{localStorage.setItem('chayne',best)}catch(e){}}}
 function runnerUI(){
  const d=Math.floor(run.dist),nx=nextMilestone(d);
- $('rn-distance').textContent=d+' m';$('rn-best').textContent=best+' m';$('rn-next').textContent=nx[0]+' m · +'+nx[1];$('rn-speed').textContent=(run.v/20).toFixed(1)+'×';
+ $('rn-distance').textContent=d+' m';$('rn-best').textContent=best+' m';$('rn-next').textContent=nx[0]+' m · +'+nx[1];$('rn-speed').textContent=(run.v/20).toFixed(2)+'×';
  $('rn-go').disabled=st==='run'||runStarting||runSending;$('rn-go').textContent=st==='run'?'{{t:runner.msg.007}}':'{{t:runner.msg.008}}';
  document.querySelectorAll('[data-run]').forEach(b=>b.disabled=st!=='run');
 }
@@ -51,7 +52,8 @@ async function start(){
  let ranked=null;
  try{
   const api=await import('./frontend/services/api.mjs');
-  ranked=await api.startBoardRound('runner',AbortSignal.timeout(4000));
+  const session=await api.startBoardRound('runner',AbortSignal.timeout(4000),{rulesVersion:runnerRules.rulesVersion});
+  if(session.state.rulesVersion===runnerRules.rulesVersion)ranked=session;
  }catch{}
  runStarting=false;
  if($('view-runner').hidden){runStatus('');runnerUI();return}
@@ -97,49 +99,154 @@ function update(dt){
  while(awarded<reached){awarded++;const b=bonusAt(awarded);if(b)award(awarded,b)}
  if(run.dead)die();
 }
+const artFiles={
+ road:'postal-road.webp',
+ idle:'otter-idle.webp',
+ left:'otter-stride-left.webp',
+ right:'otter-stride-right.webp',
+ buoy:'signal-buoy.webp',
+ propeller:'ship-propeller.webp'
+};
+let art;
+function loadArt(){
+ return Object.fromEntries(Object.entries(artFiles).map(([name,file])=>{
+  const image=new Image();
+  image.src='./games/runner/art/'+file;
+  return [name,image];
+ }));
+}
+function drawSprite(image,x,y,height){
+ if(!image.naturalWidth)return;
+ const width=height*image.naturalWidth/image.naturalHeight;
+ g.save();
+ g.translate(x,y);
+ g.drawImage(image,-width/2,-height,width,height);
+ g.restore();
+}
+function drawRunner(x,y,height){
+ const moving=st==='run'&&!reduceMotion;
+ const phase=moving?run.dist/3:0;
+ const left=Math.floor(phase)%2===0;
+ g.save();
+ g.translate(x,y);
+ g.fillStyle='rgba(12,37,52,.42)';
+ g.beginPath();g.ellipse(0,0,height*.23,height*.046,0,0,Math.PI*2);g.fill();
+ g.rotate(moving?(run.tl-run.px)*.16:0);
+ const pose=moving?(left?art.left:art.right):art.idle;
+ drawSprite(pose.naturalWidth?pose:art.idle,0,moving?-Math.abs(Math.sin(phase*Math.PI))*4:0,height);
+ g.restore();
+}
 function draw(){
-const camH=0,ox=shake>0?(Math.random()-.5)*14:0;
-const X=(l,z)=>W/2+(l-run.px)*LW*perspective(z),Y=z=>HOR+(220+camH)*perspective(z);
-const quad=(a,b,l0,l1,col)=>{g.fillStyle=col;g.beginPath();g.moveTo(X(l0,a),Y(a));g.lineTo(X(l1,a),Y(a));g.lineTo(X(l1,b),Y(b));g.lineTo(X(l0,b),Y(b));g.closePath();g.fill()};
-g.save();g.translate(ox,0);
-g.fillStyle='#0a2a3b';g.fillRect(-20,0,W+40,HOR);
-g.fillStyle='#051620';g.fillRect(-20,HOR,W+40,H-HOR);
-const off=run.dist%16;
-for(let i=13;i>=-1;i--){
-let z0=i*8-off,z1=z0+8;if(z1<=-2)continue;if(z0<-2)z0=-2;
-const wd=run.dist+z0,gold=best>0&&Math.abs(wd+4-best)<5;
-quad(z0,z1,-1.5,1.5,gold?'#ffb638':(Math.floor(wd/8)%2?'#113041':'#0c2230'));
-if(!gold&&Math.floor(wd/8)%2){quad(z0,z1,-.53,-.47,'#214658');quad(z0,z1,.47,.53,'#214658')}}
-quad(-2,100,-1.58,-1.5,'#62e6d2');quad(-2,100,1.5,1.58,'#62e6d2');
-const cols={block:'#ff6f61',low:'#ffb638',high:'#62e6d2'};
-run.obs.slice().sort((a,b)=>b.z-a.z).forEach(o=>{
-if(o.z<-1.5)return;
-const s=perspective(o.z),cx=X(o.l,o.z),by=Y(o.z),w=112*s;
-g.globalAlpha=Math.max(0,Math.min(1,(95-o.z)/40));
-g.fillStyle=cols[o.t];
-if(o.t==='block')g.fillRect(cx-w/2,by-130*s,w,130*s);
-else if(o.t==='low')g.fillRect(cx-w/2,by-38*s,w,38*s);
-else g.fillRect(cx-w/2,by-110*s,w,50*s);
-g.globalAlpha=1});
-g.restore();
-const d=Math.floor(run.dist),nx=nextMilestone(d),pv=prevMilestone(d);
-g.fillStyle='#e4f2f3';g.font='600 20px system-ui,sans-serif';g.textAlign='left';g.fillText(d+' m',16,32);
-g.textAlign='right';g.fillText(T('best')+' '+best+' m',W-16,32);
-g.fillStyle='#214658';g.fillRect(16,44,W-32,6);g.fillStyle='#62e6d2';g.fillRect(16,44,(W-32)*Math.max(0,Math.min(1,(run.dist-pv)/(nx[0]-pv))),6);
-if(st==='run'){g.textAlign='center';g.fillStyle='#8db0b9';g.font='13px system-ui,sans-serif';g.fillText('下一個獎勵 '+nx[0]+' m · +'+nx[1]+' 點',W/2,70)}
-g.textAlign='left';g.fillStyle=earned>0?'#ffb638':'#8db0b9';g.font='600 14px system-ui,sans-serif';g.fillText('{{t:runner.msg.016}}'+earned+' 點',16,70);
-if(flash>0&&st==='run'){g.textAlign='center';g.fillStyle='#e4f2f3';g.font='600 26px system-ui,sans-serif';g.fillText(T('near'),W/2,118)}
+ const mobile=fullScreen.matches;
+ const H=mobile&&c.clientWidth?Math.max(430,Math.round(W*c.clientHeight/c.clientWidth)):600;
+ const density=c.clientWidth?Math.min(2.5,devicePixelRatio*c.clientWidth/W):1;
+ const pixelsWide=Math.round(W*density),pixelsHigh=Math.round(H*density);
+ if(c.width!==pixelsWide)c.width=pixelsWide;
+ if(c.height!==pixelsHigh)c.height=pixelsHigh;
+ g.setTransform(pixelsWide/W,0,0,pixelsHigh/H,0,0);
+ // The runtime also initializes on the lobby, but the artwork is only needed in this view.
+ if($('view-runner').hidden)return;
+ art??=loadArt();
+
+ const horizon=H*.31,feet=H*.952,collisionY=feet-5;
+ const ox=shake>0?(Math.random()-.5)*14:0;
+ const X=(lane,z)=>W/2+lane*LW*perspective(z)**.47;
+ const Y=z=>horizon+(collisionY-horizon)*perspective(z);
+ g.fillStyle='#17627a';
+ g.fillRect(0,0,W,H);
+ if(art.road.naturalWidth)g.drawImage(art.road,0,0,W,H);
+ g.save();
+ g.translate(ox,0);
+ // Road studs supply forward motion and mark the two boundaries of the three lanes.
+ const spacing=3.8,offset=run.dist%spacing;
+ for(let i=58;i>=0;i--){
+  const z=i*spacing-offset;
+  if(z<-1.4)continue;
+  const scale=perspective(z);
+  const y=Y(z);
+  g.globalAlpha=Math.min(1,scale*6);
+  for(const side of [-.5,.5]){
+   const x=X(side,z);
+   g.fillStyle='#207b7d';
+   g.beginPath();g.ellipse(x,y,11*scale,5.5*scale,0,0,Math.PI*2);g.fill();
+   g.fillStyle='#b2f4cf';
+   g.beginPath();g.ellipse(x,y-1.1*scale,8.5*scale,3.5*scale,0,0,Math.PI*2);g.fill();
+  }
+ }
+ g.globalAlpha=1;
+ // Mark whole kilometres on the road, independently of saved personal records.
+ const kilometre=Math.max(1,Math.ceil(run.dist/1000));
+ const markerDepth=kilometre*1000-run.dist;
+ if(markerDepth<95){
+  const y=Y(markerDepth),scale=perspective(markerDepth);
+  g.save();
+  g.globalAlpha=Math.min(1,(95-markerDepth)/35);
+  g.strokeStyle='#ffd185';g.lineWidth=1+3*scale;
+  g.setLineDash([12*scale,5*scale]);
+  g.beginPath();
+  g.moveTo(X(-1.4,markerDepth),y);
+  g.lineTo(X(1.4,markerDepth),y);
+  g.stroke();
+  g.restore();
+ }
+ for(const obstacle of run.obs.slice().sort((a,b)=>b.z-a.z)){
+  if(obstacle.z< -1.5)continue;
+  const scale=perspective(obstacle.z);
+  const image=obstacle.l===1?art.propeller:art.buoy;
+  const maxWidth=LW*.94*scale**.55;
+  const maxHeight=Math.min(W*.48,H*.25)*Math.sqrt(scale);
+  const x=X(obstacle.l,obstacle.z),y=Y(obstacle.z);
+  g.globalAlpha=Math.max(0,Math.min(1,(76-obstacle.z)/22));
+  if(image.naturalWidth){
+   const height=Math.min(maxHeight,maxWidth*image.naturalHeight/image.naturalWidth);
+   drawSprite(image,x,y,height);
+  }else{
+   // Keep incoming obstacles visible while their illustrations load.
+   g.fillStyle='#f37860';
+   g.beginPath();
+   g.moveTo(x-maxWidth*.45,y);
+   g.lineTo(x-maxWidth*.21,y-maxHeight*.7);
+   g.lineTo(x+maxWidth*.21,y-maxHeight*.7);
+   g.lineTo(x+maxWidth*.45,y);
+   g.closePath();g.fill();
+  }
+ }
+ g.restore();
+
+ const d=Math.floor(run.dist),nx=nextMilestone(d),pv=prevMilestone(d);
+ const progress=Math.max(0,Math.min(1,(run.dist-pv)/(nx[0]-pv)));
+ const hudY=mobile?61*H/Math.max(1,c.clientHeight):44;
+ if(!mobile){
+  g.fillStyle='#fff1cb';g.font='700 22px Georgia,serif';g.textAlign='left';g.fillText(d+' m',16,32);
+  g.textAlign='right';g.fillText(T('best')+' '+best+' m',W-16,32);
+ }
+ const meterWidth=mobile?152:W-32,meterX=(W-meterWidth)/2;
+ g.fillStyle='rgba(190,238,225,.24)';
+ g.beginPath();g.roundRect(meterX,hudY,meterWidth,5,3);g.fill();
+ if(progress>0){
+  g.fillStyle='#9df4c5';
+  g.beginPath();g.roundRect(meterX,hudY,meterWidth*progress,5,3);g.fill();
+ }
+ if(earned>0){
+  g.textAlign='center';g.fillStyle='#ffd185';g.font='600 14px system-ui,sans-serif';
+  g.fillText('{{t:runner.msg.016}}'+earned+' 點',W/2,hudY+24);
+ }
+if(flash>0&&st==='run'){g.textAlign='center';g.fillStyle='#e4f2f3';g.font='600 26px system-ui,sans-serif';g.fillText(T('near'),W/2,hudY+71)}
 pops.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/2.2);const y=190-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#ffb638';g.font='700 38px system-ui,sans-serif';g.fillText('+'+p.b+' 點',W/2,y);g.fillStyle='#e4f2f3';g.font='600 17px system-ui,sans-serif';g.fillText(p.m+' 公尺里程碑',W/2,y+28);g.globalAlpha=1});
 if(st!=='run'){
-g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,0,W,H);g.textAlign='center';g.fillStyle='#e4f2f3';
-if(st==='ready'){g.font='600 34px system-ui,sans-serif';g.fillText(T('title'),W/2,270);g.font='18px system-ui,sans-serif';g.fillText(T('tap'),W/2,310)}
-else{g.font='600 34px system-ui,sans-serif';g.fillText(T('crash'),W/2,235);
-g.font='600 24px system-ui,sans-serif';g.fillText(lastD+' m',W/2,277);
-g.font='600 20px system-ui,sans-serif';g.fillStyle=earned>0?'#ffb638':'#e4f2f3';g.fillText(earned>0?'{{t:runner.msg.017}}'+earned+' 點':'{{t:runner.msg.018}}',W/2,312);
+const center=H*.45;
+g.fillStyle='rgba(9,26,46,.64)';g.fillRect(0,0,W,H);g.textAlign='center';g.fillStyle='#fff1cb';
+if(st==='ready'){g.font='600 34px system-ui,sans-serif';g.fillText(T('title'),W/2,center);g.font='18px system-ui,sans-serif';g.fillText(T('tap'),W/2,center+36)}
+else{g.font='600 34px system-ui,sans-serif';g.fillText(T('crash'),W/2,center-45);
+g.font='600 24px system-ui,sans-serif';g.fillText(lastD+' m',W/2,center-8);
+g.font='600 20px system-ui,sans-serif';g.fillStyle=earned>0?'#ffb638':'#e4f2f3';g.fillText(earned>0?'{{t:runner.msg.017}}'+earned+' 點':'{{t:runner.msg.018}}',W/2,center+25);
 g.font='18px system-ui,sans-serif';
 g.fillStyle=rec?'#ffb638':'#e4f2f3';
-g.fillText(rec?T('rec'):T('left')(best-lastD),W/2,348);
-g.fillStyle='#e4f2f3';g.fillText('{{t:runner.msg.019}}',W/2,392)}}}
+g.fillText(rec?T('rec'):T('left')(best-lastD),W/2,center+55);
+if(!mobile){g.fillStyle='#e4f2f3';g.fillText('{{t:runner.msg.019}}',W/2,center+92)}}}
+drawRunner(X(run.px,0)+ox,feet,Math.min(H*.285,W*.67));
+}
+
 
 function changeLane(direction){
  const target=Math.max(-1,Math.min(1,run.tl+direction));

@@ -71,6 +71,8 @@ git diff --check
 
 ## 6. 提交、推送與正式站確認
 
+- [ ] 開啟待發布版本的驗收環境，交付可直接進入遊戲的網址、版本 SHA 與試玩項目。Agent 先點開確認可玩，需要手機實機驗收時，確認預覽位址能從該裝置開啟。詳見 [驗收入口規範](docs/agent-guides/release.md#先提供可遊玩的驗收入口)。
+- [ ] 記錄使用者試玩後明確核准的版本，再合併會觸發正式部署的分支或執行正式發布。若待驗收內容有變，提供新版入口並重新確認。
 - [ ] 有使用者提交／推送授權才發布。先 fetch 並比較遠端分支；遠端較新時保留其變更，禁止強推覆蓋。
 - [ ] 推送前檢查最新版：合併／rebase 最新 `origin/main` 後重新 build 並 `--check`；以 `git diff origin/main -- games/elevator/` 確認插隊封面與排行榜圖示（`queue-cutter-cover.webp`、`queue-cutter-leaderboard.webp`）及其他素材未被舊版覆蓋或還原。
 - [ ] 有其他未提交修改時，以乾淨暫存 checkout 或 worktree 整合授權內容；以實際要提交的版本重新組合及驗證，不能把髒工作樹的 index.html 直接夾帶上線。

@@ -7,7 +7,7 @@
 - 網址：`#bird`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「跳過仙人掌和狼群，用便便把狼王打跑。」｜立即開玩 · 狼王挑戰
 - 追蹤名稱（GA4 `game_name`）：便便鳥大戰狼群，`game_id` 為 `bird`
-- 檔案：`games/bird/card.html`、`games/bird/game.js`、`games/bird/icon.svg`、`games/bird/view.html`；`game.js` 共 178 行、11.5 KB
+- 檔案：`games/bird/card.html`、`games/bird/cover.webp`、`games/bird/game.js`、`games/bird/icon.svg`、`games/bird/leaderboard.webp`、`games/bird/view.html`；`game.js` 共 178 行、11.5 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「20. Poop Bird vs Wolves（bird）」（下方「規則摘要」已複製）
 

@@ -240,7 +240,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 
 ### 手機全螢幕版面（`css/mobile-fullscreen.css`，2026-11-20）
 
-適用：偷偷下班、深海釣手、閃避跑酷、時序修復、便便鳥大戰狼群、屋頂貓貓、死神打工、插隊大師（Canvas 遊戲），以及插珍奶（iframe）。條件是 `@media(max-width:880px),(pointer:coarse) and (max-width:1100px)`；桌面版維持原本兩欄版面，`.fs-exit` 退出鈕在桌面隱藏。玩法、扣點、追蹤、儲存都不在這份 CSS 的範圍。
+適用：偷偷下班、深海釣手、時序修復、便便鳥大戰狼群、屋頂貓貓、死神打工、插隊大師（Canvas 遊戲），以及插珍奶（iframe）；閃避跑酷用共用結構但版面另有核准設計（見下方例外）。條件是 `@media(max-width:880px),(pointer:coarse) and (max-width:1100px)`；桌面版維持原本兩欄版面，`.fs-exit` 退出鈕在桌面隱藏。玩法、扣點、追蹤、儲存都不在這份 CSS 的範圍。
 
 **結構（每款 `view.html` 都一樣）**
 
@@ -257,6 +257,8 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 4. 不可點（`disabled`）的原始 `.go` 與閃避跑酷的左右鈕一律隱藏；否則會被排到畫面外。提示文字（`.hint`、規則、圖例、階梯表）與排行榜狀態文字在全螢幕時隱藏，只留 `.msg` 小提示條。
 5. 站內的「返回遊戲大廳」連結（`.game-exit-link`）在全螢幕時隱藏，改用 `.fs-exit`。
 6. 點擊範圍 ≥44px，退出鈕在左上，不被 HUD、按鈕或分享鈕蓋住。
+
+**閃避跑酷是例外**：使用者核准了它自己的版面（`games/runner/style.css`，水獺／郵政公路畫面），該檔把 `--hud` 設為 0、畫面內自己畫 HUD、開始鈕留在畫面中間、退出鈕改成圓形。共用 CSS 中 `#view-runner` 的變數只是預設值，被 `games/runner/style.css` 覆寫；改版閃避跑酷時以該檔為準，不要套回上面的 HUD 預留與貼底規則，也不要刪除它的覆寫。
 
 **插珍奶**：`#view-boba` 為 `fixed` 的欄位式版面，頂列只留左側退出鈕與結算後出現在右側的「分享成績」；「結束本局」鈕、提示、訊息與排行榜狀態文字都隱藏（失敗時才顯示一個小重試鈕）；iframe 填滿其下。不改子頁的畫面。
 
