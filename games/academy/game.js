@@ -110,11 +110,11 @@
     }
     function submitRankedRound() {
       if (!rankRound) { submission = { message: 'rsLocal', done: true }; renderRankStatus(); return; }
-      if (state.credits <= 0) { submission = { message: 'rsZero', done: true }; renderRankStatus(); return; }
+      if (state.cleared <= 0) { submission = { message: 'rsZero', done: true }; renderRankStatus(); return; }
       submission = {
         ticket: rankRound,
         move: { id: rankRound.id, gameId: 'academy', revision: rankRound.revision, action: actions.slice() },
-        score: state.credits
+        score: state.cleared
       };
       sendRankedRound(submission);
     }
@@ -132,7 +132,7 @@
           const name = document.createElement('span');
           name.textContent = entry.displayName || t('guest');
           const amount = document.createElement('strong');
-          amount.textContent = fmt(entry.score) + ' ' + t('unit');
+          amount.textContent = t('boardStage', entry.score);
           item.append(name, amount);
           return item;
         }));
