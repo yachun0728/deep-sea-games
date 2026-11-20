@@ -7,7 +7,7 @@
 - 網址：`#campaign`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「繞市區拉票，經過學校、醫院、豪宅要按住靜音。」｜立即開玩 · 無盡 · 越開越快
 - 追蹤名稱（GA4 `game_name`）：宣傳車，`game_id` 為 `campaign`
-- 檔案：`games/campaign/card.html`、`games/campaign/game.js`、`games/campaign/icon.svg`、`games/campaign/style.css`、`games/campaign/view.html`；`game.js` 共 276 行、29.1 KB
+- 檔案：`games/campaign/card.html`、`games/campaign/cover.webp`、`games/campaign/game.js`、`games/campaign/icon.svg`、`games/campaign/style.css`、`games/campaign/view.html`；`game.js` 共 276 行、29.1 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「17. Campaign（campaign）」（下方「規則摘要」已複製）
 

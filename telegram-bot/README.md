@@ -15,6 +15,22 @@
 - 私聊使用 `web_app` 按鈕，在 Telegram 內開啟網站；群組只能用一般連結按鈕。群組中的未知指令不回應。
 - 調整隨機推薦清單時，名稱要和 `games/README.md` 一致。執行 `node tools/test_telegram_bot.mjs` 會檢查。
 
+## 成效追蹤（GA4）
+
+Telegram 內建瀏覽器開網站時不帶來源，GA4 會記成 `(direct) / (none)`。因此按鈕連結都加上 UTM，網站原有的 GA4 會從網址讀取，不需修改網站：
+
+| 參數 | 值 |
+| --- | --- |
+| `utm_source` | `telegram` |
+| `utm_medium` | `bot` |
+| `utm_campaign` | `/start` 的深連結參數，沒有或不合法時為 `organic` |
+| `utm_content` | 觸發的指令，例如 `start`、`play`、`daily`、`random` |
+
+- 各推廣管道使用不同連結，例如 `https://t.me/<Bot username>?start=ads_nov`、`?start=channel`。參數只能用英數字、`_`、`-`，最多 64 字，其他值會記成 `organic`。
+- Bot 不儲存資料，只有該次 `/start` 帶管道參數；之後的 `/play` 等指令記為 `organic`。
+- GA4：「報表 → 獲客 → 流量獲取」，維度選「工作階段來源/媒介」找 `telegram / bot`，再看「工作階段廣告活動」比較各管道。
+- Telegram 內建瀏覽器與手機瀏覽器的儲存分開，GA4 會把同一人視為不同使用者。
+
 ## 第一次部署
 
 以下指令都在 `telegram-bot/` 目錄執行。Token 與 secret 只在終端機輸入，不要寫進檔案或提交。

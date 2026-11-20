@@ -8,7 +8,7 @@ export const SITE = 'https://ticaticagames.com/';
 export const RANDOM_GAMES = [
   ['mines', '踩地雷 Minesweeper'],
   ['merge', '養珠 Pearl Merge'],
-  ['runner', '閃避跑酷 Dodge Run'],
+  ['runner', '閃避跑酷：深海快遞 Dodge Run'],
   ['sneak', '偷偷下班 Sneak Out'],
   ['cat', '屋頂貓貓 Rooftop Cat'],
   ['nap', '偷睡大師 Nap Master'],
@@ -56,16 +56,31 @@ export function languageFor(code) {
   return /^zh-(hant|tw|hk|mo)\b/.test(String(code || '').toLowerCase()) ? 'zh-Hant' : 'en';
 }
 
-export function gameUrl(hash, language) {
+// GA4 reads utm_* from page_location. Telegram's in-app browser sends no referrer, so without these
+// visits from the bot would show up as (direct) / (none).
+export const DEFAULT_CAMPAIGN = 'organic';
+
+// Channel tag from a deep link such as t.me/<bot>?start=ads_nov, which arrives as "/start ads_nov".
+// Telegram only allows A-Z a-z 0-9 _ - (up to 64) in start parameters; anything else is ignored.
+export function campaignFrom(text) {
+  const payload = String(text || '').trim().split(/\s+/)[1] || '';
+  return /^[A-Za-z0-9_-]{1,64}$/.test(payload) ? payload : DEFAULT_CAMPAIGN;
+}
+
+export function gameUrl(hash, language, { campaign = DEFAULT_CAMPAIGN, content } = {}) {
   const url = new URL(SITE);
   url.searchParams.set('lang', language);
+  url.searchParams.set('utm_source', 'telegram');
+  url.searchParams.set('utm_medium', 'bot');
+  url.searchParams.set('utm_campaign', campaign);
+  if (content) url.searchParams.set('utm_content', content);
   if (hash) url.hash = hash;
   return url.href;
 }
 
 // web_app buttons open inside Telegram but only work in private chats; groups get a normal link.
-function button(text, hash, language, isPrivate) {
-  const url = gameUrl(hash, language);
+function button(text, hash, language, isPrivate, tracking) {
+  const url = gameUrl(hash, language, tracking);
   return isPrivate ? { text, web_app: { url } } : { text, url };
 }
 
@@ -78,11 +93,13 @@ export function buildReply(message, random = Math.random) {
   const language = languageFor(message.from?.language_code);
   const t = TEXT[language];
   const isPrivate = chat.type === 'private';
+  // Only /start carries a deep-link channel; the bot stores nothing, so later commands count as organic.
+  const tracking = { campaign: command === 'start' ? campaignFrom(text) : DEFAULT_CAMPAIGN, content: command };
   const send = (body, label, hash) => ({
     method: 'sendMessage',
     chat_id: chat.id,
     text: body,
-    ...(label ? { reply_markup: { inline_keyboard: [[button(label, hash, language, isPrivate)]] } } : {}),
+    ...(label ? { reply_markup: { inline_keyboard: [[button(label, hash, language, isPrivate, tracking)]] } } : {}),
   });
 
   switch (command) {
