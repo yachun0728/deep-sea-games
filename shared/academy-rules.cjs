@@ -99,13 +99,13 @@ const academyRules = (() => {
     return Array.isArray(actions) && actions.length > 0 && actions.length <= MAX_ACTIONS &&
       actions.every(a => Number.isInteger(a) && a >= 0 && a <= ACT.WALK);
   }
-  // 重播全部操作；必須恰好在最後一個操作結束本局，否則回傳 null。
+  // 重播全部操作，回傳通過的關數（0–10，排行榜成績，不是學分）；必須恰好在最後一個操作結束本局，否則回傳 null。
   function replay(random, actions) {
     if (!accepts(actions)) return null;
     const state = create(random);
     for (let i = 0; i < actions.length; i++) {
       if (!step(state, actions[i])) return null;
-      if (state.over) return i === actions.length - 1 ? state.credits : null;
+      if (state.over) return i === actions.length - 1 ? state.cleared : null;
     }
     return null;
   }

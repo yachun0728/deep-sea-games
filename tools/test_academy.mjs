@@ -54,7 +54,7 @@ test('全部答對通關 1,000,000 學分並可重播', () => {
     assert.equal(state.reason, 'champion');
     assert.equal(state.credits, 1000000);
     assert.equal(state.cleared, 10);
-    assert.equal(rules.replay(timedReplay.seeded(seed), actions), 1000000);
+    assert.equal(rules.replay(timedReplay.seeded(seed), actions), 10);
   }
 });
 
@@ -62,7 +62,7 @@ test('答錯與超時：第 5 關前歸零，第 5 關後保底 32,000', () => {
   let r = play(7, [right(0), right(1), { domain: 2, answer: 'wrong' }]);
   assert.equal(r.state.credits, 0);
   assert.equal(r.state.cleared, 2);
-  assert.equal(rules.replay(timedReplay.seeded(7), r.actions), 0);
+  assert.equal(rules.replay(timedReplay.seeded(7), r.actions), 2, '排行榜成績是通過關數，不是學分');
   r = play(7, [...Array.from({ length: 5 }, () => right(5)), { domain: 0, answer: 'wrong' }]);
   assert.equal(r.state.credits, 32000);
   assert.equal(r.state.reason, 'wrong');
@@ -80,7 +80,7 @@ test('結束挑戰只在已有學分時可用，成績等於目前學分', () =>
   assert.equal(r.state.credits, LADDER[2]);
   assert.equal(r.state.reason, 'walk');
   assert.equal(r.state.cleared, 3);
-  assert.equal(rules.replay(timedReplay.seeded(5), r.actions), LADDER[2]);
+  assert.equal(rules.replay(timedReplay.seeded(5), r.actions), 3);
 });
 
 test('錦囊每局各限一次；換題會換成同領域的新題', () => {
@@ -115,7 +115,7 @@ test('題目不重複，隨機盲盒只抽還有題的領域', () => {
 test('非法操作序列被拒絕', () => {
   const seed = 21;
   const ok = play(seed, [right(0), { domain: 1, answer: 'wrong' }]).actions;
-  assert.equal(rules.replay(timedReplay.seeded(seed), ok), 0);
+  assert.equal(rules.replay(timedReplay.seeded(seed), ok), 1, '通過一關後答錯 = 1 關');
   assert.equal(rules.replay(timedReplay.seeded(seed), [...ok, ACT.ANSWER]), null, '結束後不能再操作');
   assert.equal(rules.replay(timedReplay.seeded(seed), ok.slice(0, -1)), null, '沒有結束點');
   assert.equal(rules.replay(timedReplay.seeded(seed), [ACT.ANSWER]), null, '選領域前不能作答');
@@ -129,7 +129,7 @@ test('非法操作序列被拒絕', () => {
   // 偽造高分：用另一個種子的操作重播，學分不會比該種子的合法結果高
   const forged = play(1, Array.from({ length: 10 }, () => right(0))).actions;
   const other = rules.replay(timedReplay.seeded(2), forged);
-  assert.ok(other === null || other <= 1000000);
+  assert.ok(other === null || (other >= 0 && other <= 10));
 });
 
 test('單局最多 10 點 BONUS，與學分無關', () => {

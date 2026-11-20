@@ -167,4 +167,4 @@ Closing Call 開局會等待訪客排行回合準備完成，避免快速點擊�
 
 ## 百萬大學堂訪客成績
 
-沿用棋盤對局 API，以 `academy` 開局。Worker 發種子，客戶端結束時送出操作碼陣列（最多 64 個），Worker 用 `shared/academy-rules.cjs` 重播並以最終學分寫公開榜。無新 migration；先部署 Worker 再發布前端，回退可還原前端與 Worker 註冊，保留既有紀錄。
+沿用棋盤對局 API，以 `academy` 開局。Worker 發種子，客戶端結束時送出操作碼陣列（最多 64 個），Worker 用 `shared/academy-rules.cjs` 重播並以通過關數寫公開榜。無新 migration；先部署 Worker 再發布前端，回退可還原前端與 Worker 註冊，保留既有紀錄。
