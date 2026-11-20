@@ -7,7 +7,7 @@
 - 網址：`#nap`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。」｜立即開玩 · 按住反應
 - 追蹤名稱（GA4 `game_name`）：偷睡大師，`game_id` 為 `nap`
-- 檔案：`games/nap/card.html`、`games/nap/game.js`、`games/nap/icon.svg`、`games/nap/view.html`；`game.js` 共 300 行、17.9 KB
+- 檔案：`games/nap/card.html`、`games/nap/cover.webp`、`games/nap/game.js`、`games/nap/icon.svg`、`games/nap/view.html`；`game.js` 共 300 行、17.9 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「32. 偷睡大師 Nap Master（nap）」（下方「規則摘要」已複製）
 

@@ -7,7 +7,7 @@
 - 網址：`#baby`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。」｜立即開玩 · 居家逃亡
 - 追蹤名稱（GA4 `game_name`）：寶寶逃洗澡，`game_id` 為 `baby`
-- 檔案：`games/baby/card.html`、`games/baby/game.js`、`games/baby/icon.svg`、`games/baby/view.html`；`game.js` 共 167 行、12.5 KB
+- 檔案：`games/baby/card.html`、`games/baby/cover.webp`、`games/baby/game.js`、`games/baby/icon.svg`、`games/baby/view.html`；`game.js` 共 167 行、12.5 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「31. 寶寶逃洗澡 Baby Bath Escape（baby）」（下方「規則摘要」已複製）
 
