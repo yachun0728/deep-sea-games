@@ -1153,6 +1153,59 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 .share-dialog button:disabled{opacity:.5;cursor:default}
 .share-dialog-note{min-height:21px;margin:10px 0 0;color:var(--tc-muted,#acb5c2);text-align:center}
 
+/* Mobile-first full-screen play for canvas games (class .fs-game on .console, .fs-exit button).
+   Desktop keeps the original two-column layout; the exit button is hidden there. */
+.fs-exit{display:none}
+#view-runner{--fs-bg:#060e1c}
+#view-sneak{--ar:.6667;--fs-bg:#1d2036}
+#view-fishing{--ar:.9286;--fs-bg:#06263a}
+#view-dream{--ar:1.0833;--fs-bg:#0b1a33}
+#view-bird,#view-cat{--ar:.7143;--fs-bg:#12203a}
+#view-reaper{--ar:.7143;--fs-bg:#1b1630}
+#view-elevator{--ar:.8966;--fs-bg:#101d2e}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  html:has(.view:not([hidden]) .fs-game),html:has(#view-boba:not([hidden])){overflow:hidden}
+  .view:not([hidden]) .fs-game{position:fixed;inset:0;z-index:1200;display:block;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:var(--fs-bg,#0b1626);overscroll-behavior:none;-webkit-touch-callout:none}
+  .view:not([hidden]) .fs-game>:first-child{position:relative;display:flex;justify-content:center;align-items:flex-start;width:100%;height:100%;margin:0;border:0;border-radius:0;background:none;overflow:visible}
+  .view:not([hidden]) .fs-game>:first-child canvas{width:min(100%,calc((100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * var(--ar,.6667)));height:auto;max-height:none;object-fit:fill}
+  #view-runner:not([hidden]) .fs-game .runner-stage canvas{width:100%;height:100%}
+  .fs-game .fs-exit{display:grid;place-items:center;position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 8px);left:calc(env(safe-area-inset-left) + 8px);width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);font:700 21px system-ui;cursor:pointer}
+  .fs-game .side,.fs-game .side .panel{display:contents}
+  .fs-game .stats{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 8px);left:calc(env(safe-area-inset-left) + 60px);right:calc(env(safe-area-inset-right) + 8px);display:flex;gap:5px;margin:0;pointer-events:none}
+  .fs-game .stats~.stats{top:calc(env(safe-area-inset-top) + 52px);left:calc(env(safe-area-inset-left) + 8px)}
+  .fs-game .stats>div{flex:1;min-width:0;padding:3px 6px;border-radius:8px;background:rgba(5,12,24,.72)}
+  .fs-game .stats dt{font-size:10px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fs-game .stats dd{font-size:13px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fs-game .queue-watch{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 52px);left:calc(env(safe-area-inset-left) + 8px);right:calc(env(safe-area-inset-right) + 8px);margin:0;padding:4px 10px;font-size:12px;text-align:center;border-radius:99px;pointer-events:none}
+  .fs-game .stats~.stats~.queue-watch{top:calc(env(safe-area-inset-top) + 96px)}
+  .fs-game .field{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 88px);left:calc(env(safe-area-inset-left) + 8px);right:calc(env(safe-area-inset-right) + 8px);margin:0;padding:4px 10px;border-radius:10px;background:rgba(5,12,24,.72);pointer-events:none}
+  .fs-game .field .hint{display:none}
+  .fs-game .msg{position:absolute;z-index:3;left:calc(env(safe-area-inset-left) + 12px);right:calc(env(safe-area-inset-right) + 12px);bottom:calc(env(safe-area-inset-bottom) + 92px);margin:0;padding:3px 10px;border-radius:12px;background:rgba(5,12,24,.78);color:#e8f2ff;font-size:12px;line-height:1.4;text-align:center;pointer-events:none}
+  .fs-game .msg:empty{display:none}
+  .fs-game [class$="-hold"]{position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);min-height:64px;font-size:17px;touch-action:manipulation}
+  .fs-game [class$="-hold"]:disabled{display:none}
+  .fs-game .side .go:not(:disabled){position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);min-height:64px;font-size:17px;touch-action:manipulation}
+  .fs-game .side .go:disabled,.fs-game .runner-controls{display:none}
+  .view:has(.fs-game)>.game-exit-link,#view-boba>.game-exit-link,#view-boba>.mobile-scroll-pad{display:none}
+  .fs-game .share-result:not([hidden]){position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);margin:0}
+  .fs-game [id$="-rank-status"]{display:none}
+  .fs-game [id$="-rank-retry"]:not([hidden]){position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 140px);min-height:44px}
+  .fs-game .hint,.fs-game .fishing-name,.fs-game .queue-legend,.fs-game .reaper-legend,.fs-game .stage-hint,.fs-game~.rules,.fs-game~.fishing-ladder,.fs-game~.mobile-scroll-pad,.fs-game .mobile-scroll-pad{display:none}
+  /* Boba: original iframe fills the screen under a slim top bar. */
+  #view-boba:not([hidden]){position:fixed;inset:0;z-index:1200;display:flex;flex-direction:column;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:#f6d3df;overscroll-behavior:none}
+  #view-boba .boba-platform-bar{flex:none;padding:6px 8px;gap:8px;background:#fff6f9}
+  #view-boba .boba-platform-bar .hint{display:none}
+  #view-boba .fs-exit{display:grid;place-items:center;flex:none;width:44px;height:44px;padding:0;border:1px solid #ffc2d4;border-radius:10px;background:#fff;color:#7a4a3c;font:700 21px system-ui;cursor:pointer}
+  /* Top bar shows only the exit button and, after a round, the share button. */
+  #view-boba .boba-platform-bar .chip,#view-boba #boba-msg,#view-boba #boba-rank-status{display:none}
+  #view-boba .share-result:not([hidden]){position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 6px);right:calc(env(safe-area-inset-right) + 8px);width:auto;min-height:44px;margin:0;padding:0 14px;border-color:#ffc2d4;background:#fff;color:#7a4a3c;font-size:15px;white-space:nowrap}
+  #view-boba .share-result i{color:#ff6f9c}
+  #view-boba #boba-rank-retry:not([hidden]){position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 6px);left:calc(env(safe-area-inset-left) + 62px);min-height:44px;padding:0 12px}
+  #view-boba .boba-stage{flex:1;min-height:0;border:0;border-radius:0}
+  #view-boba .boba-stage iframe{width:100%;height:100%;min-height:0}
+  #view-boba~.rules{display:none}
+}
+
 #view-blaster .bl-stage{display:grid;place-items:center;min-width:0}
 #view-blaster .bl-board{position:relative;width:min(100%,400px);aspect-ratio:2/3;overflow:hidden;border-radius:var(--radius);background:#061c2c}
 #bl-canvas{display:block;width:100%;height:100%;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -4170,8 +4223,8 @@ html.frontier-immersive{overflow:hidden}
   </section>
 
   <section class="view" id="view-dream" hidden>
-    <div class="console">
-      <div class="timing-stage"><canvas id="dr-canvas" width="520" height="480" aria-label="時序修復：在青綠色目標區域停針"></canvas></div>
+    <div class="console fs-game">
+      <div class="timing-stage"><canvas id="dr-canvas" width="520" height="480" aria-label="時序修復：在青綠色目標區域停針"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="時序修復操作">
         <dl class="stats"><div><dt>目前關卡</dt><dd id="dr-stage">第 1 關</dd></div></dl>
         <input id="dr-amount" type="hidden" value="0">
@@ -4185,8 +4238,8 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與點數</summary><p>續關不限次數，關卡沒有上限。指針停在青綠色區域就過關，錯過則本局結束；沒有額外成就獎勵，關卡成績不轉換成錢包點數。</p><p>目標範圍逐漸縮小，最低 24°；指針逐漸加速，最高每秒 2.4 弧度。第 11 關起每關最多反轉一次，第 21 關起最多兩次。反轉前中心燈閃爍並顯示文字至少 0.5 秒；接近目標區時延後反轉，兩次反轉至少間隔 1.5 秒，反轉不改速度。引入反轉的初期暫緩縮圈與加速。</p><p>切換遊戲、背景分頁或視窗失焦會暫停，返回可繼續；過關等待不計有效遊玩時間。重新整理會放棄本局，點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-runner" hidden>
-    <div class="console">
-      <div class="runner-stage"><canvas id="rn-canvas" width="400" height="600" tabindex="0" aria-label="深海跑酷：點左半邊或右半邊換道"></canvas></div>
+    <div class="console fs-game">
+      <div class="runner-stage"><canvas id="rn-canvas" width="400" height="600" tabindex="0" aria-label="深海跑酷：點左半邊或右半邊換道"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="跑酷操作">
         <dl class="stats"><div><dt>本局距離</dt><dd id="rn-distance">0 m</dd></div><div><dt>最佳紀錄</dt><dd id="rn-best">0 m</dd></div><div><dt>下一個獎勵</dt><dd id="rn-next">3500 m · +3</dd></div></dl>
         <dl class="stats"><div><dt>潛行速度</dt><dd id="rn-speed">1.0×</dd></div></dl>
@@ -4202,8 +4255,8 @@ html.frontier-immersive{overflow:hidden}
   </section>
 
   <section class="view" id="view-elevator" hidden>
-    <div class="console">
-      <div class="queue-stage"><canvas id="eq-canvas" width="520" height="580" aria-label="升降艙插隊：無盡加長的隊伍，背對時向前插隊，警示可能轉為回頭"></canvas></div>
+    <div class="console fs-game">
+      <div class="queue-stage"><canvas id="eq-canvas" width="520" height="580" aria-label="升降艙插隊：無盡加長的隊伍，背對時向前插隊，警示可能轉為回頭"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="插隊操作">
         <dl class="stats"><div><dt>已插過乘客</dt><dd id="eq-progress">0 / 10</dd></div><div><dt>前方還有</dt><dd id="eq-remaining">10 人</dd></div><div><dt>目前隊伍</dt><dd id="eq-stage">第 1 隊</dd></div></dl>
         <dl class="stats"><div><dt>本局累計超過</dt><dd id="eq-total">0 人</dd></div><div><dt>最佳紀錄</dt><dd id="eq-best">0 人</dd></div><div><dt>下一個獎勵</dt><dd id="eq-next">40 人 · +3</dd></div></dl>
@@ -4213,6 +4266,7 @@ html.frontier-immersive{overflow:hidden}
         <button class="go" id="eq-go" type="button" data-mode="bet">開始排隊</button>
         <p class="msg" id="eq-msg" aria-live="polite">每點一下插過一位，移動時被前方任一乘客看見即失敗；不動不會被抓。</p>
         <p class="hint">點「往前插一位」、遊戲畫面或按 <kbd>空白鍵</kbd>。警示本身不會抓人，但沒有保證安全時間。</p>
+        <p id="eq-rank-status" role="status" hidden></p>    <button id="eq-rank-retry" type="button" hidden>重送排行榜成績</button>
       </section></div>
     </div>
     <details class="rules"><summary>玩法、風險與點數</summary>
@@ -4221,12 +4275,10 @@ html.frontier-immersive{overflow:hidden}
       <p>累計插過的人數達到特定數量時，獎勵點數當場入帳，之後被發現也不會收回：40 人 +3、55 人 +7（累計 10 點，累計獲得）、70 人 +15、90 人 +30，之後每多 20 人 +40。這是固定點數，沒有倍率。這些人數刻意設得很高，一般玩家大約能插過 25 人。</p>
       <p>切換遊戲或背景分頁會暫停。重新整理會放棄本局，已入帳的點數會保留。點數與其他遊戲共用，沒有現金價值。</p>
     </details>
-    <p id="eq-rank-status" role="status" hidden></p>
-    <button id="eq-rank-retry" type="button" hidden>重送排行榜成績</button>
   </section>
 
   <section class="view" id="view-sneak" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="sk-canvas" tabindex="0" width="400" height="600" aria-label="偷偷下班：按住前進，放開假裝工作，老闆回頭時不要動"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="sk-canvas" tabindex="0" width="400" height="600" aria-label="偷偷下班：按住前進，放開假裝工作，老闆回頭時不要動"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="偷偷下班操作">
         <dl class="stats"><div><dt>目前關卡</dt><dd id="sk-stage">1 關</dd></div><div><dt>下班進度</dt><dd id="sk-progress">0%</dd></div><div><dt>最佳紀錄</dt><dd id="sk-best">0 關</dd></div><div><dt>下一個獎勵</dt><dd id="sk-next">完成 9 關 · +3</dd></div></dl>
         <div class="queue-watch" id="sk-signal" role="status" aria-live="polite" data-state="away">等待開始</div><p class="hint" id="sk-difficulty"></p>
@@ -4242,7 +4294,7 @@ html.frontier-immersive{overflow:hidden}
   </section>
 
   <section class="view" id="view-fishing" hidden>
-    <div class="console"><div class="fishing-stage"><canvas id="fi-canvas" width="520" height="560" tabindex="0" aria-label="深海釣手：按住收線、放開卸力，把魚拉上岸"></canvas></div>
+    <div class="console fs-game"><div class="fishing-stage"><canvas id="fi-canvas" width="520" height="560" tabindex="0" aria-label="深海釣手：按住收線、放開卸力，把魚拉上岸"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="釣魚操作">
         <dl class="stats"><div><dt>挑戰第幾條</dt><dd id="fi-number">第 1 條</dd></div><div><dt>距離岸邊</dt><dd id="fi-distance">20.0 m</dd></div><div><dt>最佳紀錄</dt><dd id="fi-best">0 條</dd></div><div><dt>下一個獎勵</dt><dd id="fi-next">釣到 10 條 · +3</dd></div></dl>
         <p class="fishing-name" id="fi-name">小丑魚</p><div class="queue-watch" id="fi-signal" role="status" aria-live="polite" data-state="calm">下竿後，觀察魚的動作</div>
@@ -4251,11 +4303,10 @@ html.frontier-immersive{overflow:hidden}
         <button class="go" id="fi-go" type="button" data-mode="bet">下竿</button>
         <button class="chip fishing-hold" id="fi-hold" type="button" disabled>按住收線 · 放開卸力</button>
         <p class="msg" id="fi-msg" aria-live="polite">先下竿，再按住收線；掙扎時放開卸力，避免斷線。</p><p class="hint">可按住畫面、收線按鈕或 <kbd>空白鍵</kbd>。放太久魚會游遠，線太鬆可能脫鉤。</p>
+        <p id="fi-rank-status" role="status" hidden></p>    <button id="fi-rank-retry" type="button" hidden>重送排行榜成績</button>
       </section></div>
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>按住收線可以拉近魚，但張力會上升；放開可卸力，但魚會逐漸游遠。平穩時可收線，水花變大時要準備卸力；猛烈掙扎時硬拉會快速提高張力，疲累時收線最有效。</p><p>沒有終點：每釣上一條，下一條魚馬上上鉤，直到斷線或脫鉤這一局才結束。魚越大，距離越遠、掙扎越久，硬拉的張力也上升更快；約第 20 條之後難度不再增加。張力達 100 就斷線；低於或等於 8 持續 1.2 秒會脫鉤。拖時間、等待與放線都沒有幫助。</p><p>釣到特定條數時，獎勵點數當場入帳，之後斷線也不會收回：10 條 +3、12 條 +7（累計 10 點，累計獲得）、14 條 +15、17 條 +30，之後每多 3 條 +40。這是固定點數，沒有倍率。這些條數刻意設得很高，一般玩家大約釣 8 條左右。</p><p>切換遊戲或背景分頁會暫停並放開收線，回來需要重新按住。視窗失焦會放開收線。重新整理會放棄本局，已入帳的點數會保留。點數與其他遊戲共用。</p></details>
-    <p id="fi-rank-status" role="status" hidden></p>
-    <button id="fi-rank-retry" type="button" hidden>重送排行榜成績</button>
   </section>
 
   <section class="view" id="view-campaign" hidden>
@@ -4275,14 +4326,14 @@ html.frontier-immersive{overflow:hidden}
 </section>
 
   <section class="view" id="view-boba" hidden>
-    <div class="boba-platform-bar"><p class="hint">沒有額外成就獎勵。</p><button class="chip" id="boba-finish" type="button" disabled>結束本局</button></div>
+    <div class="boba-platform-bar"><button class="fs-exit" type="button" aria-label="退出遊戲">←</button><p class="hint">沒有額外成就獎勵。</p><button class="chip" id="boba-finish" type="button" disabled>結束本局</button></div>
     <p class="msg" id="boba-msg" aria-live="polite">原版畫面完整保留。先按遊戲裡的開始按鈕，</p>
     <p id="boba-rank-status" role="status" hidden></p><button id="boba-rank-retry" type="button" hidden>重送排行榜成績</button>
     <div class="boba-stage"><iframe id="boba-frame" title="插珍奶 Boba Straw Won't Go In" allow="autoplay; clipboard-write; web-share"></iframe></div>
   </section>
 
   <section class="view" id="view-cat" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="ct-canvas" tabindex="0" width="400" height="560" aria-label="屋頂貓貓：點一下跳躍，按越久跳越高，別掉進屋頂間的空隙"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="ct-canvas" tabindex="0" width="400" height="560" aria-label="屋頂貓貓：點一下跳躍，按越久跳越高，別掉進屋頂間的空隙"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="屋頂貓貓操作">
         <dl class="stats"><div><dt>本局距離</dt><dd id="ct-score">0 m</dd></div><div><dt>最佳紀錄</dt><dd id="ct-best">0 m</dd></div><div><dt>下一個獎勵</dt><dd id="ct-next">150 m · +3</dd></div></dl>
         <input id="ct-amount" type="hidden" value="0">
@@ -4297,7 +4348,7 @@ html.frontier-immersive{overflow:hidden}
   </section>
 
   <section class="view" id="view-bird" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="pb-canvas" tabindex="0" width="400" height="560" aria-label="便便鳥大戰狼群：點畫面跳躍，狼王出現時按右下角的便便按鈕"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="pb-canvas" tabindex="0" width="400" height="560" aria-label="便便鳥大戰狼群：點畫面跳躍，狼王出現時按右下角的便便按鈕"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="便便鳥操作">
         <dl class="stats"><div><dt>本局距離</dt><dd id="pb-score">0 m</dd></div><div><dt>擊退狼王</dt><dd id="pb-boss">0 隻</dd></div><div><dt>最佳紀錄</dt><dd id="pb-best">0 m</dd></div></dl>
         <input id="pb-amount" type="hidden" value="0">
@@ -4338,7 +4389,7 @@ html.frontier-immersive{overflow:hidden}
   <p id="np-rank-status" role="status" hidden></p><button id="np-rank-retry" type="button" hidden>重送排行榜成績</button>
 </section>
   <section class="view" id="view-reaper" hidden>
-    <div class="console"><div class="reaper-stage"><canvas id="rp-canvas" width="400" height="560" tabindex="0" aria-label="死神打工：普通靈魂經過金色區域時接走，帶綠色通行證的靈魂要放行"></canvas></div>
+    <div class="console fs-game"><div class="reaper-stage"><canvas id="rp-canvas" width="400" height="560" tabindex="0" aria-label="死神打工：普通靈魂經過金色區域時接走，帶綠色通行證的靈魂要放行"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="死神打工操作">
         <dl class="stats"><div><dt>目前班次</dt><dd id="rp-level">第 1 班</dd></div><div><dt>本班進度</dt><dd id="rp-progress">0 / 10</dd></div><div><dt>剩餘愛心</dt><dd id="rp-lives">3 / 3</dd></div></dl>
         <dl class="stats"><div><dt>累計接走</dt><dd id="rp-score">0 位</dd></div><div><dt>最佳紀錄</dt><dd id="rp-best">0 位</dd></div><div><dt>下一個獎勵</dt><dd id="rp-next">120 位 · +3</dd></div></dl>
@@ -12834,7 +12885,8 @@ const L=()=>changeLane(-1),R=()=>changeLane(1);
 $('rn-rank-retry').addEventListener('click',sendRun);
 $('rn-go').addEventListener('click',start);
 addEventListener('keydown',e=>{if($('view-runner').hidden||document.hidden||st!=='run'||e.metaKey||e.ctrlKey||e.altKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;if(['ArrowLeft','ArrowRight','a','d'].includes(e.key)){e.preventDefault();if(e.key==='ArrowLeft'||e.key==='a')L();else R();}});
-c.addEventListener('pointerdown',e=>{if(st!=='run'||$('view-runner').hidden||document.hidden)return;e.preventDefault();c.focus();const r=c.getBoundingClientRect();if(e.clientX<r.left+r.width/2)L();else R();});
+['dblclick','gesturestart','contextmenu'].forEach(n=>c.parentNode.parentNode.addEventListener(n,e=>e.preventDefault()));
+c.parentNode.parentNode.addEventListener('pointerdown',e=>{if(st!=='run'||$('view-runner').hidden||document.hidden||e.target.closest('button,a,summary,input'))return;e.preventDefault();c.focus();const r=c.getBoundingClientRect();if(e.clientX<r.left+r.width/2)L();else R();});
 document.querySelectorAll('[data-run]').forEach(b=>b.addEventListener('click',()=>{if(st!=='run')return;({left:L,right:R})[b.dataset.run]();c.focus()}));
 function loop(t){
  const ms=Math.min(50,Math.max(0,t-last)||0);last=t;
@@ -16955,6 +17007,14 @@ if(typeof module!=='undefined')module.exports=rocketChairRules;
     });
     function resize(){groups.forEach(function(sync){sync();});}
     if(media.addEventListener)media.addEventListener('change',resize);else if(media.addListener)media.addListener(resize);
+  })();
+
+  /* Full-screen games: the exit button returns to the lobby (same route as the header's back link). */
+  (function(){
+    document.addEventListener('click',function(e){
+      var b=e.target.closest&&e.target.closest('.fs-exit');
+      if(b)window.location.hash='lobby';
+    });
   })();
   /* Navigation uses separate DOM controls; game pointer listeners are untouched. */
   (function(){

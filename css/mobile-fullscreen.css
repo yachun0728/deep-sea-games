@@ -1,0 +1,52 @@
+/* Mobile-first full-screen play for canvas games (class .fs-game on .console, .fs-exit button).
+   Desktop keeps the original two-column layout; the exit button is hidden there. */
+.fs-exit{display:none}
+#view-runner{--fs-bg:#060e1c}
+#view-sneak{--ar:.6667;--fs-bg:#1d2036}
+#view-fishing{--ar:.9286;--fs-bg:#06263a}
+#view-dream{--ar:1.0833;--fs-bg:#0b1a33}
+#view-bird,#view-cat{--ar:.7143;--fs-bg:#12203a}
+#view-reaper{--ar:.7143;--fs-bg:#1b1630}
+#view-elevator{--ar:.8966;--fs-bg:#101d2e}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  html:has(.view:not([hidden]) .fs-game),html:has(#view-boba:not([hidden])){overflow:hidden}
+  .view:not([hidden]) .fs-game{position:fixed;inset:0;z-index:1200;display:block;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:var(--fs-bg,#0b1626);overscroll-behavior:none;-webkit-touch-callout:none}
+  .view:not([hidden]) .fs-game>:first-child{position:relative;display:flex;justify-content:center;align-items:flex-start;width:100%;height:100%;margin:0;border:0;border-radius:0;background:none;overflow:visible}
+  .view:not([hidden]) .fs-game>:first-child canvas{width:min(100%,calc((100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * var(--ar,.6667)));height:auto;max-height:none;object-fit:fill}
+  #view-runner:not([hidden]) .fs-game .runner-stage canvas{width:100%;height:100%}
+  .fs-game .fs-exit{display:grid;place-items:center;position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 8px);left:calc(env(safe-area-inset-left) + 8px);width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);font:700 21px system-ui;cursor:pointer}
+  .fs-game .side,.fs-game .side .panel{display:contents}
+  .fs-game .stats{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 8px);left:calc(env(safe-area-inset-left) + 60px);right:calc(env(safe-area-inset-right) + 8px);display:flex;gap:5px;margin:0;pointer-events:none}
+  .fs-game .stats~.stats{top:calc(env(safe-area-inset-top) + 52px);left:calc(env(safe-area-inset-left) + 8px)}
+  .fs-game .stats>div{flex:1;min-width:0;padding:3px 6px;border-radius:8px;background:rgba(5,12,24,.72)}
+  .fs-game .stats dt{font-size:10px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fs-game .stats dd{font-size:13px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fs-game .queue-watch{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 52px);left:calc(env(safe-area-inset-left) + 8px);right:calc(env(safe-area-inset-right) + 8px);margin:0;padding:4px 10px;font-size:12px;text-align:center;border-radius:99px;pointer-events:none}
+  .fs-game .stats~.stats~.queue-watch{top:calc(env(safe-area-inset-top) + 96px)}
+  .fs-game .field{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 88px);left:calc(env(safe-area-inset-left) + 8px);right:calc(env(safe-area-inset-right) + 8px);margin:0;padding:4px 10px;border-radius:10px;background:rgba(5,12,24,.72);pointer-events:none}
+  .fs-game .field .hint{display:none}
+  .fs-game .msg{position:absolute;z-index:3;left:calc(env(safe-area-inset-left) + 12px);right:calc(env(safe-area-inset-right) + 12px);bottom:calc(env(safe-area-inset-bottom) + 92px);margin:0;padding:3px 10px;border-radius:12px;background:rgba(5,12,24,.78);color:#e8f2ff;font-size:12px;line-height:1.4;text-align:center;pointer-events:none}
+  .fs-game .msg:empty{display:none}
+  .fs-game [class$="-hold"]{position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);min-height:64px;font-size:17px;touch-action:manipulation}
+  .fs-game [class$="-hold"]:disabled{display:none}
+  .fs-game .side .go:not(:disabled){position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);min-height:64px;font-size:17px;touch-action:manipulation}
+  .fs-game .side .go:disabled,.fs-game .runner-controls{display:none}
+  .view:has(.fs-game)>.game-exit-link,#view-boba>.game-exit-link,#view-boba>.mobile-scroll-pad{display:none}
+  .fs-game .share-result:not([hidden]){position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);margin:0}
+  .fs-game [id$="-rank-status"]{display:none}
+  .fs-game [id$="-rank-retry"]:not([hidden]){position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 140px);min-height:44px}
+  .fs-game .hint,.fs-game .fishing-name,.fs-game .queue-legend,.fs-game .reaper-legend,.fs-game .stage-hint,.fs-game~.rules,.fs-game~.fishing-ladder,.fs-game~.mobile-scroll-pad,.fs-game .mobile-scroll-pad{display:none}
+  /* Boba: original iframe fills the screen under a slim top bar. */
+  #view-boba:not([hidden]){position:fixed;inset:0;z-index:1200;display:flex;flex-direction:column;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:#f6d3df;overscroll-behavior:none}
+  #view-boba .boba-platform-bar{flex:none;padding:6px 8px;gap:8px;background:#fff6f9}
+  #view-boba .boba-platform-bar .hint{display:none}
+  #view-boba .fs-exit{display:grid;place-items:center;flex:none;width:44px;height:44px;padding:0;border:1px solid #ffc2d4;border-radius:10px;background:#fff;color:#7a4a3c;font:700 21px system-ui;cursor:pointer}
+  /* Top bar shows only the exit button and, after a round, the share button. */
+  #view-boba .boba-platform-bar .chip,#view-boba #boba-msg,#view-boba #boba-rank-status{display:none}
+  #view-boba .share-result:not([hidden]){position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 6px);right:calc(env(safe-area-inset-right) + 8px);width:auto;min-height:44px;margin:0;padding:0 14px;border-color:#ffc2d4;background:#fff;color:#7a4a3c;font-size:15px;white-space:nowrap}
+  #view-boba .share-result i{color:#ff6f9c}
+  #view-boba #boba-rank-retry:not([hidden]){position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 6px);left:calc(env(safe-area-inset-left) + 62px);min-height:44px;padding:0 12px}
+  #view-boba .boba-stage{flex:1;min-height:0;border:0;border-radius:0}
+  #view-boba .boba-stage iframe{width:100%;height:100%;min-height:0}
+  #view-boba~.rules{display:none}
+}
