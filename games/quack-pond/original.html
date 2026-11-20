@@ -435,7 +435,7 @@ function win(){
   if(stars>old)progress.stars[level]=stars;
   progress.max=Math.max(progress.max,Math.min(level+1,TOTAL));
   save('qp_progress',progress);
-  roundEnd('win',{stars});
+  roundEnd('win',{stars,columns:marks.map(row=>row.indexOf(2))});
   let s='';for(let i=0;i<3;i++)s+='<svg class="'+(i<stars?'on':'off')+'" viewBox="0 0 50 50"><use href="#star"/></svg>';
   $('winStars').innerHTML=s;
   $('winInfo').textContent=t('time')(fmt(ms))+(level>=TOTAL?t('allClear'):'');

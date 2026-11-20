@@ -7,7 +7,7 @@
 - 網址：`#mirror-twins`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「同時操控兩位太空人，其中一位左右相反，一起走進傳送艙。」｜立即開玩 · 10 關
 - 追蹤名稱（GA4 `game_name`）：鏡像雙子，`game_id` 為 `mirror-twins`
-- 檔案：`games/mirror-twins/card.html`、`games/mirror-twins/cover.webp`、`games/mirror-twins/game.js`、`games/mirror-twins/icon.svg`、`games/mirror-twins/original.html`、`games/mirror-twins/style.css`、`games/mirror-twins/view.html`；`game.js` 共 62 行、5.3 KB
+- 檔案：`games/mirror-twins/card.html`、`games/mirror-twins/cover.webp`、`games/mirror-twins/game.js`、`games/mirror-twins/icon.svg`、`games/mirror-twins/original.html`、`games/mirror-twins/style.css`、`games/mirror-twins/view.html`；`game.js` 共 64 行、5.5 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「43. 鏡像雙子 Mirror Twins（mirror-twins）」（下方「規則摘要」已複製）
 
@@ -22,7 +22,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`mtL` L3、`mtSay` L4、`mtStored` L5、`mtCleared` L6、`mtUI` L7、`mtValid` L11、`mtFinish` L37、`mtRoute` L45
+`mtL` L3、`mtSay` L4、`mtStored` L5、`mtCleared` L6、`mtUI` L7、`mtValid` L11、`mtFinish` L39、`mtRoute` L47
 
 ## 錢包與結算接點
 
@@ -30,7 +30,7 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L26 `mtValid`：`S.balance+=got;`
+- L28 `mtValid`：`S.balance+=got;`
 
 **餘額檢查**
 - L15 `mtValid`：`if(ENTRY_FEE>S.balance){mtSay(LOW_MSG,'lose');`
@@ -41,11 +41,11 @@
 ## 追蹤（GA4）
 
 - L17 `mtValid`：`MIRR.analytics=AN.start('mirror-twins',ENTRY_FEE);`
-- L27 `mtValid`：`AN.progress(MIRR.analytics,{stage:level+1,step:MIRR.cleared,bonus_points:got,total_bonus_points:MIRR.earned});`
-- L33 `mtValid`：`if(mtValid(source)&&MIRR.active)AN.progress(MIRR.analytics,{phase:'pause'},true);`
-- L34 `mtValid`：`if(mtValid(source)&&MIRR.active)AN.resume(MIRR.analytics);`
-- L39 `mtFinish`：`AN.end(MIRR.analytics,MIRR.earned,'complete',{step:MIRR.cleared});`
-- L44 `mtFinish`：`AN.end(MIRR.analytics,MIRR.earned,'abandoned',{step:MIRR.cleared});`
+- L29 `mtValid`：`AN.progress(MIRR.analytics,{stage:level+1,step:MIRR.cleared,bonus_points:got,total_bonus_points:MIRR.earned});`
+- L35 `mtValid`：`if(mtValid(source)&&MIRR.active)AN.progress(MIRR.analytics,{phase:'pause'},true);`
+- L36 `mtValid`：`if(mtValid(source)&&MIRR.active)AN.resume(MIRR.analytics);`
+- L41 `mtFinish`：`AN.end(MIRR.analytics,MIRR.earned,'complete',{step:MIRR.cleared});`
+- L46 `mtFinish`：`AN.end(MIRR.analytics,MIRR.earned,'abandoned',{step:MIRR.cleared});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -61,6 +61,8 @@
 - 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
+
+**訪客排行榜**：每過一關送出該關的移動方向序列，Worker 用 `shared/mirror-twins-rules.cjs` 重播驗證；分數＝已驗證的不同關卡數（每關一次）。
 
 定位：父頁 `games/mirror-twins/game.js`（`MIRR`、`window.deepSeaMirrorTwins`），子頁 `games/mirror-twins/original.html` 以 srcdoc 載入（同一口氣探險模式，右側 `.console` 面板）。2026-11-18 由使用者提供的單檔 HTML（games-innovation/mirror-twins.html）接入平台，保留原玩法、關卡與數值。回合制推箱類解謎：一次操控兩位太空人，藍色照按鍵方向、橘色左右相反；撞到小行星的那位停住，兩人同時站進各自傳送艙才過關，踩到雷射地雷自動退回上一步。最少步數由 BFS（`solve`）計算，依步數給 1～3 星。
 

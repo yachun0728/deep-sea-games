@@ -507,6 +507,8 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 
 ## 37. 打磚塊 Breakout（breakout）
 
+**訪客排行榜**：分數＝Worker 以種子重播操作碼後的分數（`shared/breakout-rules.cjs`，輸入碼 406 種，10 毫秒固定步進，結束由輸入結尾）。沒連上後端照常遊玩、不計排行。
+
 定位：`games/breakout/game.js` 的獨立 IIFE（狀態為 `st`／`level`／`score`／`lives`，畫布 `br-canvas`，開始鈕 `br-go`）。免費懷舊分類，完全免費、不限次數：不扣點、不發點、不碰 `S.balance`，也沒有 BONUS；重設為 500 點的進行中防護不需涵蓋。
 
 玩法：用擋板接住並反彈小球，打光全部磚塊即過關並進入下一關，無終點關卡。每局 3 顆球，漏接少一顆，用完結束。球打在擋板邊緣會斜飛；關卡越後磚塊列數越多（最多 8 列）、球越快（基準 300，每關 +25，上限 520），第 3 關起上方 2 列、第 6 關起 3 列為兩下才破的磚塊；版型每 4 關輪替（全滿、棋盤、空心、條紋）。打碎磚塊有 14% 機率掉道具：加寬擋板 12 秒、球速 ×0.72 持續 10 秒、多出兩顆球；道具只影響操作，不涉及點數。
@@ -610,6 +612,8 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 
 ## 43. 鏡像雙子 Mirror Twins（mirror-twins）
 
+**訪客排行榜**：每過一關送出該關的移動方向序列，Worker 用 `shared/mirror-twins-rules.cjs` 重播驗證；分數＝已驗證的不同關卡數（每關一次）。
+
 定位：父頁 `games/mirror-twins/game.js`（`MIRR`、`window.deepSeaMirrorTwins`），子頁 `games/mirror-twins/original.html` 以 srcdoc 載入（同一口氣探險模式，右側 `.console` 面板）。2026-11-18 由使用者提供的單檔 HTML（games-innovation/mirror-twins.html）接入平台，保留原玩法、關卡與數值。回合制推箱類解謎：一次操控兩位太空人，藍色照按鍵方向、橘色左右相反；撞到小行星的那位停住，兩人同時站進各自傳送艙才過關，踩到雷射地雷自動退回上一步。最少步數由 BFS（`solve`）計算，依步數給 1～3 星。
 
 - 入場：每局固定扣 `ENTRY_FEE`（10 點）。按右側「扣點開始一局」，或在子頁選單直接點一關，都走子頁 `ensureRound` → `deepSeaMirrorTwins.start` 由父頁驗證來源、檢查餘額後扣款並 `AN.start('mirror-twins')`；回傳 0 代表未扣款，子頁不開關。餘額不足顯示 `LOW_MSG`；進行中右側開始鈕停用、重複點擊不再扣。
@@ -664,6 +668,8 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 - 測試：`node tools/test_tetris.mjs`（父頁橋接與子頁流程）與 `node tools/test_freeplay_bridges.mjs`。
 
 ## 50. 不准跑調 Stay On Pitch（on-pitch）
+
+**訪客排行榜**：分數＝Worker 以種子重播操作碼後的關卡分數（`shared/on-pitch-rules.cjs`，10 毫秒固定步進）。沒連上後端或麥克風不可用時改用螢幕琴鍵仍可玩，只是以重播為準。
 
 定位：`games/on-pitch/game.js`（自帶 IIFE，對外只有 `window.deepSeaOnPitch`），畫面為 `#op-canvas`（400×720，直接畫在父頁，不用 iframe，因為 iframe 需要額外授權麥克風）。2026-11-19 由聲控原型改寫接入平台。
 

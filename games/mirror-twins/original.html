@@ -237,6 +237,7 @@ function touch() { const h = host(); if (h && roundOn && h.touch) h.touch(window
 
 // ---------- 狀態 ----------
 let lvIndex = 0, L, par = 0, a, b, history = [], moves = 0, state = 'menu';
+let rankMoves = [];
 let anim = null, queue = [], deadFlash = 0, winT = 0, bump = { a: null, b: null, t: 0 };
 
 function loadLevel(i) {
@@ -246,7 +247,7 @@ function loadLevel(i) {
   resize();
 }
 function resetRun() {
-  a = L.A.slice(); b = L.B.slice(); history = []; moves = 0; anim = null; queue = []; deadFlash = 0; winT = 0;
+  a = L.A.slice(); b = L.B.slice(); history = []; rankMoves = []; moves = 0; anim = null; queue = []; deadFlash = 0; winT = 0;
   updHud();
 }
 function updHud() {
@@ -261,6 +262,7 @@ function tryMove(dx, dy) {
   const blockedA = eq(r.a, a), blockedB = eq(r.b, b);
   if (blockedA && blockedB) { bump = { a: [dx, dy], b: [-dx, dy], t: 1 }; return; }
   history.push([a, b, moves]);
+  rankMoves.push(DIRS.findIndex(dir=>dir[0]===dx&&dir[1]===dy));
   anim = { fa: a, fb: b, ta: r.a, tb: r.b, t: 0, dead: r.dead, win: r.win };
   bump = { a: blockedA ? [dx, dy] : null, b: blockedB ? [-dx, dy] : null, t: blockedA || blockedB ? 1 : 0 };
   a = r.a; b = r.b; moves++; updHud();
@@ -280,14 +282,14 @@ function finishAnim() {
 function undo(force) {
   if (!force && (state !== 'play' || anim)) return;
   const h = history.pop(); if (!h) return;
-  a = h[0]; b = h[1]; moves = h[2]; updHud();
+  a = h[0]; b = h[1]; moves = h[2]; rankMoves.length = moves; updHud();
 }
 function win() {
   state = 'win'; winT = 0;
   const stars = moves <= par ? 3 : moves <= Math.ceil(par * 1.5) ? 2 : 1;
   if ((bestStars[lvIndex] || 0) < stars) { bestStars[lvIndex] = stars; store.set('stars', bestStars); }
   if (lvIndex + 2 > unlocked) { unlocked = Math.min(LEVELS.length, lvIndex + 2); store.set('unlocked', unlocked); }
-  const h = host(), got = h && roundOn ? Math.max(0, Math.floor(Number(h.clear(window, lvIndex)) || 0)) : 0;
+  const h = host(), got = h && roundOn ? Math.max(0, Math.floor(Number(h.clear(window, lvIndex, rankMoves.slice())) || 0)) : 0;
   earned += got;
   document.getElementById('stars').innerHTML = [1, 2, 3].map(s => `<span class="${s <= stars ? '' : 'off'}">★</span>`).join('');
   winView = { moves, par, got };

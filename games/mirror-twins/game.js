@@ -19,9 +19,11 @@
       mtSay('{{tb:mirror-twins.say.003}}','',{fee:ENTRY_FEE});
       return true;
     },
-    clear:function(source,level){
+    clear:function(source,level,actions){
       if(!mtValid(source)||!MIRR.active)return 0;
       level=Math.floor(Number(level));if(!(level>=0&&level<MIRR_LEVELS))return 0;
+      import('./frontend/services/api.mjs').then(api=>api.submitPuzzleSolution('mirror-twins',[level+1,...(actions||[])]))
+        .catch(()=>mtSay('排行榜成績未能送出。','lose'));
       var got=0,repeat=!!MIRR.paid[level];MIRR.cleared++;
       if(!repeat&&MIRR.earned<MIRR_CAP){got=Math.min(MIRR_BONUS,MIRR_CAP-MIRR.earned);MIRR.paid[level]=true;MIRR.earned+=got;S.balance+=got;save();renderAll();}
       AN.progress(MIRR.analytics,{stage:level+1,step:MIRR.cleared,bonus_points:got,total_bonus_points:MIRR.earned});

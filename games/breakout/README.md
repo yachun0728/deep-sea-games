@@ -7,13 +7,13 @@
 - 網址：`#breakout`　分類：懷舊經典　狀態：顯示中
 - 大廳卡片：「移動擋板反彈小球，打光磚塊一關闖過一關。」｜不限次數 · 反應闖關
 - 追蹤名稱（GA4 `game_name`）：打磚塊，`game_id` 為 `breakout`
-- 檔案：`games/breakout/card.html`、`games/breakout/cover.webp`、`games/breakout/game.js`、`games/breakout/icon.svg`、`games/breakout/view.html`；`game.js` 共 228 行、14.3 KB
+- 檔案：`games/breakout/card.html`、`games/breakout/cover.webp`、`games/breakout/game.js`、`games/breakout/icon.svg`、`games/breakout/view.html`；`game.js` 共 150 行、10.2 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「37. 打磚塊 Breakout（breakout）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-breakout`、`br-canvas`、`br-level`、`br-score`、`br-lives`、`br-best`、`br-best-level`、`br-go`、`br-pause`、`br-msg`
+`view-breakout`、`br-canvas`、`br-level`、`br-score`、`br-lives`、`br-best`、`br-best-level`、`br-go`、`br-pause`、`br-msg`、`br-rank-status`、`br-rank-retry`
 
 ## 狀態與常數
 
@@ -21,10 +21,11 @@
 - L5 常數：`COLS`、`GAP`、`TOP`、`LEFT`
 - L6 常數：`COLORS`
 - L7 常數：`KEY_BEST`、`KEY_LEVEL`
+- L13 常數：`RULE_TEXTS`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`say` L15、`setText` L16、`baseSpeed` L17、`curSpeed` L18、`paddleWidth` L19、`buildLevel` L21、`serve` L32、`burst` L36、`pop` L37、`ui` L39、`start` L47、`finish` L54、`launch` L63、`togglePause` L68、`dropChance` L73、`hitBrick` L74、`applyDrop` L81、`stepBall` L97、`update` L121、`rr` L154、`tx` L157、`draw` L161、`moveTo` L190、`loop` L221
+`syncModel` L14、`act` L21、`launch` L22、`say` L28、`setText` L29、`ui` L31、`start` L39、`finish` L51、`togglePause` L62、`rr` L67、`tx` L70、`draw` L74、`moveTo` L103、`loop` L134
 
 ## 錢包與結算接點
 
@@ -42,10 +43,10 @@
 
 ## 追蹤（GA4）
 
-- L49 `start`：`analytics = AN.start('breakout', 0);`
-- L59 `finish`：`AN.end(analytics, 0, 'loss', { score: score, level: level, bricks: bricksBroken });`
-- L148 `update`：`AN.progress(analytics, { stage: level, step: level, score: score, level: level });`
-- L219 `moveTo`：`AN.end(analytics, 0, 'abandoned', { score: score, level: level, bricks: bricksBroken });`
+- L42 `start`：`analytics = AN.start('breakout', 0);`
+- L45 `start`：`AN.progress(analytics,data);`
+- L57 `finish`：`AN.end(analytics, 0, 'loss', { score: score, level: level, bricks: bricksBroken });`
+- L132 `moveTo`：`AN.end(analytics, 0, 'abandoned', { score: score, level: level, bricks: bricksBroken });`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -60,6 +61,8 @@
 - 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
 ## 規則摘要（取自 GAME_RULES.md）
+
+**訪客排行榜**：分數＝Worker 以種子重播操作碼後的分數（`shared/breakout-rules.cjs`，輸入碼 406 種，10 毫秒固定步進，結束由輸入結尾）。沒連上後端照常遊玩、不計排行。
 
 定位：`games/breakout/game.js` 的獨立 IIFE（狀態為 `st`／`level`／`score`／`lives`，畫布 `br-canvas`，開始鈕 `br-go`）。免費懷舊分類，完全免費、不限次數：不扣點、不發點、不碰 `S.balance`，也沒有 BONUS；重設為 500 點的進行中防護不需涵蓋。
 

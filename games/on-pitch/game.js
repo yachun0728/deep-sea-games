@@ -2,229 +2,7 @@
   function opRoute(active){ if(window.deepSeaOnPitch)window.deepSeaOnPitch.route(active); }
 (function(){
 /*CORE_START*/
-// ===== 核心：偵測器與遊戲邏輯（不碰 DOM，可在 Node 測試）=====
-const NOTE_KEYS = 'CDEFGAB';
-const SEMI = [0,2,4,5,7,9,11];
-const SOLF = ['Do','Re','Mi','Fa','Sol','La','Si'];
-const NOTE_HZ = SEMI.map(s => 440*Math.pow(2,(60+s-69)/12));
-const PC_NAMES = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
-const mod = (a,n) => ((a%n)+n)%n;
-function hzToMidi(f){ return 69+12*Math.log2(f/440); }
-function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
-
-// YIN 音高偵測。buf: Float32Array 時域資料；回傳 {hz, clarity} 或 null
-function detectPitch(buf, sr){
-  const N = buf.length;
-  let sum = 0;
-  for (let i=0;i<N;i++) sum += buf[i]*buf[i];
-  const rms = Math.sqrt(sum/N);
-  if (rms < 0.008) return null;
-  const tauMin = Math.max(2, Math.floor(sr/1200));
-  const tauMax = Math.min(Math.floor(sr/70), (N>>1)-1);
-  const W = N - tauMax;
-  const d = new Float32Array(tauMax+1);
-  for (let tau=1; tau<=tauMax; tau++){
-    let s = 0;
-    for (let j=0;j<W;j++){ const x = buf[j]-buf[j+tau]; s += x*x; }
-    d[tau] = s;
-  }
-  const cm = new Float32Array(tauMax+1);
-  cm[0] = 1;
-  let run = 0;
-  for (let tau=1; tau<=tauMax; tau++){
-    run += d[tau];
-    cm[tau] = run > 0 ? d[tau]*tau/run : 1;
-  }
-  const thr = 0.15;
-  let tauE = -1;
-  for (let tau=tauMin; tau<=tauMax; tau++){
-    if (cm[tau] < thr){
-      while (tau+1<=tauMax && cm[tau+1] < cm[tau]) tau++;
-      tauE = tau; break;
-    }
-  }
-  if (tauE < 0) return null;
-  let t = tauE;
-  if (t>1 && t<tauMax){
-    const a=cm[t-1], b=cm[t], c=cm[t+1];
-    const den = a - 2*b + c;
-    if (den !== 0) t = t + (a - c)/(2*den);
-  }
-  return { hz: sr/t, clarity: 1 - cm[tauE] };
-}
-
-function seq(str){ return str.split('').map(c => NOTE_KEYS.indexOf(c)); }
-function randSeq(rng, pool, n){
-  const out = []; let last = -1;
-  while (out.length < n){
-    const p = pool[Math.floor(rng()*pool.length)];
-    if (p === last) continue;
-    out.push(p); last = p;
-  }
-  return out;
-}
-
-function makeLevels(){
-  const CUE_FULL = { height:true,  label:'always', color:'always', tone:'target', toneOff:-1.5 };
-  const CUE_W3   = { height:false, label:'always', color:'always', tone:'target', toneOff:-1.5 };
-  const CUE_W4   = { height:false, label:'none',   color:'flash',  tone:'target', toneOff:-1.5, flashOff:-1.5 };
-  const worlds = [
-    { name:'{{t:on-pitch.msg.001}}',   tol:45, hold:0.20, win:1.4, gap:2.6, cues:CUE_FULL },
-    { name:'{{t:on-pitch.msg.002}}',     tol:40, hold:0.25, win:1.2, gap:2.2, cues:CUE_FULL },
-    { name:'{{t:on-pitch.msg.003}}', tol:40, hold:0.25, win:1.1, gap:2.0, cues:CUE_W3 },
-    { name:'{{t:on-pitch.msg.004}}',   tol:35, hold:0.25, win:1.0, gap:2.0, cues:CUE_W4 },
-    { name:'{{t:on-pitch.msg.005}}',   tol:30, hold:0.25, win:1.0, gap:2.4, cues:null }
-  ];
-  const W5 = [
-    { height:false, label:'flash', color:'always', tone:null, flashOff:-1.5 },
-    { height:false, label:'none',  color:'flash',  tone:null, flashOff:-1.5 },
-    { height:false, label:'flash', color:'none',   tone:'distractor', toneOff:-2.0, flashOff:-1.3 },
-    { height:false, label:'flash', color:'none',   tone:null, flashOff:-2.0 }
-  ];
-  const names = [
-    ['{{t:on-pitch.msg.006}}','C E G','{{t:on-pitch.msg.007}}','{{t:on-pitch.msg.008}}'],
-    ['{{t:on-pitch.msg.009}}','{{t:on-pitch.msg.010}}','{{t:on-pitch.msg.011}}','Boss：Jingle Bells'],
-    ['{{t:on-pitch.msg.012}}','{{t:on-pitch.msg.013}}','{{t:on-pitch.msg.014}}','{{t:on-pitch.msg.015}}'],
-    ['{{t:on-pitch.msg.012}}','{{t:on-pitch.msg.013}}','{{t:on-pitch.msg.014}}','{{t:on-pitch.msg.016}}'],
-    ['{{t:on-pitch.msg.017}}','{{t:on-pitch.msg.018}}','{{t:on-pitch.msg.019}}','{{t:on-pitch.msg.020}}']
-  ];
-  const lv = [];
-  for (let w=0; w<5; w++){
-    for (let l=0; l<4; l++){
-      const seed = w*10+l+1, rng = mulberry32(seed*7919);
-      let notes;
-      if (w===0) notes = [seq('CGCGGCGC'), seq('CEGECGEGCE'), seq('CDEFGAB'), seq('CDEFGABBAGFEDCGC')][l];
-      else if (w===1) notes = [seq('CCGGAAGFFEEDDC'), seq('EDCDEEEDDDEGG'), seq('EEFGGFEDCCDEEDD'), seq('EEEEEEEGCDEFFFFFEE')][l];
-      else if (w===2 || w===3){
-        if (w===2 && l===3) notes = seq('CCGGAAGFFEEDDC');
-        else if (w===3 && l===3) notes = randSeq(rng,[0,1,2,3,4,5,6],12);
-        else notes = randSeq(rng, [[0,2,4],[0,1,2,4,5],[0,1,2,3,4,5,6]][l], 8+l*2);
-      } else notes = randSeq(rng,[0,1,2,3,4,5,6],10);
-      const cues = worlds[w].cues || W5[l];
-      lv.push({ id:(w+1)+'-'+(l+1), w:w, l:l, worldName:worlds[w].name, title:names[w][l],
-        notes:notes, tol:worlds[w].tol, hold:worlds[w].hold, win:worlds[w].win, gap:worlds[w].gap,
-        cues:cues, seed:seed, rowLabels: w<3 });
-    }
-  }
-  return lv;
-}
-function endlessLevel(){
-  return { id:'∞', w:4, l:0, worldName:'{{t:on-pitch.msg.021}}', title:'{{t:on-pitch.msg.021}}', notes:[], tol:30, hold:0.25, win:1.0, gap:2.4,
-    cues:{ height:false, label:'flash', color:'none', tone:null, flashOff:-1.5 }, seed:99, rowLabels:false, endless:true };
-}
-
-function createGame(level, opts){
-  opts = opts || {};
-  const strict = opts.octave === 'strict';
-  const rng = mulberry32((level.seed||1)*131);
-  const g = { level:level, strict:strict, t:0, lives:3, score:0, combo:0, maxCombo:0, walls:[], events:[],
-    flash:null, state:'play', stars:0, passes:0, tol:level.tol,
-    stats:{perfect:0,good:0,ok:0,fail:0}, view:{voice:false,p:null,cents:null,nearest:null,centsNear:0} };
-  const buf = [];
-  function addWall(note, arrive){
-    const w = { note:note, arrive:arrive, passed:false, judged:false, run:0, sum:0, grade:null,
-      toneDone:false, flashDone:false, distract:null };
-    if (level.cues.tone === 'distractor'){
-      let d; do { d = Math.floor(rng()*7); } while (d === note);
-      w.distract = d;
-    }
-    g.walls.push(w);
-  }
-  let lastNote = -1;
-  function addEndless(){
-    let n; do { n = Math.floor(rng()*7); } while (n === lastNote);
-    lastNote = n;
-    const last = g.walls.length ? g.walls[g.walls.length-1].arrive + level.gap : 3.5;
-    addWall(n, last);
-  }
-  if (level.endless){ for (let i=0;i<4;i++) addEndless(); }
-  else level.notes.forEach((n,i) => addWall(n, 3.5 + i*level.gap));
-
-  g.step = function(dt, hz){
-    if (g.state !== 'play') return;
-    g.t += dt;
-    const c = level.cues;
-    if (hz) buf.push({ t:g.t, m:hzToMidi(hz) });
-    while (buf.length && buf[0].t < g.t - 0.12) buf.shift();
-    let m = null;
-    if (buf.length){
-      const arr = buf.map(x => x.m).sort((a,b)=>a-b);
-      m = arr[arr.length>>1];
-    }
-    const active = g.walls.find(w => !w.judged && g.t >= w.arrive && g.t <= w.arrive + level.win);
-    const tw = active || g.walls.find(w => !w.judged);
-    const v = g.view;
-    if (m !== null){
-      const pr = m - 60;
-      let p;
-      if (strict) p = pr;
-      else { const tc = tw ? SEMI[tw.note] : 5.5; p = tc + (mod(pr - tc + 6, 12) - 6); }
-      v.voice = true; v.p = p;
-      const rn = Math.round(pr);
-      v.nearest = mod(rn,12); v.centsNear = (pr - rn)*100;
-    } else { v.voice = false; v.p = null; v.cents = null; v.nearest = null; }
-    // 提示事件
-    g.walls.forEach(w => {
-      if (!w.judged){
-        if (c.tone && !w.toneDone && g.t >= w.arrive + c.toneOff){
-          w.toneDone = true;
-          g.events.push({ type:'tone', note: c.tone==='distractor' ? w.distract : w.note });
-        }
-        if (c.flashOff !== undefined && !w.flashDone && g.t >= w.arrive + c.flashOff){
-          w.flashDone = true;
-          g.flash = { note:w.note, t0:g.t, dur:0.5 };
-        }
-      }
-    });
-    // 判定
-    if (active){
-      let d = null;
-      if (m !== null){
-        d = (m - 60 - SEMI[active.note]) * 100;
-        if (!strict) d = mod(d + 600, 1200) - 600;
-      }
-      v.cents = d;
-      if (d !== null && Math.abs(d) <= g.tol){
-        active.run += dt; active.sum += Math.abs(d)*dt;
-        if (!active.passed && active.run >= level.hold){
-          active.passed = true;
-          const avg = active.sum / active.run;
-          let grade = 'ok', pts = 40;
-          if (avg <= 10){ grade = 'perfect'; pts = 100; }
-          else if (avg <= 25){ grade = 'good'; pts = 70; }
-          const mult = (1 + Math.min(0.5, 0.1*Math.floor(g.combo/5))) * (strict ? 1.5 : 1);
-          g.score += Math.round(pts*mult);
-          g.combo++; g.maxCombo = Math.max(g.maxCombo, g.combo);
-          g.stats[grade]++; g.passes++;
-          active.grade = grade;
-          g.events.push({ type:'pass', grade:grade });
-          if (level.endless) g.tol = Math.max(15, 30 - 5*Math.floor(g.passes/10));
-        }
-      } else { active.run = 0; active.sum = 0; }
-    }
-    g.walls.forEach(w => {
-      if (!w.judged && g.t > w.arrive + level.win){
-        w.judged = true;
-        if (!w.passed){
-          g.lives--; g.combo = 0; g.stats.fail++;
-          g.events.push({ type:'fail' });
-        }
-      }
-    });
-    if (level.endless){
-      while (g.walls.filter(w => !w.judged).length < 4) addEndless();
-    }
-    if (g.lives <= 0){ g.state = 'over'; return; }
-    if (!level.endless){
-      const last = g.walls[g.walls.length-1];
-      if (g.walls.every(w => w.judged) && g.t > last.arrive + level.win + 0.4){
-        g.state = 'clear';
-        g.stars = g.stats.fail === 0 ? 3 : (g.stats.fail <= 2 ? 2 : 1);
-      }
-    }
-  };
-  return g;
-}
+const {NOTE_KEYS,SEMI,SOLF,NOTE_HZ,PC_NAMES,mod,hzToMidi,mulberry32,detectPitch,seq,randSeq,makeLevels,endlessLevel,createGame}=onPitchRules;
 /*CORE_END*/const W = 400, H = 720;
 const FONT = '"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif';
 const EN = () => !!(window.deepSeaI18n && window.deepSeaI18n.getLanguage && window.deepSeaI18n.getLanguage() === 'en');
@@ -254,7 +32,8 @@ function persist(){ try { localStorage.setItem(SAVE_KEY, JSON.stringify(prefs));
 const LEVELS = makeLevels();
 const OP = { active:false, starting:false, resuming:false, analytics:null, sel:0, score:0, msg:null };
 let scene = 'menu';          // menu | play | pause | result
-let game = null, level = null;
+let game = null, level = null, rankPitch=0;
+const pitchRank=timedLeaderboard('on-pitch','op',onPitchRules.inputCount,opUI);
 let msg = '', msgUntil = 0;
 function toast(t){ msg = t; msgUntil = performance.now() + 3500; }
 
@@ -356,15 +135,19 @@ async function ensureMic(){
   }
 }
 async function startLevel(lv){
-  if (OP.active || OP.starting) return;
+  if (OP.active || OP.starting || pitchRank.busy()) return;
   if (ENTRY_FEE > S.balance){ opSay(LOW_MSG, 'lose'); return; }
   OP.starting = true; opUI();
   ensureCtx();
   await ensureMic();
-  OP.starting = false;
-  if (!opShown()){ Mic.stop(); opUI(); return; }
+  if (!opShown()){ OP.starting=false;Mic.stop(); opUI(); return; }
   level = lv; OP.sel = Math.max(0, LEVELS.indexOf(lv)); if (lv.endless) OP.sel = LEVELS.length;
+  await new Promise(resolve=>pitchRank.start(()=>resolve(),()=>resolve()));
+  OP.starting=false;
+  if (!opShown()) { Mic.stop(); opUI();return; }
   game = createGame(lv, { octave: prefs.octave });
+  rankPitch=0;
+  pitchRank.record(2010000+OP.sel*2+(prefs.octave==='strict'?1:0));
   fx = { hurt:0, happy:0, popups:[] };
   heroS = 2.5; scene = 'play';
   OP.active = true; OP.score = 0;
@@ -796,7 +579,9 @@ function frame(){
     let hz = getHz(now);
     if (now < muteUntil) hz = null;
     if (hz && now - lastTouch > 1000){ lastTouch = now; if (AN.interact) AN.interact(); }
-    game.step(dt, hz);
+    const sample=hz?Math.max(1,Math.min(2000000,Math.round(hz*1000))):0;
+    if(sample!==rankPitch){pitchRank.record(sample);rankPitch=sample;}
+    pitchRank.update(dt*1000,()=>scene==='play'&&game.state==='play',step=>game.step(step,sample?sample/1000:null));
     OP.score = game.score;
     fx.hurt = Math.max(0, fx.hurt - dt); fx.happy = Math.max(0, fx.happy - dt);
     game.events.splice(0).forEach(ev => {
@@ -811,6 +596,7 @@ function frame(){
       OP.sel = win && idx >= 0 ? Math.min(idx + 1, LEVELS.length) : (idx >= 0 ? idx : LEVELS.length);
       scene = 'result';
       const st = game.stats;
+      pitchRank.finish(game.score);
       endRound('complete', { score: game.score, step: st.perfect + st.good + st.ok, level: idx + 1, cleared: win ? 1 : 0, stars: win ? game.stars : 0 });
       opSay(win ? '{{tb:on-pitch.say.055}}' : '{{tb:on-pitch.say.056}}', win ? 'win' : 'lose', { sc: game.score, st: game.stars });
     }

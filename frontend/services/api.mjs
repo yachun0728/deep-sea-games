@@ -102,3 +102,15 @@ export function moveBoardRound(token, move, signal) {
 export function finishFrogRound({ id, token, ticks, presses }, signal) {
   return createApiClient(arcadeApiOrigin()).finishFrog(token, { id, ticks, presses }, signal);
 }
+
+// A solved puzzle is verified against the server's level data.
+// Database uniqueness makes a repeated stage clear safe across separate rounds.
+export async function submitPuzzleSolution(gameId, action) {
+  const round = await startBoardRound(gameId, AbortSignal.timeout(10000));
+  const result = await moveBoardRound(round.token, {
+    gameId, id: round.id, revision: round.revision, action,
+  }, AbortSignal.timeout(10000));
+  if (result.revision !== round.revision + 1) throw new Error('invalid_solution');
+  window.dispatchEvent(new CustomEvent('deep-sea-score-saved', {detail: {gameId}}));
+  return result;
+}
