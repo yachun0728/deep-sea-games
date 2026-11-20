@@ -60,4 +60,4 @@
 | [收盤之前 Closing Call](market-desk/README.md) | `#market-desk` | 益智策略 | 顯示 | 437 行 | 20 個交易日，從台股怪新聞裡挖出可信的消息。 |
 | [不准跑調 Stay On Pitch](on-pitch/README.md) | `#on-pitch` | 時機操作 | 顯示 | 883 行 | 對著麥克風唱出缺口的音，音準對了才能穿牆。 |
 | [貓咪疊書舖 Cat Book Stack](book-sort/README.md) | `#book-sort` | 益智策略 | 顯示 | 236 行 | 把書依顏色疊進紙箱，集滿 5 本同色自動封箱。 |
-| [百萬大學堂 Millionaire Academy](academy/README.md) | `#academy` | 益智策略 | 顯示 | 683 行 | 一百道百科題，自選領域闖十關，挑戰 1,000,000 學分。 |
+| [百萬大學堂 Millionaire Academy](academy/README.md) | `#academy` | 益智策略 | 顯示 | 554 行 | 一百道百科題，自選領域闖十關，挑戰 1,000,000 學分。 |

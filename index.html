@@ -2637,7 +2637,7 @@ html[lang="en"] #site-shell:has(#tab-market-desk[aria-current]) #game-name > spa
 
 #view-academy .ac-hud{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(3,6,20,.6);border-bottom:1px solid var(--ac-line)}
 #view-academy .ac-exit,#view-academy .ac-lang{flex:none;min-width:44px;min-height:44px;border:1px solid rgba(251,191,36,.4);border-radius:12px;background:rgba(9,17,43,.85);color:var(--ac-gold);font-weight:800}
-#view-academy .ac-exit{font-size:1.3rem}
+#view-academy .ac-exit{display:grid;place-items:center;font-size:1.3rem;text-decoration:none;box-sizing:border-box}
 #view-academy .ac-lang{font-size:.82rem;padding:0 8px}
 #view-academy .ac-hud-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
 #view-academy .ac-stage{font-size:.78rem;font-weight:800;color:var(--ac-gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2994,7 +2994,7 @@ html.frontier-immersive{overflow:hidden}
 
 
   <section class="view lobby-view" id="view-lobby" aria-label="遊戲大廳">
-<svg class="lobby-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-outpost" viewBox="0 0 96 96"><rect x="9" y="14" width="78" height="68" rx="15" fill="#10334a"/><path d="M20 30h56M20 48h56M20 66h56" stroke="#32798e" stroke-width="3"/><path d="M73 30H60L39 48H23m11-8-11 8 11 8M73 66H60L39 48" fill="none" stroke="#64f1d0" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="74" cy="30" r="5" fill="#ffc56c"/><circle cx="74" cy="66" r="5" fill="#ffc56c"/></symbol>
+<svg class="lobby-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-outpost" viewBox="0 0 96 96"><rect x="8" y="12" width="80" height="72" rx="16" fill="#10334a"/><path d="M14 74q10-6 20 0t20 0 20 0 16-2" fill="none" stroke="#32798e" stroke-width="3" stroke-linecap="round"/><path d="M14 74V40q0-9 9-9h6q9 0 9 9v34z" fill="#5d7f92"/><path d="M20 74V42q0-5 5-5h2q5 0 5 5v32z" fill="#64f1d0"/><path d="M22 46q3-3 6 0M22 54q3-3 6 0M22 62q3-3 6 0" fill="none" stroke="#10334a" stroke-width="2" stroke-linecap="round"/><path d="M40 74l4-10h20l4 10z" fill="#8aa6b5"/><path d="M46 64V54q0-10 9-10t9 10v10z" fill="#62e6d2"/><circle cx="52" cy="54" r="2.5" fill="#d8fbff"/><circle cx="58" cy="50" r="1.8" fill="#d8fbff"/><rect x="64" y="50" width="16" height="10" rx="3" fill="#8aa6b5"/><rect x="76" y="48" width="6" height="14" rx="2" fill="#ffc56c"/><path transform="translate(-5 0)" d="M72 28q5-6 11-1l5-3-1 7 1 7-5-3q-6 5-11-1-3-3 0-6z" fill="#ff8f6b"/><circle cx="68" cy="31" r="1.8" fill="#10334a"/><circle cx="40" cy="24" r="3" fill="none" stroke="#9fe9f5" stroke-width="2"/><circle cx="50" cy="19" r="2" fill="none" stroke="#9fe9f5" stroke-width="2"/></symbol>
 <symbol id="icon-market-desk" viewBox="0 0 96 96">
   <rect x="12" y="16" width="72" height="64" rx="12" fill="#13282c" stroke="#88a49b" stroke-width="2"/>
   <path d="M25 65h46M25 49h46M25 33h46" stroke="#3b5659" stroke-width="2"/>
@@ -3002,12 +3002,16 @@ html.frontier-immersive{overflow:hidden}
   <path d="m50 52 21-21m-12 0h12v12" fill="none" stroke="#ff857b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
 <symbol id="icon-academy" viewBox="0 0 96 96">
-  <rect x="10" y="14" width="76" height="68" rx="14" fill="#0f1f4d" stroke="#fbbf24" stroke-width="3"/>
-  <path d="M48 24 22 36l26 12 26-12z" fill="#fbbf24"/>
-  <path d="M32 44v12c0 5 7 9 16 9s16-4 16-9V44l-16 7z" fill="#d97706"/>
-  <path d="M74 38v16" stroke="#fde68a" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="74" cy="57" r="3.5" fill="#fde68a"/>
-  <g fill="none" stroke="#7dd3fc" stroke-width="3" stroke-linecap="round"><path d="M24 73h48"/><path d="M30 78h36" opacity=".6"/></g>
+  <defs>
+    <linearGradient id="ac-icon-hex" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f56e0"/><stop offset="1" stop-color="#0d1b6b"/></linearGradient>
+    <linearGradient id="ac-icon-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffbd0"/><stop offset=".5" stop-color="#ffd23f"/><stop offset="1" stop-color="#e58a00"/></linearGradient>
+  </defs>
+  <path d="M26 40h44l16 20-16 20H26L10 60z" fill="#ffd23f"/>
+  <path d="M28 44h40l12 16-12 16H28L16 60z" fill="url(#ac-icon-hex)" stroke="#fff6c2" stroke-width="1.5"/>
+  <text x="48" y="73" text-anchor="middle" font-family="Georgia,serif" font-weight="900" font-size="36" fill="url(#ac-icon-gold)" stroke="#7a3d00" stroke-width="1" paint-order="stroke">?</text>
+  <path d="M33 22v8c0 4 7 7 15 7s15-3 15-7v-8l-15 6z" fill="#c26a00"/>
+  <path d="M48 8 18 20l30 12 30-12z" fill="#10206e" stroke="#ffd23f" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M72 22v10" stroke="#ffd23f" stroke-width="2" stroke-linecap="round"/><circle cx="72" cy="34" r="2.6" fill="#ffd23f"/>
 </symbol>
 <symbol id="icon-frontier" viewBox="0 0 96 96"><path fill="#254e47" d="M8 65 26 48l48-6 15 24-22 17-39-3z"/><path fill="#8ac687" d="m8 60 19-17 46-7 16 24-23 17-38-3z"/><path fill="#bf9464" d="M32 39h6v26h-6z"/><path fill="#316b4e" d="m35 12-17 31h34z"/><path fill="#e9dfb4" d="M56 38h13v27H56z"/><path fill="#e9a25a" d="m52 40 10-16 12 16z"/><path stroke="#fff4cf" stroke-width="3" d="m62 11 0 11m8-6-5 7m-11-7 5 7"/></symbol>
 <symbol id="icon-ocean-link" viewBox="0 0 96 96">
@@ -3070,7 +3074,7 @@ html.frontier-immersive{overflow:hidden}
   <span class="gold-banner-cta" id="gold-daily-cta">挖一次 <span aria-hidden="true">↗</span></span>
 </a></section>
     <section class="lobby-games" aria-labelledby="lobby-games-title"><div class="lobby-row-head" id="lobby-games"><h2 id="lobby-games-title"><i class="fa-solid fa-table-cells-large side-head-icon" aria-hidden="true"></i>遊戲 <span id="lobby-count">48 款遊戲</span></h2><button type="button" class="row-all" id="lobby-show-all">查看全部</button></div><div class="lobby-tabs-row"><div class="lobby-filters tab-filters" role="group" aria-label="遊戲分類"><button type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div><label class="top-search"><input id="lobby-search" type="search" placeholder="搜尋" aria-label="搜尋遊戲" autocomplete="off"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></label></div>
-    <div class="lobby-grid"><a class="game-card" href="#outpost" data-art="icon" data-game-category="puzzle" aria-label="遊玩深海前哨"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-outpost"></use></svg></div><h3>深海前哨</h3><p class="game-card-en">Deep Sea Outpost</p><p class="game-card-description">扳動海流閘門，將敵群導入防守火網。</p><div class="game-card-footer"><span>不限次數</span><span>分路塔防</span></div></a>
+    <div class="lobby-grid"><a class="game-card" href="#outpost" data-art="cover" style="--cover:url(games/outpost/cover.webp?v=3b0dbcea)" data-game-category="puzzle" aria-label="遊玩深海前哨"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-outpost"></use></svg></div><h3>深海前哨</h3><p class="game-card-en">Deep Sea Outpost</p><p class="game-card-description">扳動海流閘門，將敵群導入防守火網。</p><div class="game-card-footer"><span>不限次數</span><span>分路塔防</span></div></a>
 <a class="game-card" href="#blaster" data-art="cover" style="--cover:url(games/blaster/cover.webp?v=02d6206d)" data-game-category="run" aria-label="遊玩深海火線：自由移動自動射擊，三選一武器擊退怪物"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-blaster"></use></svg></div><h3>深海火線</h3><p class="game-card-en">Reef Blaster</p><p class="game-card-description">帶領潛艇編隊航行，閃過怪潮和打不碎的硬礁。</p><div class="game-card-footer"><span>立即開玩</span><span>無盡航行 · 每萬米+1點</span></div></a>
 <a class="game-card" href="#market-desk" data-art="cover" style="--cover:url(games/market-desk/cover.webp?v=b1c91ed6)" data-game-category="puzzle" aria-label="遊玩收盤之前：20 天台股查證挑戰">
   <div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div>
@@ -3079,7 +3083,7 @@ html.frontier-immersive{overflow:hidden}
   <p class="game-card-description">20 個交易日，從台股怪新聞裡挖出可信的消息。</p>
   <div class="game-card-footer"><span>不限次數</span><span>消息查證</span></div>
 </a>
-<a class="game-card" href="#academy" data-art="icon" data-game-category="puzzle" aria-label="遊玩百萬大學堂：十關百科問答，三種語言。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-academy"></use></svg></div><h3>百萬大學堂</h3><p class="game-card-en">Millionaire Academy</p><p class="game-card-description">一百道百科題，自選領域闖十關，挑戰 1,000,000 學分。</p><div class="game-card-footer"><span>不限次數</span><span>百科問答</span></div></a>
+<a class="game-card" href="#academy" data-art="cover" style="--cover:url(games/academy/cover.webp?v=74022f47)" data-game-category="puzzle" aria-label="遊玩百萬大學堂：十關百科問答，三種語言。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-academy"></use></svg></div><h3>百萬大學堂</h3><p class="game-card-en">Millionaire Academy</p><p class="game-card-description">一百道百科題，自選領域闖十關，挑戰 1,000,000 學分。</p><div class="game-card-footer"><span>不限次數</span><span>百科問答</span></div></a>
 <a class="game-card" href="#frontier" data-art="cover" style="--cover:url(games/frontier/cover.webp?v=b3a4931c)" data-game-category="puzzle" aria-label="遊玩荒島遠征：五十關採集、建造與戰鬥冒險"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#icon-frontier"></use></svg></div><h3>荒島遠征</h3><p class="game-card-en">Frontier Islands</p><p class="game-card-description">砍出道路，建立據點，挑戰五大區域與五十關考驗。</p><div class="game-card-footer"><span>遠征與續玩不限次數</span><span>50 關 · 自動存檔</span></div></a>
 <a class="game-card" href="#rocket-chair" data-art="cover" style="--cover:url(games/rocket-chair/cover.webp?v=3ccab053)" data-game-category="timing" aria-label="遊玩社畜要下班：對著手機大吼讓火箭椅往上衝，撞破 5 層天花板提早下班"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-rocket-chair"></use></svg></div><h3>社畜要下班</h3><p class="game-card-en">Roar Through the Ceiling</p><p class="game-card-description">對著手機大吼，火箭椅一路撞破天花板提早下班。</p><div class="game-card-footer"><span>立即開玩</span><span>不限次數</span></div></a>
 <a class="game-card" href="#eat-smaller" data-art="cover" style="--cover:url(games/eat-smaller/cover.webp?v=5fdc7434)" data-game-category="puzzle" aria-label="遊玩數字吞噬：吃掉比你小的數字，剛好變成目標數字就過關。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-eat-smaller"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-eat-smaller"></use></svg></div><h3>數字吞噬</h3><p class="game-card-en">Number Gulp</p><p class="game-card-description">吃掉比你小的數字、躲開比你大的，剛好變成目標數字就過關。</p><div class="game-card-footer"><span>立即開玩</span><span>8 關</span></div></a>
@@ -3337,7 +3341,7 @@ html.frontier-immersive{overflow:hidden}
 <section class="view" id="view-academy" hidden data-i18n-ignore lang="zh-Hant">
   <div class="ac-app" id="ac-app" data-phase="intro">
     <header class="ac-hud">
-      <button class="ac-exit" id="ac-exit" type="button" data-t-aria="exit">←</button>
+      <a class="ac-exit" id="ac-exit" href="#lobby" data-t-aria="exit">←</a>
       <div class="ac-hud-main">
         <span class="ac-stage" id="ac-stage"></span>
         <span class="ac-credits"><small data-t="credits"></small> <strong id="ac-credits">0</strong></span>
@@ -28616,7 +28620,7 @@ const academyRules = (() => {
   const SAFE_CREDITS = 32000;
   const DOMAINS = ['science', 'history', 'geography', 'sports_ent', 'daily_tech'];
   const PER_DOMAIN = 20;
-  // 題號 1–100 的正確選項（0–3），每 20 題一個領域；題目文字見 games/academy/questions.js。
+  // 題號 1–100 的正確選項（0–3），每 20 題一個領域；題目文字見 games/academy/i18n.js。
   const ANSWERS = '2003030221031121301023031133230110213303000311302100211232333011212200230221322202331302211133011220'
     .split('').map(Number);
   const BONUS_PER_STAGE = 1;
@@ -28698,7 +28702,7 @@ const academyRules = (() => {
       state.correct++;
       state.credits = LADDER[state.stage - 1];
       if (state.stage === LADDER.length) finish(state, 'champion');
-      else { state.stage++; state.phase = 'select'; state.question = 0; }
+      else { state.stage++; state.phase = 'select'; }
       return true;
     }
     state.credits = state.stage > SAFE_STAGE ? SAFE_CREDITS : 0;
@@ -29038,17 +29042,8 @@ const academyBank = {
  ]
 };
 
-    const rules = academyRules;
-    const view = $('view-academy');
-    const prefsKey = 'deep-sea-academy-prefs-v1';
-    const bestKey = 'deep-sea-academy-best';
-    const LANGS = ['tw', 'en', 'cn'];
-    const LANG_ATTR = { tw: 'zh-Hant', en: 'en', cn: 'zh-Hans' };
-    const LANG_LABEL = { tw: '繁中', en: 'EN', cn: '简中' };
-    const TIME_LIMIT = 30;
-    const STAGES = rules.LADDER.length;
-
-    // ---- 三語介面文字（題庫在 questions.js）----
+// 三語介面文字。檔名固定為 i18n.js：中文字串集中在這裡，不需要加進 locales/en.json（站台翻譯器略過本遊戲畫面）。
+const LANG_LABEL = { tw: '繁中', en: 'EN', cn: '简中' };
     const T = {
       tw: {
         title: '百萬大學堂', tag: '十大關卡 · 五大領域 · 百科挑戰',
@@ -29174,6 +29169,16 @@ const academyBank = {
         langName: '简中'
       }
     };
+
+
+    const rules = academyRules;
+    const view = $('view-academy');
+    const prefsKey = 'deep-sea-academy-prefs-v1';
+    const bestKey = 'deep-sea-academy-best';
+    const LANGS = ['tw', 'en', 'cn'];
+    const LANG_ATTR = { tw: 'zh-Hant', en: 'en', cn: 'zh-Hans' };
+    const TIME_LIMIT = 30;
+    const STAGES = rules.LADDER.length;
 
     // ---- 偏好 ----
     let prefs = { lang: null, timer: true, sound: true };
@@ -29658,7 +29663,6 @@ const academyBank = {
     $('ac-rank-btn').addEventListener('click', openRank);
     $('ac-rank-close').addEventListener('click', closeRank);
     $('ac-retry').addEventListener('click', () => sendRankedRound(submission));
-    $('ac-exit').addEventListener('click', () => { location.hash = 'lobby'; });
     $('ac-lang').addEventListener('click', () => {
       prefs.lang = LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length];
       savePrefs();
