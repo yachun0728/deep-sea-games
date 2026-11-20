@@ -5,6 +5,8 @@ import { applyMinesMove, readMinesMove, startMinesRound } from '../services/mine
 import { moveRankedBoard, readBoardCommand, startRankedBoard } from '../services/ranked-boards.mjs';
 import { getBalance } from '../services/points.mjs';
 import { getGameName, getLeaderboard, getLeaderboardFeed } from '../services/leaderboard.mjs';
+import { createShare, findShare, readShareCommand, renderSharePage } from '../services/shares.mjs';
+import { SHARE_PATH } from '../../../shared/share-games.mjs';
 
 export function json(body, status = 200, headers = {}) {
   return Response.json(body, { status, headers: { 'Cache-Control': 'no-store', ...headers } });
@@ -72,10 +74,28 @@ const routes = new Map([
       entries: await getLeaderboard(db, gameId),
     });
   }]],
+  [API.shares, ['POST', withPlayer(async (request, db, player) => {
+    const command = await readShareCommand(request);
+    if (!command) return json({ error: 'invalid_share' }, 400);
+    const result = await createShare(db, player.id, command);
+    return result.error ? json({ error: result.error }, result.status) : json(result, 201);
+  })]],
 ]);
 
-export async function route(request, db) {
+async function sharePage(request, db, url, env) {
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return new Response(null, { status: 405, headers: { Allow: 'GET, HEAD' } });
+  }
+  const id = SHARE_PATH.exec(url.pathname)[1];
+  const response = renderSharePage(await findShare(db, id), {
+    id, siteOrigin: env?.SITE_ORIGIN || undefined, langOverride: url.searchParams.get('lang'),
+  });
+  return request.method === 'HEAD' ? new Response(null, response) : response;
+}
+
+export async function route(request, db, env) {
   const url = new URL(request.url);
+  if (SHARE_PATH.test(url.pathname)) return sharePage(request, db, url, env);
   const endpoint = routes.get(url.pathname);
   if (!endpoint) return json({ error: 'not_found' }, 404);
 

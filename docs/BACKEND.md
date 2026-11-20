@@ -39,6 +39,26 @@ npx wrangler@4 dev --local --config backend/wrangler.jsonc --var FRONTEND_ORIGIN
 2. 在 Worker 註冊該遊戲的對局驗證，從合法操作計算成績。大廳會從公開排行榜 feed 讀取分數。單款名次可用 `createApiClient(arcadeApiOrigin()).leaderboard(gameId)`。
 3. 用本機 Worker 和 D1 跑一局，確認合法結算入榜，直接填分與重送依契約處理。新增遊戲的顯示及發布驗收見 [新增遊戲必接訪客排行榜](../README.md#新增遊戲必接訪客排行榜)。
 
+## 分享成績連結
+
+玩家結算後可分享已驗證成績。連結格式為 `https://ticaticagames.com/s/<10 碼代碼>`，打開後顯示成績卡和「我也要玩」按鈕，貼到 LINE、Facebook、Discord 等平台會出現 Open Graph 預覽。
+
+| 方法與路徑 | 行為 |
+| --- | --- |
+| `POST /api/v1/shares` | 訪客 bearer token，body `{gameId, roundId, lang}`。只接受 `shared/share-games.mjs` 列出的遊戲，並確認回合屬於該訪客、且已有驗證成績。同一回合永遠回同一條連結，回傳 `{id, gameId, score, path}`，不含玩家 ID |
+| `GET /s/<id>`（也接受 HEAD） | 成績卡頁面。預設使用建立時的語言，`?lang=en` 或 `?lang=zh` 可覆寫；不存在的代碼回 404 頁 |
+
+- `0012_result_shares.sql` 新增 `result_shares` 表。建立連結時複製當下分數，之後不會變動。
+- 主站由根目錄 `wrangler.jsonc` 的 `site/worker.mjs` 處理，只有 `/s/*` 會執行這支程式（`run_worker_first`），再透過 service binding 轉給 API Worker。其餘路徑照舊由靜態資產直接回應。分享頁內的連結與預覽圖使用 API Worker 的 `SITE_ORIGIN`。
+- 前端 SDK 是 `frontend/services/share.mjs`（`createShareLink`、`inviteLink`、`shareMessage`、`presentResult`）與 `frontend/services/share-card.mjs`。按下分享後開啟對話框：在瀏覽器以 canvas 產生 1080×1350 PNG 成績卡（TICATICA logo、結束當下的遊戲畫面、遊戲名稱、分數與站名），提供「分享圖片」（支援檔案分享的手機以系統選單傳送 PNG 與連結）、「下載圖片」與「複製連結」。成績卡不上傳伺服器；分享頁的 Open Graph 預覽圖目前仍是站台 logo。卡片與對話框文字依按下時的介面語言產生。
+- 所有可見遊戲（每日免費補給「挖金礦」除外）都已接入，設定集中在 `shared/share-games.mjs`：中英文名稱、`AN.end` 中代表成績的參數、單位與文案。`js/result-share.js` 在回合結束時自動於操作區（排行榜重送按鈕或遊戲訊息之後）插入「分享成績」按鈕，並截取畫面中最大的 canvas（含同源 iframe）。截圖幾乎是單色、無法匯出，或該款標為只用封面時，卡片改用 `cover.webp` 或大廳圖示。
+- 成績來源分兩種：使用 `timedLeaderboard` 的遊戲由排行榜模組提供成績，驗證成功後連結升級為 `/s/<id>` 成績頁，驗證中按鈕顯示「成績驗證中…」；其他遊戲由 `js/analytics.js` 的 `deepSeaRoundEnd` 掛勾取 `AN.end` 參數（`abandoned`、`restart`、`cancelled` 不提供分享），連結為 `/#<gameId>`。掛勾不影響 GA4 事件內容。
+- 新增遊戲時在 `shared/share-games.mjs` 加一列即可；若遊戲已有自己的 `#<gameId>-share` 按鈕（例如「別看」），不會另外插入按鈕，由遊戲呼叫 `resultShare.open(gameId)` 開啟同一個對話框。
+- 未接排行榜的遊戲：卡片仍顯示本局分數（瀏覽器端數值，未經伺服器驗證），連結打開直接進遊戲；兩者的成績卡外觀相同。
+- 非正式網域（例如本機預覽容器）產生的連結使用當下網址，`ticaticagames.com` 與 `github.io` 一律連到 `https://ticaticagames.com`。
+- 本機測試：先套用 migration，再以 `--var SITE_ORIGIN:http://127.0.0.1:8765` 啟動 API Worker；本機產生的分享連結由 `127.0.0.1:8787/s/...` 回應。`node tools/test_result_shares.mjs` 以 SQLite 跑全部 migration 並測試路由。
+- 部署順序：套用 `0012` → 部署 API Worker → 部署主站 Worker（根目錄 `wrangler.jsonc`）→ 發布前端。回退時依相反順序，保留 `result_shares` 資料；回退主站 Worker 後 `/s/*` 會回到 404。
+
 ### 踩地雷訪客成績
 
 踩地雷使用同一支 SDK 的專用介面。

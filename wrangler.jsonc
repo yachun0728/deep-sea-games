@@ -1,6 +1,8 @@
 {
   "name": "deep-sea-games",
   "compatibility_date": "2026-11-01",
-  "assets": { "directory": "." },
+  "main": "site/worker.mjs",
+  "assets": { "directory": ".", "binding": "ASSETS", "run_worker_first": ["/s/*"] },
+  "services": [{ "binding": "API", "service": "deep-sea-games-api" }],
   "previews": {}
 }

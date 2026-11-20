@@ -13,6 +13,7 @@
     }
   ],
   "vars": {
-    "FRONTEND_ORIGIN": "https://yachun0728.github.io,https://ticaticagames.com,https://www.ticaticagames.com"
+    "FRONTEND_ORIGIN": "https://yachun0728.github.io,https://ticaticagames.com,https://www.ticaticagames.com",
+    "SITE_ORIGIN": "https://ticaticagames.com"
   }
 }

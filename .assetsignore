@@ -6,3 +6,4 @@
 /.claude/
 /.wrangler/
 .dev.vars*
+/site/

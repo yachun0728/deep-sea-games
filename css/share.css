@@ -1,0 +1,35 @@
+/* Result sharing: in-game share button and the result card dialog. */
+.share-result{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;margin-top:10px;padding:10px 16px;box-sizing:border-box;border:1px solid var(--tc-accent,#886cff);border-radius:8px;background:rgba(136,108,255,.12);color:#fff;font:600 16px/1.2 var(--tc-font,var(--font-body));cursor:pointer;transition:background .15s ease,transform .08s ease}
+.share-result[hidden]{display:none}
+.share-result i{color:var(--tc-accent,#886cff);font-size:17px}
+.share-result:hover:not(:disabled){background:rgba(136,108,255,.24)}
+.share-result:active:not(:disabled){transform:translateY(1px)}
+.share-result:disabled{opacity:.55;cursor:default}
+.share-result:focus-visible{outline:2px solid var(--tc-accent,#886cff);outline-offset:2px}
+
+.share-dialog{width:min(440px,calc(100vw - 32px));max-height:calc(100dvh - 32px);box-sizing:border-box;padding:20px;border:1px solid var(--tc-line,#292d35);border-radius:12px;background:var(--tc-side,#121418);color:var(--tc-text,#fff);font:14px/1.5 var(--tc-font,var(--font-body));overflow:auto}
+.share-dialog::backdrop{background:rgba(0,0,0,.72)}
+.share-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.share-dialog-head h2{margin:0;font:700 18px/1.3 var(--tc-font,var(--font-body))}
+.share-dialog-close{display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:6px;background:var(--tc-surface,#191c21);color:#fff;cursor:pointer}
+.share-dialog-close:hover{background:var(--tc-active,#313640)}
+.share-dialog-preview{display:grid;place-items:center;min-height:200px;border-radius:10px;background:var(--tc-bg,#0b0c0f);overflow:hidden}
+.share-dialog-preview img{display:block;width:100%;height:auto;max-height:min(52dvh,520px);object-fit:contain}
+.share-dialog-preview img[hidden],.share-dialog-making[hidden]{display:none}
+.share-dialog-making{margin:0;color:var(--tc-muted,#acb5c2)}
+.share-dialog-link{display:grid;grid-template-columns:1fr auto;gap:6px 8px;margin-top:14px}
+.share-dialog-link>span{grid-column:1/-1;color:var(--tc-muted,#acb5c2);font-size:12px}
+.share-dialog-link input{min-width:0;height:40px;box-sizing:border-box;padding:0 12px;border:1px solid var(--tc-line,#292d35);border-radius:6px;background:var(--tc-bg,#0b0c0f);color:#fff;font:500 13px var(--tc-font,var(--font-body))}
+.share-dialog button[data-action]:not(.share-dialog-close){display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 14px;border-radius:6px;font:600 14px/1.2 var(--tc-font,var(--font-body));cursor:pointer;white-space:nowrap}
+.share-dialog-link button{border:0;background:var(--tc-surface,#191c21);color:#fff}
+.share-dialog-link button:hover{background:var(--tc-active,#313640)}
+.share-dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.share-dialog-actions button{min-height:48px!important}
+.share-dialog-actions button[hidden]{display:none!important}
+.share-dialog-actions:has(button[hidden]){grid-template-columns:1fr}
+.share-dialog-primary{border:0;background:var(--tc-primary,#7717ff);color:#fff}
+.share-dialog-primary:hover:not(:disabled){filter:brightness(1.1)}
+.share-dialog-secondary{border:1px solid var(--tc-accent,#886cff);background:transparent;color:#fff}
+.share-dialog-secondary:hover:not(:disabled){background:rgba(136,108,255,.16)}
+.share-dialog button:disabled{opacity:.5;cursor:default}
+.share-dialog-note{min-height:21px;margin:10px 0 0;color:var(--tc-muted,#acb5c2);text-align:center}

@@ -12,7 +12,7 @@ export default {
     try {
       const response = crossOrigin && request.method === 'OPTIONS'
         ? new Response(null, { status: 204 })
-        : await route(request, env.DB);
+        : await route(request, env.DB, env);
       response.headers.set('Vary', 'Origin');
       if (crossOrigin) {
         response.headers.set('Access-Control-Allow-Origin', origin);
