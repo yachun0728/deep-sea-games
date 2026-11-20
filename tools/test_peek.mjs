@@ -264,7 +264,7 @@ check('Dying is permanent: no lives, the whole run starts over from level 1',()=
 check('Items are used by hand: torch adds warning only when tapped, scroll burns leaf/branch/hush ghosts, a chest is given to Flick or Nib',()=>{
   let f=fixture();f.F.start();f.F.ev('bag.torch=1;gapT=999');f.spirit('eye',1);assert.equal(f.ev('bag.torch'),1,'no automatic torch');
   f.F.ev('useItem(0)');assert.equal(f.ev('bag.torch'),0);assert.equal(f.ev('ev.torch'),true);
-  f=fixture();f.F.start();f.F.ev('scrolls=2');f.spirit('eye',1,'judge');f.F.ev('tap(582+120,44)');assert.equal(f.ev('scrolls'),1);assert.equal(f.ev('survived'),1);
+  f=fixture();f.F.start();f.F.ev('scrolls=2');f.spirit('eye',1,'judge');f.F.ev('tap(256,754)');assert.equal(f.ev('scrolls'),1);assert.equal(f.ev('survived'),1);
   f=fixture();f.F.start();f.F.ev('scrolls=2');f.spirit('gale',1,'judge');f.F.ev('useItem(2)');assert.equal(f.ev('scrolls'),2);assert.equal(f.ev('survived'),0);
   f=fixture();f.F.start();f.F.ev('scrolls=2');f.spirit('twins',1,'warn');f.F.ev('useItem(2)');assert.equal(f.ev('survived'),1);
   f=fixture();f.F.start();f.F.ev('bag.chest=1;scrolls=0');f.spirit('flick',1,'judge');f.F.ev('useItem(3)');assert.equal(f.ev('bag.chest'),0);assert.equal(f.ev('survived'),1);

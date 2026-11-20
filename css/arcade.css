@@ -311,7 +311,7 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
 .sneak-hold{padding:18px 10px;width:100%;color:var(--lamp);border-color:var(--lamp);touch-action:none;user-select:none;-webkit-user-select:none}.sneak-hold:active:not(:disabled){background:var(--lamp);color:var(--abyss)}
 #sk-signal[data-state="look"]{border-color:var(--crush);color:var(--crush)}#sk-signal[data-state="warn"]{border-color:var(--lamp);color:var(--lamp)}
 .sneak-ladder{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.sneak-ladder span{padding:10px 6px;border:1px solid var(--line);background:var(--panel);border-radius:7px;text-align:center;color:var(--muted);font-size:13px}
-#peek-canvas{width:min(100%,800px)}
+#peek-canvas{width:min(100%,450px)}
 @media(max-width:700px){.sneak-stage canvas{max-height:70vh;object-fit:contain}.sneak-ladder{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 .fishing-stage{min-width:0;display:grid;place-items:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:var(--abyss)}.fishing-stage canvas{display:block;width:100%;height:auto;touch-action:none;user-select:none;-webkit-user-select:none;outline-offset:-3px}
@@ -396,11 +396,6 @@ body.game-view-scroll-lock { overflow: hidden; }
 }
 
 .sneak-stage{position:relative}
-.peek-fsx{position:absolute;top:8px;right:8px;z-index:3;min-height:44px;padding:0 14px;border:1px solid #d6a24e;border-radius:10px;background:rgba(18,13,10,.8);color:#f1d9a6;font:700 14px system-ui,sans-serif}
-.sneak-stage.peek-fs{position:fixed;inset:0;z-index:9999;width:auto;border:0;border-radius:0;background:#050805}
-.sneak-stage.peek-fs canvas{width:min(100vw,177.7vh);max-height:100vh}
-.sneak-stage.peek-rot{inset:auto;top:0;left:100vw;width:100vh;height:100vw;transform-origin:top left;transform:rotate(90deg)}
-.sneak-stage.peek-rot canvas{width:min(100vh,177.7vw);max-height:100vw}
 .game-icon-peek{position:relative;width:84px;height:84px;border-radius:22px;overflow:hidden;border:2.5px solid #e2b95c;box-shadow:0 0 0 2px rgba(60,38,10,.9),0 10px 20px rgba(0,0,0,.45),inset 0 0 18px rgba(0,0,0,.55);background:radial-gradient(circle at 50% 38%,#6b4222 0%,#3a2312 55%,#1d1109 100%);display:flex;align-items:flex-end;justify-content:center}
 .game-icon-peek img{width:120%;max-width:none;height:auto;margin-bottom:-9%;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5));animation:peek-breath 3.6s ease-in-out infinite;transform-origin:50% 90%}
 @keyframes peek-breath{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}

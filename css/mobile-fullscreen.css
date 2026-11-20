@@ -1,6 +1,6 @@
 /* Mobile-first full-screen play for canvas games (class .fs-game on .console, .fs-exit button).
    Desktop keeps the original two-column layout; the exit button is hidden there. */
-.fs-exit{display:none}
+.fs-exit,.fs-menu{display:none}
 #view-runner{--ar:.6667;--hud:96px;--fs-bg:#060e1c}
 #view-sneak{--ar:.6667;--hud:88px;--fs-bg:#1d2036}
 #view-fishing{--ar:.9286;--hud:140px;--fs-bg:#06263a}
@@ -15,6 +15,7 @@
 #view-mosquito{--ar:.6667;--hud:52px;--fs-bg:#0b1020}
 #view-dive,#view-mrt,#view-one-line-defense,#view-shadow-relay,#view-mirror-twins,#view-eat-smaller{--hud:52px;--reserve:72px;--fs-bg:#000}
 #view-mermaid{--hud:52px;--fs-bg:#17444a}
+#view-peek{--ar:.5625;--hud:52px;--fs-bg:#0a0705}
 #view-banquet{--hud:52px;--fs-bg:#0b0907}
 #view-pet-walk{--ar:.7143;--hud:52px;--fs-bg:#12203a}
 #view-office-shoot{--ar:.5625;--hud:96px;--fs-bg:#12203a}
@@ -124,6 +125,19 @@
   #view-banquet #bq-adv,#view-banquet #bq-mute{display:none}
   #view-banquet #bq-home:not([hidden]),#view-banquet #bq-quit:not([hidden]){position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 8px);right:calc(env(safe-area-inset-right) + 8px);width:88px;height:44px;min-width:0;min-height:44px;padding:0 6px;margin:0;box-sizing:border-box;font:700 12px/1.15 Georgia,serif;white-space:normal;overflow:hidden;background:#173a2b;border:1px solid #c9a44a;border-radius:8px;color:#f1e3b8;text-align:center}
   #view-banquet #bq-home::before,#view-banquet #bq-home::after,#view-banquet #bq-quit::before,#view-banquet #bq-quit::after{display:none}
+  /* Don't Peek: portrait canvas (450x800). Top strip holds exit + menu; the panel opens as a bottom sheet from the menu button. */
+  #view-peek .fs-menu{display:grid;place-items:center;position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 8px);right:calc(env(safe-area-inset-right) + 8px);width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);font:700 20px system-ui;cursor:pointer}
+  #view-peek .mobile-stage-actions{display:none}
+  #view-peek .fs-game:not(.fs-sheet-open) .side{display:none}
+  #view-peek .fs-game.fs-sheet-open .side{display:block;position:absolute;z-index:40;left:0;right:0;bottom:0;max-height:74dvh;overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box;padding:12px 12px calc(env(safe-area-inset-bottom) + 14px);background:#17110c;border-top:1px solid #6b4a1e}
+  #view-peek .fs-game.fs-sheet-open .side .panel{display:flex;flex-direction:column;gap:10px;padding:0;border:0;background:none}
+  #view-peek .fs-game.fs-sheet-open .stats,#view-peek .fs-game.fs-sheet-open .field,#view-peek .fs-game.fs-sheet-open .msg,#view-peek .fs-game.fs-sheet-open .side .go:not(:disabled),#view-peek .fs-game.fs-sheet-open .hint{position:static;display:grid;transform:none;width:auto;min-height:0;margin:0;pointer-events:auto}
+  #view-peek .fs-game.fs-sheet-open .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  #view-peek .fs-game.fs-sheet-open .stats>div{background:rgba(255,255,255,.06)}
+  #view-peek .fs-game.fs-sheet-open .field{gap:8px;padding:0;background:none;color:inherit}
+  #view-peek .fs-game.fs-sheet-open .side .go{min-height:48px}
+  #view-peek .fs-game.fs-sheet-open .msg{display:block;position:static;background:none;font-size:13px;text-align:left}
+  #view-peek .fs-game.fs-sheet-open .hint{display:block;font-size:12px}
   /* Rocket Chair: same slim top bar as Boba Straw and Noodle Pancake. */
   #view-rocket-chair:not([hidden]){position:fixed;inset:0;z-index:1200;display:flex;flex-direction:column;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:#fff;overscroll-behavior:none}
   html:has(#view-rocket-chair:not([hidden])){overflow:hidden}
