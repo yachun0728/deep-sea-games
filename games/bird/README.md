@@ -7,7 +7,7 @@
 - 網址：`#bird`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「跳過仙人掌和狼群，用便便把狼王打跑。」｜立即開玩 · 狼王挑戰
 - 追蹤名稱（GA4 `game_name`）：便便鳥大戰狼群，`game_id` 為 `bird`
-- 檔案：`games/bird/card.html`、`games/bird/cover.webp`、`games/bird/game.js`、`games/bird/icon.svg`、`games/bird/leaderboard.webp`、`games/bird/view.html`；`game.js` 共 178 行、11.5 KB
+- 檔案：`games/bird/card.html`、`games/bird/cover.webp`、`games/bird/game.js`、`games/bird/icon.svg`、`games/bird/leaderboard.webp`、`games/bird/view.html`；`game.js` 共 231 行、15.2 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「20. Poop Bird vs Wolves（bird）」（下方「規則摘要」已複製）
 
@@ -19,10 +19,12 @@
 
 - 狀態物件／進行中旗標：`birdBusy`（L2）
 - L5 常數：`BOSS_REWARD`
+- L16 常數：`ART_NAMES`
+- L23 常數：`LIFT`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`cl` L8、`O` L9、`C` L10、`F` L11、`RR` L12、`tx` L13、`score` L17、`say` L18、`setText` L20、`ui` L21、`die` L26、`update` L37、`birdEvent` L44、`drawPoop` L52、`drawBird` L61、`leg` L63、`drawWolf` L73、`drawCactus` L86、`label` L93、`drawEgg` L100、`draw` L101、`start` L137、`pos` L147、`input` L148、`down` L149、`release` L150、`shoot` L151、`loop` L170
+`cl` L8、`O` L9、`C` L10、`F` L11、`RR` L12、`tx` L13、`artReady` L19、`spr` L20、`fit` L24、`score` L30、`say` L31、`setText` L33、`ui` L34、`die` L39、`update` L50、`birdEvent` L59、`drawPoop` L67、`drawBird` L76、`leg` L78、`drawWolf` L88、`drawCactus` L101、`label` L108、`drawEgg` L115、`drawWorld` L116、`layer` L118、`drawHero` L130、`drawWolfArt` L135、`drawCactusArt` L143、`draw` L148、`start` L190、`pos` L200、`input` L201、`down` L202、`release` L203、`shoot` L204、`loop` L223
 
 ## 錢包與結算接點
 
@@ -30,20 +32,20 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L47 `birdEvent`：`S.balance+=BOSS_REWARD;`
+- L62 `birdEvent`：`S.balance+=BOSS_REWARD;`
 
 **餘額檢查**
-- L140 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L193 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L31 `die`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:s,bosses:bird.eggs});`
-- L45 `birdEvent`：`AN.progress(analytics,{stage:bird.eggs+1,step:score(),phase:'alpha'});`
-- L48 `birdEvent`：`AN.progress(analytics,{step:score(),score:score(),bosses:bird.eggs,bonus_points:BOSS_REWARD});`
-- L143 `start`：`analytics=AN.start('bird',amount);`
+- L44 `die`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:s,bosses:bird.eggs});`
+- L60 `birdEvent`：`AN.progress(analytics,{stage:bird.eggs+1,step:score(),phase:'alpha'});`
+- L63 `birdEvent`：`AN.progress(analytics,{step:score(),score:score(),bosses:bird.eggs,bonus_points:BOSS_REWARD});`
+- L196 `start`：`analytics=AN.start('bird',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -59,7 +61,7 @@
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-定位：`birdBusy` 所在 IIFE。無盡跑酷：地面／空中二段跳，第二跳可按住短暫提升；點攻擊或X／P／下方向鍵射擊，冷卻.3秒。每8個障礙有狼王，需3次命中擊敗，擊敗增加一顆蛋。撞到障礙才結束。
+定位：`birdBusy` 所在 IIFE。無盡跑酷：地面／空中二段跳，第二跳可按住短暫提升；點攻擊或X／P／下方向鍵射擊，冷卻.3秒。每8個障礙有狼王，需3次命中擊敗，擊敗增加一顆蛋。撞到障礙才結束。速度每跑 50 公尺（score 每 50、距離每 3000 畫素）提升一級：`v=min(500, 290+級數×20)`，最高 500；升級時畫面短暫出現速度線。
 
 獎勵：**只有打贏狼王才給點數**，每隻 +1（`BOSS_REWARD`），在擊敗的當下加入共用餘額（`S.balance`）並存檔，每隻只入帳一次，之後撞到障礙不收回。跑多遠（score=floor(dist/60)）沒有任何獎勵，也沒有倍率；結束時不再另外結算。`AN.end` 的 payout_points 為本局累計入帳（`earned`），每隻狼王另送 game_progress（step、score、bosses、bonus_points）。大廳卡片以 `game-card-bonus`（「✦ BONUS」）標示，不說明達成方式。
 

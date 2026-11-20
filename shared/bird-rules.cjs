@@ -4,7 +4,7 @@ const birdRules = (() => {
   const cl=(x,a,b)=>Math.max(a,Math.min(b,x));
   function create(random=Math.random,event=()=>{}) {
     const rnd=(a,b)=>a+random()*(b-a);
-    let by=GY,vy=0,on=true,buf=0,hold=false,jc=0,boost=0,obs=[],proj=[],dist=0,v=290,
+    let by=GY,vy=0,on=true,buf=0,hold=false,jc=0,boost=0,lvl=0,obs=[],proj=[],dist=0,v=290,
       nextAt=450,cnt=0,lb=-1,boss=false,eggs=0,sq=0,pcd=0,warnT=0,dead=false;
     function input(action) {
       if(dead)return false;
@@ -29,7 +29,7 @@ const birdRules = (() => {
     sq*=.86;
     if(dead)return;
     if(warnT>0)warnT-=dt;if(pcd>0)pcd-=dt;
-    v=Math.min(450,290+dist*.01);dist+=v*dt;
+    lvl=Math.floor(dist/3000);v=Math.min(500,290+lvl*20);dist+=v*dt;
     const bossDue=cnt>0&&cnt%8===0&&lb!==cnt;
     if(!boss){
     if(bossDue){if(!obs.some(o=>!o.dead)){boss=true;lb=cnt;obs.push({k:'a',x:W+220,y:GY,sc:2,hp:3,dead:0,vy:0,a:0,hit:0});warnT=1.3;event('alpha')}}
@@ -52,7 +52,7 @@ const birdRules = (() => {
     obs=obs.filter(o=>o.x>-220&&o.x<W+500&&o.y<H+200)}
 
     return {input,advance:update,get by(){return by},get on(){return on},
-      get obs(){return obs},get proj(){return proj},get dist(){return dist},get eggs(){return eggs},
+      get obs(){return obs},get proj(){return proj},get dist(){return dist},get level(){return lvl},get eggs(){return eggs},
       get sq(){return sq},get pcd(){return pcd},get warnT(){return warnT},get dead(){return dead}};
   }
   return {inputCount:3,create,input:(model,action)=>model.input(action),

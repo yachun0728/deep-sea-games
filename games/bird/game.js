@@ -12,6 +12,19 @@ const F=(x,y,r,f)=>{g.fillStyle=f;g.beginPath();g.arc(x,y,r,0,7);g.fill()};
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();O(f,lw||3)};
 function tx(s,x,y,sz,col){g.font='800 '+sz+'px "Noto Sans TC",system-ui,sans-serif';g.textAlign='center';g.lineJoin='round';g.lineWidth=sz/5;g.strokeStyle=OL;g.strokeText(s,x,y,W-30);g.fillStyle=col;g.fillText(s,x,y,W-30)}
 const CW=[26,34,44];
+/* Art from the approved boards (games/bird/design/); the old canvas drawing stays as fallback until every file has loaded. */
+const ART_NAMES=['hero-run','hero-jump','hero-hit','hero-idle','wolf-runner','wolf-bruiser','wolf-leaper','alpha-normal','alpha-enraged','alpha-exhausted','alpha-hit','alpha-fall','cactus','barrel-cactus','bg-a','bg-b','bg-c','ground-a','ground-b','ground-c'];
+const art={};ART_NAMES.forEach(n=>{const i=new Image();i.src='./games/bird/art/'+n+'.webp';art[n]=i});
+let artOk=false;
+const artReady=()=>artOk||(artOk=ART_NAMES.every(n=>art[n].complete&&art[n].naturalWidth>0));
+function spr(n,cx,by,h,w,flip){const i=art[n],ww=w||h*i.naturalWidth/i.naturalHeight;if(!h)h=ww*i.naturalHeight/i.naturalWidth;g.save();g.translate(cx,by);if(flip)g.scale(-1,1);g.drawImage(i,-ww/2,-h,ww,h);g.restore()}
+let biome=0,prevBiome=0,bfade=1,lastLv=0,streak=0;
+/* Phone full screen: the canvas is taller than 560 so it fills the screen; the world stays bottom-aligned, extra rows are sky. */
+const LIFT=90;let VH=H,fs=false;const fsq=matchMedia('(max-width:880px),(pointer:coarse) and (max-width:1100px)');
+function fit(){
+ const ok=fsq.matches&&c.clientWidth>0&&c.clientHeight>0;
+ const nv=ok?cl(Math.round(W*c.clientHeight/c.clientWidth),H,1000):H;
+ fs=ok;if(c.height!==nv)c.height=nv;VH=nv;PB.y=VH-55}
 let st='ready',bird=birdRules.create(),hid=-1,fxs=[],tt=0,shake=0,rec=false,last=0;
 const birdRank=timedLeaderboard('bird','pb',birdRules.inputCount,ui,null,{canvas:'pb-canvas'});
 const score=()=>birdRules.score(bird);
@@ -35,10 +48,12 @@ function die(){
  ui();
 }
 function update(dt){
- tt+=dt;if(shake>0)shake-=dt;
+ tt+=dt;if(shake>0)shake-=dt;if(bfade<1)bfade=Math.min(1,bfade+dt/1.2);
  fxs.forEach(f=>{f.t+=dt});fxs=fxs.filter(f=>f.t<.8);
  if(st!=='run')return;
  bird.advance(dt);
+ if(bird.level!==lastLv){lastLv=bird.level;streak=1}
+ if(streak>0)streak=Math.max(0,streak-dt/1.2);
  if(bird.dead)die();
 }
 function birdEvent(event,alpha){
@@ -98,10 +113,45 @@ if(poop)drawPoop(x,y+8,.4);
 else{if(tier===0)F(x,y-4,4.5,OL);else{F(x-10,y-4,4.5,OL);F(x+10,y-4,4.5,OL)}
 if(tier===2){g.fillStyle=OL;g.fillRect(x-16,y+4,32,4)}}}
 function drawEgg(x,y){g.beginPath();g.ellipse(x,y,9,12,0,0,7);O('#fff1c1',3);F(x-3,y-2,1.8,'#ff9f1c');F(x+3,y+4,1.8,'#4cc9f0')}
+function drawWorld(){
+ const lv=bird.eggs%3;if(lv!==biome){prevBiome=biome;biome=lv;bfade=0}
+ const layer=(b,al)=>{const bg=art['bg-'+'abc'[b]],gr=art['ground-'+'abc'[b]],bw=bg.naturalWidth,gw=gr.naturalWidth;
+  g.globalAlpha=al;
+  const k=Math.min(1.5,VH/H),bh=bg.naturalHeight,bx=-20/k-((bird.dist*.22)%bw),gx=-20-(bird.dist%gw);
+  g.save();g.translate(0,GY);g.scale(k,k);
+  g.drawImage(bg,bx,-bh);g.drawImage(bg,bx+bw,-bh);
+  if(VH>H){const e=VH/k+2;g.drawImage(bg,0,0,bw,1,bx,-bh-e,bw,e);g.drawImage(bg,0,0,bw,1,bx+bw,-bh-e,bw,e)}
+  g.restore();
+  g.drawImage(gr,gx,GY-12,gw,H-GY+12);g.drawImage(gr,gx+gw,GY-12,gw,H-GY+12);
+  if(fs){const e=LIFT+6,sy=gr.naturalHeight-1;g.drawImage(gr,0,sy,gw,1,gx,H-1,gw,e);g.drawImage(gr,0,sy,gw,1,gx+gw,H-1,gw,e)}
+  g.globalAlpha=1};
+ if(bfade<1)layer(prevBiome,1);
+ layer(biome,bfade<1?bfade:1)}
+function drawHero(){
+ const run=st==='run',n=!run?(st==='over'?'hero-hit':'hero-idle'):(bird.on?'hero-run':'hero-jump');
+ const h={'hero-run':64,'hero-jump':80,'hero-hit':72,'hero-idle':92}[n];
+ const bob=n==='hero-run'&&!reduceMotion?-Math.abs(Math.sin(tt*14))*4:0;
+ spr(n,n==='hero-run'?-2:0,bob,h)}
+function drawWolfArt(o){
+ const bob=reduceMotion?0:-Math.abs(Math.sin(tt*13+o.x*.05))*3;
+ if(o.k==='a'){
+  const n=o.dead?'alpha-fall':o.hit>0?'alpha-hit':o.hp>=3?'alpha-normal':o.hp===2?'alpha-enraged':'alpha-exhausted';
+  if(n==='alpha-hit')spr(n,27,bob,62,null,true);else spr(n,27,o.dead?0:bob,0,90,true);return}
+ if(o.dead)spr('wolf-leaper',27,0,60,null,true);
+ else if(o.s===0)spr('wolf-runner',27,bob,64,103,true);
+ else spr('wolf-bruiser',27,bob,72,null,true)}
+function drawCactusArt(o){
+ const cx=o.x+CW[o.s]/2;
+ if(o.s===0)spr('barrel-cactus',cx,GY+2,44);
+ else if(o.s===1)spr('cactus',cx,GY+2,o.h);
+ else spr('cactus',cx,GY+2,o.h,74)}
 function draw(){
+fit();const ex=VH-H-(fs?LIFT:0);
 const ox=shake>0?(Math.random()-.5)*12:0;
-g.save();g.translate(ox,0);
-g.fillStyle='#ffb703';g.fillRect(-20,0,W+40,H);
+g.save();g.translate(ox,ex);
+g.fillStyle='#ffb703';g.fillRect(-20,-ex,W+40,VH);
+const A=artReady();
+if(A)drawWorld();else{
 C(300,130,56,'#fb5607',4);C(300,130,32,'#ffd166',3);
 g.fillStyle='#f48c06';
 for(let i=0;i<6;i++){const x=((i*170-bird.dist*.2)%1020+1020)%1020-200;g.beginPath();g.ellipse(x+100,GY,140,80,0,Math.PI,0);g.fill()}
@@ -110,28 +160,31 @@ g.fillStyle='#f72585';g.fillRect(-20,GY,W+40,16);
 g.strokeStyle=OL;g.lineWidth=4;g.beginPath();g.moveTo(-20,GY);g.lineTo(W+20,GY);g.stroke();
 g.fillStyle='#9d4edd';
 for(let i=0;i<8;i++){const x=((i*70-bird.dist)%560+560)%560-80;g.fillRect(x,GY+44+(i%3)*22,26,8)}
+}
 for(const o of bird.obs){
-if(o.k==='c'){drawCactus(o);label(o.x+CW[o.s]/2,GY-o.h,o.s,0)}
+if(o.k==='c'){if(A)drawCactusArt(o);else drawCactus(o);label(o.x+CW[o.s]/2,GY-o.h,o.s,0)}
 else{
 g.save();g.translate(o.x+(o.hit>0&&!reduceMotion?Math.random()*8-4:0),o.y);g.scale(o.sc,o.sc);
 if(o.dead){g.translate(30,-30);g.rotate(o.a);g.translate(-30,30)}
-drawWolf(tt,o.k==='a'?'#8d99ae':'#adb5bd',o.k==='a');g.restore();
+if(A)drawWolfArt(o);else drawWolf(tt,o.k==='a'?'#8d99ae':'#adb5bd',o.k==='a');g.restore();
 if(!o.dead){
 if(o.k==='w')label(o.x+27*o.sc,o.y-80*o.sc,o.s,0);
 else{label(o.x+60,o.y-200,0,1);for(let i=0;i<3;i++)C(o.x+30+i*28,o.y-218,8,i<o.hp?'#e63946':'#fff1c1',3)}}}}
 bird.proj.forEach(p=>drawPoop(p.x,p.y+14,.4,tt*10));
-g.save();g.translate(BX,bird.by);g.scale(1+bird.sq*.4,1-bird.sq*.4);drawBird(!bird.on);g.restore();
+g.save();g.translate(BX,bird.by);g.scale(1+bird.sq*.4,1-bird.sq*.4);if(A)drawHero();else drawBird(!bird.on);g.restore();
 fxs.forEach(f=>{g.globalAlpha=1-f.t/.8;tx(f.s,f.x,f.y-f.t*50,24,'#ffd23f');g.globalAlpha=1});
+if(streak>0&&!reduceMotion){g.globalAlpha=.55*Math.min(1,streak*2);g.strokeStyle='#fff';g.lineWidth=2;g.lineCap='round';
+for(let i=0;i<9;i++){const y=-ex+((i*97+tt*700)%(VH-60))+20,x=((i*151-tt*1500)%520+520)%520-60;g.beginPath();g.moveTo(x,y);g.lineTo(x+70+i%3*30,y);g.stroke()}g.globalAlpha=1}
 g.restore();
 const s=score();
-tx(s+' m',W/2,62,40,'#fff1c1');
+if(!fs){tx(s+' m',W/2,62,40,'#fff1c1');
 drawEgg(24,40);tx('x'+bird.eggs,56,48,20,'#fff1c1');
-tx('最佳 '+best+' m',W-70,34,16,'#fff1c1');
-if(bird.warnT>0&&st==='run')tx('{{t:bird.msg.006}}',W/2,150,26,'#ff5d8f');
-C(PB.x,PB.y,PB.r,bird.pcd>0?'#d9c9a3':'#fff1c1',4);drawPoop(PB.x,PB.y+20,.5);
-if(bird.pcd>0){g.strokeStyle='#ff5d8f';g.lineWidth=5;g.beginPath();g.arc(PB.x,PB.y,PB.r+7,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-bird.pcd/.3));g.stroke()}
+tx('最佳 '+best+' m',W-70,34,16,'#fff1c1')}
+if(bird.warnT>0&&st==='run')tx('{{t:bird.msg.006}}',W/2,fs?ex+170:150,26,'#ff5d8f');
+if(!fs||st==='run'){C(PB.x,PB.y,PB.r,bird.pcd>0?'#d9c9a3':'#fff1c1',4);drawPoop(PB.x,PB.y+20,.5);
+if(bird.pcd>0){g.strokeStyle='#ff5d8f';g.lineWidth=5;g.beginPath();g.arc(PB.x,PB.y,PB.r+7,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-bird.pcd/.3));g.stroke()}}
 if(st!=='run'){
-g.fillStyle='rgba(27,27,47,.55)';g.fillRect(0,0,W,H);
+g.fillStyle='rgba(27,27,47,.55)';g.fillRect(0,0,W,VH);
 if(st==='ready'){tx('{{t:bird.msg.007}}',W/2,200,32,'#ffd23f');tx('{{t:bird.msg.008}}',W/2,252,19,'#fff1c1');tx('{{t:bird.msg.009}}',W/2,282,19,'#fff1c1');tx('{{t:bird.msg.010}}',W/2,340,24,'#ffd23f')}
 else{tx('{{t:bird.msg.011}}',W/2,180,32,'#ff5d8f');tx(s+' m',W/2,244,50,'#fff1c1');tx('{{t:bird.msg.012}}'+bird.eggs+' 隻',W/2,284,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'{{t:bird.msg.013}}',W/2,320,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('{{t:bird.msg.014}}',W/2,352,20,'#ffd23f');tx('{{t:bird.msg.015}}',W/2,396,20,'#fff1c1')}}}
 function start(){
@@ -141,10 +194,10 @@ function start(){
  birdRank.start(random=>{
   bird=birdRules.create(random||Math.random,birdEvent);
   analytics=AN.start('bird',amount);birdStake=amount;birdBusy=true;save();renderAll();
-  earned=0;fxs=[];shake=0;rec=false;hid=-1;st='run';last=performance.now();say('{{t:bird.msg.016}}');ui();c.focus();
+  earned=0;fxs=[];shake=0;rec=false;hid=-1;biome=0;prevBiome=0;bfade=1;lastLv=0;streak=0;st='run';last=performance.now();say('{{t:bird.msg.016}}');ui();c.focus();
  });
 }
-function pos(e){const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}}
+function pos(e){const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*VH/r.height}}
 function input(action){if(st==='run'&&bird.input(action)){birdRank.record(action);return true}return false}
 function down(id){if(st!=='run'||$('view-bird').hidden||document.hidden)return false;hid=id;return input(0)}
 function release(){input(1)}
