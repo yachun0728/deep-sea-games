@@ -1,13 +1,13 @@
   <section class="view" id="view-nap" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="np-canvas" tabindex="0" width="400" height="560" aria-label="{{t:nap.view.18}}"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="np-canvas" tabindex="0" width="400" height="560" aria-label="{{t:nap.view.18}}"></canvas></div><button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
       <div class="side"><section class="panel" aria-label="{{t:nap.view.19}}">
         <dl class="stats"><div><dt>{{t:nap.view.01}}</dt><dd id="np-level">{{t:nap.view.02}}</dd></div><div><dt>{{t:nap.view.03}}</dt><dd id="np-hearts">♥♥♥</dd></div><div><dt>{{t:nap.view.04}}</dt><dd id="np-best">{{t:nap.view.05}}</dd></div></dl>
         <input id="np-amount" type="hidden" value="0">
         <button class="go" id="np-go" type="button" data-mode="bet">{{t:nap.view.06}}</button>
         <p class="msg" id="np-msg" aria-live="polite">{{t:nap.view.07}}</p>
         <p class="hint">{{t:nap.view.08}} <kbd>{{t:nap.view.09}}</kbd> {{t:nap.view.10}} <kbd>J</kbd> {{t:nap.view.11}}</p>
+        <p id="np-rank-status" role="status" hidden></p><button id="np-rank-retry" type="button" hidden>{{t:nap.view.17}}</button>
       </section></div>
     </div>
     <details class="rules"><summary>{{t:nap.view.12}}</summary><p>{{t:nap.view.13}}</p><p>{{t:nap.view.14}}</p><p>{{t:nap.view.15}}</p><p>{{t:nap.view.16}}</p></details>
-  <p id="np-rank-status" role="status" hidden></p><button id="np-rank-retry" type="button" hidden>{{t:nap.view.17}}</button>
 </section>

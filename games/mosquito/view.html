@@ -1,13 +1,13 @@
   <section class="view" id="view-mosquito" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="mq-canvas" tabindex="0" width="480" height="720" aria-label="{{t:mosquito.view.16}}"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="mq-canvas" tabindex="0" width="480" height="720" aria-label="{{t:mosquito.view.16}}"></canvas></div><button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
       <div class="side"><section class="panel" aria-label="{{t:mosquito.view.17}}">
         <dl class="stats"><div><dt>{{t:mosquito.view.01}}</dt><dd id="mq-blood">0.0%</dd></div><div><dt>{{t:mosquito.view.02}}</dt><dd id="mq-alert">0%</dd></div><div><dt>{{t:mosquito.view.03}}</dt><dd id="mq-best">0.0%</dd></div></dl>
         <input id="mq-amount" type="hidden" value="0">
         <button class="go" id="mq-go" type="button" data-mode="bet">{{t:mosquito.view.04}}</button>
         <p class="msg" id="mq-msg" aria-live="polite">{{t:mosquito.view.05}}</p>
         <p class="hint">{{t:mosquito.view.06}} <kbd>{{t:mosquito.view.07}}</kbd> {{t:mosquito.view.08}}</p>
+        <p id="mq-rank-status" role="status" hidden></p><button id="mq-rank-retry" type="button" hidden>{{t:mosquito.view.15}}</button>
       </section></div>
     </div>
     <details class="rules"><summary>{{t:mosquito.view.09}}</summary><p>{{t:mosquito.view.10}}</p><p>{{t:mosquito.view.11}}</p><p>{{t:mosquito.view.12}}</p><p>{{t:mosquito.view.13}}</p><p>{{t:mosquito.view.14}}</p></details>
-  <p id="mq-rank-status" role="status" hidden></p><button id="mq-rank-retry" type="button" hidden>{{t:mosquito.view.15}}</button>
 </section>

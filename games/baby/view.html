@@ -1,5 +1,5 @@
   <section class="view" id="view-baby" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="baby-canvas" tabindex="0" width="400" height="560" aria-label="{{t:baby.view.20}}"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="baby-canvas" tabindex="0" width="400" height="560" aria-label="{{t:baby.view.20}}"></canvas></div><button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
       <div class="side"><section class="panel" aria-label="{{t:baby.view.21}}">
         <dl class="stats"><div><dt>{{t:baby.view.01}}</dt><dd id="baby-score">0 m</dd></div><div><dt>{{t:baby.view.02}}</dt><dd id="baby-best">0 m</dd></div></dl>
         <input id="baby-amount" type="hidden" value="0">
@@ -7,10 +7,10 @@
         <button class="go" id="baby-go" type="button" data-mode="start">{{t:baby.view.07}}</button>
         <p class="msg" id="baby-msg" aria-live="polite">{{t:baby.view.08}}</p>
         <p class="hint">{{t:baby.view.09}} <kbd>{{t:baby.view.10}}</kbd>／<kbd>↑</kbd>{{t:baby.view.11}} <kbd>→</kbd>{{t:baby.view.12}} <kbd>X</kbd>{{t:baby.view.13}}</p>
+        <p id="baby-rank-status" role="status" hidden></p><button id="baby-rank-retry" type="button" hidden>{{t:baby.view.19}}</button>
       </section></div>
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="{{t:baby.view.22}}"><span data-baby-tier="200"><b>200 m BONUS</b>{{t:baby.view.14}}</span><span data-baby-tier="500"><b>500 m BONUS</b>{{t:baby.view.14}}</span><span data-baby-tier="900"><b>900 m BONUS</b>{{t:baby.view.14}}</span></div>
     <details class="rules"><summary>{{t:baby.view.15}}</summary><p>{{t:baby.view.16}}</p><p>{{t:baby.view.17}}</p><p>{{t:baby.view.18}}</p></details>
-  <p id="baby-rank-status" role="status" hidden></p><button id="baby-rank-retry" type="button" hidden>{{t:baby.view.19}}</button>
 </section>
 
