@@ -1,7 +1,7 @@
 import { arcadeApiOrigin, createApiClient } from './api.mjs';
 
 const api = createApiClient(arcadeApiOrigin());
-for (const gameId of ['frontier', 'rocket-chair']) {
+for (const gameId of ['frontier', 'rocket-chair', 'blaster']) {
   const view = document.getElementById('view-' + gameId);
   if (!view) continue;
   const details = document.createElement('details');
@@ -12,7 +12,9 @@ for (const gameId of ['frontier', 'rocket-chair']) {
   status.setAttribute('role', 'status');
   const list = document.createElement('ol');
   details.append(summary, status, list);
-  view.append(details);
+  const host = view.querySelector('deep-sea-leaderboard[game-id="' + gameId + '"]');
+  if (host) details.id = 'bl-rank-panel';
+  (host || view).append(details);
   let generation = 0;
   async function refresh() {
     if (!details.open) return;
@@ -27,7 +29,8 @@ for (const gameId of ['frontier', 'rocket-chair']) {
         const name = document.createElement('span');
         if (entry.displayName) name.setAttribute('data-i18n-ignore', '');
         name.textContent = entry.displayName || '訪客';
-        row.append(name, document.createTextNode(' · ' + entry.score));
+        const score = gameId === 'blaster' ? entry.score.toLocaleString('en-US') + ' m' : entry.score;
+        row.append(name, document.createTextNode(' · ' + score));
         return row;
       }));
       status.textContent = result.entries.length ? '' : '目前尚無排行榜紀錄。';

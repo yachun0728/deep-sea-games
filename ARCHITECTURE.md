@@ -293,3 +293,5 @@ Frontier draw.js uses two PNG atlases with vector fallback. Optional world.suppl
 `games/market-desk/` 的雙語案件由 `cases.js` 組合進遊戲邏輯。手動點選推進交易日，切換分頁保留當前狀態，路由離開時結束當局。專用儲存鍵 `deep-sea-market-desk-best` 保存結局確認時的最高查證分數（0～100），共用錢包無遊戲交易。
 
 貓咪疊書舖以 `shared/book-sort-rules.cjs` 共用編號盤面與搬書判定。全視窗遊戲右上選單接入既有訪客回合 SDK，由 Worker 驗證後更新訪客排行榜。
+
+《深海火線》的航行、碰撞、選卡和距離計算位於 `shared/blaster-rules.cjs`，同一規則由前端及排名 Worker 執行。前端以 `games/blaster/game.js` 接入畫布、點數和既有訪客 SDK。排行榜使用整數公尺，顯示於遊戲畫面內。

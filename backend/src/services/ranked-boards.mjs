@@ -1,3 +1,4 @@
+import blasterRules from '../../../shared/blaster-rules.cjs';
 import mermaidRules from '../../../shared/mermaid-rules.cjs';
 import lasthairRules from '../../../shared/last-hair-rules.cjs';
 import mosquitoRules from '../../../shared/mosquito-rules.cjs';
@@ -32,11 +33,12 @@ const MAX_REVISIONS = 16384;
 const ID = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
 const random = () => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
 const newSeed = () => crypto.getRandomValues(new Uint32Array(1))[0];
-function timedBoard(engine) {
+function timedBoard(engine, rulesVersion) {
   return {
-    create: () => ({seed: newSeed(), issuedAt: Date.now(), score: null}),
+    create: () => ({seed: newSeed(), issuedAt: Date.now(), score: null, rulesVersion}),
     accepts: action => timedReplay.accepts(action, engine.inputCount),
     apply: (state, action) => {
+      if (state.rulesVersion !== rulesVersion) return false;
       if ((action[0] - 1) * timedReplay.STEP_MS > Date.now() - state.issuedAt) return false;
       state.score = timedReplay.verify(engine, state.seed, action);
       return state.score !== null;
@@ -46,6 +48,7 @@ function timedBoard(engine) {
   };
 }
 const boards = new Map([
+  ['blaster', timedBoard(blasterRules, 1)],
   ['mermaid', timedBoard(mermaidRules)],
   ['last-hair', timedBoard(lasthairRules)],
   ['mosquito', timedBoard(mosquitoRules)],

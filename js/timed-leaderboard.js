@@ -1,4 +1,4 @@
-  function timedLeaderboard(gameId, prefix, inputCount, refresh) {
+  function timedLeaderboard(gameId, prefix, inputCount, refresh, onSaved) {
     let round, pending, starting = false, sending = false;
     let tick = 0, carry = 0, actions = [];
     function status(message, retry = false) {
@@ -59,7 +59,9 @@
       try {
         const api = await import('./frontend/services/api.mjs');
         const next = await api.moveBoardRound(round.token, pending.move, AbortSignal.timeout(10000));
-        status(next.state.score === pending.score ? '成績已送到排行榜。' : '排行榜成績未能送出。');
+        const saved = next.state.score === pending.score;
+        status(saved ? '成績已送到排行榜。' : '排行榜成績未能送出。');
+        if (saved) onSaved?.();
         pending = null;
       } catch (error) {
         if (error.retryable === false) pending = null;
