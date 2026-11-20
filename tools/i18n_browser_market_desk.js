@@ -227,11 +227,8 @@
       assert(text('balance') === balance, 'Gameplay and route changes do not charge or pay points');
       assert(!/[\u3400-\u9fff]/.test(view.textContent), 'English view has no untranslated text');
       if (matchMedia('(max-width:880px)').matches) {
-        const expand = view.querySelector('.game-view-controls button');
-        expand.click();
-        assert(view.classList.contains('game-view-expanded') && nativeFullscreenCalls === 0,
-          'Phone expand stays in the portrait web page, without native fullscreen');
-        expand.click();
+        assert(!view.querySelector('.game-view-controls') && !!view.querySelector('.game-exit-link'),
+          'Phone shows a compact lobby exit');
         start('mk-go');
         const rects = buttons.map(button => button.getBoundingClientRect());
         const portraitViewport = matchMedia('(orientation: portrait)').matches;

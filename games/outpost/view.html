@@ -1,0 +1,91 @@
+<section class="view" id="view-outpost" hidden>
+  <div class="outpost-shell">
+    <a class="game-exit-link" href="#lobby"><span aria-hidden="true">‹</span> <span>返回遊戲大廳</span></a>
+    <header class="outpost-head">
+      <h2>深海前哨</h2>
+      <div class="outpost-clock"><b id="outpost-time">03:00</b><span><span>波次</span> <span id="outpost-wave">1</span>/3</span></div>
+    </header>
+    <div class="outpost-stage-controls">
+      <label for="outpost-stage">關卡</label>
+      <select id="outpost-stage">
+        <option value="1">第一關 · 前哨防守</option>
+        <option value="2" disabled>第二關 · 火力升級</option>
+        <option value="3" disabled>第三關 · 洋流交會</option>
+        <option value="4" disabled>第四關 · 暗礁巡邏</option>
+        <option value="5" disabled>第五關 · 潮汐警報</option>
+        <option value="6" disabled>第六關 · 珊瑚迷宮</option>
+        <option value="7" disabled>第七關 · 熱泉前線</option>
+        <option value="8" disabled>第八關 · 沉船殘骸</option>
+        <option value="9" disabled>第九關 · 磷光魚群</option>
+        <option value="10" disabled>第十關 · 深淵閘口</option>
+        <option value="11" disabled>第十一關 · 鐵殼潮</option>
+        <option value="12" disabled>第十二關 · 暗流迴廊</option>
+        <option value="13" disabled>第十三關 · 海溝邊緣</option>
+        <option value="14" disabled>第十四關 · 水晶礁盤</option>
+        <option value="15" disabled>第十五關 · 巨浪前夕</option>
+        <option value="16" disabled>第十六關 · 迷霧海床</option>
+        <option value="17" disabled>第十七關 · 雙流夾擊</option>
+        <option value="18" disabled>第十八關 · 沸騰海域</option>
+        <option value="19" disabled>第十九關 · 冰縫航道</option>
+        <option value="20" disabled>第二十關 · 重甲行軍</option>
+        <option value="21" disabled>第二十一關 · 漩渦圍城</option>
+        <option value="22" disabled>第二十二關 · 黑潮湧動</option>
+        <option value="23" disabled>第二十三關 · 暗礁迷陣</option>
+        <option value="24" disabled>第二十四關 · 深淵回聲</option>
+        <option value="25" disabled>第二十五關 · 風暴海眼</option>
+        <option value="26" disabled>第二十六關 · 裂谷突圍</option>
+        <option value="27" disabled>第二十七關 · 鋼鯨巡航</option>
+        <option value="28" disabled>第二十八關 · 潮湧終局</option>
+        <option value="29" disabled>第二十九關 · 前哨絕地</option>
+        <option value="30" disabled>第三十關 · 深海守望</option>
+      </select>
+      <small id="outpost-stage-mode">第一關成績列入訪客排行。</small>
+    </div>
+    <dl class="outpost-stats">
+      <div><dt>局內能源</dt><dd id="outpost-energy">95</dd></div>
+      <div><dt>站體完整度</dt><dd id="outpost-hull">5/5</dd></div>
+      <div><dt>防守分數</dt><dd id="outpost-score">0</dd></div>
+      <div id="outpost-best-stat"><dt>第一關最佳</dt><dd id="outpost-best">0</dd></div>
+    </dl>
+    <aside id="outpost-guide" class="outpost-guide" hidden>
+      <p id="outpost-guide-text" role="status"></p>
+      <button type="button" id="outpost-guide-skip">跳過教學</button>
+    </aside>
+    <div class="outpost-board-label">
+      <span class="outpost-board-station">研究站</span>
+      <span class="outpost-board-flow"><span aria-hidden="true"></span><span>敵人向左</span></span>
+      <span class="outpost-board-entry">敵群入口</span>
+    </div>
+    <div id="outpost-board" aria-label="三條洋流通道">
+      <span id="outpost-current" aria-hidden="true" hidden></span>
+    </div>
+    <div class="outpost-tools" aria-label="部署設備">
+      <button type="button" data-device="0"><b aria-hidden="true"></b><span>泡泡砲</span><small>40</small></button>
+      <button type="button" data-device="1"><b aria-hidden="true"></b><span>聲納塔</span><small>25</small></button>
+      <button type="button" data-device="2"><b aria-hidden="true"></b><span>脈衝線圈</span><small>35</small></button>
+      <button type="button" data-device="3"><b aria-hidden="true"></b><span>海流閘門</span><small>30</small></button>
+    </div>
+    <div id="outpost-direction" hidden class="outpost-actions" aria-label="閘門方向">
+      <button type="button" data-direction="-1">↑ 向上換道</button><button type="button" data-direction="1">↓ 向下換道</button>
+    </div>
+    <p id="outpost-message" role="status">開始後，先選設備再點空格部署。</p>
+    <div class="outpost-actions">
+      <button type="button" id="outpost-start">開始防守</button>
+      <button type="button" id="outpost-next" hidden>下一關</button>
+      <div id="outpost-rank" class="outpost-actions">
+        <p id="outpost-rank-status" role="status" hidden></p>
+        <button type="button" id="outpost-rank-retry" hidden>重試上傳</button>
+      </div>
+    </div>
+    <details class="outpost-rules">
+      <summary>防守手冊</summary>
+      <p>守住研究站 3 分鐘。敵群由右向左前進，每漏一隻損失 1 格站體。第一關初始 95 能源，每 4 秒補充 5 能源。</p>
+      <p>泡泡砲可波及附近敵人。聲納塔標記後，敵人受到的傷害提高。脈衝線圈適合對付厚甲敵人。</p>
+      <p>部署閘門前先選方向。敵人游到閘門附近時，點已部署的閘門，把附近敵群導向相鄰通道。閘門冷卻 8 秒。</p>
+      <p>換道後消滅的敵人額外加 15 分。守滿 3 分鐘另加 300 分，每格剩餘站體加 100 分。</p>
+      <p>第二關起，從第二波起可點已部署的泡泡砲或脈衝線圈，花 25 能源升級一次。泡泡砲濺射更廣，脈衝線圈射擊更快。</p>
+      <p>全部 30 關逐關通關解鎖。後面的關卡敵群更多、更硬，後段連一般敵人也會游得更快，補充能源的速度只小幅提高。</p>
+      <p>厚甲蟹有 85 點生命。把聲納塔和脈衝線圈放在同一路，讓線圈打到被標記的厚甲蟹。</p>
+    </details>
+  </div>
+</section>

@@ -1,5 +1,13 @@
 [
   {
+    "id": "outpost",
+    "logic": "games/outpost/game.js",
+    "view": "games/outpost/view.html",
+    "card": "games/outpost/card.html",
+    "icon": "games/outpost/icon.svg",
+    "style": "games/outpost/style.css"
+  },
+  {
     "id": "crash",
     "logic": "games/crash/game.js",
     "view": "games/crash/view.html",

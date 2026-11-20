@@ -1,9 +1,25 @@
   /* ---------- Reef Blaster: free horizontal movement, automatic fire, monsters in five columns, persistent levels ---------- */
-  var BL={active:false,phase:'ready',stage:1,cleared:0,stake:0,spent:0,retries:0,earned:0,attemptEarned:0,rewarded:0,analytics:null,lives:3,weapon:1,form:'pulse',picks:[],sinceCard:0,keys:{l:false,r:false},ink:[],bossSpawned:false,target:200,x:200,kills:0,stageKills:0,wave:0,waves:18,clock:0,scroll:0,nextWave:.9,shot:0,enemies:[],bullets:[],fx:[],last:0,focused:document.hasFocus?document.hasFocus():true,flash:0,best:0,serial:0,tracked:false};
+  var BL_FLEET_MAX=35,BL_GATE_CAP=35,BL_GATE_HALF=33,BL_SPAWN_Y=532,BL_MILESTONE=10000,BL_DEPTH_STEP=1000;
+  var BL={active:false,phase:'ready',stage:1,distance:0,nextHazard:1500,nextBoss:5000,earned:0,rewarded:0,analytics:null,lives:3,weapon:1,form:'pulse',picks:[],sinceCard:0,keys:{l:false,r:false,u:false,d:false},dragging:null,ink:[],gates:[],target:200,x:200,targetY:BL_SPAWN_Y,y:BL_SPAWN_Y,kills:0,wave:0,clock:0,scroll:0,nextWave:.9,shot:0,enemies:[],bullets:[],fx:[],last:0,focused:document.hasFocus?document.hasFocus():true,flash:0,best:0,serial:0,tracked:false};
   var blCanvas=$('bl-canvas'),blCtx=blCanvas.getContext('2d');
-  try{var blSaved=Number(localStorage.getItem('deep-sea-blaster-best'));if(Number.isFinite(blSaved))BL.best=Math.max(0,Math.min(Number.MAX_SAFE_INTEGER,Math.floor(blSaved)));}catch(_){}
+  var BL_ART_PATH='games/blaster/assets/';
+  var blCanyon=blLoadArt('reef-canyon.jpg'),blAtlas=blLoadArt('reef-sprites.png');
+  // Tight source rectangles in the 512px atlas.
+  var BL_SPRITES={ship:[12,25,233,193],octo:[279,30,209,195],crab:[12,293,230,163],ray:[267,285,234,196]};
+  function blLoadArt(filename){
+    var image=new Image();
+    image.src=BL_ART_PATH+filename;
+    return image;
+  }
+  function blDrawSprite(kind,width){
+    var rect=BL_SPRITES[kind];
+    if(!rect||!blAtlas.naturalWidth)return false;
+    var height=width*rect[3]/rect[2];
+    blCtx.drawImage(blAtlas,rect[0],rect[1],rect[2],rect[3],-width/2,-height/2,width,height);
+    return true;
+  }
+  try{var blSaved=Number(localStorage.getItem('deep-sea-blaster-distance-best'));if(Number.isFinite(blSaved))BL.best=Math.max(0,Math.min(Number.MAX_SAFE_INTEGER,Math.floor(blSaved)));}catch(_){}
   function blSay(text,kind){$('bl-msg').textContent=text;$('bl-msg').className='msg'+(kind?' '+kind:'');}
-  function blRetryFee(){return 0;}
   function blPay(){return BL.earned;}
   // Weapon forms are chosen from three cards between stages; firepower level (BL.weapon) only scales damage and fire rate.
   var BL_GUNS=[
@@ -19,39 +35,67 @@
     var gun=BL_GUNS[0];BL_GUNS.forEach(function(g){if(g.kind===BL.form)gun=g;});
     return Object.assign({},gun,{damage:1+Math.ceil(BL.weapon/3),interval:gun.kind==='rocket'?.34:Math.max(.11,.27-BL.weapon*.005)});
   }
-  function blBossStage(stage){return stage%5===0;}
-  function blStageConfig(stage){var waves=Math.min(180,54+12*(stage-1));return {waves:blBossStage(stage)?Math.ceil(waves*.6):waves,interval:Math.max(.7,1.3-(stage-1)*.05),speed:stage<=10?150+stage*14:290+12*Math.log2(stage-9)};}
+  function blStageConfig(stage){return {interval:Math.max(.50,.84-(stage-1)*.035),speed:stage<=10?150+stage*14:290+12*Math.log2(stage-9)};}
   function blHealth(){return BL.stage<=10?3+Math.ceil(.8*BL.stage):11+3*(BL.stage-10);}
-  function blPace(){return 1+.35*Math.min(1,BL.wave/BL.waves);}
+  function blPace(){return 1+.35*Math.min(1,BL.distance/BL_DEPTH_STEP);}
+  function blMeters(value){return Math.floor(value).toLocaleString('en-US')+' m';}
+  function blSaveBest(){
+    if(Math.floor(BL.distance)<=BL.best)return;
+    BL.best=Math.floor(BL.distance);
+    try{localStorage.setItem('deep-sea-blaster-distance-best',String(BL.best));}catch(_){}
+  }
+  function blAdvanceDistance(pixels){
+    BL.distance+=pixels/10;
+    var depth=1+Math.floor(BL.distance/BL_DEPTH_STEP);
+    if(depth>BL.stage){
+      BL.weapon+=depth-BL.stage;BL.stage=depth;
+      AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills,distance_m:Math.floor(BL.distance)});
+    }
+    var milestones=Math.floor(BL.distance/BL_MILESTONE),bonus=milestones-BL.rewarded;
+    if(bonus>0){
+      BL.rewarded=milestones;BL.earned+=bonus;S.balance+=bonus;save();renderAll();
+      AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills,distance_m:Math.floor(BL.distance),bonus_points:bonus,total_bonus_points:BL.earned,weapon_form:BL.form});
+    }
+    if(BL.distance>=BL.nextHazard){
+      var index=Math.floor((BL.nextHazard-1500)/350);
+      var rock=blEnemy(index%2===0?0:4,-30,'reef',1);
+      rock.x=index%2===0?73:327;BL.enemies.push(rock);
+      BL.nextHazard+=350;
+    }
+    if(BL.distance>=BL.nextBoss&&!BL.enemies.some(function(e){return e.type==='boss';})){
+      BL.nextBoss+=5000;blBossSpawn();
+    }
+  }
   function blVisible(){return !$('view-blaster').hidden&&!document.hidden&&BL.focused;}
   function blTracking(){var engaged=BL.active&&BL.phase==='run'&&blVisible();if(engaged===BL.tracked)return;BL.tracked=engaged;if(engaged)AN.resume(BL.analytics,{stage:BL.stage});else if(BL.active)AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills},true);}
   function blUI(){
-    var w=blWeapon();$('bl-stage').textContent='第 '+BL.stage+' 關';$('bl-lives').textContent=BL.lives+' / 3';$('bl-wave').textContent=BL.wave+' / '+BL.waves;
-    $('bl-weapon').textContent=w.name+' Lv.'+BL.weapon;$('bl-power').textContent=Math.round(w.damage*w.scale*100)/100+' 傷害 × '+w.pellets+' 發';
-    $('bl-evolution').textContent=BL.phase==='pick'?'選一張強化卡，戰鬥會接著繼續':blBossStage(BL.stage)?'第 '+BL.stage+' 關：關底有王':'戰鬥中每隔一段時間三選一強化';$('bl-weapon').style.color=w.color;$('bl-speed').textContent=(blStageConfig(BL.stage).speed*blPace()/96).toFixed(2)+'×';$('bl-kills').textContent=BL.kills+' 隻';$('bl-best').textContent=BL.best+' 關';
-    $('bl-reward-status').textContent=BL.cleared+' / '+((Math.floor(BL.cleared/10)+1)*10)+' 關';$('bl-pay').textContent=BL.earned+' 點';$('bl-amount').disabled=BL.active;
-    $('bl-go').hidden=BL.phase==='lost'||BL.phase==='pick';$('bl-go').disabled=BL.phase==='run';$('bl-picks').hidden=BL.phase!=='pick';for(var pi=0;pi<3;pi++){var card=BL.picks[pi],pb=$('bl-pick-'+pi);pb.hidden=!card;if(card){var label=blCardText(card);if(pb.textContent!==label)pb.textContent=label;pb.disabled=BL.phase!=='pick';}}$('bl-go').textContent=BL.phase==='cleared'?'帶著武器，挑戰下一關':'開始出擊';$('bl-go').dataset.mode='bet';
-    $('bl-cash').disabled=BL.phase!=='cleared';$('bl-cash').textContent=BL.phase==='cleared'?'結束這輪（已獲 '+BL.earned+' 點）':'過關後可選擇收隊';
-    $('bl-retry').hidden=BL.phase!=='lost';$('bl-retry').disabled=BL.phase!=='lost'||S.balance<blRetryFee();$('bl-retry').textContent='重玩第 '+BL.stage+' 關';
-    $('bl-retry-info').hidden=BL.phase!=='lost';$('bl-retry-info').textContent='保留 Lv.'+BL.weapon+' 武器，恢復 3 心，從第 '+BL.stage+' 關第一波重來。'+(S.balance<blRetryFee()?'目前餘額不足，可等待回點。':'');
-    $('bl-left').disabled=$('bl-right').disabled=BL.phase!=='run';
+    $('bl-lives').textContent=BL.lives+' / '+BL_FLEET_MAX;
+    var launch=$('bl-go');
+    launch.hidden=BL.phase!=='ready'&&BL.phase!=='lost';
+    launch.textContent=BL.phase==='lost'?'重新出擊':'開始出擊';
+    $('bl-playfield').classList.toggle('bl-immersive',BL.phase!=='ready');
+  }
+  function blFinish(result){
+    if(!BL.active)return;
+    blSaveBest();BL.active=false;BL.tracked=false;
+    AN.end(BL.analytics,BL.earned,result,{stage:BL.stage,score:BL.kills,distance_m:Math.floor(BL.distance),weapon_level:BL.weapon});
+  }
+  function blExit(){
+    blFinish('abandoned');blSuspend();BL.phase='ready';blUI();
+    window.location.hash='lobby';
   }
   function blRound(){
-    BL.phase='run';BL.stageKills=0;BL.wave=0;BL.waves=blStageConfig(BL.stage).waves;BL.clock=0;BL.scroll=0;BL.nextWave=.6;BL.shot=0;BL.enemies=[];BL.bullets=[];BL.fx=[];BL.ink=[];BL.bossSpawned=false;BL.target=200;BL.x=200;BL.keys.l=BL.keys.r=false;BL.flash=0;BL.last=performance.now();
-    blTracking();blSay(blBossStage(BL.stage)?'第 '+BL.stage+' 關：打完怪潮後，深海巨獸會現身。':'第 '+BL.stage+' 關：自動射擊中。左右移動對準怪物，閃開水雷與墨彈。');blUI();blCanvas.focus();
+    BL.phase='run';BL.wave=0;BL.clock=0;BL.scroll=0;BL.nextWave=.10;BL.shot=0;BL.enemies=[];BL.bullets=[];BL.fx=[];BL.ink=[];BL.gates=[];
+    BL.target=BL.x=200;BL.targetY=BL.y=BL_SPAWN_Y;BL.dragging=null;blReleaseDirections();BL.flash=0;BL.last=performance.now();
+    blTracking();blSay('移動編隊，射擊數字區，閃避怪物與墨彈。');blUI();blCanvas.focus();
   }
-  function blCardText(card){
-    if(card.type==='repair')return '修補船體 · 恢復 1 心';
-    var gun=BL_GUNS.filter(function(g){return g.kind===card.kind;})[0];
-    return gun.name+' · '+gun.desc;
-  }
-  // Weapon choice cards: the fight pauses every BL_CARD_EVERY waves (counted across stages) and resumes after the pick.
-  // Cards only swap the weapon form (or heal); firepower level grows by +1 per cleared stage and +1 per boss.
+  // Weapon choice cards: the fight pauses every BL_CARD_EVERY waves and resumes after the pick.
+  // Cards only swap the weapon form (or heal); firepower level grows by +1 every 1,000 m and per boss.
   var BL_CARD_EVERY=36;
   function blOfferPicks(){
     var pool=BL_GUNS.filter(function(g){return g.kind!==BL.form;}).sort(function(){return Math.random()-.5;}).slice(0,3).map(function(g){return {type:'weapon',kind:g.kind};});
     if(BL.lives<3&&pool.length)pool[pool.length-1]={type:'repair'};
-    BL.picks=pool;BL.phase='pick';BL.sinceCard=0;BL.tracked=false;
+    BL.picks=pool;BL.phase='pick';BL.sinceCard=0;blTracking();
     blSay('暫停選擇：從三張強化卡中選一張，戰鬥會接著繼續。','win');blUI();
   }
   function blChoose(index){
@@ -61,38 +105,28 @@
     BL.phase='run';BL.last=performance.now();blTracking();blSay('強化完成，繼續出擊！');blUI();blCanvas.focus();
   }
   function blStart(){
-    if(BL.phase==='run'||BL.phase==='lost'||BL.phase==='pick')return;
-    if(BL.active&&BL.phase==='cleared'){BL.stage++;blRound();return;}
+    if(BL.active)return;
     var stake=ENTRY_FEE;
     if(stake>S.balance){blSay(LOW_MSG,'lose');return;}
-    BL.stake=stake;BL.spent=stake;BL.retries=0;BL.earned=0;BL.attemptEarned=0;BL.rewarded=0;BL.stage=1;BL.cleared=0;BL.lives=3;BL.weapon=1;BL.form='pulse';BL.picks=[];BL.sinceCard=0;BL.kills=0;BL.active=true;BL.tracked=false;BL.serial=0;
+    BL.earned=0;BL.rewarded=0;BL.stage=1;BL.distance=0;BL.nextHazard=1500;BL.nextBoss=5000;BL.lives=3;BL.weapon=1;BL.form='pulse';BL.picks=[];BL.sinceCard=0;BL.kills=0;BL.active=true;BL.tracked=false;BL.serial=0;
     BL.analytics=AN.start('blaster',stake);save();renderAll();blRound();
   }
-  function blRetry(){
-    if(BL.active||BL.phase!=='lost')return;
-    var cost=blRetryFee();
-    if(S.balance<cost){blSay('餘額不足，重玩第 '+BL.stage+' 關需要 '+cost+' 點。','lose');return;}
-    BL.stake=cost;BL.spent+=cost;BL.retries++;BL.attemptEarned=0;BL.lives=3;BL.active=true;BL.tracked=false;
-    BL.analytics=AN.start('blaster',cost,{stage:BL.stage,entry_kind:'stage_retry',retry_count:BL.retries});save();renderAll();blRound();
-  }
-  function blCash(){
-    if(!BL.active||BL.phase!=='cleared')return;
-    BL.active=false;BL.phase='cashed';BL.tracked=false;
-    AN.end(BL.analytics,BL.attemptEarned,'complete',{stage:BL.cleared,score:BL.kills,weapon_level:BL.weapon});
-    blSay('已結束這輪，累計獎勵 '+BL.earned+' 點已入帳。重玩與續關不限次數。');blUI();
-  }
   function blHurt(){
-    if(BL.phase!=='run')return;BL.lives--;BL.flash=.3;
-    if(BL.lives<=0){BL.active=false;BL.phase='lost';BL.tracked=false;AN.end(BL.analytics,BL.attemptEarned,'loss',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});blSay('防線失守！已獲得的 '+BL.earned+' 點獎勵保留。可重玩目前第 '+BL.stage+' 關，保留武器並恢復 3 心。','lose');}
-    else blSay('怪物突破防線，扣 1 心！剩 '+BL.lives+' 心，快找武器箱提升火力。','lose');blUI();
+    if(BL.phase!=='run'||BL.flash>0)return;
+    BL.flash=.3;
+    blChangeFleet(-1);
   }
-  function blClear(){
-    if(BL.phase!=='run')return;BL.cleared=BL.stage;BL.phase='cleared';BL.bullets=[];BL.weapon=Math.min(Number.MAX_SAFE_INTEGER,BL.weapon+1);
-    var milestones=Math.floor(BL.cleared/10),bonus=Math.max(0,milestones-BL.rewarded);
-    if(bonus){BL.rewarded=milestones;BL.earned+=bonus;BL.attemptEarned+=bonus;S.balance+=bonus;save();renderAll();}
-    BL.tracked=false;AN.progress(BL.analytics,{stage:BL.stage,score:BL.kills,bonus_points:bonus,total_bonus_points:BL.earned,weapon_form:BL.form,boss:blBossStage(BL.stage)},true);
-    if(BL.cleared>BL.best){BL.best=BL.cleared;try{localStorage.setItem('deep-sea-blaster-best',String(BL.best));}catch(_){}}
-    blSay((blBossStage(BL.stage)?'擊敗深海巨獸！':'')+'第 '+BL.stage+' 關完成！'+(bonus?'獲得 '+bonus+' 點，已直接入帳。':'')+'可帶著 Lv.'+BL.weapon+' 火力與 '+BL.lives+' 心挑戰第 '+(BL.stage+1)+' 關，開始前可三選一強化。','win');blUI();
+  function blChangeFleet(delta){
+    if(BL.phase!=='run')return;
+    BL.lives=Math.max(0,Math.min(BL_FLEET_MAX,BL.lives+delta));
+    BL.x=blClampX(BL.x);BL.target=blClampX(BL.target);
+    BL.y=blClampY(BL.y);BL.targetY=blClampY(BL.targetY);
+    if(BL.lives<=0){
+      BL.phase='lost';blFinish('loss');
+      blSay('航行結束。可免費重新出擊。','lose');
+    }else if(delta<0)blSay('編隊受損！剩 '+BL.lives+' 艘潛艇。','lose');
+    else blSay('補員完成！編隊現有 '+BL.lives+' 艘潛艇。','win');
+    blUI();
   }
   var BL_MOBS={
     octo:{name:'泡泡章魚',color:'#b8a4f4',health:1,speed:1},
@@ -105,6 +139,7 @@
     mine:{name:'水雷',color:'#ff6b6b',health:.45,speed:1.1},
     rock:{name:'礁石',color:'#8f9aa8',health:2.2,speed:.62},
     squid:{name:'噴墨烏賊',color:'#d78bff',health:1.1,speed:.72},
+    reef:{name:'硬礁',color:'#77a0b8',health:1,speed:.76},
     boss:{name:'深海巨獸',color:'#ff7a6b',health:1,speed:0}
   };
   // Threat cost and first stage for each spawnable type; a wave spends a growing budget across up to four of five columns.
@@ -115,13 +150,11 @@
     var spec=BL_MOBS[type],health=Math.ceil(hp*spec.health);
     return {type:type,lane:lane,x:BL_SLOTS[lane],y:y,hp:health,max:health,speed:blStageConfig(BL.stage).speed*spec.speed,shield:type==='turtle'?Math.ceil(hp*.75):0,shieldMax:type==='turtle'?Math.ceil(hp*.75):0,hit:0,id:++BL.serial,age:0,shiftAt:1.5,telegraph:0,targetLane:null,slow:0,hold:0,cd:1};
   }
-  function blWavePlan(wave){
+  function blWavePlan(){
     var stage=BL.stage,pool=Object.keys(BL_UNLOCK).filter(function(t){return stage>=BL_UNLOCK[t];});
     var lanes=[0,1,2,3,4].sort(function(){return Math.random()-.5;});
-    var intro=pool.filter(function(t){return BL_UNLOCK[t]===stage&&stage>1;});
-    if(intro.length&&wave===3)return [{lane:lanes[0],type:intro[0],dy:0}];
     // Intensity ramps with total progress T (stages plus position inside the stage): a quiet start with the starter gun, then denser waves.
-    var T=(stage-1)+(BL.waves?wave/BL.waves:0),mean=Math.min(3.6,1+.55*T),n=Math.floor(mean)+(Math.random()<mean-Math.floor(mean)?1:0);
+    var T=(stage-1)+(BL.distance%BL_DEPTH_STEP)/BL_DEPTH_STEP,mean=Math.min(3.6,1+.55*T),n=Math.floor(mean)+(Math.random()<mean-Math.floor(mean)?1:0);
     if(Math.random()<.2)n+=Math.random()<.5?-1:1;
     var maxPer=Math.max(1,Math.min(5,n)),budget=1.4*maxPer+.5,plan=[];
     for(var i=0;i<maxPer;i++){
@@ -134,19 +167,50 @@
     return plan;
   }
   function blSpawn(){
-    BL.wave++;var hp=blHealth(),config=blStageConfig(BL.stage),plan=blWavePlan(BL.wave),scale=Math.max(.6,1-.1*(plan.length-1));
-    plan.forEach(function(q){BL.enemies.push(blEnemy(q.lane,-32+q.dy,q.type,Math.max(1,Math.round(hp*scale))));});
-    BL.nextWave=config.interval*(1-.16*BL.wave/BL.waves);
+    BL.wave++;var hp=blHealth(),config=blStageConfig(BL.stage),plan=blWavePlan(),scale=Math.max(.6,1-.1*(plan.length-1));
+    if(BL.wave%5===1){
+      blSpawnGates(Math.floor(BL.wave/5));
+    }
+    plan.forEach(function(q){BL.enemies.push(blEnemy(q.lane,54+q.dy,q.type,Math.max(1,Math.round(hp*scale))));});
+    blSpawnSwarm(hp);
+    BL.nextWave=config.interval*(1-.16*Math.min(1,BL.distance/BL_DEPTH_STEP));
     BL.sinceCard++;
-    if(BL.sinceCard>=BL_CARD_EVERY&&BL.wave<BL.waves){blOfferPicks();return;}
+    if(BL.sinceCard>=BL_CARD_EVERY){blOfferPicks();return;}
     blUI();
   }
+  function blSpawnGates(pair){
+    var left=pair%2===0;
+    if(!pair&&BL.stage===1){
+      BL.gates.push({x:120,y:168,value:2,cap:4,group:pair},{x:280,y:168,value:-6,group:pair});
+      return;
+    }
+    var penalty={x:left?266:134,y:-25,value:-[11,15,19,24][pair%4],half:134,group:pair};
+    var armor=9+4*BL.lives;
+    BL.gates.push(
+      {x:left?66:334,y:-25,value:[1,2,3,2][pair%4],half:66,cap:5,group:pair,armor:armor,maxArmor:armor,fallback:penalty},
+      penalty
+    );
+  }
+  function blSpawnSwarm(hp){
+    var count=Math.min(16,4+Math.floor(BL.wave/6)+BL.stage-1);
+    var center=BL.wave===1?200:[200,110,290][BL.wave%3],columns=4;
+    for(var i=0;i<count;i++){
+      var offset=(i%columns-1.5)*22;
+      var enemy=blEnemy(2,54-Math.floor(i/columns)*24-i%2*10,'octo',Math.max(1,Math.ceil(hp*.4)));
+      enemy.x=center+offset;
+      enemy.swarmOffset=offset;
+      enemy.speed*=1.12+(i%columns)*.06;
+      BL.enemies.push(enemy);
+    }
+  }
   function blBossSpawn(){
-    var boss=blEnemy(1,150,'boss',blHealth()*28);boss.x=200;boss.warn=[];boss.warnT=0;boss.cd=2.2;BL.enemies.push(boss);BL.bossSpawned=true;
+    var boss=blEnemy(1,150,'boss',blHealth()*28);boss.x=200;boss.warn=[];boss.warnT=0;boss.cd=2.2;BL.enemies.push(boss);
     blSay('深海巨獸現身！留意紅色警示區域，墨浪會沿區域衝下來。','lose');blUI();
   }
   function blAdvanceBoss(e,step){
-    e.age+=step;e.hit=Math.max(0,e.hit-step);e.y=150;e.x=200+Math.sin(e.age*.55)*105;
+    e.age+=step;e.hit=Math.max(0,e.hit-step);
+    if(e.age>=24){e.warn=[];e.y-=220*step;if(e.y< -100)e.hp=0;return;}
+    e.y=150;e.x=200+Math.sin(e.age*.55)*105;
     var rage=e.hp/e.max<.5;
     if(e.warn.length){
       e.warnT-=step;
@@ -168,24 +232,33 @@
       if(e.cd<=0){BL.ink.push({x:BL.x,y:e.y+22,vy:300,r:13,beam:false});e.cd=1.7;}
       return;
     }
-    e.y+=e.speed*blPace()*step*slow;
-    if(e.type!=='eel')return;
+    var swimmer=e.type!=='rock'&&e.type!=='mine'&&e.type!=='reef';
+    e.y+=e.speed*blPace()*step*slow*(swimmer?1.14:1);
+    if(e.type!=='eel'){
+      // Stop steering before contact so a late sidestep can still beat the dive.
+      if(swimmer&&e.y>145&&e.y<Math.min(445,BL.y-65)){
+        var turn=(e.swarmOffset!==undefined?240:185)*slow*step;
+        var aim=Math.max(9,Math.min(391,BL.x+(e.swarmOffset||0)));
+        e.x+=Math.max(-turn,Math.min(turn,aim-e.x));
+      }
+      return;
+    }
     if(e.targetLane!==null){e.telegraph-=step;if(e.telegraph<=0){e.x+=(BL_SLOTS[e.targetLane]-e.x)*Math.min(1,step*9);if(Math.abs(e.x-BL_SLOTS[e.targetLane])<1){e.x=BL_SLOTS[e.targetLane];e.lane=e.targetLane;e.targetLane=null;e.shiftAt=e.age+2.2;}}}
     else if(e.y>65&&e.y<365&&e.age>=e.shiftAt){var near=[e.lane-2,e.lane-1,e.lane+1,e.lane+2].filter(function(q){return q>=0&&q<=4;});e.targetLane=near[e.id%near.length];e.telegraph=.65;}
   }
   function blDamage(e,damage){
-    if(e.hp<=0)return;
+    if(e.hp<=0||e.type==='reef')return;
     if(e.shield>0){var blocked=Math.min(e.shield,damage);e.shield-=blocked;damage-=blocked;if(e.shield===0)blEffect(e.x,e.y,'#79bfff',14);}
     e.hp-=damage;e.hit=.09;
     if(e.hp>0)return;
     if(e.type==='rock'){blEffect(e.x,e.y,'#b8c2cf',12);return;}
-    if(e.type==='boss'){BL.kills+=10;BL.stageKills+=10;BL.weapon=Math.min(Number.MAX_SAFE_INTEGER,BL.weapon+1);BL.ink=[];blEffect(e.x,e.y,'#ff7a6b',40);return;}
-    BL.kills++;BL.stageKills++;blEffect(e.x,e.y,(BL_MOBS[e.type]||BL_MOBS.octo).color,9);
+    if(e.type==='boss'){BL.kills+=10;BL.weapon=Math.min(Number.MAX_SAFE_INTEGER,BL.weapon+1);BL.ink=[];blEffect(e.x,e.y,'#ff7a6b',40);return;}
+    BL.kills++;blEffect(e.x,e.y,(BL_MOBS[e.type]||BL_MOBS.octo).color,9);
     if(e.type==='mine'){
       var blast=Math.max(2,Math.ceil(blHealth()*.6));
       BL.fx.push({x:e.x,y:e.y,vx:0,vy:0,t:.32,color:'#ff6b6b',ring:90});
       BL.enemies.slice().forEach(function(o){if(o.id!==e.id&&o.hp>0&&o.type!=='boss'&&Math.hypot(o.x-e.x,o.y-e.y)<90)blDamage(o,blast);});
-      if(e.y>400&&Math.hypot(e.x-BL.x,e.y-532)<110)blHurt();
+      if(blFleetTouch(e.x,e.y,90,90,true))blHurt();
     }
     if(e.type==='jelly'){
       var hp=blHealth(),y=Math.min(e.y,390);
@@ -196,30 +269,106 @@
     var dx=bx-ax,dy=by-ay,length=dx*dx+dy*dy,t=length?Math.max(0,Math.min(1,((e.x-ax)*dx+(e.y-ay)*dy)/length)):0;
     return Math.hypot(ax+dx*t-e.x,ay+dy*t-e.y)<radius;
   }
-  function blClampX(x){return Math.max(28,Math.min(372,x));}
-  // Free movement: drag/tap sets the target x, arrow/A-D keys and the on-screen buttons slide it while held.
-  function blMove(direction){
-    if(BL.phase!=='run'||!blVisible())return;blSync(performance.now());if(BL.phase!=='run')return;
-    BL.target=blClampX(BL.target+direction*80);blTracking();
+  function blFleetWidth(){return Math.min(7,BL.lives);}
+  function blFleet(){
+    var ships=[],width=blFleetWidth();
+    for(var i=0;i<BL.lives;i++){
+      var row=Math.floor(i/width),count=Math.min(width,BL.lives-row*width);
+      var offset=i%width-(count-1)/2;
+      var stagger=row%2===0?0:row%4===1?2:-2;
+      var sweep=Math.abs(offset)*4+(offset===0?0:(i*3)%5);
+      ships.push({x:BL.x+offset*12+stagger,y:BL.y+row*11+sweep,lead:row===0&&offset===0,side:Math.sign(offset)});
+    }
+    return ships;
   }
-  function blAim(x){if(BL.phase==='run')BL.target=blClampX(x);}
+  function blFleetTouch(x,y,rx,ry,radial){
+    return blFleet().some(function(ship){
+      var dx=ship.x-x,dy=ship.y-y;
+      return radial?dx*dx+dy*dy<rx*rx:Math.abs(dx)<rx&&Math.abs(dy)<ry;
+    });
+  }
+  function blClampX(x){
+    var margin=Math.max(28,blFleetWidth()*6+5);
+    return Math.max(margin,Math.min(400-margin,x));
+  }
+  function blClampY(y){
+    var rows=Math.ceil(BL.lives/7);
+    var rear=Math.max(0,rows-1)*11+(blFleetWidth()-1)*2.5+4;
+    return Math.max(105,Math.min(565-Math.max(0,rear),y));
+  }
+  function blReleaseDirections(){
+    BL.keys.l=BL.keys.r=BL.keys.u=BL.keys.d=false;
+  }
+  function blAim(x,y){
+    BL.target=blClampX(x);BL.targetY=blClampY(y);
+  }
+  function blAdvanceFleet(step){
+    var dx=Number(BL.keys.r)-Number(BL.keys.l),dy=Number(BL.keys.d)-Number(BL.keys.u);
+    var scale=430*step/(Math.hypot(dx,dy)||1);
+    blAim(BL.target+dx*scale,BL.targetY+dy*scale);
+    var mx=BL.target-BL.x,my=BL.targetY-BL.y;
+    var travel=Math.min(1,720*step/(Math.hypot(mx,my)||1));
+    BL.x=blClampX(BL.x+mx*travel);BL.y=blClampY(BL.y+my*travel);
+  }
   function blBurst(){
-    var w=blWeapon();for(var i=0;i<w.pellets;i++){
-      var offset=i-(w.pellets-1)/2,spread=w.kind==='plasma'?offset*60:0;
-      BL.bullets.push({x:BL.x+offset*13,y:508,damage:w.damage*w.scale,vx:spread,speed:w.speed,kind:w.kind,color:w.color,pierce:w.pierce,radius:w.radius,hits:[]});
-    }BL.shot=w.interval;
+    var w=blWeapon();
+    blFleet().forEach(function(ship){
+      for(var i=0;i<w.pellets;i++){
+        var offset=i-(w.pellets-1)/2,spread=w.kind==='plasma'?offset*60:0;
+        BL.bullets.push({x:ship.x+offset*5,y:ship.y-8,damage:w.damage*w.scale,vx:spread,speed:w.speed,kind:w.kind,color:w.color,pierce:w.pierce,radius:w.radius,hits:[]});
+      }
+    });
+    BL.shot=w.interval;
+  }
+  function blGateContains(gate,x){
+    var half=gate.half||BL_GATE_HALF;
+    return x>=gate.x-half&&x<gate.x+half;
   }
   function blAdvanceBullet(b,step){
+    if(b.pierce<=0)return;
     var ax=b.x,ay=b.y;
     if(b.kind==='rocket'){
       var target=null;BL.enemies.forEach(function(e){if(e.hp>0&&e.y<b.y+12&&(!target||Math.hypot(e.x-b.x,e.y-b.y)<Math.hypot(target.x-b.x,target.y-b.y)))target=e;});
       if(target)b.x+=Math.max(-210*step,Math.min(210*step,target.x-b.x));
     }else b.x+=(b.vx||0)*step;
     b.y-=b.speed*step;
-    // Resolve nearest along this projectile's path, preserving one hit per enemy for piercing shots.
-    var targets=BL.enemies.filter(function(e){return e.hp>0&&b.hits.indexOf(e.id)<0&&blSegmentHit(ax,ay,b.x,b.y,e,22+(b.kind==='plasma'?7:0));}).sort(function(a,c){return Math.hypot(a.x-ax,a.y-ay)-Math.hypot(c.x-ax,c.y-ay);});
-    for(var j=0;j<targets.length&&b.pierce>0;j++){
-      var enemy=targets[j];if(enemy.hp<=0)continue;b.hits.push(enemy.id);blDamage(enemy,b.damage);b.pierce--;
+    var impacts=[];
+    var dx=b.x-ax,dy=b.y-ay,length=dx*dx+dy*dy;
+    BL.enemies.forEach(function(enemy){
+      if(enemy.hp<=0||b.hits.indexOf(enemy.id)>=0||!length)return;
+      var reef=enemy.type==='reef',verticalScale=reef?2.2:1;
+      var ex=enemy.x-ax,ey=(enemy.y-ay)*verticalScale,rayY=dy*verticalScale;
+      var radius=reef?48:(enemy.swarmOffset!==undefined?9:22)+(b.kind==='plasma'?7:0);
+      var dot=ex*dx+ey*rayY,span=dx*dx+rayY*rayY;
+      var discriminant=dot*dot-span*(ex*ex+ey*ey-radius*radius);
+      if(discriminant<0)return;
+      var root=Math.sqrt(discriminant),entry=(dot-root)/span;
+      if(entry<=1&&(dot+root)>=0)impacts.push({enemy:enemy,time:Math.max(0,entry)});
+    });
+    BL.gates.forEach(function(gate){
+      if(ay<=gate.y||b.y>gate.y)return;
+      var time=(gate.y-ay)/dy;
+      if(blGateContains(gate,ax+dx*time))impacts.push({gate:gate,time:time});
+    });
+    impacts.sort(function(a,c){return a.time-c.time;});
+    for(var j=0;j<impacts.length&&b.pierce>0&&BL.phase==='run';j++){
+      var impact=impacts[j],enemy=impact.enemy;
+      if(impact.gate){
+        var gate=impact.gate;
+        if(gate.armor>0){
+          gate.armor--;
+          b.pierce=0;
+        }else if(gate.value<0){
+          gate.value=Math.max(-BL_GATE_CAP,gate.value-1);
+        }else{
+          gate.hits=(gate.hits||0)+1;
+          if(gate.hits%5===0)gate.value=Math.min(gate.cap,gate.value+1);
+        }
+        continue;
+      }
+      if(enemy.hp<=0)continue;
+      if(enemy.type==='reef'){b.pierce=0;break;}
+      b.hits.push(enemy.id);blDamage(enemy,b.damage);b.pierce--;
       if(b.kind==='frost'&&enemy.type!=='boss')enemy.slow=2;
       if(b.kind==='chain'){BL.enemies.filter(function(o){return o.id!==enemy.id&&o.hp>0&&Math.hypot(o.x-enemy.x,o.y-enemy.y)<140;}).sort(function(a,c){return Math.hypot(a.x-enemy.x,a.y-enemy.y)-Math.hypot(c.x-enemy.x,c.y-enemy.y);}).slice(0,2).forEach(function(o){blDamage(o,b.damage*.6);BL.fx.push({x:o.x,y:o.y,vx:0,vy:0,t:.2,color:b.color,ring:18});});}
       if(b.radius>0){
@@ -234,28 +383,50 @@
   function blStep(dt){
     while(dt>1e-8&&BL.phase==='run'){
       var step=Math.min(dt,.016);dt-=step;
-      BL.clock+=step;BL.scroll+=blStageConfig(BL.stage).speed*blPace()*step;BL.flash=Math.max(0,BL.flash-step);var dir=(BL.keys.r?1:0)-(BL.keys.l?1:0);if(dir)BL.target=blClampX(BL.target+dir*430*step);BL.x+=Math.max(-720*step,Math.min(720*step,BL.target-BL.x));
-      BL.shot-=step;if(BL.shot<=0)blBurst();BL.nextWave-=step;if(BL.wave<BL.waves&&BL.nextWave<=0)blSpawn();
+      BL.clock+=step;var travel=blStageConfig(BL.stage).speed*blPace()*step;BL.scroll+=travel;blAdvanceDistance(travel);BL.flash=Math.max(0,BL.flash-step);var previousFleetX=BL.x,previousFleetY=BL.y;blAdvanceFleet(step);
+      BL.shot-=step;if(BL.shot<=0)blBurst();BL.nextWave-=step;if(BL.nextWave<=0)blSpawn();
+      if(BL.phase!=='run')return;
       BL.enemies.forEach(function(e){blAdvanceEnemy(e,step);});
-      BL.bullets.forEach(function(b){blAdvanceBullet(b,step);});
+      BL.bullets.forEach(function(b){if(BL.phase==='run')blAdvanceBullet(b,step);});
+      if(BL.phase!=='run')return;
+      BL.gates.forEach(function(gate){gate.y+=140*step;});
+      var crossing=BL.gates.find(function(gate){
+        var before=previousFleetY-(gate.y-140*step),after=BL.y-gate.y;
+        if(before<=0||after>0)return false;
+        var crossingX=previousFleetX+(BL.x-previousFleetX)*before/(before-after);
+        return blGateContains(gate,crossingX);
+      });
+      if(crossing){
+        BL.gates=BL.gates.filter(function(gate){
+          return gate!==crossing&&(crossing.group===undefined||gate.group!==crossing.group);
+        });
+        blChangeFleet(crossing.armor>0?crossing.fallback.value:crossing.value);
+        if(BL.phase!=='run')return;
+      }
+      BL.gates=BL.gates.filter(function(gate){return gate.y<=620;});
       BL.bullets=BL.bullets.filter(function(b){return b.y>-40&&b.x>-40&&b.x<440;});BL.enemies=BL.enemies.filter(function(e){return e.hp>0;});
       for(var k=BL.enemies.length-1;k>=0;k--){
         var e=BL.enemies[k];if(e.type==='boss')continue;
-        var touch=Math.abs(e.x-BL.x)<34&&Math.abs(e.y-532)<34;
-        if(e.type==='rock'){if(e.y>585){BL.enemies.splice(k,1);}else if(touch){BL.enemies.splice(k,1);blHurt();if(BL.phase!=='run')return;}continue;}
-        if(e.y>585||touch){BL.enemies.splice(k,1);blHurt();if(BL.phase!=='run')return;}
+        if(e.y>620){BL.enemies.splice(k,1);continue;}
+        if(e.type==='reef'){
+          if(!e.collided&&blFleetTouch(e.x,e.y,52,25)){
+            e.collided=true;blHurt();if(BL.phase!=='run')return;
+          }
+          continue;
+        }
+        var radius=e.swarmOffset!==undefined?11:24;
+        if(blFleetTouch(e.x,e.y,radius+1,radius)){
+          BL.enemies.splice(k,1);blHurt();if(BL.phase!=='run')return;
+        }
       }
       for(var q=BL.ink.length-1;q>=0;q--){
         var ink=BL.ink[q];ink.y+=ink.vy*step;
-        if(Math.abs(ink.x-BL.x)<(ink.beam?40:30)&&Math.abs(ink.y-532)<(ink.beam?40:30)){BL.ink.splice(q,1);blHurt();if(BL.phase!=='run')return;}
+        if(blFleetTouch(ink.x,ink.y,ink.beam?32:16,ink.beam?36:18)){BL.ink.splice(q,1);blHurt();if(BL.phase!=='run')return;}
         else if(ink.y>640)BL.ink.splice(q,1);
       }
-      if(BL.wave<BL.waves&&!BL.enemies.length&&BL.nextWave>.35)BL.nextWave=.35;
+      if(!BL.enemies.length)BL.nextWave=Math.min(BL.nextWave,.10);
       BL.fx.forEach(function(f){f.x+=f.vx*step;f.y+=f.vy*step;f.t-=step;});BL.fx=BL.fx.filter(function(f){return f.t>0;});
-      if(BL.wave===BL.waves&&!BL.enemies.length){
-        if(blBossStage(BL.stage)&&!BL.bossSpawned)blBossSpawn();
-        else blClear();
-      }
+
     }
   }
   function blSync(now){
@@ -271,37 +442,71 @@
     blRoundRect(30,62,340,10,5,'#3a1a22');blRoundRect(30,62,340*Math.max(0,e.hp/e.max),10,5,'#ff7a6b');g.textAlign='center';g.fillStyle='#ffe4e0';g.font='bold 12px system-ui';g.fillText('深海巨獸 '+Math.max(0,Math.ceil(e.hp))+' HP',200,92);
   }
   function blDrawMonster(e){
+    if(e.type==='reef'){
+      var g=blCtx,x=e.x,y=e.y;
+      blRoundRect(x-50,y-22,100,44,9,'#3d566d');
+      g.strokeStyle='#ffc66b';g.lineWidth=2;g.beginPath();g.roundRect(x-50,y-22,100,44,9);g.stroke();
+      g.fillStyle='#99bbc6';g.beginPath();g.moveTo(x-38,y-13);g.lineTo(x-7,y-18);g.lineTo(x+9,y-4);g.lineTo(x-21,y+1);g.closePath();g.fill();
+      g.fillStyle='#ffdaa2';g.font='bold 18px system-ui';g.textAlign='center';g.fillText('×',x+29,y+8);
+      return;
+    }
     if(e.type==='boss'){blDrawBoss(e);return;}
     var g=blCtx,x=e.x,y=e.y,t=BL.clock,spec=BL_MOBS[e.type]||BL_MOBS.octo,c=e.hit>0?'#fff':spec.color;
     if(e.type==='eel'&&e.targetLane!==null){
       var target=BL_SLOTS[e.targetLane];g.strokeStyle='rgba(255,224,118,.65)';g.lineWidth=2;g.setLineDash([5,5]);g.beginPath();g.moveTo(x,y);g.lineTo(target,y+40);g.stroke();g.setLineDash([]);g.fillStyle='#ffe076';g.font='bold 20px system-ui';g.textAlign='center';g.fillText(target<x?'←':'→',target,y+30);
     }
-    g.save();g.translate(x,y);g.scale(.8,.8);if(!reduceMotion)g.rotate(Math.sin(t*4+e.id)*.06);
-    g.fillStyle=c;g.strokeStyle=c;g.lineWidth=7;g.lineCap='round';
-    if(e.type==='crab'){
-      [-1,1].forEach(function(d){g.beginPath();g.moveTo(d*20,4);g.lineTo(d*37,-7);g.lineTo(d*39,-19);g.stroke();g.beginPath();g.arc(d*39,-23,9,0,Math.PI*1.6);g.fill();for(var i=0;i<2;i++){g.beginPath();g.moveTo(d*18,12+i*6);g.lineTo(d*33,22+i*7);g.stroke();}});
-      blRoundRect(-27,-21,54,47,12,c);blRoundRect(-26,-22,52,12,5,'#94695f');
-    }else if(e.type==='ray'){
-      g.beginPath();g.moveTo(0,-30);g.quadraticCurveTo(13,-2,43,14);g.lineTo(15,20);g.lineTo(0,11);g.lineTo(-15,20);g.lineTo(-43,14);g.quadraticCurveTo(-13,-2,0,-30);g.fill();g.lineWidth=4;g.beginPath();g.moveTo(0,12);g.quadraticCurveTo(15,30,0,44);g.stroke();
-    }else if(e.type==='eel'){
-      g.lineWidth=16;g.beginPath();g.moveTo(0,-24);g.bezierCurveTo(-32,-8,30,8,0,24);g.stroke();g.beginPath();g.ellipse(0,-19,18,14,0,0,7);g.fill();g.strokeStyle='#b08c25';g.lineWidth=3;g.beginPath();g.moveTo(-4,-4);g.lineTo(7,1);g.lineTo(-7,8);g.lineTo(5,15);g.stroke();
-    }else if(e.type==='mine'){
-      g.lineWidth=5;for(var i=0;i<8;i++){var a=i*Math.PI/4;g.beginPath();g.moveTo(Math.cos(a)*18,Math.sin(a)*18);g.lineTo(Math.cos(a)*29,Math.sin(a)*29);g.stroke();}
-      g.fillStyle=e.hit>0?'#fff':'#3a2f3f';g.beginPath();g.arc(0,0,20,0,7);g.fill();g.fillStyle=Math.sin(t*10+e.id)>0?'#ff5a4d':'#7a2a2a';g.beginPath();g.arc(0,0,7,0,7);g.fill();
-    }else if(e.type==='rock'){
-      g.fillStyle=c;g.beginPath();g.moveTo(-30,16);g.lineTo(-24,-14);g.lineTo(-6,-28);g.lineTo(18,-22);g.lineTo(32,-2);g.lineTo(26,22);g.lineTo(-8,26);g.closePath();g.fill();g.strokeStyle='#59636f';g.lineWidth=3;g.beginPath();g.moveTo(-6,-28);g.lineTo(0,-6);g.lineTo(-12,14);g.moveTo(0,-6);g.lineTo(18,10);g.stroke();
-    }else if(e.type==='squid'){
-      g.beginPath();g.moveTo(0,-30);g.quadraticCurveTo(28,-8,16,8);g.lineTo(-16,8);g.quadraticCurveTo(-28,-8,0,-30);g.fill();g.lineWidth=5;for(var i=0;i<4;i++){g.beginPath();g.moveTo(-12+i*8,8);g.quadraticCurveTo(-14+i*9,22,-12+i*8+Math.sin(t*5+i)*4,30);g.stroke();}
-      if(e.y>=150&&e.hold<4&&e.cd<.5){g.strokeStyle='rgba(255,120,120,.55)';g.lineWidth=2;g.setLineDash([4,6]);g.beginPath();g.moveTo(BL.x-x,30);g.lineTo(BL.x-x,400);g.stroke();g.setLineDash([]);}
-    }else if(e.type==='turtle'){
-      [-1,1].forEach(function(d){g.beginPath();g.ellipse(d*25,12,12,8,d*.4,0,7);g.fill();});g.beginPath();g.ellipse(0,-22,14,16,0,0,7);g.fill();g.fillStyle=e.hit>0?'#fff':'#3e698e';g.beginPath();g.ellipse(0,7,26,29,0,0,7);g.fill();g.strokeStyle='#a9d4ed';g.lineWidth=2;g.beginPath();g.moveTo(0,-15);g.lineTo(15,-4);g.lineTo(15,15);g.lineTo(0,27);g.lineTo(-15,15);g.lineTo(-15,-4);g.closePath();g.stroke();
+    var swarm=e.swarmOffset!==undefined;
+    g.save();g.translate(x,y);
+    if(!reduceMotion)g.rotate(Math.sin(t*4+e.id)*.06);
+    if(e.type==='ray')g.rotate(Math.PI);
+    if(blDrawSprite(e.type,swarm?17:e.type==='octo'?29:40)){
+      g.restore();
+      if(e.slow>0||e.hit>0){
+        g.strokeStyle=e.slow>0?'#bdefff':'#f8edff';g.lineWidth=1;
+        g.beginPath();g.arc(x,y,swarm?9:20,0,7);g.stroke();
+      }
+      if(e.type==='octo')return;
     }else{
-      var small=e.type==='mini',jelly=e.type==='jelly'||small,size=small?16:25;
-      g.lineWidth=small?4:7;for(var i=0;i<3;i++){g.beginPath();g.moveTo(-size*.65+i*size*.65,9);g.quadraticCurveTo(-size+i*size*.7,32,-size*.6+i*size*.65+Math.sin(t*5+i)*4,small?24:32);g.stroke();}
-      g.beginPath();g.ellipse(0,0,size,jelly?size*.75:size,0,0,7);g.fill();if(jelly){g.fillStyle='#ffe6f4';g.beginPath();g.arc(-6,-6,4,0,7);g.fill();}
+      if(e.type==='ray')g.rotate(-Math.PI);
+      var size=swarm?.25:e.type==='rock'||e.type==='mine'?.8:.48;
+      g.scale(size,size);
+      g.fillStyle=c;g.strokeStyle=c;g.lineWidth=7;g.lineCap='round';
+      if(e.type==='crab'){
+        [-1,1].forEach(function(d){g.beginPath();g.moveTo(d*20,4);g.lineTo(d*37,-7);g.lineTo(d*39,-19);g.stroke();g.beginPath();g.arc(d*39,-23,9,0,Math.PI*1.6);g.fill();for(var i=0;i<2;i++){g.beginPath();g.moveTo(d*18,12+i*6);g.lineTo(d*33,22+i*7);g.stroke();}});
+        blRoundRect(-27,-21,54,47,12,c);blRoundRect(-26,-22,52,12,5,'#94695f');
+      }else if(e.type==='ray'){
+        g.beginPath();g.moveTo(0,-30);g.quadraticCurveTo(13,-2,43,14);g.lineTo(15,20);g.lineTo(0,11);g.lineTo(-15,20);g.lineTo(-43,14);g.quadraticCurveTo(-13,-2,0,-30);g.fill();g.lineWidth=4;g.beginPath();g.moveTo(0,12);g.quadraticCurveTo(15,30,0,44);g.stroke();
+      }else if(e.type==='eel'){
+        g.lineWidth=16;g.beginPath();g.moveTo(0,-24);g.bezierCurveTo(-32,-8,30,8,0,24);g.stroke();g.beginPath();g.ellipse(0,-19,18,14,0,0,7);g.fill();g.strokeStyle='#b08c25';g.lineWidth=3;g.beginPath();g.moveTo(-4,-4);g.lineTo(7,1);g.lineTo(-7,8);g.lineTo(5,15);g.stroke();
+      }else if(e.type==='mine'){
+        g.strokeStyle='#d57962';g.lineWidth=6;
+        for(var i=0;i<8;i++){
+          var a=i*Math.PI/4;
+          g.beginPath();g.moveTo(Math.cos(a)*17,Math.sin(a)*17);g.lineTo(Math.cos(a)*27,Math.sin(a)*27);g.stroke();
+        }
+        g.fillStyle=e.hit>0?'#fff':'#592c46';g.beginPath();g.arc(0,0,20,0,7);g.fill();
+        g.strokeStyle='#ffab87';g.lineWidth=2;g.stroke();
+        g.fillStyle=reduceMotion||Math.sin(t*10+e.id)>0?'#ffcfad':'#ff756a';
+        g.beginPath();g.arc(0,0,7,0,7);g.fill();
+      }else if(e.type==='rock'){
+        g.fillStyle=e.hit>0?'#fff':'#456880';g.beginPath();g.moveTo(-30,16);g.lineTo(-24,-14);g.lineTo(-6,-28);g.lineTo(18,-22);g.lineTo(32,-2);g.lineTo(26,22);g.lineTo(-8,26);g.closePath();g.fill();
+        g.strokeStyle='#b8d2dc';g.lineWidth=2;g.stroke();
+        g.fillStyle='#7b9eb0';g.beginPath();g.moveTo(-24,-14);g.lineTo(-6,-28);g.lineTo(18,-22);g.lineTo(4,-4);g.lineTo(-13,1);g.closePath();g.fill();
+        g.strokeStyle='#222f48';g.lineWidth=3;g.beginPath();g.moveTo(-6,-28);g.lineTo(4,-4);g.lineTo(-12,14);g.moveTo(4,-4);g.lineTo(23,8);g.stroke();
+      }else if(e.type==='squid'){
+        g.beginPath();g.moveTo(0,-30);g.quadraticCurveTo(28,-8,16,8);g.lineTo(-16,8);g.quadraticCurveTo(-28,-8,0,-30);g.fill();g.lineWidth=5;for(var i=0;i<4;i++){g.beginPath();g.moveTo(-12+i*8,8);g.quadraticCurveTo(-14+i*9,22,-12+i*8+Math.sin(t*5+i)*4,30);g.stroke();}
+        if(e.y>=150&&e.hold<4&&e.cd<.5){g.strokeStyle='rgba(255,120,120,.55)';g.lineWidth=2;g.setLineDash([4,6]);g.beginPath();g.moveTo(BL.x-x,30);g.lineTo(BL.x-x,400);g.stroke();g.setLineDash([]);}
+      }else if(e.type==='turtle'){
+        [-1,1].forEach(function(d){g.beginPath();g.ellipse(d*25,12,12,8,d*.4,0,7);g.fill();});g.beginPath();g.ellipse(0,-22,14,16,0,0,7);g.fill();g.fillStyle=e.hit>0?'#fff':'#3e698e';g.beginPath();g.ellipse(0,7,26,29,0,0,7);g.fill();g.strokeStyle='#a9d4ed';g.lineWidth=2;g.beginPath();g.moveTo(0,-15);g.lineTo(15,-4);g.lineTo(15,15);g.lineTo(0,27);g.lineTo(-15,15);g.lineTo(-15,-4);g.closePath();g.stroke();
+      }else{
+        var small=e.type==='mini',jelly=e.type==='jelly'||small,size=small?16:25;
+        g.lineWidth=small?4:7;for(var i=0;i<3;i++){g.beginPath();g.moveTo(-size*.65+i*size*.65,9);g.quadraticCurveTo(-size+i*size*.7,32,-size*.6+i*size*.65+Math.sin(t*5+i)*4,small?24:32);g.stroke();}
+        g.beginPath();g.ellipse(0,0,size,jelly?size*.75:size,0,0,7);g.fill();if(jelly){g.fillStyle='#ffe6f4';g.beginPath();g.arc(-6,-6,4,0,7);g.fill();}
+      }
+      var ey=e.type==='turtle'?-26:e.type==='eel'?-22:-4,eyeSize=e.type==='mini'?4:6;
+      if(e.type!=='mine'&&e.type!=='rock'){g.fillStyle='#fff';g.beginPath();g.ellipse(-8,ey,eyeSize,eyeSize+2,0,0,7);g.ellipse(8,ey,eyeSize,eyeSize+2,0,0,7);g.fill();g.fillStyle='#182c40';g.beginPath();g.arc(-7,ey+1,2.5,0,7);g.arc(9,ey+1,2.5,0,7);g.fill();}g.restore();
     }
-    var ey=e.type==='turtle'?-26:e.type==='eel'?-22:-4,eyeSize=e.type==='mini'?4:6;
-    if(e.type!=='mine'&&e.type!=='rock'){g.fillStyle='#fff';g.beginPath();g.ellipse(-8,ey,eyeSize,eyeSize+2,0,0,7);g.ellipse(8,ey,eyeSize,eyeSize+2,0,0,7);g.fill();g.fillStyle='#182c40';g.beginPath();g.arc(-7,ey+1,2.5,0,7);g.arc(9,ey+1,2.5,0,7);g.fill();}g.restore();
+    if(e.type==='octo')return;
     if(e.slow>0){g.strokeStyle='#bdefff';g.lineWidth=2;g.beginPath();g.arc(x,y,28,0,7);g.stroke();}
     if(e.shield>0){g.strokeStyle='#79bfff';g.lineWidth=3;g.beginPath();g.ellipse(x,y,27,34,0,0,7);g.stroke();blRoundRect(x-22,y-49,44*e.shield/e.shieldMax,4,2,'#79bfff');}
     blRoundRect(x-22,y-40,44,5,2,'#183a49');blRoundRect(x-22,y-40,44*Math.max(0,e.hp/e.max),5,2,spec.color);g.font='bold 10px system-ui';g.textAlign='center';g.fillStyle='#e4f2f3';g.fillText(Math.max(0,Math.ceil(e.hp))+' HP',x,y-45);
@@ -322,9 +527,20 @@
     g.fillStyle='#b35cff';g.beginPath();g.ellipse(i.x,i.y,9,13,0,0,7);g.fill();g.fillStyle='#e6c4ff';g.beginPath();g.arc(i.x-2,i.y-4,3,0,7);g.fill();
   }
   function blDrawPlayer(){
-    var g=blCtx,px=BL.x,py=532,gun=blWeapon(),c=gun.color;
-    g.fillStyle='rgba(98,230,210,.12)';g.beginPath();g.ellipse(px,py+28,35,11,0,0,7);g.fill();g.fillStyle=c;g.beginPath();g.moveTo(px,py-27);g.lineTo(px+29,py+18);g.lineTo(px+17,py+25);g.lineTo(px,py+17);g.lineTo(px-17,py+25);g.lineTo(px-29,py+18);g.closePath();g.fill();
-    blRoundRect(px-9,py-13,18,23,8,'#163e50');g.fillStyle='#ecffff';g.beginPath();g.arc(px,py-6,5,0,7);g.fill();
+    var g=blCtx,gun=blWeapon(),bank=reduceMotion?0:Math.max(-.12,Math.min(.12,(BL.target-BL.x)*.004));
+    blFleet().forEach(function(ship){
+      g.save();g.translate(ship.x,ship.y);g.rotate(bank+ship.side*.055);
+      var size=ship.lead?.25:.195;
+      g.scale(size,size);
+      blDrawShip(g,gun);g.restore();
+    });
+  }
+  function blDrawShip(g,gun){
+    var px=0,py=0,c=gun.color;
+    if(!blDrawSprite('ship',72)){
+      g.fillStyle='rgba(98,230,210,.12)';g.beginPath();g.ellipse(px,py+28,35,11,0,0,7);g.fill();g.fillStyle=c;g.beginPath();g.moveTo(px,py-27);g.lineTo(px+29,py+18);g.lineTo(px+17,py+25);g.lineTo(px,py+17);g.lineTo(px-17,py+25);g.lineTo(px-29,py+18);g.closePath();g.fill();
+      blRoundRect(px-9,py-13,18,23,8,'#163e50');g.fillStyle='#ecffff';g.beginPath();g.arc(px,py-6,5,0,7);g.fill();
+    }
     if(gun.kind==='pulse')blRoundRect(px-4,py-35,8,24,4,c);
     if(gun.kind==='twin')[-1,1].forEach(function(d){blRoundRect(px+d*14-5,py-35,10,29,4,c);});
     if(gun.kind==='frost')[-1,1].forEach(function(d){blRoundRect(px+d*14-4,py-33,8,26,4,c);blRoundRect(px+d*14-8,py-20,16,5,2,'#6aa9c4');});
@@ -332,9 +548,15 @@
     if(gun.kind==='rail'){blRoundRect(px-11,py-48,7,38,2,c);blRoundRect(px+4,py-48,7,38,2,c);blRoundRect(px-14,py-30,28,7,2,'#406f58');}
     if(gun.kind==='rocket')[-1,1].forEach(function(d){blRoundRect(px+d*24-8,py-23,16,35,5,'#734b4c');blRoundRect(px+d*24-6,py-31,12,20,4,c);g.fillStyle='#ffcf68';g.beginPath();g.arc(px+d*24,py-24,3,0,7);g.fill();});
     if(gun.kind==='plasma'){g.strokeStyle=c;g.lineWidth=3;g.beginPath();g.ellipse(px,py-29,24,12,0,0,7);g.stroke();g.fillStyle=c;g.beginPath();g.arc(px,py-29,11,0,7);g.fill();g.fillStyle='#fff2ff';g.beginPath();g.arc(px-3,py-32,4,0,7);g.fill();[-1,1].forEach(function(d){blRoundRect(px+d*27-4,py-17,8,31,3,c);});}
-    if(BL.phase==='run'&&!reduceMotion){g.fillStyle=c;g.beginPath();g.moveTo(px-7,py+22);g.lineTo(px,py+36+Math.sin(BL.clock*35)*5);g.lineTo(px+7,py+22);g.fill();}
+    if(BL.phase==='run'&&!reduceMotion){
+      var wake=8+Math.sin(BL.clock*24)*2;
+      g.fillStyle='rgba(114,232,255,.36)';
+      g.beginPath();g.ellipse(-13,35,4,wake,0,0,7);g.ellipse(13,35,4,wake,0,0,7);g.fill();
+      g.fillStyle='#c4fbff';
+      g.beginPath();g.arc(-13,30,2.5,0,7);g.arc(13,30,2.5,0,7);g.fill();
+    }
   }
-  function blPickCard(card){var gun=card.type==='weapon'?BL_GUNS.filter(function(x){return x.kind===card.kind;})[0]:null;return {title:gun?gun.name:'修補船體',desc:gun?gun.desc:'恢復 1 心',color:gun?gun.color:'#ff958c'};}
+  function blPickCard(card){var gun=card.type==='weapon'?BL_GUNS.filter(function(x){return x.kind===card.kind;})[0]:null;return {title:gun?gun.name:'救援潛艇',desc:gun?gun.desc:'補充 1 艘潛艇',color:gun?gun.color:'#ff958c'};}
   function blDrawPicks(){
     var g=blCtx;g.fillStyle='rgba(4,18,29,.9)';g.fillRect(0,0,400,600);g.textAlign='center';g.fillStyle='#62e6d2';g.font='bold 26px system-ui';g.fillText('選擇強化',200,120);g.fillStyle='#e4f2f3';g.font='14px system-ui';g.fillText('戰鬥暫停，三選一',200,150);
     BL.picks.forEach(function(card,i){var info=blPickCard(card),x=22+i*120;blRoundRect(x,190,116,300,14,'#113041');blRoundRect(x,190,116,8,4,info.color);g.fillStyle=info.color;g.font='bold 16px system-ui';g.fillText(info.title,x+58,250,100);g.fillStyle='#e4f2f3';g.font='12px system-ui';g.fillText(info.desc,x+58,290,100);g.fillStyle='#ffdc87';g.fillText('火力 Lv.'+BL.weapon,x+58,330,100);g.fillStyle='#9fc1ca';g.fillText('按 '+(i+1),x+58,470,100);});
@@ -342,52 +564,106 @@
   }
   function blDraw(){
     var g=blCtx,w=400,h=600;g.clearRect(0,0,w,h);g.fillStyle='#061c2c';g.fillRect(0,0,w,h);
-    var glow=g.createLinearGradient(0,0,0,h);glow.addColorStop(0,'#133b50');glow.addColorStop(1,'#071d2d');g.fillStyle=glow;g.fillRect(20,0,360,h);
-    g.fillStyle='rgba(98,230,210,.05)';g.fillRect(BL.x-1.5,0,3,h);
-    g.strokeStyle='#265061';g.lineWidth=1;g.setLineDash([8,15]);[92,164,236,308].forEach(function(x){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();});g.setLineDash([]);
-    g.strokeStyle='rgba(98,230,210,.09)';for(var i=0;i<9;i++){var y=(i*80+(reduceMotion?0:BL.scroll*.65))%680-40;g.beginPath();g.moveTo(22,y);g.lineTo(378,y);g.stroke();}
-    g.fillStyle='rgba(98,230,210,.22)';for(var i=0;i<12;i++){g.beginPath();g.arc(9+(i%2)*382,((i*71-BL.scroll*.15)%640+640)%640,2+i%3,0,7);g.fill();}
+    if(blCanyon.naturalWidth)g.drawImage(blCanyon,0,0,w,h);
+    else {
+      var glow=g.createLinearGradient(0,0,0,h);
+      glow.addColorStop(0,'#133b50');glow.addColorStop(1,'#071d2d');
+      g.fillStyle=glow;g.fillRect(0,0,w,h);
+    }
+    var light=g.createLinearGradient(0,54,0,330);
+    light.addColorStop(0,'rgba(84,225,255,.12)');light.addColorStop(1,'rgba(84,225,255,0)');
+    g.fillStyle=light;g.beginPath();g.moveTo(145,54);g.lineTo(220,54);g.lineTo(318,330);g.lineTo(90,330);g.closePath();g.fill();
+    g.fillStyle='rgba(152,231,239,.18)';
+    for(var i=0;i<14;i++){
+      var y=(i*83+(reduceMotion?0:BL.scroll*.32))%h;
+      g.beginPath();g.arc(49+(i*73)%303,y,1+i%2*.5,0,7);g.fill();
+    }
+    BL.gates.forEach(function(gate){
+      var positive=gate.value>0,half=gate.half||BL_GATE_HALF,locked=gate.armor>0;
+      var label=(positive?'+':'−')+Math.abs(gate.value);
+      var edge=locked?'#ffcc78':positive?'#76ffe2':'#ff929d';
+      var glass=g.createLinearGradient(0,gate.y-13,0,gate.y+13);
+      glass.addColorStop(0,locked?'#5e3d2a':positive?'#153c48':'#4c263b');
+      glass.addColorStop(1,locked?'#925f2f':positive?'#126d69':'#883d53');
+      var left=gate.x-half+1,width=half*2-2;
+      blRoundRect(left,gate.y-13,width,26,7,glass);
+      g.strokeStyle=edge;g.lineWidth=1;
+      g.beginPath();g.roundRect(left+.5,gate.y-12.5,width-1,25,7);g.stroke();
+      if(locked){
+        g.fillStyle='#ffcc78';
+        g.fillRect(gate.x-half+4,gate.y-12,4,24);
+        g.fillRect(gate.x+half-8,gate.y-12,4,24);
+        g.fillStyle='#302c35';
+        for(var stripe=-8;stripe<=8;stripe+=8){
+          g.fillRect(gate.x-half+4,gate.y+stripe,4,3);
+          g.fillRect(gate.x+half-8,gate.y+stripe,4,3);
+        }
+      }
+      g.fillStyle='#ffffff';g.font='bold 17px system-ui';g.textAlign='center';
+      g.fillText(locked?'◆ '+gate.armor+' → '+label:label,gate.x,gate.y+6,half*2-8);
+      if(locked)blRoundRect(gate.x-half+4,gate.y+9,(half*2-8)*gate.armor/gate.maxArmor,3,1,'#ffca70');
+    });
     BL.bullets.forEach(blDrawBullet);BL.enemies.forEach(blDrawMonster);BL.ink.forEach(blDrawInk);blDrawPlayer();
     BL.fx.forEach(function(f){g.globalAlpha=Math.max(0,f.t/.45);g.fillStyle=f.color;if(f.ring){g.strokeStyle=f.color;g.lineWidth=2;g.beginPath();g.arc(f.x,f.y,f.ring*(reduceMotion?.8:1-f.t/.36),0,7);g.stroke();}else g.fillRect(f.x-2,f.y-2,4,4);});g.globalAlpha=1;
-    g.fillStyle='rgba(4,18,29,.9)';g.fillRect(0,0,400,54);g.font='bold 14px system-ui';g.fillStyle='#e4f2f3';g.textAlign='left';g.fillText('第 '+BL.stage+' 關 · '+BL.wave+'/'+BL.waves+' 波',16,23);g.fillStyle='#ffb638';g.fillText(blWeapon().name+' Lv.'+BL.weapon,16,44);g.textAlign='right';g.fillStyle='#ff958c';g.fillText('♥'.repeat(Math.max(0,BL.lives))+'♡'.repeat(3-Math.max(0,BL.lives)),384,25);g.fillStyle='#9fc1ca';g.font='12px system-ui';g.fillText((blStageConfig(BL.stage).speed*blPace()/96).toFixed(2)+'× 航速',384,44);
+    g.fillStyle='rgba(4,18,29,.9)';g.fillRect(0,0,400,54);g.font='bold 14px system-ui';g.fillStyle='#e4f2f3';g.textAlign='left';g.fillText(blMeters(BL.phase==='ready'?0:BL.distance),62,23);g.fillStyle='#ffb638';g.fillText(blWeapon().name+' Lv.'+BL.weapon,62,44);g.textAlign='right';g.fillStyle='#ff958c';g.fillText('編隊：'+BL.lives+' / '+BL_FLEET_MAX,384,25);g.fillStyle='#9fc1ca';g.font='12px system-ui';g.fillText((blStageConfig(BL.stage).speed*blPace()/10).toFixed(1)+' m/s',384,44);
     if(BL.flash>0){g.fillStyle='rgba(255,111,97,'+(BL.flash*.6)+')';g.fillRect(0,0,w,h);}
     if(BL.phase==='pick')blDrawPicks();
     else if(BL.phase!=='run'||!blVisible()){
       g.fillStyle='rgba(4,18,29,.82)';g.fillRect(0,0,w,h);blRoundRect(28,180,344,222,18,'#113041');g.strokeStyle='#326475';g.lineWidth=1;g.strokeRect(40,194,320,194);
-      g.textAlign='center';g.fillStyle=BL.phase==='lost'?'#ff958c':'#62e6d2';g.font='bold 28px system-ui';g.fillText(BL.phase==='ready'?'深海火線':BL.phase==='cleared'?'防線守住了！':BL.phase==='cashed'?'出擊完成':BL.phase==='lost'?'防線失守':'已暫停',200,236);
-      g.fillStyle='#e4f2f3';g.font='15px system-ui';g.fillText(BL.phase==='ready'?'自由移動，自動開火。':BL.phase==='cleared'?'下一站：第 '+(BL.stage+1)+' 關':BL.phase==='cashed'?'本輪已獲得 '+BL.earned+' 點':BL.phase==='lost'?'已獲 '+BL.earned+' 點保留，可重玩本關':'回到遊戲後繼續',200,276);
-      g.fillStyle='#ffdc87';g.fillText(BL.phase==='ready'?'每關開始前，三選一強化':blWeapon().name+' · 擊破 '+BL.kills+' 隻',200,310);
-      g.fillStyle='#9fc1ca';g.font='13px system-ui';g.fillText(BL.phase==='ready'?'到操作區開始':'使用操作面板選擇下一步',200,352);
+      g.textAlign='center';g.fillStyle=BL.phase==='lost'?'#ff958c':'#62e6d2';g.font='bold 28px system-ui';g.fillText(BL.phase==='ready'?'深海火線':BL.phase==='lost'?'航行結束':'已暫停',200,236);
+      g.fillStyle='#e4f2f3';g.font='15px system-ui';g.fillText(BL.phase==='ready'?'自由移動，自動開火。':BL.phase==='lost'?blMeters(BL.distance):'回到遊戲後繼續',200,276);
+      g.fillStyle='#ffdc87';g.fillText('最佳距離 '+blMeters(BL.best),200,310);
     }
-    g.textAlign='center';g.fillStyle='#8db0b9';g.font='11px system-ui';g.fillText('← 按住拖曳或左右移動 →',200,585);
   }
-  $('bl-go').addEventListener('click',blStart);$('bl-retry').addEventListener('click',blRetry);$('bl-cash').addEventListener('click',blCash);
-  function blHold(button,side){
-    function down(e){if(BL.phase!=='run')return;if(e&&e.preventDefault)e.preventDefault();BL.keys[side]=true;}
-    function up(){BL.keys[side]=false;}
-    button.addEventListener('pointerdown',down);button.addEventListener('pointerup',up);button.addEventListener('pointerleave',up);button.addEventListener('pointercancel',up);
-    button.addEventListener('click',function(e){if(!e||!e.detail)blMove(side==='l'?-1:1);});
-  }
-  blHold($('bl-left'),'l');blHold($('bl-right'),'r');
-  function blPointerX(e){var bounds=blCanvas.getBoundingClientRect();return (e.clientX-bounds.left)/bounds.width*400;}
-  blCanvas.addEventListener('pointerdown',function(e){
+  $('bl-go').addEventListener('click',blStart);
+  $('bl-exit').addEventListener('click',blExit);
+  function blPointerPosition(e){
     var bounds=blCanvas.getBoundingClientRect();
-    if(BL.phase==='pick'){e.preventDefault();var cx=(e.clientX-bounds.left)/bounds.width*400,cy=bounds.height?(e.clientY-bounds.top)/bounds.height*600:300,index=Math.floor((cx-22)/120);if(cy>=190&&cy<=490&&index>=0&&index<3&&cx-22-index*120<=116)blChoose(index);return;}
-    if(BL.phase!=='run')return;e.preventDefault();blCanvas.focus();BL.dragging=true;try{blCanvas.setPointerCapture(e.pointerId);}catch(_){}blAim(blPointerX(e));});
-  blCanvas.addEventListener('pointermove',function(e){if(BL.dragging&&BL.phase==='run')blAim(blPointerX(e));});
-  ['pointerup','pointercancel'].forEach(function(name){blCanvas.addEventListener(name,function(){BL.dragging=false;});});
-  [0,1,2].forEach(function(i){$('bl-pick-'+i).addEventListener('click',function(){blChoose(i);});});
+    var scale=Math.min(bounds.width/400,bounds.height/600);
+    return {
+      x:(e.clientX-bounds.left-(bounds.width-400*scale)/2)/scale,
+      y:(e.clientY-bounds.top-(bounds.height-600*scale)/2)/scale
+    };
+  }
+  blCanvas.addEventListener('pointerdown',function(e){
+    if(BL.phase!=='run'&&BL.phase!=='pick')return;
+    e.preventDefault();
+    var pos=blPointerPosition(e);
+    if(BL.phase==='pick'){
+      var index=Math.floor((pos.x-22)/120);
+      if(pos.y>=190&&pos.y<=490&&index>=0&&index<3&&pos.x-22-index*120<=116)blChoose(index);
+      return;
+    }
+    if(BL.dragging!==null)return;
+    blCanvas.focus();BL.dragging=e.pointerId;
+    try{blCanvas.setPointerCapture(e.pointerId);}catch(_){}
+    blAim(pos.x,pos.y);
+  });
+  blCanvas.addEventListener('pointermove',function(e){
+    if(BL.dragging!==e.pointerId||BL.phase!=='run')return;
+    var pos=blPointerPosition(e);blAim(pos.x,pos.y);
+  });
+  ['pointerup','pointercancel','lostpointercapture'].forEach(function(name){
+    blCanvas.addEventListener(name,function(e){if(BL.dragging===e.pointerId)BL.dragging=null;});
+  });
+  var BL_DIRECTIONS={arrowleft:'l',a:'l',arrowright:'r',d:'r',arrowup:'u',w:'u',arrowdown:'d',s:'d'};
   document.addEventListener('keydown',function(e){
-    if(!blVisible()||(BL.phase!=='run'&&BL.phase!=='pick')||e.ctrlKey||e.metaKey||e.altKey)return;
+    if(!blVisible()||e.ctrlKey||e.metaKey||e.altKey)return;
+    if(e.key==='Escape'){e.preventDefault();blExit();return;}
+    if(BL.phase!=='run'&&BL.phase!=='pick')return;
     if(['INPUT','BUTTON','A','SUMMARY','TEXTAREA','SELECT'].indexOf(e.target.tagName)>=0||e.target.isContentEditable)return;
     var key=e.key.toLowerCase();
     if(BL.phase==='pick'){if(!e.repeat&&['1','2','3'].indexOf(key)>=0){e.preventDefault();blChoose(Number(key)-1);}return;}
-    if(key==='arrowleft'||key==='a'){e.preventDefault();BL.keys.l=true;}else if(key==='arrowright'||key==='d'){e.preventDefault();BL.keys.r=true;}
+    var side=BL_DIRECTIONS[key];
+    if(side){e.preventDefault();BL.keys[side]=true;}
   });
-  document.addEventListener('keyup',function(e){var key=e.key.toLowerCase();if(key==='arrowleft'||key==='a')BL.keys.l=false;if(key==='arrowright'||key==='d')BL.keys.r=false;});
-  function blSuspend(){BL.last=performance.now();BL.keys.l=BL.keys.r=false;BL.dragging=false;blTracking();}
+  document.addEventListener('keyup',function(e){
+    var side=BL_DIRECTIONS[e.key.toLowerCase()];
+    if(side)BL.keys[side]=false;
+  });
+  function blSuspend(){BL.last=performance.now();blReleaseDirections();BL.dragging=null;if(BL.active)blSaveBest();blTracking();}
   window.addEventListener('blur',function(){BL.focused=false;blSuspend();});window.addEventListener('focus',function(){BL.focused=true;blSuspend();});
   document.addEventListener('visibilitychange',blSuspend);window.addEventListener('hashchange',blSuspend);
-  window.addEventListener('pagehide',function(e){if(!e.persisted&&BL.active){AN.end(BL.analytics,BL.attemptEarned,'abandoned',{stage:BL.stage,score:BL.kills,weapon_level:BL.weapon});BL.active=false;BL.tracked=false;}},true);
-  function blLoop(now){blSync(now);if(!$('view-blaster').hidden){blUI();blDraw();}requestAnimationFrame(blLoop);}
+  window.addEventListener('pagehide',function(e){if(!e.persisted)blFinish('abandoned');},true);
+  function blLoop(now){blSync(now);if(!$('view-blaster').hidden)blDraw();requestAnimationFrame(blLoop);}
   blUI();blDraw();requestAnimationFrame(blLoop);

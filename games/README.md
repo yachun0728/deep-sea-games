@@ -4,6 +4,7 @@
 
 | 遊戲 | hash | 分類 | 狀態 | game.js | 說明 |
 | --- | --- | --- | --- | --- | --- |
+| [深海前哨 Deep Sea Outpost](outpost/README.md) | `#outpost` | 益智策略 | 顯示 | 320 行 | 扳動海流閘門，將敵群導入防守火網。 |
 | [壓潰深度 Crush Depth](crash/README.md) | `#crash` | 機率挑戰 | 隱藏 | 235 行 | 隨潛艇一起下潛，在壓潰前上浮。 |
 | [踩地雷 Minesweeper](mines/README.md) | `#mines` | 免費懷舊 | 顯示 | 195 行 | 低中高難度或自訂棋盤，重溫經典踩地雷。 |
 | [落珠 Pearl Drop](plinko/README.md) | `#plinko` | 機率挑戰 | 隱藏 | 133 行 | 投下珍珠，看它穿過釘陣落在哪一格。 |
@@ -27,7 +28,7 @@
 | [青蛙吃蟲 Frog Snack](frog/README.md) | `#frog` | 時機操作 | 顯示 | 209 行 | 對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。 |
 | [偷睡大師 Nap Master](nap/README.md) | `#nap` | 潛行偷閒 | 顯示 | 300 行 | 趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。 |
 | [死神打工 Reaper Shift](reaper/README.md) | `#reaper` | 潛行偷閒 | 顯示 | 107 行 | 普通靈魂要接走，綠色通行證要放行。 |
-| [深海火線 Reef Blaster](blaster/README.md) | `#blaster` | 跑酷動作 | 顯示 | 394 行 | 七種武器三選一，闖過水雷、礁石與深海巨獸。 |
+| [深海火線 Reef Blaster](blaster/README.md) | `#blaster` | 跑酷動作 | 顯示 | 670 行 | 帶領潛艇編隊航行，閃過怪潮和打不碎的硬礁。 |
 | [一口氣探險 One Breath Dive](dive/README.md) | `#dive` | 益智策略 | 顯示 | 54 行 | 選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。 |
 | [捷運搶位 MRT Seat Grab](mrt/README.md) | `#mrt` | 益智策略 | 顯示 | 52 行 | 看小動作猜誰要下車，一階一階往上搶座位。 |
 | [泡麵煎餅翻面 Noodle Pancake](pancake/README.md) | `#pancake` | 時機操作 | 顯示 | 43 行 | 半夜偷煮宵夜，晃手機煎到金黃再甩起來翻面。 |

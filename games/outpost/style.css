@@ -1,0 +1,90 @@
+/* Keep the playfield aligned when controls or the tutorial cross the scroll threshold. */
+html:has(#view-outpost:not([hidden], .game-view-expanded, :fullscreen)),
+#view-outpost:is(.game-view-expanded, :fullscreen){scrollbar-gutter:stable}
+.outpost-shell{box-sizing:border-box;width:100%;max-width:810px;margin:auto;padding:clamp(9px,2.4vw,20px);border:1px solid #315268;border-radius:16px;background:linear-gradient(155deg,#17374b,#091e30 60%);color:#e4f5ff}
+.outpost-head,.outpost-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.outpost-head{justify-content:space-between}
+.outpost-head h2{font-size:clamp(1.5rem,5vw,2.5rem);letter-spacing:.04em;margin:0;color:#eafaff}
+.outpost-rules p{color:#b1d7e4;margin:4px 0;font-size:.9rem}
+.outpost-clock{text-align:right;color:#8cf8e4;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;font-variant-numeric:tabular-nums}
+.outpost-clock b{font-size:clamp(1.2rem,5vw,1.65rem)}
+.outpost-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin:9px 0}
+.outpost-stats:has(#outpost-best-stat[hidden]){grid-template-columns:repeat(3,minmax(0,1fr))}
+.outpost-stats div{background:#091d2c;border:1px solid #254759;border-radius:10px;padding:7px}
+.outpost-stats dt,.outpost-board-label{font-size:.72rem;color:#acd1de}
+.outpost-stats dd{margin:2px 0 0;font-weight:700;font-size:1.15rem;font-variant-numeric:tabular-nums}
+#outpost-board{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr);overflow:clip;gap:4px;margin:4px 0 5px;padding:7px 0;border-radius:10px;background:#082233 url("./games/outpost/assets/station.jpg") left center/cover no-repeat}
+#outpost-current{position:absolute;left:68%;top:16%;width:13%;height:29%;pointer-events:none;z-index:3;border-right:3px solid #8dfbf1;border-bottom:3px solid #8dfbf1;border-radius:0 0 80% 0;filter:drop-shadow(0 0 5px #39e9fb)}
+#outpost-current::after{content:"";position:absolute;bottom:-6px;left:-1px;border:5px solid transparent;border-right:8px solid #8dfbf1;border-left:0}
+.outpost-lane{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding-inline:11.66%;border-radius:9px;background:linear-gradient(180deg,#3b778d66,#112e4766 55%,#4690a477);border:1px solid #2d5870}
+.outpost-lane button{grid-row:1;min-width:0;height:clamp(54px,14vw,89px);padding:0 0 22px;border:1px dashed #38657c;color:#a8cedd;background:#0d293a3b;border-radius:7px;font-size:1.25rem;touch-action:manipulation}
+.outpost-lane button[data-built=true]{background:#15495e;color:#9afee4;border-style:solid}
+.outpost-lane button[data-ready=true]{background:#1b645c;border-color:#6df2d3;box-shadow:inset 0 0 12px #6df2d344}
+.outpost-lane button:disabled{opacity:.7}
+.outpost-enemies{position:absolute;inset:0;pointer-events:none}
+.outpost-enemy{position:absolute;bottom:6px;transform:translateX(-50%);width:15px;height:13px;border:2px solid #ffc56c;background:#ac5850;border-radius:65% 35% 35% 65%}
+.outpost-enemy[data-type="1"]{width:11px;background:#e06d88;border-radius:70% 30%}
+.outpost-enemy[data-type="2"]{width:20px;background:#694960;border-radius:5px}
+.outpost-enemy[data-marked=true]{border-color:#6df2d3}
+.outpost-enemy[data-diverted=true]{box-shadow:0 0 7px 2px #82fbe5aa}
+.outpost-enemy i{position:absolute;bottom:-5px;left:0;height:2px;background:#ffc56c}
+.outpost-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.outpost-tools button,.outpost-actions button{color:#e4f5ff;background:#12374d;border:1px solid #397086;border-radius:9px;min-height:44px;padding:5px;touch-action:manipulation}
+.outpost-tools button{display:grid;justify-items:center;align-content:start;gap:3px;min-width:0;font-size:.75rem}
+.outpost-tools b{display:grid;place-items:center;width:29px;height:26px;border-radius:7px;background:#14384e;border:1px solid #5186a0;font-size:1.15rem;color:#76e7d4}
+.outpost-tools small{color:#ffc56c}
+.outpost-tools button[aria-pressed=true],.outpost-actions button[aria-pressed=true],#outpost-start{background:#68e7cd;color:#062a31;border-color:#68e7cd;font-weight:700}
+.outpost-tools button[aria-pressed=true] small{color:inherit}
+.outpost-actions p,#outpost-message{margin:8px 0;font-size:.86rem}
+#outpost-direction{margin-top:8px}
+.outpost-rules{margin-top:14px;border-top:1px solid #275366;padding-top:10px}
+.outpost-shell [hidden]{display:none}
+
+.outpost-guide{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;margin:0 0 10px;border:1px solid #e5b95f;border-radius:10px;background:#18364a;color:#fff1c4}
+.outpost-guide p{margin:0;font-size:.84rem;line-height:1.35}
+.outpost-guide button{flex:none;min-height:44px;padding:0 8px;border:1px solid #9e8a63;border-radius:7px;background:#143044;color:#fff1c4;touch-action:manipulation}
+.outpost-shell button[data-guide=true]{position:relative;z-index:1;outline:2px solid #ffd479;outline-offset:-3px;box-shadow:inset 0 0 15px #ffc56c66}
+.outpost-lane button[data-ready=true]{outline:2px solid #6df2d3;outline-offset:-3px}
+.outpost-lane button[data-guide=true][data-ready=true]{outline-color:#ffd479}
+.outpost-attack{position:absolute;z-index:2;bottom:10px;height:4px;min-width:6px;border-radius:4px;background:#bafcfd;box-shadow:0 0 7px 2px #59dff6;transform-origin:left;animation:outpost-shot .38s ease-out both}
+.outpost-attack-left{transform-origin:right}
+.outpost-attack[data-type="1"]{background:#99ffa3;box-shadow:0 0 9px 2px #71f393;height:2px}
+.outpost-attack[data-type="2"]{background:#ffd479;box-shadow:0 0 8px 2px #ffba59;height:5px}
+@keyframes outpost-shot{0%{transform:scaleX(.16);opacity:1}35%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+@media(prefers-reduced-motion:reduce){.outpost-attack{animation-name:outpost-shot-fade}}
+@keyframes outpost-shot-fade{from{opacity:1}to{opacity:0}}
+
+
+
+.outpost-shell{--outpost-cannon:url("./games/outpost/assets/cannon.png");--outpost-sonar:url("./games/outpost/assets/sonar.png");--outpost-coil:url("./games/outpost/assets/coil.png");--outpost-gate:url("./games/outpost/assets/gate.png")}
+.outpost-shell :is([data-device="0"],[data-device-type="0"]){--outpost-device:var(--outpost-cannon)}
+.outpost-shell :is([data-device="1"],[data-device-type="1"]){--outpost-device:var(--outpost-sonar)}
+.outpost-shell :is([data-device="2"],[data-device-type="2"]){--outpost-device:var(--outpost-coil)}
+.outpost-shell :is([data-device="3"],[data-device-type="3"]){--outpost-device:var(--outpost-gate)}
+.outpost-tools b,.outpost-lane button[data-built=true]{background-image:var(--outpost-device);background-repeat:no-repeat;background-position:center}
+.outpost-tools b{position:relative;width:100%;height:clamp(28px,8vw,47px);border:0;background-color:transparent;background-size:contain}
+.outpost-lane button[data-built=true]{background-size:auto min(70%,48px);background-position:center top 3px}
+.outpost-lane button[data-device-type="3"] .outpost-pad-symbol{display:inline-block;color:#fff;text-shadow:0 1px 3px #001324,0 0 4px #001324;font-weight:800}
+.outpost-enemy,.outpost-enemy[data-type]{width:clamp(25px,7vw,43px);height:clamp(18px,5vw,32px);border:0;border-radius:0;background:var(--outpost-enemy) center/contain no-repeat;box-shadow:none;z-index:2}
+.outpost-enemy[data-type="0"]{--outpost-enemy:url("./games/outpost/assets/coral-fish.png")}
+.outpost-enemy[data-type="1"]{--outpost-enemy:url("./games/outpost/assets/needlefish.png")}
+.outpost-enemy[data-type="2"]{--outpost-enemy:url("./games/outpost/assets/armored-crab.png");width:clamp(30px,8vw,51px)}
+.outpost-enemy[data-marked=true],.outpost-enemy[data-diverted=true]{filter:drop-shadow(0 0 3px #8effd9)}
+.outpost-tools [data-device="3"] b::after{content:"↓";position:absolute;inset:0;display:grid;place-items:center;color:#fff;text-shadow:0 1px 3px #001324}
+.outpost-tools [data-gate-direction="up"] b::after{content:"↑"}
+
+
+.outpost-board-label{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px;padding:4px 6px;border:1px solid #31566a;border-radius:8px;background:#0a2235;color:#d9eff7;line-height:1.3}
+.outpost-board-station,.outpost-board-entry{display:flex;align-items:center;gap:5px;min-height:25px;padding:0 5px;font-weight:600}
+.outpost-board-station::before,.outpost-board-entry::before{content:"";width:6px;height:6px;border-radius:50%;background:#ffd18a}
+.outpost-board-entry::before{background:#ff9a85}
+.outpost-board-flow{display:flex;justify-content:center;align-items:center;gap:6px;color:#9ce2df}
+.outpost-board-flow>[aria-hidden]{width:clamp(10px,6vw,35px);height:8px;background:currentColor;clip-path:polygon(0 50%,7px 0,7px 38%,100% 38%,100% 62%,7px 62%,7px 100%)}
+
+.outpost-stage-controls{display:flex;align-items:center;gap:6px 9px;flex-wrap:wrap;margin:6px 0;color:#b8dbe7;font-size:.8rem}
+.outpost-stage-controls select{max-width:100%;min-height:44px;padding:4px 6px;border:1px solid #397086;border-radius:8px;background:#102d42;color:#e4f5ff}
+.outpost-stage-controls small{color:#97c6d2}
+.outpost-lane button[data-upgrade-ready=true]{box-shadow:inset 0 0 0 2px #f5c06b}
+.outpost-lane button[data-upgraded=true]::after{content:"★";position:absolute;right:3px;top:2px;color:#ffd479;font-size:.8rem}
+.outpost-lane button[data-upgraded=true]{position:relative}
+#outpost-next{background:#164c51;border-color:#68e7cd}

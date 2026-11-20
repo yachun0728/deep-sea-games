@@ -293,3 +293,13 @@ Frontier draw.js uses two PNG atlases with vector fallback. Optional world.suppl
 `games/market-desk/` 的雙語案件由 `cases.js` 組合進遊戲邏輯。手動點選推進交易日，切換分頁保留當前狀態，路由離開時結束當局。專用儲存鍵 `deep-sea-market-desk-best` 保存結局確認時的最高查證分數（0～100），共用錢包無遊戲交易。
 
 貓咪疊書舖以 `shared/book-sort-rules.cjs` 共用編號盤面與搬書判定。全視窗遊戲右上選單接入既有訪客回合 SDK，由 Worker 驗證後更新訪客排行榜。
+
+### 深海前哨
+
+`games/outpost/` 用 DOM 顯示三路棋盤與觸控部署。前端與 Worker 共用 `shared/outpost-rules.cjs`，每 10 ms 推進一次，僅記錄有效部署與閘門換道。背景、失焦及離開 hash 時暫停，返回手動繼續。最佳分數使用獨立鍵 `deep-sea-outpost-best-v1`。
+
+訪客沿用 `POST /api/v1/boards/rounds` 及 `POST /api/v1/boards/rounds/move`。Worker 驗證訪客、revision、兩小時有效期限、經過時間、規則版本及合法終點，再用操作重播計分。沿用既有 D1 migration 與公開榜 trigger。新部署按 Worker、前端順序，回退時移除此次前端接線並重新組合、還原 Worker 的遊戲註冊，保留訪客歷史資料。
+
+遊戲路由使用 `is-game` 隱藏共用的遊戲切換與畫面／操作工具列，提供精簡返回大廳連結。荒島遠征和深海連連看的返回入口放在遊戲內工具列，手機自動進入沉浸版面時仍可使用；深海火線、貓咪疊書舖與深海前哨使用各自的返回入口。
+
+深海前哨第二至第三十關共用同一模擬（第 4–30 關由 `outpost-rules.cjs` 內固定種子的產生器建立），解鎖進度另存 `deep-sea-outpost-unlocked-v1`。訪客排行榜的重播入口固定開第一關，舊成績仍使用同一套分數規則。其餘 29 關進度存於瀏覽器，沒有新增 D1 migration。

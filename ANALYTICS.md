@@ -168,3 +168,5 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 所有已上架遊戲entry_points=0，免費重試與補給extra_points=0；game_id與game_name及回合生命周期不變。Reef Blaster結束以complete記錄已入帳固定獎勵，移除cashout/multiplier參數。平台依現有有效時間判定給固定遊玩與每日完成獎勵，另送platform_points_earned（reward_kind=play_time或daily_complete、reward_points）；外觀兌換送cosmetic_redeemed（item_id、spent_points）。這些獎勵不再次加入game_end的payout，避免把原遊戲里程碑與平台獎勵混算。不傳玩家姓名或本機收藏內容，不新增Google tag。正式GA4後台未驗收。
 
 `market-desk`（收盤之前）以零入場點數開始，提交每日答案時以 `step` 回報已完成天數、`score` 回報查證分數。確認結局時送出 `win` 或 `lose`，離開遊戲時送出 `abandoned`，結束入帳為 0。切換分頁的有效時間由共用追蹤處理。
+
+深海前哨使用 `game_id=outpost`、`game_name=深海前哨`。開局送 start，波次切換及暫停送 progress，手動續玩送 resume。結束帶 `stage=1`、`step`（波次）與 `score`（防守分數），結果為 `complete` 或 `loss`。重新整理沿用平台的 `abandoned`，入場及遊戲結算點數皆為 0。

@@ -16,9 +16,9 @@ try {
     document.getElementById('ol-stage').requestFullscreen=undefined;
     var area=document.getElementById('ol-game-area').getBoundingClientRect();
     var corners=[[area.left+5,area.top+5],[area.right-5,area.bottom-5]];
-    assert(button.textContent==='Tap to play fullscreen'&&corners.every(function(point){
+    assert(button.textContent==='Start game'&&corners.every(function(point){
       return document.elementFromPoint(point[0],point[1])===button;
-    }),'Tapping either corner of the game area targets fullscreen');
+    }),'Tapping either corner of the game area starts Ocean Link');
   }
   button.click();await wait();
   assert(balance()===before,id+': start has the correct entry fee');
@@ -26,6 +26,22 @@ try {
   i.setLanguage('zh-Hant');await wait();i.setLanguage('en');await wait();
   assert(balance()===charged&&location.hash===hash,id+': language switch preserves balance and route');
   assert(!chinese(view).length,id+': live labels translated '+JSON.stringify(chinese(view)));
+  if(id==='blaster'){
+    var fleet=document.getElementById('bl-lives'),board=document.getElementById('bl-canvas');
+    assert(fleet.textContent==='3 / 35','Reef Blaster starts with three submarines and keeps them across language switches');
+    assert(fleet.getAttribute('aria-label')==='Submarines left'&&view.textContent.includes('Steer the fleet, shoot gates, and dodge enemies and ink.'),'Reef Blaster fleet HUD and instructions are translated');
+    var bounds=board.getBoundingClientRect();
+    assert(bounds.width>0&&bounds.right<=innerWidth,'Reef Blaster playfield fits the viewport');
+    assert(!view.querySelector('.side,.game-view-controls,#bl-left')&&document.getElementById('bl-exit').parentElement===board.parentElement,'Reef Blaster controls stay on the playfield');
+    if(innerWidth===390)assert(getComputedStyle(document.getElementById('bl-playfield')).position==='fixed','Reef Blaster occupies the mobile viewport');
+
+    var steer={clientX:bounds.left+bounds.width*.3,clientY:bounds.top+bounds.height*.70,pointerId:1,bubbles:true};
+    board.dispatchEvent(new PointerEvent('pointerdown',steer));
+    board.dispatchEvent(new PointerEvent('pointerup',steer));
+    for(var frame=0;frame<65&&parseInt(fleet.textContent,10)<=3;frame++)await wait(100);
+    assert(parseInt(fleet.textContent,10)>3,'Steering through the first positive gate expands the fleet');
+    assert(document.getElementById('bl-msg').textContent.includes('Reinforcements!'),'Live reinforcement message is translated');
+  }
   if(id==='ocean-link'){
     var grid=document.getElementById('ol-board');
     assert(grid.querySelectorAll('.ol-tile').length===252,'Ocean Link standard board has 252 tiles');

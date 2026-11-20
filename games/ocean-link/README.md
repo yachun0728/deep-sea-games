@@ -7,7 +7,7 @@
 - 網址：`#ocean-link`　分類：免費懷舊　狀態：顯示中
 - 大廳卡片：「把相同的圖案連起來，穿越礁石與移動棋盤。」｜不限次數 · 配對解謎
 - 追蹤名稱（GA4 `game_name`）：深海連連看，`game_id` 為 `ocean-link`
-- 檔案：`games/ocean-link/board.js`、`games/ocean-link/card.html`、`games/ocean-link/cover.webp`、`games/ocean-link/game.js`、`games/ocean-link/icon.svg`、`games/ocean-link/style.css`、`games/ocean-link/tiles.js`、`games/ocean-link/view.html`；`game.js` 共 472 行、18.3 KB
+- 檔案：`games/ocean-link/board.js`、`games/ocean-link/card.html`、`games/ocean-link/cover.webp`、`games/ocean-link/game.js`、`games/ocean-link/icon.svg`、`games/ocean-link/style.css`、`games/ocean-link/tiles.js`、`games/ocean-link/view.html`；`game.js` 共 472 行、18.2 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「40. 深海連連看 Ocean Link（ocean-link）」（下方「規則摘要」已複製）
 

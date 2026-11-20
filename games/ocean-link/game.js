@@ -140,7 +140,7 @@
       $('ol-bonus').textContent = paid;
       const expanded = full.getAttribute('aria-pressed') === 'true';
       stage.classList.toggle('ol-board-focus', oceanLinkBusy && expanded);
-      if (!expanded) full.textContent = '點一下全螢幕開始';
+      if (!expanded) full.textContent = '開始遊戲';
     }
 
     function drawTrace() {

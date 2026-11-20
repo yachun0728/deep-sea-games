@@ -137,7 +137,7 @@ def main():
     threading.Thread(target=server.serve_forever, daemon=True).start()
     with tempfile.TemporaryDirectory(prefix='deep-sea-i18n-') as temp:
         folder = Path(temp)
-        for suite, width, height in [('book_sort', 1366, 900), ('book_sort', 390, 844), ('book_sort', 844, 390), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('core', 1366, 900), ('games', 1366, 900), ('games', 390, 844),
+        for suite, width, height in [('outpost', 1366, 900), ('outpost', 390, 844), ('book_sort', 1366, 900), ('book_sort', 390, 844), ('book_sort', 844, 390), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('core', 1366, 900), ('games', 1366, 900), ('games', 390, 844),
                                      ('ocean_link', 1366, 900), ('ocean_link', 844, 390), ('frontier', 1366, 900), ('frontier', 390, 844), ('frontier', 844, 390)]:
             script = (ROOT / f'tools/i18n_browser_{suite}.js').read_text(encoding='utf-8')
             route = f'/{suite}-{width}.html'
@@ -145,6 +145,12 @@ def main():
             if suite == 'frontier':
                 hook = 'window.__frontierTest={world:function(){return world;},create:frontierWorld,step:frontierStep,plan:frontierPlan,goal:frontierGoal,upgrade:frontierUpgrade,leave:frontierLeave,finish:finishStage,persist:persist};'
                 tested_source = source.replace('var preview=frontierWorld(1);', hook+'var preview=frontierWorld(1);')
+            if suite == 'outpost':
+                start = tested_source.index('  const outpostRoute =')
+                end = tested_source.index('  var VIEWS =', start)
+                game = tested_source[start:end].replace('requestAnimationFrame(', 'window.__outpostClock.request(')
+                game = game.replace('cancelAnimationFrame(', 'window.__outpostClock.cancel(')
+                tested_source = tested_source[:start] + game + tested_source[end:]
             pages[route] = tested_source.replace('<head>', '<head>' + MONITOR).replace('</body>', '<script>' + script + '</script></body>')
             page = f'http://127.0.0.1:{server.server_port}{route}'
             chrome = Chrome(args.chrome, folder / f'profile-{suite}-{width}')
@@ -153,11 +159,16 @@ def main():
                 if suite == 'core':
                     total += chrome.check(page, '?probe=default', 'Default Chinese')
                 query = '?lang=en&keep=1' + ('&preview=frontier' if suite == 'frontier' else '') + ('#ocean-link' if suite == 'ocean_link' else '#frontier' if suite == 'frontier' else '')
+                if suite == 'outpost':
+                    query += '#outpost'
                 if suite == 'market_desk':
                     query += '#market-desk'
                 if suite == 'book_sort':
                     query += '#book-sort'
                 total += chrome.check(page, query, f'{suite} {width}×{height}')
+                if suite == 'outpost':
+                    total += chrome.check(page, '?probe=saved#outpost', 'Outpost saved language')
+                    total += chrome.check(page, '?probe=chinese&lang=zh-Hant#outpost', 'Outpost direct Chinese')
                 if suite == 'book_sort':
                     if width == 1366:
                         total += chrome.check(page, '?probe=campaign-next&lang=en#book-sort', 'Stage 5 advances to stage 6')
