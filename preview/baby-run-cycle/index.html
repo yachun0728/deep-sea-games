@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>寶寶逃洗澡｜跑步循環預覽</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; background: #392e44; color: #f8e7d8; font: 15px system-ui, sans-serif; }
+main { width: min(100%, 390px); margin: auto; }
+.stage { position: relative; }
+canvas { display: block; width: 100%; height: auto; background: #a991b0; }
+.stage span { position: absolute; padding: 9px 15px; border-radius: 15px; background: #f4dec0; color: #634437; font-weight: 800; box-shadow: 0 3px 0 #a98279; }
+.distance { top: 14px; left: 14px; }
+.crawl { bottom: 18px; right: 18px; min-width: 64px; min-height: 48px; display: grid; place-items: center; font-size: 22px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; }
+button { flex: 1; min-height: 44px; border: 1px solid #bb9aba; border-radius: 9px; background: #593e60; color: inherit; font: inherit; cursor: pointer; }
+button[aria-pressed="true"] { background: #865d66; }
+h1 { font-size: 16px; margin: 16px 12px 0; }
+output { display: block; margin: 0 12px 18px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="stage">
+    <canvas width="390" height="844" aria-label="寶寶向右跑，生氣的媽媽從後方追上"></canvas>
+    <span class="distance" aria-hidden="true">327 m</span>
+    <span class="crawl" aria-hidden="true">趴</span>
+  </div>
+  <h1>跑步循環預覽</h1>
+  <div class="controls">
+    <button id="play" disabled>暫停</button>
+    <button id="slow" aria-pressed="false" disabled>半速</button>
+    <button id="next" disabled>下一格</button>
+  </div>
+  <output id="frames">載入角色素材中</output>
+</main>
+<script type="module">
+const canvas = document.querySelector('canvas');
+const ctx = canvas.getContext('2d');
+const play = document.querySelector('#play');
+const slow = document.querySelector('#slow');
+const next = document.querySelector('#next');
+const frames = document.querySelector('#frames');
+const ground = 700;
+const babyStep = 64;
+const momStep = 90;
+let babyTime = 0;
+let momTime = momStep * 2;
+let last = 0;
+let playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+let halfSpeed = false;
+
+async function load(src) {
+  const image = new Image();
+  image.src = src;
+  await image.decode();
+  return image;
+}
+function hallLayer(image, scroll, top, bottom) {
+  const height = 844;
+  const width = height * image.naturalWidth / image.naturalHeight;
+  scroll %= 2 * width;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, top, canvas.width, bottom - top);
+  ctx.clip();
+  const section = Math.floor(scroll / width);
+  for (let i = 0; i <= 1; i++) {
+    const x = (i + section) * width - scroll;
+    ctx.save();
+    ctx.translate(x + ((section + i) % 2 ? width : 0), 0);
+    if ((section + i) % 2) ctx.scale(-1, 1);
+    ctx.drawImage(image, 0, 0, width, height);
+    ctx.restore();
+  }
+  ctx.restore();
+}
+function hall(image) {
+  hallLayer(image, 180 + babyTime * .064, 0, 596);
+  hallLayer(image, 180 + babyTime * .175, 596, 844);
+}
+function runner(sheet, frame, x, size) {
+  const cell = 192;
+  ctx.fillStyle = '#58394b35';
+  ctx.beginPath();
+  ctx.ellipse(x, ground + 1, size * .24, size * .045, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.drawImage(sheet, frame * cell, 0, cell, cell,
+    x - size / 2, ground - size * 174 / cell, size, size);
+}
+function setPlaying(value) {
+  playing = value;
+  play.textContent = playing ? '暫停' : '播放';
+}
+
+try {
+  const [room, baby, mom] = await Promise.all([load('../../games/baby/art/hall.webp'), load('../../games/baby/art/baby.webp'), load('../../games/baby/art/mom-v2.webp')]);
+  for (const button of [play, slow, next]) button.disabled = false;
+  setPlaying(playing);
+  play.onclick = () => setPlaying(!playing);
+  slow.onclick = () => {
+    halfSpeed = !halfSpeed;
+    slow.setAttribute('aria-pressed', String(halfSpeed));
+  };
+  next.onclick = () => {
+    setPlaying(false);
+    babyTime = (Math.floor(babyTime / babyStep) + 1) * babyStep;
+    momTime = (Math.floor(momTime / momStep) + 1) * momStep;
+  };
+  function tick(now) {
+    if (last && playing) {
+      const dt = Math.min(now - last, 40) * (halfSpeed ? .5 : 1);
+      babyTime += dt;
+      momTime += dt;
+    }
+    last = now;
+    const babyFrame = Math.floor(babyTime / babyStep) % 8;
+    const momFrame = Math.floor(momTime / momStep) % 8;
+    hall(room);
+    runner(mom, momFrame, 82, 154);
+    runner(baby, babyFrame, 198, 91);
+    frames.textContent = `寶寶 ${babyFrame + 1}/8　媽媽 ${momFrame + 1}/8`;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+} catch (error) {
+  frames.textContent = '角色素材載入失敗，請重新整理。';
+  console.error(error);
+}
+</script>
+</body>
+</html>

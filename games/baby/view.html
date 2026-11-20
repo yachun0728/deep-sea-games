@@ -2,11 +2,12 @@
     <div class="console fs-game"><div class="sneak-stage"><canvas id="baby-canvas" tabindex="0" width="400" height="560" aria-label="{{t:baby.view.20}}"></canvas></div><button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
       <div class="side"><section class="panel" aria-label="{{t:baby.view.21}}">
         <dl class="stats"><div><dt>{{t:baby.view.01}}</dt><dd id="baby-score">0 m</dd></div><div><dt>{{t:baby.view.02}}</dt><dd id="baby-best">0 m</dd></div></dl>
+        <progress id="baby-gap" max="1" value="0" aria-hidden="true"></progress>
         <input id="baby-amount" type="hidden" value="0">
         <dl class="stats"><div><dt>{{t:baby.view.03}}</dt><dd id="baby-pay">{{t:baby.view.04}}</dd></div><div><dt>{{t:baby.view.05}}</dt><dd id="baby-next">{{t:baby.view.06}}</dd></div></dl>
         <button class="go" id="baby-go" type="button" data-mode="start">{{t:baby.view.07}}</button>
         <p class="msg" id="baby-msg" aria-live="polite">{{t:baby.view.08}}</p>
-        <p class="hint">{{t:baby.view.09}} <kbd>{{t:baby.view.10}}</kbd>／<kbd>↑</kbd>{{t:baby.view.11}} <kbd>→</kbd>{{t:baby.view.12}} <kbd>X</kbd>{{t:baby.view.13}}</p>
+        <p class="hint">{{t:baby.view.09}} <kbd>{{t:baby.view.10}}</kbd>／<kbd>↑</kbd>{{t:baby.view.11}} <kbd>X</kbd>{{t:baby.view.12}}</p>
         <p id="baby-rank-status" role="status" hidden></p><button id="baby-rank-retry" type="button" hidden>{{t:baby.view.19}}</button>
       </section></div>
     </div>

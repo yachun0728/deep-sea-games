@@ -53,6 +53,8 @@ function timedBoard(engine, rulesVersion) {
 }
 const blasterV1 = timedBoard({...blasterRules, create: rng => blasterRules.create(rng, 1)}, 1);
 const blasterV2 = timedBoard(blasterRules, blasterRules.rulesVersion);
+const babyV1 = timedBoard({...babyRules, create: rng => babyRules.create(rng, 1)});
+const babyV2 = timedBoard(babyRules, babyRules.rulesVersion);
 const sneakBoards = new Map([
   [undefined, timedBoard({...sneakRules, create: rng => sneakRules.create(rng, 1)})],
   ...[2, 3, 4, sneakRules.rulesVersion].map(version => [
@@ -70,7 +72,12 @@ const boards = new Map([
   ['last-hair', timedBoard(lasthairRules)],
   ['mosquito', timedBoard(mosquitoRules)],
   ['campaign', timedBoard(campaignRules)],
-  ['baby', timedBoard(babyRules)],
+  ['baby', {
+    ...babyV1,
+    rulesVersion: babyRules.rulesVersion,
+    create: version => (version === babyRules.rulesVersion ? babyV2 : babyV1).create(),
+    apply: (state, action) => (state.rulesVersion === babyRules.rulesVersion ? babyV2 : babyV1).apply(state, action),
+  }],
   ['thief', timedBoard(thiefRules)],
   ['boss', timedBoard(bossRules)],
   ['rider', timedBoard(riderRules)],
