@@ -284,7 +284,7 @@ kbd { font-family: var(--font-display); border: 1px solid var(--line); border-ra
 
 .timing-stage,.runner-stage{min-width:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,var(--sea),var(--abyss));overflow:hidden}
 .timing-stage canvas{display:block;width:100%;height:auto;touch-action:manipulation;cursor:pointer}
-.runner-stage canvas{display:block;width:min(100%,400px);height:auto;touch-action:none;user-select:none;-webkit-user-select:none;outline-offset:-3px}
+.runner-stage canvas{display:block;aspect-ratio:2/3;width:min(100%,400px);height:auto;touch-action:none;user-select:none;-webkit-user-select:none;outline-offset:-3px}
 .timing-cash{width:100%;padding:12px;color:var(--glow);border-color:var(--line)}
 .runner-controls{margin-top:8px}.runner-controls .chip{flex:1;padding:10px 4px}
 .runner-fee{font-family:var(--font-display);font-size:28px;margin:0;color:var(--lamp)}.runner-fee small{font-size:14px;color:var(--muted)}
