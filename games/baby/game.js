@@ -20,7 +20,7 @@ else if(a===2)P([[-13,0],[-14,-16],[-7,-8],[0,-20],[7,-8],[14,-16],[13,0]],'#ffd
 else if(a===3){P([[-11,0],[0,-30],[11,0]],'#ff5d8f',3);C(0,-31,4,'#fff',2.5)}
 else E(0,-8,13,4,'#ffe27a',3);
 g.restore()}
-G.I={bs:n=>'最高 '+n,tap:'',title:"{{t:baby.msg.001}}",s1:"{{t:baby.msg.002}}",s2:"{{t:baby.msg.003}}",caught:"{{t:baby.msg.004}}",bt:n=>'{{t:baby.msg.005}}'+n,sh:['{{t:baby.msg.006}}','{{t:baby.msg.007}}','{{t:baby.msg.008}}']};
+G.I={bs:n=>'最高 '+n,tap:'',title:"{{t:baby.msg.001}}",s1:"{{t:baby.msg.002}}",s2:"{{t:baby.msg.003}}",caught:"{{t:baby.msg.004}}",bt:n=>'{{t:baby.msg.005}}'+n,crawl:'{{t:baby.msg.028}}',cry:'{{t:baby.msg.029}}',sh:['{{t:baby.msg.006}}','{{t:baby.msg.007}}','{{t:baby.msg.008}}']};
 G.skins=[{need:0,n:'{{t:baby.msg.009}}',c:['#a0c4ff','#ffd6a5'],a:0},{need:200,n:'{{t:baby.msg.010}}',c:['#ffc8dd','#ffafcc'],a:1},{need:500,n:'{{t:baby.msg.011}}',c:['#b7e4c7','#74c69d'],a:3},{need:1000,n:'{{t:baby.msg.012}}',c:['#ffd23f','#ff9f1c'],a:2}];
 const GY=440,PXL=170;
 let dist,v,gap,py,vy,on,crawl,cid,obs,nextAt,stun,fx,charge,mstun,bots,rings;
@@ -31,9 +31,12 @@ function control(code){if(!babyRules.input(model,code))return;rank.record(code);
 G.reset=()=>{model=babyRules.create();syncModel();};
 G.score=()=>model.score();
 G.extra=()=>T('bt')(bots);
+const CRAWL=[340,505,52],CRY=[262,492,40],near=(b,p)=>Math.hypot(p.x-b[0],p.y-b[1])<b[2];
 G.down=p=>{
- const code=Math.hypot(p.x-340,p.y-505)<50?2:p.x<200?0:1;
- control(code);heldBy=p.id;
+ // round bottom-right button = CRAWL (hold), small button beside it = CRY, everywhere else = JUMP
+ const code=near(CRAWL,p)?1:near(CRY,p)?2:0;
+ if(code===1){if(heldBy!==undefined)return;heldBy=p.id}
+ control(code);
 };
 G.up=p=>{if(p.id===heldBy){control(3);heldBy=undefined;}};
 G.update=dt=>{babyRules.advance(model,dt);syncModel();if(model.dead)die(model.dead);};
@@ -79,8 +82,13 @@ fx.forEach(f=>{g.globalAlpha=1-f.t/.8;tx(f.s,f.x,f.y-f.t*50,26,'#ffd23f');g.glob
 tx(String(G.score())+' m',16,42,32,'#fff','left');tx(T('bs')(best),16,66,14,'#ffd23f','left');
 RR(16,78,W-32,10,5,'rgba(255,255,255,.3)',2);const r=cl(1-gap/220,0,1);if(r>0)RR(16,78,Math.max(10,(W-32)*r),10,5,r>.7?'#e63946':'#6cf0a8',2);
 if(st==='run'&&gap<110&&mstun<=0)tx(T('sh')[Math.floor(tt/1.4)%3],120,290,22,'#ff7a7a');
-C(340,505,44,'#fff1c1',4);for(let i=0;i<3;i++)C(318+i*22,545,6,i<charge?'#ff5d8f':'#ced4da',2);
-E(340,503,20,14,'#ff8fab',3);F(332,500,3,OL);F(348,500,3,OL);E(340,512,8,5,'#7a1c1c',2.5)};
+const ready=charge>0&&mstun<=0,holding=crawl;
+g.save();C(CRAWL[0],CRAWL[1],44,holding?'#ffd23f':'#ff8fab',4);g.restore();
+tx(T('crawl'),CRAWL[0],CRAWL[1]+15,44,'#fff');
+if(ready){g.save();g.globalAlpha=.35+.25*Math.sin(tt*8);C(CRY[0],CRY[1],34,'#ff5d8f',0);g.restore()}
+g.save();g.globalAlpha=ready?1:.55;C(CRY[0],CRY[1],28,ready?'#fff1c1':'#dee2e6',4);
+E(CRY[0],CRY[1]-6,13,9,ready?'#ff8fab':'#adb5bd',2.5);F(CRY[0]-5,CRY[1]-8,2,OL);F(CRY[0]+5,CRY[1]-8,2,OL);E(CRY[0],CRY[1]-1,5,3.5,'#7a1c1c',2);g.restore();
+tx(T('cry'),CRY[0],CRY[1]+44,15,'#fff');for(let i=0;i<3;i++)C(CRY[0]-20+i*20,CRY[1]+54,5,i<charge?'#ff5d8f':'#ced4da',2)};
 let st='ready',rec=false,unl=[],last=0,shake=0,skin=0,best=0,tt=0;
 const SK=()=>G.skins[skin],CHY=440,V=$('view-baby');
 const T=k=>G.I[k];
@@ -150,7 +158,7 @@ c.addEventListener('pointerdown',e=>{
  G.down(p)});
 ['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,e=>{if(st==='run'&&G.up)G.up({id:e.pointerId})}));
 c.addEventListener('contextmenu',e=>e.preventDefault());
-const KM={' ':[190,300],ArrowUp:[190,300],ArrowLeft:[40,300],ArrowRight:[360,300],ArrowDown:[350,505],x:[350,505]};
+const KM={' ':[190,300],ArrowUp:[190,300],ArrowLeft:[40,300],ArrowRight:[340,505],ArrowDown:[262,492],x:[262,492]};
 addEventListener('keydown',e=>{const m=KM[e.key];if(!m||V.hidden||document.hidden||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;e.preventDefault();if(e.repeat)return;G.down({x:m[0],y:m[1],id:'k'+e.key})});
 addEventListener('keyup',e=>{if(KM[e.key]&&st==='run'&&G.up&&!V.hidden)G.up({id:'k'+e.key})});
 addEventListener('blur',()=>{release();last=performance.now()});
