@@ -6,13 +6,13 @@
 | --- | --- | --- | --- | --- | --- |
 | [深海前哨 Deep Sea Outpost](outpost/README.md) | `#outpost` | 益智策略 | 顯示 | 320 行 | 扳動海流閘門，將敵群導入防守火網。 |
 | [壓潰深度 Crush Depth](crash/README.md) | `#crash` | 機率挑戰 | 隱藏 | 235 行 | 隨潛艇一起下潛，在壓潰前上浮。 |
-| [踩地雷 Minesweeper](mines/README.md) | `#mines` | 免費懷舊 | 顯示 | 195 行 | 低中高難度或自訂棋盤，重溫經典踩地雷。 |
+| [踩地雷 Minesweeper](mines/README.md) | `#mines` | 懷舊經典 | 顯示 | 188 行 | 低中高難度或自訂棋盤，重溫經典踩地雷。 |
 | [落珠 Pearl Drop](plinko/README.md) | `#plinko` | 機率挑戰 | 隱藏 | 133 行 | 投下珍珠，看它穿過釘陣落在哪一格。 |
-| [養珠 Pearl Merge](merge/README.md) | `#merge` | 益智策略 | 顯示 | 132 行 | 滑動合併珍珠，養出更大的數字。 |
+| [養珠 Pearl Merge](merge/README.md) | `#merge` | 益智策略 | 顯示 | 130 行 | 滑動合併珍珠，養出更大的數字。 |
 | [測深 Sonar Dice](dice/README.md) | `#dice` | 機率挑戰 | 隱藏 | 65 行 | 設定聲納讀數範圍，等待海底回音。 |
 | [探底 Deep Probe](limbo/README.md) | `#limbo` | 機率挑戰 | 隱藏 | 66 行 | 選定目標倍率，看看探測錘能到多深。 |
 | [漲退 High Tide](hilo/README.md) | `#hilo` | 機率挑戰 | 隱藏 | 91 行 | 猜下一張牌更高或更低，連猜累積。 |
-| [挖金礦 Gold Digger](keno/README.md) | `#keno` | 每日免費補給 | 顯示 | 76 行 | 挖金礦拿點數，再去挑戰喜歡的小遊戲。 |
+| [挖金礦 Gold Digger](keno/README.md) | `#keno` | 每日補給 | 顯示 | 76 行 | 挖金礦拿點數，再去挑戰喜歡的小遊戲。 |
 | [羅盤 Compass](wheel/README.md) | `#wheel` | 機率挑戰 | 隱藏 | 85 行 | 轉動深海羅盤，等待指針停下。 |
 | [浮升 Ascent](tower/README.md) | `#tower` | 機率挑戰 | 隱藏 | 94 行 | 挑選安全的氣泡，一層一層往上浮。 |
 | [橫渡 Reef Run](crossing/README.md) | `#crossing` | 機率挑戰 | 隱藏 | 86 行 | 帶小海龜穿越暗流，決定何時收手。 |
@@ -44,10 +44,10 @@
 | [別看 Don’t Peek](peek/README.md) | `#peek` | 潛行偷閒 | 顯示 | 941 行 | 抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，點對牠怕的道具。 |
 | [血壓上升 Midnight Mosquito](mosquito/README.md) | `#mosquito` | 潛行偷閒 | 顯示 | 293 行 | 深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。 |
 | [尊嚴保衛戰 The Last Hair](last-hair/README.md) | `#last-hair` | 潛行偷閒 | 顯示 | 395 行 | 頂著最後三根頭髮，在強風中走完 500 公尺去面試。 |
-| [打磚塊 Breakout](breakout/README.md) | `#breakout` | 免費懷舊 | 顯示 | 228 行 | 移動擋板反彈小球，打光磚塊一關闖過一關。 |
+| [打磚塊 Breakout](breakout/README.md) | `#breakout` | 懷舊經典 | 顯示 | 228 行 | 移動擋板反彈小球，打光磚塊一關闖過一關。 |
 | [小灰出門 Pet Walkies](pet-walk/README.md) | `#pet-walk` | 跑酷動作 | 顯示 | 1104 行 | 一鍵帶小灰散步，路上撞見野狗、河鯊和幸運轉盤。 |
 | [拒絕加班 No Overtime!](office-shoot/README.md) | `#office-shoot` | 跑酷動作 | 顯示 | 1178 行 | 自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。 |
-| [深海連連看 Ocean Link](ocean-link/README.md) | `#ocean-link` | 免費懷舊 | 顯示 | 472 行 | 把相同的圖案連起來，穿越礁石與移動棋盤。 |
+| [深海連連看 Ocean Link](ocean-link/README.md) | `#ocean-link` | 懷舊經典 | 顯示 | 472 行 | 把相同的圖案連起來，穿越礁石與移動棋盤。 |
 | [最後的晚餐 The Last Banquet](banquet/README.md) | `#banquet` | 益智策略 | 顯示 | 742 行 | 與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。 |
 | [人魚接龍 Mermaid Spider](mermaid/README.md) | `#mermaid` | 益智策略 | 顯示 | 230 行 | 牌背是美人魚的蜘蛛接龍，排滿 K 到 A 收成珍珠。 |
 | [數字吞噬 Number Gulp](eat-smaller/README.md) | `#eat-smaller` | 益智策略 | 顯示 | 62 行 | 吃掉比你小的數字、躲開比你大的，剛好變成目標數字就過關。 |
@@ -55,9 +55,9 @@
 | [影子接力 Shadow Relay](shadow-relay/README.md) | `#shadow-relay` | 益智策略 | 顯示 | 62 行 | 影子會照你的路線重走，讓它點亮燈籠，別被它追上。 |
 | [一筆畫守城 One-Line Defense](one-line-defense/README.md) | `#one-line-defense` | 時機操作 | 顯示 | 59 行 | 只能畫一條線擋住湧向核心的敵人，線越長消失越快。 |
 | [荒島遠征 Frontier Islands](frontier/README.md) | `#frontier` | 益智策略 | 顯示 | 209 行 | 砍出道路，建立據點，挑戰五大區域與五十關考驗。 |
-| [俄羅斯方塊 Block Drop](tetris/README.md) | `#tetris` | 免費懷舊 | 顯示 | 63 行 | 經典落塊消行，旋轉、牆踢與暫存都有。 |
+| [俄羅斯方塊 Block Drop](tetris/README.md) | `#tetris` | 懷舊經典 | 顯示 | 63 行 | 經典落塊消行，旋轉、牆踢與暫存都有。 |
 | [呱呱池塘 Quack Pond](quack-pond/README.md) | `#quack-pond` | 益智策略 | 顯示 | 61 行 | 每行、每列、每個顏色區域各放一隻鴨子，而且不能相鄰。 |
 | [收盤之前 Closing Call](market-desk/README.md) | `#market-desk` | 益智策略 | 顯示 | 437 行 | 20 個交易日，從台股怪新聞裡挖出可信的消息。 |
 | [不准跑調 Stay On Pitch](on-pitch/README.md) | `#on-pitch` | 時機操作 | 顯示 | 883 行 | 對著麥克風唱出缺口的音，音準對了才能穿牆。 |
 | [貓咪疊書舖 Cat Book Stack](book-sort/README.md) | `#book-sort` | 益智策略 | 顯示 | 236 行 | 把書依顏色疊進紙箱，集滿 5 本同色自動封箱。 |
-| [百萬大學堂 Millionaire Academy](academy/README.md) | `#academy` | 益智策略 | 顯示 | 683 行 | 一百道百科題，自選領域闖十關，挑戰 1,000,000 學分。 |
+| [百萬大學堂 Millionaire Academy](academy/README.md) | `#academy` | 益智策略 | 顯示 | 554 行 | 一百道百科題，自選領域闖十關，挑戰 1,000,000 學分。 |

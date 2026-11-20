@@ -7,7 +7,7 @@
 - 網址：`#merge`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「滑動合併珍珠，養出更大的數字。」｜立即開玩 · 滑動合併
 - 追蹤名稱（GA4 `game_name`）：養珠，`game_id` 為 `merge`
-- 檔案：`games/merge/card.html`、`games/merge/cover.webp`、`games/merge/game.js`、`games/merge/icon.svg`、`games/merge/view.html`；`game.js` 共 132 行、6.3 KB
+- 檔案：`games/merge/card.html`、`games/merge/cover.webp`、`games/merge/game.js`、`games/merge/icon.svg`、`games/merge/view.html`；`game.js` 共 130 行、6.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「4. Pearl Merge（merge）」（下方「規則摘要」已複製）
 
@@ -22,7 +22,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`gSay` L8、`mgTier` L9、`mgBuild` L10、`mgRender` L11、`mergeStatus` L27、`beginMerge` L33、`mgStart` L44、`updateMerge` L63、`sendMergeMove` L73、`mgMove` L102
+`gSay` L8、`mgTier` L9、`mgBuild` L10、`mgRender` L11、`mergeStatus` L27、`beginMerge` L33、`mgStart` L46、`updateMerge` L65、`sendMergeMove` L75、`mgMove` L96
 
 ## 錢包與結算接點
 
@@ -33,7 +33,7 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **餘額檢查**
-- L46 `mgStart`：`if (S.balance < MG_FEE) { gSay(LOW_MSG, 'lose');`
+- L48 `mgStart`：`if (S.balance < MG_FEE) { gSay(LOW_MSG, 'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
@@ -42,8 +42,7 @@
 
 - L35 `beginMerge`：`if (G.active) AN.end(G.analytics,0,'restart',{score:G.score});`
 - L36 `beginMerge`：`G.analytics = AN.start('merge',MG_FEE);`
-- L67 `updateMerge`：`AN.end(G.analytics,0,'complete',{score:G.score});`
-- L92 `sendMergeMove`：`AN.end(G.analytics,0,'abandoned',{score:G.score});`
+- L69 `updateMerge`：`AN.end(G.analytics,0,'complete',{score:G.score});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

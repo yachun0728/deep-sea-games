@@ -124,9 +124,20 @@ const boards = new Map([
   ['sneak', timedBoard(sneakRules)],
   ['skybuilder', timedBoard(skybuilderRules)],
   ['merge', {
-    create: () => mergeRules.create(random),
-    accepts: action => mergeRules.directions.includes(action),
-    apply: (state, action) => mergeRules.move(state, action, random),
+    // The client plays the whole game locally from this seed and sends every swipe once, at game over.
+    create: () => {
+      const seed = newSeed();
+      return { ...mergeRules.create(timedReplay.seeded(seed)), seed };
+    },
+    accepts: action => Array.isArray(action) && action.length >= 1 && action.length <= 8000 &&
+      action.every(move => Number.isInteger(move) && move >= 0 && move < mergeRules.directions.length),
+    apply: (state, action) => {
+      const rng = timedReplay.seeded(state.seed), replay = mergeRules.create(rng);
+      for (const move of action) if (!mergeRules.move(replay, mergeRules.directions[move], rng)) return false;
+      if (!replay.over) return false;
+      Object.assign(state, replay);
+      return true;
+    },
     score: state => state.over ? state.score : null,
     visible: state => state,
   }],
