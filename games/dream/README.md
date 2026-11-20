@@ -7,7 +7,7 @@
 - 網址：`#dream`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「抓準時機，讓指針停在青綠色區域。」｜立即開玩 · 無限關卡
 - 追蹤名稱（GA4 `game_name`）：時序修復，`game_id` 為 `dream`
-- 檔案：`games/dream/card.html`、`games/dream/game.js`、`games/dream/icon.svg`、`games/dream/view.html`；`game.js` 共 141 行、7.9 KB
+- 檔案：`games/dream/card.html`、`games/dream/cover.webp`、`games/dream/game.js`、`games/dream/icon.svg`、`games/dream/view.html`；`game.js` 共 141 行、7.9 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「12. Dream Repair Shop（dream）」（下方「規則摘要」已複製）
 

@@ -7,7 +7,7 @@
 - 網址：`#thief`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「換道、跳籃子，偷水果躲開老闆娘。」｜立即開玩 · 市場追逐
 - 追蹤名稱（GA4 `game_name`）：偷水果的貓，`game_id` 為 `thief`
-- 檔案：`games/thief/card.html`、`games/thief/game.js`、`games/thief/icon.svg`、`games/thief/view.html`；`game.js` 共 166 行、12.1 KB
+- 檔案：`games/thief/card.html`、`games/thief/cover.webp`、`games/thief/game.js`、`games/thief/icon.svg`、`games/thief/view.html`；`game.js` 共 166 行、12.1 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「30. 偷水果的貓 Fruit Thief Cat（thief）」（下方「規則摘要」已複製）
 

@@ -7,7 +7,7 @@
 - 網址：`#pudding`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「拼出武器，背著小王子殺出重圍。」｜立即開玩 · 拼武器闖關
 - 追蹤名稱（GA4 `game_name`）：布丁突圍，`game_id` 為 `pudding`
-- 檔案：`games/pudding/card.html`、`games/pudding/game.js`、`games/pudding/icon.svg`、`games/pudding/view.html`；`game.js` 共 386 行、26.8 KB
+- 檔案：`games/pudding/card.html`、`games/pudding/cover.webp`、`games/pudding/game.js`、`games/pudding/icon.svg`、`games/pudding/view.html`；`game.js` 共 386 行、26.8 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「27. 布丁突圍 Pudding Dash（pudding）」（下方「規則摘要」已複製）
 
