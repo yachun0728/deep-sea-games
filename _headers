@@ -12,3 +12,7 @@
 
 /shared/*
   Cache-Control: no-cache, must-revalidate
+
+/preview/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-cache, must-revalidate

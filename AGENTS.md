@@ -12,6 +12,7 @@
 
 | 任務 | 必讀指南 |
 | --- | --- |
+| 使用者提出新遊戲概念、想法，要先做可玩骨架、推上去或放預覽 | [遊戲骨架與預覽區](docs/agent-guides/prototype.md)、[遊戲產品原則](docs/agent-guides/product-policy.md) |
 | 新增、改版、維護或重新上架遊戲，或調整獎勵 | [遊戲產品原則](docs/agent-guides/product-policy.md) |
 | 設計或修改遊戲畫面、角色、場景、HUD 或手機操作 | [手機畫面與美術設定](docs/agent-guides/mobile-design.md) |
 | 修改遊戲程式、錢包、儲存、路由、追蹤或靜態組合 | [遊戲與平台程式契約](docs/agent-guides/runtime-contracts.md) |
