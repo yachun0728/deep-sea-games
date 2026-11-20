@@ -8,7 +8,7 @@
 
 #view-academy .ac-hud{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(3,6,20,.6);border-bottom:1px solid var(--ac-line)}
 #view-academy .ac-exit,#view-academy .ac-lang{flex:none;min-width:44px;min-height:44px;border:1px solid rgba(251,191,36,.4);border-radius:12px;background:rgba(9,17,43,.85);color:var(--ac-gold);font-weight:800}
-#view-academy .ac-exit{font-size:1.3rem}
+#view-academy .ac-exit{display:grid;place-items:center;font-size:1.3rem;text-decoration:none;box-sizing:border-box}
 #view-academy .ac-lang{font-size:.82rem;padding:0 8px}
 #view-academy .ac-hud-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
 #view-academy .ac-stage{font-size:.78rem;font-weight:800;color:var(--ac-gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

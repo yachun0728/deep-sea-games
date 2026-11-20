@@ -6,7 +6,7 @@ const academyRules = (() => {
   const SAFE_CREDITS = 32000;
   const DOMAINS = ['science', 'history', 'geography', 'sports_ent', 'daily_tech'];
   const PER_DOMAIN = 20;
-  // 題號 1–100 的正確選項（0–3），每 20 題一個領域；題目文字見 games/academy/questions.js。
+  // 題號 1–100 的正確選項（0–3），每 20 題一個領域；題目文字見 games/academy/i18n.js。
   const ANSWERS = '2003030221031121301023031133230110213303000311302100211232333011212200230221322202331302211133011220'
     .split('').map(Number);
   const BONUS_PER_STAGE = 1;
@@ -88,7 +88,7 @@ const academyRules = (() => {
       state.correct++;
       state.credits = LADDER[state.stage - 1];
       if (state.stage === LADDER.length) finish(state, 'champion');
-      else { state.stage++; state.phase = 'select'; state.question = 0; }
+      else { state.stage++; state.phase = 'select'; }
       return true;
     }
     state.credits = state.stage > SAFE_STAGE ? SAFE_CREDITS : 0;

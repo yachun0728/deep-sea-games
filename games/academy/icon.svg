@@ -1,8 +1,12 @@
 <symbol id="icon-academy" viewBox="0 0 96 96">
-  <rect x="10" y="14" width="76" height="68" rx="14" fill="#0f1f4d" stroke="#fbbf24" stroke-width="3"/>
-  <path d="M48 24 22 36l26 12 26-12z" fill="#fbbf24"/>
-  <path d="M32 44v12c0 5 7 9 16 9s16-4 16-9V44l-16 7z" fill="#d97706"/>
-  <path d="M74 38v16" stroke="#fde68a" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="74" cy="57" r="3.5" fill="#fde68a"/>
-  <g fill="none" stroke="#7dd3fc" stroke-width="3" stroke-linecap="round"><path d="M24 73h48"/><path d="M30 78h36" opacity=".6"/></g>
+  <defs>
+    <linearGradient id="ac-icon-hex" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f56e0"/><stop offset="1" stop-color="#0d1b6b"/></linearGradient>
+    <linearGradient id="ac-icon-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffbd0"/><stop offset=".5" stop-color="#ffd23f"/><stop offset="1" stop-color="#e58a00"/></linearGradient>
+  </defs>
+  <path d="M26 40h44l16 20-16 20H26L10 60z" fill="#ffd23f"/>
+  <path d="M28 44h40l12 16-12 16H28L16 60z" fill="url(#ac-icon-hex)" stroke="#fff6c2" stroke-width="1.5"/>
+  <text x="48" y="73" text-anchor="middle" font-family="Georgia,serif" font-weight="900" font-size="36" fill="url(#ac-icon-gold)" stroke="#7a3d00" stroke-width="1" paint-order="stroke">?</text>
+  <path d="M33 22v8c0 4 7 7 15 7s15-3 15-7v-8l-15 6z" fill="#c26a00"/>
+  <path d="M48 8 18 20l30 12 30-12z" fill="#10206e" stroke="#ffd23f" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M72 22v10" stroke="#ffd23f" stroke-width="2" stroke-linecap="round"/><circle cx="72" cy="34" r="2.6" fill="#ffd23f"/>
 </symbol>
