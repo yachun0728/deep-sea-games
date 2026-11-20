@@ -13,7 +13,13 @@
 #view-carp{--hud:96px}
 #view-breakout{--ar:.7692;--hud:52px;--fs-bg:#0c1224}
 #view-mosquito{--ar:.6667;--hud:52px;--fs-bg:#0b1020}
-#view-dive,#view-mrt{--hud:52px;--reserve:72px;--fs-bg:#000}
+#view-dive,#view-mrt,#view-one-line-defense,#view-shadow-relay,#view-mirror-twins,#view-eat-smaller{--hud:52px;--reserve:72px;--fs-bg:#000}
+#view-mermaid{--hud:52px;--fs-bg:#17444a}
+#view-banquet{--hud:52px;--fs-bg:#0b0907}
+#view-pet-walk{--ar:.7143;--hud:52px;--fs-bg:#12203a}
+#view-office-shoot{--ar:.5625;--hud:96px;--fs-bg:#12203a}
+#view-last-hair,#view-on-pitch{--ar:.5556;--hud:52px;--fs-bg:#12203a}
+#view-quack-pond{--hud:52px;--reserve:72px;--fs-bg:#000}
 @media(max-width:880px),(pointer:coarse) and (max-width:1100px){
   html:has(.view:not([hidden]) .fs-game),html:has(#view-boba:not([hidden])){overflow:hidden}
   .view:not([hidden]) .fs-game{position:fixed;inset:0;z-index:1200;display:block;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:calc(env(safe-area-inset-top) + var(--hud,52px)) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + var(--reserve,0px)) env(safe-area-inset-left);background:var(--fs-bg,#0b1626);overscroll-behavior:none;-webkit-touch-callout:none}
@@ -25,7 +31,7 @@
   #view-breakout #br-pause:disabled{display:none}
   .fs-game .fs-exit{display:grid;place-items:center;position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 8px);left:calc(env(safe-area-inset-left) + 8px);width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);font:700 21px system-ui;cursor:pointer}
   .fs-game .side,.fs-game .side .panel{display:contents}
-  .fs-game>.mobile-start-stage>.mobile-stage-actions{top:auto;bottom:calc(16px - var(--reserve,0px));transform:none}
+  .fs-game>.mobile-start-stage>.mobile-stage-actions{z-index:30;top:auto;bottom:calc(16px - var(--reserve,0px));transform:none}
   .fs-game .stats{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 8px);left:calc(env(safe-area-inset-left) + 60px);right:calc(env(safe-area-inset-right) + 8px);display:flex;gap:5px;margin:0;pointer-events:none}
   .fs-game .stats~.stats{top:calc(env(safe-area-inset-top) + 52px);left:calc(env(safe-area-inset-left) + 8px)}
   .fs-game .stats>div{flex:1;min-width:0;padding:3px 6px;border-radius:8px;background:rgba(5,12,24,.72)}
@@ -36,7 +42,7 @@
   .fs-game .field{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 88px);left:calc(env(safe-area-inset-left) + 8px);right:calc(env(safe-area-inset-right) + 8px);margin:0;padding:4px 10px;border-radius:10px;background:rgba(5,12,24,.72);pointer-events:none}
   .fs-game .field .hint{display:none}
   .fs-game .msg{position:absolute;z-index:3;left:calc(env(safe-area-inset-left) + 12px);right:calc(env(safe-area-inset-right) + 12px);bottom:calc(env(safe-area-inset-bottom) + 92px);margin:0;padding:3px 10px;border-radius:12px;background:rgba(5,12,24,.78);color:#e8f2ff;font-size:12px;line-height:1.4;text-align:center;pointer-events:none}
-  .fs-game .msg:empty,#view-dive .msg,#view-mrt .msg{display:none}
+  .fs-game .msg:empty,#view-dive .msg,#view-mrt .msg,#view-one-line-defense .msg,#view-shadow-relay .msg,#view-mirror-twins .msg,#view-eat-smaller .msg,#view-quack-pond .msg{display:none}
   .fs-game [class$="-hold"]{position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);min-height:64px;font-size:17px;touch-action:manipulation}
   .fs-game [class$="-hold"]:disabled{display:none}
   .fs-game .side .go:not(:disabled){position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);min-height:64px;font-size:17px;touch-action:manipulation}
@@ -100,4 +106,33 @@
     border-color:#a76740;background:#623a2b;color:#fff3d8;
   }
   #view-bird .share-result i{color:#ffda9c}
+  /* Mermaid Spider: a DOM card board, so the stage scrolls instead of using a canvas ratio. */
+  #view-mermaid:not([hidden]) .fs-game>.mm-stage{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;border-radius:0;box-sizing:border-box;padding:8px 8px 76px}
+  #view-mermaid .stats{right:calc(env(safe-area-inset-right) + 96px)}
+  #view-mermaid #mm-quit:not([hidden]){position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 8px);right:calc(env(safe-area-inset-right) + 8px);min-width:80px;min-height:44px}
+  /* On Pitch: the input / octave / mic-test settings only show while the start button is on screen (idle). */
+  #view-on-pitch .fs-game .seg-row,#view-on-pitch .fs-game #op-mic-test{display:none}
+  #view-on-pitch .fs-game:has(.mobile-stage-action #op-go) .seg-row,#view-on-pitch .fs-game:has(.mobile-stage-action #op-go) #op-mic-test{display:flex;position:absolute;z-index:4;left:calc(env(safe-area-inset-left) + 12px);right:calc(env(safe-area-inset-right) + 12px);gap:6px;margin:0}
+  #view-on-pitch .fs-game:has(.mobile-stage-action #op-go) #op-mic-test{bottom:calc(env(safe-area-inset-bottom) + 72px);justify-content:center;align-items:center;box-sizing:border-box;width:calc(100% - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));min-height:44px}
+  #view-on-pitch .fs-game:has(.mobile-stage-action #op-go) div.seg-row:nth-of-type(2){bottom:calc(env(safe-area-inset-bottom) + 122px)}
+  #view-on-pitch .fs-game:has(.mobile-stage-action #op-go) div.seg-row:nth-of-type(1){bottom:calc(env(safe-area-inset-bottom) + 172px)}
+  #view-on-pitch .fs-game .seg-row .seg{flex:1;min-height:44px}
+  /* The Last Banquet: a DOM scene that scrolls. The panel's sound / advanced chips are proxied by the in-scene menu, so only Home / Quit stay on screen. */
+  #view-banquet:not([hidden]) .fs-game>.bq-stage{display:block;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;box-sizing:border-box;border-radius:0;padding:0}
+  #view-banquet .stats{right:calc(env(safe-area-inset-right) + 96px)}
+  #view-banquet .bq-opts{display:contents}
+  #view-banquet #bq-adv,#view-banquet #bq-mute{display:none}
+  #view-banquet #bq-home:not([hidden]),#view-banquet #bq-quit:not([hidden]){position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 8px);right:calc(env(safe-area-inset-right) + 8px);width:88px;height:44px;min-width:0;min-height:44px;padding:0 6px;margin:0;box-sizing:border-box;font:700 12px/1.15 Georgia,serif;white-space:normal;overflow:hidden;background:#173a2b;border:1px solid #c9a44a;border-radius:8px;color:#f1e3b8;text-align:center}
+  #view-banquet #bq-home::before,#view-banquet #bq-home::after,#view-banquet #bq-quit::before,#view-banquet #bq-quit::after{display:none}
+  /* Rocket Chair: same slim top bar as Boba Straw and Noodle Pancake. */
+  #view-rocket-chair:not([hidden]){position:fixed;inset:0;z-index:1200;display:flex;flex-direction:column;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:#fff;overscroll-behavior:none}
+  html:has(#view-rocket-chair:not([hidden])){overflow:hidden}
+  #view-rocket-chair>.game-exit-link,#view-rocket-chair>.mobile-scroll-pad,#view-rocket-chair .rocket-chair-platform-bar .hint,#view-rocket-chair #rocket-chair-msg,#view-rocket-chair #rocket-chair-rank-status{display:none}
+  #view-rocket-chair .rocket-chair-platform-bar{flex:none;padding:6px 8px;background:#f4f4f6}
+  #view-rocket-chair .fs-exit{display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid #c9ccd4;border-radius:10px;background:#fff;color:#222;font:700 21px system-ui;cursor:pointer}
+  #view-rocket-chair .share-result:not([hidden]){position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 6px);right:calc(env(safe-area-inset-right) + 8px);width:auto;min-height:44px;margin:0;padding:0 14px;white-space:nowrap}
+  #view-rocket-chair #rocket-chair-rank-retry:not([hidden]){position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 6px);left:calc(env(safe-area-inset-left) + 62px);min-height:44px;padding:0 12px}
+  #view-rocket-chair .rocket-chair-stage{flex:1;min-height:0;border:0;border-radius:0}
+  #view-rocket-chair .rocket-chair-stage iframe{width:100%;height:100%;min-height:0;max-width:none}
+  #view-rocket-chair~.rules{display:none}
 }

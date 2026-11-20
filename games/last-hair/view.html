@@ -1,13 +1,13 @@
   <section class="view" id="view-last-hair" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="lh-canvas" tabindex="0" width="400" height="720" aria-label="{{t:last-hair.view.17}}"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="lh-canvas" tabindex="0" width="400" height="720" aria-label="{{t:last-hair.view.17}}"></canvas></div><button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
       <div class="side"><section class="panel" aria-label="{{t:last-hair.view.18}}">
         <dl class="stats"><div><dt>{{t:last-hair.view.01}}</dt><dd id="lh-dist">0 m</dd></div><div><dt>{{t:last-hair.view.02}}</dt><dd id="lh-hairs">3 / 3</dd></div><div><dt>{{t:last-hair.view.03}}</dt><dd id="lh-best">0 m</dd></div></dl>
         <input id="lh-amount" type="hidden" value="0">
         <button class="go" id="lh-go" type="button" data-mode="bet">{{t:last-hair.view.04}}</button>
         <p class="msg" id="lh-msg" aria-live="polite">{{t:last-hair.view.05}}</p>
         <p class="hint">{{t:last-hair.view.06}}<kbd>A</kbd><kbd>D</kbd>{{t:last-hair.view.07}} <kbd>←</kbd><kbd>→</kbd>{{t:last-hair.view.08}} <kbd>{{t:last-hair.view.09}}</kbd> {{t:last-hair.view.10}}</p>
+        <p id="lh-rank-status" role="status" hidden></p><button id="lh-rank-retry" type="button" hidden>{{t:last-hair.view.16}}</button>
       </section></div>
     </div>
     <details class="rules"><summary>{{t:last-hair.view.11}}</summary><p>{{t:last-hair.view.12}}</p><p>{{t:last-hair.view.13}}</p><p>{{t:last-hair.view.14}}</p><p>{{t:last-hair.view.15}}</p></details>
-  <p id="lh-rank-status" role="status" hidden></p><button id="lh-rank-retry" type="button" hidden>{{t:last-hair.view.16}}</button>
 </section>

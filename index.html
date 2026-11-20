@@ -1168,7 +1168,13 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 #view-carp{--hud:96px}
 #view-breakout{--ar:.7692;--hud:52px;--fs-bg:#0c1224}
 #view-mosquito{--ar:.6667;--hud:52px;--fs-bg:#0b1020}
-#view-dive,#view-mrt{--hud:52px;--reserve:72px;--fs-bg:#000}
+#view-dive,#view-mrt,#view-one-line-defense,#view-shadow-relay,#view-mirror-twins,#view-eat-smaller{--hud:52px;--reserve:72px;--fs-bg:#000}
+#view-mermaid{--hud:52px;--fs-bg:#17444a}
+#view-banquet{--hud:52px;--fs-bg:#0b0907}
+#view-pet-walk{--ar:.7143;--hud:52px;--fs-bg:#12203a}
+#view-office-shoot{--ar:.5625;--hud:96px;--fs-bg:#12203a}
+#view-last-hair,#view-on-pitch{--ar:.5556;--hud:52px;--fs-bg:#12203a}
+#view-quack-pond{--hud:52px;--reserve:72px;--fs-bg:#000}
 @media(max-width:880px),(pointer:coarse) and (max-width:1100px){
   html:has(.view:not([hidden]) .fs-game),html:has(#view-boba:not([hidden])){overflow:hidden}
   .view:not([hidden]) .fs-game{position:fixed;inset:0;z-index:1200;display:block;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:calc(env(safe-area-inset-top) + var(--hud,52px)) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + var(--reserve,0px)) env(safe-area-inset-left);background:var(--fs-bg,#0b1626);overscroll-behavior:none;-webkit-touch-callout:none}
@@ -1180,7 +1186,7 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
   #view-breakout #br-pause:disabled{display:none}
   .fs-game .fs-exit{display:grid;place-items:center;position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 8px);left:calc(env(safe-area-inset-left) + 8px);width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);font:700 21px system-ui;cursor:pointer}
   .fs-game .side,.fs-game .side .panel{display:contents}
-  .fs-game>.mobile-start-stage>.mobile-stage-actions{top:auto;bottom:calc(16px - var(--reserve,0px));transform:none}
+  .fs-game>.mobile-start-stage>.mobile-stage-actions{z-index:30;top:auto;bottom:calc(16px - var(--reserve,0px));transform:none}
   .fs-game .stats{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 8px);left:calc(env(safe-area-inset-left) + 60px);right:calc(env(safe-area-inset-right) + 8px);display:flex;gap:5px;margin:0;pointer-events:none}
   .fs-game .stats~.stats{top:calc(env(safe-area-inset-top) + 52px);left:calc(env(safe-area-inset-left) + 8px)}
   .fs-game .stats>div{flex:1;min-width:0;padding:3px 6px;border-radius:8px;background:rgba(5,12,24,.72)}
@@ -1191,7 +1197,7 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
   .fs-game .field{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 88px);left:calc(env(safe-area-inset-left) + 8px);right:calc(env(safe-area-inset-right) + 8px);margin:0;padding:4px 10px;border-radius:10px;background:rgba(5,12,24,.72);pointer-events:none}
   .fs-game .field .hint{display:none}
   .fs-game .msg{position:absolute;z-index:3;left:calc(env(safe-area-inset-left) + 12px);right:calc(env(safe-area-inset-right) + 12px);bottom:calc(env(safe-area-inset-bottom) + 92px);margin:0;padding:3px 10px;border-radius:12px;background:rgba(5,12,24,.78);color:#e8f2ff;font-size:12px;line-height:1.4;text-align:center;pointer-events:none}
-  .fs-game .msg:empty,#view-dive .msg,#view-mrt .msg{display:none}
+  .fs-game .msg:empty,#view-dive .msg,#view-mrt .msg,#view-one-line-defense .msg,#view-shadow-relay .msg,#view-mirror-twins .msg,#view-eat-smaller .msg,#view-quack-pond .msg{display:none}
   .fs-game [class$="-hold"]{position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);min-height:64px;font-size:17px;touch-action:manipulation}
   .fs-game [class$="-hold"]:disabled{display:none}
   .fs-game .side .go:not(:disabled){position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);min-height:64px;font-size:17px;touch-action:manipulation}
@@ -1255,6 +1261,35 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
     border-color:#a76740;background:#623a2b;color:#fff3d8;
   }
   #view-bird .share-result i{color:#ffda9c}
+  /* Mermaid Spider: a DOM card board, so the stage scrolls instead of using a canvas ratio. */
+  #view-mermaid:not([hidden]) .fs-game>.mm-stage{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;border-radius:0;box-sizing:border-box;padding:8px 8px 76px}
+  #view-mermaid .stats{right:calc(env(safe-area-inset-right) + 96px)}
+  #view-mermaid #mm-quit:not([hidden]){position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 8px);right:calc(env(safe-area-inset-right) + 8px);min-width:80px;min-height:44px}
+  /* On Pitch: the input / octave / mic-test settings only show while the start button is on screen (idle). */
+  #view-on-pitch .fs-game .seg-row,#view-on-pitch .fs-game #op-mic-test{display:none}
+  #view-on-pitch .fs-game:has(.mobile-stage-action #op-go) .seg-row,#view-on-pitch .fs-game:has(.mobile-stage-action #op-go) #op-mic-test{display:flex;position:absolute;z-index:4;left:calc(env(safe-area-inset-left) + 12px);right:calc(env(safe-area-inset-right) + 12px);gap:6px;margin:0}
+  #view-on-pitch .fs-game:has(.mobile-stage-action #op-go) #op-mic-test{bottom:calc(env(safe-area-inset-bottom) + 72px);justify-content:center;align-items:center;box-sizing:border-box;width:calc(100% - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));min-height:44px}
+  #view-on-pitch .fs-game:has(.mobile-stage-action #op-go) div.seg-row:nth-of-type(2){bottom:calc(env(safe-area-inset-bottom) + 122px)}
+  #view-on-pitch .fs-game:has(.mobile-stage-action #op-go) div.seg-row:nth-of-type(1){bottom:calc(env(safe-area-inset-bottom) + 172px)}
+  #view-on-pitch .fs-game .seg-row .seg{flex:1;min-height:44px}
+  /* The Last Banquet: a DOM scene that scrolls. The panel's sound / advanced chips are proxied by the in-scene menu, so only Home / Quit stay on screen. */
+  #view-banquet:not([hidden]) .fs-game>.bq-stage{display:block;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;box-sizing:border-box;border-radius:0;padding:0}
+  #view-banquet .stats{right:calc(env(safe-area-inset-right) + 96px)}
+  #view-banquet .bq-opts{display:contents}
+  #view-banquet #bq-adv,#view-banquet #bq-mute{display:none}
+  #view-banquet #bq-home:not([hidden]),#view-banquet #bq-quit:not([hidden]){position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 8px);right:calc(env(safe-area-inset-right) + 8px);width:88px;height:44px;min-width:0;min-height:44px;padding:0 6px;margin:0;box-sizing:border-box;font:700 12px/1.15 Georgia,serif;white-space:normal;overflow:hidden;background:#173a2b;border:1px solid #c9a44a;border-radius:8px;color:#f1e3b8;text-align:center}
+  #view-banquet #bq-home::before,#view-banquet #bq-home::after,#view-banquet #bq-quit::before,#view-banquet #bq-quit::after{display:none}
+  /* Rocket Chair: same slim top bar as Boba Straw and Noodle Pancake. */
+  #view-rocket-chair:not([hidden]){position:fixed;inset:0;z-index:1200;display:flex;flex-direction:column;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:#fff;overscroll-behavior:none}
+  html:has(#view-rocket-chair:not([hidden])){overflow:hidden}
+  #view-rocket-chair>.game-exit-link,#view-rocket-chair>.mobile-scroll-pad,#view-rocket-chair .rocket-chair-platform-bar .hint,#view-rocket-chair #rocket-chair-msg,#view-rocket-chair #rocket-chair-rank-status{display:none}
+  #view-rocket-chair .rocket-chair-platform-bar{flex:none;padding:6px 8px;background:#f4f4f6}
+  #view-rocket-chair .fs-exit{display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid #c9ccd4;border-radius:10px;background:#fff;color:#222;font:700 21px system-ui;cursor:pointer}
+  #view-rocket-chair .share-result:not([hidden]){position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 6px);right:calc(env(safe-area-inset-right) + 8px);width:auto;min-height:44px;margin:0;padding:0 14px;white-space:nowrap}
+  #view-rocket-chair #rocket-chair-rank-retry:not([hidden]){position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 6px);left:calc(env(safe-area-inset-left) + 62px);min-height:44px;padding:0 12px}
+  #view-rocket-chair .rocket-chair-stage{flex:1;min-height:0;border:0;border-radius:0}
+  #view-rocket-chair .rocket-chair-stage iframe{width:100%;height:100%;min-height:0;max-width:none}
+  #view-rocket-chair~.rules{display:none}
 }
 
 .game-icon-runner img {
@@ -4868,7 +4903,7 @@ html.frontier-immersive{overflow:hidden}
     <div class="pancake-stage"><iframe id="pancake-frame" title="泡麵煎餅翻面 Noodle Pancake" allow="accelerometer; gyroscope; magnetometer; autoplay; clipboard-write; web-share"></iframe></div>
   </section>
   <section class="view" id="view-rocket-chair" hidden>
-    <div class="rocket-chair-platform-bar"><p class="hint">沒有點數獎勵。會議時間用完可用 5 點買特濃咖啡續命，或看示範廣告延長一次。</p></div>
+    <div class="rocket-chair-platform-bar"><button class="fs-exit" type="button" aria-label="退出遊戲">←</button><p class="hint">沒有點數獎勵。會議時間用完可用 5 點買特濃咖啡續命，或看示範廣告延長一次。</p></div>
     <p class="msg" id="rocket-chair-msg" aria-live="polite">對著手機大吼讓火箭椅往上衝，撞破 5 層天花板提早下班。不方便出聲可以選按住螢幕。</p>
     <div class="rocket-chair-stage"><iframe id="rocket-chair-frame" title="社畜要下班 Roar Through the Ceiling" allow="microphone; autoplay; clipboard-write; web-share"></iframe></div>
   <p id="rocket-chair-rank-status" role="status" hidden></p><button id="rocket-chair-rank-retry" type="button" hidden>重送排行榜成績</button>
@@ -4906,7 +4941,7 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與點數</summary><p>遊戲共 100 關、分五個世界（森林、墓地、沼澤、雪原、火山），每個世界 20 關。每一關都有固定的類型和天氣（白天、黃昏、夜、雨、霧、雪、灰燼、熱浪等，不會連兩關相同），新鬼出現在第 4、8、12、16 關，第 10 關是首領。部分關卡會有寶箱、旅人或小傢伙 Nib 出現。你有 3 條命（上限 5），死了在同一關重來，生命用完整輪重來，回到第 1 關，沒有存檔點；打倒首領加一條命，營火停留可補一條命（每十關最多一次）。同一關死兩次後，小螢會多給 0.3 秒預警並少來一次襲擊（畫面會告知）。第 1 關和首領關使用固定種子，其他關每次隨機，可輸入種子碼重玩同一局，也可選每日挑戰（同一天全站同一關、同一個種子，不扣命、不存檔、不發點，純比成績）。能選的關卡上限是你這一輪實際打到的關，命用完整輪重來後就不能直接跳回去。每一關都會把所有襲擊出完才開門。關卡填 0 是沒有生命的自由跑；在圖鑑裡可以聽線索並練習某隻鬼，練習不扣生命也不發點。</p><p>你抱著盒子在森林裡自動往出口跑，沒有進度條，跑到看得見出口就快到了。路邊的樹和棺材會在鬼出現前從左側或右側滑進畫面，左右滑就能躲進去；不是隨時都有躲藏處。有些鬼會折返好幾趟，蟲鳴恢復才算結束。畫面為第一人稱，背景是目前這一關所在的世界。</p><p>每隻鬼都有自己的線索和答案。葉下客（第 4 關）：腳邊的落葉聚成一堆，睜開紅眼，躲進另一側並撐滿 3 秒。敲枝者（第 8 關）：鳥群先飛走，接著有敲擊聲從單邊傳來，躲進敲擊的另一側；後面的關卡會折返兩趟。靜林鬼（第 12 關）：蟲鳴停了，左右各冒出一件道具；牠怕燈籠，點燈籠那一側。點錯就死。逆風客（第 16 關）：風向反了、葉子逆風翻動，接著有拖行聲從一邊靠近，躲進風來的那一側。墳手（第 22 關）：土面鼓起、泥水冒泡，躲進另一側並撐住 2 秒。守墓鐘（第 23 關）：鐘響三下，第三下之後往下滑低頭，一直低著頭直到鐘聲散去。每個首領關前面會依序出現學過的鬼，最後是空殼：牠怕符紙。玻璃臉（第 30 關首領）怕鐵鎚，灰燼鴉群怕水桶。第 15 關起可能出現假前兆（只是虛驚一場），第 25 關起會有連續襲擊。</p><p>路邊會出現火把、護身符和舊卷軸，靠近時點一下撿起。火把讓下次襲擊多 0.6 秒預警並標出方向；護身符能擋下一次致命失誤。營火出現在每十關的第 5 關（自由跑則每跑 20%），可在三樣東西中選一樣並休息一下。路邊連續三關沒有掉東西，下一關一定會掉。墓地的濃霧會縮小視野，沼澤的聲音比較悶，雪原躲進去比較慢，火山的畫面會微微晃動。</p><p>固定獎勵：躲過 2 次襲擊，獲得 2 點；衝出出口打開盒子，獲得 5 點。每項每局只發一次，當場入帳，之後死亡也不會收回；每局最多 7 點；關卡模式下，每一關只有第一次通關發點，重玩已通關的關卡和練習都不發點。分數、最佳進度、死因圖鑑與累計躲過次數只是顯示用，不直接換點數。這是操作與反應遊戲，結果取決於你的動作。</p><p>手機可按「啟用體感」，用傾斜手機代替左右滑；不支援的瀏覽器會自動改用手勢。畫面含閃爍燈光，不適合者可開啟「低驚嚇」，或請勿遊玩。切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最佳進度、死因、累計躲過次數、卷軸與選項保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-pet-walk" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="pw-canvas" tabindex="0" width="400" height="560" aria-label="小灰出門：點一下走一步，按住連續走，路上會遇到隨機事件和轉盤，走滿 60 步回家寫日記"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="pw-canvas" tabindex="0" width="400" height="560" aria-label="小灰出門：點一下走一步，按住連續走，路上會遇到隨機事件和轉盤，走滿 60 步回家寫日記"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="小灰出門操作">
         <dl class="stats"><div><dt>步數</dt><dd id="pw-steps">— / 60</dd></div><div><dt>本趟分數</dt><dd id="pw-score">—</dd></div><div><dt>最高分</dt><dd id="pw-best">0 分</dd></div></dl>
         
@@ -4918,7 +4953,7 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與點數</summary><p>小灰自己走在路上，一趟 60 步，分成平原、水域、山地三段，每段 20 步。每隔幾步會遇到隨機事件：撿東西、遇到野狗、河鯊、落石，或踩上幸運轉盤。走滿 60 步時，門口還有最後一次轉盤。部分事件可以二選一，例如用頭撞開鐵櫃，或用繩索撬開；拿罐頭換一次轉盤，或跟著野狗一起吠。</p><p>BONUS 是固定獎勵：每走完一段 20 步立刻入帳 1 點，一趟最多 3 點，每段只發一次。走完整趟最多獲得 3 點 BONUS。獎勵當場入帳，不會收回；中途離開或重新整理，已入帳的保留，轉盤、物資與分數只是顯示用，不直接換點數。這是反應與探索收集遊戲，沒有任何機率下注。</p><p>走完 60 步會寫一篇小灰的日記，並累積圖鑑：每個新事件、稀有事件與物資第一次出現加 5 分。切換遊戲或背景分頁會暫停，回來後繼續。圖鑑與最高分保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-office-shoot" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="os-canvas" tabindex="0" width="450" height="800" aria-label="拒絕加班：左右移動自動開火，擋住右道湧入的工作，打破左道補給拿新裝備，每天 17:00 擊敗大魔王準時下班"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="os-canvas" tabindex="0" width="450" height="800" aria-label="拒絕加班：左右移動自動開火，擋住右道湧入的工作，打破左道補給拿新裝備，每天 17:00 擊敗大魔王準時下班"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="拒絕加班操作">
         <dl class="stats"><div><dt>目前天數</dt><dd id="os-day" data-i18n-ignore>—</dd></div><div><dt>績效分數</dt><dd id="os-score" data-i18n-ignore>—</dd></div><div><dt>最佳績效</dt><dd id="os-best" data-i18n-ignore>0</dd></div></dl>
         <dl class="stats"><div><dt>本局 BONUS 點數</dt><dd id="os-pay" data-i18n-ignore>0 / 10</dd></div></dl>
@@ -4931,7 +4966,7 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與點數</summary><p>畫面分成兩道：右道是不斷湧入的工作（報告、急件、會議……），只要有一件衝過紅色「下班線」，今晚就要加班，這一局結束。左道是補給站，掉下來的補給箱有護盾，打破後可以升級裝備（原子筆、釘書機、碎紙機、雷射簡報筆、咖啡火箭、印表機、已讀不回砲）或拿到射速、傷害、多一隻手等強化。角色自動開火，只要左右移動，在兩道之間取捨。</p><p>每天上午 9 點開工，17:00 會出現當天的大魔王，各有不同機制：會分裂、週期無敵、狂丟待辦、只怕弱點、改需求時吸收子彈、停火回血、真假分身、亂丟文件、閃現帶人與發訊息彈。前 10 天是固定魔王，之後會隨機組合 2～3 種機制。擊敗魔王就算準時下班，進入下一天，敵人會越來越強。</p><p>BONUS 是固定獎勵：第 1～5 天每擊敗當天大魔王（準時下班）立即入帳 2 點，每天每局只發一次，一局最多 10 點；第 6 天起可以繼續挑戰最佳績效，但不再給點。已入帳的點數不會因為之後加班而收回，結束時不另發點。績效分數、裝備與強化只是遊戲內數值，不直接換點數。這是操作技巧遊戲，沒有任何下注或倍率返還。</p><p>切換遊戲、背景分頁或視窗失焦會暫停，回來後點一下畫面或按空白鍵繼續。重新整理會放棄本局，已入帳的 BONUS 保留。最佳績效保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-eat-smaller" hidden>
-    <div class="console"><div class="es-stage"><iframe id="es-frame" title="數字吞噬 Number Gulp"></iframe></div>
+    <div class="console fs-game"><div class="es-stage"><iframe id="es-frame" title="數字吞噬 Number Gulp"></iframe></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="數字吞噬操作">
         <dl class="stats"><div><dt>本局過關次數</dt><dd id="es-cleared" data-i18n-ignore>0</dd></div><div><dt>本局 BONUS</dt><dd id="es-pay" data-i18n-ignore>0 / 10</dd></div><div><dt>已通過關卡</dt><dd id="es-best" data-i18n-ignore>0 / 8</dd></div></dl>
         
@@ -4944,7 +4979,7 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與點數</summary><p>你是一個數字。碰到比你小的綠色數字就吃掉它，數值加到你身上；碰到比你大的紅色數字就被吃掉。運算符（−3、+1、÷2）碰到立刻生效，可以在吃過頭時降回來。要剛好等於目標數字才算過關，越大游得越慢。共 8 關，過關後解鎖下一關。</p><p>一局內可以自由選關、重玩，失敗可以直接重來。BONUS 是固定獎勵：本局每一關第一次通過立即入帳 2 點，同一關在同一局重複通過不再給點，一局最多 10 點。已入帳的點數不會收回，結束時不另發點。按「結束本局」結束這一局，之後要再拿 BONUS 需要重新開局。過關時間只是成績，不換點數；這是操作與計算遊戲，沒有任何下注或倍率返還。</p><p>切換遊戲或背景分頁會暫停，回來後按「繼續」。重新整理會放棄本局，已入帳的 BONUS 保留。關卡進度與最佳時間保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-mirror-twins" hidden>
-    <div class="console"><div class="mt-stage"><iframe id="mt-frame" title="鏡像雙子 Mirror Twins"></iframe></div>
+    <div class="console fs-game"><div class="mt-stage"><iframe id="mt-frame" title="鏡像雙子 Mirror Twins"></iframe></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="鏡像雙子操作">
         <dl class="stats"><div><dt>本局過關次數</dt><dd id="mt-cleared" data-i18n-ignore>0</dd></div><div><dt>本局 BONUS</dt><dd id="mt-pay" data-i18n-ignore>0 / 10</dd></div><div><dt>已通過關卡</dt><dd id="mt-best" data-i18n-ignore>0 / 10</dd></div></dl>
         
@@ -4957,7 +4992,7 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與點數</summary><p>一次操控兩位太空人：藍色照你按的方向走，橘色上下相同、左右相反。撞到小行星的那位會停住，另一位照樣走，這是讓兩人錯開的方法。兩人要同時站進自己顏色的傳送艙才算過關；踩到雷射地雷會自動退回上一步。共 10 關，過關後解鎖下一關，依步數給 1～3 星。</p><p>一局內可以自由選關、重玩，失敗可以直接重來。BONUS 是固定獎勵：本局每一關第一次通過立即入帳 2 點，同一關在同一局重複通過不再給點，一局最多 10 點。已入帳的點數不會收回，結束時不另發點。按「結束本局」結束這一局，之後要再拿 BONUS 需要重新開局。星等、步數與過關時間只是成績，不換點數；這是操作與推理遊戲，沒有任何下注或倍率返還。</p><p>這款是回合制，離開畫面不會影響盤面，回來可以接著走。重新整理會放棄本局，已入帳的 BONUS 保留。關卡進度與最佳星等保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-shadow-relay" hidden>
-    <div class="console"><div class="sr-stage"><iframe id="sr-frame" title="影子接力 Shadow Relay"></iframe></div>
+    <div class="console fs-game"><div class="sr-stage"><iframe id="sr-frame" title="影子接力 Shadow Relay"></iframe></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="影子接力操作">
         <dl class="stats"><div><dt>本局過關次數</dt><dd id="sr-cleared" data-i18n-ignore>0</dd></div><div><dt>本局 BONUS</dt><dd id="sr-pay" data-i18n-ignore>0 / 10</dd></div><div><dt>已通過關卡</dt><dd id="sr-best" data-i18n-ignore>0 / 8</dd></div></dl>
         
@@ -4970,7 +5005,7 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與點數</summary><p>你的影子會晚幾秒，照你走過的路線再走一次，碰到你就失敗，失敗後自動重來這一關。燈籠開關只有影子點得亮，全部同時亮著出口才會打開，任何一個熄掉出口就關上；趁出口開著走進去就過關。後面的關卡會有多個影子，開關也只亮幾秒。共 8 關，過關後解鎖下一關。</p><p>一局內可以自由選關、重玩，失敗可以直接重來。BONUS 是固定獎勵：本局每一關第一次通過立即入帳 2 點，同一關在同一局重複通過不再給點，一局最多 10 點。已入帳的點數不會收回，結束時不另發點。按「結束本局」結束這一局，之後要再拿 BONUS 需要重新開局。過關時間與失敗次數只是成績，不換點數；這是操作與推理遊戲，沒有任何下注或倍率返還。</p><p>切換遊戲或背景分頁會暫停，回來後按「繼續」。重新整理會放棄本局，已入帳的 BONUS 保留。關卡進度與最佳時間保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-one-line-defense" hidden>
-    <div class="console"><div class="od-stage"><iframe id="od-frame" title="一筆畫守城 One-Line Defense"></iframe></div>
+    <div class="console fs-game"><div class="od-stage"><iframe id="od-frame" title="一筆畫守城 One-Line Defense"></iframe></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="一筆畫守城操作">
         <dl class="stats"><div><dt>本局分數</dt><dd id="od-score" data-i18n-ignore>0</dd></div><div><dt>本局 BONUS</dt><dd id="od-pay" data-i18n-ignore>0 / 10</dd></div><div><dt>最佳分數</dt><dd id="od-best" data-i18n-ignore>0</dd></div></dl>
         
@@ -4995,7 +5030,7 @@ html.frontier-immersive{overflow:hidden}
 <symbol id="mm-art-j" viewBox="0 0 40 52"><path d="M24 5c-5-1.6-10 .6-10.4 5.4-.2 2.6 1.4 4.2 3.2 5.2-2.4 2.6-3 6.4-1.4 10 1.8 4 1.6 7.6-.8 10.6-2 2.6-6 3.2-8 .4 0 6 6 10.4 11.4 7.6 4.6-2.4 5.6-8 3.6-12.6-1.4-3.4-1-6 1.6-8.6 3.6-3.6 3.2-9.8-1.4-13.6z" fill="currentColor"/><path d="M14 9.6l-8 1.6 8 2.6z" fill="currentColor"/><path d="M26.4 8.6l5-3.4-1 6zM27.4 16l5.4-1.2-3 4.4zM25.6 23l5.2.4-3.8 3.6z" fill="#f6c453"/><circle cx="18.6" cy="9.4" r="1.2" fill="#fff"/><circle cx="18.8" cy="9.5" r=".55" fill="#2b2140"/><path d="M16 24q3 1.4 5.6 0M17 29q3 1.4 5.4 0M17.4 34q2.6 1.2 4.6 0" stroke="#fff" stroke-opacity=".5" stroke-width=".9" fill="none" stroke-linecap="round"/></symbol>
 
 </defs></svg>
-    <div class="console"><div class="mm-stage" id="mm-stage">
+    <div class="console fs-game"><div class="mm-stage" id="mm-stage">
       <div class="mm-top">
         <div class="mm-says"><p class="mm-bubble" id="mm-bubble">開始後發牌，把牌排成一整串收成珍珠。</p><span class="mm-info" id="mm-info"></span></div>
         <div class="mm-tools">
@@ -5011,6 +5046,7 @@ html.frontier-immersive{overflow:hidden}
         <div class="mm-modes" role="group" aria-label="海域難度"><button type="button" class="mm-mode" data-diff="1" aria-pressed="true">淺灘<small>1 種花色</small></button><button type="button" class="mm-mode" data-diff="2" aria-pressed="false">珊瑚礁<small>2 種花色</small></button><button type="button" class="mm-mode" data-diff="4" aria-pressed="false">深海<small>4 種花色</small></button></div>
       </div>
     </div>
+      <button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="人魚接龍操作">
         <dl class="stats"><div><dt>珍珠</dt><dd id="mm-pearls">0 / 8</dd></div><div><dt>分數</dt><dd id="mm-score">—</dd></div><div><dt>最高分</dt><dd id="mm-best">0 分</dd></div></dl>
         
@@ -5018,10 +5054,10 @@ html.frontier-immersive{overflow:hidden}
         <button class="chip mm-quit" id="mm-quit" type="button" hidden>放棄本局</button>
         <p class="msg" id="mm-msg" aria-live="polite">開始後發牌：每收成一顆珍珠 BONUS +1 點。</p>
         <p class="hint">拖曳牌，或點一下牌再點目標列來移動。只有同花色、由大到小連續的牌能一起搬。點左上角的牌堆發牌，指路會告訴你一步好棋。</p>
+        <p id="mm-rank-status" role="status" hidden></p><button id="mm-rank-retry" type="button" hidden>重送排行榜成績</button>
       </section></div>
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>牌桌有 10 列牌，共 104 張，牌背是美人魚。把牌放在比它大 1 的牌上面（不用同花色），同花色且由大到小連續的牌可以一起搬。把同一花色的 K 到 A 排滿 13 張，這一串會自動收成一顆珍珠。收集滿 8 顆珍珠就通關。牌堆點一下會在每一列各發一張，發牌前每一列都要有牌。</p><p>難度分三種：淺灘只有 1 種花色，珊瑚礁 2 種，深海 4 種。難度要在開始前選好，開始後不能更換。悔棋和指路不限次數，但每步（含悔棋）會讓分數少 1 分，每收成一顆珍珠加 100 分；分數只是顯示用，不直接換點數。</p><p>每收成一顆珍珠，BONUS +1 點當場入帳；珊瑚礁和深海通關時再加 2 點，只發一次。所以最多入帳：淺灘 8 點，珊瑚礁與深海 10 點，沒有任何下注或倍率。悔棋後再收同一顆珍珠不會重複發點。這是操作與推理的接龍遊戲。</p><p>放棄本局後，已入帳的點數會保留。重新整理會放棄本局，最高分依難度分別保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  <p id="mm-rank-status" role="status" hidden></p><button id="mm-rank-retry" type="button" hidden>重送排行榜成績</button>
 </section>
   <section class="view" id="view-book-sort" hidden>
     <div class="bs-stage" id="bs-stage">
@@ -5091,7 +5127,7 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與點數</summary><p>經典俄羅斯方塊：七種方塊用 7-bag 洗牌隨機出現，旋轉採用 SRS 規則並支援牆踢。把一整排填滿就會消除，一次消越多行得分越高，每消除 10 行升一級，方塊掉得更快。可以把方塊暫存起來，每放下一塊才能再暫存一次。方塊堆到頂端放不下就結束。</p><p>這款遊戲沒有 BONUS，分數、行數與等級只是你的成績，不換點數；沒有任何下注或倍率返還。每款遊戲每天第一次完整玩過一局（至少 10 秒），會依平台固定規則領到完成獎勵。</p><p>切換遊戲或背景分頁會暫停，回來後按「繼續」。重新整理會放棄本局。最高分保存在這個瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
   <section class="view" id="view-on-pitch" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="op-canvas" tabindex="0" width="400" height="720" aria-label="不准跑調：對著麥克風唱出牆上缺口的音（C D E F G A B），音準到了才能穿過去；也可以改用螢幕琴鍵練習"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="op-canvas" tabindex="0" width="400" height="720" aria-label="不准跑調：對著麥克風唱出牆上缺口的音（C D E F G A B），音準到了才能穿過去；也可以改用螢幕琴鍵練習"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="不准跑調操作">
         <dl class="stats"><div><dt>目前關卡</dt><dd id="op-level" data-i18n-ignore>1-1</dd></div><div><dt>本局分數</dt><dd id="op-score" data-i18n-ignore>0</dd></div><div><dt>累計星數</dt><dd id="op-stars" data-i18n-ignore>0 / 60</dd></div></dl>
         <button class="go" id="op-go" type="button" data-mode="start">開始遊戲</button>
@@ -5105,7 +5141,7 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與點數</summary><p>你是一顆往前滑行的小機器人，前面不斷出現有缺口的牆，缺口高度對應 C D E F G A B 七個音（第 4 八度）。對著麥克風唱出那個音，讓音高落在容許誤差內並撐住 0.2～0.25 秒，就能穿過缺口；過牆時間內沒唱準會失去一顆愛心，共 3 顆。通過時依誤差給「完美／好／過」並累積連續分數。</p><p>共 5 個世界、每個 4 關，外加無盡模式：世界 1 全提示（缺口高度、音名、顏色、參考音）；世界 2 唱出小星星等公版旋律；世界 3 把缺口高度藏起來；世界 4 只剩顏色閃現；世界 5 逐步拿掉提示，靠記憶與絕對音準。越後面的世界容許誤差越小（±45 → ±30 音分）。預設「任何八度」：只看音名，高八度或低八度都算；也可切成嚴格第 4 八度。</p><p>這款遊戲沒有 BONUS，分數與星數只是你的成績，不換點數；沒有任何下注或倍率返還。每款遊戲每天第一次完整玩過一局（至少 10 秒），會依平台固定規則領到完成獎勵。</p><p>麥克風只在遊戲中即時分析音高，不錄音、不上傳；切換分頁、離開本頁或按暫停會立刻關閉麥克風。星數與設定保存在這個瀏覽器中。</p></details>
   </section>
   <section class="view" id="view-quack-pond" hidden>
-    <div class="console"><div class="qp-stage"><iframe id="qp-frame" title="呱呱池塘 Quack Pond"></iframe></div>
+    <div class="console fs-game"><div class="qp-stage"><iframe id="qp-frame" title="呱呱池塘 Quack Pond"></iframe></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="呱呱池塘操作">
         <dl class="stats"><div><dt>目前關卡</dt><dd id="qp-level" data-i18n-ignore>1 / 200</dd></div><div><dt>已通關</dt><dd id="qp-cleared" data-i18n-ignore>0 / 200</dd></div><div><dt>累積星星</dt><dd id="qp-stars" data-i18n-ignore>0 / 600</dd></div></dl>
         <button class="go" id="qp-go" type="button" data-mode="start">重新開始本關</button>
@@ -5129,17 +5165,17 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法說明</summary><p>用擋板接住小球並反彈，打掉全部磚塊就過關，進入下一關。球打在擋板邊緣會斜著飛出，越往後關卡磚塊越多、球越快，部分磚塊要打兩下。每局有 3 顆球，漏接就少一顆，用完即結束。</p><p>打碎磚塊時有機會掉下道具，用擋板接住即可生效：加寬擋板、讓球變慢、或多出兩顆球。道具只影響本局操作，沒有任何點數效果。</p><p>不限次數，另依平台規則累積遊玩點數；分數只用來和自己的最佳紀錄比較，最佳分數與最高關卡保存在這個瀏覽器。切換遊戲或背景分頁會暫停，重新整理會放棄本局。</p></details>
   </section>
   <section class="view" id="view-last-hair" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="lh-canvas" tabindex="0" width="400" height="720" aria-label="尊嚴保衛戰：左手滑動脖子迎著風歪頭，右手按住壓住頭髮；走完 500 公尺去面試，至少要留下一根頭髮"></canvas></div>
+    <div class="console fs-game"><div class="sneak-stage"><canvas id="lh-canvas" tabindex="0" width="400" height="720" aria-label="尊嚴保衛戰：左手滑動脖子迎著風歪頭，右手按住壓住頭髮；走完 500 公尺去面試，至少要留下一根頭髮"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="尊嚴保衛戰操作">
         <dl class="stats"><div><dt>目前距離</dt><dd id="lh-dist">0 m</dd></div><div><dt>剩餘頭髮</dt><dd id="lh-hairs">3 / 3</dd></div><div><dt>最遠紀錄</dt><dd id="lh-best">0 m</dd></div></dl>
         <input id="lh-amount" type="hidden" value="0">
         <button class="go" id="lh-go" type="button" data-mode="bet">開始出門</button>
         <p class="msg" id="lh-msg" aria-live="polite">佐藤只剩 3 根頭髮，今天要去面試！開始後出門，迎著風歪頭、壓住頭髮，走完 500 公尺。</p>
         <p class="hint">手機：左手在左半邊畫面滑動脖子，把滑桿移到綠圈；右手在右半邊畫面按住「死命壓住」。電腦：<kbd>A</kbd><kbd>D</kbd>（或 <kbd>←</kbd><kbd>→</kbd>、滑鼠左右移動）歪頭，按住 <kbd>空白鍵</kbd> 或滑鼠壓頭。歪頭太久脖子會抽筋，壓太久手會流汗、路人會側目。</p>
+        <p id="lh-rank-status" role="status" hidden></p><button id="lh-rank-retry" type="button" hidden>重送排行榜成績</button>
       </section></div>
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>佐藤只剩 3 根頭髮，要在強風中走完 500 公尺去面試。把脖子歪向風來的那一邊可以減少受風；按住壓頭則大幅擋風，並讓髮膠慢慢回復。三根頭髮各有髮膠（黃條）和髮根（紅條），髮膠先流失，之後髮根才會掉，掉光一根就「啵」地飛走，三根全掉光就面試取消。剩的頭髮越少，走得越慢。</p><p>歪頭超過 85% 滿格連續 3 秒，脖子會抽筋、僵直 2 秒。壓頭會累積手汗，手汗滿了就壓不住；壓頭時路人會側目，側目滿格會社死，腳步變慢並被迫放下手 1.5 秒。四個路段各有不同事件：商店街的打招呼（放開手 1.2 秒才算揮手）與傳單（手被佔住 2 秒）、高架橋的滴水（壓住頭可擋）與鴿子亂流、帝國大廈廣場的下沉氣流與面試官回頭（此時壓頭會被側目）。每個事件都有預警。</p><p>抵達 100、250、400、500 公尺，分別立即入帳 1、2、3、4 點，每個里程碑每局只發一次，全部達成共 10 點；頭髮掉光不會收回已入帳的點數，結局與頭髮根數只影響稱號，不給點數。距離只是紀錄，不直接換點數。這是操作技巧遊戲，沒有任何倍率。</p><p>切換遊戲或背景分頁會暫停，回來後點一下畫面繼續。重新整理會放棄本局，已入帳的點數會保留。最遠紀錄、死亡位置與操作設定保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
-  <p id="lh-rank-status" role="status" hidden></p><button id="lh-rank-retry" type="button" hidden>重送排行榜成績</button>
 </section>
   <section class="view" id="view-carp" hidden>
     <div class="console fs-game"><div class="sneak-stage"><canvas id="carp-canvas" tabindex="0" width="400" height="560" aria-label="鯉魚躍龍門：按住蓄力、放開起跳，越過石瀑，別撞到石頭和魚鉤"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
@@ -5247,7 +5283,7 @@ html.frontier-immersive{overflow:hidden}
     <details class="rules"><summary>玩法與點數</summary><p>你是深夜的一隻蚊子，要在睡著的人身上吸滿血，再從左上角窗戶的破洞逃出去。放開空白鍵蚊子往上飄，按住往下俯衝；降落在臉頰、手臂或腳上，持續按住就開始吸血，放開就起飛。降落時速度太快，蚊子會折斷口器、暈眩 1 秒。</p><p>吸得越多，蚊子越重，上升越慢、俯衝越快。警覺值會隨著飛行與吸血上升：臉最快也最吵，腳最慢最安靜，靠近耳朵飛和飛到高處也會更吵。吸血進度到 90% 以後，警覺值上升速度減半。</p><p>睡著的人有三種方式拍死你。吸血時皮膚出現紅色波紋，1.2 秒後巨手會抓下來，要立刻放開飛走。棉被隆起代表要翻身，翻身時畫面下方會全部被壓到，要先往上飛。警覺值滿了會開燈，2 秒內飛進左上角窗戶的破洞才能逃生，但沒吸滿就逃走不算過關。</p><p>固定獎勵：吸血進度每達 25%、50%、75%，分別立即入帳 1、2、3 點；吸滿 100% 並成功飛出窗戶，再入帳 4 點，每局最多 10 點。每個門檻每局只入帳一次，被拍扁後已入帳的點數不會收回，結束時也不會另外結算。吸血百分比與最佳紀錄只是記錄，不直接換點數。這是操作技巧遊戲，結果取決於你的時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最佳紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
 </section>
   <section class="view" id="view-banquet" data-i18n-ignore hidden>
-    <div class="console"><div class="bq-stage" id="bq-stage" tabindex="-1" lang="en">
+    <div class="console fs-game"><div class="bq-stage" id="bq-stage" tabindex="-1" lang="en">
 
       <div class="bq-scene" id="bq-scene"><div class="bq-dust" aria-hidden="true"><i style="left:8%;animation-duration:11s;animation-delay:-2s"></i><i style="left:18%;animation-duration:14s;animation-delay:-7s"></i><i style="left:27%;animation-duration:12s;animation-delay:-4s"></i><i style="left:36%;animation-duration:16s;animation-delay:-9s"></i><i style="left:47%;animation-duration:13s;animation-delay:-1s"></i><i style="left:58%;animation-duration:15s;animation-delay:-6s"></i><i style="left:66%;animation-duration:11s;animation-delay:-3s"></i><i style="left:75%;animation-duration:17s;animation-delay:-10s"></i><i style="left:84%;animation-duration:12s;animation-delay:-5s"></i><i style="left:92%;animation-duration:14s;animation-delay:-8s"></i></div>
 
@@ -5285,6 +5321,7 @@ html.frontier-immersive{overflow:hidden}
 
       <div class="bq-flash" id="bq-flash" aria-hidden="true"></div>
     </div>
+      <button class="fs-exit" type="button" aria-label="Exit game · 退出遊戲">←</button>
       <div class="side"><section class="panel" data-bq-aria="v.panel">
         <dl class="stats"><div><dt data-bq="v.progress"></dt><dd id="bq-stage-t"></dd></div><div><dt data-bq="v.bonus"></dt><dd id="bq-bonus"></dd></div><div><dt data-bq="v.winsl"></dt><dd id="bq-best"></dd></div></dl>
         <input id="bq-amount" type="hidden" value="0">
