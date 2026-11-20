@@ -7,7 +7,7 @@
 - 網址：`#elevator`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「趁乘客背對你，偷偷往前插一位。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：插隊大師，`game_id` 為 `elevator`
-- 檔案：`games/elevator/card.html`、`games/elevator/game.js`、`games/elevator/icon.svg`、`games/elevator/view.html`；`game.js` 共 129 行、11.3 KB
+- 檔案：`games/elevator/card.html`、`games/elevator/cover.webp`、`games/elevator/game.js`、`games/elevator/icon.svg`、`games/elevator/queue-cutter-leaderboard.webp`、`games/elevator/view.html`；`game.js` 共 129 行、11.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「14. Queue Cutter（elevator）」（下方「規則摘要」已複製）
 
