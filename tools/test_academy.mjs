@@ -7,7 +7,7 @@ import { readBoardCommand } from '../backend/src/services/ranked-boards.mjs';
 const require = createRequire(import.meta.url);
 const rules = require('../shared/academy-rules.cjs');
 const timedReplay = require('../shared/timed-replay.cjs');
-const bank = new Function(fs.readFileSync(new URL('../games/academy/questions.js', import.meta.url), 'utf8') + '; return academyBank;')();
+const bank = new Function(fs.readFileSync(new URL('../games/academy/i18n.js', import.meta.url), 'utf8') + '; return academyBank;')();
 const { ACT, LADDER } = rules;
 let passed = 0;
 const test = (name, fn) => { fn(); passed++; console.log('ok -', name); };

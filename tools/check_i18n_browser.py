@@ -113,6 +113,7 @@ class Chrome:
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--chrome', default=shutil.which('google-chrome') or shutil.which('chromium') or '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
+    parser.add_argument('--suite', action='append', help='Run only the named suite(s), e.g. --suite academy')
     parser.add_argument('--screenshots', type=Path, help='Optional directory for English lobby and game screenshots')
     args = parser.parse_args()
     source = (ROOT / 'index.html').read_text(encoding='utf-8')
@@ -137,14 +138,18 @@ def main():
     threading.Thread(target=server.serve_forever, daemon=True).start()
     with tempfile.TemporaryDirectory(prefix='deep-sea-i18n-') as temp:
         folder = Path(temp)
-        for suite, width, height in [('outpost', 1366, 900), ('outpost', 390, 844), ('book_sort', 1366, 900), ('book_sort', 390, 844), ('book_sort', 844, 390), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('core', 1366, 900), ('games', 1366, 900), ('games', 390, 844),
+        for suite, width, height in [('outpost', 1366, 900), ('outpost', 390, 844), ('book_sort', 1366, 900), ('book_sort', 390, 844), ('book_sort', 844, 390), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('academy', 1366, 900), ('academy', 390, 844), ('core', 1366, 900), ('games', 1366, 900), ('games', 390, 844),
                                      ('ocean_link', 1366, 900), ('ocean_link', 844, 390), ('frontier', 1366, 900), ('frontier', 390, 844), ('frontier', 844, 390)]:
+            if args.suite and suite not in args.suite:
+                continue
             script = (ROOT / f'tools/i18n_browser_{suite}.js').read_text(encoding='utf-8')
             route = f'/{suite}-{width}.html'
             tested_source = source
             if suite == 'frontier':
                 hook = 'window.__frontierTest={world:function(){return world;},create:frontierWorld,step:frontierStep,plan:frontierPlan,goal:frontierGoal,upgrade:frontierUpgrade,leave:frontierLeave,finish:finishStage,persist:persist};'
                 tested_source = source.replace('var preview=frontierWorld(1);', hook+'var preview=frontierWorld(1);')
+            if suite == 'academy':
+                tested_source = source.replace('const rules = academyRules;', 'const rules = academyRules; window.__academyTest = {rules, snapshot: () => ({phase, state, actions, bonusEarned})};')
             if suite == 'outpost':
                 start = tested_source.index('  const outpostRoute =')
                 end = tested_source.index('  var VIEWS =', start)
@@ -163,6 +168,8 @@ def main():
                     query += '#outpost'
                 if suite == 'market_desk':
                     query += '#market-desk'
+                if suite == 'academy':
+                    query += '#academy'
                 if suite == 'book_sort':
                     query += '#book-sort'
                 total += chrome.check(page, query, f'{suite} {width}×{height}')
