@@ -49,6 +49,11 @@
     game.appendChild(link);
     best.className = 'board-best';
     best.textContent = (gameId === 'market-desk' ? 'NT$' : '') + entry.score.toLocaleString('zh-TW');
+    if (gameId === 'merge') {
+      var metric = document.createElement('span');
+      metric.textContent = '{{t:merge.view.02}}';
+      best.replaceChildren(metric, ' ' + entry.score);
+    }
     if (lastPlayedAt) {
       var lastPlayed = new Date(lastPlayedAt);
       if (Number.isFinite(lastPlayed.getTime())) {

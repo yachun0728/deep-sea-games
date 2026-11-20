@@ -1664,32 +1664,175 @@ body:has(#view-book-sort:not([hidden])){overflow:hidden}
   #view-tetris .rules,#view-tetris .mobile-stage-actions{display:none}
   html:has(#view-tetris:not([hidden])){overflow:hidden}
 }
-#view-merge .mg-exit{display:none}
-#view-merge .console,#view-merge .mg{touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
-#view-merge .mg-console{display:flex;flex-direction:column;align-items:stretch;max-width:460px;margin-inline:auto}
-#view-merge .mg-hud{order:-1;margin-bottom:12px}
-@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
-  #view-merge:not([hidden]) .mg-console{position:fixed;inset:0;z-index:1200;display:flex;flex-direction:column;align-items:stretch;gap:0;box-sizing:border-box;width:100vw;height:100dvh;margin:0;padding:calc(env(safe-area-inset-top) + 8px) calc(env(safe-area-inset-right) + 12px) calc(env(safe-area-inset-bottom) + 8px) calc(env(safe-area-inset-left) + 12px);background:var(--abyss);overscroll-behavior:none}
-  #view-merge .mg-exit{display:grid;place-items:center;position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 8px);left:calc(env(safe-area-inset-left) + 8px);width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);font:700 21px system-ui;cursor:pointer}
-  #view-merge .mg-hud{order:-1;margin:0 0 0 52px;min-height:44px;align-items:center}
-  #view-merge .mg-hud dt{font-size:11px}
-  #view-merge .mg-hud dd{font-size:18px}
-  #view-merge .mg-stage{flex:1;min-height:0;align-items:center;border:0;border-radius:0;padding:0;background:none}
-  #view-merge .mg{width:min(100%,calc(100dvh - 190px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));max-width:none;gap:6px}
-  #view-merge .mg.idle{opacity:.25}
-  #view-merge .mg-side{position:absolute;z-index:2;left:0;right:0;bottom:0;top:0;pointer-events:none;justify-content:flex-end;align-items:center;padding:0 16px calc(env(safe-area-inset-bottom) + 16px)}
-  #view-merge .mg-side .panel{width:100%;max-width:320px;padding:0;border:0;background:none;align-items:stretch;text-align:center}
-  #view-merge .mg-side .hint,#view-merge .rules{display:none}
-  #view-merge .mg-side .go{pointer-events:auto;min-height:48px}
-  #view-merge #mg-rank-retry{pointer-events:auto;min-height:44px}
-  #view-merge #mg-rank-status{margin:0;font-size:12px;color:var(--muted)}
-  #view-merge .mobile-scroll-pad{display:none}
-  #view-merge .mg-side .msg{text-shadow:0 1px 4px var(--abyss)}
-  /* 遊玩中：只留一個小小的重開鈕在底部，訊息淡淡一行 */
-  #view-merge.mg-playing .mg-side .go{min-height:44px;opacity:.75;font-size:14px}
-  #view-merge.mg-playing .mg-side .msg:not(.win),#view-merge.mg-playing #mg-rank-status{display:none}
-  #view-merge.mg-playing .mg-side .msg{min-height:0;font-size:13px}
-  html:has(#view-merge:not([hidden])){overflow:hidden}
+#view-merge .mg-console {
+  --mg-ink: #ecfbff;
+  --mg-muted: #b5d1df;
+  --mg-line: #a5eaef38;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto auto 32px minmax(0, 1fr) auto;
+  gap: 8px;
+  height: clamp(530px, calc(100dvh - 140px), 780px);
+  max-width: 540px;
+  margin-inline: auto;
+  padding: 16px;
+  overflow: hidden;
+  border: 1px solid var(--mg-line);
+  border-radius: 28px;
+  background:
+    radial-gradient(ellipse at 28% -12%, #276883 0%, transparent 58%),
+    radial-gradient(ellipse at 100% 65%, #172a51 0%, transparent 60%),
+    linear-gradient(160deg, #102c42, #061322 75%);
+  color: var(--mg-ink);
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#view-merge.mg-playing .mg-console,
+#view-merge .mg-stage { touch-action: none; -webkit-touch-callout: none; }
+#view-merge .mg-header { display: flex; align-items: center; gap: 14px; }
+#view-merge .mg-header h2 { margin: 0; color: var(--mg-ink); font: 700 21px/1.2 system-ui; }
+#view-merge .mg-hud { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin: 0; }
+#view-merge .mg-hud div {
+  min-width: 0;
+  padding: 7px 3px;
+  border: 1px solid var(--mg-line);
+  border-radius: 12px;
+  background: #081e32a8;
+  text-align: center;
+}
+#view-merge .mg-hud dt { color: var(--mg-muted); font: 600 11px/1.2 system-ui; }
+#view-merge .mg-hud dd {
+  margin: 2px 0 0;
+  font: 700 clamp(15px, 4.5vw, 22px)/1.2 system-ui;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+#view-merge .mg-notice { display: grid; place-items: center; pointer-events: none; }
+#view-merge #mg-milestone:not(:empty) {
+  margin: 0;
+  padding: 4px 12px;
+  border: 1px solid #f2d78a80;
+  border-radius: 100px;
+  background: #392c23;
+  color: #fff0b6;
+  text-align: center;
+  font: 700 13px/1.2 system-ui;
+}
+#view-merge .mg-stage {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  container-type: size;
+}
+#view-merge .mg {
+  box-sizing: border-box;
+  width: min(100cqw, 100cqh, 460px);
+  aspect-ratio: 1;
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  gap: clamp(3px, 1.7cqw, 8px);
+  padding: clamp(4px, 2cqw, 10px);
+  border: 1px solid #a5eaef60;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #244961, #0c2238);
+  box-shadow: inset 0 1px 0 #d9f9ff35, 0 14px 38px #020c1b80;
+  container-type: inline-size;
+}
+#view-merge .mg.idle { opacity: .8; }
+#view-merge .cell {
+  min-width: 0;
+  min-height: 0;
+  aspect-ratio: auto;
+  border-color: #a5eaef20;
+  border-radius: 11px;
+  background: #06192b9e;
+}
+#view-merge .orb {
+  --mg-pearl: #b9e6f0;
+  --mg-rim: #70a8bc;
+  width: 89%;
+  height: auto;
+  aspect-ratio: 1;
+  background: radial-gradient(circle at 31% 21%, #fff 0%, #ffffff75 16%, transparent 44%),
+    radial-gradient(circle at 70% 79%, var(--mg-rim), var(--mg-pearl) 66%);
+  box-shadow: inset 0 -2px 4px #0a21434a, 0 3px 6px #020b1b80;
+  color: #10283d;
+  font: 800 clamp(10px, 7cqw, 32px)/1 system-ui;
+  font-variant-numeric: tabular-nums;
+}
+#view-merge .orb.d3 { font-size: clamp(9px, 5.8cqw, 27px); }
+#view-merge .orb.d4 { font-size: clamp(8px, 4.5cqw, 22px); }
+#view-merge .orb.d5 { font-size: clamp(7px, 3.8cqw, 18px); }
+#view-merge .orb.t1 { --mg-pearl: #e4f5fc; }
+#view-merge .orb.t2 { --mg-pearl: #93dfed; --mg-rim: #51a1bd; }
+#view-merge .orb.t3 { --mg-pearl: #a9e7da; --mg-rim: #639fb4; }
+#view-merge .orb.t4 { --mg-pearl: #d5d7ff; --mg-rim: #8d8ace; }
+#view-merge .orb.t5 { --mg-pearl: #ffe7a3; --mg-rim: #ca8d46; box-shadow: 0 0 13px #efd49b65; }
+#view-merge .orb.new { animation: mg-pearl-in 150ms ease-out both; }
+@keyframes mg-pearl-in { from { scale: .85; filter: brightness(1.25); } to { scale: 1; filter: none; } }
+#view-merge .mg-actions {
+  display: grid;
+  justify-items: center;
+  align-content: end;
+  gap: 5px;
+  min-height: 0;
+  max-height: 37dvh;
+  overflow-y: auto;
+  text-align: center;
+}
+#view-merge .mg-actions:has(details[open]) { align-content: start; }
+#view-merge .mg-actions p { margin: 0; font: 500 13px/1.4 system-ui; }
+#view-merge #mg-msg { max-width: 34ch; }
+#view-merge #mg-rank-status { color: var(--mg-muted); }
+#view-merge .mg-actions button, #view-merge .mg-exit {
+  min-height: 44px;
+  min-width: 44px;
+  border: 1px solid var(--mg-line);
+  border-radius: 12px;
+  background: #142e45;
+  color: var(--mg-ink);
+  font: 650 14px/1.2 system-ui;
+  cursor: pointer;
+}
+#view-merge .mg-exit { width: 44px; padding: 0; font-size: 22px; }
+#view-merge .mg-go { width: min(100%, 290px); padding: 8px 12px; }
+#view-merge:not(.mg-playing) .mg-go {
+  border-color: #a8ece8;
+  background: #b5eeea;
+  color: #102c42;
+}
+#view-merge .mg-actions button:disabled { opacity: .65; cursor: wait; }
+#view-merge .mg-rules { max-width: 36ch; color: var(--mg-muted); }
+#view-merge .mg-rules summary {
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 12px 8px;
+  cursor: pointer;
+  font: 600 13px/20px system-ui;
+}
+#view-merge .mg-rules p + p { margin-top: 6px; }
+#view-merge.mg-playing #mg-msg,
+#view-merge.mg-playing .mg-rules { display: none; }
+#view-merge.mg-playing .mg-go { width: auto; }
+@media (max-width: 880px), (pointer: coarse) and (max-width: 1100px) {
+  #view-merge:not([hidden]) .mg-console {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    height: 100dvh;
+    max-width: none;
+    padding: calc(env(safe-area-inset-top) + 8px) calc(env(safe-area-inset-right) + 12px)
+      calc(env(safe-area-inset-bottom) + 10px) calc(env(safe-area-inset-left) + 12px);
+    border: 0;
+    border-radius: 0;
+  }
+  html:has(#view-merge:not([hidden])) { overflow: hidden; }
+}
+@media (max-height: 520px) {
+  #view-merge .mg-console { gap: 4px; grid-template-rows: auto auto 24px minmax(0, 1fr) auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #view-merge .orb.new { animation: none; }
 }
 .sneak-stage #op-canvas{width:min(100%,400px,calc(80vh * 400 / 720));height:auto;aspect-ratio:400/720;max-height:none;object-fit:fill}#view-on-pitch .seg-row{margin-top:10px}#view-on-pitch #op-mic-test{width:100%;margin-top:8px}
 
@@ -3638,34 +3781,37 @@ html.frontier-immersive{overflow:hidden}
   </section>
 
   <section class="view" id="view-merge" hidden>
-    <div class="console mg-console">
-      <div class="board-wrap mg-stage">
-        <div class="mg idle" id="mg" role="group" aria-label="4 乘 4 養珠盤"></div>
-      </div>
-      <dl class="stats mg-hud">
+    <div class="mg-console">
+      <header class="mg-header">
+        <button class="mg-exit" id="mg-exit" type="button" aria-label="退出遊戲">←</button>
+        <h2>養珠</h2>
+      </header>
+      <dl class="mg-hud">
         <div><dt>分數</dt><dd id="mg-score">0</dd></div>
         <div><dt>最大珍珠</dt><dd id="mg-max">—</dd></div>
         <div><dt>最佳分數</dt><dd id="mg-best">0</dd></div>
       </dl>
-      <button class="mg-exit" id="mg-exit" type="button" aria-label="退出遊戲">←</button>
-      <div class="side mg-side">
-        <section class="panel" aria-label="養珠">
-          <p class="msg" id="mg-msg" aria-live="polite">把相同數字的珍珠滑在一起，合併成更大的珍珠。</p>
-          <p id="mg-rank-status" role="status" hidden></p>
-          <button type="button" id="mg-rank-retry" hidden>重送遊戲操作</button>
-          <button class="go" id="mg-go" type="button" data-mode="bet">開始一局</button>
-          <p class="hint">可以用 <kbd>方向鍵</kbd>、<kbd>WASD</kbd>，或在盤面上滑動。</p>
-        </section>
+      <div class="mg-notice">
+        <p id="mg-milestone" role="status" data-i18n-ignore></p>
+      </div>
+      <div class="mg-stage">
+        <div class="mg idle" id="mg" role="group" aria-label="4 乘 4 養珠盤"></div>
+      </div>
+      <div class="mg-actions">
+        <p id="mg-msg" aria-live="polite">把相同數字的珍珠滑在一起，合併成更大的珍珠。</p>
+        <p id="mg-rank-status" role="status" hidden></p>
+        <button type="button" id="mg-rank-retry" hidden>重送遊戲操作</button>
+        <button class="mg-go" id="mg-go" type="button">開始一局</button>
+        <details class="mg-rules">
+          <summary>玩法</summary>
+          <p>每次滑動，盤上所有珍珠都往同一個方向靠攏，兩顆相同數字的珍珠相撞就合併成兩倍大，並把合併後的數字加進分數。每滑一步會多長出一顆 2（九成）或 4（一成）。</p>
+          <p>盤面塞滿、而且沒有任何相鄰的相同珍珠時，這一局就結束。</p>
+          <p>最佳分數只存在你的瀏覽器裡。</p>
+          <p>達成 2048 後可以繼續玩。訪客榜依單局最大珍珠排名。</p>
+        </details>
       </div>
     </div>
-    <details class="rules">
-      <summary>玩法</summary>
-      <p>每次滑動，盤上所有珍珠都往同一個方向靠攏，兩顆相同數字的珍珠相撞就合併成兩倍大，並把合併後的數字加進分數。每滑一步會多長出一顆 2（九成）或 4（一成）。</p>
-      <p>盤面塞滿、而且沒有任何相鄰的相同珍珠時，這一局就結束。</p>
-      <p>最佳分數只存在你的瀏覽器裡。</p>
-    </details>
   </section>
-
   <section class="view" id="view-dice" hidden>
     <div class="console">
       <div class="dice-stage" id="dc-stage">
@@ -8355,14 +8501,12 @@ html.frontier-immersive{overflow:hidden}
   "最大珍珠": "Largest pearl",
   "把相同數字的珍珠滑在一起，合併成更大的珍珠。": "Slide matching pearls together to merge larger pearls.",
   "重送遊戲操作": "Retry game move",
-  "可以用": "Use",
-  "方向鍵": "Arrow keys",
-  "，或在盤面上滑動。": ", or swipe the board.",
   "玩法": "How to play",
   "每次滑動，盤上所有珍珠都往同一個方向靠攏，兩顆相同數字的珍珠相撞就合併成兩倍大，並把合併後的數字加進分數。每滑一步會多長出一顆 2（九成）或 4（一成）。": "Start round play. Each swipe slides all pearls in one direction. Matching pearls merge into double their value and add that value to your score. Each move spawns a 2 (90%) or a 4 (10%).",
   "盤面塞滿、而且沒有任何相鄰的相同珍珠時，這一局就結束。": "The round ends when the board is full and no neighboring pearls match.",
   "最佳分數只存在你的瀏覽器裡。": "Your best score is saved only in this browser.",
   "4 乘 4 養珠盤": "4 by 4 pearl board",
+  "達成 2048 後可以繼續玩。訪客榜依單局最大珍珠排名。": "Keep playing after reaching 2048. The guest leaderboard ranks your largest pearl in a completed round.",
   "開始後發牌，把牌排成一整串收成珍珠。": "Deal, then line cards up into a full run to collect a pearl.",
   "悔棋": "Undo",
   "指路": "Hint",
@@ -9303,10 +9447,12 @@ html.frontier-immersive{overflow:hidden}
   "放棄重開": "Abandon and restart",
   "再玩一局": "Play again",
   "開始養珠。": "Start merging.",
-  "盤面滿了，這一局結束：": "Board full. Round over:",
   "正在驗證遊戲操作…": "Verifying game move…",
   "排行榜回合已中斷，請再開一局。": "The ranked round ended. Start a new round.",
   "遊戲操作未能送出。": "Unable to submit the game move.",
+  "養出 {0} 珍珠！": "You reached {0}!",
+  "刷新最佳分數！本局 {0} 分，最大珍珠 {1}。": "New best! Score {0} · Largest pearl {1}",
+  "無法再移動。本局 {0} 分，最大珍珠 {1}。": "No moves left. Score {0} · Largest pearl {1}",
   "牌局進行中": "Round in progress",
   "再按一次確認放棄": "Press again to confirm forfeit",
   "全部珍珠收集完成！": "All pearls collected!",
@@ -11487,14 +11633,47 @@ if (typeof module !== 'undefined') module.exports = mergeRules;
   var mergeRound = null, mergeRandom = null, mergeActions = [], mergePending = null, mergeStarting = false, mergeSending = false;
   try { var gb = parseInt(localStorage.getItem(BEST), 10); if (isFinite(gb) && gb > 0) G.best = gb; } catch (e) {}
 
-  function gSay(text, cls) { elGMsg.textContent = text; elGMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
+  var mergeMilestone = 0, mergeNoticeTimer = 0;
+  var mergeResult = null, mergeStartingBest = G.best;
+
+  function mergeText(template, values) {
+    var i18n = window.deepSeaI18n;
+    return (i18n ? i18n.text(template) : template).replace(/\{(\d+)\}/g, (_, index) => values[index]);
+  }
+
+  function mergeFeedback() {
+    $('mg-milestone').textContent = mergeMilestone
+      ? mergeText('養出 {0} 珍珠！', [mergeMilestone]) : '';
+    if (mergeResult) {
+      elGMsg.setAttribute('data-i18n-ignore', '');
+      elGMsg.textContent = mergeText(
+        mergeResult.best ? '刷新最佳分數！本局 {0} 分，最大珍珠 {1}。' : '無法再移動。本局 {0} 分，最大珍珠 {1}。',
+        [fmt(G.score), mergeResult.max]
+      );
+    }
+  }
+
+  function celebrateMerge(max) {
+    clearTimeout(mergeNoticeTimer);
+    mergeMilestone = max;
+    mergeFeedback();
+    if (max) mergeNoticeTimer = setTimeout(() => {
+      mergeMilestone = 0;
+      mergeFeedback();
+    }, 1000);
+  }
+
+  function gSay(text) {
+    elGMsg.removeAttribute('data-i18n-ignore');
+    elGMsg.textContent = text;
+  }
   function mgTier(v) { var l = Math.round(Math.log(v) / Math.LN2); return l <= 2 ? 't1' : l <= 5 ? 't2' : l <= 8 ? 't3' : l <= 10 ? 't4' : 't5'; }
   function mgBuild() { for (var i = 0; i < 16; i++) { var c = document.createElement('div'); c.className = 'cell'; elMg.appendChild(c); cells.push(c); } }
   function mgRender() {
     var max = 0;
     cells.forEach(function (c, i) {
       var v = G.grid[i]; if (v > max) max = v;
-      c.innerHTML = v ? '<span class="orb ' + mgTier(v) + (v >= 1000 ? ' d4' : v >= 100 ? ' d3' : '') + (G.fresh[i] ? ' new' : '') + '">' + v + '</span>' : '';
+      c.innerHTML = v ? '<span class="orb ' + mgTier(v) + (v >= 10000 ? ' d5' : v >= 1000 ? ' d4' : v >= 100 ? ' d3' : '') + (G.fresh[i] ? ' new' : '') + '">' + v + '</span>' : '';
     });
     G.fresh = {};
     elMg.classList.toggle('idle', !G.active);
@@ -11521,13 +11700,17 @@ if (typeof module !== 'undefined') module.exports = mergeRules;
     Object.assign(G, round ? Object.assign(mergeRules.create(mergeRandom), {over:false}) : mergeRules.create());
     G.fresh = Object.fromEntries(G.grid.flatMap((tile, i) => tile ? [[i,1]] : []));
     G.active = true;
+    elMgArea.querySelector('.mg-rules').open = false;
+    mergeResult = null;
+    mergeStartingBest = G.best;
+    celebrateMerge(0);
     gSay('開始養珠。');
     syncBalance();
     mgRender();
   }
   async function mgStart() {
     if (mergeStarting || mergeSending) return;
-    if (S.balance < MG_FEE) { gSay(LOW_MSG, 'lose'); return; }
+    if (S.balance < MG_FEE) { gSay(LOW_MSG); return; }
     mergePending = null;
     if (typeof location === 'undefined' || location.protocol === 'file:') { beginMerge(null); return; }
 
@@ -11550,8 +11733,10 @@ if (typeof module !== 'undefined') module.exports = mergeRules;
     if (G.over) {
       AN.end(G.analytics,0,'complete',{score:G.score});
       G.active = false;
-      gSay('盤面滿了，這一局結束：' + fmt(G.score) + ' 分，最大珍珠 ' + max + '。', 'lose');
-    } else if (max > before && max >= 128) gSay('養出 ' + max + ' 的珍珠了！', 'win');
+      mergeResult = { max, best: G.score > mergeStartingBest };
+      mergeFeedback();
+    }
+    if (max > before && max >= 2048) celebrateMerge(max);
     mgRender();
   }
   async function sendMergeMove() {
@@ -11589,6 +11774,7 @@ if (typeof module !== 'undefined') module.exports = mergeRules;
       sendMergeMove();
     }
   }
+  window.addEventListener('arcade-languagechange', mergeFeedback);
   $('mg-rank-retry').addEventListener('click',sendMergeMove);
   elGGo.addEventListener('click', mgStart);
   $('mg-exit').addEventListener('click', function () { window.location.hash = 'lobby'; });
@@ -11599,16 +11785,28 @@ if (typeof module !== 'undefined') module.exports = mergeRules;
     var dir = map[e.code]; if (!dir) return;
     e.preventDefault(); mgMove(dir);
   });
-  var swipe = null, elMgArea = elMg.closest('.console');
-  elMgArea.addEventListener('pointerdown', function (e) { swipe = e.target.closest('button') ? null : { x: e.clientX, y: e.clientY }; });
+  var swipe = null, elMgArea = elMg.closest('.mg-console');
+  elMgArea.addEventListener('pointerdown', function (e) {
+    if (!G.active || mergeStarting || swipe || !e.isPrimary || e.button !== 0 ||
+        e.target.closest('button, summary')) return;
+    swipe = { id: e.pointerId, x: e.clientX, y: e.clientY };
+    elMgArea.setPointerCapture(e.pointerId);
+  });
   elMgArea.addEventListener('pointerup', function (e) {
-    if (!swipe) return;
-    var dx = e.clientX - swipe.x, dy = e.clientY - swipe.y; swipe = null;
+    if (!swipe || e.pointerId !== swipe.id) return;
+    var dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+    swipe = null;
     if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
     mgMove(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
   });
-  elMgArea.addEventListener('pointercancel', function () { swipe = null; });
-  ['dblclick', 'gesturestart', 'contextmenu'].forEach(function (n) { elMgArea.addEventListener(n, function (e) { e.preventDefault(); }); });
+  function cancelMergeSwipe(e) {
+    if (swipe && e.pointerId === swipe.id) swipe = null;
+  }
+  elMgArea.addEventListener('pointercancel', cancelMergeSwipe);
+  elMgArea.addEventListener('lostpointercapture', cancelMergeSwipe);
+  window.addEventListener('blur', () => { swipe = null; });
+  window.addEventListener('hashchange', () => { swipe = null; });
+  elMgArea.addEventListener('contextmenu', function (e) { if (G.active) e.preventDefault(); });
   /* ---------- Dice ---------- */
   var D = { mode: 'under', target: 50, pending: 0, last: [] };
   var elDGo = $('dc-go'), elDMsg = $('dc-msg'), elDAmt = $('dc-amount'), elDTarget = $('dc-target'), elDStage = $('dc-stage'), elDMarker = $('dc-marker');
@@ -28221,6 +28419,11 @@ function ftBuilding(b,w){
     game.appendChild(link);
     best.className = 'board-best';
     best.textContent = (gameId === 'market-desk' ? 'NT$' : '') + entry.score.toLocaleString('zh-TW');
+    if (gameId === 'merge') {
+      var metric = document.createElement('span');
+      metric.textContent = '最大珍珠';
+      best.replaceChildren(metric, ' ' + entry.score);
+    }
     if (lastPlayedAt) {
       var lastPlayed = new Date(lastPlayedAt);
       if (Number.isFinite(lastPlayed.getTime())) {

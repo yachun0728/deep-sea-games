@@ -152,6 +152,49 @@ class LeaderboardRetentionTests(unittest.TestCase):
         ).fetchall()
         self.assertEqual(order, [('p10',), ('p00',)])
 
+    def test_merge_migration_ranks_largest_verified_pearl(self):
+        self.migrate()
+        for version in range(7, 11):
+            self.db.executescript(next(MIGRATIONS.glob(f'{version:04d}_*.sql')).read_text())
+
+        def round_with_peak(round_id, player, peak, score):
+            self.db.execute(
+                'INSERT INTO ranked_boards (id, player_id, game_id, started_at, state) '
+                'VALUES (?, ?, ?, 1, ?)', (round_id, player, 'merge', f'{{"grid":[2,{peak},4]}}'),
+            )
+            if score is not None:
+                self.db.execute('UPDATE ranked_boards SET score = ? WHERE id = ?', (score, round_id))
+
+        round_with_peak('a', 'p00', 2048, 6500)
+        round_with_peak('b', 'p01', 4096, 5000)
+        round_with_peak('c', 'p02', 4096, 7500)
+        round_with_peak('d', 'p00', 1024, 12000)
+        round_with_peak('unfinished', 'p03', 8192, None)
+        for i in range(4, 60):
+            round_with_peak(f'low-{i}', f'p{i:02}', 512, 2000)
+        self.add('p00', 14, 'frog')
+        frog = self.scores()
+
+        self.db.executescript(next(MIGRATIONS.glob('0011_*.sql')).read_text())
+
+        def merge_scores():
+            return self.db.execute(
+                "SELECT player_id, score, recorded_at FROM game_leaderboard WHERE game_id = 'merge' "
+                'ORDER BY score DESC, recorded_at, score_order, player_id',
+            ).fetchall()
+
+        self.assertEqual(merge_scores()[:3], [('p01', 4096, None), ('p02', 4096, None), ('p00', 2048, None)])
+        self.assertEqual(len(merge_scores()), 50)
+        self.assertEqual(self.scores(), frog)
+        round_with_peak('equal', 'p03', 4096, 16000)
+        self.assertEqual([row[0] for row in merge_scores()[:3]], ['p01', 'p02', 'p03'])
+        round_with_peak('lower', 'p01', 1024, 99999)
+        self.assertEqual(merge_scores()[0], ('p01', 4096, None))
+        round_with_peak('new', 'p04', 8192, 17000)
+        self.assertEqual(merge_scores()[0][:2], ('p04', 8192))
+        self.assertEqual(len(merge_scores()), 50)
+        self.assertEqual(self.db.execute("SELECT score FROM ranked_boards WHERE id = 'new'").fetchone(), (17000,))
+
 
 if __name__ == '__main__':
     unittest.main()

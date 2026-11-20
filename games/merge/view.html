@@ -1,29 +1,32 @@
   <section class="view" id="view-merge" hidden>
-    <div class="console mg-console">
-      <div class="board-wrap mg-stage">
-        <div class="mg idle" id="mg" role="group" aria-label="{{t:merge.view.15}}"></div>
-      </div>
-      <dl class="stats mg-hud">
+    <div class="mg-console">
+      <header class="mg-header">
+        <button class="mg-exit" id="mg-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
+        <h2>{{t:merge.view.16}}</h2>
+      </header>
+      <dl class="mg-hud">
         <div><dt>{{t:merge.view.01}}</dt><dd id="mg-score">0</dd></div>
         <div><dt>{{t:merge.view.02}}</dt><dd id="mg-max">—</dd></div>
         <div><dt>{{t:merge.view.03}}</dt><dd id="mg-best">0</dd></div>
       </dl>
-      <button class="mg-exit" id="mg-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
-      <div class="side mg-side">
-        <section class="panel" aria-label="{{t:merge.view.16}}">
-          <p class="msg" id="mg-msg" aria-live="polite">{{t:merge.view.06}}</p>
-          <p id="mg-rank-status" role="status" hidden></p>
-          <button type="button" id="mg-rank-retry" hidden>{{t:merge.view.07}}</button>
-          <button class="go" id="mg-go" type="button" data-mode="bet">{{t:merge.view.05}}</button>
-          <p class="hint">{{t:merge.view.08}} <kbd>{{t:merge.view.09}}</kbd>、<kbd>WASD</kbd>{{t:merge.view.10}}</p>
-        </section>
+      <div class="mg-notice">
+        <p id="mg-milestone" role="status" data-i18n-ignore></p>
+      </div>
+      <div class="mg-stage">
+        <div class="mg idle" id="mg" role="group" aria-label="{{t:merge.view.15}}"></div>
+      </div>
+      <div class="mg-actions">
+        <p id="mg-msg" aria-live="polite">{{t:merge.view.06}}</p>
+        <p id="mg-rank-status" role="status" hidden></p>
+        <button type="button" id="mg-rank-retry" hidden>{{t:merge.view.07}}</button>
+        <button class="mg-go" id="mg-go" type="button">{{t:merge.view.05}}</button>
+        <details class="mg-rules">
+          <summary>{{t:merge.view.11}}</summary>
+          <p>{{t:merge.view.12}}</p>
+          <p>{{t:merge.view.13}}</p>
+          <p>{{t:merge.view.14}}</p>
+          <p>{{t:merge.view.17}}</p>
+        </details>
       </div>
     </div>
-    <details class="rules">
-      <summary>{{t:merge.view.11}}</summary>
-      <p>{{t:merge.view.12}}</p>
-      <p>{{t:merge.view.13}}</p>
-      <p>{{t:merge.view.14}}</p>
-    </details>
   </section>
-

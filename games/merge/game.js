@@ -5,14 +5,47 @@
   var mergeRound = null, mergeRandom = null, mergeActions = [], mergePending = null, mergeStarting = false, mergeSending = false;
   try { var gb = parseInt(localStorage.getItem(BEST), 10); if (isFinite(gb) && gb > 0) G.best = gb; } catch (e) {}
 
-  function gSay(text, cls) { elGMsg.textContent = text; elGMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
+  var mergeMilestone = 0, mergeNoticeTimer = 0;
+  var mergeResult = null, mergeStartingBest = G.best;
+
+  function mergeText(template, values) {
+    var i18n = window.deepSeaI18n;
+    return (i18n ? i18n.text(template) : template).replace(/\{(\d+)\}/g, (_, index) => values[index]);
+  }
+
+  function mergeFeedback() {
+    $('mg-milestone').textContent = mergeMilestone
+      ? mergeText('{{t:merge.msg.013}}', [mergeMilestone]) : '';
+    if (mergeResult) {
+      elGMsg.setAttribute('data-i18n-ignore', '');
+      elGMsg.textContent = mergeText(
+        mergeResult.best ? '{{t:merge.msg.014}}' : '{{t:merge.msg.015}}',
+        [fmt(G.score), mergeResult.max]
+      );
+    }
+  }
+
+  function celebrateMerge(max) {
+    clearTimeout(mergeNoticeTimer);
+    mergeMilestone = max;
+    mergeFeedback();
+    if (max) mergeNoticeTimer = setTimeout(() => {
+      mergeMilestone = 0;
+      mergeFeedback();
+    }, 1000);
+  }
+
+  function gSay(text) {
+    elGMsg.removeAttribute('data-i18n-ignore');
+    elGMsg.textContent = text;
+  }
   function mgTier(v) { var l = Math.round(Math.log(v) / Math.LN2); return l <= 2 ? 't1' : l <= 5 ? 't2' : l <= 8 ? 't3' : l <= 10 ? 't4' : 't5'; }
   function mgBuild() { for (var i = 0; i < 16; i++) { var c = document.createElement('div'); c.className = 'cell'; elMg.appendChild(c); cells.push(c); } }
   function mgRender() {
     var max = 0;
     cells.forEach(function (c, i) {
       var v = G.grid[i]; if (v > max) max = v;
-      c.innerHTML = v ? '<span class="orb ' + mgTier(v) + (v >= 1000 ? ' d4' : v >= 100 ? ' d3' : '') + (G.fresh[i] ? ' new' : '') + '">' + v + '</span>' : '';
+      c.innerHTML = v ? '<span class="orb ' + mgTier(v) + (v >= 10000 ? ' d5' : v >= 1000 ? ' d4' : v >= 100 ? ' d3' : '') + (G.fresh[i] ? ' new' : '') + '">' + v + '</span>' : '';
     });
     G.fresh = {};
     elMg.classList.toggle('idle', !G.active);
@@ -39,13 +72,17 @@
     Object.assign(G, round ? Object.assign(mergeRules.create(mergeRandom), {over:false}) : mergeRules.create());
     G.fresh = Object.fromEntries(G.grid.flatMap((tile, i) => tile ? [[i,1]] : []));
     G.active = true;
+    elMgArea.querySelector('.mg-rules').open = false;
+    mergeResult = null;
+    mergeStartingBest = G.best;
+    celebrateMerge(0);
     gSay('{{t:merge.msg.004}}');
     syncBalance();
     mgRender();
   }
   async function mgStart() {
     if (mergeStarting || mergeSending) return;
-    if (S.balance < MG_FEE) { gSay(LOW_MSG, 'lose'); return; }
+    if (S.balance < MG_FEE) { gSay(LOW_MSG); return; }
     mergePending = null;
     if (typeof location === 'undefined' || location.protocol === 'file:') { beginMerge(null); return; }
 
@@ -68,8 +105,10 @@
     if (G.over) {
       AN.end(G.analytics,0,'complete',{score:G.score});
       G.active = false;
-      gSay('{{t:merge.msg.008}}' + fmt(G.score) + ' 分，最大珍珠 ' + max + '。', 'lose');
-    } else if (max > before && max >= 128) gSay('養出 ' + max + ' 的珍珠了！', 'win');
+      mergeResult = { max, best: G.score > mergeStartingBest };
+      mergeFeedback();
+    }
+    if (max > before && max >= 2048) celebrateMerge(max);
     mgRender();
   }
   async function sendMergeMove() {
@@ -107,6 +146,7 @@
       sendMergeMove();
     }
   }
+  window.addEventListener('arcade-languagechange', mergeFeedback);
   $('mg-rank-retry').addEventListener('click',sendMergeMove);
   elGGo.addEventListener('click', mgStart);
   $('mg-exit').addEventListener('click', function () { window.location.hash = 'lobby'; });
@@ -117,13 +157,25 @@
     var dir = map[e.code]; if (!dir) return;
     e.preventDefault(); mgMove(dir);
   });
-  var swipe = null, elMgArea = elMg.closest('.console');
-  elMgArea.addEventListener('pointerdown', function (e) { swipe = e.target.closest('button') ? null : { x: e.clientX, y: e.clientY }; });
+  var swipe = null, elMgArea = elMg.closest('.mg-console');
+  elMgArea.addEventListener('pointerdown', function (e) {
+    if (!G.active || mergeStarting || swipe || !e.isPrimary || e.button !== 0 ||
+        e.target.closest('button, summary')) return;
+    swipe = { id: e.pointerId, x: e.clientX, y: e.clientY };
+    elMgArea.setPointerCapture(e.pointerId);
+  });
   elMgArea.addEventListener('pointerup', function (e) {
-    if (!swipe) return;
-    var dx = e.clientX - swipe.x, dy = e.clientY - swipe.y; swipe = null;
+    if (!swipe || e.pointerId !== swipe.id) return;
+    var dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+    swipe = null;
     if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
     mgMove(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
   });
-  elMgArea.addEventListener('pointercancel', function () { swipe = null; });
-  ['dblclick', 'gesturestart', 'contextmenu'].forEach(function (n) { elMgArea.addEventListener(n, function (e) { e.preventDefault(); }); });
+  function cancelMergeSwipe(e) {
+    if (swipe && e.pointerId === swipe.id) swipe = null;
+  }
+  elMgArea.addEventListener('pointercancel', cancelMergeSwipe);
+  elMgArea.addEventListener('lostpointercapture', cancelMergeSwipe);
+  window.addEventListener('blur', () => { swipe = null; });
+  window.addEventListener('hashchange', () => { swipe = null; });
+  elMgArea.addEventListener('contextmenu', function (e) { if (G.active) e.preventDefault(); });
