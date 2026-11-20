@@ -8,7 +8,7 @@ const bonusAt=m=>{for(const t of MILESTONES)if(t[0]===m)return t[1];return m>END
 const nextMilestone=d=>{for(const t of MILESTONES)if(t[0]>d)return t;return [ENDLESS_FROM+(Math.floor((d-ENDLESS_FROM)/ENDLESS_STEP)+1)*ENDLESS_STEP,ENDLESS_BONUS]};
 const prevMilestone=d=>{let p=0;for(const t of MILESTONES)if(t[0]<=d)p=t[0];if(d>=ENDLESS_FROM)p=ENDLESS_FROM+Math.floor((d-ENDLESS_FROM)/ENDLESS_STEP)*ENDLESS_STEP;return p};
 let best=0;try{const n=Number(localStorage.getItem('chayne'));if(Number.isFinite(n))best=Math.max(0,n)}catch(e){}
-const texts={best:'最佳',near:'擦身而過！',title:'深海潛行',tap:'開始挑戰',crash:'撞上障礙',rec:'新紀錄！',left:n=>'距離紀錄還差 '+n+' m'};const T=k=>texts[k];
+const texts={best:'{{t:runner.msg.001}}',near:'{{t:runner.msg.002}}',title:'{{t:runner.msg.003}}',tap:'{{t:runner.msg.004}}',crash:'{{t:runner.msg.005}}',rec:'{{t:runner.msg.006}}',left:n=>'距離紀錄還差 '+n+' m'};const T=k=>texts[k];
 let runnerAnalytics=null,earned=0,awarded=0,pops=[];
 let st='ready',run=runnerRules.create(),flash=0,shake=0,last=0,lastD=0,rec=false;
 let runRank=null, runPending=null, runStarting=false, runSending=false, runRandom=Math.random;
@@ -24,7 +24,7 @@ function remember(){lastD=Math.floor(run.dist);rec=lastD>best;if(rec){best=lastD
 function runnerUI(){
  const d=Math.floor(run.dist),nx=nextMilestone(d);
  $('rn-distance').textContent=d+' m';$('rn-best').textContent=best+' m';$('rn-next').textContent=nx[0]+' m · +'+nx[1];$('rn-speed').textContent=(run.v/20).toFixed(1)+'×';
- $('rn-go').disabled=st==='run'||runStarting||runSending;$('rn-go').textContent=st==='run'?'潛行中 · 只需左右換道':'開始潛行';
+ $('rn-go').disabled=st==='run'||runStarting||runSending;$('rn-go').textContent=st==='run'?'{{t:runner.msg.007}}':'{{t:runner.msg.008}}';
  document.querySelectorAll('[data-run]').forEach(b=>b.disabled=st!=='run');
 }
 function award(m,b){
@@ -38,7 +38,7 @@ function beginRun(ranked){
  runTicks=0;runCarry=0;runMoves=[];
  runnerAnalytics=AN.start('runner',ENTRY_FEE);save();renderAll();
  flash=0;shake=0;earned=0;awarded=0;pops=[];rec=false;st='run';runnerBusy=true;last=performance.now();
- note('出發！左右換道避開障礙，沒有終點，越跑越快。');runnerUI();c.focus();
+ note('{{t:runner.msg.009}}');runnerUI();c.focus();
 }
 async function start(){
  if(st==='run'||runStarting||runSending)return;
@@ -46,7 +46,7 @@ async function start(){
  runPending=null;
  if(typeof location==='undefined'||location.protocol==='file:'){beginRun(null);return}
  runStarting=true;
- runStatus('正在準備訪客排行…');
+ runStatus('{{t:runner.msg.010}}');
  runnerUI();
  let ranked=null;
  try{
@@ -55,22 +55,22 @@ async function start(){
  }catch{}
  runStarting=false;
  if($('view-runner').hidden){runStatus('');runnerUI();return}
- runStatus(ranked?'本局將列入訪客排行。':'這一局可在本機遊玩。');
+ runStatus(ranked?'{{t:runner.msg.011}}':'{{t:runner.msg.012}}');
  beginRun(ranked);
 }
 async function sendRun(){
  if(!runPending||runSending)return;
  runSending=true;
- runStatus('正在驗證排行榜成績…');
+ runStatus('{{t:runner.msg.013}}');
  runnerUI();
  try{
   const api=await import('./frontend/services/api.mjs');
   const result=await api.moveBoardRound(runRank.token,runPending,AbortSignal.timeout(10000));
   runPending=null;
-  runStatus(result.state.distance===lastD?'成績已送到排行榜。':'排行榜成績未能送出。');
+  runStatus(result.state.distance===lastD?'{{t:runner.msg.014}}':'{{t:runner.msg.015}}');
  }catch(error){
   if(error.retryable===false)runPending=null;
-  runStatus('排行榜成績未能送出。',!!runPending);
+  runStatus('{{t:runner.msg.015}}',!!runPending);
  }finally{
   runSending=false;
   runnerUI();
@@ -127,7 +127,7 @@ g.fillStyle='#e4f2f3';g.font='600 20px system-ui,sans-serif';g.textAlign='left';
 g.textAlign='right';g.fillText(T('best')+' '+best+' m',W-16,32);
 g.fillStyle='#214658';g.fillRect(16,44,W-32,6);g.fillStyle='#62e6d2';g.fillRect(16,44,(W-32)*Math.max(0,Math.min(1,(run.dist-pv)/(nx[0]-pv))),6);
 if(st==='run'){g.textAlign='center';g.fillStyle='#8db0b9';g.font='13px system-ui,sans-serif';g.fillText('下一個獎勵 '+nx[0]+' m · +'+nx[1]+' 點',W/2,70)}
-g.textAlign='left';g.fillStyle=earned>0?'#ffb638':'#8db0b9';g.font='600 14px system-ui,sans-serif';g.fillText('本局 +'+earned+' 點',16,70);
+g.textAlign='left';g.fillStyle=earned>0?'#ffb638':'#8db0b9';g.font='600 14px system-ui,sans-serif';g.fillText('{{t:runner.msg.016}}'+earned+' 點',16,70);
 if(flash>0&&st==='run'){g.textAlign='center';g.fillStyle='#e4f2f3';g.font='600 26px system-ui,sans-serif';g.fillText(T('near'),W/2,118)}
 pops.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/2.2);const y=190-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#ffb638';g.font='700 38px system-ui,sans-serif';g.fillText('+'+p.b+' 點',W/2,y);g.fillStyle='#e4f2f3';g.font='600 17px system-ui,sans-serif';g.fillText(p.m+' 公尺里程碑',W/2,y+28);g.globalAlpha=1});
 if(st!=='run'){
@@ -135,11 +135,11 @@ g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,0,W,H);g.textAlign='center';g.fillStyl
 if(st==='ready'){g.font='600 34px system-ui,sans-serif';g.fillText(T('title'),W/2,270);g.font='18px system-ui,sans-serif';g.fillText(T('tap'),W/2,310)}
 else{g.font='600 34px system-ui,sans-serif';g.fillText(T('crash'),W/2,235);
 g.font='600 24px system-ui,sans-serif';g.fillText(lastD+' m',W/2,277);
-g.font='600 20px system-ui,sans-serif';g.fillStyle=earned>0?'#ffb638':'#e4f2f3';g.fillText(earned>0?'本局獎勵 +'+earned+' 點':'這一局沒有獎勵',W/2,312);
+g.font='600 20px system-ui,sans-serif';g.fillStyle=earned>0?'#ffb638':'#e4f2f3';g.fillText(earned>0?'{{t:runner.msg.017}}'+earned+' 點':'{{t:runner.msg.018}}',W/2,312);
 g.font='18px system-ui,sans-serif';
 g.fillStyle=rec?'#ffb638':'#e4f2f3';
 g.fillText(rec?T('rec'):T('left')(best-lastD),W/2,348);
-g.fillStyle='#e4f2f3';g.fillText('可到操作區再跑一次',W/2,392)}}}
+g.fillStyle='#e4f2f3';g.fillText('{{t:runner.msg.019}}',W/2,392)}}}
 
 function changeLane(direction){
  const target=Math.max(-1,Math.min(1,run.tl+direction));
@@ -149,7 +149,7 @@ function changeLane(direction){
  const input=runTicks*3+target+1;
  if(Math.floor(runMoves[runMoves.length-1]/3)===runTicks)runMoves[runMoves.length-1]=input;
  else runMoves.push(input);
- if(runMoves.length>6000){runRank=null;runStatus('這一局可在本機遊玩。')}
+ if(runMoves.length>6000){runRank=null;runStatus('{{t:runner.msg.012}}')}
 }
 const L=()=>changeLane(-1),R=()=>changeLane(1);
 $('rn-rank-retry').addEventListener('click',sendRun);
@@ -168,7 +168,7 @@ function loop(t){
     update(runnerRules.STEP_MS/1000);
     if(runTicks>=runnerRules.MAX_TICKS&&st==='run'){
      runRank=null;
-     runStatus('這一局可在本機遊玩。');
+     runStatus('{{t:runner.msg.012}}');
      break;
     }
    }

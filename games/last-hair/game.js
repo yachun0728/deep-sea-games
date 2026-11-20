@@ -10,15 +10,15 @@ const FONT='"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-ser
 const REWARDS=[[100,1],[250,2],[400,3],[500,4]];   // 固定里程碑：抵達該公尺立即入帳；共 10 點，與入場費、頭髮根數、結局無關
 const RANK_ORDER=['C','BEARD','B','A','S'];
 const RANKS={
- S:{big:'S',title:'穩如泰山',desc:'三根頭髮服服貼貼。面試官驚嘆於你的氣場，當場錄取為副部長。',col:'#ffd54f'},
- A:{big:'A',title:'勉強過關',desc:'三根都還在，只是有點蓬。面試官沒多問，錄取為課長。',col:'#9ccc65'},
- BEARD:{big:'?',title:'絡腮鬍藝術家',desc:'三根頭髮全黏在臉上。面試官誤以為你是蓄鬍的藝術家，意外錄取。',col:'#ba68c8'},
- B:{big:'B',title:'反光頭皮',desc:'剩兩根，頭皮閃到面試官。他說你很有個人特色，錄取為業務。',col:'#4fc3f7'},
- C:{big:'C',title:'頭頂天線',desc:'剩一根孤零零豎著。面試官覺得你很幽默，錄取為諧星企劃。',col:'#ff8a65'}};
-const CAUSE={vortex:'鴿子群的亂流',drip:'天降水滴洗掉髮膠',cramp:'脖子抽筋',flyer:'手被傳單佔住',updraft:'大樓的下沉氣流'};
-const WIN_MSG=['','抵達面試現場！剩 1 根頭髮，本局共入帳','抵達面試現場！剩 2 根頭髮，本局共入帳','抵達面試現場！剩 3 根頭髮，本局共入帳'];
-const HAIR_LEFT=['剩 0 根','剩 1 根','剩 2 根','剩 3 根'];
-const TIPS=['左手把脖子滑到綠圈：迎著風歪頭','右手按住壓頭：抗風 ×4，但會流手汗、被側目','水滴和鴿子亂流：只有壓住頭擋得住','面試官在看！回頭時別壓頭，優雅走完'];
+ S:{big:'S',title:'{{t:last-hair.msg.001}}',desc:'{{t:last-hair.msg.002}}',col:'#ffd54f'},
+ A:{big:'A',title:'{{t:last-hair.msg.003}}',desc:'{{t:last-hair.msg.004}}',col:'#9ccc65'},
+ BEARD:{big:'?',title:'{{t:last-hair.msg.005}}',desc:'{{t:last-hair.msg.006}}',col:'#ba68c8'},
+ B:{big:'B',title:'{{t:last-hair.msg.007}}',desc:'{{t:last-hair.msg.008}}',col:'#4fc3f7'},
+ C:{big:'C',title:'{{t:last-hair.msg.009}}',desc:'{{t:last-hair.msg.010}}',col:'#ff8a65'}};
+const CAUSE={vortex:'{{t:last-hair.msg.011}}',drip:'{{t:last-hair.msg.012}}',cramp:'{{t:last-hair.msg.013}}',flyer:'{{t:last-hair.msg.014}}',updraft:'{{t:last-hair.msg.015}}'};
+const WIN_MSG=['','{{t:last-hair.msg.016}}','{{t:last-hair.msg.017}}','{{t:last-hair.msg.018}}'];
+const HAIR_LEFT=['{{t:last-hair.msg.019}}','{{t:last-hair.msg.020}}','{{t:last-hair.msg.021}}','{{t:last-hair.msg.022}}'];
+const TIPS=['{{t:last-hair.msg.023}}','{{t:last-hair.msg.024}}','{{t:last-hair.msg.025}}','{{t:last-hair.msg.026}}'];
 let best=0,deaths=[],swap=false,soundOn=true;
 try{best=+localStorage.getItem('deep-sea-last-hair-best')||0}catch(e){}
 try{deaths=JSON.parse(localStorage.getItem('deep-sea-last-hair-deaths')||'[]');if(!Array.isArray(deaths))deaths=[]}catch(e){deaths=[]}
@@ -41,7 +41,7 @@ function aliveN(){return g.hairs.filter(h=>h.alive).length}
 function ui(){
  const live=st==='run';
  setText('lh-dist',Math.floor(live||st==='over'?g.dist:0)+' m');setText('lh-hairs',(live||st==='over'?aliveN():3)+' / 3');setText('lh-best',best.toFixed(0)+' m');
- $('lh-amount').disabled=hairBusy;$('lh-go').disabled=live||rank.busy();setText('lh-go',live?'逆風前進中':st==='over'?'再玩一次':'開始出門');
+ $('lh-amount').disabled=hairBusy;$('lh-go').disabled=live||rank.busy();setText('lh-go',live?'{{t:last-hair.msg.027}}':st==='over'?'{{t:last-hair.msg.028}}':'{{t:last-hair.msg.029}}');
 }
 // ---- audio / haptics ----
 let ac=null;
@@ -57,7 +57,7 @@ function end(won){
  if(won){rec=best<500;if(rec){best=500;lsSet('deep-sea-last-hair-best',String(best))}}
  else{
   const parts=g.cause.split('|'),zn=game.config.zones[+parts[1]].name;
-  causeText=parts[0]==='wind'?zn+'的強風':(CAUSE[parts[0]]||'強風');
+  causeText=parts[0]==='wind'?zn+'{{t:last-hair.msg.030}}':(CAUSE[parts[0]]||'{{t:last-hair.msg.031}}');
   rec=g.deathDist>best;if(rec){best=g.deathDist;lsSet('deep-sea-last-hair-best',best.toFixed(1))}
   deaths.push({d:+g.deathDist.toFixed(1),c:causeText});if(deaths.length>12)deaths.shift();lsSet('deep-sea-last-hair-deaths',JSON.stringify(deaths));
  }
@@ -80,14 +80,14 @@ function handleEvents(){
  const evs=g.events.splice(0),hx=200;
  for(const e of evs){
   switch(e.type){
-   case'hairLost':SFX.pop();vib([70,40,70]);addFloat('啵！',hx+(e.i-1)*24,200,'#ff5252',30,1.3);flyHairs.push({x:hx+(e.i-1)*24,y:232,vx:(Math.random()<.5?-1:1)*(120+Math.random()*80),vy:-180,r:0,t:2});break;
-   case'cramp':SFX.cramp();vib(40);addFloat('喀啦！',200,170,'#ffab40',30,1.2);break;
-   case'drip':SFX.drip();vib(20);addFloat(e.shielded?'擋住了':'髮膠被洗掉！',200,190,e.shielded?'#80cbc4':'#4fc3f7',22,1.3);break;
-   case'greetOk':SFX.ok();addFloat('禮貌滿分',200,190,'#9ccc65',24,1.1);break;
-   case'greetFail':SFX.bad();vib(30);addFloat('被當成怪人…',200,190,'#ff8a80',24,1.3);break;
-   case'embarrassed':SFX.bad();vib([30,30,30]);addFloat('社死！腳步變慢',200,190,'#ff8a80',26,1.6);break;
+   case'hairLost':SFX.pop();vib([70,40,70]);addFloat('{{t:last-hair.msg.032}}',hx+(e.i-1)*24,200,'#ff5252',30,1.3);flyHairs.push({x:hx+(e.i-1)*24,y:232,vx:(Math.random()<.5?-1:1)*(120+Math.random()*80),vy:-180,r:0,t:2});break;
+   case'cramp':SFX.cramp();vib(40);addFloat('{{t:last-hair.msg.033}}',200,170,'#ffab40',30,1.2);break;
+   case'drip':SFX.drip();vib(20);addFloat(e.shielded?'{{t:last-hair.msg.034}}':'{{t:last-hair.msg.035}}',200,190,e.shielded?'#80cbc4':'#4fc3f7',22,1.3);break;
+   case'greetOk':SFX.ok();addFloat('{{t:last-hair.msg.036}}',200,190,'#9ccc65',24,1.1);break;
+   case'greetFail':SFX.bad();vib(30);addFloat('{{t:last-hair.msg.037}}',200,190,'#ff8a80',24,1.3);break;
+   case'embarrassed':SFX.bad();vib([30,30,30]);addFloat('{{t:last-hair.msg.038}}',200,190,'#ff8a80',26,1.6);break;
    case'greetStart':case'flyerTele':case'dripTele':case'vortexTele':case'lookTele':SFX.warn();break;
-   case'calm':addFloat('風停了…喘口氣',200,272,'#a5d6a7',18,2.2);break;
+   case'calm':addFloat('{{t:last-hair.msg.039}}',200,272,'#a5d6a7',18,2.2);break;
    case'zone':tipText=TIPS[e.zone];tipT=4.5;addFloat(game.config.zones[e.zone].name,200,222,'#fff',22,2);break;
    case'finish':SFX.win();end(true);break;
    case'dead':SFX.lose();end(false);break;
@@ -130,7 +130,7 @@ function drawScene(){
   const gx=200+(500-d)*PX+120,hgt=520;ctx.fillStyle='#4a5568';ctx.fillRect(gx-90,392-hgt,360,hgt+90);
   ctx.fillStyle='rgba(180,215,240,.5)';for(let y=392-hgt+14;y<380;y+=26)for(let x=gx-80;x<gx+260;x+=28)ctx.fillRect(x,y,18,16);
   ctx.fillStyle='#263238';ctx.fillRect(gx-40,336,90,120);ctx.fillStyle='rgba(160,200,230,.55)';ctx.fillRect(gx-34,342,38,108);ctx.fillRect(gx+8,342,36,108);
-  txt('帝國大廈',gx+5,318,16,'#fff','center',true);
+  txt('{{t:last-hair.msg.040}}',gx+5,318,16,'#fff','center',true);
   const look=g.ev.look&&g.ev.look.tele<=0,ix=285,iy=440;
   ctx.fillStyle='#37474f';rrect(ix-15,iy-62,30,62,10);ctx.fill();ctx.fillStyle='#e3c3a5';ctx.beginPath();ctx.arc(ix,iy-74,13,0,7);ctx.fill();
   if(look){ctx.fillStyle='#222';ctx.fillRect(ix-8,iy-77,4,4);ctx.fillRect(ix+4,iy-77,4,4);ctx.fillRect(ix-6,iy-68,12,2);txt('！',ix,iy-104,26,'#ff5252','center',true,'#000')}
@@ -206,13 +206,13 @@ function drawEventsWorld(){
 function bannerList(){
  const b=[],e=g.ev,c=game.config;
  if(g.crampLocked)b.push(['脖子抽筋！僵直 '+Math.max(0,g.crampLock).toFixed(1)+'s','#ff7043']);
- else if(g.cramp>=c.cramp.warn)b.push(['脖子快抽筋！回正一點！','#ffb74d']);
+ else if(g.cramp>=c.cramp.warn)b.push(['{{t:last-hair.msg.041}}','#ffb74d']);
  if(e.greet)b.push(['打招呼！放開手揮一揮 '+(e.greet.wave/c.greet.need*100|0)+'%','#aed581']);
- if(e.flyer)b.push([e.flyer.tele>0?'工讀生來了！手要被佔住':'傳單！手被佔住 '+Math.max(0,e.flyer.t).toFixed(1)+'s','#ffd54f']);
- if(e.drip)b.push(['頭上要滴水了！壓住頭！','#4fc3f7']);
- if(e.vortex)b.push([e.vortex.started?'鴿子亂流！壓住頭！':'鴿子群來了！壓住頭準備','#90a4ae']);
- if(e.look)b.push([e.look.tele>0?'面試官要回頭！放開手！':'面試官在看！優雅！別壓頭','#ff8a80']);
- if(g.slowT>0)b.push(['社死中…腳步變慢','#ff8a80']);
+ if(e.flyer)b.push([e.flyer.tele>0?'{{t:last-hair.msg.042}}':'傳單！手被佔住 '+Math.max(0,e.flyer.t).toFixed(1)+'s','#ffd54f']);
+ if(e.drip)b.push(['{{t:last-hair.msg.043}}','#4fc3f7']);
+ if(e.vortex)b.push([e.vortex.started?'{{t:last-hair.msg.044}}':'{{t:last-hair.msg.045}}','#90a4ae']);
+ if(e.look)b.push([e.look.tele>0?'{{t:last-hair.msg.046}}':'{{t:last-hair.msg.047}}','#ff8a80']);
+ if(g.slowT>0)b.push(['{{t:last-hair.msg.048}}','#ff8a80']);
  return b.slice(0,2);
 }
 function drawHUD(){
@@ -226,13 +226,13 @@ function drawHUD(){
   if(h.alive){ctx.moveTo(x,62);ctx.quadraticCurveTo(x+10,50,x+26,60);ctx.stroke();bar(x,68,50,5,h.glue/100,'#ffd54f');bar(x,76,50,5,h.root/100,'#ef5350')}
   else{ctx.moveTo(x+6,52);ctx.lineTo(x+24,66);ctx.moveTo(x+24,52);ctx.lineTo(x+6,66);ctx.stroke()}
  }
- txt('黃＝髮膠　紅＝髮根',14,92,10,'rgba(255,255,255,.75)','left',false,'rgba(0,0,0,.35)');
- txt('側目',258,62,12,'#fff','right',true,'rgba(0,0,0,.4)');bar(264,56,122,10,g.sideEye/100,g.sideEye>70?'#ff5252':'#ff9800');
- txt('手汗',258,82,12,'#fff','right',true,'rgba(0,0,0,.4)');bar(264,76,122,10,g.sweat,g.sweat>.6?'#29b6f6':'#80deea');
+ txt('{{t:last-hair.msg.049}}',14,92,10,'rgba(255,255,255,.75)','left',false,'rgba(0,0,0,.35)');
+ txt('{{t:last-hair.msg.050}}',258,62,12,'#fff','right',true,'rgba(0,0,0,.4)');bar(264,56,122,10,g.sideEye/100,g.sideEye>70?'#ff5252':'#ff9800');
+ txt('{{t:last-hair.msg.051}}',258,82,12,'#fff','right',true,'rgba(0,0,0,.4)');bar(264,76,122,10,g.sweat,g.sweat>.6?'#29b6f6':'#80deea');
  const w=g.wind,a=clamp(Math.abs(w),0,1.2),dir=-Math.sign(w)||-1,len=22+54*a,cx=200,cy=112;
  ctx.save();ctx.translate(cx,cy);ctx.scale(dir,1);ctx.fillStyle='rgba(255,213,79,'+(.5+a*.5)+')';ctx.strokeStyle='rgba(0,0,0,.45)';ctx.lineWidth=3;
  ctx.beginPath();ctx.moveTo(len,0);ctx.lineTo(len-26,-22);ctx.lineTo(len-26,-9);ctx.lineTo(-len,-9);ctx.lineTo(-len,9);ctx.lineTo(len-26,9);ctx.lineTo(len-26,22);ctx.closePath();ctx.stroke();ctx.fill();ctx.restore();
- if(g.tele){if(Math.floor(time*8)%2){const side=g.tele.dir>0?1:-1;ctx.save();ctx.translate(200+side*150,112);ctx.scale(-side,1);ctx.fillStyle='#ff8a65';ctx.beginPath();ctx.moveTo(18,0);ctx.lineTo(-6,-16);ctx.lineTo(-6,16);ctx.closePath();ctx.fill();ctx.restore();txt('變向！',200+side*150,138,13,'#ff8a65','center',true,'rgba(0,0,0,.5)')}}
+ if(g.tele){if(Math.floor(time*8)%2){const side=g.tele.dir>0?1:-1;ctx.save();ctx.translate(200+side*150,112);ctx.scale(-side,1);ctx.fillStyle='#ff8a65';ctx.beginPath();ctx.moveTo(18,0);ctx.lineTo(-6,-16);ctx.lineTo(-6,16);ctx.closePath();ctx.fill();ctx.restore();txt('{{t:last-hair.msg.052}}',200+side*150,138,13,'#ff8a65','center',true,'rgba(0,0,0,.5)')}}
  const bl=bannerList();
  if(tipT>0&&!bl.length){ctx.globalAlpha=clamp(tipT,0,1);ctx.fillStyle='rgba(0,0,0,.5)';rrect(20,160,360,30,15);ctx.fill();txt(tipText,200,175,14,'#fff','center',true,null,340);ctx.globalAlpha=1}
  bl.forEach((it,i)=>{ctx.fillStyle='rgba(0,0,0,.62)';rrect(30,158+i*36,340,30,15);ctx.fill();txt(it[0],200,173+i*36,16,it[1],'center',true,null,320)});
@@ -241,7 +241,7 @@ function drawControls(){
  ctx.fillStyle='#242a38';ctx.fillRect(0,SCENE_H,W,H-SCENE_H);ctx.fillStyle='#10131b';ctx.fillRect(0,SCENE_H,W,3);
  const pd=padBox(),b=btnBox(),y=612;
  ctx.fillStyle='rgba(255,255,255,.07)';rrect(pd.cx-pd.r-14,y-70,pd.r*2+28,140,22);ctx.fill();
- txt('脖子',pd.cx-52,y-50,14,'rgba(255,255,255,.7)');
+ txt('{{t:last-hair.msg.053}}',pd.cx-52,y-50,14,'rgba(255,255,255,.7)');
  {const v=g.crampLocked?1:g.cramp/game.config.cramp.trigger;bar(pd.cx-24,y-56,76,10,v,v>.66?'#ff5252':'#ffb74d')}
  if(st==='run'){
   const s=Math.sign(g.wind)||1,pulse=.6+.4*Math.sin(time*8);
@@ -252,12 +252,12 @@ function drawControls(){
  ctx.fillStyle='rgba(255,255,255,.35)';ctx.fillRect(pd.cx-1,y-12,2,24);
  const lim=game.config.cramp.limit*pd.r;ctx.fillStyle='rgba(255,112,67,.5)';ctx.fillRect(pd.cx-pd.r,y-7,pd.r-lim,14);ctx.fillRect(pd.cx+lim,y-7,pd.r-lim,14);
  const kx=pd.cx+input.tilt*pd.r;ctx.fillStyle='#ffd54f';ctx.beginPath();ctx.arc(kx,y,22,0,7);ctx.fill();ctx.strokeStyle='#8d6e00';ctx.lineWidth=3;ctx.stroke();
- txt('◀ 左歪',pd.cx-pd.r+8,y+46,13,'rgba(255,255,255,.7)','left');txt('右歪 ▶',pd.cx+pd.r-8,y+46,13,'rgba(255,255,255,.7)','right');
+ txt('{{t:last-hair.msg.054}}',pd.cx-pd.r+8,y+46,13,'rgba(255,255,255,.7)','left');txt('{{t:last-hair.msg.055}}',pd.cx+pd.r-8,y+46,13,'rgba(255,255,255,.7)','right');
  const locked=g.pressLock>0,on=g.pressing;
  ctx.fillStyle=locked?'#4a4f5c':(on?'#ff8f00':'#e65100');ctx.beginPath();ctx.arc(b.cx,b.cy,b.r,0,7);ctx.fill();
  ctx.lineWidth=6;ctx.strokeStyle=on?'#ffe0b2':'rgba(0,0,0,.35)';ctx.stroke();
  if(g.sweat>.05){ctx.strokeStyle='#4fc3f7';ctx.lineWidth=7;ctx.beginPath();ctx.arc(b.cx,b.cy,b.r+8,-Math.PI/2,-Math.PI/2+Math.PI*2*g.sweat);ctx.stroke()}
- txt(locked?'手被佔住':'死命壓住',b.cx,b.cy-6,20,'#fff');if(!locked)txt('按住不放',b.cx,b.cy+20,13,'rgba(255,255,255,.8)','center',false);
+ txt(locked?'{{t:last-hair.msg.056}}':'{{t:last-hair.msg.057}}',b.cx,b.cy-6,20,'#fff');if(!locked)txt('{{t:last-hair.msg.058}}',b.cx,b.cy+20,13,'rgba(255,255,255,.8)','center',false);
 }
 function wrapC(s,x,y,w,lh,size,col,align){
  // Translate the whole sentence first so English wraps on words instead of on Chinese characters.
@@ -266,16 +266,16 @@ function wrapC(s,x,y,w,lh,size,col,align){
  for(const word of words){const next=line?line+sep+word:word;if(line&&ctx.measureText(next).width>w){txt(line,x,yy,size,col,align);line=word;yy+=lh}else line=next}
  txt(line,x,yy,size,col,align);
 }
-const TOGGLES=()=>[[24,swap?'操作：左壓右歪':'操作：左歪右壓'],[204,soundOn?'音效：開':'音效：關']];
+const TOGGLES=()=>[[24,swap?'{{t:last-hair.msg.059}}':'{{t:last-hair.msg.060}}'],[204,soundOn?'{{t:last-hair.msg.061}}':'{{t:last-hair.msg.062}}']];
 function drawReady(){
  const keep=g;g=idleG;idleG.E=.05;idleG.wind=Math.sin(time*1.5)*.15;
  drawScene();drawMan(.016,{});g=keep;
  ctx.fillStyle='rgba(16,19,27,.72)';ctx.fillRect(0,0,W,190);
- txt('尊嚴保衛戰',200,54,44,'#ffd54f','center',true,'#000');txt('強風中的地中海',200,100,22,'#fff','center',true);
- txt('用最後 3 根頭髮，走完 500 公尺去面試',200,140,15,'rgba(255,255,255,.85)','center',false);
+ txt('{{t:last-hair.msg.063}}',200,54,44,'#ffd54f','center',true,'#000');txt('{{t:last-hair.msg.064}}',200,100,22,'#fff','center',true);
+ txt('{{t:last-hair.msg.065}}',200,140,15,'rgba(255,255,255,.85)','center',false);
  ctx.fillStyle='rgba(16,19,27,.92)';ctx.fillRect(0,SCENE_H,W,H-SCENE_H);
- ['左手把脖子滑到綠圈：迎著風歪頭','右手按住壓頭：抗風 ×4，但會流汗、被側目','歪頭太久脖子會抽筋；遇到路人記得放手'].forEach((s,i)=>txt(s,200,556+i*22,14,'rgba(255,255,255,.88)','center',false,null,370));
- ctx.globalAlpha=.6+.4*Math.sin(time*4);txt('到操作區開始',200,624,20,'#ffd54f');ctx.globalAlpha=1;
+ ['{{t:last-hair.msg.023}}','{{t:last-hair.msg.066}}','{{t:last-hair.msg.067}}'].forEach((s,i)=>txt(s,200,556+i*22,14,'rgba(255,255,255,.88)','center',false,null,370));
+ ctx.globalAlpha=.6+.4*Math.sin(time*4);txt('{{t:last-hair.msg.068}}',200,624,20,'#ffd54f');ctx.globalAlpha=1;
  TOGGLES().forEach(it=>{ctx.fillStyle='#3b4358';rrect(it[0],642,172,42,14);ctx.fill();txt(it[1],it[0]+86,663,16,'#fff','center',true,null,160)});
  txt('最遠紀錄 '+best.toFixed(0)+' m',200,704,14,'rgba(255,255,255,.7)','center',false);
 }
@@ -285,16 +285,16 @@ function drawOver(){
  if(!won){ctx.save();ctx.globalCompositeOperation='saturation';ctx.fillStyle='#808080';ctx.fillRect(0,0,W,SCENE_H);ctx.restore();ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(0,0,W,SCENE_H)}
  ctx.fillStyle='rgba(16,19,27,.96)';ctx.fillRect(0,SCENE_H,W,H-SCENE_H);ctx.fillStyle='#10131b';ctx.fillRect(0,SCENE_H,W,3);
  if(won){
-  const r=RANKS[g.rankKey];txt('抵達面試現場！',200,552,15,'rgba(255,255,255,.8)');
+  const r=RANKS[g.rankKey];txt('{{t:last-hair.msg.069}}',200,552,15,'rgba(255,255,255,.8)');
   txt(r.big,64,622,76,r.col,'center',true,'#000');txt(r.title,124,582,24,r.col,'left',true,null,270);
   wrapC(r.desc,124,606,272,18,13,'rgba(255,255,255,.92)','left');
   txt(HAIR_LEFT[aliveN()],130,682,14,'rgba(255,255,255,.65)','center',false);txt('用時 '+g.t.toFixed(0)+' 秒',270,682,14,'rgba(255,255,255,.65)','center',false);
  }else{
-  txt('面試取消',200,556,28,'#eceff1','center',true);txt('你失去了最後的尊嚴',200,584,17,'#eceff1','center',true,null,370);
+  txt('{{t:last-hair.msg.070}}',200,556,28,'#eceff1','center',true);txt('{{t:last-hair.msg.071}}',200,584,17,'#eceff1','center',true,null,370);
   txt('死於 '+g.deathDist.toFixed(1)+'m',200,612,20,'#ffcc80');wrapC('— '+causeText,200,636,340,20,15,'#eceff1');
   txt('最遠紀錄 '+best.toFixed(0)+' m',200,676,14,'rgba(255,255,255,.65)','center',false);
  }
- if(time-endAt>.8){ctx.globalAlpha=.6+.4*Math.sin(time*4);txt('到操作區再玩一次',200,704,18,'#ffd54f');ctx.globalAlpha=1}
+ if(time-endAt>.8){ctx.globalAlpha=.6+.4*Math.sin(time*4);txt('{{t:last-hair.msg.072}}',200,704,18,'#ffd54f');ctx.globalAlpha=1}
 }
 function draw(dt){
  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);
@@ -305,7 +305,7 @@ function draw(dt){
  drawHUD();drawControls();
  for(let i=floats.length-1;i>=0;i--){const f=floats[i];f.t-=dt;if(f.t<=0){floats.splice(i,1);continue}ctx.globalAlpha=clamp(f.t/(f.d*.5),0,1);txt(f.text,f.x,f.y-(1-f.t/f.d)*36,f.size,f.col,'center',true,'rgba(0,0,0,.6)');ctx.globalAlpha=1}
  for(let i=flyHairs.length-1;i>=0;i--){const f=flyHairs[i];f.t-=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=120*dt;f.r+=5*dt;if(f.t<=0)flyHairs.splice(i,1)}
- if(paused){ctx.fillStyle='rgba(0,0,0,.7)';ctx.fillRect(0,0,W,H);txt('暫停中',200,320,36,'#fff');txt('點一下畫面繼續',200,380,22,'#ffd54f')}
+ if(paused){ctx.fillStyle='rgba(0,0,0,.7)';ctx.fillRect(0,0,W,H);txt('{{t:last-hair.msg.073}}',200,320,36,'#fff');txt('{{t:last-hair.msg.074}}',200,380,22,'#ffd54f')}
 }
 // ---- input ----
 const shown=()=>!$('view-last-hair').hidden&&!document.hidden;
@@ -321,7 +321,7 @@ function start(){
  rank.start(random=>{
  analytics=AN.start('last-hair',amount);hairBusy=true;hairStake=amount;save();renderAll();
  game=hairRules.create(random||Math.random);g=game.state;earned=0;rewarded=0;rec=false;floats.length=0;flyHairs.length=0;hs.forEach(h=>{h.init=false});clearInput();paused=false;
- tipText=TIPS[0];tipT=4.5;st='run';last=performance.now();say('出門了！左手滑脖子迎風歪頭，右手按住壓頭，走完 500 公尺。');ui();c.focus();
+ tipText=TIPS[0];tipT=4.5;st='run';last=performance.now();say('{{t:last-hair.msg.075}}');ui();c.focus();
  },ui);
 }
 $('lh-go').addEventListener('click',start);
@@ -335,9 +335,9 @@ c.addEventListener('pointerdown',e=>{
    if(p.y>642&&p.y<684){
     if(p.x>24&&p.x<196){swap=!swap;lsSet('deep-sea-last-hair-swap',swap?'1':'0')}
     else if(p.x>204&&p.x<376){soundOn=!soundOn;lsSet('deep-sea-last-hair-sound',soundOn?'1':'0');if(soundOn)audioInit()}
-    else say('先按「開始出門」。');
-   }else say('先按「開始出門」。');
-  }else say('這一局已結算。按「再玩一次」開始新的一局。');
+    else say('{{t:last-hair.msg.076}}');
+   }else say('{{t:last-hair.msg.076}}');
+  }else say('{{t:last-hair.msg.077}}');
   return;
  }
  e.preventDefault();c.focus();

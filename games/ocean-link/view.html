@@ -3,48 +3,48 @@
     <header class="ol-toolbar">
       <div class="ol-heading">
         <h2>Ocean Link</h2>
-        <p id="ol-rule">深海連連看</p>
+        <p id="ol-rule">{{t:ocean-link.view.01}}</p>
       </div>
-      <p id="ol-clock" hidden><span id="ol-clock-label">用時</span> <time id="ol-time" aria-labelledby="ol-clock-label" datetime="PT0S">00:00</time></p>
+      <p id="ol-clock" hidden><span id="ol-clock-label">{{t:ocean-link.view.02}}</span> <time id="ol-time" aria-labelledby="ol-clock-label" datetime="PT0S">00:00</time></p>
       <div class="ol-actions" id="ol-toolbar-actions">
-        <label for="ol-mode">模式</label>
+        <label for="ol-mode">{{t:ocean-link.view.03}}</label>
         <select id="ol-mode">
-          <option value="easy">簡單 · 6 × 8</option>
-          <option value="standard" selected>標準 · 14 × 18</option>
-          <option value="challenge">挑戰 · 16 × 26</option>
+          <option value="easy">{{t:ocean-link.view.04}}</option>
+          <option value="standard" selected>{{t:ocean-link.view.05}}</option>
+          <option value="challenge">{{t:ocean-link.view.06}}</option>
         </select>
-        <button id="ol-go" type="button" hidden>開始遠征</button>
-        <button id="ol-hint" type="button" disabled>提示</button>
+        <button id="ol-go" type="button" hidden>{{t:ocean-link.view.07}}</button>
+        <button id="ol-hint" type="button" disabled>{{t:ocean-link.view.08}}</button>
       </div>
-      <p id="ol-count" hidden><span>關卡</span> <b id="ol-level">1</b>/10 · <span>剩餘配對</span> <b id="ol-left">0</b> · BONUS <b id="ol-bonus">0</b></p>
-      <p id="ol-record"><span>最高通關</span> <b id="ol-best">0</b>/10</p>
+      <p id="ol-count" hidden><span>{{t:ocean-link.view.09}}</span> <b id="ol-level">1</b>/10 · <span>{{t:ocean-link.view.10}}</span> <b id="ol-left">0</b> · BONUS <b id="ol-bonus">0</b></p>
+      <p id="ol-record"><span>{{t:ocean-link.view.11}}</span> <b id="ol-best">0</b>/10</p>
       <p id="ol-msg" role="status"></p>
       <p id="ol-rank-status" role="status" hidden></p>
-      <button id="ol-rank-retry" type="button" hidden>重送排行榜成績</button>
+      <button id="ol-rank-retry" type="button" hidden>{{t:ocean-link.view.12}}</button>
     </header>
     <div id="ol-game-area">
       <div class="ol-actions" id="ol-board-actions">
-        <button id="ol-full" type="button" aria-pressed="false">開始遊戲</button>
+        <button id="ol-full" type="button" aria-pressed="false">{{t:ocean-link.view.13}}</button>
       </div>
       <div id="ol-playfield" hidden>
-        <div id="ol-board" role="group" aria-label="連連看棋盤"></div>
+        <div id="ol-board" role="group" aria-label="{{t:ocean-link.view.23}}"></div>
         <svg id="ol-trace" aria-hidden="true"><polyline></polyline></svg>
       </div>
     </div>
     <section id="ol-result" aria-labelledby="ol-result-title" hidden>
       <span class="ol-result-icon" aria-hidden="true">🏆</span>
-      <h3 id="ol-result-title" tabindex="-1">恭喜通關！</h3>
-      <p><span>已完成關卡</span> <b id="ol-result-level">1</b>/10</p>
-      <p><span>累計用時</span> <time id="ol-result-time" datetime="PT0S">00:00</time></p>
-      <p id="ol-result-reward" hidden>已獲得 5 點。</p>
+      <h3 id="ol-result-title" tabindex="-1">{{t:ocean-link.view.14}}</h3>
+      <p><span>{{t:ocean-link.view.15}}</span> <b id="ol-result-level">1</b>/10</p>
+      <p><span>{{t:ocean-link.view.16}}</span> <time id="ol-result-time" datetime="PT0S">00:00</time></p>
+      <p id="ol-result-reward" hidden>{{t:ocean-link.view.17}}</p>
       <div id="ol-result-actions" class="ol-actions"></div>
     </section>
     <details class="ol-rules" open>
-      <summary>玩法與獎勵</summary>
-      <p>點選相同的兩張圖案。連線只能水平或垂直、最多轉彎兩次，可以繞過棋盤外框。礁石會擋住連線與移動。</p>
-      <p>簡單模式有較大的圖案，所有關卡都是經典配對，適合初學者。</p>
-      <p>每次遠征連闖 10 關。第 3、6、10 關各送 5 點，每關限領一次，每次遠征最多 15 點。</p>
-      <p>無法再配對時，剩餘圖案會自動洗牌。手機建議橫放。</p>
+      <summary>{{t:ocean-link.view.18}}</summary>
+      <p>{{t:ocean-link.view.19}}</p>
+      <p>{{t:ocean-link.view.20}}</p>
+      <p>{{t:ocean-link.view.21}}</p>
+      <p>{{t:ocean-link.view.22}}</p>
     </details>
   </div>
 </section>

@@ -19,6 +19,9 @@ from pathlib import Path
 import re
 import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import i18n_data  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 
 # Shared-scope names a game may rely on; listed when the game's source mentions them.
@@ -134,9 +137,10 @@ def platform_callers(root: Path, funcs: list[tuple[int, str]], gid: str) -> list
 def analyze(root: Path, game: dict, names: dict, rules: dict, controls: str, game_names: dict) -> dict:
     gid = game['id']
     base = root / 'games' / gid
-    logic = read(root / game['logic'])
-    view = read(root / game['view'])
-    card = read(root / game['card'])
+    zh_text = i18n_data.zh_ids(root)
+    logic = i18n_data.expand_ids(read(root / game['logic']), root, js=True)
+    view = re.sub(r'\{\{t:([^{}]+)\}\}', lambda m: zh_text.get(m.group(1), m.group(0)), read(root / game['view']))
+    card = re.sub(r'\{\{t:([^{}]+)\}\}', lambda m: zh_text.get(m.group(1), m.group(0)), read(root / game['card']))
     funcs = functions(logic)
     category = re.search(r'data-game-category="(\w+)"', card)
     description = re.search(r'class="game-card-description">([^<]*)<', card)
@@ -174,7 +178,7 @@ def render_game(info: dict) -> str:
     funcs = info['funcs']
     zh, en = info['zh']
     status = '已隱藏（catalog 的 `hidden`；大廳、選單與網址都進不去，程式碼仍會組合與初始化）' if game.get('hidden') else '顯示中'
-    category = {'skill': '技巧闖關', 'run': '跑酷動作', 'stealth': '潛行偷閒', 'timing': '時機操作', 'puzzle': '益智策略', 'chance': '機率挑戰', 'retro': '免費懷舊', 'daily': '每日免費補給'}.get(info['category'], info['category'])
+    category = {'skill': '技巧闖關', 'run': '跑酷動作', 'stealth': '潛行偷閒', 'timing': '時機操作', 'puzzle': '益智策略', 'chance': '機率挑戰', 'retro': '懷舊經典', 'daily': '每日補給'}.get(info['category'], info['category'])
     lines = [f'# {zh} {en}（{gid}）', '',
              '> 這份檔案由 `python3 tools/game_docs.py` 從原始碼自動產生，請勿手改；修改遊戲後重新執行。'
              '先讀這份找到位置，再只打開需要的函式範圍，不必掃整支 `game.js`。', '',
@@ -239,7 +243,7 @@ def render_index(infos: list[dict]) -> str:
              '| 遊戲 | hash | 分類 | 狀態 | game.js | 說明 |', '| --- | --- | --- | --- | --- | --- |']
     for info in infos:
         gid, (zh, en) = info['game']['id'], info['zh']
-        category = {'skill': '技巧闖關', 'run': '跑酷動作', 'stealth': '潛行偷閒', 'timing': '時機操作', 'puzzle': '益智策略', 'chance': '機率挑戰', 'retro': '免費懷舊', 'daily': '每日免費補給'}.get(info['category'], info['category'])
+        category = {'skill': '技巧闖關', 'run': '跑酷動作', 'stealth': '潛行偷閒', 'timing': '時機操作', 'puzzle': '益智策略', 'chance': '機率挑戰', 'retro': '懷舊經典', 'daily': '每日補給'}.get(info['category'], info['category'])
         state = '隱藏' if info['game'].get('hidden') else '顯示'
         lines.append(f'| [{zh} {en}]({gid}/README.md) | `#{gid}` | {category} | {state} | {info["logic"].count(chr(10)) + 1} 行 | {info["description"]} |')
     return '\n'.join(lines) + '\n'

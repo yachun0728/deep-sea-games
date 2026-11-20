@@ -1,8 +1,9 @@
 // Run with Node.js, without npm packages.
 import fs from 'node:fs';
+import {readSource} from './expand_ids.mjs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
-const root=new URL('../',import.meta.url),source=fs.readFileSync(new URL('js/mobile-navigation.js',root),'utf8');
+const root=new URL('../',import.meta.url),source=readSource('js/mobile-navigation.js',root);
 const results=[];
 function fixture({id='view-blaster',reduced=false,missing=false,button=true,iframe=false}={}){
   const events={},scrolls=[],queried=[],pads=[],canvas={scrollIntoView:o=>scrolls.push(['game',o])},controls={scrollIntoView:o=>scrolls.push(['controls',o])},panel={scrollIntoView:o=>scrolls.push(['panel',o])};

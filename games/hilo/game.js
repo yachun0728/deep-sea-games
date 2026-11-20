@@ -10,8 +10,8 @@
   // The two guesses for a card of rank r: label, chance, and the comparison the next rank must pass.
   function hOpts(r) {
     return {
-      hi: r === 1 ? { label: '更大', p: 12 / 13, kind: 'gt' } : r === 13 ? { label: '相同', p: 1 / 13, kind: 'eq' } : { label: '更大或相同', p: (14 - r) / 13, kind: 'ge' },
-      lo: r === 13 ? { label: '更小', p: 12 / 13, kind: 'lt' } : r === 1 ? { label: '相同', p: 1 / 13, kind: 'eq' } : { label: '更小或相同', p: r / 13, kind: 'le' }
+      hi: r === 1 ? { label: '{{t:hilo.msg.001}}', p: 12 / 13, kind: 'gt' } : r === 13 ? { label: '{{t:hilo.msg.002}}', p: 1 / 13, kind: 'eq' } : { label: '{{t:hilo.msg.003}}', p: (14 - r) / 13, kind: 'ge' },
+      lo: r === 13 ? { label: '{{t:hilo.msg.004}}', p: 12 / 13, kind: 'lt' } : r === 1 ? { label: '{{t:hilo.msg.002}}', p: 1 / 13, kind: 'eq' } : { label: '{{t:hilo.msg.005}}', p: r / 13, kind: 'le' }
     };
   }
   function hTest(kind, n, r) { return kind === 'gt' ? n > r : kind === 'ge' ? n >= r : kind === 'lt' ? n < r : kind === 'le' ? n <= r : n === r; }
@@ -29,22 +29,22 @@
       b.innerHTML = x[1] + x[2].label + '<small>' + (HL.active ? (x[2].p * 100).toFixed(1) + '% · 猜中 ' + fx(hMult(HL.raw / x[2].p)) + '×' : '—') + '</small>';
     });
     $('hl-skip').disabled = !HL.active || HL.skips >= HL_SKIPS;
-    $('hl-skip').textContent = '換一張牌' + (HL.active ? '（剩 ' + (HL_SKIPS - HL.skips) + ' 次）' : '');
+    $('hl-skip').textContent = '{{t:hilo.msg.006}}' + (HL.active ? '（剩 ' + (HL_SKIPS - HL.skips) + ' 次）' : '');
     var has = (HL.active || HL.over) && HL.picks > 0, m = hMult(HL.raw);
     $('hl-mult').textContent = has ? fx(m) + '×' : '—';
     $('hl-win').textContent = HL.active && HL.picks > 0 ? fmt(Math.floor(HL.bet * m)) : '—';
     $('hl-picks').textContent = HL.active || HL.over ? HL.picks + ' 次' : '—';
-    $('hl-sub').textContent = HL.active ? 'A 最小、K 最大 · 下一張會漲還是退？' : HL.over ? '這一局結束' : '猜下一張牌比這張大還是小';
+    $('hl-sub').textContent = HL.active ? '{{t:hilo.msg.007}}' : HL.over ? '{{t:hilo.msg.008}}' : '{{t:hilo.msg.009}}';
     elHAmt.disabled = HL.active;
     document.querySelectorAll('.hchip').forEach(function (b) { b.disabled = HL.active; });
-    if (!HL.active) { elHGo.dataset.mode = 'bet'; elHGo.disabled = false; elHGo.innerHTML = (HL.over ? '再來一局' : '開始') + '<small>下注 ' + fmt(readHAmount()) + ' 點</small>'; }
+    if (!HL.active) { elHGo.dataset.mode = 'bet'; elHGo.disabled = false; elHGo.innerHTML = (HL.over ? '{{t:hilo.msg.010}}' : '{{t:hilo.msg.011}}') + '<small>下注 ' + fmt(readHAmount()) + ' 點</small>'; }
     else if (HL.picks === 0) { elHGo.dataset.mode = 'done'; elHGo.disabled = true; elHGo.innerHTML = '先猜一次<small>猜對才能領回</small>'; }
     else { elHGo.dataset.mode = 'surface'; elHGo.disabled = false; elHGo.innerHTML = '領回<small>' + fmt(Math.floor(HL.bet * m)) + ' 點 · ' + fx(m) + '×</small>'; }
   }
   function hStart() {
     var a = readHAmount();
     if (a < MIN_BET) { hSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
-    if (a > S.balance) { hSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    if (a > S.balance) { hSay('{{t:hilo.msg.012}}', 'lose'); return; }
     S.balance -= a;
     HL.analytics=AN.start('hilo',a); HL.active = true; HL.over = false; HL.bet = a; HL.card = hDraw(); HL.raw = 1; HL.picks = 0; HL.trail = []; HL.skips = 0; HL.fresh = true;
     elHStage.classList.remove('win', 'lose');
@@ -57,7 +57,7 @@
     HL.trail.push(prev); HL.card = next; HL.fresh = true;
     if (hTest(o.kind, next.r, prev.r)) {
       HL.raw /= o.p; HL.picks++; AN.progress(HL.analytics,{step:HL.picks});
-      hSay('翻出 ' + hName(next) + '，猜對了！目前 ' + fx(hMult(HL.raw)) + '×，可以領回或繼續猜。', 'win');
+      hSay('翻出 ' + hName(next) + '，猜對了！目前 ' + fx(hMult(HL.raw)) + '{{t:hilo.msg.013}}', 'win');
     } else {
       AN.end(HL.analytics,0,'loss',{step:HL.picks}); HL.active = false; HL.over = true; elHStage.classList.add('lose');
       hSay('翻出 ' + hName(next) + '，猜錯了，失去 ' + fmt(HL.bet) + ' 點。', 'lose');

@@ -1,13 +1,13 @@
   <section class="view" id="view-dive" hidden>
-    <div class="console"><div class="dive-stage"><iframe id="dv-frame" title="一口氣探險 One Breath Dive"></iframe></div>
-      <div class="side"><section class="panel" aria-label="一口氣探險操作">
-        <dl class="stats"><div><dt>目前分數</dt><dd id="dv-score">0 分</dd></div><div><dt>目前深度</dt><dd id="dv-depth">0 m</dd></div><div><dt>最佳分數</dt><dd id="dv-best">0 分</dd></div></dl>
+    <div class="console"><div class="dive-stage"><iframe id="dv-frame" title="{{t:dive.view.12}}"></iframe></div>
+      <div class="side"><section class="panel" aria-label="{{t:dive.view.13}}">
+        <dl class="stats"><div><dt>{{t:dive.view.01}}</dt><dd id="dv-score">{{t:dive.view.02}}</dd></div><div><dt>{{t:dive.view.03}}</dt><dd id="dv-depth">0 m</dd></div><div><dt>{{t:dive.view.04}}</dt><dd id="dv-best">{{t:dive.view.02}}</dd></div></dl>
         <input id="dv-amount" type="hidden" value="0">
-        <button class="go" id="dv-go" type="button" data-mode="bet">開始下潛</button>
-        <p class="msg" id="dv-msg" aria-live="polite">按「開始下潛」或遊戲裡的「深吸一口氣」開始。遊玩點數依平台規則累積。</p>
-        <p class="hint">每層挑一條路往下潛；氧氣高於紅線才能上浮結算，溺水歸零。上浮時若需要丟珍珠減重，實際分數以結束畫面為準。</p>
+        <button class="go" id="dv-go" type="button" data-mode="bet">{{t:dive.view.05}}</button>
+        <p class="msg" id="dv-msg" aria-live="polite">{{t:dive.view.06}}</p>
+        <p class="hint">{{t:dive.view.07}}</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法與成績</summary><p>每層從幾條路線中挑一條往下潛，會消耗氧氣，並可能拿到珍珠、氧氣或遺物。氧氣條上的紅線是上浮所需氧氣，珍珠越多越重、紅線越高；高於紅線才能上浮，差一點時可以丟掉部分珍珠減重。</p><p>分數＝珍珠＋層數×2。上浮或潛到第 40 層海底時這一趟結束，記錄最佳分數；氧氣耗盡分數歸零（若有「救生繩」遺物，第一次耗盡會保留一半珍珠）。分數只是成績，不會換算成點數，也沒有倍率或領回。</p><p>這款是回合制，離開畫面不會自動結束；回來後可以繼續同一局。重新整理會放棄本局，最佳分數保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+    <details class="rules"><summary>{{t:dive.view.08}}</summary><p>{{t:dive.view.09}}</p><p>{{t:dive.view.10}}</p><p>{{t:dive.view.11}}</p></details>
   </section>
 

@@ -58,7 +58,7 @@
     function showResult(reward, finished) {
       playfield.hidden = true;
       clock.hidden = true;
-      resultTitle.textContent = finished ? '恭喜完成遠征！' : '恭喜通關！';
+      resultTitle.textContent = finished ? '{{t:ocean-link.msg.001}}' : '{{t:ocean-link.msg.002}}';
       $('ol-result-level').textContent = level;
       $('ol-result-time').textContent = clockValue.textContent;
       $('ol-result-time').dateTime = clockValue.dateTime;
@@ -113,7 +113,7 @@
           node.setAttribute('aria-pressed', String(cell === selected));
         } else if (value < 0) {
           node.className = 'ol-reef';
-          node.title = '礁石';
+          node.title = '{{t:ocean-link.msg.003}}';
         } else node.setAttribute('aria-hidden', 'true');
         fragment.appendChild(node);
       });
@@ -140,7 +140,7 @@
       $('ol-bonus').textContent = paid;
       const expanded = full.getAttribute('aria-pressed') === 'true';
       stage.classList.toggle('ol-board-focus', oceanLinkBusy && expanded);
-      if (!expanded) full.textContent = '開始遊戲';
+      if (!expanded) full.textContent = '{{t:ocean-link.msg.004}}';
     }
 
     function drawTrace() {
@@ -187,7 +187,7 @@
       updateButtons();
       sizeBoard();
       paint(true);
-      say('選兩張相同的圖案。');
+      say('{{t:ocean-link.msg.005}}');
     }
 
     function params(extra = {}) {
@@ -205,17 +205,17 @@
     async function submitLevel() {
       if (rankSending || !rankPending) return;
       rankSending = true;
-      rankStatus('正在驗證排行榜成績…');
+      rankStatus('{{t:ocean-link.msg.006}}');
       const submission = rankPending;
       try {
         const api = await import('./frontend/services/api.mjs');
         const next = await api.moveBoardRound(submission.token, submission.move, AbortSignal.timeout(10000));
         if (next.revision === submission.move.revision) {
           ranked = null;
-          rankStatus('排行榜成績未能送出。');
+          rankStatus('{{t:ocean-link.msg.007}}');
         } else {
           Object.assign(ranked, next);
-          rankStatus('成績已送到排行榜。');
+          rankStatus('{{t:ocean-link.msg.008}}');
         }
         rankPending = null;
       } catch (error) {
@@ -223,7 +223,7 @@
           ranked = null;
           rankPending = null;
         }
-        rankStatus('排行榜成績未能送出。', !!rankPending);
+        rankStatus('{{t:ocean-link.msg.007}}', !!rankPending);
       } finally {
         rankSending = false;
         updateButtons();
@@ -244,7 +244,7 @@
       rankStatus('');
       if (mode.value === 'easy' && location.protocol !== 'file:') {
         rankStarting = true;
-        rankStatus('正在準備訪客排行…');
+        rankStatus('{{t:ocean-link.msg.009}}');
         updateButtons();
         try {
           const api = await import('./frontend/services/api.mjs');
@@ -257,14 +257,14 @@
           updateButtons();
           return;
         }
-        rankStatus(ranked ? '本局將列入訪客排行。' : '這一局可在本機遊玩。');
+        rankStatus(ranked ? '{{t:ocean-link.msg.010}}' : '{{t:ocean-link.msg.011}}');
       }
       [rows, cols] = dimensions[mode.value];
       rules = oceanLinkBoard(rows, cols);
       stride = cols + 2;
       level = 1;
       paid = 0;
-      go.textContent = '下一關';
+      go.textContent = '{{t:ocean-link.msg.012}}';
       oceanLinkBusy = true;
       elapsedMs = 0;
       dealLevel();
@@ -283,10 +283,10 @@
       clearTrace();
       playfield.hidden = true;
       grid.replaceChildren();
-      go.textContent = '開始遠征';
-      $('ol-rule').textContent = '深海連連看';
+      go.textContent = '{{t:ocean-link.msg.013}}';
+      $('ol-rule').textContent = '{{t:ocean-link.msg.014}}';
       updateButtons();
-      say(result === 'win' ? '遠征完成！所有關卡已通過。' : '遠征已結束。');
+      say(result === 'win' ? '{{t:ocean-link.msg.015}}' : '{{t:ocean-link.msg.016}}');
       if (!$('view-ocean-link').hidden && result !== 'win') full.focus({preventScroll: true});
     }
 
@@ -321,7 +321,7 @@
       }
       between = true;
       updateButtons();
-      say(reward ? '關卡完成！已獲得 5 點。' : '關卡完成！');
+      say(reward ? '{{t:ocean-link.msg.017}}' : '{{t:ocean-link.msg.018}}');
       showResult(reward, false);
     }
 
@@ -343,7 +343,7 @@
       const path = rules.linkPath(board, previous, cell);
       if (!path) {
         clearHint();
-        say('這兩張圖案之間沒有可用路線。');
+        say('{{t:ocean-link.msg.019}}');
         return;
       }
       const followPlan = moves.length && moves[0].includes(previous) && moves[0].includes(cell);
@@ -361,10 +361,10 @@
         selected = -1;
         remaining--;
         rules.slide(board, stageRule()[1]);
-        let message = '配對成功。';
+        let message = '{{t:ocean-link.msg.020}}';
         if (remaining && !moves.length && !rules.findPair(board)) {
           recover();
-          message = '沒有可配對的圖案，已自動洗牌。';
+          message = '{{t:ocean-link.msg.021}}';
         }
         paint(keyboard && remaining > 0);
         if (remaining) say(message);
@@ -386,7 +386,7 @@
       selected = -1;
       clearHint();
       pair.forEach(cell => grid.children[cell].classList.add('ol-hint'));
-      say('已標出一組可連線的圖案。');
+      say('{{t:ocean-link.msg.022}}');
     }
 
     function setExpanded(expanded) {
@@ -401,7 +401,7 @@
       const expanded = native || stage.classList.contains('ol-expanded');
       const leaving = !expanded && full.getAttribute('aria-pressed') === 'true';
       full.setAttribute('aria-pressed', String(expanded));
-      if (expanded) full.textContent = '離開全螢幕';
+      if (expanded) full.textContent = '{{t:ocean-link.msg.023}}';
       const boardActions = $('ol-board-actions');
       const controls = expanded ? $('ol-toolbar-actions') : boardActions;
       const restoreFocus = document.activeElement === full;

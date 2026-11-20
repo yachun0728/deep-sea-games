@@ -140,6 +140,19 @@ python3 -m http.server 8765
 
 翻譯來源為 `locales/en.json`，顯示邏輯為 `js/i18n.js`，樣式為 `css/i18n.css`。新增或調整遊戲文字後，補齊翻譯並執行既有組合與單元測試。額外瀏覽器驗證：
 
+### 簡體中文（簡中）
+
+頁首語言選單為「繁中／簡中／EN」，網址參數 `?lang=zh-Hans`，偏好存在既有的 `deep-sea-language-v1`。簡中不是另一份人工翻譯：`js/i18n.js` 在顯示層把繁中原文轉成簡體，規則來自 `locales/zh-Hans.json`（內嵌為 `#arcade-hans`）：字表 `chars`、台灣→大陸用語 `words`（軟體→软件、滑鼠→鼠标）、整句例外 `exact`。遊戲狀態、儲存、GA4 與 id 都不受影響，Canvas 文字與同源 iframe 也會轉換。
+
+- 產生：`python3 tools/build_zh_hans.py`（開發機需 `pip3 install --user opencc`，成品 json 已提交，建置與部署不需要 OpenCC）。新增或修改繁中文字後重跑一次，再 `python3 tools/build.py`。
+- 人工修正：改 `locales/zh-Hans.overrides.json`（`exact` 整句、`words` 詞、`remove` 拒絕 OpenCC 的詞，例如「核心」不可轉成「内核」），再重新產生；重新產生不會覆蓋它。
+- 驗證：`tools/test_i18n_hans.py`（表格格式、已知詞、所有可見文字轉換後不殘留繁體字、成品是否為最新）與 `python3 tools/check_i18n_browser.py --suite hans`（桌面與 390px：切換、記憶、大廳與數款遊戲畫面無繁體殘留）。
+- 範圍：Academy 有自己的繁中／簡中／英文題庫，站台選簡中時會跟著用簡中。珍奶原版維持英文。譯文為機器轉換，上線前建議請母語者校對常用詞並寫入 overrides。
+
+### 文字 id（逐步把繁中抽出來）
+
+已遷移的文字（目前為卡片頁尾、大廳模板與各遊戲 `view.html` 的靜態文字，以及各遊戲 `game.js` 與 `js/`、`platform/` 平台檔的提示字串；Academy 因進行中暫未遷移，`shared/` 規則檔（後端也讀取）與 GA4 遊戲名稱表 `js/analytics.js` 刻意不遷移）在原始碼裡寫 `{{t:card.mines.tag}}`，繁中寫在 `locales/zh-Hant.json`、英文寫在 `locales/en.ids.json`，兩邊以相同 id 對應。`tools/build.py` 會把 `{{t:id}}` 展開成中文，並把「中文→英文」併入內嵌字典，所以 `js/i18n.js` 與玩家看到的畫面完全不變。改字只改這兩個 json 再 build；未遷移的字串仍用 `locales/en.json`（以中文原文為 key）。`tools/test_i18n_ids.py` 檢查 id 都存在、沒有孤兒 id、中英對應與值乾淨；`tools/i18n_data.py` 是共用的讀取／合併工具。`game.js` 內寫成 `'{{t:id}}'`（純中文）或 `'{{tb:id}}'`（遊戲內 `中文|English` 雙語字串，id 慣例為 `<遊戲>.say.NNN`，英文取自 `en.ids.json`），build 會依前一個引號做 JS 跳脫。因此 `game.js` 原始檔不再是可直接執行的 JS：測試請用 `tools/expand_ids.mjs` 的 `readSource()`／`expandIds()`、Python 工具用 `i18n_data.expand_ids()` 讀取。新字串請優先用 id，值不得含半形雙引號與 `{{`。
+
 ```sh
 python3 tools/check_i18n_browser.py
 # Chrome 不在預設位置時可加 --chrome /完整/執行檔路徑

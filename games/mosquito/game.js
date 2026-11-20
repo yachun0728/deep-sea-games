@@ -76,7 +76,7 @@ const {MQC,MQZ,BLANKET_Y,mqNew,mqStep,mqSurface,mqInWin}=mosquitoRules;
     if (it.phase === 'wind' && it.zone) {
       var z = it.zone, cx = (z.x0 + z.x1) / 2, p = 1 - it.t / MQC.itchWind;
       for (var k = 0; k < 3; k++) { var rr0 = ((p * 2 + k / 3) % 1) * 34 + 6; g.strokeStyle = 'rgba(255,60,60,' + (0.8 - rr0 / 50) + ')'; g.lineWidth = 3; g.beginPath(); g.ellipse(cx, z.y + 3, rr0 * 1.6, rr0 * 0.6, 0, 0, 6.3); g.stroke(); }
-      text('嗯…', cx, z.y - 150 + Math.sin(tt * 10) * 3, 20, '#ffd0d0', 'center', '#300');
+      text('{{t:mosquito.msg.001}}', cx, z.y - 150 + Math.sin(tt * 10) * 3, 20, '#ffd0d0', 'center', '#300');
     }
     if (it.phase === 'grab' && it.zone) {
       var zz = it.zone, hx = (zz.x0 + zz.x1) / 2, hp = 1 - it.t / MQC.grabTime, hy = lerp(zz.y - 260, zz.y - 70, Math.min(1, hp * 2.2));
@@ -131,10 +131,10 @@ const {MQC,MQZ,BLANKET_Y,mqNew,mqStep,mqSurface,mqInWin}=mosquitoRules;
 
   function drawHUD(q, tt) {
     var p = q.blood / 100, a = q.alert / 100;
-    text('吸血', 16, 22, 15, '#ffd6d6', 'left');
+    text('{{t:mosquito.msg.002}}', 16, 22, 15, '#ffd6d6', 'left');
     drawBar(60, 14, 404, 16, p, bloodColor(Math.max(0.35, p)));
     text(q.blood.toFixed(1) + '%', 468, 22, 13, '#fff', 'right');
-    text('警覺', 16, 46, 15, '#ffe9b0', 'left');
+    text('{{t:mosquito.msg.003}}', 16, 46, 15, '#ffe9b0', 'left');
     var col = a > 0.7 ? '#ff4040' : a > 0.4 ? '#ff9f2e' : '#ffd23f';
     drawBar(60, 38, 404, 16, a, col);
     if (a > 0.7 && Math.floor(tt * 6) % 2 === 0) { g.strokeStyle = '#ff4040'; g.lineWidth = 2; rr(60, 38, 404, 16, 8); g.stroke(); }
@@ -142,18 +142,18 @@ const {MQC,MQZ,BLANKET_Y,mqNew,mqStep,mqSurface,mqInWin}=mosquitoRules;
   }
 
   function computeHint(q) {
-    if (q.light.on) return '開燈了！衝向左邊的破洞！';
-    if (q.itch.phase === 'wind') return '發癢！快放開飛走！';
-    if (q.roll.phase === 'warn') return '要翻身了！快往上飛！';
-    if (q.blood >= 100) return '吸飽了！飛出窗戶的破洞！';
-    if (q.mode === 'suck') return '按住繼續吸 · 放開起飛';
-    if (q.t < 6) return '放開＝上升　按住＝俯衝　落在皮膚上按住吸血';
+    if (q.light.on) return '{{t:mosquito.msg.004}}';
+    if (q.itch.phase === 'wind') return '{{t:mosquito.msg.005}}';
+    if (q.roll.phase === 'warn') return '{{t:mosquito.msg.006}}';
+    if (q.blood >= 100) return '{{t:mosquito.msg.007}}';
+    if (q.mode === 'suck') return '{{t:mosquito.msg.008}}';
+    if (q.t < 6) return '{{t:mosquito.msg.009}}';
     return '';
   }
 
 const rank=timedLeaderboard('mosquito','mq',mosquitoRules.inputCount,ui);
 let st='ready',mo=mqNew(Math.random),tt=0,last=0,overT=0,rec=false,shake=0,flash=0,hintText='',splat=[],result=null;
-const CAUSE={face:'死因：被抓癢的手拍扁（臉頰）',arm:'死因：被抓癢的手拍扁（手臂）',foot:'死因：被抓癢的手拍扁（腳）',roll:'死因：被翻身壓死',light:'死因：燈亮後被電蚊拍打中'};
+const CAUSE={face:'{{t:mosquito.msg.010}}',arm:'{{t:mosquito.msg.011}}',foot:'{{t:mosquito.msg.012}}',roll:'{{t:mosquito.msg.013}}',light:'{{t:mosquito.msg.014}}'};
 const ptrs=new Set();let keyHeld=false;
 const held=()=>ptrs.size>0||keyHeld;
 const releaseInput=()=>{ptrs.clear();keyHeld=false};
@@ -163,7 +163,7 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const live=st==='run';
  setText('mq-blood',mo.blood.toFixed(1)+'%');setText('mq-alert',Math.floor(mo.alert)+'%');setText('mq-best',best.toFixed(1)+'%');
- $('mq-amount').disabled=mqBusy;$('mq-go').disabled=live||rank.busy();setText('mq-go',live?'出動中 · 放開上升、按住下降':st==='over'?'再來一隻':'開始吸血');
+ $('mq-amount').disabled=mqBusy;$('mq-go').disabled=live||rank.busy();setText('mq-go',live?'{{t:mosquito.msg.015}}':st==='over'?'{{t:mosquito.msg.016}}':'{{t:mosquito.msg.017}}');
 }
 function pay(n){
  earned+=n;paidCount++;S.balance+=n;save();renderAll();
@@ -171,7 +171,7 @@ function pay(n){
 }
 function checkMilestones(){
  for(let i=0;i<MQ_REWARDS.length;i++){
-  if(!paid[i]&&mo.blood>=MQ_REWARDS[i][0]){paid[i]=true;pay(MQ_REWARDS[i][1]);say('吸血達 '+MQ_REWARDS[i][0]+'% 里程碑，+'+MQ_REWARDS[i][1]+' 點已入帳。','win')}}
+  if(!paid[i]&&mo.blood>=MQ_REWARDS[i][0]){paid[i]=true;pay(MQ_REWARDS[i][1]);say('吸血達 '+MQ_REWARDS[i][0]+'{{t:mosquito.msg.018}}'+MQ_REWARDS[i][1]+' 點已入帳。','win')}}
 }
 function finish(kind){
  if(st!=='run')return;
@@ -184,8 +184,8 @@ function finish(kind){
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:Math.round(result.blood),step:paidCount,stage:1});mqBusy=false;save();renderAll();
  const pct=result.blood.toFixed(1);
  if(kind==='won')say('吸飽了！成功飛出窗戶，本局共入帳 '+fmt(earned)+' 點。','win');
- else if(kind==='escaped'){if(earned)say('死裡逃生！只吸到 '+pct+'%，沒有過關，本局共入帳 '+fmt(earned)+' 點。','win');else say('死裡逃生！只吸到 '+pct+'%，沒有過關，這一局沒有額外成就獎勵。','lose')}
- else{if(earned)say('被拍扁了。吸飽度 '+pct+'%，本局共入帳 '+fmt(earned)+' 點。','win');else say('被拍扁了。吸飽度 '+pct+'%，這一局沒有額外成就獎勵。','lose')}
+ else if(kind==='escaped'){if(earned)say('死裡逃生！只吸到 '+pct+'%，沒有過關，本局共入帳 '+fmt(earned)+' 點。','win');else say('死裡逃生！只吸到 '+pct+'{{t:mosquito.msg.019}}','lose')}
+ else{if(earned)say('被拍扁了。吸飽度 '+pct+'%，本局共入帳 '+fmt(earned)+' 點。','win');else say('被拍扁了。吸飽度 '+pct+'{{t:mosquito.msg.020}}','lose')}
  ui();
 }
 function handleEvents(){
@@ -219,31 +219,31 @@ function tick(dt){
 function drawOverlay(){
  if(st==='ready'){
   g.fillStyle='rgba(8,8,16,.72)';g.fillRect(0,0,W,H);
-  text('血壓上升',240,130,54,'#ff5a5a','center','#200');text('深夜蚊子大作戰',240,184,26,'#ffd6d6','center','#200');
-  const ins=['放開：蚊子往上飄','按住：往下俯衝','降落在皮膚上，按住就吸血','吸越多越重、越飛不動','吸滿 100% 才能從窗戶破洞逃出去','別把他吵醒，被拍扁是你太貪心'];
+  text('{{t:mosquito.msg.021}}',240,130,54,'#ff5a5a','center','#200');text('{{t:mosquito.msg.022}}',240,184,26,'#ffd6d6','center','#200');
+  const ins=['{{t:mosquito.msg.023}}','{{t:mosquito.msg.024}}','{{t:mosquito.msg.025}}','{{t:mosquito.msg.026}}','{{t:mosquito.msg.027}}','{{t:mosquito.msg.028}}'];
   for(let i=0;i<ins.length;i++)text(ins[i],240,250+i*30,18,'#e8e8f4');
-  text('到操作區開始',240,560,24,'#ffd23f','center','#000');
+  text('{{t:mosquito.msg.029}}',240,560,24,'#ffd23f','center','#000');
   return}
  if(st!=='over'||!result)return;
  const r=result;
  if(r.kind==='dead'){
   g.fillStyle='rgba(30,0,0,'+Math.min(.7,overT*3)+')';g.fillRect(0,0,W,H);
-  text('被拍扁了',240,250,32,'#ffd6d6','center','#200');
+  text('{{t:mosquito.msg.030}}',240,250,32,'#ffd6d6','center','#200');
   text('吸飽度 '+r.blood.toFixed(1)+'%',240,330,52,'#ff2a2a','center','#200');
-  text(r.blood>=95?'就差一點點……你太貪心了':r.blood>=80?'再多活一秒就能吸飽':'連一半都沒吸到',240,388,20,'#ffd6d6');
+  text(r.blood>=95?'{{t:mosquito.msg.031}}':r.blood>=80?'{{t:mosquito.msg.032}}':'{{t:mosquito.msg.033}}',240,388,20,'#ffd6d6');
   text(CAUSE[r.cause==='itch'?r.part:r.cause],240,426,18,'#ffb0b0');
  }else if(r.kind==='won'){
   g.fillStyle='rgba(0,20,10,.6)';g.fillRect(0,0,W,H);
-  text('吸飽了！',240,270,52,'#7dffb0','center','#031');
+  text('{{t:mosquito.msg.034}}',240,270,52,'#7dffb0','center','#031');
   text('成功飛出窗戶　用時 '+r.time.toFixed(1)+' 秒',240,340,20,'#d8ffe8');
  }else{
   g.fillStyle='rgba(10,10,30,.6)';g.fillRect(0,0,W,H);
-  text('死裡逃生',240,270,48,'#9ec3ff','center','#012');
-  text('但你只吸到 '+r.blood.toFixed(1)+'%，餓著肚子逃走',240,340,20,'#dce8ff');
+  text('{{t:mosquito.msg.035}}',240,270,48,'#9ec3ff','center','#012');
+  text('但你只吸到 '+r.blood.toFixed(1)+'{{t:mosquito.msg.036}}',240,340,20,'#dce8ff');
  }
- text(earned>0?'本局入帳 '+fmt(earned)+' 點':'這一局沒有額外成就獎勵',240,468,22,earned>0?'#ffd23f':'#fff1c1');
- if(rec)text('新紀錄！',240,502,20,'#ffd23f');
- text('到操作區再玩一次',240,560,20,'#fff1c1');
+ text(earned>0?'本局入帳 '+fmt(earned)+' 點':'{{t:mosquito.msg.037}}',240,468,22,earned>0?'#ffd23f':'#fff1c1');
+ if(rec)text('{{t:mosquito.msg.038}}',240,502,20,'#ffd23f');
+ text('{{t:mosquito.msg.039}}',240,560,20,'#fff1c1');
 }
 function draw(){
  const sx=shake>0?(Math.random()-.5)*20*shake:0,sy=shake>0?(Math.random()-.5)*20*shake:0;
@@ -267,14 +267,14 @@ function start(){
  rank.start(random=>{
  analytics=AN.start('mosquito',amount);mqStake=amount;mqBusy=true;save();renderAll();
  mo=mosquitoRules.create(random||Math.random);earned=0;paid=[false,false,false];winPaid=false;paidCount=0;rec=false;result=null;splat=[];shake=0;flash=0;hintText='';releaseInput();
- st='run';last=performance.now();say('出動！放開上升、按住下降，降落在皮膚上按住吸血。');ui();cv.focus();
+ st='run';last=performance.now();say('{{t:mosquito.msg.040}}');ui();cv.focus();
  },ui);
 }
 const shown=()=>!$('view-mosquito').hidden&&!document.hidden;
 $('mq-go').addEventListener('click',start);
 cv.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
- if(st!=='run'){say(st==='over'?'這一局已結算。按「再來一隻」開始新的一局。':'先按「開始吸血」。');return}
+ if(st!=='run'){say(st==='over'?'{{t:mosquito.msg.041}}':'{{t:mosquito.msg.042}}');return}
  if(!shown())return;e.preventDefault();cv.focus();try{cv.setPointerCapture(e.pointerId)}catch(_){}
  ptrs.add(e.pointerId)});
 const endPointer=e=>{ptrs.delete(e.pointerId)};

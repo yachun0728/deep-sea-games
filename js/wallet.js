@@ -18,5 +18,5 @@
   }
   // Legacy regeneration keys remain readable; no passive or offline points after free-play migration.
   function regenTick(now) { return false; }
-  function regenUI() { var el=document.getElementById('regen-hint'); if(el)el.textContent='點數可兌換外觀'; }
+  function regenUI() { var el=document.getElementById('regen-hint'); if(el)el.textContent='{{t:wallet.msg.001}}'; }
   function regenStart() { regenUI(); }

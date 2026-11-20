@@ -15,7 +15,7 @@
       if(AN.interact)AN.interact();
       QP.active=true;QP.level=Math.max(1,Math.min(QP.total,Math.floor(Number(data&&data.level)||1)));QP.ducks=0;QP.analytics=AN.start('quack-pond',ENTRY_FEE);
       save();renderAll();qpUI();
-      qpSay('第 {lv} 關開始，每行、每列、每個顏色區域各放一隻鴨子。|Level {lv} started: one duck in every row, column and colour region.','',{lv:QP.level});
+      qpSay('{{tb:quack-pond.say.001}}','',{lv:QP.level});
       return true;
     },
     progress:function(source,level,ducks){
@@ -29,10 +29,10 @@
       QP.active=false;QP.level=level;
       if(result==='win'){
         AN.end(QP.analytics,0,'complete',{score:level,step:stars});
-        qpSay('第 {lv} 關過關，拿到 {st} 顆星。|Level {lv} cleared with {st} star(s).','win',{lv:level,st:stars});
+        qpSay('{{tb:quack-pond.say.002}}','win',{lv:level,st:stars});
       }else if(result==='loss'){
         AN.end(QP.analytics,0,'loss',{score:level,step:QP.ducks});
-        qpSay('第 {lv} 關失敗，愛心用完了。再想想哪一格才是對的。|Level {lv} failed: out of hearts. Think about which cell is really safe.','lose',{lv:level});
+        qpSay('{{tb:quack-pond.say.003}}','lose',{lv:level});
       }else{
         AN.end(QP.analytics,0,'abandoned',{score:level,step:QP.ducks});
       }
@@ -52,9 +52,9 @@
   }
   $('qp-go').addEventListener('click',function(){
     var w=$('qp-frame').contentWindow;
-    if(!w||!w.startQuackPlatformRound){qpSay('遊戲畫面還在載入，請稍候再試。','lose');return;}
+    if(!w||!w.startQuackPlatformRound){qpSay('{{t:quack-pond.msg.004}}','lose');return;}
     if(w.startQuackPlatformRound())$('qp-frame').focus();
   });
   window.addEventListener('arcade-languagechange',function(){if(QP.msg)qpSay(QP.msg.text,QP.msg.kind,QP.msg.params);});
-  qpSay('在左側選關或直接開始；點空格標 ✕，再點放鴨子。|Pick a level on the left or just start: tap a cell for ✕, tap again for a duck.');
+  qpSay('{{tb:quack-pond.say.005}}');
   qpUI();

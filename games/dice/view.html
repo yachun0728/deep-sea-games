@@ -3,7 +3,7 @@
       <div class="dice-stage" id="dc-stage">
         <div class="dc-read">
           <div class="mult" id="dc-result">50.00</div>
-          <div class="sub-line" id="dc-sub">聲納讀數會落在 0.00 到 99.99 之間</div>
+          <div class="sub-line" id="dc-sub">{{t:dice.view.01}}</div>
         </div>
         <div>
           <div class="dc-track">
@@ -13,47 +13,47 @@
           <div class="dc-scale" aria-hidden="true"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
         </div>
         <div class="dc-target">
-          <label for="dc-target">門檻<output id="dc-target-out" for="dc-target">50</output></label>
+          <label for="dc-target">{{t:dice.view.02}}<output id="dc-target-out" for="dc-target">50</output></label>
           <input id="dc-target" type="range" min="2" max="95" step="1" value="50">
         </div>
-        <div class="history" aria-label="最近的讀數">
-          <span class="label">最近讀數</span>
+        <div class="history" aria-label="{{t:dice.view.20}}">
+          <span class="label">{{t:dice.view.03}}</span>
           <div class="pills" id="dc-last"></div>
         </div>
       </div>
       <div class="side">
-        <section class="panel" aria-label="測深下注">
+        <section class="panel" aria-label="{{t:dice.view.21}}">
           <div class="field">
-            <label for="dc-amount">下注點數</label>
+            <label for="dc-amount">{{t:dice.view.04}}</label>
             <div class="input-row">
               <input id="dc-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
               <button class="chip dchip" type="button" data-dchip="half">½</button>
               <button class="chip dchip" type="button" data-dchip="double">2×</button>
-              <button class="chip dchip" type="button" data-dchip="max">全押</button>
+              <button class="chip dchip" type="button" data-dchip="max">{{t:dice.view.05}}</button>
             </div>
           </div>
           <div class="field">
-            <label id="dc-mode-label">猜讀數</label>
+            <label id="dc-mode-label">{{t:dice.view.06}}</label>
             <div class="seg-row" role="group" aria-labelledby="dc-mode-label">
-              <button class="chip seg" type="button" data-dmode="under" id="dc-under">低於 50</button>
-              <button class="chip seg" type="button" data-dmode="over" id="dc-over">50 以上</button>
+              <button class="chip seg" type="button" data-dmode="under" id="dc-under">{{t:dice.view.07}}</button>
+              <button class="chip seg" type="button" data-dmode="over" id="dc-over">{{t:dice.view.08}}</button>
             </div>
           </div>
           <dl class="stats">
-            <div><dt>勝率</dt><dd id="dc-chance">—</dd></div>
-            <div><dt>倍率</dt><dd id="dc-mult">—</dd></div>
-            <div><dt>猜中可領</dt><dd id="dc-win">—</dd></div>
+            <div><dt>{{t:dice.view.09}}</dt><dd id="dc-chance">—</dd></div>
+            <div><dt>{{t:dice.view.10}}</dt><dd id="dc-mult">—</dd></div>
+            <div><dt>{{t:dice.view.11}}</dt><dd id="dc-win">—</dd></div>
           </dl>
-          <button class="go" id="dc-go" type="button" data-mode="bet">發出聲納</button>
-          <p class="msg" id="dc-msg" aria-live="polite">拉動門檻決定勝率：勝率越低，倍率越高。</p>
+          <button class="go" id="dc-go" type="button" data-mode="bet">{{t:dice.view.12}}</button>
+          <p class="msg" id="dc-msg" aria-live="polite">{{t:dice.view.13}}</p>
         </section>
       </div>
     </div>
     <details class="rules">
-      <summary>玩法與機率</summary>
-      <p>每次聲納會回傳一個 0.00 到 99.99 的讀數，共 10,000 種結果、機率相同。你先選門檻，再猜讀數會「低於門檻」還是「在門檻以上」（剛好等於門檻算以上）。亮色那一段就是你會贏的範圍。</p>
-      <p>猜「低於 T」的勝率是 T%，猜「T 以上」的勝率是 (100 − T)%。倍率固定是 <code>97 ÷ 勝率(%)</code>，所以不論門檻怎麼選，長期期望回報都約 97%。勝率可調範圍是 2% 到 95%，對應倍率 48.50× 到 1.02×。</p>
-      <p>讀數在按下的瞬間用瀏覽器亂數決定。點數與其他遊戲共用，沒有任何現金價值。</p>
+      <summary>{{t:dice.view.14}}</summary>
+      <p>{{t:dice.view.15}}</p>
+      <p>{{t:dice.view.16}} <code>{{t:dice.view.17}}</code>{{t:dice.view.18}}</p>
+      <p>{{t:dice.view.19}}</p>
     </details>
   </section>
 

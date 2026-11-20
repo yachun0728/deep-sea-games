@@ -1,37 +1,37 @@
   <section class="view" id="view-merge" hidden>
     <div class="console">
       <div class="board-wrap">
-        <div class="mg idle" id="mg" role="group" aria-label="4 乘 4 養珠盤"></div>
+        <div class="mg idle" id="mg" role="group" aria-label="{{t:merge.view.15}}"></div>
       </div>
       <div class="side">
-        <section class="panel" aria-label="養珠">
+        <section class="panel" aria-label="{{t:merge.view.16}}">
           <dl class="stats">
-            <div><dt>分數</dt><dd id="mg-score">0</dd></div>
-            <div><dt>最大珍珠</dt><dd id="mg-max">—</dd></div>
-            <div><dt>最佳分數</dt><dd id="mg-best">0</dd></div>
+            <div><dt>{{t:merge.view.01}}</dt><dd id="mg-score">0</dd></div>
+            <div><dt>{{t:merge.view.02}}</dt><dd id="mg-max">—</dd></div>
+            <div><dt>{{t:merge.view.03}}</dt><dd id="mg-best">0</dd></div>
           </dl>
           <div class="field">
-            <label id="mg-dir-label">滑動方向</label>
+            <label id="mg-dir-label">{{t:merge.view.04}}</label>
             <div class="input-row dpad" role="group" aria-labelledby="mg-dir-label">
-              <button class="chip" type="button" data-dir="left" aria-label="向左滑">←</button>
-              <button class="chip" type="button" data-dir="up" aria-label="向上滑">↑</button>
-              <button class="chip" type="button" data-dir="down" aria-label="向下滑">↓</button>
-              <button class="chip" type="button" data-dir="right" aria-label="向右滑">→</button>
+              <button class="chip" type="button" data-dir="left" aria-label="{{t:merge.view.17}}">←</button>
+              <button class="chip" type="button" data-dir="up" aria-label="{{t:merge.view.18}}">↑</button>
+              <button class="chip" type="button" data-dir="down" aria-label="{{t:merge.view.19}}">↓</button>
+              <button class="chip" type="button" data-dir="right" aria-label="{{t:merge.view.20}}">→</button>
             </div>
           </div>
-          <button class="go" id="mg-go" type="button" data-mode="bet">開始一局</button>
-          <p class="msg" id="mg-msg" aria-live="polite">把相同數字的珍珠滑在一起，合併成更大的珍珠。</p>
+          <button class="go" id="mg-go" type="button" data-mode="bet">{{t:merge.view.05}}</button>
+          <p class="msg" id="mg-msg" aria-live="polite">{{t:merge.view.06}}</p>
       <p id="mg-rank-status" role="status" hidden></p>
-      <button type="button" id="mg-rank-retry" hidden>重送遊戲操作</button>
-          <p class="hint">可以用 <kbd>方向鍵</kbd>、<kbd>WASD</kbd>，或在盤面上滑動。</p>
+      <button type="button" id="mg-rank-retry" hidden>{{t:merge.view.07}}</button>
+          <p class="hint">{{t:merge.view.08}} <kbd>{{t:merge.view.09}}</kbd>、<kbd>WASD</kbd>{{t:merge.view.10}}</p>
         </section>
       </div>
     </div>
     <details class="rules">
-      <summary>玩法</summary>
-      <p>每次滑動，盤上所有珍珠都往同一個方向靠攏，兩顆相同數字的珍珠相撞就合併成兩倍大，並把合併後的數字加進分數。每滑一步會多長出一顆 2（九成）或 4（一成）。</p>
-      <p>盤面塞滿、而且沒有任何相鄰的相同珍珠時，這一局就結束。</p>
-      <p>最佳分數只存在你的瀏覽器裡。</p>
+      <summary>{{t:merge.view.11}}</summary>
+      <p>{{t:merge.view.12}}</p>
+      <p>{{t:merge.view.13}}</p>
+      <p>{{t:merge.view.14}}</p>
     </details>
   </section>
 

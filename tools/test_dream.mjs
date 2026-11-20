@@ -1,10 +1,11 @@
 // Optional: node tools/test_dream.mjs (no packages).
 import fs from 'node:fs';
+import {readSource} from './expand_ids.mjs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import rules from '../shared/dream-rules.cjs';
 const shared=fs.readFileSync(new URL('../shared/dream-rules.cjs',import.meta.url),'utf8');
-const source=fs.readFileSync(new URL('../games/dream/game.js',import.meta.url),'utf8');
+const source=readSource('../games/dream/game.js',import.meta.url);
 function fixture(balance=100){
  let now=0;const elements=new Map(),events=[];
  const drawing=new Proxy({createRadialGradient:()=>({addColorStop(){}})},{get:(t,k)=>t[k]||(()=>{})});

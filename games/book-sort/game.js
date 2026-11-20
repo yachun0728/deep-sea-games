@@ -2,7 +2,7 @@
   (function(){
 const BEST_KEY='deep-sea-book-sort-best',GAME_ID='book-sort';
 {{include:shared/book-sort-rules.cjs}}
-const QUOTES=['「喵嗚～整整齊齊的書箱，這下店長可以安心睡午覺了！」','「不愧是金牌整理師！每本書的書脊都排得像藝術品一樣美～」','「封箱膠帶貼得筆直又漂亮，店長決定頒發肉球印章給你！」','「書架大掃除順利完成，空出來的紙箱正好讓我進去打個盹～」'];
+const QUOTES=['{{t:book-sort.msg.001}}','{{t:book-sort.msg.002}}','{{t:book-sort.msg.003}}','{{t:book-sort.msg.004}}'];
 // ===== 畫面與流程 =====
 const g=id=>document.getElementById(id);
 const I=()=>window.deepSeaI18n;
@@ -56,8 +56,8 @@ function updateLevelPicker(){
  const numbers=[...new Set([level,unlocked])].filter(n=>n>LEVELS.length).sort((a,b)=>a-b);
  const group=g('bs-campaign-options');
  group.hidden=!numbers.length;
- group.label=T('進階關卡');
- group.replaceChildren(...numbers.map(n=>new Option(tr('第 {0} 關',n),String(n))));
+ group.label=T('{{t:book-sort.msg.005}}');
+ group.replaceChildren(...numbers.map(n=>new Option(tr('{{t:book-sort.msg.006}}',n),String(n))));
  g('bs-level').value=random?'random':String(level)
 }
 function load(value){
@@ -74,20 +74,20 @@ function load(value){
  boxes=initial.map(b=>b.slice());
  updateLevelPicker();
  g('bs-modal').hidden=true;
- say('新關卡準備完成！所有書本從底層到頂層都一清二楚囉～');
+ say('{{t:book-sort.msg.007}}');
  ui();render()}
 function ui(){
  g('bs-moves').textContent=String(moves);
- g('bs-level-text').textContent=random?T('隨機關卡'):tr('第 {0} 關',level);
- g('bs-best').textContent=random||!bestFor(level)?'—':tr('{0} 步',bestFor(level));
+ g('bs-level-text').textContent=random?T('{{t:book-sort.msg.008}}'):tr('{{t:book-sort.msg.006}}',level);
+ g('bs-best').textContent=random||!bestFor(level)?'—':tr('{{t:book-sort.msg.009}}',bestFor(level));
  g('bs-undo').disabled=!history.length||busy;
  g('bs-add').disabled=extraUsed;
- g('bs-sound').textContent=T(sfx.on?'音效：開':'音效：關');g('bs-sound').setAttribute('aria-pressed',String(sfx.on))}
+ g('bs-sound').textContent=T(sfx.on?'{{t:book-sort.msg.010}}':'{{t:book-sort.msg.011}}');g('bs-sound').setAttribute('aria-pressed',String(sfx.on))}
 function describe(i){
  const b=boxes[i];
- if(!b.length)return tr('紙箱 {0}：空箱',i+1);
- if(isFull(b))return tr('紙箱 {0}：已封箱，{1}',i+1,T(BOOKS[b[0]].name));
- return tr('紙箱 {0}：{1} 本書，頂部是{2}',i+1,b.length,T(BOOKS[b[b.length-1]].name))}
+ if(!b.length)return tr('{{t:book-sort.msg.012}}',i+1);
+ if(isFull(b))return tr('{{t:book-sort.msg.013}}',i+1,T(BOOKS[b[0]].name));
+ return tr('{{t:book-sort.msg.014}}',i+1,b.length,T(BOOKS[b[b.length-1]].name))}
 function render(){
  boxesEl.innerHTML='';
  boxesEl.classList.toggle('bs-dense',boxes.length>6);
@@ -117,7 +117,7 @@ function render(){
   slot.appendChild(stack);
   const front=document.createElement('div');front.className='bs-front';front.innerHTML='<span></span><span></span>';front.firstChild.textContent='BOX #'+(i+1);slot.appendChild(front);
   const tape=document.createElement('div');tape.className='bs-tape';slot.appendChild(tape);
-  const stamp=document.createElement('div');stamp.className='bs-stamp';stamp.innerHTML='PACKED<br><small></small>';stamp.querySelector('small').textContent=T('已整理');slot.appendChild(stamp);
+  const stamp=document.createElement('div');stamp.className='bs-stamp';stamp.innerHTML='PACKED<br><small></small>';stamp.querySelector('small').textContent=T('{{t:book-sort.msg.015}}');slot.appendChild(stamp);
   const code=document.createElement('div');code.className='bs-code';code.textContent=(b.length?BOOKS[b[0]].code:'EMPTY')+' · 5';slot.appendChild(code);
   slot.addEventListener('click',()=>click(i));
   slot.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();click(i)}});
@@ -132,15 +132,15 @@ function sparkles(el){
 function click(i){
  if(busy||g('bs-modal').hidden===false)return;
  hint=null;
- if(isFull(boxes[i])){shake(i);say('這箱已經集滿 5 本並封箱囉，交給貓咪店長保管！');render();return}
+ if(isFull(boxes[i])){shake(i);say('{{t:book-sort.msg.016}}');render();return}
  if(sel===null){
-  if(!boxes[i].length){shake(i);sfx.bad();say('這個紙箱是空的喔，先點選有書的紙箱吧！');render();return}
-  sel=i;sfx.pick();say('已拿起「{0}」，請點選要疊放的紙箱！',T(BOOKS[boxes[i][boxes[i].length-1]].name));render();return}
- if(sel===i){sel=null;sfx.place(1);say('已將書本放回原位。');render();return}
+  if(!boxes[i].length){shake(i);sfx.bad();say('{{t:book-sort.msg.017}}');render();return}
+  sel=i;sfx.pick();say('{{t:book-sort.msg.018}}',T(BOOKS[boxes[i][boxes[i].length-1]].name));render();return}
+ if(sel===i){sel=null;sfx.place(1);say('{{t:book-sort.msg.019}}');render();return}
  if(!canMove(boxes,sel,i)){
   const full=boxes[i].length>=CAP;
   sel=null;shake(i);sfx.bad();
-  say(full?'這個紙箱已經疊滿 5 本書囉，換個箱子試試！':'書本顏色不同喔！只能疊在同色書上方或空紙箱裡。');render();return}
+  say(full?'{{t:book-sort.msg.020}}':'{{t:book-sort.msg.021}}');render();return}
  doMove(sel,i)}
 function doMove(from,to){
  if(!random&&!rankTicket&&location.protocol!=='file:')rankTicket=prepareRank(level);
@@ -163,8 +163,8 @@ function doMove(from,to){
   boxes=applyMove(boxes,from,to);sel=null;moves++;busy=false;landed={box:to,n:n};
   sfx.place(n);
   const sealedNow=isFull(boxes[to]);
-  if(sealedNow){sfx.seal();say('集滿 5 本同色書！自動升起擋板、貼上膠帶並蓋章封箱！')}
-  else say('疊放成功！繼續整理剩下的精裝書吧～');
+  if(sealedNow){sfx.seal();say('{{t:book-sort.msg.022}}')}
+  else say('{{t:book-sort.msg.023}}');
   ui();render();
   if(round){try{AN.progress(round,{stage:level,step:moves})}catch(_){}}
   if(sealedNow){const s=boxesEl.querySelector('.bs-slot[data-index="'+to+'"]');if(s)sparkles(s)}
@@ -180,9 +180,9 @@ function win(){
  trackEnd('complete');
  g('bs-final-moves').textContent=String(moves);g('bs-final-rating').textContent='★★★'.slice(0,stars)+'☆☆☆'.slice(0,3-stars);
  quoteIdx=Math.floor(Math.random()*QUOTES.length);g('bs-modal-quote').textContent=T(QUOTES[quoteIdx]);
- g('bs-next').textContent=random?T('挑戰隨機關卡'):tr('前往第 {0} 關',level+1);
+ g('bs-next').textContent=random?T('{{t:book-sort.msg.024}}'):tr('{{t:book-sort.msg.025}}',level+1);
  menu.open=false;g('bs-modal').hidden=false;g('bs-next').focus({preventScroll:true});
- say('書本全部封箱完成！');ui()}
+ say('{{t:book-sort.msg.026}}');ui()}
 function findHint(){
  const sol=solve(boxes,30000);
  if(sol&&sol.length)return sol[0];
@@ -191,24 +191,24 @@ g('bs-level').addEventListener('change',e=>{sfx.pick();load(e.target.value)});
 g('bs-undo').addEventListener('click',()=>{
  if(!history.length||busy)return;
  clearTimeout(winTimer);const p=history.pop();boxes=p.boxes;moves=p.moves;extraUsed=p.extra;sel=null;hint=null;landed=null;
- sfx.pick();say('已撤銷上一步移動！');ui();render()});
+ sfx.pick();say('{{t:book-sort.msg.027}}');ui();render()});
 g('bs-hint').addEventListener('click',()=>{
  if(busy||g('bs-modal').hidden===false)return;
  const h=findHint();
- if(!h){sfx.bad();say('目前沒有可以移動的書，試試「撤銷上一步」吧！');return}
+ if(!h){sfx.bad();say('{{t:book-sort.msg.028}}');return}
  sel=null;hint=h;sfx.pick();
- say('店長提示：試著把 {0} 號箱頂部的書移到 {1} 號箱！',h.from+1,h.to+1);render()});
+ say('{{t:book-sort.msg.029}}',h.from+1,h.to+1);render()});
 g('bs-restart').addEventListener('click',()=>{
  if(busy)return;
  trackEnd('abandoned');clearTimeout(winTimer);rankTicket=null;
  boxes=initial.map(b=>b.slice());sel=null;hint=null;moves=0;history=[];extraUsed=false;landed=null;g('bs-modal').hidden=true;
- sfx.pick();say('紙箱已恢復原狀，重新整理一次吧！');ui();render()});
+ sfx.pick();say('{{t:book-sort.msg.030}}');ui();render()});
 g('bs-add').addEventListener('click',()=>{
  if(extraUsed||busy||g('bs-modal').hidden===false)return;
  history.push({boxes:boxes.map(b=>b.slice()),moves:moves,extra:extraUsed,action:[]});
  extraUsed=true;sel=null;hint=null;boxes.push([]);sfx.place(1);
- say('店長搬來一個備用空紙箱了！好好利用它來周轉書本吧。');ui();render()});
-g('bs-random').addEventListener('click',()=>{sfx.pick();load('random');say('已生成全新的隨機關卡，祝你整理愉快！')});
+ say('{{t:book-sort.msg.031}}');ui();render()});
+g('bs-random').addEventListener('click',()=>{sfx.pick();load('random');say('{{t:book-sort.msg.032}}')});
 g('bs-next').addEventListener('click',()=>{if(g('bs-modal').hidden)return;sfx.pick();load(random?'random':level+1);g('bs-title').focus({preventScroll:true})});
 g('bs-sound').addEventListener('click',()=>{sfx.on=!sfx.on;ui();if(sfx.on)sfx.pick()});
 function closeMenu(){
@@ -230,6 +230,6 @@ window.addEventListener('hashchange',()=>{
  }
  else requestAnimationFrame(()=>{
   if(location.hash==='#'+GAME_ID)g('bs-title').focus({preventScroll:true})})});
-window.addEventListener('arcade-languagechange',()=>{updateLevelPicker();ui();render();paintSay();if(!g('bs-modal').hidden){g('bs-next').textContent=random?T('挑戰隨機關卡'):tr('前往第 {0} 關',level+1);g('bs-modal-quote').textContent=T(QUOTES[quoteIdx])}});
+window.addEventListener('arcade-languagechange',()=>{updateLevelPicker();ui();render();paintSay();if(!g('bs-modal').hidden){g('bs-next').textContent=random?T('{{t:book-sort.msg.024}}'):tr('{{t:book-sort.msg.025}}',level+1);g('bs-modal-quote').textContent=T(QUOTES[quoteIdx])}});
 load(highestUnlocked());
   })();

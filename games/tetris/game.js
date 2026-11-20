@@ -6,7 +6,7 @@
   function ttBest(){try{return Math.max(0,Math.floor(Number(localStorage.getItem('tetris-best'))||0));}catch(_){return 0;}}
   function ttUI(){
     $('tt-score').textContent=fmt(TET.score);$('tt-lines').textContent=TET.lines;$('tt-best').textContent=fmt(Math.max(ttBest(),TET.score));
-    $('tt-go').disabled=TET.active||tetrisRank.busy();$('tt-go').textContent=TET.active?'遊戲中 · 在左側操作':'開始遊戲';
+    $('tt-go').disabled=TET.active||tetrisRank.busy();$('tt-go').textContent=TET.active?'{{t:tetris.msg.001}}':'{{t:tetris.msg.002}}';
   }
   function ttValid(source){return source===$('tt-frame').contentWindow;}
   window.deepSeaTetris={
@@ -28,7 +28,7 @@
       if(AN.interact)AN.interact();
       TET.active=true;TET.score=0;TET.lines=0;TET.analytics=AN.start('tetris',ENTRY_FEE);
       save();renderAll();ttUI();
-      ttSay('方塊落到底前可以左右移動、旋轉或暫存。|Move, rotate or hold the piece before it locks.');
+      ttSay('{{tb:tetris.say.003}}');
       return true;
     },
     finish:function(source,data){
@@ -36,7 +36,7 @@
       var score=Math.max(0,Math.floor(Number(data&&data.score)||0)),lines=Math.max(0,Math.floor(Number(data&&data.lines)||0)),level=Math.max(1,Math.floor(Number(data&&data.level)||1));
       TET.active=false;TET.score=score;TET.lines=lines;
       AN.end(TET.analytics,0,'complete',{score:score,step:lines,level:level});TET.analytics=null;
-      ttSay('遊戲結束：{sc} 分、消除 {ln} 行、等級 {lv}。|Game over: {sc} points, {ln} lines, level {lv}.','',{sc:fmt(score),ln:lines,lv:level});
+      ttSay('{{tb:tetris.say.004}}','',{sc:fmt(score),ln:lines,lv:level});
       tetrisRank.finish(score,data?.endedOnInput===true);ttUI();return 0;
     },
     pause:function(source){if(ttValid(source)&&TET.active)AN.progress(TET.analytics,{phase:'pause'},true);},
@@ -54,9 +54,10 @@
   $('tt-go').addEventListener('click',function(){
     var w=$('tt-frame').contentWindow;
     if(TET.active)return;
-    if(!w||!w.startTetrisPlatformRound){ttSay('遊戲畫面還在載入，請稍候再試。','lose');return;}
+    if(!w||!w.startTetrisPlatformRound){ttSay('{{t:tetris.msg.005}}','lose');return;}
     if(w.startTetrisPlatformRound())$('tt-frame').focus();
   });
+  $('tt-exit').addEventListener('click',function(){window.location.hash='lobby';});
   window.addEventListener('arcade-languagechange',function(){if(TET.msg)ttSay(TET.msg.text,TET.msg.kind,TET.msg.params);});
-  ttSay('按「開始遊戲」或在遊戲畫面按 Enter 開局。|Press “Start” or Enter in the game to begin.');
+  ttSay('{{tb:tetris.say.006}}');
   ttUI();

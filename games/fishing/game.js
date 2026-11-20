@@ -5,7 +5,7 @@ var FI_MILESTONES=[[10,3],[12,7],[14,15],[17,30]],FI_ENDLESS_FROM=17,FI_ENDLESS_
 function fiBonusAt(n){for(var i=0;i<FI_MILESTONES.length;i++)if(FI_MILESTONES[i][0]===n)return FI_MILESTONES[i][1];return n>FI_ENDLESS_FROM&&(n-FI_ENDLESS_FROM)%FI_ENDLESS_STEP===0?FI_ENDLESS_BONUS:0;}
 function fiNextMilestone(n){for(var i=0;i<FI_MILESTONES.length;i++)if(FI_MILESTONES[i][0]>n)return FI_MILESTONES[i];return [FI_ENDLESS_FROM+(Math.floor((n-FI_ENDLESS_FROM)/FI_ENDLESS_STEP)+1)*FI_ENDLESS_STEP,FI_ENDLESS_BONUS];}
 function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+' 代';}
-  var FI_NAMES=['小丑魚','藍雀鯛','小河豚','彩虹魚','海鱸','鮪魚','鬼頭刀','旗魚','巨型石斑','深海魚王'];
+  var FI_NAMES=['{{t:fishing.msg.001}}','{{t:fishing.msg.002}}','{{t:fishing.msg.003}}','{{t:fishing.msg.004}}','{{t:fishing.msg.005}}','{{t:fishing.msg.006}}','{{t:fishing.msg.007}}','{{t:fishing.msg.008}}','{{t:fishing.msg.009}}','{{t:fishing.msg.010}}'];
   var fishingCanvas=$('fi-canvas'),fishingCtx=fishingCanvas.getContext('2d'),fishingPointers=new Set(),fishingKeys=new Set();
   try{var fb=Number(localStorage.getItem('deep-sea-fishing-best'));if(Number.isFinite(fb))FI.best=Math.max(0,Math.floor(fb));}catch(e){}
   function fiText(id,value){var el=$(id);if(el.textContent!==value)el.textContent=value;}
@@ -18,14 +18,14 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
     var nx=fiNextMilestone(FI.landed);
     fiText('fi-number','第 '+FI.number+' 條');fiText('fi-distance',Math.max(0,FI.distance).toFixed(1)+' m');fiText('fi-best',FI.best+' 條');fiText('fi-next','釣到 '+nx[0]+' 條 · +'+nx[1]);
     $('fi-amount').disabled=FI.active;
-    $('fi-go').disabled=FI.phase==='fishing'||fiRank.busy();fiText('fi-go',FI.phase==='fishing'?'拉鋸中 · 按住收線':'下竿');
-    $('fi-hold').disabled=FI.phase!=='fishing';fiText('fi-hold',FI.hold?'收線中 · 放開卸力':'按住收線 · 放開卸力');
+    $('fi-go').disabled=FI.phase==='fishing'||fiRank.busy();fiText('fi-go',FI.phase==='fishing'?'{{t:fishing.msg.011}}':'{{t:fishing.msg.012}}');
+    $('fi-hold').disabled=FI.phase!=='fishing';fiText('fi-hold',FI.hold?'{{t:fishing.msg.013}}':'{{t:fishing.msg.014}}');
     var tension=Math.max(0,Math.min(100,FI.tension));$('fi-tension-fill').style.width=tension+'%';
     var danger=tension>=88||tension<=8,warn=tension>75||tension<20;
     $('fi-tension-fill').style.background=danger?'var(--crush)':warn?'var(--lamp)':'var(--glow)';
     $('fi-tension').setAttribute('aria-valuenow',String(Math.round(tension)));fiText('fi-tension-value',Math.round(tension)+' / 100');
-    fiText('fi-slack',FI.phase==='fishing'&&tension<=8?'快脫鉤了！立即收線':FI.phase==='fishing'&&tension>=88?'魚線快斷了！放開卸力':'張力 20～75 較穩定');
-    var text=FI.phase==='lost'?'本局結束':FI.phase==='ready'?'下竿後，觀察魚的動作':FI.mode==='struggle'?'猛力掙扎 · 放開卸力':FI.mode==='warn'?'水花變大 · 準備掙扎':FI.mode==='tired'?'魚累了 · 趁機收線':'平穩游動 · 可以收線';
+    fiText('fi-slack',FI.phase==='fishing'&&tension<=8?'{{t:fishing.msg.015}}':FI.phase==='fishing'&&tension>=88?'{{t:fishing.msg.016}}':'{{t:fishing.msg.017}}');
+    var text=FI.phase==='lost'?'{{t:fishing.msg.018}}':FI.phase==='ready'?'{{t:fishing.msg.019}}':FI.mode==='struggle'?'{{t:fishing.msg.020}}':FI.mode==='warn'?'{{t:fishing.msg.021}}':FI.mode==='tired'?'{{t:fishing.msg.022}}':'{{t:fishing.msg.023}}';
     fiText('fi-signal',text);$('fi-signal').dataset.state=FI.mode;
     fiText('fi-name',fiFishName(FI.number));
   }
@@ -43,17 +43,17 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
       fishingRules.create(random||Math.random,function(event){
         if(event==='land')fiLand();
         else if(event==='next')fiRound(false);
-        else fiLose(event==='break'?'魚線斷了！':'魚線太鬆，魚脫鉤了！');
+        else fiLose(event==='break'?'{{t:fishing.msg.024}}':'{{t:fishing.msg.025}}');
       },FI);
       fiRound(true);
     },fiUI);
   }
-  function fiLose(reason){if(FI.phase!=='fishing')return;AN.end(FI.analytics,FI.earned,FI.earned>0?'complete':'loss',{stage:FI.number,landed_fish:FI.landed});FI.active=false;FI.phase='lost';fiRelease();fiRank.finish(FI.landed);fiSay(reason+' 本局釣到 '+FI.landed+' 條，'+(FI.earned>0?'共入帳 '+fmt(FI.earned)+' 點。':'這一局沒有獎勵。'),FI.earned>0?'win':'lose');fiUI();}
+  function fiLose(reason){if(FI.phase!=='fishing')return;AN.end(FI.analytics,FI.earned,FI.earned>0?'complete':'loss',{stage:FI.number,landed_fish:FI.landed});FI.active=false;FI.phase='lost';fiRelease();fiRank.finish(FI.landed);fiSay(reason+' 本局釣到 '+FI.landed+' 條，'+(FI.earned>0?'共入帳 '+fmt(FI.earned)+' 點。':'{{t:fishing.msg.026}}'),FI.earned>0?'win':'lose');fiUI();}
   function fiAward(n,b){FI.earned+=b;S.balance+=b;save();renderAll();AN.progress(FI.analytics,{stage:n,landed_fish:n,bonus_points:b});FI.pops.push({n:n,b:b,age:0});if(FI.pops.length>3)FI.pops.shift();fiSay('釣到第 '+n+' 條！獎勵 +'+b+' 點已入帳，本局累計 +'+FI.earned+' 點。','win');}
   function fiLand(){
     if(FI.phase!=='fishing')return;
     var name=fiFishName(FI.number);AN.progress(FI.analytics,{stage:FI.number,landed_fish:FI.landed},true);fiRemember();
-    var b=fiBonusAt(FI.landed);if(b)fiAward(FI.landed,b);else fiSay('釣到 '+name+'！下一條馬上上鉤。','win');
+    var b=fiBonusAt(FI.landed);if(b)fiAward(FI.landed,b);else fiSay('釣到 '+name+'{{t:fishing.msg.027}}','win');
     FI.flash=1;
   }
   function fiSync(now){var dt=Math.max(0,(now-FI.last)/1000);FI.last=now;if(FI.phase==='fishing'&&!$('view-fishing').hidden&&!document.hidden)fiRank.update(dt*1000,()=>FI.phase==='fishing',step=>fishingRules.advance(FI,step));}
@@ -76,11 +76,11 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
         g.save();g.translate(fishX,fishY);g.scale(scale,scale);g.rotate(FI.mode==='struggle'?Math.sin(t*19)*.24:Math.sin(t*2)*.05);
     g.fillStyle=colors[(FI.number-1)%colors.length];g.beginPath();g.moveTo(32,0);g.lineTo(59,-24);g.lineTo(55,22);g.closePath();g.fill();g.beginPath();g.ellipse(0,0,40,25,0,0,Math.PI*2);g.fill();g.fillStyle='rgba(255,255,255,.26)';g.beginPath();g.ellipse(-3,9,24,11,0,0,Math.PI*2);g.fill();g.fillStyle='#e4f2f3';g.beginPath();g.arc(-22,-5,9,0,Math.PI*2);g.fill();g.fillStyle='#051620';g.beginPath();g.arc(-25,-5,4,0,Math.PI*2);g.fill();g.strokeStyle='#0c2230';g.lineWidth=2;g.beginPath();g.arc(-34,8,5,-.5,1);g.stroke();g.restore();
     if(FI.mode==='struggle'||FI.mode==='warn'){g.strokeStyle=FI.mode==='struggle'?'#ffb638':'#8db0b9';g.lineWidth=2;for(var s=0;s<5;s++){var a=s*.9+t*3;g.beginPath();g.moveTo(fishX+Math.cos(a)*57,fishY+Math.sin(a)*32);g.lineTo(fishX+Math.cos(a)*70,fishY+Math.sin(a)*43);g.stroke();}}
-    g.textAlign='left';g.fillStyle='#e4f2f3';g.font='600 21px system-ui';g.fillText('深海釣手',20,32);g.textAlign='right';g.fillStyle='#8db0b9';g.font='14px system-ui';g.fillText('第 '+FI.number+' 條 · 本局 +'+FI.earned+' 點',W-20,31);
-    g.textAlign='center';g.fillStyle='#8db0b9';g.font='13px system-ui';g.fillText('按住收線 · 放開卸力 · 把魚拉上岸',W/2,H-20);
+    g.textAlign='left';g.fillStyle='#e4f2f3';g.font='600 21px system-ui';g.fillText('{{t:fishing.msg.028}}',20,32);g.textAlign='right';g.fillStyle='#8db0b9';g.font='14px system-ui';g.fillText('第 '+FI.number+' 條 · 本局 +'+FI.earned+' 點',W-20,31);
+    g.textAlign='center';g.fillStyle='#8db0b9';g.font='13px system-ui';g.fillText('{{t:fishing.msg.029}}',W/2,H-20);
     FI.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=130-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#62e6d2';g.font='700 38px system-ui';g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#e4f2f3';g.font='600 17px system-ui';g.fillText('釣到 '+p.n+' 條里程碑',W/2,py+28);g.globalAlpha=1;});
     if(FI.phase==='lost'||FI.phase==='ready'){
-      g.fillStyle='rgba(5,22,32,.88)';g.fillRect(48,389,424,103);g.fillStyle=FI.phase==='lost'?'#ff6f61':'#62e6d2';g.font='600 25px system-ui';g.fillText(FI.phase==='ready'?'準備釣一條大魚？':'魚逃走了！',W/2,430);g.fillStyle='#e4f2f3';g.font='15px system-ui';g.fillText(FI.phase==='ready'?'先下竿，再按住畫面開始收線':'本局釣到 '+FI.landed+' 條'+(FI.earned>0?' · 入帳 +'+FI.earned+' 點':''),W/2,465);
+      g.fillStyle='rgba(5,22,32,.88)';g.fillRect(48,389,424,103);g.fillStyle=FI.phase==='lost'?'#ff6f61':'#62e6d2';g.font='600 25px system-ui';g.fillText(FI.phase==='ready'?'{{t:fishing.msg.030}}':'{{t:fishing.msg.031}}',W/2,430);g.fillStyle='#e4f2f3';g.font='15px system-ui';g.fillText(FI.phase==='ready'?'{{t:fishing.msg.032}}':'本局釣到 '+FI.landed+' 條'+(FI.earned>0?' · 入帳 +'+FI.earned+' 點':''),W/2,465);
     }
   }
   function fiPress(e){if(e.button!==undefined&&e.button!==0)return;if(FI.phase!=='fishing'||$('view-fishing').hidden||document.hidden)return;e.preventDefault();fiSync(performance.now());if(FI.phase!=='fishing')return;fishingCanvas.focus();fishingPointers.add(e.pointerId);fiHold(true);try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}fiUI();}

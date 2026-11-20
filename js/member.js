@@ -39,7 +39,7 @@
       player.setAttribute('data-i18n-ignore', '');
       player.textContent = entry.displayName;
     } else {
-      player.textContent = '訪客';
+      player.textContent = '{{t:member.msg.001}}';
     }
 
     var link = document.createElement('a'), name = document.createElement('span');
@@ -73,7 +73,7 @@
     var request = new AbortController();
     boardRequest = request;
     var body = $('board-rows');
-    if (!body.children.length) boardStatus('載入排行榜中…');
+    if (!body.children.length) boardStatus('{{t:member.msg.002}}');
     var timeout = setTimeout(function () { request.abort(); }, 10000);
     try {
       var module = await import('./frontend/services/api.mjs');
@@ -92,9 +92,9 @@
         body.replaceChildren(...recent.map(function (game) { return boardRow(...game); }));
         boardSnapshot = snapshot;
       }
-      boardStatus(recent.length ? '' : '目前尚無排行榜紀錄。');
+      boardStatus(recent.length ? '' : '{{t:member.msg.003}}');
     } catch (error) {
-      if (boardRequest === request) boardStatus('目前無法載入排行榜。', true);
+      if (boardRequest === request) boardStatus('{{t:member.msg.004}}', true);
     } finally {
       clearTimeout(timeout);
       if (boardRequest === request) boardRequest = null;
@@ -148,8 +148,8 @@
       $('account-bar').parentNode.hidden = !goal;
       if (goal) {
         $('account-bar').style.width = Math.min(100, S.balance / goal.price * 100) + '%';
-        $('account-goal').textContent = S.balance >= goal.price ? '可以兌換：' + goal.name : '下一個外觀：' + goal.name + '（還差 ' + fmt(goal.price - S.balance) + ' 點）';
-      } else $('account-goal').textContent = '外觀已全部收藏';
+        $('account-goal').textContent = S.balance >= goal.price ? '{{t:member.msg.005}}' + goal.name : '{{t:member.msg.006}}' + goal.name + '（還差 ' + fmt(goal.price - S.balance) + ' 點）';
+      } else $('account-goal').textContent = '{{t:member.msg.007}}';
     }
     function setOpen(open) {
       menu.hidden = !open; button.setAttribute('aria-expanded', open ? 'true' : 'false');

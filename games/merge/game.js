@@ -2,7 +2,7 @@
   var MG_FEE = ENTRY_FEE, BEST = 'pearl-merge-best';
   var G = { grid: [0, 0, 2, 0, 0, 4, 2, 0, 8, 4, 0, 0, 32, 16, 2, 0], score: 0, best: 0, active: false, over: false, fresh: {} };
   var elMg = $('mg'), elGGo = $('mg-go'), elGMsg = $('mg-msg'), cells = [];
-  var mergeRound = null, mergePending = null, mergeStarting = false, mergeSending = false;
+  var mergeRound = null, mergeRandom = null, mergeActions = [], mergePending = null, mergeStarting = false, mergeSending = false;
   try { var gb = parseInt(localStorage.getItem(BEST), 10); if (isFinite(gb) && gb > 0) G.best = gb; } catch (e) {}
 
   function gSay(text, cls) { elGMsg.textContent = text; elGMsg.className = 'msg' + (cls ? ' ' + cls : ''); }
@@ -21,8 +21,8 @@
     $('mg-best').textContent = fmt(G.best);
     document.querySelectorAll('[data-dir]').forEach(function (b) { b.disabled = !G.active || !!mergePending; });
     elGGo.disabled = mergeStarting || mergeSending;
-    if (G.active) { elGGo.dataset.mode = 'cancel'; elGGo.innerHTML = '放棄重開'; }
-    else { elGGo.dataset.mode = 'bet'; elGGo.innerHTML = (G.over ? '再玩一局' : '開始一局') + ''; }
+    if (G.active) { elGGo.dataset.mode = 'cancel'; elGGo.innerHTML = '{{t:merge.msg.001}}'; }
+    else { elGGo.dataset.mode = 'bet'; elGGo.innerHTML = (G.over ? '{{t:merge.msg.002}}' : '{{t:merge.msg.003}}') + ''; }
   }
   function mergeStatus(text, retry) {
     var status = $('mg-rank-status');
@@ -34,10 +34,12 @@
     mergeRound = round;
     if (G.active) AN.end(G.analytics,0,'restart',{score:G.score});
     G.analytics = AN.start('merge',MG_FEE);
-    Object.assign(G, round ? round.state : mergeRules.create());
+    mergeActions = [];
+    mergeRandom = round ? timedReplay.seeded(round.state.seed) : null;
+    Object.assign(G, round ? Object.assign(mergeRules.create(mergeRandom), {over:false}) : mergeRules.create());
     G.fresh = Object.fromEntries(G.grid.flatMap((tile, i) => tile ? [[i,1]] : []));
     G.active = true;
-    gSay('開始養珠。');
+    gSay('{{t:merge.msg.004}}');
     syncBalance();
     mgRender();
   }
@@ -48,7 +50,7 @@
     if (typeof location === 'undefined' || location.protocol === 'file:') { beginMerge(null); return; }
 
     mergeStarting = true;
-    mergeStatus('正在準備訪客排行…');
+    mergeStatus('{{t:merge.msg.005}}');
     mgRender();
     var round = null;
     try {
@@ -57,7 +59,7 @@
     } catch {}
     mergeStarting = false;
     if ($('view-merge').hidden) { mergeStatus(''); mgRender(); return; }
-    mergeStatus(round ? '本局將列入訪客排行。' : '這一局可在本機遊玩。');
+    mergeStatus(round ? '{{t:merge.msg.006}}' : '{{t:merge.msg.007}}');
     beginMerge(round);
   }
   function updateMerge(before) {
@@ -66,48 +68,44 @@
     if (G.over) {
       AN.end(G.analytics,0,'complete',{score:G.score});
       G.active = false;
-      gSay('盤面滿了，這一局結束：' + fmt(G.score) + ' 分，最大珍珠 ' + max + '。', 'lose');
+      gSay('{{t:merge.msg.008}}' + fmt(G.score) + ' 分，最大珍珠 ' + max + '。', 'lose');
     } else if (max > before && max >= 128) gSay('養出 ' + max + ' 的珍珠了！', 'win');
     mgRender();
   }
   async function sendMergeMove() {
     if (!mergePending || mergeSending) return;
     mergeSending = true;
-    mergeStatus('正在驗證遊戲操作…');
+    mergeStatus('{{t:merge.msg.009}}');
     mgRender();
     try {
       var api = await import('./frontend/services/api.mjs');
-      var next = await api.moveBoardRound(mergeRound.token,mergePending,AbortSignal.timeout(8000));
-      var changed = next.revision !== mergeRound.revision;
-      var before = Math.max(...G.grid);
-      Object.assign(mergeRound,next);
-      if (changed) Object.assign(G,next.state);
+      var next = await api.moveBoardRound(mergeRound.token,mergePending,AbortSignal.timeout(10000));
+      var saved = next.revision !== mergePending.revision && next.state.score === G.score;
       mergePending = null;
-      mergeStatus(next.state.over ? '成績已送到排行榜。' : '本局將列入訪客排行。');
-      if (changed) updateMerge(before);
+      mergeStatus(saved ? '{{t:merge.msg.010}}' : '{{t:merge.msg.011}}');
     } catch (error) {
       if (error.retryable === false) {
         mergePending = null;
-        G.active = false;
-        AN.end(G.analytics,0,'abandoned',{score:G.score});
-        mergeStatus('排行榜回合已中斷，請再開一局。');
-        mgRender();
-      } else mergeStatus('遊戲操作未能送出。',true);
+        mergeStatus('{{t:merge.msg.011}}');
+      } else mergeStatus('{{t:merge.msg.012}}',true);
     } finally {
       mergeSending = false;
-      elGGo.disabled = false;
-      document.querySelectorAll('[data-dir]').forEach(function (button) { button.disabled = !G.active || !!mergePending; });
+      mgRender();
     }
   }
   function mgMove(dir) {
-    if (!G.active || mergePending || mergeStarting || $('view-merge').hidden) return;
-    if (mergeRound) {
-      mergePending = {gameId:'merge',id:mergeRound.id,revision:mergeRound.revision,action:dir};
-      sendMergeMove();
-      return;
-    }
+    if (!G.active || mergeStarting || $('view-merge').hidden) return;
     var before = Math.max(...G.grid);
-    if (mergeRules.move(G,dir)) updateMerge(before);
+    if (!mergeRules.move(G,dir,mergeRandom || Math.random)) return;
+    if (mergeRound) {
+      mergeActions.push(mergeRules.directions.indexOf(dir));
+      if (mergeActions.length > 8000) { mergeRound = null; mergeStatus('{{t:merge.msg.011}}'); }
+    }
+    updateMerge(before);
+    if (mergeRound && G.over) {
+      mergePending = {gameId:'merge',id:mergeRound.id,revision:mergeRound.revision,action:mergeActions};
+      sendMergeMove();
+    }
   }
   $('mg-rank-retry').addEventListener('click',sendMergeMove);
   elGGo.addEventListener('click', mgStart);

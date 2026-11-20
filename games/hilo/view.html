@@ -2,40 +2,40 @@
     <div class="console">
       <div class="dice-stage" id="hl-stage">
         <div class="hl-table"><div class="card idle" id="hl-card"></div></div>
-        <div class="dc-read"><div class="sub-line" id="hl-sub">猜下一張牌比這張大還是小</div></div>
-        <div class="hl-trail" id="hl-trail" aria-label="這一局翻過的牌"></div>
+        <div class="dc-read"><div class="sub-line" id="hl-sub">{{t:hilo.view.01}}</div></div>
+        <div class="hl-trail" id="hl-trail" aria-label="{{t:hilo.view.16}}"></div>
       </div>
       <div class="side">
-        <section class="panel" aria-label="漲退下注">
+        <section class="panel" aria-label="{{t:hilo.view.17}}">
           <div class="field">
-            <label for="hl-amount">下注點數</label>
+            <label for="hl-amount">{{t:hilo.view.02}}</label>
             <div class="input-row">
               <input id="hl-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
               <button class="chip hchip" type="button" data-hchip="half">½</button>
               <button class="chip hchip" type="button" data-hchip="double">2×</button>
-              <button class="chip hchip" type="button" data-hchip="max">全押</button>
+              <button class="chip hchip" type="button" data-hchip="max">{{t:hilo.view.03}}</button>
             </div>
           </div>
           <div class="hl-guess">
-            <button class="chip guess hi" type="button" id="hl-hi" disabled>漲 ▲<small>—</small></button>
-            <button class="chip guess lo" type="button" id="hl-lo" disabled>退 ▼<small>—</small></button>
+            <button class="chip guess hi" type="button" id="hl-hi" disabled>{{t:hilo.view.04}}<small>—</small></button>
+            <button class="chip guess lo" type="button" id="hl-lo" disabled>{{t:hilo.view.05}}<small>—</small></button>
           </div>
-          <button class="chip skip" type="button" id="hl-skip" disabled>換一張牌</button>
+          <button class="chip skip" type="button" id="hl-skip" disabled>{{t:hilo.view.06}}</button>
           <dl class="stats">
-            <div><dt>目前倍率</dt><dd id="hl-mult">—</dd></div>
-            <div><dt>可領</dt><dd id="hl-win">—</dd></div>
-            <div><dt>猜對</dt><dd id="hl-picks">—</dd></div>
+            <div><dt>{{t:hilo.view.07}}</dt><dd id="hl-mult">—</dd></div>
+            <div><dt>{{t:hilo.view.08}}</dt><dd id="hl-win">—</dd></div>
+            <div><dt>{{t:hilo.view.09}}</dt><dd id="hl-picks">—</dd></div>
           </dl>
-          <button class="go" id="hl-go" type="button" data-mode="bet">開始</button>
-          <p class="msg" id="hl-msg" aria-live="polite">按開始翻出第一張牌，每猜對一次倍率就往上，隨時可以領回。</p>
+          <button class="go" id="hl-go" type="button" data-mode="bet">{{t:hilo.view.10}}</button>
+          <p class="msg" id="hl-msg" aria-live="polite">{{t:hilo.view.11}}</p>
         </section>
       </div>
     </div>
     <details class="rules">
-      <summary>玩法與機率</summary>
-      <p>牌面由小到大是 A、2 … 10、J、Q、K，A 最小。按開始後翻出一張牌，你猜下一張會「漲」（更大或相同）還是「退」（更小或相同）。猜對倍率就乘上去，可以繼續猜或領回「下注 × 目前倍率」；猜錯就失去這一注。</p>
-      <p>手上是 A 時，「漲」變成嚴格更大、「退」變成猜剛好相同；手上是 K 時反過來。每局可以換牌 3 次，換牌不影響倍率。</p>
-      <p>每張牌都是從 13 種點數裡等機率抽出（等於無限副牌，不會算牌）。倍率是每次猜測「1 ÷ 猜中機率」連乘，最後乘上 0.97，所以長期期望回報約 97%。按鈕上會直接顯示該選項的機率與猜中後的倍率。</p>
+      <summary>{{t:hilo.view.12}}</summary>
+      <p>{{t:hilo.view.13}}</p>
+      <p>{{t:hilo.view.14}}</p>
+      <p>{{t:hilo.view.15}}</p>
     </details>
   </section>
 

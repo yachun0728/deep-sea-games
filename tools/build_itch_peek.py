@@ -15,10 +15,12 @@ def read(p):
     with open(os.path.join(ROOT, p), encoding='utf-8') as f:
         return f.read()
 
+sys.path.insert(0, os.path.join(ROOT, 'tools'))
+import i18n_data  # noqa: E402
 
-game = read('games/peek/game.js')
-view = read('games/peek/view.html')
-dic = json.loads(read('locales/en.json'))
+game = i18n_data.expand_ids(read('games/peek/game.js'), ROOT, js=True)
+view = i18n_data.expand_ids(read('games/peek/view.html'), ROOT)
+dic = i18n_data.dictionary(ROOT)
 
 # ---- game source: strip platform rewards, point to local assets ----
 game = game.replace("games/peek/assets/", "assets/")

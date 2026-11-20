@@ -6,7 +6,7 @@
     DIVE.best=Math.max(DIVE.best,diveBest());
     $('dv-score').textContent=fmt(DIVE.score)+' 分';$('dv-depth').textContent=DIVE.depth*10+' m';$('dv-best').textContent=fmt(DIVE.best)+' 分';
     $('dv-go').disabled=DIVE.active;
-    $('dv-go').textContent=DIVE.active?'下潛中 · 在左側畫面操作':DIVE.done?'再潛一次':'開始下潛';
+    $('dv-go').textContent=DIVE.active?'{{t:dive.msg.001}}':DIVE.done?'{{t:dive.msg.002}}':'{{t:dive.msg.003}}';
   }
   function diveValid(source){return source===$('dv-frame').contentWindow;}
   window.deepSeaDive={
@@ -16,7 +16,7 @@
       if(amount>S.balance){diveSay(LOW_MSG,'lose');return 0;}
       if(AN.interact)AN.interact();
       DIVE.active=true;DIVE.stake=amount;DIVE.score=0;DIVE.depth=0;DIVE.done=false;DIVE.analytics=AN.start('dive',amount);save();renderAll();diveUI();
-      diveSay('在左側畫面挑路線往下潛，珍珠與深度累積成分數；遊玩點數依平台規則累積。');
+      diveSay('{{t:dive.msg.004}}');
       return true;
     },
     live:function(source,score,depth){
@@ -28,7 +28,7 @@
       var score=Math.max(0,Math.floor(Number(data&&data.score)||0)),kind=String(data&&data.kind||''),depth=Math.max(0,Math.floor(Number(data&&data.depth)||0));
       DIVE.active=false;DIVE.done=true;DIVE.score=score;DIVE.depth=depth;diveUI();
       AN.end(DIVE.analytics,0,kind==='drown'?'loss':'complete',{score:score,depth:depth});
-      diveSay(kind==='drown'?'氧氣耗盡，這一趟分數歸零。':'本局 '+fmt(score)+' 分，最深 '+depth*10+' m。',kind==='drown'?'lose':'win');
+      diveSay(kind==='drown'?'{{t:dive.msg.005}}':'本局 '+fmt(score)+' 分，最深 '+depth*10+' m。',kind==='drown'?'lose':'win');
       return 0;
     },
     progress:function(source,depth){
@@ -46,7 +46,7 @@
   $('dv-go').addEventListener('click',function(){
     var w=$('dv-frame').contentWindow;
     if(DIVE.active)return;
-    if(!w||!w.startDivePlatformRound){diveSay('遊戲畫面還在載入，請稍候再試。','lose');return;}
+    if(!w||!w.startDivePlatformRound){diveSay('{{t:dive.msg.006}}','lose');return;}
     w.startDivePlatformRound();
   });
   diveUI();

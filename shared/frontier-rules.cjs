@@ -1,7 +1,7 @@
 const frontierRules=(()=>{
 const model=typeof module!=='undefined'?require('../games/frontier/world.js'):{frontierWorld,frontierStep,frontierChoose,frontierUpgrade,frontierSell,frontierLeave,frontierUpgradeHut,frontierRecruit};
 const {frontierWorld:createWorld,frontierStep:step,frontierChoose:choose,frontierUpgrade:upgrade,frontierSell:sell,frontierLeave:leave,frontierUpgradeHut:upgradeHut,frontierRecruit:recruit}=model;
-const INPUTS=1100,STEP=.05,MAX_TICKS=400;
+const INPUTS=1100,STEP=.05,MAX_TICKS=2400;
 function create(seed){
  const world=createWorld(1);world.rankSeed=seed;
  return {world,completed:0,elapsed:0,x:0,y:0,dash:false,dead:false};
@@ -29,7 +29,7 @@ function advance(s){
  if(s.world.phase==='dead')s.dead=true;
 }
 function accepts(action){
- if(!Array.isArray(action)||!Number.isInteger(action[0])||action[0]<0||action[0]>MAX_TICKS||action.length>1601)return false;
+ if(!Array.isArray(action)||!Number.isInteger(action[0])||action[0]<0||action[0]>MAX_TICKS||action.length>4001)return false;
  let last=-1;
  return action.slice(1).every(code=>{
   const tick=Math.floor(code/INPUTS);

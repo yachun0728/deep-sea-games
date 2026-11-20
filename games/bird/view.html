@@ -1,14 +1,14 @@
   <section class="view" id="view-bird" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="pb-canvas" tabindex="0" width="400" height="560" aria-label="便便鳥大戰狼群：點畫面跳躍，狼王出現時按右下角的便便按鈕"></canvas></div>
-      <div class="side"><section class="panel" aria-label="便便鳥操作">
-        <dl class="stats"><div><dt>本局距離</dt><dd id="pb-score">0 m</dd></div><div><dt>擊退狼王</dt><dd id="pb-boss">0 隻</dd></div><div><dt>最佳紀錄</dt><dd id="pb-best">0 m</dd></div></dl>
+    <div class="console"><div class="sneak-stage"><canvas id="pb-canvas" tabindex="0" width="400" height="560" aria-label="{{t:bird.view.16}}"></canvas></div>
+      <div class="side"><section class="panel" aria-label="{{t:bird.view.17}}">
+        <dl class="stats"><div><dt>{{t:bird.view.01}}</dt><dd id="pb-score">0 m</dd></div><div><dt>{{t:bird.view.02}}</dt><dd id="pb-boss">{{t:bird.view.03}}</dd></div><div><dt>{{t:bird.view.04}}</dt><dd id="pb-best">0 m</dd></div></dl>
         <input id="pb-amount" type="hidden" value="0">
-        <button class="go" id="pb-go" type="button" data-mode="bet">開始奔跑</button>
-        <p class="msg" id="pb-msg" aria-live="polite">狼群偷走了你的蛋！開始後開始奔跑，跳過障礙，狼王出現時用便便把牠打跑。</p>
-        <p id="pb-rank-status" role="status" hidden></p><button id="pb-rank-retry" type="button" hidden>重送排行榜成績</button>
-        <p class="hint">看障礙上方的標記：1 個點點 1 下，2 個點點 2 下（二段跳），2 個點加長條是第二下要按住。戴王冠的狼王出現時，按畫面右下角的便便按鈕（或 <kbd>X</kbd>）丟牠，其他地方點一下是跳躍（或 <kbd>空白鍵</kbd>）。</p>
+        <button class="go" id="pb-go" type="button" data-mode="bet">{{t:bird.view.05}}</button>
+        <p class="msg" id="pb-msg" aria-live="polite">{{t:bird.view.06}}</p>
+        <p id="pb-rank-status" role="status" hidden></p><button id="pb-rank-retry" type="button" hidden>{{t:bird.view.07}}</button>
+        <p class="hint">{{t:bird.view.08}} <kbd>X</kbd>{{t:bird.view.09}} <kbd>{{t:bird.view.10}}</kbd>）。</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法與點數</summary><p>小鳥會自動往前跑，速度隨距離慢慢加快，沒有終點，撞到任何障礙這一局就結束。障礙有仙人掌和迎面衝來的狼，上方的標記告訴你怎麼跳：1 個點是點 1 下；2 個點是點 2 下，在空中再跳一次；2 個點加長條是點 2 下，第二下按住不放可以飛得更高。</p><p>每通過 8 個障礙，戴王冠的狼王會出現。牠跳不過去，必須按右下角的便便按鈕丟牠，打中 3 次才會被擊退；便便每 0.3 秒可以丟一次。</p><p>每擊退一隻狼王，救回一顆蛋，並獲得 1 點，當場入帳，之後撞到障礙也不會收回。跑多遠不另外給點數，只有打贏狼王才有。這是操作技巧遊戲，結果取決於跳躍與丟便便的時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最佳紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+    <details class="rules"><summary>{{t:bird.view.11}}</summary><p>{{t:bird.view.12}}</p><p>{{t:bird.view.13}}</p><p>{{t:bird.view.14}}</p><p>{{t:bird.view.15}}</p></details>
   </section>
 

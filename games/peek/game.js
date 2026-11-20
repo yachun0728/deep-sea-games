@@ -29,11 +29,11 @@ const art=k=>{if(typeof Image!=='function')return null;let i=ART[k];if(!i){i=ART
 const SIDE=230,PICK_AT=.3,DROP_EVERY=[7,11],CAMP_EVERY=20,CAMP_REST=3,CAMP_WIN=3,CAMP_PICK_MAX=8;   // props sit SIDE px off centre; items can be grabbed once nearer than 30% depth; a campfire every 20%
 const CARD_W=170,CARD_H=198,CARD_Y=146,CARDS_X=[CX-285,CX-85,CX+115];
 const CAMP_CARDS=['torch','charm','scroll'];
-const ITEM_NAME={torch:'火把',charm:'護身符',scroll:'舊卷軸',nib:'Nib',chest:'寶箱',rook:'旅人 Rook'};
-const ITEM_DESC={torch:'點一下火把：下次襲擊多 0.6 秒並標出方向',charm:'自動擋下一次致命失誤',scroll:'丟向葉下客、敲枝者、靜林鬼，燒掉牠們',nib:'無害的小傢伙，偷偷塞給你一卷軸',chest:'送給 Flick 或 Nib，牠們會放過你',rook:'旅人分你一樣：火把或護身符'};
-const FLICK_TIPS=['小螢：腳邊的落葉聚成一堆，就躲進另一側。','小螢：鳥群突然飛走，是有東西在敲樹枝。','小螢：蟲鳴停了。左右各有一件道具，點牠怕的那一件。','小螢：不同的鬼怕不同的道具：燈籠、符紙、鐵鎚、水桶。','小螢：風向反了。拖行聲從哪邊來，就躲進那一邊。','小螢：首領怕符紙，點符紙那一側。','小螢：首領怕符紙，點符紙那一側。','小螢：土面鼓起的那邊會伸出手，躲進另一邊。','小螢：鐘響三下。第三下之後往下滑低頭，一直低著頭，直到鐘聲散去。','小螢：躲太久會被發現。視野變暗就快憋不住了，鬼過去就出來。','小螢：水冒泡了。快速連點兩下！','小螢：冰在裂開。裂縫到腳邊的那一刻，點一下。','小螢：煙在哪邊，就躲進另一邊。','小螢：那些螢火是假的。點下方的火把，沒火把就躲進另一側。','小螢：記住嚎叫的節奏，等牠停了再點。','小螢：哪邊閃光，就躲進哪邊的雪洞。','小螢：起霧了，有張臉貼過來。點鐵鎚。','小螢：天暗了，鴉群在拍翅。點水桶。'];
-const CAUSES={eye:'死因 #1 葉下客：落葉聚在哪一邊，你沒有躲進另一側',twins:'死因 #2 敲枝者：敲擊聲在哪一邊，你就躲進哪一邊',walkerLate:'死因 #3 靜林鬼：你沒有及時點起道具',walkerMove:'死因 #4 靜林鬼：你點錯了道具',gale:'死因 #5 逆風客：風反著吹的時候，你沒有躲進風來的那一側',hollowLate:'死因 #6 空殼：你沒有及時點起道具',hollowMove:'死因 #7 空殼：你點錯了道具',reach:'死因 #8 墳手：土面鼓起的那一邊，你沒有躲進另一側',bell:'死因 #9 守墓鐘：第三下鐘響之後，你沒有一直低著頭',breath:'死因 #10 Dread 追上了：你躲太久，牠從背後找到你了',bog:'死因 #11 泥沼拖行者：水面冒泡時，你沒有連點兩下',crawl:'死因 #12 冰縫行者：裂縫爬到腳邊時，你沒有點一下',magma:'死因 #13 熔岩蟲：冒煙的那一邊，你沒有躲進另一側',flick:'死因 #14 螢火騙子：假螢火飄來時，你沒有點亮火把',howl:'死因 #15 雪嚎者：嚎叫的節奏，你沒有照著點對',white:'死因 #16 白幕：雪洞閃光的那一側，你沒有躲進去',glass:'死因 #17 玻璃臉：你沒有及時點鐵鎚，或點錯了道具',ash:'死因 #18 灰燼鴉群：你沒有及時點水桶，或點錯了道具',colossus:'死因 #19 巨像：最後一步踩在哪一邊，你沒有躲進另一側',tail:'死因 #20 Dread：它從背後追上來，你沒有連點拉開距離，或沒有躲開撲擊'};
-const TIPS={tail:'下次：聽到背後的腳步，連點螢幕（或按 F／Enter）拉開距離；它撲來時躲進另一側。',colossus:'下次：腳步左右交替，只看最後一步，躲進另一側。',eye:'下次：落葉聚在哪邊，就躲進另一邊，撐滿 3 秒。',twins:'下次：鳥群飛走、敲擊聲響起時，躲進敲擊的另一側。',walkerLate:'下次：左右各出現一件道具，要在牠逼近前點對的那一件（靜林鬼怕燈籠）。',walkerMove:'下次：看清楚兩件道具，牠怕的是燈籠（第一次遇到只會出現一件）。',gale:'下次：風向反了、拖行聲靠近時，躲進風來的那一側。',hollowLate:'下次：空殼怕符紙，牠逼近前點符紙那一側。',hollowMove:'下次：空殼怕符紙，不是燈籠。',reach:'下次：泥水冒泡、土面鼓起時，躲進另一邊並撐住 2 秒。',bell:'下次：鐘響三下，第三下之後往下滑低頭，低著頭直到鐘聲散去。',breath:'下次：躲著的時候背後的腳步會越來越近，在 Dread 追上來之前出來。',bog:'下次：水面冒泡、長條陰影浮起時，連點畫面兩下。',crawl:'下次：冰面裂縫延伸、咯吱聲變急時，在裂縫到腳邊的那一刻點一下畫面。',magma:'下次：地面發紅、一側冒煙時，躲進沒冒煙的那一側。',flick:'下次：很多螢火飄過來時，點畫面下方的火把；沒有火把就躲進另一側。',howl:'下次：聽清楚嚎叫的節奏，等牠停了，照同樣的間隔點畫面。',white:'下次：畫面一片白、一側閃光時，躲進閃光的那一側（雪洞）。',glass:'下次：畫面起霧、一張臉貼近時，點鐵鎚那一側。',ash:'下次：天色變暗、鴉群飛過、有拍翅聲時，點水桶那一側。'};
+const ITEM_NAME={torch:'{{t:peek.msg.001}}',charm:'{{t:peek.msg.002}}',scroll:'{{t:peek.msg.003}}',nib:'Nib',chest:'{{t:peek.msg.004}}',rook:'{{t:peek.msg.005}}'};
+const ITEM_DESC={torch:'{{t:peek.msg.006}}',charm:'{{t:peek.msg.007}}',scroll:'{{t:peek.msg.008}}',nib:'{{t:peek.msg.009}}',chest:'{{t:peek.msg.010}}',rook:'{{t:peek.msg.011}}'};
+const FLICK_TIPS=['{{t:peek.msg.012}}','{{t:peek.msg.013}}','{{t:peek.msg.014}}','{{t:peek.msg.015}}','{{t:peek.msg.016}}','{{t:peek.msg.017}}','{{t:peek.msg.017}}','{{t:peek.msg.018}}','{{t:peek.msg.019}}','{{t:peek.msg.020}}','{{t:peek.msg.021}}','{{t:peek.msg.022}}','{{t:peek.msg.023}}','{{t:peek.msg.024}}','{{t:peek.msg.025}}','{{t:peek.msg.026}}','{{t:peek.msg.027}}','{{t:peek.msg.028}}'];
+const CAUSES={eye:'{{t:peek.msg.029}}',twins:'{{t:peek.msg.030}}',walkerLate:'{{t:peek.msg.031}}',walkerMove:'{{t:peek.msg.032}}',gale:'{{t:peek.msg.033}}',hollowLate:'{{t:peek.msg.034}}',hollowMove:'{{t:peek.msg.035}}',reach:'{{t:peek.msg.036}}',bell:'{{t:peek.msg.037}}',breath:'{{t:peek.msg.038}}',bog:'{{t:peek.msg.039}}',crawl:'{{t:peek.msg.040}}',magma:'{{t:peek.msg.041}}',flick:'{{t:peek.msg.042}}',howl:'{{t:peek.msg.043}}',white:'{{t:peek.msg.044}}',glass:'{{t:peek.msg.045}}',ash:'{{t:peek.msg.046}}',colossus:'{{t:peek.msg.047}}',tail:'{{t:peek.msg.048}}'};
+const TIPS={tail:'{{t:peek.msg.049}}',colossus:'{{t:peek.msg.050}}',eye:'{{t:peek.msg.051}}',twins:'{{t:peek.msg.052}}',walkerLate:'{{t:peek.msg.053}}',walkerMove:'{{t:peek.msg.054}}',gale:'{{t:peek.msg.055}}',hollowLate:'{{t:peek.msg.056}}',hollowMove:'{{t:peek.msg.057}}',reach:'{{t:peek.msg.058}}',bell:'{{t:peek.msg.059}}',breath:'{{t:peek.msg.060}}',bog:'{{t:peek.msg.061}}',crawl:'{{t:peek.msg.062}}',magma:'{{t:peek.msg.063}}',flick:'{{t:peek.msg.064}}',howl:'{{t:peek.msg.065}}',white:'{{t:peek.msg.066}}',glass:'{{t:peek.msg.067}}',ash:'{{t:peek.msg.068}}'};
 const SWIPE_PX=40,COVER_MS=250,TAP_MS=260,BREATH=4.5,BREATH_BACK=2;   // gestures: swipe = hide into a spot, hold = close your eyes, tap = pick up / come out
 let best=0,deaths={};try{best=+localStorage.getItem('deep-sea-peek-best')||0}catch(e){}
 try{deaths=JSON.parse(localStorage.getItem('deep-sea-peek-deaths')||'{}')||{}}catch(e){deaths={}}
@@ -54,15 +54,15 @@ let tutSeen=false,tutAlways=true;try{tutAlways=localStorage.getItem('deep-sea-pe
 const needTut=()=>tutAlways?!tutSeen:!tutDone;
 try{const o=JSON.parse(localStorage.getItem('deep-sea-peek-opts')||'{}');assist=!!o.a;lowScare=!!o.l;captions=!!o.c;if(typeof o.m==='number')AMB=clamp(o.m,0,1);if(typeof o.v==='number')MASTER=clamp(o.v,0,1)}catch(e){}
 /* ---- levels: 100 levels in 5 worlds, a ten-level sawtooth with buffer levels and a boss every tenth (v0.5 section 5) ---- */
-const WORLD_BASE=[1,1.15,1.3,1.45,1.6],WORLD_NAME=['森林','墓地','沼澤','雪原','火山'];
-const WORLD_RULE=['霧天視野會變窄。','雨聲會蓋住方向，聲音從哪邊來比較難分。','沼澤讓聲音變悶，要聽仔細。','雪地讓腳步沉重，躲進去比較慢。','熱浪讓畫面晃動，灰燼蓋住聲音。'];
+const WORLD_BASE=[1,1.15,1.3,1.45,1.6],WORLD_NAME=['{{t:peek.msg.069}}','{{t:peek.msg.070}}','{{t:peek.msg.071}}','{{t:peek.msg.072}}','{{t:peek.msg.073}}'];
+const WORLD_RULE=['{{t:peek.msg.074}}','{{t:peek.msg.075}}','{{t:peek.msg.076}}','{{t:peek.msg.077}}','{{t:peek.msg.078}}'];
 const RHYTHM=[0,.65,.8,.85,.9,.65,.95,1,1.05,1.2,1];   // multiplier by level number inside a ten
 const LEARN={4:'eye',8:'twins',12:'walker',16:'gale',22:'reach',23:'bell',30:'glass',42:'bog',43:'flick',62:'howl',63:'crawl',64:'white',74:'tail',82:'magma',83:'ash'};   // the level that teaches each ghost
 /* ---- level table (docs: 100 關關卡表 v0.6). Worlds 2-5 reuse the four forest ghosts until their own ghosts exist. ---- */
 // kind, weather pool (indices into WX), event flags: c chest, r traveler 30%, n Nib
 const LVT=[0,['safe',[0],''],['safe',[2,0],''],['safe',[3,1],'n'],['learn',[0,1],''],['safe',[0,2],''],['mix',[3,1],''],['mix',[3,0],''],['learn',[4,1],''],['peak',[0,1],''],['boss',[3,2],''],['safe',[1,3],''],['learn',[1,0],''],['normal',[1,3],'c'],['normal',[1,4],''],['review',[0,4],''],['learn',[1,4],''],['mix',[1,4],''],['mix',[2,4],''],['peak',[1,4],''],['boss',[1,4],''],['safe',[1,3],''],['learn',[2,3],''],['learn',[1,2],'c'],['normal',[3,1],''],['safe',[2,3],''],['mix',[4,1],''],['mix',[2,4],'r'],['mix',[4,2],''],['peak',[4,3],''],['boss',[4,3],''],['safe',[4,2],''],['normal',[1,3],''],['normal',[3,2],'c'],['normal',[4,2],''],['review',[4,3],''],['mix',[2,4],''],['mix',[1,3],'r'],['mix',[1,4],''],['peak',[2,3],''],['boss',[2,4],''],['safe',[3,2],''],['learn',[3,5],''],['learn',[3,4],'c'],['normal',[2,4],''],['safe',[2,4],''],['mix',[2,3],''],['mix',[5,2],'r'],['mix',[2,3],''],['peak',[5,3],''],['boss',[5,4],''],['safe',[2,4],''],['normal',[2,5],''],['normal',[2,3],'c'],['normal',[5,3],''],['review',[2,3],''],['mix',[3,5],''],['mix',[3,2],'r'],['mix',[2,3],''],['peak',[3,2],''],['boss',[5,4],''],['safe',[1,6],''],['learn',[7,2],''],['learn',[2,7],'c'],['learn',[1,2],''],['safe',[1,6],''],['mix',[6,2],''],['mix',[6,7],'r'],['mix',[2,6],''],['peak',[7,2],''],['boss',[7,2],''],['safe',[1,6],''],['normal',[7,1],''],['normal',[2,6],'c'],['normal',[6,7],''],['review',[2,6],''],['mix',[1,2],''],['mix',[7,2],'r'],['mix',[1,7],''],['peak',[2,7],''],['boss',[2,7],''],['safe',[9,2],''],['learn',[2,8],''],['learn',[9,1],'c'],['normal',[2,1],''],['safe',[9,2],''],['mix',[2,8],''],['mix',[9,2],'r'],['mix',[1,8],''],['peak',[1,9],''],['boss',[8,2],''],['safe',[1,9],''],['normal',[1,2],''],['normal',[1,9],'c'],['normal',[1,2],''],['review',[2,1],''],['mix',[8,2],''],['mix',[1,2],'r'],['mix',[1,2],''],['peak',[1,9],''],['boss',[1,2],'']];
 LVT[74]=['learn',[3,1],''];LVT[75]=['boss',[3,1],''];
-const KIND_NAME={safe:'安全緩衝',review:'低壓複習',learn:'學新鬼',normal:'一般',mix:'混合',peak:'高峰',boss:'首領'};
+const KIND_NAME={safe:'{{t:peek.msg.079}}',review:'{{t:peek.msg.080}}',learn:'{{t:peek.msg.081}}',normal:'{{t:peek.msg.082}}',mix:'{{t:peek.msg.083}}',peak:'{{t:peek.msg.084}}',boss:'{{t:peek.msg.085}}'};
 const TAIL={warn:3,chase:6,lunge:1.6,gain:.09,decay:.22,d0:.5};   // Tail: it runs you down from behind; keep tapping to stay ahead, then hide from its lunge
 const WARN_FLOOR={tail:2,bog:1.6,flick:1.8,howl:2.2,crawl:1.8,white:1.6,magma:1.6,eye:1.6,twins:1.4,walker:3.5,gale:1.6,reach:1.6,bell:2.4};   // no knob may push a clue below these
 const GALE={warn:2.5,judge:2,toward:.5,grace:.35};            // lean toward the side the reversed wind comes from
@@ -116,7 +116,7 @@ function applyLevel(){
  {let wp=L.wxp;if(!L.fixed&&L.kind!=='boss'&&L.kind!=='learn'){const all=[...new Set(LVT.slice(L.wi*20+1,L.wi*20+21).flatMap(e=>e?e[1]:[]))].filter(x=>L.t>=.5||(x!==5&&x!==7));if(all.length>1)wp=all}   // ordinary levels draw from every weather their world uses, so the same level is not always the same rain
  wx=wp[(R()*wp.length)|0];if(wp.length>1&&wx===lastWx)wx=wp.find(x=>x!==lastWx);lastWx=wx}
  assistHid=L.ease?1:0;
- say('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'：'+KIND_NAME[L.kind]+(L.fixed?'（固定種子）':'')+'。'+WORLD_RULE[L.wi]+(L.ease?'小螢多給你 0.3 秒預警，少來一次襲擊。':''))}
+ say('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'：'+KIND_NAME[L.kind]+(L.fixed?'{{t:peek.msg.086}}':'')+'。'+WORLD_RULE[L.wi]+(L.ease?'{{t:peek.msg.087}}':''))}
 function reset(){shieldFx=0;torchTap=0;tapQ=[];headDown=false;itemTap=0;pendType=null;hideWant=0;tapPick=0;lt=0;breath=1;hk=0;scareSnap=null;gs.clear();eyeSeen=0;run=0;ph=0;prog=0;tilt=0;gapT=FIRST_GAP;ev=null;survived=0;lastType='';directorUsed=false;score=0;why='';rec=false;flash=0;shake=0;fxs=[];lampOut=0;bag={charm:0,torch:0,chest:0};drops=[];dropT=rnd(5,8);camp=null;campNext=CAMP_EVERY;openFx=null;pickHeld=0;sc=0;rB=BASE_RATE;scared=false;dropped=false;nibT=0;lostAll=false}
 reset();
 /* ---- audio: stereo cues, so headphones help; silent if the browser has no Web Audio ---- */
@@ -154,15 +154,15 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const live=st==='run';
  setText('peek-prog',L?'第 '+lvl+' 關':Math.floor(prog)+'%');setText('peek-spirits',survived+' 次襲擊');setText('peek-best',best+'%');setText('peek-codex',Object.keys(CAUSES).filter(k=>deaths[k]>0).length+' / '+Object.keys(CAUSES).length);setText('peek-dodges',dodgesTotal+' 次');
- setText('peek-lvl',L?lvl+' / 100':'自由跑');
+ setText('peek-lvl',L?lvl+' / 100':'{{t:peek.msg.088}}');
  const lv=wantLevel();
- $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'逃跑中 · 別回頭':(st==='ready'?'開始 ':'再試 ')+(lv?'第 '+lv+' 關':'自由跑'));
+ $('peek-amount').disabled=peekBusy;$('peek-go').disabled=live;setText('peek-go',live?'{{t:peek.msg.089}}':(st==='ready'?'開始 ':'再試 ')+(lv?'第 '+lv+' 關':'{{t:peek.msg.088}}'));
 }
 function fx(s,x,y,col){fxs.push({s,x,y,col,t:0})}
 function end(kind,reason){tutSeen=false;
  if(st!=='run')return;
  if(tut&&kind==='dead'){tutFail();return}
- if(kind==='dead'&&bag.charm>0){bag.charm--;shieldFx=1;fx('護身符擋下了這一次',CX,118,'#9fe8ff');ev=null;gapT=Math.max(nextGap(),4);flash=lowScare?.1:.3;return}
+ if(kind==='dead'&&bag.charm>0){bag.charm--;shieldFx=1;fx('{{t:peek.msg.090}}',CX,118,'#9fe8ff');ev=null;gapT=Math.max(nextGap(),4);flash=lowScare?.1:.3;return}
  deathEv=ev?{type:ev.col?'colossus':ev.type,side:ev.side,boss:!!ev.boss}:null;
  st=kind==='won'?'won':'over';try{window.__gp&&window.__gp(false)}catch(e){}why=reason||'';lostAll=false;
  const p=Math.floor(prog);rec=!L&&!practice&&p>best;
@@ -177,13 +177,13 @@ function end(kind,reason){tutSeen=false;
  if(kind==='won'&&L&&!practice&&!daily){
   maxLvl=Math.min(100,Math.max(maxLvl,lvl+1));runTop=Math.max(runTop,Math.min(100,lvl+1));noDrop=dropped?0:noDrop+1;delete lvDeaths[lvl];sv();if(hasLv)lvUI.value=Math.min(100,lvl+1)}
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:survived,stage:p,level:lvl,seed:seedCode,retry_assist:assistHid});peekBusy=false;save();renderAll();
- if(kind==='won')say((L?'第 '+lvl+' 關通關。':'衝出出口，盒子打開了。別看裡面。')+(earned>0?'本局共入帳 '+fmt(earned)+' 點。':''),'win');
- else if(!earned)say(CAUSES[reason]+'。'+(L?'你死了，整輪重來，回到第 1 關。':'這一局沒有額外成就獎勵。'),'lose');
+ if(kind==='won')say((L?'第 '+lvl+' 關通關。':'{{t:peek.msg.091}}')+(earned>0?'本局共入帳 '+fmt(earned)+' 點。':''),'win');
+ else if(!earned)say(CAUSES[reason]+'。'+(L?'{{t:peek.msg.092}}':'{{t:peek.msg.093}}'),'lose');
  else say(CAUSES[reason]+'。本局共入帳 '+fmt(earned)+' 點。','win');
  ui();
  if(kind==='won'&&L&&!practice&&!daily&&forceLvl===null&&lvl<100){   // no result page between levels: roll straight into the next one and announce the new terrain
   const pw=L.wi;forceLvl=lvl+1;start();forceLvl=null;
-  if(st==='run'&&L){fx('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'・'+KIND_NAME[L.kind],CX,150,'#e8c675');if(L.wi!==pw)fx('地形改變',CX,118,'#ffd98a')}}
+  if(st==='run'&&L){fx('第 '+lvl+' 關・'+WORLD_NAME[L.wi]+'・'+KIND_NAME[L.kind],CX,150,'#e8c675');if(L.wi!==pw)fx('{{t:peek.msg.094}}',CX,118,'#ffd98a')}}
 }
 function pay(n,text){
  if(practice||daily||(L&&lvl<maxLvl)){say(text+'。','win');return}   // practice and replays of cleared levels pay nothing
@@ -194,13 +194,13 @@ function pickPool(){
  const open=['eye'];if(survived>=UNLOCK_TWINS)open.push('twins');if(survived>=UNLOCK_WALKER)open.push('walker');
  const pool=open.filter(t=>t!==lastType);return pool.length?pool:open}
 const TUT=[
- {ty:'eye',k:['←','→'],kt:'按住躲藏',g:'swipe',gt:'左右滑並按住',t:'落葉堆在一側，等紅光亮起。',tj:'現在！往另一側滑（或按住 ← →）躲進去，撐滿 3 秒。',t2:'躲太久會喘不過氣，只在紅光亮時躲。'},
- {ty:'walker',k:['←','→'],kt:'選燈籠那一側',g:'tap',gt:'點燈籠那一側',t:'鬼來了。點燈籠那一側（或按 ← →）。',t2:'牠怕光。點錯道具就會被抓到。'},
- {ty:'pick',k:['F'],kt:'撿起',g:'tap',gt:'點一下道具',t:'路邊有東西，點一下（或按 F）撿起來。',t2:''},
- {ty:'eye',k:['←','→'],kt:'按住躲藏',g:'swipe',gt:'左右滑並按住',t:'換你了。聽聲音，自己判斷。',t2:'落葉在哪邊就躲另一邊，紅光亮時才躲。',solo:1}];
+ {ty:'eye',k:['←','→'],kt:'{{t:peek.msg.095}}',g:'swipe',gt:'{{t:peek.msg.096}}',t:'{{t:peek.msg.097}}',tj:'{{t:peek.msg.098}}',t2:'{{t:peek.msg.099}}'},
+ {ty:'walker',k:['←','→'],kt:'{{t:peek.msg.100}}',g:'tap',gt:'{{t:peek.msg.101}}',t:'{{t:peek.msg.102}}',t2:'{{t:peek.msg.103}}'},
+ {ty:'pick',k:['F'],kt:'{{t:peek.msg.104}}',g:'tap',gt:'{{t:peek.msg.105}}',t:'{{t:peek.msg.106}}',t2:''},
+ {ty:'eye',k:['←','→'],kt:'{{t:peek.msg.095}}',g:'swipe',gt:'{{t:peek.msg.096}}',t:'{{t:peek.msg.107}}',t2:'{{t:peek.msg.108}}',solo:1}];
 const tutHelp=()=>!!(tut&&!TUT[tut.i].solo);
-function tutFail(){ev=null;pendType=null;tilt=0;hideWant=0;breath=1;clearInput();tut.fails++;gapT=1.8;flash=0;fx('沒關係，再來一次。',CX,118,'#9fe8ff')}
-function tutOk(){fx('很好！',CX,118,'#9fe8ff');ev=null;pendType=null;tut.i++;clearInput();
+function tutFail(){ev=null;pendType=null;tilt=0;hideWant=0;breath=1;clearInput();tut.fails++;gapT=1.8;flash=0;fx('{{t:peek.msg.109}}',CX,118,'#9fe8ff')}
+function tutOk(){fx('{{t:peek.msg.110}}',CX,118,'#9fe8ff');ev=null;pendType=null;tut.i++;clearInput();
  if(tut.i>=TUT.length){tutEnd();return}
  gapT=TUT[tut.i].ty==='pick'?99:1.2;
  if(TUT[tut.i].ty==='pick'){tut.n=bag.torch;drops.length=0}}
@@ -213,18 +213,18 @@ function keyCap(x,y,w,lab,down){const dy=down?3:0;RR(x,y+4,w,30,7,'#5a3d18',0);R
 function drawControls(s,yy){
  const x0=CX-300,y0=yy||H-130,w=600,h=76;RR(x0,y0,w,h,12,'rgba(18,13,10,.86)',2);
  g.save();g.strokeStyle='rgba(232,198,117,.35)';g.lineWidth=1;g.beginPath();g.moveTo(CX,y0+10);g.lineTo(CX,y0+h-10);g.stroke();g.restore();
- g.textAlign='left';tx('電腦鍵盤',x0+16,y0+20,14,'#e8c675','left');
+ g.textAlign='left';tx('{{t:peek.msg.111}}',x0+16,y0+20,14,'#e8c675','left');
  const kd={'←':keys.l,'→':keys.r,'F':keys.pick};let kx=x0+16;s.k.forEach(k=>{keyCap(kx,y0+30,36,k,!!kd[k]);kx+=44});
  tx(s.kt,kx+6,y0+53,16,'#f1d9a6','left');
- const gx=CX+22;tx('手機觸控',gx,y0+20,14,'#e8c675','left');
+ const gx=CX+22;tx('{{t:peek.msg.112}}',gx,y0+20,14,'#e8c675','left');
  const cx=gx+34,cy=y0+50;g.save();g.fillStyle='rgba(255,255,255,.9)';
  if(s.g==='swipe'){const dx=Math.sin(tt*3)*22;g.strokeStyle='#ffd98a';g.lineWidth=3;g.beginPath();g.moveTo(cx-32,cy);g.lineTo(cx+32,cy);g.stroke();[[-1,cx-32],[1,cx+32]].forEach(a=>{g.fillStyle='#ffd98a';g.beginPath();g.moveTo(a[1],cy);g.lineTo(a[1]-a[0]*10,cy-8);g.lineTo(a[1]-a[0]*10,cy+8);g.fill()});g.fillStyle='rgba(255,255,255,.92)';g.beginPath();g.arc(cx+dx,cy,10,0,7);g.fill()}
  else{const r=(tt*1.6)%1;g.strokeStyle='rgba(255,217,138,'+(1-r)+')';g.lineWidth=3;g.beginPath();g.arc(cx,cy,8+r*22,0,7);g.stroke();g.beginPath();g.arc(cx,cy,10,0,7);g.fill()}
  g.restore();tx(s.gt,cx+46,y0+53,16,'#f1d9a6','left')}
 const INTRO=[
- {t:'怎麼玩：躲起來',b:'鬼來襲時，往遠離牠的另一側躲進樹或棺材，撐到牠離開。躲太久會喘不過氣，所以只在需要時躲。',k:['←','→'],kt:'按住躲藏',g:'swipe',gt:'左右滑並按住'},
- {t:'有些鬼怕道具',b:'左右會各出現一件道具。點牠怕的那一側，點錯就會被抓到。第一隻怕燈籠。',k:['←','→'],kt:'選燈籠那一側',g:'tap',gt:'點燈籠那一側'},
- {t:'撿東西、聽聲音',b:'路邊的東西可以撿，有些能救命。聲音會告訴你方向，戴耳機更容易聽出左右。',k:['F','T'],kt:'撿起 / 火把',g:'tap',gt:'點一下道具'}];
+ {t:'{{t:peek.msg.113}}',b:'{{t:peek.msg.114}}',k:['←','→'],kt:'{{t:peek.msg.095}}',g:'swipe',gt:'{{t:peek.msg.096}}'},
+ {t:'{{t:peek.msg.115}}',b:'{{t:peek.msg.116}}',k:['←','→'],kt:'{{t:peek.msg.100}}',g:'tap',gt:'{{t:peek.msg.101}}'},
+ {t:'{{t:peek.msg.117}}',b:'{{t:peek.msg.118}}',k:['F','T'],kt:'{{t:peek.msg.119}}',g:'tap',gt:'{{t:peek.msg.105}}'}];
 function introNext(){introP++;if(introP>INTRO.length){introP=0;last=performance.now()}}
 function introClick(e){const p=cxy(e);for(const b of introBtns)if(p[0]>=b[0]&&p[0]<=b[0]+b[2]&&p[1]>=b[1]&&p[1]<=b[1]+b[3]){if(b[4]==='skip'){introP=0;tutEnd()}else introNext();return}}
 function drawIntro(){
@@ -234,17 +234,17 @@ function drawIntro(){
  drawControls(d,H-190);
  for(let i=0;i<INTRO.length;i++){g.fillStyle=i===introP-1?'#fff':'rgba(255,255,255,.3)';g.beginPath();g.arc(CX-18+i*18,H-92,4,0,7);g.fill()}
  introBtns=[[CX-80,H-82,160,40,'next'],[W-150,H-46,132,32,'skip']];
- btnImg(CX-80,H-82,160,40,introP<INTRO.length?'下一頁':'開始練習',false,18);btnImg(W-150,H-46,132,32,'跳過教學',false,15)}
+ btnImg(CX-80,H-82,160,40,introP<INTRO.length?'{{t:peek.msg.120}}':'{{t:peek.msg.121}}',false,18);btnImg(W-150,H-46,132,32,'{{t:peek.msg.122}}',false,15)}
 function drawTutUI(){
  const s=TUT[tut.i];g.save();
  const main=(ev&&ev.phase==='judge'&&s.tj)?s.tj:s.t;RR(CX-350,142,700,s.t2?70:52,12,'rgba(18,13,10,.84)',2);tx(main,CX,172,18,'#ffd98a');if(s.t2)tx(s.t2,CX,198,13,'#cfcfcf');
  {const dy=s.t2?226:214;for(let i=0;i<TUT.length;i++){g.fillStyle=i<tut.i?'#e8c675':i===tut.i?'#fff':'rgba(255,255,255,.25)';g.beginPath();g.arc(CX-((TUT.length-1)*9)+i*18,dy,4,0,7);g.fill()}}
- RR(CX-80,H-34,160,12,6,'rgba(255,255,255,.15)');if(breath>.01)RR(CX-80,H-34,160*breath,12,6,Math.abs(tilt)>.5?'#ffb347':'#9fe8ff');tx('身後',CX,H-40,12,'#cfcfcf');
+ RR(CX-80,H-34,160,12,6,'rgba(255,255,255,.15)');if(breath>.01)RR(CX-80,H-34,160*breath,12,6,Math.abs(tilt)>.5?'#ffb347':'#9fe8ff');tx('{{t:peek.msg.123}}',CX,H-40,12,'#cfcfcf');
  if(!s.solo){g.strokeStyle='#ffd98a';g.lineWidth=4;g.globalAlpha=.9;
   if(s.ty==='eye'&&ev&&!ev.fake&&ev.phase==='judge'){const safe=-ev.side,x=CX+safe*150;tx(safe<0?'◀◀':'▶▶',x+safe*Math.abs(Math.sin(tt*5))*14,275,46,'#ffd98a')}
   else if(s.ty==='walker'&&itemsUp()){const f=ev.phase==='judge'?1:clamp((ITEM_SHOW-ev.t)/1.2,0,1);[-1,1].forEach(sd=>{if(ev.items[sd]===ITEM_OF.hush){g.beginPath();g.arc(CX+sd*(540-300*f),310,60+7*Math.sin(tt*6),0,7);g.stroke()}})}
   else if(s.ty==='pick')drops.forEach(d=>{if(d.z<0)return;const q=1-d.z;g.beginPath();g.arc(CX+d.side*(90+(SIDE+30-90)*q),300+95*q,40+90*q*.4+6*Math.sin(tt*6),0,7);g.stroke()})}
- drawControls(s);btnImg(W-150,H-46,132,32,'跳過教學',false,15);
+ drawControls(s);btnImg(W-150,H-46,132,32,'{{t:peek.msg.122}}',false,15);
  g.restore()}
 function startEvent(){
  if(L&&L.left<=0&&!L.forceFake){gapT=99;return}
@@ -320,18 +320,18 @@ function drawSlots(){   // four item slots, top right: tap one (or press 1-4) to
 function useItem(i){
  if(st!=='run'||camp||introP)return;
  const say1=(t,c)=>fx(t,CX,118,c||'#cfcfcf');
- if(i===0){if(bag.torch<=0){say1('沒有火把');return}
+ if(i===0){if(bag.torch<=0){say1('{{t:peek.msg.124}}');return}
   if(ev&&ev.type==='flick'&&ev.phase==='judge'){torchTap=1;return}
-  if(ev&&ev.phase==='warn'&&!ev.torch&&ev.type!=='tail'&&!ev.col){bag.torch--;ev.warn+=.6;ev.t+=.6;ev.torch=true;say1('火把：多 0.6 秒預警','#ffb347');return}
-  say1('現在不需要火把');return}
- if(i===1){say1(bag.charm>0?'護身符會自動擋下一次致命失誤':'沒有護身符','#9fe8ff');return}
- if(i===2){if(scrolls<=0){say1('沒有卷軸');return}
-  if(burnable()){scrolls--;try{localStorage.setItem('deep-sea-peek-scrolls',scrolls)}catch(e){}say1('卷軸燒掉了牠','#ff9a4d');flash=lowScare?0:.25;survive();return}
-  say1('卷軸對牠沒用');return}
- if(i===3){if(bag.chest<=0){say1('沒有寶箱');return}
-  if(flickLive()){bag.chest--;say1('Flick 收下寶箱，放過了你','#ffd98a');survive();return}
-  const nb=nibNear();if(nb){nb.z=-1;bag.chest--;scrolls=Math.min(5,scrolls+2);try{localStorage.setItem('deep-sea-peek-scrolls',scrolls)}catch(e){}say1('Nib 收下寶箱，留下兩卷軸','#ffd98a');return}
-  say1('寶箱要送給 Flick 或 Nib')}}
+  if(ev&&ev.phase==='warn'&&!ev.torch&&ev.type!=='tail'&&!ev.col){bag.torch--;ev.warn+=.6;ev.t+=.6;ev.torch=true;say1('{{t:peek.msg.125}}','#ffb347');return}
+  say1('{{t:peek.msg.126}}');return}
+ if(i===1){say1(bag.charm>0?'{{t:peek.msg.127}}':'{{t:peek.msg.128}}','#9fe8ff');return}
+ if(i===2){if(scrolls<=0){say1('{{t:peek.msg.129}}');return}
+  if(burnable()){scrolls--;try{localStorage.setItem('deep-sea-peek-scrolls',scrolls)}catch(e){}say1('{{t:peek.msg.130}}','#ff9a4d');flash=lowScare?0:.25;survive();return}
+  say1('{{t:peek.msg.131}}');return}
+ if(i===3){if(bag.chest<=0){say1('{{t:peek.msg.132}}');return}
+  if(flickLive()){bag.chest--;say1('{{t:peek.msg.133}}','#ffd98a');survive();return}
+  const nb=nibNear();if(nb){nb.z=-1;bag.chest--;scrolls=Math.min(5,scrolls+2);try{localStorage.setItem('deep-sea-peek-scrolls',scrolls)}catch(e){}say1('{{t:peek.msg.134}}','#ffd98a');return}
+  say1('{{t:peek.msg.135}}')}}
 function tap(x,y){if(x!=null&&y!=null&&st==='run'&&!camp){for(let i=0;i<4;i++){const q=slotXY(i);if(Math.hypot(x-q[0],y-q[1])<32){useItem(i);return}}}
  tailPush();const n=performance.now();lastTap=tt;tapQ.push(tt);if(tapQ.length>8)tapQ.shift();if(n-tapT<350&&tapT>=0){dbl=1;tapT=-9}else tapT=n;if(ev&&ev.type==='flick'&&ev.phase==='judge'&&bag.torch>0&&(y==null?false:y>320)){torchTap=1;return}if(headDown){headDown=false;return}if(itemsUp()&&x!=null){itemTap=x<CX?-1:1;return}if(canPick()){tapPick=1;return}if(hideWant){hideWant=0;return}}
 function colPlan(){   // footsteps alternate left/right; the last one lands on ev.side. Round 2 has one more step
@@ -356,7 +356,7 @@ function update(dt){
  if(tut&&tutTick())return;
  if(!covered){prog=Math.min(L&&(L.left>0||ev)?97:100,prog+rB*dt);run+=dt*1.5}
  ph+=dt*(covered?2.5:9);
- if(prog>=100){score+=500;pay(WIN_REWARD,'盒子打開了！');end('won');return}
+ if(prog>=100){score+=500;pay(WIN_REWARD,'{{t:peek.msg.136}}');end('won');return}
  while(campNext<100&&prog>=campNext+CAMP_WIN)campNext+=CAMP_EVERY;
  if(!ev&&prog>=campNext&&campNext<100){startCamp();return}
  updateDrops(dt,covered,pk);
@@ -371,7 +371,7 @@ function update(dt){
   if(ev.phase==='warn'){ev.snd-=dt;if(ev.snd<=0){ev.snd=.5;tone(90+Math.random()*30,.12,.05,ev.side*.7,'sawtooth')}if(ev.t<=0){ev.phase='judge';ev.t=EYE.judge;tone(520,.3,.07,ev.side*.7,'square',380)}}
   else{if(away<EYE.away)ev.bad+=dt;if(ev.bad>EYE.grace){end('dead','eye');return}if(ev.t<=0)survive()}}
  else if(ev.type==='tail'){
-  if(ev.phase==='warn'){if(!ev.hint&&ev.first){ev.hint=1;fx('背後有東西追上來！連點螢幕（或按 F／Enter）拉開距離。',CX,160,'#ffd98a')}
+  if(ev.phase==='warn'){if(!ev.hint&&ev.first){ev.hint=1;fx('{{t:peek.msg.137}}',CX,160,'#ffd98a')}
    ev.snd-=dt;const f=clamp(ev.el/ev.warn,0,1);if(ev.snd<=0){ev.snd=.55-.25*f;tone(64,.08,.08+.1*f,0,'sine',44)}if(ev.t<=0){ev.phase='chase';ev.t=TAIL.chase;ev.d=TAIL.d0;ev.snd=0}}
   else if(ev.phase==='chase'){ev.d-=TAIL.decay*dt;ev.snd-=dt;if(ev.snd<=0){ev.snd=.17+.3*ev.d;tone(58+34*(1-ev.d),.07,.1+.22*(1-ev.d),0,'sine',40);if(!lowScare&&ev.d<.3)shake=Math.max(shake,.08)}
    if(ev.d<=0){end('dead','tail');return}
@@ -431,10 +431,10 @@ function giveItem(k){
  else if(k==='charm'){bag.charm=Math.min(2,bag.charm+1);fx('img:item-charm',CX,150)}
  else if(k==='chest'){bag.chest=Math.min(2,bag.chest+1);fx('img:item-chest',CX,150)}
  else if(k==='rook'){giveItem(R()<.5?'torch':'charm');return}
- else{scrolls=Math.min(5,scrolls+1);try{localStorage.setItem('deep-sea-peek-scrolls',scrolls)}catch(e){}fx(k==='nib'?'Nib 塞給你一卷軸':'撿到舊卷軸',CX,150,'#e8c675');fx('卷軸 +1',CX,118,'#e8c675')}
+ else{scrolls=Math.min(5,scrolls+1);try{localStorage.setItem('deep-sea-peek-scrolls',scrolls)}catch(e){}fx(k==='nib'?'{{t:peek.msg.138}}':'{{t:peek.msg.139}}',CX,150,'#e8c675');fx('{{t:peek.msg.140}}',CX,118,'#e8c675')}
  mark(k==='nib'?'nib':k)}
 function spawnDrop(kind){const r=R();dropped=true;drops.push({k:kind||(r<.4?'torch':r<.7?'charm':'scroll'),side:R()<.5?-1:1,z:1});mark(kind==='rook'?'rook':kind==='chest'?'chest':'flick')}
-function collect(d){d.z=-1;giveItem(d.k);say('撿到'+ITEM_NAME[d.k]+'：'+ITEM_DESC[d.k]+'。','win')}
+function collect(d){d.z=-1;giveItem(d.k);say('{{t:peek.msg.141}}'+ITEM_NAME[d.k]+'：'+ITEM_DESC[d.k]+'。','win')}
 function updateDrops(dt,covered,pk){
  if(!covered){
   if(!ev){dropT-=dt;if(dropT<=0){if(drops.length<2)spawnDrop();dropT=rnd(DROP_EVERY[0],DROP_EVERY[1])}}
@@ -444,7 +444,7 @@ function updateDrops(dt,covered,pk){
  if(pk){let b=null;drops.forEach(d=>{if(d.z>=0&&d.z<PICK_AT&&(!b||d.z<b.z))b=d});if(b)collect(b)}
  drops=drops.filter(d=>d.z>-.05&&d.z>=0)}
 const canPick=()=>drops.some(d=>d.z>=0&&d.z<PICK_AT);
-function startCamp(){camp={state:'pick',t:0,choice:-1,rest:0};ev=null;clearInput();mark('rook');if(scrolls>=3)mark('lantern');say('營火到了。選一樣帶走。')}
+function startCamp(){camp={state:'pick',t:0,choice:-1,rest:0};ev=null;clearInput();mark('rook');if(scrolls>=3)mark('lantern');say('{{t:peek.msg.142}}')}
 function updateCamp(dt){
  camp.t+=dt;
  if(camp.state==='pick'){
@@ -461,8 +461,8 @@ const optSave=()=>{try{localStorage.setItem('deep-sea-peek-opts',JSON.stringify(
  {const cp=$('peek-caps'),am=$('peek-vol-amb'),dx=$('peek-dex'),sh=$('peek-share');
   if(cp&&cp.addEventListener){cp.checked=captions;cp.addEventListener('change',()=>{captions=!!cp.checked;optSave()})}
   if(am&&am.addEventListener){am.value=Math.round(AMB*100);am.addEventListener('input',()=>{AMB=clamp((+am.value||0)/100,0,1);optSave()})}
-  if(dx&&dx.addEventListener)dx.addEventListener('click',()=>{if(st==='run'){say('逃跑中不能翻圖鑑。');return}dex=true;dexPg=0;dexSel=0});
-  if(sh&&sh.addEventListener)sh.addEventListener('click',()=>{if(st==='ready'||st==='run'){say('先玩一局再分享結果。');return}share()})}
+  if(dx&&dx.addEventListener)dx.addEventListener('click',()=>{if(st==='run'){say('{{t:peek.msg.143}}');return}dex=true;dexPg=0;dexSel=0});
+  if(sh&&sh.addEventListener)sh.addEventListener('click',()=>{if(st==='ready'||st==='run'){say('{{t:peek.msg.144}}');return}share()})}
  if(v&&v.addEventListener){v.value=Math.round(MASTER*100);v.addEventListener('input',()=>{MASTER=clamp((+v.value||0)/100,0,1);optSave()})}}
 /* ---- scene: painted background per world, parallax by lean, first-person bob ---- */
 function drawWorld(lamp){
@@ -503,7 +503,7 @@ function drawSpirits(){
   g.save();g.fillStyle='rgba(0,0,0,'+(.25+.5*f)+')';g.beginPath();g.ellipse(CX,H+30,110+330*f,26+130*f,0,0,7);g.fill();
   if(f>.45){g.fillStyle='rgba(255,90,40,'+(.3+.6*f)+')';[-1,1].forEach(q=>{g.beginPath();g.ellipse(CX+q*(26+20*f),H-20-70*f,5+4*f,3+3*f,0,0,7);g.fill()})}
   g.restore();
-  if(ev.phase==='chase'){RR(CX-100,H-70,200,12,6,'rgba(255,255,255,.18)');RR(CX-100,H-70,Math.max(5,200*ev.d),12,6,ev.d<.3?'#ff6a4d':'#9fe8ff');tx('連點！拉開距離',CX,H-78,16,'#ffd98a')}
+  if(ev.phase==='chase'){RR(CX-100,H-70,200,12,6,'rgba(255,255,255,.18)');RR(CX-100,H-70,Math.max(5,200*ev.d),12,6,ev.d<.3?'#ff6a4d':'#9fe8ff');tx('{{t:peek.msg.145}}',CX,H-78,16,'#ffd98a')}
   if(judge){const lim=art('ghost-dread');if(lim)sprite(lim,sx+Math.sin(tt*30)*3,by,360,.95);else blob(sx,by-40,70,.9,'#0a0508')}}
  else if(ev.type==='twins'){     // crows scatter off the branch, then Knocker raps on the wood from that side
   const cr=ev.col?null:art('env-crows'),im=art(ev.col?'ghost-colossus':'ghost-thorn');
@@ -572,7 +572,7 @@ function drawCamp(){
  if(rk)sprite(rk,CX-300,H-30,250,1);
  if(scrolls>=3){const lt=art('prop-skull-lantern');if(lt)sprite(lt,CX+150,H-36,90,1)}
  if(camp.state==='pick'){
-  tx('營火歇腳：選一樣帶走',CX,128,24,'#ffd98a');
+  tx('{{t:peek.msg.146}}',CX,128,24,'#ffd98a');
   const cd=art('ui-card');
   CARDS_X.forEach((x,i)=>{
    const k=CAMP_CARDS[i],im=art(k==='scroll'?'item-chest':'item-'+k),hot=camp.choice===i;
@@ -581,8 +581,8 @@ function drawCamp(){
    txp(ITEM_NAME[k],x+CARD_W/2,CARD_Y+CARD_H*.66,19,'#2a1a0c');
    txd(ITEM_DESC[k],x+CARD_W/2,CARD_Y+CARD_H*.76,13,'#3a2812',CARD_W*.62,2);
    if(hot){g.strokeStyle='#ffd98a';g.lineWidth=4;g.strokeRect(x+3,CARD_Y+3,CARD_W-6,CARD_H-6)}});
-  tx('點卡片或按 1／2／3',CX,CARD_Y+CARD_H+30,16,'#f1d9a6')}
- else tx('歇一口氣……',CX,128,24,'#f1d9a6')}
+  tx('{{t:peek.msg.147}}',CX,CARD_Y+CARD_H+30,16,'#f1d9a6')}
+ else tx('{{t:peek.msg.148}}',CX,128,24,'#f1d9a6')}
 /* centred text with wrapping by character count (CJK is one em wide, so no measureText needed) */
 function wrapLines(s,sz,wd){const I=typeof window!=='undefined'&&window.deepSeaI18n;if(I&&I.getLanguage&&I.getLanguage()==='en'){const per=Math.max(6,Math.floor(wd/(sz*.52))),o=[];let cur='';I.text(s).split(' ').forEach(w=>{if(cur&&(cur+' '+w).length>per){o.push(cur);cur=w}else cur=cur?cur+' '+w:w});if(cur)o.push(cur);return o.slice(0,12)}const n=Math.max(2,Math.floor(wd/sz)),o=[];for(let i=0;i<s.length&&o.length<12;i+=n)o.push(s.slice(i,i+n));return o}
 function txp(s,x,y,sz,col,mw){sz=Math.max(sz,MINSZ);g.font='700 '+sz+'px '+FB;g.textAlign='center';g.fillStyle=col;g.fillText(s,x,y,mw||W-24)}   // plain text for parchment
@@ -594,20 +594,20 @@ function hpRect(k){
  return[HP.x+HP.w*f[0],HP.y+h*f[1],HP.w*f[2],h*f[3]]}
 function hpClick(e){
  const p=cxy(e),inR=r=>p[0]>=r[0]&&p[0]<=r[0]+r[2]&&p[1]>=r[1]&&p[1]<=r[1]+r[3];
- if(inR(hpRect('spk'))){audioInit();tone(660,.18,.08,-1,'sine');setTimeout(()=>tone(660,.18,.08,1,'sine'),320);say('先左耳、再右耳各一聲。聽得到就按勾勾。');return true}
- if(inR(hpRect('ok'))){audioInit();audioOk=true;if(needTut()){start();return true}say('耳機確認完成。按「開始逃跑」。');return true}
+ if(inR(hpRect('spk'))){audioInit();tone(660,.18,.08,-1,'sine');setTimeout(()=>tone(660,.18,.08,1,'sine'),320);say('{{t:peek.msg.149}}');return true}
+ if(inR(hpRect('ok'))){audioInit();audioOk=true;if(needTut()){start();return true}say('{{t:peek.msg.150}}');return true}
  return false}
 function drawHeadphone(){
  const im=art('ui-headphone'),h=HP.w*432/578;
  if(im)g.drawImage(im,HP.x,HP.y,HP.w,h);else RR(HP.x,HP.y,HP.w,h,14,'#3a2c1c',3);
  const en=typeof window!=='undefined'&&window.deepSeaI18n&&window.deepSeaI18n.getLanguage&&window.deepSeaI18n.getLanguage()==='en';
- txp('戴上耳機更容易躲',CX,HP.y+h*.40,en?19:26,'#3a2812',HP.w*.6);
- txd('開聲音、戴耳機更容易聽出方向。按喇叭試聽左右各一聲，再按勾勾開始。',CX,HP.y+h*.47,en?13:16,'#3a2812',HP.w*.6,en?7:4);
- for(const k of ['spk','ok']){const r=hpRect(k);if(!im){RR(r[0],r[1],r[2],r[3],8,'#5a4228',2);tx(k==='spk'?'聲音':'確認',r[0]+r[2]/2,r[1]+r[3]*.7,16,'#f1d9a6')}}}
-const CAPS={eye:['（左邊的落葉沙沙作響）','（右邊的落葉沙沙作響）'],twins:['（左邊傳來敲擊聲）','（右邊傳來敲擊聲）'],walker:['（蟲鳴停了……左右出現了道具）','（蟲鳴停了……左右出現了道具）'],gale:['（風向反了，拖行聲從左邊靠近）','（風向反了，拖行聲從右邊靠近）'],reach:['（左邊的泥水在冒泡）','（右邊的泥水在冒泡）'],bell:['（遠處傳來鐘聲）','（遠處傳來鐘聲）'],bog:['（水面冒著泡）','（水面冒著泡）'],crawl:['（冰面咯吱作響）','（冰面咯吱作響）'],magma:['（左邊冒著煙）','（右邊冒著煙）'],white:['（左邊閃著白光）','（右邊閃著白光）'],flick:['（螢火飄過來了）','（螢火飄過來了）'],howl:['（遠處傳來嚎叫）','（遠處傳來嚎叫）']};
+ txp('{{t:peek.msg.151}}',CX,HP.y+h*.40,en?19:26,'#3a2812',HP.w*.6);
+ txd('{{t:peek.msg.152}}',CX,HP.y+h*.47,en?13:16,'#3a2812',HP.w*.6,en?7:4);
+ for(const k of ['spk','ok']){const r=hpRect(k);if(!im){RR(r[0],r[1],r[2],r[3],8,'#5a4228',2);tx(k==='spk'?'{{t:peek.msg.153}}':'{{t:peek.msg.154}}',r[0]+r[2]/2,r[1]+r[3]*.7,16,'#f1d9a6')}}}
+const CAPS={eye:['{{t:peek.msg.155}}','{{t:peek.msg.156}}'],twins:['{{t:peek.msg.157}}','{{t:peek.msg.158}}'],walker:['{{t:peek.msg.159}}','{{t:peek.msg.159}}'],gale:['{{t:peek.msg.160}}','{{t:peek.msg.161}}'],reach:['{{t:peek.msg.162}}','{{t:peek.msg.163}}'],bell:['{{t:peek.msg.164}}','{{t:peek.msg.164}}'],bog:['{{t:peek.msg.165}}','{{t:peek.msg.165}}'],crawl:['{{t:peek.msg.166}}','{{t:peek.msg.166}}'],magma:['{{t:peek.msg.167}}','{{t:peek.msg.168}}'],white:['{{t:peek.msg.169}}','{{t:peek.msg.170}}'],flick:['{{t:peek.msg.171}}','{{t:peek.msg.171}}'],howl:['{{t:peek.msg.172}}','{{t:peek.msg.172}}']};
 const capText=d=>(CAPS[d.type]||['',''])[d.side<0?0:1];
 function hud(I,lamp){
- const bn=art('ui-banner'),bw=270,bh=53,by=14,title=(L?'第 '+lvl+' 關':(tut?'教學':practice?'練習':'自由跑　'+Math.floor(prog)+'%'));
+ const bn=art('ui-banner'),bw=270,bh=53,by=14,title=(L?'第 '+lvl+' 關':(tut?'{{t:peek.msg.173}}':practice?'{{t:peek.msg.174}}':'自由跑　'+Math.floor(prog)+'%'));
  if(!tut){g.fillStyle='rgba(0,0,0,.5)';g.fillRect(0,0,W,6);   // progress: one thin line along the top edge instead of a bar inside the banner
   const pw=W*clamp(prog,0,100)/100;if(pw>0){const gr=g.createLinearGradient(0,0,W,0);gr.addColorStop(0,'#8a6420');gr.addColorStop(.7,'#c9a14a');gr.addColorStop(1,'#c4472f');g.save();g.beginPath();g.rect(0,0,pw,6);g.clip();g.fillStyle=gr;g.fillRect(0,0,W,6);g.restore();
    const hg=g.createRadialGradient(pw,3,0,pw,3,16);hg.addColorStop(0,prog>=85?'rgba(255,120,90,.9)':'rgba(255,220,140,.85)');hg.addColorStop(1,'rgba(255,200,120,0)');g.fillStyle=hg;g.fillRect(pw-16,0,32,22)}
@@ -640,8 +640,8 @@ function doAct(a){
  if(a==='retry'||a==='next')start();
  else if(a==='listen')playCue(deathEv);
  else if(a==='dex'){dex=true;dexPg=0;dexSel=0}
- else if(a==='later'){st='ready';reset();endBtns=[];say('慢慢來。選好關卡再按「開始」。')}
- else if(a==='assist'){assist=true;optSave();const el=$('peek-assist');if(el)el.checked=true;say('已開啟輔助標記。','win')}
+ else if(a==='later'){st='ready';reset();endBtns=[];say('{{t:peek.msg.175}}')}
+ else if(a==='assist'){assist=true;optSave();const el=$('peek-assist');if(el)el.checked=true;say('{{t:peek.msg.176}}','win')}
  else if(a==='share')share()}
 const later=(f,ms)=>{try{setTimeout(f,ms)}catch(e){f()}};
 function playCue(d){
@@ -661,12 +661,12 @@ function playCue(d){
   :d.type==='howl'?[[0,200,.28,.1,0,'sawtooth',120],[.5,200,.28,.1,0,'sawtooth',120],[1.05,200,.28,.1,0,'sawtooth',120]]
   :[[0,70,.08,.1,0,'sine'],[.6,70,.08,.1,0,'sine'],[1.2,70,.08,.1,0,'sine']];
  seq.forEach(q=>later(()=>tone(q[1],q[2],q[3],q[4],q[5],q[6]),q[0]*1000));
- say('再聽一次：'+capText(d)+(d.type==='eye'?'　然後紅光射出。':d.type==='twins'?'　之後要躲進另一側。':d.type==='gale'?'　要躲進風來的那一側。':d.type==='reach'?'　要躲進另一側。':d.type==='bell'?'　第三下之後要低頭，直到鐘聲散去。':d.type==='bog'?'　要連點兩下。':d.type==='crawl'?'　要在裂縫到腳邊時點一下。':d.type==='magma'?'　要躲進沒冒煙的一側。':d.type==='white'?'　要躲進閃光的一側。':d.type==='flick'?'　要點亮火把，或躲進另一側。':d.type==='howl'?'　要照牠的節奏點。':'　要點對牠怕的道具。'))}
+ say('{{t:peek.msg.177}}'+capText(d)+(d.type==='eye'?'　然後紅光射出。':d.type==='twins'?'　之後要躲進另一側。':d.type==='gale'?'　要躲進風來的那一側。':d.type==='reach'?'　要躲進另一側。':d.type==='bell'?'　第三下之後要低頭，直到鐘聲散去。':d.type==='bog'?'　要連點兩下。':d.type==='crawl'?'　要在裂縫到腳邊時點一下。':d.type==='magma'?'　要躲進沒冒煙的一側。':d.type==='white'?'　要躲進閃光的一側。':d.type==='flick'?'　要點亮火把，或躲進另一側。':d.type==='howl'?'　要照牠的節奏點。':'　要點對牠怕的道具。'))}
 const causeText=k=>{const I=typeof window!=='undefined'&&window.deepSeaI18n;let t=CAUSES[k]||'';if(I&&I.text)t=I.text(t);return t.replace(/^(死因|Cause) #\d+:? ?/,'')};   // translate the whole line first, then drop the numbering
-const shareText=()=>'《別看 Don\'t Peek》'+(L?'第 '+lvl+' 關':'自由跑')+(seedCode?'・種子 '+seedCode:'')+'：躲過 '+survived+' 次襲擊，'+(st==='won'?'衝出去了！':causeText(why)+'。');
+const shareText=()=>'{{t:peek.msg.178}}'+(L?'第 '+lvl+' 關':'{{t:peek.msg.088}}')+(seedCode?'・種子 '+seedCode:'')+'：躲過 '+survived+' 次襲擊，'+(st==='won'?'{{t:peek.msg.179}}':causeText(why)+'。');
 function share(){
  const t=shareText();
- try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t);say('已複製分享文字：'+t,'win')}else say(t,'win')}catch(e){say(t,'win')}
+ try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t);say('{{t:peek.msg.180}}'+t,'win')}else say(t,'win')}catch(e){say(t,'win')}
  try{shareCard(t)}catch(e){}}
 function shareCard(t){
  const cv=document.createElement('canvas');cv.width=1200;cv.height=630;const x=cv.getContext('2d'),bg=art('bg-'+WORLDS[L?L.wi:0]),gh=art(KILLER[why]||'ghost-wraith');
@@ -674,13 +674,13 @@ function shareCard(t){
  if(bg){const h=630,w=bg.naturalWidth*h/bg.naturalHeight;x.drawImage(bg,600-w/2,0,w,h)}
  x.fillStyle='rgba(8,10,14,.62)';x.fillRect(0,0,1200,630);
  if(gh&&st!=='won'){const h=420,w=gh.naturalWidth*h/gh.naturalHeight;x.globalAlpha=.85;x.drawImage(gh,880-w/2,150,w,h);x.globalAlpha=1}
- x.textAlign='left';x.fillStyle='#e8c675';x.font='800 64px '+FB;x.fillText('別看 Don\'t Peek',60,110);
+ x.textAlign='left';x.fillStyle='#e8c675';x.font='800 64px '+FB;x.fillText('{{t:peek.msg.181}}',60,110);
  x.fillStyle='#f1d9a6';x.font='700 34px '+FB;
  wrapLines(t.replace(/^《[^》]*》/,''),34,720).forEach((ln,i)=>x.fillText(ln,60,200+i*48));
- x.fillStyle='rgba(241,217,166,.7)';x.font='600 24px '+FB;x.fillText('yachun0728.github.io 的深海遊戲廳',60,590);
+ x.fillStyle='rgba(241,217,166,.7)';x.font='600 24px '+FB;x.fillText('{{t:peek.msg.182}}',60,590);
  cv.toBlob(b=>{if(!b)return;const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='dont-peek-'+(seedCode||'free')+'.png';a.click()})}
 const KILLER={breath:'ghost-dread',tail:'ghost-dread',colossus:'ghost-colossus',bog:'ghost-bog',crawl:'ghost-crawler',magma:'ghost-magma',flick:'guide-flick',howl:'ghost-howler',white:'ghost-whiteout',eye:'ghost-leafling',twins:'ghost-thorn',walkerLate:'ghost-wraith',walkerMove:'ghost-wraith',gale:'ghost-gale',hollowLate:'ghost-hollow',hollowMove:'ghost-hollow',reach:'ghost-reacher',bell:'ghost-bellkeeper',glass:'ghost-glassface',ash:'ghost-ash'};
-const RULE_FULL={tail:'Dread從背後追來：腳步越來越急時連點螢幕（電腦按 F 或 Enter），讓距離條不要見底；最後它從一側撲來，躲進另一側。',colossus:'巨像的腳步左右交替。只看最後一步踩在哪一邊，躲進相反的另一側，撐住。共有兩輪，第二輪多一步。',eye:'落葉堆在哪一邊，那邊就有東西。紅光亮起時，躲進另一側並撐滿 3 秒。',twins:'鳥群飛走後，敲擊聲從一邊傳來。躲進敲擊的另一側；躲在敲擊那一側一定會死。',walkerLate:'蟲鳴停了，左右會各出現一件道具。靜林鬼怕燈籠：點燈籠那一側。',walkerMove:'點錯道具打不退牠。這類鬼各怕一件道具，要記住。',gale:'風向反了，拖行聲從一邊靠近。躲進風來的那一側，頂住 2 秒。',hollowLate:'首領空殼出現時左右各有一件道具，點符紙那一側。',hollowMove:'點錯道具打不退牠。空殼怕符紙。',reach:'土面鼓起、泥水冒泡的那一邊會伸出手。躲進另一側，撐住 2 秒。',bell:'鐘響三下。第三下之後要往下滑低頭，一直低著頭，直到鐘聲散去才抬頭。',breath:'Dread 一直在背後追你。躲藏時牠會越逼越近，腳步越來越急就快被找到了，鬼過去之後就出來。',bog:'水面冒泡，一道長條陰影浮上來。牠抓住你之前，連點畫面兩下掙脫。',crawl:'冰面裂縫一路延伸到腳邊。咯吱聲最急的那一刻，點一下畫面。',magma:'地面發紅，哪一邊冒煙，熔岩蟲就從那邊鑽出。躲進另一側，撐住 2 秒；牠可能折返。',flick:'成群的假螢火往你飄來。點畫面下方的火把，牠們就散了；沒有火把，躲進另一側。',howl:'風聲裡夾著 2 到 3 聲嚎叫。等牠停下，照同樣的間隔點畫面。',white:'暴雪蓋住畫面，哪一邊閃光，哪裡就是雪洞。躲進閃光那一側，撐住 2 秒；牠可能折返。',glass:'畫面起霧，一張臉貼近，左右各有一件道具。玻璃臉怕鐵鎚：點鐵鎚那一側。',ash:'天色變暗，鴉群飛過，翅膀聲拍動。左右各有一件道具，灰燼鴉群怕水桶：點水桶那一側。'};
+const RULE_FULL={tail:'{{t:peek.msg.183}}',colossus:'{{t:peek.msg.184}}',eye:'{{t:peek.msg.185}}',twins:'{{t:peek.msg.186}}',walkerLate:'{{t:peek.msg.187}}',walkerMove:'{{t:peek.msg.188}}',gale:'{{t:peek.msg.189}}',hollowLate:'{{t:peek.msg.190}}',hollowMove:'{{t:peek.msg.191}}',reach:'{{t:peek.msg.192}}',bell:'{{t:peek.msg.193}}',breath:'{{t:peek.msg.194}}',bog:'{{t:peek.msg.195}}',crawl:'{{t:peek.msg.196}}',magma:'{{t:peek.msg.197}}',flick:'{{t:peek.msg.198}}',howl:'{{t:peek.msg.199}}',white:'{{t:peek.msg.200}}',glass:'{{t:peek.msg.201}}',ash:'{{t:peek.msg.202}}'};
 function drawScare(){
  const behind=()=>{g.drawImage(scareSnap,0,140,W,H-210,0,140,W,H-210);const t=g.createLinearGradient(0,100,0,150);t.addColorStop(0,'#050403');t.addColorStop(1,'rgba(5,4,3,0)');g.fillStyle='#050403';g.fillRect(0,0,W,100);g.fillStyle=t;g.fillRect(0,100,W,50);const b=g.createLinearGradient(0,H-80,0,H);b.addColorStop(0,'rgba(5,4,3,0)');b.addColorStop(1,'#050403');g.fillStyle=b;g.fillRect(0,H-80,W,80)};   // the view behind you: the world mirrored, without the HUD
  const turn=!!scareSnap&&(why==='breath'||why==='tail'),T0=.42,p0=clamp(1-scareT/scareMax,0,1);
@@ -704,62 +704,62 @@ function drawDeath(){
   const im=art(i?(why==='flick'?'item-torch':'guide-flick'):KILLER[why]||'ghost-wraith');if(im)floatImg(im,x+kw*.49,ky+kh*.28,kw*.33,1);
   const body=i?TIPS[why]||'':causeText(why);
   txd(body,x+kw/2,ky+kh*.6,14,'#2a1a0c',kw*.64,5)}
- tx('這一輪結束了',CX,ky+34,20,'#ffd98a');
+ tx('{{t:peek.msg.203}}',CX,ky+34,20,'#ffd98a');
  tx('躲過 '+survived+' 次襲擊',CX,ky+66,16,'#f1d9a6');
- if(lostAll)txd('整輪重來：回到第 1 關',CX,ky+96,15,'#ffb347',200,2);
- else if(L&&L.ease)txd('小螢多給你 0.3 秒預警，少來一次襲擊。',CX,ky+96,13,'#cfe8ff',200,3);
+ if(lostAll)txd('{{t:peek.msg.204}}',CX,ky+96,15,'#ffb347',200,2);
+ else if(L&&L.ease)txd('{{t:peek.msg.087}}',CX,ky+96,13,'#cfe8ff',200,3);
  txd(n<=1?RULE_FULL[why]||'':FLICK_TIPS[['eye','twins','walkerLate','walkerMove','gale','hollowLate','hollowMove','reach','bell','breath','bog','crawl','magma','flick','howl','white','glass','ash'].indexOf(why)]||'',CX,ky+130,14,'#cfe8ff',236,5);
- if(rec)tx('新紀錄！',CX,ky+226,16,'#ffd98a');
- if(n>=3)tx('多次失敗：可以開輔助標記，或到圖鑑聽一次、練習。',CX,ky+kh+20,14,'#ffd98a');
- const row=[[L?'從第 1 關重來':'再跑一次','retry'],['再聽一次','listen'],['看鬼圖鑑','dex'],['稍後再學','later']];if(n>=3&&!assist)row.splice(3,0,['開輔助標記','assist']);
+ if(rec)tx('{{t:peek.msg.205}}',CX,ky+226,16,'#ffd98a');
+ if(n>=3)tx('{{t:peek.msg.206}}',CX,ky+kh+20,14,'#ffd98a');
+ const row=[[L?'{{t:peek.msg.207}}':'{{t:peek.msg.208}}','retry'],['{{t:peek.msg.209}}','listen'],['{{t:peek.msg.210}}','dex'],['{{t:peek.msg.211}}','later']];if(n>=3&&!assist)row.splice(3,0,['{{t:peek.msg.212}}','assist']);
  btnRow(row)}
 function drawWon(){
  g.fillStyle='rgba(18,13,10,.72)';g.fillRect(0,0,W,H);
- tx('衝出去了',CX,110,48,'#ffd98a');tx('別看裡面。',CX,168,28,'#ff6a4d');
+ tx('{{t:peek.msg.213}}',CX,110,48,'#ffd98a');tx('{{t:peek.msg.214}}',CX,168,28,'#ff6a4d');
  tx((L?'第 '+lvl+' 關通關　':'')+'躲過 '+survived+' 次襲擊',CX,218,20,'#f1d9a6');
  if(earned>0)tx('本局入帳 '+fmt(earned)+' 點',CX,252,20,'#ffd98a');
  else if(L)tx('下一關：第 '+Math.min(100,lvl+1)+' 關',CX,292,18,'#f1d9a6');
- if(L&&lvl>=100)tx('你走出了整座森林。',CX,330,22,'#ffd98a');
- btnRow([[L&&lvl<100?'下一關':'再玩一次','next'],['分享結果卡','share'],['看鬼圖鑑','dex']])}
+ if(L&&lvl>=100)tx('{{t:peek.msg.215}}',CX,330,22,'#ffd98a');
+ btnRow([[L&&lvl<100?'{{t:peek.msg.216}}':'{{t:peek.msg.217}}','next'],['{{t:peek.msg.218}}','share'],['{{t:peek.msg.210}}','dex']])}
 /* ---- ghost codex (12 slots): what you have met, the rule, listen again, practice ---- */
 const DEX=[
- {id:'leafling',ghost:1,img:'ghost-leafling',name:'葉下客 Leafling',type:'eye',clue:'腳邊的落葉聚成一堆，聲音很弱。',judge:'低頭看：落葉堆在哪一邊？',act:'躲進另一側，撐滿 3 秒。'},
- {id:'knocker',ghost:1,img:'ghost-thorn',name:'敲枝者 Knocker',type:'twins',clue:'鳥群飛走，接著有固定節奏的敲擊從一邊傳來。',judge:'敲擊來自哪一邊？',act:'躲進敲擊的另一側；躲在敲擊那一側會死。'},
- {id:'hush',ghost:1,img:'ghost-wraith',name:'靜林鬼 Hush',type:'walker',clue:'蟲鳴停了，沒有形體的東西靠近，左右各出現一件道具。',judge:'牠怕燈籠。',act:'點燈籠所在的那一側。點錯就死。'},
- {id:'gale',ghost:1,img:'ghost-gale',name:'逆風客 Gale',type:'gale',clue:'風向反了，葉子逆風翻動，接著有拖行聲。',judge:'拖行聲從哪一邊靠近？',act:'躲進風來的那一側，頂住 2 秒。'},
- {id:'hollow',ghost:1,img:'ghost-hollow',name:'空殼 Hollow（首領）',type:'hollow',clue:'每個世界的第 10 關，先依序面對學過的鬼，最後是牠。',judge:'牠怕符紙。',act:'點符紙所在的那一側。點錯就死。'},
- {id:'reacher',ghost:1,img:'ghost-reacher',name:'墳手 Reacher',type:'reach',clue:'土面鼓起，泥水冒泡，一側地面隆起。',judge:'哪一邊的土在鼓起？',act:'躲進另一邊，撐住 2 秒。'},
- {id:'bellkeeper',ghost:1,img:'ghost-bellkeeper',name:'守墓鐘 Bellkeeper',type:'bell',clue:'遠處的鐘敲了三下。',judge:'第三下就是信號。',act:'第三下之後往下滑低頭，一直低著頭直到鐘聲散去。'},
- {id:'glassface',ghost:1,img:'ghost-glassface',name:'玻璃臉 Glassface',type:'glass',clue:'畫面起霧，一張臉貼近。',judge:'牠怕鐵鎚。',act:'點鐵鎚所在的那一側。'},
- {id:'ash',ghost:1,img:'ghost-ash',name:'灰燼鴉群 Ash',type:'ash',clue:'天空變暗，翅膀聲。',judge:'牠怕水桶。',act:'點水桶所在的那一側。'},
- {id:'colossus',ghost:1,img:'ghost-colossus',name:'巨像 Colossus（最終首領）',type:'colossus',clue:'地面一步一步震動，腳步聲左右交替靠近。',judge:'最後一步踩在哪一邊？',act:'躲進最後一步的另一側，撐住；共兩輪，第二輪多一步。'},
- {id:'tail',ghost:1,img:'ghost-dread',name:'Dread',type:'tail',clue:'背後傳來腳步聲，越來越急。',judge:'牠在追你。',act:'連點螢幕（電腦按 F 或 Enter）拉開距離，最後牠從一側撲來，躲進另一側。'},
- {id:'bog',ghost:1,img:'ghost-bog',name:'泥沼拖行者 Bog',type:'bog',clue:'水面冒泡，一道長條陰影浮上來。',judge:'牠抓住你之前。',act:'連點畫面兩下。'},
- {id:'flickghost',ghost:1,img:'guide-flick',name:'螢火騙子 Flick',type:'flick',clue:'成群的螢火往你飄來，但那些光是假的。',judge:'真正的光在你手上。',act:'點火把，或把寶箱送給牠；都沒有就躲進另一側。'},
- {id:'howler',ghost:1,img:'ghost-howler',name:'雪嚎者 Howler',type:'howl',clue:'風聲中夾著 2 到 3 聲有節奏的嚎叫。',judge:'牠在教你一段節奏。',act:'等牠停了，照同樣的間隔點畫面。'},
- {id:'crawler',ghost:1,img:'ghost-crawler',name:'冰縫行者 Crawler',type:'crawl',clue:'冰面裂縫延伸，咯吱聲越來越急。',judge:'裂縫到腳邊的那一刻。',act:'點一下畫面。'},
- {id:'whiteout',ghost:1,img:'ghost-whiteout',name:'白幕 Whiteout',type:'white',clue:'畫面一片白，一側閃光。',judge:'閃光的地方是雪洞。',act:'躲進閃光那一側，撐住 2 秒；牠可能折返。'},
- {id:'magma',ghost:1,img:'ghost-magma',name:'熔岩蟲 Magma',type:'magma',clue:'地面發紅，一側冒煙。',judge:'冒煙的地方牠會鑽出來。',act:'躲進沒冒煙的那一側；牠可能折返。'},
- {id:'flick',img:'guide-flick',name:'小螢 Flick',clue:'友方的螢火蟲，會在死亡後告訴你剛才漏掉了什麼。',judge:'牠不是鬼。',act:'多看牠的提示。'},
- {id:'rook',img:'npc-rook',name:'旅人 Rook',clue:'在營火旁出現。',judge:'牠不追你。',act:'營火邊三選一，帶走一樣東西。'},
- {id:'nib',img:'npc-nib',name:'Nib',clue:'偶爾跑過路邊的無害小傢伙，出現率約五十分之一。',judge:'牠不會傷害你。',act:'靠近時點一下撿起，牠會留點小禮物。'},
- {id:'torch',img:'item-torch',name:'火把 Torch',clue:'路邊或營火的道具。',judge:'',act:'點一下火把：下次襲擊多 0.6 秒預警並標出方向。'},
- {id:'charm',img:'item-charm',name:'護身符 Charm',clue:'路邊或營火的道具，掉落保底較低。',judge:'',act:'擋下一次致命失誤。'},
- {id:'scroll',img:'item-chest',name:'舊卷軸 Scroll',clue:'收藏品。',judge:'',act:'丟向葉下客、敲枝者、靜林鬼，燒掉牠們；對其他鬼沒用。'},
- {id:'lantern',img:'prop-skull-lantern',name:'骷髏燈籠',clue:'身上帶著 3 卷以上舊卷軸時，會出現在營火旁。',judge:'',act:'營火旁的裝飾。'}];
+ {id:'leafling',ghost:1,img:'ghost-leafling',name:'{{t:peek.msg.219}}',type:'eye',clue:'{{t:peek.msg.220}}',judge:'{{t:peek.msg.221}}',act:'{{t:peek.msg.222}}'},
+ {id:'knocker',ghost:1,img:'ghost-thorn',name:'{{t:peek.msg.223}}',type:'twins',clue:'{{t:peek.msg.224}}',judge:'{{t:peek.msg.225}}',act:'{{t:peek.msg.226}}'},
+ {id:'hush',ghost:1,img:'ghost-wraith',name:'{{t:peek.msg.227}}',type:'walker',clue:'{{t:peek.msg.228}}',judge:'{{t:peek.msg.229}}',act:'{{t:peek.msg.230}}'},
+ {id:'gale',ghost:1,img:'ghost-gale',name:'{{t:peek.msg.231}}',type:'gale',clue:'{{t:peek.msg.232}}',judge:'{{t:peek.msg.233}}',act:'{{t:peek.msg.234}}'},
+ {id:'hollow',ghost:1,img:'ghost-hollow',name:'{{t:peek.msg.235}}',type:'hollow',clue:'{{t:peek.msg.236}}',judge:'{{t:peek.msg.237}}',act:'{{t:peek.msg.238}}'},
+ {id:'reacher',ghost:1,img:'ghost-reacher',name:'{{t:peek.msg.239}}',type:'reach',clue:'{{t:peek.msg.240}}',judge:'{{t:peek.msg.241}}',act:'{{t:peek.msg.242}}'},
+ {id:'bellkeeper',ghost:1,img:'ghost-bellkeeper',name:'{{t:peek.msg.243}}',type:'bell',clue:'{{t:peek.msg.244}}',judge:'{{t:peek.msg.245}}',act:'{{t:peek.msg.246}}'},
+ {id:'glassface',ghost:1,img:'ghost-glassface',name:'{{t:peek.msg.247}}',type:'glass',clue:'{{t:peek.msg.248}}',judge:'{{t:peek.msg.249}}',act:'{{t:peek.msg.250}}'},
+ {id:'ash',ghost:1,img:'ghost-ash',name:'{{t:peek.msg.251}}',type:'ash',clue:'{{t:peek.msg.252}}',judge:'{{t:peek.msg.253}}',act:'{{t:peek.msg.254}}'},
+ {id:'colossus',ghost:1,img:'ghost-colossus',name:'{{t:peek.msg.255}}',type:'colossus',clue:'{{t:peek.msg.256}}',judge:'{{t:peek.msg.257}}',act:'{{t:peek.msg.258}}'},
+ {id:'tail',ghost:1,img:'ghost-dread',name:'Dread',type:'tail',clue:'{{t:peek.msg.259}}',judge:'{{t:peek.msg.260}}',act:'{{t:peek.msg.261}}'},
+ {id:'bog',ghost:1,img:'ghost-bog',name:'{{t:peek.msg.262}}',type:'bog',clue:'{{t:peek.msg.263}}',judge:'{{t:peek.msg.264}}',act:'{{t:peek.msg.265}}'},
+ {id:'flickghost',ghost:1,img:'guide-flick',name:'{{t:peek.msg.266}}',type:'flick',clue:'{{t:peek.msg.267}}',judge:'{{t:peek.msg.268}}',act:'{{t:peek.msg.269}}'},
+ {id:'howler',ghost:1,img:'ghost-howler',name:'{{t:peek.msg.270}}',type:'howl',clue:'{{t:peek.msg.271}}',judge:'{{t:peek.msg.272}}',act:'{{t:peek.msg.273}}'},
+ {id:'crawler',ghost:1,img:'ghost-crawler',name:'{{t:peek.msg.274}}',type:'crawl',clue:'{{t:peek.msg.275}}',judge:'{{t:peek.msg.276}}',act:'{{t:peek.msg.277}}'},
+ {id:'whiteout',ghost:1,img:'ghost-whiteout',name:'{{t:peek.msg.278}}',type:'white',clue:'{{t:peek.msg.279}}',judge:'{{t:peek.msg.280}}',act:'{{t:peek.msg.281}}'},
+ {id:'magma',ghost:1,img:'ghost-magma',name:'{{t:peek.msg.282}}',type:'magma',clue:'{{t:peek.msg.283}}',judge:'{{t:peek.msg.284}}',act:'{{t:peek.msg.285}}'},
+ {id:'flick',img:'guide-flick',name:'{{t:peek.msg.286}}',clue:'{{t:peek.msg.287}}',judge:'{{t:peek.msg.288}}',act:'{{t:peek.msg.289}}'},
+ {id:'rook',img:'npc-rook',name:'{{t:peek.msg.005}}',clue:'{{t:peek.msg.290}}',judge:'{{t:peek.msg.291}}',act:'{{t:peek.msg.292}}'},
+ {id:'nib',img:'npc-nib',name:'Nib',clue:'{{t:peek.msg.293}}',judge:'{{t:peek.msg.294}}',act:'{{t:peek.msg.295}}'},
+ {id:'torch',img:'item-torch',name:'{{t:peek.msg.296}}',clue:'{{t:peek.msg.297}}',judge:'',act:'{{t:peek.msg.298}}'},
+ {id:'charm',img:'item-charm',name:'{{t:peek.msg.299}}',clue:'{{t:peek.msg.300}}',judge:'',act:'{{t:peek.msg.301}}'},
+ {id:'scroll',img:'item-chest',name:'{{t:peek.msg.302}}',clue:'{{t:peek.msg.303}}',judge:'',act:'{{t:peek.msg.304}}'},
+ {id:'lantern',img:'prop-skull-lantern',name:'{{t:peek.msg.305}}',clue:'{{t:peek.msg.306}}',judge:'',act:'{{t:peek.msg.307}}'}];
 const DEXF={x:14,y:5,h:440},DK=DEXF.h/578,DCX=[95,175,256,337],DCY=[190,273,355];
 const dexPos=j=>[DEXF.x+DCX[j%4]*DK,DEXF.y+DCY[(j/4)|0]*DK];
 const dexPages=()=>{const out=[],ch=a=>{for(let i=0;i<a.length;i+=12)out.push(a.slice(i,i+12))};ch(DEX.filter(d=>d.ghost));ch(DEX.filter(d=>!d.ghost));return out};   // 12 slots per page: ghosts first, then NPCs and items
 let dexPg=0;
 const dexGo=n=>{const pg=dexPages();dexPg=(dexPg+n+pg.length)%pg.length;dexSel=DEX.indexOf(pg[dexPg][0])};
-const DEXB=[[372,392,118,38,'聽一次'],[500,392,118,38,'練習'],[628,392,118,38,'關閉']],DEXP=[[40,396,92,32,'上一頁'],[222,396,92,32,'下一頁']];
+const DEXB=[[372,392,118,38,'{{t:peek.msg.308}}'],[500,392,118,38,'{{t:peek.msg.174}}'],[628,392,118,38,'{{t:peek.msg.309}}']],DEXP=[[40,396,92,32,'{{t:peek.msg.310}}'],[222,396,92,32,'{{t:peek.msg.120}}']];
 function txl(s,x,y,sz,col,wd,maxL){sz=Math.max(sz,MINSZ);g.font='600 '+sz+'px '+FB;g.textAlign='left';g.fillStyle=col;const ls=wrapLines(s,sz,wd).slice(0,maxL||12);ls.forEach((ln,i)=>g.fillText(ln,x,y+i*(sz+5)));return y+ls.length*(sz+5)}
 function drawDex(){
  g.fillStyle='#06060a';g.fillRect(0,0,W,H);
  const fr=art('ui-codex');if(fr)g.drawImage(fr,DEXF.x,DEXF.y,432*DK,DEXF.h);
  const pgs=dexPages(),cur=pgs[dexPg]||pgs[0];
  txp((cur[0].ghost?'鬼圖鑑　':'道具與旅人　')+cur.filter(d=>seen[d.id]).length+' / '+cur.length,DEXF.x+216*DK,DEXF.y+105*DK,18,'#e8e0d0');
- txp('點圓圈看線索與解法',DEXF.x+220*DK,DEXF.y+462*DK,14,'#4a3a2a');
+ txp('{{t:peek.msg.311}}',DEXF.x+220*DK,DEXF.y+462*DK,14,'#4a3a2a');
  cur.forEach((d,j)=>{
   const p=dexPos(j),im=d.img?art(d.img):null,got=!!seen[d.id];
   if(DEX.indexOf(d)===dexSel){g.strokeStyle='#ffd98a';g.lineWidth=3;g.beginPath();g.arc(p[0],p[1],27*DK*1.2+2,0,7);g.stroke()}
@@ -770,8 +770,8 @@ function drawDex(){
  if(got){const im=d.img?art(d.img):null;if(im)floatImg(im,430,80,96,1);
   txl(d.name,490,50,22,'#ffd98a',290,2);
   const n=d.type?deathsOf(d.type):0;if(d.type)txl('被牠打倒 '+n+' 次',490,84,14,'#cfe8ff',290,1);
-  let y=150;y=txl('線索：'+d.clue,384,y,15,'#f1d9a6',390,3)+6;if(d.judge)y=txl('判斷：'+d.judge,384,y,15,'#f1d9a6',390,2)+6;txl('應對：'+d.act,384,y,15,'#ffd98a',390,3)}
- else{txl('？？？',490,60,24,'#8a8a96',290,1);txl('還沒遇見。繼續往前走，遇到之後這裡會記下線索和解法。',384,150,15,'#c9c0b0',390,3)}
+  let y=150;y=txl('{{t:peek.msg.312}}'+d.clue,384,y,15,'#f1d9a6',390,3)+6;if(d.judge)y=txl('{{t:peek.msg.313}}'+d.judge,384,y,15,'#f1d9a6',390,2)+6;txl('{{t:peek.msg.314}}'+d.act,384,y,15,'#ffd98a',390,3)}
+ else{txl('？？？',490,60,24,'#8a8a96',290,1);txl('{{t:peek.msg.315}}',384,150,15,'#c9c0b0',390,3)}
  DEXP.forEach(b=>btnImg(b[0],b[1],b[2],b[3],b[4],false,15));tx((dexPg+1)+' / '+pgs.length,DEXF.x+216*DK,DEXF.y+413,14,'#e8e0d0');
  DEXB.forEach((b,i)=>{const dis=(i<2&&!(got&&d.type));btnImg(b[0],b[1],b[2],b[3],b[4],dis,17)})}
 function dexClick(e){
@@ -805,7 +805,7 @@ function drawHide(){   // first person inside the spot: pitch black (bush and co
  if(breath<.999){const gr=g.createRadialGradient(CX,225,120,CX,225,520);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,'+(.9*(1-breath))+')');g.fillStyle=gr;g.fillRect(0,0,W,H)}}
 function howCards(y,w,al){   // three parchment cards: icon in the window, two short lines underneath
  const h=w*216/186,gap=w*.1,x0=CX-(3*w+2*gap)/2,bg=art('ui-card'),
-  defs=[[['spot-tree'],'左右滑','躲進樹或棺材',1],[['item-lantern','item-hammer'],'鬼來了','點對的道具',0],[['item-torch'],'路邊有東西','點一下撿起',0]];
+  defs=[[['spot-tree'],'{{t:peek.msg.316}}','{{t:peek.msg.317}}',1],[['item-lantern','item-hammer'],'{{t:peek.msg.318}}','{{t:peek.msg.319}}',0],[['item-torch'],'{{t:peek.msg.320}}','{{t:peek.msg.321}}',0]];
  g.save();g.globalAlpha=al;
  defs.forEach((d,i)=>{const x=x0+i*(w+gap);
   if(bg)g.drawImage(bg,x,y,w,h);else RR(x,y,w,h,10,'#d9c08a',2);
@@ -862,10 +862,10 @@ function draw(){
   g.fillStyle='rgba(18,13,10,.72)';g.fillRect(0,0,W,H);
   if(!audioOk)drawHeadphone();
   else{const lv=wantLevel(),lc=lv?levelCfg(lv,(lvDeaths[lv]||0)>=2):null;
-   tx('別看',CX,58,50,'#e8c675');tx('Don\'t Peek　禁忌寶盒・夜逃',CX,86,16,'#f1d9a6');
-   tx(lc?'第 '+lv+' 關・'+WORLD_NAME[lc.wi]+'・'+KIND_NAME[lc.kind]+'':'自由跑（沒有關卡和生命）',CX,118,19,'#ffd98a');
+   tx('{{t:peek.msg.322}}',CX,58,50,'#e8c675');tx('{{t:peek.msg.323}}',CX,86,16,'#f1d9a6');
+   tx(lc?'第 '+lv+' 關・'+WORLD_NAME[lc.wi]+'・'+KIND_NAME[lc.kind]+'':'{{t:peek.msg.324}}',CX,118,19,'#ffd98a');
    drawStartBtn();
-   howCards(298,108,1);tx(PEEK_VER,14,H-12,14,'rgba(241,217,166,.55)','left');tx('電腦：← → 躲　1–4／T 用道具　F 撿',W-14,H-12,13,'rgba(241,217,166,.7)','right')}}
+   howCards(298,108,1);tx(PEEK_VER,14,H-12,14,'rgba(241,217,166,.55)','left');tx('{{t:peek.msg.325}}',W-14,H-12,13,'rgba(241,217,166,.7)','right')}}
  else if(st==='won')drawWon();
  else if(st==='over'){if(scareT>0)drawScare();else drawDeath()}
  if(dex)drawDex()}
@@ -874,7 +874,7 @@ function drawStartBtn(){const [x,y,w,h]=startRect(),pr=.5+.5*Math.sin(tt*3);
  g.save();g.shadowColor='rgba(255,200,110,'+(.35+.25*pr)+')';g.shadowBlur=18+10*pr;
  const gr=g.createLinearGradient(0,y,0,y+h);gr.addColorStop(0,'#5d4228');gr.addColorStop(1,'#2a1b0f');RR(x,y,w,h,14,gr,0);g.restore();
  g.save();g.strokeStyle='#e2b95c';g.lineWidth=3;g.beginPath();g.moveTo(x+14,y);g.arcTo(x+w,y,x+w,y+h,14);g.arcTo(x+w,y+h,x,y+h,14);g.arcTo(x,y+h,x,y,14);g.arcTo(x,y,x+w,y,14);g.closePath();g.stroke();g.restore();
- tx('開始',CX,y+h/2+11,34,'#f6dfa8')}
+ tx('{{t:peek.msg.326}}',CX,y+h/2+11,34,'#f6dfa8')}
 const inStart=e=>{const p=cxy(e),r=startRect();return p[0]>=r[0]&&p[0]<=r[0]+r[2]&&p[1]>=r[1]&&p[1]<=r[1]+r[3]};
 function start(){
  if(st==='run')return;
@@ -885,7 +885,7 @@ function start(){
  practice=nextPractice;nextPractice='';daily=forceLvl===null&&!practice&&dailyOn();lvl=practice?0:daily?dailyLvl():wantLevel();L=lvl>0?levelCfg(lvl,(lvDeaths[lvl]||0)>=2):null;
  tut=null;if(needTut()&&!practice&&!daily&&lvl<=1&&forceLvl===null){tut={i:0,fails:0,n:0};introP=1;lvl=0;L=null}
  reset();earned=0;st='run';try{window.__gp&&window.__gp(true)}catch(e){}last=performance.now();applyLevel();if(L)mark('flick');dex=false;endBtns=[];
- if(!L)say(practice?'練習：不扣生命，也不發點。':'開始逃跑。別回頭。');ui();c.focus();
+ if(!L)say(practice?'{{t:peek.msg.327}}':'{{t:peek.msg.328}}');ui();c.focus();
 }
 const shown=()=>!$('view-peek').hidden&&!document.hidden;
 $('peek-go').addEventListener('click',start);
@@ -893,7 +893,7 @@ c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
  if(dex){dexClick(e);return}
  if(introP){introClick(e);return}
- if(st!=='run'){if(st==='ready'&&!audioOk&&shown()&&hpClick(e))return;if(st==='ready'&&audioOk&&!introP&&shown()&&inStart(e)){start();return}if(st!=='ready'&&shown()&&deathClick(e))return;say(st==='ready'?'先按中間的「開始」。':'這一局已結算。按「再開一次」開始新的一局。');return}
+ if(st!=='run'){if(st==='ready'&&!audioOk&&shown()&&hpClick(e))return;if(st==='ready'&&audioOk&&!introP&&shown()&&inStart(e)){start();return}if(st!=='ready'&&shown()&&deathClick(e))return;say(st==='ready'?'{{t:peek.msg.329}}':'{{t:peek.msg.330}}');return}
  if(!shown())return;e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(x){}
  if(tut){const q=cxy(e);if(q[0]>W-150&&q[1]>H-46){tutEnd();return}}
  if(camp){campTap(e);return}
@@ -920,9 +920,9 @@ window.addEventListener('hashchange',()=>{last=performance.now();clearInput()});
 function onOrient(e){if(e.gamma===null||e.gamma===undefined)return;gyro.tilt=clamp(e.gamma/30,-1,1);gyro.down=Math.abs(e.beta||0)>145}
 /* ---- landscape fullscreen for phones: real fullscreen where allowed, otherwise turn the stage 90deg ---- */
 const fsB=$('peek-full'),fsX=$('peek-fsx');
-function fsOff(){if(stageEl.classList){stageEl.classList.remove('peek-fs','peek-rot')}if(fsX)fsX.hidden=true;if(fsB)fsB.textContent='橫向全螢幕';try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen()}catch(x){}}
+function fsOff(){if(stageEl.classList){stageEl.classList.remove('peek-fs','peek-rot')}if(fsX)fsX.hidden=true;if(fsB)fsB.textContent='{{t:peek.msg.331}}';try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen()}catch(x){}}
 function fsOn(){
- if(!stageEl.classList)return;stageEl.classList.add('peek-fs');if(fsX)fsX.hidden=false;if(fsB)fsB.textContent='退出全螢幕';
+ if(!stageEl.classList)return;stageEl.classList.add('peek-fs');if(fsX)fsX.hidden=false;if(fsB)fsB.textContent='{{t:peek.msg.332}}';
  const portrait=window.innerHeight>window.innerWidth;let ok=false;
  try{if(stageEl.requestFullscreen){const p=stageEl.requestFullscreen();if(p&&p.catch)p.catch(()=>{});ok=true}}catch(x){}
  try{if(ok&&screen.orientation&&screen.orientation.lock){screen.orientation.lock('landscape').catch(()=>{portrait&&stageEl.classList.add('peek-rot')});return}}catch(x){}
@@ -932,9 +932,9 @@ if(fsX)fsX.addEventListener('click',fsOff);
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&stageEl.classList&&stageEl.classList.contains('peek-fs')&&!stageEl.classList.contains('peek-rot'))fsOff()});
 const gb=$('peek-gyro');
 if(gb)gb.addEventListener('click',()=>{
- if(gyro.on){gyro.on=false;window.removeEventListener('deviceorientation',onOrient);gb.textContent='啟用體感（手機）';return}
- const go=()=>{gyro.on=true;window.addEventListener('deviceorientation',onOrient);gb.textContent='關閉體感'};
- try{if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){DeviceOrientationEvent.requestPermission().then(r=>{if(r==='granted')go();else say('沒有取得體感權限，改用按鈕操作。','lose')}).catch(()=>say('這個瀏覽器不能使用體感，改用按鈕操作。','lose'))}else go()}catch(e){say('這個瀏覽器不能使用體感，改用按鈕操作。','lose')}});
+ if(gyro.on){gyro.on=false;window.removeEventListener('deviceorientation',onOrient);gb.textContent='{{t:peek.msg.333}}';return}
+ const go=()=>{gyro.on=true;window.addEventListener('deviceorientation',onOrient);gb.textContent='{{t:peek.msg.334}}'};
+ try{if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){DeviceOrientationEvent.requestPermission().then(r=>{if(r==='granted')go();else say('{{t:peek.msg.335}}','lose')}).catch(()=>say('{{t:peek.msg.336}}','lose'))}else go()}catch(e){say('{{t:peek.msg.336}}','lose')}});
 function loop(t){const dt=Math.min(.05,Math.max(0,(t-last)/1000)||0);last=t;if(shown()){update(dt);ui();draw()}requestAnimationFrame(loop)}
 ui();draw();requestAnimationFrame(loop);
   })();

@@ -1,12 +1,12 @@
   <section class="view" id="view-pudding" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="pd-canvas" tabindex="0" width="400" height="560" aria-label="布丁突圍：每段先把拼圖碎片拼進武器格子，再按住左右鍵或按住畫面移動阿鋼，讓武器碰到敵人，護送小王子布丁到援軍橋"></canvas></div>
-      <div class="side"><section class="panel" aria-label="布丁突圍操作">
-        <dl class="stats"><div><dt>目前進度</dt><dd id="pd-seg">第 1/8 段</dd></div><div><dt>本局分數</dt><dd id="pd-score">0</dd></div><div><dt>最佳紀錄</dt><dd id="pd-best">0 分</dd></div></dl>
+    <div class="console"><div class="sneak-stage"><canvas id="pd-canvas" tabindex="0" width="400" height="560" aria-label="{{t:pudding.view.16}}"></canvas></div>
+      <div class="side"><section class="panel" aria-label="{{t:pudding.view.17}}">
+        <dl class="stats"><div><dt>{{t:pudding.view.01}}</dt><dd id="pd-seg">{{t:pudding.view.02}}</dd></div><div><dt>{{t:pudding.view.03}}</dt><dd id="pd-score">0</dd></div><div><dt>{{t:pudding.view.04}}</dt><dd id="pd-best">{{t:pudding.view.05}}</dd></div></dl>
         <input id="pd-amount" type="hidden" value="0">
-        <button class="go" id="pd-go" type="button" data-mode="bet">開始突圍</button>
-        <p class="msg" id="pd-msg" aria-live="polite">阿鋼要背著布丁殺出重圍！開始後先拼武器，再往前衝。</p>
-        <p class="hint">營帳：選一塊碎片，點武器格子放下（可旋轉），按「鍛造」。跑道：按住 <kbd>←</kbd><kbd>→</kbd>（或 <kbd>A</kbd><kbd>D</kbd>）或按住畫面左右移動，武器格子就是打擊範圍：紅色刃持續砍、藍色矛突刺、黃色盾擋箭並減少布丁受到的驚嚇。</p>
+        <button class="go" id="pd-go" type="button" data-mode="bet">{{t:pudding.view.06}}</button>
+        <p class="msg" id="pd-msg" aria-live="polite">{{t:pudding.view.07}}</p>
+        <p class="hint">{{t:pudding.view.08}} <kbd>←</kbd><kbd>→</kbd>{{t:pudding.view.09}} <kbd>A</kbd><kbd>D</kbd>{{t:pudding.view.10}}</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法與點數</summary><p>一局共 8 段路，每段開始前在營帳從 3 塊碎片（刃、矛、盾各一塊）選 1 塊，拼進 4×4 的武器格子，新碎片會直接蓋掉原本的格子。同色格子相連 3 格以上有加成。武器格子會真的出現在阿鋼前方，形狀就是打擊範圍：敵人碰到刃會持續掉血並被拖慢，碰到矛會被刺一下並彈開，盾會擋下弓兵的箭並減少布丁受到的驚嚇。</p><p>每段 16 秒，按住左右鍵或按住畫面移動阿鋼，讓武器碰到敵人。敵人撞到阿鋼、被箭射中，或從旁邊溜過去，都會讓布丁的安心值下降；連續打倒 8 隻敵人可回復一點安心值，每段結束也會回復。安心值歸零，布丁大哭，這一局結束。</p><p>每突破一段 +1 點，當場入帳；8 段全部突破再 +2 點（共 10 點，累計獲得）。結束時不收回已入帳的點數。分數只顯示，不直接換點數。這是操作技巧遊戲，結果取決於拼法與移動。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最佳紀錄保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+    <details class="rules"><summary>{{t:pudding.view.11}}</summary><p>{{t:pudding.view.12}}</p><p>{{t:pudding.view.13}}</p><p>{{t:pudding.view.14}}</p><p>{{t:pudding.view.15}}</p></details>
   </section>

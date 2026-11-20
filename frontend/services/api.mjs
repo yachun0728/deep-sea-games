@@ -7,6 +7,12 @@ export function arcadeApiOrigin() {
   return document.querySelector('meta[name="leaderboard-api-origin"]').content.trim() || location.origin;
 }
 
+// Current site language (zh-Hant | zh-Hans | en) from the i18n runtime; falls back to zh-Hant
+// where it is absent (Node tests, standalone pages). Used so the API can localize gameName.
+export function currentLang() {
+  return globalThis.window?.deepSeaI18n?.getLanguage?.() || 'zh-Hant';
+}
+
 export function createApiClient(baseUrl) {
   async function request(path, init, query) {
     const url = new URL(path, baseUrl);
@@ -32,8 +38,8 @@ export function createApiClient(baseUrl) {
     health: () => request(API.health),
     createPlayer: signal => request(API.players, { method: 'POST', signal }),
     getPlayer: token => request(API.me, authorized('GET', token)),
-    leaderboardFeed: signal => request(API.leaderboardFeed, { signal }),
-    leaderboard: (gameId, signal) => request(API.leaderboard, { signal }, { gameId }),
+    leaderboardFeed: signal => request(API.leaderboardFeed, { signal }, { lang: currentLang() }),
+    leaderboard: (gameId, signal) => request(API.leaderboard, { signal }, { gameId, lang: currentLang() }),
     startMines: (token, signal) => request(API.minesStart, authorized('POST', token, signal)),
     moveMines: (token, move, signal) => request(API.minesMove, authorized('POST', token, signal, move)),
     startBoard: (token, signal, gameId, settings) => request(API.boardStart, authorized('POST', token, signal, {...settings,gameId})),

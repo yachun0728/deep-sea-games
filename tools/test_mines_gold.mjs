@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {readSource} from './expand_ids.mjs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 const root=new URL('../',import.meta.url);
@@ -7,7 +8,7 @@ function fixture(storage={}){
  function element(){return {style:{},dataset:{},children:[],disabled:false,textContent:'',innerHTML:'',listeners:{},addEventListener(type,fn){this.listeners[type]=fn;},setAttribute(){},appendChild(b){this.children.push(b);}};}
  const timers=new Map();let timerId=0;
  const c={setTimeout(fn){timers.set(++timerId,fn);return timerId;},clearTimeout(id){timers.delete(id);},$:id=>elements[id]??=element(),window:{addEventListener(){}},navigator:{},setInterval(){},document:{createElement:element,addEventListener(){},hidden:false},S:{balance:Number(storage.wallet??500)},STORE:'wallet',ENTRY_FEE:10,LOW_MSG:'不足',fmt:String,elBal:element(),save(){storage.wallet=String(c.S.balance);},renderGo(){},localStorage:{getItem:k=>storage[k]??null,setItem:(k,v)=>storage[k]=v},AN:{start:(...a)=>{events.push(['start',...a]);return events.length;},progress:(...a)=>events.push(['progress',...a]),resume:(...a)=>events.push(['resume',...a]),end:(...a)=>events.push(['end',...a])}};
- vm.createContext(c);vm.runInContext(fs.readFileSync(new URL('shared/mines-rules.cjs',root),'utf8'),c);for(const game of ['mines','keno'])vm.runInContext(fs.readFileSync(new URL(`games/${game}/game.js`,root),'utf8'),c);
+ vm.createContext(c);vm.runInContext(fs.readFileSync(new URL('shared/mines-rules.cjs',root),'utf8'),c);for(const game of ['mines','keno'])vm.runInContext(readSource(`games/${game}/game.js`,root),c);
  c.keDay=()=>day;c.buildBoard();c.renderMines();c.keBuild();c.keUI();return {c,storage,events,elements,timers,setDay:d=>day=d};
 }
 const f=fixture(),{c,events,storage}=f;

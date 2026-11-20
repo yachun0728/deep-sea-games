@@ -1,36 +1,36 @@
 <section class="view" id="view-mines" hidden>
   <div class="mines-layout">
-    <section class="mines-settings" aria-label="踩地雷設定">
+    <section class="mines-settings" aria-label="{{t:mines.view.19}}">
       <div class="field">
-        <label for="mines-difficulty">難度</label>
+        <label for="mines-difficulty">{{t:mines.view.01}}</label>
         <select id="mines-difficulty">
-          <option value="low">低 · 5×5／3 雷</option>
-          <option value="medium">中 · 8×8／10 雷</option>
-          <option value="high">高 · 10×10／20 雷</option>
-          <option value="custom">自訂棋盤與地雷</option>
+          <option value="low">{{t:mines.view.02}}</option>
+          <option value="medium">{{t:mines.view.03}}</option>
+          <option value="high">{{t:mines.view.04}}</option>
+          <option value="custom">{{t:mines.view.05}}</option>
         </select>
       </div>
       <div id="mines-custom" hidden>
-        <div class="field"><label for="mines-size">棋盤邊長 N（2～10）</label><input id="mines-size" type="number" min="2" max="10" step="1" value="5" inputmode="numeric"></div>
-        <div class="field"><label for="mines-bombs" id="mines-bomb-limit">地雷數：1～24（N×N−1）</label><input id="mines-bombs" type="number" min="1" max="24" step="1" value="3" inputmode="numeric"></div>
+        <div class="field"><label for="mines-size">{{t:mines.view.06}}</label><input id="mines-size" type="number" min="2" max="10" step="1" value="5" inputmode="numeric"></div>
+        <div class="field"><label for="mines-bombs" id="mines-bomb-limit">{{t:mines.view.07}}</label><input id="mines-bombs" type="number" min="1" max="24" step="1" value="3" inputmode="numeric"></div>
       </div>
     </section>
-    <div class="mines-actions" role="group" aria-label="踩地雷操作">
+    <div class="mines-actions" role="group" aria-label="{{t:mines.view.20}}">
       <dl class="mines-stats">
-        <div><dt>剩餘安全格</dt><dd id="mines-left">22</dd></div>
-        <div><dt>已插旗</dt><dd id="mines-flags">0 / 3</dd></div>
+        <div><dt>{{t:mines.view.08}}</dt><dd id="mines-left">22</dd></div>
+        <div><dt>{{t:mines.view.09}}</dt><dd id="mines-flags">0 / 3</dd></div>
       </dl>
-      <button id="mines-mode" type="button" aria-pressed="false">插旗</button>
-      <button class="go" id="mines-go" type="button" data-mode="start">開始</button>
+      <button id="mines-mode" type="button" aria-pressed="false">{{t:mines.view.10}}</button>
+      <button class="go" id="mines-go" type="button" data-mode="start">{{t:mines.view.11}}</button>
     </div>
     <div class="mines-stage">
-      <div class="board-wrap"><div class="board" id="board" role="group" aria-label="5 乘 5 排雷棋盤"></div></div>
+      <div class="board-wrap"><div class="board" id="board" role="group" aria-label="{{t:mines.view.21}}"></div></div>
     </div>
     <div class="mines-feedback">
       <p class="msg" id="mines-msg" aria-live="polite"></p>
       <p id="mines-rank-status" role="status" hidden></p>
-      <button type="button" id="mines-rank-retry" hidden>重送排雷操作</button>
+      <button type="button" id="mines-rank-retry" hidden>{{t:mines.view.12}}</button>
     </div>
   </div>
-  <details class="rules"><summary>玩法說明</summary><p>按「插旗」後，點格子即可插旗或取消；再按一次恢復翻格。</p><p>點一下翻格；手機長按插旗／取消，電腦按滑鼠右鍵。鍵盤按 F 也可插旗。</p><p>插旗數等於數字時，點數字快開周圍；旗子插錯仍會踩雷。</p><p>地雷在開局時隨機配置，第一格也可能踩雷。數字為周圍八格雷數，空白區自動展開。翻開全部安全格就獲勝。</p><p>5×5／3 雷通關會列入訪客排行。大棋盤可水平捲動，重新整理會放棄本局。</p></details>
+  <details class="rules"><summary>{{t:mines.view.13}}</summary><p>{{t:mines.view.14}}</p><p>{{t:mines.view.15}}</p><p>{{t:mines.view.16}}</p><p>{{t:mines.view.17}}</p><p>{{t:mines.view.18}}</p></details>
 </section>

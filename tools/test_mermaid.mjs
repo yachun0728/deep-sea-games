@@ -1,9 +1,10 @@
 // Optional behavior checks: node tools/test_mermaid.mjs (Node.js, no packages).
 import fs from 'node:fs';
+import {readSource} from './expand_ids.mjs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 const root=new URL('../',import.meta.url);
-const raw=fs.readFileSync(new URL('games/mermaid/game.js',root),'utf8');
+const raw=readSource('games/mermaid/game.js',root);
 const fee=Number(fs.readFileSync(new URL('js/config.js',root),'utf8').match(/ENTRY_FEE\s*=\s*(\d+)/)[1]);
 const hookAt='ui();layoutIdle();';
 assert.ok(raw.includes(hookAt),'test hook anchor missing');

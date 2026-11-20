@@ -3,9 +3,12 @@ import json
 from html.parser import HTMLParser
 from pathlib import Path
 import re
+import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'tools'))
+import i18n_data  # noqa: E402
 HAN = re.compile(r'[\u3400-\u9fff]')
 LITERALS = re.compile(r'//[^\n]*|/\*[\s\S]*?\*/|\'(?:\\.|[^\'\\])*\'|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`')
 
@@ -119,13 +122,17 @@ def source_texts(skip=()):
                         found.update(markup_text(text))
                     else:
                         found.add(text.strip())
+    english = i18n_data.en_ids(ROOT)
+    for key, text in i18n_data.zh_ids(ROOT).items():  # {{t:id}} / {{tb:id}} texts
+        if HAN.search(text):
+            found.add((text + '|' + english[key] if '.say.' in key and key in english else text).strip())
     return found
 
 
 class LocalizationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.dictionary = json.loads((ROOT / 'locales/en.json').read_text(encoding='utf-8'))
+        cls.dictionary = i18n_data.dictionary(ROOT)
 
     def test_source_text_is_covered(self):
         missing = sorted(source_texts() - self.dictionary.keys())
@@ -138,7 +145,7 @@ class LocalizationTests(unittest.TestCase):
                 self.assertIsNone(HAN.search(value))
 
     def test_embedded_dictionary_cannot_close_script(self):
-        self.assertNotIn('</script', (ROOT / 'locales/en.json').read_text().lower())
+        self.assertNotIn('</script', json.dumps(i18n_data.dictionary(ROOT)).lower())
 
     def test_boba_card_has_no_fee_wording(self):
         source = (ROOT / 'games/boba/card.html').read_text()

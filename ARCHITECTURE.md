@@ -305,3 +305,7 @@ Frontier draw.js uses two PNG atlases with vector fallback. Optional world.suppl
 深海前哨第二至第三十關共用同一模擬（第 4–30 關由 `outpost-rules.cjs` 內固定種子的產生器建立），解鎖進度另存 `deep-sea-outpost-unlocked-v1`。訪客排行榜的重播入口固定開第一關，舊成績仍使用同一套分數規則。其餘 29 關進度存於瀏覽器，沒有新增 D1 migration。
 
 《深海火線》的航行、碰撞、選卡和距離計算位於 `shared/blaster-rules.cjs`，同一規則由前端及排名 Worker 執行。前端以 `games/blaster/game.js` 接入畫布、點數和既有訪客 SDK。排行榜使用整數公尺，顯示於遊戲畫面內。
+
+### 百萬大學堂（academy）
+
+`games/academy/` 為原生 view（手機全螢幕、桌面置中手機比例），不用 iframe。`i18n.js` 放三語題庫與介面文字（站台翻譯器略過 `data-i18n-ignore`），`shared/academy-rules.cjs` 是前端與 Worker 共用的純狀態機。排行榜、BONUS 與儲存 Key 見 GAME_RULES.md 對應章節。

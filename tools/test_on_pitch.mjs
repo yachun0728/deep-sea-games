@@ -1,10 +1,11 @@
 // 不准跑調 行為測試：node tools/test_on_pitch.mjs（Node.js，無需 npm 套件）。
 // 在假的 DOM／時鐘中載入 games/on-pitch/game.js，驗證免費開局、單次結算、暫停／離頁、儲存與英文畫面。
 import fs from 'node:fs';
+import {readSource} from './expand_ids.mjs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 const root = new URL('../', import.meta.url);
-const source = fs.readFileSync(new URL('games/on-pitch/game.js', root), 'utf8');
+const source = readSource('games/on-pitch/game.js',root);
 const fee = Number(fs.readFileSync(new URL('js/config.js', root), 'utf8').match(/ENTRY_FEE\s*=\s*(\d+)/)[1]);
 const HAN = /[㐀-鿿]/;
 const KEY = 'on-pitch-v1';

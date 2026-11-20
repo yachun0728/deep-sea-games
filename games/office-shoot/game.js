@@ -33,20 +33,20 @@ function wpick(list){let tw=0;for(const x of list)tw+=x[1];let r=Math.random()*t
 
 // ====== 武器進化線 ======
 const WEAPONS=[
- {name:'原子筆|Ballpoint Pen',en:'BALLPOINT PEN',color:'#4d8dff',rate:4,dmg:1,spd:720,type:'bullet',size:3.5,look:'ink',armor:'#5b6573',trim:'#d64545'},
- {name:'釘書機|Stapler',en:'STAPLER',color:'#d9dee6',rate:10,dmg:1,spd:820,type:'bullet',size:3,jitter:.06,look:'staple',armor:'#3d4a63',trim:'#4dabf7'},
- {name:'碎紙機|Shredder',en:'SHREDDER',color:'#ffffff',rate:2.4,dmg:1.6,spd:680,type:'spread',pellets:5,spread:.34,size:3.5,armor:'#4a3b2f',trim:'#ffa94d'},
- {name:'雷射簡報筆|Laser Pointer',en:'LASER POINTER',color:'#ff3b3b',rate:7,dmg:4.3,spd:1150,type:'laser',pierce:3,armor:'#1f2937',trim:'#ff3b3b'},
- {name:'咖啡火箭|Coffee Rocket',en:'COFFEE ROCKET',color:'#c8874a',rate:2.3,dmg:20,spd:260,type:'rocket',aoe:58,armor:'#6b3e26',trim:'#e0a96d'},
- {name:'印表機|Printer',en:'PRINTER',color:'#bcd4ff',rate:4.5,dmg:15,spd:540,type:'orb',size:9,pierce:6,armor:'#2b3a67',trim:'#e8f0ff'},
- {name:'已讀不回砲|Seen-Zone Cannon',en:'SEEN-ZONE CANNON',color:'#7dff9a',rate:2.6,dmg:46,type:'rail',width:18,armor:'#a8841f',trim:'#fff3a8'},
+ {name:'{{tb:office-shoot.say.001}}',en:'BALLPOINT PEN',color:'#4d8dff',rate:4,dmg:1,spd:720,type:'bullet',size:3.5,look:'ink',armor:'#5b6573',trim:'#d64545'},
+ {name:'{{tb:office-shoot.say.002}}',en:'STAPLER',color:'#d9dee6',rate:10,dmg:1,spd:820,type:'bullet',size:3,jitter:.06,look:'staple',armor:'#3d4a63',trim:'#4dabf7'},
+ {name:'{{tb:office-shoot.say.003}}',en:'SHREDDER',color:'#ffffff',rate:2.4,dmg:1.6,spd:680,type:'spread',pellets:5,spread:.34,size:3.5,armor:'#4a3b2f',trim:'#ffa94d'},
+ {name:'{{tb:office-shoot.say.004}}',en:'LASER POINTER',color:'#ff3b3b',rate:7,dmg:4.3,spd:1150,type:'laser',pierce:3,armor:'#1f2937',trim:'#ff3b3b'},
+ {name:'{{tb:office-shoot.say.005}}',en:'COFFEE ROCKET',color:'#c8874a',rate:2.3,dmg:20,spd:260,type:'rocket',aoe:58,armor:'#6b3e26',trim:'#e0a96d'},
+ {name:'{{tb:office-shoot.say.006}}',en:'PRINTER',color:'#bcd4ff',rate:4.5,dmg:15,spd:540,type:'orb',size:9,pierce:6,armor:'#2b3a67',trim:'#e8f0ff'},
+ {name:'{{tb:office-shoot.say.007}}',en:'SEEN-ZONE CANNON',color:'#7dff9a',rate:2.6,dmg:46,type:'rail',width:18,armor:'#a8841f',trim:'#fff3a8'},
 ];
 const WDPS=[4,10,15,30,46,67,120];
 const GUN_LEN=[18,30,28,34,42,42,48];
 const MODS=[
- {id:'rate',label:'咖啡 射速+15%|Coffee  Rate +15%',icon:'☕',w:3,col:'#ffd43b'},
- {id:'dmg',label:'加薪 傷害+20%|Raise  Dmg +20%',icon:'💰',w:3,col:'#7dff9a'},
- {id:'barrel',label:'多一隻手 +1|Extra Hand +1',icon:'🤚',w:1.3,col:'#4dabf7'},
+ {id:'rate',label:'{{tb:office-shoot.say.008}}',icon:'☕',w:3,col:'#ffd43b'},
+ {id:'dmg',label:'{{tb:office-shoot.say.009}}',icon:'💰',w:3,col:'#7dff9a'},
+ {id:'barrel',label:'{{tb:office-shoot.say.010}}',icon:'🤚',w:1.3,col:'#4dabf7'},
 ];
 const ETYPES={
  grunt:{r:15,ttk:.5,spd:52,col:'#5cd65c',dark:'#1f5e22',score:10},
@@ -64,21 +64,21 @@ const ETYPES={
 // ====== Boss ======
 const SHAPES={round:{w:130,h:105,r:45},square:{w:130,h:100,r:16},tall:{w:112,h:125,r:30}};
 const BOSS_DEFS=[
- {name:'無限會議經理|The Endless-Meeting Manager',mech:['split'],hint:'血量減半就分裂出副理，再分裂出組長|Splits into deputies at half HP, then into team leads',look:'human',col:'#3d4a63',tie:'#d64545',hair:'comb',glasses:true,shape:'square'},
- {name:'開會中總監|The In-a-Meeting Director',mech:['shield'],hint:'「開會中」時無敵，等他開完會再打|Invincible while "In a meeting" — wait it out',look:'human',col:'#2f2f3a',tie:'#ffb347',hair:'part',headset:true,shape:'square'},
- {name:'待辦清單女王|The To-Do List Queen',mech:['hive'],hint:'不斷產出新的待辦事項，別讓它們淹沒你|Keeps spawning new to-dos — don\'t get buried',look:'human',col:'#8a3b6b',tie:'#ffd43b',hair:'bun',glasses:true,shape:'tall'},
- {name:'KPI 鐵血董事|The Iron-Fisted KPI Director',mech:['weak'],hint:'刀槍不入，只怕打中他的「KPI 缺口」|Armored — only the moving "KPI GAP" takes real damage',look:'human',col:'#4a4f57',tie:'#9fb3c8',hair:'bald',shape:'square'},
- {name:'改需求的客戶|The Client Who Changes Everything',mech:['absorb'],hint:'說「還是第一版好」時子彈會被吸收，快躲去左道|"I liked v1 better" = bullets heal her. Dodge left!',look:'human',col:'#6b4fa0',tie:'#ff6b6b',hair:'spiky',glasses:true,shape:'round'},
- {name:'永不結案的專案|The Project That Never Ends',mech:['regen'],hint:'一停手就自動延期回血，火力不能斷|Heals when you stop firing — keep the pressure on',look:'folder',col:'#3fae6a',shape:'tall'},
- {name:'雙胞胎 PM|The Twin PMs',mech:['mirror'],hint:'只有「有影子」的才是真的 PM，會互換位置|Only the one with a shadow is real. They swap places',look:'human',col:'#2b7a8a',tie:'#5ad1e6',hair:'part',shape:'round'},
- {name:'週五五點的新需求|The Friday 5 PM Request',mech:['meteor'],hint:'亂丟文件，會砸爛補給，也會把你砸暈|Throws paperwork that smashes supplies and stuns you',look:'human',col:'#8a5a3a',tie:'#ffd43b',hair:'spiky',shape:'square'},
- {name:'神出鬼沒的老闆|The Boss Who Appears Out of Nowhere',mech:['teleport'],hint:'每掉 20% 血就閃現回來，還帶人來|Every 20% HP lost, warps back with backup',look:'human',col:'#1a1a1a',tie:'#ffd43b',hair:'bald',crown:true,glasses:true,shape:'round'},
- {name:'全自動催稿機器人|The Auto Deadline-Chaser Bot',mech:['missile'],hint:'狂發「進度如何？」訊息彈，被打中會當機|Spams "ETA?" missiles — getting hit freezes you',look:'robot',col:'#c0c8d0',shape:'square'},
+ {name:'{{tb:office-shoot.say.011}}',mech:['split'],hint:'{{tb:office-shoot.say.012}}',look:'human',col:'#3d4a63',tie:'#d64545',hair:'comb',glasses:true,shape:'square'},
+ {name:'{{tb:office-shoot.say.013}}',mech:['shield'],hint:'{{tb:office-shoot.say.014}}',look:'human',col:'#2f2f3a',tie:'#ffb347',hair:'part',headset:true,shape:'square'},
+ {name:'{{tb:office-shoot.say.015}}',mech:['hive'],hint:'{{tb:office-shoot.say.016}}',look:'human',col:'#8a3b6b',tie:'#ffd43b',hair:'bun',glasses:true,shape:'tall'},
+ {name:'{{tb:office-shoot.say.017}}',mech:['weak'],hint:'{{tb:office-shoot.say.018}}',look:'human',col:'#4a4f57',tie:'#9fb3c8',hair:'bald',shape:'square'},
+ {name:'{{tb:office-shoot.say.019}}',mech:['absorb'],hint:'{{tb:office-shoot.say.020}}',look:'human',col:'#6b4fa0',tie:'#ff6b6b',hair:'spiky',glasses:true,shape:'round'},
+ {name:'{{tb:office-shoot.say.021}}',mech:['regen'],hint:'{{tb:office-shoot.say.022}}',look:'folder',col:'#3fae6a',shape:'tall'},
+ {name:'{{tb:office-shoot.say.023}}',mech:['mirror'],hint:'{{tb:office-shoot.say.024}}',look:'human',col:'#2b7a8a',tie:'#5ad1e6',hair:'part',shape:'round'},
+ {name:'{{tb:office-shoot.say.025}}',mech:['meteor'],hint:'{{tb:office-shoot.say.026}}',look:'human',col:'#8a5a3a',tie:'#ffd43b',hair:'spiky',shape:'square'},
+ {name:'{{tb:office-shoot.say.027}}',mech:['teleport'],hint:'{{tb:office-shoot.say.028}}',look:'human',col:'#1a1a1a',tie:'#ffd43b',hair:'bald',crown:true,glasses:true,shape:'round'},
+ {name:'{{tb:office-shoot.say.029}}',mech:['missile'],hint:'{{tb:office-shoot.say.030}}',look:'robot',col:'#c0c8d0',shape:'square'},
 ];
 const MECH_POOL=['split','shield','hive','weak','absorb','regen','mirror','meteor','teleport','missile'];
-const MECH_NAME={split:'愛開會|Meeting-Happy',shield:'已讀不回|Ghosting',hive:'交辦狂|Task-Dumping',weak:'KPI|KPI-Obsessed',absorb:'朝令夕改|Flip-Flopping',regen:'愛拖延|Procrastinating',mirror:'有分身|Two-Faced',meteor:'愛丟包|Buck-Passing',teleport:'神出鬼沒|Lurking',missile:'奪命連環call|Spam-Calling'};
-const MECH_HINT={split:'會分裂|Splits',shield:'週期無敵|Periodic invincibility',hive:'狂丟待辦|Spawns to-dos',weak:'只怕 KPI 缺口|Only the KPI gap hurts',absorb:'改需求時停火|Hold fire when it flip-flops',regen:'停火會回血|Heals if you stop firing',mirror:'找有影子的真身|Find the one with a shadow',meteor:'亂丟文件|Throws paperwork',teleport:'閃現帶人|Warps in with backup',missile:'狂發訊息彈|Fires message missiles'};
-const NOUNS=['經理|Manager','總監|Director','協理|VP','董事|Board Member','顧問|Consultant','副總|Deputy','老闆|Boss','特助|Assistant'];
+const MECH_NAME={split:'{{tb:office-shoot.say.031}}',shield:'{{tb:office-shoot.say.032}}',hive:'{{tb:office-shoot.say.033}}',weak:'KPI|KPI-Obsessed',absorb:'{{tb:office-shoot.say.034}}',regen:'{{tb:office-shoot.say.035}}',mirror:'{{tb:office-shoot.say.036}}',meteor:'{{tb:office-shoot.say.037}}',teleport:'{{tb:office-shoot.say.038}}',missile:'{{tb:office-shoot.say.039}}'};
+const MECH_HINT={split:'{{tb:office-shoot.say.040}}',shield:'{{tb:office-shoot.say.041}}',hive:'{{tb:office-shoot.say.042}}',weak:'{{tb:office-shoot.say.043}}',absorb:'{{tb:office-shoot.say.044}}',regen:'{{tb:office-shoot.say.045}}',mirror:'{{tb:office-shoot.say.046}}',meteor:'{{tb:office-shoot.say.047}}',teleport:'{{tb:office-shoot.say.048}}',missile:'{{tb:office-shoot.say.049}}'};
+const NOUNS=['{{tb:office-shoot.say.050}}','{{tb:office-shoot.say.051}}','{{tb:office-shoot.say.052}}','{{tb:office-shoot.say.053}}','{{tb:office-shoot.say.054}}','{{tb:office-shoot.say.055}}','{{tb:office-shoot.say.056}}','{{tb:office-shoot.say.057}}'];
 function bossDefFor(s){
   if(s<=BOSS_DEFS.length)return BOSS_DEFS[s-1];
   const R=seeded(s*7919+13),n=s>=16?3:2,pool=MECH_POOL.slice(),mech=[];
@@ -88,7 +88,7 @@ function bossDefFor(s){
     mech.push(m);
   }
   const hue=Math.floor(R()*360),pick=a=>a[Math.floor(R()*a.length)],ni=Math.floor(R()*NOUNS.length);
-  const NAME_FMT='{a}的{b}|The {a} {b}',fill=(s,o)=>s.replace(/\{(\w+)\}/g,(m,k)=>o[k]);
+  const NAME_FMT='{{tb:office-shoot.say.058}}',fill=(s,o)=>s.replace(/\{(\w+)\}/g,(m,k)=>o[k]);
   const name=fill(ZH(NAME_FMT),{a:mech.map(m=>ZH(MECH_NAME[m])).join('・'),b:ZH(NOUNS[ni])})+'|'+fill(EN(NAME_FMT),{a:mech.map(m=>EN(MECH_NAME[m])).join(', '),b:EN(NOUNS[ni])});
   return {name,mech,hint:mech.map(m=>ZH(MECH_HINT[m])).join(' ＋ ')+'|'+mech.map(m=>EN(MECH_HINT[m])).join(' + '),look:R()<.15?'robot':'human',col:hsl2hex(hue,40,32),tie:hsl2hex((hue+150)%360,75,60),
     hair:pick(['comb','part','spiky','bun','bald']),glasses:R()<.5,headset:R()<.3,crown:s>=15,shape:pick(['round','square','tall'])};
@@ -97,10 +97,10 @@ function bossDefFor(s){
 let state='menu',phase='waves',stage=1,stageT=0,phaseT=0,score=0,best=0,t=0,overT=0,kills=0;
 let p,bullets,enemies,crates,bosses,hazards,parts,texts,beams,rings,shake=0,banner=null,flash=0,danger=0,bossTotal=1,curBoss=null;
 let spawnT,crateT,sinceWeapon,modsTaken,eliteT=8,shotSfxT=0,quipT=0,critT=0,overTitle='',overQuip='';
-const QUIPS=['我還有房貸…|I still have a mortgage…','告訴我媽我愛她|Tell my mom I love her','這不在我的 JD 裡|Not in my job description','先這樣…|Let\'s circle back…','已讀…|Seen…','明天見…|See you tomorrow…','我只是個便利貼啊|I\'m just a sticky note!','記得幫我打卡|Clock me out, please','謝謝指教（哭）|Thanks for the feedback (sob)','收到，處理中…|Noted, on it…'];
-const MISS=['欸你的強化不要了喔|You didn\'t want that?','它哭著離開了|It left in tears','補給：我先下班了|Supply: I\'m clocking out','錯過了…（嘆）|Missed it… (sigh)','被隔壁同事拿走了|Your coworker grabbed it'];
-const OVER_T=['今晚加班 確定|Overtime Confirmed','週末沒了|Bye-Bye Weekend','又是加班的一天|Another Late Night','爆肝結局|Burnout Ending'];
-const OVER_Q=['下次一定準時下班（大概）|You\'ll leave on time next time (probably)','老闆：辛苦了，明天早點來|Boss: Great work. Come in early tomorrow','至少你努力過了（考績：C）|At least you tried (Review: C)','加班費？什麼加班費？|Overtime pay? What overtime pay?'];
+const QUIPS=['{{tb:office-shoot.say.059}}','{{tb:office-shoot.say.060}}','{{tb:office-shoot.say.061}}','{{tb:office-shoot.say.062}}','{{tb:office-shoot.say.063}}','{{tb:office-shoot.say.064}}','{{tb:office-shoot.say.065}}','{{tb:office-shoot.say.066}}','{{tb:office-shoot.say.067}}','{{tb:office-shoot.say.068}}'];
+const MISS=['{{tb:office-shoot.say.069}}','{{tb:office-shoot.say.070}}','{{tb:office-shoot.say.071}}','{{tb:office-shoot.say.072}}','{{tb:office-shoot.say.073}}'];
+const OVER_T=['{{tb:office-shoot.say.074}}','{{tb:office-shoot.say.075}}','{{tb:office-shoot.say.076}}','{{tb:office-shoot.say.077}}'];
+const OVER_Q=['{{tb:office-shoot.say.078}}','{{tb:office-shoot.say.079}}','{{tb:office-shoot.say.080}}','{{tb:office-shoot.say.081}}'];
 try{best=+localStorage.getItem(BEST_KEY)||0}catch(e){}
 
 function reset(){
@@ -308,8 +308,8 @@ function killEnemy(e){
   if(quipT<=0&&Math.random()<.07){quipT=1.4;floatText(e.x,e.y-14,pickL(QUIPS),'#ffe8a3',13);}
   if(e.type==='splitter')for(let i=0;i<3;i++)spawnEnemy('mini',e.x+(i-1)*20,e.y+rand(-6,6),true);
   if(e.elite){
-    if(Math.random()<.5){p.rateMul*=1.06;floatText(e.x,e.y-10,L('老闆請喝飲料 ☕+6%|Boss bought drinks ☕+6%'),'#ffd43b',15);}
-    else{p.dmgMul*=1.08;floatText(e.x,e.y-10,L('年終獎金 💰+8%|Year-end bonus 💰+8%'),'#7dff9a',15);}
+    if(Math.random()<.5){p.rateMul*=1.06;floatText(e.x,e.y-10,L('{{tb:office-shoot.say.082}}'),'#ffd43b',15);}
+    else{p.dmgMul*=1.08;floatText(e.x,e.y-10,L('{{tb:office-shoot.say.083}}'),'#7dff9a',15);}
     tone(880,.1,'sine',.05,1.5);
     rings.push({x:e.x,y:e.y,r:8,max:70,life:.4,mx:.4,col:'#ffd43b'});
   }
@@ -322,7 +322,7 @@ function splitBoss(b){
     c.y=b.y;c.gen=b.gen+1;c.t=b.t+k;bosses.push(c);
   }
   spark(b.x,b.y,b.def.col,30,300,4);rings.push({x:b.x,y:b.y,r:10,max:140,life:.45,mx:.45,col:b.def.col});
-  floatText(b.x,b.y-b.h/2-12,b.gen===0?L('分裂！副理登場|Split! Deputies incoming'):L('再分裂！組長登場|Split again! Team leads!'),'#ff4d4d',20);shake=Math.max(shake,8);
+  floatText(b.x,b.y-b.h/2-12,b.gen===0?L('{{tb:office-shoot.say.084}}'):L('{{tb:office-shoot.say.085}}'),'#ff4d4d',20);shake=Math.max(shake,8);
   tone(160,.3,'sawtooth',.06,.5);
 }
 function killBoss(b){
@@ -338,10 +338,10 @@ function killBoss(b){
   for(const e of enemies)if(!e.dead)killEnemy(e);
   for(const h of hazards)h.dead=true;
   p.dmgMul*=1.3;
-  floatText(p.x,PY-70,L('準時下班獎勵 💰傷害 +30%|On-time bonus 💰Dmg +30%'),'#ffd43b',17);
+  floatText(p.x,PY-70,L('{{tb:office-shoot.say.086}}'),'#ffd43b',17);
   phase='clear';phaseT=0;
   dayCleared(stage);
-  banner={text:LF('第 {n} 天 準時下班！|Day {n}: Clocked Out!',{n:stage}),sub:LF('成功擺脫 {b}|Escaped {b}',{b:bName(b.def)}),col:'#ffe066',t:0,dur:2.4};
+  banner={text:LF('{{tb:office-shoot.say.087}}',{n:stage}),sub:LF('{{tb:office-shoot.say.088}}',{b:bName(b.def)}),col:'#ffe066',t:0,dur:2.4};
   tone(523,.15,'square',.04,1,.25);tone(659,.15,'square',.04,1,.4);tone(784,.3,'square',.04,1,.55);
 }
 function breakCrate(c){
@@ -350,12 +350,12 @@ function breakCrate(c){
   rings.push({x:c.x,y:c.y,r:10,max:110,life:.35,mx:.35,col:'#8fe3ff'});
   if(c.refine){
     p.wlv=c.refine;p.dmgMul*=1.3;const w=WEAPONS[p.tier];
-    banner={text:wName(w)+' +'+p.wlv+'!',sub:L('裝備精煉 · 傷害 ×1.3|Gear refined · Damage ×1.3'),col:'#ffd43b',t:0,dur:2.2};
+    banner={text:wName(w)+' +'+p.wlv+'!',sub:L('{{tb:office-shoot.say.089}}'),col:'#ffd43b',t:0,dur:2.2};
     rings.push({x:p.x,y:PY,r:10,max:180,life:.6,mx:.6,col:'#ffd43b'});spark(p.x,PY,'#ffd43b',50,340,3.5);
     flash=.6;shake=Math.max(shake,8);[659,784,988,1319].forEach((f,i)=>tone(f,.16,'square',.045,1,i*.08));
   }else if(c.weapon!=null){
     p.tier=c.weapon;const w=WEAPONS[p.tier];
-    banner={text:LF('獲得 {w}！|Got the {w}!',{w:wName(w)}),sub:(lang==='en'?'':w.en+'  ·  ')+LF('裝備升級 {a} / {b}|Gear upgrade {a} / {b}',{a:p.tier+1,b:WEAPONS.length}),col:w.color,t:0,dur:2.2};
+    banner={text:LF('{{tb:office-shoot.say.090}}',{w:wName(w)}),sub:(lang==='en'?'':w.en+'  ·  ')+LF('{{tb:office-shoot.say.091}}',{a:p.tier+1,b:WEAPONS.length}),col:w.color,t:0,dur:2.2};
     rings.push({x:p.x,y:PY,r:10,max:160,life:.6,mx:.6,col:w.color});
     spark(p.x,PY,w.color,40,320,3.5);
     flash=.6;shake=Math.max(shake,8);
@@ -364,7 +364,7 @@ function breakCrate(c){
 }
 function stunPlayer(){
   p.stun=1;flash=Math.max(flash,.3);shake=Math.max(shake,6);
-  floatText(p.x,PY-50,L('當機！|Frozen!'),'#ff6b6b',20);tone(140,.3,'square',.05,.5);
+  floatText(p.x,PY-50,L('{{tb:office-shoot.say.092}}'),'#ff6b6b',20);tone(140,.3,'square',.05,.5);
 }
 function throwRock(b){
   let tx,ty;
@@ -383,7 +383,7 @@ function teleportBoss(b){
   spark(b.x,b.y,'#c77dff',30,260,3);rings.push({x:b.x,y:b.y,r:10,max:120,life:.4,mx:.4,col:'#c77dff'});
   b.y=70;
   rings.push({x:b.x,y:b.y,r:120,max:10,life:.4,mx:.4,col:'#c77dff'});
-  floatText(b.x,b.y+b.h/2+14,L('老闆閃現！還帶人來了|Boss warped in with backup!'),'#e599f7',17);
+  floatText(b.x,b.y+b.h/2+14,L('{{tb:office-shoot.say.093}}'),'#e599f7',17);
   for(let i=0;i<4;i++)spawnEnemy(pickType(),rand(MID+30,W-30),b.y+b.h/2+rand(0,40));
   tone(900,.3,'sine',.05,.3);
 }
@@ -447,7 +447,7 @@ function update(dt){
     }
     if(stageT>=STAGE_LEN){phase='warn';phaseT=0;
       const d=bossDefFor(stage);
-      banner={text:L('⚠ 17:00 大魔王出沒 ⚠|⚠ 5 PM BOSS INCOMING ⚠'),sub:bName(d),hint:bHint(d),col:'#ff4d4d',t:0,dur:2.6};
+      banner={text:L('{{tb:office-shoot.say.094}}'),sub:bName(d),hint:bHint(d),col:'#ff4d4d',t:0,dur:2.6};
       tone(392,.22,'square',.05,1);tone(415,.22,'square',.05,1,.25);tone(370,.5,'square',.05,.97,.5);}
   }else if(phase==='warn'){
     if(phaseT>=2.4){spawnBoss();phase='boss';phaseT=0;}
@@ -472,10 +472,10 @@ function update(dt){
         if(b.rocket){explode(b.x,b.y,b.aoe,b.dmg,b.col);b.dead=true;break;}
         if(tg.shieldHits>0&&!b.laser&&!b.orb){
           tg.shieldHits--;tg.hit=.05;b.dead=true;spark(b.x,b.y,'#9fd3ff',2,120,2);
-          if(tg.shieldHits===0){floatText(tg.x,tg.y-24,L('緊急牌被打掉了|Urgent sign down!'),'#ffc9c9',13);spark(tg.x,tg.y+tg.r,'#9fd3ff',12,200,2.5);}
+          if(tg.shieldHits===0){floatText(tg.x,tg.y-24,L('{{tb:office-shoot.say.095}}'),'#ffc9c9',13);spark(tg.x,tg.y+tg.r,'#9fd3ff',12,200,2.5);}
           break;
         }
-        let dd=b.dmg;if(Math.random()<.06){dd*=2;if(critT<=0){critT=.35;floatText(b.x+rand(-8,8),b.y-12,L('爆擊！|CRIT!'),'#ff922b',15);}}
+        let dd=b.dmg;if(Math.random()<.06){dd*=2;if(critT<=0){critT=.35;floatText(b.x+rand(-8,8),b.y-12,L('{{tb:office-shoot.say.096}}'),'#ff922b',15);}}
         damage(tg,dd,b);
         if(Math.random()<.5)spark(b.x,b.y,tg.kind==='crate'?'#8fe3ff':b.col,2,120,2);
         b.pierce--;if(b.pierce<=0){b.dead=true;break;}
@@ -489,14 +489,14 @@ function update(dt){
   for(const e of enemies){
     if(e.dead)continue;
     let sp=e.spd;
-    if(e.d.dash&&e.y>e.dashY){sp*=6.5;if(!e.dashing){e.dashing=true;floatText(e.x,e.y-20,L('急件！！|ASAP!!'),'#ff4d4d',18);}}
+    if(e.d.dash&&e.y>e.dashY){sp*=6.5;if(!e.dashing){e.dashing=true;floatText(e.x,e.y-20,L('{{tb:office-shoot.say.097}}'),'#ff4d4d',18);}}
     e.y+=sp*dt;e.wob+=dt*7;e.hit-=dt;
     if(e.type==='healer'){
       e.healT-=dt;
       if(e.healT<=0){e.healT=2;let n=0;
         for(const o of enemies)if(o!==e&&!o.dead&&o.hp<o.max&&Math.hypot(o.x-e.x,o.y-e.y)<100){o.hp=Math.min(o.max,o.hp+o.max*.2);n++;spark(o.x,o.y,'#7dff9a',4,80,2.5);}
         rings.push({x:e.x,y:e.y,r:8,max:100,life:.5,mx:.5,col:'#7dff9a'});
-        if(n)floatText(e.x,e.y-22,L('再改一版！|One more revision!'),'#ff8cc6',13);}
+        if(n)floatText(e.x,e.y-22,L('{{tb:office-shoot.say.098}}'),'#ff8cc6',13);}
     }
     danger=Math.max(danger,(e.y+e.r-(LINE-190))/190);
     if(e.y+e.r>=LINE){gameOver(e.x,LINE);break;}
@@ -508,7 +508,7 @@ function update(dt){
     h.x+=h.vx*dt;h.y+=h.vy*dt;h.hit-=dt;
     if(h.type==='rock'){h.rot+=dt*4;
       for(const c of crates){if(!c.broken&&!c.gone&&Math.abs(c.x-h.x)<c.w/2+h.r&&Math.abs(c.y-h.y)<c.h/2+h.r){
-        c.gone=true;h.dead=true;floatText(c.x,c.y,L('補給被新需求砸爛了！|Supply crushed by a new request!'),'#ff9a6b',15);
+        c.gone=true;h.dead=true;floatText(c.x,c.y,L('{{tb:office-shoot.say.099}}'),'#ff9a6b',15);
         spark(c.x,c.y,'#c49a6c',25,260,3.5);spark(c.x,c.y,'#8fe3ff',12,200,2.5);shake=Math.max(shake,5);tone(120,.25,'sawtooth',.05,.5);break;}}
     }else if(Math.random()<.8)parts.push({x:h.x-h.vx*.04,y:h.y-h.vy*.04,vx:rand(-20,20),vy:rand(-20,20),life:.3,max:.3,col:'#ffb36b',size:2.5});
     if(!h.dead&&h.y>=PY-8){
@@ -546,7 +546,7 @@ function updateBosses(dt){
     if(M.has('absorb')){
       if(b.absorbOn>0)b.absorbOn-=dt;
       else{b.absorbT-=dt;
-        if(b.absorbT<=1.1&&!b.absWarned){b.absWarned=true;floatText(b.x,b.y+b.h/2+16,L('停火！要改需求了|Hold fire! Requirements changing!'),'#ff4d4d',16);tone(660,.1,'square',.04,1);tone(660,.1,'square',.04,1,.2);}
+        if(b.absorbT<=1.1&&!b.absWarned){b.absWarned=true;floatText(b.x,b.y+b.h/2+16,L('{{tb:office-shoot.say.100}}'),'#ff4d4d',16);tone(660,.1,'square',.04,1);tone(660,.1,'square',.04,1,.2);}
         if(b.absorbT<=0){b.absorbOn=2.5;b.absorbT=7;b.absWarned=false;}}
     }
     if(M.has('regen')&&b.idle>1.5&&b.hp<b.max&&!b.fake){b.hp=Math.min(b.max,b.hp+b.max*.07*dt);if(Math.random()<.3)parts.push({x:b.x+rand(-b.w/2,b.w/2),y:b.y+rand(-b.h/2,b.h/2),vx:0,vy:-40,life:.6,max:.6,col:'#7dff9a',size:3});}
@@ -556,7 +556,7 @@ function updateBosses(dt){
     if(M.has('missile')){b.missileT-=dt;if(b.missileT<=0){b.missileT=Math.max(1.1,1.8-stage*.03);fireMissile(b);}}
     if(M.has('teleport')&&!b.fake&&b.tpNext>.1&&b.hp<=b.max*b.tpNext){b.tpNext-=.2;teleportBoss(b);}
     if(M.has('mirror')&&!b.fake){b.swapT-=dt;if(b.swapT<=0){b.swapT=6;const o=alive.find(k=>k!==b);
-      if(o){const hx=b.hx;b.hx=o.hx;o.hx=hx;for(const k of [b,o]){spark(k.x,k.y,'#5ad1e6',20,220,3);k.x=k.hx;}floatText(MID*1.5,b.y-b.h/2-14,L('互換位置！|Swapped!'),'#5ad1e6',16);}}}
+      if(o){const hx=b.hx;b.hx=o.hx;o.hx=hx;for(const k of [b,o]){spark(k.x,k.y,'#5ad1e6',20,220,3);k.x=k.hx;}floatText(MID*1.5,b.y-b.h/2-14,L('{{tb:office-shoot.say.101}}'),'#5ad1e6',16);}}}
     b.y+=sp*dt;
     if(b.y+b.h/2>=LINE){gameOver(b.x,LINE);return;}
   }
@@ -622,15 +622,15 @@ function drawBG(){
   ctx.restore();
   if(phase!=='boss'){
     ctx.font=`bold 13px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillStyle='rgba(140,230,220,.6)';ctx.fillText(L('▼ 補給站|▼ SUPPLIES'),MID/2,TOP+18);
-    ctx.fillStyle='rgba(255,150,170,.6)';ctx.fillText(L('▼ 工作湧入|▼ INCOMING WORK'),MID*1.5,TOP+18);
+    ctx.fillStyle='rgba(140,230,220,.6)';ctx.fillText(L('{{tb:office-shoot.say.102}}'),MID/2,TOP+18);
+    ctx.fillStyle='rgba(255,150,170,.6)';ctx.fillText(L('{{tb:office-shoot.say.103}}'),MID*1.5,TOP+18);
   }
   // 下班線以下：打卡區
   ctx.fillStyle='#14161c';ctx.fillRect(0,LINE,W,H-LINE);
   ctx.fillStyle='rgba(255,255,255,.04)';for(let x=0;x<W;x+=30)ctx.fillRect(x,LINE,15,H-LINE);
   ctx.strokeStyle='rgba(255,70,90,.8)';ctx.lineWidth=2;ctx.setLineDash([10,8]);ctx.lineDashOffset=-t*30;
   ctx.beginPath();ctx.moveTo(0,LINE);ctx.lineTo(W,LINE);ctx.stroke();ctx.setLineDash([]);
-  ctx.font=`bold 10px ${FONT}`;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillStyle='rgba(255,110,130,.85)';ctx.fillText(L('— 下班線 —|— CLOCK-OUT LINE —'),6,LINE+9);
+  ctx.font=`bold 10px ${FONT}`;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillStyle='rgba(255,110,130,.85)';ctx.fillText(L('{{tb:office-shoot.say.104}}'),6,LINE+9);
 }
 function drawGun(gx,gy,tier,w,s){
   ctx.save();ctx.translate(gx,gy);if(s)ctx.scale(s,s);
@@ -666,7 +666,7 @@ function drawGun(gx,gy,tier,w,s){
     case 6: // 已讀不回砲（手機）
       ctx.fillStyle='#1a1a1a';rr(-8,-46,16,46,4);ctx.fill();
       ctx.fillStyle=hexA(w.color,.6+.4*Math.random());rr(-6,-43,12,36,2);ctx.fill();
-      ctx.fillStyle='#1a1a1a';ctx.font=`bold 6px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(L('已讀|SEEN'),0,-26,11);
+      ctx.fillStyle='#1a1a1a';ctx.font=`bold 6px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(L('{{tb:office-shoot.say.105}}'),0,-26,11);
       ctx.fillStyle='#fff3a8';ctx.fillRect(-8,-4,16,2);break;
   }
   ctx.restore();
@@ -704,7 +704,7 @@ function drawPlayer(){
   ctx.fillStyle='#f1c9a5';circle(-10,5,3);ctx.fill();circle(10,5,3);ctx.fill();
   ctx.fillStyle='#2a1f1a';circle(0,5,10);ctx.fill();
   ctx.strokeStyle='#3d2e26';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(1,3,4,0,Math.PI*1.4);ctx.stroke();
-  if(T>=5){ctx.fillStyle='#e03131';ctx.fillRect(-10,0,20,4);ctx.fillStyle='#fff';ctx.font=`bold 4px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(L('必勝|WIN'),0,2.2,18);}
+  if(T>=5){ctx.fillStyle='#e03131';ctx.fillRect(-10,0,20,4);ctx.fillStyle='#fff';ctx.font=`bold 4px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(L('{{tb:office-shoot.say.106}}'),0,2.2,18);}
   if(T>=6){ctx.fillStyle='#ffd43b';ctx.beginPath();ctx.moveTo(-7,-4);ctx.lineTo(-7,-10);ctx.lineTo(-3,-6);ctx.lineTo(0,-11);ctx.lineTo(3,-6);ctx.lineTo(7,-10);ctx.lineTo(7,-4);ctx.closePath();ctx.fill();}
   for(let i=0;i<n;i++){
     const gx=(i-(n-1)/2)*15;drawGun(gx,-10+p.recoil,T,w);
@@ -712,7 +712,7 @@ function drawPlayer(){
   }
   if(p.stun>0){
     ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`bold 12px ${FONT}`;
-    ctx.fillStyle='#fff';ctx.strokeStyle='#000';ctx.lineWidth=3;ctx.strokeText(L('當機中…|Frozen…'),0,30);ctx.fillText(L('當機中…|Frozen…'),0,30);
+    ctx.fillStyle='#fff';ctx.strokeStyle='#000';ctx.lineWidth=3;ctx.strokeText(L('{{tb:office-shoot.say.107}}'),0,30);ctx.fillText(L('{{tb:office-shoot.say.107}}'),0,30);
     ctx.font=`14px ${FONT}`;for(let i=0;i<3;i++){const a=t*6+i*2.09;ctx.fillText('💫',Math.cos(a)*18,-2+Math.sin(a)*6);}
   }
   ctx.restore();
@@ -741,17 +741,17 @@ function drawEnemy(e){
       ctx.strokeStyle='rgba(125,255,154,.5)';ctx.lineWidth=2;for(const x of [-6,0,6]){ctx.beginPath();ctx.moveTo(x,-r-3);ctx.lineTo(x,-r-12);ctx.stroke();}
       ctx.fillStyle=fl?'#fff':'#5fd17a';rr(-r*1.45,-r*.85,r*2.9,r*1.7,r*.7);ctx.fill();
       ctx.beginPath();ctx.moveTo(-r*.6,r*.7);ctx.lineTo(-r*1.1,r*1.25);ctx.lineTo(-r*.1,r*.8);ctx.closePath();ctx.fill();
-      txt(L('在嗎?|u there?'),0,1,r*(lang==='en'?.62:.82),'#123',true,r*2.6);break;}
+      txt(L('{{tb:office-shoot.say.108}}'),0,1,r*(lang==='en'?.62:.82),'#123',true,r*2.6);break;}
     case 'tank':{ // 一疊報表
       for(let i=2;i>=0;i--){ctx.fillStyle=i?'#d9dee6':(fl?'#fff':'#f5f7fa');ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=1.5;
         rr(-r+i*3,-r*.85-i*4,2*r,r*1.75,3);ctx.fill();ctx.stroke();}
       ctx.strokeStyle='rgba(0,0,0,.15)';ctx.lineWidth=1;for(let i=0;i<4;i++){ctx.beginPath();ctx.moveTo(-r*.7,-r*.5+i*r*.18);ctx.lineTo(r*.3,-r*.5+i*r*.18);ctx.stroke();}
       ctx.fillStyle='#4dabf7';for(let i=0;i<4;i++)ctx.fillRect(r*.4+i*4,r*.1-i*5,3,i*5+6);
-      txt(L('報表|REPORT'),-r*.25,-r*.65,r*.36,'#d64545',true,r*1.2);
+      txt(L('{{tb:office-shoot.say.109}}'),-r*.25,-r*.65,r*.36,'#d64545',true,r*1.2);
       eyes(r,r*.25,.36,true);ctx.fillStyle='#111';rr(-r*.25,r*.55,r*.5,r*.14,2);ctx.fill();break;}
     case 'charger':{ // 急件
       ctx.fillStyle=fl?'#fff':'#e03131';rr(-r*.7,-r*1.15,r*.8,r*.4,3);ctx.fill();rr(-r,-r*.9,2*r,r*1.8,4);ctx.fill();ctx.stroke();
-      txt(L('急|ASAP'),0,-r*.25,r*(lang==='en'?.55:.95),'#fff',true,r*1.8);
+      txt(L('{{tb:office-shoot.say.110}}'),0,-r*.25,r*(lang==='en'?.55:.95),'#fff',true,r*1.8);
       eyes(r,r*.5,.42,true);if(e.dashing){txt('!!',r*1.1,-r,r,'#ffd43b');}break;}
     case 'shield':{ // 郵件
       ctx.fillStyle=fl?'#fff':'#e8f0ff';rr(-r*1.1,-r*.8,r*2.2,r*1.6,3);ctx.fill();ctx.stroke();
@@ -766,7 +766,7 @@ function drawEnemy(e){
       ctx.fillStyle=fl?'#fff':'#ffffff';rr(-r,-r*.85,2*r,r*1.85,3);ctx.fill();ctx.stroke();
       ctx.fillStyle='#e64980';ctx.fillRect(-r,-r*.85,2*r,r*.5);
       ctx.fillStyle='#555';for(const sd of [-1,1])ctx.fillRect(sd*r*.5-1.5,-r*1.05,3,r*.4);
-      if(e.type==='splitter'){txt(L('會議|MTG'),0,-r*.6,r*.36,'#fff',true,r*1.8);eyes(r,r*.25,.4,true);}
+      if(e.type==='splitter'){txt(L('{{tb:office-shoot.say.111}}'),0,-r*.6,r*.36,'#fff',true,r*1.8);eyes(r,r*.25,.4,true);}
       else txt('+1',0,r*.3,r*.9,'#e64980');
       break;}
     case 'healer':{ // 再改一版
@@ -776,14 +776,14 @@ function drawEnemy(e){
     case 'larva':{ // 待辦事項
       ctx.strokeStyle='#7a5c00';ctx.lineWidth=2;for(const sd of [-1,1])for(const y of [-.3,.3]){ctx.beginPath();ctx.moveTo(sd*r*.8,y*r);ctx.lineTo(sd*r*1.3,y*r+Math.sin(e.wob*2+y*5)*3);ctx.stroke();}
       ctx.fillStyle=fl?'#fff':'#fff8db';ctx.strokeStyle='#7a5c00';rr(-r*.85,-r*.85,r*1.7,r*1.7,3);ctx.fill();ctx.stroke();
-      txt(L('待辦|TODO'),0,-r*.25,r*.55,'#7a5c00',true,r*1.5);eyes(r,r*.35,.35,false);break;}
+      txt(L('{{tb:office-shoot.say.112}}'),0,-r*.25,r*.55,'#7a5c00',true,r*1.5);eyes(r,r*.35,.35,false);break;}
   }
-  if(e.elite){ctx.fillStyle='#ffd43b';rr(-r*1.2,-r-15,r*2.4,11,3);ctx.fill();txt(L('老闆交辦|BOSS ORDER'),0,-r-9.5,8,'#5a3d00',true,r*2.3);}
+  if(e.elite){ctx.fillStyle='#ffd43b';rr(-r*1.2,-r-15,r*2.4,11,3);ctx.fill();txt(L('{{tb:office-shoot.say.113}}'),0,-r-9.5,8,'#5a3d00',true,r*2.3);}
   if(e.shieldHits>0){
     const k=e.shieldHits/e.shieldMax;
     ctx.fillStyle=`rgba(224,49,49,${.75+.25*k})`;rr(-r*1.1,r*.9,r*2.2,r*.75,3);ctx.fill();
     ctx.strokeStyle='#fff';ctx.lineWidth=1.5;rr(-r*1.1,r*.9,r*2.2,r*.75,3);ctx.stroke();
-    txt(L('緊急|URGENT'),0,r*1.28,r*.5,'#fff',true,r*2.1);
+    txt(L('{{tb:office-shoot.say.114}}'),0,r*1.28,r*.5,'#fff',true,r*2.1);
     ctx.fillStyle='rgba(255,255,255,.7)';ctx.fillRect(-r*1.1,r*1.7,r*2.2*k,2);
   }
   ctx.restore();
@@ -797,7 +797,7 @@ function drawCrate(c,top){
     if(isW){
       const nw=WEAPONS[c.weapon];
       ctx.save();ctx.translate(-iw/2+12,4);ctx.rotate(Math.PI/2);drawGun(0,0,c.weapon,nw,.9);ctx.restore();
-      ctx.textAlign='left';ctx.font=`bold 10px ${FONT}`;const tag=c.refine?LF('★ 精煉 +{n}|★ REFINE +{n}',{n:c.refine}):L('★ 新裝備|★ NEW GEAR');ctx.strokeText(tag,-iw/2+62,-11,iw-66);ctx.fillStyle='#ffd54a';ctx.fillText(tag,-iw/2+62,-11,iw-66);
+      ctx.textAlign='left';ctx.font=`bold 10px ${FONT}`;const tag=c.refine?LF('{{tb:office-shoot.say.115}}',{n:c.refine}):L('{{tb:office-shoot.say.116}}');ctx.strokeText(tag,-iw/2+62,-11,iw-66);ctx.fillStyle='#ffd54a';ctx.fillText(tag,-iw/2+62,-11,iw-66);
       ctx.font=`bold ${lang==='en'?14:18}px ${FONT}`;ctx.strokeText(wName(nw),-iw/2+62,9,iw-66);ctx.fillStyle=nw.color;ctx.fillText(wName(nw),-iw/2+62,9,iw-66);
     }else{
       const s=c.mod.icon+' '+mLabel(c.mod);ctx.textAlign='center';ctx.font=`bold 15px ${FONT}`;ctx.strokeText(s,0,2,iw-8);ctx.fillStyle=c.mod.col;ctx.fillText(s,0,2,iw-8);
@@ -837,7 +837,7 @@ function drawBoss(b){
     ctx.strokeStyle='#3a4048';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,-h/2);ctx.lineTo(0,-h/2-20);ctx.stroke();ctx.fillStyle='#ff4040';circle(0,-h/2-22,4+Math.sin(t*8));ctx.fill();
     ctx.fillStyle='#1a1d22';rr(-w*.38,-h*.38,w*.76,h*.42,8);ctx.fill();
     ctx.fillStyle='#7dff9a';ctx.font=`bold 15px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(Math.floor(t*2)%2?L('進度？|ETA?'):L('在嗎？|Ping!'),0,-h*.17,w*.7);
+    ctx.fillText(Math.floor(t*2)%2?L('{{tb:office-shoot.say.117}}'):L('{{tb:office-shoot.say.118}}'),0,-h*.17,w*.7);
     ctx.fillStyle='#c5ccd6';for(const [x,y] of [[-.42,-.42],[.42,-.42],[-.42,.42],[.42,.42]]){circle(x*w,y*h,3);ctx.fill();}
     ctx.fillStyle='#3a4048';rr(-w*.3,h*.14,w*.6,h*.2,4);ctx.fill();ctx.fillStyle='#ff4040';for(let i=0;i<5;i++)ctx.fillRect(-w*.26+i*w*.11,h*.19,w*.07,h*.1);
   }else if(d.look==='folder'){
@@ -845,9 +845,9 @@ function drawBoss(b){
     ctx.fillStyle='#fff';for(let i=0;i<3;i++){ctx.save();ctx.rotate((i-1)*.12);ctx.fillRect(-w*.35+i*w*.2,-h/2-10-i*3,w*.3,30);ctx.restore();}
     ctx.fillStyle=fl?'#fff':d.col;ctx.strokeStyle='#1d4a2c';ctx.lineWidth=4;rr(-w/2,-h/2,w,h,12);ctx.fill();ctx.stroke();
     ctx.fillStyle='#fff';rr(-w*.36,-h*.36,w*.72,22,4);ctx.fill();
-    ctx.fillStyle='#1d4a2c';ctx.font=`bold 12px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(L('專案_最終版_v38|Project_FINAL_v38'),0,-h*.36+11,w*.68);
+    ctx.fillStyle='#1d4a2c';ctx.font=`bold 12px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(L('{{tb:office-shoot.say.119}}'),0,-h*.36+11,w*.68);
     faceFeatures(w,h,d,b,-h*.02);
-    ctx.fillStyle='#1d4a2c';ctx.font=`bold 11px ${FONT}`;ctx.fillText(L('結案日：未定|Due date: TBD'),0,h*.36,w*.8);
+    ctx.fillStyle='#1d4a2c';ctx.font=`bold 11px ${FONT}`;ctx.fillText(L('{{tb:office-shoot.say.120}}'),0,h*.36,w*.8);
   }else{
     // 手（拿著文件）
     for(const sd of [-1,1]){const y=h*.2+Math.sin(b.t*4+sd)*4;ctx.fillStyle=d.col;ctx.strokeStyle='rgba(0,0,0,.5)';ctx.lineWidth=3;circle(sd*(w/2+4),y,15);ctx.fill();ctx.stroke();ctx.fillStyle='#f1c9a5';circle(sd*(w/2+10),y+8,8);ctx.fill();}
@@ -871,20 +871,20 @@ function drawBoss(b){
     if(d.headset){ctx.strokeStyle='#222';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,fy+fh*.45,w*.42,Math.PI*1.1,Math.PI*1.9);ctx.stroke();ctx.fillStyle='#222';for(const sd of [-1,1])rr(sd*w*.42-5,fy+fh*.3,10,18,4),ctx.fill();
       ctx.beginPath();ctx.moveTo(-w*.4,fy+fh*.6);ctx.quadraticCurveTo(-w*.3,fy+fh*.95,-w*.1,fy+fh*.85);ctx.stroke();}
   }
-  if(M.has('hive')){const notes=['報告|Report','回信|Email','訂會議|Meeting','簽核|Sign'].map(L);for(let i=0;i<4;i++){const x=(i%2?.36:-.36)*w,y=(i<2?.08:.32)*h;ctx.save();ctx.translate(x,y);ctx.rotate((i-1.5)*.15);ctx.fillStyle='#ffe066';ctx.fillRect(-14,-10,28,20);ctx.fillStyle='#7a5c00';ctx.font=`bold 8px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(notes[i],0,0,26);ctx.restore();}}
+  if(M.has('hive')){const notes=['{{tb:office-shoot.say.121}}','{{tb:office-shoot.say.122}}','{{tb:office-shoot.say.123}}','{{tb:office-shoot.say.124}}'].map(L);for(let i=0;i<4;i++){const x=(i%2?.36:-.36)*w,y=(i<2?.08:.32)*h;ctx.save();ctx.translate(x,y);ctx.rotate((i-1.5)*.15);ctx.fillStyle='#ffe066';ctx.fillRect(-14,-10,28,20);ctx.fillStyle='#7a5c00';ctx.font=`bold 8px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(notes[i],0,0,26);ctx.restore();}}
   if(d.crown){ctx.fillStyle='#ffd43b';ctx.beginPath();ctx.moveTo(-26,-h/2+2);for(let i=0;i<5;i++)ctx.lineTo(-26+i*13,-h/2-(i%2?6:18));ctx.lineTo(26,-h/2+2);ctx.closePath();ctx.fill();}
   if(M.has('weak')){const wx=b.weakX/b.scale,wy=h/2-12,pr=18+Math.sin(t*10)*2;
     const g=ctx.createRadialGradient(wx,wy,0,wx,wy,pr*1.6);g.addColorStop(0,'#fff');g.addColorStop(.35,'#ff2a2a');g.addColorStop(1,'rgba(255,0,0,0)');
     ctx.fillStyle=g;circle(wx,wy,pr*1.6);ctx.fill();ctx.strokeStyle='#ffdddd';ctx.lineWidth=2;circle(wx,wy,pr);ctx.stroke();
-    ctx.fillStyle='#fff';ctx.font=`bold 9px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(L('KPI缺口|KPI GAP'),wx,wy,32);}
+    ctx.fillStyle='#fff';ctx.font=`bold 9px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(L('{{tb:office-shoot.say.125}}'),wx,wy,32);}
   if(M.has('shield')){
     if(b.shieldOn>0){const a=.35+.15*Math.sin(t*12);ctx.fillStyle=`rgba(255,120,30,${a})`;ctx.strokeStyle='#ffb347';ctx.lineWidth=4;
       ctx.beginPath();ctx.ellipse(0,0,w*.72,h*.72,0,0,6.283);ctx.fill();ctx.stroke();
-      ctx.fillStyle='#e03131';rr(-52,h*.5,104,22,5);ctx.fill();ctx.fillStyle='#fff';ctx.font=`bold 13px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(L('🔴 開會中|🔴 IN A MEETING'),0,h*.5+11,98);}
+      ctx.fillStyle='#e03131';rr(-52,h*.5,104,22,5);ctx.fill();ctx.fillStyle='#fff';ctx.font=`bold 13px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(L('{{tb:office-shoot.say.126}}'),0,h*.5+11,98);}
     else if(b.shieldT<.9&&Math.sin(t*30)>0){ctx.strokeStyle='#ffb347';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(0,0,w*.72,h*.72,0,0,6.283);ctx.stroke();}
   }
-  if(b.absorbOn>0){bubble(w*.15,-h/2-30,L('還是第一版好|I liked v1 better'),'#c77dff');}
-  if(M.has('regen')&&b.idle>1.5&&b.hp<b.max&&!b.fake){ctx.strokeStyle='rgba(125,255,154,.8)';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(0,0,w*.6,h*.6,0,0,6.283);ctx.stroke();bubble(0,-h/2-30,L('延期一下～|Let\'s push it back~'),'#7dff9a');}
+  if(b.absorbOn>0){bubble(w*.15,-h/2-30,L('{{tb:office-shoot.say.127}}'),'#c77dff');}
+  if(M.has('regen')&&b.idle>1.5&&b.hp<b.max&&!b.fake){ctx.strokeStyle='rgba(125,255,154,.8)';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(0,0,w*.6,h*.6,0,0,6.283);ctx.stroke();bubble(0,-h/2-30,L('{{tb:office-shoot.say.128}}'),'#7dff9a');}
   ctx.restore();
 }
 function faceFeatures(w,h,d,b,ey){
@@ -913,12 +913,12 @@ function drawHazards(){
       ctx.rotate(h.rot);ctx.fillStyle=h.hit>0?'#fff':'#e0a96d';ctx.strokeStyle='#6b3e26';ctx.lineWidth=2;
       rr(-h.r,-h.r*.75,h.r*2,h.r*1.5,3);ctx.fill();ctx.stroke();
       ctx.fillStyle='#fff';ctx.fillRect(-h.r*.7,-h.r*.95,h.r*1.2,h.r*.4);
-      txt(L('新需求|NEW REQ'),0,h.r*.1,7,'#6b3e26',true,h.r*1.9);
+      txt(L('{{tb:office-shoot.say.129}}'),0,h.r*.1,7,'#6b3e26',true,h.r*1.9);
     }else{ // 「進度？」訊息彈
       ctx.fillStyle='rgba(255,120,120,.35)';circle(-h.vx*.04,-h.vy*.04,8);ctx.fill();
       ctx.fillStyle=h.hit>0?'#fff':'#ff6b6b';rr(-17,-10,34,20,9);ctx.fill();
       ctx.beginPath();ctx.moveTo(-4,9);ctx.lineTo(0,16);ctx.lineTo(4,9);ctx.closePath();ctx.fill();
-      txt(L('進度?|ETA?'),0,0,10,'#fff',true,30);
+      txt(L('{{tb:office-shoot.say.130}}'),0,0,10,'#fff',true,30);
     }
     ctx.restore();
     const tt=(PY-h.y)/Math.max(1,h.vy);
@@ -947,7 +947,7 @@ function drawBeams(){
     ctx.fillStyle=hexA(q.col,.45*k);ctx.fillRect(q.x-bw/2,0,bw,PY-40);
     ctx.fillStyle=`rgba(255,255,255,${k})`;ctx.fillRect(q.x-bw/6,0,bw/3,PY-40);
     if(q.tag==null)q.tag=rand(120,PY-120);
-    ctx.globalAlpha=k;ctx.font=`bold 11px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff';ctx.fillText(L('已讀|Seen'),q.x+14,q.tag);ctx.globalAlpha=1;}
+    ctx.globalAlpha=k;ctx.font=`bold 11px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff';ctx.fillText(L('{{tb:office-shoot.say.131}}'),q.x+14,q.tag);ctx.globalAlpha=1;}
 }
 function drawParts(){
   for(const q of parts){const k=q.life/q.max;ctx.fillStyle=hexA(q.col,Math.min(1,k*1.5));ctx.fillRect(q.x-q.size/2,q.y-q.size/2,q.size,q.size);}
@@ -966,14 +966,14 @@ function drawVignette(){
   ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
 }
 function clockStr(){
-  if(phase!=='waves')return L('17:00 加班危機|5 PM — OVERTIME!');
+  if(phase!=='waves')return L('{{tb:office-shoot.say.132}}');
   const m=Math.floor(9*60+8*60*Math.min(1,stageT/STAGE_LEN));
   return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
 }
 function drawHUD(){
   ctx.textBaseline='middle';
   ctx.fillStyle='rgba(5,8,15,.82)';ctx.fillRect(0,0,W,TOP);
-  ctx.textAlign='left';ctx.fillStyle='#fff';ctx.font=`bold 19px ${FONT}`;const dayS=LF('第 {n} 天|Day {n}',{n:stage});ctx.fillText(dayS,14,20);
+  ctx.textAlign='left';ctx.fillStyle='#fff';ctx.font=`bold 19px ${FONT}`;const dayS=LF('{{tb:office-shoot.say.133}}',{n:stage});ctx.fillText(dayS,14,20);
   const tw=ctx.measureText(dayS).width;
   ctx.font=`bold 13px ${FONT}`;ctx.fillStyle=phase==='waves'?'#8fe3d8':'#ff6b6b';ctx.fillText('🕘 '+clockStr(),22+tw,21);
   const pr=phase==='waves'?Math.min(1,stageT/STAGE_LEN):1;
@@ -981,7 +981,7 @@ function drawHUD(){
   ctx.fillStyle=phase==='waves'?'#8fe3d8':'#ff4d4d';rr(14,36,Math.max(8,150*pr),8,4);ctx.fill();
   ctx.font=`12px ${FONT}`;ctx.fillText('🏠',170,40);
   ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font=`bold 20px ${FONT}`;ctx.fillText(score.toLocaleString(),W-52,20,150);
-  ctx.fillStyle='#8a93a6';ctx.font=`10px ${FONT}`;ctx.fillText(L('績效|SCORE'),W-52,40);
+  ctx.fillStyle='#8a93a6';ctx.font=`10px ${FONT}`;ctx.fillText(L('{{tb:office-shoot.say.134}}'),W-52,40);
   ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font=`18px ${FONT}`;ctx.fillText(muted?'🔇':'🔊',W-22,28);
   const real=bosses.filter(b=>!b.dead&&!b.fake);
   if(phase==='boss'&&real.length&&curBoss){
@@ -1000,7 +1000,7 @@ function drawHUD(){
   if(lang!=='en'){const nw=ctx.measureText(wName(w)+(p.wlv?` +${p.wlv}`:'')).width;ctx.fillStyle='#8a93a6';ctx.font=`11px ${FONT}`;ctx.fillText(w.en,20+nw,by+44);}
   ctx.textAlign='right';ctx.fillStyle='#dde3ee';ctx.font=`bold 14px ${FONT}`;
   ctx.fillText(`☕×${fmtMul(p.rateMul)}  💰×${fmtMul(p.dmgMul)}  🤚×${p.barrels}`,W-14,by+18,250);
-  ctx.fillStyle='#7dffa1';ctx.font=`bold 13px ${FONT}`;ctx.fillText(LF('戰力 {n} / 秒|Power {n}/s',{n:fmt(dps())}),W-14,by+43);
+  ctx.fillStyle='#7dffa1';ctx.font=`bold 13px ${FONT}`;ctx.fillText(LF('{{tb:office-shoot.say.135}}',{n:fmt(dps())}),W-14,by+43);
 }
 function drawBanner(){
   if(!banner)return;
@@ -1042,29 +1042,29 @@ function render(){
   drawVignette();drawHUD();drawBanner();
   if(flash>0){ctx.fillStyle=`rgba(255,255,255,${flash*.5})`;ctx.fillRect(0,0,W,H);}
   if(state==='menu'){
-    drawOverlay(L('拒絕加班|No Overtime!'),'#ffe066',[
+    drawOverlay(L('{{tb:office-shoot.say.136}}'),'#ffe066',[
       {t:L('NO OVERTIME!|Leave work on time. At any cost.'),c:'#8a93a6',s:13,gap:36},
-      {t:L('← →  /  拖曳  左右移動，自動開火|← → / Drag to move — you fire automatically'),b:1,gap:28},
-      {t:L('左道補給站：打破護盾 → 拿新裝備、強化|Left lane: break shields for new gear & boosts'),c:'#8fe3d8',gap:28},
-      {t:L('右道：工作衝過「下班線」你就要加班|Right lane: if work crosses the line, it\'s overtime'),c:'#ff9aa8',gap:28},
-      {t:L('每天 17:00 會有大魔王來找你|Every day at 5 PM, a boss comes for you'),c:'#ffd43b',gap:28},
-      {t:L('金框「老闆交辦」打掉可再強化火力|Gold "BOSS ORDER" enemies drop extra power-ups'),c:'#ffd43b',gap:30},
-      {t:LF('第 1～{d} 天每準時下班一次 BONUS +{n} 點|Clock out on days 1–{d}: BONUS +{n} pts each',{d:BONUS_DAYS,n:BONUS_PER_DAY}),c:'#ffe066',b:1,gap:34},
-      {t:L('裝備進化：|Gear: ')+WEAPONS.map(wName).join(' → '),s:11,c:'#a9b3c6',gap:28},
-      {t:best?LF('最佳績效 {n}|Best score {n}',{n:best.toLocaleString()}):'',s:14,c:'#7dffa1'},
-    ],L('按「開始上班」開始|Press "Clock in" to start'),H*.3);
+      {t:L('{{tb:office-shoot.say.137}}'),b:1,gap:28},
+      {t:L('{{tb:office-shoot.say.138}}'),c:'#8fe3d8',gap:28},
+      {t:L('{{tb:office-shoot.say.139}}'),c:'#ff9aa8',gap:28},
+      {t:L('{{tb:office-shoot.say.140}}'),c:'#ffd43b',gap:28},
+      {t:L('{{tb:office-shoot.say.141}}'),c:'#ffd43b',gap:30},
+      {t:LF('{{tb:office-shoot.say.142}}',{d:BONUS_DAYS,n:BONUS_PER_DAY}),c:'#ffe066',b:1,gap:34},
+      {t:L('{{tb:office-shoot.say.143}}')+WEAPONS.map(wName).join(' → '),s:11,c:'#a9b3c6',gap:28},
+      {t:best?LF('{{tb:office-shoot.say.144}}',{n:best.toLocaleString()}):'',s:14,c:'#7dffa1'},
+    ],L('{{tb:office-shoot.say.145}}'),H*.3);
   }else if(state==='over'&&overT>.6){
     drawOverlay(L(OVER_T[overTitle]),'#ff5f6d',[
-      {t:LF('績效  {n}|Score  {n}',{n:score.toLocaleString()}),b:1,s:26,gap:40},
-      {t:LF('最佳績效  {n}|Best  {n}',{n:best.toLocaleString()}),c:'#7dffa1',gap:40},
-      {t:LF('撐到第 {d} 天 · 處理掉 {k} 件工作|Made it to day {d} · {k} tasks handled',{d:stage,k:kills})},
-      {t:LF('最終裝備：{w}（{a}/{b}）|Final gear: {w} ({a}/{b})',{w:wName(WEAPONS[p.tier]),a:p.tier+1,b:WEAPONS.length}),c:WEAPONS[p.tier].color},
-      {t:curBoss&&phase==='boss'?LF('被「{b}」留下來加班|Kept late by {b}',{b:bName(curBoss)}):'',c:'#ff9aa8',gap:40},
-      {t:LF('本局 BONUS 已入帳 {n} 點|BONUS credited this shift: {n} pts',{n:earned}),c:'#ffe066',b:1},
+      {t:LF('{{tb:office-shoot.say.146}}',{n:score.toLocaleString()}),b:1,s:26,gap:40},
+      {t:LF('{{tb:office-shoot.say.147}}',{n:best.toLocaleString()}),c:'#7dffa1',gap:40},
+      {t:LF('{{tb:office-shoot.say.148}}',{d:stage,k:kills})},
+      {t:LF('{{tb:office-shoot.say.149}}',{w:wName(WEAPONS[p.tier]),a:p.tier+1,b:WEAPONS.length}),c:WEAPONS[p.tier].color},
+      {t:curBoss&&phase==='boss'?LF('{{tb:office-shoot.say.150}}',{b:bName(curBoss)}):'',c:'#ff9aa8',gap:40},
+      {t:LF('{{tb:office-shoot.say.151}}',{n:earned}),c:'#ffe066',b:1},
       {t:L(OVER_Q[overQuip]),c:'#a9b3c6',s:14},
-    ],overT>1.1?L('按「再上一次班」再挑戰|Press "Clock in again" to retry'):'');
+    ],overT>1.1?L('{{tb:office-shoot.say.152}}'):'');
   }else if(state==='play'&&paused){
-    drawOverlay(L('暫停中|Paused'),'#8fe3d8',[{t:L('點一下畫面或按空白鍵繼續上班|Tap the screen or press Space to resume'),b:1}],'');
+    drawOverlay(L('{{tb:office-shoot.say.153}}'),'#8fe3d8',[{t:L('{{tb:office-shoot.say.154}}'),b:1}],'');
   }
 }
 // ====== 輸入（只在本款畫面顯示時作用）======
@@ -1092,7 +1092,7 @@ cv.addEventListener('pointerdown',e=>{
   if(e.pointerType==='mouse'&&e.button!==0)return;
   e.preventDefault();initAudio();const pt=toLocal(e);
   if(pt.y<TOP&&pt.x>W-42){muted=!muted;return;}
-  if(state!=='play'){say(state==='over'?'這一局已結算。按「再上一次班」開始新的一局。|This shift is settled. Press "Clock in again" for a new one.':'先按「開始上班」。|Press "Clock in" first.');return;}
+  if(state!=='play'){say(state==='over'?'{{tb:office-shoot.say.155}}':'{{tb:office-shoot.say.156}}');return;}
   try{cv.focus();}catch(_){}
   if(paused){paused=false;last=null;return;}
   if(e.pointerType==='mouse'){p.tx=pt.x;}
@@ -1114,7 +1114,7 @@ window.addEventListener('hashchange',pauseNow);
 // ====== 平台：單次扣款、固定 BONUS、單次結算 ======
 var $v=$('view-office-shoot'),analytics=null,earned=0,paidDays={};
 // 訊息與數值欄位標記 data-i18n-ignore，每格依目前語言從「中文|English」輸出；按鈕沿用大廳翻譯層
-let msg={text:'開始後開始上班：擊敗第 1～{d} 天的大魔王，每天 BONUS +{n} 點。|Start your shift: beat the boss on days 1–{d} for BONUS +{n} pts each.',kind:'',params:{d:BONUS_DAYS,n:BONUS_PER_DAY}};
+let msg={text:'{{tb:office-shoot.say.157}}',kind:'',params:{d:BONUS_DAYS,n:BONUS_PER_DAY}};
 function msgText(){const t=msg.text;if(t.indexOf('|')>=0)return LF(t,msg.params||{});return lang==='en'&&window.deepSeaI18n?window.deepSeaI18n.text(t):t;}
 function say(text,kind,params){msg={text:String(text),kind:kind||'',params};renderMsg();}
 function renderMsg(){const m=$('os-msg'),v=msgText(),c='msg'+(msg.kind?' '+msg.kind:'');if(m.textContent!==v)m.textContent=v;if(m.className!==c)m.className=c;}
@@ -1123,12 +1123,12 @@ const domCache={};
 function setText(id,v){if(domCache[id]!==v){domCache[id]=v;$(id).textContent=v;}}
 function ui(){
   const live=state==='play',played=live||state==='over';
-  setText('os-day',played?LF('第 {n} 天|Day {n}',{n:stage}):'—');
+  setText('os-day',played?LF('{{tb:office-shoot.say.133}}',{n:stage}):'—');
   setText('os-score',played?score.toLocaleString():'—');
   setText('os-best',best.toLocaleString());
   setText('os-pay',earned+' / '+BONUS_PER_DAY*BONUS_DAYS);
   const b=$('os-go');b.disabled=live;
-  setText('os-go',live?'上班中':state==='over'?'再上一次班':'開始上班');
+  setText('os-go',live?'{{t:office-shoot.msg.158}}':state==='over'?'{{t:office-shoot.msg.159}}':'{{t:office-shoot.msg.160}}');
   renderMsg();
 }
 // 擊敗第 1～BONUS_DAYS 天的大魔王：每天固定 +BONUS_PER_DAY 點，每天每局只發一次
@@ -1136,16 +1136,16 @@ function dayCleared(day){
   if(!otBusy||day>BONUS_DAYS||paidDays[day])return;
   paidDays[day]=true;earned+=BONUS_PER_DAY;S.balance+=BONUS_PER_DAY;save();renderAll();
   if(analytics)AN.progress(analytics,{stage:day,step:kills,score,bonus_points:BONUS_PER_DAY,total_bonus_points:earned});
-  floatText(p.x,PY-96,LF('BONUS +{n} 點|BONUS +{n} pts',{n:BONUS_PER_DAY}),'#ffe066',22);
-  say('第 {d} 天準時下班！BONUS +{n} 點已入帳。|Day {d} clocked out! BONUS +{n} pts credited.','win',{d:day,n:BONUS_PER_DAY});
+  floatText(p.x,PY-96,LF('{{tb:office-shoot.say.161}}',{n:BONUS_PER_DAY}),'#ffe066',22);
+  say('{{tb:office-shoot.say.162}}','win',{d:day,n:BONUS_PER_DAY});
 }
 function settle(){
   if(!otBusy)return;
   otBusy=false;otStake=0;clearInput();paused=false;
   if(analytics)AN.end(analytics,earned,earned>0?'complete':'loss',{stage,score,step:kills,weapon_level:p.tier+1});
   analytics=null;save();renderAll();
-  if(earned)say('今晚加班了。撐到第 {d} 天，本局 BONUS 共入帳 {n} 點。|Overtime tonight. Reached day {d}; BONUS credited this shift: {n} pts.','win',{d:stage,n:earned});
-  else say('今晚加班了。撐到第 {d} 天，這一局沒有 BONUS。|Overtime tonight. Reached day {d}; no BONUS this shift.','lose',{d:stage});
+  if(earned)say('{{tb:office-shoot.say.163}}','win',{d:stage,n:earned});
+  else say('{{tb:office-shoot.say.164}}','lose',{d:stage});
   ui();
 }
 function begin(){
@@ -1154,7 +1154,7 @@ function begin(){
   analytics=AN.start('office-shoot',ENTRY_FEE);otBusy=true;otStake=ENTRY_FEE;earned=0;paidDays={};
   save();renderAll();
   reset();clearInput();paused=false;state='play';last=null;initAudio();
-  say('上班囉！擊敗第 1～{d} 天的大魔王，每天 BONUS +{n} 點。|Shift started! Beat the boss on days 1–{d} for BONUS +{n} pts each.','',{d:BONUS_DAYS,n:BONUS_PER_DAY});
+  say('{{tb:office-shoot.say.165}}','',{d:BONUS_DAYS,n:BONUS_PER_DAY});
   ui();try{cv.focus();}catch(_){}
 }
 $('os-go').addEventListener('click',begin);

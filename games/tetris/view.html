@@ -1,12 +1,12 @@
   <section class="view" id="view-tetris" hidden>
-    <div class="console"><div class="tt-stage"><iframe id="tt-frame" title="俄羅斯方塊 Block Drop"></iframe></div>
-      <div class="side"><section class="panel" aria-label="俄羅斯方塊操作">
-        <dl class="stats"><div><dt>本局分數</dt><dd id="tt-score" data-i18n-ignore>0</dd></div><div><dt>消除行數</dt><dd id="tt-lines" data-i18n-ignore>0</dd></div><div><dt>最高分</dt><dd id="tt-best" data-i18n-ignore>0</dd></div></dl>
-        <button class="go" id="tt-go" type="button" data-mode="start">開始遊戲</button>
+    <div class="console"><button class="tt-exit" id="tt-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button><div class="tt-stage"><iframe id="tt-frame" title="{{t:tetris.view.11}}"></iframe></div>
+      <div class="side"><section class="panel" aria-label="{{t:tetris.view.12}}">
+        <dl class="stats"><div><dt>{{t:tetris.view.01}}</dt><dd id="tt-score" data-i18n-ignore>0</dd></div><div><dt>{{t:tetris.view.02}}</dt><dd id="tt-lines" data-i18n-ignore>0</dd></div><div><dt>{{t:tetris.view.03}}</dt><dd id="tt-best" data-i18n-ignore>0</dd></div></dl>
+        <button class="go" id="tt-go" type="button" data-mode="start">{{t:tetris.view.04}}</button>
         <p class="msg" id="tt-msg" aria-live="polite" data-i18n-ignore></p>
-        <p id="tt-rank-status" role="status" hidden></p><button id="tt-rank-retry" type="button" hidden>重送排行榜成績</button>
-        <p class="hint">電腦：方向鍵左右移動、上或 X 旋轉、Z 逆轉、下軟降、空白鍵硬降、C 暫存、P 暫停。手機：在棋盤上左右滑動移動、點一下旋轉、慢慢下拖軟降、快速下滑落底、快速上滑或點「暫存」格暫存；標題列可切換成按鈕操作。</p>
+        <p id="tt-rank-status" role="status" hidden></p><button id="tt-rank-retry" type="button" hidden>{{t:tetris.view.05}}</button>
+        <p class="hint">{{t:tetris.view.06}}</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法與點數</summary><p>經典俄羅斯方塊：七種方塊用 7-bag 洗牌隨機出現，旋轉採用 SRS 規則並支援牆踢。把一整排填滿就會消除，一次消越多行得分越高，每消除 10 行升一級，方塊掉得更快。可以把方塊暫存起來，每放下一塊才能再暫存一次。方塊堆到頂端放不下就結束。</p><p>這款遊戲沒有 BONUS，分數、行數與等級只是你的成績，不換點數；沒有任何下注或倍率返還。每款遊戲每天第一次完整玩過一局（至少 10 秒），會依平台固定規則領到完成獎勵。</p><p>切換遊戲或背景分頁會暫停，回來後按「繼續」。重新整理會放棄本局。最高分保存在這個瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+    <details class="rules"><summary>{{t:tetris.view.07}}</summary><p>{{t:tetris.view.08}}</p><p>{{t:tetris.view.09}}</p><p>{{t:tetris.view.10}}</p></details>
   </section>

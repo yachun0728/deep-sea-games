@@ -20,8 +20,8 @@ else if(a===2)P([[-13,0],[-14,-16],[-7,-8],[0,-20],[7,-8],[14,-16],[13,0]],'#ffd
 else if(a===3){P([[-11,0],[0,-30],[11,0]],'#ff5d8f',3);C(0,-31,4,'#fff',2.5)}
 else E(0,-8,13,4,'#ffe27a',3);
 g.restore()}
-G.I={bs:n=>'最高 '+n,tap:'',title:"寶寶逃洗澡！",s1:"媽媽拿著浴巾，寶寶只穿了一件尿布！",s2:"跳過玩具、鑽過櫃子，大哭攔住媽媽。",caught:"被媽媽抱去洗澡了！",bt:n=>'已喝奶瓶：'+n,sh:['來洗澡！','別跑！','水很溫暖！']};
-G.skins=[{need:0,n:'藍尿布寶寶',c:['#a0c4ff','#ffd6a5'],a:0},{need:200,n:'兔耳寶寶',c:['#ffc8dd','#ffafcc'],a:1},{need:500,n:'生日寶寶',c:['#b7e4c7','#74c69d'],a:3},{need:1000,n:'搗蛋之王',c:['#ffd23f','#ff9f1c'],a:2}];
+G.I={bs:n=>'最高 '+n,tap:'',title:"{{t:baby.msg.001}}",s1:"{{t:baby.msg.002}}",s2:"{{t:baby.msg.003}}",caught:"{{t:baby.msg.004}}",bt:n=>'{{t:baby.msg.005}}'+n,sh:['{{t:baby.msg.006}}','{{t:baby.msg.007}}','{{t:baby.msg.008}}']};
+G.skins=[{need:0,n:'{{t:baby.msg.009}}',c:['#a0c4ff','#ffd6a5'],a:0},{need:200,n:'{{t:baby.msg.010}}',c:['#ffc8dd','#ffafcc'],a:1},{need:500,n:'{{t:baby.msg.011}}',c:['#b7e4c7','#74c69d'],a:3},{need:1000,n:'{{t:baby.msg.012}}',c:['#ffd23f','#ff9f1c'],a:2}];
 const GY=440,PXL=170;
 let dist,v,gap,py,vy,on,crawl,cid,obs,nextAt,stun,fx,charge,mstun,bots,rings;
 let model=babyRules.create(),heldBy;
@@ -94,8 +94,8 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('baby-score',G.score()+UNIT);setText('baby-best',best+UNIT);setText('baby-pay',fmt(paid)+' 點');
- setText('baby-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('baby-amount').disabled=babyBusy;$('baby-go').disabled=live||rank.busy();setText('baby-go',live?'逃跑中 · 跳躍／爬行':st==='over'?'再逃一次':'開始逃跑');
+ setText('baby-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'{{t:baby.msg.013}}');
+ $('baby-amount').disabled=babyBusy;$('baby-go').disabled=live||rank.busy();setText('baby-go',live?'{{t:baby.msg.014}}':st==='over'?'{{t:baby.msg.015}}':'{{t:baby.msg.016}}');
  document.querySelectorAll('[data-baby-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-baby-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -115,7 +115,7 @@ function die(m){
  if(rec){best=s;try{localStorage.setItem(KEY,best)}catch(e){}}
  if(unl.length)pick(G.skins.indexOf(unl[unl.length-1]));
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});babyBusy=false;renderAll();
- say('被媽媽抓去洗澡了，本局 '+fmt(s)+UNIT+'。'+(paid?'BONUS 共 '+paid+' 點已入帳。':'這一局沒有 BONUS。'),paid?'win':'lose');
+ say('被媽媽抓去洗澡了，本局 '+fmt(s)+UNIT+'。'+(paid?'BONUS 共 '+paid+' 點已入帳。':'{{t:baby.msg.017}}'),paid?'win':'lose');
  ui();
 }
 function start(){
@@ -124,13 +124,13 @@ function start(){
  if(amount>S.balance){say(LOW_MSG,'lose');return}
  rank.start(random=>{
  analytics=AN.start('baby',amount);babyStake=amount;babyBusy=true;save();renderAll();
- model=babyRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=babyRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('{{t:baby.msg.018}}');ui();c.focus();
  },ui);
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx(T('title'),W/2,170,32,'#ffd23f');tx(T('s1'),W/2,218,17,'#fff');tx(T('s2'),W/2,244,17,'#fff');tx('右側開始',W/2,312,24,'#ffd23f')}
-else{tx(T(G.msg),W/2,130,28,'#ff7a7a');tx(String(G.score()),W/2,205,52,'#fff');if(G.extra)tx(G.extra(),W/2,240,17,'#fff');if(rec)tx('新紀錄！',W/2,272,20,'#ffd23f');if(unl.length)tx('已解鎖：'+unl.map(k=>k.n).join('、'),W/2,300,17,'#6cf0a8');tx(paid>0?'BONUS 已入帳 +'+paid+' 點':'這一局沒有 BONUS',W/2,336,20,paid>0?'#ffd23f':'#fff');tx('右側可以再玩一次',W/2,382,18,'#fff')}
+if(st==='ready'){tx(T('title'),W/2,170,32,'#ffd23f');tx(T('s1'),W/2,218,17,'#fff');tx(T('s2'),W/2,244,17,'#fff');tx('{{t:baby.msg.019}}',W/2,312,24,'#ffd23f')}
+else{tx(T(G.msg),W/2,130,28,'#ff7a7a');tx(String(G.score()),W/2,205,52,'#fff');if(G.extra)tx(G.extra(),W/2,240,17,'#fff');if(rec)tx('{{t:baby.msg.020}}',W/2,272,20,'#ffd23f');if(unl.length)tx('{{t:baby.msg.021}}'+unl.map(k=>k.n).join('、'),W/2,300,17,'#6cf0a8');tx(paid>0?'{{t:baby.msg.022}}'+paid+' 點':'{{t:baby.msg.023}}',W/2,336,20,paid>0?'#ffd23f':'#fff');tx('{{t:baby.msg.024}}',W/2,382,18,'#fff')}
 const n=G.skins.length;
 G.skins.forEach((k,i)=>{const x=W/2+(i-(n-1)/2)*72,lk=best<k.need;
 C(x,CHY,24,lk?'#6c757d':k.c[0],3);
@@ -145,7 +145,7 @@ c.addEventListener('pointerdown',e=>{
  if(st!=='run'){
   const n=G.skins.length;
   if(Math.abs(p.y-CHY)<32){for(let i=0;i<n;i++)if(Math.abs(p.x-(W/2+(i-(n-1)/2)*72))<32){if(best>=G.skins[i].need)pick(i);return}}
-  say(st==='over'?'這一局已結束。按「再逃一次」開始新的一局。':'先按「開始逃跑」。');return}
+  say(st==='over'?'{{t:baby.msg.025}}':'{{t:baby.msg.026}}');return}
  e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(_){}
  G.down(p)});
 ['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,e=>{if(st==='run'&&G.up)G.up({id:e.pointerId})}));

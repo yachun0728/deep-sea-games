@@ -21,7 +21,7 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const s=score(),live=st==='run';
  setText('pb-score',s+' m');setText('pb-boss',bird.eggs+' 隻');setText('pb-best',best+' m');
- $('pb-amount').disabled=birdBusy;$('pb-go').disabled=live||birdRank.busy();setText('pb-go',live?'奔跑中 · 點畫面跳躍':st==='over'?'再跑一次':'開始奔跑');
+ $('pb-amount').disabled=birdBusy;$('pb-go').disabled=live||birdRank.busy();setText('pb-go',live?'{{t:bird.msg.001}}':st==='over'?'{{t:bird.msg.002}}':'{{t:bird.msg.003}}');
 }
 function die(){
  if(st!=='run')return;
@@ -42,10 +42,10 @@ function update(dt){
 }
 function birdEvent(event,alpha){
  if(event==='alpha'){AN.progress(analytics,{stage:bird.eggs+1,step:score(),phase:'alpha'});return}
- if(event==='hit'){shake=reduceMotion?0:.12;fxs.push({x:alpha.x,y:alpha.y-90,t:0,s:'啪！'});return}
+ if(event==='hit'){shake=reduceMotion?0:.12;fxs.push({x:alpha.x,y:alpha.y-90,t:0,s:'{{t:bird.msg.004}}'});return}
  earned+=BOSS_REWARD;S.balance+=BOSS_REWARD;save();renderAll();
  AN.progress(analytics,{step:score(),score:score(),bosses:bird.eggs,bonus_points:BOSS_REWARD});
- fxs.push({x:W/2,y:200,t:0,s:'救回一顆蛋！ +'+BOSS_REWARD+' 點'});
+ fxs.push({x:W/2,y:200,t:0,s:'{{t:bird.msg.005}}'+BOSS_REWARD+' 點'});
  say('擊退狼王！救回第 '+bird.eggs+' 顆蛋，+'+BOSS_REWARD+' 點已入帳。','win');
 }
 function drawPoop(x,y,s,rot){
@@ -126,13 +126,13 @@ const s=score();
 tx(s+' m',W/2,62,40,'#fff1c1');
 drawEgg(24,40);tx('x'+bird.eggs,56,48,20,'#fff1c1');
 tx('最佳 '+best+' m',W-70,34,16,'#fff1c1');
-if(bird.warnT>0&&st==='run')tx('狼王來了！快丟便便',W/2,150,26,'#ff5d8f');
+if(bird.warnT>0&&st==='run')tx('{{t:bird.msg.006}}',W/2,150,26,'#ff5d8f');
 C(PB.x,PB.y,PB.r,bird.pcd>0?'#d9c9a3':'#fff1c1',4);drawPoop(PB.x,PB.y+20,.5);
 if(bird.pcd>0){g.strokeStyle='#ff5d8f';g.lineWidth=5;g.beginPath();g.arc(PB.x,PB.y,PB.r+7,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-bird.pcd/.3));g.stroke()}
 if(st!=='run'){
 g.fillStyle='rgba(27,27,47,.55)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx('便便鳥大戰狼群',W/2,200,32,'#ffd23f');tx('狼群偷走了你的蛋！',W/2,252,19,'#fff1c1');tx('躲開障礙，再賞狼王一坨！',W/2,282,19,'#fff1c1');tx('到操作區開始',W/2,340,24,'#ffd23f')}
-else{tx('哎喲！被撞到了',W/2,180,32,'#ff5d8f');tx(s+' m',W/2,244,50,'#fff1c1');tx('擊退狼王：'+bird.eggs+' 隻',W/2,284,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'沒打贏狼王，沒有點數',W/2,320,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('新紀錄！',W/2,352,20,'#ffd23f');tx('到操作區再跑一次',W/2,396,20,'#fff1c1')}}}
+if(st==='ready'){tx('{{t:bird.msg.007}}',W/2,200,32,'#ffd23f');tx('{{t:bird.msg.008}}',W/2,252,19,'#fff1c1');tx('{{t:bird.msg.009}}',W/2,282,19,'#fff1c1');tx('{{t:bird.msg.010}}',W/2,340,24,'#ffd23f')}
+else{tx('{{t:bird.msg.011}}',W/2,180,32,'#ff5d8f');tx(s+' m',W/2,244,50,'#fff1c1');tx('{{t:bird.msg.012}}'+bird.eggs+' 隻',W/2,284,20,'#fff1c1');tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'{{t:bird.msg.013}}',W/2,320,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('{{t:bird.msg.014}}',W/2,352,20,'#ffd23f');tx('{{t:bird.msg.015}}',W/2,396,20,'#fff1c1')}}}
 function start(){
  if(st==='run')return;
  const amount=ENTRY_FEE;
@@ -140,7 +140,7 @@ function start(){
  birdRank.start(random=>{
   bird=birdRules.create(random||Math.random,birdEvent);
   analytics=AN.start('bird',amount);birdStake=amount;birdBusy=true;save();renderAll();
-  earned=0;fxs=[];shake=0;rec=false;hid=-1;st='run';last=performance.now();say('出發！看障礙上方的標記決定點幾下，狼王出現就丟便便。');ui();c.focus();
+  earned=0;fxs=[];shake=0;rec=false;hid=-1;st='run';last=performance.now();say('{{t:bird.msg.016}}');ui();c.focus();
  });
 }
 function pos(e){const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}}
@@ -151,7 +151,7 @@ function shoot(){input(2)}
 $('pb-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
 if(e.button!==undefined&&e.button!==0)return;
-if(st!=='run'){say(st==='over'?'這一局已結算。按「再跑一次」開始新的一局。':'先按「開始奔跑」。');return}
+if(st!=='run'){say(st==='over'?'{{t:bird.msg.017}}':'{{t:bird.msg.018}}');return}
 if($('view-bird').hidden||document.hidden)return;e.preventDefault();c.focus();
 const p=pos(e);
 if(Math.hypot(p.x-PB.x,p.y-PB.y)<PB.r+10){shoot();return}

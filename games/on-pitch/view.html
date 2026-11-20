@@ -1,14 +1,14 @@
   <section class="view" id="view-on-pitch" hidden>
-    <div class="console"><div class="sneak-stage"><canvas id="op-canvas" tabindex="0" width="400" height="720" aria-label="不准跑調：對著麥克風唱出牆上缺口的音（C D E F G A B），音準到了才能穿過去；也可以改用螢幕琴鍵練習"></canvas></div>
-      <div class="side"><section class="panel" aria-label="不准跑調操作">
-        <dl class="stats"><div><dt>目前關卡</dt><dd id="op-level" data-i18n-ignore>1-1</dd></div><div><dt>本局分數</dt><dd id="op-score" data-i18n-ignore>0</dd></div><div><dt>累計星數</dt><dd id="op-stars" data-i18n-ignore>0 / 60</dd></div></dl>
-        <button class="go" id="op-go" type="button" data-mode="start">開始遊戲</button>
+    <div class="console"><div class="sneak-stage"><canvas id="op-canvas" tabindex="0" width="400" height="720" aria-label="{{t:on-pitch.view.16}}"></canvas></div>
+      <div class="side"><section class="panel" aria-label="{{t:on-pitch.view.17}}">
+        <dl class="stats"><div><dt>{{t:on-pitch.view.01}}</dt><dd id="op-level" data-i18n-ignore>1-1</dd></div><div><dt>{{t:on-pitch.view.02}}</dt><dd id="op-score" data-i18n-ignore>0</dd></div><div><dt>{{t:on-pitch.view.03}}</dt><dd id="op-stars" data-i18n-ignore>0 / 60</dd></div></dl>
+        <button class="go" id="op-go" type="button" data-mode="start">{{t:on-pitch.view.04}}</button>
         <p class="msg" id="op-msg" aria-live="polite" data-i18n-ignore></p>
-        <div class="seg-row" role="group" aria-label="輸入方式"><button class="seg" id="op-in-mic" type="button" aria-pressed="true">麥克風</button><button class="seg" id="op-in-key" type="button" aria-pressed="false">螢幕琴鍵（練習）</button></div>
-        <div class="seg-row" role="group" aria-label="八度規則"><button class="seg" id="op-oct-any" type="button" aria-pressed="true">任何八度</button><button class="seg" id="op-oct-strict" type="button" aria-pressed="false">嚴格第 4 八度</button></div>
-        <button class="seg" id="op-mic-test" type="button">測試麥克風</button>
-        <p class="hint">用嗓音、哼歌或吹口哨唱出牆上缺口的音，音準進到範圍並撐住一小段時間就算通過；唱錯或沒唱到會失去一顆愛心，三顆用完就失敗。建議戴耳機：喇叭播出的參考音會被麥克風收到（播音時已暫停偵測）。電腦也可以用鍵盤 C D E F G A B（或 1～7）練習；畫面上的 ❚❚ 或 Esc 暫停。</p>
+        <div class="seg-row" role="group" aria-label="{{t:on-pitch.view.18}}"><button class="seg" id="op-in-mic" type="button" aria-pressed="true">{{t:on-pitch.view.05}}</button><button class="seg" id="op-in-key" type="button" aria-pressed="false">{{t:on-pitch.view.06}}</button></div>
+        <div class="seg-row" role="group" aria-label="{{t:on-pitch.view.19}}"><button class="seg" id="op-oct-any" type="button" aria-pressed="true">{{t:on-pitch.view.07}}</button><button class="seg" id="op-oct-strict" type="button" aria-pressed="false">{{t:on-pitch.view.08}}</button></div>
+        <button class="seg" id="op-mic-test" type="button">{{t:on-pitch.view.09}}</button>
+        <p class="hint">{{t:on-pitch.view.10}}</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法與點數</summary><p>你是一顆往前滑行的小機器人，前面不斷出現有缺口的牆，缺口高度對應 C D E F G A B 七個音（第 4 八度）。對著麥克風唱出那個音，讓音高落在容許誤差內並撐住 0.2～0.25 秒，就能穿過缺口；過牆時間內沒唱準會失去一顆愛心，共 3 顆。通過時依誤差給「完美／好／過」並累積連續分數。</p><p>共 5 個世界、每個 4 關，外加無盡模式：世界 1 全提示（缺口高度、音名、顏色、參考音）；世界 2 唱出小星星等公版旋律；世界 3 把缺口高度藏起來；世界 4 只剩顏色閃現；世界 5 逐步拿掉提示，靠記憶與絕對音準。越後面的世界容許誤差越小（±45 → ±30 音分）。預設「任何八度」：只看音名，高八度或低八度都算；也可切成嚴格第 4 八度。</p><p>這款遊戲沒有 BONUS，分數與星數只是你的成績，不換點數；沒有任何下注或倍率返還。每款遊戲每天第一次完整玩過一局（至少 10 秒），會依平台固定規則領到完成獎勵。</p><p>麥克風只在遊戲中即時分析音高，不錄音、不上傳；切換分頁、離開本頁或按暫停會立刻關閉麥克風。星數與設定保存在這個瀏覽器中。</p></details>
+    <details class="rules"><summary>{{t:on-pitch.view.11}}</summary><p>{{t:on-pitch.view.12}}</p><p>{{t:on-pitch.view.13}}</p><p>{{t:on-pitch.view.14}}</p><p>{{t:on-pitch.view.15}}</p></details>
   </section>

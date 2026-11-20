@@ -7,6 +7,7 @@ import json
 import re
 import unittest
 
+import i18n_data
 from test_i18n import ROOT, source_texts
 
 HIDDEN = tuple(g['id'] for g in json.loads((ROOT / 'games/catalog.json').read_text(encoding='utf-8')) if g.get('hidden'))
@@ -27,7 +28,7 @@ def hits(pattern, text):
 class WordingPolicyTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.dictionary = json.loads((ROOT / 'locales/en.json').read_text(encoding='utf-8'))
+        cls.dictionary = i18n_data.dictionary(ROOT)
         cls.texts = source_texts(skip=HIDDEN)  # hidden games keep legacy text until they are reworked
 
     def test_visible_chinese_text_has_no_price_wording(self):

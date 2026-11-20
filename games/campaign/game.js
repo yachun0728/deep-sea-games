@@ -6,7 +6,7 @@
   // Milestones count votes and were calibrated with a mute-timing simulation (see GAME_RULES.md).
   var CP_MILESTONES=[[8000,3],[10000,7],[12000,15],[15000,30]],CP_ENDLESS_FROM=15000,CP_ENDLESS_STEP=3000,CP_ENDLESS_BONUS=40;
   function cpNextMilestone(v){for(var i=0;i<CP_MILESTONES.length;i++)if(CP_MILESTONES[i][0]>v)return CP_MILESTONES[i];return [CP_ENDLESS_FROM+(Math.floor((v-CP_ENDLESS_FROM)/CP_ENDLESS_STEP)+1)*CP_ENDLESS_STEP,CP_ENDLESS_BONUS];}
-  var CP_KINDS={'學校':{w:220,h:150,quiet:true},'醫院':{w:190,h:184,quiet:true},'豪宅':{w:210,h:150,quiet:true},'住宅':{w:170,h:158},'公寓':{w:160,h:178},'商店':{w:150,h:112},'市場':{w:200,h:104},'夜市':{w:200,h:122},'公園':{w:190,h:112},'廟口':{w:190,h:150}};
+  var CP_KINDS={'{{t:campaign.msg.001}}':{w:220,h:150,quiet:true},'{{t:campaign.msg.002}}':{w:190,h:184,quiet:true},'{{t:campaign.msg.003}}':{w:210,h:150,quiet:true},'{{t:campaign.msg.004}}':{w:170,h:158},'{{t:campaign.msg.005}}':{w:160,h:178},'{{t:campaign.msg.006}}':{w:150,h:112},'{{t:campaign.msg.007}}':{w:200,h:104},'{{t:campaign.msg.008}}':{w:200,h:122},'{{t:campaign.msg.009}}':{w:190,h:112},'{{t:campaign.msg.010}}':{w:190,h:150}};
   var CP_FONT='"Noto Sans TC",system-ui,sans-serif';
   var campaignCanvas=$('cp-canvas'),campaignCtx=campaignCanvas.getContext('2d'),campaignPointers=new Set(),campaignKeys=new Set();
   try{var cpb=Number(localStorage.getItem('deep-sea-campaign-best'));if(Number.isFinite(cpb))CP.best=Math.max(0,cpb);}catch(e){}
@@ -22,7 +22,7 @@
   function cpLose(reason){
     AN.end(CP.analytics,CP.earned,CP.earned>0?'complete':'loss',{step:cpPassed(),votes:CP.votes,misses:CP.miss});
     CP.active=false;CP.phase='lost';cpRelease();cpRemember();cpRank.finish(CP.votes);
-    cpSay(reason+' 累計 '+CP_MAX_MISS+' 次失誤，被檢舉落選。最終 '+fmt(CP.votes)+' 票，'+(CP.earned>0?'本局共入帳 '+fmt(CP.earned)+' 點。':'這一局沒有獎勵。'),CP.earned>0?'win':'lose');cpUI();
+    cpSay(reason+' 累計 '+CP_MAX_MISS+' 次失誤，被檢舉落選。最終 '+fmt(CP.votes)+' 票，'+(CP.earned>0?'本局共入帳 '+fmt(CP.earned)+' 點。':'{{t:campaign.msg.011}}'),CP.earned>0?'win':'lose');cpUI();
   }
   function cpMilestones(){
     var nx=cpNextMilestone(CP.awarded);
@@ -30,17 +30,17 @@
       var b=nx[1];CP.awarded=nx[0];CP.earned+=b;S.balance+=b;save();renderAll();
       AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss,bonus_points:b});
       CP.pops.push({v:nx[0],b:b,age:0});if(CP.pops.length>3)CP.pops.shift();
-      cpSay('得票達 '+fmt(nx[0])+'！獎勵 +'+b+' 點已入帳，本局累計 +'+CP.earned+' 點。','win');
+      cpSay('得票達 '+fmt(nx[0])+'{{t:campaign.msg.012}}'+b+' 點已入帳，本局累計 +'+CP.earned+' 點。','win');
       nx=cpNextMilestone(CP.awarded);
     }
   }
   function cpSignal(){
-    if(CP.phase!=='run')return[CP.phase==='lost'?'look':'safe',CP.phase==='lost'?'被檢舉落選':'尚未出發'];
+    if(CP.phase!=='run')return[CP.phase==='lost'?'look':'safe',CP.phase==='lost'?'{{t:campaign.msg.013}}':'{{t:campaign.msg.014}}'];
     var wx=CP.dist+CP_TRUCK,look=cpSpeed()*.6,cur=CP.lots[CP.idx],inQuiet=!!cur&&cur.quiet&&wx>=cur.x0,soon=false;
     for(var i=CP.idx;i<Math.min(CP.lots.length,CP.idx+2);i++){var lot=CP.lots[i];if(lot.quiet&&lot.x0>wx&&lot.x0-wx<look)soon=true;}
-    if(inQuiet)return CP.hold?['safe','安靜區通過中 · 繼續按住']:['look','吵到了！快按住靜音'];
-    if(soon)return CP.hold?['safe','前方安靜區 · 已經靜音']:['warn','前方安靜區 · 準備按住'];
-    return CP.hold?['warn','靜音中 · 這裡放開才有票']:['safe','廣播拉票中'];
+    if(inQuiet)return CP.hold?['safe','{{t:campaign.msg.015}}']:['look','{{t:campaign.msg.016}}'];
+    if(soon)return CP.hold?['safe','{{t:campaign.msg.017}}']:['warn','{{t:campaign.msg.018}}'];
+    return CP.hold?['warn','{{t:campaign.msg.019}}']:['safe','{{t:campaign.msg.020}}'];
   }
   function cpUI(){
     var live=CP.phase==='run',sig=cpSignal(),nx=cpNextMilestone(CP.awarded);
@@ -49,8 +49,8 @@
     $('cp-miss').style.color=CP.miss>=3?'var(--crush)':'';
     cpText('cp-signal',sig[1]);$('cp-signal').dataset.state=sig[0];
     $('cp-amount').disabled=CP.active;$('cp-go').disabled=live||cpRank.busy();
-    cpText('cp-go',live?'拉票中 · 安靜區按住靜音':CP.phase==='ready'?'出發拉票':'再跑一趟');
-    $('cp-hold').disabled=!live;cpText('cp-hold',CP.hold?'靜音中 · 放開廣播':'按住靜音 · 放開廣播');
+    cpText('cp-go',live?'{{t:campaign.msg.021}}':CP.phase==='ready'?'{{t:campaign.msg.022}}':'{{t:campaign.msg.023}}');
+    $('cp-hold').disabled=!live;cpText('cp-hold',CP.hold?'{{t:campaign.msg.024}}':'{{t:campaign.msg.025}}');
   }
   function cpStart(){
     if(CP.phase==='run'||cpRank.busy())return;
@@ -64,7 +64,7 @@
       else if(event==='progress')AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss});
       else if(event==='float')cpFloat(data.lot,data.text,data.kind);
     },CP);CP.floats=[];CP.pops=[];CP.earned=0;CP.awarded=0;CP.phase='run';CP.last=performance.now();cpRelease();
-    cpSay('出發！沒有終點，越開越快。放開讓喇叭廣播，前方出現紅色的學校、醫院、豪宅時按住靜音；在一般路段靜音太久也算失誤。');cpUI();campaignCanvas.focus();
+    cpSay('{{t:campaign.msg.026}}');cpUI();campaignCanvas.focus();
     },cpUI);
   }
   // Phones: canvas is always 640 logical px wide and as tall as the screen needs; the 460px scene sits in the middle, sky above, mute pad below.
@@ -88,49 +88,49 @@
   function cpBuilding(g,lot,x,t){
     var G=CP_GROUND,w=lot.w,h=lot.h,top=G-h,cx=x+w/2,i,warm='#ffd98a',dark='#0f3040';
     switch(lot.name){
-    case '住宅':
+    case '{{t:campaign.msg.004}}':
       cpBox(g,x+8,top,w-16,h,'#1d4a5c');cpBox(g,x+2,top-8,w-4,10,'#163a48');
       cpWindows(g,x+26,top+18,3,3,28,26,17,14,lot.seed,warm,dark);cpBox(g,cx-11,G-34,22,34,'#0c2a36');cpBox(g,cx-11,G-34,22,3,'#ffb638');break;
-    case '公寓':
+    case '{{t:campaign.msg.005}}':
       cpBox(g,x+6,top,w-12,h,'#1a4152');cpBox(g,x+w-52,top-18,26,18,'#163a48');cpBox(g,x+2,top-5,w-4,7,'#163a48');
       cpWindows(g,x+25,top+16,3,4,26,22,16,14,lot.seed,warm,dark);
       for(i=0;i<4;i++)cpBox(g,x+20,top+40+i*36,w-40,3,'#0f3040');break;
-    case '商店':
+    case '{{t:campaign.msg.006}}':
       cpBox(g,x+6,top,w-12,h,'#235566');cpBox(g,x+16,top+6,w-32,22,'#0c2a36');
       for(i=0;i<9;i++)cpBox(g,x+4+i*((w-8)/9),top+34,(w-8)/9+.5,18,i%2?'#e4f2f3':'#ffb638');
       g.globalAlpha=.9;cpBox(g,x+18,G-56,w-70,40,warm);g.globalAlpha=1;cpBox(g,x+w-42,G-58,24,58,'#0c2a36');
       cpBox(g,x+24,G-50,10,28,'#e8a64a');cpBox(g,x+40,G-44,12,22,'#c96a4b');break;
-    case '市場':
+    case '{{t:campaign.msg.007}}':
       cpBox(g,x+6,G-44,w-12,44,'#1f4b5b');
       for(i=0;i<3;i++){var mx=x+8+i*((w-16)/3),mw=(w-16)/3;g.fillStyle=i%2?'#ffb638':'#8fe0b0';g.beginPath();g.moveTo(mx,top+44);g.lineTo(mx+mw/2,top);g.lineTo(mx+mw,top+44);g.closePath();g.fill();cpBox(g,mx+mw/2-2,top+44,4,18,'#8d7254');}
       for(i=0;i<8;i++){g.fillStyle=['#ff6f61','#ffb638','#9ad17a'][i%3];g.beginPath();g.arc(x+26+i*((w-52)/7),G-50,7,0,7);g.fill();}break;
-    case '夜市':
+    case '{{t:campaign.msg.008}}':
       cpBox(g,x+10,G-62,78,62,'#235566');cpBox(g,x+w-88,G-62,78,62,'#1f4b5b');
       for(i=0;i<6;i++){cpBox(g,x+6+i*14.3,G-80,14.5,18,i%2?'#e4f2f3':'#ff6f61');cpBox(g,x+w-92+i*14.3,G-80,14.5,18,i%2?'#e4f2f3':'#8fe0b0');}
       g.globalAlpha=.85;cpBox(g,x+20,G-52,58,22,warm);cpBox(g,x+w-78,G-52,58,22,warm);g.globalAlpha=1;
       g.strokeStyle='#d3b9c0';g.lineWidth=1.5;g.beginPath();g.moveTo(x+4,top);g.quadraticCurveTo(cx,top+26,x+w-4,top);g.stroke();
       for(i=1;i<8;i++){var u=i/8,lx=x+4+(w-8)*u,ly=top+26*4*u*(1-u)*.5+2;g.fillStyle=i%2?'#ffb638':'#ff6f61';g.beginPath();g.arc(lx,ly+7,6+(reduceMotion?0:Math.sin(t*3+i)*.6),0,7);g.fill();}break;
-    case '公園':
+    case '{{t:campaign.msg.009}}':
       cpBox(g,x,G-8,w,8,'#1f5a4c');
       [[38,58,30],[98,82,36],[154,52,26]].forEach(function(tr){cpBox(g,x+tr[0]-4,G-tr[1],8,tr[1],'#6b5238');g.fillStyle='#1f6b5a';g.beginPath();g.arc(x+tr[0],G-tr[1],tr[2],0,7);g.fill();g.fillStyle='#2a8a70';g.beginPath();g.arc(x+tr[0]-tr[2]*.3,G-tr[1]-tr[2]*.3,tr[2]*.55,0,7);g.fill();});
       cpBox(g,x+56,G-22,34,4,'#8d7254');cpBox(g,x+58,G-18,3,10,'#8d7254');cpBox(g,x+85,G-18,3,10,'#8d7254');break;
-    case '廟口':
+    case '{{t:campaign.msg.010}}':
       cpBox(g,x+10,G-12,w-20,12,'#8f8a80');cpBox(g,x+22,G-92,w-44,80,'#7a2f2a');
       for(i=0;i<4;i++)cpBox(g,x+28+i*((w-68)/3),G-92,12,80,'#b5483c');cpBox(g,cx-15,G-62,30,50,'#2a1512');
       [[0,G-92,w+8,22],[26,G-128,w-44,18]].forEach(function(r){var rx=x-4+r[0],ry=r[1],rw=r[2],rh=r[3];g.fillStyle='#ffb638';g.beginPath();g.moveTo(rx-8,ry-4);g.quadraticCurveTo(rx+6,ry-rh*.2,rx+18,ry-rh);g.lineTo(rx+rw-18,ry-rh);g.quadraticCurveTo(rx+rw-6,ry-rh*.2,rx+rw+8,ry-4);g.lineTo(rx+rw,ry+3);g.lineTo(rx,ry+3);g.closePath();g.fill();cpBox(g,rx+16,ry-rh-3,rw-32,4,'#d5912a');});
       cpBox(g,x+48,G-114,w-96,22,'#7a2f2a');g.fillStyle='#ff6f61';g.beginPath();g.arc(x+44,G-74,8,0,7);g.arc(x+w-44,G-74,8,0,7);g.fill();break;
-    case '學校':
+    case '{{t:campaign.msg.001}}':
       cpBox(g,x+6,G-118,w-12,118,'#2b5872');cpBox(g,x+2,G-124,w-4,8,'#1f4257');
       cpBox(g,cx-38,top+22,76,h-22,'#356c85');g.fillStyle='#1f4257';g.beginPath();g.moveTo(cx-46,top+24);g.lineTo(cx,top-4);g.lineTo(cx+46,top+24);g.closePath();g.fill();
       g.fillStyle='#e9fbff';g.beginPath();g.arc(cx,top+52,15,0,7);g.fill();g.strokeStyle='#1f4257';g.lineWidth=2.5;g.beginPath();g.moveTo(cx,top+52);g.lineTo(cx,top+42);g.moveTo(cx,top+52);g.lineTo(cx+8,top+56);g.stroke();
       cpWindows(g,x+18,G-104,2,2,22,24,10,14,lot.seed,'#bfe6ee',dark);cpWindows(g,x+w-72,G-104,2,2,22,24,10,14,lot.seed+1,'#bfe6ee',dark);cpBox(g,cx-14,G-40,28,40,'#12303f');
       cpBox(g,x+14,top-22,3,52,'#cfe3e6');g.fillStyle='#ffb638';g.beginPath();g.moveTo(x+17,top-22);g.lineTo(x+42,top-15+(reduceMotion?0:Math.sin(t*5)*2));g.lineTo(x+17,top-7);g.closePath();g.fill();break;
-    case '醫院':
+    case '{{t:campaign.msg.002}}':
       cpBox(g,x+8,top,w-16,h,'#9fc0c6');cpBox(g,x+8,top,22,h,'#86a9b0');cpBox(g,x+2,top-6,w-4,8,'#6f949c');
       cpWindows(g,x+42,top+58,4,3,22,20,10,12,lot.seed,'#e9fbff','#5d8c95');
       g.fillStyle='#f4ffff';g.beginPath();g.arc(cx+10,top+32,22,0,7);g.fill();cpBox(g,cx+4,top+16,12,32,'#ff6f61');cpBox(g,cx-6,top+26,32,12,'#ff6f61');
       cpBox(g,cx-30,G-44,80,6,'#ff6f61');cpBox(g,cx-16,G-38,52,38,'#3d6a74');cpBox(g,cx+9,G-38,2,38,'#9fc0c6');break;
-    case '豪宅':
+    case '{{t:campaign.msg.003}}':
       cpBox(g,x+26,G-104,w-52,104,'#3d3760');g.fillStyle='#2a2547';g.beginPath();g.moveTo(x+12,G-102);g.lineTo(cx,top-4);g.lineTo(x+w-12,G-102);g.closePath();g.fill();cpBox(g,x+w-66,top+6,16,34,'#2a2547');
       g.fillStyle=warm;g.beginPath();g.arc(cx,top+34,10,0,7);g.fill();
       for(i=0;i<4;i++)cpBox(g,x+40+i*((w-92)/3),G-98,12,98,'#cfc8ee');
@@ -164,7 +164,7 @@
     g.fillStyle=red;g.fillRect(x-68,392+y,98,6);g.fillStyle=blue;g.fillRect(x-68,398+y,98,6);
     // big banner board on the box side
     g.fillStyle=red;cpRR(g,x-60,342+y,82,40,5);g.fill();g.strokeStyle=gold;g.lineWidth=2;cpRR(g,x-57,345+y,76,34,4);g.stroke();
-    g.fillStyle=gold;g.font='900 19px '+CP_FONT;g.textAlign='center';g.textBaseline='middle';g.fillText('懇請支持',x-19,363+y);
+    g.fillStyle=gold;g.font='900 19px '+CP_FONT;g.textAlign='center';g.textBaseline='middle';g.fillText('{{t:campaign.msg.027}}',x-19,363+y);
     g.fillStyle='#fff4de';g.beginPath();for(i=0;i<5;i++){g.arc(x-50+i*8,350+y,1.6,0,7);g.closePath();}g.fill();
     // cab
     g.fillStyle=cream;g.beginPath();g.moveTo(x+30,350+y);g.lineTo(x+52,350+y);g.quadraticCurveTo(x+62,366+y,x+70,378+y);g.lineTo(x+70,404+y);g.lineTo(x+30,404+y);g.closePath();g.fill();
@@ -226,14 +226,14 @@
     g.restore();
     // HUD: votes, route progress and speed, strikes (screen space)
     cpBox(g,0,0,W,96,'rgba(28,16,40,.8)');cpBox(g,0,96,W,1,'#6a4a62');
-    g.textAlign='left';g.fillStyle='#d3b9c0';g.font='12px '+CP_FONT;g.fillText('目前選票',16,16);g.fillStyle='#e4f2f3';g.font='700 30px "Chakra Petch",'+CP_FONT;g.fillText(fmt(CP.votes),16,42);
+    g.textAlign='left';g.fillStyle='#d3b9c0';g.font='12px '+CP_FONT;g.fillText('{{t:campaign.msg.028}}',16,16);g.fillStyle='#e4f2f3';g.font='700 30px "Chakra Petch",'+CP_FONT;g.fillText(fmt(CP.votes),16,42);
     var prog=Math.max(0,Math.min(1,(cpSpeed()-CP_V0)/(CP_VMAX-CP_V0)));
     g.textAlign='center';g.fillStyle='#d3b9c0';g.font='12px '+CP_FONT;g.fillText('車速 '+(cpSpeed()/CP_V0).toFixed(1)+'× · 已過 '+cpPassed()+' 棟 · 本局 +'+CP.earned+' 點',W/2,16);
     g.fillStyle='#3a2640';cpRR(g,200,32,240,10,5);g.fill();g.fillStyle='#ffc247';cpRR(g,200,32,Math.max(10,240*prog),10,5);g.fill();cpBox(g,436,28,3,18,'#ffc247');
     g.textAlign='right';g.fillStyle='#d3b9c0';g.font='12px '+CP_FONT;g.fillText('吵到 '+CP.miss+' / '+CP_MAX_MISS+' 次',W-16,16);
     for(i=0;i<CP_MAX_MISS;i++){g.beginPath();g.arc(W-24-(CP_MAX_MISS-1-i)*24,40,8,0,7);if(i<CP.miss){g.fillStyle='#ff6f61';g.fill();}else{g.lineWidth=1.5;g.strokeStyle='#8a6a80';g.stroke();}}
     // upcoming buildings
-    g.textAlign='left';g.fillStyle='#d3b9c0';g.font='12px '+CP_FONT;g.fillText('接下來',16,75);
+    g.textAlign='left';g.fillStyle='#d3b9c0';g.font='12px '+CP_FONT;g.fillText('{{t:campaign.msg.029}}',16,75);
     for(i=0;i<6;i++){var up=CP.lots[CP.idx+i],ux=66+i*95;if(!up)break;
       g.fillStyle=up.quiet?'rgba(255,111,97,.22)':'#3a2640';cpRR(g,ux,62,84,26,13);g.fill();g.lineWidth=i===0?2:1;g.strokeStyle=up.quiet?'#ff6f61':i===0?'#d3b9c0':'#6a4a62';g.stroke();
       g.fillStyle=up.quiet?'#ff9a8f':'#f0dcd6';g.font='600 13px '+CP_FONT;g.textAlign='center';g.fillText(up.quiet?up.name+' 靜':up.name,ux+42,76);
@@ -243,20 +243,20 @@
       var sg=cpSignal(),warn=sg[0]!=='safe',ph=Math.min(150,Math.max(96,Math.round((Hl-460-dy)*.42))),py0=Hl-ph-70,pulse=reduceMotion?.5:(.5+.5*Math.sin(t*10));
       g.fillStyle=CP.hold?'rgba(217,60,54,.9)':'rgba(255,194,71,.16)';cpRR(g,28,py0,W-56,ph,28);g.fill();
       g.lineWidth=warn&&!CP.hold?4:2;g.strokeStyle=CP.hold?'#ffb4a8':(warn?'rgba(255,111,97,'+(.55+.45*pulse)+')':'rgba(255,194,71,.7)');cpRR(g,28,py0,W-56,ph,28);g.stroke();
-      g.textAlign='center';g.textBaseline='middle';g.fillStyle='#fff1dc';g.font='800 26px '+CP_FONT;g.fillText(CP.hold?'靜音中 · 放開廣播':'按住靜音 · 放開廣播',W/2,py0+ph/2-(ph>110?12:0));
-      if(ph>110){g.fillStyle=CP.hold?'#ffe3dc':'#d3b9c0';g.font='600 15px '+CP_FONT;g.fillText(CP.hold?'靜音中 · 放開才會廣播':'廣播拉票中 · 紅色路段要按住',W/2,py0+ph/2+22);}
+      g.textAlign='center';g.textBaseline='middle';g.fillStyle='#fff1dc';g.font='800 26px '+CP_FONT;g.fillText(CP.hold?'{{t:campaign.msg.024}}':'{{t:campaign.msg.025}}',W/2,py0+ph/2-(ph>110?12:0));
+      if(ph>110){g.fillStyle=CP.hold?'#ffe3dc':'#d3b9c0';g.font='600 15px '+CP_FONT;g.fillText(CP.hold?'{{t:campaign.msg.030}}':'{{t:campaign.msg.031}}',W/2,py0+ph/2+22);}
     }else if(!fs){
     g.textAlign='center';g.fillStyle=live?(CP.hold?'#d3b9c0':'#8fe0b0'):'#d3b9c0';g.font='600 14px '+CP_FONT;
-    g.fillText(live?(CP.hold?'靜音中 · 放開才會廣播':'廣播拉票中 · 紅色路段要按住'):'放開＝廣播拉票　按住＝靜音',W/2,Hl-13);
+    g.fillText(live?(CP.hold?'{{t:campaign.msg.030}}':'{{t:campaign.msg.031}}'):'{{t:campaign.msg.032}}',W/2,Hl-13);
     }
     g.save();g.translate(0,dy);
     CP.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=190-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#ffb638';g.font='700 38px '+CP_FONT;g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#e4f2f3';g.font='600 17px '+CP_FONT;g.fillText('得票 '+fmt(p.v)+' 里程碑',W/2,py+28);g.globalAlpha=1;});
     if(!live){
       g.fillStyle='rgba(28,16,40,.92)';cpRR(g,150,150,340,104,12);g.fill();g.lineWidth=1;g.strokeStyle='#6a4a62';g.stroke();
       g.fillStyle=CP.phase==='lost'?'#ff6f61':'#8fe0b0';g.font='700 24px '+CP_FONT;
-      g.fillText(CP.phase==='ready'?'準備出發拉票？':'被檢舉，落選了！',W/2,186);
+      g.fillText(CP.phase==='ready'?'{{t:campaign.msg.033}}':'{{t:campaign.msg.034}}',W/2,186);
       g.fillStyle='#e4f2f3';g.font='14px '+CP_FONT;
-      g.fillText(CP.phase==='ready'?'紅色建築要按住靜音，其他路段放開廣播':'最終 '+fmt(CP.votes)+' 票 · 過了 '+cpPassed()+' 棟'+(CP.earned>0?' · 入帳 +'+fmt(CP.earned)+' 點':''),W/2,222);
+      g.fillText(CP.phase==='ready'?'{{t:campaign.msg.035}}':'最終 '+fmt(CP.votes)+' 票 · 過了 '+cpPassed()+' 棟'+(CP.earned>0?' · 入帳 +'+fmt(CP.earned)+' 點':''),W/2,222);
     }
     g.restore();g.textBaseline='alphabetic';g.textAlign='left';
   }

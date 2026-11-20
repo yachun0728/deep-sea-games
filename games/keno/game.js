@@ -2,7 +2,7 @@
   var KE_N = 36, KE_DIGS = 5, KE_DAILY_KEY = 'deep-sea-gold-daily-v1';
   var KE = {active:false, over:false, layout:[], open:[], digs:0, score:0, best:0, earned:0, day:'', daily:null};
   var elKGo=$('ke-go'), elKMsg=$('ke-msg'), elKBoard=$('ke-board'), kcells=[];
-  var KE_ORES=[{name:'石頭',reward:0,score:0,color:'#a1a8ae'},{name:'銅礦',reward:2,score:10,color:'#e99a64'},{name:'金礦',reward:3,score:30,color:'#ffd368'},{name:'鑽石',reward:5,score:60,color:'#86eee9'}];
+  var KE_ORES=[{name:'{{t:keno.msg.001}}',reward:0,score:0,color:'#a1a8ae'},{name:'{{t:keno.msg.002}}',reward:2,score:10,color:'#e99a64'},{name:'{{t:keno.msg.003}}',reward:3,score:30,color:'#ffd368'},{name:'{{t:keno.msg.004}}',reward:5,score:60,color:'#86eee9'}];
   function kSay(text,cls){elKMsg.textContent=text;elKMsg.className='msg'+(cls?' '+cls:'');}
   function keDay(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
   function keRead(){
@@ -14,7 +14,7 @@
   }
   function keStore(d){localStorage.setItem(KE_DAILY_KEY,JSON.stringify(d));}
   function keLocked(fn){
-    function run(){try{fn();}catch(e){kSay('無法讀寫每日紀錄，請確認瀏覽器允許本機儲存後再試。','lose');}}
+    function run(){try{fn();}catch(e){kSay('{{t:keno.msg.005}}','lose');}}
     if(navigator.locks&&navigator.locks.request)return navigator.locks.request(KE_DAILY_KEY,run);
     run();
   }
@@ -39,20 +39,20 @@
     }else if(KE.active){AN.end(KE.analytics,KE.earned,'complete',{step:KE.digs,score:KE.score});KE.active=false;}
   }
   function keUI(){
-    kcells.forEach(function(b,i){var shown=!!KE.open[i],ore=KE_ORES[KE.layout[i]||0];b.className='kcell '+(shown?'ore-'+KE.layout[i]:'soil');b.innerHTML=shown?keArt(KE.layout[i]):'<span class="ore-crack" aria-hidden="true"></span>';b.disabled=!KE.active||shown;b.setAttribute('aria-label','礦區第 '+(i+1)+' 格，'+(shown?ore.name:'尚未挖掘'));});
+    kcells.forEach(function(b,i){var shown=!!KE.open[i],ore=KE_ORES[KE.layout[i]||0];b.className='kcell '+(shown?'ore-'+KE.layout[i]:'soil');b.innerHTML=shown?keArt(KE.layout[i]):'<span class="ore-crack" aria-hidden="true"></span>';b.disabled=!KE.active||shown;b.setAttribute('aria-label','礦區第 '+(i+1)+' 格，'+(shown?ore.name:'{{t:keno.msg.006}}'));});
     $('ke-left').textContent=(5-KE.digs)+' / 5';$('ke-score').textContent=KE.score;$('ke-best').textContent=KE.best;
     $('ke-free').textContent=KE.daily?(3-KE.daily.plays)+' / 3':'—';$('ke-earned').textContent=KE.daily?KE.daily.earned+' / 30 點':'—';
     elKGo.disabled=KE.active||!KE.daily||KE.daily.plays>=3||KE.daily.earned>=30;elKGo.dataset.mode=KE.active?'playing':'start';
-    elKGo.innerHTML=KE.active?'選一格挖掘吧':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'今日補給已完成<small>台灣時間午夜再來</small>':'挖金礦<small>每次可挖 5 格</small>';
-    var cta=$('gold-daily-cta');if(cta)cta.textContent=KE.active?'繼續本次挖掘 ↗':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'查看今日補給':'挖一次 ↗';
-    var badge=$('gold-free-badge');if(badge)badge.textContent=KE.active?'挖':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'✓':KE.daily?String(3-KE.daily.plays):'3';
-    var link=$('gold-float');if(link)link.setAttribute('aria-label',KE.active?'每日挖礦：繼續本次挖掘':KE.daily?'每日挖礦：剩餘'+(3-KE.daily.plays)+'次，今日已獲得'+KE.daily.earned+'點':'每日挖礦');
-    var card=$('gold-daily-status');if(card)card.textContent=KE.daily?'今日剩 '+(3-KE.daily.plays)+' 次 · 已獲 '+KE.daily.earned+'/30 點':'每天 3 次 · 最多獲得 30 點';
+    elKGo.innerHTML=KE.active?'{{t:keno.msg.007}}':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'今日補給已完成<small>台灣時間午夜再來</small>':'挖金礦<small>每次可挖 5 格</small>';
+    var cta=$('gold-daily-cta');if(cta)cta.textContent=KE.active?'{{t:keno.msg.008}}':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'{{t:keno.msg.009}}':'{{t:keno.msg.010}}';
+    var badge=$('gold-free-badge');if(badge)badge.textContent=KE.active?'{{t:keno.msg.011}}':KE.daily&&(KE.daily.plays>=3||KE.daily.earned>=30)?'✓':KE.daily?String(3-KE.daily.plays):'3';
+    var link=$('gold-float');if(link)link.setAttribute('aria-label',KE.active?'{{t:keno.msg.012}}':KE.daily?'{{t:keno.msg.013}}'+(3-KE.daily.plays)+'{{t:keno.msg.014}}'+KE.daily.earned+'{{t:keno.msg.015}}':'{{t:keno.msg.016}}');
+    var card=$('gold-daily-status');if(card)card.textContent=KE.daily?'今日剩 '+(3-KE.daily.plays)+' 次 · 已獲 '+KE.daily.earned+'{{t:keno.msg.017}}':'{{t:keno.msg.018}}';
   }
   function kePlay(){keLocked(function(){var d=keRead();keSync(d);if(KE.active)return;if(d.plays>=3||d.earned>=30){keUI();return;}
     var layout=Array.from({length:36},function(_,i){return i<18?0:i<28?1:i<34?2:3;});
     for(var i=35;i>0;i--){var r=Math.floor(Math.random()*(i+1)),t=layout[i];layout[i]=layout[r];layout[r]=t;}
-    d.plays++;d.round={layout:layout,open:Array(36).fill(false)};keStore(d);KE.over=false;KE.earned=0;keSync(d);kSay('出發！每次挖 5 格，礦物點數立即加入共用餘額。');keUI();
+    d.plays++;d.round={layout:layout,open:Array(36).fill(false)};keStore(d);KE.over=false;KE.earned=0;keSync(d);kSay('{{t:keno.msg.019}}');keUI();
   });}
   function keDig(i){keLocked(function(){var d=keRead();keSync(d);if(!KE.active||i<0||i>=36||KE.open[i]){keUI();return;}
     var ore=KE_ORES[KE.layout[i]],bonus=Math.min(ore.reward,30-d.earned);
@@ -64,7 +64,7 @@
     if(KE.score>KE.best){KE.best=KE.score;try{localStorage.setItem('deep-sea-gold-best',String(KE.best));}catch(e){}}
     AN.progress(KE.analytics,{step:KE.digs,score:KE.score,bonus_points:bonus,total_bonus_points:KE.earned});
     if(done){KE.active=false;KE.over=true;AN.end(KE.analytics,KE.earned,'complete',{step:KE.digs,score:KE.score});}
-    kSay('挖到'+ore.name+'，獲得 '+bonus+' 點！'+(done?'本次補給完成。':'還可挖 '+(5-KE.digs)+' 格。'),bonus?'win':'');keUI();
+    kSay('{{t:keno.msg.020}}'+ore.name+'，獲得 '+bonus+' 點！'+(done?'{{t:keno.msg.021}}':'還可挖 '+(5-KE.digs)+' 格。'),bonus?'win':'');keUI();
   });}
   elKGo.addEventListener('click',kePlay);
   document.addEventListener('visibilitychange',function(){if(!document.hidden)keLocked(function(){keSync(keRead());keUI();});});

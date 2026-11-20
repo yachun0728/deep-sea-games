@@ -1,13 +1,13 @@
   <section class="view" id="view-eat-smaller" hidden>
-    <div class="console"><div class="es-stage"><iframe id="es-frame" title="數字吞噬 Number Gulp"></iframe></div>
-      <div class="side"><section class="panel" aria-label="數字吞噬操作">
-        <dl class="stats"><div><dt>本局過關次數</dt><dd id="es-cleared" data-i18n-ignore>0</dd></div><div><dt>本局 BONUS</dt><dd id="es-pay" data-i18n-ignore>0 / 10</dd></div><div><dt>已通過關卡</dt><dd id="es-best" data-i18n-ignore>0 / 8</dd></div></dl>
+    <div class="console"><div class="es-stage"><iframe id="es-frame" title="{{t:eat-smaller.view.11}}"></iframe></div>
+      <div class="side"><section class="panel" aria-label="{{t:eat-smaller.view.12}}">
+        <dl class="stats"><div><dt>{{t:eat-smaller.view.01}}</dt><dd id="es-cleared" data-i18n-ignore>0</dd></div><div><dt>{{t:eat-smaller.view.02}}</dt><dd id="es-pay" data-i18n-ignore>0 / 10</dd></div><div><dt>{{t:eat-smaller.view.03}}</dt><dd id="es-best" data-i18n-ignore>0 / 8</dd></div></dl>
         
-        <button class="go" id="es-go" type="button" data-mode="bet">開始一局</button>
-        <button class="go" id="es-end" type="button" data-mode="cancel" hidden>結束本局</button>
+        <button class="go" id="es-go" type="button" data-mode="bet">{{t:eat-smaller.view.04}}</button>
+        <button class="go" id="es-end" type="button" data-mode="cancel" hidden>{{t:eat-smaller.view.05}}</button>
         <p class="msg" id="es-msg" aria-live="polite" data-i18n-ignore></p>
-        <p class="hint">滑鼠或手指指向哪裡，數字就往哪裡游；鍵盤可以用方向鍵或 WASD。R 鍵重來，Esc 鍵回選關。</p>
+        <p class="hint">{{t:eat-smaller.view.06}}</p>
       </section></div>
     </div>
-    <details class="rules"><summary>玩法與點數</summary><p>你是一個數字。碰到比你小的綠色數字就吃掉它，數值加到你身上；碰到比你大的紅色數字就被吃掉。運算符（−3、+1、÷2）碰到立刻生效，可以在吃過頭時降回來。要剛好等於目標數字才算過關，越大游得越慢。共 8 關，過關後解鎖下一關。</p><p>一局內可以自由選關、重玩，失敗可以直接重來。BONUS 是固定獎勵：本局每一關第一次通過立即入帳 2 點，同一關在同一局重複通過不再給點，一局最多 10 點。已入帳的點數不會收回，結束時不另發點。按「結束本局」結束這一局，之後要再拿 BONUS 需要重新開局。過關時間只是成績，不換點數；這是操作與計算遊戲，沒有任何下注或倍率返還。</p><p>切換遊戲或背景分頁會暫停，回來後按「繼續」。重新整理會放棄本局，已入帳的 BONUS 保留。關卡進度與最佳時間保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+    <details class="rules"><summary>{{t:eat-smaller.view.07}}</summary><p>{{t:eat-smaller.view.08}}</p><p>{{t:eat-smaller.view.09}}</p><p>{{t:eat-smaller.view.10}}</p></details>
   </section>

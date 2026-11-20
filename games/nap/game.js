@@ -22,7 +22,7 @@ function ui(){
  const live=st==='run';
  let hearts='';for(let i=0;i<G.cfg.hearts;i++)hearts+=i<G.hearts?'♥':'♡';
  setText('np-level','第 '+G.level+' 關');setText('np-hearts',hearts);setText('np-best',best+' 分');
- $('np-amount').disabled=napBusy;$('np-go').disabled=live||rank.busy();setText('np-go',live?'偷睡中 · 按住睡覺':st==='over'?'再玩一次':'開始偷睡');
+ $('np-amount').disabled=napBusy;$('np-go').disabled=live||rank.busy();setText('np-go',live?'{{t:nap.msg.001}}':st==='over'?'{{t:nap.msg.002}}':'{{t:nap.msg.003}}');
 }
 function addFloat(x,y,text,color,size,life){floats.push({x:x,y:y,text:text,color:color,size:size||18,life:life||.9,max:life||.9})}
 function end(win){
@@ -33,24 +33,24 @@ function end(win){
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:score,step:earned,stage:G.level});napBusy=false;save();renderAll();
  if(win)say('10 關全部睡過，主管毫不知情！本局共入帳 '+fmt(earned)+' 點。','win');
  else if(earned)say('被炒魷魚了。撐到第 '+G.level+' 關，本局共入帳 '+fmt(earned)+' 點。','win');
- else say('被炒魷魚了。第 1 關沒睡飽，這一局沒有額外成就獎勵。','lose');
+ else say('{{t:nap.msg.004}}','lose');
  ui();
 }
 function handleEvents(){
  const ev=G.events.splice(0);
  for(const e of ev){
   switch(e.type){
-   case 'fake':addFloat(G.boss.x,150,'…虛驚一場','#cfd8dc',14,1);break;
+   case 'fake':addFloat(G.boss.x,150,'{{t:nap.msg.005}}','#cfd8dc',14,1);break;
    case 'hit':addFloat(e.x,170,'-1','#ffeb3b',24,.7);break;
-   case 'wasted':addFloat(e.x,170,'浪費了','#90a4ae',14,.8);break;
-   case 'ko':addFloat(e.x,160,'暈倒！快睡！','#ffeb3b',22,1.2);if(!reduceMotion)flashWhite=.15;break;
-   case 'recover':addFloat(G.boss.x,160,'主管醒了','#ef9a9a',16,1);break;
-   case 'caught':addFloat(200,270,'被抓到！考績 -1','#ff5252',24,1.2);if(!reduceMotion){shake=.35;flashRed=.25}if(G.hearts>0)say('被抓到了！還剩 '+G.hearts+' 顆考績，睡意被扣掉一些。','lose');break;
-   case 'heal':addFloat(200,100,'考績 +1','#80cbc4',18,1.2);break;
+   case 'wasted':addFloat(e.x,170,'{{t:nap.msg.006}}','#90a4ae',14,.8);break;
+   case 'ko':addFloat(e.x,160,'{{t:nap.msg.007}}','#ffeb3b',22,1.2);if(!reduceMotion)flashWhite=.15;break;
+   case 'recover':addFloat(G.boss.x,160,'{{t:nap.msg.008}}','#ef9a9a',16,1);break;
+   case 'caught':addFloat(200,270,'{{t:nap.msg.009}}','#ff5252',24,1.2);if(!reduceMotion){shake=.35;flashRed=.25}if(G.hearts>0)say('被抓到了！還剩 '+G.hearts+' 顆考績，睡意被扣掉一些。','lose');break;
+   case 'heal':addFloat(200,100,'{{t:nap.msg.010}}','#80cbc4',18,1.2);break;
    case 'clear':
     earned+=NAP_REWARD;S.balance+=NAP_REWARD;save();renderAll();
     AN.progress(analytics,{stage:G.level,step:earned,score:G.score,bonus_points:NAP_REWARD});
-    addFloat(200,200,'睡飽了！ +'+e.bonus,'#b39ddb',26,1.3);
+    addFloat(200,200,'{{t:nap.msg.011}}'+e.bonus,'#b39ddb',26,1.3);
     say('第 '+G.level+' 關睡飽了！+'+NAP_REWARD+' 點已入帳。','win');break;
    case 'intro':if(G.level>1)say('第 '+G.level+' 關：主管更難纏了。');break;
    case 'over':end(false);break;
@@ -172,7 +172,7 @@ function drawHUD(){
   const k=Math.min(1,G.sleepVal/G.L.goal);
   if(k>0) rrect(14,12,Math.max(16,372*k),22,8,'#7e57c2');
   tx('睡意 '+Math.floor(G.sleepVal)+' / '+G.L.goal,200,23,13,'#fff','center',true,'#000');
-  tx('考績',16,52,12,'#cfd8dc','left',true,'#000');
+  tx('{{t:nap.msg.012}}',16,52,12,'#cfd8dc','left',true,'#000');
   for(let i=0;i<G.cfg.hearts;i++) tx('♥',62+i*22,52,22,i<G.hearts?'#ef5350':'#546e7a','center',true,'#000');
   tx('第 '+G.level+' 關',386,52,16,'#fff','right',true,'#000');
   tx('分數 '+G.score,200,52,12,'#cfd8dc','center',false,'#000');
@@ -181,48 +181,48 @@ function drawButtons(){
   const holding=sleepHeld();
   const sleepable=G.caughtLock<=0;
   rrect(BTN_SLEEP.x,BTN_SLEEP.y,BTN_SLEEP.w,BTN_SLEEP.h,16,sleepable?(holding?'#7e57c2':'#5e35b1'):'#455a64','#000',3);
-  tx(sleepable?(holding?'睡著了… Zzz':'按住睡覺'):'被抓！冷靜中',BTN_SLEEP.x+BTN_SLEEP.w/2,BTN_SLEEP.y+30,24,'#fff','center',true);
-  tx('空白鍵',BTN_SLEEP.x+BTN_SLEEP.w/2,BTN_SLEEP.y+54,11,'#d1c4e9');
+  tx(sleepable?(holding?'{{t:nap.msg.013}}':'{{t:nap.msg.014}}'):'{{t:nap.msg.015}}',BTN_SLEEP.x+BTN_SLEEP.w/2,BTN_SLEEP.y+30,24,'#fff','center',true);
+  tx('{{t:nap.msg.016}}',BTN_SLEEP.x+BTN_SLEEP.w/2,BTN_SLEEP.y+54,11,'#d1c4e9');
   const can=G.ammo>0&&G.boss.state!=='STUN'&&G.caughtLock<=0;
   rrect(BTN_THROW.x,BTN_THROW.y,BTN_THROW.w,BTN_THROW.h,16,can?'#f9a825':'#6d5b4b','#000',3);
-  tx('丟垃圾',BTN_THROW.x+BTN_THROW.w/2,BTN_THROW.y+26,22,can?'#3e2723':'#bcaaa4','center',true);
+  tx('{{t:nap.msg.017}}',BTN_THROW.x+BTN_THROW.w/2,BTN_THROW.y+26,22,can?'#3e2723':'#bcaaa4','center',true);
   for(let i=0;i<G.cfg.trash.max;i++) circ(BTN_THROW.x+18+i*21,BTN_THROW.y+52,7,i<G.ammo?'#fafafa':'#4e342e','#3e2723',1.5);
 }
 function tipFor(level){
   const tips={
-    1:['按住「睡覺」累積睡意，睡越久睡越深、越快，但醒得也越慢','主管頭上冒出「!」就立刻放開，否則被抓','丟垃圾砸主管，血歸零會暈倒，暈倒時可以安心睡'],
-    2:['主管走得更快了'],
-    3:['小心：有時候「!」只是虛驚一場'],
-    4:['垃圾丟太多次，主管會提早回頭'],
-    5:['小心：看完一次，他可能又回頭瞪第二次（回馬槍）'],
-    6:['垃圾補得更慢，丟之前先想清楚'],
-    7:['主管幾乎不停走動了'],
-    8:['預警越來越短，睡淺一點比較好逃'],
-    9:['只剩一點點反應時間'],
-    10:['最後一關。祝你好運。']
+    1:['{{t:nap.msg.018}}','{{t:nap.msg.019}}','{{t:nap.msg.020}}'],
+    2:['{{t:nap.msg.021}}'],
+    3:['{{t:nap.msg.022}}'],
+    4:['{{t:nap.msg.023}}'],
+    5:['{{t:nap.msg.024}}'],
+    6:['{{t:nap.msg.025}}'],
+    7:['{{t:nap.msg.026}}'],
+    8:['{{t:nap.msg.027}}'],
+    9:['{{t:nap.msg.028}}'],
+    10:['{{t:nap.msg.029}}']
   };
   return tips[level]||[];
 }
 function drawOverlay(){
  if(st==='ready'){
   ctx.fillStyle='rgba(10,10,20,0.78)';ctx.fillRect(0,0,W,H);
-  tx('偷睡大師',200,150,40,'#fff','center',true,'#5e35b1');
-  tx('主管在巡邏，你只想睡一下',200,196,16,'#d1c4e9');
-  tx('按住：睡覺（睡越久睡越深）',200,252,15,'#fff');
-  tx('主管頭上冒出「!」：立刻放開！',200,278,15,'#ffeb3b');
-  tx('丟垃圾：砸主管，血歸零就暈倒',200,304,15,'#fff');
-  tx('睡意滿了就過關，共 10 關',200,330,15,'#fff');
-  tx('空白鍵＝睡　J＝丟垃圾',200,366,13,'#90a4ae');
-  tx('到操作區開始',200,430,22,'#ffd54f','center',true,'#000');
+  tx('{{t:nap.msg.030}}',200,150,40,'#fff','center',true,'#5e35b1');
+  tx('{{t:nap.msg.031}}',200,196,16,'#d1c4e9');
+  tx('{{t:nap.msg.032}}',200,252,15,'#fff');
+  tx('{{t:nap.msg.033}}',200,278,15,'#ffeb3b');
+  tx('{{t:nap.msg.034}}',200,304,15,'#fff');
+  tx('{{t:nap.msg.035}}',200,330,15,'#fff');
+  tx('{{t:nap.msg.036}}',200,366,13,'#90a4ae');
+  tx('{{t:nap.msg.037}}',200,430,22,'#ffd54f','center',true,'#000');
  }else if(st==='over'){
   ctx.fillStyle='rgba(10,10,20,0.82)';ctx.fillRect(0,0,W,H);
-  if(why==='win'){tx('升職加薪！',200,140,38,'#ffd54f','center',true,'#000');tx('你睡過了 10 關，主管還是不知道。',200,190,15,'#fff')}
-  else{tx('被炒魷魚',200,140,40,'#ff5252','center',true,'#000');tx('考績歸零，今天的午覺到此為止。',200,190,15,'#fff')}
+  if(why==='win'){tx('{{t:nap.msg.038}}',200,140,38,'#ffd54f','center',true,'#000');tx('{{t:nap.msg.039}}',200,190,15,'#fff')}
+  else{tx('{{t:nap.msg.040}}',200,140,40,'#ff5252','center',true,'#000');tx('{{t:nap.msg.041}}',200,190,15,'#fff')}
   tx('撐到第 '+G.level+' 關',200,250,22,'#fff','center',true);
   tx('分數 '+G.score,200,288,22,'#ffd54f','center',true);
-  tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'沒睡飽任何一關，沒有點數',200,322,18,earned>0?'#ffd54f':'#fff','center',true);
-  if(rec)tx('新紀錄！',200,352,18,'#80cbc4','center',true);
-  tx('到操作區再玩一次',200,430,20,'#ffd54f','center',true,'#000');
+  tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'{{t:nap.msg.042}}',200,322,18,earned>0?'#ffd54f':'#fff','center',true);
+  if(rec)tx('{{t:nap.msg.043}}',200,352,18,'#80cbc4','center',true);
+  tx('{{t:nap.msg.044}}',200,430,20,'#ffd54f','center',true,'#000');
  }else if(G.state==='INTRO'){
   ctx.fillStyle='rgba(10,10,20,0.7)';ctx.fillRect(0,0,W,H);
   tx('第 '+G.level+' 關',200,170,44,'#fff','center',true,'#5e35b1');
@@ -231,7 +231,7 @@ function drawOverlay(){
   for(let i=0;i<tp.length;i++)tx(tp[i],200,276+i*28,i===0&&G.level>1?17:14,i===0?'#ffeb3b':'#fff');
  }else if(G.state==='CLEAR'){
   ctx.fillStyle='rgba(60,30,100,0.35)';ctx.fillRect(0,0,W,H);
-  tx('睡飽了！ +'+NAP_REWARD+' 點',200,160,34,'#fff','center',true,'#5e35b1');
+  tx('{{t:nap.msg.011}}'+NAP_REWARD+' 點',200,160,34,'#fff','center',true,'#5e35b1');
  }
 }
 function draw(dt){
@@ -257,7 +257,7 @@ function start(){
  rank.start(random=>{
  analytics=AN.start('nap',amount);napStake=amount;napBusy=true;save();renderAll();
  G=napRules.create(random||Math.random);earned=0;rec=false;why='';floats.length=0;clearInput();shake=0;flashRed=0;flashWhite=0;
- st='run';last=performance.now();say('開始偷睡！按住睡覺鍵累積睡意，看到「!」立刻放開。');ui();c.focus();
+ st='run';last=performance.now();say('{{t:nap.msg.045}}');ui();c.focus();
  },ui);
 }
 const shown=()=>!$('view-nap').hidden&&!document.hidden;
@@ -265,7 +265,7 @@ const toLocal=e=>{const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)/
 $('np-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
- if(st!=='run'){say(st==='over'?'這一局已結算。按「再玩一次」開始新的一局。':'先按「開始偷睡」。');return}
+ if(st!=='run'){say(st==='over'?'{{t:nap.msg.046}}':'{{t:nap.msg.047}}');return}
  if(!shown())return;e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(_){}
  const p=toLocal(e);
  if(inRect(p,BTN_SLEEP))pointers.set(e.pointerId,'sleep');

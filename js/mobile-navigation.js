@@ -1,7 +1,7 @@
   /* Navigation uses separate DOM controls; game pointer listeners are untouched. */
   (function(){
     function scrollPad(){
-      var pad=document.createElement('div');pad.className='mobile-scroll-pad';pad.textContent='↕ 在這裡上下滑動頁面';pad.setAttribute('role','note');return pad;
+      var pad=document.createElement('div');pad.className='mobile-scroll-pad';pad.textContent='{{t:mobile-navigation.msg.001}}';pad.setAttribute('role','note');return pad;
     }
     document.querySelectorAll('.view .console').forEach(function(console){
       var side=console.querySelector('.side');if(side)console.insertBefore(scrollPad(),side);

@@ -14,10 +14,10 @@
       for (var c = 0; c < d.n; c++) {
         var chosen = TW.picks[r] === c, cls = 'tcell', icon = '', label = '第 ' + (r + 1) + ' 層第 ' + (c + 1) + ' 格';
         if (TW.over && TW.layout[r]) {
-          if (TW.layout[r][c]) { cls += ' mine' + (TW.hit && TW.hit.r === r && TW.hit.c === c ? ' hit' : ''); icon = SVG_MINE; label += '，海膽'; }
-          else { cls += ' gem'; icon = SVG_PEARL; label += '，氣泡'; }
+          if (TW.layout[r][c]) { cls += ' mine' + (TW.hit && TW.hit.r === r && TW.hit.c === c ? ' hit' : ''); icon = SVG_MINE; label += '{{t:tower.msg.001}}'; }
+          else { cls += ' gem'; icon = SVG_PEARL; label += '{{t:tower.msg.002}}'; }
           if (!chosen) cls += ' dim';
-        } else if (chosen) { cls += ' gem'; icon = SVG_PEARL; label += '，氣泡'; }
+        } else if (chosen) { cls += ' gem'; icon = SVG_PEARL; label += '{{t:tower.msg.002}}'; }
         html += '<button type="button" class="' + cls + '" data-r="' + r + '" data-c="' + c + '" aria-label="' + label + '"' + (cur ? '' : ' disabled') + '>' + icon + '</button>';
       }
       html += '</div></div>';
@@ -30,14 +30,14 @@
     $('tw-mult').textContent = TW.level > 0 ? fx(m) + '×' : '—';
     $('tw-next').textContent = TW.over || TW.level >= TW_ROWS ? '—' : fx(twMult(TW.level + 1)) + '×';
     $('tw-level').textContent = TW.active || TW.over ? TW.level + ' / ' + TW_ROWS : '—';
-    if (!TW.active) { elTGo.dataset.mode = 'bet'; elTGo.disabled = false; elTGo.innerHTML = (TW.over ? '再來一局' : '開始') + '<small>下注 ' + fmt(readTAmount()) + ' 點</small>'; }
+    if (!TW.active) { elTGo.dataset.mode = 'bet'; elTGo.disabled = false; elTGo.innerHTML = (TW.over ? '{{t:tower.msg.003}}' : '{{t:tower.msg.004}}') + '<small>下注 ' + fmt(readTAmount()) + ' 點</small>'; }
     else if (TW.level === 0) { elTGo.dataset.mode = 'done'; elTGo.disabled = true; elTGo.innerHTML = '選最底層的一格<small>第一層 ' + fx(twMult(1)) + '×</small>'; }
     else { elTGo.dataset.mode = 'surface'; elTGo.disabled = false; elTGo.innerHTML = '領回<small>' + fmt(Math.floor(TW.bet * m)) + ' 點 · ' + fx(m) + '×</small>'; }
   }
   function twStart() {
     var a = readTAmount(), d = TW_DIFF[TW.diff];
     if (a < MIN_BET) { tSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
-    if (a > S.balance) { tSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    if (a > S.balance) { tSay('{{t:tower.msg.005}}', 'lose'); return; }
     var layout = [];
     for (var r = 0; r < TW_ROWS; r++) {
       var row = [], c;
@@ -53,7 +53,7 @@
   function twCash() {
     var m = twMult(TW.level), pay = Math.floor(TW.bet * m);
     AN.end(TW.analytics,pay,'cashout',{stage:TW.level,multiplier:m}); S.balance += pay; TW.active = false; TW.over = true;
-    tSay((TW.level === TW_ROWS ? '浮到頂了！' : '') + '在 ' + fx(m) + '× 領回 ' + fmt(pay) + ' 點（' + (pay >= TW.bet ? '+' : '−') + fmt(Math.abs(pay - TW.bet)) + '）。', pay >= TW.bet ? 'win' : 'lose');
+    tSay((TW.level === TW_ROWS ? '{{t:tower.msg.006}}' : '') + '在 ' + fx(m) + '× 領回 ' + fmt(pay) + ' 點（' + (pay >= TW.bet ? '+' : '−') + fmt(Math.abs(pay - TW.bet)) + '）。', pay >= TW.bet ? 'win' : 'lose');
     syncBalance(); twUI();
   }
   function twPick(r, c) {
@@ -66,7 +66,7 @@
     }
     TW.level++; AN.progress(TW.analytics,{stage:TW.level});
     if (TW.level === TW_ROWS) { twCash(); return; }
-    tSay('氣泡！上浮到第 ' + TW.level + ' 層，目前 ' + fx(twMult(TW.level)) + '×，可以領回或繼續。');
+    tSay('氣泡！上浮到第 ' + TW.level + ' 層，目前 ' + fx(twMult(TW.level)) + '{{t:tower.msg.007}}');
     twUI();
   }
   elTower.addEventListener('click', function (e) {

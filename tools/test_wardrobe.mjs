@@ -1,7 +1,8 @@
 import fs from 'node:fs';
+import {readSource} from './expand_ids.mjs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
-const source=fs.readFileSync(new URL('../platform/wardrobe.js',import.meta.url),'utf8');
+const source=readSource('../platform/wardrobe.js',import.meta.url);
 let count=0;function ok(v,label){assert.ok(v,label);count++;}
 function fixture(balance=500,saved=null){
  const store=new Map([['crush-depth-balance',String(balance)]]),els=new Map(),events=[];let fail=false;

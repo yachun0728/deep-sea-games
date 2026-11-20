@@ -8,12 +8,12 @@
                target: Math.min(60, Math.max(1.05, Math.round(99 / (1 - Math.random())) / 100)), out: null };
     });
     sea.classList.remove('safe');
-    if (S.queued) { S.queued = false; if (!placeBet()) say('預約的下注未成立：餘額不足。', 'lose'); }
+    if (S.queued) { S.queued = false; if (!placeBet()) say('{{t:crash.msg.001}}', 'lose'); }
     renderAll();
   }
   function startDive(now) {
     S.phase = 'diving'; S.t0 = now; S.m = 1;
-    if (S.bet) say('下潛中，倍率到了就上浮。');
+    if (S.bet) say('{{t:crash.msg.002}}');
     renderAll();
   }
   function doCrash(now) {
@@ -27,7 +27,7 @@
   function placeBet() {
     var a = checkAmount(); if (!a) return false;
     S.balance -= a; S.bet = { amount: a, auto: readAuto(), out: null, analytics:AN.start('crash',a) }; save();
-    say('已下注 ' + fmt(a) + ' 點' + (S.bet.auto ? '，到 ' + fx(S.bet.auto) + '× 自動上浮。' : '。'));
+    say('已下注 ' + fmt(a) + ' 點' + (S.bet.auto ? '，到 ' + fx(S.bet.auto) + '{{t:crash.msg.003}}' : '。'));
     return true;
   }
   function cashOut(at) {
@@ -41,12 +41,12 @@
   }
   function mainAction() {
     if (S.phase === 'betting') {
-      if (S.bet) { AN.end(S.bet.analytics,S.bet.amount,'cancelled'); S.balance += S.bet.amount; S.bet = null; save(); say('已取消下注。'); }
+      if (S.bet) { AN.end(S.bet.analytics,S.bet.amount,'cancelled'); S.balance += S.bet.amount; S.bet = null; save(); say('{{t:crash.msg.004}}'); }
       else placeBet();
     } else if (S.phase === 'diving' && S.bet && !S.bet.out) {
       cashOut(S.m);
     } else if (!(S.phase === 'diving' && S.bet)) {
-      if (S.queued) { S.queued = false; say('已取消預約。'); }
+      if (S.queued) { S.queued = false; say('{{t:crash.msg.005}}'); }
       else if (checkAmount()) { S.queued = true; say('已預約，下一回合自動下注 ' + fmt(readAmount()) + ' 點。'); }
     }
     renderAll();
@@ -87,14 +87,14 @@
   function crewRow(name, stake, out, me) {
     var state, cls = '';
     if (out) { state = fx(out) + '× +' + fmt(Math.floor(stake * out) - stake); cls = 'up'; }
-    else if (S.phase === 'crashed') { state = '壓潰'; cls = 'lost'; }
-    else state = S.phase === 'diving' ? '下潛中' : '待命';
+    else if (S.phase === 'crashed') { state = '{{t:crash.msg.006}}'; cls = 'lost'; }
+    else state = S.phase === 'diving' ? '{{t:crash.msg.007}}' : '{{t:crash.msg.008}}';
     return '<li' + (me ? ' class="me"' : '') + '><span class="name">' + name + '</span><span class="stake">' + fmt(stake) +
            '</span><span class="state ' + cls + '">' + state + '</span></li>';
   }
   function renderCrew() {
     var rows = [];
-    if (S.bet) rows.push(crewRow('你', S.bet.amount, S.bet.out, true));
+    if (S.bet) rows.push(crewRow('{{t:crash.msg.009}}', S.bet.amount, S.bet.out, true));
     S.bots.forEach(function (b) { rows.push(crewRow(b.name, b.stake, b.out, false)); });
     elCrew.innerHTML = rows.join('') || '<li class="empty">這一趟沒有人下潛。</li>';
   }

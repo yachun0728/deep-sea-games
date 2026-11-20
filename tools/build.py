@@ -9,12 +9,21 @@ from pathlib import Path
 import re
 import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import i18n_data  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
-DIRECTIVE = re.compile(r'\{\{(include|json):([^{}\r\n]+)\}\}')
+DIRECTIVE = re.compile(r'\{\{(include|json|tb|t):([^{}\r\n]+)\}\}')
 
 
 def render(root: Path = ROOT, entry: str = 'templates/index.html') -> str:
     root = root.resolve()
+    zh_text = i18n_data.zh_ids(root)
+    en_text = i18n_data.en_ids(root)
+
+    def _js_text(kind, key, source, start):
+        value = zh_text[key] if kind == 't' else zh_text[key] + '|' + en_text[key]
+        return i18n_data.js_escape(value, source[start - 1] if start else '')
 
     def expand(name: str, parents: tuple[Path, ...] = ()) -> str:
         path = (root / name).resolve()
@@ -26,6 +35,14 @@ def render(root: Path = ROOT, entry: str = 'templates/index.html') -> str:
 
         def replace(match: re.Match) -> str:
             kind, target = match.groups()
+            if kind in ('t', 'tb'):  # text by id, from locales/zh-Hant.json (+ en.ids.json for the bilingual tb form)
+                if target not in zh_text:
+                    raise ValueError(f'Unknown text id {{{{{kind}:{target}}}}} in {name}')
+                if path.suffix in ('.js', '.cjs'):
+                    return _js_text(kind, target, text, match.start())
+                return zh_text[target] if kind == 't' else zh_text[target] + '|' + en_text[target]
+            if kind == 'include' and target == 'locales/en.json':  # legacy dictionary + id-based entries
+                return json.dumps(i18n_data.dictionary(root), ensure_ascii=False, indent=2)
             if kind == 'include':
                 return expand(target, parents + (path,))
             source = (root / target).resolve()

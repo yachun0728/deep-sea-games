@@ -21,18 +21,18 @@
     $('dc-win').textContent = fmt(Math.floor(readDAmount() * dMult()));
     $('dc-last').innerHTML = D.last.map(function (r) { return '<span class="pill ' + (r.win ? 'high' : 'low') + '">' + r.roll.toFixed(2) + '</span>'; }).join('') || '<span class="pill">尚未發出聲納</span>';
     elDGo.disabled = busy;
-    elDGo.innerHTML = busy ? '等待回波…' : '發出聲納<small>下注 ' + fmt(readDAmount()) + ' 點</small>';
+    elDGo.innerHTML = busy ? '{{t:dice.msg.001}}' : '發出聲納<small>下注 ' + fmt(readDAmount()) + ' 點</small>';
   }
   function dRoll() {
     if (D.pending) return;
     var a = readDAmount();
     if (a < MIN_BET) { dSay('最低下注 ' + MIN_BET + ' 點。', 'lose'); return; }
-    if (a > S.balance) { dSay('餘額不足，請調低下注或重設點數。', 'lose'); return; }
+    if (a > S.balance) { dSay('{{t:dice.msg.002}}', 'lose'); return; }
     var roll = Math.floor(Math.random() * 10000) / 100;
     var win = D.mode === 'under' ? roll < D.target : roll >= D.target, mult = dMult(), mode = D.mode, target = D.target;
     D.analytics=AN.start('dice',a); S.balance -= a; D.pending = a;
     elDStage.classList.remove('win', 'lose');
-    $('dc-result').textContent = '··.··'; $('dc-sub').textContent = '聲納發出，等待回波';
+    $('dc-result').textContent = '··.··'; $('dc-sub').textContent = '{{t:dice.msg.003}}';
     elDMarker.hidden = false; void elDMarker.offsetWidth; elDMarker.style.left = roll + '%';
     syncBalance(); dUI();
     setTimeout(function () {

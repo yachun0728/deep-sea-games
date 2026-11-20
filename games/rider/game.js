@@ -20,8 +20,8 @@ else if(a===2)P([[-13,0],[-14,-16],[-7,-8],[0,-20],[7,-8],[14,-16],[13,0]],'#ffd
 else if(a===3){P([[-11,0],[0,-30],[11,0]],'#ff5d8f',3);C(0,-31,4,'#fff',2.5)}
 else E(0,-8,13,4,'#ffe27a',3);
 g.restore()}
-G.I={bs:n=>'最高 '+n,tap:'',title:"外送員大戰惡犬！",s1:"熱騰騰的訂單快涼了，巷子裡還有狗在追！",s2:"準時送達，閃開坑洞，按喇叭嚇跑狗。",cold:"餐涼了，被打一星！",dl:n=>'已送達 '+n+' 單',bip:"嗶嗶！",bom:"沒送到！"};
-G.skins=[{need:0,n:'菜鳥外送員',c:['#2ec4b6','#ff9f1c'],a:0},{need:300,n:'西瓜安全帽',c:['#7bd88f','#e63946'],a:1},{need:800,n:'派對外送員',c:['#ff5d8f','#ffd23f'],a:3},{need:1600,n:'外送之王',c:['#ffd23f','#e63946'],a:2}];
+G.I={bs:n=>'最高 '+n,tap:'',title:"{{t:rider.msg.001}}",s1:"{{t:rider.msg.002}}",s2:"{{t:rider.msg.003}}",cold:"{{t:rider.msg.004}}",dl:n=>'已送達 '+n+' 單',bip:"{{t:rider.msg.005}}",bom:"{{t:rider.msg.006}}"};
+G.skins=[{need:0,n:'{{t:rider.msg.007}}',c:['#2ec4b6','#ff9f1c'],a:0},{need:300,n:'{{t:rider.msg.008}}',c:['#7bd88f','#e63946'],a:1},{need:800,n:'{{t:rider.msg.009}}',c:['#ff5d8f','#ffd23f'],a:3},{need:1600,n:'{{t:rider.msg.010}}',c:['#ffd23f','#e63946'],a:2}];
 const GY=440,PXL=130;
 let dist,v,hot,py,vy,on,gas,hold,hid,hcool,obs,nextAt,nextHouse,stun,fx,deliv,boosting;
 let model=riderRules.create(),heldBy;
@@ -97,8 +97,8 @@ function setText(id,value){const el=$(id);if(el.textContent!==value)el.textConte
 function ui(){
  const next=MILESTONES.find(x=>!awarded.has(x)),live=st==='run';
  setText('rider-score',G.score()+UNIT);setText('rider-best',best+UNIT);setText('rider-pay',fmt(paid)+' 點');
- setText('rider-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'本局 BONUS 全數達成');
- $('rider-amount').disabled=riderBusy;$('rider-go').disabled=live||rank.busy();setText('rider-go',live?'送餐中 · 跳躍／加速':st==='over'?'再送一次':'開始送餐');
+ setText('rider-next',next?fmt(next)+UNIT+' · +'+BONUS+' 點':'{{t:rider.msg.011}}');
+ $('rider-amount').disabled=riderBusy;$('rider-go').disabled=live||rank.busy();setText('rider-go',live?'{{t:rider.msg.012}}':st==='over'?'{{t:rider.msg.013}}':'{{t:rider.msg.014}}');
  document.querySelectorAll('[data-rider-tier]').forEach(el=>el.setAttribute('aria-current',awarded.has(Number(el.getAttribute('data-rider-tier')))?'step':'false'));
 }
 function awardBonus(){
@@ -118,7 +118,7 @@ function die(m){
  if(rec){best=s;try{localStorage.setItem(KEY,best)}catch(e){}}
  if(unl.length)pick(G.skins.indexOf(unl[unl.length-1]));
  AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});riderBusy=false;renderAll();
- say('訂單涼掉了，這一局結束了，本局 '+fmt(s)+UNIT+'。'+(paid?'BONUS 共 '+paid+' 點已入帳。':'這一局沒有 BONUS。'),paid?'win':'lose');
+ say('訂單涼掉了，這一局結束了，本局 '+fmt(s)+UNIT+'。'+(paid?'BONUS 共 '+paid+' 點已入帳。':'{{t:rider.msg.015}}'),paid?'win':'lose');
  ui();
 }
 function start(){
@@ -127,13 +127,13 @@ function start(){
  if(amount>S.balance){say(LOW_MSG,'lose');return}
  rank.start(random=>{
  analytics=AN.start('rider',amount);riderStake=amount;riderBusy=true;save();renderAll();
- model=riderRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('開始！點畫面跳躍，越過障礙。');ui();c.focus();
+ model=riderRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('{{t:rider.msg.016}}');ui();c.focus();
  },ui);
 }
 function overlay(){
 g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx(T('title'),W/2,170,32,'#ffd23f');tx(T('s1'),W/2,218,17,'#fff');tx(T('s2'),W/2,244,17,'#fff');tx('右側開始',W/2,312,24,'#ffd23f')}
-else{tx(T(G.msg),W/2,130,28,'#ff7a7a');tx(String(G.score()),W/2,205,52,'#fff');if(G.extra)tx(G.extra(),W/2,240,17,'#fff');if(rec)tx('新紀錄！',W/2,272,20,'#ffd23f');if(unl.length)tx('已解鎖：'+unl.map(k=>k.n).join('、'),W/2,300,17,'#6cf0a8');tx(paid>0?'BONUS 已入帳 +'+paid+' 點':'這一局沒有 BONUS',W/2,336,20,paid>0?'#ffd23f':'#fff');tx('右側可以再玩一次',W/2,382,18,'#fff')}
+if(st==='ready'){tx(T('title'),W/2,170,32,'#ffd23f');tx(T('s1'),W/2,218,17,'#fff');tx(T('s2'),W/2,244,17,'#fff');tx('{{t:rider.msg.017}}',W/2,312,24,'#ffd23f')}
+else{tx(T(G.msg),W/2,130,28,'#ff7a7a');tx(String(G.score()),W/2,205,52,'#fff');if(G.extra)tx(G.extra(),W/2,240,17,'#fff');if(rec)tx('{{t:rider.msg.018}}',W/2,272,20,'#ffd23f');if(unl.length)tx('{{t:rider.msg.019}}'+unl.map(k=>k.n).join('、'),W/2,300,17,'#6cf0a8');tx(paid>0?'{{t:rider.msg.020}}'+paid+' 點':'{{t:rider.msg.021}}',W/2,336,20,paid>0?'#ffd23f':'#fff');tx('{{t:rider.msg.022}}',W/2,382,18,'#fff')}
 const n=G.skins.length;
 G.skins.forEach((k,i)=>{const x=W/2+(i-(n-1)/2)*72,lk=best<k.need;
 C(x,CHY,24,lk?'#6c757d':k.c[0],3);
@@ -148,7 +148,7 @@ c.addEventListener('pointerdown',e=>{
  if(st!=='run'){
   const n=G.skins.length;
   if(Math.abs(p.y-CHY)<32){for(let i=0;i<n;i++)if(Math.abs(p.x-(W/2+(i-(n-1)/2)*72))<32){if(best>=G.skins[i].need)pick(i);return}}
-  say(st==='over'?'這一局已結束。按「再送一次」開始新的一局。':'先按「開始送餐」。');return}
+  say(st==='over'?'{{t:rider.msg.023}}':'{{t:rider.msg.024}}');return}
  e.preventDefault();c.focus();try{c.setPointerCapture(e.pointerId)}catch(_){}
  G.down(p)});
 ['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,e=>{if(st==='run'&&G.up)G.up({id:e.pointerId})}));

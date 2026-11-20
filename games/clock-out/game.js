@@ -2,7 +2,7 @@
   var clockBusy=false,clockStake=0,clockSay=function(){};
   (function(){
 'use strict';
-var WV=['','第 1 波','第 2 波','第 3 波','第 4 波','第 5 波','第 6 波','第 7 波','第 8 波'];
+var WV=['','{{t:clock-out.msg.001}}','{{t:clock-out.msg.002}}','{{t:clock-out.msg.003}}','{{t:clock-out.msg.004}}','{{t:clock-out.msg.005}}','{{t:clock-out.msg.006}}','{{t:clock-out.msg.007}}','{{t:clock-out.msg.008}}'];
 var CLOCK_BONUS=[{wave:5,pts:3},{wave:8,pts:7}];
 var analytics=null,earned=0,paid={};
 var $v=$('view-clock-out');
@@ -16,7 +16,7 @@ function ui(){
   setText('co-san',live?G.san+' / '+CONFIG.maxSan:'—');
   setText('co-best',best+' 分');
   var b=$('co-go');b.disabled=live;
-  setText('co-go',live?'上班中 · 守住座位':'開始上班');
+  setText('co-go',live?'{{t:clock-out.msg.009}}':'{{t:clock-out.msg.010}}');
 }
 function pay(n,label,wave){
   if(paid[wave])return;paid[wave]=true;
@@ -26,17 +26,17 @@ function pay(n,label,wave){
 }
 function clockWaveDone(n){
   if(!clockBusy)return;
-  if(n===5)pay(3,'撐過第 5 波，BONUS +3 點已入帳。',5);
+  if(n===5)pay(3,'{{t:clock-out.msg.011}}',5);
 }
 function clockFinish(res){
   if(!clockBusy)return;
-  if(res==='win')pay(7,'17:00 打卡下班，BONUS +7 點已入帳。',8);
+  if(res==='win')pay(7,'{{t:clock-out.msg.012}}',8);
   clockBusy=false;
   var result=earned>0?'complete':'loss';
   AN.end(analytics,earned,result,{score:G.score,step:G.wi+1,stage:G.wi+1});analytics=null;
   save();renderAll();
   if(res==='win')say('通關！本局共入帳 '+fmt(earned)+' 點。','win');
-  else say(earned>0?'加班到天亮。'+WV[G.wi+1]+'倒下，本局共入帳 '+fmt(earned)+' 點。':'加班到天亮。'+WV[G.wi+1]+'倒下，這一局沒有額外成就獎勵。','lose');
+  else say(earned>0?'{{t:clock-out.msg.013}}'+WV[G.wi+1]+'倒下，本局共入帳 '+fmt(earned)+' 點。':'{{t:clock-out.msg.013}}'+WV[G.wi+1]+'{{t:clock-out.msg.014}}','lose');
   ui();
 }
 function begin(){
@@ -45,7 +45,7 @@ function begin(){
   analytics=AN.start('clock-out',ENTRY_FEE);clockStake=ENTRY_FEE;clockBusy=true;earned=0;paid={};
   save();renderAll();
   resetGame();startGame();
-  say('開工！第 5 波完成 +3 點，通關再 +7 點。');ui();$('co-canvas').focus();
+  say('{{t:clock-out.msg.015}}');ui();$('co-canvas').focus();
 }
 /* ============================================================
    CONFIG：所有數值集中在這裡（規格 v0.1）
@@ -67,24 +67,24 @@ var CONFIG = {
 };
 
 var TOOLS = {
-  band:       {id:'band',       name:'橡皮筋', ch:'RB', cost:30, rng:85,  dmg:3,  iv:0.8, atk:true,  w:20, shape:[[0,0]],                       fill:'#fbc02d', stroke:'#f57f17', tag:'剋：電郵', desc:'橡皮筋：連彈 3 隻，剋電子郵件'},
-  coffee:     {id:'coffee',     name:'咖啡杯', ch:'CM', cost:35, rng:0,   dmg:0,  iv:0,   atk:false, w:15, shape:[[0,0]],                       fill:'#d7ccc8', stroke:'#4e342e', tag:'輔助',     desc:'咖啡杯：貼著的工具射速變快'},
-  stapler:    {id:'stapler',    name:'釘書機', ch:'ST', cost:40, rng:95,  dmg:4,  iv:0.5, atk:true,  w:18, shape:[[0,0],[1,0]],                 fill:'#546e7a', stroke:'#263238', tag:'剋：緊急', desc:'釘書機：快速單體，剋緊急任務'},
-  highlighter:{id:'highlighter',name:'螢光筆', ch:'HL', cost:45, rng:0,   dmg:0,  iv:0,   atk:false, w:10, shape:[[0,0],[1,0],[2,0]],           fill:'#c6ff00', stroke:'#76a300', tag:'輔助',     desc:'螢光筆：貼著的工具射程變遠'},
-  headphones: {id:'headphones', name:'耳機',   ch:'HP', cost:60, rng:100, dmg:3,  iv:1.2, atk:true,  w:12, shape:[[0,0],[0,1],[1,1]],           fill:'#7e57c2', stroke:'#4527a0', tag:'剋：會議', desc:'耳機：範圍減速並擋會議邀請，剋會議'},
-  stamp:      {id:'stamp',      name:'印章',   ch:'SP', cost:70, rng:120, dmg:40, iv:2.0, atk:true,  w:13, shape:[[0,0],[0,1]],                 fill:'#e53935', stroke:'#8e1c1a', tag:'剋：報表', desc:'印章：慢但重擊，剋報表與老闆'},
-  shredder:   {id:'shredder',   name:'碎紙機', ch:'SH', cost:80, rng:85,  dmg:8,  iv:1.4, atk:true,  w:12, shape:[[0,0],[1,0],[0,1],[1,1]],     fill:'#26a69a', stroke:'#00695c', tag:'剋：紙本', desc:'碎紙機：範圍傷害，剋紙本文件'}
+  band:       {id:'band',       name:'{{t:clock-out.msg.016}}', ch:'RB', cost:30, rng:85,  dmg:3,  iv:0.8, atk:true,  w:20, shape:[[0,0]],                       fill:'#fbc02d', stroke:'#f57f17', tag:'{{t:clock-out.msg.017}}', desc:'{{t:clock-out.msg.018}}'},
+  coffee:     {id:'coffee',     name:'{{t:clock-out.msg.019}}', ch:'CM', cost:35, rng:0,   dmg:0,  iv:0,   atk:false, w:15, shape:[[0,0]],                       fill:'#d7ccc8', stroke:'#4e342e', tag:'{{t:clock-out.msg.020}}',     desc:'{{t:clock-out.msg.021}}'},
+  stapler:    {id:'stapler',    name:'{{t:clock-out.msg.022}}', ch:'ST', cost:40, rng:95,  dmg:4,  iv:0.5, atk:true,  w:18, shape:[[0,0],[1,0]],                 fill:'#546e7a', stroke:'#263238', tag:'{{t:clock-out.msg.023}}', desc:'{{t:clock-out.msg.024}}'},
+  highlighter:{id:'highlighter',name:'{{t:clock-out.msg.025}}', ch:'HL', cost:45, rng:0,   dmg:0,  iv:0,   atk:false, w:10, shape:[[0,0],[1,0],[2,0]],           fill:'#c6ff00', stroke:'#76a300', tag:'{{t:clock-out.msg.020}}',     desc:'{{t:clock-out.msg.026}}'},
+  headphones: {id:'headphones', name:'{{t:clock-out.msg.027}}',   ch:'HP', cost:60, rng:100, dmg:3,  iv:1.2, atk:true,  w:12, shape:[[0,0],[0,1],[1,1]],           fill:'#7e57c2', stroke:'#4527a0', tag:'{{t:clock-out.msg.028}}', desc:'{{t:clock-out.msg.029}}'},
+  stamp:      {id:'stamp',      name:'{{t:clock-out.msg.030}}',   ch:'SP', cost:70, rng:120, dmg:40, iv:2.0, atk:true,  w:13, shape:[[0,0],[0,1]],                 fill:'#e53935', stroke:'#8e1c1a', tag:'{{t:clock-out.msg.031}}', desc:'{{t:clock-out.msg.032}}'},
+  shredder:   {id:'shredder',   name:'{{t:clock-out.msg.033}}', ch:'SH', cost:80, rng:85,  dmg:8,  iv:1.4, atk:true,  w:12, shape:[[0,0],[1,0],[0,1],[1,1]],     fill:'#26a69a', stroke:'#00695c', tag:'{{t:clock-out.msg.034}}', desc:'{{t:clock-out.msg.035}}'}
 };
 var TOOL_ORDER = ['band','coffee','stapler','highlighter','headphones','stamp','shredder'];
 
 // hp, speed, leak(理智), reward(便利貼), score, 名稱
 var ENEMIES = {
-  email:  {name:'電子郵件', hp:15,   sp:70,  leak:1,  reward:4,   score:4,   barW:26, noSlow:false, hint:'橡皮筋'},
-  paper:  {name:'紙本文件', hp:50,   sp:40,  leak:2,  reward:8,   score:8,   barW:28, noSlow:false, hint:'碎紙機'},
-  meeting:{name:'會議邀請', hp:65,   sp:50,  leak:2,  reward:10,  score:10,  barW:28, noSlow:false, hint:'耳機'},
-  report: {name:'報表',     hp:200,  sp:30,  leak:4,  reward:18,  score:18,  barW:36, noSlow:false, hint:'印章'},
-  urgent: {name:'緊急任務', hp:38,   sp:110, leak:3,  reward:12,  score:12,  barW:26, noSlow:true,  hint:'釘書機'},
-  boss:   {name:'老闆',     hp:1250, sp:25,  leak:99, reward:100, score:100, barW:60, noSlow:true,  hint:'印章'}
+  email:  {name:'{{t:clock-out.msg.036}}', hp:15,   sp:70,  leak:1,  reward:4,   score:4,   barW:26, noSlow:false, hint:'{{t:clock-out.msg.016}}'},
+  paper:  {name:'{{t:clock-out.msg.037}}', hp:50,   sp:40,  leak:2,  reward:8,   score:8,   barW:28, noSlow:false, hint:'{{t:clock-out.msg.033}}'},
+  meeting:{name:'{{t:clock-out.msg.038}}', hp:65,   sp:50,  leak:2,  reward:10,  score:10,  barW:28, noSlow:false, hint:'{{t:clock-out.msg.027}}'},
+  report: {name:'{{t:clock-out.msg.039}}',     hp:200,  sp:30,  leak:4,  reward:18,  score:18,  barW:36, noSlow:false, hint:'{{t:clock-out.msg.030}}'},
+  urgent: {name:'{{t:clock-out.msg.040}}', hp:38,   sp:110, leak:3,  reward:12,  score:12,  barW:26, noSlow:true,  hint:'{{t:clock-out.msg.022}}'},
+  boss:   {name:'{{t:clock-out.msg.041}}',     hp:1250, sp:25,  leak:99, reward:100, score:100, barW:60, noSlow:true,  hint:'{{t:clock-out.msg.030}}'}
 };
 
 var MULT = {
@@ -335,7 +335,7 @@ window.addEventListener('keydown',function(ev){
 });
 
 function handleTap(x,y){
-  if(G.state==='TITLE'){ say('先按右側「開始上班」。'); return; }
+  if(G.state==='TITLE'){ say('{{t:clock-out.msg.042}}'); return; }
   if(G.state==='WIN'||G.state==='GAMEOVER'){
     if(G.endTimer>=0.6){ resetGame(); ui(); }
     return;
@@ -404,7 +404,7 @@ function buildTap(x,y){
         G.items.splice(G.items.indexOf(G.selItem),1);
         G.selItem=hit; recalc();
       }else{
-        var c0=itemCenter(hit); toast(c0[0],c0[1],'不能合併');
+        var c0=itemCenter(hit); toast(c0[0],c0[1],'{{t:clock-out.msg.043}}');
       }
       return;
     }
@@ -415,7 +415,7 @@ function buildTap(x,y){
     var nc=[];
     for(i=0;i<shp.length;i++) nc.push([g[0]+shp[i][0],g[1]+shp[i][1]]);
     if(canPlace(nc,it)){ it.cells=nc; it.flash=0.3; recalc(); }
-    else { var cc=cellCenter(cx,cy); toast(cc[0],cc[1],'放不下'); }
+    else { var cc=cellCenter(cx,cy); toast(cc[0],cc[1],'{{t:clock-out.msg.044}}'); }
     return;
   }
   if(hit){ G.selItem=hit; }
@@ -424,8 +424,8 @@ function confirmBuy(){
   var card=G.cards[G.selCard]; if(!card) return;
   var d=TOOLS[card.t], gc=ghostCells();
   var c0=cellCenter(G.ghost[0],G.ghost[1]);
-  if(!canPlace(gc,null)){ G.ghostShake=0.2; toast(c0[0],c0[1],'放不下'); return; }
-  if(G.money<d.cost){ toast(c0[0],c0[1],'便利貼不夠'); return; }
+  if(!canPlace(gc,null)){ G.ghostShake=0.2; toast(c0[0],c0[1],'{{t:clock-out.msg.044}}'); return; }
+  if(G.money<d.cost){ toast(c0[0],c0[1],'{{t:clock-out.msg.045}}'); return; }
   G.money-=d.cost;
   var it=newItem(card.t,gc); it.flash=0.3;
   G.items.push(it);
@@ -448,7 +448,7 @@ function doRotate(){
     var nc=[];
     for(i=0;i<rs.length;i++) nc.push([ox+rs[i][0],oy+rs[i][1]]);
     if(canPlace(nc,it)){ it.cells=nc; recalc(); }
-    else { var cc=itemCenter(it); toast(cc[0],cc[1],'放不下'); }
+    else { var cc=itemCenter(it); toast(cc[0],cc[1],'{{t:clock-out.msg.044}}'); }
   }
 }
 function doRecycle(){
@@ -518,7 +518,7 @@ function damage(e,amount,toolId){
   if(e.fcd<=0){
     var p=enemyPos(e);
     if(m>=2){ addFloat(p[0],p[1]-18,Math.round(amount)+'!','#ff9800',0.5,30,14); e.fcd=0.25; }
-    else if(m<=0.5){ addFloat(p[0],p[1]-18,'無效','#9e9e9e',0.5,30,12); e.fcd=0.25; }
+    else if(m<=0.5){ addFloat(p[0],p[1]-18,'{{t:clock-out.msg.046}}','#9e9e9e',0.5,30,12); e.fcd=0.25; }
   }
 }
 
@@ -644,8 +644,8 @@ function updateWave(dt){
             if(dist(hc[0],hc[1],bc[0],bc[1])<=CONFIG.meetingReach){shielded=true;break;}
           }
         }
-        if(shielded) addFloat(ep[0],ep[1]-18,'婉拒','#4fc3f7',0.8,30,14);
-        else { bi.locked=CONFIG.meetingLock; addFloat(bc[0],bc[1]-14,'開會中','#ff5252',0.8,30,14); }
+        if(shielded) addFloat(ep[0],ep[1]-18,'{{t:clock-out.msg.047}}','#4fc3f7',0.8,30,14);
+        else { bi.locked=CONFIG.meetingLock; addFloat(bc[0],bc[1]-14,'{{t:clock-out.msg.048}}','#ff5252',0.8,30,14); }
       }
     }
   }
@@ -687,7 +687,7 @@ function waveClear(){
   if(last){ winGame(); return; }
   var n=G.wi+1;
   G.state='BANNER'; G.bannerView='wave';
-  G.banner={text:WV[n]+'完成！',t:0,dur:0.8,next:function(){
+  G.banner={text:WV[n]+'{{t:clock-out.msg.049}}',t:0,dur:0.8,next:function(){
     G.wi++; G.buildCount++; G.enemies=[]; G.effects=[];
     enterBuild();
   }};
@@ -758,14 +758,14 @@ function drawField(){
   ctx.lineCap='butt';
   // 收件匣
   rrect(28,68,44,24,5); ctx.fillStyle='#78909c'; ctx.fill();
-  text('收件匣',50,80,11,'#fff','center');
+  text('{{t:clock-out.msg.050}}',50,80,11,'#fff','center');
   // 座位
   rrect(28,365,44,30,5); ctx.fillStyle='#8d6e63'; ctx.fill();
   ctx.beginPath(); ctx.arc(50,362,9,0,Math.PI*2); ctx.fillStyle=G.headRed>0?'#e57373':'#f1c9a0'; ctx.fill();
-  text('座位',50,383,11,'#fff','center');
+  text('{{t:clock-out.msg.051}}',50,383,11,'#fff','center');
   // 抽屜外框與格子
   rrect(72,102,256,256,10); ctx.fillStyle='#5d4037'; ctx.fill();
-  text('抽屜',200,95,11,'#bcaaa4','center');
+  text('{{t:clock-out.msg.052}}',200,95,11,'#bcaaa4','center');
   for(i=0;i<CONFIG.grid;i++){
     for(j=0;j<CONFIG.grid;j++){
       ctx.fillStyle='#8d6e63';
@@ -899,7 +899,7 @@ function drawEnemy(e){
     ctx.fillStyle='#d32f2f'; ctx.fillRect(-3,-12,6,30);
     ctx.beginPath(); ctx.arc(0,-31,13,0,Math.PI*2); ctx.fillStyle='#f1c9a0'; ctx.fill();
     rrect(-35,-68,70,20,6); ctx.fillStyle='#fff'; ctx.fill();
-    text('小事一件',0,-58,11,'#000','center');
+    text('{{t:clock-out.msg.053}}',0,-58,11,'#000','center');
   }
   if(white){
     ctx.globalAlpha=0.7; ctx.fillStyle='#fff';
@@ -974,14 +974,14 @@ function drawBenchBuild(){
     text(d.tag,r[0]+r[2]-8,r[1]+r[3]-11,11,d.atk?'#81d4fa':'#a5d6a7','right');
     ctx.globalAlpha=1;
   }
-  var hint='選卡 → 點抽屜格子放 → 再點一下確認';
+  var hint='{{t:clock-out.msg.054}}';
   if(G.selItem) hint=TOOLS[G.selItem.t].desc+' Lv'+G.selItem.lv+'　點空格移動／點同款合併';
   text(hint,200,510,11,'#bdbdbd','center');
   var hasSel=(G.selCard>=0||G.selItem);
-  drawButton(BTN.rotate,'旋轉',hasSel?'#4a5a78':'#555');
-  drawButton(BTN.recycle,'回收',G.selItem?'#8d4a3a':'#555');
-  drawButton(BTN.reroll,'換一批 −10',G.money>=CONFIG.rerollCost?'#666':'#4a4a4a',G.money>=CONFIG.rerollCost?'#fff':'#888',13);
-  drawButton(BTN.go,'開工！','#ffb300','#000',16);
+  drawButton(BTN.rotate,'{{t:clock-out.msg.055}}',hasSel?'#4a5a78':'#555');
+  drawButton(BTN.recycle,'{{t:clock-out.msg.056}}',G.selItem?'#8d4a3a':'#555');
+  drawButton(BTN.reroll,'{{t:clock-out.msg.057}}',G.money>=CONFIG.rerollCost?'#666':'#4a4a4a',G.money>=CONFIG.rerollCost?'#fff':'#888',13);
+  drawButton(BTN.go,'{{t:clock-out.msg.058}}','#ffb300','#000',16);
 }
 function drawBenchWave(){
   ctx.fillStyle='#3e2f28'; ctx.fillRect(0,400,W,160);
@@ -998,7 +998,7 @@ function drawBenchWave(){
     ctx.globalAlpha=done?0.4:1;
     drawEnemyIcon(type,24,y);
     text(d.name+' ×'+n,40,y,13,'#fff','left');
-    text('建議：'+d.hint,384,y,11,'#81d4fa','right');
+    text('{{t:clock-out.msg.059}}'+d.hint,384,y,11,'#81d4fa','right');
     ctx.globalAlpha=1;
     y+=20;
   }
@@ -1007,8 +1007,8 @@ function drawBenchWave(){
   var pr=G.spawnTotal?G.spawnIdx/G.spawnTotal:0;
   // 老闆召喚的不算：spawnIdx 只計 spawns 內
   ctx.fillRect(16,534,368*clamp(pr,0,1),8);
-  var fr=BTN.fast; drawButton(fr,G.fast?'快轉中':'快轉 ▶▶',G.fast?'#ffb300':'#666',G.fast?'#000':'#fff',13);
-  if(G.wi===0) text('點一下戰場，丟便利貼幫忙',200,552,11,'#bdbdbd','center');
+  var fr=BTN.fast; drawButton(fr,G.fast?'{{t:clock-out.msg.060}}':'{{t:clock-out.msg.061}}',G.fast?'#ffb300':'#666',G.fast?'#000':'#fff',13);
+  if(G.wi===0) text('{{t:clock-out.msg.062}}',200,552,11,'#bdbdbd','center');
 }
 function drawEnemyIcon(type,x,y){
   ctx.save(); ctx.translate(x,y); ctx.scale(0.5,0.5);
@@ -1032,9 +1032,9 @@ function draw(){
   if(st==='TITLE'){
     drawField(); drawHud();
     ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.fillRect(0,0,W,H);
-    text('下班保衛戰',200,200,32,'#fff','center',true,'#000');
-    text('守住座位，撐到 17:00',200,236,16,'#fff','center');
-    text('按「開始上班」',200,300,18,'#ffd54f','center',true);
+    text('{{t:clock-out.msg.063}}',200,200,32,'#fff','center',true,'#000');
+    text('{{t:clock-out.msg.064}}',200,236,16,'#fff','center');
+    text('{{t:clock-out.msg.065}}',200,300,18,'#ffd54f','center',true);
     text('最高分 '+best,200,340,14,'#bdbdbd','center');
     return;
   }
@@ -1042,7 +1042,7 @@ function draw(){
   if(st==='BUILD'||(st==='BANNER'&&G.bannerView==='build')) drawBenchBuild();
   else drawBenchWave();
   if(G.topFlash>0){ ctx.globalAlpha=G.topFlash/0.1*0.5; ctx.fillStyle='#e53935'; ctx.fillRect(0,0,W,40); ctx.globalAlpha=1; }
-  if(G.bossWarn>0){ ctx.globalAlpha=Math.min(1,G.bossWarn/0.3); text('老闆來了！',200,110,28,'#e53935','center',true,'#fff'); ctx.globalAlpha=1; }
+  if(G.bossWarn>0){ ctx.globalAlpha=Math.min(1,G.bossWarn/0.3); text('{{t:clock-out.msg.066}}',200,110,28,'#e53935','center',true,'#fff'); ctx.globalAlpha=1; }
   if(st==='BANNER'&&G.banner){
     text(G.banner.text,200,200,28,'#fff','center',true,'#000');
   }
@@ -1050,27 +1050,27 @@ function draw(){
     var k=Math.min(1,G.endTimer/0.3);
     ctx.fillStyle='rgba(0,0,0,'+(0.7*k)+')'; ctx.fillRect(0,0,W,H);
     if(st==='WIN'){
-      text('17:00 打卡下班！',200,130,30,'#ffd54f','center',true);
-      text('今天的工作都處理完了。',200,168,16,'#fff','center');
-      var rows=[['擊倒分數',G.killScore],['波次分數',G.waveScoreTotal],['通關獎勵',G.winBonus],['理智獎勵',G.sanBonus]];
+      text('{{t:clock-out.msg.067}}',200,130,30,'#ffd54f','center',true);
+      text('{{t:clock-out.msg.068}}',200,168,16,'#fff','center');
+      var rows=[['{{t:clock-out.msg.069}}',G.killScore],['{{t:clock-out.msg.070}}',G.waveScoreTotal],['{{t:clock-out.msg.071}}',G.winBonus],['{{t:clock-out.msg.072}}',G.sanBonus]];
       for(var i=0;i<rows.length;i++){
         text(rows[i][0],90,222+i*26,15,'#fff','left');
         text(String(rows[i][1]),310,222+i*26,15,'#fff','right');
       }
       ctx.fillStyle='#fff'; ctx.fillRect(90,330,220,1);
-      text('總分',90,350,18,'#ffd54f','left',true);
+      text('{{t:clock-out.msg.073}}',90,350,18,'#ffd54f','left',true);
       text(String(G.score),310,350,18,'#ffd54f','right',true);
       if(G.newBest) text('NEW BEST!',200,390,20,'#ff9800','center',true);
       text('最高分 '+best,200,424,14,'#bdbdbd','center');
     }else{
-      text('加班到天亮',200,150,32,'#e53935','center',true);
-      text(G.endReason==='boss'?'老闆走到你桌前：「有個小事……」':'理智歸零……今晚又要加班。',200,190,15,'#fff','center');
+      text('{{t:clock-out.msg.074}}',200,150,32,'#e53935','center',true);
+      text(G.endReason==='boss'?'{{t:clock-out.msg.075}}':'{{t:clock-out.msg.076}}',200,190,15,'#fff','center');
       text('本局分數 '+G.score,200,250,20,'#fff','center',true);
-      text('撐到'+WV[G.wi+1],200,284,16,'#fff','center');
+      text('{{t:clock-out.msg.077}}'+WV[G.wi+1],200,284,16,'#fff','center');
       if(G.newBest) text('NEW BEST!',200,326,20,'#ff9800','center',true);
       text('最高分 '+best,200,360,14,'#bdbdbd','center');
     }
-    if(G.endTimer>=0.6) text('點一下回到標題，再按「開始上班」',200,500,14,'#ffd54f','center');
+    if(G.endTimer>=0.6) text('{{t:clock-out.msg.078}}',200,500,14,'#ffd54f','center');
   }
 }
 

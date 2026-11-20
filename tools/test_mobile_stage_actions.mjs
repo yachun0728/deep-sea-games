@@ -1,7 +1,8 @@
 import fs from 'node:fs';
+import {readSource} from './expand_ids.mjs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
-const root=new URL('../',import.meta.url),source=fs.readFileSync(new URL('js/mobile-stage-actions.js',root),'utf8');
+const root=new URL('../',import.meta.url),source=readSource('js/mobile-stage-actions.js',root);
 const results=[];
 class Node{
   constructor(tag='div'){this.tagName=tag.toUpperCase();this.children=[];this.parentNode=null;this.hidden=false;this.disabled=false;this.dataset={};this.textContent='';this.events={};this.classList={add(){}};}

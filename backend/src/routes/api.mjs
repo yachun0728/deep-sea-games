@@ -4,7 +4,7 @@ import { finishFrogRound, readFrogProof, startFrogRound } from '../services/frog
 import { applyMinesMove, readMinesMove, startMinesRound } from '../services/mines.mjs';
 import { moveRankedBoard, readBoardCommand, startRankedBoard } from '../services/ranked-boards.mjs';
 import { getBalance } from '../services/points.mjs';
-import { getLeaderboard, getLeaderboardFeed } from '../services/leaderboard.mjs';
+import { getGameName, getLeaderboard, getLeaderboardFeed } from '../services/leaderboard.mjs';
 
 export function json(body, status = 200, headers = {}) {
   return Response.json(body, { status, headers: { 'Cache-Control': 'no-store', ...headers } });
@@ -58,14 +58,19 @@ const routes = new Map([
     const result = await moveRankedBoard(db, player.id, command);
     return result.error ? json({ error: result.error }, result.status) : json(result);
   })]],
-  [API.leaderboardFeed, ['GET', async (_request, db) => {
-    return json({ games: await getLeaderboardFeed(db) });
+  [API.leaderboardFeed, ['GET', async (_request, db, url) => {
+    return json({ games: await getLeaderboardFeed(db, url.searchParams.get('lang')) });
   }]],
   [API.leaderboard, ['GET', async (_request, db, url) => {
     const gameId = url.searchParams.get('gameId') ?? '';
     if (!GAME_ID.test(gameId)) return json({ error: 'invalid_game_id' }, 400);
 
-    return json({ gameId, entries: await getLeaderboard(db, gameId) });
+    const lang = url.searchParams.get('lang');
+    return json({
+      gameId,
+      gameName: await getGameName(db, gameId, lang),
+      entries: await getLeaderboard(db, gameId),
+    });
   }]],
 ]);
 

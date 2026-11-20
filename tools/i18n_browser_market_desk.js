@@ -50,17 +50,20 @@
         'A-Ze starts at his original desk with its own artwork');
       const buttons = [...view.querySelectorAll('[data-market-action]')];
       const actions = [1, 2, 0, 1, 1, 2, 0, 1, 0, 0, 1, 2, 2, 0, 1, 0, 0, 2, 0, 2];
-      function start(id) {
+      // start() awaits the ranked-round request before dealing, so keep the fixed random order until the button re-enables.
+      async function start(id) {
         const random = Math.random;
         Math.random = () => 0.999999;
         try {
           get(id).click();
           get(id).click();
+          await new Promise(resolve => setTimeout(resolve, 0)); // the click disables the button before the request resolves
+          for (let tries = 0; tries < 100 && get(id).disabled; tries++) await new Promise(resolve => setTimeout(resolve, 20));
         } finally {
           Math.random = random;
         }
       }
-      start('mk-go');
+      await start('mk-go');
       assert(text('mk-headline') === '早餐店的外星訂單', 'Chinese case renders after start');
       i18n.setLanguage('en');
       assert(text('mk-headline') === 'An alien order with breakfast' && rounds.length === 1,
@@ -128,7 +131,7 @@
       i18n.setLanguage('zh-Hant');
       assert(text('mk-ending') === '台股查證王牌' && text('mk-replay') === '下一輪' && text('mk-result').includes('100 / 100'), 'Completed result translates to Chinese');
       i18n.setLanguage('en');
-      start('mk-replay');
+      await start('mk-replay');
       assert(finale.hidden && text('mk-day') === 'Day 1 / 20' && text('mk-score') === '0' &&
         text('mk-index') === '1,000' && character.dataset.life === 'starter' && !character.dataset.shift,
         'Replay resets both the index and the character scene');
@@ -160,7 +163,7 @@
         text('mk-ending-status') === 'Day 6 · Run ended early' && text('mk-focus') === '0' && rounds.at(-1)[3] === 'lose',
         'Six errors exhaust focus and end the run');
       if (reducedMotion) {
-        start('mk-replay');
+        await start('mk-replay');
         const misses = new Map([[0, 0], [4, 0], [9, 1], [12, 0], [16, 1], [19, 0]]);
         for (const [index, correctAction] of actions.entries()) {
           buttons[misses.get(index) ?? correctAction].click();
@@ -189,7 +192,7 @@
           {misses: [0, 1, 2, 5], result: 'steady', tag: 'Steady finish'}
         ];
         for (const path of finalePaths) {
-          start('mk-replay');
+          await start('mk-replay');
           for (const [index, action] of actions.entries()) {
             buttons[path.misses.includes(index) ? (action === 0 ? 2 : 0) : action].click();
             await waitForClose();
@@ -199,7 +202,7 @@
             text('mk-ending-status') === 'Day 20 · Final close', path.tag + ' receives a dedicated final scene');
         }
       }
-      start('mk-replay');
+      await start('mk-replay');
       if (!reducedMotion) buttons[actions[0]].click();
       document.querySelector('.brand-home').click();
       await wait();
@@ -215,8 +218,9 @@
         document.querySelector('.lobby-grid > .game-card[href="#tetris"]') &&
         document.querySelector('.lobby-grid > .game-card[href="#mirror-twins"]'),
         'TICATICA sidebar and the current lobby games are present');
-      assert(document.querySelector('.lobby-grid > .game-card') === card &&
-        card.dataset.art === 'cover', 'TICATICA lists Closing Call first with its own cover');
+      // The lobby order is a product decision (Outpost and Reef Blaster now lead), so only require the card and its cover.
+      assert(card.parentElement.classList.contains('lobby-grid') && card.dataset.art === 'cover',
+        'TICATICA lists Closing Call in the lobby with its own cover');
       let nativeFullscreenCalls = 0;
       view.requestFullscreen = async function () { nativeFullscreenCalls++; };
       card.click();
@@ -229,7 +233,7 @@
       if (matchMedia('(max-width:880px)').matches) {
         assert(!view.querySelector('.game-view-controls') && !!view.querySelector('.game-exit-link'),
           'Phone shows a compact lobby exit');
-        start('mk-go');
+        await start('mk-go');
         const rects = buttons.map(button => button.getBoundingClientRect());
         const portraitViewport = matchMedia('(orientation: portrait)').matches;
         assert((portraitViewport ? innerWidth === 390 : innerWidth === 844) &&

@@ -3,31 +3,31 @@
       <div class="dice-stage" id="lb-stage">
         <div class="dc-read">
           <div class="mult" id="lb-result">1.00<small>×</small></div>
-          <div class="sub-line" id="lb-sub">探測錘沉到你的目標倍率就算贏</div>
+          <div class="sub-line" id="lb-sub">{{t:limbo.view.01}}</div>
         </div>
         <div class="lb-gauge">
           <div class="lb-track"><div class="lb-fill" id="lb-fill"></div></div>
           <div class="lb-tick" aria-hidden="true"></div>
-          <div class="lb-labels" aria-hidden="true"><span>1.00×</span><span class="t" id="lb-tlabel">目標 2.00×</span></div>
+          <div class="lb-labels" aria-hidden="true"><span>1.00×</span><span class="t" id="lb-tlabel">{{t:limbo.view.02}}</span></div>
         </div>
-        <div class="history" aria-label="最近的結果">
-          <span class="label">最近結果</span>
+        <div class="history" aria-label="{{t:limbo.view.19}}">
+          <span class="label">{{t:limbo.view.03}}</span>
           <div class="pills" id="lb-last"></div>
         </div>
       </div>
       <div class="side">
-        <section class="panel" aria-label="探底下注">
+        <section class="panel" aria-label="{{t:limbo.view.20}}">
           <div class="field">
-            <label for="lb-amount">下注點數</label>
+            <label for="lb-amount">{{t:limbo.view.04}}</label>
             <div class="input-row">
               <input id="lb-amount" type="number" inputmode="numeric" min="10" step="10" value="100">
               <button class="chip lchip" type="button" data-lchip="half">½</button>
               <button class="chip lchip" type="button" data-lchip="double">2×</button>
-              <button class="chip lchip" type="button" data-lchip="max">全押</button>
+              <button class="chip lchip" type="button" data-lchip="max">{{t:limbo.view.05}}</button>
             </div>
           </div>
           <div class="field">
-            <label for="lb-target">目標倍率（1.01–1000）</label>
+            <label for="lb-target">{{t:limbo.view.06}}</label>
             <div class="input-row">
               <input id="lb-target" type="number" inputmode="decimal" min="1.01" max="1000" step="0.1" value="2.00">
               <button class="chip lchip" type="button" data-ltarget="1.5">1.5×</button>
@@ -37,20 +37,20 @@
             </div>
           </div>
           <dl class="stats">
-            <div><dt>勝率</dt><dd id="lb-chance">—</dd></div>
-            <div><dt>目標倍率</dt><dd id="lb-mult">—</dd></div>
-            <div><dt>達標可領</dt><dd id="lb-win">—</dd></div>
+            <div><dt>{{t:limbo.view.07}}</dt><dd id="lb-chance">—</dd></div>
+            <div><dt>{{t:limbo.view.08}}</dt><dd id="lb-mult">—</dd></div>
+            <div><dt>{{t:limbo.view.09}}</dt><dd id="lb-win">—</dd></div>
           </dl>
-          <button class="go" id="lb-go" type="button" data-mode="bet">放下探測錘</button>
-          <p class="msg" id="lb-msg" aria-live="polite">目標訂得越高越難達到，達到了就拿目標倍率。</p>
+          <button class="go" id="lb-go" type="button" data-mode="bet">{{t:limbo.view.10}}</button>
+          <p class="msg" id="lb-msg" aria-live="polite">{{t:limbo.view.11}}</p>
         </section>
       </div>
     </div>
     <details class="rules">
-      <summary>玩法與機率</summary>
-      <p>先訂一個目標倍率，再放下探測錘。探測錘會瞬間沉到某個倍率：沉到的倍率大於或等於你的目標就算贏，領回「下注 × 目標倍率」；沒到就失去這一注。贏的時候拿的是你訂的目標，不是探測錘實際沉到的倍率。</p>
-      <p>結果的算法和「壓潰深度」相同：<code>結果 = max(1, 0.97 ÷ (1 − r))</code>，所以達到目標 T 的機率是 <code>97% ÷ T</code>，長期期望回報約 97%，不論目標訂多少都一樣。它等於是不用等、也不用自己按上浮的 Crash。</p>
-      <p>結果在按下的瞬間用瀏覽器亂數決定。點數與其他遊戲共用，沒有任何現金價值。</p>
+      <summary>{{t:limbo.view.12}}</summary>
+      <p>{{t:limbo.view.13}}</p>
+      <p>{{t:limbo.view.14}}<code>{{t:limbo.view.15}}</code>{{t:limbo.view.16}} <code>97% ÷ T</code>{{t:limbo.view.17}}</p>
+      <p>{{t:limbo.view.18}}</p>
     </details>
   </section>
 

@@ -16,7 +16,7 @@ for(let part=0;part<10;part++){
 }
 assert.equal(rules.apply(rules.create(42),[0,886]),false);
 assert.equal(rules.apply(rules.create(42),[0,885]),false);
-assert.equal(rules.accepts([401]),false);
+assert.equal(rules.accepts([2401]),false);
 assert.equal(rules.accepts([1,2200]),false);
 assert.equal(rules.accepts([1,1100,0]),false);
 assert.equal(worker.completed,0);

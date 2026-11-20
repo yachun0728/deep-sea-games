@@ -14,14 +14,14 @@
       PANCAKE.active=true;PANCAKE.extra=0;PANCAKE.free=free;
       PANCAKE.analytics=AN.start('pancake',fee,free?{entry_kind:'free_pass'}:undefined);
       if(fee){save();renderAll();}
-      pancakeUI('泡麵已補給。');return true;
+      pancakeUI('{{t:pancake.msg.001}}');return true;
     },
     spend:function(source,n){
       n=Math.floor(Number(n)||0);
       if(!pancakeValid(source)||!PANCAKE.active||n<0)return false;
 
       AN.progress(PANCAKE.analytics,{phase:'free_noodles',extra_points:0});
-      pancakeUI('已補充泡麵。');return true;
+      pancakeUI('{{t:pancake.msg.002}}');return true;
     },
     finish:function(source,data){
       if(!pancakeValid(source)||!PANCAKE.active)return;PANCAKE.active=false;
