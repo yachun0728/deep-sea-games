@@ -28,6 +28,7 @@ import runnerRules from '../../../shared/runner-rules.cjs';
 import dreamRules from '../../../shared/dream-rules.cjs';
 import oceanLink from '../../../games/ocean-link/board.js';
 import mergeRules from '../../../shared/merge-rules.cjs';
+import bobaRules from '../../../shared/boba-rules.cjs';
 
 import outpostRules from '../../../shared/outpost-rules.cjs';
 
@@ -116,6 +117,7 @@ const boards = new Map([
     visible: ({seed, score}) => ({seed, score}),
   }],
   ['elevator', timedBoard(elevatorRules)],
+  ['boba', timedBoard(bobaRules)],
   ['fishing', timedBoard(fishingRules)],
   ['cat', timedBoard(catRules)],
   ['bird', timedBoard(birdRules)],

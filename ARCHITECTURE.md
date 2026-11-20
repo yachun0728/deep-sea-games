@@ -126,7 +126,7 @@ js/navigation.js 的 route 以 hash 切換 view 與 tab、標題、AN.view，空
 
 games/pancake/game.js 首次進入時把 iframe `src` 設為 `games/pancake/original.html`（同源，圖片以相對路徑載入）。deepSeaPancake 提供 balance、start、spend、finish、progress、pause、resume、touch，同樣驗證來源 contentWindow；子頁提供 setPancakePlatformActive（切走時暫停）、finishPancakePlatformRound。iframe 帶 `allow="accelerometer; gyroscope; magnetometer"` 供晃手機玩法使用。
 
-games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.srcdoc。deepSeaBoba 提供 start、finish、progress、pause、resume、touch，驗證來源 contentWindow；子頁提供 setBobaPlatformActive、finishBobaPlatformRound。原粉色 UI、父頁扣點／GA4、子頁本機紀錄責任維持原狀。
+games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.srcdoc。deepSeaBoba 提供 start、finish、progress、pause、resume、touch，以及排行榜用的 rules（shared/boba-rules.cjs）、prepare、advance、record，驗證來源 contentWindow；子頁提供 setBobaPlatformActive、finishBobaPlatformRound。原粉色 UI、父頁扣點／GA4、子頁本機紀錄責任維持原狀。
 
 一口氣探險（dive）與捷運搶位（mrt）沿用相同 srcdoc 子頁模式，但 view 採用與其他遊戲相同的 `.console` 版型（左側 iframe、右側 `.side .panel` 放固定 10 點入場、目前分數／階數、最佳紀錄與扣點按鈕）。右側按鈕呼叫子頁的 `startDivePlatformRound`／`startMrtPlatformRound`，與子頁開場按鈕共用同一開局流程；開局時呼叫 `deepSeaDive.start`／`deepSeaMrt.start` 由父頁驗證來源、檢查餘額並扣 `ENTRY_FEE`（回傳 0 代表未扣款），結束時以 `finish` 回報倍率，由父頁計算 `floor(入場 × round(倍率×100) / 100)` 並入帳，`active` 旗標保證單次扣款與單次結算。兩者另提供 `live`（只更新右側面板倍率）、`progress`、`touch`；mrt 另有 `pause`／`resume`。父頁經 `setDivePlatformActive`／`setMrtPlatformActive` 通知子頁是否顯示：隱藏時停止繪圖，mrt 在進站中會自動暫停。子頁單獨開啟（無父頁）時維持原本不扣點的示範模式。原始子頁中未使用的示範錢包（`lobbyPoints`）已移除，子頁不保存點數。
 
