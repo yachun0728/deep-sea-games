@@ -155,7 +155,8 @@ const L=()=>changeLane(-1),R=()=>changeLane(1);
 $('rn-rank-retry').addEventListener('click',sendRun);
 $('rn-go').addEventListener('click',start);
 addEventListener('keydown',e=>{if($('view-runner').hidden||document.hidden||st!=='run'||e.metaKey||e.ctrlKey||e.altKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;if(['ArrowLeft','ArrowRight','a','d'].includes(e.key)){e.preventDefault();if(e.key==='ArrowLeft'||e.key==='a')L();else R();}});
-c.addEventListener('pointerdown',e=>{if(st!=='run'||$('view-runner').hidden||document.hidden)return;e.preventDefault();c.focus();const r=c.getBoundingClientRect();if(e.clientX<r.left+r.width/2)L();else R();});
+['dblclick','gesturestart','contextmenu'].forEach(n=>c.parentNode.parentNode.addEventListener(n,e=>e.preventDefault()));
+c.parentNode.parentNode.addEventListener('pointerdown',e=>{if(st!=='run'||$('view-runner').hidden||document.hidden||e.target.closest('button,a,summary,input'))return;e.preventDefault();c.focus();const r=c.getBoundingClientRect();if(e.clientX<r.left+r.width/2)L();else R();});
 document.querySelectorAll('[data-run]').forEach(b=>b.addEventListener('click',()=>{if(st!=='run')return;({left:L,right:R})[b.dataset.run]();c.focus()}));
 function loop(t){
  const ms=Math.min(50,Math.max(0,t-last)||0);last=t;
