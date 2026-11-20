@@ -48,12 +48,8 @@
     link.append(memberIcon(gameId), name);
     game.appendChild(link);
     best.className = 'board-best';
-    best.textContent = (gameId === 'market-desk' ? 'NT$' : '') + entry.score.toLocaleString('zh-TW');
-    if (gameId === 'merge') {
-      var metric = document.createElement('span');
-      metric.textContent = '{{t:merge.view.02}}';
-      best.replaceChildren(metric, ' ' + entry.score);
-    }
+    best.textContent = gameId === 'merge' ? String(entry.score)
+      : (gameId === 'market-desk' ? 'NT$' : '') + entry.score.toLocaleString('zh-TW');
     if (lastPlayedAt) {
       var lastPlayed = new Date(lastPlayedAt);
       if (Number.isFinite(lastPlayed.getTime())) {
