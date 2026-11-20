@@ -262,8 +262,50 @@ const L=()=>changeLane(-1),R=()=>changeLane(1);
 $('rn-rank-retry').addEventListener('click',sendRun);
 $('rn-go').addEventListener('click',start);
 addEventListener('keydown',e=>{if($('view-runner').hidden||document.hidden||st!=='run'||e.metaKey||e.ctrlKey||e.altKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;if(['ArrowLeft','ArrowRight','a','d'].includes(e.key)){e.preventDefault();if(e.key==='ArrowLeft'||e.key==='a')L();else R();}});
-['dblclick','gesturestart','contextmenu'].forEach(n=>c.parentNode.parentNode.addEventListener(n,e=>e.preventDefault()));
-c.parentNode.parentNode.addEventListener('pointerdown',e=>{if(st!=='run'||$('view-runner').hidden||document.hidden||e.target.closest('button,a,summary,input'))return;e.preventDefault();c.focus();const r=c.getBoundingClientRect();if(e.clientX<r.left+r.width/2)L();else R();});
+const runnerConsole=$('view-runner').querySelector('.console');
+const swipeDistance=14;
+let runnerTouch=null;
+const canSteer=()=>st==='run'&&!$('view-runner').hidden&&!document.hidden;
+function tapLane(x){
+ const bounds=c.getBoundingClientRect();
+ changeLane(x<bounds.left+bounds.width/2?-1:1);
+}
+function steerSwipe(event){
+ const touch=runnerTouch;
+ if(!touch||touch.id!==event.pointerId||touch.round!==run||touch.used||!canSteer())return;
+ const dx=event.clientX-touch.x,dy=event.clientY-touch.y;
+ if(Math.abs(dx)>=swipeDistance&&Math.abs(dx)>=Math.abs(dy)*1.2){
+  touch.used=true;
+  changeLane(Math.sign(dx));
+ }
+}
+function endSwipe(event){
+ if(runnerTouch?.id===event.pointerId)runnerTouch=null;
+}
+['dblclick','gesturestart','contextmenu'].forEach(type=>runnerConsole.addEventListener(type,event=>event.preventDefault()));
+runnerConsole.addEventListener('pointerdown',event=>{
+ if(!canSteer()||event.target.closest('button,a,summary,input'))return;
+ if(event.pointerType==='touch'){
+  if(!event.isPrimary)return;
+  runnerTouch={id:event.pointerId,x:event.clientX,y:event.clientY,round:run,used:false};
+  runnerConsole.setPointerCapture(event.pointerId);
+ }else{
+  tapLane(event.clientX);
+ }
+ event.preventDefault();
+ c.focus();
+});
+runnerConsole.addEventListener('pointermove',steerSwipe);
+runnerConsole.addEventListener('pointerup',event=>{
+ const touch=runnerTouch;
+ if(!touch||touch.id!==event.pointerId)return;
+ steerSwipe(event);
+ if(touch.round===run&&canSteer()&&!touch.used&&
+    Math.hypot(event.clientX-touch.x,event.clientY-touch.y)<swipeDistance)tapLane(touch.x);
+ endSwipe(event);
+});
+runnerConsole.addEventListener('pointercancel',endSwipe);
+runnerConsole.addEventListener('lostpointercapture',endSwipe);
 document.querySelectorAll('[data-run]').forEach(b=>b.addEventListener('click',()=>{if(st!=='run')return;({left:L,right:R})[b.dataset.run]();c.focus()}));
 function loop(t){
  const ms=Math.min(50,Math.max(0,t-last)||0);last=t;
