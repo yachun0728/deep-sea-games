@@ -4232,7 +4232,7 @@ html.frontier-immersive{overflow:hidden}
 </section>
 <section class="view" id="view-frontier" hidden>
 <div class="ft-rank-controls"><p>排行榜遠征保留已驗證進度；可隨時切回原存檔。</p><button id="ft-ranked" type="button">排行榜遠征</button><button id="ft-local" type="button">繼續原存檔</button><p id="ft-rank-status" role="status"></p><button id="ft-rank-retry" type="button" hidden>重送排行榜成績</button></div><div class="ft-layout"><div class="ft-main" id="ft-main">
-<div class="ft-top"><span class="ft-eyebrow">FRONTIER / 50 STAGES</span><div class="ft-status"><strong id="ft-zone">翠葉群島</strong><span id="ft-level">1 / 50</span><span id="ft-health">♥ 100</span><span id="ft-base-health"></span></div><button type="button" id="ft-journal" aria-expanded="false" aria-controls="ft-task-details">任務</button><button type="button" id="ft-full">全螢幕</button></div><span id="ft-assault" class="ft-assault"></span><p id="ft-objective" class="ft-objective" aria-live="polite">建立據點，清除守衛，點亮燈塔。</p>
+<div class="ft-top"><span class="ft-eyebrow">FRONTIER / 50 STAGES</span><div class="ft-status"><strong id="ft-zone">翠葉群島</strong><span id="ft-level">1 / 50</span><span id="ft-health">♥ 100</span><span id="ft-base-health"></span></div><button type="button" id="ft-journal" aria-expanded="false" aria-controls="ft-task-details">任務</button><button type="button" id="ft-full">全螢幕</button><button type="button" id="ft-mute" aria-label="Sound">🔊</button></div><span id="ft-assault" class="ft-assault"></span><p id="ft-objective" class="ft-objective" aria-live="polite">建立據點，清除守衛，點亮燈塔。</p>
 <div class="ft-mission" id="ft-task-details" hidden><span id="ft-checklist"></span><span id="ft-warning"></span><span id="ft-hauling"></span><span id="ft-army"></span><span id="ft-journal-stock"></span></div><div class="ft-stage" id="ft-stage"><canvas id="ft-canvas" width="900" height="650" tabindex="0" aria-label="荒島遠征：移動採集、靠近建造、閃避攻擊"></canvas><section id="ft-cards" class="ft-cards" aria-live="polite" hidden><h3 id="ft-cards-title">金幣湊滿了！選一張強化卡</h3><div class="ft-card-row"><button type="button" id="ft-card-0" class="ft-card"><strong id="ft-card-0-name"></strong><em id="ft-card-0-lv"></em><span id="ft-card-0-desc"></span></button><button type="button" id="ft-card-1" class="ft-card"><strong id="ft-card-1-name"></strong><em id="ft-card-1-lv"></em><span id="ft-card-1-desc"></span></button><button type="button" id="ft-card-2" class="ft-card"><strong id="ft-card-2-name"></strong><em id="ft-card-2-lv"></em><span id="ft-card-2-desc"></span></button></div></section><p id="ft-notice" class="ft-notice" aria-live="polite" hidden></p><div id="ft-overlay" class="ft-overlay"><span class="ft-eyebrow">GATHER · BUILD · SURVIVE</span><h2 id="ft-title">荒島遠征</h2><p id="ft-message">五大區域，五十場考驗。建立據點，穿越危險地帶。</p><button type="button" id="ft-go">開始遠征</button></div><div class="ft-touch"><div id="ft-stick" role="group" aria-label="拖曳搖桿移動"><span id="ft-knob"></span></div><button type="button" id="ft-dash" class="ft-optional-dash">衝刺</button></div></div>
 <div class="ft-resource"><span id="ft-bag">背包</span><span id="ft-stock">倉庫</span><span id="ft-troops"></span><span id="ft-coins">金幣 0</span><span id="ft-workers">工人 0</span><button type="button" id="ft-hut-up" hidden>升級</button><button type="button" id="ft-home">返回營地</button><button type="button" id="ft-shop-toggle" hidden aria-expanded="false" aria-controls="ft-shop">交易與裝備</button><button type="button" id="ft-pause">暫停</button><button type="button" id="ft-next" hidden>前往下一島</button></div>
 <section id="ft-shop" class="ft-shop" hidden><div class="ft-shop-head"><h3>交易與裝備</h3><button type="button" id="ft-shop-close">關閉</button></div><p>靠近營地購買裝備，靠近市集出售倉庫材料。金幣只用於本遊戲。</p><label for="ft-sale-count">出售數量</label><select id="ft-sale-count"><option value="5">5</option><option value="10" selected>10</option><option value="25">25</option></select><p id="ft-building-effects" class="ft-building-effects"></p><p>第 11 關起可蓋戰士小屋，消耗倉庫木材與石材訓練戰士，自動保護大本營。大本營血量歸零就會失敗。</p><div class="ft-shop-actions"><button type="button" id="ft-recruit">訓練戰士</button><button type="button" id="ft-sell-wood">出售木材 · 每份 2 金幣</button><button type="button" id="ft-sell-stone">出售石材 · 每份 3 金幣</button><button type="button" id="ft-tool">採集工具</button><button type="button" id="ft-blade">戰鬥武器</button><button type="button" id="ft-pack">背包容量</button></div><p id="ft-upgrade" aria-live="polite"></p><p id="ft-storage" aria-live="polite"></p></section></div>
@@ -30068,6 +30068,73 @@ function frontierStep(w,input,dt){
 
 if(typeof module!=='undefined')module.exports={frontierWorld,frontierStep,frontierChoose,frontierUpgrade,frontierSell,frontierLeave,frontierUpgradeHut,frontierRecruit};
 
+    /* Frontier Islands sound effects: synthesized with the Web Audio API, no audio files. */
+var ftSfx=(function(){
+  var ctx=null,master=null,noiseBuf=null,muted=false,lastPlay={};
+  try{muted=localStorage.getItem('frontier-muted')==='1';}catch(e){}
+  function init(){
+    if(ctx){if(ctx.state==='suspended')ctx.resume();return true;}
+    var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
+    try{ctx=new AC();}catch(e){return false;}
+    master=ctx.createGain();master.gain.value=muted?0:.5;master.connect(ctx.destination);
+    noiseBuf=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate);
+    var d=noiseBuf.getChannelData(0);for(var i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    return true;
+  }
+  /* Oscillator with pitch glide and attack/decay envelope. */
+  function tone(type,f0,f1,dur,vol,delay){
+    var t=ctx.currentTime+(delay||0),o=ctx.createOscillator(),g=ctx.createGain();
+    o.type=type;o.frequency.setValueAtTime(f0,t);if(f1&&f1!==f0)o.frequency.exponentialRampToValueAtTime(f1,t+dur);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g);g.connect(master);o.start(t);o.stop(t+dur+.02);
+  }
+  /* Filtered noise burst for thuds, chops and whooshes. */
+  function noise(ftype,f0,f1,dur,vol,delay,q){
+    var t=ctx.currentTime+(delay||0),s=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();
+    s.buffer=noiseBuf;f.type=ftype;f.Q.value=q||1;f.frequency.setValueAtTime(f0,t);if(f1)f.frequency.exponentialRampToValueAtTime(f1,t+dur);
+    g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    s.connect(f);f.connect(g);g.connect(master);s.start(t);s.stop(t+dur+.02);
+  }
+  var sounds={
+    wood:function(){noise('bandpass',900,300,.09,.7,0,2);tone('square',180,90,.07,.18);},          /* chop a tree */
+    stone:function(){noise('highpass',3000,2000,.06,.5);tone('triangle',1400,900,.09,.25);tone('square',2200,1600,.04,.08);}, /* mine a rock */
+    pickup:function(){tone('sine',660,990,.09,.25);tone('sine',990,1320,.1,.22,.07);},
+    delivery:function(){tone('triangle',523,523,.1,.25);tone('triangle',659,659,.1,.25,.08);tone('triangle',784,784,.16,.25,.16);},
+    build:function(){noise('lowpass',500,150,.18,.8);tone('square',110,70,.14,.3);tone('triangle',440,660,.1,.2,.14);},
+    hit:function(){noise('bandpass',1800,500,.12,.6,0,1.2);tone('sawtooth',220,70,.12,.3);},
+    dash:function(){noise('bandpass',500,2400,.22,.5,0,.8);},
+    hurt:function(){tone('sawtooth',300,90,.25,.4);noise('lowpass',800,200,.2,.5);},
+    ui:function(){tone('triangle',700,900,.07,.22);},
+    upgrade:function(){tone('square',392,392,.08,.18);tone('square',523,523,.08,.18,.08);tone('square',659,659,.08,.18,.16);tone('square',784,784,.2,.2,.24);},
+    coin:function(){tone('square',988,988,.06,.18);tone('square',1319,1319,.18,.18,.06);},
+    deny:function(){tone('square',160,120,.16,.22);},
+    win:function(){[523,659,784,1047].forEach(function(f,i){tone('triangle',f,f,.28,.3,i*.12);});tone('sine',1047,1047,.6,.2,.5);},
+    lose:function(){[392,330,262,196].forEach(function(f,i){tone('sawtooth',f,f*.97,.3,.25,i*.18);});}
+  };
+  function play(name){
+    if(muted||!sounds[name]||!init())return;
+    var now=ctx.currentTime,gap=name==='hit'?.05:name==='wood'||name==='stone'?.08:.03;
+    if(lastPlay[name]&&now-lastPlay[name]<gap)return;lastPlay[name]=now;
+    try{sounds[name]();}catch(e){}
+  }
+  var seen=typeof WeakSet==='function'?new WeakSet():null;
+  /* Call every frame: plays a sound once per new world effect, and for player damage. */
+  function scan(w){
+    if(!w||!seen)return;
+    var list=w.effects||[];
+    for(var i=0;i<list.length;i++){
+      var e=list[i];if(seen.has(e))continue;seen.add(e);
+      if(e.kind==='wood'||e.kind==='stone'){if(e.px===undefined)continue;play(e.kind);} /* only the player's own swings, not workers */
+      else if(sounds[e.kind]&&e.kind!=='hurt')play(e.kind);
+    }
+    var hp=w.p&&w.p.hp;
+    if(typeof hp==='number'){if(scan.hp!==undefined&&hp<scan.hp)play('hurt');scan.hp=hp;}
+  }
+  function reset(){scan.hp=undefined;}
+  function toggle(){muted=!muted;try{localStorage.setItem('frontier-muted',muted?'1':'0');}catch(e){}if(master)master.gain.value=muted?0:.5;if(!muted)play('ui');return muted;}
+  return {play:play,scan:scan,reset:reset,toggle:toggle,init:init,isMuted:function(){return muted;}};
+})();
+
     const frontierRules=(()=>{
 const model=typeof module!=='undefined'?require('../games/frontier/world.js'):{frontierWorld,frontierStep,frontierChoose,frontierUpgrade,frontierSell,frontierLeave,frontierUpgradeHut,frontierRecruit};
 const {frontierWorld:createWorld,frontierStep:step,frontierChoose:choose,frontierUpgrade:upgrade,frontierSell:sell,frontierLeave:leave,frontierUpgradeHut:upgradeHut,frontierRecruit:recruit}=model;
@@ -30395,7 +30462,7 @@ function ftBuilding(b,w){
       else if(world.phase==='clear')world=frontierWorld(world.level===50?1:world.level+1,Object.assign({},world.tech),world.coins);
       if(!fresh){if(round)AN.resume(round,params());else round=AN.start('frontier',0,params());}
       if(world.level>10&&(world.level-1)%10===0&&world.time<1)showNotice('新解鎖：工人小屋現在可以升到 Lv.'+world.cfg.houseMax+'！村民更多、採集更快。');
-      paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});syncViewport();
+      ftSfx.init();ftSfx.reset();ftSfx.play('ui');paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});syncViewport();
     }
     function selectLevel(n){if(ranking){rankStatus('排行遠征從第一島依序前進。');return;}if(!paid||n>Math.min(50,cleared+1))return;pause();pendingLevel=n;set('ft-select-label','前往關卡 '+n+'？');$('ft-select').hidden=false;}
     function updateMap(){Array.from($('ft-map').children).forEach(function(b,i){b.disabled=!paid||i+1>Math.min(50,cleared+1);var cl=(i+1<=cleared?'ft-done ':'')+(world&&world.level===i+1?'ft-current':'');if(b.className!==cl)b.className=cl;var current=world&&world.level===i+1?'step':'false';if(b.getAttribute('aria-current')!==current)b.setAttribute('aria-current',current);});}
@@ -30419,7 +30486,7 @@ function ftBuilding(b,w){
       }updateMap();
     }
     var transientMessage=false;
-    function finishStage(){if(world.phase==='clear'){if(ranking)recordRank(886);cleared=Math.max(cleared,world.level);AN.progress(round,params(),true);endRound('complete');}else endRound('loss');paused=true;frontierBusy=false;release();persist();update();if(ranking)uploadRank();}
+    function finishStage(){ftSfx.play(world.phase==='clear'?'win':'lose');if(world.phase==='clear'){if(ranking)recordRank(886);cleared=Math.max(cleared,world.level);AN.progress(round,params(),true);endRound('complete');}else endRound('loss');paused=true;frontierBusy=false;release();persist();update();if(ranking)uploadRank();}
     function frame(now){if(visible){if(world&&!paused&&world.phase==='play'){
       var x=stick.x+(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),y=stick.y+(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
       if(x||y)walkTarget=null;
@@ -30433,9 +30500,9 @@ function ftBuilding(b,w){
           if(rankTicks>=2400||rankActions.length>=3000){uploadRank();break;}
         }
       }else frontierStep(world,{x:x,y:y,dash:dash},Math.min(.05,(now-last)/1000));dash=false;if(world.phase!=='play')finishStage();else if(now-saveAt>5000){persist();saveAt=now;}
-    }if(now-uiAt>180){update();uiAt=now;}paint();}last=now;requestAnimationFrame(frame);}
+    }if(world&&!paused)ftSfx.scan(world);if(now-uiAt>180){update();uiAt=now;}paint();}last=now;requestAnimationFrame(frame);}
     $('ft-go').addEventListener('click',function(){transientMessage=false;start();if(!world)transientMessage=true;});$('ft-pause').addEventListener('click',function(){if(paused)start();else pause();});
-    ['tool','blade','pack'].forEach(function(k){$('ft-'+k).addEventListener('click',function(){if(world&&!paused){var ok=frontierUpgrade(world,k);set('ft-upgrade',ok?'升級完成':'材料不足，或需要回到營地。');if(ok){recordRank(887+['tool','blade','pack'].indexOf(k));AN.progress(round,params(),false);persist();}update();}});});
+    ['tool','blade','pack'].forEach(function(k){$('ft-'+k).addEventListener('click',function(){if(world&&!paused){var ok=frontierUpgrade(world,k);set('ft-upgrade',ok?'升級完成':'材料不足，或需要回到營地。');ftSfx.play(ok?'upgrade':'deny');if(ok){recordRank(887+['tool','blade','pack'].indexOf(k));AN.progress(round,params(),false);persist();}update();}});});
     $('ft-select-yes').addEventListener('click',function(){if(!pendingLevel)return;endRound('restart');world=frontierWorld(pendingLevel,world?Object.assign({},world.tech):undefined,world?world.coins:0);pendingLevel=0;$('ft-select').hidden=true;paused=true;frontierBusy=false;persist();update();});$('ft-select-no').addEventListener('click',function(){pendingLevel=0;$('ft-select').hidden=true;});
     for(var n=1;n<=50;n++){var b=document.createElement('button');b.type='button';b.textContent=n;b.dataset.level=n;b.addEventListener('click',function(){selectLevel(Number(this.dataset.level));});$('ft-map').appendChild(b);}
     document.addEventListener('keydown',function(e){var k=e.key.toLowerCase();if(!visible||paused||(e.target.closest&&e.target.closest('input,select,textarea,button'))||!['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))return;e.preventDefault();keys[k]=true;if(k===' '&&!e.repeat)dash=true;AN.interact();});document.addEventListener('keyup',function(e){delete keys[e.key.toLowerCase()];});
@@ -30464,13 +30531,14 @@ function ftBuilding(b,w){
     $('ft-stage').addEventListener('click',function(e){if(e.target!==canvas&&!(e.target.closest&&e.target.closest('#ft-overlay')))return;if(e.target.closest&&e.target.closest('button,summary,details,a'))return;if(paused){start();}});
     canvas.addEventListener('pointerdown',function(e){if(paused)return;var r=canvas.getBoundingClientRect();if(viewCamera)walkTarget={x:(e.clientX-r.left)/viewCamera.scale+viewCamera.left,y:(e.clientY-r.top)/viewCamera.scale+viewCamera.top};if(walkTarget&&walkTarget.x>552&&walkTarget.x<678){walkTarget.x=walkTarget.x<615?530:700;}AN.interact();});
     function showShop(open){$('ft-shop').hidden=!open;$('ft-shop-toggle').setAttribute('aria-expanded',String(open));if(open)$('ft-main').classList.add('ft-shop-open');else $('ft-main').classList.remove('ft-shop-open');release();if(!open)canvas.focus({preventScroll:true});}
+    $('ft-mute').textContent=ftSfx.isMuted()?'🔇':'🔊';$('ft-mute').addEventListener('click',function(){this.textContent=ftSfx.toggle()?'🔇':'🔊';});
     $('ft-journal').addEventListener('click',function(){var open=$('ft-task-details').hidden;$('ft-task-details').hidden=!open;this.setAttribute('aria-expanded',String(open));release();});
     $('ft-shop-toggle').addEventListener('click',function(){showShop($('ft-shop').hidden);});
     $('ft-shop-close').addEventListener('click',function(){showShop(false);});
-    ['wood','stone'].forEach(function(k){$('ft-sell-'+k).addEventListener('click',function(){if(!world||paused)return;var sold=frontierSell(world,k,Number($('ft-sale-count').value||10));set('ft-upgrade',sold?'交易完成':'需要市集、倉庫材料與靠近市集');if(sold){recordRank(893+(k==='stone'?100:0)+Math.max(1,Math.min(100,Number($('ft-sale-count').value||10)))-1);persist();}update();});});
-    for(var ci=0;ci<3;ci++)(function(n){$('ft-card-'+n).addEventListener('click',function(){if(world&&(!ranking||!paused&&!rankPending&&!rankSending)&&frontierChoose(world,n)){recordRank(882+n);persist();update();$('ft-canvas').focus({preventScroll:true});}});})(ci);
-    $('ft-hut-up').addEventListener('click',function(){if(world&&!paused&&frontierUpgradeHut(world,this.dataset.kind)){recordRank(890+['house','guardhouse','barracks'].indexOf(this.dataset.kind));persist();update();}});
-    $('ft-recruit').addEventListener('click',function(){if(world&&!paused){var recruited=frontierRecruit(world);set('ft-upgrade',recruited?'戰士訓練中':'需要戰士小屋、足夠材料與空位');if(recruited){recordRank(885);persist();}update();}});
+    ['wood','stone'].forEach(function(k){$('ft-sell-'+k).addEventListener('click',function(){if(!world||paused)return;var sold=frontierSell(world,k,Number($('ft-sale-count').value||10));set('ft-upgrade',sold?'交易完成':'需要市集、倉庫材料與靠近市集');ftSfx.play(sold?'coin':'deny');if(sold){recordRank(893+(k==='stone'?100:0)+Math.max(1,Math.min(100,Number($('ft-sale-count').value||10)))-1);persist();}update();});});
+    for(var ci=0;ci<3;ci++)(function(n){$('ft-card-'+n).addEventListener('click',function(){if(world&&(!ranking||!paused&&!rankPending&&!rankSending)&&frontierChoose(world,n)){ftSfx.play('upgrade');recordRank(882+n);persist();update();$('ft-canvas').focus({preventScroll:true});}});})(ci);
+    $('ft-hut-up').addEventListener('click',function(){if(world&&!paused&&frontierUpgradeHut(world,this.dataset.kind)){ftSfx.play('upgrade');recordRank(890+['house','guardhouse','barracks'].indexOf(this.dataset.kind));persist();update();}});
+    $('ft-recruit').addEventListener('click',function(){if(world&&!paused){var recruited=frontierRecruit(world);set('ft-upgrade',recruited?'戰士訓練中':'需要戰士小屋、足夠材料與空位');ftSfx.play(recruited?'upgrade':'deny');if(recruited){recordRank(885);persist();}update();}});
     $('ft-next').addEventListener('click',function(){if(world&&!paused&&frontierLeave(world)){finishStage();}});
     $('ft-home').addEventListener('click',function(){if(world&&!paused){walkTarget={x:180,y:450};AN.interact();}});
     document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});window.addEventListener('blur',pause);window.addEventListener('pagehide',function(e){pause();if(!e.persisted)endRound('abandoned');},{capture:true});
