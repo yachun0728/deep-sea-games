@@ -30484,7 +30484,7 @@ function paint(){
    ctx.fillStyle='#b29b6d66';ctx.fillRect(b.x-31,b.y-14,62,30);ctx.fillStyle='#98734f';for(var stake=0;stake<4;stake++)ctx.fillRect(b.x+(stake%2?28:-31),b.y+(stake>1?11:-17),4,13);ctx.fillStyle='#123b31e6';ctx.beginPath();ctx.roundRect(b.x-52,b.y+12,104,23,7);ctx.fill();
    text('🪵 '+b.wood+' ◆ '+b.stone,b.x,b.y+28,11);if(b.kind==='beacon'&&!frontierReady(w))text('先完成任務',b.x,b.y+22,10);
   }
-  text(labels[b.kind],b.x,b.y+(b.built?24:-119),12);if(b.built&&b.hp>0&&['mill','quarry','forge','warehouse'].includes(b.kind))text(w.cfg.war?(b.kind==='mill'?'木材背包 +5':b.kind==='quarry'?'石頭背包 +5':'木材石頭背包各 +5'):(b.kind==='mill'?'伐木 +1 · 工具上限 8':b.kind==='quarry'?'採石 +1 · 背包 +12':'攻擊 +9 · 武器上限 8'),b.x,b.y+40,10,'#ffe4a4');
+  text(labels[b.kind],b.x,b.y+(b.built?24:50),12);if(b.built&&b.hp>0&&['mill','quarry','forge','warehouse'].includes(b.kind))text(w.cfg.war?(b.kind==='mill'?'木材背包 +5':b.kind==='quarry'?'石頭背包 +5':'木材石頭背包各 +5'):(b.kind==='mill'?'伐木 +1 · 工具上限 8':b.kind==='quarry'?'採石 +1 · 背包 +12':'攻擊 +9 · 武器上限 8'),b.x,b.y+40,10,'#ffe4a4');
  }});});
  if(w.cfg.mission==='rescue')w.cages.forEach(function(c){objects.push({y:c.y,draw:function(){point(c.x,c.y,20,c.open?'#b9d59b':'#6e7460','#f1d89d');text(c.open?'✓':'!',c.x,c.y+5,20);if(!c.open){ctx.strokeStyle='#dfd3a7';for(var j=-12;j<=12;j+=8){ctx.beginPath();ctx.moveTo(c.x+j,c.y-20);ctx.lineTo(c.x+j,c.y+20);ctx.stroke();}}}});});
  w.enemies.forEach(function(e){if(e.hp<=0)return;objects.push({y:e.y,draw:function(){
