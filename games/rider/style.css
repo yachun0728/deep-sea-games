@@ -1,0 +1,25 @@
+/* 外送員大戰惡犬：開始按鈕與手機狀態列配合遊戲畫面的深青色面板、黃色按鈕 */
+#view-rider .go:not(:disabled){background:#ffbf1f;color:#13283d;border:3px solid #13283d;border-radius:999px;font-weight:900;letter-spacing:.04em;box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 4px 0 #cf8500,0 8px 18px rgba(10,25,40,.35)}
+#view-rider .go:hover:not(:disabled){background:#ffcb45}
+#view-rider .go:active:not(:disabled){transform:translateY(2px);box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 2px 0 #cf8500,0 4px 10px rgba(10,25,40,.35)}
+#view-rider .go:disabled{background:#2a5670;color:#bfe6f2;border:3px solid #4f8fa8;border-radius:999px}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  #view-rider .fs-game .side .go:active:not(:disabled){transform:translateX(-50%) translateY(2px)}
+  /* 手機全螢幕上方狀態列與返回鈕：深青色面板 */
+  #view-rider .fs-game .stats>div{background:#173b4f;border:2px solid #4f8fa8;border-radius:12px;box-shadow:0 3px 0 rgba(5,15,30,.4)}
+  #view-rider .fs-game .stats dt{color:#9fd3e6;font-weight:700}
+  #view-rider .fs-game .stats dd{color:#fff;font-weight:900}
+  #view-rider .fs-game .fs-exit{background:#173b4f;border:2px solid #4f8fa8;color:#fff;box-shadow:0 3px 0 rgba(5,15,30,.4)}
+}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  /* 手機全螢幕不顯示下方訊息列：開始、結算、里程碑都已畫在遊戲畫面與按鈕上，避免蓋住跳躍／加速鈕 */
+  #view-rider .fs-game .msg{display:none}
+}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  /* 結束後出現「分享成績」時：分享改成左側只有圖示的圓鈕，再送一次放右側，不再疊在一起 */
+  #view-rider .fs-game:has(.share-result:not([hidden])) .mobile-stage-actions{left:80px;right:12px}
+  #view-rider .fs-game:has(.share-result:not([hidden])) #rider-go:not(:disabled){width:100%;min-width:0;height:56px;min-height:56px;padding:6px 12px}
+  #view-rider .fs-game .share-result:not([hidden]){left:12px;right:auto;transform:none;width:56px;height:56px;min-height:56px;padding:0;justify-content:center;border:3px solid #4f8fa8;border-radius:50%;background:#173b4f;color:#fff;font-size:22px}
+  #view-rider .fs-game .share-result span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  #view-rider .share-result i{color:#ffbf1f;font-size:22px}
+}
