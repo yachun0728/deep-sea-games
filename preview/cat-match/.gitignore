@@ -1,0 +1,4 @@
+# Local art references and review pages are not deployment assets.
+/design/
+/assets/icon-sheet.png
+/specials-review.html

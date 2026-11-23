@@ -1,9 +1,0 @@
-# 拉布背景 v2
-
-2026-11-23 使用者採用森林背景 v1 後，要求拉布縮小、降低、畫風接近棋盤 icon；身體與墊子允許被遮住。使用內建 image_gen 編輯 v1，保留原稿，輸出 `forest-rabu-background-v2.png`，已接入 v0.5 試玩版。
-
-背景等比例 cover 靠左顯示，優先保留拉布臉；窄螢幕會裁掉部分右側木屋。棋盤優先使用寬度，底部操作放右側避開臉部。
-
-## 生成提示
-
-Edit input 1, the portrait forest game background. Preserve exactly the original portrait dimensions and the cozy green forest, flowers, sky, cottage at right, central pale negative space, wooden foreground. Change ONLY the cat and cushion at lower left and their immediately adjacent fill area. Input 2 is STYLE REFERENCE for the cat: rounded cute mobile match-3 icon, thick clean dark-brown outline, simple large shapes, smooth glossy shaded colors, minimal fur texture, cute squat head, not realistic detailed fur. Input 3 is the IDENTITY reference for Rabu: gray/taupe tortoiseshell with pale orange patches, small irregular orange forehead blaze, huge yellow-green open eyes and cream muzzle. Do not turn Rabu into an orange tabby. Shrink Rabu and move significantly DOWN: the very top of ears at 81% of total image height, chin around 93%, body and cushion extend below the bottom frame and may be cropped. Cat head width roughly 20% of whole image width, face center at x=14%, y=88%. Only the friendly chibi face with round large eyes and perhaps tips of two front paws should peek up from the bottom-left edge. This is a small companion, not a full-body portrait. Preserve distinctive patchy fur colors but simplify them to crisp icon-like patches matching input 2. Remove the former large cat and former large cushion so the region from y=65% to 80% becomes empty soft garden background, with no ghost cat. Keep exact established scenery elsewhere, don't add UI, board, text, labels, watermarks or other characters. User now explicitly permits body and cushion to be occluded by game controls; keep recognizable head low and compact to allow a large board above it.
