@@ -3,6 +3,7 @@
   (function(){
     'use strict';
     {{include:games/frontier/world.js}}
+    {{include:games/frontier/audio.js}}
     {{include:shared/frontier-rules.cjs}}
     {{include:games/frontier/draw.js}}
     var canvas=$('ft-canvas'),ctx=canvas.getContext('2d'),world=null;
@@ -124,7 +125,7 @@
       else if(world.phase==='clear')world=frontierWorld(world.level===50?1:world.level+1,Object.assign({},world.tech),world.coins);
       if(!fresh){if(round)AN.resume(round,params());else round=AN.start('frontier',0,params());}
       if(world.level>10&&(world.level-1)%10===0&&world.time<1)showNotice('{{t:frontier.msg.041}}'+world.cfg.houseMax+'{{t:frontier.msg.042}}');
-      paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});syncViewport();
+      ftSfx.init();ftSfx.reset();ftSfx.play('ui');paused=false;frontierBusy=true;release();last=performance.now();persist();update();canvas.focus({preventScroll:true});syncViewport();
     }
     function selectLevel(n){if(ranking){rankStatus('{{t:frontier.msg.043}}');return;}if(!paid||n>Math.min(50,cleared+1))return;pause();pendingLevel=n;set('ft-select-label','前往關卡 '+n+'？');$('ft-select').hidden=false;}
     function updateMap(){Array.from($('ft-map').children).forEach(function(b,i){b.disabled=!paid||i+1>Math.min(50,cleared+1);var cl=(i+1<=cleared?'ft-done ':'')+(world&&world.level===i+1?'ft-current':'');if(b.className!==cl)b.className=cl;var current=world&&world.level===i+1?'step':'false';if(b.getAttribute('aria-current')!==current)b.setAttribute('aria-current',current);});}
@@ -148,7 +149,7 @@
       }updateMap();
     }
     var transientMessage=false;
-    function finishStage(){if(world.phase==='clear'){if(ranking)recordRank(886);cleared=Math.max(cleared,world.level);AN.progress(round,params(),true);endRound('complete');}else endRound('loss');paused=true;frontierBusy=false;release();persist();update();if(ranking)uploadRank();}
+    function finishStage(){ftSfx.play(world.phase==='clear'?'win':'lose');if(world.phase==='clear'){if(ranking)recordRank(886);cleared=Math.max(cleared,world.level);AN.progress(round,params(),true);endRound('complete');}else endRound('loss');paused=true;frontierBusy=false;release();persist();update();if(ranking)uploadRank();}
     function frame(now){if(visible){if(world&&!paused&&world.phase==='play'){
       var x=stick.x+(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),y=stick.y+(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
       if(x||y)walkTarget=null;
@@ -162,9 +163,9 @@
           if(rankTicks>=2400||rankActions.length>=3000){uploadRank();break;}
         }
       }else frontierStep(world,{x:x,y:y,dash:dash},Math.min(.05,(now-last)/1000));dash=false;if(world.phase!=='play')finishStage();else if(now-saveAt>5000){persist();saveAt=now;}
-    }if(now-uiAt>180){update();uiAt=now;}paint();}last=now;requestAnimationFrame(frame);}
+    }if(world&&!paused)ftSfx.scan(world);if(now-uiAt>180){update();uiAt=now;}paint();}last=now;requestAnimationFrame(frame);}
     $('ft-go').addEventListener('click',function(){transientMessage=false;start();if(!world)transientMessage=true;});$('ft-pause').addEventListener('click',function(){if(paused)start();else pause();});
-    ['tool','blade','pack'].forEach(function(k){$('ft-'+k).addEventListener('click',function(){if(world&&!paused){var ok=frontierUpgrade(world,k);set('ft-upgrade',ok?'{{t:frontier.msg.076}}':'{{t:frontier.msg.077}}');if(ok){recordRank(887+['tool','blade','pack'].indexOf(k));AN.progress(round,params(),false);persist();}update();}});});
+    ['tool','blade','pack'].forEach(function(k){$('ft-'+k).addEventListener('click',function(){if(world&&!paused){var ok=frontierUpgrade(world,k);set('ft-upgrade',ok?'{{t:frontier.msg.076}}':'{{t:frontier.msg.077}}');ftSfx.play(ok?'upgrade':'deny');if(ok){recordRank(887+['tool','blade','pack'].indexOf(k));AN.progress(round,params(),false);persist();}update();}});});
     $('ft-select-yes').addEventListener('click',function(){if(!pendingLevel)return;endRound('restart');world=frontierWorld(pendingLevel,world?Object.assign({},world.tech):undefined,world?world.coins:0);pendingLevel=0;$('ft-select').hidden=true;paused=true;frontierBusy=false;persist();update();});$('ft-select-no').addEventListener('click',function(){pendingLevel=0;$('ft-select').hidden=true;});
     for(var n=1;n<=50;n++){var b=document.createElement('button');b.type='button';b.textContent=n;b.dataset.level=n;b.addEventListener('click',function(){selectLevel(Number(this.dataset.level));});$('ft-map').appendChild(b);}
     document.addEventListener('keydown',function(e){var k=e.key.toLowerCase();if(!visible||paused||(e.target.closest&&e.target.closest('input,select,textarea,button'))||!['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))return;e.preventDefault();keys[k]=true;if(k===' '&&!e.repeat)dash=true;AN.interact();});document.addEventListener('keyup',function(e){delete keys[e.key.toLowerCase()];});
@@ -193,13 +194,14 @@
     $('ft-stage').addEventListener('click',function(e){if(e.target!==canvas&&!(e.target.closest&&e.target.closest('#ft-overlay')))return;if(e.target.closest&&e.target.closest('button,summary,details,a'))return;if(paused){start();}});
     canvas.addEventListener('pointerdown',function(e){if(paused)return;var r=canvas.getBoundingClientRect();if(viewCamera)walkTarget={x:(e.clientX-r.left)/viewCamera.scale+viewCamera.left,y:(e.clientY-r.top)/viewCamera.scale+viewCamera.top};if(walkTarget&&walkTarget.x>552&&walkTarget.x<678){walkTarget.x=walkTarget.x<615?530:700;}AN.interact();});
     function showShop(open){$('ft-shop').hidden=!open;$('ft-shop-toggle').setAttribute('aria-expanded',String(open));if(open)$('ft-main').classList.add('ft-shop-open');else $('ft-main').classList.remove('ft-shop-open');release();if(!open)canvas.focus({preventScroll:true});}
+    $('ft-mute').textContent=ftSfx.isMuted()?'🔇':'🔊';$('ft-mute').addEventListener('click',function(){this.textContent=ftSfx.toggle()?'🔇':'🔊';});
     $('ft-journal').addEventListener('click',function(){var open=$('ft-task-details').hidden;$('ft-task-details').hidden=!open;this.setAttribute('aria-expanded',String(open));release();});
     $('ft-shop-toggle').addEventListener('click',function(){showShop($('ft-shop').hidden);});
     $('ft-shop-close').addEventListener('click',function(){showShop(false);});
-    ['wood','stone'].forEach(function(k){$('ft-sell-'+k).addEventListener('click',function(){if(!world||paused)return;var sold=frontierSell(world,k,Number($('ft-sale-count').value||10));set('ft-upgrade',sold?'{{t:frontier.msg.078}}':'{{t:frontier.msg.079}}');if(sold){recordRank(893+(k==='stone'?100:0)+Math.max(1,Math.min(100,Number($('ft-sale-count').value||10)))-1);persist();}update();});});
-    for(var ci=0;ci<3;ci++)(function(n){$('ft-card-'+n).addEventListener('click',function(){if(world&&(!ranking||!paused&&!rankPending&&!rankSending)&&frontierChoose(world,n)){recordRank(882+n);persist();update();$('ft-canvas').focus({preventScroll:true});}});})(ci);
-    $('ft-hut-up').addEventListener('click',function(){if(world&&!paused&&frontierUpgradeHut(world,this.dataset.kind)){recordRank(890+['house','guardhouse','barracks'].indexOf(this.dataset.kind));persist();update();}});
-    $('ft-recruit').addEventListener('click',function(){if(world&&!paused){var recruited=frontierRecruit(world);set('ft-upgrade',recruited?'{{t:frontier.msg.080}}':'{{t:frontier.msg.081}}');if(recruited){recordRank(885);persist();}update();}});
+    ['wood','stone'].forEach(function(k){$('ft-sell-'+k).addEventListener('click',function(){if(!world||paused)return;var sold=frontierSell(world,k,Number($('ft-sale-count').value||10));set('ft-upgrade',sold?'{{t:frontier.msg.078}}':'{{t:frontier.msg.079}}');ftSfx.play(sold?'coin':'deny');if(sold){recordRank(893+(k==='stone'?100:0)+Math.max(1,Math.min(100,Number($('ft-sale-count').value||10)))-1);persist();}update();});});
+    for(var ci=0;ci<3;ci++)(function(n){$('ft-card-'+n).addEventListener('click',function(){if(world&&(!ranking||!paused&&!rankPending&&!rankSending)&&frontierChoose(world,n)){ftSfx.play('upgrade');recordRank(882+n);persist();update();$('ft-canvas').focus({preventScroll:true});}});})(ci);
+    $('ft-hut-up').addEventListener('click',function(){if(world&&!paused&&frontierUpgradeHut(world,this.dataset.kind)){ftSfx.play('upgrade');recordRank(890+['house','guardhouse','barracks'].indexOf(this.dataset.kind));persist();update();}});
+    $('ft-recruit').addEventListener('click',function(){if(world&&!paused){var recruited=frontierRecruit(world);set('ft-upgrade',recruited?'{{t:frontier.msg.080}}':'{{t:frontier.msg.081}}');ftSfx.play(recruited?'upgrade':'deny');if(recruited){recordRank(885);persist();}update();}});
     $('ft-next').addEventListener('click',function(){if(world&&!paused&&frontierLeave(world)){finishStage();}});
     $('ft-home').addEventListener('click',function(){if(world&&!paused){walkTarget={x:180,y:450};AN.interact();}});
     document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});window.addEventListener('blur',pause);window.addEventListener('pagehide',function(e){pause();if(!e.persisted)endRound('abandoned');},{capture:true});
