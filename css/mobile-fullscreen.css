@@ -10,6 +10,7 @@
 #view-elevator{--ar:.8966;--hud:132px;--fs-bg:#101d2e}
 #view-frog,#view-nap,#view-pudding,#view-clock-out,#view-carp{--ar:.7143;--hud:52px;--fs-bg:#12203a}
 #view-skybuilder,#view-baby,#view-thief,#view-boss,#view-rider{--ar:.7143;--hud:96px;--fs-bg:#12203a}
+#view-thief{--fs-bg:#5f8f3e}
 #view-carp{--hud:96px}
 #view-breakout{--ar:.7692;--hud:52px;--fs-bg:#0c1224}
 #view-mosquito{--ar:.6667;--hud:52px;--fs-bg:#0b1020}
