@@ -1,0 +1,21 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+import R from '../shared/cat-match-rules.js';
+const SEED=Number(process.env.CAT_MATCH_TEST_SEED||18);
+const nodes=new Map(),ctx=new Proxy({},{get:(_,k)=>k==='createLinearGradient'?()=>({addColorStop(){}}):()=>{}});
+const $=id=>nodes.get(id)||nodes.set(id,{style:{},hidden:false,disabled:false,textContent:'',getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:390,height:480}),setAttribute(){},setPointerCapture(){},replaceChildren(){},append(){}}).get(id);
+let tracked=[],finishes=0,prepared=0;const saved=new Map();
+const bridge={getLanguage:()=> 'zh-Hant',prepare:async()=>{prepared++;return{id:'round'+prepared,seed:SEED,ranked:true}},pause(){},resume(){},touch(){},trackEnd:(...args)=>tracked.push(args),finish:async()=>{finishes++;return true},leaders:async()=>({entries:[]})};
+const sandbox={console,catMatchRules:R,Map,Set,Promise,Math,JSON,crypto:{getRandomValues:a=>(a[0]=SEED,a)},devicePixelRatio:1,Image:class{},matchMedia:()=>({matches:true}),localStorage:{getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)},document:{hidden:false,documentElement:{},getElementById:$,querySelectorAll:()=>[],addEventListener(){},createElement:()=>({})},window:{addEventListener(){}},parent:{deepSeaCatMatch:bridge},performance:{now:()=>0},createCatMatchSound:()=>({play(){},sync(){}})};
+vm.createContext(sandbox);vm.runInContext(fs.readFileSync(new URL('../games/cat-match/i18n.js',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('../games/cat-match/main.js',import.meta.url),'utf8'),sandbox);
+const flush=async()=>{for(let i=0;i<100;i++)await Promise.resolve()};await flush();assert.equal($('moves').textContent,24);assert.equal($('hint').disabled,false);
+const g=R.create(SEED,1);let pid=0;
+while(!g.over){const [a,b]=R.legal(g)[0];let cell=390/8;
+ const event=i=>({pointerId:++pid,clientX:(i%8+.5)*cell,clientY:((i>>3)+.5)*cell});let begin=event(a),end={...event(b),pointerId:begin.pointerId};
+ $('board').onpointerdown(begin);$('board').onpointermove(end);$('board').onpointerup(end);assert.ok(R.act(g,a*64+b));await flush();assert.equal(Number($('moves').textContent),g.moves);assert.ok($('score').textContent.includes(String(g.score)));
+}
+assert.equal(finishes,1);assert.equal(tracked.length,1);assert.equal($('overlay').hidden,false);assert.equal($('hint').disabled,true);sandbox.window.setCatMatchLanguage('en');assert.equal($('dialogTitle').textContent,g.won?'This stop is complete!':'A little catnap');assert.equal(/[\u3400-\u9fff]/.test($('dialogText').textContent),false);
+$('primary').onclick();await flush();assert.equal(prepared,2);assert.equal($('moves').textContent,24);assert.equal($('hintCount').textContent,'3 left');assert.equal($('shuffleCount').textContent,'2 left');assert.equal($('overlay').hidden,true);
+sandbox.window.setCatMatchActive(false);assert.equal($('overlay').hidden,false);sandbox.window.setCatMatchActive(true);$('primary').onclick();assert.equal($('overlay').hidden,true);
+console.log(`Cat Match controller: complete real seeded round (${g.score}), single settlement, end-screen language switch, next-round refill, hide/resume passed.`);

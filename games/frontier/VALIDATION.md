@@ -68,3 +68,9 @@ Opening mobile hint now starts expanded. A persistent named Fullscreen guide but
 - Chrome viewport 390×844: starts playing without rotate prompt; canvas 388×842 fills frame. Screenshot /tmp/frontier-portrait-preview.jpg.
 - Chrome viewport 320×568: no horizontal overflow, canvas 318×566; shop bounds x=9..311, y=59..427. Shop opens/closes, pause and fullscreen exit remain available. This is browser viewport testing, not real iPhone Safari acceptance.
 - Catalog hidden=true retained; player storage and gameplay rules unchanged.
+
+## 2026-11-23 HUD 靜音鈕
+
+- 靜音鈕原本是 emoji 文字鈕，在 644px 寬時被擠到 HUD 第二行，把整個頂部面板撐高並蓋到波數提示；改成 HUD 同一列的小圖示鈕（SVG 喇叭／靜音叉叉），`.ft-top` 全尺寸改為單列 flex，`aria-pressed` 表示靜音狀態，沿用 `frontier-muted` 儲存值。
+- 實際以 644×700、390×844（遊玩中沉浸版面）、800×380 橫向、1100×700 桌面檢查：HUD 皆為單列，靜音鈕在同一列，沒有換行或蓋住波數提示；切換靜音會換圖示並寫入 `frontier-muted`。
+- 未驗證：實機觸控手感、真實聲音輸出（只確認狀態與儲存）、英文介面外觀。

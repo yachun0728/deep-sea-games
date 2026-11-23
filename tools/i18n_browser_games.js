@@ -115,13 +115,13 @@ try {
     assert(button.closest('.side')&&i.sourceText(button)===sourceLabel,'Live Stop action returns to its original panel after the label fixture');
   }
  }
- for(var game of [{id:'dive',frame:'dv-frame',button:'dv-go'},{id:'mrt',frame:'mr-frame',button:'mr-go'},{id:'pancake',frame:'pancake-frame',button:'btn-touch'},{id:'eat-smaller',frame:'es-frame',button:'es-go'},{id:'mirror-twins',frame:'mt-frame',button:'mt-go'},{id:'shadow-relay',frame:'sr-frame',button:'sr-go'},{id:'one-line-defense',frame:'od-frame',button:'od-go'},{id:'tetris',frame:'tt-frame',button:'tt-go'},{id:'quack-pond',frame:'qp-frame',button:'qp-go'}]){
+ for(var game of [{id:'cat-match',frame:'cm-frame',button:'hint',inner:true},{id:'dive',frame:'dv-frame',button:'dv-go'},{id:'mrt',frame:'mr-frame',button:'mr-go'},{id:'pancake',frame:'pancake-frame',button:'btn-touch'},{id:'eat-smaller',frame:'es-frame',button:'es-go'},{id:'mirror-twins',frame:'mt-frame',button:'mt-go'},{id:'shadow-relay',frame:'sr-frame',button:'sr-go'},{id:'one-line-defense',frame:'od-frame',button:'od-go'},{id:'tetris',frame:'tt-frame',button:'tt-go'},{id:'quack-pond',frame:'qp-frame',button:'qp-go'},{id:'siege-architect',frame:'sa-frame',button:'goBtn',inner:true}]){
    location.hash=game.id;await wait(250);
    var frame=document.getElementById(game.frame),doc=frame.contentDocument;
    assert(doc&&doc.body,game.id+': same-origin iframe loads');
    assert(!chinese(doc.body).length,game.id+': iframe labels translated '+JSON.stringify(chinese(doc.body)));
    var before=balance();
-   if(game.id==='pancake')doc.getElementById(game.button).click();else document.getElementById(game.button).click();
+   if(game.id==='pancake'||game.inner)doc.getElementById(game.button).click();else document.getElementById(game.button).click();
    await wait();
    assert(balance()===before,game.id+': iframe start is free and charges nothing');
    var paid=balance();i.setLanguage('zh-Hant');await wait();i.setLanguage('en');await wait();

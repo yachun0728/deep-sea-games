@@ -385,6 +385,14 @@
     "style": "games/quack-pond/style.css"
   },
   {
+    "id": "siege-architect",
+    "logic": "games/siege-architect/game.js",
+    "view": "games/siege-architect/view.html",
+    "card": "games/siege-architect/card.html",
+    "icon": "games/siege-architect/icon.svg",
+    "style": "games/siege-architect/style.css"
+  },
+  {
     "id": "market-desk",
     "logic": "games/market-desk/game.js",
     "view": "games/market-desk/view.html",
@@ -415,5 +423,13 @@
     "card": "games/academy/card.html",
     "icon": "games/academy/icon.svg",
     "style": "games/academy/style.css"
+  },
+  {
+    "id": "cat-match",
+    "logic": "games/cat-match/game.js",
+    "view": "games/cat-match/view.html",
+    "card": "games/cat-match/card.html",
+    "icon": "games/cat-match/icon.svg",
+    "style": "games/cat-match/style.css"
   }
 ]

@@ -154,3 +154,20 @@ html.frontier-immersive{overflow:hidden}
 #view-frontier .ft-notice[hidden]{display:none}
 
 #view-frontier .ft-rank-controls{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px}#view-frontier .ft-rank-controls p{margin:0;font-size:13px;color:var(--muted)}
+/* HUD: one flex row at every size. The sound control is a compact icon button in that row, so it never wraps and pushes the panel down. */
+#view-frontier .ft-top{display:flex;align-items:center;flex-wrap:nowrap;gap:8px}
+#view-frontier .ft-top>.ft-eyebrow{order:1;flex:none}
+#view-frontier .ft-top>.ft-status{order:2;flex:1 1 auto;min-width:0}
+#view-frontier .ft-top>#ft-journal{order:3;flex:none}
+#view-frontier .ft-top>#ft-full{order:4;flex:none}
+#view-frontier .ft-top>#ft-mute{order:5}
+#view-frontier .ft-top>.game-exit-link{order:6;flex:none}
+#view-frontier .ft-mute{display:inline-grid;place-items:center;flex:none;width:34px;min-width:34px;height:30px;min-height:30px;padding:0;border:1px solid #e4c88f66;border-radius:9px;background:linear-gradient(#1f4f48,#143833);color:#f3dfa8;box-shadow:inset 0 1px 0 #ffffff1f;cursor:pointer}
+#view-frontier .ft-mute svg{display:block;width:18px;height:18px}
+#view-frontier .ft-mute .ft-ico-off{display:none}
+#view-frontier .ft-mute[aria-pressed="true"]{color:#c9bfa0;background:linear-gradient(#2b3a38,#1d2a29);border-color:#9f9a8455}
+#view-frontier .ft-mute[aria-pressed="true"] .ft-ico-on{display:none}
+#view-frontier .ft-mute[aria-pressed="true"] .ft-ico-off{display:block}
+#view-frontier .ft-mute:hover{border-color:#f0d58f}
+#view-frontier .ft-mute:focus-visible{outline:2px solid #f0d58f;outline-offset:2px}
+@media(max-width:600px){#view-frontier .ft-mute{width:38px;min-width:38px;height:36px;min-height:36px}}

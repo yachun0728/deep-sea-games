@@ -99,14 +99,20 @@ def js_literals(source):
     return found
 
 
-def source_texts(skip=()):
+# Same-origin pages that carry their own zh/en string tables and mark <body data-i18n-ignore>: the site
+# dictionary never translates them (Simplified Chinese still converts them, so the Hans tables keep scanning
+# them). Their English is checked against their own tables by a dedicated test instead.
+SELF_LOCALIZED = ('games/siege-architect/original.html',)  # tools/test_siege_architect.mjs
+
+
+def source_texts(skip=(), skip_files=()):
     """Audit static text and literal fragments used by the existing concatenated game UI."""
     found = set()
     for folder in ('templates', 'games', 'js', 'platform'):
         for path in (ROOT / folder).rglob('*'):
             if path.suffix not in ('.html', '.js') or path.name == 'i18n.js':
                 continue
-            if any(part in skip for part in path.relative_to(ROOT).parts):
+            if any(part in skip for part in path.relative_to(ROOT).parts) or path.relative_to(ROOT).as_posix() in skip_files:
                 continue
             source = path.read_text(encoding='utf-8')
             if path.suffix == '.html':
@@ -135,7 +141,7 @@ class LocalizationTests(unittest.TestCase):
         cls.dictionary = i18n_data.dictionary(ROOT)
 
     def test_source_text_is_covered(self):
-        missing = sorted(source_texts() - self.dictionary.keys())
+        missing = sorted(source_texts(skip_files=SELF_LOCALIZED) - self.dictionary.keys())
         self.assertEqual(missing, [], 'Add English translations for new source UI text')
 
     def test_english_values_are_nonempty_and_not_chinese(self):

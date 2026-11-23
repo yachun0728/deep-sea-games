@@ -151,6 +151,10 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 免費邏輯謎題、無 BONUS。每關一次 start（entry_points=0）；正確放置一隻鴨子送一次 progress（step=已放鴨數）。關卡完成送 end：win→result=complete、loss→result=loss、離開→result=abandoned；附 level（1–200）與 stars（0–3，hearts 剩餘數）、payout_points=0。pagehide 由共用層送 abandoned；BFCache persisted 不結束。未驗證 GA4 後台收件。
 
+## 萌獸破城隊（siege-architect）
+
+免費確定性解謎、無 BONUS，`game_name=萌獸破城隊`。一局是同一關裡的一段遊玩：子頁第一次編排或按出擊時送 start（entry_points=0）；每次出擊送 progress（stage=關卡 1–20、step=本局出擊次數），失敗與撤退不結束本局。攻破城門送 end：result=complete、score=關卡、step=這次星數（1–3）、payout_points=0；換到別關送 cancelled；正常離頁由 game.js 先於共用層送 abandoned，BFCache 不結束。離開遊戲畫面時子頁暫停並送 progress（phase=pause），回來送 resume。未驗證 GA4 後台收件。
+
 ## 時序修復（dream）
 
 無限關卡、固定入場10點，沒有點數獎勵。每局一次start；過關progress帶stage、score（完成關數）、reversals（本關已反轉次數）並暫停有效時間，下一關resume。失敗end為loss、payout_points=0，不送multiplier或cashout；正常離頁由共用層送abandoned，BFCache沿用暫停／恢復。未驗證GA4後台收件。
@@ -172,3 +176,5 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 深海前哨使用 `game_id=outpost`、`game_name=深海前哨`。開局送 start，波次切換及暫停送 progress，手動續玩送 resume。結束帶 `stage=1`、`step`（波次）與 `score`（防守分數），結果為 `complete` 或 `loss`。重新整理沿用平台的 `abandoned`，入場及遊戲結算點數皆為 0。
 
 《深海火線》（`blaster`）採連續航行。事件的 `stage` 表示每 1,000 公尺的難度段，`score` 仍為擊破數；航行進度與結束事件包含整數公尺 `distance_m`。每 10,000 公尺發出的固定點數記在 `bonus_points` 與 `total_bonus_points`。訪客排行榜由 Worker 另行驗證距離。
+
+Cat Match（`cat-match`／貓貓三消）：一個關卡一個免費回合；進入新關 start，收集完成 complete、步數耗盡 loss、重玩／離頁 abandoned；暫停排除有效停留時間，score 為單關分數，沒有點數入帳。
