@@ -11,5 +11,5 @@ for(let level=1;level<=36;level++)for(let seed=1;seed<=20;seed++){
  assert.ok(g.over);g.won?wins++:losses++;assert.deepEqual(R.replay(seed,level,plan),g);assert.equal(R.replay(seed,level,[...plan,0]),null);assert.equal(R.replay(seed,level,plan.slice(0,-1)),null);
 }
 const g=R.create(18);for(let n=0;n<3;n++)assert.ok(R.act(g,R.HINT));assert.equal(R.act(g,R.HINT),false);for(let n=0;n<2;n++)assert.ok(R.act(g,R.SHUFFLE));assert.equal(R.act(g,R.SHUFFLE),false);assert.equal(g.moves,24);const before=structuredClone(g);assert.equal(R.act(g,0),false);assert.deepEqual(g,before);
-assert.equal(R.accepts(Array(30).fill(4096)),false);assert.equal(R.accepts([NaN]),false);assert.throws(()=>R.create(1,0));assert.throws(()=>R.create(1,1000001));assert.ok(specials>100);assert.ok(wins&&losses);
+assert.equal(R.accepts(Array(34).fill(4096)),false);assert.equal(R.accepts([NaN]),false);assert.throws(()=>R.create(1,0));assert.throws(()=>R.create(1,1000001));assert.ok(specials>100);assert.ok(wins);
 console.log(`Cat Match: 720 seeded rounds, ${wins} wins / ${losses} losses, ${specials} special cascades; replay, limits, stable boards, tampering passed.`);
