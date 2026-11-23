@@ -14,7 +14,7 @@ await new Promise(r=>setTimeout(r,actions.length*100+30));
 const sent=await request('/api/v1/boards/rounds/move',proof,token);assert.equal(sent.status,200);assert.equal(sent.body.state.score,g.score);assert.equal(sent.body.revision,1);
 const duplicate=await request('/api/v1/boards/rounds/move',proof,token);assert.deepEqual(duplicate,sent);
 const altered=await request('/api/v1/boards/rounds/move',{...proof,action:[0]},token);assert.equal(altered.status,409);
-const leaderboard=await request('/api/v1/leaderboard?gameId=cat-match');assert.equal(leaderboard.status,200);assert.equal(leaderboard.body.entries.find(e=>e.playerId===guest.body.playerId)?.score??leaderboard.body.entries[0].score,g.score);
+const leaderboard=await request('/api/v1/leaderboard?gameId=cat-match');assert.equal(leaderboard.status,200);assert.equal(leaderboard.body.entries.find(e=>e.playerId===guest.body.id)?.score,g.score);
 const feed=await request('/api/v1/leaderboard/feed');assert.ok(JSON.stringify(feed.body).includes('cat-match'));
 const invalid=await request('/api/v1/boards/rounds',{gameId:'cat-match',stage:1000001},token);assert.equal(invalid.status,400);
 console.log(`Cat Match API: score ${g.score}; D1-backed round, invalid boosters, ownership, replay, duplicate submit, stale command, leaderboard/feed verified.`);
