@@ -1113,6 +1113,8 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 .game-exit-link:hover,.game-exit-link:focus-visible{color:#eafffa;text-decoration:underline}
 .game-exit-link span[aria-hidden]{font-size:1.25rem;line-height:1}
 #view-frontier .ft-top>.game-exit-link{grid-column:-2;grid-row:1}
+/* Member buttons hidden for now (header account button, sidebar member link) */
+.top .account,.side-links a[href="#member"]{display:none!important}
 
 /* Result sharing: in-game share button and the result card dialog. */
 .share-result{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;margin-top:10px;padding:10px 16px;box-sizing:border-box;border:1px solid var(--tc-accent,#886cff);border-radius:8px;background:rgba(136,108,255,.12);color:#fff;font:600 16px/1.2 var(--tc-font,var(--font-body));cursor:pointer;transition:background .15s ease,transform .08s ease}

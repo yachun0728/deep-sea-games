@@ -561,3 +561,5 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 .game-exit-link:hover,.game-exit-link:focus-visible{color:#eafffa;text-decoration:underline}
 .game-exit-link span[aria-hidden]{font-size:1.25rem;line-height:1}
 #view-frontier .ft-top>.game-exit-link{grid-column:-2;grid-row:1}
+/* Member buttons hidden for now (header account button, sidebar member link) */
+.top .account,.side-links a[href="#member"]{display:none!important}
