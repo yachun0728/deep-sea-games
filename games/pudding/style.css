@@ -18,3 +18,12 @@
   #view-pudding .fs-game .share-result span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   #view-pudding .share-result i{color:#ffc93c;font-size:22px}
 }
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  /* 手機全螢幕不顯示下方黑底訊息列：開始、結算、過關提示都已畫在遊戲畫面裡 */
+  #view-pudding .fs-game .msg{display:none}
+}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  /* 上方狀態列留出內距，不擠在一起 */
+  #view-pudding .fs-game .stats{gap:6px}
+  #view-pudding .fs-game .stats>div{padding:5px 12px}
+}

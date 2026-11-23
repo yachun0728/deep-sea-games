@@ -7,7 +7,7 @@
 - 網址：`#thief`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「換道、跳籃子，偷水果躲開老闆娘。」｜立即開玩 · 市場追逐
 - 追蹤名稱（GA4 `game_name`）：偷水果的貓，`game_id` 為 `thief`
-- 檔案：`games/thief/card.html`、`games/thief/cover.webp`、`games/thief/game.js`、`games/thief/icon.svg`、`games/thief/leaderboard.webp`、`games/thief/style.css`、`games/thief/view.html`；`game.js` 共 213 行、17.2 KB
+- 檔案：`games/thief/card.html`、`games/thief/cover.webp`、`games/thief/game.js`、`games/thief/icon.svg`、`games/thief/leaderboard.webp`、`games/thief/style.css`、`games/thief/view.html`；`game.js` 共 217 行、17.9 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「30. 偷水果的貓 Fruit Thief Cat（thief）」（下方「規則摘要」已複製）
 
@@ -17,7 +17,7 @@
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`A`（L42）、`KM`（L199）、`thiefBusy`（L2）
+- 狀態物件／進行中旗標：`A`（L42）、`KM`（L203）、`thiefBusy`（L2）
 - L4 常數：`DPR`
 - L5 常數：`MILESTONES`、`BONUS`、`KEY`、`SKEY`、`UNIT`
 - L15 常數：`FNT`
@@ -29,7 +29,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rnd` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L16、`acc` L17、`syncModel` L30、`control` L31、`sprOk` L43、`spr` L44、`tint` L46、`pj` L56、`hw` L57、`wrap` L58、`poly` L60、`bg` L61、`item` L79、`cat` L85、`granny` L94、`sign` L99、`wt` L100、`card` L101、`SK` L118、`T` L119、`ST` L120、`pick` L122、`release` L123、`say` L124、`setText` L126、`ui` L127、`awardBonus` L134、`die` L144、`start` L154、`overlay` L163、`bonusDraw` L186、`pos` L187、`loop` L206
+`rnd` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L16、`acc` L17、`syncModel` L30、`control` L31、`sprOk` L43、`spr` L44、`tint` L46、`pj` L56、`hw` L57、`wrap` L58、`poly` L60、`bg` L61、`item` L79、`cat` L85、`granny` L94、`sign` L99、`wt` L100、`card` L101、`SK` L118、`T` L119、`ST` L120、`pick` L122、`release` L123、`say` L124、`setText` L126、`ui` L127、`awardBonus` L134、`die` L144、`start` L154、`wrapLines` L163、`cblock` L164、`lh` L166、`overlay` L168、`bonusDraw` L190、`pos` L191、`loop` L210
 
 ## 錢包與結算接點
 
