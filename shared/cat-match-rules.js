@@ -6,8 +6,8 @@ const catMatchRules=(()=>{
  const adjacent=(a,b)=>Math.abs((a>>3)-(b>>3))+Math.abs(a%8-b%8)===1;
  const copy=b=>b.map(t=>t?{...t}:null);
  function random(g){let t=g.rng+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);g.rng>>>=0;return ((t^t>>>14)>>>0)/4294967296}
- // 目標圖案出現率：前 10 關約 3 成，第 11 關起約 2 成（其餘五種平分），避免目標太少見卡關，又隨旅程變難
- const tile=g=>{const p=g.level>10?0.22:0.3,r=random(g);if(r<p)return{t:g.target,s:''};const o=Math.floor((r-p)/(1-p)*5);return{t:o>=g.target?o+1:o,s:''}};
+ // 目標圖案出現率：前 10 關約 3 成，第 11～15 關約 2 成，第 16 關起回到完全平均的 1/6（其餘五種平分），避免目標太少見卡關，又隨旅程變難
+ const tile=g=>{const p=g.level>15?1/6:g.level>10?0.22:0.3,r=random(g);if(r<p)return{t:g.target,s:''};const o=Math.floor((r-p)/(1-p)*5);return{t:o>=g.target?o+1:o,s:''}};
  function matches(b){const groups=[];for(let i=0;i<64;i++){if(!b[i]||b[i].t===6)continue;for(let step of [1,8]){if(step===1&&i%8>=6||step===8&&i>=48)continue;let prev=i-step;if(prev>=0&&b[prev]?.t===b[i].t&&(step===8||(prev>>3)===(i>>3)))continue;let group=[i];for(let j=i+step;j<64&&b[j]?.t===b[i].t&&(step===8||(j>>3)===(i>>3));j+=step)group.push(j);if(group.length>=3)groups.push(group)}}return groups}
  function legal(g){let result=[];for(let a=0;a<64;a++)if(g.board[a])for(let b of [a+1,a+8]){if(!g.board[b]||!adjacent(a,b))continue;const x=g.board[a],y=g.board[b];[g.board[a],g.board[b]]=[y,x];let ok=x.s==='rainbow'||y.s==='rainbow'||x.s&&y.s||matches(g.board).length;[g.board[a],g.board[b]]=[x,y];if(ok)result.push([a,b])}return result}
  function fresh(g){for(let attempt=0;attempt<500;attempt++){g.board=Array.from({length:64},(_,i)=>active(g.level,i)?tile(g):null);for(let i=0;i<64;i++)if(g.board[i]){const forbidden=new Set();for(let step of [1,8])if((step===8?i>=16:i%8>=2)&&g.board[i-step]&&g.board[i-step*2]&&g.board[i-step].t===g.board[i-step*2].t)forbidden.add(g.board[i-step].t);while(forbidden.has(g.board[i].t))g.board[i]=tile(g)}if(legal(g).length)return}throw Error('cat-match generation failed')}
