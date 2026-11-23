@@ -1,6 +1,6 @@
 (()=>{
 'use strict';
-const R=catMatchRules,$=id=>document.getElementById(id),cv=$('board'),ctx=cv.getContext('2d');
+const R=catMatchRules,$=id=>document.getElementById(id),cv=$('board');let ctx=cv.getContext('2d');const main=ctx;
 const sheet=new Image();sheet.src='assets/icon-sheet.webp';
 const crops=[[10,4,250,220],[266,4,225,220],[493,4,241,220],[985,20,180,194],[1160,30,190,182],[1340,12,194,212]];
 let G=null,visual=[],level=1,best=1,lang='zh-Hant',size=0,cell=0,busy=true,paused=false,ended=false,selected=-1,down=null,hintCells=[],clearing=new Set(),clearProgress=0,offsets=new Map(),epoch=0,actions=[],ticket=null,lastSay=null,dialog=null,rankState='local',rankScore=0,roundShown=null,visible=true;
@@ -14,7 +14,13 @@ function setLanguage(value){lang=CAT_MATCH_TEXT[value]||value==='zh-Hans'?value:
 function hud(){if(!G)return;$('level').textContent=level;$('moves').textContent=G.moves;$('remaining').textContent=Math.max(0,G.goal-G.collected);$('goalLabel').textContent=T('collect',{tile:T('tiles')[G.target]});$('score').textContent=T('points',{score:G.score,best});$('progress').value=Math.min(1,G.collected/G.goal);$('shape').textContent=T('shapes')[(level-1)%3];for(const [id,count] of [['hint',G.hints],['shuffle',G.shuffles]]){$(id+'Count').textContent=T('remaining',{n:count});$(id).disabled=busy||count===0||ended}let c=crops[G.target];$('targetIcon').style.backgroundSize=`${1536*44/c[2]}px ${1024*44/c[3]}px`;$('targetIcon').style.backgroundPosition=`-${c[0]*44/c[2]}px -${c[1]*44/c[3]}px`}
 function resize(){let r=$('stage').getBoundingClientRect();size=Math.max(8,Math.min(r.width,r.height-12,464));cell=size/8;const dpr=Math.min(devicePixelRatio||1,2);cv.style.width=size+'px';cv.style.height=size+'px';cv.width=Math.round(size*dpr);cv.height=Math.round(size*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);draw()}
 function round(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
-function draw(){ctx.clearRect(0,0,size,size);for(let i=0;i<64;i++){if(!R.active(level,i))continue;let x=i%8*cell,y=(i>>3)*cell,t=visual[i],pad=cell*.055;ctx.fillStyle='#d4b293';round(x+1,y+2,cell-2,cell-2,cell*.23);ctx.fill();if(!t)continue;let offset=offsets.get(t);if(offset){x+=offset.x*cell;y+=offset.y*cell}ctx.save();ctx.globalAlpha=clearing.has(i)?1-clearProgress:1;let shrink=clearing.has(i)?clearProgress*.42:0;let p=pad+cell*shrink;round(x+p,y+p,cell-p*2,cell-p*2,cell*.21);ctx.clip();if(sheet.complete&&sheet.naturalWidth&&t.t<6){let c=crops[t.t];ctx.drawImage(sheet,...c,x+p,y+p,cell-p*2,cell-p*2)}else{ctx.fillStyle=t.t===6?'#e18cba':'#f4c890';ctx.fillRect(x,y,cell,cell)}ctx.restore();if(t.s)drawSpecial(t,x,y,clearing.has(i)?1-clearProgress:1);if(selected===i||down?.i===i||hintCells.includes(i)){ctx.strokeStyle=selected===i?'#fff5af':'#aaffde';ctx.lineWidth=3;round(x+2,y+2,cell-4,cell-4,cell*.22);ctx.stroke()}}}
+// 效能：貓咪圖案與特殊徽章先畫進小的離屏畫布快取，動畫每一幀只做 drawImage，不再每幀裁切大圖與計算漸層／陰影。
+let cache=null,cacheKey='';
+function offscreen(px,paint){const c=document.createElement('canvas');c.width=c.height=px;const prev=ctx;ctx=c.getContext('2d');ctx.setTransform(px/cell,0,0,px/cell,0,0);paint();ctx=prev;return c}
+function ensureCache(){const px=Math.max(1,Math.round(cell*Math.min(devicePixelRatio||1,2))),ready=sheet.complete&&sheet.naturalWidth>0,key=px+':'+ready;if(cacheKey===key)return;cacheKey=key;const pad=cell*.055;
+ cache={tiles:[0,1,2,3,4,5,6].map(n=>offscreen(px,()=>{round(pad,pad,cell-pad*2,cell-pad*2,cell*.21);ctx.clip();if(ready&&n<6){const c=crops[n];ctx.drawImage(sheet,...c,pad,pad,cell-pad*2,cell-pad*2)}else{ctx.fillStyle=n===6?'#e18cba':'#f4c890';ctx.fillRect(0,0,cell,cell)}})),
+  specials:Object.fromEntries(['rainbow','bomb','row','col'].map(k=>[k,offscreen(px,()=>drawSpecial({s:k},0,0,1))]))}}
+function draw(){ensureCache();ctx.clearRect(0,0,size,size);const pad=cell*.055;for(let i=0;i<64;i++){if(!R.active(level,i))continue;let x=i%8*cell,y=(i>>3)*cell,t=visual[i];ctx.fillStyle='#d4b293';round(x+1,y+2,cell-2,cell-2,cell*.23);ctx.fill();if(!t)continue;let offset=offsets.get(t);if(offset){x+=offset.x*cell;y+=offset.y*cell}const fading=clearing.has(i),alpha=fading?1-clearProgress:1;ctx.globalAlpha=alpha;if(fading){const k=(cell-2*(pad+cell*clearProgress*.42))/(cell-2*pad),d=cell*k;ctx.drawImage(cache.tiles[t.t],x+(cell-d)/2,y+(cell-d)/2,d,d)}else ctx.drawImage(cache.tiles[t.t],x,y,cell,cell);if(t.s)ctx.drawImage(cache.specials[t.s],x,y,cell,cell);ctx.globalAlpha=1;if(selected===i||down?.i===i||hintCells.includes(i)){ctx.strokeStyle=selected===i?'#fff5af':'#aaffde';ctx.lineWidth=3;round(x+2,y+2,cell-4,cell-4,cell*.22);ctx.stroke()}}}
 // 金邊、實心方向徽章：避免白線穿過圖案，被誤認為顯示錯誤。
 function drawSpecial(t,x,y,alpha){
  ctx.save();ctx.translate(x,y);ctx.scale(cell/48,cell/48);ctx.globalAlpha=alpha;
@@ -39,7 +45,8 @@ function drawSpecial(t,x,y,alpha){
  }
  ctx.restore();
 }
-function animate(ms,frame){if(matchMedia('(prefers-reduced-motion: reduce)').matches||document.hidden||!visible){frame(1);draw();return Promise.resolve()}return new Promise(resolve=>{const t=performance.now();function step(now){const p=Math.min(1,(now-t)/ms);frame(p);draw();if(p<1&&!document.hidden&&visible)requestAnimationFrame(step);else{frame(1);draw();resolve()}}requestAnimationFrame(step)})}
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
+function animate(ms,frame){if(reduceMotion.matches||document.hidden||!visible){frame(1);draw();return Promise.resolve()}return new Promise(resolve=>{const t=performance.now();function step(now){const p=Math.min(1,(now-t)/ms);frame(p);draw();if(p<1&&!document.hidden&&visible)requestAnimationFrame(step);else{frame(1);draw();resolve()}}requestAnimationFrame(step)})}
 async function slide(entries,ms){await animate(ms,p=>{let left=(1-p)**3;offsets=new Map(entries.map(([i,dx,dy])=>[visual[i],{x:dx*left,y:dy*left}]))});offsets.clear();draw()}
 function rankUI(){ $('rankStatus').textContent=T(rankState,{score:rankScore});$('rankRetry').hidden=rankState!=='failed'}
 function paintDialog(){if(!dialog)return;$('dialogTitle').textContent=T(dialog.title);$('dialogText').textContent=T(dialog.text,{...dialog.args,...(dialog.args.tileIndex!==undefined?{tile:T('tiles')[dialog.args.tileIndex]}:{})});$('primary').textContent=T(dialog.actionLabel);$('secondary').hidden=!dialog.cancel;rankUI()}
