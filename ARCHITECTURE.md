@@ -377,4 +377,4 @@ Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsig
 
 ### Cat Match 正式版
 
-`games/cat-match/play.html` 是獨立同源 iframe；`main.js` 為正式控制器、`audio.js` 管理音訊、`i18n.js` 為繁中／英字串，`shared/cat-match-rules.cjs` 為前端與 Worker 共用具種子的純規則。`game.js` 負責來源驗證、路由暫停、AN 生命週期、訪客開局／結算與單關分數榜；不使用錢包。預覽版保留，標記 graduated。
+`games/cat-match/play.html` 是獨立同源 iframe；`main.js` 為正式控制器、`audio.js` 管理音訊、`i18n.js` 為繁中／英字串，`shared/cat-match-rules.js` 為前端與 Worker 共用具種子的純規則。`game.js` 負責來源驗證、路由暫停、AN 生命週期、訪客開局／結算與單關分數榜；不使用錢包。預覽版保留，標記 graduated。

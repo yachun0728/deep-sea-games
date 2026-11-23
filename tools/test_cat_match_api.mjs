@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import R from '../shared/cat-match-rules.cjs';
+import R from '../shared/cat-match-rules.js';
 const origin=process.env.CAT_MATCH_API_ORIGIN||'http://127.0.0.1:8787';
 async function request(path,body,token){const response=await fetch(origin+path,{method:body?'POST':'GET',headers:{Origin:'http://127.0.0.1:8766',...(body?{'Content-Type':'application/json'}:{}),...(token?{Authorization:'Bearer '+token}:{})},body:body?JSON.stringify(body):undefined});return {status:response.status,body:await response.json()}}
 const guest=await request('/api/v1/players',{});assert.equal(guest.status,201);const token=guest.body.token;

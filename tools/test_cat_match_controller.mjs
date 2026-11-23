@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
-import R from '../shared/cat-match-rules.cjs';
+import R from '../shared/cat-match-rules.js';
 const SEED=Number(process.env.CAT_MATCH_TEST_SEED||18);
 const nodes=new Map(),ctx=new Proxy({},{get:(_,k)=>k==='createLinearGradient'?()=>({addColorStop(){}}):()=>{}});
 const $=id=>nodes.get(id)||nodes.set(id,{style:{},hidden:false,disabled:false,textContent:'',getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:390,height:480}),setAttribute(){},setPointerCapture(){},replaceChildren(){},append(){}}).get(id);

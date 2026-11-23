@@ -1,4 +1,4 @@
-import catMatchRules from '../../../shared/cat-match-rules.cjs';
+import catMatchRules from '../../../shared/cat-match-rules.js';
 import onPitchRules from '../../../shared/on-pitch-rules.cjs';
 import breakoutRules from '../../../shared/breakout-rules.cjs';
 import quackPondRules from '../../../shared/quack-pond-rules.cjs';

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import R from '../shared/cat-match-rules.cjs';
+import R from '../shared/cat-match-rules.js';
 let wins=0,losses=0,specials=0;
 for(let level=1;level<=36;level++)for(let seed=1;seed<=20;seed++){
  const g=R.create(seed,level),again=R.create(seed,level);assert.deepEqual(g,again);assert.equal(g.board.filter(Boolean).length,R.MASKS[(level-1)%3].split('').filter(x=>x==='1').length);assert.equal(R.matches(g.board).length,0);let plan=[];
