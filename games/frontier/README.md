@@ -21,7 +21,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`stageSteps` L15、`warTip` L31、`rankStatus` L34、`recordRank` L35、`uploadRank` L36、`startRanked` L55、`showNotice` L79、`renderCards` L81、`stageList` L91、`set` L93、`safeNumbers` L94、`validShape` L95、`loadFrontier` L96、`persist` L109、`params` L110、`release` L111、`endRound` L112、`pause` L113、`start` L114、`selectLevel` L130、`updateMap` L131、`update` L132、`finishStage` L152、`frame` L153、`moveStick` L172、`isHandheld` L175、`autoScreen` L176、`screenClass` L177、`syncViewport` L178、`enterScreen` L183、`fallback` L185、`exitScreen` L189、`showShop` L196
+`stageSteps` L15、`warTip` L31、`rankStatus` L34、`recordRank` L35、`uploadRank` L36、`startRanked` L55、`showNotice` L79、`renderCards` L81、`stageList` L91、`set` L93、`safeNumbers` L94、`validShape` L95、`loadFrontier` L96、`persist` L109、`params` L110、`release` L111、`endRound` L112、`pause` L113、`start` L114、`selectLevel` L130、`updateMap` L131、`update` L132、`finishStage` L152、`frame` L153、`moveStick` L172、`isHandheld` L175、`autoScreen` L176、`screenClass` L177、`syncViewport` L178、`enterScreen` L183、`fallback` L185、`exitScreen` L189、`showShop` L196、`muteUI` L197
 
 ## 錢包與結算接點
 
