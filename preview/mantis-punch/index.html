@@ -125,7 +125,7 @@ button{font:inherit;font-weight:800;font-size:18px;padding:12px 36px;min-height:
     s.connect(f);f.connect(g);g.connect(AC.destination);s.start(n);
   }
   var SFX={
-    hit:function(){noise(0.12,0.35,900);tone(160,0.1,'square',0.1,60);},
+    hit:function(c){c=c||0;noise(0.1,0.5,1300+c*160);tone(180+c*24,0.13,'square',0.13,55);tone(2400+c*80,0.03,'triangle',0.06);},
     heavy:function(){noise(0.25,0.5,600);tone(120,0.25,'sawtooth',0.14,40);},
     block:function(){tone(700,0.05,'square',0.06,500);},
     whoosh:function(){noise(0.18,0.18,2500);},
@@ -143,7 +143,7 @@ button{font:inherit;font-weight:800;font-size:18px;padding:12px 36px;min-height:
          charging:false,chargeT:0,buffer:null,hurtT:0},
       e:{hp:ENEMY_HP,state:'idle',timer:1.0,atk:null,wind:0,windT:0,feint:false,feintDone:false,
          flash:0,openT:0,openMax:1,strikeT:0,next:null,count:0,openCount:0,angry:false,interrupted:false},
-      fx:[],shake:0,hitstop:0,hits:0,perfects:0,dodges:0,combo:0,maxCombo:0};
+      fx:[],shake:0,hitstop:0,zoom:1,hits:0,perfects:0,dodges:0,combo:0,maxCombo:0};
     hud.textContent='0.0s';
   }
   function phase2(){return S.e.hp<=ENEMY_HP*0.5;}
@@ -195,8 +195,8 @@ button{font:inherit;font-weight:800;font-size:18px;padding:12px 36px;min-height:
     var hx=W/2+p.punchSide*L.u*0.8,hy=L.crabY+L.u*0.6;
     if(e.state==='open'){
       var d=charged?DMG_OPEN_CHARGE:DMG_OPEN;
-      hurtEnemy(d,hx,hy,charged);
       S.combo++;if(S.combo>S.maxCombo)S.maxCombo=S.combo;
+      hurtEnemy(d,hx,hy,charged,S.combo);
       if(S.combo>=3){
         S.fx=S.fx.filter(function(f){return !f.combo;});
         addText(S.combo+' 連擊',W/2,L.crabY-L.u*3.2,'#f7e33b',20,0.6);S.fx[S.fx.length-1].combo=true;
@@ -216,13 +216,21 @@ button{font:inherit;font-weight:800;font-size:18px;padding:12px 36px;min-height:
     }
     return true;
   }
-  function hurtEnemy(d,x,y,heavy){
-    var e=S.e;
-    e.hp=Math.max(0,e.hp-d);e.flash=0.12;
-    S.hitstop=heavy?0.12:0.05;S.shake=Math.max(S.shake,heavy?12:5);
-    (heavy?SFX.heavy:SFX.hit)();
-    addText('-'+d,x+(Math.random()-0.5)*L.u,y-L.u*0.5,heavy?'#ffb347':'#fff',heavy?32:22);
-    burst(x,y,heavy?'#ffb347':'#fff4c2',heavy?18:9,heavy?280:180);
+  function hurtEnemy(d,x,y,heavy,combo){
+    var e=S.e,c=Math.min(combo||0,10);
+    e.hp=Math.max(0,e.hp-d);e.flash=0.1;
+    // 打擊感：被打退＋壓扁、停頓隨連擊加長、鏡頭微推
+    e.knock=L.u*(heavy?0.9:0.35+c*0.04);e.knockX=(x-W/2)*0.12;e.squash=heavy?0.22:0.1+c*0.008;
+    S.hitstop=heavy?0.14:(combo?0.06+c*0.007:0.04);
+    S.shake=Math.max(S.shake,heavy?16:(combo?6+c*0.8:4));
+    S.zoom=Math.max(S.zoom,heavy?1.07:(combo?1.025+c*0.003:1.01));
+    if(heavy)SFX.heavy();else SFX.hit(c);
+    addText('-'+d,x+(Math.random()-0.5)*L.u,y-L.u*0.5,heavy?'#ffb347':(c>=5?'#ff9f1a':'#ffe14d'),heavy?34:24+c*1.5);
+    S.fx.push({k:'r',x:x,y:y,r0:L.u*0.3,r1:L.u*(heavy?3.2:1.5+c*0.08),c:heavy?'#ffd34d':'#ffc94d',t:0,life:heavy?0.3:0.18});
+    var n=heavy?12:6+Math.floor(c/2),a0=Math.random()*Math.PI;
+    for(var i=0;i<n;i++){var a=a0+i*Math.PI*2/n;
+      S.fx.push({k:'l',x:x,y:y,a:a,len:L.u*(heavy?2.6:1.3+c*0.06)*(0.7+Math.random()*0.5),c:heavy?'#ffb347':'#ffd966',t:0,life:heavy?0.22:0.13});}
+    burst(x,y,heavy?'#ffb347':'#fff4c2',heavy?18:9+c,heavy?280:200+c*10);
     if(!e.angry&&phase2()){e.angry=true;addText('螃蟹生氣了！',W/2,L.crabY+L.u*2.6,'#ff6b5a',24,1.4);}
     if(e.hp<=0){
       S.phase='ko';S.phaseT=1.6;S.hitstop=0.25;S.shake=18;SFX.ko();
@@ -306,6 +314,10 @@ button{font:inherit;font-weight:800;font-size:18px;padding:12px 36px;min-height:
     S.shake=Math.max(0,S.shake-60*dt);
     if(S.hitstop>0){S.hitstop-=dt;return;}
     if(e.flash>0)e.flash-=dt;
+    if(e.knock)e.knock*=Math.pow(0.0005,dt);
+    if(e.knockX)e.knockX*=Math.pow(0.0005,dt);
+    if(e.squash)e.squash*=Math.pow(0.0003,dt);
+    S.zoom=1+(S.zoom-1)*Math.pow(0.002,dt);
     if(p.hurtT>0)p.hurtT-=dt;
 
     if(S.phase==='intro'){S.phaseT-=dt;if(S.phaseT<=0)S.phase='fight';return;}
@@ -489,6 +501,9 @@ button{font:inherit;font-weight:800;font-size:18px;padding:12px 36px;min-height:
   function drawShrimp(){
     var p=S.p,u=L.u,x=playerX(),y=L.playerY,t=S.t;
     var lean=p.dodgeT>0?p.dodgeDir*0.25:0;
+    var lg=0;
+    if(p.punchT>0){var rc=p.lastCharged?CHARGE_REC:PUNCH_REC,pq=p.punchT/rc;lg=(pq>0.5?1:pq*2)*u*(p.lastCharged?0.7:0.35);}
+    y-=lg;
     ctx.save();ctx.translate(x,y);ctx.rotate(lean);
     var hurt=p.hurtT>0&&Math.floor(p.hurtT*20)%2===0;
     // 尾扇
@@ -585,10 +600,18 @@ button{font:inherit;font-weight:800;font-size:18px;padding:12px 36px;min-height:
       var f=S.fx[i],a=1-f.t/f.life;
       ctx.globalAlpha=Math.max(0,a);
       if(f.k==='p'){ctx.fillStyle=f.c;ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,Math.PI*2);ctx.fill();}
+      else if(f.k==='r'){
+        var rk=f.t/f.life;ctx.strokeStyle=f.c;ctx.lineWidth=Math.max(1,8*(1-rk));
+        ctx.beginPath();ctx.arc(f.x,f.y,f.r0+(f.r1-f.r0)*ease(rk),0,Math.PI*2);ctx.stroke();
+      }else if(f.k==='l'){
+        var lk=ease(f.t/f.life),r0=f.len*0.3+f.len*0.5*lk,r1=f.len*(0.6+0.6*lk);
+        ctx.strokeStyle=f.c;ctx.lineWidth=Math.max(1,5*(1-lk));ctx.lineCap='round';
+        ctx.beginPath();ctx.moveTo(f.x+Math.cos(f.a)*r0,f.y+Math.sin(f.a)*r0);ctx.lineTo(f.x+Math.cos(f.a)*r1,f.y+Math.sin(f.a)*r1);ctx.stroke();
+      }
       else{
         var sc=f.t<0.08?0.6+f.t*5:1;
         ctx.font='900 '+Math.round(f.s*sc)+'px sans-serif';
-        ctx.lineWidth=4;ctx.strokeStyle='rgba(0,0,0,.6)';ctx.strokeText(f.txt,f.x,f.y);
+        ctx.lineWidth=5;ctx.strokeStyle='rgba(20,10,0,.8)';ctx.strokeText(f.txt,f.x,f.y);
         ctx.fillStyle=f.c;ctx.fillText(f.txt,f.x,f.y);
       }
     }
@@ -612,7 +635,14 @@ button{font:inherit;font-weight:800;font-size:18px;padding:12px 36px;min-height:
     ctx.clearRect(0,0,W,H);
     ctx.save();
     if(S.shake>0)ctx.translate((Math.random()-0.5)*S.shake,(Math.random()-0.5)*S.shake);
-    drawBg();dangerZones();drawCrab();drawShrimp();drawFx();
+    if(S.zoom>1.001){ctx.translate(W/2,L.crabY);ctx.scale(S.zoom,S.zoom);ctx.translate(-W/2,-L.crabY);}
+    drawBg();dangerZones();
+    var e=S.e,sq=e.squash||0;
+    ctx.save();
+    ctx.translate(W/2+(e.knockX||0),L.crabY-(e.knock||0));ctx.scale(1+sq,1-sq*0.8);ctx.translate(-W/2,-L.crabY);
+    drawCrab();
+    ctx.restore();
+    drawShrimp();drawFx();
     ctx.restore();
     drawHud();drawControls();drawBanner();
   }
