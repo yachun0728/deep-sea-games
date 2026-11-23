@@ -16,5 +16,11 @@
     "name": "偷偷下班 · 巡邏試玩",
     "concept": "可直接挑戰第 5、8、12 至 14 關，試玩遮蔽物、保全巡邏與輪替配置。",
     "status": "playtest"
+  },
+  {
+    "id": "cat-match",
+    "name": "貓貓三消",
+    "concept": "交換貓咪與玩具、完成收集目標，無限接關的療癒三消。",
+    "status": "playtest"
   }
 ]
