@@ -35,7 +35,7 @@
 | [社畜要下班 Roar Through the Ceiling](rocket-chair/README.md) | `#rocket-chair` | 時機操作 | 顯示 | 50 行 | 對著手機大吼，火箭椅一路撞破天花板提早下班。 |
 | [蓋樓大師 Sky Builder](skybuilder/README.md) | `#skybuilder` | 時機操作 | 顯示 | 163 行 | 抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。 |
 | [鯉魚躍龍門 Carp Leap](carp/README.md) | `#carp` | 時機操作 | 顯示 | 173 行 | 蓄力起跳，越過一道道石瀑。 |
-| [外送員大戰惡犬 Rider vs Dogs](rider/README.md) | `#rider` | 跑酷動作 | 顯示 | 170 行 | 巷子裡閃狗送餐，餐涼之前送越多越好。 |
+| [外送員大戰惡犬 Rider vs Dogs](rider/README.md) | `#rider` | 跑酷動作 | 顯示 | 218 行 | 巷子裡閃狗送餐，餐涼之前送越多越好。 |
 | [胖老闆追人 Chubby Boss](boss/README.md) | `#boss` | 跑酷動作 | 顯示 | 386 行 | 遲到了！跳過障礙，別被胖老闆追上。 |
 | [偷水果的貓 Fruit Thief Cat](thief/README.md) | `#thief` | 跑酷動作 | 顯示 | 213 行 | 換道、跳籃子，偷水果躲開老闆娘。 |
 | [寶寶逃洗澡 Baby Bath Escape](baby/README.md) | `#baby` | 跑酷動作 | 顯示 | 286 行 | 跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。 |

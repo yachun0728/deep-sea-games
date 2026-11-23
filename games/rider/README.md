@@ -7,7 +7,7 @@
 - 網址：`#rider`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「巷子裡閃狗送餐，餐涼之前送越多越好。」｜立即開玩 · 閃避送餐
 - 追蹤名稱（GA4 `game_name`）：外送員大戰惡犬，`game_id` 為 `rider`
-- 檔案：`games/rider/card.html`、`games/rider/cover.webp`、`games/rider/game.js`、`games/rider/icon.svg`、`games/rider/view.html`；`game.js` 共 170 行、12.6 KB
+- 檔案：`games/rider/card.html`、`games/rider/cover.webp`、`games/rider/game.js`、`games/rider/icon.svg`、`games/rider/leaderboard.webp`、`games/rider/style.css`、`games/rider/view.html`；`game.js` 共 218 行、17.7 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「28. 外送員大戰惡犬 Rider vs Dogs（rider）」（下方「規則摘要」已複製）
 
@@ -17,14 +17,19 @@
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`KM`（L156）、`riderBusy`（L2）
-- L5 常數：`MILESTONES`、`BONUS`、`KEY`、`SKEY`、`UNIT`
-- L25 常數：`PXL`
-- L88 常數：`CHY`
+- 狀態物件／進行中旗標：`A`（L42）、`LA`（L43）、`KM`（L204）、`riderBusy`（L2）
+- L4 常數：`DPR`
+- L5 常數：`FNT`
+- L6 常數：`MILESTONES`、`BONUS`、`KEY`、`SKEY`、`UNIT`
+- L26 常數：`PXL`
+- L41 常數：`SPR`、`LAY`
+- L44 常數：`DOGS`
+- L117 常數：`CHY`
+- L163 常數：`PADX`、`PADY`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rnd` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L15、`acc` L16、`syncModel` L29、`control` L30、`bg` L40、`wheel` L47、`bike` L48、`dog` L60、`house` L68、`SK` L88、`T` L89、`ST` L90、`pick` L92、`release` L93、`say` L94、`setText` L96、`ui` L97、`awardBonus` L104、`die` L114、`start` L124、`overlay` L133、`bonusDraw` L143、`pos` L144、`loop` L163
+`rnd` L8、`O` L9、`C` L10、`E` L11、`F` L12、`RR` L13、`P` L14、`L2` L15、`tx` L16、`acc` L17、`syncModel` L30、`control` L31、`ok` L44、`wrap` L45、`spr` L46、`tint` L48、`layer` L57、`shadow` L58、`bg` L59、`house` L70、`dog` L75、`bike` L81、`pill` L90、`wt` L91、`hud` L92、`controls` L98、`SK` L117、`T` L118、`ST` L119、`pick` L121、`release` L122、`say` L123、`setText` L125、`ui` L126、`awardBonus` L133、`die` L143、`start` L153、`card` L162、`wrapT` L164、`block` L169、`lh` L171、`overlay` L174、`bonusDraw` L191、`pos` L192、`loop` L211
 
 ## 錢包與結算接點
 
@@ -32,19 +37,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L108 `awardBonus`：`S.balance+=BONUS;`
+- L137 `awardBonus`：`S.balance+=BONUS;`
 
 **餘額檢查**
-- L127 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L156 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L109 `awardBonus`：`AN.progress(analytics,{step:s,score:s,milestone:m,bonus_points:BONUS,total_bonus_points:paid});`
-- L120 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
-- L129 `start`：`analytics=AN.start('rider',amount);`
+- L138 `awardBonus`：`AN.progress(analytics,{step:s,score:s,milestone:m,bonus_points:BONUS,total_bonus_points:paid});`
+- L149 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
+- L158 `start`：`analytics=AN.start('rider',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
