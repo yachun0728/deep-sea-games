@@ -15,7 +15,14 @@
     document.documentElement.lang = language;
     document.querySelectorAll('article[lang]').forEach(function (article) { article.hidden = article.lang !== language; });
     document.querySelectorAll('[data-language]').forEach(function (button) { button.setAttribute('aria-pressed', String(button.dataset.language === language)); });
-    var title = document.querySelector('article[lang="' + language + '"] h1');
+    // Header labels carry "zh-Hant|zh-Hans|en" so the shared header follows the page language.
+    var slot = languages.indexOf(language);
+    document.querySelectorAll('[data-legal-text]').forEach(function (el) { el.textContent = el.dataset.legalText.split('|')[slot]; });
+    document.querySelectorAll('[data-legal-aria]').forEach(function (el) {
+      var label = el.dataset.legalAria.split('|')[slot];
+      el.setAttribute('aria-label', label); el.title = label;
+    });
+    var title = document.querySelector('article[lang="' + language + '"] .legal-title');
     if (title) document.title = title.textContent + ' · TICATICA GAMES';
     // Links to the lobby and the other legal page keep the chosen language.
     document.querySelectorAll('a[data-keep-lang]').forEach(function (link) {
@@ -32,5 +39,10 @@
   document.querySelectorAll('[data-language]').forEach(function (button) {
     button.addEventListener('click', function () { apply(button.dataset.language, true); });
   });
+  // Same balance the lobby header shows, read-only.
+  try {
+    var balance = parseInt(localStorage.getItem('crush-depth-balance'), 10);
+    if (localStorage.getItem('deep-sea-balance-zero-v1') === '1' && isFinite(balance) && balance >= 0) document.getElementById('balance').textContent = balance.toLocaleString('zh-TW');
+  } catch (e) {}
   apply(pick(), false);
 })();

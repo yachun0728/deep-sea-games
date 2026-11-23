@@ -7,21 +7,33 @@
 <meta name="description" content="TICATICA GAMES privacy policy: what the site and Telegram bot collect, why, and how to ask for deletion.">
 <link rel="icon" type="image/png" href="images/favicon.png?v=3">
 <link rel="canonical" href="https://ticaticagames.com/privacy.html">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/arcade.css">
+<link rel="stylesheet" href="css/mobile-navigation.css">
+<link rel="stylesheet" href="css/ticatica.css">
+<link rel="stylesheet" href="css/i18n.css">
 <link rel="stylesheet" href="css/legal.css">
 </head>
 <body>
-<header class="legal-top">
-  <a class="legal-home" href="./" data-keep-lang>TICATICA GAMES</a>
-  <div class="legal-lang" role="group" aria-label="Language / 語言">
-    <button type="button" data-language="zh-Hant" lang="zh-Hant" aria-pressed="true">繁中</button>
-    <button type="button" data-language="zh-Hans" lang="zh-Hans" aria-pressed="false">简中</button>
-    <button type="button" data-language="en" lang="en" aria-pressed="false">EN</button>
+<div class="wrap legal-shell" id="site-shell">
+<!-- Same header as templates/index.html; links lead back into the lobby. -->
+<header class="top">
+  <div class="brand">
+    <a class="brand-home" href="./" data-keep-lang data-legal-aria="返回遊戲大廳|返回游戏大厅|Back to lobby" aria-label="返回遊戲大廳" title="返回遊戲大廳"><span class="brand-word"><img src="images/ticatica-logo.png?v=2" alt="TICATICA GAMES" width="900" height="233" decoding="async"></span><h1 data-legal-text="隱私權政策|隐私权政策|Privacy Policy">隱私權政策</h1></a>
+    <span class="demo-tag" data-legal-text="Demo · 虛擬點數|Demo · 虚拟点数|Demo · Virtual points">Demo · 虛擬點數</span>
   </div>
+  <div class="top-center"><a class="top-feature" href="./#keno" data-keep-lang><span class="top-feature-icon" aria-hidden="true"><i class="fa-solid fa-gem" aria-hidden="true"></i></span><span data-legal-text="每日挖礦|每日挖矿|Daily mining">每日挖礦</span></a></div>
+  <div class="header-tools"><div class="language-switch" role="group" aria-label="Language / 語言"><button type="button" data-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" aria-pressed="true">繁中</button><button type="button" data-language="zh-Hans" lang="zh-Hans" aria-label="简体中文" aria-pressed="false">简中</button><button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button></div><div class="wallet-box"><div class="wallet">
+    <i class="fa-solid fa-coins wallet-coin" aria-hidden="true"></i><span class="label" data-legal-text="餘額|余额|Balance">餘額</span>
+    <span class="amount" id="balance">0</span><span class="unit" data-legal-text="點|点|pts">點</span>
+  </div></div></div>
 </header>
-<main>
+<main class="legal-main">
 <!-- zh-Hant:start -->
 <article lang="zh-Hant">
-<h1>隱私權政策</h1>
+<h2 class="legal-title">隱私權政策</h2>
 <p class="legal-date">生效日期：2026 年 11 月 23 日</p>
 <p>本政策說明 TICATICA GAMES（以下稱「我們」）在網站 ticaticagames.com 與 Telegram Bot、Mini App（以下合稱「本服務」）中，會處理哪些資料、為什麼處理，以及你可以怎麼要求刪除。本服務不需要註冊帳號，也不會要求你提供姓名、電話、信箱或付款資料。</p>
 
@@ -78,7 +90,7 @@
 <!-- zh-Hant:end -->
 <!-- zh-Hans:start -->
 <article lang="zh-Hans" hidden>
-<h1>隐私权政策</h1>
+<h2 class="legal-title">隐私权政策</h2>
 <p class="legal-date">生效日期：2026 年 11 月 23 日</p>
 <p>本政策说明 TICATICA GAMES（以下称「我们」）在网站 ticaticagames.com 与 Telegram Bot、Mini App（以下合称「本服务」）中，会处理哪些数据、为什么处理，以及你可以怎么要求删除。本服务不需要注册帐号，也不会要求你提供姓名、电话、信箱或付款数据。</p>
 
@@ -134,7 +146,7 @@
 </article>
 <!-- zh-Hans:end -->
 <article lang="en" hidden>
-<h1>Privacy Policy</h1>
+<h2 class="legal-title">Privacy Policy</h2>
 <p class="legal-date">Effective date: November 23, 2026</p>
 <p>This policy explains what data TICATICA GAMES ("we") processes on ticaticagames.com and in our Telegram bot and Mini App (together, the "Service"), why we process it, and how you can ask us to delete it. The Service does not require an account, and we never ask for your name, phone number, email address or payment details.</p>
 
@@ -189,6 +201,7 @@
 <p class="legal-foot"><a href="terms.html" data-keep-lang>Terms of Use</a> · <a href="./" data-keep-lang>Back to the lobby</a></p>
 </article>
 </main>
+</div>
 <script src="js/legal.js"></script>
 </body>
 </html>
