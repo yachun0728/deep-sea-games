@@ -26,7 +26,7 @@
 | [屋頂貓貓 Rooftop Cat](cat/README.md) | `#cat` | 跑酷動作 | 顯示 | 125 行 | 無盡跑酷，看你能跑多遠。 |
 | [便便鳥大戰狼群 Poop Bird vs Wolves](bird/README.md) | `#bird` | 跑酷動作 | 顯示 | 336 行 | 跳過仙人掌和狼群，用便便把狼王打跑。 |
 | [青蛙吃蟲 Frog Snack](frog/README.md) | `#frog` | 時機操作 | 顯示 | 212 行 | 對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。 |
-| [偷睡大師 Nap Master](nap/README.md) | `#nap` | 潛行偷閒 | 顯示 | 250 行 | 趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。 |
+| [偷睡大師 Nap Master](nap/README.md) | `#nap` | 潛行偷閒 | 顯示 | 249 行 | 趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。 |
 | [死神打工 Reaper Shift](reaper/README.md) | `#reaper` | 潛行偷閒 | 顯示 | 107 行 | 普通靈魂要接走，綠色通行證要放行。 |
 | [深海火線 Reef Blaster](blaster/README.md) | `#blaster` | 跑酷動作 | 顯示 | 343 行 | 帶領潛艇編隊航行，閃過怪潮和打不碎的硬礁。 |
 | [一口氣探險 One Breath Dive](dive/README.md) | `#dive` | 益智策略 | 顯示 | 54 行 | 選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。 |
