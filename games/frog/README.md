@@ -7,7 +7,7 @@
 - 網址：`#frog`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。」｜立即開玩 · 一鍵反應
 - 追蹤名稱（GA4 `game_name`）：青蛙吃蟲，`game_id` 為 `frog`
-- 檔案：`games/frog/card.html`、`games/frog/game.js`、`games/frog/icon.svg`、`games/frog/style.css`、`games/frog/view.html`；`game.js` 共 212 行、14.2 KB
+- 檔案：`games/frog/card.html`、`games/frog/cover.webp`、`games/frog/game.js`、`games/frog/icon.svg`、`games/frog/leaderboard.webp`、`games/frog/style.css`、`games/frog/view.html`；`game.js` 共 212 行、14.2 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「26. 青蛙吃蟲 Frog Snack（frog）」（下方「規則摘要」已複製）
 
