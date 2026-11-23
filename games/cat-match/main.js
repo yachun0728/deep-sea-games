@@ -3,7 +3,7 @@
 const R=catMatchRules,$=id=>document.getElementById(id),cv=$('board');let ctx=cv.getContext('2d');const main=ctx;
 const sheet=new Image();sheet.src='assets/icon-sheet.webp';
 const crops=[[10,4,250,220],[266,4,225,220],[493,4,241,220],[985,20,180,194],[1160,30,190,182],[1340,12,194,212]];
-let G=null,visual=[],level=1,best=1,lang='zh-Hant',size=0,cell=0,busy=true,paused=false,ended=false,selected=-1,down=null,hintCells=[],clearing=new Set(),clearProgress=0,offsets=new Map(),epoch=0,actions=[],ticket=null,lastSay=null,dialog=null,rankState='local',rankScore=0,roundShown=null,visible=true;
+let G=null,visual=[],level=1,best=1,lang='zh-Hant',size=0,cell=0,busy=true,paused=false,ended=false,selected=-1,down=null,hintCells=[],clearing=new Set(),clearProgress=0,offsets=new Map(),epoch=0,actions=[],ticket=null,lastSay=null,dialog=null,rankState='local',rankScore=0,roundShown=null,visible=true,prefetch=null;
 const KEY='deep-sea-cat-match-progress-v1';
 try{let s=JSON.parse(localStorage.getItem(KEY)||localStorage.getItem('proto-cat-match-save-v1'));if(s&&Number.isSafeInteger(s.level)&&s.level>0&&s.level<=1000000){level=s.level;best=Math.max(level,Number.isSafeInteger(s.best)?s.best:level)}}catch{}
 const host=()=>parent!==window?parent.deepSeaCatMatch:null;
@@ -53,14 +53,15 @@ function paintDialog(){if(!dialog)return;$('dialogTitle').textContent=T(dialog.t
 function show(title,text,actionLabel,action,args={},cancel=false){paused=true;dialog={title,text,actionLabel,action,args,cancel};$('rankList').hidden=true;paintDialog();$('overlay').hidden=false;sound.sync();host()?.pause(window)}
 function resume(){paused=false;dialog=null;$('overlay').hidden=true;sound.sync();if(!ended)host()?.resume(window)}
 async function start(){const request=++epoch;busy=true;ended=false;paused=false;dialog=null;G=null;visual=[];selected=-1;hintCells=[];clearing.clear();offsets.clear();actions=[];$('overlay').hidden=true;say('loading');resize();
- let reply;try{reply=await host()?.prepare(window,level)}catch{}
+ let pre=null;if(prefetch){const waiting=prefetch;prefetch=null;try{pre=await waiting}catch{}if(pre&&pre.level!==level)pre=null}
+ let reply;try{reply=await host()?.prepare(window,level,pre)}catch{}
  if(request!==epoch)return;ticket=reply?.id||null;G=R.create(reply?.seed??crypto.getRandomValues(new Uint32Array(1))[0],level);visual=R.copy(G.board);busy=false;rankState=reply?.ranked?'rankReady':'local';rankScore=0;roundShown=request;hud();draw();say('ready');sound.sync();if(!visible)show('pause','rules','resume',resume)
 }
 async function submit(){const generation=roundShown;if(!ticket){rankState='local';rankUI();return}rankState='submitting';rankUI();let ok=false;try{ok=await host().finish(window,ticket,actions,G.score,G.won)}catch{}if(generation!==roundShown)return;rankState=ok?'submitted':'failed';rankScore=G.score;rankUI()}
 async function swap(a,b){if(busy||paused||ended||!G?.board[a]||!G.board[b]||!R.adjacent(a,b))return;busy=true;down=null;hintCells=[];selected=-1;host()?.touch(window);sound.play('swap');let frames=[];const legal=R.act(G,a*64+b,frames),original=R.copy(visual);[visual[a],visual[b]]=[visual[b],visual[a]];await slide([[a,b%8-a%8,(b>>3)-(a>>3)],[b,a%8-b%8,(a>>3)-(b>>3)]],125);
  if(!legal){visual=original;await slide([[a,b%8-a%8,(b>>3)-(a>>3)],[b,a%8-b%8,(a>>3)-(b>>3)]],125);say('invalid');sound.play('invalid');busy=false;hud();return}
  actions.push(a*64+b);hud();for(const f of frames){if(f.shuffle){visual=R.copy(f.after);say('auto');draw();continue}visual=R.copy(f.before);clearing=new Set(f.removed);clearProgress=0;sound.play(f.special?'special':'clear',f.chain);say(f.chain>1?'chain':'clear',{n:f.chain});await animate(115,p=>clearProgress=p);clearing.clear();clearProgress=0;visual=R.copy(f.after);await slide(f.falling.map(({i,from})=>[i,0,from-(i>>3)]),190)}
- visual=R.copy(G.board);busy=false;ended=G.over;hud();draw();if(ended){rankScore=G.score;host()?.trackEnd(window,ticket,G.score,G.won);if(G.won){best=Math.max(best,level+1);try{localStorage.setItem(KEY,JSON.stringify({level:Math.min(1000000,level+1),best}))}catch{}sound.play('win');show('win','winText','next',()=>{level=Math.min(1000000,level+1);start()},{n:G.collected,tileIndex:G.target,score:G.score})}else{sound.play('lose');show('lose','loseText','freeRetry',start,{n:Math.max(0,G.goal-G.collected),tileIndex:G.target})}submit()}
+ visual=R.copy(G.board);busy=false;ended=G.over;hud();draw();if(ended){prefetch=host()?.fetchTicket?.(window,G.won?level+1:level)||null;rankScore=G.score;host()?.trackEnd(window,ticket,G.score,G.won);if(G.won){best=Math.max(best,level+1);try{localStorage.setItem(KEY,JSON.stringify({level:Math.min(1000000,level+1),best}))}catch{}sound.play('win');show('win','winText','next',()=>{level=Math.min(1000000,level+1);start()},{n:G.collected,tileIndex:G.target,score:G.score})}else{sound.play('lose');show('lose','loseText','freeRetry',start,{n:Math.max(0,G.goal-G.collected),tileIndex:G.target})}submit()}
 }
 function pick(i){if(busy||paused||ended||!G?.board[i])return;if(i===selected)selected=-1;else if(selected>=0&&R.adjacent(selected,i)){swap(selected,i);return}else selected=i;hintCells=[];draw()}
 function index(e){const r=cv.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)/cell),y=Math.floor((e.clientY-r.top)/cell);return x>=0&&x<8&&y>=0&&y<8?y*8+x:-1}

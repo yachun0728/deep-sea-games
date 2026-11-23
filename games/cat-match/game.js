@@ -7,9 +7,18 @@ window.deepSeaCatMatch={
  getLanguage:function(source){return cmValid(source)?window.deepSeaI18n?.getLanguage()||'zh-Hant':'zh-Hant';},
  translate:function(source,text){return cmValid(source)?window.deepSeaI18n?.text(text)||text:text;},
  language:function(source){if(!cmValid(source))return;var i=window.deepSeaI18n;i?.setLanguage(i.getLanguage()==='en'?'zh-Hant':'en');},
- prepare:async function(source,level){
+ // 結算時預先領取下一局票據，玩家按「下一關／再試」時不必再等網路（票據兩小時內有效）。
+ fetchTicket:async function(source,level){
+  if(!cmValid(source)||!Number.isSafeInteger(level)||level<1||level>1000000)return null;
+  try{var api=await import('./frontend/services/api.mjs');var entry=await api.startBoardRound('cat-match',AbortSignal.timeout(5000),{stage:level});}catch(_){return null;}
+  CM.tickets.set(entry.id,{...entry,ended:false,level:level});if(CM.tickets.size>12)CM.tickets.delete(CM.tickets.keys().next().value);
+  return{id:entry.id,seed:entry.state.seed,level:level};
+ },
+ prepare:async function(source,level,pre){
   if(!cmValid(source)||$('view-cat-match').hidden||!Number.isSafeInteger(level)||level<1||level>1000000)return null;
   cmEnd('abandoned');var generation=++CM.generation;CM.active=true;CM.round=AN.start('cat-match',0);
+  var held=pre&&CM.tickets.get(pre.id);
+  if(held&&held.level===level&&!held.ended&&!held.used&&!held.sending){held.used=true;return{id:held.id,ranked:true,seed:held.state.seed};}
   var entry=null;try{var api=await import('./frontend/services/api.mjs');entry=await api.startBoardRound('cat-match',AbortSignal.timeout(5000),{stage:level});}catch(_){}
   if(generation!==CM.generation||!cmValid(source)||$('view-cat-match').hidden)return null;
   if(!entry)return{ranked:false,seed:crypto.getRandomValues(new Uint32Array(1))[0]};
