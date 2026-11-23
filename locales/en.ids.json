@@ -87,6 +87,8 @@
   "lobby.board.game": "Game / Last played",
   "lobby.board.best": "Best record",
   "lobby.board.reload": "Retry leaderboard",
+  "lobby.legal.privacy": "Privacy Policy",
+  "lobby.legal.terms": "Terms of Use",
   "lobby.aria.view": "Game lobby",
   "lobby.aria.menu": "Game menu",
   "lobby.aria.collapse": "Collapse menu",
