@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>偷吃餅乾（骨架）</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#0b1d2a;color:#e8f4f8;overflow:hidden;overscroll-behavior:none;touch-action:none;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif}
+#app{position:relative;max-width:480px;height:100%;margin:0 auto;background:#10303f}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+#tag{position:absolute;top:calc(8px + env(safe-area-inset-top));left:8px;z-index:5;font-size:11px;padding:3px 8px;
+  border-radius:99px;background:#f7e33b;color:#1d1b1a;font-weight:800;letter-spacing:1px}
+#hud{position:absolute;top:calc(8px + env(safe-area-inset-top));right:10px;z-index:5;font-size:18px;font-weight:800}
+.screen{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;padding:24px;text-align:center;background:rgba(11,29,42,.9)}
+.screen.hide{display:none}
+.screen h1{font-size:28px}
+.screen p{font-size:15px;line-height:1.6;opacity:.85}
+button{font:inherit;font-weight:800;font-size:18px;padding:12px 32px;border:0;border-radius:12px;background:#f7e33b;color:#1d1b1a}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="tag">PROTOTYPE · 未上架</div>
+  <div id="hud">0</div>
+  <canvas id="cv"></canvas>
+  <div id="start" class="screen">
+    <h1>偷吃餅乾</h1>
+    <p>點一下偷吃一片。主管轉過來的時候別在吃！<br>吃完一整包就過關，下一包更多、主管更敏感。</p>
+    <button id="go" type="button">開始</button>
+  </div>
+  <div id="end" class="screen hide">
+    <h1>本局結束</h1>
+    <p id="result"></p>
+    <button id="again" type="button">再玩一次</button>
+  </div>
+</div>
+<script>
+/* 骨架：偷吃餅乾。一個操作（點一下吃一片）、一個目標（吃完一包過關）、一個失敗條件（主管看到你在吃）。
+   不讀寫平台點數、不送 GA4、不存 localStorage；上架時才依 games/ 流程接入。 */
+(function(){
+  var cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+  var hud=document.getElementById('hud');
+  var W=0,H=0,dpr=1,running=false,last=0,t=0;
+  var level=1,packSize=6,left=6,eaten=0,eating=0,flash=0,hintOn=true,caught=false;
+  var boss={s:'away',t:2,fake:false};
+  var EAT=.45;
+
+  function resize(){
+    dpr=Math.min(window.devicePixelRatio||1,2);
+    W=cv.clientWidth;H=cv.clientHeight;
+    cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  window.addEventListener('resize',resize);resize();
+
+  function rnd(a,b){return a+Math.random()*(b-a);}
+  function awayTime(){return rnd(1.4,2.8)*Math.max(.45,1-.08*(level-1));}
+  function warnTime(){return Math.max(.35,.7-.04*(level-1));}
+  function setBoss(s){
+    boss.s=s;
+    if(s==='away')boss.t=boss.fake?rnd(.5,.9):awayTime();
+    else if(s==='warn')boss.t=warnTime();
+    else boss.t=rnd(.7,1.1);
+  }
+  function startLevel(){
+    packSize=Math.min(12,5+level);left=packSize;eating=0;
+    boss.fake=false;setBoss('away');boss.t=1.2;
+    hud.textContent='第 '+level+' 關 · '+eaten+' 片';
+  }
+  function reset(){level=1;eaten=0;caught=false;flash=0;hintOn=true;startLevel();}
+
+  function update(dt){
+    t+=dt;
+    if(flash>0){flash-=dt;if(flash<=0)startLevel();return;}
+    if(eating>0)eating=Math.max(0,eating-dt);
+    boss.t-=dt;
+    if(boss.t<=0){
+      if(boss.s==='away'){boss.fake=false;setBoss('warn');}
+      else if(boss.s==='warn'){
+        if(Math.random()<Math.min(.95,.75+.02*level)){setBoss('look');}
+        else{boss.fake=true;setBoss('away');}
+      }else{boss.fake=false;setBoss('away');}
+    }
+    if(eating>0&&boss.s==='look')finish(true);
+  }
+
+  function pack(cx,cy,w,h){
+    ctx.fillStyle='#d9b38c';rr(cx-w/2,cy-h/2,w,h,16);ctx.fill();
+    ctx.strokeStyle='#6b4a2f';ctx.lineWidth=3;rr(cx-w/2,cy-h/2,w,h,16);ctx.stroke();
+    var cols=4,gap=w/(cols+.5),n=packSize;
+    for(var i=0;i<n;i++){
+      var c=i%cols,r=Math.floor(i/cols);
+      var x=cx-w/2+gap*.75+c*gap,y=cy-h/2+gap*.7+r*gap;
+      if(i<left){
+        ctx.fillStyle='#e8a951';ctx.beginPath();ctx.arc(x,y,gap*.38,0,7);ctx.fill();
+        ctx.strokeStyle='#8a5a1f';ctx.lineWidth=2;ctx.stroke();
+        ctx.fillStyle='#4a2b14';
+        [[-.12,-.1],[.14,.05],[-.05,.16]].forEach(function(d){ctx.beginPath();ctx.arc(x+d[0]*gap,y+d[1]*gap,gap*.06,0,7);ctx.fill();});
+      }else{
+        ctx.fillStyle='rgba(107,74,47,.35)';ctx.beginPath();ctx.arc(x,y,gap*.14,0,7);ctx.fill();
+      }
+    }
+  }
+  function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+  function drawBoss(){
+    var cx=W/2,cy=H*.2;
+    ctx.fillStyle='#2f4a63';rr(cx-W*.2,cy+34,W*.4,H*.12,18);ctx.fill();
+    var look=boss.s==='look',warn=boss.s==='warn';
+    var shake=warn?Math.sin(t*40)*3:0;
+    ctx.fillStyle='#f2c9a0';ctx.beginPath();ctx.arc(cx+shake,cy,40,0,7);ctx.fill();
+    if(!look){ctx.fillStyle='#1d1b1a';ctx.beginPath();ctx.arc(cx+shake,cy-3,40,0,7);ctx.fill();}
+    if(warn){
+      ctx.fillStyle='#1d1b1a';ctx.beginPath();ctx.arc(cx+shake,cy-3,40,Math.PI*.9,Math.PI*2.1);ctx.fill();
+      ctx.fillStyle='#ffd23f';ctx.font='900 40px sans-serif';ctx.textAlign='center';ctx.fillText('!',cx+58,cy-18);
+    }
+    if(look){
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx-15,cy-4,9,0,7);ctx.arc(cx+15,cy-4,9,0,7);ctx.fill();
+      ctx.fillStyle='#c0392b';ctx.beginPath();ctx.arc(cx-15,cy-4,4,0,7);ctx.arc(cx+15,cy-4,4,0,7);ctx.fill();
+      ctx.strokeStyle='#8a2b20';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(cx-28,cy-20);ctx.lineTo(cx-6,cy-12);ctx.moveTo(cx+28,cy-20);ctx.lineTo(cx+6,cy-12);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx-12,cy+20);ctx.lineTo(cx+12,cy+20);ctx.stroke();
+    }
+    ctx.fillStyle='#e8f4f8';ctx.font='700 13px sans-serif';ctx.textAlign='center';
+    ctx.fillText(look?'看著你！':warn?'要轉頭了…':'背對你',cx,cy+H*.12+54);
+  }
+  function drawMe(){
+    var cx=W/2,cy=H*.8;
+    var chew=eating>0?1+Math.sin(t*50)*.06:1;
+    ctx.fillStyle='#f2c9a0';ctx.beginPath();ctx.ellipse(cx,cy,34*chew,30,0,0,7);ctx.fill();
+    ctx.fillStyle='#1d1b1a';ctx.beginPath();ctx.arc(cx-11,cy-5,3,0,7);ctx.arc(cx+11,cy-5,3,0,7);ctx.fill();
+    ctx.strokeStyle='#1d1b1a';ctx.lineWidth=3;ctx.beginPath();
+    if(eating>0){ctx.arc(cx,cy+8,6*chew,0,7);}else{ctx.moveTo(cx-8,cy+9);ctx.lineTo(cx+8,cy+9);}
+    ctx.stroke();
+    ctx.fillStyle='#e8f4f8';ctx.font='700 14px sans-serif';ctx.textAlign='center';
+    ctx.fillText(eating>0?'嚼嚼嚼…':'點一下偷吃一片',cx,cy+54);
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#16384a';ctx.fillRect(0,H*.38,W,H*.62);
+    drawBoss();
+    pack(W/2,H*.52,Math.min(W*.74,300),Math.min(H*.2,150));
+    ctx.fillStyle='#e8f4f8';ctx.font='700 15px sans-serif';ctx.textAlign='center';
+    ctx.fillText('剩 '+left+' 片',W/2,H*.52+Math.min(H*.2,150)/2+24);
+    drawMe();
+    if(flash>0){
+      ctx.fillStyle='rgba(11,29,42,.78)';ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='#f7e33b';ctx.font='900 36px sans-serif';ctx.textAlign='center';
+      ctx.fillText('吃完一包！',W/2,H/2-6);
+      ctx.fillStyle='#e8f4f8';ctx.font='700 16px sans-serif';ctx.fillText('下一包更多，主管更敏感',W/2,H/2+28);
+    }
+  }
+  function eat(){
+    if(!running||flash>0||eating>0)return;
+    if(boss.s==='look'){finish(true);return;}
+    left--;eaten++;eating=EAT;hintOn=false;
+    hud.textContent='第 '+level+' 關 · '+eaten+' 片';
+    if(left<=0){level++;flash=1.1;}
+  }
+  function onPress(e){e.preventDefault();eat();}
+  cv.addEventListener('pointerdown',onPress);
+  document.addEventListener('keydown',function(e){if(e.code==='Space'){e.preventDefault();eat();}});
+
+  function loop(now){
+    if(!running)return;
+    var dt=Math.min((now-last)/1000,.05);last=now;
+    update(dt);draw();
+    if(running)requestAnimationFrame(loop);
+  }
+  function start(){
+    reset();running=true;last=performance.now();
+    document.getElementById('start').classList.add('hide');
+    document.getElementById('end').classList.add('hide');
+    requestAnimationFrame(loop);
+  }
+  function finish(c){
+    running=false;caught=!!c;draw();
+    document.getElementById('result').textContent=(caught?'被主管抓到了！':'')+'共偷吃 '+eaten+' 片，過了 '+(level-1)+' 關';
+    document.getElementById('end').classList.remove('hide');
+  }
+  document.addEventListener('visibilitychange',function(){if(document.hidden&&running)finish(false);});
+  document.getElementById('go').addEventListener('click',start);
+  document.getElementById('again').addEventListener('click',start);
+  reset();draw();
+})();
+</script>
+</body>
+</html>

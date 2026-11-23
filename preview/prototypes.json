@@ -22,5 +22,11 @@
     "name": "貓貓三消",
     "concept": "交換貓咪與玩具、完成收集目標，無限接關的療癒三消。",
     "status": "graduated"
+  },
+  {
+    "id": "cookie-snatch",
+    "name": "偷吃餅乾",
+    "concept": "趁主管轉頭，一片一片偷吃餅乾，吃完一包就過關",
+    "status": "prototype"
   }
 ]
