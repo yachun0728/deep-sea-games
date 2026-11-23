@@ -2,6 +2,7 @@ import onPitchRules from '../../../shared/on-pitch-rules.cjs';
 import breakoutRules from '../../../shared/breakout-rules.cjs';
 import quackPondRules from '../../../shared/quack-pond-rules.cjs';
 import mirrorTwinsRules from '../../../shared/mirror-twins-rules.cjs';
+import siegeArchitectRules from '../../../shared/siege-architect-rules.cjs';
 import blasterRules from '../../../shared/blaster-rules.cjs';
 import mermaidRules from '../../../shared/mermaid-rules.cjs';
 import lasthairRules from '../../../shared/last-hair-rules.cjs';
@@ -86,6 +87,7 @@ const boards = new Map([
   ['breakout', timedBoard(breakoutRules)],
   ['quack-pond', puzzleBoard(quackPondRules)],
   ['mirror-twins', puzzleBoard(mirrorTwinsRules)],
+  ['siege-architect', puzzleBoard(siegeArchitectRules)],
   ['outpost', timedBoard(outpostRules, 1)],
   ['blaster', {
     ...blasterV1,

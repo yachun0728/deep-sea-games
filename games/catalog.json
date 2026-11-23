@@ -385,6 +385,14 @@
     "style": "games/quack-pond/style.css"
   },
   {
+    "id": "siege-architect",
+    "logic": "games/siege-architect/game.js",
+    "view": "games/siege-architect/view.html",
+    "card": "games/siege-architect/card.html",
+    "icon": "games/siege-architect/icon.svg",
+    "style": "games/siege-architect/style.css"
+  },
+  {
     "id": "market-desk",
     "logic": "games/market-desk/game.js",
     "view": "games/market-desk/view.html",

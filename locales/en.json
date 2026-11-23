@@ -3181,5 +3181,9 @@
   "選關 (P / Esc)|Stages (P / Esc)": "Stages (P / Esc)",
   "還差 {n}：吃一個「{n}」就剛好|{n} to go: eat a {n} to land it exactly": "{n} to go: eat a {n} to land it exactly",
   "開始遊玩就會開一局；本局每關第一次通過 BONUS +2 點，最多 10 點。|Start playing to open a round; each stage’s first clear in the round gives a +2 pt BONUS, up to 10 pts.": "Start playing to open a round; each stage’s first clear in the round gives a +2 pt BONUS, up to 10 pts.",
-  "音效 (M)|Sound (M)": "Sound (M)"
+  "音效 (M)|Sound (M)": "Sound (M)",
+  "萌獸破城隊": "Critter Crashers",
+  "萌獸破城隊 Critter Crashers": "Critter Crashers",
+  "在時間軸上排好萌獸部隊的出發時間，利用每座塔的鎖定規則攻破城門。": "Schedule your critter squad on a timeline and use each tower's targeting rule to breach the gate.",
+  "遊玩萌獸破城隊：在時間軸上排好萌獸部隊的出發時間，利用每座塔的鎖定規則攻破城門。": "Play Critter Crashers: schedule your critter squad on a timeline and use each tower's targeting rule to breach the gate."
 }

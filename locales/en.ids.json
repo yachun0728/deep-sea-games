@@ -3102,5 +3102,22 @@
   "wardrobe.msg.014": "Cannot read your collection. Existing data was preserved.",
   "wardrobe.msg.015": "Hat",
   "wardrobe.msg.016": "Outfit",
-  "wardrobe.msg.017": "Companion"
+  "wardrobe.msg.017": "Companion",
+  "card.siege-architect.tag": "20 levels",
+  "siege-architect.view.01": "Current stage",
+  "siege-architect.view.02": "Cleared",
+  "siege-architect.view.03": "Total stars",
+  "siege-architect.view.04": "Drag unit cards onto time slots to set when they depart, then press Attack. Each tower shows its targeting rule; a failed attack keeps your plan so you can tweak it and retry.",
+  "siege-architect.view.05": "Rules and records",
+  "siege-architect.view.06": "The defenses are set. Now you attack. Schedule when each critter departs on a 10-second timeline, press Attack and watch your plan succeed or fail. Gun towers hit the closest unit, cannons hit the highest HP with a splash, and snipers hit whoever entered range first; a tower keeps firing at its target until it falls or leaves range. There is no randomness: the same plan always gives the same result.",
+  "siege-architect.view.07": "20 levels, each with a squad budget and gate HP. Breaching the gate earns 1 star, staying within the cost target earns another, and meeting the level's extra condition earns the third. Clearing a level unlocks the next; progress, stars and plans are saved in this browser.",
+  "siege-architect.view.08": "This game has no BONUS. Levels and stars are just your record and are not converted to points; there are no bets or multiplier payouts. The first full round (at least 10 seconds) of each game each day earns the platform's fixed completion reward.",
+  "siege-architect.view.09": "The leaderboard counts the different levels the server has replayed and verified, once per level. Switching games or tabs pauses the attack and it resumes when you return; changing levels or refreshing ends the round but keeps your plan.",
+  "siege-architect.view.10": "Critter Crashers",
+  "siege-architect.view.11": "Critter Crashers status",
+  "siege-architect.say.001": "Level {lv}: schedule your squad, then press Attack.",
+  "siege-architect.say.002": "Level {lv}: gate breached with {st} star(s).",
+  "siege-architect.say.003": "Level {lv}: attack #{n}.",
+  "siege-architect.say.004": "Drag unit cards onto the timeline, then press Attack. Pick levels from the menu at the top left.",
+  "siege-architect.say.005": "Leaderboard result could not be sent. It will be sent again on your next clear."
 }

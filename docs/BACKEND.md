@@ -172,7 +172,7 @@ const next = await moveMinesRound(round.token, {
 
 2026-11-19，本機 Worker + 暫存 D1 驗證上述十款開局、合法終局、榜單讀回與重送。為縮短測試等待，測試腳本只在本機資料庫調整 issuedAt，重播引擎使用真實規則逐步運算。桌面與 390px 的遊戲翻譯、切換語言、版面及初始化檢查通過。全站 i18n 執行仍因宴會遊戲既有漏翻中止，針對十款的手機測試最後遇到舊頁首錢包定位斷言失敗。實體手機、正式站自然終局與 GA4 後台尚未驗收。
 
-其餘尚待接入的競賽遊戲包含 blaster、boba、dive、mrt、pancake、pudding、clock-out、peek、breakout、pet-walk、office-shoot、banquet、eat-smaller、mirror-twins、shadow-relay、one-line-defense、quack-pond、on-pitch。book-sort 已由獨立 SDK 模組接入。
+其餘尚待接入的競賽遊戲包含 blaster、boba、dive、mrt、pancake、pudding、clock-out、peek、breakout、pet-walk、office-shoot、banquet、eat-smaller、mirror-twins、shadow-relay、one-line-defense、on-pitch。book-sort 已由獨立 SDK 模組接入。
 
 
 ## 已串接遊戲的榜單顯示
@@ -201,4 +201,5 @@ Closing Call 開局會等待訪客排行回合準備完成，避免快速點擊�
 - **呱呱池塘（`quack-pond`）、鏡像雙子（`mirror-twins`）** 是關卡制：每過一關，客戶端用一個回合送出該關解答（呱呱池塘為每列皇冠欄位；鏡像雙子為移動方向序列），Worker 用 `puzzleBoard` 對照伺服器內的關卡資料驗證，通過後把 `lastCleared` 寫進回合狀態。分數是「已驗證的不同關卡數」，每關最多算一次。
 - `0014_verified_puzzle_stages.sql` 新增 `verified_puzzle_stages`（主鍵 `game_id, player_id, stage`，重複過同一關不會重複計分）與兩個 trigger：回合狀態出現 `lastCleared` 時登記關卡，登記後把該玩家的已驗證關卡數寫入 `game_leaderboard`（只在變高時更新），並更新 `leaderboard_activity`。既有的前 50 名與時間排序 trigger 照常運作。
 - 排行榜面板：`frontend/services/leaderboard-view.mjs` 的遊戲清單加入呱呱池塘與鏡像雙子。
+- **萌獸破城隊（`siege-architect`）** 同樣用 `puzzleBoard`：攻破城門時送 `[關卡, 20 個時間格代碼]`（0 = 空格，1～6 = shield、sapper、scout、rats、peacock、mole）。`shared/siege-architect-rules.cjs` 檢查兵種已解鎖、花費在預算內，再用遊戲同一份確定性模擬重播，城門被攻破才寫入 `lastCleared`。`0015_game_names_siege_architect.sql` 新增遊戲名稱，`0016_siege_architect_puzzle_stages.sql` 把它加入 `verified_puzzle_stage_after_move` trigger。測試：`node tools/test_puzzle_leaderboards.mjs`、`node tools/test_siege_architect_board.mjs`（真實 Worker 路由＋SQLite 套用全部 migration）。發布順序同上：migration → Worker → 前端；回復時移除前端接線，trigger 與名稱可保留。
 - 發布順序：先套用 `0014` migration，再部署 Worker，最後發布前端。回復時反向處理；`verified_puzzle_stages` 與 trigger 可保留。
