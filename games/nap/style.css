@@ -1,0 +1,13 @@
+/* 偷睡大師：手機狀態列與分享鈕配合遊戲畫面的深夜藍面板 */
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  #view-nap .fs-game .stats>div{background:#141a46;border:2px solid #5c68d8;border-radius:12px;box-shadow:0 0 12px rgba(92,104,216,.35)}
+  #view-nap .fs-game .stats dt{color:#aab3ff;font-weight:700}
+  #view-nap .fs-game .stats dd{color:#fff;font-weight:900}
+  #view-nap .fs-game .fs-exit{background:#141a46;border:2px solid #5c68d8;color:#fff}
+  /* 結束後出現「分享成績」時：分享改成左側只有圖示的圓鈕，再玩一次放右側，不再疊在一起 */
+  #view-nap .fs-game:has(.share-result:not([hidden])) .mobile-stage-actions{left:80px;right:12px}
+  #view-nap .fs-game:has(.share-result:not([hidden])) #np-go:not(:disabled){width:100%;min-width:0;height:56px;min-height:56px;padding:6px 12px}
+  #view-nap .fs-game .share-result:not([hidden]){left:12px;right:auto;transform:none;width:56px;height:56px;min-height:56px;padding:0;justify-content:center;border:2px solid #5c68d8;border-radius:50%;background:#141a46;color:#fff;font-size:22px}
+  #view-nap .fs-game .share-result span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  #view-nap .share-result i{color:#ffd54f;font-size:22px}
+}
