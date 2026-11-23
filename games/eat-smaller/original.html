@@ -24,7 +24,7 @@
   button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   b{font-weight:700}
   .num{font-variant-numeric:tabular-nums}
-  #app{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:12px}
+  #app{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
   .lbl{font-size:13px;letter-spacing:.08em;color:var(--mute)}
   .icon-btn{width:38px;height:38px;border-radius:var(--sk);background:var(--paper2);border:2px solid var(--ink);display:inline-flex;align-items:center;justify-content:center;font-size:17px;margin-left:5px;box-shadow:2px 3px 0 var(--ink);transition:transform .08s,box-shadow .08s}
   .icon-btn:nth-child(2n){border-radius:var(--sk2)}
@@ -32,8 +32,9 @@
   .icon-btn:active{transform:translate(2px,3px);box-shadow:0 0 0 var(--ink)}
   canvas#cv{display:block;border:2.5px solid var(--ink);border-radius:14px 26px 12px 24px/24px 12px 26px 14px;box-shadow:5px 6px 0 rgba(43,43,43,.85);background:var(--paper)}
   .hint{font-size:14px;color:var(--mute);text-align:center}
-  .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(232,220,189,.7);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);padding:16px;z-index:10}
+  .overlay{position:fixed;inset:0;display:none;background:rgba(232,220,189,.7);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);padding:22px 16px 16px;z-index:10;overflow-y:auto;touch-action:pan-y;overscroll-behavior:contain}
   .overlay.show{display:flex}
+  .overlay .card{margin:auto}
   .card{position:relative;width:min(460px,100%);background:var(--paper2);border:2.5px solid var(--ink);border-radius:var(--sk);padding:28px 24px 24px;text-align:center;box-shadow:7px 8px 0 var(--ink);transform:rotate(-.6deg)}
   .card::before{content:"";position:absolute;left:50%;top:-14px;width:96px;height:26px;margin-left:-48px;background:rgba(246,196,122,.75);transform:rotate(-3deg);border-left:2px dashed rgba(43,43,43,.15);border-right:2px dashed rgba(43,43,43,.15)}
   .card h1{font-size:38px;font-weight:700;letter-spacing:.02em}
@@ -56,23 +57,33 @@
   .bar{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
   .big{font-size:40px;font-weight:700;line-height:1}
   .target{color:var(--amber)}
-  .mid{flex:1;padding:0 6px 8px}
+  .mid{flex:1;min-width:0;padding:0 6px 2px}
+  .big.bump{animation:bump .28s ease-out}
+  @keyframes bump{0%{transform:scale(1.4)}100%{transform:scale(1)}}
   .prog{height:13px;border:2px solid var(--ink);border-radius:var(--sk);background:var(--paper2);overflow:hidden;margin-top:6px}
   .prog i{display:block;height:100%;width:0;background:repeating-linear-gradient(-45deg,var(--green) 0 3px,var(--m-green) 3px 7px);transition:width .2s}
   .prog i.over{background:repeating-linear-gradient(-45deg,var(--red) 0 3px,var(--m-red) 3px 7px)}
-  .status{font-size:17px;color:var(--mute);text-align:center;min-height:22px}
+  .status{font-size:15px;line-height:1.2;color:var(--mute);text-align:center;min-height:18px;margin-top:4px}
   .status.warn{color:var(--red);font-weight:700}
   .chip{flex:none;min-width:36px;height:27px;padding:0 6px;border-radius:var(--sk);border:2px solid var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;color:var(--ink)}
   .btn{background:var(--m-green)}
+  @media (max-height:520px){ .levels button{aspect-ratio:1.35} .card{padding:22px 22px 18px} }
   .levels{grid-template-columns:repeat(4,1fr)}
   .levels button.done{background:#e3f1d6}
   canvas#cv{cursor:crosshair}
   .plat{margin-top:14px;padding:8px 12px;border:2px dashed rgba(43,43,43,.35);border-radius:var(--sk2);font-size:14px;line-height:1.5;color:var(--ink);background:rgba(246,196,122,.25)}
   .bonus{margin-top:10px;font-size:17px;font-weight:700;color:var(--green);min-height:0}
   .bonus:empty{display:none}
-  /* 平台內嵌：說明卡比畫面高時可在浮層內捲動，不裁掉標題 */
-  .overlay{overflow-y:auto;align-items:flex-start;touch-action:pan-y;overscroll-behavior:contain}
-  .overlay .card{margin:auto}
+  /* 觸控搖桿 */
+  #joy{position:fixed;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:2.5px dashed rgba(43,43,43,.45);background:rgba(246,238,219,.45);display:none;pointer-events:none;z-index:6}
+  #joy.on{display:block}
+  #joy i{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:#8fd3e8;border:2.5px solid var(--ink);box-shadow:2px 3px 0 rgba(43,43,43,.8)}
+  #app,#app *{touch-action:none}
+  .thumb{display:none}
+  @media (pointer:coarse) and (orientation:portrait){
+    .thumb{display:flex;align-items:center;justify-content:center;flex:none;height:150px;border:2.5px dashed rgba(43,43,43,.3);border-radius:var(--sk);color:var(--mute2);font-size:16px;gap:10px}
+    .thumb b{display:inline-block;width:34px;height:34px;border-radius:50%;border:2.5px dashed rgba(43,43,43,.35)}
+  }
 </style>
 </head>
 <body>
@@ -82,35 +93,23 @@
     <div class="mid">
       <div class="lbl" id="hudLv" style="text-align:center"></div>
       <div class="prog"><i id="prog"></i></div>
+      <div class="status" id="status"></div>
     </div>
     <div style="text-align:right"><div class="lbl" data-t="target"></div><div class="big num target" id="hudTarget">12</div></div>
-    <div style="align-self:center"><button class="icon-btn" id="btnRestart" data-tt="restart">↻</button><button class="icon-btn" id="btnMenu" data-tt="menu">☰</button></div>
+    <div style="align-self:center;white-space:nowrap"><button class="icon-btn" id="btnSound" data-tt="sound">🔊</button><button class="icon-btn" id="btnRestart" data-tt="restart">↻</button><button class="icon-btn" id="btnMenu" data-tt="menu">☰</button></div>
   </div>
   <canvas id="cv"></canvas>
-  <div class="status" id="status"></div>
+  <div class="thumb" id="thumb"><b></b><span data-t="thumb"></span></div>
 </div>
+<div id="joy"><i></i></div>
 
-<div class="overlay show" id="ovMenu">
+<div class="overlay" id="ovMenu">
   <div class="card">
     <h1 data-t="title"></h1>
     <div class="sub" data-t="intro"></div>
-    <div class="rules">
-      <div><span class="chip" style="background:var(--m-green)">3</span><span data-t="r1"></span></div>
-      <div><span class="chip" style="background:var(--m-red)">9</span><span data-t="r2"></span></div>
-      <div><span class="chip" style="background:var(--m-amber)">÷2</span><span data-t="r3"></span></div>
-      <div><span class="chip" style="background:#e2dccd">•</span><span data-t="r4"></span></div>
-    </div>
     <div class="plat" id="platNote" hidden></div>
     <div class="levels" id="levels"></div>
-  </div>
-</div>
-
-<div class="overlay" id="ovIntro">
-  <div class="card">
-    <div class="lbl" id="introLv"></div>
-    <h2 id="introName" style="margin-top:6px">—</h2>
-    <div class="sub" id="introTip"></div>
-    <button class="btn" id="btnGo" data-t="go"></button>
+    <button class="btn" id="btnBack" data-t="back"></button>
   </div>
 </div>
 
@@ -139,7 +138,10 @@
 <script>
 (() => {
 'use strict';
-const W = 800, H = 800;
+// 世界尺寸（遊戲單位）：短邊固定 SHORT，長邊跟著畫面比例，讓棋盤填滿畫面而不是縮在中間的正方形。
+const SHORT = 520;
+let W = SHORT, H = SHORT;
+const REF_AREA = SHORT * SHORT * 16 / 9; // 關卡數量以 16:9 棋盤為基準
 
 // ---------- 語言：字串寫成「中文|English」，語言跟隨 Deep Sea Arcade 頁首切換 ----------
 function lang() { try { const i = window.parent !== window && window.parent.deepSeaI18n; return i && i.getLanguage() === 'en' ? 'en' : 'zh'; } catch (e) { return 'zh'; } }
@@ -149,16 +151,12 @@ function Lx(s, p) {
   return p ? t.replace(/\{(\w+)\}/g, (_, n) => p[n] != null ? p[n] : '') : t;
 }
 const TX = {
-  you: '你|You', target: '目標|Target', restart: '重來 (R)|Restart (R)', menu: '選單 (Esc)|Menu (Esc)',
+  you: '你|You', target: '目標|Target', sound: '音效 (M)|Sound (M)', restart: '重來 (R)|Restart (R)', menu: '選關 (P / Esc)|Stages (P / Esc)',
+  thumb: '在這裡按住拖曳來移動|Press and drag here to move',
   title: '數字吞噬|Number Gulp',
-  intro: '你是一個數字。吃掉比你小的，躲開比你大的，讓自己**剛好**變成目標數字。|You are a number. Eat the smaller ones, dodge the bigger ones, and land **exactly** on the target.',
-  r1: '綠色比你小：碰到就吃掉，數值加到你身上。|Green is smaller than you: touch it to eat it and add its value to yours.',
-  r2: '紅色比你大：碰到就被吃掉。有些會主動追你。|Red is bigger than you: touch it and you get eaten. Some will chase you.',
-  r3: '運算符：碰到立刻生效。超過目標時可以靠它們降回來，但不小心碰到也會白忙一場。|Operators take effect on contact. They bring you back down when you overshoot, but bump one by accident and your work is undone.',
-  r4: '越大游得越慢，到後面要算好再出手。|The bigger you get, the slower you swim, so plan your moves later on.',
-  go: '開始|Start', sec: '秒|sec', best: '最佳|Best', pick: '選關|Stages',
+  intro: '吃掉比你小的數字、躲開比你大的，**剛好**變成目標數字就過關。|Eat smaller numbers, dodge bigger ones, and hit the target **exactly**.',
+  back: '回到遊戲|Back to game', sec: '秒|sec', best: '最佳|Best', pick: '選關|Stages',
   paused: '已暫停|Paused', pausedSub: '離開畫面時會自動暫停。|The game pauses when you leave the screen.', resume: '繼續|Resume',
-  hint: '滑鼠 / 手指指哪裡就往哪裡游 · 也可以用方向鍵|Swim toward your mouse or finger · arrow keys also work',
 };
 function applyStatic() {
   document.querySelectorAll('[data-t]').forEach(el => { el.innerHTML = Lx(TX[el.dataset.t]); });
@@ -166,26 +164,27 @@ function applyStatic() {
 }
 
 // pop: 場上數字量；danger: 比你大的比例；hunt: 大數字會追人的比例；ops: 可能出現的運算符；opRate: 運算符出現機率
+// tip 畫在棋盤上的開場卡，要短到一行放得下
 const LEVELS = [
   { name: '暖身|Warm-up', start: 2, target: 12, pop: 12, danger: .25, hunt: 0, ops: ['−3'], opRate: .12,
-    tip: '吃掉比你小的數字，**剛好**變成 12 就過關。吃過頭了？撿 **−3** 降回來。|Eat numbers smaller than you and hit **exactly** 12 to clear the stage. Overshot? Grab a **−3** to come back down.' },
+    tip: '吃小的數字長大。吃過頭？撿 −3 降回來。|Eat smaller numbers. Overshot? A −3 brings you back down.' },
   { name: '剛剛好|Just Right', start: 3, target: 25, pop: 14, danger: .3, hunt: 0, ops: ['−3', '+1'], opRate: .14,
-    tip: '目標 25。快到的時候，別亂吃：先算一下差幾點。|Target 25. When you get close, don\'t eat blindly: work out how much you still need.' },
+    tip: '快到目標時，先算好再吃。|Close to the target? Count before you eat.' },
   { name: '除以二|Halve It', start: 4, target: 40, pop: 15, danger: .35, hunt: 0, ops: ['÷2', '−3', '+1'], opRate: .16,
-    tip: '新的運算符 **÷2**（無條件捨去）。救命用的好東西，也可能害你。|New operator: **÷2** (rounds down). It can save you, and it can ruin you.' },
+    tip: '新的 ÷2（無條件捨去）：能救你，也能害你。|New: ÷2 (rounds down). It can save you, or ruin you.' },
   { name: '獵人|Hunters', start: 3, target: 30, pop: 15, danger: .38, hunt: .45, ops: ['−3', '+1'], opRate: .13,
-    tip: '有些大數字會**主動追你**（帶尖角的那種）。被盯上就快跑。|Some big numbers **hunt you down** (the spiky ones). If one locks on, run.' },
+    tip: '帶尖角的數字會追你，快跑！|Spiky numbers hunt you down. Run!' },
   { name: '大胃王|Big Eater', start: 5, target: 99, pop: 17, danger: .4, hunt: .35, ops: ['÷2', '−3', '+1'], opRate: .14,
-    tip: '目標 99。越大越慢，越後面越難逃。|Target 99. The bigger you get, the slower you are, and the harder it is to escape.' },
+    tip: '越大游得越慢，越後面越難逃。|The bigger you get, the slower you swim.' },
   { name: '陷阱海|Sea of Traps', start: 4, target: 50, pop: 18, danger: .3, hunt: .3, ops: ['÷2', '÷2', '−3', '+1'], opRate: .32,
-    tip: '到處漂著運算符。小心不要一頭撞上 ÷2。|Operators drift everywhere. Careful not to swim straight into a ÷2.' },
+    tip: '到處都是運算符，別一頭撞上 ÷2。|Operators everywhere. Don\'t swim into a ÷2.' },
   { name: '質數|Prime', start: 2, target: 61, pop: 17, danger: .45, hunt: .5, ops: ['÷2', '−3', '+1'], opRate: .15,
-    tip: '61 是質數，不能靠 ÷2 剛好湊到。要一點一點推上去。|61 is prime, so ÷2 can never land you on it. Build up bit by bit.' },
+    tip: '61 是質數，靠 ÷2 永遠湊不到。|61 is prime: ÷2 can never land you on it.' },
   { name: '128', start: 2, target: 128, pop: 18, danger: .48, hunt: .55, ops: ['÷2', '−3', '+1'], opRate: .14,
-    tip: '最終關：從 2 長到 128。祝好運。|Final stage: grow from 2 to 128. Good luck.' },
+    tip: '最終關：從 2 一路長到 128。|Final stage: from 2 all the way to 128.' },
 ];
 
-// ---------- Deep Sea Arcade 平台：免費、BONUS 與暫停由父頁 deepSeaEatSmaller 處理；單獨開啟時是不免費的示範 ----------
+// ---------- Deep Sea Arcade 平台：開局、BONUS 與暫停由父頁 deepSeaEatSmaller 處理；單獨開啟時是不入帳的示範 ----------
 function host() { try { return window.parent !== window ? window.parent.deepSeaEatSmaller || null : null; } catch (e) { return null; } }
 let roundOn = false, earned = 0, platformVisible = true;
 function ensureRound() {
@@ -201,8 +200,9 @@ function renderNote() {
   el.hidden = false;
   el.innerHTML = roundOn
     ? Lx('本局進行中：每關第一次通過 BONUS +2 點（已得 {e} / 10）。失敗可以直接重來。|Round in progress: +2 BONUS pts the first time you clear each stage ({e} / 10 earned). Retry freely after a loss at no extra cost.', { e: earned })
-    : Lx('點一關就會扣 10 點開始一局；本局每過一關 BONUS +2 點，最多 10 點。|Picking a stage starts a round for 10 pts; each stage you clear in the round gives a +2 pt BONUS, up to 10 pts.');
+    : Lx('開始遊玩就會開一局；本局每關第一次通過 BONUS +2 點，最多 10 點。|Start playing to open a round; each stage’s first clear in the round gives a +2 pt BONUS, up to 10 pts.');
 }
+function touch() { const h = host(); if (h && roundOn && h.touch) h.touch(window); }
 
 const store = {
   get(k, d) { try { const v = localStorage.getItem('eatSmaller.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
@@ -211,33 +211,130 @@ const store = {
 let unlocked = store.get('unlocked', 1);
 let bests = store.get('bests', {});
 
+// ---------- Sound (synthesized live with Web Audio; no audio files needed) ----------
+const sfx = (() => {
+  let ac = null, master = null, noiseBuf = null, muted = store.get('muted', false);
+  const VOL = .6, lastAt = {};
+  function ensure() {
+    if (!ac) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ac = new AC();
+      const comp = ac.createDynamicsCompressor();
+      master = ac.createGain(); master.gain.value = muted ? 0 : VOL;
+      master.connect(comp); comp.connect(ac.destination);
+      noiseBuf = ac.createBuffer(1, ac.sampleRate * .5, ac.sampleRate);
+      const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    if (ac.state === 'suspended') ac.resume();
+    return ac;
+  }
+  // Skip a sound if the same one just played, so rapid eating does not turn into noise
+  function gate(name, gap) { const n = performance.now(); if (lastAt[name] && n - lastAt[name] < gap) return false; lastAt[name] = n; return true; }
+  function tone({ type = 'triangle', f0, f1, t = 0, dur = .12, vol = .3, attack = .006 }) {
+    const a = ensure(); if (!a || muted) return;
+    const s = a.currentTime + t, o = a.createOscillator(), g = a.createGain();
+    o.type = type; o.frequency.setValueAtTime(f0, s);
+    if (f1) o.frequency.exponentialRampToValueAtTime(f1, s + dur);
+    g.gain.setValueAtTime(.0001, s); g.gain.exponentialRampToValueAtTime(vol, s + attack);
+    g.gain.exponentialRampToValueAtTime(.0001, s + dur);
+    o.connect(g); g.connect(master); o.start(s); o.stop(s + dur + .03);
+  }
+  function noise({ t = 0, dur = .06, vol = .15, freq = 2500, q = 1, type = 'bandpass' }) {
+    const a = ensure(); if (!a || muted) return;
+    const s = a.currentTime + t, src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+    src.buffer = noiseBuf; f.type = type; f.frequency.value = freq; f.Q.value = q;
+    g.gain.setValueAtTime(vol, s); g.gain.exponentialRampToValueAtTime(.0001, s + dur);
+    src.connect(f); f.connect(g); g.connect(master); src.start(s); src.stop(s + dur + .02);
+  }
+  return {
+    unlock: ensure,
+    get muted() { return muted; },
+    toggle() { muted = !muted; store.set('muted', muted); if (master) master.gain.value = muted ? 0 : VOL; return muted; },
+    // Eat: the closer you are to the target, the higher the pitch
+    eat(progress) {
+      if (!gate('eat', 45)) return;
+      const f = 330 + 560 * Math.max(0, Math.min(1, progress));
+      tone({ f0: f, f1: f * 1.8, dur: .09, vol: .26 });
+      noise({ dur: .025, vol: .07, freq: 3500 });
+    },
+    // Operators: −3 and ÷2 slide down, +1 hops up
+    opDown() { tone({ type: 'sine', f0: 560, f1: 170, dur: .24, vol: .3 }); tone({ f0: 280, f1: 90, dur: .24, vol: .1 }); },
+    opUp() { tone({ f0: 640, f1: 960, dur: .08, vol: .22 }); tone({ f0: 960, f1: 1280, t: .06, dur: .08, vol: .16 }); },
+    // Same size: bounce off
+    bump() { if (!gate('bump', 150)) return; tone({ type: 'sine', f0: 200, f1: 340, dur: .1, vol: .26 }); tone({ type: 'sine', f0: 340, f1: 190, t: .08, dur: .14, vol: .16 }); },
+    // Warning when you overshoot the target
+    over() { tone({ type: 'square', f0: 466, dur: .1, vol: .06 }); tone({ type: 'square', f0: 349, t: .13, dur: .18, vol: .06 }); },
+    // Eaten
+    lose() {
+      tone({ type: 'sawtooth', f0: 320, f1: 55, dur: .65, vol: .16 });
+      noise({ dur: .3, vol: .3, freq: 700, q: .6, type: 'lowpass' });
+      noise({ t: .05, dur: .08, vol: .12, freq: 1800 });
+    },
+    // Hit the target exactly
+    win() {
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ f0: f, dur: .28, t: i * .09, vol: .2 }));
+      tone({ type: 'sine', f0: 2093, f1: 2637, t: .38, dur: .4, vol: .07 });
+    },
+    start() { tone({ f0: 392, dur: .1, vol: .14 }); tone({ f0: 587.33, t: .08, dur: .16, vol: .14 }); },
+    click() { tone({ type: 'square', f0: 1100, dur: .03, vol: .04 }); },
+  };
+})();
+// Browsers only allow audio after a user gesture, so start it on the first tap or key press
+['pointerdown', 'keydown', 'touchstart'].forEach(ev => window.addEventListener(ev, () => sfx.unlock(), { capture: true, passive: true }));
+document.addEventListener('click', e => { if (e.target.closest('button')) sfx.click(); });
+
 const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
 let scale = 1;
 function resize() {
-  const avail = Math.min(window.innerWidth - 24, window.innerHeight - 120);
-  const size = Math.max(260, Math.floor(avail));
+  const bar = document.getElementById('bar'), thumb = document.getElementById('thumb');
+  const thumbZone = matchMedia('(pointer:coarse) and (orientation:portrait)').matches ? 158 : 0;
+  const availW = Math.max(240, window.innerWidth - 16);
+  let cw = availW, ch = 0;
+  // Two passes: the HUD may wrap onto more lines once the board (and so the HUD) gets narrower.
+  for (let pass = 0; pass < 2; pass++) {
+    bar.style.width = cw + 'px';
+    const availH = Math.max(200, window.innerHeight - 16 - 8 - bar.offsetHeight - thumbZone);
+    const asp = availW / availH;
+    if (asp >= 1) { H = SHORT; W = Math.round(SHORT * Math.min(asp, 1.9)); }
+    else { W = SHORT; H = Math.round(SHORT / Math.max(asp, 1 / 1.9)); }
+    scale = Math.min(availW / W, availH / H);
+    cw = Math.floor(W * scale); ch = Math.floor(H * scale);
+  }
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  cv.style.width = cv.style.height = size + 'px';
-  cv.width = cv.height = Math.round(size * dpr);
-  document.getElementById('bar').style.width = size + 'px';
-  scale = size / W;
+  cv.style.width = cw + 'px'; cv.style.height = ch + 'px';
+  cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr);
+  bar.style.width = cw + 'px'; thumb.style.width = cw + 'px';
   ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
+  if (player) { player.x = Math.min(player.x, W - player.r); player.y = Math.min(player.y, H - player.r); }
 }
-window.addEventListener('resize', resize); resize();
+window.addEventListener('resize', resize);
 
-const radiusOf = v => 14 + Math.sqrt(v) * 3.2;
+const radiusOf = v => 16 + Math.sqrt(v) * 3.2;
 const speedOf = v => 250 / (1 + v / 28);
 const rand = (a, b) => a + Math.random() * (b - a);
 const randi = (a, b) => Math.floor(rand(a, b + 1));
 
 let uid = 0;
-let lvIndex = 0, L, player, ents, state = 'menu', time = 0, spawnT = 0, invuln = 0, popups = [], particles = [], shake = 0;
+// state: 'ready' (level shown, waiting for the first move) → 'play' → 'end'; 'menu' while the level list is open
+let lvIndex = 0, L, player, ents, state = 'ready', time = 0, spawnT = 0, invuln = 0, popups = [], particles = [], shake = 0;
+let popN = 12, danger = 0, winT = 0;
+// One-time coaching hints shown in the game itself (instead of a wall of rules before playing)
+const seenTips = store.get('tips', {});
+let tip = null; // { key, text, t }
+function coach(key, text, force) {
+  if ((seenTips[key] && !force) || (tip && tip.key === key)) return;
+  if (tip && tip.t < 1.2 && !force) return; // let the current hint be read first
+  tip = { key, text, t: 0 };
+  seenTips[key] = 1; store.set('tips', seenTips);
+}
 
 function loadLevel(i) {
   lvIndex = i; L = LEVELS[i];
-  player = { x: W / 2, y: H / 2, v: L.start, vx: 0, vy: 0, r: radiusOf(L.start) };
-  ents = []; popups = []; particles = []; time = 0; invuln = 1.5; spawnT = 0;
-  for (let k = 0; k < L.pop; k++) spawn(true);
+  player = { x: W / 2, y: H / 2, v: L.start, vx: 0, vy: 0, r: radiusOf(L.start), pop: 0, lookX: 1, lookY: 0 };
+  ents = []; popups = []; particles = []; time = 0; invuln = 1.5; spawnT = 0; wasOver = false; tip = null; danger = 0; winT = 0;
+  popN = Math.round(L.pop * Math.max(.75, Math.min(1.15, W * H / REF_AREA)));
+  for (let k = 0; k < popN; k++) spawn(true);
   updHud();
 }
 
@@ -253,7 +350,6 @@ function spawn(initial) {
     else v = randi(1, Math.max(1, Math.min(pv - 1, Math.ceil(pv * 0.75))));
     e = { v, r: radiusOf(v), hunter: v > pv && Math.random() < L.hunt };
   }
-  // 位置：初始散在場上（避開玩家），之後從邊緣漂進來
   let x, y, tries = 0;
   if (initial) {
     do { x = rand(40, W - 40); y = rand(40, H - 40); tries++; } while (Math.hypot(x - player.x, y - player.y) < 200 && tries < 50);
@@ -270,31 +366,112 @@ function spawn(initial) {
   ents.push(e);
 }
 
-// ---------- 輸入 ----------
+// ---------- Input ----------
 const keys = new Set();
-let pointer = null, pointerActive = false;
+let pointer = null;
 function toLocal(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; }
-cv.addEventListener('pointermove', e => { if (e.pointerType === 'mouse' || pointerActive) pointer = toLocal(e); });
-cv.addEventListener('pointerdown', e => { touch(); pointerActive = true; pointer = toLocal(e); cv.setPointerCapture(e.pointerId); });
-cv.addEventListener('pointerup', e => { pointerActive = false; if (e.pointerType !== 'mouse') pointer = null; });
+// Mouse: swim toward the cursor
+cv.addEventListener('pointermove', e => {
+  if (e.pointerType !== 'mouse') return;
+  pointer = toLocal(e);
+  if (state === 'ready') begin(); // moving the mouse over the board starts the level
+});
 cv.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') pointer = null; });
+// Touch: floating virtual joystick. It appears wherever the finger lands, so the finger never covers the player.
+// Dragging past the edge pulls the base along, so reversing direction is instant.
+const JOY_R = 50;
+let joy = null;
+const joyEl = document.getElementById('joy');
+function joyKnob(dx, dy) { joyEl.firstElementChild.style.transform = `translate(${dx}px,${dy}px)`; }
+// Phones use Touch Events (more reliable than Pointer Events there), and page scrolling/bounce is blocked during play;
+// otherwise the browser treats the drag as a scroll and cancels the touch, freezing the joystick.
+const HAS_TOUCH = 'TouchEvent' in window; // touch listeners only fire on touch screens, so registering them is harmless elsewhere
+function joyStart(id, x, y) {
+  if ((state !== 'play' && state !== 'ready') || joy) return false;
+  if (state === 'ready') begin();
+  joy = { id, ox: x, oy: y, dx: 0, dy: 0 };
+  pointer = null;
+  joyEl.style.left = x + 'px'; joyEl.style.top = y + 'px';
+  joyEl.classList.add('on'); joyKnob(0, 0);
+  return true;
+}
+function joyMove(x, y) {
+  let dx = x - joy.ox, dy = y - joy.oy;
+  const d = Math.hypot(dx, dy);
+  if (d > JOY_R) {
+    joy.ox += dx / d * (d - JOY_R); joy.oy += dy / d * (d - JOY_R);
+    dx = x - joy.ox; dy = y - joy.oy;
+    joyEl.style.left = joy.ox + 'px'; joyEl.style.top = joy.oy + 'px';
+  }
+  joy.dx = dx; joy.dy = dy; joyKnob(dx, dy);
+}
+function endJoy() { if (joy) { joy = null; joyEl.classList.remove('on'); } }
+if (HAS_TOUCH) {
+  document.addEventListener('touchstart', e => {
+    if ((state !== 'play' && state !== 'ready') || e.target.closest('button, .overlay')) return;
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    joyStart(t.identifier, t.clientX, t.clientY);
+  }, { passive: false });
+  document.addEventListener('touchmove', e => {
+    if (state === 'play') e.preventDefault();
+    if (!joy) return;
+    for (const t of e.changedTouches) if (t.identifier === joy.id) joyMove(t.clientX, t.clientY);
+  }, { passive: false });
+  const touchEnd = e => { if (joy) for (const t of e.changedTouches) if (t.identifier === joy.id) endJoy(); };
+  document.addEventListener('touchend', touchEnd);
+  document.addEventListener('touchcancel', touchEnd);
+}
+// Devices without Touch Events (e.g. some pens and tablets) fall back to Pointer Events
+window.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'mouse' || (HAS_TOUCH && e.pointerType === 'touch')) return;
+  if (e.target.closest('button')) return;
+  if (joyStart(e.pointerId, e.clientX, e.clientY)) e.preventDefault();
+});
+window.addEventListener('pointermove', e => { if (joy && e.pointerId === joy.id) joyMove(e.clientX, e.clientY); });
+window.addEventListener('pointerup', e => { if (joy && e.pointerId === joy.id) endJoy(); });
+window.addEventListener('pointercancel', e => { if (joy && e.pointerId === joy.id) endJoy(); });
+function buzz(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
+const isTouchUI = () => matchMedia('(pointer:coarse)').matches;
+try { matchMedia('(pointer:coarse)').addEventListener('change', () => resize()); } catch (e) {}
+// 有操作時通知父頁（有效遊玩時間）
+window.addEventListener('pointerdown', touch, { capture: true, passive: true });
+// P 或 Esc 開關選關
 window.addEventListener('keydown', e => {
   const k = e.key.toLowerCase();
   if (k.startsWith('arrow') || k === ' ') e.preventDefault();
-  keys.add(k);
-  if (keys.size && /^(arrow|[wasd]$)/.test(k)) pointer = null;
   touch();
-  if (k === 'r' && (state === 'play' || state === 'end')) { loadLevel(lvIndex); state = 'play'; show(null); }
-  if (k === 'escape') openMenu();
-  if (k === ' ' || k === 'enter') { if (state === 'intro') begin(); else if (state === 'end') document.getElementById('btnEnd').click(); else if (state === 'pause') resumeGame(); }
+  keys.add(k);
+  const move = /^(arrow|[wasd]$)/.test(k);
+  if (move) pointer = null;
+  if (move && state === 'ready') begin();
+  if (k === 'r' && (state === 'play' || state === 'end')) { loadLevel(lvIndex); begin(); }
+  if (k === 'p' || k === 'escape') { if (state === 'menu') resume(); else openMenu(); }
+  if (k === 'm') toggleSound();
+  if (k === ' ' || k === 'enter') {
+    if (state === 'pause') resumeGame();
+    else if (state === 'end' && document.getElementById('ovEnd').classList.contains('show')) document.getElementById('btnEnd').click();
+  }
 });
 window.addEventListener('keyup', e => keys.delete(e.key.toLowerCase()));
 window.addEventListener('blur', () => keys.clear());
 
-// ---------- 更新 ----------
+// ---------- Update ----------
 function update(dt) {
+  const live = state === 'play';
+  if (tip) { tip.t += dt; if (tip.t > 3.2) tip = null; }
+  player.pop *= Math.exp(-dt * 7);
+  if (!live) { // 'ready': the world drifts while the level waits for the first move
+    for (const e of ents) { e.born += dt; e.wob += dt; e.x += e.vx * dt; e.y += e.vy * dt; }
+    ents = ents.filter(e => e.born < 2 || (e.x > -80 && e.x < W + 80 && e.y > -80 && e.y < H + 80));
+    for (const e of ents) { // keep bigger numbers from parking on top of the waiting player
+      const ox = e.x - player.x, oy = e.y - player.y, d = Math.hypot(ox, oy) || 1;
+      if (!e.op && e.v > player.v && d < e.r + player.r + 70) { e.vx = ox / d * e.sp; e.vy = oy / d * e.sp; }
+    }
+    spawnT -= dt; if (ents.length < popN && spawnT <= 0) { spawn(false); spawnT = rand(.25, .7); }
+    stepFx(dt); return;
+  }
   time += dt; invuln = Math.max(0, invuln - dt);
-  // 玩家移動
   let dx = 0, dy = 0;
   if (keys.has('arrowleft') || keys.has('a')) dx -= 1;
   if (keys.has('arrowright') || keys.has('d')) dx += 1;
@@ -303,6 +480,10 @@ function update(dt) {
   const sp = speedOf(player.v);
   let tvx = 0, tvy = 0;
   if (dx || dy) { const l = Math.hypot(dx, dy); tvx = dx / l * sp; tvy = dy / l * sp; }
+  else if (joy && Math.hypot(joy.dx, joy.dy) > 6) {
+    const d = Math.hypot(joy.dx, joy.dy), k = Math.min(1, d / JOY_R);
+    tvx = joy.dx / d * sp * k; tvy = joy.dy / d * sp * k;
+  }
   else if (pointer) {
     const ox = pointer.x - player.x, oy = pointer.y - player.y, d = Math.hypot(ox, oy);
     if (d > 4) { const k = Math.min(1, d / 60); tvx = ox / d * sp * k; tvy = oy / d * sp * k; }
@@ -312,23 +493,30 @@ function update(dt) {
   player.x = Math.max(player.r, Math.min(W - player.r, player.x + player.vx * dt));
   player.y = Math.max(player.r, Math.min(H - player.r, player.y + player.vy * dt));
   player.r += (radiusOf(player.v) - player.r) * (1 - Math.exp(-dt * 8));
+  const pv = Math.hypot(player.vx, player.vy);
+  if (pv > 15) { player.lookX += (player.vx / pv - player.lookX) * .2; player.lookY += (player.vy / pv - player.lookY) * .2; }
 
-  // 敵人
+  danger = 0;
   for (const e of ents) {
-    e.born += dt; e.wob += dt;
+    e.born += dt; e.wob += dt; e.locked = false;
     if (e.hunter && e.v > player.v) {
       const ox = player.x - e.x, oy = player.y - e.y, d = Math.hypot(ox, oy);
       if (d < 260 && d > 1) {
         const k = 1 - Math.exp(-dt * 2.2);
         e.vx += (ox / d * e.sp * 1.25 - e.vx) * k; e.vy += (oy / d * e.sp * 1.25 - e.vy) * k;
+        e.locked = true;
       }
     }
     e.x += e.vx * dt; e.y += e.vy * dt;
+    if (!e.op && e.v > player.v && e.born > .4) {
+      const clear = Math.hypot(e.x - player.x, e.y - player.y) - e.r - player.r;
+      danger = Math.max(danger, Math.min(1, (110 - clear) / 110));
+      if (clear < 130) coach(e.locked ? 'hunter' : 'red', e.locked ? '帶尖角的會追你，快跑！|Spiky numbers chase you. Run!' : '紅色比你大，碰到會被吃掉！|Red is bigger: it eats you!');
+    }
   }
-  // 離開場地的移除
+  if (ents.some(e => !e.op && e.v < player.v && player.v + e.v === L.target)) coach('exact', '吃掉發光的那顆就剛好！|Eat the glowing one to land it exactly!');
   ents = ents.filter(e => e.born < 2 || (e.x > -80 && e.x < W + 80 && e.y > -80 && e.y < H + 80));
 
-  // 碰撞
   for (let i = ents.length - 1; i >= 0; i--) {
     const e = ents[i];
     const d = Math.hypot(e.x - player.x, e.y - player.y);
@@ -338,46 +526,64 @@ function update(dt) {
       if (e.op === '−3') player.v = Math.max(2, player.v - 3);
       else if (e.op === '÷2') player.v = Math.max(2, Math.floor(player.v / 2));
       else if (e.op === '+1') player.v += 1;
+      if (e.op === '+1') { sfx.opUp(); player.pop = .3; } else { sfx.opDown(); player.pop = -.25; }
       popup(e.x, e.y, e.op, '#d9801a'); burst(e.x, e.y, '#d9801a', 10);
       ents.splice(i, 1);
       if (player.v !== before) afterChange();
     } else if (e.v < player.v) {
-      player.v += e.v;
-      popup(e.x, e.y, '+' + e.v, '#3f7a31'); burst(e.x, e.y, '#3f7a31', 8);
+      player.v += e.v; buzz(12); sfx.eat(player.v / L.target);
+      player.pop = Math.min(.45, .18 + e.v / player.v * .5); shake = Math.max(shake, 2.5);
+      popup(e.x, e.y, '+' + e.v, '#3f7a31', 1 + Math.min(.6, e.v / 20)); burst(e.x, e.y, '#3f7a31', 10);
       ents.splice(i, 1);
       afterChange();
     } else if (e.v > player.v) {
       if (invuln > 0) continue;
       lose(e); return;
     } else {
-      // 一樣大：互相彈開
       const nx = (e.x - player.x) / (d || 1), ny = (e.y - player.y) / (d || 1);
       e.vx = nx * e.sp; e.vy = ny * e.sp;
-      player.vx -= nx * 220; player.vy -= ny * 220;
+      player.vx -= nx * 220; player.vy -= ny * 220; sfx.bump();
       e.x = player.x + nx * (e.r + player.r - 4);
       e.y = player.y + ny * (e.r + player.r - 4);
     }
     if (state !== 'play') return;
   }
 
-  // 補充數字
   spawnT -= dt;
-  if (ents.length < L.pop && spawnT <= 0) { spawn(false); spawnT = rand(.25, .7); }
-  // 確保永遠有能吃的
+  if (ents.length < popN && spawnT <= 0) { spawn(false); spawnT = rand(.25, .7); }
   if (!ents.some(e => !e.op && e.v < player.v) && player.v > 1) { const s = L.danger; L.danger = 0; spawn(false); L.danger = s; }
-
-  // 特效
+  stepFx(dt);
+}
+// Particles, popups and shake (also run on the end screen, so the celebration keeps playing)
+function stepFx(dt) {
   popups.forEach(p => { p.t += dt; p.y -= 30 * dt; }); popups = popups.filter(p => p.t < .9);
-  particles.forEach(p => { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= .94; p.vy *= .94; }); particles = particles.filter(p => p.t < .6);
+  particles.forEach(p => {
+    p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt;
+    if (p.conf) { p.vy += 520 * dt; p.vx *= .985; p.spin += p.vs * dt; } else { p.vx *= .94; p.vy *= .94; }
+  });
+  particles = particles.filter(p => p.t < p.life);
   shake = Math.max(0, shake - dt * 30);
+  if (state === 'end') winT += dt;
 }
+let wasOver = false;
 function afterChange() {
-  // 重新判斷誰是獵人（比你大的才會追）
   if (player.v === L.target) return win();
+  const over = player.v > L.target;
+  if (over && !wasOver) { sfx.over(); coach('over', '太大了！找 −3 或 ÷2 縮回來|Too big! Grab a −3 or ÷2 to shrink'); }
+  wasOver = over;
   updHud();
+  bumpHud();
 }
-function popup(x, y, text, color) { popups.push({ x, y, text, color, t: 0 }); }
-function burst(x, y, color, n) { for (let i = 0; i < n; i++) { const a = rand(0, 6.28), s = rand(80, 220); particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, color, t: 0 }); } }
+function bumpHud() { const el = document.getElementById('hudVal'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+function popup(x, y, text, color, size) { popups.push({ x, y, text, color, t: 0, size: size || 1 }); }
+function burst(x, y, color, n) { for (let i = 0; i < n; i++) { const a = rand(0, 6.28), s = rand(80, 220); particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, color, t: 0, life: .6 }); } }
+function confetti(x, y, n) {
+  const cols = ['#8fd3e8', '#a9d98f', '#f6c47a', '#f2a594', '#c9a6e8'];
+  for (let i = 0; i < n; i++) {
+    const a = rand(-Math.PI, 0), s = rand(220, 560);
+    particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 120, color: cols[i % cols.length], t: 0, life: rand(1.2, 1.9), conf: true, spin: rand(0, 6), vs: rand(-9, 9) });
+  }
+}
 
 function updHud() {
   document.getElementById('hudVal').textContent = player.v;
@@ -388,18 +594,22 @@ function updHud() {
   pr.style.width = Math.min(100, player.v / L.target * 100) + '%';
   pr.classList.toggle('over', over);
   const st = document.getElementById('status');
-  if (over) { st.textContent = Lx('超過了 {d}！找 −3 或 ÷2 降回來|Over by {d}! Find a −3 or ÷2 to come back down', { d: player.v - L.target }); st.className = 'status warn'; }
+  if (player.v === L.target) { st.textContent = Lx('過關了！|Stage cleared!'); st.className = 'status'; }
+  else if (over) { st.textContent = Lx('超過了 {d}！找 −3 或 ÷2 降回來|Over by {d}! Find a −3 or ÷2', { d: player.v - L.target }); st.className = 'status warn'; }
+  else if (state === 'ready') { st.textContent = Lx('要剛好變成 {n}|Reach exactly {n}', { n: L.target }); st.className = 'status'; }
   else if (state === 'play' || state === 'pause') {
     const need = L.target - player.v;
-    st.textContent = need < player.v ? Lx('還差 {n}：吃一個「{n}」就剛好|{n} to go: eat a "{n}" to land exactly', { n: need }) : Lx('還差 {n}|{n} to go', { n: need });
+    st.textContent = need < player.v ? Lx('還差 {n}：吃一個「{n}」就剛好|{n} to go: eat a {n} to land it exactly', { n: need }) : Lx('還差 {n}|{n} to go', { n: need });
     st.className = 'status';
-  } else { st.textContent = Lx(TX.hint); st.className = 'status'; }
+  }
 }
 
 function win() {
-  state = 'end';
-  updHud();
-  burst(player.x, player.y, '#3f7a31', 40);
+  sfx.win();
+  state = 'end'; endJoy(); buzz([20, 30, 20, 30, 60]); tip = null;
+  updHud(); bumpHud();
+  player.pop = .6; shake = 6; winT = 0;
+  burst(player.x, player.y, '#3f7a31', 30); confetti(player.x, player.y, 90);
   const t = Math.round(time * 10) / 10;
   if (bests[lvIndex] == null || t < bests[lvIndex]) { bests[lvIndex] = t; store.set('bests', bests); }
   if (lvIndex + 2 > unlocked) { unlocked = Math.min(LEVELS.length, lvIndex + 2); store.set('unlocked', unlocked); }
@@ -409,7 +619,7 @@ function win() {
   renderEnd();
   const b = document.getElementById('btnEnd');
   b.onclick = () => lvIndex + 1 < LEVELS.length ? intro(lvIndex + 1) : openMenu();
-  setTimeout(() => show('ovEnd'), 600);
+  const lv = lvIndex; setTimeout(() => { if (state === 'end' && lvIndex === lv) show('ovEnd'); }, 1300);
 }
 let endView = null;
 function renderEnd() {
@@ -426,13 +636,14 @@ function renderEnd() {
   document.getElementById('btnEnd').textContent = !v.win ? Lx('再試一次|Try again') : last ? Lx('全部通關！回選單|All cleared! Back to menu') : Lx('下一關|Next stage');
 }
 function lose(e) {
-  state = 'end'; shake = 14;
+  sfx.lose();
+  state = 'end'; endJoy(); buzz([40, 40, 90]); shake = 14; tip = null; winT = 0;
   burst(player.x, player.y, '#c8402f', 30);
   endView = { win: false, by: e.v, was: player.v, target: L.target };
   renderEnd();
   const b = document.getElementById('btnEnd');
-  b.onclick = () => { loadLevel(lvIndex); begin(); };
-  setTimeout(() => show('ovEnd'), 650);
+  b.onclick = () => intro(lvIndex);
+  const lv = lvIndex; setTimeout(() => { if (state === 'end' && lvIndex === lv) show('ovEnd'); }, 750);
 }
 
 // ---------- 手繪筆觸工具 ----------
@@ -506,13 +717,14 @@ function hatch(x, y, w, h, seed, color, gap, lw) {
   }
   ctx.stroke(); ctx.restore();
 }
-function inkText(text, x, y, size, color, weight) {
+function inkText(text, x, y, size, color, weight, maxW) {
   ctx.font = `${weight || 700} ${size}px ${FONT}`;
+  if (maxW) { const w = ctx.measureText(text).width; if (w > maxW) ctx.font = `${weight || 700} ${Math.floor(size * maxW / w)}px ${FONT}`; }
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillStyle = color; ctx.fillText(text, x, y);
 }
 
-// ---------- 繪圖（紙張手繪） ----------
+// ---------- Rendering (paper sketch) ----------
 const COLORS = {
   small: { ink: '#3f7a31', wash: 'rgba(169,217,143,.45)' },
   big:   { ink: '#c8402f', wash: 'rgba(242,165,148,.5)' },
@@ -523,7 +735,6 @@ function draw(now) {
   ctx.save();
   if (shake) ctx.translate(rand(-shake, shake), rand(-shake, shake));
   ctx.fillStyle = PAPER; ctx.fillRect(-20, -20, W + 40, H + 40);
-  // 筆記本橫線與紅色邊線
   ctx.strokeStyle = 'rgba(63,151,196,.22)'; ctx.lineWidth = 1.5;
   ctx.beginPath(); for (let y = 48; y < H; y += 40) { ctx.moveTo(0, y); ctx.lineTo(W, y); } ctx.stroke();
   ctx.strokeStyle = 'rgba(200,64,47,.28)'; ctx.lineWidth = 2;
@@ -531,26 +742,106 @@ function draw(now) {
   if (!L) { ctx.restore(); return; }
 
   for (const e of ents) drawEnt(e, now, boil);
-  // 玩家
-  if (state !== 'end' || player.v === L.target) {
-    const blink = invuln > 0 && Math.floor(now / 110) % 2;
+  const won = state === 'end' && player.v === L.target;
+  if (state !== 'end' || won) {
+    const blink = state === 'play' && invuln > 0 && Math.floor(now / 110) % 2;
+    const s = 1 + player.pop, r = player.r * s;
     ctx.save();
     ctx.globalAlpha = blink ? .45 : 1;
-    sketchCircle(player.x + 3, player.y + 4, player.r, 7, { fill: 'rgba(43,43,43,.12)' });
-    sketchCircle(player.x, player.y, player.r, 1 + boil * 13, { fill: '#8fd3e8', stroke: INK, lw: 2.8 });
-    inkText(player.v, player.x, player.y + 1, Math.round(Math.min(32, player.r * 1.05)), INK, 700);
+    if (danger > .15 && state === 'play') { // red warning ring when something bigger is close
+      ctx.save(); ctx.globalAlpha = danger * (.45 + .35 * Math.sin(now / 90));
+      sketchCircle(player.x, player.y, r + 9, 5 + boil, { stroke: '#c8402f', lw: 3, passes: 1 });
+      ctx.restore();
+    }
+    sketchCircle(player.x + 3, player.y + 4, r, 7, { fill: 'rgba(43,43,43,.12)' });
+    sketchCircle(player.x, player.y, r, 1 + boil * 13, { fill: '#8fd3e8', stroke: INK, lw: 2.8 });
+    const fs = Math.round(Math.max(20, Math.min(32, r * .9)));
+    inkText(player.v, player.x, player.y + r * .28, fs, INK, 700);
+    drawEyes(player.x, player.y - r * .38, r, player.lookX, player.lookY, danger > .5 && state === 'play');
+    if (danger > .5 && state === 'play') { // sweat drop, like on the cover
+      ctx.fillStyle = '#8fd3e8'; ctx.strokeStyle = INK; ctx.lineWidth = 1.6;
+      const dx = player.x - r * .78, dy = player.y - r * .72;
+      ctx.beginPath(); ctx.moveTo(dx, dy - 7); ctx.quadraticCurveTo(dx + 5, dy + 1, dx, dy + 4); ctx.quadraticCurveTo(dx - 5, dy + 1, dx, dy - 7); ctx.fill(); ctx.stroke();
+    }
     ctx.restore();
   }
   for (const p of particles) {
-    ctx.globalAlpha = 1 - p.t / .6; ctx.strokeStyle = p.color; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * .03, p.y - p.vy * .03); ctx.stroke();
+    ctx.globalAlpha = Math.max(0, 1 - p.t / p.life);
+    if (p.conf) {
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.spin); ctx.fillStyle = p.color; ctx.strokeStyle = INK; ctx.lineWidth = 1;
+      ctx.fillRect(-5, -3, 10, 6); ctx.strokeRect(-5, -3, 10, 6); ctx.restore();
+    } else {
+      ctx.strokeStyle = p.color; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * .03, p.y - p.vy * .03); ctx.stroke();
+    }
   }
   ctx.globalAlpha = 1;
   for (const p of popups) {
     ctx.globalAlpha = 1 - p.t / .9;
-    inkText(p.text, p.x, p.y, 26, p.color, 700);
+    const k = p.size * (1 + .5 * Math.max(0, 1 - p.t * 6)); // pops in big, settles
+    inkText(p.text, p.x, p.y, Math.round(26 * k), p.color, 700);
   }
   ctx.globalAlpha = 1;
+  if (won) drawStamp(Lx('剛好 {n}！|Exactly {n}!', { n: L.target }), Math.min(1, winT * 4));
+  if (tip && state === 'play') drawTip(tip);
+  ctx.restore();
+  if (danger > .3 && state === 'play') { // soft red edge when in danger
+    const g = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * .35, W / 2, H / 2, Math.max(W, H) * .65);
+    g.addColorStop(0, 'rgba(200,64,47,0)'); g.addColorStop(1, `rgba(200,64,47,${(danger - .3) * .35})`);
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  }
+  if (state === 'ready') drawReady(now);
+}
+function drawEyes(x, y, r, lx, ly, scared) {
+  const er = Math.max(4, r * .2), gap = r * .34, px = lx * er * .45, py = ly * er * .45;
+  for (const sx of [-1, 1]) {
+    const ex = x + sx * gap;
+    ctx.fillStyle = '#fff'; ctx.strokeStyle = INK; ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.ellipse(ex, y, er * (scared ? 1.15 : 1), er * (scared ? 1.3 : 1.12), 0, 0, 6.2832); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(ex + px, y + py, er * (scared ? .38 : .52), 0, 6.2832); ctx.fill();
+  }
+}
+function card(cx, cy, w, h, seed) {
+  sketchRect(cx - w / 2 + 6, cy - h / 2 + 7, w, h, seed + 1, { fill: 'rgba(43,43,43,.75)', j: 1 });
+  sketchRect(cx - w / 2, cy - h / 2, w, h, seed, { fill: '#fbf6ea', stroke: INK, lw: 2.5, j: 1.4 });
+}
+function drawStamp(text, k) {
+  ctx.save(); ctx.translate(W / 2, H * .3); ctx.rotate(-.06); const s = 1.6 - .6 * k; ctx.scale(s, s); ctx.globalAlpha = k;
+  ctx.font = `700 64px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.lineWidth = 10; ctx.strokeStyle = '#fbf6ea'; ctx.lineJoin = 'round'; ctx.strokeText(text, 0, 0);
+  ctx.fillStyle = '#d9801a'; ctx.fillText(text, 0, 0);
+  ctx.restore();
+}
+// 每關的開場卡，直接畫在棋盤上；第一次移動就收起並開始。
+function drawReady(now) {
+  const w = Math.min(W - 60, 520), h = 196, cx = W / 2, cy = Math.max(h / 2 + 16, player.y - player.r - 36 - h / 2); // 放在玩家上方
+  const tw = w - 32;
+  card(cx, cy, w, h, 11);
+  inkText(Lx('第 {n} 關 · {name}|Stage {n} · {name}', { n: lvIndex + 1, name: Lx(L.name) }), cx, cy - 66, 22, 'rgba(43,43,43,.62)', 400, tw);
+  ctx.font = `700 40px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const a = Lx('剛好變成 |Reach exactly '), b = String(L.target), aw = ctx.measureText(a).width, bw = ctx.measureText(b).width;
+  ctx.fillStyle = INK; ctx.fillText(a, cx - bw / 2, cy - 24); ctx.fillStyle = '#d9801a'; ctx.fillText(b, cx + aw / 2, cy - 24);
+  inkText(Lx(L.tip), cx, cy + 22, 22, INK, 400, tw);
+  const pulse = .6 + .4 * Math.sin(now / 260);
+  ctx.globalAlpha = pulse;
+  inkText(isTouchUI() ? Lx('在畫面任何地方按住拖曳就開始|Drag anywhere to start') : Lx('移動滑鼠就開始 · 也可以用方向鍵／WASD|Move your mouse to start  ·  or arrow keys / WASD'), cx, cy + 66, 21, '#3f7a31', 700, tw);
+  ctx.globalAlpha = 1;
+}
+function drawTip(t) {
+  const a = Math.min(1, t.t * 5, (3.2 - t.t) * 3);
+  if (a <= 0) return;
+  const text = Lx(t.text);
+  ctx.save(); ctx.globalAlpha = a;
+  ctx.font = `700 22px ${FONT}`;
+  const tw = Math.min(W - 16, ctx.measureText(text).width + 28), th = 40;
+  const above = player.y - player.r - 70 > 0;
+  let cx = Math.max(tw / 2 + 8, Math.min(W - tw / 2 - 8, player.x));
+  const cy = above ? player.y - player.r - 42 : player.y + player.r + 42;
+  sketchRect(cx - tw / 2, cy - th / 2, tw, th, 21, { fill: '#fff8e6', stroke: INK, lw: 2, j: 1 });
+  ctx.fillStyle = '#fff8e6'; ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.beginPath(); // little pointer toward the player
+  const py = above ? cy + th / 2 : cy - th / 2, dir = above ? 1 : -1, px = Math.max(cx - tw / 2 + 14, Math.min(cx + tw / 2 - 14, player.x));
+  ctx.moveTo(px - 8, py); ctx.lineTo(px, py + 10 * dir); ctx.lineTo(px + 8, py); ctx.fill(); ctx.stroke();
+  inkText(text, cx, cy + 1, 22, INK, 700, tw - 20);
   ctx.restore();
 }
 function drawEnt(e, now, boil) {
@@ -574,7 +865,6 @@ function drawEnt(e, now, boil) {
     ctx.restore();
   }
   if (e.hunter && rel === 'big') {
-    // 鋸齒尖角
     const a0 = Math.atan2(e.vy, e.vx), R = rng(seed);
     ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2; ctx.lineJoin = 'round'; ctx.beginPath();
     const n = 9;
@@ -590,65 +880,73 @@ function drawEnt(e, now, boil) {
     hatch(-e.r, -e.r, e.r * 2, e.r * 2, e.id, 'rgba(200,64,47,.28)', 6, 1.2);
     ctx.restore();
   }
-  inkText(e.v, 0, 1, Math.round(Math.min(28, e.r * 1.02)), c.ink, 700);
+  const fs = Math.round(Math.max(21, Math.min(30, e.r * 1.1)));
+  if (rel === 'big' && e.r >= 24) { // big ones watch you
+    inkText(e.v, 0, e.r * .3, Math.min(fs, Math.round(e.r * .85)), c.ink, 700);
+    const ox = player.x - e.x, oy = player.y - e.y, d = Math.hypot(ox, oy) || 1;
+    drawEyes(0, -e.r * .36, e.r, ox / d, oy / d, false);
+  } else inkText(e.v, 0, 1, fs, c.ink, 700);
+  if (e.locked) { // a hunter that has spotted you
+    const bob = Math.sin(now / 90) * 2;
+    inkText('!', 0, -e.r - 20 + bob, 28, '#c8402f', 700);
+  }
   ctx.restore();
 }
 
-// ---------- 迴圈 ----------
+// ---------- Loop ----------
 let last = performance.now();
 function frame(now) {
   let dt = Math.min(.05, (now - last) / 1000); last = now;
   if (!platformVisible) { requestAnimationFrame(frame); return; }
-  if (state === 'play') update(dt);
-  else if (state === 'end') {
-    particles.forEach(p => { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; }); particles = particles.filter(p => p.t < .6);
-    shake = Math.max(0, shake - dt * 30);
-  }
+  if (state === 'play' || state === 'ready') update(dt);
+  else if (state === 'end') { player.pop *= Math.exp(-dt * 4); stepFx(dt); }
   draw(now);
   requestAnimationFrame(frame);
 }
 
-// ---------- 介面 ----------
+// ---------- UI ----------
 function show(id) { document.querySelectorAll('.overlay').forEach(o => o.classList.toggle('show', o.id === id)); }
+let before = null; // 關掉選關時要回到的狀態
 function openMenu() {
-  if (state === 'pause') tellResume();
-  state = 'menu';
-  renderMenu();
-  renderNote();
+  if (state === 'menu') return;
+  if (state === 'pause') { tellResume(); state = 'play'; }
+  before = state === 'play' || state === 'ready' ? state : null;
+  state = 'menu'; endJoy(); keys.clear(); pointer = null;
+  renderMenu(); renderNote();
   show('ovMenu');
-  updHud();
 }
 function renderMenu() {
+  document.getElementById('btnBack').style.display = before ? '' : 'none';
   const box = document.getElementById('levels'); box.innerHTML = '';
   LEVELS.forEach((lv, i) => {
     const b = document.createElement('button');
     b.innerHTML = `${lv.target}<small>${bests[i] != null ? bests[i].toFixed(1) + 's' : Lx('第 {n} 關|Stage {n}', { n: i + 1 })}</small>`;
     b.disabled = i >= unlocked;
     if (bests[i] != null) b.classList.add('done');
-    b.onclick = () => { if (ensureRound()) intro(i); };
+    b.onclick = () => intro(i);
     box.appendChild(b);
   });
 }
-function intro(i) {
-  loadLevel(i); state = 'intro';
-  renderIntro();
-  show('ovIntro');
+function resume() { if (!before) return; state = before; before = null; show(null); last = performance.now(); }
+// 把關卡擺上棋盤，等玩家第一次移動才開始（不用多按一次）。
+function intro(i) { show(null); loadLevel(i); state = 'ready'; pointer = null; updHud(); }
+function begin() {
+  if (!ensureRound()) return; // 平台開局失敗時留在開場卡
+  sfx.start(); show(null); state = 'play'; last = performance.now(); invuln = 1.2; updHud();
+  if (lvIndex === 0) coach('eat', '吃掉綠色的小數字來長大|Eat smaller (green) numbers to grow');
 }
-function renderIntro() {
-  document.getElementById('introLv').textContent = Lx('第 {n} 關 · 從 {a} 到 {b}|Stage {n} · from {a} to {b}', { n: lvIndex + 1, a: L.start, b: L.target });
-  document.getElementById('introName').textContent = Lx(L.name);
-  document.getElementById('introTip').innerHTML = Lx(L.tip);
-}
-function begin() { show(null); state = 'play'; last = performance.now(); updHud(); }
-document.getElementById('btnGo').onclick = begin;
+document.getElementById('btnBack').onclick = resume;
 document.getElementById('btnEndMenu').onclick = openMenu;
 document.getElementById('btnMenu').onclick = openMenu;
+function toggleSound() { const m = sfx.toggle(); const b = document.getElementById('btnSound'); b.textContent = m ? '🔇' : '🔊'; b.style.opacity = m ? .55 : 1; }
+document.getElementById('btnSound').onclick = toggleSound;
+if (sfx.muted) { const b = document.getElementById('btnSound'); b.textContent = '🔇'; b.style.opacity = .55; }
 document.getElementById('btnRestart').onclick = () => { if (state === 'play' || state === 'end') { loadLevel(lvIndex); begin(); } };
 
 // ---------- 暫停：切走遊戲、背景分頁時自動暫停，回來要按「繼續」 ----------
 function pauseGame() {
   if (state !== 'play') return;
-  state = 'pause'; keys.clear(); pointer = null; pointerActive = false;
+  state = 'pause'; keys.clear(); pointer = null; endJoy();
   show('ovPause');
   const h = host(); if (h && roundOn && h.pause) h.pause(window);
 }
@@ -659,21 +957,21 @@ function resumeGame() {
 }
 document.getElementById('btnResume').onclick = resumeGame;
 document.addEventListener('visibilitychange', () => { if (document.hidden) pauseGame(); });
-function touch() { const h = host(); if (h && roundOn && h.touch) h.touch(window); }
 
 // 父頁介面：右側按鈕開局、切換畫面、結束本局
 window.startEatPlatformRound = () => { if (roundOn) return roundOn; if (ensureRound()) openMenu(); return roundOn; };
 window.setEatPlatformActive = v => { platformVisible = !!v; last = performance.now(); if (!platformVisible) pauseGame(); else resize(); };
-window.endEatPlatformRound = () => { roundOn = false; earned = 0; openMenu(); };
+window.endEatPlatformRound = () => { roundOn = false; earned = 0; endJoy(); if (state !== 'menu') state = 'end'; before = null; openMenu(); renderMenu(); renderNote(); };
 window.isEatPlatformRound = () => roundOn;
 
 function relang() {
-  applyStatic(); updHud(); renderNote(); renderMenu(); renderIntro(); renderEnd();
+  applyStatic(); updHud(); renderNote(); renderMenu(); renderEnd();
 }
 try { window.parent.addEventListener('arcade-languagechange', relang); } catch (e) {}
 applyStatic();
-loadLevel(0);
-openMenu();
+resize();
+// 直接進入遊玩：新玩家從第 1 關、回訪玩家從最遠的關開始。
+intro(Math.min(unlocked, LEVELS.length) - 1);
 requestAnimationFrame(frame);
 })();
 </script>
