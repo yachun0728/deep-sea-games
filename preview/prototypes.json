@@ -28,5 +28,11 @@
     "name": "偷吃餅乾",
     "concept": "趁主管轉頭，一片一片偷吃餅乾，吃完一包就過關",
     "status": "prototype"
+  },
+  {
+    "id": "mantis-punch",
+    "name": "蝦拳",
+    "concept": "螳螂蝦守洞穴：看穿對手前搖、閃避後反擊，打倒來搶地盤的海洋生物。",
+    "status": "prototype"
   }
 ]
