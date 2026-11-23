@@ -176,3 +176,5 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 深海前哨使用 `game_id=outpost`、`game_name=深海前哨`。開局送 start，波次切換及暫停送 progress，手動續玩送 resume。結束帶 `stage=1`、`step`（波次）與 `score`（防守分數），結果為 `complete` 或 `loss`。重新整理沿用平台的 `abandoned`，入場及遊戲結算點數皆為 0。
 
 《深海火線》（`blaster`）採連續航行。事件的 `stage` 表示每 1,000 公尺的難度段，`score` 仍為擊破數；航行進度與結束事件包含整數公尺 `distance_m`。每 10,000 公尺發出的固定點數記在 `bonus_points` 與 `total_bonus_points`。訪客排行榜由 Worker 另行驗證距離。
+
+Cat Match（`cat-match`／貓貓三消）：一個關卡一個免費回合；進入新關 start，收集完成 complete、步數耗盡 loss、重玩／離頁 abandoned；暫停排除有效停留時間，score 為單關分數，沒有點數入帳。

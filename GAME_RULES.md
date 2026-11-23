@@ -875,3 +875,11 @@ Equipment initially caps at level 2. Mill / forge / quarry unlock tool / weapon 
 - 排行榜：Worker 註冊 `academy`（`backend/src/services/ranked-boards.mjs`）。開局取得種子，前端與 Worker 共用狀態機；送出的操作碼為 0–4 選領域、5 隨機盲盒、10／11／12 錦囊、20–23 作答、24 超時、30 結束挑戰。Worker 重播並要求恰在最後一個操作結束，排行成績為通過的關數（0–10，不是學分；通過 0 關不送出）。同分先達成者在前。沿用訪客榜 `game_leaderboard`，無新 migration。已知限制：種子與題庫在前端，合法的自動作答無法排除，同青蛙吃蟲、收盤之前。
 - 題庫修訂：原稿多數正解在 B，已在三語題庫內重排為平均分布；移除第 99 題「本遊戲背後的技術」的不實描述。
 - 測試：`node tools/test_academy.mjs`（規則、題庫、Worker 指令）；`python3 tools/check_i18n_browser.py --suite academy`（桌面與 390px 流程、語言、BONUS 單次、離頁）。
+
+## 貓貓三消 Cat Match（cat-match）
+
+免費、無 BONUS，無倒數無體力限制。手機交換鄰格，三連收集；四連生成整行／列消除、五連生成彩虹球、T/L 生成 3×3 消除。24 步收集指定圖案，目標 18 起、隨旅程遞增到 30 封頂；完成可繼續下一關，失敗可免費重試。三種 8×8 遮罩輪替，無解自動洗牌。每關 3 次提示、2 次手動洗牌，新關／重玩補滿，自動洗牌不耗次數。每個消除格 10×當次連鎖段數分，成績不換點數。
+
+正式規則 `shared/cat-match-rules.cjs` 重建為具種子的純引擎，前端與 Worker 共用。排行榜比較已結束之單關分數（成功或步數耗盡），不是旅程關數；同訪客只留最佳，前50名，同分先到優先。Worker 發 seed 與指定旅程 level，重播最多29個合法操作（24次交換+3提示+2洗牌），拒絕中途結算、超額道具、非法交換、多送操作、偽造成績。每次新關重新領取票據；離線可玩但不送榜。
+
+獨立 iframe `games/cat-match/play.html`，來源驗證橋接 `deepSeaCatMatch`，一關一次免費 start、complete/loss/abandoned end，離頁／背景停音樂與操作。`deep-sea-cat-match-progress-v1` 保存旅程與最高旅程，`deep-sea-cat-match-audio-v1` 保存獨立音樂／音效設定；不改 preview 存檔，也不改平台餘額。繁中／英文介面及平台語言切換，簡中沿平台轉換。封面1056×1000，排行榜頭像192×192。

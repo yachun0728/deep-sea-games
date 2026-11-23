@@ -1,7 +1,7 @@
 {
   "老闆走回座位 · 把握空檔": "Boss returning to the desk · Keep moving",
   "老闆離開座位 · 可以前進": "Boss leaving the desk · Keep moving",
-  "前段走廊 · 可以前進": "Entrance hallway \u00b7 Keep walking",
+  "前段走廊 · 可以前進": "Entrance hallway · Keep walking",
   "保全靠近 · 注意手電筒": "Guard approaching · Watch the flashlight",
   "手電筒照過來了 · 放開": "In the flashlight beam · Release",
   "在遮蔽物後 · 留意巡邏": "Behind cover · Watch for patrols",
@@ -3185,5 +3185,12 @@
   "萌獸破城隊": "Critter Crashers",
   "萌獸破城隊 Critter Crashers": "Critter Crashers",
   "在時間軸上排好萌獸部隊的出發時間，利用每座塔的鎖定規則攻破城門。": "Schedule your critter squad on a timeline and use each tower's targeting rule to breach the gate.",
-  "遊玩萌獸破城隊：在時間軸上排好萌獸部隊的出發時間，利用每座塔的鎖定規則攻破城門。": "Play Critter Crashers: schedule your critter squad on a timeline and use each tower's targeting rule to breach the gate."
+  "遊玩萌獸破城隊：在時間軸上排好萌獸部隊的出發時間，利用每座塔的鎖定規則攻破城門。": "Play Critter Crashers: schedule your critter squad on a timeline and use each tower's targeting rule to breach the gate.",
+  "貓貓三消": "Cat Match",
+  "貓貓三消 <span>Cat Match</span>": "Cat Match <span>Cozy endless puzzles</span>",
+  "遊玩貓貓三消：拉布陪你三消連鎖、無限接關。": "Play Cat Match: cozy cascades and endless levels with Rabu.",
+  "拉布陪你交換貓咪與玩具，三消連鎖、無限接關。": "Swap cats and toys with Rabu. Match, cascade, and keep exploring.",
+  "中文": "Chinese",
+  "療癒三消": "Cozy match-three",
+  "音樂": "Music"
 }

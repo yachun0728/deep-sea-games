@@ -62,3 +62,4 @@
 | [不准跑調 Stay On Pitch](on-pitch/README.md) | `#on-pitch` | 時機操作 | 顯示 | 669 行 | 對著麥克風唱出缺口的音，音準對了才能穿牆。 |
 | [貓咪疊書舖 Cat Book Stack](book-sort/README.md) | `#book-sort` | 益智策略 | 顯示 | 236 行 | 把書依顏色疊進紙箱，集滿 5 本同色自動封箱。 |
 | [百萬大學堂 Millionaire Academy](academy/README.md) | `#academy` | 益智策略 | 顯示 | 554 行 | 一百道百科題，自選領域闖十關，挑戰 1,000,000 學分。 |
+| [貓貓三消 Cat Match](cat-match/README.md) | `#cat-match` | 益智策略 | 顯示 | 33 行 | 拉布陪你交換貓咪與玩具，三消連鎖、無限接關。 |

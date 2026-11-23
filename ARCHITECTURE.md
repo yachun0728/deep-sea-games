@@ -374,3 +374,7 @@ Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsig
 ### 百萬大學堂（academy）
 
 `games/academy/` 為原生 view（手機全螢幕、桌面置中手機比例），不用 iframe。`i18n.js` 放三語題庫與介面文字（站台翻譯器略過 `data-i18n-ignore`），`shared/academy-rules.cjs` 是前端與 Worker 共用的純狀態機。排行榜、BONUS 與儲存 Key 見 GAME_RULES.md 對應章節。
+
+### Cat Match 正式版
+
+`games/cat-match/play.html` 是獨立同源 iframe；`main.js` 為正式控制器、`audio.js` 管理音訊、`i18n.js` 為繁中／英字串，`shared/cat-match-rules.cjs` 為前端與 Worker 共用具種子的純規則。`game.js` 負責來源驗證、路由暫停、AN 生命週期、訪客開局／結算與單關分數榜；不使用錢包。預覽版保留，標記 graduated。

@@ -1,3 +1,4 @@
+import catMatchRules from '../../../shared/cat-match-rules.cjs';
 import onPitchRules from '../../../shared/on-pitch-rules.cjs';
 import breakoutRules from '../../../shared/breakout-rules.cjs';
 import quackPondRules from '../../../shared/quack-pond-rules.cjs';
@@ -83,6 +84,16 @@ function puzzleBoard(rules) {
   };
 }
 const boards = new Map([
+ ['cat-match',{
+  create:level=>({seed:newSeed(),level,version:catMatchRules.VERSION,issuedAt:Date.now(),score:null}),
+  accepts:catMatchRules.accepts,
+  apply:(state,actions)=>{
+   if(state.version!==catMatchRules.VERSION||actions.filter(a=>a<4096).length*100>Date.now()-state.issuedAt)return false;
+   const result=catMatchRules.replay(state.seed,state.level,actions);if(!result)return false;state.score=result.score;return true;
+  },
+  score:state=>state.score,
+  visible:({seed,level,score})=>({seed,level,score}),
+ }],
   ['on-pitch', timedBoard(onPitchRules)],
   ['breakout', timedBoard(breakoutRules)],
   ['quack-pond', puzzleBoard(quackPondRules)],
@@ -260,12 +271,12 @@ export async function readBoardCommand(request, isMove) {
     const command = JSON.parse(text + decoder.decode());
     const game = boards.get(command?.gameId);
     if (!game) return null;
-    const bookSortStart = !isMove && command.gameId === 'book-sort';
+    const bookSortStart = !isMove && ['book-sort','cat-match'].includes(command.gameId);
     const rulesVersion = command.gameId === 'blaster' ? blasterRules.rulesVersion : game.rulesVersion;
     const versionedStart = !isMove && rulesVersion !== undefined && Object.hasOwn(command, 'rulesVersion');
     if (Object.keys(command).length !== (isMove ? 4 : bookSortStart || versionedStart ? 2 : 1)) return null;
     if (versionedStart && !((game.supportedVersions ?? [rulesVersion]).includes(command.rulesVersion))) return null;
-    if (bookSortStart && (!Number.isSafeInteger(command.stage) || command.stage < 1)) return null;
+    if (bookSortStart && (!Number.isSafeInteger(command.stage) || command.stage < 1 || command.gameId==='cat-match' && command.stage>1000000)) return null;
     if (isMove && (typeof command.id !== 'string' || !ID.test(command.id) ||
         !Number.isInteger(command.revision) || command.revision < 0 ||
         command.revision > MAX_REVISIONS || !game.accepts(command.action))) return null;

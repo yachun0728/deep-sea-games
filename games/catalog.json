@@ -423,5 +423,13 @@
     "card": "games/academy/card.html",
     "icon": "games/academy/icon.svg",
     "style": "games/academy/style.css"
+  },
+  {
+    "id": "cat-match",
+    "logic": "games/cat-match/game.js",
+    "view": "games/cat-match/view.html",
+    "card": "games/cat-match/card.html",
+    "icon": "games/cat-match/icon.svg",
+    "style": "games/cat-match/style.css"
   }
 ]
