@@ -160,21 +160,25 @@ function start(){
  model=thiefRules.create(random||Math.random);syncModel();heldBy=undefined;paid=0;awarded=new Set();bpop=[];rec=false;unl=[];shake=0;st='run';last=performance.now();say('{{t:thief.msg.017}}');ui();c.focus();
  },ui);
 }
+function wrapLines(t,font,mw){t=window.deepSeaI18n?deepSeaI18n.text(String(t)):String(t);g.font=font;const parts=/\s/.test(t)?t.split(/(\s+)/):[...t],out=[];let cur='';parts.forEach(p=>{const nx=cur+p;if(cur.trim()&&g.measureText(nx).width>mw&&!/^\s+$/.test(p)&&!/^[，。！？、：；）」』]$/.test(p)){out.push(cur.trim());cur=p.trimStart()}else cur=nx});if(cur.trim())out.push(cur.trim());return out}
+function cblock(items,top){const X=36,CW=328,PX=34,PY=20,TW=CW-PX*2,rows=[];
+ items.forEach(it=>wrapLines(it[0],'800 '+it[1]+'px '+FNT,TW).forEach(l=>rows.push([l,it[1],it[2]])));
+ const lh=r=>Math.round(r[1]*1.38),tot=rows.reduce((a,r)=>a+lh(r),0)+PY*2;card(X,top,CW,tot);
+ let y=top+PY;rows.forEach(r=>{const h=lh(r);g.textBaseline='middle';wt(r[0],W/2,y+h/2,r[1],r[2],0,TW);g.textBaseline='alphabetic';y+=h});return top+tot}
 function overlay(){
 g.fillStyle='rgba(74,44,29,.38)';g.fillRect(0,0,W,H);
 if(st==='ready'){
  if(LOGO.complete&&LOGO.naturalWidth)g.drawImage(LOGO,50,70,300,300*LOGO.naturalHeight/LOGO.naturalWidth);else tx(T('title'),W/2,150,32,'#ffd23f');
- card(40,196,320,96);wt(T('s1'),W/2,236,15,OL,0,296);wt(T('s2'),W/2,264,15,'#8a5a3b',0,296);
- tx('{{t:thief.msg.018}}',W/2,338+Math.sin(tt*4)*2,22,'#ff8a3d')}
+ const b=cblock([[T('s1'),15,OL],[T('s2'),15,'#8a5a3b']],196);
+ tx('{{t:thief.msg.018}}',W/2,Math.min(372,b+44)+Math.sin(tt*4)*2,22,'#ff8a3d')}
 else{
- card(36,80,328,282);
- wt(T(G.msg),W/2,122,24,'#e0503f',0,300);
- wt(String(G.score()),W/2,184,54,OL);
- if(G.extra)wt(G.extra(),W/2,212,15,'#8a5a3b');
- if(rec){g.font='800 15px '+FNT;const w=g.measureText('{{t:thief.msg.019}}').width+30;RR(W/2-w/2,226,w,28,14,'#ffd23f',2.5);wt('{{t:thief.msg.019}}',W/2,245,15,OL)}
- if(unl.length)wt('{{t:thief.msg.020}}'+unl.map(k=>k.n).join('、'),W/2,276,14,'#4f9a2f',0,300);
- wt(paid>0?'{{t:thief.msg.021}}'+paid+' 點':'{{t:thief.msg.022}}',W/2,304,16,paid>0?'#d9822b':'#8a5a3b',0,300);
- wt('{{t:thief.msg.023}}',W/2,340,15,'#d9822b',0,300)}
+ const it=[[T(G.msg),24,'#e0503f'],[String(G.score()),54,OL]];
+ if(G.extra)it.push([G.extra(),15,'#8a5a3b']);
+ if(rec)it.push(['{{t:thief.msg.019}}',15,'#d9822b']);
+ if(unl.length)it.push(['{{t:thief.msg.020}}'+unl.map(k=>k.n).join('、'),14,'#4f9a2f']);
+ it.push([paid>0?'{{t:thief.msg.021}}'+paid+' 點':'{{t:thief.msg.022}}',16,paid>0?'#d9822b':'#8a5a3b']);
+ it.push(['{{t:thief.msg.023}}',15,'#d9822b']);
+ cblock(it,72)}
 RR(36,392,328,124,16,'#f4c983',3);g.fillStyle='rgba(255,255,255,.3)';g.fillRect(52,398,296,3);
 const n=G.skins.length;
 G.skins.forEach((k,i)=>{const x=W/2+(i-(n-1)/2)*72,lk=best<k.need;

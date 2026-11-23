@@ -1,0 +1,27 @@
+/* 青蛙吃蟲：開始按鈕與手機狀態列配合遊戲畫面的白色膠囊、草綠按鈕 */
+#view-frog .go:not(:disabled){background:#7ed957;color:#fff;border:0;border-radius:999px;font-weight:900;letter-spacing:.04em;text-shadow:0 1px 0 rgba(40,90,20,.45);box-shadow:inset 0 3px 0 rgba(255,255,255,.45),0 5px 0 #4ea52f,0 10px 20px rgba(40,90,20,.3)}
+#view-frog .go:hover:not(:disabled){background:#8fe36a}
+#view-frog .go:active:not(:disabled){transform:translateY(2px);box-shadow:inset 0 3px 0 rgba(255,255,255,.45),0 3px 0 #4ea52f,0 5px 10px rgba(40,90,20,.3)}
+#view-frog .go:disabled{background:#e7f3ea;color:#5a7a63;border:0;border-radius:999px}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  #view-frog .fs-game .side .go:active:not(:disabled){transform:translateX(-50%) translateY(2px)}
+  #view-frog .fs-game .stats>div{background:#fff;border:0;border-radius:14px;box-shadow:0 3px 0 rgba(40,70,110,.18)}
+  #view-frog .fs-game .stats dt{color:#6d7a96;font-weight:700}
+  #view-frog .fs-game .stats dd{color:#3b2a4f;font-weight:900}
+  #view-frog .fs-game .fs-exit{background:#fff;border:0;color:#3b2a4f;box-shadow:0 3px 0 rgba(40,70,110,.18)}
+  /* 結束後出現「分享成績」時：分享改成左側只有圖示的圓鈕，再吃一次放右側，不再疊在一起 */
+  #view-frog .fs-game:has(.share-result:not([hidden])) .mobile-stage-actions{left:80px;right:12px}
+  #view-frog .fs-game:has(.share-result:not([hidden])) #fg-go:not(:disabled){width:100%;min-width:0;height:56px;min-height:56px;padding:6px 12px}
+  #view-frog .fs-game .share-result:not([hidden]){left:12px;right:auto;transform:none;width:56px;height:56px;min-height:56px;padding:0;justify-content:center;border:0;border-radius:50%;background:#fff;color:#3b2a4f;font-size:22px;box-shadow:0 3px 0 rgba(40,70,110,.18)}
+  #view-frog .fs-game .share-result span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  #view-frog .share-result i{color:#7ed957;font-size:22px}
+}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  /* 手機全螢幕不顯示下方黑底訊息列：開始、結算、過關提示都已畫在遊戲畫面裡 */
+  #view-frog .fs-game .msg{display:none}
+}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  /* 上方狀態列留出內距，不擠在一起 */
+  #view-frog .fs-game .stats{gap:6px}
+  #view-frog .fs-game .stats>div{padding:5px 12px}
+}
