@@ -7,7 +7,11 @@
 - 網址：`#carp`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「蓄力起跳，越過一道道石瀑。」｜立即開玩 · 蓄力跳躍
 - 追蹤名稱（GA4 `game_name`）：鯉魚躍龍門，`game_id` 為 `carp`
+<<<<<<< Updated upstream
 - 檔案：`games/carp/card.html`、`games/carp/cover.webp`、`games/carp/game.js`、`games/carp/icon.svg`、`games/carp/view.html`；`game.js` 共 152 行、11.0 KB
+=======
+- 檔案：`games/carp/card.html`、`games/carp/game.js`、`games/carp/icon.svg`、`games/carp/view.html`；`game.js` 共 173 行、15.3 KB
+>>>>>>> Stashed changes
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「31. 鯉魚躍龍門 Carp Leap（carp）」（下方「規則摘要」已複製）
 
@@ -17,13 +21,13 @@
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`KM`（L138）、`carpBusy`（L2）
+- 狀態物件／進行中旗標：`KM`（L159）、`carpBusy`（L2）
 - L5 常數：`MILESTONES`、`BONUS`、`KEY`、`SKEY`、`UNIT`
-- L70 常數：`CHY`
+- L86 常數：`CHY`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`cl` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L15、`acc` L16、`control` L31、`bg` L34、`wall` L42、`carp` L48、`SK` L70、`T` L71、`ST` L72、`pick` L74、`release` L75、`say` L76、`setText` L78、`ui` L79、`awardBonus` L86、`die` L96、`start` L106、`overlay` L115、`bonusDraw` L125、`pos` L126、`loop` L145
+`cl` L7、`O` L8、`C` L9、`E` L10、`F` L11、`RR` L12、`P` L13、`L2` L14、`tx` L15、`acc` L16、`control` L31、`bg` L34、`wall` L49、`carp` L56、`SK` L86、`T` L87、`ST` L88、`pick` L90、`release` L91、`say` L92、`setText` L94、`ui` L95、`awardBonus` L102、`die` L112、`start` L122、`overlay` L131、`bonusDraw` L146、`pos` L147、`loop` L166
 
 ## 錢包與結算接點
 
@@ -31,19 +35,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L90 `awardBonus`：`S.balance+=BONUS;`
+- L106 `awardBonus`：`S.balance+=BONUS;`
 
 **餘額檢查**
-- L109 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L125 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L91 `awardBonus`：`AN.progress(analytics,{step:s,score:s,milestone:m,bonus_points:BONUS,total_bonus_points:paid});`
-- L102 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
-- L111 `start`：`analytics=AN.start('carp',amount);`
+- L107 `awardBonus`：`AN.progress(analytics,{step:s,score:s,milestone:m,bonus_points:BONUS,total_bonus_points:paid});`
+- L118 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
+- L127 `start`：`analytics=AN.start('carp',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

@@ -32,30 +32,46 @@ function control(action){if(carpRules.input(model,action)){rank.record(action);r
 G.down=p=>{if(control(0))heldBy=p.id};
 G.up=p=>{if(p.id===heldBy&&control(1))heldBy=undefined};
 function bg(){
-const {dist}=model;
-const sg=g.createLinearGradient(0,0,0,GY);sg.addColorStop(0,'#8ecae6');sg.addColorStop(1,'#ffe8d6');g.fillStyle=sg;g.fillRect(-20,0,W+40,GY);
-g.fillStyle='#4d908e';for(let i=0;i<4;i++){const x=((i*200-dist*.08)%800+800)%800-200;P([[x,GY],[x+120,GY-250],[x+260,GY]],'#4d908e',3)}
-for(let i=0;i<6;i++){const x=((i*110-dist*.25)%660+660)%660-60;g.fillStyle='rgba(255,255,255,.75)';g.fillRect(x,GY-330+(i%3)*30,12,260)}
-g.fillStyle='#219ebc';g.fillRect(-20,GY,W+40,H-GY);g.fillStyle='#48cae4';g.fillRect(-20,GY,W+40,14);
-for(let i=0;i<10;i++){const x=((i*70-dist)%700+700)%700-60;g.strokeStyle='#bde0fe';g.lineWidth=3;g.beginPath();g.arc(x,GY+10,12,Math.PI,0);g.stroke()}
-L2(-20,GY,W+20,GY,4)}
+const {dist}=model,par=(n,rate,span)=>((n*span-dist*rate)%((span+80)*Math.ceil(W/span))+((span+80)*Math.ceil(W/span)))%((span+80)*Math.ceil(W/span))-80;
+const sky=g.createLinearGradient(0,0,0,GY);sky.addColorStop(0,'#183b56');sky.addColorStop(.48,'#477f91');sky.addColorStop(1,'#f1bb83');g.fillStyle=sky;g.fillRect(-20,0,W+40,H);
+// A warm sun and layered, ink-wash mountain ridges set the Japanese print mood.
+g.globalAlpha=.82;F(316,94,43,'#f6c76b');g.globalAlpha=1;C(316,94,43,'#f6c76b',2);
+for(let i=0;i<3;i++){const y=GY-150+i*43,shift=par(i,.08+i*.07,180);g.beginPath();g.moveTo(-20,GY);for(let x=-20;x<=W+40;x+=8){const ridge=y+Math.sin((x+shift+i*30)/67)*26+Math.sin((x+shift)/31)*7;g.lineTo(x,ridge)}g.lineTo(W+40,GY);g.closePath();g.fillStyle=['#305968','#28656c','#357c78'][i];g.fill();g.strokeStyle=['#e9c58c','#b8c995','#89bba0'][i];g.lineWidth=2;g.stroke()}
+// Waterfall curtains, drawn as flowing ink strokes rather than flat rectangles.
+for(let i=0;i<3;i++){const x=par(i,.24,135)+25,w=34+(i%2)*15;g.beginPath();g.moveTo(x,GY-315);g.bezierCurveTo(x-12,GY-220,x+w+12,GY-115,x+w,GY);g.strokeStyle='rgba(226,246,229,.42)';g.lineWidth=w;g.stroke();g.beginPath();g.moveTo(x,GY-300);g.bezierCurveTo(x+10,GY-210,x-4,GY-130,x+8,GY-28);g.strokeStyle='rgba(255,248,218,.55)';g.lineWidth=2;g.stroke()}
+// Clouds and drifting sakura petals.
+for(let i=0;i<3;i++){const x=par(i,.11,170)+30,y=48+(i%2)*48;g.globalAlpha=.72;E(x,y,36,9,'#f6dfbe',1.5);E(x+22,y-5,20,9,'#f6dfbe',1.5);g.globalAlpha=1}
+for(let i=0;i<8;i++){const x=par(i,.36,58),y=42+(i*53+tt*13)%(GY-75),r=3+i%3;g.save();g.translate(x,y);g.rotate(tt*.55+i);for(let j=0;j<5;j++){g.rotate(Math.PI*2/5);E(0,-r,r*.48,r,'#f3a5a3',1)}g.restore()}
+// Foaming current at the foot of the falls.
+g.fillStyle='#164c64';g.fillRect(-20,GY,W+40,H-GY);g.fillStyle='#2d8290';g.fillRect(-20,GY,W+40,14);
+for(let i=0;i<15;i++){const x=par(i,.9,34),y=GY+14+(i%3)*23+Math.sin(tt*2+i)*3;g.strokeStyle=i%2?'#a9d8c8':'#f2d9ac';g.lineWidth=2;g.beginPath();g.arc(x,y,8+(i%4)*2,Math.PI,Math.PI*2);g.stroke();L2(x-7,y+5,x+8,y+5,1.5,'rgba(242,217,172,.65)')}
+L2(-20,GY,W+20,GY,4,'#f6dfbe')}
 function wall(o){
-RR(o.x,GY-o.h,WW,o.h+130,7,'#8d6e63',3);RR(o.x-3,GY-o.h-8,WW+6,16,6,'#52b788',3);
-L2(o.x+12,GY-o.h+20,o.x+22,GY-o.h+40,2.5);L2(o.x+36,GY-o.h+30,o.x+30,GY-o.h+56,2.5);
-g.fillStyle='rgba(255,255,255,.75)';g.fillRect(o.x+WW,GY-o.h,9,o.h);
-const cx=o.x+WW/2;
-L2(cx,0,cx,GY-o.hb-16,3,'#fff');g.beginPath();g.arc(cx-7,GY-o.hb-8,9,Math.PI*1.9,Math.PI*1.1,true);g.strokeStyle=OL;g.lineWidth=4;g.stroke();F(cx+3,GY-o.hb-18,3,'#ff8fab')}
+const top=GY-o.h, rock=g.createLinearGradient(o.x,top,o.x+WW,top+90);rock.addColorStop(0,'#a77a5c');rock.addColorStop(.5,'#765849');rock.addColorStop(1,'#493f46');
+RR(o.x,top,WW,o.h+130,12,rock,3);RR(o.x-5,top-10,WW+10,19,8,'#4e8b71',3);
+for(let i=0;i<4;i++){const xx=o.x+9+i*13,yy=top+22+(i%2)*23;g.beginPath();g.moveTo(xx,yy);g.quadraticCurveTo(xx+7,yy+8,xx+3,yy+22);g.strokeStyle='rgba(238,203,157,.64)';g.lineWidth=2;g.stroke()}
+for(let i=0;i<5;i++){const xx=o.x+5+i*10;E(xx,top-8,3,2,'#a8c68b',1)}
+g.beginPath();g.moveTo(o.x+WW,top+5);g.quadraticCurveTo(o.x+WW+10,top+o.h*.45,o.x+WW+2,top+o.h);g.strokeStyle='rgba(255,241,202,.8)';g.lineWidth=3;g.stroke();
+const cx=o.x+WW/2,hookY=GY-o.hb-10;g.beginPath();g.moveTo(cx,-8);g.bezierCurveTo(cx+9,70,cx-7,hookY-42,cx,hookY);g.strokeStyle='#34495a';g.lineWidth=2.5;g.stroke();g.beginPath();g.arc(cx-7,hookY+1,9,Math.PI*1.9,Math.PI*1.1,true);g.strokeStyle='#d7b26f';g.lineWidth=4;g.stroke();C(cx-7,hookY+1,3,'#e9c58c',1.5)}
 function carp(){
-const {vy,on,hold,ch,py}=model;
-const k=SK(),r=cl(vy/900,-.6,.6),sq=on&&hold?1-ch*.15:1;
+const {vy,on,hold,ch,py}=model,k=SK(),leap=Math.sin(tt*13),r=cl(vy/900,-.6,.6),sq=on&&hold?1-ch*.1:1,fin=leap*5+(hold?ch*7:0);
 g.save();g.translate(PXL,py-16);g.rotate(r);g.scale(1,sq);
-P([[-18,0],[-42,-14],[-36,0],[-42,14]],k.c[1],3);
-E(0,0,24,15,k.c[0],3);E(2,5,15,7,'#ffe8d6',2);
-P([[-6,-13],[6,-13],[-2,-26]],k.c[1],3);
-[-8,2,12].forEach(x=>{g.strokeStyle=k.c[1];g.lineWidth=2;g.beginPath();g.arc(x,-2,6,.4,2.7);g.stroke()});
-C(14,-4,6,'#fff',2);F(16,-4,2.6,OL);
-g.strokeStyle=OL;g.lineWidth=2.5;g.beginPath();g.moveTo(24,2);g.quadraticCurveTo(36,0,38,10);g.moveTo(24,5);g.quadraticCurveTo(34,10,32,18);g.stroke();
-acc(k.a,6,-20,.8);g.restore()}
+// Long, animated fan tail with ivory edging and flowing inner rays.
+g.beginPath();g.moveTo(-17,0);g.bezierCurveTo(-31,-8-fin,-41,-20-fin,-55,-18-fin);g.quadraticCurveTo(-49,-5,-44,0);g.quadraticCurveTo(-51,8,-57,19+fin);g.bezierCurveTo(-38,16+fin,-27,7, -17,3);g.closePath();g.fillStyle=k.c[1];g.fill();g.strokeStyle='#f7dfb0';g.lineWidth=2.5;g.stroke();
+for(let i=0;i<4;i++){g.beginPath();g.moveTo(-20,1);g.quadraticCurveTo(-37,-7+i*5,-51,-15+i*9);g.strokeStyle='rgba(255,239,202,.78)';g.lineWidth=1.3;g.stroke()}
+// Flowing pectoral and dorsal fins.
+g.beginPath();g.moveTo(-4,3);g.quadraticCurveTo(-1,15+fin,13,23+fin);g.quadraticCurveTo(15,10,8,3);g.closePath();g.fillStyle=k.c[1];g.fill();g.strokeStyle='#f7dfb0';g.lineWidth=2;g.stroke();
+g.beginPath();g.moveTo(-7,-10);g.quadraticCurveTo(0,-30-fin*.4,15,-23);g.quadraticCurveTo(11,-13,3,-9);g.closePath();g.fillStyle=k.c[1];g.fill();g.strokeStyle='#f7dfb0';g.lineWidth=2;g.stroke();
+E(0,0,27,16,k.c[0],3);E(3,6,17,8,'#f5e7c5',2);
+// Koi scale pattern and flowing red-white patches, clipped to the body.
+g.save();g.beginPath();g.ellipse(0,0,25,14,0,0,Math.PI*2);g.clip();
+for(let row=0;row<3;row++)for(let col=0;col<6;col++){const x=-19+col*8+(row%2)*4,y=-7+row*7;g.beginPath();g.arc(x,y,5.5,.12,Math.PI-.12);g.strokeStyle='rgba(255,245,218,.7)';g.lineWidth=1.15;g.stroke()}
+g.beginPath();g.moveTo(-2,-15);g.bezierCurveTo(-10,-5,4,-1,-3,14);g.strokeStyle=k.c[1];g.lineWidth=5;g.stroke();g.restore();
+// Gill, bright eye, small smile and whiskers.
+g.beginPath();g.arc(9,-1,7,-1.1,1.15);g.strokeStyle='rgba(67,48,48,.75)';g.lineWidth=1.5;g.stroke();C(17,-5,5.4,'#fff4d8',1.5);F(19,-5,2.4,'#233746');F(20,-6,1,'#fff');
+g.beginPath();g.moveTo(23,2);g.quadraticCurveTo(31,0,34,5);g.strokeStyle='#493f46';g.lineWidth=1.5;g.stroke();
+g.beginPath();g.moveTo(23,5);g.quadraticCurveTo(36,5+fin*.25,40,11+fin*.25);g.moveTo(23,7);g.quadraticCurveTo(33,11,36,17);g.strokeStyle='#f5e7c5';g.lineWidth=1.4;g.stroke();
+acc(k.a,3,-20,.7);g.restore()}
 G.draw=()=>{
 const {obs,fx,ch}=model;
 const ox=shake>0?(Math.random()-.5)*10:0;g.save();g.translate(ox,0);
@@ -113,9 +129,14 @@ function start(){
  },ui);
 }
 function overlay(){
-g.fillStyle='rgba(27,27,47,.6)';g.fillRect(0,0,W,H);
-if(st==='ready'){tx(T('title'),W/2,170,32,'#ffd23f');tx(T('s1'),W/2,218,17,'#fff');tx(T('s2'),W/2,244,17,'#fff');tx('{{t:carp.msg.016}}',W/2,312,24,'#ffd23f')}
-else{tx(T(G.msg),W/2,130,28,'#ff7a7a');tx(String(G.score()),W/2,205,52,'#fff');if(G.extra)tx(G.extra(),W/2,240,17,'#fff');if(rec)tx('{{t:carp.msg.017}}',W/2,272,20,'#ffd23f');if(unl.length)tx('{{t:carp.msg.018}}'+unl.map(k=>k.n).join('、'),W/2,300,17,'#6cf0a8');tx(paid>0?'{{t:carp.msg.019}}'+paid+' 點':'{{t:carp.msg.020}}',W/2,336,20,paid>0?'#ffd23f':'#fff');tx('{{t:carp.msg.021}}',W/2,382,18,'#fff')}
+g.fillStyle='rgba(13,39,54,.34)';g.fillRect(0,0,W,H);
+// Framed story card and a small vermilion seal make the ready/result screens
+// feel like part of the same illustrated print as the play scene.
+g.save();g.globalAlpha=.94;RR(21,91,W-42,310,18,'rgba(19,52,68,.84)',2.5);g.restore();
+g.strokeStyle='#e9c58c';g.lineWidth=1.5;g.beginPath();g.moveTo(53,107);g.lineTo(113,107);g.moveTo(287,107);g.lineTo(347,107);g.stroke();
+g.save();g.translate(337,124);g.rotate(-.12);RR(-13,-13,26,26,4,'#bb4b43',1.5);g.beginPath();g.moveTo(-7,1);g.quadraticCurveTo(0,-5,7,1);g.quadraticCurveTo(0,7,-7,1);g.moveTo(-8,-6);g.lineTo(-13,-10);g.moveTo(8,-6);g.lineTo(13,-10);g.strokeStyle='#fff2d4';g.lineWidth=1.5;g.stroke();g.restore();
+if(st==='ready'){C(W/2,144,27,'rgba(246,199,107,.23)',1);tx(T('title'),W/2,176,32,'#ffe19a');tx(T('s1'),W/2,218,17,'#fff4df');tx(T('s2'),W/2,244,17,'#fff4df');L2(103,273,297,273,1.5,'#d4b77c');tx('{{t:carp.msg.016}}',W/2,316,24,'#ffe19a');g.beginPath();g.moveTo(169,355);g.quadraticCurveTo(184,344,200,355);g.quadraticCurveTo(216,366,231,355);g.strokeStyle='#9bc4b5';g.lineWidth=2;g.stroke()}
+else{tx(T(G.msg),W/2,145,28,'#ffb4a5');tx(String(G.score()),W/2,211,52,'#fff4df');if(G.extra)tx(G.extra(),W/2,244,17,'#f4d9a8');if(rec)tx('{{t:carp.msg.017}}',W/2,277,20,'#ffe19a');if(unl.length)tx('{{t:carp.msg.018}}'+unl.map(k=>k.n).join('、'),W/2,306,17,'#bfe8c6');tx(paid>0?'{{t:carp.msg.019}}'+paid+' 點':'{{t:carp.msg.020}}',W/2,342,20,paid>0?'#ffe19a':'#fff4df');tx('{{t:carp.msg.021}}',W/2,378,18,'#fff4df')}
 const n=G.skins.length;
 G.skins.forEach((k,i)=>{const x=W/2+(i-(n-1)/2)*72,lk=best<k.need;
 C(x,CHY,24,lk?'#6c757d':k.c[0],3);
