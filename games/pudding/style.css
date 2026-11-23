@@ -1,0 +1,20 @@
+/* 布丁突圍：開始按鈕與手機狀態列配合遊戲畫面的黃色按鈕、深棕面板 */
+#view-pudding .go:not(:disabled){background:#ffc93c;color:#2a1a12;border:3px solid #2a1a12;border-radius:999px;font-weight:900;letter-spacing:.04em;box-shadow:inset 0 3px 0 rgba(255,255,255,.45),0 4px 0 #d98a00,0 8px 18px rgba(42,26,18,.35)}
+#view-pudding .go:hover:not(:disabled){background:#ffd45c}
+#view-pudding .go:active:not(:disabled){transform:translateY(2px);box-shadow:inset 0 3px 0 rgba(255,255,255,.45),0 2px 0 #d98a00,0 4px 10px rgba(42,26,18,.35)}
+#view-pudding .go:disabled{background:#5a3f2e;color:#f3e2c0;border:3px solid #8a6448;border-radius:999px}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  #view-pudding .fs-game .side .go:active:not(:disabled){transform:translateX(-50%) translateY(2px)}
+  #view-pudding .fs-game .stats>div{background:#3a261c;border:2px solid #8a6448;border-radius:12px;box-shadow:0 3px 0 rgba(20,10,5,.4)}
+  #view-pudding .fs-game .stats dt{color:#f3d9a8;font-weight:700}
+  #view-pudding .fs-game .stats dd{color:#fff;font-weight:900}
+  #view-pudding .fs-game .fs-exit{background:#3a261c;border:2px solid #8a6448;color:#fff;box-shadow:0 3px 0 rgba(20,10,5,.4)}
+}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  /* 結束後出現「分享成績」時：分享改成左側只有圖示的圓鈕，再突圍一次放右側，不再疊在一起 */
+  #view-pudding .fs-game:has(.share-result:not([hidden])) .mobile-stage-actions{left:80px;right:12px}
+  #view-pudding .fs-game:has(.share-result:not([hidden])) #pd-go:not(:disabled){width:100%;min-width:0;height:56px;min-height:56px;padding:6px 12px}
+  #view-pudding .fs-game .share-result:not([hidden]){left:12px;right:auto;transform:none;width:56px;height:56px;min-height:56px;padding:0;justify-content:center;border:3px solid #8a6448;border-radius:50%;background:#3a261c;color:#fff;font-size:22px}
+  #view-pudding .fs-game .share-result span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  #view-pudding .share-result i{color:#ffc93c;font-size:22px}
+}

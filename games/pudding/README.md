@@ -7,7 +7,7 @@
 - 網址：`#pudding`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「拼出武器，背著小王子殺出重圍。」｜立即開玩 · 拼武器闖關
 - 追蹤名稱（GA4 `game_name`）：布丁突圍，`game_id` 為 `pudding`
-- 檔案：`games/pudding/card.html`、`games/pudding/cover.webp`、`games/pudding/game.js`、`games/pudding/icon.svg`、`games/pudding/view.html`；`game.js` 共 386 行、26.8 KB
+- 檔案：`games/pudding/card.html`、`games/pudding/cover.webp`、`games/pudding/game.js`、`games/pudding/icon.svg`、`games/pudding/leaderboard.webp`、`games/pudding/style.css`、`games/pudding/view.html`；`game.js` 共 368 行、27.2 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「27. 布丁突圍 Pudding Dash（pudding）」（下方「規則摘要」已複製）
 
@@ -17,8 +17,8 @@
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`E`（L42）、`puddingBusy`（L2）
-- L4 常數：`FONT`
+- 狀態物件／進行中旗標：`E`（L42）、`A`（L194）、`EK`（L227）、`puddingBusy`（L2）
+- L4 常數：`DPR`、`FONT`
 - L5 常數：`XMIN`、`XMAX`、`KEY_SPEED`、`PTR_SPEED`
 - L6 常數：`CELL`、`WTOP`
 - L7 常數：`SEGS`、`SEG_TIME`、`SPAWN_STOP`、`FIRST_SPAWN`、`CAV_WARN`、`ARROW_SPEED`
@@ -32,10 +32,11 @@
 - L25 常數：`CARD_HINT`
 - L26 常數：`TYPES`
 - L28 常數：`SHAPES`
+- …另有 2 行常數宣告，請直接搜尋大寫名稱
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rnd` L32、`wpick` L33、`RR` L34、`tx` L35、`cardX` L36、`inRect` L37、`emptyGrid` L39、`startGrid` L40、`computeStats` L41、`rotateCells` L53、`dims` L54、`reset` L61、`resetRun` L62、`clearInput` L63、`say` L65、`setText` L67、`ui` L68、`fl` L73、`end` L74、`enterForge` L87、`clampGhost` L93、`previewGrid` L94、`forgeRotate` L95、`forgeConfirm` L96、`forgeSkip` L102、`forgeTap` L103、`weaponCells` L110、`touches` L111、`makeEnemy` L112、`spawn` L113、`hurt` L118、`kill` L123、`moveHero` L128、`endSegment` L134、`updateRun` L143、`update` L178、`drawRoad` L193、`drawHero` L197、`drawWeaponWorld` L222、`drawEnemyBody` L229、`drawEnemy` L247、`drawArcher` L252、`drawBar` L257、`drawGrid` L263、`drawRun` L272、`drawForge` L294、`segs` L302、`line` L308、`drawOver` L325、`drawReady` L340、`draw` L347、`start` L351、`shown` L358、`ptX` L359、`release` L369、`isL` L372、`loop` L383
+`rnd` L32、`wpick` L33、`RR` L34、`tx` L35、`cardX` L36、`inRect` L37、`emptyGrid` L39、`startGrid` L40、`computeStats` L41、`rotateCells` L53、`dims` L54、`reset` L61、`resetRun` L62、`clearInput` L63、`say` L65、`setText` L67、`ui` L68、`fl` L73、`end` L74、`enterForge` L87、`clampGhost` L93、`previewGrid` L94、`forgeRotate` L95、`forgeConfirm` L96、`forgeSkip` L102、`forgeTap` L103、`weaponCells` L110、`touches` L111、`makeEnemy` L112、`spawn` L113、`hurt` L118、`kill` L123、`moveHero` L128、`endSegment` L134、`updateRun` L143、`update` L178、`ok` L195、`spr` L197、`sprBox` L198、`panel` L200、`btn` L201、`drawRoad` L209、`mood` L214、`drawHero` L215、`drawWeaponWorld` L221、`drawEnemyBody` L228、`drawEnemy` L229、`drawArcher` L235、`drawBar` L236、`drawGrid` L244、`drawRun` L252、`drawForge` L271、`segs` L281、`line` L287、`rowsCard` L305、`lh` L306、`drawOver` L308、`drawReady` L321、`draw` L328、`start` L333、`shown` L340、`ptX` L341、`release` L351、`isL` L354、`loop` L365
 
 ## 錢包與結算接點
 
@@ -47,7 +48,7 @@
 - L137 `endSegment`：`S.balance+=SEG_REWARD;`
 
 **餘額檢查**
-- L354 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L336 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
@@ -56,7 +57,7 @@
 
 - L80 `end`：`AN.end(analytics,earned,reason==='win'||earned>0?'complete':'loss',{score:score,step:seg,stage:seg});`
 - L138 `endSegment`：`AN.progress(analytics,{stage:seg,step:seg,score:score,bonus_points:SEG_REWARD});`
-- L355 `start`：`analytics=AN.start('pudding',amount);`
+- L337 `start`：`analytics=AN.start('pudding',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
