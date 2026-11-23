@@ -19,3 +19,4 @@
 | 新增或上架遊戲，或調整訪客排行榜 | [新增遊戲與訪客排行榜](docs/agent-guides/new-game.md) |
 | 新增遊戲、修改顯示文字或語言切換 | [遊戲多語系](docs/agent-guides/localization.md) |
 | 新增、改造、重新上架、調整 BONUS、準備發布或推送 | [遊戲驗收與推送](docs/agent-guides/release.md) |
+| 做新遊戲、改版遊戲玩法或畫面、重新上架 | [遊戲品質指南](docs/agent-guides/quality.md) |
