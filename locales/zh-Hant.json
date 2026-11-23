@@ -3102,5 +3102,22 @@
   "wardrobe.msg.014": "收藏讀取失敗，原資料已保留。",
   "wardrobe.msg.015": "帽子",
   "wardrobe.msg.016": "服裝",
-  "wardrobe.msg.017": "跟隨配件"
+  "wardrobe.msg.017": "跟隨配件",
+  "card.siege-architect.tag": "20 關",
+  "siege-architect.view.01": "目前關卡",
+  "siege-architect.view.02": "已通關",
+  "siege-architect.view.03": "累積星星",
+  "siege-architect.view.04": "把兵種卡拖到時間格上排好出發時間，再按「出擊」。每座塔的鎖定規則畫在塔上；進攻失敗會保留編排，改一改再試。",
+  "siege-architect.view.05": "玩法與成績",
+  "siege-architect.view.06": "防線已經擺好，換你來進攻。在 10 秒的時間軸上安排萌獸部隊的出發時間，按下出擊後看戰術成功或失敗。機槍塔打最近的，大砲塔打血最多的並造成範圍爆炸，狙擊塔打最先進入射程的；塔會一直攻擊鎖定的目標，直到它倒下或離開射程。沒有任何隨機，同樣的編排永遠得到同樣的結果。",
+  "siege-architect.view.07": "共 20 關，每關有部隊預算與城門血量。攻破城門得 1 顆星，花費不超過目標再得 1 顆，達成該關的額外條件再得 1 顆。過關解鎖下一關，進度、星星與編排保存在這個瀏覽器中。",
+  "siege-architect.view.08": "這款遊戲沒有 BONUS，關卡與星星只是你的成績，不換點數；沒有任何下注或倍率返還。每款遊戲每天第一次完整玩過一局（至少 10 秒），會依平台固定規則領到完成獎勵。",
+  "siege-architect.view.09": "排行榜計算伺服器重播驗證過的不同關卡數，每關只算一次。切換遊戲或背景分頁會暫停進攻，回來後繼續；換關或重新整理會結束本局，但保留編排。",
+  "siege-architect.view.10": "萌獸破城隊 Critter Crashers",
+  "siege-architect.view.11": "萌獸破城隊狀態",
+  "siege-architect.say.001": "第 {lv} 關開始：排好部隊的出發時間，再按出擊。",
+  "siege-architect.say.002": "第 {lv} 關城門攻破，拿到 {st} 顆星。",
+  "siege-architect.say.003": "第 {lv} 關第 {n} 次出擊。",
+  "siege-architect.say.004": "把兵種卡拖到時間軸上，再按出擊；左上選單可以選關。",
+  "siege-architect.say.005": "排行榜成績未能送出，下次過關會再送一次。"
 }

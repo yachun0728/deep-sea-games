@@ -7,7 +7,7 @@ export const SHARE_PATH = /^\/s\/([A-Za-z0-9]{10})\/?$/;
 
 const COVERS = new Set(['academy', 'banquet', 'blaster', 'boba', 'breakout', 'dive', 'eat-smaller', 'elevator',
   'frontier', 'last-hair', 'market-desk', 'merge', 'mines', 'mirror-twins', 'mosquito', 'mrt', 'ocean-link',
-  'office-shoot', 'one-line-defense', 'outpost', 'pancake', 'peek', 'quack-pond', 'rocket-chair', 'shadow-relay',
+  'office-shoot', 'one-line-defense', 'outpost', 'pancake', 'peek', 'quack-pond', 'rocket-chair', 'shadow-relay', 'siege-architect',
   'skybuilder', 'tetris']);
 
 // Games whose largest canvas is a background layer rather than the play field.
@@ -65,6 +65,7 @@ const TABLE = {
   'shadow-relay': ['影子接力', 'Shadow Relay', 'step', CLEARED],
   'one-line-defense': ['一筆畫守城', 'One-Line Defense', 'score', POINTS],
   'quack-pond': ['呱呱池塘', 'Quack Pond', 'score', { unit: ['關', 'levels'], result: ['來到第 {score} 關', 'reached level {score}'] }],
+  'siege-architect': ['萌獸破城隊', 'Critter Crashers', 'score', { unit: ['關', 'levels'], result: ['攻破第 {score} 關的城門', 'breached the gate on level {score}'] }],
   'on-pitch': ['不准跑調', 'Stay On Pitch', 'score', POINTS],
   boba: ['插珍奶', 'Boba Straw', 'score', { unit: ['杯', 'drinks'], result: ['插好 {score} 杯珍奶', 'made {score} boba drinks'] }],
 };

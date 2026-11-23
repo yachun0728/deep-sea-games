@@ -20,6 +20,7 @@ export const RANDOM_GAMES = [
   ['ocean-link', '深海連連看 Ocean Link'],
   ['tetris', '俄羅斯方塊 Block Drop'],
   ['quack-pond', '呱呱池塘 Quack Pond'],
+  ['siege-architect', '萌獸破城隊 Critter Crashers'],
   ['book-sort', '貓咪疊書舖 Cat Book Stack'],
 ];
 

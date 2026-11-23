@@ -117,6 +117,7 @@ flowchart TD
 | tetris | TET、deepSeaTetris；original.html 為 srcdoc 子頁（俄羅斯方塊，免費、無 BONUS，成績不換點數） |
 | on-pitch | OP（內部狀態在 game.js 自己的 IIFE 內）、deepSeaOnPitch；畫面直接用 `#op-canvas`（400×720），不使用 iframe。免費、無 BONUS，成績不換點數；麥克風音高偵測（YIN）核心 `createGame` 為純邏輯 |
 | quack-pond | QP、deepSeaQuackPond；200 關邏輯謎題（呱呱池塘），免費、無 BONUS |
+| siege-architect | SA、deepSeaSiege；original.html 為 srcdoc 子頁（萌獸破城隊 Critter Crashers，20 關確定性解謎），免費、無 BONUS。子頁自帶繁中／英文字串表，跟隨站台語言即時切換，簡中由 js/i18n.js 在顯示層轉換；`<body data-i18n-ignore>` 讓站台字典不翻譯它（tools/test_i18n.py 的 `SELF_LOCALIZED`）。模擬與關卡逐字複製到 `shared/siege-architect-rules.cjs` 供 Worker 重播驗證 |
 | pancake | PANCAKE、deepSeaPancake；original.html 為以 iframe src 載入的子頁，圖片在 assets/ |
 
 ### 遊戲骨架與預覽區
@@ -201,6 +202,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `qp_seen` | 呱呱池塘已看過教學（子頁寫入）；新增於 2026-11-19 |
 | `qp_muted` | 呱呱池塘靜音設定（子頁寫入）；新增於 2026-11-19 |
 | `qp_best_*` | 呱呱池塘各關最佳用時（子頁寫入）；新增於 2026-11-19 |
+| `siegeArch.level` / `siegeArch.stars` / `siegeArch.drafts` / `siegeArch.metUnits` / `siegeArch.muted` / `siegeArch.panelOpen` | 萌獸破城隊目前關卡（0 起算）、各關最佳星數、各關編排、已介紹過的兵種、靜音、部署面板展開（JSON，子頁寫入，沿用原版 Key）；新增於 2026-11-23 |
 | `oneLine.best` / `oneLine.tutDone` | 一筆畫守城最佳分數、教學已完成（JSON，子頁寫入）；新增於 2026-11-18 |
 | `ticatica-sidebar-collapsed` | 大廳左側選單是否收合（1／0），只影響畫面；新增於 2026-11-18，缺少時展開 |
 | `deep-sea-free-until` | 泡麵煎餅看示範廣告後的免扣點截止時間（毫秒時間戳）；新增於 2026-11-17，只有泡麵煎餅讀取 |
@@ -247,7 +249,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 
 ### 手機全螢幕版面（`css/mobile-fullscreen.css`，2026-11-20）
 
-適用：偷偷下班、深海釣手、時序修復、便便鳥大戰狼群、屋頂貓貓、死神打工、插隊大師、青蛙吃蟲、蓋樓大師、寶寶逃洗澡、偷水果的貓、胖老闆追人、外送員大戰惡犬、鯉魚躍龍門、偷睡大師、布丁突圍、打磚塊、下班保衛戰、血壓上升（Canvas 遊戲），小灰出門、拒絕加班、尊嚴保衛戰、不准跑調（Canvas 遊戲），一口氣探險、捷運搶位、一筆畫守城、影子接力、鏡像雙子、數字吞噬、呱呱池塘（舞台內是 iframe 的 `.console` 遊戲），人魚接龍、最後的晚餐（DOM 版面），以及插珍奶、泡麵煎餅翻面、社畜要下班（整頁 iframe）；閃避跑酷用共用結構但版面另有核准設計（見下方例外）。別看（`peek`）改為直式 450×800 的全螢幕（見下方說明）。條件是 `@media(max-width:880px),(pointer:coarse) and (max-width:1100px)`；桌面版維持原本兩欄版面，`.fs-exit` 退出鈕在桌面隱藏。玩法、扣點、追蹤、儲存都不在這份 CSS 的範圍。
+適用：偷偷下班、深海釣手、時序修復、便便鳥大戰狼群、屋頂貓貓、死神打工、插隊大師、青蛙吃蟲、蓋樓大師、寶寶逃洗澡、偷水果的貓、胖老闆追人、外送員大戰惡犬、鯉魚躍龍門、偷睡大師、布丁突圍、打磚塊、下班保衛戰、血壓上升（Canvas 遊戲），小灰出門、拒絕加班、尊嚴保衛戰、不准跑調（Canvas 遊戲），一口氣探險、捷運搶位、一筆畫守城、影子接力、鏡像雙子、數字吞噬、呱呱池塘、萌獸破城隊（舞台內是 iframe 的 `.console` 遊戲），人魚接龍、最後的晚餐（DOM 版面），以及插珍奶、泡麵煎餅翻面、社畜要下班（整頁 iframe）；閃避跑酷用共用結構但版面另有核准設計（見下方例外）。別看（`peek`）改為直式 450×800 的全螢幕（見下方說明）。條件是 `@media(max-width:880px),(pointer:coarse) and (max-width:1100px)`；桌面版維持原本兩欄版面，`.fs-exit` 退出鈕在桌面隱藏。玩法、扣點、追蹤、儲存都不在這份 CSS 的範圍。
 
 **結構（每款 `view.html` 都一樣）**
 
@@ -273,6 +275,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 - 不准跑調：麥克風／琴鍵、八度、測試麥克風這三組設定只在開始鈕顯示（待機）時出現在畫面下方，進行中隱藏（以 `:has(.mobile-stage-action #op-go)` 判斷）。
 - 社畜要下班：頂列比照插珍奶，只留退出鈕與結算後的「分享成績」，重試鈕出現時放在退出鈕旁。
 - 一筆畫守城、影子接力、鏡像雙子、數字吞噬、呱呱池塘比照一口氣探險：`--reserve` 72px、隱藏 `.msg`；其中「結束本局」類 `.go`（`data-mode="cancel"`）顯示時固定在底部。
+- 萌獸破城隊：子頁自己有出擊鈕與底部部署面板，父頁沒有 `.go`，所以不留 `--reserve`；隱藏 `.msg`，結算後的「分享成績」改放在頂部統計列右側（不透明底），避免蓋住兵種卡。
 - 別看（`peek`）：畫布 450×800 直式。原橫式場景座標（800×450）保留，場景相關繪圖（背景、躲藏處、鬼、道具、掉落物）包在 `cam()` 裡，以 800/450 倍率置中裁切；所以場景函式內的 `W`／`H`／`CX` 已改名 `SW`／`SH`／`SCX`，全螢幕疊色用 `fillRect(VX,0,VW,SH)`。鬼、躲藏處、道具的左右偏移乘上 `KS`（`SIDE=72`）才會落在可見寬度內。HUD、教學、開場、結算、營火、圖鑑等畫面用畫布座標（`W`／`H`／`CX`）直排；指向場景物件的標示用 `S2C()` 轉換座標。面板（關卡／種子／每日挑戰、無障礙與音量、圖鑑、分享、體感）在全螢幕時收進底部面板，由右上角選單鈕（`#peek-menu`）開關，並隱藏重複的開始鈕托盤（畫布自己有開始鈕）。已移除橫向全螢幕與旋轉模式。設計圖與說明在 `games/peek/design/`。
 - 打磚塊：`#br-pause` 只在進行中顯示，固定在右下角（64×64）。
 - 面板內沒有 class／id 的裸 `<p>`（例如打磚塊的說明）在全螢幕時隱藏。

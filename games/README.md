@@ -57,6 +57,7 @@
 | [荒島遠征 Frontier Islands](frontier/README.md) | `#frontier` | 益智策略 | 顯示 | 211 行 | 砍出道路，建立據點，挑戰五大區域與五十關考驗。 |
 | [俄羅斯方塊 Block Drop](tetris/README.md) | `#tetris` | 懷舊經典 | 顯示 | 64 行 | 經典落塊消行，旋轉、牆踢與暫存都有。 |
 | [呱呱池塘 Quack Pond](quack-pond/README.md) | `#quack-pond` | 益智策略 | 顯示 | 65 行 | 每行、每列、每個顏色區域各放一隻鴨子，而且不能相鄰。 |
+| [萌獸破城隊 Critter Crashers](siege-architect/README.md) | `#siege-architect` | 益智策略 | 顯示 | 66 行 | 在時間軸上排好萌獸部隊的出發時間，利用每座塔的鎖定規則攻破城門。 |
 | [收盤之前 Closing Call](market-desk/README.md) | `#market-desk` | 益智策略 | 顯示 | 437 行 | 20 個交易日，從台股怪新聞裡挖出可信的消息。 |
 | [不准跑調 Stay On Pitch](on-pitch/README.md) | `#on-pitch` | 時機操作 | 顯示 | 669 行 | 對著麥克風唱出缺口的音，音準對了才能穿牆。 |
 | [貓咪疊書舖 Cat Book Stack](book-sort/README.md) | `#book-sort` | 益智策略 | 顯示 | 236 行 | 把書依顏色疊進紙箱，集滿 5 本同色自動封箱。 |

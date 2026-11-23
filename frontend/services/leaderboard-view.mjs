@@ -1,7 +1,7 @@
 import { arcadeApiOrigin, createApiClient } from './api.mjs';
 
 const api = createApiClient(arcadeApiOrigin());
-for (const gameId of ['frontier', 'rocket-chair', 'blaster', 'quack-pond', 'mirror-twins']) {
+for (const gameId of ['frontier', 'rocket-chair', 'blaster', 'quack-pond', 'mirror-twins', 'siege-architect']) {
   const view = document.getElementById('view-' + gameId);
   if (!view) continue;
   const details = document.createElement('details');

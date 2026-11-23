@@ -151,6 +151,10 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 免費邏輯謎題、無 BONUS。每關一次 start（entry_points=0）；正確放置一隻鴨子送一次 progress（step=已放鴨數）。關卡完成送 end：win→result=complete、loss→result=loss、離開→result=abandoned；附 level（1–200）與 stars（0–3，hearts 剩餘數）、payout_points=0。pagehide 由共用層送 abandoned；BFCache persisted 不結束。未驗證 GA4 後台收件。
 
+## 萌獸破城隊（siege-architect）
+
+免費確定性解謎、無 BONUS，`game_name=萌獸破城隊`。一局是同一關裡的一段遊玩：子頁第一次編排或按出擊時送 start（entry_points=0）；每次出擊送 progress（stage=關卡 1–20、step=本局出擊次數），失敗與撤退不結束本局。攻破城門送 end：result=complete、score=關卡、step=這次星數（1–3）、payout_points=0；換到別關送 cancelled；正常離頁由 game.js 先於共用層送 abandoned，BFCache 不結束。離開遊戲畫面時子頁暫停並送 progress（phase=pause），回來送 resume。未驗證 GA4 後台收件。
+
 ## 時序修復（dream）
 
 無限關卡、固定入場10點，沒有點數獎勵。每局一次start；過關progress帶stage、score（完成關數）、reversals（本關已反轉次數）並暫停有效時間，下一關resume。失敗end為loss、payout_points=0，不送multiplier或cashout；正常離頁由共用層送abandoned，BFCache沿用暫停／恢復。未驗證GA4後台收件。
