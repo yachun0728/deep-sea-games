@@ -456,15 +456,104 @@
     const s = makeSprite(TEX[o.asset], w, h, 0); s.position.set(x, 0, z); scene.add(s);
     if (a.collision) colliders.push({ minX: x + a.collision.x / U * k, maxX: x + (a.collision.x + a.collision.w) / U * k, minZ: z + a.collision.y / U * k, maxZ: z + 0.01 });
   }
-  const TILT = 0.42;   // buildings stand almost upright, leaning back slightly, like real street fronts
-  const bGeo = new THREE.PlaneGeometry(1, 1); bGeo.translate(0, 0.5, 0);
+  // --- real 3D buildings: a solid volume per city block (walls, roof, windows, doors), styled after the pack's 12 building types ---
+  const BSPEC = {
+    apartment_01: { h: 11,  wall: '#f0d9c8', accent: '#4aa3c9', roof: '#c9bdb4', shop: true,  roofType: 'flat', ac: 3 },
+    club_01:      { h: 8.5, wall: '#7a3aa5', accent: '#ff4fd8', roof: '#4b2a66', shop: true,  roofType: 'flat', neon: true, ring: true },
+    factory_01:   { h: 7.5, wall: '#a5aeb8', accent: '#ff6a3d', roof: '#5f6a78', shop: false, roofType: 'gable', chimneys: 2, door: true },
+    garage_01:    { h: 6.5, wall: '#ddd5c9', accent: '#ff9f1c', roof: '#8d8a86', shop: false, roofType: 'flat', door: true },
+    gas_01:       { h: 4.6, wall: '#eadfca', accent: '#e63946', roof: '#d9453a', shop: true,  roofType: 'flat', canopy: true },
+    hotel_01:     { h: 15,  wall: '#f7e8d8', accent: '#2ed9d0', roof: '#e6d6c4', shop: true,  roofType: 'flat', neon: true, tower: true },
+    house_01:     { h: 5.8, wall: '#f4e7d0', accent: '#d9453a', roof: '#d9453a', shop: false, roofType: 'hip' },
+    office_01:    { h: 19,  wall: '#5fa8ea', accent: '#c9e6ff', roof: '#8fb4d6', shop: true,  roofType: 'flat', glass: true, ac: 2 },
+    police_01:    { h: 8.5, wall: '#e6e9ef', accent: '#2a58c8', roof: '#9aa3b2', shop: true,  roofType: 'flat', ac: 2 },
+    restaurant_01:{ h: 6.8, wall: '#ff9fcb', accent: '#d62839', roof: '#b66a8a', shop: true,  roofType: 'flat', awning: true },
+    store_01:     { h: 6.2, wall: '#f7f1e3', accent: '#e63946', accent2: '#1fb5a8', roof: '#c9c2b6', shop: true, roofType: 'flat', stripes: true, ac: 1 },
+    warehouse_01: { h: 7.2, wall: '#bcc7d4', accent: '#f4a300', roof: '#6c7686', shop: false, roofType: 'gable', door: true }
+  };
+  const INK = '#1a1620', wallCache = {};
+  function drawWall(key, wU, hU, spec, front, variant) {
+    const ck = key + (front ? 'F' : 'S') + variant; if (wallCache[ck]) return wallCache[ck];
+    const r = mulberry(key.length * 977 + variant * 131 + (front ? 7 : 3));
+    const ppu = 34, W = Math.max(96, Math.round(wU * ppu)), H = Math.round(hU * ppu);
+    const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+    g.fillStyle = spec.wall; g.fillRect(0, 0, W, H);
+    const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, 'rgba(255,255,255,.14)'); gr.addColorStop(1, 'rgba(0,0,0,.14)'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    const ground = spec.shop ? 3.3 : 0, floorH = spec.glass ? 2.3 : 3.0, cornice = 0.8;
+    const nF = Math.max(1, Math.floor((hU - ground - cornice - 0.4) / floorH));
+    const cols = Math.max(1, Math.floor(wU / (spec.glass ? 1.7 : 2.6))), cw = W / cols;
+    const lit = spec.glass ? ['#bfe3ff', '#8fc6f5'] : ['#ffe08a', '#ffb74a'], dark = spec.glass ? '#2f6fb5' : '#33476b';
+    for (let f = 0; f < nF; f++) for (let k = 0; k < cols; k++) {
+      const y = (cornice + 0.45 + f * floorH) * ppu, h = floorH * ppu * (spec.glass ? 0.78 : 0.58), x = k * cw + cw * (spec.glass ? 0.1 : 0.2), w = cw * (spec.glass ? 0.8 : 0.6);
+      const on = r() < 0.74, wg = g.createLinearGradient(0, y, 0, y + h); wg.addColorStop(0, on ? lit[0] : dark); wg.addColorStop(1, on ? lit[1] : '#24334f');
+      g.fillStyle = wg; g.fillRect(x, y, w, h); g.lineWidth = 3; g.strokeStyle = INK; g.strokeRect(x, y, w, h);
+      g.fillStyle = 'rgba(255,255,255,.5)'; g.fillRect(x + w * 0.1, y + h * 0.08, w * 0.18, h * 0.84);
+      g.fillStyle = '#e9dfd0'; g.fillRect(x - 3, y + h, w + 6, 5); g.strokeRect(x - 3, y + h, w + 6, 5);
+    }
+    g.fillStyle = spec.accent; g.fillRect(0, 0, W, cornice * ppu); g.lineWidth = 3; g.strokeStyle = INK; g.strokeRect(0, 0, W, cornice * ppu);
+    if (spec.neon) { g.save(); g.shadowColor = spec.accent; g.shadowBlur = 14; g.fillStyle = '#fff'; g.fillRect(0, cornice * ppu - 6, W, 5); g.restore(); }
+    if (ground) {
+      const y0 = H - ground * ppu; g.fillStyle = 'rgba(0,0,0,.18)'; g.fillRect(0, y0, W, ground * ppu);
+      const panes = Math.max(2, Math.floor(wU / 2.6)), pw = W / panes;
+      for (let k = 0; k < panes; k++) {
+        const x = k * pw + pw * 0.1, w = pw * 0.8, y = y0 + ppu * 0.95, h = ground * ppu - ppu * 1.15;
+        const isDoor = front && k === Math.floor(panes / 2);
+        const pg = g.createLinearGradient(0, y, 0, y + h); pg.addColorStop(0, isDoor ? '#7a4a2a' : '#fff0a8'); pg.addColorStop(1, isDoor ? '#5a3418' : '#ffb74a');
+        g.fillStyle = pg; g.fillRect(x, y, w, h); g.lineWidth = 3; g.strokeStyle = INK; g.strokeRect(x, y, w, h);
+        if (!isDoor) { g.beginPath(); g.moveTo(x + w / 2, y); g.lineTo(x + w / 2, y + h); g.stroke(); }
+      }
+      const ah = ppu * 0.85, sw = ppu * 0.9, n = Math.ceil(W / sw);
+      for (let k = 0; k < n; k++) { g.fillStyle = (spec.awning || spec.stripes) ? (k % 2 ? (spec.accent2 || '#ffffff') : spec.accent) : (k % 2 ? '#ffffff' : spec.accent); g.fillRect(k * sw, y0 + ppu * 0.05, sw + 1, ah); }
+      g.lineWidth = 3; g.strokeStyle = INK; g.strokeRect(0, y0 + ppu * 0.05, W, ah);
+    } else {
+      g.fillStyle = 'rgba(0,0,0,.2)'; g.fillRect(0, H - ppu * 0.6, W, ppu * 0.6);
+      if (spec.door && front) { const dw = Math.min(W * 0.4, ppu * 5), dh = ppu * 3.6, dx = (W - dw) / 2; g.fillStyle = '#9ea7b3'; g.fillRect(dx, H - dh - ppu * 0.6, dw, dh); g.lineWidth = 3; g.strokeStyle = INK; g.strokeRect(dx, H - dh - ppu * 0.6, dw, dh); for (let i = 1; i < 6; i++) { g.beginPath(); g.moveTo(dx, H - dh - ppu * 0.6 + i * dh / 6); g.lineTo(dx + dw, H - dh - ppu * 0.6 + i * dh / 6); g.stroke(); } }
+    }
+    g.lineWidth = 6; g.strokeStyle = INK; g.strokeRect(0, 0, W, H);
+    const tex = new THREE.CanvasTexture(c); tex.anisotropy = maxAniso; wallCache[ck] = tex; return tex;
+  }
   function makeBuilding(b) {
-    const a = MAN[b.asset];
-    b.bw = b.x2 - b.x1; b.bd = b.z2 - b.z1; b.aspect = a.sourceSize[0] / a.sourceSize[1];
-    b.cx = (b.x1 + b.x2) / 2; b.cz = (b.z1 + b.z2) / 2; b.w = b.bw; b.hh = 12; b.ux = 0; b.uz = 1;
-    b.mesh = new THREE.Mesh(bGeo, new THREE.MeshBasicMaterial({ map: TEX[b.asset], transparent: true, alphaTest: 0.08, fog: true }));
-    b.mesh.rotation.order = 'YXZ'; b.mesh.rotation.x = -TILT; b.mesh.position.set(b.cx, 0.02, b.cz); scene.add(b.mesh);
-    b.alpha = 1;
+    const nm = b.asset.split('/').pop(), spec = BSPEC[nm] || BSPEC.store_01;
+    b.bw = b.x2 - b.x1; b.bd = b.z2 - b.z1; b.cx = (b.x1 + b.x2) / 2; b.cz = (b.z1 + b.z2) / 2; b.alpha = 1; b.mats = [];
+    const pad = 1.0, fw = b.bw - pad * 2, fd = b.bd - pad * 2, H = spec.h, v = Math.abs(Math.round(b.cx * 7 + b.cz * 13)) % 2;
+    const grp = new THREE.Group(); grp.position.set(b.cx, 0, b.cz); b.grp = grp;
+    const mk = m => { m.transparent = true; b.mats.push(m); return m; };
+    const mat = color => mk(new THREE.MeshBasicMaterial({ color }));
+    const edgeMat = mk(new THREE.LineBasicMaterial({ color: 0x1a1620 }));
+    const solid = (w, h, d, material, x, y, z) => { const geo = new THREE.BoxGeometry(w, h, d), m = new THREE.Mesh(geo, material); m.position.set(x, y, z); grp.add(m); const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), edgeMat); e.position.copy(m.position); grp.add(e); return m; };
+    // main volume (the gas station is a small shop with a big canopy)
+    let bw = fw, bd = fd, bz = 0;
+    if (spec.canopy) { bw = fw * 0.5; bd = fd * 0.45; bz = -fd * 0.28; }
+    const front = mk(new THREE.MeshBasicMaterial({ map: drawWall(nm, bw, H, spec, true, v) })), side = mk(new THREE.MeshBasicMaterial({ map: drawWall(nm, bd, H, spec, false, v) }));
+    const roofMat = mat(spec.roof);
+    const body = new THREE.Mesh(new THREE.BoxGeometry(bw, H, bd), [side, side, roofMat, roofMat, front, front]);
+    body.position.set(spec.canopy ? -fw * 0.2 : 0, H / 2, bz); grp.add(body);
+    const eg = new THREE.LineSegments(new THREE.EdgesGeometry(body.geometry), edgeMat); eg.position.copy(body.position); grp.add(eg);
+    const bx = body.position.x;
+    if (spec.roofType === 'hip') {
+      const rh = 2.6, geo = new THREE.ConeGeometry(1, rh, 4); geo.rotateY(Math.PI / 4);
+      const m = new THREE.Mesh(geo, mat(spec.roof)); m.scale.set((bw + 0.8) / Math.SQRT2, 1, (bd + 0.8) / Math.SQRT2); m.position.set(bx, H + rh / 2, bz); grp.add(m);
+      const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), edgeMat); e.scale.copy(m.scale); e.position.copy(m.position); grp.add(e);
+    } else if (spec.roofType === 'gable') {
+      const rh = 2.4, shp = new THREE.Shape(); shp.moveTo(-bd / 2 - 0.3, 0); shp.lineTo(bd / 2 + 0.3, 0); shp.lineTo(0, rh); shp.closePath();
+      const geo = new THREE.ExtrudeGeometry(shp, { depth: bw + 0.6, bevelEnabled: false }); geo.translate(0, 0, -(bw + 0.6) / 2); geo.rotateY(Math.PI / 2);
+      const m = new THREE.Mesh(geo, mat(spec.roof)); m.position.set(bx, H, bz); grp.add(m);
+      const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), edgeMat); e.position.copy(m.position); grp.add(e);
+    } else {
+      solid(bw + 0.5, 0.45, bd + 0.5, mat(spec.accent), bx, H + 0.22, bz);   // parapet lip in the accent colour
+    }
+    const rr = mulberry(Math.abs(Math.round(b.cx * 31 + b.cz * 17)));
+    for (let i = 0; i < (spec.ac || 0); i++) solid(1.5, 0.9, 1.1, mat('#c7ccd3'), bx + (rr() - 0.5) * bw * 0.6, H + 0.9, bz + (rr() - 0.5) * bd * 0.5);
+    for (let i = 0; i < (spec.chimneys || 0); i++) { const m = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.55, 4.2, 10), mat(i % 2 ? '#e63946' : '#f2efe8')); m.position.set(bx - bw * 0.25 + i * bw * 0.28, H + 3.4, bz - bd * 0.15); grp.add(m); }
+    if (spec.tower) solid(bw * 0.3, 5, bd * 0.3, mat(spec.wall), bx, H + 2.5, bz);
+    if (spec.ring) { const m = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.28, 8, 24), mat(spec.accent)); m.position.set(bx, H + 2.2, bz + bd * 0.3); grp.add(m); }
+    if (spec.canopy) {
+      const cz = fd * 0.2, cw = fw * 0.55;
+      solid(cw, 0.5, fd * 0.5, mat(spec.accent), fw * 0.2, 4.7, cz);
+      for (const sx of [-1, 1]) for (const sz of [-1, 1]) solid(0.45, 4.4, 0.45, mat('#e9e4d8'), fw * 0.2 + sx * cw * 0.42, 2.2, cz + sz * fd * 0.18);
+      for (const sx of [-1, 1]) solid(0.9, 1.9, 0.7, mat('#d62839'), fw * 0.2 + sx * cw * 0.2, 0.95, cz);
+    }
+    scene.add(grp);
   }
   for (const b of blocks) {
     if (!b.asset) continue;
@@ -666,37 +755,19 @@
     vfxList.push({ mesh: ring, life: 0.24, maxLife: 0.24 });
   }
 
-  // --- buildings face the camera (yaw only), lean back over their block, and fade when they would hide something ---
+  // --- buildings between the camera and the dog (behind the player) turn see-through; the ones ahead stay solid ---
   function updateBuildings(dt) {
-    camera.updateMatrixWorld();
+    const heroDist = Math.hypot(player.position.x - camera.position.x, player.position.z - camera.position.z);
     for (const b of blocks) {
-      if (!b.mesh) continue;
-      const dx = camera.position.x - b.cx, dz = camera.position.z - b.cz, dist = Math.hypot(dx, dz);
-      b.mesh.visible = dist < 95;
-      if (!b.mesh.visible) continue;
-      // aligned with the block: the building faces one of the four block edges (the side the camera is on), never an arbitrary angle
-      if (dist > 0.8) {
-        const ax = Math.abs(dx), az = Math.abs(dz), cur = b.faceX;
-        if (cur === undefined) b.faceX = ax > az;
-        else if (cur && az > ax * 1.18) b.faceX = false;
-        else if (!cur && ax > az * 1.18) b.faceX = true;
-        b.ux = b.faceX ? Math.sign(dx) || 1 : 0; b.uz = b.faceX ? 0 : (Math.sign(dz) || 1);
-      }
-      const yaw = Math.atan2(b.ux, b.uz);
-      const wFit = b.faceX ? b.bd : b.bw, depth = b.faceX ? b.bw : b.bd;
-      b.w = wFit * 1.06;
-      b.hh = Math.min(15.5, b.w / (b.aspect * 0.95));
-      b.mesh.rotation.y = yaw; b.mesh.scale.set(b.w, b.hh, 1);
-      const off = depth / 2 - 0.25;                  // the building's foot sits on the near edge of its block
-      b.mesh.position.set(b.cx + b.ux * off, 0.02, b.cz + b.uz * off);
-      b.mesh.updateMatrixWorld();
-      // buildings between the camera and the dog (behind the player) turn see-through; buildings ahead of the dog stay solid
-      let want = 1;
-      const heroDist = Math.hypot(player.position.x - camera.position.x, player.position.z - camera.position.z);
+      if (!b.grp) continue;
+      const dx = camera.position.x - b.cx, dz = camera.position.z - b.cz;
+      b.grp.visible = Math.hypot(dx, dz) < 120;
+      if (!b.grp.visible) continue;
       const nx = Math.min(Math.max(camera.position.x, b.x1), b.x2), nz = Math.min(Math.max(camera.position.z, b.z1), b.z2);
-      if (Math.hypot(nx - camera.position.x, nz - camera.position.z) < heroDist - 0.5) want = 0.3;
+      const want = Math.hypot(nx - camera.position.x, nz - camera.position.z) < heroDist - 0.5 ? 0.3 : 1;
       b.alpha += (want - b.alpha) * Math.min(1, dt * 9);
-      b.mesh.material.opacity = b.alpha;
+      const solid = b.alpha > 0.98;
+      for (const m of b.mats) { m.opacity = b.alpha; m.depthWrite = solid; }
     }
   }
 
