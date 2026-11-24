@@ -287,6 +287,13 @@
   #weapon-label .wi{height:22px;width:auto;margin:0}
   #weapon-label .wn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px}
   #weapon-label small,#weapon-label br{display:none}
+
+  #ov-practice{position:absolute;right:0;top:10px;min-height:44px;padding:6px 12px;border:1px solid #ffc83d;border-radius:999px;background:#241333;color:#ffe9a8;font-weight:800;cursor:pointer}
+  #tutorial-panel{position:fixed;left:14px;right:14px;top:150px;z-index:30;max-width:500px;margin:auto;padding:10px 76px 10px 12px;border:1px solid #7ef9ff;border-radius:12px;background:rgba(15,6,32,.9);color:#fff;pointer-events:none;font-size:13px;line-height:1.5}
+  #tutorial-panel[hidden]{display:none}
+  #tutorial-help{font-size:11px;color:#7ef9ff}
+  #tutorial-skip{position:absolute;right:6px;top:8px;min-height:44px;padding:6px 8px;border:0;border-radius:8px;background:#ffe9a8;color:#241333;font-weight:800;pointer-events:auto;cursor:pointer}
+  .tutorial-focus{outline:3px solid #ffc83d!important;outline-offset:4px}
 </style>
 </head>
 <body data-i18n-ignore>
@@ -329,6 +336,7 @@
   <div class="hp-bar-bg"><div class="hp-bar-fill" id="hp-fill"></div></div>
 </div>
 
+<div id="tutorial-panel" hidden><strong id="tutorial-title"></strong><div id="tutorial-help"></div><button id="tutorial-skip" type="button">跳過教學</button></div>
 <!-- Mobile Touch Controls -->
 <div id="touch-controls">
   <div id="joy-zone">
@@ -347,7 +355,7 @@
 <div id="overlay">
   <div class="ov-rays"></div>
   <div class="ov-card">
-    <button type="button" id="ov-exit">← 大廳</button>
+    <button type="button" id="ov-exit">← 大廳</button><button type="button" id="ov-practice" disabled>操作教學</button>
     <img id="ov-logo" src="assets/ui/logo.png" alt="TOP DOGGO: PAW CITY">
     <div class="ov-tag">美式鬥牛犬 vs 紫色浣熊幫</div>
     <div id="over-msg"></div>
@@ -356,7 +364,7 @@
     <div id="diff-row"><button type="button" data-d="easy">簡單</button><button type="button" data-d="normal">普通</button><button type="button" data-d="hard">困難</button></div>
     <div id="rank-box" hidden><div id="rk-title"></div><ol id="rk-list"></ol><div id="rk-status"></div></div>
     <button class="start-btn" id="btn-play">▶ PLAY TOP DOGGO</button>
-    <div class="ov-tips guide-pc"><span><img src="assets/ui/k_move.png" alt="">WASD 移動</span><span><img src="assets/ui/k_attack.png" alt="">滑鼠左鍵 攻擊</span><span><img src="assets/ui/k_roll.png" alt="">空白鍵 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">Q 換武器</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 E 上車</span></div><div class="ov-note guide-pc">按住滑鼠右鍵拖曳轉向，左鍵攻擊 · C 蹲下 · X 轉身 180°</div><div class="ov-tips guide-touch"><span><img src="assets/ui/k_move.png" alt="">左手搖桿 移動</span><span><img src="assets/ui/k_attack.png" alt="">右側 FIRE 攻擊</span><span><img src="assets/ui/k_roll.png" alt="">DODGE 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">換武器鈕</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 DRIVE 上車</span></div><div class="ov-note guide-touch">滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身</div>
+    <div class="ov-tips guide-pc"><span><img src="assets/ui/k_move.png" alt="">WASD 移動</span><span><img src="assets/ui/k_attack.png" alt="">滑鼠左鍵 攻擊</span><span><img src="assets/ui/k_roll.png" alt="">空白鍵 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">Q 換武器</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 E 上車</span></div><div class="ov-note guide-pc">←→ 或右鍵拖曳轉向，J 或左鍵攻擊 · C 蹲下 · X 轉身 180°</div><div class="ov-tips guide-touch"><span><img src="assets/ui/k_move.png" alt="">左手搖桿 移動</span><span><img src="assets/ui/k_attack.png" alt="">右側 FIRE 攻擊</span><span><img src="assets/ui/k_roll.png" alt="">DODGE 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">換武器鈕</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 DRIVE 上車</span></div><div class="ov-note guide-touch">滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身</div>
     <div class="ov-note ov-goal"><b>目標：</b>完成上方任務通關，下一關更難。金骨頭回血，滿血變護盾；武器箱有手榴彈、大砲、狙擊槍（彈藥有限）。</div>
     <script>document.getElementById("overlay").classList.add((("ontouchstart" in window) || navigator.maxTouchPoints > 0 || window.innerWidth < 820) ? "dev-touch" : "dev-pc");</script>
   </div>
@@ -372,10 +380,21 @@
   // 0. PLATFORM LAYER (TICATICA): language, leaderboard bridge, run tracking
   // ==========================================
   const EN = {
+    '用 ←→ 轉向，按住 J 攻擊練習靶': 'Turn with arrows; hold J to attack the target',
+    '操作教學': 'Practice',
+    '跳過教學': 'Skip',
+    '教學完成，準備好就開始！': 'Practice complete. Ready to play!',
+    '移動到發光圓圈': 'Move into the glowing ring',
+    '拖曳空白畫面轉向，攻擊練習靶': 'Drag empty space to turn; attack the target',
+    '換一次武器': 'Switch weapons once',
+    '朝任意方向翻滾一次': 'Dodge in any direction',
+    '安全練習：不受傷、不計榜': 'Safe practice: no damage, no ranked score',
+    '左搖桿移動，拖曳空白畫面轉向': 'Left stick moves; drag empty space to turn',
+    'WASD 移動，←→ 轉向，J 攻擊': 'WASD moves; arrows turn; J attacks',
     '美式鬥牛犬 vs 紫色浣熊幫': 'American Bulldog vs. the Purple Raccoon Gang', '難度': 'Difficulty', '簡單': 'Easy', '普通': 'Normal', '困難': 'Hard',
     'WASD 移動': 'WASD Move', '滑鼠左鍵 攻擊': 'Left Click Attack', '空白鍵 翻滾': 'Space Roll', 'Q 換武器': 'Q Switch Weapon', '靠近車按 E 上車': 'Press E near a car to drive',
     '左手搖桿 移動': 'Left Stick Move', '右側 FIRE 攻擊': 'Right FIRE Attack', 'DODGE 翻滾': 'DODGE Roll', '換武器鈕': 'Weapon Switch', '靠近車按 DRIVE 上車': 'DRIVE near a car',
-    '按住滑鼠右鍵拖曳轉向，左鍵攻擊 · C 蹲下 · X 轉身 180°': 'Hold right mouse and drag to turn; left click to attack · C Crouch · X Turn 180°',
+    '←→ 或右鍵拖曳轉向，J 或左鍵攻擊 · C 蹲下 · X 轉身 180°': 'Arrows or right-drag to turn; J or left click to attack · C Crouch · X Turn 180°',
     '滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身': 'Swipe the right side to turn · CROUCH · 180° Turn',
     '目標：': 'Goal: ', '完成上方任務通關，下一關更難。金骨頭回血，滿血變護盾；武器箱有手榴彈、大砲、狙擊槍（彈藥有限）。': 'Finish the missions above to clear a level; the next one is tougher. Golden bones heal you (or add a shield at full health). Weapon crates hold grenades, cannons and sniper rifles (limited ammo).',
     '載入素材中…': 'Loading…', '載入失敗，請重新整理': 'Failed to load. Please refresh.', '模型載入失敗，請重新整理': 'Models failed to load. Please refresh.',
@@ -393,10 +412,21 @@
     '訪客': 'Guest', '成績送出中…': 'Submitting score…', '排行榜連線失敗，仍可繼續遊玩': 'Leaderboard offline — you can still play', '你的最高紀錄': 'Your best',
   };
   const HANS = {
+    '用 ←→ 轉向，按住 J 攻擊練習靶': '用 ←→ 转向，按住 J 攻击练习靶',
+    '操作教學': '操作教学',
+    '跳過教學': '跳过教学',
+    '教學完成，準備好就開始！': '教学完成，准备好就开始！',
+    '移動到發光圓圈': '移动到发光圆圈',
+    '拖曳空白畫面轉向，攻擊練習靶': '拖曳空白画面转向，攻击练习靶',
+    '換一次武器': '换一次武器',
+    '朝任意方向翻滾一次': '朝任意方向翻滚一次',
+    '安全練習：不受傷、不計榜': '安全练习：不受伤、不计榜',
+    '左搖桿移動，拖曳空白畫面轉向': '左摇杆移动，拖曳空白画面转向',
+    'WASD 移動，←→ 轉向，J 攻擊': 'WASD 移动，←→ 转向，J 攻击',
     '美式鬥牛犬 vs 紫色浣熊幫': '美式斗牛犬 vs 紫色浣熊帮', '難度': '难度', '簡單': '简单', '普通': '普通', '困難': '困难',
     'WASD 移動': 'WASD 移动', '滑鼠左鍵 攻擊': '鼠标左键 攻击', '空白鍵 翻滾': '空格键 翻滚', 'Q 換武器': 'Q 换武器', '靠近車按 E 上車': '靠近车按 E 上车',
     '左手搖桿 移動': '左手摇杆 移动', '右側 FIRE 攻擊': '右侧 FIRE 攻击', 'DODGE 翻滾': 'DODGE 翻滚', '換武器鈕': '换武器钮', '靠近車按 DRIVE 上車': '靠近车按 DRIVE 上车',
-    '按住滑鼠右鍵拖曳轉向，左鍵攻擊 · C 蹲下 · X 轉身 180°': '按住鼠标右键拖曳转向，左键攻击 · C 蹲下 · X 转身 180°',
+    '←→ 或右鍵拖曳轉向，J 或左鍵攻擊 · C 蹲下 · X 轉身 180°': '←→ 或右键拖曳转向，J 或左键攻击 · C 蹲下 · X 转身 180°',
     '滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身': '滑动屏幕右侧转向 · CROUCH 蹲下 · 180° 转身',
     '目標：': '目标：', '完成上方任務通關，下一關更難。金骨頭回血，滿血變護盾；武器箱有手榴彈、大砲、狙擊槍（彈藥有限）。': '完成上方任务通关，下一关更难。金骨头回血，满血变护盾；武器箱有手榴弹、大炮、狙击枪（弹药有限）。',
     '載入素材中…': '载入素材中…', '載入失敗，請重新整理': '载入失败，请重新刷新', '模型載入失敗，請重新整理': '模型载入失败，请重新刷新',
@@ -858,6 +888,7 @@
   player.add(dogBodyGroup);
   const HERO_CELL = 3.0, HERO_FEET = 1 - 232 / 256;       // 256px cell: every animation is normalised so the standing dog is ~205px (= 2.4u) tall, feet at y=231
   const heroSprite = makeSprite(TEX.heroA, HERO_CELL, HERO_CELL, HERO_FEET);
+  heroSprite.material.depthTest = false; heroSprite.renderOrder = 30;
   dogBodyGroup.add(heroSprite);
   const heroShadow = makeShadow(1.9); player.add(heroShadow);
   for (const k of Object.keys(TEX).filter(k => /^heroA|^heroB/.test(k))) { TEX[k].repeat.set(1 / 6, 1 / 2); TEX[k].wrapS = TEX[k].wrapT = THREE.ClampToEdgeWrapping; TEX[k].minFilter = THREE.LinearFilter; TEX[k].generateMipmaps = false; TEX[k].needsUpdate = true; }
@@ -1217,7 +1248,7 @@
     state.weapon = w; state.forcePawMode = w === 1 || w === 2; blaster.visible = !state.forcePawMode;
     setHeroWeapon(w); refreshWeaponHUD();
   }
-  function cycleWeapon() { const o = ownedOrder(), i = o.indexOf(state.weapon | 0); setWeapon(o[(i + 1) % o.length]); }
+  function cycleWeapon() { if(tutorial.active && tutorial.step===2)setTutorialStep(3); const o = ownedOrder(), i = o.indexOf(state.weapon | 0); setWeapon(o[(i + 1) % o.length]); }
   function refreshWeaponHUD() {
     const w = state.weapon | 0, W = WEAPONS[w], el = document.getElementById('weapon-label'), btn = document.getElementById('btn-switch');
     if (el) { const ammo = W.inf ? '∞' : '×' + inv[w]; el.innerHTML = '<img class="wi" src="' + W.img + '" alt=""> <span class="wn">' + L(W.name) + '</span> <span class="wa' + (!W.inf && inv[w] <= 1 ? ' low' : '') + '">' + ammo + '</span><br><small>' + L(W.how) + '</small>'; }
@@ -1432,9 +1463,94 @@
     btnMute.innerHTML = AudioSys.muted ? '<img class="pi" src="assets/ui/h_mute.png" alt="">MUTE' : '<img class="pi" src="assets/ui/h_sound.png" alt="">SFX';
   });
 
+
+  const TUTORIAL_KEY = 'top-doggo-tutorial-v1';
+  let tutorialSeen = false;
+  try { tutorialSeen = localStorage.getItem(TUTORIAL_KEY) === '1'; } catch (_) {}
+  const tutorial = { active:false, step:0, hits:0, dodged:false, marker:null, target:null };
+  let manualViewUntil = 0, moveViewBasis = null;
+  const tutorialPanel = document.getElementById('tutorial-panel');
+  function tutorialText() {
+    if (!tutorial.active) return;
+    const labels = ['移動到發光圓圈','拖曳空白畫面轉向，攻擊練習靶','換一次武器','朝任意方向翻滾一次'];
+    const instruction = tutorial.step===1 && !handheld && innerWidth>=820 ? '用 ←→ 轉向，按住 J 攻擊練習靶' : labels[tutorial.step];
+    document.getElementById('tutorial-title').textContent = (tutorial.step + 1) + '/4 · ' + L(instruction) + (tutorial.step === 1 ? ' ' + tutorial.hits + '/3' : '');
+    document.getElementById('tutorial-help').textContent = L('安全練習：不受傷、不計榜') + ' · ' + L(handheld || innerWidth < 820 ? '左搖桿移動，拖曳空白畫面轉向' : 'WASD 移動，←→ 轉向，J 攻擊');
+    document.getElementById('tutorial-skip').textContent = L('跳過教學');
+  }
+  function trainingSpot(distance) {
+    // Keep the whole approach clear, not only its endpoint.
+    for (let i=0;i<24;i++) {
+      const a=state.yaw + (i % 2 ? 1 : -1) * Math.ceil(i/2) * Math.PI/12;
+      let clear=true;
+      for(let d=.25;d<=distance;d+=.25) if(moveBlockedAt(player.position.x-Math.sin(a)*d,player.position.z-Math.cos(a)*d,.6)){clear=false;break;}
+      if(clear)return {x:player.position.x-Math.sin(a)*distance,z:player.position.z-Math.cos(a)*distance};
+    }
+    return {x:player.position.x,z:player.position.z};
+  }
+  function setTutorialStep(step) {
+    tutorial.step=step;
+    tutorial.marker.visible=step===0; tutorial.target.visible=step===1;
+    ['joy-zone','btn-fire','btn-switch','btn-dodge'].forEach((id,i)=>document.getElementById(id).classList.toggle('tutorial-focus',i===step));
+    if(step===1){const p=trainingSpot(5);tutorial.target.position.set(p.x,1.4,p.z);}
+    tutorialText();
+  }
+  function startTutorial() {
+    if(run.active) endRun('left');
+    resetMissions();
+    clearInputs(); tutorial.active=true;tutorial.hits=0;tutorial.dodged=false;
+    state.started=true;state.paused=false;state.drivingCar=null;drivingMesh=null;state.hp=100;state.dodgeTimer=0;state.turn180Timer=0;state.fireCd=0;state.isCrouching=false;state.pendingNext=false;state.yaw=0;moveViewBasis=null;manualViewUntil=0;
+    player.visible=true;heroShadow.visible=true;dogBodyGroup.position.set(0,0,0);player.position.set(START.x,0,START.z);setWeapon(0);
+    for(const e of enemies)e.mesh.visible=false;
+    for(const b of bones)b.visible=false;
+    for(const p of projectiles)scene.remove(p.mesh);projectiles.length=0;
+    if(!tutorial.marker){
+      tutorial.marker=new THREE.Mesh(new THREE.RingGeometry(.65,1,32),new THREE.MeshBasicMaterial({color:0x7ef9ff,side:THREE.DoubleSide}));tutorial.marker.rotation.x=-Math.PI/2;scene.add(tutorial.marker);
+      const texture=Toon.canvasTexture(128,128,(c)=>{for(let i=4;i>0;i--){c.fillStyle=i%2?'#ff5297':'#fff6d5';c.beginPath();c.arc(64,64,i*14,0,Math.PI*2);c.fill();}});
+      tutorial.target=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,depthTest:true}));tutorial.target.scale.set(2,2,1);scene.add(tutorial.target);
+    }
+    const spot=trainingSpot(3);tutorial.marker.position.set(spot.x,.06,spot.z);
+    tutorialPanel.hidden=false;overlay.classList.add('hidden');setTutorialStep(0);updateHUD();
+  }
+  function finishTutorial() {
+    if(!tutorial.active)return;
+    for(const shot of projectiles)scene.remove(shot.mesh);projectiles.length=0;
+    tutorial.active=false;tutorialSeen=true;
+    ['joy-zone','btn-fire','btn-switch','btn-dodge'].forEach(id=>document.getElementById(id).classList.remove('tutorial-focus'));
+    try{localStorage.setItem(TUTORIAL_KEY,'1');}catch(_){}
+    tutorial.marker.visible=tutorial.target.visible=false;tutorialPanel.hidden=true;
+    for(const e of enemies)e.mesh.visible=true;for(const b of bones)b.visible=true;
+    player.position.set(START.x,0,START.z);dogBodyGroup.position.set(0,0,0);state.hp=100;state.dodgeTimer=0;state.isCrouching=false;
+    resetMissions();state.started=true;setPaused(false);updateHUD();
+    beginRun();
+  }
+  function tickTutorial(dt) {
+    for(let i=projectiles.length-1;i>=0;i--){
+      const shot=projectiles[i];shot.life-=dt;
+      // Substeps keep the 30 FPS ball from skipping the small training target.
+      const steps=Math.max(1,Math.ceil(shot.vel.length()*dt/.3));
+      let hit=false;
+      for(let j=0;j<steps;j++){
+        shot.mesh.position.addScaledVector(shot.vel,dt/steps);
+        if(tutorial.step===1 && shot.mesh.position.distanceTo(tutorial.target.position)<.9){hit=true;break;}
+        if(bulletBlocked(shot.mesh.position)){shot.life=0;break;}
+      }
+      if(hit){
+        tutorial.hits++;burst(tutorial.target.position.x,1.4,tutorial.target.position.z,0x7ef9ff,6,3,.3,.3);AudioSys.play('hit');
+        if(tutorial.hits>=3)setTutorialStep(2);else tutorialText();
+      }
+      if(hit||shot.life<=0){scene.remove(shot.mesh);projectiles.splice(i,1);}
+    }
+    if(tutorial.step===0 && Math.hypot(player.position.x-tutorial.marker.position.x,player.position.z-tutorial.marker.position.z)<.9)setTutorialStep(1);
+    if(tutorial.step===3 && tutorial.dodged && state.dodgeTimer<=0)finishTutorial();
+  }
+  document.getElementById('tutorial-skip').addEventListener('click',finishTutorial);
+  document.getElementById('ov-practice').addEventListener('click',startTutorial);
+
   const overMsg = document.getElementById('over-msg');
   function setPaused(p) {
     state.paused = p;
+    tutorialPanel.hidden = !tutorial.active || p;
     if (p) {
       clearInputs();
       overlay.classList.remove('hidden');
@@ -1466,7 +1582,7 @@
     }
     state.started = true;
     setPaused(false);
-    if (freshRun) beginRun();
+    if (freshRun && !tutorial.active) { if (!tutorialSeen) startTutorial(); else beginRun(); }
 
   });
 
@@ -1484,6 +1600,7 @@
     state.isCrouching = false;
     btnCrouch.classList.remove('active-state');
     state.dodgeTimer = 0.36;
+    if(tutorial.active && tutorial.step===3)tutorial.dodged=true;
     const forward = new THREE.Vector3(-Math.sin(state.yaw), 0, -Math.cos(state.yaw));
     const right = new THREE.Vector3(Math.cos(state.yaw), 0, -Math.sin(state.yaw));
     const move = new THREE.Vector3();
@@ -1539,6 +1656,7 @@
   }
 
   function toggleCar() {
+    if(tutorial.active)return;
     if (state.drivingCar) {
       const f = findCarExit(state.drivingCar);
       if (!f) return;
@@ -1579,8 +1697,42 @@
     return player.position.clone().addScaledVector(fallbackDir, 18).setY(1.1);
   }
 
+
+  function angleDelta(target,current){return Math.atan2(Math.sin(target-current),Math.cos(target-current));}
+  function assistedTarget(origin,yaw,candidates){
+    let best=null,bestScore=Infinity;
+    for(const e of candidates){
+      if(e.hp<=0)continue;
+      const dx=e.mesh.position.x-origin.x,dz=e.mesh.position.z-origin.z,dist=Math.hypot(dx,dz);
+      if(dist<.5||dist>28)continue;
+      const angle=Math.abs(angleDelta(Math.atan2(-dx,-dz),yaw));
+      if(angle>Math.PI/4)continue;
+      let clear=true;
+      for(let d=.75;d<dist-.5;d+=.75){if(bulletBlocked({x:origin.x+dx*d/dist,y:1.1,z:origin.z+dz*d/dist})){clear=false;break;}}
+      const score=angle*20+dist*.12;
+      if(clear && score<bestScore){best=e;bestScore=score;}
+    }
+    return best;
+  }
+
   function triggerAttack() {
     if (state.drivingCar || state.fireCd > 0) return;
+    if(tutorial.active){
+      const practiceWeapon=state.weapon|0;
+      if(practiceWeapon===1 || practiceWeapon===2){
+        state.fireCd=practiceWeapon===1?.24:.34;state.punchAnimTimer=.24;AudioSys.play('punch');
+        const direction=new THREE.Vector3(-Math.sin(state.yaw),0,-Math.cos(state.yaw));
+        spawnPawSlashVFX(player.position.clone().addScaledVector(direction,1.2),state.yaw,practiceWeapon===1);
+        if(tutorial.step===1 && player.position.distanceTo(tutorial.target.position)<4.4){tutorial.hits++;if(tutorial.hits>=3)setTutorialStep(2);else tutorialText();}
+        return;
+      }
+      state.fireCd=.2;AudioSys.play('shoot');
+      const origin=player.position.clone().add(new THREE.Vector3(0,1.15,0));
+      const target=assistedTarget(origin,state.yaw,[{hp:1,mesh:tutorial.target}]);
+      const direction=target ? tutorial.target.position.clone().sub(origin).normalize() : new THREE.Vector3(-Math.sin(state.yaw),0,-Math.cos(state.yaw));
+      spawnProjectile(origin,direction,true);
+      return;
+    }
     const w = state.weapon | 0, knife = w === 1, fist = w === 2;
     const forward = new THREE.Vector3(-Math.sin(state.yaw), 0, -Math.cos(state.yaw));
     if (knife || fist) {
@@ -1597,24 +1749,7 @@
       const targetPt = getCenterCrosshairTarget();
       const muzzlePos = player.position.clone().add(new THREE.Vector3(0, state.isCrouching ? 0.78 : 1.15, 0));
       let shotDir = targetPt.sub(muzzlePos).normalize();
-      // crosshair on an enemy's BODY (the upright sprite you see): shoot at that enemy's real position, whatever the camera angle
-      raycaster.setFromCamera(new THREE.Vector2(0, 0), camera); camera.updateMatrixWorld();
-      const upc = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
-      let locked = null, lockD = 1.6;
-      for (const e of enemies) {
-        const V = new THREE.Vector3(e.mesh.position.x, 0, e.mesh.position.z).addScaledVector(upc, 1.0), dd = raycaster.ray.distanceToPoint(V);
-        if (dd < lockD && V.distanceTo(camera.position) < 65) { lockD = dd; locked = e; }
-      }
-      // aim assist: an enemy within ~12 degrees of the shot line pulls the shot onto itself
-      const flat = new THREE.Vector3(shotDir.x, 0, shotDir.z).normalize();
-      let best = null, bestAng = locked ? 0 : 0.21;
-      for (const e of enemies) {
-        const t = new THREE.Vector3(e.mesh.position.x - muzzlePos.x, 0, e.mesh.position.z - muzzlePos.z), dd = t.length();
-        if (dd < 1 || dd > 42) continue;
-        const ang = Math.acos(Math.min(1, flat.dot(t.normalize())));
-        if (ang < bestAng) { bestAng = ang; best = e; }
-      }
-      if (best) shotDir = new THREE.Vector3(best.mesh.position.x - muzzlePos.x, 1.0 - muzzlePos.y, best.mesh.position.z - muzzlePos.z).normalize();
+      const locked = assistedTarget(muzzlePos,state.yaw,enemies);
       if (locked) {
         // lead the target: the ball needs a moment to arrive, the enemy keeps walking
         let tx = locked.mesh.position.x, tz = locked.mesh.position.z;
@@ -1633,6 +1768,8 @@
   window.addEventListener('keydown', (e) => {
     keys[e.code] = true;
     if (!state.started || state.paused) return;
+    if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') e.preventDefault();
+    if (e.code === 'KeyJ' && !e.repeat) triggerAttack();
     if (e.code === 'Space') { e.preventDefault(); triggerDodge(); }
     if (e.code === 'KeyC' || e.code === 'ControlLeft') toggleCrouch();
     if (e.code === 'KeyX') triggerTurn180();
@@ -1645,9 +1782,7 @@
   let mouseFireDown = false, mouseLookDown = false, mouseLookX = 0;
   canvas.addEventListener('mousedown', (e) => {
     if (!state.started || state.paused) return;
-    if (e.button === 0 && window.innerWidth >= 820 && state.uiMode !== 'ON' && document.pointerLockElement !== canvas) {
-      try { canvas.requestPointerLock?.()?.catch?.(() => {}); } catch (_) { /* Right-drag remains available. */ }
-    }
+
     if (e.button === 0) { mouseFireDown = true; triggerAttack(); }
     if (e.button === 2) { e.preventDefault(); state.isFocusing = true; mouseLookDown = true; mouseLookX = e.clientX; }
     if (e.button === 1) { e.preventDefault(); triggerTurn180(); }
@@ -1660,8 +1795,10 @@
   window.addEventListener('mousemove', (e) => {
     if (!state.started || state.paused) return;
     if (document.pointerLockElement === canvas) {
+      manualViewUntil = performance.now() + 1800; moveViewBasis = null;
       state.yaw -= (e.movementX || 0) * 0.0032;
     } else if (mouseLookDown) {
+      manualViewUntil = performance.now() + 1800; moveViewBasis = null;
       state.yaw -= (e.clientX - mouseLookX) * 0.0068;
       mouseLookX = e.clientX;
     }
@@ -1674,36 +1811,20 @@
   const joyBase = document.getElementById('joy-base');
   const joyKnob = document.getElementById('joy-knob');
 
-  joyZone.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    AudioSys.init();
-    if (!state.started || state.paused || joyInput.active) return;
-    const t = e.changedTouches[0];
-    joyInput.active = true;
-    joyInput.id = t.identifier;
-    updateJoy(t);
-  }, { passive: false });
-
-  joyZone.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    for (const t of e.changedTouches) {
-      if (t.identifier === joyInput.id) updateJoy(t);
-    }
-  }, { passive: false });
-
-  function resetJoy(e) {
-    for (const t of e.changedTouches) {
-      if (t.identifier === joyInput.id) {
-        joyInput.active = false;
-        joyInput.id = null;
-        joyInput.x = 0;
-        joyInput.y = 0;
-        joyKnob.style.transform = 'translate(0px, 0px)';
-      }
-    }
+  joyZone.addEventListener('pointerdown', e => {
+    if(!state.started||state.paused||joyInput.active||e.button!==0)return;
+    e.preventDefault();AudioSys.init();joyInput.active=true;joyInput.id=e.pointerId;
+    try{joyZone.setPointerCapture(e.pointerId);}catch(_){}
+    updateJoy(e);
+  });
+  joyZone.addEventListener('pointermove', e => {if(e.pointerId===joyInput.id){e.preventDefault();updateJoy(e);}});
+  function resetJoy(e){
+    if(e.pointerId!==joyInput.id)return;
+    joyInput.active=false;joyInput.id=null;joyInput.x=joyInput.y=0;joyKnob.style.transform='translate(0px, 0px)';
   }
-  joyZone.addEventListener('touchend', resetJoy);
-  joyZone.addEventListener('touchcancel', resetJoy);
+  joyZone.addEventListener('pointerup',resetJoy);
+  joyZone.addEventListener('pointercancel',resetJoy);
+  joyZone.addEventListener('lostpointercapture',resetJoy);
 
   function updateJoy(touch) {
     const rect = joyBase.getBoundingClientRect();
@@ -1727,7 +1848,7 @@
   // Screen Swipe Camera Rotation (Mobile)
   canvas.addEventListener('touchstart', (e) => {
     AudioSys.init();
-    if (state.started && !state.paused && lookTouchId === null && e.changedTouches.length > 0 && e.changedTouches[0].clientX > window.innerWidth * 0.46) {
+    if (state.started && !state.paused && lookTouchId === null && e.changedTouches.length > 0) {
       lookTouchId = e.changedTouches[0].identifier;
       lastTouchX = e.changedTouches[0].clientX;
     }
@@ -1738,7 +1859,7 @@
       if (t.identifier === lookTouchId) {
         const dx = t.clientX - lastTouchX;
         lastTouchX = t.clientX;
-        if (state.started && !state.paused) state.yaw -= Math.max(-40, Math.min(40, dx)) * (1.8 / window.innerWidth);
+        if (state.started && !state.paused) { state.yaw -= Math.max(-40, Math.min(40, dx)) * (1.8 / window.innerWidth); manualViewUntil = performance.now() + 1800; moveViewBasis = state.yaw; }
       }
     }
   }, { passive: true });
@@ -1754,10 +1875,19 @@
   // Right-Hand Thumb Arc Buttons
   let touchFireHold = false;
   const btnFire = document.getElementById('btn-fire');
-  btnFire.addEventListener('touchstart', (e) => { e.preventDefault(); touchFireHold = true; btnFire.classList.add('pressed'); triggerAttack(); }, { passive: false });
-  function releaseFire() { touchFireHold = false; btnFire.classList.remove('pressed'); }
-  btnFire.addEventListener('touchend', releaseFire);
-  btnFire.addEventListener('touchcancel', releaseFire);
+  let firePointer = null;
+  btnFire.addEventListener('pointerdown', (e) => {
+    if(e.button!==0 || firePointer!==null || !state.started || state.paused)return;
+    e.preventDefault();firePointer=e.pointerId;touchFireHold=true;btnFire.classList.add('pressed');
+    try{btnFire.setPointerCapture(e.pointerId);}catch(_){}
+    triggerAttack();
+  });
+  function releaseFire() { firePointer = null; touchFireHold = false; btnFire.classList.remove('pressed'); }
+  function releaseFirePointer(e){if(e.pointerId===firePointer)releaseFire();}
+  btnFire.addEventListener('pointerup',releaseFirePointer);
+  btnFire.addEventListener('pointercancel',releaseFirePointer);
+  btnFire.addEventListener('lostpointercapture',releaseFirePointer);
+  window.addEventListener('pointerup',releaseFirePointer);
   function clearInputs() {
     for (const k of Object.keys(keys)) keys[k] = false;
     joyInput.active = false; joyInput.id = null; joyInput.x = joyInput.y = 0;
@@ -1768,11 +1898,15 @@
   window.addEventListener('blur', clearInputs);
   document.addEventListener('visibilitychange', () => { if (document.hidden) clearInputs(); });
 
-  document.getElementById('btn-dodge').addEventListener('touchstart', (e) => { e.preventDefault(); triggerDodge(); }, { passive: false });
-  btnCrouch.addEventListener('touchstart', (e) => { e.preventDefault(); toggleCrouch(); }, { passive: false });
-  document.getElementById('btn-turn180').addEventListener('touchstart', (e) => { e.preventDefault(); triggerTurn180(); }, { passive: false });
-  btnSwitch.addEventListener('touchstart', (e) => { e.preventDefault(); toggleWeaponMode(); }, { passive: false });
-  btnCar.addEventListener('touchstart', (e) => { e.preventDefault(); toggleCar(); }, { passive: false });
+  function bindAction(button,action){button.addEventListener('pointerdown',e=>{
+    if(e.button!==0||!state.started||state.paused||button.disabled)return;
+    e.preventDefault();action();
+  });}
+  bindAction(document.getElementById('btn-dodge'),triggerDodge);
+  bindAction(btnCrouch,toggleCrouch);
+  bindAction(document.getElementById('btn-turn180'),triggerTurn180);
+  bindAction(btnSwitch,toggleWeaponMode);
+  bindAction(btnCar,toggleCar);
 
   // ==========================================
   // 8. COLLISION, COMBAT & HUD HELPERS
@@ -1948,13 +2082,26 @@
     }
 
     if (state.fireCd > 0) state.fireCd -= dt;
-    if ((mouseFireDown || touchFireHold) && state.fireCd <= 0) triggerAttack();
+    if ((mouseFireDown || touchFireHold || keys.KeyJ) && state.fireCd <= 0) triggerAttack();
 
+    const keyboardTurn = (keys.ArrowLeft ? 1 : 0) - (keys.ArrowRight ? 1 : 0);
+    if(keyboardTurn){ state.yaw += keyboardTurn * 1.8 * dt; manualViewUntil = performance.now() + 1800; moveViewBasis = null; }
     // Movement Input
     const inX = joyInput.x || ((keys['KeyD'] ? 1 : 0) - (keys['KeyA'] ? 1 : 0));
     const inY = joyInput.y || ((keys['KeyS'] ? 1 : 0) - (keys['KeyW'] ? 1 : 0));
+    const moving=Math.hypot(inX,inY)>.12;
+    if(!moving)moveViewBasis=null;
+    else if(moveViewBasis===null)moveViewBasis=state.yaw;
+    if(!state.drivingCar && moving && inY<-.45 && Math.abs(inX)<.8 && performance.now()>manualViewUntil){
+      const target=moveViewBasis-Math.atan2(inX,-inY);
+      state.yaw+=Math.max(-.8*dt,Math.min(.8*dt,angleDelta(target,state.yaw)));
+    }
+    if(state.drivingCar && performance.now()>manualViewUntil){state.yaw+=angleDelta(state.drivingCar.heading,state.yaw)*(1-Math.exp(-3*dt));}
     const forward = new THREE.Vector3(-Math.sin(state.yaw), 0, -Math.cos(state.yaw));
     const right = new THREE.Vector3(Math.cos(state.yaw), 0, -Math.sin(state.yaw));
+    const movementYaw=moveViewBasis===null?state.yaw:moveViewBasis;
+    const moveForward=new THREE.Vector3(-Math.sin(movementYaw),0,-Math.cos(movementYaw));
+    const moveRight=new THREE.Vector3(Math.cos(movementYaw),0,-Math.sin(movementYaw));
 
     if (state.drivingCar) {
       // Driving Convertible
@@ -1993,8 +2140,8 @@
       } else {
         const speed = state.isCrouching ? 4.4 : 8.6;
         const moveVec = new THREE.Vector3();
-        moveVec.addScaledVector(right, inX);
-        moveVec.addScaledVector(forward, -inY);
+        moveVec.addScaledVector(moveRight, inX);
+        moveVec.addScaledVector(moveForward, -inY);
         if (moveVec.lengthSq() > 1) moveVec.normalize();
         moveEntityWithCollision(player.position, moveVec.multiplyScalar(speed * dt), 0.52);
         movingMag = Math.min(1, Math.hypot(inX, inY));
@@ -2014,6 +2161,8 @@
       }
     }
 
+    if(tutorial.active)tickTutorial(dt);
+    if(!tutorial.active && run.active){
     // Melee Range Crosshair Indicator
     let anyCloseEnemy = false;
     for (const e of enemies) {
@@ -2120,6 +2269,7 @@
       }
     }
 
+    }
     // ==========================================
     // 55° BEHIND-THE-HEAD CAMERA + BOTTOM-RIGHT FRAMING
     // ==========================================
@@ -2147,7 +2297,14 @@
       .addScaledVector(right, sideShift * 0.85);
     desiredLookAt.y = -0.6;
 
+    const cameraAnchor = new THREE.Vector3(player.position.x, 1.8, player.position.z);
+    const cameraOffset = desiredCamPos.clone().sub(cameraAnchor), cameraLength = cameraOffset.length();
+    for(let d=.4;d<cameraLength;d+=.35){
+      const t=d/cameraLength,x=cameraAnchor.x+cameraOffset.x*t,z=cameraAnchor.z+cameraOffset.z*t;
+      if(moveBlockedAt(x,z,.25)){desiredCamPos.copy(cameraAnchor).addScaledVector(cameraOffset,Math.max(.08,(d-.4)/cameraLength));break;}
+    }
     smoothCamPos.lerp(desiredCamPos, 1 - Math.exp(-14 * dt));
+    if(moveBlockedAt(smoothCamPos.x,smoothCamPos.z,.2))smoothCamPos.copy(desiredCamPos);
     smoothLookAt.lerp(desiredLookAt, 1 - Math.exp(-16 * dt));
 
     camera.position.copy(smoothCamPos);
@@ -2171,8 +2328,9 @@
     updateTouchVisibility();
   });
 
+  document.getElementById('ov-practice').disabled = false;
   btnPlay.disabled = false; btnPlay.textContent = '▶ PLAY TOP DOGGO'; applyLang(); refreshRank(DIFF_KEY);
-  refreshWeaponHUD(); window.__tdRefresh = () => { refreshWeaponHUD(); updateMissionHUD(); setPaused(state.paused); };
+  refreshWeaponHUD(); window.__tdRefresh = () => { refreshWeaponHUD(); updateMissionHUD(); tutorialText(); setPaused(state.paused); };
   updateHUD();
   animate();
 })();

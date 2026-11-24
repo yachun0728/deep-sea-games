@@ -49,7 +49,7 @@ window.deepSeaTopDoggo={
 };
 function tdRoute(active){
  var frame=$('td-frame');
- if(active&&!TD.loaded){TD.loaded=true;frame.onload=function(){tdFrame()?.setTopDoggoLanguage?.(tdLang());tdFrame()?.setTopDoggoActive?.(!$('view-top-doggo').hidden);};frame.src='games/top-doggo/play.html?v=20261124-health4';}
+ if(active&&!TD.loaded){TD.loaded=true;frame.onload=function(){tdFrame()?.setTopDoggoLanguage?.(tdLang());tdFrame()?.setTopDoggoActive?.(!$('view-top-doggo').hidden);};frame.src='games/top-doggo/play.html?v=20261124-onboarding2';}
  else if(active){tdFrame()?.setTopDoggoLanguage?.(tdLang());tdFrame()?.setTopDoggoActive?.(true);}
  if(!active)tdFrame()?.setTopDoggoActive?.(false);
 }
