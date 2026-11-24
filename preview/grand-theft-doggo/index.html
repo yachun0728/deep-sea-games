@@ -499,6 +499,9 @@
     const mats = [mk('b4:' + nm + ':right'), mk('b4:' + nm + ':left'), mk('b4:' + nm + ':roof'), mk('b4:' + nm + ':roof'), mk('b4:' + nm + ':front'), mk('b4:' + nm + ':back')];
     b.mesh = new THREE.Mesh(new THREE.BoxGeometry(W, H, D), mats);
     b.mesh.position.set(b.cx, H / 2, b.cz); scene.add(b.mesh);
+    // dark solid core: where a face image has transparent rounded corners or outline gaps, the viewer sees dark grey instead of the ground behind
+    const dm = new THREE.MeshBasicMaterial({ color: 0x2a2630, transparent: true }); b.mats.push(dm);
+    const core = new THREE.Mesh(new THREE.BoxGeometry(W - 0.12, H - 0.06, D - 0.12), dm); b.mesh.add(core);
   }
   for (const b of blocks) {
     if (!b.asset) continue;
@@ -546,6 +549,8 @@
     };
     for (let x = minX + L / 2; x < maxX; x += L) { seg(x, minZ, true); seg(x, maxZ, true); }
     for (let z = minZ + L / 2; z < maxZ; z += L) { seg(minX, z, false); seg(maxX, z, false); }
+    const dark = new THREE.MeshBasicMaterial({ color: 0x2a2630 });
+    for (const [cx, cz, w, d] of [[0, minZ, maxX - minX, T - 0.1], [0, maxZ, maxX - minX, T - 0.1], [minX, 0, T - 0.1, maxZ - minZ], [maxX, 0, T - 0.1, maxZ - minZ]]) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, Hh - 0.08, d), dark); m.position.set(cx, Hh / 2, cz); scene.add(m); }
     colliders.push({ minX: -OX - 2, maxX: OX + 2, minZ: minZ - T / 2, maxZ: minZ + T / 2 }, { minX: -OX - 2, maxX: OX + 2, minZ: maxZ - T / 2, maxZ: maxZ + T / 2 },
       { minX: minX - T / 2, maxX: minX + T / 2, minZ: -OZ - 2, maxZ: OZ + 2 }, { minX: maxX - T / 2, maxX: maxX + T / 2, minZ: -OZ - 2, maxZ: OZ + 2 });
   })();
