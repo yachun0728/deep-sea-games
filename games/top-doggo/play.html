@@ -410,7 +410,7 @@
       n.nodeValue = raw.replace(key, hit === undefined ? key : hit);
     }
   }
-  window.setTopDoggoLanguage = v => { LANG = normLang(v); applyLang(); if (window.__tdRefresh) window.__tdRefresh(); };
+  window.setTopDoggoLanguage = v => { LANG = normLang(v); applyLang(); if (window.__tdRefresh) window.__tdRefresh(); renderRankStatus(); };
   // run tracking for the platform leaderboard (score = level reached, per difficulty)
   const run = { active: false, ms: 0, kills: 0, reported: false };
   function syncRunUI() { const row = document.getElementById('diff-row'); if (row) row.classList.toggle('locked', run.active); }
@@ -425,6 +425,13 @@
       list.innerHTML = entries.length ? entries.map((e, i) => '<li><b>' + (i + 1) + '</b><span>' + String(e.displayName || L('訪客')).replace(/[<>&"]/g, '') + '</span><em>' + L('第 {n} 關', { n: e.score }) + '</em></li>').join('') : '<li class="rk-empty">' + L('尚無紀錄') + '</li>';
     } catch (e) { box.hidden = true; }
   }
+  let rankStatus = null;
+  function renderRankStatus() {
+    const st = document.getElementById('rk-status');
+    if (!st || !rankStatus) return;
+    const { result, level: reached, pending } = rankStatus;
+    st.textContent = pending ? L('成績送出中…') : result && result.saved ? L('已記入排行榜') + ' · ' + L('第 {n} 關', { n: reached }) : (result && result.offline ? L('排行榜連線失敗，仍可繼續遊玩') : L('這局沒有記入排行榜'));
+  }
   function beginRun() {
     run.active = true; run.ms = 0; run.kills = 0; run.reported = false; syncRunUI();
     if (PF && PF.prepare) { try { PF.prepare(window, DIFF_KEY); } catch (e) { /* ignore */ } }
@@ -434,10 +441,10 @@
     run.active = false; run.reported = true; syncRunUI();
     const st = document.getElementById('rk-status');
     if (!PF || !PF.finish) return;
-    if (st) st.textContent = L('成績送出中…');
+    rankStatus = { pending: true }; renderRankStatus();
     let result = null;
     try { result = await PF.finish(window, { difficulty: DIFF_KEY, level, kills: run.kills, playMs: Math.round(run.ms), reason }); } catch (e) { /* ignore */ }
-    if (st) st.textContent = result && result.saved ? L('已記入排行榜') + ' · ' + L('第 {n} 關', { n: level }) : (result && result.offline ? L('排行榜連線失敗，仍可繼續遊玩') : L('這局沒有記入排行榜'));
+    rankStatus = { result, level }; renderRankStatus();
     refreshRank(DIFF_KEY);
   }
   window.setTopDoggoActive = active => {
@@ -1896,7 +1903,7 @@
         scene.remove(b);
         bones.splice(i, 1);
         state.cash += 100;
-        
+
         AudioSys.play('coin');
         updateHUD();
         spawnBoneRandom(); onBonePicked();
