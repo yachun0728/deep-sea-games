@@ -28,5 +28,11 @@
     "name": "偷吃餅乾",
     "concept": "趁主管轉頭，一片一片偷吃餅乾，吃完一包就過關",
     "status": "prototype"
+  },
+  {
+    "id": "grand-theft-doggo",
+    "name": "Grand Theft Doggo: Vice Paw",
+    "concept": "美式復古卡通的鬥牛犬主角，2D 街區動作：打倒 12 名紫色浣熊幫、撿金骨頭、開車撞人。",
+    "status": "prototype"
   }
 ]

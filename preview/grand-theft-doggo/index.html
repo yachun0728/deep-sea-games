@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Grand Theft Doggo: Vice Paw（骨架）</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+  :root { --red:#d62839; --navy:#1d3f8a; --cream:#f5f1e6; --gold:#ffc83d; --ink:#1a1620; --safe-t:max(10px, env(safe-area-inset-top)); --safe-b:max(12px, env(safe-area-inset-bottom)); --safe-l:max(12px, env(safe-area-inset-left)); --safe-r:max(12px, env(safe-area-inset-right)); }
+  html, body { width: 100%; height: 100%; height: 100dvh; overflow: hidden; background: #2b1840; color: var(--cream); font-family: "Arial Rounded MT Bold", "Trebuchet MS", "PingFang TC", "Noto Sans TC", sans-serif; touch-action: none; overscroll-behavior: none; }
+  #game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+  #hud { position: fixed; inset: 0; z-index: 10; pointer-events: none; padding: var(--safe-t) var(--safe-r) 0 var(--safe-l); }
+  .tl { position: absolute; left: var(--safe-l); top: var(--safe-t); display: flex; flex-direction: column; gap: 6px; }
+  .tr { position: absolute; right: var(--safe-r); top: var(--safe-t); display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .row { display: flex; gap: 6px; pointer-events: auto; }
+  .ibtn { width: 44px; height: 44px; border-radius: 50%; border: 3px solid var(--ink); background: var(--cream); color: var(--ink); font-size: 18px; font-weight: 900; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 3px 0 var(--ink); pointer-events: auto; cursor: pointer; }
+  .ibtn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+  .card { background: var(--cream); color: var(--ink); border: 3px solid var(--ink); border-radius: 14px; padding: 5px 10px 7px; min-width: 138px; box-shadow: 0 3px 0 var(--ink); }
+  .lbl { display: flex; justify-content: space-between; font-size: 12px; font-weight: 900; letter-spacing: .5px; margin-bottom: 3px; }
+  .bar { height: 12px; border: 2px solid var(--ink); border-radius: 99px; background: #cdbfa3; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 100%; background: linear-gradient(180deg, #ff5a6a, var(--red)); transition: width .12s; }
+  .wp { font-size: 11px; font-weight: 800; margin-top: 3px; color: var(--navy); }
+  #radar-wrap { width: 84px; height: 84px; border-radius: 50%; border: 3px solid var(--ink); background: var(--cream); overflow: hidden; box-shadow: 0 3px 0 var(--ink); }
+  #radar { width: 100%; height: 100%; display: block; }
+  .pill { background: var(--cream); color: var(--ink); border: 3px solid var(--ink); border-radius: 99px; padding: 1px 10px; font-size: 15px; font-weight: 900; box-shadow: 0 2px 0 var(--ink); }
+  #cash { color: #1d7a3a; }
+
+  #toast { position: fixed; left: 50%; top: calc(var(--safe-t) + 112px); transform: translateX(-50%); max-width: 86vw; text-align: center; background: var(--cream); color: var(--ink); border: 3px solid var(--ink); border-radius: 14px; font-size: 14px; font-weight: 900; padding: 6px 14px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 15; box-shadow: 0 3px 0 var(--ink); }
+  #toast.show { opacity: 1; }
+  #flash { position: fixed; inset: 0; background: radial-gradient(circle, transparent 45%, rgba(214,40,57,.55)); opacity: 0; pointer-events: none; z-index: 12; transition: opacity .25s; }
+  #tag { position: fixed; left: 50%; bottom: 3px; transform: translateX(-50%); z-index: 50; font-size: 10px; padding: 1px 8px; border-radius: 99px; background: #f7e33b; color: #1d1b1a; font-weight: 800; letter-spacing: 1px; pointer-events: none; opacity: .9; }
+
+  #touch { position: fixed; inset: 0; z-index: 20; pointer-events: none; }
+  #touch.hidden { display: none; }
+  #joy-zone { position: fixed; left: 0; bottom: 0; width: 55%; height: 60%; pointer-events: auto; touch-action: none; }
+  #joy-base { position: fixed; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; background: rgba(245,241,230,.28); border: 3px solid rgba(26,22,32,.75); display: none; }
+  #joy-base.on { display: block; }
+  #joy-knob { position: absolute; left: 36px; top: 36px; width: 48px; height: 48px; border-radius: 50%; background: var(--gold); border: 3px solid var(--ink); }
+  #joy-hint { position: fixed; left: var(--safe-l); bottom: calc(var(--safe-b) + 34px); width: 110px; height: 110px; border-radius: 50%; border: 3px dashed rgba(245,241,230,.55); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: rgba(245,241,230,.85); pointer-events: none; text-shadow: 0 2px 0 var(--ink); }
+  .abtn { position: fixed; border-radius: 50%; border: 4px solid var(--ink); font-weight: 900; color: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: auto; touch-action: none; box-shadow: 0 4px 0 var(--ink); }
+  .abtn span { font-size: 12px; margin-top: 1px; }
+  .abtn.pressed { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+  #bt-atk { right: calc(var(--safe-r) + 6px); bottom: calc(var(--safe-b) + 40px); width: 88px; height: 88px; background: #ff6b6b; font-size: 30px; }
+  #bt-roll { right: calc(var(--safe-r) + 104px); bottom: calc(var(--safe-b) + 26px); width: 62px; height: 62px; background: #7ee0ff; font-size: 22px; }
+  #bt-car { right: calc(var(--safe-r) + 40px); bottom: calc(var(--safe-b) + 140px); width: 62px; height: 62px; background: #7dff9b; font-size: 22px; display: none; }
+
+  #overlay { position: fixed; inset: 0; z-index: 40; background: rgba(43,24,64,.9); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; gap: 8px; }
+  #overlay.hidden { display: none; }
+  #hero-img { height: min(30vh, 220px); max-height: 30vh; filter: drop-shadow(0 6px 0 rgba(0,0,0,.35)); }
+  .logo-sub { font-size: 12px; font-weight: 900; letter-spacing: 3px; color: var(--gold); }
+  .logo { font-size: clamp(34px, 9vw, 58px); font-weight: 900; line-height: 1; color: var(--cream); -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; text-shadow: 0 5px 0 var(--red); }
+  #over-msg { font-size: 22px; font-weight: 900; color: var(--gold); min-height: 26px; -webkit-text-stroke: 2px var(--ink); paint-order: stroke fill; }
+  .hint { max-width: 420px; font-size: 13px; line-height: 1.55; color: var(--cream); background: rgba(255,255,255,.08); border: 2px solid rgba(255,255,255,.2); border-radius: 14px; padding: 10px 14px; }
+  .start { border: 4px solid var(--ink); background: var(--gold); color: var(--ink); font-size: 20px; font-weight: 900; padding: 12px 38px; border-radius: 999px; cursor: pointer; box-shadow: 0 5px 0 var(--ink); margin-top: 6px; min-height: 52px; font-family: inherit; }
+  .start:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--ink); }
+  #loading { font-size: 14px; font-weight: 800; color: var(--gold); }
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="flash"></div>
+<div id="toast"></div>
+<div id="tag">PROTOTYPE · 未上架</div>
+
+<div id="hud">
+  <div class="tl">
+    <div class="row">
+      <a class="ibtn" id="b-exit" href="../" aria-label="離開遊戲">←</a>
+      <button class="ibtn" id="b-pause" aria-label="暫停">⏸</button>
+      <button class="ibtn" id="b-mute" aria-label="音效開關">♪</button>
+    </div>
+    <div class="card">
+      <div class="lbl"><span>鬥牛犬</span><span id="hp-t">100</span></div>
+      <div class="bar"><i id="hp-f"></i></div>
+      <div class="wp" id="wp">網球槍・近身自動揮拳</div>
+    </div>
+  </div>
+  <div class="tr">
+    <div id="radar-wrap"><canvas id="radar" width="168" height="168"></canvas></div>
+    <div class="pill" id="cash">$0</div>
+    <div class="pill" id="gang">黑幫 12</div>
+  </div>
+</div>
+
+<div id="touch" class="hidden">
+  <div id="joy-zone"></div>
+  <div id="joy-hint">移動</div>
+  <div id="joy-base"><div id="joy-knob"></div></div>
+  <button class="abtn" id="bt-atk" aria-label="攻擊">🎾<span>攻擊</span></button>
+  <button class="abtn" id="bt-roll" aria-label="翻滾">🌀<span>翻滾</span></button>
+  <button class="abtn" id="bt-car" aria-label="上車">🚗<span>上車</span></button>
+</div>
+
+<div id="overlay">
+  <img id="hero-img" src="assets/characters/hero/front_armed.png" alt="" />
+  <div class="logo-sub">VICE PAW • AMERICAN BULLDOG</div>
+  <div class="logo">GRAND THEFT<br>DOGGO</div>
+  <div id="over-msg"></div>
+  <div class="hint" id="hint-box">擊倒 12 名紫色浣熊幫成員，Boss 在最後。<br>手機：左手拖曳移動、右側「攻擊」（近身自動揮拳）、「翻滾」閃子彈、靠近車子按「上車」。<br>電腦：WASD／方向鍵移動、滑鼠左鍵或 J 攻擊（瞄準滑鼠）、空白鍵翻滾、E 上下車、P 暫停。</div>
+  <div id="loading">載入素材中…</div>
+  <button class="start" id="btn-play" type="button" style="display:none">▶ 開始</button>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  // =========================================================
+  // Audio (synthesized, no external assets)
+  // =========================================================
+  const Audio_ = {
+    ctx: null, muted: false,
+    init() {
+      if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; if (AC) this.ctx = new AC(); }
+      if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+    },
+    tone(type, f0, f1, dur, vol) {
+      if (this.muted || !this.ctx) return;
+      const t = this.ctx.currentTime, o = this.ctx.createOscillator(), g = this.ctx.createGain();
+      o.type = type; o.connect(g); g.connect(this.ctx.destination);
+      o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(Math.max(30, f1), t + dur);
+      g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      o.start(t); o.stop(t + dur);
+    },
+    play(k) {
+      if (k === 'shoot') this.tone('triangle', 520, 140, .09, .16);
+      else if (k === 'punch') this.tone('sawtooth', 190, 48, .14, .22);
+      else if (k === 'roll') this.tone('sine', 260, 480, .14, .14);
+      else if (k === 'coin') { this.tone('sine', 880, 1180, .16, .14); }
+      else if (k === 'hit') this.tone('square', 150, 60, .1, .14);
+      else if (k === 'hurt') this.tone('sawtooth', 300, 90, .2, .2);
+      else if (k === 'ko') this.tone('square', 400, 70, .3, .16);
+      else if (k === 'car') this.tone('sine', 200, 340, .12, .12);
+    }
+  };
+
+  // =========================================================
+  // Data tables
+  // =========================================================
+  const TILE = 64;
+  const VEHICLES = {
+    convertible: { file: 'assets/vehicles2/convertible.png', w: 108, speed: 400 },
+    taxi:        { file: 'assets/vehicles2/taxi.png',        w: 108, speed: 340 },
+    muscle:      { file: 'assets/vehicles2/muscle.png',      w: 112, speed: 450 },
+    scooter:     { file: 'assets/vehicles2/scooter.png',     w: 62,  speed: 480 },
+    pickup:      { file: 'assets/vehicles2/pickup.png',      w: 116, speed: 300 },
+    police:      { file: 'assets/vehicles2/police.png',      w: 112, speed: 410 }
+  };
+  const PROPS2 = {
+    bench: 66, umbrella_table: 72, surfboard_rack: 56, phone_booth: 38, hotdog_cart: 66, mailbox: 40,
+    stop_sign: 28, traffic_light: 22, dumpster: 66, bike_rack: 58, news_box: 36, fountain: 88
+  };
+  const ENEMY_TYPES = {
+    thug:    { hp: 60,  speed: 105, melee: 9,  ranged: false, reward: 100 },
+    brawler: { hp: 120, speed: 85,  melee: 15, ranged: false, reward: 150 },
+    shooter: { hp: 50,  speed: 80,  melee: 6,  ranged: true,  reward: 120 },
+    boss:    { hp: 320, speed: 70,  melee: 20, ranged: true,  reward: 500 }
+  };
+  const PLAYER_R = 14;
+  const AGGRO = 500;
+
+  // =========================================================
+  // Canvas & asset loading
+  // =========================================================
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const radarCv = document.getElementById('radar');
+  const rctx = radarCv.getContext('2d');
+  const imgs = {};
+  let MAN = null, WORLD = null;
+  let VW = innerWidth, VH = innerHeight, DPR = 1, zoom = 1;
+
+  function loadImg(key, src) {
+    return new Promise((res, rej) => { const i = new Image(); i.onload = () => { imgs[key] = i; res(); }; i.onerror = () => rej(new Error('載入失敗：' + src)); i.src = src; });
+  }
+  async function loadAll() {
+    const [m, w] = await Promise.all([fetch('assets/asset-manifest.json').then(r => r.json()), fetch('assets/world-map.json').then(r => r.json())]);
+    MAN = m.assets; WORLD = w;
+    const jobs = [];
+    for (const id in MAN) jobs.push(loadImg(id, 'assets/' + MAN[id].file));
+    for (const k in VEHICLES) jobs.push(loadImg('veh:' + k, VEHICLES[k].file));
+    for (const k in PROPS2) jobs.push(loadImg('prop2:' + k, 'assets/props2/' + k + '.png'));
+    await Promise.all(jobs);
+  }
+
+  function resize() {
+    VW = innerWidth; VH = innerHeight; DPR = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = Math.round(VW * DPR); canvas.height = Math.round(VH * DPR);
+    zoom = Math.max(0.55, Math.min(1.0, Math.min(VW, VH) / 560));
+  }
+  addEventListener('resize', resize); resize();
+
+  // =========================================================
+  // World building
+  // =========================================================
+  let WW = 0, WH = 0, terrain = null, rects = [], drawList = [], rng = null;
+  function mulberry(a) { return () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function tileAt(wx, wy) {
+    const tx = Math.floor(wx / TILE), ty = Math.floor(wy / TILE);
+    if (tx < 0 || ty < 0 || tx >= WORLD.width || ty >= WORLD.height) return 'tiles/water';
+    return terrain[ty][tx];
+  }
+  function buildWorld() {
+    terrain = WORLD.terrain; WW = WORLD.width * TILE; WH = WORLD.height * TILE;
+    rects = []; drawList = [];
+    for (const o of WORLD.objects) {
+      const a = MAN[o.asset]; if (!a) continue;
+      drawList.push({ kind: 'obj', asset: o.asset, x: o.x, y: o.y, dw: a.drawSize[0], dh: a.drawSize[1], ax: a.anchor[0], ay: a.anchor[1], build: a.kind === 'buildings' });
+      if (a.collision) rects.push({ x1: o.x + a.collision.x, y1: o.y + a.collision.y, x2: o.x + a.collision.x + a.collision.w, y2: o.y + a.collision.y + a.collision.h });
+    }
+    // extra street props (new art) on sidewalk tiles, deterministic
+    rng = mulberry(20261124);
+    const sidewalk = [];
+    for (let ty = 1; ty < WORLD.height - 2; ty++) for (let tx = 1; tx < WORLD.width - 1; tx++) if (terrain[ty][tx] === 'tiles/sidewalk') sidewalk.push([tx, ty]);
+    const names = Object.keys(PROPS2), used = [];
+    for (let i = 0; i < 46; i++) {
+      const [tx, ty] = sidewalk[Math.floor(rng() * sidewalk.length)];
+      const x = tx * TILE + 32, y = ty * TILE + 56;
+      if (used.some(u => Math.hypot(u[0] - x, u[1] - y) < 200)) continue;
+      if (Math.hypot(x - 5664, y - 3488) < 160) continue;
+      const nm = names[i % names.length], w = PROPS2[nm], im = imgs['prop2:' + nm];
+      const h = Math.round(w * im.height / im.width);
+      used.push([x, y]);
+      drawList.push({ kind: 'obj', asset: 'prop2:' + nm, x, y, dw: w, dh: h, ax: .5, ay: 1, build: false, custom: true });
+      rects.push({ x1: x - w * .32, y1: y - 14, x2: x + w * .32, y2: y });
+    }
+  }
+  function blockedBox(x, y, r) {
+    const x1 = x - r, x2 = x + r, y1 = y - r * .6, y2 = y + r * .6;
+    if (x1 < 0 || x2 > WW || y1 < 0 || y2 > WH) return true;
+    if (tileAt(x1, y1) === 'tiles/water' || tileAt(x2, y1) === 'tiles/water' || tileAt(x1, y2) === 'tiles/water' || tileAt(x2, y2) === 'tiles/water') return true;
+    for (let i = 0; i < rects.length; i++) { const c = rects[i]; if (x2 > c.x1 && x1 < c.x2 && y2 > c.y1 && y1 < c.y2) return true; }
+    return false;
+  }
+  function moveCol(e, dx, dy, r) {
+    if (dx) { const nx = e.x + dx; if (!blockedBox(nx, e.y, r)) e.x = nx; else e.bumped = true; }
+    if (dy) { const ny = e.y + dy; if (!blockedBox(e.x, ny, r)) e.y = ny; else e.bumped = true; }
+  }
+  function freeSpot(x, y, r) {
+    if (!blockedBox(x, y, r)) return [x, y];
+    for (let rad = 16; rad < 400; rad += 16) for (let a = 0; a < 6.28; a += .5) { const nx = x + Math.cos(a) * rad, ny = y + Math.sin(a) * rad; if (!blockedBox(nx, ny, r)) return [nx, ny]; }
+    return [x, y];
+  }
+
+  // =========================================================
+  // Game state
+  // =========================================================
+  const S = { phase: 'loading', paused: false, time: 0, cash: 0, shake: 0, hintT: 0, started: false };
+  const player = { x: 0, y: 0, vx: 0, vy: 0, dir: 'down', face: { x: 0, y: 1 }, hp: 100, roll: 0, rollCd: 0, atkCd: 0, punchT: 0, inv: 0, car: null, lunge: 0 };
+  let enemies = [], bullets = [], cars = [], bones = [], floaters = [];
+  const keys = {};
+  const joy = { x: 0, y: 0, id: null };
+  const mouse = { x: 0, y: 0, moved: 0, down: false };
+  let atkHeld = false;
+
+  function resetGame() {
+    S.cash = 0; S.time = 0; S.shake = 0; S.hintT = 6;
+    const sp = WORLD.spawns.find(s => s.type === 'player');
+    const [px, py] = freeSpot(sp.x, sp.y, PLAYER_R);
+    Object.assign(player, { x: px, y: py, vx: 0, vy: 0, dir: 'down', face: { x: 0, y: 1 }, hp: 100, roll: 0, rollCd: 0, atkCd: 0, punchT: 0, inv: 0, car: null, lunge: 0 });
+    enemies = []; bullets = []; floaters = [];
+    for (const s of WORLD.spawns) {
+      if (s.type !== 'enemy') continue;
+      const type = s.asset.split('/').pop().replace(/_(front|back)$/, '');
+      const T = ENEMY_TYPES[type]; if (!T) continue;
+      const [ex, ey] = freeSpot(s.x, s.y, 16);
+      enemies.push({ type, x: ex, y: ey, hp: T.hp, maxHp: T.hp, cd: 1 + Math.random() * 1.5, melCd: 0, wander: Math.random() * 6.28, wt: 0, hit: 0, vx: 0, vy: 0, kx: 0, ky: 0, face: 1, back: false, strafe: Math.random() < .5 ? 1 : -1 });
+    }
+    // cars on road tiles: two near spawn, rest spread out
+    const r2 = mulberry(77), roads = [];
+    for (let ty = 2; ty < WORLD.height - 3; ty++) for (let tx = 2; tx < WORLD.width - 2; tx++) { const id = terrain[ty][tx]; if (id === 'tiles/road_h' || id === 'tiles/road_v' || id === 'tiles/asphalt') roads.push([tx * TILE + 32, ty * TILE + 48]); }
+    const names = Object.keys(VEHICLES); cars = [];
+    roads.sort((a, b) => Math.hypot(a[0] - player.x, a[1] - player.y) - Math.hypot(b[0] - player.x, b[1] - player.y));
+    const near = roads.filter(p => Math.hypot(p[0] - player.x, p[1] - player.y) > 150 && Math.hypot(p[0] - player.x, p[1] - player.y) < 700);
+    const picks = [near[0], near[Math.floor(near.length * .6)]].filter(Boolean);
+    while (picks.length < 9) { const p = roads[Math.floor(r2() * roads.length)]; if (!picks.some(q => Math.hypot(q[0] - p[0], q[1] - p[1]) < 500)) picks.push(p); }
+    picks.forEach((p, i) => { const nm = names[i % names.length], V = VEHICLES[nm], im = imgs['veh:' + nm]; cars.push({ nm, x: p[0], y: p[1], vx: 0, vy: 0, w: V.w, h: Math.round(V.w * im.height / im.width), speed: V.speed, flip: false, driver: false, hp: 150 }); });
+    // golden bones on streets/sidewalks
+    bones = []; const spots = [];
+    for (let ty = 2; ty < WORLD.height - 3; ty++) for (let tx = 2; tx < WORLD.width - 2; tx++) { const id = terrain[ty][tx]; if (id === 'tiles/sidewalk' || id === 'tiles/asphalt') spots.push([tx * TILE + 32, ty * TILE + 40]); }
+    let guard = 0;
+    while (bones.length < 14 && guard++ < 400) { const p = spots[Math.floor(r2() * spots.length)]; if (!blockedBox(p[0], p[1], 14) && !bones.some(b => Math.hypot(b.x - p[0], b.y - p[1]) < 400)) bones.push({ x: p[0], y: p[1], t: r2() * 6 }); }
+    updateHUD();
+  }
+
+  // =========================================================
+  // HUD
+  // =========================================================
+  const el = id => document.getElementById(id);
+  const toastEl = el('toast'), flashEl = el('flash'), btCar = el('bt-car'), overlay = el('overlay');
+  let toastT = 0;
+  function toast(t, sec = 2.2) { toastEl.textContent = t; toastEl.classList.add('show'); toastT = sec; }
+  function updateHUD() {
+    const hp = Math.max(0, Math.round(player.hp));
+    el('hp-t').textContent = hp; el('hp-f').style.width = hp + '%';
+    el('cash').textContent = '$' + S.cash.toLocaleString();
+    el('gang').textContent = '黑幫 ' + enemies.length;
+  }
+  function float(x, y, text, color) { floaters.push({ x, y, text, color: color || '#fff', t: .8 }); }
+
+  // =========================================================
+  // Combat
+  // =========================================================
+  function nearestEnemy(x, y, maxD) {
+    let best = null, bd = maxD;
+    for (const e of enemies) { const d = Math.hypot(e.x - x, e.y - y); if (d < bd) { bd = d; best = e; } }
+    return best;
+  }
+  function setFace(vx, vy) {
+    const l = Math.hypot(vx, vy); if (l < .01) return;
+    player.face.x = vx / l; player.face.y = vy / l;
+    player.dir = Math.abs(vx) > Math.abs(vy) ? (vx > 0 ? 'right' : 'left') : (vy > 0 ? 'down' : 'up');
+  }
+  function worldMouse() { return { x: camX + mouse.x / zoom, y: camY + mouse.y / zoom }; }
+  function attack() {
+    if (player.car || player.atkCd > 0 || player.roll > 0 || S.phase !== 'play') return;
+    const near = nearestEnemy(player.x, player.y, 78);
+    if (near) {
+      player.atkCd = .38; player.punchT = .22; Audio_.play('punch');
+      setFace(near.x - player.x, near.y - player.y);
+      player.lunge = .12;
+      for (const e of enemies.slice()) { if (Math.hypot(e.x - player.x, e.y - player.y) < 92) damageEnemy(e, 45, player.x, player.y, 150); }
+    } else {
+      player.atkCd = .2; Audio_.play('shoot');
+      let ax = player.face.x, ay = player.face.y;
+      const t = nearestEnemy(player.x, player.y, 560);
+      if (mouse.moved > 0 && !('ontouchstart' in window && !mouse.down)) { const m = worldMouse(); ax = m.x - player.x; ay = m.y - (player.y - 40); }
+      else if (t) { ax = t.x - player.x; ay = t.y - player.y; }
+      const l = Math.hypot(ax, ay) || 1; ax /= l; ay /= l; setFace(ax, ay);
+      bullets.push({ x: player.x + ax * 22, y: player.y + ay * 22, vx: ax * 640, vy: ay * 640, life: .85, mine: true, dmg: 20 });
+    }
+  }
+  function damageEnemy(e, dmg, fx, fy, kb) {
+    e.hp -= dmg; e.hit = .14; Audio_.play('hit');
+    const l = Math.hypot(e.x - fx, e.y - fy) || 1; e.kx = (e.x - fx) / l * kb; e.ky = (e.y - fy) / l * kb;
+    float(e.x, e.y - 90, dmg >= 40 ? 'POW!' : String(dmg), dmg >= 40 ? '#ffc83d' : '#fff');
+    if (e.hp <= 0) {
+      const T = ENEMY_TYPES[e.type]; S.cash += T.reward; Audio_.play('ko'); float(e.x, e.y - 110, '+$' + T.reward, '#7dff9b');
+      enemies.splice(enemies.indexOf(e), 1); updateHUD();
+      if (enemies.length === 0) endGame(true);
+      else if (enemies.length === 1 && enemies[0].type === 'boss') toast('只剩 Boss 了！', 2.5);
+    }
+  }
+  function hurtPlayer(dmg, fromX, fromY) {
+    if (player.inv > 0 || player.roll > 0 || S.phase !== 'play') return;
+    if (player.car) dmg *= .4;
+    player.hp -= dmg; player.inv = .55; S.shake = 8; Audio_.play('hurt');
+    flashEl.style.opacity = 1; setTimeout(() => flashEl.style.opacity = 0, 140);
+    if (fromX !== undefined && !player.car) { const l = Math.hypot(player.x - fromX, player.y - fromY) || 1; player.vx = (player.x - fromX) / l * 220; player.vy = (player.y - fromY) / l * 220; }
+    updateHUD();
+    if (player.hp <= 0) endGame(false);
+  }
+  function enemyShoot(e, spread) {
+    const base = Math.atan2(player.y - e.y, player.x - e.x);
+    const angles = spread ? [-.28, 0, .28] : [(Math.random() - .5) * .12];
+    for (const da of angles) { const a = base + da; bullets.push({ x: e.x, y: e.y, vx: Math.cos(a) * 280, vy: Math.sin(a) * 280, life: 1.8, mine: false, dmg: spread ? 10 : 8 }); }
+  }
+
+  // =========================================================
+  // Vehicles
+  // =========================================================
+  function nearestCar() { let b = null, bd = 100; for (const c of cars) { const d = Math.hypot(c.x - player.x, c.y - player.y); if (d < bd) { bd = d; b = c; } } return b; }
+  function toggleCar() {
+    if (S.phase !== 'play') return;
+    if (player.car) {
+      const c = player.car; c.driver = false; player.car = null;
+      const opts = [[c.w * .6 + 20, 0], [-c.w * .6 - 20, 0], [0, 50], [0, -50]];
+      for (const o of opts) if (!blockedBox(c.x + o[0], c.y + o[1], PLAYER_R)) { player.x = c.x + o[0]; player.y = c.y + o[1]; break; }
+      Audio_.play('car'); return;
+    }
+    const c = nearestCar();
+    if (c) { player.car = c; c.driver = true; player.x = c.x; player.y = c.y; Audio_.play('car'); toast('開車！撞倒敵人也算數', 2); }
+  }
+
+  // =========================================================
+  // Update
+  // =========================================================
+  function inputVec() {
+    let x = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0);
+    let y = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.ArrowUp ? 1 : 0);
+    if (x || y) { const l = Math.hypot(x, y); return [x / l, y / l]; }
+    return [joy.x, joy.y];
+  }
+  function doRoll() {
+    if (player.car || player.roll > 0 || player.rollCd > 0 || S.phase !== 'play') return;
+    const [ix, iy] = inputVec(); const l = Math.hypot(ix, iy);
+    const dx = l > .1 ? ix / l : player.face.x, dy = l > .1 ? iy / l : player.face.y;
+    setFace(dx, dy); player.rx = dx; player.ry = dy; player.roll = .38; player.rollCd = .9; Audio_.play('roll');
+  }
+  let camX = 0, camY = 0;
+  function update(dt) {
+    S.time += dt;
+    if (toastT > 0) { toastT -= dt; if (toastT <= 0) toastEl.classList.remove('show'); }
+    if (S.hintT > 0) { S.hintT -= dt; if (S.hintT <= 0 && !toastT) toastEl.classList.remove('show'); }
+    player.atkCd = Math.max(0, player.atkCd - dt); player.rollCd = Math.max(0, player.rollCd - dt);
+    player.inv = Math.max(0, player.inv - dt); player.punchT = Math.max(0, player.punchT - dt);
+    if ((atkHeld || mouse.down) && player.atkCd <= 0) attack();
+
+    const [ix, iy] = inputVec();
+    if (player.car) {
+      const c = player.car;
+      c.vx += (ix * c.speed - c.vx) * Math.min(1, dt * 3.2); c.vy += (iy * c.speed - c.vy) * Math.min(1, dt * 3.2);
+      const sp = Math.hypot(c.vx, c.vy);
+      if (Math.abs(c.vx) > 20) c.flip = c.vx < 0;
+      const r = 26; c.bumped = false;
+      moveCol(c, c.vx * dt, c.vy * dt, r); if (c.bumped) { c.vx *= -.2; c.vy *= -.2; }
+      player.x = c.x; player.y = c.y;
+      if (sp > 190) for (const e of enemies.slice()) if (Math.hypot(e.x - c.x, e.y - c.y) < 54) damageEnemy(e, 130, c.x - c.vx * .01, c.y - c.vy * .01, 260);
+      setFace(c.vx, c.vy);
+    } else if (player.roll > 0) {
+      player.roll -= dt; moveCol(player, player.rx * 480 * dt, player.ry * 480 * dt, PLAYER_R);
+    } else {
+      player.vx *= Math.pow(.0008, dt); player.vy *= Math.pow(.0008, dt);
+      const sp = 185;
+      moveCol(player, (ix * sp + player.vx) * dt, (iy * sp + player.vy) * dt, PLAYER_R);
+      if (player.lunge > 0) { player.lunge -= dt; moveCol(player, player.face.x * 150 * dt, player.face.y * 150 * dt, PLAYER_R); }
+      if (Math.hypot(ix, iy) > .15) setFace(ix, iy);
+    }
+    // car prompt
+    const nc = !player.car && nearestCar();
+    btCar.style.display = (player.car || nc) ? 'flex' : 'none';
+    btCar.innerHTML = player.car ? '🏃<span>下車</span>' : '🚗<span>上車</span>';
+    // pickups
+    for (let i = bones.length - 1; i >= 0; i--) {
+      const b = bones[i]; b.t += dt;
+      if (Math.hypot(b.x - player.x, b.y - player.y) < 34) {
+        bones.splice(i, 1); player.hp = Math.min(100, player.hp + 25); S.cash += 50; Audio_.play('coin'); float(b.x, b.y - 30, '+25', '#7dff9b'); updateHUD();
+      }
+    }
+    // enemies
+    for (const e of enemies) {
+      const T = ENEMY_TYPES[e.type];
+      e.hit = Math.max(0, e.hit - dt); e.cd -= dt; e.melCd -= dt;
+      const dx = player.x - e.x, dy = player.y - e.y, d = Math.hypot(dx, dy) || 1, ux = dx / d, uy = dy / d;
+      let mx = 0, my = 0;
+      if (d < AGGRO) {
+        if (T.ranged) {
+          const want = e.type === 'boss' ? 230 : 280;
+          if (d > want + 40) { mx = ux; my = uy; } else if (d < want - 50) { mx = -ux; my = -uy; } else { mx = -uy * e.strafe; my = ux * e.strafe; }
+          if (e.cd <= 0 && d < 470) { e.cd = e.type === 'boss' ? 2.0 : 1.7 + Math.random() * .8; enemyShoot(e, e.type === 'boss'); }
+        } else if (d > 36) { mx = ux; my = uy; }
+        if (d < 46 && e.melCd <= 0) { e.melCd = 1; hurtPlayer(T.melee, e.x, e.y); }
+        e.face = dx >= 0 ? 1 : -1; e.back = Math.abs(dy) > Math.abs(dx) * .8 && dy < 0;
+      } else {
+        e.wt -= dt; if (e.wt <= 0) { e.wt = 1.5 + Math.random() * 2; e.wander = Math.random() * 6.28; }
+        if (Math.sin(e.wander * 3) > -.2) { mx = Math.cos(e.wander) * .4; my = Math.sin(e.wander) * .4; }
+        if (mx) e.face = mx >= 0 ? 1 : -1; e.back = my < -.2;
+      }
+      const sp = T.speed;
+      e.kx *= Math.pow(.001, dt); e.ky *= Math.pow(.001, dt);
+      moveCol(e, (mx * sp + e.kx) * dt, (my * sp + e.ky) * dt, 16);
+    }
+    for (let i = 0; i < enemies.length; i++) for (let j = i + 1; j < enemies.length; j++) {
+      const a = enemies[i], b = enemies[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (d < 36 && d > .1) { const p = (36 - d) / 2, nx = (a.x - b.x) / d, ny = (a.y - b.y) / d; moveCol(a, nx * p, ny * p, 16); moveCol(b, -nx * p, -ny * p, 16); }
+    }
+    // bullets
+    for (let i = bullets.length - 1; i >= 0; i--) {
+      const b = bullets[i]; b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt;
+      let dead = b.life <= 0;
+      if (!dead) for (const c of rects) if (b.x > c.x1 && b.x < c.x2 && b.y > c.y1 && b.y < c.y2) { dead = true; break; }
+      if (!dead && b.mine) { for (const e of enemies) if (Math.hypot(e.x - b.x, e.y - b.y) < 30) { damageEnemy(e, b.dmg, b.x - b.vx, b.y - b.vy, 90); dead = true; break; } }
+      else if (!dead && Math.hypot(player.x - b.x, player.y - b.y) < 24) { hurtPlayer(b.dmg, b.x, b.y); if (player.roll <= 0 && player.inv <= .5) dead = true; else if (player.roll <= 0) dead = true; }
+      if (dead) bullets.splice(i, 1);
+    }
+    for (let i = floaters.length - 1; i >= 0; i--) { const f = floaters[i]; f.t -= dt; f.y -= 40 * dt; if (f.t <= 0) floaters.splice(i, 1); }
+    // camera
+    S.shake = Math.max(0, S.shake - dt * 30);
+    const vw = VW / zoom, vh = VH / zoom;
+    const tx = Math.max(0, Math.min(WW - vw, player.x - vw / 2)), ty = Math.max(0, Math.min(WH - vh, player.y - vh * .56));
+    camX += (tx - camX) * Math.min(1, dt * 9); camY += (ty - camY) * Math.min(1, dt * 9);
+  }
+
+  // =========================================================
+  // Rendering
+  // =========================================================
+  function sprite(key, x, y, dw, dh, ax, ay, alpha, flip) {
+    const im = imgs[key]; if (!im) return;
+    ctx.save();
+    if (alpha !== undefined && alpha < 1) ctx.globalAlpha = alpha;
+    if (flip) { ctx.translate(x, y); ctx.scale(-1, 1); ctx.drawImage(im, -dw * ax, -dh * ay, dw, dh); }
+    else ctx.drawImage(im, x - dw * ax, y - dh * ay, dw, dh);
+    ctx.restore();
+  }
+  function shadow(x, y, rx) { ctx.fillStyle = 'rgba(20,10,30,.28)'; ctx.beginPath(); ctx.ellipse(x, y - 2, rx, rx * .38, 0, 0, 6.283); ctx.fill(); }
+  function drawBone(b) {
+    const y = b.y - 14 - Math.sin(b.t * 3) * 4;
+    shadow(b.x, b.y, 12);
+    ctx.save(); ctx.translate(b.x, y); ctx.rotate(-.4); ctx.lineWidth = 3; ctx.strokeStyle = '#1a1620'; ctx.fillStyle = '#ffc83d';
+    ctx.beginPath(); ctx.roundRect(-12, -4, 24, 8, 3); ctx.fill(); ctx.stroke();
+    for (const [cx, cy] of [[-13, -5], [-13, 5], [13, -5], [13, 5]]) { ctx.beginPath(); ctx.arc(cx, cy, 5.5, 0, 6.283); ctx.fill(); ctx.stroke(); }
+    ctx.beginPath(); ctx.roundRect(-12, -3, 24, 6, 2); ctx.fill(); ctx.restore();
+  }
+  function heroKey() {
+    const armed = !player.car;
+    if (player.dir === 'up') return armed ? 'characters/hero/back_armed' : 'characters/hero/back';
+    if (player.dir === 'down') return armed ? 'characters/hero/front_armed' : 'characters/hero/front';
+    return player.dir === 'left' ? 'characters/hero/left' : 'characters/hero/right';
+  }
+  function render() {
+    ctx.setTransform(DPR * zoom, 0, 0, DPR * zoom, 0, 0);
+    ctx.fillStyle = '#2b1840'; ctx.fillRect(0, 0, VW / zoom, VH / zoom);
+    const sx = (Math.random() - .5) * S.shake, sy = (Math.random() - .5) * S.shake;
+    ctx.translate(-Math.round(camX) + sx, -Math.round(camY) + sy);
+    const vw = VW / zoom, vh = VH / zoom;
+    // terrain
+    const tx0 = Math.max(0, Math.floor(camX / TILE)), ty0 = Math.max(0, Math.floor(camY / TILE));
+    const tx1 = Math.min(WORLD.width - 1, Math.floor((camX + vw) / TILE)), ty1 = Math.min(WORLD.height - 1, Math.floor((camY + vh) / TILE));
+    for (let ty = ty0; ty <= ty1; ty++) for (let tx = tx0; tx <= tx1; tx++) { const im = imgs[terrain[ty][tx]]; if (im) ctx.drawImage(im, tx * TILE, ty * TILE, TILE + 1, TILE + 1); }
+    // sorted entities
+    const list = [];
+    const pad = 300, L = camX - pad, R = camX + vw + pad, T = camY - pad, B = camY + vh + pad + 200;
+    for (const o of drawList) if (o.x > L && o.x < R && o.y > T && o.y < B) list.push(o);
+    for (const b of bones) list.push({ kind: 'bone', y: b.y, b });
+    for (const c of cars) list.push({ kind: 'car', y: c.y, c });
+    for (const e of enemies) list.push({ kind: 'enemy', y: e.y, e });
+    if (!player.car) list.push({ kind: 'player', y: player.y });
+    list.sort((a, b) => a.y - b.y);
+    for (const o of list) {
+      if (o.kind === 'obj') {
+        let a = 1;
+        if (o.build && player.y < o.y && player.y > o.y - o.dh + 20 && Math.abs(player.x - o.x) < o.dw / 2 + 10) a = .42;
+        sprite(o.asset, o.x, o.y, o.dw, o.dh, o.ax, o.ay, a);
+      } else if (o.kind === 'bone') drawBone(o.b);
+      else if (o.kind === 'car') {
+        const c = o.c; shadow(c.x, c.y, c.w * .46);
+        sprite('veh:' + c.nm, c.x, c.y, c.w, c.h, .5, .92, 1, c.flip);
+        if (c.driver) {
+          const bob = Math.sin(S.time * 14) * 1.2;
+          sprite(heroKey(), c.x, c.y - c.h * .35 + bob, 40, 51, .5, 1, 1);
+        }
+      } else if (o.kind === 'enemy') {
+        const e = o.e; shadow(e.x, e.y, 22);
+        const key = 'characters/enemies/' + e.type + (e.back ? '_back' : '_front');
+        const A = MAN[key], k = e.type === 'boss' ? 1.18 : 1;
+        const bob = Math.sin(S.time * 9 + e.x) * 1.5;
+        ctx.save(); if (e.hit > 0) ctx.globalAlpha = .55;
+        sprite(key, e.x, e.y + bob, A.drawSize[0] * k, A.drawSize[1] * k, .5, .97, e.hit > 0 ? .6 : 1, e.face < 0 && !e.back);
+        ctx.restore();
+        // hp bar
+        const bw = 40 * k, bh = 6, by = e.y - A.drawSize[1] * k - 6;
+        ctx.fillStyle = '#1a1620'; ctx.fillRect(e.x - bw / 2 - 2, by - 2, bw + 4, bh + 4);
+        ctx.fillStyle = '#d62839'; ctx.fillRect(e.x - bw / 2, by, bw * Math.max(0, e.hp / e.maxHp), bh);
+      } else if (o.kind === 'player') {
+        const A = MAN['characters/hero/back_armed'];
+        shadow(player.x, player.y, 24);
+        ctx.save(); ctx.translate(player.x, player.y);
+        const moving = Math.hypot(...inputVec()) > .15;
+        const bob = moving ? Math.abs(Math.sin(S.time * 14)) * 4 : Math.sin(S.time * 3) * 1;
+        let sc = 1;
+        if (player.roll > 0) { const p = 1 - player.roll / .38; ctx.translate(0, -34); ctx.rotate(p * 6.283 * (player.rx >= 0 ? 1 : -1)); ctx.translate(0, 34); sc = .85; }
+        if (player.punchT > 0) { const p = Math.sin((1 - player.punchT / .22) * Math.PI); ctx.translate(player.face.x * 10 * p, player.face.y * 8 * p); sc = 1 + .08 * p; }
+        if (player.inv > 0 && Math.floor(S.time * 24) % 2 === 0) ctx.globalAlpha = .5;
+        ctx.scale(sc, sc);
+        sprite(heroKey(), 0, -bob, A.drawSize[0] * .92, A.drawSize[1] * .92, .5, .97);
+        ctx.restore();
+      }
+    }
+    // bullets
+    for (const b of bullets) {
+      const y = b.y - 40; ctx.fillStyle = 'rgba(20,10,30,.25)'; ctx.beginPath(); ctx.ellipse(b.x, b.y, 6, 3, 0, 0, 6.283); ctx.fill();
+      ctx.lineWidth = 3; ctx.strokeStyle = '#1a1620'; ctx.fillStyle = b.mine ? '#d4ff2a' : '#ff5aa5';
+      ctx.beginPath(); ctx.arc(b.x, y, b.mine ? 7 : 8, 0, 6.283); ctx.fill(); ctx.stroke();
+      if (b.mine) { ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff'; ctx.beginPath(); ctx.arc(b.x, y, 4, .6, 2.6); ctx.stroke(); }
+    }
+    // lock-on marker
+    if (!player.car && S.phase === 'play') {
+      const t = nearestEnemy(player.x, player.y, 560);
+      if (t) { ctx.strokeStyle = '#ffc83d'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(t.x, t.y + 2, 26, 11, 0, 0, 6.283); ctx.stroke(); }
+    }
+    // floating text
+    ctx.textAlign = 'center'; ctx.font = '900 20px "Arial Rounded MT Bold", Arial, sans-serif'; ctx.lineWidth = 5; ctx.strokeStyle = '#1a1620';
+    for (const f of floaters) { ctx.globalAlpha = Math.min(1, f.t * 2); ctx.strokeText(f.text, f.x, f.y); ctx.fillStyle = f.color; ctx.fillText(f.text, f.x, f.y); }
+    ctx.globalAlpha = 1;
+    drawRadar();
+  }
+  function drawRadar() {
+    const w = radarCv.width, c = w / 2, R = 700, k = c / R;
+    rctx.clearRect(0, 0, w, w); rctx.fillStyle = '#e9dfc4'; rctx.fillRect(0, 0, w, w);
+    const to = (x, y) => [c + (x - player.x) * k, c + (y - player.y) * k];
+    // roads hint
+    rctx.fillStyle = '#9a8f8a';
+    const x0 = Math.floor((player.x - R) / TILE), x1 = Math.floor((player.x + R) / TILE), y0 = Math.floor((player.y - R) / TILE), y1 = Math.floor((player.y + R) / TILE);
+    for (let ty = y0; ty <= y1; ty++) for (let tx = x0; tx <= x1; tx++) {
+      const id = tileAt(tx * TILE + 1, ty * TILE + 1); const [px, py] = to(tx * TILE, ty * TILE);
+      if (id === 'tiles/water') rctx.fillStyle = '#6fb8d8'; else if (id === 'tiles/grass') rctx.fillStyle = '#9ccc7a'; else if (id === 'tiles/sand') rctx.fillStyle = '#f0d890'; else if (id === 'tiles/sidewalk') rctx.fillStyle = '#e8c0b0'; else rctx.fillStyle = '#7b7585';
+      rctx.fillRect(px, py, TILE * k + 1, TILE * k + 1);
+    }
+    for (const b of bones) { const [px, py] = to(b.x, b.y); rctx.fillStyle = '#ffc83d'; rctx.beginPath(); rctx.arc(px, py, 4, 0, 6.283); rctx.fill(); }
+    for (const cr of cars) { const [px, py] = to(cr.x, cr.y); rctx.fillStyle = '#1d9bd6'; rctx.fillRect(px - 4, py - 4, 8, 8); }
+    for (const e of enemies) {
+      let [px, py] = to(e.x, e.y); const dx = px - c, dy = py - c, d = Math.hypot(dx, dy), m = c - 8;
+      if (d > m) { px = c + dx / d * m; py = c + dy / d * m; }
+      rctx.fillStyle = e.type === 'boss' ? '#8a1bd6' : '#d62839'; rctx.beginPath(); rctx.arc(px, py, e.type === 'boss' ? 7 : 5, 0, 6.283); rctx.fill(); rctx.lineWidth = 2; rctx.strokeStyle = '#1a1620'; rctx.stroke();
+    }
+    rctx.fillStyle = '#1d3f8a'; rctx.strokeStyle = '#1a1620'; rctx.lineWidth = 2.5; rctx.beginPath(); rctx.arc(c, c, 7, 0, 6.283); rctx.fill(); rctx.stroke();
+  }
+
+  // =========================================================
+  // Flow
+  // =========================================================
+  const bestKey = 'proto-grand-theft-doggo-best';
+  function getBest() { try { return parseFloat(localStorage.getItem(bestKey)) || 0; } catch (e) { return 0; } }
+  function setBest(v) { try { localStorage.setItem(bestKey, String(v)); } catch (e) { /* ignore */ } }
+  function showOverlay(msg, btn, showHint) {
+    overlay.classList.remove('hidden'); el('over-msg').textContent = msg; el('btn-play').textContent = btn;
+    el('hint-box').style.display = showHint ? '' : 'none';
+  }
+  function endGame(win) {
+    S.phase = win ? 'win' : 'lose'; atkHeld = false; mouse.down = false; if (document.pointerLockElement) document.exitPointerLock();
+    if (win) {
+      const t = Math.round(S.time), best = getBest(); let line = '清空 Vice Paw！用時 ' + t + ' 秒・$' + S.cash.toLocaleString();
+      if (!best || t < best) { setBest(t); line += '（新紀錄）'; } else line += '（最佳 ' + best + ' 秒）';
+      setTimeout(() => showOverlay(line, '↻ 再玩一次', false), 700);
+    } else setTimeout(() => showOverlay('WASTED！剩 ' + enemies.length + ' 名黑幫・$' + S.cash.toLocaleString(), '↻ 再來一局', false), 700);
+  }
+  function setPaused(p) {
+    if (S.phase !== 'play') return; S.paused = p;
+    if (p) { showOverlay('暫停中', '▶ 繼續', true); atkHeld = false; mouse.down = false; joy.x = joy.y = 0; } else overlay.classList.add('hidden');
+  }
+  el('btn-play').addEventListener('click', () => {
+    Audio_.init();
+    if (S.phase === 'play' && S.paused) { setPaused(false); return; }
+    resetGame(); S.phase = 'play'; S.paused = false; overlay.classList.add('hidden');
+    camX = player.x - VW / zoom / 2; camY = player.y - VH / zoom * .56;
+    toast(isTouch() ? '左手拖曳移動・右側按「攻擊」' : 'WASD 移動・左鍵／J 攻擊・空白鍵翻滾', 6);
+  });
+  el('b-pause').addEventListener('click', () => setPaused(!S.paused));
+  el('b-mute').addEventListener('click', () => { Audio_.muted = !Audio_.muted; el('b-mute').textContent = Audio_.muted ? '✕' : '♪'; });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) setPaused(true); });
+  addEventListener('blur', () => setPaused(true));
+
+  // =========================================================
+  // Input
+  // =========================================================
+  function isTouch() { return ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || innerWidth < 820; }
+  function syncTouchUI() { el('touch').classList.toggle('hidden', !isTouch()); }
+  syncTouchUI(); addEventListener('resize', syncTouchUI);
+
+  addEventListener('keydown', e => {
+    keys[e.code] = true;
+    if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
+    if (S.phase !== 'play' || S.paused) return;
+    if (e.code === 'Space') doRoll();
+    if (e.code === 'KeyE') toggleCar();
+    if (e.code === 'KeyJ') atkHeld = true;
+    if (e.code === 'KeyP') setPaused(true);
+  });
+  addEventListener('keyup', e => { keys[e.code] = false; if (e.code === 'KeyJ') atkHeld = false; });
+  canvas.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; mouse.moved = 3; });
+  canvas.addEventListener('mousedown', e => { if (e.button === 0) { Audio_.init(); mouse.down = true; mouse.x = e.clientX; mouse.y = e.clientY; mouse.moved = 3; } });
+  addEventListener('mouseup', e => { if (e.button === 0) mouse.down = false; });
+  addEventListener('contextmenu', e => e.preventDefault());
+
+  const zone = el('joy-zone'), jb = el('joy-base'), jk = el('joy-knob');
+  let joyCx = 0, joyCy = 0;
+  zone.addEventListener('pointerdown', e => {
+    if (joy.id !== null) return; Audio_.init(); joy.id = e.pointerId; zone.setPointerCapture(e.pointerId);
+    joyCx = e.clientX; joyCy = e.clientY; jb.style.left = joyCx + 'px'; jb.style.top = joyCy + 'px'; jb.classList.add('on'); jk.style.transform = 'translate(0,0)';
+  });
+  zone.addEventListener('pointermove', e => {
+    if (e.pointerId !== joy.id) return;
+    let dx = e.clientX - joyCx, dy = e.clientY - joyCy; const m = 44, d = Math.hypot(dx, dy);
+    if (d > m) { dx = dx / d * m; dy = dy / d * m; }
+    jk.style.transform = 'translate(' + dx + 'px,' + dy + 'px)'; joy.x = dx / m; joy.y = dy / m;
+    if (Math.hypot(joy.x, joy.y) < .18) { joy.x = 0; joy.y = 0; }
+  });
+  const joyEnd = e => { if (e.pointerId !== joy.id) return; joy.id = null; joy.x = joy.y = 0; jb.classList.remove('on'); };
+  zone.addEventListener('pointerup', joyEnd); zone.addEventListener('pointercancel', joyEnd);
+
+  function holdBtn(id, down, up) {
+    const b = el(id);
+    b.addEventListener('pointerdown', e => { e.preventDefault(); Audio_.init(); b.setPointerCapture(e.pointerId); b.classList.add('pressed'); down(); });
+    const u = () => { b.classList.remove('pressed'); if (up) up(); };
+    b.addEventListener('pointerup', u); b.addEventListener('pointercancel', u);
+  }
+  holdBtn('bt-atk', () => { atkHeld = true; attack(); }, () => { atkHeld = false; });
+  holdBtn('bt-roll', () => doRoll());
+  holdBtn('bt-car', () => toggleCar());
+
+  // =========================================================
+  // Main loop
+  // =========================================================
+  let last = performance.now();
+  function frame(now) {
+    requestAnimationFrame(frame);
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (!WORLD) return;
+    if (mouse.moved > 0) mouse.moved -= dt;
+    if (S.phase === 'play' && !S.paused) update(dt);
+    else if (S.phase === 'win' || S.phase === 'lose') { S.time += 0; }
+    if (S.phase !== 'loading') render();
+  }
+  requestAnimationFrame(frame);
+
+  loadAll().then(() => {
+    buildWorld(); resetGame(); S.phase = 'title';
+    camX = player.x - VW / zoom / 2; camY = player.y - VH / zoom * .56;
+    el('loading').style.display = 'none'; el('btn-play').style.display = '';
+    const b = getBest(); if (b) el('over-msg').textContent = '最佳清場 ' + b + ' 秒';
+  }).catch(err => { el('loading').textContent = '載入失敗，請用 http 伺服器開啟（' + err.message + '）'; });
+
+  // test hook (prototype only)
+  window.__doggo = { S, player, get enemies() { return enemies; }, get cars() { return cars; }, attack, doRoll, toggleCar };
+})();
+</script>
+</body>
+</html>
