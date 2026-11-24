@@ -1,1 +1,7 @@
 .rocket-chair-platform-bar p{margin:0}.rocket-chair-stage{display:flex;justify-content:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#fff}.rocket-chair-stage iframe{display:block;width:min(100%,430px);height:min(860px,calc(100svh - 150px));min-height:600px;border:0;background:#fff;touch-action:none}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  /* 返回鈕疊在遊戲畫面左上角（拿掉上方白色橫條），樣式配合遊戲的美漫圓鈕；遊戲裡已有自己的分享鈕 */
+  #view-rocket-chair .rocket-chair-platform-bar{position:absolute;z-index:4;top:calc(env(safe-area-inset-top) + 10px);left:calc(env(safe-area-inset-left) + 10px);padding:0;background:none}
+  #view-rocket-chair .fs-exit{width:44px;height:44px;border:3px solid #1d1b1a;border-radius:50%;background:#fff;color:#1d1b1a;box-shadow:0 0 0 3px #fff,0 0 0 5px #1d1b1a,0 5px 0 5px #1d1b1a}
+  #view-rocket-chair .share-result{display:none!important}
+}
