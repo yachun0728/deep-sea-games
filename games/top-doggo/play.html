@@ -1491,7 +1491,7 @@
   function setTutorialStep(step) {
     tutorial.step=step;
     tutorial.marker.visible=step===0; tutorial.target.visible=step===1;
-    ['joy-zone','btn-fire','btn-switch','btn-dodge'].forEach((id,i)=>document.getElementById(id).classList.toggle('tutorial-focus',i===step));
+    ['joy-base','btn-fire','btn-switch','btn-dodge'].forEach((id,i)=>document.getElementById(id).classList.toggle('tutorial-focus',i===step));
     if(step===1){const p=trainingSpot(5);tutorial.target.position.set(p.x,1.4,p.z);}
     tutorialText();
   }
@@ -1519,7 +1519,7 @@
     if(!tutorial.active)return;
     for(const shot of projectiles)scene.remove(shot.mesh);projectiles.length=0;
     tutorial.active=false;tutorialSeen=true;
-    ['joy-zone','btn-fire','btn-switch','btn-dodge'].forEach(id=>document.getElementById(id).classList.remove('tutorial-focus'));
+    ['joy-base','btn-fire','btn-switch','btn-dodge'].forEach(id=>document.getElementById(id).classList.remove('tutorial-focus'));
     try{localStorage.setItem(TUTORIAL_KEY,'1');}catch(_){}
     tutorial.marker.visible=tutorial.target.visible=false;tutorialPanel.hidden=true;
     for(const e of enemies)e.mesh.visible=true;for(const b of bones)b.visible=true;
