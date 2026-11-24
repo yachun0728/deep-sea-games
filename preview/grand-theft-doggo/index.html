@@ -192,6 +192,9 @@
     cursor: pointer; letter-spacing: 1px; box-shadow: 0 6px 24px rgba(255, 42, 133, 0.6);
   }
   .start-btn:active { transform: scale(0.96); }
+  #diff-row { display: flex; gap: 8px; margin: 0 0 12px; }
+  #diff-row button { background: rgba(255,255,255,.1); border: 2px solid rgba(255,255,255,.35); color: #fff; font-weight: 900; font-size: 15px; padding: 8px 18px; border-radius: 999px; cursor: pointer; min-height: 44px; }
+  #diff-row button.on { background: #ffc83d; color: #1a1620; border-color: #1a1620; }
 </style>
 </head>
 <body>
@@ -244,7 +247,7 @@
   <button class="action-btn" id="btn-dodge">🌀<span>DODGE</span></button>
   <button class="action-btn" id="btn-crouch">🛡️<span>CROUCH</span></button>
   <button class="action-btn" id="btn-turn180">↩️<span>180°</span></button>
-  <button class="action-btn" id="btn-switch">🐾<span>PAW/GUN</span></button>
+  <button class="action-btn" id="btn-switch">🔪<span>KNIFE</span></button>
   <button class="action-btn" id="btn-car">🏎️<span>DRIVE</span></button>
 </div>
 
@@ -255,8 +258,9 @@
   <div id="over-msg"></div>
   <div class="controls-hint">
     <b>📱 手機：</b>左手搖桿移動、滑動畫面轉向、右側按鈕 開火／近戰、翻滾、蹲下、180° 轉身、上車。<br><b>📱 Mobile:</b> Left Thumb Move • Swipe Screen Aim • Right Arc: Fire/Paw Punch, Dodge Roll, Crouch Cover, 180° Turn &amp; Hijack.<br>
-    <b>💻 電腦：</b>點擊鎖定視角、WASD 移動、左鍵開火、空白鍵翻滾。<br><b>💻 PC:</b> Click to Lock Aim • <b>WASD</b> Move • <b>Left-Click</b> Shoot/Paw • <b>Right-Click</b> Focus • <b>Space</b> Dodge • <b>C</b> Crouch • <b>X</b> 180° • <b>Q</b> Paw/Gun • <b>E</b> Car
+    <b>💻 電腦：</b>點擊鎖定視角、WASD 移動、左鍵攻擊、空白鍵翻滾、Q 切換槍／小刀／揮拳、E 上車。<br><b>💻 PC:</b> Click to Lock Aim • <b>WASD</b> Move • <b>Left-Click</b> Shoot/Paw • <b>Right-Click</b> Focus • <b>Space</b> Dodge • <b>C</b> Crouch • <b>X</b> 180° • <b>Q</b> Gun/Knife/Paw • <b>E</b> Car
   </div>
+  <div id="diff-row"><button type="button" data-d="easy">簡單</button><button type="button" data-d="normal">普通</button><button type="button" data-d="hard">困難</button></div>
   <button class="start-btn" id="btn-play">▶ PLAY VICE PAW</button>
 </div>
 
@@ -351,6 +355,15 @@
   scene.fog = new THREE.FogExp2(0xc9b894, 0.0085);
   const camera = new THREE.PerspectiveCamera(56, window.innerWidth / window.innerHeight, 0.1, 240);
   const colliders = [];
+  // three difficulty levels: enemy health, damage, fire rate, speed, bullet speed, melee damage
+  const DIFFS = {
+    easy:   { hp: 1.6, dmg: 0.7, rate: 1.5, speed: 0.85, bspeed: 14, melee: 6 },
+    normal: { hp: 2.6, dmg: 1.0, rate: 1.0, speed: 1.0, bspeed: 18, melee: 10 },
+    hard:   { hp: 4.2, dmg: 1.5, rate: 0.6, speed: 1.25, bspeed: 23, melee: 16 }
+  };
+  let DIFF_KEY = 'normal';
+  try { const k = localStorage.getItem('proto-grand-theft-doggo-diff'); if (DIFFS[k]) DIFF_KEY = k; } catch (e) { /* ignore */ }
+  let DIFF = DIFFS[DIFF_KEY];
   let lastDt = 0.016;
 
   function loadImage(src) {
@@ -380,6 +393,7 @@
     for (const id in MAN) if (id.startsWith('characters/enemies/')) jobs.push(loadImage('assets/' + MAN[id].file).then(i => texOf(id, i)));
     jobs.push(loadImage('assets/hero/atlas_attack_run.png').then(i => texOf('heroA', i)));
     jobs.push(loadImage('assets/hero/atlas_roll_crouch.png').then(i => texOf('heroB', i)));
+    for (const w of ['knife', 'fist']) for (const [k, f] of [['heroA', 'atlas_attack_run'], ['heroB', 'atlas_roll_crouch']]) jobs.push(new Promise(res => { const im = new Image(); im.onload = () => { texOf(k + '_' + w, im); res(); }; im.onerror = () => res(); im.src = 'assets/hero/' + f + '_' + w + '.png'; }));
     await Promise.all(jobs);
   } catch (err) { btnPlayEarly.textContent = '載入失敗，請重新整理'; throw err; }
   if (!window.Toon || !window.CityBuildings || !window.CityProps) { btnPlayEarly.textContent = '模型載入失敗，請重新整理'; throw new Error('3D models missing'); }
@@ -623,15 +637,17 @@
   player.position.set(START.x, 0, START.z);
   const dogBodyGroup = new THREE.Group();      // kept so the framework's references still work
   player.add(dogBodyGroup);
-  const HERO_CELL = 3.53, HERO_FEET = 1 - 231 / 256;      // 256px cell: character is 174px tall (= 2.4u), feet at y=231
+  const HERO_CELL = 3.0, HERO_FEET = 1 - 232 / 256;       // 256px cell: every animation is normalised so the standing dog is ~205px (= 2.4u) tall, feet at y=231
   const heroSprite = makeSprite(TEX.heroA, HERO_CELL, HERO_CELL, HERO_FEET);
   dogBodyGroup.add(heroSprite);
   const heroShadow = makeShadow(1.9); player.add(heroShadow);
-  for (const k of ['heroA', 'heroB']) { TEX[k].repeat.set(1 / 6, 1 / 2); TEX[k].wrapS = TEX[k].wrapT = THREE.ClampToEdgeWrapping; TEX[k].minFilter = THREE.LinearFilter; TEX[k].generateMipmaps = false; TEX[k].needsUpdate = true; }
+  for (const k of Object.keys(TEX).filter(k => /^heroA|^heroB/.test(k))) { TEX[k].repeat.set(1 / 6, 1 / 2); TEX[k].wrapS = TEX[k].wrapT = THREE.ClampToEdgeWrapping; TEX[k].minFilter = THREE.LinearFilter; TEX[k].generateMipmaps = false; TEX[k].needsUpdate = true; }
   const blaster = { visible: true };
   const heroAnim = { run: 0, crouch: 0, breathe: 0 };
+  let heroWeapon = 'gun';
+  function setHeroWeapon(w) { heroWeapon = ['gun', 'knife', 'fist'][w] || 'gun'; }
   function setHeroFrame(atlasKey, row, col) {
-    const t = TEX[atlasKey]; heroSprite.material.map = t; t.offset.set(col / 6, 1 - (row + 1) / 2);
+    const t = (heroWeapon !== 'gun' && TEX[atlasKey + '_' + heroWeapon]) || TEX[atlasKey]; heroSprite.material.map = t; t.offset.set(col / 6, 1 - (row + 1) / 2);
   }
   function updateHero(dt, movingMag, inX) {
     heroAnim.breathe += dt;
@@ -705,7 +721,7 @@
     const hpBar = new THREE.Mesh(barGeo, new THREE.MeshBasicMaterial({ color: 0xff2a54, side: THREE.DoubleSide, depthTest: false }));
     hpBar.position.set(-0.97, 0, 0.01); hpBg.renderOrder = 10; hpBar.renderOrder = 11; hpGrp.add(hpBg, hpBar); grp.add(hpGrp);
     const f = freeSpotU(x, z, 0.6); grp.position.set(f.x, 0, f.z); scene.add(grp);
-    enemies.push({ mesh: grp, hpBar, hp: T.hp, maxHp: T.hp, type, sprite: sp, texF: TEX[fk], texB: TEX[bk], front: true, flash: 0, bobT: Math.random() * 6, shootCd: 1.5 + Math.random() * 2, patrolAngle: Math.random() * Math.PI * 2 });
+    enemies.push({ mesh: grp, hpBar, hp: T.hp * DIFF.hp, maxHp: T.hp * DIFF.hp, type, sprite: sp, texF: TEX[fk], texB: TEX[bk], front: true, flash: 0, bobT: Math.random() * 6, shootCd: 1.5 + Math.random() * 2, patrolAngle: Math.random() * Math.PI * 2 });
   }
   const _bq = new THREE.Quaternion();
   function updateEnemyBars() {
@@ -738,17 +754,18 @@
     );
     mesh.position.copy(origin);
     scene.add(mesh);
-    projectiles.push({ mesh, vel: dir.clone().multiplyScalar(isPlayer ? 36 : 18), isPlayer, life: 1.4 });
+    projectiles.push({ mesh, vel: dir.clone().multiplyScalar(isPlayer ? 36 : DIFF.bspeed), isPlayer, life: 1.4 });
   }
 
-  function spawnPawSlashVFX(pos, yaw) {
+  function spawnPawSlashVFX(pos, yaw, knife) {
     const ring = new THREE.Mesh(
       new THREE.RingGeometry(0.45, 1.15, 16, 1, -Math.PI * 0.4, Math.PI * 0.8),
-      new THREE.MeshBasicMaterial({ color: 0xffc83d, side: THREE.DoubleSide, transparent: true, opacity: 0.9 })
+      new THREE.MeshBasicMaterial({ color: knife ? 0xe8f2ff : 0xffc83d, side: THREE.DoubleSide, transparent: true, opacity: 0.9 })
     );
     ring.position.set(pos.x, 1.15, pos.z);
     ring.rotation.x = -Math.PI / 2;
     ring.rotation.z = yaw + Math.PI / 2;
+    if (knife) ring.scale.setScalar(1.5);
     scene.add(ring);
     vfxList.push({ mesh: ring, life: 0.24, maxLife: 0.24 });
   }
@@ -793,6 +810,13 @@
       setFade(p.mats, p.a);
     }
   }
+
+  // --- difficulty buttons on the start / pause screen ---
+  function applyDifficulty() { for (const e of enemies) { e.maxHp = ENEMY[e.type].hp * DIFF.hp; e.hp = e.maxHp; e.hpBar.scale.x = 1; } }
+  function refreshDiffUI() { document.querySelectorAll('#diff-row button').forEach(b => b.classList.toggle('on', b.dataset.d === DIFF_KEY)); }
+  function setDifficulty(k) { if (!DIFFS[k]) return; DIFF_KEY = k; DIFF = DIFFS[k]; try { localStorage.setItem('proto-grand-theft-doggo-diff', k); } catch (e) { /* ignore */ } applyDifficulty(); refreshDiffUI(); }
+  document.querySelectorAll('#diff-row button').forEach(b => b.addEventListener('click', ev => { ev.stopPropagation(); setDifficulty(b.dataset.d); }));
+  refreshDiffUI();
 
   // ==========================================
   // 7. GAME STATE & INPUT CONTROLS
@@ -935,12 +959,12 @@
   }
 
   function toggleWeaponMode() {
-    state.forcePawMode = !state.forcePawMode;
-    blaster.visible = !state.forcePawMode;
-    weaponLabel.textContent = state.forcePawMode
-      ? '🐾 PAW PUNCH MODE (HEAVY MELEE)'
-      : '🎾 TENNIS BLASTER (AUTO-PAW CLOSE)';
-    btnSwitch.innerHTML = state.forcePawMode ? '🎾<span>GUN</span>' : '🐾<span>PAW</span>';
+    state.weapon = ((state.weapon | 0) + 1) % 3;
+    state.forcePawMode = state.weapon !== 0;
+    blaster.visible = state.weapon === 0;
+    weaponLabel.textContent = ['🎾 TENNIS BLASTER (SHOOT)', '🔪 KNIFE (FAST MELEE)', '🐾 PAW PUNCH (HEAVY MELEE)'][state.weapon];
+    btnSwitch.innerHTML = ['🔪<span>KNIFE</span>', '🐾<span>PAW</span>', '🎾<span>GUN</span>'][state.weapon];
+    setHeroWeapon(state.weapon);
   }
 
   function toggleCar() {
@@ -980,48 +1004,32 @@
 
   function triggerAttack() {
     if (state.drivingCar || state.fireCd > 0) return;
-
-    // Check if an enemy is within close melee range for automatic Paw Punch
-    let closestEnemy = null;
-    let closestDist = 3.3;
-    for (const e of enemies) {
-      const d = e.mesh.position.distanceTo(player.position);
-      if (d < closestDist) {
-        closestDist = d;
-        closestEnemy = e;
-      }
-    }
-
-    if (state.forcePawMode || closestEnemy) {
-      // PAW PUNCH MELEE
-      state.fireCd = 0.34;
-      state.punchAnimTimer = 0.24;
-      AudioSys.play('punch');
-
-      const forward = new THREE.Vector3(-Math.sin(state.yaw), 0, -Math.cos(state.yaw));
-      // Lunge forward slightly
-      moveEntityWithCollision(player.position, forward.clone().multiplyScalar(1.15), 0.55);
-      spawnPawSlashVFX(player.position.clone().addScaledVector(forward, 1.1), state.yaw);
-
-      // Hit all enemies in front melee arc
+    const w = state.weapon | 0, knife = w === 1, fist = w === 2;
+    const forward = new THREE.Vector3(-Math.sin(state.yaw), 0, -Math.cos(state.yaw));
+    if (knife || fist) {
+      state.fireCd = knife ? 0.24 : 0.34; state.punchAnimTimer = 0.24; AudioSys.play(knife ? 'shoot' : 'punch');
+      moveEntityWithCollision(player.position, forward.clone().multiplyScalar(knife ? 1.4 : 1.15), 0.55);
+      spawnPawSlashVFX(player.position.clone().addScaledVector(forward, 1.2), state.yaw, knife);
+      const reach = knife ? 4.4 : 3.6, dmg = knife ? 48 : 64;
       for (let i = enemies.length - 1; i >= 0; i--) {
-        const e = enemies[i];
-        const diff = e.mesh.position.clone().sub(player.position);
-        const dist = diff.length();
-        if (dist < 3.4) {
-          diff.normalize();
-          if (diff.dot(forward) > 0.25 || dist < 1.6) {
-            damageEnemy(i, 60, forward.clone().multiplyScalar(6.5));
-          }
-        }
+        const e = enemies[i], diff = e.mesh.position.clone().sub(player.position).setY(0), dist = diff.length();
+        if (dist < reach) { diff.normalize(); if (diff.dot(forward) > (knife ? 0.05 : 0.25) || dist < 1.6) damageEnemy(i, dmg, forward.clone().multiplyScalar(knife ? 5 : 6.5)); }
       }
     } else {
-      // TENNIS BALL BLASTER TOWARD DEAD-CENTER CROSSHAIR
-      state.fireCd = 0.18;
-      AudioSys.play('shoot');
+      state.fireCd = 0.2; AudioSys.play('shoot');
       const targetPt = getCenterCrosshairTarget();
       const muzzlePos = player.position.clone().add(new THREE.Vector3(0, state.isCrouching ? 0.78 : 1.15, 0));
-      const shotDir = targetPt.sub(muzzlePos).normalize();
+      let shotDir = targetPt.sub(muzzlePos).normalize();
+      // aim assist: an enemy within ~12 degrees of the shot line pulls the shot onto itself
+      const flat = new THREE.Vector3(shotDir.x, 0, shotDir.z).normalize();
+      let best = null, bestAng = 0.21;
+      for (const e of enemies) {
+        const t = new THREE.Vector3(e.mesh.position.x - muzzlePos.x, 0, e.mesh.position.z - muzzlePos.z), dd = t.length();
+        if (dd < 1 || dd > 42) continue;
+        const ang = Math.acos(Math.min(1, flat.dot(t.normalize())));
+        if (ang < bestAng) { bestAng = ang; best = e; }
+      }
+      if (best) shotDir = new THREE.Vector3(best.mesh.position.x - muzzlePos.x, 1.0 - muzzlePos.y, best.mesh.position.z - muzzlePos.z).normalize();
       spawnProjectile(muzzlePos, shotDir, true);
     }
   }
@@ -1390,13 +1398,18 @@
 
       if (dist < 24) {
         e.mesh.rotation.y = Math.atan2(toPlayer.x, toPlayer.z);
-        if (dist > 5.5) {
+        if (dist > (e.type === 'shooter' ? 7 : 1.9)) {
           toPlayer.normalize();
-          moveEntityWithCollision(e.mesh.position, toPlayer.multiplyScalar(3.4 * dt), 0.5);
+          moveEntityWithCollision(e.mesh.position, toPlayer.multiplyScalar(3.4 * DIFF.speed * dt), 0.5);
+        }
+        e.melCd = (e.melCd || 0) - dt;
+        if (dist < 2.4 && e.melCd <= 0 && state.dodgeTimer <= 0 && !state.drivingCar && state.hp > 0) {
+          e.melCd = 1.1; state.hp -= DIFF.melee * (e.type === 'boss' ? 1.6 : e.type === 'brawler' ? 1.3 : 1) * (state.isCrouching ? 0.5 : 1);
+          AudioSys.play('hit'); updateHUD(); if (state.hp <= 0) setPaused(true);
         }
         e.shootCd -= dt;
         if (e.shootCd <= 0 && dist < 19) {
-          e.shootCd = 2.1 + Math.random() * 1.3;
+          e.shootCd = (2.1 + Math.random() * 1.3) * DIFF.rate;
           const aimDir = player.position.clone().sub(e.mesh.position).setY(0).normalize();
           spawnProjectile(e.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0)), aimDir, false);
         }
@@ -1417,15 +1430,15 @@
       let hit = p.life <= 0;
       if (!hit && p.isPlayer) {
         for (let j = enemies.length - 1; j >= 0; j--) {
-          if (enemies[j].mesh.position.distanceTo(p.mesh.position) < 1.15) {
-            damageEnemy(j, 35, p.vel.clone().normalize().multiplyScalar(3));
+          if (Math.hypot(enemies[j].mesh.position.x - p.mesh.position.x, enemies[j].mesh.position.z - p.mesh.position.z) < 1.25 && p.mesh.position.y < 3.2) {
+            damageEnemy(j, 32, p.vel.clone().normalize().multiplyScalar(3));
             hit = true;
             break;
           }
         }
       } else if (!hit && !p.isPlayer) {
-        if (player.position.distanceTo(p.mesh.position) < 0.95 && state.dodgeTimer <= 0 && !state.drivingCar) {
-          state.hp -= state.isCrouching ? 4 : 9;
+        if (Math.hypot(player.position.x - p.mesh.position.x, player.position.z - p.mesh.position.z) < 0.95 && state.dodgeTimer <= 0 && !state.drivingCar) {
+          state.hp -= (state.isCrouching ? 0.45 : 1) * 9 * DIFF.dmg;
           AudioSys.play('hit');
           updateHUD();
           hit = true;
@@ -1498,7 +1511,7 @@
   });
 
   btnPlay.disabled = false; btnPlay.textContent = '▶ PLAY VICE PAW';
-  window.__doggo = { state, player, camera, enemies, cars, blocks, scene, moveBlockedAt, bulletBlocked, colliders };
+  window.__doggo = { state, player, camera, enemies, cars, blocks, scene, moveBlockedAt, bulletBlocked, colliders, projectiles, triggerAttack, setDifficulty };
   updateHUD();
   animate();
 })();
