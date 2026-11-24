@@ -1,0 +1,1134 @@
+{
+  "version": 1,
+  "assets": {
+    "buildings/hotel_01": {
+      "file": "buildings/hotel_01.png",
+      "kind": "buildings",
+      "sourceSize": [
+        337,
+        305
+      ],
+      "drawSize": [
+        256,
+        232
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -104.0,
+        "y": -112,
+        "w": 208,
+        "h": 112
+      }
+    },
+    "buildings/club_01": {
+      "file": "buildings/club_01.png",
+      "kind": "buildings",
+      "sourceSize": [
+        322,
+        293
+      ],
+      "drawSize": [
+        256,
+        233
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -104.0,
+        "y": -112,
+        "w": 208,
+        "h": 112
+      }
+    },
+    "buildings/restaurant_01": {
+      "file": "buildings/restaurant_01.png",
+      "kind": "buildings",
+      "sourceSize": [
+        322,
+        299
+      ],
+      "drawSize": [
+        256,
+        238
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -104.0,
+        "y": -112,
+        "w": 208,
+        "h": 112
+      }
+    },
+    "buildings/store_01": {
+      "file": "buildings/store_01.png",
+      "kind": "buildings",
+      "sourceSize": [
+        333,
+        246
+      ],
+      "drawSize": [
+        256,
+        189
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -104.0,
+        "y": -112,
+        "w": 208,
+        "h": 112
+      }
+    },
+    "buildings/garage_01": {
+      "file": "buildings/garage_01.png",
+      "kind": "buildings",
+      "sourceSize": [
+        326,
+        265
+      ],
+      "drawSize": [
+        256,
+        208
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -104.0,
+        "y": -112,
+        "w": 208,
+        "h": 112
+      }
+    },
+    "buildings/gas_01": {
+      "file": "buildings/gas_01.png",
+      "kind": "buildings",
+      "sourceSize": [
+        326,
+        269
+      ],
+      "drawSize": [
+        256,
+        211
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -104.0,
+        "y": -112,
+        "w": 208,
+        "h": 112
+      }
+    },
+    "buildings/apartment_01": {
+      "file": "buildings/apartment_01.png",
+      "kind": "buildings",
+      "sourceSize": [
+        321,
+        331
+      ],
+      "drawSize": [
+        256,
+        264
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -104.0,
+        "y": -112,
+        "w": 208,
+        "h": 112
+      }
+    },
+    "buildings/office_01": {
+      "file": "buildings/office_01.png",
+      "kind": "buildings",
+      "sourceSize": [
+        293,
+        344
+      ],
+      "drawSize": [
+        256,
+        301
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -104.0,
+        "y": -112,
+        "w": 208,
+        "h": 112
+      }
+    },
+    "buildings/factory_01": {
+      "file": "buildings/factory_01.png",
+      "kind": "buildings",
+      "sourceSize": [
+        333,
+        301
+      ],
+      "drawSize": [
+        256,
+        231
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -104.0,
+        "y": -112,
+        "w": 208,
+        "h": 112
+      }
+    },
+    "buildings/warehouse_01": {
+      "file": "buildings/warehouse_01.png",
+      "kind": "buildings",
+      "sourceSize": [
+        346,
+        281
+      ],
+      "drawSize": [
+        256,
+        208
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -104.0,
+        "y": -112,
+        "w": 208,
+        "h": 112
+      }
+    },
+    "buildings/house_01": {
+      "file": "buildings/house_01.png",
+      "kind": "buildings",
+      "sourceSize": [
+        330,
+        284
+      ],
+      "drawSize": [
+        256,
+        220
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -104.0,
+        "y": -112,
+        "w": 208,
+        "h": 112
+      }
+    },
+    "buildings/police_01": {
+      "file": "buildings/police_01.png",
+      "kind": "buildings",
+      "sourceSize": [
+        342,
+        292
+      ],
+      "drawSize": [
+        256,
+        219
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -104.0,
+        "y": -112,
+        "w": 208,
+        "h": 112
+      }
+    },
+    "characters/hero/front_armed": {
+      "file": "characters/hero/front_armed.png",
+      "kind": "characters",
+      "sourceSize": [
+        269,
+        307
+      ],
+      "drawSize": [
+        84,
+        96
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "characters/hero/front": {
+      "file": "characters/hero/front.png",
+      "kind": "characters",
+      "sourceSize": [
+        242,
+        306
+      ],
+      "drawSize": [
+        84,
+        106
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "characters/hero/left": {
+      "file": "characters/hero/left.png",
+      "kind": "characters",
+      "sourceSize": [
+        193,
+        302
+      ],
+      "drawSize": [
+        84,
+        131
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "characters/hero/back_armed": {
+      "file": "characters/hero/back_armed.png",
+      "kind": "characters",
+      "sourceSize": [
+        239,
+        304
+      ],
+      "drawSize": [
+        84,
+        107
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "characters/hero/back": {
+      "file": "characters/hero/back.png",
+      "kind": "characters",
+      "sourceSize": [
+        246,
+        303
+      ],
+      "drawSize": [
+        84,
+        103
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "characters/hero/right": {
+      "file": "characters/hero/right.png",
+      "kind": "characters",
+      "sourceSize": [
+        197,
+        302
+      ],
+      "drawSize": [
+        84,
+        129
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "characters/enemies/thug_front": {
+      "file": "characters/enemies/thug_front.png",
+      "kind": "characters",
+      "sourceSize": [
+        279,
+        321
+      ],
+      "drawSize": [
+        74,
+        85
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "characters/enemies/thug_back": {
+      "file": "characters/enemies/thug_back.png",
+      "kind": "characters",
+      "sourceSize": [
+        252,
+        325
+      ],
+      "drawSize": [
+        74,
+        95
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "characters/enemies/shooter_front": {
+      "file": "characters/enemies/shooter_front.png",
+      "kind": "characters",
+      "sourceSize": [
+        311,
+        321
+      ],
+      "drawSize": [
+        80,
+        83
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "characters/enemies/shooter_back": {
+      "file": "characters/enemies/shooter_back.png",
+      "kind": "characters",
+      "sourceSize": [
+        291,
+        317
+      ],
+      "drawSize": [
+        80,
+        87
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "characters/enemies/brawler_front": {
+      "file": "characters/enemies/brawler_front.png",
+      "kind": "characters",
+      "sourceSize": [
+        339,
+        327
+      ],
+      "drawSize": [
+        100,
+        96
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "characters/enemies/brawler_back": {
+      "file": "characters/enemies/brawler_back.png",
+      "kind": "characters",
+      "sourceSize": [
+        301,
+        327
+      ],
+      "drawSize": [
+        100,
+        109
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "characters/enemies/boss_front": {
+      "file": "characters/enemies/boss_front.png",
+      "kind": "characters",
+      "sourceSize": [
+        374,
+        333
+      ],
+      "drawSize": [
+        118,
+        105
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "characters/enemies/boss_back": {
+      "file": "characters/enemies/boss_back.png",
+      "kind": "characters",
+      "sourceSize": [
+        330,
+        328
+      ],
+      "drawSize": [
+        118,
+        117
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    },
+    "vegetation/palm_tall": {
+      "file": "vegetation/palm_tall.png",
+      "kind": "vegetation",
+      "sourceSize": [
+        76,
+        117
+      ],
+      "drawSize": [
+        76,
+        117
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -11.0,
+        "y": -18,
+        "w": 22,
+        "h": 18
+      }
+    },
+    "vegetation/palm_small": {
+      "file": "vegetation/palm_small.png",
+      "kind": "vegetation",
+      "sourceSize": [
+        53,
+        63
+      ],
+      "drawSize": [
+        54,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -8.0,
+        "y": -14,
+        "w": 16,
+        "h": 14
+      }
+    },
+    "vegetation/planter": {
+      "file": "vegetation/planter.png",
+      "kind": "vegetation",
+      "sourceSize": [
+        51,
+        56
+      ],
+      "drawSize": [
+        48,
+        53
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -15.0,
+        "y": -20,
+        "w": 30,
+        "h": 20
+      }
+    },
+    "props/lamp": {
+      "file": "props/lamp.png",
+      "kind": "props",
+      "sourceSize": [
+        28,
+        90
+      ],
+      "drawSize": [
+        30,
+        96
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -6.0,
+        "y": -12,
+        "w": 12,
+        "h": 12
+      }
+    },
+    "props/lamp_double": {
+      "file": "props/lamp_double.png",
+      "kind": "props",
+      "sourceSize": [
+        33,
+        87
+      ],
+      "drawSize": [
+        40,
+        105
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -7.0,
+        "y": -14,
+        "w": 14,
+        "h": 14
+      }
+    },
+    "props/hydrant": {
+      "file": "props/hydrant.png",
+      "kind": "props",
+      "sourceSize": [
+        35,
+        59
+      ],
+      "drawSize": [
+        28,
+        47
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -8.0,
+        "y": -14,
+        "w": 16,
+        "h": 14
+      }
+    },
+    "props/bin": {
+      "file": "props/bin.png",
+      "kind": "props",
+      "sourceSize": [
+        33,
+        47
+      ],
+      "drawSize": [
+        30,
+        43
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -11.0,
+        "y": -18,
+        "w": 22,
+        "h": 18
+      }
+    },
+    "props/cone": {
+      "file": "props/cone.png",
+      "kind": "props",
+      "sourceSize": [
+        34,
+        41
+      ],
+      "drawSize": [
+        26,
+        31
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -7.0,
+        "y": -14,
+        "w": 14,
+        "h": 14
+      }
+    },
+    "props/barrier": {
+      "file": "props/barrier.png",
+      "kind": "props",
+      "sourceSize": [
+        60,
+        61
+      ],
+      "drawSize": [
+        66,
+        67
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -26.0,
+        "y": -18,
+        "w": 52,
+        "h": 18
+      }
+    },
+    "props/crate": {
+      "file": "props/crate.png",
+      "kind": "props",
+      "sourceSize": [
+        49,
+        54
+      ],
+      "drawSize": [
+        52,
+        57
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -20.0,
+        "y": -30,
+        "w": 40,
+        "h": 30
+      }
+    },
+    "props/barrel": {
+      "file": "props/barrel.png",
+      "kind": "props",
+      "sourceSize": [
+        38,
+        64
+      ],
+      "drawSize": [
+        38,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -14.0,
+        "y": -22,
+        "w": 28,
+        "h": 22
+      }
+    },
+    "props/bench": {
+      "file": "props/bench.png",
+      "kind": "props",
+      "sourceSize": [
+        65,
+        39
+      ],
+      "drawSize": [
+        65,
+        39
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -27.0,
+        "y": -20,
+        "w": 54,
+        "h": 20
+      }
+    },
+    "props/umbrella": {
+      "file": "props/umbrella.png",
+      "kind": "props",
+      "sourceSize": [
+        70,
+        67
+      ],
+      "drawSize": [
+        76,
+        73
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -22.5,
+        "y": -35,
+        "w": 45,
+        "h": 35
+      }
+    },
+    "props/surfboards": {
+      "file": "props/surfboards.png",
+      "kind": "props",
+      "sourceSize": [
+        44,
+        73
+      ],
+      "drawSize": [
+        40,
+        66
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -11.0,
+        "y": -15,
+        "w": 22,
+        "h": 15
+      }
+    },
+    "vehicles/convertible": {
+      "file": "vehicles/convertible.png",
+      "kind": "vehicles",
+      "sourceSize": [
+        91,
+        46
+      ],
+      "drawSize": [
+        96,
+        49
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -35.0,
+        "y": -36,
+        "w": 70,
+        "h": 36
+      }
+    },
+    "vehicles/muscle": {
+      "file": "vehicles/muscle.png",
+      "kind": "vehicles",
+      "sourceSize": [
+        81,
+        38
+      ],
+      "drawSize": [
+        96,
+        45
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -35.0,
+        "y": -36,
+        "w": 70,
+        "h": 36
+      }
+    },
+    "vehicles/taxi": {
+      "file": "vehicles/taxi.png",
+      "kind": "vehicles",
+      "sourceSize": [
+        86,
+        43
+      ],
+      "drawSize": [
+        96,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -35.0,
+        "y": -36,
+        "w": 70,
+        "h": 36
+      }
+    },
+    "vehicles/police": {
+      "file": "vehicles/police.png",
+      "kind": "vehicles",
+      "sourceSize": [
+        90,
+        57
+      ],
+      "drawSize": [
+        96,
+        61
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -35.0,
+        "y": -36,
+        "w": 70,
+        "h": 36
+      }
+    },
+    "vehicles/truck": {
+      "file": "vehicles/truck.png",
+      "kind": "vehicles",
+      "sourceSize": [
+        85,
+        59
+      ],
+      "drawSize": [
+        96,
+        67
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -35.0,
+        "y": -36,
+        "w": 70,
+        "h": 36
+      }
+    },
+    "vehicles/motorcycle": {
+      "file": "vehicles/motorcycle.png",
+      "kind": "vehicles",
+      "sourceSize": [
+        85,
+        58
+      ],
+      "drawSize": [
+        58,
+        40
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": {
+        "x": -20.0,
+        "y": -20,
+        "w": 40,
+        "h": 20
+      }
+    },
+    "tiles/asphalt": {
+      "file": "tiles/asphalt.png",
+      "kind": "tile",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "drawSize": [
+        64,
+        64
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "collision": null
+    },
+    "tiles/sidewalk": {
+      "file": "tiles/sidewalk.png",
+      "kind": "tile",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "drawSize": [
+        64,
+        64
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "collision": null
+    },
+    "tiles/grass": {
+      "file": "tiles/grass.png",
+      "kind": "tile",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "drawSize": [
+        64,
+        64
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "collision": null
+    },
+    "tiles/sand": {
+      "file": "tiles/sand.png",
+      "kind": "tile",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "drawSize": [
+        64,
+        64
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "collision": null
+    },
+    "tiles/water": {
+      "file": "tiles/water.png",
+      "kind": "tile",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "drawSize": [
+        64,
+        64
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "collision": null
+    },
+    "tiles/road_h": {
+      "file": "tiles/road_h.png",
+      "kind": "tile",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "drawSize": [
+        64,
+        64
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "collision": null
+    },
+    "tiles/road_v": {
+      "file": "tiles/road_v.png",
+      "kind": "tile",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "drawSize": [
+        64,
+        64
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "collision": null
+    },
+    "tiles/intersection": {
+      "file": "tiles/intersection.png",
+      "kind": "tile",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "drawSize": [
+        64,
+        64
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "collision": null
+    },
+    "tiles/crosswalk_h": {
+      "file": "tiles/crosswalk_h.png",
+      "kind": "tile",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "drawSize": [
+        64,
+        64
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "collision": null
+    },
+    "tiles/crosswalk_v": {
+      "file": "tiles/crosswalk_v.png",
+      "kind": "tile",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "drawSize": [
+        64,
+        64
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "collision": null
+    },
+    "backgrounds/sunset_city": {
+      "file": "backgrounds/sunset_city.png",
+      "kind": "background",
+      "sourceSize": [
+        594,
+        166
+      ],
+      "drawSize": [
+        1188,
+        332
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "collision": null
+    }
+  }
+}

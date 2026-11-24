@@ -3124,5 +3124,6 @@
   "siege-architect.say.003": "Level {lv}: attack #{n}.",
   "siege-architect.say.004": "Drag unit cards onto the timeline, then press Attack. Pick levels from the menu at the top left.",
   "siege-architect.say.005": "Leaderboard result could not be sent. It will be sent again on your next clear.",
-  "card.cat-match.tag": "Cozy match-three"
+  "card.cat-match.tag": "Cozy match-three",
+  "card.top-doggo.tag": "Street action"
 }

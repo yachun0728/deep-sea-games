@@ -58,6 +58,8 @@ deep-sea-games/
 │   ├── banquet_i18n.py       最後的晚餐六語系字串來源，產生 games/banquet/i18n.js
 │   ├── test_mermaid.mjs      人魚接龍行為測試（可選 Node.js）
 │   ├── test_tetris.mjs       俄羅斯方塊行為測試（父頁橋接＋子頁流程，可選 Node.js）
+│   ├── test_top_doggo.mjs    TOP DOGGO 行為測試（父頁橋接＋遊戲頁字串表，可選 Node.js）
+│   ├── test_top_doggo_board.mjs  TOP DOGGO 三難度排行榜（真實 Worker 路由＋SQLite，可選 Node.js）
 │   ├── test_on_pitch.mjs     不准跑調行為測試（免費開局、單次結算、暫停／離頁、英文畫面，可選 Node.js）
 │   ├── test_last_hair.mjs    尊嚴保衛戰行為測試（可選 Node.js）
 │   ├── test_pet_walk.mjs     小灰出門行為測試（可選 Node.js）
@@ -115,6 +117,7 @@ flowchart TD
 | eat-smaller / mirror-twins / shadow-relay | EATS／deepSeaEatSmaller、MIRR／deepSeaMirrorTwins、SHAD／deepSeaShadowRelay；original.html 為子頁（數字吞噬／鏡像雙子／影子接力，關卡制，一局內每關首通 +2 點） |
 | one-line-defense | ONEL、deepSeaOneLine；original.html 為子頁（一筆畫守城，每撐過 30 秒 +2 點） |
 | tetris | TET、deepSeaTetris；original.html 為 srcdoc 子頁（俄羅斯方塊，免費、無 BONUS，成績不換點數） |
+| top-doggo | TD、deepSeaTopDoggo；play.html 為 iframe 子頁（three.js 3D 街區動作，素材在 `games/top-doggo/assets`、`models`；免費、無 BONUS，成績 = 到達關卡，三個難度各一張榜 `top-doggo-easy／normal／hard`，Worker 做合理性驗證） |
 | on-pitch | OP（內部狀態在 game.js 自己的 IIFE 內）、deepSeaOnPitch；畫面直接用 `#op-canvas`（400×720），不使用 iframe。免費、無 BONUS，成績不換點數；麥克風音高偵測（YIN）核心 `createGame` 為純邏輯 |
 | quack-pond | QP、deepSeaQuackPond；200 關邏輯謎題（呱呱池塘），免費、無 BONUS |
 | siege-architect | SA、deepSeaSiege；original.html 為 srcdoc 子頁（萌獸破城隊 Critter Crashers，20 關確定性解謎），免費、無 BONUS。子頁自帶繁中／英文字串表，跟隨站台語言即時切換，簡中由 js/i18n.js 在顯示層轉換；`<body data-i18n-ignore>` 讓站台字典不翻譯它（tools/test_i18n.py 的 `SELF_LOCALIZED`）。模擬與關卡逐字複製到 `shared/siege-architect-rules.cjs` 供 Worker 重播驗證 |
@@ -195,6 +198,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `shadowRelay.unlocked` / `shadowRelay.bests` | 影子接力已解鎖關數、每關最佳秒數（JSON，子頁寫入）；新增於 2026-11-18 |
 | `tetris-best` | 俄羅斯方塊最高分（整數字串，子頁寫入）；新增於 2026-11-19 |
 | `tetris-ctl` | 俄羅斯方塊手機操作模式（`gesture` 或 `buttons`，子頁寫入）；新增於 2026-11-19 |
+| `top-doggo-diff` | TOP DOGGO 上次選的難度（`easy`／`normal`／`hard`，子頁寫入）；新增於 2026-11-24 |
 | `on-pitch-v1` | 不准跑調存檔（JSON：`stars` 各關最高星數、`input` 為 `mic` 或 `key`、`octave` 為 `any` 或 `strict`）；新增於 2026-11-19 |
 | `qp_progress` | 呱呱池塘進度（`{max,stars}` JSON，各關最高星數；子頁寫入）；新增於 2026-11-19 |
 | `qp_level` | 呱呱池塘當前關卡（整數，子頁寫入）；新增於 2026-11-19 |

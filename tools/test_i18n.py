@@ -106,6 +106,7 @@ SELF_LOCALIZED = (
     'games/siege-architect/original.html',  # tools/test_siege_architect.mjs
     'games/eat-smaller/original.html',
     'games/one-line-defense/original.html',
+    'games/top-doggo/play.html',  # tools/test_top_doggo.mjs
 )
 
 

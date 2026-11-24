@@ -87,7 +87,7 @@ const next = await moveMinesRound(round.token, {
 | --- | --- | --- |
 | 已正式發布 | frog | Worker 重播 |
 | 已正式發布 | mines | Worker 管理棋盤 |
-| 已接入，待整批發布 | merge、ocean-link、dream、runner、cat、skybuilder、sneak、reaper、bird、tetris、elevator、fishing | Worker 管理棋盤或重播玩家輸入 |
+| 已接入，待整批發布 | merge、ocean-link、dream、runner、cat、skybuilder、sneak、reaper、bird、tetris、elevator、fishing、top-doggo | Worker 管理棋盤或重播玩家輸入 |
 | 回合制與解謎，待串接 | mermaid、banquet | 依各款動作與關卡狀態定義伺服器驗證 |
 | 即時操作與反應，待串接 | campaign、nap、blaster、carp、rider、boss、thief、baby、pudding、clock-out、peek、mosquito、last-hair、breakout、pet-walk、office-shoot | 逐款核對時鐘、輸入及隨機性再重播 |
 | 同來源 iframe，待串接 | boba、dive、mrt、pancake、eat-smaller、mirror-twins、shadow-relay、one-line-defense | 保留父子頁生命週期，增設必要橋接與 Worker 驗證 |
@@ -203,3 +203,9 @@ Closing Call 開局會等待訪客排行回合準備完成，避免快速點擊�
 - 排行榜面板：`frontend/services/leaderboard-view.mjs` 的遊戲清單加入呱呱池塘與鏡像雙子。
 - **萌獸破城隊（`siege-architect`）** 同樣用 `puzzleBoard`：攻破城門時送 `[關卡, 20 個時間格代碼]`（0 = 空格，1～6 = shield、sapper、scout、rats、peacock、mole）。`shared/siege-architect-rules.cjs` 檢查兵種已解鎖、花費在預算內，再用遊戲同一份確定性模擬重播，城門被攻破才寫入 `lastCleared`。`0015_game_names_siege_architect.sql` 新增遊戲名稱，`0016_siege_architect_puzzle_stages.sql` 把它加入 `verified_puzzle_stage_after_move` trigger。測試：`node tools/test_puzzle_leaderboards.mjs`、`node tools/test_siege_architect_board.mjs`（真實 Worker 路由＋SQLite 套用全部 migration）。發布順序同上：migration → Worker → 前端；回復時移除前端接線，trigger 與名稱可保留。
 - 發布順序：先套用 `0014` migration，再部署 Worker，最後發布前端。回復時反向處理；`verified_puzzle_stages` 與 trigger 可保留。
+
+## TOP DOGGO 三難度排行榜（top-doggo）
+
+2026-11-24 新增。三個難度各一張榜：`top-doggo-easy`、`top-doggo-normal`、`top-doggo-hard`（棋盤對局 API 的 gameId），成績 = 該局到達的關卡數。即時 3D 動作遊戲無法在 Worker 完整重播，所以只做合理性驗證：`shared/top-doggo-rules.cjs` 的 `verify([關卡, 擊倒數, 遊玩毫秒], 開局至今毫秒)` 檢查關卡範圍（1～60）、每關至少 8 名擊倒、遊玩時間下限（6 秒＋每關 18 秒）與不得超過實際經過時間（容差 3 秒）、擊倒速度上限。`backend/src/services/ranked-boards.mjs` 以 `topDoggoBoard()` 為三個 ID 各註冊一份，沿用兩小時對局期限、重送保護、`ranked_board_best_after_finish` trigger 與前 50 筆保留，不需要新 trigger。`0018_game_names_top_doggo.sql` 新增大廳卡片名稱與三張榜的顯示名稱。大廳榜單（`js/member.js`）把 `<遊戲>-easy|normal|hard` 的榜依難度分列，列上顯示 `Lv N`，連結回遊戲。已知限制：此驗證不能擋住「等待足夠時間後送出假成績」；若日後需要更強防護，要改成由 Worker 逐關核發憑證。
+
+測試：`node tools/test_top_doggo_board.mjs`（真實 Worker 路由＋SQLite 套用全部 migration）。發布順序：先套用 `0018` migration，再部署 Worker，最後發布前端；回復時反向處理，名稱列與榜單資料可保留。前端在 Worker 尚未部署時會顯示「排行榜連線失敗，仍可繼續遊玩」，不影響遊玩。

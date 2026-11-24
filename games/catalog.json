@@ -431,5 +431,13 @@
     "card": "games/cat-match/card.html",
     "icon": "games/cat-match/icon.svg",
     "style": "games/cat-match/style.css"
+  },
+  {
+    "id": "top-doggo",
+    "logic": "games/top-doggo/game.js",
+    "view": "games/top-doggo/view.html",
+    "card": "games/top-doggo/card.html",
+    "icon": "games/top-doggo/icon.svg",
+    "style": "games/top-doggo/style.css"
   }
 ]

@@ -86,6 +86,7 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 | shadow-relay / 影子接力 Shadow Relay | 固定10 | 8 關；同數字吞噬：本局每關第一次通過 +2 點（最多 10 點）；時間與失敗次數不給點 |
 | one-line-defense / 一筆畫守城 One-Line Defense | 固定10 | 無盡；教學後每撐過 30 秒 +2 點當場入帳（30～150 秒各一次，最多 10 點，剛好回本）；核心被攻破結束不扣回，分數與連擊不給點 |
 | tetris / 俄羅斯方塊 Block Drop | 免費 | 無盡；沒有 BONUS，分數、行數與等級不給點；平台固定完成獎勵依全站規則 |
+| top-doggo / TOP DOGGO: Paw City | 免費 | 無盡關卡；沒有 BONUS，關卡、擊倒數與現金只是成績，不給點；三個難度各有一張排行榜（成績 = 到達關卡） |
 | on-pitch / 不准跑調 Stay On Pitch | 免費 | 5 世界×4 關＋無盡；沒有 BONUS，分數、連續與星數不給點；平台固定完成獎勵依全站規則 |
 | quack-pond / 呱呱池塘 Quack Pond | 免費 | 200 關邏輯謎題（每行每列每色區各一隻鴨，不可相鄰含對角）；3 顆心、3 個提示；通關得 0–3 星；平台固定完成獎勵依全站規則 |
 | siege-architect / 萌獸破城隊 Critter Crashers | 免費 | 20 關確定性解謎：在 10 秒（20 格、每格 0.5 秒）時間軸上排部隊出發時間，預算內攻破城門 HP；機槍打最近、大砲打血最多並範圍爆炸、狙擊打最先進入射程，鎖定為黏著；攻破城門 1 星、花費 ≤ 目標 1 星、該關額外條件 1 星；沒有 BONUS，平台固定完成獎勵依全站規則；排行榜＝伺服器重播驗證過的不同關卡數 |
@@ -883,3 +884,20 @@ Equipment initially caps at level 2. Mill / forge / quarry unlock tool / weapon 
 正式規則 `shared/cat-match-rules.js` 重建為具種子的純引擎，前端與 Worker 共用。排行榜比較已結束之單關分數（成功或步數耗盡），不是旅程關數；同訪客只留最佳，前50名，同分先到優先。Worker 發 seed 與指定旅程 level，重播最多33個合法操作（24次交換+5提示+4洗牌），拒絕中途結算、超額道具、非法交換、多送操作、偽造成績。每次新關重新領取票據；離線可玩但不送榜。
 
 獨立 iframe `games/cat-match/play.html`，來源驗證橋接 `deepSeaCatMatch`，一關一次免費 start、complete/loss/abandoned end，離頁／背景停音樂與操作。`deep-sea-cat-match-progress-v1` 保存旅程與最高旅程，`deep-sea-cat-match-audio-v1` 保存獨立音樂／音效設定；不改 preview 存檔，也不改平台餘額。繁中／英文介面及平台語言切換，簡中沿平台轉換。封面1056×1000，排行榜頭像192×192。
+
+## 52. TOP DOGGO: Paw City（top-doggo）
+
+定位：父頁 `games/top-doggo/game.js`（`TD`、`window.deepSeaTopDoggo`），子頁 `games/top-doggo/play.html`（three.js r128 + 低面數 3D 場景模型 `models/`，主角與敵人為 2D Sprite）以 iframe 載入。2026-11-24 由預覽區骨架 `preview/grand-theft-doggo/` 升級上架（骨架保留作玩法參考）。
+
+- 入場：免費、無 BONUS、不給點。主角是美式鬥牛犬，用網球槍對抗紫色浣熊幫；沒有任何下注、倍率或領回。
+- 玩法：第三人稱 55° 過肩視角。電腦 WASD 移動、滑鼠左鍵攻擊、空白鍵翻滾、C 蹲下、X 轉身 180°、Q 換武器、E 上下車；手機左手搖桿、右側按鈕（FIRE／DODGE／CROUCH／180°／換武器／DRIVE）。武器：網球槍、小刀、揮拳（無限），以及彈藥有限的網球手榴彈、網球大砲、狙擊槍（地圖武器箱或敵人掉落）。
+- 關卡：每關任務鏈依序為擊倒浣熊、撿金骨頭、開車撞人、打出連擊，奇數關另有頭目（浣熊老闆／浣熊將軍），偶數關改為擊倒射手或壯漢。全部完成顯示通關，按「下一關」進入下一關：敵人血量 +18%、傷害 +10%、射速與速度略增、目標增加。金骨頭回血，滿血變護盾。
+- 難度：簡單／普通／困難（預設普通，存在 `top-doggo-diff`）。一局開始後鎖定難度，死亡或離開後才能更換。
+- 結束：血量歸零（本局結束）或離開遊戲頁都算一局結束；離開會把目前到達的關卡送榜並重置，再進入從第 1 關重來。
+- 排行榜：三個難度各一張榜（`top-doggo-easy`／`-normal`／`-hard`），成績 = 該局到達的關卡數（越高越好，同分依伺服器紀錄時間最早者在前）。遊戲開始前顯示該難度前 3 名，大廳榜單依難度分列並顯示 `Lv N`。
+- 驗證（Worker 合理性驗證，`shared/top-doggo-rules.cjs`）：即時 3D 動作遊戲無法在伺服器完整重播，所以 Worker 只檢查：開局時間由 Worker 記錄；結束送 `[關卡, 累計擊倒數, 遊玩毫秒]`；關卡 1～60；每通過一關至少擊倒 8 名；遊玩時間不得低於 6 秒＋每關 18 秒，也不得超過實際經過時間（容差 3 秒）；擊倒速度上限每秒 3 名。不合理或重送的成績不入榜。這不能擋住「等夠久再送出假成績」的進階作弊，榜單只代表合理性，不是完整防作弊。
+- 結算與追蹤：每局一次 `start`（entry_points=0，參數 difficulty），死亡為 `loss`、離開為 `abandoned`，各一次 `end`（payout=0，score=到達關卡、step=擊倒數、level）。
+- 語言：子頁內建繁中／英文／簡中字串表（`EN`／`HANS`），跟隨父頁語言，`<body data-i18n-ignore>` 不走全站字典。卡片與選單文字照一般流程補 `locales/en.json`。
+- 儲存：`top-doggo-diff`（上次選的難度）；新增於 2026-11-24。不讀寫點數或其他平台 Key。
+- 測試：`node tools/test_top_doggo.mjs`（父頁橋接與字串表）、`node tools/test_top_doggo_board.mjs`（真實 Worker 路由＋SQLite 套用全部 migration）。
+- 未驗證：真機手機操作手感、低階手機幀率、長時間遊玩平衡（關卡 8 以上）；Worker／D1 尚需依 `docs/BACKEND.md` 發布。

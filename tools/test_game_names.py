@@ -18,7 +18,10 @@ class GameNamesMigrationTests(unittest.TestCase):
 
     def test_every_catalog_game_has_all_names_matching_cards(self):
         catalog = json.loads((ROOT / 'games/catalog.json').read_text())
-        self.assertEqual({g['id'] for g in catalog}, set(self.rows))
+        # A game may also own extra leaderboard boards named '<catalog id>-<board>' (e.g. per-difficulty boards).
+        ids = {g['id'] for g in catalog}
+        extra = {r for r in self.rows if r not in ids and any(r.startswith(i + '-') for i in ids)}
+        self.assertEqual(ids, set(self.rows) - extra)
         for g in catalog:
             card = (ROOT / g['card']).read_text()
             zh = html.unescape(re.search(r'<h3>(.*?)</h3>', card).group(1))

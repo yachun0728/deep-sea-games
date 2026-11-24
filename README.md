@@ -100,6 +100,10 @@ python3 -m http.server 8765                                     # 開 http://loc
 
 修改 `games/tetris/` 時可執行 `node tools/test_tetris.mjs`，驗證父頁橋接免費開始、單次結算、暫停／繼續、離頁 abandoned，以及子頁整局流程只回報一次 finish。無需 npm 套件。
 
+## TOP DOGGO 行為檢查
+
+修改 `games/top-doggo/`、`shared/top-doggo-rules.cjs` 或其 Worker 註冊時，執行 `node tools/test_top_doggo.mjs`（父頁橋接免費開局、單次結算、三難度各用自己的榜、離頁 abandoned、遊戲頁繁中／英文／簡中字串表齊全）與 `node tools/test_top_doggo_board.mjs`（真實 Worker 路由＋SQLite 套用全部 migration，驗證合理性規則、各難度分榜、重送與名稱）。遊戲頁 `games/top-doggo/play.html` 由預覽區骨架升級而來，之後直接維護這份。無需 npm 套件。
+
 ## 不准跑調行為檢查
 
 修改 `games/on-pitch/` 時可執行 `node tools/test_on_pitch.mjs`，在假的 DOM 與時鐘中驗證免費開局（餘額 0 也能開、不重複開局）、通關與失敗各只結算一次且 payout 為 0、星數存檔、暫停／繼續／回選單、離頁 abandoned、麥克風被拒絕時改用螢幕琴鍵，以及英文畫面不殘留中文。無需 npm 套件；真人聲音與各瀏覽器麥克風行為需手動試玩。

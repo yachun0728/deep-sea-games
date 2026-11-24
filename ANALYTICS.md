@@ -143,6 +143,10 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 無盡、免費、沒有 BONUS。每局一次start（entry_points=0）；暫停送progress（phase=pause、checkpoint=1）並停止有效時間，繼續送resume。頂端放不下送一次end：result為complete、payout_points=0，附score、step（消除行數）、level。正常離頁由pagehide送abandoned；BFCache persisted不結束。
 
+## TOP DOGGO: Paw City（top-doggo）
+
+無盡、免費、沒有 BONUS。每局一次start（entry_points=0，difficulty＝easy／normal／hard）；暫停與繼續不另送事件。血量歸零送一次end：result為loss、payout=0、score＝到達關卡、step＝累計擊倒數、level＝到達關卡；離開遊戲頁或關閉分頁送一次end：result為abandoned。重送與重複結束只會記一次。
+
 ## 不准跑調（on-pitch）
 
 免費、沒有 BONUS。每次開始一個關卡就一次start（entry_points=0，stage＝世界 1～5）；暫停（按 ❚❚、Esc、切走分頁或離開本頁）送progress（phase=pause、checkpoint=1）並停止有效時間，點畫面繼續送resume。過關或三顆愛心用完送一次end：result為complete、payout_points=0，附score、step（通過的牆數）、level（1～20，無盡為 0）、cleared（1／0）、stars；從暫停回選單或正常離頁送abandoned。因為遊戲只用聲音操作，每次通過／失誤與每秒偵測到聲音時會呼叫 `AN.interact()`，避免 60 秒沒有點擊被當成閒置。

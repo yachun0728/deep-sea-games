@@ -37,7 +37,23 @@ import mergeRules from '../../../shared/merge-rules.cjs';
 import bobaRules from '../../../shared/boba-rules.cjs';
 
 import outpostRules from '../../../shared/outpost-rules.cjs';
+import topDoggoRules from '../../../shared/top-doggo-rules.cjs';
 
+// TOP DOGGO: 三個難度各一張榜，成績 = 到達關卡數；只做合理性驗證（見 shared/top-doggo-rules.cjs）。
+function topDoggoBoard() {
+  return {
+    create: () => ({ issuedAt: Date.now(), score: null, rulesVersion: topDoggoRules.VERSION }),
+    accepts: topDoggoRules.accepts,
+    apply: (state, action) => {
+      const result = topDoggoRules.verify(action, Date.now() - state.issuedAt);
+      if (!result) return false;
+      state.score = result.score;
+      return true;
+    },
+    score: state => state.score,
+    visible: ({ issuedAt, score }) => ({ issuedAt, score }),
+  };
+}
 const LIFETIME_MS = 2 * 60 * 60 * 1000;
 const MAX_REVISIONS = 16384;
 const ID = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
@@ -84,6 +100,7 @@ function puzzleBoard(rules) {
   };
 }
 const boards = new Map([
+  ...topDoggoRules.DIFFICULTIES.map(difficulty => [topDoggoRules.boardId(difficulty), topDoggoBoard()]),
  ['cat-match',{
   create:level=>({seed:newSeed(),level,version:catMatchRules.VERSION,issuedAt:Date.now(),score:null}),
   accepts:catMatchRules.accepts,

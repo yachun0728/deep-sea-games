@@ -31,7 +31,9 @@
     hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
   });
 
-  function boardRow(gameId, entry, lastPlayedAt) {
+  // A game may keep one board per difficulty (id '<game>-easy|normal|hard'); its rows link to the game and show the API's localized board name.
+  var DIFFICULTY_BOARD = /^(.+)-(easy|normal|hard)$/;
+  function boardRow(gameId, entry, lastPlayedAt, boardName, scorePrefix) {
     var row = document.createElement('tr');
     var player = row.insertCell(), game = row.insertCell(), best = row.insertCell();
     player.className = 'board-player';
@@ -44,11 +46,12 @@
 
     var link = document.createElement('a'), name = document.createElement('span');
     link.href = '#' + gameId;
-    name.textContent = memberGameName(gameId);
+    name.textContent = boardName || memberGameName(gameId);
+    if (boardName) name.setAttribute('data-i18n-ignore', '');
     link.append(memberIcon(gameId), name);
     game.appendChild(link);
     best.className = 'board-best';
-    best.textContent = gameId === 'merge' ? String(entry.score)
+    best.textContent = scorePrefix ? scorePrefix + entry.score : gameId === 'merge' ? String(entry.score)
       : (gameId === 'market-desk' ? 'NT$' : '') + entry.score.toLocaleString('zh-TW');
     if (lastPlayedAt) {
       var lastPlayed = new Date(lastPlayedAt);
@@ -83,10 +86,14 @@
       if (boardRequest !== request) return;
       var visibleGames = new Set(Array.from(document.querySelectorAll('.lobby-grid .game-card:not([data-game-hidden])'),
         function (card) { return card.hash.slice(1); }));
-      var recent = result.games.filter(function (game) {
-        return visibleGames.has(game.gameId) && Object.hasOwn(VIEWS, game.gameId) && game.entries.length;
-      }).slice(0, RECENT_GAMES_LIMIT).map(function (game) {
-        return [game.gameId, game.entries[0], game.lastPlayedAt];
+      var recent = result.games.map(function (game) {
+        var match = DIFFICULTY_BOARD.exec(game.gameId);
+        var base = match && visibleGames.has(match[1]) ? match[1] : game.gameId;
+        return { game: game, base: base, multi: base !== game.gameId };
+      }).filter(function (item) {
+        return visibleGames.has(item.base) && Object.hasOwn(VIEWS, item.base) && item.game.entries.length;
+      }).slice(0, RECENT_GAMES_LIMIT).map(function (item) {
+        return [item.base, item.game.entries[0], item.game.lastPlayedAt, item.multi ? item.game.gameName : null, item.multi ? 'Lv ' : ''];
       });
       var snapshot = JSON.stringify(recent);
       if (snapshot !== boardSnapshot) {
