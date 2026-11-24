@@ -357,9 +357,9 @@
   const colliders = [];
   // three difficulty levels: enemy health, damage, fire rate, speed, bullet speed, melee damage
   const DIFFS = {
-    easy:   { hp: 1.6, dmg: 0.7, rate: 1.5, speed: 0.85, bspeed: 14, melee: 6 },
-    normal: { hp: 2.6, dmg: 1.0, rate: 1.0, speed: 1.0, bspeed: 18, melee: 10 },
-    hard:   { hp: 4.2, dmg: 1.5, rate: 0.6, speed: 1.25, bspeed: 23, melee: 16 }
+    easy:   { hp: 2.2, dmg: 0.7, rate: 1.5, speed: 0.85, bspeed: 14, melee: 6 },
+    normal: { hp: 3.8, dmg: 1.0, rate: 1.0, speed: 1.0, bspeed: 18, melee: 10 },
+    hard:   { hp: 6.5, dmg: 1.5, rate: 0.6, speed: 1.25, bspeed: 23, melee: 16 }
   };
   let DIFF_KEY = 'normal';
   try { const k = localStorage.getItem('proto-grand-theft-doggo-diff'); if (DIFFS[k]) DIFF_KEY = k; } catch (e) { /* ignore */ }
@@ -731,6 +731,8 @@
     const fx = Math.sin(e.mesh.rotation.y), fz = Math.cos(e.mesh.rotation.y);
     const front = fx * (camera.position.x - e.mesh.position.x) + fz * (camera.position.z - e.mesh.position.z) > 0;
     if (front !== e.front) { e.front = front; e.sprite.material.map = front ? e.texF : e.texB; }
+    if (e.px !== undefined && lastDt > 0) { e.vx = (e.mesh.position.x - e.px) / lastDt * 0.5 + (e.vx || 0) * 0.5; e.vz = (e.mesh.position.z - e.pz) / lastDt * 0.5 + (e.vz || 0) * 0.5; }
+    e.px = e.mesh.position.x; e.pz = e.mesh.position.z;
     e.bobT += lastDt * 9; e.sprite.position.y = Math.abs(Math.sin(e.bobT)) * 0.06;
     if (e.flash > 0) { e.flash -= lastDt; e.sprite.material.color.setHex(0xff9a9a); } else e.sprite.material.color.setHex(0xffffff);
   }
@@ -1020,9 +1022,17 @@
       const targetPt = getCenterCrosshairTarget();
       const muzzlePos = player.position.clone().add(new THREE.Vector3(0, state.isCrouching ? 0.78 : 1.15, 0));
       let shotDir = targetPt.sub(muzzlePos).normalize();
+      // crosshair on an enemy's BODY (the upright sprite you see): shoot at that enemy's real position, whatever the camera angle
+      raycaster.setFromCamera(new THREE.Vector2(0, 0), camera); camera.updateMatrixWorld();
+      const upc = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
+      let locked = null, lockD = 1.6;
+      for (const e of enemies) {
+        const V = new THREE.Vector3(e.mesh.position.x, 0, e.mesh.position.z).addScaledVector(upc, 1.0), dd = raycaster.ray.distanceToPoint(V);
+        if (dd < lockD && V.distanceTo(camera.position) < 65) { lockD = dd; locked = e; }
+      }
       // aim assist: an enemy within ~12 degrees of the shot line pulls the shot onto itself
       const flat = new THREE.Vector3(shotDir.x, 0, shotDir.z).normalize();
-      let best = null, bestAng = 0.21;
+      let best = null, bestAng = locked ? 0 : 0.21;
       for (const e of enemies) {
         const t = new THREE.Vector3(e.mesh.position.x - muzzlePos.x, 0, e.mesh.position.z - muzzlePos.z), dd = t.length();
         if (dd < 1 || dd > 42) continue;
@@ -1030,6 +1040,12 @@
         if (ang < bestAng) { bestAng = ang; best = e; }
       }
       if (best) shotDir = new THREE.Vector3(best.mesh.position.x - muzzlePos.x, 1.0 - muzzlePos.y, best.mesh.position.z - muzzlePos.z).normalize();
+      if (locked) {
+        // lead the target: the ball needs a moment to arrive, the enemy keeps walking
+        let tx = locked.mesh.position.x, tz = locked.mesh.position.z;
+        for (let it = 0; it < 2; it++) { const tt = Math.hypot(tx - muzzlePos.x, tz - muzzlePos.z) / 36; tx = locked.mesh.position.x + (locked.vx || 0) * tt; tz = locked.mesh.position.z + (locked.vz || 0) * tt; }
+        shotDir = new THREE.Vector3(tx - muzzlePos.x, 1.0 - muzzlePos.y, tz - muzzlePos.z).normalize();
+      }
       spawnProjectile(muzzlePos, shotDir, true);
     }
   }
@@ -1430,7 +1446,7 @@
       let hit = p.life <= 0;
       if (!hit && p.isPlayer) {
         for (let j = enemies.length - 1; j >= 0; j--) {
-          if (Math.hypot(enemies[j].mesh.position.x - p.mesh.position.x, enemies[j].mesh.position.z - p.mesh.position.z) < 1.25 && p.mesh.position.y < 3.2) {
+          if (Math.hypot(enemies[j].mesh.position.x - p.mesh.position.x, enemies[j].mesh.position.z - p.mesh.position.z) < 1.55 && p.mesh.position.y < 3.2) {
             damageEnemy(j, 32, p.vel.clone().normalize().multiplyScalar(3));
             hit = true;
             break;
