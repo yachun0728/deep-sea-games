@@ -279,6 +279,14 @@
     #weapon-label .wi{height:26px}
     #mission{margin-bottom:6px}
   }
+
+  #player-health{position:fixed;left:0;top:0;z-index:12;transform:translate(-50%,-100%);width:80px;min-width:0;margin:0;padding:0;border:0;border-radius:0;background:none;backdrop-filter:none;pointer-events:none;display:none}
+  #player-health .hp-label{justify-content:center;font-size:10px;color:#fff;text-shadow:0 1px 3px #000;margin-bottom:3px}
+  #player-health .hp-bar-bg{height:6px;background:rgba(15,6,32,.8);border:1px solid rgba(255,255,255,.7)}
+  #weapon-label{align-self:flex-start;display:flex;align-items:center;gap:4px;margin:0;padding:4px 7px;max-width:170px;min-height:28px;border-radius:8px;background:rgba(15,6,32,.65);font-size:11px;line-height:1.2}
+  #weapon-label .wi{height:22px;width:auto;margin:0}
+  #weapon-label .wn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px}
+  #weapon-label small,#weapon-label br{display:none}
 </style>
 </head>
 <body data-i18n-ignore>
@@ -300,11 +308,7 @@
         <button class="pill-btn" id="btn-ui-toggle"><img class="pi" src="assets/ui/h_pad.png" alt="">UI: AUTO</button>
         <button class="pill-btn" id="btn-mute"><img class="pi" src="assets/ui/h_sound.png" alt="">SFX</button>
       </div>
-      <div class="stat-card">
-        <div class="hp-label"><span>BULLDOG ARMOR</span><span id="hp-text">100%</span></div>
-        <div class="hp-bar-bg"><div class="hp-bar-fill" id="hp-fill"></div></div>
-        <div class="weapon-tag" id="weapon-label">🎾 TENNIS BLASTER (SHOOT)</div>
-      </div>
+      <div class="weapon-tag" id="weapon-label">🎾 TENNIS BLASTER (SHOOT)</div>
     </div>
 
     <!-- GTA Mini-Radar -->
@@ -318,6 +322,11 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="stat-card" id="player-health">
+  <div class="hp-label"><span id="hp-text">100%</span></div>
+  <div class="hp-bar-bg"><div class="hp-bar-fill" id="hp-fill"></div></div>
 </div>
 
 <!-- Mobile Touch Controls -->
@@ -1899,6 +1908,17 @@
   const smoothCamPos = new THREE.Vector3(START.x + 1, 5.6, START.z + 4.6);
   const smoothLookAt = new THREE.Vector3(START.x - 1.2, 0.8, START.z - 5.0);
 
+  const healthCard = document.getElementById('player-health'), healthPoint = new THREE.Vector3();
+  function positionPlayerHealth() {
+    if (!state.started || state.paused) { healthCard.style.display = 'none'; return; }
+    const height = state.drivingCar ? (state.drivingCar.riderVisible ? state.drivingCar.riderSeat.y + 1.5 : 2.5) : (state.isCrouching ? 1.8 : 2.9);
+    camera.updateMatrixWorld();
+    healthPoint.set(player.position.x, player.position.y + height, player.position.z).project(camera);
+    if (healthPoint.z < -1 || healthPoint.z > 1) { healthCard.style.display = 'none'; return; }
+    healthCard.style.display = 'block';
+    healthCard.style.left = Math.max(44, Math.min(window.innerWidth - 44, (healthPoint.x + 1) * window.innerWidth / 2)) + 'px';
+    healthCard.style.top = Math.max(30, Math.min(window.innerHeight - 20, (1 - healthPoint.y) * window.innerHeight / 2 - 8)) + 'px';
+  }
   let radarElapsed = 0, sceneryElapsed = 0, lastFrameAt = -Infinity;
   function frameInterval() { return !state.started || state.paused ? 100 : (handheld ? 1000 / 30 : 1000 / 60); }
   function animate(now = 0) {
@@ -1912,6 +1932,7 @@
     if (hitStopT > 0) { hitStopT -= dt; renderer.render(scene, camera); return; }
 
     if (!state.started || state.paused) {
+      positionPlayerHealth();
       if (!state.started) titleOrbit(dt);
       renderer.render(scene, camera);
       return;
@@ -1986,7 +2007,7 @@
       if (nearCar) {
         updateCarButton(false, true);
         toastEl.textContent = 'PRESS [E] OR DRIVE TO HIJACK';
-        toastEl.classList.add('show');
+        toastEl.classList.toggle('show', !handheld && window.innerWidth >= 820);
       } else {
         updateCarButton(false, false);
         toastEl.classList.remove('show');
@@ -2132,6 +2153,7 @@
     camera.position.copy(smoothCamPos);
     applyShake(lastDt);
     camera.lookAt(smoothLookAt);
+    positionPlayerHealth();
 
     radarElapsed += dt;
     if (radarElapsed >= 1 / 15) { drawRadar(); radarElapsed %= 1 / 15; }
