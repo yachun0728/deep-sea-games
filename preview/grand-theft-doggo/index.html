@@ -902,7 +902,7 @@
   // 7b. JUICE (damage numbers, sparks, hit-stop, shake, combo, hurt flash) AND MISSIONS
   // ==========================================
   let hitStopT = 0, shakeT = 0, shakeAmp = 0.12;
-  const sparkTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 32; const g = c.getContext('2d'); const gr = g.createRadialGradient(16, 16, 1, 16, 16, 15); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.4, 'rgba(255,255,255,.7)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 32, 32); return new THREE.CanvasTexture(c); })();
+  const sparkTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 32; const g = c.getContext('2d'); const gr = g.createRadialGradient(16, 16, 1, 16, 16, 15); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.7, 'rgba(255,255,255,1)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 32, 32); return new THREE.CanvasTexture(c); })();
   const sparks = [], sparkPool = [], texts = [], textCache = {};
   function getSpark() {
     let s = sparkPool.pop();
@@ -937,13 +937,14 @@
   // combat events (called from the game logic)
   function onEnemyHit(e, dmg) {
     const p = e.mesh.position, heavy = dmg >= 40;
-    burst(p.x, 1.3, p.z, heavy ? 0xff9a2e : 0xffd23f, heavy ? 8 : 4, heavy ? 7 : 5, 0.35, heavy ? 0.7 : 0.45);
-    popText(p.x, 2.7, p.z, String(Math.round(dmg)), heavy ? '#ffc83d' : '#ffffff', heavy ? 0.85 : 0.6);
+    if (heavy) burst(p.x, 1.3, p.z, 0xff9a2e, 5, 6, 0.3, 0.5);
+    const nowT = performance.now(); e._acc = (e._acc || 0) + dmg;
+    if (nowT - (e._numT || 0) > 260) { popText(p.x, 2.7, p.z, String(Math.round(e._acc)), heavy ? '#ffc83d' : '#ffffff', heavy ? 0.85 : 0.6); e._acc = 0; e._numT = nowT; }
     shakeT = Math.max(shakeT, heavy ? 0.16 : 0.06); shakeAmp = heavy ? 0.2 : 0.1; if (heavy) hitStopT = Math.max(hitStopT, 0.05);
   }
   function onEnemyKilled(e) {
     const p = e.mesh.position;
-    burst(p.x, 1.2, p.z, 0xff5aa5, 14, 9, 0.6, 0.8); burst(p.x, 1.2, p.z, 0xffc83d, 12, 8, 0.7, 0.7);
+    burst(p.x, 1.2, p.z, 0xff5aa5, 7, 8, 0.45, 0.6); burst(p.x, 1.2, p.z, 0xffc83d, 6, 7, 0.5, 0.5);
     combo.n = combo.t > 0 ? combo.n + 1 : 1; combo.t = 4.0; combo.best = Math.max(combo.best, combo.n);
     const reward = killReward(e);
     popText(p.x, 3.4, p.z, '+$' + reward, '#7dff9b', 0.8, 2.8); popText(p.x, 2.4, p.z, isBoss(e.type) ? 'BOSS DOWN!' : 'KO!', '#ff5aa5', 0.7, 2.0);
