@@ -498,9 +498,11 @@
   function makeBuilding(b) {
     const g = CityBuildings[b.asset](), sz = CityBuildings.size[b.asset];
     b.bw = b.x2 - b.x1; b.bd = b.z2 - b.z1; b.cx = (b.x1 + b.x2) / 2; b.cz = (b.z1 + b.z2) / 2; b.alpha = 1;
-    const k = Math.min((b.bw - 1.2) / sz.w, (b.bd - 0.8) / sz.d, 1.5);
-    g.scale.setScalar(k); g.position.set(b.cx, 0, b.cz); scene.add(g);
-    b.mesh = g; b.W = sz.w * k; b.D = sz.d * k; b.H = sz.h * k; b.mats = ownMaterials(g);
+    const rot = b.rot || 0, sw = rot ? b.bd : b.bw, sd = rot ? b.bw : b.bd;
+    const k = Math.min((sw - 1.2) / sz.w, (sd - 0.8) / sz.d, 1.5);
+    if (k < 0.5) return;                                       // lot too small for a building: leave it to the hedges
+    g.scale.setScalar(k); g.position.set(b.cx, 0, b.cz); g.rotation.y = rot; scene.add(g);
+    b.mesh = g; b.W = (rot ? sz.d : sz.w) * k; b.D = (rot ? sz.w : sz.d) * k; b.H = sz.h * k; b.mats = ownMaterials(g);
   }
   for (const b of blocks) {
     if (!b.asset) continue;
@@ -535,9 +537,38 @@
       used.push([x, z]); addProp(names[used.length % names.length], x, z);
     }
   })();
+  // --- edge lots: the strips of grass between the outer roads and the perimeter wall get buildings too, and each road that runs into the wall is closed by a gate ---
+  (function edgeLots() {
+    const lots = [], lotMin = 4, lotMax = 20, rows = [];
+    const grassFromLeft = y => { let n = 0; while (n < GW && terrain[y][n] === 'tiles/grass') n++; return n; };
+    const grassFromRight = y => { let n = 0; while (n < GW && terrain[y][GW - 1 - n] === 'tiles/grass') n++; return n; };
+    const grassFromTop = x => { let n = 0; while (n < GH && terrain[n][x] === 'tiles/grass') n++; return n; };
+    const runs = (len, widthAt, cb) => { let st = -1, mn = 99; for (let i = 0; i <= len; i++) { const w = i < len ? widthAt(i) : 0, ok = w >= lotMin && w < lotMax; if (ok) { if (st < 0) st = i; mn = Math.min(mn, w); } if ((!ok) && st >= 0) { cb(st, i, mn); st = -1; mn = 99; } } };
+    runs(GH, grassFromLeft, (a, b, w) => lots.push({ x1: -OX, x2: toX(w * TILE), z1: toZ(a * TILE), z2: toZ(b * TILE), rot: Math.PI / 2 }));
+    runs(GH, grassFromRight, (a, b, w) => lots.push({ x1: toX((GW - w) * TILE), x2: OX, z1: toZ(a * TILE), z2: toZ(b * TILE), rot: -Math.PI / 2 }));
+    runs(GW, grassFromTop, (a, b, w) => lots.push({ x1: toX(a * TILE), x2: toX(b * TILE), z1: -OZ, z2: toZ(w * TILE), rot: 0 }));
+    for (const l of lots) {
+      if ((l.x2 - l.x1) < 3 || (l.z2 - l.z1) < 3) continue;
+      const b = { x1: l.x1 + 0.4, x2: l.x2 - 0.5, z1: l.z1 + 0.4, z2: l.z2 - 0.5, asset: nextBuilding(), rot: l.rot, edge: true };
+      blocks.push(b); makeBuilding(b);
+      if (b.mesh) colliders.push({ minX: b.x1, maxX: b.x2, minZ: b.z1, maxZ: b.z2 });
+      else { // too small for a building: a solid hedge row fills the lot
+        const hedge = CityProps.hedgeLong(), n = Math.max(1, Math.floor(Math.max(b.x2 - b.x1, b.z2 - b.z1) / 3.2)), alongZ = (b.z2 - b.z1) > (b.x2 - b.x1);
+        for (let i = 0; i < n; i++) { const h = hedge.clone(true); h.scale.setScalar(1.15); const f = (i + 0.5) / n; h.position.set(alongZ ? (b.x1 + b.x2) / 2 : b.x1 + (b.x2 - b.x1) * f, 0, alongZ ? b.z1 + (b.z2 - b.z1) * f : (b.z1 + b.z2) / 2); h.rotation.y = alongZ ? Math.PI / 2 : 0; scene.add(h); }
+        colliders.push({ minX: b.x1, maxX: b.x2, minZ: b.z1, maxZ: b.z2 });
+      }
+    }
+    // gates across every road that ends at the wall (left, right, top)
+    const gate = CityProps.gateNoEntry(), hazard = CityProps.gateHazard();
+    const roadRuns = (len, idAt, put) => { let st = -1; for (let i = 0; i <= len; i++) { const road = i < len && /road|crosswalk|intersection/.test(idAt(i)); if (road && st < 0) st = i; if (!road && st >= 0) { put((st + i) / 2, i - st); st = -1; } } };
+    roadRuns(GH, y => terrain[y][0], (c, n) => { const g = (n >= 3 ? hazard : gate).clone(true); g.position.set(-OX + 1.6, 0, toZ(c * TILE)); g.rotation.y = Math.PI / 2; g.scale.set(1, 1, 1); scene.add(g); });
+    roadRuns(GH, y => terrain[y][GW - 1], (c, n) => { const g = (n >= 3 ? hazard : gate).clone(true); g.position.set(OX - 1.6, 0, toZ(c * TILE)); g.rotation.y = Math.PI / 2; scene.add(g); });
+    roadRuns(GW, x => terrain[0][x], (c, n) => { const g = (n >= 3 ? hazard : gate).clone(true); g.position.set(toX(c * TILE), 0, -OZ + 1.6); scene.add(g); });
+  })();
+
   // --- perimeter walls: real 3D wall and fence segments with height and collision ---
   (function perimeterWalls() {
-    const types = ['wallPaw', 'wallGraffiti', 'wallBrick', 'fenceChain', 'wallPaw', 'wallBrick'], L = 5.0, T = 0.8;
+    const types = ['wallPaw', 'wallGraffiti', 'wallBrick', 'wallPaw', 'wallGraffiti', 'wallBrick'], L = 5.0, T = 0.8;
     const minX = -OX + 0.5, maxX = OX - 0.5, minZ = -OZ + 0.5, maxZ = OZ - 0.5, proto = {}; let k = 0;
     const seg = (x, z, alongX) => { const nm = types[k++ % types.length]; proto[nm] = proto[nm] || CityProps[nm](); const g = proto[nm].clone(true); g.position.set(x, 0, z); g.rotation.y = alongX ? 0 : Math.PI / 2; scene.add(g); };
     for (let x = minX + L / 2; x < maxX; x += L) { seg(x, minZ, true); seg(x, maxZ, true); }
