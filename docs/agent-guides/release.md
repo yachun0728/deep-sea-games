@@ -35,6 +35,7 @@ Agent 完成測試與推送驗收分支後，等使用者實際試玩並明確�
 執行前必須閱讀：
 - [CrazyGames 平台合規規範](crazygames-compliance.md)
 - [RELEASE_CHECKLIST.md](../../RELEASE_CHECKLIST.md)
+- [跨裝置相容性與效能規範](cross-platform-performance.md)
 
 ### 1. 確認發布階段
 
@@ -73,4 +74,70 @@ Agent 完成測試與推送驗收分支後，等使用者實際試玩並明確�
 
 若遊戲使用廣告：
 
-- [ ] 使用平台
+- [ ] 使用平台允許的廣告整合方式
+- [ ] 廣告播放及結束流程正常
+- [ ] 廣告前後遊戲狀態處理正常
+- [ ] 沒有未經允許的第三方廣告
+
+不適用的項目必須標示 NOT APPLICABLE。
+
+### 5. QA 測試
+
+依遊戲實際功能執行：
+
+- [ ] Gameplay QA
+- [ ] UI QA
+- [ ] Input QA
+- [ ] Audio QA
+- [ ] Restart QA
+- [ ] Save / Load QA（若適用）
+- [ ] SDK QA（若適用）
+- [ ] Ads QA（若適用）
+- [ ] CrazyGames QA Tool（若適用）
+- [ ] Mobile QA
+- [ ] Tablet QA（若適用）
+- [ ] Desktop QA
+- [ ] Responsive Layout QA
+- [ ] Touch / Mouse / Keyboard QA（依裝置適用）
+- [ ] Performance / FPS QA
+- [ ] Lifecycle / State Recovery QA
+
+### 6. 驗證狀態
+
+所有檢查項目必須使用以下狀態：
+
+- PASS：已實際測試並通過
+- FAIL：測試未通過
+- NOT TESTED：尚未測試
+- BLOCKED：受環境、權限或其他限制而無法測試
+- NOT APPLICABLE：不適用
+
+不得將未測試或無法測試的項目標示為 PASS。
+
+### 7. 發布前報告
+
+Agent 必須回報：
+
+| 項目 | 結果 |
+|---|---|
+| 目標發布階段 | Basic Launch / Full Launch |
+| Build | PASS / FAIL |
+| Runtime | PASS / FAIL / NOT TESTED |
+| Gameplay QA | PASS / FAIL / NOT TESTED |
+| Platform Compliance | PASS / FAIL / BLOCKED / NOT TESTED |
+| Cross-Platform QA | PASS / FAIL / NOT TESTED |
+| SDK | PASS / FAIL / NOT APPLICABLE / NOT TESTED |
+| Monetization | PASS / FAIL / NOT APPLICABLE / NOT TESTED |
+| CrazyGames QA Tool | PASS / FAIL / NOT APPLICABLE / NOT TESTED |
+| 未驗證項目 | 列出 |
+| 阻塞問題 | 列出 |
+| 發布風險 | 列出 |
+
+### 8. 正式發布權限
+
+- Agent 完成檢查後，必須提供驗收結果。
+- 必須等待使用者實際試玩並明確核准。
+- 未經使用者確認，不得合併會觸發正式部署的分支或執行正式發布。
+- 有重大 FAIL、BLOCKED 或重要 NOT TESTED 項目時，必須說明風險。
+- 不得將本站 Preview、Build 成功或 CrazyGames QA Tool 通過宣稱為 CrazyGames 正式審核通過。
+- CrazyGames 正式審核及發布狀態，必須以平台實際結果確認。
