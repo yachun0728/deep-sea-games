@@ -27,3 +27,50 @@ Agent 完成測試與推送驗收分支後，等使用者實際試玩並明確�
 2. 合併後重新執行 `python3 tools/build.py` 與 `--check`，`index.html` 一律由最新來源重新組合，不沿用舊的產出或以自己的版本解衝突。
 3. 以 `git diff origin/main --stat` 與 `git diff origin/main -- games/elevator/` 核對：不得有未被授權的圖片／素材被還原或刪除；插隊兩張圖的內容須與遠端最新版一致，除非本次明確要改。
 4. 推送後在 PR 或回報中記錄已核對的遠端 commit SHA。
+
+## CrazyGames Release Gate
+
+當遊戲準備上架、更新、重新上架或發布至 CrazyGames 時，必須執行本節檢查。
+
+執行前必須閱讀：
+- [CrazyGames 平台合規規範](crazygames-compliance.md)
+- [RELEASE_CHECKLIST.md](../../RELEASE_CHECKLIST.md)
+
+### 1. 確認發布階段
+
+- [ ] 確認目標階段：Basic Launch / Full Launch
+- [ ] 確認本次版本符合該階段的要求
+- [ ] 不得將 Basic Launch 的完成視為 Full Launch 合規
+
+### 2. Build 與遊戲運作
+
+- [ ] Build 成功
+- [ ] 遊戲正常載入
+- [ ] 核心玩法正常
+- [ ] UI、音訊及操作正常
+- [ ] Restart / Replay 正常
+- [ ] 沒有重大 Runtime Error
+- [ ] 沒有影響正常遊玩的重大 Bug
+
+### 3. CrazyGames 平台合規
+
+- [ ] 技術限制符合官方最新要求
+- [ ] 遊戲內容符合平台政策及適用的 PEGI 12 要求
+- [ ] 遊戲素材具有適當使用權
+- [ ] Metadata、封面及截圖正確
+- [ ] 廣告及 Monetization 整合符合目標發布階段
+- [ ] 隱私及玩家資料處理符合要求
+
+### 4. SDK 與廣告
+
+若目標發布階段需要 SDK：
+
+- [ ] SDK 初始化正常
+- [ ] GameplayStart 正確觸發
+- [ ] Audio / Mute 正常
+- [ ] Pause / Resume 正常
+- [ ] SDK 失敗時有適當處理
+
+若遊戲使用廣告：
+
+- [ ] 使用平台
