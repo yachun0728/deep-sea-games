@@ -12,6 +12,7 @@
 | `05-ground-v1.webp` | 工地地面與城市背景 | v1 | 採用 |
 | `06-sky-v1.webp` | 高空背景（浮空島與雲） | v1 | 採用 |
 | `08-cover-v1.webp` | 大廳封面原圖 | v1 | 採用 |
+| `09-leaderboard-v1.webp` | 排行榜縮圖原圖 | v1 | 採用 |
 | `07-logo-v1.webp` | 英文標題 Logo「SKYBUILDER」。下方木牌字樣是產圖時多出來的，遊戲裡已裁掉，只用上方字與小起重機 | v1 | 採用 |
 
 ## 畫風方向
@@ -28,4 +29,4 @@
 ## 待補
 
 - 大廳封面 `../cover.webp`（1056×1000）：取自 `08-cover-v1.webp`（GPT 依本組素材產生，2026-11-24 使用者確認），左上 BONUS 區只有天空。
-- 排行榜縮圖 `../leaderboard.webp` 尚未換新。
+- 排行榜縮圖 `../leaderboard.webp`（192×192）：取自 `09-leaderboard-v1.webp`（GPT 產生，2026-11-24 使用者提供）；`../icon.svg` 改以 `<image>` 指向它。本機沒有排行榜後端，實際榜單列尚未驗收。
