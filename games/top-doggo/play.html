@@ -419,7 +419,7 @@
     if (!box || !PF || !PF.leaders) return;
     try {
       const data = await PF.leaders(window, diff);
-      const entries = (data && data.entries ? data.entries : []).slice(0, 3);
+      const entries = (data && data.entries ? data.entries : []).slice(0, 1);
       box.hidden = false;
       title.textContent = L('排行榜') + ' · ' + L({ easy: '簡單', normal: '普通', hard: '困難' }[diff]);
       list.innerHTML = entries.length ? entries.map((e, i) => '<li><b>' + (i + 1) + '</b><span>' + String(e.displayName || L('訪客')).replace(/[<>&"]/g, '') + '</span><em>' + L('第 {n} 關', { n: e.score }) + '</em></li>').join('') : '<li class="rk-empty">' + L('尚無紀錄') + '</li>';
