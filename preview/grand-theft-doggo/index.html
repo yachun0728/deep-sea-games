@@ -207,7 +207,8 @@
   #hurt.on { animation: hurtFlash .45s ease-out; }
   @keyframes hurtFlash { 0% { opacity: 1; } 100% { opacity: 0; } }
   #weapon-label { font-size: 12px; line-height: 1.25; }
-  #weapon-label .wi { font-size: 18px; vertical-align: -2px; }
+  #weapon-label .wi { height: 38px; width: auto; vertical-align: middle; margin-right: 2px; }
+  .action-btn .wi { height: 34px; width: auto; }
   #weapon-label .wn { font-weight: 900; color: #ffd166; }
   #weapon-label .wa { font-weight: 900; font-size: 15px; color: #7ef9ff; margin-left: 4px; }
   #weapon-label .wa.low { color: #ff6b6b; }
@@ -215,6 +216,8 @@
   #overlay { align-items: center; justify-content: center; padding: 14px; background: linear-gradient(180deg, rgba(60,24,70,.42), rgba(24,10,38,.88)) !important; backdrop-filter: blur(2.5px) !important; overflow-y: auto; }
   .ov-rays { position: absolute; inset: -30%; pointer-events: none; opacity: .13; background: repeating-conic-gradient(from 0deg at 50% 62%, #ffc83d 0 6deg, transparent 6deg 14deg); animation: raySpin 60s linear infinite; mask-image: radial-gradient(circle at 50% 60%, #000 0, transparent 62%); -webkit-mask-image: radial-gradient(circle at 50% 60%, #000 0, transparent 62%); }
   @keyframes raySpin { to { transform: rotate(360deg); } }
+  #ov-logo { width: min(86vw, 400px); height: auto; filter: drop-shadow(0 8px 0 rgba(0,0,0,.35)) drop-shadow(0 0 22px rgba(255,160,40,.35)); animation: logoIn .8s cubic-bezier(.2,1.4,.4,1); }
+  @keyframes logoIn { from { transform: scale(.6) rotate(-6deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
   .ov-card { position: relative; width: min(440px, 100%); display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
   .logo-sub { font-size: 11px; font-weight: 900; letter-spacing: 4px; color: #ffc83d; margin: 0; text-shadow: 0 2px 0 #1a1620; }
   .ov-title { display: flex; flex-direction: column; align-items: center; line-height: .95; transform: rotate(-3deg); margin: 2px 0 2px; }
@@ -223,7 +226,7 @@
   .ov-title .l2 { font-size: clamp(60px, 19vw, 96px); letter-spacing: 3px; color: #ffc83d; text-shadow: 0 7px 0 #d62839, 0 12px 20px rgba(0,0,0,.4); }
   .ov-tag { font-size: 13px; font-weight: 800; color: #ffd9e6; letter-spacing: 1px; }
   #over-msg { font-size: 18px; font-weight: 900; color: #7ef9ff; min-height: 22px; text-shadow: 0 2px 0 #1a1620; margin: 0; }
-  #ov-hero { height: min(30vh, 250px); margin: -4px 0 -6px; filter: drop-shadow(0 8px 0 rgba(0,0,0,.35)); animation: heroBob 2.4s ease-in-out infinite; }
+  #ov-hero { height: min(24vh, 200px); margin: -4px 0 -6px; filter: drop-shadow(0 8px 0 rgba(0,0,0,.35)); animation: heroBob 2.4s ease-in-out infinite; }
   @keyframes heroBob { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-7px) rotate(1deg); } }
   .ov-label { font-size: 11px; font-weight: 900; letter-spacing: 3px; color: #cbbfe6; margin-top: 2px; }
   #diff-row { margin: 0 0 6px; }
@@ -296,8 +299,7 @@
 <div id="overlay">
   <div class="ov-rays"></div>
   <div class="ov-card">
-    <div class="logo-sub">VICE PAW BOULEVARD</div>
-    <div class="ov-title"><span class="l1">GRAND THEFT</span><span class="l2">DOGGO</span></div>
+    <img id="ov-logo" src="assets/ui/logo.png" alt="GRAND THEFT DOGGO: VICE PAW">
     <div class="ov-tag">美式鬥牛犬 vs 紫色浣熊幫</div>
     <div id="over-msg"></div>
     <img id="ov-hero" src="assets/characters/hero/front_armed.png" alt="">
@@ -443,6 +445,7 @@
     for (const id in MAN) if (id.startsWith('characters/enemies/')) jobs.push(loadImage('assets/' + MAN[id].file).then(i => texOf(id, i)));
     for (const t of ['thug', 'shooter', 'brawler', 'boss', 'warlord']) jobs.push(new Promise(res => { const im = new Image(); im.onload = () => { texOf('atk:' + t, im); res(); }; im.onerror = () => res(); im.src = 'assets/enemies/atk_' + t + '.png'; }));
     for (const side of ['front', 'back']) jobs.push(new Promise(res => { const im = new Image(); im.onload = () => { texOf('characters/enemies/warlord_' + side, im); res(); }; im.onerror = () => res(); im.src = 'assets/characters/enemies/warlord_' + side + '.png'; }));
+    for (const id of ['grenade', 'cannon', 'sniper']) jobs.push(loadImage('assets/ui/w_' + id + '.png').then(i => texOf('ui:' + id, i)));
     jobs.push(loadImage('assets/hero/atlas_attack_run.png').then(i => texOf('heroA', i)));
     jobs.push(loadImage('assets/hero/atlas_roll_crouch.png').then(i => texOf('heroB', i)));
     for (const w of ['knife', 'fist']) for (const [k, f] of [['heroA', 'atlas_attack_run'], ['heroB', 'atlas_roll_crouch']]) jobs.push(new Promise(res => { const im = new Image(); im.onload = () => { texOf(k + '_' + w, im); res(); }; im.onerror = () => res(); im.src = 'assets/hero/' + f + '_' + w + '.png'; }));
@@ -1018,12 +1021,12 @@
   // 7c. SPECIAL WEAPONS (limited ammo), WEAPON HUD, LEVELS, BONES
   // ==========================================
   const WEAPONS = [
-    { id: 'gun', icon: '🎾', name: '網球槍', how: '按住連射・準心壓敵人自動鎖定', inf: true },
-    { id: 'knife', icon: '🔪', name: '小刀', how: '近身快砍・範圍大', inf: true },
-    { id: 'fist', icon: '🐾', name: '揮拳', how: '近身重拳・傷害高', inf: true },
-    { id: 'grenade', icon: '💣', name: '網球手榴彈', how: '拋物線投擲・落地範圍爆炸', ammo: 5, cd: 0.7 },
-    { id: 'cannon', icon: '🚀', name: '網球大砲', how: '直線重砲・命中爆炸', ammo: 4, cd: 1.1 },
-    { id: 'sniper', icon: '🎯', name: '狙擊槍', how: '鏡頭拉近・一條線穿透多人', ammo: 6, cd: 0.9 }
+    { id: 'gun', img: 'assets/ui/w_gun.png', name: '網球槍', how: '按住連射・準心壓敵人自動鎖定', inf: true },
+    { id: 'knife', img: 'assets/ui/w_knife.png', name: '小刀', how: '近身快砍・範圍大', inf: true },
+    { id: 'fist', img: 'assets/ui/w_fist.png', name: '揮拳', how: '近身重拳・傷害高', inf: true },
+    { id: 'grenade', img: 'assets/ui/w_grenade.png', name: '網球手榴彈', how: '拋物線投擲・落地範圍爆炸', ammo: 5, cd: 0.7 },
+    { id: 'cannon', img: 'assets/ui/w_cannon.png', name: '網球大砲', how: '直線重砲・命中爆炸', ammo: 4, cd: 1.1 },
+    { id: 'sniper', img: 'assets/ui/w_sniper.png', name: '狙擊槍', how: '鏡頭拉近・一條線穿透多人', ammo: 6, cd: 0.9 }
   ];
   const inv = [0, 0, 0, 999, 0, 0].map((v, i) => (i === 3 ? 0 : v));   // ammo per weapon index (specials only)
   const specialCrates = [], grenades = [], cannonBalls = [], tracers = [], rings = [];
@@ -1036,9 +1039,9 @@
   function cycleWeapon() { const o = ownedOrder(), i = o.indexOf(state.weapon | 0); setWeapon(o[(i + 1) % o.length]); }
   function refreshWeaponHUD() {
     const w = state.weapon | 0, W = WEAPONS[w], el = document.getElementById('weapon-label'), btn = document.getElementById('btn-switch');
-    if (el) { const ammo = W.inf ? '∞' : '×' + inv[w]; el.innerHTML = '<span class="wi">' + W.icon + '</span> <span class="wn">' + W.name + '</span> <span class="wa' + (!W.inf && inv[w] <= 1 ? ' low' : '') + '">' + ammo + '</span><br><small>' + W.how + '</small>'; }
+    if (el) { const ammo = W.inf ? '∞' : '×' + inv[w]; el.innerHTML = '<img class="wi" src="' + W.img + '" alt=""> <span class="wn">' + W.name + '</span> <span class="wa' + (!W.inf && inv[w] <= 1 ? ' low' : '') + '">' + ammo + '</span><br><small>' + W.how + '</small>'; }
     const o = ownedOrder(), nx = WEAPONS[o[(o.indexOf(w) + 1) % o.length]];
-    if (btn) btn.innerHTML = nx.icon + '<span>' + nx.name.replace('網球', '') + '</span>';
+    if (btn) btn.innerHTML = '<img class="wi" src="' + nx.img + '" alt=""><span>' + nx.name.replace('網球', '') + '</span>';
   }
   function useAmmo(w) {
     inv[w]--; if (inv[w] <= 0) { inv[w] = 0; setWeapon(0); banner(WEAPONS[w].name + ' 用完了，換回網球槍', '#ff8c42'); AudioSys.play('hit'); } else refreshWeaponHUD();
@@ -1088,8 +1091,7 @@
   function spawnCrate(w, x, z) {
     if (specialCrates.length > 8) return;
     const g = new THREE.Group(); g.add(Toon.mesh(new THREE.BoxGeometry(1.3, 1.0, 1.3), CRATE_COL[w], { t: 0.07 })); const band = Toon.mesh(new THREE.BoxGeometry(1.36, 0.22, 1.36), 0xffc83d, { t: 0.04 }); band.position.y = 0.1; g.add(band);
-    const c = document.createElement('canvas'); c.width = c.height = 96; const k = c.getContext('2d'); k.font = '64px sans-serif'; k.textAlign = 'center'; k.textBaseline = 'middle'; k.fillText(WEAPONS[w].icon, 48, 52);
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false, fog: false })); sp.scale.set(1.9, 1.9, 1); sp.position.y = 2.4; sp.renderOrder = 25; g.add(sp);
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX['ui:' + WEAPONS[w].id], transparent: true, depthTest: false, fog: false })); sp.scale.set(2.3, 2.3, 1); sp.position.y = 2.4; sp.renderOrder = 25; g.add(sp);
     g.position.set(x, 0.5, z); scene.add(g); specialCrates.push({ g, w, sp, t: Math.random() * 6 });
   }
   function spawnCratesForLevel() {
@@ -1114,7 +1116,7 @@
       const c = specialCrates[i]; c.t += dt; c.g.rotation.y += dt * 1.4; c.sp.position.y = 2.3 + Math.sin(c.t * 3) * 0.25;
       if (Math.hypot(c.g.position.x - player.position.x, c.g.position.z - player.position.z) < 1.9) {
         const W = WEAPONS[c.w]; inv[c.w] = Math.min(W.ammo * 2, inv[c.w] + W.ammo); setWeapon(c.w);
-        banner(W.icon + ' ' + W.name + ' ×' + inv[c.w], '#7ef9ff'); popText(player.position.x, 3.3, player.position.z, W.name + ' ×' + W.ammo, '#7ef9ff', 0.6); AudioSys.play('mission');
+        banner(W.name + ' ×' + inv[c.w], '#7ef9ff'); popText(player.position.x, 3.3, player.position.z, W.name + ' ×' + W.ammo, '#7ef9ff', 0.6); AudioSys.play('mission');
         burst(c.g.position.x, 1.2, c.g.position.z, 0x7ef9ff, 18, 9, 0.7, 0.9); scene.remove(c.g); specialCrates.splice(i, 1);
       }
     }
