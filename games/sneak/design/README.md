@@ -15,3 +15,8 @@
 - [巡經同事 v1](coworker-poses-v1.png) 用於兩位路過的同事。
 
 2026-11-20 使用者試玩確認本版可發布。
+
+## 2026-11-24 走路與走廊（sprite-gen + GPT）
+
+- [走路循環 v1](walk-cycle-v1.png)（原始條帶 [walk-cycle-v1-raw.png](walk-cycle-v1-raw.png)）：以 `art/step-a.webp` 為底圖，用 sprite-gen 的 GPT 圖列生成 8 格潛行走路，每格 256×384、腳底線在第 348 列；正式素材為 `art/walk-cycle.webp`。walk 屬 sprite-gen 的實驗狀態，未經使用者確認前視為待驗收。
+- [入口走廊 v1](hallway-v1-raw.png)：以 `art/rainy-office.webp` 為風格參考生成，沒有桌椅、檯燈與盆栽，雨向與辦公室一致；正式素材 `art/hallway.webp` 由原圖右段加左段接成一個可單向重複的區塊（不再鏡像）。

@@ -7,7 +7,7 @@
 - 網址：`#sneak`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「按住偷溜，老闆回頭前趕快裝忙。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：偷偷下班，`game_id` 為 `sneak`
-- 檔案：`games/sneak/card.html`、`games/sneak/cover.webp`、`games/sneak/game.js`、`games/sneak/icon.svg`、`games/sneak/leaderboard.webp`、`games/sneak/style.css`、`games/sneak/view.html`；`game.js` 共 387 行、19.3 KB
+- 檔案：`games/sneak/card.html`、`games/sneak/cover.webp`、`games/sneak/game.js`、`games/sneak/icon.svg`、`games/sneak/leaderboard.webp`、`games/sneak/style.css`、`games/sneak/view.html`；`game.js` 共 395 行、20.2 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「15. Sneak（sneak）」（下方「規則摘要」已複製）
 
@@ -22,7 +22,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`bonusAt` L8、`nextMilestone` L9、`T` L11、`saySneak` L17、`remember` L18、`setHold` L19、`release` L22、`ui` L23、`die` L54、`award` L63、`nextStage` L64、`update` L73、`sync` L79、`start` L83、`sprite` L103、`drawSneakLeg` L111、`drawSneakingPlayer` L143、`drawCoworker` L160、`routeX` L181、`drawCover` L182、`drawGuard` L201、`drawBoss` L235、`drawHallway` L268、`draw` L280、`press` L375、`lift` L376、`loop` L383
+`bonusAt` L8、`nextMilestone` L9、`T` L11、`saySneak` L17、`remember` L18、`setHold` L19、`release` L22、`ui` L23、`die` L54、`award` L63、`nextStage` L64、`update` L73、`sync` L79、`start` L83、`sprite` L103、`drawSneakLeg` L111、`drawWalkCycle` L145、`drawSneakingPlayer` L153、`drawCoworker` L173、`routeX` L194、`drawCover` L195、`drawGuard` L214、`drawBoss` L248、`drawHallway` L283、`draw` L288、`press` L383、`lift` L384、`loop` L391
 
 ## 錢包與結算接點
 

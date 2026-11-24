@@ -14561,7 +14561,7 @@ function start(){
 }
 const art={};
 const bossSteps=['boss-walk-a','boss-walk-b','boss-walk-c','boss-walk-d'];
-for(const name of [...bossSteps,'boss-turn','boss-sit','rainy-office','step-a','step-shoe','work','away','warn','look','visitor-teal','visitor-rust']){
+for(const name of [...bossSteps,'boss-turn','boss-sit','rainy-office','hallway','step-a','step-shoe','walk-cycle','work','away','warn','look','visitor-teal','visitor-rust']){
  const image=new Image();
  image.src='games/sneak/art/'+name+'.webp';
  art[name]=image;
@@ -14573,15 +14573,15 @@ function sprite(name,x,y,height){
  g.drawImage(image,x-width/2,y-height,width,height);
 }
 // Positions are in the original walking sprite's 300 px coordinate space.
-const sneakStepLength=37;
+const sneakStepLength=46;
 function drawSneakLeg(phase,hipX,far){
  const planted=phase<.5, t=(phase%.5)*2;
  const swing=(1-Math.cos(t*Math.PI))/2;
  const ankleX=94+sneakStepLength*(planted?.5-t:swing-.5);
- const lift=planted?0:Math.sin(t*Math.PI)**2*13;
+ const lift=planted?0:Math.sin(t*Math.PI)**2*19;
  const roll=.36+.30*(planted?(1-Math.cos(t*Math.PI))/2:(1+Math.cos(t*Math.PI))/2);
  const ankleY=298-lift-(27*Math.sin(roll)-12*Math.cos(roll)+6);
- const kneeX=(hipX+ankleX)/2+8,kneeY=(168+ankleY)/2-3;
+ const kneeX=(hipX+ankleX)/2+8+lift*.45,kneeY=(168+ankleY)/2-3-lift*.3;
  g.lineJoin='round';
  g.beginPath();
  g.moveTo(hipX-17,142);g.quadraticCurveTo(hipX+6,140,hipX+15,168);
@@ -14606,17 +14606,30 @@ function drawSneakLeg(phase,hipX,far){
   g.strokeStyle='#25201d';g.lineWidth=2;g.stroke();
  }
 }
+// walk-cycle.webp: 8 frames of 256x384 (sprite-gen run, design/walk-cycle-v1.png); feet rest on row 348, body centre near x 138.
+const walkFrames=8,walkCellW=256,walkCellH=384,walkFootY=348,walkCenterX=138,walkBodyH=270;
+function drawWalkCycle(x,y,height,distance){
+ const sheet=art['walk-cycle'];
+ const scale=height/walkBodyH;
+ const phase=reduceMotion?.3:(distance/(height*.45))%1;
+ const frame=Math.floor(phase*walkFrames)%walkFrames;
+ g.drawImage(sheet,frame*walkCellW,0,walkCellW,walkCellH,
+   x-walkCenterX*scale,y-walkFootY*scale,walkCellW*scale,walkCellH*scale);
+}
 function drawSneakingPlayer(x,y,height,walking,distance){
  if(!walking){sprite('work',x,y,height);return}
+ if(art['walk-cycle'].naturalWidth){drawWalkCycle(x,y,height,distance);return}
  const torso=art['step-a'];
  if(!torso.naturalWidth)return;
  const scale=height/300;
  const phase=reduceMotion?.16:(distance/(2*sneakStepLength*scale))%1;
- const dip=reduceMotion?0:Math.sin(phase*Math.PI*2)**2*2;
+ // The body is lowest when both feet are on the floor (phase 0 and .5) and rocks slightly with each stride.
+ const dip=reduceMotion?0:Math.cos(phase*Math.PI*2)**2*4;
+ const rock=reduceMotion?0:Math.sin(phase*Math.PI*2)*.03;
  g.save();g.translate(x-torso.naturalWidth/2*scale,y-height);g.scale(scale,scale);
  drawSneakLeg((phase+.5)%1,91,true);
  drawSneakLeg(phase,101,false);
- g.translate(0,dip);
+ g.translate(0,dip);g.translate(100,150);g.rotate(rock);g.translate(-100,-150);
  // Preserve the original inked torso and bag, clipping away the old stride.
  g.beginPath();g.moveTo(0,0);g.lineTo(torso.naturalWidth,0);g.lineTo(torso.naturalWidth,147);
  g.lineTo(102,147);g.lineTo(92,151);g.lineTo(80,160);g.lineTo(73,184);g.lineTo(0,184);
@@ -14731,17 +14744,12 @@ function drawBoss(deskX,deskY,floorY,roomTop,roomHeight,room){
   g.save();g.globalAlpha=sitting;sprite('away',deskX,deskY,roomHeight*.15);g.restore();
  }
 }
+// hallway.webp: a GPT-drawn corridor (design/hallway-v1-raw.png) with no desks, tiled in one direction so rain never flips.
+const hallTileWidth=342;
 function drawHallway(room,top,height,left){
- if(left>=0||!room.naturalWidth)return;
- const tile=200;
- const sourceWidth=room.naturalWidth*tile/W;
- for(let i=Math.ceil(-left/tile);i>0;i--){
-  const x=-i*tile;
-  g.save();g.translate(x+(i%2?tile:0),top);
-  if(i%2)g.scale(-1,1);
-  g.drawImage(room,0,0,sourceWidth,room.naturalHeight,0,0,tile,height);
-  g.restore();
- }
+ const hall=art.hallway;
+ if(left>=0||!hall.naturalWidth)return;
+ for(let i=Math.ceil(-left/hallTileWidth);i>0;i--)g.drawImage(hall,-i*hallTileWidth,top,hallTileWidth+1,height);
 }
 function draw(){
  const cssWidth=c.clientWidth||W,cssHeight=c.clientHeight||600;

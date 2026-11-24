@@ -33,12 +33,22 @@ Agent 必須區分實際完成的修改、已執行的測試及尚未驗證的�
 | --- | --- |
 | 使用者提出新遊戲概念、想法，要先做可玩骨架、推上去或放預覽 | [遊戲骨架與預覽區](docs/agent-guides/prototype.md)、[遊戲產品原則](docs/agent-guides/product-policy.md) |
 | 新增、改版、維護或重新上架遊戲，或調整獎勵 | [遊戲產品原則](docs/agent-guides/product-policy.md) |
-| 設計或修改遊戲畫面、角色、場景、HUD 或手機操作 | [手機畫面與美術設定](docs/agent-guides/mobile-design.md) |
+| 設計或修改遊戲畫面、角色、場景、HUD 或手機操作 | [手機畫面與美術設定](docs/agent-guides/mobile-design.md)；需要做走路／動作影格、去背或背景素材時，本機有 sprite-gen 就依下方「外部工具：sprite-gen」使用 |
 | 修改遊戲程式、錢包、儲存、路由、追蹤或靜態組合 | [遊戲與平台程式契約](docs/agent-guides/runtime-contracts.md) |
 | 新增或上架遊戲，或調整訪客排行榜 | [新增遊戲與訪客排行榜](docs/agent-guides/new-game.md) |
 | 新增遊戲、修改顯示文字或語言切換 | [遊戲多語系](docs/agent-guides/localization.md) |
 | 新增、修改、驗收或發布遊戲 | `docs/agent-guides/cross-platform-performance.md` |
 | 新增、改造、重新上架、調整 BONUS、準備發布或推送 | [遊戲驗收與推送](docs/agent-guides/release.md)、[CrazyGames 平台上架規範](docs/agent-guides/crazygames-compliance.md) |
+
+## 外部工具：sprite-gen（選用）
+
+2026-11-24 使用者指定。來源：<https://github.com/aldegad/sprite-gen>（Apache-2.0）。用於製作或修改角色走路／動作影格、去背、循環動畫、可重複拼接的背景與投影，例如偷偷下班的走路與走廊背景。
+
+- **只在本機已安裝時使用。** 先確認 `$SPRITE_GEN_ROOT/.venv/bin/sprite-gen` 或 `~/tools/sprite-gen/.venv/bin/sprite-gen` 存在；不存在就不要用，也不要自行下載、安裝或登入，改用程式繪製或向使用者回報。
+- 使用前先讀該資料夾的 `SKILL.md`，再依其中指引執行（例如 `sprite-gen workflow --kind sprite` 查看可用存取與預設）；一律用 venv 內的執行檔，不假設 shell 已啟用。
+- 生成圖需要使用者自己的 codex（ChatGPT）、grok 或 API 登入，會產生使用量或費用。沒有登入或需要金鑰時停下回報，不替使用者登入或填入金鑰；有明確收費的供應商（如 `openai`）須先取得同意。
+- 產出放在暫存區或該遊戲的 `design/` 與 `art/`，採用的原檔依 [手機畫面與美術設定](docs/agent-guides/mobile-design.md) 保存並記錄；工具不會取代使用者對角色與場景的確認。
+- 新素材仍要符合本站美術一致性與手機 390×844 驗收；不改玩法、扣點、追蹤與儲存契約。
 
 ## 外部平台規範
 
