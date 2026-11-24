@@ -470,14 +470,14 @@
     root.traverse(o => { if (o.isMesh) { let c = map.get(o.material); if (!c) { c = o.material.clone(); c.transparent = true; map.set(o.material, c); list.push(c); } o.material = c; } });
     return list;
   }
-  function setFade(list, a) { const solid = a > 0.98; for (const m of list) { m.opacity = a; m.depthWrite = solid; } }
+  function setFade(list, a) { const solid = a > 0.98; for (const m of list) { m.opacity = m.side === THREE.BackSide ? (solid ? 1 : 0) : a; m.depthWrite = solid; } }
 
   // --- props: real 3D models scaled up so they read as big city furniture; tall ones can fade when they stand between the camera and the dog ---
   const fadeProps = [];
   function addProp(name, x, z, solidProp, ry) {
     const g = CityProps[name](), sz = CityProps.size[name], k = sz.h < 3 ? 1.8 : 1.15;
     g.scale.setScalar(k); g.position.set(x, 0, z); g.rotation.y = ry || 0; scene.add(g);
-    if (sz.h >= 3.4) { const mats = ownMaterials(g); fadeProps.push({ g, mats, h: sz.h * k, w: sz.w * k, a: 1 }); }
+    { const mats = ownMaterials(g); fadeProps.push({ g, mats, h: sz.h * k, w: sz.w * k, a: 1, tall: sz.h >= 3.4 }); }
     if (solidProp !== false) { const cw = /palm|lamp|Sign|banner|trafficLight|tree/.test(name) ? 0.8 : sz.w * k * 0.6; colliders.push({ minX: x - cw / 2, maxX: x + cw / 2, minZ: z - Math.max(0.6, sz.d * k * 0.4), maxZ: z + Math.max(0.6, sz.d * k * 0.4) }); }
     return g;
   }
@@ -577,7 +577,22 @@
       { minX: minX - T / 2, maxX: minX + T / 2, minZ: -OZ - 2, maxZ: OZ + 2 }, { minX: maxX - T / 2, maxX: maxX + T / 2, minZ: -OZ - 2, maxZ: OZ + 2 });
   })();
 
+  const carBoxes = []; let drivingMesh = null;
+  function carHit(x, z, r, skip) {
+    for (const c of carBoxes) {
+      if (c.mesh === drivingMesh || c.mesh === skip) continue;
+      const px = c.mesh.position.x, pz = c.mesh.position.z, sw = Math.abs(Math.sin(c.mesh.rotation.y)) > 0.5, hw = sw ? c.hd : c.hw, hd = sw ? c.hw : c.hd;
+      if (x + r > px - hw && x - r < px + hw && z + r > pz - hd && z - r < pz + hd) return true;
+    }
+    return false;
+  }
+  function bulletBlocked(p) {
+    if (p.y > 6) return false;
+    for (const c of colliders) if (p.x > c.minX && p.x < c.maxX && p.z > c.minZ && p.z < c.maxZ) return true;
+    return p.y < 2.5 && carHit(p.x, p.z, 0.1);
+  }
   function moveBlockedAt(x, z, r) {
+    if (carHit(x, z, r)) return true;
     if (x - r < WB.minX || x + r > WB.maxX || z - r < WB.minZ || z + r > WB.maxZ) return true;
     if (tileAtU(x - r, z - r) === 'tiles/water' || tileAtU(x + r, z - r) === 'tiles/water' || tileAtU(x - r, z + r) === 'tiles/water' || tileAtU(x + r, z + r) === 'tiles/water') return true;
     for (const c of colliders) if (x + r > c.minX && x - r < c.maxX && z + r > c.minZ && z - r < c.maxZ) return true;
@@ -645,6 +660,7 @@
   function createSportsCar(x, z, name, ry) {
     const car = CityProps[name](); car.position.set(x, 0, z); car.rotation.y = ry || 0; car.add(makeShadow(CityProps.size[name].d * 0.9));
     scene.add(car); cars.push({ mesh: car, speed: 0 });
+    { const sz = CityProps.size[name]; carBoxes.push({ mesh: car, hw: sz.w / 2 + 0.15, hd: sz.d / 2 + 0.15 }); }
   }
   function updateCarFlip() {}
   (function placeCars() {
@@ -683,12 +699,17 @@
     const T = ENEMY[type], fk = 'characters/enemies/' + type + '_front', bk = 'characters/enemies/' + type + '_back';
     const A = MAN[fk], w = A.drawSize[0] / U * T.k, h = A.drawSize[1] / U * T.k;
     const grp = new THREE.Group(); const sp = makeSprite(TEX[fk], w, h, 0.03); grp.add(sp); grp.add(makeShadow(w * 1.15));
-    const hpGrp = new THREE.Group(); hpGrp.position.y = h + 0.3;
-    const hpBg = new THREE.Mesh(new THREE.PlaneGeometry(1.15, 0.16), new THREE.MeshBasicMaterial({ color: 0x1a1620, side: THREE.DoubleSide, depthTest: false }));
-    const hpBar = new THREE.Mesh(new THREE.PlaneGeometry(1.07, 0.1), new THREE.MeshBasicMaterial({ color: 0xff2a54, side: THREE.DoubleSide, depthTest: false }));
-    hpBar.position.z = 0.01; hpBg.renderOrder = 10; hpBar.renderOrder = 11; hpGrp.add(hpBg, hpBar); grp.add(hpGrp);
+    const hpGrp = new THREE.Group(); hpGrp.position.y = h + 0.45;
+    const hpBg = new THREE.Mesh(new THREE.PlaneGeometry(2.1, 0.34), new THREE.MeshBasicMaterial({ color: 0x1a1620, side: THREE.DoubleSide, depthTest: false }));
+    const barGeo = new THREE.PlaneGeometry(1.94, 0.22); barGeo.translate(0.97, 0, 0);
+    const hpBar = new THREE.Mesh(barGeo, new THREE.MeshBasicMaterial({ color: 0xff2a54, side: THREE.DoubleSide, depthTest: false }));
+    hpBar.position.set(-0.97, 0, 0.01); hpBg.renderOrder = 10; hpBar.renderOrder = 11; hpGrp.add(hpBg, hpBar); grp.add(hpGrp);
     const f = freeSpotU(x, z, 0.6); grp.position.set(f.x, 0, f.z); scene.add(grp);
     enemies.push({ mesh: grp, hpBar, hp: T.hp, maxHp: T.hp, type, sprite: sp, texF: TEX[fk], texB: TEX[bk], front: true, flash: 0, bobT: Math.random() * 6, shootCd: 1.5 + Math.random() * 2, patrolAngle: Math.random() * Math.PI * 2 });
+  }
+  const _bq = new THREE.Quaternion();
+  function updateEnemyBars() {
+    for (const e of enemies) { const g = e.hpBar.parent; e.mesh.getWorldQuaternion(_bq).invert(); g.quaternion.copy(_bq.multiply(camera.quaternion)); }
   }
   function updateEnemyLook(e) {
     const fx = Math.sin(e.mesh.rotation.y), fz = Math.cos(e.mesh.rotation.y);
@@ -763,10 +784,10 @@
     for (const p of fadeProps) {
       const pdx = p.g.position.x - camera.position.x, pdz = p.g.position.z - camera.position.z, pd = Math.hypot(pdx, pdz);
       let want = 1;
-      if (pd < heroDist - 0.3 && pd < 60) {
+      if (pd < heroDist - 0.3 && pd < (p.tall ? 60 : 24)) {
         pv.set(p.g.position.x, p.h * 0.5, p.g.position.z).project(camera);
         const half = (p.w / 2) * (0.9 / Math.max(pd, 1)) * 2.2;
-        if (pv.z < 1 && Math.abs(pv.x - hn.x) < 0.42 + half) want = 0.22;
+        if (pv.z < 1 && Math.abs(pv.x - hn.x) < (p.tall ? 0.42 : 0.3) + half) want = p.tall ? 0.22 : 0.3;
       }
       p.a += (want - p.a) * Math.min(1, dt * 10);
       setFade(p.mats, p.a);
@@ -926,13 +947,13 @@
     if (state.drivingCar) {
       { const f = freeSpotU(state.drivingCar.mesh.position.x - 2.6, state.drivingCar.mesh.position.z, 0.55); player.position.set(f.x, 0, f.z); }
       player.visible = true;
-      state.drivingCar = null;
+      state.drivingCar = null; drivingMesh = null;
       stanceChip.textContent = '55° TACTICAL';
       return;
     }
     const nearCar = getNearestCar();
     if (nearCar) {
-      state.drivingCar = nearCar;
+      state.drivingCar = nearCar; drivingMesh = nearCar.mesh;
       state.isCrouching = false;
       player.visible = false;
       stanceChip.textContent = 'CONVERTIBLE DRIVING';
@@ -1391,6 +1412,7 @@
       const p = projectiles[i];
       p.life -= dt;
       p.mesh.position.addScaledVector(p.vel, dt);
+      if (bulletBlocked(p.mesh.position)) p.life = 0;
 
       let hit = p.life <= 0;
       if (!hit && p.isPlayer) {
@@ -1463,6 +1485,7 @@
     camera.lookAt(smoothLookAt);
 
     drawRadar();
+    updateEnemyBars();
     updateBuildings(dt);
     renderer.render(scene, camera);
   }
@@ -1475,7 +1498,7 @@
   });
 
   btnPlay.disabled = false; btnPlay.textContent = '▶ PLAY VICE PAW';
-  window.__doggo = { state, player, camera, enemies, cars, blocks, scene };
+  window.__doggo = { state, player, camera, enemies, cars, blocks, scene, moveBlockedAt, bulletBlocked, colliders };
   updateHUD();
   animate();
 })();
