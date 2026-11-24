@@ -162,9 +162,10 @@
   #btn-car {
     right: 24px; bottom: 184px; width: 54px; height: 54px;
     background: rgba(77, 255, 145, 0.58); border: 2px solid #b8ffd2;
-    font-size: 18px; display: none;
+    font-size: 18px; display: flex;
   }
   #btn-car span { font-size: 9px; }
+  #btn-car:disabled { opacity: .4; filter: saturate(.3); }
 
   /* Start / Pause Overlay (Platform SDK Compliant) */
   #overlay {
@@ -316,7 +317,7 @@
   <button class="action-btn" id="btn-crouch"><img class="bi" src="assets/ui/b_shield.png" alt=""><span>CROUCH</span></button>
   <button class="action-btn" id="btn-turn180"><img class="bi" src="assets/ui/b_turn.png" alt=""><span>180°</span></button>
   <button class="action-btn" id="btn-switch">🔪<span>KNIFE</span></button>
-  <button class="action-btn" id="btn-car"><img class="bi" src="assets/ui/k_car.png" alt=""><span>DRIVE</span></button>
+  <button class="action-btn" id="btn-car" disabled><img class="bi" src="assets/ui/k_car.png" alt=""><span>DRIVE</span></button>
 </div>
 
 <!-- Start / Pause Overlay -->
@@ -332,7 +333,7 @@
     <div id="diff-row"><button type="button" data-d="easy">簡單</button><button type="button" data-d="normal">普通</button><button type="button" data-d="hard">困難</button></div>
     <div id="rank-box" hidden><div id="rk-title"></div><ol id="rk-list"></ol><div id="rk-status"></div></div>
     <button class="start-btn" id="btn-play">▶ PLAY TOP DOGGO</button>
-    <div class="ov-tips guide-pc"><span><img src="assets/ui/k_move.png" alt="">WASD 移動</span><span><img src="assets/ui/k_attack.png" alt="">滑鼠左鍵 攻擊</span><span><img src="assets/ui/k_roll.png" alt="">空白鍵 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">Q 換武器</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 E 上車</span></div><div class="ov-note guide-pc">先點一下畫面鎖定視角，移動滑鼠轉向 · C 蹲下 · X 轉身 180°</div><div class="ov-tips guide-touch"><span><img src="assets/ui/k_move.png" alt="">左手搖桿 移動</span><span><img src="assets/ui/k_attack.png" alt="">右側 FIRE 攻擊</span><span><img src="assets/ui/k_roll.png" alt="">DODGE 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">換武器鈕</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 DRIVE 上車</span></div><div class="ov-note guide-touch">滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身</div>
+    <div class="ov-tips guide-pc"><span><img src="assets/ui/k_move.png" alt="">WASD 移動</span><span><img src="assets/ui/k_attack.png" alt="">滑鼠左鍵 攻擊</span><span><img src="assets/ui/k_roll.png" alt="">空白鍵 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">Q 換武器</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 E 上車</span></div><div class="ov-note guide-pc">按住滑鼠右鍵拖曳轉向，左鍵攻擊 · C 蹲下 · X 轉身 180°</div><div class="ov-tips guide-touch"><span><img src="assets/ui/k_move.png" alt="">左手搖桿 移動</span><span><img src="assets/ui/k_attack.png" alt="">右側 FIRE 攻擊</span><span><img src="assets/ui/k_roll.png" alt="">DODGE 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">換武器鈕</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 DRIVE 上車</span></div><div class="ov-note guide-touch">滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身</div>
     <div class="ov-note ov-goal"><b>目標：</b>完成上方任務通關，下一關更難。金骨頭回血，滿血變護盾；武器箱有手榴彈、大砲、狙擊槍（彈藥有限）。</div>
     <script>document.getElementById("overlay").classList.add((("ontouchstart" in window) || navigator.maxTouchPoints > 0 || window.innerWidth < 820) ? "dev-touch" : "dev-pc");</script>
   </div>
@@ -351,7 +352,7 @@
     '美式鬥牛犬 vs 紫色浣熊幫': 'American Bulldog vs. the Purple Raccoon Gang', '難度': 'Difficulty', '簡單': 'Easy', '普通': 'Normal', '困難': 'Hard',
     'WASD 移動': 'WASD Move', '滑鼠左鍵 攻擊': 'Left Click Attack', '空白鍵 翻滾': 'Space Roll', 'Q 換武器': 'Q Switch Weapon', '靠近車按 E 上車': 'Press E near a car to drive',
     '左手搖桿 移動': 'Left Stick Move', '右側 FIRE 攻擊': 'Right FIRE Attack', 'DODGE 翻滾': 'DODGE Roll', '換武器鈕': 'Weapon Switch', '靠近車按 DRIVE 上車': 'DRIVE near a car',
-    '先點一下畫面鎖定視角，移動滑鼠轉向 · C 蹲下 · X 轉身 180°': 'Click the screen to lock the view, move the mouse to aim · C Crouch · X Turn 180°',
+    '按住滑鼠右鍵拖曳轉向，左鍵攻擊 · C 蹲下 · X 轉身 180°': 'Hold right mouse and drag to turn; left click to attack · C Crouch · X Turn 180°',
     '滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身': 'Swipe the right side to turn · CROUCH · 180° Turn',
     '目標：': 'Goal: ', '完成上方任務通關，下一關更難。金骨頭回血，滿血變護盾；武器箱有手榴彈、大砲、狙擊槍（彈藥有限）。': 'Finish the missions above to clear a level; the next one is tougher. Golden bones heal you (or add a shield at full health). Weapon crates hold grenades, cannons and sniper rifles (limited ammo).',
     '載入素材中…': 'Loading…', '載入失敗，請重新整理': 'Failed to load. Please refresh.', '模型載入失敗，請重新整理': 'Models failed to load. Please refresh.',
@@ -371,7 +372,7 @@
     '美式鬥牛犬 vs 紫色浣熊幫': '美式斗牛犬 vs 紫色浣熊帮', '難度': '难度', '簡單': '简单', '普通': '普通', '困難': '困难',
     'WASD 移動': 'WASD 移动', '滑鼠左鍵 攻擊': '鼠标左键 攻击', '空白鍵 翻滾': '空格键 翻滚', 'Q 換武器': 'Q 换武器', '靠近車按 E 上車': '靠近车按 E 上车',
     '左手搖桿 移動': '左手摇杆 移动', '右側 FIRE 攻擊': '右侧 FIRE 攻击', 'DODGE 翻滾': 'DODGE 翻滚', '換武器鈕': '换武器钮', '靠近車按 DRIVE 上車': '靠近车按 DRIVE 上车',
-    '先點一下畫面鎖定視角，移動滑鼠轉向 · C 蹲下 · X 轉身 180°': '先点一下画面锁定视角，移动鼠标转向 · C 蹲下 · X 转身 180°',
+    '按住滑鼠右鍵拖曳轉向，左鍵攻擊 · C 蹲下 · X 轉身 180°': '按住鼠标右键拖曳转向，左键攻击 · C 蹲下 · X 转身 180°',
     '滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身': '滑动屏幕右侧转向 · CROUCH 蹲下 · 180° 转身',
     '目標：': '目标：', '完成上方任務通關，下一關更難。金骨頭回血，滿血變護盾；武器箱有手榴彈、大砲、狙擊槍（彈藥有限）。': '完成上方任务通关，下一关更难。金骨头回血，满血变护盾；武器箱有手榴弹、大炮、狙击枪（弹药有限）。',
     '載入素材中…': '载入素材中…', '載入失敗，請重新整理': '载入失败，请重新刷新', '模型載入失敗，請重新整理': '模型载入失败，请重新刷新',
@@ -835,8 +836,8 @@
   const heroAnim = { run: 0, crouch: 0, breathe: 0 };
   let heroWeapon = 'gun';
   function setHeroWeapon(w) { heroWeapon = ['gun', 'knife', 'fist', 'grenade', 'cannon', 'sniper'][w] || 'gun'; }
-  function setHeroFrame(atlasKey, row, col) {
-    const t = (heroWeapon !== 'gun' && TEX[atlasKey + '_' + heroWeapon]) || TEX[atlasKey]; heroSprite.material.map = t; t.offset.set(col / 6, 1 - (row + 1) / 2);
+  function setHeroFrame(atlasKey, row, col, weapon = heroWeapon) {
+    const t = (weapon !== 'gun' && TEX[atlasKey + '_' + weapon]) || TEX[atlasKey]; heroSprite.material.map = t; t.offset.set(col / 6, 1 - (row + 1) / 2);
   }
   function updateHero(dt, movingMag, inX) {
     heroAnim.breathe += dt;
@@ -864,7 +865,7 @@
   const CAR_NAMES = ['carConvertible', 'carTaxi', 'carPolice', 'carSedan', 'vanAmbulance', 'truckBlue', 'scooterCream', 'motorcycleRed'];
   function createSportsCar(x, z, name, ry) {
     const car = CityProps[name](); car.position.set(x, 0, z); car.rotation.y = ry || 0; car.add(makeShadow(CityProps.size[name].d * 0.9));
-    scene.add(car); cars.push({ mesh: car, speed: 0 });
+    scene.add(car); cars.push({ mesh: car, speed: 0, riderVisible: ['carConvertible', 'scooterCream', 'motorcycleRed'].includes(name), riderSeat: name === 'carConvertible' ? {x: -0.4, y: 0.95, z: -0.61, scale: 1.55} : {x: 0, y: 0.68, z: -0.3, scale: 1.65} });
     { const sz = CityProps.size[name]; carBoxes.push({ mesh: car, hw: sz.w / 2 + 0.15, hd: sz.d / 2 + 0.15 }); }
   }
   function updateCarFlip() {}
@@ -1000,8 +1001,8 @@
       setFade(b.mats, b.alpha);
     }
     // tall props (lamps, signs, palms...) that stand between the camera and the dog also turn see-through
-    const hn = new THREE.Vector3(player.position.x, 1.2, player.position.z).project(camera);
-    const pv = new THREE.Vector3();
+    const hn = _hn;
+    const pv = _bc;
     for (const p of fadeProps) {
       const pdx = p.g.position.x - camera.position.x, pdz = p.g.position.z - camera.position.z, pd = Math.hypot(pdx, pdz);
       let want = 1;
@@ -1368,6 +1369,16 @@
   const weaponLabel = document.getElementById('weapon-label');
   const stanceChip = document.getElementById('stance-chip');
 
+  let carButtonMode = 'drive', carButtonEnabled = false;
+  function updateCarButton(driving, enabled) {
+    const mode = driving ? 'exit' : 'drive';
+    if (mode !== carButtonMode) {
+      carButtonMode = mode;
+      btnCar.innerHTML = driving ? '<img class="bi" src="assets/ui/b_exit.png" alt=""><span>EXIT</span>' : '<img class="bi" src="assets/ui/k_car.png" alt=""><span>DRIVE</span>';
+    }
+    if (enabled !== carButtonEnabled) { carButtonEnabled = enabled; btnCar.disabled = !enabled; }
+  }
+
   function updateTouchVisibility() {
     const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth < 820);
     const show = state.uiMode === 'ON' || (state.uiMode === 'AUTO' && isTouchDevice);
@@ -1423,9 +1434,7 @@
     state.started = true;
     setPaused(false);
     if (freshRun) beginRun();
-    if (window.innerWidth >= 820 && state.uiMode !== 'ON') {
-      canvas.requestPointerLock?.();
-    }
+
   });
 
   btnPause.addEventListener('click', (e) => {
@@ -1472,10 +1481,40 @@
 
   function toggleWeaponMode() { cycleWeapon(); }
 
+  // Include the occupied car when checking exits; require room and a walkable escape.
+  function findCarExit(car) {
+    const previous = drivingMesh;
+    drivingMesh = null;
+    try {
+      const x = car.mesh.position.x, z = car.mesh.position.z;
+      for (let rad = 1; rad <= 12; rad += 0.5) {
+        for (let i = 0; i < 24; i++) {
+          const a = car.mesh.rotation.y + i * Math.PI / 12;
+          const nx = x + Math.cos(a) * rad, nz = z + Math.sin(a) * rad;
+          if (moveBlockedAt(nx, nz, 0.85)) continue;
+          for (let dir = 0; dir < 8; dir++) {
+            const b = dir * Math.PI / 4;
+            let clear = true;
+            for (let step = 0.25; step <= 2; step += 0.25) {
+              if (moveBlockedAt(nx + Math.cos(b) * step, nz + Math.sin(b) * step, 0.55)) { clear = false; break; }
+            }
+            if (clear) return { x: nx, z: nz };
+          }
+        }
+      }
+      return null;
+    } finally { drivingMesh = previous; }
+  }
+
   function toggleCar() {
     if (state.drivingCar) {
-      { const f = freeSpotU(state.drivingCar.mesh.position.x - 2.6, state.drivingCar.mesh.position.z, 0.55); player.position.set(f.x, 0, f.z); }
+      const f = findCarExit(state.drivingCar);
+      if (!f) return;
+      state.drivingCar.speed = 0;
+      player.position.set(f.x, 0, f.z);
       player.visible = true;
+      dogBodyGroup.position.set(0, 0, 0);
+      heroShadow.visible = true;
       state.drivingCar = null; drivingMesh = null;
       stanceChip.textContent = '55° TACTICAL';
       return;
@@ -1484,7 +1523,8 @@
     if (nearCar) {
       state.drivingCar = nearCar; drivingMesh = nearCar.mesh;
       state.isCrouching = false;
-      player.visible = false;
+      player.visible = nearCar.riderVisible;
+      heroShadow.visible = false;
       stanceChip.textContent = 'CONVERTIBLE DRIVING';
       AudioSys.play('dodge');
     }
@@ -1570,26 +1610,32 @@
   window.addEventListener('keyup', (e) => { keys[e.code] = false; });
 
   // Mouse Listeners (PC)
-  let mouseFireDown = false;
+  let mouseFireDown = false, mouseLookDown = false, mouseLookX = 0;
   canvas.addEventListener('mousedown', (e) => {
     if (!state.started || state.paused) return;
-    if (window.innerWidth >= 820 && state.uiMode !== 'ON' && document.pointerLockElement !== canvas) {
-      canvas.requestPointerLock?.();
+    if (e.button === 0 && window.innerWidth >= 820 && state.uiMode !== 'ON' && document.pointerLockElement !== canvas) {
+      try { canvas.requestPointerLock?.()?.catch?.(() => {}); } catch (_) { /* Right-drag remains available. */ }
     }
     if (e.button === 0) { mouseFireDown = true; triggerAttack(); }
-    if (e.button === 2) { state.isFocusing = true; }
+    if (e.button === 2) { e.preventDefault(); state.isFocusing = true; mouseLookDown = true; mouseLookX = e.clientX; }
     if (e.button === 1) { e.preventDefault(); triggerTurn180(); }
   });
   window.addEventListener('mouseup', (e) => {
     if (e.button === 0) mouseFireDown = false;
-    if (e.button === 2) state.isFocusing = false;
+    if (e.button === 2) { state.isFocusing = false; mouseLookDown = false; }
   });
   window.addEventListener('contextmenu', e => e.preventDefault());
   window.addEventListener('mousemove', (e) => {
-    if (document.pointerLockElement === canvas && !state.paused) {
-      state.yaw -= e.movementX * 0.0032;
+    if (!state.started || state.paused) return;
+    if (document.pointerLockElement === canvas) {
+      state.yaw -= (e.movementX || 0) * 0.0032;
+    } else if (mouseLookDown) {
+      state.yaw -= (e.clientX - mouseLookX) * 0.0068;
+      mouseLookX = e.clientX;
     }
   });
+
+  window.addEventListener('blur', () => { mouseLookDown = false; mouseFireDown = false; state.isFocusing = false; });
 
   // Mobile Joystick Touch Handling
   const joyZone = document.getElementById('joy-zone');
@@ -1689,9 +1735,14 @@
   }
 
   function getNearestCar() {
-    let best = null, minD = 3.8;
+    let best = null, minD = 2.0;
     for (const c of cars) {
-      const d = c.mesh.position.distanceTo(player.position);
+      const box = carBoxes.find(b => b.mesh === c.mesh);
+      if (!box) continue;
+      const dx = player.position.x - c.mesh.position.x, dz = player.position.z - c.mesh.position.z;
+      const a = c.mesh.rotation.y, cs = Math.cos(a), sn = Math.sin(a);
+      const lx = cs * dx - sn * dz, lz = sn * dx + cs * dz;
+      const d = Math.hypot(Math.max(0, Math.abs(lx) - box.hw), Math.max(0, Math.abs(lz) - box.hd));
       if (d < minD) { minD = d; best = c; }
     }
     return best;
@@ -1810,6 +1861,7 @@
   const smoothCamPos = new THREE.Vector3(START.x + 1, 5.6, START.z + 4.6);
   const smoothLookAt = new THREE.Vector3(START.x - 1.2, 0.8, START.z - 5.0);
 
+  let radarElapsed = 0, sceneryElapsed = 0;
   function animate() {
     requestAnimationFrame(animate);
     const rawDt = clock.getDelta(), dt = Math.min(rawDt, 0.05);
@@ -1853,8 +1905,16 @@
       updateCarFlip(car, carFwd.x * car.speed, carFwd.z * car.speed);
       { const b0 = car.mesh.position.clone(), want = Math.abs(car.speed) * dt; if (moveBlockedAt(b0.x, b0.z, 1.05)) { const f = freeSpotU(b0.x, b0.z, 1.05); car.mesh.position.x = f.x; car.mesh.position.z = f.z; } moveEntityWithCollision(car.mesh.position, carFwd.multiplyScalar(car.speed * dt), 1.05); const got = car.mesh.position.distanceTo(b0); if (want > 0.02 && got < want * 0.35) car.speed *= 0.5; }
       player.position.copy(car.mesh.position);
-      btnCar.style.display = 'flex';
-      btnCar.innerHTML = '<img class="bi" src="assets/ui/b_exit.png" alt=""><span>EXIT</span>';
+      if (car.riderVisible) {
+        player.rotation.y = state.yaw;
+        const seat = car.riderSeat;
+        // Car faces player yaw + PI: convert its seat into the player's local space.
+        dogBodyGroup.position.set(-seat.x, seat.y, -seat.z);
+        setHeroFrame('heroB', 1, 0, 'fist');
+        heroSprite.scale.set(seat.scale, seat.scale, 1);
+        heroSprite.material.rotation = 0;
+      }
+      updateCarButton(true, true);
     } else {
       // On-foot movement (camera is always behind the dog: we only ever see the back of its head)
       player.rotation.y = state.yaw;
@@ -1878,12 +1938,11 @@
       // Car Proximity Prompt
       const nearCar = getNearestCar();
       if (nearCar) {
-        btnCar.style.display = 'flex';
-        btnCar.innerHTML = '<img class="bi" src="assets/ui/k_car.png" alt=""><span>DRIVE</span>';
+        updateCarButton(false, true);
         toastEl.textContent = 'PRESS [E] OR DRIVE TO HIJACK';
         toastEl.classList.add('show');
       } else {
-        btnCar.style.display = 'none';
+        updateCarButton(false, false);
         toastEl.classList.remove('show');
       }
     }
@@ -2028,10 +2087,12 @@
     applyShake(lastDt);
     camera.lookAt(smoothLookAt);
 
-    drawRadar();
+    radarElapsed += dt;
+    if (radarElapsed >= 1 / 15) { drawRadar(); radarElapsed %= 1 / 15; }
     updateEnemyBars();
     updateJuice(Math.min(rawDt, 0.25));
-    updateBuildings(dt);
+    sceneryElapsed += dt;
+    if (sceneryElapsed >= 1 / 30) { updateBuildings(sceneryElapsed); sceneryElapsed = 0; }
     renderer.render(scene, camera);
   }
 
