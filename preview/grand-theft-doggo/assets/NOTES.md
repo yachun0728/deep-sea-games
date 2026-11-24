@@ -66,3 +66,5 @@
   - 進遊戲畫面：放射光芒、金色大標題、鬥牛犬主角、難度選擇、開始鈕、操作圖示，後面的 3D 城市慢慢旋轉。
 
 - 2026-11-24：標題改用原創 logo（assets/ui/logo.png）；武器 HUD、切換鈕、補給箱改用設計過的圖示（assets/ui/w_*.png），取代 emoji。
+
+- 2026-11-24：改名「TOP DOGGO: Paw City」，logo 重畫（assets/ui/logo.png）；主角拿網球大砲時有專屬動畫（atlas_attack_run_cannon.png）。手榴彈、狙擊槍與大砲的翻滾／蹲下動畫生成中，尚未到的暫用原槍動畫。

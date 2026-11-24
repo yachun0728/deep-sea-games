@@ -1,4 +1,4 @@
-# Grand Theft Doggo: Vice Paw 設計圖
+# TOP DOGGO: Paw City 設計圖
 
 畫風（2026-11-24 使用者選定）：粗輪廓美式復古卡通角色 + 邁阿密夕陽場景。
 

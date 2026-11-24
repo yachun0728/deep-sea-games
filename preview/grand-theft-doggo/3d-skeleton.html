@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="robots" content="noindex, nofollow" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<title>Grand Theft Doggo: Vice Paw（骨架）</title>
+<title>TOP DOGGO: Paw City（骨架）</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
   html, body { width: 100%; height: 100%; overflow: hidden; background: #0d041a; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #fff; touch-action: none; }
@@ -257,7 +257,7 @@
     <b>📱 手機：</b>左手搖桿移動、滑動畫面轉向、右側按鈕 開火／近戰、翻滾、蹲下、180° 轉身、上車。<br><b>📱 Mobile:</b> Left Thumb Move • Swipe Screen Aim • Right Arc: Fire/Paw Punch, Dodge Roll, Crouch Cover, 180° Turn &amp; Hijack.<br>
     <b>💻 電腦：</b>點擊鎖定視角、WASD 移動、左鍵開火、空白鍵翻滾。<br><b>💻 PC:</b> Click to Lock Aim • <b>WASD</b> Move • <b>Left-Click</b> Shoot/Paw • <b>Right-Click</b> Focus • <b>Space</b> Dodge • <b>C</b> Crouch • <b>X</b> 180° • <b>Q</b> Paw/Gun • <b>E</b> Car
   </div>
-  <button class="start-btn" id="btn-play">▶ PLAY VICE PAW</button>
+  <button class="start-btn" id="btn-play">▶ PLAY TOP DOGGO</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -812,7 +812,7 @@
       overlay.classList.remove('hidden');
       const dead = state.hp <= 0;
       overMsg.textContent = dead ? `WASTED！本局賺到 $${state.cash.toLocaleString()}` : (state.started ? '暫停中' : '');
-      btnPlay.textContent = dead ? '↻ 再來一局' : (state.started ? '▶ RESUME VICE PAW' : '▶ PLAY VICE PAW');
+      btnPlay.textContent = dead ? '↻ 再來一局' : (state.started ? '▶ RESUME TOP DOGGO' : '▶ PLAY TOP DOGGO');
       if (document.pointerLockElement) document.exitPointerLock();
     } else {
       overlay.classList.add('hidden');

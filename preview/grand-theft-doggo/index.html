@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="robots" content="noindex, nofollow" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<title>Grand Theft Doggo: Vice Paw（骨架）</title>
+<title>TOP DOGGO: Paw City（骨架）</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
   html, body { width: 100%; height: 100%; overflow: hidden; background: #0d041a; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #fff; touch-action: none; }
@@ -299,13 +299,13 @@
 <div id="overlay">
   <div class="ov-rays"></div>
   <div class="ov-card">
-    <img id="ov-logo" src="assets/ui/logo.png" alt="GRAND THEFT DOGGO: VICE PAW">
+    <img id="ov-logo" src="assets/ui/logo.png" alt="TOP DOGGO: PAW CITY">
     <div class="ov-tag">美式鬥牛犬 vs 紫色浣熊幫</div>
     <div id="over-msg"></div>
     <img id="ov-hero" src="assets/characters/hero/front_armed.png" alt="">
     <div class="ov-label">難度</div>
     <div id="diff-row"><button type="button" data-d="easy">簡單</button><button type="button" data-d="normal">普通</button><button type="button" data-d="hard">困難</button></div>
-    <button class="start-btn" id="btn-play">▶ PLAY VICE PAW</button>
+    <button class="start-btn" id="btn-play">▶ PLAY TOP DOGGO</button>
     <div class="ov-tips"><span>🕹 左手移動</span><span>🎾 右側攻擊</span><span>🌀 翻滾</span><span>🔄 換武器</span><span>🚗 上車</span></div>
     <details class="controls-hint"><summary>操作說明</summary>
       <b>📱 手機：</b>左手搖桿移動、滑動畫面轉向、右側按鈕攻擊／翻滾／蹲下／180° 轉身／換武器／上車。<br>
@@ -448,7 +448,7 @@
     for (const id of ['grenade', 'cannon', 'sniper']) jobs.push(loadImage('assets/ui/w_' + id + '.png').then(i => texOf('ui:' + id, i)));
     jobs.push(loadImage('assets/hero/atlas_attack_run.png').then(i => texOf('heroA', i)));
     jobs.push(loadImage('assets/hero/atlas_roll_crouch.png').then(i => texOf('heroB', i)));
-    for (const w of ['knife', 'fist']) for (const [k, f] of [['heroA', 'atlas_attack_run'], ['heroB', 'atlas_roll_crouch']]) jobs.push(new Promise(res => { const im = new Image(); im.onload = () => { texOf(k + '_' + w, im); res(); }; im.onerror = () => res(); im.src = 'assets/hero/' + f + '_' + w + '.png'; }));
+    for (const w of ['knife', 'fist', 'grenade', 'cannon', 'sniper']) for (const [k, f] of [['heroA', 'atlas_attack_run'], ['heroB', 'atlas_roll_crouch']]) jobs.push(new Promise(res => { const im = new Image(); im.onload = () => { texOf(k + '_' + w, im); res(); }; im.onerror = () => res(); im.src = 'assets/hero/' + f + '_' + w + '.png'; }));
     await Promise.all(jobs);
   } catch (err) { btnPlayEarly.textContent = '載入失敗，請重新整理'; throw err; }
   for (const side of ['front', 'back']) { const t = TEX['characters/enemies/warlord_' + side]; if (t) MAN['characters/enemies/warlord_' + side] = { drawSize: [t.image.width, t.image.height] }; }
@@ -701,7 +701,7 @@
   const blaster = { visible: true };
   const heroAnim = { run: 0, crouch: 0, breathe: 0 };
   let heroWeapon = 'gun';
-  function setHeroWeapon(w) { heroWeapon = ['gun', 'knife', 'fist'][w] || 'gun'; }
+  function setHeroWeapon(w) { heroWeapon = ['gun', 'knife', 'fist', 'grenade', 'cannon', 'sniper'][w] || 'gun'; }
   function setHeroFrame(atlasKey, row, col) {
     const t = (heroWeapon !== 'gun' && TEX[atlasKey + '_' + heroWeapon]) || TEX[atlasKey]; heroSprite.material.map = t; t.offset.set(col / 6, 1 - (row + 1) / 2);
   }
@@ -1034,7 +1034,7 @@
   function ownedOrder() { const o = [0, 1, 2]; for (let i = 3; i < WEAPONS.length; i++) if (inv[i] > 0) o.push(i); return o; }
   function setWeapon(w) {
     state.weapon = w; state.forcePawMode = w === 1 || w === 2; blaster.visible = !state.forcePawMode;
-    setHeroWeapon(w === 1 ? 1 : w === 2 ? 2 : 0); refreshWeaponHUD();
+    setHeroWeapon(w); refreshWeaponHUD();
   }
   function cycleWeapon() { const o = ownedOrder(), i = o.indexOf(state.weapon | 0); setWeapon(o[(i + 1) % o.length]); }
   function refreshWeaponHUD() {
@@ -1082,7 +1082,7 @@
   // single entry point used by triggerAttack: aim is already computed there
   function fireSpecial(w, muzzle, dir, aimPoint) {
     const W = WEAPONS[w]; if (inv[w] <= 0) { setWeapon(0); return false; }
-    state.fireCd = W.cd; AudioSys.play(w === 5 ? 'shoot' : 'punch');
+    state.fireCd = W.cd; state.punchAnimTimer = 0.24; AudioSys.play(w === 5 ? 'shoot' : 'punch');
     if (w === 3) throwGrenade(muzzle, aimPoint); else if (w === 4) fireCannon(muzzle, dir); else fireSniper(muzzle, dir);
     useAmmo(w); return true;
   }
@@ -1250,7 +1250,7 @@
       overlay.classList.remove('hidden');
       const dead = state.hp <= 0;
       overMsg.textContent = dead ? `WASTED！本局賺到 $${state.cash.toLocaleString()}` : (state.started ? '暫停中' : '');
-      btnPlay.textContent = dead ? '↻ 再來一局' : (state.started ? '▶ RESUME VICE PAW' : '▶ PLAY VICE PAW');
+      btnPlay.textContent = dead ? '↻ 再來一局' : (state.started ? '▶ RESUME TOP DOGGO' : '▶ PLAY TOP DOGGO');
       if (document.pointerLockElement) document.exitPointerLock();
     } else {
       overlay.classList.add('hidden');
@@ -1891,7 +1891,7 @@
     updateTouchVisibility();
   });
 
-  btnPlay.disabled = false; btnPlay.textContent = '▶ PLAY VICE PAW';
+  btnPlay.disabled = false; btnPlay.textContent = '▶ PLAY TOP DOGGO';
   refreshWeaponHUD(); window.__doggo = { state, player, camera, enemies, cars, blocks, scene, moveBlockedAt, bulletBlocked, colliders, projectiles, triggerAttack, setDifficulty, inv, setWeapon, cycleWeapon, spawnCrate, startNextLevel, levelComplete, explode, cannonBalls, grenades, updateSpecials, get level() { return level; }, get shield() { return shield; } };
   updateHUD();
   animate();
