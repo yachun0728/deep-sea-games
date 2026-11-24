@@ -1,0 +1,1181 @@
+{
+  "version": "0.3",
+  "assets": {
+    "hotel_front": {
+      "file": "buildings/hotel_front.png",
+      "size": [
+        165,
+        163
+      ],
+      "anchor": [
+        0.5,
+        0.9754601226993865
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "club_front": {
+      "file": "buildings/club_front.png",
+      "size": [
+        154,
+        158
+      ],
+      "anchor": [
+        0.5,
+        0.9746835443037974
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "burger_front": {
+      "file": "buildings/burger_front.png",
+      "size": [
+        140,
+        157
+      ],
+      "anchor": [
+        0.5,
+        0.9745222929936306
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "cafe_front": {
+      "file": "buildings/cafe_front.png",
+      "size": [
+        128,
+        146
+      ],
+      "anchor": [
+        0.5,
+        0.9726027397260274
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "pawn_front": {
+      "file": "buildings/pawn_front.png",
+      "size": [
+        132,
+        145
+      ],
+      "anchor": [
+        0.5,
+        0.9724137931034482
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "gym_front": {
+      "file": "buildings/gym_front.png",
+      "size": [
+        137,
+        150
+      ],
+      "anchor": [
+        0.5,
+        0.9733333333333334
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "store_front": {
+      "file": "buildings/store_front.png",
+      "size": [
+        129,
+        154
+      ],
+      "anchor": [
+        0.5,
+        0.974025974025974
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "cinema_front": {
+      "file": "buildings/cinema_front.png",
+      "size": [
+        140,
+        145
+      ],
+      "anchor": [
+        0.5,
+        0.9724137931034482
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "police_front": {
+      "file": "buildings/police_front.png",
+      "size": [
+        155,
+        164
+      ],
+      "anchor": [
+        0.5,
+        0.975609756097561
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "hospital_front": {
+      "file": "buildings/hospital_front.png",
+      "size": [
+        150,
+        139
+      ],
+      "anchor": [
+        0.5,
+        0.9712230215827338
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "garage_front": {
+      "file": "buildings/garage_front.png",
+      "size": [
+        139,
+        131
+      ],
+      "anchor": [
+        0.5,
+        0.9694656488549618
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "warehouse_front": {
+      "file": "buildings/warehouse_front.png",
+      "size": [
+        135,
+        131
+      ],
+      "anchor": [
+        0.5,
+        0.9694656488549618
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "mall_front": {
+      "file": "buildings/mall_front.png",
+      "size": [
+        110,
+        142
+      ],
+      "anchor": [
+        0.5,
+        0.971830985915493
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "bank_front": {
+      "file": "buildings/bank_front.png",
+      "size": [
+        143,
+        143
+      ],
+      "anchor": [
+        0.5,
+        0.972027972027972
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "apartment_peach": {
+      "file": "buildings/apartment_peach.png",
+      "size": [
+        112,
+        144
+      ],
+      "anchor": [
+        0.5,
+        0.9722222222222222
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "apartment_yellow": {
+      "file": "buildings/apartment_yellow.png",
+      "size": [
+        105,
+        132
+      ],
+      "anchor": [
+        0.5,
+        0.9696969696969697
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "apartment_pink": {
+      "file": "buildings/apartment_pink.png",
+      "size": [
+        107,
+        140
+      ],
+      "anchor": [
+        0.5,
+        0.9714285714285714
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "office_blue": {
+      "file": "buildings/office_blue.png",
+      "size": [
+        102,
+        137
+      ],
+      "anchor": [
+        0.5,
+        0.9708029197080292
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "tower_round": {
+      "file": "buildings/tower_round.png",
+      "size": [
+        92,
+        169
+      ],
+      "anchor": [
+        0.5,
+        0.9763313609467456
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "tower_neon": {
+      "file": "buildings/tower_neon.png",
+      "size": [
+        95,
+        163
+      ],
+      "anchor": [
+        0.5,
+        0.9754601226993865
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "shop_red": {
+      "file": "buildings/shop_red.png",
+      "size": [
+        115,
+        134
+      ],
+      "anchor": [
+        0.5,
+        0.9701492537313433
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "shop_yellow": {
+      "file": "buildings/shop_yellow.png",
+      "size": [
+        103,
+        132
+      ],
+      "anchor": [
+        0.5,
+        0.9696969696969697
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "shop_pink": {
+      "file": "buildings/shop_pink.png",
+      "size": [
+        106,
+        132
+      ],
+      "anchor": [
+        0.5,
+        0.9696969696969697
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "shop_blue": {
+      "file": "buildings/shop_blue.png",
+      "size": [
+        104,
+        131
+      ],
+      "anchor": [
+        0.5,
+        0.9694656488549618
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "shop_magenta": {
+      "file": "buildings/shop_magenta.png",
+      "size": [
+        108,
+        132
+      ],
+      "anchor": [
+        0.5,
+        0.9696969696969697
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "house_peach": {
+      "file": "buildings/house_peach.png",
+      "size": [
+        102,
+        132
+      ],
+      "anchor": [
+        0.5,
+        0.9696969696969697
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "house_tan": {
+      "file": "buildings/house_tan.png",
+      "size": [
+        102,
+        132
+      ],
+      "anchor": [
+        0.5,
+        0.9696969696969697
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "parking_garage": {
+      "file": "buildings/parking_garage.png",
+      "size": [
+        188,
+        147
+      ],
+      "anchor": [
+        0.5,
+        0.9727891156462585
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "parking_lot": {
+      "file": "buildings/parking_lot.png",
+      "size": [
+        203,
+        133
+      ],
+      "anchor": [
+        0.5,
+        0.9699248120300752
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "gas_station": {
+      "file": "buildings/gas_station.png",
+      "size": [
+        139,
+        146
+      ],
+      "anchor": [
+        0.5,
+        0.9726027397260274
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": "front"
+    },
+    "wall_paw": {
+      "file": "walls/wall_paw.png",
+      "size": [
+        91,
+        80
+      ],
+      "anchor": [
+        0.5,
+        0.95
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "wall_graffiti": {
+      "file": "walls/wall_graffiti.png",
+      "size": [
+        89,
+        80
+      ],
+      "anchor": [
+        0.5,
+        0.95
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "fence_panel": {
+      "file": "walls/fence_panel.png",
+      "size": [
+        89,
+        81
+      ],
+      "anchor": [
+        0.5,
+        0.9506172839506173
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "fence_security": {
+      "file": "walls/fence_security.png",
+      "size": [
+        88,
+        89
+      ],
+      "anchor": [
+        0.5,
+        0.9550561797752809
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "brick_wall": {
+      "file": "walls/brick_wall.png",
+      "size": [
+        82,
+        88
+      ],
+      "anchor": [
+        0.5,
+        0.9545454545454546
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "wall_posts": {
+      "file": "walls/wall_posts.png",
+      "size": [
+        80,
+        81
+      ],
+      "anchor": [
+        0.5,
+        0.9506172839506173
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "hedge_short": {
+      "file": "walls/hedge_short.png",
+      "size": [
+        117,
+        70
+      ],
+      "anchor": [
+        0.5,
+        0.9428571428571428
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "hedge_long": {
+      "file": "walls/hedge_long.png",
+      "size": [
+        115,
+        71
+      ],
+      "anchor": [
+        0.5,
+        0.9436619718309859
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "barrier_gate": {
+      "file": "walls/barrier_gate.png",
+      "size": [
+        116,
+        75
+      ],
+      "anchor": [
+        0.5,
+        0.9466666666666667
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "fence_gate": {
+      "file": "walls/fence_gate.png",
+      "size": [
+        164,
+        75
+      ],
+      "anchor": [
+        0.5,
+        0.9466666666666667
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "road_straight": {
+      "file": "tiles/road_straight.png",
+      "size": [
+        90,
+        90
+      ],
+      "anchor": [
+        0.5,
+        0.9555555555555556
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "road_intersection": {
+      "file": "tiles/road_intersection.png",
+      "size": [
+        92,
+        90
+      ],
+      "anchor": [
+        0.5,
+        0.9555555555555556
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "road_t": {
+      "file": "tiles/road_t.png",
+      "size": [
+        91,
+        89
+      ],
+      "anchor": [
+        0.5,
+        0.9550561797752809
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "road_curve": {
+      "file": "tiles/road_curve.png",
+      "size": [
+        89,
+        89
+      ],
+      "anchor": [
+        0.5,
+        0.9550561797752809
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "road_corner": {
+      "file": "tiles/road_corner.png",
+      "size": [
+        90,
+        89
+      ],
+      "anchor": [
+        0.5,
+        0.9550561797752809
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "road_crosswalk": {
+      "file": "tiles/road_crosswalk.png",
+      "size": [
+        90,
+        90
+      ],
+      "anchor": [
+        0.5,
+        0.9555555555555556
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "road_straight_alt": {
+      "file": "tiles/road_straight_alt.png",
+      "size": [
+        94,
+        90
+      ],
+      "anchor": [
+        0.5,
+        0.9555555555555556
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "road_crosswalk_alt": {
+      "file": "tiles/road_crosswalk_alt.png",
+      "size": [
+        91,
+        90
+      ],
+      "anchor": [
+        0.5,
+        0.9555555555555556
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "sidewalk_a": {
+      "file": "tiles/sidewalk_a.png",
+      "size": [
+        68,
+        62
+      ],
+      "anchor": [
+        0.5,
+        0.9354838709677419
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "sidewalk_b": {
+      "file": "tiles/sidewalk_b.png",
+      "size": [
+        68,
+        63
+      ],
+      "anchor": [
+        0.5,
+        0.9365079365079365
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "curb_corner_a": {
+      "file": "tiles/curb_corner_a.png",
+      "size": [
+        74,
+        62
+      ],
+      "anchor": [
+        0.5,
+        0.9354838709677419
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "curb_corner_b": {
+      "file": "tiles/curb_corner_b.png",
+      "size": [
+        64,
+        63
+      ],
+      "anchor": [
+        0.5,
+        0.9365079365079365
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "sidewalk_c": {
+      "file": "tiles/sidewalk_c.png",
+      "size": [
+        65,
+        63
+      ],
+      "anchor": [
+        0.5,
+        0.9365079365079365
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "sidewalk_round": {
+      "file": "tiles/sidewalk_round.png",
+      "size": [
+        65,
+        63
+      ],
+      "anchor": [
+        0.5,
+        0.9365079365079365
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "concrete_cracked": {
+      "file": "tiles/concrete_cracked.png",
+      "size": [
+        66,
+        62
+      ],
+      "anchor": [
+        0.5,
+        0.9354838709677419
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "manhole": {
+      "file": "tiles/manhole.png",
+      "size": [
+        67,
+        62
+      ],
+      "anchor": [
+        0.5,
+        0.9354838709677419
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "drain": {
+      "file": "tiles/drain.png",
+      "size": [
+        65,
+        63
+      ],
+      "anchor": [
+        0.5,
+        0.9365079365079365
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "yellow_box": {
+      "file": "tiles/yellow_box.png",
+      "size": [
+        66,
+        62
+      ],
+      "anchor": [
+        0.5,
+        0.9354838709677419
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "arrow": {
+      "file": "tiles/arrow.png",
+      "size": [
+        67,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.9375
+      ],
+      "layer": "ground",
+      "collision": "none",
+      "orientation": null
+    },
+    "palm_tall": {
+      "file": "props/palm_tall.png",
+      "size": [
+        109,
+        143
+      ],
+      "anchor": [
+        0.5,
+        0.972027972027972
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "palm_medium": {
+      "file": "props/palm_medium.png",
+      "size": [
+        80,
+        118
+      ],
+      "anchor": [
+        0.5,
+        0.9661016949152542
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "palm_short": {
+      "file": "props/palm_short.png",
+      "size": [
+        65,
+        95
+      ],
+      "anchor": [
+        0.5,
+        0.9578947368421052
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "planter_pink": {
+      "file": "props/planter_pink.png",
+      "size": [
+        65,
+        74
+      ],
+      "anchor": [
+        0.5,
+        0.9459459459459459
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "planter_round": {
+      "file": "props/planter_round.png",
+      "size": [
+        68,
+        76
+      ],
+      "anchor": [
+        0.5,
+        0.9473684210526315
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "lamp_double_a": {
+      "file": "props/lamp_double_a.png",
+      "size": [
+        64,
+        88
+      ],
+      "anchor": [
+        0.5,
+        0.9545454545454546
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "lamp_double_b": {
+      "file": "props/lamp_double_b.png",
+      "size": [
+        63,
+        89
+      ],
+      "anchor": [
+        0.5,
+        0.9550561797752809
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "banner": {
+      "file": "props/banner.png",
+      "size": [
+        52,
+        96
+      ],
+      "anchor": [
+        0.5,
+        0.9583333333333334
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "stop_sign": {
+      "file": "props/stop_sign.png",
+      "size": [
+        58,
+        93
+      ],
+      "anchor": [
+        0.5,
+        0.956989247311828
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "parking_sign": {
+      "file": "props/parking_sign.png",
+      "size": [
+        49,
+        84
+      ],
+      "anchor": [
+        0.5,
+        0.9523809523809523
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "direction_sign": {
+      "file": "props/direction_sign.png",
+      "size": [
+        50,
+        81
+      ],
+      "anchor": [
+        0.5,
+        0.9506172839506173
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "cone": {
+      "file": "props/cone.png",
+      "size": [
+        53,
+        62
+      ],
+      "anchor": [
+        0.5,
+        0.9354838709677419
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "road_barrier": {
+      "file": "props/road_barrier.png",
+      "size": [
+        66,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.9375
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "umbrella_red": {
+      "file": "props/umbrella_red.png",
+      "size": [
+        113,
+        98
+      ],
+      "anchor": [
+        0.5,
+        0.9591836734693877
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "umbrella_yellow": {
+      "file": "props/umbrella_yellow.png",
+      "size": [
+        80,
+        94
+      ],
+      "anchor": [
+        0.5,
+        0.9574468085106383
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "street_kiosk": {
+      "file": "props/street_kiosk.png",
+      "size": [
+        77,
+        92
+      ],
+      "anchor": [
+        0.5,
+        0.9565217391304348
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "mailbox": {
+      "file": "props/mailbox.png",
+      "size": [
+        55,
+        61
+      ],
+      "anchor": [
+        0.5,
+        0.9344262295081968
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "vending_green": {
+      "file": "props/vending_green.png",
+      "size": [
+        53,
+        68
+      ],
+      "anchor": [
+        0.5,
+        0.9411764705882353
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "vending_red": {
+      "file": "props/vending_red.png",
+      "size": [
+        53,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.9375
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "trash_can": {
+      "file": "props/trash_can.png",
+      "size": [
+        51,
+        62
+      ],
+      "anchor": [
+        0.5,
+        0.9354838709677419
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "bench": {
+      "file": "props/bench.png",
+      "size": [
+        111,
+        62
+      ],
+      "anchor": [
+        0.5,
+        0.9354838709677419
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "hydrant": {
+      "file": "props/hydrant.png",
+      "size": [
+        61,
+        74
+      ],
+      "anchor": [
+        0.5,
+        0.9459459459459459
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "ac_unit": {
+      "file": "props/ac_unit.png",
+      "size": [
+        67,
+        62
+      ],
+      "anchor": [
+        0.5,
+        0.9354838709677419
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "barrel_blue": {
+      "file": "props/barrel_blue.png",
+      "size": [
+        45,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.9375
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    },
+    "barrel_gray": {
+      "file": "props/barrel_gray.png",
+      "size": [
+        47,
+        70
+      ],
+      "anchor": [
+        0.5,
+        0.9428571428571428
+      ],
+      "layer": "objects",
+      "collision": "configure_footprint",
+      "orientation": null
+    }
+  }
+}
