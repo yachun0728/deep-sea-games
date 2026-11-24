@@ -134,6 +134,32 @@ EN = {
   '排行榜仍在處理上一局，請稍後再試。': 'Please wait a moment and try again.',
 }
 
+# Text the shared rules file draws on the canvas (floating words, gossip bubbles).
+# Only the exported copy is translated; the site and the Worker keep the original file.
+RULES_EN = {
+  '1F 業務部': '1F Sales', '2F 財務部': '2F Finance', '3F 會議室': '3F Meeting Room',
+  '4F 茶水間': '4F Break Room', '5F 頂樓前': '5F Below the Roof',
+  "' 分鐘'": "' min'",
+  '欸你有空嗎？': 'Got a minute?',
+  '啪！': 'SPLAT!',
+  '被拉進會議……': 'Pulled into a meeting...',
+  '欸你知道嗎……': 'Did you hear...',
+  '咚！': 'BONK!',
+  "'欸你知道嗎'": "'Did you hear'",
+  "'聽說……'": "'Rumor is...'",
+  "'他們兩個……'": "'Those two...'",
+  "'我跟你講喔'": "'Listen up'",
+  "'不要說是我說的'": "'Don’t quote me'",
+  '推力減半！': 'Half thrust!',
+}
+
+
+def chinese_left(code):
+    """Chinese still in code (comments ignored)."""
+    code = re.sub(r'/\*.*?\*/|//[^\n]*|<!--.*?-->', '', code, flags=re.S)
+    return sorted(set(re.findall(r'[一-鿿][^\'"`<>\n]{0,30}', code)))
+
+
 # CrazyGames SDK glue, injected after the game script.
 SHIM = r"""
 <script>
@@ -182,8 +208,22 @@ SHIM = r"""
 """
 
 
+def cut(html, old, new):
+    """Replace a source block that must exist exactly once, so a site change cannot silently skip it."""
+    assert html.count(old) == 1, f'expected exactly one match for: {old[:60]}'
+    return html.replace(old, new)
+
+
 def build():
     html = open(SRC, encoding='utf-8').read()
+    # Points screen is unreachable (everything is free); drop its fee line so no stray "點" is left.
+    html = cut(html, '<p>每局需要 <span id="low-fee"></span> 點</p>', '<span id="low-fee" class="hidden"></span>')
+    # No player id at all: analytics is off, so nothing random is stored on the player's device.
+    html = cut(html, """const playerId = (() => {
+  let id = lsGet('mini_player_id');
+  if (!id) { id = 'p_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36); lsSet('mini_player_id', id); }
+  return id;
+})();""", "const playerId = '';")
     for zh in sorted(EN, key=len, reverse=True):
         html = html.replace(zh, EN[zh].replace("'", '’') if not EN[zh].startswith(("'", '`')) else EN[zh])
     html = html.replace('<html lang="zh-Hant">', '<html lang="en">')
@@ -192,11 +232,14 @@ def build():
     html = re.sub(r'\.\./\.\./', '', html)
     # loading start as early as possible is handled by the SDK itself; inject glue before </body>
     html = html.replace('</body>', SHIM + '</body>', 1)
-    left = sorted(set(m for m in re.findall(r'[一-鿿][^\'"`<>\n]{0,30}', re.sub(r'/\*.*?\*/|//[^\n]*', '', html, flags=re.S))))
+    rules = open(RULES, encoding='utf-8').read()
+    for zh in sorted(RULES_EN, key=len, reverse=True):
+        rules = rules.replace(zh, RULES_EN[zh])
+    left = chinese_left(html) + chinese_left(rules)
     if os.path.isdir(OUT): shutil.rmtree(OUT)
     os.makedirs(os.path.join(OUT, 'assets'))
     open(os.path.join(OUT, 'index.html'), 'w', encoding='utf-8').write(html)
-    shutil.copy(RULES, os.path.join(OUT, 'rocket-chair-rules.js'))
+    open(os.path.join(OUT, 'rocket-chair-rules.js'), 'w', encoding='utf-8').write(rules)
     for f in os.listdir(ASSETS):
         if f.endswith('.webp'): shutil.copy(os.path.join(ASSETS, f), os.path.join(OUT, 'assets', f))
     if os.path.exists(ZIP): os.remove(ZIP)
