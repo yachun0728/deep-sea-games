@@ -81,7 +81,7 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 | last-hair / 尊嚴保衛戰 The Last Hair | 固定10 | 抵達 100／250／400／500 公尺各立即 +1／+2／+3／+4 點，每局各發一次，共 10 點剛好回本；頭髮掉光不扣回，距離與頭髮根數不給點 |
 | mermaid / 人魚接龍 Mermaid Spider | 固定10 | 每收成一顆珍珠（同花色 K→A 滿 13 張）+1 點當場入帳；珊瑚礁（2 花色）與深海（4 花色）通關再 +2 點，只發一次；淺灘最多 8 點、其餘最多 10 點；悔棋後重收同一顆不重發；放棄不扣回；分數不給點 |
 | banquet / 最後的晚餐 The Last Banquet | 固定10 | 撐過第一／二／三幕立即 +1／+2／+3 點，贏下整場再 +2 點，每項每局只發一次，一局最多 8 點；輸了或放棄不扣回 |
-| eat-smaller / 數字吞噬 Number Gulp | 固定10 | 8 關；一局內自由選關重玩，本局每關第一次通過 +2 點當場入帳（同局同關不重發，最多 10 點，剛好回本）；失敗重來不另扣，按「結束本局」結束，結束不另發點、不扣回 |
+| eat-smaller / 數字吞噬 Number Gulp | 固定10 | 12 關；一局內自由選關重玩，本局每關第一次通過 +2 點當場入帳（同局同關不重發，最多 10 點，剛好回本）；失敗重來不另扣，按「結束本局」結束，結束不另發點、不扣回 |
 | mirror-twins / 鏡像雙子 Mirror Twins | 固定10 | 10 關；同數字吞噬：本局每關第一次通過 +2 點（最多 10 點）；星等與步數不給點 |
 | shadow-relay / 影子接力 Shadow Relay | 固定10 | 8 關；同數字吞噬：本局每關第一次通過 +2 點（最多 10 點）；時間與失敗次數不給點 |
 | one-line-defense / 一筆畫守城 One-Line Defense | 固定10 | 無盡；教學後每撐過 30 秒 +2 點當場入帳（30～150 秒各一次，最多 10 點，剛好回本）；核心被攻破結束不扣回，分數與連擊不給點 |
@@ -600,13 +600,13 @@ Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他�
 
 ## 42. 數字吞噬 Number Gulp（eat-smaller）
 
-定位：父頁 `games/eat-smaller/game.js`（`EATS`、`window.deepSeaEatSmaller`），子頁 `games/eat-smaller/original.html` 以 srcdoc 載入（同一口氣探險模式，右側 `.console` 面板）。2026-11-18 由使用者提供的單檔 HTML（games-innovation/eat-smaller.html）接入平台，保留原玩法、關卡與數值。你是一個數字，吃掉比你小的、躲開比你大的（碰到即結束本關），運算符 −3／+1／÷2 碰到立即生效，剛好等於目標才過關；越大游得越慢，部分大數字會追人。8 關目標依序為 12、25、40、30、99、50、61、128。
+定位：父頁 `games/eat-smaller/game.js`（`EATS`、`window.deepSeaEatSmaller`），子頁 `games/eat-smaller/original.html` 以 srcdoc 載入（同一口氣探險模式，右側 `.console` 面板）。2026-11-18 由使用者提供的單檔 HTML（games-innovation/eat-smaller.html）接入平台，保留原玩法、關卡與數值。你是一個數字，吃掉比你小的、躲開比你大的（碰到即結束本關），運算符 −3／+1／÷2 碰到立即生效，剛好等於目標才過關；越大游得越慢，部分大數字會追人。共有 12 關，過關解鎖下一關。
 
 2026-11-23 同步使用者之後在 games-innovation 的修改（`eat-smaller.html` 與 `eat-smaller-en.html`）：關卡、數值與判定不變，玩法流程與手感改為：載入後直接把目前最遠的關擺上棋盤（開場卡畫在 Canvas 上），第一次移動（滑鼠移動、方向鍵／WASD、手機按住拖曳）才開始；棋盤短邊 520 單位、長邊依畫面比例（最多 1.9 倍）延伸，場上數量依面積在 0.75～1.15 倍之間調整；手機改為浮動虛擬搖桿，直式時下方留拇指區；Web Audio 即時合成音效（M 鍵靜音）與震動回饋；遊戲內一次性提示、危險紅圈與畫面紅邊、玩家眼睛與汗滴、吃到時彈跳、過關印章與彩帶；玩家半徑由 14＋√v×3.2 改為 16＋√v×3.2。
 
 - 入場：每局固定扣 `ENTRY_FEE`（10 點）。按右側「開始一局」，或在子頁第一次移動開始一關（`begin`），都走子頁 `ensureRound` → `deepSeaEatSmaller.start` 由父頁驗證來源、檢查餘額後扣款並 `AN.start('eat-smaller')`；回傳 0 代表未扣款，子頁不開關。餘額不足顯示 `LOW_MSG`；進行中右側開始鈕停用、重複點擊不再扣。
 - 一局：扣款後可在子頁自由選已解鎖的關、重玩，失敗按「再試一次」（回到該關開場卡）或 R 直接重來不另扣點。按右側「結束本局」（`esFinish` → `endEatPlatformRound`）結束；子頁回到選單，下一次開始遊玩會重新開局。沒有自動結束條件。
-- BONUS（固定點數，不依入場費計算）：子頁過關時呼叫 `deepSeaEatSmaller.clear(level)`；父頁以 `paid[level]` 確保同一局每關只發一次 2 點，累計上限 10 點（共 8 關，最多 5 關有獎勵，剛好回本）。同關重複通過、已達上限都回 0 並提示。已入帳點數不收回，結束不另發點；重新整理時已入帳的保留，入場不退。
+- BONUS（固定點數，不依入場費計算）：子頁過關時呼叫 `deepSeaEatSmaller.clear(level)`；父頁以 `paid[level]` 確保同一局每關只發一次 2 點，累計上限 10 點（共 12 關，最多 5 關有獎勵，剛好回本）。同關重複通過、已達上限都回 0 並提示。已入帳點數不收回，結束不另發點；重新整理時已入帳的保留，入場不退。
 - 追蹤：每次過關送一次 `AN.progress`（`stage`＝關卡、`step`＝本局過關次數、`bonus_points`＝本次入帳，可能為 0、`total_bonus_points`）。結束本局送一次 `AN.end`（payout＝本局已入帳 BONUS，result `complete`，附 `step`）。正常離頁由本款 capture 階段 `pagehide` 先送 `abandoned` 並帶已入帳 BONUS；BFCache persisted 不結束。暫停：切走畫面（`setEatPlatformActive(false)`）或背景分頁時進行中的關卡會暫停並顯示「繼續」，暫停送 `AN.progress(phase:pause)`、繼續送 `AN.resume`。
 - 子頁單獨開啟（無父頁）時是不扣點的示範模式。
 - 儲存：沿用原版 Key `eatSmaller.unlocked`（已解鎖關數）與 `eatSmaller.bests`（每關最佳秒數，JSON），子頁同源寫入；新增於 2026-11-18。2026-11-23 新增 `eatSmaller.muted`（音效靜音，布林）與 `eatSmaller.tips`（已看過的遊戲內提示，JSON 物件），只是介面偏好，不影響進度。

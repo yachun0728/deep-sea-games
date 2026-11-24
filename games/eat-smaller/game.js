@@ -1,5 +1,5 @@
   /* ---------- Number Gulp（數字吞噬）: srcdoc 子頁；免費入場，本局每關第一次通過 BONUS +2 點，最多 10 點 ---------- */
-  var EATS={active:false,stake:0,earned:0,paid:{},cleared:0,analytics:null,loaded:false,msg:null},EATS_LEVELS=8,EATS_BONUS=2,EATS_CAP=10;
+  var EATS={active:false,stake:0,earned:0,paid:{},cleared:0,analytics:null,loaded:false,msg:null},EATS_LEVELS=12,EATS_BONUS=2,EATS_CAP=10;
   function esL(s,p){var i=window.deepSeaI18n,en=!!(i&&i.getLanguage()==='en'),k=s.indexOf('|'),t=k<0?(en?i.text(s):s):(en?s.slice(k+1):s.slice(0,k));return p?t.replace(/\{(\w+)\}/g,function(_,n){return p[n]!=null?p[n]:'';}):t;}
   function esSay(text,kind,params){EATS.msg={text:text,kind:kind||'',params:params};var el=$('es-msg');el.textContent=esL(text,params);el.className='msg'+(kind?' '+kind:'');}
   function esStored(){try{var u=JSON.parse(localStorage.getItem('eatSmaller.unlocked'));u=Math.floor(Number(u)||1);return Math.max(0,Math.min(EATS_LEVELS,u-1));}catch(_){return 0;}}

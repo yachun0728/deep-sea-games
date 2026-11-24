@@ -7,8 +7,9 @@
 <title>數字吞噬</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
+  html[lang=en]{--font:"Patrick Hand","Comic Sans MS",cursive}
   :root{
     --desk:#e8dcbd; --paper:#f6eedb; --paper2:#fbf6ea; --ink:#2b2b2b; --mute:rgba(43,43,43,.62); --mute2:rgba(43,43,43,.42);
     --cyan:#3f97c4; --violet:#8e5fcf; --amber:#d9801a; --red:#c8402f; --green:#4a8a3a;
@@ -26,31 +27,49 @@
   .num{font-variant-numeric:tabular-nums}
   #app{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
   .lbl{font-size:13px;letter-spacing:.08em;color:var(--mute)}
-  .icon-btn{width:38px;height:38px;border-radius:var(--sk);background:var(--paper2);border:2px solid var(--ink);display:inline-flex;align-items:center;justify-content:center;font-size:17px;margin-left:5px;box-shadow:2px 3px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+  .icon-btn{width:44px;height:44px;border-radius:var(--sk);background:var(--paper2);border:2px solid var(--ink);display:inline-flex;align-items:center;justify-content:center;font-size:18px;margin-left:5px;box-shadow:2px 3px 0 var(--ink);transition:transform .08s,box-shadow .08s}
   .icon-btn:nth-child(2n){border-radius:var(--sk2)}
   .icon-btn:hover{background:#fff}
   .icon-btn:active{transform:translate(2px,3px);box-shadow:0 0 0 var(--ink)}
-  canvas#cv{display:block;border:2.5px solid var(--ink);border-radius:14px 26px 12px 24px/24px 12px 26px 14px;box-shadow:5px 6px 0 rgba(43,43,43,.85);background:var(--paper)}
-  .hint{font-size:14px;color:var(--mute);text-align:center}
-  .overlay{position:fixed;inset:0;display:none;background:rgba(232,220,189,.7);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);padding:22px 16px 16px;z-index:10;overflow-y:auto;touch-action:pan-y;overscroll-behavior:contain}
+  canvas#cv{display:block;border:2.5px solid var(--ink);border-radius:14px 26px 12px 24px/24px 12px 26px 14px;box-shadow:5px 6px 0 rgba(43,43,43,.85);background:var(--paper);cursor:crosshair}
+  .overlay{position:fixed;inset:0;display:none;background:rgba(232,220,189,.62);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);padding:22px 16px 16px;z-index:10;overflow-y:auto;touch-action:pan-y}
+  .overlay *{touch-action:pan-y}
   .overlay.show{display:flex}
   .overlay .card{margin:auto}
-  .card{position:relative;width:min(460px,100%);background:var(--paper2);border:2.5px solid var(--ink);border-radius:var(--sk);padding:28px 24px 24px;text-align:center;box-shadow:7px 8px 0 var(--ink);transform:rotate(-.6deg)}
+  .card{position:relative;width:min(460px,100%);background:var(--paper2);border:2.5px solid var(--ink);border-radius:var(--sk);padding:26px 24px 22px;text-align:center;box-shadow:7px 8px 0 var(--ink);transform:rotate(-.6deg)}
+  .card.wide{width:min(560px,100%)}
   .card::before{content:"";position:absolute;left:50%;top:-14px;width:96px;height:26px;margin-left:-48px;background:rgba(246,196,122,.75);transform:rotate(-3deg);border-left:2px dashed rgba(43,43,43,.15);border-right:2px dashed rgba(43,43,43,.15)}
-  .card h1{font-size:38px;font-weight:700;letter-spacing:.02em}
-  .card h2{font-size:30px;font-weight:700}
-  .sub{color:var(--mute);font-size:16px;line-height:1.65;margin-top:10px}
-  .rules{text-align:left;margin:18px 0 6px;display:grid;gap:10px;font-size:16px;line-height:1.5}
+  .card h1{font-size:46px;font-weight:700;letter-spacing:.02em;line-height:1.05}
+  .card h2{font-size:32px;font-weight:700}
+  .card h3{font-size:21px;font-weight:700;margin-top:16px;text-align:left}
+  .sub{color:var(--mute);font-size:17px;line-height:1.5;margin-top:6px}
+  .rules{text-align:left;margin:14px 0 4px;display:grid;gap:9px;font-size:16px;line-height:1.45}
   .rules div{display:flex;gap:10px;align-items:flex-start}
-  .btn{display:inline-block;margin-top:18px;padding:10px 28px;border-radius:var(--sk);border:2.5px solid var(--ink);font-weight:700;font-size:19px;box-shadow:3px 4px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+  .btn{display:inline-block;margin-top:18px;padding:10px 28px;border-radius:var(--sk);border:2.5px solid var(--ink);font-weight:700;font-size:20px;box-shadow:3px 4px 0 var(--ink);transition:transform .08s,box-shadow .08s;background:var(--m-green);min-height:48px}
   .btn:active{transform:translate(3px,4px);box-shadow:0 0 0 var(--ink)}
-  .btn.ghost{background:var(--paper2);padding:7px 18px;font-size:16px;margin-top:12px;border-radius:var(--sk2)}
-  .levels{display:grid;gap:10px;margin-top:18px}
-  .levels button{aspect-ratio:1;background:var(--paper2);border:2px solid var(--ink);border-radius:var(--sk);font-weight:700;font-size:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;box-shadow:2px 3px 0 var(--ink)}
+  .btn.ghost{background:var(--paper2);padding:8px 16px;font-size:17px;margin-top:12px;border-radius:var(--sk2);min-height:46px}
+  .btn.ghost:hover{background:#fff}
+  .btn.play{display:flex;flex-direction:column;align-items:center;width:100%;max-width:300px;margin:16px auto 0;padding:10px 20px 8px;font-size:34px;line-height:1.05}
+  .btn.play small{font-size:15px;font-weight:400;color:var(--ink);opacity:.72;margin-top:2px}
+  .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .row .btn.ghost{flex:1 1 0;min-width:84px;max-width:150px;padding:8px 8px}
+  .col{display:flex;flex-direction:column;align-items:center;gap:0}
+  .col .btn{min-width:220px}
+  #mascot{display:block;margin:-4px auto 4px;width:210px;height:104px}
+  .levels{display:grid;gap:10px;margin-top:16px;grid-template-columns:repeat(4,1fr)}
+  .levels button{aspect-ratio:1.1;background:var(--paper2);border:2px solid var(--ink);border-radius:var(--sk);font-weight:700;font-size:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;box-shadow:2px 3px 0 var(--ink);line-height:1.1}
   .levels button:nth-child(2n){border-radius:var(--sk2);transform:rotate(1deg)}
   .levels button:nth-child(3n){transform:rotate(-1.2deg)}
   .levels button small{font-size:12px;font-weight:400;color:var(--mute)}
   .levels button:disabled{opacity:.35;cursor:default;border-style:dashed;box-shadow:none}
+  .levels button.done{background:#e3f1d6}
+  .levels button.cur{outline:3px dashed var(--amber);outline-offset:2px}
+  .slider{display:grid;grid-template-columns:1fr 52px;align-items:center;gap:4px 12px;text-align:left;font-size:19px;margin-top:16px}
+  .slider span{grid-column:1/3}
+  .slider b{text-align:right;font-size:18px}
+  .slider input{width:100%;height:34px;accent-color:var(--green);cursor:pointer;touch-action:none}
+  .keys{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:16px;margin-top:8px;text-align:left}
+  kbd{font:inherit;font-weight:700;border:2px solid var(--ink);border-radius:var(--sk2);padding:0 6px;background:#fff;margin-right:3px}
   .stat{display:flex;justify-content:center;gap:28px;margin-top:14px}
   .stat b{display:block;font-size:32px}
   .stat span{font-size:13px;color:var(--mute)}
@@ -66,15 +85,9 @@
   .status{font-size:15px;line-height:1.2;color:var(--mute);text-align:center;min-height:18px;margin-top:4px}
   .status.warn{color:var(--red);font-weight:700}
   .chip{flex:none;min-width:36px;height:27px;padding:0 6px;border-radius:var(--sk);border:2px solid var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;color:var(--ink)}
-  .btn{background:var(--m-green)}
-  @media (max-height:520px){ .levels button{aspect-ratio:1.35} .card{padding:22px 22px 18px} }
-  .levels{grid-template-columns:repeat(4,1fr)}
-  .levels button.done{background:#e3f1d6}
-  canvas#cv{cursor:crosshair}
-  .plat{margin-top:14px;padding:8px 12px;border:2px dashed rgba(43,43,43,.35);border-radius:var(--sk2);font-size:14px;line-height:1.5;color:var(--ink);background:rgba(246,196,122,.25)}
-  .bonus{margin-top:10px;font-size:17px;font-weight:700;color:var(--green);min-height:0}
-  .bonus:empty{display:none}
-  /* 觸控搖桿 */
+  @media (max-height:560px){ .card{padding:20px 20px 16px} .card h1{font-size:38px} #mascot{height:80px;width:162px} .btn.play{font-size:28px;margin-top:10px} .levels button{aspect-ratio:1.5} }
+  @media (max-height:420px){ .overlay{padding:14px 12px 10px} .card{padding:14px 18px 12px} .card h1{font-size:30px} #mascot{height:52px;width:105px;margin:0 auto} .sub{font-size:14px;margin-top:2px} .btn.play{font-size:24px;margin-top:8px;padding:6px 16px 4px} .btn{margin-top:10px;min-height:42px} .btn.ghost{margin-top:8px;min-height:42px} .levels{gap:6px;margin-top:8px} .levels button{aspect-ratio:2.2;font-size:18px} .card h2{font-size:26px} }
+  /* Touch joystick */
   #joy{position:fixed;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:2.5px dashed rgba(43,43,43,.45);background:rgba(246,238,219,.45);display:none;pointer-events:none;z-index:6}
   #joy.on{display:block}
   #joy i{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:#8fd3e8;border:2.5px solid var(--ink);box-shadow:2px 3px 0 rgba(43,43,43,.8)}
@@ -86,17 +99,17 @@
   }
 </style>
 </head>
-<body>
+<body data-i18n-ignore>
 <div id="app">
   <div class="bar" id="bar">
     <div><div class="lbl" data-t="you"></div><div class="big num" id="hudVal">2</div></div>
     <div class="mid">
-      <div class="lbl" id="hudLv" style="text-align:center"></div>
+      <div class="lbl" id="hudLv" style="text-align:center">&nbsp;</div>
       <div class="prog"><i id="prog"></i></div>
       <div class="status" id="status"></div>
     </div>
     <div style="text-align:right"><div class="lbl" data-t="target"></div><div class="big num target" id="hudTarget">12</div></div>
-    <div style="align-self:center;white-space:nowrap"><button class="icon-btn" id="btnSound" data-tt="sound">🔊</button><button class="icon-btn" id="btnRestart" data-tt="restart">↻</button><button class="icon-btn" id="btnMenu" data-tt="menu">☰</button></div>
+    <div style="align-self:center;white-space:nowrap"><button class="icon-btn" id="btnSound">🔊</button><button class="icon-btn" id="btnPause">❚❚</button></div>
   </div>
   <canvas id="cv"></canvas>
   <div class="thumb" id="thumb"><b></b><span data-t="thumb"></span></div>
@@ -105,11 +118,52 @@
 
 <div class="overlay" id="ovMenu">
   <div class="card">
+    <canvas id="mascot" width="420" height="208"></canvas>
     <h1 data-t="title"></h1>
-    <div class="sub" data-t="intro"></div>
-    <div class="plat" id="platNote" hidden></div>
+    <div class="sub" data-t="tagline"></div>
+    <button class="btn play" id="btnPlay"><span id="playLbl"></span><small id="playSub"></small></button>
+    <div class="row">
+      <button class="btn ghost" id="btnLevels" data-t="levels"></button>
+      <button class="btn ghost" id="btnSettings" data-t="settings"></button>
+      <button class="btn ghost" id="btnInfo" data-t="info"></button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="ovLevels">
+  <div class="card">
+    <h2 data-t="levels"></h2>
     <div class="levels" id="levels"></div>
-    <button class="btn" id="btnBack" data-t="back"></button>
+    <button class="btn ghost" data-back data-t="back"></button>
+  </div>
+</div>
+
+<div class="overlay" id="ovSettings">
+  <div class="card">
+    <h2 data-t="settings"></h2>
+    <label class="slider"><span data-t="music"></span><input type="range" id="volMusic" min="0" max="100" step="1"><b class="num" id="volMusicV"></b></label>
+    <label class="slider"><span data-t="sfx"></span><input type="range" id="volSfx" min="0" max="100" step="1"><b class="num" id="volSfxV"></b></label>
+    <button class="btn" data-back data-t="back"></button>
+  </div>
+</div>
+
+<div class="overlay" id="ovInfo">
+  <div class="card wide">
+    <h2 data-t="info"></h2>
+    <div id="infoBody"></div>
+    <button class="btn" data-back data-t="back"></button>
+  </div>
+</div>
+
+<div class="overlay" id="ovPause">
+  <div class="card">
+    <h2 data-t="paused"></h2>
+    <div class="col">
+      <button class="btn" id="btnResume" data-t="resume"></button>
+      <button class="btn ghost" id="btnRestart" data-t="restart"></button>
+      <button class="btn ghost" id="btnPauseSettings" data-t="settings"></button>
+      <button class="btn ghost" id="btnPauseMenu" data-t="mainMenu"></button>
+    </div>
   </div>
 </div>
 
@@ -118,139 +172,246 @@
     <h2 id="endTitle"></h2>
     <div class="sub" id="endSub"></div>
     <div class="stat" id="endStat">
-      <div><b class="num" id="endTime">0.0</b><span data-t="sec"></span></div>
+      <div><b class="num" id="endTime">0.0</b><span data-t="seconds"></span></div>
       <div><b class="num" id="endBest">0.0</b><span data-t="best"></span></div>
     </div>
-    <div class="bonus" id="endBonus"></div>
     <button class="btn" id="btnEnd"></button>
-    <div><button class="btn ghost" id="btnEndMenu" data-t="pick"></button></div>
-  </div>
-</div>
-
-<div class="overlay" id="ovPause">
-  <div class="card">
-    <h2 data-t="paused"></h2>
-    <div class="sub" data-t="pausedSub"></div>
-    <button class="btn" id="btnResume" data-t="resume"></button>
+    <div><button class="btn ghost" id="btnEndMenu" data-t="mainMenu"></button></div>
   </div>
 </div>
 
 <script>
 (() => {
 'use strict';
-// 世界尺寸（遊戲單位）：短邊固定 SHORT，長邊跟著畫面比例，讓棋盤填滿畫面而不是縮在中間的正方形。
+function host() { try { return window.parent !== window ? window.parent.deepSeaEatSmaller || null : null; } catch (e) { return null; } }
+function siteLang() { try { const i = window.parent !== window && window.parent.deepSeaI18n; return i ? i.getLanguage() : null; } catch (e) { return null; } }
+const pickLang = l => l === 'en' ? 'en' : 'zh';
+let LANG = pickLang(siteLang() || new URLSearchParams(location.search).get('lang') || (/^zh/i.test(navigator.language || '') ? 'zh' : 'en'));
+const STR = {
+  zh: {
+  title: '數字吞噬',
+  tagline: '吃掉比你小的數字，躲開比你大的，<b>剛好</b>湊到目標數字。',
+  you: '你', target: '目標', level: n => `第 ${n} 關`,
+  play: '開始', cont: '繼續', levels: '選關', settings: '設定', info: '玩法說明', back: '返回',
+  music: '音樂', sfx: '音效', paused: '暫停中', resume: '繼續遊戲', restart: '重來這一關', mainMenu: '主選單',
+  sound: '聲音開關 (M)', pause: '暫停 (P)',
+  thumb: '在這裡按住拖曳來移動',
+  seconds: '秒', best: '最佳', next: '下一關', retry: '再試一次',
+  exactly: t => `剛好 ${t}！`, cleared: '過關了。', finale: '12 關全部通關！',
+  eatenBy: v => `被 ${v} 吃掉了`, youWere: (v, t) => `你當時是 ${v}，目標是 ${t}。`,
+  timeUp: '時間到！', timeUpSub: (v, t) => `你到了 ${v}，目標是 ${t}。`,
+  reach: '剛好變成 ',
+  startMouse: '移動滑鼠就開始 · 也可以用方向鍵 / WASD', startTouch: '在任何地方按住拖曳就開始',
+  stCleared: '過關！', stOver: n => `超過了 ${n}！找 −3 或 ÷2 降回來`, stReady: t => `剛好變成 ${t}`,
+  stNeed: (n, v) => `還差 ${n}` + (n < v ? `：吃一個「${n}」就剛好` : ''),
+  coach: {
+    eat: '吃掉比你小的（綠色）數字來長大', red: '紅色比你大：碰到會被吃掉！', hunter: '帶尖刺的會追你，快跑！',
+    exact: '吃掉發光的那個就剛好！', over: '太大了！撿 −3 或 ÷2 縮回來',
+    sleep: '噓…靠太近它會醒來', flee: '長腳的點心會逃跑，把它逼到角落！',
+    double: '×2 會讓你變兩倍，先算一下！', boss: '大魔王不會停，躲到尺的後面！',
+    wall: '尺會擋住所有人，獵人也一樣', stain: '咖啡很黏：在裡面大家都游得比較慢',
+    clock: '跟時間賽跑！',
+  },
+  infoHtml: `
+    <div class="rules">
+      <div><span class="chip" style="background:var(--m-cyan)">7</span><span>你是藍色的數字。用滑鼠、方向鍵 / WASD 控制，觸控螢幕在任何地方按住拖曳就能移動。</span></div>
+      <div><span class="chip" style="background:var(--m-green)">3</span><span><b>綠色</b>比你小：碰到就吃掉，數值加到你身上。</span></div>
+      <div><span class="chip" style="background:var(--m-red)">9</span><span><b>紅色</b>比你大，碰到會被吃掉。帶尖刺的會追你，睡著的靠太近會醒來。</span></div>
+      <div><span class="chip" style="background:var(--m-amber)">÷2</span><span><b>運算子</b>一碰到就生效：−3、+1、÷2（無條件捨去）、×2。吃過頭時靠它們修正。</span></div>
+      <div><span class="chip" style="background:#e2dccd">=</span><span><b>剛好</b>變成目標數字就過關。越大游得越慢。</span></div>
+      <div><span class="chip" style="background:#f5d98b">12</span><span>共 12 關，每關都有新花樣：擋路的尺、黏黏的咖啡、沉睡的巨人、會逃跑的點心、倒數計時，還有一個超大的數字。</span></div>
+    </div>
+    <h3>操作</h3>
+    <div class="keys"><span><kbd>滑鼠</kbd>引導方向</span><span><kbd>←↑↓→</kbd><kbd>WASD</kbd>移動</span><span><kbd>觸控</kbd>任意處拖曳</span><span><kbd>P</kbd>暫停</span><span><kbd>R</kbd>重來</span><span><kbd>M</kbd>靜音</span></div>`,},
+  en: {
+  title: 'Eat Smaller',
+  tagline: 'Eat smaller numbers, dodge bigger ones, hit the target <b>exactly</b>.',
+  you: 'You', target: 'Target', level: n => `Level ${n}`,
+  play: 'Play', cont: 'Continue', levels: 'Levels', settings: 'Settings', info: 'How to play', back: 'Back',
+  music: 'Music', sfx: 'Sound effects', paused: 'Paused', resume: 'Resume', restart: 'Restart level', mainMenu: 'Main menu',
+  sound: 'Sound (M)', pause: 'Pause (P)',
+  thumb: 'Press and drag here to move',
+  seconds: 'Seconds', best: 'Best', next: 'Next level', retry: 'Try again',
+  exactly: t => `Exactly ${t}!`, cleared: 'Level cleared.', finale: 'You cleared all 12 levels!',
+  eatenBy: v => `Eaten by ${v}`, youWere: (v, t) => `You were ${v}; the target was ${t}.`,
+  timeUp: "Time's up!", timeUpSub: (v, t) => `You reached ${v}; the target was ${t}.`,
+  reach: 'Reach exactly ',
+  startMouse: 'Move your mouse to start  ·  or arrow keys / WASD', startTouch: 'Drag anywhere to start',
+  stCleared: 'Level cleared!', stOver: n => `Over by ${n}! Find a −3 or ÷2`, stReady: t => `Reach exactly ${t}`,
+  stNeed: (n, v) => `${n} to go` + (n < v ? `: eat ${/^(8|11|18)/.test(n) ? 'an' : 'a'} ${n} to land it exactly` : ''),
+  coach: {
+    eat: 'Eat smaller (green) numbers to grow', red: 'Red is bigger: it eats you!', hunter: 'Spiky numbers chase you. Run!',
+    exact: 'Eat the glowing one to land it exactly!', over: 'Too big! Grab a −3 or ÷2 to shrink',
+    sleep: 'Shh… it wakes up if you get close', flee: 'Snacks with legs run away. Corner them!',
+    double: '×2 doubles you. Count first!', boss: 'The Big One never stops. Hide behind the rulers!',
+    wall: 'Rulers block everyone, hunters too', stain: 'Coffee is sticky: everyone swims slower in it',
+    clock: 'Beat the clock!',
+  },
+  infoHtml: `
+    <div class="rules">
+      <div><span class="chip" style="background:var(--m-cyan)">7</span><span>You are the blue number. Steer with the mouse, the arrow keys / WASD, or drag anywhere on a touch screen.</span></div>
+      <div><span class="chip" style="background:var(--m-green)">3</span><span><b>Green</b> numbers are smaller than you. Touch one to eat it and add its value.</span></div>
+      <div><span class="chip" style="background:var(--m-red)">9</span><span><b>Red</b> numbers are bigger and eat you. Spiky ones chase you; sleeping ones wake up when you get close.</span></div>
+      <div><span class="chip" style="background:var(--m-amber)">÷2</span><span><b>Operators</b> work the moment you touch them: −3, +1, ÷2 (rounds down) and ×2. Use them to fix an overshoot.</span></div>
+      <div><span class="chip" style="background:#e2dccd">=</span><span>Hit the target <b>exactly</b> to clear the level. The bigger you get, the slower you swim.</span></div>
+      <div><span class="chip" style="background:#f5d98b">12</span><span>12 levels, each with a twist: rulers that block the way, sticky coffee, sleeping giants, runaway snacks, a clock, and one very big number.</span></div>
+    </div>
+    <h3>Controls</h3>
+    <div class="keys"><span><kbd>Mouse</kbd>steer</span><span><kbd>←↑↓→</kbd><kbd>WASD</kbd>move</span><span><kbd>Touch</kbd>drag anywhere</span><span><kbd>P</kbd>pause</span><span><kbd>R</kbd>restart</span><span><kbd>M</kbd>mute</span></div>`,}
+};
+let T = STR[LANG];
+const tx = v => (v && typeof v === 'object') ? (v[LANG] || v.zh) : v;
+
+// pop: numbers on the field; danger: share bigger than you; hunt: share of big ones that chase; sleep: share of big ones that doze;
+// flee: share of small ones that run away; ops/opRate: operators; walls/stains: map features; time: seconds; boss: the Big One
+const LEVELS = [
+  { name: { zh: '暖身', en: 'Warm-up' }, start: 2, target: 12, pop: 12, danger: .25, ops: ['−3'], opRate: .12,
+    tip: { zh: '吃掉比你小的數字。吃過頭了？撿 −3 降回來。', en: 'Eat smaller numbers. Overshot? A −3 brings you back down.' } },
+  { name: { zh: '剛剛好', en: 'Just Right' }, start: 3, target: 25, pop: 14, danger: .3, ops: ['−3', '+1'], opRate: .14,
+    tip: { zh: '快到目標了？吃之前先算一下。', en: 'Close to the target? Count before you eat.' } },
+  { name: { zh: '除以二', en: 'Halve It' }, start: 4, target: 40, pop: 15, danger: .35, ops: ['÷2', '−3', '+1'], opRate: .16,
+    tip: { zh: '新的 ÷2（無條件捨去）：能救你，也能害你。', en: 'New: ÷2 (rounds down). It can save you, or ruin you.' } },
+  { name: { zh: '獵人', en: 'Hunters' }, start: 3, target: 30, pop: 15, danger: .38, hunt: .45, ops: ['−3', '+1'], opRate: .13,
+    tip: { zh: '帶尖刺的大數字會追你，快跑！', en: 'Spiky numbers hunt you down. Run!' } },
+  { name: { zh: '沉睡巨人', en: 'Sleeping Giants' }, start: 3, target: 50, pop: 15, danger: .42, sleep: .75, ops: ['÷2', '−3', '+1'], opRate: .13,
+    tip: { zh: '大數字在睡覺。輕輕繞過去，太靠近會醒來。', en: 'Big numbers are napping. Tiptoe past, they wake up close.' } },
+  { name: { zh: '尺的迷宮', en: 'Ruler Maze' }, start: 4, target: 45, pop: 15, danger: .36, hunt: .25, ops: ['−3', '+1'], opRate: .13, walls: 'maze',
+    tip: { zh: '尺會擋路。把獵人引到尺的後面。', en: 'Rulers block the way. Lure hunters behind them.' } },
+  { name: { zh: '加倍', en: 'Double Up' }, start: 2, target: 64, pop: 15, danger: .36, hunt: .25, ops: ['×2', '×2', '−3', '+1'], opRate: .17,
+    tip: { zh: '新的 ×2 讓你變兩倍。64 = 2×2×2×2×2×2…', en: 'New: ×2 doubles you. 64 is 2×2×2×2×2×2…' } },
+  { name: { zh: '咖啡打翻了', en: 'Coffee Spill' }, start: 4, target: 70, pop: 16, danger: .36, hunt: .3, ops: ['÷2', '−3', '+1'], opRate: .14, stains: 'spill',
+    tip: { zh: '咖啡很黏：誰進去都會變慢。', en: 'Coffee is sticky: everyone swims slowly in it.' } },
+  { name: { zh: '逃跑的點心', en: 'Runaways' }, start: 3, target: 60, pop: 16, danger: .42, hunt: .32, flee: .55, ops: ['−3', '+1'], opRate: .12,
+    tip: { zh: '長腳的點心會逃跑，把它們逼到角落！', en: 'Snacks with legs run away. Corner them!' } },
+  { name: { zh: '隨堂小考', en: 'Pop Quiz' }, start: 2, target: 61, pop: 17, danger: .42, hunt: .4, ops: ['÷2', '−3', '+1'], opRate: .15, time: 90,
+    tip: { zh: '限時 90 秒，而且 61 是質數。', en: '90 seconds on the clock, and 61 is prime.' } },
+  { name: { zh: '運算子風暴', en: 'Operator Storm' }, start: 4, target: 99, pop: 18, danger: .35, hunt: .25, ops: ['÷2', '×2', '−3', '+1', '+1'], opRate: .3,
+    tip: { zh: '到處都是運算子。98 的時候別撞上 ÷2！', en: 'Operators everywhere. Don\'t swim into a ÷2 at 98!' } },
+  { name: { zh: '大魔王', en: 'The Big One' }, start: 2, target: 128, pop: 15, danger: .33, hunt: .1, ops: ['÷2', '−3', '+1'], opRate: .14, walls: 'final', boss: true,
+    tip: { zh: '最終關：在大魔王的追殺下長到 128。', en: 'Final level: grow to 128 while the Big One hunts you.' } },
+];
+// ===========================================================================================
+
+// World size in game units. The short side is always SHORT; the long side follows the screen's shape,
+// so the board fills the window instead of sitting as a small square in the middle.
 const SHORT = 520;
 let W = SHORT, H = SHORT;
-const REF_AREA = SHORT * SHORT * 16 / 9; // 關卡數量以 16:9 棋盤為基準
+const REF_AREA = SHORT * SHORT * 16 / 9; // level populations are tuned for a 16:9 board
+const FONT = getComputedStyle(document.documentElement).getPropertyValue('--font').trim() || 'cursive';
 
-// ---------- 語言：字串寫成「中文|English」，語言跟隨 Deep Sea Arcade 頁首切換 ----------
-function lang() { try { const i = window.parent !== window && window.parent.deepSeaI18n; return i && i.getLanguage() === 'en' ? 'en' : 'zh'; } catch (e) { return 'zh'; } }
-function Lx(s, p) {
-  const k = s.indexOf('|'); let t = k < 0 ? s : lang() === 'en' ? s.slice(k + 1) : s.slice(0, k);
-  t = t.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
-  return p ? t.replace(/\{(\w+)\}/g, (_, n) => p[n] != null ? p[n] : '') : t;
-}
-const TX = {
-  you: '你|You', target: '目標|Target', sound: '音效 (M)|Sound (M)', restart: '重來 (R)|Restart (R)', menu: '選關 (P / Esc)|Stages (P / Esc)',
-  thumb: '在這裡按住拖曳來移動|Press and drag here to move',
-  title: '數字吞噬|Number Gulp',
-  intro: '吃掉比你小的數字、躲開比你大的，**剛好**變成目標數字就過關。|Eat smaller numbers, dodge bigger ones, and hit the target **exactly**.',
-  back: '回到遊戲|Back to game', sec: '秒|sec', best: '最佳|Best', pick: '選關|Stages',
-  paused: '已暫停|Paused', pausedSub: '離開畫面時會自動暫停。|The game pauses when you leave the screen.', resume: '繼續|Resume',
-};
-function applyStatic() {
-  document.querySelectorAll('[data-t]').forEach(el => { el.innerHTML = Lx(TX[el.dataset.t]); });
-  document.querySelectorAll('[data-tt]').forEach(el => { el.title = Lx(TX[el.dataset.tt]); el.setAttribute('aria-label', el.title); });
-}
-
-// pop: 場上數字量；danger: 比你大的比例；hunt: 大數字會追人的比例；ops: 可能出現的運算符；opRate: 運算符出現機率
-// tip 畫在棋盤上的開場卡，要短到一行放得下
-const LEVELS = [
-  { name: '暖身|Warm-up', start: 2, target: 12, pop: 12, danger: .25, hunt: 0, ops: ['−3'], opRate: .12,
-    tip: '吃小的數字長大。吃過頭？撿 −3 降回來。|Eat smaller numbers. Overshot? A −3 brings you back down.' },
-  { name: '剛剛好|Just Right', start: 3, target: 25, pop: 14, danger: .3, hunt: 0, ops: ['−3', '+1'], opRate: .14,
-    tip: '快到目標時，先算好再吃。|Close to the target? Count before you eat.' },
-  { name: '除以二|Halve It', start: 4, target: 40, pop: 15, danger: .35, hunt: 0, ops: ['÷2', '−3', '+1'], opRate: .16,
-    tip: '新的 ÷2（無條件捨去）：能救你，也能害你。|New: ÷2 (rounds down). It can save you, or ruin you.' },
-  { name: '獵人|Hunters', start: 3, target: 30, pop: 15, danger: .38, hunt: .45, ops: ['−3', '+1'], opRate: .13,
-    tip: '帶尖角的數字會追你，快跑！|Spiky numbers hunt you down. Run!' },
-  { name: '大胃王|Big Eater', start: 5, target: 99, pop: 17, danger: .4, hunt: .35, ops: ['÷2', '−3', '+1'], opRate: .14,
-    tip: '越大游得越慢，越後面越難逃。|The bigger you get, the slower you swim.' },
-  { name: '陷阱海|Sea of Traps', start: 4, target: 50, pop: 18, danger: .3, hunt: .3, ops: ['÷2', '÷2', '−3', '+1'], opRate: .32,
-    tip: '到處都是運算符，別一頭撞上 ÷2。|Operators everywhere. Don\'t swim into a ÷2.' },
-  { name: '質數|Prime', start: 2, target: 61, pop: 17, danger: .45, hunt: .5, ops: ['÷2', '−3', '+1'], opRate: .15,
-    tip: '61 是質數，靠 ÷2 永遠湊不到。|61 is prime: ÷2 can never land you on it.' },
-  { name: '128', start: 2, target: 128, pop: 18, danger: .48, hunt: .55, ops: ['÷2', '−3', '+1'], opRate: .14,
-    tip: '最終關：從 2 一路長到 128。|Final stage: from 2 all the way to 128.' },
-];
-
-// ---------- Deep Sea Arcade 平台：開局、BONUS 與暫停由父頁 deepSeaEatSmaller 處理；單獨開啟時是不入帳的示範 ----------
-function host() { try { return window.parent !== window ? window.parent.deepSeaEatSmaller || null : null; } catch (e) { return null; } }
-let roundOn = false, earned = 0, platformVisible = true;
-function ensureRound() {
+// ---------- Deep Sea Arcade platform bridge ----------
+let roundOn = false, earned = 0;
+function beginPlatform() {
   const h = host();
-  if (!h || roundOn) return true;
-  if (!(h.start(window) > 0)) return false;
-  roundOn = true; earned = 0; renderNote();
+  if (h && !roundOn) {
+    if (!(h.start(window) > 0)) return false;
+    roundOn = true; earned = 0;
+  }
   return true;
 }
-function renderNote() {
-  const el = document.getElementById('platNote');
-  if (!host()) { el.hidden = true; return; }
-  el.hidden = false;
-  el.innerHTML = roundOn
-    ? Lx('本局進行中：每關第一次通過 BONUS +2 點（已得 {e} / 10）。失敗可以直接重來。|Round in progress: +2 BONUS pts the first time you clear each stage ({e} / 10 earned). Retry freely after a loss at no extra cost.', { e: earned })
-    : Lx('開始遊玩就會開一局；本局每關第一次通過 BONUS +2 點，最多 10 點。|Start playing to open a round; each stage’s first clear in the round gives a +2 pt BONUS, up to 10 pts.');
-}
 function touch() { const h = host(); if (h && roundOn && h.touch) h.touch(window); }
+window.addEventListener('pointerdown', touch, true);
+window.addEventListener('keydown', touch, true);
 
 const store = {
   get(k, d) { try { const v = localStorage.getItem('eatSmaller.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem('eatSmaller.' + k, JSON.stringify(v)); } catch (e) {} }
 };
-let unlocked = store.get('unlocked', 1);
+let unlocked = Math.min(LEVELS.length, Math.max(1, store.get('unlocked', 1)));
 let bests = store.get('bests', {});
+let cur = Math.min(unlocked - 1, Math.max(0, store.get('cur', unlocked - 1)));
 
-// ---------- Sound (synthesized live with Web Audio; no audio files needed) ----------
+// ---------- Sound and music (synthesized live with Web Audio; no audio files) ----------
 const sfx = (() => {
-  let ac = null, master = null, noiseBuf = null, muted = store.get('muted', false);
-  const VOL = .6, lastAt = {};
+  let ac = null, sfxBus = null, musicBus = null, muteBus = null, noiseBuf = null, muted = store.get('muted', false);
+  const vol = Object.assign({ music: .26, sfx: .8 }, store.get('vol', {}));
+  const SFX_K = .75, MUSIC_K = 1.5, lastAt = {}, holds = new Set();
+  let duck = 1;
   function ensure() {
     if (!ac) {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
       ac = new AC();
       const comp = ac.createDynamicsCompressor();
-      master = ac.createGain(); master.gain.value = muted ? 0 : VOL;
-      master.connect(comp); comp.connect(ac.destination);
+      muteBus = ac.createGain(); muteBus.gain.value = muted ? 0 : 1;
+      sfxBus = ac.createGain(); sfxBus.gain.value = vol.sfx * SFX_K;
+      musicBus = ac.createGain(); musicBus.gain.value = vol.music * MUSIC_K;
+      sfxBus.connect(muteBus); musicBus.connect(muteBus); muteBus.connect(comp); comp.connect(ac.destination);
       noiseBuf = ac.createBuffer(1, ac.sampleRate * .5, ac.sampleRate);
       const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      setInterval(schedule, 25);
     }
-    if (ac.state === 'suspended') ac.resume();
+    if (ac.state === 'suspended' && !holds.size) ac.resume();
     return ac;
   }
   // Skip a sound if the same one just played, so rapid eating does not turn into noise
   function gate(name, gap) { const n = performance.now(); if (lastAt[name] && n - lastAt[name] < gap) return false; lastAt[name] = n; return true; }
-  function tone({ type = 'triangle', f0, f1, t = 0, dur = .12, vol = .3, attack = .006 }) {
-    const a = ensure(); if (!a || muted) return;
-    const s = a.currentTime + t, o = a.createOscillator(), g = a.createGain();
+  function tone({ type = 'triangle', f0, f1, t = 0, at, dur = .12, vol = .3, attack = .006, bus }) {
+    const a = ensure(); if (!a || (!bus && muted)) return;
+    const s = at != null ? at : a.currentTime + t, o = a.createOscillator(), g = a.createGain();
     o.type = type; o.frequency.setValueAtTime(f0, s);
     if (f1) o.frequency.exponentialRampToValueAtTime(f1, s + dur);
     g.gain.setValueAtTime(.0001, s); g.gain.exponentialRampToValueAtTime(vol, s + attack);
     g.gain.exponentialRampToValueAtTime(.0001, s + dur);
-    o.connect(g); g.connect(master); o.start(s); o.stop(s + dur + .03);
+    o.connect(g); g.connect(bus || sfxBus); o.start(s); o.stop(s + dur + .03);
   }
-  function noise({ t = 0, dur = .06, vol = .15, freq = 2500, q = 1, type = 'bandpass' }) {
-    const a = ensure(); if (!a || muted) return;
-    const s = a.currentTime + t, src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+  function noise({ t = 0, at, dur = .06, vol = .15, freq = 2500, q = 1, type = 'bandpass', bus }) {
+    const a = ensure(); if (!a || (!bus && muted)) return;
+    const s = at != null ? at : a.currentTime + t, src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
     src.buffer = noiseBuf; f.type = type; f.frequency.value = freq; f.Q.value = q;
     g.gain.setValueAtTime(vol, s); g.gain.exponentialRampToValueAtTime(.0001, s + dur);
-    src.connect(f); f.connect(g); g.connect(master); src.start(s); src.stop(s + dur + .02);
+    src.connect(f); f.connect(g); g.connect(bus || sfxBus); src.start(s, Math.random() * .4); src.stop(s + dur + .02);
   }
+
+  // Background music: an original 64-step (8-bar) loop at 116 BPM, about 16.5 s, scheduled ahead on the audio clock
+  // so it repeats without a seam. Plucky marimba lead, ukulele-ish offbeat strums, soft bass, pencil-tap percussion.
+  const midi = s => { const m = /^([A-G])(#?)(\d)$/.exec(s); return m ? { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[m[1]] + (m[2] ? 1 : 0) + 12 * (+m[3] + 1) : null; };
+  const hz = n => 440 * Math.pow(2, (n - 69) / 12);
+  const MEL = ('E5 . G5 . A5 G5 E5 . | C5 . E5 . D5 C5 A4 . | A4 . C5 . F5 . E5 D5 | D5 . . B4 G4 . . . | ' +
+               'E5 . G5 . C6 . B5 G5 | B4 . E5 . G5 . E5 . | F5 . A5 . G5 . D5 . | C5 E5 G5 E5 C5 . . .')
+    .replace(/\|/g, ' ').trim().split(/\s+/).map(midi);
+  const CH = { C: [60, 64, 67], Am: [57, 60, 64], F: [57, 60, 65], G: [55, 59, 62], Em: [55, 59, 64] };
+  const BASS = { C: 36, Am: 45, F: 41, G: 43, Em: 40 };
+  const HALF = ['C', 'C', 'Am', 'Am', 'F', 'F', 'G', 'G', 'C', 'C', 'Em', 'Em', 'F', 'G', 'C', 'C'];
+  const STEP = 60 / 116 / 2;
+  let musicOn = false, step = 0, nextT = 0;
+  function playStep(i, t) {
+    const ch = HALF[i >> 2], b = i & 7;
+    const m = MEL[i];
+    if (m != null) { // marimba: sine body + a quick bright partial
+      tone({ type: 'sine', f0: hz(m), at: t, dur: .34, vol: .16, attack: .004, bus: musicBus });
+      tone({ type: 'sine', f0: hz(m) * 4, at: t, dur: .06, vol: .025, attack: .002, bus: musicBus });
+    }
+    const root = BASS[ch];
+    const bn = b === 0 || b === 3 ? root : b === 4 ? root + 7 : b === 6 ? root + 12 : null;
+    if (bn != null) tone({ type: 'triangle', f0: hz(bn), at: t, dur: b === 6 ? .16 : .26, vol: .2, attack: .01, bus: musicBus });
+    if (b === 2 || b === 6) CH[ch].forEach((n, k) => tone({ type: 'triangle', f0: hz(n), at: t + k * .012, dur: .16, vol: .045, bus: musicBus }));
+    if ((i & 3) === 0) tone({ type: 'sine', f0: 130, f1: 48, at: t, dur: .15, vol: .2, attack: .002, bus: musicBus });
+    if (b === 4) noise({ at: t, dur: .07, vol: .09, freq: 2300, q: 1.2, bus: musicBus });
+    noise({ at: t, dur: .03, vol: b % 2 ? .035 : .02, freq: 7500, q: .7, type: 'highpass', bus: musicBus });
+  }
+  function schedule() {
+    if (!ac || !musicOn || ac.state !== 'running') return;
+    if (nextT < ac.currentTime) nextT = ac.currentTime + .05; // after a suspend, pick up cleanly
+    while (nextT < ac.currentTime + .2) { playStep(step, nextT); nextT += STEP; step = (step + 1) % MEL.length; }
+  }
+  function applyMusic() { if (musicBus) musicBus.gain.setTargetAtTime(vol.music * MUSIC_K * duck, ac.currentTime, .08); }
   return {
     unlock: ensure,
     get muted() { return muted; },
-    toggle() { muted = !muted; store.set('muted', muted); if (master) master.gain.value = muted ? 0 : VOL; return muted; },
+    vol: k => vol[k],
+    setVol(k, v) {
+      vol[k] = v; store.set('vol', vol);
+      if (k === 'music') applyMusic(); else if (sfxBus) sfxBus.gain.value = v * SFX_K;
+    },
+    startMusic() { if (!ensure() || musicOn) return; musicOn = true; step = 0; nextT = ac.currentTime + .1; },
+    duck(on) { duck = on ? .45 : 1; applyMusic(); },
+    // Suspend all audio while any reason holds (hidden tab, ad break)
+    hold(reason, on) {
+      if (on) holds.add(reason); else holds.delete(reason);
+      try { if (ac) holds.size ? ac.suspend() : ac.resume(); } catch (e) {}
+    },
+    toggle() { muted = !muted; store.set('muted', muted); if (muteBus) muteBus.gain.value = muted ? 0 : 1; return muted; },
     // Eat: the closer you are to the target, the higher the pitch
     eat(progress) {
       if (!gate('eat', 45)) return;
@@ -258,20 +419,18 @@ const sfx = (() => {
       tone({ f0: f, f1: f * 1.8, dur: .09, vol: .26 });
       noise({ dur: .025, vol: .07, freq: 3500 });
     },
-    // Operators: −3 and ÷2 slide down, +1 hops up
     opDown() { tone({ type: 'sine', f0: 560, f1: 170, dur: .24, vol: .3 }); tone({ f0: 280, f1: 90, dur: .24, vol: .1 }); },
     opUp() { tone({ f0: 640, f1: 960, dur: .08, vol: .22 }); tone({ f0: 960, f1: 1280, t: .06, dur: .08, vol: .16 }); },
-    // Same size: bounce off
+    opDouble() { [523, 784, 1047].forEach((f, i) => tone({ f0: f, f1: f * 1.5, t: i * .05, dur: .09, vol: .18 })); },
     bump() { if (!gate('bump', 150)) return; tone({ type: 'sine', f0: 200, f1: 340, dur: .1, vol: .26 }); tone({ type: 'sine', f0: 340, f1: 190, t: .08, dur: .14, vol: .16 }); },
-    // Warning when you overshoot the target
     over() { tone({ type: 'square', f0: 466, dur: .1, vol: .06 }); tone({ type: 'square', f0: 349, t: .13, dur: .18, vol: .06 }); },
-    // Eaten
+    wake() { if (!gate('wake', 300)) return; tone({ type: 'sawtooth', f0: 90, f1: 140, dur: .3, vol: .12 }); tone({ type: 'square', f0: 880, t: .05, dur: .06, vol: .05 }); },
+    tick() { tone({ type: 'square', f0: 1400, dur: .03, vol: .05 }); },
     lose() {
       tone({ type: 'sawtooth', f0: 320, f1: 55, dur: .65, vol: .16 });
       noise({ dur: .3, vol: .3, freq: 700, q: .6, type: 'lowpass' });
       noise({ t: .05, dur: .08, vol: .12, freq: 1800 });
     },
-    // Hit the target exactly
     win() {
       [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ f0: f, dur: .28, t: i * .09, vol: .2 }));
       tone({ type: 'sine', f0: 2093, f1: 2637, t: .38, dur: .4, vol: .07 });
@@ -280,11 +439,12 @@ const sfx = (() => {
     click() { tone({ type: 'square', f0: 1100, dur: .03, vol: .04 }); },
   };
 })();
-// Browsers only allow audio after a user gesture, so start it on the first tap or key press
-['pointerdown', 'keydown', 'touchstart'].forEach(ev => window.addEventListener(ev, () => sfx.unlock(), { capture: true, passive: true }));
-document.addEventListener('click', e => { if (e.target.closest('button')) sfx.click(); });
+// Browsers only allow audio after a user gesture, so start it (and the music) on the first tap or key press
+['pointerdown', 'keydown', 'touchstart'].forEach(ev => window.addEventListener(ev, () => { sfx.unlock(); sfx.startMusic(); }, { capture: true, passive: true }));
+document.addEventListener('click', e => { sfx.startMusic(); if (e.target.closest('button')) sfx.click(); });
 
-const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+let cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const bgCv = document.createElement('canvas'), bgCtx = bgCv.getContext('2d');
 let scale = 1;
 function resize() {
   const bar = document.getElementById('bar'), thumb = document.getElementById('thumb');
@@ -306,6 +466,7 @@ function resize() {
   cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr);
   bar.style.width = cw + 'px'; thumb.style.width = cw + 'px';
   ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
+  if (L) buildMap();
   if (player) { player.x = Math.min(player.x, W - player.r); player.y = Math.min(player.y, H - player.r); }
 }
 window.addEventListener('resize', resize);
@@ -314,54 +475,111 @@ const radiusOf = v => 16 + Math.sqrt(v) * 3.2;
 const speedOf = v => 250 / (1 + v / 28);
 const rand = (a, b) => a + Math.random() * (b - a);
 const randi = (a, b) => Math.floor(rand(a, b + 1));
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const applyOp = (v, op) => op === '−3' ? Math.max(2, v - 3) : op === '÷2' ? Math.max(2, Math.floor(v / 2)) : op === '+1' ? v + 1 : op === '×2' ? v * 2 : v;
 
 let uid = 0;
-// state: 'ready' (level shown, waiting for the first move) → 'play' → 'end'; 'menu' while the level list is open
-let lvIndex = 0, L, player, ents, state = 'ready', time = 0, spawnT = 0, invuln = 0, popups = [], particles = [], shake = 0;
-let popN = 12, danger = 0, winT = 0;
+// state: 'menu' (title and other screens; the board idles behind) → 'ready' (level shown, waiting for the first move)
+//        → 'play' ⇄ 'pause' → 'end'
+let lvIndex = 0, L = null, player = null, ents = [], state = 'menu', time = 0, spawnT = 0, invuln = 0, popups = [], particles = [], shake = 0;
+let popN = 12, danger = 0, winT = 0, walls = [], stains = [], lastTick = 0;
 // One-time coaching hints shown in the game itself (instead of a wall of rules before playing)
 const seenTips = store.get('tips', {});
 let tip = null; // { key, text, t }
-function coach(key, text, force) {
+function coach(key, force) {
+  const text = T.coach[key];
   if ((seenTips[key] && !force) || (tip && tip.key === key)) return;
   if (tip && tip.t < 1.2 && !force) return; // let the current hint be read first
   tip = { key, text, t: 0 };
   seenTips[key] = 1; store.set('tips', seenTips);
 }
 
+// ---------- Map features: rulers (walls) and coffee stains, laid out relative to the board's shape ----------
+function buildMap() {
+  walls = []; stains = [];
+  const ruler = (cx, cy, len, vert) => walls.push(vert ? { x: cx * W - 11, y: cy * H - len / 2, w: 22, h: len, kind: 'ruler', vert } : { x: cx * W - len / 2, y: cy * H - 11, w: len, h: 22, kind: 'ruler', vert });
+  const eraser = (cx, cy) => walls.push({ x: cx * W - 36, y: cy * H - 21, w: 72, h: 42, kind: 'eraser' });
+  if (L.walls === 'maze') {
+    ruler(.3, .3, H * .42, true); ruler(.7, .7, H * .42, true);
+    eraser(.5, .17); eraser(.5, .83);
+  } else if (L.walls === 'final') {
+    ruler(.3, .27, Math.min(W * .26, 230), false); ruler(.7, .73, Math.min(W * .26, 230), false);
+    eraser(.18, .74); eraser(.82, .26);
+  }
+  if (L.stains === 'spill') {
+    stains.push({ x: W * .24, y: H * .34, r: 78 }, { x: W * .74, y: H * .64, r: 92 }, { x: W * .5, y: H * .86, r: 56 });
+  }
+  renderBg();
+}
+function collideWalls(o, r) {
+  let hit = null;
+  for (const w of walls) {
+    const cx = clamp(o.x, w.x, w.x + w.w), cy = clamp(o.y, w.y, w.y + w.h);
+    const dx = o.x - cx, dy = o.y - cy, d = Math.hypot(dx, dy);
+    if (d >= r) continue;
+    if (d < .001) { // the centre is inside: push out along the shortest way
+      const l = o.x - w.x, rt = w.x + w.w - o.x, t = o.y - w.y, b = w.y + w.h - o.y, m = Math.min(l, rt, t, b);
+      if (m === l) { o.x = w.x - r; hit = { nx: -1, ny: 0 }; } else if (m === rt) { o.x = w.x + w.w + r; hit = { nx: 1, ny: 0 }; }
+      else if (m === t) { o.y = w.y - r; hit = { nx: 0, ny: -1 }; } else { o.y = w.y + w.h + r; hit = { nx: 0, ny: 1 }; }
+      continue;
+    }
+    const nx = dx / d, ny = dy / d; o.x = cx + nx * r; o.y = cy + ny * r; hit = { nx, ny };
+  }
+  return hit;
+}
+const inStain = (x, y) => stains.some(s => Math.hypot(x - s.x, y - s.y) < s.r);
+const freeSpot = (x, y, r) => !walls.some(w => x > w.x - r && x < w.x + w.w + r && y > w.y - r && y < w.y + w.h + r);
+
 function loadLevel(i) {
   lvIndex = i; L = LEVELS[i];
-  player = { x: W / 2, y: H / 2, v: L.start, vx: 0, vy: 0, r: radiusOf(L.start), pop: 0, lookX: 1, lookY: 0 };
-  ents = []; popups = []; particles = []; time = 0; invuln = 1.5; spawnT = 0; wasOver = false; tip = null; danger = 0; winT = 0;
+  player = { x: W / 2, y: H / 2, v: L.start, vx: 0, vy: 0, r: radiusOf(L.start), pop: 0, lookX: 1, lookY: 0, chomp: 0, mouth: 0, blinkT: 3 };
+  ents = []; popups = []; particles = []; time = 0; invuln = 1.5; spawnT = 0; wasOver = false; tip = null; danger = 0; winT = 0; lastTick = 0;
+  buildMap();
   popN = Math.round(L.pop * Math.max(.75, Math.min(1.15, W * H / REF_AREA)));
   for (let k = 0; k < popN; k++) spawn(true);
+  if (L.boss) {
+    const corner = randi(0, 1);
+    ents.push({ boss: true, v: 999, r: 62, x: corner ? W - 70 : 70, y: corner ? 70 : H - 70, vx: 0, vy: 0, sp: 29, wob: 0, born: 0, id: ++uid, hunter: true });
+  }
   updHud();
 }
 
 function spawn(initial) {
-  const isOp = Math.random() < L.opRate;
+  const pv = player.v, need = L.target - pv;
+  const reducers = L.ops.filter(o => o === '−3' || o === '÷2');
+  // When you are over the target, make sure a way back down shows up
+  const forceOp = pv > L.target && reducers.length && !ents.some(e => e.op === '−3' || e.op === '÷2') && Math.random() < .5;
+  const isOp = forceOp || Math.random() < L.opRate;
   let e;
   if (isOp) {
-    e = { op: L.ops[randi(0, L.ops.length - 1)], r: 17 };
+    e = { op: forceOp ? reducers[randi(0, reducers.length - 1)] : L.ops[randi(0, L.ops.length - 1)], r: 17 };
   } else {
-    const pv = player.v;
-    let v;
-    if (Math.random() < L.danger) v = randi(pv + 1, Math.max(pv + 3, Math.round(pv * 2.2) + 3));
+    let v, exact = false;
+    if (!initial && need > 0 && need < pv && Math.random() < .3 && !ents.some(x => x.v === need)) { v = need; exact = true; } // the missing piece sometimes drifts in
+    else if (Math.random() < L.danger) v = randi(pv + 1, Math.max(pv + 3, Math.round(pv * 2.2) + 3));
     else v = randi(1, Math.max(1, Math.min(pv - 1, Math.ceil(pv * 0.75))));
-    e = { v, r: radiusOf(v), hunter: v > pv && Math.random() < L.hunt };
+    e = { v, r: radiusOf(v) };
+    if (v > pv) {
+      if (Math.random() < (L.hunt || 0)) e.hunter = true;
+      else if (Math.random() < (L.sleep || 0)) { e.sleepAt = initial ? 0 : rand(1.2, 2.6); e.sleeping = initial; }
+    } else if (!exact && Math.random() < (L.flee || 0)) e.flee = true;
   }
   let x, y, tries = 0;
   if (initial) {
-    do { x = rand(40, W - 40); y = rand(40, H - 40); tries++; } while (Math.hypot(x - player.x, y - player.y) < 200 && tries < 50);
-  } else {
-    const side = randi(0, 3), m = e.r + 4;
-    if (side === 0) { x = -m; y = rand(0, H); } else if (side === 1) { x = W + m; y = rand(0, H); }
-    else if (side === 2) { x = rand(0, W); y = -m; } else { x = rand(0, W); y = H + m; }
+    do { x = rand(40, W - 40); y = rand(40, H - 40); tries++; }
+    while ((Math.hypot(x - player.x, y - player.y) < (e.sleeping ? 170 : 200) || !freeSpot(x, y, e.r + 4)) && tries < 80);
+  } else { // enter from an edge; bigger numbers never pop in right next to the player
+    const m = e.r + 4;
+    do {
+      const side = randi(0, 3);
+      if (side === 0) { x = -m; y = rand(0, H); } else if (side === 1) { x = W + m; y = rand(0, H); }
+      else if (side === 2) { x = rand(0, W); y = -m; } else { x = rand(0, W); y = H + m; }
+    } while (!e.op && e.v > pv && Math.hypot(x - player.x, y - player.y) < 190 + e.r && ++tries < 12);
   }
   const tx = rand(W * .2, W * .8), ty = rand(H * .2, H * .8);
   const a = Math.atan2(ty - y, tx - x) + rand(-.4, .4);
   const sp = e.op ? rand(25, 50) : (e.hunter ? rand(55, 80) : rand(30, 85));
-  Object.assign(e, { x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, sp, wob: rand(0, 6.28), born: 0 });
+  Object.assign(e, { x, y, vx: e.sleeping ? 0 : Math.cos(a) * sp, vy: e.sleeping ? 0 : Math.sin(a) * sp, sp, wob: rand(0, 6.28), born: 0 });
   e.id = ++uid;
   ents.push(e);
 }
@@ -425,59 +643,80 @@ if (HAS_TOUCH) {
 // Devices without Touch Events (e.g. some pens and tablets) fall back to Pointer Events
 window.addEventListener('pointerdown', e => {
   if (e.pointerType === 'mouse' || (HAS_TOUCH && e.pointerType === 'touch')) return;
-  if (e.target.closest('button')) return;
+  if (e.target.closest('button, .overlay')) return;
   if (joyStart(e.pointerId, e.clientX, e.clientY)) e.preventDefault();
 });
 window.addEventListener('pointermove', e => { if (joy && e.pointerId === joy.id) joyMove(e.clientX, e.clientY); });
 window.addEventListener('pointerup', e => { if (joy && e.pointerId === joy.id) endJoy(); });
 window.addEventListener('pointercancel', e => { if (joy && e.pointerId === joy.id) endJoy(); });
-function buzz(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
+function buzz(p) { try { if (navigator.vibrate && isTouchUI() && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) navigator.vibrate(p); } catch (e) {} }
 const isTouchUI = () => matchMedia('(pointer:coarse)').matches;
 try { matchMedia('(pointer:coarse)').addEventListener('change', () => resize()); } catch (e) {}
-// 有操作時通知父頁（有效遊玩時間）
-window.addEventListener('pointerdown', touch, { capture: true, passive: true });
-// P 或 Esc 開關選關
+const visible = id => document.getElementById(id).classList.contains('show');
+// Escape is left alone on purpose: game portals use it to leave fullscreen. P pauses.
 window.addEventListener('keydown', e => {
   const k = e.key.toLowerCase();
   if (k.startsWith('arrow') || k === ' ') e.preventDefault();
-  touch();
+  if (e.repeat && !/^(arrow|[wasd]$)/.test(k)) return;
   keys.add(k);
   const move = /^(arrow|[wasd]$)/.test(k);
   if (move) pointer = null;
   if (move && state === 'ready') begin();
-  if (k === 'r' && (state === 'play' || state === 'end')) { loadLevel(lvIndex); begin(); }
-  if (k === 'p' || k === 'escape') { if (state === 'menu') resume(); else openMenu(); }
+  if (k === 'r' && (state === 'play' || state === 'end' || state === 'pause')) restartLevel();
+  if (k === 'p') { if (state === 'pause') unpause(); else pause(); }
   if (k === 'm') toggleSound();
   if (k === ' ' || k === 'enter') {
-    if (state === 'pause') resumeGame();
-    else if (state === 'end' && document.getElementById('ovEnd').classList.contains('show')) document.getElementById('btnEnd').click();
+    if (state === 'end' && visible('ovEnd')) document.getElementById('btnEnd').click();
+    else if (state === 'menu' && visible('ovMenu')) document.getElementById('btnPlay').click();
+    else if (state === 'pause') unpause();
   }
 });
 window.addEventListener('keyup', e => keys.delete(e.key.toLowerCase()));
-window.addEventListener('blur', () => keys.clear());
+// Losing focus (tab switch, another window, a phone call) pauses the game and lets go of held keys
+window.addEventListener('blur', () => { keys.clear(); endJoy(); if (state === 'play') pause(); });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { keys.clear(); endJoy(); if (state === 'play') pause(); }
+  sfx.hold('hidden', document.hidden);
+});
 
 // ---------- Update ----------
 function update(dt) {
   const live = state === 'play';
   if (tip) { tip.t += dt; if (tip.t > 3.2) tip = null; }
   player.pop *= Math.exp(-dt * 7);
-  if (!live) { // 'ready': the world drifts while the level waits for the first move
-    for (const e of ents) { e.born += dt; e.wob += dt; e.x += e.vx * dt; e.y += e.vy * dt; }
-    ents = ents.filter(e => e.born < 2 || (e.x > -80 && e.x < W + 80 && e.y > -80 && e.y < H + 80));
+  player.chomp = Math.max(0, player.chomp - dt * 4);
+  player.blinkT -= dt; if (player.blinkT < 0) player.blinkT = rand(2.2, 5);
+  if (!live) { // 'ready' and 'menu': the world drifts while it waits for the first move
+    for (const e of ents) {
+      e.born += dt; e.wob += dt;
+      if (e.boss) continue;
+      if (e.sleepAt && !e.sleeping && e.born > e.sleepAt && e.x > 40 && e.x < W - 40 && e.y > 40 && e.y < H - 40) e.sleeping = true;
+      if (e.sleeping) { e.vx *= Math.exp(-dt * 3); e.vy *= Math.exp(-dt * 3); }
+      e.x += e.vx * dt; e.y += e.vy * dt;
+      if (walls.length) bounce(e);
+      if (e.flee) keepOnPage(e);
+    }
+    ents = ents.filter(e => e.boss || e.born < 2 || (e.x > -80 && e.x < W + 80 && e.y > -80 && e.y < H + 80));
     for (const e of ents) { // keep bigger numbers from parking on top of the waiting player
       const ox = e.x - player.x, oy = e.y - player.y, d = Math.hypot(ox, oy) || 1;
-      if (!e.op && e.v > player.v && d < e.r + player.r + 70) { e.vx = ox / d * e.sp; e.vy = oy / d * e.sp; }
+      if (!e.op && !e.boss && e.v > player.v && d < e.r + player.r + 70) { e.vx = ox / d * e.sp; e.vy = oy / d * e.sp; e.sleeping = false; e.sleepAt = 0; }
     }
     spawnT -= dt; if (ents.length < popN && spawnT <= 0) { spawn(false); spawnT = rand(.25, .7); }
     stepFx(dt); return;
   }
   time += dt; invuln = Math.max(0, invuln - dt);
+  if (L.time) {
+    const left = L.time - time;
+    if (left <= 0) return timeUp();
+    if (left < 10 && Math.ceil(left) !== lastTick) { lastTick = Math.ceil(left); sfx.tick(); }
+  }
   let dx = 0, dy = 0;
   if (keys.has('arrowleft') || keys.has('a')) dx -= 1;
   if (keys.has('arrowright') || keys.has('d')) dx += 1;
   if (keys.has('arrowup') || keys.has('w')) dy -= 1;
   if (keys.has('arrowdown') || keys.has('s')) dy += 1;
-  const sp = speedOf(player.v);
+  const sticky = stains.length && inStain(player.x, player.y);
+  const sp = speedOf(player.v) * (sticky ? .5 : 1);
   let tvx = 0, tvy = 0;
   if (dx || dy) { const l = Math.hypot(dx, dy); tvx = dx / l * sp; tvy = dy / l * sp; }
   else if (joy && Math.hypot(joy.dx, joy.dy) > 6) {
@@ -492,30 +731,55 @@ function update(dt) {
   player.vx += (tvx - player.vx) * ease; player.vy += (tvy - player.vy) * ease;
   player.x = Math.max(player.r, Math.min(W - player.r, player.x + player.vx * dt));
   player.y = Math.max(player.r, Math.min(H - player.r, player.y + player.vy * dt));
+  if (walls.length) {
+    const h = collideWalls(player, player.r * .92);
+    if (h) { const vn = player.vx * h.nx + player.vy * h.ny; if (vn < 0) { player.vx -= vn * h.nx; player.vy -= vn * h.ny; } }
+  }
   player.r += (radiusOf(player.v) - player.r) * (1 - Math.exp(-dt * 8));
   const pv = Math.hypot(player.vx, player.vy);
   if (pv > 15) { player.lookX += (player.vx / pv - player.lookX) * .2; player.lookY += (player.vy / pv - player.lookY) * .2; }
 
   danger = 0;
+  let near = 0;
   for (const e of ents) {
     e.born += dt; e.wob += dt; e.locked = false;
-    if (e.hunter && e.v > player.v) {
-      const ox = player.x - e.x, oy = player.y - e.y, d = Math.hypot(ox, oy);
-      if (d < 260 && d > 1) {
+    const ox = player.x - e.x, oy = player.y - e.y, d = Math.hypot(ox, oy) || 1;
+    const big = !e.op && e.v > player.v, gap = d - e.r - player.r;
+    if (e.boss) { // the Big One: slow, relentless, speeds up a little over time
+      const s = time < 3 ? 0 : e.sp + Math.min(8, time / 10), k = 1 - Math.exp(-dt * 1.6);
+      e.vx += (ox / d * s - e.vx) * k; e.vy += (oy / d * s - e.vy) * k; e.locked = true;
+    } else if (e.sleeping) {
+      e.vx *= Math.exp(-dt * 3); e.vy *= Math.exp(-dt * 3);
+      if (big && gap < 70 && e.born > .5) { // woke up: now it hunts
+        e.sleeping = false; e.sleepAt = 0; e.hunter = true; e.sp = Math.max(e.sp, 60); sfx.wake(); popup(e.x, e.y - e.r - 10, '!', '#c8402f');
+      } else if (big && gap < 160) coach('sleep');
+    } else if (e.hunter && big) {
+      if (d < 260) {
         const k = 1 - Math.exp(-dt * 2.2);
         e.vx += (ox / d * e.sp * 1.25 - e.vx) * k; e.vy += (oy / d * e.sp * 1.25 - e.vy) * k;
         e.locked = true;
       }
+    } else if (e.flee && !e.op && e.v < player.v && gap < 150) { // runaway snack
+      const s = Math.min(95, e.sp * 1.5), k = 1 - Math.exp(-dt * 3);
+      e.vx += (-ox / d * s - e.vx) * k; e.vy += (-oy / d * s - e.vy) * k; e.running = true;
+      coach('flee');
+    } else e.running = false;
+    if (e.sleepAt && !e.sleeping && e.born > e.sleepAt && e.x > 40 && e.x < W - 40 && e.y > 40 && e.y < H - 40) { e.sleeping = true; }
+    const f = stains.length && inStain(e.x, e.y) ? .45 : 1;
+    e.x += e.vx * dt * f; e.y += e.vy * dt * f;
+    if (walls.length) bounce(e);
+    if (e.flee) keepOnPage(e);
+    if (big && !e.sleeping && e.born > .4) {
+      danger = Math.max(danger, Math.min(1, (110 - gap) / 110));
+      if (gap < 130) coach(e.boss ? 'boss' : e.locked ? 'hunter' : 'red');
     }
-    e.x += e.vx * dt; e.y += e.vy * dt;
-    if (!e.op && e.v > player.v && e.born > .4) {
-      const clear = Math.hypot(e.x - player.x, e.y - player.y) - e.r - player.r;
-      danger = Math.max(danger, Math.min(1, (110 - clear) / 110));
-      if (clear < 130) coach(e.locked ? 'hunter' : 'red', e.locked ? '帶尖角的會追你，快跑！|Spiky numbers chase you. Run!' : '紅色比你大，碰到會被吃掉！|Red is bigger: it eats you!');
-    }
+    if (e.op === '×2' && d < 170) coach('double');
+    if (!e.op && e.v < player.v && gap < 46) near = 1;
+    if (e.op && applyOp(player.v, e.op) === L.target && gap < 46) near = 1;
   }
-  if (ents.some(e => !e.op && e.v < player.v && player.v + e.v === L.target)) coach('exact', '吃掉發光的那顆就剛好！|Eat the glowing one to land it exactly!');
-  ents = ents.filter(e => e.born < 2 || (e.x > -80 && e.x < W + 80 && e.y > -80 && e.y < H + 80));
+  player.mouth += ((Math.max(player.chomp, near * .4)) - player.mouth) * (1 - Math.exp(-dt * 18));
+  if (ents.some(e => !e.op && e.v < player.v && player.v + e.v === L.target)) coach('exact');
+  ents = ents.filter(e => e.boss || e.born < 2 || (e.x > -80 && e.x < W + 80 && e.y > -80 && e.y < H + 80));
 
   for (let i = ents.length - 1; i >= 0; i--) {
     const e = ents[i];
@@ -523,20 +787,19 @@ function update(dt) {
     if (d > e.r + player.r - 5) continue;
     if (e.op) {
       const before = player.v;
-      if (e.op === '−3') player.v = Math.max(2, player.v - 3);
-      else if (e.op === '÷2') player.v = Math.max(2, Math.floor(player.v / 2));
-      else if (e.op === '+1') player.v += 1;
-      if (e.op === '+1') { sfx.opUp(); player.pop = .3; } else { sfx.opDown(); player.pop = -.25; }
+      player.v = applyOp(player.v, e.op);
+      if (e.op === '+1') { sfx.opUp(); player.pop = .3; } else if (e.op === '×2') { sfx.opDouble(); player.pop = .5; } else { sfx.opDown(); player.pop = -.25; }
+      player.chomp = 1;
       popup(e.x, e.y, e.op, '#d9801a'); burst(e.x, e.y, '#d9801a', 10);
       ents.splice(i, 1);
       if (player.v !== before) afterChange();
-    } else if (e.v < player.v) {
+    } else if (!e.boss && e.v < player.v) {
       player.v += e.v; buzz(12); sfx.eat(player.v / L.target);
-      player.pop = Math.min(.45, .18 + e.v / player.v * .5); shake = Math.max(shake, 2.5);
+      player.pop = Math.min(.45, .18 + e.v / player.v * .5); shake = Math.max(shake, 2.5); player.chomp = 1;
       popup(e.x, e.y, '+' + e.v, '#3f7a31', 1 + Math.min(.6, e.v / 20)); burst(e.x, e.y, '#3f7a31', 10);
       ents.splice(i, 1);
       afterChange();
-    } else if (e.v > player.v) {
+    } else if (e.boss || e.v > player.v) {
       if (invuln > 0) continue;
       lose(e); return;
     } else {
@@ -551,8 +814,18 @@ function update(dt) {
 
   spawnT -= dt;
   if (ents.length < popN && spawnT <= 0) { spawn(false); spawnT = rand(.25, .7); }
-  if (!ents.some(e => !e.op && e.v < player.v) && player.v > 1) { const s = L.danger; L.danger = 0; spawn(false); L.danger = s; }
+  if (!ents.some(e => !e.op && !e.boss && e.v < player.v) && player.v > 1) { const s = L.danger; L.danger = 0; spawn(false); L.danger = s; }
   stepFx(dt);
+}
+// Runaway snacks can't leave the page: once inside, they bounce off the edges, so you can corner them
+function keepOnPage(e) {
+  if (!e.inside) { if (e.x > e.r && e.x < W - e.r && e.y > e.r && e.y < H - e.r) e.inside = true; else return; }
+  if (e.x < e.r) { e.x = e.r; e.vx = Math.abs(e.vx); } else if (e.x > W - e.r) { e.x = W - e.r; e.vx = -Math.abs(e.vx); }
+  if (e.y < e.r) { e.y = e.r; e.vy = Math.abs(e.vy); } else if (e.y > H - e.r) { e.y = H - e.r; e.vy = -Math.abs(e.vy); }
+}
+function bounce(e) {
+  const h = collideWalls(e, e.r);
+  if (h) { const vn = e.vx * h.nx + e.vy * h.ny; if (vn < 0) { e.vx -= 2 * vn * h.nx; e.vy -= 2 * vn * h.ny; } }
 }
 // Particles, popups and shake (also run on the end screen, so the celebration keeps playing)
 function stepFx(dt) {
@@ -562,6 +835,7 @@ function stepFx(dt) {
     if (p.conf) { p.vy += 520 * dt; p.vx *= .985; p.spin += p.vs * dt; } else { p.vx *= .94; p.vy *= .94; }
   });
   particles = particles.filter(p => p.t < p.life);
+  if (particles.length > 260) particles.splice(0, particles.length - 260);
   shake = Math.max(0, shake - dt * 30);
   if (state === 'end') winT += dt;
 }
@@ -569,7 +843,7 @@ let wasOver = false;
 function afterChange() {
   if (player.v === L.target) return win();
   const over = player.v > L.target;
-  if (over && !wasOver) { sfx.over(); coach('over', '太大了！找 −3 或 ÷2 縮回來|Too big! Grab a −3 or ÷2 to shrink'); }
+  if (over && !wasOver) { sfx.over(); coach('over'); }
   wasOver = over;
   updHud();
   bumpHud();
@@ -586,68 +860,57 @@ function confetti(x, y, n) {
 }
 
 function updHud() {
+  if (!L) return;
   document.getElementById('hudVal').textContent = player.v;
   document.getElementById('hudTarget').textContent = L.target;
-  document.getElementById('hudLv').textContent = Lx('第 {n} 關 · {name}|Stage {n} · {name}', { n: lvIndex + 1, name: Lx(L.name) });
+  document.getElementById('hudLv').textContent = T.level(lvIndex + 1) + ' · ' + tx(L.name);
   const over = player.v > L.target;
   const pr = document.getElementById('prog');
   pr.style.width = Math.min(100, player.v / L.target * 100) + '%';
   pr.classList.toggle('over', over);
   const st = document.getElementById('status');
-  if (player.v === L.target) { st.textContent = Lx('過關了！|Stage cleared!'); st.className = 'status'; }
-  else if (over) { st.textContent = Lx('超過了 {d}！找 −3 或 ÷2 降回來|Over by {d}! Find a −3 or ÷2', { d: player.v - L.target }); st.className = 'status warn'; }
-  else if (state === 'ready') { st.textContent = Lx('要剛好變成 {n}|Reach exactly {n}', { n: L.target }); st.className = 'status'; }
-  else if (state === 'play' || state === 'pause') {
-    const need = L.target - player.v;
-    st.textContent = need < player.v ? Lx('還差 {n}：吃一個「{n}」就剛好|{n} to go: eat a {n} to land it exactly', { n: need }) : Lx('還差 {n}|{n} to go', { n: need });
-    st.className = 'status';
-  }
+  if (player.v === L.target) { st.textContent = T.stCleared; st.className = 'status'; }
+  else if (over) { st.textContent = T.stOver(player.v - L.target); st.className = 'status warn'; }
+  else if (state === 'ready' || state === 'menu') { st.textContent = T.stReady(L.target); st.className = 'status'; }
+  else { st.textContent = T.stNeed(L.target - player.v, player.v); st.className = 'status'; }
 }
 
+function finishLevel() { state = 'end'; endJoy(); keys.clear(); tip = null; winT = 0; }
 function win() {
-  sfx.win();
-  state = 'end'; endJoy(); buzz([20, 30, 20, 30, 60]); tip = null;
+  sfx.win(); finishLevel(); buzz([20, 30, 20, 30, 60]);
   updHud(); bumpHud();
-  player.pop = .6; shake = 6; winT = 0;
+  player.pop = .6; shake = 6;
   burst(player.x, player.y, '#3f7a31', 30); confetti(player.x, player.y, 90);
   const t = Math.round(time * 10) / 10;
   if (bests[lvIndex] == null || t < bests[lvIndex]) { bests[lvIndex] = t; store.set('bests', bests); }
   if (lvIndex + 2 > unlocked) { unlocked = Math.min(LEVELS.length, lvIndex + 2); store.set('unlocked', unlocked); }
-  const h = host(), got = h && roundOn ? Math.max(0, Math.floor(Number(h.clear(window, lvIndex)) || 0)) : 0;
-  earned += got;
-  endView = { win: true, t, got, target: L.target };
-  renderEnd();
+  const last = lvIndex + 1 >= LEVELS.length;
+  setCur(last ? lvIndex : lvIndex + 1);
+  document.getElementById('endTitle').textContent = T.exactly(L.target);
+  document.getElementById('endSub').textContent = last ? T.finale : T.cleared;
+  document.getElementById('endStat').style.display = '';
+  document.getElementById('endTime').textContent = t.toFixed(1);
+  document.getElementById('endBest').textContent = bests[lvIndex].toFixed(1);
   const b = document.getElementById('btnEnd');
-  b.onclick = () => lvIndex + 1 < LEVELS.length ? intro(lvIndex + 1) : openMenu();
+  b.textContent = last ? T.mainMenu : T.next;
+  b.onclick = () => last ? openMain() : adBreak(() => intro(lvIndex + 1));
   const lv = lvIndex; setTimeout(() => { if (state === 'end' && lvIndex === lv) show('ovEnd'); }, 1300);
 }
-let endView = null;
-function renderEnd() {
-  if (!endView) return;
-  const v = endView, last = lvIndex + 1 >= LEVELS.length;
-  document.getElementById('endTitle').textContent = v.win ? Lx('剛好 {n}！|Exactly {n}!', { n: v.target }) : Lx('被 {n} 吃掉了|Eaten by {n}', { n: v.by });
-  document.getElementById('endSub').textContent = v.win ? Lx('過關了。|Stage cleared.') : Lx('你當時是 {v}，目標 {t}。|You were {v}; the target was {t}.', { v: v.was, t: v.target });
-  document.getElementById('endStat').style.display = v.win ? '' : 'none';
-  if (v.win) {
-    document.getElementById('endTime').textContent = v.t.toFixed(1);
-    document.getElementById('endBest').textContent = bests[lvIndex].toFixed(1);
-  }
-  document.getElementById('endBonus').textContent = v.win && v.got ? Lx('BONUS +{p} 點已入帳|BONUS +{p} pts added', { p: v.got }) : '';
-  document.getElementById('btnEnd').textContent = !v.win ? Lx('再試一次|Try again') : last ? Lx('全部通關！回選單|All cleared! Back to menu') : Lx('下一關|Next stage');
-}
-function lose(e) {
-  sfx.lose();
-  state = 'end'; endJoy(); buzz([40, 40, 90]); shake = 14; tip = null; winT = 0;
+function failed(title, sub, delay) {
+  sfx.lose(); finishLevel(); buzz([40, 40, 90]); shake = 14;
   burst(player.x, player.y, '#c8402f', 30);
-  endView = { win: false, by: e.v, was: player.v, target: L.target };
-  renderEnd();
+  document.getElementById('endTitle').textContent = title;
+  document.getElementById('endSub').textContent = sub;
+  document.getElementById('endStat').style.display = 'none';
   const b = document.getElementById('btnEnd');
-  b.onclick = () => intro(lvIndex);
-  const lv = lvIndex; setTimeout(() => { if (state === 'end' && lvIndex === lv) show('ovEnd'); }, 750);
+  b.textContent = T.retry;
+  b.onclick = () => adBreak(() => intro(lvIndex));
+  const lv = lvIndex; setTimeout(() => { if (state === 'end' && lvIndex === lv) show('ovEnd'); }, delay);
 }
+function lose(e) { failed(T.eatenBy(e.v), T.youWere(player.v, L.target), 750); }
+function timeUp() { failed(T.timeUp, T.timeUpSub(player.v, L.target), 600); }
 
-// ---------- 手繪筆觸工具 ----------
-const FONT = '"LXGW WenKai TC","Kaiti TC","STKaiti","BiauKai","Comic Sans MS",cursive';
+// ---------- Hand-drawn stroke helpers ----------
 const INK = '#2b2b2b', PAPER = '#f6eedb';
 function rng(seed) {
   let s = (Math.imul(seed | 0, 2654435761) >>> 0) || 1;
@@ -717,11 +980,94 @@ function hatch(x, y, w, h, seed, color, gap, lw) {
   }
   ctx.stroke(); ctx.restore();
 }
-function inkText(text, x, y, size, color, weight, maxW) {
+function inkText(text, x, y, size, color, weight) {
   ctx.font = `${weight || 700} ${size}px ${FONT}`;
-  if (maxW) { const w = ctx.measureText(text).width; if (w > maxW) ctx.font = `${weight || 700} ${Math.floor(size * maxW / w)}px ${FONT}`; }
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillStyle = color; ctx.fillText(text, x, y);
+}
+
+// ---------- Background: notebook page with margin doodles, drawn once per level/resize ----------
+const PENCIL = 'rgba(43,43,43,.2)';
+const DOODLES = [
+  (R, s) => { const p = []; for (let k = 0; k < 10; k++) { const a = -Math.PI / 2 + k * Math.PI / 5, rr = k % 2 ? 7 : 17; p.push([Math.cos(a) * rr, Math.sin(a) * rr]); } sketchPoly(p, s, { stroke: 'rgba(217,128,26,.38)', lw: 1.8 }); },
+  (R) => { ctx.strokeStyle = PENCIL; ctx.lineWidth = 1.6; ctx.beginPath(); for (let a = 0; a < 12.6; a += .2) { const r = 1.4 * a; a ? ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r) : ctx.moveTo(0, 0); } ctx.stroke(); },
+  (R, s) => { // little sun
+    sketchCircle(0, 0, 11, s, { stroke: 'rgba(217,128,26,.4)', lw: 1.8, passes: 1 });
+    ctx.beginPath(); for (let k = 0; k < 8; k++) { const a = k * .785; ctx.moveTo(Math.cos(a) * 15, Math.sin(a) * 15); ctx.lineTo(Math.cos(a) * 21, Math.sin(a) * 21); } ctx.stroke();
+    ctx.fillStyle = 'rgba(43,43,43,.3)'; ctx.fillRect(-5, -3, 2, 2); ctx.fillRect(3, -3, 2, 2);
+    ctx.beginPath(); ctx.arc(0, 1, 5, .3, 2.8); ctx.stroke(); },
+  (R) => { ctx.strokeStyle = 'rgba(200,64,47,.32)'; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(0, 6); ctx.bezierCurveTo(-16, -6, -8, -16, 0, -7); ctx.bezierCurveTo(8, -16, 16, -6, 0, 6); ctx.stroke(); },
+  (R) => { ctx.strokeStyle = 'rgba(63,151,196,.38)'; ctx.lineWidth = 1.7; ctx.beginPath(); ctx.arc(-10, 2, 8, Math.PI * .5, Math.PI * 1.5); ctx.arc(0, -4, 10, Math.PI, 0); ctx.arc(11, 2, 8, -Math.PI * .5, Math.PI * .5); ctx.lineTo(-10, 10); ctx.stroke(); },
+  (R) => { ctx.strokeStyle = PENCIL; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(-18, 8); ctx.quadraticCurveTo(0, -14, 18, 2); ctx.moveTo(10, -3); ctx.lineTo(18, 2); ctx.lineTo(11, 9); ctx.stroke(); },
+  (R) => { ctx.save(); ctx.rotate(-.12); inkText(['3+4=7', 'x²', 'π≈3.14', '½', '2×6=12', '9>8', '√16=4', '1+1=2'][Math.floor(R() * 8)], 0, 0, 21, 'rgba(43,43,43,.26)', 400); ctx.restore(); },
+  (R) => { // tic-tac-toe
+    ctx.strokeStyle = PENCIL; ctx.lineWidth = 1.4; ctx.beginPath();
+    for (const k of [-6, 6]) { ctx.moveTo(k, -17); ctx.lineTo(k, 17); ctx.moveTo(-17, k); ctx.lineTo(17, k); } ctx.stroke();
+    ctx.strokeStyle = 'rgba(200,64,47,.35)'; ctx.beginPath(); ctx.moveTo(-15, -15); ctx.lineTo(-9, -9); ctx.moveTo(-9, -15); ctx.lineTo(-15, -9); ctx.stroke();
+    ctx.strokeStyle = 'rgba(63,151,196,.45)'; ctx.beginPath(); ctx.arc(0, 0, 3.5, 0, 6.3); ctx.stroke(); },
+  (R) => { // flower
+    ctx.strokeStyle = 'rgba(142,95,207,.35)'; ctx.lineWidth = 1.6;
+    for (let k = 0; k < 5; k++) { const a = k * 1.2566; ctx.beginPath(); ctx.ellipse(Math.cos(a) * 7, Math.sin(a) * 7, 5, 3.4, a, 0, 6.3); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(0, 12); ctx.quadraticCurveTo(3, 20, 0, 28); ctx.strokeStyle = 'rgba(74,138,58,.4)'; ctx.stroke(); },
+  (R) => { // cube
+    ctx.strokeStyle = PENCIL; ctx.lineWidth = 1.5; ctx.strokeRect(-12, -6, 16, 16); ctx.strokeRect(-6, -12, 16, 16);
+    ctx.beginPath(); ctx.moveTo(-12, -6); ctx.lineTo(-6, -12); ctx.moveTo(4, -6); ctx.lineTo(10, -12); ctx.moveTo(4, 10); ctx.lineTo(10, 4); ctx.moveTo(-12, 10); ctx.lineTo(-6, 4); ctx.stroke(); },
+  (R) => { // cat face
+    ctx.strokeStyle = PENCIL; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(0, 2, 11, 0, 6.3);
+    ctx.moveTo(-10, -4); ctx.lineTo(-8, -15); ctx.lineTo(-2, -9); ctx.moveTo(10, -4); ctx.lineTo(8, -15); ctx.lineTo(2, -9);
+    ctx.moveTo(-17, 3); ctx.lineTo(-7, 4); ctx.moveTo(17, 3); ctx.lineTo(7, 4); ctx.stroke();
+    ctx.fillStyle = 'rgba(43,43,43,.3)'; ctx.fillRect(-5, -1, 2, 3); ctx.fillRect(3, -1, 2, 3); },
+  (R) => { ctx.strokeStyle = 'rgba(217,128,26,.42)'; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(3, -16); ctx.lineTo(-6, 1); ctx.lineTo(2, 1); ctx.lineTo(-4, 16); ctx.lineTo(9, -3); ctx.lineTo(1, -3); ctx.closePath(); ctx.stroke(); },
+];
+function renderBg() {
+  bgCv.width = cv.width; bgCv.height = cv.height;
+  const main = ctx; ctx = bgCtx;
+  ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
+  ctx.fillStyle = PAPER; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(63,151,196,.22)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); for (let y = 48; y < H; y += 40) { ctx.moveTo(0, y); ctx.lineTo(W, y); } ctx.stroke();
+  ctx.strokeStyle = 'rgba(200,64,47,.28)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(64, 0); ctx.lineTo(64, H); ctx.stroke();
+  for (const f of [.2, .5, .8]) { // punched holes
+    ctx.fillStyle = '#e8dcbd'; ctx.beginPath(); ctx.arc(28, H * f, 9, 0, 6.3); ctx.fill();
+    ctx.strokeStyle = 'rgba(43,43,43,.22)'; ctx.lineWidth = 1.4; ctx.stroke();
+  }
+  // Doodles stay faint and keep to the edges, so they never compete with the numbers
+  const R = rng(97 + lvIndex * 13), placed = [];
+  const first = Math.floor(R() * DOODLES.length);
+  for (let k = 0, tries = 0; k < Math.round(W * H / 30000) && tries < 200; tries++) {
+    const x = rand(80, W - 30), y = rand(26, H - 26);
+    const edge = Math.min(x - 64, W - x, y, H - y) < Math.min(W, H) * .2;
+    if (!edge || placed.some(p => Math.hypot(p[0] - x, p[1] - y) < 90) || !freeSpot(x, y, 26)) continue;
+    placed.push([x, y]); k++;
+    ctx.save(); ctx.translate(x, y); ctx.rotate((R() - .5) * .6);
+    DOODLES[(first + k * 5) % DOODLES.length](R, 300 + k * 7); // every doodle once before any repeats
+    ctx.restore();
+  }
+  for (const s of stains) { // coffee spill: a tinted puddle with a darker dried ring
+    sketchCircle(s.x, s.y, s.r, 41 + s.r, { fill: 'rgba(160,104,52,.2)' });
+    sketchCircle(s.x, s.y, s.r * .97, 43 + s.r, { stroke: 'rgba(120,72,30,.42)', lw: 3, passes: 1 });
+    sketchCircle(s.x + s.r * .2, s.y - s.r * .15, s.r * .62, 45 + s.r, { stroke: 'rgba(120,72,30,.16)', lw: 2, passes: 1 });
+    const r2 = rng(s.r); for (let k = 0; k < 4; k++) { const a = r2() * 6.3, dd = s.r + 10 + r2() * 18; sketchCircle(s.x + Math.cos(a) * dd, s.y + Math.sin(a) * dd, 3 + r2() * 4, 50 + k, { fill: 'rgba(160,104,52,.28)' }); }
+  }
+  walls.forEach((w, i) => drawWall(w, i));
+  ctx = main;
+}
+function drawWall(w, i) {
+  sketchRect(w.x + 4, w.y + 5, w.w, w.h, 60 + i, { fill: 'rgba(43,43,43,.22)', j: .8 });
+  if (w.kind === 'ruler') {
+    sketchRect(w.x, w.y, w.w, w.h, 70 + i, { fill: '#f5d98b', stroke: INK, lw: 2.2, j: .9 });
+    ctx.strokeStyle = 'rgba(43,43,43,.6)'; ctx.lineWidth = 1.2; ctx.beginPath();
+    const len = w.vert ? w.h : w.w;
+    for (let t = 8, n = 0; t < len - 4; t += 8, n++) {
+      const tl = n % 5 === 4 ? 9 : 5;
+      if (w.vert) { ctx.moveTo(w.x, w.y + t); ctx.lineTo(w.x + tl, w.y + t); } else { ctx.moveTo(w.x + t, w.y); ctx.lineTo(w.x + t, w.y + tl); }
+    }
+    ctx.stroke();
+  } else {
+    sketchRect(w.x, w.y, w.w, w.h, 80 + i, { fill: '#f4a9b8', stroke: INK, lw: 2.2, j: .9 });
+    sketchRect(w.x + w.w * .62, w.y, w.w * .38, w.h, 90 + i, { fill: '#9cc3ea', stroke: INK, lw: 2, j: .7 });
+  }
 }
 
 // ---------- Rendering (paper sketch) ----------
@@ -735,34 +1081,26 @@ function draw(now) {
   ctx.save();
   if (shake) ctx.translate(rand(-shake, shake), rand(-shake, shake));
   ctx.fillStyle = PAPER; ctx.fillRect(-20, -20, W + 40, H + 40);
-  ctx.strokeStyle = 'rgba(63,151,196,.22)'; ctx.lineWidth = 1.5;
-  ctx.beginPath(); for (let y = 48; y < H; y += 40) { ctx.moveTo(0, y); ctx.lineTo(W, y); } ctx.stroke();
-  ctx.strokeStyle = 'rgba(200,64,47,.28)'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(64, 0); ctx.lineTo(64, H); ctx.stroke();
   if (!L) { ctx.restore(); return; }
+  ctx.drawImage(bgCv, 0, 0, W, H);
 
   for (const e of ents) drawEnt(e, now, boil);
   const won = state === 'end' && player.v === L.target;
   if (state !== 'end' || won) {
-    const blink = state === 'play' && invuln > 0 && Math.floor(now / 110) % 2;
+    const live = state === 'play';
+    const blink = live && invuln > 0 && Math.floor(now / 110) % 2;
     const s = 1 + player.pop, r = player.r * s;
     ctx.save();
     ctx.globalAlpha = blink ? .45 : 1;
-    if (danger > .15 && state === 'play') { // red warning ring when something bigger is close
+    if (danger > .15 && live) { // red warning ring when something bigger is close
       ctx.save(); ctx.globalAlpha = danger * (.45 + .35 * Math.sin(now / 90));
       sketchCircle(player.x, player.y, r + 9, 5 + boil, { stroke: '#c8402f', lw: 3, passes: 1 });
       ctx.restore();
     }
-    sketchCircle(player.x + 3, player.y + 4, r, 7, { fill: 'rgba(43,43,43,.12)' });
-    sketchCircle(player.x, player.y, r, 1 + boil * 13, { fill: '#8fd3e8', stroke: INK, lw: 2.8 });
-    const fs = Math.round(Math.max(20, Math.min(32, r * .9)));
-    inkText(player.v, player.x, player.y + r * .28, fs, INK, 700);
-    drawEyes(player.x, player.y - r * .38, r, player.lookX, player.lookY, danger > .5 && state === 'play');
-    if (danger > .5 && state === 'play') { // sweat drop, like on the cover
-      ctx.fillStyle = '#8fd3e8'; ctx.strokeStyle = INK; ctx.lineWidth = 1.6;
-      const dx = player.x - r * .78, dy = player.y - r * .72;
-      ctx.beginPath(); ctx.moveTo(dx, dy - 7); ctx.quadraticCurveTo(dx + 5, dy + 1, dx, dy + 4); ctx.quadraticCurveTo(dx - 5, dy + 1, dx, dy - 7); ctx.fill(); ctx.stroke();
-    }
+    const scared = danger > .5 && live;
+    drawPlayer(player.x + (scared ? Math.sin(now / 25) * 1.2 : 0), player.y, r, player.v, {
+      lx: player.lookX, ly: player.lookY, mouth: player.mouth, blink: player.blinkT < .13, scared, happy: won, seed: 1 + boil * 13,
+    });
     ctx.restore();
   }
   for (const p of particles) {
@@ -782,7 +1120,7 @@ function draw(now) {
     inkText(p.text, p.x, p.y, Math.round(26 * k), p.color, 700);
   }
   ctx.globalAlpha = 1;
-  if (won) drawStamp(Lx('剛好 {n}！|Exactly {n}!', { n: L.target }), Math.min(1, winT * 4));
+  if (won) drawStamp(T.exactly(L.target), Math.min(1, winT * 4));
   if (tip && state === 'play') drawTip(tip);
   ctx.restore();
   if (danger > .3 && state === 'play') { // soft red edge when in danger
@@ -790,15 +1128,64 @@ function draw(now) {
     g.addColorStop(0, 'rgba(200,64,47,0)'); g.addColorStop(1, `rgba(200,64,47,${(danger - .3) * .35})`);
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   }
+  if (L.time && state !== 'menu') drawClock(now);
   if (state === 'ready') drawReady(now);
 }
-function drawEyes(x, y, r, lx, ly, scared) {
+// The player: a blue blob with a face. It blinks, opens its mouth toward what it is about to eat, sweats when chased
+// and squints happily on a win.
+function drawPlayer(x, y, r, v, o) {
+  r = Math.max(r, 23); // tiny players are drawn a touch bigger so the face and number both fit
+  sketchCircle(x + 3, y + 4, r, 7, { fill: 'rgba(43,43,43,.12)' });
+  sketchCircle(x, y, r, o.seed, { fill: '#8fd3e8', stroke: INK, lw: 2.8 });
+  // face: eyes on top, mouth in the middle, number below
+  const ey = y - r * .42, my = y - r * .06, mx = x + o.lx * r * .08, er = Math.max(4, r * .2), gap = r * .34;
+  const chomp = o.mouth > .55 && !o.scared && !o.happy;
+  ctx.strokeStyle = INK; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  if (o.happy || chomp) { // ^ ^ (won, or mid-bite)
+    ctx.lineWidth = 2.4;
+    for (const sx of [-1, 1]) { ctx.beginPath(); ctx.moveTo(x + sx * gap - er, ey + er * .4); ctx.lineTo(x + sx * gap, ey - er * .6); ctx.lineTo(x + sx * gap + er, ey + er * .4); ctx.stroke(); }
+  } else drawEyes(x, ey, r, o.lx, o.ly, { scared: o.scared, blink: o.blink && !o.scared, brows: o.scared ? 'up' : null });
+  if (o.happy) { // big open grin
+    const w = r * .26;
+    ctx.fillStyle = '#7a2f2f'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x - w, my - r * .06); ctx.quadraticCurveTo(x, my + r * .32, x + w, my - r * .06); ctx.closePath(); ctx.fill(); ctx.stroke();
+  } else if (o.scared) { // wobbly worried line
+    const w = r * .2; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(mx - w, my);
+    for (let k = 1; k <= 4; k++) ctx.lineTo(mx - w + k * w / 2, my + (k % 2 ? -2 : 2)); ctx.stroke();
+  } else if (o.mouth > .08) { // open "O": a little when food is close, wide on each bite
+    const rx = r * (.1 + .08 * o.mouth), ry = r * (.07 + .14 * o.mouth);
+    ctx.fillStyle = '#7a2f2f'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(mx, my, rx, ry, 0, 0, 6.2832); ctx.fill(); ctx.stroke();
+    if (o.mouth > .3) { ctx.save(); ctx.clip(); ctx.fillStyle = '#f2a5b8'; ctx.beginPath(); ctx.ellipse(mx, my + ry * .75, rx * .8, ry * .5, 0, 0, 6.2832); ctx.fill(); ctx.restore(); }
+  } else { // calm smile
+    ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(mx, my - r * .12, r * .16, .55, Math.PI - .55); ctx.stroke();
+  }
+  const fs = Math.round(Math.max(17, Math.min(32, r * .76)));
+  inkText(v, x, y + r * .47, fs, INK, 700);
+  if (o.scared) { // sweat drop
+    ctx.fillStyle = '#8fd3e8'; ctx.strokeStyle = INK; ctx.lineWidth = 1.6;
+    const dx = x - r * .8, dy = y - r * .72;
+    ctx.beginPath(); ctx.moveTo(dx, dy - 7); ctx.quadraticCurveTo(dx + 5, dy + 1, dx, dy + 4); ctx.quadraticCurveTo(dx - 5, dy + 1, dx, dy - 7); ctx.fill(); ctx.stroke();
+  }
+}
+function drawEyes(x, y, r, lx, ly, o) {
+  o = o || {};
   const er = Math.max(4, r * .2), gap = r * .34, px = lx * er * .45, py = ly * er * .45;
+  ctx.strokeStyle = INK; ctx.lineCap = 'round';
   for (const sx of [-1, 1]) {
     const ex = x + sx * gap;
-    ctx.fillStyle = '#fff'; ctx.strokeStyle = INK; ctx.lineWidth = 1.8;
-    ctx.beginPath(); ctx.ellipse(ex, y, er * (scared ? 1.15 : 1), er * (scared ? 1.3 : 1.12), 0, 0, 6.2832); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(ex + px, y + py, er * (scared ? .38 : .52), 0, 6.2832); ctx.fill();
+    if (o.blink || o.closed) { // shut: a short arc
+      ctx.lineWidth = 2.2; ctx.beginPath();
+      if (o.closed) ctx.arc(ex, y - er * .2, er * .8, .25, Math.PI - .25); else { ctx.moveTo(ex - er, y); ctx.lineTo(ex + er, y); }
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = '#fff'; ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.ellipse(ex, y, er * (o.scared ? 1.15 : 1), er * (o.scared ? 1.3 : 1.12), 0, 0, 6.2832); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(ex + px, y + py, er * (o.scared ? .36 : .52), 0, 6.2832); ctx.fill();
+    }
+    if (o.brows) { // 'angry': inner ends down; 'up': worried, inner ends up
+      const inner = ex - sx * er * .7, outer = ex + sx * er * 1.05;
+      const yi = o.brows === 'angry' ? y - er * 1.15 : y - er * 1.85, yo = o.brows === 'angry' ? y - er * 1.75 : y - er * 1.4;
+      ctx.lineWidth = 2.4; ctx.beginPath(); ctx.moveTo(inner, yi); ctx.lineTo(outer, yo); ctx.stroke();
+    }
   }
 }
 function card(cx, cy, w, h, seed) {
@@ -812,28 +1199,43 @@ function drawStamp(text, k) {
   ctx.fillStyle = '#d9801a'; ctx.fillText(text, 0, 0);
   ctx.restore();
 }
-// 每關的開場卡，直接畫在棋盤上；第一次移動就收起並開始。
+// Countdown clock for timed levels, top centre of the board
+function drawClock(now) {
+  const left = Math.max(0, Math.ceil(L.time - time)), hot = left <= 10 && state === 'play';
+  const cx = W / 2, cy = 30, k = hot ? 1 + .08 * Math.sin(now / 80) : 1;
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(k, k);
+  sketchRect(-52, -19, 104, 38, 33, { fill: hot ? '#fde2dc' : '#fff8e6', stroke: INK, lw: 2, j: 1 });
+  sketchCircle(-30, 0, 11, 34, { fill: '#fff', stroke: INK, lw: 1.8, passes: 1 });
+  const a = -Math.PI / 2 + (1 - (L.time - time) / L.time) * 6.2832;
+  ctx.strokeStyle = hot ? '#c8402f' : INK; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-30, 0); ctx.lineTo(-30 + Math.cos(a) * 8, Math.sin(a) * 8); ctx.stroke();
+  inkText(left + 's', 12, 1, 25, hot ? '#c8402f' : INK, 700);
+  ctx.restore();
+}
+// Opening card for each level, drawn on the board; the first move dismisses it and starts the level.
 function drawReady(now) {
-  const w = Math.min(W - 60, 520), h = 196, cx = W / 2, cy = Math.max(h / 2 + 16, player.y - player.r - 36 - h / 2); // 放在玩家上方
-  const tw = w - 32;
+  const w = Math.min(W - 60, 540), h = 196, cx = W / 2, cy = Math.max(h / 2 + 16 + (L.time ? 40 : 0), player.y - player.r - 36 - h / 2); // sits above the player
   card(cx, cy, w, h, 11);
-  inkText(Lx('第 {n} 關 · {name}|Stage {n} · {name}', { n: lvIndex + 1, name: Lx(L.name) }), cx, cy - 66, 22, 'rgba(43,43,43,.62)', 400, tw);
+  inkText(`${T.level(lvIndex + 1)} · ${tx(L.name)}`, cx, cy - 66, 22, 'rgba(43,43,43,.62)', 400);
   ctx.font = `700 40px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  const a = Lx('剛好變成 |Reach exactly '), b = String(L.target), aw = ctx.measureText(a).width, bw = ctx.measureText(b).width;
+  const a = T.reach, b = String(L.target), aw = ctx.measureText(a).width, bw = ctx.measureText(b).width;
   ctx.fillStyle = INK; ctx.fillText(a, cx - bw / 2, cy - 24); ctx.fillStyle = '#d9801a'; ctx.fillText(b, cx + aw / 2, cy - 24);
-  inkText(Lx(L.tip), cx, cy + 22, 22, INK, 400, tw);
+  fitText(tx(L.tip), cx, cy + 22, 22, w - 30, INK, 400);
   const pulse = .6 + .4 * Math.sin(now / 260);
   ctx.globalAlpha = pulse;
-  inkText(isTouchUI() ? Lx('在畫面任何地方按住拖曳就開始|Drag anywhere to start') : Lx('移動滑鼠就開始 · 也可以用方向鍵／WASD|Move your mouse to start  ·  or arrow keys / WASD'), cx, cy + 66, 21, '#3f7a31', 700, tw);
+  fitText(isTouchUI() ? T.startTouch : T.startMouse, cx, cy + 66, 21, w - 30, '#3f7a31', 700);
   ctx.globalAlpha = 1;
+}
+function fitText(text, x, y, size, maxW, color, weight) {
+  ctx.font = `${weight} ${size}px ${FONT}`;
+  const tw = ctx.measureText(text).width;
+  inkText(text, x, y, tw > maxW ? Math.floor(size * maxW / tw) : size, color, weight);
 }
 function drawTip(t) {
   const a = Math.min(1, t.t * 5, (3.2 - t.t) * 3);
   if (a <= 0) return;
-  const text = Lx(t.text);
   ctx.save(); ctx.globalAlpha = a;
   ctx.font = `700 22px ${FONT}`;
-  const tw = Math.min(W - 16, ctx.measureText(text).width + 28), th = 40;
+  const tw = ctx.measureText(t.text).width + 28, th = 40;
   const above = player.y - player.r - 70 > 0;
   let cx = Math.max(tw / 2 + 8, Math.min(W - tw / 2 - 8, player.x));
   const cy = above ? player.y - player.r - 42 : player.y + player.r + 42;
@@ -841,7 +1243,7 @@ function drawTip(t) {
   ctx.fillStyle = '#fff8e6'; ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.beginPath(); // little pointer toward the player
   const py = above ? cy + th / 2 : cy - th / 2, dir = above ? 1 : -1, px = Math.max(cx - tw / 2 + 14, Math.min(cx + tw / 2 - 14, player.x));
   ctx.moveTo(px - 8, py); ctx.lineTo(px, py + 10 * dir); ctx.lineTo(px + 8, py); ctx.fill(); ctx.stroke();
-  inkText(text, cx, cy + 1, 22, INK, 700, tw - 20);
+  inkText(t.text, cx, cy + 1, 22, INK, 700);
   ctx.restore();
 }
 function drawEnt(e, now, boil) {
@@ -851,127 +1253,233 @@ function drawEnt(e, now, boil) {
   ctx.scale(appear, appear);
   const seed = e.id * 31 + boil * 7;
   if (e.op) {
+    if (applyOp(player.v, e.op) === L.target) { // this operator would land you exactly on the target
+      ctx.save(); ctx.globalAlpha = .55 + .45 * Math.sin(now / 150);
+      sketchCircle(0, 0, e.r + 10, seed + 3, { stroke: '#d9801a', lw: 2.4, dash: [6, 6], passes: 1 });
+      ctx.restore();
+    }
     ctx.rotate(Math.sin(e.wob * 2) * .15);
     const s = e.r + 3;
-    sketchPoly([[0, -s], [s, 0], [0, s], [-s, 0]], seed, { fill: '#f6c47a', stroke: INK, lw: 2.2 });
+    sketchPoly([[0, -s], [s, 0], [0, s], [-s, 0]], seed, { fill: e.op === '×2' ? '#c9a6e8' : '#f6c47a', stroke: INK, lw: 2.2 });
     inkText(e.op, 0, 1, 17, INK, 700);
     ctx.restore(); return;
   }
-  const rel = e.v < player.v ? 'small' : e.v > player.v ? 'big' : 'eq';
-  const c = COLORS[rel];
+  const rel = e.boss ? 'big' : e.v < player.v ? 'small' : e.v > player.v ? 'big' : 'eq';
+  const c = COLORS[rel], r = e.r;
+  const ox = player.x - e.x, oy = player.y - e.y, dist = Math.hypot(ox, oy) || 1;
+  const blink = ((now / 1000 + e.id * .37) % 3.7) < .13;
   if (rel === 'small' && player.v + e.v === L.target) {
     ctx.save(); ctx.globalAlpha = .55 + .45 * Math.sin(now / 150);
-    sketchCircle(0, 0, e.r + 8, seed + 3, { stroke: '#d9801a', lw: 2.4, dash: [6, 6], passes: 1 });
+    sketchCircle(0, 0, r + 8, seed + 3, { stroke: '#d9801a', lw: 2.4, dash: [6, 6], passes: 1 });
     ctx.restore();
   }
-  if (e.hunter && rel === 'big') {
-    const a0 = Math.atan2(e.vy, e.vx), R = rng(seed);
-    ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2; ctx.lineJoin = 'round'; ctx.beginPath();
-    const n = 9;
-    for (let k = 0; k <= n * 2; k++) {
-      const a = a0 + k / (n * 2) * 6.2832, rr = k % 2 ? e.r + 3 : e.r + 10 + (R() - .5) * 3;
-      k ? ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr) : ctx.moveTo(Math.cos(a) * rr, Math.sin(a) * rr);
-    }
+  const scared = rel === 'small' && state === 'play' && (e.running || dist < r + player.r + 90);
+  if (scared) ctx.translate(Math.sin(now / 24 + e.id) * 1.1, 0);
+  if (e.flee && rel === 'small') { // little legs, pedalling when it runs
+    const sp = e.running ? now / 60 : now / 260;
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.beginPath();
+    for (const sx of [-1, 1]) { const kx = sx * r * .38, sw = Math.sin(sp + (sx > 0 ? Math.PI : 0)) * 5; ctx.moveTo(kx, r * .8); ctx.lineTo(kx + sw, r + 7); ctx.lineTo(kx + sw + 4 * sx, r + 7); }
     ctx.stroke();
   }
-  sketchCircle(0, 0, e.r, seed, { fill: c.wash, stroke: c.ink, lw: 2.4 });
+  if ((e.hunter && rel === 'big' && !e.sleeping) || e.boss) { // spiky outline for hunters
+    const a0 = Math.atan2(e.vy, e.vx) + (e.boss ? now / 900 : 0), R = rng(seed);
+    ctx.strokeStyle = c.ink; ctx.lineWidth = e.boss ? 3 : 2.2; ctx.lineJoin = 'round'; ctx.beginPath();
+    const n = e.boss ? 16 : 9;
+    for (let k = 0; k <= n * 2; k++) {
+      const a = a0 + k / (n * 2) * 6.2832, rr = k % 2 ? r + 3 : r + (e.boss ? 15 : 10) + (R() - .5) * 3;
+      k ? ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr) : ctx.moveTo(Math.cos(a) * rr, Math.sin(a) * rr);
+    }
+    if (e.boss) { ctx.fillStyle = 'rgba(242,165,148,.35)'; ctx.fill(); }
+    ctx.stroke();
+  }
+  sketchCircle(0, 0, r, seed, { fill: e.boss ? 'rgba(232,120,100,.75)' : c.wash, stroke: c.ink, lw: e.boss ? 3.2 : 2.4 });
   if (rel === 'big') {
-    ctx.save(); ctx.beginPath(); ctx.arc(0, 0, e.r - 3, 0, 6.2832); ctx.clip();
-    hatch(-e.r, -e.r, e.r * 2, e.r * 2, e.id, 'rgba(200,64,47,.28)', 6, 1.2);
+    ctx.save(); ctx.beginPath(); ctx.arc(0, 0, r - 3, 0, 6.2832); ctx.clip();
+    hatch(-r, -r, r * 2, r * 2, e.id, 'rgba(200,64,47,.28)', 6, 1.2);
     ctx.restore();
   }
-  const fs = Math.round(Math.max(21, Math.min(30, e.r * 1.1)));
-  if (rel === 'big' && e.r >= 24) { // big ones watch you
-    inkText(e.v, 0, e.r * .3, Math.min(fs, Math.round(e.r * .85)), c.ink, 700);
-    const ox = player.x - e.x, oy = player.y - e.y, d = Math.hypot(ox, oy) || 1;
-    drawEyes(0, -e.r * .36, e.r, ox / d, oy / d, false);
+  const fs = Math.round(Math.max(21, Math.min(30, r * 1.1)));
+  if (e.boss) {
+    inkText(e.v, 0, r * .36, 34, '#8a2418', 700);
+    drawEyes(0, -r * .3, r * .9, ox / dist, oy / dist, { brows: 'angry', blink });
+    ctx.fillStyle = '#fff'; ctx.strokeStyle = INK; ctx.lineWidth = 1.6; // fangs
+    for (const sx of [-1, 1]) { ctx.beginPath(); ctx.moveTo(sx * r * .22, r * .02); ctx.lineTo(sx * r * .12, r * .02); ctx.lineTo(sx * r * .17, r * .16); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+  } else if (rel === 'big' && r >= 24) { // big ones watch you; hunters frown, sleepers doze
+    inkText(e.v, 0, r * .3, Math.min(fs, Math.round(r * .85)), c.ink, 700);
+    drawEyes(0, -r * .36, r, ox / dist, oy / dist, { closed: e.sleeping, blink: blink && !e.sleeping, brows: e.locked ? 'angry' : null });
+  } else if (rel === 'small') { // small ones have dot eyes; they go wide when you get close
+    const ey = -r * .44, gx = r * .28;
+    inkText(e.v, 0, r * .16, Math.round(fs * .92), c.ink, 700);
+    if (scared) {
+      for (const sx of [-1, 1]) { ctx.fillStyle = '#fff'; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.arc(sx * gx, ey, 3.6, 0, 6.2832); ctx.fill(); ctx.stroke(); ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(sx * gx + ox / dist * 1.2, ey + oy / dist * 1.2, 1.3, 0, 6.2832); ctx.fill(); }
+      ctx.fillStyle = '#8fd3e8'; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; const dx = r * .82, dy = -r * .5;
+      ctx.beginPath(); ctx.moveTo(dx, dy - 5); ctx.quadraticCurveTo(dx + 4, dy + 1, dx, dy + 3); ctx.quadraticCurveTo(dx - 4, dy + 1, dx, dy - 5); ctx.fill(); ctx.stroke();
+    } else if (blink) {
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); for (const sx of [-1, 1]) { ctx.moveTo(sx * gx - 2.5, ey); ctx.lineTo(sx * gx + 2.5, ey); } ctx.stroke();
+    } else {
+      ctx.fillStyle = c.ink; for (const sx of [-1, 1]) { ctx.beginPath(); ctx.arc(sx * gx, ey, Math.max(1.8, r * .085), 0, 6.2832); ctx.fill(); }
+    }
   } else inkText(e.v, 0, 1, fs, c.ink, 700);
-  if (e.locked) { // a hunter that has spotted you
+  if (e.sleeping && rel === 'big') { // z Z floating up
+    for (let k = 0; k < 2; k++) {
+      const t = ((now / 1400 + k * .5 + e.id * .13) % 1);
+      ctx.globalAlpha = Math.sin(t * Math.PI);
+      inkText(k ? 'Z' : 'z', r * .7 + t * 12, -r * .8 - t * 22, 14 + k * 5, '#7d776b', 700);
+    }
+    ctx.globalAlpha = 1;
+  }
+  if (e.locked && !e.boss) { // a hunter that has spotted you
     const bob = Math.sin(now / 90) * 2;
-    inkText('!', 0, -e.r - 20 + bob, 28, '#c8402f', 700);
+    inkText('!', 0, -r - 20 + bob, 28, '#c8402f', 700);
   }
   ctx.restore();
+}
+// Title-screen mascot: the blue number chomping toward a nervous small one, with a big one glaring from behind
+const mascotCv = document.getElementById('mascot'), mascotCtx = mascotCv.getContext('2d');
+function drawMascot(now) {
+  const main = ctx; ctx = mascotCtx;
+  ctx.setTransform(2, 0, 0, 2, 0, 0); ctx.clearRect(0, 0, 210, 104);
+  const boil = Math.floor(now / 170), bob = Math.sin(now / 300) * 2;
+  // big red, glaring
+  ctx.save(); ctx.translate(166, 50 - bob);
+  sketchCircle(0, 0, 33, 400 + boil * 7, { fill: 'rgba(242,165,148,.6)', stroke: '#c8402f', lw: 2.4 });
+  ctx.save(); ctx.beginPath(); ctx.arc(0, 0, 30, 0, 6.2832); ctx.clip(); hatch(-33, -33, 66, 66, 3, 'rgba(200,64,47,.28)', 6, 1.2); ctx.restore();
+  inkText('9', 0, 10, 26, '#c8402f', 700);
+  drawEyes(0, -12, 33, -1, .2, { brows: 'angry', blink: (now / 1000 % 4.1) < .13 });
+  ctx.restore();
+  // small green, scared
+  ctx.save(); ctx.translate(108 + Math.sin(now / 24) * 1, 60);
+  sketchCircle(0, 0, 21, 500 + boil * 7, { fill: 'rgba(169,217,143,.6)', stroke: '#3f7a31', lw: 2.2 });
+  inkText('3', 0, 4, 21, '#3f7a31', 700);
+  for (const sx of [-1, 1]) { ctx.fillStyle = '#fff'; ctx.strokeStyle = '#3f7a31'; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.arc(sx * 6, -9, 3.6, 0, 6.2832); ctx.fill(); ctx.stroke(); ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(sx * 6 - 1.2, -9, 1.3, 0, 6.2832); ctx.fill(); }
+  ctx.restore();
+  // the player
+  const chomp = .5 + .5 * Math.sin(now / 160);
+  drawPlayer(48, 54 + bob, 34, 7, { lx: 1, ly: .1, mouth: chomp, blink: (now / 1000 % 3.3) < .13, seed: 600 + boil * 13 });
+  ctx = main;
 }
 
 // ---------- Loop ----------
 let last = performance.now();
 function frame(now) {
   let dt = Math.min(.05, (now - last) / 1000); last = now;
-  if (!platformVisible) { requestAnimationFrame(frame); return; }
-  if (state === 'play' || state === 'ready') update(dt);
+  if (state === 'play' || state === 'ready' || state === 'menu') update(dt);
   else if (state === 'end') { player.pop *= Math.exp(-dt * 4); stepFx(dt); }
   draw(now);
+  if (visible('ovMenu')) drawMascot(now);
   requestAnimationFrame(frame);
 }
 
-// ---------- UI ----------
-function show(id) { document.querySelectorAll('.overlay').forEach(o => o.classList.toggle('show', o.id === id)); }
-let before = null; // 關掉選關時要回到的狀態
-function openMenu() {
-  if (state === 'menu') return;
-  if (state === 'pause') { tellResume(); state = 'play'; }
-  before = state === 'play' || state === 'ready' ? state : null;
-  state = 'menu'; endJoy(); keys.clear(); pointer = null;
-  renderMenu(); renderNote();
+// ---------- Screens ----------
+function adBreak(go) { go(); } // hook: portal builds replace this line to show an ad before Play / Next level / Try again
+function show(id) {
+  document.querySelectorAll('.overlay').forEach(o => o.classList.toggle('show', o.id === id));
+  sfx.duck(id === 'ovPause' || id === 'ovSettings' && state === 'pause');
+}
+function setCur(i) { cur = i; store.set('cur', i); }
+// Main menu: the current level idles behind the title
+function openMain() {
+  endJoy(); keys.clear(); pointer = null;
+  loadLevel(cur); state = 'menu'; updHud();
+  const progress = unlocked > 1 || bests[0] != null;
+  document.getElementById('playLbl').textContent = progress ? T.cont : T.play;
+  document.getElementById('playSub').textContent = T.level(cur + 1) + ' · ' + tx(LEVELS[cur].name);
   show('ovMenu');
 }
-function renderMenu() {
-  document.getElementById('btnBack').style.display = before ? '' : 'none';
+function openLevels() {
   const box = document.getElementById('levels'); box.innerHTML = '';
   LEVELS.forEach((lv, i) => {
     const b = document.createElement('button');
-    b.innerHTML = `${lv.target}<small>${bests[i] != null ? bests[i].toFixed(1) + 's' : Lx('第 {n} 關|Stage {n}', { n: i + 1 })}</small>`;
+    b.innerHTML = `${lv.target}<small>${bests[i] != null ? bests[i].toFixed(1) + 's' : T.level(i + 1)}</small>`;
+    b.title = T.level(i + 1) + ' · ' + tx(lv.name);
     b.disabled = i >= unlocked;
     if (bests[i] != null) b.classList.add('done');
-    b.onclick = () => intro(i);
+    if (i === cur) b.classList.add('cur');
+    b.onclick = () => adBreak(() => intro(i));
     box.appendChild(b);
   });
+  openSub('ovLevels');
 }
-function resume() { if (!before) return; state = before; before = null; show(null); last = performance.now(); }
-// 把關卡擺上棋盤，等玩家第一次移動才開始（不用多按一次）。
-function intro(i) { show(null); loadLevel(i); state = 'ready'; pointer = null; updHud(); }
+let subBack = 'ovMenu';
+function openSub(id) { const v = document.querySelector('.overlay.show'); subBack = v ? v.id : 'ovMenu'; show(id); }
+document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => show(subBack));
+// Show a level on the board, waiting for the player's first move (no extra click needed).
+function intro(i) { show(null); setCur(i); loadLevel(i); state = 'ready'; pointer = null; keys.clear(); updHud(); }
 function begin() {
-  if (!ensureRound()) return; // 平台開局失敗時留在開場卡
+  beginPlatform();
   sfx.start(); show(null); state = 'play'; last = performance.now(); invuln = 1.2; updHud();
-  if (lvIndex === 0) coach('eat', '吃掉綠色的小數字來長大|Eat smaller (green) numbers to grow');
+  if (lvIndex === 0) coach('eat');
+  else if (L.boss) coach('boss', true);
+  else if (L.walls) coach('wall');
+  else if (L.stains) coach('stain');
+  else if (L.time) coach('clock');
 }
-document.getElementById('btnBack').onclick = resume;
-document.getElementById('btnEndMenu').onclick = openMenu;
-document.getElementById('btnMenu').onclick = openMenu;
-function toggleSound() { const m = sfx.toggle(); const b = document.getElementById('btnSound'); b.textContent = m ? '🔇' : '🔊'; b.style.opacity = m ? .55 : 1; }
-document.getElementById('btnSound').onclick = toggleSound;
-if (sfx.muted) { const b = document.getElementById('btnSound'); b.textContent = '🔇'; b.style.opacity = .55; }
-document.getElementById('btnRestart').onclick = () => { if (state === 'play' || state === 'end') { loadLevel(lvIndex); begin(); } };
-
-// ---------- 暫停：切走遊戲、背景分頁時自動暫停，回來要按「繼續」 ----------
-function pauseGame() {
-  if (state !== 'play') return;
-  state = 'pause'; keys.clear(); pointer = null; endJoy();
+let pausedFrom = null;
+function pause() {
+  if (state !== 'play' && state !== 'ready') return;
+  pausedFrom = state; state = 'pause'; endJoy(); keys.clear(); pointer = null;
   show('ovPause');
   const h = host(); if (h && roundOn && h.pause) h.pause(window);
 }
-function tellResume() { const h = host(); if (h && roundOn && h.resume) h.resume(window); }
-function resumeGame() {
+function unpause() {
   if (state !== 'pause') return;
-  state = 'play'; show(null); last = performance.now(); tellResume();
+  state = pausedFrom; show(null); last = performance.now();
+  const h = host(); if (h && roundOn && h.resume) h.resume(window);
 }
-document.getElementById('btnResume').onclick = resumeGame;
-document.addEventListener('visibilitychange', () => { if (document.hidden) pauseGame(); });
-
-// 父頁介面：右側按鈕開局、切換畫面、結束本局
-window.startEatPlatformRound = () => { if (roundOn) return roundOn; if (ensureRound()) openMenu(); return roundOn; };
-window.setEatPlatformActive = v => { platformVisible = !!v; last = performance.now(); if (!platformVisible) pauseGame(); else resize(); };
-window.endEatPlatformRound = () => { roundOn = false; earned = 0; endJoy(); if (state !== 'menu') state = 'end'; before = null; openMenu(); renderMenu(); renderNote(); };
-window.isEatPlatformRound = () => roundOn;
-
-function relang() {
-  applyStatic(); updHud(); renderNote(); renderMenu(); renderEnd();
+function restartLevel() { loadLevel(lvIndex); show(null); state = 'ready'; begin(); }
+document.getElementById('btnPlay').onclick = () => adBreak(() => intro(cur));
+document.getElementById('btnLevels').onclick = openLevels;
+document.getElementById('btnSettings').onclick = () => openSub('ovSettings');
+document.getElementById('btnInfo').onclick = () => openSub('ovInfo');
+document.getElementById('btnPause').onclick = () => state === 'pause' ? unpause() : pause();
+document.getElementById('btnResume').onclick = unpause;
+document.getElementById('btnRestart').onclick = restartLevel;
+document.getElementById('btnPauseSettings').onclick = () => openSub('ovSettings');
+document.getElementById('btnPauseMenu').onclick = openMain;
+document.getElementById('btnEndMenu').onclick = openMain;
+function toggleSound() { const m = sfx.toggle(); const b = document.getElementById('btnSound'); b.textContent = m ? '🔇' : '🔊'; b.style.opacity = m ? .55 : 1; }
+document.getElementById('btnSound').onclick = toggleSound;
+if (sfx.muted) { const b = document.getElementById('btnSound'); b.textContent = '🔇'; b.style.opacity = .55; }
+// Settings: separate music and effects volume, saved on this device
+for (const [id, k] of [['volMusic', 'music'], ['volSfx', 'sfx']]) {
+  const el = document.getElementById(id), out = document.getElementById(id + 'V');
+  el.value = Math.round(sfx.vol(k) * 100); out.textContent = el.value + '%';
+  el.addEventListener('input', () => { out.textContent = el.value + '%'; sfx.setVol(k, el.value / 100); });
+  if (k === 'sfx') el.addEventListener('change', () => sfx.eat(.6));
 }
-try { window.parent.addEventListener('arcade-languagechange', relang); } catch (e) {}
-applyStatic();
+
+// Fill in the text
+document.querySelectorAll('[data-t]').forEach(el => { el.innerHTML = T[el.dataset.t]; });
+document.getElementById('infoBody').innerHTML = T.infoHtml;
+document.getElementById('btnSound').title = T.sound;
+document.getElementById('btnPause').title = T.pause;
+document.title = T.title;
+
+const docLang = () => { document.documentElement.lang = LANG === 'en' ? 'en' : siteLang() === 'zh-Hans' ? 'zh-Hans' : 'zh-Hant'; };
+docLang();
+function setLang(next) {
+  next = pickLang(next); docLang();
+  if (next === LANG) return;
+  LANG = next; T = STR[LANG]; docLang();
+  document.querySelectorAll('[data-t]').forEach(el => { el.innerHTML = T[el.dataset.t]; });
+  document.getElementById('infoBody').innerHTML = T.infoHtml;
+  document.getElementById('btnSound').title = T.sound;
+  document.getElementById('btnPause').title = T.pause;
+  document.title = T.title;
+  updHud();
+  if (document.getElementById('ovMenu').classList.contains('show')) openMain();
+  if (document.getElementById('ovLevels').classList.contains('show')) openLevels();
+  draw();
+}
+try { window.parent.addEventListener('arcade-languagechange', e => setLang(e.detail && e.detail.language)); } catch (e) {}
+
+// Parent platform hooks
+window.startEatPlatformRound = () => { if (state === 'play') return false; intro(cur); return begin(); };
+window.endEatPlatformRound = () => { roundOn = false; };
+window.setEatPlatformActive = v => { if (!v) pause(); };
+
 resize();
-// 直接進入遊玩：新玩家從第 1 關、回訪玩家從最遠的關開始。
-intro(Math.min(unlocked, LEVELS.length) - 1);
+openMain();
 requestAnimationFrame(frame);
 })();
 </script>

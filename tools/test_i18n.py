@@ -102,7 +102,11 @@ def js_literals(source):
 # Same-origin pages that carry their own zh/en string tables and mark <body data-i18n-ignore>: the site
 # dictionary never translates them (Simplified Chinese still converts them, so the Hans tables keep scanning
 # them). Their English is checked against their own tables by a dedicated test instead.
-SELF_LOCALIZED = ('games/siege-architect/original.html',)  # tools/test_siege_architect.mjs
+SELF_LOCALIZED = (
+    'games/siege-architect/original.html',  # tools/test_siege_architect.mjs
+    'games/eat-smaller/original.html',
+    'games/one-line-defense/original.html',
+)
 
 
 def source_texts(skip=(), skip_files=()):

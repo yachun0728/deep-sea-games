@@ -7,478 +7,924 @@
 <title>一筆畫守城</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
+  html[lang=en]{--font:"Patrick Hand","Comic Sans MS",cursive}
   :root{
     --board:#2f4a3a; --board2:#253c2f; --wood:#8a6a44; --wood2:#5e4426;
-    --text:#f3f1e6; --chalk:#f3f1e6; --mute:rgba(243,241,230,.62); --mute2:rgba(243,241,230,.42);
-    --cyan:#a8dcf0; --violet:#d2b0ff; --amber:#ffe08a; --red:#ff9e9e; --green:#bfe8a8;
+    --chalk:#f3f1e6; --mute:rgba(243,241,230,.62); --mute2:rgba(243,241,230,.42);
+    --cyan:#a8dcf0; --violet:#d2b0ff; --amber:#ffe08a; --red:#ff9e9e; --green:#bfe8a8; --teal:#9fe6d6;
     --font:"LXGW WenKai TC","Kaiti TC","STKaiti","BiauKai",cursive;
+    --bs:14px; --bb:24px;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   html,body{height:100%;color:var(--chalk);font-family:var(--font);overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-font-smoothing:antialiased;
     background:#1d221e;background-image:radial-gradient(ellipse at 50% 35%,#2b332d 0%,#161a17 75%)}
   button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   b{font-weight:700}
-  .num{font-variant-numeric:tabular-nums}
-  #app{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px}
-  .bar{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
-  .lbl{font-size:13px;letter-spacing:.12em;color:var(--mute)}
-  .big{font-size:34px;font-weight:700;line-height:1.05}
-  .hearts{font-size:22px;letter-spacing:3px;color:var(--red)}
-  .hearts .off{color:rgba(243,241,230,.15)}
-  canvas#cv{display:block;cursor:crosshair;border:14px solid var(--wood);border-bottom-width:24px;border-radius:5px;
+  [hidden]{display:none!important}
+  #app{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  #stage{position:relative}
+  canvas#cv{display:block;cursor:crosshair;border:var(--bs) solid var(--wood);border-bottom-width:var(--bb);border-radius:5px;
     box-shadow:0 0 0 2px var(--wood2),inset 0 0 0 2px var(--wood2),0 24px 60px rgba(0,0,0,.55);background:var(--board)}
-  .hint{font-size:14px;color:var(--mute2);text-align:center}
-  .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(10,14,11,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:16px;z-index:10}
+  /* chalk and eraser lying on the wooden ledge */
+  .ledge{position:absolute;left:0;right:0;bottom:0;height:var(--bb);pointer-events:none}
+  .ledge i{position:absolute;top:50%;transform:translateY(-50%);border-radius:3px}
+  .ledge .stick{width:28px;height:6px;background:#f3f1e6;left:14%;box-shadow:inset -4px 0 0 rgba(0,0,0,.12)}
+  .ledge .stick.s2{width:18px;left:calc(14% + 40px);background:#ffe08a;transform:translateY(-50%) rotate(-6deg)}
+  .ledge .eraser{width:44px;height:12px;right:12%;background:linear-gradient(#c9a77a 0 55%,#3a3a3a 55%);border-radius:3px 3px 2px 2px}
+  #btnPause{position:absolute;top:calc(var(--bs) + 8px);right:calc(var(--bs) + 8px);width:44px;height:44px;border:2px solid rgba(243,241,230,.55);
+    border-radius:12px 15px 11px 14px;display:none;align-items:center;justify-content:center;gap:5px;background:transparent}
+  #btnPause.on{display:flex}
+  #btnPause i{display:block;width:5px;height:17px;background:var(--chalk);border-radius:2px;opacity:.9}
+  #btnPause:hover{background:rgba(243,241,230,.08)}
+  .overlay{position:fixed;inset:0;display:none;background:rgba(10,14,11,.62);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);padding:12px;z-index:10;overflow:auto;touch-action:pan-y}
+  .overlay.clear{background:rgba(10,14,11,.25);backdrop-filter:none;-webkit-backdrop-filter:none}
   .overlay.show{display:flex}
-  .card{width:min(460px,100%);background:var(--board);border:12px solid var(--wood);border-radius:5px;padding:26px 24px 22px;text-align:center;
+  .card{margin:auto;width:min(480px,100%);background:var(--board);border:12px solid var(--wood);border-radius:5px;padding:22px 22px 20px;text-align:center;
     box-shadow:0 0 0 2px var(--wood2),inset 0 0 40px rgba(0,0,0,.35),0 30px 80px rgba(0,0,0,.6)}
-  .card h1{font-size:38px;font-weight:700;letter-spacing:.06em;text-shadow:0 0 1px rgba(243,241,230,.6)}
-  .card h2{font-size:30px;font-weight:700}
-  .sub{color:var(--mute);font-size:16px;line-height:1.65;margin-top:10px}
-  .rules{text-align:left;margin:18px 0 6px;display:grid;gap:10px;font-size:16px;line-height:1.5}
+  .card.wide{width:min(620px,100%)}
+  .card h1{font-size:46px;font-weight:700;letter-spacing:.04em;line-height:1.05;text-shadow:0 0 1px rgba(243,241,230,.6)}
+  .card h2{font-size:32px;font-weight:700;line-height:1.1}
+  .card h3{font-size:20px;color:var(--amber);margin:16px 0 6px;text-align:left}
+  .sub{color:var(--mute);font-size:17px;line-height:1.55;margin-top:8px}
+  .menu{display:grid;gap:12px;width:min(300px,100%);margin:20px auto 0}
+  .btn{display:block;width:100%;padding:9px 18px;border:2.5px solid var(--chalk);border-radius:12px 18px 10px 16px;font-weight:700;font-size:22px;background:rgba(243,241,230,.04)}
+  .btn:hover,.btn:focus-visible{background:rgba(243,241,230,.12);outline:none}
+  .btn.main{border-color:var(--amber);color:var(--amber);background:rgba(255,224,138,.07);font-size:30px;padding:12px 18px}
+  .btn.main:hover,.btn.main:focus-visible{background:rgba(255,224,138,.16)}
+  .btn small{display:block;font-size:14px;font-weight:400;color:var(--mute);margin-top:-2px}
+  .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+  .row .btn{width:auto;min-width:130px}
+  .rules{text-align:left;display:grid;gap:9px;font-size:16px;line-height:1.45}
   .rules div{display:flex;gap:10px;align-items:flex-start}
   .ico{flex:none;width:16px;height:16px;margin-top:3px;border-radius:50%;opacity:.9}
-  .btn{display:inline-block;margin-top:18px;padding:9px 30px;border:2.5px solid var(--amber);border-radius:12px 18px 10px 16px;color:var(--amber);font-weight:700;font-size:20px;background:rgba(255,224,138,.06)}
-  .btn:hover{background:rgba(255,224,138,.14)}
-  #btnTut{border-color:var(--mute)!important;color:var(--chalk)!important}
-  .stat{display:flex;justify-content:center;gap:26px;margin-top:14px}
-  .stat b{display:block;font-size:32px}
-  .stat span{font-size:13px;color:var(--mute)}
-  .plat{margin-top:12px;padding:8px 12px;border:1.5px dashed rgba(243,241,230,.35);border-radius:8px;font-size:14px;line-height:1.55;color:var(--chalk);background:rgba(255,224,138,.06)}
-  .bonus{margin-top:8px;font-size:17px;font-weight:700;color:var(--green)}
-  .bonus:empty{display:none}
-  .newbest{color:var(--amber);font-weight:700;font-size:17px;margin-top:10px;min-height:22px}
-  /* 平台內嵌：說明卡比畫面高時可在浮層內捲動，不裁掉標題 */
-  .overlay{overflow-y:auto;align-items:flex-start;touch-action:pan-y;overscroll-behavior:contain}
-  .overlay .card{margin:auto}
+  .levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:16px}
+  .lv{aspect-ratio:1/1.05;border:2.5px solid var(--chalk);border-radius:12px 16px 10px 14px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:28px;font-weight:700;line-height:1;background:rgba(243,241,230,.04)}
+  .lv:hover,.lv:focus-visible{background:rgba(243,241,230,.12);outline:none}
+  .lv .st{font-size:13px;letter-spacing:1px;color:var(--amber);margin-top:5px;min-height:14px}
+  .lv .st .off{color:rgba(243,241,230,.25)}
+  .lv.boss{border-color:var(--red)}
+  .lv.locked{cursor:default;border-style:dashed;border-color:rgba(243,241,230,.32);background:transparent}
+  .lv.boss.locked{border-color:rgba(255,158,158,.4)}
+  .lv .lock{width:min(40px,62%);height:auto;aspect-ratio:32/34;display:block;overflow:visible;opacity:.8}
+  .lv .lnum{font-size:13px;color:var(--mute);margin-top:3px;min-height:14px;font-weight:400}
+  .lv.next{border-color:var(--amber);color:var(--amber)}
+  .vol{display:grid;grid-template-columns:96px 1fr 48px;gap:12px;align-items:center;text-align:left;font-size:20px;margin-top:16px}
+  .vol span:last-child{text-align:right;color:var(--mute);font-variant-numeric:tabular-nums}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;touch-action:none}
+  input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:rgba(243,241,230,.28)}
+  input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:rgba(243,241,230,.28)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;margin-top:-9px;border-radius:50%;background:var(--amber);border:3px solid var(--wood2)}
+  input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--amber);border:3px solid var(--wood2)}
+  .stars{font-size:44px;letter-spacing:6px;color:var(--amber);margin-top:6px;line-height:1}
+  .stars .off{color:rgba(243,241,230,.18)}
+  .stat{display:flex;justify-content:center;gap:24px;margin-top:12px}
+  .stat b{display:block;font-size:30px;font-variant-numeric:tabular-nums}
+  .stat span{font-size:14px;color:var(--mute)}
+  .newbest{color:var(--amber);font-weight:700;font-size:18px;margin-top:8px;min-height:22px}
+  .keys{font-size:14px;color:var(--mute2);margin-top:12px}
+  @media (max-width:520px){ .card{border-width:8px;padding:16px 14px} .card h1{font-size:38px} .levels{gap:7px} .lv{font-size:22px} .btn.main{font-size:26px} }
 </style>
 </head>
-<body>
+<body data-i18n-ignore>
+<!-- chalk grain for the hand-drawn lock icons: noise eats small gaps out of the strokes -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="chalkGrain" x="-10%" y="-10%" width="120%" height="120%">
+  <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="4" result="n"/>
+  <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.75" result="m"/>
+  <feComposite in="SourceGraphic" in2="m" operator="in"/>
+</filter></defs></svg>
 <div id="app">
-  <div class="bar" id="bar">
-    <div><div class="lbl" data-t="score"></div><div class="big num" id="score">0</div></div>
-    <div style="text-align:center"><div class="lbl" data-t="core"></div><div class="hearts" id="hearts"></div></div>
-    <div style="text-align:right"><div class="lbl" data-t="time"></div><div class="big num" id="time">0</div></div>
-  </div>
-  <canvas id="cv"></canvas>
-  <div class="hint" data-t="hint"></div>
-</div>
-
-<div class="overlay show" id="ovStart">
-  <div class="card">
-    <h1 data-t="title"></h1>
-    <div class="sub" data-t="intro"></div>
-    <div class="rules">
-      <div><span class="ico" style="background:var(--cyan);border-radius:3px"></span><span data-t="r1"></span></div>
-      <div><span class="ico" style="background:var(--amber)"></span><span data-t="r2"></span></div>
-      <div><span class="ico" style="background:var(--green)"></span><span data-t="r3"></span></div>
-      <div><span class="ico" style="background:var(--red)"></span><span data-t="r4"></span></div>
-    </div>
-    <div class="plat" id="platNote" hidden></div>
-    <div class="sub" id="bestLine" style="margin-top:6px"></div>
-    <button class="btn" id="btnStart" data-t="start"></button>
-    <div><button class="btn" id="btnTut" style="background:rgba(255,255,255,.08);color:var(--text);padding:9px 18px;font-size:14px;margin-top:10px" data-t="tut"></button></div>
+  <div id="stage">
+    <canvas id="cv"></canvas>
+    <div class="ledge"><i class="stick"></i><i class="stick s2"></i><i class="eraser"></i></div>
+    <button id="btnPause" aria-label="暫停"><i></i><i></i></button>
   </div>
 </div>
 
-<div class="overlay" id="ovEnd">
-  <div class="card">
-    <h2 data-t="over"></h2>
-    <div class="stat">
-      <div><b class="num" id="endScore">0</b><span data-t="score"></span></div>
-      <div><b class="num" id="endTime">0</b><span data-t="lasted"></span></div>
-      <div><b class="num" id="endCombo">0</b><span data-t="combo"></span></div>
-    </div>
-    <div class="newbest" id="newBest"></div>
-    <div class="bonus" id="endBonus"></div>
-    <button class="btn" id="btnAgain" data-t="again"></button>
-    <div class="hint" style="margin-top:10px"><span data-t="bestLbl"></span><span class="num" id="endBest">0</span><span data-t="spaceAgain"></span></div>
+<div class="overlay show" id="ovMenu"><div class="card">
+  <h1 data-t="title"></h1>
+  <div class="sub" data-t="tagline"></div>
+  <div class="menu">
+    <button class="btn main" id="btnContinue"></button>
+    <button class="btn main" id="btnPlay" data-t="play"></button>
+    <button class="btn" id="btnSettings" data-t="settings"></button>
+    <button class="btn" id="btnInfo" data-t="info"></button>
   </div>
-</div>
+</div></div>
 
-<div class="overlay" id="ovPause">
-  <div class="card">
-    <h2 data-t="paused"></h2>
-    <div class="sub" data-t="pausedSub"></div>
-    <button class="btn" id="btnResume" data-t="resume"></button>
+<div class="overlay" id="ovLevels"><div class="card wide">
+  <h2 data-t="chooseLevel"></h2>
+  <div class="levels" id="levelGrid"></div>
+  <div class="menu" style="width:min(340px,100%)">
+    <button class="btn" id="btnEndless"></button>
   </div>
-</div>
+  <div class="row"><button class="btn" id="btnLevelsBack" data-t="back" data-primary></button></div>
+</div></div>
+
+<div class="overlay" id="ovSettings"><div class="card">
+  <h2 data-t="settings"></h2>
+  <label class="vol"><span data-t="music"></span><input type="range" id="volMusic" min="0" max="100" step="1"><span id="volMusicV"></span></label>
+  <label class="vol"><span data-t="sfx"></span><input type="range" id="volSfx" min="0" max="100" step="1"><span id="volSfxV"></span></label>
+  <div class="keys" data-t="settingsHint"></div>
+  <div class="row"><button class="btn" id="btnSettingsBack" data-t="back" data-primary></button></div>
+</div></div>
+
+<div class="overlay" id="ovInfo"><div class="card wide">
+  <h2 data-t="infoTitle"></h2>
+  <div id="infoBody"></div>
+  <div class="row"><button class="btn" id="btnInfoBack" data-t="back" data-primary></button></div>
+</div></div>
+
+<div class="overlay clear" id="ovPause"><div class="card">
+  <h2 data-t="paused"></h2>
+  <div class="sub" id="pauseSub"></div>
+  <div class="menu">
+    <button class="btn main" id="btnResume" data-t="resume" data-primary></button>
+    <button class="btn" id="btnRestart" data-t="restart"></button>
+    <button class="btn" id="btnPauseSettings" data-t="settings"></button>
+    <button class="btn" id="btnPauseMenu" data-t="menu"></button>
+  </div>
+  <div class="keys" data-t="pauseKeys"></div>
+</div></div>
+
+<div class="overlay" id="ovEnd"><div class="card">
+  <h2 id="endTitle"></h2>
+  <div class="stars" id="endStars"></div>
+  <div class="stat" id="endStats"></div>
+  <div class="newbest" id="endNote"></div>
+  <div class="row" id="endBtns"></div>
+</div></div>
 
 <script>
 (() => {
 'use strict';
-const W = 800, H = 800, CX = W / 2, CY = H / 2, CORE_R = 32, MAX_HP = 5;
-const MAX_INK = 900;              // 一條線最長
-const lifeOf = len => Math.max(0.6, Math.min(4.5, 650 / Math.max(len, 1)));
-
-// ---------- 語言：字串寫成「中文|English」，語言跟隨 Deep Sea Arcade 頁首切換 ----------
-function lang() { try { const i = window.parent !== window && window.parent.deepSeaI18n; return i && i.getLanguage() === 'en' ? 'en' : 'zh'; } catch (e) { return 'zh'; } }
-function Lx(s, p) {
-  const k = s.indexOf('|'); let t = k < 0 ? s : lang() === 'en' ? s.slice(k + 1) : s.slice(0, k);
-  t = t.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
-  return p ? t.replace(/\{(\w+)\}/g, (_, n) => p[n] != null ? p[n] : '') : t;
-}
-const TX = {
-  score: '分數|Score', core: '核心|Core', time: '時間|Time',
-  hint: '按住拖曳畫一條線 · 新線一畫，舊線就消失 · 線越長，撐得越短|Press and drag to draw a line · a new line erases the old one · longer lines fade faster',
-  title: '一筆畫守城|One-Line Defense', intro: '敵人從四面八方湧向核心。你只能畫**一條**線來擋。|Enemies swarm the core from every direction. You get **one** line to stop them.',
-  r1: '拖曳畫線。碰到線的敵人會被消滅。|Drag to draw a line. Enemies that touch it are wiped out.',
-  r2: '**線越長，消失得越快**：短線能撐好幾秒（藍色），繞一大圈只能撐不到 1 秒（紅色）。所以要看敵人從哪裡來，在那個方向畫短線。|**The longer the line, the faster it fades**: a short line lasts several seconds (blue), a big loop less than 1 second (red). Watch where enemies come from and draw short lines that way.',
-  r3: '一條線消滅越多敵人，連擊加分越多。|The more enemies one line wipes out, the bigger the combo score.',
-  r4: '大顆的會**撞斷**你的線；紫色的被打中會分裂。核心被撞五次就結束。|Big ones **break** your line; purple ones split when hit. The game ends when the core is hit five times.',
-  start: '開始|Start', tut: '重看教學|Replay tutorial', over: '核心被攻破|The core has fallen',
-  lasted: '撐了幾秒|Seconds survived', combo: '最高連擊|Best combo', again: '再來一局|Play again',
-  bestLbl: '最佳分數：|Best score: ', spaceAgain: ' · 按空白鍵重來| · Press Space to play again',
-  paused: '已暫停|Paused', pausedSub: '離開畫面時會自動暫停。|The game pauses when you leave the screen.', resume: '繼續|Resume',
+function host() { try { return window.parent !== window ? window.parent.deepSeaOneLine || null : null; } catch (e) { return null; } }
+function siteLang() { try { const i = window.parent !== window && window.parent.deepSeaI18n; return i ? i.getLanguage() : null; } catch (e) { return null; } }
+const pickLang = l => l === 'en' ? 'en' : 'zh';
+let LANG = pickLang(siteLang() || new URLSearchParams(location.search).get('lang') || (/^zh/i.test(navigator.language || '') ? 'zh' : 'en'));
+const STR = {
+  zh: {
+  title: '一筆畫守城',
+  tagline: '敵人從四面八方湧向核心。你只能畫<b>一條</b>線來擋。',
+  play: '開始', cont: '繼續', settings: '設定', info: '說明', back: '返回', menu: '主選單',
+  contSub: n => `第 ${n} 關`,
+  chooseLevel: '選擇關卡',
+  endless: '無盡模式', endlessSub: b => b ? `最佳分數：${b}` : '撐得越久越好',
+  music: '音樂', sfx: '音效', settingsHint: '遊戲中按 M 可以全部靜音。',
+  paused: '暫停', resume: '繼續', restart: '重來', pauseKeys: 'P：暫停／繼續',
+  infoTitle: '怎麼玩',
+  infoRules: [
+    ['--cyan', '在黑板上按住拖曳，畫出一條粉筆線。碰到線的敵人會被消滅。'],
+    ['--amber', '<b>線越長，消失得越快。</b>短線最多撐 4.5 秒（藍色），繞一大圈不到 1 秒（紅色）。筆尖的圓圈顯示剩下的時間。'],
+    ['--green', '新線一畫，舊線就消失。一條線打到越多敵人，連擊倍率越高。'],
+    ['--red', '保護中間的核心：它能挨 5 下。被打得越少，星星越多。'],
+  ],
+  enemiesTitle: '敵人',
+  enemyInfo: {
+    dot: '粉筆點：慢慢走過來。',
+    dart: '飛箭：小小一隻，速度很快。',
+    brute: '大塊頭：要打兩次，第一次會把你的線撞斷。',
+    split: '雙胞胎：被打中會分裂成兩隻。',
+    ghost: '幽靈：忽隱忽現，只有實體的時候線才抓得到。',
+    boss: '魔王（第 5、10 關）：每打中一次都會撞斷你的線，並被往外推。',
+  },
+  modesTitle: '模式',
+  modes: '<b>關卡</b>：10 個關卡，各有不同目標，每隔幾關出現新敵人，還有兩隻魔王。星等和最佳分數會存在這台裝置上。<b>無盡</b>：撐得越久越好。',
+  controlsTitle: '操作',
+  controls: '滑鼠或觸控：按住拖曳畫線 · P：暫停 · M：靜音 · 空白鍵／Enter：選單確認',
+  levelN: n => `第 ${n} 關`,
+  levelNames: ['第一筆', '一整排', '飛箭來襲', '粉筆不夠用', '粉筆石魔', '重量級', '一分為二', '粉筆幽靈', '最後彩排', '板擦大王'],
+  goalKills: n => `消滅 ${n} 隻敵人`,
+  goalSurvive: s => `撐過 ${s} 秒`,
+  goalBoss: name => `打倒${name}`,
+  goalChalk: n => `只有 ${n} 支粉筆`,
+  hudKills: (k, n) => `已消滅 ${k} / ${n}`,
+  hudSurvive: s => `還要撐 ${s} 秒`,
+  hudChalk: n => `粉筆 ×${n}`,
+  hudEndless: '無盡模式',
+  bossName: { golem: '粉筆石魔', king: '板擦大王' },
+  bossHud: { golem: '粉筆石魔', king: '板擦大王' },
+  hint: {
+    draw: '拖曳，在敵人和核心之間畫一條線',
+    nice: '很好！碰到線的東西都會被消滅',
+    row: '一條線就能擋下整排，試試連擊！',
+    fade: '長線消失得快，筆尖的圓圈是剩下的時間',
+    rows: '敵人開始成排出現：用一條線擋下整排',
+    dart: '新敵人：飛箭又小又快',
+    chalk: '每一筆都要算好：這關只有 16 支粉筆',
+    golem: '魔王！每打中一次，你的線就會斷，它會被推回去',
+    brute: '新敵人：大塊頭要打兩次，第一次會撞斷你的線',
+    split: '新敵人：雙胞胎被打中會分裂成兩隻',
+    ghost: '新敵人：幽靈只有實體的時候才抓得到',
+    king: '最終魔王！它會繞著核心轉，還會叫幫手',
+    enraged: '板擦大王生氣了：它會不時變成透明！',
+    noChalk: '粉筆用完了！',
+  },
+  newTag: '新！', lineBroken: '線斷了！',
+  cleared: n => `第 ${n} 關過關！`,
+  allClear: '黑板守住了！',
+  allClearNote: '10 關全破！去無盡模式挑戰最高分吧。',
+  failed: '核心被攻破', outOfChalk: '粉筆用完了',
+  stScore: '分數', stCombo: '最高連擊', stHits: '核心受傷', stTime: '撐了幾秒',
+  next: '下一關', retry: '重試', levels: '關卡', playAgain: '再來一局',
+  newBest: '新紀錄！', best: b => `最佳分數：${b}`,},
+  en: {
+  title: 'One Line Defense',
+  tagline: 'Enemies swarm the core from every side. You get just <b>one</b> line to stop them.',
+  play: 'Play', cont: 'Continue', settings: 'Settings', info: 'Info', back: 'Back', menu: 'Menu',
+  contSub: n => `Level ${n}`,
+  chooseLevel: 'Choose a level',
+  endless: 'Endless mode', endlessSub: b => b ? `Best score: ${b}` : 'Survive as long as you can',
+  music: 'Music', sfx: 'Effects', settingsHint: 'M mutes everything during play.',
+  paused: 'Paused', resume: 'Resume', restart: 'Restart', pauseKeys: 'P: pause / resume',
+  infoTitle: 'How to play',
+  infoRules: [
+    ['--cyan', 'Press and drag on the board to draw a chalk line. Any enemy that touches it is destroyed.'],
+    ['--amber', '<b>The longer the line, the faster it fades.</b> A short line lasts up to 4.5 s (blue), a big loop less than a second (red). The ring at the tip shows the time left.'],
+    ['--green', 'A new line erases the old one. Hit several enemies with one line for a combo multiplier.'],
+    ['--red', 'Protect the core in the middle: it survives 5 hits. Take fewer hits to earn more stars.'],
+  ],
+  enemiesTitle: 'Enemies',
+  enemyInfo: {
+    dot: 'Chalk Dot: slow and steady.',
+    dart: 'Dart: small and very fast.',
+    brute: 'Brute: takes two hits, and the first one breaks your line.',
+    split: 'Twins: split in two when hit.',
+    ghost: 'Ghost: fades in and out. Your line only catches it while it is solid.',
+    boss: 'Bosses (levels 5 and 10): every hit breaks your line and pushes them back.',
+  },
+  modesTitle: 'Modes',
+  modes: '<b>Levels</b>: 10 levels with their own goals, new enemies every few levels and two bosses. Stars and best scores are saved on this device. <b>Endless</b>: survive as long as you can.',
+  controlsTitle: 'Controls',
+  controls: 'Mouse or touch: press and drag to draw · P: pause · M: mute · Space / Enter: confirm on menus',
+  levelN: n => `Level ${n}`,
+  levelNames: ['First Lines', 'Rows', 'Fast Arrows', 'Short Supply', 'Chalk Golem', 'Heavy Hitters', 'Split Ends', 'Ghost Chalk', 'Final Rehearsal', 'Eraser King'],
+  goalKills: n => `Destroy ${n} enemies`,
+  goalSurvive: s => `Survive ${s} seconds`,
+  goalBoss: name => `Defeat ${name}`,
+  goalChalk: n => `Only ${n} pieces of chalk`,
+  hudKills: (k, n) => `${k} / ${n} destroyed`,
+  hudSurvive: s => `${s}s to go`,
+  hudChalk: n => `Chalk ×${n}`,
+  hudEndless: 'Endless',
+  bossName: { golem: 'the Chalk Golem', king: 'the Eraser King' },
+  bossHud: { golem: 'Chalk Golem', king: 'Eraser King' },
+  hint: {
+    draw: 'Drag to draw a line between an enemy and the core',
+    nice: 'Nice! Anything that touches your line is destroyed',
+    row: 'One line can stop a whole row. Go for a combo!',
+    fade: 'Long lines fade fast. The ring at the tip shows time left',
+    rows: 'Enemies come in rows now: catch a whole row with one line',
+    dart: 'New: Darts are small and fast',
+    chalk: 'Make every line count: you only have 16 pieces of chalk',
+    golem: 'Boss! Each hit breaks your line and pushes it back',
+    brute: 'New: Brutes take two hits, and the first breaks your line',
+    split: 'New: Twins split in two when you hit them',
+    ghost: 'New: Ghosts can only be caught while they are solid',
+    king: 'Final boss! It circles the core and calls for help',
+    enraged: 'The Eraser King is angry: it fades out now and then!',
+    noChalk: 'No chalk left!',
+  },
+  newTag: 'NEW', lineBroken: 'Line broken!',
+  cleared: n => `Level ${n} cleared!`,
+  allClear: 'The board is safe!',
+  allClearNote: 'All 10 levels done. Endless mode is waiting.',
+  failed: 'Core breached', outOfChalk: 'Out of chalk',
+  stScore: 'Score', stCombo: 'Best combo', stHits: 'Core hits', stTime: 'Seconds',
+  next: 'Next level', retry: 'Retry', levels: 'Levels', playAgain: 'Play again',
+  newBest: 'New best score!', best: b => `Best score: ${b}`,}
 };
-function applyStatic() {
-  document.querySelectorAll('[data-t]').forEach(el => { el.innerHTML = Lx(TX[el.dataset.t]); });
+let T = STR[LANG];
+const tx = v => (v && typeof v === 'object') ? (v[LANG] || v.zh) : v;
+
+// STRINGS>>
+const t = (k, ...a) => (typeof T[k] === 'function' ? T[k](...a) : T[k]);
+
+// Platform hooks. The plain game has no ads; a platform build can swap this line for its own SDK glue.
+const platform = { between: go => go(), paused: () => false };
+
+const TAU = Math.PI * 2;
+let W = 800, H = 600, CX = W / 2, CY = H / 2;
+const CORE_R = 32, MAX_HP = 5, MAX_INK = 900;
+const lifeOf = len => Math.max(0.6, Math.min(4.5, 650 / Math.max(len, 1)));
+const rand = (a, b) => a + Math.random() * (b - a);
+const lerp = (a, b, k) => a + (b - a) * Math.max(0, Math.min(1, k));
+
+// ---------- Deep Sea Arcade platform bridge ----------
+let roundOn = false, earned = 0, marks = 0;
+function beginPlatform() {
+  const h = host();
+  if (h && !roundOn) {
+    if (!(h.start(window) > 0)) return false;
+    roundOn = true; earned = 0; marks = 0;
+  }
+  return true;
 }
+function touch() { const h = host(); if (h && roundOn && h.touch) h.touch(window); }
+window.addEventListener('pointerdown', touch, true);
+window.addEventListener('keydown', touch, true);
 
 const store = {
   get(k, d) { try { const v = localStorage.getItem('oneLine.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem('oneLine.' + k, JSON.stringify(v)); } catch (e) {} }
 };
-let best = store.get('best', 0);
+let best = store.get('best', 0);   // endless best score
+const prog = Object.assign({ u: 1, s: [], b: [] }, store.get('prog', {}));   // u: highest unlocked level, s: stars, b: best scores
+function saveProg() { store.set('prog', prog); }
 
-// ---------- Deep Sea Arcade 平台：免費、BONUS 與暫停由父頁 deepSeaOneLine 處理；單獨開啟時是不免費的示範 ----------
-const BONUS_EVERY = 30, BONUS_MARKS = 5;
-function host() { try { return window.parent !== window ? window.parent.deepSeaOneLine || null : null; } catch (e) { return null; } }
-let roundOn = false, earned = 0, marks = 0, platformVisible = true;
-function renderNote() {
-  const el = document.getElementById('platNote');
-  if (!host()) { el.hidden = true; return; }
-  el.hidden = false;
-  el.innerHTML = Lx('每撐過 30 秒 BONUS +2 點，最多 10 點（150 秒）。|Every 30 seconds survived gives a +2 pt BONUS, up to 10 pts (150 seconds).');
-}
-function touch() { const h = host(); if (h && roundOn && h.touch) h.touch(window); }
+// ---------- Sound and music (synthesized live with Web Audio; no audio files) ----------
+const audio = (() => {
+  let ac = null, master = null, sfxBus = null, musBus = null, noiseBuf = null;
+  const vol = Object.assign({ music: .26, sfx: .8 }, store.get('vol', {}));
+  let muted = store.get('muted', false), held = false, hidden = false, duck = 1;
+  let scratchSrc = null, scratchGain = null, scratchFilter = null;
+  const lastAt = {};
+  function apply() {
+    if (!ac) return;
+    const now = ac.currentTime;
+    master.gain.setTargetAtTime(muted ? 0 : 1, now, .02);
+    sfxBus.gain.setTargetAtTime(vol.sfx * .75, now, .02);
+    musBus.gain.setTargetAtTime(vol.music * duck, now, .08);
+  }
+  function wake() { if (ac && ac.state === 'suspended' && !held && !hidden) ac.resume().catch(() => {}); }
+  function ensure() {
+    if (!ac) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ac = new AC();
+      const comp = ac.createDynamicsCompressor();
+      master = ac.createGain(); sfxBus = ac.createGain(); musBus = ac.createGain();
+      sfxBus.connect(master); musBus.connect(master); master.connect(comp); comp.connect(ac.destination);
+      master.gain.value = muted ? 0 : 1; sfxBus.gain.value = vol.sfx * .75; musBus.gain.value = vol.music;
+      noiseBuf = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);
+      const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      music.start();
+    }
+    wake();
+    return ac;
+  }
+  function gate(name, gap) { const n = performance.now(); if (lastAt[name] && n - lastAt[name] < gap) return false; lastAt[name] = n; return true; }
+  function tone({ type = 'triangle', f0, f1, t = 0, at, dur = .12, vol = .3, attack = .006, bus }) {
+    if (!ac || (!at && ac.state !== 'running')) return;
+    const s = at != null ? at : ac.currentTime + t, o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(f0, s);
+    if (f1) o.frequency.exponentialRampToValueAtTime(f1, s + dur);
+    g.gain.setValueAtTime(.0001, s); g.gain.exponentialRampToValueAtTime(vol, s + attack);
+    g.gain.exponentialRampToValueAtTime(.0001, s + dur);
+    o.connect(g); g.connect(bus || sfxBus); o.start(s); o.stop(s + dur + .03);
+  }
+  function noise({ t = 0, at, dur = .06, vol = .15, freq = 2500, f1 = 0, q = 1, type = 'bandpass', attack = .002, bus }) {
+    if (!ac || (!at && ac.state !== 'running')) return;
+    const s = at != null ? at : ac.currentTime + t, src = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+    src.buffer = noiseBuf; src.loop = true; f.type = type; f.Q.value = q;
+    f.frequency.setValueAtTime(freq, s); if (f1) f.frequency.exponentialRampToValueAtTime(f1, s + dur);
+    g.gain.setValueAtTime(.0001, s); g.gain.exponentialRampToValueAtTime(vol, s + attack);
+    g.gain.exponentialRampToValueAtTime(.0001, s + dur);
+    src.connect(f); f.connect(g); g.connect(bus || sfxBus); src.start(s, Math.random() * .5); src.stop(s + dur + .02);
+  }
 
-const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
-function resize() {
-  const avail = Math.min(window.innerWidth - 24, window.innerHeight - 120);
-  const size = Math.max(260, Math.floor(avail));
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  cv.style.width = cv.style.height = size + 'px';
-  cv.width = cv.height = Math.round(size * dpr);
-  document.getElementById('bar').style.width = size + 'px';
-  ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
-}
-window.addEventListener('resize', resize); resize();
+  // Original 8-bar loop, 100 BPM (19.2 s): C Am F G C Am Dm G, mallet melody, bass, soft pad and brushed drums.
+  // A look-ahead scheduler keeps playing step after step, so the loop never has a seam.
+  const music = (() => {
+    const STEP = 60 / 100 / 4, STEPS = 128;
+    const midi = n => 440 * Math.pow(2, (n - 69) / 12);
+    const NOTE = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+    const nm = s => 12 * (+s.slice(-1) + 1) + NOTE[s[0]] + (s[1] === '#' ? 1 : 0);
+    const BASS = [48, 45, 41, 43, 48, 45, 50, 43];
+    const PAD = [[60, 64, 67], [57, 60, 64], [57, 60, 65], [55, 59, 62], [60, 64, 67], [57, 60, 64], [57, 62, 65], [55, 59, 62]];
+    const MEL = [
+      'E5 _ G5 _ A5 G5 E5 -', 'C5 _ D5 E5 _ - A4 -', 'C5 _ A4 C5 D5 _ C5 -', 'B4 _ D5 _ G4 _ - -',
+      'E5 _ G5 _ C6 _ B5 A5', 'G5 _ E5 _ - A5 G5 E5', 'F5 _ E5 D5 _ - A4 C5', 'D5 _ _ - B4 _ G4 -',
+    ].map(b => b.split(' '));
+    let next = 0, step = 0, timer = null, intense = false;
+    function mallet(f, at, dur, v) {
+      tone({ type: 'sine', f0: f, at, dur: dur + .25, vol: v, attack: .004, bus: musBus });
+      tone({ type: 'sine', f0: f * 4, at, dur: .07, vol: v * .25, attack: .002, bus: musBus });
+    }
+    function play(i, at) {
+      const bar = i >> 4, pos = i & 15, root = BASS[bar];
+      if (pos === 0 || pos === 8 || (intense && pos === 10) || (bar % 2 && pos === 14)) {
+        tone({ type: 'sine', f0: 130, f1: 42, at, dur: .22, vol: .55, attack: .003, bus: musBus });
+      }
+      if (pos === 4 || pos === 12) noise({ at, dur: .13, vol: .16, freq: 1900, q: .7, bus: musBus });
+      if (pos % 2 === 0 || intense) noise({ at, dur: .035, vol: pos % 4 === 2 ? .07 : .035, freq: 8500, q: .9, type: 'highpass', bus: musBus });
+      const bl = { 0: [0, .32], 6: [12, .14], 8: [7, .26], 12: [0, .2], 14: [12, .1] }[pos];
+      if (bl) {
+        tone({ type: 'triangle', f0: midi(root + bl[0] - 12), at, dur: bl[1], vol: .34, attack: .01, bus: musBus });
+        if (intense) tone({ type: 'square', f0: midi(root + bl[0] - 12), at, dur: bl[1] * .7, vol: .025, attack: .01, bus: musBus });
+      }
+      if (pos === 0) PAD[bar].forEach(n => tone({ type: 'triangle', f0: midi(n), at, dur: 2.3, vol: .035, attack: .35, bus: musBus }));
+      if (pos % 2 === 0) {
+        const toks = MEL[bar], k = pos / 2, tok = toks[k];
+        if (tok !== '-' && tok !== '_') {
+          let len = 1; while (k + len < 8 && toks[k + len] === '_') len++;
+          const f = midi(nm(tok));
+          mallet(f, at, len * 2 * STEP, .2);
+          mallet(f, at + 3 * STEP, len * STEP, .055);   // soft echo
+        }
+      }
+    }
+    function tick() {
+      if (!ac || ac.state !== 'running') return;
+      const now = ac.currentTime;
+      if (next < now - .05) next = now + .03;   // came back from a throttled tab: skip ahead instead of bunching notes
+      while (next < now + .25) { if (vol.music > 0 && !muted) play(step % STEPS, next); next += STEP; step++; }
+    }
+    return {
+      start() { if (timer) return; next = ac.currentTime + .1; step = 0; timer = setInterval(tick, 40); tick(); },
+      set intense(v) { intense = !!v; },
+    };
+  })();
 
-const rand = (a, b) => a + Math.random() * (b - a);
-let state = 'start', time = 0, score = 0, hp = MAX_HP, enemies = [], particles = [], popups = [], shake = 0, coreHit = 0;
-let line = null, drawing = false, spawnT = 0, waveT = 8, maxCombo = 0, tut = null;
+  return {
+    unlock: ensure,
+    get muted() { return muted; },
+    get vol() { return vol; },
+    setVol(kind, v) { vol[kind] = v; store.set('vol', vol); apply(); },
+    toggleMute() { muted = !muted; store.set('muted', muted); apply(); return muted; },
+    duck(on) { duck = on ? .45 : 1; apply(); },
+    intense(on) { music.intense = on; },
+    // freeze all sound (ads, hidden tab) and bring it back with the saved volumes untouched
+    hold(on) { held = on; if (!ac) return; if (on) ac.suspend().catch(() => {}); else wake(); },
+    setHidden(h) { hidden = h; if (!ac) return; if (h) ac.suspend().catch(() => {}); else wake(); },
+    // chalk scraping the board: a looping filtered noise whose volume follows drawing speed
+    scratch(level) {
+      if (!ac || ac.state !== 'running') return;
+      if (!scratchSrc) {
+        scratchSrc = ac.createBufferSource(); scratchSrc.buffer = noiseBuf; scratchSrc.loop = true;
+        scratchFilter = ac.createBiquadFilter(); scratchFilter.type = 'bandpass'; scratchFilter.Q.value = 1.1; scratchFilter.frequency.value = 3000;
+        scratchGain = ac.createGain(); scratchGain.gain.value = 0;
+        scratchSrc.connect(scratchFilter); scratchFilter.connect(scratchGain); scratchGain.connect(sfxBus); scratchSrc.start();
+      }
+      const grit = .65 + Math.random() * .35;
+      scratchGain.gain.setTargetAtTime(level * .2 * grit, ac.currentTime, .025);
+      scratchFilter.frequency.setTargetAtTime(2400 + level * 2200, ac.currentTime, .05);
+    },
+    tap() { noise({ dur: .035, vol: .22, freq: 2200, q: 1.5 }); tone({ type: 'sine', f0: 180, f1: 120, dur: .05, vol: .12 }); },
+    kill(combo, type) {
+      if (!gate('kill', 35)) return;
+      const step = Math.min(combo - 1, 10), f = 440 * Math.pow(2, step * 2 / 12);
+      noise({ dur: .12, vol: .18, freq: 1500, f1: 500, q: .8 });
+      tone({ f0: f, f1: f * 1.25, dur: .1, vol: .2 });
+      if (type === 'split') tone({ f0: f * 1.5, t: .05, dur: .08, vol: .14 });
+      if (type === 'ghost') tone({ type: 'sine', f0: f * .75, f1: f * 1.5, dur: .2, vol: .1 });
+      if (combo >= 3) tone({ type: 'sine', f0: f * 2, t: .06, dur: .18, vol: .08 });
+    },
+    snap() { noise({ dur: .07, vol: .35, freq: 4200, q: 2 }); noise({ t: .01, dur: .15, vol: .25, freq: 300, q: .7, type: 'lowpass' }); tone({ type: 'square', f0: 140, f1: 70, dur: .12, vol: .1 }); },
+    bossHit() { noise({ dur: .2, vol: .35, freq: 260, q: .6, type: 'lowpass' }); tone({ type: 'sawtooth', f0: 110, f1: 55, dur: .25, vol: .12 }); noise({ dur: .07, vol: .3, freq: 4200, q: 2 }); },
+    bossDown() { [0, .12, .24].forEach((t, i) => { noise({ t, dur: .3, vol: .3, freq: 400 - i * 80, q: .5, type: 'lowpass' }); tone({ type: 'sine', f0: 160 - i * 30, f1: 40, t, dur: .35, vol: .35 }); }); },
+    bossRoar() { tone({ type: 'sawtooth', f0: 70, f1: 110, dur: .6, vol: .12, attack: .1 }); tone({ type: 'sawtooth', f0: 73, f1: 104, dur: .6, vol: .1, attack: .1 }); },
+    erase() { if (!gate('erase', 200)) return; noise({ dur: .28, vol: .1, freq: 900, f1: 2600, q: .6, attack: .08 }); },
+    coreHit() {
+      tone({ type: 'sine', f0: 120, f1: 45, dur: .35, vol: .45 });
+      noise({ dur: .3, vol: .3, freq: 500, q: .5, type: 'lowpass' });
+      tone({ type: 'sawtooth', f0: 233, dur: .2, vol: .06 }); tone({ type: 'sawtooth', f0: 247, dur: .2, vol: .06 });
+    },
+    miss() { tone({ type: 'sine', f0: 300, f1: 200, dur: .2, vol: .15 }); },
+    wave() { [0, .16].forEach(t => { tone({ type: 'sine', f0: 90, f1: 60, t, dur: .14, vol: .35 }); noise({ t, dur: .06, vol: .1, freq: 400, type: 'lowpass' }); }); },
+    chime() { tone({ f0: 659.25, dur: .14, vol: .16 }); tone({ f0: 987.77, t: .09, dur: .22, vol: .14 }); },
+    start() { tone({ f0: 392, dur: .1, vol: .14 }); tone({ f0: 587.33, t: .08, dur: .16, vol: .14 }); },
+    over() { [392, 329.63, 261.63, 196].forEach((f, i) => tone({ f0: f, t: i * .16, dur: .3, vol: .18 })); },
+    win() { [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ f0: f, t: i * .1, dur: .32, vol: .16 })); tone({ type: 'sine', f0: 1318.5, t: .42, dur: .5, vol: .1 }); },
+    record() { [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => tone({ f0: f, t: i * .08, dur: .3, vol: .16 })); },
+    click() { noise({ dur: .025, vol: .1, freq: 2500, q: 1.5 }); },
+  };
+})();
+// Browsers only allow audio after a user gesture, so start it on the first tap or key press
+['pointerdown', 'keydown', 'touchstart'].forEach(ev => window.addEventListener(ev, () => audio.unlock(), { capture: true, passive: true }));
+document.addEventListener('click', e => { if (e.target.closest('button')) audio.click(); });
+
+// ---------- Levels ----------
+// goal: kills (destroy n), survive (seconds), boss. mix: spawn weights. iv: spawn interval from start to end of the level.
+// wave: rows of enemies from one direction. intro: what the level introduces (a hint and a NEW tag on the first one).
+const LEVELS = [
+  { goal: { kills: 12 }, mix: { dot: 1 }, iv: [2.6, 1.9], spd: .8, tutorial: true },
+  { goal: { kills: 25 }, mix: { dot: 1 }, iv: [2.5, 1.7], spd: .9, wave: { first: 5, every: 9, n: 4, grow: 2 }, intro: 'rows' },
+  { goal: { survive: 40 }, mix: { dot: .65, dart: .35 }, iv: [2.1, 1.3], spd: .95, wave: { first: 8, every: 10, n: 4, grow: 2, mix: { dot: .7, dart: .3 } }, intro: 'dart' },
+  { goal: { kills: 24 }, chalk: 16, mix: { dot: .7, dart: .3 }, iv: [3.0, 2.3], spd: .95, wave: { first: 3, every: 7, n: 5, grow: 1, mix: { dot: .75, dart: .25 } }, intro: 'chalk' },
+  { goal: { boss: 'golem' }, mix: { dot: .8, dart: .2 }, iv: [3.0, 2.2], spd: .95, intro: 'golem' },
+  { goal: { kills: 26 }, mix: { dot: .55, dart: .2, brute: .25 }, iv: [1.9, 1.25], spd: 1, wave: { first: 7, every: 10, n: 5, grow: 2 }, intro: 'brute' },
+  { goal: { survive: 45 }, mix: { dot: .5, dart: .2, brute: .12, split: .18 }, iv: [2.1, 1.45], spd: 1, wave: { first: 6, every: 10, n: 4, grow: 2 }, intro: 'split' },
+  { goal: { kills: 32 }, mix: { dot: .4, dart: .15, ghost: .3, split: .15 }, iv: [1.7, 1.05], spd: 1, wave: { first: 6, every: 9, n: 5, grow: 2 }, intro: 'ghost' },
+  { goal: { survive: 50 }, mix: { dot: .35, dart: .2, brute: .15, split: .15, ghost: .15 }, iv: [1.9, 1.25], spd: 1, wave: { first: 5, every: 9, n: 4, grow: 2, mix: { dot: .7, dart: .3 } } },
+  { goal: { boss: 'king' }, mix: { dot: .5, dart: .2, split: .15, ghost: .15 }, iv: [3.2, 2.4], spd: 1, intro: 'king' },
+];
+const BOSS_HP = { golem: 8, king: 10 };
+
+// ---------- Run state ----------
+let state = 'menu', mode = 'level', lv = 0, LV = null, runCfg = null;
+let time = 0, score = 0, hp = MAX_HP, enemies = [], particles = [], popups = [], pending = [], shake = 0, coreHit = 0;
+let line = null, drawing = false, spawnT = 0, waveT = 0, maxCombo = 0, kills = 0, hits = 0, chalkLeft = 0;
+let banner = null, hint = null, tut = 0, introDone = false, bossRef = null, enraged = false;
 
 function reset() {
-  time = 0; score = 0; hp = MAX_HP; enemies = []; particles = []; popups = []; shake = 0; coreHit = 0;
-  line = null; drawing = false; spawnT = 1.5; waveT = 20; maxCombo = 0;
-  updHud();
+  time = 0; score = 0; hp = MAX_HP; enemies = []; particles = []; popups = []; pending = []; shake = 0; coreHit = 0;
+  line = null; drawing = false; spawnT = 1.5; waveT = 20; maxCombo = 0; kills = 0; hits = 0;
+  hint = null; banner = null; tut = 0; introDone = false; bossRef = null; enraged = false;
+  chalkLeft = LV && LV.chalk ? LV.chalk : 0;
+  if (LV) { spawnT = LV.tutorial ? 1.2 : 1.6; waveT = LV.wave ? LV.wave.first : 1e9; }
 }
+function later(dt, fn) { pending.push({ at: time + dt, fn }); }
+function say(text, dur) { hint = { text, t: 0, dur: dur || 4 }; }
 
-// ---------- 敵人 ----------
+// ---------- Enemies ----------
 const TYPES = {
-  dot:   { r: 9,  speed: [55, 80],   hp: 1, color: '#ff9e9e', pts: 10 },
+  dot:   { r: 10, speed: [55, 80],   hp: 1, color: '#ff9e9e', pts: 10 },
   dart:  { r: 6,  speed: [125, 155], hp: 1, color: '#ffc48a', pts: 15 },
   brute: { r: 16, speed: [36, 46],   hp: 2, color: '#ff7a7a', pts: 30 },
   split: { r: 12, speed: [46, 62],   hp: 1, color: '#d2b0ff', pts: 20 },
+  ghost: { r: 12, speed: [50, 64],   hp: 1, color: '#9fe6d6', pts: 25 },
+  golem: { r: 34, speed: [17, 17],   hp: 8, color: '#ffb07a', pts: 300 },
+  king:  { r: 38, speed: [0, 0],     hp: 12, color: '#f2a7d6', pts: 600 },
 };
-function pickType() {
-  const r = Math.random();
-  if (time > 60 && r < .14) return 'split';
-  if (time > 40 && r < .30) return 'brute';
-  if (time > 20 && r < .50) return 'dart';
+function pick(mix) {
+  let tot = 0; for (const k in mix) tot += mix[k];
+  let r = Math.random() * tot; for (const k in mix) { r -= mix[k]; if (r <= 0) return k; }
   return 'dot';
 }
-function spawnEnemy(type, ang) {
-  const T = TYPES[type];
-  const a = ang != null ? ang : rand(0, Math.PI * 2);
-  const d = 440 + T.r;
-  const x = CX + Math.cos(a) * d, y = CY + Math.sin(a) * d;
-  const sp = rand(...T.speed) * (1 + Math.min(time, 150) / 300);
-  return enemies[enemies.push({ id: Math.random() * 1e6 | 0, type, x, y, r: T.r, hp: T.hp, sp, vx: 0, vy: 0, knock: 0, color: T.color, wob: rand(0, 6) }) - 1];
+function edgeDist(a) { const c = Math.abs(Math.cos(a)), s = Math.abs(Math.sin(a)); return Math.min(c > 1e-6 ? W / 2 / c : 1e9, s > 1e-6 ? H / 2 / s : 1e9); }
+function speedMul() { return mode === 'endless' ? 1 + Math.min(time, 150) / 300 : LV.spd; }
+function mk(type, x, y, sp) {
+  const T0 = TYPES[type];
+  const e = { id: Math.random() * 1e6 | 0, type, x, y, r: T0.r, hp: T0.hp, maxHp: T0.hp, sp, vx: 0, vy: 0, knock: 0, color: T0.color, wob: rand(0, 6), ph: rand(0, 1.5), hit: 0, imm: 0 };
+  if (LV && LV.intro === type && !introDone) { introDone = true; e.tag = 1; say(T.hint[type], 4.5); }
+  enemies.push(e);
+  return e;
 }
+function spawnEnemy(type, ang, mul) {
+  const T0 = TYPES[type], a = ang != null ? ang : rand(0, TAU);
+  const d = Math.max(edgeDist(a) + T0.r + 12, 330);
+  return mk(type, CX + Math.cos(a) * d, CY + Math.sin(a) * d, rand(...T0.speed) * speedMul() * (mul || 1));
+}
+function wave(n, mix, mul) {
+  const a = rand(0, TAU); audio.wave();
+  for (let i = 0; i < n; i++) later(i * .16, () => spawnEnemy(pick(mix), a + rand(-.22, .22), mul));
+  return a;
+}
+function spawnBoss(kind) {
+  const a = rand(0, TAU);
+  let e;
+  if (kind === 'golem') e = spawnEnemy('golem', a);
+  else { e = mk('king', CX, CY, 0); e.rho = 430; e.th = a; e.dir = Math.random() < .5 ? -1 : 1; placeKing(e); }
+  e.hp = e.maxHp = BOSS_HP[kind]; e.spawnT = 3; e.tag = 0;
+  bossRef = e; audio.bossRoar(); shake = 8;
+  say(T.hint[kind], 5);
+}
+function placeKing(e) { const m = Math.max(W, H); e.x = CX + Math.cos(e.th) * e.rho * W / m; e.y = CY + Math.sin(e.th) * e.rho * H / m; }
+function spawnAt(type, x, y) { return mk(type, x, y, rand(...TYPES[type].speed) * speedMul()); }
 
-// ---------- 畫線 ----------
-function toLocal(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; }
-function lineLen(pts) { let s = 0; for (let i = 1; i < pts.length; i++) s += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y); return s; }
-cv.addEventListener('pointerdown', e => {
-  if (state !== 'play') return;
-  cv.setPointerCapture(e.pointerId);
-  const p = toLocal(e);
+// ---------- Line drawing ----------
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+function toLocal(e) { const r = cv.getBoundingClientRect(), bl = cv.clientLeft, bt = cv.clientTop; return { x: (e.clientX - r.left - bl) / cv.clientWidth * W, y: (e.clientY - r.top - bt) / cv.clientHeight * H }; }
+// On touch screens the finger covers the tip of the line, so the time readout moves to the bottom of the board,
+// and enemies are a little easier to hit.
+let TOUCH = matchMedia('(pointer:coarse)').matches;
+let HIT_PAD = TOUCH ? 9 : 4;
+let drawId = null, scratchLevel = 0;
+function buzz(p) { try { const ua = navigator.userActivation; if (navigator.vibrate && (!ua || ua.hasBeenActive)) navigator.vibrate(p); } catch (e) {} }
+function penDown(p) {
+  if (LV && LV.chalk) {
+    if (chalkLeft <= 0) { audio.miss(); popup(p.x, p.y - 16, T.hint.noChalk, '#ff9e9e'); return false; }
+    chalkLeft--;
+  }
   line = { pts: [p], len: 0, age: 0, kills: 0, id: Math.random() };
-  drawing = true;
+  audio.tap(); drawing = true;
+  return true;
+}
+function penMove(p) {
+  if (!drawing || !line) return;
+  const q = line.pts[line.pts.length - 1], d = Math.hypot(p.x - q.x, p.y - q.y);
+  if (d < 5) return;
+  if (line.len + d > MAX_INK) { drawing = false; return; }
+  line.pts.push(p); line.len += d;
+  scratchLevel = Math.min(1, scratchLevel + d / 35);
+}
+function penUp() {
+  if (drawing && line && LV && LV.chalk && line.len < 10 && !line.kills) { chalkLeft++; line = null; }   // a tap doesn't use up chalk
+  drawing = false;
+}
+// Block page scrolling/bounce while playing, so the browser never steals (and cancels) a swipe or drag
+document.addEventListener('touchmove', e => { if (state === 'play') e.preventDefault(); }, { passive: false });
+cv.addEventListener('pointerdown', e => {
+  if (state !== 'play' || platform.paused()) return;
+  if (drawing && drawId !== e.pointerId) return;
+  e.preventDefault();
+  if (!penDown(toLocal(e))) return;
+  drawId = e.pointerId;
+  try { cv.setPointerCapture(e.pointerId); } catch (err) {}
 });
 cv.addEventListener('pointermove', e => {
-  if (!drawing || !line || state !== 'play') return;
-  const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
-  for (const ev of evs) {
-    const p = toLocal(ev), q = line.pts[line.pts.length - 1];
-    const d = Math.hypot(p.x - q.x, p.y - q.y);
-    if (d < 5) continue;
-    if (line.len + d > MAX_INK) { drawing = false; break; }
-    line.pts.push(p); line.len += d;
-  }
+  if (!drawing || state !== 'play' || e.pointerId !== drawId) return;
+  let evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [];
+  if (!evs.length) evs = [e];
+  for (const ev of evs) { penMove(toLocal(ev)); if (!drawing) break; }
 });
-const endDraw = () => { drawing = false; };
+const endDraw = e => { if (e.pointerId === drawId) { penUp(); drawId = null; } };
 window.addEventListener('pointerup', endDraw);
 window.addEventListener('pointercancel', endDraw);
 
 function distToSeg(px, py, a, b) {
   const vx = b.x - a.x, vy = b.y - a.y, wx = px - a.x, wy = py - a.y;
   const l2 = vx * vx + vy * vy;
-  let t = l2 ? (wx * vx + wy * vy) / l2 : 0; t = Math.max(0, Math.min(1, t));
-  return Math.hypot(px - (a.x + vx * t), py - (a.y + vy * t));
+  let k = l2 ? (wx * vx + wy * vy) / l2 : 0; k = Math.max(0, Math.min(1, k));
+  return Math.hypot(px - (a.x + vx * k), py - (a.y + vy * k));
 }
 function hitsLine(e) {
   if (!line || line.pts.length < 2) return false;
   const pts = line.pts;
-  for (let i = 1; i < pts.length; i++) if (distToSeg(e.x, e.y, pts[i - 1], pts[i]) < e.r + 4) return true;
+  for (let i = 1; i < pts.length; i++) if (distToSeg(e.x, e.y, pts[i - 1], pts[i]) < e.r + HIT_PAD) return true;
   return false;
 }
+const solid = e => e.type === 'ghost' ? (e.ph % 2.7) < 1.6 : e.type === 'king' ? !(enraged && (e.ph % 6) > 4.4) : true;
 
-// ---------- 更新 ----------
-function update(dt) {
-  if (!tut) time += dt;
-  // 線的壽命
-  if (line) {
-    line.age += dt;
-    if (line.age >= lifeOf(Math.max(line.len, 30))) { line = null; drawing = false; }
+// ---------- Update ----------
+function levelSpawns(dt) {
+  const g = LV.goal, p = g.kills ? kills / g.kills : g.survive ? time / g.survive : Math.min(1, time / 70);
+  if (LV.tutorial) {
+    // level 1 teaches by doing: one enemy at a time until the first hit, then a row, then a word on fading
+    if (tut === 0 && !hint) say(T.hint.draw, 99);
+    if (tut === 0 && kills >= 1) { tut = 1; audio.chime(); say(T.hint.nice, 3); }
+    if (tut === 1 && kills >= 4) { tut = 2; audio.chime(); say(T.hint.row, 6); wave(3, { dot: 1 }, .85); spawnT = 5; }
+    if (tut === 2 && kills >= 8) { tut = 3; say(T.hint.fade, 5); }
+    if (tut === 0 && enemies.length) return;
   }
-  // 生成
-  if (tut) tutUpdate(dt);
-  else {
   spawnT -= dt;
-  const interval = Math.max(0.38, 1.6 - time * 0.009);
-  if (spawnT <= 0) { spawnEnemy(pickType()); spawnT = interval * rand(.7, 1.3); }
+  if (spawnT <= 0) { spawnEnemy(pick(LV.mix)); spawnT = lerp(LV.iv[0], LV.iv[1], p) * rand(.75, 1.25); }
+  if (LV.wave) {
+    waveT -= dt;
+    if (waveT <= 0) {
+      if (LV.intro === 'rows' && !introDone) { introDone = true; say(T.hint.rows, 4.5); }
+      wave(LV.wave.n + Math.floor(p * LV.wave.grow + Math.random() * .99), LV.wave.mix || { dot: 1 });
+      waveT = LV.wave.every * rand(.9, 1.1);
+    }
+  }
+  if (LV.intro && TYPES[LV.intro] && !introDone && !g.boss && time > 3) spawnEnemy(LV.intro);   // show the new enemy early
+  if (g.boss && !bossRef && time > 2.5 && !bossRef_done) spawnBoss(g.boss);
+  if (bossRef && bossRef.type === 'king' && !enraged && bossRef.hp <= BOSS_HP.king / 2) { enraged = true; say(T.hint.enraged, 4); audio.bossRoar(); }
+}
+let bossRef_done = false;
+function endlessSpawns(dt) {
+  spawnT -= dt;
+  if (spawnT <= 0) {
+    const r = Math.random();
+    const ty = time > 90 && r < .08 ? 'ghost' : time > 60 && r < .2 ? 'split' : time > 40 && r < .34 ? 'brute' : time > 20 && r < .52 ? 'dart' : 'dot';
+    spawnEnemy(ty); spawnT = Math.max(0.38, 1.6 - time * 0.009) * rand(.7, 1.3);
+  }
   waveT -= dt;
   if (waveT <= 0) {
-    // 同一方向一整串
-    const a = rand(0, Math.PI * 2), n = 4 + Math.floor(time / 20);
-    for (let i = 0; i < n; i++) setTimeout(() => state === 'play' && spawnEnemy(time > 20 && i % 3 === 2 ? 'dart' : 'dot', a + rand(-.25, .25)), i * 160);
+    const a = rand(0, TAU), n = 4 + Math.floor(time / 20);
+    audio.wave();
+    for (let i = 0; i < n; i++) later(i * .16, () => spawnEnemy(time > 20 && i % 3 === 2 ? 'dart' : 'dot', a + rand(-.25, .25)));
     waveT = Math.max(6, 13 - time / 15);
   }
+}
+function moveEnemy(e, dt) {
+  e.wob += dt; e.ph += dt; e.hit = Math.max(0, e.hit - dt * 3); e.imm = Math.max(0, e.imm - dt);
+  if (e.type === 'king') {
+    e.rho -= (enraged ? 15 : 11) * dt; e.th += (enraged ? .42 : .28) * e.dir * dt; placeKing(e);
+    e.spawnT -= dt;
+    if (e.spawnT <= 0 && e.rho < 400) {
+      e.spawnT = enraged ? 3.6 : 4.5;
+      const a = Math.atan2(e.y - CY, e.x - CX), px = -Math.sin(a), py = Math.cos(a);
+      for (const s of (enraged ? [-1, 0, 1] : [-1, 1])) { const m = spawnAt(pick({ dart: .25, split: .2, ghost: enraged ? .2 : 0, dot: .55 }), e.x + px * s * 34, e.y + py * s * 34); m.knock = 0; }
+    }
+    return;
   }
-  // 敵人移動
+  const f = Math.pow(.92, dt * 60);
+  if (e.knock > 0) { e.knock -= dt; e.x += e.vx * dt; e.y += e.vy * dt; e.vx *= f; e.vy *= f; }
+  else {
+    const dx = CX - e.x, dy = CY - e.y, d = Math.hypot(dx, dy) || 1;
+    const sp = e.type === 'golem' && e.hp <= 4 ? e.sp * 1.4 : e.sp;
+    e.x += dx / d * sp * dt; e.y += dy / d * sp * dt;
+  }
+  if (e.type === 'golem') {
+    e.spawnT -= dt;
+    if (e.spawnT <= 0 && Math.hypot(e.x - CX, e.y - CY) < 420) {
+      e.spawnT = e.hp <= 4 ? 2.6 : 3.4;
+      const a = Math.atan2(e.y - CY, e.x - CX);
+      for (const s of [-1, 1]) spawnAt('dot', e.x + Math.cos(a + s * 1.2) * 40, e.y + Math.sin(a + s * 1.2) * 40);
+    }
+  }
+}
+function damageCore(n, x, y) {
+  hp -= n; hits += n; shake = 16; coreHit = 1; audio.coreHit(); buzz(70);
+  burst(x, y, '#ff9e9e', 16);
+  if (hp <= 0) { hp = 0; lose('core'); }
+}
+function update(dt) {
+  time += dt;
+  // bonus in endless mode: every 30 seconds survived
+  const h = host();
+  if (h && roundOn && mode === 'endless') {
+    while (marks < 5 && time >= (marks + 1) * 30) {
+      marks++;
+      const got = Math.max(0, Math.floor(Number(h.bonus(window, marks)) || 0));
+      if (got) { earned += got; burst(CX, CY - 40, '#ffe08a', 12); }
+    }
+  }
+
+  for (let i = pending.length - 1; i >= 0; i--) if (pending[i].at <= time) { const p = pending[i]; pending.splice(i, 1); p.fn(); if (state !== 'play') return; }
+  if (line) {
+    line.age += dt;
+    if (line.age >= lifeOf(Math.max(line.len, 30))) { line = null; drawing = false; audio.erase(); }
+  }
+  if (mode === 'endless') endlessSpawns(dt); else levelSpawns(dt);
   for (const e of enemies) {
-    const dx = CX - e.x, dy = CY - e.y, d = Math.hypot(dx, dy);
-    e.wob += dt;
-    if (e.knock > 0) { e.knock -= dt; e.x += e.vx * dt; e.y += e.vy * dt; e.vx *= .92; e.vy *= .92; }
-    else { e.x += dx / d * e.sp * dt; e.y += dy / d * e.sp * dt; }
+    moveEnemy(e, dt);
     if (e.lineImmune && (!line || line.id !== e.lineImmune)) e.lineImmune = null;
   }
-  // 碰撞
   for (let i = enemies.length - 1; i >= 0; i--) {
     const e = enemies[i];
+    if (!e) continue;
+    const boss = e.type === 'golem' || e.type === 'king';
     if (Math.hypot(e.x - CX, e.y - CY) < CORE_R + e.r) {
-      enemies.splice(i, 1); shake = 10; coreHit = 1;
-      burst(e.x, e.y, '#ff9e9e', 16);
-      if (tut) { popup(CX, CY - 60, Lx('沒擋到，再試一次|Missed it, try again'), '#ff9e9e'); continue; }
-      hp--; shake = 16;
-      if (hp <= 0) return gameOver();
+      if (boss) {
+        if (e.type === 'king') e.rho = 340;
+        else { const a = Math.atan2(e.y - CY, e.x - CX); e.vx = Math.cos(a) * 420; e.vy = Math.sin(a) * 420; e.knock = .7; }
+        damageCore(2, e.x, e.y);
+      } else { enemies.splice(i, 1); damageCore(1, e.x, e.y); }
+      if (state !== 'play') return;
       continue;
     }
-    if (line && e.lineImmune !== line.id && hitsLine(e)) {
-      if (e.type === 'brute' && e.hp > 1) {
-        // 撞斷線
-        e.hp--; e.knock = .35;
-        const dx = e.x - CX, dy = e.y - CY, d = Math.hypot(dx, dy);
-        e.vx = dx / d * 260; e.vy = dy / d * 260;
-        burst(e.x, e.y, '#a8dcf0', 18); popup(e.x, e.y - 20, Lx('線斷了！|Line broken!'), '#a8dcf0');
-        line = null; drawing = false;
-        continue;
-      }
-      line.kills++;
-      if (tut) tut.kills++;
-      const combo = line.kills;
-      maxCombo = Math.max(maxCombo, combo);
-      const pts = TYPES[e.type].pts * combo;
-      score += pts;
-      popup(e.x, e.y - 14, combo > 1 ? `+${pts} ×${combo}` : `+${pts}`, combo > 2 ? '#ffe08a' : '#bfe8a8');
-      burst(e.x, e.y, e.color, 12);
-      enemies.splice(i, 1);
-      if (e.type === 'split') {
-        const base = Math.atan2(e.y - CY, e.x - CX);
-        for (const s of [-1, 1]) {
-          const a = base + s * .7, T = TYPES.dot;
-          const ne = { type: 'dot', x: e.x + Math.cos(a) * 14, y: e.y + Math.sin(a) * 14, r: 7, hp: 1, sp: 95, vx: Math.cos(a) * 160, vy: Math.sin(a) * 160, knock: .45, color: '#d2b0ff', id: Math.random() * 1e6 | 0, wob: 0, lineImmune: line.id };
-          enemies.push(ne);
-        }
+    if (!line || e.lineImmune === line.id || e.imm > 0 || !solid(e) || !hitsLine(e)) continue;
+    if (boss) {
+      e.hp--; e.imm = .5; e.hit = 1; audio.bossHit(); buzz(40); shake = 9;
+      if (e.type === 'king') e.rho = Math.min(e.rho + 85, 390);
+      else { const a = Math.atan2(e.y - CY, e.x - CX); e.vx = Math.cos(a) * 300; e.vy = Math.sin(a) * 300; e.knock = .45; }
+      const pts = 50 * (line.kills + 1); score += pts;
+      burst(e.x, e.y, '#a8dcf0', 22); popup(e.x, e.y - e.r - 12, `${T.lineBroken} +${pts}`, '#a8dcf0');
+      line = null; drawing = false;
+      if (e.hp <= 0) { bossDown(e); return; }
+      continue;
+    }
+    if (e.type === 'brute' && e.hp > 1) {
+      e.hp--; e.knock = .35; e.hit = 1; audio.snap();
+      const dx = e.x - CX, dy = e.y - CY, d = Math.hypot(dx, dy);
+      e.vx = dx / d * 260; e.vy = dy / d * 260;
+      burst(e.x, e.y, '#a8dcf0', 18); popup(e.x, e.y - 20, T.lineBroken, '#a8dcf0'); buzz(35);
+      line = null; drawing = false;
+      continue;
+    }
+    line.kills++; kills++;
+    const combo = line.kills;
+    maxCombo = Math.max(maxCombo, combo); audio.kill(combo, e.type); buzz(10);
+    const pts = TYPES[e.type].pts * combo;
+    score += pts;
+    popup(e.x, e.y - 14, combo > 1 ? `+${pts} ×${combo}` : `+${pts}`, combo > 2 ? '#ffe08a' : '#bfe8a8');
+    burst(e.x, e.y, e.color, 12);
+    enemies.splice(i, 1);
+    if (e.type === 'split') {
+      const base = Math.atan2(e.y - CY, e.x - CX);
+      for (const s of [-1, 1]) {
+        const a = base + s * .7;
+        const ne = mk('dot', e.x + Math.cos(a) * 14, e.y + Math.sin(a) * 14, 78);
+        Object.assign(ne, { r: 7, vx: Math.cos(a) * 160, vy: Math.sin(a) * 160, knock: .45, color: '#d2b0ff', lineImmune: line.id, mini: 1 });
       }
     }
   }
-  // 特效
+  if (mode === 'level') {
+    const g = LV.goal;
+    if ((g.kills && kills >= g.kills) || (g.survive && time >= g.survive)) return win();
+    if (LV.chalk && chalkLeft <= 0 && !line && !drawing) return lose('chalk');
+  }
+  if (hint) { hint.t += dt; if (hint.t > hint.dur) hint = null; }
+  if (banner) { banner.t += dt; if (banner.t > 3) banner = null; }
+  tick(dt);
+}
+function tick(dt) {
   particles.forEach(p => { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= .93; p.vy *= .93; });
   particles = particles.filter(p => p.t < .6);
   popups.forEach(p => { p.t += dt; p.y -= 28 * dt; }); popups = popups.filter(p => p.t < .9);
   shake = Math.max(0, shake - dt * 40); coreHit = Math.max(0, coreHit - dt * 2);
-  checkBonus();
-  updHud();
 }
-function checkBonus() {
-  const h = host();
-  if (!h || !roundOn || tut) return;
-  while (marks < BONUS_MARKS && time >= (marks + 1) * BONUS_EVERY) {
-    marks++;
-    const got = Math.max(0, Math.floor(Number(h.bonus(window, marks)) || 0));
-    if (got) { earned += got; popup(CX, CY - 80, Lx('撐過 {s} 秒 · BONUS +{p} 點|{s}s survived · BONUS +{p} pts', { s: marks * BONUS_EVERY, p: got }), '#ffe08a'); }
-  }
+function bossDown(e) {
+  bossRef_done = true;
+  audio.bossDown(); shake = 22; buzz([60, 40, 120]);
+  for (let k = 0; k < 4; k++) burst(e.x + rand(-20, 20), e.y + rand(-20, 20), k % 2 ? e.color : '#f3f1e6', 18);
+  score += TYPES[e.type].pts;
+  popup(e.x, e.y - 50, `+${TYPES[e.type].pts}`, '#ffe08a');
+  enemies.splice(enemies.indexOf(e), 1);
+  win();
 }
-// ---------- 教學 ----------
-const TUT_TEXT = [
-  '在敵人（粉筆叉叉）和核心之間**畫一條短線**|**Draw a short line** between the enemy (chalk X) and the core',
-  '一條線可以擋很多個：**一筆擋下這一串**，連擊加分|One line can stop many: **block this whole row in one stroke** for combo points',
-  '注意線頭的秒數：**線越長，消失越快**。準備開始！|Watch the timer at the tip: **longer lines fade faster**. Get ready!',
-];
-function startTut() { tut = { step: 0, kills: 0, t: 0, ang: rand(0, Math.PI * 2) }; }
-function tutUpdate(dt) {
-  tut.t += dt;
-  if (tut.step === 0) {
-    if (tut.kills >= 1) { tut.step = 1; tut.kills = 0; tut.t = 0; tut.ang += 2.2; return; }
-    if (!enemies.length) { const e = spawnEnemy('dot', tut.ang); e.sp = 55; }
-  } else if (tut.step === 1) {
-    if (tut.kills >= 3) { tut.step = 2; tut.t = 0; return; }
-    if (!enemies.length && tut.t > .6) {
-      tut.kills = 0;
-      for (let i = 0; i < 3; i++) { const e = spawnEnemy('dot', tut.ang + (i - 1) * .18); e.sp = 50; }
-    }
-  } else if (tut.t > 3.2) {
-    tut = null; store.set('tutDone', true); spawnT = 1;
-  }
-}
-
-function burst(x, y, color, n) { for (let i = 0; i < n; i++) { const a = rand(0, 6.28), s = rand(60, 240); particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, color, t: 0 }); } }
+function burst(x, y, color, n) { for (let i = 0; i < n; i++) { const a = rand(0, TAU), s = rand(60, 240); particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, color, t: 0 }); } }
 function popup(x, y, text, color) { popups.push({ x, y, text, color, t: 0 }); }
 
-let lastHud = '';
-function updHud() {
-  const h = score + '|' + hp + '|' + Math.floor(time);
-  if (h === lastHud) return; lastHud = h;
-  document.getElementById('score').textContent = score;
-  document.getElementById('time').textContent = Math.floor(time);
-  document.getElementById('hearts').innerHTML = Array.from({ length: MAX_HP }, (_, i) => `<span class="${i < hp ? '' : 'off'}">♥</span>`).join('');
+// ---------- Run flow ----------
+function starsFor(h) { return h <= 1 ? 3 : h <= 3 ? 2 : 1; }
+function win() {
+  state = 'over'; line = null; drawing = false; setPause(false);
+  for (const e of enemies) burst(e.x, e.y, e.color, 8);
+  enemies = []; pending = [];
+  const bonus = hp * 50; score += bonus;
+  const stars = starsFor(hits), prevBest = prog.b[lv] || 0;
+  prog.s[lv] = Math.max(prog.s[lv] || 0, stars); prog.b[lv] = Math.max(prevBest, score);
+  prog.u = Math.max(prog.u, Math.min(LEVELS.length, lv + 2)); saveProg();
+  audio.win(); audio.intense(false);
+  setTimeout(() => showResult({ win: true, stars, newBest: score > prevBest && prevBest > 0 }), 1000);
 }
-let lastNewBest = false;
-function gameOver() {
-  state = 'over'; line = null; drawing = false; updHud();
-  const nb = score > best;
-  if (nb) { best = score; store.set('best', best); }
-  lastNewBest = nb && score > 0;
+function lose(reason) {
+  state = 'over'; line = null; drawing = false; setPause(false); buzz([60, 40, 120]);
   const h = host();
-  if (h && roundOn) { roundOn = false; h.finish(window, { score, time: Math.floor(time), combo: maxCombo }); }
-  document.getElementById('endScore').textContent = score;
-  document.getElementById('endTime').textContent = Math.floor(time);
-  document.getElementById('endCombo').textContent = maxCombo;
-  document.getElementById('endBest').textContent = best;
-  renderEnd();
-  setTimeout(() => show('ovEnd'), 700);
+  if (h && roundOn) {
+    roundOn = false;
+    h.finish(window, { score, time: Math.floor(time), combo: maxCombo });
+  }
+  audio.over(); audio.intense(false);
+  if (mode === 'endless') {
+    const nb = score > best && score > 0;
+    if (nb) { best = score; store.set('best', best); setTimeout(() => audio.record(), 750); }
+    setTimeout(() => showResult({ win: false, reason, newBest: nb }), 800);
+  } else setTimeout(() => showResult({ win: false, reason }), 800);
 }
-function renderEnd() {
-  document.getElementById('newBest').textContent = lastNewBest ? Lx('新紀錄！|New record!') : '';
-  document.getElementById('endBonus').textContent = host() && state === 'over' ? Lx('本局 BONUS {e} 點|BONUS this game: {e} pts', { e: earned }) : '';
-  document.getElementById('bestLine').textContent = best ? Lx('最佳分數：{b}|Best score: {b}', { b: best }) : '';
+function startRun(cfg) {
+  beginPlatform();
+  runCfg = cfg; mode = cfg.mode; lv = cfg.lv | 0; LV = mode === 'level' ? LEVELS[lv] : null;
+  bossRef_done = false;
+  reset(); show(null); state = 'play'; setPause(false); last = performance.now();
+  audio.start(); audio.intense(!!(LV && LV.goal.boss));
+  banner = mode === 'level' ? { title: `${t('levelN', lv + 1)} · ${T.levelNames[lv]}`, sub: goalText(LV) + (LV.chalk ? ' · ' + t('goalChalk', LV.chalk) : ''), t: 0 }
+    : { title: T.endless, sub: t('endlessSub', 0), t: 0 };
+  if (LV && LV.intro === 'chalk') { introDone = true; later(.5, () => say(T.hint.chalk, 5)); }
+}
+// Every action that starts a run goes through here (a platform build may show an ad first)
+function requestRun(cfg) { platform.between(() => startRun(cfg)); }
+function goalText(L) {
+  const g = L.goal;
+  return g.kills ? t('goalKills', g.kills) : g.survive ? t('goalSurvive', g.survive) : t('goalBoss', T.bossName[g.boss]);
+}
+function setPause(on) {
+  document.getElementById('btnPause').classList.toggle('on', state === 'play' && !on);
+  audio.duck(on);
+}
+function pauseGame() {
+  if (state !== 'play') return;
+  state = 'paused'; penUp(); drawId = null; setPause(true);
+  document.getElementById('pauseSub').textContent = mode === 'level' ? `${t('levelN', lv + 1)} · ${goalText(LV)}` : T.endless;
+  show('ovPause');
+}
+function resumeGame() {
+  if (state !== 'paused') return;
+  show(null); state = 'play'; last = performance.now(); setPause(false);
+}
+function goMenu() {
+  state = 'menu'; enemies = []; line = null; drawing = false; pending = []; popups = []; hint = null; banner = null;
+  setPause(false); audio.intense(false); refreshMenu(); show('ovMenu');
 }
 
-// ---------- 手繪筆觸工具 ----------
-const FONT = '"LXGW WenKai TC","Kaiti TC","STKaiti","BiauKai","Comic Sans MS",cursive';
-const INK = '#2b2b2b', PAPER = '#f6eedb';
+// ---------- Hand-drawn chalk rendering ----------
+const FONT = getComputedStyle(document.documentElement).getPropertyValue('--font').trim() || 'cursive';
 function rng(seed) {
   let s = (Math.imul(seed | 0, 2654435761) >>> 0) || 1;
   return () => { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; };
 }
-function wobblyCircle(x, y, r, R, over) {
-  const n = Math.max(12, Math.round(r / 2)), a0 = R() * 6.2832, amp = Math.min(2, r * .08);
-  const extra = over ? 0.12 + R() * 0.12 : 0;
-  ctx.beginPath();
-  for (let i = 0; i <= n * (1 + extra); i++) {
-    const a = a0 + i / n * 6.2832, rr = r + (R() - .5) * 2 * amp;
-    const px = x + Math.cos(a) * rr, py = y + Math.sin(a) * rr;
-    i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
-  }
-}
-function sketchCircle(x, y, r, seed, o) {
-  const R = rng(seed);
-  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-  if (o.fill) { ctx.fillStyle = o.fill; wobblyCircle(x + (R() - .5) * 2.5, y + (R() - .5) * 2.5, r * .97, R, false); ctx.closePath(); ctx.fill(); }
-  if (o.stroke) {
-    ctx.strokeStyle = o.stroke;
-    if (o.dash) ctx.setLineDash(o.dash);
-    ctx.lineWidth = o.lw || 2; wobblyCircle(x, y, r, R, true); ctx.stroke();
-    if (o.passes !== 1) { ctx.lineWidth = (o.lw || 2) * .55; wobblyCircle(x, y, r + .6, R, true); ctx.stroke(); }
-    ctx.setLineDash([]);
-  }
-}
-function sketchLine(x1, y1, x2, y2, R, j) {
-  const mx = (x1 + x2) / 2 + (R() - .5) * j * 2, my = (y1 + y2) / 2 + (R() - .5) * j * 2;
-  ctx.moveTo(x1 + (R() - .5) * j, y1 + (R() - .5) * j);
-  ctx.quadraticCurveTo(mx, my, x2 + (R() - .5) * j, y2 + (R() - .5) * j);
-}
-function sketchRect(x, y, w, h, seed, o) {
-  const R = rng(seed), j = o.j != null ? o.j : 1.6, e = o.over != null ? o.over : 3;
-  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-  if (o.fill) {
-    ctx.fillStyle = o.fill; ctx.beginPath();
-    ctx.moveTo(x + R() * j, y + R() * j); ctx.lineTo(x + w - R() * j, y + R() * j);
-    ctx.lineTo(x + w - R() * j, y + h - R() * j); ctx.lineTo(x + R() * j, y + h - R() * j); ctx.closePath(); ctx.fill();
-  }
-  if (o.stroke) {
-    ctx.strokeStyle = o.stroke; ctx.lineWidth = o.lw || 2;
-    if (o.dash) ctx.setLineDash(o.dash);
-    ctx.beginPath();
-    sketchLine(x - e, y, x + w + e * .4, y, R, j); sketchLine(x + w, y - e * .4, x + w, y + h + e, R, j);
-    sketchLine(x + w + e * .4, y + h, x - e, y + h, R, j); sketchLine(x, y + h + e * .4, x, y - e, R, j);
-    ctx.stroke(); ctx.setLineDash([]);
-  }
-}
-function sketchPoly(pts, seed, o) {
-  const R = rng(seed), j = o.j != null ? o.j : 1.4;
-  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-  if (o.fill) { ctx.fillStyle = o.fill; ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); ctx.fill(); }
-  if (o.stroke) {
-    ctx.strokeStyle = o.stroke; ctx.lineWidth = o.lw || 2; ctx.beginPath();
-    for (let i = 0; i < pts.length; i++) { const a = pts[i], b = pts[(i + 1) % pts.length]; sketchLine(a[0], a[1], b[0] + (b[0] - a[0]) * .08, b[1] + (b[1] - a[1]) * .08, R, j); }
-    ctx.stroke();
-  }
-}
-function hatch(x, y, w, h, seed, color, gap, lw) {
-  const R = rng(seed);
-  ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
-  ctx.strokeStyle = color; ctx.lineWidth = lw || 1.2; ctx.lineCap = 'round'; ctx.beginPath();
-  for (let k = -h; k < w + h; k += gap) {
-    ctx.moveTo(x + k + (R() - .5) * 2, y + h + 2 + (R() - .5) * 2);
-    ctx.lineTo(x + k + h + (R() - .5) * 2, y - 2 + (R() - .5) * 2);
-  }
-  ctx.stroke(); ctx.restore();
-}
-function inkText(text, x, y, size, color, weight) {
-  ctx.font = `${weight || 700} ${size}px ${FONT}`;
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillStyle = color; ctx.fillText(text, x, y);
-}
-
-// ---------- 繪圖（粉筆黑板） ----------
-// 所有粉筆筆觸先畫在一張透明圖層上，再用「粉筆顆粒紋理」把它侵蝕掉一部分，
-// 最後蓋到黑板上。紋理固定在黑板上（跟真的粉筆一樣，顆粒來自板面）。
+// All chalk strokes go on a transparent layer, get partly eaten away by a chalk-grain texture,
+// and are then composited onto the board. The texture is fixed to the board, like real chalk.
 const BOARD = '#2f4a3a';
-let boardBg = null, layer = null, lctx = null, chalkPat = null, tctx = null;
+let boardBg = null, layer = null, lctx = null, chalkPat = null, tctx = ctx;
 function makeBoard() {
   const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
   g.fillStyle = BOARD; g.fillRect(0, 0, W, H);
   for (let i = 0; i < 22; i++) {
     g.save(); g.translate(Math.random() * W, Math.random() * H); g.rotate(Math.random() * Math.PI);
     g.fillStyle = `rgba(243,241,230,${.006 + Math.random() * .01})`;
-    g.beginPath(); g.ellipse(0, 0, 60 + Math.random() * 160, 18 + Math.random() * 40, 0, 0, Math.PI * 2); g.fill(); g.restore();
+    g.beginPath(); g.ellipse(0, 0, 60 + Math.random() * 160, 18 + Math.random() * 40, 0, 0, TAU); g.fill(); g.restore();
   }
   for (let i = 0; i < 9000; i++) {
     g.fillStyle = Math.random() < .5 ? 'rgba(243,241,230,.035)' : 'rgba(0,0,0,.05)';
     g.fillRect(Math.random() * W, Math.random() * H, 1.5, 1.5);
   }
+  doodles(g);
   return c;
+}
+// Faint leftovers from earlier lessons, kept to the corners so the battlefield stays clear
+function doodles(g) {
+  const R = rng(4242), j = () => (R() - .5) * 1.6;
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round'; g.strokeStyle = 'rgba(243,241,230,.12)'; g.fillStyle = 'rgba(243,241,230,.12)'; g.lineWidth = 2;
+  const path = pts => { g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0] + j(), p[1] + j()) : g.moveTo(p[0] + j(), p[1] + j())); g.stroke(); };
+  // bottom left: a little castle with a flag
+  const bx = 34, by = H - 34;
+  path([[bx, by], [bx, by - 40], [bx + 10, by - 40], [bx + 10, by - 32], [bx + 20, by - 32], [bx + 20, by - 40], [bx + 30, by - 40], [bx + 30, by - 32], [bx + 40, by - 32], [bx + 40, by - 40], [bx + 50, by - 40], [bx + 50, by], [bx, by]]);
+  path([[bx + 19, by], [bx + 19, by - 14], [bx + 31, by - 14], [bx + 31, by]]);
+  path([[bx + 25, by - 40], [bx + 25, by - 62], [bx + 40, by - 56], [bx + 25, by - 50]]);
+  // bottom right: arithmetic and a triangle
+  g.font = `700 22px ${FONT}`; g.textAlign = 'right'; g.textBaseline = 'alphabetic';
+  g.fillText('1 line = 3 + 4 + 5', W - 30, H - 30);
+  path([[W - 140, H - 62], [W - 60, H - 62], [W - 140, H - 120], [W - 140, H - 62]]);
+  g.font = `700 17px ${FONT}`; g.fillText('a² + b² = c²', W - 30, H - 92);
+  // left and right edges: stars, a spiral, arrows pointing in
+  const star = (x, y, r) => { const p = []; for (let k = 0; k <= 10; k++) { const a = -Math.PI / 2 + k * Math.PI / 5, rr = k % 2 ? r * .45 : r; p.push([x + Math.cos(a) * rr, y + Math.sin(a) * rr]); } path(p); };
+  star(42, H * .42, 13); star(70, H * .5, 8); star(W - 46, H * .36, 11);
+  const sp = []; for (let a = 0; a < 16; a += .3) sp.push([W - 52 + Math.cos(a) * a * 1.6, H * .55 + Math.sin(a) * a * 1.6]); path(sp);
+  path([[24, H * .66], [62, H * .66]]); path([[52, H * .66 - 8], [62, H * .66], [52, H * .66 + 8]]);
+  // a few eraser streaks near the top corners
+  g.lineWidth = 9; g.strokeStyle = 'rgba(243,241,230,.025)';
+  path([[W * .06, H * .2], [W * .2, H * .17], [W * .1, H * .23], [W * .24, H * .2]]);
+  path([[W * .78, H * .18], [W * .93, H * .21], [W * .8, H * .24]]);
+  g.restore();
 }
 function makeChalkTexture(target) {
   const S = 256, c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d');
-  // 低頻雜訊：讓有些區域比較乾、比較淡
   const lf = document.createElement('canvas'); lf.width = lf.height = 28; const lg = lf.getContext('2d'); const ld = lg.createImageData(28, 28);
   for (let i = 0; i < ld.data.length; i += 4) { const v = Math.random() * 255; ld.data[i] = ld.data[i + 1] = ld.data[i + 2] = v; ld.data[i + 3] = 255; }
   lg.putImageData(ld, 0, 0);
@@ -490,7 +936,6 @@ function makeChalkTexture(target) {
     out.data[i] = out.data[i + 1] = out.data[i + 2] = 255; out.data[i + 3] = a * 255;
   }
   g.putImageData(out, 0, 0);
-  // 斜向的細刮痕（粉筆在板面上拖過的紋路）
   g.globalCompositeOperation = 'destination-out'; g.strokeStyle = 'rgba(0,0,0,.6)'; g.lineWidth = .9;
   for (let k = 0; k < 220; k++) {
     const x = Math.random() * S, y = Math.random() * S, l = 4 + Math.random() * 16;
@@ -523,7 +968,6 @@ function chalkStroke(pts, color, w, seed) {
   const c = tctx, R = rng(seed);
   c.save(); c.lineCap = 'round'; c.lineJoin = 'round'; c.strokeStyle = color;
   c.lineWidth = w; chalkPath(c, pts); c.stroke();
-  // 粗糙、斷續的邊緣
   const base = c.globalAlpha;
   for (let k = 0; k < 5; k++) {
     const a = k * 1.2566 + R() * .9, d = w * (.32 + R() * .3);
@@ -532,7 +976,6 @@ function chalkStroke(pts, color, w, seed) {
     c.setLineDash([2 + R() * 9, 1 + R() * 5, 1 + R() * 3, 2 + R() * 6]); c.lineDashOffset = R() * 30;
     chalkPath(c, pts); c.stroke(); c.restore();
   }
-  // 掉在旁邊的粉筆屑
   c.fillStyle = color;
   for (let i = 0; i < pts.length; i++) {
     if (R() < .55) continue;
@@ -542,35 +985,127 @@ function chalkStroke(pts, color, w, seed) {
   }
   c.restore();
 }
-function chalkCircle(x, y, r, color, w, seed) {
-  const R = rng(seed), n = Math.max(14, Math.round(r / 1.6)), a0 = R() * 6.28, pts = [];
-  for (let i = 0; i <= n * 1.12; i++) { const a = a0 + i / n * 6.2832, rr = r + (R() - .5) * Math.min(3, r * .12); pts.push({ x: x + Math.cos(a) * rr, y: y + Math.sin(a) * rr }); }
-  chalkStroke(pts, color, w, seed + 1);
+function circlePts(x, y, r, seed, over) {
+  const R = rng(seed), n = Math.max(14, Math.round(r / 1.6)), a0 = R() * TAU, pts = [];
+  for (let i = 0; i <= n * (over || 1.12); i++) { const a = a0 + i / n * TAU, rr = r + (R() - .5) * Math.min(3, r * .12); pts.push({ x: x + Math.cos(a) * rr, y: y + Math.sin(a) * rr }); }
+  return pts;
 }
-// 文字不經過顆粒紋理（不然小字會看不清楚），只疊兩層做出粉筆的毛邊
-function chalkText(text, x, y, size, color, align) {
+function chalkCircle(x, y, r, color, w, seed) { chalkStroke(circlePts(x, y, r, seed), color, w, seed + 1); }
+function hatchIn(pts, x, y, r, color, alpha, seed) {
+  const c = tctx; c.save(); c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(p.x, p.y) : c.moveTo(p.x, p.y)); c.clip();
+  c.globalAlpha *= alpha; const R = rng(seed);
+  for (let k = -r * 2; k < r * 2; k += 5.5) chalkStroke([{ x: x + k - r + (R() - .5) * 2, y: y + r }, { x: x + k + r + (R() - .5) * 2, y: y - r }], color, 2, seed + k);
+  c.restore();
+}
+// Text skips the grain texture (small text would be unreadable); two offset layers give it a chalky edge
+function chalkText(text, x, y, size, color, align, alpha) {
   const c = ctx;
-  c.save(); c.globalAlpha = tctx.globalAlpha * .93;
+  c.save(); c.globalAlpha = (alpha == null ? 1 : alpha) * .93;
   c.font = `700 ${size}px ${FONT}`; c.textAlign = align || 'center'; c.textBaseline = 'middle';
   c.fillStyle = color; c.fillText(text, x, y);
   c.globalAlpha *= .45; c.fillText(text, x + .9, y + .7); c.fillText(text, x - .6, y + .4);
   c.restore();
 }
+
+// enemy bodies (on the chalk layer)
+function drawBody(e, c) {
+  const sd = e.id * 7, bob = 1 + Math.sin(e.wob * 7) * .05, r = e.r * bob;
+  const ghostly = !solid(e);
+  c.save(); if (ghostly) c.globalAlpha = .3;
+  if (e.type === 'dart') {
+    const a = Math.atan2(CY - e.y, CX - e.x), ca = Math.cos(a), sa = Math.sin(a);
+    const P = (u, v) => ({ x: e.x + ca * u - sa * v, y: e.y + sa * u + ca * v });
+    chalkStroke([P(-r - 9, 0), P(r + 5, 0)], e.color, 3.4, sd);
+    chalkStroke([P(r - 3, -6.5), P(r + 6, 0), P(r - 3, 6.5)], e.color, 3.4, sd + 1);
+    c.globalAlpha *= .45;
+    chalkStroke([P(-r - 16, -5), P(-r - 26, -5)], e.color, 2, sd + 2);
+    chalkStroke([P(-r - 14, 5), P(-r - 22, 5)], e.color, 2, sd + 3);
+  } else if (e.type === 'brute' || e.type === 'golem') {
+    const n = e.type === 'brute' ? 6 : 9, R = rng(sd), pts = [];
+    for (let k = 0; k <= n; k++) { const a = e.wob * (e.type === 'brute' ? .8 : .15) + k * TAU / n, rr = e.type === 'golem' ? r * (.88 + (k % n === 0 ? .1 : R() * .2)) : r; pts.push({ x: e.x + Math.cos(a) * rr, y: e.y + Math.sin(a) * rr }); }
+    if (e.type === 'golem') pts[n] = pts[0];
+    hatchIn(pts, e.x, e.y, r, e.color, e.hp > e.maxHp / 2 ? .7 : .35, sd);
+    chalkStroke(pts, e.color, e.type === 'golem' ? 4.5 : 3.6, sd + 2);
+    const cracks = e.maxHp - e.hp;
+    for (let k = 0; k < cracks; k++) {
+      const a = k * 2.4 + 1, R2 = rng(sd + k * 13);
+      chalkStroke([{ x: e.x + Math.cos(a) * r, y: e.y + Math.sin(a) * r }, { x: e.x + Math.cos(a + .3) * r * .6 + (R2() - .5) * 6, y: e.y + Math.sin(a + .3) * r * .6 }, { x: e.x + Math.cos(a - .1) * r * .35, y: e.y + Math.sin(a - .1) * r * .35 }], '#f3f1e6', 1.8, sd + 50 + k);
+    }
+  } else if (e.type === 'split') {
+    chalkCircle(e.x - 5, e.y, r * .72, e.color, 3, sd);
+    chalkCircle(e.x + 5, e.y, r * .72, e.color, 3, sd + 1);
+  } else if (e.type === 'ghost') {
+    const pts = [];
+    for (let k = 0; k <= 12; k++) { const a = Math.PI + k / 12 * Math.PI; pts.push({ x: e.x + Math.cos(a) * r, y: e.y - 2 + Math.sin(a) * r }); }
+    for (let k = 0; k <= 12; k++) { const u = 1 - k / 12; pts.push({ x: e.x - r + 2 * r * u + 0 * k, y: e.y + r * .9 + Math.sin(k * 1.6 + e.wob * 8) * 3 }); }
+    pts.push(pts[0]);
+    chalkStroke(pts, e.color, ghostly ? 2 : 3.2, sd);
+  } else if (e.type === 'king') {
+    const w = r * 1.25, h = r * .8, x = e.x, y = e.y;
+    const box = [{ x: x - w, y: y - h }, { x: x + w, y: y - h }, { x: x + w, y: y + h }, { x: x - w, y: y + h }, { x: x - w, y: y - h }];
+    const felt = [{ x: x - w, y: y + h * .35 }, { x: x + w, y: y + h * .35 }, { x: x + w, y: y + h }, { x: x - w, y: y + h }, { x: x - w, y: y + h * .35 }];
+    hatchIn(felt, x, y + h * .6, w, '#f3f1e6', .45, sd);
+    chalkStroke(box, e.color, 4.5, sd + 1);
+    chalkStroke([{ x: x - w, y: y + h * .35 }, { x: x + w, y: y + h * .35 }], e.color, 3, sd + 2);
+    const cy0 = y - h - 2;
+    chalkStroke([{ x: x - w * .6, y: cy0 }, { x: x - w * .65, y: cy0 - 22 }, { x: x - w * .3, y: cy0 - 10 }, { x: x, y: cy0 - 28 }, { x: x + w * .3, y: cy0 - 10 }, { x: x + w * .65, y: cy0 - 22 }, { x: x + w * .6, y: cy0 }, { x: x - w * .6, y: cy0 }], '#ffe08a', 3.4, sd + 3);
+  } else {
+    chalkCircle(e.x, e.y, r, e.color, 3.2, sd);
+    if (!e.mini) { c.globalAlpha *= .4; chalkStroke([{ x: e.x - r * .5, y: e.y + r + 3 }, { x: e.x - r * .5, y: e.y + r + 7 + Math.sin(e.wob * 14) * 2 }], e.color, 2.4, sd + 4); chalkStroke([{ x: e.x + r * .5, y: e.y + r + 3 }, { x: e.x + r * .5, y: e.y + r + 7 - Math.sin(e.wob * 14) * 2 }], e.color, 2.4, sd + 5); }
+  }
+  if (e.hit > 0) { c.globalAlpha = e.hit; chalkCircle(e.x, e.y, e.r + 8, '#f3f1e6', 2.5, sd + 9); }
+  c.restore();
+}
+// faces (drawn crisp on top, so they stay readable): eyes follow the core, they blink now and then
+function face(e, x, y, s, o) {
+  const a = Math.atan2(CY - y, CX - x), lx = Math.cos(a), ly = Math.sin(a);
+  const blink = ((e.wob + (e.id % 13) * .37) % 3.4) < .13;
+  const er = Math.max(1.7, s * .2), gap = o.gap != null ? o.gap : s * .42, ey = y - s * .12;
+  ctx.save(); ctx.globalAlpha = o.alpha != null ? o.alpha : 1; ctx.lineCap = 'round'; ctx.strokeStyle = '#f3f1e6';
+  ctx.lineWidth = Math.max(1.3, s * .1);
+  for (const sd of (o.one ? [0] : [-1, 1])) {
+    const ex = x + sd * gap;
+    if (blink) { ctx.beginPath(); ctx.moveTo(ex - er, ey); ctx.lineTo(ex + er, ey); ctx.stroke(); }
+    else {
+      ctx.fillStyle = '#f3f1e6'; ctx.beginPath(); ctx.ellipse(ex, ey, er, er * (o.oval ? 1.4 : 1), 0, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#18261d'; ctx.beginPath(); ctx.arc(ex + lx * er * .45, ey + ly * er * .45, er * .55, 0, TAU); ctx.fill();
+    }
+    if (o.brows && sd) { ctx.beginPath(); ctx.moveTo(ex + sd * er * 1.3, ey - er * 2.1); ctx.lineTo(ex - sd * er * 1.1, ey - er * 1.2); ctx.stroke(); }
+  }
+  const my = y + s * .45, mw = s * .32;
+  ctx.beginPath();
+  if (o.mouth === 'teeth') { ctx.moveTo(x - mw, my); for (let k = 1; k <= 4; k++) ctx.lineTo(x - mw + k * mw / 2, my + (k % 2 ? -s * .1 : s * .06)); }
+  else if (o.mouth === 'o') ctx.arc(x, my, s * .12, 0, TAU);
+  else if (o.mouth === 'grin') ctx.arc(x, my - s * .12, mw, .25, Math.PI - .25);
+  else if (o.mouth === 'frown') ctx.arc(x, my + s * .14, mw * .8, Math.PI + .5, TAU - .5);
+  else { ctx.moveTo(x - mw * .7, my); ctx.lineTo(x + mw * .7, my); }
+  if (o.mouth !== 'none') ctx.stroke();
+  ctx.restore();
+}
+function drawFace(e) {
+  const r = e.r * (1 + Math.sin(e.wob * 7) * .05), al = solid(e) ? 1 : .35;
+  switch (e.type) {
+    case 'dot': if (e.mini) face(e, e.x, e.y, r * 1.1, { mouth: 'o', alpha: al }); else face(e, e.x, e.y + 1, r * 1.05, { brows: true, mouth: 'frown' }); break;
+    case 'dart': { const a = Math.atan2(CY - e.y, CX - e.x); face(e, e.x + Math.cos(a) * 1, e.y + Math.sin(a) * 1 - 1, 9, { one: true, brows: false, mouth: 'none' }); break; }
+    case 'brute': face(e, e.x, e.y, r * .95, { brows: true, mouth: 'teeth' }); break;
+    case 'split': face(e, e.x - 5, e.y, r * .7, { one: true, mouth: 'none' }); face(e, e.x + 5, e.y, r * .7, { one: true, mouth: 'o' }); break;
+    case 'ghost': face(e, e.x, e.y - 3, r * 1.05, { oval: true, mouth: 'o', alpha: al }); break;
+    case 'golem': face(e, e.x, e.y, r * .8, { brows: true, mouth: 'teeth', gap: r * .34 }); break;
+    case 'king': face(e, e.x, e.y - r * .32, r * .7, { brows: true, mouth: 'grin', alpha: al, gap: r * .36 }); break;
+  }
+}
+
+function hudSize() { return Math.max(20, 12.5 / kScale); }
 function draw(now) {
   if (!boardBg) boardBg = makeBoard();
   const sx = shake ? rand(-shake, shake) * .5 : 0, sy = shake ? rand(-shake, shake) * .5 : 0;
-  ctx.save(); ctx.translate(sx, sy);
-  ctx.drawImage(boardBg, 0, 0);
-  if (tut && state === 'play') drawTutBox();
-  ctx.restore();
+  ctx.save(); ctx.translate(sx, sy); ctx.drawImage(boardBg, 0, 0); ctx.restore();
 
   beginChalk(sx, sy);
   const c = tctx;
-  // 擦得不乾淨的同心圓
   c.save(); c.globalAlpha = .1;
-  for (let r = 100, k = 0; r < 600; r += 100, k++) chalkCircle(CX, CY, r, '#f3f1e6', 2.2, 900 + k);
+  for (let r = 100, k = 0; r < 520; r += 100, k++) chalkCircle(CX, CY, r, '#f3f1e6', 2.2, 900 + k);
   c.restore();
-  // 核心：粉筆畫的小城堡
   const coreCol = coreHit > 0 ? '#ff9e9e' : '#bfe8a8';
   chalkCircle(CX, CY, CORE_R, coreCol, 4, 11);
   chalkCircle(CX, CY, CORE_R + 6, coreCol, 1.8, 17);
@@ -583,7 +1118,6 @@ function draw(now) {
     chalkStroke([{ x, y: CY + CORE_R + 15 }, { x: x + 1.5, y: CY + CORE_R + 30 }], '#f3f1e6', 3.5, 40 + i);
     c.restore();
   }
-  // 你畫的線
   if (line && line.pts.length > 0) {
     const life = lifeOf(Math.max(line.len, 30)), left = Math.max(0, 1 - line.age / life);
     const warn = left < .3 && Math.floor(now / 90) % 2;
@@ -594,139 +1128,288 @@ function draw(now) {
     else chalkStroke(line.pts, col, 7 + 3 * left, Math.floor(line.id * 1e6));
     c.restore();
     const tip = line.pts[line.pts.length - 1], arc = [];
-    for (let a = 0; a <= left * 6.2832; a += .2) arc.push({ x: tip.x + Math.cos(a - Math.PI / 2) * 15, y: tip.y + Math.sin(a - Math.PI / 2) * 15 });
+    for (let a = 0; a <= left * TAU; a += .2) arc.push({ x: tip.x + Math.cos(a - Math.PI / 2) * 15, y: tip.y + Math.sin(a - Math.PI / 2) * 15 });
     if (arc.length > 1) chalkStroke(arc, '#ffe08a', 3, 99);
-    chalkText((life * left).toFixed(1) + 's', tip.x + 22, tip.y - 2, 19, '#ffe08a', 'left');
+    if (TOUCH) chalkText((life * left).toFixed(1) + 's', CX, H - 52, 30, '#ffe08a');
+    else chalkText((life * left).toFixed(1) + 's', tip.x + 22, tip.y - 2, 19, '#ffe08a', 'left');
     if (drawing) {
       c.save(); c.globalAlpha = .2;
-      chalkStroke([{ x: W / 2 - 100, y: H - 20 }, { x: W / 2 + 100, y: H - 20 }], '#f3f1e6', 7, 77);
+      chalkStroke([{ x: CX - 100, y: H - 20 }, { x: CX + 100, y: H - 20 }], '#f3f1e6', 7, 77);
       c.restore();
-      chalkStroke([{ x: W / 2 - 100, y: H - 20 }, { x: W / 2 - 100 + 200 * line.len / MAX_INK, y: H - 20 }], line.len > MAX_INK * .8 ? '#ff9e9e' : '#a8dcf0', 7, 78);
+      chalkStroke([{ x: CX - 100, y: H - 20 }, { x: CX - 100 + 200 * line.len / MAX_INK, y: H - 20 }], line.len > MAX_INK * .8 ? '#ff9e9e' : '#a8dcf0', 7, 78);
     }
   }
-  // 敵人：粉筆塗鴉
   for (const e of enemies) {
-    const sd = e.id * 7, r = e.r;
-    if (e.type === 'dart') {
-      const a = Math.atan2(CY - e.y, CX - e.x), ca = Math.cos(a), sa = Math.sin(a);
-      const P = (u, v) => ({ x: e.x + ca * u - sa * v, y: e.y + sa * u + ca * v });
-      chalkStroke([P(-r - 9, 0), P(r + 5, 0)], e.color, 3.4, sd);
-      chalkStroke([P(r - 3, -6.5), P(r + 6, 0), P(r - 3, 6.5)], e.color, 3.4, sd + 1);
-    } else if (e.type === 'brute') {
-      const pts = [];
-      for (let k = 0; k <= 6; k++) { const a = e.wob * .8 + k * Math.PI / 3; pts.push({ x: e.x + Math.cos(a) * r, y: e.y + Math.sin(a) * r }); }
-      c.save(); c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(p.x, p.y) : c.moveTo(p.x, p.y)); c.clip();
-      const R = rng(sd); c.globalAlpha = e.hp > 1 ? .75 : .35;
-      for (let k = -r * 2; k < r * 2; k += 5.5) chalkStroke([{ x: e.x + k - r + (R() - .5) * 2, y: e.y + r }, { x: e.x + k + r + (R() - .5) * 2, y: e.y - r }], e.color, 2, sd + k);
-      c.restore();
-      chalkStroke(pts, e.color, 3.6, sd + 2);
-    } else if (e.type === 'split') {
-      chalkCircle(e.x - 4, e.y, r * .75, e.color, 3, sd);
-      chalkCircle(e.x + 4, e.y, r * .75, e.color, 3, sd + 1);
-    } else {
-      const R = rng(sd), j = () => (R() - .5) * 2.5;
-      chalkStroke([{ x: e.x - r + j(), y: e.y - r + j() }, { x: e.x + r + j(), y: e.y + r + j() }], e.color, 3.6, sd + 1);
-      chalkStroke([{ x: e.x + r + j(), y: e.y - r + j() }, { x: e.x - r + j(), y: e.y + r + j() }], e.color, 3.6, sd + 2);
+    drawBody(e, c);
+    // enemies still off the board: a small arrow at the edge shows where they are coming from
+    if (e.x < -4 || e.x > W + 4 || e.y < -4 || e.y > H + 4) {
+      const ex = Math.max(16, Math.min(W - 16, e.x)), ey = Math.max(16, Math.min(H - 16, e.y)), a = Math.atan2(e.y - CY, e.x - CX);
+      const P = (u, v) => ({ x: ex + Math.cos(a) * u - Math.sin(a) * v, y: ey + Math.sin(a) * u + Math.cos(a) * v });
+      c.save(); c.globalAlpha = .55; chalkStroke([P(-8, -7), P(0, 0), P(-8, 7)], e.color, 3, e.id); c.restore();
     }
   }
-  for (const p of popups) { c.save(); c.globalAlpha = 1 - p.t / .9; chalkText(p.text, p.x, p.y, 23, p.color); c.restore(); }
-  if (tut && state === 'play') drawTut(now);
+  if (mode === 'level' && LV && LV.tutorial && state !== 'menu' && (tut === 0 || tut === 2) && !line) drawGuide(now, c);
   endChalk();
 
-  // 粉筆灰（不經過紋理，保持細碎）
   ctx.save(); ctx.translate(sx, sy);
+  for (const e of enemies) if (e.x > -30 && e.x < W + 30 && e.y > -30 && e.y < H + 30) drawFace(e);
   for (const p of particles) { ctx.globalAlpha = (1 - p.t / .6) * .7; ctx.fillStyle = p.color; ctx.fillRect(p.x - 1.2, p.y - 1.2, 2.4, 2.4); }
   ctx.globalAlpha = 1;
+  for (const p of popups) chalkText(p.text, p.x, p.y, 23, p.color, 'center', 1 - p.t / .9);
+  for (const e of enemies) if (e.tag && e.x > 0 && e.x < W && e.y > 0 && e.y < H) {
+    const pulse = .7 + .3 * Math.sin(now / 150);
+    chalkText(T.newTag, e.x, e.y - e.r - 26, 20, '#ffe08a', 'center', pulse);
+    ctx.save(); ctx.strokeStyle = '#ffe08a'; ctx.globalAlpha = pulse; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(e.x, e.y - e.r - 16); ctx.lineTo(e.x, e.y - e.r - 6); ctx.stroke(); ctx.restore();
+  }
   if (coreHit > 0) { ctx.fillStyle = `rgba(255,120,120,${coreHit * .14})`; ctx.fillRect(-20, -20, W + 40, H + 40); }
   ctx.restore();
+  if (state !== 'menu') drawHud(now);
 }
-let tutBoxW = 0;
-function drawTutBox() {
-  const text = Lx(TUT_TEXT[tut.step]).replace(/<\/?b>/g, '');
-  ctx.font = `700 24px ${FONT}`;
-  tutBoxW = ctx.measureText(text).width + 44;
-  ctx.fillStyle = 'rgba(37,60,47,.92)'; ctx.fillRect(CX - tutBoxW / 2, 38, tutBoxW, 56);
-}
-function drawTut(now) {
-  const c = tctx;
-  if (tut.step < 2 && enemies.length && !line) {
-    let sx = 0, sy = 0; enemies.forEach(e => { sx += e.x; sy += e.y; }); sx /= enemies.length; sy /= enemies.length;
-    const dx = sx - CX, dy = sy - CY, d = Math.hypot(dx, dy) || 1;
-    const mx = CX + dx / d * Math.min(150, d * .5), my = CY + dy / d * Math.min(150, d * .5);
-    const px = -dy / d, py = dx / d, half = tut.step === 0 ? 45 : 85;
-    c.save(); c.globalAlpha = .45 + .35 * Math.sin(now / 200);
-    for (let t = -1; t < .99; t += .3) chalkStroke([{ x: mx + px * half * t, y: my + py * half * t }, { x: mx + px * half * (t + .16), y: my + py * half * (t + .16) }], '#f3f1e6', 4, 300 + Math.round(t * 10));
-    c.restore();
-    const k = (now / 1200) % 1;
-    c.save(); c.globalAlpha = 1 - k * .3;
-    chalkCircle(mx - px * half + px * half * 2 * k, my - py * half + py * half * 2 * k, 8, '#ffe08a', 3, 5);
-    c.restore();
-  }
-  const text = Lx(TUT_TEXT[tut.step]).replace(/<\/?b>/g, ''), w = tutBoxW;
-  c.save(); c.globalAlpha = .6;
-  chalkStroke([{ x: CX - w / 2, y: 38 }, { x: CX + w / 2, y: 38 }, { x: CX + w / 2, y: 94 }, { x: CX - w / 2, y: 94 }, { x: CX - w / 2, y: 38 }], '#f3f1e6', 2.2, 3);
+function drawGuide(now, c) {
+  const near = enemies.filter(e => e.type === 'dot');
+  if (!near.length) return;
+  let sx = 0, sy = 0; near.forEach(e => { sx += e.x; sy += e.y; }); sx /= near.length; sy /= near.length;
+  const dx = sx - CX, dy = sy - CY, d = Math.hypot(dx, dy) || 1;
+  const mx = CX + dx / d * Math.min(150, d * .5), my = CY + dy / d * Math.min(150, d * .5);
+  const px = -dy / d, py = dx / d, half = tut === 0 ? 45 : 85;
+  c.save(); c.globalAlpha = .45 + .35 * Math.sin(now / 200);
+  for (let k = -1; k < .99; k += .3) chalkStroke([{ x: mx + px * half * k, y: my + py * half * k }, { x: mx + px * half * (k + .16), y: my + py * half * (k + .16) }], '#f3f1e6', 4, 300 + Math.round(k * 10));
   c.restore();
-  chalkText(text, CX, 67, 24, '#f3f1e6');
-  c.save(); c.globalAlpha = .55; chalkText(Lx('教學 {n} / 3 · 教學中核心不會受傷|Tutorial {n} / 3 · the core can’t be hurt during the tutorial', { n: tut.step + 1 }), CX, 114, 15, '#f3f1e6'); c.restore();
+  const k = (now / 1200) % 1;
+  c.save(); c.globalAlpha = 1 - k * .3;
+  chalkCircle(mx - px * half + px * half * 2 * k, my - py * half + py * half * 2 * k, 8, '#ffe08a', 3, 5);
+  c.restore();
+}
+function boxText(text, y, size, color, alpha) {
+  ctx.save(); ctx.font = `700 ${size}px ${FONT}`;
+  const w = Math.min(W - 20, ctx.measureText(text).width + 36);
+  ctx.globalAlpha = .85 * alpha; ctx.fillStyle = 'rgba(37,60,47,.9)'; ctx.fillRect(CX - w / 2, y - size * .8, w, size * 1.6);
+  ctx.restore();
+  chalkText(text, CX, y, size, color, 'center', alpha);
+}
+function drawHud(now) {
+  const s = hudSize(), pad = 14, top = pad + s * .55;
+  // left: level and objective
+  if (mode === 'level') {
+    const g = LV.goal;
+    chalkText(t('levelN', lv + 1), pad, top, s * .8, 'rgba(243,241,230,.62)', 'left');
+    const goal = g.kills ? t('hudKills', Math.min(kills, g.kills), g.kills) : g.survive ? t('hudSurvive', Math.max(0, Math.ceil(g.survive - time))) : T.bossHud[g.boss];
+    chalkText(goal, pad, top + s * 1.05, s, '#f3f1e6', 'left');
+    if (LV.chalk) chalkText(t('hudChalk', chalkLeft), pad, top + s * 2.1, s * .9, chalkLeft <= 3 ? '#ff9e9e' : '#ffe08a', 'left');
+  } else {
+    chalkText(T.hudEndless, pad, top, s * .8, 'rgba(243,241,230,.62)', 'left');
+    chalkText(Math.floor(time) + 's', pad, top + s * 1.05, s * 1.1, '#f3f1e6', 'left');
+  }
+  // center: core health
+  ctx.save(); ctx.font = `700 ${s * 1.1}px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (let i = 0; i < MAX_HP; i++) { ctx.globalAlpha = i < hp ? .95 : .16; ctx.fillStyle = '#ff9e9e'; ctx.fillText('♥', CX + (i - 2) * s * 1.05, top + 2); }
+  ctx.restore();
+  // boss health bar
+  if (bossRef && enemies.includes(bossRef)) {
+    const bw = Math.min(260, W * .38), y = top + s * 1.25, f = bossRef.hp / bossRef.maxHp;
+    ctx.save(); ctx.strokeStyle = 'rgba(243,241,230,.7)'; ctx.lineWidth = 2; ctx.strokeRect(CX - bw / 2, y, bw, 10);
+    ctx.fillStyle = bossRef.color; ctx.fillRect(CX - bw / 2 + 2, y + 2, (bw - 4) * f, 6); ctx.restore();
+  }
+  // right: score (kept clear of the pause button)
+  const rx = W - pad - 56 / kScale;
+  chalkText(String(score), rx, top + s * .4, s * 1.25, '#f3f1e6', 'right');
+  // level banner and hints
+  if (banner) {
+    const a = Math.min(1, banner.t * 4, (3 - banner.t) * 2);
+    boxText(banner.title, CY - H * .24, Math.max(34, s * 1.6), '#ffe08a', a);
+    chalkText(banner.sub, CX, CY - H * .24 + Math.max(34, s * 1.6) * 1.05, Math.max(22, s * 1.05), '#f3f1e6', 'center', a);
+  } else if (hint) {
+    const a = Math.min(1, hint.t * 4, (hint.dur - hint.t) * 2);
+    boxText(hint.text, top + s * 3.2, Math.max(20, s * .95), '#f3f1e6', a);
+  }
 }
 
-// ---------- 迴圈 ----------
-let last = performance.now();
+// ---------- Layout ----------
+let kScale = 1, last = performance.now();
+const stage = document.getElementById('stage');
+function resize() {
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const portrait = vh > vw;
+  const nW = portrait ? 600 : 800, nH = portrait ? 800 : 600;
+  if (nW !== W) {
+    // turning the phone keeps the core in the middle: move everything with it
+    const dx = nW / 2 - CX, dy = nH / 2 - CY;
+    W = nW; H = nH; CX = W / 2; CY = H / 2; boardBg = null;
+    for (const e of enemies) { e.x += dx; e.y += dy; }
+    for (const p of particles) { p.x += dx; p.y += dy; }
+    for (const p of popups) { p.x += dx; p.y += dy; }
+    if (line) line.pts.forEach(p => { p.x += dx; p.y += dy; });
+  }
+  const small = Math.min(vw, vh) < 520;
+  const bs = small ? 7 : 14, bb = small ? 13 : 24, pad = small ? 4 : 14;
+  document.documentElement.style.setProperty('--bs', bs + 'px');
+  document.documentElement.style.setProperty('--bb', bb + 'px');
+  const k = Math.min((vw - pad * 2 - bs * 2) / W, (vh - pad * 2 - bs - bb) / H);
+  const cw = Math.max(240, Math.floor(W * k)), chh = Math.round(cw * H / W);
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.style.width = cw + 2 * bs + 'px'; cv.style.height = chh + bs + bb + 'px';
+  cv.width = Math.round(cw * dpr); cv.height = Math.round(chh * dpr);
+  ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
+  kScale = cw / W;
+}
+window.addEventListener('resize', resize); resize();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { boardBg = null; });
+
+// ---------- Loop ----------
+let adHeld = false;
 function frame(now) {
+  const ad = platform.paused();
+  if (ad !== adHeld) { adHeld = ad; if (ad) { penUp(); drawId = null; } audio.hold(ad); }
   const dt = Math.min(.05, (now - last) / 1000); last = now;
-  if (!platformVisible) { requestAnimationFrame(frame); return; }
-  if (state === 'play') update(dt);
-  else {
-    particles.forEach(p => { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; }); particles = particles.filter(p => p.t < .6);
-    shake = Math.max(0, shake - dt * 40); coreHit = Math.max(0, coreHit - dt * 2);
+  if (!ad) {
+    scratchLevel = drawing && state === 'play' ? scratchLevel * Math.exp(-dt * 9) : 0;
+    audio.scratch(scratchLevel);
+    if (state === 'play') update(dt);
+    else if (state !== 'paused') tick(dt);
   }
   draw(now);
   requestAnimationFrame(frame);
 }
 
+// ---------- Menus ----------
+const $ = id => document.getElementById(id);
 function show(id) { document.querySelectorAll('.overlay').forEach(o => o.classList.toggle('show', o.id === id)); }
-function begin(withTut) {
-  const h = host();
-  if (h && !roundOn) {
-    if (!(h.start(window) > 0)) return false;
-    roundOn = true; earned = 0; marks = 0;
+function shown() { return document.querySelector('.overlay.show'); }
+document.querySelectorAll('[data-t]').forEach(el => { el.innerHTML = T[el.dataset.t]; });
+$('btnPause').setAttribute('aria-label', T.paused);
+// a padlock drawn in chalk: every stroke goes down twice with a little wobble, like a hand going over it again
+function lockSvg(seed) {
+  const R = rng(seed * 31 + 7), j = (v, a) => (v + (R() - .5) * (a || 1.4)).toFixed(1);
+  const pass = (w, o) => {
+    const shackle = `M${j(9.5)} ${j(15)} L${j(9.5)} ${j(10)} C${j(9.5)} ${j(3)} ${j(22.5)} ${j(3)} ${j(22.5)} ${j(10)} L${j(22.5)} ${j(15)}`;
+    const body = `M${j(5.5)} ${j(15)} L${j(26.5)} ${j(15)} L${j(26.5)} ${j(30)} L${j(5.5)} ${j(30)} Z`;
+    const hole = `M${j(16, .6)} ${j(19.5, .6)} m-2.2 0 a2.2 2.2 0 1 0 4.4 0 a2.2 2.2 0 1 0 -4.4 0 M${j(16, .5)} ${j(21.5, .5)} L${j(16, .8)} ${j(26, .5)}`;
+    return `<path d="${shackle} ${body} ${hole}" stroke-width="${w}" opacity="${o}"/>`;
+  };
+  const hatch = [0, 1, 2, 3, 4].map(k => `M${j(8 + k * 4.5)} ${j(29)} L${j(12 + k * 4.5)} ${j(17)}`).join(' ');
+  return `<svg class="lock" viewBox="0 0 32 34" fill="none" stroke="#f3f1e6" stroke-linecap="round" stroke-linejoin="round" filter="url(#chalkGrain)" aria-hidden="true">`
+    + `<path d="${hatch}" stroke-width="1.2" opacity=".25"/>` + pass(2.6, .95) + pass(1.3, .55) + `</svg>`;
+}
+function starStr(n) { return [0, 1, 2].map(i => i < n ? '★' : '<span class="off">★</span>').join(''); }
+function nextLevel() { for (let i = 0; i < LEVELS.length; i++) if (!prog.s[i]) return Math.min(i, prog.u - 1); return -1; }
+function hasSave() { return prog.u > 1 || prog.s.some(Boolean); }
+function refreshMenu() {
+  const b = $('btnContinue'), n = nextLevel();
+  b.hidden = !hasSave();
+  b.innerHTML = `${T.cont}<small>${n >= 0 ? t('contSub', n + 1) + ' · ' + T.levelNames[n] : T.endless}</small>`;
+  b.toggleAttribute('data-primary', hasSave());
+  $('btnPlay').toggleAttribute('data-primary', !hasSave());
+  $('btnPlay').classList.toggle('main', !hasSave());
+}
+function openLevels() {
+  const grid = $('levelGrid'); grid.innerHTML = '';
+  const nx = nextLevel();
+  LEVELS.forEach((L, i) => {
+    const el = document.createElement('button'), locked = i + 1 > prog.u;
+    el.className = 'lv' + (L.goal.boss ? ' boss' : '') + (locked ? ' locked' : '') + (i === nx ? ' next' : '');
+    el.innerHTML = locked ? `${lockSvg(i)}<span class="lnum">${i + 1}</span>` : `${i + 1}<span class="st">${starStr(prog.s[i] || 0)}</span>`;
+    el.title = `${t('levelN', i + 1)} · ${T.levelNames[i]} · ${goalText(L)}`;
+    if (locked) el.disabled = true; else el.onclick = () => requestRun({ mode: 'level', lv: i });
+    grid.appendChild(el);
+  });
+  $('btnEndless').innerHTML = `${T.endless}<small>${t('endlessSub', best)}</small>`;
+  show('ovLevels');
+}
+let settingsFrom = 'ovMenu';
+function openSettings(from) {
+  settingsFrom = from;
+  const v = audio.vol;
+  $('volMusic').value = Math.round(v.music * 100); $('volSfx').value = Math.round(v.sfx * 100);
+  $('volMusicV').textContent = $('volMusic').value + '%'; $('volSfxV').textContent = $('volSfx').value + '%';
+  show('ovSettings');
+}
+$('volMusic').oninput = e => { audio.unlock(); audio.setVol('music', e.target.value / 100); $('volMusicV').textContent = e.target.value + '%'; };
+$('volSfx').oninput = e => { audio.unlock(); audio.setVol('sfx', e.target.value / 100); $('volSfxV').textContent = e.target.value + '%'; audio.kill(1, 'dot'); };
+function buildInfo() {
+  const ico = (v, sq) => `<span class="ico" style="background:var(${v})${sq ? ';border-radius:3px' : ''}"></span>`;
+  const E = T.enemyInfo, col = { dot: '--red', dart: '--amber', brute: '--red', split: '--violet', ghost: '--teal', boss: '--amber' };
+  $('infoBody').innerHTML =
+    `<div class="rules" style="margin-top:14px">${T.infoRules.map(([c, s], i) => `<div>${ico(c, i === 0)}<span>${s}</span></div>`).join('')}</div>` +
+    `<h3>${T.enemiesTitle}</h3><div class="rules">${Object.keys(E).map(k => `<div>${ico(col[k], k === 'brute')}<span>${E[k]}</span></div>`).join('')}</div>` +
+    `<h3>${T.modesTitle}</h3><div class="rules"><div><span>${T.modes}</span></div></div>` +
+    `<h3>${T.controlsTitle}</h3><div class="rules"><div><span>${T.controls}</span></div></div>`;
+}
+buildInfo();
+function showResult(r) {
+  const btns = [];
+  const B = (label, fn, primary) => btns.push({ label, fn, primary });
+  if (mode === 'level') {
+    const last10 = lv === LEVELS.length - 1;
+    $('endTitle').textContent = r.win ? (last10 ? T.allClear : t('cleared', lv + 1)) : (r.reason === 'chalk' ? T.outOfChalk : T.failed);
+    $('endStars').innerHTML = r.win ? starStr(r.stars) : '';
+    $('endStats').innerHTML = `<div><b>${score}</b><span>${T.stScore}</span></div><div><b>${maxCombo}</b><span>${T.stCombo}</span></div><div><b>${hits}</b><span>${T.stHits}</span></div>`;
+    $('endNote').textContent = r.win ? (last10 ? T.allClearNote : r.newBest ? T.newBest : '') : t('best', prog.b[lv] || 0);
+    if (r.win && !last10) B(T.next, () => requestRun({ mode: 'level', lv: lv + 1 }), true);
+    if (r.win && last10) B(T.endless, () => requestRun({ mode: 'endless' }), true);
+    B(T.retry, () => requestRun({ mode: 'level', lv }), !r.win);
+    B(T.levels, openLevels);
+  } else {
+    $('endTitle').textContent = T.failed;
+    $('endStars').innerHTML = '';
+    $('endStats').innerHTML = `<div><b>${score}</b><span>${T.stScore}</span></div><div><b>${Math.floor(time)}</b><span>${T.stTime}</span></div><div><b>${maxCombo}</b><span>${T.stCombo}</span></div>`;
+    $('endNote').textContent = r.newBest ? T.newBest : t('best', best);
+    B(T.playAgain, () => requestRun({ mode: 'endless' }), true);
+    B(T.menu, goMenu);
   }
-  reset(); show(null); state = 'play'; last = performance.now(); if (withTut) startTut();
-  return true;
+  const row = $('endBtns'); row.innerHTML = '';
+  for (const b of btns) { const el = document.createElement('button'); el.className = 'btn' + (b.primary ? ' main' : ''); el.textContent = b.label; el.onclick = b.fn; if (b.primary) el.setAttribute('data-primary', ''); row.appendChild(el); }
+  show('ovEnd');
 }
-document.getElementById('btnStart').onclick = () => begin(!store.get('tutDone', false));
-document.getElementById('btnTut').onclick = () => begin(true);
-document.getElementById('btnAgain').onclick = () => begin(false);
+$('btnPlay').onclick = () => { if (hasSave()) openLevels(); else requestRun({ mode: 'level', lv: 0 }); };
+$('btnContinue').onclick = () => { const n = nextLevel(); requestRun(n >= 0 ? { mode: 'level', lv: n } : { mode: 'endless' }); };
+$('btnSettings').onclick = () => openSettings('ovMenu');
+$('btnInfo').onclick = () => show('ovInfo');
+$('btnInfoBack').onclick = () => show('ovMenu');
+$('btnLevelsBack').onclick = () => { refreshMenu(); show('ovMenu'); };
+$('btnEndless').onclick = () => requestRun({ mode: 'endless' });
+$('btnSettingsBack').onclick = () => show(settingsFrom);
+$('btnPause').onclick = pauseGame;
+$('btnResume').onclick = resumeGame;
+$('btnRestart').onclick = () => requestRun(runCfg);
+$('btnPauseSettings').onclick = () => openSettings('ovPause');
+$('btnPauseMenu').onclick = goMenu;
 window.addEventListener('keydown', e => {
-  touch();
-  if ((e.key === ' ' || e.key === 'Enter') && state === 'pause') { e.preventDefault(); resumeGame(); return; }
-  if ((e.key === ' ' || e.key === 'Enter') && state !== 'play') { e.preventDefault(); begin(state === 'start' && !store.get('tutDone', false)); }
+  const k = e.key.toLowerCase();
+  if (k === 'm') { audio.toggleMute(); return; }
+  if (k === 'p') { if (state === 'play') pauseGame(); else if (state === 'paused' && shown() && shown().id === 'ovPause') resumeGame(); return; }
+  if ((k === ' ' || k === 'enter') && state !== 'play' && !platform.paused()) {
+    const ae = document.activeElement;
+    if (ae && (ae.tagName === 'BUTTON' || ae.tagName === 'INPUT') && shown() && shown().contains(ae)) return;   // the browser handles the focused control
+    const ov = shown(), b = ov && ov.querySelector('[data-primary]:not([hidden])');
+    if (b) { e.preventDefault(); b.click(); }
+  }
 });
-cv.addEventListener('pointerdown', touch);
-
-// ---------- 暫停：切走遊戲、背景分頁時自動暫停，回來要按「繼續」 ----------
-function pauseGame() {
-  if (state !== 'play') return;
-  state = 'pause'; drawing = false;
-  show('ovPause');
-  const h = host(); if (h && roundOn && h.pause) h.pause(window);
+// stop the game when the player looks away (tab switch, window loses focus)
+window.addEventListener('blur', pauseGame);
+document.addEventListener('visibilitychange', () => { if (document.hidden) pauseGame(); audio.setHidden(document.hidden); });
+try { matchMedia('(pointer:coarse)').addEventListener('change', ev => { TOUCH = ev.matches; HIT_PAD = TOUCH ? 9 : 4; }); } catch (e) {}
+const docLang = () => { document.documentElement.lang = LANG === 'en' ? 'en' : siteLang() === 'zh-Hans' ? 'zh-Hans' : 'zh-Hant'; };
+docLang();
+function setLang(next) {
+  next = pickLang(next); docLang();
+  if (next === LANG) return;
+  LANG = next; T = STR[LANG]; docLang();
+  document.title = T.title;
+  refreshMenu(); buildInfo();
+  if (shown() && shown().id === 'ovLevels') openLevels();
+  draw();
 }
-function resumeGame() {
-  if (state !== 'pause') return;
-  state = 'play'; show(null); last = performance.now();
-  const h = host(); if (h && roundOn && h.resume) h.resume(window);
-}
-document.getElementById('btnResume').onclick = resumeGame;
-document.addEventListener('visibilitychange', () => { if (document.hidden) pauseGame(); });
+try { window.parent.addEventListener('arcade-languagechange', e => setLang(e.detail && e.detail.language)); } catch (e) {}
 
-// 父頁介面：右側按鈕開局、切換畫面
-window.startOneLinePlatformRound = () => { if (state === 'play' || state === 'pause') return false; return begin(state === 'start' && !store.get('tutDone', false)); };
-window.setOneLinePlatformActive = v => { platformVisible = !!v; last = performance.now(); if (!platformVisible) pauseGame(); else resize(); };
+// Parent platform hooks
+window.startOneLinePlatformRound = () => {
+  if (state === 'play' || state === 'paused') return false;
+  requestRun(hasSave() ? { mode: 'level', lv: nextLevel() >= 0 ? nextLevel() : 0 } : { mode: 'level', lv: 0 });
+  return true;
+};
+window.setOneLinePlatformActive = v => { if (!v) pauseGame(); else resize(); };
 
-function relang() { applyStatic(); renderNote(); renderEnd(); }
-try { window.parent.addEventListener('arcade-languagechange', relang); } catch (e) {}
-applyStatic(); renderNote(); renderEnd();
-updHud();
+refreshMenu();
 requestAnimationFrame(frame);
 })();
 </script>

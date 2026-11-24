@@ -76,6 +76,9 @@
   #hud .hint{background:rgba(44,40,64,.88);border:2px solid var(--out);border-radius:12px;padding:4px 12px;max-width:min(760px,calc(100vw - 24px))}
   #hud .hint:empty{display:none}
   .phead .goals{flex:1;justify-content:center}
+  /* the goal chips get their own row when they do not fit between the buttons (fitGoals() sets .stack) */
+  .phead.stack{flex-wrap:wrap;row-gap:6px}
+  .phead.stack .goals{order:3;flex-basis:100%}
   .hint{font-size:14px;color:var(--mute);text-align:center;min-height:20px;line-height:1.45;font-weight:500}
   .hint b{color:var(--yellow)}
   .tlwrap{width:100%}
@@ -155,6 +158,19 @@
   .panel .row{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
   .levels{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin:14px 0 4px}
   .lv{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:22px;font-weight:900;padding:0}
+  .mview{display:none}.mview.on{display:block}
+  .btn.big{display:flex;width:fit-content;font-size:22px;padding:12px 44px;margin:12px auto 0}
+  .mrow .btn{font-size:15px;padding:8px 14px}
+  .slider{display:grid;grid-template-columns:auto 1fr 40px;align-items:center;gap:12px;margin:16px 4px;font-weight:900;text-align:left;font-size:16px}
+  .slider input{width:100%;accent-color:#e0a800;height:22px}
+  .slider b{text-align:right}
+  .info{text-align:left;font-size:14px;line-height:1.6;font-weight:500;margin:8px 0}
+  .info ul{list-style:none;margin:8px 0;text-align:left}
+  .info li{margin:7px 0;padding-left:20px;position:relative}
+  .info li::before{content:'';position:absolute;left:4px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--yellow);border:2px solid var(--out)}
+  .info h3{font-size:15px;font-weight:900;margin:12px 0 2px}
+  .pcol{display:flex;flex-direction:column;gap:10px;align-items:center;margin-top:12px}
+  .pcol .btn{min-width:210px}
   .lv .st{display:flex;gap:1px}
   .lv .st img{width:14px;height:14px}
   .lv>img{width:28px;height:28px}
@@ -226,7 +242,7 @@
     .newunit{padding:6px 8px;gap:8px}
     .newunit>img{width:56px;height:56px}
   }
-  /* landscape screens up to 900px tall (every CrazyGames iframe size below 1920x1080): one 20-slot timeline row and slim
+  /* landscape screens up to 900px tall (typical embedded game sizes below 1920x1080): one 20-slot timeline row and slim
      unit cards, so the open deploy panel stays short and the map keeps most of the screen */
   @media (max-height:900px) and (min-width:641px){
     #tl{grid-template-columns:repeat(20,minmax(0,1fr));gap:4px}
@@ -337,11 +353,24 @@
 <svg class="coach" id="coach" viewBox="0 0 40 48"><path d="M14 5a4 4 0 0 1 8 0v15l2.4-.4a4 4 0 0 1 4.3 2.7l.3.9 1.2-.2a4 4 0 0 1 4.6 3.4L36 33c.6 6.5-3.6 12.5-10.4 12.5h-5.4c-3.8 0-6.4-1.6-8.6-4.6L4.4 31.6a4 4 0 0 1 6.3-4.9L14 30z" fill="#fff" stroke="#1d1a24" stroke-width="3" stroke-linejoin="round"/></svg>
 <div class="overlay" id="resultOv"><div class="panel box" id="resultPanel"></div></div>
 <div class="overlay" id="menuOv"><div class="panel box">
-  <img class="logo" id="logoIc" alt="">
-  <h2 id="menuTitle"></h2>
-  <p id="menuIntro"></p>
-  <div class="levels" id="levels"></div>
-  <div class="row"><button class="btn box go" id="closeMenu"></button></div>
+  <div class="mview" id="mHome">
+    <img class="logo" id="logoIc" alt="">
+    <h2 id="menuTitle"></h2>
+    <p id="menuIntro"></p>
+    <button class="btn box go big" id="playBtn"></button>
+    <div class="row mrow"><button class="btn box" id="levelsBtn"></button><button class="btn box" id="settingsBtn"></button><button class="btn box" id="infoBtn"></button></div>
+  </div>
+  <div class="mview" id="mLevels"><h2 id="levelsTitle"></h2><div class="levels" id="levels"></div><div class="row"><button class="btn box back"></button></div></div>
+  <div class="mview" id="mSettings"><h2 id="settingsTitle"></h2>
+    <label class="slider"><span id="musicLbl"></span><input type="range" id="musicVol" min="0" max="100" step="1"><b class="num" id="musicVal"></b></label>
+    <label class="slider"><span id="sfxLbl"></span><input type="range" id="sfxVol" min="0" max="100" step="1"><b class="num" id="sfxVal"></b></label>
+    <div class="row"><button class="btn box back"></button></div>
+  </div>
+  <div class="mview" id="mInfo"><h2 id="infoTitle"></h2><div class="info" id="infoBody"></div><div class="row"><button class="btn box back"></button></div></div>
+</div></div>
+<div class="overlay" id="pauseOv"><div class="panel box">
+  <h2 id="pauseTitle"></h2>
+  <div class="pcol"><button class="btn box go" id="resumeBtn"></button><button class="btn box" id="pRetreat"></button><button class="btn box" id="pSettings"></button><button class="btn box" id="pHome"></button></div>
 </div></div>
 
 <script id="sim">
@@ -573,8 +602,6 @@ const LEVELS = [
 </script>
 <script>
 (() => {
-// 語言：放在 TICATICA 大廳時跟隨站台（繁中／簡中／EN）。遊戲本身只有繁中與英文字串，
-// 簡中由站台的 js/i18n.js 在顯示層把繁中（DOM 與 Canvas）轉成簡體。單獨開啟時看 ?lang= 或瀏覽器語言。
 function host() { try { return window.parent !== window ? window.parent.deepSeaSiege || null : null; } catch (e) { return null; } }
 function siteLang() { try { const i = window.parent !== window && window.parent.deepSeaI18n; return i ? i.getLanguage() : null; } catch (e) { return null; } }
 const pickLang = l => l === 'en' ? 'en' : 'zh';
@@ -603,7 +630,7 @@ const STR = {
     rule: { gun: '打最近的', cannon: '打血最多的・範圍爆炸', sniper: '打最先進入射程的' },
     tlHead: '出發時間 ▸', tlInfo: '每格 0.5 秒', sec: v => `${v} 秒`,
     clear: '清空', go: '出擊', retreat: '撤退', best: '最佳',
-    hintRun: '看看每座塔先打誰…（看出不行了可以按「撤退」或 R 提早重來）', hintRetreat: '已撤退。✖ 是目前為止的陣亡位置，調整編排後再出擊。', hintFail: '✖ 是陣亡位置，顏色代表打死它的塔。調整編排後再出擊。',
+    hintRun: '看看每座塔先打誰。不行就按「撤退」（R）重排。', hintRetreat: '已撤退。✖ 是目前為止的陣亡位置，調整編排後再出擊。', hintFail: '✖ 是陣亡位置，顏色代表打死它的塔。調整編排後再出擊。',
     tutorial: '把兵種卡拖到時間格上，再按「出擊」。', newBadge: '新！',
     tt: { hp: '生命', spd: '速度（格/秒）', siege: '攻城傷害', range: '射程（格）', dmg: '傷害／間隔', splash: '爆炸範圍（格）', skull: '一擊必殺／間隔' },
     abTaunt: '嘲諷', abBurrow: '鑽地',
@@ -626,7 +653,11 @@ const STR = {
     rMulti: (tw, t, n) => `${tw}在 ${t} 秒一發炸倒 <b>${n}</b> 個單位，部隊太擠了。`,
     rNoSapper: '沒有派河狸工兵。一隻河狸抵達就能造成 <b>5</b> 點攻城傷害。',
     rArrive: (a, g) => `抵達城門：${a} 個單位，城門還剩 <b>${g}</b>。`,
-    aMenu: '選擇關卡', aMute: '音效開關',
+    aMenu: '選單／暫停', aMute: '聲音開關',
+    tagline: '防線已經擺好，換你來進攻！',
+    play: '開始遊戲', playAt: n => `繼續第 ${n} 關`, levelsBtn: '選擇關卡', settings: '設定', info: '玩法', back: '返回',
+    music: '音樂', sfx: '音效', paused: '暫停中', resume: '繼續', pRetreat: '撤退重排', home: '主選單',
+    infoHtml: `<ul><li>每關的防禦塔已經擺好，你是進攻的一方。</li><li>把兵種卡拖到時間軸上，決定每隻什麼時候出發，再按「出擊」。</li><li>每座塔只照自己的規則挑目標（打最近的、打血最多的、打最先進入射程的），利用規則讓塔打錯對象。</li><li>城門血量歸零就過關。花費越少、條件達成越多，星星越多。</li></ul><h3>操作</h3><ul><li>拖曳或點選兵種卡，再點時間格放置；把格子拖出時間軸就移除。</li><li>空白鍵或 Enter：出擊　R：撤退／重試　P：暫停</li><li>滑鼠移到塔上（手機點一下）看它的規則。</li></ul>`,
   },
   en: {
     title: 'Critter Crashers', level: n => `Level ${n}`,
@@ -645,7 +676,7 @@ const STR = {
     rule: { gun: 'Hits the closest', cannon: 'Hits the highest HP · splash', sniper: 'Hits the first to enter range' },
     tlHead: 'Departure time ▸', tlInfo: '0.5 s per slot', sec: v => `${v}s`,
     clear: 'Clear', go: 'Attack', retreat: 'Retreat', best: 'Best',
-    hintRun: 'Watch who each tower targets… (if it\'s hopeless, hit Retreat or R to start over)', hintRetreat: 'Retreated. ✖ marks where units fell so far. Adjust and attack again.', hintFail: '✖ marks where units fell, colored by the tower that got them. Adjust and attack again.',
+    hintRun: 'Watch who each tower targets. Hit Retreat (R) to re-plan.', hintRetreat: 'Retreated. ✖ marks where units fell so far. Adjust and attack again.', hintFail: '✖ marks where units fell, colored by the tower that got them. Adjust and attack again.',
     tutorial: 'Drag a unit onto a time slot, then hit Attack.', newBadge: 'NEW',
     tt: { hp: 'HP', spd: 'Speed (tiles/s)', siege: 'Siege damage', range: 'Range (tiles)', dmg: 'Damage / interval', splash: 'Blast radius (tiles)', skull: 'One-shot kill / interval' },
     abTaunt: 'Taunt', abBurrow: 'Burrow',
@@ -668,7 +699,11 @@ const STR = {
     rMulti: (tw, t, n) => `${tw} hit <b>${n}</b> units with one blast at ${t}s. Your troops were too close together.`,
     rNoSapper: 'No beavers sent. One beaver reaching the gate deals <b>5</b> siege damage.',
     rArrive: (a, g) => `Units at the gate: ${a}. Gate HP left: <b>${g}</b>.`,
-    aMenu: 'Choose level', aMute: 'Sound on/off',
+    aMenu: 'Menu / pause', aMute: 'Sound on/off',
+    tagline: 'The defenses are set. Now you attack!',
+    play: 'Play', playAt: n => `Continue · Level ${n}`, levelsBtn: 'Levels', settings: 'Settings', info: 'How to play', back: 'Back',
+    music: 'Music', sfx: 'Sound', paused: 'Paused', resume: 'Resume', pRetreat: 'Retreat & re-plan', home: 'Main menu',
+    infoHtml: `<ul><li>The towers in each level are already built. You are the attacker.</li><li>Drag unit cards onto the timeline to set when each one leaves, then hit Attack.</li><li>Every tower picks targets by its own rule (closest, highest HP, or first in range). Use those rules to make towers shoot the wrong unit.</li><li>Bring the gate's HP to zero to clear the level. Spend less and meet the bonus goal for more stars.</li></ul><h3>Controls</h3><ul><li>Drag a unit card onto a time slot, or click a card and then a slot. Drag a placed unit off the timeline to remove it.</li><li>Space or Enter: Attack · R: Retreat / retry · P: Pause</li><li>Hover over a tower (tap on touch screens) to see its rule.</li></ul>`,
   },
 };
 let S = STR[LANG];
@@ -679,17 +714,17 @@ const store = {
   get(k, d) { try { const v = localStorage.getItem('siegeArch.' + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem('siegeArch.' + k, JSON.stringify(v)); } catch (e) {} },
 };
-// CrazyGames SDK (only the English build loads the script): report when the player is in gameplay. Every call is
-// guarded, so the game runs the same when the SDK is missing, blocked or not on CrazyGames.
-const CG = (() => {
-  let sdk = null, playing = false;
-  const ready = (async () => {
-    try { if (window.CrazyGames && window.CrazyGames.SDK) { await window.CrazyGames.SDK.init(); sdk = window.CrazyGames.SDK; } } catch (e) { sdk = null; }
-  })();
-  const call = f => ready.then(() => { try { if (sdk && sdk.environment !== 'disabled') f(sdk.game); } catch (e) {} });
+// Platform hooks. The plain game sets none and never talks to any platform. A platform build (tools/build-en.js) may
+// define window.__platform before this script with: gameplayStart(), gameplayStop(), paused() -> bool (an ad is on screen:
+// freeze the game and its sound), betweenLevels(go) -> true if it shows something first and calls go() when done.
+const PLATFORM = (() => {
+  let playing = false;
+  const call = (name, ...a) => { try { const P = window.__platform, f = P && P[name]; return f ? f(...a) : undefined; } catch (e) { return undefined; } };
   return {
-    start() { if (playing) return; playing = true; call(g => g.gameplayStart()); },
-    stop() { if (!playing) return; playing = false; call(g => g.gameplayStop()); },
+    start() { if (playing) return; playing = true; call('gameplayStart'); },
+    stop() { if (!playing) return; playing = false; call('gameplayStop'); },
+    paused: () => call('paused') === true,
+    between(go) { let done = false; const once = () => { if (!done) { done = true; go(); } }; if (call('betweenLevels', once) !== true) once(); },
   };
 })();
 
@@ -722,15 +757,98 @@ addEventListener('keydown', () => PF.touch(), true);
 
 // ---------- sound (synthesized with WebAudio, no asset files) ----------
 const SFX = (() => {
-  let ac = null, out = null, noiseBuf = null, muted = store.get('muted', false);
+  let ac = null, out = null, master = null, musicBus = null, noiseBuf = null, muted = store.get('muted', false), held = false;
   const last = {};
+  // volumes (0..1), saved: music sits well behind the effects
+  const vol = Object.assign({ music: 0.26, sfx: 0.8 }, store.get('vol', {}));
+  const applyVol = () => {
+    if (!ac) return;
+    master.gain.value = muted ? 0 : 1;
+    out.gain.value = 0.55 * vol.sfx / 0.8;
+    musicBus.gain.cancelScheduledValues(ac.currentTime); musicBus.gain.setValueAtTime(vol.music * 0.9, ac.currentTime);
+  };
   function unlock() {
     if (!ac) {
-      try { ac = new (window.AudioContext || window.webkitAudioContext)(); out = ac.createGain(); out.gain.value = 0.55; out.connect(ac.destination); }
+      try {
+        ac = new (window.AudioContext || window.webkitAudioContext)();
+        const lim = ac.createDynamicsCompressor();   // soft limiter: stacked notes never clip
+        lim.threshold.value = -12; lim.knee.value = 6; lim.ratio.value = 12; lim.attack.value = 0.003; lim.release.value = 0.25;
+        master = ac.createGain(); master.connect(lim); lim.connect(ac.destination);
+        out = ac.createGain(); out.connect(master);
+        musicBus = ac.createGain(); musicBus.connect(master);
+        applyVol(); musicStart();
+      }
       catch (e) { ac = null; return null; }
     }
-    if (ac.state === 'suspended') ac.resume();
+    if (ac.state === 'suspended' && !held) ac.resume();
     return ac;
+  }
+  // ---- background music, synthesized on the fly (no audio files). Two original 8-bar loops:
+  //      deploy: a light march (C major, 112 BPM) while planning; battle: a driving, heroic theme (A minor, 144 BPM) during attacks ----
+  const mf = m => 440 * Math.pow(2, (m - 69) / 12);
+  let track = 'deploy', STEP = 60 / 112 / 4;   // one 16th note of the current track
+  const TRI = { C: [60, 64, 67], Am: [57, 60, 64], F: [57, 60, 65], G: [55, 59, 62] }, ROOT = { C: 48, Am: 45, F: 41, G: 43 };
+  const HALF = ['C', 'C', 'Am', 'Am', 'F', 'F', 'G', 'G', 'C', 'C', 'Am', 'Am', 'F', 'G', 'C', 'C'];   // chord per half bar
+  const MEL = [
+    [64, 67, 72, 67, 64, 0, 67, 0], [69, 72, 76, 72, 69, 0, 72, 0], [65, 69, 72, 69, 77, 76, 74, 72], [71, 0, 74, 0, 79, 0, 0, 0],
+    [76, 74, 72, 67, 72, 0, 76, 0], [77, 76, 74, 72, 69, 0, 72, 0], [69, 72, 77, 76, 74, 71, 67, 71], [72, 0, 67, 0, 72, 0, 0, 0],
+  ];
+  const B_TRI = { Am: [57, 60, 64], F: [57, 60, 65], G: [55, 59, 62], E: [56, 59, 64], D: [57, 62, 66] }, B_ROOT = { Am: 45, F: 41, G: 43, E: 40, D: 38 };
+  const B_HALF = ['Am', 'Am', 'F', 'F', 'G', 'G', 'E', 'E', 'Am', 'Am', 'F', 'F', 'D', 'D', 'E', 'E'];
+  const B_MEL = [
+    [69, 0, 69, 72, 76, 0, 74, 72], [72, 0, 69, 0, 65, 67, 69, 0], [67, 0, 71, 74, 79, 0, 77, 76], [76, 0, 75, 0, 71, 0, 68, 71],
+    [81, 0, 79, 76, 77, 0, 76, 72], [74, 72, 69, 72, 77, 0, 76, 74], [74, 0, 78, 81, 79, 0, 78, 74], [76, 0, 0, 71, 76, 0, 0, 0],
+  ];
+  let mTimer = null, mStep = 0, mNext = 0;
+  function mNote(type, m, t, dur, v, cut) {
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(mf(m), t);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    if (cut) { const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = cut; o.connect(f); f.connect(g); } else o.connect(g);
+    g.connect(musicBus); o.start(t); o.stop(t + dur + 0.03);
+  }
+  function mNoise(t, dur, v, type, freq) {
+    const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+    s.buffer = noiseBuffer(); f.type = type; f.frequency.value = freq;
+    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f); f.connect(g); g.connect(musicBus); s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.02);
+  }
+  function kick(t, v) { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.setValueAtTime(130, t); o.frequency.exponentialRampToValueAtTime(45, t + 0.12); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16); o.connect(g); g.connect(musicBus); o.start(t); o.stop(t + 0.2); }
+  function battleStep(i, t) {
+    const bar = i >> 4, k = i & 15, ch = B_HALF[bar * 2 + (k >= 8 ? 1 : 0)];
+    if (k % 2 === 0) { const n = B_MEL[bar][k / 2]; if (n) { mNote('sawtooth', n, t, STEP * 1.8, 0.03, 1700); mNote('triangle', n - 12, t, STEP * 1.6, 0.03); } }
+    if (k % 2 === 0) mNote('sawtooth', B_ROOT[ch] + (k % 4 === 2 ? 12 : 0), t, STEP * 1.5, 0.055, 520);   // driving eighth-note bass
+    if (k === 0 || k === 8) for (const n of B_TRI[ch]) mNote('sawtooth', n, t, STEP * 5, 0.012, 1200);   // brass-like chord swells
+    if (k % 4 === 0) kick(t, 0.26);
+    if (k === 4 || k === 12 || (bar === 7 && k >= 13)) mNoise(t, 0.11, bar === 7 && k >= 13 ? 0.05 : 0.075, 'bandpass', 1600);
+    mNoise(t, 0.025, k % 2 ? 0.014 : 0.02, 'highpass', 8000);
+    if (bar === 0 && k === 0) mNoise(t, 0.9, 0.03, 'highpass', 5000);   // crash at the top of the loop
+  }
+  function playStep(i, t) {
+    if (track === 'quiet') return;
+    if (track === 'battle') return battleStep(i, t);
+    const bar = i >> 4, k = i & 15, ch = HALF[bar * 2 + (k >= 8 ? 1 : 0)];
+    if (k % 2 === 0) { const n = MEL[bar][k / 2]; if (n) mNote('square', n, t, STEP * 1.7, 0.05, 2300); }
+    if (k % 4 === 0) mNote('triangle', ROOT[ch] + (k % 8 === 4 ? 7 : 0), t, STEP * 3, 0.2);
+    if (k % 4 === 2) for (const n of TRI[ch]) mNote('triangle', n, t, STEP * 1.2, 0.035);
+    if (k === 0 || k === 8) kick(t, 0.32);
+    if (k === 4 || k === 12) mNoise(t, 0.1, 0.09, 'bandpass', 1800);
+    if (k % 2 === 1) mNoise(t, 0.03, 0.022, 'highpass', 7000);
+  }
+  function musicTick() {
+    if (!ac || held || ac.state !== 'running') return;
+    if (mNext < ac.currentTime - 0.05) mNext = ac.currentTime + 0.05;   // the tab was asleep: pick the beat up again instead of bursting
+    while (mNext < ac.currentTime + 0.15) { playStep(mStep, mNext); mStep = (mStep + 1) % 128; mNext += STEP; }
+  }
+  function musicStart() { if (mTimer || !ac) return; mNext = ac.currentTime + 0.1; mTimer = setInterval(musicTick, 30); }
+  // switch loops (deploy <-> battle): a quick dip in volume, then the new loop starts from its first bar
+  function music(name) {
+    if (name === track) return;
+    track = name; STEP = 60 / (name === 'battle' ? 144 : 112) / 4; mStep = 0;
+    if (!ac || name === 'quiet') return;   // the win/lose jingle plays on its own, without the fade
+    const g = musicBus.gain, now = ac.currentTime, v = vol.music * 0.9;
+    g.cancelScheduledValues(now); g.setValueAtTime(g.value, now); g.linearRampToValueAtTime(0.0001, now + 0.12); g.linearRampToValueAtTime(v, now + 0.35);
+    mNext = now + 0.14;
   }
   function noiseBuffer() {
     if (!noiseBuf) { const n = ac.sampleRate; noiseBuf = ac.createBuffer(1, n, n); const d = noiseBuf.getChannelData(0); for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1; }
@@ -767,13 +885,35 @@ const SFX = (() => {
   };
   const GAP = { gun: 0.05, spawn: 0.06, squeak: 0.04, death: 0.04, gate: 0.05 };
   function play(name, arg) {
-    if (muted || !unlock()) return;
+    if (muted || held || !unlock()) return;
     const now = ac.currentTime;
     if (GAP[name] && last[name] !== undefined && now - last[name] < GAP[name]) return;
     last[name] = now;
     try { SND[name](arg); } catch (e) {}
   }
-  return { play, unlock, get muted() { return muted; }, toggle() { muted = !muted; store.set('muted', muted); if (!muted) unlock(); return muted; } };
+  // hold: silence everything while a platform ad is on screen (does not touch the player's mute setting)
+  function hold(on) { held = on; try { if (ac) on ? ac.suspend() : ac.resume(); } catch (e) {} }
+  // short win / lose jingles on the music bus (so the music slider controls them too)
+  function jingle(win) {
+    if (!ac || held || ac.state !== 'running') return;
+    const t0 = ac.currentTime + 0.05;
+    if (win) {   // a bright fanfare: pickup triplet, a held top note over a C major chord, cymbal
+      [[67, 0, 0.12], [72, 0.12, 0.12], [76, 0.24, 0.12], [79, 0.36, 0.42], [76, 0.84, 0.14], [79, 0.98, 1.0]]
+        .forEach(([n, d, l]) => { mNote('sawtooth', n, t0 + d, l, 0.045, 2400); mNote('square', n, t0 + d, l, 0.02, 1800); });
+      for (const n of [48, 60, 64, 67, 72]) mNote('triangle', n, t0 + 0.98, 1.2, 0.05);
+      kick(t0, 0.3); kick(t0 + 0.36, 0.3); kick(t0 + 0.98, 0.34);
+      mNoise(t0 + 0.98, 1.1, 0.04, 'highpass', 5000);
+    } else {     // a deflated trombone slide down: G, F#, F, then a long, wobbling E
+      [[67, 0, 0.32], [66, 0.36, 0.32], [65, 0.72, 0.32]].forEach(([n, d, l]) => mNote('sawtooth', n - 12, t0 + d, l, 0.06, 900));
+      const o = ac.createOscillator(), g = ac.createGain(), f = ac.createBiquadFilter(), lfo = ac.createOscillator(), lg = ac.createGain();
+      o.type = 'sawtooth'; o.frequency.value = mf(52); f.type = 'lowpass'; f.frequency.value = 800;
+      lfo.frequency.value = 6; lg.gain.value = 4; lfo.connect(lg); lg.connect(o.frequency);
+      const t = t0 + 1.08; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.07, t + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
+      o.connect(f); f.connect(g); g.connect(musicBus); o.start(t); lfo.start(t); o.stop(t + 1.15); lfo.stop(t + 1.15);
+      mNote('triangle', 40, t, 1.0, 0.08);
+    }
+  }
+  return { play, unlock, hold, vol, music, jingle, setVol(k, v) { vol[k] = v; store.set('vol', vol); applyVol(); }, get muted() { return muted; }, toggle() { muted = !muted; store.set('muted', muted); if (!muted) unlock(); applyVol(); return muted; } };
 })();
 
 // ============================================================
@@ -1575,6 +1715,8 @@ const iconize = html => html.replace(/\[(\w+)\]/g, (m, k) => ICON.tower[k] ? img
 const SVG = {
   chev: '<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="#1d1a24" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   stop: '<svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2.5" fill="#1d1a24"/></svg>',
+  menu: '<svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="#1d1a24" stroke-width="3.2" stroke-linecap="round"/></svg>',
+  pause: '<svg viewBox="0 0 24 24"><rect x="5.5" y="4.5" width="4.6" height="15" rx="1.6" fill="#1d1a24"/><rect x="13.9" y="4.5" width="4.6" height="15" rx="1.6" fill="#1d1a24"/></svg>',
   play: '<svg viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z" fill="#1d1a24" stroke="#1d1a24" stroke-width="2" stroke-linejoin="round"/></svg>',
   fast: n => `<svg viewBox="0 0 24 24"><path d="M3 6v12l8-6zM12 6v12l8-6z" fill="#1d1a24" stroke="#1d1a24" stroke-width="1.6" stroke-linejoin="round"/></svg>${n}x`,
   sound: on => `<svg viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3z" fill="#1d1a24" stroke="#1d1a24" stroke-width="1.6" stroke-linejoin="round"/>${on ? '<path d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="#1d1a24" stroke-width="2.4" stroke-linecap="round"/>' : '<path d="M15.5 9l6 6M21.5 9l-6 6" stroke="#ff5247" stroke-width="2.8" stroke-linecap="round"/>'}</svg>`,
@@ -1588,7 +1730,7 @@ let drafts = store.get('drafts', {});
 let li = Math.min(store.get('level', 0), LEVELS.length - 1);
 let timeline = Array(SLOTS).fill(null);
 let mode = 'edit';            // edit | run | result
-let sim = null, acc = 0, speed = 1, lastTs = 0;
+let sim = null, acc = 0, speed = 1, lastTs = 0, adHeld = false;
 let lastRun = null, selected = null;
 let fx = [], shake = 0, gateFlash = 0, gateDisp = null, outro = null, doorOpen = 0, doorHold = 0;
 let aim = [], recoil = [], hurt = new Map();
@@ -1673,6 +1815,7 @@ function layout(animate = false) {
   $('top').style.width = Math.min(1040, vw - 24) + 'px';
   $('panel').style.width = Math.min(vw >= 1100 && vh <= 900 ? 1160 : 1040, vw - 24) + 'px';   // wide screens: room for the bigger unit cards
   $('panel').classList.toggle('open', panelOpen);
+  fitGoals();
   // the map fills the space between the HUD and the deploy panel; grass covers the rest of the screen
   hudBottom = $('hud').getBoundingClientRect().bottom;
   const body = $('pbody');
@@ -1700,6 +1843,15 @@ function layout(animate = false) {
   if (animate && viewReady) [cell, ox, oy] = cur;
   viewReady = true;
   draw();
+}
+// narrow landscape windows (about 640-800px, e.g. small portal iframes): the goal chips would spill over the
+// Hide / Clear buttons, so move them to their own row. Returns true when that changed the panel height.
+function fitGoals() {
+  const ph = $('phead'), g = $('goals'), was = ph.classList.contains('stack');
+  ph.classList.remove('stack');
+  const stack = g.scrollWidth > g.clientWidth + 1;
+  ph.classList.toggle('stack', stack);
+  return stack !== was;
 }
 function setPanel(open, auto = false) {
   if (panelOpen === open) return;
@@ -1848,13 +2000,18 @@ function buildBackground() {
 // ============================================================
 function buildStatic() {
   document.title = S.title;
-  $('menuTitle').textContent = S.title; $('menuIntro').innerHTML = S.intro; $('closeMenu').textContent = S.cont;
+  $('menuTitle').textContent = S.title; $('menuIntro').innerHTML = S.tagline;
+  $('levelsBtn').textContent = S.levelsBtn; $('settingsBtn').textContent = S.settings; $('infoBtn').textContent = S.info;
+  $('levelsTitle').textContent = S.levelsBtn; $('settingsTitle').textContent = S.settings; $('infoTitle').textContent = S.info; $('infoBody').innerHTML = S.infoHtml;
+  document.querySelectorAll('.mview .back').forEach(b => b.textContent = S.back);
+  $('musicLbl').textContent = S.music; $('sfxLbl').textContent = S.sfx;
+  $('pauseTitle').textContent = S.paused; $('resumeBtn').textContent = S.resume; $('pRetreat').textContent = S.pRetreat; $('pSettings').textContent = S.settings; $('pHome').textContent = S.home;
   $('menuBtn').setAttribute('aria-label', S.aMenu); $('muteBtn').setAttribute('aria-label', S.aMute);
   $('tlHead').textContent = S.tlHead; $('tlInfo').textContent = S.tlInfo;
   $('clearBtn').textContent = S.clear;
   $('coachUnit').src = ICON.unit.shield;
   $('gateIc').src = ICON.castle; $('coinIc').src = ICON.coin; $('logoIc').src = ICON.logo;
-  if (!document.querySelector('link[rel=icon]')) try { const fav = document.createElement('link'); fav.rel = 'icon'; fav.href = makeIcon((g, p) => drawLogo(g, p), 64); document.head.appendChild(fav); } catch (e) {}
+  try { const fav = document.createElement('link'); fav.rel = 'icon'; fav.href = makeIcon((g, p) => drawLogo(g, p), 64); document.head.appendChild(fav); } catch (e) {}
   const tl = $('tl'); tl.innerHTML = '';
   for (let i = 0; i < SLOTS; i++) {
     const d = document.createElement('div');
@@ -1874,6 +2031,7 @@ function buildStatic() {
 }
 function render() {
   const L = level();
+  const mi = mode === 'run' ? 'pause' : 'menu'; if ($('menuBtn')._i !== mi) { $('menuBtn')._i = mi; $('menuBtn').innerHTML = SVG[mi]; }
   $('title').innerHTML = `<small>${S.level(li + 1)}${DEV ? ' · DEV' : ''}</small>${tx(L.name)}`;
   const used = SIM.cost(timeline);
   $('budget').textContent = `${used}/${L.budget}`;
@@ -1924,7 +2082,7 @@ function render() {
     `<span class="box ${parOk ? 'met' : 'miss'}">${img(parOk ? ICON.star : ICON.starOff)} ${S.condParShort(L.par)}</span>` +
     `<span class="box ${s3Ok ? 'met' : 'miss'}">${img(s3Ok ? ICON.star : ICON.starOff)} ${S.star3(L.star3)}</span>` +
     `<span class="box best">${S.best} ${[0, 1, 2].map(k => img(k < best ? ICON.star : ICON.starOff, '')).join('')}</span>`;
-  if ($('goals')._h !== gl) { $('goals').innerHTML = gl; $('goals')._h = gl; }
+  if ($('goals')._h !== gl) { $('goals').innerHTML = gl; $('goals')._h = gl; if (viewReady && fitGoals()) layout(); }
 }
 const muteIcon = () => { $('muteBtn').innerHTML = SVG.sound(!SFX.muted); };
 
@@ -1984,6 +2142,7 @@ $('clearBtn').onclick = () => { timeline = Array(SLOTS).fill(null); changed(); S
 $('speedBtn').onclick = () => { speed = speed === 1 ? 2 : speed === 2 ? 4 : 1; SFX.play('select'); render(); };
 function retreat() {
   if (mode !== 'run' || !sim) return;
+  if (paused) resumeGame();
   sim._retreat = true; lastRun = sim; mode = 'edit'; sim = null; fx = []; outro = null; gateDisp = null;
   SFX.play('remove'); render(); draw();
   if (autoClosed) setPanel(true);
@@ -1998,16 +2157,44 @@ $('goBtn').onclick = () => {
   SFX.play('go'); render();
   if (panelOpen) setPanel(false, true);
 };
-$('menuBtn').onclick = () => { if (mode !== 'run' && !outro) openMenu(); };
+$('menuBtn').onclick = () => { if (mode === 'run') pauseGame(); else if (!outro) openMenu('home'); };
 $('panelBtn').onclick = () => setPanel(!panelOpen);
 $('muteBtn').onclick = () => { SFX.toggle(); muteIcon(); SFX.play('select'); };
-$('closeMenu').onclick = () => { $('menuOv').classList.remove('show'); CG.start(); };
+// main menu: Play goes straight into the level (after a platform ad when one is due)
+const closeMenuThen = fn => { $('menuOv').classList.remove('show'); PLATFORM.between(fn); };
+$('playBtn').onclick = () => closeMenuThen(() => loadLevel(li));
+$('levelsBtn').onclick = () => showView('levels');
+$('settingsBtn').onclick = () => showView('settings');
+$('infoBtn').onclick = () => showView('info');
+document.querySelectorAll('.mview .back').forEach(b => b.onclick = () => showView(settingsFromPause ? null : 'home'));
+for (const k of ['music', 'sfx']) {
+  const el = $(k + 'Vol'), val = $(k + 'Val');
+  const sync = () => { val.textContent = Math.round(SFX.vol[k] * 100); el.value = Math.round(SFX.vol[k] * 100); };
+  el.oninput = () => { SFX.setVol(k, el.value / 100); sync(); };
+  el.onchange = () => { if (k === 'sfx') SFX.play('select'); };
+  sync();
+}
+// pause during an attack: the menu button turns into a pause button; P, losing focus or hiding the tab also pause
+let paused = false, settingsFromPause = false;
+function pauseGame() { if (mode !== 'run' || paused || !sim) return; paused = true; $('pauseOv').classList.add('show'); PLATFORM.stop(); }
+function resumeGame() { if (!paused) return; paused = false; $('pauseOv').classList.remove('show'); PLATFORM.start(); }
+$('resumeBtn').onclick = resumeGame;
+$('pRetreat').onclick = () => { resumeGame(); retreat(); };
+$('pSettings').onclick = () => { $('pauseOv').classList.remove('show'); settingsFromPause = true; showView('settings'); $('menuOv').classList.add('show'); };
+$('pHome').onclick = () => { resumeGame(); retreat(); openMenu('home'); };
+window.addEventListener('blur', () => pauseGame());
+document.addEventListener('visibilitychange', () => { if (document.hidden) pauseGame(); });
 
 // ============================================================
 //  LOOP + JUICE
 // ============================================================
 function frame(ts) {
   if (!PF.active) { lastTs = ts; requestAnimationFrame(frame); return; }   // hidden in the arcade: freeze the battle and effects
+  const ad = PLATFORM.paused();   // a platform ad is showing: freeze everything, keep the clock from jumping afterwards
+  if (ad !== adHeld) { adHeld = ad; SFX.hold(ad); }
+  if (ad) { lastTs = ts; requestAnimationFrame(frame); return; }
+  SFX.music(mode === 'run' && !(sim && sim.done) ? 'battle' : outro || $('resultOv').classList.contains('show') ? 'quiet' : 'deploy');   // planning and fighting have their own loops; results get a jingle
+  if (paused) { lastTs = ts; draw(); requestAnimationFrame(frame); return; }
   const dt = Math.min(0.25, (ts - (lastTs || ts)) / 1000); lastTs = ts;
   if (mode === 'run' && sim) {
     acc += dt * speed;
@@ -2093,12 +2280,12 @@ function finish() {
   outro = { win: sim.win, got, c, t: 0, dur: sim.win ? 1.3 : 0.75 };
   if (sim.win) {
     const [gx, gy] = gatePos();
-    shake += 16; SFX.play('boom');
+    shake += 16; SFX.play('boom'); SFX.music('quiet'); SFX.jingle(true);
     burst(gx, gy, '#8f86a8', 30, 6, 0.2, 1.1, 4);
     burst(gx, gy, COL.stone, 20, 4, 0.28, 1.2);
     const colors = [COL.yellow, COL.cannon, COL.shield, COL.scout, COL.sniper, COL.ratPink];
     for (let i = 0; i < 80; i++) fx.push({ kind: 'confetti', x: rand(0, GW()), y: rand(-3, -0.2), vx: rand(-0.6, 0.6), vy: rand(2, 4), g: 1.5, color: colors[i % colors.length], size: rand(0.1, 0.18), rot: rand(0, 6), life: 2.6, max: 2.6 });
-  } else SFX.play('fail');
+  } else { SFX.music('quiet'); SFX.jingle(false); }
 }
 
 function failSummary(s) {
@@ -2133,9 +2320,7 @@ function failSummary(s) {
     <div class="fates">${fates}</div>
     <div class="tipbox"><span class="lb">${S.tipLabel}</span>${tip}</div>`;
 }
-let shownResult = null;
-function showResult(win, got, c, quiet = false) {
-  shownResult = [win, got, c];
+function showResult(win, got, c) {
   const L = level(), p = $('resultPanel');
   const conds = [S.condGate, S.condPar(L.par, c), S.star3(L.star3)];
   if (win) {
@@ -2144,19 +2329,19 @@ function showResult(win, got, c, quiet = false) {
       <ul>${conds.map((t, i) => `<li class="${got[i] ? 'ok' : 'no'}">${img(got[i] ? ICON.star : ICON.starOff)} ${t}</li>`).join('')}</ul>
       <p>${got.every(Boolean) ? S.perfect : S.more}</p>
       <div class="row"><button class="btn box" id="rEdit">${S.tweak}</button>${li < LEVELS.length - 1 ? `<button class="btn box go" id="rNext">${S.next} ▸</button>` : `<button class="btn box go" id="rMenu">${S.levels}</button>`}</div>`;
-    if (!quiet) { SFX.play('win'); got.forEach((g, i) => { if (g) setTimeout(() => SFX.play('star', i), 570 + i * 220); }); }
+    got.forEach((g, i) => { if (g) setTimeout(() => SFX.play('star', i), 570 + i * 220); });
   } else {
     p.innerHTML = `<h2>${S.fail}</h2>
       ${failSummary(sim)}
       <div class="row"><button class="btn box go" id="rEdit">${S.adjust}</button></div>`;
   }
-  $('resultOv').classList.add('show'); CG.stop();
+  $('resultOv').classList.add('show'); PLATFORM.stop();
   const close = () => $('resultOv').classList.remove('show');
-  $('rEdit').onclick = () => { close(); backToEdit(); };
-  if ($('rNext')) $('rNext').onclick = () => { close(); loadLevel(li + 1); };
+  $('rEdit').onclick = () => { close(); PLATFORM.between(backToEdit); };
+  if ($('rNext')) $('rNext').onclick = () => { close(); PLATFORM.between(() => loadLevel(li + 1)); };
   if ($('rMenu')) $('rMenu').onclick = () => { close(); openMenu(); };
 }
-function backToEdit() { CG.start(); mode = 'edit'; sim = null; outro = null; fx = []; gateDisp = null; render(); draw(); if (autoClosed) setPanel(true); }
+function backToEdit() { PLATFORM.start(); mode = 'edit'; sim = null; outro = null; fx = []; gateDisp = null; render(); draw(); if (autoClosed) setPanel(true); }
 
 document.addEventListener('keydown', e => {
   if (DEV && (e.key === '[' || e.key === ']') && mode !== 'run') {
@@ -2164,8 +2349,11 @@ document.addEventListener('keydown', e => {
     loadLevel(Math.max(0, Math.min(LEVELS.length - 1, li + (e.key === ']' ? 1 : -1))));
     return;
   }
-  if ((e.key === 'r' || e.key === 'R') && $('resultOv').classList.contains('show')) { $('resultOv').classList.remove('show'); backToEdit(); }
-  else if ((e.key === 'r' || e.key === 'R') && mode === 'run') retreat();   // not Escape: on CrazyGames it exits fullscreen
+  if ((e.key === 'p' || e.key === 'P') && mode === 'run') { if (paused) resumeGame(); else pauseGame(); return; }
+  if (paused) { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); resumeGame(); } return; }
+  if ((e.key === 'r' || e.key === 'R') && $('resultOv').classList.contains('show')) { $('resultOv').classList.remove('show'); PLATFORM.between(backToEdit); }
+  else if ((e.key === 'r' || e.key === 'R') && mode === 'run') retreat();   // not Escape: game portals use it to leave fullscreen
+  if ((e.key === ' ' || e.key === 'Enter') && $('menuOv').classList.contains('show') && $('mHome').classList.contains('on') && document.activeElement === document.body) { e.preventDefault(); $('playBtn').click(); return; }
   if ((e.key === ' ' || e.key === 'Enter') && mode === 'edit' && !$('resultOv').classList.contains('show') && !$('menuOv').classList.contains('show')) { e.preventDefault(); $('goBtn').click(); }
 });
 
@@ -2183,7 +2371,7 @@ function loadLevel(i, keepPlan = i === li, quiet = false) {
   hideTip(); queueView.clear();
   render(); layout();
   if (!quiet) introduceUnits();
-  CG.start();
+  PLATFORM.start();
 }
 // new units are introduced inside gameplay: a NEW badge on the card (until it's first placed) and the card's info bubble
 let met = store.get('metUnits', []);
@@ -2234,7 +2422,14 @@ function coach(dt) {
   ghost.style.opacity = press ? op * 0.9 : 0; ghost.style.transform = `translate(${x - 26}px, ${y - 40}px)`;
 }
 
-function openMenu() {
+function showView(v) {
+  if (v === null) {   // settings opened from the pause screen: back returns there
+    settingsFromPause = false; $('menuOv').classList.remove('show'); $('pauseOv').classList.add('show'); return;
+  }
+  const id = { home: 'mHome', levels: 'mLevels', settings: 'mSettings', info: 'mInfo' }[v];
+  document.querySelectorAll('.mview').forEach(m => m.classList.toggle('on', m.id === id));
+}
+function openMenu(view = 'home') {
   const box = $('levels'); box.innerHTML = '';
   LEVELS.forEach((L, i) => {
     const b = document.createElement('button');
@@ -2242,10 +2437,14 @@ function openMenu() {
     b.className = 'lv box' + (ok ? '' : ' lock') + (i === li ? ' cur' : '');
     b.innerHTML = ok ? `${i + 1}<span class="st">${[0, 1, 2].map(k => img(k < n ? ICON.star : ICON.starOff, '')).join('')}</span>` : img(ICON.lock, '');
     b.title = tx(L.name);
-    if (ok) b.onclick = () => { $('menuOv').classList.remove('show'); loadLevel(i); };
+    if (ok) b.onclick = () => closeMenuThen(() => loadLevel(i));
     box.appendChild(b);
   });
-  $('menuOv').classList.add('show'); CG.stop();
+  const started = li > 0 || Object.keys(stars).length > 0;
+  $('playBtn').textContent = started ? S.playAt(li + 1) : S.play;
+  settingsFromPause = false;
+  showView(view);
+  $('menuOv').classList.add('show'); PLATFORM.stop();
 }
 
 
@@ -2567,15 +2766,19 @@ function setLang(next) {
   if (next === LANG) return;
   LANG = next; S = STR[LANG]; docLang();
   hideTip(); buildStatic(); render(); layout(); draw();
-  if ($('menuOv').classList.contains('show')) openMenu();
-  if ($('resultOv').classList.contains('show') && shownResult) showResult(...shownResult, true);
+  if ($('menuOv').classList.contains('show')) {
+    const curV = document.querySelector('.mview.on');
+    openMenu(curV && curV.id === 'mLevels' ? 'levels' : (curV && curV.id === 'mSettings' ? 'settings' : (curV && curV.id === 'mInfo' ? 'info' : 'home')));
+  }
 }
 try { window.parent.addEventListener('arcade-languagechange', e => setLang(e.detail && e.detail.language)); } catch (e) {}
+document.documentElement.lang = LANG === 'en' ? 'en' : 'zh-Hant';
 buildIcons(); buildStatic(); muteIcon();
 window.addEventListener('resize', () => layout());
 PORTRAIT = wantPortrait();
-loadLevel(unlocked(li) ? li : 0, true);
+loadLevel(unlocked(li) ? li : 0, true, true);
 layout();
+openMenu('home');   // title screen: Play, Levels, Settings, How to play
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => draw());
 requestAnimationFrame(frame);
 if (location.hash === '#art') artSheet();
