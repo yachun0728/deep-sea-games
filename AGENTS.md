@@ -37,6 +37,7 @@ Agent 必須區分實際完成的修改、已執行的測試及尚未驗證的�
 | 修改遊戲程式、錢包、儲存、路由、追蹤或靜態組合 | [遊戲與平台程式契約](docs/agent-guides/runtime-contracts.md) |
 | 新增或上架遊戲，或調整訪客排行榜 | [新增遊戲與訪客排行榜](docs/agent-guides/new-game.md) |
 | 新增遊戲、修改顯示文字或語言切換 | [遊戲多語系](docs/agent-guides/localization.md) |
+| 新增、修改、驗收或發布遊戲 | `docs/agent-guides/cross-platform-performance.md` |
 | 新增、改造、重新上架、調整 BONUS、準備發布或推送 | [遊戲驗收與推送](docs/agent-guides/release.md)、[CrazyGames 平台上架規範](docs/agent-guides/crazygames-compliance.md) |
 
 ## 外部平台規範
