@@ -452,7 +452,7 @@
   for (const b of blocks) {
     if (!b.asset) continue;
     const a = MAN[b.asset], bw = b.x2 - b.x1, bd = b.z2 - b.z1, aspect = a.sourceSize[0] / a.sourceSize[1];
-    b.bw = bw; b.bd = bd; b.h = Math.min(11.4, bd * 1.18); b.wNat = b.h * aspect * 1.5;
+    b.bw = bw; b.bd = bd; b.aspect = aspect; b.h = 11.4; b.wNat = bw;
     b.cx = (b.x1 + b.x2) / 2; b.cz = (b.z1 + b.z2) / 2; b.w = b.wNat; b.ux = 0; b.uz = 1;
     b.mesh = new THREE.Mesh(bGeo, new THREE.MeshBasicMaterial({ map: TEX[b.asset], transparent: true, alphaTest: 0.08, fog: true }));
     b.mesh.rotation.order = 'YXZ'; b.mesh.rotation.x = -TILT; b.mesh.position.set(b.cx, 0.02, b.cz); scene.add(b.mesh);
@@ -651,12 +651,20 @@
       const dx = camera.position.x - b.cx, dz = camera.position.z - b.cz, dist = Math.hypot(dx, dz);
       b.mesh.visible = dist < 95;
       if (!b.mesh.visible) continue;
-      if (dist > 0.8) { b.ux = dx / dist; b.uz = dz / dist; }
-      const yaw = Math.atan2(b.ux, b.uz), rx = Math.cos(yaw), rz = -Math.sin(yaw);
-      const wFit = Math.abs(rx) * b.bw + Math.abs(rz) * b.bd;
-      b.w = Math.min(wFit * 1.0, b.wNat);
-      const D = b.h * Math.sin(TILT);
-      b.mesh.rotation.y = yaw; b.mesh.scale.set(b.w, b.h, 1);
+      // aligned with the block: the building faces one of the four block edges (the side the camera is on), never an arbitrary angle
+      if (dist > 0.8) {
+        const ax = Math.abs(dx), az = Math.abs(dz), cur = b.faceX;
+        if (cur === undefined) b.faceX = ax > az;
+        else if (cur && az > ax * 1.18) b.faceX = false;
+        else if (!cur && ax > az * 1.18) b.faceX = true;
+        b.ux = b.faceX ? Math.sign(dx) || 1 : 0; b.uz = b.faceX ? 0 : (Math.sign(dz) || 1);
+      }
+      const yaw = Math.atan2(b.ux, b.uz);
+      const wFit = b.faceX ? b.bd : b.bw, depth = b.faceX ? b.bw : b.bd;
+      b.w = wFit * 0.99;
+      b.hh = Math.min(11.4, b.w / (b.aspect * 1.15), depth * 1.12);
+      const D = b.hh * Math.sin(TILT);
+      b.mesh.rotation.y = yaw; b.mesh.scale.set(b.w, b.hh, 1);
       b.mesh.position.set(b.cx + b.ux * D / 2, 0.02, b.cz + b.uz * D / 2);
       b.mesh.updateMatrixWorld();
       let want = 1;
