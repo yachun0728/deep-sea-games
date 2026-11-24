@@ -172,7 +172,16 @@
   let VW = innerWidth, VH = innerHeight, DPR = 1, zoom = 1;
 
   function loadImg(key, src) {
-    return new Promise((res, rej) => { const i = new Image(); i.onload = () => { imgs[key] = i; res(); }; i.onerror = () => rej(new Error('載入失敗：' + src)); i.src = src; });
+    return new Promise((res, rej) => {
+      let tries = 0;
+      const go = () => {
+        const i = new Image();
+        i.onload = () => { imgs[key] = i; res(); };
+        i.onerror = () => { if (++tries < 4) setTimeout(go, 400 * tries); else rej(new Error('載入失敗：' + src)); };
+        i.src = tries ? src + '?r=' + tries : src;
+      };
+      go();
+    });
   }
   async function loadAll() {
     const [m, w] = await Promise.all([fetch('assets/asset-manifest.json').then(r => r.json()), fetch('assets/world-map.json').then(r => r.json())]);
@@ -699,7 +708,9 @@
     camX = player.x - VW / zoom / 2; camY = player.y - VH / zoom * .56;
     el('loading').style.display = 'none'; el('btn-play').style.display = '';
     const b = getBest(); if (b) el('over-msg').textContent = '最佳清場 ' + b + ' 秒';
-  }).catch(err => { el('loading').textContent = '載入失敗，請用 http 伺服器開啟（' + err.message + '）'; });
+  }).catch(err => {
+    el('loading').innerHTML = '素材載入失敗（' + err.message.replace(/</g, '') + '）<br><button class="start" type="button" onclick="location.reload()">重新載入</button>';
+  });
 
   // test hook (prototype only)
   window.__doggo = { S, player, get enemies() { return enemies; }, get cars() { return cars; }, attack, doRoll, toggleCar };
