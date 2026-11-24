@@ -226,15 +226,20 @@
   .ov-title .l2 { font-size: clamp(60px, 19vw, 96px); letter-spacing: 3px; color: #ffc83d; text-shadow: 0 7px 0 #d62839, 0 12px 20px rgba(0,0,0,.4); }
   .ov-tag { font-size: 13px; font-weight: 800; color: #ffd9e6; letter-spacing: 1px; }
   #over-msg { font-size: 18px; font-weight: 900; color: #7ef9ff; min-height: 22px; text-shadow: 0 2px 0 #1a1620; margin: 0; }
-  #ov-hero { height: min(24vh, 200px); margin: -4px 0 -6px; filter: drop-shadow(0 8px 0 rgba(0,0,0,.35)); animation: heroBob 2.4s ease-in-out infinite; }
+  #ov-hero { height: min(20vh, 190px); margin: -4px 0 -6px; filter: drop-shadow(0 8px 0 rgba(0,0,0,.35)); animation: heroBob 2.4s ease-in-out infinite; }
   @keyframes heroBob { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-7px) rotate(1deg); } }
   .ov-label { font-size: 11px; font-weight: 900; letter-spacing: 3px; color: #cbbfe6; margin-top: 2px; }
   #diff-row { margin: 0 0 6px; }
   #diff-row button { min-width: 74px; }
-  .start-btn { font-size: 22px; padding: 14px 44px; min-height: 56px; background: linear-gradient(180deg, #ffd96a, #ffb02e) !important; color: #1a1620 !important; border: 4px solid #1a1620 !important; box-shadow: 0 6px 0 #1a1620, 0 12px 24px rgba(255,200,61,.35) !important; letter-spacing: 2px; animation: startPulse 1.8s ease-in-out infinite; }
+  .start-btn { font-size: 20px; padding: 12px 30px; min-height: 56px; background: linear-gradient(180deg, #ffd96a, #ffb02e) !important; color: #1a1620 !important; border: 4px solid #1a1620 !important; box-shadow: 0 6px 0 #1a1620, 0 12px 24px rgba(255,200,61,.35) !important; letter-spacing: 2px; animation: startPulse 1.8s ease-in-out infinite; }
   .start-btn:disabled { animation: none; opacity: .75; }
   @keyframes startPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.045); } }
   .ov-tips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 6px; }
+  #overlay.dev-touch .guide-pc, #overlay.dev-pc .guide-touch { display: none; }
+  .ov-note { font-size: 12px; font-weight: 700; color: #cfc6e8; text-align: center; max-width: 440px; margin-top: 4px; line-height: 1.5; }
+  .ov-goal { color: #ffe9a8; font-size: 11px; padding-bottom: 36px; }
+  #btn-play { white-space: nowrap; }
+  @media (max-height: 760px) { #ov-hero { height: min(18vh, 150px) !important; } }
   .ov-tips span img { height: 32px; width: auto; vertical-align: middle; margin-right: 4px; }
   .ov-tips span { display: inline-flex; align-items: center; font-size: 12px; font-weight: 800; color: #f5f1e6; background: rgba(255,255,255,.1); border: 1.5px solid rgba(255,255,255,.22); border-radius: 99px; padding: 3px 10px; }
   .controls-hint { max-width: 100%; font-size: 12px; line-height: 1.6; text-align: left; margin: 4px 0 0; padding: 8px 12px; }
@@ -307,12 +312,9 @@
     <div class="ov-label">難度</div>
     <div id="diff-row"><button type="button" data-d="easy">簡單</button><button type="button" data-d="normal">普通</button><button type="button" data-d="hard">困難</button></div>
     <button class="start-btn" id="btn-play">▶ PLAY TOP DOGGO</button>
-    <div class="ov-tips"><span><img src="assets/ui/k_move.png" alt="">左手移動</span><span><img src="assets/ui/k_attack.png" alt="">右側攻擊</span><span><img src="assets/ui/k_roll.png" alt="">翻滾</span><span><img src="assets/ui/k_swap.png" alt="">換武器 Q</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 E 上車</span></div>
-    <details class="controls-hint"><summary>操作說明</summary>
-      <b>📱 手機：</b>左手搖桿移動、滑動畫面轉向、右側按鈕攻擊／翻滾／蹲下／180° 轉身／換武器／上車。<br>
-      <b>💻 電腦：</b>點擊鎖定視角、WASD 移動、左鍵攻擊、空白鍵翻滾、C 蹲下、X 180°、Q 換武器（槍／小刀／揮拳／特殊武器）、E 上下車。<br>
-      <b>🎯 目標：</b>完成上方任務就能通關，下一關更難；金骨頭回血，滿血變護盾；地圖上的武器箱有手榴彈、大砲、狙擊槍（有彈藥限制）。
-    </details>
+    <div class="ov-tips guide-pc"><span><img src="assets/ui/k_move.png" alt="">WASD 移動</span><span><img src="assets/ui/k_attack.png" alt="">滑鼠左鍵 攻擊</span><span><img src="assets/ui/k_roll.png" alt="">空白鍵 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">Q 換武器</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 E 上車</span></div><div class="ov-note guide-pc">先點一下畫面鎖定視角，移動滑鼠轉向 · C 蹲下 · X 轉身 180°</div><div class="ov-tips guide-touch"><span><img src="assets/ui/k_move.png" alt="">左手搖桿 移動</span><span><img src="assets/ui/k_attack.png" alt="">右側 FIRE 攻擊</span><span><img src="assets/ui/k_roll.png" alt="">DODGE 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">換武器鈕</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 DRIVE 上車</span></div><div class="ov-note guide-touch">滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身</div>
+    <div class="ov-note ov-goal"><b>目標：</b>完成上方任務通關，下一關更難。金骨頭回血，滿血變護盾；武器箱有手榴彈、大砲、狙擊槍（彈藥有限）。</div>
+    <script>document.getElementById("overlay").classList.add((("ontouchstart" in window) || navigator.maxTouchPoints > 0 || window.innerWidth < 820) ? "dev-touch" : "dev-pc");</script>
   </div>
 </div>
 
