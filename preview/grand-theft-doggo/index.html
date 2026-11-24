@@ -1197,7 +1197,6 @@
     titleT += dt * 0.12; const r = 15, a = titleT;
     camera.position.set(START.x + Math.sin(a) * r, 6.5, START.z + Math.cos(a) * r); camera.lookAt(START.x, 1.6, START.z); camera.updateMatrixWorld();
     updateEnemyBars();
-    updateJuice(Math.min(rawDt, 0.25));
     updateBuildings(dt);
   }
   // ==========================================
@@ -1900,6 +1899,8 @@
     camera.lookAt(smoothLookAt);
 
     drawRadar();
+    updateEnemyBars();
+    updateJuice(Math.min(rawDt, 0.25));
     updateBuildings(dt);
     renderer.render(scene, camera);
   }
