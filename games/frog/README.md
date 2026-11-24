@@ -7,7 +7,7 @@
 - 網址：`#frog`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。」｜立即開玩 · 一鍵反應
 - 追蹤名稱（GA4 `game_name`）：青蛙吃蟲，`game_id` 為 `frog`
-- 檔案：`games/frog/card.html`、`games/frog/cover.webp`、`games/frog/game.js`、`games/frog/icon.svg`、`games/frog/leaderboard.webp`、`games/frog/style.css`、`games/frog/view.html`；`game.js` 共 212 行、14.2 KB
+- 檔案：`games/frog/card.html`、`games/frog/cover.webp`、`games/frog/game.js`、`games/frog/icon.svg`、`games/frog/leaderboard.webp`、`games/frog/style.css`、`games/frog/view.html`；`game.js` 共 229 行、15.9 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「26. 青蛙吃蟲 Frog Snack（frog）」（下方「規則摘要」已複製）
 
@@ -24,11 +24,12 @@
 - L8 常數：`FROG_REWARD`
 - L74 常數：`SPR`、`SCN`
 - L76 常數：`BUGK`
-- L125 常數：`PADX`、`PADY`
+- L101 常數：`MOBILE`
+- L141 常數：`PADX`、`PADY`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`O` L11、`C` L12、`F` L13、`RR` L14、`tx` L15、`level` L18、`reset` L19、`say` L21、`setText` L23、`ui` L24、`fx` L29、`end` L30、`press` L45、`update` L66、`ok` L76、`spr` L77、`sprW` L78、`sprBox` L79、`pill` L80、`wt` L81、`drawBug` L82、`drawFrog` L88、`draw` L99、`wrapT` L126、`block` L127、`lh` L127、`begin` L133、`rankStatus` L140、`start` L146、`uploadRank` L166、`shown` L177、`loop` L190
+`O` L11、`C` L12、`F` L13、`RR` L14、`tx` L15、`level` L18、`reset` L19、`say` L21、`setText` L23、`ui` L24、`fx` L29、`end` L30、`press` L45、`update` L66、`ok` L76、`spr` L77、`sprW` L78、`sprBox` L79、`pill` L80、`wt` L81、`drawBug` L82、`drawFrog` L88、`fit` L102、`scene` L103、`draw` L110、`lab` L135、`wrapT` L142、`block` L143、`lh` L143、`begin` L150、`rankStatus` L157、`start` L163、`uploadRank` L183、`shown` L194、`loop` L207
 
 ## 錢包與結算接點
 
@@ -39,7 +40,7 @@
 - L61 `press`：`S.balance+=FROG_REWARD;`
 
 **餘額檢查**
-- L148 `start`：`if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');`
+- L165 `start`：`if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 2 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
@@ -48,7 +49,7 @@
 
 - L34 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:state.pts,step:state.eaten,stage:level()});`
 - L62 `press`：`AN.progress(analytics,{stage:level(),step:state.eaten,score:state.pts,bonus_points:FROG_REWARD});`
-- L136 `begin`：`analytics=AN.start('frog',amount);`
+- L153 `begin`：`analytics=AN.start('frog',amount);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

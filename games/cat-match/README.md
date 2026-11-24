@@ -7,7 +7,7 @@
 - 網址：`#cat-match`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「拉布陪你交換貓咪與玩具，三消連鎖、無限接關。」｜不限次數 · 療癒三消
 - 追蹤名稱（GA4 `game_name`）：貓貓三消，`game_id` 為 `cat-match`
-- 檔案：`games/cat-match/.gitignore`、`games/cat-match/DESIGN.md`、`games/cat-match/RELEASE.md`、`games/cat-match/audio.js`、`games/cat-match/card.html`、`games/cat-match/cover.webp`、`games/cat-match/game.js`、`games/cat-match/i18n.js`、`games/cat-match/icon.svg`、`games/cat-match/leaderboard.webp`、`games/cat-match/main.js`、`games/cat-match/play.css`、`games/cat-match/play.html`、`games/cat-match/style.css`、`games/cat-match/view.html`；`game.js` 共 33 行、3.6 KB
+- 檔案：`games/cat-match/.gitignore`、`games/cat-match/DESIGN.md`、`games/cat-match/RELEASE.md`、`games/cat-match/audio.js`、`games/cat-match/card.html`、`games/cat-match/cover.webp`、`games/cat-match/game.js`、`games/cat-match/i18n.js`、`games/cat-match/icon.svg`、`games/cat-match/leaderboard.webp`、`games/cat-match/main.js`、`games/cat-match/play.css`、`games/cat-match/play.html`、`games/cat-match/style.css`、`games/cat-match/view.html`；`game.js` 共 42 行、4.4 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「貓貓三消 Cat Match（cat-match）」（下方「規則摘要」已複製）
 
@@ -21,7 +21,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`cmValid` L3、`cmFrame` L4、`cmEnd` L5、`cmRoute` L30
+`cmValid` L3、`cmFrame` L4、`cmEnd` L5、`cmRoute` L39
 
 ## 錢包與結算接點
 
@@ -40,10 +40,10 @@
 ## 追蹤（GA4）
 
 - L5 `cmEnd`：`AN.end(CM.round,0,result,{score:Math.max(0,Number(score)||0)});`
-- L12 `cmEnd`：`CM.round=AN.start('cat-match',0);`
-- L25 `cmEnd`：`if(cmValid(source)&&CM.round)AN.progress(CM.round,{phase:'pause'},true);`
-- L26 `cmEnd`：`CM.round=AN.start('cat-match',0);`
-- L26 `cmEnd`：`else AN.resume(CM.round);`
+- L19 `cmEnd`：`CM.round=AN.start('cat-match',0);`
+- L34 `cmEnd`：`if(cmValid(source)&&CM.round)AN.progress(CM.round,{phase:'pause'},true);`
+- L35 `cmEnd`：`CM.round=AN.start('cat-match',0);`
+- L35 `cmEnd`：`else AN.resume(CM.round);`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

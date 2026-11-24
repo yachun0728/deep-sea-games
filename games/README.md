@@ -25,8 +25,8 @@
 | [插珍奶 Boba Straw](boba/README.md) | `#boba` | 時機操作 | 顯示 | 41 行 | 抓準力道插吸管，原版粉紅珍奶小遊戲。 |
 | [屋頂貓貓 Rooftop Cat](cat/README.md) | `#cat` | 跑酷動作 | 顯示 | 125 行 | 無盡跑酷，看你能跑多遠。 |
 | [便便鳥大戰狼群 Poop Bird vs Wolves](bird/README.md) | `#bird` | 跑酷動作 | 顯示 | 336 行 | 跳過仙人掌和狼群，用便便把狼王打跑。 |
-| [青蛙吃蟲 Frog Snack](frog/README.md) | `#frog` | 時機操作 | 顯示 | 212 行 | 對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。 |
-| [偷睡大師 Nap Master](nap/README.md) | `#nap` | 潛行偷閒 | 顯示 | 249 行 | 趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。 |
+| [青蛙吃蟲 Frog Snack](frog/README.md) | `#frog` | 時機操作 | 顯示 | 229 行 | 對準最底下的蟲按下去吃掉牠，紅色帶刺的不能吃。 |
+| [偷睡大師 Nap Master](nap/README.md) | `#nap` | 潛行偷閒 | 顯示 | 267 行 | 趁主管走開偷睡，他回頭前放開，還能丟垃圾砸暈他。 |
 | [死神打工 Reaper Shift](reaper/README.md) | `#reaper` | 潛行偷閒 | 顯示 | 107 行 | 普通靈魂要接走，綠色通行證要放行。 |
 | [深海火線 Reef Blaster](blaster/README.md) | `#blaster` | 跑酷動作 | 顯示 | 343 行 | 帶領潛艇編隊航行，閃過怪潮和打不碎的硬礁。 |
 | [一口氣探險 One Breath Dive](dive/README.md) | `#dive` | 益智策略 | 顯示 | 54 行 | 選路線往下潛撿珍珠，氧氣用完前上浮，挑戰最高分。 |
@@ -35,9 +35,9 @@
 | [社畜要下班 Roar Through the Ceiling](rocket-chair/README.md) | `#rocket-chair` | 時機操作 | 顯示 | 50 行 | 對著手機大吼，火箭椅一路撞破天花板提早下班。 |
 | [蓋樓大師 Sky Builder](skybuilder/README.md) | `#skybuilder` | 時機操作 | 顯示 | 163 行 | 抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。 |
 | [鯉魚躍龍門 Carp Leap](carp/README.md) | `#carp` | 時機操作 | 顯示 | 173 行 | 蓄力起跳，越過一道道石瀑。 |
-| [外送員大戰惡犬 Rider vs Dogs](rider/README.md) | `#rider` | 跑酷動作 | 顯示 | 218 行 | 巷子裡閃狗送餐，餐涼之前送越多越好。 |
+| [外送員大戰惡犬 Rider vs Dogs](rider/README.md) | `#rider` | 跑酷動作 | 顯示 | 232 行 | 巷子裡閃狗送餐，餐涼之前送越多越好。 |
 | [胖老闆追人 Chubby Boss](boss/README.md) | `#boss` | 跑酷動作 | 顯示 | 386 行 | 遲到了！跳過障礙，別被胖老闆追上。 |
-| [偷水果的貓 Fruit Thief Cat](thief/README.md) | `#thief` | 跑酷動作 | 顯示 | 217 行 | 換道、跳籃子，偷水果躲開老闆娘。 |
+| [偷水果的貓 Fruit Thief Cat](thief/README.md) | `#thief` | 跑酷動作 | 顯示 | 225 行 | 換道、跳籃子，偷水果躲開老闆娘。 |
 | [寶寶逃洗澡 Baby Bath Escape](baby/README.md) | `#baby` | 跑酷動作 | 顯示 | 286 行 | 跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。 |
 | [布丁突圍 Pudding Dash](pudding/README.md) | `#pudding` | 跑酷動作 | 顯示 | 371 行 | 拼出武器，背著小王子殺出重圍。 |
 | [下班保衛戰 Clock Out](clock-out/README.md) | `#clock-out` | 益智策略 | 顯示 | 1096 行 | 擺好辦公用品擋住一波波工作，撐到 17:00 打卡下班。 |
@@ -62,4 +62,4 @@
 | [不准跑調 Stay On Pitch](on-pitch/README.md) | `#on-pitch` | 時機操作 | 顯示 | 669 行 | 對著麥克風唱出缺口的音，音準對了才能穿牆。 |
 | [貓咪疊書舖 Cat Book Stack](book-sort/README.md) | `#book-sort` | 益智策略 | 顯示 | 236 行 | 把書依顏色疊進紙箱，集滿 5 本同色自動封箱。 |
 | [百萬大學堂 Millionaire Academy](academy/README.md) | `#academy` | 益智策略 | 顯示 | 554 行 | 一百道百科題，自選領域闖十關，挑戰 1,000,000 學分。 |
-| [貓貓三消 Cat Match](cat-match/README.md) | `#cat-match` | 益智策略 | 顯示 | 33 行 | 拉布陪你交換貓咪與玩具，三消連鎖、無限接關。 |
+| [貓貓三消 Cat Match](cat-match/README.md) | `#cat-match` | 益智策略 | 顯示 | 42 行 | 拉布陪你交換貓咪與玩具，三消連鎖、無限接關。 |
