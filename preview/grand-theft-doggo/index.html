@@ -374,13 +374,17 @@
     WORLD = await (await fetch('assets/world-map.json')).json();
   } catch (err) { btnPlayEarly.textContent = '載入失敗，請重新整理'; throw err; }
 
+  const BNAMES = ['store24', 'cafe', 'police', 'hospital', 'gym', 'cinema', 'bank', 'apt_yellow', 'apt_pink', 'office_blue', 'tower_pink', 'parking'];
+  const BFACES = ['front', 'right', 'back', 'left', 'roof'];
   const VEHICLES = {
     convertible: { w: 4.3 }, taxi: { w: 4.3 }, muscle: { w: 4.5 }, scooter: { w: 2.5 }, pickup: { w: 4.7 }, police: { w: 4.5 }
   };
   try {
     const jobs = [];
     for (const id in MAN) if (!id.startsWith('tiles/') && !id.startsWith('buildings/') && !id.startsWith('props/') && !id.startsWith('vegetation/')) jobs.push(loadImage('assets/' + MAN[id].file).then(i => texOf(id, i)));
-    for (const name in V3) jobs.push(loadImage('assets/v3/' + V3[name].file).then(i => texOf('v3:' + name, i)));
+    for (const name in V3) if (!V3[name].file.startsWith('buildings/')) jobs.push(loadImage('assets/v3/' + V3[name].file).then(i => texOf('v3:' + name, i)));
+    for (const nm of BNAMES) for (const f of BFACES) jobs.push(loadImage('assets/v4/bld/' + nm + '_' + f + '.png').then(i => texOf('b4:' + nm + ':' + f, i)));
+    for (const w of ['wall_paw', 'wall_graffiti', 'fence_chain', 'wall_brick']) jobs.push(loadImage('assets/v4/walls/' + w + '.png').then(i => texOf('w4:' + w, i)));
     for (const t of ['road_straight', 'road_intersection', 'road_crosswalk', 'asphalt', 'sidewalk_a', 'sidewalk_b', 'sidewalk_c']) jobs.push(loadImage('assets/v3/tiles/' + t + '.png').then(i => { IMGS['v3:' + t] = i; }));
     for (const id in MAN) if (id.startsWith('tiles/')) jobs.push(loadImage('assets/' + MAN[id].file).then(i => { IMGS[id] = i; }));
     for (const k in VEHICLES) jobs.push(loadImage('assets/vehicles2/' + k + '.png').then(i => { IMGS['veh:' + k] = i; }));
@@ -455,7 +459,7 @@
     }
   })();
   const blockAt = (x, z) => blocks.find(b => x >= b.x1 && x < b.x2 && z >= b.z1 && z <= b.z2);
-  const NEWB = Object.keys(V3).filter(k => V3[k].file.startsWith('buildings/') && k !== 'parking_lot');
+  const NEWB = BNAMES;
   const bRng = mulberry(98765); let bBag = [];
   function nextBuilding() { if (!bBag.length) { bBag = NEWB.slice(); for (let i = bBag.length - 1; i > 0; i--) { const j = Math.floor(bRng() * (i + 1)); [bBag[i], bBag[j]] = [bBag[j], bBag[i]]; } } return bBag.pop(); }
   // --- props from the expansion pack, sized by target height in world units ---
@@ -481,12 +485,20 @@
     addProp(name, x, z);
   }
   // --- buildings from the expansion pack: one big camera-facing 3/4 illustration per city block ---
+  // 2.5D / 3D hybrid: every building is a low-poly box with fixed world position and rotation; its five faces (front, right, back, left, roof) carry their own art
   function makeBuilding(b) {
-    const a = V3[b.asset], tex = TEX['v3:' + b.asset];
-    b.bw = b.x2 - b.x1; b.bd = b.z2 - b.z1; b.cx = (b.x1 + b.x2) / 2; b.cz = (b.z1 + b.z2) / 2; b.alpha = 1;
-    b.w = b.bw * 0.98; b.hh = b.w * tex.image.height / tex.image.width;
-    b.spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, alphaTest: 0.08, fog: true }));
-    b.spr.center.set(0.5, 1 - a.anchor[1]); b.spr.scale.set(b.w, b.hh, 1); b.spr.position.set(b.cx, 0.02, b.cz); scene.add(b.spr);
+    const nm = b.asset, tall = nm === 'office_blue' || nm === 'tower_pink', img = n => TEX['b4:' + nm + ':' + n].image;
+    b.bw = b.x2 - b.x1; b.bd = b.z2 - b.z1; b.cx = (b.x1 + b.x2) / 2; b.cz = (b.z1 + b.z2) / 2; b.alpha = 1; b.mats = [];
+    const fw = b.bw - 1.6, fd = b.bd - 1.6, fr = img('front'), sd = img('right');
+    let W = tall ? Math.min(fw, 9.5) : fw * 0.94;
+    const H = Math.min(tall ? 23 : 14.5, Math.max(7, W * fr.height / fr.width * 0.95));
+    W = Math.min(W, H * fr.width / fr.height / 0.95);
+    const D = Math.min(fd, Math.max(4.5, H * sd.width / sd.height));
+    b.W = W; b.H = H; b.D = D;
+    const mk = key => { const m = new THREE.MeshBasicMaterial({ map: TEX[key], transparent: true, alphaTest: 0.08 }); b.mats.push(m); return m; };
+    const mats = [mk('b4:' + nm + ':right'), mk('b4:' + nm + ':left'), mk('b4:' + nm + ':roof'), mk('b4:' + nm + ':roof'), mk('b4:' + nm + ':front'), mk('b4:' + nm + ':back')];
+    b.mesh = new THREE.Mesh(new THREE.BoxGeometry(W, H, D), mats);
+    b.mesh.position.set(b.cx, H / 2, b.cz); scene.add(b.mesh);
   }
   for (const b of blocks) {
     if (!b.asset) continue;
@@ -495,7 +507,7 @@
   }
   // backdrop: a ring of buildings and palms just outside the playable map so the edges are full of city, not empty ground
   (function backdrop() {
-    const list = NEWB, r = mulberry(4242), BW = 14.8, BD = 9.7;
+    const list = ['apt_yellow', 'apt_pink', 'office_blue', 'tower_pink', 'parking', 'hospital', 'office_blue', 'tower_pink'], r = mulberry(4242), BW = 14.8, BD = 9.7;
     const add = (cx, cz) => { const b = { x1: cx - BW / 2, x2: cx + BW / 2, z1: cz - BD / 2, z2: cz + BD / 2, asset: list[Math.floor(r() * list.length)], backdrop: true }; blocks.push(b); makeBuilding(b); };
     for (let z = -OZ + 6; z < OZ - 3; z += BD + 5.5) { add(-OX - 7.5, z); add(OX + 7.5, z); }
     for (let x = -OX - 4; x < OX + 12; x += BW + 4.5) add(x, -OZ - 7);
@@ -520,6 +532,22 @@
       if (used.some(u => Math.hypot(u[0] - x, u[1] - z) < 6.5)) continue;
       used.push([x, z]); addProp(names[used.length % names.length], x, z);
     }
+  })();
+
+  // --- perimeter walls: real boxes with height and collision, so nothing can leave or see past the edge of the city ---
+  (function perimeterWalls() {
+    const types = ['wall_paw', 'wall_graffiti', 'wall_brick', 'fence_chain', 'wall_paw', 'wall_brick'], Hh = 3.6, T = 0.8, L = 5.0;
+    const face = types.map(t => new THREE.MeshBasicMaterial({ map: TEX['w4:' + t], transparent: true, alphaTest: 0.08 }));
+    const cap = new THREE.MeshBasicMaterial({ color: 0x8d8a95 });
+    const minX = -OX + 0.5, maxX = OX - 0.5, minZ = -OZ + 0.5, maxZ = OZ - 0.5; let k = 0;
+    const seg = (x, z, alongX) => {
+      const m = face[k++ % face.length], g = new THREE.BoxGeometry(alongX ? L : T, Hh, alongX ? T : L);
+      const mesh = new THREE.Mesh(g, alongX ? [cap, cap, cap, cap, m, m] : [m, m, cap, cap, cap, cap]); mesh.position.set(x, Hh / 2, z); scene.add(mesh);
+    };
+    for (let x = minX + L / 2; x < maxX; x += L) { seg(x, minZ, true); seg(x, maxZ, true); }
+    for (let z = minZ + L / 2; z < maxZ; z += L) { seg(minX, z, false); seg(maxX, z, false); }
+    colliders.push({ minX: -OX - 2, maxX: OX + 2, minZ: minZ - T / 2, maxZ: minZ + T / 2 }, { minX: -OX - 2, maxX: OX + 2, minZ: maxZ - T / 2, maxZ: maxZ + T / 2 },
+      { minX: minX - T / 2, maxX: minX + T / 2, minZ: -OZ - 2, maxZ: OZ + 2 }, { minX: maxX - T / 2, maxX: maxX + T / 2, minZ: -OZ - 2, maxZ: OZ + 2 });
   })();
 
   function moveBlockedAt(x, z, r) {
@@ -685,19 +713,31 @@
     vfxList.push({ mesh: ring, life: 0.24, maxLife: 0.24 });
   }
 
-  // --- buildings between the camera and the dog (behind the player) turn see-through; the ones ahead stay solid ---
+  // --- a building only fades while it really covers the dog; every other building stays solid ---
+  const _bc = new THREE.Vector3(), _hn = new THREE.Vector3();
   function updateBuildings(dt) {
+    camera.updateMatrixWorld();
     const heroDist = Math.hypot(player.position.x - camera.position.x, player.position.z - camera.position.z);
+    _hn.set(player.position.x, 1.2, player.position.z).project(camera);
     for (const b of blocks) {
-      if (!b.spr) continue;
-      const dx = camera.position.x - b.cx, dz = camera.position.z - b.cz, dist = Math.hypot(dx, dz);
-      b.spr.visible = dist < 130;
-      if (!b.spr.visible) continue;
-      b.spr.position.set(b.cx, 0.02, b.cz + b.bd * 0.3);       // fixed in the world: the building never slides around its block
-      const nx = Math.min(Math.max(camera.position.x, b.x1), b.x2), nz = Math.min(Math.max(camera.position.z, b.z1), b.z2);
-      const want = Math.hypot(nx - camera.position.x, nz - camera.position.z) < heroDist - 0.5 ? 0.3 : 1;
-      b.alpha += (want - b.alpha) * Math.min(1, dt * 9);
-      b.spr.material.opacity = b.alpha; b.spr.material.depthWrite = b.alpha > 0.98;
+      if (!b.mesh) continue;
+      const mx = b.mesh.position.x, mz = b.mesh.position.z, hx = b.W / 2, hz = b.D / 2;
+      b.mesh.visible = Math.hypot(camera.position.x - mx, camera.position.z - mz) < 150;
+      if (!b.mesh.visible) continue;
+      let want = 1;
+      const nx = Math.min(Math.max(camera.position.x, mx - hx), mx + hx), nz = Math.min(Math.max(camera.position.z, mz - hz), mz + hz);
+      if (Math.hypot(nx - camera.position.x, nz - camera.position.z) < heroDist - 0.3 && heroDist < 90) {
+        let x0 = 9, x1 = -9, y0 = 9, y1 = -9, ok = true;
+        for (const sx of [-1, 1]) for (const sz of [-1, 1]) for (const yy of [0, b.H]) {
+          _bc.set(mx + sx * hx, yy, mz + sz * hz).project(camera);
+          if (_bc.z > 1) ok = false; x0 = Math.min(x0, _bc.x); x1 = Math.max(x1, _bc.x); y0 = Math.min(y0, _bc.y); y1 = Math.max(y1, _bc.y);
+        }
+        const nearCam = Math.abs(camera.position.x - mx) < hx + 2.5 && Math.abs(camera.position.z - mz) < hz + 2.5;
+        if (ok ? (_hn.x > x0 - 0.04 && _hn.x < x1 + 0.04 && _hn.y > y0 - 0.04 && _hn.y < y1 + 0.04) : nearCam) want = 0.28;
+      }
+      b.alpha += (want - b.alpha) * Math.min(1, dt * 10);
+      const solid = b.alpha > 0.98;
+      for (const m of b.mats) { m.opacity = b.alpha; m.depthWrite = solid; }
     }
     // props (lamps, signs, palms...) that stand between the camera and the dog also turn see-through
     const hn = new THREE.Vector3(player.position.x, 1.2, player.position.z).project(camera);
