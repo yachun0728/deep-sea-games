@@ -154,39 +154,38 @@ function tipFor(level){
   };
   return tips[level]||[];
 }
+function wrapLines(t,font,mw){t=window.deepSeaI18n?deepSeaI18n.text(String(t)):String(t);ctx.font=font;const parts=/\s/.test(t)?t.split(/(\s+)/):[...t],out=[];let cur='';parts.forEach(p=>{const nx=cur+p;if(cur.trim()&&ctx.measureText(nx).width>mw&&!/^\s+$/.test(p)&&!/^[，。！？、：；）」』]$/.test(p)){out.push(cur.trim());cur=p.trimStart()}else cur=nx});if(cur.trim())out.push(cur.trim());return out}
+// card with ~12% side padding; every line wraps to the inner width and the card grows to fit
+function block(items,top){const X=36,CW=328,PX=38,PY=20,TW=CW-PX*2,rows=[];
+ items.forEach(it=>wrapLines(it[0],(it[3]===false?'700 ':'900 ')+it[1]+'px '+FONT,TW).forEach(l=>rows.push([l,it[1],it[2],it[3]])));
+ const lh=r=>Math.round(r[1]*1.5),tot=rows.reduce((a,r)=>a+lh(r),0)+PY*2;card(X,top,CW,tot);
+ let y=top+PY;rows.forEach(r=>{const h=lh(r);tx(r[0],200,y+h/2,r[1],r[2],'center',r[3]!==false,null,TW);y+=h});return top+tot}
 function drawOverlay(){
  const dim=a=>{ctx.fillStyle='rgba(8,10,34,'+a+')';ctx.fillRect(0,0,W,H)};
  if(st==='ready'){
   dim(.55);
-  tx('{{t:nap.msg.030}}',200,104,40,'#ffd54f','center',true,'#1a1450');
-  tx('{{t:nap.msg.031}}',200,142,15,'#e4e6ff','center',false,'#0d1236');
-  card(36,166,328,168);
-  tx('{{t:nap.msg.032}}',200,196,14,'#fff','center',true);
-  tx('{{t:nap.msg.033}}',200,226,14,'#ffd54f','center',true);
-  tx('{{t:nap.msg.034}}',200,256,14,'#fff','center',true);
-  tx('{{t:nap.msg.035}}',200,286,14,'#fff','center',true);
-  tx('{{t:nap.msg.036}}',200,314,12,'#aab3ff');
-  tx('{{t:nap.msg.037}}',200,370,20,'#ffd54f','center',true,'#1a1450');
+  tx('{{t:nap.msg.030}}',200,108,40,'#ffd54f','center',true,'#1a1450');
+  tx('{{t:nap.msg.031}}',200,146,15,'#e4e6ff','center',false,'#0d1236',W-60);
+  const b=block([['{{t:nap.msg.032}}',14,'#fff'],['{{t:nap.msg.033}}',14,'#ffd54f'],['{{t:nap.msg.034}}',14,'#fff'],['{{t:nap.msg.035}}',14,'#fff'],['{{t:nap.msg.036}}',12,'#aab3ff',false]],168);
+  tx('{{t:nap.msg.037}}',200,Math.min(b+36,440),20,'#ffd54f','center',true,'#1a1450',W-48);
  }else if(st==='over'){
   dim(.6);
   const win=why==='win';
-  tx(win?'{{t:nap.msg.038}}':'{{t:nap.msg.040}}',200,108,36,win?'#ffd54f':'#ff6b7a','center',true,'#1a1450');
-  tx(win?'{{t:nap.msg.039}}':'{{t:nap.msg.041}}',200,146,14,'#e4e6ff','center',false,'#0d1236');
-  const rows=3+(rec?1:0),h=40+rows*32;card(36,170,328,h);
-  tx('撐到第 '+G.level+' 關',200,204,18,'#fff','center',true);
-  tx('分數 '+G.score,200,236,22,'#ffd54f','center',true);
-  tx(earned>0?'本局入帳 '+fmt(earned)+' 點':'{{t:nap.msg.042}}',200,268,15,earned>0?'#ffd54f':'#cfd6ff','center',true);
-  if(rec)tx('{{t:nap.msg.043}}',200,300,16,'#7ef0d0','center',true);
-  tx('{{t:nap.msg.044}}',200,170+h+34,18,'#ffd54f','center',true,'#1a1450');
+  tx(win?'{{t:nap.msg.038}}':'{{t:nap.msg.040}}',200,112,36,win?'#ffd54f':'#ff6b7a','center',true,'#1a1450',W-48);
+  tx(win?'{{t:nap.msg.039}}':'{{t:nap.msg.041}}',200,150,14,'#e4e6ff','center',false,'#0d1236',W-60);
+  const it=[['撐到第 '+G.level+' 關',18,'#fff'],['分數 '+G.score,22,'#ffd54f'],[earned>0?'本局入帳 '+fmt(earned)+' 點':'{{t:nap.msg.042}}',15,earned>0?'#ffd54f':'#cfd6ff']];
+  if(rec)it.push(['{{t:nap.msg.043}}',16,'#7ef0d0']);
+  const b=block(it,174);
+  tx('{{t:nap.msg.044}}',200,Math.min(b+34,440),18,'#ffd54f','center',true,'#1a1450',W-48);
  }else if(G.state==='INTRO'){
   dim(.5);
   tx('第 '+G.level+' 關',200,150,42,'#fff','center',true,'#1a1450');
   tx('睡意目標 '+G.L.goal,200,192,15,'#cfd6ff','center',false,'#0d1236');
   const tp=tipFor(G.level);
-  if(tp.length){card(36,214,328,24+tp.length*28);for(let i=0;i<tp.length;i++)tx(tp[i],200,240+i*28,i===0&&G.level>1?16:14,i===0?'#ffd54f':'#fff','center',true)}
+  if(tp.length)block(tp.map((t,i)=>[t,i===0&&G.level>1?16:14,i===0?'#ffd54f':'#fff']),214);
  }else if(G.state==='CLEAR'){
   dim(.3);
-  tx('{{t:nap.msg.011}}'+NAP_REWARD+' 點',200,160,32,'#fff','center',true,'#5e35b1');
+  tx('{{t:nap.msg.011}}'+NAP_REWARD+' 點',200,160,32,'#fff','center',true,'#5e35b1',W-48);
  }
 }
 function draw(dt){
