@@ -337,9 +337,11 @@ function saveProg() { store.set('prog', prog); }
 const audio = (() => {
   let ac = null, master = null, sfxBus = null, musBus = null, noiseBuf = null;
   const vol = Object.assign({ music: .26, sfx: .8 }, store.get('vol', {}));
-  let muted = store.get('muted', false), held = false, hidden = false, duck = 1;
+  const holds = new Set();
+  let muted = store.get('muted', false), hidden = false, duck = 1;
   let scratchSrc = null, scratchGain = null, scratchFilter = null;
   const lastAt = {};
+  function isHeld() { return holds.size > 0 || hidden; }
   function apply() {
     if (!ac) return;
     const now = ac.currentTime;
@@ -347,7 +349,12 @@ const audio = (() => {
     sfxBus.gain.setTargetAtTime(vol.sfx * .75, now, .02);
     musBus.gain.setTargetAtTime(vol.music * duck, now, .08);
   }
-  function wake() { if (ac && ac.state === 'suspended' && !held && !hidden) ac.resume().catch(() => {}); }
+  function syncAudioState() {
+    if (!ac) return;
+    if (isHeld()) ac.suspend().catch(() => {});
+    else if (ac.state === 'suspended') ac.resume().catch(() => {});
+  }
+  function wake() { if (ac && ac.state === 'suspended' && !isHeld()) ac.resume().catch(() => {}); }
   function ensure() {
     if (!ac) {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -445,9 +452,13 @@ const audio = (() => {
     toggleMute() { muted = !muted; store.set('muted', muted); apply(); return muted; },
     duck(on) { duck = on ? .45 : 1; apply(); },
     intense(on) { music.intense = on; },
-    // freeze all sound (ads, hidden tab) and bring it back with the saved volumes untouched
-    hold(on) { held = on; if (!ac) return; if (on) ac.suspend().catch(() => {}); else wake(); },
-    setHidden(h) { hidden = h; if (!ac) return; if (h) ac.suspend().catch(() => {}); else wake(); },
+    // freeze all sound (platform inactive, ads, hidden tab) and bring it back with the saved volumes untouched
+    hold(reason, on) {
+      if (typeof reason === 'boolean') { on = reason; reason = 'ad'; }
+      if (on) holds.add(reason); else holds.delete(reason);
+      syncAudioState();
+    },
+    setHidden(h) { hidden = !!h; syncAudioState(); },
     // chalk scraping the board: a looping filtered noise whose volume follows drawing speed
     scratch(level) {
       if (!ac || ac.state !== 'running') return;
@@ -1407,7 +1418,17 @@ window.startOneLinePlatformRound = () => {
   requestRun(hasSave() ? { mode: 'level', lv: nextLevel() >= 0 ? nextLevel() : 0 } : { mode: 'level', lv: 0 });
   return true;
 };
-window.setOneLinePlatformActive = v => { if (!v) pauseGame(); else resize(); };
+window.setOneLinePlatformActive = v => {
+  v = !!v;
+  if (!v) {
+    pauseGame();
+    audio.hold('platform', true);
+  } else {
+    audio.hold('platform', false);
+    resize();
+  }
+};
+window.addEventListener('pagehide', () => audio.hold('page', true));
 
 refreshMenu();
 requestAnimationFrame(frame);

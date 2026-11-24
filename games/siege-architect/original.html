@@ -751,7 +751,12 @@ const PF = (() => {
     level(level) { call('level', { level }); },
   };
 })();
-window.setSiegePlatformActive = on => PF.setActive(on);
+window.setSiegePlatformActive = on => {
+  on = !!on;
+  PF.setActive(on);
+  SFX.hold('platform', !on);
+};
+window.addEventListener('pagehide', () => SFX.hold('page', true));
 addEventListener('pointerdown', () => PF.touch(), true);
 addEventListener('keydown', () => PF.touch(), true);
 
@@ -891,8 +896,14 @@ const SFX = (() => {
     last[name] = now;
     try { SND[name](arg); } catch (e) {}
   }
-  // hold: silence everything while a platform ad is on screen (does not touch the player's mute setting)
-  function hold(on) { held = on; try { if (ac) on ? ac.suspend() : ac.resume(); } catch (e) {} }
+  // hold: silence everything while platform is inactive, page hidden, or an ad is on screen
+  const holds = new Set();
+  function hold(reason, on) {
+    if (typeof reason === 'boolean') { on = reason; reason = 'ad'; }
+    if (on) holds.add(reason); else holds.delete(reason);
+    held = holds.size > 0;
+    try { if (ac) held ? ac.suspend() : ac.resume(); } catch (e) {}
+  }
   // short win / lose jingles on the music bus (so the music slider controls them too)
   function jingle(win) {
     if (!ac || held || ac.state !== 'running') return;
@@ -2183,7 +2194,10 @@ $('pRetreat').onclick = () => { resumeGame(); retreat(); };
 $('pSettings').onclick = () => { $('pauseOv').classList.remove('show'); settingsFromPause = true; showView('settings'); $('menuOv').classList.add('show'); };
 $('pHome').onclick = () => { resumeGame(); retreat(); openMenu('home'); };
 window.addEventListener('blur', () => pauseGame());
-document.addEventListener('visibilitychange', () => { if (document.hidden) pauseGame(); });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) pauseGame();
+  SFX.hold('hidden', document.hidden);
+});
 
 // ============================================================
 //  LOOP + JUICE

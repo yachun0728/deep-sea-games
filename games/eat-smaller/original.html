@@ -1476,7 +1476,17 @@ try { window.parent.addEventListener('arcade-languagechange', e => setLang(e.det
 // Parent platform hooks
 window.startEatPlatformRound = () => { if (state === 'play') return false; intro(cur); return begin(); };
 window.endEatPlatformRound = () => { roundOn = false; };
-window.setEatPlatformActive = v => { if (!v) pause(); };
+window.setEatPlatformActive = v => {
+  v = !!v;
+  if (!v) {
+    if (state === 'play') pause();
+    sfx.hold('platform', true);
+  } else {
+    sfx.hold('platform', false);
+    resize();
+  }
+};
+window.addEventListener('pagehide', () => sfx.hold('page', true));
 
 resize();
 openMain();
