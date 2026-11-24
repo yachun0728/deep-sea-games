@@ -235,7 +235,8 @@
   .start-btn:disabled { animation: none; opacity: .75; }
   @keyframes startPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.045); } }
   .ov-tips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 6px; }
-  .ov-tips span { font-size: 12px; font-weight: 800; color: #f5f1e6; background: rgba(255,255,255,.1); border: 1.5px solid rgba(255,255,255,.22); border-radius: 99px; padding: 3px 10px; }
+  .ov-tips span img { height: 32px; width: auto; vertical-align: middle; margin-right: 4px; }
+  .ov-tips span { display: inline-flex; align-items: center; font-size: 12px; font-weight: 800; color: #f5f1e6; background: rgba(255,255,255,.1); border: 1.5px solid rgba(255,255,255,.22); border-radius: 99px; padding: 3px 10px; }
   .controls-hint { max-width: 100%; font-size: 12px; line-height: 1.6; text-align: left; margin: 4px 0 0; padding: 8px 12px; }
   .controls-hint summary { cursor: pointer; font-weight: 900; color: #ffc83d; text-align: center; }
 </style>
@@ -306,7 +307,7 @@
     <div class="ov-label">難度</div>
     <div id="diff-row"><button type="button" data-d="easy">簡單</button><button type="button" data-d="normal">普通</button><button type="button" data-d="hard">困難</button></div>
     <button class="start-btn" id="btn-play">▶ PLAY TOP DOGGO</button>
-    <div class="ov-tips"><span>🕹 左手移動</span><span>🎾 右側攻擊</span><span>🌀 翻滾</span><span>🔄 換武器</span><span>🚗 上車</span></div>
+    <div class="ov-tips"><span><img src="assets/ui/k_move.png" alt="">左手移動</span><span><img src="assets/ui/k_attack.png" alt="">右側攻擊</span><span><img src="assets/ui/k_roll.png" alt="">翻滾</span><span><img src="assets/ui/k_swap.png" alt="">換武器 Q</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 E 上車</span></div>
     <details class="controls-hint"><summary>操作說明</summary>
       <b>📱 手機：</b>左手搖桿移動、滑動畫面轉向、右側按鈕攻擊／翻滾／蹲下／180° 轉身／換武器／上車。<br>
       <b>💻 電腦：</b>點擊鎖定視角、WASD 移動、左鍵攻擊、空白鍵翻滾、C 蹲下、X 180°、Q 換武器（槍／小刀／揮拳／特殊武器）、E 上下車。<br>
@@ -1702,7 +1703,7 @@
       car.mesh.rotation.y = state.yaw + Math.PI;
       const carFwd = new THREE.Vector3(-Math.sin(state.yaw), 0, -Math.cos(state.yaw));
       updateCarFlip(car, carFwd.x * car.speed, carFwd.z * car.speed);
-      moveEntityWithCollision(car.mesh.position, carFwd.multiplyScalar(car.speed * dt), 1.9);
+      { const b0 = car.mesh.position.clone(), want = Math.abs(car.speed) * dt; if (moveBlockedAt(b0.x, b0.z, 1.2)) { const f = freeSpotU(b0.x, b0.z, 1.2); car.mesh.position.x = f.x; car.mesh.position.z = f.z; } moveEntityWithCollision(car.mesh.position, carFwd.multiplyScalar(car.speed * dt), 1.2); const got = car.mesh.position.distanceTo(b0); if (want > 0.02 && got < want * 0.35) car.speed *= 0.5; }
       player.position.copy(car.mesh.position);
       btnCar.style.display = 'flex';
       btnCar.innerHTML = '🏃<span>EXIT</span>';
@@ -1892,7 +1893,7 @@
   });
 
   btnPlay.disabled = false; btnPlay.textContent = '▶ PLAY TOP DOGGO';
-  refreshWeaponHUD(); window.__doggo = { state, player, camera, enemies, cars, blocks, scene, moveBlockedAt, bulletBlocked, colliders, projectiles, triggerAttack, setDifficulty, inv, setWeapon, cycleWeapon, spawnCrate, startNextLevel, levelComplete, explode, cannonBalls, grenades, updateSpecials, get level() { return level; }, get shield() { return shield; } };
+  refreshWeaponHUD(); window.__doggo = { sparks, updateJuice, burst, state, player, camera, enemies, cars, blocks, scene, moveBlockedAt, bulletBlocked, colliders, projectiles, triggerAttack, setDifficulty, inv, setWeapon, cycleWeapon, spawnCrate, startNextLevel, levelComplete, explode, cannonBalls, grenades, updateSpecials, get level() { return level; }, get shield() { return shield; } };
   updateHUD();
   animate();
 })();
