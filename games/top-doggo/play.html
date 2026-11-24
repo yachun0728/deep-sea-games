@@ -196,7 +196,7 @@
   #diff-row { display: flex; gap: 8px; margin: 0 0 12px; }
   #diff-row button { background: rgba(255,255,255,.1); border: 2px solid rgba(255,255,255,.35); color: #fff; font-weight: 900; font-size: 15px; padding: 8px 18px; border-radius: 999px; cursor: pointer; min-height: 44px; }
   #diff-row button.on { background: #ffc83d; color: #1a1620; border-color: #1a1620; }
-  #mission { position: fixed; left: 50%; top: calc(max(12px, env(safe-area-inset-top)) + 100px); transform: translateX(-50%); z-index: 11; background: rgba(15,6,32,.78); border: 2px solid #ffc83d; color: #ffe9a8; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 999px; pointer-events: none; white-space: nowrap; }
+  #mission { position:relative; width:min(100%,540px); margin:0 auto 8px; padding:7px 12px; border:1px solid rgba(255,200,61,.65); border-radius:12px; background:rgba(15,6,32,.86); color:#ffe9a8; font-size:12px; line-height:1.4; font-weight:800; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none; }
   #combo { position: fixed; right: 14px; top: 42%; z-index: 11; text-align: right; color: #fff; font-weight: 900; font-size: 14px; letter-spacing: 1px; line-height: 1.05; text-shadow: 0 3px 0 #1a1620, 0 0 12px rgba(255,200,61,.7); pointer-events: none; display: none; }
   #combo b { font-size: 40px; color: #ffc83d; margin-right: 4px; }
   #combo small { font-size: 12px; color: #7dff9b; }
@@ -215,7 +215,6 @@
   #weapon-label .wa { font-weight: 900; font-size: 15px; color: #7ef9ff; margin-left: 4px; }
   #weapon-label .wa.low { color: #ff6b6b; }
   #weapon-label small { font-size: 10px; font-weight: 700; color: #cbbfe6; }
-  @media (max-width: 560px) { #mission { top: calc(max(12px, env(safe-area-inset-top)) + 150px) !important; } }
   .action-btn .bi { height: 46%; width: auto; max-width: 70%; object-fit: contain; pointer-events: none; }
   .pill-btn { display: inline-flex; align-items: center; gap: 5px; }
   .pill-btn .pi { height: 20px; width: auto; }
@@ -252,8 +251,9 @@
   .controls-hint { max-width: 100%; font-size: 12px; line-height: 1.6; text-align: left; margin: 4px 0 0; padding: 8px 12px; }
   .controls-hint summary { cursor: pointer; font-weight: 900; color: #ffc83d; text-align: center; }
   #ov-exit { position: absolute; top: 10px; left: 10px; z-index: 3; background: rgba(18,8,36,.78); border: 1.5px solid rgba(255,105,180,.65); color: #fff; font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 999px; cursor: pointer; }
-  #overlay { overflow-y: auto; align-items: flex-start !important; }
-  .ov-card { margin: auto; padding-bottom: 28px; }
+  #overlay { overflow-y: auto; align-items: center !important; justify-content:flex-start!important; touch-action:pan-y; }
+  .ov-card { flex:none; margin:auto; padding:44px 0 28px; }
+  #ov-logo { max-width:100%; max-height: min(26dvh,220px); object-fit:contain; flex:none; }
   #diff-row.locked { opacity: .45; pointer-events: none; }
   #rank-box { width: min(86vw, 330px); margin: 6px auto 0; padding: 6px 10px; background: rgba(18,8,36,.7); border: 1.5px solid rgba(255,200,61,.5); border-radius: 12px; text-align: left; }
   #rk-title { font-size: 12px; font-weight: 900; color: #ffc83d; text-align: center; margin-bottom: 2px; }
@@ -264,6 +264,21 @@
   #rk-list li em { font-style: normal; color: #7ef9ff; font-weight: 800; }
   #rk-list .rk-empty { justify-content: center; color: #cfc6e8; }
   #rk-status { font-size: 11px; color: #7dff9b; text-align: center; min-height: 14px; }
+
+  @media(max-width:560px){
+    .top-bar{display:grid;grid-template-columns:minmax(0,1fr) 76px;gap:6px 10px;align-items:start}
+    .top-left{grid-column:1;grid-row:1 / span 2;min-width:0}
+    .badge-row{flex-wrap:nowrap;gap:4px}
+    .pill-btn{min-height:44px;padding:5px 7px;font-size:10px;letter-spacing:0}
+    .stat-card{min-width:0;padding:6px 8px}
+    #radar-wrap{grid-column:2;grid-row:1;width:76px;height:76px}
+    .top-right{grid-column:2;grid-row:2;align-items:center;min-width:0}
+    #wanted-bones{gap:1px}
+    #wanted-bones .pi{height:13px;width:auto}
+    #weapon-label{font-size:11px}
+    #weapon-label .wi{height:26px}
+    #mission{margin-bottom:6px}
+  }
 </style>
 </head>
 <body data-i18n-ignore>
@@ -272,11 +287,12 @@
 
 <!-- Dead-Center Crosshair -->
 <div id="crosshair"><div class="dot"></div></div>
-<div id="hurt"></div><div id="banner"></div><div id="combo"></div><div id="mission"></div>
+<div id="hurt"></div><div id="banner"></div><div id="combo"></div>
 <div id="toast">PRESS [E] TO HIJACK CONVERTIBLE</div>
 
 <!-- HUD -->
 <div id="hud">
+  <div id="mission"></div>
   <div class="top-bar">
     <div class="top-left">
       <div class="badge-row">
@@ -297,11 +313,9 @@
     </div>
 
     <div class="top-right">
-      <div class="cash-box" id="cash-text">$0</div>
       <div class="wanted-row" id="wanted-bones">
         <span><img class="pi" src="assets/ui/h_bone.png" alt=""></span><span class="bone-off"><img class="pi" src="assets/ui/h_bone.png" alt=""></span><span class="bone-off"><img class="pi" src="assets/ui/h_bone.png" alt=""></span><span class="bone-off"><img class="pi" src="assets/ui/h_bone.png" alt=""></span><span class="bone-off"><img class="pi" src="assets/ui/h_bone.png" alt=""></span>
       </div>
-      <div class="mode-chip" id="stance-chip">55° TACTICAL</div>
     </div>
   </div>
 </div>
@@ -356,6 +370,7 @@
     '滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身': 'Swipe the right side to turn · CROUCH · 180° Turn',
     '目標：': 'Goal: ', '完成上方任務通關，下一關更難。金骨頭回血，滿血變護盾；武器箱有手榴彈、大砲、狙擊槍（彈藥有限）。': 'Finish the missions above to clear a level; the next one is tougher. Golden bones heal you (or add a shield at full health). Weapon crates hold grenades, cannons and sniper rifles (limited ammo).',
     '載入素材中…': 'Loading…', '載入失敗，請重新整理': 'Failed to load. Please refresh.', '模型載入失敗，請重新整理': 'Models failed to load. Please refresh.',
+    '擊倒浣熊': 'Defeat raccoons', '撿金骨頭': 'Collect bones', '開車撞敵人': 'Ram enemies', '連擊': 'Combo', '擊敗頭目': 'Defeat bosses', '擊倒精英': 'Defeat elites',
     '擊倒 {n} 名浣熊': 'Defeat {n} raccoons', '撿 {n} 根金骨頭': 'Collect {n} golden bones', '開車撞倒 {n} 名敵人': 'Run over {n} enemies with a car', '打出 {n} 連擊': 'Reach a {n}-hit combo', '擊敗頭目 ×{n}': 'Defeat bosses ×{n}', '擊倒 {n} 名射手或壯漢': 'Defeat {n} shooters or brutes',
     '全城清空！自由闖蕩': 'City cleared! Roam free', '任務完成': 'Mission complete',
     '網球槍': 'Tennis Blaster', '小刀': 'Knife', '揮拳': 'Fist', '網球手榴彈': 'Tennis Grenade', '網球大砲': 'Tennis Cannon', '狙擊槍': 'Sniper Rifle',
@@ -376,6 +391,7 @@
     '滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身': '滑动屏幕右侧转向 · CROUCH 蹲下 · 180° 转身',
     '目標：': '目标：', '完成上方任務通關，下一關更難。金骨頭回血，滿血變護盾；武器箱有手榴彈、大砲、狙擊槍（彈藥有限）。': '完成上方任务通关，下一关更难。金骨头回血，满血变护盾；武器箱有手榴弹、大炮、狙击枪（弹药有限）。',
     '載入素材中…': '载入素材中…', '載入失敗，請重新整理': '载入失败，请重新刷新', '模型載入失敗，請重新整理': '模型载入失败，请重新刷新',
+    '擊倒浣熊': '击倒浣熊', '撿金骨頭': '捡金骨头', '開車撞敵人': '开车撞敌人', '連擊': '连击', '擊敗頭目': '击败头目', '擊倒精英': '击倒精英',
     '擊倒 {n} 名浣熊': '击倒 {n} 名浣熊', '撿 {n} 根金骨頭': '捡 {n} 根金骨头', '開車撞倒 {n} 名敵人': '开车撞倒 {n} 名敌人', '打出 {n} 連擊': '打出 {n} 连击', '擊敗頭目 ×{n}': '击败头目 ×{n}', '擊倒 {n} 名射手或壯漢': '击倒 {n} 名射手或壮汉',
     '全城清空！自由闖蕩': '全城清空！自由闯荡', '任務完成': '任务完成',
     '網球槍': '网球枪', '小刀': '小刀', '揮拳': '挥拳', '網球手榴彈': '网球手榴弹', '網球大砲': '网球大炮', '狙擊槍': '狙击枪', '槍': '枪', '手榴彈': '手榴弹', '大砲': '大炮',
@@ -449,6 +465,7 @@
     refreshRank(DIFF_KEY);
   }
   window.setTopDoggoActive = active => {
+    platformActive = active;
     if (active) { applyLang(); refreshRank(DIFF_KEY); return; }
     if (state.started && !state.paused) setPaused(true);
     if (run.active) { endRun('left'); state.hp = 0; setPaused(true); }
@@ -530,8 +547,10 @@
   const btnPlayEarly = document.getElementById('btn-play');
   btnPlayEarly.disabled = true; btnPlayEarly.textContent = L('載入素材中…');
 
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, ('ontouchstart' in window || navigator.maxTouchPoints > 0) ? 1.5 : 2));
+  const handheld = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  let platformActive = true;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !handheld, powerPreference: handheld ? 'low-power' : 'default' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, handheld ? 1 : 1.5));
   renderer.setSize(window.innerWidth, window.innerHeight);
   const maxAniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
 
@@ -671,7 +690,8 @@
   // clone every material of a model so that one building (or one tall prop) can fade without touching the shared city materials
   function ownMaterials(root) {
     const map = new Map(), list = [];
-    root.traverse(o => { if (o.isMesh) { let c = map.get(o.material); if (!c) { c = o.material.clone(); c.transparent = true; map.set(o.material, c); list.push(c); } o.material = c; } });
+    root.userData.outlines = [];
+    root.traverse(o => { if (o.isMesh) { if (o.material.side === THREE.BackSide) root.userData.outlines.push(o); let c = map.get(o.material); if (!c) { c = o.material.clone(); c.transparent = true; map.set(o.material, c); list.push(c); } o.material = c; } });
     return list;
   }
   function setFade(list, a) { const solid = a > 0.98; for (const m of list) { m.opacity = m.side === THREE.BackSide ? (solid ? 1 : 0) : a; m.depthWrite = solid; } }
@@ -984,7 +1004,9 @@
     for (const b of blocks) {
       if (!b.mesh) continue;
       const mx = b.mesh.position.x, mz = b.mesh.position.z, hx = b.W / 2, hz = b.D / 2;
-      b.mesh.visible = Math.hypot(camera.position.x - mx, camera.position.z - mz) < 150;
+      const distance = Math.hypot(camera.position.x - mx, camera.position.z - mz);
+      b.mesh.visible = distance < (handheld ? 85 : 150);
+      if (handheld) for (const outline of b.mesh.userData.outlines || []) outline.visible = distance < 28;
       if (!b.mesh.visible) continue;
       let want = 1;
       const nx = Math.min(Math.max(camera.position.x, mx - hx), mx + hx), nz = Math.min(Math.max(camera.position.z, mz - hz), mz + hz);
@@ -1005,6 +1027,9 @@
     const pv = _bc;
     for (const p of fadeProps) {
       const pdx = p.g.position.x - camera.position.x, pdz = p.g.position.z - camera.position.z, pd = Math.hypot(pdx, pdz);
+      p.g.visible = !handheld || pd < 70;
+      if (!p.g.visible) continue;
+      if (handheld) for (const outline of p.g.userData.outlines || []) outline.visible = pd < 24;
       let want = 1;
       if (pd < heroDist - 0.3 && pd < (p.tall ? 60 : 24)) {
         pv.set(p.g.position.x, p.h * 0.5, p.g.position.z).project(camera);
@@ -1074,7 +1099,7 @@
     burst(p.x, 1.2, p.z, 0xff5aa5, 7, 8, 0.45, 0.6); burst(p.x, 1.2, p.z, 0xffc83d, 6, 7, 0.5, 0.5);
     combo.n = combo.t > 0 ? combo.n + 1 : 1; combo.t = 4.0; combo.best = Math.max(combo.best, combo.n);
     const reward = killReward(e);
-    popText(p.x, 3.4, p.z, '+$' + reward, '#7dff9b', 0.8, 2.8); popText(p.x, 2.4, p.z, isBoss(e.type) ? 'BOSS DOWN!' : 'KO!', '#ff5aa5', 0.7, 2.0);
+    popText(p.x, 2.4, p.z, isBoss(e.type) ? 'BOSS DOWN!' : 'KO!', '#ff5aa5', 0.7, 2.0);
     hitStopT = Math.max(hitStopT, isBoss(e.type) ? 0.22 : 0.09); shakeT = 0.3; shakeAmp = isBoss(e.type) ? 0.55 : 0.28;
     if (combo.n === 3) banner('TRIPLE!', '#ffc83d'); else if (combo.n === 5) banner('RAMPAGE!', '#ff5aa5'); else if (combo.n === 8) banner('UNSTOPPABLE!', '#7ef9ff'); else if (combo.n === 12) banner('LEGENDARY!', '#ff8c42');
     AudioSys.play('kill'); if (combo.n >= 2) AudioSys.play('combo');
@@ -1093,7 +1118,7 @@
   }
   function updateComboHUD() {
     if (!comboEl) return;
-    if (combo.n >= 2 && combo.t > 0) { comboEl.style.display = 'block'; comboEl.innerHTML = '<b>' + combo.n + '</b> COMBO<br><small>x' + Math.min(3, 1 + 0.2 * Math.max(0, combo.n)).toFixed(1) + ' $</small><i style="width:' + Math.round(combo.t / 4 * 100) + '%"></i>'; } else comboEl.style.display = 'none';
+    if (combo.n >= 2 && combo.t > 0) { comboEl.style.display = 'block'; comboEl.innerHTML = '<b>' + combo.n + '</b> COMBO<i style="width:' + Math.round(combo.t / 4 * 100) + '%"></i>'; } else comboEl.style.display = 'none';
   }
   // missions
   // bosses appear on odd levels only (1, 3, 5...) and there are more of them, and tougher, the deeper you go
@@ -1115,14 +1140,14 @@
   function updateMissionHUD() {
     if (!missionEl) return;
     if (mission.done) { missionEl.textContent = L('全城清空！自由闖蕩'); return; }
-    const m = MISSIONS[mission.i]; missionEl.textContent = 'LV' + level + '  ' + (mission.i + 1) + '/' + MISSIONS.length + '  ' + textOf(m) + '  ' + Math.min(mission.p, goalOf(m)) + '/' + goalOf(m);
+    const m = MISSIONS[mission.i]; const label = {kills:'擊倒浣熊',bones:'撿金骨頭',ram:'開車撞敵人',combo:'連擊',boss:'擊敗頭目',elite:'擊倒精英'}[m.id]; missionEl.textContent = 'LV ' + level + ' · ' + (mission.i + 1) + '/' + MISSIONS.length + ' ｜ ' + L(label) + '  ' + Math.min(mission.p, goalOf(m)) + '/' + goalOf(m);
   }
   function missionProgress(id, n) {
     if (mission.done) return; const m = MISSIONS[mission.i]; if (m.id !== id) return;
     mission.p = id === 'combo' ? Math.max(mission.p, n) : mission.p + (n || 1);
     if (mission.p >= goalOf(m)) {
-      const bonus = 500 * (mission.i + 1); state.cash += bonus; state.hp = Math.min(100, state.hp + 40); updateHUD();
-      banner(L('任務完成') + ' +$' + bonus, '#7dff9b'); AudioSys.play('mission'); burst(player.position.x, 1.6, player.position.z, 0x7dff9b, 24, 10, 0.8, 0.9);
+      const bonus = 500 * (mission.i + 1); state.threatScore += bonus; state.hp = Math.min(100, state.hp + 40); updateHUD();
+      banner(L('任務完成'), '#7dff9b'); AudioSys.play('mission'); burst(player.position.x, 1.6, player.position.z, 0x7dff9b, 24, 10, 0.8, 0.9);
       mission.i++; mission.p = 0;
       if (mission.i >= MISSIONS.length) { levelComplete(); }
     }
@@ -1297,8 +1322,8 @@
     banner('LEVEL ' + level, '#7ef9ff'); toast(L('第 {n} 關：敵人更強了', { n: level }) + (level >= 2 ? L('，地圖上有特殊武器箱') : ''), 3.5);
   }
   function levelComplete() {
-    mission.done = true; state.pendingNext = true; const bonus = 1000 * level; state.cash += bonus; updateHUD();
-    banner('LEVEL ' + level + ' ' + L('通關！') + ' +$' + bonus, '#ffc83d'); AudioSys.play('mission');
+    mission.done = true; state.pendingNext = true; const bonus = 1000 * level; state.threatScore += bonus; updateHUD();
+    banner('LEVEL ' + level + ' ' + L('通關！'), '#ffc83d'); AudioSys.play('mission');
     setTimeout(() => {
       if (!state.pendingNext) return; setPaused(true);
       document.getElementById('over-msg').textContent = 'LEVEL ' + level + ' ' + L('清空！下一關更難'); document.getElementById('btn-play').textContent = L('下一關') + ' ▶';
@@ -1333,7 +1358,7 @@
     started: false,
     paused: false,
     hp: 100,
-    cash: 0,
+    threatScore: 0,
     wanted: 1,
     yaw: 0,
     isCrouching: false,
@@ -1367,7 +1392,6 @@
   const btnCrouch = document.getElementById('btn-crouch');
   const btnSwitch = document.getElementById('btn-switch');
   const weaponLabel = document.getElementById('weapon-label');
-  const stanceChip = document.getElementById('stance-chip');
 
   let carButtonMode = 'drive', carButtonEnabled = false;
   function updateCarButton(driving, enabled) {
@@ -1403,9 +1427,10 @@
   function setPaused(p) {
     state.paused = p;
     if (p) {
+      clearInputs();
       overlay.classList.remove('hidden');
       const dead = state.hp <= 0;
-      overMsg.textContent = dead ? L('本局結束！到達第 {n} 關', { n: level }) + '　$' + state.cash.toLocaleString() : (state.started ? L('暫停中') : '');
+      overMsg.textContent = dead ? L('本局結束！到達第 {n} 關', { n: level }) : (state.started ? L('暫停中') : '');
       syncRunUI(); if (dead) endRun('dead'); refreshRank(DIFF_KEY);
       btnPlay.textContent = dead ? '↻ ' + L('再來一局') : (state.started ? '▶ RESUME TOP DOGGO' : '▶ PLAY TOP DOGGO');
       if (document.pointerLockElement) document.exitPointerLock();
@@ -1420,12 +1445,11 @@
     if (state.pendingNext) { state.pendingNext = false; startNextLevel(); }
     if (state.hp <= 0) {
       state.hp = 100;
-      state.cash = 0;
+      state.threatScore = 0;
       state.wanted = 1;
       resetMissions();
       state.isCrouching = false;
       btnCrouch.classList.remove('active-state');
-      stanceChip.textContent = '55° TACTICAL';
       player.position.set(START.x, 0, START.z);
       for (let i = projectiles.length - 1; i >= 0; i--) { scene.remove(projectiles[i].mesh); projectiles.splice(i, 1); }
       enemies.forEach(e => { e.hp = e.maxHp; e.hpBar.scale.x = 1; });
@@ -1468,7 +1492,6 @@
     if (state.drivingCar) return;
     state.isCrouching = !state.isCrouching;
     btnCrouch.classList.toggle('active-state', state.isCrouching);
-    stanceChip.textContent = state.isCrouching ? 'CROUCH COVER' : '55° TACTICAL';
   }
 
   function triggerTurn180() {
@@ -1516,16 +1539,16 @@
       dogBodyGroup.position.set(0, 0, 0);
       heroShadow.visible = true;
       state.drivingCar = null; drivingMesh = null;
-      stanceChip.textContent = '55° TACTICAL';
       return;
     }
     const nearCar = getNearestCar();
     if (nearCar) {
       state.drivingCar = nearCar; drivingMesh = nearCar.mesh;
+      nearCar.heading = nearCar.mesh.rotation.y - Math.PI; nearCar.steer = 0;
+      state.yaw = nearCar.heading;
       state.isCrouching = false;
       player.visible = nearCar.riderVisible;
       heroShadow.visible = false;
-      stanceChip.textContent = 'CONVERTIBLE DRIVING';
       AudioSys.play('dodge');
     }
   }
@@ -1645,6 +1668,7 @@
   joyZone.addEventListener('touchstart', (e) => {
     e.preventDefault();
     AudioSys.init();
+    if (!state.started || state.paused || joyInput.active) return;
     const t = e.changedTouches[0];
     joyInput.active = true;
     joyInput.id = t.identifier;
@@ -1685,14 +1709,16 @@
       dy = (dy / dist) * maxR;
     }
     joyKnob.style.transform = `translate(${dx}px, ${dy}px)`;
-    joyInput.x = dx / maxR;
-    joyInput.y = dy / maxR;
+    const magnitude = Math.hypot(dx, dy) / maxR;
+    const strength = magnitude <= 0.12 ? 0 : (magnitude - 0.12) / 0.88;
+    joyInput.x = magnitude ? dx / (magnitude * maxR) * strength : 0;
+    joyInput.y = magnitude ? dy / (magnitude * maxR) * strength : 0;
   }
 
   // Screen Swipe Camera Rotation (Mobile)
   canvas.addEventListener('touchstart', (e) => {
     AudioSys.init();
-    if (lookTouchId === null && e.changedTouches.length > 0) {
+    if (state.started && !state.paused && lookTouchId === null && e.changedTouches.length > 0 && e.changedTouches[0].clientX > window.innerWidth * 0.46) {
       lookTouchId = e.changedTouches[0].identifier;
       lastTouchX = e.changedTouches[0].clientX;
     }
@@ -1703,22 +1729,35 @@
       if (t.identifier === lookTouchId) {
         const dx = t.clientX - lastTouchX;
         lastTouchX = t.clientX;
-        state.yaw -= dx * 0.0068;
+        if (state.started && !state.paused) state.yaw -= Math.max(-40, Math.min(40, dx)) * (1.8 / window.innerWidth);
       }
     }
   }, { passive: true });
 
-  canvas.addEventListener('touchend', (e) => {
+  function resetLook(e) {
     for (const t of e.changedTouches) {
       if (t.identifier === lookTouchId) lookTouchId = null;
     }
-  });
+  }
+  canvas.addEventListener('touchend', resetLook);
+  canvas.addEventListener('touchcancel', resetLook);
 
   // Right-Hand Thumb Arc Buttons
   let touchFireHold = false;
   const btnFire = document.getElementById('btn-fire');
   btnFire.addEventListener('touchstart', (e) => { e.preventDefault(); touchFireHold = true; btnFire.classList.add('pressed'); triggerAttack(); }, { passive: false });
-  btnFire.addEventListener('touchend', () => { touchFireHold = false; btnFire.classList.remove('pressed'); });
+  function releaseFire() { touchFireHold = false; btnFire.classList.remove('pressed'); }
+  btnFire.addEventListener('touchend', releaseFire);
+  btnFire.addEventListener('touchcancel', releaseFire);
+  function clearInputs() {
+    for (const k of Object.keys(keys)) keys[k] = false;
+    joyInput.active = false; joyInput.id = null; joyInput.x = joyInput.y = 0;
+    joyKnob.style.transform = 'translate(0px, 0px)';
+    lookTouchId = null; mouseLookDown = mouseFireDown = false; state.isFocusing = false;
+    releaseFire();
+  }
+  window.addEventListener('blur', clearInputs);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) clearInputs(); });
 
   document.getElementById('btn-dodge').addEventListener('touchstart', (e) => { e.preventDefault(); triggerDodge(); }, { passive: false });
   btnCrouch.addEventListener('touchstart', (e) => { e.preventDefault(); toggleCrouch(); }, { passive: false });
@@ -1760,8 +1799,8 @@
     if (e.hp <= 0) {
       scene.remove(e.mesh);
       enemies.splice(idx, 1);
-      onEnemyKilled(e); state.cash += killReward(e);
-      state.wanted = Math.min(5, 1 + Math.floor(state.cash / 450));
+      onEnemyKilled(e); state.threatScore += killReward(e);
+      state.wanted = Math.min(5, 1 + Math.floor(state.threatScore / 450));
       updateHUD();
 
       // Respawn wave so streets always stay lively
@@ -1781,7 +1820,6 @@
     hudHurtCheck();
     document.getElementById('hp-text').textContent = `${Math.max(0, Math.round(state.hp))}%` + shieldText();
     document.getElementById('hp-fill').style.width = `${Math.max(0, state.hp)}%`;
-    document.getElementById('cash-text').textContent = `$${state.cash.toLocaleString()}`;
     const boneSpans = document.getElementById('wanted-bones').children;
     for (let i = 0; i < 5; i++) {
       boneSpans[i].classList.toggle('bone-off', i >= state.wanted);
@@ -1861,9 +1899,14 @@
   const smoothCamPos = new THREE.Vector3(START.x + 1, 5.6, START.z + 4.6);
   const smoothLookAt = new THREE.Vector3(START.x - 1.2, 0.8, START.z - 5.0);
 
-  let radarElapsed = 0, sceneryElapsed = 0;
-  function animate() {
+  let radarElapsed = 0, sceneryElapsed = 0, lastFrameAt = -Infinity;
+  function frameInterval() { return !state.started || state.paused ? 100 : (handheld ? 1000 / 30 : 1000 / 60); }
+  function animate(now = 0) {
     requestAnimationFrame(animate);
+    if (!platformActive || document.hidden) { clock.getDelta(); lastFrameAt = -Infinity; return; }
+    const interval = frameInterval();
+    if (now - lastFrameAt < interval - 0.5) return;
+    lastFrameAt = Number.isFinite(lastFrameAt) ? now - ((now - lastFrameAt) % interval) : now;
     const rawDt = clock.getDelta(), dt = Math.min(rawDt, 0.05);
     lastDt = dt;
     if (hitStopT > 0) { hitStopT -= dt; renderer.render(scene, camera); return; }
@@ -1895,18 +1938,21 @@
     if (state.drivingCar) {
       // Driving Convertible
       const car = state.drivingCar;
-      const accel = -inY * 22;
-      car.speed = THREE.MathUtils.lerp(car.speed, accel, dt * 3.2);
-      if (Math.abs(car.speed) > 0.4) {
-        state.yaw -= inX * 2.1 * dt * Math.sign(car.speed);
-      }
-      car.mesh.rotation.y = state.yaw + Math.PI;
-      const carFwd = new THREE.Vector3(-Math.sin(state.yaw), 0, -Math.cos(state.yaw));
+      const targetSpeed = -inY * (inY > 0 ? 11 : 22);
+      const braking = !inY || targetSpeed * car.speed < 0;
+      car.speed += (targetSpeed - car.speed) * (1 - Math.exp(-(braking ? 7 : 3.2) * dt));
+      if (!inY && Math.abs(car.speed) < 0.08) car.speed = 0;
+      car.steer += (inX - car.steer) * (1 - Math.exp(-10 * dt));
+      const turn = car.steer * 1.8 * Math.min(1, Math.abs(car.speed) / 7) * dt * Math.sign(car.speed);
+      car.heading -= turn;
+      state.yaw -= turn;
+      car.mesh.rotation.y = car.heading + Math.PI;
+      const carFwd = new THREE.Vector3(-Math.sin(car.heading), 0, -Math.cos(car.heading));
       updateCarFlip(car, carFwd.x * car.speed, carFwd.z * car.speed);
       { const b0 = car.mesh.position.clone(), want = Math.abs(car.speed) * dt; if (moveBlockedAt(b0.x, b0.z, 1.05)) { const f = freeSpotU(b0.x, b0.z, 1.05); car.mesh.position.x = f.x; car.mesh.position.z = f.z; } moveEntityWithCollision(car.mesh.position, carFwd.multiplyScalar(car.speed * dt), 1.05); const got = car.mesh.position.distanceTo(b0); if (want > 0.02 && got < want * 0.35) car.speed *= 0.5; }
       player.position.copy(car.mesh.position);
       if (car.riderVisible) {
-        player.rotation.y = state.yaw;
+        player.rotation.y = car.heading;
         const seat = car.riderSeat;
         // Car faces player yaw + PI: convert its seat into the player's local space.
         dogBodyGroup.position.set(-seat.x, seat.y, -seat.z);
@@ -1961,7 +2007,7 @@
       if (b.position.distanceTo(player.position) < 1.55) {
         scene.remove(b);
         bones.splice(i, 1);
-        state.cash += 100;
+        state.threatScore += 100;
 
         AudioSys.play('coin');
         updateHUD();

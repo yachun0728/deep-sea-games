@@ -65,7 +65,7 @@ const eq = (a, b, m) => { assert.equal(JSON.stringify(a), JSON.stringify(b), m);
   failStart = false;
   // leaving the view tells the game page to end the run; entering reactivates it
   ctx.tdRoute(true);
-  ok(el('td-frame').src === 'games/top-doggo/play.html?v=20261124-controls', 'frame loads the game page on first entry');
+  ok(el('td-frame').src === 'games/top-doggo/play.html?v=20261124-hud3', 'frame loads the game page on first entry');
   ctx.tdRoute(false);
   ok(frame.calls.some(c => c[0] === 'active' && c[1] === false), 'leaving deactivates the game page');
   // page hide while a round is open is abandoned once

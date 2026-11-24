@@ -2,3 +2,5 @@
 #view-top-doggo .mobile-scroll-pad{display:none!important}
 /* Keep the lobby return row and the iframe within the same mobile viewport. */
 @media(max-width:880px){#view-top-doggo:not([hidden]){display:flex;flex-direction:column}#view-top-doggo .td-platform{flex:1;min-height:0;height:auto!important}#view-top-doggo #td-frame{height:100%!important}}
+/* The game's pause/start menu already provides the lobby exit. */
+#view-top-doggo>.game-exit-link{display:none!important}

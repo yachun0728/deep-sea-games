@@ -2610,6 +2610,8 @@ body:has(#view-book-sort:not([hidden])){overflow:hidden}
 #view-top-doggo .mobile-scroll-pad{display:none!important}
 /* Keep the lobby return row and the iframe within the same mobile viewport. */
 @media(max-width:880px){#view-top-doggo:not([hidden]){display:flex;flex-direction:column}#view-top-doggo .td-platform{flex:1;min-height:0;height:auto!important}#view-top-doggo #td-frame{height:100%!important}}
+/* The game's pause/start menu already provides the lobby exit. */
+#view-top-doggo>.game-exit-link{display:none!important}
 
 /* The Last Banquet (banquet): all selectors are scoped to .bq-*. Dark, grainy, CRT-lit table in the spirit of low-light horror card rooms. */
 .bq-stage{--bq-ink:#f2e6d0;--bq-dim:#bfa98c;--bq-amber:#e6c277;--bq-red:#e0392f;--bq-green:#f0cf84;--bq-line:#3f5a4a;--bq-head:"Cinzel","Noto Serif TC",Georgia,serif;--bq-body:"Cormorant Garamond","Noto Serif TC",Georgia,serif;font-size:17px;
@@ -33412,7 +33414,7 @@ window.deepSeaTopDoggo={
 };
 function tdRoute(active){
  var frame=$('td-frame');
- if(active&&!TD.loaded){TD.loaded=true;frame.onload=function(){tdFrame()?.setTopDoggoLanguage?.(tdLang());tdFrame()?.setTopDoggoActive?.(!$('view-top-doggo').hidden);};frame.src='games/top-doggo/play.html?v=20261124-controls';}
+ if(active&&!TD.loaded){TD.loaded=true;frame.onload=function(){tdFrame()?.setTopDoggoLanguage?.(tdLang());tdFrame()?.setTopDoggoActive?.(!$('view-top-doggo').hidden);};frame.src='games/top-doggo/play.html?v=20261124-hud3';}
  else if(active){tdFrame()?.setTopDoggoLanguage?.(tdLang());tdFrame()?.setTopDoggoActive?.(true);}
  if(!active)tdFrame()?.setTopDoggoActive?.(false);
 }
