@@ -168,6 +168,7 @@ SHIM = r"""
   track = function(){};                                   // no analytics on CrazyGames
   Wallet.isFree = () => true; Wallet.canStart = () => true; Wallet.spend = () => true; Wallet.tick = () => false; Wallet.bal = 1e9;
   ['btn-coffee','coffee-note','btn-share','btn-copy','btn-low-ad','debug'].forEach(id => { const e = $(id); if (e) e.classList.add('hidden'); });
+  if (!IS_MOBILE) { $('btn-touch').textContent = 'No mic? Play with SPACE or mouse'; $('btn-mf-touch').textContent = 'Play with SPACE or mouse'; }
   const adBtn = $('btn-ad'); adBtn.classList.add('hidden');
   let sdk = null, playing = false;
   const start = () => { if (sdk && !playing) { playing = true; try { sdk.game.gameplayStart(); } catch (e) {} } };
@@ -224,6 +225,21 @@ def build():
   if (!id) { id = 'p_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36); lsSet('mini_player_id', id); }
   return id;
 })();""", "const playerId = '';")
+    # English floor names are longer than the Chinese ones: size the floor sign to its text.
+    html = cut(html, """  hudBox(c, x + 4, y, 112, 34, '#ffd23f');
+  comicText(c, text, x + 60, y + 17, 17);""", """  c.font = `italic 900 17px ${FONT}`; const sw = Math.max(112, Math.ceil(c.measureText(text).width) + 26);
+  hudBox(c, x + 4, y, sw, 34, '#ffd23f');
+  comicText(c, text, x + 4 + sw / 2, y + 17, 17);""")
+    # Thrust meter labels sit 46px apart at the low end: an arrow instead of "DOWN" so it doesn't run into "HOLD".
+    html = cut(html, "['掉', 0.075]", "['↓', 0.075]")
+    # Desktop players have no touch screen: name the Space key and the mouse in the hints.
+    html = cut(html, "'快速點兩下衝刺，就能撞破天花板！'",
+               "(IS_MOBILE ? 'Double-tap to dash and smash the ceiling!' : 'Double-tap SPACE to dash and smash the ceiling!')")
+    html = cut(html, "'按住螢幕往上飛，快速點兩下衝刺'",
+               "(IS_MOBILE ? 'Hold the screen to fly up, double-tap to dash' : 'Hold SPACE or the mouse to fly up, double-tap to dash')")
+    html = cut(html, "'對著手機大吼往上飛，短吼一聲衝刺'", "'Yell to fly up, a short yell to dash'")
+    html = cut(html, '<div id="t-sub">對著手機大吼，衝破 5 層樓</div>', '<div id="t-sub">Yell to fly. Smash through 5 floors.</div>')
+    html = cut(html, "'對著手機大聲一點'", "'Yell a bit louder'")
     for zh in sorted(EN, key=len, reverse=True):
         html = html.replace(zh, EN[zh].replace("'", '’') if not EN[zh].startswith(("'", '`')) else EN[zh])
     html = html.replace('<html lang="zh-Hant">', '<html lang="en">')
