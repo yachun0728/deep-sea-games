@@ -7,7 +7,7 @@
 - 網址：`#skybuilder`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。」｜立即開玩 · 高度挑戰
 - 追蹤名稱（GA4 `game_name`）：蓋樓大師，`game_id` 為 `skybuilder`
-- 檔案：`games/skybuilder/card.html`、`games/skybuilder/cover.webp`、`games/skybuilder/game.js`、`games/skybuilder/icon.svg`、`games/skybuilder/leaderboard.webp`、`games/skybuilder/view.html`；`game.js` 共 163 行、10.7 KB
+- 檔案：`games/skybuilder/card.html`、`games/skybuilder/cover.webp`、`games/skybuilder/game.js`、`games/skybuilder/icon.svg`、`games/skybuilder/leaderboard.webp`、`games/skybuilder/style.css`、`games/skybuilder/view.html`；`game.js` 共 191 行、13.9 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「20. Sky Builder（skybuilder）」（下方「規則摘要」已複製）
 
@@ -17,15 +17,16 @@
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`COL`（L15）、`sbBusy`（L2）
-- L4 常數：`BASE`
-- L5 常數：`MILESTONES`、`BONUS`
-- L14 常數：`PAL`
-- L15 常數：`COL`
+- 狀態物件／進行中旗標：`A`（L6）、`sbBusy`（L2）
+- L4 常數：`DPR`、`BASE`
+- L7 常數：`SPR`、`SKY`、`GND`
+- L12 常數：`MILESTONES`、`BONUS`
+- L80 常數：`MOBILE`
+- L112 常數：`GAP`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rnd` L9、`O` L10、`C` L11、`RR` L12、`tx` L13、`Ht` L17、`floors` L18、`hook` L19、`burst` L21、`say` L22、`setText` L24、`ui` L25、`end` L32、`awardBonus` L42、`update` L53、`floor` L78、`roof` L91、`crane` L92、`draw` L101、`start` L131、`act` L143、`loop` L156
+`ok` L8、`spr` L10、`rnd` L16、`floors` L18、`hook` L19、`burst` L21、`say` L22、`setText` L24、`ui` L25、`end` L32、`awardBonus` L42、`update` L53、`floor` L76、`roof` L77、`fit` L81、`scene` L82、`crane` L90、`pill` L104、`num` L105、`meter` L107、`hud` L109、`wrapLines` L120、`block` L122、`lh` L124、`draw` L128、`start` L159、`act` L171、`loop` L184
 
 ## 錢包與結算接點
 
@@ -36,7 +37,7 @@
 - L47 `awardBonus`：`S.balance+=BONUS;`
 
 **餘額檢查**
-- L134 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L162 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
@@ -45,8 +46,8 @@
 
 - L36 `end`：`AN.end(analytics,paid,'loss',{score:tower.sc,floors:n,total_bonus_points:paid});`
 - L48 `awardBonus`：`AN.progress(analytics,{step:n,score:tower.sc,floors:n,milestone,bonus_points:BONUS,total_bonus_points:paid});`
-- L138 `start`：`analytics=AN.start('skybuilder',amount);`
-- L154 `act`：`AN.end(analytics,paid,'abandoned',{score:tower.sc,floors:floors(),total_bonus_points:paid});`
+- L166 `start`：`analytics=AN.start('skybuilder',amount);`
+- L182 `act`：`AN.end(analytics,paid,'abandoned',{score:tower.sc,floors:floors(),total_bonus_points:paid});`
 
 - 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -56,7 +57,7 @@
 
 ## 平台共用相依
 
-- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`、`C`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - 共用檔沒有直接呼叫本遊戲的函式。
 - 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 

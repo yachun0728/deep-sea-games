@@ -1,0 +1,25 @@
+/* 蓋樓大師：開始按鈕配合遊戲畫面的黃色工地按鈕與藍天 */
+#view-skybuilder .go:not(:disabled){background:#ffc21a;color:#5a3300;border:0;border-radius:999px;font-weight:900;letter-spacing:.04em;text-shadow:0 1px 0 rgba(255,255,255,.5);box-shadow:inset 0 3px 0 rgba(255,255,255,.55),0 5px 0 #d98a00,0 10px 20px rgba(16,40,90,.3)}
+#view-skybuilder .go:hover:not(:disabled){background:#ffcf3d}
+#view-skybuilder .go:active:not(:disabled){transform:translateY(2px);box-shadow:inset 0 3px 0 rgba(255,255,255,.55),0 3px 0 #d98a00,0 5px 10px rgba(16,40,90,.3)}
+#view-skybuilder .go:disabled{background:#e3effc;color:#3a5a8a;border:0;border-radius:999px}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+  /* 遊戲畫面填滿整個手機：網站狀態卡片拿掉（層數、分數、最佳、BONUS、穩定度都畫在遊戲上方），返回鈕放進遊戲狀態列左側 */
+  #view-skybuilder{--hud:0px}
+  #view-skybuilder .fs-game{--fs-bg:#2f8fe8}
+  #view-skybuilder .fs-game .stats{display:none}
+  #view-skybuilder .fs-game>:first-child canvas{width:100%;height:100%}
+  #view-skybuilder .fs-game .fs-exit{top:calc(env(safe-area-inset-top) + 10px);left:calc(env(safe-area-inset-left) + 12px);width:40px;height:40px;border:0;border-radius:50%;background:#fff;color:#123a7a;font-size:19px;box-shadow:0 3px 0 rgba(16,40,90,.25)}
+  /* 手機全螢幕不顯示下方黑底訊息列：開始、結算都已畫在遊戲畫面裡 */
+  #view-skybuilder .fs-game .msg{display:none}
+  #view-skybuilder .fs-game .side .go:active:not(:disabled){transform:translateY(2px)}
+  /* 下方按鈕區：左右 16px、按鈕間 12px、底部避開手機橫條 */
+  #view-skybuilder .fs-game>.mobile-start-stage>.mobile-stage-actions{left:calc(env(safe-area-inset-left) + 16px);right:calc(env(safe-area-inset-right) + 16px);bottom:calc(env(safe-area-inset-bottom) + 20px)}
+  #view-skybuilder .fs-game .mobile-stage-action>.go{width:100%;min-height:56px}
+  /* 結束後出現「分享成績」時：分享改成左側只有圖示的圓鈕，再蓋一次放右側，不疊在一起 */
+  #view-skybuilder .fs-game:has(.share-result:not([hidden])) .mobile-stage-actions{left:calc(env(safe-area-inset-left) + 84px);right:calc(env(safe-area-inset-right) + 16px)}
+  #view-skybuilder .fs-game:has(.share-result:not([hidden])) #sb-go:not(:disabled){width:100%;min-width:0;height:56px;min-height:56px;padding:6px 12px}
+  #view-skybuilder .fs-game .share-result:not([hidden]){left:calc(env(safe-area-inset-left) + 16px);right:auto;bottom:calc(env(safe-area-inset-bottom) + 20px);transform:none;width:56px;height:56px;min-height:56px;padding:0;justify-content:center;border:0;border-radius:50%;background:#fff;color:#123a7a;font-size:22px;box-shadow:0 3px 0 rgba(16,40,90,.25)}
+  #view-skybuilder .fs-game .share-result span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  #view-skybuilder .share-result i{color:#ffb000;font-size:22px}
+}
