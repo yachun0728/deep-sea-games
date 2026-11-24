@@ -261,6 +261,9 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="models/toon.js"></script>
+<script src="models/buildings.js"></script>
+<script src="models/props.js"></script>
 <script>
 (async () => {
   // ==========================================
@@ -367,31 +370,20 @@
     const t = new THREE.Texture(img); t.anisotropy = maxAniso; t.needsUpdate = true; TEX[key] = t; return t;
   }
 
-  let MAN, WORLD, V3;
+  let MAN, WORLD;
   try {
     MAN = (await (await fetch('assets/asset-manifest.json')).json()).assets;
-    V3 = (await (await fetch('assets/v3/asset-manifest.json')).json()).assets;
     WORLD = await (await fetch('assets/world-map.json')).json();
   } catch (err) { btnPlayEarly.textContent = '載入失敗，請重新整理'; throw err; }
-
-  const BNAMES = ['store24', 'cafe', 'police', 'hospital', 'gym', 'cinema', 'bank', 'apt_yellow', 'apt_pink', 'office_blue', 'tower_pink', 'parking'];
-  const BFACES = ['front', 'right', 'back', 'left', 'roof'];
-  const VEHICLES = {
-    convertible: { w: 4.3 }, taxi: { w: 4.3 }, muscle: { w: 4.5 }, scooter: { w: 2.5 }, pickup: { w: 4.7 }, police: { w: 4.5 }
-  };
   try {
     const jobs = [];
-    for (const id in MAN) if (!id.startsWith('tiles/') && !id.startsWith('buildings/') && !id.startsWith('props/') && !id.startsWith('vegetation/')) jobs.push(loadImage('assets/' + MAN[id].file).then(i => texOf(id, i)));
-    for (const name in V3) if (!V3[name].file.startsWith('buildings/')) jobs.push(loadImage('assets/v3/' + V3[name].file).then(i => texOf('v3:' + name, i)));
-    for (const nm of BNAMES) for (const f of BFACES) jobs.push(loadImage('assets/v4/bld/' + nm + '_' + f + '.png').then(i => texOf('b4:' + nm + ':' + f, i)));
-    for (const w of ['wall_paw', 'wall_graffiti', 'fence_chain', 'wall_brick']) jobs.push(loadImage('assets/v4/walls/' + w + '.png').then(i => texOf('w4:' + w, i)));
-    for (const t of ['road_straight', 'road_intersection', 'road_crosswalk', 'asphalt', 'sidewalk_a', 'sidewalk_b', 'sidewalk_c']) jobs.push(loadImage('assets/v3/tiles/' + t + '.png').then(i => { IMGS['v3:' + t] = i; }));
-    for (const id in MAN) if (id.startsWith('tiles/')) jobs.push(loadImage('assets/' + MAN[id].file).then(i => { IMGS[id] = i; }));
-    for (const k in VEHICLES) jobs.push(loadImage('assets/vehicles2/' + k + '.png').then(i => { IMGS['veh:' + k] = i; }));
+    for (const id in MAN) if (id.startsWith('characters/enemies/')) jobs.push(loadImage('assets/' + MAN[id].file).then(i => texOf(id, i)));
     jobs.push(loadImage('assets/hero/atlas_attack_run.png').then(i => texOf('heroA', i)));
     jobs.push(loadImage('assets/hero/atlas_roll_crouch.png').then(i => texOf('heroB', i)));
     await Promise.all(jobs);
   } catch (err) { btnPlayEarly.textContent = '載入失敗，請重新整理'; throw err; }
+  if (!window.Toon || !window.CityBuildings || !window.CityProps) { btnPlayEarly.textContent = '模型載入失敗，請重新整理'; throw new Error('3D models missing'); }
+  Toon.lights(scene);
 
   // --- world <-> unit conversion (pack pixels -> world units, map centered on the origin) ---
   const TILE = 64, GW = WORLD.width, GH = WORLD.height;
@@ -407,29 +399,39 @@
   function mulberry(a) { return () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
   const rng = mulberry(20261124);
 
-  // --- ground: the pack's terrain tiles baked into one texture, with a margin that repeats the edge tiles so the map never ends in empty space ---
+  // --- ground: clean procedural roads, sidewalks and lawns baked into one texture (no tile seams, no stray lane marks); the margin repeats the edge tiles ---
   const GM = 22;   // margin in tiles
   (function buildGround() {
-    const PX = 24, TW = GW + GM * 2, TH = GH + GM * 2, cv = document.createElement('canvas'); cv.width = TW * PX; cv.height = TH * PX;
-    const g = cv.getContext('2d');
+    const PX = 28, TW = GW + GM * 2, TH = GH + GM * 2, cv = document.createElement('canvas'); cv.width = TW * PX; cv.height = TH * PX;
+    const g = cv.getContext('2d'), gr = mulberry(77), isRoad = id => id === 'tiles/road_h' || id === 'tiles/road_v' || id === 'tiles/intersection' || id === 'tiles/crosswalk_h' || id === 'tiles/crosswalk_v' || id === 'tiles/asphalt';
+    const T = (sx, sy) => terrain[Math.min(GH - 1, Math.max(0, sy))][Math.min(GW - 1, Math.max(0, sx))];
     for (let y = 0; y < TH; y++) for (let x = 0; x < TW; x++) {
-      const sx = Math.min(GW - 1, Math.max(0, x - GM)), sy = Math.min(GH - 1, Math.max(0, y - GM));
-      let id = terrain[sy][sx];
-      if ((x < GM || x >= GM + GW || y < GM || y >= GM + GH) && (id === 'tiles/road_h' || id === 'tiles/road_v' || id === 'tiles/intersection' || id === 'tiles/crosswalk_h' || id === 'tiles/crosswalk_v')) id = 'tiles/asphalt';
-      let key = id, rot = 0;
-      if (id === 'tiles/road_v') key = 'v3:road_straight'; else if (id === 'tiles/road_h') { key = 'v3:road_straight'; rot = 1; }
-      else if (id === 'tiles/intersection') key = 'v3:road_intersection';
-      else if (id === 'tiles/crosswalk_h') key = 'v3:road_crosswalk'; else if (id === 'tiles/crosswalk_v') { key = 'v3:road_crosswalk'; rot = 1; }
-      else if (id === 'tiles/asphalt') key = 'v3:asphalt';
-      else if (id === 'tiles/sidewalk') key = ['v3:sidewalk_a', 'v3:sidewalk_b', 'v3:sidewalk_c'][(sx * 7 + sy * 13) % 3];
-      const im = IMGS[key]; if (!im) continue;
-      if (rot) { g.save(); g.translate(x * PX + PX / 2, y * PX + PX / 2); g.rotate(Math.PI / 2); g.drawImage(im, -PX / 2 - 0.5, -PX / 2 - 0.5, PX + 1, PX + 1); g.restore(); }
-      else g.drawImage(im, x * PX, y * PX, PX + 1, PX + 1);
+      const sx = Math.min(GW - 1, Math.max(0, x - GM)), sy = Math.min(GH - 1, Math.max(0, y - GM)), outside = x < GM || x >= GM + GW || y < GM || y >= GM + GH;
+      let id = terrain[sy][sx]; if (outside && isRoad(id) && id !== 'tiles/asphalt') id = 'tiles/asphalt';
+      const X = x * PX, Y = y * PX;
+      if (id === 'tiles/grass') {
+        g.fillStyle = (x + y) % 2 ? '#86c452' : '#7fbd4c'; g.fillRect(X, Y, PX + 1, PX + 1);
+        g.fillStyle = 'rgba(40,110,30,.35)'; for (let i = 0; i < 3; i++) g.fillRect(X + gr() * (PX - 3), Y + gr() * (PX - 4), 1.5, 3);
+      } else if (id === 'tiles/sand') { g.fillStyle = '#ecd59a'; g.fillRect(X, Y, PX + 1, PX + 1); g.fillStyle = 'rgba(190,150,80,.4)'; for (let i = 0; i < 3; i++) g.fillRect(X + gr() * PX, Y + gr() * PX, 2, 1); }
+      else if (id === 'tiles/water') { g.fillStyle = '#4fb1d6'; g.fillRect(X, Y, PX + 1, PX + 1); g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(X + gr() * (PX - 8), Y + gr() * (PX - 2), 8, 1.5); }
+      else if (id === 'tiles/sidewalk') {
+        g.fillStyle = ((sx + sy) % 2) ? '#eeb1a6' : '#e9a79d'; g.fillRect(X, Y, PX + 1, PX + 1);
+        g.strokeStyle = 'rgba(150,80,80,.45)'; g.lineWidth = 1; for (let i = 1; i < 4; i++) { g.beginPath(); g.moveTo(X + i * PX / 4, Y); g.lineTo(X + i * PX / 4, Y + PX); g.moveTo(X, Y + i * PX / 4); g.lineTo(X + PX, Y + i * PX / 4); g.stroke(); }
+        g.fillStyle = '#f7d6cb'; // light kerb along every side that meets the road
+        if (isRoad(T(sx, sy - 1))) g.fillRect(X, Y, PX, 3); if (isRoad(T(sx, sy + 1))) g.fillRect(X, Y + PX - 3, PX, 3); if (isRoad(T(sx - 1, sy))) g.fillRect(X, Y, 3, PX); if (isRoad(T(sx + 1, sy))) g.fillRect(X + PX - 3, Y, 3, PX);
+      } else {
+        g.fillStyle = ((sx + sy) % 2) ? '#4a4656' : '#4d4959'; g.fillRect(X, Y, PX + 1, PX + 1);
+        g.fillStyle = '#f2efe6';
+        if (id === 'tiles/road_v') g.fillRect(X + PX / 2 - 1.2, Y + PX * 0.18, 2.4, PX * 0.5);
+        else if (id === 'tiles/road_h') g.fillRect(X + PX * 0.18, Y + PX / 2 - 1.2, PX * 0.5, 2.4);
+        else if (id === 'tiles/crosswalk_h') for (let i = 0; i < 4; i++) g.fillRect(X + 3 + i * 6, Y + 2, 3.5, PX - 4);
+        else if (id === 'tiles/crosswalk_v') for (let i = 0; i < 4; i++) g.fillRect(X + 2, Y + 3 + i * 6, PX - 4, 3.5);
+      }
     }
     const t = new THREE.CanvasTexture(cv); t.anisotropy = maxAniso;
     const ground = new THREE.Mesh(new THREE.PlaneGeometry(TW * TILE / U, TH * TILE / U), new THREE.MeshBasicMaterial({ map: t }));
     ground.rotation.x = -Math.PI / 2; scene.add(ground);
-    const far = new THREE.Mesh(new THREE.PlaneGeometry(1400, 1400), new THREE.MeshBasicMaterial({ color: 0x8fbf6e }));
+    const far = new THREE.Mesh(new THREE.PlaneGeometry(1400, 1400), new THREE.MeshBasicMaterial({ color: 0x86c452 }));
     far.rotation.x = -Math.PI / 2; far.position.y = -0.03; scene.add(far);
   })();
 
@@ -444,7 +446,7 @@
     m.rotation.x = -Math.PI / 2; m.position.y = 0.04; return m;
   }
 
-  // --- city blocks: rectangular grass areas inside the map get ONE big building that fills them ---
+  // --- city blocks: rectangular grass areas inside the map each get ONE real 3D building ---
   const blocks = [];
   (function findBlocks() {
     const seen = terrain.map(r => r.map(() => false));
@@ -459,58 +461,55 @@
     }
   })();
   const blockAt = (x, z) => blocks.find(b => x >= b.x1 && x < b.x2 && z >= b.z1 && z <= b.z2);
-  const NEWB = BNAMES;
+  const BMAP = ['store24', 'cafe', 'police', 'hospital', 'gym', 'cinema', 'bank', 'aptYellow', 'aptPink', 'officeBlue', 'towerPink', 'parking'];
   const bRng = mulberry(98765); let bBag = [];
-  function nextBuilding() { if (!bBag.length) { bBag = NEWB.slice(); for (let i = bBag.length - 1; i > 0; i--) { const j = Math.floor(bRng() * (i + 1)); [bBag[i], bBag[j]] = [bBag[j], bBag[i]]; } } return bBag.pop(); }
-  // --- props from the expansion pack, sized by target height in world units ---
-  const PROPH = { ac_unit: 1.8, banner: 5, barrel_blue: 2.1, barrel_gray: 2.1, bench: 2.1, cone: 1.6, direction_sign: 4.2, hydrant: 2, lamp_double_a: 5.6, lamp_double_b: 5.6, mailbox: 2.7, palm_medium: 6, palm_short: 4.6, palm_tall: 7.6, parking_sign: 4.2, planter_pink: 2.5, planter_round: 2.5, road_barrier: 2.3, stop_sign: 4.2, street_kiosk: 4.2, trash_can: 2.1, umbrella_red: 4.4, umbrella_yellow: 4.4, vending_green: 3.5, vending_red: 3.5 };
-  const propSprites = [];
-  function addProp(name, x, z, solidProp) {
-    const t = TEX['v3:' + name], h = PROPH[name] || 2.5, w = h * t.image.width / t.image.height, a = V3[name];
-    const sp = makeSprite(t, w, h, 1 - a.anchor[1]); sp.position.set(x, 0, z); scene.add(sp);
-    sp.userData = { h, a: 1 }; propSprites.push(sp);
-    if (solidProp !== false) { const cw = /palm|lamp|sign|banner/.test(name) ? 0.7 : w * 0.55; colliders.push({ minX: x - cw / 2, maxX: x + cw / 2, minZ: z - 0.8, maxZ: z + 0.01 }); }
-    return sp;
+  function nextBuilding() { if (!bBag.length) { bBag = BMAP.slice(); for (let i = bBag.length - 1; i > 0; i--) { const j = Math.floor(bRng() * (i + 1)); [bBag[i], bBag[j]] = [bBag[j], bBag[i]]; } } return bBag.pop(); }
+  // clone every material of a model so that one building (or one tall prop) can fade without touching the shared city materials
+  function ownMaterials(root) {
+    const map = new Map(), list = [];
+    root.traverse(o => { if (o.isMesh) { let c = map.get(o.material); if (!c) { c = o.material.clone(); c.transparent = true; map.set(o.material, c); list.push(c); } o.material = c; } });
+    return list;
+  }
+  function setFade(list, a) { const solid = a > 0.98; for (const m of list) { m.opacity = a; m.depthWrite = solid; } }
+
+  // --- props: real 3D models scaled up so they read as big city furniture; tall ones can fade when they stand between the camera and the dog ---
+  const fadeProps = [];
+  function addProp(name, x, z, solidProp, ry) {
+    const g = CityProps[name](), sz = CityProps.size[name], k = sz.h < 3 ? 1.8 : 1.15;
+    g.scale.setScalar(k); g.position.set(x, 0, z); g.rotation.y = ry || 0; scene.add(g);
+    if (sz.h >= 3.4) { const mats = ownMaterials(g); fadeProps.push({ g, mats, h: sz.h * k, w: sz.w * k, a: 1 }); }
+    if (solidProp !== false) { const cw = /palm|lamp|Sign|banner|trafficLight|tree/.test(name) ? 0.8 : sz.w * k * 0.6; colliders.push({ minX: x - cw / 2, maxX: x + cw / 2, minZ: z - Math.max(0.6, sz.d * k * 0.4), maxZ: z + Math.max(0.6, sz.d * k * 0.4) }); }
+    return g;
   }
   let nPalm = 0, nLamp = 0, nObs = 0;
   for (const o of WORLD.objects) {
     const a = MAN[o.asset]; if (!a) continue;
     const x = toX(o.x), z = toZ(o.y);
     if (a.kind === 'buildings') { const b = blockAt(x, z - 0.02); if (b && !b.asset) b.asset = nextBuilding(); continue; }
-    if (blockAt(x, z - 0.02)) continue;                       // would be hidden inside a building block
+    if (blockAt(x, z - 0.02)) continue;                       // would be hidden inside a building
     let name;
-    if (o.asset.includes('palm')) name = ['palm_tall', 'palm_medium', 'palm_short'][nPalm++ % 3];
-    else if (o.asset.includes('lamp')) name = ['lamp_double_a', 'lamp_double_b'][nLamp++ % 2];
-    else name = ['barrel_blue', 'barrel_gray', 'trash_can', 'road_barrier', 'planter_round', 'planter_pink'][nObs++ % 6];
+    if (o.asset.includes('palm')) name = ['palmTall', 'palmMedium', 'palmShort'][nPalm++ % 3];
+    else if (o.asset.includes('lamp')) name = 'lampDouble';
+    else name = ['barrelBlue', 'barrelGray', 'trashCan', 'barrierStriped', 'planterRound', 'shrubFlowers'][nObs++ % 6];
     addProp(name, x, z);
   }
-  // --- buildings from the expansion pack: one big camera-facing 3/4 illustration per city block ---
-  // 2.5D / 3D hybrid: every building is a low-poly box with fixed world position and rotation; its five faces (front, right, back, left, roof) carry their own art
+
+  // --- buildings: low-poly toon models with fixed position and rotation; each block is solid ---
   function makeBuilding(b) {
-    const nm = b.asset, tall = nm === 'office_blue' || nm === 'tower_pink', img = n => TEX['b4:' + nm + ':' + n].image;
-    b.bw = b.x2 - b.x1; b.bd = b.z2 - b.z1; b.cx = (b.x1 + b.x2) / 2; b.cz = (b.z1 + b.z2) / 2; b.alpha = 1; b.mats = [];
-    const fw = b.bw - 1.6, fd = b.bd - 1.6, fr = img('front'), sd = img('right');
-    let W = tall ? Math.min(fw, 9.5) : fw * 0.94;
-    const H = Math.min(tall ? 23 : 14.5, Math.max(7, W * fr.height / fr.width * 0.95));
-    W = Math.min(W, H * fr.width / fr.height / 0.95);
-    const D = Math.min(fd, Math.max(4.5, H * sd.width / sd.height));
-    b.W = W; b.H = H; b.D = D;
-    const mk = key => { const m = new THREE.MeshBasicMaterial({ map: TEX[key], transparent: true, alphaTest: 0.08 }); b.mats.push(m); return m; };
-    const mats = [mk('b4:' + nm + ':right'), mk('b4:' + nm + ':left'), mk('b4:' + nm + ':roof'), mk('b4:' + nm + ':roof'), mk('b4:' + nm + ':front'), mk('b4:' + nm + ':back')];
-    b.mesh = new THREE.Mesh(new THREE.BoxGeometry(W, H, D), mats);
-    b.mesh.position.set(b.cx, H / 2, b.cz); scene.add(b.mesh);
-    // dark solid core: where a face image has transparent rounded corners or outline gaps, the viewer sees dark grey instead of the ground behind
-    const dm = new THREE.MeshBasicMaterial({ color: 0x2a2630, transparent: true }); b.mats.push(dm);
-    const core = new THREE.Mesh(new THREE.BoxGeometry(W - 0.12, H - 0.06, D - 0.12), dm); b.mesh.add(core);
+    const g = CityBuildings[b.asset](), sz = CityBuildings.size[b.asset];
+    b.bw = b.x2 - b.x1; b.bd = b.z2 - b.z1; b.cx = (b.x1 + b.x2) / 2; b.cz = (b.z1 + b.z2) / 2; b.alpha = 1;
+    const k = Math.min((b.bw - 1.2) / sz.w, (b.bd - 0.8) / sz.d, 1.5);
+    g.scale.setScalar(k); g.position.set(b.cx, 0, b.cz); scene.add(g);
+    b.mesh = g; b.W = sz.w * k; b.D = sz.d * k; b.H = sz.h * k; b.mats = ownMaterials(g);
   }
   for (const b of blocks) {
     if (!b.asset) continue;
     makeBuilding(b);
     colliders.push({ minX: b.x1 + 0.1, maxX: b.x2 - 0.1, minZ: b.z1 + 0.1, maxZ: b.z2 - 0.1 });   // the whole block is solid
   }
-  // backdrop: a ring of buildings and palms just outside the playable map so the edges are full of city, not empty ground
+  // backdrop: a ring of tall buildings and palms outside the playable map so the edges are full of city
   (function backdrop() {
-    const list = ['apt_yellow', 'apt_pink', 'office_blue', 'tower_pink', 'parking', 'hospital', 'office_blue', 'tower_pink'], r = mulberry(4242), BW = 14.8, BD = 9.7;
+    const list = ['aptYellow', 'aptPink', 'officeBlue', 'towerPink', 'parking', 'hospital', 'officeBlue', 'towerPink'], r = mulberry(4242), BW = 14.8, BD = 9.7;
     const add = (cx, cz) => { const b = { x1: cx - BW / 2, x2: cx + BW / 2, z1: cz - BD / 2, z2: cz + BD / 2, asset: list[Math.floor(r() * list.length)], backdrop: true }; blocks.push(b); makeBuilding(b); };
     for (let z = -OZ + 6; z < OZ - 3; z += BD + 5.5) { add(-OX - 7.5, z); add(OX + 7.5, z); }
     for (let x = -OX - 4; x < OX + 12; x += BW + 4.5) add(x, -OZ - 7);
@@ -521,36 +520,28 @@
       let x, z;
       if (side === 0) { x = -OX - 1 - r() * 4; z = -OZ + t * OZ * 2; } else if (side === 1) { x = OX + 1 + r() * 4; z = -OZ + t * OZ * 2; } else if (side === 2) { x = -OX + t * OX * 2; z = -OZ - 1 - r() * 3; } else { x = -OX + t * OX * 2; z = OZ + 0.5 + r() * 3; }
       if (tileAtU(x, z) === 'tiles/water' && side === 3) continue;
-      addProp(['palm_tall', 'palm_medium', 'palm_short'][i % 3], x, z, false);
+      addProp(['palmTall', 'palmMedium', 'palmShort', 'treeRound'][i % 4], x, z, false);
     }
   })();
   // extra street props on sidewalks
   (function scatterProps() {
     const sidewalk = [];
     for (let ty = 1; ty < GH - 2; ty++) for (let tx = 1; tx < GW - 1; tx++) if (terrain[ty][tx] === 'tiles/sidewalk') sidewalk.push([tx, ty]);
-    const names = ['bench', 'umbrella_red', 'vending_green', 'mailbox', 'hydrant', 'street_kiosk', 'umbrella_yellow', 'vending_red', 'stop_sign', 'parking_sign', 'direction_sign', 'banner', 'cone', 'road_barrier', 'ac_unit'], used = [];
-    for (let i = 0; i < 90 && used.length < 46; i++) {
+    const names = ['bench', 'umbrellaTableRed', 'vendingGreen', 'mailboxBlue', 'hydrant', 'kiosk', 'umbrellaTableYellow', 'vendingRed', 'stopSign', 'parkingSign', 'directionSign', 'banner', 'coneOrange', 'barrierStriped', 'acUnit', 'trafficLight', 'hedgeLong', 'planterRound', 'treeRound', 'shrubFlowers'], used = [];
+    for (let i = 0; i < 120 && used.length < 60; i++) {
       const [tx, ty] = sidewalk[Math.floor(rng() * sidewalk.length)];
-      const x = toX(tx * TILE + 32), z = toZ(ty * TILE + 52);
+      const x = toX(tx * TILE + 32), z = toZ(ty * TILE + 36);
       if (used.some(u => Math.hypot(u[0] - x, u[1] - z) < 6.5)) continue;
       used.push([x, z]); addProp(names[used.length % names.length], x, z);
     }
   })();
-
-  // --- perimeter walls: real boxes with height and collision, so nothing can leave or see past the edge of the city ---
+  // --- perimeter walls: real 3D wall and fence segments with height and collision ---
   (function perimeterWalls() {
-    const types = ['wall_paw', 'wall_graffiti', 'wall_brick', 'fence_chain', 'wall_paw', 'wall_brick'], Hh = 3.6, T = 0.8, L = 5.0;
-    const face = types.map(t => new THREE.MeshBasicMaterial({ map: TEX['w4:' + t], transparent: true, alphaTest: 0.08 }));
-    const cap = new THREE.MeshBasicMaterial({ color: 0x8d8a95 });
-    const minX = -OX + 0.5, maxX = OX - 0.5, minZ = -OZ + 0.5, maxZ = OZ - 0.5; let k = 0;
-    const seg = (x, z, alongX) => {
-      const m = face[k++ % face.length], g = new THREE.BoxGeometry(alongX ? L : T, Hh, alongX ? T : L);
-      const mesh = new THREE.Mesh(g, alongX ? [cap, cap, cap, cap, m, m] : [m, m, cap, cap, cap, cap]); mesh.position.set(x, Hh / 2, z); scene.add(mesh);
-    };
+    const types = ['wallPaw', 'wallGraffiti', 'wallBrick', 'fenceChain', 'wallPaw', 'wallBrick'], L = 5.0, T = 0.8;
+    const minX = -OX + 0.5, maxX = OX - 0.5, minZ = -OZ + 0.5, maxZ = OZ - 0.5, proto = {}; let k = 0;
+    const seg = (x, z, alongX) => { const nm = types[k++ % types.length]; proto[nm] = proto[nm] || CityProps[nm](); const g = proto[nm].clone(true); g.position.set(x, 0, z); g.rotation.y = alongX ? 0 : Math.PI / 2; scene.add(g); };
     for (let x = minX + L / 2; x < maxX; x += L) { seg(x, minZ, true); seg(x, maxZ, true); }
     for (let z = minZ + L / 2; z < maxZ; z += L) { seg(minX, z, false); seg(maxX, z, false); }
-    const dark = new THREE.MeshBasicMaterial({ color: 0x2a2630 });
-    for (const [cx, cz, w, d] of [[0, minZ, maxX - minX, T - 0.1], [0, maxZ, maxX - minX, T - 0.1], [minX, 0, T - 0.1, maxZ - minZ], [maxX, 0, T - 0.1, maxZ - minZ]]) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, Hh - 0.08, d), dark); m.position.set(cx, Hh / 2, cz); scene.add(m); }
     colliders.push({ minX: -OX - 2, maxX: OX + 2, minZ: minZ - T / 2, maxZ: minZ + T / 2 }, { minX: -OX - 2, maxX: OX + 2, minZ: maxZ - T / 2, maxZ: maxZ + T / 2 },
       { minX: minX - T / 2, maxX: minX + T / 2, minZ: -OZ - 2, maxZ: OZ + 2 }, { minX: maxX - T / 2, maxX: maxX + T / 2, minZ: -OZ - 2, maxZ: OZ + 2 });
   })();
@@ -619,28 +610,20 @@
   // 4. VEHICLES (DRIVEABLE) & GOLDEN BONES
   // ==========================================
   const cars = [];
-  function createSportsCar(x, z, name) {
-    const V = VEHICLES[name], img = IMGS['veh:' + name], h = V.w * img.height / img.width;
-    const tR = new THREE.Texture(img); tR.anisotropy = maxAniso; tR.needsUpdate = true;
-    const tL = new THREE.Texture(img); tL.anisotropy = maxAniso; tL.wrapS = THREE.RepeatWrapping; tL.repeat.x = -1; tL.offset.x = 1; tL.needsUpdate = true;
-    const car = new THREE.Group(); car.position.set(x, 0, z);
-    const s = makeSprite(tR, V.w, h, 0.07); car.add(s); car.add(makeShadow(V.w * 0.95));
-    scene.add(car);
-    cars.push({ mesh: car, speed: 0, sprite: s, tR, tL, left: false });
+  const CAR_NAMES = ['carConvertible', 'carTaxi', 'carPolice', 'carSedan', 'vanAmbulance', 'truckBlue', 'scooterCream', 'motorcycleRed'];
+  function createSportsCar(x, z, name, ry) {
+    const car = CityProps[name](); car.position.set(x, 0, z); car.rotation.y = ry || 0; car.add(makeShadow(CityProps.size[name].d * 0.9));
+    scene.add(car); cars.push({ mesh: car, speed: 0 });
   }
-  function updateCarFlip(c, vx, vz) {
-    const rx = Math.cos(state.yaw), rz = -Math.sin(state.yaw);
-    const s = vx * rx + vz * rz;
-    if (Math.abs(s) > 0.25) { const left = s < 0; if (left !== c.left) { c.left = left; c.sprite.material.map = left ? c.tL : c.tR; } }
-  }
+  function updateCarFlip() {}
   (function placeCars() {
-    const names = Object.keys(VEHICLES), roads = streetTiles.filter(t => t[2] === 'tiles/road_h' || t[2] === 'tiles/road_v' || t[2] === 'tiles/asphalt');
+    const roads = streetTiles.filter(t => t[2] === 'tiles/road_h' || t[2] === 'tiles/road_v' || t[2] === 'tiles/asphalt');
     const pick = [];
-    const near = roads.map(t => ({ x: toX(t[0] * TILE + 32), z: toZ(t[1] * TILE + 32) })).filter(p => { const d = Math.hypot(p.x - START.x, p.z - START.z); return d > 6 && d < 16 && !moveBlockedAt(p.x, p.z, 2.0); });
+    const near = roads.map(t => ({ x: toX(t[0] * TILE + 32), z: toZ(t[1] * TILE + 32), v: t[2] === 'tiles/road_v' })).filter(p => { const d = Math.hypot(p.x - START.x, p.z - START.z); return d > 6 && d < 16 && !moveBlockedAt(p.x, p.z, 2.4); });
     if (near[0]) pick.push(near[0]); if (near.length > 8) pick.push(near[Math.floor(near.length * 0.7)]);
     let guard = 0;
-    while (pick.length < 9 && guard++ < 500) { const t = roads[Math.floor(rng() * roads.length)], p = { x: toX(t[0] * TILE + 32), z: toZ(t[1] * TILE + 32) }; if (!moveBlockedAt(p.x, p.z, 2.0) && !pick.some(q => Math.hypot(q.x - p.x, q.z - p.z) < 18)) pick.push(p); }
-    pick.forEach((p, i) => createSportsCar(p.x, p.z, names[i % names.length]));
+    while (pick.length < 10 && guard++ < 500) { const t = roads[Math.floor(rng() * roads.length)], p = { x: toX(t[0] * TILE + 32), z: toZ(t[1] * TILE + 32), v: t[2] === 'tiles/road_v' }; if (!moveBlockedAt(p.x, p.z, 2.4) && !pick.some(q => Math.hypot(q.x - p.x, q.z - p.z) < 18)) pick.push(p); }
+    pick.forEach((p, i) => createSportsCar(p.x, p.z, CAR_NAMES[i % CAR_NAMES.length], p.v ? (i % 2 ? 0 : Math.PI) : (i % 2 ? Math.PI / 2 : -Math.PI / 2)));
   })();
 
   const bones = [];
@@ -741,22 +724,21 @@
         if (ok ? (_hn.x > x0 - 0.04 && _hn.x < x1 + 0.04 && _hn.y > y0 - 0.04 && _hn.y < y1 + 0.04) : nearCam) want = 0.28;
       }
       b.alpha += (want - b.alpha) * Math.min(1, dt * 10);
-      const solid = b.alpha > 0.98;
-      for (const m of b.mats) { m.opacity = b.alpha; m.depthWrite = solid; }
+      setFade(b.mats, b.alpha);
     }
-    // props (lamps, signs, palms...) that stand between the camera and the dog also turn see-through
+    // tall props (lamps, signs, palms...) that stand between the camera and the dog also turn see-through
     const hn = new THREE.Vector3(player.position.x, 1.2, player.position.z).project(camera);
     const pv = new THREE.Vector3();
-    for (const sp of propSprites) {
-      const pdx = sp.position.x - camera.position.x, pdz = sp.position.z - camera.position.z, pd = Math.hypot(pdx, pdz);
+    for (const p of fadeProps) {
+      const pdx = p.g.position.x - camera.position.x, pdz = p.g.position.z - camera.position.z, pd = Math.hypot(pdx, pdz);
       let want = 1;
       if (pd < heroDist - 0.3 && pd < 60) {
-        pv.set(sp.position.x, sp.userData.h * 0.5, sp.position.z).project(camera);
-        const half = (sp.scale.x / 2) * (0.9 / Math.max(pd, 1)) * 2.2;
+        pv.set(p.g.position.x, p.h * 0.5, p.g.position.z).project(camera);
+        const half = (p.w / 2) * (0.9 / Math.max(pd, 1)) * 2.2;
         if (pv.z < 1 && Math.abs(pv.x - hn.x) < 0.42 + half) want = 0.22;
       }
-      sp.userData.a += (want - sp.userData.a) * Math.min(1, dt * 10);
-      sp.material.opacity = sp.userData.a;
+      p.a += (want - p.a) * Math.min(1, dt * 10);
+      setFade(p.mats, p.a);
     }
   }
 
@@ -1278,7 +1260,7 @@
       if (Math.abs(car.speed) > 0.4) {
         state.yaw -= inX * 2.1 * dt * Math.sign(car.speed);
       }
-      car.mesh.rotation.y = state.yaw;
+      car.mesh.rotation.y = state.yaw + Math.PI;
       const carFwd = new THREE.Vector3(-Math.sin(state.yaw), 0, -Math.cos(state.yaw));
       updateCarFlip(car, carFwd.x * car.speed, carFwd.z * car.speed);
       moveEntityWithCollision(car.mesh.position, carFwd.multiplyScalar(car.speed * dt), 1.9);
