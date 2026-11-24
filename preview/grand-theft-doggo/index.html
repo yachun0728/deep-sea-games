@@ -209,10 +209,13 @@
   #weapon-label { font-size: 12px; line-height: 1.25; }
   #weapon-label .wi { height: 38px; width: auto; vertical-align: middle; margin-right: 2px; }
   .action-btn .wi { height: 34px; width: auto; }
-  #weapon-label .wn { font-weight: 900; color: #ffd166; }
+  #weapon-label .wn { font-weight: 900; color: #ffd166; white-space: nowrap; }
+  @media (max-width: 560px) { #weapon-label small { display: none; } }
   #weapon-label .wa { font-weight: 900; font-size: 15px; color: #7ef9ff; margin-left: 4px; }
   #weapon-label .wa.low { color: #ff6b6b; }
   #weapon-label small { font-size: 10px; font-weight: 700; color: #cbbfe6; }
+  @media (max-width: 560px) { #mission { top: calc(max(12px, env(safe-area-inset-top)) + 150px) !important; } }
+  .action-btn .bi { height: 46%; width: auto; max-width: 70%; object-fit: contain; pointer-events: none; }
   #overlay { align-items: center; justify-content: center; padding: 14px; background: linear-gradient(180deg, rgba(60,24,70,.42), rgba(24,10,38,.88)) !important; backdrop-filter: blur(2.5px) !important; overflow-y: auto; }
   .ov-rays { position: absolute; inset: -30%; pointer-events: none; opacity: .13; background: repeating-conic-gradient(from 0deg at 50% 62%, #ffc83d 0 6deg, transparent 6deg 14deg); animation: raySpin 60s linear infinite; mask-image: radial-gradient(circle at 50% 60%, #000 0, transparent 62%); -webkit-mask-image: radial-gradient(circle at 50% 60%, #000 0, transparent 62%); }
   @keyframes raySpin { to { transform: rotate(360deg); } }
@@ -293,12 +296,12 @@
     <div id="joy-base"><div id="joy-knob"></div></div>
   </div>
 
-  <button class="action-btn" id="btn-fire">🎾<span>FIRE/PAW</span></button>
-  <button class="action-btn" id="btn-dodge">🌀<span>DODGE</span></button>
-  <button class="action-btn" id="btn-crouch">🛡️<span>CROUCH</span></button>
-  <button class="action-btn" id="btn-turn180">↩️<span>180°</span></button>
+  <button class="action-btn" id="btn-fire"><img class="bi" src="assets/ui/k_attack.png" alt=""><span>FIRE/PAW</span></button>
+  <button class="action-btn" id="btn-dodge"><img class="bi" src="assets/ui/k_roll.png" alt=""><span>DODGE</span></button>
+  <button class="action-btn" id="btn-crouch"><img class="bi" src="assets/ui/b_shield.png" alt=""><span>CROUCH</span></button>
+  <button class="action-btn" id="btn-turn180"><img class="bi" src="assets/ui/b_turn.png" alt=""><span>180°</span></button>
   <button class="action-btn" id="btn-switch">🔪<span>KNIFE</span></button>
-  <button class="action-btn" id="btn-car">🏎️<span>DRIVE</span></button>
+  <button class="action-btn" id="btn-car"><img class="bi" src="assets/ui/k_car.png" alt=""><span>DRIVE</span></button>
 </div>
 
 <!-- Start / Pause Overlay -->
@@ -400,7 +403,7 @@
   btnPlayEarly.disabled = true; btnPlayEarly.textContent = '載入素材中…';
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, ('ontouchstart' in window || navigator.maxTouchPoints > 0) ? 1.5 : 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   const maxAniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
 
@@ -1180,7 +1183,7 @@
     titleT += dt * 0.12; const r = 15, a = titleT;
     camera.position.set(START.x + Math.sin(a) * r, 6.5, START.z + Math.cos(a) * r); camera.lookAt(START.x, 1.6, START.z); camera.updateMatrixWorld();
     updateEnemyBars();
-    updateJuice(dt);
+    updateJuice(Math.min(rawDt, 0.25));
     updateBuildings(dt);
   }
   // ==========================================
@@ -1667,7 +1670,7 @@
 
   function animate() {
     requestAnimationFrame(animate);
-    const dt = Math.min(clock.getDelta(), 0.05);
+    const rawDt = clock.getDelta(), dt = Math.min(rawDt, 0.05);
     lastDt = dt;
     if (hitStopT > 0) { hitStopT -= dt; renderer.render(scene, camera); return; }
 
@@ -1708,7 +1711,7 @@
       { const b0 = car.mesh.position.clone(), want = Math.abs(car.speed) * dt; if (moveBlockedAt(b0.x, b0.z, 1.2)) { const f = freeSpotU(b0.x, b0.z, 1.2); car.mesh.position.x = f.x; car.mesh.position.z = f.z; } moveEntityWithCollision(car.mesh.position, carFwd.multiplyScalar(car.speed * dt), 1.2); const got = car.mesh.position.distanceTo(b0); if (want > 0.02 && got < want * 0.35) car.speed *= 0.5; }
       player.position.copy(car.mesh.position);
       btnCar.style.display = 'flex';
-      btnCar.innerHTML = '🏃<span>EXIT</span>';
+      btnCar.innerHTML = '<img class="bi" src="assets/ui/b_exit.png" alt=""><span>EXIT</span>';
     } else {
       // On-foot movement (camera is always behind the dog: we only ever see the back of its head)
       player.rotation.y = state.yaw;
@@ -1733,7 +1736,7 @@
       const nearCar = getNearestCar();
       if (nearCar) {
         btnCar.style.display = 'flex';
-        btnCar.innerHTML = '🏎️<span>DRIVE</span>';
+        btnCar.innerHTML = '<img class="bi" src="assets/ui/k_car.png" alt=""><span>DRIVE</span>';
         toastEl.textContent = 'PRESS [E] OR DRIVE TO HIJACK';
         toastEl.classList.add('show');
       } else {
