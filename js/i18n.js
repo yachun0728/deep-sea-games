@@ -145,7 +145,7 @@
     var options = { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: attributes };
     observer.observe(document.documentElement, options);
     frameDocuments.forEach(function (doc, frame) {
-      if (frame.isConnected && frame.contentDocument === doc) observer.observe(doc.documentElement, options);
+      if (frame.isConnected && frame.contentDocument === doc && doc.documentElement) observer.observe(doc.documentElement, options);
       else frameDocuments.delete(frame);
     });
   }
