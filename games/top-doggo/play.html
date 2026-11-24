@@ -384,7 +384,7 @@
     '操作教學': 'Practice',
     '跳過教學': 'Skip',
     '教學完成，準備好就開始！': 'Practice complete. Ready to play!',
-    '移動到發光圓圈': 'Move into the glowing ring',
+    '移動到藍色箭頭下的圓圈': 'Move to the ring under the blue arrow',
     '拖曳空白畫面轉向，攻擊練習靶': 'Drag empty space to turn; attack the target',
     '換一次武器': 'Switch weapons once',
     '朝任意方向翻滾一次': 'Dodge in any direction',
@@ -416,7 +416,7 @@
     '操作教學': '操作教学',
     '跳過教學': '跳过教学',
     '教學完成，準備好就開始！': '教学完成，准备好就开始！',
-    '移動到發光圓圈': '移动到发光圆圈',
+    '移動到藍色箭頭下的圓圈': '移动到蓝色箭头下的圆圈',
     '拖曳空白畫面轉向，攻擊練習靶': '拖曳空白画面转向，攻击练习靶',
     '換一次武器': '换一次武器',
     '朝任意方向翻滾一次': '朝任意方向翻滚一次',
@@ -1472,7 +1472,7 @@
   const tutorialPanel = document.getElementById('tutorial-panel');
   function tutorialText() {
     if (!tutorial.active) return;
-    const labels = ['移動到發光圓圈','拖曳空白畫面轉向，攻擊練習靶','換一次武器','朝任意方向翻滾一次'];
+    const labels = ['移動到藍色箭頭下的圓圈','拖曳空白畫面轉向，攻擊練習靶','換一次武器','朝任意方向翻滾一次'];
     const instruction = tutorial.step===1 && !handheld && innerWidth>=820 ? '用 ←→ 轉向，按住 J 攻擊練習靶' : labels[tutorial.step];
     document.getElementById('tutorial-title').textContent = (tutorial.step + 1) + '/4 · ' + L(instruction) + (tutorial.step === 1 ? ' ' + tutorial.hits + '/3' : '');
     document.getElementById('tutorial-help').textContent = L('安全練習：不受傷、不計榜') + ' · ' + L(handheld || innerWidth < 820 ? '左搖桿移動，拖曳空白畫面轉向' : 'WASD 移動，←→ 轉向，J 攻擊');
@@ -1505,7 +1505,10 @@
     for(const b of bones)b.visible=false;
     for(const p of projectiles)scene.remove(p.mesh);projectiles.length=0;
     if(!tutorial.marker){
-      tutorial.marker=new THREE.Mesh(new THREE.RingGeometry(.65,1,32),new THREE.MeshBasicMaterial({color:0x7ef9ff,side:THREE.DoubleSide}));tutorial.marker.rotation.x=-Math.PI/2;scene.add(tutorial.marker);
+      tutorial.marker=new THREE.Group();
+      const ring=new THREE.Mesh(new THREE.RingGeometry(.8,1.35,40),new THREE.MeshBasicMaterial({color:0x00eaff,side:THREE.DoubleSide,depthTest:false,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.renderOrder=26;tutorial.marker.add(ring);
+      const arrowTexture=Toon.canvasTexture(128,192,c=>{c.clearRect(0,0,128,192);c.fillStyle='#00eaff';c.strokeStyle='#102848';c.lineWidth=8;c.beginPath();c.moveTo(45,12);c.lineTo(83,12);c.lineTo(83,90);c.lineTo(116,90);c.lineTo(64,162);c.lineTo(12,90);c.lineTo(45,90);c.closePath();c.stroke();c.fill();});
+      const arrow=new THREE.Sprite(new THREE.SpriteMaterial({map:arrowTexture,depthTest:false,depthWrite:false,fog:false}));arrow.position.y=2.3;arrow.scale.set(1.2,1.8,1);arrow.renderOrder=27;tutorial.marker.add(arrow);tutorial.marker.userData.arrow=arrow;scene.add(tutorial.marker);
       const texture=Toon.canvasTexture(128,128,(c)=>{for(let i=4;i>0;i--){c.fillStyle=i%2?'#ff5297':'#fff6d5';c.beginPath();c.arc(64,64,i*14,0,Math.PI*2);c.fill();}});
       tutorial.target=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,depthTest:true}));tutorial.target.scale.set(2,2,1);scene.add(tutorial.target);
     }
@@ -1525,6 +1528,7 @@
     beginRun();
   }
   function tickTutorial(dt) {
+    if(tutorial.step===0){const pulse=Math.sin(performance.now()*.004);tutorial.marker.scale.setScalar(1+pulse*.08);tutorial.marker.userData.arrow.position.y=2.3+pulse*.15;}
     for(let i=projectiles.length-1;i>=0;i--){
       const shot=projectiles[i];shot.life-=dt;
       // Substeps keep the 30 FPS ball from skipping the small training target.
