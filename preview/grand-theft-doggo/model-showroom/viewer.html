@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vice Paw 3D showroom（骨架）</title>
+<style>html,body{margin:0;overflow:hidden;background:#79c6de;font:14px system-ui;color:#fff}canvas{display:block}#hud{position:fixed;left:16px;top:16px;background:#252033e8;padding:14px 18px;border-radius:12px;line-height:1.6}button{background:#ffce45;border:2px solid #252033;border-radius:7px;padding:6px 12px;color:#252033;font-weight:bold;cursor:pointer}small{color:#bceeff}#error{color:#ffcc79}</style></head>
+<body><div id="hud"><b>GRAND THEFT DOGGO · VICE PAW</b><div id="counts">Loading THREE r128…</div><button id="wire">Wireframe: off (W)</button><br><small>Automatic 360° orbit · front = +Z</small><div id="error"></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="models.js"></script>
+<script>
+(function(){
+'use strict';
+if(!window.THREE){document.getElementById('error').textContent='THREE could not load. Internet access is needed for the CDN script.';return;}
+var scene=new THREE.Scene();scene.background=new THREE.Color(0x79c6de);
+var camera=new THREE.PerspectiveCamera(43,innerWidth/innerHeight,.1,150);
+var renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);document.body.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xfff5de,0x78609a,.9));var sun=new THREE.DirectionalLight(0xffeed0,.85);sun.position.set(-8,18,12);scene.add(sun);
+var ground=new THREE.Mesh(new THREE.PlaneGeometry(120,120),new THREE.MeshLambertMaterial({color:0x91b879}));ground.rotation.x=-Math.PI/2;ground.position.y=-.012;scene.add(ground);
+var models=[CityModels.bank(),CityModels.carConvertible(),CityModels.palmTall()];models[0].position.x=-6;models[1].position.set(4,0,2);models[2].position.x=10;
+var text=[],total=0,materials=[],lines=[];
+models.forEach(function(model){scene.add(model);var n=0;model.traverse(function(o){if(o.isMesh){n+=(o.geometry.index?o.geometry.index.count:o.geometry.attributes.position.count)/3;if(materials.indexOf(o.material)<0)materials.push(o.material);}if(o.isLineSegments)lines.push(o);});total+=n;text.push(model.name+': '+n.toLocaleString()+' triangles');});
+document.getElementById('counts').innerHTML=text.join('<br>')+'<br><b>Total: '+total.toLocaleString()+'</b> <small>(outlines are lines)</small>';
+var wire=false;function toggle(){wire=!wire;for(var i=0;i<materials.length;i++)materials[i].wireframe=wire;for(var j=0;j<lines.length;j++)lines[j].visible=!wire;document.getElementById('wire').textContent='Wireframe: '+(wire?'on':'off')+' (W)';}
+document.getElementById('wire').onclick=toggle;addEventListener('keydown',function(e){if(e.key.toLowerCase()==='w'&&!e.repeat)toggle();});
+var target=new THREE.Vector3(0,3.6,0);var start=performance.now();
+function frame(now){var angle=(now-start)*.00010;var radius=innerWidth<innerHeight?42:29;camera.position.set(Math.sin(angle)*radius,21,Math.cos(angle)*radius);camera.lookAt(target);renderer.render(scene,camera);requestAnimationFrame(frame);}requestAnimationFrame(frame);
+addEventListener('resize',function(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+})();
+</script></body></html>
