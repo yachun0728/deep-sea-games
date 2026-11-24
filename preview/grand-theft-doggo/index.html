@@ -460,9 +460,11 @@
   function nextBuilding() { if (!bBag.length) { bBag = NEWB.slice(); for (let i = bBag.length - 1; i > 0; i--) { const j = Math.floor(bRng() * (i + 1)); [bBag[i], bBag[j]] = [bBag[j], bBag[i]]; } } return bBag.pop(); }
   // --- props from the expansion pack, sized by target height in world units ---
   const PROPH = { ac_unit: 1.8, banner: 5, barrel_blue: 2.1, barrel_gray: 2.1, bench: 2.1, cone: 1.6, direction_sign: 4.2, hydrant: 2, lamp_double_a: 5.6, lamp_double_b: 5.6, mailbox: 2.7, palm_medium: 6, palm_short: 4.6, palm_tall: 7.6, parking_sign: 4.2, planter_pink: 2.5, planter_round: 2.5, road_barrier: 2.3, stop_sign: 4.2, street_kiosk: 4.2, trash_can: 2.1, umbrella_red: 4.4, umbrella_yellow: 4.4, vending_green: 3.5, vending_red: 3.5 };
+  const propSprites = [];
   function addProp(name, x, z, solidProp) {
     const t = TEX['v3:' + name], h = PROPH[name] || 2.5, w = h * t.image.width / t.image.height, a = V3[name];
     const sp = makeSprite(t, w, h, 1 - a.anchor[1]); sp.position.set(x, 0, z); scene.add(sp);
+    sp.userData = { h, a: 1 }; propSprites.push(sp);
     if (solidProp !== false) { const cw = /palm|lamp|sign|banner/.test(name) ? 0.7 : w * 0.55; colliders.push({ minX: x - cw / 2, maxX: x + cw / 2, minZ: z - 0.8, maxZ: z + 0.01 }); }
     return sp;
   }
@@ -691,14 +693,25 @@
       const dx = camera.position.x - b.cx, dz = camera.position.z - b.cz, dist = Math.hypot(dx, dz);
       b.spr.visible = dist < 130;
       if (!b.spr.visible) continue;
-      // the building's foot sits on the edge of its block that faces the camera
-      const ux = dist > 0.5 ? dx / dist : 0, uz = dist > 0.5 ? dz / dist : 1;
-      const reach = Math.min(b.bd / 2 / Math.max(Math.abs(uz), 0.001), b.bw / 2 / Math.max(Math.abs(ux), 0.001)) - 0.5;
-      b.spr.position.set(b.cx + ux * reach, 0.02, b.cz + uz * reach);
+      b.spr.position.set(b.cx, 0.02, b.cz + b.bd * 0.3);       // fixed in the world: the building never slides around its block
       const nx = Math.min(Math.max(camera.position.x, b.x1), b.x2), nz = Math.min(Math.max(camera.position.z, b.z1), b.z2);
       const want = Math.hypot(nx - camera.position.x, nz - camera.position.z) < heroDist - 0.5 ? 0.3 : 1;
       b.alpha += (want - b.alpha) * Math.min(1, dt * 9);
       b.spr.material.opacity = b.alpha; b.spr.material.depthWrite = b.alpha > 0.98;
+    }
+    // props (lamps, signs, palms...) that stand between the camera and the dog also turn see-through
+    const hn = new THREE.Vector3(player.position.x, 1.2, player.position.z).project(camera);
+    const pv = new THREE.Vector3();
+    for (const sp of propSprites) {
+      const pdx = sp.position.x - camera.position.x, pdz = sp.position.z - camera.position.z, pd = Math.hypot(pdx, pdz);
+      let want = 1;
+      if (pd < heroDist - 0.3 && pd < 60) {
+        pv.set(sp.position.x, sp.userData.h * 0.5, sp.position.z).project(camera);
+        const half = (sp.scale.x / 2) * (0.9 / Math.max(pd, 1)) * 2.2;
+        if (pv.z < 1 && Math.abs(pv.x - hn.x) < 0.42 + half) want = 0.22;
+      }
+      sp.userData.a += (want - sp.userData.a) * Math.min(1, dt * 10);
+      sp.material.opacity = sp.userData.a;
     }
   }
 
