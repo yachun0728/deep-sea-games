@@ -29,3 +29,17 @@
 沿用錢包及既有儲存模型，遊戲不扣點、不將成績換點、不新增 BONUS；平台既有遊玩獎勵沿用 AN。新增 Analytics 名稱 `berry-trail`，既有遊戲追蹤事件不變。排名使用既有訪客 API 與 timedLeaderboard，Worker 以種子及操作重播計分，不信任前端自報分數。分享設定沿用既有 resultShare；正式分享連結尚未驗證。
 
 核准後依序：套用 `backend/migrations/0019_game_names_berry_trail.sql` → 部署 API Worker → 發布前端。正式上線後再核對實際對局、D1、單款 API、大廳 feed 與 GA4。若回退，還原此前端與 API 註冊，不清除 `berryTrailBest` 或既有訪客排行榜資料。
+
+## 正式發布紀錄
+
+使用者於本次對話明確核准「直接上吧！」。核准遊戲版本 `933e929`，上線版本 `b9c7f80`（僅額外排除設計原稿靜態發布，遊戲內容不變），發布前核對遠端 `aba16f7` 並確認插隊素材沒有差異。
+
+- PASS：正式 D1 已套用唯一待執行的 `0019_game_names_berry_trail.sql`，未清除或遷移玩家資料；三語名稱已唯讀查核。
+- PASS：API Worker 已發布，版本 `44e1019e-562b-4af9-ae26-53acd8cdcdfe`。
+- PASS：已推送 `origin/main`，主站 Worker 已發布，版本 `6d91e1fc-9a1c-45b8-8c80-c677e441f80e`。
+- PASS：正式網址 `https://ticaticagames.com/#berry-trail`，正式首頁、子頁、封面、排行榜縮圖、about.html、robots.txt、sitemap.xml 均經瀏覽器 fetch SHA-256 比對核准版本一致。
+- PASS：正式站隔離 Chrome（macOS，390×844 裝置模擬及 1366×900）三語標題、操作、44px 按鈕與版面；完整對局吃莓果取得 10 分、合法碰撞結算，收到「成績已送到排行榜」。正式 D1 唯讀查詢已有合法成績（最高 10 分）；遊戲內榜單可載入。重玩、失焦暫停、離頁重設均通過，未捕獲 runtime error。
+- NOT TESTED：iOS／Android 實機、Safari／Firefox、低階及長時間效能、正式分享連結、GA4 後台收件。Chrome 裝置模擬不能代替實機。
+- NOT APPLICABLE：CrazyGames 正式審核或發布，此次僅本站。
+
+正式資料保留正常驗收對局的訪客成績；沒有以清除正式資料作為測試清理。
