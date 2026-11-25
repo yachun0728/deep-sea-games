@@ -29,21 +29,24 @@
 <body>
 <main>
   <h1>Roar 音樂試聽</h1>
-  <p class="sub">兩首都是遊戲內用程式即時合成的原創音樂，沒有使用任何音檔。每首 16 小節循環，聽聽看接回開頭時有沒有斷點。</p>
+  <p class="sub">全部都是遊戲內用程式即時合成的原創聲音，沒有使用任何音檔。</p>
   <div id="now">還沒播放</div>
 
   <section class="card">
-    <h2>1. 標題畫面：Nine-to-Five Shuffle</h2>
-    <p class="meta">C 大調、104 BPM、搖擺節奏。木琴主旋律＋低音號貝斯＋柔和和弦＋刷子鼓，輕鬆滑稽的辦公室風。</p>
+    <h2>1. 標題頁／結果頁：After Hours</h2>
+    <p class="meta">Lo-fi 律動，80 BPM。電鋼琴爵士和弦＋低沉貝斯＋鬆散的鼓＋黑膠底噪，沒有主旋律。16 小節循環，聽聽看接回開頭有沒有斷點。</p>
     <div class="row"><button id="p-title">▶ 播放</button></div>
   </section>
 
   <section class="card">
-    <h2>2. 遊戲中：Overtime Escape</h2>
-    <p class="meta">A 小調、138–150 BPM。合成器貝斯＋電子主旋律＋鼓，越往上層樂器越多、速度越快。選樓層聽每一層的差別：</p>
+    <h2>2. 遊戲中：辦公室環境音＋會議時鐘</h2>
+    <p class="meta">遊戲中不放音樂（避免被麥克風收進去）。時鐘每秒滴答，每層樓有自己的背景聲：1F 電話鈴、2F 印表機和計算機、3F 投影機風扇、4F 微波爐和咖啡機、5F 頂樓的風和灑水器；各層都有打字聲。</p>
     <div class="row"><button id="p-game">▶ 播放</button></div>
     <div class="row floors" style="margin-top:12px" id="floors"></div>
-    <div class="row" style="margin-top:12px"><button class="sec" id="climb">模擬一局：每 8 秒往上一層</button></div>
+    <div class="row" style="margin-top:12px">
+      <button class="sec" id="urgent">會議最後 10 秒：關</button>
+      <button class="sec" id="climb">模擬一局（約 50 秒）</button>
+    </div>
   </section>
 
   <section class="card">
@@ -70,14 +73,16 @@
   function setFloor(i) { Music.setIntensity(i); [...floors.children].forEach((b, k) => b.classList.toggle('on', k === i)); show(); }
   function show() {
     const t = Music.track;
-    $('now').textContent = !t ? '已停止' : (t === 'title' ? '標題畫面' : '遊戲中・' + FLOOR[Music.intensity]) + (Music.state === 'paused' ? '（暫停中）' : '（播放中）');
+    $('now').textContent = !t ? '已停止' : (t === 'title' ? '標題頁音樂' : '遊戲中・' + FLOOR[Music.intensity] + (Music.urgent ? '・最後 10 秒' : '')) + (Music.state === 'paused' ? '（暫停中）' : '（播放中）');
   }
   function play(n) { Music.play(n); show(); }
   function stopClimb() { clearInterval(climbTimer); climbTimer = 0; }
   $('p-title').onclick = () => { stopClimb(); play('title'); };
-  $('p-game').onclick = () => { stopClimb(); setFloor(0); play('game'); };
-  $('climb').onclick = () => { stopClimb(); setFloor(0); play('game'); let i = 0;
-    climbTimer = setInterval(() => { i++; if (i > 4) { stopClimb(); return; } setFloor(i); }, 8000); };
+  $('p-game').onclick = () => { stopClimb(); setFloor(0); setUrgent(false); play('game'); };
+  $('climb').onclick = () => { stopClimb(); setFloor(0); setUrgent(false); play('game'); let i = 0;
+    climbTimer = setInterval(() => { i++; if (i <= 4) setFloor(i); else if (i === 5) setUrgent(true); else { stopClimb(); setUrgent(false); play('title'); } }, 9000); };
+  function setUrgent(u) { Music.setUrgent(u); $('urgent').textContent = '會議最後 10 秒：' + (u ? '開' : '關'); $('urgent').classList.toggle('on', u); show(); }
+  $('urgent').onclick = () => { setUrgent(!Music.urgent); if (Music.track !== 'game') play('game'); };
   $('pause').onclick = () => { Music.pause(); show(); };
   $('resume').onclick = () => { Music.resume(); show(); };
   $('stop').onclick = () => { stopClimb(); Music.stop(); show(); };
