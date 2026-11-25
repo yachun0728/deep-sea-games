@@ -439,5 +439,13 @@
     "card": "games/top-doggo/card.html",
     "icon": "games/top-doggo/icon.svg",
     "style": "games/top-doggo/style.css"
+  },
+  {
+    "id": "berry-trail",
+    "logic": "games/berry-trail/game.js",
+    "view": "games/berry-trail/view.html",
+    "card": "games/berry-trail/card.html",
+    "icon": "games/berry-trail/icon.svg",
+    "style": "games/berry-trail/style.css"
   }
 ]

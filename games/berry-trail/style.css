@@ -1,0 +1,5 @@
+#view-berry-trail .bt-platform{position:relative;padding:0;margin:auto;width:100%;max-width:560px;border:0;border-radius:18px;overflow:hidden;background:#d4e8c0}
+#bt-frame{display:block;width:100%;height:900px;max-height:calc(100dvh - 100px);border:0;background:#d4e8c0}
+#bt-rank-status,#bt-rank-retry{position:absolute;z-index:2;bottom:8px;left:12px;right:12px;margin:0;text-align:center;font-size:12px;background:#fff9e9;color:#254b3c;border-radius:8px;padding:4px}
+#bt-rank-retry{bottom:35px;min-height:44px}
+@media(max-width:880px){#view-berry-trail:not([hidden]){position:fixed!important;inset:0;z-index:160;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;width:100%!important;height:100dvh;background:#d4e8c0}#view-berry-trail .bt-platform{max-width:none;height:100%;border-radius:0}#bt-frame{height:100%;max-height:none}#view-berry-trail .mobile-scroll-pad{display:none!important}}
