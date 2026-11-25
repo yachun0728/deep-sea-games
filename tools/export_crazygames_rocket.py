@@ -12,16 +12,19 @@ What changes compared with the site version (games/rocket-chair/original.html):
 - The page still runs when the SDK is missing (local test): the ad continue button is then hidden.
 
 The site version is never modified. Run: python3 tools/export_crazygames_rocket.py
+(add --zh for a Traditional Chinese review build in output/rocket-chair-crazygames-zh/, not for upload)
 """
-import os, re, shutil, zipfile
+import os, re, shutil, sys, zipfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'games', 'rocket-chair', 'original.html')
 RULES = os.path.join(ROOT, 'shared', 'rocket-chair-rules.js')
 ASSETS = os.path.join(ROOT, 'games', 'rocket-chair', 'assets', 'comic')
 CG_DIR = os.path.join(ROOT, 'games', 'rocket-chair', 'crazygames')   # CrazyGames-only additions
-OUT = os.path.join(ROOT, 'output', 'rocket-chair-crazygames')
-ZIP = os.path.join(ROOT, 'output', 'rocket-chair-crazygames.zip')
+# --zh: a Traditional Chinese build for reviewing the game in the team's own language. Never uploaded.
+ZH = '--zh' in sys.argv
+OUT = os.path.join(ROOT, 'output', 'rocket-chair-crazygames-zh' if ZH else 'rocket-chair-crazygames')
+ZIP = None if ZH else os.path.join(ROOT, 'output', 'rocket-chair-crazygames.zip')
 
 # Exact source text -> English. Longest keys are applied first.
 EN = {
@@ -201,13 +204,18 @@ def build():
     # Thrust meter labels sit 46px apart at the low end: an arrow instead of "DOWN" so it doesn't run into "HOLD".
     html = cut(html, "['掉', 0.075]", "['↓', 0.075]")
     # Desktop players have no touch screen: name the Space key and the mouse in the hints.
-    html = cut(html, "'快速點兩下衝刺，就能撞破天花板！'",
-               "(IS_MOBILE ? 'Double-tap to dash and smash the ceiling!' : 'Double-tap SPACE to smash the ceiling!')")
-    html = cut(html, "'按住螢幕往上飛，快速點兩下衝刺'",
-               "(IS_MOBILE ? 'Hold the screen to fly up, double-tap to dash' : 'Hold SPACE to fly, double-tap to dash')")
-    html = cut(html, "'對著手機大吼往上飛，短吼一聲衝刺'", "'Yell to fly up, a short yell to dash'")
-    html = cut(html, '<div id="t-sub">對著手機大吼，衝破 5 層樓</div>', '<div id="t-sub">Yell to fly. Smash through 5 floors.</div>')
-    html = cut(html, "'對著手機大聲一點'", "'Yell a bit louder'")
+    if ZH:
+        html = cut(html, "'快速點兩下衝刺，就能撞破天花板！'", "(IS_MOBILE ? '快速點兩下衝刺，就能撞破天花板！' : '連按兩下空白鍵衝刺，撞破天花板！')")
+        html = cut(html, "'按住螢幕往上飛，快速點兩下衝刺'", "(IS_MOBILE ? '按住螢幕往上飛，快速點兩下衝刺' : '按住空白鍵往上飛，連按兩下衝刺')")
+        html = cut(html, '<div id="t-sub">對著手機大吼，衝破 5 層樓</div>', '<div id="t-sub">大吼就能飛，衝破 5 層樓</div>')
+    else:
+        html = cut(html, "'快速點兩下衝刺，就能撞破天花板！'",
+                   "(IS_MOBILE ? 'Double-tap to dash and smash the ceiling!' : 'Double-tap SPACE to smash the ceiling!')")
+        html = cut(html, "'按住螢幕往上飛，快速點兩下衝刺'",
+                   "(IS_MOBILE ? 'Hold the screen to fly up, double-tap to dash' : 'Hold SPACE to fly, double-tap to dash')")
+        html = cut(html, "'對著手機大吼往上飛，短吼一聲衝刺'", "'Yell to fly up, a short yell to dash'")
+        html = cut(html, '<div id="t-sub">對著手機大吼，衝破 5 層樓</div>', '<div id="t-sub">Yell to fly. Smash through 5 floors.</div>')
+        html = cut(html, "'對著手機大聲一點'", "'Yell a bit louder'")
     # Saves: the game's own lsGet/lsSet go through CG.store (CrazyGames Data module), never localStorage.
     html = cut(html, "function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }",
                "function lsGet(k) { return CG.store.get(k); }")
@@ -218,21 +226,28 @@ def build():
     boot = open(os.path.join(CG_DIR, 'cg-boot.js'), encoding='utf-8').read()
     html = cut(html, '<script src="../../shared/rocket-chair-rules.js"></script>',
                '<script>\n' + boot + '</script>\n<script src="../../shared/rocket-chair-rules.js"></script>')
-    for zh in sorted(EN, key=len, reverse=True):
-        html = html.replace(zh, EN[zh].replace("'", '’') if not EN[zh].startswith(("'", '`')) else EN[zh])
-    html = html.replace('<html lang="zh-Hant">', '<html lang="en">')
+    if ZH:
+        html = html.replace('<script>\n' + boot, "<script>window.CG_LANG = 'zh';</script>\n<script>\n" + boot, 1)
+    else:
+        for zh in sorted(EN, key=len, reverse=True):
+            html = html.replace(zh, EN[zh].replace("'", '’') if not EN[zh].startswith(("'", '`')) else EN[zh])
+        html = html.replace('<html lang="zh-Hant">', '<html lang="en">')
     html = html.replace('src="../../shared/rocket-chair-rules.js"', 'src="rocket-chair-rules.js"')
     html = html.replace('assets/comic/', 'assets/')
     html = re.sub(r'\.\./\.\./', '', html)
     # CrazyGames glue (saves, SDK events, pause menu, one-click start, rewarded ad, music and sound files),
     # after the game script; music.js (title music player + office ambience) goes first.
+    # Code comments that name our own site are dropped (page source is public).
+    html = re.sub(r'/\*[^*]*deep-sea[^*]*\*/', '', html)
+    game_only = html   # checked for leftover Chinese; the glue's Chinese strings only show in the --zh build
     music = open(os.path.join(CG_DIR, 'music.js'), encoding='utf-8').read()
     glue = open(os.path.join(CG_DIR, 'cg-game.js'), encoding='utf-8').read()
     html = cut(html, '</body>', '<script>\n' + music + '</script>\n<script>\n' + glue + '</script>\n</body>')
     rules = open(RULES, encoding='utf-8').read()
-    for zh in sorted(RULES_EN, key=len, reverse=True):
-        rules = rules.replace(zh, RULES_EN[zh])
-    left = chinese_left(html) + chinese_left(rules)
+    if not ZH:
+        for zh in sorted(RULES_EN, key=len, reverse=True):
+            rules = rules.replace(zh, RULES_EN[zh])
+    left = [] if ZH else chinese_left(game_only) + chinese_left(rules)
     if os.path.isdir(OUT): shutil.rmtree(OUT)
     os.makedirs(os.path.join(OUT, 'assets'))
     open(os.path.join(OUT, 'index.html'), 'w', encoding='utf-8').write(html)
@@ -244,14 +259,15 @@ def build():
     shutil.copytree(os.path.join(CG_DIR, 'result'), os.path.join(OUT, 'result'))   # result-screen art (no text)
     shutil.copytree(os.path.join(CG_DIR, 'desktop'), os.path.join(OUT, 'desktop'))   # side background for wide screens
     shutil.copy(os.path.join(CG_DIR, 'CREDITS.md'), os.path.join(OUT, 'CREDITS.md'))
-    if os.path.exists(ZIP): os.remove(ZIP)
-    with zipfile.ZipFile(ZIP, 'w', zipfile.ZIP_DEFLATED) as z:
-        for base, _, files in os.walk(OUT):
-            for f in files:
-                p = os.path.join(base, f); z.write(p, os.path.relpath(p, OUT))
+    if ZIP:
+        if os.path.exists(ZIP): os.remove(ZIP)
+        with zipfile.ZipFile(ZIP, 'w', zipfile.ZIP_DEFLATED) as z:
+            for base, _, files in os.walk(OUT):
+                for f in files:
+                    p = os.path.join(base, f); z.write(p, os.path.relpath(p, OUT))
     size = sum(os.path.getsize(os.path.join(b, f)) for b, _, fs in os.walk(OUT) for f in fs)
     count = sum(len(fs) for _, _, fs in os.walk(OUT))
-    print(f'Built {OUT} ({count} files, {size/1e6:.2f} MB) and {ZIP} ({os.path.getsize(ZIP)/1e6:.2f} MB)')
+    print(f'Built {OUT} ({count} files, {size/1e6:.2f} MB)' + (f' and {ZIP} ({os.path.getsize(ZIP)/1e6:.2f} MB)' if ZIP else ' (review build, no zip)'))
     if left: print('Untranslated Chinese left in code (check):', left)
 
 

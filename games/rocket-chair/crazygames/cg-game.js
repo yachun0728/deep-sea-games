@@ -1,5 +1,7 @@
 /* ===== CrazyGames build: runs after the game script. Free to play, no analytics, SDK v3. ===== */
 (function () {
+  // UI language: English for CrazyGames; the review-only build sets CG_LANG = 'zh' (Traditional Chinese).
+  const ZH = window.CG_LANG === 'zh', L = (en, zh) => ZH ? zh : en;
   track = function () {};                                   // no analytics on CrazyGames
   Wallet.isFree = () => true; Wallet.canStart = () => true; Wallet.spend = () => true; Wallet.tick = () => false; Wallet.bal = 1e9;
   ['btn-coffee', 'coffee-note', 'btn-share', 'btn-copy', 'btn-low-ad', 'debug'].forEach(id => { const e = $(id); if (e) e.classList.add('hidden'); });
@@ -11,7 +13,7 @@
   const saveBest = (patch) => { const b = best(); let changed = false;
     for (const k in patch) if (patch[k] > b[k]) { b[k] = patch[k]; changed = true; }
     if (changed) CG.store.setJSON('roar_best', b); };
-  const bestText = () => { const b = best(); return b.cleared ? `Best: ${b.early} min early` : b.floors ? `Best: ${b.floors} of ${FLOORS} ceilings` : ''; };
+  const bestText = () => { const b = best(); return b.cleared ? L(`Best: ${b.early} min early`, `最佳：提早 ${b.early} 分鐘`) : b.floors ? L(`Best: ${b.floors} of ${FLOORS} ceilings`, `最佳：撞破 ${b.floors}／${FLOORS} 層`) : ''; };
   renderWallet = function () { const el = $('t-wallet'); if (el) el.textContent = bestText(); };
   const _rocketEvent = rocketEvent; rocketEvent = function (type) {
     const r = _rocketEvent.apply(this, arguments);
@@ -54,24 +56,24 @@
   $('r-head').insertAdjacentElement('afterend', res);
   function renderResult(g) {
     const b = best(), win = !!g.cleared;
-    const headline = win ? ((g.early || 0) > 0 ? `You left<b>${g.early} min</b>early!` : 'Out at<b>6:00</b>on the dot!') : 'Overtime<b>again...</b>';
-    const bestLine = b.cleared ? `Best: ${b.early} min early` : `Best: ${b.floors} of ${FLOORS} ceilings`;
+    const headline = win ? ((g.early || 0) > 0 ? L(`You left<b>${g.early} min</b>early!`, `提早<b>${g.early} 分鐘</b>下班！`) : L('Out at<b>6:00</b>on the dot!', '剛好<b>6 點</b>準時下班！')) : L('Overtime<b>again...</b>', '今天也<b>加班了……</b>');
+    const bestLine = bestText();
     $('s-result').classList.toggle('win', win); $('s-result').classList.toggle('fail', !win);
     res.className = win ? 'win' : 'fail';
     res.innerHTML =
       `<div class="head"><p>${headline}</p></div>` +
-      `<div class="hero" role="img" aria-label="${win ? 'Celebrating on the rocket chair' : 'Exhausted in the office chair'}"></div>` +
+      `<div class="hero" role="img" aria-label="${win ? L('Celebrating on the rocket chair', '坐著火箭椅歡呼') : L('Exhausted in the office chair', '累癱在辦公椅上')}"></div>` +
       `<div class="rank"><span>${rankOf(g)}</span></div>` +
       `<div class="stats">` +
-      `<div class="stat"><img src="result/icon-clock.webp" alt=""><div><b>${win ? g.early || 0 : 0}</b><span>min early</span></div></div>` +
-      `<div class="stat"><img src="result/icon-ceiling.webp" alt=""><div><b>${g.broken || 0}/${FLOORS}</b><span>ceilings</span></div></div>` +
-      `<div class="stat"><img src="result/icon-dash.webp" alt=""><div><b>${g.bursts || 0}</b><span>dashes</span></div></div></div>` +
-      `<div class="best"><span>${bestLine}${g.newBest ? '<span class="new">NEW BEST!</span>' : ''}</span></div>`;
+      `<div class="stat"><img src="result/icon-clock.webp" alt=""><div><b>${win ? g.early || 0 : 0}</b><span>${L('min early', '提早分鐘')}</span></div></div>` +
+      `<div class="stat"><img src="result/icon-ceiling.webp" alt=""><div><b>${g.broken || 0}/${FLOORS}</b><span>${L('ceilings', '撞破樓層')}</span></div></div>` +
+      `<div class="stat"><img src="result/icon-dash.webp" alt=""><div><b>${g.bursts || 0}</b><span>${L('dashes', '衝刺次數')}</span></div></div></div>` +
+      `<div class="best"><span>${bestLine}${g.newBest ? '<span class="new">' + L('NEW BEST!', '新紀錄！') + '</span>' : ''}</span></div>`;
   }
   const _showResultSlip = showResult; showResult = function () { const g = G; const r = _showResultSlip.apply(this, arguments); if (g) renderResult(g); $('toast').classList.remove('show'); return r; };
 
   /* ---------- one click to play: yelling only; hold-to-fly appears only when the mic can't be used ---------- */
-  const NO_MIC = IS_MOBILE ? 'Mic not available — hold the screen to fly' : 'Mic not available — hold SPACE or the mouse to fly';
+  const NO_MIC = IS_MOBILE ? L('Mic not available — hold the screen to fly', '讀不到麥克風：按住螢幕就能飛') : L('Mic not available — hold SPACE or the mouse to fly', '讀不到麥克風：按住空白鍵或滑鼠就能飛');
   function play() {                       // runs inside a click or key handler, so the browser may ask for the mic
     if (rocketStarting) return;
     ensureAudio(); Snd.click();
@@ -115,16 +117,16 @@
   pb.id = 'cg-pause'; pb.type = 'button'; pb.className = 'hidden'; pb.setAttribute('aria-label', 'Pause (P)');
   pb.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
   app.appendChild(pb);
-  const pauseNow = () => { if (appState === 'play') pauseGame('Paused', 'The boss is still in the meeting.'); };
+  const pauseNow = () => { if (appState === 'play') pauseGame(L('Paused', '暫停'), L('The boss is still in the meeting.', '主管還在開會。')); };
   pb.onclick = pauseNow;
   (function watch() { const p = appState === 'play'; pb.classList.toggle('hidden', !p); app.classList.toggle('cg-playing', p); requestAnimationFrame(watch); })();
 
   const box = $('s-pause');
   const mk = (id, cls, text) => { const b = document.createElement('button'); b.id = id; b.type = 'button'; b.className = 'btn ' + cls; b.textContent = text; box.appendChild(b); return b; };
-  $('btn-resume').textContent = 'Resume';
-  const restartBtn = mk('cg-restart', 'sec', 'Restart');
+  $('btn-resume').textContent = L('Resume', '繼續');
+  const restartBtn = mk('cg-restart', 'sec', L('Restart', '重新開始'));
   restartBtn.onclick = () => { stop(); Mic.stop(); G = null; play(); };
-  const _pauseScreen = pauseGame; pauseGame = function () { const r = _pauseScreen.apply(this, arguments); $('btn-resume').textContent = 'Resume'; renderSound(); return r; };
+  const _pauseScreen = pauseGame; pauseGame = function () { const r = _pauseScreen.apply(this, arguments); $('btn-resume').textContent = L('Resume', '繼續'); renderSound(); return r; };
 
   window.addEventListener('keydown', (e) => {
     if (e.code !== 'KeyP' || e.repeat) return;
@@ -147,8 +149,8 @@
     try { if (master) master.gain.value = muted ? 0 : (inputMode === 'touch' ? 0.5 : 0.28); } catch (e) {}
     if (window.Music) Music.mute(muted || musicOff); };
   function renderSound() {
-    soundBtn.innerHTML = 'Sound <b>' + (userMuted ? 'Off' : 'On') + '</b>'; soundBtn.classList.toggle('off', userMuted);
-    musicBtn.innerHTML = 'Music <b>' + (musicOff ? 'Off' : 'On') + '</b>'; musicBtn.classList.toggle('off', musicOff);
+    soundBtn.innerHTML = L('Sound', '音效') + ' <b>' + (userMuted ? L('Off', '關') : L('On', '開')) + '</b>'; soundBtn.classList.toggle('off', userMuted);
+    musicBtn.innerHTML = L('Music', '音樂') + ' <b>' + (musicOff ? L('Off', '關') : L('On', '開')) + '</b>'; musicBtn.classList.toggle('off', musicOff);
     musicBtn.disabled = userMuted;   // everything is already silent
   }
   const toggleSound = () => { userMuted = !userMuted; lsSet(MUTE_KEY, userMuted ? '1' : '0'); syncMute(); renderSound(); ensureAudio(); };
