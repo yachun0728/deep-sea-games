@@ -47,50 +47,30 @@
   const _showResult = showResult; showResult = function () { stop(); return _showResult.apply(this, arguments); };
   const _goTitle = goTitle; goTitle = function () { stop(); return _goTitle.apply(this, arguments); };
 
-  /* ---------- result screen: a clock-out slip ---------- */
-  // Headline stays on top; below it a time-card with the hero, the title as a rubber stamp, three stats,
-  // one funny note from the run and the saved best. "Yell again" and "Menu" sit together at the bottom.
-  const ICON = {
-    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="#1d1b1a" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
-    ceiling: '<svg viewBox="0 0 24 24" fill="none" stroke="#1d1b1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h18M3 8l4 5 3-3 4 5 3-3 4 4M8 17l-1 3M14 18l1 3"/></svg>',
-    dash: '<svg viewBox="0 0 24 24" fill="#ff7a12" stroke="#1d1b1a" stroke-width="2" stroke-linejoin="round"><path d="M12 2c3 4 5 7 5 11a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-10z"/></svg>',
-  };
-  const slip = document.createElement('div'); slip.id = 'cg-slip';
-  $('r-head').insertAdjacentElement('afterend', slip);
+  /* ---------- result screen (layout from the approved mockup) ---------- */
+  // Background, hero, burst, banner, brush and icons are text-free images (result/*.webp);
+  // the headline, title, stats, best and buttons are live text. "Yell again" and "Menu" sit at the bottom.
+  const res = document.createElement('div'); res.id = 'cg-res';
+  $('r-head').insertAdjacentElement('afterend', res);
   const homeBtn = $('btn-home'); homeBtn.className = 'btn sec'; homeBtn.textContent = 'Menu';
   if ($('r-bar')) $('r-bar').appendChild(homeBtn);
-  function heroStyle(key, w) {
-    const a = A[key]; if (!a) return '';
-    const k = w / a[2];
-    return `width:${w}px;height:${Math.round(a[3] * k)}px;background-image:url(assets/sprites.webp);` +
-      `background-size:${Math.round(1800 * k)}px auto;background-position:-${Math.round(a[0] * k)}px -${Math.round(a[1] * k)}px`;
-  }
-  // one line about how this run went, first match wins
-  function noteFor(g) {
-    const stuck = (g.bounces || []).findIndex(n => n >= 3);
-    if (g.beamHit) return 'Got pulled into a meeting. Again.';
-    if ((g.paperHits || 0) >= 3) return `Buried under ${g.paperHits} expense reports.`;
-    if (stuck >= 0) return `Bonked the ${stuck + 1}F ceiling ${g.bounces[stuck]} times.`;
-    if (g.mode !== 'touch' && (g.maxPct || 0) > 130) return 'The whole office heard you leave.';
-    if (g.cleared && (g.early || 0) >= 60) return 'Gone before the boss looked up.';
-    if (!g.cleared) return 'The boss says: see you at 9 PM.';
-    return 'Clocked out. Nobody saw a thing.';
-  }
-  function renderSlip(g) {
-    const b = best(), note = noteFor(g);
+  function renderResult(g) {
+    const b = best(), win = !!g.cleared;
+    const headline = win ? ((g.early || 0) > 0 ? `You left<b>${g.early} min</b>early!` : 'Out at<b>6:00</b>on the dot!') : 'Overtime<b>again...</b>';
     const bestLine = b.cleared ? `Best: ${b.early} min early` : `Best: ${b.floors} of ${FLOORS} ceilings`;
-    slip.innerHTML =
-      `<div class="slip-top"><span>Clock-out slip</span><span>${g.cleared ? fmtClock(clockMin(CONFIG.offClock) - (g.early || 0)) : '18:00+'}</span></div>` +
-      `<div class="slip-mid"><div class="hero" style="${heroStyle(g.cleared ? 'hWin' : 'hTired', 118)}"></div>` +
-      `<div class="stamp"><small>Title</small>${rankOf(g)}</div></div>` +
-      `<div class="tiles">` +
-      `<div class="tile">${ICON.clock}<b>${g.cleared ? (g.early || 0) : 0}</b><span>min early</span></div>` +
-      `<div class="tile">${ICON.ceiling}<b>${g.broken || 0}/${FLOORS}</b><span>ceilings</span></div>` +
-      `<div class="tile">${ICON.dash}<b>${g.bursts || 0}</b><span>dashes</span></div></div>` +
-      `<div class="note">${note}</div>` +
-      `<div class="best"><span>${bestLine}</span>${g.newBest ? '<span class="new">NEW BEST!</span>' : ''}</div>`;
+    $('s-result').classList.toggle('win', win); $('s-result').classList.toggle('fail', !win);
+    res.className = win ? 'win' : 'fail';
+    res.innerHTML =
+      `<div class="head"><p>${headline}</p></div>` +
+      `<div class="hero" role="img" aria-label="${win ? 'Celebrating on the rocket chair' : 'Exhausted in the office chair'}"></div>` +
+      `<div class="rank"><span>${rankOf(g)}</span></div>` +
+      `<div class="stats">` +
+      `<div class="stat"><img src="result/icon-clock.webp" alt=""><div><b>${win ? g.early || 0 : 0}</b><span>min early</span></div></div>` +
+      `<div class="stat"><img src="result/icon-ceiling.webp" alt=""><div><b>${g.broken || 0}/${FLOORS}</b><span>ceilings</span></div></div>` +
+      `<div class="stat"><img src="result/icon-dash.webp" alt=""><div><b>${g.bursts || 0}</b><span>dashes</span></div></div></div>` +
+      `<div class="best"><span>${bestLine}${g.newBest ? '<span class="new">NEW BEST!</span>' : ''}</span></div>`;
   }
-  const _showResultSlip = showResult; showResult = function () { const g = G; const r = _showResultSlip.apply(this, arguments); if (g) renderSlip(g); $('toast').classList.remove('show'); return r; };
+  const _showResultSlip = showResult; showResult = function () { const g = G; const r = _showResultSlip.apply(this, arguments); if (g) renderResult(g); $('toast').classList.remove('show'); return r; };
 
   /* ---------- one click to play: yelling only; hold-to-fly appears only when the mic can't be used ---------- */
   const NO_MIC = IS_MOBILE ? 'Mic not available — hold the screen to fly' : 'Mic not available — hold SPACE or the mouse to fly';

@@ -227,6 +227,7 @@ def build():
         if f.endswith('.webp'): shutil.copy(os.path.join(ASSETS, f), os.path.join(OUT, 'assets', f))
     # title music (MP3) and sound effects (m4a), plus the credits the music licence (CC BY 4.0) requires
     shutil.copytree(os.path.join(CG_DIR, 'audio'), os.path.join(OUT, 'audio'))
+    shutil.copytree(os.path.join(CG_DIR, 'result'), os.path.join(OUT, 'result'))   # result-screen art (no text)
     shutil.copy(os.path.join(CG_DIR, 'CREDITS.md'), os.path.join(OUT, 'CREDITS.md'))
     if os.path.exists(ZIP): os.remove(ZIP)
     with zipfile.ZipFile(ZIP, 'w', zipfile.ZIP_DEFLATED) as z:
