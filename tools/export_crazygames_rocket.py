@@ -161,72 +161,6 @@ def chinese_left(code):
     return sorted(set(re.findall(r'[一-鿿][^\'"`<>\n]{0,30}', code)))
 
 
-# CrazyGames SDK glue, injected after the game script.
-SHIM = r"""
-<script>
-/* ===== CrazyGames build: free to play, no analytics, SDK v3 ===== */
-(function(){
-  track = function(){};                                   // no analytics on CrazyGames
-  Wallet.isFree = () => true; Wallet.canStart = () => true; Wallet.spend = () => true; Wallet.tick = () => false; Wallet.bal = 1e9;
-  ['btn-coffee','coffee-note','btn-share','btn-copy','btn-low-ad','debug'].forEach(id => { const e = $(id); if (e) e.classList.add('hidden'); });
-  if (!IS_MOBILE) { $('btn-touch').textContent = 'No mic? Play with SPACE or mouse'; $('btn-mf-touch').textContent = 'Play with SPACE or mouse'; }
-  const adBtn = $('btn-ad'); adBtn.classList.add('hidden');
-  let sdk = null, playing = false;
-  // ---- saved progress (CrazyGames Data module through CG.store) ----
-  const best = () => CG.store.getJSON('roar_best', { early: 0, cleared: false, floors: 0 });
-  const saveBest = (patch) => { const b = best(); let changed = false;
-    for (const k in patch) if (patch[k] > b[k]) { b[k] = patch[k]; changed = true; }
-    if (changed) CG.store.setJSON('roar_best', b); };
-  const bestText = () => { const b = best(); return b.cleared ? `Best: ${b.early} min early` : b.floors ? `Best: ${b.floors} of ${FLOORS} ceilings` : ''; };
-  renderWallet = function () { const el = $('t-wallet'); if (el) el.textContent = bestText(); };
-  const _rocketEvent = rocketEvent; rocketEvent = function (type, data) {
-    const r = _rocketEvent.apply(this, arguments);
-    if (type === 'ceilingParticles' && G) saveBest({ floors: G.broken || 0 });   // saved as soon as a floor is broken
-    return r; };
-  const _showResultSave = showResult; showResult = function () {
-    const g = G; if (g) saveBest({ floors: g.broken || 0, early: g.cleared ? g.early || 0 : 0, cleared: g.cleared ? 1 : 0 });
-    return _showResultSave.apply(this, arguments); };
-  const start = () => { if (sdk && !playing) { playing = true; try { sdk.game.gameplayStart(); } catch (e) {} } };
-  const stop = () => { if (sdk && playing) { playing = false; try { sdk.game.gameplayStop(); } catch (e) {} } };
-  // gameplay start / stop around the real play state
-  const _startGame = startGame; startGame = function(){ const r = _startGame.apply(this, arguments); start(); return r; };
-  const _resumePlay = resumePlay; resumePlay = function(){ const r = _resumePlay.apply(this, arguments); start(); return r; };
-  const _pauseGame = pauseGame; pauseGame = function(){ stop(); return _pauseGame.apply(this, arguments); };
-  const _timeUp = timeUp; timeUp = function(){ stop(); return _timeUp.apply(this, arguments); };
-  const _levelClear = levelClear; levelClear = function(){ stop(); return _levelClear.apply(this, arguments); };
-  const _showResult = showResult; showResult = function(){ stop(); return _showResult.apply(this, arguments); };
-  // rewarded ad replaces the site's demo ad: once per round, the meeting runs longer
-  const _renderRevive = renderRevive; renderRevive = function(){ _renderRevive.apply(this, arguments); adBtn.classList.toggle('hidden', !sdk || G.adUsed >= CONFIG.adContinuePerGame); };
-  adBtn.onclick = () => {
-    if (!sdk || !G || G.adUsed >= CONFIG.adContinuePerGame) return;
-    let done = false;
-    sdk.ad.requestAd('rewarded', {
-      adStarted: () => { adMuted = true; syncMute(); },
-      adFinished: () => { adMuted = false; syncMute(); if (done) return; done = true;
-        rocketControl(124); reviveContinue();
-        $('pause-title').textContent = `Meeting extended by ${CONFIG.adExtendSeconds} seconds!`;
-        $('pause-desc').textContent = 'The boss started talking again. Keep going!'; },
-      adError: () => { adMuted = false; syncMute(); toast('No ad available right now'); adBtn.classList.add('hidden'); },
-    });
-  };
-  // sound is off when the player turned it off (saved) OR the CrazyGames page mutes it
-  let userMuted = false, platformMuted = false, adMuted = false;
-  const syncMute = () => { muted = userMuted || platformMuted || adMuted; $('mute').classList.toggle('muted', userMuted || platformMuted);
-    try { if (master) master.gain.value = muted ? 0 : (inputMode === 'touch' ? 0.5 : 0.28); } catch (e) {} };
-  $('mute').onclick = () => { userMuted = !userMuted; lsSet(MUTE_KEY, userMuted ? '1' : '0'); syncMute(); ensureAudio(); };
-  const applyMute = (s) => { if (s && typeof s.muteAudio === 'boolean') { platformMuted = s.muteAudio; syncMute(); } };
-  CG.ready.then((C) => {
-    // saved settings arrive with the SDK: apply them (the game read empty defaults at startup)
-    userMuted = lsGet(MUTE_KEY) === '1'; syncMute(); Calib.load(); renderWallet();
-    if (!C) return;
-    sdk = C;
-    try { sdk.game.loadingStop(); } catch (e) {}
-    try { applyMute(sdk.game.settings); sdk.game.addSettingsChangeListener(applyMute); } catch (e) {}
-    if (appState === 'play') start();
-  });
-})();
-</script>
-"""
 
 
 def cut(html, old, new):
@@ -254,9 +188,9 @@ def build():
     html = cut(html, "['掉', 0.075]", "['↓', 0.075]")
     # Desktop players have no touch screen: name the Space key and the mouse in the hints.
     html = cut(html, "'快速點兩下衝刺，就能撞破天花板！'",
-               "(IS_MOBILE ? 'Double-tap to dash and smash the ceiling!' : 'Double-tap SPACE to dash and smash the ceiling!')")
+               "(IS_MOBILE ? 'Double-tap to dash and smash the ceiling!' : 'Double-tap SPACE to smash the ceiling!')")
     html = cut(html, "'按住螢幕往上飛，快速點兩下衝刺'",
-               "(IS_MOBILE ? 'Hold the screen to fly up, double-tap to dash' : 'Hold SPACE or the mouse to fly up, double-tap to dash')")
+               "(IS_MOBILE ? 'Hold the screen to fly up, double-tap to dash' : 'Hold SPACE to fly, double-tap to dash')")
     html = cut(html, "'對著手機大吼往上飛，短吼一聲衝刺'", "'Yell to fly up, a short yell to dash'")
     html = cut(html, '<div id="t-sub">對著手機大吼，衝破 5 層樓</div>', '<div id="t-sub">Yell to fly. Smash through 5 floors.</div>')
     html = cut(html, "'對著手機大聲一點'", "'Yell a bit louder'")
@@ -277,7 +211,9 @@ def build():
     html = html.replace('assets/comic/', 'assets/')
     html = re.sub(r'\.\./\.\./', '', html)
     # loading start as early as possible is handled by the SDK itself; inject glue before </body>
-    html = html.replace('</body>', SHIM + '</body>', 1)
+    # CrazyGames glue (saves, SDK events, pause menu, one-click start, rewarded ad), after the game script.
+    glue = open(os.path.join(CG_DIR, 'cg-game.js'), encoding='utf-8').read()
+    html = cut(html, '</body>', '<script>\n' + glue + '</script>\n</body>')
     rules = open(RULES, encoding='utf-8').read()
     for zh in sorted(RULES_EN, key=len, reverse=True):
         rules = rules.replace(zh, RULES_EN[zh])

@@ -1,3 +1,12 @@
 /* CrazyGames build only. */
 /* Best result under the title (the site hides this pill because it showed the points wallet). */
 #t-wallet:not(:empty){display:inline-block!important;margin-top:8px;background:rgba(7,16,51,.78);color:#ffd23f;border:2px solid #ffd23f;border-radius:999px;padding:3px 14px;font-size:14px;font-weight:900;letter-spacing:.5px;box-shadow:none}
+/* Pause button: top centre between the clock and the meeting timer, only while playing. */
+#cg-pause{position:absolute;top:calc(14px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:15;width:46px;height:46px;padding:0;border-radius:50%;
+  background:#ffd23f;border:3px solid #1d1b1a;box-shadow:2px 3px 0 #1d1b1a;cursor:pointer}
+#cg-pause svg{display:block;width:24px;height:24px;margin:auto;fill:#1d1b1a}
+#cg-pause:active{transform:translateX(-50%) translateY(2px);box-shadow:1px 1px 0 #1d1b1a}
+#cg-pause.hidden{display:none}
+/* Pause menu: Resume first, then Restart / Back to Menu, Sound as a text toggle. */
+#s-pause .btn{min-width:240px}
+#s-pause #cg-sound{min-width:0}
