@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roar 音樂試聽</title>
+<style>
+  :root { --ink: #1d1b1a; --blue: #071033; --yellow: #ffd23f; --red: #e8502e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; background: radial-gradient(ellipse at 50% 0, #1f4fa8, var(--blue) 70%); color: #fff;
+    font: 600 16px/1.5 -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", sans-serif; display: flex; justify-content: center; padding: 24px 16px; }
+  main { width: 100%; max-width: 520px; }
+  h1 { margin: 0 0 4px; color: var(--yellow); font-size: 28px; font-style: italic; text-shadow: 3px 3px 0 var(--ink); }
+  p.sub { margin: 0 0 20px; opacity: .8; font-size: 14px; }
+  .card { background: #fff; color: var(--ink); border: 3px solid var(--ink); border-radius: 12px; box-shadow: 5px 5px 0 var(--ink); padding: 16px; margin-bottom: 18px; }
+  .card h2 { margin: 0 0 4px; font-size: 19px; }
+  .card .meta { margin: 0 0 12px; font-size: 13px; color: #5f5c59; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  button { font: inherit; font-weight: 900; cursor: pointer; border: 3px solid var(--ink); border-radius: 8px; padding: 10px 16px; background: var(--yellow); color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+  button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+  button.sec { background: #fff; }
+  button.on { background: var(--red); color: #fff; }
+  .floors button { padding: 8px 12px; min-width: 52px; }
+  label { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  input[type=range] { width: 160px; accent-color: var(--red); }
+  #now { font-size: 14px; color: var(--yellow); min-height: 1.5em; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Roar 音樂試聽</h1>
+  <p class="sub">兩首都是遊戲內用程式即時合成的原創音樂，沒有使用任何音檔。每首 16 小節循環，聽聽看接回開頭時有沒有斷點。</p>
+  <div id="now">還沒播放</div>
+
+  <section class="card">
+    <h2>1. 標題畫面：Nine-to-Five Shuffle</h2>
+    <p class="meta">C 大調、104 BPM、搖擺節奏。木琴主旋律＋低音號貝斯＋柔和和弦＋刷子鼓，輕鬆滑稽的辦公室風。</p>
+    <div class="row"><button id="p-title">▶ 播放</button></div>
+  </section>
+
+  <section class="card">
+    <h2>2. 遊戲中：Overtime Escape</h2>
+    <p class="meta">A 小調、138–150 BPM。合成器貝斯＋電子主旋律＋鼓，越往上層樂器越多、速度越快。選樓層聽每一層的差別：</p>
+    <div class="row"><button id="p-game">▶ 播放</button></div>
+    <div class="row floors" style="margin-top:12px" id="floors"></div>
+    <div class="row" style="margin-top:12px"><button class="sec" id="climb">模擬一局：每 8 秒往上一層</button></div>
+  </section>
+
+  <section class="card">
+    <h2>控制</h2>
+    <div class="row">
+      <button class="sec" id="pause">⏸ 暫停</button>
+      <button class="sec" id="resume">▶ 繼續</button>
+      <button class="sec" id="stop">■ 停止</button>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <label>音量 <input type="range" id="vol" min="0" max="100" value="60"></label>
+      <label><input type="checkbox" id="mute"> 靜音</label>
+    </div>
+  </section>
+</main>
+<script src="music.js"></script>
+<script>
+  const $ = id => document.getElementById(id);
+  const FLOOR = ['1F 業務部', '2F 財務部', '3F 會議室', '4F 茶水間', '5F 頂樓前'];
+  let climbTimer = 0;
+  const floors = $('floors');
+  FLOOR.forEach((f, i) => { const b = document.createElement('button'); b.className = 'sec'; b.textContent = f.slice(0, 2); b.title = f;
+    b.onclick = () => { stopClimb(); setFloor(i); if (Music.track !== 'game') play('game'); }; floors.appendChild(b); });
+  function setFloor(i) { Music.setIntensity(i); [...floors.children].forEach((b, k) => b.classList.toggle('on', k === i)); show(); }
+  function show() {
+    const t = Music.track;
+    $('now').textContent = !t ? '已停止' : (t === 'title' ? '標題畫面' : '遊戲中・' + FLOOR[Music.intensity]) + (Music.state === 'paused' ? '（暫停中）' : '（播放中）');
+  }
+  function play(n) { Music.play(n); show(); }
+  function stopClimb() { clearInterval(climbTimer); climbTimer = 0; }
+  $('p-title').onclick = () => { stopClimb(); play('title'); };
+  $('p-game').onclick = () => { stopClimb(); setFloor(0); play('game'); };
+  $('climb').onclick = () => { stopClimb(); setFloor(0); play('game'); let i = 0;
+    climbTimer = setInterval(() => { i++; if (i > 4) { stopClimb(); return; } setFloor(i); }, 8000); };
+  $('pause').onclick = () => { Music.pause(); show(); };
+  $('resume').onclick = () => { Music.resume(); show(); };
+  $('stop').onclick = () => { stopClimb(); Music.stop(); show(); };
+  $('vol').oninput = e => Music.setVolume(e.target.value / 100);
+  $('mute').onchange = e => Music.mute(e.target.checked);
+  setFloor(0); $('now').textContent = '還沒播放';
+</script>
+</body>
+</html>
