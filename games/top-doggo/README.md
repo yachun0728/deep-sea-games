@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：TOP DOGGO，`game_id` 為 `top-doggo`
 - 檔案：`games/top-doggo/card.html`、`games/top-doggo/cover.webp`、`games/top-doggo/game.js`、`games/top-doggo/icon.svg`、`games/top-doggo/leaderboard.webp`、`games/top-doggo/levels.js`、`games/top-doggo/play.html`、`games/top-doggo/progress.js`、`games/top-doggo/style.css`、`games/top-doggo/view.html`；`game.js` 共 28 行、1.8 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「52. TOP DOGGO: Paw City（top-doggo）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「52. TOP DOGGO: Paw City（top-doggo）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -42,7 +42,7 @@
 - L6 `tdEnd`：`if(round)AN.end(round,0,result,params||{});`
 - L11 `tdEnd`：`TD.round=AN.start('top-doggo',0,{level:level,mode:mode||'campaign'});`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

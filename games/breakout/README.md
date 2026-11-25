@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：打磚塊，`game_id` 為 `breakout`
 - 檔案：`games/breakout/card.html`、`games/breakout/cover.webp`、`games/breakout/game.js`、`games/breakout/icon.svg`、`games/breakout/view.html`；`game.js` 共 150 行、10.2 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「37. 打磚塊 Breakout（breakout）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「37. 打磚塊 Breakout（breakout）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -48,7 +48,7 @@
 - L57 `finish`：`AN.end(analytics, 0, 'loss', { score: score, level: level, bricks: bricksBroken });`
 - L132 `moveTo`：`AN.end(analytics, 0, 'abandoned', { score: score, level: level, bricks: bricksBroken });`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

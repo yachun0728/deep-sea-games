@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：布丁突圍，`game_id` 為 `pudding`
 - 檔案：`games/pudding/card.html`、`games/pudding/cover.webp`、`games/pudding/game.js`、`games/pudding/icon.svg`、`games/pudding/leaderboard.webp`、`games/pudding/style.css`、`games/pudding/view.html`；`game.js` 共 371 行、27.7 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「27. 布丁突圍 Pudding Dash（pudding）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「27. 布丁突圍 Pudding Dash（pudding）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -59,7 +59,7 @@
 - L138 `endSegment`：`AN.progress(analytics,{stage:seg,step:seg,score:score,bonus_points:SEG_REWARD});`
 - L340 `start`：`analytics=AN.start('pudding',amount);`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

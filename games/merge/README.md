@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：養珠，`game_id` 為 `merge`
 - 檔案：`games/merge/card.html`、`games/merge/cover.webp`、`games/merge/game.js`、`games/merge/icon.svg`、`games/merge/style.css`、`games/merge/view.html`；`game.js` 共 182 行、8.0 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「4. Pearl Merge（merge）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「4. Pearl Merge（merge）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -44,7 +44,7 @@
 - L69 `beginMerge`：`G.analytics = AN.start('merge',MG_FEE);`
 - L106 `updateMerge`：`AN.end(G.analytics,0,'complete',{score:G.score});`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

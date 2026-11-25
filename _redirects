@@ -1,0 +1,16 @@
+# Legacy URLs: centralized redirects for Cloudflare Workers static assets.
+/dodge-run /#runner 302
+/dodge-run.html /#runner 302
+/dream-repair /#dream 302
+/dream-repair.html /#dream 302
+/clock-out /#clock-out 302
+/clock-out/ /#clock-out 302
+/clock-out/index.html /#clock-out 302
+/last-hair /#last-hair 302
+/last-hair/ /#last-hair 302
+/last-hair/index.html /#last-hair 302
+/quack-pond /#quack-pond 302
+/quack-pond/ /#quack-pond 302
+/quack-pond/index.html /#quack-pond 302
+/index_v2 / 302
+/index_v2.html / 302

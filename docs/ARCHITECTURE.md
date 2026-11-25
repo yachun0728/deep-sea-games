@@ -8,7 +8,10 @@
 
 ```text
 deep-sea-games/
-├── AGENTS.md / ARCHITECTURE.md / GAME_RULES.md
+├── AGENTS.md                 Agent 入口規範
+├── docs/                     架構、規則、Analytics、美術與發布清單
+│   ├── ARCHITECTURE.md / GAME_RULES.md / ANALYTICS.md
+│   └── GAME_ICON_SPEC.md / RELEASE_CHECKLIST.md
 ├── README.md                 本機操作與新增遊戲指南
 ├── ANALYTICS.md              GA4 事件與後台設定說明
 ├── index.html                產生並追蹤的靜態部署檔，勿直接編輯
@@ -64,16 +67,16 @@ deep-sea-games/
 │   ├── test_last_hair.mjs    尊嚴保衛戰行為測試（可選 Node.js）
 │   ├── test_pet_walk.mjs     小灰出門行為測試（可選 Node.js）
 │   └── test_office_shoot.mjs 拒絕加班行為測試（可選 Node.js）
-├── dodge-run.html            舊網址 → index.html#runner
-├── dream-repair.html         舊網址 → index.html#dream
+├── _redirects                舊網址集中轉址（Cloudflare）
+├── 404.html                  找不到頁面與 GitHub Pages 舊網址相容
 └── .gitignore                忽略 .claude/、crush-depth.html 與 Python 暫存
 ```
 
-`.claude/launch.json` 與 crush-depth.html 為既有被忽略的本機檔案，不是可編輯主來源。沒有 package.json、npm 框架、伺服器端模組或 games 以外的隱藏遊戲框架。
+`.claude/launch.json` 是本機設定；舊本機 crush-depth.html 已歸檔至 `output/archive/legacy/crush-depth-2026-11-25.html`，不是可編輯主來源。沒有 package.json、npm 框架、伺服器端模組或 games 以外的隱藏遊戲框架。
 
 ## 大廳排行榜與後端
 
-`js/member.js` 用 `frontend/services/api.mjs` 查詢所選遊戲的 D1 前 50 筆最佳紀錄，並重用原本的玩家、遊戲、最佳紀錄表格。會員中心和錢包繼續讀取原有的本機資料。青蛙吃蟲用雲端訪客 ID 保存排行榜分數，前端與 Worker 共用 `shared/frog-rules.cjs` 的玩法判定。D1 在同次寫入保存已驗證訪客回合，更新 `game_leaderboard` 的公開前 50 名。`player_best_scores` 保留給日後有登入的帳戶。Worker 入口、D1 migrations 與部署設定位於 `backend/`，API 契約位於 `shared/api.mjs`。見 [後端開發](docs/BACKEND.md)。
+`js/member.js` 用 `frontend/services/api.mjs` 查詢所選遊戲的 D1 前 50 筆最佳紀錄，並重用原本的玩家、遊戲、最佳紀錄表格。會員中心和錢包繼續讀取原有的本機資料。青蛙吃蟲用雲端訪客 ID 保存排行榜分數，前端與 Worker 共用 `shared/frog-rules.cjs` 的玩法判定。D1 在同次寫入保存已驗證訪客回合，更新 `game_leaderboard` 的公開前 50 名。`player_best_scores` 保留給日後有登入的帳戶。Worker 入口、D1 migrations 與部署設定位於 `backend/`，API 契約位於 `shared/api.mjs`。見 [後端開發](BACKEND.md)。
 
 ## 組合方式與責任邊界
 
@@ -125,7 +128,7 @@ flowchart TD
 
 ### 遊戲骨架與預覽區
 
-`preview/<id>/index.html` 是獨立單檔，不經 `tools/build.py`、不寫入 `games/catalog.json`、不接共用 runtime、錢包與 GA4，也不在大廳或選單出現；只靠網址進入，推送後為 `<站台網址>/preview/<id>/`。`preview/prototypes.json` 記錄各骨架狀態（prototype／playtest／graduated／dropped），`preview/index.html` 由 `tools/prototype.py index` 產生。上架時在 `games/<id>/` 重做正式版，不複製骨架程式。流程見 [prototype.md](docs/agent-guides/prototype.md)。
+`preview/<id>/index.html` 是獨立單檔，不經 `tools/build.py`、不寫入 `games/catalog.json`、不接共用 runtime、錢包與 GA4，也不在大廳或選單出現；只靠網址進入，推送後為 `<站台網址>/preview/<id>/`。`preview/prototypes.json` 記錄各骨架狀態（prototype／playtest／graduated／dropped），`preview/index.html` 由 `tools/prototype.py index` 產生。上架時在 `games/<id>/` 重做正式版，不複製骨架程式。流程見 [prototype.md](agent-guides/prototype.md)。
 
 ### 隱藏遊戲
 
@@ -239,7 +242,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 
 ## 後續演進
 
-目前每款遊戲已能分開定位，通常不必讀取產出的 index.html。若日後共享相依持續增加，再另提方案建立明確錢包／遊戲註冊 API、逐款遷移並做行為測試；此次沒有進行該第二次重構，也沒有變更規則。完整新增遊戲流程見 [README.md](README.md)。
+目前每款遊戲已能分開定位，通常不必讀取產出的 index.html。若日後共享相依持續增加，再另提方案建立明確錢包／遊戲註冊 API、逐款遷移並做行為測試；此次沒有進行該第二次重構，也沒有變更規則。完整新增遊戲流程見 [README.md](../README.md)。
 
 ## 手機頁面導覽
 
@@ -359,9 +362,9 @@ Frontier draw.js uses two PNG atlases with vector fallback. Optional world.suppl
 
 貓咪疊書舖以 `shared/book-sort-rules.cjs` 共用編號盤面與搬書判定。全視窗遊戲右上選單接入既有訪客回合 SDK，由 Worker 驗證後更新訪客排行榜。
 
-分享成績由 `js/result-share.js`（按鈕、截圖、回合狀態）、`frontend/services/share.mjs` 與 `share-card.mjs`（成績卡與對話框）、`shared/share-games.mjs`（各遊戲設定）及 API Worker 的 `backend/src/services/shares.mjs` 組成；主站 `site/worker.mjs` 只把 `/s/*` 轉給 API Worker。除挖金礦外所有可見遊戲皆已接入。詳見 [docs/BACKEND.md](docs/BACKEND.md#分享成績連結)。
+分享成績由 `js/result-share.js`（按鈕、截圖、回合狀態）、`frontend/services/share.mjs` 與 `share-card.mjs`（成績卡與對話框）、`shared/share-games.mjs`（各遊戲設定）及 API Worker 的 `backend/src/services/shares.mjs` 組成；主站 `site/worker.mjs` 只把 `/s/*` 轉給 API Worker。除挖金礦外所有可見遊戲皆已接入。詳見 [docs/BACKEND.md](BACKEND.md#分享成績連結)。
 
-Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsignore`，不會當成網站檔案發布）。它只回覆 `/start`、`/play`、`/random`、`/daily`、`/leaderboard`、`/help` 的文字與開啟網站的按鈕，不讀寫 D1、錢包、排行榜或 GA4；按鈕連結帶 `utm_source=telegram`、`utm_medium=bot` 與 `/start` 深連結參數作為 `utm_campaign`，由網站原有 GA4 歸因。設定步驟見 [telegram-bot/README.md](telegram-bot/README.md)。
+Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsignore`，不會當成網站檔案發布）。它只回覆 `/start`、`/play`、`/random`、`/daily`、`/leaderboard`、`/help` 的文字與開啟網站的按鈕，不讀寫 D1、錢包、排行榜或 GA4；按鈕連結帶 `utm_source=telegram`、`utm_medium=bot` 與 `/start` 深連結參數作為 `utm_campaign`，由網站原有 GA4 歸因。設定步驟見 [telegram-bot/README.md](../telegram-bot/README.md)。
 
 ### 深海前哨
 

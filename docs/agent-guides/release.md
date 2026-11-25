@@ -2,7 +2,7 @@
 
 ## 遊戲上線與 BONUS 驗收
 
-新增、改造、重新上架、調整 BONUS 或準備發布時，必須依 [RELEASE_CHECKLIST.md](../../RELEASE_CHECKLIST.md) 核對適用項目，並記錄實測結果及未驗證事項。BONUS 採固定技能／里程碑獎勵，核對卡片標章、規則、單次入帳與離頁追蹤；不得以獎勵名義保留博弈機制。提交及推送後須區分遠端收件、正式內容更新、實機操作與 GA4 後台驗收，不能互相替代。純文件需求只更新規範，不執行遊戲改造或自動發布。
+新增、改造、重新上架、調整 BONUS 或準備發布時，必須依 [RELEASE_CHECKLIST.md](../RELEASE_CHECKLIST.md) 核對適用項目，並記錄實測結果及未驗證事項。BONUS 採固定技能／里程碑獎勵，核對卡片標章、規則、單次入帳與離頁追蹤；不得以獎勵名義保留博弈機制。提交及推送後須區分遠端收件、正式內容更新、實機操作與 GA4 後台驗收，不能互相替代。純文件需求只更新規範，不執行遊戲改造或自動發布。
 
 ## 先提供可遊玩的驗收入口
 
@@ -34,7 +34,7 @@ Agent 完成測試與推送驗收分支後，等使用者實際試玩並明確�
 
 執行前必須閱讀：
 - [CrazyGames 平台合規規範](crazygames-compliance.md)
-- [RELEASE_CHECKLIST.md](../../RELEASE_CHECKLIST.md)
+- [RELEASE_CHECKLIST.md](../RELEASE_CHECKLIST.md)
 - [跨裝置相容性與效能規範](cross-platform-performance.md)
 
 ### 1. 確認發布階段

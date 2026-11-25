@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：尊嚴保衛戰，`game_id` 為 `last-hair`
 - 檔案：`games/last-hair/card.html`、`games/last-hair/cover.webp`、`games/last-hair/game.js`、`games/last-hair/icon.svg`、`games/last-hair/style.css`、`games/last-hair/view.html`；`game.js` 共 395 行、32.6 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「36. 尊嚴保衛戰 The Last Hair（last-hair）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「36. 尊嚴保衛戰 The Last Hair（last-hair）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -57,7 +57,7 @@
 - L74 `milestones`：`AN.progress(analytics,{stage:rewarded,step:earned,score:Math.floor(g.dist),bonus_points:pts,total_bonus_point…`
 - L322 `start`：`analytics=AN.start('last-hair',amount);`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

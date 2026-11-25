@@ -46,7 +46,7 @@
 - L46 `qpValid`：`if(qpValid(source)&&QP.active)AN.resume(QP.analytics);`
 - L50 `qpValid`：`AN.end(QP.analytics,0,'abandoned',{score:QP.level,step:QP.ducks});`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

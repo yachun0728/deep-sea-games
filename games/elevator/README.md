@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：插隊大師，`game_id` 為 `elevator`
 - 檔案：`games/elevator/card.html`、`games/elevator/cover.webp`、`games/elevator/game.js`、`games/elevator/icon.svg`、`games/elevator/queue-cutter-leaderboard.webp`、`games/elevator/view.html`；`game.js` 共 129 行、11.3 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「14. Queue Cutter（elevator）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「14. Queue Cutter（elevator）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -46,7 +46,7 @@
 - L38 `eqEvent`：`AN.progress(EQ.analytics,{stage:EQ.stage,step:EQ.passed},EQ.passed===eqCount());`
 - L52 `eqAction`：`EQ.analytics=AN.start('elevator',stake);`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

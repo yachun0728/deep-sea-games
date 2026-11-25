@@ -1,0 +1,28 @@
+{
+  "game_name": "Frontier Islands",
+  "game_slug": "frontier-islands",
+  "game_url": "https://example.invalid/index.html#frontier",
+  "build_revision": "REPLACE_WITH_REVIEWED_REVISION",
+  "asset_path": "../../../../output/publishing/y8/frontier-islands",
+  "media": {
+    "standard": [
+      "deliverables/frontier-islands-y8-standard-gather-01-760x570-en-v01.jpg"
+    ],
+    "widescreen": [
+      "deliverables/frontier-islands-y8-widescreen-build-01-1280x720-en-v01.jpg"
+    ],
+    "landscape_promo": [
+      "deliverables/frontier-islands-y8-landscape-promo-keyart-01-1920x1080-en-v01.png"
+    ],
+    "portrait_promo": [
+      "deliverables/frontier-islands-y8-portrait-promo-keyart-01-1080x1920-en-v01.png"
+    ],
+    "card_promo": [
+      "deliverables/frontier-islands-y8-card-promo-keyart-01-760x570-en-v01.jpg"
+    ],
+    "gameplay": [
+      "deliverables/frontier-islands-y8-gameplay-core-01-1280x720-en-v01.mp4"
+    ],
+    "gameplay_4_3": []
+  }
+}

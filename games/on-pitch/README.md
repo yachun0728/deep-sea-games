@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：不准跑調，`game_id` 為 `on-pitch`
 - 檔案：`games/on-pitch/card.html`、`games/on-pitch/cover.webp`、`games/on-pitch/game.js`、`games/on-pitch/icon.svg`、`games/on-pitch/style.css`、`games/on-pitch/view.html`；`game.js` 共 669 行、34.5 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「50. 不准跑調 Stay On Pitch（on-pitch）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「50. 不准跑調 Stay On Pitch（on-pitch）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -51,7 +51,7 @@
 - L179 `resumeRound`：`if (OP.analytics) AN.resume(OP.analytics);`
 - L662 `onRoute`：`AN.end(a, 0, 'abandoned', { score: OP.score });`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

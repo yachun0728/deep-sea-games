@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：深海連連看，`game_id` 為 `ocean-link`
 - 檔案：`games/ocean-link/board.js`、`games/ocean-link/card.html`、`games/ocean-link/cover.webp`、`games/ocean-link/game.js`、`games/ocean-link/icon.svg`、`games/ocean-link/style.css`、`games/ocean-link/tiles.js`、`games/ocean-link/view.html`；`game.js` 共 472 行、18.2 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「40. 深海連連看 Ocean Link（ocean-link）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「40. 深海連連看 Ocean Link（ocean-link）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -44,7 +44,7 @@
 - L280 `end`：`AN.end(round, paid, result, params());`
 - L316 `completeLevel`：`AN.progress(round, params({bonus_points: reward}), level < levels.length);`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

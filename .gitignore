@@ -10,3 +10,6 @@ dist/
 .dev.vars.*
 
 output/
+
+# macOS Finder metadata
+.DS_Store

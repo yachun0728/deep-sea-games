@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：外送員大戰惡犬，`game_id` 為 `rider`
 - 檔案：`games/rider/card.html`、`games/rider/cover.webp`、`games/rider/game.js`、`games/rider/icon.svg`、`games/rider/leaderboard.webp`、`games/rider/style.css`、`games/rider/view.html`；`game.js` 共 218 行、17.7 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「28. 外送員大戰惡犬 Rider vs Dogs（rider）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「28. 外送員大戰惡犬 Rider vs Dogs（rider）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -51,7 +51,7 @@
 - L149 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
 - L158 `start`：`analytics=AN.start('rider',amount);`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

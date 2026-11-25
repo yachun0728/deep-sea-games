@@ -4,10 +4,10 @@
 
 ## 0. 骨架（Prototype）試玩檢查
 
-遊戲概念先做可玩骨架放在 `preview/<id>/`，不進大廳；流程與規則見 [docs/agent-guides/prototype.md](docs/agent-guides/prototype.md)。骨架階段只做本節，下面第 1～4 節在正式上架時才適用。
+遊戲概念先做可玩骨架放在 `preview/<id>/`，不進大廳；流程與規則見 [docs/agent-guides/prototype.md](agent-guides/prototype.md)。骨架階段只做本節，下面第 1～4 節在正式上架時才適用。
 
 - [ ] 用 `python3 tools/prototype.py new <id> "名稱" "概念"` 建立，id 不與 `games/catalog.json` 重複；未修改 catalog、`templates/`、`js/`，也沒有重新組合 `index.html`。
-- [ ] 核心循環可從開始玩到結束並重玩：一個操作、一個目標、一個失敗條件；沒有博弈元素（見 [product-policy.md](docs/agent-guides/product-policy.md)）。
+- [ ] 核心循環可從開始玩到結束並重玩：一個操作、一個目標、一個失敗條件；沒有博弈元素（見 [product-policy.md](agent-guides/product-policy.md)）。
 - [ ] 骨架不讀寫平台點數與 Key、不送 GA4、不接排行榜；自有存檔只用 `proto-<id>-` 開頭的 Key。
 - [ ] `python3 tools/prototype.py --check` 通過（預覽入口最新、每頁 noindex、未上架的骨架沒有出現在 catalog／大廳／`index.html`）。
 - [ ] 本機 `http://localhost:8765/preview/<id>/` 與桌面、390 px 手機尺寸各完整玩一輪；有實機時另記錄。
@@ -56,7 +56,7 @@ BONUS 是操作、推理、探索或關卡里程碑的固定獎勵，不依入�
 
 ### 訪客排行榜
 
-新增遊戲預設必填本節，在同一份 PR 附實作位置與驗收結果。無競賽指標的免費補給須記錄不參與原因。操作流程見 [新增遊戲必接訪客排行榜](README.md#新增遊戲必接訪客排行榜)。
+新增遊戲預設必填本節，在同一份 PR 附實作位置與驗收結果。無競賽指標的免費補給須記錄不參與原因。操作流程見 [新增遊戲必接訪客排行榜](../README.md#新增遊戲必接訪客排行榜)。
 
 - [ ] 記錄 catalog 遊戲 ID、排行榜指標與單位、排序方向、同分規則、適用難度或模式、可提交的回合終點。分數／時間／關卡須和錢包點數分開。免費補給等無競賽指標的項目記錄不參與原因。
 - [ ] 使用既有訪客憑證。明列 Worker 開局及結算 API、輸入與版本、可接受的時限、驗證方式、D1 migration 與回退步驟。Worker 根據操作重播或伺服器對局狀態算出成績；同來源 iframe 須透過受控的父頁橋接傳遞本局輸入與結束，仍由 Worker 判定。
@@ -65,7 +65,7 @@ BONUS 是操作、推理、探索或關卡里程碑的固定獎勵，不依入�
 - [ ] D1 每款保留前 50 筆，訪客只寫公開榜。同分依伺服器紀錄時間與寫入順序，最早達到者優先。測試同分寫入同一毫秒、原玩家進步到同分與低分重送，核對大廳只顯示優先者。
 - [ ] 正式發布先套用 D1 migration、再部署 Worker、最後更新前端。用正式網域完成一局，核對 D1 Studio 和大廳實際資料。記錄已發布及驗證的模式，並標示仍待串接的既有遊戲。
 
-參考 [後端 API 與既有遊戲的串接分組](docs/BACKEND.md)。
+參考 [後端 API 與既有遊戲的串接分組](BACKEND.md)。
 
 ## 5. 發布前檢查
 
@@ -85,7 +85,7 @@ git diff --check
 
 ## 6. 提交、推送與正式站確認
 
-- [ ] 開啟待發布版本的驗收環境，交付可直接進入遊戲的網址、版本 SHA 與試玩項目。Agent 先點開確認可玩，需要手機實機驗收時，確認預覽位址能從該裝置開啟。詳見 [驗收入口規範](docs/agent-guides/release.md#先提供可遊玩的驗收入口)。
+- [ ] 開啟待發布版本的驗收環境，交付可直接進入遊戲的網址、版本 SHA 與試玩項目。Agent 先點開確認可玩，需要手機實機驗收時，確認預覽位址能從該裝置開啟。詳見 [驗收入口規範](agent-guides/release.md#先提供可遊玩的驗收入口)。
 - [ ] 記錄使用者試玩後明確核准的版本，再合併會觸發正式部署的分支或執行正式發布。若待驗收內容有變，提供新版入口並重新確認。
 - [ ] 有使用者提交／推送授權才發布。先 fetch 並比較遠端分支；遠端較新時保留其變更，禁止強推覆蓋。
 - [ ] 推送前檢查最新版：合併／rebase 最新 `origin/main` 後重新 build 並 `--check`；以 `git diff origin/main -- games/elevator/` 確認插隊封面與排行榜圖示（`queue-cutter-cover.webp`、`queue-cutter-leaderboard.webp`）及其他素材未被舊版覆蓋或還原。

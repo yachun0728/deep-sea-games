@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：一口氣探險，`game_id` 為 `dive`
 - 檔案：`games/dive/card.html`、`games/dive/cover.webp`、`games/dive/game.js`、`games/dive/icon.svg`、`games/dive/original.html`、`games/dive/style.css`、`games/dive/view.html`；`game.js` 共 54 行、3.3 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「23. 一口氣探險（dive）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「23. 一口氣探險（dive）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -44,7 +44,7 @@
 - L30 `diveValid`：`AN.end(DIVE.analytics,0,kind==='drown'?'loss':'complete',{score:score,depth:depth});`
 - L37 `diveValid`：`AN.progress(DIVE.analytics,{stage:d>=30?4:d>=20?3:d>=10?2:1,step:d});`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

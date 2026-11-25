@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：數字吞噬，`game_id` 為 `eat-smaller`
 - 檔案：`games/eat-smaller/card.html`、`games/eat-smaller/cover.webp`、`games/eat-smaller/game.js`、`games/eat-smaller/icon.svg`、`games/eat-smaller/original.html`、`games/eat-smaller/style.css`、`games/eat-smaller/view.html`；`game.js` 共 62 行、5.2 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「42. 數字吞噬 Number Gulp（eat-smaller）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「42. 數字吞噬 Number Gulp（eat-smaller）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -47,7 +47,7 @@
 - L39 `esFinish`：`AN.end(EATS.analytics,EATS.earned,'complete',{step:EATS.cleared});`
 - L44 `esFinish`：`AN.end(EATS.analytics,EATS.earned,'abandoned',{step:EATS.cleared});`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

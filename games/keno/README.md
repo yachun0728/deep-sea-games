@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：挖金礦，`game_id` 為 `keno`
 - 檔案：`games/keno/card.html`、`games/keno/game.js`、`games/keno/icon.svg`、`games/keno/style.css`、`games/keno/view.html`；`game.js` 共 76 行、7.4 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「8. Keno（keno）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「8. Keno（keno）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -48,7 +48,7 @@
 - L66 `keDig`：`AN.end(KE.analytics,KE.earned,'complete',{step:KE.digs,score:KE.score});`
 - L73 `keDig`：`if(!e.persisted&&KE.active)AN.end(KE.analytics,KE.earned,'abandoned',{step:KE.digs,score:KE.score});`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

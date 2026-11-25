@@ -1,0 +1,51 @@
+[
+  {
+    "from": "clock-out/index.html",
+    "to": "docs/archive/standalone-games/clock-out/index.html",
+    "sha256": "7ddb19a8e1cbf18ce20b4d5e23e31bdb48070670d6de800f681ff4932ced3ad0",
+    "action": "archive original; remove old root directory; centralize URL redirect in _redirects with 404 fallback"
+  },
+  {
+    "from": "last-hair/index.html",
+    "to": "docs/archive/standalone-games/last-hair/index.html",
+    "sha256": "beee0f756704b0d6ce9d455d9025a661eae3a7ef54bdd27c7ed298044ca4dd12",
+    "action": "archive original; remove old root directory; centralize URL redirect in _redirects with 404 fallback"
+  },
+  {
+    "from": "quack-pond/index.html",
+    "to": "docs/archive/standalone-games/quack-pond/index.html",
+    "sha256": "4a99c83a7c5808c1744881215f9bc3017382ff348ae28299fd11194133498b57",
+    "action": "archive original; remove old root directory; centralize URL redirect in _redirects with 404 fallback"
+  },
+  {
+    "from": "crush-depth.html",
+    "to": "output/archive/legacy/crush-depth-2026-11-25.html",
+    "sha256": "c0b6df4e27de2a59f9f2afdbff075de4e5a2ae449bcd92a5754b64ec9f3844b2",
+    "action": "archive ignored local original"
+  },
+  {
+    "from": "dist/",
+    "to": "output/archive/itch-peek/dont-peek-html5-local-2026-11-20.zip",
+    "sha256": "9c30b635544616ed2fbe26edbedf5aff40962e366765c769d5c8ba51b58a8d9a",
+    "action": "preserve distinct package; remove generated build copies",
+    "removedFiles": 67,
+    "removedBytes": 6277852,
+    "buildDifferences": 0
+  },
+  {
+    "from": ".DS_Store",
+    "action": "remove Finder metadata"
+  },
+  {
+    "from": "docs/.DS_Store",
+    "action": "remove Finder metadata"
+  },
+  {
+    "from": [
+      "dodge-run.html",
+      "dream-repair.html",
+      "index_v2.html"
+    ],
+    "action": "remove individual root redirects; retain archives and centralize all 15 legacy URL forms in _redirects and 404.html"
+  }
+]

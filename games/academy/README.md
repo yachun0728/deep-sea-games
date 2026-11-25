@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：百萬大學堂，`game_id` 為 `academy`
 - 檔案：`games/academy/card.html`、`games/academy/cover.webp`、`games/academy/game.js`、`games/academy/i18n.js`、`games/academy/icon.svg`、`games/academy/style.css`、`games/academy/view.html`；`game.js` 共 554 行、24.0 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「百萬大學堂（academy）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「百萬大學堂（academy）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -50,7 +50,7 @@
 - L467 `abandon`：`AN.end(analytics, bonusEarned, 'abandoned', params());`
 - L543 `abandon`：`if (analytics && (phase === 'ask' || phase === 'select')) AN.end(analytics, bonusEarned, 'abandoned', params(…`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

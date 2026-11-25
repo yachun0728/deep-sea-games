@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：俄羅斯方塊，`game_id` 為 `tetris`
 - 檔案：`games/tetris/card.html`、`games/tetris/cover.webp`、`games/tetris/game.js`、`games/tetris/icon.svg`、`games/tetris/original.html`、`games/tetris/style.css`、`games/tetris/view.html`；`game.js` 共 64 行、4.4 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「47. 俄羅斯方塊 Block Drop（tetris）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「47. 俄羅斯方塊 Block Drop（tetris）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -46,7 +46,7 @@
 - L43 `ttValid`：`if(ttValid(source)&&TET.active)AN.resume(TET.analytics);`
 - L47 `ttValid`：`AN.end(TET.analytics,0,'abandoned',{score:TET.score});`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

@@ -71,7 +71,7 @@ def view_names(root: Path) -> dict[str, tuple[str, str]]:
 
 def rules_sections(root: Path) -> dict[str, tuple[str, str]]:
     """game id -> (heading, body) from GAME_RULES.md."""
-    text = read(root / 'GAME_RULES.md')
+    text = read(root / 'docs/GAME_RULES.md')
     sections = {}
     parts = re.split(r'(?m)^## ', text)
     for part in parts[1:]:
@@ -189,7 +189,7 @@ def render_game(info: dict) -> str:
              '- 檔案：' + '、'.join(f'`games/{gid}/{name}`' for name in info['files'])
              + f'；`game.js` 共 {logic.count(chr(10)) + 1} 行、{len(logic.encode("utf-8")) / 1024:.1f} KB', '']
     if info['rules']:
-        lines += [f'- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「{info["rules"][0]}」（下方「規則摘要」已複製）', '']
+        lines += [f'- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「{info["rules"][0]}」（下方「規則摘要」已複製）', '']
     lines += ['## 畫面元素（view.html 的 id）', '', code_list(info['ids']) or '（無）', '',
               '## 狀態與常數', '']
     states = [f'`{name}`（L{line}）' for line, name in info['states']] + [f'`{name}`（L{line}）' for line, name in info['busy']]
@@ -212,7 +212,7 @@ def render_game(info: dict) -> str:
               '- 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。', '',
               '## 追蹤（GA4）', '']
     lines += analytics_rows(logic, funcs) or ['- （沒有偵測到 `AN.*` 呼叫）']
-    lines += ['', '- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。', '',
+    lines += ['', '- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。', '',
               '## 儲存（localStorage）', '']
     modes = {}
     for key, mode in info['storage']:

@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：社畜要下班，`game_id` 為 `rocket-chair`
 - 檔案：`games/rocket-chair/card.html`、`games/rocket-chair/cover.webp`、`games/rocket-chair/game.js`、`games/rocket-chair/icon.svg`、`games/rocket-chair/leaderboard.webp`、`games/rocket-chair/original.html`、`games/rocket-chair/style.css`、`games/rocket-chair/view.html`；`game.js` 共 50 行、3.1 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「25b. 社畜要下班 Roar Through the Ceiling（rocket-chair）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「25b. 社畜要下班 Roar Through the Ceiling（rocket-chair）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -47,7 +47,7 @@
 - L33 `rocketValid`：`AN.progress(ROCKET.analytics,{phase:'coffee',extra_points:n});`
 - L40 `rocketValid`：`AN.end(ROCKET.analytics,0,'complete',{score:early,cleared:data&&data.cleared?1:0,extra_spent_points:ROCKET.ex…`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

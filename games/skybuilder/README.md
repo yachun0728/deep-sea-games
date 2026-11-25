@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：蓋樓大師，`game_id` 為 `skybuilder`
 - 檔案：`games/skybuilder/card.html`、`games/skybuilder/cover.webp`、`games/skybuilder/game.js`、`games/skybuilder/icon.svg`、`games/skybuilder/leaderboard.webp`、`games/skybuilder/style.css`、`games/skybuilder/view.html`；`game.js` 共 191 行、13.9 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「20. Sky Builder（skybuilder）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「20. Sky Builder（skybuilder）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -49,7 +49,7 @@
 - L166 `start`：`analytics=AN.start('skybuilder',amount);`
 - L182 `act`：`AN.end(analytics,paid,'abandoned',{score:tower.sc,floors:floors(),total_bonus_points:paid});`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

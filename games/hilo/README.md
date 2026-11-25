@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：漲退，`game_id` 為 `hilo`
 - 檔案：`games/hilo/card.html`、`games/hilo/game.js`、`games/hilo/icon.svg`、`games/hilo/view.html`；`game.js` 共 91 行、6.3 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「7. HiLo（hilo）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「7. HiLo（hilo）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -45,7 +45,7 @@
 - L62 `hGuess`：`AN.end(HL.analytics,0,'loss',{step:HL.picks});`
 - L69 `hCash`：`AN.end(HL.analytics,pay,'cashout',{step:HL.picks,multiplier:m});`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 
