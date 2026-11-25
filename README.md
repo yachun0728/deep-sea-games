@@ -8,6 +8,13 @@
 
 踩地雷與挖金礦已完成改造，其他遊戲尚未全部完成；下文的返還與結算用語是現況紀錄。完整限制與踩地雷／挖金礦的待辦見 [GAME_RULES.md](GAME_RULES.md)，執行規範見 [AGENTS.md](AGENTS.md)。本次文件更新不代表遊戲已符合新規範。
 
+## 目錄導覽
+
+- [Repo 目錄與檔案歸屬](docs/repository-layout.md)：遊戲、共用系統、工具與產物放哪裡。
+- [文件索引](docs/README.md)：維護規範、平台上架 skill、驗收與交接。
+- [工具入口](tools/README.md)：建置、測試、翻譯與平台匯出命令。
+- 本機交付檔放在 `output/`，平台包放在 `output/publishing/<platform>/<game>/`；舊版本保留供回復。
+
 ## 先定位，再讀程式
 
 1. [AGENTS.md](AGENTS.md)：Agent 維護規範。

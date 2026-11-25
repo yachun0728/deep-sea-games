@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "platform": "crazygames",
+  "studio_name": "TiCATiCA Games",
+  "game_name": "Frontier Islands",
+  "local_name": "荒島遠征",
+  "game_slug": "frontier-islands",
+  "project_game_id": "frontier",
+  "source_path": "../../../../../games/frontier",
+  "asset_path": "../../../../../output/publishing/crazygames/frontier-islands",
+  "game_url": null,
+  "build_revision": null,
+  "launch_phase": null,
+  "full_launch_selected": false,
+  "portal_game_id": null,
+  "sdk": {
+    "script_url": "https://sdk.crazygames.com/crazygames-sdk-v3.js",
+    "init": "await window.CrazyGames.SDK.init()",
+    "integration_status": "NOT IMPLEMENTED",
+    "basic_sdk_optional": true,
+    "basic_ads_enabled": false,
+    "full_sdk_required": true,
+    "y8_credentials_allowed": false
+  },
+  "build": {
+    "archive_path": null,
+    "entrypoint": "index.html",
+    "root_entrypoint_source": "TiCATiCA internal convention; confirm current Portal upload requirements",
+    "standalone_required_by_internal_policy": true,
+    "original_lobby_required": false,
+    "original_site_api_required": false,
+    "custom_fullscreen_button_allowed": false,
+    "max_file_count": 1500,
+    "max_total_bytes_conservative": 250000000,
+    "max_initial_bytes_conservative": 50000000,
+    "max_total_bytes_without_sdk_conservative": 50000000,
+    "mobile_homepage_max_initial_bytes_conservative": 20000000,
+    "max_zip_bytes": null,
+    "qa_status": "NOT CHECKED"
+  },
+  "media_requirements": {
+    "verified_on": "2026-11-23",
+    "covers": {
+      "landscape": {
+        "count": 1,
+        "dimensions_px": [
+          1920,
+          1080
+        ]
+      },
+      "portrait": {
+        "count": 1,
+        "dimensions_px": [
+          800,
+          1200
+        ]
+      },
+      "square": {
+        "count": 1,
+        "dimensions_px": [
+          800,
+          800
+        ]
+      }
+    },
+    "cover_max_bytes": null,
+    "cover_accepted_formats": null,
+    "preview_videos": {
+      "landscape": {
+        "count": 1,
+        "official_resolution": "1080p,16:9"
+      },
+      "portrait": {
+        "count": 1,
+        "official_resolution": "1080p,2:3",
+        "exact_dimensions_px": null,
+        "note": "Confirm exact dimensions in Portal; do not reuse Y8 9:16"
+      }
+    },
+    "video_duration_seconds": [
+      15,
+      20
+    ],
+    "video_max_bytes_conservative": 50000000,
+    "video_sound_allowed": false,
+    "video_fast_forward_allowed": false,
+    "video_opening_frame": "static cover",
+    "video_accepted_formats": null,
+    "byte_policy": "Decimal limits are conservative internal conversion; official pages use MB."
+  },
+  "media": {
+    "landscape_cover": [],
+    "portrait_cover": [],
+    "square_cover": [],
+    "landscape_video": [],
+    "portrait_video": []
+  },
+  "submission": {
+    "status": "documentation_preparation_only",
+    "allow_automatic_upload": false,
+    "allow_automatic_request_review": false,
+    "allow_automatic_publish": false,
+    "qa_status": "NOT CHECKED",
+    "pending": [
+      "Confirm Basic or Full phase in Portal",
+      "Build dedicated CrazyGames export without Y8 SDK or original lobby/API",
+      "Remove custom fullscreen button and automatic fullscreen request in export",
+      "Implement and validate CrazyGames SDK adapter",
+      "Prepare 3 covers and 2 silent videos; confirm portrait video exact pixels and Portal formats",
+      "Measure initial download at real gameplayStart",
+      "Complete local and Portal QA before review",
+      "Perform quality guideline playtest and record evidence separately from mandatory QA"
+    ]
+  },
+  "sources": {
+    "requirements": "https://docs.crazygames.com/requirements/intro/",
+    "technical": "https://docs.crazygames.com/requirements/technical/",
+    "gameplay": "https://docs.crazygames.com/requirements/gameplay/",
+    "media": "https://docs.crazygames.com/requirements/game-covers/",
+    "sdk": "https://docs.crazygames.com/sdk/intro/",
+    "game_module": "https://docs.crazygames.com/sdk/game/",
+    "ad_requirements": "https://docs.crazygames.com/requirements/ads/",
+    "ad_sdk": "https://docs.crazygames.com/sdk/video-ads/",
+    "quality": "https://docs.crazygames.com/requirements/quality/"
+  },
+  "quality_review": {
+    "source_classification": "official_guideline; mandatory requirements assessed separately",
+    "verified_on": "2026-11-23",
+    "status": "NOT CHECKED",
+    "reference": "../../references/quality.md",
+    "report_path": "../../../../../output/publishing/crazygames/frontier-islands/quality-qa.md",
+    "focus": [
+      "first-play onboarding",
+      "gather/build feedback",
+      "repetition and pacing",
+      "mobile HUD and joystick",
+      "keyboard layout alternatives",
+      "consistent art and audio"
+    ]
+  }
+}

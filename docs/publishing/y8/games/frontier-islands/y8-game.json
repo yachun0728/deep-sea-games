@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "studio_name": "TiCATiCA Games",
+  "game_name": "Frontier Islands",
+  "local_name": "荒島遠征",
+  "game_slug": "frontier-islands",
+  "project_game_id": "frontier",
+  "game_url": null,
+  "local_route": "/#frontier",
+  "build_revision": null,
+  "asset_path": "../../../../../output/publishing/y8/frontier-islands",
+  "credentials": {
+    "game_id": "295027",
+    "app_id": "6b03ea57e1e0e654199f21fb",
+    "source": "user-provided 2026-11-23",
+    "portal_game_and_studio_verified": false
+  },
+  "sdk": {
+    "script_url": "https://cdn.y8.com/minimal-sdk/2-0/y8.min.js",
+    "ready_event": "y8sdk.ready",
+    "instance_factory": "y8.sdk()",
+    "emit_ready_fallback": true,
+    "app_config": {
+      "appId": "6b03ea57e1e0e654199f21fb",
+      "autoLogin": true
+    },
+    "ads_enabled": true,
+    "ad_config_if_enabled": {
+      "gameId": "295027",
+      "preloadAdBreaks": "on",
+      "sound": "on"
+    },
+    "integration_status": "initialized_in_standalone_export; localhost authentication reported state mismatch; Y8 preview auth and ads not verified",
+    "ad_callback_contract": {
+      "beforeAd": "pause gameplay and mute audio",
+      "afterAd": "release ad pause; respect focus and player mute settings",
+      "beforeReward": "call provided showAdFn only after player consent",
+      "adViewed": "grant agreed reward once",
+      "adDismissed": "no reward",
+      "adBreakDone": "log outcome; never grant reward here"
+    },
+    "reward_design": "No new reward mechanics or reward button; helper requires an explicit grantReward callback."
+  },
+  "requirements": {
+    "verified_on": "2026-11-23",
+    "image_formats": [
+      "JPG",
+      "PNG"
+    ],
+    "image_slots": {
+      "standard": {
+        "dimensions_px": [
+          760,
+          570
+        ],
+        "aspect_ratio": "4:3",
+        "max_bytes_conservative": 2000000,
+        "min_count": 1,
+        "max_count": 6
+      },
+      "widescreen": {
+        "dimensions_px": [
+          1280,
+          720
+        ],
+        "aspect_ratio": "16:9",
+        "max_bytes_conservative": 5000000,
+        "min_count": 1,
+        "max_count": 6
+      },
+      "landscape_promo": {
+        "dimensions_px": [
+          1920,
+          1080
+        ],
+        "aspect_ratio": "16:9",
+        "max_bytes_conservative": 5000000,
+        "min_count": 1,
+        "max_count": 3
+      },
+      "portrait_promo": {
+        "dimensions_px": [
+          1080,
+          1920
+        ],
+        "aspect_ratio": "9:16",
+        "max_bytes_conservative": 5000000,
+        "min_count": 1,
+        "max_count": 3
+      },
+      "card_promo": {
+        "dimensions_px": [
+          760,
+          570
+        ],
+        "aspect_ratio": "4:3",
+        "max_bytes_conservative": 2000000,
+        "min_count": 1,
+        "max_count": 3
+      }
+    },
+    "gameplay": {
+      "aspect_ratio": "16:9",
+      "minimum_dimensions_px": [
+        1280,
+        720
+      ],
+      "minimum_duration_seconds": 15,
+      "formats": [
+        "MP4",
+        "MOV"
+      ],
+      "max_bytes_conservative": 50000000,
+      "required_count": 1
+    },
+    "gameplay_4_3": {
+      "aspect_ratio": "4:3",
+      "exact_dimensions_px": [
+        960,
+        720
+      ],
+      "minimum_duration_seconds": 15,
+      "formats": [
+        "MP4",
+        "MOV"
+      ],
+      "max_bytes_conservative": 50000000,
+      "optional": true
+    },
+    "preview_first_seconds_max": 20,
+    "default_4_3_crop": "center",
+    "mb_basis": "Official page says MB without byte definition; decimal byte limits are conservative local policy."
+  },
+  "media": {
+    "standard": [],
+    "widescreen": [],
+    "landscape_promo": [],
+    "portrait_promo": [],
+    "card_promo": [],
+    "gameplay": [],
+    "gameplay_4_3": []
+  },
+  "candidate_existing_assets": [
+    {
+      "path": "../frontier-screenshots/760x570",
+      "possible_slot": "standard",
+      "status": "not_reviewed"
+    },
+    {
+      "path": "../frontier-screenshots/1280x720",
+      "possible_slot": "widescreen",
+      "status": "not_reviewed"
+    },
+    {
+      "path": "../frontier-screenshots/1080x1920",
+      "possible_slot": null,
+      "status": "not_a_Y8_screenshot_slot; inspect_before_using_as_promo"
+    },
+    {
+      "path": "../frontier-game-icons",
+      "possible_slot": null,
+      "status": "inspect_content_and_dimensions; 1280x720_is_not_landscape_promo_size"
+    }
+  ],
+  "recommendations_not_official": {
+    "screenshot_scenes": [
+      "gather",
+      "build",
+      "battle"
+    ],
+    "target_video_seconds": 20,
+    "video_codec": "H.264",
+    "fps": 30,
+    "promo_safe_margin_percent": "8-10"
+  },
+  "submission": {
+    "mode": null,
+    "status": "local_preparation_only",
+    "allow_automatic_upload": false,
+    "allow_automatic_request_review": false,
+    "allow_automatic_publish": false,
+    "qa_status": "NOT CHECKED",
+    "pending": [
+      "Confirm Portal IDs belong to Frontier Islands / TiCATiCA Games",
+      "Set actual game URL and reviewed build revision",
+      "Decide whether to use ads and agree reward design",
+      "Select actual media files for each slot",
+      "Run technical validation",
+      "Complete real gameplay, rights, game and SDK QA",
+      "Inspect processed Portal previews only if upload is separately authorized",
+      "Prepare game build ZIP with root index.html; verify extracted build starts Frontier Islands",
+      "Test responsive gameplay on supported devices and orientations"
+    ]
+  },
+  "sources": {
+    "media": "https://docs.y8.com/studio/media/",
+    "game_requirements": "https://docs.y8.com/studio/game-requirements/",
+    "sdk_initialization": "https://docs.y8.com/studio/sdk-initialization/",
+    "sdk_intro": "https://docs.y8.com/sdk/intro/",
+    "advertising": "https://docs.y8.com/sdk/advertising/",
+    "upload_build_screenshot": "../../references/upload-build-2026-11-23.png"
+  },
+  "build": {
+    "archive_path": "../../../../../output/publishing/y8/frontier-islands/frontier-islands-y8.zip",
+    "build_revision": null,
+    "archive_format": "ZIP",
+    "entrypoint": "index.html",
+    "entrypoint_at_archive_root_required": true,
+    "responsive_required": true,
+    "max_archive_bytes": null,
+    "max_uncompressed_bytes": null,
+    "requirements_source": "User-provided Y8 Upload New Build screenshot, 2026-11-23",
+    "archive_validation_status": "PASS: rebuilt at platform output path; ZIP integrity, root index.html and all extracted contents verified",
+    "responsive_validation_status": "PASS: desktop/default viewport and 390x844 browser layout; physical devices not tested",
+    "note": "Media validator does not validate build archives or responsive gameplay.",
+    "sha256": "bc37e2421f621f3da9a32e5823e6b55a05467d4bad4ff6360a0ab71d87c476d9",
+    "packaging_policy": {
+      "standalone": true,
+      "include_only": "game runtime, required assets/localization and Y8 SDK adapter",
+      "entrypoint": "index.html",
+      "archive_root_entrypoint": true,
+      "original_lobby_required": false,
+      "original_site_api_required": false
+    }
+  }
+}
