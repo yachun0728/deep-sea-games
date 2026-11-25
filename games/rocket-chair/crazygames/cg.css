@@ -69,6 +69,6 @@
 #app.cg-playing #cg-audio-menu{top:calc(64px + env(safe-area-inset-top))}
 /* ===== Wide screens: centred, scaled game column on the city background (class set by cg-game.js) ===== */
 #app{container-type:size}
-body.cg-wide{background:#071033 url(desktop/bg.webp) center/cover no-repeat}
+body.cg-wide{background:#071033 url(desktop/bg.webp) center bottom/cover no-repeat}
 body.cg-wide #app{position:absolute;left:50%;top:50%;width:370px;height:640px;max-width:none;margin:0;transform-origin:center;border-radius:14px;
   box-shadow:0 0 0 3px #1d1b1a,0 0 0 7px #fff,0 0 0 10px #1d1b1a,0 24px 60px rgba(0,0,0,.6)}
