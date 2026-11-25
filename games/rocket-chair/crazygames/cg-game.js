@@ -119,14 +119,13 @@
   app.appendChild(pb);
   const pauseNow = () => { if (appState === 'play') pauseGame('Paused', 'The boss is still in the meeting.'); };
   pb.onclick = pauseNow;
-  (function watch() { pb.classList.toggle('hidden', appState !== 'play'); requestAnimationFrame(watch); })();
+  (function watch() { const p = appState === 'play'; pb.classList.toggle('hidden', !p); app.classList.toggle('cg-playing', p); requestAnimationFrame(watch); })();
 
   const box = $('s-pause');
   const mk = (id, cls, text) => { const b = document.createElement('button'); b.id = id; b.type = 'button'; b.className = 'btn ' + cls; b.textContent = text; box.appendChild(b); return b; };
   $('btn-resume').textContent = 'Resume';
   const restartBtn = mk('cg-restart', 'sec', 'Restart');
   const menuBtn = mk('cg-menu', 'sec', 'Back to Menu');
-  const soundBtn = mk('cg-sound', 'ghost', '');
   restartBtn.onclick = () => { stop(); Mic.stop(); G = null; play(); };
   menuBtn.onclick = () => goTitle();
   const _pauseScreen = pauseGame; pauseGame = function () { const r = _pauseScreen.apply(this, arguments); $('btn-resume').textContent = 'Resume'; renderSound(); return r; };
@@ -141,14 +140,25 @@
   /* ---------- sound: player choice (saved) OR the CrazyGames page OR an ad mutes it ---------- */
   // "Sound" switches everything off; "Music" only the title music and the in-game office ambience.
   let userMuted = false, platformMuted = false, adMuted = false, musicOff = false;
-  const musicBtn = mk('cg-music', 'ghost', '');
+  // Sound and Music live in one dropdown under the speaker button, top right on every screen.
+  const audioMenu = document.createElement('div'); audioMenu.id = 'cg-audio-menu'; audioMenu.className = 'hidden';
+  audioMenu.innerHTML = '<button type="button" id="cg-sound"></button><button type="button" id="cg-music"></button>';
+  app.appendChild(audioMenu);
+  const soundBtn = $('cg-sound'), musicBtn = $('cg-music');
+  const closeAudioMenu = () => audioMenu.classList.add('hidden');
+  document.addEventListener('pointerdown', (e) => { if (!audioMenu.contains(e.target) && !$('mute').contains(e.target)) closeAudioMenu(); }, true);
   const syncMute = () => { muted = userMuted || platformMuted || adMuted; $('mute').classList.toggle('muted', userMuted || platformMuted);
     try { if (master) master.gain.value = muted ? 0 : (inputMode === 'touch' ? 0.5 : 0.28); } catch (e) {}
     if (window.Music) Music.mute(muted || musicOff); };
-  function renderSound() { soundBtn.textContent = userMuted ? 'Sound: Off' : 'Sound: On'; musicBtn.textContent = musicOff ? 'Music: Off' : 'Music: On'; }
+  function renderSound() {
+    soundBtn.innerHTML = 'Sound <b>' + (userMuted ? 'Off' : 'On') + '</b>'; soundBtn.classList.toggle('off', userMuted);
+    musicBtn.innerHTML = 'Music <b>' + (musicOff ? 'Off' : 'On') + '</b>'; musicBtn.classList.toggle('off', musicOff);
+    musicBtn.disabled = userMuted;   // everything is already silent
+  }
   const toggleSound = () => { userMuted = !userMuted; lsSet(MUTE_KEY, userMuted ? '1' : '0'); syncMute(); renderSound(); ensureAudio(); };
   const toggleMusic = () => { musicOff = !musicOff; CG.store.setJSON('roar_settings', { music: !musicOff }); syncMute(); renderSound(); };
-  $('mute').onclick = toggleSound; soundBtn.onclick = toggleSound; musicBtn.onclick = toggleMusic;
+  $('mute').onclick = (e) => { e.stopPropagation(); ensureAudio(); audioMenu.classList.toggle('hidden'); renderSound(); };
+  soundBtn.onclick = toggleSound; musicBtn.onclick = toggleMusic;
 
   /* ---------- recorded sound effects (Kenney, CC0) replace the synthesized ones; synth stays as fallback ---------- */
   const SFX_FILES = ['bonk', 'crash', 'burst', 'grab', 'paper', 'timeup', 'tick', 'click', 'clear'];
