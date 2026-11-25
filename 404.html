@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>找不到頁面 · TiCATiCA Games</title><style>body{background:#10121b;color:#fff;font:18px system-ui;padding:40px}a{color:#7ef9ff}</style></head><body><h1>找不到頁面 / Page not found</h1><a id="home" href="./">返回遊戲大廳 / Back to games</a><script>
+(function(){
+  // GitHub Pages ignores _redirects; its custom 404 retains the legacy URL fallback.
+  var base=location.hostname.endsWith('.github.io')&&location.pathname.startsWith('/deep-sea-games/')?'/deep-sea-games/':'/';
+  var path=location.pathname.slice(base.length).replace(/\/$/,'');
+  var routes={'dodge-run':'runner','dodge-run.html':'runner','dream-repair':'dream','dream-repair.html':'dream','clock-out':'clock-out','clock-out/index.html':'clock-out','last-hair':'last-hair','last-hair/index.html':'last-hair','quack-pond':'quack-pond','quack-pond/index.html':'quack-pond','index_v2':'','index_v2.html':''};
+  document.getElementById('home').href=base+location.search;
+  if(Object.prototype.hasOwnProperty.call(routes,path))location.replace(base+location.search+(routes[path]?'#'+routes[path]:location.hash));
+})();
+</script></body></html>

@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：血壓上升，`game_id` 為 `mosquito`
 - 檔案：`games/mosquito/card.html`、`games/mosquito/cover.webp`、`games/mosquito/game.js`、`games/mosquito/icon.svg`、`games/mosquito/view.html`；`game.js` 共 293 行、18.7 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「35. 血壓上升 Midnight Mosquito（mosquito）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「35. 血壓上升 Midnight Mosquito（mosquito）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -47,7 +47,7 @@
 - L184 `finish`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:Math.round(result.blood),step:paidCount,stage:1});`
 - L268 `start`：`analytics=AN.start('mosquito',amount);`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

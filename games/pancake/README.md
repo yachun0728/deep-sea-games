@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：泡麵煎餅翻面，`game_id` 為 `pancake`
 - 檔案：`games/pancake/card.html`、`games/pancake/cover.webp`、`games/pancake/game.js`、`games/pancake/icon.svg`、`games/pancake/original.html`、`games/pancake/style.css`、`games/pancake/view.html`；`game.js` 共 43 行、3.0 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「25. 泡麵煎餅翻面 Noodle Pancake（pancake）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「25. 泡麵煎餅翻面 Noodle Pancake（pancake）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -48,7 +48,7 @@
 - L33 `pancakeValid`：`if(pancakeValid(source)&&PANCAKE.active)AN.progress(PANCAKE.analytics,{phase:'revive'},true);`
 - L34 `pancakeValid`：`if(pancakeValid(source)&&PANCAKE.active)AN.resume(PANCAKE.analytics);`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

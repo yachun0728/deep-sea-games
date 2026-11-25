@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：一筆畫守城，`game_id` 為 `one-line-defense`
 - 檔案：`games/one-line-defense/card.html`、`games/one-line-defense/cover.webp`、`games/one-line-defense/game.js`、`games/one-line-defense/icon.svg`、`games/one-line-defense/original.html`、`games/one-line-defense/style.css`、`games/one-line-defense/view.html`；`game.js` 共 59 行、4.8 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「45. 一筆畫守城 One-Line Defense（one-line-defense）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「45. 一筆畫守城 One-Line Defense（one-line-defense）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -47,7 +47,7 @@
 - L38 `olValid`：`if(olValid(source)&&ONEL.active)AN.resume(ONEL.analytics);`
 - L42 `olValid`：`AN.end(ONEL.analytics,ONEL.earned,'abandoned',{score:ONEL.score});`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

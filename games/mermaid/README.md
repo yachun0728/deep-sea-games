@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：人魚接龍，`game_id` 為 `mermaid`
 - 檔案：`games/mermaid/card.html`、`games/mermaid/game.js`、`games/mermaid/icon.svg`、`games/mermaid/style.css`、`games/mermaid/view.html`；`game.js` 共 230 行、15.7 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「40. 人魚接龍 Mermaid Spider（mermaid）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「40. 人魚接龍 Mermaid Spider（mermaid）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -48,7 +48,7 @@
 - L131 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:G.score,step:G.done,stage:G.done});`
 - L140 `start`：`analytics=AN.start('mermaid',ENTRY_FEE);`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

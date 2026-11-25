@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：寶寶逃洗澡，`game_id` 為 `baby`
 - 檔案：`games/baby/card.html`、`games/baby/cover.webp`、`games/baby/game.js`、`games/baby/icon.svg`、`games/baby/leaderboard.webp`、`games/baby/view.html`；`game.js` 共 286 行、14.1 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「31. 寶寶逃洗澡 Baby Bath Escape（baby）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「31. 寶寶逃洗澡 Baby Bath Escape（baby）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -46,7 +46,7 @@
 - L190 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
 - L199 `start`：`analytics=AN.start('baby',amount);`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

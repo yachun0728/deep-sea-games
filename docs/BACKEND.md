@@ -93,7 +93,7 @@ const next = await moveMinesRound(round.token, {
 | 同來源 iframe，待串接 | boba、dive、mrt、pancake、eat-smaller、mirror-twins、shadow-relay、one-line-defense | 保留父子頁生命週期，增設必要橋接與 Worker 驗證 |
 | 每日免費補給 | keno | 隨機補給與配額，不列競賽榜 |
 
-隱藏中的遊戲依既有改造與上架流程處理。新版遊戲上線前須完成 [訪客排行榜檢查](../RELEASE_CHECKLIST.md#訪客排行榜)。
+隱藏中的遊戲依既有改造與上架流程處理。新版遊戲上線前須完成 [訪客排行榜檢查](RELEASE_CHECKLIST.md#訪客排行榜)。
 
 ## 養珠訪客成績
 

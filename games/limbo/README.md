@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：探底，`game_id` 為 `limbo`
 - 檔案：`games/limbo/card.html`、`games/limbo/game.js`、`games/limbo/icon.svg`、`games/limbo/view.html`；`game.js` 共 66 行、4.0 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「6. Limbo（limbo）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「6. Limbo（limbo）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -42,7 +42,7 @@
 - L27 `lRoll`：`L.analytics=AN.start('limbo',a);`
 - L41 `step`：`AN.end(L.analytics,pay,pay>0?'complete':'loss');`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

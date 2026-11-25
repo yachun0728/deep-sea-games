@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：鯉魚躍龍門，`game_id` 為 `carp`
 - 檔案：`games/carp/card.html`、`games/carp/cover.webp`、`games/carp/game.js`、`games/carp/icon.svg`、`games/carp/view.html`；`game.js` 共 173 行、15.3 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「31. 鯉魚躍龍門 Carp Leap（carp）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「31. 鯉魚躍龍門 Carp Leap（carp）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -45,7 +45,7 @@
 - L118 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
 - L127 `start`：`analytics=AN.start('carp',amount);`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

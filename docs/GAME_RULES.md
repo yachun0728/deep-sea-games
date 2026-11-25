@@ -24,13 +24,13 @@
 - `keno`：已改為每日免費補給，台灣時間每天免費3次、每次挖5格，每日最多發30點，大廳獨立放置。
 - 其他遊戲：逐款檢查可見與隱藏玩法、內部結算、按鈕與說明，移除博弈機制。隱藏遊戲完成改造並驗證前不得直接重新上架。
 
-Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他遊戲仍依各節的現況與待辦逐款處理。維護契約見 [AGENTS.md](AGENTS.md)。
+Mines 與 Keno 已依下方新規則完成程式改造並重新顯示；其他遊戲仍依各節的現況與待辦逐款處理。維護契約見 [AGENTS.md](../AGENTS.md)。
 
 每日免費挖礦為核准的免費補給活動，不收費、不提供付費加挖；每天3次、每次5格、每天最多30點。
 
 ## 基準與共通定義
 
-依 2026-11-17 本機遊戲來源與其組合產出記錄（含尚未提交的 Reaper Shift），不是對線上部署狀態的保證。架構見 [ARCHITECTURE.md](ARCHITECTURE.md)，維護要求見 [AGENTS.md](AGENTS.md)。每節 hash 對應 `games/<hash>/game.js` 與 `view.html`；共用工具見 js/platform.js、設定見 js/config.js。請依遊戲檔案搜尋識別字，不必讀取整份產出的 index.html。
+依 2026-11-17 本機遊戲來源與其組合產出記錄（含尚未提交的 Reaper Shift），不是對線上部署狀態的保證。架構見 [ARCHITECTURE.md](ARCHITECTURE.md)，維護要求見 [AGENTS.md](../AGENTS.md)。每節 hash 對應 `games/<hash>/game.js` 與 `view.html`；共用工具見 js/platform.js、設定見 js/config.js。請依遊戲檔案搜尋識別字，不必讀取整份產出的 index.html。
 
 - 深海火線開局與重玩免費；新一趟從 0 公尺、3 艘潛艇開始，詳第22節。
 - 新瀏覽器預設 500 點（`START_BALANCE`）；共用餘額存在 `crush-depth-balance`。開啟遊戲畫面本身不扣點，實際開始／投注才扣款。

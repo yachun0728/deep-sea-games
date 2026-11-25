@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：宣傳車，`game_id` 為 `campaign`
 - 檔案：`games/campaign/card.html`、`games/campaign/cover.webp`、`games/campaign/game.js`、`games/campaign/icon.svg`、`games/campaign/style.css`、`games/campaign/view.html`；`game.js` 共 397 行、33.8 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「17. Campaign（campaign）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「17. Campaign（campaign）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -50,7 +50,7 @@
 - L60 `cpStart`：`CP.analytics=AN.start('campaign',stake);`
 - L64 `cpStart`：`else if(event==='progress')AN.progress(CP.analytics,{step:cpPassed(),votes:CP.votes,misses:CP.miss});`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：胖老闆追人，`game_id` 為 `boss`
 - 檔案：`games/boss/card.html`、`games/boss/cover.webp`、`games/boss/game.js`、`games/boss/icon.svg`、`games/boss/leaderboard.webp`、`games/boss/view.html`；`game.js` 共 386 行、18.3 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「29. 胖老闆追人 Chubby Boss Chase（boss）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「29. 胖老闆追人 Chubby Boss Chase（boss）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -46,7 +46,7 @@
 - L289 `die`：`AN.end(analytics,paid,paid>0?'complete':'loss',{score:s,total_bonus_points:paid});`
 - L298 `start`：`analytics=AN.start('boss',amount);`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

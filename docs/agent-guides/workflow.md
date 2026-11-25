@@ -13,7 +13,7 @@
 依變更範圍執行相關檢查，不需要為純文件修改重玩全部遊戲：
 
 - 通用：修改遊戲來源或 GAME_RULES.md 後先執行 `python3 tools/game_docs.py` 重新產生說明檔（單元測試會檢查是否過期）；再執行 `python3 tools/build.py`、`python3 tools/build.py --check`、`python3 -m unittest discover -s tools -p "test_*.py"` 與 `git diff --check`。確認僅修改授權範圍、產出已同步、文件連結正確。
-- 骨架（`preview/`）：執行 `python3 tools/prototype.py --check`（預覽入口、noindex、不外洩到大廳）與 `tools/test_prototype.py`；本機與推送後的線上網址各實際玩一輪，逐項依 [RELEASE_CHECKLIST.md](../../RELEASE_CHECKLIST.md) 第 0 節。純骨架不需重新組合 `index.html`。
+- 骨架（`preview/`）：執行 `python3 tools/prototype.py --check`（預覽入口、noindex、不外洩到大廳）與 `tools/test_prototype.py`；本機與推送後的線上網址各實際玩一輪，逐項依 [RELEASE_CHECKLIST.md](../RELEASE_CHECKLIST.md) 第 0 節。純骨架不需重新組合 `index.html`。
 - JavaScript：擷取可執行 script 後做語法檢查；JSON script 必須以 JSON 解析，不能當作 JavaScript 程式。若無 Node 或瀏覽器環境，明列限制。
 - 錢包／遊戲：檢查不足額、開始只扣一次、成功／失敗／領回、續關、重複點擊、重新開始及重新整理後的儲存結果；核對倍率與取整。
 - 路由／UI：從大廳、直接 hash、左上回大廳、手機尺寸、切分頁／背景恢復驗證受影響流程。不得假設每款遊戲離開頁面後都會自動暫停。

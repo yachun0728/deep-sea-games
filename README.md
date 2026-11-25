@@ -6,7 +6,7 @@
 
 所有遊戲（包含隱藏與新增遊戲）都不得有下注、全押、賠率／返還倍率、領回或提前兌現。不得僅隱藏文字而保留博弈機制；改以操作、推理、探索、分數與關卡提供遊戲目標。固定入場費與自然回點可保留，但不得以入場費作本金計算輸贏返還。
 
-踩地雷與挖金礦已完成改造，其他遊戲尚未全部完成；下文的返還與結算用語是現況紀錄。完整限制與踩地雷／挖金礦的待辦見 [GAME_RULES.md](GAME_RULES.md)，執行規範見 [AGENTS.md](AGENTS.md)。本次文件更新不代表遊戲已符合新規範。
+踩地雷與挖金礦已完成改造，其他遊戲尚未全部完成；下文的返還與結算用語是現況紀錄。完整限制與踩地雷／挖金礦的待辦見 [GAME_RULES.md](docs/GAME_RULES.md)，執行規範見 [AGENTS.md](AGENTS.md)。本次文件更新不代表遊戲已符合新規範。
 
 ## 目錄導覽
 
@@ -18,8 +18,8 @@
 ## 先定位，再讀程式
 
 1. [AGENTS.md](AGENTS.md)：Agent 維護規範。
-2. [ARCHITECTURE.md](ARCHITECTURE.md)：實際相依、資料 Key、共用程式邊界。
-3. [GAME_RULES.md](GAME_RULES.md)：玩法、扣款與返還公式。
+2. [ARCHITECTURE.md](docs/ARCHITECTURE.md)：實際相依、資料 Key、共用程式邊界。
+3. [GAME_RULES.md](docs/GAME_RULES.md)：玩法、扣款與返還公式。
 4. `games/catalog.json`：用 hash ID 找到遊戲來源。
 5. [games/README.md](games/README.md) 與各款的 `games/<id>/README.md`：自動產生的函式索引（含行號）、扣款與追蹤位置、規則摘要。改某一款先讀它，不必掃整支 `game.js`。改完執行 `python3 tools/game_docs.py` 重新產生。
 
@@ -36,7 +36,7 @@ python3 -m unittest discover -s tools -p 'test_*.py'
 python3 -m http.server 8765
 ```
 
-開啟 `http://localhost:8765/`。GA4 在 localhost 刻意不送事件；正式環境驗收見 [ANALYTICS.md](ANALYTICS.md)。
+開啟 `http://localhost:8765/`。GA4 在 localhost 刻意不送事件；正式環境驗收見 [ANALYTICS.md](docs/ANALYTICS.md)。
 
 `templates/`、`games/`、`js/`、`css/` 是來源。`index.html` 是追蹤在 Git 的靜態產出，修改來源後必須重新組合，提交時一併包含來源與產出。GitHub Pages 不需 Python，也不用調整現有入口。`--check` 可用於未來 CI，但目前沒有擅自加入部署 workflow。
 
@@ -52,7 +52,7 @@ python3 tools/prototype.py --check                              # 檢查入口�
 python3 -m http.server 8765                                     # 開 http://localhost:8765/preview/
 ```
 
-推送後線上網址為 `https://yachun0728.github.io/deep-sea-games/preview/<id>/`，總覽在 `/preview/`。完整流程見 [prototype.md](docs/agent-guides/prototype.md)，驗收見 [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) 第 0 節。
+推送後線上網址為 `https://yachun0728.github.io/deep-sea-games/preview/<id>/`，總覽在 `/preview/`。完整流程見 [prototype.md](docs/agent-guides/prototype.md)，驗收見 [RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md) 第 0 節。
 
 ## 隱藏或重新顯示遊戲
 
@@ -87,7 +87,7 @@ python3 -m http.server 8765                                     # 開 http://loc
 6. 用正常操作完成至少一局，核對畫面分數、Worker 結算、D1 紀錄、單款 API 與大廳最高分。驗證同分先到、較低分、重送、偽造分數、錯誤訪客、非法操作、空榜及網路失敗。完成桌面與 390px、繁中與英文、直接 hash、離頁與背景恢復檢查。
 7. PR 附遊戲 ID、驗證器位置、計分規則、測試指令與結果、migration 需求、未驗證事項及回復方式。依序套用需要的 D1 migration、部署 Worker、部署前端，再用正式站實際對局確認。
 
-驗收細項見 [訪客排行榜上線檢查](RELEASE_CHECKLIST.md#訪客排行榜)，接入步驟與踩地雷程式碼範例見 [使用 SDK 加入排行榜](docs/BACKEND.md#使用-sdk-加入排行榜)。`tools/build.py` 目前檢查來源組合與 catalog，排行榜串接須由上架者依本節完成並實測。
+驗收細項見 [訪客排行榜上線檢查](docs/RELEASE_CHECKLIST.md#訪客排行榜)，接入步驟與踩地雷程式碼範例見 [使用 SDK 加入排行榜](docs/BACKEND.md#使用-sdk-加入排行榜)。`tools/build.py` 目前檢查來源組合與 catalog，排行榜串接須由上架者依本節完成並實測。
 
 ## 來源拆分的驗證與回復
 
@@ -121,7 +121,7 @@ python3 -m http.server 8765                                     # 開 http://loc
 
 ## 遊戲上線與 BONUS 檢查
 
-新增、改造、重新上架及發布前，依 [遊戲上線與 BONUS 檢查規範](RELEASE_CHECKLIST.md) 驗證非博弈玩法、固定獎勵門檻、BONUS 標章、錢包防重複、追蹤與正式站部署。清單也包含遠端較新及本機有其他未提交修改時的隔離發布流程；每次只回報實際通過的項目。各款獎勵數值仍以 GAME_RULES.md 與來源核對，不統一套用蓋樓遊戲的門檻。
+新增、改造、重新上架及發布前，依 [遊戲上線與 BONUS 檢查規範](docs/RELEASE_CHECKLIST.md) 驗證非博弈玩法、固定獎勵門檻、BONUS 標章、錢包防重複、追蹤與正式站部署。清單也包含遠端較新及本機有其他未提交修改時的隔離發布流程；每次只回報實際通過的項目。各款獎勵數值仍以 GAME_RULES.md 與來源核對，不統一套用蓋樓遊戲的門檻。
 
 ## 免費懷舊與每日補給
 

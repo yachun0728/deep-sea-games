@@ -45,7 +45,7 @@
 - L51 `saLevel`：`if(saValid(source)&&SA.active)AN.resume(SA.analytics);`
 - L56 `saLevel`：`AN.end(SA.analytics,0,'abandoned',{score:SA.level,step:SA.attempts});`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

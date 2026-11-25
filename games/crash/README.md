@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：壓潰深度，`game_id` 為 `crash`
 - 檔案：`games/crash/card.html`、`games/crash/game.js`、`games/crash/icon.svg`、`games/crash/view.html`；`game.js` 共 235 行、12.1 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「1. Crush Depth（crash）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「1. Crush Depth（crash）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -45,7 +45,7 @@
 - L36 `cashOut`：`AN.end(S.bet.analytics,pay,'cashout',{multiplier:at});`
 - L44 `mainAction`：`AN.end(S.bet.analytics,S.bet.amount,'cancelled');`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

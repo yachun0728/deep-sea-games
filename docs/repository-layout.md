@@ -1,12 +1,10 @@
 # Repo 目錄與檔案歸屬
 
-本次採用「保留遊戲與工具入口，整理文件和產物」方案。以下描述現有結構，不將遊戲改成新框架，也不搬動公開網址。
+本次採用「保留遊戲與工具入口，整理文件和產物」方案；第二階段將五份跨遊戲規範移進 docs。以下描述現有結構，不將遊戲改成新框架，也不搬動公開網址。
 
 ```text
 deep-sea-games/
-├── README.md / AGENTS.md / ARCHITECTURE.md   開發與架構入口
-├── GAME_RULES.md / ANALYTICS.md              跨遊戲規則與追蹤
-├── GAME_ICON_SPEC.md / RELEASE_CHECKLIST.md  美術與發布規範
+├── README.md / AGENTS.md                    根目錄開發入口
 ├── games/<id>/                              正式遊戲來源與 design
 ├── preview/<id>/                            原型／預覽來源
 ├── templates/                              大廳與頁面組合來源
@@ -20,6 +18,10 @@ deep-sea-games/
 ├── tools/                                  既有命令、測試與匯出入口
 ├── docs/
 │   ├── README.md                           文件總索引
+│   ├── ARCHITECTURE.md                      架構與來源定位
+│   ├── GAME_RULES.md / ANALYTICS.md          規則與追蹤
+│   ├── GAME_ICON_SPEC.md                    遊戲圖示規範
+│   ├── RELEASE_CHECKLIST.md                 發布驗收清單
 │   ├── agent-guides/                       維護規範
 │   ├── publishing/<platform>/              平台 skill、SDK 參考與 manifest
 │   ├── qa/                                 歷史驗收
@@ -27,7 +29,6 @@ deep-sea-games/
 │   ├── maintenance/                        Repo 維護紀錄
 │   └── archive/                            舊交付快照
 ├── output/                                 本機媒體、平台包及驗證產物（Git 忽略）
-├── dist/                                   舊工具的建置產物（Git 忽略）
 └── index.html                              組合產出，勿手改
 ```
 
@@ -50,9 +51,9 @@ deep-sea-games/
 
 `js/` 是既有共享 runtime，`frontend/services/` 是 API client，`platform/` 是共用平台畫面；它們目前不是可直接合併的同一層。`backend/` 與 `site/` 分別是 API Worker 與前端 Worker。搬動這些目錄會連動相依、測試及部署，這次保留。
 
-`clock-out/`、`last-hair/`、`quack-pond/` 與根目錄的舊 HTML 可能承擔公開路徑相容用途；這次不按外觀重複就刪除或搬移。`index_v2.html`、`.co-stage/` 的歷史用途需另外核對，未當作安全可刪檔案。
+舊根目錄 `clock-out/`、`last-hair/`、`quack-pond/` 的完整原稿已歸檔至 `docs/archive/standalone-games/`，三個舊目錄與 `dodge-run.html`、`dream-repair.html`、`index_v2.html` 均已移除。舊網址統一由根目錄 `_redirects` 轉往大廳對應遊戲；`404.html` 提供 GitHub Pages 的相容處理及一般找不到頁面的提示。轉址設定屬必要網站入口，不再為每個舊遊戲保留一個根目錄。`.co-stage/` 與正在使用的 worktree 保留。
 
-`output/` 與 `dist/` 都是本機產物，但已有工具輸出、下載連結與 manifest 相依；現有檔案保留，往後新增的平台包統一走 `output/publishing/`。不要把送審圖、影片或報告放進遊戲 ZIP。
+舊本機 `crush-depth.html` 已移至 `output/archive/legacy/`。過期 `dist/` 建置副本已移除；其中與先前交付不同的 ZIP 保存在 `output/archive/itch-peek/`。`tools/build_itch_peek.py` 仍可依原命令重新產生 dist，不需先建空目錄。平台新版產物走 `output/publishing/`，一般媒體走 `output/media/`。已交付的 output 版本及相容連結保留。
 
 ## 多個工作樹
 

@@ -1,6 +1,6 @@
 # 荒島遠征美術與互動規範 / Frontier Islands art direction
 
-修改本遊戲前，請先讀本文件、[玩法規則](../../GAME_RULES.md#46-荒島遠征-frontier-islandsfrontier) 與 [設定圖](art/direction-board.png)。設定圖也附在遊戲的「美術設定與設計規範」中。遊戲的實際可玩場景由 draw.js 的 Canvas 繪製；設定圖不是實機截圖，也不可以整張拿來當地圖假裝可互動。
+修改本遊戲前，請先讀本文件、[玩法規則](../../docs/GAME_RULES.md#46-荒島遠征-frontier-islandsfrontier) 與 [設定圖](art/direction-board.png)。設定圖也附在遊戲的「美術設定與設計規範」中。遊戲的實際可玩場景由 draw.js 的 Canvas 繪製；設定圖不是實機截圖，也不可以整張拿來當地圖假裝可互動。
 
 ## 美術方向 / Visual language
 

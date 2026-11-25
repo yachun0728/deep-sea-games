@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：貓咪疊書舖，`game_id` 為 `book-sort`
 - 檔案：`games/book-sort/card.html`、`games/book-sort/game.js`、`games/book-sort/icon.svg`、`games/book-sort/ranking.js`、`games/book-sort/style.css`、`games/book-sort/view.html`；`game.js` 共 236 行、14.4 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「50. 貓咪疊書舖 Cat Book Stack（book-sort）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「50. 貓咪疊書舖 Cat Book Stack（book-sort）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -45,7 +45,7 @@
 - L162 `doMove`：`round=AN.start(GAME_ID,0,{stage:level})}catch(_){round=null}}`
 - L169 `doMove`：`AN.progress(round,{stage:level,step:moves})}catch(_){}}`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：落珠，`game_id` 為 `plinko`
 - 檔案：`games/plinko/card.html`、`games/plinko/game.js`、`games/plinko/icon.svg`、`games/plinko/view.html`；`game.js` 共 133 行、7.9 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「3. Plinko（plinko）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「3. Plinko（plinko）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -44,7 +44,7 @@
 - L43 `pkDrop`：`analytics:AN.start('plinko',a), bet: a, k: k, bin: rights, t0: performance.now(), seg: 190 - P.rows * 6, at: …`
 - L48 `pkLand`：`AN.end(b.analytics,pay,'complete',{multiplier:m});`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 

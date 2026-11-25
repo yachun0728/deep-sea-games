@@ -9,7 +9,7 @@
 - 追蹤名稱（GA4 `game_name`）：貓貓三消，`game_id` 為 `cat-match`
 - 檔案：`games/cat-match/.gitignore`、`games/cat-match/DESIGN.md`、`games/cat-match/RELEASE.md`、`games/cat-match/audio.js`、`games/cat-match/card.html`、`games/cat-match/cover.webp`、`games/cat-match/game.js`、`games/cat-match/i18n.js`、`games/cat-match/icon.svg`、`games/cat-match/leaderboard.webp`、`games/cat-match/main.js`、`games/cat-match/play.css`、`games/cat-match/play.html`、`games/cat-match/style.css`、`games/cat-match/view.html`；`game.js` 共 42 行、4.4 KB
 
-- 完整規則與公式：[GAME_RULES.md](../../GAME_RULES.md) 的「貓貓三消 Cat Match（cat-match）」（下方「規則摘要」已複製）
+- 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「貓貓三消 Cat Match（cat-match）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
@@ -45,7 +45,7 @@
 - L35 `cmEnd`：`CM.round=AN.start('cat-match',0);`
 - L35 `cmEnd`：`else AN.resume(CM.round);`
 
-- 契約見 [ANALYTICS.md](../../ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
+- 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
 ## 儲存（localStorage）
 
