@@ -48,7 +48,7 @@
 #cg-res .best span{font-family:var(--comic);font-style:italic;font-weight:900;color:#1d1b1a;font-size:clamp(13px,2.5vh,19px);white-space:nowrap}
 #cg-res .best .new{margin-left:8px;color:#d8281a;animation:cg-pop .6s ease-in-out .8s 3 alternate}
 @keyframes cg-pop{to{transform:scale(1.15)}}
-#r-bar #btn-home{flex:0 0 auto;margin:0;padding:12px 18px;font-size:16px;min-width:0}
+#btn-home{display:none!important}
 #s-result > #btn-home{display:none}
 /* Speaker button: on every screen, top right; while playing it sits under the meeting timer. Opens the audio menu. */
 #mute,#mute.hidden{display:block!important;position:absolute;top:calc(10px + env(safe-area-inset-top));right:8px;z-index:27;width:44px;height:44px}
@@ -62,3 +62,8 @@
 #cg-audio-menu button b{min-width:38px;text-align:center;padding:2px 8px;border-radius:999px;background:#ffd23f;border:2px solid #1d1b1a;font-size:13px}
 #cg-audio-menu button.off b{background:#d9dde8;color:#5f5c59}
 #cg-audio-menu button:disabled{opacity:.45;cursor:default}
+/* Top bar order while playing: clock (canvas) | meeting timer (canvas) | pause | speaker */
+#cg-pause{left:259px;transform:none;top:calc(13px + env(safe-area-inset-top))}
+#cg-pause:active{transform:translateY(2px)}
+#app.cg-playing #mute{top:calc(14px + env(safe-area-inset-top))}
+#app.cg-playing #cg-audio-menu{top:calc(64px + env(safe-area-inset-top))}
