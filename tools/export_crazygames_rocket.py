@@ -19,6 +19,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'games', 'rocket-chair', 'original.html')
 RULES = os.path.join(ROOT, 'shared', 'rocket-chair-rules.js')
 ASSETS = os.path.join(ROOT, 'games', 'rocket-chair', 'assets', 'comic')
+CG_DIR = os.path.join(ROOT, 'games', 'rocket-chair', 'crazygames')   # CrazyGames-only additions
 OUT = os.path.join(ROOT, 'output', 'rocket-chair-crazygames')
 ZIP = os.path.join(ROOT, 'output', 'rocket-chair-crazygames.zip')
 
@@ -171,6 +172,20 @@ SHIM = r"""
   if (!IS_MOBILE) { $('btn-touch').textContent = 'No mic? Play with SPACE or mouse'; $('btn-mf-touch').textContent = 'Play with SPACE or mouse'; }
   const adBtn = $('btn-ad'); adBtn.classList.add('hidden');
   let sdk = null, playing = false;
+  // ---- saved progress (CrazyGames Data module through CG.store) ----
+  const best = () => CG.store.getJSON('roar_best', { early: 0, cleared: false, floors: 0 });
+  const saveBest = (patch) => { const b = best(); let changed = false;
+    for (const k in patch) if (patch[k] > b[k]) { b[k] = patch[k]; changed = true; }
+    if (changed) CG.store.setJSON('roar_best', b); };
+  const bestText = () => { const b = best(); return b.cleared ? `Best: ${b.early} min early` : b.floors ? `Best: ${b.floors} of ${FLOORS} ceilings` : ''; };
+  renderWallet = function () { const el = $('t-wallet'); if (el) el.textContent = bestText(); };
+  const _rocketEvent = rocketEvent; rocketEvent = function (type, data) {
+    const r = _rocketEvent.apply(this, arguments);
+    if (type === 'ceilingParticles' && G) saveBest({ floors: G.broken || 0 });   // saved as soon as a floor is broken
+    return r; };
+  const _showResultSave = showResult; showResult = function () {
+    const g = G; if (g) saveBest({ floors: g.broken || 0, early: g.cleared ? g.early || 0 : 0, cleared: g.cleared ? 1 : 0 });
+    return _showResultSave.apply(this, arguments); };
   const start = () => { if (sdk && !playing) { playing = true; try { sdk.game.gameplayStart(); } catch (e) {} } };
   const stop = () => { if (sdk && playing) { playing = false; try { sdk.game.gameplayStop(); } catch (e) {} } };
   // gameplay start / stop around the real play state
@@ -184,26 +199,31 @@ SHIM = r"""
   const _renderRevive = renderRevive; renderRevive = function(){ _renderRevive.apply(this, arguments); adBtn.classList.toggle('hidden', !sdk || G.adUsed >= CONFIG.adContinuePerGame); };
   adBtn.onclick = () => {
     if (!sdk || !G || G.adUsed >= CONFIG.adContinuePerGame) return;
-    const was = muted; let done = false;
+    let done = false;
     sdk.ad.requestAd('rewarded', {
-      adStarted: () => { muted = true; },
-      adFinished: () => { muted = was; if (done) return; done = true;
+      adStarted: () => { adMuted = true; syncMute(); },
+      adFinished: () => { adMuted = false; syncMute(); if (done) return; done = true;
         rocketControl(124); reviveContinue();
         $('pause-title').textContent = `Meeting extended by ${CONFIG.adExtendSeconds} seconds!`;
         $('pause-desc').textContent = 'The boss started talking again. Keep going!'; },
-      adError: () => { muted = was; toast('No ad available right now'); adBtn.classList.add('hidden'); },
+      adError: () => { adMuted = false; syncMute(); toast('No ad available right now'); adBtn.classList.add('hidden'); },
     });
   };
-  // mute setting from the CrazyGames page
-  const applyMute = (s) => { if (s && typeof s.muteAudio === 'boolean') { muted = s.muteAudio; $('mute').classList.toggle('muted', muted); } };
-  const s = document.createElement('script'); s.src = 'https://sdk.crazygames.com/crazygames-sdk-v3.js';
-  s.onload = () => { const C = window.CrazyGames && window.CrazyGames.SDK; if (!C) return;
-    Promise.resolve(C.init()).then(() => { sdk = C;
-      try { sdk.game.loadingStop(); } catch (e) {}
-      try { applyMute(sdk.game.settings); sdk.game.addSettingsChangeListener(applyMute); } catch (e) {}
-      if (appState === 'play') start();
-    }).catch(() => {}); };
-  document.head.appendChild(s);
+  // sound is off when the player turned it off (saved) OR the CrazyGames page mutes it
+  let userMuted = false, platformMuted = false, adMuted = false;
+  const syncMute = () => { muted = userMuted || platformMuted || adMuted; $('mute').classList.toggle('muted', userMuted || platformMuted);
+    try { if (master) master.gain.value = muted ? 0 : (inputMode === 'touch' ? 0.5 : 0.28); } catch (e) {} };
+  $('mute').onclick = () => { userMuted = !userMuted; lsSet(MUTE_KEY, userMuted ? '1' : '0'); syncMute(); ensureAudio(); };
+  const applyMute = (s) => { if (s && typeof s.muteAudio === 'boolean') { platformMuted = s.muteAudio; syncMute(); } };
+  CG.ready.then((C) => {
+    // saved settings arrive with the SDK: apply them (the game read empty defaults at startup)
+    userMuted = lsGet(MUTE_KEY) === '1'; syncMute(); Calib.load(); renderWallet();
+    if (!C) return;
+    sdk = C;
+    try { sdk.game.loadingStop(); } catch (e) {}
+    try { applyMute(sdk.game.settings); sdk.game.addSettingsChangeListener(applyMute); } catch (e) {}
+    if (appState === 'play') start();
+  });
 })();
 </script>
 """
@@ -240,6 +260,16 @@ def build():
     html = cut(html, "'對著手機大吼往上飛，短吼一聲衝刺'", "'Yell to fly up, a short yell to dash'")
     html = cut(html, '<div id="t-sub">對著手機大吼，衝破 5 層樓</div>', '<div id="t-sub">Yell to fly. Smash through 5 floors.</div>')
     html = cut(html, "'對著手機大聲一點'", "'Yell a bit louder'")
+    # Saves: the game's own lsGet/lsSet go through CG.store (CrazyGames Data module), never localStorage.
+    html = cut(html, "function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }",
+               "function lsGet(k) { return CG.store.get(k); }")
+    html = cut(html, "function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }",
+               "function lsSet(k, v) { CG.store.set(k, v); }")
+    css = open(os.path.join(CG_DIR, 'cg.css'), encoding='utf-8').read()
+    html = cut(html, '</head>', '<style>\n' + css + '</style>\n</head>')
+    boot = open(os.path.join(CG_DIR, 'cg-boot.js'), encoding='utf-8').read()
+    html = cut(html, '<script src="../../shared/rocket-chair-rules.js"></script>',
+               '<script>\n' + boot + '</script>\n<script src="../../shared/rocket-chair-rules.js"></script>')
     for zh in sorted(EN, key=len, reverse=True):
         html = html.replace(zh, EN[zh].replace("'", '’') if not EN[zh].startswith(("'", '`')) else EN[zh])
     html = html.replace('<html lang="zh-Hant">', '<html lang="en">')
