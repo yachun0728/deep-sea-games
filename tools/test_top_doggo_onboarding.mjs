@@ -11,16 +11,16 @@ assert.ok(Math.abs(ctx.angleDelta(-Math.PI+.1,Math.PI-.1)-.2)<1e-9);
 // Execute actual tutorial completion with strict no-ranking stand-ins.
 const elements=new Map();const el=id=>{if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:true,addEventListener(){},classList:{add(){},remove(){}}});return elements.get(id)};
 const state={};const marker={visible:true},target={visible:true};const tutorial={active:true,marker,target};let saved=0,reset=0,cleared=0,rounds=0;
-const tctx={document:{getElementById:el},beginRun(){rounds++},projectiles:[],scene:{remove(){}},tutorial,state,tutorialSeen:false,TUTORIAL_KEY:'key',localStorage:{setItem(){saved++}},clearInputs(){cleared++},tutorialPanel:el('panel'),enemies:[],bones:[],player:{position:{set(){}}},dogBodyGroup:{position:{set(){}}},START:{x:0,z:0},resetMissions(){reset++},setPaused(p){state.paused=p},updateHUD(){},overMsg:el('msg'),L:s=>s};
+const tctx={selectedLevel:3,startCampaignLevel(n,resume){assert.equal(n,3);assert.equal(resume,true);reset++;rounds++;state.started=true;state.paused=false},document:{getElementById:el},beginRun(){rounds++},projectiles:[],scene:{remove(){}},tutorial,state,tutorialSeen:false,TUTORIAL_KEY:'key',localStorage:{setItem(){saved++}},clearInputs(){cleared++},tutorialPanel:el('panel'),enemies:[],bones:[],player:{position:{set(){}}},dogBodyGroup:{position:{set(){}}},START:{x:0,z:0},resetMissions(){reset++},setPaused(p){state.paused=p},updateHUD(){},overMsg:el('msg'),L:s=>s};
 vm.createContext(tctx);vm.runInContext(s.slice(s.indexOf('  function finishTutorial()'),s.indexOf('  function tickTutorial(')),tctx);tctx.finishTutorial();assert.equal(saved,1);assert.equal(reset,1);assert.equal(cleared,0);assert.equal(rounds,1);assert.equal(tutorial.active,false);assert.equal(tctx.tutorialSeen,true);assert.equal(state.started,true);assert.equal(state.paused,false);assert.equal(marker.visible,false);
 // Practice movement remains live; combat/score/AI block requires a real ranked run.
 assert.ok(s.includes('if(!tutorial.active && run.active){'));
-assert.ok(s.includes('if (freshRun && !tutorial.active) { if (!tutorialSeen) startTutorial(); else beginRun(); }'));
+assert.ok(s.includes('if(!tutorialSeen){startTutorial();return;}'));
 console.log('PASS: forward-cone assist, rear/side/range/dead rejection, wall rejection, angle wrapping, tutorial completion isolation and persistence');
 // Hits require an actual practice projectile to reach the target, not just an attack callback.
 class V{constructor(x=0,y=0,z=0){Object.assign(this,{x,y,z})}length(){return Math.hypot(this.x,this.y,this.z)}addScaledVector(v,k){this.x+=v.x*k;this.y+=v.y*k;this.z+=v.z*k;return this}distanceTo(v){return Math.hypot(this.x-v.x,this.y-v.y,this.z-v.z)}}
 const practice={step:1,hits:0,target:{position:new V(0,1.4,-5)},marker:{position:new V()},dodged:false};
-const shots=[];const hitctx={tutorial:practice,projectiles:shots,Math,bulletBlocked:()=>false,burst(){},AudioSys:{play(){}},scene:{remove(){}},setTutorialStep(i){practice.step=i},tutorialText(){},player:{position:new V()},state:{dodgeTimer:0},finishTutorial(){}};
+const shots=[];const hitctx={impactAt(){},tutorial:practice,projectiles:shots,Math,bulletBlocked:()=>false,burst(){},AudioSys:{play(){}},scene:{remove(){}},setTutorialStep(i){practice.step=i},tutorialText(){},player:{position:new V()},state:{dodgeTimer:0},finishTutorial(){}};
 vm.createContext(hitctx);vm.runInContext(s.slice(s.indexOf('  function tickTutorial('),s.indexOf("  document.getElementById('tutorial-skip')",s.indexOf('  function tickTutorial('))),hitctx);
 hitctx.tickTutorial(1/30);assert.equal(practice.hits,0);
 shots.push({life:1,vel:new V(0,0,-36),mesh:{position:new V(0,1.4,-4)}});hitctx.tickTutorial(1/30);assert.equal(practice.hits,1);assert.equal(shots.length,0);

@@ -209,3 +209,7 @@ Closing Call 開局會等待訪客排行回合準備完成，避免快速點擊�
 2026-11-24 新增。三個難度各一張榜：`top-doggo-easy`、`top-doggo-normal`、`top-doggo-hard`（棋盤對局 API 的 gameId），成績 = 該局到達的關卡數。即時 3D 動作遊戲無法在 Worker 完整重播，所以只做合理性驗證：`shared/top-doggo-rules.cjs` 的 `verify([關卡, 擊倒數, 遊玩毫秒], 開局至今毫秒)` 檢查關卡範圍（1～60）、每關至少 8 名擊倒、遊玩時間下限（6 秒＋每關 18 秒）與不得超過實際經過時間（容差 3 秒）、擊倒速度上限。`backend/src/services/ranked-boards.mjs` 以 `topDoggoBoard()` 為三個 ID 各註冊一份，沿用兩小時對局期限、重送保護、`ranked_board_best_after_finish` trigger 與前 50 筆保留，不需要新 trigger。`0018_game_names_top_doggo.sql` 新增大廳卡片名稱與三張榜的顯示名稱。大廳榜單（`js/member.js`）把 `<遊戲>-easy|normal|hard` 的榜依難度分列，列上顯示 `Lv N`，連結回遊戲。已知限制：此驗證不能擋住「等待足夠時間後送出假成績」；若日後需要更強防護，要改成由 Worker 逐關核發憑證。
 
 測試：`node tools/test_top_doggo_board.mjs`（真實 Worker 路由＋SQLite 套用全部 migration）。發布順序：先套用 `0018` migration，再部署 Worker，最後發布前端；回復時反向處理，名稱列與榜單資料可保留。前端在 Worker 尚未部署時會顯示「排行榜連線失敗，仍可繼續遊玩」，不影響遊玩。
+
+### TOP DOGGO 關卡制（2026-11-25）
+
+本站已改為本機 10 關進度，前端移除排行榜呼叫；Worker 停用三種難度的新回合註冊，須另部署才生效。正式 game_leaderboard 舊分數已按使用者要求備份並清除 30 筆，清除後查詢為 0；player_best_scores 與 ranked_boards 活動回合保留。舊正式前端／Worker 在新版發布前仍可能產生新分數。

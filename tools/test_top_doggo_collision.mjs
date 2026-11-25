@@ -1,0 +1,13 @@
+import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';
+const source=fs.readFileSync(new URL('../games/top-doggo/play.html',import.meta.url),'utf8');
+const ctx={};vm.createContext(ctx);vm.runInContext(source.slice(source.indexOf('  function buildingCollisionBounds('),source.indexOf('  function makeBuilding(')),ctx);
+const bounds=ctx.buildingCollisionBounds({mesh:{},cx:20,cz:30,W:10,D:8});
+assert.equal(bounds.minX,14.85);assert.equal(bounds.maxX,25.15);assert.equal(bounds.minZ,25.85);assert.equal(ctx.buildingCollisionBounds({}),null,'empty lots have no phantom building');
+Object.assign(ctx,{colliders:[bounds],carHit:()=>false,WB:{minX:-100,maxX:100,minZ:-100,maxZ:100},tileAtU:()=>'tiles/grass'});
+vm.runInContext(source.slice(source.indexOf('  function moveBlockedAt('),source.indexOf('  function freeSpotU(')),ctx);
+assert.equal(ctx.moveBlockedAt(12,30,.55),false,'empty grass inside the original lot is walkable');
+assert.equal(ctx.moveBlockedAt(14.4,30,.55),true,'character radius plus small wall margin prevents clipping');
+assert.equal(ctx.moveBlockedAt(20,30,.55),true,'building remains solid');
+assert.equal(ctx.moveBlockedAt(27,30,1.05),false,'vehicle can use grass outside the footprint');
+assert.equal(ctx.moveBlockedAt(12,24,.55),false,'grass corners remain open');
+console.log('PASS: grass is walkable; model footprint + 0.15 margin and character radius protect walls; empty lots stay open');

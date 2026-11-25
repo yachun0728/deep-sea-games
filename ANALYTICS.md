@@ -145,7 +145,7 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 
 ## TOP DOGGO: Paw City（top-doggo）
 
-無盡、免費、沒有 BONUS。每局一次start（entry_points=0，difficulty＝easy／normal／hard）；暫停與繼續不另送事件。血量歸零送一次end：result為loss、payout=0、score＝到達關卡、step＝累計擊倒數、level＝到達關卡；離開遊戲頁或關閉分頁送一次end：result為abandoned。重送與重複結束只會記一次。
+免費、沒有 BONUS、無排行榜。每關一次 start（entry_points=0，level、mode=campaign/free）；暫停與繼續不另送事件。通關 win、血量歸零 loss、離頁 abandoned，end 保留 payout=0、score=關卡、step=累計擊倒數、level。自由玩另開回合，重複結束只會記一次。
 
 ## 不准跑調（on-pitch）
 

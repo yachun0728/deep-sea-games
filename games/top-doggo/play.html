@@ -220,7 +220,7 @@
   .pill-btn .pi { height: 20px; width: auto; }
   #wanted-bones .pi { height: 24px; width: auto; display: block; }
   #overlay { align-items: center; justify-content: center; padding: 14px; background: linear-gradient(180deg, rgba(60,24,70,.42), rgba(24,10,38,.88)) !important; backdrop-filter: blur(2.5px) !important; overflow-y: auto; }
-  .ov-rays { position: absolute; inset: -30%; pointer-events: none; opacity: .13; background: repeating-conic-gradient(from 0deg at 50% 62%, #ffc83d 0 6deg, transparent 6deg 14deg); animation: raySpin 60s linear infinite; mask-image: radial-gradient(circle at 50% 60%, #000 0, transparent 62%); -webkit-mask-image: radial-gradient(circle at 50% 60%, #000 0, transparent 62%); }
+  .ov-rays { position: fixed; inset: 0; pointer-events: none; opacity: .13; background: repeating-conic-gradient(from 0deg at 50% 62%, #ffc83d 0 6deg, transparent 6deg 14deg); animation: none; mask-image: radial-gradient(circle at 50% 60%, #000 0, transparent 62%); -webkit-mask-image: radial-gradient(circle at 50% 60%, #000 0, transparent 62%); }
   @keyframes raySpin { to { transform: rotate(360deg); } }
   #ov-logo { width: min(86vw, 400px); height: auto; filter: drop-shadow(0 8px 0 rgba(0,0,0,.35)) drop-shadow(0 0 22px rgba(255,160,40,.35)); animation: logoIn .8s cubic-bezier(.2,1.4,.4,1); }
   @keyframes logoIn { from { transform: scale(.6) rotate(-6deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
@@ -294,6 +294,60 @@
   #tutorial-help{font-size:11px;color:#7ef9ff}
   #tutorial-skip{position:absolute;right:6px;top:8px;min-height:44px;padding:6px 8px;border:0;border-radius:8px;background:#ffe9a8;color:#241333;font-weight:800;pointer-events:auto;cursor:pointer}
   .tutorial-focus{outline:3px solid #ffc83d!important;outline-offset:4px}
+  #crosshair.hit-confirmed::before,#crosshair.hit-confirmed::after{background:#7ef9ff;box-shadow:0 0 5px #7ef9ff}
+
+  html,body{overscroll-behavior:none}img,canvas{-webkit-user-drag:none}#overlay,#help-dialog{overscroll-behavior:contain}
+  #btn-help{position:fixed;top:max(10px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));z-index:55;width:44px;height:44px;border:1px solid #ffc83d;border-radius:50%;background:rgba(24,10,38,.86);color:#ffe9a8;font-size:25px;font-weight:bold;cursor:pointer}
+  #ov-practice{right:54px}
+  #help-dialog{width:min(500px,calc(100vw - 28px));max-height:calc(100dvh - 28px);margin:auto;padding:16px;border:1px solid #ffc83d;border-radius:18px;background:#21132f;color:#fff;overflow:auto;touch-action:pan-y}
+  .screen-help{margin-top:18px;border-top:1px solid #ffffff30;padding-top:12px;text-align:left}.screen-help h3{margin:0 0 12px;color:#ffe9a8}.screen-help dl{margin:0}.screen-help dt{font-weight:bold;color:#7ef9ff;margin-top:12px}.screen-help dd{margin:4px 0 0;line-height:1.6;color:#eee}
+  #help-dialog::backdrop{background:rgba(0,0,0,.65)}
+  .help-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+  .help-heading h2{font-size:20px;margin:0}
+  #help-close{min-width:64px;min-height:44px;border:1px solid #ffc83d;border-radius:10px;background:#ffe9a8;color:#241333;font-weight:800;cursor:pointer}
+  #help-dialog .ov-note{margin:10px auto;line-height:1.65}
+  #help-dialog .ov-goal{padding-bottom:0}
+  #help-dialog.dev-touch .guide-pc,#help-dialog.dev-pc .guide-touch{display:none}
+  @media(max-width:560px){#mission{width:calc(100% - 52px);margin-left:0;margin-right:52px}.top-bar{margin-top:12px}}
+
+  #help-dialog{width:min(700px,calc(100vw - 28px));padding:20px;box-sizing:border-box}
+  #help-dialog [hidden]{display:none!important}
+  .help-heading{position:sticky;top:-20px;background:#21132f;z-index:2;padding:4px 0 10px}
+  .help-tabs{display:flex;gap:8px;margin-bottom:18px}
+  .help-tabs button{flex:1;min-height:44px;border:1px solid #ffffff40;border-radius:12px;background:#ffffff0a;color:#d6c9e5;font:inherit;font-weight:800;cursor:pointer}
+  .help-tabs button[aria-selected=true]{background:#ffc83d;color:#21132f;border-color:#ffc83d}
+  .help-tabs button:focus-visible{outline:3px solid #7ef9ff;outline-offset:2px}
+  #help-dialog .ov-tips{gap:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:0}
+  #help-dialog .ov-tips span{border:1px solid #ffffff25;border-radius:14px;background:#ffffff08;padding:12px;font-size:15px;white-space:normal;display:flex;gap:10px;align-items:center}
+  #help-dialog .ov-tips img{height:42px;width:42px;object-fit:contain;flex-shrink:0}
+  .help-shot{position:relative;margin:0;border:1px solid #ffffff30;border-radius:12px;overflow:hidden}
+  .help-shot>img{display:block;width:100%;height:auto}
+  .shot-pin,.help-number{display:inline-flex;align-items:center;justify-content:center;background:#ffca3d;color:#21132f;font-weight:900;border:2px solid #21132f;border-radius:50%;width:25px;height:25px;font-size:14px;box-sizing:border-box}
+  .shot-pin{position:absolute;transform:translate(-50%,-50%);box-shadow:0 0 0 2px #fff8}
+  .pin-1{left:50%;top:5%}.pin-2{left:65%;top:55%}.pin-3{left:9%;top:15%}.pin-4{left:59%;top:14%}.pin-5{left:91%;top:11%}
+  .help-number{margin-right:8px}.screen-help{border:0;padding:0;margin-top:12px}.screen-help dt{display:flex;align-items:center}.screen-help dd{font-size:14px;margin-left:33px}
+  .help-loot{display:flex;justify-content:center;gap:14px;padding:24px 0}.help-loot img{width:52px;height:52px;object-fit:contain}
+  @media(max-width:480px){#help-dialog{padding:14px}.help-heading{top:-14px}#help-dialog .ov-tips{gap:8px}#help-dialog .ov-tips span{padding:10px 8px;font-size:13px;gap:6px}#help-dialog .ov-tips img{width:32px;height:32px}.help-loot{gap:8px}.help-loot img{width:42px;height:42px}.shot-pin{width:21px;height:21px;font-size:12px}}
+
+  #campaign-menu[hidden],#btn-levels[hidden],#btn-roam[hidden]{display:none!important}#campaign-menu{width:min(100%,520px);margin:12px auto;text-align:left}#campaign-title{font-size:18px;color:#ffe9a8;margin-bottom:6px}#campaign-status,#save-status{font-size:12px;color:#c9bed9;margin:6px 0}#level-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.level-card{border:1px solid #ffffff40;border-radius:12px;padding:10px 4px;background:#21132f;color:#fff;min-height:70px;cursor:pointer}.level-card strong{display:block;font-size:24px;color:#7ef9ff}.level-card span{font-size:11px}.level-card.selected{border:2px solid #ffc83d;background:#503142}.level-card:disabled{opacity:.4;cursor:default}#btn-levels,#btn-roam{margin:6px}#overlay #ov-logo{max-height:22dvh;width:auto;max-width:80%}#overlay #ov-hero{max-height:8dvh;width:auto}
+@media(min-width:881px){#overlay{overflow:hidden;touch-action:none;overscroll-behavior:none;padding:10px}#overlay .ov-card{height:100%;max-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}#overlay #ov-logo{max-height:13dvh;margin:0}#overlay #ov-hero{display:none}#overlay .ov-tag{font-size:12px;margin:0}#campaign-menu{margin:5px auto}#overlay .start-btn{font-size:20px;padding:10px 24px;min-height:48px;margin:4px}#overlay .level-card{min-height:58px;padding:5px}#overlay #over-msg{font-size:16px;margin:0}}
+.level-pages{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px}.level-pages button{min-height:44px;min-width:80px;background:#2d1d3c;border:1px solid #ffffff40;border-radius:10px;color:#fff;font:inherit;cursor:pointer}.level-pages button:disabled{opacity:.35;cursor:default}#level-preview{font-size:12px;color:#ffe9a8;margin:8px 0}.coming-soon{opacity:.65!important;border-style:dashed}.coming-soon strong{color:#ffc83d}@media(min-width:881px){#overlay #ov-logo{max-height:10dvh}.level-pages{margin-top:4px}.level-pages button{min-height:36px}#level-preview{margin:4px 0}}
+
+  #mission{display:flex;align-items:center;justify-content:center;gap:8px;width:max-content;max-width:calc(100% - 58px);min-height:34px;padding:6px 12px;margin:0 auto 10px;border:1px solid #ffc83d70;border-radius:12px;font-size:12px;line-height:1.4;white-space:nowrap;background:#190e29d9;box-shadow:0 2px 10px #0002}
+  #mission img{width:22px;height:22px;object-fit:contain}#mission .mission-level{color:#cfc2dd;font-size:11px;padding-right:8px;border-right:1px solid #ffffff30}#mission strong{color:#7ef9ff;font-size:14px;font-variant-numeric:tabular-nums}#mission::after{content:'';position:absolute;bottom:0;left:0;height:2px;width:var(--mission-progress,0%);background:#7ef9ff;transition:width .2s}
+  @media(max-width:560px){#mission{max-width:calc(100% - 52px);margin:0 auto 10px 0;gap:6px;padding:6px 9px;font-size:11px}#mission .mission-level{font-size:10px;padding-right:6px}#mission strong{font-size:13px}#mission img{width:20px;height:20px}}
+#over-msg:empty{display:none}#overlay .start-btn{animation:none}
+@media(max-width:880px){#overlay .ov-card{gap:4px;padding-bottom:18px}#overlay #ov-logo{max-height:18dvh}#campaign-menu{margin:8px auto}#overlay #ov-hero{max-height:8dvh}}
+  body.mouse-aim #crosshair{display:none}body.mouse-aim #game-canvas{cursor:crosshair}
+
+  #help-dialog .help-heading h2{font-size:24px}#help-close,.help-tabs button{font-size:16px}
+  #help-dialog .ov-note{font-size:16px;line-height:1.8}#help-dialog .screen-help dt{font-size:17px}#help-dialog .screen-help dd{font-size:16px;line-height:1.75;margin-top:6px}
+  #help-dialog .ov-tips span{font-size:17px;line-height:1.5;padding:14px 12px}
+  .help-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid #ffffff25;text-align:left}
+  .help-actions>div{display:flex;align-items:center;gap:12px;padding:10px 12px;min-height:60px;font-size:17px;line-height:1.6;color:#f2eaf9;background:#ffffff08;border-radius:12px}
+  .help-actions kbd{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:40px;padding:4px 8px;background:#ffe9a8;color:#241333;border-radius:8px;box-shadow:0 3px 0 #a87e2a;font-family:inherit;font-weight:800;font-size:18px;flex-shrink:0}
+  .help-actions img{width:40px;height:40px;object-fit:contain;flex-shrink:0}
+  @media(max-width:480px){#help-dialog .help-heading h2{font-size:21px}#help-dialog .ov-tips span{font-size:15px;padding:12px 10px;line-height:1.6}#help-dialog .ov-note,#help-dialog .screen-help dd{font-size:16px}.help-actions{grid-template-columns:1fr}.help-actions>div{font-size:16px;min-height:60px}.help-actions kbd{font-size:17px}}
 </style>
 </head>
 <body data-i18n-ignore>
@@ -313,7 +367,7 @@
       <div class="badge-row">
         <button class="pill-btn" id="btn-pause"><img class="pi" src="assets/ui/h_pause.png" alt="">PAUSE</button>
         <button class="pill-btn" id="btn-ui-toggle"><img class="pi" src="assets/ui/h_pad.png" alt="">UI: AUTO</button>
-        <button class="pill-btn" id="btn-mute"><img class="pi" src="assets/ui/h_sound.png" alt="">SFX</button>
+        <button class="pill-btn" id="btn-mute"><img class="pi" src="assets/ui/h_sound.png" alt="">SOUND</button>
       </div>
       <div class="weapon-tag" id="weapon-label">🎾 TENNIS BLASTER (SHOOT)</div>
     </div>
@@ -360,17 +414,23 @@
     <div class="ov-tag">美式鬥牛犬 vs 紫色浣熊幫</div>
     <div id="over-msg"></div>
     <img id="ov-hero" src="assets/characters/hero/front_armed.png" alt="">
-    <div class="ov-label">難度</div>
-    <div id="diff-row"><button type="button" data-d="easy">簡單</button><button type="button" data-d="normal">普通</button><button type="button" data-d="hard">困難</button></div>
-    <div id="rank-box" hidden><div id="rk-title"></div><ol id="rk-list"></ol><div id="rk-status"></div></div>
+<section id="campaign-menu" aria-labelledby="campaign-title"><h2 id="campaign-title">選擇關卡</h2><p id="campaign-status"></p><div id="level-grid"></div><div class="level-pages"><button type="button" id="level-prev">上一頁</button><span id="level-page"></span><button type="button" id="level-next">下一頁</button></div><p id="level-preview"></p><p id="save-status"></p></section>
+    <button type="button" class="pill-btn" id="btn-free">自由探索</button>
+    <button type="button" class="pill-btn" id="btn-levels">選擇關卡</button>
+    <button type="button" class="pill-btn" id="btn-roam" hidden>繼續自由玩</button>
+    <button type="button" class="pill-btn" id="btn-music">MUSIC: ON</button>
     <button class="start-btn" id="btn-play">▶ PLAY TOP DOGGO</button>
-    <div class="ov-tips guide-pc"><span><img src="assets/ui/k_move.png" alt="">WASD 移動</span><span><img src="assets/ui/k_attack.png" alt="">滑鼠左鍵 攻擊</span><span><img src="assets/ui/k_roll.png" alt="">空白鍵 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">Q 換武器</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 E 上車</span></div><div class="ov-note guide-pc">←→ 或右鍵拖曳轉向，J 或左鍵攻擊 · C 蹲下 · X 轉身 180°</div><div class="ov-tips guide-touch"><span><img src="assets/ui/k_move.png" alt="">左手搖桿 移動</span><span><img src="assets/ui/k_attack.png" alt="">右側 FIRE 攻擊</span><span><img src="assets/ui/k_roll.png" alt="">DODGE 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">換武器鈕</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 DRIVE 上車</span></div><div class="ov-note guide-touch">滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身</div>
-    <div class="ov-note ov-goal"><b>目標：</b>完成上方任務通關，下一關更難。金骨頭回血，滿血變護盾；武器箱有手榴彈、大砲、狙擊槍（彈藥有限）。</div>
     <script>document.getElementById("overlay").classList.add((("ontouchstart" in window) || navigator.maxTouchPoints > 0 || window.innerWidth < 820) ? "dev-touch" : "dev-pc");</script>
   </div>
 </div>
 
+<button type="button" id="btn-help" aria-label="操作說明" aria-haspopup="dialog">ⓘ</button>
+<dialog id="help-dialog" aria-labelledby="help-title"><div class="help-heading"><h2 id="help-title">操作說明</h2><button type="button" id="help-close">關閉</button></div>
+<div class="help-tabs" role="tablist" aria-label="說明分類"><button type="button" role="tab" id="help-tab-controls" aria-controls="help-panel-controls" aria-selected="true" tabindex="0">操作</button><button type="button" role="tab" id="help-tab-screen" aria-controls="help-panel-screen" aria-selected="false" tabindex="-1">畫面</button><button type="button" role="tab" id="help-tab-goal" aria-controls="help-panel-goal" aria-selected="false" tabindex="-1">目標</button></div><section role="tabpanel" id="help-panel-controls" aria-labelledby="help-tab-controls">    <div class="ov-tips guide-pc"><span><img src="assets/ui/k_move.png" alt="">WASD 移動</span><span><img src="assets/ui/k_attack.png" alt="">滑鼠瞄準・按住左鍵攻擊</span><span><img src="assets/ui/k_roll.png" alt="">空白鍵 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">Q 換武器</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 E 上車</span></div><div class="help-actions guide-pc"><div><kbd>← →</kbd><span>轉向</span></div><div><kbd>J</kbd><span>按住攻擊</span></div><div><kbd>C</kbd><span>蹲下</span></div><div><kbd>X</kbd><span>轉身 180°</span></div></div><div class="ov-tips guide-touch"><span><img src="assets/ui/k_move.png" alt="">左手搖桿 移動</span><span><img src="assets/ui/k_attack.png" alt="">右側 FIRE 攻擊</span><span><img src="assets/ui/k_roll.png" alt="">DODGE 翻滾</span><span><img src="assets/ui/k_swap.png" alt="">換武器鈕</span><span><img src="assets/ui/k_car.png" alt="">靠近車按 DRIVE 上車</span></div><div class="help-actions guide-touch"><div><img src="assets/ui/k_move.png" alt=""><span>拖曳空白畫面轉向</span></div><div><img src="assets/ui/b_shield.png" alt=""><span>CROUCH 蹲下</span></div><div><img src="assets/ui/b_turn.png" alt=""><span>180° 轉身</span></div></div>
+</section><section role="tabpanel" id="help-panel-screen" aria-labelledby="help-tab-screen" hidden><figure class="help-shot"><img src="assets/ui/help-gameplay.webp" alt="遊戲畫面範例"><span class="shot-pin pin-1">1</span><span class="shot-pin pin-2">2</span><span class="shot-pin pin-3">3</span><span class="shot-pin pin-4">4</span><span class="shot-pin pin-5">5</span></figure><div class="screen-help"><dl><dt><span class="help-number">1</span>關卡與任務</dt><dd>上方顯示目前關卡、任務圖示與完成數；例如 3/8 表示已完成 3 個，目標共 8 個。</dd><dt><span class="help-number">2</span>頭頂血量</dt><dd>自己頭頂的百分比是血量；「盾」是額外護盾，受傷時優先消耗。</dd><dt><span class="help-number">3</span>左上武器</dt><dd>顯示目前武器與剩餘彈藥；∞ 代表無限彈藥。</dd><dt><span class="help-number">4</span>小地圖</dt><dd>綠色三角是自己、粉紅圓點是敵人、黃色圓點是金骨頭、藍色方塊是車輛。</dd><dt><span class="help-number">5</span>骨頭警戒值</dt><dd>亮起的骨頭表示警戒程度，不是金錢；擊倒敵人後會提高。</dd></dl></div></section><section role="tabpanel" id="help-panel-goal" aria-labelledby="help-tab-goal" hidden><div class="help-loot"><img src="assets/ui/h_bone.png" alt=""><img src="assets/ui/b_shield.png" alt=""><img src="assets/ui/w_grenade.png" alt=""><img src="assets/ui/w_cannon.png" alt=""><img src="assets/ui/w_sniper.png" alt=""></div><div class="ov-note ov-goal"><b>目標：</b>完成上方任務通關，下一關更難。金骨頭回血，滿血變護盾；武器箱有手榴彈、大砲、狙擊槍（彈藥有限）。</div></section></dialog>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="levels.js"></script>
+<script src="progress.js"></script>
 <script src="models/toon.js"></script>
 <script src="models/buildings.js"></script>
 <script src="models/props.js"></script>
@@ -380,7 +440,51 @@
   // 0. PLATFORM LAYER (TICATICA): language, leaderboard bridge, run tracking
   // ==========================================
   const EN = {
-    '用 ←→ 轉向，按住 J 攻擊練習靶': 'Turn with arrows; hold J to attack the target',
+    "轉向": "Turn",
+    "按住攻擊": "Hold to attack",
+    "蹲下": "Crouch",
+    "轉身 180°": "Turn 180°",
+    "拖曳空白畫面轉向": "Drag empty space to turn",
+    "CROUCH 蹲下": "CROUCH to duck",
+    "180° 轉身": "180° turn",
+    "任務 {n}/{total}": "Mission {n}/{total}",
+    "自由探索": "Free roam",
+    "自由探索 · 浣熊持續出沒": "Free roam · raccoons keep coming",
+    "上一頁": "Previous",
+    "下一頁": "Next",
+    "施工中": "Under construction",
+    "威脅等級 {n}": "Threat level {n}",
+    "本關目標：擊倒 {n} 名浣熊": "Level goal: defeat {n} raccoons",
+    "選擇關卡": "Select level",
+    "繼續自由玩": "Keep exploring",
+    "重玩本關": "Replay level",
+    "第 {n} 關通關！": "Level {n} cleared!",
+    "進度自動儲存在此瀏覽器": "Progress is saved automatically in this browser",
+    "無法儲存；關閉頁面後進度可能遺失": "Saving unavailable; progress may be lost when you close this page",
+    "已通關 {n}/{total}": "Cleared {n}/{total}",
+    "尚未解鎖": "Locked",
+    "已通關": "Cleared",
+    "挑戰": "Play",
+    "開始第 {n} 關": "Play level {n}",
+    "操作": "Controls",
+    "畫面": "Screen",
+    "目標": "Goal",
+    "說明分類": "Help categories",
+    "遊戲畫面範例": "Gameplay example",
+    "小地圖": "Minimap",
+    "畫面說明": "Screen guide",
+    "關卡與任務": "Level and missions",
+    "上方顯示目前關卡、任務圖示與完成數；例如 3/8 表示已完成 3 個，目標共 8 個。": "The top bar shows your level, mission icon and progress. For example, 3/8 means 3 completed out of 8.",
+    "頭頂血量": "Health above your head",
+    "自己頭頂的百分比是血量；「盾」是額外護盾，受傷時優先消耗。": "The percentage above your character is health. SH is extra shield, which absorbs damage first.",
+    "左上武器": "Weapon at top left",
+    "顯示目前武器與剩餘彈藥；∞ 代表無限彈藥。": "Shows your equipped weapon and remaining ammo; ∞ means unlimited ammo.",
+    "右上小地圖": "Minimap at top right",
+    "綠色三角是自己、粉紅圓點是敵人、黃色圓點是金骨頭、藍色方塊是車輛。": "Green triangle: you. Pink dots: enemies. Yellow dots: golden bones. Cyan squares: vehicles.",
+    "骨頭警戒值": "Bone alert meter",
+    "亮起的骨頭表示警戒程度，不是金錢；擊倒敵人後會提高。": "Lit bones indicate your alert level, not money. Defeating enemies raises it.",
+    '操作說明': 'How to play', '關閉': 'Close',
+    '滑鼠瞄準練習靶，按住左鍵或 J 攻擊': 'Aim at the target with your mouse; hold left click or J',
     '操作教學': 'Practice',
     '跳過教學': 'Skip',
     '教學完成，準備好就開始！': 'Practice complete. Ready to play!',
@@ -392,10 +496,10 @@
     '左搖桿移動，拖曳空白畫面轉向': 'Left stick moves; drag empty space to turn',
     'WASD 移動，←→ 轉向，J 攻擊': 'WASD moves; arrows turn; J attacks',
     '美式鬥牛犬 vs 紫色浣熊幫': 'American Bulldog vs. the Purple Raccoon Gang', '難度': 'Difficulty', '簡單': 'Easy', '普通': 'Normal', '困難': 'Hard',
-    'WASD 移動': 'WASD Move', '滑鼠左鍵 攻擊': 'Left Click Attack', '空白鍵 翻滾': 'Space Roll', 'Q 換武器': 'Q Switch Weapon', '靠近車按 E 上車': 'Press E near a car to drive',
+    'WASD 移動': 'WASD Move', '滑鼠瞄準・按住左鍵攻擊': 'Mouse aim · hold left click', '空白鍵 翻滾': 'Space Roll', 'Q 換武器': 'Q Switch Weapon', '靠近車按 E 上車': 'Press E near a car to drive',
     '左手搖桿 移動': 'Left Stick Move', '右側 FIRE 攻擊': 'Right FIRE Attack', 'DODGE 翻滾': 'DODGE Roll', '換武器鈕': 'Weapon Switch', '靠近車按 DRIVE 上車': 'DRIVE near a car',
-    '←→ 或右鍵拖曳轉向，J 或左鍵攻擊 · C 蹲下 · X 轉身 180°': 'Arrows or right-drag to turn; J or left click to attack · C Crouch · X Turn 180°',
-    '滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身': 'Swipe the right side to turn · CROUCH · 180° Turn',
+    '←→ 轉向，J 或左鍵攻擊 · C 蹲下 · X 轉身 180°': 'Arrows to turn; J or left click to attack · C Crouch · X Turn 180°',
+    '拖曳空白畫面轉向 · CROUCH 蹲下 · 180° 轉身': 'Drag empty space to turn · CROUCH · 180° Turn',
     '目標：': 'Goal: ', '完成上方任務通關，下一關更難。金骨頭回血，滿血變護盾；武器箱有手榴彈、大砲、狙擊槍（彈藥有限）。': 'Finish the missions above to clear a level; the next one is tougher. Golden bones heal you (or add a shield at full health). Weapon crates hold grenades, cannons and sniper rifles (limited ammo).',
     '載入素材中…': 'Loading…', '載入失敗，請重新整理': 'Failed to load. Please refresh.', '模型載入失敗，請重新整理': 'Models failed to load. Please refresh.',
     '擊倒浣熊': 'Defeat raccoons', '撿金骨頭': 'Collect bones', '開車撞敵人': 'Ram enemies', '連擊': 'Combo', '擊敗頭目': 'Defeat bosses', '擊倒精英': 'Defeat elites',
@@ -412,7 +516,51 @@
     '訪客': 'Guest', '成績送出中…': 'Submitting score…', '排行榜連線失敗，仍可繼續遊玩': 'Leaderboard offline — you can still play', '你的最高紀錄': 'Your best',
   };
   const HANS = {
-    '用 ←→ 轉向，按住 J 攻擊練習靶': '用 ←→ 转向，按住 J 攻击练习靶',
+    "轉向": "转向",
+    "按住攻擊": "按住攻击",
+    "蹲下": "蹲下",
+    "轉身 180°": "转身 180°",
+    "拖曳空白畫面轉向": "拖曳空白画面转向",
+    "CROUCH 蹲下": "CROUCH 蹲下",
+    "180° 轉身": "180° 转身",
+    "任務 {n}/{total}": "任务 {n}/{total}",
+    "自由探索": "自由探索",
+    "自由探索 · 浣熊持續出沒": "自由探索 · 浣熊持续出没",
+    "上一頁": "上一页",
+    "下一頁": "下一页",
+    "施工中": "施工中",
+    "威脅等級 {n}": "威胁等级 {n}",
+    "本關目標：擊倒 {n} 名浣熊": "本关目标：击倒 {n} 名浣熊",
+    "選擇關卡": "选择关卡",
+    "繼續自由玩": "继续自由玩",
+    "重玩本關": "重玩本关",
+    "第 {n} 關通關！": "第 {n} 关通关！",
+    "進度自動儲存在此瀏覽器": "进度自动储存在此浏览器",
+    "無法儲存；關閉頁面後進度可能遺失": "无法储存；关闭页面后进度可能遗失",
+    "已通關 {n}/{total}": "已通关 {n}/{total}",
+    "尚未解鎖": "尚未解锁",
+    "已通關": "已通关",
+    "挑戰": "挑战",
+    "開始第 {n} 關": "开始第 {n} 关",
+    "操作": "操作",
+    "畫面": "画面",
+    "目標": "目标",
+    "說明分類": "说明分类",
+    "遊戲畫面範例": "游戏画面范例",
+    "小地圖": "小地图",
+    "畫面說明": "画面说明",
+    "關卡與任務": "关卡与任务",
+    "上方顯示目前關卡、任務圖示與完成數；例如 3/8 表示已完成 3 個，目標共 8 個。": "上方显示目前关卡、任务图示与完成数；例如 3/8 表示已完成 3 个，目标共 8 个。",
+    "頭頂血量": "头顶血量",
+    "自己頭頂的百分比是血量；「盾」是額外護盾，受傷時優先消耗。": "自己头顶的百分比是血量；「盾」是额外护盾，受伤时优先消耗。",
+    "左上武器": "左上武器",
+    "顯示目前武器與剩餘彈藥；∞ 代表無限彈藥。": "显示目前武器与剩余弹药；∞ 代表无限弹药。",
+    "右上小地圖": "右上小地图",
+    "綠色三角是自己、粉紅圓點是敵人、黃色圓點是金骨頭、藍色方塊是車輛。": "绿色三角是自己、粉红圆点是敌人、黄色圆点是金骨头、蓝色方块是车辆。",
+    "骨頭警戒值": "骨头警戒值",
+    "亮起的骨頭表示警戒程度，不是金錢；擊倒敵人後會提高。": "亮起的骨头表示警戒程度，不是金钱；击倒敌人后会提高。",
+    '操作說明': '操作说明', '關閉': '关闭',
+    '滑鼠瞄準練習靶，按住左鍵或 J 攻擊': '鼠标瞄准练习靶，按住左键或 J 攻击',
     '操作教學': '操作教学',
     '跳過教學': '跳过教学',
     '教學完成，準備好就開始！': '教学完成，准备好就开始！',
@@ -424,10 +572,10 @@
     '左搖桿移動，拖曳空白畫面轉向': '左摇杆移动，拖曳空白画面转向',
     'WASD 移動，←→ 轉向，J 攻擊': 'WASD 移动，←→ 转向，J 攻击',
     '美式鬥牛犬 vs 紫色浣熊幫': '美式斗牛犬 vs 紫色浣熊帮', '難度': '难度', '簡單': '简单', '普通': '普通', '困難': '困难',
-    'WASD 移動': 'WASD 移动', '滑鼠左鍵 攻擊': '鼠标左键 攻击', '空白鍵 翻滾': '空格键 翻滚', 'Q 換武器': 'Q 换武器', '靠近車按 E 上車': '靠近车按 E 上车',
+    'WASD 移動': 'WASD 移动', '滑鼠瞄準・按住左鍵攻擊': '鼠标左键 攻击', '空白鍵 翻滾': '空格键 翻滚', 'Q 換武器': 'Q 换武器', '靠近車按 E 上車': '靠近车按 E 上车',
     '左手搖桿 移動': '左手摇杆 移动', '右側 FIRE 攻擊': '右侧 FIRE 攻击', 'DODGE 翻滾': 'DODGE 翻滚', '換武器鈕': '换武器钮', '靠近車按 DRIVE 上車': '靠近车按 DRIVE 上车',
-    '←→ 或右鍵拖曳轉向，J 或左鍵攻擊 · C 蹲下 · X 轉身 180°': '←→ 或右键拖曳转向，J 或左键攻击 · C 蹲下 · X 转身 180°',
-    '滑動螢幕右側轉向 · CROUCH 蹲下 · 180° 轉身': '滑动屏幕右侧转向 · CROUCH 蹲下 · 180° 转身',
+    '←→ 轉向，J 或左鍵攻擊 · C 蹲下 · X 轉身 180°': '←→ 转向，J 或左键攻击 · C 蹲下 · X 转身 180°',
+    '拖曳空白畫面轉向 · CROUCH 蹲下 · 180° 轉身': '拖曳空白画面转向 · CROUCH 蹲下 · 180° 转身',
     '目標：': '目标：', '完成上方任務通關，下一關更難。金骨頭回血，滿血變護盾；武器箱有手榴彈、大砲、狙擊槍（彈藥有限）。': '完成上方任务通关，下一关更难。金骨头回血，满血变护盾；武器箱有手榴弹、大炮、狙击枪（弹药有限）。',
     '載入素材中…': '载入素材中…', '載入失敗，請重新整理': '载入失败，请重新刷新', '模型載入失敗，請重新整理': '模型载入失败，请重新刷新',
     '擊倒浣熊': '击倒浣熊', '撿金骨頭': '捡金骨头', '開車撞敵人': '开车撞敌人', '連擊': '连击', '擊敗頭目': '击败头目', '擊倒精英': '击倒精英',
@@ -454,6 +602,8 @@
   };
   const zhOf = new WeakMap();
   function applyLang() {
+    document.getElementById('btn-help')?.setAttribute('aria-label',L('操作說明'));
+    document.querySelector('.help-tabs')?.setAttribute('aria-label',L('說明分類'));
     document.documentElement.lang = LANG === 'en' ? 'en' : LANG === 'zh-Hans' ? 'zh-Hans' : 'zh-Hant';
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     for (let n = walker.nextNode(); n; n = walker.nextNode()) {
@@ -466,46 +616,18 @@
       n.nodeValue = raw.replace(key, hit === undefined ? key : hit);
     }
   }
-  window.setTopDoggoLanguage = v => { LANG = normLang(v); applyLang(); if (window.__tdRefresh) window.__tdRefresh(); renderRankStatus(); };
-  // run tracking for the platform leaderboard (score = level reached, per difficulty)
-  const run = { active: false, ms: 0, kills: 0, reported: false };
-  function syncRunUI() { const row = document.getElementById('diff-row'); if (row) row.classList.toggle('locked', run.active); }
-  async function refreshRank(diff) {
-    const box = document.getElementById('rank-box'), list = document.getElementById('rk-list'), title = document.getElementById('rk-title');
-    if (!box || !PF || !PF.leaders) return;
-    try {
-      const data = await PF.leaders(window, diff);
-      const entries = (data && data.entries ? data.entries : []).slice(0, 1);
-      box.hidden = false;
-      title.textContent = L('排行榜') + ' · ' + L({ easy: '簡單', normal: '普通', hard: '困難' }[diff]);
-      list.innerHTML = entries.length ? entries.map((e, i) => '<li><b>' + (i + 1) + '</b><span>' + String(e.displayName || L('訪客')).replace(/[<>&"]/g, '') + '</span><em>' + L('第 {n} 關', { n: e.score }) + '</em></li>').join('') : '<li class="rk-empty">' + L('尚無紀錄') + '</li>';
-    } catch (e) { box.hidden = true; }
-  }
-  let rankStatus = null;
-  function renderRankStatus() {
-    const st = document.getElementById('rk-status');
-    if (!st || !rankStatus) return;
-    const { result, level: reached, pending } = rankStatus;
-    st.textContent = pending ? L('成績送出中…') : result && result.saved ? L('已記入排行榜') + ' · ' + L('第 {n} 關', { n: reached }) : (result && result.offline ? L('排行榜連線失敗，仍可繼續遊玩') : L('這局沒有記入排行榜'));
-  }
-  function beginRun() {
-    run.active = true; run.ms = 0; run.kills = 0; run.reported = false; syncRunUI();
-    if (PF && PF.prepare) { try { PF.prepare(window, DIFF_KEY); } catch (e) { /* ignore */ } }
-  }
-  async function endRun(reason) {
-    if (!run.active || run.reported) return;
-    run.active = false; run.reported = true; syncRunUI();
-    const st = document.getElementById('rk-status');
-    if (!PF || !PF.finish) return;
-    rankStatus = { pending: true }; renderRankStatus();
-    let result = null;
-    try { result = await PF.finish(window, { difficulty: DIFF_KEY, level, kills: run.kills, playMs: Math.round(run.ms), reason }); } catch (e) { /* ignore */ }
-    rankStatus = { result, level }; renderRankStatus();
-    refreshRank(DIFF_KEY);
-  }
+  let campaignReady=false;
+  window.setTopDoggoLanguage = v => { LANG = normLang(v); applyLang(); if (window.__tdRefresh) window.__tdRefresh(); renderRankStatus();if(campaignReady)renderCampaign(); };
+  const run={active:false,ms:0,kills:0,reported:false};
+  function syncRunUI(){}
+  function refreshRank(){}
+  function renderRankStatus(){}
+  function beginRun(){run.active=true;run.ms=0;run.kills=0;run.reported=false;if(PF?.prepare)PF.prepare(window,level,freeRoam?'free':'campaign');}
+  async function endRun(reason){if(!run.active||run.reported)return;run.active=false;run.reported=true;await PF?.finish?.(window,{level,kills:run.kills,playMs:Math.round(run.ms),reason,mode:freeRoam?'free':'campaign'});}
   window.setTopDoggoActive = active => {
     platformActive = active;
-    if (active) { applyLang(); refreshRank(DIFF_KEY); return; }
+    if(!active)AudioSys.setActive(false);
+    if (active) { applyLang(); refreshRank(DIFF_KEY);if(campaignReady)AudioSys.setScene(state.started&&!state.paused?'game':'menu',true);return; }
     if (state.started && !state.paused) setPaused(true);
     if (run.active) { endRun('left'); state.hp = 0; setPaused(true); }
   };
@@ -518,19 +640,27 @@
     ctx: null,
     muted: false,
     init() {
-      if (!this.ctx) {
-        const AC = window.AudioContext || window.webkitAudioContext;
-        if (AC) this.ctx = new AC();
-      }
-      if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+      try {
+        if(!this.ctx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();
+          this.master=this.ctx.createGain();this.master.gain.value=.65;this.master.connect(this.ctx.destination);
+          this.sfxBus=this.ctx.createGain();this.sfxBus.gain.value=.7;this.sfxBus.connect(this.master);
+          this.musicBus=this.ctx.createGain();this.musicBus.gain.value=.22;this.musicBus.connect(this.master);
+          const n=this.ctx.sampleRate/5;this.noise=this.ctx.createBuffer(1,n,this.ctx.sampleRate);const data=this.noise.getChannelData(0);
+          let seed=217;for(let i=0;i<n;i++){seed=(seed*16807)%2147483647;data[i]=seed/1073741823.5-1;}
+        }
+        if(this.ctx.state==='suspended')this.ctx.resume().then(()=>this.sync()).catch(()=>{});
+      }catch(_){/* Audio failure must never block gameplay. */}
     },
     play(type) {
-      if (this.muted || !this.ctx) return;
+      if (this.muted || !this.ctx || !this.active || this.scene!=='game' || document.hidden) return;
+      if (!['shoot','punch','dodge','turn','coin','hit','hurt'].includes(type)) return;
+      if(type==='hurt')type='hit';
       const now = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxBus || this.ctx.destination);
+      osc.onended=()=>{osc.disconnect();gain.disconnect();};
 
       if (type === 'shoot') {
         osc.type = 'triangle';
@@ -578,6 +708,55 @@
     }
   };
 
+
+  // Original 108 BPM synth groove, scheduled ahead; no downloaded music or looping timer while paused.
+  Object.assign(AudioSys,{
+    active:false,scene:'menu',musicEnabled:true,musicTimer:null,musicStep:0,nextBeat:0,musicGeneration:0,musicVoices:new Set(),
+    musicNote(type,freq,time,duration,volume){
+      const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=type;o.frequency.setValueAtTime(freq,time);
+      g.gain.setValueAtTime(.001,time);g.gain.linearRampToValueAtTime(volume,time+.008);g.gain.exponentialRampToValueAtTime(.001,time+duration);
+      o.connect(g);g.connect(this.musicBus);this.musicVoices.add(o);o.onended=()=>{this.musicVoices.delete(o);o.disconnect();g.disconnect();};o.start(time);o.stop(time+duration+.01);
+    },
+    percussion(time,snare){
+      if(snare){const n=this.ctx.createBufferSource(),g=this.ctx.createGain(),filter=this.ctx.createBiquadFilter();n.buffer=this.noise;filter.type='highpass';filter.frequency.value=1800;
+        g.gain.setValueAtTime(.13,time);g.gain.exponentialRampToValueAtTime(.001,time+.09);n.connect(filter);filter.connect(g);g.connect(this.musicBus);this.musicVoices.add(n);
+        n.onended=()=>{this.musicVoices.delete(n);n.disconnect();filter.disconnect();g.disconnect();};n.start(time);n.stop(time+.1);
+      }else{const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.frequency.setValueAtTime(105,time);o.frequency.exponentialRampToValueAtTime(42,time+.1);g.gain.setValueAtTime(.3,time);g.gain.exponentialRampToValueAtTime(.001,time+.14);o.connect(g);g.connect(this.musicBus);this.musicVoices.add(o);o.onended=()=>{this.musicVoices.delete(o);o.disconnect();g.disconnect();};o.start(time);o.stop(time+.15);}
+    },
+    scheduleMusic(){
+      if(!this.active||this.muted||!this.musicEnabled||!this.ctx||this.ctx.state!=='running')return;
+      const menu=this.scene==='menu';
+      const stepDuration=60/(menu?88:108)/4;this.nextBeat=Math.max(this.nextBeat,this.ctx.currentTime+.015);
+      const bass=[40,0,40,0,43,0,47,0,38,0,38,41,43,0,38,0];
+      while(this.nextBeat<this.ctx.currentTime+.13){const step=this.musicStep%32,i=step%16,t=this.nextBeat;
+        if(menu){
+          // Original C–Am–F–G menu loop: bell melody, warm chords, light bass.
+          const chords=[[48,52,55],[45,48,52],[41,45,48],[43,47,50]],chord=chords[Math.floor(step/8)];
+          if(step%8===0){for(const note of chord)this.musicNote('sine',440*Math.pow(2,(note+12-69)/12),t,1.25,.065);this.musicNote('triangle',440*Math.pow(2,(chord[0]-69)/12),t,.45,.1);}
+          if(step%2===0){const melody=[72,76,79,76,72,76,81,79,77,76,72,69,71,74,79,74];this.musicNote('sine',440*Math.pow(2,(melody[Math.floor(step/2)]-69)/12),t,.32,.075);}
+          this.musicStep++;this.nextBeat+=stepDuration;continue;
+        }
+        if(i%4===0)this.percussion(t,false);if(i===4||i===12)this.percussion(t,true);
+        if(bass[i])this.musicNote('triangle',440*Math.pow(2,(bass[i]-69)/12),t,.16,.2);
+        if(step%4===2){const notes=[64,67,71,67,62,65,69,65];this.musicNote('sine',440*Math.pow(2,(notes[Math.floor(step/4)]-69)/12),t,.18,.1);}
+        this.musicStep++;this.nextBeat+=stepDuration;
+      }
+    },
+    stopMusic(){this.musicGeneration++;if(this.musicTimer!==null){clearInterval(this.musicTimer);this.musicTimer=null;}for(const v of this.musicVoices){try{v.stop();}catch(_){}try{v.disconnect();}catch(_){}}this.musicVoices.clear();},
+    sync(){
+      if(!this.ctx)return;
+      this.master.gain.setTargetAtTime(this.muted?0:.65,this.ctx.currentTime,.025);
+      if(this.active&&!document.hidden&&!this.muted&&this.musicEnabled&&this.ctx.state==='running'){
+        if(this.musicTimer===null){this.nextBeat=this.ctx.currentTime+.04;const generation=this.musicGeneration;this.musicTimer=setInterval(()=>{if(generation===this.musicGeneration)this.scheduleMusic();},70);this.scheduleMusic();}
+      }else this.stopMusic();
+    },
+    setScene(scene,enabled=true){if(this.scene!==scene){this.stopMusic();if(this.ctx){this.musicBus.disconnect();this.musicBus=this.ctx.createGain();this.musicBus.gain.value=.22;this.musicBus.connect(this.master);}this.scene=scene;this.musicStep=0;}this.setActive(enabled);},
+    setActive(active){this.active=!!active&&!document.hidden;if(this.active)this.init();this.sync();if(!this.active&&this.ctx&&this.ctx.state==='running')this.ctx.suspend().catch(()=>{});}
+  });
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)AudioSys.setActive(false);});
+  window.addEventListener('pagehide',()=>AudioSys.setActive(false));
+  window.addEventListener('blur',()=>AudioSys.setActive(false));
+
   // ==========================================
   // 2. THREE.JS SCENE — SAME FRAMEWORK, SKINNED WITH THE VICE PAW ASSET PACK
   // ==========================================
@@ -600,15 +779,13 @@
   const colliders = [];
   // three difficulty levels: enemy health, damage, fire rate, speed, bullet speed, melee damage
   const DIFFS = {
-    easy:   { hp: 2.2, dmg: 0.7, rate: 1.5, speed: 0.85, bspeed: 14, melee: 6 },
     normal: { hp: 3.8, dmg: 1.0, rate: 1.0, speed: 1.0, bspeed: 18, melee: 10 },
-    hard:   { hp: 6.5, dmg: 1.5, rate: 0.6, speed: 1.25, bspeed: 23, melee: 16 }
   };
-  let DIFF_KEY = 'normal';
-  try { const k = localStorage.getItem('top-doggo-diff'); if (DIFFS[k]) DIFF_KEY = k; } catch (e) { /* ignore */ }
+  const DIFF_KEY = 'normal';
+
   let DIFF = DIFFS[DIFF_KEY];   // recomputed with the level (see recomputeDiff)
   let lastDt = 0.016;
-  let shield = 0, level = 1;
+  let shield = 0, level = 1, freeRoam=false;
 
   function loadImage(src) {
     return new Promise((res, rej) => {
@@ -757,7 +934,12 @@
     addProp(name, x, z);
   }
 
-  // --- buildings: low-poly toon models with fixed position and rotation; each block is solid ---
+  // --- Building collisions follow the model footprint, with a small visual safety margin. ---
+  function buildingCollisionBounds(b){
+    if(!b.mesh)return null;
+    const margin=.15;
+    return {minX:b.cx-b.W/2-margin,maxX:b.cx+b.W/2+margin,minZ:b.cz-b.D/2-margin,maxZ:b.cz+b.D/2+margin};
+  }
   function makeBuilding(b) {
     const g = CityBuildings[b.asset](), sz = CityBuildings.size[b.asset];
     b.bw = b.x2 - b.x1; b.bd = b.z2 - b.z1; b.cx = (b.x1 + b.x2) / 2; b.cz = (b.z1 + b.z2) / 2; b.alpha = 1;
@@ -766,11 +948,11 @@
     if (k < 0.5) return;                                       // lot too small for a building: leave it to the hedges
     g.scale.setScalar(k); g.position.set(b.cx, 0, b.cz); g.rotation.y = rot; scene.add(g);
     b.mesh = g; b.W = (rot ? sz.d : sz.w) * k; b.D = (rot ? sz.w : sz.d) * k; b.H = sz.h * k; b.mats = ownMaterials(g);
+    colliders.push(buildingCollisionBounds(b));
   }
   for (const b of blocks) {
     if (!b.asset) continue;
     makeBuilding(b);
-    colliders.push({ minX: b.x1 + 0.1, maxX: b.x2 - 0.1, minZ: b.z1 + 0.1, maxZ: b.z2 - 0.1 });   // the whole block is solid
   }
   // backdrop: a ring of tall buildings and palms outside the playable map so the edges are full of city
   (function backdrop() {
@@ -814,11 +996,9 @@
       if ((l.x2 - l.x1) < 3 || (l.z2 - l.z1) < 3) continue;
       const b = { x1: l.x1 + 0.4, x2: l.x2 - 0.5, z1: l.z1 + 0.4, z2: l.z2 - 0.5, asset: nextBuilding(), rot: l.rot, edge: true };
       blocks.push(b); makeBuilding(b);
-      if (b.mesh) colliders.push({ minX: b.x1, maxX: b.x2, minZ: b.z1, maxZ: b.z2 });
-      else { // too small for a building: a solid hedge row fills the lot
+      if (!b.mesh) { // too small for a building: a solid hedge row fills the lot
         const hedge = CityProps.hedgeLong(), n = Math.max(1, Math.floor(Math.max(b.x2 - b.x1, b.z2 - b.z1) / 3.2)), alongZ = (b.z2 - b.z1) > (b.x2 - b.x1);
-        for (let i = 0; i < n; i++) { const h = hedge.clone(true); h.scale.setScalar(1.15); const f = (i + 0.5) / n; h.position.set(alongZ ? (b.x1 + b.x2) / 2 : b.x1 + (b.x2 - b.x1) * f, 0, alongZ ? b.z1 + (b.z2 - b.z1) * f : (b.z1 + b.z2) / 2); h.rotation.y = alongZ ? Math.PI / 2 : 0; scene.add(h); }
-        colliders.push({ minX: b.x1, maxX: b.x2, minZ: b.z1, maxZ: b.z2 });
+        for (let i = 0; i < n; i++) { const h = hedge.clone(true); h.scale.setScalar(1.15); const f = (i + 0.5) / n; h.position.set(alongZ ? (b.x1 + b.x2) / 2 : b.x1 + (b.x2 - b.x1) * f, 0, alongZ ? b.z1 + (b.z2 - b.z1) * f : (b.z1 + b.z2) / 2); h.rotation.y = alongZ ? Math.PI / 2 : 0; scene.add(h);h.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(h);colliders.push({minX:box.min.x,maxX:box.max.x,minZ:box.min.z,maxZ:box.max.z}); }
       }
     }
     // gates across every road that ends at the wall (left, right, top)
@@ -971,8 +1151,8 @@
   const enemies = [];
   const ENEMY = { thug: { hp: 100, k: 1 }, shooter: { hp: 80, k: 1 }, brawler: { hp: 160, k: 1.08 }, boss: { hp: 320, k: 1.3 }, warlord: { hp: 800, k: 1.0, tall: 4.4 } };
   const isBoss = t => t === 'boss' || t === 'warlord';
-  // bosses: strong from the start, +30% per level, but they do not use the full per-level enemy growth so they stay beatable
-  const enemyMaxHp = type => isBoss(type) ? ENEMY[type].hp * DIFFS[DIFF_KEY].hp * 0.8 * (1 + 0.3 * (level - 1)) : ENEMY[type].hp * DIFF.hp;
+  // Boss health follows the explicit level configuration.
+  const enemyMaxHp = type => isBoss(type) ? ENEMY[type].hp * DIFF.hp * 0.8 : ENEMY[type].hp * DIFF.hp;
   function spawnEnemy(x, z, type) {
     type = type || ['thug', 'shooter', 'brawler'][Math.floor(Math.random() * 3)];
     const T = ENEMY[type], fk = 'characters/enemies/' + type + '_front', bk = 'characters/enemies/' + type + '_back';
@@ -1012,9 +1192,10 @@
   const tennisMat = new THREE.MeshBasicMaterial({ color: 0xd4ff2a });
   const enemyBulletMat = new THREE.MeshBasicMaterial({ color: 0xff5aa5 });
 
+  const playerBallGeometry=new THREE.SphereGeometry(.18,10,10),enemyBallGeometry=new THREE.SphereGeometry(.2,10,10);
   function spawnProjectile(origin, dir, isPlayer) {
     const mesh = new THREE.Mesh(
-      new THREE.SphereGeometry(isPlayer ? 0.18 : 0.2, 10, 10),
+      isPlayer ? playerBallGeometry : enemyBallGeometry,
       isPlayer ? tennisMat : enemyBulletMat
     );
     mesh.position.copy(origin);
@@ -1083,12 +1264,6 @@
 
   // --- difficulty buttons on the start / pause screen ---
   function applyDifficulty() { for (const e of enemies) { e.maxHp = enemyMaxHp(e.type); e.hp = e.maxHp; e.hpBar.scale.x = 1; } }
-  function refreshDiffUI() { document.querySelectorAll('#diff-row button').forEach(b => b.classList.toggle('on', b.dataset.d === DIFF_KEY)); }
-  function setDifficulty(k) { if (!DIFFS[k] || run.active) return; DIFF_KEY = k; recomputeDiff(); try { localStorage.setItem('top-doggo-diff', k); } catch (e) { /* ignore */ } applyDifficulty(); refreshDiffUI(); }
-  document.querySelectorAll('#diff-row button').forEach(b => b.addEventListener('click', ev => { ev.stopPropagation(); setDifficulty(b.dataset.d); }));
-  refreshDiffUI();
-  document.querySelectorAll('#diff-row button').forEach(b => b.addEventListener('click', () => { if (!run.active) refreshRank(DIFF_KEY); }));
-
   // ==========================================
   // 7b. JUICE (damage numbers, sparks, hit-stop, shake, combo, hurt flash) AND MISSIONS
   // ==========================================
@@ -1101,13 +1276,23 @@
     scene.add(s); return s;
   }
   function burst(x, y, z, color, n, speed, life, size) {
-    for (let i = 0; i < n && sparks.length < 260; i++) {
+    for (let i = 0; i < n && sparks.length < (handheld ? 96 : 180); i++) {
       const s = getSpark(), a = Math.random() * 6.283, up = Math.random() * 0.9 + 0.2, sp = speed * (0.5 + Math.random() * 0.7);
       s.material.color.setHex(color); s.position.set(x, y, z); s.scale.setScalar(size * 0.55 * (0.6 + Math.random() * 0.7)); s.material.opacity = 1;
       Object.assign(s.userData, { vx: Math.cos(a) * sp, vy: up * sp, vz: Math.sin(a) * sp, t: life * (0.7 + Math.random() * 0.5), life });
       sparks.push(s);
     }
   }
+
+  const impactTexture=Toon.canvasTexture(96,96,c=>{c.clearRect(0,0,96,96);c.fillStyle='#fff';c.beginPath();for(let i=0;i<16;i++){const a=i*Math.PI/8,r=i%2?14:43;c.lineTo(48+Math.cos(a)*r,48+Math.sin(a)*r);}c.closePath();c.fill();});
+  const impacts=[],impactPool=[];let hitConfirmUntil=0;
+  function impactAt(position,heavy=false){
+    if(impacts.length>=(handheld?8:16))return;
+    const sp=impactPool.pop()||new THREE.Sprite(new THREE.SpriteMaterial({map:impactTexture,transparent:true,depthTest:false,depthWrite:false,fog:false}));
+    sp.material.color.setHex(heavy?0xffc83d:0x7ef9ff);sp.material.opacity=1;sp.material.rotation=Math.random()*Math.PI;sp.position.set(position.x,1.35,position.z);sp.renderOrder=28;sp.scale.setScalar(heavy?1.4:.9);scene.add(sp);
+    impacts.push({sp,t:.16,life:.16,size:heavy?1.4:.9});hitConfirmUntil=performance.now()+130;
+  }
+
   function labelTexture(txt, color) {
     const key = txt + color; if (textCache[key]) return textCache[key];
     const c = document.createElement('canvas'); c.width = 256; c.height = 96; const g = c.getContext('2d');
@@ -1128,6 +1313,8 @@
   // combat events (called from the game logic)
   function onEnemyHit(e, dmg) {
     const p = e.mesh.position, heavy = dmg >= 40;
+    impactAt(p,heavy);
+    if(!heavy)burst(p.x,1.3,p.z,0x7ef9ff,4,4,.18,.35);
     if (heavy) burst(p.x, 1.3, p.z, 0xff9a2e, 5, 6, 0.3, 0.5);
     const nowT = performance.now(); e._acc = (e._acc || 0) + dmg;
     if (nowT - (e._numT || 0) > 260) { popText(p.x, 2.7, p.z, String(Math.round(e._acc)), heavy ? '#ffc83d' : '#ffffff', heavy ? 0.85 : 0.6); e._acc = 0; e._numT = nowT; }
@@ -1144,7 +1331,7 @@
     if (combo.n === 3) banner('TRIPLE!', '#ffc83d'); else if (combo.n === 5) banner('RAMPAGE!', '#ff5aa5'); else if (combo.n === 8) banner('UNSTOPPABLE!', '#7ef9ff'); else if (combo.n === 12) banner('LEGENDARY!', '#ff8c42');
     AudioSys.play('kill'); if (combo.n >= 2) AudioSys.play('combo');
     if (Math.random() < 0.3 && bones.length < 24) spawnBone(p.x, p.z);
-    if ((level >= 2 || DIFF_KEY === 'hard') && (e.type === 'brawler' || e.type === 'boss') && Math.random() < 0.4) spawnCrate(3 + Math.floor(Math.random() * 3), p.x, p.z);
+    if ((level >= 2) && (e.type === 'brawler' || e.type === 'boss') && Math.random() < 0.4) spawnCrate(3 + Math.floor(Math.random() * 3), p.x, p.z);
     missionProgress('kills', 1); missionProgress('combo', combo.n); if (isBoss(e.type)) missionProgress('boss', 1); if (e.type === 'shooter' || e.type === 'brawler') missionProgress('elite', 1); if (state.drivingCar) missionProgress('ram', 1);
     updateComboHUD();
   }
@@ -1161,40 +1348,55 @@
     if (combo.n >= 2 && combo.t > 0) { comboEl.style.display = 'block'; comboEl.innerHTML = '<b>' + combo.n + '</b> COMBO<i style="width:' + Math.round(combo.t / 4 * 100) + '%"></i>'; } else comboEl.style.display = 'none';
   }
   // missions
-  // bosses appear on odd levels only (1, 3, 5...) and there are more of them, and tougher, the deeper you go
-  function bossPlan(L) { if (L % 2 === 0) return []; const n = Math.ceil(L / 2), plan = ['boss']; for (let i = 1; i < n; i++) plan.push('warlord'); return plan; }
+  // Explicit level configuration controls bosses, including the level-10 finale.
+  function bossPlan(n){return TopDoggoLevels.get(n).bosses;}
   let MISSIONS = [];
   function buildMissions() {
-    const plan = bossPlan(level);
+    const plan = bossPlan(level),cfg=TopDoggoLevels.get(level);
     MISSIONS = [
-      { id: 'kills', text: '擊倒 {n} 名浣熊', goal: 8, per: 3 },
-      { id: 'bones', text: '撿 {n} 根金骨頭', goal: 4, per: 1 },
-      { id: 'ram', text: '開車撞倒 {n} 名敵人', goal: 3, per: 1 },
-      { id: 'combo', text: '打出 {n} 連擊', goal: 5, per: 1 },
-      plan.length ? { id: 'boss', text: '擊敗頭目 ×{n}', goal: plan.length, per: 0 } : { id: 'elite', text: '擊倒 {n} 名射手或壯漢', goal: 5, per: 2 }
+      { id: 'kills', text: '擊倒 {n} 名浣熊', goal: cfg.kills, per: 0 },
+      { id: 'bones', text: '撿 {n} 根金骨頭', goal: cfg.bones, per: 0 },
+      { id: 'ram', text: '開車撞倒 {n} 名敵人', goal: cfg.ram, per: 0 },
+      { id: 'combo', text: '打出 {n} 連擊', goal: cfg.combo, per: 0 },
+      plan.length ? { id: 'boss', text: '擊敗頭目 ×{n}', goal: plan.length, per: 0 } : { id: 'elite', text: '擊倒 {n} 名射手或壯漢', goal: cfg.elite, per: 0 }
     ];
   }
   buildMissions();
   const mission = { i: 0, p: 0, done: false };
   const goalOf = m => m.goal + (level - 1) * m.per, textOf = m => L(m.text, { n: goalOf(m) });
-  function updateMissionHUD() {
-    if (!missionEl) return;
-    if (mission.done) { missionEl.textContent = L('全城清空！自由闖蕩'); return; }
-    const m = MISSIONS[mission.i]; const label = {kills:'擊倒浣熊',bones:'撿金骨頭',ram:'開車撞敵人',combo:'連擊',boss:'擊敗頭目',elite:'擊倒精英'}[m.id]; missionEl.textContent = 'LV ' + level + ' · ' + (mission.i + 1) + '/' + MISSIONS.length + ' ｜ ' + L(label) + '  ' + Math.min(mission.p, goalOf(m)) + '/' + goalOf(m);
+  function updateMissionHUD(){
+    if(!missionEl)return;
+    missionEl.replaceChildren();missionEl.style.setProperty('--mission-progress','0%');
+    if(freeRoam){missionEl.textContent=L('自由探索 · 浣熊持續出沒');return;}
+    if(mission.done){missionEl.textContent=L('第 {n} 關通關！',{n:level});missionEl.style.setProperty('--mission-progress','100%');return;}
+    const m=MISSIONS[mission.i],labels={kills:'擊倒浣熊',bones:'撿金骨頭',ram:'開車撞敵人',combo:'連擊',boss:'擊敗頭目',elite:'擊倒精英'},icons={kills:'k_attack',bones:'h_bone',ram:'k_car',combo:'k_attack',boss:'k_attack',elite:'k_attack'};
+    const tag=document.createElement('span'),icon=document.createElement('img'),label=document.createElement('span'),count=document.createElement('strong');
+    tag.className='mission-level';tag.textContent=L('第 {n} 關',{n:level});icon.src='assets/ui/'+icons[m.id]+'.png';icon.alt='';label.textContent=L(labels[m.id]);count.textContent=Math.min(mission.p,goalOf(m))+'/'+goalOf(m);
+    missionEl.append(tag,icon,label,count);missionEl.title=L('任務 {n}/{total}',{n:mission.i+1,total:MISSIONS.length});missionEl.style.setProperty('--mission-progress',Math.min(100,mission.p/goalOf(m)*100)+'%');
   }
   function missionProgress(id, n) {
-    if (mission.done) return; const m = MISSIONS[mission.i]; if (m.id !== id) return;
+    if (freeRoam || mission.done) return; const m = MISSIONS[mission.i]; if (m.id !== id) return;
     mission.p = id === 'combo' ? Math.max(mission.p, n) : mission.p + (n || 1);
     if (mission.p >= goalOf(m)) {
       const bonus = 500 * (mission.i + 1); state.threatScore += bonus; state.hp = Math.min(100, state.hp + 40); updateHUD();
       banner(L('任務完成'), '#7dff9b'); AudioSys.play('mission'); burst(player.position.x, 1.6, player.position.z, 0x7dff9b, 24, 10, 0.8, 0.9);
       mission.i++; mission.p = 0;
+      ensureMissionTargets();
       if (mission.i >= MISSIONS.length) { levelComplete(); }
     }
+    if(!tutorial.active)saveCheckpoint();
     updateMissionHUD();
+  }
+  function ensureMissionTargets(){
+    if(freeRoam||mission.done||MISSIONS[mission.i]?.id!=='boss')return;
+    const need=goalOf(MISSIONS[mission.i])-mission.p-enemies.filter(e=>isBoss(e.type)&&e.hp>0).length;
+    const plan=bossPlan(level);for(let i=0;i<need;i++){const p=randomStreetSpot(player.position.x,player.position.z,25,60);spawnEnemy(p.x,p.z,plan[i%plan.length]||'boss');}
   }
   function resetMissions() { level = 1; buildMissions(); mission.i = 0; mission.p = 0; mission.done = false; combo.n = 0; combo.t = 0; resetRun(); updateMissionHUD(); updateComboHUD(); lastHpSeen = 100; }
   function updateJuice(dt) {
+    crosshairEl.classList.toggle('hit-confirmed',performance.now()<hitConfirmUntil);
+    for(let i=impacts.length-1;i>=0;i--){const fx=impacts[i];fx.t-=dt;fx.sp.material.opacity=Math.max(0,fx.t/fx.life);fx.sp.scale.setScalar(fx.size*(1+(1-fx.t/fx.life)*.4));if(fx.t<=0){scene.remove(fx.sp);impactPool.push(fx.sp);impacts.splice(i,1);}}
+
     updateSpecials(dt);
     for (let i = sparks.length - 1; i >= 0; i--) {
       const s = sparks[i], u = s.userData; u.t -= dt; u.vy -= 18 * dt; s.position.x += u.vx * dt; s.position.y = Math.max(0.05, s.position.y + u.vy * dt); s.position.z += u.vz * dt;
@@ -1215,7 +1417,7 @@
   (function juiceAudio() {
     const base = AudioSys.play.bind(AudioSys);
     AudioSys.play = function (t) {
-      if (this.muted || !this.ctx) return;
+      if (this.muted || !this.ctx || !this.active || this.scene!=='game' || document.hidden) return;
       if (t === 'kill') { this.tone('square', 520, 90, 0.28, 0.18); this.tone('sawtooth', 220, 50, 0.3, 0.16); }
       else if (t === 'combo') { const f = 520 + Math.min(combo.n, 12) * 60; this.tone('triangle', f, f * 1.5, 0.18, 0.15); }
       else if (t === 'boom') { this.tone('sawtooth', 150, 28, 0.55, 0.32); this.tone('square', 80, 28, 0.45, 0.26); }
@@ -1223,8 +1425,9 @@
       else base(t);
     };
     if (!AudioSys.tone) AudioSys.tone = function (type, f0, f1, dur, vol) {
-      const ctx = this.ctx, t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.connect(g); g.connect(ctx.destination);
-      o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(Math.max(30, f1), t + dur); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur); o.start(t); o.stop(t + dur);
+      if(this.muted||!this.active||!this.ctx||this.scene!=='game'||document.hidden)return;
+      const ctx = this.ctx, t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.connect(g); g.connect(this.sfxBus || ctx.destination);
+      o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(Math.max(30, f1), t + dur); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur); o.onended=()=>{o.disconnect();g.disconnect();};o.start(t); o.stop(t + dur);
     };
   })();
   updateMissionHUD();
@@ -1308,7 +1511,7 @@
   }
   function spawnCratesForLevel() {
     for (const c of specialCrates) scene.remove(c.g); specialCrates.length = 0;
-    if (level < 2 && DIFF_KEY !== 'hard') return;
+    if (level < 2) return;
     const n = Math.min(6, 2 + level); for (let i = 0; i < n; i++) { const p = randomStreetSpot(player.position.x, player.position.z, 10, 70); spawnCrate(3 + (i % 3), p.x, p.z); }
   }
   function updateSpecials(dt) {
@@ -1336,8 +1539,7 @@
   }
   // levels: clearing the whole mission chain opens the next, slightly harder one
   function recomputeDiff() {
-    const b = DIFFS[DIFF_KEY], L = level - 1;
-    DIFF = { hp: b.hp * (1 + 0.18 * L), dmg: b.dmg * (1 + 0.1 * L), rate: b.rate / (1 + 0.06 * L), speed: b.speed * (1 + 0.04 * L), bspeed: b.bspeed * (1 + 0.03 * L), melee: b.melee * (1 + 0.1 * L) };
+    const cfg=TopDoggoLevels.get(level);DIFF={...cfg};
   }
   function spawnWave() {
     const plan = bossPlan(level); let bi = 0;
@@ -1347,12 +1549,12 @@
       else spawnEnemy(toX(s.x), toZ(s.y), ENEMY[type] ? type : 'thug');
     });
     while (bi < plan.length) { const p = randomStreetSpot(player.position.x, player.position.z, 35, 100); spawnEnemy(p.x, p.z, plan[bi++]); }
-    const extra = Math.min(8, (level - 1) * 2);
-    for (let i = 0; i < extra; i++) { const p = randomStreetSpot(player.position.x, player.position.z, 30, 90); spawnEnemy(p.x, p.z, ['thug', 'shooter', 'brawler'][i % 3]); }
+    const extra = TopDoggoLevels.get(level).extra;
+    for (let i = 0; i < extra; i++) { const p = randomStreetSpot(player.position.x, player.position.z, 30, 90); spawnEnemy(p.x, p.z, (level>=6?['shooter','brawler','shooter']:['thug','shooter','brawler'])[i%3]); }
   }
   function toast(t, sec) { toastEl.textContent = t; toastEl.classList.add('show'); clearTimeout(window.__toastT); window.__toastT = setTimeout(() => toastEl.classList.remove('show'), (sec || 2.5) * 1000); }
   function startNextLevel() {
-    level++; recomputeDiff();
+    level=Math.min(TopDoggoProgress.COUNT,level+1); recomputeDiff();
     for (const e of enemies) scene.remove(e.mesh); enemies.length = 0;
     for (const b of bones) scene.remove(b); bones.length = 0; for (let i = 0; i < 14; i++) { const p = randomStreetSpot(); spawnBone(p.x, p.z); }
     for (const g of grenades) scene.remove(g.m); grenades.length = 0; for (const c of cannonBalls) scene.remove(c.m); cannonBalls.length = 0;
@@ -1361,13 +1563,12 @@
     state.hp = 100; shield = 0; lastHpSeen = 100; updateHUD(); updateMissionHUD(); updateComboHUD(); refreshWeaponHUD();
     banner('LEVEL ' + level, '#7ef9ff'); toast(L('第 {n} 關：敵人更強了', { n: level }) + (level >= 2 ? L('，地圖上有特殊武器箱') : ''), 3.5);
   }
-  function levelComplete() {
-    mission.done = true; state.pendingNext = true; const bonus = 1000 * level; state.threatScore += bonus; updateHUD();
-    banner('LEVEL ' + level + ' ' + L('通關！'), '#ffc83d'); AudioSys.play('mission');
-    setTimeout(() => {
-      if (!state.pendingNext) return; setPaused(true);
-      document.getElementById('over-msg').textContent = 'LEVEL ' + level + ' ' + L('清空！下一關更難'); document.getElementById('btn-play').textContent = L('下一關') + ' ▶';
-    }, 1900);
+  function levelComplete(){
+    mission.done=true;state.pendingNext=true;campaign.completed.push(level);campaign=TopDoggoProgress.clean(campaign);
+    campaign.current={level:Math.min(TopDoggoProgress.COUNT,level+1),mission:0,progress:0};persistCampaign();endRun('win');
+    banner('LEVEL '+level+' '+L('通關！'),'#ffc83d');AudioSys.play('mission');
+    setPaused(true);overMsg.textContent=L('第 {n} 關通關！',{n:level});
+    btnPlay.textContent=level<TopDoggoProgress.COUNT?L('下一關')+' ▶':L('重玩本關');renderCampaign();
   }
   function resetRun() {
     level = 1; recomputeDiff(); applyDifficulty(); shield = 0; for (let i = 3; i < inv.length; i++) inv[i] = 0; setWeapon(0);
@@ -1425,6 +1626,8 @@
   const btnPause = document.getElementById('btn-pause');
   const btnUiToggle = document.getElementById('btn-ui-toggle');
   const btnMute = document.getElementById('btn-mute');
+  const btnMusic = document.getElementById('btn-music');
+  btnMusic.addEventListener('click',()=>{AudioSys.musicEnabled=!AudioSys.musicEnabled;btnMusic.textContent='MUSIC: '+(AudioSys.musicEnabled?'ON':'OFF');AudioSys.sync();});
   const touchControls = document.getElementById('touch-controls');
   const crosshairEl = document.getElementById('crosshair');
   const toastEl = document.getElementById('toast');
@@ -1447,6 +1650,7 @@
     const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth < 820);
     const show = state.uiMode === 'ON' || (state.uiMode === 'AUTO' && isTouchDevice);
     touchControls.classList.toggle('hidden', !show);
+    document.body.classList.toggle('mouse-aim',!handheld&&innerWidth>=820);
     btnUiToggle.innerHTML = '<img class="pi" src="assets/ui/h_pad.png" alt="">UI: ' + state.uiMode;
   }
   updateTouchVisibility();
@@ -1459,8 +1663,8 @@
 
   btnMute.addEventListener('click', (e) => {
     e.stopPropagation();
-    AudioSys.muted = !AudioSys.muted;
-    btnMute.innerHTML = AudioSys.muted ? '<img class="pi" src="assets/ui/h_mute.png" alt="">MUTE' : '<img class="pi" src="assets/ui/h_sound.png" alt="">SFX';
+    AudioSys.muted = !AudioSys.muted;AudioSys.sync();
+    btnMute.innerHTML = AudioSys.muted ? '<img class="pi" src="assets/ui/h_mute.png" alt="">MUTE' : '<img class="pi" src="assets/ui/h_sound.png" alt="">SOUND';
   });
 
 
@@ -1473,7 +1677,7 @@
   function tutorialText() {
     if (!tutorial.active) return;
     const labels = ['移動到藍色箭頭下的圓圈','拖曳空白畫面轉向，攻擊練習靶','換一次武器','朝任意方向翻滾一次'];
-    const instruction = tutorial.step===1 && !handheld && innerWidth>=820 ? '用 ←→ 轉向，按住 J 攻擊練習靶' : labels[tutorial.step];
+    const instruction = tutorial.step===1 && !handheld && innerWidth>=820 ? '滑鼠瞄準練習靶，按住左鍵或 J 攻擊' : labels[tutorial.step];
     document.getElementById('tutorial-title').textContent = (tutorial.step + 1) + '/4 · ' + L(instruction) + (tutorial.step === 1 ? ' ' + tutorial.hits + '/3' : '');
     document.getElementById('tutorial-help').textContent = L('安全練習：不受傷、不計榜') + ' · ' + L(handheld || innerWidth < 820 ? '左搖桿移動，拖曳空白畫面轉向' : 'WASD 移動，←→ 轉向，J 攻擊');
     document.getElementById('tutorial-skip').textContent = L('跳過教學');
@@ -1496,8 +1700,9 @@
     tutorialText();
   }
   function startTutorial() {
+    AudioSys.init();AudioSys.setScene('game',platformActive);
     if(run.active) endRun('left');
-    resetMissions();
+    freeRoam=false;resetMissions();
     clearInputs(); tutorial.active=true;tutorial.hits=0;tutorial.dodged=false;
     state.started=true;state.paused=false;state.drivingCar=null;drivingMesh=null;state.hp=100;state.dodgeTimer=0;state.turn180Timer=0;state.fireCd=0;state.isCrouching=false;state.pendingNext=false;state.yaw=0;moveViewBasis=null;manualViewUntil=0;
     player.visible=true;heroShadow.visible=true;dogBodyGroup.position.set(0,0,0);player.position.set(START.x,0,START.z);setWeapon(0);
@@ -1524,8 +1729,7 @@
     tutorial.marker.visible=tutorial.target.visible=false;tutorialPanel.hidden=true;
     for(const e of enemies)e.mesh.visible=true;for(const b of bones)b.visible=true;
     player.position.set(START.x,0,START.z);dogBodyGroup.position.set(0,0,0);state.hp=100;state.dodgeTimer=0;state.isCrouching=false;
-    resetMissions();state.started=true;setPaused(false);updateHUD();
-    beginRun();
+    startCampaignLevel(selectedLevel,true);
   }
   function tickTutorial(dt) {
     if(tutorial.step===0){const pulse=Math.sin(performance.now()*.004);tutorial.marker.scale.setScalar(1+pulse*.08);tutorial.marker.userData.arrow.position.y=2.3+pulse*.15;}
@@ -1540,7 +1744,7 @@
         if(bulletBlocked(shot.mesh.position)){shot.life=0;break;}
       }
       if(hit){
-        tutorial.hits++;burst(tutorial.target.position.x,1.4,tutorial.target.position.z,0x7ef9ff,6,3,.3,.3);AudioSys.play('hit');
+        tutorial.hits++;impactAt(tutorial.target.position);burst(tutorial.target.position.x,1.4,tutorial.target.position.z,0x7ef9ff,6,3,.3,.3);AudioSys.play('hit');
         if(tutorial.hits>=3)setTutorialStep(2);else tutorialText();
       }
       if(hit||shot.life<=0){scene.remove(shot.mesh);projectiles.splice(i,1);}
@@ -1551,43 +1755,47 @@
   document.getElementById('tutorial-skip').addEventListener('click',finishTutorial);
   document.getElementById('ov-practice').addEventListener('click',startTutorial);
 
+
+  document.addEventListener('dragstart',e=>e.preventDefault());
+  const helpDialog=document.getElementById('help-dialog'),helpButton=document.getElementById('btn-help');let resumeAfterHelp=false;
+
+  const helpTabs=[...helpDialog.querySelectorAll('[role="tab"]')];
+  function selectHelpTab(tab){for(const item of helpTabs){const selected=item===tab;item.setAttribute('aria-selected',String(selected));item.tabIndex=selected?0:-1;document.getElementById(item.getAttribute('aria-controls')).hidden=!selected;}helpDialog.scrollTop=0;}
+  helpTabs.forEach((tab,i)=>{tab.addEventListener('click',()=>selectHelpTab(tab));tab.addEventListener('keydown',e=>{let next;if(e.key==='ArrowRight')next=(i+1)%helpTabs.length;else if(e.key==='ArrowLeft')next=(i+helpTabs.length-1)%helpTabs.length;else if(e.key==='Home')next=0;else if(e.key==='End')next=helpTabs.length-1;else return;e.preventDefault();selectHelpTab(helpTabs[next]);helpTabs[next].focus();});});
+  helpButton.addEventListener('click',()=>{
+    resumeAfterHelp=state.started&&!state.paused;
+    if(resumeAfterHelp)setPaused(true);
+    const touch=handheld||innerWidth<820;helpDialog.classList.toggle('dev-touch',touch);helpDialog.classList.toggle('dev-pc',!touch);
+    helpDialog.showModal();document.getElementById('help-close').focus();
+  });
+  document.getElementById('help-close').addEventListener('click',()=>helpDialog.close());
+  helpDialog.addEventListener('close',()=>{if(resumeAfterHelp&&platformActive&&!document.hidden&&state.hp>0)setPaused(false);resumeAfterHelp=false;helpButton.focus();});
+
   const overMsg = document.getElementById('over-msg');
   function setPaused(p) {
     state.paused = p;
+    AudioSys.setScene(p?'menu':'game',platformActive);
     tutorialPanel.hidden = !tutorial.active || p;
     if (p) {
       clearInputs();
       overlay.classList.remove('hidden');
       const dead = state.hp <= 0;
       overMsg.textContent = dead ? L('本局結束！到達第 {n} 關', { n: level }) : (state.started ? L('暫停中') : '');
-      syncRunUI(); if (dead) endRun('dead'); refreshRank(DIFF_KEY);
-      btnPlay.textContent = dead ? '↻ ' + L('再來一局') : (state.started ? '▶ RESUME TOP DOGGO' : '▶ PLAY TOP DOGGO');
+      syncRunUI(); if (dead) endRun('dead');
+      renderCampaign();
+      btnPlay.textContent = state.pendingNext ? (level<TopDoggoProgress.COUNT?L('下一關')+' ▶':L('重玩本關')) : dead ? '↻ '+L('再來一局') : (state.started ? '▶ RESUME TOP DOGGO' : L('開始第 {n} 關',{n:selectedLevel}));
       if (document.pointerLockElement) document.exitPointerLock();
     } else {
       overlay.classList.add('hidden');
     }
   }
 
-  btnPlay.addEventListener('click', () => {
+  btnPlay.addEventListener('click',()=>{
     AudioSys.init();
-    const freshRun = !state.started || state.hp <= 0 || !run.active;
-    if (state.pendingNext) { state.pendingNext = false; startNextLevel(); }
-    if (state.hp <= 0) {
-      state.hp = 100;
-      state.threatScore = 0;
-      state.wanted = 1;
-      resetMissions();
-      state.isCrouching = false;
-      btnCrouch.classList.remove('active-state');
-      player.position.set(START.x, 0, START.z);
-      for (let i = projectiles.length - 1; i >= 0; i--) { scene.remove(projectiles[i].mesh); projectiles.splice(i, 1); }
-      enemies.forEach(e => { e.hp = e.maxHp; e.hpBar.scale.x = 1; });
-      updateHUD();
-    }
-    state.started = true;
-    setPaused(false);
-    if (freshRun && !tutorial.active) { if (!tutorialSeen) startTutorial(); else beginRun(); }
-
+    if(state.started&&state.paused&&state.hp>0&&!state.pendingNext&&!choosingLevel){setPaused(false);return;}
+    if(state.pendingNext){selectedLevel=level<TopDoggoProgress.COUNT?level+1:TopDoggoProgress.COUNT;state.pendingNext=false;startCampaignLevel(selectedLevel,false);return;}
+    if(!tutorialSeen){startTutorial();return;}
+    startCampaignLevel(selectedLevel,true,freeRoam&&!choosingLevel);
   });
 
   btnPause.addEventListener('click', (e) => {
@@ -1597,6 +1805,53 @@
 
   document.addEventListener('visibilitychange', () => { if (document.hidden && state.started && !state.paused) setPaused(true); });
   document.addEventListener('pointerlockchange', () => { if (!document.pointerLockElement && state.started && !state.paused && window.innerWidth >= 820) setPaused(true); });
+
+  let campaignStorage;try{campaignStorage=localStorage;}catch(_){}
+  let campaign=TopDoggoProgress.load(campaignStorage),selectedLevel=campaign.current.level,choosingLevel=true,levelPage=Math.floor((selectedLevel-1)/TopDoggoLevels.PAGE_SIZE);
+  const campaignMenu=document.getElementById('campaign-menu'),levelGrid=document.getElementById('level-grid');
+  function persistCampaign(){const ok=TopDoggoProgress.save(campaignStorage,campaign);document.getElementById('save-status').textContent=ok?L('進度自動儲存在此瀏覽器'):L('無法儲存；關閉頁面後進度可能遺失');}
+  function saveCheckpoint(){if(freeRoam||tutorial.active||mission.done||!run.active)return;campaign.current={level,mission:mission.i,progress:mission.p};persistCampaign();}
+  function renderCampaign(){
+    campaignMenu.hidden=state.started&&!choosingLevel&&!state.pendingNext;
+    document.getElementById('campaign-status').textContent=L('已通關 {n}/{total}',{n:campaign.completed.length,total:TopDoggoProgress.COUNT});
+    levelGrid.replaceChildren();
+    const size=TopDoggoLevels.PAGE_SIZE,total=TopDoggoLevels.levels.length,pages=Math.ceil((total+1)/size);
+    document.getElementById('level-prev').disabled=levelPage===0;document.getElementById('level-next').disabled=levelPage>=pages-1;
+    document.getElementById('level-page').textContent=(levelPage+1)+' / '+pages;
+    const cfg=TopDoggoLevels.get(selectedLevel);document.getElementById('level-preview').textContent=L('本關目標：擊倒 {n} 名浣熊',{n:cfg.kills})+' · '+L('威脅等級 {n}',{n:selectedLevel});
+    for(let n=levelPage*size+1;n<=Math.min(total+1,(levelPage+1)*size);n++){
+      if(n>total){const soon=document.createElement('button');soon.type='button';soon.disabled=true;soon.className='level-card coming-soon';const num=document.createElement('strong'),label=document.createElement('span');num.textContent=String(n).padStart(2,'0');label.textContent=L('施工中');soon.append(num,label);levelGrid.append(soon);continue;}
+const button=document.createElement('button');button.type='button';button.disabled=n>campaign.unlocked;button.className='level-card'+(n===selectedLevel?' selected':'');button.setAttribute('aria-pressed',String(n===selectedLevel));const number=document.createElement('strong'),status=document.createElement('span');number.textContent=String(n).padStart(2,'0');status.textContent=L(n>campaign.unlocked?'尚未解鎖':campaign.completed.includes(n)?'已通關':'挑戰');button.append(number,status);button.addEventListener('click',()=>{selectedLevel=n;choosingLevel=true;state.pendingNext=false;btnPlay.textContent=L('開始第 {n} 關',{n});renderCampaign();});levelGrid.append(button);}
+    document.getElementById('btn-levels').hidden=!state.started;
+    document.getElementById('btn-roam').hidden=!state.pendingNext;
+  }
+  function startCampaignLevel(n,resume,free=false){
+    endRun('left');freeRoam=free;clearInputs();selectedLevel=n;levelPage=Math.floor((n-1)/TopDoggoLevels.PAGE_SIZE);state.pendingNext=false;choosingLevel=false;
+    if(tutorial.active){tutorial.active=false;tutorialPanel.hidden=true;if(tutorial.marker)tutorial.marker.visible=tutorial.target.visible=false;}
+    resetMissions();level=n-1;startNextLevel();
+    const checkpoint=campaign.current;
+    if(resume&&checkpoint.level===n){mission.i=checkpoint.mission;mission.p=Math.min(checkpoint.progress,goalOf(MISSIONS[mission.i])-1);}
+    ensureMissionTargets();
+    if(state.drivingCar)state.drivingCar.playerDriving=false;state.drivingCar=null;drivingMesh=null;
+    state.started=true;state.hp=100;state.threatScore=0;state.wanted=1;state.yaw=0;state.isCrouching=false;state.dodgeTimer=0;state.fireCd=0;state.turn180Timer=0;moveViewBasis=null;manualViewUntil=0;
+    player.visible=true;heroShadow.visible=true;dogBodyGroup.position.set(0,0,0);player.position.set(START.x,0,START.z);setWeapon(0);
+    for(const e of enemies)e.mesh.visible=true;for(const b of bones)b.visible=true;
+    for(const p of projectiles)scene.remove(p.mesh);projectiles.length=0;
+    btnCrouch.classList.remove('active-state');beginRun();saveCheckpoint();setPaused(false);updateHUD();updateMissionHUD();renderCampaign();
+  }
+  document.getElementById('level-prev').addEventListener('click',()=>{levelPage=Math.max(0,levelPage-1);renderCampaign();});
+  document.getElementById('level-next').addEventListener('click',()=>{levelPage++;renderCampaign();});
+  document.getElementById('btn-free').addEventListener('click',()=>startCampaignLevel(1,false,true));
+  document.getElementById('btn-levels').addEventListener('click',()=>{choosingLevel=true;state.pendingNext=false;renderCampaign();btnPlay.textContent=L('開始第 {n} 關',{n:selectedLevel});});
+  document.getElementById('btn-roam').addEventListener('click',()=>{state.pendingNext=false;choosingLevel=false;beginRun();setPaused(false);renderCampaign();});
+  window.addEventListener('pagehide',saveCheckpoint);
+  // Start menu audio after a gesture, without delaying gameplay.
+  function unlockMenuMusic(){if(platformActive&&!document.hidden)AudioSys.setScene(state.started&&!state.paused?'game':'menu',true);}
+  document.addEventListener('pointerdown',unlockMenuMusic,{once:true});
+  document.addEventListener('keydown',unlockMenuMusic,{once:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&platformActive)AudioSys.setScene(state.started&&!state.paused?'game':'menu',true);});
+  window.addEventListener('focus',unlockMenuMusic);
+  campaignReady=true;persistCampaign();renderCampaign();btnPlay.textContent=L('開始第 {n} 關',{n:selectedLevel});
 
   // Action Triggers
   function triggerDodge() {
@@ -1625,7 +1880,7 @@
   }
 
   function triggerTurn180() {
-    if (state.turn180Timer > 0) return;
+    if (state.drivingCar || state.turn180Timer > 0) return;
     state.turn180StartYaw = state.yaw;
     state.turn180TargetYaw = state.yaw + Math.PI;
     state.turn180Timer = 0.22;
@@ -1675,7 +1930,7 @@
     const nearCar = getNearestCar();
     if (nearCar) {
       state.drivingCar = nearCar; drivingMesh = nearCar.mesh;
-      nearCar.heading = nearCar.mesh.rotation.y - Math.PI; nearCar.steer = 0;
+      nearCar.heading = nearCar.mesh.rotation.y - Math.PI; nearCar.steer = 0;state.turn180Timer=0;manualViewUntil=0;moveViewBasis=null;lookTouchId=null;
       state.yaw = nearCar.heading;
       state.isCrouching = false;
       player.visible = nearCar.riderVisible;
@@ -1687,13 +1942,17 @@
   // Raycast Dead-Center Crosshair to 3D World Target
   const raycaster = new THREE.Raycaster();
   const aimPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.1);
+  const mouseAim={active:false,x:0,y:0};
+  function usesMouseAim(){return !handheld&&innerWidth>=820;}
+  function updateMouseAim(e){if(!usesMouseAim())return;const rect=canvas.getBoundingClientRect();mouseAim.x=(e.clientX-rect.left)/rect.width*2-1;mouseAim.y=1-(e.clientY-rect.top)/rect.height*2;mouseAim.active=true;}
   function getCenterCrosshairTarget() {
-    raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+    const pointer=usesMouseAim()&&mouseAim.active;
+    raycaster.setFromCamera(new THREE.Vector2(pointer?mouseAim.x:0,pointer?mouseAim.y:0), camera);
     const hitPt = new THREE.Vector3();
     if (raycaster.ray.intersectPlane(aimPlane, hitPt)) {
       const forward = new THREE.Vector3(-Math.sin(state.yaw), 0, -Math.cos(state.yaw));
       const toHit = hitPt.clone().sub(player.position);
-      if (toHit.dot(forward) > 1.2 && toHit.length() < 55) {
+      if ((pointer || toHit.dot(forward) > 1.2) && toHit.length() < 80) {
         return hitPt;
       }
     }
@@ -1703,14 +1962,14 @@
 
 
   function angleDelta(target,current){return Math.atan2(Math.sin(target-current),Math.cos(target-current));}
-  function assistedTarget(origin,yaw,candidates){
+  function assistedTarget(origin,yaw,candidates,halfAngle=Math.PI/4){
     let best=null,bestScore=Infinity;
     for(const e of candidates){
       if(e.hp<=0)continue;
       const dx=e.mesh.position.x-origin.x,dz=e.mesh.position.z-origin.z,dist=Math.hypot(dx,dz);
       if(dist<.5||dist>28)continue;
       const angle=Math.abs(angleDelta(Math.atan2(-dx,-dz),yaw));
-      if(angle>Math.PI/4)continue;
+      if(angle>halfAngle)continue;
       let clear=true;
       for(let d=.75;d<dist-.5;d+=.75){if(bulletBlocked({x:origin.x+dx*d/dist,y:1.1,z:origin.z+dz*d/dist})){clear=false;break;}}
       const score=angle*20+dist*.12;
@@ -1719,6 +1978,10 @@
     return best;
   }
 
+  function attackYaw(origin){
+    if(!usesMouseAim()||!mouseAim.active)return state.yaw;
+    const point=getCenterCrosshairTarget();return Math.atan2(-(point.x-origin.x),-(point.z-origin.z));
+  }
   function triggerAttack() {
     if (state.drivingCar || state.fireCd > 0) return;
     if(tutorial.active){
@@ -1732,17 +1995,18 @@
       }
       state.fireCd=.2;AudioSys.play('shoot');
       const origin=player.position.clone().add(new THREE.Vector3(0,1.15,0));
-      const target=assistedTarget(origin,state.yaw,[{hp:1,mesh:tutorial.target}]);
-      const direction=target ? tutorial.target.position.clone().sub(origin).normalize() : new THREE.Vector3(-Math.sin(state.yaw),0,-Math.cos(state.yaw));
+      const yaw=attackYaw(origin);const target=assistedTarget(origin,yaw,[{hp:1,mesh:tutorial.target}],usesMouseAim()?.12:Math.PI/4);
+      const direction=target ? tutorial.target.position.clone().sub(origin).normalize() : getCenterCrosshairTarget().sub(origin).normalize();
       spawnProjectile(origin,direction,true);
       return;
     }
     const w = state.weapon | 0, knife = w === 1, fist = w === 2;
-    const forward = new THREE.Vector3(-Math.sin(state.yaw), 0, -Math.cos(state.yaw));
+    const yaw=attackYaw(player.position);
+    const forward = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
     if (knife || fist) {
       state.fireCd = knife ? 0.24 : 0.34; state.punchAnimTimer = 0.24; AudioSys.play(knife ? 'shoot' : 'punch');
       moveEntityWithCollision(player.position, forward.clone().multiplyScalar(knife ? 1.4 : 1.15), 0.55);
-      spawnPawSlashVFX(player.position.clone().addScaledVector(forward, 1.2), state.yaw, knife);
+      spawnPawSlashVFX(player.position.clone().addScaledVector(forward, 1.2), yaw, knife);
       const reach = knife ? 4.4 : 3.6, dmg = knife ? 48 : 64;
       for (let i = enemies.length - 1; i >= 0; i--) {
         const e = enemies[i], diff = e.mesh.position.clone().sub(player.position).setY(0), dist = diff.length();
@@ -1752,8 +2016,8 @@
       state.fireCd = 0.2; AudioSys.play('shoot');
       const targetPt = getCenterCrosshairTarget();
       const muzzlePos = player.position.clone().add(new THREE.Vector3(0, state.isCrouching ? 0.78 : 1.15, 0));
-      let shotDir = targetPt.sub(muzzlePos).normalize();
-      const locked = assistedTarget(muzzlePos,state.yaw,enemies);
+      let shotDir = targetPt.clone().sub(muzzlePos).normalize();
+      const locked = assistedTarget(muzzlePos,attackYaw(muzzlePos),enemies,usesMouseAim()?.12:Math.PI/4);
       if (locked) {
         // lead the target: the ball needs a moment to arrive, the enemy keeps walking
         let tx = locked.mesh.position.x, tz = locked.mesh.position.z;
@@ -1770,6 +2034,7 @@
 
   // Keyboard Listeners
   window.addEventListener('keydown', (e) => {
+    if(helpDialog.open)return;
     keys[e.code] = true;
     if (!state.started || state.paused) return;
     if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') e.preventDefault();
@@ -1784,11 +2049,14 @@
 
   // Mouse Listeners (PC)
   let mouseFireDown = false, mouseLookDown = false, mouseLookX = 0;
+  canvas.addEventListener('mousemove',updateMouseAim);
+  canvas.addEventListener('mouseleave',()=>{mouseAim.active=false;});
   canvas.addEventListener('mousedown', (e) => {
+    updateMouseAim(e);
     if (!state.started || state.paused) return;
 
     if (e.button === 0) { mouseFireDown = true; triggerAttack(); }
-    if (e.button === 2) { e.preventDefault(); state.isFocusing = true; mouseLookDown = true; mouseLookX = e.clientX; }
+    if (e.button === 2) { e.preventDefault(); state.isFocusing = true; }
     if (e.button === 1) { e.preventDefault(); triggerTurn180(); }
   });
   window.addEventListener('mouseup', (e) => {
@@ -1796,18 +2064,6 @@
     if (e.button === 2) { state.isFocusing = false; mouseLookDown = false; }
   });
   window.addEventListener('contextmenu', e => e.preventDefault());
-  window.addEventListener('mousemove', (e) => {
-    if (!state.started || state.paused) return;
-    if (document.pointerLockElement === canvas) {
-      manualViewUntil = performance.now() + 1800; moveViewBasis = null;
-      state.yaw -= (e.movementX || 0) * 0.0032;
-    } else if (mouseLookDown) {
-      manualViewUntil = performance.now() + 1800; moveViewBasis = null;
-      state.yaw -= (e.clientX - mouseLookX) * 0.0068;
-      mouseLookX = e.clientX;
-    }
-  });
-
   window.addEventListener('blur', () => { mouseLookDown = false; mouseFireDown = false; state.isFocusing = false; });
 
   // Mobile Joystick Touch Handling
@@ -1852,7 +2108,7 @@
   // Screen Swipe Camera Rotation (Mobile)
   canvas.addEventListener('touchstart', (e) => {
     AudioSys.init();
-    if (state.started && !state.paused && lookTouchId === null && e.changedTouches.length > 0) {
+    if (state.started && !state.paused && !state.drivingCar && lookTouchId === null && e.changedTouches.length > 0) {
       lookTouchId = e.changedTouches[0].identifier;
       lastTouchX = e.changedTouches[0].clientX;
     }
@@ -1863,7 +2119,7 @@
       if (t.identifier === lookTouchId) {
         const dx = t.clientX - lastTouchX;
         lastTouchX = t.clientX;
-        if (state.started && !state.paused) { state.yaw -= Math.max(-40, Math.min(40, dx)) * (1.8 / window.innerWidth); manualViewUntil = performance.now() + 1800; moveViewBasis = state.yaw; }
+        if (state.started && !state.paused && !state.drivingCar) { state.yaw -= Math.max(-40, Math.min(40, dx)) * (1.8 / window.innerWidth); manualViewUntil = performance.now() + 1800; moveViewBasis = state.yaw; }
       }
     }
   }, { passive: true });
@@ -2089,7 +2345,7 @@
     if ((mouseFireDown || touchFireHold || keys.KeyJ) && state.fireCd <= 0) triggerAttack();
 
     const keyboardTurn = (keys.ArrowLeft ? 1 : 0) - (keys.ArrowRight ? 1 : 0);
-    if(keyboardTurn){ state.yaw += keyboardTurn * 1.8 * dt; manualViewUntil = performance.now() + 1800; moveViewBasis = null; }
+    if(keyboardTurn&&!state.drivingCar){ state.yaw += keyboardTurn * 1.8 * dt; manualViewUntil = performance.now() + 1800; moveViewBasis = null; }
     // Movement Input
     const inX = joyInput.x || ((keys['KeyD'] ? 1 : 0) - (keys['KeyA'] ? 1 : 0));
     const inY = joyInput.y || ((keys['KeyS'] ? 1 : 0) - (keys['KeyW'] ? 1 : 0));
@@ -2100,7 +2356,7 @@
       const target=moveViewBasis-Math.atan2(inX,-inY);
       state.yaw+=Math.max(-.8*dt,Math.min(.8*dt,angleDelta(target,state.yaw)));
     }
-    if(state.drivingCar && performance.now()>manualViewUntil){state.yaw+=angleDelta(state.drivingCar.heading,state.yaw)*(1-Math.exp(-3*dt));}
+    if(state.drivingCar){state.yaw=state.drivingCar.heading;}
     const forward = new THREE.Vector3(-Math.sin(state.yaw), 0, -Math.cos(state.yaw));
     const right = new THREE.Vector3(Math.cos(state.yaw), 0, -Math.sin(state.yaw));
     const movementYaw=moveViewBasis===null?state.yaw:moveViewBasis;
@@ -2109,15 +2365,18 @@
 
     if (state.drivingCar) {
       // Driving Convertible
+      toastEl.classList.remove('show');
       const car = state.drivingCar;
       const targetSpeed = -inY * (inY > 0 ? 11 : 22);
       const braking = !inY || targetSpeed * car.speed < 0;
       car.speed += (targetSpeed - car.speed) * (1 - Math.exp(-(braking ? 7 : 3.2) * dt));
       if (!inY && Math.abs(car.speed) < 0.08) car.speed = 0;
-      car.steer += (inX - car.steer) * (1 - Math.exp(-10 * dt));
+      car.steer += ((inX || -keyboardTurn) - car.steer) * (1 - Math.exp(-10 * dt));
       const turn = car.steer * 1.8 * Math.min(1, Math.abs(car.speed) / 7) * dt * Math.sign(car.speed);
       car.heading -= turn;
-      state.yaw -= turn;
+      state.yaw = car.heading;
+      forward.set(-Math.sin(car.heading),0,-Math.cos(car.heading));
+      right.set(Math.cos(car.heading),0,-Math.sin(car.heading));
       car.mesh.rotation.y = car.heading + Math.PI;
       const carFwd = new THREE.Vector3(-Math.sin(car.heading), 0, -Math.cos(car.heading));
       updateCarFlip(car, carFwd.x * car.speed, carFwd.z * car.speed);
@@ -2333,8 +2592,8 @@
   });
 
   document.getElementById('ov-practice').disabled = false;
-  btnPlay.disabled = false; btnPlay.textContent = '▶ PLAY TOP DOGGO'; applyLang(); refreshRank(DIFF_KEY);
-  refreshWeaponHUD(); window.__tdRefresh = () => { refreshWeaponHUD(); updateMissionHUD(); tutorialText(); setPaused(state.paused); };
+  btnPlay.disabled = false; btnPlay.textContent = L('開始第 {n} 關',{n:selectedLevel}); applyLang(); renderCampaign();
+  refreshWeaponHUD(); window.__tdRefresh = () => { refreshWeaponHUD(); updateMissionHUD(); tutorialText(); if(state.started)setPaused(state.paused);renderCampaign(); };
   updateHUD();
   animate();
 })();

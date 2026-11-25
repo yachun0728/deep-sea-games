@@ -31,50 +31,16 @@ const eq = (a, b, m) => { assert.equal(JSON.stringify(a), JSON.stringify(b), m);
   };
   vm.createContext(ctx);
   vm.runInContext(readSource('games/top-doggo/game.js', root), ctx);
-  ctx.tdApi = async () => fakeApi;
-  const api = win.deepSeaTopDoggo, frame = el('td-frame').contentWindow;
-  ok(api, 'bridge available');
-  eq(api.getLanguage(frame), 'en', 'language follows the site');
-  ok(!api.prepare({}, 'normal'), 'foreign window rejected');
-  ok(!api.prepare(frame, 'insane'), 'unknown difficulty rejected');
-  ok(api.prepare(frame, 'normal'), 'prepare accepted');
-  eq(events.filter(e => e[0] === 'start').length, 1, 'analytics start once');
-  eq(events[0].slice(1, 3), ['top-doggo', 0], 'free entry: stake 0');
-  const done = await api.finish(frame, { difficulty: 'normal', level: 4, kills: 31, playMs: 80000, reason: 'dead' });
-  eq(done, { saved: true }, 'score saved');
-  eq(sent[0], { gameId: 'top-doggo-normal', id: 'round-1', revision: 0, action: [4, 31, 80000] }, 'move carries [level, kills, playMs] on the normal board');
-  const end = events.filter(e => e[0] === 'end');
-  eq(end.length, 1, 'one analytics end');
-  eq([end[0][2], end[0][3], end[0][4].score], [0, 'loss', 4], 'payout 0, loss, score = level');
-  eq(await api.finish(frame, { difficulty: 'normal', level: 9, kills: 90, playMs: 1e6, reason: 'dead' }), { saved: false, offline: true }, 'a second finish cannot resend the same round');
-  eq(sent.length, 1, 'no second move');
-  // each difficulty uses its own board
-  for (const d of ['easy', 'hard']) {
-    api.prepare(frame, d);
-    await api.finish(frame, { difficulty: d, level: 2, kills: 10, playMs: 30000, reason: 'left' });
-    eq(sent.at(-1).gameId, 'top-doggo-' + d, d + ' board');
-  }
-  eq(events.filter(e => e[0] === 'end').at(-1)[3], 'abandoned', 'leaving is abandoned');
-  // difficulty mismatch between prepare and finish never submits
-  api.prepare(frame, 'easy');
-  eq(await api.finish(frame, { difficulty: 'hard', level: 5, kills: 40, playMs: 90000, reason: 'dead' }), { saved: false, offline: true }, 'board mismatch is not sent');
-  // offline start: finish degrades without throwing
-  failStart = true;
-  api.prepare(frame, 'normal');
-  eq(await api.finish(frame, { difficulty: 'normal', level: 3, kills: 20, playMs: 60000, reason: 'dead' }), { saved: false, offline: true }, 'offline start keeps local play working');
-  failStart = false;
-  // leaving the view tells the game page to end the run; entering reactivates it
-  ctx.tdRoute(true);
-  ok(el('td-frame').src === 'games/top-doggo/play.html?v=20261124-highlight4', 'frame loads the game page on first entry');
-  ctx.tdRoute(false);
-  ok(frame.calls.some(c => c[0] === 'active' && c[1] === false), 'leaving deactivates the game page');
-  // page hide while a round is open is abandoned once
-  api.prepare(frame, 'normal');
-  const before = events.filter(e => e[0] === 'end').length;
-  win.listeners.pagehide[0]({ persisted: false });
-  eq(events.filter(e => e[0] === 'end').length, before + 1, 'pagehide abandons the open round');
-  api.exit(frame);
-  eq(loc.hash, 'lobby', 'exit returns to the lobby');
+  const api=win.deepSeaTopDoggo,frame=el('td-frame').contentWindow;
+  eq(api.getLanguage(frame),'en','language follows site');ok(!api.prepare({},1),'foreign window rejected');
+  ok(api.prepare(frame,1),'free campaign starts');
+  eq(await api.finish(frame,{level:1,kills:8,reason:'win'}),{saved:false},'no ranked score');
+  eq(events.filter(e=>e[0]==='end').at(-1)[3],'win','clear tracked as win');
+  await api.finish(frame,{level:1,reason:'dead'});eq(events.filter(e=>e[0]==='end').length,1,'duplicate finish ignored');
+  eq(sent.length,0,'no score submission');ok(!api.leaders,'no leaderboard reader');
+  ctx.tdRoute(true);ok(/play\.html\?v=.+campaign\d+/.test(el('td-frame').src),'current campaign cache version');ctx.tdRoute(false);ok(frame.calls.some(c=>c[0]==='active'&&c[1]===false),'leaving deactivates');
+  api.prepare(frame,2);win.listeners.pagehide[0]({persisted:false});eq(events.filter(e=>e[0]==='end').length,2,'pagehide ends once');
+  api.exit(frame);eq(loc.hash,'lobby','returns to lobby');
 }
 
 // ---------- 遊戲頁：字串表與模板 ----------

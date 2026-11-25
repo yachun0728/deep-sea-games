@@ -4,3 +4,11 @@
 @media(max-width:880px){#view-top-doggo:not([hidden]){display:flex;flex-direction:column}#view-top-doggo .td-platform{flex:1;min-height:0;height:auto!important}#view-top-doggo #td-frame{height:100%!important}}
 /* The game's pause/start menu already provides the lobby exit. */
 #view-top-doggo>.game-exit-link{display:none!important}
+/* Keep the desktop game inside the available viewport without page panning. */
+@media(min-width:881px){
+ html:has(#view-top-doggo:not([hidden])),body:has(#view-top-doggo:not([hidden])){height:100%;overflow:hidden;overscroll-behavior:none}
+ #site-shell:has(#view-top-doggo:not([hidden])){height:100dvh;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden}
+ #site-shell:has(#view-top-doggo:not([hidden]))>.top{flex-shrink:0}
+ #view-top-doggo:not([hidden]){flex:1;min-height:0;overflow:hidden;margin-bottom:0}
+ #view-top-doggo .td-platform,#view-top-doggo #td-frame{height:100%;min-height:0;overscroll-behavior:none}
+}

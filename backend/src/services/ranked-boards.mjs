@@ -100,7 +100,7 @@ function puzzleBoard(rules) {
   };
 }
 const boards = new Map([
-  ...topDoggoRules.DIFFICULTIES.map(difficulty => [topDoggoRules.boardId(difficulty), topDoggoBoard()]),
+  // TOP DOGGO now uses a local campaign; retired boards reject new rounds.
  ['cat-match',{
   create:level=>({seed:newSeed(),level,version:catMatchRules.VERSION,issuedAt:Date.now(),score:null}),
   accepts:catMatchRules.accepts,
