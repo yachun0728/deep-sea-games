@@ -187,6 +187,17 @@ def build():
     # Top bar order for CrazyGames: clock, meeting timer, pause, speaker.
     html = cut(html, "  const hx = window.parent !== window && W < 520 ? 64 : 14;\n  hudBox(c, hx, top, 118, 44, late ? '#e8502e' : '#ffd23f');\n  cs(c, 'clock', hx + 22, top + 38, 32);\n  comicText(c, fmtClock(mins), hx + 78, top + 22, 23);\n  // 右上：主管會議倒數（剩 10 秒變紅，不閃爍）\n  const danger = left < 10;\n  hudBox(c, W - 152, top, 138, 44, danger ? '#e8502e' : '#fff');\n  c.save(); c.beginPath(); c.arc(W - 128, top + 22, 17, 0, 7); c.fillStyle = '#fff'; c.fill(); c.clip();\n  drawBossIcon(c, W - 128, top + 24, 17, 0); c.restore();\n  c.beginPath(); c.arc(W - 128, top + 22, 17, 0, 7); c.lineWidth = 2.5; c.strokeStyle = INK; c.stroke();\n  const ls = Math.max(0, Math.ceil(left));\n  plainText(c, '會議剩', W - 76, top + 12, 11, danger ? '#fff' : '#3a4670', 'center', 900);\n  comicText(c, `${Math.floor(ls / 60)}:${String(ls % 60).padStart(2, '0')}`, W - 76, top + 30, 20, danger ? '#fff' : '#ffd23f');\n",
                "  // CrazyGames build: one row, left to right: clock, meeting timer, pause button, speaker button (the last two are HTML)\n  hudBox(c, 13, top, 100, 44, late ? '#e8502e' : '#ffd23f');\n  cs(c, 'clock', 32, top + 38, 28);\n  comicText(c, fmtClock(mins), 81, top + 22, 21);\n  const danger = left < 10;\n  hudBox(c, 131, top, 118, 44, danger ? '#e8502e' : '#fff');\n  c.save(); c.beginPath(); c.arc(151, top + 22, 16, 0, 7); c.fillStyle = '#fff'; c.fill(); c.clip();\n  drawBossIcon(c, 151, top + 24, 16, 0); c.restore();\n  c.beginPath(); c.arc(151, top + 22, 16, 0, 7); c.lineWidth = 2.5; c.strokeStyle = INK; c.stroke();\n  const ls = Math.max(0, Math.ceil(left));\n  plainText(c, '會議剩', 209, top + 12, 11, danger ? '#fff' : '#3a4670', 'center', 900);\n  comicText(c, `${Math.floor(ls / 60)}:${String(ls % 60).padStart(2, '0')}`, 209, top + 30, 20, danger ? '#fff' : '#ffd23f');\n")
+    # Desktop layout scales the whole game column with a CSS transform: measure its unscaled size,
+    # and render the canvas at screen resolution (devicePixelRatio x scale) so it stays sharp.
+    html = cut(html, "const r = $('app').getBoundingClientRect(); if (r.width < 10 || r.height < 10) return;",
+               "const ap = $('app'), r = { width: ap.offsetWidth, height: ap.offsetHeight }; if (r.width < 10 || r.height < 10) return;")
+    html = cut(html, "DPR = Math.min(window.devicePixelRatio || 1, 2.5);",
+               "DPR = Math.min((window.devicePixelRatio || 1) * (window.CG_SCALE || 1), 3);")
+    # Physics in fixed 1/120 s steps, so the game runs the same at 60, 144 or 165 Hz.
+    html = cut(html, "let rocketModel=null,rocketStarting=false,rocketRaw=-1;",
+               "let rocketModel=null,rocketStarting=false,rocketRaw=-1,cgAcc=0;const CG_STEP=1/120;")
+    html = cut(html, "if(HOST?.update)HOST.update(window,dt*1000,()=>appState==='play',step);else step(dt);",
+               "if(HOST?.update)HOST.update(window,dt*1000,()=>appState==='play',step);else{cgAcc=Math.min(cgAcc+dt,0.25);while(cgAcc>=CG_STEP&&appState==='play'){step(CG_STEP);cgAcc-=CG_STEP;}}")
     # Thrust meter labels sit 46px apart at the low end: an arrow instead of "DOWN" so it doesn't run into "HOLD".
     html = cut(html, "['掉', 0.075]", "['↓', 0.075]")
     # Desktop players have no touch screen: name the Space key and the mouse in the hints.
@@ -231,6 +242,7 @@ def build():
     # title music (MP3) and sound effects (m4a), plus the credits the music licence (CC BY 4.0) requires
     shutil.copytree(os.path.join(CG_DIR, 'audio'), os.path.join(OUT, 'audio'))
     shutil.copytree(os.path.join(CG_DIR, 'result'), os.path.join(OUT, 'result'))   # result-screen art (no text)
+    shutil.copytree(os.path.join(CG_DIR, 'desktop'), os.path.join(OUT, 'desktop'))   # side background for wide screens
     shutil.copy(os.path.join(CG_DIR, 'CREDITS.md'), os.path.join(OUT, 'CREDITS.md'))
     if os.path.exists(ZIP): os.remove(ZIP)
     with zipfile.ZipFile(ZIP, 'w', zipfile.ZIP_DEFLATED) as z:

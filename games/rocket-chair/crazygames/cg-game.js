@@ -209,6 +209,20 @@
   // (A CrazyGames rewarded ad can come back here for Full Launch.)
   afterFailScene = function () { scene = null; if (G && G.failSnap) { G.y = G.failSnap.y; G.v = 0; } finishFail(); };
 
+  /* ---------- wide screens (desktop, laptop, CrazyGames embed): the portrait game column, centred and
+     scaled to the window, on an illustrated city background. Phones keep the full-screen portrait layout. ---------- */
+  const COL_W = 370, COL_H = 640;
+  function layout() {
+    const vw = innerWidth, vh = innerHeight, wide = !IS_MOBILE && vw / vh > 0.75;
+    document.body.classList.toggle('cg-wide', wide);
+    if (wide) {
+      const k = Math.min((vh - 28) / COL_H, (vw - 28) / COL_W);
+      window.CG_SCALE = k; app.style.transform = `translate(-50%, -50%) scale(${k})`;
+    } else { window.CG_SCALE = 1; app.style.transform = ''; }
+    resize();
+  }
+  window.addEventListener('resize', layout); layout();
+
   CG.ready.then((C) => {
     // saved settings arrive with the SDK: apply them (the game read empty defaults at startup)
     userMuted = lsGet(MUTE_KEY) === '1'; musicOff = CG.store.getJSON('roar_settings', { music: true }).music === false;
