@@ -27,4 +27,12 @@
 
 截圖：`berry-trail-touch-2026-11-25/mobile-playing.png`、`berry-trail-touch-2026-11-25/mobile-paused.png`。
 
-目前為驗收版，提供本機網址供確認新版手感；正式發布前需依專案 Release 規範核准這次畫面變更。
+以下為發布前驗收紀錄；正式發布結果見下節。
+
+## 正式上線
+
+使用者確認新版並指示「上」。已將 `fcdfdabff8442b61a664f57602efd4effc8f1dda` 推送 `origin/main`，發布主站 Worker 版本 `bb368b5c-b247-4e3a-a222-97d32b2fe80c`。此次不需變動 API Worker 或 D1。發布前遠端為 `eb5d1ef`，工作樹乾淨，插隊圖片無差異。
+
+PASS：正式網站 `https://ticaticagames.com/#berry-trail` 在隔離 Chrome 的 390×844／1366×900 三語檢查通過；手機標題頂距 <20px、方向鍵不可見、按鈕觸控範圍正確。完成真實對局取得 10 分並送分成功；送分成功後 status 與 retry 均為 display:none。重玩、失焦暫停、返回大廳重設均通過，第一張卡片仍為莓果小蛇，未捕獲 runtime error。正式首頁、子頁、美術與 SEO 檔案經 SHA-256 比對均與核准版本一致。
+
+NOT TESTED：iOS／Android 實機手感、Safari／Firefox、長時間及低階效能、GA4 後台收件。Chrome 裝置模擬不能代替實機。
