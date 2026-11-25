@@ -63,7 +63,7 @@
 #cg-audio-menu button.off b{background:#d9dde8;color:#5f5c59}
 #cg-audio-menu button:disabled{opacity:.45;cursor:default}
 /* Top bar order while playing: clock (canvas) | meeting timer (canvas) | pause | speaker */
-#cg-pause{left:259px;transform:none;top:calc(13px + env(safe-area-inset-top))}
+#cg-pause{left:264px;transform:none;top:calc(13px + env(safe-area-inset-top))}
 #cg-pause:active{transform:translateY(2px)}
 #app.cg-playing #mute{top:calc(14px + env(safe-area-inset-top))}
 #app.cg-playing #cg-audio-menu{top:calc(64px + env(safe-area-inset-top))}
