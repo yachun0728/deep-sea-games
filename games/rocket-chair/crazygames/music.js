@@ -145,6 +145,44 @@
     },
   };
 
+  /* ---------- muffled office voices, as if through a wall ---------- */
+  // One phrase = a buzzy voice source whose pitch rises and falls like speech, shaped by two moving vowel
+  // formants and a syllable-by-syllable volume envelope, then low-passed hard so no words can be made out.
+  const VOWELS = [[730, 1090], [530, 1840], [270, 2290], [570, 840], [300, 870], [660, 1720], [440, 1020]];
+  const SPEAKERS = [105, 122, 140, 195, 215, 240];   // base pitch (Hz): three lower and three higher voices
+  function phrase(t, base, syllables, vol, laugh) {
+    const r = Math.random, src = ctx.createOscillator(), g = ctx.createGain(), lp = ctx.createBiquadFilter();
+    const f1 = ctx.createBiquadFilter(), f2 = ctx.createBiquadFilter(), g2 = ctx.createGain();
+    src.type = 'sawtooth'; f1.type = f2.type = 'bandpass'; f1.Q.value = 6; f2.Q.value = 9; g2.gain.value = 0.5;
+    lp.type = 'lowpass'; lp.frequency.value = 850; lp.Q.value = 0.3;
+    src.connect(f1); src.connect(f2); f1.connect(g); f2.connect(g2); g2.connect(g); g.connect(lp); lp.connect(bus);
+    let x = t; g.gain.setValueAtTime(0, t);
+    const rise = r() < 0.35;   // questions end higher
+    for (let i = 0; i < syllables; i++) {
+      const len = laugh ? 0.11 : 0.09 + r() * 0.16, [a, b] = VOWELS[r() * VOWELS.length | 0], last = i === syllables - 1;
+      let p = base * (1 + (r() - 0.5) * 0.18) * (1 - i / syllables * 0.12);
+      if (last && rise) p *= 1.25; if (laugh) p = base * (1.35 - i * 0.04);
+      src.frequency.setTargetAtTime(p, x, 0.03);
+      f1.frequency.setTargetAtTime(a, x, 0.02); f2.frequency.setTargetAtTime(b, x, 0.02);
+      const peak = vol * (0.6 + r() * 0.4) * (i === 0 ? 1.1 : 1);
+      g.gain.setTargetAtTime(peak, x, 0.012); g.gain.setTargetAtTime(peak * 0.25, x + len * 0.6, 0.02);
+      x += len + (r() < 0.15 ? 0.08 : 0.015);
+    }
+    g.gain.setTargetAtTime(0, x, 0.03);
+    src.frequency.setValueAtTime(base, t); src.start(t); src.stop(x + 0.3); keep(src);
+    return x - t;
+  }
+  // a short back-and-forth between two people
+  function chat(t, vol, laughs) {
+    const r = Math.random, a = SPEAKERS[r() * 6 | 0];
+    let b = SPEAKERS[r() * 6 | 0]; if (b === a) b = SPEAKERS[(SPEAKERS.indexOf(a) + 3) % 6];
+    let x = t;
+    for (let turn = 0, n = 2 + (r() * 3 | 0); turn < n; turn++) {
+      x += phrase(x, turn % 2 ? b : a, 4 + (r() * 9 | 0), vol) + 0.25 + r() * 0.5;
+      if (laughs && r() < 0.3) x += phrase(x, turn % 2 ? a : b, 4, vol * 0.8, true) + 0.2;
+    }
+  }
+
   /* ---------- in-game: office soundscape + meeting clock ---------- */
   // No music while playing (the microphone would pick it up): quiet room tone, per-floor background sounds,
   // and a clock that ticks once a second, twice a second with a heartbeat when the meeting is about to end.
@@ -168,6 +206,9 @@
       }
       if (urgent && s % 2 === 0) { kick(t, 0.2); kick(t + 0.16, 0.12); }    // heartbeat
       const r = Math.random, f = intensity;
+      // people talking behind walls: busiest in the meeting room, chatty with laughs in the break room, none on the roof
+      const talk = [0.07, 0.05, 0.12, 0.09, 0][f];
+      if (r() < talk) chat(t, f === 2 ? 0.05 : 0.04, f === 3);
       // keyboard typing (every floor but the roof)
       if (f < 4 && r() < 0.18) for (let i = 0, n = 3 + (r() * 7 | 0); i < n; i++) hiss(t + i * (0.06 + r() * 0.07), { freq: 2500 + r() * 1500, q: 2, vol: 0.02 + r() * 0.015, decay: 0.02 });
       if (f === 0 && r() < 0.025) {          // 1F Sales: a phone rings twice, somewhere across the floor
