@@ -74,7 +74,7 @@
   "lobby.member": "會員中心",
   "lobby.hero.title1": "今天，想玩",
   "lobby.hero.title2": "哪一款？",
-  "lobby.hero.sub": "免費小遊戲，免下載、免註冊，挑一款就開玩。",
+  "lobby.hero.sub": "挑一款就開玩，同一個點數錢包。",
   "lobby.hero.cta": "探索全部遊戲",
   "lobby.banner.clock-out.title": "社畜要下班",
   "lobby.banner.clock-out.sub": "新遊戲上架，對著手機大吼衝破天花板。",
@@ -3282,12 +3282,5 @@
   "card.top-doggo.tag": "街頭動作闖關",
   "seo.title": "免費小遊戲・經典益智與休閒遊戲｜TICATICA GAMES",
   "seo.description": "免費小遊戲隨時開玩！TICATICA GAMES 提供經典小遊戲、益智解謎、跑酷與反應挑戰，免下載、免註冊，手機與電腦瀏覽器都能玩。利用休息時間輕鬆玩一局，探索喜歡的線上遊戲。",
-  "seo.about.title": "免費小遊戲、經典益智與休閒遊戲",
-  "seo.about.intro": "TICATICA GAMES 是免費線上小遊戲網站，提供經典懷舊、益智解謎、跑酷與反應挑戰。免下載、免安裝、免註冊，手機與電腦瀏覽器都能玩。無論想動動腦，或利用休息時間輕鬆玩一局，都能從大廳挑選喜歡的小遊戲。",
-  "seo.faq.free.q": "玩遊戲需要付費嗎？",
-  "seo.faq.free.a": "本站遊戲皆可免費遊玩。網站點數為虛擬點數，不需要儲值，也不能兌換現金。",
-  "seo.faq.device.q": "手機和電腦都可以玩嗎？",
-  "seo.faq.device.a": "可以，使用手機或電腦瀏覽器開啟網站，依各款遊戲的觸控或鍵盤操作提示遊玩；不需要下載 App。",
-  "seo.faq.find.q": "有哪些小遊戲可以玩？",
-  "seo.faq.find.a": "可以從大廳分類或搜尋挑選遊戲，例如踩地雷、深海連連看與貓咪疊書舖，也有跑酷及反應挑戰。各款玩法與操作請查看遊戲內說明。"
+  "lobby.legal.about": "遊戲介紹"
 }

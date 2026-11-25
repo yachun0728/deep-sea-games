@@ -74,7 +74,7 @@
   "lobby.member": "Member Center",
   "lobby.hero.title1": "What's your",
   "lobby.hero.title2": "game today?",
-  "lobby.hero.sub": "Free mini games. No download or registration. Pick one and play.",
+  "lobby.hero.sub": "One wallet, every game.",
   "lobby.hero.cta": "Explore all games",
   "lobby.banner.clock-out.title": "Roar Through the Ceiling",
   "lobby.banner.clock-out.sub": "Shout to blast through the ceiling.",
@@ -3282,12 +3282,5 @@
   "card.top-doggo.tag": "Street action",
   "seo.title": "Free Online Mini Games, Classic Puzzles & Casual Games | TICATICA GAMES",
   "seo.description": "Play free online mini games at TICATICA GAMES, from classic puzzles to runners and reaction challenges. No download or registration required. Enjoy a quick break in your mobile or desktop browser.",
-  "seo.about.title": "Free mini games, classic puzzles and casual games",
-  "seo.about.intro": "TICATICA GAMES offers free online mini games, from classic and retro games to puzzles, runners and reaction challenges. Play in your mobile or desktop browser with no download, installation or registration. Exercise your mind or enjoy a quick break with a game from the lobby.",
-  "seo.faq.free.q": "Are the games free?",
-  "seo.faq.free.a": "All games on this site are free to play. Site points are virtual, require no top-up and cannot be exchanged for cash.",
-  "seo.faq.device.q": "Can I play on mobile and desktop?",
-  "seo.faq.device.a": "Yes. Open the site in a mobile or desktop browser and follow each game’s touch or keyboard instructions. No app download is needed.",
-  "seo.faq.find.q": "What kinds of mini games can I play?",
-  "seo.faq.find.a": "Browse categories or search the lobby for games such as Minesweeper, Ocean Link and Cat Book Stack, plus runners and reaction challenges. Check each game’s instructions for rules and controls."
+  "lobby.legal.about": "About the games"
 }
