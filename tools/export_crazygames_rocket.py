@@ -210,10 +210,11 @@ def build():
     html = html.replace('src="../../shared/rocket-chair-rules.js"', 'src="rocket-chair-rules.js"')
     html = html.replace('assets/comic/', 'assets/')
     html = re.sub(r'\.\./\.\./', '', html)
-    # loading start as early as possible is handled by the SDK itself; inject glue before </body>
-    # CrazyGames glue (saves, SDK events, pause menu, one-click start, rewarded ad), after the game script.
+    # CrazyGames glue (saves, SDK events, pause menu, one-click start, rewarded ad, music and sound files),
+    # after the game script; music.js (title music player + office ambience) goes first.
+    music = open(os.path.join(CG_DIR, 'music.js'), encoding='utf-8').read()
     glue = open(os.path.join(CG_DIR, 'cg-game.js'), encoding='utf-8').read()
-    html = cut(html, '</body>', '<script>\n' + glue + '</script>\n</body>')
+    html = cut(html, '</body>', '<script>\n' + music + '</script>\n<script>\n' + glue + '</script>\n</body>')
     rules = open(RULES, encoding='utf-8').read()
     for zh in sorted(RULES_EN, key=len, reverse=True):
         rules = rules.replace(zh, RULES_EN[zh])
@@ -224,6 +225,9 @@ def build():
     open(os.path.join(OUT, 'rocket-chair-rules.js'), 'w', encoding='utf-8').write(rules)
     for f in os.listdir(ASSETS):
         if f.endswith('.webp'): shutil.copy(os.path.join(ASSETS, f), os.path.join(OUT, 'assets', f))
+    # title music (MP3) and sound effects (m4a), plus the credits the music licence (CC BY 4.0) requires
+    shutil.copytree(os.path.join(CG_DIR, 'audio'), os.path.join(OUT, 'audio'))
+    shutil.copy(os.path.join(CG_DIR, 'CREDITS.md'), os.path.join(OUT, 'CREDITS.md'))
     if os.path.exists(ZIP): os.remove(ZIP)
     with zipfile.ZipFile(ZIP, 'w', zipfile.ZIP_DEFLATED) as z:
         for base, _, files in os.walk(OUT):

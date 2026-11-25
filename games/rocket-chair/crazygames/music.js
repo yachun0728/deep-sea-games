@@ -9,13 +9,16 @@
  * Music.setVolume(0..1) / mute(bool)      level and on/off (the game applies its global mute through these)
  * Music.setIntensity(0..4)                in-game: current floor (each floor has its own background sounds)
  * Music.setUrgent(bool)                   in-game: last seconds of the meeting (faster, higher ticking + heartbeat)
+ * Music.setVoices(bool)                   in-game: muffled office voices on/off
+ * Music.setSample('tick', AudioBuffer)    in-game: use a recorded clock tick instead of the synthesized one
  *
  * The soundscape is scheduled step by step on the audio clock, so it has no loop gap. */
 (function (global) {
   'use strict';
   let ctx = null, out = null, bus = null, noise = null;
   let track = null, name = '', timer = 0, step = 0, nextTime = 0, state = 'stopped';
-  let intensity = 0, urgent = false, volume = 0.6, muted = false;
+  let intensity = 0, urgent = false, voices = true, volume = 0.6, muted = false;
+  const samples = {};              // decoded audio files handed in by the game (e.g. the clock tick)
   const live = new Set();          // one-shot sources, stopped on pause/stop
   const layers = new Map();        // looping background layers (room tone, wind...), keyed by name
 
@@ -32,6 +35,11 @@
     return Music;
   }
   const keep = (src) => { live.add(src); src.onended = () => live.delete(src); return src; };
+  function sampleAt(buf, t, vol, rate) {
+    const src = ctx.createBufferSource(), g = ctx.createGain();
+    src.buffer = buf; src.playbackRate.value = rate || 1; g.gain.value = vol;
+    src.connect(g); g.connect(bus); src.start(t); keep(src);
+  }
 
   /* ---------- sound sources ---------- */
   function env(g, t, v, a, d, s, end, r) {
@@ -164,14 +172,17 @@
       // clock: tick (high) and tock (low) every second, every half second when urgent
       if (s % 2 === 0 || urgent) {
         const hi = (s / (urgent ? 1 : 2)) % 2 === 0;
-        blip(urgent ? (hi ? 1900 : 1500) : (hi ? 1450 : 1100), t, 0.025, urgent ? 0.09 : 0.05, 'triangle');
-        hiss(t, { type: 'highpass', freq: 5000, vol: urgent ? 0.05 : 0.03, decay: 0.012 });
+        if (samples.tick) sampleAt(samples.tick, t, urgent ? 0.22 : 0.12, (hi ? 1.08 : 0.92) * (urgent ? 1.15 : 1));   // Kenney tick, tick-tock pitch
+        else {
+          blip(urgent ? (hi ? 1900 : 1500) : (hi ? 1450 : 1100), t, 0.025, urgent ? 0.09 : 0.05, 'triangle');
+          hiss(t, { type: 'highpass', freq: 5000, vol: urgent ? 0.05 : 0.03, decay: 0.012 });
+        }
       }
       if (urgent && s % 2 === 0) { kick(t, 0.2); kick(t + 0.16, 0.12); }    // heartbeat
       const r = Math.random, f = intensity;
       // people talking behind walls: busiest in the meeting room, chatty with laughs in the break room, none on the roof
       const talk = [0.07, 0.05, 0.12, 0.09, 0][f];
-      if (r() < talk) chat(t, f === 2 ? 0.05 : 0.04, f === 3);
+      if (voices && r() < talk) chat(t, f === 2 ? 0.05 : 0.04, f === 3);
       // keyboard typing (every floor but the roof)
       if (f < 4 && r() < 0.18) for (let i = 0, n = 3 + (r() * 7 | 0); i < n; i++) hiss(t + i * (0.06 + r() * 0.07), { freq: 2500 + r() * 1500, q: 2, vol: 0.02 + r() * 0.015, decay: 0.02 });
       if (f === 0 && r() < 0.025) {          // 1F Sales: a phone rings twice, somewhere across the floor
@@ -228,6 +239,8 @@
     mute(m) { muted = !!m; if (out) out.gain.setTargetAtTime(muted ? 0 : volume, ctx.currentTime, 0.05); },
     setIntensity(n) { n = Math.max(0, Math.min(4, n | 0)); if (n === intensity) return; intensity = n; if (name === 'game' && state === 'playing') GAME.floor(); },
     setUrgent(u) { urgent = !!u; },
+    setVoices(v) { voices = !!v; },                 // off while the microphone is listening
+    setSample(k, buf) { samples[k] = buf; },
     get track() { return name; }, get state() { return state; }, get intensity() { return intensity; }, get urgent() { return urgent; },
   };
   global.Music = Music;

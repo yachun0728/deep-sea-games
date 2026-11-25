@@ -109,12 +109,63 @@
   window.addEventListener('blur', () => { if (appState === 'play') pauseGame(); });
 
   /* ---------- sound: player choice (saved) OR the CrazyGames page OR an ad mutes it ---------- */
-  let userMuted = false, platformMuted = false, adMuted = false;
+  // "Sound" switches everything off; "Music" only the title music and the in-game office ambience.
+  let userMuted = false, platformMuted = false, adMuted = false, musicOff = false;
+  const musicBtn = mk('cg-music', 'ghost', '');
   const syncMute = () => { muted = userMuted || platformMuted || adMuted; $('mute').classList.toggle('muted', userMuted || platformMuted);
-    try { if (master) master.gain.value = muted ? 0 : (inputMode === 'touch' ? 0.5 : 0.28); } catch (e) {} };
-  function renderSound() { soundBtn.textContent = userMuted ? 'Sound: Off' : 'Sound: On'; }
+    try { if (master) master.gain.value = muted ? 0 : (inputMode === 'touch' ? 0.5 : 0.28); } catch (e) {}
+    if (window.Music) Music.mute(muted || musicOff); };
+  function renderSound() { soundBtn.textContent = userMuted ? 'Sound: Off' : 'Sound: On'; musicBtn.textContent = musicOff ? 'Music: Off' : 'Music: On'; }
   const toggleSound = () => { userMuted = !userMuted; lsSet(MUTE_KEY, userMuted ? '1' : '0'); syncMute(); renderSound(); ensureAudio(); };
-  $('mute').onclick = toggleSound; soundBtn.onclick = toggleSound;
+  const toggleMusic = () => { musicOff = !musicOff; CG.store.setJSON('roar_settings', { music: !musicOff }); syncMute(); renderSound(); };
+  $('mute').onclick = toggleSound; soundBtn.onclick = toggleSound; musicBtn.onclick = toggleMusic;
+
+  /* ---------- recorded sound effects (Kenney, CC0) replace the synthesized ones; synth stays as fallback ---------- */
+  const SFX_FILES = ['bonk', 'crash', 'burst', 'grab', 'paper', 'timeup', 'tick', 'click', 'clear'];
+  const sfxRaw = {}, sfx = {};
+  SFX_FILES.forEach(n => { sfxRaw[n] = fetch('audio/sfx/' + n + '.m4a').then(r => r.ok ? r.arrayBuffer() : null).catch(() => null); });
+  let sfxDecoding = null;
+  function decodeSfx() {
+    if (sfxDecoding || !actx) return;
+    sfxDecoding = Promise.all(SFX_FILES.map(n => sfxRaw[n].then(ab => ab && actx.decodeAudioData(ab.slice(0))).then(b => { if (b) sfx[n] = b; }).catch(() => {})))
+      .then(() => { if (sfx.tick && window.Music) Music.setSample('tick', sfx.tick); });
+  }
+  function sample(n, vol, dur) {
+    const b = sfx[n]; if (!b || !actx || !master) return false;
+    if (muted) return true;
+    const s = actx.createBufferSource(), g = actx.createGain(), t = actx.currentTime;
+    s.buffer = b; g.gain.value = vol; s.connect(g); g.connect(master); s.start(t);
+    if (dur && dur < b.duration) { g.gain.setValueAtTime(vol, t + dur - 0.2); g.gain.linearRampToValueAtTime(0, t + dur); s.stop(t + dur + 0.02); }
+    return true;
+  }
+  const synth = Object.assign({}, Snd);
+  const useSample = (key, n, vol, dur) => { Snd[key] = function () { if (!sample(n, vol, dur)) return synth[key].apply(Snd, arguments); }; };
+  useSample('bonk', 'bonk', 1.0); useSample('crash', 'crash', 1.0); useSample('burst', 'burst', 0.8, 0.9);
+  useSample('grab', 'grab', 0.9); useSample('paper', 'paper', 0.9); useSample('ding', 'timeup', 1.0);
+  useSample('win', 'clear', 0.9); useSample('click', 'click', 0.8);
+
+  /* ---------- music and office ambience follow the game state ---------- */
+  let musicReady = false;
+  function audioUnlock() {          // browsers only allow audio after the first click / key
+    ensureAudio(); if (!actx || musicReady || !window.Music) return;
+    Music.init(actx); musicReady = true; syncMute(); decodeSfx();
+  }
+  ['pointerdown', 'keydown', 'touchstart'].forEach(ev => window.addEventListener(ev, audioUnlock, { capture: true }));
+  function syncMusic() {
+    if (!musicReady) return;
+    const s = appState, gameTrack = Music.track === 'game';
+    // while the microphone listens: quieter ambience and no voices, so the speakers don't fly the chair
+    const mic = inputMode === 'voice' && s === 'play', level = mic ? 0.35 : 0.6;
+    if (level !== lastLevel) { lastLevel = level; Music.setVolume(level); Music.setVoices(!mic); }
+    if (s === 'play') {
+      if (gameTrack && Music.state === 'paused') Music.resume(); else if (!gameTrack || Music.state !== 'playing') Music.play('game');
+      if (G) { Music.setIntensity(G.floor); Music.setUrgent(G.meetingTotal - G.elapsed <= 10); }
+    } else if (s === 'paused' || s === 'revive' || s === 'ad' || s === 'micfail') { if (gameTrack && Music.state === 'playing') Music.pause(); }
+    else if (s === 'failcs' || s === 'clearcs') { if (gameTrack) Music.stop(); }
+    else if (s === 'title' || s === 'result') { if (Music.track !== 'title') Music.play('title'); }
+  }
+  let lastLevel = -1;
+  (function musicLoop() { try { syncMusic(); } catch (e) {} requestAnimationFrame(musicLoop); })();
   const applyMute = (s) => { if (s && typeof s.muteAudio === 'boolean') { platformMuted = s.muteAudio; syncMute(); } };
 
   /* ---------- rewarded ad replaces the site's demo ad: once per round, the meeting runs longer ---------- */
@@ -134,7 +185,8 @@
 
   CG.ready.then((C) => {
     // saved settings arrive with the SDK: apply them (the game read empty defaults at startup)
-    userMuted = lsGet(MUTE_KEY) === '1'; syncMute(); renderSound(); Calib.load(); renderWallet();
+    userMuted = lsGet(MUTE_KEY) === '1'; musicOff = CG.store.getJSON('roar_settings', { music: true }).music === false;
+    syncMute(); renderSound(); Calib.load(); renderWallet();
     if (!C) return;
     sdk = C;
     try { sdk.game.loadingStop(); } catch (e) {}
