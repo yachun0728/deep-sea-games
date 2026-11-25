@@ -10,3 +10,32 @@
 /* Pause menu: Resume first, then Restart / Back to Menu, Sound as a text toggle. */
 #s-pause .btn{min-width:240px}
 #s-pause #cg-sound{min-width:0}
+/* ===== Result screen: a "clock-out slip" ===== */
+#r-title,#r-stats,#r-cards{display:none!important}
+#s-result{justify-content:safe center;gap:14px;padding-top:calc(22px + env(safe-area-inset-top))}
+#r-head{font-size:26px;margin-top:4px}
+#cg-slip{position:relative;width:100%;max-width:340px;background:#fffaf0;color:#1d1b1a;border:3px solid #1d1b1a;border-radius:6px;
+  box-shadow:6px 7px 0 #1d1b1a;padding:12px 14px 12px;transform:rotate(-1.2deg);text-align:left;
+  background-image:repeating-linear-gradient(180deg,transparent 0 23px,rgba(70,110,200,.13) 23px 24px)}
+#cg-slip::before{content:"";position:absolute;left:-3px;right:-3px;top:34px;border-top:3px dashed #1d1b1a;opacity:.35}
+#cg-slip .slip-top{display:flex;justify-content:space-between;align-items:baseline;font-weight:900;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+#cg-slip .slip-top span:last-child{font-size:12px;letter-spacing:1px;color:#5f5c59}
+#cg-slip .slip-mid{display:flex;align-items:flex-end;gap:6px;min-height:118px}
+#cg-slip .hero{flex:0 0 auto;width:118px;background-repeat:no-repeat;filter:drop-shadow(2px 3px 0 rgba(29,27,26,.25))}
+#cg-slip .stamp{flex:1;align-self:center;margin-left:4px;transform:rotate(-9deg);border:4px double #d8281a;color:#d8281a;border-radius:8px;
+  padding:6px 8px;text-align:center;font-weight:900;font-size:21px;line-height:1.1;letter-spacing:1px;text-transform:uppercase;opacity:.9;
+  mix-blend-mode:multiply;animation:cg-stamp .35s cubic-bezier(.2,1.6,.4,1) .25s both}
+#cg-slip .stamp small{display:block;font-size:10px;letter-spacing:2px;margin-bottom:2px}
+@keyframes cg-stamp{from{transform:rotate(-9deg) scale(2.2);opacity:0}to{transform:rotate(-9deg) scale(1);opacity:.9}}
+#cg-slip .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+#cg-slip .tile{background:#fff;border:2.5px solid #1d1b1a;border-radius:6px;box-shadow:2px 3px 0 #1d1b1a;padding:6px 4px 5px;text-align:center}
+#cg-slip .tile svg{width:22px;height:22px;display:block;margin:0 auto 2px}
+#cg-slip .tile b{display:block;font-size:22px;line-height:1.1;color:#e0301c;font-style:italic}
+#cg-slip .tile span{display:block;font-size:11px;font-weight:800;color:#3a4670;line-height:1.2}
+#cg-slip .note{margin-top:10px;font-size:13px;font-weight:700;font-style:italic;color:#3a4670;min-height:1em}
+#cg-slip .best{margin-top:6px;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:900}
+#cg-slip .best .new{background:#ffd23f;border:2px solid #1d1b1a;border-radius:999px;padding:1px 10px;font-size:12px;letter-spacing:1px;animation:cg-pop .6s ease-in-out .7s 2 alternate}
+@keyframes cg-pop{to{transform:scale(1.15)}}
+/* Play again (primary) and Menu side by side at the bottom */
+#r-bar #btn-home{flex:0 0 auto;margin:0;padding:12px 18px;font-size:16px;min-width:0}
+#s-result > #btn-home{display:none}
