@@ -80,7 +80,7 @@
     AN.view(member?'lobby':v);
     var heading = member ? '{{t:navigation.msg.004}}' : VIEWS[v];
     $('game-name').innerHTML = heading;
-    document.title=member?'{{t:navigation.msg.005}}':v==='lobby'?'TiCATiCA GAMES':VIEWS[v].replace(/<[^>]*>/g,'').trim();
+    document.title=member?'{{t:navigation.msg.005}}':v==='lobby'?'{{t:seo.title}}':VIEWS[v].replace(/<[^>]*>/g,'').trim();
     if(lastView&&lastView!==v){$('game-name').focus({preventScroll:true});if(window.scrollTo)window.scrollTo({top:v==='lobby'?lobbyScroll:0,behavior:'instant'});}
     lastView=v;
     $('picker-current').textContent=heading.replace(/<[^>]*>/g,'').trim();

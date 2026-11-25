@@ -6,7 +6,9 @@
   var language = 'zh-Hant', preferenceKey = 'deep-sea-language-v1';
   var records = new WeakMap(), attributeRecords = new WeakMap(), cache = new Map();
   var frameDocuments = new Map(), canvasPrototypes = new WeakSet();
-  var attributes = ['aria-label', 'title', 'placeholder', 'alt'];
+  var attributes = ['aria-label', 'title', 'placeholder', 'alt', 'content'];
+  var siteSchema = document.getElementById('site-schema');
+  var siteSchemaSource = siteSchema ? JSON.parse(siteSchema.textContent) : null;
   var ignored = 'script,style,noscript,[data-i18n-ignore]';
   var han = /[\u3400-\u9fff]/;
   // Simplified Chinese is derived from the Traditional source text: whole-text exceptions, then word exceptions, then per-character mapping.
@@ -108,6 +110,7 @@
     if (excluded(el)) return;
     var saved = attributeRecords.get(el) || {};
     attributes.forEach(function (name) {
+      if (name === 'content' && !el.matches('meta[data-i18n-content]')) return;
       if (!el.hasAttribute(name)) { delete saved[name]; return; }
       var value = el.getAttribute(name), record = saved[name];
       var source = record && value === record.rendered ? record.source : value;
@@ -168,6 +171,10 @@
       document.querySelectorAll('iframe').forEach(function (frame) { try { if (frame.contentDocument && frame.contentDocument.documentElement) restoreIgnored(frame.contentDocument); } catch (e) {} });
     }
     visit(document);
+    if (siteSchemaSource) {
+      var schema = Object.assign({}, siteSchemaSource, { description: translate(siteSchemaSource.description) });
+      siteSchema.textContent = JSON.stringify(schema).replace(/</g, '\\u003c');
+    }
     document.querySelectorAll('iframe').forEach(localizeFrame);
     document.querySelectorAll('[data-language]').forEach(function (button) { button.setAttribute('aria-pressed', String(button.dataset.language === language)); });
     observe();

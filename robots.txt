@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /preview/
+Disallow: /templates/
+Disallow: /output/
+
+Sitemap: https://ticaticagames.com/sitemap.xml
