@@ -11,16 +11,36 @@ body{font-family:"Avenir Next Rounded","Nunito","Arial Rounded MT Bold","PingFan
 html,body{width:100%;height:100%;overflow:hidden}body{min-height:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 main{width:min(calc(100vw - 28px),calc(100dvh - 365px),500px);min-width:0;padding:6px 0 40px}header{gap:10px}h1{font-size:clamp(22px,6vw,36px)}small{font-size:9px;letter-spacing:1.5px}#exit{min-width:44px;min-height:44px;padding:6px}.stats{margin:8px 0 12px}.stat{padding:5px 12px}.stat strong{font-size:24px}.stat:after{right:10px;top:16px;width:12px;height:12px}.board{border-width:5px}.controls{margin-top:12px}.controls button{min-height:44px;padding:6px}.pad{display:grid;margin-top:10px;grid-template-columns:repeat(3,48px);gap:6px}.pad button{height:44px;min-width:44px}.hint{font-size:11px;margin:10px 0 0}.overlay{padding:12px}.overlay h2{font-size:clamp(22px,6vw,34px)}.overlay p{font-size:13px;margin:6px 0 14px}.overlay button{min-height:44px;padding:8px 22px}.overlay button:disabled{opacity:.65}button:focus-visible{outline:3px solid #e4a04c;outline-offset:2px}
 @media(min-width:600px) and (max-height:500px){main{width:auto;display:grid;grid-template-columns:min(52vw,calc(100dvh - 80px)) 210px;gap:4px 18px;padding:4px 0 30px}header{grid-column:1/-1}h1{font-size:24px}.board{grid-column:1;grid-row:2/6;align-self:start}.stats{grid-column:2;grid-row:2;margin:0}.controls{grid-column:2;grid-row:3;margin:0}.pad{grid-column:2;grid-row:4;margin:0}.hint{grid-column:2;grid-row:5;margin:0}}
+
+/* Give the square play field almost the entire phone width; compact surrounding HUD. */
+@media(max-width:599px),(min-height:501px){
+ main{width:min(calc(100vw - 12px),calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 246px),620px);padding:4px 0 34px}
+ header{gap:6px;padding:0 4px}h1{font-size:clamp(22px,5.5vw,30px)}small{font-size:8px;letter-spacing:1px}
+ .stats{gap:8px;margin:6px 0 8px}.stat{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:3px 10px;border-radius:11px;min-height:34px}.stat span{display:inline;font-size:11px;letter-spacing:0}.stat strong{font-size:22px}.stat:after{display:none}
+ .board{border-width:4px;border-radius:18px}.controls{margin-top:10px;gap:8px}.controls button{font-size:12px}
+ .pad{grid-template-columns:repeat(4,52px);gap:8px;margin-top:8px}.pad button:first-child,.pad button:nth-child(2){grid-column:auto}.pad button:nth-child(2){order:-1}
+ .hint{margin:7px 0 0;font-size:10px;line-height:1.4}
+}
+
+/* Touch players steer on the board; keep only two large secondary actions. */
+html.touch-layout body{align-items:start;align-content:start}
+html.touch-layout .pad{display:none!important}
+html.touch-layout main{padding-top:10px;padding-bottom:8px;width:min(calc(100vw - 12px),calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 168px),620px)}
+html.touch-layout .controls{gap:12px;margin-top:12px}html.touch-layout .controls button{min-height:52px;font-size:15px;border-radius:16px;touch-action:manipulation}
+html.touch-layout .hint{margin-top:10px;font-size:12px}
+@media(min-width:600px) and (max-height:500px){html.touch-layout main{width:auto}html.touch-layout .controls button{min-height:48px}html.touch-layout .hint{font-size:12px}}
 </style><body data-i18n-ignore><main><header><div><small>TiCATiCA GAMES</small><h1 id="title">Berry Trail</h1></div><button id="leaders" aria-label="Leaderboard">☰</button><button id="exit" aria-label="Back to lobby">←</button></header><div class="stats"><div class="stat"><span id="scoreLabel">SCORE</span><strong id="score">0</strong></div><div class="stat"><span id="bestLabel">BEST</span><strong id="best">0</strong></div></div><div class="board" id="board"><canvas id="c" width="600" height="600" aria-label="Snake game board"></canvas><div class="overlay" id="overlay"><h2 id="message">Berry Trail</h2><p id="desc">A little snake, a big berry adventure.</p><button id="start">Play</button></div></div><div class="controls"><button id="pause">Pause</button><button id="restart">Restart</button></div><div class="pad"><button data-d="0,-1" aria-label="Up">↑</button><button data-d="-1,0" aria-label="Left">←</button><button data-d="0,1" aria-label="Down">↓</button><button data-d="1,0" aria-label="Right">→</button></div><p class="hint" id="hint">Arrow keys / WASD · Swipe to turn · Space to pause</p></main><dialog id="rank-dialog"><h2 id="rank-title"></h2><p id="rank-message" role="status"></p><ol id="rank-list"></ol><button id="rank-close"></button></dialog><script>
 'use strict';
 const $=id=>document.getElementById(id),c=$('c'),g=c.getContext('2d'),N=20,S=30;
 const bridge=parent.deepSeaBerry,rules=bridge.rules;
-let model,rng=Math.random,snake,food,dir,next,score=0,best=0,state='ready',language=bridge.language(window),lang=language==='en'?'en':'zh',last=0,starting=false,active=true;
+let model,rng=Math.random,snake,food,dir,next,score=0,best=0,state='ready',language=bridge.language(window),lang=language==='en'?'en':'zh',last=0,starting=false,active=true,bufferedTurn=null;
 try{const saved=Number(localStorage.getItem('berryTrailBest'));best=Number.isFinite(saved)?Math.max(0,Math.floor(saved)):0;}catch{}
 const words={en:['Berry Trail','SCORE','BEST','A little snake, a big berry adventure.','Play','Pause','Restart','Arrow keys / WASD · Swipe to turn · Space to pause','Game over','Play again','Paused','Resume','You cleared the forest!'],zh:['莓果小蛇','分數','最高分','陪小蛇在森林中尋找甜甜的莓果。','開始遊戲','暫停','重新開始','方向鍵 / WASD · 滑動轉向 · 空白鍵暫停','遊戲結束','再玩一次','暫停中','繼續遊戲','你吃遍整座森林了！']};
 function labels(){
  const w=words[lang].map(t=>bridge.translate(window,t));
  ['title','scoreLabel','bestLabel','hint'].forEach((id,i)=>$(id).textContent=w[[0,1,2,7][i]]);
+ const touchLayout=parent.innerWidth<=880||matchMedia('(pointer: coarse)').matches;document.documentElement.classList.toggle('touch-layout',touchLayout);
+ if(touchLayout)$('hint').textContent=lang==='en'?'Swipe on the board to turn':bridge.translate(window,'在棋盤上滑動轉向');
  $('pause').textContent=state==='paused'?w[11]:w[5];$('restart').textContent=w[6];
  $('message').textContent=state==='over'?w[8]:state==='won'?w[12]:state==='paused'?w[10]:w[0];
  $('desc').textContent=state==='over'||state==='won'?w[1]+': '+score:state==='paused'?'':w[3];
@@ -36,20 +56,24 @@ function labels(){
  document.querySelectorAll('[data-d]').forEach((b,i)=>b.setAttribute('aria-label',lang==='en'?['Up','Left','Down','Right'][i]:['上','左','下','右'][i]));
 }
 function sync(){snake=model.snake;food=model.food;dir=rules.directions[model.dir];score=model.score;}
-function reset(){model=rules.create(rng);sync();state='ready';labels();draw();}
+function reset(){bufferedTurn=null;model=rules.create(rng);sync();state='ready';labels();draw();}
 function start(){
  if(starting||!active)return;
  starting=true;labels();
- const accepted=bridge.prepare(window,function(random){starting=false;if(!active){labels();return;}rng=random;model=rules.create(rng);sync();state='running';last=performance.now();labels();draw();c.focus();});
+ const accepted=bridge.prepare(window,function(random){starting=false;if(!active){labels();return;}rng=random;bufferedTurn=null;model=rules.create(rng);sync();state='running';last=performance.now();labels();draw();c.focus();});
  if(!accepted){starting=false;labels();}
 }
 function turn(x,y){
- if(state!=='running')return;
+ if(state!=='running'||starting)return false;
  const code=rules.directions.findIndex(d=>d[0]===x&&d[1]===y);
- if(rules.input(model,code)){bridge.record(window,code);bridge.touch(window);}
+ if(rules.input(model,code)){bridge.record(window,code);bridge.touch(window);return true;}
+ // Keep one quick follow-up turn; send it to the existing rules only after the next grid step.
+ if(model.queued&&bufferedTurn===null&&code!==model.next&&code!==(model.next+2)%4){bufferedTurn=code;bridge.touch(window);return true;}
+ return false;
 }
 function step(dt){
  rules.advance(model,dt,rng);sync();
+ if(!model.dead&&!model.queued&&bufferedTurn!==null){const code=bufferedTurn;bufferedTurn=null;if(rules.input(model,code))bridge.record(window,code);}
  if(score>best){best=score;try{localStorage.setItem('berryTrailBest',String(best));}catch{}}
  if(model.dead){state=model.won?'won':'over';labels();draw();bridge.finish(window,score);}
 }
@@ -82,7 +106,7 @@ g.save();g.translate(0,2);silhouette();g.fillStyle='#244e3c66';g.fill();g.restor
 ellipse(8,0,6.3,5.4,'#c8e6a5');for(let side of [-1,1]){let y=side*7.2;ellipse(2,y,5.8,5.1,'#fff8df');ellipse(3.8,y,3.8,4.1,'#253d35');ellipse(4.4,y-1.4,1.5,1.5,'#fff');ellipse(2.1,y+1.6,.7,.7,'#b4d8b4');ellipse(8.2,side*9.4,2.7,1.6,'#ecad97');ellipse(11,side*2.5,.65,.85,'#477c55')}
 g.beginPath();g.moveTo(11,-2.4);g.quadraticCurveTo(14,0,11,2.4);g.strokeStyle='#39674b';g.lineWidth=1.1;g.stroke();ellipse(-6,0,2.9,2.1,'#e5edb4');g.restore()}
 
-function pause(){if(state==='running'){state='paused';bridge.pause(window);labels();}else if(state==='paused'&&active){state='running';last=performance.now();bridge.resume(window);labels();}}
+function pause(){if(state==='running'){bufferedTurn=null;touch=null;state='paused';bridge.pause(window);labels();}else if(state==='paused'&&active){state='running';last=performance.now();bridge.resume(window);labels();}}
 function rankStatus(value){$('rank-message').dataset.state=value;const texts={loading:['載入排行榜中…','Loading…'],empty:['目前還沒有成績。','No scores yet.'],error:['載入失敗，請關閉後重試。','Could not load scores. Close and open to retry.']};$('rank-message').textContent=value?(lang==='en'?texts[value][1]:bridge.translate(window,texts[value][0])):'';}
 $('rank-close').onclick=()=>$('rank-dialog').close();
 $('leaders').onclick=async()=>{
@@ -100,10 +124,11 @@ window.addEventListener('keydown',e=>{
  if(e.code==='Space'&&e.target.tagName!=='BUTTON'){e.preventDefault();pause();}
 });
 let touch=null;
-$('board').addEventListener('pointerdown',e=>{if(e.target!==c)return;touch=[e.clientX,e.clientY];c.setPointerCapture(e.pointerId);});
-$('board').addEventListener('pointermove',e=>{if(!touch)return;const x=e.clientX-touch[0],y=e.clientY-touch[1];if(Math.max(Math.abs(x),Math.abs(y))>18){Math.abs(x)>Math.abs(y)?turn(Math.sign(x),0):turn(0,Math.sign(y));touch=[e.clientX,e.clientY];}});
-for(const ev of ['pointerup','pointercancel'])$('board').addEventListener(ev,()=>touch=null);
+$('board').addEventListener('pointerdown',e=>{if(e.target!==c||state!=='running'||starting||touch)return;e.preventDefault();touch=[e.clientX,e.clientY,e.pointerId];c.setPointerCapture(e.pointerId);});
+$('board').addEventListener('pointermove',e=>{if(!touch||e.pointerId!==touch[2]||state!=='running')return;e.preventDefault();const x=e.clientX-touch[0],y=e.clientY-touch[1];if(Math.max(Math.abs(x),Math.abs(y))>=8){Math.abs(x)>Math.abs(y)?turn(Math.sign(x),0):turn(0,Math.sign(y));touch=[e.clientX,e.clientY,e.pointerId];}});
+for(const ev of ['pointerup','pointercancel'])$('board').addEventListener(ev,e=>{if(touch&&e.pointerId===touch[2])touch=null;});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='running')pause();});
+window.addEventListener('resize',labels);
 window.addEventListener('blur',()=>{if(state==='running')pause();});
 window.setBerryLanguage=function(value){language=value;lang=value==='en'?'en':'zh';labels();};
 window.setBerryActive=function(value){active=value;touch=null;if(!value){starting=false;reset();}};

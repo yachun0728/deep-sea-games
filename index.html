@@ -2637,6 +2637,9 @@ body:has(#view-book-sort:not([hidden])){overflow:hidden}
 #bt-rank-status,#bt-rank-retry{position:absolute;z-index:2;bottom:8px;left:12px;right:12px;margin:0;text-align:center;font-size:12px;background:#fff9e9;color:#254b3c;border-radius:8px;padding:4px}
 #bt-rank-retry{bottom:35px;min-height:44px}
 @media(max-width:880px){#view-berry-trail:not([hidden]){position:fixed!important;inset:0;z-index:160;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;width:100%!important;height:100dvh;background:#d4e8c0}#view-berry-trail .bt-platform{max-width:none;height:100%;border-radius:0}#bt-frame{height:100%;max-height:none}#view-berry-trail .mobile-scroll-pad{display:none!important}}
+
+/* Ranking runs in the background; connection status never occupies the game UI. */
+#bt-rank-status,#bt-rank-retry{display:none!important}
 #view-top-doggo .td-platform{padding:0;overflow:hidden;margin:0 auto;width:100%;max-width:1100px;border:0;border-radius:18px;background:#1a0f3a}#view-top-doggo #td-frame{display:block;width:100%;height:max(620px,86dvh);border:0;background:#1a0f3a}@media(max-width:880px){#view-top-doggo:not([hidden]){display:block;position:fixed;inset:0;z-index:160;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;width:100vw!important;max-width:none!important;height:100dvh!important;background:#1a0f3a;overflow:hidden}#view-top-doggo .td-platform{margin:0!important;padding:0!important;border:0!important;border-radius:0!important;width:100%!important;max-width:none!important;height:100dvh!important}#view-top-doggo #td-frame{height:100dvh!important;max-height:none!important;min-height:0!important;width:100%!important}}
 #view-top-doggo .mobile-scroll-pad{display:none!important}
 /* Keep the lobby return row and the iframe within the same mobile viewport. */
@@ -5502,7 +5505,7 @@ html.frontier-immersive{overflow:hidden}
     </div>
     <details class="rules"><summary>玩法與點數</summary><p>經典俄羅斯方塊：七種方塊用 7-bag 洗牌隨機出現，旋轉採用 SRS 規則並支援牆踢。把一整排填滿就會消除，一次消越多行得分越高，每消除 10 行升一級，方塊掉得更快。可以把方塊暫存起來，每放下一塊才能再暫存一次。方塊堆到頂端放不下就結束。</p><p>這款遊戲沒有 BONUS，分數、行數與等級只是你的成績，不換點數；沒有任何下注或倍率返還。每款遊戲每天第一次完整玩過一局（至少 10 秒），會依平台固定規則領到完成獎勵。</p><p>切換遊戲或背景分頁會暫停，回來後按「繼續」。重新整理會放棄本局。最高分保存在這個瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
   </section>
-<section class="view" id="view-berry-trail" hidden><div class="panel bt-platform"><iframe id="bt-frame" title="Berry Trail" src="about:blank"></iframe><p id="bt-rank-status" role="status" hidden></p><button id="bt-rank-retry" type="button" hidden>重新送出成績</button></div></section>
+<section class="view" id="view-berry-trail" hidden><div class="panel bt-platform"><iframe id="bt-frame" title="Berry Trail" src="about:blank"></iframe><p id="bt-rank-status" aria-hidden="true" hidden></p><button id="bt-rank-retry" type="button" aria-hidden="true" tabindex="-1" hidden>重新送出成績</button></div></section>
   <section class="view" id="view-on-pitch" hidden>
     <div class="console fs-game"><div class="sneak-stage"><canvas id="op-canvas" tabindex="0" width="400" height="720" aria-label="不准跑調：對著麥克風唱出牆上缺口的音（C D E F G A B），音準到了才能穿過去；也可以改用螢幕琴鍵練習"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="不准跑調操作">
@@ -8951,6 +8954,7 @@ html.frontier-immersive{overflow:hidden}
   "重新送出成績": "Retry score submission",
   "目前還沒有成績。": "No scores yet.",
   "載入失敗，請關閉後重試。": "Could not load scores. Close and open to retry.",
+  "在棋盤上滑動轉向": "Swipe on the board to turn",
   "不限次數": "Unlimited plays",
   "百科問答": "Trivia quiz",
   "立即開玩": "Play now",

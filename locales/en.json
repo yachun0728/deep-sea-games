@@ -3210,5 +3210,6 @@
   "繼續遊戲": "Resume",
   "重新送出成績": "Retry score submission",
   "目前還沒有成績。": "No scores yet.",
-  "載入失敗，請關閉後重試。": "Could not load scores. Close and open to retry."
+  "載入失敗，請關閉後重試。": "Could not load scores. Close and open to retry.",
+  "在棋盤上滑動轉向": "Swipe on the board to turn"
 }

@@ -7,6 +7,11 @@
   for(let i=0;i<100&&!frame.contentWindow.setBerryLanguage;i++)await wait(30);
   const child=frame.contentWindow,doc=child.document;
   check(!!child.setBerryLanguage,'Same-origin game loaded');
+  const status=document.getElementById('bt-rank-status'),retry=document.getElementById('bt-rank-retry');
+  for(const text of ['成績已送到排行榜。','排行榜連線失敗']){status.textContent=text;status.hidden=false;retry.hidden=false;check(getComputedStyle(status).display==='none'&&getComputedStyle(retry).display==='none','Ranking status never adds UI: '+text);}
+  retry.hidden=true;
+  const touch=innerWidth<=880||matchMedia('(pointer:coarse)').matches;
+  check((child.getComputedStyle(doc.querySelector('.pad')).display==='none')===touch,'Swipe-only controls on handheld; desktop controls preserved');
   for(const language of ['zh-Hant','en','zh-Hans','zh-Hant']){
    deepSeaI18n.setLanguage(language);await wait(60);
    check(doc.documentElement.lang===language,'Language follows '+language);
