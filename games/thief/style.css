@@ -1,5 +1,5 @@
 /* 偷水果的貓：開始按鈕配合遊戲畫面的橘色木牌風格 */
-#view-thief .go:not(:disabled){background:#ff8a3d;color:#fff;border:3px solid #4a2c1d;border-radius:999px;font-weight:800;letter-spacing:.04em;text-shadow:0 1px 0 rgba(74,44,29,.45);box-shadow:inset 0 3px 0 rgba(255,255,255,.35),0 4px 0 #b5561c,0 8px 18px rgba(74,44,29,.3)}
+#view-thief .go:not(:disabled){background:#ff8a3d;color:#fff;border:3px solid #4a2c1d;border-radius:999px;font-family:Grandstander,Fredoka,sans-serif;font-weight:900;font-size:1.08em;letter-spacing:.02em;text-shadow:0 1px 0 rgba(74,44,29,.45);box-shadow:inset 0 3px 0 rgba(255,255,255,.35),0 4px 0 #b5561c,0 8px 18px rgba(74,44,29,.3)}
 #view-thief .go:hover:not(:disabled){background:#ff9a52}
 #view-thief .go:active:not(:disabled){transform:translateY(2px);box-shadow:inset 0 3px 0 rgba(255,255,255,.35),0 2px 0 #b5561c,0 4px 10px rgba(74,44,29,.3)}
 #view-thief .go:disabled{background:#f4c983;color:#7a4a24;border:3px solid #c9965a;border-radius:999px}
@@ -7,8 +7,8 @@
   #view-thief .fs-game .side .go:active:not(:disabled){transform:translateX(-50%) translateY(2px)}
   /* 手機全螢幕上方狀態列與返回鈕：木牌配色 */
   #view-thief .fs-game .stats>div{background:#f4c983;border:2px solid #7a4a24;border-radius:10px;box-shadow:inset 0 2px 0 rgba(255,255,255,.4),0 2px 0 rgba(74,44,29,.35)}
-  #view-thief .fs-game .stats dt{color:#8a5a3b;font-weight:700}
-  #view-thief .fs-game .stats dd{color:#4a2c1d;font-weight:800}
+  #view-thief .fs-game .stats dt{color:#8a5a3b;font-weight:800;font-family:Grandstander,Fredoka,sans-serif}
+  #view-thief .fs-game .stats dd{color:#4a2c1d;font-weight:800;font-family:Grandstander,Fredoka,sans-serif}
   #view-thief .fs-game .fs-exit{background:#f4c983;border:2px solid #7a4a24;color:#4a2c1d;box-shadow:inset 0 2px 0 rgba(255,255,255,.4),0 2px 0 rgba(74,44,29,.35)}
 }
 @media(max-width:880px),(pointer:coarse) and (max-width:1100px){
@@ -34,3 +34,7 @@
   #view-thief .side .stats dd{font-size:15px;line-height:1.3}
   #view-thief .side .stats+.stats{margin-top:-2px}
 }
+
+/* Site header title in the game's bubble font, only while this game is open. */
+#site-shell:has(#view-thief:not([hidden])) #game-name{font-family:Grandstander,Fredoka,sans-serif;font-weight:900;letter-spacing:.01em;color:#ffb347}
+#view-thief .side .stats dt,#view-thief .side .stats dd{font-family:Grandstander,Fredoka,sans-serif;font-weight:800;letter-spacing:0}
