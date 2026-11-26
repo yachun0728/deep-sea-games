@@ -132,3 +132,5 @@
 - PASS: 26 physics tests, 33 synthetic input/layout checks at 390x844, 320x568 and 430x760. Main touch targets >=44px.
 - PASS: Chrome native mouse pick drag, held pour, settings and manual tilt in a 390x844 iframe.
 - NOT TESTED: physical mobile/iPad sensor and touch behavior, subjective flow feel.
+
+- Tool/jar feedback: 260 ms lift/rock animation, gentle procedural wood/glass/brush sounds, optional 7 ms vibration where supported. Muting suppresses selection sounds; reduced-motion skips animation/vibration. Physical haptic and audio comfort NOT TESTED.
