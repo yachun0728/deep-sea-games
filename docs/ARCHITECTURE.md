@@ -389,3 +389,10 @@ Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsig
 ### 莓果小蛇 Berry Trail
 
 `games/berry-trail/play.html` 為同源 iframe，保留使用者提供的原始 Canvas 美術。`shared/berry-trail-rules.cjs` 由父頁與 Worker 共用，父頁提供給子頁作為唯一模擬規則。`game.js` 使用來源驗證、既有 timedLeaderboard、AN 生命週期及語言同步；不操作錢包。原始附件完整保存在 `design/berry-trail-v5.html`。
+
+
+### Sand & Chill 正式版
+
+`games/sand-art/engine.js` 保存顆粒引擎與六張向量區塊資料；`app.js` 處理選畫、操作、教學、音訊與畫板；`play.html`／`play.css` 為獨立遊戲頁。`game.js` 使用來源視窗驗證的同來源父頁橋接，接入 AN 與語言／路由生命週期。大廳第一張卡片是 sand-art，Preview 保留並標為 graduated。
+
+沒有競賽指標，不註冊排行榜 API；`0020_game_names_sand_art.sql` 只在既有 game_names 新增顯示名稱，不新增資料表或改動排行與錢包格式。

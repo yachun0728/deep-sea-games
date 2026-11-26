@@ -186,3 +186,10 @@ Cat Match（`cat-match`／貓貓三消）：一個關卡一個免費回合；進
 ## 莓果小蛇（berry-trail）
 
 `game_name=莓果小蛇`，免費開局 `start`；暫停 `progress(phase=pause)`、繼續 `resume`；碰撞或吃滿棋盤 `end(complete, score)`。重玩或離開路由 `end(abandoned, score)`，每局單次結算、派發點數 0；排行榜另由 Worker 重播驗證。語言切換不重開回合。GA4 正式後台收件尚未驗證。
+
+
+## 沙沙時光（sand-art）
+
+進入選畫頁只記 game_view；確認畫紙才開始 game_start（entry_points=0，picture 為固定圖案 ID）。選畫／設定／玩法透過 progress(pause) 暫停有效時間，關閉後 resume；離開記 abandoned，換紙記 paper_changed。欣賞記 admired，不以 complete 觸發通關獎勵。bound 為操作分析的已黏顆粒數，不作排行分數。橋接驗證來源 iframe，不傳作品圖片或個人資料。
+
+本機行為測試不代表 GA4 後台收件；正式後台須另行驗證。

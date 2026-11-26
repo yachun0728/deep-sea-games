@@ -103,6 +103,9 @@ def js_literals(source):
 # dictionary never translates them (Simplified Chinese still converts them, so the Hans tables keep scanning
 # them). Their English is checked against their own tables by a dedicated test instead.
 SELF_LOCALIZED = (
+    'games/sand-art/play.html',
+    'games/sand-art/app.js',
+    'games/sand-art/engine.js',  # tools/test_sand_art_release.html / own zh/en strings
     'games/siege-architect/original.html',  # tools/test_siege_architect.mjs
     'games/eat-smaller/original.html',
     'games/one-line-defense/original.html',

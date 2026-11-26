@@ -4,6 +4,7 @@
 
 | 遊戲 | hash | 分類 | 狀態 | game.js | 說明 |
 | --- | --- | --- | --- | --- | --- |
+| [沙沙時光 Sand & Chill](sand-art/README.md) | `#sand-art` | 益智策略 | 顯示 | 22 行 | 挑開黃紙，自由混色，讓沙粒慢慢沾附成畫。 |
 | [深海前哨 Deep Sea Outpost](outpost/README.md) | `#outpost` | 益智策略 | 顯示 | 320 行 | 扳動海流閘門，將敵群導入防守火網。 |
 | [壓潰深度 Crush Depth](crash/README.md) | `#crash` | 機率挑戰 | 隱藏 | 235 行 | 隨潛艇一起下潛，在壓潰前上浮。 |
 | [踩地雷 Minesweeper](mines/README.md) | `#mines` | 懷舊經典 | 顯示 | 188 行 | 低中高難度或自訂棋盤，重溫經典踩地雷。 |

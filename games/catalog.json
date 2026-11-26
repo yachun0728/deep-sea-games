@@ -1,5 +1,13 @@
 [
   {
+    "id": "sand-art",
+    "logic": "games/sand-art/game.js",
+    "view": "games/sand-art/view.html",
+    "card": "games/sand-art/card.html",
+    "icon": "games/sand-art/icon.svg",
+    "style": "games/sand-art/style.css"
+  },
+  {
     "id": "outpost",
     "logic": "games/outpost/game.js",
     "view": "games/outpost/view.html",

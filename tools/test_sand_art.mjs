@@ -2,8 +2,8 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
-const html=fs.readFileSync(new URL('../preview/sand-art/index.html',import.meta.url),'utf8');
-const source=html.match(/<script id="sand-engine">([\s\S]*?)<\/script>/)[1];
+const html=fs.readFileSync(process.argv[2]||new URL('../preview/sand-art/index.html',import.meta.url),'utf8');
+const source=html.includes('<script id="sand-engine">')?html.match(/<script id="sand-engine">([\s\S]*?)<\/script>/)[1]:html;
 const scope=vm.createContext({});vm.runInContext(source,scope);
 const {SandWorld,MAX,MAX_LOOSE}=scope.SandEngine;
 function seeded(){let n=15;return()=>((n=(Math.imul(n,1664525)+1013904223)>>>0)/4294967296)}
