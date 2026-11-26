@@ -142,3 +142,10 @@
 - PASS: 28 physics tests, including different friction travel and upper-layer yield under a blade. Coating spill test allows 7.5 seconds for the slower flow.
 - PASS: local Chrome initialization and mouse tool interaction with about 2,550 loose grains. An observed FPS sample is not a full performance certification.
 - NOT TESTED: physical phone touch, sensors, haptics, subjective sound and naturalness.
+
+## DEMO 10
+
+- Loose-sand allowance increased to 5,000. Attached pigment does not consume this allowance. Existing capacity and pigment-budget regression tests apply.
+- Physical phone performance at the new cap remains NOT TESTED.
+
+- PASS local browser: held pour reached exactly 5,000 loose grains; peeling exposed glue bound 1,820 grains and reopened capacity. A further held pour increased total emitted to 5,602 (2,051 attached / 3,551 loose). No grains were deleted.
