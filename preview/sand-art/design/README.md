@@ -5,3 +5,5 @@
 - 原始稿：`../index.html` 的 `SandEngine.paths`（向量路徑）及 paper／glue 材質產生器；皆程式原創，不使用 Emoji、他人 IP 或外部素材。
 - `demo-390x844.jpg`：實際 Chrome 390×844 CSS viewport 遊玩中截圖；展示試玩角色、桌面、HUD、工具與混色沙粒。
 - 本次為 Preview 試玩稿，尚未取得正式角色／場景美術採納確認，不作正式大廳封面。
+
+- `dense-ears-v2-390x844.jpg`：Demo 02 真實 390×844 iframe 操作截圖，展示密集藍色雙耳與未撕輪廓不再黏沙；舊版試玩截圖保留。
