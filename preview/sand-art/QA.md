@@ -50,3 +50,18 @@
 - **NOT APPLICABLE**：錢包、帳號、排行榜、共用存檔、Analytics、CrazyGames 上架；本次均未改動。
 
 發布僅更新沙畫 Preview 與回歸測試；新頁右上標記 `DEMO 02`。
+
+
+## Demo 03：長按、可撕線條、直式與放大
+
+- **PASS**：Node 13 項實際物理引擎測試。新增密集已黏薄層穿越測試：30 粒鬆沙可穿過已黏沙層並物理出界，固定沙位置不變；鬆粒間仍碰撞及支援高度接觸。調整原先以已黏沙阻擋形成堆積的舊測試，改驗證鬆粒間的垂直接觸。
+- **PASS**：瀏覽器 10 項真實 Path2D 回歸，14.4 萬像素符合可見圖形；31 個面／線條區域皆非空，眼睛能獨立撕開並上沙；232 個舊誤黏座標仍不黏，耳朵內部持續補沙達 100% 樣本覆蓋（不含邊緣），未使用填色。
+- **PASS**：輸入回歸 16 項，驗證 CSS 與選取／contextmenu 取消、眼睛撕紙、縮放及座標、雙指縮放不誤撕、還原不清作品、橫放暫停與直放保留作品、鎖定拒絕 fallback、英文控制。此頁使用合成 pointer、mock capture／裝置 API，不能當成實機結果。
+- **PASS**：390×844 iframe 原生滑鼠操作：+ 放大至約 2.46 倍，左眼長按約 1.8 秒後撕開、右眼獨立撕開；雙眼倒炭灰沙後方向鍵清沙。固定 225 粒僅在雙眼（左 138、右 87），鬆沙 0、物理出界 1645；截圖 `design/detail-zoom-v3-390x844.jpg`。
+- **PASS**：JS 語法、Preview noindex／Lobby 隔離及 Python 48 項 Repo 測試。
+- **NOT TESTED**：本版 iOS Safari 真機 callout、雙指縮放／平移、螢幕旋轉、Android 原生 fullscreen／orientation lock 與感測方向；仍待使用者手機試玩。
+- **BLOCKED**：代理無實體手機感測器可操作。
+- **NOT APPLICABLE**：正式 Lobby、共用錢包、帳號、排行榜、Analytics、CrazyGames 發布；全部未改動。
+- **FAIL**：目前沒有未修正的已知回歸測試失敗；不代表手機實測已完成。
+
+旋轉鎖定的瀏覽器前置條件與限制依 [Screen Orientation 規範](https://www.w3.org/TR/screen-orientation/)；不支援時使用直式提示，不要求使用者開啟實驗性設定。

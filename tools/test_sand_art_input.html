@@ -1,0 +1,23 @@
+<!doctype html><meta charset="utf-8"><title>Sand Art input regression QA</title><style>body{font:14px system-ui;background:#faf7ee;color:#40362c;margin:16px}iframe{width:390px;height:844px;border:1px solid #cabca5}pre{white-space:pre-wrap}</style><h1>Sand Art input regression (synthetic pointer / mocked device APIs)</h1><pre id="results">Running…</pre><iframe id="game"></iframe><script>
+(async()=>{const out=document.getElementById('results'),frame=document.getElementById('game'),lines=[];const ok=(v,label)=>{if(!v)throw Error(label);lines.push('PASS '+label);out.textContent=lines.join('\n')};const wait=ms=>new Promise(r=>setTimeout(r,ms));
+try{
+const html=await(await fetch('../preview/sand-art/index.html')).text();
+const prelude=`(${function(){const native=window.matchMedia.bind(window);let mobileLandscape=false;const listeners=new Set();window.matchMedia=q=>q.includes('any-pointer:coarse')?{get matches(){return mobileLandscape},addEventListener:(name,fn)=>listeners.add(fn)}:native(q);window.__qaRotate=v=>{mobileLandscape=v;for(const fn of listeners)fn()}}.toString()})();`;
+frame.srcdoc=html.replace('<script id="sand-engine">','<script>'+prelude+'<'+'/script><script id="sand-engine">');await new Promise(r=>frame.onload=r);await wait(100);
+const w=frame.contentWindow,d=frame.contentDocument,cv=d.getElementById('canvas');cv.setPointerCapture=()=>{}; // Synthetic events have no browser-owned active pointer.
+const state=()=>w.sandArt.snapshot();
+const point=(x,y)=>{const rect=cv.getBoundingClientRect(),s=Math.min(rect.width/360,rect.height/400),v=state();return{x:rect.left+(rect.width-360*s)/2+(v.pan.x+x*v.zoom)*s,y:rect.top+(rect.height-400*s)/2+(v.pan.y+y*v.zoom)*s}};
+const pointer=(type,id,x,y)=>cv.dispatchEvent(new w.PointerEvent(type,{pointerId:id,pointerType:'touch',clientX:x,clientY:y,bubbles:true,cancelable:true}));
+const tap=(x,y,id=90)=>{const p=point(x,y);pointer('pointerdown',id,p.x,p.y);pointer('pointerup',id,p.x,p.y)};
+ok(w.getComputedStyle(cv).userSelect==='none','Canvas and game UI disable text selection');ok(!cv.dispatchEvent(new w.Event('selectstart',{bubbles:true,cancelable:true})),'Selection-start default is cancelled');ok(!cv.dispatchEvent(new w.Event('contextmenu',{bubbles:true,cancelable:true})),'Long-press context menu default is cancelled');
+tap(140,182);ok(state().peeled.includes(w.SandEngine.paths.findIndex(p=>p[0]==='eyeLeft')),'Eye line peels independently');
+d.getElementById('zoomIn').click();d.getElementById('zoomIn').click();ok(state().zoom>1.8,'Zoom buttons enlarge only the board');tap(220,182);ok(state().peeled.includes(w.SandEngine.paths.findIndex(p=>p[0]==='eyeRight')),'Zoomed tap maps back to the correct eye');
+const before=state().peeled.length;pointer('pointerdown',11,100,240);pointer('pointerdown',12,280,240);pointer('pointermove',11,60,220);pointer('pointermove',12,320,260);pointer('pointerup',11,60,220);pointer('pointerup',12,320,260);ok(state().zoom>2.3,'Synthetic two-finger pinch changes zoom');ok(state().peeled.length===before,'Pinch does not peel either initial finger location');
+d.getElementById('zoomReset').click();ok(state().zoom===1&&state().pan.x===0&&state().pan.y===0,'Reset restores the complete board without resetting art');
+w.__qaRotate(true);ok(cv.dataset.portraitPaused==='true'&&w.getComputedStyle(d.getElementById('rotateGuard')).display==='flex','Simulated mobile landscape pauses and shows upright guidance');ok(d.getElementById('app').inert,'Landscape blocks game controls');const count=state().peeled.length;tap(70,275);ok(state().peeled.length===count,'Landscape cannot accidentally peel hidden artwork');w.__qaRotate(false);ok(cv.dataset.portraitPaused==='false'&&w.getComputedStyle(d.getElementById('rotateGuard')).display==='none','Returning upright restores the same picture');ok(state().peeled.length===before,'Rotation preserves peeled artwork');
+let locks=0;Object.defineProperty(w.screen.orientation,'lock',{configurable:true,value:async()=>{locks++;throw new Error('unsupported in test')}});d.documentElement.requestFullscreen=async()=>{};d.getElementById('portrait').click();await wait(30);ok(locks===1&&d.getElementById('hint').textContent.includes('無法鎖定'),'Rejected orientation lock provides system-lock fallback');
+d.getElementById('lang').click();ok(d.getElementById('portrait').textContent==='Portrait'&&d.getElementById('rotateTitle').textContent==='Turn your phone upright','New controls and rotation guidance support English');
+document.body.dataset.result='PASS';out.textContent=lines.join('\n')+'\nALL INPUT REGRESSIONS PASS';
+}catch(e){document.body.dataset.result='FAIL';out.textContent+='\nFAIL '+e.stack}
+})();
+</script>
