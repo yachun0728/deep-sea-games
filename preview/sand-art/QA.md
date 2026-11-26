@@ -134,3 +134,11 @@
 - NOT TESTED: physical mobile/iPad sensor and touch behavior, subjective flow feel.
 
 - Tool/jar feedback: 260 ms lift/rock animation, gentle procedural wood/glass/brush sounds, optional 7 ms vibration where supported. Muting suppresses selection sounds; reduced-motion skips animation/vibration. Physical haptic and audio comfort NOT TESTED.
+
+## DEMO 09
+
+- Stable per-grain friction and height-dependent tool carry reduce rigid-sheet motion. No added random jitter, color blending or artificial grain displacement.
+- Cached irregular sand silhouettes, fixed faceted lighting, contact/falling shadows and height-sorted loose grains replace identical circles with square highlights.
+- PASS: 28 physics tests, including different friction travel and upper-layer yield under a blade. Coating spill test allows 7.5 seconds for the slower flow.
+- PASS: local Chrome initialization and mouse tool interaction with about 2,550 loose grains. An observed FPS sample is not a full performance certification.
+- NOT TESTED: physical phone touch, sensors, haptics, subjective sound and naturalness.
