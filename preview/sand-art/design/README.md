@@ -9,3 +9,5 @@
 - `dense-ears-v2-390x844.jpg`：Demo 02 真實 390×844 iframe 操作截圖，展示密集藍色雙耳與未撕輪廓不再黏沙；舊版試玩截圖保留。
 
 - `detail-zoom-v3-390x844.jpg`：Demo 03 在 2.46 倍視角逐眼撕紙與炭灰沙上色後的手機比例截圖；眼睛、輪廓與鬍鬚為實際可撕區域。
+
+- `hand-tools-v1.svg`: Preview design sheet for wooden/brass soft brush and wooden sand spoon. Shelf icons and in-hand tools share `handToolArt` in index.html. Original vector artwork; no third-party assets.

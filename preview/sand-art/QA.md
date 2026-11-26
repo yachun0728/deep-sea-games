@@ -149,3 +149,9 @@
 - Physical phone performance at the new cap remains NOT TESTED.
 
 - PASS local browser: held pour reached exactly 5,000 loose grains; peeling exposed glue bound 1,820 grains and reopened capacity. A further held pour increased total emitted to 5,602 (2,051 attached / 3,551 loose). No grains were deleted.
+
+## DEMO 11
+
+- Redesigned brush and spoon with shared vector paths in the shelf icon and on-canvas tool. Spoon sand color follows the current palette; brush follows stroke direction.
+- Loose allowance remains 5,000. No physics, adhesive or tool-force changes.
+- Physical phone touch and performance remain NOT TESTED.
