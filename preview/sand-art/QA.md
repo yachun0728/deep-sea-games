@@ -30,6 +30,6 @@
 
 ## 發布
 
-隨既有 Cloudflare Workers Builds 的 GitHub 整合發布 `/preview/sand-art/`。HTTPS 內容與線上操作結果、commit SHA 於完成後另記錄；Git 推送成功不代表部署或真機驗收通過。
+隨既有 Cloudflare Workers Builds 的 GitHub 整合發布 `/preview/sand-art/`。遊戲版本 commit：`92721db`。已推送 origin/main，HTTPS 頁面 HTTP 200，內容包含最終高度物理。線上 Chrome 已實際撕紙、雙色倒沙、刮板、搖動及敲擊；觀察 emitted=935、bound=329、loose=606，error／warn 記錄為空。頁面：https://www.ticaticagames.com/preview/sand-art/ 。CI/CD 與瀏覽器驗證皆不等同手機實機通過。
 
 建議：可提供 Internal Preview 供手機試玩，尚不建議正式上架。美術為試玩稿，實際敲擊辨識為實驗性功能；作品重整即清除。
