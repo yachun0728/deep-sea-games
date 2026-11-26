@@ -7,7 +7,7 @@
 - 網址：`#cat`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「無盡跑酷，看你能跑多遠。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：屋頂貓貓，`game_id` 為 `cat`
-- 檔案：`games/cat/card.html`、`games/cat/cover.webp`、`games/cat/game.js`、`games/cat/icon.svg`、`games/cat/leaderboard.webp`、`games/cat/view.html`；`game.js` 共 125 行、8.3 KB
+- 檔案：`games/cat/card.html`、`games/cat/cover.webp`、`games/cat/game.js`、`games/cat/icon.svg`、`games/cat/leaderboard.webp`、`games/cat/view.html`；`game.js` 共 518 行、48.4 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「19. Rooftop Cat（cat）」（下方「規則摘要」已複製）
 
@@ -17,12 +17,26 @@
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`catBusy`（L2）
-- L7 常數：`MILESTONES`、`ENDLESS_FROM`、`ENDLESS_STEP`、`ENDLESS_BONUS`、`LADDER`
+- 狀態物件／進行中旗標：`KC`（L76）、`K`（L77）、`catBusy`（L2）
+- L7 常數：`DPR`
+- L13 常數：`MILESTONES`、`ENDLESS_FROM`、`ENDLESS_STEP`、`ENDLESS_BONUS`、`LADDER`
+- L22 常數：`FONT`
+- L78 常數：`TAU`
+- L110 常數：`SEP`
+- L231 常數：`CITY`
+- L239 常數：`SIGNS`
+- L240 常數：`SIGNC`
+- L297 常數：`GRAIN`
+- L323 常數：`DEP`
+- L325 常數：`ROD`
+- L328 常數：`BLD`
+- L359 常數：`PROPS`
+- L367 常數：`SHEDC`
+- …另有 2 行常數宣告，請直接搜尋大寫名稱
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`bonusAt` L8、`nextMilestone` L9、`O` L12、`C` L13、`F` L14、`tx` L15、`score` L18、`say` L19、`setText` L21、`award` L22、`ui` L28、`die` L35、`update` L45、`drawCat` L54、`leg` L56、`draw` L68、`start` L92、`down` L103、`release` L107、`loop` L117
+`puff` L10、`bonusAt` L14、`nextMilestone` L15、`O` L18、`C` L19、`F` L20、`mix` L24、`dark` L25、`tx` L26、`score` L32、`say` L33、`setText` L35、`award` L36、`ui` L42、`die` L49、`update` L59、`chain` L79、`limb` L81、`shape` L84、`el` L85、`blobPath` L88、`patch` L89、`bodyPath` L92、`tailUpdate` L97、`drawTail` L99、`hp` L112、`inHead` L113、`headShape` L119、`earInner` L124、`neckBridge` L126、`headCoat` L131、`face` L138、`coat` L149、`headFront` L152、`farEar` L154、`collar` L155、`nearLimb` L157、`catBody` L159、`front` L161、`gallop` L177、`fa` L179、`catPose` L182、`kitty` L202、`catSit` L205、`bp` L207、`tp` L209、`catFlop` L222、`seeded` L229、`layer` L230、`fillP` L241、`drawHills` L243、`ridge` L244、`drawCloud` L248、`drawTower` L254、`drawFar` L266、`one` L268、`drawMid` L280、`one` L282、`drawCanopy` L295、`grain` L298、`bgLayers` L300、`scroll` L301、`pigeon` L302、`backdrop` L303、`dxAt` L324、`poly` L327、`box` L335、`acUnit` L338、`prop` L342、`shed` L361、`sideFace` L368、`grilleWindow` L374、`vSign` L381、`roof` L385、`grade` L410、`roofAt` L412、`marker` L414、`star` L420、`paw` L421、`tapHint` L423、`drawFx` L430、`sitImg` L438、`runFrame` L445、`catSprite` L448、`draw` L456、`cityTitle` L482、`start` L485、`down` L496、`release` L500、`loop` L510
 
 ## 錢包與結算接點
 
@@ -30,19 +44,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L23 `award`：`S.balance+=b;`
+- L37 `award`：`S.balance+=b;`
 
 **餘額檢查**
-- L95 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L488 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L24 `award`：`AN.progress(analytics,{step:m,score:m,bonus_points:b});`
-- L39 `die`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:s});`
-- L98 `start`：`analytics=AN.start('cat',amount);`
+- L38 `award`：`AN.progress(analytics,{step:m,score:m,bonus_points:b});`
+- L53 `die`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:s});`
+- L491 `start`：`analytics=AN.start('cat',amount);`
 
 - 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -52,7 +66,7 @@
 
 ## 平台共用相依
 
-- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`、`C`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`fx`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`、`C`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - `js/result-share.js` 會呼叫：`score`
 - 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 
