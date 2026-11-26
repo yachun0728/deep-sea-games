@@ -155,3 +155,15 @@
 - Redesigned brush and spoon with shared vector paths in the shelf icon and on-canvas tool. Spoon sand color follows the current palette; brush follows stroke direction.
 - Loose allowance remains 5,000. No physics, adhesive or tool-force changes.
 - Physical phone touch and performance remain NOT TESTED.
+
+## DEMO 12
+
+- Five new playable vector pictures plus a cuter original kitten; all regions remain geometry-based and individually peelable. First screen is picture selection, with explicit reset confirmation and safe cancellation.
+- PASS: all six pictures have visible fill/line regions; each region accepts a peel and each picture binds a physically contacting grain on exposed adhesive.
+- PASS: 53 synthetic input/layout regressions including initial chooser, six picture switches, retained colors, cancel preservation and rotation, at 390x844, 320x568 and 430x760.
+- Cover: built-in imagegen original, opaque RGB 1056x1000 WebP 151378 bytes. Preview only; formal Lobby/platform approval NOT APPLICABLE.
+- Physical iOS/Android sensors, touch feel and performance NOT TESTED.
+
+- PASS: native mouse play on all six pictures: choose, peel a real region, hold pour, observe 114-210 bound grains in each trial with conserved counts.
+- PASS: Preview cover loads at 165x156 display size; English title is visually readable.
+- Shared change is limited to optional Preview-cover rendering/validation in tools/prototype.py. Formal game catalog, wallet, account and Analytics are unaffected.

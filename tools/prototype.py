@@ -131,7 +131,7 @@ ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 a{display:block;padding:14px 16px;border-radius:12px;background:#10303f;color:inherit;text-decoration:none}
 a b{font-size:17px}
 a small{display:block;margin-top:4px;opacity:.75;font-size:13px}
-.tag{float:right;font-size:11px;padding:2px 8px;border-radius:99px;background:#f7e33b;color:#1d1b1a;font-weight:800}
+.has-cover{min-height:184px}.preview-cover{float:left;width:165px;height:156px;object-fit:cover;border-radius:8px;margin:0 12px 0 0}.tag{float:right;font-size:11px;padding:2px 8px;border-radius:99px;background:#f7e33b;color:#1d1b1a;font-weight:800}
 .graduated .tag{background:#7fd6a8}.dropped{opacity:.5}.dropped .tag{background:#999}
 </style>
 </head>
@@ -161,8 +161,12 @@ def render_index(items):
     rows = []
     for item in items:
         status = item['status']
+        cover = item.get('cover')
+        cover_markup = (f'<img class="preview-cover" src="{html.escape(item["id"] + "/" + cover)}" width="165" height="156" alt="" loading="lazy">' if cover else '')
+        card_class = ' class="has-cover"' if cover else ''
         rows.append(
-            f'<li class="{status}"><a href="{html.escape(item["id"])}/">'
+            f'<li class="{status}"><a{card_class} href="{html.escape(item["id"])}/">'
+            f'{cover_markup}'
             f'<span class="tag">{STATUS_LABEL[status]}</span>'
             f'<b>{html.escape(item["name"])}</b>'
             f'<small>{html.escape(item.get("concept", ""))}</small></a></li>')
@@ -215,6 +219,13 @@ def check(root=ROOT):
             errors.append(f'{pid}: status 必須是 {STATUSES}')
         if not ID_RE.match(pid):
             errors.append(f'{pid}: id 格式錯誤')
+        cover = item.get('cover')
+        if cover:
+            cover_path = Path(cover)
+            if cover_path.is_absolute() or '..' in cover_path.parts or '\\' in cover or cover_path.suffix.lower() not in ('.png', '.webp'):
+                errors.append(f'{pid}: invalid preview cover path')
+            elif not (root / 'preview' / pid / cover).is_file():
+                errors.append(f'{pid}: missing preview cover')
         page = root / 'preview' / pid / 'index.html'
         if item.get('status') != 'dropped' and not page.is_file():
             errors.append(f'{pid}: 缺少 preview/{pid}/index.html')

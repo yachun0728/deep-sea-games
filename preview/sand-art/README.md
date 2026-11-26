@@ -4,7 +4,7 @@
 
 ## 實作
 
-- 1 張原創貓咪（31 個獨立區塊，含輪廓、眼睛、鼻子、嘴巴與鬍鬚紙條）、12 色可複選；繁中／英文即時切換。
+- 6 張原創沙畫（晚安小貓、小兔花園、月光鯨魚、草莓蛋糕、花朵盆栽、山間小屋；圖案、輪廓與五官細節各自可撕）、12 色可複選；繁中／英文即時切換。
 - 單檔 HTML，Canvas 原生繪圖，無外部字型、素材、套件或網路依賴。黃紙纖維、白色黏膠與貓咪皆為程式繪製的試玩稿，尚未作正式美術確認。
 - 120 Hz 固定物理步進；俯視顆粒近似，包含高度／落下速度軸，以球粒接觸、慣性、動／靜摩擦、壓力傳遞形成堆積。新沙落下，上層鬆沙具有較低的阻力與切向耗損，比底層更容易滑下；工具與搖動可抬升鬆沙；只有接觸底面的顆粒可黏附。固定沙嵌入薄黏膠層，不再參與球粒碰撞，鬆沙可滑過已黏圖案。不是工業級粒體模擬。保留個別顏色與不規則顆粒邊緣。
 - 逐粒檢查黏膠區域與接觸時間，達到停留條件後逐步黏附；已黏沙粒固定，黃紙不黏。沒有區塊填滿、混合成單色或自動清沙。
@@ -53,3 +53,7 @@ Demo 04 同時提高一般倒沙率（520 → 850 粒／秒，約 +63%），沙�
 ## Demo 08
 
 The five tools are the paper-lifting pick, pour, scraper, brush and spoon. Tap or drag the pick to lift paper. Twelve sand jars allow multiple selections or none. Motion, shake and tap stay on the desk; tilt arrows, portrait lock, audio and help are in Settings. Zoom controls sit below the board.
+
+## Demo 12 gallery
+
+The first screen is the six-picture chooser. Colored thumbnails are examples, not mandatory colors. Confirming a fresh paper explicitly clears current work; browsing or cancelling does not. Geometry masks are cached per picture. The new game cover appears in the Preview index and chooser only, not the formal Lobby. Cover generation uses the built-in imagegen tool; original vectors and prompts are in design/.

@@ -47,6 +47,20 @@ class PrototypeTests(unittest.TestCase):
         prototype.write_index(self.root)
         self.assertEqual(prototype.check(self.root), [])
 
+    def test_optional_cover_renders_only_on_requested_card(self):
+        prototype.new('deep-dash', 'Deep Dash', '', self.root)
+        items = prototype.load_manifest(self.root)
+        items[0]['cover'] = 'cover.webp'
+        (self.root / 'preview/deep-dash/cover.webp').write_bytes(b'preview-art')
+        prototype.manifest_path(self.root).write_text(json.dumps(items))
+        prototype.write_index(self.root)
+        self.assertEqual(prototype.check(self.root), [])
+        self.assertIn('src="deep-dash/cover.webp"', (self.root / 'preview/index.html').read_text())
+        items[0]['cover'] = '../outside.webp'
+        prototype.manifest_path(self.root).write_text(json.dumps(items))
+        prototype.write_index(self.root)
+        self.assertTrue(any('cover path' in e for e in prototype.check(self.root)))
+
 
 if __name__ == '__main__':
     unittest.main()
