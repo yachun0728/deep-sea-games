@@ -48,7 +48,7 @@ function ui(){
 }
 function die(){
  if(st!=='run')return;
- st='over';cat.hold=false;shake=reduceMotion?0:.35;const s=score();rec=s>best;
+ st='over';cat.hold=false;paused=false;if(panel==='pause')panel=null;sfx('fall');shake=reduceMotion?0:.35;const s=score();rec=s>best;
  if(rec){best=s;try{localStorage.setItem('deep-sea-cat-best',best)}catch(e){}}
  AN.end(analytics,earned,earned>0?'complete':'loss',{score:s});catBusy=false;save();renderAll();
  if(!earned)say('跑了 '+s+' 公尺，這一局沒有獎勵。','lose');
@@ -62,11 +62,11 @@ function update(dt){
  fx.forEach(p=>{p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=(p.star?260:90)*dt});fx=fx.filter(p=>p.t<p.life);
  if(st!=='run'){cat.sq*=.86;return}
  catRules.advance(cat,dt,catRandom);
- if(cat.on&&!wasOn){puff(CX,cat.cy,6,'#f7efd9');K.landT=tt}
- if(!cat.on&&wasOn&&cat.vy<0){puff(CX-6,cat.cy,4,'#f7efd9');K.jumpT=tt;if(!jumped){jumped=true;taught=true}}
+ if(cat.on&&!wasOn){puff(CX,cat.cy,6,'#f7efd9');K.landT=tt;sfx('land')}
+ if(!cat.on&&wasOn&&cat.vy<0){puff(CX-6,cat.cy,4,'#f7efd9');K.jumpT=tt;sfx('jump');if(!jumped){jumped=true;if(!taught)firstJumpT=tt;taught=true}}
  wasOn=cat.on;
  const reached=score();
- while(awarded<reached){awarded++;const b=bonusAt(awarded);if(b){award(awarded,b);puff(CX+10,cat.cy-40,14,'#e8b45a',true)}}
+ while(awarded<reached){awarded++;const b=bonusAt(awarded);if(b){award(awarded,b);sfx('coin');puff(CX+10,cat.cy-40,14,'#e8b45a',true)}}
  if(cat.dead)die();
 }
 // The calico cat: a slim, natural cat drawn in code on a procedural rig, in a flat illustration style: no
@@ -469,7 +469,7 @@ g.restore();
 const s=score(),nx=nextMilestone(s);
 tx(s+' m',W/2,76,40,'#fff1c1');
 if(st==='run')tx('下一個獎勵 '+nx[0]+' m · +'+nx[1]+' 點',W/2,104,15,'#9bfff0');
-tx('最佳 '+best+' m',W-70,30,16,'#ffd23f');
+tx('最佳 '+best+' m',W-118,30,16,'#ffd23f');
 tx('{{t:cat.msg.004}}'+earned+' 點',70,30,16,earned>0?'#ffd23f':'#fff1c1');
 pops.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/2.2);const y=175-(reduceMotion?0:Math.min(1,p.age*3)*22);tx('+'+p.b+' 點',W/2,y,38,'#ffd23f');tx(p.m+' 公尺里程碑',W/2,y+28,17,'#fff1c1');g.globalAlpha=1});
 if(st!=='run'){
@@ -477,13 +477,105 @@ g.fillStyle='rgba(20,52,58,.5)';g.fillRect(0,0,W,H);
 if(st==='ready'){if(!sitImg(W/2,220,132)){g.save();g.translate(W/2-14,214);g.scale(1.9,1.9);kitty(catPose());g.restore()}cityTitle(372,1);tx('{{t:cat.msg.005}}',W/2,258,36,'#ffd23f');tx('{{t:cat.msg.006}}',W/2,300,22,'#fff1c1')}
 else{tx('{{t:cat.msg.007}}',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(earned>0?'{{t:cat.msg.008}}'+earned+' 點':'沒到 '+MILESTONES[0][0]+' 公尺，沒有獎勵',W/2,314,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('{{t:cat.msg.009}}',W/2,348,20,'#ffd23f');tx('{{t:cat.msg.010}}',W/2,392,20,'#fff1c1')}}
 if(st==="run"&&tt-cityT<2.6)cityTitle(200,Math.min(1,(2.6-(tt-cityT))/.8));
-tapHint()}
+tapHint();holdHint();cornerButton();if(panel)drawPanel()}
 // Poster-style city name: TAIPEI · TAIWAN. A proper noun, shown in Latin letters in every language.
 function cityTitle(y,a){g.save();g.globalAlpha=a;g.textAlign='center';try{g.letterSpacing='4px'}catch(e){}
 g.font='900 44px '+FONT;g.fillStyle='rgba(31,58,64,.55)';g.fillText(CITY.name,W/2+3,y+3);g.fillStyle='#bfe8dc';g.fillText(CITY.name,W/2,y);
 try{g.letterSpacing='8px'}catch(e){}g.font='900 15px '+FONT;g.fillStyle='#e8b45a';g.fillText(CITY.sub,W/2,y+24);g.restore()}
+// ===== Sound: everything is synthesized with Web Audio (no audio files, so nothing to license). Music plays
+// during a run; effects for jump, landing, milestone and fall. Music and effects switch off separately (saved). =====
+const MKEY='deep-sea-cat-music',XKEY='deep-sea-cat-sfx';
+const LS=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+let musicOn=LS(MKEY)!=='0',sfxOn=LS(XKEY)!=='0',ac=null,master=null,musBus=null,sfxBus=null,noise=null,echo=null,nextT=0,stepI=0;
+function audioInit(){
+ if(!ac){try{ac=new (window.AudioContext||window.webkitAudioContext)()}catch(e){return}
+  master=ac.createGain();master.gain.value=.85;master.connect(ac.destination);
+  musBus=ac.createGain();musBus.gain.value=musicOn?.5:0;musBus.connect(master);
+  sfxBus=ac.createGain();sfxBus.gain.value=sfxOn?.9:0;sfxBus.connect(master);
+  // A soft echo send for the melody.
+  echo=ac.createDelay(1);echo.delayTime.value=.31;const fb=ac.createGain(),ef=ac.createBiquadFilter();fb.gain.value=.28;ef.type='lowpass';ef.frequency.value=2200;
+  echo.connect(ef);ef.connect(fb);fb.connect(echo);ef.connect(musBus);
+  noise=ac.createBuffer(1,ac.sampleRate,ac.sampleRate);const d=noise.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+ if(ac.state==='suspended')ac.resume().catch(()=>{})}
+function syncAudio(){if(musBus)musBus.gain.value=musicOn?.5:0;if(sfxBus)sfxBus.gain.value=sfxOn?.9:0;
+ try{localStorage.setItem(MKEY,musicOn?'1':'0');localStorage.setItem(XKEY,sfxOn?'1':'0')}catch(e){}}
+const mf=n=>440*Math.pow(2,(n-69)/12);
+// One enveloped voice: wave, frequency (or [from, to] glide), start time, length, peak gain, bus, low-pass cutoff, echo send.
+function tone(type,f,t0,len,gain,bus,cut,send){const o=ac.createOscillator(),gn=ac.createGain();o.type=type;
+ if(Array.isArray(f)){o.frequency.setValueAtTime(f[0],t0);o.frequency.exponentialRampToValueAtTime(f[1],t0+len)}else o.frequency.value=f;
+ gn.gain.setValueAtTime(0,t0);gn.gain.linearRampToValueAtTime(gain,t0+.012);gn.gain.exponentialRampToValueAtTime(.0001,t0+len);
+ let node=o;if(cut){const fl=ac.createBiquadFilter();fl.type='lowpass';fl.frequency.value=cut;o.connect(fl);node=fl}
+ node.connect(gn);gn.connect(bus);if(send)gn.connect(echo);o.start(t0);o.stop(t0+len+.05)}
+function hiss(t0,len,gain,bus,type,f){const s=ac.createBufferSource(),fl=ac.createBiquadFilter(),gn=ac.createGain();s.buffer=noise;fl.type=type;fl.frequency.value=f;
+ gn.gain.setValueAtTime(gain,t0);gn.gain.exponentialRampToValueAtTime(.0001,t0+len);s.connect(fl);fl.connect(gn);gn.connect(bus);s.start(t0,Math.random()*.5);s.stop(t0+len+.02)}
+const SFX={
+ jump:t=>tone('triangle',[380,820],t,.16,.16,sfxBus,3000),
+ land:t=>{hiss(t,.09,.18,sfxBus,'lowpass',700);tone('sine',[150,70],t,.1,.18,sfxBus)},
+ coin:t=>[72,76,79,84].forEach((n,i)=>tone('sine',mf(n+12),t+i*.07,.28,.12,sfxBus)),
+ fall:t=>tone('triangle',[640,140],t,.6,.14,sfxBus,2400),
+ tick:t=>tone('sine',1100,t,.05,.08,sfxBus)};
+function sfx(k){if(!sfxOn)return;audioInit();if(ac&&ac.state==='running')SFX[k](ac.currentTime+.005)}
+// A light city-pop / lo-fi loop at 96 BPM: Fmaj7 - Em7 - Dm7 - Cmaj7 electric-piano chords, round bass, soft
+// drums and a pentatonic hook with echo. Notes are scheduled slightly ahead so the beat stays steady.
+const BPM=96,STEP=60/BPM/4,CH=[[53,57,60,64],[52,55,59,62],[50,53,57,60],[48,52,55,59]],BASS=[41,40,38,36];
+const MEL=[[[0,72,2],[3,69,1],[4,72,2],[8,74,3],[12,72,2]],[[0,71,3],[4,67,2],[8,69,4]],[[0,69,2],[2,72,2],[4,74,2],[8,76,3],[12,74,2]],[[0,72,4],[6,67,2],[8,69,6]]];
+function music(){
+ if(!musicOn||!ac||ac.state!=='running'||st!=='run'||paused){nextT=0;return}
+ if(!nextT||nextT<ac.currentTime-.2){nextT=ac.currentTime+.05;stepI=0}
+ while(nextT<ac.currentTime+.14){
+  const bar=Math.floor(stepI/16)%4,s=stepI%16,t=nextT;
+  if(s===0||s===10)CH[bar].forEach(n=>tone('triangle',mf(n),t,s?STEP*2.2:STEP*6,.045,musBus,1800));
+  if(s===0||s===6||s===8||s===14)tone('sine',mf(BASS[bar]+(s===8?7:s===14?12:0)),t,STEP*1.8,.17,musBus);
+  if(s%8===0)tone('sine',[130,48],t,.16,.22,musBus);
+  if(s===4||s===12)hiss(t,.12,.07,musBus,'bandpass',1800);
+  if(s%2===0)hiss(t,.035,s%4?.03:.018,musBus,'highpass',7000);
+  MEL[bar].forEach(m=>{if(m[0]===s)tone('square',mf(m[1]),t,STEP*m[2]*.95,.035,musBus,2600,true)});
+  nextT+=STEP;stepI++}}
+// ===== Pause and settings: one card drawn on the canvas. During a run the corner button pauses play (the
+// leaderboard clock does not advance while paused); before or after a run it opens the same card as settings.
+// P also toggles pause; Escape is left alone (it exits full screen on CrazyGames). =====
+let paused=false,panel=null,hits=[],holdAt=0,heldLong=false,firstJumpT=-9;
+const BTN={x:W-26,y:30,r:17};
+function openPanel(mode){panel=mode;if(mode==='pause'){paused=true;release()}sfx('tick')}
+function closePanel(){panel=null;paused=false;last=performance.now();sfx('tick')}
+function autoPause(){if(st==='run'&&!paused)openPanel('pause')}
+function canvasPoint(e){const r=c.getBoundingClientRect();return [(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]}
+// Returns true when the tap was used by the button or the card (so it does not also jump).
+function tapUI(p){
+ if(panel){for(const h of hits)if(p[0]>=h.x&&p[0]<=h.x+h.w&&p[1]>=h.y&&p[1]<=h.y+h.h){h.fn();break}return true}
+ if(Math.hypot(p[0]-BTN.x,p[1]-BTN.y)<BTN.r+8){openPanel(st==='run'?'pause':'settings');return true}
+ return false}
+function cornerButton(){
+ g.beginPath();g.arc(BTN.x,BTN.y,BTN.r,0,7);g.fillStyle='rgba(31,58,64,.6)';g.fill();g.lineWidth=2;g.strokeStyle='rgba(247,239,217,.85)';g.stroke();
+ g.fillStyle='#f7efd9';
+ if(st==='run'){g.fillRect(BTN.x-6,BTN.y-7,4.5,14);g.fillRect(BTN.x+1.5,BTN.y-7,4.5,14);return}
+ // Speaker: sound settings.
+ g.beginPath();g.moveTo(BTN.x-9,BTN.y-3.5);g.lineTo(BTN.x-5,BTN.y-3.5);g.lineTo(BTN.x+1,BTN.y-8.5);g.lineTo(BTN.x+1,BTN.y+8.5);g.lineTo(BTN.x-5,BTN.y+3.5);g.lineTo(BTN.x-9,BTN.y+3.5);g.closePath();g.fill();
+ g.strokeStyle='#f7efd9';g.lineWidth=1.8;g.lineCap='round';
+ if(musicOn||sfxOn){g.beginPath();g.arc(BTN.x+2,BTN.y,5,-.8,.8);g.stroke();g.beginPath();g.arc(BTN.x+2,BTN.y,9,-.8,.8);g.stroke()}
+ else{g.beginPath();g.moveTo(BTN.x+4,BTN.y-4);g.lineTo(BTN.x+11,BTN.y+4);g.moveTo(BTN.x+11,BTN.y-4);g.lineTo(BTN.x+4,BTN.y+4);g.stroke()}}
+function pill(x,y,on){g.beginPath();g.roundRect?g.roundRect(x,y,58,30,15):g.rect(x,y,58,30);g.fillStyle=on?'#4f9e9c':'#a9b3b1';g.fill();
+ g.beginPath();g.arc(on?x+43:x+15,y+15,11,0,7);g.fillStyle='#fffaf0';g.fill()}
+function drawPanel(){
+ hits=[];g.fillStyle='rgba(20,40,44,.6)';g.fillRect(0,0,W,H);
+ g.beginPath();g.roundRect?g.roundRect(70,168,260,234,20):g.rect(70,168,260,234);g.fillStyle='#f7efd9';g.fill();g.lineWidth=3;g.strokeStyle='#1f3a40';g.stroke();
+ tx(panel==='pause'?'{{t:cat.msg.014}}':'{{t:cat.msg.015}}',W/2,214,26,'#e8b45a');
+ const row=(y,label,on,fn)=>{g.font='800 19px '+FONT;g.textAlign='left';g.fillStyle='#1f3a40';g.fillText(label,96,y+21,140);pill(250,y,on);hits.push({x:236,y:y-8,w:86,h:46,fn})};
+ row(236,'{{t:cat.msg.016}}',musicOn,()=>{musicOn=!musicOn;audioInit();syncAudio();sfx('tick')});
+ row(282,'{{t:cat.msg.017}}',sfxOn,()=>{sfxOn=!sfxOn;audioInit();syncAudio();sfx('tick')});
+ g.beginPath();g.roundRect?g.roundRect(120,334,160,50,14):g.rect(120,334,160,50);g.fillStyle='#4f9e9c';g.fill();
+ g.font='900 21px '+FONT;g.textAlign='center';g.fillStyle='#fffaf0';g.fillText(panel==='pause'?'{{t:cat.msg.018}}':'{{t:cat.msg.019}}',W/2,366,150);
+ hits.push({x:112,y:326,w:176,h:66,fn:closePanel})}
+// After the first jump, a short reminder that holding the tap makes a higher jump (until the player tries it).
+function holdHint(){
+ if(st!=='run'||heldLong||paused||tt-firstJumpT>6||tt<firstJumpT)return;
+ const a=Math.min(1,(tt-firstJumpT)*2,(6-(tt-firstJumpT))*1.5),p=reduceMotion?.6:(tt*.9)%1,x=W/2,y=292;
+ g.save();g.globalAlpha=a;g.beginPath();g.arc(x,y,13,0,7);g.fillStyle='rgba(31,58,64,.45)';g.fill();
+ g.beginPath();g.arc(x,y,13,-Math.PI/2,-Math.PI/2+p*Math.PI*2);g.strokeStyle='#e8b45a';g.lineWidth=4;g.stroke();
+ tx('{{t:cat.msg.020}}',x,y+36,17,'#fff1c1');g.restore()}
 function start(){
  if(st==='run')return;
+ audioInit();paused=false;panel=null;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
  catRank.start(random=>{
@@ -494,22 +586,23 @@ function start(){
  });
 }
 function down(){
- if(st!=='run'||$('view-cat').hidden||document.hidden)return false;
+ if(st!=='run'||paused||$('view-cat').hidden||document.hidden)return false;holdAt=tt;
  catRules.input(cat,0);catRank.record(0);return true;
 }
-function release(){if(st==='run'&&catRules.input(cat,1))catRank.record(1)}
+function release(){if(st==='run'&&tt-holdAt>.24)heldLong=true;if(st==='run'&&catRules.input(cat,1))catRank.record(1)}
 $('ct-go').addEventListener('click',start);
-c.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;if(down()){e.preventDefault();c.focus()}else if(st!=='run')say(st==='over'?'{{t:cat.msg.012}}':'{{t:cat.msg.013}}')});
+c.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;audioInit();if(tapUI(canvasPoint(e))){e.preventDefault();return}if(down()){e.preventDefault();c.focus()}else if(st!=='run')say(st==='over'?'{{t:cat.msg.012}}':'{{t:cat.msg.013}}')});
 ['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,release));
 c.addEventListener('contextmenu',e=>e.preventDefault());
-addEventListener('keydown',e=>{if($('view-cat').hidden||document.hidden||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();if(!e.repeat)down()}});
+addEventListener('keydown',e=>{if($('view-cat').hidden||document.hidden||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(e.code==='KeyP'&&!e.repeat&&!['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName)){e.preventDefault();panel?closePanel():openPanel('pause');return}if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();if(!e.repeat)down()}});
 addEventListener('keyup',e=>{if(e.key===' '||e.key==='ArrowUp')release()});
-addEventListener('blur',()=>{release();last=performance.now()});
-document.addEventListener('visibilitychange',()=>{release();last=performance.now()});
-window.addEventListener('hashchange',()=>{release();last=performance.now()});
+// Leaving the app, the tab or the game pauses the run.
+addEventListener('blur',()=>{release();autoPause();last=performance.now()});
+document.addEventListener('visibilitychange',()=>{release();if(document.hidden)autoPause();last=performance.now()});
+window.addEventListener('hashchange',()=>{release();autoPause();last=performance.now()});
 function loop(t){
  const ms=Math.min(50,Math.max(0,t-last)||0);last=t;
- if(!$('view-cat').hidden&&!document.hidden){catRank.update(ms,()=>st==='run',update);ui();draw()}
+ if(!$('view-cat').hidden&&!document.hidden){if(!paused)catRank.update(ms,()=>st==='run',update);ui();music();draw()}
  requestAnimationFrame(loop);
 }
 ui();draw();requestAnimationFrame(loop);
