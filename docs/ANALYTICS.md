@@ -182,3 +182,7 @@ GA4 評估 ID：`G-B5PKZSCCEQ`
 《深海火線》（`blaster`）採連續航行。事件的 `stage` 表示每 1,000 公尺的難度段，`score` 仍為擊破數；航行進度與結束事件包含整數公尺 `distance_m`。每 10,000 公尺發出的固定點數記在 `bonus_points` 與 `total_bonus_points`。訪客排行榜由 Worker 另行驗證距離。
 
 Cat Match（`cat-match`／貓貓三消）：一個關卡一個免費回合；進入新關 start，收集完成 complete、步數耗盡 loss、重玩／離頁 abandoned；暫停排除有效停留時間，score 為單關分數，沒有點數入帳。
+
+## 莓果小蛇（berry-trail）
+
+`game_name=莓果小蛇`，免費開局 `start`；暫停 `progress(phase=pause)`、繼續 `resume`；碰撞或吃滿棋盤 `end(complete, score)`。重玩或離開路由 `end(abandoned, score)`，每局單次結算、派發點數 0；排行榜另由 Worker 重播驗證。語言切換不重開回合。GA4 正式後台收件尚未驗證。

@@ -1,0 +1,138 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Berry Trail | TiCATiCA Games</title><style>
+*{box-sizing:border-box}body{margin:0;background:#e8edda;color:#304b3c;font-family:system-ui,sans-serif;min-height:100dvh;display:grid;place-items:center}main{width:min(94vw,530px);padding:16px 0}header{display:flex;align-items:center;justify-content:space-between}h1{font-size:clamp(26px,6vw,40px);margin:0;letter-spacing:-2px}small{font-weight:700;letter-spacing:2px;color:#75876a}button{font:inherit;font-weight:700;border:0;border-radius:14px;background:#456b50;color:white;padding:12px 20px;cursor:pointer}button:focus-visible{outline:3px solid #e4a04c}.stats{display:flex;gap:12px;margin:14px 0}.stat{flex:1;background:#faf8ed;border-radius:16px;padding:10px 16px;box-shadow:0 3px 0 #cbd5ba}.stat span{display:block;font-size:12px;color:#75876a;font-weight:700}.stat strong{font-size:24px}.board{position:relative;border:9px solid #668563;border-radius:24px;overflow:hidden;box-shadow:0 6px 0 #46644c;touch-action:none}canvas{display:block;width:100%;aspect-ratio:1}.overlay{position:absolute;inset:0;display:grid;place-content:center;text-align:center;background:#e9efdbc9;padding:22px;backdrop-filter:blur(3px)}.overlay[hidden]{display:none}.overlay h2{font-size:34px;margin:0}.overlay p{margin:8px 0 20px}.controls{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:8px}.pad{display:grid;grid-template-columns:repeat(3,46px);gap:5px;justify-content:center;margin-top:12px}.pad button{padding:0;height:42px;background:#faf8ed;color:#456b50;box-shadow:0 3px 0 #cbd5ba;touch-action:manipulation}.pad button:first-child{grid-column:2}.pad button:nth-child(2){grid-column:1}.hint{font-size:12px;text-align:center;color:#64755c;margin:12px 0 0}@media(max-height:700px) and (min-width:600px){main{width:min(88vh,530px)}.pad{display:none}}
+
+:root{--ink:#254b3c;--cream:#fff9e9}body{background:radial-gradient(ellipse at 50% 0,#fff6d9 0%,transparent 48%),linear-gradient(155deg,#d4e8c0,#a9c7a6);color:var(--ink)}main{width:min(94vw,560px);padding:18px 0 22px}header{padding:0 5px}h1{font-family:Georgia,serif;font-weight:900;letter-spacing:-1.5px;text-shadow:0 2px #fff8dc;font-size:clamp(32px,7vw,46px)}small{font-size:10px;letter-spacing:3px;color:#52765a}button{background:linear-gradient(#54845b,#376548);border:1px solid #315b42;box-shadow:0 3px 0 #254b37,inset 0 1px #ffffff35;border-radius:13px}button:active{transform:translateY(2px);box-shadow:none}.stats{gap:10px;margin:16px 0 12px}.stat{position:relative;background:linear-gradient(#fffbed,#f0e8c9);border:1px solid #fffdf0;border-radius:15px;box-shadow:0 3px 0 #a9bd91,0 5px 12px #426b4520;padding:9px 16px}.stat span{letter-spacing:1.5px;font-size:10px}.stat strong{font-size:27px;font-variant-numeric:tabular-nums}.stat:after{content:'';position:absolute;right:16px;top:18px;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe1a0,#e1a64b 70%);box-shadow:0 2px 0 #b48842}.stat:first-child:after{background:radial-gradient(circle at 35% 30%,#ffada1,#c74852 75%);box-shadow:0 2px 0 #a33c43}.board{border:7px solid #46674a;border-radius:25px;box-shadow:0 0 0 3px #aec296,0 7px 0 #35543d,0 15px 24px #36553c35}.overlay{background:linear-gradient(145deg,#183b2ac2,#315f38a8);color:#fff9e4;backdrop-filter:blur(2px)}.overlay h2{font-family:Georgia,serif;font-size:clamp(30px,7vw,44px);text-shadow:0 3px 0 #203e2f}.overlay p{color:#f1e8c8;font-size:14px}.overlay button{background:linear-gradient(#fff2b0,#e9b95e);color:#4d4328;border-color:#cb9945;box-shadow:0 4px 0 #a97c3a;padding:13px 30px}.controls{margin-top:17px}.controls button{flex:1;font-size:13px;padding:9px}.pad button{border:1px solid #fffbed;background:linear-gradient(#fffbed,#e8dfbd);box-shadow:0 3px 0 #9eb58c;color:#375d43;font-size:22px}.hint{font-size:11px;color:#385c43}@media(pointer:fine) and (min-width:650px){.pad{display:none}}@media(max-height:760px) and (min-width:650px){main{width:min(70vh,560px);padding:8px 0}h1{font-size:32px}.stats{margin:8px 0}.stat{padding:5px 12px}.controls{margin-top:12px}}@media(max-width:480px){main{width:min(94vw,calc(100dvh - 265px));min-width:min(90vw,300px);padding:8px 0}.pad{margin-top:8px;grid-template-columns:repeat(3,46px)}.pad button{height:36px}.hint{margin:8px 0}.stats{margin:8px 0 10px}.stat{padding:5px 12px}h1{font-size:32px}.board{border-width:5px}}
+
+/* Rounded arcade typography; offline system fallbacks */
+body{font-family:"Avenir Next Rounded","Nunito","Arial Rounded MT Bold","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;font-weight:500;-webkit-font-smoothing:antialiased}h1,.overlay h2{font-family:"Arial Rounded MT Bold","Avenir Next Rounded","Nunito","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;font-weight:900;letter-spacing:-.035em;line-height:1.13}h1{color:#264d39;text-shadow:0 2px 0 #fff8dc,0 3px 0 #c3d7a8}.overlay h2{letter-spacing:-.025em;text-shadow:0 3px 0 #203e2f,0 5px 12px #132d2650}.stat strong{font-family:"Arial Rounded MT Bold","Avenir Next",system-ui,sans-serif;font-weight:800;font-size:30px;letter-spacing:-.045em;line-height:1.15}.stat span{font-size:11px;font-weight:800;letter-spacing:.10em}small{font-weight:800;letter-spacing:.22em}button{font-weight:800;letter-spacing:.015em}.overlay button{font-size:18px}.overlay p{line-height:1.55;font-weight:600}.hint{font-weight:600;line-height:1.5}html[lang=zh-Hant] h1,html[lang=zh-Hant] .overlay h2{letter-spacing:.06em}html[lang=zh-Hant] .stat span{letter-spacing:.08em}html[lang=zh-Hant] button{letter-spacing:.06em}
+
+#rank-dialog{max-width:min(90vw,420px);max-height:80dvh;overflow:auto;border:0;border-radius:18px;background:#fff9e9;color:#254b3c}#rank-dialog::backdrop{background:#183b2a99}#rank-dialog li{padding:6px}#leaders{min-width:44px;min-height:44px;padding:6px}header>div{flex:1}
+/* Platform fit: 44px controls, safe areas, a square board and no page scrolling. */
+html,body{width:100%;height:100%;overflow:hidden}body{min-height:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+main{width:min(calc(100vw - 28px),calc(100dvh - 365px),500px);min-width:0;padding:6px 0 40px}header{gap:10px}h1{font-size:clamp(22px,6vw,36px)}small{font-size:9px;letter-spacing:1.5px}#exit{min-width:44px;min-height:44px;padding:6px}.stats{margin:8px 0 12px}.stat{padding:5px 12px}.stat strong{font-size:24px}.stat:after{right:10px;top:16px;width:12px;height:12px}.board{border-width:5px}.controls{margin-top:12px}.controls button{min-height:44px;padding:6px}.pad{display:grid;margin-top:10px;grid-template-columns:repeat(3,48px);gap:6px}.pad button{height:44px;min-width:44px}.hint{font-size:11px;margin:10px 0 0}.overlay{padding:12px}.overlay h2{font-size:clamp(22px,6vw,34px)}.overlay p{font-size:13px;margin:6px 0 14px}.overlay button{min-height:44px;padding:8px 22px}.overlay button:disabled{opacity:.65}button:focus-visible{outline:3px solid #e4a04c;outline-offset:2px}
+@media(min-width:600px) and (max-height:500px){main{width:auto;display:grid;grid-template-columns:min(52vw,calc(100dvh - 80px)) 210px;gap:4px 18px;padding:4px 0 30px}header{grid-column:1/-1}h1{font-size:24px}.board{grid-column:1;grid-row:2/6;align-self:start}.stats{grid-column:2;grid-row:2;margin:0}.controls{grid-column:2;grid-row:3;margin:0}.pad{grid-column:2;grid-row:4;margin:0}.hint{grid-column:2;grid-row:5;margin:0}}
+
+/* Give the square play field almost the entire phone width; compact surrounding HUD. */
+@media(max-width:599px),(min-height:501px){
+ main{width:min(calc(100vw - 12px),calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 246px),620px);padding:4px 0 34px}
+ header{gap:6px;padding:0 4px}h1{font-size:clamp(22px,5.5vw,30px)}small{font-size:8px;letter-spacing:1px}
+ .stats{gap:8px;margin:6px 0 8px}.stat{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:3px 10px;border-radius:11px;min-height:34px}.stat span{display:inline;font-size:11px;letter-spacing:0}.stat strong{font-size:22px}.stat:after{display:none}
+ .board{border-width:4px;border-radius:18px}.controls{margin-top:10px;gap:8px}.controls button{font-size:12px}
+ .pad{grid-template-columns:repeat(4,52px);gap:8px;margin-top:8px}.pad button:first-child,.pad button:nth-child(2){grid-column:auto}.pad button:nth-child(2){order:-1}
+ .hint{margin:7px 0 0;font-size:10px;line-height:1.4}
+}
+
+/* Touch players steer on the board; keep only two large secondary actions. */
+html.touch-layout body{align-items:start;align-content:start}
+html.touch-layout .pad{display:none!important}
+html.touch-layout main{padding-top:10px;padding-bottom:8px;width:min(calc(100vw - 12px),calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 168px),620px)}
+html.touch-layout .controls{gap:12px;margin-top:12px}html.touch-layout .controls button{min-height:52px;font-size:15px;border-radius:16px;touch-action:manipulation}
+html.touch-layout .hint{margin-top:10px;font-size:12px}
+@media(min-width:600px) and (max-height:500px){html.touch-layout main{width:auto}html.touch-layout .controls button{min-height:48px}html.touch-layout .hint{font-size:12px}}
+</style><body data-i18n-ignore><main><header><div><small>TiCATiCA GAMES</small><h1 id="title">Berry Trail</h1></div><button id="leaders" aria-label="Leaderboard">☰</button><button id="exit" aria-label="Back to lobby">←</button></header><div class="stats"><div class="stat"><span id="scoreLabel">SCORE</span><strong id="score">0</strong></div><div class="stat"><span id="bestLabel">BEST</span><strong id="best">0</strong></div></div><div class="board" id="board"><canvas id="c" width="600" height="600" aria-label="Snake game board"></canvas><div class="overlay" id="overlay"><h2 id="message">Berry Trail</h2><p id="desc">A little snake, a big berry adventure.</p><button id="start">Play</button></div></div><div class="controls"><button id="pause">Pause</button><button id="restart">Restart</button></div><div class="pad"><button data-d="0,-1" aria-label="Up">↑</button><button data-d="-1,0" aria-label="Left">←</button><button data-d="0,1" aria-label="Down">↓</button><button data-d="1,0" aria-label="Right">→</button></div><p class="hint" id="hint">Arrow keys / WASD · Swipe to turn · Space to pause</p></main><dialog id="rank-dialog"><h2 id="rank-title"></h2><p id="rank-message" role="status"></p><ol id="rank-list"></ol><button id="rank-close"></button></dialog><script>
+'use strict';
+const $=id=>document.getElementById(id),c=$('c'),g=c.getContext('2d'),N=20,S=30;
+const bridge=parent.deepSeaBerry,rules=bridge.rules;
+let model,rng=Math.random,snake,food,dir,next,score=0,best=0,state='ready',language=bridge.language(window),lang=language==='en'?'en':'zh',last=0,starting=false,active=true,bufferedTurn=null;
+try{const saved=Number(localStorage.getItem('berryTrailBest'));best=Number.isFinite(saved)?Math.max(0,Math.floor(saved)):0;}catch{}
+const words={en:['Berry Trail','SCORE','BEST','A little snake, a big berry adventure.','Play','Pause','Restart','Arrow keys / WASD · Swipe to turn · Space to pause','Game over','Play again','Paused','Resume','You cleared the forest!'],zh:['莓果小蛇','分數','最高分','陪小蛇在森林中尋找甜甜的莓果。','開始遊戲','暫停','重新開始','方向鍵 / WASD · 滑動轉向 · 空白鍵暫停','遊戲結束','再玩一次','暫停中','繼續遊戲','你吃遍整座森林了！']};
+function labels(){
+ const w=words[lang].map(t=>bridge.translate(window,t));
+ ['title','scoreLabel','bestLabel','hint'].forEach((id,i)=>$(id).textContent=w[[0,1,2,7][i]]);
+ const touchLayout=parent.innerWidth<=880||matchMedia('(pointer: coarse)').matches;document.documentElement.classList.toggle('touch-layout',touchLayout);
+ if(touchLayout)$('hint').textContent=lang==='en'?'Swipe on the board to turn':bridge.translate(window,'在棋盤上滑動轉向');
+ $('pause').textContent=state==='paused'?w[11]:w[5];$('restart').textContent=w[6];
+ $('message').textContent=state==='over'?w[8]:state==='won'?w[12]:state==='paused'?w[10]:w[0];
+ $('desc').textContent=state==='over'||state==='won'?w[1]+': '+score:state==='paused'?'':w[3];
+ $('start').textContent=state==='paused'?w[11]:state==='over'||state==='won'?w[9]:w[4];
+ $('overlay').hidden=state==='running';$('score').textContent=score;$('best').textContent=best;
+ $('start').disabled=starting;$('restart').disabled=starting;$('pause').disabled=starting||!['running','paused'].includes(state);
+ document.documentElement.lang=language;document.title=w[0]+' | TICATICA GAMES';
+ $('leaders').setAttribute('aria-label',lang==='en'?'Leaderboard':bridge.translate(window,'排行榜'));
+ rankStatus($('rank-message').dataset.state||'');
+ $('rank-title').textContent=lang==='en'?'Leaderboard':bridge.translate(window,'排行榜');$('rank-close').textContent=lang==='en'?'Close':bridge.translate(window,'關閉');
+ $('exit').setAttribute('aria-label',lang==='en'?'Back to lobby':bridge.translate(window,'返回遊戲大廳'));
+ c.setAttribute('aria-label',lang==='en'?'Snake game board':bridge.translate(window,'貪食蛇遊戲棋盤'));
+ document.querySelectorAll('[data-d]').forEach((b,i)=>b.setAttribute('aria-label',lang==='en'?['Up','Left','Down','Right'][i]:['上','左','下','右'][i]));
+}
+function sync(){snake=model.snake;food=model.food;dir=rules.directions[model.dir];score=model.score;}
+function reset(){bufferedTurn=null;model=rules.create(rng);sync();state='ready';labels();draw();}
+function start(){
+ if(starting||!active)return;
+ starting=true;labels();
+ const accepted=bridge.prepare(window,function(random){starting=false;if(!active){labels();return;}rng=random;bufferedTurn=null;model=rules.create(rng);sync();state='running';last=performance.now();labels();draw();c.focus();});
+ if(!accepted){starting=false;labels();}
+}
+function turn(x,y){
+ if(state!=='running'||starting)return false;
+ const code=rules.directions.findIndex(d=>d[0]===x&&d[1]===y);
+ if(rules.input(model,code)){bridge.record(window,code);bridge.touch(window);return true;}
+ // Keep one quick follow-up turn; send it to the existing rules only after the next grid step.
+ if(model.queued&&bufferedTurn===null&&code!==model.next&&code!==(model.next+2)%4){bufferedTurn=code;bridge.touch(window);return true;}
+ return false;
+}
+function step(dt){
+ rules.advance(model,dt,rng);sync();
+ if(!model.dead&&!model.queued&&bufferedTurn!==null){const code=bufferedTurn;bufferedTurn=null;if(rules.input(model,code))bridge.record(window,code);}
+ if(score>best){best=score;try{localStorage.setItem('berryTrailBest',String(best));}catch{}}
+ if(model.dead){state=model.won?'won':'over';labels();draw();bridge.finish(window,score);}
+}
+function ellipse(x,y,rx,ry,color){g.fillStyle=color;g.beginPath();g.ellipse(x,y,rx,ry,0,0,Math.PI*2);g.fill()}function draw(){
+let bg=g.createLinearGradient(0,0,600,600);bg.addColorStop(0,'#b6d99a');bg.addColorStop(1,'#82b879');g.fillStyle=bg;g.fillRect(0,0,600,600);
+for(let y=0;y<N;y++)for(let x=0;x<N;x++){let X=x*S,Y=y*S;g.fillStyle=(x+y)%2?'#315d3510':'#fff9d51a';g.fillRect(X,Y,S,S);let k=(x*47+y*73+x*y*13)%31;if(k<4){g.strokeStyle='#4c874e55';g.lineWidth=1.5;g.beginPath();g.moveTo(X+8,Y+22);g.quadraticCurveTo(X+5,Y+16,X+5,Y+14);g.moveTo(X+8,Y+22);g.quadraticCurveTo(X+11,Y+16,X+14,Y+15);g.stroke()}if(k===8){ellipse(X+22,Y+8,2,2,'#fff7c4aa');ellipse(X+19,Y+9,1.5,1.5,'#fff7c4aa')}}
+let v=g.createRadialGradient(300,300,170,300,300,430);v.addColorStop(0,'#365f3500');v.addColorStop(1,'#365f3540');g.fillStyle=v;g.fillRect(0,0,600,600);
+// Jewel-like woodland strawberry, drawn at native board scale.
+if(food){g.save();g.translate(food.x*S+15,food.y*S+15);
+ellipse(0,11,12,3.5,'#244b3355');
+let glow=g.createRadialGradient(0,0,2,0,0,15);glow.addColorStop(0,'#fff4ba88');glow.addColorStop(1,'#fff4ba00');g.fillStyle=glow;g.fillRect(-15,-15,30,30);
+function berryShape(){g.beginPath();g.moveTo(0,-7);g.bezierCurveTo(-8,-12,-14,-7,-12,0);g.bezierCurveTo(-11,5,-5,12,0,13);g.bezierCurveTo(5,12,11,5,12,0);g.bezierCurveTo(14,-7,8,-12,0,-7);g.closePath()}
+berryShape();let ruby=g.createRadialGradient(-6,-6,1,3,5,17);ruby.addColorStop(0,'#ffb4a0');ruby.addColorStop(.35,'#ff6965');ruby.addColorStop(.72,'#e83d56');ruby.addColorStop(1,'#9d2044');g.fillStyle=ruby;g.fill();g.strokeStyle='#a32c49';g.lineWidth=1;g.stroke();
+g.save();berryShape();g.clip();g.beginPath();g.moveTo(-9,-4);g.quadraticCurveTo(-12,1,-6,6);g.strokeStyle='#ffb9a280';g.lineWidth=2;g.lineCap='round';g.stroke();
+for(let [x,y,r] of [[-7,-3,-.35],[0,-3,0],[7,-2,.35],[-5,3,-.3],[3,3,.25],[-1,8,.05]]){g.save();g.translate(x,y);g.rotate(r);ellipse(.3,.4,1.3,1.9,'#a82d46');ellipse(0,-.35,.8,1.3,'#ffe3a0');g.restore()}g.restore();
+// Five distinct calyx leaves with a subtle central vein.
+for(let [angle,len] of [[-1.05,9],[-.52,8],[0,9],[.55,8],[1.08,9]]){g.save();g.translate(0,-7);g.rotate(angle);let leaf=g.createLinearGradient(-3,0,3,-len);leaf.addColorStop(0,'#2f7446');leaf.addColorStop(1,'#a3d879');g.beginPath();g.moveTo(0,1);g.quadraticCurveTo(-5,-len*.52,0,-len);g.quadraticCurveTo(4,-len*.45,0,1);g.fillStyle=leaf;g.fill();g.strokeStyle='#387b48';g.lineWidth=.65;g.stroke();g.restore()}
+g.beginPath();g.moveTo(0,-8);g.quadraticCurveTo(-1,-12,3,-13);g.strokeStyle='#366b40';g.lineWidth=1.8;g.lineCap='round';g.stroke();ellipse(-7,-5,1.8,.85,'#fff5dcbb');g.restore()}
+// Hand-drawn jade snake: curved silhouette, tapered tail, warm gold markings.
+let pts=snake.map(p=>({x:p.x*S+15,y:p.y*S+15}));
+function centerline(offset=0){g.beginPath();g.moveTo(pts[0].x,pts[0].y+offset);for(let i=1;i<pts.length-1;i++){let a=pts[i],b=pts[i+1];g.quadraticCurveTo(a.x,a.y+offset,(a.x+b.x)/2,(a.y+b.y)/2+offset)}let t=pts.at(-1);g.lineTo(t.x,t.y+offset)}
+g.lineCap='round';g.lineJoin='round';centerline(4);g.lineWidth=25;g.strokeStyle='#244a384d';g.stroke();
+centerline();g.lineWidth=24;g.strokeStyle='#255945';g.stroke();g.lineWidth=21;g.strokeStyle='#439b70';g.stroke();g.lineWidth=15;g.strokeStyle='#78c68a';g.stroke();g.lineWidth=8;g.strokeStyle='#a6d99a';g.stroke();
+// A small repeating scale motif, oriented along the spine.
+for(let i=1;i<pts.length;i++){let p=pts[i],a=pts[i-1],b=pts[Math.min(i+1,pts.length-1)];g.save();g.translate(p.x,p.y);g.rotate(Math.atan2(a.y-b.y,a.x-b.x));if(i===pts.length-1){ellipse(0,0,7,7,'#86ca91');}else{g.fillStyle='#3e926b';for(let side of [-1,1]){g.beginPath();g.moveTo(-5,side*4);g.quadraticCurveTo(0,side*10,5,side*4);g.quadraticCurveTo(0,side*6,-5,side*4);g.fill()}ellipse(0,0,2.5,1.8,'#e5eab0');}g.restore()}
+let h=pts[0];g.save();g.translate(h.x,h.y);g.rotate(Math.atan2(dir[1],dir[0]));
+// Rounded pear-shaped head, soft snout and expressive eyes.
+function silhouette(){g.beginPath();g.moveTo(-12,0);g.bezierCurveTo(-12,-10,-5,-14,4,-13);g.bezierCurveTo(12,-13,15,-7,15,0);g.bezierCurveTo(15,7,12,13,4,13);g.bezierCurveTo(-5,14,-12,10,-12,0);g.closePath()}
+g.save();g.translate(0,2);silhouette();g.fillStyle='#244e3c66';g.fill();g.restore();silhouette();let jade=g.createRadialGradient(-5,-7,0,1,1,17);jade.addColorStop(0,'#d0edaa');jade.addColorStop(.5,'#96d39a');jade.addColorStop(1,'#4a9f76');g.fillStyle=jade;g.fill();g.strokeStyle='#285e47';g.lineWidth=1.5;g.stroke();
+ellipse(8,0,6.3,5.4,'#c8e6a5');for(let side of [-1,1]){let y=side*7.2;ellipse(2,y,5.8,5.1,'#fff8df');ellipse(3.8,y,3.8,4.1,'#253d35');ellipse(4.4,y-1.4,1.5,1.5,'#fff');ellipse(2.1,y+1.6,.7,.7,'#b4d8b4');ellipse(8.2,side*9.4,2.7,1.6,'#ecad97');ellipse(11,side*2.5,.65,.85,'#477c55')}
+g.beginPath();g.moveTo(11,-2.4);g.quadraticCurveTo(14,0,11,2.4);g.strokeStyle='#39674b';g.lineWidth=1.1;g.stroke();ellipse(-6,0,2.9,2.1,'#e5edb4');g.restore()}
+
+function pause(){if(state==='running'){bufferedTurn=null;touch=null;state='paused';bridge.pause(window);labels();}else if(state==='paused'&&active){state='running';last=performance.now();bridge.resume(window);labels();}}
+function rankStatus(value){$('rank-message').dataset.state=value;const texts={loading:['載入排行榜中…','Loading…'],empty:['目前還沒有成績。','No scores yet.'],error:['載入失敗，請關閉後重試。','Could not load scores. Close and open to retry.']};$('rank-message').textContent=value?(lang==='en'?texts[value][1]:bridge.translate(window,texts[value][0])):'';}
+$('rank-close').onclick=()=>$('rank-dialog').close();
+$('leaders').onclick=async()=>{
+ if(state==='running')pause();$('rank-list').replaceChildren();rankStatus('loading');$('rank-dialog').showModal();
+ try{const result=await bridge.leaders(window);rankStatus(result.entries.length?'':'empty');for(const entry of result.entries){const li=document.createElement('li');li.textContent=(entry.nickname||entry.displayName||'Player')+' · '+entry.score;$('rank-list').append(li);}}
+ catch{rankStatus('error');}
+};
+$('start').onclick=()=>state==='paused'?pause():start();$('restart').onclick=start;$('pause').onclick=pause;$('exit').onclick=()=>bridge.exit(window);
+c.tabIndex=0;
+document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>turn(...b.dataset.d.split(',').map(Number)));
+window.addEventListener('keydown',e=>{
+ if(e.repeat)return;
+ const m={ArrowUp:[0,-1],KeyW:[0,-1],ArrowDown:[0,1],KeyS:[0,1],ArrowLeft:[-1,0],KeyA:[-1,0],ArrowRight:[1,0],KeyD:[1,0]};
+ const d=m[e.code];if(d){e.preventDefault();turn(...d);}
+ if(e.code==='Space'&&e.target.tagName!=='BUTTON'){e.preventDefault();pause();}
+});
+let touch=null;
+$('board').addEventListener('pointerdown',e=>{if(e.target!==c||state!=='running'||starting||touch)return;e.preventDefault();touch=[e.clientX,e.clientY,e.pointerId];c.setPointerCapture(e.pointerId);});
+$('board').addEventListener('pointermove',e=>{if(!touch||e.pointerId!==touch[2]||state!=='running')return;e.preventDefault();const x=e.clientX-touch[0],y=e.clientY-touch[1];if(Math.max(Math.abs(x),Math.abs(y))>=8){Math.abs(x)>Math.abs(y)?turn(Math.sign(x),0):turn(0,Math.sign(y));touch=[e.clientX,e.clientY,e.pointerId];}});
+for(const ev of ['pointerup','pointercancel'])$('board').addEventListener(ev,e=>{if(touch&&e.pointerId===touch[2])touch=null;});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='running')pause();});
+window.addEventListener('resize',labels);
+window.addEventListener('blur',()=>{if(state==='running')pause();});
+window.setBerryLanguage=function(value){language=value;lang=value==='en'?'en':'zh';labels();};
+window.setBerryActive=function(value){active=value;touch=null;if(!value){starting=false;reset();}};
+window.berryScore=()=>score;
+function frame(t){const dt=Math.min(100,Math.max(0,t-last));last=t;if(active&&state==='running'){bridge.advance(window,dt,()=>state==='running',step);if(state==='running'){labels();draw();}}requestAnimationFrame(frame);}
+reset();requestAnimationFrame(frame);
+</script></body></html>

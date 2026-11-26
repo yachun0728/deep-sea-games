@@ -1,4 +1,5 @@
-"""Wording policy for visible text: the platform is free, so no text may mention free/fees or paying in.
+"""Wording policy for visible text: the platform is free, so game UI does not mention free/fees or paying in.
+The user-authorized SEO introduction may describe the site as free.
 
 Checks only text that source files actually display (via test_i18n.source_texts), so stale dictionary
 entries cannot fail it; run `python3 tools/i18n_audit.py` to list those.
@@ -29,7 +30,9 @@ class WordingPolicyTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.dictionary = i18n_data.dictionary(ROOT)
-        cls.texts = source_texts(skip=HIDDEN)  # hidden games keep legacy text until they are reworked
+        zh = i18n_data.zh_ids(ROOT)
+        seo_texts = {text for key, text in zh.items() if key.startswith('seo.') or key == 'lobby.hero.sub'}
+        cls.texts = source_texts(skip=HIDDEN) - seo_texts  # hidden games keep legacy text until they are reworked
 
     def test_visible_chinese_text_has_no_price_wording(self):
         bad = sorted(t for t in self.texts if ZH_BANNED.search(t))

@@ -385,3 +385,7 @@ Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsig
 ### Cat Match 正式版
 
 `games/cat-match/play.html` 是獨立同源 iframe；`main.js` 為正式控制器、`audio.js` 管理音訊、`i18n.js` 為繁中／英字串，`shared/cat-match-rules.js` 為前端與 Worker 共用具種子的純規則。`game.js` 負責來源驗證、路由暫停、AN 生命週期、訪客開局／結算與單關分數榜；不使用錢包。預覽版保留，標記 graduated。
+
+### 莓果小蛇 Berry Trail
+
+`games/berry-trail/play.html` 為同源 iframe，保留使用者提供的原始 Canvas 美術。`shared/berry-trail-rules.cjs` 由父頁與 Worker 共用，父頁提供給子頁作為唯一模擬規則。`game.js` 使用來源驗證、既有 timedLeaderboard、AN 生命週期及語言同步；不操作錢包。原始附件完整保存在 `design/berry-trail-v5.html`。

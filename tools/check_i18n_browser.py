@@ -138,7 +138,7 @@ def main():
     threading.Thread(target=server.serve_forever, daemon=True).start()
     with tempfile.TemporaryDirectory(prefix='deep-sea-i18n-') as temp:
         folder = Path(temp)
-        for suite, width, height in [('outpost', 1366, 900), ('outpost', 390, 844), ('book_sort', 1366, 900), ('book_sort', 390, 844), ('book_sort', 844, 390), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('academy', 1366, 900), ('academy', 390, 844), ('core', 1366, 900), ('hans', 1366, 900), ('hans', 390, 844), ('games', 1366, 900), ('games', 390, 844),
+        for suite, width, height in [('berry_trail',390,844), ('berry_trail',1366,900), ('berry_trail',844,390), ('outpost', 1366, 900), ('outpost', 390, 844), ('book_sort', 1366, 900), ('book_sort', 390, 844), ('book_sort', 844, 390), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('academy', 1366, 900), ('academy', 390, 844), ('core', 1366, 900), ('hans', 1366, 900), ('hans', 390, 844), ('games', 1366, 900), ('games', 390, 844),
                                      ('campaign', 1366, 900), ('campaign', 390, 844), ('campaign', 320, 550),
                                      ('merge', 1366, 900), ('merge', 390, 844), ('merge', 320, 480),
                                      ('ocean_link', 1366, 900), ('ocean_link', 844, 390), ('frontier', 1366, 900), ('frontier', 390, 844), ('frontier', 844, 390)]:
@@ -147,6 +147,8 @@ def main():
             script = (ROOT / f'tools/i18n_browser_{suite}.js').read_text(encoding='utf-8')
             route = f'/{suite}-{width}.html'
             tested_source = source
+            if suite == 'berry_trail':
+                tested_source = tested_source.replace('function btValid(source)', 'berryRank.start = ready => ready(() => .4);\nfunction btValid(source)')
             if suite == 'campaign':
                 anchor = "  campaignRules.create(Math.random, null, CP);CP.phase='ready';"
                 hook = '''window.__campaignTest = {

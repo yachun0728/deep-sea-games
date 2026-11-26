@@ -64,3 +64,4 @@
 | [百萬大學堂 Millionaire Academy](academy/README.md) | `#academy` | 益智策略 | 顯示 | 554 行 | 一百道百科題，自選領域闖十關，挑戰 1,000,000 學分。 |
 | [貓貓三消 Cat Match](cat-match/README.md) | `#cat-match` | 益智策略 | 顯示 | 42 行 | 拉布陪你交換貓咪與玩具，三消連鎖、無限接關。 |
 | [TOP DOGGO Paw City](top-doggo/README.md) | `#top-doggo` | 跑酷動作 | 顯示 | 28 行 | 美式鬥牛犬清空紫色浣熊幫，三種難度比誰闖到第幾關。 |
+| [莓果小蛇 Berry Trail](berry-trail/README.md) | `#berry-trail` | 懷舊經典 | 顯示 | 33 行 | 吃莓果長大，避開牆壁與自己的身體。 |

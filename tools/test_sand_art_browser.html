@@ -1,0 +1,37 @@
+<!doctype html><html><meta charset="utf-8"><title>Sand Art · Browser regression QA</title><style>body{font:16px system-ui;margin:24px;background:#faf7ee;color:#40362c}pre{white-space:pre-wrap}canvas{border:1px solid #b6a57e;width:360px;height:400px}</style><h1>Sand Art geometry / density regression</h1><pre id="results">Running actual embedded engine…</pre><canvas id="result" width="360" height="400"></canvas><script>
+(async()=>{
+ const out=document.getElementById('results');const lines=[];function ok(value,message){if(!value)throw Error(message);lines.push('PASS '+message);out.textContent=lines.join('\n')}
+ try{
+ const html=await(await fetch('../preview/sand-art/index.html')).text();const script=document.createElement('script');script.textContent=html.match(/<script id="sand-engine">([\s\S]*?)<\/script>/)[1];document.head.append(script);
+ const {SandWorld,paths,rasterizeRegions,W,H}=SandEngine;
+ const canvas=document.getElementById('result'),ctx=canvas.getContext('2d',{willReadFrequently:true});
+ const shapes=paths.map(p=>new Path2D(p[1]));const strokes=paths.map(p=>p[2]||0),occluders=paths.map(p=>p[3]===undefined?[]:shapes.slice(p[3]+1,12));const ids=rasterizeRegions(ctx,shapes,W,H,strokes,occluders);
+ const at=(x,y)=>x<0||x>=W||y<0||y>=H?-1:ids[Math.floor(y)*W+Math.floor(x)];
+ let wrong=0;for(let y=0;y<H;y++)for(let x=0;x<W;x++){let expected=-1;for(let i=shapes.length-1;i>=0;i--){ctx.lineWidth=strokes[i]||1;if((strokes[i]?ctx.isPointInStroke(shapes[i],x+.5,y+.5):ctx.isPointInPath(shapes[i],x+.5,y+.5))&&!occluders[i].some(p=>ctx.isPointInPath(p,x+.5,y+.5))){expected=i;break}}if(at(x,y)!==expected)wrong++}
+ ok(wrong===0,'Every mask pixel matches topmost geometry (144000 pixels)');
+ shapes.slice(0,12).forEach((p,i)=>{ctx.fillStyle=`rgb(${i+1},0,0)`;ctx.fill(p)});const old=ctx.getImageData(0,0,W,H).data;
+ const legacyIds=rasterizeRegions(ctx,shapes.slice(0,12),W,H);const ghosts=[];for(let y=20;y<380;y++)for(let x=20;x<340;x++){const prior=old[(y*W+x)*4]-1;if((prior===5||prior===6)&&legacyIds[y*W+x]!==5&&legacyIds[y*W+x]!==6)ghosts.push([x+.5,y+.5])}
+ ok(ghosts.length>0,'Reproduced old antialias ghost glue: '+ghosts.length+' pixels');
+ let seed=14;const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
+ const w=new SandWorld(at,random);w.peel(5);w.peel(6);for(const [x,y]of ghosts)w.emit(x,y,8,1,0);
+ for(let i=0;i<360;i++)w.step(1/120);
+ ok(w.grains.filter(p=>p.bound).every(p=>[5,6].includes(at(p.x,p.y))),'No grain sticks to any unpeeled outline after settling');
+ ok(w.stats().bound===0,'Former ghost-line coordinates bind zero grains');
+ const counts=new Array(paths.length).fill(0);for(const id of ids)if(id>=0)counts[id]++;ok(counts.every(n=>n>0),'Every fill and line-art region has a nonempty peelable area: '+paths.length+' regions');
+ const eye=paths.findIndex(p=>p[0]==='eyeLeft');ok(at(140,182)===eye,'Eye is a separate protective-paper strip');const eyeWorld=new SandWorld(at,random);eyeWorld.peel(eye);eyeWorld.emit(140,182,11,160,3);for(let i=0;i<240;i++)eyeWorld.step(1/120);ok(eyeWorld.stats().bound>0&&eyeWorld.grains.filter(p=>p.bound).every(p=>at(p.x,p.y)===eye),'Eye strip can be peeled and receive its own sand color');
+ const fill=new SandWorld(at,random);fill.peel(5);
+ const interior=[];for(let y=104;y<142;y++)for(let x=114;x<145;x++)if(at(x,y)===5&&[[-2,0],[2,0],[0,-2],[0,2]].every(([dx,dy])=>at(x+dx,y+dy)===5))interior.push([x+.5,y+.5]);
+ const coverage=()=>{const bound=fill.grains.filter(p=>p.bound);return interior.filter(([x,y])=>bound.some(p=>(x-p.x)**2+(y-p.y)**2<=p.r*p.r)).length/interior.length};
+ let early=0;
+ for(let i=0;i<1080;i++){
+  if(i<840)for(let j=0;j<2;j++){const [x,y]=interior[Math.floor(random()*interior.length)];fill.emit(x,y,j?4:8,1,.5)}
+  if(i%240===0)fill.shake(35);fill.step(1/120);if(i===60)early=coverage();if(i%120===0)await new Promise(requestAnimationFrame);
+ }
+ const late=coverage();ok(late>early+.15,'Continued pouring fills remaining white gaps: '+Math.round(early*100)+'% → '+Math.round(late*100)+'%');
+ ok(late>.9,'Actual cat ear interior exceeds 90% granular coverage');
+ ok(fill.grains.filter(p=>p.bound).every(p=>at(p.x,p.y)===5),'Dense fill remains confined to the peeled ear');
+ ctx.clearRect(0,0,W,H);shapes.forEach((shape,i)=>{ctx.fillStyle=i===5?'#fcfaf1':'#e6c65f';ctx.strokeStyle='#9f823a';ctx.lineWidth=strokes[i]||1;if(strokes[i])ctx.stroke(shape);else{ctx.fill(shape);ctx.stroke(shape)}});for(const p of fill.grains){if(!p.bound)continue;ctx.fillStyle=p.color===8?'#8cbcc6':'#d88f9f';ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill()}
+ document.body.dataset.result='PASS';document.body.dataset.metrics=JSON.stringify({ghostPixels:ghosts.length,earlyCoverage:early,lateCoverage:late,bound:fill.stats().bound,wrongMaskPixels:wrong});out.textContent=lines.join('\n')+'\nALL BROWSER REGRESSIONS PASS';
+ }catch(e){document.body.dataset.result='FAIL';out.textContent+='\nFAIL '+e.stack}
+})();
+</script></html>
