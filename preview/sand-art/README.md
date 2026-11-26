@@ -49,3 +49,7 @@ Demo 04 同時提高一般倒沙率（520 → 850 粒／秒，約 +63%），沙�
 ## Demo 07 沙堆與白膠
 
 原地長按可在已支撐的鬆沙上方續倒，下層承重、高層屈服滑落，刮板與毛刷可攤開鬆沙。裸膠加快逐粒捕捉；固定顆粒按覆蓋足跡封住黏附位點，避免已上色位置被後色反覆黏進。仍不自動填滿區塊。
+
+## Demo 08
+
+The five tools are the paper-lifting pick, pour, scraper, brush and spoon. Tap or drag the pick to lift paper. Twelve sand jars allow multiple selections or none. Motion, shake and tap stay on the desk; tilt arrows, portrait lock, audio and help are in Settings. Zoom controls sit below the board.

@@ -123,3 +123,12 @@
 - PASS：26 項 Node 測試，包括同點倒 2,520 粒、停倒後堆積、刮板搬移、未刪沙守恆、快速黏附與防止重黏足跡。上層滑落測試觀察改為 1.5 秒，符合微滑而非立即散開。
 - PASS：本機瀏覽器實際長按倒出 2,557 粒、刮板與毛刷推沙，白膠產生黏附。
 - NOT TESTED：實體手機觸控、感測及主觀手感。
+
+## DEMO 08
+
+- Gravity acceleration: 210 to 125 logical px/s2; pouring, adhesive and tool strokes unchanged. A 10-degree tilt travels 20-40 px over 3 seconds.
+- Pick now lifts paper only, with directional paper and pick animation. Five main tools.
+- Larger paper, twelve sand jars, a compact tool tray and a Settings drawer. Chinese and English supported.
+- PASS: 26 physics tests, 33 synthetic input/layout checks at 390x844, 320x568 and 430x760. Main touch targets >=44px.
+- PASS: Chrome native mouse pick drag, held pour, settings and manual tilt in a 390x844 iframe.
+- NOT TESTED: physical mobile/iPad sensor and touch behavior, subjective flow feel.
