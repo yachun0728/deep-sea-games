@@ -34,5 +34,11 @@
     "name": "TOP DOGGO: Paw City",
     "concept": "已上架為 TOP DOGGO: Paw City（games/top-doggo）。這是上架前的骨架，保留作玩法參考。",
     "status": "graduated"
+  },
+  {
+    "id": "sand-art",
+    "name": "沙沙時光 Sand & Chill",
+    "concept": "自由撕紙、混色倒沙，傾斜與工具讓真實顆粒慢慢沾附的療癒沙畫。",
+    "status": "playtest"
   }
 ]
