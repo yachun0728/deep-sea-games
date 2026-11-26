@@ -83,7 +83,7 @@ const babyV2 = timedBoard(babyRules, babyRules.rulesVersion);
 // Each rules version keeps its own replay, so rounds started on an older client still verify.
 const thiefBoards = new Map([
   [undefined, timedBoard({...thiefRules, create: rng => thiefRules.create(rng, 1)})],
-  ...[2, thiefRules.rulesVersion].map(version => [
+  ...[2, 3, thiefRules.rulesVersion].map(version => [
     version, timedBoard({...thiefRules, create: rng => thiefRules.create(rng, version)}, version),
   ]),
 ]);
@@ -143,7 +143,7 @@ const boards = new Map([
   ['thief', {
     ...thiefBoards.get(undefined),
     rulesVersion: thiefRules.rulesVersion,
-    supportedVersions: [2, thiefRules.rulesVersion],
+    supportedVersions: [2, 3, thiefRules.rulesVersion],
     create: version => (thiefBoards.get(version) ?? thiefBoards.get(undefined)).create(),
     apply: (state, action) => thiefBoards.get(state.rulesVersion)?.apply(state, action) ?? false,
   }],

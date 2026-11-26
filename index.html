@@ -93,7 +93,7 @@ img { max-width: 100%; }
 }</script>
 <link rel="icon" type="image/png" href="images/favicon.png?v=3">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Fredoka:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Fredoka:wght@500;600;700&family=Grandstander:wght@800;900&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
 <style>
 /* Layout: a dive console. The sea (canvas) takes the wide left column and the curve runs downward;
@@ -2460,7 +2460,7 @@ body:has(#view-book-sort:not([hidden])){overflow:hidden}
 .qp-stage{min-width:0;display:flex;flex-direction:column;align-items:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#2394cc}.qp-stage iframe{display:block;width:100%;height:min(820px,calc(100svh - 150px));min-height:560px;border:0;background:#2394cc}
 
 /* 偷水果的貓：開始按鈕配合遊戲畫面的橘色木牌風格 */
-#view-thief .go:not(:disabled){background:#ff8a3d;color:#fff;border:3px solid #4a2c1d;border-radius:999px;font-weight:800;letter-spacing:.04em;text-shadow:0 1px 0 rgba(74,44,29,.45);box-shadow:inset 0 3px 0 rgba(255,255,255,.35),0 4px 0 #b5561c,0 8px 18px rgba(74,44,29,.3)}
+#view-thief .go:not(:disabled){background:#ff8a3d;color:#fff;border:3px solid #4a2c1d;border-radius:999px;font-family:Grandstander,Fredoka,sans-serif;font-weight:900;font-size:1.08em;letter-spacing:.02em;text-shadow:0 1px 0 rgba(74,44,29,.45);box-shadow:inset 0 3px 0 rgba(255,255,255,.35),0 4px 0 #b5561c,0 8px 18px rgba(74,44,29,.3)}
 #view-thief .go:hover:not(:disabled){background:#ff9a52}
 #view-thief .go:active:not(:disabled){transform:translateY(2px);box-shadow:inset 0 3px 0 rgba(255,255,255,.35),0 2px 0 #b5561c,0 4px 10px rgba(74,44,29,.3)}
 #view-thief .go:disabled{background:#f4c983;color:#7a4a24;border:3px solid #c9965a;border-radius:999px}
@@ -2468,8 +2468,8 @@ body:has(#view-book-sort:not([hidden])){overflow:hidden}
   #view-thief .fs-game .side .go:active:not(:disabled){transform:translateX(-50%) translateY(2px)}
   /* 手機全螢幕上方狀態列與返回鈕：木牌配色 */
   #view-thief .fs-game .stats>div{background:#f4c983;border:2px solid #7a4a24;border-radius:10px;box-shadow:inset 0 2px 0 rgba(255,255,255,.4),0 2px 0 rgba(74,44,29,.35)}
-  #view-thief .fs-game .stats dt{color:#8a5a3b;font-weight:700}
-  #view-thief .fs-game .stats dd{color:#4a2c1d;font-weight:800}
+  #view-thief .fs-game .stats dt{color:#8a5a3b;font-weight:800;font-family:Grandstander,Fredoka,sans-serif}
+  #view-thief .fs-game .stats dd{color:#4a2c1d;font-weight:800;font-family:Grandstander,Fredoka,sans-serif}
   #view-thief .fs-game .fs-exit{background:#f4c983;border:2px solid #7a4a24;color:#4a2c1d;box-shadow:inset 0 2px 0 rgba(255,255,255,.4),0 2px 0 rgba(74,44,29,.35)}
 }
 @media(max-width:880px),(pointer:coarse) and (max-width:1100px){
@@ -2495,6 +2495,10 @@ body:has(#view-book-sort:not([hidden])){overflow:hidden}
   #view-thief .side .stats dd{font-size:15px;line-height:1.3}
   #view-thief .side .stats+.stats{margin-top:-2px}
 }
+
+/* Site header title in the game's bubble font, only while this game is open. */
+#site-shell:has(#view-thief:not([hidden])) #game-name{font-family:Grandstander,Fredoka,sans-serif;font-weight:900;letter-spacing:.01em;color:#ffb347}
+#view-thief .side .stats dt,#view-thief .side .stats dd{font-family:Grandstander,Fredoka,sans-serif;font-weight:800;letter-spacing:0}
 /* 外送員大戰惡犬：開始按鈕與手機狀態列配合遊戲畫面的深青色面板、黃色按鈕 */
 #view-rider .go:not(:disabled){background:#ffbf1f;color:#13283d;border:3px solid #13283d;border-radius:999px;font-weight:900;letter-spacing:.04em;box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 4px 0 #cf8500,0 8px 18px rgba(10,25,40,.35)}
 #view-rider .go:hover:not(:disabled){background:#ffcb45}
@@ -5631,7 +5635,7 @@ html.frontier-immersive{overflow:hidden}
       </section></div>
     </div>
     <div class="fishing-ladder campaign-ladder" role="group" aria-label="BONUS 里程碑"><span data-thief-tier="150"><b>150 分 BONUS</b>+5 點</span><span data-thief-tier="400"><b>400 分 BONUS</b>+5 點</span><span data-thief-tier="800"><b>800 分 BONUS</b>+5 點</span></div>
-    <details class="rules"><summary>玩法、里程碑與點數</summary><p>沒有終點，玩到失敗為止。三條跑道，老闆娘從下方追來，和你的距離縮到 0 就被抓住、這一局結束。點畫面左右兩側或左右滑動換道，點中間或往上滑跳過竹籃（跳起時拿不到東西）；撞到竹籃或被拖鞋打中會被拉近。撿水果加 5 分，但每顆都讓貓變重變慢（最多 5 顆）；吃魚能讓貓變輕。分數＝前進距離（每 50 單位 1 分）＋水果數 × 5。連續偷 10 顆水果不被打到進入 5 秒暴衝模式（不受重量影響、每顆水果 +10、老闆娘被拉開），金蘋果 +15 分並直接觸發；老闆娘偶爾暴怒連丟三隻瞄準你的拖鞋，全部閃過 +20 分。</p><p>BONUS：150分、400分、800分 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵採固定門檻；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，最佳紀錄、已解鎖造型與任務進度保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
+    <details class="rules"><summary>玩法、里程碑與點數</summary><p>沒有終點，玩到失敗為止。三條跑道，老闆娘從下方追來，和你的距離縮到 0 就被抓住、這一局結束。點畫面左右兩側或左右滑動換道，點中間或往上滑跳過竹籃（跳起時拿不到東西）；撞到竹籃或被拖鞋打中會被拉近。撿水果加 3 分，但每顆都讓貓稍微變重變慢（最多 5 顆）；吃魚能讓貓變輕，並衝刺 1.5 秒。前 25 秒老闆娘追得比較慢，每局第一次被打到只扣一半。分數＝前進距離（每 125 單位 1 分）＋水果數 × 3。連續偷 10 顆水果不被打到進入 5 秒暴衝模式（不受重量影響、每顆水果 +8、老闆娘被拉開），金蘋果 +15 分並直接觸發；老闆娘偶爾暴怒連丟三隻瞄準你的拖鞋，全部閃過 +20 分。</p><p>BONUS：150分、400分、800分 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵採固定門檻；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，最佳紀錄、已解鎖造型與任務進度保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
 </section>
 
   <section class="view" id="view-baby" hidden>
@@ -9823,19 +9827,19 @@ html.frontier-immersive{overflow:hidden}
   "切換遊戲或背景分頁會暫停，回來後按「繼續」。重新整理會放棄本局。最高分保存在這個瀏覽器中；點數與其他遊戲共用，沒有現金價值。": "Switching games or hiding the tab pauses play; press “Resume” when you return. Refreshing abandons the round. Your best score is saved in this browser; points are shared with the other games and have no cash value.",
   "俄羅斯方塊操作": "Block Drop controls",
   "150 · +5 點": "150 · +5 pts",
-  "開始偷水果": "Play · Start the heist",
-  "一偷就停不下來！換道、跳籃、抱水果，分數衝過里程碑就送 BONUS。": "One heist, zero brakes! Switch lanes, hop baskets, hoard fruit and bag BONUS at score milestones.",
-  "點畫面左右兩側或左右滑動（或": "Tap the left or right side, or swipe left or right (or",
-  "）換道；點中間或往上滑（或": ") to switch lanes; tap the center or swipe up (or",
-  "）跳過竹籃。拖鞋飛來前會先出現驚嘆號，換道閃開。水果加分但讓貓變重變慢；吃魚會把背上的水果送回給小貓、身體變輕。連續偷 10 顆水果不被打到會進入暴衝模式，金蘋果也能直接觸發。完成任務可解鎖新造型；按 M 開關音效。": ") to jump baskets. Slippers show an exclamation mark first; switch lanes to dodge. Fruit adds score but makes the cat heavier and slower; a fish delivers the fruit on your back to the kittens and lightens the load. Grab 10 fruits in a row without getting hit for Zoomies, or catch a golden apple to start them instantly. Complete missions to unlock new skins; press M to toggle sound.",
+  "開始偷水果": "Play · Heist time!",
+  "一偷就停不下來！換道、跳籃、抱水果，分數衝過里程碑就送 BONUS。": "Snatch it, dash it, do it again! Swerve lanes, leap baskets, hoard fruit and bag a BONUS at every milestone.",
+  "點畫面左右兩側或左右滑動（或": "Tap left or right, or swipe sideways (or",
+  "）換道；點中間或往上滑（或": ") to swerve lanes; tap the middle or swipe up (or",
+  "）跳過竹籃。拖鞋飛來前會先出現驚嘆號，換道閃開。水果加分但讓貓變重變慢；吃魚會把背上的水果送回給小貓、身體變輕。連續偷 10 顆水果不被打到會進入暴衝模式，金蘋果也能直接觸發。完成任務可解鎖新造型；按 M 開關音效。": ") to leap baskets. A red ! means a slipper is incoming: swerve out of the way! Fruit pumps your score but weighs your paws down; snag a fish to fly the loot home to the kittens and travel light. Chain 10 fruits without a scratch, or grab a golden apple, for ZOOMIES! Clear missions to unlock new looks; press M to mute.",
   "150 分 BONUS": "150 score BONUS",
   "400 分 BONUS": "400 score BONUS",
   "800 分 BONUS": "800 score BONUS",
-  "沒有終點，玩到失敗為止。三條跑道，老闆娘從下方追來，和你的距離縮到 0 就被抓住、這一局結束。點畫面左右兩側或左右滑動換道，點中間或往上滑跳過竹籃（跳起時拿不到東西）；撞到竹籃或被拖鞋打中會被拉近。撿水果加 5 分，但每顆都讓貓變重變慢（最多 5 顆）；吃魚能讓貓變輕。分數＝前進距離（每 50 單位 1 分）＋水果數 × 5。連續偷 10 顆水果不被打到進入 5 秒暴衝模式（不受重量影響、每顆水果 +10、老闆娘被拉開），金蘋果 +15 分並直接觸發；老闆娘偶爾暴怒連丟三隻瞄準你的拖鞋，全部閃過 +20 分。": "It lasts until failure. The shopkeeper chases from behind across three lanes; A gap of zero ends the round. Tap the edges or swipe left/right to switch lanes; tap the center or swipe up to jump baskets (items cannot be collected in midair). Baskets and slippers bring the pursuer closer. Fruit adds 5 score but makes the cat heavier and slower, up to five fruits; Fish lighten the load. Score = distance (1 per 50 units) + fruit count × 5. Grab 10 fruits in a row without getting hit for 5 seconds of Zoomies (no weight, +10 per fruit, the shopkeeper falls back); a golden apple gives +15 and starts them at once. Now and then the shopkeeper throws three aimed slippers in a row; dodge them all for +20.",
+  "沒有終點，玩到失敗為止。三條跑道，老闆娘從下方追來，和你的距離縮到 0 就被抓住、這一局結束。點畫面左右兩側或左右滑動換道，點中間或往上滑跳過竹籃（跳起時拿不到東西）；撞到竹籃或被拖鞋打中會被拉近。撿水果加 3 分，但每顆都讓貓稍微變重變慢（最多 5 顆）；吃魚能讓貓變輕，並衝刺 1.5 秒。前 25 秒老闆娘追得比較慢，每局第一次被打到只扣一半。分數＝前進距離（每 125 單位 1 分）＋水果數 × 3。連續偷 10 顆水果不被打到進入 5 秒暴衝模式（不受重量影響、每顆水果 +8、老闆娘被拉開），金蘋果 +15 分並直接觸發；老闆娘偶爾暴怒連丟三隻瞄準你的拖鞋，全部閃過 +20 分。": "It lasts until failure. The shopkeeper chases from behind across three lanes; A gap of zero ends the round. Tap the edges or swipe left/right to switch lanes; tap the center or swipe up to jump baskets (items cannot be collected in midair). Baskets and slippers bring the pursuer closer. Fruit adds 3 score but makes the cat a little heavier and slower, up to five fruits; a fish lightens the load and gives a 1.5-second dash. For the first 25 seconds the shopkeeper closes in at half speed, and the first hit of each round costs half. Score = distance (1 per 125 units) + fruit count × 3. Grab 10 fruits in a row without getting hit for 5 seconds of Zoomies (no weight, +8 per fruit, the shopkeeper falls back); a golden apple gives +15 and starts them at once. Now and then the shopkeeper throws three aimed slippers in a row; dodge them all for +20.",
   "BONUS：150分、400分、800分 各有一次固定獎勵，每次立即入帳 5 點，每個里程碑當局限一次，單局最多 15 點。獎勵採固定門檻；失敗或重新整理都不扣回已入帳獎勵，結束時不另外發點。分數與距離只用來比較。": "BONUS: Reach scores of 150, 400 and 800 to earn 5 points at each milestone, credited immediately. Each milestone can be earned once per round, up to 15 points total. Rewards are awarded at fixed milestones. Failure or refreshing does not remove credited rewards; no extra points are paid at the end. Score and distance are for comparison only.",
   "切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，最佳紀錄、已解鎖造型與任務進度保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。": "Switching games or hiding the tab pauses play; return to continue. Refreshing abandons the round. Your best record, unlocked skins and mission progress are saved in this browser. Points are shared and have no cash value.",
-  "偷水果的貓：左右滑動或點兩側換道，往上滑或點中間跳過竹籃，偷水果並躲開老闆娘的拖鞋": "Fruit Thief Cat: swipe or tap the sides to switch lanes, swipe up or tap the center to hop baskets, steal fruit and dodge the shopkeeper’s slippers",
-  "偷水果的貓操作": "Fruit Thief Cat controls",
+  "偷水果的貓：左右滑動或點兩側換道，往上滑或點中間跳過竹籃，偷水果並躲開老闆娘的拖鞋": "Fruit Thief Cat: swipe or tap the sides to swerve lanes, swipe up or tap the middle to leap baskets, snatch fruit and dodge the shopkeeper’s flying slippers",
+  "偷水果的貓操作": "Fruit Thief Cat · controls",
   "下一層": "Next floor",
   "從最底層開始，每層選一條水道。選到氣泡就往上一層，選到海膽就結束。": "Start at the bottom and choose a channel on each floor. A bubble advances you; an urchin ends the round.",
   "共 8 層，從最底下那層開始，每層選一格。選到氣泡就上浮一層、倍率往上；選到海膽就失去這一注。每上浮一層之後都可以按「領回」拿走「下注 × 目前倍率」，浮到最頂層會自動領回。": "Climb eight floors from the bottom, choosing one cell per floor. Bubbles advance you and increase the multiplier; an urchin loses the bet. After each safe floor you can collect bet × current multiplier. Reaching the top collects automatically.",
@@ -11371,92 +11375,92 @@ html.frontier-immersive{overflow:hidden}
   "老闆忙著工作": "The boss is busy",
   "可能直接回頭": "May turn without warning",
   "回頭前會先警示": "Warns before turning",
-  "偷了就跑，跑了再偷！": "Grab it, dash, repeat!",
-  "抱越多分越高但越重，吃魚就把水果送回家！": "More loot, heavier paws. Grab a fish to deliver it home!",
-  "人贓俱獲！": "Caught red-pawed!",
-  "臭貓，把水果放下！": "Drop that apple, furball!",
-  "我的水果啊！別跑！": "Come back with my fruit!",
-  "看我的拖鞋！": "Slipper incoming!",
-  "蒙面大盜": "Masked Bandit",
+  "偷了就跑，跑了再偷！": "Snatch it. Dash it. Repeat!",
+  "抱越多分越高但越重，吃魚就把水果送回家！": "More loot, heavier paws! Snag a fish to send it home!",
+  "人贓俱獲！": "BUSTED! Caught red-pawed!",
+  "臭貓，把水果放下！": "Drop my apples, you furball!",
+  "我的水果啊！別跑！": "Get back here, fruit bandit!",
+  "看我的拖鞋！": "INCOMING SLIPPER!",
+  "紅巾大盜": "Bandana Bandit",
   "白糰子": "Snowball",
   "忍者喵": "Ninja Meow",
   "市場貓王": "Market Cat King",
-  "本局 BONUS 全收，太神了！": "Every BONUS bagged this run!",
-  "快逃！滑動換道、跳躍": "On the run! Swipe and hop",
-  "再偷一次": "Play · One more heist",
-  "這局沒拿到 BONUS，再接再厲！": "No BONUS this time. Paws up, go again!",
-  "衝啊！滑動或點擊來換道、跳躍。": "Paws to the pavement! Swipe or tap to switch lanes and hop.",
-  "按開始，水果不會自己跑來！": "Tap Start! Fruit won’t steal itself!",
-  "新紀錄，喵！": "New purr-sonal best!",
-  "解鎖：": "Unlocked: ",
-  "BONUS 入袋 +": "BONUS bagged +",
-  "這局沒有 BONUS": "No BONUS this run",
-  "點畫面或按空白鍵，再偷一次！": "Tap or press Space for one more heist!",
-  "這局收工了。按「再偷一次」重新開跑。": "This heist is over. Select Play · One more heist to run again.",
-  "戰利品：{n} 顆水果": "Fruit loot: {n}",
-  "喵喵任務 Lv {lv} · 解鎖造型": "Cat-tastic missions Lv {lv} · unlock skins",
-  "全部任務達成，你就是市場傳奇！": "All missions done. Market legend status!",
-  "差一根鬍鬚！": "Whisker-close!",
+  "本局 BONUS 全收，太神了！": "Clean sweep! Every BONUS bagged!",
+  "快逃！滑動換道、跳躍": "RUN! Swipe to swerve, hop to fly",
+  "再偷一次": "Play · Again! Again!",
+  "這局沒拿到 BONUS，再接再厲！": "No BONUS this time… paws up, go again!",
+  "衝啊！滑動或點擊來換道、跳躍。": "Paws to the pavement! Swipe or tap to swerve and leap.",
+  "按開始，水果不會自己跑來！": "Tap Play! That fruit won’t steal itself!",
+  "新紀錄，喵！": "NEW PURR-SONAL BEST!",
+  "解鎖：": "Unlocked! ",
+  "BONUS 入袋 +": "BONUS bagged! +",
+  "這局沒有 BONUS": "BONUS got away this time",
+  "點畫面或按空白鍵，再偷一次！": "Tap or hit Space for another heist!",
+  "這局收工了。按「再偷一次」重新開跑。": "Heist over! Hit Play · Again! Again! to run it back.",
+  "戰利品：{n} 顆水果": "Loot stash: {n} fruits",
+  "喵喵任務 Lv {lv} · 解鎖造型": "Cat-tastic Missions · Lv {lv} · win new looks",
+  "全部任務達成，你就是市場傳奇！": "Every mission cleared. You’re a Market Legend!",
+  "差一根鬍鬚！": "By a whisker!",
   "任務達成，喵！": "Mission a-cat-plished!",
-  "新造型：{name}": "New look: {name}",
-  "解鎖條件：{m}": "Unlock it: {m}",
-  "解鎖條件：最佳紀錄 {n} 分": "Unlock it: best score {n}",
-  "啃掉 {n} 顆蘋果": "Crunch {n} apples",
-  "吞下 {n} 條魚": "Gulp down {n} fish",
-  "閃過 {n} 隻瞄準你的拖鞋": "Duck {n} slippers aimed at you",
-  "跳過 {n} 個竹籃": "Hop over {n} baskets",
-  "一次抱著 {n} 顆水果": "Stack {n} fruits at once",
-  "連續 {n} 秒毫髮無傷": "Stay untouched for {n}s",
+  "新造型：{name}": "New look unlocked: {name}!",
+  "解鎖條件：{m}": "To unlock: {m}",
+  "解鎖條件：最佳紀錄 {n} 分": "To unlock: score {n} in one heist",
+  "啃掉 {n} 顆蘋果": "Chomp {n} apples",
+  "吞下 {n} 條魚": "Gobble {n} fish",
+  "閃過 {n} 隻瞄準你的拖鞋": "Dodge {n} slippers aimed at you",
+  "跳過 {n} 個竹籃": "Leap {n} baskets",
+  "一次抱著 {n} 顆水果": "Tower {n} fruits on your back",
+  "連續 {n} 秒毫髮無傷": "Stay spotless for {n}s",
   "蘋果大盜": "Apple Bandit",
   "愛魚喵": "Fish Fancier",
   "閃避大師": "Dodge Master",
   "跳籃高手": "Basket Case",
   "水果疊疊樂": "Fruit Tower",
   "隱形喵": "Untouchable",
-  "收集 {n} 顆橘子": "Squeeze in {n} oranges",
-  "一局閃過 {n} 隻瞄準拖鞋": "Duck {n} aimed slippers in one run",
-  "一局吞下 {n} 條魚": "Gulp {n} fish in one run",
-  "一局拿到 {n} 分": "Score {n} in one run",
-  "一局偷到 {n} 顆水果": "Swipe {n} fruits in one run",
-  "收集 {n} 顆綠色水果": "Collect {n} green fruits",
-  "一局跳過 {n} 個竹籃": "Hop {n} baskets in one run",
-  "升級！喵喵任務 Lv {lv}": "Level up! Missions Lv {lv}",
-  "★ Lv {lv} 進度 {d}/{all}": "★ Lv {lv}: {d}/{all} done",
+  "收集 {n} 顆橘子": "Snag {n} oranges",
+  "一局閃過 {n} 隻瞄準拖鞋": "Dodge {n} aimed slippers in one heist",
+  "一局吞下 {n} 條魚": "Gobble {n} fish in one heist",
+  "一局拿到 {n} 分": "Score {n} in one heist",
+  "一局偷到 {n} 顆水果": "Swipe {n} fruits in one heist",
+  "收集 {n} 顆綠色水果": "Snag {n} green apples",
+  "一局跳過 {n} 個竹籃": "Leap {n} baskets in one heist",
+  "升級！喵喵任務 Lv {lv}": "LEVEL UP! Missions Lv {lv}",
+  "★ Lv {lv} 進度 {d}/{all}": "★ Lv {lv}: {d}/{all} cleared",
   "金爪喵": "Golden Paws",
   "市場傳奇": "Market Legend",
-  "解鎖條件：完成 Lv {lv} 全部任務": "Unlock it: finish every Lv {lv} mission",
-  "最高 {n}": "Best {n}",
-  "{m} 分里程碑！": "Milestone {m}!",
-  "衝過 {m} 分！BONUS +{b} 點入袋，本局共 +{t} 點。": "{m} smashed! BONUS +{b} pts bagged, {t} pts this run.",
-  "人贓俱獲！本局 {s} 分。": "Caught red-pawed! This run: {s}.",
-  "BONUS 共 {t} 點已入帳。": "{t} BONUS pts credited.",
-  "身輕如燕！": "Light paws!",
+  "解鎖條件：完成 Lv {lv} 全部任務": "To unlock: clear every Lv {lv} mission",
+  "最高 {n}": "Top {n}",
+  "{m} 分里程碑！": "{m} smashed!",
+  "衝過 {m} 分！BONUS +{b} 點入袋，本局共 +{t} 點。": "{m} smashed! BONUS +{b} pts bagged, {t} pts this heist.",
+  "人贓俱獲！本局 {s} 分。": "Busted! This heist: {s}.",
+  "BONUS 共 {t} 點已入帳。": "{t} BONUS pts in the bag.",
+  "身輕如燕！": "Light as a feather!",
   "第 1 章 · 春日市集": "Chapter 1 · Spring Market",
   "第 2 章 · 盛夏追逐": "Chapter 2 · Summer Sizzle",
   "第 3 章 · 秋葉狂奔": "Chapter 3 · Autumn Rush",
-  "新場景解鎖！": "New scene unlocked!",
+  "新場景解鎖！": "New stage unlocked!",
   "五隻小貓餓著肚子……": "Five hungry kittens…",
   "……一位勇敢的大哥哥……": "…one brave big brother…",
   "……還有一位超火大的老闆娘！": "…and one VERY angry shopkeeper!",
-  "小貓們還想再吃！": "The kittens want seconds!",
-  "老闆娘絕不放棄。": "The shopkeeper never gives up.",
+  "小貓們還想再吃！": "The kittens want SECONDS!",
+  "老闆娘絕不放棄。": "The shopkeeper NEVER gives up.",
   "夏日豔陽下，追得更熱了！": "The chase heats up under the summer sun!",
-  "秋葉紛飛，水果正香！": "Autumn leaves, autumn loot!",
+  "秋葉紛飛，水果正香！": "Crunchy leaves, crunchier loot!",
   "可是……後門那條魚是誰留的？": "But who keeps leaving fish by the back door?",
   "故事未完，待續……": "To be continued…",
-  "點一下，故事繼續": "Tap to continue",
-  "新章節解鎖！點左上角的書本閱讀": "New chapter unlocked! Tap the book to read",
-  "只差 {n} 分就破紀錄！": "Just {n} more to beat your best!",
-  "{m}：只差 {k}！": "{m}: only {k} to go!",
+  "點一下，故事繼續": "Tap to keep going",
+  "新章節解鎖！點左上角的書本閱讀": "New chapter unlocked! Tap the book!",
+  "只差 {n} 分就破紀錄！": "Only {n} more to beat your best!",
+  "{m}：只差 {k}！": "{m}: just {k} to go!",
   "再 {n} 分就到{z}！": "{n} more to reach {z}!",
   "夏日市集": "Summer Market",
   "秋日市集": "Autumn Market",
-  "暴衝模式！": "ZOOMIES!",
-  "水果分數加倍，身體輕飄飄！": "Double fruit points, featherlight paws!",
-  "老闆娘暴怒！": "Shopkeeper’s fury!",
-  "三連閃成功！+{n}": "Fury dodged! +{n}",
-  "送回去給小貓了！": "Delivered to the kittens!",
-  "三隻拖鞋瞄準你，快換道！": "Three slippers incoming. Keep switching lanes!",
+  "暴衝模式！": "ZOOMIES!!",
+  "水果額外加分，身體輕飄飄！": "Bonus fruit points, feather paws!",
+  "老闆娘暴怒！": "SHOPKEEPER RAGE!",
+  "三連閃成功！+{n}": "Rage dodged! +{n}",
+  "送回去給小貓了！": "Special delivery for the kittens!",
+  "三隻拖鞋瞄準你，快換道！": "Triple slipper storm! Keep swerving!",
   "第一次作案": "First Heist",
   "蘋果成癮": "Apple Addict",
   "橘子狂熱": "Orange Crush",
@@ -11477,19 +11481,19 @@ html.frontier-immersive{overflow:hidden}
   "熟客": "Regular Customer",
   "每日一偷": "Daily Bread",
   "全勤喵": "Every-Day Hero",
-  "玩第一局": "Play your first run",
+  "玩第一局": "Pull off your first heist",
   "用一條魚送回 5 顆水果": "Deliver 5 fruits with one fish",
   "送 {n} 顆水果給小貓": "Deliver {n} fruits to the kittens",
   "抵達{z}": "Reach {z}",
-  "觸發一次暴衝模式": "Trigger Zoomies once",
-  "觸發 {n} 次暴衝模式": "Trigger Zoomies {n} times",
-  "撿到一顆金蘋果": "Catch a golden apple",
-  "撿到 {n} 顆金蘋果": "Catch {n} golden apples",
-  "閃過一整輪暴怒拖鞋": "Dodge a whole fury volley",
-  "被抓 {n} 次": "Get caught {n} times",
-  "完成一次每日挑戰": "Clear one Daily Heist",
-  "連續 {n} 天完成每日挑戰": "Clear the Daily Heist {n} days in a row",
-  "新貼紙！": "New sticker!",
+  "觸發一次暴衝模式": "Go ZOOMIES once",
+  "觸發 {n} 次暴衝模式": "Go ZOOMIES {n} times",
+  "撿到一顆金蘋果": "Grab a golden apple",
+  "撿到 {n} 顆金蘋果": "Grab {n} golden apples",
+  "閃過一整輪暴怒拖鞋": "Survive a full slipper storm",
+  "被抓 {n} 次": "Get busted {n} times",
+  "完成一次每日挑戰": "Win one Daily Heist",
+  "連續 {n} 天完成每日挑戰": "Win the Daily Heist {n} days in a row",
+  "新貼紙！": "NEW STICKER!",
   "貼紙簿 {a}/{b}": "Sticker Album {a}/{b}",
   "點貼紙看看怎麼收集": "Tap a sticker to see how to earn it",
   "點空白處關閉": "Tap outside to close",
@@ -11497,18 +11501,18 @@ html.frontier-immersive{overflow:hidden}
   "已送回水果：{d} / {n}": "Fruit delivered: {d} / {n}",
   "已送回水果：{d}，小貓們吃得飽飽！": "Fruit delivered: {d}. The kittens are stuffed!",
   "下一個佈置：{i}": "Next upgrade: {i}",
-  "吃魚把背上的水果送回來，小貓窩就會升級。點小貓摸摸頭！": "Deliver fruit with fish to upgrade the hideout. Tap a kitten for a pat!",
+  "吃魚把背上的水果送回來，小貓窩就會升級。點小貓摸摸頭！": "Send fruit home with fish to upgrade the hideout. Tap a kitten for a pat!",
   "歡迎回家": "Home sweet home",
   "軟軟的毯子": "A cosy blanket",
   "小魚缸": "A little fish bowl",
   "紙燈籠": "Paper lanterns",
   "圓圓的坐墊": "Round cushions",
   "歡迎回家招牌": "A welcome sign",
-  "每日挑戰！今天的目標：{n} 分": "Daily Heist! Today’s goal: {n}",
-  "每日挑戰 · 目標 {n} · 今日最佳 {b}": "Daily Heist · goal {n} · best today {b}",
-  "今日挑戰完成！連續 {s} 天": "Daily Heist cleared! Streak: {s} days",
-  "每日挑戰完成！": "Daily Heist cleared!",
-  "連續 {s} 天，明天再來！": "{s}-day streak. See you tomorrow!",
+  "每日挑戰！今天的目標：{n} 分": "Daily Heist! Today’s target: {n}",
+  "每日挑戰 · 目標 {n} · 今日最佳 {b}": "Daily Heist · target {n} · today’s best {b}",
+  "今日挑戰完成！連續 {s} 天": "Daily Heist won! Streak: {s} days",
+  "每日挑戰完成！": "Daily Heist won!",
+  "連續 {s} 天，明天再來！": "{s}-day streak! Same time tomorrow?",
   "終章 · 回家": "Epilogue · Home Sweet Home",
   "原來每晚留魚的，就是老闆娘！": "It was the shopkeeper all along!",
   "她每天晚上都偷偷餵小貓。": "She’d been feeding the kittens every night.",
@@ -11518,16 +11522,16 @@ html.frontier-immersive{overflow:hidden}
   "冬夜燈火": "Winter Lights",
   "春櫻盛開": "Spring Blossoms",
   "夏夜螢火": "Summer Nights",
-  "{e}活動：玩 {r}/{n} 局解鎖「{s}」": "{e}: play {r}/{n} runs to unlock {s}",
+  "{e}活動：玩 {r}/{n} 局解鎖「{s}」": "{e}: play {r}/{n} heists to unlock {s}",
   "{e}活動：已解鎖「{s}」！": "{e}: {s} unlocked!",
   "楓葉帽": "Leaf Cap",
   "雪球毛帽": "Snow Beanie",
   "櫻花喵": "Blossom",
   "草帽喵": "Straw Hat",
   "好朋友": "Best Friends",
-  "解鎖條件：在{e}活動期間玩 {n} 局": "Unlock it: play {n} runs during {e}",
-  "解鎖條件：讀到終章（送回 300 顆水果）": "Unlock it: reach the Epilogue (deliver 300 fruits)",
-  "活動造型到手！": "Event skin unlocked!",
+  "解鎖條件：在{e}活動期間玩 {n} 局": "To unlock: play {n} heists during {e}",
+  "解鎖條件：讀到終章（送回 300 顆水果）": "To unlock: reach the Epilogue (deliver 300 fruits)",
+  "活動造型到手！": "Event look unlocked!",
   "小貓們一天比一天圓滾滾。": "The kittens grow rounder by the day.",
   "下雪也擋不住肚子餓的小貓。": "Snow can’t stop a hungry kitten.",
   "有人跟著雪地上的貓腳印……": "Someone is following the paw prints…",
@@ -27591,7 +27595,7 @@ function loop(ts){const dt=Math.min(.05,Math.max(0,(ts-last)/1000)||0);last=ts;
 G.reset();ui();G.draw();overlay();requestAnimationFrame(loop);
   })();
 const thiefRules = (() => {
-  const rulesVersion=3;
+  const rulesVersion=4;
   // Older versions are kept so leaderboard rounds started on an older client still replay identically.
   const TUNING={
     1:{v0:280,vMax:420,vRamp:.02,drain:4,drainFruit:5,drainDist:.002,drainCap:Infinity,basket:50,slipper:80,bEarly:.45,bMid:.75,bLate:.75,bMidAt:400,bLateAt:400,slipMin:1.8,slipA:3,slipB:5.5,slipRamp:.0005},
@@ -27599,6 +27603,10 @@ const thiefRules = (() => {
   };
   // Version 3 = version 2 plus Zoomies (a fruit streak), golden fruit and the shopkeeper's fury volleys.
   TUNING[3]={...TUNING[2],v3:true,streak:10,zoomTime:5,zoomFruit:5,zoomPush:2,goldFirst:6000,goldGapA:16000,goldGapB:22000,goldScore:15,goldPush:10,rageFirst:9000,rageGapA:9000,rageGapB:13000,rageLead:1,rageGap:.75,rageWarn:.7,rageBonus:20};
+  // Version 4 (2026-11-26) = version 3 tuned for pace: a faster start that reaches top speed in about 20 s, each carried fruit
+  // slows the cat by 3% instead of 7%, a fish gives a 1.5 s dash, the shopkeeper closes in at half speed for the first 20 s,
+  // the first hit of a run costs half, and rows sometimes come as basket walls or a zigzag of walls (one lane always open).
+  TUNING[4]={...TUNING[3],v4:true,v0:300,vMax:460,vRamp:.016,weight:.03,dashTime:1.5,dashMul:1.15,graceTime:25,graceMul:.5,firstHit:.5,basket:25,slipper:38,drainCap:3,wallFrom:2500,wallP:.18,zigFrom:5000,zigP:.1,zigRows:3,distDiv:125,fruitPts:3};
   function create(random=Math.random,version=rulesVersion) {
     const K=TUNING[version]||TUNING[1];
     const G={}, W=400,H=560,reduceMotion=false;
@@ -27606,15 +27614,28 @@ const thiefRules = (() => {
     const T=()=>()=>'',die=reason=>{dead=reason};
     let dead=false,shake=0;
 const LX=[105,200,295],CYT=430,fc=['#e63946','#ff9f1c','#7bd88f'];
-let dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx,stats,streak,zoom,extra,goldAt,rageAt,rage;
-G.reset=()=>{dist=0;v=K.v0;L=0;fruits=0;gb=130;lane=1;cx=200;jt=0;stun=0;rows=[];slips=[];warn=[];nextRow=120;nextSlip=2.5;fx=[];streak=0;zoom=0;extra=0;goldAt=K.goldFirst||Infinity;rageAt=K.rageFirst||Infinity;rage=null;
+let dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx,stats,streak,zoom,extra,goldAt,rageAt,rage,clock,dash,hits,lastFree,zig;
+G.reset=()=>{dist=0;v=K.v0;L=0;fruits=0;gb=130;lane=1;cx=200;jt=0;stun=0;rows=[];slips=[];warn=[];nextRow=120;nextSlip=2.5;fx=[];streak=0;zoom=0;extra=0;goldAt=K.goldFirst||Infinity;rageAt=K.rageFirst||Infinity;rage=null;clock=0;dash=0;hits=0;lastFree=1;zig=0;
 // Mission counters only: nothing below reads them, so replays and scores are unchanged.
 stats={apples:0,oranges:0,greens:0,fish:0,jumps:0,dodges:0,maxCarry:0,clean:0,bestClean:0,zooms:0,golds:0,rages:0}};
-G.score=()=>Math.floor(dist/50)+fruits*5+extra;
+// Version 4 runs faster and rounds last longer, so distance and fruit count for less to keep BONUS points per minute close to version 3.
+G.score=()=>Math.floor(dist/(K.distDiv||50))+fruits*(K.fruitPts||5)+extra;
 G.extra=()=>T('fr')(fruits);
 G.down=p=>{if(p.x<133)lane=Math.max(0,lane-1);else if(p.x>267)lane=Math.min(2,lane+1);else if(jt<=0)jt=.55};
-function hurt(n){stats.clean=0;streak=0;if(rage)rage.hit=1;gb-=n;stun=.8;shake=reduceMotion?0:.25;L=Math.max(0,L-2);fx.push({s:'-'+n,x:cx,y:CYT-40,t:0})}
+function hurt(n){if(K.v4&&!hits++)n=Math.round(n*K.firstHit);stats.clean=0;streak=0;if(rage)rage.hit=1;gb-=n;stun=.8;shake=reduceMotion?0:.25;L=Math.max(0,L-2);fx.push({s:'-'+n,x:cx,y:CYT-40,t:0})}
+// Version 4 picks its own free lane and may force walls; versions 1-3 never reach that branch, so their random draws are unchanged.
+function spawnRow4(){
+let free,wall=false;
+if(zig>0){free=lastFree===0?1:lastFree===2?1:(random()<.5?0:2);zig--;wall=true}
+else{free=(random()*3)|0;if(dist>=K.zigFrom&&random()<K.zigP){zig=K.zigRows-1;wall=true}else if(dist>=K.wallFrom&&random()<K.wallP)wall=true}
+lastFree=free;
+const gold=dist>=goldAt;if(gold)goldAt=dist+rnd(K.goldGapA,K.goldGapB);
+for(let l=0;l<3;l++){
+if(l===free&&gold)rows.push({t:'g',l,y:-30});
+else if(l===free){const r=random();if(r<.65)rows.push({t:'f',l,y:-30,c:(random()*3)|0});else if(L>=3||r<.75)rows.push({t:'x',l,y:-30})}
+else if(wall||random()<(dist>K.bLateAt?K.bLate:dist>K.bMidAt?K.bMid:K.bEarly))rows.push({t:'b',l,y:-30,c:(random()*3)|0})}}
 function spawnRow(){
+if(K.v4)return spawnRow4();
 const free=(random()*3)|0;
 // The golden fruit replaces the free lane's item, so versions 1 and 2 draw exactly the same random numbers as before.
 const gold=K.v3&&dist>=goldAt;if(gold)goldAt=dist+rnd(K.goldGapA,K.goldGapB);
@@ -27623,10 +27644,11 @@ if(l===free&&gold)rows.push({t:'g',l,y:-30});
 else if(l===free){const r=random();if(r<.65)rows.push({t:'f',l,y:-30,c:(random()*3)|0});else if(L>=3||r<.75)rows.push({t:'x',l,y:-30})}
 else if(random()<(dist>K.bLateAt?K.bLate:dist>K.bMidAt?K.bMid:K.bEarly))rows.push({t:'b',l,y:-30,c:(random()*3)|0})}}
 G.update=dt=>{
-v=Math.min(K.vMax,K.v0+dist*K.vRamp)*(zoom>0?1.08:1-.07*L);dist+=v*dt;
+clock+=dt;if(dash>0)dash-=dt;
+v=Math.min(K.vMax,K.v0+dist*K.vRamp)*(zoom>0?1.08:1-(K.weight||.07)*L)*(dash>0?K.dashMul:1);dist+=v*dt;
 // Zoomies: no weight, slightly faster, and the gap to the shopkeeper grows instead of shrinking.
 if(zoom>0){zoom-=dt;gb=Math.min(170,gb+K.zoomPush*dt)}
-else gb=Math.min(170,gb-(K.drain+L*K.drainFruit+Math.min(K.drainCap,dist*K.drainDist))*dt);
+else gb=Math.min(170,gb-(K.drain+L*K.drainFruit+Math.min(K.drainCap,dist*K.drainDist))*dt*(K.v4&&clock<K.graceTime?K.graceMul:1));
 cx+=(LX[lane]-cx)*Math.min(1,dt*14);
 if(jt>0)jt-=dt;if(stun>0)stun-=dt;
 stats.clean+=dt;if(stats.clean>stats.bestClean)stats.bestClean=stats.clean;
@@ -27649,7 +27671,7 @@ else if(!r.g&&!air&&near){r.g=1;
  if(r.t==='f'){if(L<5||zoom>0){if(L<5)L++;fruits++;stats[['apples','oranges','greens'][r.c%3]]++;if(L>stats.maxCarry)stats.maxCarry=L;
    if(K.v3){if(zoom>0)extra+=K.zoomFruit;else if(++streak>=K.streak){streak=0;zoom=K.zoomTime;stats.zooms++}}}}
  else if(r.t==='g'){extra+=K.goldScore;gb=Math.min(170,gb+K.goldPush);streak=0;zoom=K.zoomTime;stats.golds++}
- else{L=0;gb+=30;stats.fish++}}}
+ else{L=0;gb+=30;stats.fish++;if(K.v4)dash=K.dashTime}}}
 rows=rows.filter(r=>r.y<H+40&&!r.g);
 fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
 if(gb<=0)die('caught')};
@@ -27663,7 +27685,7 @@ if(gb<=0)die('caught')};
       G.down({x:points[code][0],y:points[code][1],id:1});
       return true;
     },advance:dt=>G.update(dt),score:()=>G.score(),
-      get dead(){return dead},snapshot:()=>({dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx,shake,stats:{...stats},streak,zoom,extra,rage:rage?{left:rage.left,hit:rage.hit}:null})};
+      get dead(){return dead},snapshot:()=>({dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx,shake,stats:{...stats},streak,zoom,extra,dash,rage:rage?{left:rage.left,hit:rage.hit}:null})};
   }
   return {create,rulesVersion,inputCount:5,input:(state,code)=>state.input(code),advance:(state,dt)=>state.advance(dt),score:state=>state.score()};
 })();
@@ -27684,18 +27706,34 @@ const F=(x,y,r,f)=>{g.fillStyle=f;g.beginPath();g.arc(x,y,r,0,7);g.fill()};
 const RR=(x,y,w,h,r,f,lw)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();O(f,lw)};
 const P=(a,f,w)=>{g.beginPath();a.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();O(f,w)};
 const L2=(x1,y1,x2,y2,w,col)=>{g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.strokeStyle=col||OL;g.lineWidth=w||3;g.lineCap='round';g.stroke()};
-// Game type: Fredoka everywhere (bold for headlines, semibold for text): rounded and playful but clean to read.
+// Game type: Grandstander for all English text (2026-11-26: the user wanted round, bouncy bubble lettering like the cover's sign):
+// weight 900 for headlines, 800 for text. Fredoka is only the fallback while it loads.
 // Chinese falls back to heavy Noto Sans TC. The page's Google Fonts link loads them; ask up front so canvas text never swaps mid-round.
-const FB='Fredoka,Nunito,ui-rounded,"Arial Rounded MT Bold",system-ui,sans-serif',FH=FB,FC='"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';
+const FB='Grandstander,Fredoka,ui-rounded,"Arial Rounded MT Bold",system-ui,sans-serif',FH=FB,FC='"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';
 const FNT=FB;
-try{document.fonts&&['700 20px Fredoka','600 20px Fredoka','900 20px "Noto Sans TC"'].forEach(f=>document.fonts.load(f))}catch(e){}
+try{document.fonts&&['900 20px Grandstander','800 20px Grandstander','900 20px "Noto Sans TC"'].forEach(f=>document.fonts.load(f))}catch(e){}
 const CJK=/[\u3400-\u9fff\uff00-\uffef]/;
 // Sets the canvas font for this exact string (after translation) and returns the string to draw.
-function font(s,sz,head){s=localText(String(s));const cjk=CJK.test(s);g.font=head?(cjk?'900 '+Math.round(sz*.92)+'px '+FC:'700 '+Math.round(sz)+'px '+FH):(cjk?'700 '+Math.round(sz*.92)+'px '+FC:'600 '+Math.round(sz)+'px '+FB);return s}
+function font(s,sz,head){s=localText(String(s));const cjk=CJK.test(s);g.font=head?(cjk?'900 '+Math.round(sz*.92)+'px '+FC:'900 '+Math.round(sz)+'px '+FH):(cjk?'700 '+Math.round(sz*.92)+'px '+FC:'800 '+Math.round(sz)+'px '+FB);return s}
 const eob=t=>{t=cl(t,0,1);const k=1.70158;return 1+(k+1)*Math.pow(t-1,3)+k*Math.pow(t-1,2)};
 function tx(s,x,y,sz,col,al){sz*=.9;s=font(s,sz,1);g.textAlign=al||'center';g.lineJoin='round';g.strokeStyle='#fffaf0';g.lineWidth=sz/3;g.strokeText(s,x,y,W-30);g.strokeStyle=OL;g.lineWidth=sz/7;g.strokeText(s,x,y,W-30);g.fillStyle=col;g.fillText(s,x,y,W-30)}
 // Pop-in: overshoots slightly, then settles. age is seconds since the text appeared.
 function ptx(s,x,y,sz,col,age,rot){const k=eob(age/.3);g.save();g.translate(x,y);if(rot)g.rotate(rot);g.scale(k,k);tx(s,0,0,sz,col);g.restore()}
+// Per-letter text: place(i,n) gives each letter an offset, scale and tilt. Lines wider than the canvas are scaled to fit.
+// With reduced motion every letter sits still. Outlines are drawn for all letters before any fill.
+function lettersTx(s,x,y,sz,col,place){
+ sz*=.9;s=font(s,sz,1);const ch=Array.from(s),tw=g.measureText(s).width,fit=Math.min(1,(W-36)/Math.max(1,tw));
+ let pre='';const at=ch.map((q,i)=>{const l=g.measureText(pre).width,w=g.measureText(q).width,o=RM()?{dx:0,dy:0,k:1,r:0}:place(i,ch.length);pre+=q;return{q,cx:-tw/2+l+w/2,...o}});
+ g.save();g.translate(x,y);g.scale(fit,fit);g.textAlign='center';g.lineJoin='round';
+ const each=f=>at.forEach(o=>{if(o.k<=.01)return;g.save();g.translate(o.cx+o.dx,o.dy);g.rotate(o.r);g.scale(o.k,o.k);f(o.q);g.restore()});
+ g.strokeStyle='#fffaf0';g.lineWidth=sz/3;each(q=>g.strokeText(q,0,0));g.strokeStyle=OL;g.lineWidth=sz/7;each(q=>g.strokeText(q,0,0));g.fillStyle=col;each(q=>g.fillText(q,0,0));
+ g.restore()}
+// Pop: letters spring up one after another with a little tilt, then float.
+function popTx(s,x,y,sz,col,age){lettersTx(s,x,y,sz,col,(i)=>{const t=age-i*.035,k=t<=0?0:eob(Math.min(1,t/.24));return{dx:0,dy:(1-k)*12-Math.max(0,Math.sin(age*7-i*.6))*1.5,k,r:(i%2?1:-1)*.22*(1-k)}})}
+// Slam: letters drop in from above one by one, land with a bounce, then keep a gentle wave going.
+function slamTx(s,x,y,sz,col,age){lettersTx(s,x,y,sz,col,(i)=>{const t=age-i*.045,k=t<=0?0:Math.min(1,t/.32),e=k<1?eob(k):1;return{dx:0,dy:-(1-e)*46-(k>=1?Math.max(0,Math.sin(tt*5-i*.5))*2.5:0),k:t<=0?0:.6+.4*e,r:(1-e)*(i%2?.35:-.35)}})}
+// Shake: every letter jitters on its own, for shouting.
+function shakeTx(s,x,y,sz,col){lettersTx(s,x,y,sz,col,(i)=>({dx:Math.sin(tt*41+i*2.3)*1.3,dy:Math.cos(tt*37+i*1.7)*1.6,k:1+.06*Math.sin(tt*18+i),r:Math.sin(tt*23+i*3.1)*.09}))}
 // Letters bob one after another; falls back to plain text when the line is too wide.
 function waveTx(s,x,y,sz,col){
  sz*=.9;s=font(s,sz,1);const ch=Array.from(s),tw=g.measureText(s).width;
@@ -27729,12 +27767,12 @@ g.restore()}
 G.I={bs:'最高 {n}',title:"偷水果的貓",tag:"偷了就跑，跑了再偷！",tip:"抱越多分越高但越重，吃魚就把水果送回家！",caught:"人贓俱獲！",fr:n=>localText('戰利品：{n} 顆水果').replace('{n}',n),
  mt:'喵喵任務 Lv {lv} · 解鎖造型',alldone:'全部任務達成，你就是市場傳奇！',close:'差一根鬍鬚！',mdone:'任務達成，喵！',newskin:'新造型：{name}',lockM:'解鎖條件：{m}',lockS:'解鎖條件：最佳紀錄 {n} 分',lockL:'解鎖條件：完成 Lv {lv} 全部任務',
  space:'空白鍵',lvup:'升級！喵喵任務 Lv {lv}',lvprog:'★ Lv {lv} 進度 {d}/{all}',mile:'{m} 分里程碑！',bonusSay:'衝過 {m} 分！BONUS +{b} 點入袋，本局共 +{t} 點。',caughtSay:'人贓俱獲！本局 {s} 分。',bonusTot:'BONUS 共 {t} 點已入帳。',light:'身輕如燕！',chap:['第 1 章 · 春日市集','第 2 章 · 盛夏追逐','第 3 章 · 秋葉狂奔','第 4 章 · 雪地足跡','終章 · 回家'],zWinter:'冬日市集',zNames:['','夏日市集','秋日市集','冬日市集'],epiNew:'新章節：終章！',evLine:'{e}活動：玩 {r}/{n} 局解鎖「{s}」',evDoneLine:'{e}活動：已解鎖「{s}」！',lockE:'解鎖條件：在{e}活動期間玩 {n} 局',lockEpi:'解鎖條件：讀到終章（送回 300 顆水果）',evWin:'活動造型到手！',newFeat:'新功能解鎖！',lbl:{story:'故事書',album:'貼紙收藏',home:'小貓家',daily:'今日挑戰',settings:'遊戲設定'},paused:'暫停中',resume:'繼續逃跑',optMusic:'背景音樂',optSfx:'遊戲音效',optMotion:'震動與閃光',settings:'遊戲設定',done:'完成設定',chapSub:'新場景解鎖！',
- hookStory:'新章節解鎖！點左上角的書本閱讀',hookBest:'只差 {n} 分就破紀錄！',hookMission:'{m}：只差 {k}！',hookZone:'再 {n} 分就到{z}！',zSunset:'夏日市集',zNight:'秋日市集',zoomies:'暴衝模式！',zoomSub:'水果分數加倍，身體輕飄飄！',fury:'老闆娘暴怒！',furySub:'三隻拖鞋瞄準你，快換道！',furyOk:'三連閃成功！+{n}',deliver:'送回去給小貓了！',
+ hookStory:'新章節解鎖！點左上角的書本閱讀',hookBest:'只差 {n} 分就破紀錄！',hookMission:'{m}：只差 {k}！',hookZone:'再 {n} 分就到{z}！',zSunset:'夏日市集',zNight:'秋日市集',zoomies:'暴衝模式！',zoomSub:'水果額外加分，身體輕飄飄！',fury:'老闆娘暴怒！',furySub:'三隻拖鞋瞄準你，快換道！',furyOk:'三連閃成功！+{n}',deliver:'送回去給小貓了！',
  newSticker:'新貼紙！',album:'貼紙簿 {a}/{b}',albumTip:'點貼紙看看怎麼收集',closeTip:'點空白處關閉',home:'小貓窩 Lv {lv}',homeProg:'已送回水果：{d} / {n}',homeMax:'已送回水果：{d}，小貓們吃得飽飽！',homeNext:'下一個佈置：{i}',homeTip:'吃魚把背上的水果送回來，小貓窩就會升級。點小貓摸摸頭！',homeSign:'歡迎回家',
  homeItems:['軟軟的毯子','小魚缸','紙燈籠','圓圓的坐墊','歡迎回家招牌'],
  dGoalSay:'每日挑戰！今天的目標：{n} 分',dLine:'每日挑戰 · 目標 {n} · 今日最佳 {b}',dCleared:'今日挑戰完成！連續 {s} 天',dWin:'每日挑戰完成！',dStreak:'連續 {s} 天，明天再來！',
  sh:['臭貓，把水果放下！','我的水果啊！別跑！','看我的拖鞋！']};
-G.skins=[{need:0,n:'蒙面大盜',c:['#ff9f1c','#e36414'],a:0},{need:150,n:'白糰子',c:['#f1faee','#a8dadc'],a:1},{need:400,n:'忍者喵',c:['#5e548e','#231942'],a:3},{need:800,n:'市場貓王',c:['#ffd23f','#e76f51'],a:2},
+G.skins=[{need:0,n:'紅巾大盜',c:['#ff9f1c','#e36414'],a:0},{need:150,n:'白糰子',c:['#f1faee','#a8dadc'],a:1},{need:400,n:'忍者喵',c:['#5e548e','#231942'],a:3},{need:800,n:'市場貓王',c:['#ffd23f','#e76f51'],a:2},
  {m:'apple',n:'蘋果大盜',c:['#e63946','#9d0208'],a:5},{m:'fish',n:'愛魚喵',c:['#8ecae6','#219ebc'],a:6},{m:'dodge',n:'閃避大師',c:['#90be6d','#43aa8b'],a:7},
  {m:'jump',n:'跳籃高手',c:['#c08552','#895737'],a:8},{m:'carry',n:'水果疊疊樂',c:['#ffafcc','#ff70a6'],a:9},{m:'clean',n:'隱形喵',c:['#adb5bd','#6c757d'],a:4},
  {lv:2,n:'金爪喵',c:['#f4a261','#e76f51'],a:10},{lv:3,n:'市場傳奇',c:['#9b5de5','#5a189a'],a:11},
@@ -27755,11 +27793,13 @@ const MISSIONS=[
  {id:'fruit15r',lv:3,stat:'fruits',n:15,t:'一局偷到 {n} 顆水果'},{id:'dodge5r',lv:3,stat:'dodges',n:5,t:'一局閃過 {n} 隻瞄準拖鞋'},{id:'green30',lv:3,stat:'greens',n:30,sum:1,t:'收集 {n} 顆綠色水果'},
  {id:'jump15r',lv:3,stat:'jumps',n:15,t:'一局跳過 {n} 個竹籃'},{id:'score450',lv:3,stat:'score',n:450,t:'一局拿到 {n} 分'},{id:'clean60',lv:3,stat:'bestClean',n:60,t:'連續 {n} 秒毫髮無傷'}];
 const LX=[105,200,295],CYT=430,fc=['#e63946','#ff9f1c','#7bd88f'];
-let dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx,stats,streak=0,zoom=0,rage=null;
+let dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx,stats,streak=0,zoom=0,rage=null,dash=0;
+// Points per fruit come from the rules version (version 4 counts 3, older versions 5); only used for the pop-up numbers.
+const FP=thiefRules.rulesVersion>=4?3:5;
 let model=thiefRules.create(),heldBy;
 const rank=timedLeaderboard('thief','thief',5,ui);
 // Screen shake is started by events() on a real hit; the rules' own shake flag never resets, so it is not read here.
-function syncModel(){({dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx,stats,streak,zoom,rage}=model.snapshot());streak=streak||0;zoom=zoom||0;}
+function syncModel(){({dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx,stats,streak,zoom,rage,dash}=model.snapshot());streak=streak||0;zoom=zoom||0;dash=dash||0;}
 function control(code){if(!thiefRules.input(model,code))return;if(!dailyRun)rank.record(code);const ln=lane;syncModel();if(lane!==ln)sfx('lane');}
 G.reset=()=>{model=thiefRules.create();syncModel();};
 G.score=()=>model.score();
@@ -27771,25 +27811,32 @@ G.down=p=>{
 };
 G.up=p=>{if(p.id===heldBy){control(3);heldBy=undefined;}};
 G.update=dt=>{thiefRules.advance(model,dt);syncModel();events();if(model.dead)die(model.dead);};
-const SPR=new Image();SPR.src='games/thief/art/sprites.webp';const LOGO=new Image();LOGO.src='games/thief/art/logo.webp';
-const A={"gt":[0,0,205,230],"gc":[207,0,204,230],"stallR":[413,0,211,230],"stallY":[626,0,213,230],"g0":[841,0,151,200],"g1":[0,232,144,200],"g2":[146,232,146,200],"g3":[294,232,146,200],"lamp":[442,232,78,170],"cd":[522,232,170,164],"cj":[694,232,117,160],"c0":[813,232,125,150],"c1":[0,434,118,150],"c2":[120,434,122,150],"c3":[244,434,118,150],"cf":[364,434,125,150],"basket":[491,434,150,124],"plant1":[643,434,112,120],"fish":[757,434,130,107],"plant2":[889,434,110,103],"plant3":[0,586,100,99],"apple":[102,586,79,96],"orange":[183,586,84,96],"green":[269,586,85,96],"warn":[356,586,120,96],"crate3":[478,586,100,93],"crate1":[580,586,100,91],"crate2":[682,586,100,88],"slip":[784,586,100,86],"cloud":[0,687,170,85],"bush":[172,687,150,85],"bunting":[324,687,209,63]};
-const sprOk=()=>SPR.complete&&SPR.naturalWidth>0,FK=['apple','orange','green'],CATF=['c0','c1','c2','c3','cj','cd','cf'];
-function spr(k,x,y,h,src,rot){const a=A[k];if(!a)return;const img=src&&src[k];if(!img&&!sprOk())return;const w=a[2]*h/a[3];g.save();g.translate(x,y);if(rot){g.rotate(rot);g.drawImage(img||SPR,img?0:a[0],img?0:a[1],a[2],a[3],-w/2,-h/2,w,h)}else g.drawImage(img||SPR,img?0:a[0],img?0:a[1],a[2],a[3],-w/2,-h,w,h);g.restore()}
+// File names carry a hash of their contents: re-packing the sheet must produce a new name, otherwise a browser
+// holding the old image would cut it with the new coordinates in A2 and draw the wrong pieces.
+// sprites-<hash>.webp: the 2026-11-25 art set cut from design/09-art-set-v1.png and design/10-back-views-v1.webp; cat and shopkeeper frames from design/11–13 (2026-11-26) (see design/README.md).
+const SPR2=new Image();SPR2.src='games/thief/art/sprites-30dd257c.webp';const LOGO=new Image();LOGO.src='games/thief/art/logo-c93056b3.webp';
+const A2={"gt":[0,0,180,280],"g3":[182,0,236,274],"gc":[420,0,234,268],"g2":[656,0,205,262],"g0":[863,0,164,259],"g1":[1029,0,186,259],"cj":[1217,0,252,223],"c3":[0,282,160,218],"c0":[162,282,184,216],"c2":[348,282,186,216],"c1":[536,282,168,212],"gF":[706,282,168,197],"cf":[876,282,132,172],"stall1":[1010,282,191,171],"treeP":[1203,282,150,169],"treeG":[1355,282,154,168],"treeW":[0,502,99,168],"stall3":[101,502,179,167],"catF":[282,502,150,167],"gS":[434,502,118,163],"stall2":[554,502,168,162],"treeA":[724,502,151,162],"cd":[877,502,209,155],"stall4":[1088,502,183,154],"pot3":[1273,502,92,139],"catL":[1367,502,89,130],"catW":[1458,502,107,123],"pot1":[0,672,80,113],"lamp":[82,672,51,110],"pot2":[135,672,80,109],"k5":[217,672,87,109],"bgWi":[306,672,374,108],"bgSp":[682,672,373,107],"bgSu":[1057,672,374,107],"bgAu":[0,787,365,107],"k1":[367,787,79,106],"k4":[448,787,90,105],"warn":[540,787,112,104],"barrel":[654,787,88,104],"spill":[744,787,155,103],"cart":[901,787,152,102],"k2":[1055,787,74,100],"fbox":[1131,787,118,94],"k3":[1251,787,76,94],"basket":[1329,787,99,90],"fence":[0,896,180,83],"slip":[182,896,114,78],"goldA":[298,896,67,76],"apple":[367,896,66,75],"green":[435,896,71,75],"orange":[508,896,69,71],"fish":[579,896,107,62]};
+const sheetOk=im=>im.complete&&im.naturalWidth>0,sprOk=()=>sheetOk(SPR2),FK=['apple','orange','green'],CATF=['c0','c1','c2','c3','cj','cd','cf'];
+function spr(k,x,y,h,src,rot){const a=A2[k],sheet=SPR2;if(!a)return;const img=src&&src[k];if(!img&&!sheetOk(sheet))return;const w=a[2]*h/a[3];g.save();g.translate(x,y);if(rot){g.rotate(rot);g.drawImage(img||sheet,img?0:a[0],img?0:a[1],a[2],a[3],-w/2,-h/2,w,h)}else g.drawImage(img||sheet,img?0:a[0],img?0:a[1],a[2],a[3],-w/2,-h,w,h);g.restore()}
 const tints={};
 function tint(i){
  if(!i||!sprOk())return null;if(tints[i]!==undefined)return tints[i];
- const hex=G.skins[i].c[0],R=parseInt(hex.slice(1,3),16),Gc=parseInt(hex.slice(3,5),16),B=parseInt(hex.slice(5,7),16),out={};
- try{CATF.forEach(k=>{const a=A[k],cv=document.createElement('canvas');cv.width=a[2];cv.height=a[3];const x=cv.getContext('2d');x.drawImage(SPR,a[0],a[1],a[2],a[3],0,0,a[2],a[3]);
+ const hex=G.skins[i].c[0],[th,ts,tl]=hsl(...[1,3,5].map(j=>parseInt(hex.slice(j,j+2),16))),out={};
+ try{CATF.forEach(k=>{const a=A2[k],cv=document.createElement('canvas');cv.width=a[2];cv.height=a[3];const x=cv.getContext('2d');x.drawImage(SPR2,a[0],a[1],a[2],a[3],0,0,a[2],a[3]);
   const d=x.getImageData(0,0,a[2],a[3]),p=d.data;
-  for(let j=0;j<p.length;j+=4){const r=p[j],gg=p[j+1],b=p[j+2],mx=Math.max(r,gg,b),mn=Math.min(r,gg,b),l=(r+gg+b)/3;
-   if(mx-mn<30&&l>70&&l<222){const f=Math.min(1.25,l/165);p[j]=Math.min(255,R*f);p[j+1]=Math.min(255,Gc*f);p[j+2]=Math.min(255,B*f)}}
+  for(let j=0;j<p.length;j+=4){if(!p[j+3])continue;const [h,s0,l]=hsl(p[j],p[j+1],p[j+2]);
+   if(s0>.28&&h>.03&&h<.14){const nl=cl(l+(tl-.5)*.75,0,1),ns=ts<.12?ts*.5:Math.min(1,ts*1.05),[r,gg,b]=rgb(th,ns,nl);p[j]=r;p[j+1]=gg;p[j+2]=b}}
   x.putImageData(d,0,0);out[k]=cv});tints[i]=out}catch(e){tints[i]=null}
  return tints[i]}
-const HZ=112;
+function hsl(r,g0,b){r/=255;g0/=255;b/=255;const mx=Math.max(r,g0,b),mn=Math.min(r,g0,b),l=(mx+mn)/2;if(mx===mn)return[0,0,l];const d=mx-mn,s0=l>.5?d/(2-mx-mn):d/(mx+mn);let h=mx===r?(g0-b)/d+(g0<b?6:0):mx===g0?(b-r)/d+2:(r-g0)/d+4;return[h/6,s0,l]}
+function rgb(h,s0,l){if(!s0){const v=Math.round(l*255);return[v,v,v]}const q=l<.5?l*(1+s0):l+s0-l*s0,p0=2*l-q,f=t=>{t=(t+1)%1;return t<1/6?p0+(q-p0)*6*t:t<.5?q:t<2/3?p0+(q-p0)*(2/3-t)*6:p0};return[f(h+1/3),f(h),f(h-1/3)].map(v=>Math.round(v*255))}
+// The horizon sits higher than it used to (112) so the street runs further into the distance; the road keeps the same
+// slope because hw() is measured from the old horizon line.
+const HZ=84;
 const pj=y=>HZ+(H-HZ)*Math.pow(Math.max(0,(y+40)/(H+40)),1.45);
-const hw=Y=>55+123*(Y-HZ)/(H-HZ),sc=Y=>hw(Y)/142,px=(x,Y)=>200+(x-200)*sc(Y);
+const hw=Y=>55+123*(Y-112)/448,sc=Y=>hw(Y)/142,px=(x,Y)=>200+(x-200)*sc(Y);
 const wrap=(v,m)=>((v%m)+m)%m;
-const SIDE=[['stallR',150],['plant1',58],['crate1',44],['stallY',150],['lamp',118],['plant2',52]],SIDE2=[['stallY',150],['crate3',44],['plant3',54],['stallR',150],['plant1',58],['crate2',44]];
+const SIDE=[['stall1',150],['pot1',56],['fbox',40],['stall3',150],['lamp',112],['barrel',46]],SIDE2=[['stall2',150],['cart',60],['pot2',50],['stall4',150],['pot3',62],['fence',38]];
 function poly(pts,fill,line,lw){g.beginPath();pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();g.fillStyle=fill;g.fill();if(line){g.strokeStyle=line;g.lineWidth=lw||3;g.lineJoin='round';g.stroke()}}
 /* ---------- Zones: the market moves from morning to sunset to night as the score climbs (look and sound only) ---------- */
 /* Seasons: spring, summer, autumn and winter arrive as the score climbs (look and sound only). */
@@ -27815,40 +27862,48 @@ const STARS=Array.from({length:22},()=>[rnd(0,W),rnd(46,HZ-16),rnd(.6,1.6),rnd(0
 function zoneOf(sc0){let z=0;ZONES.forEach((q,i)=>{if(sc0>=q.at)z=i});return z}
 function bg(){
  const P=PZ,sky=g.createLinearGradient(0,0,0,HZ+20);sky.addColorStop(0,P.s0);sky.addColorStop(1,P.s1);g.fillStyle=sky;g.fillRect(-20,0,W+40,HZ+20);
- if(P.stars>0){STARS.forEach(([x,y,r,ph])=>{g.globalAlpha=P.stars*(.55+.45*Math.sin(tt*2+ph));g.fillStyle='#fff8dc';g.beginPath();g.arc(x,y,r,0,7);g.fill()});
-  g.globalAlpha=P.stars;g.fillStyle='#fff3c4';g.beginPath();g.arc(336,60,13,0,7);g.fill();g.fillStyle=P.s0;g.beginPath();g.arc(343,55,11,0,7);g.fill();g.globalAlpha=1}
- if(P.sun>0){const sx=334,sy=66,gr=g.createRadialGradient(sx,sy,4,sx,sy,60);gr.addColorStop(0,'rgba(255,236,140,'+.95*P.sun+')');gr.addColorStop(1,'rgba(255,220,120,0)');g.fillStyle=gr;g.fillRect(sx-60,sy-60,120,120);
-  g.globalAlpha=P.sun;g.strokeStyle='#ffd23f';g.lineWidth=3;g.lineCap='round';for(let k=0;k<8;k++){const q=tt*.4+k*Math.PI/4;g.beginPath();g.moveTo(sx+Math.cos(q)*19,sy+Math.sin(q)*19);g.lineTo(sx+Math.cos(q)*27,sy+Math.sin(q)*27);g.stroke()}
-  g.fillStyle='#ffe066';g.beginPath();g.arc(sx,sy,14,0,7);g.fill();g.globalAlpha=1}
- g.globalAlpha=1-P.stars*.6;spr('cloud',wrap(70+tt*6,480)-40,HZ-34,34);spr('cloud',wrap(300+tt*4,480)-40,HZ-52,26);g.globalAlpha=1;
- // Distant hills in two layers; winter peaks wear snow caps.
- [[P.hill2,30,.011,0],[P.hill,18,.017,2]].forEach(([col,amp,f,ph])=>{g.beginPath();g.moveTo(-20,HZ+2);for(let x=-20;x<=W+20;x+=10)g.lineTo(x,HZ-amp*(.55+.45*Math.sin(x*f+ph))-6);g.lineTo(W+20,HZ+2);g.closePath();g.fillStyle=col;g.fill();g.strokeStyle='rgba(74,44,29,.35)';g.lineWidth=1.5;g.stroke()});
+ // Painted skyline for the season (cross-fades while the season changes); the grass below hides its street.
+ const bgk={petal:'bgSp',spark:'bgSu',leaf:'bgAu',snow:'bgWi'};
+ if(zT<1&&zFrom.fx&&zFrom.fx!==ZONES[zCur].fx)skyline(bgk[zFrom.fx],1);skyline(bgk[ZONES[zCur].fx],zT<1?zT:1);
  g.fillStyle=P.grass;g.fillRect(-20,HZ,W+40,H-HZ+20);
  const Yb=H+40,sw=1.2;
- poly([[200-hw(HZ)*sw,HZ],[200+hw(HZ)*sw,HZ],[200+hw(Yb)*sw,Yb],[200-hw(Yb)*sw,Yb]],P.rim,'#7a4a24',2);
- poly([[200-hw(HZ),HZ],[200+hw(HZ),HZ],[200+hw(Yb),Yb],[200-hw(Yb),Yb]],P.road,'#8a4a2c',3);
+ // Only the side edges get an outline: a line across the far end made the street look cut off.
+ const edges=(k,c,lw)=>{g.strokeStyle=c;g.lineWidth=lw;g.lineCap='round';[-1,1].forEach(d=>{g.beginPath();g.moveTo(200+d*hw(HZ)*k,HZ);g.lineTo(200+d*hw(Yb)*k,Yb);g.stroke()})};
+ poly([[200-hw(HZ)*sw,HZ],[200+hw(HZ)*sw,HZ],[200+hw(Yb)*sw,Yb],[200-hw(Yb)*sw,Yb]],P.rim);edges(sw,'#7a4a24',2);
+ poly([[200-hw(HZ),HZ],[200+hw(HZ),HZ],[200+hw(Yb),Yb],[200-hw(Yb),Yb]],P.road);edges(1,'#8a4a2c',3);
  g.save();g.beginPath();g.moveTo(200-hw(HZ),HZ);g.lineTo(200+hw(HZ),HZ);g.lineTo(200+hw(Yb),Yb);g.lineTo(200-hw(Yb),Yb);g.closePath();g.clip();
  for(let k=0;k<18;k++){const y=wrap(k*36+dist,648)-40,Y=pj(y),s=sc(Y);
   g.strokeStyle=P.brick+'73';g.lineWidth=1.4*s;g.beginPath();g.moveTo(200-hw(Y),Y);g.lineTo(200+hw(Y),Y);g.stroke();
   const Y2=pj(y+36),off=k%2?0:.5;g.fillStyle=P.rim+'40';
   for(let b=-2;b<=2;b++){const xl=200+(b+off-.45)*hw(Y)*.42,xr=200+(b+off-.05)*hw(Y)*.42;if(((k*7+b*3)%5+5)%5<2)g.fillRect(xl,Y+1,xr-xl,Math.max(1,Y2-Y-2))}}
- [152,248].forEach(bx=>{for(let k=0;k<9;k++){const y0=wrap(k*80+dist,720)-40,Y0=pj(y0),Y1=pj(y0+34);g.strokeStyle='#fbe9cf';g.lineWidth=4.5*sc(Y1);g.lineCap='round';g.beginPath();g.moveTo(px(bx,Y0),Y0);g.lineTo(px(bx,Y1),Y1);g.stroke()}});
- roadDecals();
+ // Lane dashes stretch as the cat speeds up (and during Zoomies or a fish dash), so speed reads on the road itself.
+ const dl=34+44*cl((v-260)/200,0,1)+(zoom>0||dash>0?18:0);
+ [152,248].forEach(bx=>{for(let k=0;k<9;k++){const y0=wrap(k*80+dist,720)-40,Y0=pj(y0),Y1=pj(y0+dl);g.strokeStyle='#fbe9cf';g.lineWidth=4.5*sc(Y1);g.lineCap='round';g.beginPath();g.moveTo(px(bx,Y0),Y0);g.lineTo(px(bx,Y1),Y1);g.stroke()}});
  g.restore();
+ horizon();
  const deco=[];
  // A row of seasonal trees further out than the stalls, staggered between them.
  [-1,1].forEach((side,si)=>{for(let i=0;i<4;i++){const y=wrap(i*180+90+si*45+dist,720)-40,Y=pj(y);if(Y<HZ+2)continue;const s=sc(Y);deco.push([Y,'tree',200+side*(hw(Y)*1.95+30*s),170*s,i+si])}});
- [[SIDE,-1,0],[SIDE2,1,60]].forEach(([list,side,o])=>list.forEach(([k,h],i)=>{const y=wrap(i*120+o+dist*1,720)-40,Y=pj(y);if(Y<HZ+2)return;const s=sc(Y),a=A[k],w=a[2]*h*s/a[3];deco.push([Y,k,200+side*(hw(Y)*1.2+w*.42),h*s,i])}));
+ [[SIDE,-1,0],[SIDE2,1,60]].forEach(([list,side,o])=>list.forEach(([k,h],i)=>{const y=wrap(i*120+o+dist*1,720)-40,Y=pj(y);if(Y<HZ+2)return;const s=sc(Y),a=A2[k],w=a[2]*h*s/a[3];deco.push([Y,k,200+side*(hw(Y)*1.2+w*.42),h*s,i])}));
  const sea=ZONES[zCur].fx;
  deco.sort((p,q)=>p[0]-q[0]).forEach(d=>{if(d[1]==='tree')drawTree(sea,d[2],d[0]+2,d[3],d[4]);else{spr(d[1],d[2],d[0]+2,d[3]);dress(sea,d[1],d[2],d[0]+2,d[3],d[4])}});decoLast=deco;
- spr('bush',18,HZ+14,58);spr('bush',382,HZ+14,58);if(sea==='snow'){snowCap(18,HZ-38,46,9);snowCap(382,HZ-38,46,9)}
- spr('bunting',110,HZ-6,26);spr('bunting',290,HZ-6,26)}
+ }
 /* ---------- Seasonal props drawn in the sprite sheet's style: chunky shapes with a dark brown outline ---------- */
 function blob(x,y,r,f,lw){g.beginPath();g.arc(x,y,r,0,7);g.fillStyle=f;g.fill();g.lineWidth=lw;g.strokeStyle=OL;g.stroke()}
 function snowCap(x,y,w,h){g.beginPath();g.moveTo(x-w/2,y+h*.4);g.quadraticCurveTo(x-w/2,y-h*.6,x-w*.2,y-h*.5);g.quadraticCurveTo(x,y-h*.9,x+w*.2,y-h*.5);g.quadraticCurveTo(x+w/2,y-h*.6,x+w/2,y+h*.4);
  for(let k=3;k>=-3;k--)g.lineTo(x+k*w/7,y+h*(k%2?.4:.85));g.closePath();g.fillStyle='#ffffff';g.fill();g.lineWidth=Math.max(1,h*.18);g.strokeStyle='#9fb3cc';g.stroke()}
 function pumpkin(x,y,r){const lw=Math.max(1,r*.18);E(x,y-r*.8,r*1.15,r*.85,'#f28c28',lw);g.strokeStyle='rgba(74,44,29,.5)';g.lineWidth=lw*.8;[-.45,0,.45].forEach(k=>{g.beginPath();g.ellipse(x+k*r,y-r*.8,r*.35,r*.8,0,0,7);g.stroke()});RR(x-r*.12,y-r*1.85,r*.24,r*.4,r*.1,'#5a8f29',lw)}
-function drawTree(sea,x,y,h,v){
+// Where the street meets the town: a hedge of small seasonal trees hides the seam between grass and skyline,
+// and a haze band fades the far street and grass toward the sky colour so the road runs off into the distance.
+const HEDGE=Array.from({length:19},(_,i)=>[-10+i*23+((i*37)%11),15+((i*53)%13),(i*29)%3]);
+function horizon(){const sea=ZONES[zCur].fx,tk={petal:['treeP','treeG','treeP'],spark:['treeG','treeG','treeP'],leaf:['treeA','treeG','treeA'],snow:['treeW','treeW','treeW']}[sea]||['treeG','treeG','treeG'];
+ const gap=hw(HZ)*1.25;HEDGE.forEach(([x,h,v])=>{if(Math.abs(x-200)<gap+h*.25)return;spr(tk[v],x,HZ+3+(v%2),h)});
+ const hz=g.createLinearGradient(0,HZ-8,0,HZ+56);hz.addColorStop(0,PZ.s1+'00');hz.addColorStop(.15,PZ.s1+'73');hz.addColorStop(.35,PZ.s1+'4d');hz.addColorStop(1,PZ.s1+'00');g.fillStyle=hz;g.fillRect(-20,HZ-8,W+40,64)}
+function skyline(k,a){const r=A2[k];if(!r||!sheetOk(SPR2)||a<=0)return;const sh=r[3]*.6,w=W+24,h=w*sh/r[2],y=HZ+3-h;g.globalAlpha=a;g.drawImage(SPR2,r[0],r[1],r[2],sh,-12,y,w,h);
+ // Distance haze: the far town fades toward the sky colour near the horizon so it sits behind the street.
+ const hz=g.createLinearGradient(0,y+h*.35,0,HZ+3);hz.addColorStop(0,'rgba(255,255,255,0)');hz.addColorStop(1,'rgba(236,244,250,.55)');g.fillStyle=hz;g.fillRect(-12,y,w,h+3);
+ const gr=g.createLinearGradient(0,y,0,y+22);gr.addColorStop(0,PZ.s0);gr.addColorStop(1,PZ.s0+'00');g.fillStyle=gr;g.fillRect(-12,y,w,22);g.globalAlpha=1}
+function drawTree(sea,x,y,h,v){spr({petal:'treeP',spark:'treeG',leaf:'treeA',snow:'treeW'}[sea]||'treeG',x,y,h);return;
  const lw=Math.max(1.2,h/60),tw=h*.1;RR(x-tw/2,y-h*.42,tw,h*.42,tw*.3,'#8a5a3b',lw);
  if(sea==='snow'){[[.9,.5],[.68,.4],[.45,.3]].forEach(([yy,ww],k)=>{const ty=y-h*yy+h*.06;P([[x-h*ww,ty+h*.22],[x,ty-h*.2],[x+h*ww,ty+h*.22]],'#2d6a4f',lw);snowCap(x,ty-h*.12,h*ww*.95,h*.1)})}
  else{const pal=sea==='petal'?['#ffb3c7','#ffc8dd','#ff8fab']:sea==='leaf'?(v%2?['#e76f51','#f4a261','#d65a31']:['#f4a261','#ffb703','#e76f51']):['#5fb34a','#7cc95c','#4a9a3a'],cy=y-h*.62,r=h*.2;
@@ -27856,8 +27911,8 @@ function drawTree(sea,x,y,h,v){
   if(sea==='petal')for(let k=0;k<6;k++){g.fillStyle='#fff';g.beginPath();g.arc(x+Math.cos(k*1.7+v)*r*1.1,cy+Math.sin(k*2.3+v)*r*.8,r*.09,0,7);g.fill()}
   if(sea==='spark'){g.fillStyle='#e63946';for(let k=0;k<4;k++){g.beginPath();g.arc(x+Math.cos(k*1.9+v)*r,cy+Math.sin(k*1.3+v)*r*.7,r*.11,0,7);g.fill()}}}}
 // Seasonal dressing on top of the market props: blossoms, watermelons, pumpkins, snow and icicles.
-function dress(sea,k,x,y,h,i){
- const a=A[k];if(!a)return;const w=a[2]*h/a[3],stall=/^stall/.test(k);
+function dress(sea,k,x,y,h,i){if(sea!=='snow')return;
+ const a=A2[k];if(!a)return;const w=a[2]*h/a[3],stall=/^stall/.test(k);
  if(sea==='snow'){if(stall){snowCap(x,y-h*.93,w*.95,h*.1);g.fillStyle='#d4ecff';for(let n=-3;n<=3;n++){g.beginPath();g.moveTo(x+n*w*.12-h*.015,y-h*.6);g.lineTo(x+n*w*.12+h*.015,y-h*.6);g.lineTo(x+n*w*.12,y-h*.6+h*(n%2?.06:.1));g.fill()}}else snowCap(x,y-h*.92,w*.8,h*.16)}
  else if(sea==='leaf'&&stall){pumpkin(x-w*.42,y,h*.09);pumpkin(x+w*.4,y,h*.07)}
  else if(sea==='petal'&&stall){for(let n=-3;n<=3;n++){blob(x+n*w*.14,y-h*.62,h*.028,n%2?'#ff8fab':'#fff0f5',Math.max(.8,h/150))}}
@@ -27877,16 +27932,11 @@ function item(r){
  if(r.t==='b'){
   const h0=hitAt.get(r);
   if(h0===undefined)spr('basket',x,Y+16*s,50*s);
-  else{const q=tt-h0,a=Math.min(1,q/.22),d=r.l<1?-1:1;
-   // Knocked basket: tips over on its side and spills three fruits that skid and bounce away.
-   for(let i=0;i<3;i++){const k=Math.min(1,q/.6),fx0=x+d*(14+i*13+k*(18+i*10))*s,fy=Y+12*s-Math.abs(Math.sin(Math.min(q*9,Math.PI*2)+i))*10*s*(1-k*.6);spr(FK[(r.c+i)%3],fx0,fy,(18-i*2)*s)}
-   g.save();g.translate(x+d*6*s*a,Y+16*s);g.rotate(d*a*1.3);spr('basket',0,0,50*s);g.restore()}}
+  else{const q=tt-h0,a=eob(Math.min(1,q/.3)),d=r.l<1?-1:1;g.save();g.translate(x+d*10*s*a,Y+16*s);if(d>0)g.scale(-1,1);spr('spill',0,0,46*s);g.restore()}}
  else if(r.t==='f')spr(FK[r.c%3],x,Y+12*s-Math.abs(Math.sin(tt*5+r.l))*4*s,32*s);
  else if(r.t==='g'){const by=Y+12*s-Math.abs(Math.sin(tt*5))*6*s;g.globalCompositeOperation='lighter';const gr=g.createRadialGradient(x,by-16*s,0,x,by-16*s,34*s);gr.addColorStop(0,'rgba(255,214,80,.75)');gr.addColorStop(1,'rgba(255,200,60,0)');g.fillStyle=gr;g.fillRect(x-34*s,by-50*s,68*s,68*s);g.globalCompositeOperation='source-over';
-  spr('apple',x,by,36*s,goldApple());for(let i=0;i<3;i++){const q=tt*3+i*2.1;star(x+Math.cos(q)*20*s,by-18*s+Math.sin(q)*14*s,3.5*s,'#fff6c2')}}
- else spr('fish',x,Y+12*s-Math.abs(Math.sin(tt*6))*5*s,34*s)}
-// The golden apple is the normal apple recoloured once into gold.
-let goldImg=null;function goldApple(){if(goldImg!==null||!sprOk())return goldImg||null;try{const a=A.apple,cv=document.createElement('canvas');cv.width=a[2];cv.height=a[3];const x=cv.getContext('2d');x.drawImage(SPR,a[0],a[1],a[2],a[3],0,0,a[2],a[3]);x.globalCompositeOperation='source-atop';x.fillStyle='rgba(255,196,40,.72)';x.fillRect(0,0,a[2],a[3]);goldImg={apple:cv}}catch(e){goldImg=false}return goldImg||null}
+  spr('goldA',x,by,36*s);for(let i=0;i<3;i++){const q=tt*3+i*2.1;star(x+Math.cos(q)*20*s,by-18*s+Math.sin(q)*14*s,3.5*s,'#fff6c2')}}
+ else spr('fish',x,Y+12*s-Math.abs(Math.sin(tt*6))*5*s,26*s)}
 function star(x,y,r,col){const pts=[];for(let k=0;k<10;k++){const rr=k%2?r*.45:r,q=-Math.PI/2+k*Math.PI/5;pts.push([x+Math.cos(q)*rr,y+Math.sin(q)*rr])}g.beginPath();pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();g.fillStyle=col;g.fill()}
 // The jump's airtime comes from the shared rules (0.55 s); only its look is exaggerated here:
 // a high arc, stretch on take-off, squash on landing, dust puffs and wind streaks.
@@ -27897,24 +27947,29 @@ function cat(){
  dust.forEach(d=>{g.globalAlpha=Math.max(0,.6*(1-d.age/.45));g.fillStyle='#f7e3c4';g.beginPath();g.arc(x+d.dx*s+d.vx*d.age*s,Yf-4*s-d.age*18*s,(5+d.age*16)*s,0,7);g.fill()});g.globalAlpha=1;
  if(jt>0&&p<.75){g.strokeStyle='rgba(255,255,255,.75)';g.lineCap='round';g.lineWidth=2.5*s;for(let i=-1;i<=1;i++){const y0=Yf-lift+6*s+Math.abs(i)*4*s,len=(14+10*(1-p))*s;g.beginPath();g.moveTo(x+i*11*s,y0);g.lineTo(x+i*13*s,y0+len);g.stroke()}}
  if(stun>0)g.globalAlpha=Math.floor(tt*16)%2?.55:1;
- const f=stun>0?'cd':jt>0?'cj':'c'+(Math.floor(tt*(5+v/45))%4),h=(f==='cd'?62:f==='cj'?80:76)*s*z;
+ const f=stun>0?'cd':jt>0?'cj':'c'+(Math.floor(tt*(5+v/45))%4),h=(f==='cd'?70:f==='cj'?92:88)*s*z;
  // Tripped over a basket: topple sideways, lie a beat, scramble back up. Slipper: a quick bonk squash.
  let rot=0,drop=0,bsx=1,bsy=1;const hq=tt-hitT;
  if(hitKind==='b'&&hq<.8){const q=hq/.8,f0=q<.25?eob(q/.25):q<.55?1:1-(q-.55)/.45;rot=hitDir*1.35*f0;drop=10*s*f0}
  else if(hitKind==='s'&&hq<.3){const f0=Math.sin(hq/.3*Math.PI);bsx=1+.25*f0;bsy=1-.25*f0}
+ if(dash>0&&!(zoom>0)&&!RM()){for(let k=2;k>=1;k--){g.globalAlpha=.14*(3-k)/2;spr(f,x,Yf-lift+k*12*s,h,src)}g.globalAlpha=1}
  if(zoom>0){g.globalCompositeOperation='lighter';const gr=g.createRadialGradient(x,Yf-lift-h*.45,0,x,Yf-lift-h*.45,h*.9);gr.addColorStop(0,'rgba(255,210,70,'+(.35+.15*Math.sin(tt*20))+')');gr.addColorStop(1,'rgba(255,190,50,0)');g.fillStyle=gr;g.fillRect(x-h,Yf-lift-h*1.4,h*2,h*2);g.globalCompositeOperation='source-over';
   for(let k=3;k>=1;k--){g.globalAlpha=.16*(4-k)/3;spr(f,x,Yf-lift+k*13*s,h,src)}g.globalAlpha=1}
  g.save();g.translate(x,Yf-lift+drop);g.rotate(rot);g.scale(sx*bsx,sy*bsy);
  spr(f,0,0,h,src);
  for(let i=0;i<L;i++)spr(FK[i%3],(i%2?9:-9)*s,-26*s-i*8*s-j*i*3*s,17*s);
- acc(k.a,0,-h*.86,.85*s);
  g.restore();g.globalAlpha=1;
  if(stun>0){for(let i=0;i<3;i++){const q=tt*7+i*2.1,sx0=x+Math.cos(q)*20*s,sy0=Yf-lift+drop-h*1.02+Math.sin(q)*6*s;g.save();g.translate(sx0,sy0);g.rotate(q);const pts=[];for(let k2=0;k2<10;k2++){const rr=k2%2?3*s:7*s,qq=-Math.PI/2+k2*Math.PI/5;pts.push([Math.cos(qq)*rr,Math.sin(qq)*rr])}P(pts,'#ffd23f',1.5);g.restore()}}}
 function granny(){
- const r=cl(1-gb/170,0,1),Yf=H+112-r*96,x=200+(px(cx,pj(CYT))-200)*.55;
+ const r=cl(1-gb/170,0,1),Yf=H+96-r*100,x=200+(px(cx,pj(CYT))-200)*.55;
  const f=st==='over'&&G.msg==='caught'?'gc':warn.length?'gt':'g'+(Math.floor(tt*7)%4);
  g.fillStyle='rgba(90,40,20,.25)';g.beginPath();g.ellipse(x,Yf-4,40,10,0,0,7);g.fill();
- spr(f,x,Yf,f==='g0'||f==='g1'||f==='g2'||f==='g3'?124:136);return Yf}
+ spr(f,x,Yf,f==='g0'||f==='g1'||f==='g2'||f==='g3'?160:170);return Yf}
+// How close the shopkeeper is, right above the cat once she gets near: green, then orange, then a pulsing red.
+function chaseGauge(){const r=cl(1-gb/170,0,1);if(r<.4)return;const Y=pj(CYT),s=sc(Y),x=px(cx,Y),y=Y+34*s-(jt>0?0:0)-112*s,w=46,a=Math.min(1,(r-.4)*6);
+ const col=r>.75?'#e63946':r>.58?'#ff9f1c':'#7cbf4a',pul=r>.75?1+.08*Math.sin(tt*14):1;g.save();g.globalAlpha=a;g.translate(x,y);g.scale(pul,pul);
+ RR(-w/2,-4,w,8,4,'#fff4dc',1.6);RR(-w/2,-4,Math.max(8,w*r),8,4,col,1.6);if(r>.75){g.font='900 12px '+FB;g.textAlign='center';g.lineWidth=3;g.strokeStyle='#fff';g.strokeText('!',w/2+8,5);g.fillStyle='#e63946';g.fillText('!',w/2+8,5)}
+ g.restore();g.globalAlpha=1}
 function sign(x,y,w,h){RR(x,y,w,h,Math.min(12,h/2),'#f4c983',2.5);g.fillStyle='rgba(255,255,255,.35)';g.fillRect(x+10,y+4,w-20,2.5);[[x+5,y+5],[x+w-5,y+5]].forEach(p=>{g.save();g.translate(p[0],p[1]);g.rotate(p[0]>200?.6:-.6);E(0,0,6,3.5,'#7cbf4a',1.8);g.restore()})}
 function wt(s,x,y,sz,col,al,mw){sz*=.92;s=font(s,sz,sz>=26);g.textAlign=al||'center';g.fillStyle=col||OL;g.fillText(s,x,y,mw||W-40)}
 function card(x,y,w,h){g.fillStyle='rgba(74,44,29,.25)';g.beginPath();g.roundRect?g.roundRect(x+3,y+5,w,h,18):g.rect(x+3,y+5,w,h);g.fill();RR(x,y,w,h,18,'#fff6e6',3);g.strokeStyle='rgba(122,74,36,.25)';g.lineWidth=1.5;g.setLineDash([5,5]);g.beginPath();g.moveTo(x+14,y+h-12);g.lineTo(x+w-14,y+h-12);g.stroke();g.setLineDash([])}
@@ -27966,10 +28021,10 @@ function seasonFx(){
 function drawBanner(){
  if(!banner)return;const q=banner.age,a=Math.max(0,Math.min(1,q*5,(2.6-q)*3));if(a<=0)return;
  if(banner.kind){const fury=banner.kind==='fury',k=eob(q/.3),wob=fury?Math.sin(q*30)*.04*Math.max(0,1-q):0;g.globalAlpha=a;g.save();g.translate(W/2,140);g.rotate(wob);g.scale(k,k);
-  RR(-150,-26,300,50,14,fury?'#ffe0dc':'#fff1c2',3);tx(T(fury?'fury':'zoomies'),0,0,fury?20:24,fury?'#e0503f':'#ffb703');wt(T(fury?'furySub':'zoomSub'),0,17,12,'#8a5a3b');g.restore();g.globalAlpha=1;return}
+  RR(-150,-26,300,50,14,fury?'#ffe0dc':'#fff1c2',3);if(fury)shakeTx(T('fury'),0,0,20,'#e0503f');else slamTx(T('zoomies'),0,0,24,'#ffb703',q);wt(T(fury?'furySub':'zoomSub'),0,17,12,'#8a5a3b');g.restore();g.globalAlpha=1;return}
  g.globalAlpha=a;const k=eob(q/.35);g.save();g.translate(W/2,150);g.scale(k,k);
  RR(-160,-30,320,58,16,'#fff1c2',3);[-1,1].forEach(sd=>P([[sd*160,-18],[sd*186,-4],[sd*174,4],[sd*186,14],[sd*160,18]],'#ff8a3d',3));
- tx(T('chap')[banner.z],0,-4,21,'#ff8a3d');wt(T('chapSub'),0,18,12,'#8a5a3b');g.restore();g.globalAlpha=1}
+ slamTx(T('chap')[banner.z],0,-4,21,'#ff8a3d',q);wt(T('chapSub'),0,18,12,'#8a5a3b');g.restore();g.globalAlpha=1}
 // Red edges that throb with the heartbeat as the shopkeeper closes in.
 function danger(){
  const r=cl(1-gb/170,0,1),dz=st==='run'?cl((r-.55)/.45,0,1):0;if(dz<=0)return;
@@ -27981,16 +28036,19 @@ g.setTransform(DPR,0,0,DPR,0,0);
 const ox=shake>0&&!RM()?Math.sin(shake*90)*shake*(st==='over'?14:16):0;g.save();g.translate(ox,0);
 // Caught: punch-in on the cat for a dramatic beat before the result card drops.
 if(st==='over'&&!RM()){const z=1+.22*eob(Math.min(1,overT/.25))*(overT<HOLD()?1:Math.max(0,1-(overT-HOLD())/.3)),Y=pj(CYT),fx0=px(cx,Y);g.translate(fx0,Y);g.scale(z,z);g.translate(-fx0,-Y)}
-bg();if(st==='run')streaks();rows.slice().sort((p,q)=>p.y-q.y).forEach(item);
+bg();rows.slice().sort((p,q)=>p.y-q.y).forEach(item);
 warn.forEach(w=>{if(Math.floor(tt*12)%2){const Y=pj(H-34),s=sc(Y);spr('warn',px(LX[w.l],Y),Y+14*s,40*s)}});
 slips.forEach(o=>{const Y=pj(o.y),s=sc(Y);spr('slip',px(LX[o.l],Y),Y,30*s,null,tt*14)});
-if(gate&&gate.y<CYT)drawGate();cat();if(gate&&gate.y>=CYT)drawGate();const gy=granny();zoneFx();seasonFx();if(st==='run'&&tut)hint();
-if(st==='run'&&gb<75){const i=Math.floor(tt/1.4)%3;ptx(T('sh')[i],200,Math.min(H-150,gy-140),21,'#e0503f',tt%1.4,Math.sin(tt*9)*.04)}
+if(gate&&gate.y<CYT)drawGate();cat();if(gate&&gate.y>=CYT)drawGate();const gy=granny();zoneFx();if(st==='run'&&tut)hint();
+if(st==='run'&&gb<75){const i=Math.floor(tt/1.4)%3,q=tt%1.4,k=eob(Math.min(1,q/.25));g.save();g.translate(200,Math.min(H-150,gy-140));g.scale(k,k);shakeTx(T('sh')[i],0,0,21,'#e0503f');g.restore()}
 g.restore();
 fx.forEach(f=>{g.globalAlpha=1-f.t/.8;tx(f.s,px(f.x,pj(CYT)),f.y-f.t*50,26,'#ff6b5a');g.globalAlpha=1});
 drawFlying();
-pops.forEach(q=>{g.globalAlpha=Math.max(0,1-q.age/q.life);ptx(q.s,cl(px(q.x,pj(CYT)),70,330),pj(CYT)-q.dy-q.age*46,q.sz,q.col,q.age,q.rot);g.globalAlpha=1});
+pops.forEach(q=>{g.globalAlpha=Math.max(0,1-q.age/q.life);const X=cl(px(q.x,pj(CYT)),70,330),Y0=pj(CYT)-q.dy-q.age*46;if(q.rot){g.save();g.translate(X,Y0);g.rotate(q.rot);popTx(q.s,0,0,q.sz,q.col,q.age);g.restore()}else popTx(q.s,X,Y0,q.sz,q.col,q.age);g.globalAlpha=1});
 danger();drawBanner();
+// A short red flash on a hit, so it is obvious the cat was struck (skipped with reduced motion).
+if(st==='run'&&tt-hitT<.22&&!RM()){g.fillStyle='rgba(230,57,70,'+(.26*(1-(tt-hitT)/.22))+')';g.fillRect(0,0,W,H)}
+if(st==='run')chaseGauge();
 if(flash>0){g.fillStyle='rgba(255,255,255,'+flash/.18*.6+')';g.fillRect(0,0,W,H)}
 if(st==='over'&&overT<.18){g.fillStyle='rgba(255,255,255,'+(1-overT/.18)*.85+')';g.fillRect(0,0,W,H)}
 hud()};
@@ -28028,7 +28086,7 @@ function puff(n){if(RM())return;for(let i=0;i<n;i++)dust.push({dx:rnd(-16,16),vx
 // Delivered fruit arcs up to the kittens' hideout in the top-left corner.
 let flying=[];function deliver(n){const Y=pj(CYT),x0=px(cx,Y);for(let i=0;i<n;i++)flying.push({x0,y0:Y-40,k:FK[i%3],age:-i*.07})}
 function drawFlying(){flying.forEach(f=>{if(f.age<0)return;const t=Math.min(1,f.age/.7),x=f.x0+(36-f.x0)*t,y=f.y0+(70-f.y0)*t-Math.sin(t*Math.PI)*110;g.globalAlpha=1-Math.max(0,t-.85)/.15;spr(f.k,x,y,20*(1-t*.4));g.globalAlpha=1});
- if(flying.length){const a=Math.min(1,flying[0].age*4);g.globalAlpha=Math.max(0,a);C(36,66,15,'#fff6e6',2.5);spr('c0',36,78,22,tint(1));g.globalAlpha=1}}
+ if(flying.length){const a=Math.min(1,flying[0].age*4);g.globalAlpha=Math.max(0,a);C(36,66,15,'#fff6e6',2.5);spr('k3',36,80,24);g.globalAlpha=1}}
 function burst(x,y,n,cols){if(RM())return;for(let i=0;i<n;i++){const q=rnd(0,Math.PI*2),sp=rnd(120,320);parts.push({x,y,vx:Math.cos(q)*sp,vy:Math.sin(q)*sp-160,col:cols[i%cols.length],r:rnd(0,6),vr:rnd(-9,9),age:0})}}
 function trackMissions(){
  const R={...stats,fruits:stats.apples+stats.oranges+stats.greens,score:G.score()};
@@ -28049,7 +28107,7 @@ function trackMissions(){
  }
 }
 function events(){
- const e={fr:stats.apples+stats.oranges+stats.greens,fish:stats.fish,j:stats.jumps,d:stats.dodges,stun,jt,w:warn.length,s:slips.length,L,zoom,gold:stats.golds||0,rage:!!rage,rages:stats.rages||0},p=prevEv;
+ const e={streak,fr:stats.apples+stats.oranges+stats.greens,fish:stats.fish,j:stats.jumps,d:stats.dodges,stun,jt,w:warn.length,s:slips.length,L,zoom,gold:stats.golds||0,rage:!!rage,rages:stats.rages||0},p=prevEv;
  prevEv=e;if(!p)return;
  if(e.jt>p.jt+.1){sfx('jump');puff(4)}
  if(p.jt>0&&e.jt<=0){landT=.16;puff(5);sfx('land')}
@@ -28057,19 +28115,21 @@ function events(){
   const b=rows.find(r=>r.t==='b'&&r.h&&!hitAt.has(r));
   if(b){hitAt.set(b,tt);hitKind='b';hitDir=b.l<1?-1:b.l>1?1:(Math.random()<.5?-1:1);sfx('trip')}else{hitKind='s';sfx('hit')}
   hitT=tt;shake=.15;try{navigator.vibrate&&navigator.userActivation?.hasBeenActive!==false&&navigator.vibrate(hitKind==='b'?[40,40,60]:80)}catch(_){}}
- if(e.fr>p.fr){sfx('fruit');hudBump=1;if(!(e.zoom>0))pops.push({s:'+5',x:cx,dy:70,sz:22,col:'#ffd23f',age:0,life:.7,rot:0})}
+ if(e.fr>p.fr){sfx('fruit');hudBump=1;if(!(e.zoom>0)){pops.push({s:'+'+FP,x:cx,dy:70,sz:22,col:'#ffd23f',age:0,life:.7,rot:0});
+  // Fruit streak toward Zoomies: from 3 in a row a big counter pops up with a rising note; 10 starts Zoomies.
+  if(e.streak>=3&&e.streak>p.streak){pops.push({s:'x'+e.streak,x:cx,dy:128,sz:22+e.streak*2.2,col:e.streak>=8?'#ff6b4a':'#ffb703',age:0,life:.6,rot:(e.streak%2?-1:1)*.08});tone(520+e.streak*70,520+e.streak*70,.09,'triangle',.05,.06)}}}
  if(e.fish>p.fish){sfx('fish');if(p.L>0){LS.delivered+=p.L;LS.maxDeliver=Math.max(LS.maxDeliver,p.L);checkStickers();checkEpilogue()}
   // Fish = delivery: the fruit on the cat's back flies off to the kittens' hideout, which is why the load disappears.
   if(p.L>0){deliver(p.L);pops.push({s:localText(T('deliver')),x:cx,dy:82,sz:17,col:'#7bd88f',age:0,life:1.1,rot:-.05})}
   else pops.push({s:localText(T('light')),x:cx,dy:78,sz:17,col:'#8ecae6',age:0,life:.9,rot:0})}
  if(e.gold>p.gold){sfx('gold');burst(px(cx,pj(CYT)),pj(CYT)-60,30,['#ffd23f','#fff6c2','#ffb703']);pops.push({s:'+15',x:cx,dy:96,sz:24,col:'#ffd23f',age:0,life:.8,rot:0})}
  if(e.zoom>0&&p.zoom<=0){sfx('zoom');banner={kind:'zoom',age:0}}
- if(e.zoom>0&&e.fr>p.fr)pops.push({s:'+10',x:cx,dy:96,sz:22,col:'#ffb703',age:0,life:.7,rot:0});
+ if(e.zoom>0&&e.fr>p.fr)pops.push({s:'+'+(FP+5),x:cx,dy:96,sz:22,col:'#ffb703',age:0,life:.7,rot:0});
  if(e.rage&&!p.rage){sfx('fury');banner={kind:'fury',age:0}}
  if(e.rages>p.rages){sfx('phew');burst(W/2,190,22,['#7bd88f','#ffd23f','#fff6e6']);pops.push({s:localText(T('furyOk')).replace('{n}',20),x:cx,dy:104,sz:20,col:'#7bd88f',age:0,life:1.3,rot:0})}
  if(e.w>p.w)sfx('warn');
  if(e.s>p.s)sfx('whoosh');
- if(e.d>p.d){sfx('close');pops.push({s:localText(T('close')),x:cx,dy:84,sz:20,col:'#7bd88f',age:0,life:1,rot:-.08});if(tut)tut.d+=e.d-p.d}
+ if(e.d>p.d){sfx('close');pops.push({s:localText(T('close')),x:cx,dy:96,sz:26,col:'#7bd88f',age:0,life:1.1,rot:-.08});burst(px(cx,pj(CYT)),pj(CYT)-70,14,['#7bd88f','#fff6e6','#b8f2c4']);if(tut)tut.d+=e.d-p.d}
  if(e.j>p.j&&tut)tut.j+=e.j-p.j;
  if(tut&&(tut.j>=2&&tut.d>=1)){tut=null;saveTut()}
  const z=zoneOf(G.score());
@@ -28277,26 +28337,26 @@ let story=null;
 const unseen=()=>{for(let ch=0;ch<=SS.r;ch++)if(!SS.seen.includes(ch))return ch;return LS.epi&&!SS.seen.includes(4)?4:-1};
 function openStory(ch){story={c:ch,age:0}}
 function closeStory(){if(!story)return;if(!SS.seen.includes(story.c)){SS.seen.push(story.c);saveSS()}story=null}
-const kits=(x,y,h,n)=>{for(let k=0;k<n;k++)spr('c0',x+(k-(n-1)/2)*h*.62,y-Math.abs(Math.sin(tt*4+k))*3,h,tint(k+1))};
+const KIT=['k3','k1','k2','k4','k5'],kits=(x,y,h,n)=>{for(let k=0;k<n;k++)spr(KIT[k%5],x+(k-(n-1)/2)*h*.72,y-Math.abs(Math.sin(tt*4+k))*3,h*1.05)};
 const PANELS=[
- [[ '#cdeefa',(x,y,w,h)=>{spr('crate1',x+w/2,y+h-26,60);kits(x+w/2,y+h-62,38,5)},'五隻小貓餓著肚子……'],
-  ['#d9f2fb',(x,y,w,h)=>{spr('stallR',x+92,y+h+2,104);spr('apple',x+150,y+44+Math.sin(tt*3)*3,24);spr('c0',x+w-92,y+h-26,74,tint(skin))},'……一位勇敢的大哥哥……'],
-  ['#ffe1d6',(x,y,w,h)=>{spr('gt',x+w/2-50,y+h+14,128);spr('slip',x+w/2+74,y+56,34,null,tt*8);spr('warn',x+w/2+20,y+46,30)},'……還有一位超火大的老闆娘！']],
+ [[ '#cdeefa',(x,y,w,h)=>{spr('basket',x+w/2,y+h-24,52);kits(x+w/2,y+h-58,36,5)},'五隻小貓餓著肚子……'],
+  ['#d9f2fb',(x,y,w,h)=>{spr('stall1',x+92,y+h+2,104);spr('apple',x+152,y+44+Math.sin(tt*3)*3,24);spr('catF',x+w-80,y+h-24,92)},'……一位勇敢的大哥哥……'],
+  ['#ffe1d6',(x,y,w,h)=>{spr('gS',x+w/2-40,y+h+10,128);spr('slip',x+w/2+74,y+56,34,null,tt*8);spr('warn',x+w/2+28,y+40,30)},'……還有一位超火大的老闆娘！']],
  [['#ffe8a3',(x,y,w,h)=>{kits(x+w/2-50,y+h-32,40,3);spr('apple',x+w/2+50,y+h-32,28);spr('orange',x+w/2+78,y+h-32,28);spr('green',x+w/2+64,y+h-56,26)},'小貓們還想再吃！'],
-  ['#ffd27a',(x,y,w,h)=>{spr('g0',x+w/2-20,y+h+14,128);spr('slip',x+w/2+70,y+46,30,null,.5+Math.sin(tt*6)*.3)},'老闆娘絕不放棄。'],
+  ['#ffd27a',(x,y,w,h)=>{spr('gF',x+w/2-20,y+h+14,132);spr('slip',x+w/2+70,y+46,30,null,.5+Math.sin(tt*6)*.3)},'老闆娘絕不放棄。'],
   ['#c9eeff',(x,y,w,h)=>{const gr=g.createLinearGradient(0,y,0,y+h);gr.addColorStop(0,'#4fb3f0');gr.addColorStop(1,'#c9eeff');g.fillStyle=gr;g.fillRect(x,y,w,h);g.fillStyle='#ffe066';g.beginPath();g.arc(x+w-46,y+30,15,0,7);g.fill();spr('c1',x+w/2-60,y+h-26,66,tint(skin));spr('g1',x+w/2+70,y+h+8,92)},'夏日豔陽下，追得更熱了！']],
- [['#ffe6cc',(x,y,w,h)=>{spr('stallY',x+90,y+h+2,104);for(let k=0;k<6;k++){g.fillStyle=k%2?'#e76f51':'#f4a261';g.beginPath();g.ellipse(x+150+k*28,y+20+((tt*30+k*23)%(h-40)),6,3,tt+k,0,7);g.fill()}spr('apple',x+w-70,y+h-32,28)},'秋葉紛飛，水果正香！'],
+ [['#ffe6cc',(x,y,w,h)=>{spr('stall3',x+90,y+h+2,104);for(let k=0;k<6;k++){g.fillStyle=k%2?'#e76f51':'#f4a261';g.beginPath();g.ellipse(x+150+k*28,y+20+((tt*30+k*23)%(h-40)),6,3,tt+k,0,7);g.fill()}spr('apple',x+w-70,y+h-32,28)},'秋葉紛飛，水果正香！'],
   ['#f6d5b0',(x,y,w,h)=>{RR(x+w/2-34,y+18,68,h-22,6,'#8a5a3b',3);C(x+w/2+22,y+h/2+6,3.5,'#ffd166',1.5);spr('fish',x+w/2+62,y+h-30,30);tx('?',x+w/2+62,y+40+Math.sin(tt*4)*3,30,'#ffb703');g.globalAlpha=.85;spr('g2',x+62,y+h+12,96);g.globalAlpha=1},'可是……後門那條魚是誰留的？'],
   ['#ffe6cc',(x,y,w,h)=>{kits(x+w/2-20,y+h-32,44,3);spr('fish',x+w/2+66,y+h-32,32)},'小貓們一天比一天圓滾滾。']],
- [['#e8f0ff',(x,y,w,h)=>{for(let k=0;k<14;k++){g.fillStyle='#fff';g.beginPath();g.arc(x+12+k*23,y+8+((tt*24+k*37)%(h-16)),2.6,0,7);g.fill()}spr('crate1',x+w/2,y+h-26,56);kits(x+w/2,y+h-60,36,5)},'下雪也擋不住肚子餓的小貓。'],
+ [['#e8f0ff',(x,y,w,h)=>{for(let k=0;k<14;k++){g.fillStyle='#fff';g.beginPath();g.arc(x+12+k*23,y+8+((tt*24+k*37)%(h-16)),2.6,0,7);g.fill()}spr('basket',x+w/2,y+h-24,50);kits(x+w/2,y+h-60,36,5)},'下雪也擋不住肚子餓的小貓。'],
   ['#dbe7f7',(x,y,w,h)=>{for(let k=0;k<5;k++){const px0=x+40+k*44,py0=y+h-40-(k%2)*10;g.fillStyle='#9fb3cc';[[0,0,5],[-6,-7,2.5],[0,-9,2.5],[6,-7,2.5]].forEach(([dx,dy,r])=>{g.beginPath();g.arc(px0+dx,py0+dy,r,0,7);g.fill()})}spr('g0',x+w-74,y+h+12,110)},'有人跟著雪地上的貓腳印……'],
   ['#e8f0ff',(x,y,w,h)=>{RR(x+w/2-46,y+18,92,62,8,'#ffe9a8',3);L2(x+w/2,y+18,x+w/2,y+80,3);L2(x+w/2-46,y+49,x+w/2+46,y+49,3);kits(x+w/2,y+h-30,30,3);g.fillStyle='#fff';g.fillRect(x,y+h-12,w,12)},'故事未完，待續……']],
  [['#4a5a9a',(x,y,w,h)=>{RR(x+w/2-30,y+14,60,h-40,6,'#8a5a3b',3);C(x+w/2+20,y+h/2-6,3.5,'#ffd166',1.5);spr('g2',x+86,y+h-14,96);spr('fish',x+w/2+56,y+h-32,28);tx('!',x+w/2+56,y+40+Math.sin(tt*4)*3,26,'#ffd23f')},'原來每晚留魚的，就是老闆娘！'],
   ['#ffd8a8',(x,y,w,h)=>{kits(x+92,y+h-32,36,3);spr('g0',x+w-86,y+h-6,112);spr('fish',x+w/2-6,y+h-32,26)},'她每天晚上都偷偷餵小貓。'],
-  ['#ffe1d6',(x,y,w,h)=>{spr('c0',x+w/2-56,y+h-28,72,tint(skin));spr('g1',x+w/2+56,y+h-6,104);tx('♥',x+w/2,y+40+Math.sin(tt*3)*4,30,'#ff4d6d')},'明天再來追？當然奉陪！']]];
+  ['#ffe1d6',(x,y,w,h)=>{spr('catF',x+w/2-60,y+h-24,92);spr('gc',x+w/2+62,y+h-4,104);tx('♥',x+w/2,y+40+Math.sin(tt*3)*4,30,'#ff4d6d')},'明天再來追？當然奉陪！']]];
 function drawStory(){
  const q=story.age;g.fillStyle='rgba(30,18,12,.88)';g.fillRect(0,0,W,H);
- ptx(T('chap')[story.c],W/2,40,22,'#ffd23f',q);
+ slamTx(T('chap')[story.c],W/2,40,22,'#ffd23f',q);
  PANELS[story.c].forEach(([bgc,fn,cap],i)=>{
   const a=cl((q-.25-i*.45)/.3,0,1);if(a<=0)return;const x=36,y=58+i*142+(1-eob(a))*20,w=328,h=130;
   g.globalAlpha=a;RR(x,y,w,h,14,bgc,3);g.save();g.beginPath();g.rect(x+2,y+2,w-4,h-4);g.clip();fn(x,y,w,h);g.restore();
@@ -28416,7 +28476,7 @@ function stickerCard(st0){
  g.restore()}
 function drawHome(){
  const q=sheet.age,lv=homeLv(),x=36,y=64,w=328,h=290;g.fillStyle='rgba(30,18,12,.9)';g.fillRect(0,0,W,H);
- ptx(localText(T('home')).replace('{lv}',lv+1),W/2,40,20,'#ffd23f',q);
+ popTx(localText(T('home')).replace('{lv}',lv+1),W/2,40,20,'#ffd23f',q);
  RR(x,y,w,h,16,'#f6e2c0',3);g.save();g.beginPath();g.rect(x+2,y+2,w-4,h-4);g.clip();
  g.fillStyle='#d9b48a';g.fillRect(x,y+h*.62,w,h);g.fillStyle='rgba(122,74,36,.25)';for(let i=0;i<8;i++)g.fillRect(x+i*44,y+h*.62,2,h);
  // window with the night sky
@@ -28426,8 +28486,8 @@ function drawHome(){
  if(lv>=1)RR(x+40,y+h-62,w-80,40,16,'#e98e62',3);
  if(lv>=4){E(x+70,y+h-40,26,12,'#8ecae6',2.5);E(x+w-70,y+h-40,26,12,'#ffafcc',2.5)}
  if(lv>=2){C(x+w-46,y+h-86,18,'rgba(142,202,230,.6)',2.5);spr('fish',x+w-46,y+h-78,16)}
- spr('crate1',x+50,y+h-16,46);
- const kz=1+lv*.07;for(let k=0;k<5;k++){const kx=x+w/2+(k-2)*44,ky=y+h-34-Math.abs(Math.sin(tt*3+k))*4;spr('c0',kx,ky,40*kz,tint(k+1))}
+ spr('basket',x+50,y+h-14,44);
+ const kz=1+lv*.07;for(let k=0;k<5;k++){const kx=x+w/2+(k-2)*44,ky=y+h-34-Math.abs(Math.sin(tt*3+k))*4;spr(KIT[k],kx,ky,46*kz)}
  g.restore();RR(x,y,w,h,16,'rgba(0,0,0,0)',3);
  hearts.forEach(hh=>{g.globalAlpha=1-hh.age;tx('♥',hh.x,hh.y-hh.age*40,20,'#ff70a6');g.globalAlpha=1});
  const nx=HOME_AT[lv+1];
@@ -28456,7 +28516,7 @@ function iconSound(x,y){g.save();g.translate(x,y);g.beginPath();g.moveTo(-10,-4)
 function menuItems(){const a=['story'];if(LS.runs>=2)a.push('album');if(LS.delivered>=1)a.push('home');if(LS.runs>=3)a.push('daily');return a.map((k,i)=>({k,y:SBY+i*52}))}
 const FEAT={album:'貼紙簿',home:'小貓的窩',daily:'每日偷水果挑戰'};
 function newFeatures(){menuItems().forEach(m=>{if(m.k!=='story'&&!LS.menuSeen.includes('shown:'+m.k)){LS.menuSeen.push('shown:'+m.k);toasts.push({h:T('newFeat'),a:localText(FEAT[m.k]),b:'',age:0,big:1})}});saveLS()}
-function btnLabel(x,y,k){const t=localText(T('lbl')[k]);g.font='700 9px '+FB;g.textAlign='center';g.lineJoin='round';g.strokeStyle='#4a2c1d';g.lineWidth=3;g.strokeText(t,x,y+28,48);g.fillStyle='#fff6e6';g.fillText(t,x,y+28,48)}
+function btnLabel(x,y,k){const t=localText(T('lbl')[k]);g.font='800 9px '+FB;g.textAlign='center';g.lineJoin='round';g.strokeStyle='#4a2c1d';g.lineWidth=3;g.strokeText(t,x,y+28,48);g.fillStyle='#fff6e6';g.fillText(t,x,y+28,48)}
 function sideBtn(y,kind,badge){woodBtn(BX,y);(kind==='album'?iconAlbum:kind==='home'?iconHome:iconDaily)(BX,y);btnLabel(BX,y,kind);if(badge)badgeDot(BX,y)}
 function storyBtn(){woodBtn(BX,SBY);iconBook(BX,SBY);btnLabel(BX,SBY,'story');if(unseen()>=0)badgeDot(BX,SBY)}
 function soundBtn(){woodBtn(SBX,SBY);iconSound(SBX,SBY);btnLabel(SBX,SBY,'settings')}
@@ -28478,8 +28538,8 @@ if(sheet){sheet.kind==='album'?drawAlbum():drawHome();return}
 g.fillStyle='rgba(74,44,29,.38)';g.fillRect(0,0,W,H);
 if(st==='ready'){
  const by=Math.sin(tt*2.2)*3;
- if(LOGO.complete&&LOGO.naturalWidth)g.drawImage(LOGO,62,48+by,276,276*LOGO.naturalHeight/LOGO.naturalWidth);else tx(T('title'),W/2,120,32,'#ffd23f');
- tx(T('tag'),W/2,174,16,'#fff6e6');
+ if(LOGO.complete&&LOGO.naturalWidth)g.drawImage(LOGO,80,40+by,240,240*LOGO.naturalHeight/LOGO.naturalWidth);else tx(T('title'),W/2,120,32,'#ffd23f');
+ waveTx(T('tag'),W/2,174,16,'#fff6e6');
  missionCard(186);
  waveTx('按開始，水果不會自己跑來！',W/2,318,18,'#ff8a3d');
  if(EVNOW){const done=LS.evDone.includes(EVNOW.id),sk=G.skins.find(k=>k.ev===EVNOW.id);tx(localText(T(done?'evDoneLine':'evLine')).replace('{e}',localText(EVNOW.n)).replace('{r}',Math.min(EV_RUNS,LS.ev[EVNOW.id]||0)).replace('{n}',EV_RUNS).replace('{s}',localText(sk.n)),W/2,350,13,'#ffe08a')}
@@ -28487,7 +28547,7 @@ if(st==='ready'){
 else{
  const ot=overT-HOLD(),k=eob(ot/.45),dy=(1-k)*-50;g.save();g.translate(0,dy);
  card(50,52,300,218);
- g.save();g.translate(W/2,84);g.rotate(Math.sin(ot*14)*.06*Math.max(0,1-ot));tx(T(G.msg),0,0,24,'#e0503f');g.restore();
+ slamTx(T(G.msg),W/2,84,24,'#e0503f',Math.max(0,ot));
  wt(fmt(Math.round(G.score()*cl(ot/.7,0,1))),W/2,134,46,OL);
  if(G.extra)wt(G.extra(),W/2,158,14,'#8a5a3b');
  if(rec){const s=font('新紀錄，喵！',14*.92,0),w=g.measureText(s).width+28,p=1+.06*Math.sin(tt*6);g.save();g.translate(W/2,180);g.scale(p,p);RR(-w/2,-12,w,24,12,'#ffd23f',2.5);wt(s,0,5,14,OL);g.restore()}
@@ -28524,7 +28584,7 @@ function drawShelf(){
   try{RR(36,382,328,174,16,'#f4c983',3);g.fillStyle='rgba(255,255,255,.3)';g.fillRect(52,388,296,3);
 G.skins.forEach((k,i)=>{const {x,y}=skinAt(i),lk=!isOpen(i);
  C(x,y,18,lk?'#cbb89a':'#fff6e6',3);
- if(!lk){g.save();g.beginPath();g.arc(x,y,16,0,7);g.clip();spr('c0',x,y+23,40,tint(i));g.restore();acc(k.a,x,y-11,.45)}
+ if(!lk){g.save();g.beginPath();g.arc(x,y,16,0,7);g.clip();spr('c0',x,y+23,40,tint(i));g.restore()}
  else{RR(x-6,y-7,12,10,3,'#8a6a4a',0);g.beginPath();g.arc(x,y-7,4.5,Math.PI,0);g.strokeStyle='#8a6a4a';g.lineWidth=2.5;g.stroke();wt(k.need!==undefined?String(k.need):k.lv?'Lv'+k.lv:k.ev?'✿':k.epi?'♥':'★',x,y+14,k.m?10:9,OL)}
  if(i===skin&&!lk){g.strokeStyle='#ff8a3d';g.lineWidth=3;g.beginPath();g.arc(x,y,21,0,7);g.stroke()}});
 wt(SK().n,W/2,544,13,OL)}finally{g=g0}}
@@ -28535,7 +28595,7 @@ function drawToasts(){
  g.globalAlpha=Math.max(0,Math.min(1,q.age*5,(2.6-q.age)*3));
  g.save();g.translate(W/2,y+h/2);g.scale(k,k);g.translate(-W/2,-(y+h/2));
  RR(50,y,300,h,16,q.big?'#fff1c2':'#fff6e6',3);
- tx(localText(q.h),W/2,y+22,q.big?18:16,q.big?'#ff8a3d':'#ffb703');
+ (q.big?slamTx:popTx)(localText(q.h),W/2,y+22,q.big?18:16,q.big?'#ff8a3d':'#ffb703',q.age);
  wt(q.a,W/2,y+43,14,'#2f7a1f',0,276);if(q.b)wt(q.b,W/2,y+62,12,'#d9822b',0,276);
  g.restore();g.globalAlpha=1}
 function drawParts(){parts.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/1.4);g.save();g.translate(p.x,p.y);g.rotate(p.r);g.fillStyle=p.col;g.fillRect(-4,-2.5,8,5);g.restore()});g.globalAlpha=1}

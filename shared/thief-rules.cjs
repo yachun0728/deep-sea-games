@@ -1,5 +1,5 @@
 const thiefRules = (() => {
-  const rulesVersion=3;
+  const rulesVersion=4;
   // Older versions are kept so leaderboard rounds started on an older client still replay identically.
   const TUNING={
     1:{v0:280,vMax:420,vRamp:.02,drain:4,drainFruit:5,drainDist:.002,drainCap:Infinity,basket:50,slipper:80,bEarly:.45,bMid:.75,bLate:.75,bMidAt:400,bLateAt:400,slipMin:1.8,slipA:3,slipB:5.5,slipRamp:.0005},
@@ -7,6 +7,10 @@ const thiefRules = (() => {
   };
   // Version 3 = version 2 plus Zoomies (a fruit streak), golden fruit and the shopkeeper's fury volleys.
   TUNING[3]={...TUNING[2],v3:true,streak:10,zoomTime:5,zoomFruit:5,zoomPush:2,goldFirst:6000,goldGapA:16000,goldGapB:22000,goldScore:15,goldPush:10,rageFirst:9000,rageGapA:9000,rageGapB:13000,rageLead:1,rageGap:.75,rageWarn:.7,rageBonus:20};
+  // Version 4 (2026-11-26) = version 3 tuned for pace: a faster start that reaches top speed in about 20 s, each carried fruit
+  // slows the cat by 3% instead of 7%, a fish gives a 1.5 s dash, the shopkeeper closes in at half speed for the first 20 s,
+  // the first hit of a run costs half, and rows sometimes come as basket walls or a zigzag of walls (one lane always open).
+  TUNING[4]={...TUNING[3],v4:true,v0:300,vMax:460,vRamp:.016,weight:.03,dashTime:1.5,dashMul:1.15,graceTime:25,graceMul:.5,firstHit:.5,basket:25,slipper:38,drainCap:3,wallFrom:2500,wallP:.18,zigFrom:5000,zigP:.1,zigRows:3,distDiv:125,fruitPts:3};
   function create(random=Math.random,version=rulesVersion) {
     const K=TUNING[version]||TUNING[1];
     const G={}, W=400,H=560,reduceMotion=false;
@@ -14,15 +18,28 @@ const thiefRules = (() => {
     const T=()=>()=>'',die=reason=>{dead=reason};
     let dead=false,shake=0;
 const LX=[105,200,295],CYT=430,fc=['#e63946','#ff9f1c','#7bd88f'];
-let dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx,stats,streak,zoom,extra,goldAt,rageAt,rage;
-G.reset=()=>{dist=0;v=K.v0;L=0;fruits=0;gb=130;lane=1;cx=200;jt=0;stun=0;rows=[];slips=[];warn=[];nextRow=120;nextSlip=2.5;fx=[];streak=0;zoom=0;extra=0;goldAt=K.goldFirst||Infinity;rageAt=K.rageFirst||Infinity;rage=null;
+let dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx,stats,streak,zoom,extra,goldAt,rageAt,rage,clock,dash,hits,lastFree,zig;
+G.reset=()=>{dist=0;v=K.v0;L=0;fruits=0;gb=130;lane=1;cx=200;jt=0;stun=0;rows=[];slips=[];warn=[];nextRow=120;nextSlip=2.5;fx=[];streak=0;zoom=0;extra=0;goldAt=K.goldFirst||Infinity;rageAt=K.rageFirst||Infinity;rage=null;clock=0;dash=0;hits=0;lastFree=1;zig=0;
 // Mission counters only: nothing below reads them, so replays and scores are unchanged.
 stats={apples:0,oranges:0,greens:0,fish:0,jumps:0,dodges:0,maxCarry:0,clean:0,bestClean:0,zooms:0,golds:0,rages:0}};
-G.score=()=>Math.floor(dist/50)+fruits*5+extra;
+// Version 4 runs faster and rounds last longer, so distance and fruit count for less to keep BONUS points per minute close to version 3.
+G.score=()=>Math.floor(dist/(K.distDiv||50))+fruits*(K.fruitPts||5)+extra;
 G.extra=()=>T('fr')(fruits);
 G.down=p=>{if(p.x<133)lane=Math.max(0,lane-1);else if(p.x>267)lane=Math.min(2,lane+1);else if(jt<=0)jt=.55};
-function hurt(n){stats.clean=0;streak=0;if(rage)rage.hit=1;gb-=n;stun=.8;shake=reduceMotion?0:.25;L=Math.max(0,L-2);fx.push({s:'-'+n,x:cx,y:CYT-40,t:0})}
+function hurt(n){if(K.v4&&!hits++)n=Math.round(n*K.firstHit);stats.clean=0;streak=0;if(rage)rage.hit=1;gb-=n;stun=.8;shake=reduceMotion?0:.25;L=Math.max(0,L-2);fx.push({s:'-'+n,x:cx,y:CYT-40,t:0})}
+// Version 4 picks its own free lane and may force walls; versions 1-3 never reach that branch, so their random draws are unchanged.
+function spawnRow4(){
+let free,wall=false;
+if(zig>0){free=lastFree===0?1:lastFree===2?1:(random()<.5?0:2);zig--;wall=true}
+else{free=(random()*3)|0;if(dist>=K.zigFrom&&random()<K.zigP){zig=K.zigRows-1;wall=true}else if(dist>=K.wallFrom&&random()<K.wallP)wall=true}
+lastFree=free;
+const gold=dist>=goldAt;if(gold)goldAt=dist+rnd(K.goldGapA,K.goldGapB);
+for(let l=0;l<3;l++){
+if(l===free&&gold)rows.push({t:'g',l,y:-30});
+else if(l===free){const r=random();if(r<.65)rows.push({t:'f',l,y:-30,c:(random()*3)|0});else if(L>=3||r<.75)rows.push({t:'x',l,y:-30})}
+else if(wall||random()<(dist>K.bLateAt?K.bLate:dist>K.bMidAt?K.bMid:K.bEarly))rows.push({t:'b',l,y:-30,c:(random()*3)|0})}}
 function spawnRow(){
+if(K.v4)return spawnRow4();
 const free=(random()*3)|0;
 // The golden fruit replaces the free lane's item, so versions 1 and 2 draw exactly the same random numbers as before.
 const gold=K.v3&&dist>=goldAt;if(gold)goldAt=dist+rnd(K.goldGapA,K.goldGapB);
@@ -31,10 +48,11 @@ if(l===free&&gold)rows.push({t:'g',l,y:-30});
 else if(l===free){const r=random();if(r<.65)rows.push({t:'f',l,y:-30,c:(random()*3)|0});else if(L>=3||r<.75)rows.push({t:'x',l,y:-30})}
 else if(random()<(dist>K.bLateAt?K.bLate:dist>K.bMidAt?K.bMid:K.bEarly))rows.push({t:'b',l,y:-30,c:(random()*3)|0})}}
 G.update=dt=>{
-v=Math.min(K.vMax,K.v0+dist*K.vRamp)*(zoom>0?1.08:1-.07*L);dist+=v*dt;
+clock+=dt;if(dash>0)dash-=dt;
+v=Math.min(K.vMax,K.v0+dist*K.vRamp)*(zoom>0?1.08:1-(K.weight||.07)*L)*(dash>0?K.dashMul:1);dist+=v*dt;
 // Zoomies: no weight, slightly faster, and the gap to the shopkeeper grows instead of shrinking.
 if(zoom>0){zoom-=dt;gb=Math.min(170,gb+K.zoomPush*dt)}
-else gb=Math.min(170,gb-(K.drain+L*K.drainFruit+Math.min(K.drainCap,dist*K.drainDist))*dt);
+else gb=Math.min(170,gb-(K.drain+L*K.drainFruit+Math.min(K.drainCap,dist*K.drainDist))*dt*(K.v4&&clock<K.graceTime?K.graceMul:1));
 cx+=(LX[lane]-cx)*Math.min(1,dt*14);
 if(jt>0)jt-=dt;if(stun>0)stun-=dt;
 stats.clean+=dt;if(stats.clean>stats.bestClean)stats.bestClean=stats.clean;
@@ -57,7 +75,7 @@ else if(!r.g&&!air&&near){r.g=1;
  if(r.t==='f'){if(L<5||zoom>0){if(L<5)L++;fruits++;stats[['apples','oranges','greens'][r.c%3]]++;if(L>stats.maxCarry)stats.maxCarry=L;
    if(K.v3){if(zoom>0)extra+=K.zoomFruit;else if(++streak>=K.streak){streak=0;zoom=K.zoomTime;stats.zooms++}}}}
  else if(r.t==='g'){extra+=K.goldScore;gb=Math.min(170,gb+K.goldPush);streak=0;zoom=K.zoomTime;stats.golds++}
- else{L=0;gb+=30;stats.fish++}}}
+ else{L=0;gb+=30;stats.fish++;if(K.v4)dash=K.dashTime}}}
 rows=rows.filter(r=>r.y<H+40&&!r.g);
 fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.8);
 if(gb<=0)die('caught')};
@@ -71,7 +89,7 @@ if(gb<=0)die('caught')};
       G.down({x:points[code][0],y:points[code][1],id:1});
       return true;
     },advance:dt=>G.update(dt),score:()=>G.score(),
-      get dead(){return dead},snapshot:()=>({dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx,shake,stats:{...stats},streak,zoom,extra,rage:rage?{left:rage.left,hit:rage.hit}:null})};
+      get dead(){return dead},snapshot:()=>({dist,v,L,fruits,gb,lane,cx,jt,stun,rows,slips,warn,nextRow,nextSlip,fx,shake,stats:{...stats},streak,zoom,extra,dash,rage:rage?{left:rage.left,hit:rage.hit}:null})};
   }
   return {create,rulesVersion,inputCount:5,input:(state,code)=>state.input(code),advance:(state,dt)=>state.advance(dt),score:state=>state.score()};
 })();
