@@ -8,22 +8,23 @@ const pedestrianHellRules = (() => {
   /* 第 1～4 杯慢慢變難；第 5 杯起是超級地獄（使用者指定）：車快、車密、警告和綠燈都短。
      直行車仍固定在畫面外約 1 秒就跳警告，再快也看得到 */
   function levelOf(cup){
-    if(cup>=5){const h=Math.min(cup-5,4);return {hell:true,speed:1.76+.05*h,wait:.45-.015*h,gap:2.55-.07*h,density:.86,warn:.8-.025*h,extra:2,dogs:1,green:2.7-.08*h};}
+    if(cup>=5){const h=Math.min(cup-5,4);return {hell:true,speed:1.96+.05*h,wait:.36-.01*h,gap:2.4-.06*h,density:.86,warn:.76-.022*h,extra:2,dogs:1,green:2.7-.08*h};}
     const L=cup-1;return {hell:false,speed:1+.09*L,wait:1-.08*L,gap:4-.2*L,density:.68+.025*L,warn:1.3-.07*L,extra:Math.min(L,2),dogs:L>=2?1:0,green:Math.max(3.4,5.2-.3*L)};
   }
   /* 每一關是「去買一杯飲料的一段路」，只放一兩樣重點，不全部堆在一起（使用者指定）。
      第 1 關是基本街道；第 9 杯起輪流重走第 5～8 關的路，只有速度照難度加快 */
   function themeOf(cup){return cup<=8?cup:5+(cup-9)%4;}
   const STORIES={
-    2:{plan:['closed','junk'],steps:true},          /* 老街的騎樓高高低低 */
+    2:{plan:['occupied','junk'],steps:true},          /* 老街的騎樓高高低低 */
     3:{plan:['cross','zebra']},                     /* 飲料店在馬路對面 */
     4:{plan:['green','junk']},                      /* 走專用道也有機車 */
     5:{plan:['junk','junk'],pulls:2},               /* 下班時間，大家都臨停 */
     6:{plan:['zebra','green']},                     /* 放學路上 */
-    7:{plan:['closed','cross'],steps:true,pulls:1}, /* 市場旁邊的老路 */
+    7:{plan:['occupied','cross'],steps:true,pulls:1}, /* 市場旁邊的老路 */
     8:{plan:['cross','green'],pulls:1}              /* 最遠的那一家 */
   };
-  const SEGLEN={closed:6,junk:6,cross:6,zebra:6};
+  const GARBAGE_STOP=3.6,PARK_CLEAR=9;
+  const SEGLEN={occupied:8,junk:6,cross:6,zebra:6};
   /* 突然靠邊臨停：停幾秒就開走 */
   const PULL_STAY=3.8,PULL_OUT=.8,PULL_CARS=['car_white','car_suv','carred','cargrey'];
   /* 紅綠燈：行人紅燈時橫向車流通過；紅燈最後一段不再出車，把路口清空 */
@@ -43,8 +44,12 @@ const pedestrianHellRules = (() => {
     return bags[key].pop();
   }
   var SINGLE=['pots','moneytree','bougain','gas','tyre','bluepot','blocker','stools','nopark','scooter1','cat1','cat1'];
-  /* 路緣那一欄放台灣常見的街道設施；曬東西只放在靠店家的最左欄 */
-  var STREET=['hydrant','box_green','mailbox','box_grey','telecom','tree','box_paint','noparksign'];
+  /* 靠馬路那一欄常擺出來的東西。騎樓裡不會有變電箱、消防栓這類路邊設施（使用者指定）。
+     清單固定 8 項：第 1 關的地圖格局才會和之前一樣。曬東西只放在靠店家的最左欄 */
+  var STREET=['pots','stools','nopark','gas','moneytree','blocker','bluepot','tyre'];
+  /* 佔用騎樓：小吃店的桌椅、客人和雜物擺到走道上，人還是鑽得過去 */
+  var EATERY=['eat_diner','eat_table','eat_stools','eat_diner','eat_freezer','eat_cart','eat_boxes','eat_table','eat_menu','eat_fan','gas'];
+  var EATWIDE=['diners','stall_wide'],EATTALL=['dinersv'],JAM_CHANCE=.35;
   var SIDESCOOTER=['scooterside','scooterside_blue','scooterside_grey'];
   /* 停車方向：原圖車頭朝左，名稱結尾的 ~ 代表左右翻轉成朝右。
      靠店面那一欄車頭朝店面（左），騎樓其他位置朝馬路（右），馬路上的車頭朝人行道（左） */
@@ -91,6 +96,10 @@ const pedestrianHellRules = (() => {
       /* 超級地獄：走專用道的路線再多一段下去走馬路（專用道本身離車流遠，太輕鬆） */
       var plan=shuffle(story.plan.concat(level.hell&&story.plan.indexOf('green')>=0?['junk']:[]));
       var spare=GOAL-5-plan.reduce(function(n,k){return n+SEGLEN[k];},0),gap=Math.max(1,Math.floor(spare/(plan.length+1)));
+      /* 擋住之前一定留一個走出去的縫、繞過之後留一個走回來的縫：
+         出口那兩步不停車、不臨停、不放黑狗和倒車機車（畫面上也不立柱子） */
+      function mark(){info[r-1].gap=true;}
+      function exit(before,out){shift(2,before);mark();shift(3,out);mark();}
       function arcade(n){
         for(var j=0;j<n&&r<GOAL-2;j++){if(rng()<.55)shift(between(0,ARCADE-1),level.density);else add([path],level.density);}
       }
@@ -117,13 +126,26 @@ const pedestrianHellRules = (() => {
             map.push(cells);info.push({z:zone,h:0});r++;
           }
           walkways.push({from:from-1,to:r,col:ride,wait:.6,warn:0});
-          zone='greenend';shift(3,1);
+          zone='greenend';shift(3,1);mark();
           zone='gone';add([],1);if(rng()<.5)add([],1);
-          zone='arcade';shift(2,.35);
+          zone='arcade';shift(2,.35);mark();
+        }else if(kind==='occupied'){
+          /* 一直一橫交錯的窄路：每隔一列就得往旁邊鑽一次，想下去走馬路也可以。
+             偶爾（約三次一次）整排塞死，只能走到外面繞過去 */
+          var jam=rng()<JAM_CHANCE;
+          zone='occupied';len=jam?between(2,3):between(5,6);
+          for(j=0;j<len;j++){
+            if(j%2)shift([0,1,2].filter(function(c){return c!==path;})[between(0,1)],1);else add([path],1);
+          }
+          if(jam){
+            exit(1,1);
+            zone='jammed';add([],1);if(rng()<.5)add([],1);
+            zone='occupied';shift(2,1);mark();
+          }
         }else{
-          shift(2,.5);shift(3,1);
-          zone=kind==='closed'?'closed':'arcade';len=between(2,3);for(j=0;j<len;j++)add([],1);
-          zone='arcade';shift(2,.4);
+          exit(.5,1);
+          len=between(2,3);for(j=0;j<len;j++)add([],1);
+          zone='arcade';shift(2,.4);mark();
         }
         zone='arcade';
       });
@@ -139,6 +161,8 @@ const pedestrianHellRules = (() => {
       return map;
     }
   }
+  function eatery(r){var z=info[r]&&info[r].z;return z==='occupied'||z==='jammed';}
+  function byEatery(r){return eatery(r-1)||eatery(r)||eatery(r+1);}      /* 窄路和它的出入口 */
   function decorate(blocks){
     var map=blocks.map(function(){return [null,null,null,null,null];});
     function put(img,c,r,w,h){
@@ -147,10 +171,16 @@ const pedestrianHellRules = (() => {
     }
     for(var r=0;r<blocks.length;r++)for(var c=0;c<ARCADE;c++){
       if(!blocks[r][c]||map[r][c])continue;
-      if(info[r].z==='closed'){put(r%2?'enclosure~':'enclosure',0,r,ARCADE,1);continue;}   /* 騎樓外推：整排封起來 */
       var right=c+1<ARCADE&&blocks[r][c+1]&&!map[r][c+1];
-      var up=r+1<blocks.length&&blocks[r+1][c]&&!map[r+1][c]&&info[r+1].z!=='closed';
+      var up=r+1<blocks.length&&blocks[r+1][c]&&!map[r+1][c];
       var img;
+      if(eatery(r)){
+        if(right&&rng()<.3)put(draw1('ew',EATWIDE),c,r,2,1);
+        else if(up&&eatery(r+1)&&rng()<.15)put(draw1('et',EATTALL),c,r,1,2);
+        else put(draw1('es',EATERY),c,r,1,1);
+        continue;
+      }
+      if(up&&eatery(r+1))up=false;
       if(right&&rng()<.65){
         img=c===0?draw1('w0',WIDE):draw1('w1',WIDE.filter(function(n){return n!=='quilt';}));
         put(img==='scooterside'?sideScooter(c):img,c,r,2,1);
@@ -182,11 +212,12 @@ const pedestrianHellRules = (() => {
     return false;
   }
   /* 路口和行人專用道上不放狗、鄰居和臨停車 */
-  function nearCross(r){var z=info[r]&&info[r].z;return z==='cross'||z==='curb'||z==='green'||z==='greenend';}
+  function nearCross(r){var z=info[r]&&info[r].z;return z==='cross'||z==='curb'||z==='green'||z==='greenend'||!!(info[r]&&info[r].gap);}
+  function opening(r){return !!(info[r]&&info[r].gap);}
   function placeReverser(lo,hi){
     for(var k=0;k<60;k++){
       var r=between(lo,hi),c=between(1,ARCADE-1),it=rows[r][c];
-      if(nearCross(r)||info[r].z!=='arcade'||rows[r][c-1]||(it&&(it.w>1||it.h>1||it.kind)))continue;
+      if(nearCross(r)||byEatery(r)||info[r].z!=='arcade'||rows[r][c-1]||(it&&(it.w>1||it.h>1||it.kind)))continue;
       if(!it&&!solvable(1,0,[[c,r]]))continue;
       if(!solvable(1,0,[[c-1,r]],[[c,r]]))continue;
       var s={img:sideScooter(c),c:c,r:r,w:1,h:1,kind:'rev',state:'idle',time:0,dx:0};
@@ -196,7 +227,7 @@ const pedestrianHellRules = (() => {
   function placeDog(lo,hi){
     for(var k=0;k<60;k++){
       var r=between(lo,hi),c=between(0,ARCADE-1);
-      if(nearCross(r)||rows[r][c]||rows[r-1][c]&&rows[r+1][c]||!solvable(1,0,[[c,r]]))continue;
+      if(nearCross(r)||byEatery(r)||rows[r][c]||rows[r-1][c]&&rows[r+1][c]||!solvable(1,0,[[c,r]]))continue;
       var d={img:'dog',c:c,r:r,w:1,h:1,kind:'dog',state:'sleep',time:0,ox:0,oy:0,slide:0};
       rows[r][c]=d;dogs.push(d);return;
     }
@@ -211,8 +242,14 @@ const pedestrianHellRules = (() => {
     var plan=shuffle(GROUPS.slice()),r=between(7,9);
     plan.forEach(function(group){
       var len=group.reduce(function(n,k){return n+UNIT[k];},0),cells=[],i;
-      for(var tries=0;tries<12&&crossings.some(function(x){return r+len>x.base-2&&r<x.base+CROSS_ROWS+2;});tries++)r++;
-      if(r+len>GOAL-4||crossings.some(function(x){return r+len>x.base-2&&r<x.base+CROSS_ROWS+2;}))return;
+      function taken(){
+        /* 路口上方不能緊接著路邊停車：紅燈時直行車排在停止線後面，會把停車旁唯一能走的車道塞滿，人會卡很久 */
+        if(crossings.some(function(x){return r+len>x.base-2&&r<x.base+CROSS_ROWS+PARK_CLEAR;}))return true;
+        for(var y=r;y<r+len;y++)if(opening(y))return true;      /* 出口旁邊不停車 */
+        return false;
+      }
+      for(var tries=0;tries<14&&taken();tries++)r++;
+      if(r+len>GOAL-4||taken())return;
       for(i=0;i<len;i++)cells.push([ARCADE,r+i]);
       if(!solvable(1,0,cells)){r+=3;return;}
       var row=r;
@@ -322,6 +359,11 @@ const pedestrianHellRules = (() => {
         var line=q.r+2.2;
         if((q.state==='warn'||q.state==='stay')&&v.y>=line&&y<line){y=line;v.stopped=true;}
       });
+      if(v.hold>0&&v.y>=v.holdAt&&y<=v.holdAt){
+        if(!v.waiting){v.waiting=true;emit('garbageStop',{});}
+        y=v.holdAt;v.stopped=true;v.hold-=dt;
+        if(v.hold<=0)emit('garbageGo',{});
+      }
       var front=last[v.lane];
       if(front&&y<front.y+front.len+.45){y=Math.min(v.y,front.y+front.len+.45);v.stopped=front.stopped||v.stopped;}
       if(was&&!v.stopped)v.ramp=.15;
@@ -414,8 +456,9 @@ const pedestrianHellRules = (() => {
   function callGarbage(){
     emit('garbage',{});
     spawnCar(4,{img:'v_garbage',len:2.8,v:3.4,n:'垃圾車'});laneWait[4]=3.6;
+    var truck=cars[cars.length-1];truck.hold=GARBAGE_STOP;truck.holdAt=P.r+3;          /* 開到前面停下來收垃圾 */
     var spots=[],r,c;
-    for(r=P.r+2;r<=Math.min(P.r+7,GOAL-1);r++)for(c=0;c<ARCADE;c++)if(!rows[r][c]&&!nearCross(r))spots.push([c,r]);
+    for(r=P.r+2;r<=Math.min(P.r+7,GOAL-1);r++)for(c=0;c<ARCADE;c++)if(!rows[r][c]&&!nearCross(r)&&!eatery(r))spots.push([c,r]);
     shuffle(spots);
     var chosen=[];
     spots.forEach(function(s){
@@ -428,7 +471,7 @@ const pedestrianHellRules = (() => {
     pending=pending.filter(function(p){
       p.time-=dt;if(p.time>0)return true;
       if(!rows[p.r][p.c]&&!playerAt(p.c,p.r)&&solvable(P.c,P.r,[[p.c,p.r]])){
-        var v={img:p.img,c:p.c,r:p.r,w:1,h:1,kind:'neighbor',time:4.2,age:0};
+        var v={img:p.img,c:p.c,r:p.r,w:1,h:1,kind:'neighbor',time:5.6,age:0};
         rows[p.r][p.c]=v;visitors.push(v);
         if(visitors.length%3===1)say('什麼都能等，垃圾車不能！',p.c,p.r,2);
       }
@@ -480,6 +523,7 @@ const pedestrianHellRules = (() => {
     const [dc,dr]=DIRS[code],c=P.c+dc,r=P.r+dr;
     if(c<0||c>=COLS||r<0||r>=rows.length||rows[r][c]){bump=.18;return false;}
     if(P.stop>JOG_TAIL)P.phase=0;
+    if(c>=ARCADE&&cars.some(function(v){return v.stopped&&v.lane===c&&r+.75>v.y+.08&&r+.2<v.y+v.len-.08;})){bump=.18;return false;}
     var rise=heightAt(c,r)-heightAt(P.c,P.r);
     P.hop=HOP+(rise>0?rise*STEP_UP:-rise*STEP_DOWN);
     if(rise&&!S.told.step){S.told.step=true;say('騎樓高低不平，上下會變慢',c,r,2.2);}
@@ -525,7 +569,7 @@ const pedestrianHellRules = (() => {
       const blocked=parkedAhead();
       const pulling=l===ARCADE&&pulls.some(function(q){return q.state!=='out';});
       if(!(blocked&&l===ARCADE)&&!pulling)spawnCar(l);
-      laneWait[l]=(blocked&&l===ARCADE+1?level.gap:(l===3?2:2.2)*level.wait)+rng()*1.5;
+      laneWait[l]=(blocked&&l===ARCADE+1?level.gap:(l===3?2:2.2)*level.wait)+rng()*(level.hell?1.1:1.5);
     });
     updateCrossings(dt);if(S.dead)return;
     updateWalkways(dt);updatePulls(dt);if(S.dead)return;
@@ -535,9 +579,9 @@ const pedestrianHellRules = (() => {
       const v=cars[i];
       if(v.lane===Math.round(P.x)&&P.y+.75>v.y+.08&&P.y+.2<v.y+v.len-.08){finish(false,'car',v.n);return;}
     }
-    ['closed','greenend'].forEach(function(z){
-      var ahead=info[P.r+(z==='closed'?2:0)];
-      if(ahead&&ahead.z===z&&!S.told[z]){S.told[z]=true;say(z==='closed'?'騎樓外推，沒路了！':'人行道到此為止',1,P.r+(z==='closed'?2:1),2.2);}
+    [['occupied',2,'佔用騎樓！借過一下'],['jammed',3,'塞死了，只能走外面'],['greenend',0,'人行道到此為止']].forEach(function(n){
+      var ahead=info[P.r+n[1]];
+      if(ahead&&ahead.z===n[0]&&!S.told[n[0]]){S.told[n[0]]=true;say(n[2],1,P.r+(n[1]||1),2.2);}
     });
     updateReversers(dt);if(S.dead)return;
     updateDogs(dt);updateGarbage(dt);
@@ -551,8 +595,8 @@ const pedestrianHellRules = (() => {
   }
   /* 排行榜只看買到幾杯珍奶 */
   function score(s){return s.cups;}
-  /* 第 2 版：劇情關卡、路口、長行人專用道、臨停車與超級地獄。改玩法時要加版本號並保留舊版回放 */
-  const rulesVersion=2;
+  /* 第 3 版：佔用騎樓改成鑽得過去的窄路（第 2 版是整段封死）。改玩法時要加版本號並保留舊版回放 */
+  const rulesVersion=3;
   return {rulesVersion,create,input,advance,score,levelOf,themeOf,across,CROSS_ROWS,inputCount:DIRS.length,REST,CLOSE,COLS,ARCADE,GOAL,JOG_TAIL,VIEW_ROWS,DIRS};
 })();
 if(typeof module!=='undefined')module.exports=pedestrianHellRules;

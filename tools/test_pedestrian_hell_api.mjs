@@ -5,6 +5,7 @@ import {readdirSync,readFileSync} from 'node:fs';
 import worker from '../backend/src/index.mjs';
 import R from '../shared/pedestrian-hell-rules.cjs';
 import V1 from '../shared/pedestrian-hell-rules-v1.cjs';
+import V2 from '../shared/pedestrian-hell-rules-v2.cjs';
 import T from '../shared/timed-replay.cjs';
 const sql=new DatabaseSync(':memory:');
 for(const file of readdirSync(new URL('../backend/migrations/',import.meta.url)).sort())sql.exec(readFileSync(new URL('../backend/migrations/'+file,import.meta.url),'utf8'));
@@ -40,9 +41,8 @@ function play(seed,target,E=R){
   return {cups:s.cups,cause:s.cause,ticks,moves};
 }
 // the new page reports rulesVersion; a page still open from the first release sends none and must use the frozen rules
-async function round(token,target,legacy=false){
-  const E=legacy?V1:R;
-  const ticket=await req('/api/v1/boards/rounds',legacy?{gameId:'pedestrian-hell'}:{gameId:'pedestrian-hell',rulesVersion:R.rulesVersion},token);assert.equal(ticket.status,201);
+async function round(token,target,E=R){
+  const ticket=await req('/api/v1/boards/rounds',E===V1?{gameId:'pedestrian-hell'}:{gameId:'pedestrian-hell',rulesVersion:E.rulesVersion},token);assert.equal(ticket.status,201);
   const run=play(ticket.body.state.seed,target,E),action=[run.ticks,...run.moves];
   assert.equal(T.verify(E,ticket.body.state.seed,action),run.cups);now+=run.ticks*10;
   return {...run,seed:ticket.body.state.seed,proof:{gameId:'pedestrian-hell',id:ticket.body.id,revision:0,action}};
@@ -66,12 +66,16 @@ try{
   assert.equal(sql.prepare("SELECT score FROM game_leaderboard WHERE game_id='pedestrian-hell' AND player_id=?").get(guest.body.id).score,first.cups);
   assert.equal((await send({...first.proof,action:[2,-1]},guest.body.token)).status,400);
   assert.equal((await req('/api/v1/boards/rounds',{gameId:'pedestrian-hell',rulesVersion:99},guest.body.token)).status,400,'unknown rules version');
-  const oldGuest=(await req('/api/v1/players',{})).body.token,old=await round(oldGuest,2,true);
-  const oldSaved=await send(old.proof,oldGuest);assert.equal(oldSaved.status,200);assert.equal(oldSaved.body.state.score,old.cups,'first-release page still settles');
-  assert.ok(old.cups>=2,'legacy round crossed streets: '+old.cups);
+  const older=[];
+  for(const E of [V1,V2]){
+    const token=(await req('/api/v1/players',{})).body.token,old=await round(token,2,E);
+    const done=await send(old.proof,token);assert.equal(done.status,200);assert.equal(done.body.state.score,old.cups,'older page still settles');
+    assert.ok(old.cups>=2,'older round crossed streets: '+old.cups);older.push(old.cups);
+  }
+  assert.equal(R.rulesVersion,3);
   // the longest possible round (until the shop closes) must still submit, and its replay cost is measured
   const long=await round((await req('/api/v1/players',{})).body.token,999);
   const t0=process.hrtime.bigint();T.verify(R,long.seed,long.proof.action);const ms=Number(process.hrtime.bigint()-t0)/1e6;
-  console.log(`PASS Just Want Boba Worker + SQLite: ${first.cups} cups saved; empty board, owner, unfinished/illegal proof, single settlement, duplicate, stale command, lower score, tie order, localized API, feed, stored row, rules v2 and a first-release (${old.cups} cups) round`);
+  console.log(`PASS Just Want Boba Worker + SQLite: ${first.cups} cups saved; empty board, owner, unfinished/illegal proof, single settlement, duplicate, stale command, lower score, tie order, localized API, feed, stored row, rules v3 plus v1 and v2 pages (${older.join(' and ')} cups)`);
   console.log(`longest round: ${long.cups} cups, ${long.ticks/100}s, ${long.moves.length} inputs, cause ${long.cause}, replay ${ms.toFixed(0)} ms on this Mac, body ${JSON.stringify(long.proof).length} bytes`);
 }finally{Date.now=nativeNow;sql.close();}

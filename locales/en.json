@@ -3214,10 +3214,6 @@
   "在棋盤上滑動轉向": "Swipe on the board to turn",
   "我只是想買珍奶": "I just want bubble tea",
   "騎樓被機車和攤販塞滿，只好繞到馬路上。一杯接一杯，看你能喝到幾杯！": "Scooters and stalls block the sidewalk, so you end up on the road. How many cups can you get?",
-  "點一下：往前一步": "Tap: one step forward",
-  "滑動：左右閃，往下滑後退": "Swipe: dodge left or right, swipe down to step back",
-  "方向鍵 / WASD 移動，空白鍵暫停": "Arrow keys / WASD to move, Space to pause",
-  "也可以用滑鼠點一下或拖曳": "Or click and drag with the mouse",
   "小心倒車機車、睡覺黑狗，還有垃圾車": "Watch for reversing scooters, sleeping dogs and the garbage truck",
   "載入中…": "Loading…",
   "載入失敗，請重新整理": "Failed to load. Please refresh.",
@@ -3258,7 +3254,6 @@
   "轉彎車不減速！": "Turning car, not slowing!",
   "轉彎車": "Taxi turning",
   "騎樓高低不平，上下會變慢": "Uneven floors slow you down",
-  "騎樓外推，沒路了！": "Shop walled off the arcade!",
   "人行道到此為止": "Sidewalk ends here",
   "啵！": "Pop!",
   "啾～啾～": "Sluuurp~",
@@ -3292,5 +3287,11 @@
   "百香雙響炮": "Passion fruit double topping",
   "冬瓜檸檬": "Winter melon lemon tea",
   "西瓜汁": "Watermelon juice",
-  "超級地獄：{n}": "Super hell: {n}"
+  "超級地獄：{n}": "Super hell: {n}",
+  "佔用騎樓！借過一下": "Tables on the sidewalk. Excuse me!",
+  "塞死了，只能走外面": "Dead end. Go around outside!",
+  "按住畫面：一直往前走（點一下走一步）": "Hold: keep walking (tap for one step)",
+  "左右滑：閃開；往下滑：後退": "Swipe sideways to dodge, down to step back",
+  "方向鍵 / WASD 移動，按住往前可一直走": "Arrow keys / WASD; hold forward to keep walking",
+  "空白鍵暫停；滑鼠按住也能往前": "Space pauses; holding the mouse walks too"
 }

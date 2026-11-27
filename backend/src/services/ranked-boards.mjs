@@ -1,6 +1,7 @@
 import berryTrailRules from '../../../shared/berry-trail-rules.cjs';
 import pedestrianHellRules from '../../../shared/pedestrian-hell-rules.cjs';
 import pedestrianHellRulesV1 from '../../../shared/pedestrian-hell-rules-v1.cjs';
+import pedestrianHellRulesV2 from '../../../shared/pedestrian-hell-rules-v2.cjs';
 import catMatchRules from '../../../shared/cat-match-rules.js';
 import onPitchRules from '../../../shared/on-pitch-rules.cjs';
 import breakoutRules from '../../../shared/breakout-rules.cjs';
@@ -87,8 +88,11 @@ const catV1 = timedBoard({...catRules, inputCount: 2, create: rng => catRules.cr
 const catV2 = timedBoard(catRules, catRules.rulesVersion);
 const babyV2 = timedBoard(babyRules, babyRules.rulesVersion);
 // Pedestrian hell v2 changed the streets; rounds from clients still open on v1 send no version and replay with v1.
-const pedV1 = timedBoard(pedestrianHellRulesV1);
-const pedV2 = timedBoard(pedestrianHellRules, pedestrianHellRules.rulesVersion);
+const pedBoards = new Map([
+  [undefined, timedBoard(pedestrianHellRulesV1)],
+  [2, timedBoard(pedestrianHellRulesV2, 2)],
+  [pedestrianHellRules.rulesVersion, timedBoard(pedestrianHellRules, pedestrianHellRules.rulesVersion)],
+]);
 // Each rules version keeps its own replay, so rounds started on an older client still verify.
 const thiefBoards = new Map([
   [undefined, timedBoard({...thiefRules, create: rng => thiefRules.create(rng, 1)})],
@@ -226,10 +230,11 @@ const boards = new Map([
   ['tetris', timedBoard(blockDropRules)],
   ['berry-trail', timedBoard(berryTrailRules)],
   ['pedestrian-hell', {
-    ...pedV1,
+    ...pedBoards.get(undefined),
     rulesVersion: pedestrianHellRules.rulesVersion,
-    create: version => (version === pedestrianHellRules.rulesVersion ? pedV2 : pedV1).create(),
-    apply: (state, action) => (state.rulesVersion === pedestrianHellRules.rulesVersion ? pedV2 : pedV1).apply(state, action),
+    supportedVersions: [2, pedestrianHellRules.rulesVersion],
+    create: version => (pedBoards.get(version) ?? pedBoards.get(undefined)).create(),
+    apply: (state, action) => pedBoards.get(state.rulesVersion)?.apply(state, action) ?? false,
   }],
   ['reaper', timedBoard(reaperRules)],
   ['sneak', {

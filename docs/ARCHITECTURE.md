@@ -400,4 +400,4 @@ Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsig
 
 ## 行人地獄（pedestrian-hell）
 
-同來源 iframe：`games/pedestrian-hell/play.html`（畫面、三語、聲音、動畫），父頁 `games/pedestrian-hell/game.js` 以 `window.deepSeaPed` 橋接追蹤與訪客排行榜。規則 `shared/pedestrian-hell-rules.cjs` 只用傳入的亂數，Worker 以 `timedBoard` 重播驗證。招牌牆、坐墊睡貓、路過貓、飲料款式與喝飲料動畫（`art/sip*.webp`，用到才載入）只影響畫面。關卡劇情、路口、行人專用道、臨停車與難度都在規則模組（`STORIES`、`levelOf`、`themeOf`）。目前規則為第 2 版（`rulesVersion`，開局時由新頁面回報）；沒回報版本的舊頁面由 Worker 用凍結的 `shared/pedestrian-hell-rules-v1.cjs` 重播，兩版共用同一個排行榜（第 1 關相同）。migration `0021_game_names_pedestrian_hell.sql`。
+同來源 iframe：`games/pedestrian-hell/play.html`（畫面、三語、聲音、動畫），父頁 `games/pedestrian-hell/game.js` 以 `window.deepSeaPed` 橋接追蹤與訪客排行榜。規則 `shared/pedestrian-hell-rules.cjs` 只用傳入的亂數，Worker 以 `timedBoard` 重播驗證。招牌牆、坐墊睡貓、路過貓、飲料款式與喝飲料動畫（`art/sip*.webp`，用到才載入）只影響畫面。關卡劇情、路口、行人專用道、臨停車與難度都在規則模組（`STORIES`、`levelOf`、`themeOf`）。目前規則為第 3 版（`rulesVersion`，開局時由頁面回報）；回報 2 的頁面用凍結的 `shared/pedestrian-hell-rules-v2.cjs` 重播，沒回報版本的首發版頁面用 `shared/pedestrian-hell-rules-v1.cjs`。各版共用同一個排行榜（分數都是杯數）。migration `0021_game_names_pedestrian_hell.sql`。
