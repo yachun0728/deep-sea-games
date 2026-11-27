@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "kind": "sprite-gen-request",
+  "engine": "component-row",
+  "character": {
+    "id": "hero-jog-up",
+    "description": "young Taiwanese adult, short black hair, grey T-shirt, olive knee shorts, blue-and-white flip-flops, black crossbody bag",
+    "base_image": "base-source.png"
+  },
+  "cell": {
+    "shape": "rect",
+    "width": 256,
+    "height": 384,
+    "safe_margin_x": 24,
+    "safe_margin_y": 36
+  },
+  "chroma_key": {
+    "name": "cyan",
+    "hex": "#00FFFF",
+    "rgb": [
+      0,
+      255,
+      255
+    ],
+    "selection": "auto",
+    "score": 222.11,
+    "min_subject_distance": 143.49,
+    "background": {
+      "mode": "flat",
+      "hex": "#00FF00",
+      "rgb": [
+        0,
+        255,
+        0
+      ],
+      "opaque_border_fraction": 1.0,
+      "border_coverage": 1.0,
+      "enclosed_background_pixels": 18,
+      "enclosed_material_pixels": 1,
+      "subject_pixels": 6352
+    },
+    "candidates": [
+      {
+        "name": "magenta",
+        "hex": "#FF00FF",
+        "score": 205.61,
+        "min_subject_distance": 202.99,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "green",
+        "hex": "#00FF00",
+        "score": 205.91,
+        "min_subject_distance": 146.65,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "cyan",
+        "hex": "#00FFFF",
+        "score": 222.11,
+        "min_subject_distance": 143.49,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "blue",
+        "hex": "#004DFF",
+        "score": 197.26,
+        "min_subject_distance": 118.5,
+        "clears_erase_radius": true
+      }
+    ],
+    "selection_reason": "highest 1st-percentile subject distance among the 4 candidate(s) clearing the 96 erase radius"
+  },
+  "states": {
+    "jog_up": {
+      "frames": 8,
+      "fps": 14,
+      "loop": true,
+      "action": "light jog moving AWAY from the viewer, seen from BEHIND, 8-frame run cycle. STRICT left/right alternation measured by position on screen: in frames 1,2,3,4 the leg on the LEFT SIDE OF THE IMAGE is kicked up behind with its flip-flop sole visible while the leg on the RIGHT side of the image is straight on the ground; in frames 5,6,7,8 it is mirrored: the leg on the RIGHT SIDE OF THE IMAGE is kicked up with sole visible while the LEFT side leg is straight on the ground. Frame 2 and frame 6 have the highest kick, frames 4 and 8 are airborne. Arms bent and swinging opposite to the legs. The bag stays on the same side of the body in all frames."
+    }
+  },
+  "style": "ink linework with muted watercolor, realistic proportions, same as the base image",
+  "layout": "taxonomy/v1",
+  "fit": {
+    "align_x": "centroid",
+    "align_y": "bottom",
+    "ground_frames": false
+  },
+  "chroma": {
+    "mode": "rgb",
+    "unmix_reach": 4,
+    "spill_max_fraction": 0.005
+  }
+}

@@ -25,5 +25,7 @@
 | `sheet-stall-wide-v1.png`、`sheet-stall-road-v1.png` | 騎樓與路邊小吃攤 |
 | `sheet-cats-v1.png`、`anim-cat-*` | 貓貓靜態姿勢與走路分格（坐墊上睡覺、趴坐騎樓、路過不擋路） |
 | `anim-*-raw-v1.png`、`anim-*-request.json` | 主角、鄰居、黑狗、橘貓的 sprite-gen 走路分格原圖與設定；打包成 `art/anim_*.webp` |
+| `anim-hero-jog*` | 主角改為小跑（三方向各 8 格）；背面為嚴格左右交替的重畫版，正面第 6 格有瑕疵、以第 2 格代替。`anim-hero-walk_*` 只剩站姿在用 |
+| `sheet-bus-long-v1.png` | 加長版公車與垃圾車；車道同步加寬為走道的 1.32 倍 |
 
 招牌店名為遊戲虛構，正式上架前需再確認是否撞到真實店家。
