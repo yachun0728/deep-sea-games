@@ -35,7 +35,7 @@ button:disabled{opacity:.6}
   <div id="start" class="screen">
     <h1>行人地獄<br><small style="font-size:20px">我只是想買珍奶</small></h1>
     <p>騎樓被機車和攤販塞滿，只好繞到馬路上。滑動閃避，活著走到珍奶店。</p>
-    <p>👆 點一下：往前一步<br>👈👉 滑動：左右閃、往下滑後退<br>走上馬路時，看到上面的 <b>⚠ 警告</b>就先別去那一道<br><b>路邊停車</b>要繞外側，機車也會走到外側<br>小心：<b>倒車機車</b>、<b>睡覺黑狗</b>，還有<b>垃圾車</b></p>
+    <p>👆 點一下：往前一步<br>👈👉 滑動：左右閃、往下滑後退<br>走上馬路時，看到上面的 <b>⚠ 警告</b>就先別去那一道<br><b>路邊停車</b>要繞到外側車道，看準空檔再走<br>小心：<b>倒車機車</b>、<b>睡覺黑狗</b>，還有<b>垃圾車</b></p>
     <button id="go" type="button" disabled>載入中…</button>
   </div>
   <div id="end" class="screen hide">
@@ -57,7 +57,7 @@ button:disabled{opacity:.6}
 
   /* ---------- 素材 ---------- */
   var NAMES=('pots moneytree bougain gas tyre bluepot blocker stools radish nopark dog dogup '+
-    'scooterside bathtub uncle quilt recycler diners carside_red carside_grey carside_van carred cargrey scooterside_blue scooterside_grey hydrant transformer mailbox telecom tree noparksign scooterstack dinersv '+
+    'scooterside bathtub uncle quilt recycler diners carside_red carside_grey carside_van carred cargrey scooterside_blue scooterside_grey car_suv car_white truck_parked cones box_green box_grey box_paint stall_wide stall_road hydrant mailbox telecom tree noparksign scooterstack dinersv '+
     'v_delivery v_auntie v_taxi v_truck v_bus v_garbage '+
     'hero_idle hero_walk1 hero_walk2 hero_scared hero_happy nb_auntie nb_uncle shop wall '+
     's_pharmacy s_dumpling s_keys s_barber s_herbtea s_ribs s_moto s_buffet '+
@@ -140,13 +140,13 @@ button:disabled{opacity:.6}
   }
   var SINGLE=['pots','moneytree','bougain','gas','tyre','bluepot','blocker','stools','nopark','scooter1'];
   /* 路緣那一欄放台灣常見的街道設施；曬東西只放在靠店家的最左欄 */
-  var STREET=['hydrant','transformer','mailbox','telecom','tree','noparksign'];
+  var STREET=['hydrant','box_green','mailbox','box_grey','telecom','tree','box_paint','noparksign'];
   var SIDESCOOTER=['scooterside','scooterside_blue','scooterside_grey'];
   /* 停車方向：原圖車頭朝左，名稱結尾的 ~ 代表左右翻轉成朝右。
      靠店面那一欄車頭朝店面（左），騎樓其他位置朝馬路（右），馬路上的車頭朝人行道（左） */
   function facing(name,c){return c===0?name:name+'~';}
   function sideScooter(c){return facing(draw1('sc',SIDESCOOTER),c);}
-  var WIDE=['scooterside','bathtub','uncle','quilt','recycler','diners','scooterside','carside_red','carside_grey','carside_van'];  /* 汽車一律橫停 */
+  var WIDE=['scooterside','bathtub','uncle','quilt','recycler','diners','scooterside','carside_red','carside_grey','carside_van','stall_wide'];  /* 汽車一律橫停 */
   var TALL=['scooterstack','scooterstack','dinersv'];
 
   /* 先走出一條保證可通的路徑，再把其他騎樓格塞滿東西。
@@ -302,27 +302,33 @@ button:disabled{opacity:.6}
     });
   }
 
-  /* 路邊停車：沿著馬路直停在紅線旁的內側車道，行人只能繞到外側。優先放在騎樓全擋的路段 */
+  /* 路邊停車：沿著紅線停在內側車道，行人只能繞到外側。照台灣常見樣子成排停放：
+     汽車一台接一台（有的壓著紅線跨上路緣）、帆布貨車旁擺三角錐、機車停在白線格裡 */
+  var CARS=['car_white','car_suv','carred','car_white','cargrey','car_suv'];
+  var GROUPS=[['car','car'],['scooters'],['truck'],['car','car','car'],['stall'],['scooters','car']];
+  var UNIT={car:2,scooters:2,truck:3,stall:3};               /* 各占幾列；貨車含下方一列三角錐 */
   function placeParked(){
-    var spots=[],r;
-    for(r=7;r<GOAL-5;r++){
-      var full=!!(rows[r][0]&&rows[r][1]&&rows[r][2]);
-      spots.push({r:r,score:Math.random()+(full?1:0)});
-    }
-    spots.sort(function(a,b){return b.score-a.score;});
-    var types=['car','stack','car','pair','stack','pair'],cars2=['carred','cargrey'];
-    spots.forEach(function(sp){
-      var r=sp.r;
-      if(parked.length>=6||parked.some(function(q){return Math.abs(q.r-r)<6;}))return;
-      if(!solvable(1,0,[[ARCADE,r],[ARCADE,r+1]]))return;
-      var type=types[parked.length];
-      function item(img,row,h){
-        var it={img:img,c:ARCADE,r:row,w:1,h:h,kind:'parked'},y;
+    var plan=GROUPS.slice().sort(function(){return Math.random()-.5;}),r=between(7,9);
+    plan.forEach(function(group){
+      var len=group.reduce(function(n,k){return n+UNIT[k];},0),cells=[],i;
+      if(r+len>GOAL-4)return;
+      for(i=0;i<len;i++)cells.push([ARCADE,r+i]);
+      if(!solvable(1,0,cells)){r+=3;return;}
+      var row=r;
+      function item(img,h,off){
+        var it={img:img,c:ARCADE,r:row,w:1,h:h,kind:'parked',off:off||0},y;
         for(y=0;y<h;y++)rows[row+y][ARCADE]=it;
+        row+=h;
       }
-      if(type==='pair'){item(draw1('rs',SIDESCOOTER),r,1);item(draw1('rs',SIDESCOOTER),r+1,1);}
-      else item(type==='stack'?'scooterstack':cars2[parked.length%4?1:0],r,2);
-      parked.push({r:r,type:type});
+      group.forEach(function(k){
+        if(k==='car')item(draw1('cr',CARS),2,Math.random()<.35?-.2:0);   /* off<0：往人行道壓過去 */
+        else if(k==='truck'){item('cones',1);item('truck_parked',2);}
+        else if(k==='stall')item('stall_road',3);
+        else if(Math.random()<.5)item('scooterstack',2);
+        else{item(draw1('rs',SIDESCOOTER),1);item(draw1('rs',SIDESCOOTER),1);}
+      });
+      parked.push({r:r,len:len,type:group.indexOf('scooters')>=0?'scooters':group[0],group:group});
+      r+=len+between(4,6);
     });
   }
 
@@ -344,14 +350,16 @@ button:disabled{opacity:.6}
   function playerAt(c,r){return (P.c===c&&P.r===r)||(P.k<1&&P.fc===c&&P.fr===r);}
 
   /* ---------- 車流 ---------- */
+  /* 前面有路邊停車時，行人只能沿外側車道前進後退，又是迎著車走：
+     內側車道不再出車，外側車道拉長間隔，才有走得過去的空檔 */
+  function parkedAhead(){return parked.some(function(q){return q.r+q.len>cam-1&&q.r<cam+viewRows()+8;});}
+  var GAP=4;
   var KINDS={
     3:[{img:'v_delivery',len:.9,v:6.2,n:'外送'},{img:'v_auntie',len:.9,v:6.6,n:'機車'}],
     4:[{img:'v_taxi',len:1.6,v:5.4,n:'小黃'},{img:'v_truck',len:1.8,v:5,n:'貨車'},{img:'v_bus',len:2.6,v:4,n:'公車'}]
   };
   function spawnCar(lane,kind){
     var k=kind||pick(KINDS[lane]),v=k.v,y=cam+viewRows()+k.v*1.0,name=k.n;
-    /* 前方有路邊停車：機車在畫面外就先繞到外側車道，跟一般來車一樣先警告 */
-    if(lane===ARCADE&&parked.some(function(q){return q.r+2>cam-3&&q.r<y+k.len;})){lane=ARCADE+1;name='繞行機車';}
     cars.forEach(function(o){          /* 同車道不超車、不重疊 */
       if(o.lane===lane){v=Math.min(v,o.v);y=Math.max(y,o.y+o.len+1.2);}
     });
@@ -437,7 +445,10 @@ button:disabled{opacity:.6}
     var target=P.y-2.6;cam+=(target-cam)*Math.min(1,dt*10);
     [3,4].forEach(function(l){
       laneWait[l]-=dt;
-      if(laneWait[l]<=0){spawnCar(l);laneWait[l]=(l===3?2:2.2)+Math.random()*1.5;}
+      if(laneWait[l]>0)return;
+      var blocked=parkedAhead();
+      if(!(blocked&&l===ARCADE))spawnCar(l);
+      laneWait[l]=(blocked&&l===ARCADE+1?GAP:l===3?2:2.2)+Math.random()*1.5;
     });
     cars.forEach(function(v){v.y-=v.v*dt;});
     cars=cars.filter(function(v){return v.y+v.len>cam-3;});
@@ -480,10 +491,12 @@ button:disabled{opacity:.6}
     var ox=0,oy=0;
     if(it.kind==='dog'&&it.slide>0){ox=it.ox*it.slide;oy=it.oy*it.slide;}
     if(it.kind==='rev')ox=it.dx||0;
-    var mid=cx(it.c+ox)+it.w*C/2,bottom=sy(it.r+oy)+C-3;
+    var mid=cx(it.c+ox+(it.off||0))+it.w*C/2,bottom=sy(it.r+oy)+C-3;
     var img=it.img;
     if(it.kind!=='neighbor')shadow(mid,bottom-C*.07,it.w*C*.4,C*.12);
-    if(it.h===2)sprite(img,mid,bottom,C*.98,C*1.98);
+    if(img==='cones')sprite(img,mid,bottom-C*.05,C*.6,C*.9);
+    else if(it.h===3)sprite(img,mid,bottom,C*1.04,C*2.98);
+    else if(it.h===2)sprite(img,mid,bottom,C*.98,C*1.98);
     else if(it.w===2)sprite(img,mid,bottom,C*1.92,C*1.18);
     else if(img==='dog')sprite(img,mid,bottom-C*.12,C*.98,C*.8);
     else if(it.kind==='parked'||img.indexOf('scooterside')===0)sprite(img,mid,bottom-C*.05,C*1.14,C*1.1);
@@ -536,9 +549,11 @@ button:disabled{opacity:.6}
     ctx.fillStyle='rgba(255,224,50,.4)';ctx.fillRect(cx(0),gy,C*ARCADE,C);
 
     parked.forEach(function(q){                        /* 路邊機車停在白線停車格裡 */
-      if(q.type==='car')return;
       ctx.strokeStyle='rgba(244,240,228,.9)';ctx.lineWidth=3;
-      for(var i=0;i<2;i++)ctx.strokeRect(cx(ARCADE)+11,sy(q.r+i)+2,C-17,C-4);
+      for(var i=0;i<q.len;i++){
+        var it=rows[q.r+i][ARCADE];
+        if(it&&it.img.indexOf('scooter')===0)ctx.strokeRect(cx(ARCADE)+11,sy(q.r+i)+2,C-17,C-4);
+      }
     });
     reversers.forEach(function(s){if(s.state==='warn')warnCell(s.c-1,s.r);});
     pending.forEach(function(p){warnCell(p.c,p.r);});
