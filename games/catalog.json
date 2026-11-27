@@ -455,5 +455,13 @@
     "card": "games/berry-trail/card.html",
     "icon": "games/berry-trail/icon.svg",
     "style": "games/berry-trail/style.css"
+  },
+  {
+    "id": "pedestrian-hell",
+    "logic": "games/pedestrian-hell/game.js",
+    "view": "games/pedestrian-hell/view.html",
+    "card": "games/pedestrian-hell/card.html",
+    "icon": "games/pedestrian-hell/icon.svg",
+    "style": "games/pedestrian-hell/style.css"
   }
 ]

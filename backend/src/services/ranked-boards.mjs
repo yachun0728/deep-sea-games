@@ -1,4 +1,5 @@
 import berryTrailRules from '../../../shared/berry-trail-rules.cjs';
+import pedestrianHellRules from '../../../shared/pedestrian-hell-rules.cjs';
 import catMatchRules from '../../../shared/cat-match-rules.js';
 import onPitchRules from '../../../shared/on-pitch-rules.cjs';
 import breakoutRules from '../../../shared/breakout-rules.cjs';
@@ -220,6 +221,7 @@ const boards = new Map([
   ['bird', timedBoard(birdRules)],
   ['tetris', timedBoard(blockDropRules)],
   ['berry-trail', timedBoard(berryTrailRules)],
+  ['pedestrian-hell', timedBoard(pedestrianHellRules)],
   ['reaper', timedBoard(reaperRules)],
   ['sneak', {
     ...sneakBoards.get(undefined),

@@ -3332,5 +3332,10 @@
   "sand.name": "沙沙時光",
   "sand.card.aria": "遊玩沙沙時光：挑紙、倒沙，慢慢完成六張療癒沙畫。",
   "sand.card.description": "挑開黃紙，自由混色，讓沙粒慢慢沾附成畫。",
-  "sand.card.tag": "療癒手作"
+  "sand.card.tag": "療癒手作",
+  "ped.name": "行人地獄",
+  "ped.card.description": "騎樓被占滿，只好走馬路。看你能喝到幾杯珍奶！",
+  "ped.card.aria": "遊玩行人地獄：閃過騎樓路霸和馬路車流，一杯接一杯買珍奶。",
+  "ped.card.tag": "喝到幾杯",
+  "ped.retry": "重新送出成績"
 }

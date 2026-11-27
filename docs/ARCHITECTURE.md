@@ -397,3 +397,7 @@ Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsig
 `games/sand-art/engine.js` 保存顆粒引擎與六張向量區塊資料；`app.js` 處理選畫、操作、教學、音訊與畫板；`play.html`／`play.css` 為獨立遊戲頁。`game.js` 使用來源視窗驗證的同來源父頁橋接，接入 AN 與語言／路由生命週期。大廳第一張卡片是 sand-art，Preview 保留並標為 graduated。
 
 沒有競賽指標，不註冊排行榜 API；`0020_game_names_sand_art.sql` 只在既有 game_names 新增顯示名稱，不新增資料表或改動排行與錢包格式。
+
+## 行人地獄（pedestrian-hell）
+
+同來源 iframe：`games/pedestrian-hell/play.html`（畫面、三語、聲音、動畫），父頁 `games/pedestrian-hell/game.js` 以 `window.deepSeaPed` 橋接追蹤與訪客排行榜。規則 `shared/pedestrian-hell-rules.cjs` 只用傳入的亂數，Worker 以 `timedBoard` 重播驗證。招牌牆、坐墊睡貓、路過貓只影響畫面。migration `0021_game_names_pedestrian_hell.sql`。

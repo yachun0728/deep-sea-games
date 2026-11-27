@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-i18n-ignore>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Just Want Boba | TICATICA GAMES</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#0b1d2a;color:#e8f4f8;overflow:hidden;overscroll-behavior:none;touch-action:none;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif}
+#app{position:relative;max-width:min(480px,58vh);height:100%;margin:0 auto;background:#10303f}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+#tag{position:absolute;top:calc(8px + env(safe-area-inset-top));left:8px;z-index:5;font-size:11px;padding:3px 8px;
+  border-radius:99px;background:#f7e33b;color:#1d1b1a;font-weight:800;letter-spacing:1px}
+#hud{text-shadow:0 1px 4px #000;position:absolute;top:calc(8px + env(safe-area-inset-top));right:10px;z-index:5;font-size:18px;font-weight:800}
+.screen{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;padding:24px;text-align:center;background:rgba(11,29,42,.9)}
+.screen.hide{display:none}
+.screen h1{font-size:28px}
+.screen p{font-size:15px;line-height:1.6;opacity:.85}
+button{font:inherit;font-weight:800;font-size:18px;padding:12px 32px;border:0;border-radius:12px;background:#f7e33b;color:#1d1b1a}
+#hud{background:rgba(20,16,12,.72);padding:4px 10px;border-radius:99px;font-size:15px}
+#snd{position:absolute;z-index:11;top:calc(36px + env(safe-area-inset-top));left:8px;width:44px;height:44px;padding:0;font-size:20px;border-radius:99px;background:rgba(255,253,244,.92)}
+button:disabled{opacity:.6}
+#endHero{height:150px;width:auto}
+
+.bar{position:absolute;z-index:11;top:calc(8px + env(safe-area-inset-top));left:8px;display:flex;gap:6px}
+.bar button{width:44px;height:44px;padding:0;display:grid;place-items:center;border-radius:14px;background:#fffdf4;color:#3a2c22;border:2px solid #3a2c22;box-shadow:0 2px 0 #3a2c22}
+.bar button svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.bar button span{display:grid}.bar button [class$="-b"],.bar button.on [class$="-a"]{display:none}.bar button.on [class$="-b"]{display:grid}
+.bar button:active{transform:translateY(2px);box-shadow:none}
+#hud{top:calc(60px + env(safe-area-inset-top));left:8px;right:auto;pointer-events:none}
+#snd{position:static}
+.screen{background:rgba(11,29,42,.86);overflow:auto;justify-content:safe center;padding:112px 22px 24px}
+.screen.solid{background:rgba(11,29,42,.78)}
+#title{font-size:30px}#sub{font-size:19px;font-weight:800;opacity:1}#how{list-style:none;font-size:14px;line-height:1.7;opacity:.9}
+#bestLine{font-size:13px;opacity:.8}#sub:empty,#desc:empty,#bestLine:empty{display:none}
+#go{min-height:48px;flex:none}#endHero{height:140px;flex:none}#endHero[hidden],#how[hidden]{display:none}
+button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+#rank-dialog{margin:auto;max-width:min(90vw,380px);width:90vw;max-height:80vh;overflow:auto;border:0;border-radius:16px;padding:18px;background:#fff9e9;color:#2b2018}
+#rank-dialog::backdrop{background:rgba(0,0,0,.6)}#rank-dialog ol{padding-left:24px;margin:10px 0;line-height:1.9}
+#rank-close{font-size:15px;min-height:44px}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="cv"></canvas>
+  <div class="bar">
+    <button id="exit" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5"/><path d="M11 5.5 4.5 12l6.5 6.5"/></svg></button>
+    <button id="pause" type="button"><span class="i-pause-a"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.5v13"/><path d="M15.5 5.5v13"/></svg></span><span class="i-pause-b"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5 18.5 12 8 18.5Z" fill="currentColor"/></svg></span></button>
+    <button id="snd" type="button" aria-pressed="false"><span class="i-snd-a"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12.5 5v14l-5-4.5H4Z" fill="currentColor"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6"/><path d="M18.2 6.5a8 8 0 0 1 0 11"/></svg></span><span class="i-snd-b"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12.5 5v14l-5-4.5H4Z" fill="currentColor"/><path d="m15.5 9.5 5 5"/><path d="m20.5 9.5-5 5"/></svg></span></button>
+    <button id="leaders" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 4h9v5a4.5 4.5 0 0 1-9 0Z"/><path d="M7.5 6H4.5v1.2A3.3 3.3 0 0 0 7.8 10.5"/><path d="M16.5 6h3v1.2a3.3 3.3 0 0 1-3.3 3.3"/><path d="M12 13.5V17"/><path d="M8.5 20h7"/><path d="M10 17h4v3h-4Z"/></svg></button>
+  </div>
+  <div id="hud"></div>
+  <div id="panel" class="screen solid">
+    <img id="endHero" alt="" hidden>
+    <h1 id="title"></h1>
+    <p id="sub"></p>
+    <p id="desc"></p>
+    <ul id="how"></ul>
+    <p id="bestLine"></p>
+    <button id="go" type="button" disabled></button>
+  </div>
+  <dialog id="rank-dialog"><h2 id="rank-title"></h2><p id="rank-message" role="status"></p><ol id="rank-list"></ol><button id="rank-close" type="button"></button></dialog>
+</div>
+<script>
+/* Just Want Boba（行人地獄）：畫面端。規則在 shared/pedestrian-hell-rules.cjs，扣點、追蹤與排行榜由父頁 deepSeaPed 橋接。 */
+(function(){
+  var bridge=parent.deepSeaPed,R_=bridge.rules;
+  var cv=document.getElementById('cv'),ctx=cv.getContext('2d'),goBtn=document.getElementById('go');
+  function $(id){return document.getElementById(id);}
+  var COLS=R_.COLS,ARCADE=R_.ARCADE,GOAL=R_.GOAL;
+  var W=0,H=0,dpr=1,C=0,F=0,R=0,ROADW=1.32;
+  var S=null,rng=Math.random,rows,P,cars,cam,t=0,parked,reversers,pending,bump=0,over=false;
+  var state='ready',active=true,starting=false,last=0,best=0,frameId=0,language=bridge.language(window);
+  var EN={"行人地獄":"Just Want Boba","我只是想買珍奶":"I just want bubble tea","騎樓被機車和攤販塞滿，只好繞到馬路上。一杯接一杯，看你能喝到幾杯！":"Scooters and stalls block the sidewalk, so you end up on the road. How many cups can you get?","點一下：往前一步":"Tap: one step forward","滑動：左右閃，往下滑後退":"Swipe: dodge left or right, swipe down to step back","方向鍵 / WASD 移動，空白鍵暫停":"Arrow keys / WASD to move, Space to pause","也可以用滑鼠點一下或拖曳":"Or click and drag with the mouse","上方出現紅黃警告，先別走那一道":"A red-and-yellow warning at the top means stay out of that lane","小心倒車機車、睡覺黑狗，還有垃圾車":"Watch for reversing scooters, sleeping dogs and the garbage truck","開始遊戲":"Play","再玩一次":"Play again","暫停中":"Paused","暫停":"Pause","繼續":"Resume","載入中…":"Loading…","載入失敗，請重新整理":"Failed to load. Please refresh.","第 {n} 杯":"Cup {n}","還有 {n} 步":"{n} steps left","喝到 {n} 杯珍奶。":"Cups of bubble tea: {n}.","最佳紀錄：{n} 杯":"Best: {n} cups","{n} 杯":"{n} cups","珍奶店打烊了":"The boba shop is closed","嚇到靈魂出竅！":"Scared out of your wits!","嚇到！":"Yikes!","垃圾車來了！":"Garbage truck!","第 {n} 杯到手！":"Got cup {n}!","第 {n} 杯，路更難了":"Cup {n}: it gets harder","嗶嗶～倒車":"Beep beep, backing up!","汪！這是牠的騎樓":"Woof! My sidewalk.","什麼都能等，垃圾車不能！":"Never miss the garbage truck!","喵～":"Meow~","外送":"Delivery","機車":"Scooter","小黃":"Taxi","貨車":"Truck","公車":"Bus","垃圾車":"Garbage","明明是騎樓，為什麼要走馬路？":"It is a sidewalk. Why are you on the road?","你只是想買一杯珍奶。":"All you wanted was bubble tea.","靈魂先到珍奶店了。":"Your soul got to the boba shop first.","下次記得先看上面的警告。":"Check the warnings next time.","今天喝到這裡，明天再來！":"That is enough boba for today!","「借過一下喔～啊你怎麼站這裡？」":"\"Excuse me~ why are you standing there?\"","追垃圾車的人，被垃圾車追到了。":"You chased the garbage truck. It chased back.","返回遊戲大廳":"Back to lobby","靜音切換":"Toggle sound","排行榜":"Leaderboard","關閉":"Close","讀取中…":"Loading…","目前還沒有成績":"No scores yet","排行榜讀取失敗，請稍後再試":"Leaderboard unavailable. Try again later."};
+  /* 畫面文字一律以繁中為原文：英文查表，簡中交給平台轉換 */
+  function tr(text,n){
+    var out=language==='en'?(Object.prototype.hasOwnProperty.call(EN,text)?EN[text]:text):bridge.translate(window,text);
+    return n===undefined?out:out.replace('{n}',n);
+  }
+
+  /* ---------- 素材 ---------- */
+  var loaded=false,loadFailed=false;
+  var NAMES=('pots moneytree bougain gas tyre bluepot blocker stools radish nopark dog dogup '+
+    'scooterside bathtub uncle quilt recycler diners carside_red carside_grey carside_van carred cargrey scooterside_blue scooterside_grey car_suv car_white truck_parked cones box_green box_grey box_paint stall_wide stall_road hydrant mailbox telecom tree noparksign scooterstack dinersv '+
+    'v_delivery v_auntie v_taxi v_truck v_bus v_garbage '+
+    'hero_idle hero_walk1 hero_walk2 hero_scared hero_happy nb_auntie nb_uncle shop wall '+
+    's_pharmacy s_dumpling s_keys s_barber s_herbtea s_ribs s_moto s_buffet '+
+    's_breakfast s_hardware s_rice s_noodle s_ice s_boba s_cuts s_rent '+
+    'a_green a_orange a_stripe a_tin f_cage f_ac f_lamp f_vine anim_hero anim_auntie anim_uncle anim_dog anim_cat cat_sleep cat_lick cat_loaf cat_sit cat_flop cat_stretch').split(' ');
+  var IMG={},waiting=NAMES.length,failed=0;
+  NAMES.forEach(function(n){
+    var im=new Image();
+    im.onload=ready;im.onerror=function(){failed++;ready();};
+    im.src='art/'+n+'.webp';IMG[n]=im;
+  });
+  function ready(){
+    if(--waiting>0)return;
+    if(failed){loadFailed=true;labels();return;}
+    loaded=true;labels();if(rows&&state!=='running')draw();
+  }
+
+  /* ---------- 動畫 ---------- */
+  /* sprite-gen 產出的走路分格：每個角色一張圖，一列一個動作、每列 6 格。body 是站姿身高（原圖像素） */
+  var ANIM={hero:{fw:190,fh:260,body:240},auntie:{fw:188,fh:250,body:247},uncle:{fw:188,fh:250,body:242},dog:{fw:292,fh:230,body:223},cat:{fw:282,fh:231,body:229}};
+  var catBag=['cat_lick','cat_loaf','cat_sit','cat_flop','cat_stretch'],strollers=[];
+  /* 主角小跑：圖的前三列是 往上（背面）／側面朝右／往下（正面）各 8 格的完整循環，第四列是三個方向的站姿。
+     分格照固定速度播放，連續移動時不會從頭重來 */
+  var JOG_TAIL=R_.JOG_TAIL;
+  var clk=0,shake=0,fx=[],endAt=0,bubbles=[],banner=null;
+  var calm=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  function frame(name,row,i,mid,bottom,bodyH,flip){
+    var a=ANIM[name],im=IMG['anim_'+name];if(!im||!im.naturalWidth)return;
+    var k=bodyH/a.body,w=a.fw*k,h=a.fh*k;
+    ctx.save();ctx.translate(mid,bottom);if(flip)ctx.scale(-1,1);
+    ctx.drawImage(im,i*a.fw,row*a.fh,a.fw,a.fh,-w/2,-h,w,h);ctx.restore();
+  }
+  function hash(a,b){var x=Math.sin(a*12.9898+b*78.233)*43758.5453;return x-Math.floor(x);}
+  function puff(x,y,r,color){fx.push({x:x,y:y,r:r,color:color,age:0,life:.45});}     /* x 欄、y 列（世界座標） */
+  /* 冒出往上飄的蒸氣／煙：不佔記憶體，直接用時間算 */
+  function steam(x,y,seed,size,rgb){
+    if(calm)return;
+    for(var i=0;i<3;i++){
+      var k=(clk*.55+i/3+seed)%1;
+      ctx.fillStyle='rgba('+rgb+','+(.42*(1-k)).toFixed(3)+')';
+      ctx.beginPath();ctx.arc(x+Math.sin(k*5+i*2+seed*9)*size*.7,y-k*size*5,size*(.55+k),0,7);ctx.fill();
+    }
+  }
+  /* 以底部為支點做搖擺（草木、布）或起伏（人在吃飯、泡茶） */
+  function moving(mid,bottom,skew,stretch,draw){
+    if(calm){draw();return;}
+    ctx.save();ctx.translate(mid,bottom);ctx.transform(1,0,skew,stretch,0,0);ctx.translate(-mid,-bottom);draw();ctx.restore();
+  }
+  var SWAY={pots:.035,moneytree:.03,bougain:.04,bluepot:.035,tyre:.03,tree:.04,bathtub:.015,quilt:.03,noparksign:.008};
+  var BREATHE={cat_lick:.03,cat_loaf:.03,cat_sit:.018,cat_flop:.05,cat_stretch:.022,diners:.022,dinersv:.012,uncle:.025,recycler:.018,shop:.014};
+  var STEAM={stall_wide:[[-.35,.88],[-.08,.84]],stall_road:[[.02,1.55]],diners:[[0,.9]],uncle:[[.2,.62]],shop:[[.55,1.15]]};
+
+  /* ---------- 影子 ---------- */
+  /* 每張圖算一次「腳底範圍」（最下面一小段有畫到的左右邊界），影子才會貼著實際接地的地方 */
+  var FOOT={},SIL={};
+  function footprint(name){
+    if(FOOT[name])return FOOT[name];
+    var im=IMG[name],w=80,h=Math.max(1,Math.round(80*im.naturalHeight/im.naturalWidth)),c=document.createElement('canvas');
+    c.width=w;c.height=h;var g=c.getContext('2d');g.drawImage(im,0,0,w,h);
+    var f=[.1,.9];
+    try{
+      var d=g.getImageData(0,0,w,h).data,lo=w,hi=0;
+      for(var y=Math.floor(h*.82);y<h;y++)for(var x=0;x<w;x++)if(d[(y*w+x)*4+3]>110){if(x<lo)lo=x;if(x>hi)hi=x;}
+      if(hi>lo)f=[lo/w,(hi+1)/w];
+    }catch(e){}
+    return FOOT[name]=f;
+  }
+  /* 俯視看得到整個車身的車輛：用車身剪影往右下偏一點當影子（光從左上來） */
+  function silhouette(name){
+    if(SIL[name])return SIL[name];
+    var im=IMG[name],c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;
+    var g=c.getContext('2d');g.drawImage(im,0,0);g.globalCompositeOperation='source-in';g.fillStyle='#24170f';g.fillRect(0,0,c.width,c.height);
+    return SIL[name]=c;
+  }
+  var DROP={v_delivery:1,v_auntie:1,v_taxi:1,v_truck:1,v_bus:1,v_garbage:1,carred:1,cargrey:1,car_suv:1,car_white:1,truck_parked:1};
+  function softShadow(x,y,rx,ry,alpha){
+    if(rx<=0||ry<=0)return;
+    ctx.save();ctx.translate(x,y);ctx.scale(1,ry/rx);
+    var g=ctx.createRadialGradient(0,0,0,0,0,rx);
+    g.addColorStop(0,'rgba(40,26,18,'+alpha+')');g.addColorStop(.62,'rgba(40,26,18,'+(alpha*.75).toFixed(3)+')');g.addColorStop(1,'rgba(40,26,18,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,rx,0,7);ctx.fill();ctx.restore();
+  }
+
+  /* ---------- 版面 ---------- */
+  var floorTiles=[],roadTile=null;
+  function noise(g,w,h,n,colors,max){
+    for(var i=0;i<n;i++){g.fillStyle=colors[i%colors.length];var s=.6+Math.random()*max;g.fillRect(Math.random()*w,Math.random()*h,s,s);}
+  }
+  function makeTile(draw){
+    var c=document.createElement('canvas'),s=Math.max(1,Math.round(C*dpr));c.width=c.height=s;
+    var g=c.getContext('2d');g.scale(s/64,s/64);draw(g);return c;
+  }
+  function makeTiles(){
+    function terrazzo(base){return function(g){
+      g.fillStyle=base;g.fillRect(0,0,64,64);noise(g,64,64,170,['#9d968a','#efe9dc','#b98f7e','#8b8f8a'],1.8);
+      g.strokeStyle='rgba(90,75,62,.3)';g.lineWidth=1;g.strokeRect(.5,.5,63,63);
+    };}
+    function brick(g){
+      g.fillStyle='#d6c6b8';g.fillRect(0,0,64,64);
+      for(var y=0;y<4;y++)for(var x=-1;x<4;x++){
+        g.fillStyle=((x+y)&1)?'#cfa598':'#c9bdb2';g.fillRect(x*20+(y&1)*10+1,y*16+1,18,14);
+      }
+      noise(g,64,64,60,['rgba(80,60,50,.25)','rgba(255,250,240,.4)'],1.5);
+      g.strokeStyle='rgba(90,75,62,.3)';g.strokeRect(.5,.5,63,63);
+    }
+    floorTiles=[makeTile(terrazzo('#cdc4b4')),makeTile(terrazzo('#c3b9aa')),makeTile(brick)];
+    roadTile=makeTile(function(g){g.fillStyle='#6d6c6d';g.fillRect(0,0,64,64);noise(g,64,64,150,['#7c7a7a','#605f61','#868380'],1.7);});
+  }
+  function resize(){
+    dpr=Math.min(window.devicePixelRatio||1,2);
+    W=cv.clientWidth;H=cv.clientHeight;F=Math.round(W*.2);C=(W-F)/(ARCADE+2*ROADW);R=C*ROADW;   /* 車道比走道寬，車子才夠大台 */
+    cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    makeTiles();if(rows&&state!=='running')draw();
+  }
+  window.addEventListener('resize',resize);
+
+  /* ---------- 聲音（全部即時合成，沒有外部音檔） ---------- */
+  var ac=null,muted=false;
+  function audio(){
+    if(!ac){var A=window.AudioContext||window.webkitAudioContext;if(A)ac=new A();}
+    if(ac&&ac.state==='suspended')ac.resume();
+  }
+  function tone(freq,at,dur,type,vol,to){
+    if(!ac||muted)return;
+    var o=ac.createOscillator(),g=ac.createGain(),s=ac.currentTime+at;
+    o.type=type;o.frequency.setValueAtTime(freq,s);if(to)o.frequency.exponentialRampToValueAtTime(to,s+dur);
+    g.gain.setValueAtTime(.0001,s);g.gain.exponentialRampToValueAtTime(vol,s+.02);g.gain.exponentialRampToValueAtTime(.0001,s+dur);
+    o.connect(g);g.connect(ac.destination);o.start(s);o.stop(s+dur+.02);
+  }
+  function sndReverse(){for(var i=0;i<3;i++)tone(1250,i*.4,.18,'square',.05);}
+  function sndBark(){tone(520,0,.12,'sawtooth',.09,230);tone(500,.17,.14,'sawtooth',.09,210);}
+  function sndMeow(){tone(620,0,.16,'triangle',.07,900);tone(900,.16,.26,'triangle',.07,480);}
+  function sndGarbage(){   /* 《給愛麗絲》開頭（公有領域樂曲，自行合成） */
+    var n=[659,622,659,622,659,494,587,523,440,0,262,330,440,494,0,330,415,494,523];
+    n.forEach(function(f,i){if(f)tone(f,i*.19,.24,'triangle',.09);});
+  }
+  function sndWin(){[523,659,784,1047].forEach(function(f,i){tone(f,i*.11,.22,'triangle',.09);});}
+  function sndHit(){tone(300,0,.45,'sine',.12,70);}
+
+  /* ---------- 畫面端的招牌與貓（不影響勝負，所以用一般亂數） ---------- */
+  var bags={};
+  function between(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+  function draw1(key,list){
+    if(!bags[key]||!bags[key].length)bags[key]=list.slice().sort(function(){return Math.random()-.5;});
+    return bags[key].pop();
+  }
+  function say(text,c,r,dur){bubbles.push({text:text,c:c,r:r,time:dur||1.8});}
+  function viewRows(){return H/C;}
+  /* ---------- 招牌牆：每局用單件隨機拼，大小、位置、間距都不同 ---------- */
+  var ASPECT={s_pharmacy:2.08,s_dumpling:2.2,s_keys:3.14,s_barber:1.56,s_herbtea:2.59,s_ribs:2.14,s_moto:2.37,s_buffet:2.22,
+    s_breakfast:.33,s_hardware:.32,s_rice:.83,s_noodle:.37,s_ice:.33,s_boba:.4,s_cuts:.4,s_rent:.32,
+    a_green:.63,a_orange:.66,a_stripe:.61,a_tin:.6,f_cage:1.02,f_ac:.8,f_lamp:.93,f_vine:.82};
+  var TALLSIGN=['s_pharmacy','s_dumpling','s_keys','s_barber','s_herbtea','s_ribs','s_moto','s_buffet'];
+  var WIDESIGN=['s_breakfast','s_hardware','s_rice','s_noodle','s_ice','s_boba','s_cuts','s_rent'];
+  var AWNING=['a_green','a_orange','a_stripe','a_tin'],FITTING=['f_cage','f_ac','f_lamp','f_vine'];
+  var wallSigns=[],wallBack=[];
+  function rand(a,b){return a+Math.random()*(b-a);}
+  /* x、w 以招牌欄寬為 1；y 是底部所在的列數。招牌欄寬 ÷ 格寬固定為 0.22W ÷ 0.156W */
+  function buildFacade(){
+    wallSigns=[];wallBack=[];
+    var ratio=.2/(.8/(ARCADE+2*ROADW)),y=-7;
+    function piece(list,key,name,w,x,bottom){
+      var o={img:name,w:w,x:x,y:bottom,h:w*ASPECT[name]*ratio};list.push(o);return o;
+    }
+    function back(key,list,bottom,lo,hi){
+      var w=rand(lo,hi);piece(wallBack,key,draw1(key,list),w,rand(0,Math.max(0,1.06-w)),bottom);
+    }
+    while(y<GOAL+20){
+      var roll=Math.random(),top;
+      if(roll<.34){                               /* 兩支直招一高一低並排 */
+        var w1=rand(.46,.58),w2=rand(.38,Math.min(.52,1-w1));
+        var a=piece(wallSigns,'st',draw1('st',TALLSIGN),w1,rand(0,.04),y);
+        var b=piece(wallSigns,'st',draw1('st',TALLSIGN),w2,1-w2-rand(0,.03),y+rand(.25,1.1));
+        top=Math.max(a.y+a.h,b.y+b.h);
+      }else if(roll<.52){                         /* 單支直招，旁邊露出牆面設備 */
+        var w=rand(.52,.72),left=Math.random()<.5;
+        var o=piece(wallSigns,'st',draw1('st',TALLSIGN),w,left?rand(0,.08):1-w-rand(0,.05),y);
+        back('ft',FITTING,y+rand(-.2,1.2),.5,.8);
+        if(Math.random()<.7){var s2=rand(.84,1);piece(wallSigns,'sw',draw1('sw',WIDESIGN),s2,left?1.02-s2:0,o.y+o.h+rand(-.1,.1));}
+        top=o.y+o.h+(Math.random()<.5?.4:0);
+      }else{                                      /* 橫招，寬窄差很多 */
+        var ww=rand(.84,1.02),q=piece(wallSigns,'sw',draw1('sw',WIDESIGN),ww,rand(0,1.02-ww),y);
+        top=q.y+q.h;
+      }
+      if(Math.random()<.7)back('aw',AWNING,y-rand(.1,.7),.8,1.08);
+      y=top+rand(-.2,.04);
+      if(Math.random()<.2){                       /* 偶爾空一段，掛雨棚或鐵窗 */
+        var gap=rand(.5,1.1);
+        if(Math.random()<.55)back('aw',AWNING,y+rand(0,.4),.7,1.06);else back('ft',FITTING,y+rand(0,.3),.6,.98);
+        y+=gap;
+      }
+    }
+    function far(a,b){return b.y-a.y;}            /* 遠的先畫，近的蓋住遠的 */
+    wallSigns.sort(far);wallBack.sort(far);
+  }
+  function drawFacade(){
+    var wl=IMG.wall,fw=F+4,y;
+    if(wl&&wl.naturalWidth){
+      var wh=wl.naturalHeight*fw/wl.naturalWidth,off=((cam*C)%wh+wh)%wh;
+      for(y=off-wh;y<H;y+=wh)ctx.drawImage(wl,0,y,fw,wh+.5);
+    }
+    [wallBack,wallSigns].forEach(function(list,layer){
+      list.forEach(function(o){
+        var bottom=sy(o.y)+C,w=o.w*F,h=o.h*C,im=IMG[o.img];
+        if(bottom<0||bottom-h>H||!im||!im.naturalWidth)return;
+        if(layer){ctx.globalAlpha=.24;ctx.drawImage(silhouette(o.img),o.x*F+4,bottom-h+5,w,h);ctx.globalAlpha=1;}
+        if(!calm&&(o.img==='f_lamp'||o.img==='f_vine'||o.img.charAt(0)==='a')){
+          var wave=Math.sin(clk*(o.img==='f_lamp'?2.1:1.4)+o.y*3)*(o.img==='f_lamp'?.045:.015);
+          ctx.save();ctx.translate(o.x*F,bottom-h);ctx.transform(1,wave,0,1,0,0);ctx.drawImage(im,0,0,w,h);ctx.restore();   /* 靠牆那端固定 */
+        }else ctx.drawImage(im,o.x*F,bottom-h,w,h);
+      });
+    });
+  }
+
+
+  /* 貓貓：有些橫停機車的坐墊上睡著一隻；另有幾隻在玩家靠近時悠哉橫越走道，只是路過，不擋路 */
+  function placeCats(){
+    var done=[];
+    rows.forEach(function(row){row.forEach(function(it){
+      if(!it||it.kind==='rev'||it.img.indexOf('scooterside')!==0||done.indexOf(it)>=0)return;
+      done.push(it);if(Math.random()<.4)it.napper=true;
+    });});
+    strollers=[between(5,9),between(18,24),between(33,43)].map(function(r){return {r:r,x:-.9,go:false,sat:false,pause:0};});
+  }
+  function updateCats(dt){
+    strollers.forEach(function(k){
+      if(!k.go){if(P.r>=k.r-4){k.go=true;say('喵～',0,k.r,1.1);sndMeow();}return;}
+      if(!k.sat&&k.x>=.9){k.sat=true;k.pause=.9;}          /* 走到一半停下來看你一眼 */
+      if(k.pause>0){k.pause-=dt;return;}
+      if(k.x<ARCADE-.2)k.x+=dt*.85;else k.gone=true;
+    });
+    strollers=strollers.filter(function(k){return !k.gone;});
+  }
+  function drawStroller(k){
+    var mid=cx(k.x+.5),bottom=sy(k.r)+C*.8;
+    ctx.globalAlpha=k.x>ARCADE-.6?Math.max(0,(ARCADE-.2-k.x)/.4):1;
+    if(k.pause<=0)softShadow(mid,bottom-1,C*.27,C*.07,.36);
+    if(k.pause>0)sprite('cat_sit',mid,bottom,C*.7,C*.82);
+    else frame('cat',0,Math.floor(clk*8)%6,mid,bottom,C*.68,false);
+    ctx.globalAlpha=1;
+  }
+
+  /* ---------- 繪圖 ---------- */
+  function sy(row){return H-(row-cam+1)*C;}        /* 該列格子的上緣 */
+  function cx(col){return col<=ARCADE?F+col*C:F+ARCADE*C+(col-ARCADE)*R;}
+  function box(x,y,w,h,rad,fill){
+    ctx.fillStyle=fill;ctx.beginPath();
+    if(ctx.roundRect)ctx.roundRect(x,y,w,h,rad);else ctx.rect(x,y,w,h);
+    ctx.fill();
+  }
+  function font(size){return '800 '+size+'px -apple-system,"PingFang TC","Noto Sans TC",sans-serif';}
+  function label(text,x,y,size,color){
+    ctx.fillStyle=color;ctx.font=font(size);ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,x,y);
+  }
+  /* 圖片底部對齊 bottom、水平置中，等比例縮進 maxW×maxH */
+  function sprite(name,mid,bottom,maxW,maxH,noShadow){
+    var flip=name.charAt(name.length-1)==='~',key=flip?name.slice(0,-1):name;
+    var im=IMG[key];if(!im||!im.naturalWidth)return;
+    var k=Math.min(maxW/im.naturalWidth,maxH/im.naturalHeight),w=im.naturalWidth*k,h=im.naturalHeight*k;
+    ctx.save();ctx.translate(mid,0);if(flip)ctx.scale(-1,1);
+    if(!noShadow){
+      if(DROP[key]){
+        var side=flip?-1:1;ctx.globalAlpha*=.26;
+        ctx.drawImage(silhouette(key),-w/2+side*w*.09,bottom-h+h*.045,w,h);ctx.globalAlpha/=.26;
+      }else{
+        var f=footprint(key),rx=(f[1]-f[0])*w/2*1.12,ry=Math.min(rx*.3,C*.15);
+        softShadow(-w/2+(f[0]+f[1])/2*w+rx*.06,bottom-ry*.45,rx,ry,.4);
+      }
+    }
+    ctx.drawImage(im,-w/2,bottom-h,w,h);ctx.restore();
+  }
+  function drawItem(it){
+    var ox=0,oy=0;
+    if(it.kind==='dog'&&it.slide>0){ox=it.ox*it.slide;oy=it.oy*it.slide;}
+    if(it.kind==='rev')ox=(it.dx||0)*(it.dx||0);                     /* 起步快、停下時放慢 */
+    var mid=cx(it.c+ox+(it.off||0)+it.w/2),bottom=sy(it.r+oy)+C-3;
+    var img=it.img,seed=hash(it.c+1,it.r+1);
+    if(it.kind==='neighbor'){drawNeighbor(it,mid,bottom);return;}
+    if(it.kind==='dog'){drawDog(it,mid,bottom);return;}
+    var skew=SWAY[img]?Math.sin(clk*1.7+seed*20)*SWAY[img]:0;
+    var tall=BREATHE[img]?1+Math.sin(clk*(img==='uncle'?1.6:3.1)+seed*20)*BREATHE[img]:1;
+    if(it.kind==='rev'&&!calm&&(it.state==='warn'||it.dx>0)){            /* 發動中：車身抖動 */
+      mid+=Math.sin(clk*75)*1.4;bottom+=Math.cos(clk*63);
+    }
+    moving(mid,bottom,skew,tall,function(){
+      if(img==='cones')sprite(img,mid,bottom-C*.05,C*.6,C*.9);
+      else if(it.kind==='parked'&&it.h===3)sprite(img,mid,bottom,R*.98,C*2.98);
+      else if(it.kind==='parked'&&img.indexOf('scooter')!==0)sprite(img,mid,bottom,R*.98,C*2.05);
+      else if(it.kind==='parked')sprite(img,mid,bottom-C*.05,R*.94,C*(it.h===2?1.95:1.15));
+      else if(it.h===3)sprite(img,mid,bottom,C*1.04,C*2.98);
+      else if(it.h===2)sprite(img,mid,bottom,C*.98,C*1.98);
+      else if(it.w===2)sprite(img,mid,bottom,C*1.92,C*1.18);
+      else if(img.indexOf('cat_')===0)sprite(img,mid,bottom-C*.1,C*.86,C*.92);
+      else if(img.indexOf('scooterside')===0)sprite(img,mid,bottom-C*.05,C*1.14,C*1.1);
+      else sprite(img,mid,bottom,C*.9,C*1.16);
+    });
+    if(it.napper){
+      var im=IMG[img.replace('~','')],big=it.w===2,mw=big?C*1.92:C*1.14,mh=big?C*1.18:C*1.1;
+      if(im&&im.naturalWidth){
+        var k=Math.min(mw/im.naturalWidth,mh/im.naturalHeight),w=im.naturalWidth*k,h=im.naturalHeight*k;
+        var nx=mid+(img.charAt(img.length-1)==='~'?-1:1)*w*.18,ny=bottom-(big?0:C*.05)-h*.53;
+        moving(nx,ny,0,1+Math.sin(clk*2+seed*20)*.06,function(){sprite('cat_sleep',nx,ny,w*.46,h*.4,true);});
+      }
+    }
+    if(img.indexOf('cat_')===0&&!calm){
+      var z=(clk*.4+seed)%1;
+      if(img==='cat_loaf'||img==='cat_flop'){ctx.globalAlpha=1-z;label('z',mid+C*(.22+z*.16),bottom-C*(.55+z*.45),C*(.18+z*.09),'#3b4a63');ctx.globalAlpha=1;}
+    }
+    (STEAM[img]||[]).forEach(function(o,i){steam(mid+o[0]*C,bottom-o[1]*C,seed+i*.37,C*.075,'250,248,240');});
+    if(img==='radish'||img==='stools')return;
+    if(it.kind==='rev'&&it.state==='warn'){
+      steam(mid-C*.5,bottom-C*.2,seed,C*.08,'90,90,90');
+      if(Math.floor(clk*7)%2===0){ctx.fillStyle='rgba(255,40,30,.75)';ctx.beginPath();ctx.arc(mid-C*.36,bottom-C*.42,C*.15,0,7);ctx.fill();}
+    }
+  }
+  function drawDog(it,mid,bottom){
+    if(it.slide>0){                                                  /* 小跑換位置 */
+      softShadow(mid,bottom-C*.12,C*.4,C*.1,.38);
+      frame('dog',0,Math.floor(clk*14)%6,mid,bottom-C*.1,C*.86,!!it.left);
+    }else if(it.state==='wake'){                                     /* 彈起來吠 */
+      var hop=calm?0:Math.abs(Math.sin(clk*13))*C*.13;
+      softShadow(mid,bottom-C*.12,C*.36,C*.09,.38);
+      sprite('dogup',mid,bottom-C*.1-hop,C*1.02,C*.98,true);
+      label('！',mid+C*.28,bottom-C*1.05-hop,C*.55,'#d9261c');
+    }else{
+      moving(mid,bottom-C*.12,0,1+Math.sin(clk*2.2+it.r)*.045,function(){sprite('dog',mid,bottom-C*.12,C*.98,C*.8);});
+      if(it.state==='sleep'&&!calm){
+        var k=(clk*.5+it.r*.3)%1;
+        ctx.globalAlpha=1-k;label('z',mid+C*(.24+k*.18),bottom-C*(.55+k*.5),C*(.2+k*.1),'#3b4a63');ctx.globalAlpha=1;
+      }
+    }
+  }
+  function drawNeighbor(v,mid,bottom){
+    var arrive=Math.min(1,v.age/.55),leave=v.time<.4?1-Math.max(0,v.time)/.4:0;
+    var x=mid-(1-arrive)*C*.8+leave*C*.7,busy=arrive<1||leave>0;
+    var who=v.img==='nb_uncle'?'uncle':'auntie';
+    ctx.globalAlpha=Math.min(1,arrive*1.6)*(1-leave*.8);
+    softShadow(x,bottom-C*.04,C*.34,C*.1,.38);
+    frame(who,0,Math.floor(clk*(busy?13:7)+v.r)%6,x,bottom,C*1.3,false);
+    ctx.globalAlpha=1;
+  }
+  function drawHero(){
+    var px=cx(P.x+.5)+(bump>0?Math.sin(bump*90)*4:0),base=sy(P.y)+C*.9;
+    ctx.strokeStyle='rgba(255,227,59,.9)';ctx.lineWidth=2.5;ctx.fillStyle='rgba(255,227,59,.18)';
+    ctx.beginPath();ctx.ellipse(px,base-2,C*.34,C*.14,0,0,7);ctx.fill();ctx.stroke();
+    if(over||S.rest>0){
+      var e=Math.min(1,endAt/.35);
+      if(S.rest>0||S.cause==='closed'){
+        sprite('hero_happy',px,base-Math.abs(Math.sin((over?endAt:clk)*9))*C*.22,C*1.2,C*1.6);
+      }else{                                                         /* 嚇到：彈一下、發抖，靈魂往上飄 */
+        var jx=calm?0:Math.sin(endAt*60)*3*Math.max(0,1-endAt);
+        sprite('hero_scared',px+jx,base-Math.sin(e*Math.PI)*C*.35,C*1.2,C*1.55);
+        var up=Math.min(1,endAt/1.1),gx=px+C*.35+Math.sin(endAt*6)*C*.12,gyy=base-C*1.5-up*C*.9;
+        ctx.globalAlpha=.92*(1-up*.45);ghost(gx,gyy,C*.32);ctx.globalAlpha=1;
+      }
+      return;
+    }
+    softShadow(px+2,base-C*.03,C*.27,C*.085,.42);
+    if(P.k<1||P.stop<JOG_TAIL){
+      frame('hero',P.dir,Math.floor(P.phase)%8,px,base,C*1.52,P.dir===1&&P.flip);
+    }else{
+      var side=P.dir===1&&P.stop<.4;                                /* 橫移後稍停一下再轉回背面 */
+      moving(px,base,0,1+Math.sin(clk*2.6)*.012,function(){frame('hero',3,side?1:0,px,base,C*1.52,side&&P.flip);});
+    }
+  }
+  /* 圖示都自己畫，不用 emoji（各手機長得不一樣，也跟手繪畫風不合） */
+  function ghost(x,y,r){
+    ctx.save();ctx.translate(x,y);
+    ctx.fillStyle='#fffdf4';ctx.strokeStyle='#3a2c22';ctx.lineWidth=2;ctx.lineJoin='round';
+    ctx.beginPath();ctx.arc(0,-r*.2,r*.62,Math.PI,0);ctx.lineTo(r*.62,r*.55);
+    ctx.quadraticCurveTo(r*.42,r*.3,r*.2,r*.55);ctx.quadraticCurveTo(0,r*.82,-r*.2,r*.55);ctx.quadraticCurveTo(-r*.42,r*.3,-r*.62,r*.55);
+    ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#3a2c22';
+    [-1,1].forEach(function(d){ctx.beginPath();ctx.ellipse(d*r*.22,-r*.3,r*.08,r*.13,0,0,7);ctx.fill();});
+    ctx.beginPath();ctx.ellipse(0,r*.04,r*.1,r*.14,0,0,7);ctx.fill();ctx.restore();
+  }
+  function warnSign(x,y,h){
+    ctx.save();ctx.translate(x,y);ctx.fillStyle='#ffd23d';ctx.strokeStyle='#1d1b1a';ctx.lineWidth=1.6;ctx.lineJoin='round';
+    ctx.beginPath();ctx.moveTo(0,-h*.55);ctx.lineTo(h*.6,h*.45);ctx.lineTo(-h*.6,h*.45);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#1d1b1a';ctx.fillRect(-1.2,-h*.22,2.4,h*.38);ctx.fillRect(-1.2,h*.24,2.4,2.4);ctx.restore();
+  }
+  function warnCell(c,r){
+    var x=cx(c)+3,y=sy(r)+3;
+    ctx.fillStyle=Math.floor(t*7)%2===0?'rgba(225,45,35,.42)':'rgba(255,214,40,.3)';ctx.fillRect(x,y,C-6,C-6);
+    ctx.strokeStyle='#d9261c';ctx.lineWidth=3;ctx.strokeRect(x,y,C-6,C-6);
+  }
+  function fitLabel(text,x,y,size,max,color){
+    ctx.font=font(size);var w=ctx.measureText(text).width;label(text,x,y,w>max?size*max/w:size,color);
+  }
+  function draw(){
+    if(!rows)return;
+    ctx.clearRect(0,0,W,H);
+    ctx.save();
+    if(shake>0&&!calm)ctx.translate(Math.sin(clk*90)*shake*14,Math.cos(clk*71)*shake*9);
+    var first=Math.max(Math.floor(cam)-1,-8),lastRow=Math.ceil(cam+viewRows())+2,r,c,y;
+    var road=cx(ARCADE);
+    for(r=first;r<=lastRow;r++){
+      y=sy(r);
+      for(c=0;c<ARCADE;c++){
+        var kind=(Math.floor((r+20)/5)+(c===2?1:0))%3;
+        if(floorTiles[kind])ctx.drawImage(floorTiles[kind],cx(c),y,C+.5,C+.5);
+      }
+      if(roadTile){ctx.drawImage(roadTile,road,y,R+.5,C+.5);ctx.drawImage(roadTile,road+R,y,R+.5,C+.5);}
+      ctx.fillStyle='rgba(244,240,228,.85)';ctx.fillRect(cx(4)-2,y+C*.18,4,C*.55);
+      var m=((r%11)+11)%11;
+      if(m===4){ctx.strokeStyle='#4b4a4c';ctx.lineWidth=2;ctx.fillStyle='#77716c';ctx.beginPath();ctx.arc(cx(4.5),y+C/2,C*.26,0,7);ctx.fill();ctx.stroke();}
+      if(m===8){ctx.fillStyle='#47474a';ctx.fillRect(road+9,y+C*.25,C*.22,C*.4);ctx.fillStyle='#77767a';for(var g=0;g<4;g++)ctx.fillRect(road+10,y+C*.29+g*C*.09,C*.2,2);}
+      ctx.fillStyle='#b9b2a2';ctx.fillRect(road-4,y,7,C+1);              /* 路緣 */
+      ctx.fillStyle='rgba(95,112,66,.55)';ctx.fillRect(road-4,y+((r*37%50+50)%50)/50*C*.7,3,C*.18);
+      ctx.fillStyle='#c4463c';ctx.fillRect(road+4,y,4,C+1);               /* 紅線 */
+      if(m===2){                                                          /* 黃黑斜紋電線桿，立在路緣線上 */
+        box(road-4,y-C*.7,8,C*1.55,3,'#8d887f');
+        for(var s=0;s<6;s++)box(road-4,y+C*.15+s*C*.115,8,C*.115,0,s%2?'#222':'#efc22f');
+      }
+    }
+    drawFacade();
+    var gy=sy(GOAL);
+    ctx.fillStyle='rgba(255,224,50,.4)';ctx.fillRect(cx(0),gy,C*ARCADE,C);
+
+    parked.forEach(function(q){                        /* 路邊機車停在白線停車格裡 */
+      ctx.strokeStyle='rgba(244,240,228,.9)';ctx.lineWidth=3;
+      for(var i=0;i<q.len;i++){
+        var it=rows[q.r+i][ARCADE];
+        if(it&&it.img.indexOf('scooter')===0)ctx.strokeRect(cx(ARCADE)+11,sy(q.r+i)+2,R-17,C-4);
+      }
+    });
+    reversers.forEach(function(s){if(s.state==='warn')warnCell(s.c-1,s.r);});
+    pending.forEach(function(p){warnCell(p.c,p.r);});
+
+    /* 由遠到近畫，近的蓋住遠的；主角插在自己那一列 */
+    var heroRow=Math.round(P.y),heroDone=false,done=[];
+    for(r=Math.min(lastRow,rows.length-1);r>=Math.max(first-1,0);r--){
+      for(c=0;c<COLS;c++){
+        var it=rows[r][c];
+        if(it&&it.r===r&&it.c===c&&done.indexOf(it)<0){done.push(it);drawItem(it);}
+      }
+      if(r===GOAL+1){
+        var shopY=sy(r)+C;
+        moving(cx(1.5),shopY,0,1+Math.sin(clk*3.4)*.01,function(){sprite('shop',cx(1.5),shopY,C*2.7,C*2.7);});
+        steam(cx(1.5)+C*.55,shopY-C*1.15,.2,C*.09,'250,248,240');
+      }
+      for(var q=0;q<strollers.length;q++)if(strollers[q].go&&strollers[q].r===r)drawStroller(strollers[q]);
+      if(r===heroRow){drawHero();heroDone=true;}
+    }
+    if(!heroDone)drawHero();
+
+    cars.forEach(function(v){
+      var bottom=sy(v.y)+C-3,h=v.len*C;
+      if(bottom<-C||bottom-h*1.3>H)return;
+      var two=v.len<1,mx=cx(v.lane+.5);                       /* 車身固定走車道正中央，不左右擺 */
+      var bounce=calm?0:Math.sin(clk*(two?34:19)+v.len*9)*(two?1.3:1);
+      steam(mx+C*(two?.2:.3),bottom-h*.95,v.len,C*.07,'120,120,120');      /* 排氣在車尾（上方） */
+      sprite(v.img,mx,bottom+bounce,R*(two?.76:v.img==='v_bus'?1.04:1),h*1.12);
+      if(v.img==='v_garbage'){
+        ctx.fillStyle=Math.floor(clk*6)%2?'rgba(255,170,20,.9)':'rgba(255,170,20,.25)';
+        ctx.beginPath();ctx.arc(mx,bottom+bounce-R*.82,C*.12,0,7);ctx.fill();
+        label('♪',mx-C*.45,bottom-h*.7-(clk*26%22),C*.3,'#fff6c4');
+      }
+    });
+    fx.forEach(function(f){
+      var k=f.age/f.life;
+      ctx.fillStyle='rgba('+f.color+','+(.5*(1-k)).toFixed(3)+')';
+      for(var i=-1;i<=1;i+=2){ctx.beginPath();ctx.arc(cx(f.x)+i*C*(.12+k*.16),sy(f.y)+C*.9-k*C*.12,C*f.r*(.6+k),0,7);ctx.fill();}
+    });
+    /* 警告：車還在畫面外 */
+    var edge=cam+viewRows()-.9,blink=Math.floor(t*8)%2===0,warned={};
+    cars.forEach(function(v){
+      if(v.y<=edge||v.y>Math.max(edge+v.v*1.6,cam+R_.VIEW_ROWS+v.v*1.1)||warned[v.lane])return;
+      warned[v.lane]=1;
+      var wx=cx(v.lane+.5),wy=58;
+      box(wx-C*.54,wy,C*1.08,32,9,blink?'#e8372a':'#ffd23d');
+      ctx.font=font(12.5);var name=tr(v.n),tw=Math.min(ctx.measureText(name).width,C*1.08-22);warnSign(wx-tw/2-5,wy+16,14);fitLabel(name,wx+8,wy+16,12.5,C*1.08-24,blink?'#fff':'#1d1b1a');
+    });
+    bubbles.forEach(function(b){
+      ctx.font=font(13);
+      var text=tr(b.text);
+      var w=ctx.measureText(text).width+18,x=Math.max(6,Math.min(W-w-6,cx(b.c+.5)-w/2)),by=Math.max(100,sy(b.r)-C*.75);
+      box(x,by,w,28,10,'#fffdf4');label(text,x+w/2,by+14,13,'#1d1b1a');
+    });
+    if(banner){box(W*.08,100,W*.84,42,12,'#f7e33b');fitLabel(tr(banner.text,banner.n),W/2,121,18,W*.8,'#1d1b1a');}
+    ctx.restore();
+    if(over&&S.cause!=='closed')label(tr('嚇到！'),Math.min(cx(P.x+.5),W-C*.7),sy(P.y)-C*.8,C*.38,'#fff');
+  }
+
+  /* ---------- 與規則模組同步 ---------- */
+  function sync(){
+    rows=S.rows;P=S.P;cars=S.cars;cam=S.cam;t=S.t;parked=S.parked;reversers=S.reversers;pending=S.pending;bump=S.bump;over=S.dead;
+  }
+  function newStreet(){sync();fx=[];bubbles=[];banner=null;bags={};placeCats();buildFacade();}
+  function updateHud(){
+    $('hud').textContent=tr('第 {n} 杯',S.cups+(S.rest>0?0:1))+' · '+tr('還有 {n} 步',Math.max(0,GOAL-P.r));
+  }
+  function events(){
+    var list=S.events.splice(0);
+    list.forEach(function(e){
+      if(e.type==='say')say(e.text,e.c,e.r,e.dur);
+      else if(e.type==='land')puff(e.c+.5,e.r+.12,.1,'150,135,115');
+      else if(e.type==='reverse')sndReverse();
+      else if(e.type==='bark')sndBark();
+      else if(e.type==='garbage'){banner={text:'垃圾車來了！',time:2.6};sndGarbage();}
+      else if(e.type==='cup'){banner={text:'第 {n} 杯到手！',n:e.cups,time:R_.REST};sndWin();}
+      else if(e.type==='cupStart'){newStreet();banner={text:'第 {n} 杯，路更難了',n:e.cup,time:1.6};}
+    });
+  }
+  /* 規則往前一步（排行榜固定每步 10 毫秒） */
+  function stepRules(sec){
+    R_.advance(S,sec,rng);sync();
+    var fresh=S.events.some(function(e){return e.type==='cupStart';});
+    events();
+    if(!fresh)updateCats(sec);
+    reversers.forEach(function(s){if(s.dx>0&&Math.random()<sec*22)puff(s.c+.08+s.dx*s.dx,s.r+.3,.13,'95,95,95');});
+    bubbles=bubbles.filter(function(b){b.time-=sec;return b.time>0;});
+    if(banner&&(banner.time-=sec)<=0)banner=null;
+    if(S.dead&&state==='running')finish();
+  }
+  function move(code){
+    if(state!=='running'||starting)return;
+    if(R_.input(S,code)){bridge.record(window,code);bridge.touch(window);}
+    sync();events();updateHud();
+  }
+
+  /* ---------- 操作與流程 ---------- */
+  var downX=0,downY=0,down=false;
+  cv.addEventListener('pointerdown',function(e){e.preventDefault();down=true;downX=e.clientX;downY=e.clientY;});
+  cv.addEventListener('pointermove',function(e){
+    if(!down)return;
+    var dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.max(Math.abs(dx),Math.abs(dy))<24)return;
+    down=false;                                    /* 滑超過門檻就立刻移動 */
+    if(Math.abs(dx)>Math.abs(dy))move(dx>0?3:2);else move(dy<0?0:1);
+  });
+  cv.addEventListener('pointerup',function(){if(down){down=false;move(0);}});   /* 點一下往前 */
+  cv.addEventListener('pointercancel',function(){down=false;});
+  var KEYS={ArrowUp:0,KeyW:0,ArrowDown:1,KeyS:1,ArrowLeft:2,KeyA:2,ArrowRight:3,KeyD:3};
+  window.addEventListener('keydown',function(e){
+    if($('rank-dialog').open)return;
+    if(e.code==='Space'&&(state==='running'||state==='paused')){e.preventDefault();if(!e.repeat)togglePause();return;}
+    var k=KEYS[e.code];if(k===undefined||state!=='running')return;
+    e.preventDefault();if(!e.repeat)move(k);
+  });
+
+  function animate(dt){
+    clk+=dt;if(over)endAt+=dt;
+    if(shake>0)shake=Math.max(0,shake-dt);
+    fx=fx.filter(function(f){f.age+=dt;return f.age<f.life;});
+  }
+  function loop(now){
+    frameId=requestAnimationFrame(loop);
+    var dt=Math.max(0,Math.min((now-last)/1000,.05));last=now;
+    if(!active||(state!=='running'&&state!=='over'))return;
+    if(state==='running'){bridge.advance(window,dt*1000,function(){return state==='running'&&!S.dead;},stepRules);if(state==='running')updateHud();}
+    if(state==='over'&&endAt>2.5)return;
+    animate(dt);draw();
+  }
+  function start(){
+    if(starting||!active||!loaded)return;
+    audio();if(ac&&muted)ac.suspend();
+    starting=true;labels();
+    var accepted=bridge.prepare(window,function(random){
+      starting=false;
+      if(!active){labels();return;}
+      rng=random;S=R_.create(rng);newStreet();endAt=0;shake=0;state='running';last=performance.now();updateHud();labels();draw();
+    });
+    if(!accepted){starting=false;labels();}
+  }
+  function finish(){
+    state='over';endAt=0;over=true;
+    if(S.cause==='closed')sndWin();else{sndHit();shake=.4;}
+    if(S.cups>best){best=S.cups;try{localStorage.setItem('pedestrianHellBestCups',String(best));}catch(e){}}
+    updateHud();draw();
+    bridge.finish(window,S.cups);
+    setTimeout(function(){if(state==='over')labels(true);},S.cause==='closed'?600:1100);
+  }
+  function togglePause(){
+    if(state==='running'){state='paused';down=false;bridge.pause(window);if(ac)ac.suspend();}
+    else if(state==='paused'&&active){state='running';last=performance.now();bridge.resume(window);if(ac&&!muted)ac.resume();}
+    labels();
+  }
+
+  /* ---------- 文字 ---------- */
+  function labels(showEnd){
+    var panel=$('panel'),ended=state==='over'&&(showEnd||panel.dataset.end==='1');
+    panel.dataset.end=ended?'1':'';
+    panel.classList.toggle('hide',state==='running'||(state==='over'&&!ended));
+    panel.classList.toggle('solid',state==='ready');
+    $('title').textContent=state==='paused'?tr('暫停中'):ended?(S.cause==='closed'?tr('珍奶店打烊了'):tr('嚇到靈魂出竅！')):tr('行人地獄');
+    $('sub').textContent=state==='ready'?tr('我只是想買珍奶'):'';
+    $('desc').textContent=state==='ready'?tr('騎樓被機車和攤販塞滿，只好繞到馬路上。一杯接一杯，看你能喝到幾杯！'):
+      ended?tr('喝到 {n} 杯珍奶。',S.cups)+' '+tr(quip()):'';
+    $('how').hidden=state!=='ready';
+    var touch=matchMedia('(pointer: coarse)').matches||parent.innerWidth<=880;
+    var lines=touch?['點一下：往前一步','滑動：左右閃，往下滑後退']:['方向鍵 / WASD 移動，空白鍵暫停','也可以用滑鼠點一下或拖曳'];
+    lines=lines.concat(['上方出現紅黃警告，先別走那一道','小心倒車機車、睡覺黑狗，還有垃圾車']);
+    $('how').textContent='';lines.forEach(function(l){var li=document.createElement('li');li.textContent=tr(l);$('how').appendChild(li);});
+    $('endHero').hidden=!ended;
+    if(ended)$('endHero').src='art/'+(S.cause==='closed'?'hero_happy':'hero_scared')+'.webp';
+    $('bestLine').textContent=best>0&&state!=='paused'?tr('最佳紀錄：{n} 杯',best):'';
+    $('go').textContent=loadFailed?tr('載入失敗，請重新整理'):!loaded||starting?tr('載入中…'):state==='paused'?tr('繼續'):ended?tr('再玩一次'):tr('開始遊戲');
+    $('go').disabled=!loaded||starting||loadFailed;
+    $('pause').disabled=!(state==='running'||state==='paused');
+    $('pause').classList.toggle('on',state==='paused');
+    [['exit','返回遊戲大廳'],['pause',state==='paused'?'繼續':'暫停'],['snd','靜音切換'],['leaders','排行榜']].forEach(function(p){$(p[0]).setAttribute('aria-label',tr(p[1]));});
+    $('rank-title').textContent=tr('排行榜');$('rank-close').textContent=tr('關閉');
+    document.documentElement.lang=language;document.title=tr('行人地獄')+' | TICATICA GAMES';
+    if(S&&P)updateHud();
+  }
+  var QUIPS=['明明是騎樓，為什麼要走馬路？','你只是想買一杯珍奶。','靈魂先到珍奶店了。','下次記得先看上面的警告。'],quipPick=0,quipFor=null;
+  function quip(){
+    if(S.cause==='closed')return '今天喝到這裡，明天再來！';
+    if(S.cause==='reverse')return '「借過一下喔～啊你怎麼站這裡？」';
+    if(S.by==='垃圾車')return '追垃圾車的人，被垃圾車追到了。';
+    if(quipFor!==S){quipFor=S;quipPick=Math.floor(Math.random()*QUIPS.length);}
+    return QUIPS[quipPick];
+  }
+
+  /* ---------- 排行榜 ---------- */
+  var rankRequest=0;
+  function rankStatus(text){$('rank-message').dataset.text=text;$('rank-message').textContent=text?tr(text):'';}
+  async function openLeaders(){
+    if(state==='running')togglePause();
+    var id=++rankRequest,list=$('rank-list');list.textContent='';rankStatus('讀取中…');$('rank-dialog').showModal();
+    try{
+      var data=await bridge.leaders(window);if(id!==rankRequest)return;
+      if(!data)throw new Error('unavailable');
+      (data.entries||[]).forEach(function(en){var li=document.createElement('li');li.textContent=(en.displayName||'Player')+' · '+tr('{n} 杯',en.score);list.appendChild(li);});
+      rankStatus(list.children.length?'':'目前還沒有成績');
+    }catch(e){if(id===rankRequest)rankStatus('排行榜讀取失敗，請稍後再試');}
+  }
+
+  var sndBtn=$('snd');
+  sndBtn.addEventListener('click',function(){
+    muted=!muted;sndBtn.classList.toggle('on',muted);sndBtn.setAttribute('aria-pressed',String(muted));
+    if(ac){if(muted)ac.suspend();else if(state!=='paused')ac.resume();}
+  });
+  goBtn.addEventListener('click',function(){goBtn.blur();if(state==='paused')togglePause();else start();});
+  $('pause').addEventListener('click',function(){$('pause').blur();togglePause();});
+  $('exit').addEventListener('click',function(){if(state==='running')togglePause();bridge.exit(window);});
+  $('leaders').addEventListener('click',openLeaders);
+  $('rank-close').addEventListener('click',function(){rankRequest++;$('rank-dialog').close();});
+  /* 切到背景或回大廳時自動暫停，回來按「繼續」 */
+  document.addEventListener('visibilitychange',function(){last=performance.now();down=false;if(document.hidden&&state==='running')togglePause();});
+  window.setPedActive=function(on){
+    active=!!on;
+    if(!active&&state==='running')togglePause();
+    if(!active&&ac)ac.suspend();
+    if(active){last=performance.now();resize();labels();if(state!=='running')draw();}
+  };
+  window.setPedLanguage=function(next){language=next;labels();if(state!=='running')draw();};
+  window.pedScore=function(){return S?S.cups:0;};
+  try{var saved=Number(localStorage.getItem('pedestrianHellBestCups'));best=Number.isFinite(saved)?Math.max(0,Math.floor(saved)):0;}catch(e){}
+  resize();S=R_.create(Math.random);newStreet();labels();updateHud();draw();
+  frameId=requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

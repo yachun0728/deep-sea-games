@@ -5,6 +5,7 @@
 
 | 檔案 | 用途 |
 | --- | --- |
+| `cover-original-v2.png` | 大廳封面原圖（標題 JUST WANT BOBA）；`../cover.webp` 為 1056×1000 輸出，`../leaderboard.webp` 為 192×192 頭像裁切 |
 | `taiwan-v6.png` | 核准基準畫面 |
 | `signs-compare-v1.png` | 招牌三款（熱鬧大字、直立側招、手寫鐵皮），使用者指定混搭 |
 | `sign-angle-guide.png` | 招牌立體角度底稿：伸出式招牌看得到正面與頂面 |

@@ -5,7 +5,7 @@ export const SHARE_ORIGIN = 'https://ticaticagames.com';
 export const SHARE_ID = /^[A-Za-z0-9]{10}$/;
 export const SHARE_PATH = /^\/s\/([A-Za-z0-9]{10})\/?$/;
 
-const COVERS = new Set(['berry-trail', 'academy', 'banquet', 'blaster', 'boba', 'breakout', 'dive', 'eat-smaller', 'elevator',
+const COVERS = new Set(['pedestrian-hell', 'berry-trail', 'academy', 'banquet', 'blaster', 'boba', 'breakout', 'dive', 'eat-smaller', 'elevator',
   'frontier', 'last-hair', 'market-desk', 'merge', 'mines', 'mirror-twins', 'mosquito', 'mrt', 'ocean-link',
   'office-shoot', 'one-line-defense', 'outpost', 'pancake', 'peek', 'quack-pond', 'rocket-chair', 'shadow-relay', 'siege-architect',
   'skybuilder', 'tetris']);
@@ -19,6 +19,7 @@ const CLEARED = { unit: ['關', 'stages'], result: ['過了 {score} 關', 'clear
 
 // id: [中文名, English name, score param, scoring]
 const TABLE = {
+  'pedestrian-hell': ['行人地獄', 'Just Want Boba', 'score', { unit: ['杯', 'cups'], result: ['喝到 {score} 杯珍奶', 'got {score} cups of bubble tea'] }],
   'berry-trail': ['莓果小蛇', 'Berry Trail', 'score', POINTS],
   bird: ['便便鳥大戰狼群', 'Poop Bird vs Wolves', 'score', METERS(['跑了', 'ran'])],
   boss: ['胖老闆追人', 'Chubby Boss', 'score', METERS(['逃了', 'escaped'])],

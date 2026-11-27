@@ -3332,5 +3332,10 @@
   "sand.name": "Sand & Chill",
   "sand.card.aria": "Play Sand & Chill: peel, pour and make six relaxing sand artworks.",
   "sand.card.description": "Peel the paper, choose your colors and gently guide sand onto adhesive.",
-  "sand.card.tag": "Relaxing sand art"
+  "sand.card.tag": "Relaxing sand art",
+  "ped.name": "Just Want Boba",
+  "ped.card.description": "The sidewalk is blocked, so you take the road. How many cups can you get?",
+  "ped.card.aria": "Play Just Want Boba: dodge Taiwan street clutter and traffic, one bubble tea after another.",
+  "ped.card.tag": "Cups collected",
+  "ped.retry": "Retry score submission"
 }

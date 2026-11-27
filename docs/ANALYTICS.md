@@ -193,3 +193,7 @@ Cat Match（`cat-match`／貓貓三消）：一個關卡一個免費回合；進
 進入選畫頁只記 game_view；確認畫紙才開始 game_start（entry_points=0，picture 為固定圖案 ID）。選畫／設定／玩法透過 progress(pause) 暫停有效時間，關閉後 resume；離開記 abandoned，換紙記 paper_changed。欣賞記 admired，不以 complete 觸發通關獎勵。bound 為操作分析的已黏顆粒數，不作排行分數。橋接驗證來源 iframe，不傳作品圖片或個人資料。
 
 本機行為測試不代表 GA4 後台收件；正式後台須另行驗證。
+
+## 行人地獄（pedestrian-hell）
+
+沿用共用事件：開局 `AN.start('pedestrian-hell',0)`，暫停送 progress `phase:'pause'`，恢復呼叫 resume，結束一次 `AN.end(...,'complete'|'abandoned',{score})`，`score` 為買到的杯數。追蹤名稱「行人地獄」。

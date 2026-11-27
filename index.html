@@ -15,7 +15,7 @@
     w.gtag('config',ID,{allow_google_signals:false,allow_ad_personalization_signals:false,debug_mode:debug});
     var tag=d.createElement('script');tag.async=true;tag.src='https://www.googletagmanager.com/gtag/js?id='+ID;d.head.appendChild(tag);
   }
-  var names={'sand-art':'沙沙時光','berry-trail':'莓果小蛇','top-doggo':'TOP DOGGO','cat-match':'貓貓三消',outpost:'深海前哨','market-desk':'收盤之前',academy:'百萬大學堂',frontier:'荒島遠征','ocean-link':'深海連連看',blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班','eat-smaller':'數字吞噬','mirror-twins':'鏡像雙子','shadow-relay':'影子接力','one-line-defense':'一筆畫守城',mermaid:'人魚接龍','book-sort':'貓咪疊書舖',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面','rocket-chair':'社畜要下班',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看',banquet:'最後的晚餐',tetris:'俄羅斯方塊','on-pitch':'不准跑調','quack-pond':'呱呱池塘','siege-architect':'萌獸破城隊'};
+  var names={'pedestrian-hell':'行人地獄','sand-art':'沙沙時光','berry-trail':'莓果小蛇','top-doggo':'TOP DOGGO','cat-match':'貓貓三消',outpost:'深海前哨','market-desk':'收盤之前',academy:'百萬大學堂',frontier:'荒島遠征','ocean-link':'深海連連看',blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班','eat-smaller':'數字吞噬','mirror-twins':'鏡像雙子','shadow-relay':'影子接力','one-line-defense':'一筆畫守城',mermaid:'人魚接龍','book-sort':'貓咪疊書舖',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面','rocket-chair':'社畜要下班',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看',banquet:'最後的晚餐',tetris:'俄羅斯方塊','on-pitch':'不准跑調','quack-pond':'呱呱池塘','siege-architect':'萌獸破城隊'};
   var rounds={},current='',seq=0,bucket=0,last=performance.now(),inputAt=last,visible=!d.hidden,focused=d.hasFocus?d.hasFocus():true,suspended=false;
   var tabToken=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
   function emit(event,game,params){
@@ -2645,6 +2645,11 @@ body:has(#view-book-sort:not([hidden])){overflow:hidden}
 
 /* Ranking runs in the background; connection status never occupies the game UI. */
 #bt-rank-status,#bt-rank-retry{display:none!important}
+#view-pedestrian-hell .ph-platform{position:relative;padding:0;margin:auto;width:100%;max-width:480px;border:0;border-radius:18px;overflow:hidden;background:#10303f}
+#ph-frame{display:block;width:100%;height:880px;max-height:calc(100dvh - 100px);border:0;background:#10303f}
+@media(max-width:880px){#view-pedestrian-hell:not([hidden]){position:fixed!important;inset:0;z-index:160;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;width:100%!important;height:100dvh;background:#10303f}#view-pedestrian-hell .ph-platform{max-width:none;height:100%;border-radius:0}#ph-frame{height:100%;max-height:none}#view-pedestrian-hell .mobile-scroll-pad{display:none!important}}
+/* 排行榜在背景送出，連線狀態不佔遊戲畫面 */
+#ph-rank-status,#ph-rank-retry{display:none!important}
 #view-top-doggo .td-platform{padding:0;overflow:hidden;margin:0 auto;width:100%;max-width:1100px;border:0;border-radius:18px;background:#1a0f3a}#view-top-doggo #td-frame{display:block;width:100%;height:max(620px,86dvh);border:0;background:#1a0f3a}@media(max-width:880px){#view-top-doggo:not([hidden]){display:block;position:fixed;inset:0;z-index:160;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;width:100vw!important;max-width:none!important;height:100dvh!important;background:#1a0f3a;overflow:hidden}#view-top-doggo .td-platform{margin:0!important;padding:0!important;border:0!important;border-radius:0!important;width:100%!important;max-width:none!important;height:100dvh!important}#view-top-doggo #td-frame{height:100dvh!important;max-height:none!important;min-height:0!important;width:100%!important}}
 #view-top-doggo .mobile-scroll-pad{display:none!important}
 /* Keep the lobby return row and the iframe within the same mobile viewport. */
@@ -3994,7 +3999,7 @@ html.frontier-immersive{overflow:hidden}
     <a href="#cat" id="tab-cat">屋頂貓貓<small>Rooftop Cat</small></a>
     <a href="#bird" id="tab-bird">便便鳥大戰狼群<small>Poop Bird</small></a>
     <a href="#frog" id="tab-frog">青蛙吃蟲<small>Frog Snack</small></a>
-    <a href="#ocean-link" id="tab-ocean-link">深海連連看<small>Ocean Link</small></a><a href="#clock-out" id="tab-clock-out">下班保衛戰<small>Clock Out</small></a><a href="#peek" id="tab-peek">別看<small>Don’t Peek</small></a><a href="#pet-walk" id="tab-pet-walk">小灰出門<small>Pet Walkies</small></a><a href="#office-shoot" id="tab-office-shoot">拒絕加班<small>No Overtime!</small></a><a href="#eat-smaller" id="tab-eat-smaller">數字吞噬<small>Number Gulp</small></a><a href="#mirror-twins" id="tab-mirror-twins">鏡像雙子<small>Mirror Twins</small></a><a href="#shadow-relay" id="tab-shadow-relay">影子接力<small>Shadow Relay</small></a><a href="#one-line-defense" id="tab-one-line-defense">一筆畫守城<small>One-Line Defense</small></a><a href="#mermaid" id="tab-mermaid">人魚接龍<small>Mermaid Spider</small></a><a href="#sand-art" id="tab-sand-art">沙沙時光<small>Sand &amp; Chill</small></a><a href="#cat-match" id="tab-cat-match">貓貓三消<small>Cat Match</small></a><a href="#top-doggo" id="tab-top-doggo">TOP DOGGO<small>Paw City</small></a><a href="#book-sort" id="tab-book-sort">貓咪疊書舖<small>Cat Book Stack</small></a><a href="#berry-trail" id="tab-berry-trail">莓果小蛇<small>Berry Trail</small></a>
+    <a href="#ocean-link" id="tab-ocean-link">深海連連看<small>Ocean Link</small></a><a href="#pedestrian-hell" id="tab-pedestrian-hell">行人地獄<small>Just Want Boba</small></a><a href="#clock-out" id="tab-clock-out">下班保衛戰<small>Clock Out</small></a><a href="#peek" id="tab-peek">別看<small>Don’t Peek</small></a><a href="#pet-walk" id="tab-pet-walk">小灰出門<small>Pet Walkies</small></a><a href="#office-shoot" id="tab-office-shoot">拒絕加班<small>No Overtime!</small></a><a href="#eat-smaller" id="tab-eat-smaller">數字吞噬<small>Number Gulp</small></a><a href="#mirror-twins" id="tab-mirror-twins">鏡像雙子<small>Mirror Twins</small></a><a href="#shadow-relay" id="tab-shadow-relay">影子接力<small>Shadow Relay</small></a><a href="#one-line-defense" id="tab-one-line-defense">一筆畫守城<small>One-Line Defense</small></a><a href="#mermaid" id="tab-mermaid">人魚接龍<small>Mermaid Spider</small></a><a href="#sand-art" id="tab-sand-art">沙沙時光<small>Sand &amp; Chill</small></a><a href="#cat-match" id="tab-cat-match">貓貓三消<small>Cat Match</small></a><a href="#top-doggo" id="tab-top-doggo">TOP DOGGO<small>Paw City</small></a><a href="#book-sort" id="tab-book-sort">貓咪疊書舖<small>Cat Book Stack</small></a><a href="#berry-trail" id="tab-berry-trail">莓果小蛇<small>Berry Trail</small></a>
     <a href="#tetris" id="tab-tetris">俄羅斯方塊<small>Block Drop</small></a><a href="#on-pitch" id="tab-on-pitch">不准跑調<small>Stay On Pitch</small></a><a href="#quack-pond" id="tab-quack-pond">呱呱池塘<small>Quack Pond</small></a><a href="#siege-architect" id="tab-siege-architect">萌獸破城隊<small>Critter Crashers</small></a><a href="#breakout" id="tab-breakout">打磚塊<small>Breakout</small></a>
     <a href="#nap" id="tab-nap">偷睡大師<small>Nap Master</small></a><a href="#pudding" id="tab-pudding">布丁突圍<small>Pudding Dash</small></a><a href="#mosquito" id="tab-mosquito">血壓上升<small>Midnight Mosquito</small></a><a href="#banquet" id="tab-banquet">最後的晚餐<small>The Last Banquet</small></a><a href="#last-hair" id="tab-last-hair">尊嚴保衛戰<small>The Last Hair</small></a>
     <a href="#market-desk" id="tab-market-desk">收盤之前<small>Closing Call</small></a>
@@ -4018,7 +4023,8 @@ html.frontier-immersive{overflow:hidden}
 
 
   <section class="view lobby-view" id="view-lobby" aria-label="遊戲大廳">
-<svg class="lobby-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-sand-art" viewBox="0 0 1056 1000"><image href="games/sand-art/cover.webp" width="1056" height="1000" preserveAspectRatio="xMidYMid slice"/></symbol>
+<svg class="lobby-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-pedestrian-hell" viewBox="0 0 96 96"><image href="games/pedestrian-hell/leaderboard.webp?v=1" width="96" height="96" preserveAspectRatio="xMidYMid slice"/></symbol>
+<symbol id="icon-sand-art" viewBox="0 0 1056 1000"><image href="games/sand-art/cover.webp" width="1056" height="1000" preserveAspectRatio="xMidYMid slice"/></symbol>
 <symbol id="icon-outpost" viewBox="0 0 96 96"><rect x="8" y="12" width="80" height="72" rx="16" fill="#10334a"/><path d="M14 74q10-6 20 0t20 0 20 0 16-2" fill="none" stroke="#32798e" stroke-width="3" stroke-linecap="round"/><path d="M14 74V40q0-9 9-9h6q9 0 9 9v34z" fill="#5d7f92"/><path d="M20 74V42q0-5 5-5h2q5 0 5 5v32z" fill="#64f1d0"/><path d="M22 46q3-3 6 0M22 54q3-3 6 0M22 62q3-3 6 0" fill="none" stroke="#10334a" stroke-width="2" stroke-linecap="round"/><path d="M40 74l4-10h20l4 10z" fill="#8aa6b5"/><path d="M46 64V54q0-10 9-10t9 10v10z" fill="#62e6d2"/><circle cx="52" cy="54" r="2.5" fill="#d8fbff"/><circle cx="58" cy="50" r="1.8" fill="#d8fbff"/><rect x="64" y="50" width="16" height="10" rx="3" fill="#8aa6b5"/><rect x="76" y="48" width="6" height="14" rx="2" fill="#ffc56c"/><path transform="translate(-5 0)" d="M72 28q5-6 11-1l5-3-1 7 1 7-5-3q-6 5-11-1-3-3 0-6z" fill="#ff8f6b"/><circle cx="68" cy="31" r="1.8" fill="#10334a"/><circle cx="40" cy="24" r="3" fill="none" stroke="#9fe9f5" stroke-width="2"/><circle cx="50" cy="19" r="2" fill="none" stroke="#9fe9f5" stroke-width="2"/></symbol>
 <symbol id="icon-market-desk" viewBox="0 0 96 96">
   <rect x="12" y="16" width="72" height="64" rx="12" fill="#13282c" stroke="#88a49b" stroke-width="2"/>
@@ -4116,8 +4122,9 @@ html.frontier-immersive{overflow:hidden}
   <div class="gold-banner-copy"><span class="game-card-category">每日補給</span><h3>每天挖點好運氣</h3><p class="game-card-en">Daily Gold Mine</p><p class="game-card-description">挖金礦拿點數，再去挑戰喜歡的小遊戲。</p><p id="gold-daily-status" aria-live="polite">每天 3 次 · 每次挖 5 格 · 每日最多 30 點</p><div class="game-card-footer"><span>不限次數</span><span>台灣時間午夜重置</span></div></div>
   <span class="gold-banner-cta" id="gold-daily-cta">挖一次 <span aria-hidden="true">↗</span></span>
 </a></section>
-    <section class="lobby-games" aria-labelledby="lobby-games-title"><div class="lobby-row-head" id="lobby-games"><h2 id="lobby-games-title"><i class="fa-solid fa-table-cells-large side-head-icon" aria-hidden="true"></i>遊戲 <span id="lobby-count">53 款遊戲</span></h2><button type="button" class="row-all" id="lobby-show-all">查看全部</button></div><div class="lobby-tabs-row"><div class="lobby-filters tab-filters" role="group" aria-label="遊戲分類"><button type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div><label class="top-search"><input id="lobby-search" type="search" placeholder="搜尋" aria-label="搜尋遊戲" autocomplete="off"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></label></div>
-    <div class="lobby-grid"><a class="game-card" href="#sand-art" data-art="cover" style="--cover:url(games/sand-art/cover.webp?v=60caa370)" data-game-category="puzzle" aria-label="遊玩沙沙時光：挑紙、倒沙，慢慢完成六張療癒沙畫。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 1056 1000" aria-hidden="true"><use href="#icon-sand-art"/></svg></div><h3>沙沙時光</h3><p class="game-card-en">Sand &amp; Chill</p><p class="game-card-description">挑開黃紙，自由混色，讓沙粒慢慢沾附成畫。</p><div class="game-card-footer"><span>不限次數</span><span>療癒手作</span></div></a>
+    <section class="lobby-games" aria-labelledby="lobby-games-title"><div class="lobby-row-head" id="lobby-games"><h2 id="lobby-games-title"><i class="fa-solid fa-table-cells-large side-head-icon" aria-hidden="true"></i>遊戲 <span id="lobby-count">54 款遊戲</span></h2><button type="button" class="row-all" id="lobby-show-all">查看全部</button></div><div class="lobby-tabs-row"><div class="lobby-filters tab-filters" role="group" aria-label="遊戲分類"><button type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div><label class="top-search"><input id="lobby-search" type="search" placeholder="搜尋" aria-label="搜尋遊戲" autocomplete="off"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></label></div>
+    <div class="lobby-grid"><a class="game-card" href="#pedestrian-hell" data-art="cover" style="--cover:url(games/pedestrian-hell/cover.webp?v=628f9b23)" data-game-category="run" aria-label="遊玩行人地獄：閃過騎樓路霸和馬路車流，一杯接一杯買珍奶。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#icon-pedestrian-hell"></use></svg></div><h3>行人地獄</h3><p class="game-card-en">Just Want Boba</p><p class="game-card-description">騎樓被占滿，只好走馬路。看你能喝到幾杯珍奶！</p><div class="game-card-footer"><span>不限次數</span><span>喝到幾杯</span></div></a>
+<a class="game-card" href="#sand-art" data-art="cover" style="--cover:url(games/sand-art/cover.webp?v=60caa370)" data-game-category="puzzle" aria-label="遊玩沙沙時光：挑紙、倒沙，慢慢完成六張療癒沙畫。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 1056 1000" aria-hidden="true"><use href="#icon-sand-art"/></svg></div><h3>沙沙時光</h3><p class="game-card-en">Sand &amp; Chill</p><p class="game-card-description">挑開黃紙，自由混色，讓沙粒慢慢沾附成畫。</p><div class="game-card-footer"><span>不限次數</span><span>療癒手作</span></div></a>
 <a class="game-card" href="#berry-trail" data-art="cover" style="--cover:url(games/berry-trail/cover.webp?v=a74c31fc)" data-game-category="retro" aria-label="遊玩莓果小蛇：吃莓果長大，避開牆壁與自己的身體。"><div class="game-card-top"><span class="game-card-category">經典小遊戲</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#icon-berry-trail"></use></svg></div><h3>莓果小蛇</h3><p class="game-card-en">Berry Trail</p><p class="game-card-description">吃莓果長大，避開牆壁與自己的身體。</p><div class="game-card-footer"><span>不限次數</span><span>最高分</span></div></a>
 <a class="game-card" href="#top-doggo" data-art="cover" style="--cover:url(games/top-doggo/cover.webp?v=86c712df)" data-game-category="run" aria-label="遊玩 TOP DOGGO: Paw City：美式鬥牛犬在肉球城清空紫色浣熊幫，一關比一關難，三種難度比誰闖到第幾關。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 192 192" aria-hidden="true" focusable="false"><use href="#icon-top-doggo"></use></svg></div><h3>TOP DOGGO</h3><p class="game-card-en">Paw City</p><p class="game-card-description">美式鬥牛犬清空紫色浣熊幫，三種難度比誰闖到第幾關。</p><div class="game-card-footer"><span>不限次數</span><span>街頭動作闖關</span></div></a>
 <a class="game-card" href="#skybuilder" data-art="cover" style="--cover:url(games/skybuilder/cover.webp?v=9fd89a46)" data-game-category="timing" aria-label="遊玩蓋樓大師：用起重機一層一層疊高樓，挑戰高度紀錄，享有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-skybuilder"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-skybuilder"></use></svg></div><h3>蓋樓大師</h3><p class="game-card-en">Sky Builder</p><p class="game-card-description">抓準時機疊樓層，蓋得挑戰高度紀錄，享有 BONUS 獎勵。</p><div class="game-card-footer"><span>立即開玩</span><span>高度挑戰</span></div></a>
@@ -5219,6 +5226,7 @@ html.frontier-immersive{overflow:hidden}
   </section>
 
 
+<section class="view" id="view-pedestrian-hell" hidden><div class="panel ph-platform"><iframe id="ph-frame" title="Just Want Boba" src="about:blank" allow="autoplay"></iframe><p id="ph-rank-status" aria-hidden="true" hidden></p><button id="ph-rank-retry" type="button" aria-hidden="true" tabindex="-1" hidden>重新送出成績</button></div></section>
 <section class="view" id="view-ocean-link" hidden>
   <div id="ol-stage">
     <header class="ol-toolbar">
@@ -8963,6 +8971,48 @@ html.frontier-immersive{overflow:hidden}
   "目前還沒有成績。": "No scores yet.",
   "載入失敗，請關閉後重試。": "Could not load scores. Close and open to retry.",
   "在棋盤上滑動轉向": "Swipe on the board to turn",
+  "我只是想買珍奶": "I just want bubble tea",
+  "騎樓被機車和攤販塞滿，只好繞到馬路上。一杯接一杯，看你能喝到幾杯！": "Scooters and stalls block the sidewalk, so you end up on the road. How many cups can you get?",
+  "點一下：往前一步": "Tap: one step forward",
+  "滑動：左右閃，往下滑後退": "Swipe: dodge left or right, swipe down to step back",
+  "方向鍵 / WASD 移動，空白鍵暫停": "Arrow keys / WASD to move, Space to pause",
+  "也可以用滑鼠點一下或拖曳": "Or click and drag with the mouse",
+  "小心倒車機車、睡覺黑狗，還有垃圾車": "Watch for reversing scooters, sleeping dogs and the garbage truck",
+  "載入中…": "Loading…",
+  "載入失敗，請重新整理": "Failed to load. Please refresh.",
+  "第 {n} 杯": "Cup {n}",
+  "還有 {n} 步": "{n} steps left",
+  "喝到 {n} 杯珍奶。": "Cups of bubble tea: {n}.",
+  "最佳紀錄：{n} 杯": "Best: {n} cups",
+  "{n} 杯": "{n} cups",
+  "珍奶店打烊了": "The boba shop is closed",
+  "嚇到靈魂出竅！": "Scared out of your wits!",
+  "嚇到！": "Yikes!",
+  "第 {n} 杯，路更難了": "Cup {n}: it gets harder",
+  "嗶嗶～倒車": "Beep beep, backing up!",
+  "汪！這是牠的騎樓": "Woof! My sidewalk.",
+  "什麼都能等，垃圾車不能！": "Never miss the garbage truck!",
+  "喵～": "Meow~",
+  "外送": "Delivery",
+  "機車": "Scooter",
+  "小黃": "Taxi",
+  "貨車": "Truck",
+  "公車": "Bus",
+  "垃圾車": "Garbage",
+  "明明是騎樓，為什麼要走馬路？": "It is a sidewalk. Why are you on the road?",
+  "你只是想買一杯珍奶。": "All you wanted was bubble tea.",
+  "靈魂先到珍奶店了。": "Your soul got to the boba shop first.",
+  "下次記得先看上面的警告。": "Check the warnings next time.",
+  "今天喝到這裡，明天再來！": "That is enough boba for today!",
+  "「借過一下喔～啊你怎麼站這裡？」": "\"Excuse me~ why are you standing there?\"",
+  "追垃圾車的人，被垃圾車追到了。": "You chased the garbage truck. It chased back.",
+  "靜音切換": "Toggle sound",
+  "讀取中…": "Loading…",
+  "目前還沒有成績": "No scores yet",
+  "排行榜讀取失敗，請稍後再試": "Leaderboard unavailable. Try again later.",
+  "上方出現紅黃警告，先別走那一道": "A red-and-yellow warning at the top means stay out of that lane",
+  "垃圾車來了！": "Garbage truck!",
+  "第 {n} 杯到手！": "Got cup {n}!",
   "不限次數": "Unlimited plays",
   "百科問答": "Trivia quiz",
   "立即開玩": "Play now",
@@ -11650,12 +11700,16 @@ html.frontier-immersive{overflow:hidden}
   "沙沙時光": "Sand & Chill",
   "遊玩沙沙時光：挑紙、倒沙，慢慢完成六張療癒沙畫。": "Play Sand & Chill: peel, pour and make six relaxing sand artworks.",
   "挑開黃紙，自由混色，讓沙粒慢慢沾附成畫。": "Peel the paper, choose your colors and gently guide sand onto adhesive.",
-  "療癒手作": "Relaxing sand art"
+  "療癒手作": "Relaxing sand art",
+  "行人地獄": "Just Want Boba",
+  "騎樓被占滿，只好走馬路。看你能喝到幾杯珍奶！": "The sidewalk is blocked, so you take the road. How many cups can you get?",
+  "遊玩行人地獄：閃過騎樓路霸和馬路車流，一杯接一杯買珍奶。": "Play Just Want Boba: dodge Taiwan street clutter and traffic, one bubble tea after another.",
+  "喝到幾杯": "Cups collected"
 }</script>
 <script type="application/json" id="arcade-hans">{
  "chars": [
-  "丟並乾亂亞佈佔併來係倉個們側偵偽傘備傢傳傷傾僅價儀優儲兇兌兒內兩冊凍別則剋剛創劃劇動務勝勢勵勸勻匯區協卻厲參叢員問啟喚單喲嗎嗚嗶嘆嘗噓噴嚇嚴囉國圍園圓圖團執報場塊墊墳壓壞壯夠夢夥夾奪婦媽學宮實寧寫寬寶將專尋對導尷屜層屬島嶼師帳帶幀幣幫幹幾庫廂廈廚廟廠廢廣廳張強彈彎後徑從復悶惡愛態慶憶懇應懶懷戰戲戶拋捨捲掃掙掛採揚換揮損搖搗搶摻撐撥撲撿擁擇擊擋據擠擬擲擴擺擾攏攤敗敵數斷於時暈暫書會東桿條棄棟楓業極構槍樂樑樓標樣樹橋機橢橫檔檢檻櫃櫻欄權欖歡歷歸殘殺殼毀氣決沒況涼淨淵淺減渦測湊湧準溝溫滅滾滿漁漢漲漸漿潛潰澤濃濕濺瀏灑灘灣為烏無煉煙熱燈燒營燼爍爐爛爺爾牆狀猶獎獨獲獵獸現瑪環瓊產畢畫異當疊療癒癡癢癮發皺盜盞盡監盤盪眾睜確碼磚礎礙礦祕禦禮禱種稱積穩穫窩窮窺竅竊筆節範築篩簡簽籃籠籤糰紀約紅紋納純紙級紛細紹終組結絕絡給統絲綁經綠維網綴綿緊線緣編緩練縫縮總績繞繩繪繼續纏羅習聞聯聲職聽脅脈脫腦腳膚膠膽臉臨與興舉舊舖艙荊莊萬葉蓋蔔蔥蕩薦薩藍藝藥蘇蘋蘿處虛號虧蝦蝸螢蟲術衛衝補裝裡製複褲襬襯襲見規視覺覽觀觸訂計訊討訓託記訣訪設許訴註評詛詞試詩話該認誘語誤說誰課調請論諧諷謊謎講謝謠證識譯議護讀變讓豎豐豔貓貝負財販貪貫責貴買貸費貼資賊賞賠賤質賭賴賺購賽贈贏贓趕跡蹟蹤躍車軍軟軸較載輔輕輛輩輪輯輸轉辦辭迴這連週進遊運過達遞遠適遲選遺還邊邏郵鄰醫醬釋釘針釣鈕鉗鉛鉤銀銅銷鋒鋪鋸鋼錄錘錢錨錯錶鍊鍋鍛鍵鎖鎚鏈鏡鏤鏽鐘鐮鐵鑑鑣鑽長門閃閉開閒間閘閱闆闔闖關陣陰陽隊階隕際隨險隱隻雙雜離難雲電霧靈靜響頁頂項順須頌預頒頓領頭頰頻顆題額顏類顧顯風颱飄飆飛飯飲飽飾餃餅養餌餓餘館餵馬騙騰驗驚髏體髮鬆鬍鬚鬥鬱魚魷鮪鯉鯊鯛鯨鰭鰻鱷鱸鳥鳳鳴鴉鴨鴿鵝鵡鶴鷹鸚麗麥麵麼黃點鼴齊龍龜",
-  "丢并干乱亚布占并来系仓个们侧侦伪伞备家传伤倾仅价仪优储凶兑儿内两册冻别则克刚创划剧动务胜势励劝匀汇区协却厉参丛员问启唤单哟吗呜哔叹尝嘘喷吓严啰国围园圆图团执报场块垫坟压坏壮够梦伙夹夺妇妈学宫实宁写宽宝将专寻对导尴屉层属岛屿师帐带帧币帮干几库厢厦厨庙厂废广厅张强弹弯后径从复闷恶爱态庆忆恳应懒怀战戏户抛舍卷扫挣挂采扬换挥损摇捣抢掺撑拨扑捡拥择击挡据挤拟掷扩摆扰拢摊败敌数断于时晕暂书会东杆条弃栋枫业极构枪乐梁楼标样树桥机椭横档检槛柜樱栏权榄欢历归残杀壳毁气决没况凉净渊浅减涡测凑涌准沟温灭滚满渔汉涨渐浆潜溃泽浓湿溅浏洒滩湾为乌无炼烟热灯烧营烬烁炉烂爷尔墙状犹奖独获猎兽现玛环琼产毕画异当叠疗愈痴痒瘾发皱盗盏尽监盘荡众睁确码砖础碍矿秘御礼祷种称积稳获窝穷窥窍窃笔节范筑筛简签篮笼签团纪约红纹纳纯纸级纷细绍终组结绝络给统丝绑经绿维网缀绵紧线缘编缓练缝缩总绩绕绳绘继续缠罗习闻联声职听胁脉脱脑脚肤胶胆脸临与兴举旧铺舱荆庄万叶盖卜葱荡荐萨蓝艺药苏苹萝处虚号亏虾蜗萤虫术卫冲补装里制复裤摆衬袭见规视觉览观触订计讯讨训托记诀访设许诉注评诅词试诗话该认诱语误说谁课调请论谐讽谎谜讲谢谣证识译议护读变让竖丰艳猫贝负财贩贪贯责贵买贷费贴资贼赏赔贱质赌赖赚购赛赠赢赃赶迹迹踪跃车军软轴较载辅轻辆辈轮辑输转办辞回这连周进游运过达递远适迟选遗还边逻邮邻医酱释钉针钓钮钳铅钩银铜销锋铺锯钢录锤钱锚错表炼锅锻键锁锤链镜镂锈钟镰铁鉴镳钻长门闪闭开闲间闸阅板阖闯关阵阴阳队阶陨际随险隐只双杂离难云电雾灵静响页顶项顺须颂预颁顿领头颊频颗题额颜类顾显风台飘飙飞饭饮饱饰饺饼养饵饿余馆喂马骗腾验惊髅体发松胡须斗郁鱼鱿鲔鲤鲨鲷鲸鳍鳗鳄鲈鸟凤鸣鸦鸭鸽鹅鹉鹤鹰鹦丽麦面么黄点鼹齐龙龟"
+  "丟並乾亂亞佈佔併來係倉個們側偵偽傘備傢傳傷傾僅價儀優儲兇兌兒內兩冊凍別則剋剛創劃劇動務勝勢勵勸勻匯區協卻厲參叢員問啟喚單喲嗎嗚嗶嘆嘗噓噴嚇嚴囉國圍園圓圖團執報場塊塵墊墳壓壞壯夠夢夥夾奪婦媽學宮實寧寫寬寶將專尋對導尷屜層屬島嶼師帳帶幀幣幫幹幾庫廂廈廚廟廠廢廣廳張強彈彎後徑從復悶惡愛態慶憶懇應懶懷戰戲戶拋捨捲掃掙掛採揚換揮損搖搗搶摻撐撥撲撿擁擇擊擋據擠擬擲擴擺擾攏攤敗敵數斷於時暈暫曬書會東桿條棄棟楓業極構槍樂樑樓標樣樹橋機橢橫檔檢檻櫃櫻欄權欖歡歷歸殘殺殼毀氣決沒況涼淨淵淺減渦測湊湧準溝溫滅滾滿漁漢漲漸漿潛潰澤濃濕濺瀏灑灘灣為烏無煉煙熱燈燒營燼爍爐爛爺爾牆狀猶獄獎獨獲獵獸現瑪環瓊產畢畫異當疊療癒癡癢癮發皺盜盞盡監盤盪眾睜確碼磚礎礙礦祕禦禮禱種稱積穩穫窩窮窺竅竊筆節範築篩簡簽籃籠籤糰紀約紅紋納純紙級紛細紹終組絆結絕絡給統絲綁經綠維網綴綿緊線緣編緩練縫縮總績繞繩繪繼續纏羅習聞聯聲職聽脅脈脫腦腳膚膠膽臉臨與興舉舊舖艙荊莊萬葉蓋蔔蔥蕩薦薩藍藝藥蘇蘋蘿處虛號虧蝦蝸螢蟲術衛衝補裝裡製複褲襬襯襲見規視覺覽觀觸訂計訊討訓託記訣訪設許訴註評詛詞試詩話該認誘語誤說誰課調請論諧諷謊謎講謝謠證識譯議護讀變讓豎豐豔貓貝負財貨販貪貫責貴買貸費貼資賊賞賠賤質賭賴賺購賽贈贏贓趕跡蹟蹤躍車軌軍軟軸較載輔輕輛輩輪輯輸轉辦辭迴這連週進遊運過達遞遠適遲選遺還邊邏郵鄰醫醬釋釘針釣鈕鉗鉛鉤銀銅銷鋒鋪鋸鋼錄錘錢錨錯錶鍊鍋鍛鍵鎖鎚鏈鏡鏤鏽鐘鐮鐵鑑鑣鑽長門閃閉開閒間閘閱闆闔闖關陣陰陽隊階隕際隨險隱隻雙雜離難雲電霧靈靜響頁頂項順須頌預頒頓領頭頰頻顆題額顏類顧顯風颱飄飆飛飯飲飽飾餃餅養餌餓餘館餵馬騎騙騰驗驚髏體髮鬆鬍鬚鬥鬱魚魷鮪鯉鯊鯛鯨鰭鰻鱷鱸鳥鳳鳴鴉鴨鴿鵝鵡鶴鷹鸚麗麥麵麼黃點鼴齊龍龜",
+  "丢并干乱亚布占并来系仓个们侧侦伪伞备家传伤倾仅价仪优储凶兑儿内两册冻别则克刚创划剧动务胜势励劝匀汇区协却厉参丛员问启唤单哟吗呜哔叹尝嘘喷吓严啰国围园圆图团执报场块尘垫坟压坏壮够梦伙夹夺妇妈学宫实宁写宽宝将专寻对导尴屉层属岛屿师帐带帧币帮干几库厢厦厨庙厂废广厅张强弹弯后径从复闷恶爱态庆忆恳应懒怀战戏户抛舍卷扫挣挂采扬换挥损摇捣抢掺撑拨扑捡拥择击挡据挤拟掷扩摆扰拢摊败敌数断于时晕暂晒书会东杆条弃栋枫业极构枪乐梁楼标样树桥机椭横档检槛柜樱栏权榄欢历归残杀壳毁气决没况凉净渊浅减涡测凑涌准沟温灭滚满渔汉涨渐浆潜溃泽浓湿溅浏洒滩湾为乌无炼烟热灯烧营烬烁炉烂爷尔墙状犹狱奖独获猎兽现玛环琼产毕画异当叠疗愈痴痒瘾发皱盗盏尽监盘荡众睁确码砖础碍矿秘御礼祷种称积稳获窝穷窥窍窃笔节范筑筛简签篮笼签团纪约红纹纳纯纸级纷细绍终组绊结绝络给统丝绑经绿维网缀绵紧线缘编缓练缝缩总绩绕绳绘继续缠罗习闻联声职听胁脉脱脑脚肤胶胆脸临与兴举旧铺舱荆庄万叶盖卜葱荡荐萨蓝艺药苏苹萝处虚号亏虾蜗萤虫术卫冲补装里制复裤摆衬袭见规视觉览观触订计讯讨训托记诀访设许诉注评诅词试诗话该认诱语误说谁课调请论谐讽谎谜讲谢谣证识译议护读变让竖丰艳猫贝负财货贩贪贯责贵买贷费贴资贼赏赔贱质赌赖赚购赛赠赢赃赶迹迹踪跃车轨军软轴较载辅轻辆辈轮辑输转办辞回这连周进游运过达递远适迟选遗还边逻邮邻医酱释钉针钓钮钳铅钩银铜销锋铺锯钢录锤钱锚错表炼锅锻键锁锤链镜镂锈钟镰铁鉴镳钻长门闪闭开闲间闸阅板阖闯关阵阴阳队阶陨际随险隐只双杂离难云电雾灵静响页顶项顺须颂预颁顿领头颊频颗题额颜类顾显风台飘飙飞饭饮饱饰饺饼养饵饿余馆喂马骑骗腾验惊髅体发松胡须斗郁鱼鱿鲔鲤鲨鲷鲸鳍鳗鳄鲈鸟凤鸣鸦鸭鸽鹅鹉鹤鹰鹦丽麦面么黄点鼹齐龙龟"
  ],
  "words": {
   "亮著": "亮着",
@@ -33090,7 +33144,7 @@ function ftBuilding(b,w){
 })();
 
   /* ---------- member centre (local only: reads existing best-record keys, writes nothing) ---------- */
-  var MEMBER_RECORDS = [['berry-trail','berryTrailBest'],['mines','deep-sea-mines-best'],['breakout','deep-sea-breakout-best'],['merge','pearl-merge-best'],['runner','chayne'],['elevator','deep-sea-queue-best'],['sneak','sneak'],['fishing','deep-sea-fishing-best'],['campaign','deep-sea-campaign-best'],['cat','deep-sea-cat-best'],['bird','deep-sea-bird-best'],['frog','deep-sea-frog-best'],['pudding','deep-sea-pudding-best'],['clock-out','deep-sea-clock-out-best'],['peek','deep-sea-peek-best'],['mosquito','deep-sea-mosquito-best'],['last-hair','deep-sea-last-hair-best'],['banquet','deep-sea-banquet-best'],['office-shoot','deep-sea-office-shoot-best'],['nap','deep-sea-nap-best'],['reaper','reaper'],['blaster','deep-sea-blaster-best'],['skybuilder','deep-sea-skybuilder-best'],['carp','deep-sea-carp-best'],['rider','deep-sea-rider-best'],['boss','deep-sea-boss-best'],['thief','deep-sea-thief-best'],['baby','deep-sea-baby-best'],['boba','straw_game_best'],['dive','diveBestScore'],['mrt','mrtBestTier']];
+  var MEMBER_RECORDS = [['pedestrian-hell','pedestrianHellBestCups'],['berry-trail','berryTrailBest'],['mines','deep-sea-mines-best'],['breakout','deep-sea-breakout-best'],['merge','pearl-merge-best'],['runner','chayne'],['elevator','deep-sea-queue-best'],['sneak','sneak'],['fishing','deep-sea-fishing-best'],['campaign','deep-sea-campaign-best'],['cat','deep-sea-cat-best'],['bird','deep-sea-bird-best'],['frog','deep-sea-frog-best'],['pudding','deep-sea-pudding-best'],['clock-out','deep-sea-clock-out-best'],['peek','deep-sea-peek-best'],['mosquito','deep-sea-mosquito-best'],['last-hair','deep-sea-last-hair-best'],['banquet','deep-sea-banquet-best'],['office-shoot','deep-sea-office-shoot-best'],['nap','deep-sea-nap-best'],['reaper','reaper'],['blaster','deep-sea-blaster-best'],['skybuilder','deep-sea-skybuilder-best'],['carp','deep-sea-carp-best'],['rider','deep-sea-rider-best'],['boss','deep-sea-boss-best'],['thief','deep-sea-thief-best'],['baby','deep-sea-baby-best'],['boba','straw_game_best'],['dive','diveBestScore'],['mrt','mrtBestTier']];
   var memberTimer = 0;
   function memberGameName(id) { return (VIEWS[id] || id).replace(/<span>[\s\S]*<\/span>/, '').replace(/<[^>]*>/g, '').trim(); }
   function memberSync() {
@@ -35484,6 +35538,364 @@ function btRoute(active){
 }
 window.addEventListener('arcade-languagechange',function(){$('bt-frame').contentWindow.setBerryLanguage?.(window.deepSeaI18n.getLanguage());});
 window.addEventListener('pagehide',function(e){if(!e.persisted)btEnd('abandoned',$('bt-frame').contentWindow.berryScore?.());},true);
+/* 行人地獄（Just Want Boba）：固定步進的遊戲規則。瀏覽器與排行榜 Worker 共用，只能用傳入的 rng 取亂數。 */
+const pedestrianHellRules = (() => {
+  const COLS=5,ARCADE=3,GOAL=50,HOP=.18,JOG_TAIL=.13,JOG_FPS=17;
+  /* 操作代碼：0 往前、1 往後、2 往左、3 往右 */
+  const DIRS=[[0,1],[0,-1],[-1,0],[1,0]];
+  /* 第幾杯決定難度；第 6 杯以後維持同一難度。REST 是買到珍奶後的慶祝時間，CLOSE 是打烊時間（秒，需小於排行榜重播上限 600） */
+  const REST=1.8,CLOSE=570;
+  function levelOf(cup){const L=Math.min(cup-1,5);return {speed:1+.09*L,wait:1-.08*L,gap:4-.2*L,density:.68+.025*L,warn:1.3-.07*L,extra:Math.min(L,2),dogs:L>=2?1:0};}
+  let level=levelOf(1);
+  const catBag=['cat_lick','cat_loaf','cat_sit','cat_flop','cat_stretch'];
+  /* ---------- 地圖 ---------- */
+  var rng,rows,P,cars,laneWait,queued,cam,bump,roadSteps,reversers,dogs,garbageAt,pending,visitors,parked,t,S,bags;
+  function pick(a){return a[Math.floor(rng()*a.length)];}
+  function between(a,b){return a+Math.floor(rng()*(b-a+1));}
+  /* 不用「隨機比較函式」排序：各瀏覽器排序方式不同，排行榜重播會對不起來 */
+  function shuffle(list){for(var i=list.length-1;i>0;i--){var j=Math.floor(rng()*(i+1)),x=list[i];list[i]=list[j];list[j]=x;}return list;}
+  function draw1(key,list){                       /* 抽完一輪才重複，畫面比較多樣 */
+    if(!bags[key]||!bags[key].length)bags[key]=shuffle(list.slice());
+    return bags[key].pop();
+  }
+  var SINGLE=['pots','moneytree','bougain','gas','tyre','bluepot','blocker','stools','nopark','scooter1','cat1','cat1'];
+  /* 路緣那一欄放台灣常見的街道設施；曬東西只放在靠店家的最左欄 */
+  var STREET=['hydrant','box_green','mailbox','box_grey','telecom','tree','box_paint','noparksign'];
+  var SIDESCOOTER=['scooterside','scooterside_blue','scooterside_grey'];
+  /* 停車方向：原圖車頭朝左，名稱結尾的 ~ 代表左右翻轉成朝右。
+     靠店面那一欄車頭朝店面（左），騎樓其他位置朝馬路（右），馬路上的車頭朝人行道（左） */
+  function facing(name,c){return c===0?name:name+'~';}
+  function sideScooter(c){return facing(draw1('sc',SIDESCOOTER),c);}
+  var WIDE=['scooterside','bathtub','uncle','quilt','recycler','diners','scooterside','carside_red','carside_grey','carside_van','stall_wide'];  /* 汽車一律橫停 */
+  var TALL=['scooterstack','scooterstack','dinersv'];
+
+  /* 先走出一條保證可通的路徑，再把其他騎樓格塞滿東西。
+     「全擋」路段會把路徑推到馬路上，一定得下去走。 */
+  function buildBlocks(){
+    var map=[],path=1,r=0;
+    function add(free,density){
+      var cells=[];
+      for(var c=0;c<COLS;c++)cells[c]=(c<ARCADE&&free.indexOf(c)<0&&rng()<density);
+      map.push(cells);r++;
+    }
+    function shift(to,density){
+      var free=[],c;
+      for(c=Math.min(path,to);c<=Math.max(path,to);c++)free.push(c);
+      path=to;add(free,density);
+    }
+    for(;r<3;)add([0,1,2],0);
+    while(r<GOAL-2){
+      var n=between(2,4),i;
+      for(i=0;i<n&&r<GOAL-2;i++){
+        if(rng()<.55)shift(between(0,ARCADE-1),level.density);else add([path],level.density);
+      }
+      if(r<GOAL-6){
+        shift(2,.5);shift(3,1);
+        var len=between(2,4);
+        for(i=0;i<len;i++)add([],1);
+        shift(2,.4);
+      }
+    }
+    for(;r<=GOAL+16;)add([0,1,2],0);
+    return map;
+  }
+  function decorate(blocks){
+    var map=blocks.map(function(){return [null,null,null,null,null];});
+    function put(img,c,r,w,h){
+      var it={img:img,c:c,r:r,w:w,h:h},x,y;
+      for(y=0;y<h;y++)for(x=0;x<w;x++)map[r+y][c+x]=it;
+    }
+    for(var r=0;r<blocks.length;r++)for(var c=0;c<ARCADE;c++){
+      if(!blocks[r][c]||map[r][c])continue;
+      var right=c+1<ARCADE&&blocks[r][c+1]&&!map[r][c+1];
+      var up=r+1<blocks.length&&blocks[r+1][c]&&!map[r+1][c];
+      var img;
+      if(right&&rng()<.65){
+        img=c===0?draw1('w0',WIDE):draw1('w1',WIDE.filter(function(n){return n!=='quilt';}));
+        put(img==='scooterside'?sideScooter(c):img,c,r,2,1);
+      }else if(up&&rng()<.3){
+        img=draw1('t',TALL);put(img==='scooterstack'?facing(img,c):img,c,r,1,2);
+      }else if(c===ARCADE-1&&rng()<.6)put(draw1('k',STREET),c,r,1,1);
+      else{
+        img=c===0?draw1('s0',SINGLE.concat(['radish','radish'])):draw1('s',SINGLE);
+        put(img==='scooter1'?sideScooter(c):img==='cat1'?draw1('cat',catBag):img,c,r,1,1);
+      }
+    }
+    return map;
+  }
+  /* 從 (c,r) 能否走到終點。block / free 是假設要新增或清掉的格子 */
+  function solvable(c,r,block,free){
+    function key(x,y){return x+','+y;}
+    var b={},f={},seen={},q=[[c,r]];
+    (block||[]).forEach(function(p){b[key(p[0],p[1])]=1;});
+    (free||[]).forEach(function(p){f[key(p[0],p[1])]=1;});
+    seen[key(c,r)]=1;
+    while(q.length){
+      var n=q.shift();if(n[1]>=GOAL)return true;
+      [[0,1],[1,0],[-1,0],[0,-1]].forEach(function(d){
+        var x=n[0]+d[0],y=n[1]+d[1],k=key(x,y);
+        if(x<0||x>=COLS||y<0||y>=rows.length||seen[k]||b[k]||(rows[y][x]&&!f[k]))return;
+        seen[k]=1;q.push([x,y]);
+      });
+    }
+    return false;
+  }
+  function placeReverser(lo,hi){
+    for(var k=0;k<60;k++){
+      var r=between(lo,hi),c=between(1,ARCADE-1),it=rows[r][c];
+      if(rows[r][c-1]||(it&&(it.w>1||it.h>1||it.kind)))continue;
+      if(!it&&!solvable(1,0,[[c,r]]))continue;
+      if(!solvable(1,0,[[c-1,r]],[[c,r]]))continue;
+      var s={img:sideScooter(c),c:c,r:r,w:1,h:1,kind:'rev',state:'idle',time:0,dx:0};
+      rows[r][c]=s;reversers.push(s);return;
+    }
+  }
+  function placeDog(lo,hi){
+    for(var k=0;k<60;k++){
+      var r=between(lo,hi),c=between(0,ARCADE-1);
+      if(rows[r][c]||rows[r-1][c]&&rows[r+1][c]||!solvable(1,0,[[c,r]]))continue;
+      var d={img:'dog',c:c,r:r,w:1,h:1,kind:'dog',state:'sleep',time:0,ox:0,oy:0,slide:0};
+      rows[r][c]=d;dogs.push(d);return;
+    }
+  }
+
+  /* 路邊停車：沿著紅線停在內側車道，行人只能繞到外側。照台灣常見樣子成排停放：
+     汽車一台接一台（有的壓著紅線跨上路緣）、帆布貨車旁擺三角錐、機車停在白線格裡 */
+  var CARS=['car_white','car_suv','carred','car_white','cargrey','car_suv'];
+  var GROUPS=[['car','car'],['scooters'],['truck'],['car','car','car'],['stall'],['scooters','car']];
+  var UNIT={car:2,scooters:2,truck:3,stall:3};               /* 各占幾列；貨車含下方一列三角錐 */
+  function placeParked(){
+    var plan=shuffle(GROUPS.slice()),r=between(7,9);
+    plan.forEach(function(group){
+      var len=group.reduce(function(n,k){return n+UNIT[k];},0),cells=[],i;
+      if(r+len>GOAL-4)return;
+      for(i=0;i<len;i++)cells.push([ARCADE,r+i]);
+      if(!solvable(1,0,cells)){r+=3;return;}
+      var row=r;
+      function item(img,h,off){
+        var it={img:img,c:ARCADE,r:row,w:1,h:h,kind:'parked',off:off||0},y;
+        for(y=0;y<h;y++)rows[row+y][ARCADE]=it;
+        row+=h;
+      }
+      group.forEach(function(k){
+        if(k==='car')item(draw1('cr',CARS),2,rng()<.35?-.08:0);   /* off<0：往人行道壓過去 */
+        else if(k==='truck'){item('cones',1);item('truck_parked',2);}
+        else if(k==='stall')item('stall_road',3);
+        else if(rng()<.5)item('scooterstack',2);
+        else{item(draw1('rs',SIDESCOOTER),1);item(draw1('rs',SIDESCOOTER),1);}
+      });
+      parked.push({r:r,len:len,type:group.indexOf('scooters')>=0?'scooters':group[0],group:group});
+      r+=len+between(4,6);
+    });
+  }
+
+  /* 出車位置不能跟手機螢幕高度有關，否則每台裝置玩到的車流不同 */
+  var VIEW_ROWS=15.5;
+  function viewRows(){return VIEW_ROWS;}
+  function emit(type,data){S.events.push(Object.assign({type:type},data));}
+  function say(text,c,r,dur){emit('say',{text:text,c:c,r:r,dur:dur});}
+  function finish(win,cause,name){if(S.dead)return;S.dead=true;S.won=!!win;S.cause=cause||'';S.by=name||'';emit('end',{});}
+  function playerAt(c,r){return (P.c===c&&P.r===r)||(P.k<1&&P.fc===c&&P.fr===r);}
+
+  /* ---------- 車流 ---------- */
+  /* 前面有路邊停車時，行人只能沿外側車道前進後退，又是迎著車走：
+     內側車道不再出車，外側車道拉長間隔，才有走得過去的空檔 */
+  function parkedAhead(){return parked.some(function(q){return q.r+q.len>cam-1&&q.r<cam+viewRows()+8;});}
+  var GAP=4;
+  var KINDS={
+    3:[{img:'v_delivery',len:.95,v:6.2,n:'外送'},{img:'v_auntie',len:.95,v:6.6,n:'機車'}],
+    4:[{img:'v_taxi',len:1.75,v:5.4,n:'小黃'},{img:'v_truck',len:2,v:5,n:'貨車'},{img:'v_bus',len:3.5,v:4.2,n:'公車'}]
+  };
+  function spawnCar(lane,kind){
+    var k=kind||pick(KINDS[lane]),v=k.v*level.speed,y=cam+viewRows()+v*1.0,name=k.n;
+    cars.forEach(function(o){          /* 同車道不超車、不重疊 */
+      if(o.lane===lane){v=Math.min(v,o.v);y=Math.max(y,o.y+o.len+1.2);}
+    });
+    cars.push({lane:lane,y:y,len:k.len,v:v,n:name,img:k.img});
+  }
+
+  /* ---------- 三種會動的路障 ---------- */
+  function updateReversers(dt){
+    reversers.forEach(function(s){
+      if(s.state==='idle'&&P.r<s.r&&P.r>=s.r-3){s.state='warn';s.time=level.warn;emit('reverse',{});say('嗶嗶～倒車',s.c,s.r,1.2);}
+      else if(s.state==='warn'){
+        s.time-=dt;if(s.time>0)return;
+        var tc=s.c-1;
+        if(playerAt(tc,s.r)){s.dx=1;moveItem(s,tc,s.r);s.state='moved';finish(false,'reverse');return;}
+        if(rows[s.r][tc]||!solvable(P.c,P.r,[[tc,s.r]],[[s.c,s.r]])){s.state='moved';return;}
+        s.dx=1;moveItem(s,tc,s.r);s.state='moved';
+      }
+      if(s.dx>0)s.dx=Math.max(0,s.dx-dt*2.2);
+    });
+  }
+  function moveItem(it,c,r){rows[it.r][it.c]=null;it.c=c;it.r=r;rows[r][c]=it;}
+  function updateDogs(dt){
+    dogs.forEach(function(d){
+      if(d.state==='sleep'&&Math.abs(P.c-d.c)<=1&&Math.abs(P.r-d.r)<=1){
+        d.state='wake';d.time=.8;d.img='dogup';emit('bark',{});say('汪！這是牠的騎樓',d.c,d.r,1.8);
+      }else if(d.state==='wake'){
+        d.time-=dt;if(d.time>0)return;
+        var spots=[];
+        [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]].forEach(function(o){
+          var c=d.c+o[0],r=d.r+o[1];
+          if(c<0||c>=ARCADE||r<1||rows[r][c]||playerAt(c,r))return;
+          if(solvable(P.c,P.r,[[c,r]],[[d.c,d.r]]))spots.push([c,r]);
+        });
+        if(spots.length){var s=pick(spots);d.ox=d.c-s[0];d.oy=d.r-s[1];d.slide=1;d.left=s[0]<d.c;moveItem(d,s[0],s[1]);d.img='dog';d.state='done';}
+        else d.state='done';
+      }
+      if(d.slide>0)d.slide=Math.max(0,d.slide-dt*1.7);
+    });
+  }
+  function callGarbage(){
+    emit('garbage',{});
+    spawnCar(4,{img:'v_garbage',len:2.8,v:3.4,n:'垃圾車'});laneWait[4]=3.6;
+    var spots=[],r,c;
+    for(r=P.r+2;r<=Math.min(P.r+7,GOAL-1);r++)for(c=0;c<ARCADE;c++)if(!rows[r][c])spots.push([c,r]);
+    shuffle(spots);
+    var chosen=[];
+    spots.forEach(function(s){
+      if(chosen.length<3&&solvable(P.c,P.r,chosen.concat([s])))chosen.push(s);
+    });
+    chosen.forEach(function(s,i){pending.push({c:s[0],r:s[1],time:1.5,img:i%2?'nb_uncle':'nb_auntie'});});
+  }
+  function updateGarbage(dt){
+    if(garbageAt.length&&P.r>=garbageAt[0]){garbageAt.shift();callGarbage();}
+    pending=pending.filter(function(p){
+      p.time-=dt;if(p.time>0)return true;
+      if(!rows[p.r][p.c]&&!playerAt(p.c,p.r)&&solvable(P.c,P.r,[[p.c,p.r]])){
+        var v={img:p.img,c:p.c,r:p.r,w:1,h:1,kind:'neighbor',time:4.2,age:0};
+        rows[p.r][p.c]=v;visitors.push(v);
+        if(visitors.length%3===1)say('什麼都能等，垃圾車不能！',p.c,p.r,2);
+      }
+      return false;
+    });
+    visitors=visitors.filter(function(v){
+      v.age+=dt;v.time-=dt;if(v.time>0)return true;
+      rows[v.r][v.c]=null;return false;
+    });
+  }
+
+  /* 狀態存在 S 裡；執行前把它接到上面函式用的區域變數，執行完寫回 */
+  const KEYS=['rows','P','cars','laneWait','queued','cam','bump','roadSteps','reversers','dogs','garbageAt','pending','visitors','parked','t','bags'];
+  function load(s,random){S=s;rng=random;({rows,P,cars,laneWait,queued,cam,bump,roadSteps,reversers,dogs,garbageAt,pending,visitors,parked,t,bags}=s);level=levelOf(s.cup);}
+  function store(){Object.assign(S,{rows,P,cars,laneWait,queued,cam,bump,roadSteps,reversers,dogs,garbageAt,pending,visitors,parked,t,bags});}
+  function buildCup(){
+    level=levelOf(S.cup);queued=null;bump=0;cars=[];bags={};reversers=[];dogs=[];visitors=[];pending=[];parked=[];
+    rows=decorate(buildBlocks());
+    placeParked();
+    placeReverser(6,13);placeReverser(20,30);placeReverser(35,45);
+    if(level.extra>0)placeReverser(14,19);
+    if(level.extra>1)placeReverser(31,34);
+    placeDog(5,16);placeDog(26,44);
+    if(level.dogs)placeDog(17,25);
+    garbageAt=[between(11,18),between(32,40)];
+    P={c:1,r:0,fc:1,fr:0,k:1,x:1,y:0,steps:0,dir:0,flip:false,stop:9,phase:0};
+    laneWait={3:1.4,4:.5};cam=-2.6;S.maxRow=0;
+  }
+  function create(random){
+    const s={dead:false,won:false,cause:'',by:'',events:[],maxRow:0,cup:1,cups:0,rest:0,clock:0,rng:random};
+    S=s;rng=random;t=0;roadSteps=0;
+    buildCup();store();return s;
+  }
+  function step(code){
+    const [dc,dr]=DIRS[code],c=P.c+dc,r=P.r+dr;
+    if(c<0||c>=COLS||r<0||r>=rows.length||rows[r][c]){bump=.18;return false;}
+    if(P.stop>JOG_TAIL)P.phase=0;
+    P.fc=P.c;P.fr=P.r;P.c=c;P.r=r;P.k=0;P.steps++;P.stop=0;
+    P.dir=dc?1:(dr>0?0:2);P.flip=dc<0;
+    if(c>=ARCADE&&dr>0)roadSteps++;
+    if(r>S.maxRow)S.maxRow=Math.min(r,GOAL);
+    return true;
+  }
+  /* 回傳 true 代表這個操作有效（需要記錄給排行榜重播） */
+  function input(s,code){
+    if(s.dead||s.rest>0||!Number.isInteger(code)||code<0||code>=DIRS.length)return false;
+    load(s,s.rng);
+    let ok;
+    if(P.k<1){ok=queued!==code;queued=code;}else ok=step(code);
+    store();return ok;
+  }
+  function advance(s,dt,random){
+    if(s.dead)return;
+    load(s,random);tick(dt);store();
+  }
+  function tick(dt){
+    S.clock+=dt;
+    if(S.clock>=CLOSE){finish(false,'closed');return;}
+    if(S.rest>0){                       /* 慶祝完，換下一杯的路 */
+      S.rest-=dt;P.stop+=dt;
+      if(S.rest<=0){S.rest=0;S.cup+=1;t=0;roadSteps=0;buildCup();emit('cupStart',{cup:S.cup});}
+      return;
+    }
+    t+=dt;if(bump>0)bump-=dt;
+    if(P.k<1){
+      P.k=Math.min(1,P.k+dt/HOP);
+      if(P.k>=1)emit('land',{c:P.c,r:P.r});
+    }else P.stop+=dt;
+    if(P.k<1||P.stop<JOG_TAIL)P.phase+=dt*JOG_FPS;
+    P.x=P.fc+(P.c-P.fc)*P.k;P.y=P.fr+(P.r-P.fr)*P.k;
+    const target=P.y-2.6;cam+=(target-cam)*Math.min(1,dt*10);
+    [3,4].forEach(function(l){
+      laneWait[l]-=dt;
+      if(laneWait[l]>0)return;
+      const blocked=parkedAhead();
+      if(!(blocked&&l===ARCADE))spawnCar(l);
+      laneWait[l]=(blocked&&l===ARCADE+1?level.gap:(l===3?2:2.2)*level.wait)+rng()*1.5;
+    });
+    cars.forEach(function(v){v.y-=v.v*dt;});
+    cars=cars.filter(function(v){return v.y+v.len>cam-3;});
+    for(let i=0;i<cars.length;i++){
+      const v=cars[i];
+      if(v.lane===Math.round(P.x)&&P.y+.75>v.y+.08&&P.y+.2<v.y+v.len-.08){finish(false,'car',v.n);return;}
+    }
+    updateReversers(dt);if(S.dead)return;
+    updateDogs(dt);updateGarbage(dt);
+    if(P.k>=1){
+      if(P.r>=GOAL){
+        S.cups+=1;S.maxRow=0;S.rest=REST;queued=null;cars=[];
+        emit('cup',{cups:S.cups,time:t,road:roadSteps});return;
+      }
+      if(queued!==null){const q=queued;queued=null;step(q);}
+    }
+  }
+  /* 排行榜只看買到幾杯珍奶 */
+  function score(s){return s.cups;}
+  return {create,input,advance,score,levelOf,inputCount:DIRS.length,REST,CLOSE,COLS,ARCADE,GOAL,JOG_TAIL,VIEW_ROWS,DIRS};
+})();
+if(typeof module!=='undefined')module.exports=pedestrianHellRules;
+/* Just Want Boba（行人地獄）iframe 橋接：免費遊玩；訪客排行榜比喝到幾杯。 */
+var PH={loaded:false,active:false,round:null};
+function phUI(){}
+var pedRank=timedLeaderboard('pedestrian-hell','ph',pedestrianHellRules.inputCount,phUI);
+function phValid(source){return source===$('ph-frame').contentWindow;}
+function phEnd(result,score){if(!PH.round)return;AN.end(PH.round,0,result,{score:score||0});PH.round=null;PH.active=false;}
+window.deepSeaPed={
+ rules:pedestrianHellRules,
+ leaders:async function(source){if(!phValid(source))return null;var api=await import('./frontend/services/api.mjs');return api.createApiClient(api.arcadeApiOrigin()).leaderboard('pedestrian-hell',AbortSignal.timeout(5000));},
+ language:function(source){return phValid(source)?window.deepSeaI18n.getLanguage():'zh-Hant';},
+ translate:function(source,text){return phValid(source)?window.deepSeaI18n.text(text):text;},
+ prepare:function(source,ready){
+  if(!phValid(source)||$('view-pedestrian-hell').hidden||pedRank.busy())return false;
+  if(PH.active)phEnd('abandoned',source.pedScore?.());
+  pedRank.start(function(rng){if($('view-pedestrian-hell').hidden)return;PH.active=true;if(AN.interact)AN.interact();PH.round=AN.start('pedestrian-hell',0);ready(rng||Math.random);});return true;
+ },
+ advance:function(source,ms,active,step){if(phValid(source)&&PH.active)pedRank.update(ms,active,step);},
+ record:function(source,code){if(phValid(source)&&PH.active)pedRank.record(code);},
+ finish:function(source,score){if(!phValid(source)||!PH.active)return;phEnd('complete',score);pedRank.finish(score);},
+ pause:function(source){if(phValid(source)&&PH.round)AN.progress(PH.round,{phase:'pause'},true);},
+ resume:function(source){if(phValid(source)&&PH.round)AN.resume(PH.round);},
+ touch:function(source){if(phValid(source)&&AN.interact)AN.interact();},
+ exit:function(source){if(phValid(source))location.hash='lobby';}
+};
+function phRoute(active){
+ var frame=$('ph-frame');
+ if(active&&!PH.loaded){PH.loaded=true;frame.onload=function(){frame.contentWindow.setPedLanguage?.(window.deepSeaI18n.getLanguage());frame.contentWindow.setPedActive?.(!$('view-pedestrian-hell').hidden);};frame.src='games/pedestrian-hell/play.html';}
+ if(!active&&PH.active)phEnd('abandoned',frame.contentWindow.pedScore?.());
+ frame.contentWindow.setPedActive?.(active);
+}
+window.addEventListener('arcade-languagechange',function(){$('ph-frame').contentWindow.setPedLanguage?.(window.deepSeaI18n.getLanguage());});
+window.addEventListener('pagehide',function(e){if(!e.persisted)phEnd('abandoned',$('ph-frame').contentWindow.pedScore?.());},true);
 /* Sand & Chill: free creative sandbox. No score, leaderboard request, wallet write or per-art reward. */
 var SART={loaded:false,active:false,round:null,paused:false,picture:'cat'};
 function sArtValid(source){return source===$('sand-frame').contentWindow;}
@@ -35538,7 +35950,7 @@ window.addEventListener('pagehide',function(e){if(!e.persisted)sArtEnd('abandone
   $('lobby-explore').addEventListener('click',function(){if($('lobby-games').scrollIntoView)$('lobby-games').scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});});
 
   /* ---------- tabs ---------- */
-  var VIEWS = { 'sand-art': '沙沙時光 <span>Sand & Chill</span>', 'berry-trail': '莓果小蛇 <span>Berry Trail</span>', 'top-doggo': 'TOP DOGGO <span>Paw City</span>', 'cat-match': '貓貓三消 <span>Cat Match</span>', outpost: '深海前哨 <span>Deep Sea Outpost</span>', 'book-sort': '貓咪疊書舖 <span>Cat Book Stack</span>', 'market-desk': '收盤之前 <span>Closing Call</span>', academy: '百萬大學堂 <span>Millionaire Academy</span>', wardrobe: '我的造型 <span>My Wardrobe</span>', frontier: '荒島遠征 <span>Frontier Islands</span>', 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: 'TICATICA GAMES', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷：深海快遞 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', 'rocket-chair': '社畜要下班 <span>Roar Through the Ceiling</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', 'eat-smaller': '數字吞噬 <span>Number Gulp</span>', 'mirror-twins': '鏡像雙子 <span>Mirror Twins</span>', 'shadow-relay': '影子接力 <span>Shadow Relay</span>', 'one-line-defense': '一筆畫守城 <span>One-Line Defense</span>', mermaid: '人魚接龍 <span>Mermaid Spider</span>', tetris: '俄羅斯方塊 <span>Block Drop</span>', 'on-pitch': '不准跑調 <span>Stay On Pitch</span>', 'quack-pond': '呱呱池塘 <span>Quack Pond</span>', 'siege-architect': '萌獸破城隊 <span>Critter Crashers</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
+  var VIEWS = { 'pedestrian-hell': '行人地獄 <span>Just Want Boba</span>', 'sand-art': '沙沙時光 <span>Sand & Chill</span>', 'berry-trail': '莓果小蛇 <span>Berry Trail</span>', 'top-doggo': 'TOP DOGGO <span>Paw City</span>', 'cat-match': '貓貓三消 <span>Cat Match</span>', outpost: '深海前哨 <span>Deep Sea Outpost</span>', 'book-sort': '貓咪疊書舖 <span>Cat Book Stack</span>', 'market-desk': '收盤之前 <span>Closing Call</span>', academy: '百萬大學堂 <span>Millionaire Academy</span>', wardrobe: '我的造型 <span>My Wardrobe</span>', frontier: '荒島遠征 <span>Frontier Islands</span>', 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: 'TICATICA GAMES', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷：深海快遞 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', 'rocket-chair': '社畜要下班 <span>Roar Through the Ceiling</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', 'eat-smaller': '數字吞噬 <span>Number Gulp</span>', 'mirror-twins': '鏡像雙子 <span>Mirror Twins</span>', 'shadow-relay': '影子接力 <span>Shadow Relay</span>', 'one-line-defense': '一筆畫守城 <span>One-Line Defense</span>', mermaid: '人魚接龍 <span>Mermaid Spider</span>', tetris: '俄羅斯方塊 <span>Block Drop</span>', 'on-pitch': '不准跑調 <span>Stay On Pitch</span>', 'quack-pond': '呱呱池塘 <span>Quack Pond</span>', 'siege-architect': '萌獸破城隊 <span>Critter Crashers</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
   /* ---------- collapsible lobby sidebar (per-browser preference only) ---------- */
   (function(){
     var KEY='ticatica-sidebar-collapsed',button=$('side-toggle'),collapsed=false;
@@ -35551,7 +35963,7 @@ window.addEventListener('pagehide',function(e){if(!e.persisted)sArtEnd('abandone
   $('lobby-show-all').addEventListener('click',function(){$('lobby-search').value='';var all=document.querySelector('[data-lobby-filter="all"]');if(all)all.click();});
   $('side-random').addEventListener('click',function(){var cards=[].slice.call(document.querySelectorAll('.lobby-grid .game-card:not([data-game-hidden])'));if(cards.length)location.hash=cards[Math.floor(Math.random()*cards.length)].getAttribute('href');});
   Object.keys(VIEWS).forEach(function(id) {
-    if (['sand-art', 'lobby', 'wardrobe', 'blaster', 'book-sort', 'cat-match', 'outpost', 'academy', 'berry-trail'].includes(id)) return;
+    if (['sand-art', 'lobby', 'wardrobe', 'blaster', 'book-sort', 'cat-match', 'outpost', 'academy', 'berry-trail', 'pedestrian-hell'].includes(id)) return;
     var exit = document.createElement('a');
     exit.className = 'game-exit-link';
     exit.href = '#lobby';
@@ -35581,7 +35993,7 @@ window.addEventListener('pagehide',function(e){if(!e.persisted)sArtEnd('abandone
     outpostRoute(v==='outpost');
     marketDeskRoute(v==='market-desk');
     academyRoute(v==='academy');
-    bobaRoute(v==='boba');tdRoute(v==='top-doggo');diveRoute(v==='dive');mrtRoute(v==='mrt');pancakeRoute(v==='pancake');rocketRoute(v==='rocket-chair');esRoute(v==='eat-smaller');mtRoute(v==='mirror-twins');srRoute(v==='shadow-relay');olRoute(v==='one-line-defense');ttRoute(v==='tetris');opRoute(v==='on-pitch');qpRoute(v==='quack-pond');saRoute(v==='siege-architect');cmRoute(v==='cat-match');sArtRoute(v==='sand-art');btRoute(v==='berry-trail');
+    phRoute(v==='pedestrian-hell');bobaRoute(v==='boba');tdRoute(v==='top-doggo');diveRoute(v==='dive');mrtRoute(v==='mrt');pancakeRoute(v==='pancake');rocketRoute(v==='rocket-chair');esRoute(v==='eat-smaller');mtRoute(v==='mirror-twins');srRoute(v==='shadow-relay');olRoute(v==='one-line-defense');ttRoute(v==='tetris');opRoute(v==='on-pitch');qpRoute(v==='quack-pond');saRoute(v==='siege-architect');cmRoute(v==='cat-match');sArtRoute(v==='sand-art');btRoute(v==='berry-trail');
     DR.last=performance.now();EQ.last=performance.now();
     // The member centre is not a game: analytics treats it like the lobby so no game_view is recorded.
     AN.view(member?'lobby':v);
