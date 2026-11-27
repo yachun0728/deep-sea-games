@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "kind": "sprite-gen-request",
+  "engine": "component-row",
+  "character": {
+    "id": "hero",
+    "description": "young Taiwanese adult, short black hair, grey T-shirt, olive knee shorts, blue-and-white flip-flops, black crossbody bag",
+    "base_image": "base-source.png"
+  },
+  "cell": {
+    "shape": "rect",
+    "width": 256,
+    "height": 384,
+    "safe_margin_x": 24,
+    "safe_margin_y": 36
+  },
+  "chroma_key": {
+    "name": "cyan",
+    "hex": "#00FFFF",
+    "rgb": [
+      0,
+      255,
+      255
+    ],
+    "selection": "auto",
+    "score": 222.11,
+    "min_subject_distance": 143.49,
+    "background": {
+      "mode": "flat",
+      "hex": "#00FF00",
+      "rgb": [
+        0,
+        255,
+        0
+      ],
+      "opaque_border_fraction": 1.0,
+      "border_coverage": 1.0,
+      "enclosed_background_pixels": 18,
+      "enclosed_material_pixels": 1,
+      "subject_pixels": 6352
+    },
+    "candidates": [
+      {
+        "name": "magenta",
+        "hex": "#FF00FF",
+        "score": 205.61,
+        "min_subject_distance": 202.99,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "green",
+        "hex": "#00FF00",
+        "score": 205.91,
+        "min_subject_distance": 146.65,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "cyan",
+        "hex": "#00FFFF",
+        "score": 222.11,
+        "min_subject_distance": 143.49,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "blue",
+        "hex": "#004DFF",
+        "score": 197.26,
+        "min_subject_distance": 118.5,
+        "clears_erase_radius": true
+      }
+    ],
+    "selection_reason": "highest 1st-percentile subject distance among the 4 candidate(s) clearing the 96 erase radius"
+  },
+  "states": {
+    "walk_up": {
+      "frames": 6,
+      "fps": 10,
+      "loop": true,
+      "action": "walking AWAY from the viewer, seen from BEHIND in a high three-quarter game camera, a natural relaxed walk cycle in place: clear alternating left and right foot contacts and passing poses, the lifted foot shows the sole of the flip-flop, arms swing opposite to the legs, bag sways slightly, slight head bob"
+    },
+    "walk_side": {
+      "frames": 6,
+      "fps": 10,
+      "loop": true,
+      "action": "walking toward screen RIGHT, full side profile facing right, a natural walk cycle in place: contact, down, passing and up poses with both legs clearly alternating, knees bending, arms swinging opposite to the legs, bag sways"
+    },
+    "walk_down": {
+      "frames": 6,
+      "fps": 10,
+      "loop": true,
+      "action": "walking TOWARD the viewer, front view in a high three-quarter game camera, natural walk cycle in place with clearly alternating left and right steps and opposite arm swing"
+    }
+  },
+  "style": "ink linework with muted watercolor, realistic proportions, same as the base image",
+  "layout": "taxonomy/v1",
+  "fit": {
+    "align_x": "centroid",
+    "align_y": "bottom"
+  },
+  "chroma": {
+    "mode": "rgb",
+    "unmix_reach": 4,
+    "spill_max_fraction": 0.005
+  }
+}

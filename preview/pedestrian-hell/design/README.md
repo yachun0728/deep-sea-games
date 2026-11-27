@@ -23,5 +23,7 @@
 | `sheet-roadside-v1.png` | 路邊停放的白色休旅車、白色小車、帆布貨車與三角錐；路邊車輛成排停放，部分壓紅線跨上路緣 |
 | `sheet-boxes-v1.png` | 台灣變電箱三款（深綠黃黑斜紋底座、灰色雙箱、彩繪加護欄），取代 `sheet-street-v1.png` 的單一變電箱 |
 | `sheet-stall-wide-v1.png`、`sheet-stall-road-v1.png` | 騎樓與路邊小吃攤 |
+| `sheet-cats-v1.png`、`anim-cat-*` | 貓貓靜態姿勢與走路分格（坐墊上睡覺、趴坐騎樓、路過不擋路） |
+| `anim-*-raw-v1.png`、`anim-*-request.json` | 主角、鄰居、黑狗、橘貓的 sprite-gen 走路分格原圖與設定；打包成 `art/anim_*.webp` |
 
 招牌店名為遊戲虛構，正式上架前需再確認是否撞到真實店家。

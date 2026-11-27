@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "kind": "sprite-gen-request",
+  "engine": "component-row",
+  "character": {
+    "id": "dog",
+    "description": "black and tan Taiwan dog with a thin collar",
+    "base_image": "base-source.png"
+  },
+  "cell": {
+    "shape": "rect",
+    "width": 384,
+    "height": 320,
+    "safe_margin_x": 36,
+    "safe_margin_y": 30
+  },
+  "chroma_key": {
+    "name": "cyan",
+    "hex": "#00FFFF",
+    "rgb": [
+      0,
+      255,
+      255
+    ],
+    "selection": "auto",
+    "score": 228.36,
+    "min_subject_distance": 219.1,
+    "background": {
+      "mode": "flat",
+      "hex": "#FF00FF",
+      "rgb": [
+        255,
+        0,
+        255
+      ],
+      "opaque_border_fraction": 1.0,
+      "border_coverage": 1.0,
+      "enclosed_background_pixels": 0,
+      "enclosed_material_pixels": 0,
+      "subject_pixels": 8927
+    },
+    "candidates": [
+      {
+        "name": "magenta",
+        "hex": "#FF00FF",
+        "score": 200.98,
+        "min_subject_distance": 190.66,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "green",
+        "hex": "#00FF00",
+        "score": 211.07,
+        "min_subject_distance": 205.8,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "cyan",
+        "hex": "#00FFFF",
+        "score": 228.36,
+        "min_subject_distance": 219.1,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "blue",
+        "hex": "#004DFF",
+        "score": 192.3,
+        "min_subject_distance": 186.26,
+        "clears_erase_radius": true
+      }
+    ],
+    "selection_reason": "highest 1st-percentile subject distance among the 4 candidate(s) clearing the 96 erase radius"
+  },
+  "states": {
+    "walk_side": {
+      "frames": 6,
+      "fps": 9,
+      "loop": true,
+      "action": "the black Taiwan dog trotting toward screen RIGHT in side profile facing right, mouth closed, no spark marks, four legs clearly alternating in a trot cycle in place, tail wagging"
+    }
+  },
+  "style": "ink linework with muted watercolor, same as the base image",
+  "body_plan": [
+    {
+      "plan": "quadruped",
+      "figure": ""
+    }
+  ],
+  "layout": "taxonomy/v1",
+  "fit": {
+    "align_x": "centroid",
+    "align_y": "bottom"
+  },
+  "chroma": {
+    "mode": "rgb",
+    "unmix_reach": 4,
+    "spill_max_fraction": 0.005
+  }
+}

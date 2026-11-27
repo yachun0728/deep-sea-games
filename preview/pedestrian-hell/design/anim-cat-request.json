@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "kind": "sprite-gen-request",
+  "engine": "component-row",
+  "character": {
+    "id": "cat",
+    "description": "orange tabby street cat",
+    "base_image": "base-source.png"
+  },
+  "cell": {
+    "shape": "rect",
+    "width": 384,
+    "height": 320,
+    "safe_margin_x": 36,
+    "safe_margin_y": 30
+  },
+  "chroma_key": {
+    "name": "cyan",
+    "hex": "#00FFFF",
+    "rgb": [
+      0,
+      255,
+      255
+    ],
+    "selection": "auto",
+    "score": 241.94,
+    "min_subject_distance": 228.71,
+    "background": {
+      "mode": "flat",
+      "hex": "#FC03FC",
+      "rgb": [
+        252,
+        3,
+        252
+      ],
+      "opaque_border_fraction": 1.0,
+      "border_coverage": 1.0,
+      "enclosed_background_pixels": 13,
+      "enclosed_material_pixels": 0,
+      "subject_pixels": 7350
+    },
+    "candidates": [
+      {
+        "name": "magenta",
+        "hex": "#FF00FF",
+        "score": 213.77,
+        "min_subject_distance": 198.9,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "green",
+        "hex": "#00FF00",
+        "score": 223.53,
+        "min_subject_distance": 205.46,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "cyan",
+        "hex": "#00FFFF",
+        "score": 241.94,
+        "min_subject_distance": 228.71,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "blue",
+        "hex": "#004DFF",
+        "score": 234.68,
+        "min_subject_distance": 212.83,
+        "clears_erase_radius": true
+      }
+    ],
+    "selection_reason": "highest 1st-percentile subject distance among the 4 candidate(s) clearing the 96 erase radius"
+  },
+  "states": {
+    "walk_side": {
+      "frames": 6,
+      "fps": 8,
+      "loop": true,
+      "action": "the orange tabby cat walking leisurely toward screen RIGHT in side profile, a natural feline walk cycle in place with the four legs clearly alternating, tail held up and swaying gently"
+    }
+  },
+  "style": "ink linework with muted watercolor, same as the base image",
+  "body_plan": [
+    {
+      "plan": "quadruped",
+      "figure": ""
+    }
+  ],
+  "layout": "taxonomy/v1",
+  "fit": {
+    "align_x": "centroid",
+    "align_y": "bottom"
+  },
+  "chroma": {
+    "mode": "rgb",
+    "unmix_reach": 4,
+    "spill_max_fraction": 0.005
+  }
+}
