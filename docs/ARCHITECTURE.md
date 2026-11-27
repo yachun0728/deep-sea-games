@@ -165,6 +165,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 | `deep-sea-fishing-best` | 最多釣獲條數 |
 | `deep-sea-campaign-best` | 選戰最佳票數 |
 | `deep-sea-cat-best` | Rooftop Cat 最佳顯示距離 |
+| `deep-sea-cat-progress-v1` | Rooftop Cat 留存進度（2026-11-27 新增）：魚庫、統計、今日任務、每日挑戰與連續天數、貼紙、已購與穿戴的配件；只存在瀏覽器、不發站內點數。讀取時逐欄檢查型別，缺漏補預設值，不修改其他 Key |
 | `deep-sea-bird-best` | Poop Bird 最佳顯示距離 |
 | `deep-sea-frog-best` | 青蛙吃蟲最多吃掉隻數；新增於 2026-11-17 |
 | `deep-sea-pudding-best` | 布丁突圍最高分數；新增於 2026-11-17 |

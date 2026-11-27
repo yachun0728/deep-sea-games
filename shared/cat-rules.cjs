@@ -106,7 +106,7 @@ const catRules = (() => {
     const state = {roofs:[{x:-60,w:400,y:430,id:0}],nid:1,cy:430,vy:0,on:true,offT:0,
       buf:0,hold:false,dist:0,v:190,sq:0,dead:false};
     if (version >= 2) Object.assign(state, {version, v: 230, obs: [], fish: [], birds: [], fishN: 0, stumbleT: 0, tripWin: 0,
-      trips: 0, trippedBy: null, slideT: 0, slideBuf: 0});
+      trips: 0, trippedBy: null, slideT: 0, slideBuf: 0, upT: 9, jumpY: 430});
     fill(state, random);
     return state;
   }
@@ -114,8 +114,12 @@ const catRules = (() => {
   function input(state, action) {
     if (action === 2) {
       if (!(state.version >= 2)) return false;
-      // Slide on the ground; in the air, drop faster and slide on landing.
+      // Slide on the ground. Right after a take-off (a touch that turned into a swipe down) the hop is cancelled
+      // and the cat slides from where it left; otherwise in the air it drops faster and slides on landing.
       if (state.on) state.slideT = SLIDE;
+      else if (state.upT < .15 && state.vy < 0) {
+        Object.assign(state, {cy: state.jumpY, vy: 0, on: true, offT: 0, hold: false, buf: 0, sq: 0, slideT: SLIDE});
+      }
       else { state.vy = Math.max(state.vy, 450); state.slideBuf = .2; }
       return true;
     }
@@ -127,6 +131,7 @@ const catRules = (() => {
     state.hold = true;
     if (state.version >= 2) { state.slideT = 0; state.slideBuf = 0; }
     if (state.on || state.offT < COYOTE) {
+      if (state.version >= 2) { state.upT = 0; state.jumpY = state.cy; }
       state.vy = -600;
       state.on = false;
       state.offT = 1;
@@ -157,6 +162,7 @@ const catRules = (() => {
       if (state.tripWin > 0) state.tripWin -= dt;
       if (state.slideT > 0) state.slideT -= dt;
       if (state.slideBuf > 0) state.slideBuf -= dt;
+      if (!state.on) state.upT += dt;
       for (const o of state.obs) o.x -= move * dt;
       for (const f of state.fish) f.x -= move * dt;
       for (const b of state.birds) b.x -= (move + b.vx) * dt;
@@ -192,6 +198,7 @@ const catRules = (() => {
     }
     if (!land) state.on = false;
     else if (state.buf > 0) {
+      if (v2) { state.upT = 0; state.jumpY = state.cy; }
       state.vy = -600;
       state.buf = 0;
       state.sq = -.25;
