@@ -39,7 +39,7 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
     if(stake>S.balance){fiSay(LOW_MSG,'lose');return;}
     fiRank.start(function(random){
       FI.analytics=AN.start('fishing',stake);FI.stake=stake;FI.landed=0;FI.earned=0;FI.pops=[];FI.active=true;
-      save();renderAll();
+      save();renderAll();FV.catchAge=FV.lostAge=9;FV.drops=[];
       fishingRules.create(random||Math.random,function(event){
         if(event==='land')fiLand();
         else if(event==='next')fiRound(false);
@@ -48,39 +48,164 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
       fiRound(true);
     },fiUI);
   }
-  function fiLose(reason){if(FI.phase!=='fishing')return;AN.end(FI.analytics,FI.earned,FI.earned>0?'complete':'loss',{stage:FI.number,landed_fish:FI.landed});FI.active=false;FI.phase='lost';fiRelease();fiRank.finish(FI.landed);fiSay(reason+' 本局釣到 '+FI.landed+' 條，'+(FI.earned>0?'共入帳 '+fmt(FI.earned)+' 點。':'{{t:fishing.msg.026}}'),FI.earned>0?'win':'lose');fiUI();}
+  function fiLose(reason){if(FI.phase!=='fishing')return;AN.end(FI.analytics,FI.earned,FI.earned>0?'complete':'loss',{stage:FI.number,landed_fish:FI.landed});FV.lostAge=0;FV.catchAge=9;FI.active=false;FI.phase='lost';fiRelease();fiRank.finish(FI.landed);fiSay(reason+' 本局釣到 '+FI.landed+' 條，'+(FI.earned>0?'共入帳 '+fmt(FI.earned)+' 點。':'{{t:fishing.msg.026}}'),FI.earned>0?'win':'lose');fiUI();}
   function fiAward(n,b){FI.earned+=b;S.balance+=b;save();renderAll();AN.progress(FI.analytics,{stage:n,landed_fish:n,bonus_points:b});FI.pops.push({n:n,b:b,age:0});if(FI.pops.length>3)FI.pops.shift();fiSay('釣到第 '+n+' 條！獎勵 +'+b+' 點已入帳，本局累計 +'+FI.earned+' 點。','win');}
   function fiLand(){
     if(FI.phase!=='fishing')return;
     var name=fiFishName(FI.number);AN.progress(FI.analytics,{stage:FI.number,landed_fish:FI.landed},true);fiRemember();
     var b=fiBonusAt(FI.landed);if(b)fiAward(FI.landed,b);else fiSay('釣到 '+name+'{{t:fishing.msg.027}}','win');
-    FI.flash=1;
+    FV.catchAge=0;fiSplash(FV.fx,FV.fy,24,1);
   }
   function fiSync(now){var dt=Math.max(0,(now-FI.last)/1000);FI.last=now;if(FI.phase==='fishing'&&!$('view-fishing').hidden&&!document.hidden)fiRank.update(dt*1000,()=>FI.phase==='fishing',step=>fishingRules.advance(FI,step));}
-  function fiDraw(){
-    var g=fishingCtx,W=520,H=560,t=FI.clock,water=198;
-    g.clearRect(0,0,W,H);var sky=g.createLinearGradient(0,0,0,water);sky.addColorStop(0,'#0c2230');sky.addColorStop(1,'#1c5361');g.fillStyle=sky;g.fillRect(0,0,W,water);
-    g.fillStyle='#d7e9dc';g.beginPath();g.arc(428,68,24,0,Math.PI*2);g.fill();g.fillStyle='#164353';g.beginPath();g.arc(439,61,22,0,Math.PI*2);g.fill();
-    var sea=g.createLinearGradient(0,water,0,H);sea.addColorStop(0,'#12506a');sea.addColorStop(1,'#051620');g.fillStyle=sea;g.fillRect(0,water,W,H-water);
-    for(var i=0;i<4;i++){g.strokeStyle=i===0?'#62e6d2':'rgba(141,176,185,.16)';g.lineWidth=i===0?2:1;g.beginPath();for(var x=0;x<=W;x+=8){var y=water+i*17+Math.sin(x/28+t*2+i)*4;if(x===0)g.moveTo(x,y);else g.lineTo(x,y);}g.stroke();}
-    g.fillStyle='#173e46';g.beginPath();g.moveTo(0,170);g.lineTo(88,180);g.lineTo(128,230);g.lineTo(0,249);g.closePath();g.fill();
-    g.fillStyle='#8d7254';g.fillRect(15,170,145,13);g.fillStyle='#4c433a';g.fillRect(30,183,9,67);g.fillRect(133,183,9,42);
-    var ax=98,ay=146;g.strokeStyle='#ffb638';g.lineWidth=6;g.lineCap='round';g.beginPath();g.moveTo(ax-9,ay+10);g.lineTo(ax-14,169);g.moveTo(ax+5,ay+10);g.lineTo(ax+10,169);g.stroke();g.fillStyle='#ffb638';g.fillRect(ax-12,ay-26,24,36);g.fillStyle='#f5d0a9';g.beginPath();g.arc(ax,ay-39,12,0,Math.PI*2);g.fill();g.fillStyle='#62e6d2';g.fillRect(ax-15,ay-51,30,7);g.fillRect(ax-10,ay-57,21,8);
-    var progress=Math.max(0,Math.min(1,1-FI.distance/FI.start));
-    var fishX=410-progress*222,fishY=350-progress*103+Math.sin(t*3)*9;
-    var bend=FI.tension/100*34,tipX=228-bend,tipY=69+bend;
-    g.strokeStyle='#d6bd8e';g.lineWidth=4;g.beginPath();g.moveTo(110,132);g.quadraticCurveTo(176,45+Math.max(0,bend-10),tipX,tipY);g.stroke();
-    g.strokeStyle=FI.tension>=88?'#ff6f61':FI.tension<=8?'#8db0b9':'#e4f2f3';g.lineWidth=1.5;g.beginPath();g.moveTo(tipX,tipY);if(FI.tension<20)g.quadraticCurveTo(fishX-70,fishY+60,fishX,fishY);else g.lineTo(fishX,fishY);g.stroke();g.lineCap='butt';
-    for(var b=0;b<8;b++){var bx=(b*71+40)%500,by=H-((t*18+b*51)%300);g.strokeStyle='rgba(141,176,185,.23)';g.lineWidth=1;g.beginPath();g.arc(bx,by,2+b%3,0,Math.PI*2);g.stroke();}
-    var scale=.65+Math.min(FI.number,12)*.06,colors=['#ffb638','#79c9db','#c8cf8a','#dc94b7','#83c6aa'];
-        g.save();g.translate(fishX,fishY);g.scale(scale,scale);g.rotate(FI.mode==='struggle'?Math.sin(t*19)*.24:Math.sin(t*2)*.05);
-    g.fillStyle=colors[(FI.number-1)%colors.length];g.beginPath();g.moveTo(32,0);g.lineTo(59,-24);g.lineTo(55,22);g.closePath();g.fill();g.beginPath();g.ellipse(0,0,40,25,0,0,Math.PI*2);g.fill();g.fillStyle='rgba(255,255,255,.26)';g.beginPath();g.ellipse(-3,9,24,11,0,0,Math.PI*2);g.fill();g.fillStyle='#e4f2f3';g.beginPath();g.arc(-22,-5,9,0,Math.PI*2);g.fill();g.fillStyle='#051620';g.beginPath();g.arc(-25,-5,4,0,Math.PI*2);g.fill();g.strokeStyle='#0c2230';g.lineWidth=2;g.beginPath();g.arc(-34,8,5,-.5,1);g.stroke();g.restore();
-    if(FI.mode==='struggle'||FI.mode==='warn'){g.strokeStyle=FI.mode==='struggle'?'#ffb638':'#8db0b9';g.lineWidth=2;for(var s=0;s<5;s++){var a=s*.9+t*3;g.beginPath();g.moveTo(fishX+Math.cos(a)*57,fishY+Math.sin(a)*32);g.lineTo(fishX+Math.cos(a)*70,fishY+Math.sin(a)*43);g.stroke();}}
-    g.textAlign='left';g.fillStyle='#e4f2f3';g.font='600 21px system-ui';g.fillText('{{t:fishing.msg.028}}',20,32);g.textAlign='right';g.fillStyle='#8db0b9';g.font='14px system-ui';g.fillText('第 '+FI.number+' 條 · 本局 +'+FI.earned+' 點',W-20,31);
-    g.textAlign='center';g.fillStyle='#8db0b9';g.font='13px system-ui';g.fillText('{{t:fishing.msg.029}}',W/2,H-20);
-    FI.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=130-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#62e6d2';g.font='700 38px system-ui';g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#e4f2f3';g.font='600 17px system-ui';g.fillText('釣到 '+p.n+' 條里程碑',W/2,py+28);g.globalAlpha=1;});
+  /* ---------- Fishing art (2026-11-28 大漁旗浮世繪)：純畫面，不寫入 FI 的玩法欄位 ---------- */
+  // Frame cells from games/fishing/design/build_art.py: w/h cell, x/y anchor, p = rod tip or mouth per frame.
+  var FI_SHEETS={"reel":{"w":342,"h":347,"x":234,"y":345,"p":[[88,-305],[96,-308],[104,-307],[101,-303],[93,-303],[94,-302],[95,-288],[89,-294]]},"release":{"w":384,"h":310,"x":209,"y":309,"p":[[163,-282],[171,-279],[173,-277],[170,-283],[169,-276],[166,-274],[165,-279],[160,-285]]},"fight":{"w":470,"h":339,"x":246,"y":338,"p":[[154,-303],[182,-291],[219,-265],[221,-247],[180,-252],[119,-286],[96,-305],[100,-306]]},"result":{"w":348,"h":353,"x":208,"y":351,"p":[[136,-293],[127,-326],[94,-340],[114,-337],[99,-342],[96,-113],[108,-91],[95,-77]]},"swim":{"w":318,"h":185,"x":146,"y":87,"p":[[-137,13],[-139,20],[-137,33],[-134,25],[-134,16],[-136,12],[-137,14],[-138,26]]},"thrash":{"w":316,"h":250,"x":146,"y":102,"p":[[-96,-64],[-120,-20],[-134,-4],[-139,9],[-130,24],[-114,-51],[-122,-31],[-132,-4]]},"moods":{"w":306,"h":243,"x":141,"y":113,"p":[[-135,6],[-134,23],[-133,43],[-127,63],[-125,-35],[-122,-25],[-119,-28],[-122,-20]]}};
+  var FI_TIMES=['dawn','morning','noon','dusk','night'],FI_FISH_PER_TIME=3;
+  var FI_SEA={dawn:['#5d6f9a','#f3d9d6'],morning:['#2b8f93','#f4f1dc'],noon:['#1478bd','#f2fbff'],dusk:['#1d5470','#f6e4bf'],night:['#10294a','#b9c6d6']};
+  var fiImages={},FV={now:0,man:0,fish:0,pose:'',mode:'',catchAge:9,lostAge:9,jump:0,fx:420,fy:600,drops:[],bg:0,bgFrom:0,bgMix:1,H:640};
+  function fiImg(name){var i=fiImages[name];if(!i){i=fiImages[name]=new Image();i.decoding='async';i.src='games/fishing/art/'+name+'.webp';}return i.complete&&i.naturalWidth?i:null;}
+  function fiPreload(){Object.keys(FI_SHEETS).concat('boat').forEach(fiImg);}
+  // Draws one frame with its anchor at (x,y); returns the rod tip / mouth position on the canvas.
+  function fiSprite(name,frame,x,y,s,angle){
+    var m=FI_SHEETS[name],img=fiImg(name),g=fishingCtx,p=m.p[frame];
+    if(img){g.save();g.translate(x,y);if(angle)g.rotate(angle);g.drawImage(img,frame%4*m.w,Math.floor(frame/4)*m.h,m.w,m.h,-m.x*s,-m.y*s,m.w*s,m.h*s);g.restore();}
+    var c=Math.cos(angle||0),n=Math.sin(angle||0);return [x+(p[0]*c-p[1]*n)*s,y+(p[0]*n+p[1]*c)*s];
+  }
+  function fiSplash(x,y,count,power){if(reduceMotion)count=Math.ceil(count/3);for(var i=0;i<count&&FV.drops.length<90;i++)FV.drops.push({x:x+(Math.random()-.5)*70,y:y,vx:(Math.random()-.5)*260*power,vy:-(90+Math.random()*330)*power,r:2+Math.random()*4,age:0});}
+  function fiSeason(){return FI.phase==='ready'?0:Math.floor(FI.landed/FI_FISH_PER_TIME)%FI_TIMES.length;}
+  function fiBackdrop(index,alpha,W,H,water){
+    var img=fiImg('bg-'+FI_TIMES[index]);if(!img)return;
+    // The painted horizon sits at 53.5% of the image; keep it just above the animated water line.
+    var horizon=water-46,s=Math.max(W/780,horizon/(1690*.535),(H-horizon)/(1690*.465));
+    fishingCtx.globalAlpha=alpha;fishingCtx.drawImage(img,(W-780*s)/2,horizon-1690*.535*s,780*s,1690*s);fishingCtx.globalAlpha=1;
+  }
+  function fiWave(y,amp,len,speed,fill,foam,alpha,depth){
+    var g=fishingCtx,W=520,t=FV.now,x;function wy(v){return y+Math.sin(v/len+t*speed)*amp+Math.sin(v/(len*.45)-t*speed*1.4)*amp*.35;}
+    var shade=g.createLinearGradient(0,y-amp,0,y+depth);shade.addColorStop(0,fill);shade.addColorStop(1,fill+'00');
+    g.globalAlpha=alpha;g.fillStyle=shade;g.beginPath();g.moveTo(0,y+depth);for(x=0;x<=W+8;x+=8)g.lineTo(x,wy(x));g.lineTo(W,y+depth);g.closePath();g.fill();g.globalAlpha=1;
+    g.strokeStyle=foam;g.lineWidth=3;g.beginPath();for(x=0;x<=W+8;x+=8){if(x===0)g.moveTo(x,wy(x));else g.lineTo(x,wy(x));}g.stroke();
+    // woodblock crests: cream foam claws curling over an indigo hollow, drifting along the wave
+    var gap=170,start=((-t*speed*34)%gap+gap)%gap,size=Math.min(1.25,amp/8);
+    for(x=start-gap;x<W+gap;x+=gap){var cx=x+60,cy=wy(cx)+3;g.save();g.translate(cx,cy);g.scale(speed>0?-size:size,size);
+      g.fillStyle=foam;g.strokeStyle='#143a63';g.lineWidth=1.6;g.beginPath();g.moveTo(-42,3);g.bezierCurveTo(-22,0,-18,-22,4,-23);g.bezierCurveTo(22,-24,31,-10,25,-3);
+      g.quadraticCurveTo(23,-9,17,-8);g.quadraticCurveTo(21,-2,14,1);g.quadraticCurveTo(13,-6,7,-5);g.bezierCurveTo(1,-16,-9,-9,-5,-2);g.quadraticCurveTo(8,4,40,3);g.closePath();g.fill();g.stroke();
+      [[30,-17,3],[36,-8,2],[22,-27,2.2]].forEach(function(d){g.beginPath();g.arc(d[0],d[1],d[2],0,Math.PI*2);g.fill();g.stroke();});g.restore();}
+  }
+  function fiLine(from,to,tension){
+    var g=fishingCtx,danger=tension>=88,shake=tension>75&&!reduceMotion?Math.sin(FV.now*70)*(tension-75)*.16:0;
+    var sag=tension<30?(30-tension)*3.2:0,mx=(from[0]+to[0])/2+shake,my=(from[1]+to[1])/2+sag+shake*.5;
+    g.lineCap='round';
+    [[danger?6:4,'rgba(8,20,40,.55)'],[danger?3:1.8,danger?'#ff3b24':tension<=8?'#a9b8c4':'#fff8df']].forEach(function(pass){g.lineWidth=pass[0];g.strokeStyle=pass[1];g.beginPath();g.moveTo(from[0],from[1]);g.quadraticCurveTo(mx,my,to[0],to[1]);g.stroke();});
+    if(danger){g.strokeStyle='#ffd84a';g.lineWidth=2.5;for(var i=0;i<6;i++){var a=i*1.05+Math.floor(FV.now*14)*.7,r=9+(i%3)*7;g.beginPath();g.moveTo(mx+Math.cos(a)*r,my+Math.sin(a)*r);g.lineTo(mx+Math.cos(a)*(r+12),my+Math.sin(a)*(r+12));g.stroke();}}
+    g.lineCap='butt';
+  }
+  function fiSpeedLines(x,y,H){
+    var g=fishingCtx,seed=Math.floor(FV.now*14);g.fillStyle='rgba(255,244,214,.42)';
+    for(var i=0;i<26;i++){var a=i/26*Math.PI*2+((seed*7+i*13)%11)*.02,r=235+((seed*5+i*29)%90),far=800,w=.006+((i+seed)%3)*.004;
+      g.beginPath();g.moveTo(x+Math.cos(a)*r,y+Math.sin(a)*r);g.lineTo(x+Math.cos(a-w)*far,y+Math.sin(a-w)*far);g.lineTo(x+Math.cos(a+w)*far,y+Math.sin(a+w)*far);g.closePath();g.fill();}
+  }
+  function fiAura(x,y){
+    var g=fishingCtx,t=reduceMotion?0:FV.now;
+    for(var i=0;i<9;i++){var bx=x-150+i*27,h=95+Math.sin(t*9+i*2.1)*38+(i>1&&i<7?70:0),sway=Math.sin(t*7+i)*15;
+      var grad=g.createLinearGradient(0,y,0,y-h);grad.addColorStop(0,'rgba(255,205,60,.75)');grad.addColorStop(1,'rgba(255,60,20,0)');g.fillStyle=grad;
+      g.beginPath();g.moveTo(bx-20,y);g.quadraticCurveTo(bx-24,y-h*.5,bx+sway,y-h);g.quadraticCurveTo(bx+26,y-h*.45,bx+20,y);g.closePath();g.fill();}
+  }
+  function fiMark(x,y){var g=fishingCtx,s=1+(reduceMotion?0:Math.abs(Math.sin(FV.now*9))*.18);g.save();g.translate(x,y);g.scale(s,s);g.fillStyle='#ffd84a';g.strokeStyle='#17223f';g.lineWidth=5;g.lineJoin='round';
+    g.beginPath();g.moveTo(-11,-46);g.lineTo(11,-46);g.lineTo(5,-12);g.lineTo(-5,-12);g.closePath();g.stroke();g.fill();g.beginPath();g.arc(0,2,7,0,Math.PI*2);g.stroke();g.fill();g.restore();}
+  function fiSpark(x,y,r){var g=fishingCtx;g.fillStyle='#ffe27a';g.beginPath();for(var i=0;i<8;i++){var a=i*Math.PI/4,d=i%2?r*.32:r;g.lineTo(x+Math.cos(a)*d,y+Math.sin(a)*d);}g.closePath();g.fill();}
+  function fiResize(){
+    var c=fishingCanvas,w=c.clientWidth,h=c.clientHeight;
+    var H=w&&h?Math.round(Math.max(600,Math.min(1130,520*h/w))):640,k=Math.max(1,Math.min(2,(w||520)*(window.devicePixelRatio||1)/520));
+    var bw=Math.round(520*k),bh=Math.round(H*k);if(c.width!==bw||c.height!==bh){c.width=bw;c.height=bh;}
+    fishingCtx.setTransform(bw/520,0,0,bh/H,0,0);FV.H=H;
+  }
+  function fiDraw(dt){
+    dt=Math.max(0,Math.min(.05,dt||0));FV.now+=dt;FV.catchAge+=dt;FV.lostAge+=dt;
+    fiResize();fiPreload();
+    var g=fishingCtx,W=520,H=FV.H,t=FV.now,water=Math.round(Math.max(372,H*(H<760?.6:.5)));
+    var fishing=FI.phase==='fishing',mode=fishing?FI.mode:'calm',tension=Math.max(0,Math.min(100,FI.tension));
+    if(fishing&&FI.hold&&FV.catchAge>.35)FV.catchAge=9;
+    var catching=fishing&&FV.catchAge<1.4,struggle=mode==='struggle'&&!catching,clash=struggle&&FI.hold;
+
+    var season=fiSeason();if(season!==FV.bg){FV.bgFrom=FV.bg;FV.bg=season;FV.bgMix=0;}FV.bgMix=Math.min(1,FV.bgMix+dt/2.5);
+    fiImg('bg-'+FI_TIMES[(season+1)%FI_TIMES.length]);
+    var sea=FI_SEA[FI_TIMES[FV.bg]];
+    g.fillStyle=sea[0];g.fillRect(0,0,W,H);
+    g.save();
+    var quake=reduceMotion?0:clash?3.5:fishing&&tension>=88?2:0;if(quake)g.translate(Math.sin(t*61)*quake,Math.cos(t*47)*quake);
+    if(FV.bgMix<1)fiBackdrop(FV.bgFrom,1,W,H,water);
+    fiBackdrop(FV.bg,FV.bgMix,W,H,water);
+
+    // ----- fish position -----
+    // keep the fish above the tension bar and button on short phones (about 170 CSS px at the bottom)
+    var covered=(window.innerHeight>740?212:170)*520/(fishingCanvas.clientWidth||390),depth=Math.max(74,Math.min(118,H-covered-water-52));
+    var progress=Math.max(-.6,Math.min(1,1-FI.distance/FI.start)),size=(.62+Math.min(FI.number,14)*.018);
+    var tx=Math.min(398,394-progress*70)+Math.sin(t*1.3)*(mode==='calm'?12:5),ty=water+depth-Math.max(0,progress)*Math.max(0,depth-84)+Math.sin(t*2.2)*7,angle=Math.sin(t*2.2+1)*.05,air=0;
+    if(!fishing&&FI.phase!=='lost'){tx=320+Math.sin(t*.7)*70;ty=water+depth+Math.sin(t*1.4)*12;}
+    if(mode!==FV.mode){if(mode==='struggle')FV.jump=0;FV.mode=mode;}
+    if(struggle){
+      var before=FV.jump;FV.jump=(FV.jump+dt/1.05)%1;
+      var u=FV.jump,lift=u<.68?Math.sin(u/.68*Math.PI):-Math.sin((u-.68)/.32*Math.PI)*.35;
+      ty=water+34-lift*(lift>0?175:130);tx+=Math.sin(u*Math.PI*2)*14-8;angle=u<.68?(u/.68-.5)*.9:0;air=lift;
+      if(dt&&(u<before||before<.68&&u>=.68))fiSplash(tx,water,26,1.1);
+      if(dt&&Math.random()<dt*14)fiSplash(tx,water,2,.7);
+    }else if(mode==='warn'){tx+=reduceMotion?0:Math.sin(t*38)*3;ty=water+82+Math.sin(t*9)*5;if(dt&&Math.random()<dt*12)fiSplash(tx,water,2,.5);}
+    var ease=struggle?1:Math.min(1,dt*5);FV.fx+=(tx-FV.fx)*ease;FV.fy+=(ty-FV.fy)*ease;
+    if(FI.phase==='lost'){FV.fx=Math.min(680,tx+FV.lostAge*150);FV.fy=ty+Math.min(80,FV.lostAge*35);}
+
+    // ----- man pose and frame rate -----
+    var feetX=214,feetY=water-52+Math.sin(t*1.8)*4,pose,frame;
+    if(FI.phase==='lost'){pose='result';frame=4+Math.min(3,Math.floor(FV.lostAge/.22));}
+    else if(catching){pose='result';frame=Math.min(3,Math.floor(FV.catchAge/.2));}
+    else{
+      pose=!fishing?'release':FI.hold?(struggle||tension>=85?'fight':'reel'):'release';
+      var fps=pose==='fight'?11+tension*.07:pose==='reel'?(mode==='tired'?15:8+tension*.05):struggle?12:fishing?7:4.5;
+      FV.man=(FV.man+dt*fps)%8;frame=Math.floor(FV.man);
+    }
+    if(clash)fiAura(feetX-30,feetY);
+    var boat=fiImg('boat');if(boat)g.drawImage(boat,-188,feetY-52,474,474*boat.naturalHeight/boat.naturalWidth);
+    var tip=fiSprite(pose,frame,feetX,feetY,.82,0);
+
+    // ----- fish -----
+    var sheet='swim',base=0,count=8,rate=mode==='calm'?9:10;
+    if(struggle){sheet='thrash';rate=17;}else if(mode==='warn'){sheet='moods';count=4;rate=11;}else if(mode==='tired'){sheet='moods';base=4;count=4;rate=FI.hold?5.5:3.5;}else if(fishing&&FI.hold){rate=14;}
+    FV.fish=(FV.fish+dt*rate)%8;var ff=base+Math.floor(FV.fish)%count;
+    var foam=sea[1],mouth=null;
+    function drawFish(){
+      if(FI.phase==='lost'){g.save();g.translate(FV.fx,FV.fy);g.scale(-1,1);fiSprite('swim',Math.floor(t*14)%8,0,0,size,0);g.restore();return;}
+      mouth=fiSprite(sheet,ff,FV.fx,FV.fy,size,angle);
+    }
+    var under=!struggle||air<=0;
+    if(!catching&&under){g.globalAlpha=FI.phase==='lost'?Math.max(0,1-FV.lostAge/1.6):.9;drawFish();g.globalAlpha=1;}
+    fiWave(water,9,46,1.7,sea[0],foam,.72,90);
+    if(!catching&&!under)drawFish();
+    fiWave(water+22+(struggle?Math.sin(t*8)*5:0),struggle?13:6,31,-2.3,sea[0],foam,.34,70);
+    if(fishing&&!catching&&mouth)fiLine(tip,mouth,tension);
+
+    // landed fish flies up onto the boat while the next one is already on the way
+    if(catching){var c=Math.min(1,FV.catchAge/.75),top=Math.max(88,water-405),hx=FV.fx+(206-FV.fx)*c,hy=water+40+(top-water-40)*c-Math.sin(c*Math.PI)*90;
+      var land=FV.catchAge>1.1?1-(FV.catchAge-1.1)/.3:1;g.globalAlpha=Math.max(0,land);
+      if(c>=1)for(var s=0;s<7;s++){var sa=s*.9+t*2.4;fiSpark(hx+Math.cos(sa)*108,hy+Math.sin(sa)*74,11+(s%3)*4);}
+      fiSprite('thrash',Math.floor(t*14)%8,hx,hy,size*.95,.55);g.globalAlpha=1;}
+
+    FV.drops.forEach(function(d){d.age+=dt;d.vy+=720*dt;d.x+=d.vx*dt;d.y+=d.vy*dt;g.globalAlpha=Math.max(0,1-d.age/.9);g.fillStyle=foam;g.strokeStyle='#17446a';g.lineWidth=1.4;g.beginPath();g.arc(d.x,d.y,d.r,0,Math.PI*2);g.fill();g.stroke();});g.globalAlpha=1;
+    FV.drops=FV.drops.filter(function(d){return d.age<.9&&d.y<water+40;});
+
+    if(fishing&&!catching){
+      if(mode==='warn')fiMark(FV.fx-6,FV.fy-64*size);
+      if(mode==='tired'){for(var z=0;z<3;z++){var za=t*3.4+z*2.09;fiSpark(FV.fx-62*size+Math.cos(za)*34,FV.fy-62*size+Math.sin(za)*11,9);}
+        g.strokeStyle='rgba(255,216,74,'+(.55+Math.sin(t*5)*.2)+')';g.lineWidth=4;g.beginPath();g.ellipse(FV.fx,FV.fy,128*size+Math.sin(t*5)*5,70*size,0,0,Math.PI*2);g.stroke();}
+    }
+    if(FV.bg===4){g.fillStyle='rgba(20,36,86,.16)';g.fillRect(-8,0,W+16,H+8);}
+    g.restore();
+    if(clash&&!reduceMotion)fiSpeedLines(FV.fx-60,FV.fy-20,H);
+
+    function banner(y,h){g.fillStyle='rgba(18,28,56,.9)';g.fillRect(42,y,436,h);g.strokeStyle='#e8b04b';g.lineWidth=4;g.strokeRect(42,y,436,h);g.lineWidth=1.5;g.strokeRect(50,y+8,420,h-16);}
+    g.textAlign='center';
+    FI.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=Math.max(70,water-390)-(reduceMotion?0:Math.min(1,p.age*3)*22);g.lineJoin='round';g.strokeStyle='#17223f';g.lineWidth=7;g.fillStyle='#ffd84a';g.font='800 46px system-ui';g.strokeText('+'+p.b+' 點',W/2,py);g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#fff6de';g.font='700 20px system-ui';g.lineWidth=5;g.strokeText('釣到 '+p.n+' 條里程碑',W/2,py+32);g.fillText('釣到 '+p.n+' 條里程碑',W/2,py+32);g.globalAlpha=1;});
+    if(fishing){g.fillStyle='rgba(18,28,56,.78)';g.fillRect(10,10,204,28);g.fillStyle='#fff2d2';g.font='700 14px system-ui';g.textAlign='left';g.fillText('第 '+FI.number+' 條 · 本局 +'+FI.earned+' 點',20,29);}
     if(FI.phase==='lost'||FI.phase==='ready'){
-      g.fillStyle='rgba(5,22,32,.88)';g.fillRect(48,389,424,103);g.fillStyle=FI.phase==='lost'?'#ff6f61':'#62e6d2';g.font='600 25px system-ui';g.fillText(FI.phase==='ready'?'{{t:fishing.msg.030}}':'{{t:fishing.msg.031}}',W/2,430);g.fillStyle='#e4f2f3';g.font='15px system-ui';g.fillText(FI.phase==='ready'?'{{t:fishing.msg.032}}':'本局釣到 '+FI.landed+' 條'+(FI.earned>0?' · 入帳 +'+FI.earned+' 點':''),W/2,465);
+      var by=10;banner(by,112);g.textAlign='center';g.fillStyle='#fff6de';g.font='800 14px system-ui';g.fillText('{{t:fishing.msg.028}}',W/2,by+25);g.fillStyle=FI.phase==='lost'?'#ff8a6a':'#ffd84a';g.font='800 25px system-ui';g.fillText(FI.phase==='ready'?'{{t:fishing.msg.030}}':'{{t:fishing.msg.031}}',W/2,by+55);g.fillStyle='#fff6de';g.font='15px system-ui';g.fillText(FI.phase==='ready'?'{{t:fishing.msg.032}}':'本局釣到 '+FI.landed+' 條'+(FI.earned>0?' · 入帳 +'+FI.earned+' 點':''),W/2,by+79);g.font='12px system-ui';g.fillStyle='#d8c9a4';g.fillText('{{t:fishing.msg.029}}',W/2,by+97);
     }
   }
   function fiPress(e){if(e.button!==undefined&&e.button!==0)return;if(FI.phase!=='fishing'||$('view-fishing').hidden||document.hidden)return;e.preventDefault();fiSync(performance.now());if(FI.phase!=='fishing')return;fishingCanvas.focus();fishingPointers.add(e.pointerId);fiHold(true);try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}fiUI();}
@@ -92,7 +217,7 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
   addEventListener('blur',function(){fiRelease();FI.last=performance.now();});
   document.addEventListener('visibilitychange',function(){fiRelease();FI.last=performance.now();});
   window.addEventListener('hashchange',function(){fiRelease();FI.last=performance.now();});
-  function fiLoop(now){fiSync(now);FI.pops.forEach(function(p){p.age+=.016;});FI.pops=FI.pops.filter(function(p){return p.age<2.2;});if(!$('view-fishing').hidden&&!document.hidden){fiUI();fiDraw();}requestAnimationFrame(fiLoop);}
-  fiUI();fiDraw();requestAnimationFrame(fiLoop);
+  var fiShown=0;function fiLoop(now){var dt=fiShown?(now-fiShown)/1000:0;fiShown=now;fiSync(now);FI.pops.forEach(function(p){p.age+=.016;});FI.pops=FI.pops.filter(function(p){return p.age<2.2;});if(!$('view-fishing').hidden&&!document.hidden){fiUI();fiDraw(dt);}requestAnimationFrame(fiLoop);}
+  fiUI();requestAnimationFrame(fiLoop);
 
 
