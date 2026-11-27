@@ -1,5 +1,6 @@
 import berryTrailRules from '../../../shared/berry-trail-rules.cjs';
 import pedestrianHellRules from '../../../shared/pedestrian-hell-rules.cjs';
+import pedestrianHellRulesV1 from '../../../shared/pedestrian-hell-rules-v1.cjs';
 import catMatchRules from '../../../shared/cat-match-rules.js';
 import onPitchRules from '../../../shared/on-pitch-rules.cjs';
 import breakoutRules from '../../../shared/breakout-rules.cjs';
@@ -85,6 +86,9 @@ const babyV1 = timedBoard({...babyRules, create: rng => babyRules.create(rng, 1)
 const catV1 = timedBoard({...catRules, inputCount: 2, create: rng => catRules.create(rng, 1)});
 const catV2 = timedBoard(catRules, catRules.rulesVersion);
 const babyV2 = timedBoard(babyRules, babyRules.rulesVersion);
+// Pedestrian hell v2 changed the streets; rounds from clients still open on v1 send no version and replay with v1.
+const pedV1 = timedBoard(pedestrianHellRulesV1);
+const pedV2 = timedBoard(pedestrianHellRules, pedestrianHellRules.rulesVersion);
 // Each rules version keeps its own replay, so rounds started on an older client still verify.
 const thiefBoards = new Map([
   [undefined, timedBoard({...thiefRules, create: rng => thiefRules.create(rng, 1)})],
@@ -221,7 +225,12 @@ const boards = new Map([
   ['bird', timedBoard(birdRules)],
   ['tetris', timedBoard(blockDropRules)],
   ['berry-trail', timedBoard(berryTrailRules)],
-  ['pedestrian-hell', timedBoard(pedestrianHellRules)],
+  ['pedestrian-hell', {
+    ...pedV1,
+    rulesVersion: pedestrianHellRules.rulesVersion,
+    create: version => (version === pedestrianHellRules.rulesVersion ? pedV2 : pedV1).create(),
+    apply: (state, action) => (state.rulesVersion === pedestrianHellRules.rulesVersion ? pedV2 : pedV1).apply(state, action),
+  }],
   ['reaper', timedBoard(reaperRules)],
   ['sneak', {
     ...sneakBoards.get(undefined),

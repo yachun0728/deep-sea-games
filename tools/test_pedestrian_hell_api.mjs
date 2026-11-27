@@ -4,6 +4,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {readdirSync,readFileSync} from 'node:fs';
 import worker from '../backend/src/index.mjs';
 import R from '../shared/pedestrian-hell-rules.cjs';
+import V1 from '../shared/pedestrian-hell-rules-v1.cjs';
 import T from '../shared/timed-replay.cjs';
 const sql=new DatabaseSync(':memory:');
 for(const file of readdirSync(new URL('../backend/migrations/',import.meta.url)).sort())sql.exec(readFileSync(new URL('../backend/migrations/'+file,import.meta.url),'utf8'));
@@ -13,9 +14,9 @@ let now=Date.now();const nativeNow=Date.now;Date.now=()=>now;
 async function req(path,body,token){const res=await worker.fetch(new Request('http://localhost'+path,{method:body?'POST':'GET',headers:{Origin:origin,...(body?{'Content-Type':'application/json'}:{}),...(token?{Authorization:'Bearer '+token}:{})},body:body?JSON.stringify(body):undefined}),env);return {status:res.status,body:await res.json()};}
 function path(s){const q=[[s.P.c,s.P.r,null]],seen=new Set([s.P.c+','+s.P.r]);while(q.length){const [c,r,f]=q.shift();if(r>=R.GOAL)return f;R.DIRS.forEach(([dc,dr],code)=>{const x=c+dc,y=r+dr,k=x+','+y;if(x<0||x>4||y<0||!s.rows[y]||s.rows[y][x]||seen.has(k))return;seen.add(k);q.push([x,y,f??code]);});}return null;}
 // careful player until it owns `target` cups, then walks without looking until the round ends
-function play(seed,target){
-  const random=T.seeded(seed),s=R.create(random),moves=[];let ticks=0,wait=0;
-  const press=code=>{if(R.input(s,code))moves.push(ticks*4+code);};
+function play(seed,target,E=R){
+  const random=T.seeded(seed),s=E.create(random),moves=[];let ticks=0,wait=0;
+  const press=code=>{if(E.input(s,code))moves.push(ticks*4+code);};
   while(!s.dead&&ticks<T.MAX_TICKS){
     wait-=.01;
     if(s.rest<=0&&s.P.k>=1&&wait<=0){
@@ -33,15 +34,17 @@ function play(seed,target){
         }
       }
     }
-    R.advance(s,.01,random);s.events.length=0;ticks++;
+    E.advance(s,.01,random);s.events.length=0;ticks++;
   }
   assert.ok(s.dead,'round ends inside the replay limit');
   return {cups:s.cups,cause:s.cause,ticks,moves};
 }
-async function round(token,target){
-  const ticket=await req('/api/v1/boards/rounds',{gameId:'pedestrian-hell'},token);assert.equal(ticket.status,201);
-  const run=play(ticket.body.state.seed,target),action=[run.ticks,...run.moves];
-  assert.equal(T.verify(R,ticket.body.state.seed,action),run.cups);now+=run.ticks*10;
+// the new page reports rulesVersion; a page still open from the first release sends none and must use the frozen rules
+async function round(token,target,legacy=false){
+  const E=legacy?V1:R;
+  const ticket=await req('/api/v1/boards/rounds',legacy?{gameId:'pedestrian-hell'}:{gameId:'pedestrian-hell',rulesVersion:R.rulesVersion},token);assert.equal(ticket.status,201);
+  const run=play(ticket.body.state.seed,target,E),action=[run.ticks,...run.moves];
+  assert.equal(T.verify(E,ticket.body.state.seed,action),run.cups);now+=run.ticks*10;
   return {...run,seed:ticket.body.state.seed,proof:{gameId:'pedestrian-hell',id:ticket.body.id,revision:0,action}};
 }
 const send=(p,token)=>req('/api/v1/boards/rounds/move',p,token);
@@ -62,9 +65,13 @@ try{
   assert.ok(JSON.stringify((await req('/api/v1/leaderboard/feed')).body).includes('pedestrian-hell'));
   assert.equal(sql.prepare("SELECT score FROM game_leaderboard WHERE game_id='pedestrian-hell' AND player_id=?").get(guest.body.id).score,first.cups);
   assert.equal((await send({...first.proof,action:[2,-1]},guest.body.token)).status,400);
+  assert.equal((await req('/api/v1/boards/rounds',{gameId:'pedestrian-hell',rulesVersion:99},guest.body.token)).status,400,'unknown rules version');
+  const oldGuest=(await req('/api/v1/players',{})).body.token,old=await round(oldGuest,2,true);
+  const oldSaved=await send(old.proof,oldGuest);assert.equal(oldSaved.status,200);assert.equal(oldSaved.body.state.score,old.cups,'first-release page still settles');
+  assert.ok(old.cups>=2,'legacy round crossed streets: '+old.cups);
   // the longest possible round (until the shop closes) must still submit, and its replay cost is measured
   const long=await round((await req('/api/v1/players',{})).body.token,999);
   const t0=process.hrtime.bigint();T.verify(R,long.seed,long.proof.action);const ms=Number(process.hrtime.bigint()-t0)/1e6;
-  console.log(`PASS Just Want Boba Worker + SQLite: ${first.cups} cups saved; empty board, owner, unfinished/illegal proof, single settlement, duplicate, stale command, lower score, tie order, localized API, feed and stored row`);
+  console.log(`PASS Just Want Boba Worker + SQLite: ${first.cups} cups saved; empty board, owner, unfinished/illegal proof, single settlement, duplicate, stale command, lower score, tie order, localized API, feed, stored row, rules v2 and a first-release (${old.cups} cups) round`);
   console.log(`longest round: ${long.cups} cups, ${long.ticks/100}s, ${long.moves.length} inputs, cause ${long.cause}, replay ${ms.toFixed(0)} ms on this Mac, body ${JSON.stringify(long.proof).length} bytes`);
 }finally{Date.now=nativeNow;sql.close();}

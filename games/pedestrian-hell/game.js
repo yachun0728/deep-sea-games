@@ -12,7 +12,7 @@ window.deepSeaPed={
  prepare:function(source,ready){
   if(!phValid(source)||$('view-pedestrian-hell').hidden||pedRank.busy())return false;
   if(PH.active)phEnd('abandoned',source.pedScore?.());
-  pedRank.start(function(rng){if($('view-pedestrian-hell').hidden)return;PH.active=true;if(AN.interact)AN.interact();PH.round=AN.start('pedestrian-hell',0);ready(rng||Math.random);});return true;
+  pedRank.start(function(rng){if($('view-pedestrian-hell').hidden)return;PH.active=true;if(AN.interact)AN.interact();PH.round=AN.start('pedestrian-hell',0);ready(rng||Math.random);},null,{rulesVersion:pedestrianHellRules.rulesVersion});return true;
  },
  advance:function(source,ms,active,step){if(phValid(source)&&PH.active)pedRank.update(ms,active,step);},
  record:function(source,code){if(phValid(source)&&PH.active)pedRank.record(code);},
