@@ -79,6 +79,10 @@ const blasterV2 = timedBoard(blasterRules, blasterRules.rulesVersion);
 const bossV1 = timedBoard({...bossRules, create: rng => bossRules.create(rng, 1)});
 const bossV2 = timedBoard(bossRules, bossRules.rulesVersion);
 const babyV1 = timedBoard({...babyRules, create: rng => babyRules.create(rng, 1)});
+// Rooftop Cat v2 added obstacles, fish and a slide input; v1 rounds (older clients) still replay with the v1
+// rules and their two inputs (jump press and release).
+const catV1 = timedBoard({...catRules, inputCount: 2, create: rng => catRules.create(rng, 1)});
+const catV2 = timedBoard(catRules, catRules.rulesVersion);
 const babyV2 = timedBoard(babyRules, babyRules.rulesVersion);
 // Each rules version keeps its own replay, so rounds started on an older client still verify.
 const thiefBoards = new Map([
@@ -205,7 +209,14 @@ const boards = new Map([
   ['elevator', timedBoard(elevatorRules)],
   ['boba', timedBoard(bobaRules)],
   ['fishing', timedBoard(fishingRules)],
-  ['cat', timedBoard(catRules)],
+  ['cat', {
+    ...catV1,
+    // Accept either encoding here; apply() replays with the round's own version and input count.
+    accepts: action => timedReplay.accepts(action, 2) || timedReplay.accepts(action, catRules.inputCount),
+    rulesVersion: catRules.rulesVersion,
+    create: version => (version === catRules.rulesVersion ? catV2 : catV1).create(),
+    apply: (state, action) => (state.rulesVersion === catRules.rulesVersion ? catV2 : catV1).apply(state, action),
+  }],
   ['bird', timedBoard(birdRules)],
   ['tetris', timedBoard(blockDropRules)],
   ['berry-trail', timedBoard(berryTrailRules)],

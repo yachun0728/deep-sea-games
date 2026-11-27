@@ -57,7 +57,7 @@ function die(){
  ui();
 }
 function update(dt){
- tt+=dt;if(shake>0)shake-=dt;
+ tt+=dt;if(shake>0)shake-=dt;if(fishPop>0)fishPop-=dt;
  pops.forEach(p=>{p.age+=dt});pops=pops.filter(p=>p.age<2.2);
  fx.forEach(p=>{p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=(p.star?260:90)*dt});fx=fx.filter(p=>p.t<p.life);
  if(st!=='run'){cat.sq*=.86;return}
@@ -65,6 +65,10 @@ function update(dt){
  if(cat.on&&!wasOn){puff(CX,cat.cy,6,'#f7efd9');K.landT=tt;sfx('land')}
  if(!cat.on&&wasOn&&cat.vy<0){puff(CX-6,cat.cy,4,'#f7efd9');K.jumpT=tt;sfx('jump');if(!jumped){jumped=true;if(!taught)firstJumpT=tt;taught=true}}
  wasOn=cat.on;
+ if(cat.fishN>lastFish){lastFish=cat.fishN;fishPop=.3;sfx('fish');puff(CX+8,cat.cy-24,4,'#f6d38a',true)}
+ if(cat.trips>lastTrips){lastTrips=cat.trips;shake=reduceMotion?0:.18;sfx('bonk')}
+ if(cat.slideT>0&&cat.on&&Math.random()<.5)puff(CX-10,cat.cy,1,'#f7efd9');
+ if(cat.roofs)for(const r of cat.roofs)if(r.tin){if(r.crumble>0&&!r.creaked){r.creaked=1;sfx('creak')}if(r.gone&&!r.crashed){r.crashed=1;sfx('crash');puff(r.x+r.w/2,r.y,8,'#d9824f')}}
  const reached=score();
  while(awarded<reached){awarded++;const b=bonusAt(awarded);if(b){award(awarded,b);sfx('coin');puff(CX+10,cat.cy-40,14,'#e8b45a',true)}}
  if(cat.dead)die();
@@ -383,6 +387,7 @@ function vSign(x,y,i){const c=SIGNC[i%SIGNC.length],s=SIGNS[i%SIGNS.length],h=26
  g.strokeStyle='rgba(247,239,217,.7)';g.lineWidth=1.5;g.strokeRect(x+3,y+3,16,h-6);
  g.fillStyle=c[1];g.font='900 17px '+FONT;g.textAlign='center';for(let k=0;k<s.length;k++)g.fillText(s[k],x+11,y+25+k*26)}
 function roof(r){
+ if(r.tin){tinRoof(r);return}
  const P=BLD[r.id%BLD.length],x0=r.x,x1=r.x+r.w,y0=r.y+8,d0=dxAt(x0),d1=dxAt(x1),B=H+30;
  if(d1>1)sideFace(x1,d1,y0,P);
  if(d0<-1)sideFace(x0,d0,y0,P);
@@ -401,7 +406,8 @@ function roof(r){
  poly([x0+d0,y0-DEP,x1+d1,y0-DEP,x1+d1*.8,y0-DEP*.8,x0+d0*.8,y0-DEP*.8],P.topB);
  poly([x0+d0,y0-DEP,x1+d1,y0-DEP,x1+d1,y0-DEP-6,x0+d0,y0-DEP-6],P.trim,1.5);
  const yb=y0-DEP*.55;let n=r.w>230?2:r.w>140?1:0;
- if(r.id%3===1&&r.w>170){const sw=Math.min(110,r.w*.45),sx=x1-sw-14;shed(sx+dxAt(sx)*.45,yb-2,sw,34,SHEDC[r.id%SHEDC.length]);n=Math.min(n,1)}
+ if(cat.obs&&cat.obs.some(o=>o.roof===r.id))n=-1;
+ if(n>=0&&r.id%3===1&&r.w>170){const sw=Math.min(110,r.w*.45),sx=x1-sw-14;shed(sx+dxAt(sx)*.45,yb-2,sw,34,SHEDC[r.id%SHEDC.length]);n=Math.min(n,1)}
  for(let i=0;i<n;i++){const k=PROPS[(r.id*3+i*5)%PROPS.length],px=x0+r.w*(i?.72:.22)+((r.id*13)%20)-10;prop(k,px+dxAt(px)*.45,yb,r.id)}
  // Front coping ledge, sunlit on top: the cat runs just behind it.
  poly([x0-4,y0-3,x1+4,y0-3,x1+4,y0+6,x0-4,y0+6],P.trim,1.5);
@@ -409,7 +415,39 @@ function roof(r){
 // Printed-poster finish over the whole scene: paper grain plus a soft light from the upper left.
 function grade(){g.save();g.fillStyle=grain();g.fillRect(-20,0,W+40,H);g.globalCompositeOperation='soft-light';const gr=g.createLinearGradient(0,0,W,H);gr.addColorStop(0,'rgba(255,228,170,.4)');gr.addColorStop(1,'rgba(31,90,96,.3)');g.fillStyle=gr;g.fillRect(-20,0,W+40,H);g.restore()}
 // Roof top height at screen x, or null over a gap.
-function roofAt(x){for(const r of cat.roofs)if(x>=r.x-8&&x<=r.x+r.w+8)return r.y;return null}
+function roofAt(x){for(const r of cat.roofs)if(!r.gone&&x>=r.x-8&&x<=r.x+r.w+8)return r.y;return null}
+// Rules v2 tin roof: a corrugated sheet on rusty stilts (a Taipei rooftop add-on). It shakes once the cat lands
+// and drops away when it collapses.
+function tinRoof(r){
+ const x0=r.x,w=r.w,f=r.fall||0,sh=r.crumble>0&&!r.gone&&!reduceMotion?Math.sin(tt*70)*1.8:0;
+ g.save();g.translate(x0+w/2+sh,r.y+f);g.rotate(Math.min(.5,f*.0025));g.translate(-(x0+w/2),-r.y);
+ g.lineCap='round';g.strokeStyle='#6d4a35';g.lineWidth=5;g.beginPath();
+ for(const px of [x0+10,x0+w/2,x0+w-10]){g.moveTo(px,r.y+6);g.lineTo(px,H+40)}g.stroke();
+ g.lineWidth=2.2;g.strokeStyle='#8a5e42';g.beginPath();for(let y=r.y+40;y<H;y+=60){g.moveTo(x0+10,y);g.lineTo(x0+w-10,y+30);g.moveTo(x0+w-10,y);g.lineTo(x0+10,y+30)}g.stroke();
+ const gr=g.createLinearGradient(0,r.y-4,0,r.y+10);gr.addColorStop(0,'#d9824f');gr.addColorStop(1,'#9a4f2c');
+ poly([x0-6,r.y-3,x0+w+6,r.y-3,x0+w+3,r.y+10,x0-3,r.y+10],gr);
+ g.fillStyle='rgba(80,35,15,.35)';for(let x=x0-2;x<x0+w+4;x+=7)g.fillRect(x,r.y-2,2,11);
+ g.fillStyle='rgba(120,60,30,.45)';for(let i=0;i<4;i++){g.beginPath();g.ellipse(x0+w*(.15+i*.23),r.y+3+(i%2)*3,5+(i%3)*2,2.4,0,0,7);g.fill()}
+ g.fillStyle='rgba(255,236,200,.55)';g.fillRect(x0-5,r.y-3,w+10,1.6);
+ g.restore();
+ if(!r.gone)firstSeen('tin',x0+w/2,r.y-34,x0+w)}
+// A pulsing "!" above the first obstacle of each kind in this session.
+function firstSeen(kind,x,yy,right){if(seenKinds.has(kind)||st!=='run')return;const p=reduceMotion?.5:(tt*2)%1;
+ g.globalAlpha=1-p*.6;g.beginPath();g.arc(x,yy,12+p*6,0,7);g.strokeStyle='#e8b45a';g.lineWidth=3;g.stroke();g.globalAlpha=1;
+ g.beginPath();g.arc(x,yy,11,0,7);g.fillStyle='#e8b45a';g.fill();g.fillStyle='#1f3a40';g.font='900 16px '+FONT;g.textAlign='center';g.fillText('!',x,yy+6);
+ if(right<CX-20)seenKinds.add(kind)}
+// Rules v2 pigeon: grey body, flapping wings, flying left toward the cat.
+function pigeon(b){if(b.x<-30||b.x>W+30)return;const fl=reduceMotion?0:Math.sin(tt*18+b.x*.1),x=b.x,y=b.y+(reduceMotion?0:Math.sin(tt*5+b.x*.05)*2);
+ g.save();g.translate(x,y);g.scale(1.4,1.4);if(b.hit)g.rotate(.6);
+ g.beginPath();g.ellipse(0,-1,15,9,-.08,0,7);g.fillStyle='rgba(255,248,232,.55)';g.fill();
+ g.fillStyle='#8c969b';g.beginPath();g.moveTo(8,-1);g.lineTo(16,-4+fl*2);g.lineTo(15,3);g.closePath();g.fill();
+ g.beginPath();g.ellipse(2,0,10,5.5,-.08,0,7);g.fillStyle='#a9b3b7';g.fill();
+ g.beginPath();g.ellipse(-2,2,5,3,0,0,7);g.fillStyle='#7aa59a';g.fill();
+ g.beginPath();g.arc(-8,-3,4.2,0,7);g.fillStyle='#6f7b82';g.fill();
+ g.beginPath();g.moveTo(-12,-3);g.lineTo(-15.5,-2);g.lineTo(-12,-1.4);g.closePath();g.fillStyle='#e8b45a';g.fill();
+ g.beginPath();g.arc(-9,-4,1,0,7);g.fillStyle='#c9473f';g.fill();
+ g.beginPath();g.moveTo(-1,-3);g.quadraticCurveTo(5,-14*fl-2,12,-10*fl-1);g.lineTo(8,-1);g.closePath();g.fillStyle='#7f8a90';g.fill();
+ g.restore();firstSeen('bird',x,y-26,x+10)}
 // Flag on the rooftops at a distance in metres: the next reward (paw coin) and the personal best (gold star). No text, so it reads in every language.
 function marker(m,kind){
 const x=CX+m*60-cat.dist;if(x<-20||x>W+30)return;const y=roofAt(x);if(y===null)return;
@@ -449,20 +487,74 @@ function catSprite(){
  if(st==='ready'&&sitImg(0,1,50))return;
  const o=catPose();let i;
  if(st==='over')i=10;
+ else if(cat.slideT>0&&cat.on){g.save();g.scale(1.14,.6);const ok=runFrame(7,.22);g.restore();if(ok)return;i=7}
  else if(!cat.on)i=cat.vy<0?(tt-K.jumpT<.12?6:7):8;
- else if(tt-K.landT<.16)i=9;
+ else if(tt-K.landT<.16||cat.stumbleT>0)i=9;
  else i=Math.floor(K.p*6)%6;
  if(!runFrame(i,.22))kitty(o)}
+// ===== Rules v2 on screen: rooftop obstacles, dried fish, tripping (see shared/cat-rules.cjs) =====
+// Obstacles stand on the walking line of the roof (in front of the decor) so they read as things to deal with.
+let seenKinds=new Set(),lastFish=0,lastTrips=0,fishPop=0;
+function obstacle(o){
+ const x=o.x,b=o.base,w=o.w,h=o.h,wob=o.hit&&!reduceMotion?Math.sin(tt*30)*Math.max(0,.4-(tt-(o.hitT||tt)))*6:0;
+ g.save();g.translate(x+w/2,b);g.rotate(wob*.02);g.translate(-(x+w/2),-b);
+ g.fillStyle='rgba(31,58,64,.22)';g.beginPath();g.ellipse(x+w/2,b+1,w*.6,4,0,0,7);g.fill();
+ if(o.kind==='low'){const v=Math.floor(w)%3;
+  if(v===0){box(x,b,w,h,8,'#e6e2d6','#f7f3e8','#bdb7a6');const cx=x+w*.36,cy=b-h/2,r=h*.34,a=reduceMotion?0:tt*12;g.beginPath();g.arc(cx,cy,r,0,7);g.fillStyle='#4f6b6f';g.fill();
+   g.strokeStyle='#e6e2d6';g.lineWidth=1.6;g.beginPath();for(let i=0;i<3;i++){const t=a+i*2.09;g.moveTo(cx,cy);g.lineTo(cx+Math.cos(t)*r*.8,cy+Math.sin(t)*r*.8)}g.stroke()}
+  else if(v===1){box(x,b,w,h,8,'#c98a4b','#dfa765','#a86f37');g.strokeStyle='rgba(90,50,20,.45)';g.lineWidth=1.6;g.beginPath();g.moveTo(x+3,b-3);g.lineTo(x+w-3,b-h+3);g.moveTo(x+3,b-h+3);g.lineTo(x+w-3,b-3);g.stroke()}
+  else{poly([x,b,x+w,b,x+w-2,b-h*.6,x+2,b-h*.6],'#c4703f');g.fillStyle='#97522c';g.fillRect(x+2,b-h*.6,w-4,3);
+   for(let i=0;i<4;i++){g.beginPath();g.arc(x+w*(.18+i*.22),b-h*.6-4-(i%2)*3,w*.16,0,7);g.fillStyle=CITY.trees[i%3];g.fill()}}}
+ else if(o.kind==='step'){// Stainless water tank on a red stand: the flat lid is safe to land on.
+  g.fillStyle='#c9473f';g.fillRect(x+4,b-10,4,10);g.fillRect(x+w-8,b-10,4,10);g.fillRect(x+2,b-11,w-4,3);
+  const tg=g.createLinearGradient(x,0,x+w,0);tg.addColorStop(0,'#aeb8b6');tg.addColorStop(.3,'#f4f7f6');tg.addColorStop(.6,'#cfd6d4');tg.addColorStop(1,'#8f9997');
+  g.fillStyle=tg;g.fillRect(x,b-h,w,h-10);g.fillStyle='rgba(31,58,64,.15)';for(let y=b-h+8;y<b-12;y+=9)g.fillRect(x,y,w,1.5);
+  g.fillStyle='#eef1f0';g.beginPath();g.ellipse(x+w/2,b-h,w/2,5,0,0,7);g.fill();g.fillStyle='rgba(31,58,64,.18)';g.beginPath();g.ellipse(x+w/2,b-h,w/2-4,3,0,0,7);g.fill()}
+ else if(o.kind==='sign'){// Shop sign hanging low from a frame: slide under it.
+  g.strokeStyle='#4d6b6c';g.lineWidth=3;g.lineCap='round';g.beginPath();g.moveTo(x-4,b);g.lineTo(x-4,b-124);g.lineTo(x+w+4,b-124);g.lineTo(x+w+4,b);g.stroke();
+  g.lineWidth=1.4;g.beginPath();g.moveTo(x+6,b-124);g.lineTo(x+6,b-110);g.moveTo(x+w-6,b-124);g.lineTo(x+w-6,b-110);g.stroke();
+  const sc=SIGNC[Math.floor(w)%SIGNC.length],t=SIGNS[Math.floor(w*7)%SIGNS.length],sw=reduceMotion?0:Math.sin(tt*2.4+x*.03)*1.5;
+  g.save();g.translate(sw,0);poly([x,b-110,x+w,b-110,x+w,b-26,x,b-26],sc[0]);g.strokeStyle='rgba(247,239,217,.75)';g.lineWidth=1.5;g.strokeRect(x+3,b-107,w-6,78);
+  g.fillStyle=sc[1];g.font='900 '+Math.min(30,w*.62)+'px '+FONT;g.textAlign='center';g.fillText(t[0],x+w/2,b-78);g.fillText(t[1],x+w/2,b-40);g.restore()}
+ else{// Laundry on a line between two poles: run under it, or clear it with a long jump.
+  g.strokeStyle='#4d6b6c';g.lineWidth=2.4;g.lineCap='round';g.beginPath();g.moveTo(x,b);g.lineTo(x,b-80);g.moveTo(x+w,b);g.lineTo(x+w,b-80);g.stroke();
+  g.lineWidth=1.4;g.beginPath();g.moveTo(x,b-74);g.quadraticCurveTo(x+w/2,b-68,x+w,b-74);g.stroke();
+  const sw=reduceMotion?0:Math.sin(tt*3+x*.05)*2,n=Math.max(2,Math.floor(w/26)),cols=['#e8b45a','#f7efd9','#3f8f97','#d9824f','#8fd0c4'];
+  for(let i=0;i<n;i++){const cx=x+(i+.5)*w/n,top=b-72+Math.sin((i+.5)/n*Math.PI)*-2,cw=w/n*.7;
+   poly([cx-cw/2,top,cx+cw/2,top,cx+cw/2+sw,b-54,cx-cw/2+sw,b-54],cols[(i+Math.floor(w))%cols.length])}}
+ g.restore();
+ // First time a kind of obstacle shows up in this session: a pulsing "!" above it.
+ firstSeen(o.kind,x+w/2,o.kind==='line'?b-98:o.kind==='sign'?b-146:b-h-30,x+w)}
+// Dried fish snack: a small flat fish that bobs gently.
+function fishIcon(x,y,s,rot){g.save();g.translate(x,y);g.rotate(rot||0);g.scale(s,s);
+ g.beginPath();g.moveTo(-9,0);g.lineTo(-15,-5);g.lineTo(-14,0);g.lineTo(-15,5);g.closePath();g.fillStyle='#c98a4b';g.fill();
+ g.beginPath();g.ellipse(0,0,10,4.6,0,0,7);g.fillStyle='#e8b45a';g.fill();g.beginPath();g.ellipse(1,1.6,8,2,0,0,Math.PI);g.fillStyle='#f6d38a';g.fill();
+ g.strokeStyle='rgba(140,80,30,.55)';g.lineWidth=.9;g.beginPath();g.moveTo(-3,-3.6);g.lineTo(-3,3.6);g.moveTo(1,-4.2);g.lineTo(1,4.2);g.stroke();
+ g.beginPath();g.arc(6.2,-.8,1.1,0,7);g.fillStyle='#1f3a40';g.fill();g.restore()}
+function drawFish(){if(!cat.fish)return;for(const f of cat.fish){if(f.taken||f.x<-20||f.x>W+20)continue;
+ fishIcon(f.x,f.y+(reduceMotion?0:Math.sin(tt*4+f.x*.07)*2.2),1,reduceMotion?0:Math.sin(tt*3+f.x)*.15)}}
+// While the cat is shaken after a trip: stars over its head and a ring that counts down the 4 s window in which a
+// second trip ends the run.
+function tripMarks(){if(!cat.trips||st!=='run')return;
+ if(cat.stumbleT>0){for(let i=0;i<3;i++){const a=tt*7+i*2.09;star(CX+Math.cos(a)*14,cat.cy-52+Math.sin(a)*4,3.6,'#f0c04f')}}
+ if(cat.tripWin>0){const k=cat.tripWin/4,x=CX+30,y=cat.cy-58;
+  g.beginPath();g.arc(x,y,10,0,7);g.fillStyle='rgba(31,58,64,.55)';g.fill();
+  g.beginPath();g.arc(x,y,10,-Math.PI/2,-Math.PI/2+k*Math.PI*2);g.strokeStyle='#c9473f';g.lineWidth=3;g.stroke();
+  g.fillStyle='#f7efd9';g.font='900 13px '+FONT;g.textAlign='center';g.fillText('!',x,y+5)}}
 function draw(){
 const ox=shake>0?(Math.random()-.5)*12:0;
 g.setTransform(DPR,0,0,DPR,0,0);
 g.save();g.translate(ox,0);
 backdrop();
 for(const r of cat.roofs)roof(r);
+if(cat.obs)for(const o of cat.obs)if(o.x<W+20&&o.x+o.w>-20)obstacle(o);
+drawFish();
+if(cat.birds)for(const b of cat.birds)pigeon(b);
 if(st!=='ready'){const s0=score();if(best>s0)marker(best,'best');const nx0=nextMilestone(s0)[0];if(nx0!==best)marker(nx0,'next')}
 // Soft contact shadow under the cat while it is over a roof.
 const gy=roofAt(CX);if(gy!==null&&st!=='over'){const d=Math.max(0,gy-cat.cy),k=Math.max(.25,1-d/220);g.fillStyle='rgba(31,58,64,'+(.28*k)+')';g.beginPath();g.ellipse(CX+4,gy-2,30*k,6*k,0,0,7);g.fill()}
 g.save();g.translate(CX,cat.cy);g.scale(1+cat.sq*.4,1-cat.sq*.4);catSprite();g.restore();
+tripMarks();
 drawFx();
 grade();
 g.restore();
@@ -471,13 +563,14 @@ tx(s+' m',W/2,76,40,'#fff1c1');
 if(st==='run')tx('下一個獎勵 '+nx[0]+' m · +'+nx[1]+' 點',W/2,104,15,'#9bfff0');
 tx('最佳 '+best+' m',W-118,30,16,'#ffd23f');
 tx('{{t:cat.msg.004}}'+earned+' 點',70,30,16,earned>0?'#ffd23f':'#fff1c1');
+if(cat.fish&&st!=='ready'){const k=1+Math.max(0,fishPop)*.8;fishIcon(26,54,1.15*k,-.15);tx(''+cat.fishN,58,61,18*k,'#f6d38a')}
 pops.forEach(p=>{g.globalAlpha=Math.max(0,1-p.age/2.2);const y=175-(reduceMotion?0:Math.min(1,p.age*3)*22);tx('+'+p.b+' 點',W/2,y,38,'#ffd23f');tx(p.m+' 公尺里程碑',W/2,y+28,17,'#fff1c1');g.globalAlpha=1});
 if(st!=='run'){
 g.fillStyle='rgba(20,52,58,.5)';g.fillRect(0,0,W,H);
 if(st==='ready'){if(!sitImg(W/2,220,132)){g.save();g.translate(W/2-14,214);g.scale(1.9,1.9);kitty(catPose());g.restore()}cityTitle(372,1);tx('{{t:cat.msg.005}}',W/2,258,36,'#ffd23f');tx('{{t:cat.msg.006}}',W/2,300,22,'#fff1c1')}
-else{tx('{{t:cat.msg.007}}',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(earned>0?'{{t:cat.msg.008}}'+earned+' 點':'沒到 '+MILESTONES[0][0]+' 公尺，沒有獎勵',W/2,314,22,earned>0?'#ffd23f':'#fff1c1');if(rec)tx('{{t:cat.msg.009}}',W/2,348,20,'#ffd23f');tx('{{t:cat.msg.010}}',W/2,392,20,'#fff1c1')}}
+else{tx(cat.trips>=2&&cat.trippedBy?'{{t:cat.msg.021}}':'{{t:cat.msg.007}}',W/2,205,34,'#ff5d8f');tx(s+' m',W/2,270,50,'#fff1c1');tx(earned>0?'{{t:cat.msg.008}}'+earned+' 點':'沒到 '+MILESTONES[0][0]+' 公尺，沒有獎勵',W/2,314,22,earned>0?'#ffd23f':'#fff1c1');if(cat.fish){fishIcon(W/2-28,428,1.6,-.15);tx(''+cat.fishN,W/2+12,436,24,'#f6d38a')}if(rec)tx('{{t:cat.msg.009}}',W/2,348,20,'#ffd23f');tx('{{t:cat.msg.010}}',W/2,392,20,'#fff1c1')}}
 if(st==="run"&&tt-cityT<2.6)cityTitle(200,Math.min(1,(2.6-(tt-cityT))/.8));
-tapHint();holdHint();cornerButton();if(panel)drawPanel()}
+tapHint();holdHint();slideButton();cornerButton();if(panel)drawPanel()}
 // Poster-style city name: TAIPEI · TAIWAN. A proper noun, shown in Latin letters in every language.
 function cityTitle(y,a){g.save();g.globalAlpha=a;g.textAlign='center';try{g.letterSpacing='4px'}catch(e){}
 g.font='900 44px '+FONT;g.fillStyle='rgba(31,58,64,.55)';g.fillText(CITY.name,W/2+3,y+3);g.fillStyle='#bfe8dc';g.fillText(CITY.name,W/2,y);
@@ -513,7 +606,12 @@ const SFX={
  land:t=>{hiss(t,.09,.18,sfxBus,'lowpass',700);tone('sine',[150,70],t,.1,.18,sfxBus)},
  coin:t=>[72,76,79,84].forEach((n,i)=>tone('sine',mf(n+12),t+i*.07,.28,.12,sfxBus)),
  fall:t=>tone('triangle',[640,140],t,.6,.14,sfxBus,2400),
- tick:t=>tone('sine',1100,t,.05,.08,sfxBus)};
+ tick:t=>tone('sine',1100,t,.05,.08,sfxBus),
+ fish:t=>{tone('sine',[1180,1760],t,.09,.09,sfxBus);tone('triangle',2350,t+.05,.12,.05,sfxBus)},
+ bonk:t=>{hiss(t,.12,.22,sfxBus,'lowpass',900);tone('square',[320,140],t,.16,.08,sfxBus,1400)},
+ slide:t=>hiss(t,.28,.14,sfxBus,'bandpass',1800),
+ creak:t=>{tone('sawtooth',[210,150],t,.32,.05,sfxBus,900);hiss(t,.2,.06,sfxBus,'highpass',2400)},
+ crash:t=>{hiss(t,.45,.2,sfxBus,'lowpass',1200);tone('square',[180,60],t,.4,.06,sfxBus,700)}};
 function sfx(k){if(!sfxOn)return;audioInit();if(ac&&ac.state==='running')SFX[k](ac.currentTime+.005)}
 // A light city-pop / lo-fi loop at 96 BPM: Fmaj7 - Em7 - Dm7 - Cmaj7 electric-piano chords, round bass, soft
 // drums and a pentatonic hook with echo. Notes are scheduled slightly ahead so the beat stays steady.
@@ -535,7 +633,7 @@ function music(){
 // leaderboard clock does not advance while paused); before or after a run it opens the same card as settings.
 // P also toggles pause; Escape is left alone (it exits full screen on CrazyGames). =====
 let paused=false,panel=null,hits=[],holdAt=0,heldLong=false,firstJumpT=-9;
-const BTN={x:W-26,y:30,r:17};
+const BTN={x:W-26,y:30,r:17},SBTN={x:46,y:H-50,r:28};
 function openPanel(mode){panel=mode;if(mode==='pause'){paused=true;release()}sfx('tick')}
 function closePanel(){panel=null;paused=false;last=performance.now();sfx('tick')}
 function autoPause(){if(st==='run'&&!paused)openPanel('pause')}
@@ -544,6 +642,7 @@ function canvasPoint(e){const r=c.getBoundingClientRect();return [(e.clientX-r.l
 function tapUI(p){
  if(panel){for(const h of hits)if(p[0]>=h.x&&p[0]<=h.x+h.w&&p[1]>=h.y&&p[1]<=h.y+h.h){h.fn();break}return true}
  if(Math.hypot(p[0]-BTN.x,p[1]-BTN.y)<BTN.r+8){openPanel(st==='run'?'pause':'settings');return true}
+ if(st==='run'&&Math.hypot(p[0]-SBTN.x,p[1]-SBTN.y)<SBTN.r+12){slide();return true}
  return false}
 function cornerButton(){
  g.beginPath();g.arc(BTN.x,BTN.y,BTN.r,0,7);g.fillStyle='rgba(31,58,64,.6)';g.fill();g.lineWidth=2;g.strokeStyle='rgba(247,239,217,.85)';g.stroke();
@@ -566,6 +665,15 @@ function drawPanel(){
  g.beginPath();g.roundRect?g.roundRect(120,334,160,50,14):g.rect(120,334,160,50);g.fillStyle='#4f9e9c';g.fill();
  g.font='900 21px '+FONT;g.textAlign='center';g.fillStyle='#fffaf0';g.fillText(panel==='pause'?'{{t:cat.msg.018}}':'{{t:cat.msg.019}}',W/2,366,150);
  hits.push({x:112,y:326,w:176,h:66,fn:closePanel})}
+// Slide button (bottom left) during a run; it pulses while a sign is coming up, and the first sign of the
+// session shows how to slide. Keyboard: Down arrow or S.
+function signAhead(){return cat.obs&&cat.obs.some(o=>o.kind==='sign'&&!o.hit&&o.x>CX-10&&o.x<CX+cat.v*1.1)}
+function slideButton(){if(st!=='run'||!cat.birds)return;const on=cat.slideT>0,ahead=signAhead(),p=reduceMotion?0:(tt*2)%1;
+ if(ahead){g.globalAlpha=1-p;g.beginPath();g.arc(SBTN.x,SBTN.y,SBTN.r+p*12,0,7);g.strokeStyle='#e8b45a';g.lineWidth=3;g.stroke();g.globalAlpha=1}
+ g.beginPath();g.arc(SBTN.x,SBTN.y,SBTN.r,0,7);g.fillStyle=on?'rgba(232,180,90,.85)':'rgba(31,58,64,.6)';g.fill();g.lineWidth=2;g.strokeStyle='rgba(247,239,217,.85)';g.stroke();
+ g.strokeStyle='#f7efd9';g.lineWidth=4;g.lineCap='round';g.lineJoin='round';g.beginPath();g.moveTo(SBTN.x-10,SBTN.y-7);g.lineTo(SBTN.x,SBTN.y+3);g.lineTo(SBTN.x+10,SBTN.y-7);g.moveTo(SBTN.x-10,SBTN.y+2);g.lineTo(SBTN.x,SBTN.y+12);g.lineTo(SBTN.x+10,SBTN.y+2);g.stroke();
+ if(ahead&&!seenKinds.has('sign'))tx('{{t:cat.msg.022}}',W/2+20,H-92,18,'#fff1c1')}
+function slide(){if(st!=='run'||paused||$('view-cat').hidden||document.hidden)return;if(catRules.input(cat,2)){catRank.record(2);sfx('slide')}}
 // After the first jump, a short reminder that holding the tap makes a higher jump (until the player tries it).
 function holdHint(){
  if(st!=='run'||heldLong||paused||tt-firstJumpT>6||tt<firstJumpT)return;
@@ -579,11 +687,11 @@ function start(){
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
  catRank.start(random=>{
-  catRandom=random||Math.random;cat=catRules.create(catRandom);
+  catRandom=random||Math.random;cat=catRules.create(catRandom,catRules.rulesVersion);lastFish=0;lastTrips=0;
   analytics=AN.start('cat',amount);catStake=amount;catBusy=true;save();renderAll();
   shake=0;earned=0;awarded=0;pops=[];fx=[];cityT=tt;wasOn=true;jumped=false;rec=false;st='run';last=performance.now();
   say('{{t:cat.msg.011}}');ui();c.focus();
- });
+ },ui,{rulesVersion:catRules.rulesVersion});
 }
 function down(){
  if(st!=='run'||paused||$('view-cat').hidden||document.hidden)return false;holdAt=tt;
@@ -594,7 +702,7 @@ $('ct-go').addEventListener('click',start);
 c.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;audioInit();if(tapUI(canvasPoint(e))){e.preventDefault();return}if(down()){e.preventDefault();c.focus()}else if(st!=='run')say(st==='over'?'{{t:cat.msg.012}}':'{{t:cat.msg.013}}')});
 ['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,release));
 c.addEventListener('contextmenu',e=>e.preventDefault());
-addEventListener('keydown',e=>{if($('view-cat').hidden||document.hidden||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(e.code==='KeyP'&&!e.repeat&&!['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName)){e.preventDefault();panel?closePanel():openPanel('pause');return}if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();if(!e.repeat)down()}});
+addEventListener('keydown',e=>{if($('view-cat').hidden||document.hidden||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(e.code==='KeyP'&&!e.repeat&&!['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName)){e.preventDefault();panel?closePanel():openPanel('pause');return}if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();if(!e.repeat)down()}else if(e.key==='ArrowDown'||e.code==='KeyS'){e.preventDefault();if(!e.repeat)slide()}});
 addEventListener('keyup',e=>{if(e.key===' '||e.key==='ArrowUp')release()});
 // Leaving the app, the tab or the game pauses the run.
 addEventListener('blur',()=>{release();autoPause();last=performance.now()});
