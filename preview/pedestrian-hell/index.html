@@ -391,7 +391,7 @@ button:disabled{opacity:.6}
         row+=h;
       }
       group.forEach(function(k){
-        if(k==='car')item(draw1('cr',CARS),2,Math.random()<.35?-.2:0);   /* off<0：往人行道壓過去 */
+        if(k==='car')item(draw1('cr',CARS),2,Math.random()<.35?-.08:0);   /* off<0：往人行道壓過去 */
         else if(k==='truck'){item('cones',1);item('truck_parked',2);}
         else if(k==='stall')item('stall_road',3);
         else if(Math.random()<.5)item('scooterstack',2);
@@ -758,7 +758,7 @@ button:disabled{opacity:.6}
     cars.forEach(function(v){
       var bottom=sy(v.y)+C-3,h=v.len*C;
       if(bottom<-C||bottom-h*1.3>H)return;
-      var two=v.len<1,mx=cx(v.lane+.5)+(two&&!calm?Math.sin(clk*7+v.y*.6)*C*.035:0);
+      var two=v.len<1,mx=cx(v.lane+.5);                       /* 車身固定走車道正中央，不左右擺 */
       var bounce=calm?0:Math.sin(clk*(two?34:19)+v.len*9)*(two?1.3:1);
       steam(mx+C*(two?.2:.3),bottom-h*.95,v.len,C*.07,'120,120,120');      /* 排氣在車尾（上方） */
       sprite(v.img,mx,bottom+bounce,R*(two?.76:v.img==='v_bus'?1.04:1),h*1.12);
