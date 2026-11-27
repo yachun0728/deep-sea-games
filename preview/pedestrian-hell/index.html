@@ -57,9 +57,12 @@ button:disabled{opacity:.6}
 
   /* ---------- 素材 ---------- */
   var NAMES=('pots moneytree bougain gas tyre bluepot blocker stools radish nopark dog dogup '+
-    'scooterside bathtub uncle quilt recycler diners carred cargrey scooterstack dinersv '+
+    'scooterside bathtub uncle quilt recycler diners carside_red carside_grey carside_van scooterstack dinersv '+
     'v_delivery v_auntie v_taxi v_truck v_bus v_garbage scooterfront scooterrear '+
-    'hero_idle hero_walk1 hero_walk2 hero_scared hero_happy nb_auntie nb_uncle shop facade').split(' ');
+    'hero_idle hero_walk1 hero_walk2 hero_scared hero_happy nb_auntie nb_uncle shop wall '+
+    's_pharmacy s_dumpling s_keys s_barber s_herbtea s_ribs s_moto s_buffet '+
+    's_breakfast s_hardware s_rice s_noodle s_ice s_boba s_cuts s_rent '+
+    'a_green a_orange a_stripe a_tin f_cage f_ac f_lamp f_vine').split(' ');
   var IMG={},waiting=NAMES.length,failed=0;
   NAMES.forEach(function(n){
     var im=new Image();
@@ -136,8 +139,8 @@ button:disabled{opacity:.6}
     return bags[key].pop();
   }
   var SINGLE=['pots','moneytree','bougain','gas','tyre','bluepot','blocker','stools','radish','nopark','scooterfront'];
-  var WIDE=['scooterside','bathtub','uncle','quilt','recycler','diners','scooterside'];
-  var TALL=['carred','cargrey','scooterstack','dinersv'];
+  var WIDE=['scooterside','bathtub','uncle','quilt','recycler','diners','scooterside','carside_red','carside_grey','carside_van'];  /* 汽車一律橫停 */
+  var TALL=['scooterstack','dinersv'];
 
   /* 先走出一條保證可通的路徑，再把其他騎樓格塞滿東西。
      「全擋」路段會把路徑推到馬路上，一定得下去走。 */
@@ -221,10 +224,74 @@ button:disabled{opacity:.6}
     }
   }
 
+  /* ---------- 招牌牆：每局用單件隨機拼，大小、位置、間距都不同 ---------- */
+  var ASPECT={s_pharmacy:2.08,s_dumpling:2.2,s_keys:3.14,s_barber:1.56,s_herbtea:2.59,s_ribs:2.14,s_moto:2.37,s_buffet:2.22,
+    s_breakfast:.33,s_hardware:.32,s_rice:.83,s_noodle:.37,s_ice:.33,s_boba:.4,s_cuts:.4,s_rent:.32,
+    a_green:.63,a_orange:.66,a_stripe:.61,a_tin:.6,f_cage:1.02,f_ac:.8,f_lamp:.93,f_vine:.82};
+  var TALLSIGN=['s_pharmacy','s_dumpling','s_keys','s_barber','s_herbtea','s_ribs','s_moto','s_buffet'];
+  var WIDESIGN=['s_breakfast','s_hardware','s_rice','s_noodle','s_ice','s_boba','s_cuts','s_rent'];
+  var AWNING=['a_green','a_orange','a_stripe','a_tin'],FITTING=['f_cage','f_ac','f_lamp','f_vine'];
+  var wallSigns=[],wallBack=[];
+  function rand(a,b){return a+Math.random()*(b-a);}
+  /* x、w 以招牌欄寬為 1；y 是底部所在的列數。招牌欄寬 ÷ 格寬固定為 0.22W ÷ 0.156W */
+  function buildFacade(){
+    wallSigns=[];wallBack=[];
+    var ratio=.22/.156,y=-7;
+    function piece(list,key,name,w,x,bottom){
+      var o={img:name,w:w,x:x,y:bottom,h:w*ASPECT[name]*ratio};list.push(o);return o;
+    }
+    function back(key,list,bottom,lo,hi){
+      var w=rand(lo,hi);piece(wallBack,key,draw1(key,list),w,rand(0,Math.max(0,1.06-w)),bottom);
+    }
+    while(y<GOAL+20){
+      var roll=Math.random(),top;
+      if(roll<.34){                               /* 兩支直招一高一低並排 */
+        var w1=rand(.46,.58),w2=rand(.38,Math.min(.52,1-w1));
+        var a=piece(wallSigns,'st',draw1('st',TALLSIGN),w1,rand(0,.04),y);
+        var b=piece(wallSigns,'st',draw1('st',TALLSIGN),w2,1-w2-rand(0,.03),y+rand(.25,1.1));
+        top=Math.max(a.y+a.h,b.y+b.h);
+      }else if(roll<.52){                         /* 單支直招，旁邊露出牆面設備 */
+        var w=rand(.52,.72),left=Math.random()<.5;
+        var o=piece(wallSigns,'st',draw1('st',TALLSIGN),w,left?rand(0,.08):1-w-rand(0,.05),y);
+        back('ft',FITTING,y+rand(-.2,1.2),.5,.8);
+        if(Math.random()<.7){var s2=rand(.84,1);piece(wallSigns,'sw',draw1('sw',WIDESIGN),s2,left?1.02-s2:0,o.y+o.h+rand(-.1,.1));}
+        top=o.y+o.h+(Math.random()<.5?.4:0);
+      }else{                                      /* 橫招，寬窄差很多 */
+        var ww=rand(.84,1.02),q=piece(wallSigns,'sw',draw1('sw',WIDESIGN),ww,rand(0,1.02-ww),y);
+        top=q.y+q.h;
+      }
+      if(Math.random()<.7)back('aw',AWNING,y-rand(.1,.7),.8,1.08);
+      y=top+rand(-.2,.04);
+      if(Math.random()<.2){                       /* 偶爾空一段，掛雨棚或鐵窗 */
+        var gap=rand(.5,1.1);
+        if(Math.random()<.55)back('aw',AWNING,y+rand(0,.4),.7,1.06);else back('ft',FITTING,y+rand(0,.3),.6,.98);
+        y+=gap;
+      }
+    }
+    function far(a,b){return b.y-a.y;}            /* 遠的先畫，近的蓋住遠的 */
+    wallSigns.sort(far);wallBack.sort(far);
+  }
+  function drawFacade(){
+    var wl=IMG.wall,fw=F+4,y;
+    if(wl&&wl.naturalWidth){
+      var wh=wl.naturalHeight*fw/wl.naturalWidth,off=((cam*C)%wh+wh)%wh;
+      for(y=off-wh;y<H;y+=wh)ctx.drawImage(wl,0,y,fw,wh+.5);
+    }
+    [wallBack,wallSigns].forEach(function(list,layer){
+      list.forEach(function(o){
+        var bottom=sy(o.y)+C,w=o.w*F,h=o.h*C,im=IMG[o.img];
+        if(bottom<0||bottom-h>H||!im||!im.naturalWidth)return;
+        if(layer){ctx.fillStyle='rgba(35,22,14,.24)';ctx.fillRect(o.x*F+5,bottom-h+h*.12,w-4,h*.93);}
+        ctx.drawImage(im,o.x*F,bottom-h,w,h);
+      });
+    });
+  }
+
   function reset(){
     t=0;over=false;queued=null;bump=0;cars=[];roadSteps=0;bags={};
     reversers=[];dogs=[];visitors=[];pending=[];bubbles=[];banner=null;
     rows=decorate(buildBlocks());
+    buildFacade();
     placeReverser(6,13);placeReverser(20,30);placeReverser(35,45);
     placeDog(5,16);placeDog(26,44);
     garbageAt=[between(11,18),between(32,40)];
@@ -421,12 +488,7 @@ button:disabled{opacity:.6}
         for(var s=0;s<6;s++)box(road-4,y+C*.15+s*C*.115,8,C*.115,0,s%2?'#222':'#efc22f');
       }
     }
-    /* 左側招牌牆（第六版裁下的長條，跟著街道捲動） */
-    var fc=IMG.facade;
-    if(fc&&fc.naturalWidth){
-      var fw=F+5,fh=fc.naturalHeight*fw/fc.naturalWidth,off=((cam*C)%fh+fh)%fh;
-      for(y=off-fh;y<H;y+=fh)ctx.drawImage(fc,0,y,fw,fh+.5);
-    }
+    drawFacade();
     var gy=sy(GOAL);
     ctx.fillStyle='rgba(255,224,50,.4)';ctx.fillRect(cx(0),gy,C*ARCADE,C);
 

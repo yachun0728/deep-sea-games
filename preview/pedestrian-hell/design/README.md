@@ -5,7 +5,7 @@
 
 | 檔案 | 用途 |
 | --- | --- |
-| `taiwan-v6.png` | 核准基準畫面；`art/facade.webp` 由它左側招牌牆裁下並接成上下循環 |
+| `taiwan-v6.png` | 核准基準畫面 |
 | `signs-compare-v1.png` | 招牌三款（熱鬧大字、直立側招、手寫鐵皮），使用者指定混搭 |
 | `sign-angle-guide.png` | 招牌立體角度底稿：伸出式招牌看得到正面與頂面 |
 | `sheet-small-v1.png` | 一格路障與黑狗（`art/` 單件素材原檔，以下同） |
@@ -13,5 +13,9 @@
 | `sheet-tall-v1.png` | 直向兩格路障（違停車、斜停機車、路邊攤） |
 | `sheet-vehicles-v1.png` | 車輛、垃圾車、倒車機車 |
 | `sheet-people-v1.png` | 主角姿勢、倒垃圾鄰居、珍奶攤 |
+| `sheet-signs-tall-v1.png`、`sheet-signs-wide-v1.png` | 單件招牌；遊戲每局隨機組合招牌牆（原本重複貼一張長圖，使用者回報太規律） |
+| `sheet-awnings-v1.png` | 雨棚、鐵窗、冷氣、燈籠等牆面零件 |
+| `sheet-wall-v1.png` | 招牌後方的牆面底圖 |
+| `sheet-cars-side-v1.png` | 橫停汽車；使用者指定汽車停在騎樓要橫停，`sheet-tall-v1.png` 內的直停車已停用 |
 
 招牌店名為遊戲虛構，正式上架前需再確認是否撞到真實店家。
