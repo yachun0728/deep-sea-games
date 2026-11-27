@@ -16,6 +16,6 @@
 | `sheet-signs-tall-v1.png`、`sheet-signs-wide-v1.png` | 單件招牌；遊戲每局隨機組合招牌牆（原本重複貼一張長圖，使用者回報太規律） |
 | `sheet-awnings-v1.png` | 雨棚、鐵窗、冷氣、燈籠等牆面零件 |
 | `sheet-wall-v1.png` | 招牌後方的牆面底圖 |
-| `sheet-cars-side-v1.png` | 橫停汽車；使用者指定汽車停在騎樓要橫停，`sheet-tall-v1.png` 內的直停車已停用 |
+| `sheet-cars-side-v1.png` | 橫停汽車；使用者指定汽車停在騎樓要橫停，停車規則：騎樓、人行道上橫停；路邊沿馬路直停（用 `sheet-tall-v1.png` 的紅車與灰車） |
 
 招牌店名為遊戲虛構，正式上架前需再確認是否撞到真實店家。
