@@ -41,5 +41,11 @@
     "concept": "自由撕紙、混色倒沙，傾斜與工具讓真實顆粒慢慢沾附的療癒沙畫。",
     "status": "graduated",
     "cover": "art/cover.webp"
+  },
+  {
+    "id": "pedestrian-hell",
+    "name": "行人地獄：我只是想買珍奶",
+    "concept": "騎樓被機車和攤販塞滿，只好繞到馬路上。滑動閃避，活著走到珍奶店。",
+    "status": "prototype"
   }
 ]

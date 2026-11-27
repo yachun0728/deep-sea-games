@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>行人地獄：我只是想買珍奶（骨架）</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#0b1d2a;color:#e8f4f8;overflow:hidden;overscroll-behavior:none;touch-action:none;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif}
+#app{position:relative;max-width:min(480px,58vh);height:100%;margin:0 auto;background:#10303f}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+#tag{position:absolute;top:calc(8px + env(safe-area-inset-top));left:8px;z-index:5;font-size:11px;padding:3px 8px;
+  border-radius:99px;background:#f7e33b;color:#1d1b1a;font-weight:800;letter-spacing:1px}
+#hud{text-shadow:0 1px 4px #000;position:absolute;top:calc(8px + env(safe-area-inset-top));right:10px;z-index:5;font-size:18px;font-weight:800}
+.screen{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;padding:24px;text-align:center;background:rgba(11,29,42,.9)}
+.screen.hide{display:none}
+.screen h1{font-size:28px}
+.screen p{font-size:15px;line-height:1.6;opacity:.85}
+button{font:inherit;font-weight:800;font-size:18px;padding:12px 32px;border:0;border-radius:12px;background:#f7e33b;color:#1d1b1a}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="tag">PROTOTYPE · 未上架</div>
+  <div id="hud">0</div>
+  <canvas id="cv"></canvas>
+  <div id="start" class="screen">
+    <h1>行人地獄<br><small style="font-size:20px">我只是想買珍奶</small></h1>
+    <p>騎樓被機車和攤販塞滿，只好繞到馬路上。滑動閃避，活著走到珍奶店。</p>
+    <p>👆 點一下：往前一步<br>👈👉 滑動：左右閃、往下滑後退<br>走上馬路時，看到上面的 <b>⚠ 警告</b>就先別去那一道</p>
+    <button id="go" type="button">開始</button>
+  </div>
+  <div id="end" class="screen hide">
+    <h1 id="endTitle">本局結束</h1>
+    <p id="result"></p>
+    <button id="again" type="button">再玩一次</button>
+  </div>
+</div>
+<script>
+/* 骨架：滑動移動（一個操作）、走到珍奶店（一個目標）、被車碰到（一個失敗條件）。
+   不讀寫平台點數、不送 GA4、不存 localStorage；上架時才依 games/ 流程接入。 */
+(function(){
+  var cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+  var hud=document.getElementById('hud');
+  var COLS=5,ARCADE=3,GOAL=50,HOP=.11;            /* 欄 0–2 騎樓，欄 3–4 馬路 */
+  var W=0,H=0,dpr=1,C=0,running=false,over=false,last=0,t=0;
+  var rows,P,cars,laneWait,queued,cam,bump,roadSteps;
+  var STUFF=[['機車','#59646e'],['盆栽','#3f7d45'],['鹽酥雞','#c4672f'],['招牌','#b8434e'],['鐵椅佔位','#7a6a9a'],['紙箱','#a98555'],['娃娃機','#d25c95']];
+  var QUIPS=['明明是騎樓，為什麼要走馬路？','你只是想買一杯珍奶。','靈魂先到珍奶店了。','騎樓是大家的，大家的機車的。','下次記得先看上面的警告。'];
+
+  function resize(){
+    dpr=Math.min(window.devicePixelRatio||1,2);
+    W=cv.clientWidth;H=cv.clientHeight;C=W/COLS;
+    cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    if(rows&&!running)draw();
+  }
+  window.addEventListener('resize',resize);
+
+  function pick(a){return a[Math.floor(Math.random()*a.length)];}
+  /* 先走出一條保證可通的路徑，再把其他騎樓格塞滿東西。
+     「全擋」路段會把路徑推到馬路上，一定得下去走。 */
+  function buildMap(){
+    var map=[],path=1,r=0;
+    function add(free,density){
+      var cells=[];
+      for(var c=0;c<COLS;c++)
+        cells[c]=(c<ARCADE&&free.indexOf(c)<0&&Math.random()<density)?pick(STUFF):null;
+      map.push(cells);r++;
+    }
+    function shift(to,density){            /* 在同一列橫移到 to */
+      var free=[],c;
+      for(c=Math.min(path,to);c<=Math.max(path,to);c++)free.push(c);
+      path=to;add(free,density);
+    }
+    for(;r<3;)add([0,1,2],0);
+    while(r<GOAL-2){
+      var n=2+Math.floor(Math.random()*3),i;
+      for(i=0;i<n&&r<GOAL-2;i++){
+        if(Math.random()<.55)shift(Math.floor(Math.random()*ARCADE),.7);else add([path],.7);
+      }
+      if(r<GOAL-6){
+        shift(2,.5);shift(3,1);
+        var len=2+Math.floor(Math.random()*3);
+        for(i=0;i<len;i++)add([],1);        /* 騎樓整段被占滿 */
+        shift(2,.4);
+      }
+    }
+    for(;r<=GOAL+12;)add([0,1,2],0);
+    return map;
+  }
+
+  function reset(){
+    t=0;over=false;queued=null;bump=0;cars=[];roadSteps=0;
+    rows=buildMap();
+    P={c:1,r:0,fc:1,fr:0,k:1,x:1,y:0};
+    laneWait={3:1.2,4:.4};cam=-2.6;updateHud();
+  }
+  function updateHud(){hud.textContent='珍奶店還有 '+Math.max(0,GOAL-P.r)+' 步';}
+  function viewRows(){return H/C;}
+
+  function spawnCar(lane){
+    var kinds=lane===3
+      ?[{n:'機車',len:.9,v:6.2,col:'#e8e1d0'},{n:'機車',len:.9,v:7,col:'#9fd0e8'},{n:'外送',len:.9,v:6.6,col:'#f28ab2'}]
+      :[{n:'汽車',len:1.7,v:5.2,col:'#d9d9de'},{n:'小黃',len:1.7,v:5.6,col:'#f2c230'},{n:'公車',len:3,v:4,col:'#4aa36b'}];
+    var k=pick(kinds);
+    /* 從畫面上緣外一秒的距離出發，讓玩家看得到警告 */
+    cars.push({lane:lane,y:cam+viewRows()+k.v*1.0,len:k.len,v:k.v,n:k.n,col:k.col});
+  }
+
+  function move(dc,dr){
+    if(!running||over)return;
+    if(P.k<1){queued=[dc,dr];return;}
+    var c=P.c+dc,r=P.r+dr;
+    if(c<0||c>=COLS||r<0||r>=rows.length||rows[r][c]){bump=.18;return;}
+    P.fc=P.c;P.fr=P.r;P.c=c;P.r=r;P.k=0;
+    if(c>=ARCADE&&dr>0)roadSteps++;
+    updateHud();
+  }
+
+  function update(dt){
+    t+=dt;if(bump>0)bump-=dt;
+    if(P.k<1){P.k=Math.min(1,P.k+dt/HOP);}
+    P.x=P.fc+(P.c-P.fc)*P.k;P.y=P.fr+(P.r-P.fr)*P.k;
+    var target=P.y-2.6;cam+=(target-cam)*Math.min(1,dt*10);
+    [3,4].forEach(function(l){
+      laneWait[l]-=dt;
+      if(laneWait[l]<=0){spawnCar(l);laneWait[l]=(l===3?1.9:2.1)+Math.random()*1.5;}
+    });
+    cars.forEach(function(v){v.y-=v.v*dt;});
+    cars=cars.filter(function(v){return v.y+v.len>cam-2;});
+    var lane=Math.round(P.x);
+    for(var i=0;i<cars.length;i++){
+      var v=cars[i];
+      if(v.lane===lane&&P.y+.75>v.y+.08&&P.y+.2<v.y+v.len-.08){finish(false);return;}
+    }
+    if(P.k>=1){
+      if(P.r>=GOAL){finish(true);return;}
+      if(queued){var q=queued;queued=null;move(q[0],q[1]);}
+    }
+  }
+
+  function sy(row){return H-(row-cam+1)*C;}        /* 該列格子的上緣 */
+  function box(x,y,w,h,rad,fill){
+    ctx.fillStyle=fill;ctx.beginPath();
+    if(ctx.roundRect)ctx.roundRect(x,y,w,h,rad);else ctx.rect(x,y,w,h);
+    ctx.fill();
+  }
+  function label(text,x,y,size,color){
+    ctx.fillStyle=color;ctx.font='800 '+size+'px -apple-system,"PingFang TC",sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,x,y);
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    var first=Math.floor(cam)-1,lastRow=Math.ceil(cam+viewRows())+1,r,c;
+    ctx.fillStyle='#b9a58c';ctx.fillRect(0,0,C*ARCADE,H);
+    ctx.fillStyle='#3b3f45';ctx.fillRect(C*ARCADE,0,C*2,H);
+    for(r=first;r<=lastRow;r++){
+      var y=sy(r);
+      ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=1;
+      for(c=0;c<ARCADE;c++)ctx.strokeRect(c*C,y,C,C);
+      ctx.fillStyle='rgba(255,255,255,.55)';ctx.fillRect(C*4-2,y+C*.2,4,C*.5);
+      ctx.fillStyle='#d8433b';ctx.fillRect(C*ARCADE,y,5,C+1);      /* 紅線 */
+      if(((r%4)+4)%4===0){box(C*ARCADE-7,y+C*.25,14,C*.5,3,'#6d5d4b');} /* 騎樓柱 */
+      if(!rows[r])continue;
+      for(c=0;c<ARCADE;c++){
+        var s=rows[r][c];if(!s)continue;
+        box(c*C+5,y+5,C-10,C-10,10,s[1]);
+        label(s[0],c*C+C/2,y+C/2,s[0].length>3?C*.17:C*.21,'#fff');
+      }
+    }
+    var gy=sy(GOAL);
+    box(4,gy-C*.9,C*ARCADE-8,C*.85,10,'#f7e33b');
+    label('🧋 珍奶店',C*1.5,gy-C*.48,C*.34,'#1d1b1a');
+    ctx.fillStyle='rgba(247,227,59,.35)';ctx.fillRect(0,gy,C*ARCADE,C);
+
+    cars.forEach(function(v){
+      var top=sy(v.y+v.len-1),h=v.len*C,x=v.lane*C+(v.len<1?C*.22:C*.1),w=v.len<1?C*.56:C*.8;
+      if(top+h<0||top>H)return;
+      box(x,top+3,w,h-6,v.len<1?14:12,v.col);
+      box(x+w*.15,top+h-C*.3,w*.7,C*.12,3,'#23303a');             /* 車頭朝下 */
+      label(v.n,x+w/2,top+h/2,C*.2,'#1d1b1a');
+    });
+    /* 警告：車還在畫面外 */
+    var edge=cam+viewRows()-.9,blink=Math.floor(t*8)%2===0;
+    cars.forEach(function(v){
+      if(v.y<=edge)return;
+      var wx=v.lane*C+C/2,wy=62;
+      box(wx-C*.36,wy,C*.72,34,9,blink?'#ff4d3d':'#ffd23d');
+      label('⚠ '+v.n,wx,wy+17,13,blink?'#fff':'#1d1b1a');
+    });
+
+    var px=(P.x+.5)*C+(bump>0?Math.sin(bump*90)*5:0),py=sy(P.y)+C/2;
+    var lift=P.k<1?Math.sin(P.k*Math.PI)*C*.18:0;
+    ctx.fillStyle='rgba(0,0,0,.28)';ctx.beginPath();ctx.ellipse(px,py+C*.27,C*.24,C*.1,0,0,7);ctx.fill();
+    box(px-C*.2,py-C*.08-lift,C*.4,C*.36,10,'#2f80c4');
+    ctx.fillStyle='#f5c9a2';ctx.beginPath();ctx.arc(px,py-C*.18-lift,C*.2,0,7);ctx.fill();
+    ctx.fillStyle='#1d1b1a';
+    if(over&&P.r<GOAL){
+      label('✕ ✕',px,py-C*.2,C*.14,'#1d1b1a');
+      label('👻',px+C*.2,py-C*.62,C*.38,'#fff');
+      label('嚇到！',Math.min(px,W-C*.7),py-C*1.05,C*.3,'#fff');
+    }else{
+      ctx.fillRect(px-C*.09,py-C*.21-lift,3,4);ctx.fillRect(px+C*.06,py-C*.21-lift,3,4);
+    }
+  }
+
+  var downX=0,downY=0,down=false;
+  cv.addEventListener('pointerdown',function(e){e.preventDefault();down=true;downX=e.clientX;downY=e.clientY;});
+  cv.addEventListener('pointermove',function(e){
+    if(!down)return;
+    var dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.max(Math.abs(dx),Math.abs(dy))<24)return;
+    down=false;                                    /* 滑超過門檻就立刻移動 */
+    if(Math.abs(dx)>Math.abs(dy))move(dx>0?1:-1,0);else move(0,dy<0?1:-1);
+  });
+  cv.addEventListener('pointerup',function(){if(down){down=false;move(0,1);}});   /* 點一下往前 */
+  cv.addEventListener('pointercancel',function(){down=false;});
+  var KEYS={ArrowUp:[0,1],KeyW:[0,1],ArrowDown:[0,-1],KeyS:[0,-1],ArrowLeft:[-1,0],KeyA:[-1,0],ArrowRight:[1,0],KeyD:[1,0]};
+  window.addEventListener('keydown',function(e){
+    var k=KEYS[e.code];if(!k||!running)return;
+    e.preventDefault();if(!e.repeat)move(k[0],k[1]);
+  });
+
+  function loop(now){
+    if(!running)return;
+    var dt=Math.max(0,Math.min((now-last)/1000,.05));last=now;
+    if(!over)update(dt);
+    draw();
+    if(running&&!over)requestAnimationFrame(loop);
+  }
+  function start(){
+    reset();running=true;last=performance.now();
+    document.getElementById('start').classList.add('hide');
+    document.getElementById('end').classList.add('hide');
+    document.getElementById('go').blur();document.getElementById('again').blur();
+    requestAnimationFrame(loop);
+  }
+  function finish(win){
+    over=true;draw();
+    document.getElementById('endTitle').textContent=win?'買到珍奶了！':'嚇到靈魂出竅！';
+    document.getElementById('result').textContent=win
+      ?'花了 '+t.toFixed(1)+' 秒，其中有 '+roadSteps+' 步被迫走在馬路上。'
+      :'走了 '+P.r+' / '+GOAL+' 步。'+pick(QUIPS);
+    setTimeout(function(){running=false;document.getElementById('end').classList.remove('hide');},win?350:900);
+  }
+  /* 切到背景時 requestAnimationFrame 會停，回來後重設時間即可接續 */
+  document.addEventListener('visibilitychange',function(){last=performance.now();down=false;queued=null;});
+  document.getElementById('go').addEventListener('click',start);
+  document.getElementById('again').addEventListener('click',start);
+  reset();resize();draw();
+})();
+</script>
+</body>
+</html>
