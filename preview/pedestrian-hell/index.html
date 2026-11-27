@@ -57,8 +57,8 @@ button:disabled{opacity:.6}
 
   /* ---------- 素材 ---------- */
   var NAMES=('pots moneytree bougain gas tyre bluepot blocker stools radish nopark dog dogup '+
-    'scooterside bathtub uncle quilt recycler diners carside_red carside_grey carside_van carred cargrey scooterstack dinersv '+
-    'v_delivery v_auntie v_taxi v_truck v_bus v_garbage scooterfront scooterrear '+
+    'scooterside bathtub uncle quilt recycler diners carside_red carside_grey carside_van carred cargrey scooterside_blue scooterside_grey hydrant transformer mailbox telecom tree noparksign scooterstack dinersv '+
+    'v_delivery v_auntie v_taxi v_truck v_bus v_garbage '+
     'hero_idle hero_walk1 hero_walk2 hero_scared hero_happy nb_auntie nb_uncle shop wall '+
     's_pharmacy s_dumpling s_keys s_barber s_herbtea s_ribs s_moto s_buffet '+
     's_breakfast s_hardware s_rice s_noodle s_ice s_boba s_cuts s_rent '+
@@ -138,9 +138,16 @@ button:disabled{opacity:.6}
     if(!bags[key]||!bags[key].length)bags[key]=list.slice().sort(function(){return Math.random()-.5;});
     return bags[key].pop();
   }
-  var SINGLE=['pots','moneytree','bougain','gas','tyre','bluepot','blocker','stools','radish','nopark','scooterfront'];
+  var SINGLE=['pots','moneytree','bougain','gas','tyre','bluepot','blocker','stools','nopark','scooter1'];
+  /* 路緣那一欄放台灣常見的街道設施；曬東西只放在靠店家的最左欄 */
+  var STREET=['hydrant','transformer','mailbox','telecom','tree','noparksign'];
+  var SIDESCOOTER=['scooterside','scooterside_blue','scooterside_grey'];
+  /* 停車方向：原圖車頭朝左，名稱結尾的 ~ 代表左右翻轉成朝右。
+     靠店面那一欄車頭朝店面（左），騎樓其他位置朝馬路（右），馬路上的車頭朝人行道（左） */
+  function facing(name,c){return c===0?name:name+'~';}
+  function sideScooter(c){return facing(draw1('sc',SIDESCOOTER),c);}
   var WIDE=['scooterside','bathtub','uncle','quilt','recycler','diners','scooterside','carside_red','carside_grey','carside_van'];  /* 汽車一律橫停 */
-  var TALL=['scooterstack','dinersv'];
+  var TALL=['scooterstack','scooterstack','dinersv'];
 
   /* 先走出一條保證可通的路徑，再把其他騎樓格塞滿東西。
      「全擋」路段會把路徑推到馬路上，一定得下去走。 */
@@ -182,9 +189,17 @@ button:disabled{opacity:.6}
       if(!blocks[r][c]||map[r][c])continue;
       var right=c+1<ARCADE&&blocks[r][c+1]&&!map[r][c+1];
       var up=r+1<blocks.length&&blocks[r+1][c]&&!map[r+1][c];
-      if(right&&Math.random()<.65)put(draw1('w',WIDE),c,r,2,1);
-      else if(up&&Math.random()<.55)put(draw1('t',TALL),c,r,1,2);
-      else put(draw1('s',SINGLE),c,r,1,1);
+      var img;
+      if(right&&Math.random()<.65){
+        img=c===0?draw1('w0',WIDE):draw1('w1',WIDE.filter(function(n){return n!=='quilt';}));
+        put(img==='scooterside'?sideScooter(c):img,c,r,2,1);
+      }else if(up&&Math.random()<.3){
+        img=draw1('t',TALL);put(img==='scooterstack'?facing(img,c):img,c,r,1,2);
+      }else if(c===ARCADE-1&&Math.random()<.6)put(draw1('k',STREET),c,r,1,1);
+      else{
+        img=c===0?draw1('s0',SINGLE.concat(['radish','radish'])):draw1('s',SINGLE);
+        put(img==='scooter1'?sideScooter(c):img,c,r,1,1);
+      }
     }
     return map;
   }
@@ -207,11 +222,11 @@ button:disabled{opacity:.6}
   }
   function placeReverser(lo,hi){
     for(var k=0;k<60;k++){
-      var r=between(lo,hi),c=between(0,ARCADE-1),it=rows[r][c];
-      if(rows[r-1][c]||(it&&(it.w>1||it.h>1||it.kind)))continue;
+      var r=between(lo,hi),c=between(1,ARCADE-1),it=rows[r][c];
+      if(rows[r][c-1]||(it&&(it.w>1||it.h>1||it.kind)))continue;
       if(!it&&!solvable(1,0,[[c,r]]))continue;
-      if(!solvable(1,0,[[c,r-1]],[[c,r]]))continue;
-      var s={img:'scooterrear',c:c,r:r,w:1,h:1,kind:'rev',state:'idle',time:0,dy:0};
+      if(!solvable(1,0,[[c-1,r]],[[c,r]]))continue;
+      var s={img:sideScooter(c),c:c,r:r,w:1,h:1,kind:'rev',state:'idle',time:0,dx:0};
       rows[r][c]=s;reversers.push(s);return;
     }
   }
@@ -295,14 +310,22 @@ button:disabled{opacity:.6}
       spots.push({r:r,score:Math.random()+(full?1:0)});
     }
     spots.sort(function(a,b){return b.score-a.score;});
+    var types=['car','stack','car','pair','stack','pair'],cars2=['carred','cargrey'];
     spots.forEach(function(sp){
       var r=sp.r;
-      if(parked.length>=5||parked.some(function(q){return Math.abs(q.r-r)<7;}))return;
+      if(parked.length>=6||parked.some(function(q){return Math.abs(q.r-r)<6;}))return;
       if(!solvable(1,0,[[ARCADE,r],[ARCADE,r+1]]))return;
-      var it={img:parked.length%2?'cargrey':'carred',c:ARCADE,r:r,w:1,h:2,kind:'parked'};
-      rows[r][ARCADE]=rows[r+1][ARCADE]=it;parked.push(it);
+      var type=types[parked.length];
+      function item(img,row,h){
+        var it={img:img,c:ARCADE,r:row,w:1,h:h,kind:'parked'},y;
+        for(y=0;y<h;y++)rows[row+y][ARCADE]=it;
+      }
+      if(type==='pair'){item(draw1('rs',SIDESCOOTER),r,1);item(draw1('rs',SIDESCOOTER),r+1,1);}
+      else item(type==='stack'?'scooterstack':cars2[parked.length%4?1:0],r,2);
+      parked.push({r:r,type:type});
     });
   }
+
   function reset(){
     t=0;over=false;queued=null;bump=0;cars=[];roadSteps=0;bags={};
     reversers=[];dogs=[];visitors=[];pending=[];bubbles=[];banner=null;parked=[];
@@ -341,12 +364,12 @@ button:disabled{opacity:.6}
       if(s.state==='idle'&&P.r<s.r&&P.r>=s.r-3){s.state='warn';s.time=1.3;sndReverse();say('嗶嗶～倒車',s.c,s.r,1.2);}
       else if(s.state==='warn'){
         s.time-=dt;if(s.time>0)return;
-        var tr=s.r-1;
-        if(playerAt(s.c,tr)){s.dy=1;moveItem(s,s.c,tr);s.state='moved';finish(false,'reverse');return;}
-        if(rows[tr][s.c]||!solvable(P.c,P.r,[[s.c,tr]],[[s.c,s.r]])){s.state='moved';return;}
-        s.dy=1;moveItem(s,s.c,tr);s.state='moved';
+        var tc=s.c-1;
+        if(playerAt(tc,s.r)){s.dx=1;moveItem(s,tc,s.r);s.state='moved';finish(false,'reverse');return;}
+        if(rows[s.r][tc]||!solvable(P.c,P.r,[[tc,s.r]],[[s.c,s.r]])){s.state='moved';return;}
+        s.dx=1;moveItem(s,tc,s.r);s.state='moved';
       }
-      if(s.dy>0)s.dy=Math.max(0,s.dy-dt*4);
+      if(s.dx>0)s.dx=Math.max(0,s.dx-dt*4);
     });
   }
   function moveItem(it,c,r){rows[it.r][it.c]=null;it.c=c;it.r=r;rows[r][c]=it;}
@@ -447,24 +470,26 @@ button:disabled{opacity:.6}
   function shadow(x,y,rx,ry){ctx.fillStyle='rgba(40,30,25,.26)';ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,7);ctx.fill();}
   /* 圖片底部對齊 bottom、水平置中，等比例縮進 maxW×maxH */
   function sprite(name,mid,bottom,maxW,maxH){
-    var im=IMG[name];if(!im||!im.naturalWidth)return;
+    var flip=name.charAt(name.length-1)==='~';
+    var im=IMG[flip?name.slice(0,-1):name];if(!im||!im.naturalWidth)return;
     var k=Math.min(maxW/im.naturalWidth,maxH/im.naturalHeight),w=im.naturalWidth*k,h=im.naturalHeight*k;
-    ctx.drawImage(im,mid-w/2,bottom-h,w,h);
+    if(!flip){ctx.drawImage(im,mid-w/2,bottom-h,w,h);return;}
+    ctx.save();ctx.translate(mid,0);ctx.scale(-1,1);ctx.drawImage(im,-w/2,bottom-h,w,h);ctx.restore();
   }
   function drawItem(it){
     var ox=0,oy=0;
     if(it.kind==='dog'&&it.slide>0){ox=it.ox*it.slide;oy=it.oy*it.slide;}
-    if(it.kind==='rev')oy=it.dy||0;
+    if(it.kind==='rev')ox=it.dx||0;
     var mid=cx(it.c+ox)+it.w*C/2,bottom=sy(it.r+oy)+C-3;
     var img=it.img;
-    if(it.kind==='rev'&&it.state!=='warn')img='scooterrear';
     if(it.kind!=='neighbor')shadow(mid,bottom-C*.07,it.w*C*.4,C*.12);
     if(it.h===2)sprite(img,mid,bottom,C*.98,C*1.98);
     else if(it.w===2)sprite(img,mid,bottom,C*1.92,C*1.18);
     else if(img==='dog')sprite(img,mid,bottom-C*.12,C*.98,C*.8);
+    else if(it.kind==='parked'||img.indexOf('scooterside')===0)sprite(img,mid,bottom-C*.05,C*1.14,C*1.1);
     else sprite(img,mid,bottom,C*(it.kind==='neighbor'?1:.9),C*(it.kind==='neighbor'?1.3:1.16));
     if(it.kind==='rev'&&it.state==='warn'&&Math.floor(t*7)%2===0){
-      ctx.fillStyle='rgba(255,40,30,.75)';ctx.beginPath();ctx.arc(mid,bottom-C*.52,C*.17,0,7);ctx.fill();
+      ctx.fillStyle='rgba(255,40,30,.75)';ctx.beginPath();ctx.arc(mid-C*.36,bottom-C*.42,C*.15,0,7);ctx.fill();
     }
     if(it.kind==='dog'&&it.state==='wake')label('！',mid+C*.25,bottom-C*1.05,C*.55,'#d9261c');
   }
@@ -510,7 +535,12 @@ button:disabled{opacity:.6}
     var gy=sy(GOAL);
     ctx.fillStyle='rgba(255,224,50,.4)';ctx.fillRect(cx(0),gy,C*ARCADE,C);
 
-    reversers.forEach(function(s){if(s.state==='warn')warnCell(s.c,s.r-1);});
+    parked.forEach(function(q){                        /* 路邊機車停在白線停車格裡 */
+      if(q.type==='car')return;
+      ctx.strokeStyle='rgba(244,240,228,.9)';ctx.lineWidth=3;
+      for(var i=0;i<2;i++)ctx.strokeRect(cx(ARCADE)+11,sy(q.r+i)+2,C-17,C-4);
+    });
+    reversers.forEach(function(s){if(s.state==='warn')warnCell(s.c-1,s.r);});
     pending.forEach(function(p){warnCell(p.c,p.r);});
 
     /* 由遠到近畫，近的蓋住遠的；主角插在自己那一列 */
