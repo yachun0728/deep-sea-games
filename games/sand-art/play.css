@@ -12,3 +12,5 @@
 #restick{display:flex;align-items:center;gap:5px;padding:0 10px}#restick svg{width:26px;height:26px;flex:none}#saveArt,#shareArt{background:#788a71;color:#fffaf0}#savedImage{display:block;width:100%;height:auto;max-height:48dvh;object-fit:contain;user-select:auto;-webkit-user-select:auto;-webkit-touch-callout:default}#savedImage:not([src]){display:none}#downloadArt{display:flex;align-items:center;justify-content:center;min-height:44px;margin-top:8px;border:1px solid #cfc4b0;border-radius:12px;color:inherit;text-decoration:none}#shareArt[hidden]{display:none}
 
 #downloadArt[hidden]{display:none}
+
+#saveDialog[open]{display:flex;flex-direction:column;gap:8px;padding:22px 20px max(28px,env(safe-area-inset-bottom));max-height:calc(100dvh - 40px);scroll-padding-bottom:28px}#saveDialog h2,#saveDialog p,#saveDialog button,#saveDialog a{flex-shrink:0;margin:0}#saveDialog h2{line-height:1.2}#saveDialog #savedImage{flex:0 1 auto;min-height:0;height:min(38dvh,360px);max-height:38dvh;margin:4px 0 8px}#saveStatus:empty{display:none}#saveDialog form{flex-shrink:0}#saveDialog #saveClose{background:transparent;border-color:transparent;color:#75664f}
