@@ -7,13 +7,13 @@
 - 網址：`#reaper`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「普通靈魂要接走，綠色通行證要放行。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：死神打工，`game_id` 為 `reaper`
-- 檔案：`games/reaper/card.html`、`games/reaper/cover.webp`、`games/reaper/game.js`、`games/reaper/icon.svg`、`games/reaper/view.html`；`game.js` 共 107 行、9.9 KB
+- 檔案：`games/reaper/card.html`、`games/reaper/cover.webp`、`games/reaper/game.js`、`games/reaper/icon.svg`、`games/reaper/leaderboard.webp`、`games/reaper/style.css`、`games/reaper/view.html`；`game.js` 共 175 行、12.3 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「21. Reaper Shift（reaper）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-reaper`、`rp-canvas`、`rp-level`、`rp-progress`、`rp-lives`、`rp-score`、`rp-best`、`rp-next`、`rp-difficulty`、`rp-amount`、`rp-go`、`rp-msg`、`rp-rank-status`、`rp-rank-retry`
+`view-reaper`、`rp-canvas`、`rp-go`、`rp-action-label`、`rp-rank-retry`、`rp-level`、`rp-progress`、`rp-lives`、`rp-score`、`rp-best`、`rp-next`、`rp-difficulty`、`rp-amount`、`rp-msg`、`rp-rank-status`
 
 ## 狀態與常數
 
@@ -23,7 +23,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rpBonusAt` L6、`rpNext` L7、`rpLevel` L8、`rpSay` L11、`rpRemember` L12、`rpUI` L13、`rpStart` L21、`rpAward` L32、`rpEvent` L38、`rpStep` L54、`rpSync` L63、`rpAct` L67、`rpGhost` L74、`rpDraw` L78、`rpLoop` L104
+`rpBonusAt` L6、`rpNext` L7、`rpLevel` L8、`rpSay` L11、`rpRemember` L12、`rpUI` L13、`rpStart` L22、`rpAward` L33、`rpEvent` L39、`rpStep` L55、`rpSync` L64、`rpAct` L68、`rpLoadArt` L79、`rpImage` L95、`rpSoul` L96、`rpDraw` L107、`rpLoop` L172
 
 ## 錢包與結算接點
 
@@ -31,19 +31,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L33 `rpAward`：`S.balance+=b;`
+- L34 `rpAward`：`S.balance+=b;`
 
 **餘額檢查**
-- L24 `rpStart`：`if(stake>S.balance){rpSay(LOW_MSG,'lose');`
+- L25 `rpStart`：`if(stake>S.balance){rpSay(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L28 `rpStart`：`RP.analytics=AN.start('reaper',stake);`
-- L34 `rpAward`：`AN.progress(RP.analytics,{step:n,score:RP.total,lives:RP.lives,bonus_points:b});`
-- L48 `rpEvent`：`AN.end(RP.analytics,RP.earned,RP.earned>0?'complete':'loss',{step:RP.good,score:RP.total});`
+- L29 `rpStart`：`RP.analytics=AN.start('reaper',stake);`
+- L35 `rpAward`：`AN.progress(RP.analytics,{step:n,score:RP.total,lives:RP.lives,bonus_points:b});`
+- L49 `rpEvent`：`AN.end(RP.analytics,RP.earned,RP.earned>0?'complete':'loss',{step:RP.good,score:RP.total});`
 
 - 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -53,7 +53,7 @@
 
 ## 平台共用相依
 
-- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`fx`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
+- 直接使用的共用名稱：`S`、`AN`、`renderAll`、`save`、`fmt`、`fx`、`ENTRY_FEE`、`LOW_MSG`、`reduceMotion`、`C`（共用作用域，定義見 `js/platform.js`、`games/crash/game.js`）
 - 共用檔沒有直接呼叫本遊戲的函式。
 - 平台已移除重設點數功能；沒有重設按鈕或點數重設處理器。
 

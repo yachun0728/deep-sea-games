@@ -1,13 +1,12 @@
   <section class="view" id="view-reaper" hidden>
-    <div class="console fs-game"><div class="reaper-stage"><canvas id="rp-canvas" width="400" height="560" tabindex="0" aria-label="{{t:reaper.view.24}}"></canvas></div><button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
+    <div class="console fs-game"><div class="reaper-stage"><canvas id="rp-canvas" width="400" height="523" tabindex="0" aria-label="{{t:reaper.view.24}}"></canvas><button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button><button class="go rp-action" id="rp-go" type="button" data-mode="bet"><span id="rp-action-label">{{t:reaper.view.13}}</span></button><button id="rp-rank-retry" type="button" hidden>{{t:reaper.view.15}}</button></div>
       <div class="side"><section class="panel" aria-label="{{t:reaper.view.25}}">
         <dl class="stats"><div><dt>{{t:reaper.view.01}}</dt><dd id="rp-level">{{t:reaper.view.02}}</dd></div><div><dt>{{t:reaper.view.03}}</dt><dd id="rp-progress">0 / 10</dd></div><div><dt>{{t:reaper.view.04}}</dt><dd id="rp-lives">3 / 3</dd></div></dl>
         <dl class="stats"><div><dt>{{t:reaper.view.05}}</dt><dd id="rp-score">{{t:reaper.view.06}}</dd></div><div><dt>{{t:reaper.view.07}}</dt><dd id="rp-best">{{t:reaper.view.06}}</dd></div><div><dt>{{t:reaper.view.08}}</dt><dd id="rp-next">{{t:reaper.view.09}}</dd></div></dl>
         <div class="reaper-legend"><span>{{t:reaper.view.10}}</span><span>{{t:reaper.view.11}}</span></div><p class="hint" id="rp-difficulty">{{t:reaper.view.12}}</p>
         <input id="rp-amount" type="hidden" value="0">
-        <button class="go" id="rp-go" type="button" data-mode="bet">{{t:reaper.view.13}}</button>
         <p class="msg" id="rp-msg" aria-live="polite">{{t:reaper.view.14}}</p>
-        <p id="rp-rank-status" role="status" hidden></p><button id="rp-rank-retry" type="button" hidden>{{t:reaper.view.15}}</button><p class="hint">{{t:reaper.view.16}} <kbd>{{t:reaper.view.17}}</kbd> {{t:reaper.view.18}}</p>
+        <p id="rp-rank-status" role="status" hidden></p><p class="hint">{{t:reaper.view.16}} <kbd>{{t:reaper.view.17}}</kbd> {{t:reaper.view.18}}</p>
       </section></div>
     </div>
     <details class="rules"><summary>{{t:reaper.view.19}}</summary><p>{{t:reaper.view.20}}</p><p>{{t:reaper.view.21}}</p><p>{{t:reaper.view.22}}</p><p>{{t:reaper.view.23}}</p></details>

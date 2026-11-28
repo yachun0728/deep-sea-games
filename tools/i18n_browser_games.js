@@ -20,6 +20,7 @@ try {
       return document.elementFromPoint(point[0],point[1])===button;
     }),'Tapping either corner of the game area starts Ocean Link');
   }
+  if(id==='reaper'){for(var artWait=0;button.disabled&&artWait<100;artWait++)await wait(50);assert(!button.disabled,'Reaper approved artwork loads before starting');}
   button.click();await wait();
   assert(balance()===before,id+': start has the correct entry fee');
   var charged=balance(),hash=location.hash;

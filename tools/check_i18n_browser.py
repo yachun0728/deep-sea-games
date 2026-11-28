@@ -17,11 +17,11 @@ import time
 
 ROOT = Path(__file__).resolve().parents[1]
 MONITOR = r'''<script>
-window.__untranslatedCanvas=[];
+window.__untranslatedCanvas=[];window.__untranslatedCanvasById={};
 ['fillText','strokeText'].forEach(function(method){
   var proto=CanvasRenderingContext2D.prototype,native=proto[method];
   proto[method]=function(text){
-    if(window.deepSeaI18n&&window.deepSeaI18n.getLanguage()==='en'&&/[\u3400-\u9fff]/.test(String(text))&&window.__untranslatedCanvas.length<30)window.__untranslatedCanvas.push(String(text));
+    if(window.deepSeaI18n&&window.deepSeaI18n.getLanguage()==='en'&&/[\u3400-\u9fff]/.test(String(text))&&window.__untranslatedCanvas.length<30){window.__untranslatedCanvas.push(String(text));(window.__untranslatedCanvasById[this.canvas.id]||=([])).push(String(text));}
     return native.apply(this,arguments);
   };
 });
@@ -138,7 +138,7 @@ def main():
     threading.Thread(target=server.serve_forever, daemon=True).start()
     with tempfile.TemporaryDirectory(prefix='deep-sea-i18n-') as temp:
         folder = Path(temp)
-        for suite, width, height in [('meow_link',390,844), ('meow_link',320,568), ('meow_link',430,760), ('meow_link',768,1024), ('meow_link',1366,900), ('meow_link',844,390), ('sand_art',390,844), ('sand_art',1366,900), ('sand_art',320,568), ('berry_trail',390,844), ('berry_trail',1366,900), ('berry_trail',844,390), ('outpost', 1366, 900), ('outpost', 390, 844), ('book_sort', 1366, 900), ('book_sort', 390, 844), ('book_sort', 844, 390), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('academy', 1366, 900), ('academy', 390, 844), ('core', 1366, 900), ('hans', 1366, 900), ('hans', 390, 844), ('games', 1366, 900), ('games', 390, 844),
+        for suite, width, height in [('reaper',390,844), ('reaper',320,568), ('reaper',430,760), ('reaper',768,1024), ('reaper',1366,900), ('reaper',844,390), ('meow_link',390,844), ('meow_link',320,568), ('meow_link',430,760), ('meow_link',768,1024), ('meow_link',1366,900), ('meow_link',844,390), ('sand_art',390,844), ('sand_art',1366,900), ('sand_art',320,568), ('berry_trail',390,844), ('berry_trail',1366,900), ('berry_trail',844,390), ('outpost', 1366, 900), ('outpost', 390, 844), ('book_sort', 1366, 900), ('book_sort', 390, 844), ('book_sort', 844, 390), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('academy', 1366, 900), ('academy', 390, 844), ('core', 1366, 900), ('hans', 1366, 900), ('hans', 390, 844), ('games', 1366, 900), ('games', 390, 844),
                                      ('campaign', 1366, 900), ('campaign', 390, 844), ('campaign', 320, 550),
                                      ('merge', 1366, 900), ('merge', 390, 844), ('merge', 320, 480),
                                      ('ocean_link', 1366, 900), ('ocean_link', 844, 390), ('frontier', 1366, 900), ('frontier', 390, 844), ('frontier', 844, 390)]:

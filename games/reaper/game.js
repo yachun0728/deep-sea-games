@@ -14,7 +14,8 @@
     var L=rpLevel(),nx=rpNext(RP.good);
     $('rp-level').textContent='第 '+L+' 班';$('rp-progress').textContent=(RP.good%RP_PER)+' / '+RP_PER;$('rp-lives').textContent=RP.lives+' / 3';$('rp-score').textContent=RP.total+' 位';$('rp-best').textContent=RP.best+' 位';
     $('rp-next').textContent=nx[0]+' 位 · +'+nx[1];$('rp-amount').disabled=RP.active;
-    $('rp-go').textContent=RP.phase==='run'?'{{t:reaper.msg.001}}':'{{t:reaper.msg.002}}';$('rp-go').disabled=reaperRank.busy()||RP.phase==='run'&&RP.cd>0;
+    $('rp-action-label').textContent=!rpArt.ready?(rpArt.failed?'{{t:reaper.skin.retry}}':'{{t:reaper.skin.loading}}'):RP.phase==='run'?'{{t:reaper.skin.swing}}':'{{t:reaper.msg.002}}';$('rp-go').disabled=(!rpArt.ready&&!rpArt.failed)||reaperRank.busy()||RP.phase==='run'&&RP.cd>0;
+    $('rp-go').setAttribute('aria-label',!rpArt.ready?(rpArt.failed?'{{t:reaper.skin.retry}}':'{{t:reaper.skin.loading}}'):RP.phase==='run'?'{{t:reaper.msg.001}}':'{{t:reaper.msg.002}}');
     $('rp-go').dataset.mode=RP.phase==='run'?'surface':'bet';
     $('rp-difficulty').textContent=L<4?'{{t:reaper.msg.003}}':L<7?'{{t:reaper.msg.004}}':'{{t:reaper.msg.005}}';
   }
@@ -65,42 +66,109 @@
     if(!$('view-reaper').hidden&&!document.hidden&&RP.focused)reaperRank.update(ms,()=>RP.phase==='run',rpStep);
   }
   function rpAct(){
+    if(!rpArt.ready){if(rpArt.failed)rpLoadArt();return;}
     if(RP.phase!=='run'){rpStart();return;}
     rpSync(performance.now());if(RP.phase!=='run'||RP.cd>0)return;
     reaperRank.record(0);RP.sw=.18;
     reaperRules.input(RP,0,event=>rpEvent(event,true));
     rpUI();
   }
-  function rpGhost(x,y,d,a,ha){
-    var g=reaperCtx;g.globalAlpha=a;g.fillStyle='#dfe9ff';g.beginPath();g.arc(x,y-10,16,Math.PI,0);g.lineTo(x+16,y+14);g.lineTo(x+8,y+8);g.lineTo(x,y+14);g.lineTo(x-8,y+8);g.lineTo(x-16,y+14);g.closePath();g.fill();g.fillStyle='#1b1630';g.beginPath();g.arc(x-6,y-12,3,0,Math.PI*2);g.arc(x+6,y-12,3,0,Math.PI*2);g.fill();
-    if(d&&ha>0){g.globalAlpha=a*ha;g.strokeStyle='#6cc58f';g.lineWidth=3;g.beginPath();g.ellipse(x,y-34,12,4,0,0,Math.PI*2);g.stroke();}g.globalAlpha=1;
+  /* Approved C artwork: original composition is 400 × 523, never stretched.
+     All coordinates below are presentation only; replay/rule coordinates stay 400 × 560. */
+  var rpArt={ready:false,failed:false,loading:false,images:{},attempt:0};
+  function rpLoadArt(){
+    if(rpArt.loading)return;
+    rpArt.loading=true;rpArt.failed=false;rpArt.ready=false;
+    var attempt=++rpArt.attempt;
+    var files={background:'background-v1',body:'components/reaper_body',scythe:'components/reaper_scythe',ghost:'components/reaper_ghost',permit:'components/reaper_permit'};
+    Promise.all(Object.keys(files).map(function(key){return new Promise(function(resolve,reject){
+      var im=new Image(),timer=setTimeout(function(){reject(new Error('art timeout'));},15000);
+      im.onload=function(){clearTimeout(timer);resolve([key,im]);};
+      im.onerror=function(){clearTimeout(timer);reject(new Error('art unavailable'));};
+      im.src='games/reaper/art/'+files[key]+'.webp';
+    });})).then(function(items){
+      if(attempt!==rpArt.attempt)return;
+      items.forEach(function(item){rpArt.images[item[0]]=item[1];});
+      rpArt.ready=true;rpArt.loading=false;rpUI();rpDraw();
+    }).catch(function(){if(attempt!==rpArt.attempt)return;rpArt.failed=true;rpArt.loading=false;rpUI();rpDraw();});
+  }
+  function rpImage(key,sx,sy,sw,sh,x,y,w,h){reaperCtx.drawImage(rpArt.images[key],sx,sy,sw,sh,x,y,w,h);}
+  function rpSoul(x,feet,permit,alpha,halo){
+    var g=reaperCtx;g.save();g.globalAlpha=alpha;
+    rpImage('ghost',109,111,294,389,x-29,feet-77,58,77);
+    if(permit&&halo>0){
+      g.globalAlpha=alpha*halo;
+      // Badge and halo share exactly the original fade rule, so neither leaks the memory challenge.
+      rpImage('permit',143,207,227,92,x-25,feet-95,50,20);
+      rpImage('permit',178,347,154,153,x-7,feet-50,19,19);
+    }
+    g.restore();
   }
   function rpDraw(){
-    var g=reaperCtx,W=400,H=560,ZX=200,ZW=RP.zone,BY=340;
-    g.save();g.translate(RP.shake>0?(Math.random()-.5)*12:0,0);g.fillStyle='#1b1630';g.fillRect(-20,0,W+40,H);g.fillStyle='#3a3550';g.fillRect(-20,BY-40,W+40,80);g.strokeStyle='#4b4566';g.lineWidth=3;
-    for(var k=-1;k<11;k++){var x=((RP.belt+k*40)%440)-20;g.beginPath();g.moveTo(x,BY-40);g.lineTo(x,BY+40);g.stroke();}
-    g.fillStyle='rgba(242,193,78,.14)';g.fillRect(ZX-ZW,BY-44,ZW*2,88);g.strokeStyle='#f2c14e';g.lineWidth=2;g.setLineDash([6,5]);g.strokeRect(ZX-ZW,BY-44,ZW*2,88);g.setLineDash([]);
-    RP.ghosts.forEach(function(o){var lv=rpLevel(),fade=lv<4?1:Math.max(0,Math.min(1,(ZX-(lv<7?35:90)-o.x)/80));rpGhost(o.x,BY-12,o.d,o.m?.35:1,fade);});
-    RP.fx.forEach(function(f){rpGhost(f.x,f.y,false,Math.max(0,1-f.t/.6),0);});
-    var hx=ZX+10,hy=240;g.fillStyle='#0e0a1a';g.beginPath();g.moveTo(ZX-34,hy+60);g.lineTo(ZX,hy-20);g.lineTo(ZX+34,hy+60);g.closePath();g.fill();g.beginPath();g.arc(ZX,hy-26,17,0,Math.PI*2);g.fill();g.fillStyle=RP.cd>0?'#7a6aa8':'#f2c14e';g.beginPath();g.arc(ZX-6,hy-26,3,0,Math.PI*2);g.arc(ZX+6,hy-26,3,0,Math.PI*2);g.fill();
-    var swing=RP.sw>0?1-RP.sw/.18:0,a=RP.sw>0?1.2-swing*1.6:1.2,ex=hx+Math.sin(a)*85,ey=hy+Math.cos(a)*85;g.strokeStyle='#8b7a5a';g.lineWidth=5;g.lineCap='round';g.beginPath();g.moveTo(hx,hy);g.lineTo(ex,ey);g.stroke();g.strokeStyle='#cfd6e6';g.lineWidth=6;g.beginPath();g.moveTo(ex-Math.cos(a)*8,ey+Math.sin(a)*8);g.lineTo(ex+Math.cos(a)*30,ey-Math.sin(a)*30);g.stroke();g.lineCap='butt';g.restore();
-    g.fillStyle='#e4f2f3';g.font='600 20px system-ui';g.textAlign='left';g.fillText('第 '+rpLevel()+' 班',16,32);g.textAlign='right';g.fillStyle='#a8a0c2';g.font='16px system-ui';g.fillText('已處理 '+RP.good+' 位',W-16,32);
-    for(var i=0;i<3;i++){g.beginPath();g.arc(24+i*26,58,8,0,Math.PI*2);if(i<RP.lives){g.fillStyle='#ff6f61';g.fill();}else{g.strokeStyle='#73596c';g.lineWidth=2;g.stroke();}}
-    g.fillStyle='#f2c14e';g.textAlign='right';g.fillText('已接走 '+RP.total+' 位 · 本局 +'+RP.earned+' 點',W-16,60);
-    if(RP.flash>0&&RP.phase==='run'){g.fillStyle='#ff8a80';g.textAlign='center';g.font='600 17px system-ui';g.fillText(RP.message,W/2,132,W-30);}
-    g.textAlign='center';g.fillStyle='#a8a0c2';g.font='13px system-ui';g.fillText('{{t:reaper.msg.010}}',W/2,458);g.fillText(RP.cd>0?'{{t:reaper.msg.011}}':'{{t:reaper.msg.012}}',W/2,486);
-    RP.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=210-(reduceMotion?0:Math.min(1,p.age*3)*22);g.textAlign='center';g.fillStyle='#f2c14e';g.font='700 38px system-ui';g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#e4f2f3';g.font='600 17px system-ui';g.fillText('處理 '+p.n+' 位里程碑',W/2,py+28);g.globalAlpha=1;});
-    if(RP.phase!=='run'){
-      g.fillStyle='rgba(14,10,26,.88)';g.fillRect(24,135,352,225);g.textAlign='center';g.fillStyle=RP.phase==='over'?'#ff8a80':'#e4f2f3';g.font='600 28px system-ui';g.fillText(RP.phase==='ready'?'{{t:reaper.msg.013}}':'{{t:reaper.msg.014}}',W/2,186,W-40);
-      g.font='15px system-ui';g.fillStyle='#b4acc9';g.fillText(RP.phase==='ready'?'{{t:reaper.msg.015}}':'處理了 '+RP.good+' 位靈魂 · 接走 '+RP.total+' 位',W/2,225,W-40);
-      g.fillStyle='#6cc58f';g.fillText('{{t:reaper.msg.016}}',W/2,261);g.fillStyle=RP.phase==='over'&&RP.earned>0?'#f2c14e':'#f2c14e';g.font='600 17px system-ui';g.fillText(RP.phase==='ready'?'{{t:reaper.msg.017}}':RP.earned>0?'{{t:reaper.msg.018}}'+RP.earned+' 點':'{{t:reaper.msg.019}}',W/2,312);
+    var g=reaperCtx,W=400,H=523;
+    var dpr=Math.min(2,window.devicePixelRatio||1),scale=Math.max(1,reaperCanvas.getBoundingClientRect().width/W)*dpr;
+    var bw=Math.round(W*scale),bh=Math.round(H*scale);
+    if(reaperCanvas.width!==bw||reaperCanvas.height!==bh){reaperCanvas.width=bw;reaperCanvas.height=bh;}
+    g.setTransform(reaperCanvas.width/W,0,0,reaperCanvas.height/H,0,0);
+    g.clearRect(0,0,W,H);
+    if(!rpArt.ready){
+      g.fillStyle='#f4dfb8';g.fillRect(0,0,W,H);g.fillStyle='#201d18';g.textAlign='center';g.font='700 18px system-ui';
+      g.fillText(rpArt.failed?'{{t:reaper.skin.failed}}':'{{t:reaper.skin.loading}}',200,260,360);return;
     }
+    g.drawImage(rpArt.images.background,0,0,W,H);
+    if(RP.phase==='run'&&!reduceMotion){
+      var offset=RP.belt%153;
+      for(var tile=-1;tile<4;tile++)rpImage('background',0,800,420,72,tile*153+offset,292,153,26.3);
+      rpImage('background',420,794,260,163,153,290,95,59.5);
+    }
+    var motion=reduceMotion?0:Math.sin(RP.belt/38)*.8;
+    var swing=RP.sw>0?Math.sin((1-RP.sw/.18)*Math.PI):0;
+    g.save();
+    // Shoulder, wrist and scythe remain original painted layers, not replacement primitives.
+    g.translate(208,251);g.rotate(reduceMotion?-swing*.18:-swing*2.1);
+    rpImage('scythe',76,48,360,452,0,-108,101,127);g.restore();
+    rpImage('body',81,0,350,500,109,156+motion,123,176);
+    // Show the original sample queue in standby; live souls use unchanged simulation x positions.
+    var souls=RP.phase==='ready'?[{x:24,d:false},{x:85,d:false},{x:290,d:true},{x:385,d:false}]:RP.ghosts;
+    souls.forEach(function(o){var lv=rpLevel(),fade=lv<4?1:Math.max(0,Math.min(1,(200-(lv<7?35:90)-o.x)/80));rpSoul(o.x,307,o.d,o.m?.35:1,fade);});
+    RP.fx.forEach(function(f){rpSoul(f.x,307-(328-f.y),false,Math.max(0,1-f.t/.6),0);});
+    // Foreground lip occludes the worker at the same depth as the approved tray.
+    var bg=rpArt.images.background;
+    g.drawImage(bg,0,bg.height*318/H,bg.width,bg.height*33/H,0,318,W,33);
+    // The tray remains painted gold; these fine boundary marks reflect the real shrinking hit zone.
+    if(RP.phase==='run'){
+      g.strokeStyle='#f3c04c';g.lineWidth=2;
+      [200-RP.zone,200+RP.zone].forEach(function(x){g.beginPath();g.moveTo(x,286);g.lineTo(x,312);g.stroke();});
+    }
+    g.fillStyle='#211e19';g.textBaseline='middle';g.textAlign='center';
+    g.font='900 17px Grandstander, system-ui';
+    g.fillText('{{t:reaper.skin.shift}} '+rpLevel(),220,25,78);
+    g.fillText('{{t:reaper.skin.score}} '+RP.total,333,25,96);
+    g.font='900 25px Georgia';
+    for(var i=0;i<3;i++){g.fillStyle=i<RP.lives?'#201d18':'#b9a887';g.fillText(i<RP.lives?'♥':'♡',88+i*25,25);}
+    // Reuse the painted ghost and permit in the bottom-left instruction card.
+    rpImage('ghost',109,111,294,389,15,382,28,37);
+    rpImage('ghost',109,111,294,389,15,434,28,37);
+    rpImage('permit',143,207,227,92,14,424,30,12);
+    g.font='900 15px Grandstander, system-ui';g.fillStyle='#201d18';g.textAlign='left';
+    g.fillText('{{t:reaper.skin.collect}}',50,396,70);g.fillText('{{t:reaper.skin.pass}}',50,450,70);
+    if(rpLevel()>=4&&RP.phase==='run'){g.textAlign='center';g.font='700 10.5px system-ui';g.strokeStyle='#f7e7c9';g.lineWidth=4;var memoryHint=rpLevel()<7?'{{t:reaper.msg.004}}':'{{t:reaper.msg.005}}';g.strokeText(memoryHint,200,510,360);g.fillText(memoryHint,200,510,360);}
+    if(RP.flash>0&&RP.phase==='run'){
+      g.fillStyle='#f7e7c9';g.fillRect(12,68,376,29);g.fillStyle='#201d18';g.textAlign='center';g.font='700 12px system-ui';g.fillText(RP.message,200,83,360);
+    }
+    RP.pops.forEach(function(p){g.save();g.globalAlpha=Math.max(0,1-p.age/2.2);g.textAlign='center';g.fillStyle='#201d18';g.font='900 30px Grandstander, system-ui';g.fillText('+'+p.b+' 點',200,113-(reduceMotion?0:Math.min(1,p.age*3)*12),330);g.restore();});
+    if(RP.phase==='over'){
+      g.fillStyle='#f7e7c9';g.strokeStyle='#201d18';g.lineWidth=3;g.beginPath();g.roundRect(45,102,310,60,12);g.fill();g.stroke();
+      g.textAlign='center';g.fillStyle='#201d18';g.font='900 20px system-ui';g.fillText('{{t:reaper.msg.014}}',200,121,282);
+      g.font='700 13px system-ui';g.fillText('處理了 '+RP.good+' 位靈魂 · 接走 '+RP.total+' 位',200,146,282);
+    }
+    g.textBaseline='alphabetic';
   }
   $('rp-go').addEventListener('click',rpAct);
   reaperCanvas.addEventListener('pointerdown',function(e){if(RP.phase!=='run')return;e.preventDefault();reaperCanvas.focus();rpAct();});
   document.addEventListener('keydown',function(e){if($('view-reaper').hidden||document.hidden||RP.phase!=='run'||e.code!=='Space'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;if(['INPUT','BUTTON','A','SUMMARY'].indexOf(e.target.tagName)>=0)return;e.preventDefault();rpAct();});
   window.addEventListener('blur',function(){RP.focused=false;RP.last=performance.now();});window.addEventListener('focus',function(){RP.focused=true;RP.last=performance.now();});
   document.addEventListener('visibilitychange',function(){RP.last=performance.now();});window.addEventListener('hashchange',function(){RP.last=performance.now();});
-  function rpLoop(now){rpSync(now);if(!$('view-reaper').hidden&&!document.hidden){rpUI();rpDraw();}requestAnimationFrame(rpLoop);}
+  function rpLoop(now){rpSync(now);if(!$('view-reaper').hidden&&!document.hidden){if(!rpArt.ready&&!rpArt.loading&&!rpArt.failed)rpLoadArt();rpUI();rpDraw();}requestAnimationFrame(rpLoop);}
   rpUI();rpDraw();requestAnimationFrame(rpLoop);
 

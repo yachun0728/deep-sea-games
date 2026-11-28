@@ -1,0 +1,23 @@
+/* Approved C: keep the actual 490:641 artwork intact, with no stretching or cropping. */
+#view-reaper{--fs-bg:#201d18;color:#201d18}
+#view-reaper:not([hidden]) .console.fs-game{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:100%;height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);margin:0;border:0;border-radius:0;background:#201d18;overflow:hidden;overscroll-behavior:none}
+html:has(#view-reaper:not([hidden])){overflow:hidden}
+#view-reaper:not([hidden]) .console.fs-game>.reaper-stage{position:relative;display:block;flex:none;container-type:inline-size;width:min(100%,calc((100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * 400 / 523));height:auto;aspect-ratio:400/523;border:0;border-radius:0;background:#f4dfb8;overflow:hidden}
+#view-reaper:not([hidden]) .console.fs-game .reaper-stage canvas{display:block;width:100%;height:100%;max-height:none;aspect-ratio:400/523;object-fit:contain;touch-action:manipulation;outline-offset:-4px}
+#view-reaper .console.fs-game .side,#view-reaper .console.fs-game .panel{display:contents}
+#view-reaper .console.fs-game .stats,#view-reaper .console.fs-game .reaper-legend,#view-reaper .console.fs-game .hint,#view-reaper .console.fs-game .msg,#view-reaper .console.fs-game #rp-rank-status{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip-path:inset(50%);white-space:nowrap}
+#view-reaper .console.fs-game .fs-exit{display:grid;place-items:center;position:absolute;z-index:4;top:1%;left:1.2%;width:13%;height:9%;min-width:44px;min-height:44px;padding:0;border:0;border-radius:12px;background:transparent;color:#201d18;font:900 clamp(23px,7cqw,40px) Georgia,serif;box-shadow:none}
+#view-reaper .console.fs-game #rp-go{position:absolute;z-index:4;left:35%;top:69.5%;bottom:auto;right:auto;transform:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;box-sizing:border-box;width:45%;height:25%;min-width:44px;min-height:44px;padding:0 0 6%;margin:0;border:0;border-radius:45%;background:transparent;box-shadow:none;color:#fff0d1;font:900 clamp(19px,8cqw,48px)/1.1 Grandstander,'Noto Sans TC',system-ui,sans-serif;text-align:center;touch-action:manipulation;cursor:pointer;text-shadow:1px 1px #201d18}
+#view-reaper .console.fs-game #rp-go[data-mode="bet"]{font-size:clamp(14px,4.8cqw,30px);padding-bottom:6%}
+#view-reaper .console.fs-game #rp-go:disabled{display:flex;opacity:1;cursor:wait;color:#cdbc9e}
+#view-reaper .console.fs-game #rp-go:active:not(:disabled){filter:brightness(1.2)}
+#view-reaper .console.fs-game :is(#rp-go,.fs-exit):focus-visible{outline:3px dashed #d69e28;outline-offset:-3px}
+#view-reaper>.rules{display:none}
+#view-reaper .console.fs-game #rp-rank-retry:not([hidden]){position:absolute;z-index:6;top:10%;bottom:auto;left:3%;transform:none;width:50%;min-height:44px;max-width:90%;font-size:12px;border:2px solid #201d18;background:#f7e7c9;color:#201d18}
+#view-reaper .console.fs-game .share-result:not([hidden]){position:absolute;z-index:5;top:10%;right:3%;bottom:auto;left:auto;transform:none;width:42%;min-width:44px;min-height:44px;padding:5px 10px;border:2px solid #201d18;border-radius:12px;background:#f7e7c9;color:#201d18;font-size:13px}
+@media(max-height:450px) and (orientation:landscape){#view-reaper .console.fs-game #rp-go{min-height:44px;padding-bottom:4%;font-size:17px}#view-reaper .console.fs-game #rp-go[data-mode="bet"]{font-size:12px;padding:0 4% 4% 0}}
+
+/* Anchor the live label below the painted scythe; never align anonymous flex text. */
+#view-reaper .console.fs-game #rp-go{padding:0}
+#view-reaper .console.fs-game #rp-go #rp-action-label{position:absolute;left:0;right:0;top:66%;transform:translateY(-50%);display:block;width:100%;padding:0;text-align:center;line-height:1.1}
+#view-reaper .console.fs-game #rp-go[data-mode="bet"]{padding:0}

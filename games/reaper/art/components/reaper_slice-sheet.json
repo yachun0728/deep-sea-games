@@ -1,0 +1,137 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "components-v1.png",
+  "grid": [
+    2,
+    2
+  ],
+  "canvas": {
+    "w": 512,
+    "h": 512
+  },
+  "baseline_y": 500.0,
+  "target_height": 480.0,
+  "scale": "sheet",
+  "fit": "contain",
+  "factor": 0.8130081300813008,
+  "factor_from": {
+    "rule": "fit",
+    "cell": "body"
+  },
+  "alpha_cleanup": "reaper_alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "body",
+      "file": "reaper_body.png",
+      "factor": 0.8130081300813008,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 431,
+          "h": 536
+        },
+        "canvas": {
+          "w": 350,
+          "h": 436
+        }
+      },
+      "box": {
+        "x": 81,
+        "y": 0,
+        "w": 350,
+        "h": 500
+      },
+      "anchor": [
+        256.0,
+        500.0
+      ],
+      "clipped_px": 0,
+      "parts": 4
+    },
+    {
+      "name": "scythe",
+      "file": "reaper_scythe.png",
+      "factor": 0.8130081300813008,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 443,
+          "h": 556
+        },
+        "canvas": {
+          "w": 360,
+          "h": 452
+        }
+      },
+      "box": {
+        "x": 76,
+        "y": 48,
+        "w": 360,
+        "h": 452
+      },
+      "anchor": [
+        256.0,
+        500.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "ghost",
+      "file": "reaper_ghost.png",
+      "factor": 0.8130081300813008,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 362,
+          "h": 479
+        },
+        "canvas": {
+          "w": 294,
+          "h": 389
+        }
+      },
+      "box": {
+        "x": 109,
+        "y": 111,
+        "w": 294,
+        "h": 389
+      },
+      "anchor": [
+        256.0,
+        500.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "permit",
+      "file": "reaper_permit.png",
+      "factor": 0.8130081300813008,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 168,
+          "h": 192
+        },
+        "canvas": {
+          "w": 137,
+          "h": 156
+        }
+      },
+      "box": {
+        "x": 143,
+        "y": 207,
+        "w": 227,
+        "h": 293
+      },
+      "anchor": [
+        256.093,
+        500.0
+      ],
+      "clipped_px": 0,
+      "parts": 2
+    }
+  ]
+}
