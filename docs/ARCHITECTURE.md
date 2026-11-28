@@ -413,3 +413,13 @@ Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsig
 ### Meow Link 計時排行榜
 
 三個難度 board 沿用 ranked_boards/game_leaderboard 模型及排序；每關開表、完成都受原 revision 及重試契約保護。Worker 保存累計毫秒及 runningSince，客戶端不能填報時間。全破十關才保存 score，不發中途 checkpoint。API 附加 elapsedMs/time，大廳及遊戲榜顯示時間。migration 0023 只新增難度名稱。舊通關數回合繼續驗證，舊榜從大廳隱藏。新最快時間鍵不改舊存檔；點數隱藏、錢包及 Analytics 維持原契約。
+
+### 三款像素接龍與通關時間榜（2026-11-28）
+
+人魚蜘蛛接龍保留 `mermaid` 路由、既有規則、錢包獎勵與舊存檔；新時間榜使用 `mermaid-time-1/2/4`。舊 `mermaid` 分數榜仍接受舊客戶端並保留歷史，從大廳 feed 隱藏。
+
+夜航經典接龍（`midnight-solitaire`，Klondike，一次翻一張）與星軌新接龍（`orbit-freecell`，FreeCell）使用原生 DOM view。`js/solitaire-controller.js` 建立各自的控制器，`shared/solitaire-rules.cjs` 是兩款與 Worker 共用的純規則，正式控制器與預覽版控制器分開實作。兩款免費、不扣款、不新增 BONUS；AN 使用各自 game ID，`elapsed_seconds` 供本機未驗證分享，排行榜不用此客戶端數字。
+
+`js/completion-time-leaderboard.js` 沿用訪客 API／憑證；`backend/src/services/completion-time-boards.mjs` 驗證伺服器種子重建的完整操作序列，只有合法終點才記錄。伺服器從發出種子開始計時，悔棋、說明及背景停留不暫停，兩小時到期。仍沿用 ranked_boards／game_leaderboard 與同分排序，內部 score = 7200000 − 毫秒，API 額外給 elapsedMs 與顯示時間，不改共用資料表。
+
+兩款新榜為 `midnight-solitaire-time`、`orbit-freecell-time`。`0024_game_names_solitaire_time.sql` 只新增／更新顯示名稱，不清除舊資料。部署依 migration → API Worker → 主站；回退時撤回前端接線與新增榜註冊，保留歷史與新 Key。原有 Analytics 有效遊玩時間仍排除背景，與排行榜的牆上時鐘是不同用途。

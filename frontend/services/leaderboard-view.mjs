@@ -58,3 +58,14 @@ for (const gameId of ['meow-link', 'frontier', 'rocket-chair', 'blaster', 'quack
     if (event.detail.gameId === gameId) refresh();
   });
 }
+
+// Mermaid's help panel always selects the currently chosen suit-count board.
+const mmPanel=document.getElementById('mm-board-list');
+if(mmPanel){
+ let generation=0;
+ async function load(){if(!mmPanel.open)return;const n=++generation,list=document.getElementById('mm-board-entries');list.textContent='';
+ try{const mode=document.getElementById('mm-stage').dataset.mode||'1';const result=await api.leaderboard('mermaid-time-'+mode,AbortSignal.timeout(10000));if(n!==generation)return;
+ if(!result.entries.length){const li=document.createElement('li');li.textContent='目前尚無排行榜紀錄。';list.append(li);}for(const entry of result.entries){const li=document.createElement('li');li.setAttribute('data-i18n-ignore','');li.textContent=(entry.displayName||'Guest')+' · '+entry.time;list.append(li);}
+ }catch{const li=document.createElement('li');li.textContent='目前無法載入排行榜。';list.append(li);}}
+ mmPanel.addEventListener('toggle',load);document.querySelectorAll('.mm-mode').forEach(b=>b.addEventListener('click',()=>{generation++;load();}));window.addEventListener('deep-sea-score-saved',load);
+}

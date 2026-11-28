@@ -1,3 +1,4 @@
+import solitaireTime from '../../../shared/solitaire-time.cjs';
 import meowRules from '../../../shared/meow-link-rules.cjs';
 import { LEADERBOARD_LIMIT } from '../../../shared/api.mjs';
 
@@ -37,7 +38,7 @@ export async function getLeaderboardFeed(db, lang) {
             activity.last_played_at AS lastPlayedAt
        FROM game_leaderboard AS scores JOIN players ON players.id = scores.player_id
        LEFT JOIN leaderboard_activity AS activity ON activity.game_id = scores.game_id
-      WHERE scores.game_id <> 'meow-link'
+      WHERE scores.game_id NOT IN ('meow-link','mermaid')
       ORDER BY activity.last_played_at DESC, scores.game_id, scores.score DESC,
                scores.recorded_at, scores.score_order, scores.player_id`,
   ).all();
@@ -54,6 +55,7 @@ export async function getLeaderboardFeed(db, lang) {
 }
 
 function timedEntry(gameId,entry) {
+  if(solitaireTime.IDS[gameId]){const elapsedMs=solitaireTime.LIMIT_MS-entry.score;return {...entry,elapsedMs,time:solitaireTime.format(elapsedMs)};}
   if(!/^meow-link-(easy|normal|hard)$/.test(gameId))return entry;
   const elapsedMs=meowRules.MEOW_TIME_LIMIT_MS-entry.score;
   return {...entry,elapsedMs,time:meowRules.formatMeowLinkTime(elapsedMs)};

@@ -15,7 +15,7 @@
     w.gtag('config',ID,{allow_google_signals:false,allow_ad_personalization_signals:false,debug_mode:debug});
     var tag=d.createElement('script');tag.async=true;tag.src='https://www.googletagmanager.com/gtag/js?id='+ID;d.head.appendChild(tag);
   }
-  var names={'meow-link':'貓咪連連看','pedestrian-hell':'行人地獄','sand-art':'沙沙時光','berry-trail':'莓果小蛇','top-doggo':'TOP DOGGO','cat-match':'貓貓三消',outpost:'深海前哨','market-desk':'收盤之前',academy:'百萬大學堂',frontier:'荒島遠征','ocean-link':'深海連連看',blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班','eat-smaller':'數字吞噬','mirror-twins':'鏡像雙子','shadow-relay':'影子接力','one-line-defense':'一筆畫守城',mermaid:'人魚接龍','book-sort':'貓咪疊書舖',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面','rocket-chair':'社畜要下班',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看',banquet:'最後的晚餐',tetris:'俄羅斯方塊','on-pitch':'不准跑調','quack-pond':'呱呱池塘','siege-architect':'萌獸破城隊'};
+  var names={'midnight-solitaire':'夜航經典接龍','orbit-freecell':'星軌新接龍','meow-link':'貓咪連連看','pedestrian-hell':'行人地獄','sand-art':'沙沙時光','berry-trail':'莓果小蛇','top-doggo':'TOP DOGGO','cat-match':'貓貓三消',outpost:'深海前哨','market-desk':'收盤之前',academy:'百萬大學堂',frontier:'荒島遠征','ocean-link':'深海連連看',blaster:'深海火線',crash:'壓潰深度',mines:'踩地雷',plinko:'落珠',merge:'養珠',dice:'測深',limbo:'探底',hilo:'漲退',keno:'挖金礦',wheel:'羅盤',tower:'浮升',crossing:'橫渡',dream:'時序修復',runner:'閃避跑酷',elevator:'插隊大師',sneak:'偷偷下班',fishing:'深海釣手',boba:'插珍奶',campaign:'宣傳車',cat:'屋頂貓貓',bird:'便便鳥大戰狼群',frog:'青蛙吃蟲',pudding:'布丁突圍','clock-out':'下班保衛戰',mosquito:'血壓上升',nap:'偷睡大師',breakout:'打磚塊','last-hair':'尊嚴保衛戰','pet-walk':'小灰出門','office-shoot':'拒絕加班','eat-smaller':'數字吞噬','mirror-twins':'鏡像雙子','shadow-relay':'影子接力','one-line-defense':'一筆畫守城',mermaid:'人魚接龍','book-sort':'貓咪疊書舖',reaper:'死神打工',skybuilder:'蓋樓大師',dive:'一口氣探險',mrt:'捷運搶位',pancake:'泡麵煎餅翻面','rocket-chair':'社畜要下班',carp:'鯉魚躍龍門',rider:'外送員大戰惡犬',boss:'胖老闆追人',thief:'偷水果的貓',baby:'寶寶逃洗澡',peek:'別看',banquet:'最後的晚餐',tetris:'俄羅斯方塊','on-pitch':'不准跑調','quack-pond':'呱呱池塘','siege-architect':'萌獸破城隊'};
   var rounds={},current='',seq=0,bucket=0,last=performance.now(),inputAt=last,visible=!d.hidden,focused=d.hasFocus?d.hasFocus():true,suspended=false;
   var tabToken=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
   function emit(event,game,params){
@@ -2673,6 +2673,58 @@ html:has(#view-office-shoot:not([hidden])){overflow:hidden}
 }
 
 html:has(#view-mermaid:not([hidden])){overflow:hidden}
+
+#view-mermaid .mm-titlebar h2{display:flex;flex-direction:column;gap:2px;font-size:clamp(16px,4.7vw,21px)}
+#view-mermaid .mm-titlebar h2 small{font:10px/1.1 monospace;letter-spacing:0;color:#d3e9ff;overflow:hidden;text-overflow:ellipsis}
+#view-mermaid .mm-menu summary{font:italic bold 26px Georgia,serif}
+#view-mermaid .mm-menu>div{width:min(330px,calc(100vw - 16px));max-height:calc(100dvh - 70px);overflow:auto}
+#view-mermaid .mm-menu h3{margin:0 0 8px;font-size:17px}
+#view-mermaid .mm-menu p{font-size:12px;line-height:1.5}
+#view-mermaid .stats dd{font-size:15px}
+#view-mermaid .stats>div:first-child{flex:1.5}
+#view-mermaid #mm-board-entries{padding-left:24px;font-size:12px}
+/* Approved pixel settings: native responsive UI over the original production backgrounds. */
+html:has(.view:not([hidden]) .sc-window){overflow:hidden}
+.sc-window{position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:1200;width:min(100%,470px);height:100dvh;max-height:1000px;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);overflow:hidden;box-sizing:border-box;border:3px ridge var(--sc-chrome,#d4b783);border-radius:0;background:var(--sc-bg,#25140e) var(--sc-scene) center/100% 100% no-repeat;color:#fff1d5;font:14px monospace;--sc-cw:42px;--sc-ch:60px;--sc-accent:#edc780;--sc-panel:#10213a;--sc-chrome:#d2b991;image-rendering:pixelated;isolation:isolate}
+.sc-titlebar{display:flex;align-items:center;gap:7px;height:48px;padding:2px 3px;border:2px outset var(--sc-chrome);background:var(--sc-panel)}
+.sc-titlebar h2{flex:1;min-width:0;margin:0;color:var(--sc-accent);font:bold clamp(17px,5vw,23px)/1.1 Georgia,serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0}
+.sc-titlebar a,.sc-titlebar button{display:grid;place-items:center;flex:none;width:44px;height:44px;margin:0;border:3px outset var(--sc-chrome);border-radius:0;background:var(--sc-panel);color:var(--sc-accent);text-decoration:none;font:bold 24px/1 Georgia,serif;cursor:pointer;padding:0;box-sizing:border-box}
+.sc-titlebar button{font-style:italic}.sc-type{height:25px;box-sizing:border-box;margin:0;padding:6px 8px 3px;background:#02091ccc;color:var(--sc-accent);font:11px/1 monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-hud{height:39px;padding:5px 8px;display:flex;gap:8px;align-items:center;justify-content:space-between;box-sizing:border-box;border-bottom:2px ridge var(--sc-chrome);background:var(--sc-panel);font:12px monospace;white-space:nowrap}
+.sc-hud time{font:bold 18px/1 monospace;font-variant-numeric:tabular-nums}.sc-hud b{font-weight:bold}
+.sc-message{position:absolute;top:113px;left:8px;right:8px;margin:0;color:var(--sc-accent);font:10px/1.2 monospace;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;pointer-events:none}
+.sc-rack{position:absolute;top:136px;left:8px;right:8px;display:grid;grid-template-columns:repeat(var(--sc-columns),1fr);gap:4px}
+.sc-rack-card{position:relative!important;inset:auto!important;width:100%!important;height:auto!important;aspect-ratio:5/7;min-width:0;border:1px solid var(--sc-accent);border-radius:3px;background:#050b2055;color:var(--sc-accent);font:24px Georgia;padding:0;cursor:pointer;box-sizing:border-box}
+.sc-rack-card small{position:absolute;right:-1px;bottom:-5px;padding:1px 4px;border:1px solid var(--sc-accent);background:var(--sc-panel);color:white;font:12px monospace}
+.sc-rack .sc-stock{background:#0b203c var(--sc-back) center/100% 100%;box-shadow:2px 2px var(--sc-chrome)}
+.sc-rack .sc-cell{border:2px dashed #65e6f2}.sc-rack .sc-foundation{border-color:#d2afe8}
+.sc-table{position:absolute;top:228px;left:8px;right:8px;height:calc(66% - 228px);min-height:120px;touch-action:none}
+.sc-empty{position:absolute;top:0;width:var(--sc-cw);height:var(--sc-ch);border:1px dashed #c4ab7d66;border-radius:3px;background:transparent;cursor:pointer}
+.sc-card{position:absolute;width:var(--sc-cw);height:var(--sc-ch);box-sizing:border-box;border:1px solid #15243b;border-radius:3px;background:#fff8e8;box-shadow:1px 2px #080e26;overflow:hidden;touch-action:none;cursor:grab;color:#111a2a;padding:0;text-align:left}
+.sc-card.red{color:#b02129}.sc-card.down{background:#0b2340 var(--sc-back) center/100% 100%;cursor:default;image-rendering:pixelated}
+.sc-rank{position:absolute;left:3%;top:1px;font:bold calc(var(--sc-cw)*.35)/1 Georgia,serif;letter-spacing:-1px;white-space:nowrap}
+.sc-suit{position:absolute;bottom:2%;left:0;right:0;text-align:center;font:bold calc(var(--sc-cw)*.63)/1 Georgia,serif}
+.sc-court{position:absolute;inset:27% 7% 3%;background:var(--sc-courts) 0 0/400% 300% no-repeat;image-rendering:pixelated}
+.sc-card.selected{outline:2px solid #fff000;outline-offset:1px}.sc-suggestion{outline:2px dashed #67efff;outline-offset:1px}
+.sc-ghost{pointer-events:none;z-index:1000;position:absolute;box-shadow:2px 4px #0008}
+.sc-controls{position:absolute;bottom:0;left:0;right:0;min-height:85px;box-sizing:border-box;padding:7px;background:var(--sc-panel);border:3px ridge var(--sc-chrome);display:flex;gap:7px;flex-wrap:wrap;align-content:flex-start}
+.sc-controls button{flex:1;min-width:0;min-height:44px;border:3px outset var(--sc-chrome);border-radius:0;background:var(--sc-panel);color:var(--sc-accent);font:bold 16px/1 Georgia,serif;padding:3px;cursor:pointer}
+.sc-controls button:active{border-style:inset}.sc-controls button:disabled{opacity:.45;cursor:default}.sc-controls small{flex:0 0 100%;text-align:center;color:var(--sc-accent);font:10px/18px monospace;letter-spacing:.8px}
+.sc-overlay{position:absolute;inset:48px 0 85px;z-index:100;display:grid;justify-items:center;align-items:start;padding:75px 12px 12px;background:#02081988;box-sizing:border-box}
+.sc-overlay[hidden]{display:none}.sc-dialog{width:100%;max-width:370px;box-sizing:border-box;padding:16px;background:var(--sc-panel);border:3px outset var(--sc-chrome);color:#fff1d6;max-height:100%;overflow:auto;box-shadow:3px 4px #080c22}
+.sc-dialog h3{margin:0 0 10px;color:var(--sc-accent);font:bold 23px/1.15 Georgia,serif}.sc-dialog p,.sc-dialog li{font:13px/1.6 monospace}.sc-dialog ol{margin:8px 0 12px;padding-left:22px}.sc-dialog button{display:block;width:100%;min-height:44px;margin-top:8px;border:3px outset var(--sc-chrome);border-radius:0;background:var(--sc-panel);color:var(--sc-accent);font:bold 15px Georgia,serif;cursor:pointer}
+.sc-diagram{margin:8px 0;background:#0005;border:1px inset var(--sc-chrome);padding:8px;text-align:center;font:bold 26px/1.3 Georgia,serif;color:#fff4d6}.sc-diagram em{color:#ff7e86;font-style:normal}
+.sc-help-rule{color:#b9d1ec!important;font-size:11px!important}.sc-dialog [id$="-rank-status"]{font-size:11px}.sc-dialog ol.sc-entries{font-size:12px;padding-left:22px}.sc-window [id$="-result"]{font-variant-numeric:tabular-nums}
+@media(max-height:650px){.sc-titlebar{height:45px}.sc-type{height:22px;padding-top:4px}.sc-hud{height:34px}.sc-message{top:101px;font-size:9px}.sc-rack{top:116px}.sc-table{top:193px;height:calc(72% - 193px)}.sc-controls{min-height:65px}.sc-controls small{display:none}.sc-overlay{bottom:65px;padding-top:25px}.sc-dialog{padding:10px}.sc-dialog h3{font-size:18px}.sc-dialog p,.sc-dialog li{font-size:11px;line-height:1.5}}
+@media(orientation:landscape) and (max-height:500px){.sc-window{width:min(100%,430px)}.sc-rack{top:108px;left:42px;right:42px}.sc-rack-card{aspect-ratio:1}.sc-table{top:160px;height:calc(100% - 234px);min-height:0}.sc-overlay{padding-top:5px}.sc-dialog p,.sc-dialog li{font-size:10px}.sc-diagram{font-size:18px}}
+/* Reserve a full line between HUD and stock/cells instead of overlapping their text. */
+.sc-titlebar{box-sizing:border-box;height:52px}
+.sc-message{top:120px}
+.sc-rack{top:140px}
+@media(max-height:650px){.sc-titlebar{height:45px}.sc-message{top:106px}.sc-rack{top:124px}}
+@media(orientation:landscape) and (max-height:500px){.sc-message{display:none}.sc-rack{top:108px}}
+#view-midnight-solitaire .sc-window{--sc-scene:url(games/midnight-solitaire/art/background.webp);--sc-back:url(games/midnight-solitaire/art/back.webp);--sc-courts:url(games/midnight-solitaire/art/courts.webp);}
+#view-orbit-freecell .sc-window{--sc-scene:url(games/orbit-freecell/art/background.webp);--sc-back:url(games/orbit-freecell/art/back.webp);--sc-courts:url(games/orbit-freecell/art/courts.webp);--sc-accent:#92efff;--sc-panel:#25204f;--sc-chrome:#aaa8c7;--sc-bg:#080d2d;}
 /* 貓咪疊書舖：樣式皆以 bs- 為前綴，飛行中的書本會附加在 body，所以不依賴祖先選擇器。 */
 .bs-stage{--bs-wall:#f6efe2;--bs-wall2:#ede3d0;--bs-wood:#c89d6c;--bs-wood2:#a87b4b;--bs-front:#d9aa73;--bs-front2:#c49158;--bs-inside:#93693d;--bs-back:#b88952;--bs-line:#785028;--bs-flap:#e3b884;--bs-tape:rgba(238,208,152,.92);--bs-stamp:#c84634;position:fixed;inset:0;z-index:120;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:10px;isolation:isolate;overflow:hidden;color:#4a3525;background:repeating-linear-gradient(90deg,var(--bs-wall) 0 48px,var(--bs-wall2) 48px 96px);padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}
 body:has(#view-book-sort:not([hidden])){overflow:hidden}
@@ -4541,7 +4593,7 @@ html.points-hidden [data-points-hidden] { display:none !important; }
     <a href="#cat" id="tab-cat">屋頂貓貓<small>Rooftop Cat</small></a>
     <a href="#bird" id="tab-bird">便便鳥大戰狼群<small>Poop Bird</small></a>
     <a href="#frog" id="tab-frog">青蛙吃蟲<small>Frog Snack</small></a>
-    <a href="#meow-link" id="tab-meow-link">貓咪連連看<small>Meow Link</small></a><a href="#ocean-link" id="tab-ocean-link">深海連連看<small>Ocean Link</small></a><a href="#pedestrian-hell" id="tab-pedestrian-hell">行人地獄<small>Just Want Boba</small></a><a href="#clock-out" id="tab-clock-out">下班保衛戰<small>Clock Out</small></a><a href="#peek" id="tab-peek">別看<small>Don’t Peek</small></a><a href="#pet-walk" id="tab-pet-walk">小灰出門<small>Pet Walkies</small></a><a href="#office-shoot" id="tab-office-shoot">拒絕加班<small>No Overtime!</small></a><a href="#eat-smaller" id="tab-eat-smaller">數字吞噬<small>Number Gulp</small></a><a href="#mirror-twins" id="tab-mirror-twins">鏡像雙子<small>Mirror Twins</small></a><a href="#shadow-relay" id="tab-shadow-relay">影子接力<small>Shadow Relay</small></a><a href="#one-line-defense" id="tab-one-line-defense">一筆畫守城<small>One-Line Defense</small></a><a href="#mermaid" id="tab-mermaid">人魚接龍<small>Mermaid Spider</small></a><a href="#sand-art" id="tab-sand-art">沙沙時光<small>Sand &amp; Chill</small></a><a href="#cat-match" id="tab-cat-match">貓貓三消<small>Cat Match</small></a><a href="#top-doggo" id="tab-top-doggo">TOP DOGGO<small>Paw City</small></a><a href="#book-sort" id="tab-book-sort">貓咪疊書舖<small>Cat Book Stack</small></a><a href="#berry-trail" id="tab-berry-trail">莓果小蛇<small>Berry Trail</small></a>
+    <a href="#meow-link" id="tab-meow-link">貓咪連連看<small>Meow Link</small></a><a href="#ocean-link" id="tab-ocean-link">深海連連看<small>Ocean Link</small></a><a href="#pedestrian-hell" id="tab-pedestrian-hell">行人地獄<small>Just Want Boba</small></a><a href="#clock-out" id="tab-clock-out">下班保衛戰<small>Clock Out</small></a><a href="#peek" id="tab-peek">別看<small>Don’t Peek</small></a><a href="#pet-walk" id="tab-pet-walk">小灰出門<small>Pet Walkies</small></a><a href="#office-shoot" id="tab-office-shoot">拒絕加班<small>No Overtime!</small></a><a href="#eat-smaller" id="tab-eat-smaller">數字吞噬<small>Number Gulp</small></a><a href="#mirror-twins" id="tab-mirror-twins">鏡像雙子<small>Mirror Twins</small></a><a href="#shadow-relay" id="tab-shadow-relay">影子接力<small>Shadow Relay</small></a><a href="#one-line-defense" id="tab-one-line-defense">一筆畫守城<small>One-Line Defense</small></a><a href="#midnight-solitaire" id="tab-midnight-solitaire">夜航經典接龍<small>Midnight Klondike</small></a><a href="#orbit-freecell" id="tab-orbit-freecell">星軌新接龍<small>Orbit FreeCell</small></a><a href="#mermaid" id="tab-mermaid">人魚蜘蛛接龍<small>Mermaid Spider</small></a><a href="#sand-art" id="tab-sand-art">沙沙時光<small>Sand &amp; Chill</small></a><a href="#cat-match" id="tab-cat-match">貓貓三消<small>Cat Match</small></a><a href="#top-doggo" id="tab-top-doggo">TOP DOGGO<small>Paw City</small></a><a href="#book-sort" id="tab-book-sort">貓咪疊書舖<small>Cat Book Stack</small></a><a href="#berry-trail" id="tab-berry-trail">莓果小蛇<small>Berry Trail</small></a>
     <a href="#tetris" id="tab-tetris">俄羅斯方塊<small>Block Drop</small></a><a href="#on-pitch" id="tab-on-pitch">不准跑調<small>Stay On Pitch</small></a><a href="#quack-pond" id="tab-quack-pond">呱呱池塘<small>Quack Pond</small></a><a href="#siege-architect" id="tab-siege-architect">萌獸破城隊<small>Critter Crashers</small></a><a href="#breakout" id="tab-breakout">打磚塊<small>Breakout</small></a>
     <a href="#nap" id="tab-nap">偷睡大師<small>Nap Master</small></a><a href="#pudding" id="tab-pudding">布丁突圍<small>Pudding Dash</small></a><a href="#mosquito" id="tab-mosquito">血壓上升<small>Midnight Mosquito</small></a><a href="#banquet" id="tab-banquet">最後的晚餐<small>The Last Banquet</small></a><a href="#last-hair" id="tab-last-hair">尊嚴保衛戰<small>The Last Hair</small></a>
     <a href="#market-desk" id="tab-market-desk">收盤之前<small>Closing Call</small></a>
@@ -4607,6 +4659,8 @@ html.points-hidden [data-points-hidden] { display:none !important; }
 <symbol id="icon-shadow-relay" viewBox="0 0 96 96"><circle cx="48" cy="50" r="38" fill="#f0b46a" stroke="#8a5a2e" stroke-width="4"/><circle cx="48" cy="42" r="22" fill="#fbdca6" opacity=".7"/><path d="M74 12v6" stroke="#1b1b2f" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="74" cy="28" rx="8" ry="10" fill="#e0452f" stroke="#1b1b2f" stroke-width="2.5"/><path d="M70 18h8M70 38h8" stroke="#1b1b2f" stroke-width="3" stroke-linecap="round"/><g fill="#1b1b2f" opacity=".35"><circle cx="30" cy="56" r="11"/><path d="M22 51l2-14 6 9zM32 46l6-9 2 14zM41 53l11 4-11 5z"/></g><g fill="#1b1b2f"><circle cx="52" cy="58" r="11"/><path d="M44 53l2-14 6 9zM54 48l6-9 2 14zM63 55l11 4-11 5z"/></g><circle cx="56" cy="55" r="2.6" fill="#ff6b6b"/><path d="M50 69l-5 12M28 67l-5 12" stroke="#1b1b2f" stroke-width="2.5" stroke-linecap="round"/></symbol>
 <symbol id="icon-one-line-defense" viewBox="0 0 96 96"><circle cx="48" cy="54" r="20" fill="#2f4a3a" stroke="#1b1b2f" stroke-width="3"/><circle cx="48" cy="54" r="14" fill="none" stroke="#bfe8a8" stroke-width="3"/><path d="M39 62V49h4v4h3v-6h4v6h3v-4h4v13z" fill="#bfe8a8" stroke="#1b1b2f" stroke-width="2" stroke-linejoin="round"/><path d="M14 36Q46 14 82 34" fill="none" stroke="#6be3f5" stroke-width="6" stroke-linecap="round"/><circle cx="82" cy="34" r="5" fill="#f5c26b" stroke="#1b1b2f" stroke-width="2.5"/><path d="M20 8l10 10M30 8 20 18M60 4l9 9M69 4l-9 9M8 76l9 9M17 76l-9 9M78 78l9 9M87 78l-9 9" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/></symbol>
 <symbol id="icon-mermaid" viewBox="0 0 96 96"><image href="games/mermaid/leaderboard.webp?v=retro-v1" width="96" height="96" preserveAspectRatio="xMidYMid slice"/></symbol>
+<symbol id="icon-midnight-solitaire" viewBox="0 0 96 96"><image href="games/midnight-solitaire/leaderboard.webp?v=1" width="96" height="96" preserveAspectRatio="xMidYMid slice"/></symbol>
+<symbol id="icon-orbit-freecell" viewBox="0 0 96 96"><image href="games/orbit-freecell/leaderboard.webp?v=1" width="96" height="96" preserveAspectRatio="xMidYMid slice"/></symbol>
 <symbol id="icon-book-sort" viewBox="0 0 96 96">
   <rect x="2" y="2" width="92" height="92" rx="19" fill="#204a43" stroke="#f1bb6d" stroke-width="3"/>
   <path d="M10 67V42a38 34 0 0 1 76 0v25z" fill="#fae2b7"/>
@@ -4663,14 +4717,14 @@ html.points-hidden [data-points-hidden] { display:none !important; }
 <symbol id="icon-baby" viewBox="0 0 96 96"><image width="96" height="96" href="./games/baby/leaderboard.webp"/></symbol>
 <symbol id="icon-pudding" viewBox="0 0 96 96"><image width="96" height="96" href="./games/pudding/leaderboard.webp"/></symbol>
 </defs></svg>
-    <aside class="lobby-sidebar" aria-label="遊戲選單"><div class="side-top"><a class="side-logo" href="#lobby" data-i18n-ignore aria-label="TICATICA GAMES"><img src="images/ticatica-logo.png?v=2" alt="" width="900" height="233" decoding="async"></a><button type="button" class="side-toggle" id="side-toggle" aria-expanded="true" aria-label="收合選單" title="收合選單"><i class="fa-solid fa-bars" aria-hidden="true"></i></button></div><a class="side-feature" href="#keno" title="每日挖礦"><i class="fa-solid fa-gem side-head-icon" aria-hidden="true"></i><span>每日挖礦</span><span class="side-feature-art" aria-hidden="true"></span></a><div class="side-section side-section-quick"><div class="side-head"><i class="fa-solid fa-fire side-head-icon" aria-hidden="true"></i><span>熱門遊戲</span><button type="button" class="side-random" id="side-random"><i class="fa-solid fa-shuffle" aria-hidden="true"></i>隨機</button></div><div class="side-quick"><a class="side-quick-item" href="#rocket-chair" aria-label="社畜要下班" title="社畜要下班"><img src="games/rocket-chair/cover.webp?v=084d76dc" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#eat-smaller" aria-label="數字吞噬" title="數字吞噬"><img src="games/eat-smaller/cover.webp?v=54f5022e" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#mirror-twins" aria-label="鏡像雙子" title="鏡像雙子"><img src="games/mirror-twins/cover.webp?v=268c863d" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#shadow-relay" aria-label="影子接力" title="影子接力"><img src="games/shadow-relay/cover.webp?v=1b1c5a28" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#ocean-link" aria-label="深海連連看" title="深海連連看"><img src="games/ocean-link/cover.webp?v=16f8e3e8" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#banquet" aria-label="最後的晚餐" title="最後的晚餐"><img src="games/banquet/cover.webp?v=c872f4ba" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#office-shoot" aria-label="拒絕加班" title="拒絕加班"><img src="games/office-shoot/cover.webp?v=7fce4824" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#mermaid" aria-label="人魚接龍" title="人魚接龍"><img src="games/mermaid/cover.webp?v=0b70a141" alt="" loading="lazy" decoding="async"></a></div></div><div class="side-section"><div class="side-head"><i class="fa-solid fa-bolt side-head-icon" aria-hidden="true"></i><span>遊戲分類</span></div><div class="lobby-filters side-filters" id="side-filters" role="group" aria-label="篩選遊戲類型"><button title="全部" type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button title="跑酷動作" type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button title="潛行偷閒" type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button title="時機操作" type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button title="益智策略" type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button title="經典小遊戲" type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button title="機率挑戰" type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div></div><div class="side-section"><div class="side-head"><i class="fa-solid fa-circle-info side-head-icon" aria-hidden="true"></i><span>其他資訊</span></div><nav class="side-links" aria-label="其他資訊"><a href="#member" title="會員中心"><i class="fa-solid fa-user" aria-hidden="true"></i><span>會員中心</span></a><a href="#keno" title="每日挖礦"><i class="fa-solid fa-gem" aria-hidden="true"></i><span>每日挖礦</span></a></nav></div></aside>
+    <aside class="lobby-sidebar" aria-label="遊戲選單"><div class="side-top"><a class="side-logo" href="#lobby" data-i18n-ignore aria-label="TICATICA GAMES"><img src="images/ticatica-logo.png?v=2" alt="" width="900" height="233" decoding="async"></a><button type="button" class="side-toggle" id="side-toggle" aria-expanded="true" aria-label="收合選單" title="收合選單"><i class="fa-solid fa-bars" aria-hidden="true"></i></button></div><a class="side-feature" href="#keno" title="每日挖礦"><i class="fa-solid fa-gem side-head-icon" aria-hidden="true"></i><span>每日挖礦</span><span class="side-feature-art" aria-hidden="true"></span></a><div class="side-section side-section-quick"><div class="side-head"><i class="fa-solid fa-fire side-head-icon" aria-hidden="true"></i><span>熱門遊戲</span><button type="button" class="side-random" id="side-random"><i class="fa-solid fa-shuffle" aria-hidden="true"></i>隨機</button></div><div class="side-quick"><a class="side-quick-item" href="#rocket-chair" aria-label="社畜要下班" title="社畜要下班"><img src="games/rocket-chair/cover.webp?v=084d76dc" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#eat-smaller" aria-label="數字吞噬" title="數字吞噬"><img src="games/eat-smaller/cover.webp?v=54f5022e" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#mirror-twins" aria-label="鏡像雙子" title="鏡像雙子"><img src="games/mirror-twins/cover.webp?v=268c863d" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#shadow-relay" aria-label="影子接力" title="影子接力"><img src="games/shadow-relay/cover.webp?v=1b1c5a28" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#ocean-link" aria-label="深海連連看" title="深海連連看"><img src="games/ocean-link/cover.webp?v=16f8e3e8" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#banquet" aria-label="最後的晚餐" title="最後的晚餐"><img src="games/banquet/cover.webp?v=c872f4ba" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#office-shoot" aria-label="拒絕加班" title="拒絕加班"><img src="games/office-shoot/cover.webp?v=7fce4824" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#mermaid" aria-label="人魚蜘蛛接龍" title="人魚蜘蛛接龍"><img src="games/mermaid/cover.webp?v=0b70a141" alt="" loading="lazy" decoding="async"></a></div></div><div class="side-section"><div class="side-head"><i class="fa-solid fa-bolt side-head-icon" aria-hidden="true"></i><span>遊戲分類</span></div><div class="lobby-filters side-filters" id="side-filters" role="group" aria-label="篩選遊戲類型"><button title="全部" type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button title="跑酷動作" type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button title="潛行偷閒" type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button title="時機操作" type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button title="益智策略" type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button title="經典小遊戲" type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button title="機率挑戰" type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div></div><div class="side-section"><div class="side-head"><i class="fa-solid fa-circle-info side-head-icon" aria-hidden="true"></i><span>其他資訊</span></div><nav class="side-links" aria-label="其他資訊"><a href="#member" title="會員中心"><i class="fa-solid fa-user" aria-hidden="true"></i><span>會員中心</span></a><a href="#keno" title="每日挖礦"><i class="fa-solid fa-gem" aria-hidden="true"></i><span>每日挖礦</span></a></nav></div></aside>
     <div class="lobby-banners"><div class="lobby-banner banner-welcome"><span class="banner-spark spark-a"></span><span class="banner-spark spark-b"></span><span class="banner-spark spark-c"></span><div class="banner-copy"><p class="lobby-eyebrow">TICATICA GAMES</p><h2>今天，想玩<br>哪一款？</h2><p class="lobby-intro">挑一款就開玩，同一個點數錢包。</p><button class="lobby-hero-link" id="lobby-explore" type="button">探索全部遊戲 <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button></div><svg class="banner-art" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-ocean-link"></use></svg></div><a class="lobby-banner banner-new" href="#rocket-chair"><span class="banner-spark spark-a"></span><span class="banner-spark spark-b"></span><span class="banner-spark spark-c"></span><div class="banner-copy"><p class="lobby-eyebrow">NEW GAME</p><h2>社畜要下班</h2><p class="lobby-intro">新遊戲上架，對著手機大吼衝破天花板。</p></div><svg class="banner-art" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-rocket-chair"></use></svg></a><a class="lobby-banner banner-free" href="#mines"><span class="banner-spark spark-a"></span><span class="banner-spark spark-b"></span><span class="banner-spark spark-c"></span><div class="banner-copy"><p class="lobby-eyebrow">FREE</p><h2>經典小遊戲</h2><p class="lobby-intro">踩地雷不限次數。</p></div><svg class="banner-art" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mines"></use></svg></a></div>
     <section class="daily-supply" aria-label="每日補給"><a class="game-card" href="#keno" data-art="icon" id="gold-float" title="每日挖礦" aria-describedby="gold-daily-status" data-game-category="daily" aria-label="每日挖金礦：每天 3 次，每次挖5格，最多獲得30點">
   <div class="gold-banner-art" aria-hidden="true"><svg viewBox="0 0 96 96" focusable="false"><use href="#icon-keno"></use></svg><span id="gold-free-badge">3</span></div>
   <div class="gold-banner-copy"><span class="game-card-category">每日補給</span><h3>每天挖點好運氣</h3><p class="game-card-en">Daily Gold Mine</p><p class="game-card-description">挖金礦拿點數，再去挑戰喜歡的小遊戲。</p><p id="gold-daily-status" aria-live="polite">每天 3 次 · 每次挖 5 格 · 每日最多 30 點</p><div class="game-card-footer"><span>不限次數</span><span>台灣時間午夜重置</span></div></div>
   <span class="gold-banner-cta" id="gold-daily-cta">挖一次 <span aria-hidden="true">↗</span></span>
 </a></section>
-    <section class="lobby-games" aria-labelledby="lobby-games-title"><div class="lobby-row-head" id="lobby-games"><h2 id="lobby-games-title"><i class="fa-solid fa-table-cells-large side-head-icon" aria-hidden="true"></i>遊戲 <span id="lobby-count">55 款遊戲</span></h2><button type="button" class="row-all" id="lobby-show-all">查看全部</button></div><div class="lobby-tabs-row"><div class="lobby-filters tab-filters" role="group" aria-label="遊戲分類"><button type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div><label class="top-search"><input id="lobby-search" type="search" placeholder="搜尋" aria-label="搜尋遊戲" autocomplete="off"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></label></div>
+    <section class="lobby-games" aria-labelledby="lobby-games-title"><div class="lobby-row-head" id="lobby-games"><h2 id="lobby-games-title"><i class="fa-solid fa-table-cells-large side-head-icon" aria-hidden="true"></i>遊戲 <span id="lobby-count">57 款遊戲</span></h2><button type="button" class="row-all" id="lobby-show-all">查看全部</button></div><div class="lobby-tabs-row"><div class="lobby-filters tab-filters" role="group" aria-label="遊戲分類"><button type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div><label class="top-search"><input id="lobby-search" type="search" placeholder="搜尋" aria-label="搜尋遊戲" autocomplete="off"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></label></div>
     <div class="lobby-grid"><a class="game-card" href="#pedestrian-hell" data-art="cover" style="--cover:url(games/pedestrian-hell/cover.webp?v=79de1fb0)" data-game-category="run" aria-label="遊玩行人地獄：閃過騎樓路霸和馬路車流，一杯接一杯買珍奶。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#icon-pedestrian-hell"></use></svg></div><h3>行人地獄</h3><p class="game-card-en">Just Want Boba</p><p class="game-card-description">騎樓被占滿，只好走馬路。看你能喝到幾杯珍奶！</p><div class="game-card-footer"><span>不限次數</span><span>喝到幾杯</span></div></a>
 <a class="game-card" href="#fishing" data-art="cover" style="--cover:url(games/fishing/cover.webp?v=ad98b91d)" data-game-category="timing" aria-label="遊玩深海釣手：按住收線、放開卸力，把大魚拉上岸。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-fishing"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-fishing"></use></svg></div><h3>深海釣手</h3><p class="game-card-en">Fishing</p><p class="game-card-description">按住收線、放開卸力，把大魚拉上岸。</p><div class="game-card-footer"><span>立即開玩</span><span>無盡挑戰</span></div></a><a class="game-card" href="#sand-art" data-art="cover" style="--cover:url(games/sand-art/cover.webp?v=60caa370)" data-game-category="puzzle" aria-label="遊玩沙沙時光：挑紙、倒沙，十八張沙畫，分成小朋友款和大人款。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 1056 1000" aria-hidden="true"><use href="#icon-sand-art"/></svg></div><h3>沙沙時光</h3><p class="game-card-en">Sand &amp; Chill</p><p class="game-card-description">挑開黃紙，自由混色，讓沙粒慢慢沾附成畫。</p><div class="game-card-footer"><span>不限次數</span><span>療癒手作</span></div></a>
 <a class="game-card" href="#meow-link" data-art="cover" style="--cover:url(games/meow-link/cover.webp?v=49285146)" data-game-category="retro" aria-label="遊玩貓咪連連看，配對貓咪與物品挑戰十關。">
@@ -4701,7 +4755,9 @@ html.points-hidden [data-points-hidden] { display:none !important; }
 <a class="game-card" href="#mirror-twins" data-art="cover" style="--cover:url(games/mirror-twins/cover.webp?v=268c863d)" data-game-category="puzzle" aria-label="遊玩鏡像雙子：同時操控兩位太空人，其中一位左右相反，一起走進傳送艙。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mirror-twins"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mirror-twins"></use></svg></div><h3>鏡像雙子</h3><p class="game-card-en">Mirror Twins</p><p class="game-card-description">同時操控兩位太空人，其中一位左右相反，一起走進傳送艙。</p><div class="game-card-footer"><span>立即開玩</span><span>10 關</span></div></a>
 <a class="game-card" href="#shadow-relay" data-art="cover" style="--cover:url(games/shadow-relay/cover.webp?v=1b1c5a28)" data-game-category="puzzle" aria-label="遊玩影子接力：影子會照你的路線重走，讓它點亮燈籠，別被它追上。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-shadow-relay"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-shadow-relay"></use></svg></div><h3>影子接力</h3><p class="game-card-en">Shadow Relay</p><p class="game-card-description">影子會照你的路線重走，讓它點亮燈籠，別被它追上。</p><div class="game-card-footer"><span>立即開玩</span><span>8 關</span></div></a>
 <a class="game-card" href="#one-line-defense" data-art="cover" style="--cover:url(games/one-line-defense/cover.webp?v=1cc9f71f)" data-game-category="timing" aria-label="遊玩一筆畫守城：只能畫一條線擋住湧向核心的敵人，線越長消失越快。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-one-line-defense"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-one-line-defense"></use></svg></div><h3>一筆畫守城</h3><p class="game-card-en">One-Line Defense</p><p class="game-card-description">只能畫一條線擋住湧向核心的敵人，線越長消失越快。</p><div class="game-card-footer"><span>立即開玩</span><span>最佳分數</span></div></a>
-<a class="game-card" href="#mermaid" data-art="cover" style="--cover:url(games/mermaid/cover.webp?v=0b70a141)" data-game-category="puzzle" aria-label="遊玩人魚接龍：牌背是美人魚的蜘蛛接龍，把牌排成 K 到 A 收成珍珠。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mermaid"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mermaid"></use></svg></div><h3>人魚接龍</h3><p class="game-card-en">Mermaid Spider</p><p class="game-card-description">牌背是美人魚的蜘蛛接龍，排滿 K 到 A 收成珍珠。</p><div class="game-card-footer"><span>立即開玩</span><span>策略接龍</span></div></a><a class="game-card" href="#book-sort" data-art="icon" data-game-category="puzzle" aria-label="遊玩貓咪疊書舖：把書依顏色整理進紙箱，集滿 5 本同色書自動封箱。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-book-sort"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-book-sort"></use></svg></div><h3>貓咪疊書舖</h3><p class="game-card-en">Cat Book Stack</p><p class="game-card-description">把書依顏色疊進紙箱，集滿 5 本同色自動封箱。</p><div class="game-card-footer"><span>不限次數</span><span>分類整理</span></div></a>
+<a class="game-card" href="#mermaid" data-art="cover" style="--cover:url(games/mermaid/cover.webp?v=0b70a141)" data-game-category="puzzle" aria-label="遊玩人魚蜘蛛接龍：同花色 K 到 A，收集八顆珍珠。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mermaid"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mermaid"></use></svg></div><h3>人魚蜘蛛接龍</h3><p class="game-card-en">Mermaid Spider</p><p class="game-card-description">十欄蜘蛛接龍，同花色 K→A 收成珍珠。</p><div class="game-card-footer"><span>立即開玩</span><span>策略接龍</span></div></a><a class="game-card" href="#midnight-solitaire" data-art="cover" style="--cover:url(games/midnight-solitaire/cover.webp?v=02440e53)" data-game-category="puzzle" aria-label="夜航經典接龍"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#icon-midnight-solitaire"/></svg></div><h3>夜航經典接龍</h3><p class="game-card-en">Midnight Klondike</p><p class="game-card-description">搭上夜航列車，紅黑交錯接牌，四種花色依序收 A→K。</p><div class="game-card-footer"><span>立即開玩</span><span>七欄經典接龍</span></div></a>
+<a class="game-card" href="#orbit-freecell" data-art="cover" style="--cover:url(games/orbit-freecell/cover.webp?v=69c254a0)" data-game-category="puzzle" aria-label="星軌新接龍"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#icon-orbit-freecell"/></svg></div><h3>星軌新接龍</h3><p class="game-card-en">Orbit FreeCell</p><p class="game-card-description">太空維修站裡，運用四個暫存格調度全明牌，四花色收 A→K。</p><div class="game-card-footer"><span>立即開玩</span><span>四格暫存新接龍</span></div></a>
+<a class="game-card" href="#book-sort" data-art="icon" data-game-category="puzzle" aria-label="遊玩貓咪疊書舖：把書依顏色整理進紙箱，集滿 5 本同色書自動封箱。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-book-sort"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-book-sort"></use></svg></div><h3>貓咪疊書舖</h3><p class="game-card-en">Cat Book Stack</p><p class="game-card-description">把書依顏色疊進紙箱，集滿 5 本同色自動封箱。</p><div class="game-card-footer"><span>不限次數</span><span>分類整理</span></div></a>
 <a class="game-card" href="#tetris" data-art="cover" style="--cover:url(games/tetris/cover.webp?v=ff760bda)" data-game-category="retro" aria-label="遊玩俄羅斯方塊：經典落塊消行，支援 SRS 旋轉、牆踢與暫存。"><div class="game-card-top"><span class="game-card-category">經典小遊戲</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-tetris"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-tetris"></use></svg></div><h3>俄羅斯方塊</h3><p class="game-card-en">Block Drop</p><p class="game-card-description">經典落塊消行，旋轉、牆踢與暫存都有。</p><div class="game-card-footer"><span>立即開玩</span><span>最高分</span></div></a>
 <a class="game-card" href="#on-pitch" data-art="cover" style="--cover:url(games/on-pitch/cover.webp?v=84cc4188)" data-game-category="timing" aria-label="遊玩不准跑調：用嗓音唱出牆上缺口的音，音準到了才能穿牆。"><div class="game-card-top"><span class="game-card-category">時機操作</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-on-pitch"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-on-pitch"></use></svg></div><h3>不准跑調</h3><p class="game-card-en">Stay On Pitch</p><p class="game-card-description">對著麥克風唱出缺口的音，音準對了才能穿牆。</p><div class="game-card-footer"><span>立即開玩</span><span>聲控挑戰</span></div></a>
 <a class="game-card" href="#siege-architect" data-art="cover" style="--cover:url(games/siege-architect/cover.webp?v=d7031c30)" data-game-category="puzzle" aria-label="遊玩萌獸破城隊：在時間軸上排好萌獸部隊的出發時間，利用每座塔的鎖定規則攻破城門。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-siege-architect"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-siege-architect"></use></svg></div><h3>萌獸破城隊</h3><p class="game-card-en">Critter Crashers</p><p class="game-card-description">在時間軸上排好萌獸部隊的出發時間，利用每座塔的鎖定規則攻破城門。</p><div class="game-card-footer"><span>立即開玩</span><span>20 關</span></div></a><a class="game-card" href="#quack-pond" data-art="cover" style="--cover:url(games/quack-pond/cover.webp?v=6682926c)" data-game-category="puzzle" aria-label="遊玩呱呱池塘：每行、每列、每個顏色區域各放一隻鴨子，而且不能相鄰。"><div class="game-card-top"><span class="game-card-category">益智策略</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-quack-pond"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-quack-pond"></use></svg></div><h3>呱呱池塘</h3><p class="game-card-en">Quack Pond</p><p class="game-card-description">每行、每列、每個顏色區域各放一隻鴨子，而且不能相鄰。</p><div class="game-card-footer"><span>立即開玩</span><span>200 關</span></div></a>
@@ -6029,21 +6085,39 @@ html.points-hidden [data-points-hidden] { display:none !important; }
 
 </defs></svg>
     <div class="console fs-game"><div class="mm-stage" id="mm-stage"><section class="panel mm-shell" aria-label="人魚接龍操作">
-      <header class="mm-titlebar"><button class="fs-exit" type="button" aria-label="退出遊戲">←</button><svg class="mm-title-shell" viewBox="0 0 24 24" aria-hidden="true"><use href="#mm-su0"/></svg><h2 lang="en">Mermaid Spider</h2><details class="mm-menu"><summary aria-label="玩法與點數">☰</summary><div><p>最高分 <strong id="mm-best">0 分</strong></p><button class="chip mm-quit" id="mm-quit" type="button" hidden>放棄本局</button><p id="mm-rank-status" role="status" hidden></p><button id="mm-rank-retry" type="button" hidden>重送排行榜成績</button></div></details></header>
-      <dl class="stats"><div><dt>分數</dt><dd id="mm-score">—</dd></div><div><dt>珍珠</dt><dd id="mm-pearls">0 / 8</dd></div></dl>
+      <header class="mm-titlebar"><button class="fs-exit" type="button" aria-label="退出遊戲">←</button><svg class="mm-title-shell" viewBox="0 0 24 24" aria-hidden="true"><use href="#mm-su0"/></svg><h2>人魚蜘蛛接龍<small>蜘蛛接龍 · 同花色 K→A</small></h2><details class="mm-menu"><summary aria-label="玩法與點數">i</summary><div><h3>玩法與點數</h3><p>10 欄、104 張：同花色 K→A 滿 13 張收成一顆珍珠。</p><p>可接在大一號的牌上；同花色連續牌才能一起搬，空欄可放任意牌。</p><p>每次發牌各欄加一張；集滿 8 顆珍珠才算通關。</p><p>只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。</p><p>分數 <strong id="mm-score">—</strong></p><details id="mm-board-list"><summary>最快通關排行榜</summary><ol id="mm-board-entries"></ol></details><p>舊版最高分 <strong id="mm-best" title="最高分">0 分</strong></p><button class="chip mm-quit" id="mm-quit" type="button" hidden>放棄本局</button><p id="mm-rank-status" role="status" hidden></p><button id="mm-rank-retry" type="button" hidden>重送排行榜成績</button></div></details></header>
+      <dl class="stats"><div><dt>用時</dt><dd id="mm-time">00:00.000</dd></div><div><dt>珍珠</dt><dd id="mm-pearls">0 / 8</dd></div></dl>
       <div class="mm-says"><p class="mm-bubble" id="mm-bubble">開始後發牌，把牌排成一整串收成珍珠。</p><span class="mm-info" id="mm-info"></span></div>
       <div class="mm-board" id="mm-board" aria-label="人魚接龍牌桌：把牌從大排到小，同花色排滿 K 到 A 就會收成珍珠"></div>
       <div class="mm-collection"><div class="mm-slots" id="mm-slots" role="img" aria-label="已收集的珍珠"><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span></div><button class="mm-stock" id="mm-stock" type="button" aria-label="發牌" title="發牌"><span class="mm-stock-count" id="mm-stock-count">5</span></button></div>
       <div class="mm-cover" id="mm-cover">
-        <div class="mm-cover-card"><div class="mm-hero-back" aria-hidden="true"></div><div class="mm-cover-copy"><h3 id="mm-cover-title">人魚接龍</h3><p id="mm-cover-text">把牌排成 K 到 A 的同花色序列，收集 8 顆珍珠。</p></div></div>
+        <div class="mm-cover-card"><div class="mm-hero-back" aria-hidden="true"></div><div class="mm-cover-copy"><h3 id="mm-cover-title">人魚蜘蛛接龍</h3><p id="mm-cover-text">把牌排成 K 到 A 的同花色序列，收集 8 顆珍珠。</p></div></div>
         <div class="mm-modes" role="group" aria-label="海域難度"><button type="button" class="mm-mode" data-diff="1" aria-pressed="true">淺灘<small>1 種花色</small></button><button type="button" class="mm-mode" data-diff="2" aria-pressed="false">珊瑚礁<small>2 種花色</small></button><button type="button" class="mm-mode" data-diff="4" aria-pressed="false">深海<small>4 種花色</small></button></div>
       </div>
 
-      <footer class="mm-controls"><button class="mm-tool" id="mm-undo" type="button"><b aria-hidden="true">↶</b><span>悔棋</span></button><button class="mm-tool" id="mm-hint" type="button" title="人魚指路"><b aria-hidden="true">☼</b><span>指路</span></button><button class="mm-tool" id="mm-deal" type="button"><b aria-hidden="true">▤</b><span>發牌</span></button><button class="go" id="mm-go" type="button" data-mode="bet">發牌</button><small lang="en">RETRO AQUARIUM</small></footer>
+      <footer class="mm-controls"><button class="mm-tool" id="mm-undo" type="button"><b aria-hidden="true">↶</b><span>悔棋</span></button><button class="mm-tool" id="mm-hint" type="button" title="人魚指路"><b aria-hidden="true">☼</b><span>指路</span></button><button class="mm-tool" id="mm-deal" type="button"><b aria-hidden="true">▤</b><span>發牌</span></button><button class="go" id="mm-go" type="button" data-mode="bet">發牌</button><small id="mm-ranking">RETRO AQUARIUM</small></footer>
       <p class="msg" id="mm-msg" aria-live="polite">開始後發牌：每收成一顆珍珠 BONUS +1 點。</p>
     </section></div></div>
     <details class="rules"><summary>玩法與點數</summary><p>牌桌有 10 列牌，共 104 張，牌背是美人魚。把牌放在比它大 1 的牌上面（不用同花色），同花色且由大到小連續的牌可以一起搬。把同一花色的 K 到 A 排滿 13 張，這一串會自動收成一顆珍珠。收集滿 8 顆珍珠就通關。牌堆點一下會在每一列各發一張，發牌前每一列都要有牌。</p><p>難度分三種：淺灘只有 1 種花色，珊瑚礁 2 種，深海 4 種。難度要在開始前選好，開始後不能更換。悔棋和指路不限次數，但每步（含悔棋）會讓分數少 1 分，每收成一顆珍珠加 100 分；分數只是顯示用，不直接換點數。</p><p>每收成一顆珍珠，BONUS +1 點當場入帳；珊瑚礁和深海通關時再加 2 點，只發一次。所以最多入帳：淺灘 8 點，珊瑚礁與深海 10 點，沒有任何下注或倍率。悔棋後再收同一顆珍珠不會重複發點。這是操作與推理的接龍遊戲。</p><p>放棄本局後，已入帳的點數會保留。重新整理會放棄本局，最高分依難度分別保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p><p>拖曳牌，或點一下牌再點目標列來移動。只有同花色、由大到小連續的牌能一起搬。點左上角的牌堆發牌，指路會告訴你一步好棋。</p></details>
 </section>
+<section class="view" id="view-midnight-solitaire" hidden><div class="sc-window" id="ks-window" style="--sc-columns:7">
+<header class="sc-titlebar"><a href="#lobby" aria-label="回遊戲大廳">←</a><h2>夜航經典接龍</h2><button id="ks-info" type="button" aria-label="玩法說明">i</button></header>
+<p class="sc-type">經典接龍 · 七欄紅黑交錯 · 有抽牌堆</p><div class="sc-hud"><time id="ks-time">00:00.000</time><span>步數 <b id="ks-moves">0</b></span><span>收牌 <b id="ks-home">0/52</b></span></div>
+<p class="sc-message" id="ks-message" role="status"></p><div class="sc-rack" id="ks-rack"></div><div class="sc-table" id="ks-table" aria-label="接龍牌桌"></div>
+<footer class="sc-controls"><button type="button" id="ks-undo">↶ 悔棋</button><button type="button" id="ks-hint">☼ 提示</button><button type="button" id="ks-restart">▤ 新牌局</button><small id="ks-ranking">MIDNIGHT KLONDIKE · NIGHT TRAIN</small></footer>
+<div class="sc-overlay" id="ks-cover"><section class="sc-dialog"><h3>夜航經典接龍</h3><p>Midnight Klondike</p><p id="ks-result">搭上夜航列車，紅黑交錯接牌，四種花色依序收 A→K。</p><div class="sc-diagram">K♠ <em>Q♥</em> J♣</div><p class="sc-help-rule">只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。</p><button id="ks-go" type="button">開始遊玩</button></section></div>
+<div class="sc-overlay" id="ks-help" hidden><section class="sc-dialog" role="dialog" aria-modal="true" aria-labelledby="ks-help-title"><h3 id="ks-help-title">玩法說明</h3><div class="sc-diagram">K♠ <em>Q♥</em> J♣</div><ol><li>七欄牌由大到小、紅黑交錯接牌：黑 K 接紅 Q，再接黑 J。</li><li>左上牌堆一次翻一張，可循環重翻；只有 K 能放入空欄。</li><li>右上四格各按花色從 A 收到 K，收齊 52 張才通關。</li></ol><p class="sc-help-rule">只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。</p><details id="ks-board-list"><summary>最快通關排行榜</summary><ol class="sc-entries" id="ks-entries"></ol></details><p id="ks-rank-status" role="status" hidden></p><button id="ks-rank-retry" type="button" hidden>重試排行榜</button><button id="ks-help-close" type="button">回到牌局</button></section></div>
+<div class="sc-overlay" id="ks-confirm" hidden><section class="sc-dialog" role="dialog" aria-modal="true" aria-label="新牌局"><h3>新牌局</h3><p>重發會結束目前這局，未通關時間不列入紀錄。</p><button id="ks-confirm-yes" type="button">新牌局</button><button id="ks-confirm-no" type="button">繼續這局</button></section></div>
+</div></section>
+<section class="view" id="view-orbit-freecell" hidden><div class="sc-window" id="fc-window" style="--sc-columns:8">
+<header class="sc-titlebar"><a href="#lobby" aria-label="回遊戲大廳">←</a><h2>星軌新接龍</h2><button id="fc-info" type="button" aria-label="玩法說明">i</button></header>
+<p class="sc-type">新接龍 · 八欄全明牌 · 四個暫存格</p><div class="sc-hud"><time id="fc-time">00:00.000</time><span>步數 <b id="fc-moves">0</b></span><span>收牌 <b id="fc-home">0/52</b></span></div>
+<p class="sc-message" id="fc-message" role="status"></p><div class="sc-rack" id="fc-rack"></div><div class="sc-table" id="fc-table" aria-label="接龍牌桌"></div>
+<footer class="sc-controls"><button type="button" id="fc-undo">↶ 悔棋</button><button type="button" id="fc-hint">☼ 提示</button><button type="button" id="fc-restart">▤ 新牌局</button><small id="fc-ranking">ORBIT FREECELL · ORBITAL STATION</small></footer>
+<div class="sc-overlay" id="fc-cover"><section class="sc-dialog"><h3>星軌新接龍</h3><p>Orbit FreeCell</p><p id="fc-result">太空維修站裡，運用四個暫存格調度全明牌，四花色收 A→K。</p><div class="sc-diagram">K♠ <em>Q♥</em> J♣</div><p class="sc-help-rule">只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。</p><button id="fc-go" type="button">開始遊玩</button></section></div>
+<div class="sc-overlay" id="fc-help" hidden><section class="sc-dialog" role="dialog" aria-modal="true" aria-labelledby="fc-help-title"><h3 id="fc-help-title">玩法說明</h3><div class="sc-diagram">□ □ □ □ &nbsp; + &nbsp; A→K</div><ol><li>八欄全明牌，由大到小、紅黑交錯接牌。</li><li>左上四個暫存格各放一張；空欄可放任意牌。</li><li>一疊能搬幾張取決於空暫存格與空欄；右上四格依花色收 A→K。</li></ol><p class="sc-help-rule">只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。</p><details id="fc-board-list"><summary>最快通關排行榜</summary><ol class="sc-entries" id="fc-entries"></ol></details><p id="fc-rank-status" role="status" hidden></p><button id="fc-rank-retry" type="button" hidden>重試排行榜</button><button id="fc-help-close" type="button">回到牌局</button></section></div>
+<div class="sc-overlay" id="fc-confirm" hidden><section class="sc-dialog" role="dialog" aria-modal="true" aria-label="新牌局"><h3>新牌局</h3><p>重發會結束目前這局，未通關時間不列入紀錄。</p><button id="fc-confirm-yes" type="button">新牌局</button><button id="fc-confirm-no" type="button">繼續這局</button></section></div>
+</div></section>
   <section class="view" id="view-book-sort" hidden>
     <div class="bs-stage" id="bs-stage">
       <header class="bs-toolbar">
@@ -9727,6 +9801,7 @@ html.points-hidden [data-points-hidden] { display:none !important; }
   "使用條款": "Terms of Use",
   "遊戲選單": "Game menu",
   "收合選單": "Collapse menu",
+  "人魚蜘蛛接龍": "Mermaid Spider",
   "篩選遊戲類型": "Filter game categories",
   "搜尋": "Search",
   "搜尋遊戲": "Search games",
@@ -12385,7 +12460,56 @@ html.points-hidden [data-points-hidden] { display:none !important; }
   "班次": "SHIFT",
   "接走數": "SCORE",
   "接走": "COLLECT",
-  "放行": "PASS"
+  "放行": "PASS",
+  "蜘蛛接龍 · 同花色 K→A": "SPIDER · Same-suit K→A",
+  "10 欄、104 張：同花色 K→A 滿 13 張收成一顆珍珠。": "10 columns, 104 cards: a same-suit K→A run becomes one pearl.",
+  "可接在大一號的牌上；同花色連續牌才能一起搬，空欄可放任意牌。": "Place cards on the next higher rank. Only same-suit runs move together; any card can fill an empty column.",
+  "每次發牌各欄加一張；集滿 8 顆珍珠才算通關。": "A deal adds one card per column. Collect all 8 pearls to complete the game.",
+  "遊玩人魚蜘蛛接龍：同花色 K 到 A，收集八顆珍珠。": "Play Mermaid Spider: build same-suit K-to-A runs and collect eight pearls.",
+  "十欄蜘蛛接龍，同花色 K→A 收成珍珠。": "Ten-column Spider: same-suit K→A runs become pearls.",
+  "夜航經典接龍": "Midnight Klondike",
+  "星軌新接龍": "Orbit FreeCell",
+  "經典接龍 · 七欄紅黑交錯 · 有抽牌堆": "KLONDIKE · 7 columns · Draw one",
+  "新接龍 · 八欄全明牌 · 四個暫存格": "FREECELL · 8 face-up columns · 4 free cells",
+  "搭上夜航列車，紅黑交錯接牌，四種花色依序收 A→K。": "Ride the night train: build down in alternating colors and home each suit from A→K.",
+  "太空維修站裡，運用四個暫存格調度全明牌，四花色收 A→K。": "Use four orbital docking cells to organize all face-up cards and home each suit from A→K.",
+  "七欄經典接龍": "Seven-column Klondike",
+  "四格暫存新接龍": "Four-cell FreeCell",
+  "七欄牌由大到小、紅黑交錯接牌：黑 K 接紅 Q，再接黑 J。": "Build seven columns down in alternating colors: black K, red Q, then black J.",
+  "左上牌堆一次翻一張，可循環重翻；只有 K 能放入空欄。": "Draw one card from the upper-left stock; redeals are unlimited. Only a King fills an empty column.",
+  "右上四格各按花色從 A 收到 K，收齊 52 張才通關。": "Build each of the four foundations from Ace to King by suit. Home all 52 cards to win.",
+  "八欄全明牌，由大到小、紅黑交錯接牌。": "All eight columns are face-up. Build down in alternating colors.",
+  "左上四個暫存格各放一張；空欄可放任意牌。": "Each of the four free cells holds one card. Any card can fill an empty column.",
+  "一疊能搬幾張取決於空暫存格與空欄；右上四格依花色收 A→K。": "Empty cells and columns limit how many cards can move together. Build each foundation from A→K by suit.",
+  "最快通關排行榜": "Fastest completion leaderboard",
+  "全部完成！通關時間：": "Completed! Finish time:",
+  "本局未通關，不列入時間榜。": "Incomplete rounds do not enter the time leaderboard.",
+  "只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。": "Only complete games rank; faster is better. Undo, help and background visits keep the clock running. Two-hour limit per round.",
+  "點選一張牌，再點要接上的牌或空格。": "Select a card, then tap its destination.",
+  "這裡不能放，請換一個位置。": "That move is not allowed. Try another destination.",
+  "目前沒有建議步，試試悔棋或新牌局。": "No suggestion. Try undo or a new deal.",
+  "試試翻一張牌。": "Try drawing a card.",
+  "四種花色全部完成！": "All four suits completed!",
+  "本局結束，未通關不列入時間榜。": "Round ended. Incomplete games do not rank.",
+  "開始遊玩": "Start game",
+  "重新發牌": "Deal again",
+  "重發會結束目前這局，未通關時間不列入紀錄。": "A new deal ends this round. Incomplete time is not recorded.",
+  "暗牌": "Face-down card",
+  "空欄": "Empty column",
+  "翻一張牌": "Draw one",
+  "已翻開的牌": "Waste pile",
+  "暫存格": "Free cell",
+  "收牌格": "Foundation",
+  "回遊戲大廳": "Back to lobby",
+  "收牌": "Home",
+  "接龍牌桌": "Solitaire tableau",
+  "新牌局": "New Deal",
+  "重試排行榜": "Retry leaderboard",
+  "回到牌局": "Back to game",
+  "繼續這局": "Keep playing",
+  "時間榜記錄中": "RANKED TIME RUN",
+  "練習局 · 不列入排行榜": "PRACTICE · NOT RANKED",
+  "舊版最高分": "Legacy best score"
 }</script>
 <script type="application/json" id="arcade-hans">{
  "chars": [
@@ -26505,6 +26629,57 @@ ui();render();requestAnimationFrame(frame);
   olSay('按「開始守城」或遊戲裡的「開始」開局。|Press “Start defense” or “Start” in the game.');
   olUI();
 
+/* Scores preserve the existing higher-is-better storage model; public views show elapsed time. */
+const solitaireTime=(()=>{
+ const LIMIT_MS=2*60*60*1000;
+ const IDS={'mermaid-time-1':{base:'mermaid',mode:1},'mermaid-time-2':{base:'mermaid',mode:2},'mermaid-time-4':{base:'mermaid',mode:4},'midnight-solitaire-time':{base:'midnight-solitaire',kind:'classic'},'orbit-freecell-time':{base:'orbit-freecell',kind:'freecell'}};
+ const format=ms=>Number.isFinite(ms)&&ms>=0?String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')+'.'+String(Math.floor(ms)%1000).padStart(3,'0'):'—';
+ return {LIMIT_MS,IDS,format};
+})();
+if(typeof module!=='undefined')module.exports=solitaireTime;
+  // Uses the existing guest API. Only a legal complete proof can create a public time record.
+  function completionTimeLeaderboard(boardId, ownerId, prefix, refresh) {
+    let round=null,pending=null,starting=false,sending=false,running=false,startMs=0,finalMs=0,inputs=[];
+    const id=()=>typeof boardId==='function'?boardId():boardId;
+    const clock=$(prefix+'-time'),indicator=$(prefix+'-ranking');
+    function markRanked(value){if(indicator)indicator.textContent=value?'時間榜記錄中':'練習局 · 不列入排行榜';}
+    function elapsed(){return running?Math.max(0,Date.now()-startMs):finalMs;}
+    function status(text,retry=false){$(prefix+'-rank-status').textContent=text;$(prefix+'-rank-status').hidden=!text;$(prefix+'-rank-retry').hidden=!retry;}
+    function paint(){if(round&&elapsed()>=solitaireTime.LIMIT_MS){round=null;markRanked(false);status('這一局可在本機遊玩。');}if(clock){const text=solitaireTime.format(elapsed());if(clock.textContent!==text)clock.textContent=text;}}
+    async function start(callback,cancel){
+      if(starting||sending)return;
+      starting=true;pending=null;inputs=[];round=null;status('正在準備訪客排行…');refresh();
+      const requestedId=id();
+      try{const api=await import('./frontend/services/api.mjs');round=await api.startBoardRound(requestedId,AbortSignal.timeout(4000),{rulesVersion:1});}catch{}
+      starting=false;
+      if($('view-'+ownerId).hidden){round=null;status('');refresh();cancel?.();return;}
+      startMs=Date.now();finalMs=0;running=true;
+      status(round?'本局將列入訪客排行。':'這一局可在本機遊玩。');
+      if(round)round.boardId=requestedId;markRanked(!!round);
+      callback(round?timedReplay.seeded(round.state.seed):null);paint();
+    }
+    function record(input){if(!running)return;inputs.push(input);if(inputs.length>4096){round=null;markRanked(false);status('這一局可在本機遊玩。');}}
+    async function send(){
+      if(!pending||sending)return;sending=true;status('正在驗證排行榜成績…');refresh();
+      try{
+        const api=await import('./frontend/services/api.mjs');
+        const next=await api.moveBoardRound(pending.token,pending.command,AbortSignal.timeout(10000));
+        if(next.revision!==pending.command.revision+1||!Number.isSafeInteger(next.state.elapsedMs)){const error=Error('not verified');error.retryable=false;throw error;}
+        finalMs=next.state.elapsedMs;paint();status('成績已送到排行榜。');
+        window.dispatchEvent(new CustomEvent('deep-sea-score-saved',{detail:{gameId:ownerId,boardId:pending.command.gameId}}));
+        pending=null;
+      }catch(error){if(error.retryable===false)pending=null;markRanked(false);status('排行榜成績未能送出。',!!pending);}
+      finally{sending=false;refresh();}
+    }
+    function finish(){
+      if(!running)return;finalMs=elapsed();running=false;paint();
+      if(!round){status('這一局可在本機遊玩。');return;}
+      pending={token:round.token,command:{gameId:round.boardId,id:round.id,revision:round.revision,action:inputs.slice()}};round=null;send();
+    }
+    function abandon(){if(running){finalMs=elapsed();running=false;paint();}round=null;inputs=[];}
+    $(prefix+'-rank-retry').addEventListener('click',send);
+    return {start,record,finish,abandon,busy:()=>starting||sending,update:()=>paint(),elapsed,formatted:()=>solitaireTime.format(elapsed())};
+  }
 const mermaidRules=(()=>{
 const MODES={1:{suits:[3]},2:{suits:[3,2]},4:{suits:[0,1,2,3]}};
 function shuffle(a,r){for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
@@ -26612,7 +26787,7 @@ const RANK=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 const {shuffle,createGame,snap,pushHistory,undo,flipTop,runStart,canDrop,completeRun,sweep,move,canDeal,deal,allMoves,chainLen,scoreMove,findHint}=mermaidRules;
 // ===== 畫面與點數 =====
 let rankLast=0;
-const rank=timedLeaderboard('mermaid','mm',mermaidRules.inputCount,ui);
+const rank=completionTimeLeaderboard(()=>'mermaid-time-'+mode,'mermaid','mm',ui);
 let G=null,st='idle',mode=1,analytics=null,earned=0,maxDone=0,bonusPaid=false,sel=null,hint=null,hintTimer=0,drag=null,lockUntil=0,quitArm=false,quitTimer=0,lastResult=null;
 const store={best:{},mode:1};
 try{const s=JSON.parse(localStorage.getItem(BEST_KEY)||'null');if(s&&typeof s==='object'){if(s.best&&typeof s.best==='object')store.best=s.best;if(MODES[s.mode])store.mode=Number(s.mode)}}catch(e){}
@@ -26703,11 +26878,12 @@ function ui(){
  stockBtn.disabled=!live||!G||!G.stock.length;setText('mm-stock-count',String(G?Math.ceil(G.stock.length/10):5));
  stockBtn.style.visibility=G&&!G.stock.length?'hidden':'';
  setText('mm-info',live&&G?G.score+' · '+G.moves:'');
+ stage.dataset.mode=mode;
  document.querySelectorAll('.mm-mode').forEach(b=>{b.setAttribute('aria-pressed',String(Number(b.dataset.diff)===mode));b.disabled=live});
  cover.hidden=live;
  if(st==='over'&&lastResult){setText('mm-cover-title',lastResult.win?'全部珍珠收集完成！':'本局結束');
-  setText('mm-cover-text',lastResult.win?'人魚為你唱歌。本局共入帳 '+earned+' 點。':'收集了 '+lastResult.done+' 顆珍珠，本局共入帳 '+earned+' 點。')}
- else{setText('mm-cover-title','人魚接龍');setText('mm-cover-text','把牌排成 K 到 A 的同花色序列，收集 8 顆珍珠。');
+  setText('mm-cover-text',lastResult.win?'全部完成！通關時間： '+rank.formatted():'本局未通關，不列入時間榜。')}
+ else{setText('mm-cover-title','人魚蜘蛛接龍');setText('mm-cover-text','把牌排成 K 到 A 的同花色序列，收集 8 顆珍珠。');
  }}
 function pay(n){
  earned+=n;S.balance+=n;save();renderAll();
@@ -26728,7 +26904,7 @@ function afterAction(newIds){
 function end(win){
  if(st!=='run')return;
  if(!win)rank.record(2);
- rank.finish(G.score,true);
+ if(win)rank.finish();else rank.abandon();
  const menu=stage.querySelector('.mm-menu');if(menu)menu.open=false;
  st='over';mmBusy=false;sel=null;clearHint();quitArm=false;clearTimeout(quitTimer);drag=null;
  const rec=G.done>0&&G.score>bestFor(mode);if(rec){store.best[mode]=G.score;saveStore()}
@@ -26839,6 +27015,186 @@ requestAnimationFrame(rankedClock);
 ui();layoutIdle();
 function layoutIdle(){metrics()}
   })();
+/* Deterministic Klondike (draw one) and FreeCell. Browser/Worker share this engine. */
+const solitaireRules=(()=>{
+const rank=c=>c%13+1,suit=c=>Math.floor(c/13),red=c=>[1,2].includes(suit(c));
+const INPUT_COUNT=14146;
+function create(kind='classic',random=Math.random){
+ if(!['classic','freecell'].includes(kind))throw Error('Unknown solitaire');
+ const deck=Array.from({length:52},(_,i)=>i);
+ for(let i=51;i>0;i--){const j=Math.floor(random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+ const s={kind,cols:[],hidden:[],stock:[],waste:[],cells:[null,null,null,null],found:[[],[],[],[]],moves:0,history:[],won:false};
+ if(kind==='classic'){for(let i=0;i<7;i++){s.cols.push(deck.splice(0,i+1));s.hidden.push(i);}s.stock=deck;}
+ else{for(let i=0;i<8;i++){s.cols.push([]);s.hidden.push(0);}deck.forEach((c,i)=>s.cols[i%8].push(c));}
+ return s;
+}
+function snapshot(s){const {history,...rest}=s;return JSON.parse(JSON.stringify(rest));}
+function remember(s){s.history.push(snapshot(s));if(s.history.length>400)s.history.shift();}
+function pile(s,where){if(where<8)return s.cols[where];if(where<12)return s.cells[where-8]===null?[]:[s.cells[where-8]];if(where<16)return s.found[where-12];return where===16?s.waste:null;}
+function run(s,from,index){const p=pile(s,from);if(!p||index<0||index>=p.length)return false;
+ if(from>=8)return index===p.length-1;
+ if(index<s.hidden[from])return false;
+ for(let i=index;i<p.length-1;i++)if(rank(p[i])!==rank(p[i+1])+1||red(p[i])===red(p[i+1]))return false;
+ return true;}
+function canMove(s,from,index,to){
+ if(s.won||from===to||!Number.isInteger(to)||to<0||to>=16||!run(s,from,index))return false;
+ const source=pile(s,from),cards=source.slice(index),c=cards[0],target=pile(s,to);
+ if(!target)return false;
+ if(to>=12)return cards.length===1&&suit(c)===to-12&&rank(c)===target.length+1;
+ if(to>=8)return s.kind==='freecell'&&cards.length===1&&s.cells[to-8]===null;
+ if(!target.length){if(s.kind==='classic'&&rank(c)!==13)return false;}
+ else if(rank(target[target.length-1])!==rank(c)+1||red(target[target.length-1])===red(c))return false;
+ if(s.kind==='freecell'&&cards.length>1){
+  const free=s.cells.filter(c=>c===null).length,empty=s.cols.filter((p,i)=>!p.length&&i!==to).length;
+  if(cards.length>(free+1)*2**empty)return false;
+ }
+ return true;
+}
+function move(s,from,index,to){
+ if(!canMove(s,from,index,to))return false;remember(s);
+ const source=pile(s,from),cards=source.slice(index);
+ if(from<8){s.cols[from].splice(index);s.hidden[from]=Math.max(0,Math.min(s.hidden[from],s.cols[from].length-1));}
+ else if(from<12)s.cells[from-8]=null;
+ else if(from<16)s.found[from-12].pop();else s.waste.pop();
+ if(to<8)s.cols[to].push(...cards);else if(to<12)s.cells[to-8]=cards[0];else s.found[to-12].push(cards[0]);
+ s.moves++;s.won=s.found.every(p=>p.length===13);return true;
+}
+function draw(s){
+ if(s.kind!=='classic'||s.won||!s.stock.length&&!s.waste.length)return false;
+ remember(s);if(s.stock.length)s.waste.push(s.stock.pop());else{s.stock=s.waste.reverse();s.waste=[];}s.moves++;return true;
+}
+function undo(s){if(s.won||!s.history.length)return false;const prior=s.history.pop(),moves=s.moves+1;Object.assign(s,prior);s.moves=moves;return true;}
+function encode(from,index,to){return 2+from*52*16+index*16+to;}
+function input(s,code){
+ if(!Number.isInteger(code)||code<0||code>=INPUT_COUNT)return false;
+ if(code===0)return draw(s);if(code===1)return undo(s);
+ const n=code-2,from=Math.floor(n/832),index=Math.floor(n%832/16),to=n%16;return move(s,from,index,to);
+}
+function hint(s){
+ for(let f=0;f<17;f++){const p=pile(s,f);if(!p)continue;
+  for(let i=f<8?s.hidden[f]:p.length-1;i<p.length;i++)for(let t=12;t<16;t++)if(canMove(s,f,i,t))return {from:f,index:i,to:t};
+ }
+ for(let f=0;f<17;f++){const p=pile(s,f);if(!p)continue;
+  for(let i=Math.max(0,f<8?s.hidden[f]:p.length-1);i<p.length;i++)for(let t=0;t<(s.kind==='freecell'?12:7);t++){
+   if(f<8&&i===0&&!pile(s,t)?.length)continue;
+   if(canMove(s,f,i,t))return {from:f,index:i,to:t};
+  }
+ }
+ return s.kind==='classic'&&s.stock.length?{draw:true}:null;
+}
+function replay(kind,seededRandom,actions){const s=create(kind,seededRandom);for(const code of actions){if(s.won||!input(s,code))return null;}return s.won?s:null;}
+return {create,rank,suit,red,pile,run,canMove,move,draw,undo,encode,input,hint,replay,INPUT_COUNT};
+})();
+if(typeof module!=='undefined')module.exports=solitaireRules;
+  // Formal native-DOM controller; rules and server-clock ranking stay in their own modules.
+  function createSolitaireGame(gameId,prefix,kind){
+    const R=solitaireRules,E=suffix=>$(prefix+'-'+suffix),view=$('view-'+gameId),windowEl=E('window');
+    const ranks=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'],suits=['♣','♦','♥','♠'];
+    const words={ready:'點選一張牌，再點要接上的牌或空格。',invalid:'這裡不能放，請換一個位置。',noHint:'目前沒有建議步，試試悔棋或新牌局。',draw:'試試翻一張牌。',win:'四種花色全部完成！',ended:'本局結束，未通關不列入時間榜。',start:'開始遊玩',again:'重新發牌',restart:'重發會結束目前這局，未通關時間不列入紀錄。'};
+    let g=R.create(kind),phase='idle',selection=null,drag=null,round=null,helpFocus=null,progress=0;
+    const rank=completionTimeLeaderboard(gameId+'-time',gameId,prefix,ui);
+    const cards=new Map(),table=E('table'),rack=E('rack');let cw=40,ch=58;
+    function message(text){E('message').textContent=text;}
+    function foundationCount(){return g.found.reduce((n,p)=>n+p.length,0);}
+    function label(card){return ranks[R.rank(card)]+suits[R.suit(card)];}
+    function cardNode(card,from,index,hidden=false){
+      let b=cards.get(card);if(!b){b=document.createElement('button');b.type='button';b.className='sc-card';cards.set(card,b);}
+      b.dataset.from=from;b.dataset.index=index;b.dataset.card=card;b.className='sc-card'+(R.red(card)?' red':'')+(hidden?' down':'');
+      if(selection?.from===from&&index>=selection.index)b.classList.add('selected');
+      b.disabled=hidden;b.setAttribute('aria-label',hidden?'暗牌':label(card));
+      if(!hidden){b.replaceChildren();const top=document.createElement('span');top.className='sc-rank';top.textContent=label(card);b.append(top);
+        const art=document.createElement('span');art.className=R.rank(card)>10?'sc-court':'sc-suit';
+        if(R.rank(card)>10){art.style.backgroundPosition=(R.suit(card)*100/3)+'% '+((R.rank(card)-11)*50)+'%';}else art.textContent=suits[R.suit(card)];b.append(art);
+      }else b.replaceChildren();return b;
+    }
+    function paint(){
+      if(view.hidden)return;
+      cw=(table.clientWidth-(g.cols.length-1)*4)/g.cols.length;ch=cw*1.42;
+      table.style.setProperty('--sc-cw',cw+'px');table.style.setProperty('--sc-ch',ch+'px');
+      const activeCards=new Set(),frag=document.createDocumentFragment();
+      g.cols.forEach((pile,from)=>{
+        const hidden=g.hidden[from],maxHeight=Math.max(ch*1.5,table.clientHeight),up=Math.max(0,pile.length-hidden-1);
+        let downStep=ch*.19,upStep=Math.min(cw*.43,Math.max(7,(maxHeight-ch-hidden*downStep)/Math.max(1,up)));
+        if(hidden*downStep+up*upStep+ch>maxHeight)downStep=Math.max(ch*.06,(maxHeight-ch-up*upStep)/Math.max(1,hidden));
+        const empty=document.createElement('button');empty.type='button';empty.className='sc-empty';empty.dataset.from=from;empty.style.left=from*(cw+4)+'px';empty.setAttribute('aria-label','空欄');frag.append(empty);
+        let y=0;pile.forEach((card,index)=>{const b=cardNode(card,from,index,index<hidden);b.style.left=from*(cw+4)+'px';b.style.top=y+'px';b.style.zIndex=index+1;frag.append(b);activeCards.add(card);y+=index<hidden?downStep:upStep;});
+      });table.replaceChildren(frag);
+      rack.replaceChildren();const slots=kind==='classic'?[17,16,-1,12,13,14,15]:[8,9,10,11,12,13,14,15];
+      slots.forEach(from=>{
+        if(from===-1){rack.append(document.createElement('span'));return;}
+        const pile=from===17?null:R.pile(g,from);let b;
+        if(pile?.length){const card=pile[pile.length-1];b=cardNode(card,from,pile.length-1);activeCards.add(card);b.style.cssText='';}
+        else{b=document.createElement('button');b.type='button';b.dataset.from=from;b.className='sc-slot';b.textContent=from>=12&&from<16?suits[from-12]:from===17?'↶':'＋';}
+        b.classList.add('sc-rack-card');if(from>=8&&from<12)b.classList.add('sc-cell');if(from>=12&&from<16)b.classList.add('sc-foundation');
+        b.setAttribute('aria-label',from===17?'翻一張牌':from===16?'已翻開的牌':from<12?'暫存格':'收牌格');
+        if(from===17){b.classList.toggle('sc-stock',!!g.stock.length);const n=document.createElement('small');n.textContent=g.stock.length;b.append(n);}rack.append(b);
+      });
+      for(const [id,node] of cards)if(!activeCards.has(id)){node.remove();cards.delete(id);}
+      E('moves').textContent=g.moves;E('home').textContent=foundationCount()+'/52';
+      E('undo').disabled=phase!=='run'||!g.history.length;E('hint').disabled=phase!=='run';
+    }
+    function ui(){
+      const cover=E('cover');cover.hidden=phase==='run';E('go').disabled=rank.busy();
+      E('go').textContent=phase==='idle'?words.start:words.again;
+      if(phase==='over'){E('result').textContent=g.won?words.win+' '+rank.formatted():words.ended;}
+      paint();
+    }
+    function finish(result){
+      if(phase!=='run')return;phase='over';selection=null;clearDrag();
+      if(g.won){rank.finish();try{const key='deep-sea-'+gameId+'-time-best-v1',prior=Number(localStorage.getItem(key));if(!prior||rank.elapsed()<prior)localStorage.setItem(key,String(rank.elapsed()));}catch{}}
+      else rank.abandon();
+      AN.end(round,0,result,{score:foundationCount(),step:g.moves,elapsed_seconds:g.won?Math.ceil(rank.elapsed()/1000):undefined});round=null;ui();
+    }
+    function changed(code){
+      rank.record(code);const total=foundationCount();if(Math.floor(total/13)>progress){progress=Math.floor(total/13);AN.progress(round,{stage:progress,score:total,step:g.moves});}
+      selection=null;message(words.ready);paint();if(g.won)finish('complete');
+    }
+    function attempt(from,index,to){if(!R.move(g,from,index,to))return false;changed(R.encode(from,index,to));return true;}
+    function choose(from,index){
+      if(phase!=='run'||view.hidden||!E('help').hidden)return;
+      if(from===17){if(R.draw(g))changed(0);return;}
+      if(selection){if(selection.from===from&&selection.index===index){selection=null;paint();return;}if(attempt(selection.from,selection.index,from))return;}
+      if(index!==null&&R.run(g,from,index)){selection={from,index};message(label(R.pile(g,from)[index]));}else{selection=null;message(words.invalid);}paint();
+    }
+    function clearDrag(){if(!drag)return;drag.ghosts?.forEach(n=>n.remove());drag=null;}
+    function down(event){
+      if(phase!=='run'||view.hidden||!E('help').hidden||event.button>0||!event.isPrimary)return;
+      const node=event.target.closest('[data-from]');if(!node)return;const from=Number(node.dataset.from),index=node.dataset.index===undefined?null:Number(node.dataset.index);
+      if(from===17){choose(17,null);return;}
+      event.preventDefault();drag={from,index,id:event.pointerId,x:event.clientX,y:event.clientY,started:false,ghosts:[]};try{windowEl.setPointerCapture(event.pointerId);}catch{}
+    }
+    function motion(event){
+      if(!drag||event.pointerId!==drag.id)return;const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
+      if(!drag.started){if(Math.hypot(dx,dy)<8)return;if(drag.index===null||!R.run(g,drag.from,drag.index)){clearDrag();return;}drag.started=true;
+        const wr=windowEl.getBoundingClientRect();R.pile(g,drag.from).slice(drag.index).forEach(card=>{const original=cards.get(card),r=original.getBoundingClientRect(),ghost=original.cloneNode(true);ghost.className='sc-card sc-ghost'+(original.classList.contains('red')?' red':'');ghost.style.cssText='left:'+(r.left-wr.left)+'px;top:'+(r.top-wr.top)+'px;width:'+r.width+'px;height:'+r.height+'px';ghost.style.setProperty('--sc-cw',r.width+'px');ghost.style.setProperty('--sc-ch',r.height+'px');windowEl.append(ghost);drag.ghosts.push(ghost);});}
+      drag.ghosts.forEach(n=>n.style.transform='translate('+dx+'px,'+dy+'px)');
+    }
+    function release(event,cancel=false){
+      if(!drag||event.pointerId!==drag.id)return;const d=drag;
+      if(!d.started){clearDrag();if(!cancel)choose(d.from,d.index);return;}
+      const hit=document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-from]');const to=hit?Number(hit.dataset.from):-1;
+      clearDrag();if(cancel||to<0||!attempt(d.from,d.index,to)){message(words.invalid);paint();}
+    }
+    windowEl.addEventListener('pointerdown',down);windowEl.addEventListener('pointermove',motion);windowEl.addEventListener('pointerup',e=>release(e));windowEl.addEventListener('pointercancel',e=>release(e,true));
+    // Keyboard activation uses the same move path, with no Escape or browser shortcut interception.
+    windowEl.addEventListener('click',event=>{if(event.detail!==0)return;const b=event.target.closest('[data-from]');if(b)choose(Number(b.dataset.from),b.dataset.index===undefined?null:Number(b.dataset.index));});
+    E('go').addEventListener('click',()=>{if(rank.busy()||phase==='run')return;rank.start(random=>{g=R.create(kind,random||Math.random);phase='run';progress=0;selection=null;round=AN.start(gameId,0);E('help').hidden=true;message(words.ready);ui();});});
+    E('undo').addEventListener('click',()=>{if(phase==='run'&&R.undo(g))changed(1);});
+    E('hint').addEventListener('click',()=>{if(phase!=='run')return;const hint=R.hint(g);if(hint?.draw){message(words.draw);return;}if(!hint){message(words.noHint);return;}selection={from:hint.from,index:hint.index};paint();const destination=hint.to<8?table.querySelector('.sc-empty[data-from="'+hint.to+'"]'):rack.querySelector('[data-from="'+hint.to+'"]');destination?.classList.add('sc-suggestion');message(label(R.pile(g,hint.from)[hint.index])+' → '+(hint.to<8?hint.to+1:hint.to<12?'□':suits[hint.to-12]));});
+    E('restart').addEventListener('click',()=>{if(phase==='run'){E('confirm').hidden=false;E('confirm-yes').focus();}else E('go').click();});
+    E('confirm-no').addEventListener('click',()=>E('confirm').hidden=true);
+    E('confirm-yes').addEventListener('click',()=>{E('confirm').hidden=true;finish('restart');E('go').click();});
+    E('info').addEventListener('click',()=>{helpFocus=document.activeElement;E('help').hidden=false;E('help-close').focus();});
+    E('help-close').addEventListener('click',()=>{E('help').hidden=true;helpFocus?.focus();});
+    E('board-list').addEventListener('toggle',async()=>{if(!E('board-list').open)return;const list=E('entries');list.textContent='';try{const api=await import('./frontend/services/api.mjs'),data=await api.createApiClient(api.arcadeApiOrigin()).leaderboard(gameId+'-time',AbortSignal.timeout(10000));if(!data.entries.length){const li=document.createElement('li');li.textContent='目前尚無排行榜紀錄。';list.append(li);}for(const entry of data.entries){const li=document.createElement('li');li.setAttribute('data-i18n-ignore','');li.textContent=(entry.displayName||'Guest')+' · '+entry.time;list.append(li);}}catch{const li=document.createElement('li');li.textContent='目前無法載入排行榜。';list.append(li);}});
+    window.addEventListener('hashchange',()=>{clearDrag();if(view.hidden&&phase==='run')finish('abandoned');else requestAnimationFrame(paint);});
+    window.addEventListener('resize',()=>{clearDrag();paint();});window.addEventListener('arcade-languagechange',paint);
+    const observer=new MutationObserver(()=>{if(!view.hidden)requestAnimationFrame(paint);});observer.observe(view,{attributes:true,attributeFilter:['hidden']});
+    setInterval(()=>{if(phase==='run'&&!view.hidden)rank.update();},50);
+    ui();
+  }
+createSolitaireGame('midnight-solitaire','ks','classic');
+createSolitaireGame('orbit-freecell','fc','freecell');
   /* ---------- Cat Book Stack: free sorting puzzle. No wallet access; every level is checked for a solution. ---------- */
   (function(){
 const BEST_KEY='deep-sea-book-sort-best',GAME_ID='book-sort';
@@ -35073,13 +35429,13 @@ function ftBuilding(b,w){
       var visibleGames = new Set(Array.from(document.querySelectorAll('.lobby-grid .game-card:not([data-game-hidden])'),
         function (card) { return card.hash.slice(1); }));
       var recent = result.games.map(function (game) {
-        var match = DIFFICULTY_BOARD.exec(game.gameId);
+        var match = /^(.+)-time-(1|2|4)$/.exec(game.gameId) || /^(.+)-time$/.exec(game.gameId) || DIFFICULTY_BOARD.exec(game.gameId);
         var base = match && visibleGames.has(match[1]) ? match[1] : game.gameId;
         return { game: game, base: base, multi: base !== game.gameId };
       }).filter(function (item) {
         return item.base !== 'top-doggo' && visibleGames.has(item.base) && Object.hasOwn(VIEWS, item.base) && item.game.entries.length;
       }).slice(0, RECENT_GAMES_LIMIT).map(function (item) {
-        return [item.base, item.game.entries[0], item.game.lastPlayedAt, item.multi ? item.game.gameName : null, item.multi && item.base!=='meow-link' ? 'Lv ' : ''];
+        return [item.base, item.game.entries[0], item.game.lastPlayedAt, item.multi ? item.game.gameName : null, item.multi && item.base!=='meow-link' && item.base!=='mermaid' && !item.game.gameId.endsWith('-time') ? 'Lv ' : ''];
       });
       var snapshot = JSON.stringify(recent);
       if (snapshot !== boardSnapshot) {
@@ -38132,7 +38488,7 @@ window.addEventListener('pagehide',function(e){if(!e.persisted)sArtEnd('abandone
   $('lobby-explore').addEventListener('click',function(){if($('lobby-games').scrollIntoView)$('lobby-games').scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});});
 
   /* ---------- tabs ---------- */
-  var VIEWS = { 'meow-link': '貓咪連連看 <span>Meow Link</span>', 'pedestrian-hell': '行人地獄 <span>Just Want Boba</span>', 'sand-art': '沙沙時光 <span>Sand & Chill</span>', 'berry-trail': '莓果小蛇 <span>Berry Trail</span>', 'top-doggo': 'TOP DOGGO <span>Paw City</span>', 'cat-match': '貓貓三消 <span>Cat Match</span>', outpost: '深海前哨 <span>Deep Sea Outpost</span>', 'book-sort': '貓咪疊書舖 <span>Cat Book Stack</span>', 'market-desk': '收盤之前 <span>Closing Call</span>', academy: '百萬大學堂 <span>Millionaire Academy</span>', wardrobe: '我的造型 <span>My Wardrobe</span>', frontier: '荒島遠征 <span>Frontier Islands</span>', 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: 'TICATICA GAMES', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷：深海快遞 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', 'rocket-chair': '社畜要下班 <span>Roar Through the Ceiling</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', 'eat-smaller': '數字吞噬 <span>Number Gulp</span>', 'mirror-twins': '鏡像雙子 <span>Mirror Twins</span>', 'shadow-relay': '影子接力 <span>Shadow Relay</span>', 'one-line-defense': '一筆畫守城 <span>One-Line Defense</span>', mermaid: '人魚接龍 <span>Mermaid Spider</span>', tetris: '俄羅斯方塊 <span>Block Drop</span>', 'on-pitch': '不准跑調 <span>Stay On Pitch</span>', 'quack-pond': '呱呱池塘 <span>Quack Pond</span>', 'siege-architect': '萌獸破城隊 <span>Critter Crashers</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
+  var VIEWS = { 'midnight-solitaire':'夜航經典接龍 <span>Midnight Klondike</span>', 'orbit-freecell':'星軌新接龍 <span>Orbit FreeCell</span>', 'meow-link': '貓咪連連看 <span>Meow Link</span>', 'pedestrian-hell': '行人地獄 <span>Just Want Boba</span>', 'sand-art': '沙沙時光 <span>Sand & Chill</span>', 'berry-trail': '莓果小蛇 <span>Berry Trail</span>', 'top-doggo': 'TOP DOGGO <span>Paw City</span>', 'cat-match': '貓貓三消 <span>Cat Match</span>', outpost: '深海前哨 <span>Deep Sea Outpost</span>', 'book-sort': '貓咪疊書舖 <span>Cat Book Stack</span>', 'market-desk': '收盤之前 <span>Closing Call</span>', academy: '百萬大學堂 <span>Millionaire Academy</span>', wardrobe: '我的造型 <span>My Wardrobe</span>', frontier: '荒島遠征 <span>Frontier Islands</span>', 'ocean-link': '深海連連看 <span>Ocean Link</span>', blaster: '深海火線 <span>Reef Blaster</span>', lobby: 'TICATICA GAMES', crash: '壓潰深度 <span>Crush Depth</span>', mines: '踩地雷 <span>Minesweeper</span>', plinko: '落珠 <span>Pearl Drop</span>', merge: '養珠 <span>Pearl Merge</span>', dice: '測深 <span>Sonar Dice</span>', limbo: '探底 <span>Deep Probe</span>', hilo: '漲退 <span>High Tide</span>', keno: '挖金礦 <span>Gold Digger</span>', wheel: '羅盤 <span>Compass</span>', tower: '浮升 <span>Ascent</span>', crossing: '橫渡 <span>Reef Run</span>', dream: '時序修復 <span>Dream Repair Shop</span>', runner: '閃避跑酷：深海快遞 <span>Dodge Run</span>', elevator: '插隊大師 <span>Queue Cutter</span>', sneak: '偷偷下班 <span>Sneak Out</span>', fishing: '深海釣手 <span>Fishing</span>', campaign: '宣傳車 <span>Campaign Truck</span>', boba: '插珍奶 <span>Boba Straw</span>', cat: '屋頂貓貓 <span>Rooftop Cat</span>', bird: '便便鳥大戰狼群 <span>Poop Bird vs Wolves</span>', frog: '青蛙吃蟲 <span>Frog Snack</span>', pudding: '布丁突圍 <span>Pudding Dash</span>', 'clock-out': '下班保衛戰 <span>Clock Out</span>', nap: '偷睡大師 <span>Nap Master</span>', breakout: '打磚塊 <span>Breakout</span>', 'last-hair': '尊嚴保衛戰 <span>The Last Hair</span>', mosquito: '血壓上升 <span>Midnight Mosquito</span>', reaper: '死神打工 <span>Reaper Shift</span>', skybuilder: '蓋樓大師 <span>Sky Builder</span>', dive: '一口氣探險 <span>One Breath Dive</span>', mrt: '捷運搶位 <span>MRT Seat Grab</span>', pancake: '泡麵煎餅翻面 <span>Noodle Pancake</span>', 'rocket-chair': '社畜要下班 <span>Roar Through the Ceiling</span>', carp: '鯉魚躍龍門 <span>Carp Leap</span>', rider: '外送員大戰惡犬 <span>Rider vs Dogs</span>', boss: '胖老闆追人 <span>Chubby Boss</span>', thief: '偷水果的貓 <span>Fruit Thief Cat</span>', baby: '寶寶逃洗澡 <span>Baby Bath Escape</span>', peek: '別看 <span>Don’t Peek</span>', 'pet-walk': '小灰出門 <span>Pet Walkies</span>', 'office-shoot': '拒絕加班 <span>No Overtime!</span>', 'eat-smaller': '數字吞噬 <span>Number Gulp</span>', 'mirror-twins': '鏡像雙子 <span>Mirror Twins</span>', 'shadow-relay': '影子接力 <span>Shadow Relay</span>', 'one-line-defense': '一筆畫守城 <span>One-Line Defense</span>', mermaid: '人魚蜘蛛接龍 <span>Mermaid Spider</span>', tetris: '俄羅斯方塊 <span>Block Drop</span>', 'on-pitch': '不准跑調 <span>Stay On Pitch</span>', 'quack-pond': '呱呱池塘 <span>Quack Pond</span>', 'siege-architect': '萌獸破城隊 <span>Critter Crashers</span>', banquet: '最後的晚餐 <span>The Last Banquet</span>' };
   /* ---------- collapsible lobby sidebar (per-browser preference only) ---------- */
   (function(){
     var KEY='ticatica-sidebar-collapsed',button=$('side-toggle'),collapsed=false;

@@ -471,5 +471,21 @@
     "card": "games/meow-link/card.html",
     "icon": "games/meow-link/icon.svg",
     "style": "games/meow-link/style.css"
+  },
+  {
+    "id": "midnight-solitaire",
+    "logic": "games/midnight-solitaire/game.js",
+    "view": "games/midnight-solitaire/view.html",
+    "card": "games/midnight-solitaire/card.html",
+    "icon": "games/midnight-solitaire/icon.svg",
+    "style": "games/midnight-solitaire/style.css"
+  },
+  {
+    "id": "orbit-freecell",
+    "logic": "games/orbit-freecell/game.js",
+    "view": "games/orbit-freecell/view.html",
+    "card": "games/orbit-freecell/card.html",
+    "icon": "games/orbit-freecell/icon.svg",
+    "style": "games/orbit-freecell/style.css"
   }
 ]

@@ -19,7 +19,7 @@ ZH_BANNED = re.compile(r'免費|免费|入場費|入場點數|扣點(?:開始|�
 EN_BANNED = re.compile(
     r'\bfree(?!\s+(?:run|army|roam))\b(?<!break free)|\bpay(?:ing)?\s+(?:the\s+)?(?:entry|fee)|\bpay\s*(?:&|and|to|another)|\bafter paying|'
     r'new paid round|paid entry|entry fee|entry charge|costs?\s+(?:a\s+)?(?:fixed\s+|flat\s+)?\d+\s*(?:points|pts)|\{fee\}', re.I)
-EN_ALLOWED = re.compile(r'overtime pay|Paid impersonation|Free at last', re.I)
+EN_ALLOWED = re.compile(r'\bfree cells?\b|overtime pay|Paid impersonation|Free at last', re.I)
 
 
 def hits(pattern, text):

@@ -135,3 +135,13 @@
 }
 
 html:has(#view-mermaid:not([hidden])){overflow:hidden}
+
+#view-mermaid .mm-titlebar h2{display:flex;flex-direction:column;gap:2px;font-size:clamp(16px,4.7vw,21px)}
+#view-mermaid .mm-titlebar h2 small{font:10px/1.1 monospace;letter-spacing:0;color:#d3e9ff;overflow:hidden;text-overflow:ellipsis}
+#view-mermaid .mm-menu summary{font:italic bold 26px Georgia,serif}
+#view-mermaid .mm-menu>div{width:min(330px,calc(100vw - 16px));max-height:calc(100dvh - 70px);overflow:auto}
+#view-mermaid .mm-menu h3{margin:0 0 8px;font-size:17px}
+#view-mermaid .mm-menu p{font-size:12px;line-height:1.5}
+#view-mermaid .stats dd{font-size:15px}
+#view-mermaid .stats>div:first-child{flex:1.5}
+#view-mermaid #mm-board-entries{padding-left:24px;font-size:12px}
