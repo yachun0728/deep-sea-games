@@ -3437,5 +3437,7 @@
   "meow-link.rule.1": "毛線障礙與左移",
   "meow-link.rule.2": "毛線障礙與下移",
   "meow-link.time.rules": "全破 10 關才列入計時排行；簡單、普通、困難分榜，時間越短越前面。結算畫面不計時，排名用時由伺服器核對。",
-  "meow-link.time.checkpoint": "本關已驗證，全破 10 關後才列入計時排行。"
+  "meow-link.time.checkpoint": "本關已驗證，全破 10 關後才列入計時排行。",
+  "last-hair.art.loading": "美術素材載入中…",
+  "last-hair.art.error": "素材載入失敗，請重新整理後再試。"
 }

@@ -1,0 +1,109 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "character-states-v2.png",
+  "grid": [
+    3,
+    1
+  ],
+  "canvas": {
+    "w": 512,
+    "h": 560
+  },
+  "baseline_y": 540.0,
+  "target_height": 500.0,
+  "scale": "sheet",
+  "fit": "contain",
+  "factor": 0.7668711656441718,
+  "factor_from": {
+    "rule": "target_height",
+    "cell": "protect"
+  },
+  "alpha_cleanup": "hair_alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "walk",
+      "file": "hair_walk.png",
+      "factor": 0.7668711656441718,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 601,
+          "h": 634
+        },
+        "canvas": {
+          "w": 461,
+          "h": 486
+        }
+      },
+      "box": {
+        "x": 26,
+        "y": 54,
+        "w": 461,
+        "h": 486
+      },
+      "anchor": [
+        256.5,
+        540.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "protect",
+      "file": "hair_protect.png",
+      "factor": 0.7668711656441718,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 659,
+          "h": 652
+        },
+        "canvas": {
+          "w": 505,
+          "h": 500
+        }
+      },
+      "box": {
+        "x": 4,
+        "y": 40,
+        "w": 505,
+        "h": 500
+      },
+      "anchor": [
+        256.5,
+        540.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "lost",
+      "file": "hair_lost.png",
+      "factor": 0.7668711656441718,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 502,
+          "h": 623
+        },
+        "canvas": {
+          "w": 385,
+          "h": 478
+        }
+      },
+      "box": {
+        "x": 64,
+        "y": 62,
+        "w": 385,
+        "h": 478
+      },
+      "anchor": [
+        256.5,
+        540.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

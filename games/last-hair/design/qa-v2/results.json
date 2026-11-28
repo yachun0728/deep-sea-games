@@ -1,0 +1,104 @@
+[
+  {
+    "size": [
+      390,
+      844
+    ],
+    "result": "PASS",
+    "geometry": {
+      "viewport": [
+        390,
+        844
+      ],
+      "canvas": {
+        "x": 7.4375,
+        "y": 68.40625,
+        "width": 375.109375,
+        "height": 675.1875,
+        "top": 68.40625,
+        "right": 382.546875,
+        "bottom": 743.59375,
+        "left": 7.4375
+      },
+      "scroll": 390
+    },
+    "checks": [
+      "load",
+      "no horizontal overflow",
+      "canvas aspect and bounds",
+      "start (local unranked fallback)",
+      "touch hold/release (synthetic)",
+      "English switch",
+      "blur pause/tap resume",
+      "forced loss/replay/win display"
+    ]
+  },
+  {
+    "size": [
+      320,
+      640
+    ],
+    "result": "PASS",
+    "geometry": {
+      "viewport": [
+        320,
+        640
+      ],
+      "canvas": {
+        "x": 17.78125,
+        "y": 48.015625,
+        "width": 284.4375,
+        "height": 511.984375,
+        "top": 48.015625,
+        "right": 302.21875,
+        "bottom": 560,
+        "left": 17.78125
+      },
+      "scroll": 320
+    },
+    "checks": [
+      "load",
+      "no horizontal overflow",
+      "canvas aspect and bounds",
+      "start (local unranked fallback)",
+      "touch hold/release (synthetic)",
+      "English switch",
+      "blur pause/tap resume",
+      "forced loss/replay/win display"
+    ]
+  },
+  {
+    "size": [
+      1366,
+      900
+    ],
+    "result": "PASS",
+    "geometry": {
+      "viewport": [
+        1366,
+        900
+      ],
+      "canvas": {
+        "x": 321.671875,
+        "y": 182,
+        "width": 366.65625,
+        "height": 659.96875,
+        "top": 182,
+        "right": 688.328125,
+        "bottom": 841.96875,
+        "left": 321.671875
+      },
+      "scroll": 1366
+    },
+    "checks": [
+      "load",
+      "no horizontal overflow",
+      "canvas aspect and bounds",
+      "start (local unranked fallback)",
+      "touch hold/release (synthetic)",
+      "English switch",
+      "blur pause/tap resume",
+      "forced loss/replay/win display"
+    ]
+  }
+]

@@ -1,1 +1,30 @@
 .sneak-stage #lh-canvas{width:min(100%,400px,calc(80vh * 400 / 720));height:auto;aspect-ratio:400/720;max-height:none;object-fit:fill}
+/* Approved character/city direction v1. Canvas remains 400×720 logical pixels. */
+#view-last-hair{--fs-bg:#254750;--reserve:84px}
+#view-last-hair .sneak-stage{background:#254750;border-color:#657e78;border-radius:18px;overflow:hidden}
+#view-last-hair #lh-canvas{touch-action:none;outline-offset:-3px}
+#view-last-hair .panel{background:#ffedca;color:#263b42;border-color:#b6a280}
+#view-last-hair .panel .stats>div{background:#f2dfba;color:#263b42}
+#view-last-hair .panel dt,#view-last-hair .panel .hint{color:#59645c}
+#view-last-hair #lh-go{background:#df713c;color:#fff8e8;border:2px solid #593e32;box-shadow:0 4px 0 #754b35}
+@media(max-width:880px){
+ #view-last-hair:not([hidden]) .fs-game{--hud:52px;--reserve:84px;background:#254750}
+ #view-last-hair:not([hidden]) .fs-game .sneak-stage{border-radius:0;overflow:visible;align-items:center}
+ #view-last-hair .fs-game .stats{left:auto;right:12px;width:130px}
+ #view-last-hair .fs-game .stats>div:not(:last-child){display:none}
+ #view-last-hair .fs-game .stats>div:last-child{background:#ffedca;color:#263b42}
+ #view-last-hair .fs-game .stats dt{color:#59645c}
+ #view-last-hair .fs-game .fs-exit{background:#ffedca;color:#263b42;border-color:#a9916d}
+ /* Keep live announcements available without covering the two-thumb controls. */
+ #view-last-hair .fs-game #lh-msg{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+}
+@media(min-width:881px){
+ #view-last-hair .sneak-stage #lh-canvas{width:min(100%,400px,calc((100dvh - 240px) * 400 / 720));height:auto}
+}
+#view-last-hair .panel #lh-msg{color:#46584f}
+@media(max-width:880px){
+ #view-last-hair .fs-game:has(.share-result:not([hidden])) .mobile-stage-actions{left:12px;right:calc(50% + 4px)}
+ #view-last-hair .fs-game:has(.share-result:not([hidden])) #lh-go:not(:disabled){width:100%;min-width:0;min-height:48px}
+ #view-last-hair .fs-game:has(.share-result:not([hidden])) .side #lh-go:not(:disabled){left:12px;transform:none;width:calc(50% - 16px)}
+ #view-last-hair .fs-game .share-result:not([hidden]){left:calc(50% + 4px);transform:none;width:calc(50% - 16px);min-height:48px;background:#365a63;border-color:#a9916d;color:#ffedca}
+}

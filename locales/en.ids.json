@@ -3437,5 +3437,7 @@
   "meow-link.rule.1": "Yarn and slide left",
   "meow-link.rule.2": "Yarn and slide down",
   "meow-link.time.rules": "Clear all 10 stages to rank by time. Easy, Normal and Hard have separate boards. Results-screen time is excluded; ranked time is verified by the server.",
-  "meow-link.time.checkpoint": "Stage verified. Clear all 10 stages to enter the time leaderboard."
+  "meow-link.time.checkpoint": "Stage verified. Clear all 10 stages to enter the time leaderboard.",
+  "last-hair.art.loading": "Loading artwork…",
+  "last-hair.art.error": "Artwork could not load. Please reload to try again."
 }

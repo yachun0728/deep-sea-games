@@ -40,6 +40,10 @@ Agent 必須區分實際完成的修改、已執行的測試及尚未驗證的�
 | 新增、修改、驗收或發布遊戲 | `docs/agent-guides/cross-platform-performance.md` |
 | 新增、改造、重新上架、調整 BONUS、準備發布或推送 | [遊戲驗收與推送](docs/agent-guides/release.md)、[CrazyGames 平台上架規範](docs/agent-guides/crazygames-compliance.md) |
 
+## 核准設計稿的實作要求
+
+2026-11-28 使用者指定：「設計好就是要照設計稿」。角色、場景與介面設計經使用者確認後，必須閱讀並遵守 [按核准設計稿實作 skill](docs/agent-guides/approved-design-implementation/SKILL.md)。不得自行改成簡化人物或其他畫風；交付前以實際截圖和核准稿並排驗收，不符合就繼續修正，不能把 Build／功能測試通過當作設計還原完成。
+
 ## 外部工具：sprite-gen（選用）
 
 2026-11-24 使用者指定。來源：<https://github.com/aldegad/sprite-gen>（Apache-2.0）。用於製作或修改角色走路／動作影格、去背、循環動畫、可重複拼接的背景與投影，例如偷偷下班的走路與走廊背景。
