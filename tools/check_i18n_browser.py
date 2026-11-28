@@ -138,7 +138,7 @@ def main():
     threading.Thread(target=server.serve_forever, daemon=True).start()
     with tempfile.TemporaryDirectory(prefix='deep-sea-i18n-') as temp:
         folder = Path(temp)
-        for suite, width, height in [('sand_art',390,844), ('sand_art',1366,900), ('sand_art',320,568), ('berry_trail',390,844), ('berry_trail',1366,900), ('berry_trail',844,390), ('outpost', 1366, 900), ('outpost', 390, 844), ('book_sort', 1366, 900), ('book_sort', 390, 844), ('book_sort', 844, 390), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('academy', 1366, 900), ('academy', 390, 844), ('core', 1366, 900), ('hans', 1366, 900), ('hans', 390, 844), ('games', 1366, 900), ('games', 390, 844),
+        for suite, width, height in [('meow_link',390,844), ('meow_link',320,568), ('meow_link',430,760), ('meow_link',768,1024), ('meow_link',1366,900), ('meow_link',844,390), ('sand_art',390,844), ('sand_art',1366,900), ('sand_art',320,568), ('berry_trail',390,844), ('berry_trail',1366,900), ('berry_trail',844,390), ('outpost', 1366, 900), ('outpost', 390, 844), ('book_sort', 1366, 900), ('book_sort', 390, 844), ('book_sort', 844, 390), ('market_desk', 1366, 900), ('market_desk', 390, 844), ('market_desk', 844, 390), ('academy', 1366, 900), ('academy', 390, 844), ('core', 1366, 900), ('hans', 1366, 900), ('hans', 390, 844), ('games', 1366, 900), ('games', 390, 844),
                                      ('campaign', 1366, 900), ('campaign', 390, 844), ('campaign', 320, 550),
                                      ('merge', 1366, 900), ('merge', 390, 844), ('merge', 320, 480),
                                      ('ocean_link', 1366, 900), ('ocean_link', 844, 390), ('frontier', 1366, 900), ('frontier', 390, 844), ('frontier', 844, 390)]:
@@ -189,6 +189,8 @@ def main():
                 if suite == 'core':
                     total += chrome.check(page, '?probe=default', 'Default Chinese')
                 query = '?lang=en&keep=1' + ('&preview=frontier' if suite == 'frontier' else '') + ('#ocean-link' if suite == 'ocean_link' else '#frontier' if suite == 'frontier' else '')
+                if suite == 'meow_link':
+                    query += '#meow-link'
                 if suite == 'campaign':
                     query += '#campaign'
                 if suite == 'merge':
@@ -266,6 +268,26 @@ def main():
                 actual = chrome.evaluate('innerWidth')
                 if actual != width:
                     raise RuntimeError(f'Viewport is {actual}, expected {width}')
+                if args.screenshots and suite == 'meow_link':
+                    args.screenshots.mkdir(parents=True, exist_ok=True)
+                    capture = chrome.call('Page.captureScreenshot', {'format':'png'}, page=True)
+                    (args.screenshots / f'meow-link-{width}.png').write_bytes(base64.b64decode(capture['data']))
+                    chrome.evaluate("deepSeaI18n.setLanguage('zh-Hant')")
+                    time.sleep(.1)
+                    capture = chrome.call('Page.captureScreenshot', {'format':'png'}, page=True)
+                    (args.screenshots / f'meow-link-zh-{width}.png').write_bytes(base64.b64decode(capture['data']))
+                    rect = chrome.evaluate("document.querySelector('#ml-board button').getBoundingClientRect().toJSON()")
+                    point = {'x':rect['x']+rect['width']/2,'y':rect['y']+rect['height']/2}
+                    chrome.call('Input.dispatchTouchEvent', {'type':'touchStart','touchPoints':[point]}, page=True)
+                    chrome.call('Input.dispatchTouchEvent', {'type':'touchEnd','touchPoints':[]}, page=True)
+                    if not chrome.evaluate("document.querySelector('#ml-board button').getAttribute('aria-pressed')==='true'"):
+                        raise RuntimeError('Meow Link touch did not select tile')
+                    total += 1
+                    chrome.evaluate("location.hash='lobby'; window.scrollTo(0,0)")
+                    time.sleep(.2)
+                    capture = chrome.call('Page.captureScreenshot', {'format':'png'}, page=True)
+                    (args.screenshots / f'meow-link-lobby-{width}.png').write_bytes(base64.b64decode(capture['data']))
+
                 if args.screenshots and suite == 'games':
                     args.screenshots.mkdir(parents=True, exist_ok=True)
                     for view in ('lobby', 'dream'):

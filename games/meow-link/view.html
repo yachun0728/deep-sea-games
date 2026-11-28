@@ -1,0 +1,50 @@
+<section class="view" id="view-meow-link" hidden>
+  <div id="ml-stage">
+    <header class="ml-toolbar">
+      <div class="ml-heading">
+        <h2>Meow Link</h2>
+        <p id="ml-rule">{{t:meow-link.view.01}}</p>
+      </div>
+      <p id="ml-clock" hidden><span id="ml-clock-label">{{t:meow-link.view.02}}</span> <time id="ml-time" aria-labelledby="ml-clock-label" datetime="PT0S">00:00</time></p>
+      <div class="ml-actions" id="ml-toolbar-actions">
+        <label for="ml-mode">{{t:meow-link.view.03}}</label>
+        <select id="ml-mode">
+          <option value="easy">{{t:meow-link.view.04}}</option>
+          <option value="standard" selected>{{t:meow-link.view.05}}</option>
+          <option value="challenge">{{t:meow-link.view.06}}</option>
+        </select>
+        <button id="ml-go" type="button" hidden>{{t:meow-link.view.07}}</button>
+        <button id="ml-hint" type="button" disabled>{{t:meow-link.view.08}}</button>
+      </div>
+      <p id="ml-count" hidden><span>{{t:meow-link.view.09}}</span> <b id="ml-level">1</b>/10 · <span>{{t:meow-link.view.10}}</span> <b id="ml-left">0</b> · BONUS <b id="ml-bonus">0</b></p>
+      <p id="ml-record"><span>{{t:meow-link.view.11}}</span> <b id="ml-best">0</b>/10</p>
+      <p id="ml-msg" role="status"></p>
+      <p id="ml-rank-status" role="status" hidden></p>
+      <button id="ml-rank-retry" type="button" hidden>{{t:meow-link.view.12}}</button>
+    </header>
+    <div id="ml-game-area">
+      <div class="ml-actions" id="ml-board-actions">
+        <button id="ml-full" type="button" aria-pressed="false">{{t:meow-link.view.13}}</button>
+      </div>
+      <div id="ml-playfield" hidden>
+        <div id="ml-board" role="group" aria-label="{{t:meow-link.view.23}}"></div>
+        <svg id="ml-trace" aria-hidden="true"><polyline></polyline></svg>
+      </div>
+    </div>
+    <section id="ml-result" aria-labelledby="ml-result-title" hidden>
+      <span class="ml-result-icon" aria-hidden="true">🏆</span>
+      <h3 id="ml-result-title" tabindex="-1">{{t:meow-link.view.14}}</h3>
+      <p><span>{{t:meow-link.view.15}}</span> <b id="ml-result-level">1</b>/10</p>
+      <p><span>{{t:meow-link.view.16}}</span> <time id="ml-result-time" datetime="PT0S">00:00</time></p>
+      <p id="ml-result-reward" hidden>{{t:meow-link.view.17}}</p>
+      <div id="ml-result-actions" class="ml-actions"></div>
+    </section>
+    <details class="ml-rules" open>
+      <summary>{{t:meow-link.view.18}}</summary>
+      <p>{{t:meow-link.view.19}}</p>
+      <p>{{t:meow-link.view.20}}</p>
+      <p>{{t:meow-link.view.21}}</p>
+      <p>{{t:meow-link.view.22}}</p>
+    </details>
+  </div>
+</section>

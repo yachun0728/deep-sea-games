@@ -401,3 +401,11 @@ Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsig
 ## 行人地獄（pedestrian-hell）
 
 同來源 iframe：`games/pedestrian-hell/play.html`（畫面、三語、聲音、動畫），父頁 `games/pedestrian-hell/game.js` 以 `window.deepSeaPed` 橋接追蹤與訪客排行榜。規則 `shared/pedestrian-hell-rules.cjs` 只用傳入的亂數，Worker 以 `timedBoard` 重播驗證。招牌牆、坐墊睡貓、路過貓、飲料款式與喝飲料動畫（`art/sip*.webp`，用到才載入）只影響畫面。關卡劇情、路口、行人專用道、臨停車與難度都在規則模組（`STORIES`、`levelOf`、`themeOf`）。目前規則為第 3 版（`rulesVersion`，開局時由頁面回報）；回報 2 的頁面用凍結的 `shared/pedestrian-hell-rules-v2.cjs` 重播，沒回報版本的首發版頁面用 `shared/pedestrian-hell-rules-v1.cjs`。各版共用同一個排行榜（分數都是杯數）。migration `0021_game_names_pedestrian_hell.sql`。
+
+### Meow Link（貓咪連連看）
+
+`games/meow-link/` 為 Ocean Link 原生 view/controller 的獨立複製，`ml-*` DOM/CSS、`meowLink*` 閉包與 `deep-sea-meow-link-best-v1` 各自隔離。`shared/meow-link-rules.cjs` 同時供前端組合與 Worker 重播簡單模式，僅圖案池改為 12／24／36；原版 `games/ocean-link/` 完全不改。透明圖案在 `art/`，核准設定圖及原始生成素材在 `design/`。大廳排序在 `templates/lobby.html` 第四張卡。migration `0022_game_names_meow_link.sql` 只新增名稱，不改表結構；發布前先套 migration／Worker，再發布前端。回復可撤下新增接線並重建，保留新存檔與歷史排名，不動原版資料。
+
+### 點數介面暫時隱藏（2026-11-28）
+
+依使用者指示，頁面根節點 `points-hidden` 開關搭配 `css/points-visibility.css` 與 `js/points-visibility.js` 隱藏錢包、BONUS、點數獎勵說明及造型兌換入口；同源 iframe 與 Canvas 文字亦作顯示過濾。保留分數、排行榜、既有存檔與內部獎勵／AN 計算，不停發或清除點數。移除根節點開關並重新載入即可恢復原始顯示。

@@ -1,0 +1,254 @@
+[
+  {
+    "id": 1,
+    "category": "cat",
+    "zh": "奶油貓",
+    "en": "Cream cat",
+    "file": "art/01.svg"
+  },
+  {
+    "id": 2,
+    "category": "cat",
+    "zh": "橘虎斑",
+    "en": "Ginger tabby",
+    "file": "art/02.svg"
+  },
+  {
+    "id": 3,
+    "category": "cat",
+    "zh": "灰虎斑",
+    "en": "Grey tabby",
+    "file": "art/03.svg"
+  },
+  {
+    "id": 4,
+    "category": "cat",
+    "zh": "三花貓",
+    "en": "Calico cat",
+    "file": "art/04.svg"
+  },
+  {
+    "id": 5,
+    "category": "cat",
+    "zh": "燕尾服貓",
+    "en": "Tuxedo cat",
+    "file": "art/05.svg"
+  },
+  {
+    "id": 6,
+    "category": "cat",
+    "zh": "暹羅貓",
+    "en": "Siamese cat",
+    "file": "art/06.svg"
+  },
+  {
+    "id": 7,
+    "category": "cat",
+    "zh": "白貓",
+    "en": "White cat",
+    "file": "art/07.svg"
+  },
+  {
+    "id": 8,
+    "category": "cat",
+    "zh": "黑貓",
+    "en": "Black cat",
+    "file": "art/08.svg"
+  },
+  {
+    "id": 9,
+    "category": "cat",
+    "zh": "玳瑁貓",
+    "en": "Tortoiseshell cat",
+    "file": "art/09.svg"
+  },
+  {
+    "id": 10,
+    "category": "cat",
+    "zh": "銀灰貓",
+    "en": "Silver cat",
+    "file": "art/10.svg"
+  },
+  {
+    "id": 11,
+    "category": "cat",
+    "zh": "摺耳貓",
+    "en": "Folded-ear cat",
+    "file": "art/11.svg"
+  },
+  {
+    "id": 12,
+    "category": "cat",
+    "zh": "拉布：灰褐虎斑與黃綠眼",
+    "en": "Labu: grey-brown tabby with golden-green eyes",
+    "file": "art/12.svg"
+  },
+  {
+    "id": 13,
+    "category": "toy",
+    "zh": "毛線球",
+    "en": "Yarn ball",
+    "file": "art/13.svg"
+  },
+  {
+    "id": 14,
+    "category": "toy",
+    "zh": "逗貓羽毛",
+    "en": "Feather wand",
+    "file": "art/14.svg"
+  },
+  {
+    "id": 15,
+    "category": "toy",
+    "zh": "小老鼠",
+    "en": "Toy mouse",
+    "file": "art/15.svg"
+  },
+  {
+    "id": 16,
+    "category": "toy",
+    "zh": "鈴鐺球",
+    "en": "Bell ball",
+    "file": "art/16.svg"
+  },
+  {
+    "id": 17,
+    "category": "toy",
+    "zh": "魚布偶",
+    "en": "Plush fish",
+    "file": "art/17.svg"
+  },
+  {
+    "id": 18,
+    "category": "toy",
+    "zh": "蝴蝶結",
+    "en": "Ribbon bow",
+    "file": "art/18.svg"
+  },
+  {
+    "id": 19,
+    "category": "toy",
+    "zh": "彈簧",
+    "en": "Spring toy",
+    "file": "art/19.svg"
+  },
+  {
+    "id": 20,
+    "category": "toy",
+    "zh": "星星抱枕",
+    "en": "Star cushion",
+    "file": "art/20.svg"
+  },
+  {
+    "id": 21,
+    "category": "food",
+    "zh": "魚餅乾",
+    "en": "Fish biscuit",
+    "file": "art/21.svg"
+  },
+  {
+    "id": 22,
+    "category": "food",
+    "zh": "罐罐",
+    "en": "Food tin",
+    "file": "art/22.svg"
+  },
+  {
+    "id": 23,
+    "category": "food",
+    "zh": "肉泥",
+    "en": "Treat pouch",
+    "file": "art/23.svg"
+  },
+  {
+    "id": 24,
+    "category": "food",
+    "zh": "乾糧",
+    "en": "Kibble bowl",
+    "file": "art/24.svg"
+  },
+  {
+    "id": 25,
+    "category": "food",
+    "zh": "雞腿",
+    "en": "Chicken treat",
+    "file": "art/25.svg"
+  },
+  {
+    "id": 26,
+    "category": "food",
+    "zh": "鮭魚",
+    "en": "Salmon",
+    "file": "art/26.svg"
+  },
+  {
+    "id": 27,
+    "category": "food",
+    "zh": "貓草",
+    "en": "Cat grass",
+    "file": "art/27.svg"
+  },
+  {
+    "id": 28,
+    "category": "food",
+    "zh": "凍乾",
+    "en": "Freeze-dried cubes",
+    "file": "art/28.svg"
+  },
+  {
+    "id": 29,
+    "category": "care",
+    "zh": "貓窩",
+    "en": "Cat bed",
+    "file": "art/29.svg"
+  },
+  {
+    "id": 30,
+    "category": "care",
+    "zh": "貓抓板",
+    "en": "Scratching board",
+    "file": "art/30.svg"
+  },
+  {
+    "id": 31,
+    "category": "care",
+    "zh": "項圈",
+    "en": "Collar",
+    "file": "art/31.svg"
+  },
+  {
+    "id": 32,
+    "category": "care",
+    "zh": "腳印碗",
+    "en": "Paw bowl",
+    "file": "art/32.svg"
+  },
+  {
+    "id": 33,
+    "category": "care",
+    "zh": "外出籠",
+    "en": "Pet carrier",
+    "file": "art/33.svg"
+  },
+  {
+    "id": 34,
+    "category": "care",
+    "zh": "梳子",
+    "en": "Brush",
+    "file": "art/34.svg"
+  },
+  {
+    "id": 35,
+    "category": "care",
+    "zh": "貓砂鏟",
+    "en": "Litter scoop",
+    "file": "art/35.svg"
+  },
+  {
+    "id": 36,
+    "category": "care",
+    "zh": "紙箱",
+    "en": "Cardboard box",
+    "file": "art/36.svg"
+  }
+]

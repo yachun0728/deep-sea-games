@@ -1,0 +1,15 @@
+/* Temporary presentation switch: preserve wallet data, rewards and analytics. */
+html.points-hidden .wallet-box,
+html.points-hidden .game-card-bonus,
+html.points-hidden .account-points,
+html.points-hidden .account-sub,
+html.points-hidden .demo-tag,
+html.points-hidden .member-wallet,
+html.points-hidden #open-wardrobe,
+html.points-hidden a[href="#wardrobe"],
+html.points-hidden [id$="-bonus"],
+html.points-hidden [id$="-result-reward"],
+html.points-hidden .ac-bonus,
+html.points-hidden .stats > div:has([id$="-bonus"]),
+html.points-hidden dl > div:has([id$="-bonus"]),
+html.points-hidden [data-points-hidden] { display:none !important; }

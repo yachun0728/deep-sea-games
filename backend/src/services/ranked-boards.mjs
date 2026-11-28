@@ -39,6 +39,7 @@ import catRules from '../../../shared/cat-rules.cjs';
 import runnerRules from '../../../shared/runner-rules.cjs';
 import dreamRules from '../../../shared/dream-rules.cjs';
 import oceanLink from '../../../games/ocean-link/board.js';
+import meowLink from '../../../shared/meow-link-rules.cjs';
 import mergeRules from '../../../shared/merge-rules.cjs';
 import bobaRules from '../../../shared/boba-rules.cjs';
 
@@ -304,6 +305,23 @@ const boards = new Map([
     },
     score: state => state.distance,
     visible: ({seed, distance, rulesVersion}) => ({seed, distance, rulesVersion}),
+  }],
+  ['meow-link', {
+    create: () => ({level: 1, completed: 0, seed: newSeed()}),
+    accepts: action => Array.isArray(action) && action.length === 24 &&
+      action.every(pair => Number.isInteger(pair) && pair >= 0 && pair < 6400),
+    apply: (state, action) => {
+      if (!meowLink.verifyMeowLinkLevel(state.level, state.seed, action)) return false;
+      state.completed = state.level;
+      if (state.level < 10) {
+        state.level++;
+        state.seed = newSeed();
+      }
+      return true;
+    },
+    score: state => state.completed === 10 ? state.completed : null,
+    checkpoint: state => state.completed < 10 ? state.completed : null,
+    visible: state => state,
   }],
   ['ocean-link', {
     create: () => ({level: 1, completed: 0, seed: newSeed()}),

@@ -463,5 +463,13 @@
     "card": "games/pedestrian-hell/card.html",
     "icon": "games/pedestrian-hell/icon.svg",
     "style": "games/pedestrian-hell/style.css"
+  },
+  {
+    "id": "meow-link",
+    "logic": "games/meow-link/game.js",
+    "view": "games/meow-link/view.html",
+    "card": "games/meow-link/card.html",
+    "icon": "games/meow-link/icon.svg",
+    "style": "games/meow-link/style.css"
   }
 ]

@@ -47,5 +47,11 @@
     "name": "行人地獄：我只是想買珍奶",
     "concept": "騎樓被機車和攤販塞滿，只好繞到馬路上。滑動閃避，活著走到珍奶店。",
     "status": "graduated"
+  },
+  {
+    "id": "meow-link",
+    "name": "貓咪連連看 Meow Link",
+    "concept": "奶油色貓咪連連看，沿用 Ocean Link 的十關連線玩法。",
+    "status": "graduated"
   }
 ]

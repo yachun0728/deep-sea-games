@@ -1,0 +1,295 @@
+{
+  "tool": "built-in image_gen",
+  "styleReference": "art-direction-v1.png",
+  "prompt": "One isolated subject; polished reference-matched hand-painted watercolor/gouache; complete silhouette; transparent alpha; readable at 36px; no text, UI, floor, shadow or checkerboard. Subject specified per entry in tiles.json.",
+  "assets": [
+    {
+      "id": 1,
+      "subject": "labu",
+      "source": "01-labu.png",
+      "generatedSource": "exec-0c2e8cfb-f126-46a0-8915-99145054cd09.png",
+      "file": "01.webp",
+      "alpha": true
+    },
+    {
+      "id": 2,
+      "subject": "ginger",
+      "source": "02-ginger.png",
+      "generatedSource": "exec-61d7a6a3-2156-49c8-b1c5-1b356cd01403.png",
+      "file": "02.webp",
+      "alpha": true
+    },
+    {
+      "id": 3,
+      "subject": "white",
+      "source": "03-white.png",
+      "generatedSource": "exec-b52c926e-7758-41a2-8ff7-c05a397acd54.png",
+      "file": "03.webp",
+      "alpha": true
+    },
+    {
+      "id": 4,
+      "subject": "sleepy",
+      "source": "04-sleepy.png",
+      "generatedSource": "exec-c70a7818-4b7c-4fd1-9d6d-2a43071ecc1f.png",
+      "file": "04.webp",
+      "alpha": true
+    },
+    {
+      "id": 5,
+      "subject": "black",
+      "source": "05-black.png",
+      "generatedSource": "exec-408c07a7-d32f-40f5-a75d-b68548956045.png",
+      "file": "05.webp",
+      "alpha": true
+    },
+    {
+      "id": 6,
+      "subject": "calico",
+      "source": "06-calico.png",
+      "generatedSource": "exec-33466d12-e554-4516-bf2b-24503360f704.png",
+      "file": "06.webp",
+      "alpha": true
+    },
+    {
+      "id": 7,
+      "subject": "siamese",
+      "source": "07-siamese.png",
+      "generatedSource": "exec-b667cb6c-219e-42c7-b6a9-0a2f570c9f35.png",
+      "file": "07.webp",
+      "alpha": true
+    },
+    {
+      "id": 8,
+      "subject": "tuxedo",
+      "source": "08-tuxedo.png",
+      "generatedSource": "exec-c4231e1c-fc78-42bd-8dce-b48bb8008067.png",
+      "file": "08.webp",
+      "alpha": true
+    },
+    {
+      "id": 9,
+      "subject": "yarn-cat",
+      "source": "09-yarn-cat.png",
+      "generatedSource": "exec-893945bb-0696-4ab4-b8f7-ea75c8b52aa2.png",
+      "file": "09.webp",
+      "alpha": true
+    },
+    {
+      "id": 10,
+      "subject": "belly",
+      "source": "10-belly.png",
+      "generatedSource": "exec-92100aab-62a4-4eea-ab59-5689ae9b38ee.png",
+      "file": "10.webp",
+      "alpha": true
+    },
+    {
+      "id": 11,
+      "subject": "silver",
+      "source": "11-silver.png",
+      "generatedSource": "exec-739bf447-2f61-43fe-9de7-004a6c4f25bc.png",
+      "file": "11.webp",
+      "alpha": true
+    },
+    {
+      "id": 12,
+      "subject": "cushion",
+      "source": "12-cushion.png",
+      "generatedSource": "exec-e4466253-01d5-4449-bedb-ed094a286f9f.png",
+      "file": "12.webp",
+      "alpha": true
+    },
+    {
+      "id": 13,
+      "subject": "yarn",
+      "source": "13-yarn.png",
+      "generatedSource": "exec-76b18149-aa31-4925-acf1-e1dcc49e8e26.png",
+      "file": "13.webp",
+      "alpha": true
+    },
+    {
+      "id": 14,
+      "subject": "wand",
+      "source": "14-wand.png",
+      "generatedSource": "exec-ffa7749b-6121-4f50-8586-3745fc8a87fb.png",
+      "file": "14.webp",
+      "alpha": true
+    },
+    {
+      "id": 15,
+      "subject": "mouse",
+      "source": "15-mouse.png",
+      "generatedSource": "exec-4c2a028e-ff98-4b84-8db4-8064975a3a80.png",
+      "file": "15.webp",
+      "alpha": true
+    },
+    {
+      "id": 16,
+      "subject": "bell-ball",
+      "source": "16-bell-ball.png",
+      "generatedSource": "exec-de48f64e-0fe6-4aee-8815-e9d49ed619cd.png",
+      "file": "16.webp",
+      "alpha": true
+    },
+    {
+      "id": 17,
+      "subject": "plush-fish",
+      "source": "17-plush-fish.png",
+      "generatedSource": "exec-57b5f400-cb44-4c13-8f62-55a6be606f06.png",
+      "file": "17.webp",
+      "alpha": true
+    },
+    {
+      "id": 18,
+      "subject": "ribbon",
+      "source": "18-ribbon.png",
+      "generatedSource": "exec-f515a87e-bb77-4315-b3e7-0a4a4e28bff2.png",
+      "file": "18.webp",
+      "alpha": true
+    },
+    {
+      "id": 19,
+      "subject": "spring",
+      "source": "19-spring.png",
+      "generatedSource": "exec-4f2ce92e-b2a3-4657-a286-b680d5dfc96b.png",
+      "file": "19.webp",
+      "alpha": true
+    },
+    {
+      "id": 20,
+      "subject": "star",
+      "source": "20-star.png",
+      "generatedSource": "exec-09c54807-2cf1-4329-b384-87a5d7ed054b.png",
+      "file": "20.webp",
+      "alpha": true
+    },
+    {
+      "id": 21,
+      "subject": "biscuit",
+      "source": "21-biscuit.png",
+      "generatedSource": "exec-d45394e1-853a-4f1d-a557-c4400fe61ba4.png",
+      "file": "21.webp",
+      "alpha": true
+    },
+    {
+      "id": 22,
+      "subject": "tin",
+      "source": "22-tin.png",
+      "generatedSource": "exec-0b35cded-6456-457f-92d6-4b5878103739.png",
+      "file": "22.webp",
+      "alpha": true
+    },
+    {
+      "id": 23,
+      "subject": "pouch",
+      "source": "23-pouch.png",
+      "generatedSource": "exec-bdbba658-571d-4da5-a0df-00e5eb9dafb2.png",
+      "file": "23.webp",
+      "alpha": true
+    },
+    {
+      "id": 24,
+      "subject": "kibble",
+      "source": "24-kibble.png",
+      "generatedSource": "exec-20c52991-ab52-49ec-93f7-7b376d6de8fb.png",
+      "file": "24.webp",
+      "alpha": true
+    },
+    {
+      "id": 25,
+      "subject": "chicken",
+      "source": "25-chicken.png",
+      "generatedSource": "exec-85e89b2e-31d3-4521-b77d-6b11268d3a6c.png",
+      "file": "25.webp",
+      "alpha": true
+    },
+    {
+      "id": 26,
+      "subject": "salmon",
+      "source": "26-salmon.png",
+      "generatedSource": "exec-efd5ad0e-00af-4685-a2a0-0b07aa108f84.png",
+      "file": "26.webp",
+      "alpha": true
+    },
+    {
+      "id": 27,
+      "subject": "grass",
+      "source": "27-grass.png",
+      "generatedSource": "exec-1f70d082-6291-4f5a-96c4-40b95ec482b0.png",
+      "file": "27.webp",
+      "alpha": true
+    },
+    {
+      "id": 28,
+      "subject": "cubes",
+      "source": "28-cubes.png",
+      "generatedSource": "exec-98ddee27-0445-448a-ab90-d3adf23b725e.png",
+      "file": "28.webp",
+      "alpha": true
+    },
+    {
+      "id": 29,
+      "subject": "bed",
+      "source": "29-bed.png",
+      "generatedSource": "exec-a548b18a-08e7-49d5-ab66-41c07f332ea6.png",
+      "file": "29.webp",
+      "alpha": true
+    },
+    {
+      "id": 30,
+      "subject": "scratcher",
+      "source": "30-scratcher.png",
+      "generatedSource": "exec-13378021-8dd6-457e-bbac-12ab7ca68e98.png",
+      "file": "30.webp",
+      "alpha": true
+    },
+    {
+      "id": 31,
+      "subject": "collar",
+      "source": "31-collar.png",
+      "generatedSource": "exec-78477706-af6e-4b30-ad47-13e05bc0df24.png",
+      "file": "31.webp",
+      "alpha": true
+    },
+    {
+      "id": 32,
+      "subject": "bowl",
+      "source": "32-bowl.png",
+      "generatedSource": "exec-7afff8b9-0062-46e9-a09c-db6c1906a3f1.png",
+      "file": "32.webp",
+      "alpha": true
+    },
+    {
+      "id": 33,
+      "subject": "carrier",
+      "source": "33-carrier.png",
+      "generatedSource": "exec-590d0d07-7cd1-408e-998e-f7d337310f00.png",
+      "file": "33.webp",
+      "alpha": true
+    },
+    {
+      "id": 34,
+      "subject": "brush",
+      "source": "34-brush.png",
+      "generatedSource": "exec-f12535c5-74dc-489f-a0a5-56b2fdb9d211.png",
+      "file": "34.webp",
+      "alpha": true
+    },
+    {
+      "id": 35,
+      "subject": "scoop",
+      "source": "35-scoop.png",
+      "generatedSource": "exec-4522816f-8878-4427-b5a9-64f6d07653f3.png",
+      "file": "35.webp",
+      "alpha": true
+    },
+    {
+      "id": 36,
+      "subject": "box",
+      "source": "36-box.png",
+      "generatedSource": "exec-89c14e91-f425-41fb-b57f-5fb07d14f799.png",
+      "file": "36.webp",
+      "alpha": true
+    }
+  ]
+}
