@@ -1,0 +1,21 @@
+{
+  "browser": "Chrome/158.0.8127.37",
+  "checks": [
+    "layout 390x844: proportional canvas, no overflow, native controls >=44px",
+    "layout 320x568: proportional canvas, no overflow, native controls >=44px",
+    "layout 430x760: proportional canvas, no overflow, native controls >=44px",
+    "layout 768x1024: proportional canvas, no overflow, native controls >=44px",
+    "layout 1366x900: proportional canvas, no overflow, native controls >=44px",
+    "layout 844x390: proportional canvas, no overflow, native controls >=44px",
+    "actual touch-hold walking: 23 foot/knee transforms recorded",
+    "real 60-step trip, all three milestones, final wheel, diary and save; free entry +3 game points plus separately checked platform rewards",
+    "collection, event memories, return to diary and actual PNG export",
+    "English diary, replay, live language change and route leave/return preserve progress",
+    "English gameplay and no runtime/resource errors; recent frame interval p95 16.7 ms (headless only)",
+    "failed required art blocks start; tap retries and restores start after resource recovery",
+    "390px lobby cover rendered and game link retained"
+  ],
+  "status": "PASS",
+  "physical_devices": "NOT TESTED",
+  "CrazyGames": "NOT APPLICABLE"
+}

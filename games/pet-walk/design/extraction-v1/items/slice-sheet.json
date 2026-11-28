@@ -1,0 +1,358 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "items-source-v1.png",
+  "grid": [
+    4,
+    3
+  ],
+  "canvas": {
+    "w": 192,
+    "h": 192
+  },
+  "baseline_y": 184.0,
+  "target_height": 172.0,
+  "scale": "cell",
+  "fit": "contain",
+  "factor": null,
+  "factor_from": null,
+  "alpha_cleanup": "alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "can",
+      "file": "can.png",
+      "factor": 0.6277372262773723,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 262,
+          "h": 274
+        },
+        "canvas": {
+          "w": 164,
+          "h": 172
+        }
+      },
+      "box": {
+        "x": 14,
+        "y": 12,
+        "w": 164,
+        "h": 172
+      },
+      "anchor": [
+        96.0,
+        184.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "wood",
+      "file": "wood.png",
+      "factor": 0.5647058823529412,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 339,
+          "h": 251
+        },
+        "canvas": {
+          "w": 191,
+          "h": 142
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 42,
+        "w": 191,
+        "h": 142
+      },
+      "anchor": [
+        96.5,
+        184.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "stone",
+      "file": "stone.png",
+      "factor": 0.6193548387096774,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 309,
+          "h": 222
+        },
+        "canvas": {
+          "w": 191,
+          "h": 137
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 47,
+        "w": 191,
+        "h": 137
+      },
+      "anchor": [
+        96.5,
+        184.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "scrap",
+      "file": "scrap.png",
+      "factor": 0.5217391304347826,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 367,
+          "h": 231
+        },
+        "canvas": {
+          "w": 191,
+          "h": 121
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 63,
+        "w": 191,
+        "h": 121
+      },
+      "anchor": [
+        96.5,
+        184.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "cloth",
+      "file": "cloth.png",
+      "factor": 0.6153846153846154,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 311,
+          "h": 226
+        },
+        "canvas": {
+          "w": 191,
+          "h": 139
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 45,
+        "w": 191,
+        "h": 139
+      },
+      "anchor": [
+        96.5,
+        184.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "fish",
+      "file": "fish.png",
+      "factor": 0.6881720430107527,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 278,
+          "h": 152
+        },
+        "canvas": {
+          "w": 191,
+          "h": 105
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 79,
+        "w": 191,
+        "h": 105
+      },
+      "anchor": [
+        96.5,
+        184.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "rope",
+      "file": "rope.png",
+      "factor": 0.5981308411214953,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 320,
+          "h": 247
+        },
+        "canvas": {
+          "w": 191,
+          "h": 148
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 36,
+        "w": 191,
+        "h": 148
+      },
+      "anchor": [
+        96.5,
+        184.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "battery",
+      "file": "battery.png",
+      "factor": 0.5907692307692308,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 324,
+          "h": 171
+        },
+        "canvas": {
+          "w": 191,
+          "h": 101
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 83,
+        "w": 191,
+        "h": 101
+      },
+      "anchor": [
+        96.5,
+        184.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "ore",
+      "file": "ore.png",
+      "factor": 0.593103448275862,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 253,
+          "h": 290
+        },
+        "canvas": {
+          "w": 150,
+          "h": 172
+        }
+      },
+      "box": {
+        "x": 21,
+        "y": 12,
+        "w": 150,
+        "h": 172
+      },
+      "anchor": [
+        96.0,
+        184.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "ai_word",
+      "file": "ai_word.png",
+      "factor": 0.6274509803921569,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 305,
+          "h": 216
+        },
+        "canvas": {
+          "w": 191,
+          "h": 136
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 48,
+        "w": 191,
+        "h": 136
+      },
+      "anchor": [
+        96.5,
+        184.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "rainbow",
+      "file": "rainbow.png",
+      "factor": 0.5393258426966292,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 355,
+          "h": 297
+        },
+        "canvas": {
+          "w": 191,
+          "h": 160
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 24,
+        "w": 191,
+        "h": 160
+      },
+      "anchor": [
+        96.5,
+        184.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "flowers",
+      "file": "flowers.png",
+      "factor": 0.5944272445820433,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 322,
+          "h": 289
+        },
+        "canvas": {
+          "w": 191,
+          "h": 172
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 12,
+        "w": 191,
+        "h": 172
+      },
+      "anchor": [
+        96.5,
+        184.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

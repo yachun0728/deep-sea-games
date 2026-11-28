@@ -1,0 +1,190 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "puppet-source-v1.png",
+  "grid": [
+    3,
+    2
+  ],
+  "canvas": {
+    "w": 384,
+    "h": 384
+  },
+  "baseline_y": 370.0,
+  "target_height": 350.0,
+  "scale": "cell",
+  "fit": "contain",
+  "factor": null,
+  "factor_from": null,
+  "alpha_cleanup": "alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "neutral",
+      "file": "neutral.png",
+      "factor": 0.7709251101321586,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 361,
+          "h": 454
+        },
+        "canvas": {
+          "w": 278,
+          "h": 350
+        }
+      },
+      "box": {
+        "x": 53,
+        "y": 20,
+        "w": 278,
+        "h": 350
+      },
+      "anchor": [
+        192.0,
+        370.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "happy",
+      "file": "happy.png",
+      "factor": 0.7709251101321586,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 361,
+          "h": 454
+        },
+        "canvas": {
+          "w": 278,
+          "h": 350
+        }
+      },
+      "box": {
+        "x": 53,
+        "y": 20,
+        "w": 278,
+        "h": 350
+      },
+      "anchor": [
+        192.0,
+        370.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "surprised",
+      "file": "surprised.png",
+      "factor": 0.7726269315673289,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 360,
+          "h": 453
+        },
+        "canvas": {
+          "w": 278,
+          "h": 350
+        }
+      },
+      "box": {
+        "x": 53,
+        "y": 20,
+        "w": 278,
+        "h": 350
+      },
+      "anchor": [
+        192.0,
+        370.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "thigh",
+      "file": "thigh.png",
+      "factor": 2.1875,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 93,
+          "h": 160
+        },
+        "canvas": {
+          "w": 203,
+          "h": 350
+        }
+      },
+      "box": {
+        "x": 91,
+        "y": 20,
+        "w": 203,
+        "h": 350
+      },
+      "anchor": [
+        192.5,
+        370.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "foot",
+      "file": "foot.png",
+      "factor": 2.3972602739726026,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 138,
+          "h": 146
+        },
+        "canvas": {
+          "w": 331,
+          "h": 350
+        }
+      },
+      "box": {
+        "x": 28,
+        "y": 20,
+        "w": 331,
+        "h": 350
+      },
+      "anchor": [
+        193.5,
+        370.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "portrait",
+      "file": "portrait.png",
+      "factor": 0.7743362831858407,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 351,
+          "h": 452
+        },
+        "canvas": {
+          "w": 272,
+          "h": 350
+        }
+      },
+      "box": {
+        "x": 56,
+        "y": 20,
+        "w": 272,
+        "h": 350
+      },
+      "anchor": [
+        192.0,
+        370.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

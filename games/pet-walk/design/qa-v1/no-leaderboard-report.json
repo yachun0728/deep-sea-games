@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "synthetic_feed": "Pet Walkies excluded; Frog retained",
+  "game_panel": "no leaderboard",
+  "start_requests": "no Pet Walkies API score requests",
+  "production_D1": "NOT TESTED; no writes"
+}
