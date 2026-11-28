@@ -12,3 +12,13 @@
 - NOT APPLICABLE：CrazyGames 送審／SDK／廣告；資料遷移或 API Worker 部署。
 
 初版延展場景曾出現橫紋支架，使用者指出後判定視覺 FAIL 並退掉；未部署。Chrome 此版本不提供 Emulation.setSafeAreaInsets，故明列 padding 模擬與原生安全區未驗證，未將不支援的呼叫視為通過。
+
+## 正式發布與資料驗證
+
+- 合併最新版遠端 `1eb57d2`（保留 Pet Walkies 美術與不列排行榜修改），發布遊戲 commit `2a9377a`；`dc56a5f` 排除本次 QA 截圖的公開靜態資源。
+- 正式 Worker 版本：`4705363b-faf4-4690-9401-b646fd8fc352`。網址：https://www.ticaticagames.com/#reaper 。
+- PASS：正式站觸控開局、普通幽靈收魂、三心結束、結算與送分；HTTP 201 開局，HTTP 200 回放結算，score=1、revision=1。
+- PASS：回合 `9c87c83a-9ebb-41f4-a7d0-6357289d341b`，D1 唯讀 JOIN 確認 round_score=1、leaderboard_score=1、revision=1，rows_written=0。
+- PASS：正式站實際遊玩截圖 live-captured-390.png，原畫與上下資訊沒有窄條拼接或角色拉伸。
+- PASS：該回合客戶端恰好排入一次 game_start 與一次 game_end。GA4 後台收件仍標示 NOT TESTED，沒有用 dataLayer 取代後台證據。
+- 未解決 FAIL／BLOCKED：無。實機與長時間效能的未驗證範圍仍維持上述 NOT TESTED。
