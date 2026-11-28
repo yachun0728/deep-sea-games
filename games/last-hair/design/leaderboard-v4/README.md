@@ -11,3 +11,5 @@ NOT TESTED：D1 Studio直接查表（此次使用正式持久化API讀回）、�
 美術接線 PASS：390×844 與1280×900本機預覽，核對新封面、SVG image縮圖和排行榜列連結；排行榜使用剛才正式API快照作版面驗收，並非本機正式API連線。封面1056×1000、270752bytes，頭像192×192、14468bytes。build/check與diff whitespace PASS。截圖 lobby-* / leaderboard-*。
 
 2026-11-28 使用者確認「好，這兩張可以，上線吧」，核准大廳封面及排行榜頭像。發布基準 origin/main c3572be；不改遊戲、排行計分、API、錢包、存檔或Analytics。
+
+正式發布 PASS：ef6f546已推送main；Worker版本fff4268f-2ec0-4d06-bd2c-6c4efe340559。正式網域390×844與1280×900，使用真實API資料，確認新封面／排行榜頭像、列連結可進遊戲；index與兩張圖SHA-256一致。49項Python測試、build/check、diff whitespace PASS。NOT TESTED：實體手機與其他瀏覽器；GA4後台收件。FAIL／BLOCKED：無未解決項目。NOT APPLICABLE：本次無排行邏輯、錢包、API或SDK改動。
