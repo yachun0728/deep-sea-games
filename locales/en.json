@@ -3214,7 +3214,6 @@
   "在棋盤上滑動轉向": "Swipe on the board to turn",
   "我只是想買珍奶": "I just want bubble tea",
   "騎樓被機車和攤販塞滿，只好繞到馬路上。一杯接一杯，看你能喝到幾杯！": "Scooters and stalls block the sidewalk, so you end up on the road. How many cups can you get?",
-  "小心倒車機車、睡覺黑狗，還有垃圾車": "Watch for reversing scooters, sleeping dogs and the garbage truck",
   "載入中…": "Loading…",
   "載入失敗，請重新整理": "Failed to load. Please refresh.",
   "第 {n} 杯": "Cup {n}",
@@ -3226,7 +3225,6 @@
   "嚇到靈魂出竅！": "Scared out of your wits!",
   "嚇到！": "Yikes!",
   "第 {n} 杯，路更難了": "Cup {n}: it gets harder",
-  "嗶嗶～倒車": "Beep beep, backing up!",
   "汪！這是牠的騎樓": "Woof! My sidewalk.",
   "什麼都能等，垃圾車不能！": "Never miss the garbage truck!",
   "喵～": "Meow~",
@@ -3293,5 +3291,14 @@
   "按住畫面：一直往前走（點一下走一步）": "Hold: keep walking (tap for one step)",
   "左右滑：閃開；往下滑：後退": "Swipe sideways to dodge, down to step back",
   "方向鍵 / WASD 移動，按住往前可一直走": "Arrow keys / WASD; hold forward to keep walking",
-  "空白鍵暫停；滑鼠按住也能往前": "Space pauses; holding the mouse walks too"
+  "空白鍵暫停；滑鼠按住也能往前": "Space pauses; holding the mouse walks too",
+  "側身": "Squeeze",
+  "按住側身，走得比較慢": "Hold to sidestep (slower)",
+  "側身才擠得過去！": "Turn sideways to squeeze through!",
+  "借過一下～": "Excuse me~",
+  "按住右下角「側身」：擠過窄縫、閃過機車": "Hold \"Squeeze\": slip through gaps and past scooters",
+  "按住 Shift：側身擠過窄縫、閃過機車": "Hold Shift: squeeze through gaps and past scooters",
+  "可穿過": "Way through",
+  "借過一下，我牽車": "Excuse me, moving my scooter",
+  "小心牽機車的人、睡覺黑狗，還有垃圾車": "Watch for scooters being wheeled out, sleeping dogs and the garbage truck"
 }

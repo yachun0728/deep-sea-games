@@ -9,6 +9,9 @@
 html,body{height:100%;background:#0b1d2a;color:#e8f4f8;overflow:hidden;overscroll-behavior:none;touch-action:none;
   font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif}
 #app{position:relative;max-width:min(480px,58vh);height:100%;margin:0 auto;background:#10303f}
+#side{position:absolute;z-index:6;right:14px;bottom:calc(22px + env(safe-area-inset-bottom));width:84px;height:84px;padding:0;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:rgba(255,253,244,.94);color:#3a2c22;border:3px solid #3a2c22;box-shadow:0 4px 0 #3a2c22;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#side[hidden]{display:none}#side svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}#side span{font-size:13px;font-weight:800;pointer-events:none}
+#side.on{background:#f7e33b;transform:translateY(3px);box-shadow:0 1px 0 #3a2c22}
 #cv{position:absolute;inset:0;width:100%;height:100%;display:block;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 #tag{position:absolute;top:calc(8px + env(safe-area-inset-top));left:8px;z-index:5;font-size:11px;padding:3px 8px;
   border-radius:99px;background:#f7e33b;color:#1d1b1a;font-weight:800;letter-spacing:1px}
@@ -52,6 +55,7 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
     <button id="leaders" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 4h9v5a4.5 4.5 0 0 1-9 0Z"/><path d="M7.5 6H4.5v1.2A3.3 3.3 0 0 0 7.8 10.5"/><path d="M16.5 6h3v1.2a3.3 3.3 0 0 1-3.3 3.3"/><path d="M12 13.5V17"/><path d="M8.5 20h7"/><path d="M10 17h4v3h-4Z"/></svg></button>
   </div>
   <div id="hud"></div>
+  <button id="side" type="button" hidden><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 4v24"/><path d="M25 4v24"/><circle cx="16" cy="8.5" r="3"/><path d="M16 12.5v8"/><path d="M16 14.5l3.5 3"/><path d="M16 20.5l-2.5 7"/><path d="M16 20.5l3 7"/></svg><span></span></button>
   <div id="panel" class="screen solid">
     <img id="endHero" alt="" hidden>
     <h1 id="title"></h1>
@@ -73,7 +77,7 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
   var W=0,H=0,dpr=1,C=0,F=0,R=0,ROADW=1.32;
   var S=null,rng=Math.random,rows,P,cars,cam,t=0,parked,reversers,pending,bump=0,over=false;
   var state='ready',active=true,starting=false,last=0,best=0,frameId=0,language=bridge.language(window);
-  var EN={"小綠人亮了才能走":"Wait for the little green man","轉彎車不減速！":"Turning car, not slowing!","轉彎車":"Taxi turning","騎樓高低不平，上下會變慢":"Uneven floors slow you down","人行道到此為止":"Sidewalk ends here","啵！":"Pop!","啾～啾～":"Sluuurp~","哈～好喝！":"Ahh, so good!","行人優先？轉彎車說下次一定。":"Pedestrians first? The turning car says maybe next time.","行人地獄":"Just Want Boba","我只是想買珍奶":"I just want bubble tea","騎樓被機車和攤販塞滿，只好繞到馬路上。一杯接一杯，看你能喝到幾杯！":"Scooters and stalls block the sidewalk, so you end up on the road. How many cups can you get?","上方出現紅黃警告，先別走那一道":"A red-and-yellow warning at the top means stay out of that lane","小心倒車機車、睡覺黑狗，還有垃圾車":"Watch for reversing scooters, sleeping dogs and the garbage truck","開始遊戲":"Play","再玩一次":"Play again","暫停中":"Paused","暫停":"Pause","繼續":"Resume","載入中…":"Loading…","載入失敗，請重新整理":"Failed to load. Please refresh.","第 {n} 杯":"Cup {n}","還有 {n} 步":"{n} steps left","喝到 {n} 杯珍奶。":"Cups of bubble tea: {n}.","最佳紀錄：{n} 杯":"Best: {n} cups","{n} 杯":"{n} cups","珍奶店打烊了":"The boba shop is closed","嚇到靈魂出竅！":"Scared out of your wits!","嚇到！":"Yikes!","垃圾車來了！":"Garbage truck!","第 {n} 杯到手！":"Got cup {n}!","嗶嗶～倒車":"Beep beep, backing up!","汪！這是牠的騎樓":"Woof! My sidewalk.","什麼都能等，垃圾車不能！":"Never miss the garbage truck!","喵～":"Meow~","外送":"Delivery","機車":"Scooter","小黃":"Taxi","貨車":"Truck","公車":"Bus","垃圾車":"Garbage","明明是騎樓，為什麼要走馬路？":"It is a sidewalk. Why are you on the road?","你只是想買一杯珍奶。":"All you wanted was bubble tea.","靈魂先到珍奶店了。":"Your soul got to the boba shop first.","下次記得先看上面的警告。":"Check the warnings next time.","今天喝到這裡，明天再來！":"That is enough boba for today!","「借過一下喔～啊你怎麼站這裡？」":"\"Excuse me~ why are you standing there?\"","追垃圾車的人，被垃圾車追到了。":"You chased the garbage truck. It chased back.","返回遊戲大廳":"Back to lobby","靜音切換":"Toggle sound","排行榜":"Leaderboard","關閉":"Close","讀取中…":"Loading…","目前還沒有成績":"No scores yet","排行榜讀取失敗，請稍後再試":"Leaderboard unavailable. Try again later.","老街的騎樓高高低低":"Old street, uneven arcades","飲料店在馬路對面":"The shop is across the road","走專用道也有機車":"Scooters on the walkway too","下班時間，大家都臨停":"Rush hour: everyone just stops","放學路上":"The way home from school","市場旁邊的老路":"The old road by the market","最遠的那一家":"The farthest shop","下一杯：{n}":"Next: {n}","今天要喝：{n}":"Today: {n}","沒有紅綠燈，看清楚再過":"No signal here. Look first!","借過！機車騎上來了":"Scooter on the walkway!","臨停一下就好！":"Just stopping for a sec!","臨停車":"Parking car","「臨停一下就好」，結果停到你身上。":"\"Just a quick stop,\" right on top of you.","過馬路看燈號，沒燈的路口等車過完再走":"Obey signals; at unmarked crossings, wait for a gap","珍珠奶茶":"Pearl milk tea","黑糖珍珠鮮奶":"Brown sugar boba milk","翡翠檸檬":"Jade lemon green tea","楊枝甘露":"Mango pomelo sago","芋頭鮮奶":"Taro fresh milk","抹茶拿鐵":"Matcha latte","泰式奶茶":"Thai milk tea","百香雙響炮":"Passion fruit double topping","冬瓜檸檬":"Winter melon lemon tea","西瓜汁":"Watermelon juice","超級地獄：{n}":"Super hell: {n}","佔用騎樓！借過一下":"Tables on the sidewalk. Excuse me!","塞死了，只能走外面":"Dead end. Go around outside!","按住畫面：一直往前走（點一下走一步）":"Hold: keep walking (tap for one step)","左右滑：閃開；往下滑：後退":"Swipe sideways to dodge, down to step back","方向鍵 / WASD 移動，按住往前可一直走":"Arrow keys / WASD; hold forward to keep walking","空白鍵暫停；滑鼠按住也能往前":"Space pauses; holding the mouse walks too"};
+  var EN={"小綠人亮了才能走":"Wait for the little green man","轉彎車不減速！":"Turning car, not slowing!","轉彎車":"Taxi turning","騎樓高低不平，上下會變慢":"Uneven floors slow you down","人行道到此為止":"Sidewalk ends here","啵！":"Pop!","啾～啾～":"Sluuurp~","哈～好喝！":"Ahh, so good!","行人優先？轉彎車說下次一定。":"Pedestrians first? The turning car says maybe next time.","行人地獄":"Just Want Boba","我只是想買珍奶":"I just want bubble tea","騎樓被機車和攤販塞滿，只好繞到馬路上。一杯接一杯，看你能喝到幾杯！":"Scooters and stalls block the sidewalk, so you end up on the road. How many cups can you get?","上方出現紅黃警告，先別走那一道":"A red-and-yellow warning at the top means stay out of that lane","開始遊戲":"Play","再玩一次":"Play again","暫停中":"Paused","暫停":"Pause","繼續":"Resume","載入中…":"Loading…","載入失敗，請重新整理":"Failed to load. Please refresh.","第 {n} 杯":"Cup {n}","還有 {n} 步":"{n} steps left","喝到 {n} 杯珍奶。":"Cups of bubble tea: {n}.","最佳紀錄：{n} 杯":"Best: {n} cups","{n} 杯":"{n} cups","珍奶店打烊了":"The boba shop is closed","嚇到靈魂出竅！":"Scared out of your wits!","嚇到！":"Yikes!","垃圾車來了！":"Garbage truck!","第 {n} 杯到手！":"Got cup {n}!","汪！這是牠的騎樓":"Woof! My sidewalk.","什麼都能等，垃圾車不能！":"Never miss the garbage truck!","喵～":"Meow~","外送":"Delivery","機車":"Scooter","小黃":"Taxi","貨車":"Truck","公車":"Bus","垃圾車":"Garbage","明明是騎樓，為什麼要走馬路？":"It is a sidewalk. Why are you on the road?","你只是想買一杯珍奶。":"All you wanted was bubble tea.","靈魂先到珍奶店了。":"Your soul got to the boba shop first.","下次記得先看上面的警告。":"Check the warnings next time.","今天喝到這裡，明天再來！":"That is enough boba for today!","「借過一下喔～啊你怎麼站這裡？」":"\"Excuse me~ why are you standing there?\"","追垃圾車的人，被垃圾車追到了。":"You chased the garbage truck. It chased back.","返回遊戲大廳":"Back to lobby","靜音切換":"Toggle sound","排行榜":"Leaderboard","關閉":"Close","讀取中…":"Loading…","目前還沒有成績":"No scores yet","排行榜讀取失敗，請稍後再試":"Leaderboard unavailable. Try again later.","老街的騎樓高高低低":"Old street, uneven arcades","飲料店在馬路對面":"The shop is across the road","走專用道也有機車":"Scooters on the walkway too","下班時間，大家都臨停":"Rush hour: everyone just stops","放學路上":"The way home from school","市場旁邊的老路":"The old road by the market","最遠的那一家":"The farthest shop","下一杯：{n}":"Next: {n}","今天要喝：{n}":"Today: {n}","沒有紅綠燈，看清楚再過":"No signal here. Look first!","借過！機車騎上來了":"Scooter on the walkway!","臨停一下就好！":"Just stopping for a sec!","臨停車":"Parking car","「臨停一下就好」，結果停到你身上。":"\"Just a quick stop,\" right on top of you.","過馬路看燈號，沒燈的路口等車過完再走":"Obey signals; at unmarked crossings, wait for a gap","珍珠奶茶":"Pearl milk tea","黑糖珍珠鮮奶":"Brown sugar boba milk","翡翠檸檬":"Jade lemon green tea","楊枝甘露":"Mango pomelo sago","芋頭鮮奶":"Taro fresh milk","抹茶拿鐵":"Matcha latte","泰式奶茶":"Thai milk tea","百香雙響炮":"Passion fruit double topping","冬瓜檸檬":"Winter melon lemon tea","西瓜汁":"Watermelon juice","超級地獄：{n}":"Super hell: {n}","佔用騎樓！借過一下":"Tables on the sidewalk. Excuse me!","塞死了，只能走外面":"Dead end. Go around outside!","按住畫面：一直往前走（點一下走一步）":"Hold: keep walking (tap for one step)","左右滑：閃開；往下滑：後退":"Swipe sideways to dodge, down to step back","方向鍵 / WASD 移動，按住往前可一直走":"Arrow keys / WASD; hold forward to keep walking","空白鍵暫停；滑鼠按住也能往前":"Space pauses; holding the mouse walks too","側身":"Squeeze","按住側身，走得比較慢":"Hold to sidestep (slower)","側身才擠得過去！":"Turn sideways to squeeze through!","借過一下～":"Excuse me~","按住右下角「側身」：擠過窄縫、閃過機車":"Hold \"Squeeze\": slip through gaps and past scooters","按住 Shift：側身擠過窄縫、閃過機車":"Hold Shift: squeeze through gaps and past scooters","可穿過":"Way through","借過一下，我牽車":"Excuse me, moving my scooter","小心牽機車的人、睡覺黑狗，還有垃圾車":"Watch for scooters being wheeled out, sleeping dogs and the garbage truck"};
   /* 畫面文字一律以繁中為原文：英文查表，簡中交給平台轉換 */
   function tr(text,n){
     var out=language==='en'?(Object.prototype.hasOwnProperty.call(EN,text)?EN[text]:text):bridge.translate(window,text);
@@ -85,9 +89,9 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
   var NAMES=('pots moneytree bougain gas tyre bluepot blocker stools radish nopark dog dogup '+
     'scooterside bathtub uncle quilt recycler diners carside_red carside_grey carside_van carred cargrey scooterside_blue scooterside_grey car_suv car_white truck_parked cones stall_wide stall_road scooterstack dinersv '+
     'v_delivery v_auntie v_taxi v_truck v_bus v_garbage '+
-    'hero_idle hero_walk1 hero_walk2 hero_scared hero_happy nb_auntie nb_uncle shop door_shutter door_glass door_red door_steel door_half door_eatery door_wood door_noren wall_school wall_tin wall_garden wall_mosaic '+
+    'hero_idle hero_walk1 hero_walk2 hero_scared hero_happy nb_auntie nb_uncle wall a_green a_orange a_stripe f_cage f_ac wheel wait_auntie1 wait_auntie2 wait_uncle1 wait_uncle2 side_a side_b side_c roof_red roof_canopy roof_green door_shutter door_glass door_red door_steel door_half door_eatery door_wood door_noren wall_school wall_tin wall_garden wall_mosaic '+
     's_pharmacy s_dumpling s_keys s_barber s_herbtea s_ribs s_moto s_buffet '+
-    'x_scooter x_taxi x_truck x_bus shopfront sip eat_table eat_diner eat_stools eat_freezer eat_cart eat_boxes eat_menu eat_fan '+
+    'x_scooter x_taxi x_truck x_bus shopfront shop_a shop_b shop_c shop_d corner_a corner_b corner_c hero_side sip eat_table eat_diner eat_stools eat_freezer eat_cart eat_boxes eat_menu eat_fan '+
     's_breakfast s_hardware s_rice s_noodle s_ice s_boba s_cuts s_rent '+
     'anim_hero anim_auntie anim_uncle anim_dog anim_cat cat_sleep cat_lick cat_loaf cat_sit cat_flop cat_stretch').split(' ');
   var IMG={},waiting=NAMES.length,failed=0;
@@ -281,9 +285,11 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
   }
   function resize(){
     dpr=Math.min(window.devicePixelRatio||1,2);
-    W=cv.clientWidth;H=cv.clientHeight;F=Math.round(W*.2);C=(W-F)/(ARCADE+2*ROADW);R=C*ROADW;   /* 車道比走道寬，車子才夠大台 */
+    W=cv.clientWidth;H=cv.clientHeight;F=0;C=W*.28;R=C*ROADW;       /* C、R、F 在畫每個距離的東西時會暫時改掉 */
+    FOCAL=W*.9;HORIZON=H*.33;
     cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
-    makeTiles();if(rows&&state!=='running')draw();
+    makeTiles();makeClassicTiles();
+    asphalt=paint(128,128,function(g){g.fillStyle='#737276';g.fillRect(0,0,128,128);speckle(g,128,128,seeded(5),560,['#838287','#68676b','#8d8b8f'],.8,2.4);});if(rows&&state!=='running')draw();
   }
   window.addEventListener('resize',resize);
 
@@ -300,7 +306,7 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
     g.gain.setValueAtTime(.0001,s);g.gain.exponentialRampToValueAtTime(vol,s+.02);g.gain.exponentialRampToValueAtTime(.0001,s+dur);
     o.connect(g);g.connect(ac.destination);o.start(s);o.stop(s+dur+.02);
   }
-  function sndReverse(){for(var i=0;i<3;i++)tone(1250,i*.4,.18,'square',.05);}
+  function sndReverse(){tone(540,0,.1,'triangle',.07,420);tone(540,.2,.14,'triangle',.07,360);}   /* 牽車的人出聲提醒 */
   function sndBark(){tone(520,0,.12,'sawtooth',.09,230);tone(500,.17,.14,'sawtooth',.09,210);}
   function sndMeow(){tone(620,0,.16,'triangle',.07,900);tone(900,.16,.26,'triangle',.07,480);}
   function sndGarbage(){   /* 《給愛麗絲》開頭（公有領域樂曲，自行合成） */
@@ -376,6 +382,90 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
   }
 
 
+  /* ---------- 第 1 杯的招牌牆（沿用原本的畫法，使用者指定第 1 關維持原樣） ---------- */
+  var C_ASPECT={s_pharmacy:2.05,s_dumpling:2.18,s_keys:3,s_barber:1.53,s_herbtea:2.5,s_ribs:2.12,s_moto:2.33,s_buffet:2.18,
+    s_breakfast:.32,s_hardware:.32,s_rice:.81,s_noodle:.35,s_ice:.32,s_boba:.38,s_cuts:.38,s_rent:.3,
+    a_green:.63,a_orange:.66,a_stripe:.61,a_tin:.6,f_cage:1.02,f_ac:.8};
+  var C_TALL=['s_pharmacy','s_dumpling','s_keys','s_barber','s_herbtea','s_ribs','s_moto','s_buffet'];
+  var C_WIDE=['s_breakfast','s_hardware','s_rice','s_noodle','s_ice','s_boba','s_cuts','s_rent'];
+  var C_AWNING=['a_green','a_orange','a_stripe'],C_FITTING=['f_cage','f_ac'];
+  var oldSigns=[],oldBack=[];
+  /* x、w 以招牌欄寬為 1；y 是底部所在的列數。招牌欄寬 ÷ 格寬固定為 0.22W ÷ 0.156W
+     版面刻意放疏：一次只掛一塊招牌，直招和橫招輪流，中間留牆面 */
+  function classicBuildFacade(){
+    oldSigns=[];oldBack=[];
+    var ratio=.2/(.8/(ARCADE+2*ROADW)),y=-6,tallTurn=Math.random()<.5;
+    function clear(bottom,h){                     /* 路口那幾列是橫向馬路，不掛東西 */
+      return !(S.crossings||[]).some(function(x){return bottom+h>x.base-.15&&bottom<x.base+R_.CROSS_ROWS+.15;});
+    }
+    function piece(list,name,w,x,bottom){
+      var o={img:name,w:w,x:x,y:bottom,h:w*C_ASPECT[name]*ratio};if(clear(bottom,o.h))list.push(o);return o;
+    }
+    while(y<GOAL+20){
+      var o;
+      if(tallTurn){var w=rand(.5,.58);o=piece(oldSigns,draw1('st',C_TALL),w,.1,y);}
+      else o=piece(oldSigns,draw1('sw',C_WIDE),1.02,0,y);
+      tallTurn=!tallTurn;
+      var top=o.y+o.h,gap=rand(1.5,2.5);
+      if(Math.random()<.45)piece(oldBack,draw1('aw',C_AWNING),.96,.02,top+(gap-.9)/2);
+      else if(Math.random()<.3)piece(oldBack,draw1('ft',C_FITTING),.62,.19,top+(gap-1)/2);
+      y=top+gap;
+    }
+    function far(a,b){return b.y-a.y;}            /* 遠的先畫，近的蓋住遠的 */
+    oldSigns.sort(far);oldBack.sort(far);
+  }
+  function classicDrawFacade(){
+    var wl=IMG.wall,fw=F+4,y;
+    if(wl&&wl.naturalWidth){
+      var wh=wl.naturalHeight*fw/wl.naturalWidth,off=((cam*C)%wh+wh)%wh;
+      for(y=off-wh;y<H;y+=wh)ctx.drawImage(wl,0,y,fw,wh+.5);
+    }
+    ctx.fillStyle='rgba(232,224,208,.5)';ctx.fillRect(0,0,fw,H);      /* 牆面刷淡，招牌才清楚 */
+    [oldBack,oldSigns].forEach(function(list,layer){
+      list.forEach(function(o){
+        var bottom=sy(o.y)+C,w=o.w*F,h=o.h*C,im=IMG[o.img];
+        if(bottom<0||bottom-h>H||!im||!im.naturalWidth)return;
+        if(layer){ctx.globalAlpha=.24;ctx.drawImage(silhouette(o.img),o.x*F+4,bottom-h+5,w,h);ctx.globalAlpha=1;}
+        if(!calm&&o.img.charAt(0)==='a'){
+          var wave=Math.sin(clk*1.4+o.y*3)*.012;
+          ctx.save();ctx.translate(o.x*F,bottom-h);ctx.transform(1,wave,0,1,0,0);ctx.drawImage(im,0,0,w,h);ctx.restore();   /* 靠牆那端固定 */
+        }else ctx.drawImage(im,o.x*F,bottom-h,w,h);
+      });
+    });
+  }
+
+
+  var classicTiles=[];
+  function makeClassicTiles(){
+    function terrazzo(base){return function(g){
+      g.fillStyle=base;g.fillRect(0,0,64,64);noise(g,64,64,170,['#9d968a','#efe9dc','#b98f7e','#8b8f8a'],1.8);
+      g.strokeStyle='rgba(90,75,62,.3)';g.lineWidth=1;g.strokeRect(.5,.5,63,63);
+    };}
+    function brick(g){
+      g.fillStyle='#d6c6b8';g.fillRect(0,0,64,64);
+      for(var y=0;y<4;y++)for(var x=-1;x<4;x++){
+        g.fillStyle=((x+y)&1)?'#cfa598':'#c9bdb2';g.fillRect(x*20+(y&1)*10+1,y*16+1,18,14);
+      }
+      noise(g,64,64,60,['rgba(80,60,50,.25)','rgba(255,250,240,.4)'],1.5);
+      g.strokeStyle='rgba(90,75,62,.3)';g.strokeRect(.5,.5,63,63);
+    }
+    classicTiles=[makeTile(terrazzo('#cdc4b4')),makeTile(terrazzo('#c3b9aa')),makeTile(brick)];
+  }
+  function classic(){return !!S&&S.cup===1;}
+  function classicFloors(first,lastRow){
+    for(var r=first;r<=lastRow;r++)for(var c=0;c<ARCADE;c++){
+      var kind=(Math.floor((r+20)/5)+(c===2?1:0))%3;
+      if(classicTiles[kind])ctx.drawImage(classicTiles[kind],cx(c),sy(r),C+.5,C+.5);
+    }
+  }
+  function classicPoles(first,lastRow){                       /* 黃黑斜紋電線桿，立在路緣線上 */
+    var road=cx(ARCADE);
+    for(var r=first;r<=lastRow;r++)if(((r%11)+11)%11===2){
+      var y=sy(r);box(road-4,y-C*.7,8,C*1.55,3,'#8d887f');
+      for(var k=0;k<6;k++)box(road-4,y+C*.15+k*C*.115,8,C*.115,0,k%2?'#222':'#efc22f');
+    }
+  }
+
   /* 貓貓：有些橫停機車的坐墊上睡著一隻；另有幾隻在玩家靠近時悠哉橫越走道，只是路過，不擋路 */
   function placeCats(){
     var done=[];
@@ -395,7 +485,7 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
     strollers=strollers.filter(function(k){return !k.gone;});
   }
   function drawStroller(k){
-    var mid=cx(k.x+.5),bottom=sy(k.r)+C*.8;
+    var mid=cx(k.x+.5),bottom=sy(k.r)+C*.99;
     ctx.globalAlpha=k.x>ARCADE-.6?Math.max(0,(ARCADE-.2-k.x)/.4):1;
     if(k.pause<=0)softShadow(mid,bottom-1,C*.27,C*.07,.36);
     if(k.pause>0)sprite('cat_sit',mid,bottom,C*.7,C*.82);
@@ -437,27 +527,25 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
     if(it.kind==='dog'&&it.slide>0){ox=it.ox*it.slide;oy=it.oy*it.slide;}
     if(it.kind==='rev')ox=(it.dx||0)*(it.dx||0);                     /* 起步快、停下時放慢 */
     if(it.kind==='pull')ox=(it.pull.slide||0)*.55;
-    var mid=cx(it.c+ox+(it.off||0)+it.w/2),bottom=sy(it.r+oy)+C-3;
+    var mid=cx(it.c+ox+(it.off||0)+it.w/2),bottom=sy(it.r)+C-3;       /* 前後移動由呼叫端換算成距離，不能畫成往上飄 */
     var img=it.img,seed=hash(it.c+1,it.r+1);
     if(it.kind==='pull'){sprite(it.img,mid,bottom,R*.98,C*2.05);hazards(mid,bottom);return;}
+    if(it.kind==='rev'&&drawWheeling(it,mid,bottom))return;
     if(it.kind==='neighbor'){drawNeighbor(it,mid,bottom);return;}
     if(it.kind==='dog'){drawDog(it,mid,bottom);return;}
     var skew=SWAY[img]?Math.sin(clk*1.7+seed*20)*SWAY[img]:0;
     var tall=BREATHE[img]?1+Math.sin(clk*(img==='uncle'?1.6:3.1)+seed*20)*BREATHE[img]:1;
-    if(it.kind==='rev'&&!calm&&(it.state==='warn'||it.dx>0)){            /* 發動中：車身抖動 */
-      mid+=Math.sin(clk*75)*1.4;bottom+=Math.cos(clk*63);
-    }
     moving(mid,bottom,skew,tall,function(){
-      if(img==='cones')sprite(img,mid,bottom-C*.05,C*.6,C*.9);
+      if(img==='cones')sprite(img,mid,bottom-C*.01,C*.6,C*.9);
       else if(it.kind==='parked'&&it.h===3)sprite(img,mid,bottom,R*.98,C*2.98);
       else if(it.kind==='parked'&&img.indexOf('scooter')!==0)sprite(img,mid,bottom,R*.98,C*2.05);
-      else if(it.kind==='parked')sprite(img,mid,bottom-C*.05,R*.94,C*(it.h===2?1.95:1.15));
+      else if(it.kind==='parked')sprite(img,mid,bottom-C*.01,R*.94,C*(it.h===2?1.95:1.15));
       else if(it.h===3)sprite(img,mid,bottom,C*1.04,C*2.98);
       else if(it.h===2)sprite(img,mid,bottom,C*.98,C*1.98);
       else if(it.w===2)sprite(img,mid,bottom,C*1.92,C*1.18);
       else if(img.indexOf('eat_')===0)sprite(img,mid,bottom,C*.99,C*1.16);
-      else if(img.indexOf('cat_')===0)sprite(img,mid,bottom-C*.1,C*.86,C*.92);
-      else if(img.indexOf('scooterside')===0)sprite(img,mid,bottom-C*.05,C*1.14,C*1.1);
+      else if(img.indexOf('cat_')===0)sprite(img,mid,bottom-C*.01,C*.86,C*.92);
+      else if(img.indexOf('scooterside')===0)sprite(img,mid,bottom-C*.01,C*1.14,C*1.1);
       else sprite(img,mid,bottom,C*.9,C*1.16);
     });
     if(it.napper){
@@ -474,40 +562,55 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
     }
     (STEAM[img]||[]).forEach(function(o,i){steam(mid+o[0]*C,bottom-o[1]*C,seed+i*.37,C*.075,'250,248,240');});
     if(img==='radish'||img==='stools')return;
-    if(it.kind==='rev'&&it.state==='warn'){
-      steam(mid-C*.5,bottom-C*.2,seed,C*.08,'90,90,90');
-      if(Math.floor(clk*7)%2===0){ctx.fillStyle='rgba(255,40,30,.75)';ctx.beginPath();ctx.arc(mid-C*.36,bottom-C*.42,C*.15,0,7);ctx.fill();}
-    }
   }
   function drawDog(it,mid,bottom){
     if(it.slide>0){                                                  /* 小跑換位置 */
-      softShadow(mid,bottom-C*.12,C*.4,C*.1,.38);
-      frame('dog',0,Math.floor(clk*14)%6,mid,bottom-C*.1,C*.86,!!it.left);
+      softShadow(mid,bottom-C*.02,C*.4,C*.1,.38);
+      frame('dog',0,Math.floor(clk*14)%6,mid,bottom-C*.01,C*.86,!!it.left);
     }else if(it.state==='wake'){                                     /* 彈起來吠 */
       var hop=calm?0:Math.abs(Math.sin(clk*13))*C*.13;
-      softShadow(mid,bottom-C*.12,C*.36,C*.09,.38);
-      sprite('dogup',mid,bottom-C*.1-hop,C*1.02,C*.98,true);
+      softShadow(mid,bottom-C*.02,C*.36,C*.09,.38);
+      sprite('dogup',mid,bottom-C*.01-hop,C*1.02,C*.98,true);
       label('！',mid+C*.28,bottom-C*1.05-hop,C*.55,'#d9261c');
     }else{
-      moving(mid,bottom-C*.12,0,1+Math.sin(clk*2.2+it.r)*.045,function(){sprite('dog',mid,bottom-C*.12,C*.98,C*.8);});
+      moving(mid,bottom-C*.02,0,1+Math.sin(clk*2.2+it.r)*.045,function(){sprite('dog',mid,bottom-C*.02,C*.98,C*.8);});
       if(it.state==='sleep'&&!calm){
         var k=(clk*.5+it.r*.3)%1;
         ctx.globalAlpha=1-k;label('z',mid+C*(.24+k*.18),bottom-C*(.55+k*.5),C*(.2+k*.1),'#3b4a63');ctx.globalAlpha=1;
       }
     }
   }
+  /* 停著的機車不會自己動：是主人牽著往後退。出現時淡入 0.2 秒，推到定位後停一下就離開，機車留在原地 */
+  function drawWheeling(it,mid,bottom){
+    var im=IMG.wheel;if(!im||!im.naturalWidth||it.state==='idle')return false;
+    if(it.state==='warn'){if(it.seenAt===undefined)it.seenAt=clk;}
+    if(it.state==='moved'&&!(it.dx>0)&&it.doneAt===undefined)it.doneAt=clk;
+    if(it.doneAt!==undefined&&clk-it.doneAt>1.6)return false;
+    var walking=it.dx>0,show=Math.min(1,(clk-(it.seenAt===undefined?clk-1:it.seenAt))/.2),fw=im.naturalWidth/2,fh=im.naturalHeight;
+    var step=walking&&!calm?Math.floor(clk*5)%2:0,h=C*1.34,w=h*fw/fh,rock=walking||calm?0:Math.sin(clk*5)*C*.015;
+    softShadow(mid-C*.1,bottom-C*.03,w*.44,C*.12,.4);
+    ctx.save();ctx.globalAlpha*=show;ctx.drawImage(im,step*fw,0,fw,fh,mid-w*.62+rock,bottom-h,w,h);ctx.restore();
+    return true;
+  }
   function drawNeighbor(v,mid,bottom){
-    var arrive=Math.min(1,v.age/.55),leave=v.time<.4?1-Math.max(0,v.time)/.4:0;
-    var x=mid-(1-arrive)*C*.8+leave*C*.7,busy=arrive<1||leave>0;
-    var who=v.img==='nb_uncle'?'uncle':'auntie';
-    ctx.globalAlpha=Math.min(1,arrive*1.6)*(1-leave*.8);
-    softShadow(x,bottom-C*.04,C*.34,C*.1,.38);
-    frame(who,0,Math.floor(clk*(busy?13:7)+v.r)%6,x,bottom,C*1.3,false);
-    ctx.globalAlpha=1;
+    /* 提著垃圾小跑出來 → 站著等車（張望或聊天）→ 提著垃圾往車子走去 */
+    var uncle=v.img==='nb_uncle',who=uncle?'uncle':'auntie',COME=.9,GO=.8;
+    var coming=v.age<COME,going=v.time<GO,x=mid;
+    if(coming){var k=v.age/COME;x=mid-(1-k)*(1-k)*C*1.15;}
+    if(going){var g=1-Math.max(0,v.time)/GO;x=mid+g*g*C*1.2;}
+    ctx.save();
+    if(going&&v.time<.22)ctx.globalAlpha*=Math.max(0,v.time/.22);          /* 只在走出格子的最後一瞬間淡掉 */
+    softShadow(x,bottom-C*.04,C*.32,C*.1,.38);
+    if(coming||going)frame(who,0,Math.floor(clk*9+v.r)%6,x,bottom,C*1.3,false);
+    else{
+      var pose='wait_'+who+(1+Math.floor(hash(v.r,v.c+2)*2)),sway=calm?0:Math.sin(clk*1.5+v.r)*.012;
+      moving(x,bottom,sway,1+(calm?0:Math.sin(clk*2.3+v.c)*.008),function(){sprite(pose,x,bottom,C*1.1,C*1.42,true);});
+    }
+    ctx.restore();
   }
   function heightRowAt(c,r){return c<ARCADE?heightRow(r):0;}
   function drawHero(){
-    var px=cx(P.x+.5)+(bump>0?Math.sin(bump*90)*4:0),base=sy(P.y)+C*.9;
+    var px=cx(P.x+.5)+(bump>0?Math.sin(bump*90)*4:0),base=sy(P.y)+C*.99;                 /* 腳踩在這個距離的地面上 */
     var stair=P.k<1&&heightRowAt(P.c,P.r)!==heightRowAt(P.fc,P.fr)?Math.sin(P.k*Math.PI)*C*.3:0;
     ctx.strokeStyle='rgba(255,227,59,.9)';ctx.lineWidth=2.5;ctx.fillStyle='rgba(255,227,59,.18)';
     ctx.beginPath();ctx.ellipse(px,base-2,C*.34,C*.14,0,0,7);ctx.fill();ctx.stroke();
@@ -523,8 +626,17 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
       }
       return;
     }
-    softShadow(px+2,base-C*.03,C*.27,C*.085,.42);
+    var here=rows[Math.round(P.y)]&&rows[Math.round(P.y)][Math.round(P.x)],sideways=S.side||!!(here&&here.tight);   /* 人還在窄縫裡就維持側身，才不會穿進機車 */
+    softShadow(px+2,base-C*.03,C*(sideways?.17:.27),C*.085,.42);
     base-=stair;
+    if(sideways){
+      var si=IMG.hero_side;
+      if(si&&si.naturalWidth){
+        var fw=si.naturalWidth/4,fh=si.naturalHeight,hh=C*1.52,ww=hh*fw/fh,step=P.k<1||P.stop<JOG_TAIL?Math.floor(P.phase*.5)%4:0;
+        ctx.save();ctx.translate(px,base);if(P.dir===1&&P.flip)ctx.scale(-1,1);ctx.drawImage(si,step*fw,0,fw,fh,-ww/2,-hh,ww,hh);ctx.restore();
+        return;
+      }
+    }
     if(P.k<1||P.stop<JOG_TAIL){
       frame('hero',P.dir,Math.floor(P.phase)%8,px,base,C*1.52,P.dir===1&&P.flip);
     }else{
@@ -556,68 +668,82 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
   function fitLabel(text,x,y,size,max,color){
     ctx.font=font(size);var w=ctx.measureText(text).width;label(text,x,y,w>max?size*max/w:size,color);
   }
-  /* ---------- 騎樓的屋頂和柱子 ----------
-     人在外面時屋頂是半透明的（看得到裡面塞了什麼）；走進騎樓屋頂就淡出，只留柱子和淡淡的屋簷線。
-     只影響畫面。屋頂只蓋走道，不蓋車道；終點的飲料店前面不蓋，招牌才看得清楚 */
-  var ROOF_UP=.92,ROOF_OUT=.6,roofAlpha=ROOF_OUT;
+  /* ---------- 騎樓：陰影、屋簷、柱子、橫樑 ----------
+     不把屋頂整片蓋在走道上（使用者回報像起霧、很醜）。靠三件事看出是騎樓：
+     裡面是陰影、馬路是亮的；沿馬路一道窄屋簷由柱子撐著；每段頭尾一道橫樑當出入口。
+     走進騎樓時橫樑變淡，才不會擋到人。只影響畫面 */
+  var EAVE_UP=1.02,beamAlpha=1;
   function roofed(r){
-    if(r<0||r>=GOAL-1)return false;
+    if(r>=GOAL-1)return false;
+    if(r<0)return true;
     var i=S.info&&S.info[r];return !!i&&(i.z==='arcade'||i.z==='occupied'||i.z==='jammed');
   }
   function insideArcade(){return P.x<ARCADE-.5&&roofed(Math.round(P.y));}
-  function fadeRoof(dt){
-    var target=insideArcade()?0:ROOF_OUT;
-    roofAlpha=calm?target:roofAlpha+(target-roofAlpha)*Math.min(1,dt*9);
+  function fadeBeams(dt){
+    var target=insideArcade()?.3:1;
+    beamAlpha=calm?target:beamAlpha+(target-beamAlpha)*Math.min(1,dt*9);
   }
-  /* 柱子：每 4 步一根，每段騎樓的頭尾也各一根 */
-  function shutRow(y){var q=rows[y];return !!q&&!!(q[0]&&q[1]&&q[2]);}
+  /* 畫在地板上、物件下面：物件保持清楚。陽光從馬路斜斜照進來，靠柱子那一條是亮的 */
+  function drawArcadeShade(first,lastRow){
+    var x=cx(0),w=C*ARCADE,sun=C*.3;
+    for(var r=Math.max(first,0);r<=lastRow;r++){
+      if(!roofed(r))continue;
+      var y=sy(r);
+      ctx.fillStyle='rgba(38,38,66,.2)';ctx.fillRect(x,y,w-sun,C+.6);
+      ctx.fillStyle='rgba(255,236,180,.16)';ctx.fillRect(x+w-sun,y,sun,C+.6);
+      if(!roofed(r-1)||!roofed(r+1)){                    /* 出入口：地上有一道橫樑的影子 */
+        ctx.fillStyle='rgba(30,26,40,.2)';ctx.fillRect(x,!roofed(r-1)?y+C*.82:y+C*.02,w,C*.16);
+      }
+    }
+  }
+  /* 每 3 步一根柱子，每段頭尾各一根；只有走出去的縫那兩步不立柱子 */
   function hasColumn(r){
-    if(!roofed(r)||(S.info[r]&&S.info[r].gap))return false;
-    for(var y=r-1;y<=r+2;y++)if(shutRow(y))return false;       /* 塞住的地方前後不立柱子，走得出去的縫才看得見 */
-    return r%4===2||!roofed(r-1)||!roofed(r+1);
+    if(!roofed(r))return false;
+    if(S.info[r]&&S.info[r].gap)return false;
+    if(openSlot(r))return false;                          /* 可穿過的缺口不立柱子 */
+    return r%3===1||!roofed(r-1)||!roofed(r+1);
   }
+  /* 柱子畫在屋簷前面：貼白色小磁磚、底部黃黑斜紋，頂端一塊柱頭托住屋簷 */
   function drawColumn(r){
-    var w=C*.27,h=C*ROOF_UP,x=cx(ARCADE)-w*.55,base=sy(r)+C-2,top=base-h,y,k;
-    softShadow(x+w*.75,base,w*.85,C*.08,.34);
-    ctx.fillStyle='#e4ded0';ctx.fillRect(x,top,w,h);
-    ctx.fillStyle='rgba(70,52,38,.22)';ctx.fillRect(x+w*.68,top,w*.32,h);
+    var w=C*.34,h=C*EAVE_UP,x=cx(ARCADE)-w*.42,base=sy(r)+C-3,top=base-h,y,k;
+    softShadow(x+w*.95,base+1,w*1.05,C*.12,.46);
+    ctx.fillStyle='#f4efe2';ctx.fillRect(x,top,w,h);
+    ctx.fillStyle='rgba(70,52,38,.28)';ctx.fillRect(x+w*.68,top,w*.32,h);
     ctx.strokeStyle='rgba(110,96,80,.42)';ctx.lineWidth=1;ctx.beginPath();
     for(y=top+7;y<base-C*.34;y+=7){ctx.moveTo(x,y);ctx.lineTo(x+w,y);}
-    ctx.moveTo(x+w*.5,top);ctx.lineTo(x+w*.5,base-C*.34);ctx.stroke();
+    ctx.moveTo(x+w*.36,top);ctx.lineTo(x+w*.36,base-C*.34);ctx.stroke();
     ctx.save();ctx.beginPath();ctx.rect(x,base-C*.36,w,C*.36);ctx.clip();
-    ctx.fillStyle='#efc22f';ctx.fillRect(x,base-C*.36,w,C*.36);ctx.fillStyle='#2a2622';
-    for(k=-2;k<6;k++){ctx.beginPath();y=base-C*.36+k*w*.62;ctx.moveTo(x,y);ctx.lineTo(x+w,y+w*.7);ctx.lineTo(x+w,y+w*.98);ctx.lineTo(x,y+w*.28);ctx.fill();}
+    ctx.fillStyle='#f2c32a';ctx.fillRect(x,base-C*.36,w,C*.36);ctx.fillStyle='#24201c';
+    for(k=-2;k<6;k++){y=base-C*.36+k*w*.56;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+w,y+w*.62);ctx.lineTo(x+w,y+w*.9);ctx.lineTo(x,y+w*.28);ctx.fill();}
     ctx.restore();
-    ctx.fillStyle='#bdb5a4';ctx.fillRect(x-2,top-4,w+4,6);
-    ctx.strokeStyle='#4a3d30';ctx.lineWidth=1.4;ctx.strokeRect(x,top,w,h);ctx.strokeRect(x-2,top-4,w+4,6);
+    ctx.strokeStyle='#3a2f25';ctx.lineWidth=1.8;ctx.strokeRect(x,top,w,h);
+    ctx.fillStyle='#d8cfbb';ctx.fillRect(x-4,top-6,w+8,8);ctx.strokeRect(x-4,top-6,w+8,8);
   }
-  /* 屋頂是從柱子頂端撐起來的一整片，所以畫在比地板高 ROOF_UP 格的位置 */
-  function drawRoof(first,lastRow){
-    var left=cx(0)-4,right=cx(ARCADE)+C*.13,w=right-left,lift=C*ROOF_UP,r=Math.max(first-2,0),solid=roofAlpha/ROOF_OUT;
+  function drawColumns(first,lastRow){
+    for(var r=Math.min(lastRow+1,GOAL);r>=Math.max(first-1,0);r--)if(hasColumn(r))drawColumn(r);   /* 由遠到近 */
+  }
+  function drawEaves(first,lastRow){
+    var edge=cx(ARCADE),lift=C*EAVE_UP,r=Math.max(first-2,0);
     while(r<=lastRow){
       if(!roofed(r)){r++;continue;}
       var from=r;while(r<=lastRow+1&&roofed(r))r++;
-      var top=sy(r-1)-lift,bottom=sy(from)+C-lift,k,y;
-      if(bottom<-C||top>H+C)continue;
-      if(roofAlpha>.02){
-        ctx.save();ctx.globalAlpha=roofAlpha;
-        ctx.fillStyle='#cbbfa8';ctx.fillRect(left,top,w,bottom-top);
-        for(k=from;k<r;k++){
-          y=sy(k)+C-lift;
-          if(k%2===0){ctx.fillStyle='#a99c85';ctx.fillRect(left,y-C*.16,w,C*.16);ctx.fillStyle='#ded4c0';ctx.fillRect(left,y-C*.16,w,2);}   /* 橫樑 */
-          else{ctx.strokeStyle='rgba(120,106,86,.5)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();}
-        }
-        ctx.fillStyle='#b3a690';ctx.fillRect(right-C*.2,top,C*.2,bottom-top);                  /* 沿馬路的大樑 */
-        ctx.restore();
-      }
-      /* 屋簷：朝南的立面和邊線。走進去之後只剩很淡的一圈 */
-      ctx.save();
-      ctx.globalAlpha=.16+.76*solid;
-      ctx.fillStyle='#8f836f';ctx.fillRect(left,bottom,w,C*.07+C*.13*solid);
-      ctx.fillStyle='#efe7d5';ctx.fillRect(left,bottom-3,w,3);
-      ctx.fillRect(right-3,top,3,bottom-top);
-      ctx.strokeStyle='#4a3d30';ctx.lineWidth=1.5;ctx.strokeRect(left,top,w,bottom-top);
-      ctx.restore();
+      var bottom=sy(from)+C-3-lift,top=sy(r-1)+C-3-lift-C*.78,k,y;
+      if(bottom<-C*2||top>H+C)continue;
+      /* 頭尾的橫樑：從店面牆接到柱子 */
+      [bottom,top].forEach(function(at){
+        ctx.save();ctx.globalAlpha=beamAlpha;
+        ctx.fillStyle='#e9e1cf';ctx.fillRect(cx(0)-3,at-C*.14,edge-cx(0)+5,C*.1);
+        ctx.fillStyle='#a8765c';ctx.fillRect(cx(0)-3,at-C*.04,edge-cx(0)+5,C*.13);
+        ctx.fillStyle='rgba(60,30,20,.34)';for(var d=cx(0)+4;d<edge;d+=C*.2)ctx.fillRect(d,at-C*.04,1.3,C*.13);
+        ctx.strokeStyle='#4a3d30';ctx.lineWidth=1.3;ctx.strokeRect(cx(0)-3,at-C*.14,edge-cx(0)+5,C*.23);ctx.restore();
+      });
+      /* 沿馬路的屋簷：上面是水泥緣，朝馬路貼磚 */
+      var x=edge-C*.13;
+      ctx.fillStyle='#e6ddca';ctx.fillRect(x,top-C*.14,C*.19,bottom-top+C*.23);
+      ctx.fillStyle='#a8765c';ctx.fillRect(x+C*.19,top-C*.14,C*.11,bottom-top+C*.23);
+      ctx.fillStyle='rgba(60,30,20,.34)';for(y=top;y<bottom;y+=C*.2)ctx.fillRect(x+C*.19,y,C*.11,1.3);
+      ctx.fillStyle='rgba(120,104,84,.5)';for(k=from;k<r;k+=2)ctx.fillRect(x,sy(k)+C-3-lift,C*.19,1.4);
+      ctx.strokeStyle='#4a3d30';ctx.lineWidth=1.3;ctx.strokeRect(x,top-C*.14,C*.3,bottom-top+C*.23);
     }
   }
 
@@ -687,36 +813,87 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
     for(i=0;i<n;i++)ctx.fillRect(left,top+i*gap+gap*.2,right-left,gap*.56);
     ctx.fillRect(cx(ARCADE)+8,top-9,R*2-12,6);                 /* 直行車停止線 */
   }
-  /* 台灣的行人號誌：上面站著的小紅人、下面走路的小綠人，加秒數倒數 */
+  /* 台灣的行人號誌：青綠色外殼、上下兩格 LED 點陣。
+     綠燈：上面橘黃色倒數、下面會走路的小綠人（快變紅燈時用跑的）；紅燈：上面站著的小紅人、下面紅色倒數 */
+  var LED_W=19,LED_H=21,ledCache={};
+  /* 小人用骨架描：每一段 [x0,y0,x1,y1,粗細]，頭是 [x,y,半徑]，座標以點陣格為單位 */
+  var WALK=[
+    {head:[10.6,2.6,1.9],bones:[[10,5.4,9,11.6,1.55],[9.8,6.2,13,8.6,.85],[13,8.6,15.4,9.4,.8],[9.4,6.4,6.8,9,.85],[6.8,9,5.6,11.6,.75],[9,11.8,12.6,14.8,1.1],[12.6,14.8,13.4,19.6,.95],[13.4,19.6,15.6,19.6,.7],[9,11.8,7.4,15.6,1.1],[7.4,15.6,3.8,18.8,.95]]},
+    {head:[10.4,2.3,1.9],bones:[[10,5.1,9.5,11.4,1.55],[9.9,6,11.8,9.2,.85],[11.8,9.2,13.4,10.6,.75],[9.5,6.2,7.8,9.4,.85],[7.8,9.4,7.8,12,.75],[9.5,11.6,10.8,15.4,1.1],[10.8,15.4,10.8,19.9,.95],[10.8,19.9,12.8,19.9,.7],[9.5,11.6,9.2,15.4,1.1],[9.2,15.4,6.4,16.8,.95]]},
+    {head:[10.6,2.6,1.9],bones:[[10,5.4,9,11.6,1.55],[9.4,6.4,7.2,9.2,.85],[7.2,9.2,6.4,11.6,.75],[9.8,6.2,12.4,8.2,.85],[12.4,8.2,14.6,10,.8],[9,11.8,12,15.2,1.1],[12,15.2,14.4,19,.95],[9,11.8,8.4,15.8,1.1],[8.4,15.8,5,19.6,.95],[5,19.6,3.6,18.6,.7]]},
+    {head:[10.4,2.3,1.9],bones:[[10,5.1,9.5,11.4,1.55],[9.5,6.2,8.4,9.4,.85],[8.4,9.4,9.2,11.8,.75],[9.9,6,11.6,9,.85],[11.6,9,12,11.6,.75],[9.5,11.6,11.6,14.8,1.1],[11.6,14.8,9.4,17.4,.95],[9.5,11.6,9.6,15.6,1.1],[9.6,15.6,9.6,19.9,.95],[9.6,19.9,11.6,19.9,.7]]}];
+  var STAND={head:[9.5,2.6,2],bones:[[9.5,5.6,9.5,12,2.1],[7.2,6.4,6,12.4,.9],[11.8,6.4,13,12.4,.9],[8.4,12.6,8.2,19.8,1.05],[10.6,12.6,10.8,19.8,1.05]]};
+  var DIGIT=['111101101101111','010110010010111','111001111100111','111001111001111','101101111001001','111100111001111','111100111101111','111001001001001','111101111101111','111101111001111'];
+  function nearBone(x,y,b){var dx=b[2]-b[0],dy=b[3]-b[1],len=dx*dx+dy*dy||1,k=Math.max(0,Math.min(1,((x-b[0])*dx+(y-b[1])*dy)/len));return Math.hypot(x-b[0]-dx*k,y-b[1]-dy*k)<=b[4]*.82;}
+  function manDot(pose,x,y){return Math.hypot(x-pose.head[0],y-pose.head[1])<=pose.head[2]||pose.bones.some(function(b){return nearBone(x,y,b);});}
+  function numberDot(text,x,y){                         /* 3×5 的數字放大 3 倍排進 19×21 的點陣 */
+    var wide=text.length>1?2:3,scale=3,gap=2,w=text.length*3*wide+(text.length-1)*gap,left=Math.floor((LED_W-w)/2),top=3,i;
+    for(i=0;i<text.length;i++){
+      var dx=x-left-i*(3*wide+gap),gx=Math.floor(dx/wide),gy=Math.floor((y-top)/scale);
+      if(dx>=0&&gx<3&&gy>=0&&gy<5&&DIGIT[+text[i]][gy*3+gx]==='1')return true;
+    }
+    return false;
+  }
+  /* 一格燈面畫成快取小圖（同一個狀態只畫一次） */
+  function ledPanel(key,color,lit){
+    if(ledCache[key])return ledCache[key];
+    var cell=7,c=document.createElement('canvas');c.width=LED_W*cell;c.height=LED_H*cell;
+    var g=c.getContext('2d'),x,y;g.fillStyle='#15120e';g.fillRect(0,0,c.width,c.height);
+    for(y=0;y<LED_H;y++)for(x=0;x<LED_W;x++){
+      var on=lit(x,y);g.fillStyle=on?color:'rgba(150,140,110,.16)';
+      g.beginPath();g.arc(x*cell+cell/2,y*cell+cell/2,on?cell*.47:cell*.3,0,7);g.fill();
+    }
+    return ledCache[key]=c;
+  }
+  /* 沒有紅綠燈的路口只有一盞閃黃燈 */
   function drawAmber(x){
-    var y=sy(x.base+R_.CROSS_ROWS)+C*.55,mx=cx(ARCADE)+2,on=calm||Math.floor(clk*2.4)%2===0;
-    if(y<-C||y-C*2>H)return;
-    softShadow(mx+4,y+C*.3,C*.28,C*.08,.35);
-    ctx.fillStyle='#6d7276';ctx.fillRect(mx-3,y-C,6,C*1.3);
-    box(mx-C*.32,y-C*1.55,C*.64,C*.64,8,'#23262a');
-    if(on){ctx.fillStyle='rgba(255,186,30,.35)';ctx.beginPath();ctx.arc(mx,y-C*1.23,C*.44,0,7);ctx.fill();}
-    ctx.fillStyle=on?'#ffbc1f':'#6b5420';ctx.beginPath();ctx.arc(mx,y-C*1.23,C*.2,0,7);ctx.fill();
+    var floor=sy(x.base+R_.CROSS_ROWS)+C,mx=cx(ARCADE)+C*.3,on=calm||Math.floor(clk*2.4)%2===0,pole=Math.max(2,C*.12),top=floor-C*2.7;
+    if(floor<-C||top>H)return;
+    softShadow(mx,floor,C*.24,C*.08,.38);
+    ctx.fillStyle='#9aa0a3';ctx.fillRect(mx-pole/2,top,pole,floor-top);
+    for(var k=0;k<5;k++){ctx.fillStyle=k%2?'#25201b':'#e9bb25';ctx.fillRect(mx-pole*.62,floor-C*.55+k*C*.11,pole*1.24,C*.115);}
+    box(mx-C*.34,top-C*.34,C*.68,C*.68,C*.12,'#1f8f7a');
+    if(on){ctx.fillStyle='rgba(255,186,30,.35)';ctx.beginPath();ctx.arc(mx,top,C*.46,0,7);ctx.fill();}
+    ctx.fillStyle=on?'#ffbc1f':'#6b5420';ctx.beginPath();ctx.arc(mx,top,C*.22,0,7);ctx.fill();
   }
   function drawSignal(x){
     if(!x.lit){drawAmber(x);return;}
-    var y=sy(x.base+R_.CROSS_ROWS)+C*.75,mx=cx(ARCADE)+2,w=C*.92,h=C*1.9;
-    if(y<-C||y-h>H)return;
-    var walk=x.phase==='green'||x.phase==='flash',left=Math.max(1,Math.ceil(x.left||1));
-    softShadow(mx+4,y+C*.2,C*.3,C*.08,.35);
-    ctx.fillStyle='#6d7276';ctx.fillRect(mx-3,y-h*.3,6,h*.5);
-    box(mx-w/2,y-h-h*.3,w,h,7,'#23262a');
-    var ty=y-h-h*.3;
-    walker(mx,ty+h*.2,C*.5,walk?'#4a2a2a':'#ff4536',null);
-    var blink=x.phase==='flash'&&Math.floor(clk*6)%2===0;
-    walker(mx,ty+h*.5,C*.5,walk&&!blink?'#38e27a':'#244534',walk?Math.floor(clk*(x.phase==='flash'?9:4))%2===0:true);
-    label(String(left),mx,ty+h*.82,C*.46,walk?'#38e27a':'#ff4536');
+    var floor=sy(x.base+R_.CROSS_ROWS)+C,mx=cx(ARCADE)+C*.62;           /* 立在街角、騎樓右邊柱子外側，不擋騎樓口 */
+    var w=C*.76,box1=w*1.02,gapH=C*.06,h=box1*2+gapH*3,top=floor-C*1.45-h;
+    if(floor<-C||top>H)return;
+    var walk=x.phase==='green'||x.phase==='flash',left=Math.max(1,Math.min(99,Math.ceil(x.left||1))),digits=String(left);
+    var running=x.phase==='flash',beat=calm?0:Math.floor(clk*(running?11:5))%4;
+    var upper,lower;
+    if(walk){
+      upper=ledPanel('a'+digits,'#ffa21f',function(i,j){return numberDot(digits,i,j);});
+      lower=ledPanel('w'+beat,'#3dff86',function(i,j){return manDot(WALK[beat],LED_W-1-i,j);});      /* 台灣的小綠人往左走 */
+    }else{
+      upper=ledPanel('s','#ff4030',function(i,j){return manDot(STAND,i,j);});
+      lower=ledPanel('r'+digits,'#ff4030',function(i,j){return numberDot(digits,i,j);});
+    }
+    /* 燈桿：灰色金屬，底部黃黑斜紋 */
+    var pole=Math.max(2,C*.13),poleX=mx+w*.5+pole*.9,k;
+    softShadow(poleX,floor,C*.26,C*.08,.38);
+    ctx.fillStyle='#9aa0a3';ctx.fillRect(poleX-pole/2,top-C*.18,pole,floor-top+C*.18);
+    ctx.fillStyle='rgba(255,255,255,.4)';ctx.fillRect(poleX-pole*.3,top-C*.18,pole*.2,floor-top+C*.18);
+    for(k=0;k<5;k++){ctx.fillStyle=k%2?'#25201b':'#e9bb25';ctx.fillRect(poleX-pole*.62,floor-C*.55+k*C*.11,pole*1.24,C*.115);}
+    ctx.fillStyle='#1f8f7a';[top+h*.2,top+h*.82].forEach(function(y){ctx.fillRect(mx+w*.42,y,poleX-mx-w*.42,Math.max(2,C*.09));});
+    /* 外殼 */
+    box(mx-w/2,top,w,h,C*.1,'#1f8f7a');
+    ctx.strokeStyle='#0f4f44';ctx.lineWidth=Math.max(1,C*.035);ctx.strokeRect(mx-w/2,top,w,h);
+    [[top+gapH,upper],[top+gapH*2+box1,lower]].forEach(function(v){
+      var px0=mx-w/2+C*.09,pw=w-C*.18,ph=box1;
+      ctx.fillStyle='#0c3a33';ctx.fillRect(px0-C*.035,v[0]-C*.02,pw+C*.07,ph+C*.04);
+      ctx.drawImage(v[1],px0,v[0],pw,ph);
+      ctx.fillStyle='#17705f';ctx.fillRect(px0-C*.06,v[0]-C*.075,pw+C*.12,C*.075);       /* 遮陽簷 */
+    });
   }
-  function hazards(mid,bottom){
+  function hazards(mid,ground,wide,tall){
     if(Math.floor(clk*4)%2)return;
-    [[-.36,.12],[.36,.12],[-.34,1.75],[.34,1.75]].forEach(function(o){
-      var x=mid+o[0]*R,y=bottom-o[1]*C;
-      ctx.fillStyle='rgba(255,170,20,.35)';ctx.beginPath();ctx.arc(x,y,C*.2,0,7);ctx.fill();
-      ctx.fillStyle='#ffb314';ctx.beginPath();ctx.arc(x,y,C*.085,0,7);ctx.fill();
+    [-.36,.36].forEach(function(o){
+      var x=mid+o*wide,y=ground-(tall||wide)*.33;
+      ctx.fillStyle='rgba(255,170,20,.35)';ctx.beginPath();ctx.arc(x,y,C*.18,0,7);ctx.fill();
+      ctx.fillStyle='#ffb314';ctx.beginPath();ctx.arc(x,y,C*.075,0,7);ctx.fill();
     });
   }
   /* 靠邊中：先在外側車道追上來、警告格閃爍；停幾秒後切回車道開走 */
@@ -749,11 +926,12 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
   /* 橫向車快衝進畫面時，在畫面邊緣閃一下箭頭 */
   function edgeArrows(){
     (S.xcars||[]).forEach(function(v){
-      var edge=v.dir>0?-F/C:(W-F)/C,away=v.dir>0?edge-(v.x+v.len):v.x-edge;
-      if(away<0||away>v.v*.9||Math.floor(clk*9)%2)return;
-      var x=v.dir>0?4:W-4,y=sy(v.row)+C*.5,d=v.dir;
+      var z=zOf(v.row);if(z<-.8||z>14||Math.floor(clk*9)%2)return;
+      var d=v.dir,front=px(d>0?v.x+v.len:v.x,z),away=d>0?-front:front-W;
+      if(away<0||away>v.v*K(z)*.9)return;
+      var x=d>0?4:W-4,y=py(.6,z),a=Math.max(10,K(z)*.34);
       ctx.fillStyle='#e8372a';ctx.strokeStyle='#fffdf4';ctx.lineWidth=2;ctx.lineJoin='round';
-      ctx.beginPath();ctx.moveTo(x,y-C*.3);ctx.lineTo(x+d*C*.42,y);ctx.lineTo(x,y+C*.3);ctx.closePath();ctx.fill();ctx.stroke();
+      ctx.beginPath();ctx.moveTo(x,y-a*.8);ctx.lineTo(x+d*a*1.1,y);ctx.lineTo(x,y+a*.8);ctx.closePath();ctx.fill();ctx.stroke();
     });
   }
 
@@ -817,107 +995,535 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
   }
   var STORY={1:'我只是想買珍奶',2:'老街的騎樓高高低低',3:'飲料店在馬路對面',4:'走專用道也有機車',5:'下班時間，大家都臨停',6:'放學路上',7:'市場旁邊的老路',8:'最遠的那一家'};
 
+  /* ====================================================================================
+     畫面：站在角色後面往前看的街道透視（使用者指定照台灣騎樓實景的角度）。
+     只影響畫面，規則仍是同一張格子。橫向單位是走道格寬：店面牆 0、柱子線 3、車道 3～5.64。
+     z 是離鏡頭往前幾格；FOCAL/(z+NEAR) 就是那個距離下一格有幾個像素。
+     ==================================================================================== */
+  var EYE=2.65,ROOF=3.95,NEAR=2.2,HERO_Z=1.75,FARZ=24,KERB=3.36,ACROSS_SIDE=9.4;
+  var FOCAL=300,HORIZON=250,viewX=1.75,VZ=0;
+  function K(z){return FOCAL/(z+NEAR);}
+  function px(x,z){return W/2+(x-viewX)*K(z);}
+  function py(h,z){return HORIZON+(EYE-h)*K(z);}
+  function zOf(r){return r+.5-VZ;}                       /* 第 r 列中心的距離 */
+  function mid(c){return R_.across(c+.5);}               /* 第 c 欄中心的橫向位置 */
+  function camTarget(){return 1.75+Math.max(0,R_.across(P.x+.5)-1.5)*.66;}
+  function zoneOf(r){var i=S.info&&S.info[r];return i?i.z:'arcade';}
+  function poly(pts,fill){ctx.beginPath();for(var i=0;i<pts.length;i++)ctx[i?'lineTo':'moveTo'](pts[i][0],pts[i][1]);ctx.closePath();ctx.fillStyle=fill;ctx.fill();}
+  /* 地上的一塊（x 從 a 到 b，距離從 z0 到 z1） */
+  function slab(a,b,z0,z1,fill,h){
+    z0=Math.max(z0,-1.3);z1=Math.min(z1,FARZ+6);if(z1<=z0)return;h=h||0;
+    poly([[px(a,z0),py(h,z0)],[px(b,z0),py(h,z0)],[px(b,z1),py(h,z1)],[px(a,z1),py(h,z1)]],fill);
+  }
+  /* 沿用原本的畫圖函式：把「一格多大、地面在哪」換成這個距離的值，畫出來就是立在地上的正面圖 */
+  function at(row,z,fn){
+    if(z<-1.25||z>FARZ)return;
+    var s=K(z),keep=[C,R,F,cam];
+    C=s;R=s*ROADW;F=px(0,z);cam=row-(H-py(0,z))/s;
+    ctx.save();if(z>FARZ-6)ctx.globalAlpha*=Math.max(0,(FARZ-z)/6);
+    fn();ctx.restore();
+    C=keep[0];R=keep[1];F=keep[2];cam=keep[3];
+  }
+  /* 遠方：淡淡的樓房剪影和地面，用霧氣把近景接過去，不能看到一條突然切掉的邊（使用者要更自然） */
+  var HAZE='224,230,226';
+  function drawDistance(){
+    var base=py(0,FARZ+6),scroll=VZ*.35,i,k;
+    for(k=0;k<2;k++){
+      var step=k?26:38,off=((scroll*(k?7:4))%step+step)%step,n0=Math.floor((scroll*(k?7:4))/step);
+      for(i=-1;i*step-off<W+step;i++){
+        var x=i*step-off,h=H*(k?.025:.045)+hash(i+n0,k+3)*H*(k?.04:.06);
+        ctx.fillStyle=k?'#c3c9c4':'#d1d8d6';ctx.fillRect(x,base-h,step-3,h+2);
+        ctx.fillStyle='rgba(255,255,255,.35)';for(var w=base-h+5;w<base-5;w+=7)ctx.fillRect(x+4,w,step-11,2);
+        var tin=hash(i+n0,k+29);
+        if(tin<.55){                                                      /* 遠處頂樓的鐵皮加蓋 */
+          var sw=(step-3)*(.55+tin*.6),sx=x+(step-3-sw)*hash(i+n0,k+41),sh=4+hash(i+n0,k+53)*5;
+          ctx.fillStyle=['#c9a5a0','#a9bfb0','#b7bcc0'][Math.floor(tin*30)%3];ctx.fillRect(sx,base-h-sh,sw,sh);
+          ctx.fillStyle='rgba(120,120,118,.55)';ctx.fillRect(sx-1.5,base-h-sh-1.5,sw+3,1.8);
+        }
+      }
+    }
+  }
+  function drawHaze(){
+    var base=py(0,FARZ+6),g=ctx.createLinearGradient(0,base-H*.03,0,base+H*.11);
+    g.addColorStop(0,'rgba('+HAZE+',0)');g.addColorStop(.25,'rgba('+HAZE+',.82)');g.addColorStop(.5,'rgba('+HAZE+',.45)');g.addColorStop(1,'rgba('+HAZE+',0)');
+    ctx.fillStyle=g;ctx.fillRect(0,base-H*.03,W,H*.14);
+  }
+  /* ---------- 地面：一條一條橫線貼上去 ---------- */
+  var asphalt=null;
+  function drawGround(){
+    var yFar=Math.max(0,Math.floor(py(0,FARZ+6))),y,step=2;
+    ctx.fillStyle='#8b8a8c';ctx.fillRect(0,yFar,W,H-yFar);
+    for(y=yFar;y<H+2;y+=step){
+      var s=(y+1-HORIZON)/EYE;if(s<=0)continue;
+      var z=FOCAL/s-NEAR;if(z<-1.4)break;
+      var w=z+VZ,r=Math.floor(w),f=w-r,x0=W/2+(0-viewX)*s,x3=W/2+(KERB-viewX)*s,x8=W/2+(8.3-viewX)*s,x9=W/2+(ACROSS_SIDE-viewX)*s;
+      var cross=zoneOf(r)==='cross';
+      if(asphalt)ctx.drawImage(asphalt,0,Math.floor((((w*.5)%1)+1)%1*(asphalt.height-3)),asphalt.width,2,cross?0:x3,y,cross?W:x8-x3,step+.7);
+      if(cross)continue;
+      ctx.fillStyle=((Math.floor(w*2))%2)?'#b7ada0':'#aea496';ctx.fillRect(x8,y,x9-x8,step+.7);          /* 對街人行道 */
+      var z2=zoneOf(r),name=z2==='curb'||z2==='green'||z2==='greenend'||z2==='gone'?'paver':floorOf[Math.max(0,r)]||'terrazzo',im=FLOOR[name];
+      if(im&&im.width){
+        var even=((r%2)+2)%2===0,v=(even?0:.5)+(1-f)*.5;
+        ctx.drawImage(im,0,Math.min(im.height-3,Math.floor(v*im.height)),im.width,2,x0,y,x3-x0,step+.7);
+      }
+    }
+  }
+  /* ---------- 往遠處延伸的牆：一條一條直線貼上去 ---------- */
+  function wallStrips(X,pick,zMax){
+    var step=1,x,left=X<viewX;
+    var a=px(X,-1.3),b=px(X,FARZ),from=Math.max(0,Math.floor(Math.min(a,b))),to=Math.min(W,Math.ceil(Math.max(a,b)));
+    if(Math.abs(X-viewX)<.05)return;
+    for(x=from;x<to;x+=step){
+      var s=(x+1-W/2)/(X-viewX);if(s<=0)continue;
+      var z=FOCAL/s-NEAR;if(z<-1.4||z>(zMax===undefined?FARZ+1:zMax))continue;
+      var o=pick(z+VZ,z);if(!o||!o.img||!o.img.naturalWidth)continue;
+      var top=HORIZON+(EYE-o.top)*s,bot=HORIZON+(EYE-(o.bottom||0))*s,iw=o.img.naturalWidth,ih=o.img.naturalHeight;
+      var u=left?o.u:1-o.u,mist=Math.min(.94,Math.max(0,z-7)*.056);
+      if(o.clear)ctx.globalAlpha=1-mist*.85;
+      var span=Math.max(1,Math.min(14,(z+NEAR)*(z+NEAR)/(FOCAL*Math.abs(X-viewX))*iw/(o.unit||1.5)*step));   /* 這一直條實際涵蓋原圖幾個像素 */
+      ctx.drawImage(o.img,Math.max(0,Math.min(iw-span,u*iw-span/2)),ih*(o.sy||0),span,ih*(o.sh||1),x,top,step+.4,bot-top);
+      if(o.clear){ctx.globalAlpha=1;continue;}
+      if(mist>0){ctx.fillStyle='rgba('+HAZE+','+mist.toFixed(2)+')';ctx.fillRect(x,top,step+.4,bot-top);}
+      if(o.shade){ctx.fillStyle=o.shade;ctx.fillRect(x,top,step+.4,bot-top);}
+    }
+  }
+  function pickOne(list,a,b){return IMG[list[Math.floor(hash(a,b)*list.length)%list.length]];}
+  /* 左側：騎樓裡是一戶戶的門；沒有騎樓的路段是圍牆和圍籬；路口是橫向馬路 */
+  function shopWall(w){
+    var unit=1.5,n=Math.floor(w/unit),u=w/unit-n,r=Math.floor((n+.5)*unit),z=zoneOf(r);
+    if(zoneOf(Math.floor(w))==='cross')return null;
+    if(roofed(Math.floor(w)))return {img:pickOne(z==='occupied'||z==='jammed'?EATDOORS:DOORS,n,S.cup+3),u:u,top:ROOF,shade:'rgba(40,28,30,.1)'};
+    return {img:pickOne(FENCES,n,S.cup+7),u:u,top:2.1};
+  }
+  /* 側面和遠處的樓房是素牆：小鐵窗、冷氣、水管，頂樓常有鐵皮加蓋（使用者指定，不能拿正面樓房硬拉）。
+     roof 是圖上屋頂線的位置（以上是鐵皮加蓋），aspect 是高寬比；圖的最下面約四分之一是一樓 */
+  var SIDES=[{img:'side_a',roof:.211,aspect:.563},{img:'side_b',roof:.12,aspect:.526},{img:'side_c',roof:.14,aspect:.663}],GROUND_AT=.76;
+  function facadeAbove(w){        /* 從馬路上看：柱子撐著樓上的側牆 */
+    var r=Math.floor(w);if(!roofed(r))return null;                       /* 只有騎樓上面才有樓房；每段開頭另外畫一整面正面 */
+    var n=Math.floor(w/11),q=SIDES[((n%3)+3)%3],high=(UPPER_TOP-ROOF)/(GROUND_AT-q.roof),unit=high/q.aspect,u=(w/unit)%1;
+    return {img:IMG[q.img],u:(u+1)%1,unit:unit,top:ROOF+high*GROUND_AT,bottom:ROOF,sy:0,sh:GROUND_AT,clear:true};
+  }
+  function acrossStreet(w){
+    if(zoneOf(Math.floor(w))==='cross')return null;
+    var n=Math.floor(w/9.5),q=SIDES[((n%3)+3)%3],high=(5.4+hash(n,11)*1.7)/(1-q.roof),unit=high/q.aspect,u=(w/unit)%1;
+    return {img:IMG[q.img],u:(u+1)%1,unit:unit,top:high,clear:true};
+  }
+  /* 屋頂上的鐵皮加蓋：放在正面樓房的屋頂線上，left～left+wide 是那棟樓在畫面上的範圍 */
+  var ROOFS=['roof_red','roof_canopy','roof_green'];
+  function rooftopShed(left,wide,top,key){
+    var name=ROOFS[Math.floor(hash(key,7)*3)%3],im=IMG[name];if(!im||!im.naturalWidth)return;
+    var w=wide*(.56+hash(key,13)*.22),h=w*im.naturalHeight/im.naturalWidth,x=left+(wide-w)*hash(key,19);
+    ctx.drawImage(im,x,top-h+wide*.052,w,h);                /* 往下坐進屋頂（屋頂中間有山牆裝飾，兩側比較低），才不會浮空 */
+  }
+  /* ---------- 馬路上的標線和地上的東西 ---------- */
+  function drawRoadMarks(first,last){
+    var r,z;
+    for(r=last;r>=first;r--){
+      z=r-VZ;if(zoneOf(r)==='cross')continue;
+      slab(KERB-.02,KERB+.1,z,z+1.02,'#c2baa9');                                   /* 路緣石 */
+      slab(KERB+.14,KERB+.24,z,z+1.02,'#c4463c');                                  /* 紅線 */
+      slab(4.28,4.36,z+.2,z+.8,'rgba(244,240,228,.9)');                             /* 車道線 */
+      slab(5.66,5.73,z,z+1.02,'#e3b32a');slab(5.83,5.9,z,z+1.02,'#e3b32a');          /* 雙黃線 */
+      slab(7.05,7.12,z+.2,z+.8,'rgba(244,240,228,.75)');
+      slab(8.22,8.34,z,z+1.02,'#c2baa9');
+      var m=((r%11)+11)%11;
+      if(m===4&&z+.5>2){ctx.fillStyle='#6f6a66';ctx.strokeStyle='#48454a';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(px(4.95,z+.5),py(0,z+.5),.3*K(z+.5),Math.max(1,.3*K(z+.5)*EYE/(z+.5+NEAR)),0,0,7);ctx.fill();ctx.stroke();}
+      if(m===8&&z>1.6)for(var g=0;g<4;g++)slab(3.42,3.72,z+.2+g*.16,z+.28+g*.16,'#4d4c4e');
+    }
+  }
+  /* 路口的黃色網狀線 */
+  function yellowBox(x0,x1,z0,z1){
+    z0=Math.max(z0,-1.1);z1=Math.min(z1,FARZ);if(z1<=z0)return;
+    var P3=function(x,z){return [px(x,z),py(0,z)];},corners=[P3(x0,z0),P3(x1,z0),P3(x1,z1),P3(x0,z1)],i,a,b;
+    ctx.save();ctx.beginPath();corners.forEach(function(p,n){ctx[n?'lineTo':'moveTo'](p[0],p[1]);});ctx.closePath();ctx.clip();
+    ctx.strokeStyle='#e6b422';ctx.lineWidth=Math.max(1.2,K((z0+z1)/2)*.055);
+    var span=x1-x0+(z1-z0);
+    for(i=-span;i<span;i+=1.35){
+      [1,-1].forEach(function(dir){
+        ctx.beginPath();
+        for(var t=0;t<=8;t++){var zz=z0+(z1-z0)*t/8,xx=(dir>0?x0:x1)+dir*(i+(zz-z0)),q=P3(xx,zz);ctx[t?'lineTo':'moveTo'](q[0],q[1]);}
+        ctx.stroke();
+      });
+    }
+    ctx.restore();
+    ctx.strokeStyle='#e6b422';ctx.lineWidth=Math.max(1.5,K(z0)*.07);ctx.beginPath();corners.forEach(function(p,n){ctx[n?'lineTo':'moveTo'](p[0],p[1]);});ctx.closePath();ctx.stroke();
+  }
+  function quadLabel(){}
+  function drawGroundThings(first,last){
+    var r,c,z;
+    for(r=Math.max(first,0);r<=last;r++){
+      z=r-VZ;var zn=zoneOf(r);
+      if(zn==='green'||zn==='greenend'){
+        var from=zn==='greenend'?z+.45:z;
+        slab(1,3.02,from,z+1.02,'#2f8a63');slab(1.02,1.1,from,z+1.02,'#f4f0e4');slab(2.86,2.93,from,z+1.02,'#f4f0e4');slab(2.93,3.02,from,z+1.02,'#c4463c');
+        if(zn==='greenend'){slab(1,3.02,from,from+.1,'#f4f0e4');for(c=0;c<8;c++)slab(1.05+c*.25,1.17+c*.25,from-.22,from-.04,'#f4f0e4');}
+      }
+      /* 每家店交界的門檻、騎樓和小吃店的陰影 */
+      if(roofed(r)){
+        slab(0,3.02,z,z+1.02,'rgba(34,28,44,.1)');
+        if(floorOf[r+1]&&floorOf[r+1]!==floorOf[r])slab(0,KERB,z+.94,z+1.04,'#d6cfc0');
+        slab(0,.14,z,z+1.02,'#cbc2af');slab(2.9,3.0,z,z+1.02,'#6f6b64');
+      }
+      var d=heightRow(r+1)-heightRow(r);
+      if(d){                                     /* 高低不平：遠處比較高看得到立面，近處比較高看得到一道影子 */
+        if(d>0){var hz=z+1;poly([[px(0,hz),py(0,hz)],[px(3,hz),py(0,hz)],[px(3,hz),py(.13*d,hz)],[px(0,hz),py(.13*d,hz)]],'#cfc6b4');slab(0,3,hz-.07,hz,'rgba(40,28,20,.35)');
+          ctx.strokeStyle=d>1?'#e8bc2c':'#f4eee0';ctx.lineWidth=Math.max(1,K(hz)*.045);ctx.beginPath();ctx.moveTo(px(0,hz),py(.13*d,hz));ctx.lineTo(px(3,hz),py(.13*d,hz));ctx.stroke();}
+        else{slab(0,3,z+1,z+1.12,'rgba(40,28,20,.34)');slab(0,3,z+.95,z+1,d<-1?'#e8bc2c':'#f4eee0');}
+      }
+    }
+    var gz=GOAL-VZ;slab(0,3,gz,gz+1,'rgba(255,224,50,.45)');
+    floorTags(first,last);
+    drawBlocker();
+    parked.forEach(function(q){                  /* 路邊機車停在白線停車格裡 */
+      for(var i=0;i<q.len;i++){
+        var it=rows[q.r+i][ARCADE];
+        if(it&&it.img.indexOf('scooter')!==0)continue;                   /* 空格和停機車的格子都畫停車格線 */
+        var a=q.r+i-VZ;
+        [[3.45,3.5,a+.04,a+.96],[4.18,4.23,a+.04,a+.96],[3.45,4.23,a+.04,a+.09],[3.45,4.23,a+.91,a+.96]].forEach(function(v){slab(v[0],v[1],v[2],v[3],'rgba(244,240,228,.9)');});
+      }
+    });
+    (S.crossings||[]).forEach(function(x){
+      var n=R_.CROSS_ROWS,z0=x.base-VZ,z1=z0+n,i,k;
+      slab(-8,.0,z0-.05,z0+.02,'#c2baa9');slab(-8,0,z1-.02,z1+.05,'#c2baa9');
+      slab(-8,-.15,z0+1.97,z0+2.0,'#e3b32a');slab(-8,-.15,z0+2.06,z0+2.09,'#e3b32a');slab(3.2,12,z0+1.97,z0+2.0,'#e3b32a');slab(3.2,12,z0+2.06,z0+2.09,'#e3b32a');
+      for(i=0;i<n*2;i++)slab(.06,2.96,z0+i*.5+.1,z0+i*.5+.38,'#f4f0e4');            /* 枕木紋斑馬線 */
+      slab(3.42,5.62,z1+.06,z1+.22,'#f4f0e4');                                        /* 直行車停止線 */
+      yellowBox(3.4,8.2,z0+.18,z1-.18);
+      slab(-.3,-.18,z0+.1,z0+1.9,'rgba(244,240,228,.85)');slab(3.1,3.22,z0+2.15,z1-.1,'rgba(244,240,228,.85)');
+    });
+    function mark(x0,x1,row){var a=row-VZ+.06;slab(x0,x1,a,a+.88,Math.floor(t*7)%2===0?'rgba(225,45,35,.5)':'rgba(255,214,40,.42)');
+      ctx.strokeStyle='#d9261c';ctx.lineWidth=2;ctx.stroke();}
+    function cell(c,row){if(row-VZ>-1.2&&row-VZ<FARZ)mark(R_.across(c)+.07,R_.across(c+1)-.07,row);}
+    reversers.forEach(function(s){if(s.state==='warn')cell(s.c-1,s.r);});
+    (S.pulls||[]).forEach(function(q){if(q.state==='warn')cell(ARCADE,q.r);});
+    (S.walkways||[]).forEach(function(w){if(w.warn>0)for(var k=Math.max(w.from+1,P.r-1);k<=Math.min(w.to-1,P.r+4);k++)cell(w.col,k);});
+    (S.crossings||[]).forEach(function(x){if(x.turn)for(var c=0;c<ARCADE;c++)cell(c,x.base+x.turn.k);});
+    pending.forEach(function(p){cell(p.c,p.r);});
+  }
+  /* ---------- 路口對面的街角建築 ----------
+     一整棟畫好的台灣街屋：兩根粗柱、招牌橫樑、樓上住家，騎樓口挖空可以看進走廊（原本用牆面貼圖拼，像貼紙，使用者回報）。
+     l、r、t 是圖上騎樓口的左右和上緣（比例），aspect 是圖的高寬比 */
+  var CORNER={corner_a:{l:.5221,r:.9351,t:.675,aspect:.75},corner_b:{l:.5447,r:.933,t:.6084,aspect:.7472},corner_c:{l:.4832,r:.9336,t:.634,aspect:.749}};
+  var CORNERS=['corner_a','corner_b','corner_c'],HOLE_LEFT=.02,HOLE_RIGHT=3.14,TALL_UP=1.32;
+  var UPPER_WIDE=7.4,UPPER_TOP=7.6;                         /* 樓上住家：用街角建築畫作的上半部（騎樓橫樑以上） */
+  /* 從正面看到一段騎樓的開頭：一整棟房子要從地面蓋到屋頂。樓上是住家，騎樓入口左邊是一樓店門和門柱，
+     往左一路排到畫面外（只畫樓上時房子會懸在半空，使用者回報破圖） */
+  function upperFront(row,pickAt){
+    var z=row-VZ;if(z<.9||z>FARZ-1)return;
+    var s=K(z),ground=py(0,z),y1=py(ROOF,z),y0=py(UPPER_TOP,z),x=px(KERB+.14,z),door=px(-.2,z),n=0,k;
+    var haze=Math.min(.9,Math.max(0,z-7)*.056);
+    function veil(a,b,c,d){if(haze>0){ctx.fillStyle='rgba('+HAZE+','+haze.toFixed(2)+')';ctx.fillRect(a,b,c,d);}}
+    /* 一樓：隔壁幾戶的店門 */
+    for(k=0;door>-1&&k<12;k++){
+      var dw=s*1.5,im2=IMG[DOORS[Math.floor(hash(row,k+9)*DOORS.length)%DOORS.length]];
+      ctx.fillStyle='#bfb4a0';ctx.fillRect(door-dw,y1,dw+.6,ground-y1);
+      if(im2&&im2.naturalWidth)ctx.drawImage(im2,door-dw,y1,dw+.6,ground-y1);
+      veil(door-dw,y1,dw+.6,ground-y1);ctx.fillStyle='rgba(60,44,30,.4)';ctx.fillRect(door-1,y1,2,ground-y1);door-=dw;
+    }
+    /* 騎樓入口左邊的門柱 */
+    var jl=px(-.2,z),jw=px(.05,z)-jl;
+    ctx.fillStyle='#d3cab6';ctx.fillRect(jl,y1,jw,ground-y1);ink([[jl,y1],[jl,ground]],1.2);ink([[jl+jw,y1],[jl+jw,ground]],1.2);
+    ctx.fillStyle='#a9a091';ctx.fillRect(jl-2,ground-s*.22,jw+4,s*.22);veil(jl-2,y1,jw+4,ground-y1);
+    /* 樓上住家 */
+    var right=x;
+    while(x>0&&n<5){
+      var name=CORNERS[(pickAt+n)%3],m=CORNER[name],im=IMG[name],w=UPPER_WIDE*s;
+      if(!im||!im.naturalWidth)break;
+      ctx.drawImage(im,0,0,im.naturalWidth,im.naturalHeight*m.t,x-w,y0,w+1,y1-y0);veil(x-w,y0,w+1,y1-y0);
+      if(hash(row,n+31)<.8)rooftopShed(x-w,w,y0,row+n*17);x-=w;n++;
+    }
+    /* 樓上和一樓之間的橫樑，連到右邊柱子 */
+    ctx.fillStyle='#cfc6b2';ctx.fillRect(-1,y1-s*.14,right+1,s*.2);veil(-1,y1-s*.14,right+1,s*.2);
+    ink([[-1,y1-s*.14],[right,y1-s*.14]],1);ink([[-1,y1+s*.06],[right,y1+s*.06]],1.2);
+  }
+  function cornerBuilding(row,pickAt){
+    var z=row-VZ;if(z<.35||z>FARZ-1)return;
+    var s=K(z),ground=py(0,z),name=CORNERS[pickAt%3],m=CORNER[name],im=IMG[name];if(!im||!im.naturalWidth)return;
+    var wide=(HOLE_RIGHT-HOLE_LEFT)/(m.r-m.l),high=wide*m.aspect*TALL_UP;
+    var left=px(HOLE_LEFT-m.l*wide,z),w=wide*s,h=high*s;
+    ctx.save();ctx.globalAlpha=Math.max(.35,1-Math.max(0,z-9)*.05);
+    /* 左邊接另一棟，一路接到畫面外，側邊才不會露出天空和紙板邊 */
+    var x=left,n=1;
+    while(x>0&&n<4){
+      var other=CORNERS[(pickAt+n)%3],om=CORNER[other],oi=IMG[other],ow=(HOLE_RIGHT-HOLE_LEFT)/(om.r-om.l);
+      var cut=om.l-.03,sw=ow*cut*s;                                        /* 只用它左半邊的店面，不重複騎樓口 */
+      if(oi&&oi.naturalWidth)ctx.drawImage(oi,0,0,oi.naturalWidth*cut,oi.naturalHeight,x-sw,ground-ow*om.aspect*TALL_UP*s,sw+1,ow*om.aspect*TALL_UP*s);
+      x-=sw;n++;
+    }
+    ctx.drawImage(im,left,ground-h,w,h);
+    rooftopShed(left,w,ground-h,row*3+pickAt);
+    ctx.restore();
+  }
+
+  /* ---------- 騎樓的天花板、柱子、橫樑、吊燈 ---------- */
+  /* 和其他手繪素材同一種質感：紙紋、淡淡的水漬和污點。固定亂數，畫面才不會閃 */
+  var grain=null;
+  function grainPattern(){
+    if(grain)return grain;
+    var c=paint(192,192,function(g){
+      var rnd=seeded(41),i,x,y,r;
+      for(i=0;i<46;i++){x=rnd()*192;y=rnd()*192;r=6+rnd()*26;var wash=g.createRadialGradient(x,y,0,x,y,r);
+        wash.addColorStop(0,rnd()<.8?'rgba(112,88,58,.11)':'rgba(255,250,236,.08)');wash.addColorStop(1,'rgba(120,100,70,0)');g.fillStyle=wash;g.fillRect(x-r,y-r,r*2,r*2);}
+      speckle(g,192,192,rnd,520,['rgba(70,55,40,.13)','rgba(255,250,240,.1)','rgba(100,80,55,.1)'],.6,1.4);
+      g.strokeStyle='rgba(80,64,46,.18)';g.lineWidth=.7;
+      for(i=0;i<9;i++){x=rnd()*192;y=rnd()*192;g.beginPath();g.moveTo(x,y);g.quadraticCurveTo(x+rnd()*30-15,y+rnd()*30-15,x+rnd()*44-22,y+rnd()*44-22);g.stroke();}
+    });
+    return grain=ctx.createPattern?ctx.createPattern(c,'repeat'):null;
+  }
+  function weather(pts){                                  /* 在剛畫好的面上蓋一層紙紋 */
+    var pat=grainPattern();if(!pat)return;
+    ctx.beginPath();for(var i=0;i<pts.length;i++)ctx[i?'lineTo':'moveTo'](pts[i][0],pts[i][1]);ctx.closePath();ctx.fillStyle=pat;ctx.fill();
+  }
+  function ink(pts,w,color){ctx.strokeStyle=color||'rgba(58,44,30,.7)';ctx.lineWidth=w||1.1;ctx.lineJoin='round';ctx.beginPath();for(var i=0;i<pts.length;i++)ctx[i?'lineTo':'moveTo'](pts[i][0],pts[i][1]);ctx.stroke();}
+  /* 台灣騎樓常見的圓形吸頂燈：貼平在天花板上，一圈燈座加乳白燈罩。照透視壓扁成橢圓 */
+  function ceilingLamp(x,z){
+    var R0=.27,ring=function(radius,lift){
+      var pts=[],i;for(i=0;i<20;i++){var a=i/20*Math.PI*2,zz=z+Math.sin(a)*radius;pts.push([px(x+Math.cos(a)*radius,zz),py(ROOF-lift,zz)]);}return pts;
+    };
+    var X=px(x,z),Y=py(ROOF,z),glow=Math.max(6,K(z)*.85);
+    var halo=ctx.createRadialGradient(X,Y,0,X,Y,glow);halo.addColorStop(0,'rgba(255,240,196,.42)');halo.addColorStop(1,'rgba(255,240,196,0)');
+    ctx.save();ctx.translate(X,Y);ctx.scale(1,.42);ctx.translate(-X,-Y);ctx.fillStyle=halo;ctx.beginPath();ctx.arc(X,Y,glow,0,7);ctx.fill();ctx.restore();
+    var base=ring(R0,0),dome=ring(R0*.76,.045);
+    poly(base,'#d9d2c2');ink(base.concat([base[0]]),1,'rgba(70,56,40,.75)');
+    poly(dome,'#fff6d8');ink(dome.concat([dome[0]]),.7,'rgba(150,120,70,.55)');
+    poly(ring(R0*.36,.06),'#fffdf2');
+  }
+  /* 一段騎樓的天花板。a～b 是列數；左邊一路蓋到畫面外（牆的另一邊是屋子裡） */
+  function ceilingSpan(a,b){
+    var z0=Math.max(-1.3,a-VZ),z1=Math.min(FARZ+1,b-VZ);if(z1<=z0)return;
+    var P3=function(x,z,h){return [px(x,z),py(h===undefined?ROOF:h,z)];};
+    var face=[P3(-9,z0),P3(KERB,z0),P3(KERB,z1),P3(-9,z1)];
+    var g=ctx.createLinearGradient(0,py(ROOF,z0),0,py(ROOF,z1));g.addColorStop(0,'#b3a893');g.addColorStop(.55,'#a59b88');g.addColorStop(1,'#8f8779');
+    poly(face,g);weather(face);
+    var side=ctx.createLinearGradient(px(0,1),0,px(KERB,1),0);side.addColorStop(0,'rgba(62,46,30,.3)');side.addColorStop(.7,'rgba(62,46,30,0)');side.addColorStop(1,'rgba(255,244,214,.18)');
+    poly(face,side);                                                       /* 靠牆暗、靠馬路亮 */
+    ink([P3(0,z0),P3(0,z1)],1.3);
+    ink([P3(.42,z0),P3(.42,z1)],2.4,'rgba(92,86,74,.75)');ink([P3(.52,z0),P3(.52,z1)],1.2,'rgba(150,96,60,.7)');     /* 沿牆的水管和電線 */
+    for(var r=Math.ceil(VZ+z0);r<VZ+z1;r++){var z=r-VZ;
+      if(r%2===0)ink([P3(0,z),P3(KERB,z)],.8,'rgba(70,56,40,.26)');
+      if(r%3===1&&z>.5)ceilingLamp(1.55,z+.4);                              /* 圓形吸頂燈 */
+    }
+    /* 沿柱子線的大樑 */
+    var beam=[P3(KERB,z0,ROOF-.26),P3(KERB,z1,ROOF-.26),P3(KERB,z1),P3(KERB,z0)];
+    poly(beam,viewX>KERB?'#c9bfa9':'#8c8371');weather(beam);
+    ink([P3(KERB,z0,ROOF-.26),P3(KERB,z1,ROOF-.26)],1.3);ink([P3(KERB,z0),P3(KERB,z1)],1.1);
+  }
+  function roofSpans(first,last,each){
+    var r=first;
+    while(r<=last){
+      if(!roofed(r)){r++;continue;}
+      var a=r;while(r<=last&&roofed(r))r++;
+      each(a,r);
+    }
+  }
+  function drawCeiling(first,last){roofSpans(first,last,ceilingSpan);}
+  function column3d(z){
+    var x1=2.98,x2=KERB,d=.32;if(z<HERO_Z-.7)return;                 /* 太靠近鏡頭的柱子會佔掉三分之一畫面，不畫 */
+    var P3=function(x,h,zz){return [px(x,zz),py(h,zz)];};
+    ctx.save();
+    if(z<HERO_Z-.35){var near=px(x1,z),far=px(x2,z),me=px(mid(P.x),HERO_Z),mine=.3*K(HERO_Z);
+      if(far>me-mine&&near<me+mine){ctx.restore();return;}}             /* 會擋住角色就直接不畫，不做半透明 */
+    var side=viewX<x1?x1:viewX>x2?x2:null;
+    if(side!==null)poly([P3(side,0,z),P3(side,ROOF,z),P3(side,ROOF,z+d),P3(side,0,z+d)],'#aaa292');
+    poly([P3(x1,0,z),P3(x2,0,z),P3(x2,ROOF,z),P3(x1,ROOF,z)],'#cfc6b2');
+    weather([P3(x1,0,z),P3(x2,0,z),P3(x2,ROOF,z),P3(x1,ROOF,z)]);
+    var X=px(x1,z),Wd=px(x2,z)-X,top=py(ROOF,z),bot=py(0,z),band=py(1.05,z),s=K(z),y,i;
+    ctx.strokeStyle='rgba(105,92,76,.45)';ctx.lineWidth=1;ctx.beginPath();
+    for(y=top;y<band;y+=Math.max(4,s*.12)){ctx.moveTo(X,y);ctx.lineTo(X+Wd,y);}
+    ctx.moveTo(X+Wd*.5,top);ctx.lineTo(X+Wd*.5,band);ctx.stroke();
+    ctx.save();ctx.beginPath();ctx.rect(X,band,Wd,bot-band);ctx.clip();ctx.fillStyle='#e9bb25';ctx.fillRect(X,band,Wd,bot-band);
+    for(i=-2;i<12;i++){y=band+i*Wd*.62;if(y>bot)break;poly([[X,y],[X+Wd,y+Wd*.7],[X+Wd,y+Wd],[X,y+Wd*.3]],'#25201b');}
+    ctx.restore();
+    ctx.strokeStyle='rgba(40,30,20,.65)';ctx.lineWidth=1.2;ctx.strokeRect(X,top,Wd,bot-top);ctx.restore();
+  }
+  function beam3d(z){
+    if(z<1.5)return;var th=.2,d=.3,P3=function(x,h,zz){return [px(x,zz),py(h,zz)];};
+    var under=[P3(0,ROOF-th,z),P3(KERB,ROOF-th,z),P3(KERB,ROOF-th,z+d),P3(0,ROOF-th,z+d)];
+    var front=[P3(0,ROOF-th,z),P3(KERB,ROOF-th,z),P3(KERB,ROOF,z),P3(0,ROOF,z)];
+    poly(under,'#776e5f');weather(under);poly(front,'#9d9381');weather(front);
+    ink([front[0],front[1]],1.2);ink([under[3],under[2]],.8,'rgba(58,44,30,.5)');
+  }
+  function picture(name,x,z,hUnits,lift,flip){
+    var im=IMG[name];if(!im||!im.naturalWidth||z<-1)return;
+    var h=hUnits*K(z),w=h*im.naturalWidth/im.naturalHeight,X=px(x,z),b=py(lift,z);
+    ctx.save();ctx.translate(X,0);if(flip)ctx.scale(-1,1);ctx.drawImage(im,-w/2,b-h,w,h);ctx.restore();
+  }
+  function hangingSign(name,x,z,hUnits,lift){
+    var im=IMG[name];if(!im||!im.naturalWidth)return;
+    var s=K(z),half=hUnits*s*im.naturalWidth/im.naturalHeight*.36,X=px(x,z),top=py(ROOF,z),bar=py(lift+hUnits*.94,z);
+    ctx.strokeStyle='#3d362c';ctx.lineWidth=Math.max(1.2,s*.018);ctx.beginPath();ctx.moveTo(X-half,top);ctx.lineTo(X-half,bar);ctx.moveTo(X+half,top);ctx.lineTo(X+half,bar);ctx.stroke();
+    picture(name,x,z,hUnits,lift);
+  }
+  /* 對街的電線桿、電線、招牌和停著的車（只是街景） */
+  function poleAt(r){
+    var z=r-VZ;if(z<.2||z>FARZ||zoneOf(r)==='cross')return;
+    var X=px(8.5,z),top=py(5.4,z),bot=py(0,z),s=K(z);
+    ctx.fillStyle='#8d877c';ctx.fillRect(X-s*.07,top,s*.14,bot-top);
+    ctx.fillStyle='#6f695f';ctx.fillRect(X-s*.5,top+s*.14,s,s*.07);ctx.fillRect(X-s*.38,top+s*.42,s*.76,s*.06);
+    ctx.strokeStyle='rgba(35,30,28,.55)';ctx.lineWidth=1;
+    [[-.46,.14],[.46,.14],[-.34,.42]].forEach(function(o){
+      var z2=Math.min(FARZ+4,z+9);ctx.beginPath();ctx.moveTo(X+o[0]*s,top+o[1]*s);
+      ctx.quadraticCurveTo((X+px(8.5,z2))/2+o[0]*s*.6,(top+py(5.4,z2))/2+s*.55,px(8.5,z2)+o[0]*K(z2),py(5.4,z2)+o[1]*K(z2));ctx.stroke();});
+  }
+
+  /* 車子是平視的正面圖：底邊就是輪子踩的地面，寬度依車種固定，高度照原圖比例（不壓扁） */
+  var VWIDTH={v_delivery:.74,v_auntie:.72,v_taxi:1.18,v_truck:1.2,v_bus:1.42,v_garbage:1.46,car_white:1.14,car_suv:1.2,carred:1.14,cargrey:1.16,truck_parked:1.22};
+  function standCar(name,mx,ground,wide,shade){
+    var im=IMG[name];if(!im||!im.naturalWidth)return 0;
+    var h=wide*im.naturalHeight/im.naturalWidth;
+    if(shade!==false)softShadow(mx,ground-C*.03,wide*.56,C*.13,.5);
+    ctx.drawImage(im,mx-wide/2,ground-h,wide,h);return h;
+  }
+  /* 擋路的東西一律站在它第一格的前緣（FRONT 為離前緣多遠）。畫面看到的位置就是規則擋住的位置：
+     以前畫在格子中間甚至更遠，前面看起來是空地卻走不過去（使用者回報） */
+  var FRONT=.4,NOSE_AT=.14;
+  /* 停著的東西幾乎站在格子中央，和旁邊的角色同一條橫線：畫在前緣時，同一排的狗和攤車會出現在角色斜後方，
+     看起來旁邊是空的卻走不過去（使用者回報）。行進中的車子仍用車頭位置，撞到時看起來才有碰到 */
+  function depthSlide(it){return it.kind==='dog'&&it.slide>0?it.oy*it.slide:0;}
+  function standRow(start){return start+FRONT-.5;}                   /* 讓 zOf(結果) 剛好落在 start+FRONT */
+  function drawVehicle(v,ground){
+    var two=v.len<1,mx=cx(v.lane+.5),wide=C*(VWIDTH[v.img]||1.15);
+    var h=standCar(v.img,mx,ground+(calm?0:Math.abs(Math.sin(clk*(two?17:11)+v.len*9))*C*.008),wide);
+    if(v.img==='v_garbage'&&h){
+      ctx.fillStyle=Math.floor(clk*6)%2?'rgba(255,170,20,.9)':'rgba(255,170,20,.2)';
+      ctx.beginPath();ctx.arc(mx,ground-h*.98,C*.11,0,7);ctx.fill();
+      label('♪',mx-wide*.62,ground-h*.7-(clk*26%22),C*.3,'#fff6c4');
+    }
+  }
+  var SHOPS=['shop_a','shop_b','shop_c','shop_d','shopfront'];                 /* 全部是店面（舊的小攤子已移除，使用者要求） */
+  function drawShopEnd(){
+    var shopY=sy(GOAL+1)+C,which=SHOPS[(S.cup-1)%SHOPS.length];           /* 每一杯換一家店（店名都是虛構的） */
+    sprite(which,cx(1.55),shopY,C*3.5,C*3.4);
+  }
+
+  function drawShopLabel(heroZ){
+    var z=zOf(GOAL+1);if(banner||z>15||z<heroZ+.4||S.rest>0)return;
+    var name=tr('今天要喝：{n}',tr(drinkOf(S.cup)[0]));
+    ctx.font=font(13.5);var tw=Math.min(ctx.measureText(name).width+22,W*.82),x=Math.max(8,Math.min(W-tw-8,px(1.5,z)-tw/2)),y=Math.max(150,Math.min(H*.27,py(3.15,z)-14));
+    box(x,y,tw,28,10,'#3a2c22');fitLabel(name,x+tw/2,y+14,13.5,tw-14,'#fff3d6');
+  }
   function draw(){
     if(!rows)return;
     ctx.clearRect(0,0,W,H);
     ctx.save();
     if(shake>0&&!calm)ctx.translate(Math.sin(clk*90)*shake*14,Math.cos(clk*71)*shake*9);
-    var first=Math.max(Math.floor(cam)-1,-8),lastRow=Math.ceil(cam+viewRows())+2,r,c,y;
-    var road=cx(ARCADE);
-    for(r=first;r<=lastRow;r++){
-      y=sy(r);
-      if(roadTile){ctx.drawImage(roadTile,road,y,R+.5,C+.5);ctx.drawImage(roadTile,road+R,y,R+.5,C+.5);}
-      ctx.fillStyle='rgba(244,240,228,.85)';ctx.fillRect(cx(4)-2,y+C*.18,4,C*.55);
-      var m=((r%11)+11)%11;
-      if(m===4){ctx.strokeStyle='#4b4a4c';ctx.lineWidth=2;ctx.fillStyle='#77716c';ctx.beginPath();ctx.arc(cx(4.5),y+C/2,C*.26,0,7);ctx.fill();ctx.stroke();}
-      if(m===8){ctx.fillStyle='#47474a';ctx.fillRect(road+9,y+C*.25,C*.22,C*.4);ctx.fillStyle='#77767a';for(var g=0;g<4;g++)ctx.fillRect(road+10,y+C*.29+g*C*.09,C*.2,2);}
-      ctx.fillStyle='#b9b2a2';ctx.fillRect(road-4,y,7,C+1);              /* 路緣 */
-      ctx.fillStyle='rgba(95,112,66,.55)';ctx.fillRect(road-4,y+((r*37%50+50)%50)/50*C*.7,3,C*.18);
-      ctx.fillStyle='#c4463c';ctx.fillRect(road+4,y,4,C+1);               /* 紅線 */
+    VZ=P.y+.5-HERO_Z+(cam-(P.y-2.6))*.35;
+    var first=Math.floor(VZ)-3,last=Math.ceil(VZ+FARZ),r,c;
+    var sky=ctx.createLinearGradient(0,0,0,HORIZON+60);sky.addColorStop(0,'#a9d3ea');sky.addColorStop(1,'#eef0e6');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+    drawDistance();
+    wallStrips(ACROSS_SIDE,acrossStreet);
+    drawGround();
+    ctx.save();ctx.globalAlpha=.55;weather([[0,py(0,FARZ)],[W,py(0,FARZ)],[W,H],[0,H]]);ctx.restore();
+    drawRoadMarks(first,last);
+    drawGroundThings(first,last);
+    drawHaze();
+    drawCeiling(first,last);
+    wallStrips(0,shopWall);
+    if(viewX>KERB+.1)wallStrips(KERB,facadeAbove);
+
+    /* 其他東西由遠到近畫，近的蓋住遠的。擋在角色前面（比角色靠近鏡頭）的變淡 */
+    var list=[],done=[],heroZ=zOf(P.y);
+    function add(z,fn,order){if(z>-1.25&&z<FARZ)list.push({z:z,o:order||0,fn:fn});}
+    /* 比角色靠近鏡頭的東西會被放得很大、擋住角色：很快淡出，不畫成一大片半透明 */
+    /* x、wide 是這個東西的橫向中心和寬度；沒擋到角色就一直是實心的 */
+    function solid(z,x,wide){
+      if(z>=heroZ-.25||x===undefined)return 1;                          /* 旁邊和前面的永遠是實心的 */
+      var a=px(x,z),half=wide*K(z)/2,me=px(mid(P.x),heroZ),mine=.3*K(heroZ);
+      if(a+half<me-mine||a-half>me+mine)return 1;                       /* 從旁邊滑出畫面 */
+      return z>heroZ-.35?1:0;                                           /* 會蓋住角色的直接不畫，不做半透明 */
     }
-    drawFloors(first,lastRow);
-    drawSteps(first,lastRow);
-    drawGreenway(first,lastRow);
-    drawFacade();
-    (S.crossings||[]).forEach(drawCrossingGround);
-    var gy=sy(GOAL);
-    ctx.fillStyle='rgba(255,224,50,.4)';ctx.fillRect(cx(0),gy,C*ARCADE,C);
-
-    parked.forEach(function(q){                        /* 路邊機車停在白線停車格裡 */
-      ctx.strokeStyle='rgba(244,240,228,.9)';ctx.lineWidth=3;
-      for(var i=0;i<q.len;i++){
-        var it=rows[q.r+i][ARCADE];
-        if(it&&it.img.indexOf('scooter')===0)ctx.strokeRect(cx(ARCADE)+11,sy(q.r+i)+2,R-17,C-4);
-      }
-    });
-    reversers.forEach(function(s){if(s.state==='warn')warnCell(s.c-1,s.r);});
-    (S.pulls||[]).forEach(function(q){if(q.state==='warn'){warnLane(q.r);warnLane(q.r+1);}});
-    (S.walkways||[]).forEach(function(w){
-      if(w.warn>0)for(var k=Math.max(w.from+1,P.r-1);k<=Math.min(w.to-1,P.r+4);k++)warnCell(w.col,k);
-    });
-    (S.crossings||[]).forEach(function(x){if(x.turn)for(var c=0;c<ARCADE;c++)warnCell(c,x.base+x.turn.k);});
-    pending.forEach(function(p){warnCell(p.c,p.r);});
-
-    /* 由遠到近畫，近的蓋住遠的；主角插在自己那一列 */
-    var heroRow=Math.round(P.y),heroDone=false,done=[];
-    for(r=Math.min(lastRow,rows.length-1);r>=Math.max(first-1,0);r--){
+    function place(row,fn,x,wide,order){var z=zOf(row),alpha=solid(z,x,wide);if(alpha>0)add(z,function(){at(row,z,function(){ctx.globalAlpha*=alpha;fn();});},order);}
+    for(r=Math.min(last,rows.length-1);r>=Math.max(first,0);r--){
       for(c=0;c<COLS;c++){
         var it=rows[r][c];
-        if(it&&it.r===r&&it.c===c&&done.indexOf(it)<0){done.push(it);drawItem(it);}
+        if(it&&it.img==='slit')continue;                    /* 窄縫本身沒有東西可畫 */
+        if(it&&it.r===r&&it.c===c&&done.indexOf(it)<0&&isColumnArt(it)){done.push(it);standInLine(it,place);continue;}
+        if(it&&it.r===r&&it.c===c&&done.indexOf(it)<0){done.push(it);(function(item){
+          var beside=item.flank&&Math.round(P.y)===item.r&&Math.round(P.x)===1,inGap=beside;     /* 正在從中間穿過：兩側畫在角色後面 */
+          var draw3=function(){
+          if(item.kind==='pull'||item.kind==='parked'){var m=cx(item.c+.5+(item.off||0)+(item.kind==='pull'?(item.pull.slide||0)*.55:0)),img=item.img;
+            if(img==='cones'){sprite(img,m,b,C*.62,C*.95);return;}
+            var b=sy(item.r)+C-3;
+            if(VWIDTH[img]){var gd=b+3,wd=C*VWIDTH[img],hh=standCar(img,m,gd,wd);if(item.kind==='pull')hazards(m,gd,wd,hh);return;}
+            softShadow(m,b-C*.05,R*.52,C*.12,.4);
+            sprite(img,m,b,R*(img.indexOf('scooter')===0?.98:1.04),C*(img==='stall_road'?2.6:img.indexOf('scooter')===0?1.4:2.1),true);
+            return;}
+          var keep=item.r,off=item.off;item.r=standRow(keep+depthSlide(item));
+          if(item.flank)item.off=(off||0)+(item.c===0?1:-1)*SQUEEZE_IN;      /* 窄縫兩側的機車往中間靠 */
+          drawItem(item);item.r=keep;item.off=off;};
+          if(inGap){var own=standRow(item.r),ownZ=zOf(own);add(Math.max(ownZ,heroZ+.02),function(){at(own,ownZ,draw3);},.2);}
+          else place(standRow(item.r+depthSlide(item)),draw3,R_.across(item.c+item.w/2+(item.off||0)+(item.flank?(item.c===0?1:-1)*SQUEEZE_IN:0)),item.w*1.05);})(it);}
       }
-      if(r===GOAL+1){
-        var shopY=sy(r)+C;
-        if(S.cup%2===0)sprite('shopfront',cx(1.5),shopY,C*3.05,C*2.9);        /* 偶數杯是店面，單數杯是攤子 */
-        else{
-          moving(cx(1.5),shopY,0,1+Math.sin(clk*3.4)*.01,function(){sprite('shop',cx(1.5),shopY,C*2.7,C*2.7);});
-          steam(cx(1.5)+C*.55,shopY-C*1.15,.2,C*.09,'250,248,240');
-        }
-        var name=tr('今天要喝：{n}',tr(drinkOf(S.cup)[0]));
-        ctx.font=font(13);var tw=Math.min(ctx.measureText(name).width+20,C*3.4),ty=shopY-C*3.35;
-        box(cx(1.5)-tw/2,ty-14,tw,28,10,'#3a2c22');fitLabel(name,cx(1.5),ty,13,tw-14,'#fff3d6');
+      if(roofed(r)){
+        if(hasColumn(r))(function(row){var z=row-VZ+.34;add(z,function(){column3d(z);},1);add(z+.02,function(){beam3d(z);},-1);})(r);
+        if(r%5===3)(function(row){var z=row-VZ+.8;add(z,function(){if(z>3.2)hangingSign(draw1Fixed(WIDESIGN,row),.62,z,.42,2.42);},-1);})(r);
       }
-      if(hasColumn(r))drawColumn(r);
-      for(var q=0;q<strollers.length;q++)if(strollers[q].go&&strollers[q].r===r)drawStroller(strollers[q]);
-      if(r===heroRow){drawHero();heroDone=true;}
-      for(var a=0;a<(S.xcars||[]).length;a++)if(S.xcars[a].row===r)drawAcross(S.xcars[a]);
+      for(var q=0;q<strollers.length;q++)if(strollers[q].go&&strollers[q].r===r)(function(k){place(k.r,function(){drawStroller(k);},R_.across(k.x+.5),.7);})(strollers[q]);
     }
-    if(!heroDone)drawHero();
+    for(r=Math.ceil(VZ/7)*7;r<=last;r+=7)(function(row){add(row-VZ,function(){poleAt(row);},-1);})(r);
+    for(r=Math.floor(VZ/5)*5;r<=last;r+=5)(function(row){var z=row-VZ+.5;if(zoneOf(row)!=='cross'&&hash(row,17)<.7&&z>.5)add(z,function(){var name=['car_white','car_suv','cargrey','carred'][Math.floor(hash(row,23)*4)%4],im=IMG[name];if(im&&im.naturalWidth)picture(name,7.75,z,1.45*im.naturalHeight/im.naturalWidth,0);});})(r);
+    if(GOAL+1<=last)place(GOAL+1,drawShopEnd);
+    (S.xcars||[]).forEach(function(v){place(v.row,function(){drawAcross(v);},v.x+v.len/2,v.len);});
+    cars.forEach(function(v){var at0=v.y+NOSE_AT-.5;place(at0,function(){drawVehicle(v,sy(at0)+C);},R_.across(v.lane+.5),1.25);});
+    (S.pulls||[]).forEach(function(p){
+      if(p.state==='stay')return;
+      var warn=R_.levelOf(S.cup).warn,k=p.state==='warn'?Math.max(0,Math.min(1,p.time/warn)):1-Math.max(0,p.time/.8);
+      var row=standRow(p.state==='warn'?p.r+k*4.5:p.r-k*k*4),x=p.state==='warn'?ARCADE+1.5-(1-k)*.45:ARCADE+.5+p.off+k;
+      place(row,function(){var m=cx(x),gd=sy(row)+C,wd=C*(VWIDTH[p.img]||1.15);if(p.state==='out')ctx.globalAlpha*=1-k;var hh=standCar(p.img,m,gd,wd);if(p.state==='warn')hazards(m,gd,wd,hh);},R_.across(x),1.25);
+    });
+    (S.crossings||[]).forEach(function(x){                          /* 路口對面那一段的樓房正面 */
+      for(var q=x.base+R_.CROSS_ROWS;q<x.base+R_.CROSS_ROWS+4;q++)if(roofed(q)&&!roofed(q-1)){(function(row,k){add(row-VZ+.05,function(){cornerBuilding(row,k);},-3);})(q,x.base);break;}
+      /* 這一側轉角的牆比對面近，要蓋在對面房子和橫向車流上面（原本被對面的房子蓋住，使用者回報） */
+      for(var e=x.base;e<x.base+4;e++)if(zoneOf(e)==='cross'){(function(zEnd){if(zEnd>-1)add(zEnd,function(){wallStrips(0,shopWall,zEnd);},5);})(e-VZ);break;}
+    });
+    (S.crossings||[]).forEach(function(x){var row=x.base+R_.CROSS_ROWS;add(row-VZ+.2,function(){at(row,row-VZ+.2,function(){drawSignal(x);});});});
+    add(heroZ,function(){at(P.y,heroZ,drawHero);},.5);
+    roofSpans(first,last,function(a){
+      if(a<=0||a-VZ<.9||zoneOf(a-1)==='cross'||zoneOf(a-1)==='curb')return;          /* 路口那邊由街角建築負責 */
+      var zAt=a-VZ;
+      add(zAt+.04,function(){upperFront(a,a);},-4);
+      add(zAt+.02,function(){wallStrips(0,shopWall,zAt);},-3.5);           /* 比這棟房子近的圍牆和店面要蓋在它前面 */
+    });
+    roofSpans(first,Math.ceil(VZ+9),function(a,b){
+      if(a-VZ>.3||b-VZ<=-1.2||b-VZ>FARZ)return;                            /* 只有鏡頭正在底下的那一段 */
+      var zEnd=b-VZ;
+      add(zEnd+.001,function(){ceilingSpan(a,b);wallStrips(0,shopWall,zEnd);if(viewX>KERB+.1)wallStrips(KERB,facadeAbove,zEnd);},9);   /* 天花板往左蓋到畫面外，之後要把這一側的牆畫回來 */
+    });
+    list.sort(function(a,b){return b.z-a.z||a.o-b.o;});
+    list.forEach(function(o){
+      ctx.save();
+      try{o.fn();}catch(e){if(!drawFailed){drawFailed=true;console.error(e);}}     /* 單一物件畫失敗時，其他東西照樣畫完 */
+      ctx.restore();
+    });
 
-    cars.forEach(function(v){
-      var bottom=sy(v.y)+C-3,h=v.len*C;
-      if(bottom<-C||bottom-h*1.3>H)return;
-      var two=v.len<1,mx=cx(v.lane+.5);                       /* 車身固定走車道正中央，不左右擺 */
-      var bounce=calm?0:Math.sin(clk*(two?34:19)+v.len*9)*(two?1.3:1);
-      steam(mx+C*(two?.2:.3),bottom-h*.95,v.len,C*.07,'120,120,120');      /* 排氣在車尾（上方） */
-      sprite(v.img,mx,bottom+bounce,v.walk!==undefined?C*.96:R*(two?.76:v.img==='v_bus'?1.04:1),h*1.12);
-      if(v.img==='v_garbage'){
-        ctx.fillStyle=Math.floor(clk*6)%2?'rgba(255,170,20,.9)':'rgba(255,170,20,.25)';
-        ctx.beginPath();ctx.arc(mx,bottom+bounce-R*.82,C*.12,0,7);ctx.fill();
-        label('♪',mx-C*.45,bottom-h*.7-(clk*26%22),C*.3,'#fff6c4');
-      }
-    });
-    drawRoof(first,lastRow);
-    drawPulls();
-    (S.crossings||[]).forEach(drawSignal);
-    edgeArrows();
     fx.forEach(function(f){
-      var k=f.age/f.life;
+      var k=f.age/f.life,z=zOf(f.y);if(z<-1||z>FARZ)return;
+      var s=K(z),X=px(R_.across(f.x),z),Y=py(0,z)-k*s*.12;
       ctx.fillStyle='rgba('+f.color+','+(.5*(1-k)).toFixed(3)+')';
-      for(var i=-1;i<=1;i+=2){ctx.beginPath();ctx.arc(cx(f.x)+i*C*(.12+k*.16),sy(f.y)+C*.9-k*C*.12,C*f.r*(.6+k),0,7);ctx.fill();}
+      for(var i=-1;i<=1;i+=2){ctx.beginPath();ctx.arc(X+i*s*(.12+k*.16),Y,s*f.r*(.6+k),0,7);ctx.fill();}
     });
-    /* 警告：車還在畫面外 */
-    var edge=cam+viewRows()-.9,blink=Math.floor(t*8)%2===0,warned={};
+    edgeArrows();
+    /* 警告：車還在遠處。外側車道的牌子靠右、內側車道靠中間、騎上人行道的機車在下面一排 */
+    var edge=P.y+13,blink=Math.floor(t*8)%2===0,warned={};
     cars.forEach(function(v){
-      if(v.stopped||v.y<=edge||v.y>Math.max(edge+v.v*1.6,cam+R_.VIEW_ROWS+v.v*1.1)||warned[v.lane])return;
+      if(v.stopped||v.y<=edge-4||v.y>Math.max(edge+v.v*1.4,P.y+R_.VIEW_ROWS+v.v*1.1)||warned[v.lane])return;
       warned[v.lane]=1;
-      var wx=cx(v.lane+.5),wy=58;
-      box(wx-C*.54,wy,C*1.08,32,9,blink?'#e8372a':'#ffd23d');
-      ctx.font=font(12.5);var name=tr(v.n),tw=Math.min(ctx.measureText(name).width,C*1.08-22);warnSign(wx-tw/2-5,wy+16,14);fitLabel(name,wx+8,wy+16,12.5,C*1.08-24,blink?'#fff':'#1d1b1a');
+      var bw=82,wx=v.lane===4?W-bw/2-8:v.lane===3?W-bw*1.5-14:W/2,wy=v.lane<ARCADE?106:58;
+      box(wx-bw/2,wy,bw,32,9,blink?'#e8372a':'#ffd23d');
+      ctx.font=font(12.5);var name=tr(v.n),tw=Math.min(ctx.measureText(name).width,bw-22);warnSign(wx-tw/2-5,wy+16,14);fitLabel(name,wx+8,wy+16,12.5,bw-24,blink?'#fff':'#1d1b1a');
     });
-    bubbles.forEach(function(b){
+    drawShopLabel(heroZ);
+    var talk=bubbles.slice(-3),placed=[];
+    if(talk.length>1)talk=talk.filter(function(b){return b.text!=='喵～';});     /* 有正事要說時，貓先安靜 */
+    talk.slice(-2).forEach(function(b){        /* 同時最多兩句 */
       ctx.font=font(13);
-      var text=tr(b.text);
-      var w=ctx.measureText(text).width+18,x=Math.max(6,Math.min(W-w-6,cx(b.c+.5)-w/2)),by=Math.max(100,sy(b.r)-C*.75);
+      var text=tr(b.text),z=Math.max(.6,Math.min(12,zOf(b.r)));
+      var w=ctx.measureText(text).width+18,x=Math.max(6,Math.min(W-w-6,px(mid(b.c),z)-w/2)),by=Math.max(180,py(1.75,z)-14);
+      for(var tries=0;tries<4;tries++){
+        var hit=placed.filter(function(o){return x<o.x+o.w+4&&x+w+4>o.x&&by<o.y+32&&by+32>o.y;})[0];
+        if(!hit)break;by=hit.y-33<180?hit.y+33:hit.y-33;
+      }
+      placed.push({x:x,y:by,w:w});
       box(x,by,w,28,10,'#fffdf4');label(text,x+w/2,by+14,13,'#1d1b1a');
     });
     if(banner){
@@ -927,14 +1533,68 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
     }
     ctx.restore();
     if(S.rest>0&&!over)drawSip();
-    if(over&&S.cause!=='closed')label(tr('嚇到！'),Math.min(cx(P.x+.5),W-C*.7),sy(P.y)-C*.8,C*.38,'#fff');
+    if(over&&S.cause!=='closed')label(tr('嚇到！'),Math.min(px(mid(P.x),HERO_Z),W-40),py(1.95,HERO_Z),22,'#fff');
   }
+  var drawFailed=false;
+  var SQUEEZE_IN=.24;                                   /* 兩側各往中間靠多少，中間剩大約三分之一格多 */
+  /* 「一直排吃麵的人」和「一疊機車」原本是俯視圖（畫面上方代表比較遠），立起來看會變成人和車疊在半空（使用者回報）。
+     改用單一素材，依前後距離一個一個站在地上 */
+  function isColumnArt(it){return it.img.indexOf('dinersv')===0||it.img.indexOf('scooterstack')===0;}
+  var LINE_SCOOTERS=['scooterside','scooterside_blue','scooterside_grey'];
+  function standInLine(item,place){
+    var diners=item.img.indexOf('dinersv')===0,flip=item.img.charAt(item.img.length-1)==='~'?'~':'';
+    var parts=diners?[0,1]:item.h>1?[0,.66,1.32]:[0,.5];
+    parts.forEach(function(off,i){
+      var name=diners?(i%2?'eat_table':'eat_diner'):LINE_SCOOTERS[Math.floor(hash(item.r+i*7,item.c+3)*3)%3]+flip;
+      var row=standRow(item.r+off);
+      place(row,function(){
+        if(item.kind==='parked'){
+          var m=cx(item.c+.5+(item.off||0)),b=sy(row)+C;
+          softShadow(m,b-C*.03,R*.46,C*.1,.4);sprite(name,m,b-C*.01,R*.94,C*1.15,true);
+        }else drawItem({img:name,c:item.c,r:row,w:1,h:1});
+      },R_.across(item.c+.5+(item.off||0)),1.05);
+    });
+  }
+  function passable(x,y){var q=rows[y];return x>=0&&x<COLS&&!!q&&(!q[x]||!!q[x].tight);}
+  /* 側身標籤只掛在真的過得去的縫：從這一側走得到、擠進去之後能繼續往前兩步（原本死路也標，使用者回報過不去） */
+  function squeezeOk(c,r){return passable(c,r-1)&&passable(c,r+1);}
+  /* 車縫：靠車道那排的缺口，兩邊都通（騎樓⇄車道）才標「可穿過」，免得鑽過去才發現被停車堵住 */
+  function openSlot(r){
+    var z=zoneOf(r),q=rows[r];
+    if(r>=GOAL-3||(z!=='arcade'&&z!=='occupied')||!q||q[ARCADE-2]||q[ARCADE-1]||q[ARCADE]||!rows[r-1]||!rows[r+1])return false;   /* 騎樓到車道一路都不用側身 */
+    return !!(rows[r-1][ARCADE-1]&&rows[r+1][ARCADE-1]);                  /* 前後都停著東西，中間才算「車縫」 */
+  }
+  /* 提示漆在地上（浮在半空的標籤容易讓人誤以為指著別的東西，使用者回報）。
+     畫在地面那一層，擋路的東西會蓋在它上面。文字依距離壓扁，看起來是平貼的 */
+  function paintOnFloor(x0,x1,z0,z1,fill,edge,text,ink,icon,textAt){
+    ctx.save();ctx.globalAlpha=.9;slab(x0,x1,z0,z1,edge);slab(x0+.04,x1-.04,z0+.06,z1-.06,fill);ctx.restore();
+    var zm=textAt===undefined?(z0+z1)/2:textAt,sc=K(zm),X=px((x0+x1)/2,zm),Y=py(0,zm);
+    var deep=Math.abs(py(0,z0)-py(0,z1)),wide=(x1-x0)*sc;
+    var size=Math.min(sc*.2,wide*.9/(text.length*1.05+1.6),deep*1.15);if(size<6)return;
+    ctx.save();ctx.translate(X,Y);ctx.scale(1,Math.max(.55,Math.min(.8,EYE/(zm+NEAR))));
+    ctx.font=font(size);var tw=ctx.measureText(text).width,iw=size*1.15,left=-(tw+iw+size*.2)/2,ix=left+iw/2;
+    ctx.strokeStyle=ink;ctx.lineWidth=Math.max(1.2,size*.13);ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
+    var u=size*.5;
+    if(icon==='through'){ctx.moveTo(ix-u,0);ctx.lineTo(ix+u,0);ctx.moveTo(ix-u*.5,-u*.55);ctx.lineTo(ix-u,0);ctx.lineTo(ix-u*.5,u*.55);ctx.moveTo(ix+u*.5,-u*.55);ctx.lineTo(ix+u,0);ctx.lineTo(ix+u*.5,u*.55);ctx.stroke();}
+    else{ctx.moveTo(ix-u*.8,-u);ctx.lineTo(ix-u*.8,u);ctx.moveTo(ix+u*.8,-u);ctx.lineTo(ix+u*.8,u);ctx.moveTo(ix,-u*.35);ctx.lineTo(ix,u*.25);ctx.moveTo(ix-u*.25,u);ctx.lineTo(ix,u*.25);ctx.lineTo(ix+u*.3,u);ctx.stroke();ctx.beginPath();ctx.arc(ix,-u*.7,u*.24,0,7);ctx.stroke();}
+    label(text,left+iw+size*.2+tw/2,1,size,ink);ctx.restore();ctx.lineCap='butt';
+  }
+  function floorTags(first,last){
+    var r,from=Math.max(Math.floor(P.y+.5),1),slot=-1,gap=-1;                      /* 走過的不再顯示，各只提示最近的一個 */
+    for(r=from;r<from+6&&r<rows.length-1;r++){
+      if(slot<0&&openSlot(r))slot=r;
+      var it=rows[r][1];if(gap<0&&it&&it.tight&&r>=P.y+.5&&squeezeOk(1,r))gap=r;
+    }
+    if(slot>=0){var z=slot-VZ;paintOnFloor(ARCADE-.78,ARCADE+.42,z+.27,z+.73,'#1f8a55','#fffdf4',tr('可穿過'),'#fff','through');}
+    if(gap>=0){var g=standRow(gap)+.5-VZ;paintOnFloor(mid(1)-.3,mid(1)+.3,g-.95,g+.55,'#f7e33b','#3a2c22',tr('側身'),'#3a2c22','side',g-.68);}   /* 通道直接鋪進兩台車中間的縫 */
+  }
+  function draw1Fixed(list,n){return list[Math.floor(hash(n,31)*list.length)%list.length];}
 
   /* ---------- 與規則模組同步 ---------- */
   function sync(){
     rows=S.rows;P=S.P;cars=S.cars;cam=S.cam;t=S.t;parked=S.parked;reversers=S.reversers;pending=S.pending;bump=S.bump;over=S.dead;
   }
-  function newStreet(){sync();layFloors();sipImage(S.cup);roofAlpha=insideArcade()?0:ROOF_OUT;fx=[];bubbles=[];banner=null;bags={};placeCats();buildFacade();}
+  function newStreet(){sync();layFloors();sipImage(S.cup);viewX=camTarget();fx=[];bubbles=[];banner=null;bags={};placeCats();if(classic())classicBuildFacade();else buildFacade();}
   function updateHud(){
     $('hud').textContent=tr('第 {n} 杯',S.cups+(S.rest>0?0:1))+' · '+tr('還有 {n} 步',Math.max(0,GOAL-P.r));
   }
@@ -950,6 +1610,7 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
       else if(e.type==='walk')for(var w=0;w<3;w++)tone(1760,w*.14,.07,'sine',.05,2300);
       else if(e.type==='turn'){tone(420,0,.18,'square',.06);tone(420,.24,.3,'square',.06);}
       else if(e.type==='stair')tone(e.up?190:150,0,.09,'sine',.07,e.up?280:90);
+      else if(e.type==='brush'){say('借過一下～',e.c,e.r,1);tone(700,0,.09,'triangle',.05,500);}
       else if(e.type==='scooter'){tone(880,0,.1,'square',.045);tone(880,.15,.16,'square',.045);}
       else if(e.type==='pull'){tone(360,0,.32,'square',.055);}
       else if(e.type==='cupStart'){newStreet();sipImage(e.cup);banner={text:'下一杯：{n}',drink:drinkOf(e.cup)[0],sub:STORY[R_.themeOf(e.cup)],hell:R_.levelOf(e.cup).hell,time:2.8};}
@@ -966,9 +1627,24 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
     if(banner&&(banner.time-=sec)<=0)banner=null;
     if(S.dead&&state==='running')finish();
   }
+  /* 走不過去時，讓擋住的那一格閃紅色，玩家才知道是被什麼擋住 */
+  var blocker=null;
+  function showBlocker(code){
+    var d=R_.DIRS[code],c=P.c+d[0],r=P.r+d[1];
+    if(c<0||c>=COLS||!rows[r]||!rows[r][c])return;
+    if(!blocker||blocker.c!==c||blocker.r!==r||clk-blocker.at>.55)blocker={c:c,r:r,at:clk};
+  }
+  function drawBlocker(){
+    if(!blocker||clk-blocker.at>.6){return;}
+    var z=blocker.r-VZ;if(z<-1||z>FARZ)return;
+    var a=.55*(1-(clk-blocker.at)/.6),x0=R_.across(blocker.c)+.06,x1=R_.across(blocker.c+1)-.06;
+    slab(x0,x1,z+.06,z+.94,'rgba(232,55,42,'+a.toFixed(2)+')');
+    ctx.strokeStyle='rgba(232,55,42,'+Math.min(1,a*1.7).toFixed(2)+')';ctx.lineWidth=2.5;ctx.stroke();
+  }
   function move(code){
     if(state!=='running'||starting)return;
     if(R_.input(S,code)){bridge.record(window,code);bridge.touch(window);}
+    else if(code<4)showBlocker(code);
     sync();events();updateHud();
   }
 
@@ -976,20 +1652,29 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
   /* 手指操作：按住就一直往前走，放開就停；按著的時候左右滑可以閃，閃完繼續走。點一下走一步，往下滑後退。
      鍵盤按住往前也一樣連續走。送進規則的仍是原本的四個方向，不影響排行榜重播 */
   var HOLD_MS=220,REARM_MS=110,downX=0,downY=0,down=false,downAt=0,used=false,armed=true,seenAt=0,sideAt=0,keyHeld=false;
-  function release(){down=false;keyHeld=false;}
+  var sideBtn=$('side'),sideHeld=false,walkId=null;
+  function setSide(on){
+    if(sideHeld===on)return;sideHeld=on;sideBtn.classList.toggle('on',on);
+    if(state==='running')move(on?R_.SIDE_ON:R_.SIDE_OFF);
+  }
+  sideBtn.addEventListener('pointerdown',function(e){e.preventDefault();if(sideBtn.setPointerCapture&&e.pointerId!==undefined)try{sideBtn.setPointerCapture(e.pointerId);}catch(err){}setSide(true);});
+  ['pointerup','pointercancel','lostpointercapture'].forEach(function(t){sideBtn.addEventListener(t,function(){setSide(false);});});
+  sideBtn.addEventListener('contextmenu',function(e){e.preventDefault();});
+  function release(){down=false;keyHeld=false;walkId=null;setSide(false);}
   function walkOn(now){
     var held=keyHeld||(down&&now-downAt>=HOLD_MS);
     if(!held||state!=='running'||starting||S.rest>0||P.k<1||now-sideAt<200)return;
-    var next=rows[P.r+1];
-    if(next&&next[P.c])return;                        /* 前面有東西就停下來等，不會一直撞 */
+    if(sideHeld&&!S.side)move(R_.SIDE_ON);
+    var next=rows[P.r+1],ahead=next&&next[P.c];
+    if(ahead&&!(ahead.tight&&sideHeld)){if(ahead.tight&&!S.told.tight)move(0);else showBlocker(0);return;}                        /* 前面有東西就停下來等，不會一直撞 */
     used=true;move(0);
   }
   cv.addEventListener('pointerdown',function(e){
-    e.preventDefault();if(cv.setPointerCapture&&e.pointerId!==undefined)try{cv.setPointerCapture(e.pointerId);}catch(err){}
+    e.preventDefault();walkId=e.pointerId;if(cv.setPointerCapture&&e.pointerId!==undefined)try{cv.setPointerCapture(e.pointerId);}catch(err){}
     down=true;used=false;armed=true;downX=e.clientX;downY=e.clientY;downAt=seenAt=performance.now();
   });
   cv.addEventListener('pointermove',function(e){
-    if(!down)return;
+    if(!down||e.pointerId!==walkId)return;
     var now=performance.now();
     if(!armed){                                       /* 一次滑動只算一次；手指停一下之後才能再滑 */
       if(now-seenAt>=REARM_MS)armed=true;
@@ -1003,7 +1688,8 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
     sideAt=now;if(code===1)downAt=Infinity;           /* 往下滑是後退，這次按住就不再自動往前 */
     move(code);
   });
-  cv.addEventListener('pointerup',function(){
+  cv.addEventListener('pointerup',function(e){
+    if(e&&e.pointerId!==walkId)return;
     if(down&&!used&&performance.now()-downAt<HOLD_MS)move(0);   /* 點一下走一步 */
     down=false;
   });
@@ -1013,18 +1699,20 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
   window.addEventListener('keydown',function(e){
     if($('rank-dialog').open)return;
     if(e.code==='Space'&&(state==='running'||state==='paused')){e.preventDefault();if(!e.repeat)togglePause();return;}
+    if((e.code==='ShiftLeft'||e.code==='ShiftRight'||e.code==='KeyE')&&state==='running'){e.preventDefault();setSide(true);return;}
     var k=KEYS[e.code];if(k===undefined||state!=='running')return;
     e.preventDefault();
     if(e.repeat){if(k===0&&performance.now()-keyAt>=HOLD_MS)keyHeld=true;return;}
     if(k===0)keyAt=performance.now();else sideAt=performance.now();
     move(k);
   });
-  window.addEventListener('keyup',function(e){if(KEYS[e.code]===0)keyHeld=false;});
+  window.addEventListener('keyup',function(e){if(KEYS[e.code]===0)keyHeld=false;if(e.code==='ShiftLeft'||e.code==='ShiftRight'||e.code==='KeyE')setSide(false);});
   window.addEventListener('blur',release);
 
   function animate(dt){
     clk+=dt;if(over)endAt+=dt;
-    fadeRoof(dt);
+    if(P)viewX+=(camTarget()-viewX)*Math.min(1,dt*6);
+    fadeBeams(dt);
     if(shake>0)shake=Math.max(0,shake-dt);
     fx=fx.filter(function(f){f.age+=dt;return f.age<f.life;});
   }
@@ -1075,14 +1763,17 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
       ended?tr('喝到 {n} 杯珍奶。',S.cups)+' '+tr(quip()):'';
     $('how').hidden=state!=='ready';
     var touch=matchMedia('(pointer: coarse)').matches||parent.innerWidth<=880;
-    var lines=touch?['按住畫面：一直往前走（點一下走一步）','左右滑：閃開；往下滑：後退']:['方向鍵 / WASD 移動，按住往前可一直走','空白鍵暫停；滑鼠按住也能往前'];
-    lines=lines.concat(['上方出現紅黃警告，先別走那一道','小心倒車機車、睡覺黑狗，還有垃圾車','過馬路看燈號，沒燈的路口等車過完再走']);
+    var lines=touch?['按住畫面：一直往前走（點一下走一步）','左右滑：閃開；往下滑：後退','按住右下角「側身」：擠過窄縫、閃過機車']:['方向鍵 / WASD 移動，按住往前可一直走','空白鍵暫停；滑鼠按住也能往前','按住 Shift：側身擠過窄縫、閃過機車'];
+    lines=lines.concat(['上方出現紅黃警告，先別走那一道','小心牽機車的人、睡覺黑狗，還有垃圾車','過馬路看燈號，沒燈的路口等車過完再走']);
     $('how').textContent='';lines.forEach(function(l){var li=document.createElement('li');li.textContent=tr(l);$('how').appendChild(li);});
     $('endHero').hidden=!ended;
     if(ended)$('endHero').src='art/'+(S.cause==='closed'?'hero_happy':'hero_scared')+'.webp';
     $('bestLine').textContent=best>0&&state!=='paused'?tr('最佳紀錄：{n} 杯',best):'';
     $('go').textContent=loadFailed?tr('載入失敗，請重新整理'):!loaded||starting?tr('載入中…'):state==='paused'?tr('繼續'):ended?tr('再玩一次'):tr('開始遊戲');
     $('go').disabled=!loaded||starting||loadFailed;
+    $('side').hidden=!(state==='running'||state==='paused');
+    $('side').querySelector&&($('side').querySelector('span').textContent=tr('側身'));
+    $('side').setAttribute('aria-label',tr('按住側身，走得比較慢'));
     $('pause').disabled=!(state==='running'||state==='paused');
     $('pause').classList.toggle('on',state==='paused');
     [['exit','返回遊戲大廳'],['pause',state==='paused'?'繼續':'暫停'],['snd','靜音切換'],['leaders','排行榜']].forEach(function(p){$(p[0]).setAttribute('aria-label',tr(p[1]));});

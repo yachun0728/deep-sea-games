@@ -2,6 +2,7 @@ import berryTrailRules from '../../../shared/berry-trail-rules.cjs';
 import pedestrianHellRules from '../../../shared/pedestrian-hell-rules.cjs';
 import pedestrianHellRulesV1 from '../../../shared/pedestrian-hell-rules-v1.cjs';
 import pedestrianHellRulesV2 from '../../../shared/pedestrian-hell-rules-v2.cjs';
+import pedestrianHellRulesV3 from '../../../shared/pedestrian-hell-rules-v3.cjs';
 import catMatchRules from '../../../shared/cat-match-rules.js';
 import onPitchRules from '../../../shared/on-pitch-rules.cjs';
 import breakoutRules from '../../../shared/breakout-rules.cjs';
@@ -92,6 +93,7 @@ const babyV2 = timedBoard(babyRules, babyRules.rulesVersion);
 const pedBoards = new Map([
   [undefined, timedBoard(pedestrianHellRulesV1)],
   [2, timedBoard(pedestrianHellRulesV2, 2)],
+  [3, timedBoard(pedestrianHellRulesV3, 3)],
   [pedestrianHellRules.rulesVersion, timedBoard(pedestrianHellRules, pedestrianHellRules.rulesVersion)],
 ]);
 // Each rules version keeps its own replay, so rounds started on an older client still verify.
@@ -240,8 +242,10 @@ const boards = new Map([
   ['berry-trail', timedBoard(berryTrailRules)],
   ['pedestrian-hell', {
     ...pedBoards.get(undefined),
+    // v4 added the sidestep inputs, so it encodes moves with six codes instead of four; apply() replays with the round's own version.
+    accepts: action => timedReplay.accepts(action, 4) || timedReplay.accepts(action, pedestrianHellRules.inputCount),
     rulesVersion: pedestrianHellRules.rulesVersion,
-    supportedVersions: [2, pedestrianHellRules.rulesVersion],
+    supportedVersions: [2, 3, pedestrianHellRules.rulesVersion],
     create: version => (pedBoards.get(version) ?? pedBoards.get(undefined)).create(),
     apply: (state, action) => pedBoards.get(state.rulesVersion)?.apply(state, action) ?? false,
   }],
