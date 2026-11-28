@@ -1,0 +1,26 @@
+{
+  "release": "246b17d",
+  "url": "https://ticaticagames.com/#last-hair",
+  "checks": [
+    "PASS production index and all four art assets SHA-256 match release via browser fetch",
+    "PASS live Chrome 390x844: direct hash, artwork loaded, start advances distance, canvas bounds, CDP touch press/release, exit and lobby entry",
+    "NOT TESTED real mobile devices, live round completion/rank write, audio listening, GA4 receipt (analytics domains blocked in test)"
+  ],
+  "geometry": {
+    "viewport": [
+      390,
+      844
+    ],
+    "canvas": {
+      "x": 7.4375,
+      "y": 68.40625,
+      "width": 375.109375,
+      "height": 675.1875,
+      "top": 68.40625,
+      "right": 382.546875,
+      "bottom": 743.59375,
+      "left": 7.4375
+    },
+    "scroll": 390
+  }
+}
