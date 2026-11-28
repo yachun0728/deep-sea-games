@@ -5,7 +5,7 @@ export const SHARE_ORIGIN = 'https://ticaticagames.com';
 export const SHARE_ID = /^[A-Za-z0-9]{10}$/;
 export const SHARE_PATH = /^\/s\/([A-Za-z0-9]{10})\/?$/;
 
-const COVERS = new Set(['meow-link', 'pedestrian-hell', 'berry-trail', 'academy', 'banquet', 'blaster', 'boba', 'breakout', 'dive', 'eat-smaller', 'elevator',
+const COVERS = new Set(['mermaid','midnight-solitaire','orbit-freecell','meow-link', 'pedestrian-hell', 'berry-trail', 'academy', 'banquet', 'blaster', 'boba', 'breakout', 'dive', 'eat-smaller', 'elevator',
   'frontier', 'last-hair', 'market-desk', 'merge', 'mines', 'mirror-twins', 'mosquito', 'mrt', 'ocean-link',
   'office-shoot', 'one-line-defense', 'outpost', 'pancake', 'peek', 'quack-pond', 'rocket-chair', 'shadow-relay', 'siege-architect',
   'skybuilder', 'tetris']);
@@ -19,6 +19,8 @@ const CLEARED = { unit: ['關', 'stages'], result: ['過了 {score} 關', 'clear
 
 // id: [中文名, English name, score param, scoring]
 const TABLE = {
+  'midnight-solitaire':['夜航經典接龍','Midnight Klondike','elapsed_seconds',{unit:['秒','s'],result:['以 {score} 秒通關','finished in {score} seconds']}],
+  'orbit-freecell':['星軌新接龍','Orbit FreeCell','elapsed_seconds',{unit:['秒','s'],result:['以 {score} 秒通關','finished in {score} seconds']}],
   'meow-link': ['貓咪連連看', 'Meow Link', 'step', CLEARED],
   'pedestrian-hell': ['行人地獄', 'Just Want Boba', 'score', { unit: ['杯', 'cups'], result: ['喝到 {score} 杯珍奶', 'got {score} cups of bubble tea'] }],
   'berry-trail': ['莓果小蛇', 'Berry Trail', 'score', POINTS],
@@ -38,7 +40,7 @@ const TABLE = {
   skybuilder: ['蓋樓大師', 'Sky Builder', 'floors', { unit: ['層', 'floors'], result: ['蓋了 {score} 層樓', 'built {score} floors'] }],
   reaper: ['死神打工', 'Reaper Shift', 'score', { unit: ['位', 'souls'], result: ['接走 {score} 位靈魂', 'collected {score} souls'] }],
   nap: ['偷睡大師', 'Nap Master', 'score', POINTS],
-  mermaid: ['人魚接龍', 'Mermaid Spider', 'score', POINTS],
+  mermaid: ['人魚蜘蛛接龍', 'Mermaid Spider', 'score', POINTS],
   rider: ['外送員大戰惡犬', 'Rider vs Dogs', 'score', POINTS],
   thief: ['偷水果的貓', 'Fruit Thief Cat', 'score', POINTS],
   tetris: ['俄羅斯方塊', 'Block Drop', 'score', POINTS],

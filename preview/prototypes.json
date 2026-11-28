@@ -53,5 +53,17 @@
     "name": "貓咪連連看 Meow Link",
     "concept": "奶油色貓咪連連看，沿用 Ocean Link 的十關連線玩法。",
     "status": "graduated"
+  },
+  {
+    "id": "midnight-solitaire",
+    "name": "夜航經典接龍 Midnight Klondike",
+    "concept": "已上架；保留不接錢包、GA4 與排行榜的獨立玩法預覽。",
+    "status": "graduated"
+  },
+  {
+    "id": "orbit-freecell",
+    "name": "星軌新接龍 Orbit FreeCell",
+    "concept": "已上架；保留不接錢包、GA4 與排行榜的獨立玩法預覽。",
+    "status": "graduated"
   }
 ]

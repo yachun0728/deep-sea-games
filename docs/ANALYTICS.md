@@ -197,3 +197,7 @@ Cat Match（`cat-match`／貓貓三消）：一個關卡一個免費回合；進
 ## 行人地獄（pedestrian-hell）
 
 沿用共用事件：開局 `AN.start('pedestrian-hell',0)`，暫停送 progress `phase:'pause'`，恢復呼叫 resume，結束一次 `AN.end(...,'complete'|'abandoned',{score})`，`score` 為買到的杯數。追蹤名稱「行人地獄」。
+
+## 像素接龍新增 ID（2026-11-28）
+
+`midnight-solitaire`（夜航經典接龍）與 `orbit-freecell`（星軌新接龍）以 `AN.start(id,0)` 開始免費回合，整花色里程碑呼叫 progress，完成／重發／離開路由分別 end complete／restart／abandoned。新兩款 end 的 elapsed_seconds 僅供未驗證分享使用；公開榜不信任此數字，而由 Worker 時鐘及合法操作重播驗證。人魚接龍的既有 game_id、追蹤名稱及獎勵事件保留，顯示名稱改為人魚蜘蛛接龍。實際後台收件仍須另外驗收。

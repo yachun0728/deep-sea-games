@@ -87,13 +87,13 @@
       var visibleGames = new Set(Array.from(document.querySelectorAll('.lobby-grid .game-card:not([data-game-hidden])'),
         function (card) { return card.hash.slice(1); }));
       var recent = result.games.map(function (game) {
-        var match = DIFFICULTY_BOARD.exec(game.gameId);
+        var match = /^(.+)-time-(1|2|4)$/.exec(game.gameId) || /^(.+)-time$/.exec(game.gameId) || DIFFICULTY_BOARD.exec(game.gameId);
         var base = match && visibleGames.has(match[1]) ? match[1] : game.gameId;
         return { game: game, base: base, multi: base !== game.gameId };
       }).filter(function (item) {
         return item.base !== 'top-doggo' && visibleGames.has(item.base) && Object.hasOwn(VIEWS, item.base) && item.game.entries.length;
       }).slice(0, RECENT_GAMES_LIMIT).map(function (item) {
-        return [item.base, item.game.entries[0], item.game.lastPlayedAt, item.multi ? item.game.gameName : null, item.multi && item.base!=='meow-link' ? 'Lv ' : ''];
+        return [item.base, item.game.entries[0], item.game.lastPlayedAt, item.multi ? item.game.gameName : null, item.multi && item.base!=='meow-link' && item.base!=='mermaid' && !item.game.gameId.endsWith('-time') ? 'Lv ' : ''];
       });
       var snapshot = JSON.stringify(recent);
       if (snapshot !== boardSnapshot) {

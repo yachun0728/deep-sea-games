@@ -22,7 +22,7 @@ export function fixture(balance=500,seed=7){
     performance:{now:()=>1e9},setTimeout:()=>0,clearTimeout(){},requestAnimationFrame(){},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},
     $:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',S:{balance},save(){},renderAll(){},fmt:n=>String(n),
     AN:{start:(...a)=>{events.push(['start',...a]);return 'round'},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
-  sandbox.timedLeaderboard=()=>({busy:()=>false,start:fn=>fn(math.random),record(){},finish(){},update(){}});
+  sandbox.completionTimeLeaderboard=()=>({busy:()=>false,start:fn=>fn(math.random),record(){},finish(){},abandon(){},formatted:()=>'00:01.000',update(){}});
   sandbox.globalThis=sandbox;
   const ctx=vm.createContext(sandbox);vm.runInContext(fs.readFileSync(new URL('shared/mermaid-rules.cjs',root),'utf8')+'\n'+source,ctx);
   const F=sandbox.__mm;

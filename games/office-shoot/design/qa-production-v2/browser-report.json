@@ -1,0 +1,82 @@
+{
+  "site": "https://ticaticagames.com",
+  "commit": "9b71ec0d09d579305a4c8ae6b854aad2c63e76d5",
+  "workerVersion": "f1fd456b-28ec-435b-bd37-e7b3cf2b7219",
+  "browser": "Codex in-app browser on macOS",
+  "viewports": [
+    [
+      390,
+      844
+    ],
+    [
+      1366,
+      900
+    ]
+  ],
+  "checks": [
+    "formal site start and score progression",
+    "pointer drag",
+    "natural game over and replay",
+    "pause and resume",
+    "desktop right-arrow input",
+    "exit to lobby",
+    "English and Traditional Chinese switching",
+    "real leaderboard shows 10 existing rows",
+    "cover loads from official URL"
+  ],
+  "leaderboardRows": [
+    {
+      "game": "#last-hair",
+      "score": "367"
+    },
+    {
+      "game": "#elevator",
+      "score": "14"
+    },
+    {
+      "game": "#pedestrian-hell",
+      "score": "2"
+    },
+    {
+      "game": "#mosquito",
+      "score": "83"
+    },
+    {
+      "game": "#sneak",
+      "score": "5"
+    },
+    {
+      "game": "#campaign",
+      "score": "8,250"
+    },
+    {
+      "game": "#skybuilder",
+      "score": "28"
+    },
+    {
+      "game": "#fishing",
+      "score": "2"
+    },
+    {
+      "game": "#breakout",
+      "score": "565"
+    },
+    {
+      "game": "#dream",
+      "score": "19"
+    }
+  ],
+  "consoleErrors": [],
+  "notTested": [
+    "physical mobile devices",
+    "other browser engines",
+    "listening to audio",
+    "long high-load performance",
+    "GA4 inbox"
+  ],
+  "notApplicable": [
+    "new cloud score upload",
+    "D1 migration",
+    "CrazyGames review"
+  ]
+}

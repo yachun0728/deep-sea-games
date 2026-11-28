@@ -9,7 +9,7 @@ const RANK=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 const {shuffle,createGame,snap,pushHistory,undo,flipTop,runStart,canDrop,completeRun,sweep,move,canDeal,deal,allMoves,chainLen,scoreMove,findHint}=mermaidRules;
 // ===== 畫面與點數 =====
 let rankLast=0;
-const rank=timedLeaderboard('mermaid','mm',mermaidRules.inputCount,ui);
+const rank=completionTimeLeaderboard(()=>'mermaid-time-'+mode,'mermaid','mm',ui);
 let G=null,st='idle',mode=1,analytics=null,earned=0,maxDone=0,bonusPaid=false,sel=null,hint=null,hintTimer=0,drag=null,lockUntil=0,quitArm=false,quitTimer=0,lastResult=null;
 const store={best:{},mode:1};
 try{const s=JSON.parse(localStorage.getItem(BEST_KEY)||'null');if(s&&typeof s==='object'){if(s.best&&typeof s.best==='object')store.best=s.best;if(MODES[s.mode])store.mode=Number(s.mode)}}catch(e){}
@@ -100,10 +100,11 @@ function ui(){
  stockBtn.disabled=!live||!G||!G.stock.length;setText('mm-stock-count',String(G?Math.ceil(G.stock.length/10):5));
  stockBtn.style.visibility=G&&!G.stock.length?'hidden':'';
  setText('mm-info',live&&G?G.score+' · '+G.moves:'');
- document.querySelectorAll('.mm-mode').forEach(b=>{b.setAttribute('aria-pressed',String(Number(b.dataset.diff)===mode));b.disabled=live});
+ stage.dataset.mode=mode;
+ document.querySelectorAll('.mm-mode').forEach(b=>{b.setAttribute('aria-pressed',String(Number(b.dataset.diff)===mode));b.disabled=live||rank.busy()});
  cover.hidden=live;
  if(st==='over'&&lastResult){setText('mm-cover-title',lastResult.win?'{{t:mermaid.msg.006}}':'{{t:mermaid.msg.007}}');
-  setText('mm-cover-text',lastResult.win?'人魚為你唱歌。本局共入帳 '+earned+' 點。':'收集了 '+lastResult.done+' 顆珍珠，本局共入帳 '+earned+' 點。')}
+  setText('mm-cover-text',lastResult.win?'{{t:solitaire.time.complete}} '+rank.formatted():'{{t:solitaire.time.incomplete}}')}
  else{setText('mm-cover-title','{{t:mermaid.msg.008}}');setText('mm-cover-text','{{t:mermaid.msg.009}}');
  }}
 function pay(n){
@@ -125,7 +126,7 @@ function afterAction(newIds){
 function end(win){
  if(st!=='run')return;
  if(!win)rank.record(2);
- rank.finish(G.score,true);
+ if(win)rank.finish();else rank.abandon();
  const menu=stage.querySelector('.mm-menu');if(menu)menu.open=false;
  st='over';mmBusy=false;sel=null;clearHint();quitArm=false;clearTimeout(quitTimer);drag=null;
  const rec=G.done>0&&G.score>bestFor(mode);if(rec){store.best[mode]=G.score;saveStore()}
@@ -224,7 +225,7 @@ $('mm-quit').addEventListener('click',()=>{
  if(!quitArm){quitArm=true;ui();clearTimeout(quitTimer);quitTimer=setTimeout(()=>{quitArm=false;ui()},3000);return}
  end(false)});
 document.querySelectorAll('.mm-mode').forEach(b=>b.addEventListener('click',()=>{
- if(st==='run')return;mode=Number(b.dataset.diff);store.mode=mode;saveStore();ui()}));
+ if(st==='run'||rank.busy())return;mode=Number(b.dataset.diff);store.mode=mode;saveStore();ui()}));
 if(window.ResizeObserver)new ResizeObserver(()=>{if(G)render()}).observe(board);
 window.addEventListener('resize',()=>{if(G)render()});
 window.addEventListener('hashchange',()=>{drag=null;if(G)requestAnimationFrame(render)});
