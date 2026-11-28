@@ -14,3 +14,11 @@
 正式部署版本、遠端基準與上線後驗收另記錄。
 
 發布基準：origin/main `64a48d4`，遊戲實作 `6f04077`。整合後重新通過 49 項 Python、13 項行為、動畫回歸、5 個可執行 script 語法、JSON 解析、四尺寸 Chrome；qa-release-v4 為無狀態掛鉤的待發布頁面操作結果。插隊目錄與 origin/main 無差異。
+
+## 正式發布結果
+
+- PASS：`f57c7a3` 已推送 main；主站 Worker 版本 `906f5e9e-811d-4aca-92b0-505729d5e9ba` 部署成功。
+- PASS：正式網址 https://ticaticagames.com/?v=last-hair-v4&lang=zh-Hant#last-hair ，Chrome 在 790×740、390×844 均實測啟動、距離前進、CDP 觸控護髮、六格步行、實際字形／旗子垂直置中、暫停恢復、回大廳；index 與 22 個 WebP／字型逐一 SHA-256 比對發布版一致。截圖與結果在 qa-production-v4。
+- NOT TESTED：真實行動裝置、其他瀏覽器、正式排行榜結算／D1、GA4 後台、長時間效能及音訊聽測。自動測試封鎖 Analytics 網域避免測試流量，不能據此推論正式收件。
+- NOT APPLICABLE：無 API Worker／migration 或 CrazyGames 發布。
+- FAIL：無未解決的發布測試失敗；先前 v3 美術已淘汰。BLOCKED：無。
