@@ -409,3 +409,7 @@ Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsig
 ### 點數介面暫時隱藏（2026-11-28）
 
 依使用者指示，頁面根節點 `points-hidden` 開關搭配 `css/points-visibility.css` 與 `js/points-visibility.js` 隱藏錢包、BONUS、點數獎勵說明及造型兌換入口；同源 iframe 與 Canvas 文字亦作顯示過濾。保留分數、排行榜、既有存檔與內部獎勵／AN 計算，不停發或清除點數。移除根節點開關並重新載入即可恢復原始顯示。
+
+### Meow Link 計時排行榜
+
+三個難度 board 沿用 ranked_boards/game_leaderboard 模型及排序；每關開表、完成都受原 revision 及重試契約保護。Worker 保存累計毫秒及 runningSince，客戶端不能填報時間。全破十關才保存 score，不發中途 checkpoint。API 附加 elapsedMs/time，大廳及遊戲榜顯示時間。migration 0023 只新增難度名稱。舊通關數回合繼續驗證，舊榜從大廳隱藏。新最快時間鍵不改舊存檔；點數隱藏、錢包及 Analytics 維持原契約。

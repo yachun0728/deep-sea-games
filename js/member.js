@@ -51,7 +51,7 @@
     link.append(memberIcon(gameId), name);
     game.appendChild(link);
     best.className = 'board-best';
-    best.textContent = scorePrefix ? scorePrefix + entry.score : gameId === 'merge' ? String(entry.score)
+    best.textContent = entry.time ? entry.time : scorePrefix ? scorePrefix + entry.score : gameId === 'merge' ? String(entry.score)
       : (gameId === 'market-desk' ? 'NT$' : '') + entry.score.toLocaleString('zh-TW');
     if (lastPlayedAt) {
       var lastPlayed = new Date(lastPlayedAt);
@@ -93,7 +93,7 @@
       }).filter(function (item) {
         return item.base !== 'top-doggo' && visibleGames.has(item.base) && Object.hasOwn(VIEWS, item.base) && item.game.entries.length;
       }).slice(0, RECENT_GAMES_LIMIT).map(function (item) {
-        return [item.base, item.game.entries[0], item.game.lastPlayedAt, item.multi ? item.game.gameName : null, item.multi ? 'Lv ' : ''];
+        return [item.base, item.game.entries[0], item.game.lastPlayedAt, item.multi ? item.game.gameName : null, item.multi && item.base!=='meow-link' ? 'Lv ' : ''];
       });
       var snapshot = JSON.stringify(recent);
       if (snapshot !== boardSnapshot) {

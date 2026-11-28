@@ -67,4 +67,4 @@
 | [TOP DOGGO Paw City](top-doggo/README.md) | `#top-doggo` | 跑酷動作 | 顯示 | 28 行 | 美式鬥牛犬清空紫色浣熊幫，三種難度比誰闖到第幾關。 |
 | [莓果小蛇 Berry Trail](berry-trail/README.md) | `#berry-trail` | 懷舊經典 | 顯示 | 33 行 | 吃莓果長大，避開牆壁與自己的身體。 |
 | [行人地獄 Just Want Boba](pedestrian-hell/README.md) | `#pedestrian-hell` | 跑酷動作 | 顯示 | 33 行 | 騎樓被占滿，只好走馬路。看你能喝到幾杯珍奶！ |
-| [貓咪連連看 Meow Link](meow-link/README.md) | `#meow-link` | 懷舊經典 | 顯示 | 466 行 | 貓咪、玩具與罐罐配對，尋找藏在其中的拉布。 |
+| [貓咪連連看 Meow Link](meow-link/README.md) | `#meow-link` | 懷舊經典 | 顯示 | 502 行 | 貓咪、玩具與罐罐配對，尋找藏在其中的拉布。 |

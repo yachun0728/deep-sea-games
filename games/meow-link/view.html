@@ -17,7 +17,7 @@
         <button id="ml-hint" type="button" disabled>{{t:meow-link.view.08}}</button>
       </div>
       <p id="ml-count" hidden><span>{{t:meow-link.view.09}}</span> <b id="ml-level">1</b>/10 · <span>{{t:meow-link.view.10}}</span> <b id="ml-left">0</b> · BONUS <b id="ml-bonus">0</b></p>
-      <p id="ml-record"><span>{{t:meow-link.view.11}}</span> <b id="ml-best">0</b>/10</p>
+      <p id="ml-record"><span>{{t:meow-link.view.11}}</span> <b id="ml-best">--:--.---</b></p>
       <p id="ml-msg" role="status"></p>
       <p id="ml-rank-status" role="status" hidden></p>
       <button id="ml-rank-retry" type="button" hidden>{{t:meow-link.view.12}}</button>
@@ -39,6 +39,8 @@
       <p id="ml-result-reward" hidden>{{t:meow-link.view.17}}</p>
       <div id="ml-result-actions" class="ml-actions"></div>
     </section>
+    <div id="ml-leaderboard"></div>
+    <p class="ml-ranking-rule">{{t:meow-link.time.rules}}</p>
     <details class="ml-rules" open>
       <summary>{{t:meow-link.view.18}}</summary>
       <p>{{t:meow-link.view.19}}</p>

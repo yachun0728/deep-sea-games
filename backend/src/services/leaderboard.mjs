@@ -1,3 +1,4 @@
+import meowRules from '../../../shared/meow-link-rules.cjs';
 import { LEADERBOARD_LIMIT } from '../../../shared/api.mjs';
 
 const NAME_COLUMN = { en: 'game_name_en', 'zh-cn': 'game_name_zh_cn', 'zh-hans': 'game_name_zh_cn' };
@@ -26,7 +27,7 @@ export async function getLeaderboard(db, gameId) {
       ORDER BY scores.score DESC, scores.recorded_at, scores.score_order, scores.player_id
       LIMIT ?`,
   ).bind(gameId, LEADERBOARD_LIMIT).all();
-  return results;
+  return results.map(entry => timedEntry(gameId,entry));
 }
 
 export async function getLeaderboardFeed(db, lang) {
@@ -36,6 +37,7 @@ export async function getLeaderboardFeed(db, lang) {
             activity.last_played_at AS lastPlayedAt
        FROM game_leaderboard AS scores JOIN players ON players.id = scores.player_id
        LEFT JOIN leaderboard_activity AS activity ON activity.game_id = scores.game_id
+      WHERE scores.game_id <> 'meow-link'
       ORDER BY activity.last_played_at DESC, scores.game_id, scores.score DESC,
                scores.recorded_at, scores.score_order, scores.player_id`,
   ).all();
@@ -46,7 +48,13 @@ export async function getLeaderboardFeed(db, lang) {
   const games = new Map();
   for (const { gameId, lastPlayedAt, ...entry } of results) {
     if (!games.has(gameId)) games.set(gameId, {gameId, gameName: nameById.get(gameId) ?? null, lastPlayedAt, entries: []});
-    games.get(gameId).entries.push(entry);
+    games.get(gameId).entries.push(timedEntry(gameId,entry));
   }
   return Array.from(games.values());
+}
+
+function timedEntry(gameId,entry) {
+  if(!/^meow-link-(easy|normal|hard)$/.test(gameId))return entry;
+  const elapsedMs=meowRules.MEOW_TIME_LIMIT_MS-entry.score;
+  return {...entry,elapsedMs,time:meowRules.formatMeowLinkTime(elapsedMs)};
 }

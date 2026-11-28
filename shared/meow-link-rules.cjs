@@ -178,3 +178,38 @@ function verifyMeowLinkLevel(level, seed, actions) {
   return !board.some(symbol => symbol > 0);
 }
 if (typeof module !== 'undefined') module.exports = {meowLinkBoard, meowLinkRankedLevel, verifyMeowLinkLevel};
+
+// Timed boards are separate from the legacy stage-count board.
+const MEOW_TIME_LIMIT_MS = 7200000;
+const MEOW_MODES = {easy: [6,8,12], normal: [14,18,24], hard: [16,26,36]};
+function meowLinkTimedLevel(level, seed, mode) {
+  const dimensions = MEOW_MODES[mode];
+  if (!dimensions || !Number.isInteger(level) || level < 1 || level > 10) return null;
+  const [rows,cols,pool] = dimensions;
+  const random=()=>{ seed=(seed+0x6d2b79f5)|0;let x=Math.imul(seed^(seed>>>15),seed|1);x^=x+Math.imul(x^(x>>>7),x|61);return ((x^(x>>>14))>>>0)/4294967296; };
+  const rules=meowLinkBoard(rows,cols,random);
+  const [,direction,reefs]=rules.levels[mode==='easy'?0:level-1];
+  const symbols=rules.shuffle(Array.from({length:pool},(_,i)=>i+1));
+  const pairs=(rows*cols-reefs*4)/2;
+  return {...rules.deal(rules.reefBoard(reefs),Array.from({length:pairs},(_,i)=>symbols[i%pool]),direction),
+    rules,direction,recover:board=>rules.recover(board,direction)};
+}
+function verifyMeowLinkTimedLevel(level,seed,mode,actions) {
+  const start=meowLinkTimedLevel(level,seed,mode);
+  if(!start || !Array.isArray(actions) || actions.length!==start.moves.length)return false;
+  let {board,moves}=start;
+  for(let i=0;i<actions.length;i++){
+    const code=actions[i];if(!Number.isSafeInteger(code)||code<0)return false;
+    const a=Math.floor(code/1000),b=code%1000;
+    if(!(board[a]>0)||board[a]!==board[b]||!start.rules.linkPath(board,a,b))return false;
+    if(moves.length&&moves[0].includes(a)&&moves[0].includes(b))moves.shift();else moves=[];
+    board[a]=board[b]=0;start.rules.slide(board,start.direction);
+    if(i+1<actions.length&&!moves.length&&!start.rules.findPair(board))({board,moves}=start.recover(board));
+  }
+  return !board.some(x=>x>0);
+}
+function formatMeowLinkTime(ms) {
+  if(!Number.isSafeInteger(ms)||ms<0)return '--:--.---';
+  return String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')+'.'+String(ms%1000).padStart(3,'0');
+}
+if(typeof module!=='undefined')Object.assign(module.exports,{MEOW_TIME_LIMIT_MS,MEOW_MODES,meowLinkTimedLevel,verifyMeowLinkTimedLevel,formatMeowLinkTime});

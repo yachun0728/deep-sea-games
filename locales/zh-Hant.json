@@ -3358,7 +3358,7 @@
   "meow-link.view.08": "提示",
   "meow-link.view.09": "關卡",
   "meow-link.view.10": "剩餘配對",
-  "meow-link.view.11": "最高通關",
+  "meow-link.view.11": "最快全破",
   "meow-link.view.12": "重送排行榜成績",
   "meow-link.view.13": "開始遊戲",
   "meow-link.view.14": "恭喜通關！",
@@ -3435,5 +3435,7 @@
   "meow-link.tile.35": "貓砂鏟",
   "meow-link.tile.36": "紙箱",
   "meow-link.rule.1": "毛線障礙與左移",
-  "meow-link.rule.2": "毛線障礙與下移"
+  "meow-link.rule.2": "毛線障礙與下移",
+  "meow-link.time.rules": "全破 10 關才列入計時排行；簡單、普通、困難分榜，時間越短越前面。結算畫面不計時，排名用時由伺服器核對。",
+  "meow-link.time.checkpoint": "本關已驗證，全破 10 關後才列入計時排行。"
 }

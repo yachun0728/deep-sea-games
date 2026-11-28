@@ -306,6 +306,27 @@ const boards = new Map([
     score: state => state.distance,
     visible: ({seed, distance, rulesVersion}) => ({seed, distance, rulesVersion}),
   }],
+  ...['easy','normal','hard'].map(mode => ['meow-link-'+mode, {
+    rulesVersion: 2,
+    create: () => ({level:1,completed:0,seed:newSeed(),mode,elapsedMs:0,runningSince:null}),
+    accepts: action => Array.isArray(action) && (action.length===1 && action[0]===-1 ||
+      action.length>=24 && action.length<=208 && action.every(x=>Number.isSafeInteger(x)&&x>=0&&x<504000)),
+    apply: (state,action) => {
+      if(state.completed===10)return false;
+      if(action.length===1 && action[0]===-1){
+        if(state.runningSince!==null)return false;
+        state.runningSince=Date.now();return true;
+      }
+      if(state.runningSince===null || !meowLink.verifyMeowLinkTimedLevel(state.level,state.seed,mode,action))return false;
+      const elapsed=Date.now()-state.runningSince;
+      if(elapsed<=0 || state.elapsedMs+elapsed>=meowLink.MEOW_TIME_LIMIT_MS)return false;
+      state.elapsedMs+=elapsed;state.runningSince=null;state.completed=state.level;
+      if(state.level<10){state.level++;state.seed=newSeed();}
+      return true;
+    },
+    score: state => state.completed===10 ? meowLink.MEOW_TIME_LIMIT_MS-state.elapsedMs : null,
+    visible: state => state,
+  }]),
   ['meow-link', {
     create: () => ({level: 1, completed: 0, seed: newSeed()}),
     accepts: action => Array.isArray(action) && action.length === 24 &&

@@ -1,7 +1,7 @@
 import { arcadeApiOrigin, createApiClient } from './api.mjs';
 
 const api = createApiClient(arcadeApiOrigin());
-for (const gameId of ['frontier', 'rocket-chair', 'blaster', 'quack-pond', 'mirror-twins', 'siege-architect']) {
+for (const gameId of ['meow-link', 'frontier', 'rocket-chair', 'blaster', 'quack-pond', 'mirror-twins', 'siege-architect']) {
   const view = document.getElementById('view-' + gameId);
   if (!view) continue;
   const details = document.createElement('details');
@@ -21,15 +21,16 @@ for (const gameId of ['frontier', 'rocket-chair', 'blaster', 'quack-pond', 'mirr
   details.append(summary, status, list);
   const host = view.querySelector('deep-sea-leaderboard[game-id="' + gameId + '"]');
   if (host) details.id = 'bl-rank-panel';
-  (host || view).append(details);
+  (gameId==='meow-link'?document.getElementById('ml-leaderboard'):(host||view)).append(details);
   let generation = 0;
   async function refresh() {
-    if (!details.open) return;
+    if (!details.open) { if(gameId==='meow-link'){generation++;list.replaceChildren();setTitle('');}return; }
     const request = ++generation;
     status.textContent = '載入排行榜中…';
     list.replaceChildren();
     try {
-      const result = await api.leaderboard(gameId, AbortSignal.timeout(10000));
+      const boardId=gameId==='meow-link'?'meow-link-'+({easy:'easy',standard:'normal',challenge:'hard'}[document.getElementById('ml-mode').value]):gameId;
+      const result = await api.leaderboard(boardId, AbortSignal.timeout(10000));
       if (request !== generation) return;
       setTitle(result.gameName);
       list.replaceChildren(...result.entries.map(entry => {
@@ -37,7 +38,7 @@ for (const gameId of ['frontier', 'rocket-chair', 'blaster', 'quack-pond', 'mirr
         const name = document.createElement('span');
         if (entry.displayName) name.setAttribute('data-i18n-ignore', '');
         name.textContent = entry.displayName || '訪客';
-        const score = gameId === 'blaster' ? entry.score.toLocaleString('en-US') + ' m' : entry.score;
+        const score = entry.time ? entry.time : gameId === 'blaster' ? entry.score.toLocaleString('en-US') + ' m' : entry.score;
         row.append(name, document.createTextNode(' · ' + score));
         return row;
       }));
@@ -47,6 +48,7 @@ for (const gameId of ['frontier', 'rocket-chair', 'blaster', 'quack-pond', 'mirr
     }
   }
   details.addEventListener('toggle', refresh);
+  if(gameId==='meow-link')document.getElementById('ml-mode').addEventListener('change',refresh);
   // The cached name is in the old language: drop it until the next load.
   window.addEventListener('arcade-languagechange', () => {
     setTitle('');

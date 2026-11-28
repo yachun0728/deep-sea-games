@@ -174,3 +174,6 @@ body.ml-expanded { overflow: hidden; }
 #ml-trace polyline { stroke:#b56e47; }
 
 #ml-stage .game-exit-link { color:#684b35; min-height:44px; display:inline-flex; align-items:center; padding:4px 8px; }
+
+#ml-stage.ml-board-focus #ml-leaderboard,#ml-stage.ml-board-focus .ml-ranking-rule{display:none}
+#ml-leaderboard{width:min(100%,640px)} #ml-leaderboard li{display:flex;justify-content:space-between;gap:12px} #ml-leaderboard time{font-variant-numeric:tabular-nums} .ml-ranking-rule{font-size:13px;margin:0;text-align:center}

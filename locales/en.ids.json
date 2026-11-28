@@ -3358,7 +3358,7 @@
   "meow-link.view.08": "Hint",
   "meow-link.view.09": "Level",
   "meow-link.view.10": "Pairs left",
-  "meow-link.view.11": "Best stage cleared",
+  "meow-link.view.11": "Best clear time",
   "meow-link.view.12": "Retry score submission",
   "meow-link.view.13": "Start game",
   "meow-link.view.14": "Congratulations! Stage cleared!",
@@ -3435,5 +3435,7 @@
   "meow-link.tile.35": "Litter scoop",
   "meow-link.tile.36": "Cardboard box",
   "meow-link.rule.1": "Yarn and slide left",
-  "meow-link.rule.2": "Yarn and slide down"
+  "meow-link.rule.2": "Yarn and slide down",
+  "meow-link.time.rules": "Clear all 10 stages to rank by time. Easy, Normal and Hard have separate boards. Results-screen time is excluded; ranked time is verified by the server.",
+  "meow-link.time.checkpoint": "Stage verified. Clear all 10 stages to enter the time leaderboard."
 }

@@ -14,6 +14,9 @@
     const dimensions = {easy: [6, 8], standard: [14, 18], challenge: [16, 26]};
     const easyRule = [levels[0][0], null, 0];
     const bonuses = new Map([[3, 5], [6, 5], [10, 5]]);
+    const timeKey = 'deep-sea-meow-link-time-best-v1';
+    const rankMode = () => ({easy:'easy',standard:'normal',challenge:'hard'}[mode.value]);
+    let rankResuming=false;
     const bestKey = 'deep-sea-meow-link-best-v1';
     let level = 1, remaining = 0, paid = 0, board = [], selected = -1;
     let ranked = null, rankedLevel = null, rankStarting = false, rankSending = false, rankPending = null;
@@ -26,18 +29,18 @@
 
     function updateClock() {
       const runningMs = segmentStartedAt === null ? 0 : Math.max(0, Date.now() - segmentStartedAt);
-      const elapsed = Math.floor((elapsedMs + runningMs) / 1000);
-      const dateTime = 'PT' + elapsed + 'S';
+      const elapsed = Math.floor(elapsedMs + runningMs);
+      const dateTime = 'PT' + (elapsed/1000).toFixed(3) + 'S';
       if (clockValue.dateTime === dateTime) return;
       const twoDigits = value => String(value).padStart(2, '0');
-      clockValue.textContent = twoDigits(Math.floor(elapsed / 60)) + ':' + twoDigits(elapsed % 60);
+      clockValue.textContent = formatMeowLinkTime(elapsed);
       clockValue.dateTime = dateTime;
     }
 
     function resumeClock() {
       segmentStartedAt = Date.now();
       updateClock();
-      clockTimer = setInterval(updateClock, 250);
+      clockTimer = setInterval(updateClock, 100);
     }
 
     function pauseClock() {
@@ -132,14 +135,15 @@
     }
 
     function showRecord() {
-      $('ml-best').textContent = Math.min(levels.length, Math.max(0, Number(bestStages()[mode.value]) || 0));
+      let best;try{best=JSON.parse(localStorage.getItem(timeKey)||'{}')[mode.value];}catch(_){}
+      $('ml-best').textContent = formatMeowLinkTime(best);
     }
 
     function updateButtons() {
-      mode.disabled = meowLinkBusy || rankStarting;
-      go.disabled = !!rankPending;
+      mode.disabled = meowLinkBusy || rankStarting || !!rankPending || rankResuming;
+      go.disabled = !!rankPending || rankResuming;
       go.hidden = !between && resultPanel.hidden;
-      hint.disabled = !meowLinkBusy || between;
+      hint.disabled = !meowLinkBusy || between || rankResuming;
       $('ml-count').hidden = !meowLinkBusy;
       $('ml-bonus').textContent = paid;
       const expanded = full.getAttribute('aria-pressed') === 'true';
@@ -182,7 +186,7 @@
       const symbols = rules.shuffle(Array.from({length: poolSize}, (_, i) => i + 1));
       const bag = Array.from({length: remaining}, (_, index) => symbols[index % symbols.length]);
       rankActions = [];
-      rankedLevel = ranked ? meowLinkRankedLevel(level, ranked.state.seed) : null;
+      rankedLevel = ranked ? meowLinkTimedLevel(level, ranked.state.seed, rankMode()) : null;
       ({board, moves} = rankedLevel || rules.deal(layout, bag, direction));
       selected = -1;
       between = false;
@@ -201,7 +205,7 @@
 
     function params(extra = {}) {
       return {stage: level, step: level - Number(remaining > 0), mode: mode.value,
-        total_bonus_points: paid, ...extra};
+        total_bonus_points: paid, elapsed_ms: Math.floor(elapsedMs+(segmentStartedAt===null?0:Date.now()-segmentStartedAt)), ...extra};
     }
 
     function rankStatus(message, retry = false) {
@@ -224,7 +228,13 @@
           rankStatus('{{t:meow-link.msg.007}}');
         } else {
           Object.assign(ranked, next);
-          rankStatus('{{t:meow-link.msg.008}}');
+          elapsedMs=next.state.elapsedMs;updateClock();
+          if(!resultPanel.hidden){$('ml-result-time').textContent=clockValue.textContent;$('ml-result-time').dateTime=clockValue.dateTime;}
+          if(next.state.completed===10){
+            rememberTime(elapsedMs);
+            window.dispatchEvent(new CustomEvent('deep-sea-score-saved',{detail:{gameId:'meow-link',elapsedMs}}));
+          }
+          rankStatus(next.state.completed===10?'{{t:meow-link.msg.008}}':'{{t:meow-link.time.checkpoint}}');
         }
         rankPending = null;
       } catch (error) {
@@ -239,25 +249,49 @@
       }
     }
 
+    function rememberTime(ms) {
+      try{const best=JSON.parse(localStorage.getItem(timeKey)||'{}');
+        if(!Number.isSafeInteger(best[mode.value])||ms<best[mode.value])localStorage.setItem(timeKey,JSON.stringify({...best,[mode.value]:ms}));
+      }catch(_){}showRecord();
+    }
+    async function beginLevelClock() {
+      if(ranked){
+        rankResuming=true;hint.disabled=true;updateButtons();
+        try{
+          const api=await import('./frontend/services/api.mjs');
+          const command={gameId:'meow-link-'+rankMode(),id:ranked.id,revision:ranked.revision,action:[-1]};
+          let next;
+          for(let attempt=0;attempt<2;attempt++){
+            try{next=await api.moveBoardRound(ranked.token,command,AbortSignal.timeout(10000));break;}
+            catch(error){if(attempt || error.retryable===false)throw error;}
+          }
+          if(next.revision!==command.revision+1)throw new Error('resume rejected');
+          Object.assign(ranked,next);
+        }catch(_){ranked=null;rankedLevel=null;rankStatus('{{t:meow-link.msg.011}}');}
+        finally{rankResuming=false;}
+      }
+      if(!meowLinkBusy || $('view-meow-link').hidden)return;
+      resumeClock();updateButtons();
+    }
     async function start() {
-      if ($('view-meow-link').hidden || rankStarting || rankPending) return;
+      if ($('view-meow-link').hidden || rankStarting || rankPending || rankResuming) return;
       if (meowLinkBusy) {
         if (!between) return;
         level++;
         dealLevel();
-        resumeClock();
+        await beginLevelClock();
         AN.resume(round, params());
         return;
       }
       ranked = null;
       rankStatus('');
-      if (mode.value === 'easy' && location.protocol !== 'file:') {
+      if (location.protocol !== 'file:') {
         rankStarting = true;
         rankStatus('{{t:meow-link.msg.009}}');
         updateButtons();
         try {
           const api = await import('./frontend/services/api.mjs');
-          ranked = await api.startBoardRound('meow-link', AbortSignal.timeout(4000));
+          ranked = await api.startBoardRound('meow-link-'+rankMode(), AbortSignal.timeout(4000), {rulesVersion:2});
         } catch {}
         rankStarting = false;
         if ($('view-meow-link').hidden || full.getAttribute('aria-pressed') === 'false') {
@@ -278,7 +312,8 @@
       meowLinkBusy = true;
       elapsedMs = 0;
       dealLevel();
-      resumeClock();
+      await beginLevelClock();
+      if(!meowLinkBusy || $('view-meow-link').hidden)return;
       round = AN.start('meow-link', 0, params());
     }
 
@@ -306,7 +341,7 @@
       if (ranked) {
         rankPending = {
           token: ranked.token,
-          move: {gameId: 'meow-link', id: ranked.id, revision: ranked.revision, action: rankActions},
+          move: {gameId: 'meow-link-'+rankMode(), id: ranked.id, revision: ranked.revision, action: rankActions},
         };
         submitLevel();
       }
@@ -327,6 +362,7 @@
       }
       AN.progress(round, params({bonus_points: reward}), level < levels.length);
       if (level === levels.length) {
+        if(!ranked)rememberTime(Math.floor(elapsedMs));
         end('win');
         showResult(reward, true);
         return;
@@ -343,7 +379,7 @@
 
     function pick(event) {
       const tile = event.target.closest('button[data-cell]');
-      if (!tile || !meowLinkBusy || between || locked || $('view-meow-link').hidden) return;
+      if (!tile || !meowLinkBusy || between || locked || rankResuming || $('view-meow-link').hidden) return;
       const cell = Number(tile.dataset.cell), previous = selected;
       if (previous === cell || previous < 0 || board[previous] !== board[cell]) {
         if (previous >= 0) grid.children[previous].setAttribute('aria-pressed', 'false');
@@ -368,7 +404,7 @@
       function matchTiles() {
         clearTrace();
         if (!meowLinkBusy) return;
-        if (ranked) rankActions.push(previous * 80 + cell);
+        if (ranked) rankActions.push(previous * 1000 + cell);
         board[previous] = board[cell] = 0;
         selected = -1;
         remaining--;

@@ -22,6 +22,6 @@ await play(guest,10);await play(guest,1);
 const third=await req('/api/v1/players',{});await play(third,10);
 const board=(await req('/api/v1/leaderboard?gameId=meow-link&lang=en')).body;assert.equal(board.gameName,'Meow Link');assert.deepEqual(board.entries.map(e=>e.score),[10,10]);assert.equal(board.entries[0].playerId,guest.body.id,'first tie wins and lower score cannot replace best');
 assert.equal(sql.prepare("SELECT score FROM game_leaderboard WHERE game_id='meow-link' AND player_id=?").get(guest.body.id).score,10);
-assert(JSON.stringify((await req('/api/v1/leaderboard/feed')).body).includes('meow-link'));
+assert(!JSON.stringify((await req('/api/v1/leaderboard/feed')).body).includes('meow-link'),'legacy count records do not enter timed feed');
 assert.equal(sql.prepare("SELECT count(*) n FROM game_leaderboard WHERE game_id='ocean-link'").get().n,0);
 console.log('PASS Meow Link: real Worker + SQLite migrations, ten stages, 12-symbol pool, illegal proof, owner, duplicate, lower score, tie order, API/feed, isolated Ocean Link records');sql.close();

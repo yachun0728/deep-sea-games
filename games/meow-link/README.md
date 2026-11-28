@@ -7,13 +7,13 @@
 - 網址：`#meow-link`　分類：懷舊經典　狀態：顯示中
 - 大廳卡片：「貓咪、玩具與罐罐配對，尋找藏在其中的拉布。」｜不限次數 · 配對解謎
 - 追蹤名稱（GA4 `game_name`）：貓咪連連看，`game_id` 為 `meow-link`
-- 檔案：`games/meow-link/card.html`、`games/meow-link/cover.webp`、`games/meow-link/game.js`、`games/meow-link/icon.svg`、`games/meow-link/leaderboard.webp`、`games/meow-link/style.css`、`games/meow-link/tiles.js`、`games/meow-link/view.html`；`game.js` 共 466 行、17.9 KB
+- 檔案：`games/meow-link/card.html`、`games/meow-link/cover.webp`、`games/meow-link/game.js`、`games/meow-link/icon.svg`、`games/meow-link/leaderboard.webp`、`games/meow-link/style.css`、`games/meow-link/tiles.js`、`games/meow-link/view.html`；`game.js` 共 502 行、20.1 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「63. 貓咪連連看 Meow Link（meow-link）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-meow-link`、`ml-stage`、`ml-rule`、`ml-clock`、`ml-clock-label`、`ml-time`、`ml-toolbar-actions`、`ml-mode`、`ml-go`、`ml-hint`、`ml-count`、`ml-level`、`ml-left`、`ml-bonus`、`ml-record`、`ml-best`、`ml-msg`、`ml-rank-status`、`ml-rank-retry`、`ml-game-area`、`ml-board-actions`、`ml-full`、`ml-playfield`、`ml-board`、`ml-trace`、`ml-result`、`ml-result-title`、`ml-result-level`、`ml-result-time`、`ml-result-reward`、`ml-result-actions`
+`view-meow-link`、`ml-stage`、`ml-rule`、`ml-clock`、`ml-clock-label`、`ml-time`、`ml-toolbar-actions`、`ml-mode`、`ml-go`、`ml-hint`、`ml-count`、`ml-level`、`ml-left`、`ml-bonus`、`ml-record`、`ml-best`、`ml-msg`、`ml-rank-status`、`ml-rank-retry`、`ml-game-area`、`ml-board-actions`、`ml-full`、`ml-playfield`、`ml-board`、`ml-trace`、`ml-result`、`ml-result-title`、`ml-result-level`、`ml-result-time`、`ml-result-reward`、`ml-result-actions`、`ml-leaderboard`
 
 ## 狀態與常數
 
@@ -21,7 +21,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`updateClock` L27、`twoDigits` L32、`resumeClock` L37、`pauseClock` L43、`hideResult` L51、`showResult` L58、`say` L73、`sizeBoard` L75、`paint` L102、`bestStages` L129、`showRecord` L134、`updateButtons` L138、`drawTrace` L150、`center` L152、`clearTrace` L160、`stageRule` L167、`dealLevel` L177、`params` L202、`rankStatus` L207、`submitLevel` L214、`start` L242、`end` L285、`completeLevel` L303、`recover` L340、`pick` L344、`matchTiles` L368、`clearHint` L389、`showHint` L393、`setExpanded` L404、`syncFull` L410、`toggleFull` L428、`routeMeowLink` L457
+`rankMode` L18、`updateClock` L30、`twoDigits` L35、`resumeClock` L40、`pauseClock` L46、`hideResult` L54、`showResult` L61、`say` L76、`sizeBoard` L78、`paint` L105、`bestStages` L132、`showRecord` L137、`updateButtons` L142、`drawTrace` L154、`center` L156、`clearTrace` L164、`stageRule` L171、`dealLevel` L181、`params` L206、`rankStatus` L211、`submitLevel` L218、`rememberTime` L252、`beginLevelClock` L257、`start` L276、`end` L320、`completeLevel` L338、`recover` L376、`pick` L380、`matchTiles` L404、`clearHint` L425、`showHint` L429、`setExpanded` L440、`syncFull` L446、`toggleFull` L464、`routeMeowLink` L493
 
 ## 錢包與結算接點
 
@@ -29,7 +29,7 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L324 `completeLevel`：`S.balance += reward;`
+- L359 `completeLevel`：`S.balance += reward;`
 
 **餘額檢查**
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
@@ -39,10 +39,10 @@
 
 ## 追蹤（GA4）
 
-- L249 `start`：`AN.resume(round, params());`
-- L282 `start`：`round = AN.start('meow-link', 0, params());`
-- L290 `end`：`AN.end(round, paid, result, params());`
-- L328 `completeLevel`：`AN.progress(round, params({bonus_points: reward}), level < levels.length);`
+- L283 `start`：`AN.resume(round, params());`
+- L317 `start`：`round = AN.start('meow-link', 0, params());`
+- L325 `end`：`AN.end(round, paid, result, params());`
+- L363 `completeLevel`：`AN.progress(round, params({bonus_points: reward}), level < levels.length);`
 
 - 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -64,7 +64,7 @@
 
 獨立最佳紀錄鍵 `deep-sea-meow-link-best-v1`，不讀寫 Ocean Link 存檔。CSS 全視窗操作，離開全視窗、回大廳、pagehide 放棄未完成進度，已發點數保留。背景停留沿用原版累計時鐘，不提供暫停玩法。
 
-訪客榜沿用 board API 與驗證架構，只接簡單模式，以通關數高者優先、同分先到；Worker 逐關重播 24 次合法配對。純規則 `shared/meow-link-rules.cjs` 與前端使用同一份，每關均為 12 種圖案；普通／困難只記本機最佳。獨立 game ID、GA4 生命週期與分享設定，不改 Ocean Link 的規則、追蹤或榜單。
+訪客計時榜分為 `meow-link-easy`、`meow-link-normal`、`meow-link-hard` 三榜，對應簡單、普通、困難。全破 10 關才入榜，完成時間較短者優先，同毫秒先到者優先。Worker 逐關重播合法配對、障礙位移及洗牌；每關先接收開表指令，完成驗證後停表，結算停留及等候下一關不計時。伺服器計時包含指令傳輸延遲，結算以已驗證總時間校正；切到背景不暫停。沿用兩小時對局期限。沿用高分優先的資料表，以 7200000 減去全破毫秒數保存排序值；API、大廳及遊戲內榜顯示分:秒.毫秒，不顯示排序值。舊 meow-link 通關數紀錄及回合保留，從大廳 feed 隱藏，不混入新榜。最快全破時間另存 `deep-sea-meow-link-time-best-v1`，舊最高關卡紀錄不清除。Ocean Link 不受影響。
 
 ## 修改檢查清單
 
