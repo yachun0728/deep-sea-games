@@ -15,3 +15,11 @@
 測試：node tools/test_meow_link_time.mjs；node tools/test_meow_link_api.mjs；node tools/test_meow_link.mjs；python3 tools/check_meow_link_time_browser.py；python3 tools/check_i18n_browser.py --suite meow_link。
 
 發布基準遠端 SHA：efd34c978c66b9fe6b9198897d00982410393438。回復時保留新榜時間格式化，或先隱藏三個時間榜；不得把內部排序值顯示成分數。現有時間紀錄與舊存檔皆不刪除。
+
+## 正式發布
+
+已更新至正式站，程式提交 bb70c51f0571c4a162080c490b53d01e403070d6；migration 0023 完成，API Worker 59595825-e7ba-440f-af71-b58563d7860c，網站 Worker 4e55b36c-102a-49ab-a07c-872dcde80684。
+
+PASS：正式站三難度榜名稱及載入；實際配對完成簡單第 1 關，畫面顯示 00:26.850 並保持停表。唯讀 D1 核對 completed=1、elapsedMs=26850、score=null，新三榜沒有未完成成績；原 meow-link 舊成績 1 筆仍保留。實測舊成績未混入新榜，BONUS 與點數保持隱藏。
+
+BLOCKED：無發布阻塞。NOT TESTED：正式站完整十關的最終時間入榜（已在真實 Worker handler 與記憶體 SQLite 的隔離瀏覽器完成手機及桌面、三難度全十關流程）；實體手機及 GA4 後台未驗證。
