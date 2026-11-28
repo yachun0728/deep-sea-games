@@ -13,7 +13,7 @@
 
 ## 畫面元素（view.html 的 id）
 
-`view-orbit-freecell`、`fc-window`、`fc-info`、`fc-time`、`fc-moves`、`fc-home`、`fc-message`、`fc-rack`、`fc-table`、`fc-undo`、`fc-hint`、`fc-restart`、`fc-ranking`、`fc-cover`、`fc-result`、`fc-go`、`fc-help`、`fc-help-title`、`fc-board-list`、`fc-entries`、`fc-rank-status`、`fc-rank-retry`、`fc-help-close`、`fc-confirm`、`fc-confirm-yes`、`fc-confirm-no`
+`view-orbit-freecell`、`fc-window`、`fc-info`、`fc-time`、`fc-moves`、`fc-home`、`fc-message`、`fc-rack`、`fc-table`、`fc-undo`、`fc-hint`、`fc-restart`、`fc-ranking`、`fc-cover`、`fc-result`、`fc-result-rank`、`fc-go`、`fc-help`、`fc-help-title`、`fc-board-list`、`fc-entries`、`fc-rank-status`、`fc-rank-retry`、`fc-help-close`、`fc-confirm`、`fc-confirm-yes`、`fc-confirm-no`
 
 ## 狀態與常數
 

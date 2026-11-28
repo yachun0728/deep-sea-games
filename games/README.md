@@ -50,7 +50,7 @@
 | [拒絕加班 No Overtime!](office-shoot/README.md) | `#office-shoot` | 跑酷動作 | 顯示 | 632 行 | 自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。 |
 | [深海連連看 Ocean Link](ocean-link/README.md) | `#ocean-link` | 懷舊經典 | 顯示 | 472 行 | 把相同的圖案連起來，穿越礁石與移動棋盤。 |
 | [最後的晚餐 The Last Banquet](banquet/README.md) | `#banquet` | 益智策略 | 顯示 | 742 行 | 與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。 |
-| [人魚蜘蛛接龍 Mermaid Spider](mermaid/README.md) | `#mermaid` | 益智策略 | 顯示 | 240 行 | 十欄蜘蛛接龍，同花色 K→A 收成珍珠。 |
+| [人魚蜘蛛接龍 Mermaid Spider](mermaid/README.md) | `#mermaid` | 益智策略 | 顯示 | 245 行 | 十欄蜘蛛接龍，同花色 K→A 收成珍珠。 |
 | [數字吞噬 Number Gulp](eat-smaller/README.md) | `#eat-smaller` | 益智策略 | 顯示 | 62 行 | 吃掉比你小的數字、躲開比你大的，剛好變成目標數字就過關。 |
 | [鏡像雙子 Mirror Twins](mirror-twins/README.md) | `#mirror-twins` | 益智策略 | 顯示 | 64 行 | 同時操控兩位太空人，其中一位左右相反，一起走進傳送艙。 |
 | [影子接力 Shadow Relay](shadow-relay/README.md) | `#shadow-relay` | 益智策略 | 顯示 | 62 行 | 影子會照你的路線重走，讓它點亮燈籠，別被它追上。 |

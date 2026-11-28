@@ -1,0 +1,17 @@
+{
+  "mermaid-time-1": {
+    "gameId": "mermaid-time-1",
+    "gameName": "人魚蜘蛛接龍 · 1 花色",
+    "entries": []
+  },
+  "midnight-solitaire-time": {
+    "gameId": "midnight-solitaire-time",
+    "gameName": "夜航經典接龍",
+    "entries": []
+  },
+  "orbit-freecell-time": {
+    "gameId": "orbit-freecell-time",
+    "gameName": "星軌新接龍",
+    "entries": []
+  }
+}

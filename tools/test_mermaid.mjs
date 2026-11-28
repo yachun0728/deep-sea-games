@@ -24,7 +24,7 @@ export function fixture(balance=500,seed=7){
     AN:{start:(...a)=>{events.push(['start',...a]);return 'round'},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
   sandbox.completionTimeLeaderboard=()=>({busy:()=>false,start:fn=>fn(math.random),record(){},finish(){},abandon(){},formatted:()=>'00:01.000',update(){}});
   sandbox.globalThis=sandbox;
-  const ctx=vm.createContext(sandbox);vm.runInContext(fs.readFileSync(new URL('shared/mermaid-rules.cjs',root),'utf8')+'\n'+source,ctx);
+  const ctx=vm.createContext(sandbox);vm.runInContext(readSource('js/solitaire-controller.js',root)+'\n'+fs.readFileSync(new URL('shared/mermaid-rules.cjs',root),'utf8')+'\n'+source,ctx);
   const F=sandbox.__mm;
   return{F,el,events,wallet:sandbox.S,storage,ev:F.ev,busy:()=>vm.runInContext('mmBusy',ctx),count:t=>events.filter(e=>e[0]===t).length};
 }

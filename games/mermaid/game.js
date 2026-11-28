@@ -102,7 +102,8 @@ function ui(){
  setText('mm-info',live&&G?G.score+' · '+G.moves:'');
  stage.dataset.mode=mode;
  document.querySelectorAll('.mm-mode').forEach(b=>{b.setAttribute('aria-pressed',String(Number(b.dataset.diff)===mode));b.disabled=live||rank.busy()});
- cover.hidden=live;
+ cover.hidden=live;$('mm-result-rank').hidden=st!=='over'||!$('mm-result-rank').textContent;cover.classList.toggle('solitaire-won',st==='over'&&!!lastResult?.win);
+ if(live)stage.querySelector('.solitaire-celebration')?.remove();
  if(st==='over'&&lastResult){setText('mm-cover-title',lastResult.win?'{{t:mermaid.msg.006}}':'{{t:mermaid.msg.007}}');
   setText('mm-cover-text',lastResult.win?'{{t:solitaire.time.complete}} '+rank.formatted():'{{t:solitaire.time.incomplete}}')}
  else{setText('mm-cover-title','{{t:mermaid.msg.008}}');setText('mm-cover-text','{{t:mermaid.msg.009}}');
@@ -135,7 +136,7 @@ function end(win){
  save();renderAll();render();
  if(win)say('通關！8 顆珍珠全部收集完成，本局共入帳 '+earned+' 點。','win');
  else say('本局結束，共入帳 '+earned+' 點。','lose');
- ui()}
+ ui();if(win)celebrateSolitaire(stage,'sea')}
 function start(){
  if(st==='run'||rank.busy())return;
  if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');return}
@@ -198,7 +199,11 @@ function finishDrag(e,cancel){
  else{say('{{t:mermaid.msg.012}}','lose');render()}}
 board.addEventListener('pointerup',e=>finishDrag(e,false));
 board.addEventListener('pointercancel',e=>finishDrag(e,true));
+board.addEventListener('lostpointercapture',e=>finishDrag(e,true));
 board.addEventListener('contextmenu',e=>e.preventDefault());
+$('view-mermaid').addEventListener('contextmenu',e=>e.preventDefault());
+$('view-mermaid').addEventListener('selectstart',e=>e.preventDefault());
+$('view-mermaid').addEventListener('dblclick',e=>e.preventDefault());
 stockBtn.addEventListener('click',()=>{
  if(st!=='run'||locked())return;
  if(!G.stock.length){say('{{t:mermaid.msg.014}}','lose');return}
