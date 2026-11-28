@@ -45,6 +45,7 @@ def main():
    assert_ok(ev('getSelection().toString()===""'),'Rapid double/triple clicks do not select action text')
    assert_ok(ev('__starts===1'),'Rapid clicks do not restart or duplicate the round')
    assert_ok(ev("getComputedStyle(document.getElementById('rp-canvas')).touchAction==='none'&&getComputedStyle(document.getElementById('rp-action-label')).userSelect==='none'"),'Canvas gestures and action text selection are disabled')
+   assert_ok(ev("getComputedStyle(document.getElementById('rp-go')).webkitTapHighlightColor==='rgba(0, 0, 0, 0)'"),'Native blue tap highlight is disabled on the action button')
    before=ev('visualViewport.scale')
    c.call('Input.synthesizePinchGesture',{'x':180,'y':350,'scaleFactor':1.6,'relativeSpeed':800,'gestureSourceType':'touch'},page=True)
    assert_ok(abs(ev('visualViewport.scale')-before)<.01,'Native two-finger pinch does not magnify the game')

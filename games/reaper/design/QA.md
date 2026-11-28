@@ -49,7 +49,7 @@ Build、單元測試與部署後驗證隨最終 commit 記錄。`output/reaper-c
 - PASS：刀尖從約 `(306.5,190.2)` 向下掃到 `(195.9,272.4)`，位於金色區與幽靈身體中；0.28 秒純視覺動作在原 0.35 秒冷卻內結束。
 - PASS：幽靈左右腳交替落地／抬腳並有兩段腿骨彎膝；實際錄下 1 秒 60 個影格，圖檔與原速 GIF 見 `motion-v3/`。這不是實體低階裝置長時間 FPS 驗證。
 - PASS：收魂特效縮小並落進盒子，沒有往上飄過死神的臉。
-- PASS：`tools/check_reaper_input_browser.py`，12 項真實 Chrome 斷言：雙擊只開一局、快速雙擊／三擊不選字或重開、原生雙指捏合不放大、Ctrl-wheel 觸控板式縮放被取消、長按選單被取消、連按 Space 與退出正常、沒有 JS 錯誤。
+- PASS：`tools/check_reaper_input_browser.py`，13 項真實 Chrome 斷言：雙擊只開一局、快速雙擊／三擊不選字或重開、原生雙指捏合不放大、Ctrl-wheel 觸控板式縮放被取消、藍色原生點擊高亮被取消、長按選單被取消、連按 Space 與退出正常、沒有 JS 錯誤。
 - PASS：六尺寸中／英／簡中 60 項斷言、49 項 Python 單元測試、`test_reaper_visual.mjs` 刀尖／腿部測試、`test_timed_replay.mjs`、Build 與 `--check`。
 - PASS：共用規則、錢包、排行榜與 Analytics 原始碼未改，沒有改判定、冷卻、分數與獎勵時機。
 - NOT TESTED：本次手機實機、iOS Safari 手勢及長時間低階裝置測試。
