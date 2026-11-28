@@ -394,7 +394,7 @@ Telegram Bot 是獨立的 Worker，放在 `telegram-bot/`（已列入 `.assetsig
 
 ### Sand & Chill 正式版
 
-`games/sand-art/engine.js` 保存顆粒引擎與六張向量區塊資料；`app.js` 處理選畫、操作、教學、音訊與畫板；`play.html`／`play.css` 為獨立遊戲頁。`game.js` 使用來源視窗驗證的同來源父頁橋接，接入 AN 與語言／路由生命週期。大廳第一張卡片是 sand-art，Preview 保留並標為 graduated。
+`games/sand-art/engine.js` 保存顆粒引擎與最早六張向量區塊資料；`pictures-detailed.js` 以幾何函式產生另外六張小朋友款（`level:easy`）與六張大人款（`level:detailed`）。這個檔案只用絕對座標 M/L/C/Q/Z，分區與重畫才能用外框範圍略過不相干的圖形；`app.js` 處理選畫、操作、教學、音訊與畫板；`play.html`／`play.css` 為獨立遊戲頁。`game.js` 使用來源視窗驗證的同來源父頁橋接，接入 AN 與語言／路由生命週期。大廳第一張卡片是 sand-art，Preview 保留並標為 graduated。
 
 沒有競賽指標，不註冊排行榜 API；`0020_game_names_sand_art.sql` 只在既有 game_names 新增顯示名稱，不新增資料表或改動排行與錢包格式。
 

@@ -40,10 +40,16 @@ for(const picture of pictureCatalog)if(picture.base){picture.paths=makePicturePa
 function activatePicture(id){const picture=pictureCatalog.find(p=>p.id===id);if(!picture)throw new Error('Unknown picture');paths.splice(0,paths.length,...picture.paths.map(p=>[...p]));return picture}
 // Region IDs are geometry, never antialiased RGB values: edge blending can
 // otherwise invent the ID of an unrelated peeled region (ghost glue lines).
-function rasterizeRegions(ctx,shapes,width,height,strokes=[],occluders=[]){
+// Bounds of a path written only with absolute M/L/C/Q (it stays inside its control points); null for anything else.
+function boxOf(d,stroke=0){if(!d||!/^[MLCQZ0-9\s.-]+$/.test(d))return null;const v=d.match(/-?\d+(\.\d+)?/g).map(Number),xs=v.filter((_,j)=>j%2===0),ys=v.filter((_,j)=>j%2===1),pad=stroke/2+1;return[Math.min(...xs)-pad,Math.min(...ys)-pad,Math.max(...xs)+pad,Math.max(...ys)+pad]}
+function boxesTouch(a,b){return!a||!b||!(a[2]<b[0]||b[2]<a[0]||a[3]<b[1]||b[3]<a[1])}
+function rasterizeRegions(ctx,shapes,width,height,strokes=[],occluders=[],defs=[]){
  ctx.lineCap='round';ctx.lineJoin='round';
- const ids=new Int8Array(width*height);ids.fill(-1);
+ const ids=new Int16Array(width*height);ids.fill(-1);
+ // Far pixels skip the costly hit test for shapes with known bounds.
+ const boxes=shapes.map((_,i)=>boxOf(defs[i],strokes[i]||0));
  for(let y=0;y<height;y++)for(let x=0;x<width;x++)for(let i=shapes.length-1;i>=0;i--){
+  const box=boxes[i];if(box&&(x<box[0]||x>box[2]||y<box[1]||y>box[3]))continue;
   const stroke=strokes[i]||0;ctx.lineWidth=stroke||1;
   if(stroke?ctx.isPointInStroke(shapes[i],x+.5,y+.5):ctx.isPointInPath(shapes[i],x+.5,y+.5)){if((occluders[i]||[]).some(p=>ctx.isPointInPath(p,x+.5,y+.5)))continue;ids[y*width+x]=i;break}
  }
@@ -60,6 +66,8 @@ class SandWorld{
  constructor(regionAt,random=Math.random){this.regionAt=regionAt;this.random=random;this.reset()}
  reset(){this.revision=(this.revision||0)+1;this.grains=[];this.moving=[];this.boundQueue=[];this.fixedByRegion={};this.peeled=new Set();this.sites=new Map();this.gx=0;this.gy=0;this.emitted=0;this.exited=0;this.full=false;this.time=0;this.head=new Int32Array(192*224);this.next=new Int32Array(MAX_LOOSE)}
  peel(id){if(id>=0&&id<paths.length){const changed=!this.peeled.has(id);this.peeled.add(id);return changed}return false}
+ // 貼回誤撕的黃紙；已經黏住沙的區塊不能貼回，避免紙蓋在作品上。
+ unpeel(id){if(!this.peeled.has(id)||this.fixedByRegion[id])return false;this.peeled.delete(id);return true}
  emit(x,y,color,count=1,spread=9){let made=0;for(let i=0;i<count;i++){if(this.moving.length>=MAX_LOOSE||this.grains.length>=MAX){this.full=true;break}const a=this.random()*Math.PI*2,d=Math.sqrt(this.random())*spread;const px=x+Math.cos(a)*d,py=y+Math.sin(a)*d;if(px<20||px>340||py<20||py>380)continue;let surface=0;for(const p of this.moving)if((p.supported||p.z<.35)&&Math.abs(p.x-px)<p.r+R&&Math.abs(p.y-py)<p.r+R)surface=Math.max(surface,p.z+p.r+R);const grain={index:this.grains.length,x:px,y:py,vx:(this.random()-.5)*4,vy:(this.random()-.5)*4,z:surface+6+this.random()*3,vz:0,color,bound:false,contact:0,shade:this.random(),r:R*(.82+this.random()*.32)};this.grains.push(grain);this.moving.push(grain);made++;this.emitted++}return made}
  impulse(x,y,radius,vx,vy,kind='scraper',weight=1){const cap=kind==='brush'?26:kind==='pick'?20:55,speed=Math.hypot(vx,vy),limit=cap/Math.max(cap,speed);vx*=limit;vy*=limit;
  for(const p of this.moving){const d=Math.hypot(p.x-x,p.y-y);if(d<radius){const f=(1-d/radius)*(1-Math.exp(-.65*weight));p.vx+=(vx-p.vx)*f;p.vy+=(vy-p.vy)*f;p.contact=0}}
@@ -92,5 +100,5 @@ const cover=p.r*.8;for(let cy=Math.floor((p.y-cover)/.7);cy<=Math.floor((p.y+cov
  stats(){return {loose:this.moving.length,bound:this.grains.length-this.moving.length,boundByRegion:{...this.fixedByRegion},emitted:this.emitted,exited:this.exited,regions:this.peeled.size,full:this.full}}
 
 }
-root.SandEngine={SandWorld,paths,W,H,MAX,MAX_LOOSE,rasterizeRegions,projectTilt,pictureCatalog,activatePicture};
+root.SandEngine={boxOf,boxesTouch,SandWorld,paths,W,H,MAX,MAX_LOOSE,rasterizeRegions,projectTilt,pictureCatalog,activatePicture};
 })(typeof window==='undefined'?globalThis:window);

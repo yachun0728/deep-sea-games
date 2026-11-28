@@ -7,7 +7,7 @@
 - 網址：`#sand-art`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「挑開黃紙，自由混色，讓沙粒慢慢沾附成畫。」｜不限次數 · 療癒手作
 - 追蹤名稱（GA4 `game_name`）：沙沙時光，`game_id` 為 `sand-art`
-- 檔案：`games/sand-art/QA.md`、`games/sand-art/app.js`、`games/sand-art/card.html`、`games/sand-art/cover.webp`、`games/sand-art/engine.js`、`games/sand-art/game.js`、`games/sand-art/icon.svg`、`games/sand-art/play.css`、`games/sand-art/play.html`、`games/sand-art/style.css`、`games/sand-art/view.html`；`game.js` 共 22 行、2.7 KB
+- 檔案：`games/sand-art/QA.md`、`games/sand-art/app.js`、`games/sand-art/card.html`、`games/sand-art/cover.webp`、`games/sand-art/engine.js`、`games/sand-art/game.js`、`games/sand-art/icon.svg`、`games/sand-art/pictures-detailed.js`、`games/sand-art/play.css`、`games/sand-art/play.html`、`games/sand-art/style.css`、`games/sand-art/view.html`；`game.js` 共 22 行、2.8 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「沙沙時光（sand-art）」（下方「規則摘要」已複製）
 
@@ -60,8 +60,9 @@
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-- Sand & Chill 是沒有競賽分數、倒數或勝負的手作沙畫沙盒。主大廳排第一款，先選六張圖之一，再挑紙、選色、長按倒沙及緩慢推沙。
+- Sand & Chill 是沒有競賽分數、倒數或勝負的手作沙畫沙盒。主大廳排第一款，先選十八張圖之一（小朋友款 12 張，含星花曼陀羅、彩窗蝴蝶、錦鯉蓮池、孔雀開屏、浪花與富士、夜燈老街；大人款 6 張：千瓣曼陀羅、玫瑰花窗、繁花獅王、羽紋貓頭鷹、花紋海龜、花磚拼盤，每張約 260～580 個可撕區塊含輪廓線，細線吸附範圍較小、不顯示畫紙底部英文字），再挑紙、選色、長按倒沙及緩慢推沙。
 - 12 色可複選或全取消；同時最多 5,000 粒鬆沙，已黏顆粒不佔額度。實際接觸白膠才黏附，黃紙不黏，原色不混成新色。
+- 誤撕可按畫板左下「貼回」（電腦按 Z），從最近撕的一塊開始逐步貼回；已黏住沙的區塊不能貼回（提示後略過），不會移除任何沙粒。換紙清除撕紙紀錄。貼回不新增追蹤事件。
 - 牙籤挑紙，刮板與毛刷推鬆沙，沙匙少量倒沙。手機感測僅由玩家按鈕觸發；電腦用滑鼠與方向鍵，設定內另有方向鈕。
 - 首次選紙後提供可跳過的四步提示，按實際操作進展；設定→玩法可重看。換紙明確提示清除作品；沒有自動儲存或匯出。
 - 本款不直接操作錢包、不設單局獎勵、帳號、廣告或付款。因沒有競賽指標，不提交排行榜。沿用平台有效遊玩時間追蹤與全站規則。

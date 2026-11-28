@@ -106,6 +106,7 @@ SELF_LOCALIZED = (
     'games/sand-art/play.html',
     'games/sand-art/app.js',
     'games/sand-art/engine.js',  # tools/test_sand_art_release.html / own zh/en strings
+    'games/sand-art/pictures-detailed.js',  # picture names carry their own zh/en pair, same as engine.js
     'games/siege-architect/original.html',  # tools/test_siege_architect.mjs
     'games/eat-smaller/original.html',
     'games/one-line-defense/original.html',

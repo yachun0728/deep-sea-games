@@ -5,20 +5,21 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="cover.webp" type="image/webp">
 <meta name="theme-color" content="#f3eee3"><title>Sand & Chill · 沙沙時光</title>
-<link rel="stylesheet" href="play.css"></head>
+<link rel="stylesheet" href="play.css?v=restick-1"></head>
 <body data-i18n-ignore><main id="app">
 <header><a href="../../index.html#lobby" aria-label="返回大廳" id="back">‹</a><h1>Sand &amp; Chill<small id="subtitle">沙沙時光 · 慢慢來，沙子會等你</small></h1><span id="badge"></span><button id="paper" type="button" aria-haspopup="dialog"></button><button id="finish" type="button"></button><button id="lang" type="button">EN</button></header>
 
-<div id="stage"><canvas tabindex="0" id="canvas" aria-label="貓咪沙畫工作區" role="img"></canvas><span id="viewing" hidden></span><div id="zoomControls" role="group"><button id="zoomOut" type="button">−</button><button id="zoomReset" type="button">1×</button><button id="zoomIn" type="button">+</button></div></div>
+<div id="stage"><canvas tabindex="0" id="canvas" aria-label="貓咪沙畫工作區" role="img"></canvas><span id="viewing" hidden></span><button id="restick" type="button" hidden></button><div id="zoomControls" role="group"><button id="zoomOut" type="button">−</button><button id="zoomReset" type="button">1×</button><button id="zoomIn" type="button">+</button></div></div>
 <aside id="coach" hidden aria-live="polite"><span id="coachCount"></span><div><b id="coachTitle"></b><p id="coachCopy"></p></div><button id="coachSkip" type="button"></button></aside><p id="hint" aria-live="polite"></p>
 <section id="shelf"><div class="shelf-caption"><span id="sandLabel"></span><span id="colorSummary"></span></div><div id="palette" role="group" aria-label="沙子色盤，可複選"></div><nav id="tools" aria-label="工具"></nav></section>
 <div class="desk-actions"><button id="sensor" type="button"></button><button id="shake" type="button"></button><button id="tap" type="button"></button><button id="desk" type="button" aria-haspopup="dialog"></button></div>
 
 </main>
 <aside id="rotateGuard" aria-labelledby="rotateTitle"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="21" y="8" width="24" height="46" rx="4"/><path d="M30 49h6 M15 20C3 32 10 49 21 54 M10 17l5 3 3-7"/></svg><h2 id="rotateTitle"></h2><p id="rotateText"></p><button id="rotateLock" type="button"></button><a id="rotateBack" href="../../index.html#lobby"></a></aside>
-<dialog id="pictureDialog" aria-labelledby="galleryTitle"><div class="gallery-heading"><img src="cover.webp" width="56" height="53" alt="Sand &amp; Chill"><div><h2 id="galleryTitle"></h2><p id="galleryHint"></p></div></div><div id="pictureCards" class="picture-grid"></div><div class="gallery-footer"><button id="choosePicture" type="button"></button><button id="chooseBack" type="button"></button><a id="galleryExit" href="../../index.html#lobby"></a></div></dialog>
+<dialog id="pictureDialog" aria-labelledby="galleryTitle"><div class="gallery-heading"><img src="cover.webp" width="56" height="53" alt="Sand &amp; Chill"><div><h2 id="galleryTitle"></h2><p id="galleryHint"></p></div></div><div class="gallery-levels" role="group" aria-labelledby="galleryTitle"><button type="button" data-level="easy" aria-pressed="true"></button><button type="button" data-level="detailed" aria-pressed="false"></button></div><div id="pictureCards" class="picture-grid"></div><div class="gallery-footer"><button id="choosePicture" type="button"></button><button id="chooseBack" type="button"></button><a id="galleryExit" href="../../index.html#lobby"></a></div></dialog>
 <dialog id="deskDialog"><h2 id="deskTitle"></h2><p id="tiltLabel"></p><div id="tilt" role="group"><button data-tilt="-1,0">←</button><button data-tilt="0,-1">↑</button><button class="level" data-tilt="0,0">○</button><button data-tilt="0,1">↓</button><button data-tilt="1,0">→</button></div><div class="settings-row"><button id="portrait" type="button"></button><button id="sound" type="button" aria-pressed="false"></button><button id="help" type="button"></button></div><p id="status" aria-live="off"></p><form method="dialog"><button id="deskClose"></button></form></dialog>
 <dialog id="helpDialog"><h2>Sand &amp; Chill</h2><p id="instructions"></p><button id="guideReplay" type="button"></button><form method="dialog"><button id="helpClose"></button></form></dialog>
 <dialog id="finishDialog"><h2 id="finishTitle"></h2><p id="finishText"></p><form method="dialog"><button id="continue"></button></form><button id="new"></button></dialog>
-<script src="engine.js"></script>
-<script src="app.js"></script></body></html>
+<script src="engine.js?v=restick-1"></script>
+<script src="pictures-detailed.js?v=restick-1"></script>
+<script src="app.js?v=restick-1"></script></body></html>
