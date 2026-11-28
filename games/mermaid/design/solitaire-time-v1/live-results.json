@@ -1,0 +1,11 @@
+{
+  "url": "https://ticaticagames.com",
+  "browser": "Chrome/158.0.8127.37",
+  "results": [
+    "PASS live mermaid: correct name, start, ranked API, info, no runtime exceptions",
+    "PASS live midnight-solitaire: correct name, start, ranked API, info, no runtime exceptions",
+    "PASS live orbit-freecell: correct name, start, ranked API, info, no runtime exceptions",
+    "PASS live lobby: three English covers"
+  ],
+  "note": "390×844 emulation, not physical device. No synthetic scores submitted."
+}
