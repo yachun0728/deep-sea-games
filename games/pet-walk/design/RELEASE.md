@@ -28,3 +28,15 @@
 ## 發布狀態
 
 提交與遠端推送、正式部署及正式站操作結果會於完成後分別補記，不以 dry-run 代替發布。
+
+## Production verification completed
+
+- Code commit: 1eb57d22d91260d8c77502cafd9f04f0318558b5, pushed to origin/main.
+- Cloudflare deployment: 80025ae6-eaca-4012-8b95-d81862a7c5ae; 50 static assets uploaded.
+- Live URL: https://www.ticaticagames.com/?lang=zh-Hant&v=1eb57d2#pet-walk
+- PASS: exact Pet Walkies runtime and CSS on www, apex and workers.dev; all three contain the explicit leaderboard exclusion. Published cover, CSS, character, scene and member.js match the release files byte for byte. See live-release-report.json.
+- PASS: actual official-site browser start and held walking to step 2 with the crate event. Screenshot: live-v5-event.jpg. The live smoke test does not claim a full 60-step live round; the complete round passed on the clean local release build.
+- Concurrent release preserved: origin/main dc56a5f adds Reaper fullscreen improvements. It was fast-forwarded into this checkout after verifying the live Pet Walkies fragment. No old-site redeployment overwrote that concurrent work.
+- NOT TESTED: physical mobile/tablet, GA4 backend receipt, long-running low-end performance.
+- NOT APPLICABLE: Pet Walkies leaderboard uploads, backend migrations, CrazyGames review.
+- FAIL / BLOCKED: no unresolved Pet Walkies release issues.

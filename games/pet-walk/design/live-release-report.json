@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "commit": "1eb57d22d91260d8c77502cafd9f04f0318558b5",
+  "deployment": "80025ae6-eaca-4012-8b95-d81862a7c5ae",
+  "checks": [
+    {
+      "host": "https://www.ticaticagames.com",
+      "status": 200,
+      "pet_runtime_sha256": "1ce14209d093b6a77e874e3870a9705235486c3c20ebe2e74d22532d3e466eec",
+      "exact_pet_css": true,
+      "excludes_leaderboard": true,
+      "whole_index_equal": false
+    },
+    {
+      "host": "https://ticaticagames.com",
+      "status": 200,
+      "pet_runtime_sha256": "1ce14209d093b6a77e874e3870a9705235486c3c20ebe2e74d22532d3e466eec",
+      "exact_pet_css": true,
+      "excludes_leaderboard": true,
+      "whole_index_equal": false
+    },
+    {
+      "host": "https://deep-sea-games.yachun0728.workers.dev",
+      "status": 200,
+      "pet_runtime_sha256": "1ce14209d093b6a77e874e3870a9705235486c3c20ebe2e74d22532d3e466eec",
+      "exact_pet_css": true,
+      "excludes_leaderboard": true,
+      "whole_index_equal": false
+    },
+    {
+      "asset": "games/pet-walk/cover.webp",
+      "sha256": "02a2ec9ad5d55a60d0247c8653d32e41224e964cddee1fcb98def357d0db2212"
+    },
+    {
+      "asset": "games/pet-walk/style.css",
+      "sha256": "c4cd21561fcd4e2bad1aa1a15ffe1f0df3d563b3f4bd1afbc313fc322d51f290"
+    },
+    {
+      "asset": "games/pet-walk/art/felt-v1/puppet/neutral.webp",
+      "sha256": "334440a48769ff5ab3bc6f3e96696353e5c2181a19d3f81cc5065d0e3ae5bf44"
+    },
+    {
+      "asset": "games/pet-walk/art/felt-v1/scene.webp",
+      "sha256": "1fd81bf239f8d138be3d7276b163552bbec1e0fb35e67984b3144336c2dd3b79"
+    },
+    {
+      "asset": "js/member.js",
+      "sha256": "5424e20753b339f8ccaede05032fd7b655fadaf5f3d9247b4f4d98e58a221e40"
+    }
+  ],
+  "concurrent_update": "Live index also contains newer Reaper fullscreen changes; exact Pet Walkies runtime and CSS preserved; no redeploy over concurrent updates",
+  "browser": "Official www start and hold to 2 steps/event passed in in-app browser",
+  "GA4_backend": "NOT TESTED",
+  "physical_mobile": "NOT TESTED"
+}
