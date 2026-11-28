@@ -101,7 +101,7 @@ function ui(){
  stockBtn.style.visibility=G&&!G.stock.length?'hidden':'';
  setText('mm-info',live&&G?G.score+' · '+G.moves:'');
  stage.dataset.mode=mode;
- document.querySelectorAll('.mm-mode').forEach(b=>{b.setAttribute('aria-pressed',String(Number(b.dataset.diff)===mode));b.disabled=live});
+ document.querySelectorAll('.mm-mode').forEach(b=>{b.setAttribute('aria-pressed',String(Number(b.dataset.diff)===mode));b.disabled=live||rank.busy()});
  cover.hidden=live;
  if(st==='over'&&lastResult){setText('mm-cover-title',lastResult.win?'{{t:mermaid.msg.006}}':'{{t:mermaid.msg.007}}');
   setText('mm-cover-text',lastResult.win?'{{t:solitaire.time.complete}} '+rank.formatted():'{{t:solitaire.time.incomplete}}')}
@@ -225,7 +225,7 @@ $('mm-quit').addEventListener('click',()=>{
  if(!quitArm){quitArm=true;ui();clearTimeout(quitTimer);quitTimer=setTimeout(()=>{quitArm=false;ui()},3000);return}
  end(false)});
 document.querySelectorAll('.mm-mode').forEach(b=>b.addEventListener('click',()=>{
- if(st==='run')return;mode=Number(b.dataset.diff);store.mode=mode;saveStore();ui()}));
+ if(st==='run'||rank.busy())return;mode=Number(b.dataset.diff);store.mode=mode;saveStore();ui()}));
 if(window.ResizeObserver)new ResizeObserver(()=>{if(G)render()}).observe(board);
 window.addEventListener('resize',()=>{if(G)render()});
 window.addEventListener('hashchange',()=>{drag=null;if(G)requestAnimationFrame(render)});
