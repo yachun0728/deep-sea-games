@@ -22,9 +22,22 @@ def label(mask):
 ROOT = Path(__file__).resolve().parents[1]
 SRC, ART = ROOT / 'design/source', ROOT / 'art'
 
+SPECIES = ['clownfish', 'blue-damsel', 'puffer', 'rainbowfish', 'sea-bass', 'tuna', 'mahi', 'sailfish', 'grouper']
+MAGENTA = {'mahi'}          # its body is green, so it was drawn on magenta
+BILL = {'sailfish': .17}    # left-most pixel is the bill tip; the mouth sits this far back (share of frame width)
+# Frames where the left-most pixel is a fin instead of the mouth: {sheet: {frame: [x, y] from the body centre}}
+MOUTH = {'thrash': {0: [-96, -64]}}
+# Small corrections measured on a 600 px wide preview of the sheet: {sheet: {frame: (dx, dy)}}
+NUDGE = {'fish/puffer-thrash': {0: (8, -30)}, 'fish/blue-damsel-thrash': {0: (6, -35)}, 'fish/tuna-moods': {3: (16, -40)}}
+
 def keyed(name):
-    a = np.array(Image.open(SRC / f'{name}-v1.png').convert('RGB')).astype(np.float32)
+    a = np.array(Image.open(SRC / f"{name.replace('fish/', 'species/')}-v1.png").convert('RGB')).astype(np.float32)
     r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    if name.split('/')[-1].rsplit('-', 1)[0] in MAGENTA:
+        d = np.minimum(r, b) - g
+        spill = np.clip(d, 0, None)
+        alpha = np.clip((150 - d) / 110, 0, 1)
+        return np.dstack([r - spill, g, b - spill, alpha * 255]).astype(np.uint8)
     d = g - np.maximum(r, b)
     alpha = np.clip((150 - d) / 110, 0, 1)
     g2 = np.where(d > 0, np.maximum(r, b), g)  # despill
@@ -70,6 +83,10 @@ def pack(name, kind, scale):
             ax, ay = xs.mean(), ys.mean()                           # body centre
             upper = ys < h * .8
             i = np.argmin(np.where(upper, xs, 10 ** 6)); px, py = xs[i] + 6, ys[i]  # mouth = left-most pixel
+            bill = BILL.get(name.split('/')[-1].rsplit('-', 1)[0], 0)
+            if bill:
+                px = xs[i] + w * bill
+                column = ys[np.abs(xs - px) < 6]; py = column[np.argmin(np.abs(column - ys[i]))]
         items.append((c, float(ax), float(ay), float(px), float(py)))
     left = max(i[1] for i in items); right = max(i[0].shape[1] - i[1] for i in items)
     top = max(i[2] for i in items); bottom = max(i[0].shape[0] - i[2] for i in items)
@@ -81,7 +98,10 @@ def pack(name, kind, scale):
         im = Image.fromarray(c, 'RGBA').resize((max(1, round(c.shape[1] * scale)), max(1, round(c.shape[0] * scale))), Image.LANCZOS)
         sheet.alpha_composite(im, (k % 4 * cw + round(gx - ax * scale), k // 4 * ch + round(gy - ay * scale)))
         points.append([round((px - ax) * scale), round((py - ay) * scale)])
-    if name == 'thrash': points[0] = [-96, -64]  # frame 1: left-most pixel is a fin, not the mouth
+    for k, (dx, dy) in NUDGE.get(name, {}).items():
+        points[k] = [points[k][0] + round(dx * cw * 4 / 600), points[k][1] + round(dy * cw * 4 / 600)]
+    for k, point in MOUTH.get(name, {}).items():
+        points[k] = point
     sheet.save(ART / f'{name}.webp', quality=86, method=6)
     return {'w': cw, 'h': ch, 'x': round(gx), 'y': round(gy), 'p': points}
 
@@ -94,4 +114,8 @@ for t in ('dawn', 'morning', 'noon', 'dusk', 'night'):
     Image.open(SRC / f'bg-{t}-v1.png').convert('RGB').resize((780, 1690), Image.LANCZOS).save(ART / f'bg-{t}.webp', quality=80, method=6)
 boat = Image.fromarray(keyed('boat'), 'RGBA'); boat = boat.crop(boat.getbbox()); boat = boat.resize((720, round(boat.height * 720 / boat.width)), Image.LANCZOS)
 boat.save(ART / 'boat.webp', quality=86, method=6)
+(ART / 'fish').mkdir(exist_ok=True)
+for sp in SPECIES:
+    for kind in ('swim', 'thrash', 'moods'):
+        meta[f'fish/{sp}-{kind}'] = pack(f'fish/{sp}-{kind}', 'fish', .74)
 print(json.dumps(meta, separators=(',', ':'))); print('boat', boat.size)
