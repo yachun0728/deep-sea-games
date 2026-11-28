@@ -1,0 +1,58 @@
+[
+  {
+    "size": [
+      790,
+      740
+    ],
+    "result": "PASS",
+    "headerSamples": 30,
+    "maxInkVerticalError": 1.9603305645432556e-06,
+    "maxFlagVerticalError": 0.0,
+    "poseIndicesSeen": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "checks": [
+      "actual shared preview (no game-state hook)",
+      "self-hosted fonts",
+      "viewport bounds",
+      "start and distance advance",
+      "CDP touch protects",
+      "real canvas numeral and flag vertical center",
+      "pause/resume",
+      "exit to lobby"
+    ]
+  },
+  {
+    "size": [
+      390,
+      844
+    ],
+    "result": "PASS",
+    "headerSamples": 30,
+    "maxInkVerticalError": 1.8596649624669226e-06,
+    "maxFlagVerticalError": 0.0,
+    "poseIndicesSeen": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "checks": [
+      "actual shared preview (no game-state hook)",
+      "self-hosted fonts",
+      "viewport bounds",
+      "start and distance advance",
+      "CDP touch protects",
+      "real canvas numeral and flag vertical center",
+      "pause/resume",
+      "exit to lobby"
+    ]
+  }
+]

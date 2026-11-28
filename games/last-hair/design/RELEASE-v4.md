@@ -12,3 +12,5 @@
 - BLOCKED：無發布阻塞。
 
 正式部署版本、遠端基準與上線後驗收另記錄。
+
+發布基準：origin/main `64a48d4`，遊戲實作 `6f04077`。整合後重新通過 49 項 Python、13 項行為、動畫回歸、5 個可執行 script 語法、JSON 解析、四尺寸 Chrome；qa-release-v4 為無狀態掛鉤的待發布頁面操作結果。插隊目錄與 origin/main 無差異。

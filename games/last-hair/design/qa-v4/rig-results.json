@@ -28,5 +28,95 @@
       "English",
       "blur freezes phase"
     ]
+  },
+  {
+    "size": [
+      390,
+      844
+    ],
+    "result": "PASS",
+    "geometry": {
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844,
+        "top": 0,
+        "right": 390,
+        "bottom": 844,
+        "left": 0
+      },
+      "scroll": 390
+    },
+    "checks": [
+      "full available viewport",
+      "assets",
+      "run",
+      "six painted frames render",
+      "flag and visible numerals vertically centered",
+      "CDP touch hold/release",
+      "English",
+      "blur freezes phase"
+    ]
+  },
+  {
+    "size": [
+      320,
+      640
+    ],
+    "result": "PASS",
+    "geometry": {
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 640,
+        "top": 0,
+        "right": 320,
+        "bottom": 640,
+        "left": 0
+      },
+      "scroll": 320
+    },
+    "checks": [
+      "full available viewport",
+      "assets",
+      "run",
+      "six painted frames render",
+      "flag and visible numerals vertically centered",
+      "CDP touch hold/release",
+      "English",
+      "blur freezes phase"
+    ]
+  },
+  {
+    "size": [
+      1366,
+      900
+    ],
+    "result": "PASS",
+    "geometry": {
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1366,
+        "height": 900,
+        "top": 0,
+        "right": 1366,
+        "bottom": 900,
+        "left": 0
+      },
+      "scroll": 1366
+    },
+    "checks": [
+      "full available viewport",
+      "assets",
+      "run",
+      "six painted frames render",
+      "flag and visible numerals vertically centered",
+      "CDP touch hold/release",
+      "English",
+      "blur freezes phase"
+    ]
   }
 ]
