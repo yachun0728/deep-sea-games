@@ -37,3 +37,5 @@
 /games/reaper/art/motion-v3/**/*.json
 
 /games/pet-walk/design/
+
+/output/reaper-c-qa/fullscreen/
