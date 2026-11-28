@@ -8,15 +8,16 @@ const mosquitoRules=(()=>{
     lateBlood: 90, lateMult: 0.5,
     itchBase: 0.30, itchAlert: 0.012, itchWind: 1.2, grabTime: 0.3, itchCd: 2.5, itchReachX: 20, itchReachY: 80,
     rollFirst: 8, rollGapMin: 9, rollGapMax: 13, rollWarn: 1.8, rollSweep: 0.6, rollSafeY: 400,
-    lightTime: 2.0, panicRise: 1.15,
+    lightTime: 4.5, panicRise: 1.15,
     winY0: 62, winY1: 130, deadLock: 0.25
   };
+  // v2 (2026-11-28): zones moved onto the skin of the redrawn sleeper. Rates and alert values are unchanged.
   var MQZ = [
-    { id: 'face', x0: 70, x1: 150, y: 556, rate: 16, alert: 3.8 },
-    { id: 'arm',  x0: 250, x1: 340, y: 572, rate: 12, alert: 2.1},
-    { id: 'foot', x0: 420, x1: 458, y: 582, rate: 9,  alert: 1.4}
+    { id: 'face', x0: 60, x1: 132, y: 485, rate: 16, alert: 3.8 },
+    { id: 'arm',  x0: 152, x1: 248, y: 572, rate: 12, alert: 2.1},
+    { id: 'foot', x0: 416, x1: 458, y: 544, rate: 9,  alert: 1.4}
   ];
-  var BLANKET_Y = 592;
+  var BLANKET_Y = 578;
 
   function mqSurface(x) {
     for (var i = 0; i < MQZ.length; i++) {
@@ -155,7 +156,7 @@ const mosquitoRules=(()=>{
 
 function create(random) {const s=mqNew(random);s.held=false;Object.defineProperty(s,'dead',{get:()=>s.state!=='play'});return s;}
 function input(s,code){if(s.dead||(code!==0&&code!==1)||s.held===(code===0))return false;s.held=code===0;return true;}
-return {create,input,inputCount:2,advance:(s,dt)=>mqStep(s,dt,s.held),score:s=>Math.round(s.blood),MQC,MQZ,BLANKET_Y,mqNew,mqStep,mqSurface,mqInWin};
+return {rulesVersion:2,create,input,inputCount:2,advance:(s,dt)=>mqStep(s,dt,s.held),score:s=>Math.round(s.blood),MQC,MQZ,BLANKET_Y,mqNew,mqStep,mqSurface,mqInWin};
 
 })();
 if(typeof module!=="undefined")module.exports=mosquitoRules;

@@ -7,25 +7,29 @@
 - 網址：`#mosquito`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。」｜立即開玩 · 按住吸血
 - 追蹤名稱（GA4 `game_name`）：血壓上升，`game_id` 為 `mosquito`
-- 檔案：`games/mosquito/card.html`、`games/mosquito/cover.webp`、`games/mosquito/game.js`、`games/mosquito/icon.svg`、`games/mosquito/view.html`；`game.js` 共 293 行、18.7 KB
+- 檔案：`games/mosquito/card.html`、`games/mosquito/cover.webp`、`games/mosquito/game.js`、`games/mosquito/icon.svg`、`games/mosquito/leaderboard.webp`、`games/mosquito/view.html`；`game.js` 共 347 行、21.6 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「35. 血壓上升 Midnight Mosquito（mosquito）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-mosquito`、`mq-canvas`、`mq-blood`、`mq-alert`、`mq-best`、`mq-amount`、`mq-go`、`mq-msg`、`mq-rank-status`、`mq-rank-retry`
+`view-mosquito`、`mq-canvas`、`mq-blood`、`mq-alert`、`mq-best`、`mq-info`、`mq-help`、`mq-help-title`、`mq-help-close`、`mq-amount`、`mq-go`、`mq-msg`、`mq-rank-status`、`mq-rank-retry`
 
 ## 狀態與常數
 
 - 狀態物件／進行中旗標：`mqBusy`（L2）
 - L6 常數：`MQ_REWARDS`、`MQ_WIN_REWARD`
 - L12 常數：`FONT`
-- L21 常數：`SKIN`、`SKIN_D`
-- L156 常數：`CAUSE`
+- L21 常數：`INK`、`WALL`
+- L24 常數：`ART`、`BED_Y`、`BED_H`
+- L25 常數：`MQ_SPRITE`
+- L33 常數：`SKIN_LIFT`
+- L141 常數：`SWAT_HEAD`
+- L192 常數：`CAUSE`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rr` L13、`text` L14、`lerp` L19、`bloodColor` L20、`drawRoom` L23、`drawHuman` L44、`drawMosquito` L94、`drawSwatter` L120、`drawBar` L130、`drawHUD` L132、`computeHint` L144、`held` L158、`releaseInput` L159、`say` L160、`setText` L162、`ui` L163、`pay` L168、`checkMilestones` L172、`finish` L176、`handleEvents` L191、`tick` L206、`drawOverlay` L219、`draw` L248、`start` L263、`shown` L273、`endPointer` L280、`loop` L290
+`rr` L13、`text` L14、`lerp` L19、`bloodColor` L20、`loadArt` L26、`ready` L31、`skinLift` L39、`line` L47、`drawRoom` L49、`sleeperPose` L72、`drawHuman` L87、`drawMosquito` L115、`swatFrame` L142、`drawZap` L143、`drawExitGuide` L152、`drawBar` L160、`drawHUD` L166、`computeHint` L179、`held` L194、`releaseInput` L195、`say` L196、`setText` L198、`ui` L199、`pay` L204、`checkMilestones` L208、`finish` L212、`handleEvents` L227、`tick` L242、`drawOverlay` L261、`draw` L291、`start` L307、`shown` L317、`setHelp` L319、`endPointer` L334、`loop` L344
 
 ## 錢包與結算接點
 
@@ -33,19 +37,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L169 `pay`：`S.balance+=n;`
+- L205 `pay`：`S.balance+=n;`
 
 **餘額檢查**
-- L266 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L310 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L170 `pay`：`AN.progress(analytics,{stage:1,step:paidCount,score:Math.round(mo.blood),bonus_points:n,total_bonus_points:ea…`
-- L184 `finish`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:Math.round(result.blood),step:paidCount,stage:1});`
-- L268 `start`：`analytics=AN.start('mosquito',amount);`
+- L206 `pay`：`AN.progress(analytics,{stage:1,step:paidCount,score:Math.round(mo.blood),bonus_points:n,total_bonus_points:ea…`
+- L220 `finish`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:Math.round(result.blood),step:paidCount,stage:1});`
+- L312 `start`：`analytics=AN.start('mosquito',amount);`
 
 - 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -65,7 +69,9 @@
 
 - 入場：每局固定扣 `ENTRY_FEE`（10 點），按「扣點開始」時一次扣除並呼叫 `AN.start('mosquito')`；餘額不足顯示 `LOW_MSG`；進行中按鈕停用，重複點擊不會再扣。
 - 玩法：慢速（≤190）降落在臉頰／手臂／腳的皮膚區可吸血（速率 16／12／9 %/s，警覺增加 3.8／2.1／1.4），太快撞上會摔暈 1 秒；吸得越飽越重（上升變慢、俯衝變快）。警覺滿 100% 會開燈。
-- 三種死法：抓癢（吸血中被發癢預兆後 1.2 秒出手，仍在該皮膚區才死）、翻身（預警 1.8 秒，飛行高度 y>400 即被壓死）、開燈（2 秒內沒飛到窗洞就被電蚊拍打死）。
+- 降落區（規則 v2，2026-11-28 換新畫面時移到皮膚上；畫布座標 x／高度）：臉 60～132／485、手臂 152～248／572（與 v1 同高，從手臂起飛的逃脫時間不變）、腳 416～458／544，非皮膚表面 578。速率與警覺值未改。開燈後逃跑時間由 2 秒放寬為 4.5 秒（2026-11-28 使用者要求）。排行榜重播分版本：`rulesVersion` 2 用 `shared/mosquito-rules.cjs`，未送版本的舊客戶端用 `shared/mosquito-rules-v1.cjs`；發布時須先部署 API Worker 再更新前端。
+- 畫面：漫畫風素材在 `games/mosquito/art/`（4×2×2 格人物圖與蚊子 6 姿勢），進入本款畫面才載入；睡覺表情依警覺值分 4 段，抓癢與翻身依規則計時播放。皮膚輪廓的高低差只影響蚊子畫的位置，不影響判定。翻身預警與發生時畫出 y=400 危險線。
+- 三種死法：抓癢（吸血中被發癢預兆後 1.2 秒出手，仍在該皮膚區才死）、翻身（預警 1.8 秒，飛行高度 y>400 即被壓死）、開燈（4.5 秒內沒飛到窗洞就被電蚊拍打死；v1 舊客戶端為 2 秒）。
 - 勝利：吸血 100% 後從左牆窗洞（y 62～130）飛出。吸滿但被開燈逼出窗洞也算勝利；吸不滿就逃走只算逃脫，沒有勝利獎勵。
 - BONUS（固定點數，不依入場費計算；數值為暫定提案）：吸血 25% 立即 +1、50% +2、75% +3，吸滿逃出 +4；全拿共 10 點，剛好回本。每個門檻每局只發一次，即時入帳後死亡不扣回；每次入帳 `AN.progress` 帶 `bonus_points` 與 `total_bonus_points`；結束只呼叫一次 `AN.end`，payout 為本局已入帳總和。
 - 最高紀錄與重設：最高吸血百分比存 `deep-sea-mosquito-best`（只增不減，一位小數），只顯示、不換點數。重設 500 點在本局進行中（`mqBusy`）會被擋下；餘額快照也計入已扣入場費。

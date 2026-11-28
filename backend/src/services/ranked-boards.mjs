@@ -12,6 +12,7 @@ import blasterRules from '../../../shared/blaster-rules.cjs';
 import mermaidRules from '../../../shared/mermaid-rules.cjs';
 import lasthairRules from '../../../shared/last-hair-rules.cjs';
 import mosquitoRules from '../../../shared/mosquito-rules.cjs';
+import mosquitoRulesV1 from '../../../shared/mosquito-rules-v1.cjs';
 import campaignRules from '../../../shared/campaign-rules.cjs';
 import babyRules from '../../../shared/baby-rules.cjs';
 import thiefRules from '../../../shared/thief-rules.cjs';
@@ -106,6 +107,9 @@ const sneakBoards = new Map([
     version, timedBoard({...sneakRules, create: rng => sneakRules.create(rng, version)}, version),
   ]),
 ]);
+// Midnight Mosquito v2 moved the landing zones; rounds from older clients send no version and replay with v1.
+const mosquitoV1 = timedBoard(mosquitoRulesV1);
+const mosquitoV2 = timedBoard(mosquitoRules, mosquitoRules.rulesVersion);
 function puzzleBoard(rules) {
   return {
     create: () => ({ lastCleared: null }),
@@ -145,7 +149,12 @@ const boards = new Map([
   }],
   ['mermaid', timedBoard(mermaidRules)],
   ['last-hair', timedBoard(lasthairRules)],
-  ['mosquito', timedBoard(mosquitoRules)],
+  ['mosquito', {
+    ...mosquitoV1,
+    rulesVersion: mosquitoRules.rulesVersion,
+    create: version => (version === mosquitoRules.rulesVersion ? mosquitoV2 : mosquitoV1).create(),
+    apply: (state, action) => (state.rulesVersion === mosquitoRules.rulesVersion ? mosquitoV2 : mosquitoV1).apply(state, action),
+  }],
   ['campaign', timedBoard(campaignRules)],
   ['baby', {
     ...babyV1,

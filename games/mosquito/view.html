@@ -2,6 +2,8 @@
     <div class="console fs-game"><div class="sneak-stage"><canvas id="mq-canvas" tabindex="0" width="480" height="720" aria-label="{{t:mosquito.view.16}}"></canvas></div><button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
       <div class="side"><section class="panel" aria-label="{{t:mosquito.view.17}}">
         <dl class="stats"><div><dt>{{t:mosquito.view.01}}</dt><dd id="mq-blood">0.0%</dd></div><div><dt>{{t:mosquito.view.02}}</dt><dd id="mq-alert">0%</dd></div><div><dt>{{t:mosquito.view.03}}</dt><dd id="mq-best">0.0%</dd></div></dl>
+        <button id="mq-info" type="button" aria-haspopup="dialog" aria-controls="mq-help" aria-label="{{t:mosquito.view.18}}" title="{{t:mosquito.view.18}}">i</button>
+        <div id="mq-help" role="dialog" aria-modal="true" aria-labelledby="mq-help-title" hidden><div class="mq-help-card"><h2 id="mq-help-title">{{t:mosquito.view.18}}</h2><ul><li>{{t:mosquito.view.19}}</li><li>{{t:mosquito.view.20}}</li><li>{{t:mosquito.view.21}}</li><li>{{t:mosquito.view.22}}</li><li>{{t:mosquito.view.23}}</li><li>{{t:mosquito.view.24}}</li></ul><button id="mq-help-close" type="button">{{t:mosquito.view.25}}</button></div></div>
         <input id="mq-amount" type="hidden" value="0">
         <button class="go" id="mq-go" type="button" data-mode="bet">{{t:mosquito.view.04}}</button>
         <p class="msg" id="mq-msg" aria-live="polite">{{t:mosquito.view.05}}</p>

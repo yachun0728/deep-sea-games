@@ -30,7 +30,7 @@ export function fixture(balance=500,savedBest=null,random=Math.random){
     run(seconds,held){F.ev('keyHeld='+(held?'true':'false'));for(let t=0;t<seconds&&F.ev('st')==='run';t+=1/60)F.tick(1/60);},
     land(){F.ev("keyHeld=false");for(let i=0;i<240&&F.ev('st')==='run'&&F.ev('mo.mode')==='fly';i++){F.ev('keyHeld='+(F.ev('mo.vy')<120?'true':'false'));F.tick(1/60);}},
     // Hover directly above the arm, near the surface, ready to land.
-    aboveArm(){F.ev("mo.x=300;mo.dir=1;mo.y=540;mo.vy=60;mo.mode='fly';mo.zone=null;mo.roll.t=99;mo.itch.cd=99")}};
+    aboveArm(){F.ev("mo.x=200;mo.dir=1;mo.y=540;mo.vy=60;mo.mode='fly';mo.zone=null;mo.roll.t=99;mo.itch.cd=99")}};
   return fx;
 }
 function check(name,fn){fn();results.push(name);}
@@ -52,7 +52,7 @@ check('Landing slowly on the arm starts feeding; holding keeps feeding and letti
   f.hold(false);f.F.tick(1/60);assert.equal(f.ev('mo.mode'),'fly');
 });
 check('Landing too fast on skin snaps the mouthpart: stun for 1 second and no feeding',()=>{
-  const f=fixture();f.F.start();f.ev("mo.x=300;mo.dir=1;mo.y=565;mo.vy=400;mo.roll.t=99");f.run(1/60,false);assert.equal(f.ev('mo.mode'),'stun');assert.ok(f.ev('mo.stun')>.9);assert.equal(f.ev('mo.blood'),0);
+  const f=fixture();f.F.start();f.ev("mo.x=200;mo.dir=1;mo.y=565;mo.vy=400;mo.roll.t=99");f.run(1/60,false);assert.equal(f.ev('mo.mode'),'stun');assert.ok(f.ev('mo.stun')>.9);assert.equal(f.ev('mo.blood'),0);
   f.run(.5,true);assert.notEqual(f.ev('mo.mode'),'suck');
 });
 check('Heavier means slower to rise and faster to dive',()=>{
@@ -71,6 +71,19 @@ check('BONUS pays 1/2/3 points at 25/50/75% once each, and a win pays 4: 10 poin
   assert.equal(f.ev('st'),'over');assert.equal(f.wallet.balance,500-fee+10);assert.equal(f.busy(),false);assert.equal(f.count('end'),1);
   const end=f.events.find(e=>e[0]==='end');assert.equal(end[2],10);assert.equal(end[3],'complete');assert.equal(end[4].step,4);
   f.F.tick(1/60);f.F.tick(1/60);assert.equal(f.wallet.balance,500-fee+10);assert.equal(f.count('end'),1);assert.equal(f.storage.get('deep-sea-mosquito-best'),'100');assert.equal(f.storage.get('crush-depth-balance'),String(500-fee+10));
+});
+check('Landing zones sit on the drawn skin; older rounds keep the v1 zones for replay',()=>{
+  const f=fixture();
+  for(const[x,y,id]of[[96,485,'face'],[200,572,'arm'],[436,544,'foot']]){const s=f.ev('mosquitoRules.mqSurface('+x+')');assert.equal(s.zone.id,id);assert.equal(s.y,y);}
+  assert.equal(f.ev('mosquitoRules.mqSurface(300).zone'),null);assert.equal(f.ev('mosquitoRules.rulesVersion'),2);
+  const box={module:{exports:null}};vm.runInNewContext(fs.readFileSync(new URL('shared/mosquito-rules-v1.cjs',root),'utf8'),box);
+  assert.equal(box.module.exports.mqSurface(300).zone.id,'arm');assert.equal(box.module.exports.rulesVersion,undefined);
+});
+check('The how-to card pauses the round and releases input; closing it resumes',()=>{
+  const f=fixture();f.F.start();f.hold(true);f.el('mq-info').handlers.click();
+  assert.equal(f.el('mq-help').hidden,false);assert.equal(f.ev('keyHeld'),false);
+  const before=f.ev('[mo.t,mo.x,mo.y].join()');for(let i=0;i<120;i++)f.F.tick(1/60);assert.equal(f.ev('[mo.t,mo.x,mo.y].join()'),before);
+  f.el('mq-help-close').handlers.click();assert.equal(f.el('mq-help').hidden,true);f.F.tick(1/60);assert.notEqual(f.ev('[mo.t,mo.x,mo.y].join()'),before);assert.equal(f.count('start'),1);
 });
 check('Scratching: the hand kills a mosquito still on that skin, but one that flew away lives',()=>{
   const f=fixture();f.F.start();f.aboveArm();f.land();assert.equal(f.ev('mo.mode'),'suck');
@@ -91,9 +104,9 @@ check('Full alertness turns the light on: reaching the hole in time survives but
   for(let i=0;i<150&&f.ev('st')==='run';i++){f.hold(f.ev('mo.y')<96);f.F.tick(1/60)}
   assert.equal(f.ev('result.kind'),'escaped');assert.equal(f.wallet.balance,500-fee+1,'only the 25% milestone was paid earlier? none here');
 });
-check('Light with nobody reaching the window ends in a swatter death after 2 seconds',()=>{
-  const f=fixture();f.F.start();f.ev('mo.blood=10;mo.alert=99.99;mo.y=600;mo.x=300;mo.roll.t=99');let t=0;while(f.ev('st')==='run'&&t<5){f.hold(true);f.F.tick(1/60);t+=1/60}
-  assert.equal(f.ev('result.cause'),'light');assert.ok(Math.abs(t-2)<.1,'died after '+t);assert.equal(f.count('end'),1);
+check('Light with nobody reaching the window ends in a swatter death after 4.5 seconds',()=>{
+  const f=fixture();f.F.start();f.ev('mo.blood=10;mo.alert=99.99;mo.y=600;mo.x=300;mo.roll.t=99');let t=0;while(f.ev('st')==='run'&&t<8){f.hold(true);f.F.tick(1/60);t+=1/60}
+  assert.equal(f.ev('result.cause'),'light');assert.ok(Math.abs(t-4.5)<.1,'died after '+t);assert.equal(f.count('end'),1);
 });
 check('A full belly that reaches the hole while the light is on still counts as a win',()=>{
   const f=fixture();f.F.start();f.ev('mo.blood=100;mo.alert=99.99;mo.y=100;mo.x=200;mo.roll.t=99');

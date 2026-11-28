@@ -18,127 +18,162 @@ const {MQC,MQZ,BLANKET_Y,mqNew,mqStep,mqSurface,mqInWin}=mosquitoRules;
   }
   function lerp(a, b, t) { return a + (b - a) * t; }
   function bloodColor(p) { var r = Math.round(lerp(255, 160, p)), gg = Math.round(lerp(170, 8, p)), b = Math.round(lerp(170, 28, p)); return 'rgb(' + r + ',' + gg + ',' + b + ')'; }
-  var SKIN = '#e9bf98', SKIN_D = '#c99a74';
+  var INK = '#2a0f33', WALL = '#3814ae';
+  // Art atlases: 2×2 frames of the sleeper (same camera in every sheet) and a six-pose mosquito strip.
+  // Loaded the first time this view is drawn on screen, so the lobby never downloads them.
+  var ART = null, FW = 590, FH = 596, BED_Y = 186, BED_H = FH * 480 / FW;
+  var MQ_SPRITE = [[198,152],[202,136],[176,126],[214,174],[203,112],[207,150]];
+  function loadArt() {
+    if (ART || typeof Image === 'undefined') return;
+    ART = {};
+    ['idle','face','arm','foot','roll','swat','mosquito'].forEach(function (n) { var im = new Image(); im.src = 'games/mosquito/art/' + n + '.webp'; ART[n] = im; });
+  }
+  function ready(n) { return !!(ART && ART[n] && ART[n].complete && ART[n].naturalWidth); }
+  // How far above the rule surface the drawn skin sits, per x. Drawing only: landing and hit tests are unchanged.
+  var SKIN_LIFT = [
+    [[128,0],[134,48],[151,48]],
+    [[152,5],[176,0]],
+    [[249,0],[262,36],[300,48],[360,46],[415,30]],
+    [[402,0],[416,-10],[430,2],[445,15],[458,20]]
+  ];
+  function skinLift(x) {
+    for (var i = 0; i < SKIN_LIFT.length; i++) {
+      var t = SKIN_LIFT[i];
+      for (var j = 1; j < t.length; j++) if (x >= t[j - 1][0] && x <= t[j][0]) return lerp(t[j - 1][1], t[j][1], (x - t[j - 1][0]) / (t[j][0] - t[j - 1][0]));
+    }
+    return 0;
+  }
+
+  function line(color, w) { g.strokeStyle = color; g.lineWidth = w; g.lineJoin = 'round'; g.lineCap = 'round'; g.stroke(); }
 
   function drawRoom(alertP, lightOn) {
-    var gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#15152a'); gr.addColorStop(1, '#241d33');
-    g.fillStyle = gr; g.fillRect(0, 0, W, H);
-    // moon glow from window
-    var mg = g.createRadialGradient(20, 100, 10, 20, 100, 260); mg.addColorStop(0, 'rgba(150,170,255,0.28)'); mg.addColorStop(1, 'rgba(150,170,255,0)');
-    g.fillStyle = mg; g.fillRect(0, 0, W, 420);
-    // window with torn screen
-    g.fillStyle = '#0c1024'; g.fillRect(0, 40, 70, 130);
-    g.fillStyle = '#7f94d8'; g.beginPath(); g.arc(30, 70, 11, 0, 6.3); g.fill();
-    g.strokeStyle = 'rgba(210,220,255,0.35)'; g.lineWidth = 1;
-    for (var i = 0; i <= 70; i += 7) { g.beginPath(); g.moveTo(i, 40); g.lineTo(i, 170); g.stroke(); }
-    for (var j = 40; j <= 170; j += 7) { g.beginPath(); g.moveTo(0, j); g.lineTo(70, j); g.stroke(); }
-    var hg = g.createRadialGradient(10, 96, 4, 10, 96, 38); hg.addColorStop(0, '#9fb4ff'); hg.addColorStop(1, '#2a3a7a'); g.fillStyle = hg; g.beginPath(); g.arc(12, 96, 34, -1.5, 1.5); g.lineTo(0, 130); g.lineTo(0, 62); g.closePath(); g.fill(); g.strokeStyle = 'rgba(255,255,255,0.6)'; g.lineWidth = 2; g.setLineDash([5, 4]); g.beginPath(); g.arc(12, 96, 34, -1.5, 1.5); g.stroke(); g.setLineDash([]);
-    g.fillStyle = '#7f94d8'; g.beginPath(); g.arc(30, 70, 11, 0, 6.3); g.globalAlpha = 0.9; g.fill(); g.globalAlpha = 1;
-    g.strokeStyle = '#3a3f66'; g.lineWidth = 5; g.strokeRect(0, 40, 70, 130);
-    // bed base
-    g.fillStyle = '#2a2236'; g.fillRect(0, 600, W, 120);
-    g.fillStyle = '#3a3050'; g.fillRect(0, 604, W, 22);
-    g.fillStyle = '#1b1626'; g.fillRect(0, 690, W, 30);
+    g.fillStyle = WALL; g.fillRect(0, 0, W, H);
+    g.fillStyle = '#7f55e6'; g.fillRect(0, BED_Y + BED_H - 1, W, H);
+    // window with a torn screen: the ragged hole spans the exit height (winY0..winY1)
+    g.fillStyle = '#5b3f8f'; rr(-8, 40, 86, 136, 6); g.fill(); line(INK, 4);
+    g.fillStyle = '#141a52'; g.fillRect(0, 48, 70, 120);
+    g.strokeStyle = 'rgba(190,200,255,0.28)'; g.lineWidth = 1; g.beginPath();
+    for (var i = 7; i < 70; i += 9) { g.moveTo(i, 48); g.lineTo(i, 168); }
+    for (var j = 57; j < 168; j += 9) { g.moveTo(0, j); g.lineTo(70, j); }
+    g.stroke();
+    g.fillStyle = '#fff3c4'; g.beginPath(); g.arc(52, 66, 9, 0, 6.3); g.fill();
+    g.fillStyle = '#141a52'; g.beginPath(); g.arc(56, 63, 8, 0, 6.3); g.fill();
+    var hole = [[0,62],[14,70],[24,63],[27,80],[46,82],[34,94],[48,106],[31,108],[36,126],[20,118],[10,130],[0,126]];
+    g.beginPath(); hole.forEach(function (pt, k) { if (k) g.lineTo(pt[0], pt[1]); else g.moveTo(pt[0], pt[1]); }); g.closePath();
+    g.fillStyle = '#070a24'; g.fill(); line('#ffe36b', 3);
+    g.beginPath(); g.moveTo(54, 80); g.lineTo(66, 76); g.moveTo(56, 96); g.lineTo(70, 96); g.moveTo(54, 112); g.lineTo(66, 118); line('#ffe36b', 3);
+    // curtain and sill
+    g.beginPath(); g.moveTo(68, 40); g.quadraticCurveTo(100, 78, 76, 122); g.quadraticCurveTo(96, 150, 92, 186); g.lineTo(74, 184); g.quadraticCurveTo(78, 150, 68, 124); g.closePath(); g.fillStyle = '#a47be0'; g.fill(); line(INK, 3);
+    g.fillStyle = '#7a55b8'; rr(-8, 170, 100, 12, 4); g.fill(); line(INK, 3);
+    g.fillStyle = '#7a55b8'; rr(-8, 34, 112, 10, 5); g.fill(); line(INK, 3);
+  }
+
+  // Which sheet and frame to show. Reactions follow the rule timers; `after` only holds the last frame a moment.
+  function sleeperPose(q) {
+    if (q.state === 'dead' && q.result) {
+      if (q.result.cause === 'itch') return [q.result.part, overT < 0.4 ? 2 : 3];
+      if (q.result.cause === 'roll') return ['roll', overT < 0.55 ? 2 : 3];
+      return ['swat', 3];
+    }
+    if (q.light.on) return ['swat', swatFrame(q)];
+    if (q.roll.phase === 'sweep') return ['roll', 2];
+    if (q.itch.phase === 'grab' && q.itch.zone) return [q.itch.zone.id, 2];
+    if (q.roll.phase === 'warn') return ['roll', q.roll.t > MQC.rollWarn / 2 ? 0 : 1];
+    if (q.itch.phase === 'wind' && q.itch.zone) return [q.itch.zone.id, q.itch.t > MQC.itchWind * 0.65 ? 0 : 1];
+    if (after.t > 0) return [after.sheet, 3];
+    return ['idle', q.alert < 35 ? 0 : q.alert < 65 ? 1 : 2];
   }
 
   function drawHuman(q, tt) {
-    var rl = q.roll, bulge = 0, breathe = Math.sin(tt * 1.7) * 2;
-    if (rl.phase === 'warn') bulge = (1 - rl.t / MQC.rollWarn) * 26 + Math.sin(tt * 14) * 2;
-    // pillow
-    g.fillStyle = '#cfd3ea'; rr(18, 572, 150, 50, 18); g.fill();
-    // head
-    var al = q.alert / 100;
-    g.fillStyle = SKIN; g.beginPath(); g.arc(110, 598, 42, 0, 6.3); g.fill();
-    g.fillStyle = '#2a2230'; g.beginPath(); g.arc(110, 590, 43, Math.PI * 1.05, Math.PI * 1.95); g.fill();
-    var eyesOpen = q.light.on;
-    if (eyesOpen) {
-      g.fillStyle = '#fff'; g.beginPath(); g.arc(94, 598, 7, 0, 6.3); g.arc(126, 598, 7, 0, 6.3); g.fill();
-      g.strokeStyle = '#d33'; g.lineWidth = 1; for (var ei = 0; ei < 6; ei++) { g.beginPath(); g.moveTo(94 + Math.cos(ei) * 7, 598 + Math.sin(ei) * 7); g.lineTo(94 + Math.cos(ei) * 3, 598 + Math.sin(ei) * 3); g.moveTo(126 + Math.cos(ei) * 7, 598 + Math.sin(ei) * 7); g.lineTo(126 + Math.cos(ei) * 3, 598 + Math.sin(ei) * 3); g.stroke(); }
-      g.fillStyle = '#300'; g.beginPath(); g.arc(95, 599, 3, 0, 6.3); g.arc(125, 599, 3, 0, 6.3); g.fill();
-    } else {
-      g.strokeStyle = '#4a3a3a'; g.lineWidth = 2.5; g.beginPath(); g.moveTo(87, 599); g.quadraticCurveTo(94, 603, 101, 599); g.moveTo(119, 599); g.quadraticCurveTo(126, 603, 133, 599); g.stroke();
+    var pose = sleeperPose(q), sheet = ready(pose[0]) ? pose[0] : 'idle';
+    if (ready(sheet)) {
+      var f = sheet === pose[0] ? pose[1] : 2;
+      g.drawImage(ART[sheet], (f % 2) * FW, Math.floor(f / 2) * FH, FW, FH, 0, BED_Y, W, BED_H);
     }
-    // brows: frown with alertness
-    g.strokeStyle = '#3a2a2a'; g.lineWidth = 3; var tilt = 2 + al * 9;
-    g.beginPath(); g.moveTo(86, 588 - tilt * 0.2); g.lineTo(102, 588 + tilt * 0.6); g.moveTo(134, 588 - tilt * 0.2); g.lineTo(118, 588 + tilt * 0.6); g.stroke();
-    g.strokeStyle = '#8a5a50'; g.lineWidth = 2.5; g.beginPath(); g.moveTo(100, 620 - al * 2); g.quadraticCurveTo(110, 616 + al * 5, 120, 620 - al * 2); g.stroke();
-    // blanket
-    var by = 592 - bulge;
-    g.fillStyle = '#566494'; g.beginPath(); g.moveTo(150, 626); g.lineTo(150, by + 16); g.quadraticCurveTo(152, by, 170, by + breathe * 0.3); g.lineTo(462, by + 2 + breathe * 0.3); g.lineTo(480, by + 10); g.lineTo(480, 626); g.closePath(); g.fill();
-    g.strokeStyle = 'rgba(20,20,50,0.35)'; g.lineWidth = 3; g.beginPath(); g.moveTo(190, by + 16); g.quadraticCurveTo(230, by + 40, 280, by + 20); g.moveTo(345, by + 12); g.quadraticCurveTo(390, by + 40, 430, by + 18); g.stroke();
-    // arm & foot
-    g.fillStyle = SKIN; rr(250, 572, 90, 34, 16); g.fill();
-    g.fillStyle = SKIN_D; g.beginPath(); g.arc(255, 590, 3, 0, 6.3); g.fill();
-    g.fillStyle = SKIN; rr(420, 582, 46, 26, 12); g.fill();
-    g.fillStyle = SKIN_D; for (var f = 0; f < 4; f++) { g.beginPath(); g.arc(428 + f * 10, 584, 3, 0, 6.3); g.fill(); }
-    // itch ripple & hand
-    var it = q.itch;
+    var rl = q.roll, it = q.itch;
+    if (st !== 'run') return;
+    // landing markers on the three bare-skin spots
+    if (!q.light.on && rl.phase !== 'sweep') for (var i = 0; i < MQZ.length; i++) {
+      var z = MQZ[i], mx = (z.x0 + z.x1) / 2, my = z.y - skinLift(mx) - (z.id === 'face' ? 74 : 56) + (reduceMotion ? 0 : Math.sin(tt * 5 + i) * 3);
+      if (q.mode === 'suck' && q.zone === z) continue;
+      if (z.id === 'foot') mx = 428;
+      g.beginPath(); g.moveTo(mx - 9, my); g.lineTo(mx + 9, my); g.lineTo(mx, my + 11); g.closePath(); g.fillStyle = '#ffe36b'; g.fill(); line(INK, 2.5);
+    }
     if (it.phase === 'wind' && it.zone) {
-      var z = it.zone, cx = (z.x0 + z.x1) / 2, p = 1 - it.t / MQC.itchWind;
-      for (var k = 0; k < 3; k++) { var rr0 = ((p * 2 + k / 3) % 1) * 34 + 6; g.strokeStyle = 'rgba(255,60,60,' + (0.8 - rr0 / 50) + ')'; g.lineWidth = 3; g.beginPath(); g.ellipse(cx, z.y + 3, rr0 * 1.6, rr0 * 0.6, 0, 0, 6.3); g.stroke(); }
-      text('{{t:mosquito.msg.001}}', cx, z.y - 150 + Math.sin(tt * 10) * 3, 20, '#ffd0d0', 'center', '#300');
+      var zn = it.zone, cx = (zn.x0 + zn.x1) / 2, cy = zn.y - skinLift(cx), pp = 1 - it.t / MQC.itchWind;
+      for (var k = 0; k < 3; k++) { var rad = ((pp * 2 + k / 3) % 1) * 34 + 6; g.strokeStyle = 'rgba(255,90,90,' + (0.9 - rad / 45) + ')'; g.lineWidth = 3; g.beginPath(); g.ellipse(cx, cy, rad * 1.5, rad * 0.55, 0, 0, 6.3); g.stroke(); }
+      text('{{t:mosquito.msg.001}}', Math.max(90, Math.min(390, cx)), zn.y - 150 + Math.sin(tt * 10) * 3, 20, '#fff0f0', 'center', INK);
     }
-    if (it.phase === 'grab' && it.zone) {
-      var zz = it.zone, hx = (zz.x0 + zz.x1) / 2, hp = 1 - it.t / MQC.grabTime, hy = lerp(zz.y - 260, zz.y - 70, Math.min(1, hp * 2.2));
-      g.fillStyle = SKIN; rr(hx - 52, hy - 10, 104, 80, 28); g.fill();
-      for (var fi = 0; fi < 4; fi++) { rr(hx - 48 + fi * 25, hy + 50, 20, 52, 10); g.fill(); }
-      g.fillStyle = SKIN_D; rr(hx - 24, hy - 180, 48, 180, 14); g.fill();
-    }
-    // roll sweep
-    if (rl.phase === 'sweep') {
-      var pr = 1 - rl.t / MQC.rollSweep; var topY = lerp(592, 250, Math.min(1, pr * 1.6));
-      g.fillStyle = 'rgba(66,54,100,0.92)'; g.beginPath(); g.moveTo(150, 640); g.lineTo(150, topY + 60); g.quadraticCurveTo(300, topY - 40, 480, topY + 40); g.lineTo(480, 640); g.closePath(); g.fill();
+    // roll: everything below rollSafeY is lethal, so show that line clearly
+    if (rl.phase === 'warn' || rl.phase === 'sweep') {
+      var hot = rl.phase === 'sweep', y0 = MQC.rollSafeY;
+      g.fillStyle = hot ? 'rgba(255,70,90,0.24)' : 'rgba(255,70,90,0.1)'; g.fillRect(0, y0, W, BED_Y + BED_H - y0);
+      g.setLineDash([12, 9]); g.beginPath(); g.moveTo(0, y0); g.lineTo(W, y0); line(hot || Math.floor(tt * 6) % 2 === 0 ? '#ff5a6e' : '#ffc0c8', 4); g.setLineDash([]);
     }
   }
 
   function drawMosquito(q, tt) {
-    var x = q.x, y = q.y, d = q.dir; if (q.light.on) d = -1;
-    var p = q.blood / 100;
-    g.save(); g.translate(x, y);
-    var tilt = q.mode === 'suck' ? 0.9 : Math.max(-0.5, Math.min(0.6, q.vy / 380));
-    g.scale(d * 1.6, 1.6); g.rotate(tilt);
-    // legs
-    g.strokeStyle = '#222'; g.lineWidth = 1.2;
-    for (var l = -1; l <= 1; l++) { g.beginPath(); g.moveTo(l * 3, 2); g.lineTo(l * 5 - 2, 9 + Math.sin(tt * 20 + l) * 1); g.stroke(); }
-    // belly
-    var br = 4.5 + p * 8; g.fillStyle = bloodColor(p); g.strokeStyle = 'rgba(0,0,0,0.5)'; g.lineWidth = 1;
-    g.beginPath(); g.ellipse(-8 - p * 3, 1, br + 3, br, 0, 0, 6.3); g.fill(); g.stroke();
-    // thorax + head
-    g.fillStyle = '#2b2b33'; g.beginPath(); g.ellipse(2, 0, 6, 4, 0, 0, 6.3); g.fill();
-    g.beginPath(); g.arc(8, 0, 3.2, 0, 6.3); g.fill();
-    g.strokeStyle = '#111'; g.lineWidth = 1.2; g.beginPath(); g.moveTo(10, 1); g.lineTo(q.mode === 'suck' ? 17 : 15, 5); g.stroke();
-    g.fillStyle = q.mode === 'stun' ? '#fff' : '#f55'; g.beginPath(); g.arc(9, -1, 1.2, 0, 6.3); g.fill();
-    // wings
-    var flap = q.mode === 'suck' ? 0 : Math.sin(tt * 55);
-    var wl = (q.pressed && q.mode !== 'suck') ? 3 : 11;
-    g.fillStyle = 'rgba(210,225,255,0.55)';
-    g.beginPath(); g.ellipse(0, -4 - Math.abs(flap) * 2, wl, 3.5, -0.4 + flap * 0.5, 0, 6.3); g.fill();
+    var p = q.blood / 100, d = q.light.on ? -1 : q.dir, suck = q.mode === 'suck', stun = q.mode === 'stun';
+    var n = stun ? 4 : suck ? 2 : q.light.on ? 5 : p >= 0.6 ? 3 : (!reduceMotion && Math.floor(tt * 18) % 2) ? 1 : 0;
+    var k = 0.3 * (1 + p * 0.18), w = MQ_SPRITE[n][0] * k, h = MQ_SPRITE[n][1] * k;
+    // ease from "centred on the rule position" to "feet on the drawn skin" as it gets close
+    var surf = mosquitoRules.mqSurface(q.x), near = suck ? 1 : Math.max(0, Math.min(1, (q.y + MQC.R - surf.y + 90) / 90));
+    var bottom = lerp(q.y + h * 0.45, q.y + MQC.R + 2 - skinLift(q.x), near);
+    if (!suck && !stun && !reduceMotion && st === 'run') {
+      // whiny buzz: a short zigzag tail that fades out behind it
+      g.beginPath(); for (var b = 0; b <= 6; b++) { var bx = q.x - d * (w * 0.5 + b * 7), by = q.y + Math.sin(b * 2.2 - tt * 26) * (3 + b); if (b) g.lineTo(bx, by); else g.moveTo(bx, by); }
+      line('rgba(225,215,255,0.4)', 2);
+    }
+    g.save(); g.translate(q.x, bottom - h / 2);
+    g.scale(d, 1); if (!suck && !stun) g.rotate(Math.max(-0.35, Math.min(0.4, q.vy / 520)));
+    if (ready('mosquito')) g.drawImage(ART.mosquito, n * 240 + (240 - MQ_SPRITE[n][0]) / 2, 200 - MQ_SPRITE[n][1], MQ_SPRITE[n][0], MQ_SPRITE[n][1], -w / 2, -h / 2, w, h);
+    else { g.fillStyle = bloodColor(p); g.beginPath(); g.arc(0, 0, 9, 0, 6.3); g.fill(); }
+    if (suck && p > 0.08) {
+      var br = 3 + p * 11; g.beginPath(); g.ellipse(-w * 0.2, h * 0.04, br * 1.2, br, 0, 0, 6.3); g.fillStyle = bloodColor(Math.max(0.35, p)); g.fill(); line(INK, 2);
+      g.fillStyle = 'rgba(255,255,255,0.75)'; g.beginPath(); g.arc(-w * 0.2 - br * 0.4, h * 0.04 - br * 0.4, br * 0.22, 0, 6.3); g.fill();
+    }
     g.restore();
-    if (q.mode === 'stun') { for (var s = 0; s < 3; s++) { var a = tt * 8 + s * 2.1; text('★', x + Math.cos(a) * 14, y - 12 + Math.sin(a) * 4, 10, '#ffe066'); } }
+    if (stun) { for (var s2 = 0; s2 < 3; s2++) { var a = tt * 8 + s2 * 2.1; text('★', q.x + Math.cos(a) * 22, bottom - h - 4 + Math.sin(a) * 5, 14, '#ffe066', 'center', INK); } }
   }
 
-  function drawSwatter(q) {
-    var lt = MQC.lightTime - q.light.t; var p = Math.max(0, Math.min(1, (lt - 0.5) / (MQC.lightTime - 0.5)));
-    var sx = lerp(300, q.x, p), sy = lerp(-120, q.y - 30, p * p);
-    g.save(); g.translate(sx, sy); g.rotate(0.3);
-    g.fillStyle = '#c33'; rr(-22, 0, 44, 70, 6); g.fill();
-    g.strokeStyle = '#611'; g.lineWidth = 1; for (var i = -18; i <= 18; i += 6) { g.beginPath(); g.moveTo(i, 4); g.lineTo(i, 66); g.stroke(); }
-    g.fillStyle = '#333'; g.fillRect(-4, -120, 8, 124);
-    g.restore();
+  // The zapper is part of the art (swat sheet: frame 2 wind-up, frame 3 swing). Here: only the spark that reaches
+  // the mosquito at the end of the swing. SWAT_HEAD is the centre of the mesh in each of those two frames.
+  var SWAT_HEAD = { 2: [162, 321], 3: [326, 374] };
+  function swatFrame(q) { return MQC.lightTime - q.light.t < MQC.lightTime * 0.65 ? 2 : 3; }
+  function drawZap(q) {
+    var p = (MQC.lightTime - q.light.t) / MQC.lightTime;
+    if (p <= 0.85) return;
+    var from = SWAT_HEAD[swatFrame(q)], aim = Math.atan2(q.y - from[1], q.x - from[0]);
+    g.beginPath(); g.moveTo(from[0], from[1]);
+    for (var k = 1; k < 6; k++) { var u = k / 6, side = (k % 2 ? 1 : -1) * 12; g.lineTo(lerp(from[0], q.x, u) - Math.sin(aim) * side, lerp(from[1], q.y, u) + Math.cos(aim) * side); }
+    g.lineTo(q.x, q.y); line(INK, 8); line('#fff27a', 4);
+  }
+  // While the lights are on, the only way out is the hole: show the height to fly at.
+  function drawExitGuide(tt) {
+    var y0 = MQC.winY0, y1 = MQC.winY1, on = reduceMotion || Math.floor(tt * 6) % 2 === 0;
+    g.fillStyle = 'rgba(110,255,170,0.22)'; g.fillRect(0, y0, 190, y1 - y0);
+    g.setLineDash([10, 7]); g.beginPath(); g.moveTo(0, y0); g.lineTo(190, y0); g.moveTo(0, y1); g.lineTo(190, y1); line(on ? '#6effaa' : '#ffffff', 4); g.setLineDash([]);
+    var my = (y0 + y1) / 2, ax = 62 + (reduceMotion ? 0 : Math.sin(tt * 12) * 6);
+    g.beginPath(); g.moveTo(ax, my); g.lineTo(ax + 28, my - 20); g.lineTo(ax + 28, my - 8); g.lineTo(ax + 62, my - 8); g.lineTo(ax + 62, my + 8); g.lineTo(ax + 28, my + 8); g.lineTo(ax + 28, my + 20); g.closePath(); g.fillStyle = '#6effaa'; g.fill(); line(INK, 3);
   }
 
-  function drawBar(x, y, w, h, p, color, bg) { g.fillStyle = bg || 'rgba(255,255,255,0.12)'; rr(x, y, w, h, h / 2); g.fill(); if (p > 0) { g.fillStyle = color; rr(x, y, Math.max(h, w * p), h, h / 2); g.fill(); } }
+  function drawBar(x, y, w, h, p, color) {
+    rr(x, y, w, h, h / 2); g.fillStyle = '#fff3d6'; g.fill();
+    if (p > 0) { g.fillStyle = color; rr(x, y, Math.max(h, w * p), h, h / 2); g.fill(); }
+    rr(x, y, w, h, h / 2); line(INK, 3);
+  }
 
   function drawHUD(q, tt) {
     var p = q.blood / 100, a = q.alert / 100;
-    text('{{t:mosquito.msg.002}}', 16, 22, 15, '#ffd6d6', 'left');
-    drawBar(60, 14, 404, 16, p, bloodColor(Math.max(0.35, p)));
-    text(q.blood.toFixed(1) + '%', 468, 22, 13, '#fff', 'right');
-    text('{{t:mosquito.msg.003}}', 16, 46, 15, '#ffe9b0', 'left');
+    text('{{t:mosquito.msg.002}}', 16, 22, 15, '#ffd6d6', 'left', INK);
+    drawBar(64, 13, 356, 18, p, bloodColor(Math.max(0.35, p)));
+    text(q.blood.toFixed(1) + '%', 470, 22, 13, '#fff', 'right', INK);
+    text('{{t:mosquito.msg.003}}', 16, 46, 15, '#ffe9b0', 'left', INK);
     var col = a > 0.7 ? '#ff4040' : a > 0.4 ? '#ff9f2e' : '#ffd23f';
-    drawBar(60, 38, 404, 16, a, col);
-    if (a > 0.7 && Math.floor(tt * 6) % 2 === 0) { g.strokeStyle = '#ff4040'; g.lineWidth = 2; rr(60, 38, 404, 16, 8); g.stroke(); }
-    if (hintText) text(hintText, 240, 78, 18, '#fff', 'center', 'rgba(0,0,0,0.75)');
+    drawBar(64, 37, 356, 18, a, col);
+    text(Math.floor(q.alert) + '%', 470, 46, 13, '#fff', 'right', INK);
+    if (a > 0.7 && Math.floor(tt * 6) % 2 === 0) { g.strokeStyle = '#ff4040'; g.lineWidth = 2; rr(64, 37, 356, 18, 9); g.stroke(); }
+    if (hintText) text(hintText, 240, 214, 18, '#fff', 'center', 'rgba(0,0,0,0.75)');
   }
 
   function computeHint(q) {
@@ -153,6 +188,7 @@ const {MQC,MQZ,BLANKET_Y,mqNew,mqStep,mqSurface,mqInWin}=mosquitoRules;
 
 const rank=timedLeaderboard('mosquito','mq',mosquitoRules.inputCount,ui);
 let st='ready',mo=mqNew(Math.random),tt=0,last=0,overT=0,rec=false,shake=0,flash=0,hintText='',splat=[],result=null;
+const after={sheet:'idle',t:0}; // holds a reaction's last frame (drawing only)
 const CAUSE={face:'{{t:mosquito.msg.010}}',arm:'{{t:mosquito.msg.011}}',foot:'{{t:mosquito.msg.012}}',roll:'{{t:mosquito.msg.013}}',light:'{{t:mosquito.msg.014}}'};
 const ptrs=new Set();let keyHeld=false;
 const held=()=>ptrs.size>0||keyHeld;
@@ -204,7 +240,13 @@ function handleEvents(){
  }
 }
 function tick(dt){
+ if(helpOpen)return; // the how-to card pauses the round; leaderboard ticks stop with it
  tt+=dt;
+ if(st==='run'){
+  if(mo.roll.phase==='sweep'){after.sheet='roll';after.t=.45}
+  else if(mo.itch.phase==='grab'&&mo.itch.zone){after.sheet=mo.itch.zone.id;after.t=.7}
+  else if(after.t>0)after.t-=dt;
+ }
  if(shake>0)shake=Math.max(0,shake-dt*1.5);if(flash>0)flash=Math.max(0,flash-dt*2.5);
  if(st==='run'){
    if(mo.held!==held()){const code=held()?0:1;mosquitoRules.input(mo,code);rank.record(code);}
@@ -227,7 +269,8 @@ function drawOverlay(){
  if(st!=='over'||!result)return;
  const r=result;
  if(r.kind==='dead'){
-  g.fillStyle='rgba(30,0,0,'+Math.min(.7,overT*3)+')';g.fillRect(0,0,W,H);
+  if(!reduceMotion&&overT<.8)return;
+  g.fillStyle='rgba(30,0,0,'+(reduceMotion?.6:Math.min(.6,(overT-.8)*3))+')';g.fillRect(0,0,W,H);
   text('{{t:mosquito.msg.030}}',240,250,32,'#ffd6d6','center','#200');
   text('吸飽度 '+r.blood.toFixed(1)+'%',240,330,52,'#ff2a2a','center','#200');
   text(r.blood>=95?'{{t:mosquito.msg.031}}':r.blood>=80?'{{t:mosquito.msg.032}}':'{{t:mosquito.msg.033}}',240,388,20,'#ffd6d6');
@@ -246,6 +289,7 @@ function drawOverlay(){
  text('{{t:mosquito.msg.039}}',240,560,20,'#fff1c1');
 }
 function draw(){
+ if(shown())loadArt();
  const sx=shake>0?(Math.random()-.5)*20*shake:0,sy=shake>0?(Math.random()-.5)*20*shake:0;
  g.save();g.translate(sx,sy);
  drawRoom(mo.alert/100,mo.light.on);
@@ -253,7 +297,7 @@ function draw(){
  const showMq=st!=='ready'&&!(st==='over'&&result&&result.kind==='dead')&&mo.state!=='escaped';
  if(st==='ready')drawMosquito({x:240+Math.sin(tt)*140,y:300+Math.sin(tt*1.7)*50,dir:Math.cos(tt)>0?1:-1,blood:0,mode:'fly',pressed:false,vy:0,light:{on:false}},tt);
  else if(showMq&&!mo.light.on)drawMosquito(mo,tt);
- if(mo.light.on&&st!=='ready'){g.fillStyle='rgba(255,255,245,'+(.5+Math.sin(tt*30)*.06)+')';g.fillRect(0,0,W,H);if(mo.state==='play'||mo.state==='dead')drawSwatter(mo);if(showMq)drawMosquito(mo,tt)}
+ if(mo.light.on&&st!=='ready'){g.fillStyle='rgba(255,226,130,'+(reduceMotion?.3:.3+Math.sin(tt*30)*.05)+')';g.fillRect(0,0,W,H);if(st==='run')drawExitGuide(tt);if(mo.state==='play'||mo.state==='dead')drawZap(mo);if(showMq)drawMosquito(mo,tt)}
  for(const s of splat){g.fillStyle='#b00020';g.beginPath();g.arc(s.x,s.y,s.r,0,7);g.fill()}
  if(st==='run')drawHUD(mo,tt);
  g.restore();
@@ -266,11 +310,21 @@ function start(){
  if(amount>S.balance){say(LOW_MSG,'lose');return;}
  rank.start(random=>{
  analytics=AN.start('mosquito',amount);mqStake=amount;mqBusy=true;save();renderAll();
- mo=mosquitoRules.create(random||Math.random);earned=0;paid=[false,false,false];winPaid=false;paidCount=0;rec=false;result=null;splat=[];shake=0;flash=0;hintText='';releaseInput();
+ mo=mosquitoRules.create(random||Math.random);earned=0;paid=[false,false,false];winPaid=false;paidCount=0;rec=false;result=null;splat=[];shake=0;flash=0;hintText='';after.t=0;releaseInput();
  st='run';last=performance.now();say('{{t:mosquito.msg.040}}');ui();cv.focus();
- },ui);
+ },ui,{rulesVersion:mosquitoRules.rulesVersion});
 }
 const shown=()=>!$('view-mosquito').hidden&&!document.hidden;
+let helpOpen=false;
+function setHelp(open){
+ if(helpOpen===open)return;
+ helpOpen=open;releaseInput();last=performance.now();$('mq-help').hidden=!open;
+ if(open)$('mq-help-close').focus();else if(st==='run')cv.focus();else $('mq-info').focus();
+}
+$('mq-info').addEventListener('click',()=>setHelp(true));
+$('mq-help-close').addEventListener('click',()=>setHelp(false));
+$('mq-help').addEventListener('click',e=>{if(e.target===$('mq-help'))setHelp(false)});
+window.addEventListener('hashchange',()=>setHelp(false));
 $('mq-go').addEventListener('click',start);
 cv.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
@@ -281,7 +335,7 @@ const endPointer=e=>{ptrs.delete(e.pointerId)};
 cv.addEventListener('pointerup',endPointer);cv.addEventListener('pointercancel',endPointer);cv.addEventListener('lostpointercapture',endPointer);
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 addEventListener('keydown',e=>{
- if(!shown()||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;
+ if(!shown()||helpOpen||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;
  if(e.key===' '){e.preventDefault();keyHeld=true}});
 addEventListener('keyup',e=>{if(e.key===' ')keyHeld=false});
 addEventListener('blur',()=>{releaseInput();last=performance.now()});

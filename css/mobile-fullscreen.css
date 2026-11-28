@@ -18,6 +18,18 @@
 #view-carp{--hud:96px}
 #view-breakout{--ar:.7692;--hud:52px;--fs-bg:#0c1224}
 #view-mosquito{--ar:.6667;--hud:52px;--fs-bg:#0b1020}
+/* During a round the start button is hidden: drop the message to the very bottom, below the sleeper. */
+#view-mosquito .fs-game:has(#mq-go:disabled) .msg{bottom:calc(env(safe-area-inset-bottom) + 6px)}
+/* How-to button (top right on phones, in the side panel on desktop) and its card. */
+#view-mosquito #mq-info{justify-self:end;width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:var(--fg);font:italic 700 24px Georgia,serif;cursor:pointer}
+#mq-help{position:fixed;inset:0;z-index:1300;display:grid;place-items:center;box-sizing:border-box;padding:calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 16px);background:rgba(8,4,28,.78)}
+#mq-help[hidden]{display:none}
+#mq-help .mq-help-card{box-sizing:border-box;width:min(100%,380px);max-height:100%;overflow-y:auto;padding:18px 18px 16px;border:3px solid #2a0f33;border-radius:18px;background:#fff3d6;color:#2a0f33;text-align:left}
+#mq-help h2{margin:0 0 10px;font-size:20px;text-align:center;color:#2a0f33}
+#mq-help ul{margin:0 0 14px;padding-left:20px;font-size:15px;line-height:1.6}
+#mq-help li+li{margin-top:6px}
+#mq-help-close{display:block;width:100%;min-height:48px;border:0;border-radius:12px;background:#6a23f0;color:#fff;font-size:17px;font-weight:700;cursor:pointer}
+@media(max-height:700px){#mq-help .mq-help-card{padding:12px 14px}#mq-help h2{margin-bottom:6px;font-size:17px}#mq-help ul{margin-bottom:10px;font-size:13px;line-height:1.45}#mq-help li+li{margin-top:3px}#mq-help-close{min-height:44px;font-size:15px}}
 #view-dive,#view-mrt,#view-one-line-defense,#view-shadow-relay,#view-mirror-twins,#view-eat-smaller{--hud:52px;--reserve:72px;--fs-bg:#000}
 #view-mermaid{--hud:52px;--fs-bg:#17444a}
 #view-peek{--ar:.5625;--hud:52px;--fs-bg:#0a0705}
@@ -49,6 +61,8 @@
   .fs-game .field{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 88px);left:calc(env(safe-area-inset-left) + 8px);right:calc(env(safe-area-inset-right) + 8px);margin:0;padding:4px 10px;border-radius:10px;background:rgba(5,12,24,.72);pointer-events:none}
   .fs-game .field .hint{display:none}
   .fs-game .msg{position:absolute;z-index:3;left:calc(env(safe-area-inset-left) + 12px);right:calc(env(safe-area-inset-right) + 12px);bottom:calc(env(safe-area-inset-bottom) + 92px);margin:0;padding:3px 10px;border-radius:12px;background:rgba(5,12,24,.78);color:#e8f2ff;font-size:12px;line-height:1.4;text-align:center;pointer-events:none}
+  #view-mosquito #mq-info{position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 4px);right:calc(env(safe-area-inset-right) + 8px)}
+  #view-mosquito .fs-game .stats{right:calc(env(safe-area-inset-right) + 60px)}
   .fs-game .msg:empty,#view-dive .msg,#view-mrt .msg,#view-one-line-defense .msg,#view-shadow-relay .msg,#view-mirror-twins .msg,#view-eat-smaller .msg,#view-quack-pond .msg,#view-siege-architect .msg{display:none}
   .fs-game [class$="-hold"]{position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);min-height:64px;font-size:17px;touch-action:manipulation}
   .fs-game [class$="-hold"]:disabled{display:none}
