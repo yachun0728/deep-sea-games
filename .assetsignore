@@ -32,3 +32,6 @@
 /games/reaper/art/components/*.json
 /games/midnight-solitaire/design/
 /games/orbit-freecell/design/
+
+/games/reaper/art/motion-v3/**/*.png
+/games/reaper/art/motion-v3/**/*.json

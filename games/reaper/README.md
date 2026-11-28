@@ -7,7 +7,7 @@
 - 網址：`#reaper`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「普通靈魂要接走，綠色通行證要放行。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：死神打工，`game_id` 為 `reaper`
-- 檔案：`games/reaper/card.html`、`games/reaper/cover.webp`、`games/reaper/game.js`、`games/reaper/icon.svg`、`games/reaper/leaderboard.webp`、`games/reaper/style.css`、`games/reaper/view.html`；`game.js` 共 175 行、12.3 KB
+- 檔案：`games/reaper/card.html`、`games/reaper/cover.webp`、`games/reaper/game.js`、`games/reaper/icon.svg`、`games/reaper/leaderboard.webp`、`games/reaper/style.css`、`games/reaper/view.html`；`game.js` 共 240 行、17.1 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「21. Reaper Shift（reaper）」（下方「規則摘要」已複製）
 
@@ -18,12 +18,12 @@
 ## 狀態與常數
 
 - 狀態物件／進行中旗標：（game.js 內沒有偵測到；可能定義在共用檔，見 ARCHITECTURE.md）
-- L4 常數：`RP_PER`
+- L4 常數：`RP_PER`、`RP_SWING_TIME`
 - L5 常數：`RP_MILESTONES`、`RP_ENDLESS_FROM`、`RP_ENDLESS_STEP`、`RP_ENDLESS_BONUS`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rpBonusAt` L6、`rpNext` L7、`rpLevel` L8、`rpSay` L11、`rpRemember` L12、`rpUI` L13、`rpStart` L22、`rpAward` L33、`rpEvent` L39、`rpStep` L55、`rpSync` L64、`rpAct` L68、`rpLoadArt` L79、`rpImage` L95、`rpSoul` L96、`rpDraw` L107、`rpLoop` L172
+`rpBonusAt` L6、`rpNext` L7、`rpLevel` L8、`rpSay` L11、`rpRemember` L12、`rpUI` L13、`rpStart` L22、`rpAward` L33、`rpEvent` L39、`rpStep` L55、`rpSync` L64、`rpAct` L68、`rpLoadArt` L79、`rpPrepareLayers` L95、`rpSwingPose` L105、`blend` L108、`rpPlaqueText` L113、`rpHeart` L120、`rpImage` L126、`rpLegPose` L127、`rpSoul` L134、`rpDraw` L156、`rpLoop` L237
 
 ## 錢包與結算接點
 

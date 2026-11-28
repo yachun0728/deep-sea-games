@@ -1,0 +1,50 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "resting-hand-source.png",
+  "grid": [
+    1,
+    1
+  ],
+  "canvas": {
+    "w": 512,
+    "h": 512
+  },
+  "baseline_y": 460.0,
+  "target_height": 330.0,
+  "scale": "cell",
+  "fit": "contain",
+  "factor": null,
+  "factor_from": null,
+  "alpha_cleanup": "hand_alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "resting",
+      "file": "hand_resting.png",
+      "factor": 0.5719237435008665,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 829,
+          "h": 577
+        },
+        "canvas": {
+          "w": 474,
+          "h": 330
+        }
+      },
+      "box": {
+        "x": 19,
+        "y": 130,
+        "w": 474,
+        "h": 330
+      },
+      "anchor": [
+        256.0,
+        460.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

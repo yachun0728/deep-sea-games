@@ -41,3 +41,18 @@ Build、單元測試與部署後驗證隨最終 commit 記錄。`output/reaper-c
 自動正式站流程曾因等待初始化、誤把建立回合的 201 當成 200，以及選擇器／feed 等待而停止；保留原始失敗紀錄，不列為自動全程通過。成績回放及公開 API 的自動步驟已實際通過；封面、實際 feed 列、縮圖與連結由真實 Chrome 手動補驗，GA 由登入後台補驗。
 
 證據位於工作區 `output/reaper-c-qa/`：`production-playing-390.png`、`production-over-390.png`、`production-cover-cua-390.jpg`、`production-leaderboard-cua-390.jpg`、`analytics-game-start-reaper.jpg`、`analytics-game-end-reaper.jpg`、`production-verification.json`。
+
+## v3：依後續截圖修正的驗收
+
+- PASS：死神在輸送帶後方，整段台面遮住身體；手套已獨立分離，沒有黑色矩形殘邊或切斷手指。
+- PASS：HUD 箭頭／愛心以原紙牌位置對齊，班次與分數用字體實際墨跡置中。
+- PASS：刀尖從約 `(306.5,190.2)` 向下掃到 `(195.9,272.4)`，位於金色區與幽靈身體中；0.28 秒純視覺動作在原 0.35 秒冷卻內結束。
+- PASS：幽靈左右腳交替落地／抬腳並有兩段腿骨彎膝；實際錄下 1 秒 60 個影格，圖檔與原速 GIF 見 `motion-v3/`。這不是實體低階裝置長時間 FPS 驗證。
+- PASS：收魂特效縮小並落進盒子，沒有往上飄過死神的臉。
+- PASS：`tools/check_reaper_input_browser.py`，12 項真實 Chrome 斷言：雙擊只開一局、快速雙擊／三擊不選字或重開、原生雙指捏合不放大、Ctrl-wheel 觸控板式縮放被取消、長按選單被取消、連按 Space 與退出正常、沒有 JS 錯誤。
+- PASS：六尺寸中／英／簡中 60 項斷言、49 項 Python 單元測試、`test_reaper_visual.mjs` 刀尖／腿部測試、`test_timed_replay.mjs`、Build 與 `--check`。
+- PASS：共用規則、錢包、排行榜與 Analytics 原始碼未改，沒有改判定、冷卻、分數與獎勵時機。
+- NOT TESTED：本次手機實機、iOS Safari 手勢及長時間低階裝置測試。
+- BLOCKED：本次功能無阻塞。NOT APPLICABLE：CrazyGames 送審、SDK、廣告與帳號改動。
+
+本次修改的正式部署與複測記錄將另列於 `motion-v3/RELEASE.md`，不把上述本機 QA 當成已發布。

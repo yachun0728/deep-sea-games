@@ -1,0 +1,106 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "ghost-parts-interior.png",
+  "grid": [
+    3,
+    1
+  ],
+  "canvas": {
+    "w": 512,
+    "h": 512
+  },
+  "baseline_y": 460.0,
+  "target_height": 400.0,
+  "scale": "cell",
+  "fit": "contain",
+  "factor": null,
+  "factor_from": null,
+  "alpha_cleanup": "ghost_alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "body",
+      "file": "ghost_body.png",
+      "factor": 0.644122383252818,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 579,
+          "h": 621
+        },
+        "canvas": {
+          "w": 373,
+          "h": 400
+        }
+      },
+      "box": {
+        "x": 70,
+        "y": 60,
+        "w": 373,
+        "h": 400
+      },
+      "anchor": [
+        256.5,
+        460.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "left-shoe",
+      "file": "ghost_left-shoe.png",
+      "factor": 2.2598870056497176,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 206,
+          "h": 177
+        },
+        "canvas": {
+          "w": 466,
+          "h": 400
+        }
+      },
+      "box": {
+        "x": 24,
+        "y": 60,
+        "w": 466,
+        "h": 400
+      },
+      "anchor": [
+        257.0,
+        460.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "right-shoe",
+      "file": "ghost_right-shoe.png",
+      "factor": 2.327272727272727,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 219,
+          "h": 150
+        },
+        "canvas": {
+          "w": 510,
+          "h": 349
+        }
+      },
+      "box": {
+        "x": 2,
+        "y": 111,
+        "w": 510,
+        "h": 349
+      },
+      "anchor": [
+        257.0,
+        460.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

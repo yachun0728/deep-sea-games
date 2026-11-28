@@ -1,7 +1,7 @@
   /* ---------- Reaper Shift: endless shifts; milestone bonuses are credited to the shared wallet when reached ---------- */
   var RP=Object.assign(reaperRules.create(),{active:false,phase:'ready',stake:0,analytics:null,fx:[],pops:[],sw:0,belt:0,flash:0,message:'',shake:0,last:0,best:0,focused:true,earned:0});
   var reaperRank=timedLeaderboard('reaper','rp',reaperRules.inputCount,rpUI), reaperRandom=Math.random;
-  var RP_PER=10;
+  var RP_PER=10,RP_SWING_TIME=.28;
   var RP_MILESTONES=[[120,3],[150,7],[200,15],[260,30]],RP_ENDLESS_FROM=260,RP_ENDLESS_STEP=50,RP_ENDLESS_BONUS=40;
   function rpBonusAt(n){for(var i=0;i<RP_MILESTONES.length;i++)if(RP_MILESTONES[i][0]===n)return RP_MILESTONES[i][1];return n>RP_ENDLESS_FROM&&(n-RP_ENDLESS_FROM)%RP_ENDLESS_STEP===0?RP_ENDLESS_BONUS:0;}
   function rpNext(n){for(var i=0;i<RP_MILESTONES.length;i++)if(RP_MILESTONES[i][0]>n)return RP_MILESTONES[i];return [RP_ENDLESS_FROM+(Math.floor((n-RP_ENDLESS_FROM)/RP_ENDLESS_STEP)+1)*RP_ENDLESS_STEP,RP_ENDLESS_BONUS];}
@@ -69,7 +69,7 @@
     if(!rpArt.ready){if(rpArt.failed)rpLoadArt();return;}
     if(RP.phase!=='run'){rpStart();return;}
     rpSync(performance.now());if(RP.phase!=='run'||RP.cd>0)return;
-    reaperRank.record(0);RP.sw=.18;
+    reaperRank.record(0);RP.sw=RP_SWING_TIME;
     reaperRules.input(RP,0,event=>rpEvent(event,true));
     rpUI();
   }
@@ -80,7 +80,7 @@
     if(rpArt.loading)return;
     rpArt.loading=true;rpArt.failed=false;rpArt.ready=false;
     var attempt=++rpArt.attempt;
-    var files={background:'background-v1',body:'components/reaper_body',scythe:'components/reaper_scythe',ghost:'components/reaper_ghost',permit:'components/reaper_permit'};
+    var files={background:'background-v1',body:'components/reaper_body',scythe:'components/reaper_scythe',ghost:'components/reaper_ghost',permit:'components/reaper_permit',hand:'motion-v3/hand/hand_resting',soulBody:'motion-v3/ghost/ghost_body',leftShoe:'motion-v3/ghost/ghost_left-shoe',rightShoe:'motion-v3/ghost/ghost_right-shoe'};
     Promise.all(Object.keys(files).map(function(key){return new Promise(function(resolve,reject){
       var im=new Image(),timer=setTimeout(function(){reject(new Error('art timeout'));},15000);
       im.onload=function(){clearTimeout(timer);resolve([key,im]);};
@@ -89,18 +89,67 @@
     });})).then(function(items){
       if(attempt!==rpArt.attempt)return;
       items.forEach(function(item){rpArt.images[item[0]]=item[1];});
-      rpArt.ready=true;rpArt.loading=false;rpUI();rpDraw();
+      rpPrepareLayers();rpArt.ready=true;rpArt.loading=false;rpUI();rpDraw();
     }).catch(function(){if(attempt!==rpArt.attempt)return;rpArt.failed=true;rpArt.loading=false;rpUI();rpDraw();});
   }
+  function rpPrepareLayers(){
+    // Mechanical masks retain the approved painted glove/weapon pixels; no character is redrawn.
+    var weapon=document.createElement('canvas');weapon.width=weapon.height=512;weapon.id='rp-weapon-art';
+    var w=weapon.getContext('2d');w.beginPath();w.rect(90,30,370,300);
+    [[195,310],[254,310],[303,342],[303,438],[278,457],[267,510],[224,510],[202,452],[180,444],[174,417],[176,365],[191,343]].forEach(function(p,i){if(i)w.lineTo(p[0],p[1]);else w.moveTo(p[0],p[1]);});
+    w.closePath();w.clip();w.drawImage(rpArt.images.scythe,0,0);rpArt.images.weapon=weapon;
+    var texture=document.createElement('canvas');texture.width=texture.height=24;
+    texture.getContext('2d').drawImage(rpArt.images.body,346,433,24,24,0,0,24,24);
+    rpArt.ink=reaperCtx.createPattern(texture,'repeat');
+  }
+  function rpSwingPose(remaining){
+    var idle={x:252.6,y:220.3,angle:0};if(remaining<=0)return idle;
+    var t=Math.max(0,Math.min(1,1-remaining/RP_SWING_TIME)),u;
+    function blend(a,b,v){return a+(b-a)*v;}
+    if(t<.2){u=t/.2;return {x:blend(idle.x,255,u),y:blend(idle.y,212,u),angle:-.18*u};}
+    if(t<.6){u=(t-.2)/.4;u=1-Math.pow(1-u,2);return {x:blend(255,245,u),y:blend(212,235,u),angle:blend(-.18,3,u)};}
+    u=(t-.6)/.4;u=u*u*(3-2*u);return {x:blend(245,idle.x,u),y:blend(235,idle.y,u),angle:3*(1-u)};
+  }
+  function rpPlaqueText(text,x,y,width){
+    var g=reaperCtx;g.save();g.textAlign='left';g.textBaseline='alphabetic';
+    var m=g.measureText(text),left=m.actualBoundingBoxLeft||0,right=m.actualBoundingBoxRight||m.width;
+    var inkWidth=left+right,scale=inkWidth>width?width/inkWidth:1;
+    g.translate(x,y);g.scale(scale,1);
+    g.fillText(text,(left-right)/2,((m.actualBoundingBoxAscent||12)-(m.actualBoundingBoxDescent||0))/2);g.restore();
+  }
+  function rpHeart(x,y,filled){
+    var g=reaperCtx;g.save();g.translate(x,y);g.beginPath();g.moveTo(0,9);
+    g.bezierCurveTo(-2,7,-10,1,-10,-4);g.bezierCurveTo(-10,-11,-2,-11,0,-5);
+    g.bezierCurveTo(2,-11,10,-11,10,-4);g.bezierCurveTo(10,1,2,7,0,9);g.closePath();
+    g.lineWidth=1.7;g.fillStyle='#201d18';g.strokeStyle=filled?'#201d18':'#aa9674';if(filled)g.fill();else g.stroke();g.restore();
+  }
   function rpImage(key,sx,sy,sw,sh,x,y,w,h){reaperCtx.drawImage(rpArt.images[key],sx,sy,sw,sh,x,y,w,h);}
-  function rpSoul(x,feet,permit,alpha,halo){
-    var g=reaperCtx;g.save();g.globalAlpha=alpha;
-    rpImage('ghost',109,111,294,389,x-29,feet-77,58,77);
+  function rpLegPose(cycle,leg){
+    var q=((cycle+leg*.5)%1+1)%1,stance=q<.55,t=stance?q/.55:(q-.55)/.45;
+    var dx=stance?13-26*t:-13+26*t,lift=stance?0:Math.sin(t*Math.PI)*9;
+    var hip={x:leg?9:-8,y:-24},ankle={x:(leg?7:-7)+dx,y:-7.7-lift};
+    var vx=ankle.x-hip.x,vy=ankle.y-hip.y,d=Math.max(.01,Math.hypot(vx,vy)),bend=Math.sqrt(Math.max(0,225-d*d/4));
+    return {hip:hip,ankle:ankle,knee:{x:(hip.x+ankle.x)/2+bend*vy/d,y:(hip.y+ankle.y)/2-bend*vx/d},lift:lift,roll:stance?0:-.25*Math.sin(t*Math.PI)};
+  }
+  function rpSoul(x,feet,permit,alpha,halo,cycle){
+    var g=reaperCtx;g.save();g.globalAlpha=alpha;g.translate(x,feet);
+    cycle=cycle||0;
+    for(var leg=0;leg<2;leg++){
+      var pose=rpLegPose(cycle,leg);g.save();g.strokeStyle=rpArt.ink;g.lineWidth=6;g.lineCap='round';g.lineJoin='round';
+      g.beginPath();g.moveTo(pose.hip.x,pose.hip.y);g.lineTo(pose.knee.x,pose.knee.y);g.lineTo(pose.ankle.x,pose.ankle.y);g.stroke();
+      g.translate(pose.ankle.x,pose.ankle.y);g.rotate(pose.roll);
+      if(leg)rpImage('rightShoe',2,111,510,349,-10.23,-6.3,20.46,14);
+      else rpImage('leftShoe',24,60,466,400,-8.155,-6.3,16.31,14);
+      g.restore();
+    }
+    var bob=reduceMotion?0:Math.cos(cycle*Math.PI*4)*.8;
+    g.save();g.translate(0,-49+bob);g.rotate(reduceMotion?0:Math.sin(cycle*Math.PI*2)*.025);
+    rpImage('soulBody',70,60,373,400,-27,-29,54,58);g.restore();
     if(permit&&halo>0){
       g.globalAlpha=alpha*halo;
-      // Badge and halo share exactly the original fade rule, so neither leaks the memory challenge.
-      rpImage('permit',143,207,227,92,x-25,feet-95,50,20);
-      rpImage('permit',178,347,154,153,x-7,feet-50,19,19);
+      // Halo AND badge keep the existing fade rule; walking never reveals an expired pass.
+      rpImage('permit',143,207,227,92,-25,-95+bob,50,20);
+      rpImage('permit',178,347,154,153,-7,-50+bob,19,19);
     }
     g.restore();
   }
@@ -116,24 +165,33 @@
       g.fillText(rpArt.failed?'{{t:reaper.skin.failed}}':'{{t:reaper.skin.loading}}',200,260,360);return;
     }
     g.drawImage(rpArt.images.background,0,0,W,H);
+    var motion=reduceMotion?0:Math.sin(RP.belt/38)*.8,bodyY=140+motion;
+    var pose=rpSwingPose(RP.sw);
+    // The worker stands BEHIND the belt. The textured rubber-hose arm stays on that shoulder.
+    g.save();g.strokeStyle=rpArt.ink;g.lineWidth=17;g.lineCap='round';g.lineJoin='round';
+    g.beginPath();g.moveTo(220,bodyY+120);g.bezierCurveTo(243,bodyY+147,274,pose.y+32,pose.x,pose.y);g.stroke();g.restore();
+    rpImage('body',81,0,350,500,109,bodyY,123,176);
+    var bg=rpArt.images.background;
+    // Restore the whole station, not just the bottom lip: no torso may occupy the gold opening.
+    g.drawImage(bg,0,bg.height*292/H,bg.width,bg.height*59/H,0,292,W,59);
     if(RP.phase==='run'&&!reduceMotion){
-      var offset=RP.belt%153;
-      for(var tile=-1;tile<4;tile++)rpImage('background',0,800,420,72,tile*153+offset,292,153,26.3);
+      var deck=RP.belt%153;for(var section=-1;section<4;section++)rpImage('background',0,800,420,72,section*153+deck,292,153,26.3);
       rpImage('background',420,794,260,163,153,290,95,59.5);
     }
-    var motion=reduceMotion?0:Math.sin(RP.belt/38)*.8;
-    var swing=RP.sw>0?Math.sin((1-RP.sw/.18)*Math.PI):0;
-    g.save();
-    // Shoulder, wrist and scythe remain original painted layers, not replacement primitives.
-    g.translate(208,251);g.rotate(reduceMotion?-swing*.18:-swing*2.1);
-    rpImage('scythe',76,48,360,452,0,-108,101,127);g.restore();
-    rpImage('body',81,0,350,500,109,156+motion,123,176);
+    // Only the approved resting glove reaches over the desk edge.
+    rpImage('hand',19,130,474,330,142,bodyY+143,50,34.81);
     // Show the original sample queue in standby; live souls use unchanged simulation x positions.
     var souls=RP.phase==='ready'?[{x:24,d:false},{x:85,d:false},{x:290,d:true},{x:385,d:false}]:RP.ghosts;
-    souls.forEach(function(o){var lv=rpLevel(),fade=lv<4?1:Math.max(0,Math.min(1,(200-(lv<7?35:90)-o.x)/80));rpSoul(o.x,307,o.d,o.m?.35:1,fade);});
-    RP.fx.forEach(function(f){rpSoul(f.x,307-(328-f.y),false,Math.max(0,1-f.t/.6),0);});
-    // Foreground lip occludes the worker at the same depth as the approved tray.
-    var bg=rpArt.images.background;
+    souls.forEach(function(o){var lv=rpLevel(),fade=lv<4?1:Math.max(0,Math.min(1,(200-(lv<7?35:90)-o.x)/80));rpSoul(o.x,307,o.d,o.m?.35:1,fade,RP.belt/54+o.x/360);});
+    RP.fx.forEach(function(f){
+      var sink=Math.max(0,Math.min(1,(f.t-.08)/.28));
+      g.save();g.translate(f.x+(200-f.x)*sink,307+27*sink);g.scale(1-.72*sink,1-.72*sink);
+      rpSoul(0,0,false,Math.max(0,1-sink),0);g.restore();
+    });
+    // The actual curved blade crosses DOWN through the ghost at (200, 269), then recovers.
+    g.save();g.translate(pose.x,pose.y);g.rotate(pose.angle);
+    rpImage('weapon',76,48,360,452,-44.6,-93.3,101,127);g.restore();
+    // The tray front hides anything entering the box, including the capture effect.
     g.drawImage(bg,0,bg.height*318/H,bg.width,bg.height*33/H,0,318,W,33);
     // The tray remains painted gold; these fine boundary marks reflect the real shrinking hit zone.
     if(RP.phase==='run'){
@@ -142,10 +200,9 @@
     }
     g.fillStyle='#211e19';g.textBaseline='middle';g.textAlign='center';
     g.font='900 17px Grandstander, system-ui';
-    g.fillText('{{t:reaper.skin.shift}} '+rpLevel(),220,25,78);
-    g.fillText('{{t:reaper.skin.score}} '+RP.total,333,25,96);
-    g.font='900 25px Georgia';
-    for(var i=0;i<3;i++){g.fillStyle=i<RP.lives?'#201d18':'#b9a887';g.fillText(i<RP.lives?'♥':'♡',88+i*25,25);}
+    rpPlaqueText('{{t:reaper.skin.shift}} '+rpLevel(),220,25,78);
+    rpPlaqueText('{{t:reaper.skin.score}} '+RP.total,334,25,96);
+    for(var i=0;i<3;i++)rpHeart(92+i*25,25,i<RP.lives);
     // Reuse the painted ghost and permit in the bottom-left instruction card.
     rpImage('ghost',109,111,294,389,15,382,28,37);
     rpImage('ghost',109,111,294,389,15,434,28,37);
@@ -164,8 +221,16 @@
     }
     g.textBaseline='alphabetic';
   }
+  var rpSurface=$('view-reaper').querySelector('.console');
+  ['selectstart','dragstart','dblclick','contextmenu','gesturestart','gesturechange','gestureend'].forEach(function(type){
+    rpSurface.addEventListener(type,function(e){if(!$('view-reaper').hidden)e.preventDefault();},{passive:false});
+  });
+  rpSurface.addEventListener('wheel',function(e){if(!$('view-reaper').hidden&&e.ctrlKey)e.preventDefault();},{passive:false});
+  ['touchstart','touchmove'].forEach(function(type){
+    rpSurface.addEventListener(type,function(e){if(!$('view-reaper').hidden&&e.touches.length>1)e.preventDefault();},{passive:false});
+  });
   $('rp-go').addEventListener('click',rpAct);
-  reaperCanvas.addEventListener('pointerdown',function(e){if(RP.phase!=='run')return;e.preventDefault();reaperCanvas.focus();rpAct();});
+  reaperCanvas.addEventListener('pointerdown',function(e){if(RP.phase!=='run'||e.pointerType==='touch'&&e.isPrimary===false)return;e.preventDefault();reaperCanvas.focus();rpAct();});
   document.addEventListener('keydown',function(e){if($('view-reaper').hidden||document.hidden||RP.phase!=='run'||e.code!=='Space'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;if(['INPUT','BUTTON','A','SUMMARY'].indexOf(e.target.tagName)>=0)return;e.preventDefault();rpAct();});
   window.addEventListener('blur',function(){RP.focused=false;RP.last=performance.now();});window.addEventListener('focus',function(){RP.focused=true;RP.last=performance.now();});
   document.addEventListener('visibilitychange',function(){RP.last=performance.now();});window.addEventListener('hashchange',function(){RP.last=performance.now();});
