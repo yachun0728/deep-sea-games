@@ -89,7 +89,7 @@ const next = await moveMinesRound(round.token, {
 | 已正式發布 | mines | Worker 管理棋盤 |
 | 已接入，待整批發布 | merge、ocean-link、dream、runner、cat、skybuilder、sneak、reaper、bird、tetris、elevator、fishing、top-doggo | Worker 管理棋盤或重播玩家輸入 |
 | 回合制與解謎，待串接 | mermaid、banquet | 依各款動作與關卡狀態定義伺服器驗證 |
-| 即時操作與反應，待串接 | campaign、nap、blaster、carp、rider、boss、thief、baby、pudding、clock-out、peek、mosquito、last-hair、breakout、pet-walk、office-shoot | 逐款核對時鐘、輸入及隨機性再重播 |
+| 即時操作與反應，待串接 | campaign、nap、blaster、carp、rider、boss、thief、baby、pudding、clock-out、peek、mosquito、last-hair、breakout、pet-walk | 逐款核對時鐘、輸入及隨機性再重播 |
 | 同來源 iframe，待串接 | boba、dive、mrt、pancake、eat-smaller、mirror-twins、shadow-relay、one-line-defense | 保留父子頁生命週期，增設必要橋接與 Worker 驗證 |
 | 每日免費補給 | keno | 隨機補給與配額，不列競賽榜 |
 
@@ -172,7 +172,7 @@ const next = await moveMinesRound(round.token, {
 
 2026-11-19，本機 Worker + 暫存 D1 驗證上述十款開局、合法終局、榜單讀回與重送。為縮短測試等待，測試腳本只在本機資料庫調整 issuedAt，重播引擎使用真實規則逐步運算。桌面與 390px 的遊戲翻譯、切換語言、版面及初始化檢查通過。全站 i18n 執行仍因宴會遊戲既有漏翻中止，針對十款的手機測試最後遇到舊頁首錢包定位斷言失敗。實體手機、正式站自然終局與 GA4 後台尚未驗收。
 
-其餘尚待接入的競賽遊戲包含 blaster、boba、dive、mrt、pancake、pudding、clock-out、peek、breakout、pet-walk、office-shoot、banquet、eat-smaller、mirror-twins、shadow-relay、one-line-defense、on-pitch。book-sort 已由獨立 SDK 模組接入。
+其餘尚待接入的競賽遊戲包含 blaster、boba、dive、mrt、pancake、pudding、clock-out、peek、breakout、pet-walk、banquet、eat-smaller、mirror-twins、shadow-relay、one-line-defense、on-pitch。book-sort 已由獨立 SDK 模組接入。
 
 
 ## 已串接遊戲的榜單顯示
@@ -213,3 +213,7 @@ Closing Call 開局會等待訪客排行回合準備完成，避免快速點擊�
 ### TOP DOGGO 關卡制（2026-11-25）
 
 本站已改為本機 10 關進度，前端移除排行榜呼叫；Worker 停用三種難度的新回合註冊，須另部署才生效。正式 game_leaderboard 舊分數已按使用者要求備份並清除 30 筆，清除後查詢為 0；player_best_scores 與 ranked_boards 活動回合保留。舊正式前端／Worker 在新版發布前仍可能產生新分數。
+
+### 拒絕加班雲端榜
+
+`office-shoot` 沿用訪客 ranked boards，規則版本 1，操作重播由 `shared/office-shoot-rules.cjs` 驗證；不新增資料表，不寫登入帳號 `player_best_scores`。前端每局最多 4,000 筆操作，確保證明小於 48KiB API 上限。

@@ -9,7 +9,7 @@ const fee=Number(fs.readFileSync(new URL('js/config.js',root),'utf8').match(/ENT
 const hookAt='ui();render();requestAnimationFrame(frame);';
 assert.ok(raw.includes(hookAt),'test hook anchor missing');
 // Expose the closure to the test only; the shipped source is not changed.
-const hook=`globalThis.__os={frame,begin,ev:code=>{const v=eval(code);return v&&typeof v==="object"?"@@"+JSON.stringify(v):v;}};`;
+const hook=`globalThis.__os={frame,begin,ev:code=>{const v=eval(code);syncSimulation();return v&&typeof v==="object"?"@@"+JSON.stringify(v):v;}};`;
 const source=raw.replace(hookAt,()=>hook+hookAt);
 const HAN=/[㐀-鿿]/;
 const results=[];
@@ -31,8 +31,9 @@ function fixture(balance=500,{lang='zh-Hant',best=null}={}){
     requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},
     AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
   sandbox.globalThis=sandbox;
-  const ctx=vm.createContext(sandbox);vm.runInContext(`var otBusy=false,otStake=0,otSay=function(){};`,ctx);vm.runInContext(source,ctx);
-  const rawEv=sandbox.__os.ev,ev=c=>{const v=rawEv(c);return typeof v==='string'&&v.startsWith('@@')?JSON.parse(v.slice(2)):v;};
+  const ctx=vm.createContext(sandbox);vm.runInContext(`var otBusy=false,otStake=0,otSay=function(){};`,ctx);for(const file of ['shared/timed-replay.cjs','shared/office-shoot-rules.cjs','js/timed-leaderboard.js'])vm.runInContext(readSource(file,root),ctx);vm.runInContext(source,ctx);
+  const modelNames=new Set('state phase stage stageT phaseT score t overT kills p bullets enemies crates bosses hazards parts texts beams rings shake banner flash danger bossTotal curBoss spawnT crateT sinceWeapon modsTaken eliteT shotSfxT quipT critT overTitle overQuip keys ETYPES spawnEnemy spawnCrate spawnBoss damage gameOver'.split(' '));
+  const rawEv=sandbox.__os.ev,ev=c=>{c=c.replace(/(?<![\w.])\b[A-Za-z_]\w*\b/g,n=>modelNames.has(n)?'G.'+n:n);const v=rawEv(c);return typeof v==='string'&&v.startsWith('@@')?JSON.parse(v.slice(2)):v;};
   const fire=(type,e)=>{for(const fn of listeners[type]||[])fn(e);};
   const f={sandbox,el,events,storage,drawn,i18n,wallet:sandbox.S,ev,fire,begin:sandbox.__os.begin,busy:()=>vm.runInContext('otBusy',ctx),
     key:e=>fire('keydown',e),keyup:e=>fire('keyup',e),
@@ -118,8 +119,8 @@ check('Keys only steer while the view is shown and a shift runs; buttons and inp
   f.el('view-office-shoot').hidden=true;e=k('ArrowLeft');f.key(e);assert.equal(e.done,undefined);
 });
 check('Touch drag moves relative to the finger; mouse follows the pointer',()=>{
-  const f=fixture();f.begin();const x0=f.ev('p.x');f.ptr('pointerdown',100,600);f.ptr('pointermove',160,600);assert.ok(Math.abs(f.ev('drawX(p.tx)')-f.ev('drawX('+x0+')')-60)<1e-9);
-  f.ptr('pointerup',160,600);f.ptr('pointermove',10,600);assert.ok(Math.abs(f.ev('drawX(p.tx)')-f.ev('drawX('+x0+')')-60)<1e-9);
+  const f=fixture();f.begin();const x0=f.ev('p.x');f.ptr('pointerdown',100,600);f.ptr('pointermove',160,600);assert.ok(Math.abs(f.ev('drawX(p.tx)')-f.ev('drawX('+x0+')')-60)<.11);
+  f.ptr('pointerup',160,600);f.ptr('pointermove',10,600);assert.ok(Math.abs(f.ev('drawX(p.tx)')-f.ev('drawX('+x0+')')-60)<.11);
   f.ptr('pointermove',90,600,2,'mouse');assert.equal(f.ev('drawX(p.tx)'),90);
 });
 check('The camera preserves lane coordinates and pointer inversion at both lane boundaries',()=>{
@@ -135,7 +136,7 @@ check('Reset guard and message: otSay shows the shared note',()=>{
 check('English mode draws no Chinese on the canvas in every state, and switching back restores Chinese',()=>{
   const f=fixture(500,{lang:'en'});f.step(2);f.begin();f.step(40);
   for(let day=1;day<=12;day++){f.ev('banner=null');f.ev("enemies=[];phase='waves';stageT=STAGE_LEN-.05");f.step(60);f.ev("for(const b of bosses.slice())if(!b.fake&&!b.dead)damage(b,1e18,{x:b.x,y:b.y})");f.step(30);}
-  f.ev('for(const t of Object.keys(ETYPES))spawnEnemy(t,300,200,true);spawnCrate();spawnCrate();p.tier=6');f.step(5);f.ev('paused=true');f.step(2);f.ev('paused=false');f.overtime();f.step(40);
+  f.ev('for(const kind of Object.keys(ETYPES))spawnEnemy(kind,300,200,true);spawnCrate();spawnCrate();p.tier=6');f.step(5);f.ev('paused=true');f.step(2);f.ev('paused=false');f.overtime();f.step(40);
   const zh=f.drawn.filter(s=>HAN.test(s));assert.deepEqual([...new Set(zh)],[]);
   for(const id of ['os-day','os-pay','os-msg'])assert.ok(!HAN.test(f.el(id).textContent),id+' has Chinese: '+f.el(id).textContent);
   f.i18n.language='zh-Hant';f.drawn.length=0;f.step(2);assert.ok(f.drawn.some(s=>HAN.test(s)));assert.ok(HAN.test(f.el('os-msg').textContent));

@@ -3474,5 +3474,6 @@
   "solitaire.ui.category": "Puzzle & strategy",
   "solitaire.time.ranked": "RANKED TIME RUN",
   "solitaire.time.practice": "PRACTICE · NOT RANKED",
-  "solitaire.mermaid.legacy": "Legacy best score"
+  "solitaire.mermaid.legacy": "Legacy best score",
+  "office-shoot.rank.retry": "Retry submission"
 }

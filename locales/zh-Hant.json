@@ -3474,5 +3474,6 @@
   "solitaire.ui.category": "益智策略",
   "solitaire.time.ranked": "時間榜記錄中",
   "solitaire.time.practice": "練習局 · 不列入排行榜",
-  "solitaire.mermaid.legacy": "舊版最高分"
+  "solitaire.mermaid.legacy": "舊版最高分",
+  "office-shoot.rank.retry": "重送成績"
 }

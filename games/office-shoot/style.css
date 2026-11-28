@@ -31,3 +31,8 @@ html:has(#view-office-shoot:not([hidden])){overflow:hidden}
 #view-office-shoot #os-pause{left:65.8%;width:10%;top:calc(env(safe-area-inset-top) + .4%);height:6%}
 #view-office-shoot #os-sound[hidden]{display:none}
 #view-office-shoot #os-sound{left:50%;right:auto;bottom:25%;transform:translateX(-50%);width:64px;color:#fff126;border-color:#fff7e7}
+
+/* Upload notices appear only outside gameplay; the approved play HUD is untouched. */
+#view-office-shoot #os-rank-status:not([hidden]){display:block!important;position:absolute;z-index:36;left:50%;bottom:calc(env(safe-area-inset-bottom) + 17%);transform:translateX(-50%);box-sizing:border-box;width:84%;padding:6px 9px;margin:0;background:#05090e;color:#fff126;border:1px solid #fff4dc;font:900 12px/1.4 "Office Comic TC",sans-serif;text-align:center}
+#view-office-shoot[data-round="play"] #os-rank-status{display:none!important}
+#view-office-shoot #os-rank-retry:not([hidden]){display:block;position:absolute;z-index:36;left:50%;bottom:calc(env(safe-area-inset-bottom) + 23%);transform:translateX(-50%);min-height:44px;width:64%;border:2px solid #fff4dc;border-radius:0;background:#ffed26;color:#05090e;font:900 15px "Office Comic TC",sans-serif}

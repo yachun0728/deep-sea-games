@@ -31,6 +31,7 @@ import fishingRules from '../../../shared/fishing-rules.cjs';
 import birdRules from '../../../shared/bird-rules.cjs';
 import blockDropRules from '../../../shared/block-drop-rules.js';
 import reaperRules from '../../../shared/reaper-rules.cjs';
+import officeShootRules from '../../../shared/office-shoot-rules.cjs';
 import sneakRules from '../../../shared/sneak-rules.cjs';
 import skybuilderRules from '../../../shared/skybuilder-rules.cjs';
 import marketDeskRules from '../../../shared/market-desk-rules.cjs';
@@ -253,6 +254,7 @@ const boards = new Map([
     apply: (state, action) => pedBoards.get(state.rulesVersion)?.apply(state, action) ?? false,
   }],
   ['reaper', timedBoard(reaperRules)],
+  ['office-shoot', {...timedBoard(officeShootRules,officeShootRules.rulesVersion),rulesVersion:officeShootRules.rulesVersion}],
   ['sneak', {
     ...sneakBoards.get(undefined),
     rulesVersion: sneakRules.rulesVersion,
