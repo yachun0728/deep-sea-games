@@ -5,7 +5,6 @@ const BEST_KEY='deep-sea-mermaid-best';
 const RUN_POINTS=1,CLEAR_BONUS=2,TOTAL_RUNS=8;
 const MODES={1:{suits:[3]},2:{suits:[3,2]},4:{suits:[0,1,2,3]}};
 const RANK=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'];
-const BACK_SVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140"><defs><pattern id="s" width="14" height="10" patternUnits="userSpaceOnUse"><path d="M0 10a7 7 0 0 1 14 0M-7 5a7 7 0 0 1 14 0M7 5a7 7 0 0 1 14 0" fill="none" stroke="#34568a" stroke-width="1.2"/></pattern></defs><rect width="100" height="140" rx="6" fill="#f3e9d0"/><rect x="5" y="5" width="90" height="130" rx="3" fill="#1f3556"/><rect x="5" y="5" width="90" height="130" rx="3" fill="url(#s)"/><rect x="9" y="9" width="82" height="122" rx="2" fill="none" stroke="#f3e9d0" stroke-width="1"/><ellipse cx="50" cy="70" rx="27" ry="40" fill="#f3e9d0"/><ellipse cx="50" cy="70" rx="23" ry="36" fill="none" stroke="#1f3556" stroke-width="1.4"/><path d="M50 38c-9 8-12 19-8 33 2 7 5 11 8 14 3-3 6-7 8-14 4-14 1-25-8-33z" fill="#c4473a"/><path d="M50 85c-8 2-14 8-16 16 7-1 12-4 16-8 4 4 9 7 16 8-2-8-8-14-16-16z" fill="#1f3556"/><path d="M44 52q6 3 12 0M43.5 60q6.500 3 13 0M44 68q6 3 12 0M45 76q5 2.600 10 0" stroke="#f3e9d0" stroke-width="1.100" fill="none" stroke-linecap="round"/><path d="M50 18l3 4-3 4-3-4zM50 114l3 4-3 4-3-4zM16 70l3 4-3 4-3-4zM84 70l3 4-3 4-3-4z" fill="#d9a21a"/></svg>';
 // ===== 牌局邏輯（不碰畫面）=====
 const {shuffle,createGame,snap,pushHistory,undo,flipTop,runStart,canDrop,completeRun,sweep,move,canDeal,deal,allMoves,chainLen,scoreMove,findHint}=mermaidRules;
 // ===== 畫面與點數 =====
@@ -20,8 +19,7 @@ const bestFor=m=>Number(store.best[m])||0;
 const board=$('mm-board'),stage=$('mm-stage'),cover=$('mm-cover'),stockBtn=$('mm-stock'),slotsEl=$('mm-slots');
 const slots=slotsEl.querySelectorAll('.mm-slot');
 const els=new Map();let placedNow=new Set();
-const backUrl='url("data:image/svg+xml,'+encodeURIComponent(BACK_SVG)+'")';
-stage.style.setProperty('--mm-back',backUrl);
+stage.style.setProperty('--mm-back','url("games/mermaid/art/card-back.webp")');
 let M={ok:false,cw:34,ch:48,gap:3,offX:0,dDown:10,dUp:17,maxH:400};
 function say(text,kind){$('mm-msg').textContent=text;$('mm-msg').className='msg'+(kind?' '+kind:'');$('mm-bubble').textContent=text}
 mmSay=say;
@@ -30,6 +28,8 @@ function metrics(){
  const W=board.clientWidth;if(!(W>=50)){M.ok=false;return false}
  const gap=Math.max(2,Math.round(W*.009)),cw=Math.min(66,(W-gap*9)/10),ch=Math.round(cw*1.42);
  M={ok:true,W:W,cw:cw,ch:ch,gap:gap,offX:(W-(cw*10+gap*9))/2,dDown:ch*.2,dUp:ch*.36,maxH:ch*8.4};
+ const available=slotsEl.getBoundingClientRect().top-board.getBoundingClientRect().top-16;
+ if(available>ch*2)M.maxH=Math.min(M.maxH,available);
  stage.style.setProperty('--cw',cw+'px');stage.style.setProperty('--ch',ch+'px');return true}
 const colX=c=>M.offX+c*(M.cw+M.gap);
 function colY(col){
@@ -44,9 +44,9 @@ function relPos(el){const b=board.getBoundingClientRect(),r=el.getBoundingClient
 function cardEl(card){
  let el=els.get(card.id);
  if(!el){
-  const face=card.rank>10;
+
   el=document.createElement('div');el.className='mm-card s'+card.suit;el.dataset.id=String(card.id);
-  el.innerHTML='<span class="r">'+RANK[card.rank]+'</span><svg class="su" viewBox="0 0 24 24"><use href="#mm-su'+card.suit+'"/></svg><svg class="big'+(face?' face':'')+'" viewBox="'+(face?'0 0 40 52':'0 0 24 24')+'"><use href="#'+(face?'mm-art-'+'jqk'.charAt(card.rank-11):'mm-su'+card.suit)+'"/></svg>';
+  el.innerHTML='<span class="r">'+RANK[card.rank]+'</span><svg class="su" viewBox="0 0 24 24"><use href="#mm-su'+card.suit+'"/></svg><svg class="big" viewBox="0 0 24 24"><use href="#mm-su'+card.suit+'"/></svg>';
   board.appendChild(el);els.set(card.id,el);el._new=true}
  return el}
 function render(){
@@ -96,6 +96,7 @@ function ui(){
  const go=$('mm-go');go.disabled=live||rank.busy();setText('mm-go',live?'{{t:mermaid.msg.001}}':st==='over'?'{{t:mermaid.msg.002}}':'{{t:mermaid.msg.003}}');
  const q=$('mm-quit');q.hidden=!live;setText('mm-quit',quitArm?'{{t:mermaid.msg.004}}':'{{t:mermaid.msg.005}}');
  $('mm-undo').disabled=!live||!G||!G.history.length;$('mm-hint').disabled=!live;
+ const dealButton=$('mm-deal');if(dealButton)dealButton.disabled=!live||!G||!G.stock.length;
  stockBtn.disabled=!live||!G||!G.stock.length;setText('mm-stock-count',String(G?Math.ceil(G.stock.length/10):5));
  stockBtn.style.visibility=G&&!G.stock.length?'hidden':'';
  setText('mm-info',live&&G?G.score+' · '+G.moves:'');
@@ -125,6 +126,7 @@ function end(win){
  if(st!=='run')return;
  if(!win)rank.record(2);
  rank.finish(G.score,true);
+ const menu=stage.querySelector('.mm-menu');if(menu)menu.open=false;
  st='over';mmBusy=false;sel=null;clearHint();quitArm=false;clearTimeout(quitTimer);drag=null;
  const rec=G.done>0&&G.score>bestFor(mode);if(rec){store.best[mode]=G.score;saveStore()}
  lastResult={win:win,done:G.done};
@@ -139,7 +141,7 @@ function start(){
  rank.start(random=>{
  analytics=AN.start('mermaid',ENTRY_FEE);mmStake=ENTRY_FEE;mmBusy=true;save();renderAll();
  buildBoard();G=mermaidRules.create(random||Math.random);if(mode!==1){const code=mode===2?3:4;mermaidRules.input(G,code);rank.record(code);}rankLast=performance.now();earned=0;maxDone=0;bonusPaid=false;sel=null;clearHint();drag=null;lastResult=null;quitArm=false;
- st='run';ui();render();
+ st='run';const menu=stage.querySelector('.mm-menu');if(menu)menu.open=false;ui();render();
  say('{{t:mermaid.msg.011}}');
  },ui);}
 function locked(){return performance.now()<lockUntil}
@@ -180,9 +182,15 @@ function finishDrag(e,cancel){
  if(!drag||e.pointerId!==drag.id)return;
  const d=drag;drag=null;
  if(!d.started){if(!cancel)tapColumn(d.c,d.idx);return}
+ // Keep the release position, then animate only left/top to the destination.
+ // Animating both layout coordinates and the old drag transform caused overshoot.
+ const fr=d.els[0].getBoundingClientRect(),br=board.getBoundingClientRect();
+ const positions=d.els.map(el=>el.getBoundingClientRect());
+ d.els.forEach((el,i)=>{el.style.left=(positions[i].left-br.left)+'px';el.style.top=(positions[i].top-br.top)+'px';el.style.transform=''});
+ void board.offsetWidth;
  d.els.forEach(el=>el.classList.remove('dragging'));
  if(cancel){render();return}
- const first=d.els[0],fr=first.getBoundingClientRect(),cx=fr.left+fr.width/2;
+ const cx=fr.left+fr.width/2;
  let target=colAtX(cx);
  if(!(target>=0&&target<=9&&canDrop(G,d.c,d.idx,target))){const t2=colAtX(e.clientX);target=t2>=0&&t2<=9&&canDrop(G,d.c,d.idx,t2)?t2:-1}
  if(target>=0){doMove(d.c,d.idx,target)}
@@ -209,6 +217,7 @@ $('mm-hint').addEventListener('click',()=>{
  else{hint=h;const mv=G.cols[h.from].cards[h.idx],d=G.cols[h.to].cards;
   say('試試把 '+RANK[mv.rank]+' 移到'+(d.length?' '+RANK[d[d.length-1].rank]:'{{t:mermaid.msg.021}}'))}
  render();hintTimer=setTimeout(()=>{hint=null;render()},3200)});
+$('mm-deal').addEventListener('click',()=>stockBtn.click());
 $('mm-go').addEventListener('click',start);
 $('mm-quit').addEventListener('click',()=>{
  if(st!=='run')return;

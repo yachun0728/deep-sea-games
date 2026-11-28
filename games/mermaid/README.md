@@ -7,26 +7,25 @@
 - 網址：`#mermaid`　分類：益智策略　狀態：顯示中
 - 大廳卡片：「牌背是美人魚的蜘蛛接龍，排滿 K 到 A 收成珍珠。」｜立即開玩 · 策略接龍
 - 追蹤名稱（GA4 `game_name`）：人魚接龍，`game_id` 為 `mermaid`
-- 檔案：`games/mermaid/card.html`、`games/mermaid/game.js`、`games/mermaid/icon.svg`、`games/mermaid/style.css`、`games/mermaid/view.html`；`game.js` 共 230 行、15.7 KB
+- 檔案：`games/mermaid/card.html`、`games/mermaid/cover.webp`、`games/mermaid/game.js`、`games/mermaid/icon.svg`、`games/mermaid/leaderboard.webp`、`games/mermaid/style.css`、`games/mermaid/view.html`；`game.js` 共 239 行、15.2 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「40. 人魚接龍 Mermaid Spider（mermaid）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-mermaid`、`mm-su0`、`mm-su1`、`mm-su2`、`mm-su3`、`mm-art-q`、`mm-art-k`、`mm-art-j`、`mm-stage`、`mm-bubble`、`mm-info`、`mm-stock`、`mm-stock-count`、`mm-slots`、`mm-undo`、`mm-hint`、`mm-board`、`mm-cover`、`mm-cover-title`、`mm-cover-text`、`mm-pearls`、`mm-score`、`mm-best`、`mm-go`、`mm-quit`、`mm-msg`、`mm-rank-status`、`mm-rank-retry`
+`view-mermaid`、`mm-su0`、`mm-su1`、`mm-su2`、`mm-su3`、`mm-art-q`、`mm-art-k`、`mm-art-j`、`mm-stage`、`mm-best`、`mm-quit`、`mm-rank-status`、`mm-rank-retry`、`mm-score`、`mm-pearls`、`mm-bubble`、`mm-info`、`mm-board`、`mm-slots`、`mm-stock`、`mm-stock-count`、`mm-cover`、`mm-cover-title`、`mm-cover-text`、`mm-undo`、`mm-hint`、`mm-deal`、`mm-go`、`mm-msg`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`M`（L25）、`mmBusy`（L2）
+- 狀態物件／進行中旗標：`M`（L23）、`mmBusy`（L2）
 - L4 常數：`BEST_KEY`
 - L5 常數：`RUN_POINTS`、`CLEAR_BONUS`、`TOTAL_RUNS`
 - L6 常數：`MODES`
 - L7 常數：`RANK`
-- L8 常數：`BACK_SVG`
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`saveStore` L18、`bestFor` L19、`say` L26、`setText` L28、`metrics` L29、`colX` L34、`colY` L35、`need` L37、`relPos` L43、`cardEl` L44、`render` L52、`updateSlots` L79、`buildBoard` L81、`runFx` L84、`ui` L93、`pay` L108、`clearHint` L111、`afterAction` L112、`end` L124、`start` L136、`locked` L145、`doMove` L147、`tapColumn` L151、`colAtX` L159、`finishDrag` L179、`rankedClock` L222、`layoutIdle` L228
+`saveStore` L17、`bestFor` L18、`say` L24、`setText` L26、`metrics` L27、`colX` L34、`colY` L35、`need` L37、`relPos` L43、`cardEl` L44、`render` L52、`updateSlots` L79、`buildBoard` L81、`runFx` L84、`ui` L93、`pay` L109、`clearHint` L112、`afterAction` L113、`end` L125、`start` L138、`locked` L147、`doMove` L149、`tapColumn` L153、`colAtX` L161、`finishDrag` L181、`rankedClock` L231、`layoutIdle` L237
 
 ## 錢包與結算接點
 
@@ -34,19 +33,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L109 `pay`：`S.balance+=n;`
+- L110 `pay`：`S.balance+=n;`
 
 **餘額檢查**
-- L138 `start`：`if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');`
+- L140 `start`：`if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 3 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L110 `pay`：`AN.progress(analytics,{stage:G.done,step:earned,score:G.score,bonus_points:n})}`
-- L131 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:G.score,step:G.done,stage:G.done});`
-- L140 `start`：`analytics=AN.start('mermaid',ENTRY_FEE);`
+- L111 `pay`：`AN.progress(analytics,{stage:G.done,step:earned,score:G.score,bonus_points:n})}`
+- L133 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:G.score,step:G.done,stage:G.done});`
+- L142 `start`：`analytics=AN.start('mermaid',ENTRY_FEE);`
 
 - 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -62,7 +61,7 @@
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-定位：`mmBusy` 所在 IIFE（`games/mermaid/game.js`，純 DOM＋內嵌 SVG，無畫布）。2026-11-18 由使用者要求新增：蜘蛛接龍（Spider Solitaire），牌背換成美人魚。花色為貝殼／海星／珊瑚／魚尾（`mm-su0`–`mm-su3`），J／Q／K 為海馬／美人魚／海王；牌背是內嵌 SVG（`BACK_SVG`），每張暗牌露出的上緣是一顆探頭的人魚頭。牌桌背景有氣泡、海草與人魚頭像（收成珍珠時唱歌），皆為純視覺，`prefers-reduced-motion` 時停用動畫。
+定位：`mmBusy` 所在 IIFE（`games/mermaid/game.js`，DOM 牌面＋SVG 花色，無畫布）。2026-11-28 依核准稿改為「復古電腦水族箱」：銀色立體視窗、藍色標題列、紫髮像素人魚與水族箱背景，牌背為 `art/card-back.webp`。花色仍為貝殼／海星／珊瑚／魚尾（`mm-su0`–`mm-su3`）；所有牌面用數字／字母與原花色表示，J／Q／K 不再顯示舊角色插圖。底部發牌按鈕轉送既有牌堆 click，不建立第二套規則。畫面依可用高度壓縮牌疊，收牌、分數、獎勵、排行榜與存檔契約不變；`prefers-reduced-motion` 時停用牌面動畫。核准圖與驗收在 `games/mermaid/design/retro-v1/`。下列入場費為早期紀錄，目前以全站 `ENTRY_FEE=0` 為準。
 
 - 入場：每局固定扣 `ENTRY_FEE`（10 點），按「扣點發牌」時一次扣除並呼叫 `AN.start('mermaid')`；餘額不足顯示 `LOW_MSG`；進行中按鈕停用，重複點擊不會再扣。難度（淺灘 1 花色／珊瑚礁 2 花色／深海 4 花色）要在扣點前選，進行中鎖定。
 - 規則：104 張、10 列（前 4 列 6 張、後 6 列 5 張，只翻最上面一張），牌堆 50 張分 5 次、每次每列各發一張（發牌前每列都要有牌）。牌可放在比它大 1 的牌上（不限花色）或空列；只有同花色、由大到小連續的牌能一起搬。同花色 K→A 滿 13 張自動收成一顆珍珠（`sweep`），收滿 8 顆通關。悔棋不限次數（歷史上限 400 步），悔棋與每步各 −1 分，每顆珍珠 +100 分，起始 500 分；分數只顯示與記錄最高分，不換點數。

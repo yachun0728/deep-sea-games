@@ -55,3 +55,83 @@
 @media(max-width:520px){.mm-tool span{display:none}.mm-tool{min-width:44px;padding:4px}.mm-bubble{font-size:13px}.mm-cover{padding-top:56px}.mm-mode{min-width:92px;padding:6px 10px}}
 @media(max-width:880px){.mm-stage{padding-bottom:20px}}
 @media(prefers-reduced-motion:reduce){.mm-card{transition:none}.mm-card.hint{animation:none}}
+
+/* Approved 2026-11-28: Retro Aquarium. All selectors stay within Mermaid. */
+#view-mermaid{--mm-silver:#c5cad7;--mm-edge:#162947;--mm-paper:#fffef0;--mm-ink:#102747}
+#view-mermaid:not([hidden]) .fs-game{position:fixed;z-index:1200;top:0;left:50%;transform:translateX(-50%);display:block;width:min(100%,470px);height:min(900px,100dvh);min-height:540px;margin:0 auto;padding:0;background:#069fc3;border:3px ridge #e5e9f1;border-radius:0;overflow:hidden;isolation:isolate}
+#view-mermaid:not([hidden]) .fs-game>.mm-stage{position:relative;display:block;width:100%;height:100%;padding:0;overflow:hidden;border-radius:0;background:#079fc4 url('games/mermaid/art/aquarium.webp') center/100% 100% no-repeat;--mm-paper:#fffef0;--mm-ink:#102747}
+#view-mermaid .mm-shell{display:contents;padding:0;border:0;background:none;box-shadow:none}
+#view-mermaid .mm-titlebar{position:absolute;inset:0 0 auto;height:44px;display:flex;align-items:center;gap:8px;padding:3px;background:linear-gradient(90deg,#060b74,#124ba9);border:2px ridge #e4e9f4;box-sizing:border-box;z-index:20}
+#view-mermaid .mm-titlebar h2{margin:0;flex:1;min-width:0;white-space:nowrap;font:bold clamp(17px,5vw,24px)/1.1 Georgia,serif;letter-spacing:0;color:white;text-shadow:1px 1px #02082c}
+#view-mermaid .fs-exit,#view-mermaid .mm-menu summary{position:static;display:grid;place-items:center;width:36px;height:34px;min-width:36px;padding:0;border:3px outset #eef0f8;border-radius:0;background:var(--mm-silver);color:#07182f;font:bold 25px/1 monospace;cursor:pointer;box-sizing:border-box}
+#view-mermaid .mm-menu{position:static;z-index:30}
+#view-mermaid .mm-menu summary{list-style:none}
+#view-mermaid .mm-menu summary::-webkit-details-marker{display:none}
+#view-mermaid .mm-menu>div{position:absolute;right:3px;top:44px;width:210px;padding:10px;border:3px outset white;background:var(--mm-silver);color:#102747;box-shadow:3px 4px #153550;font:14px/1.5 monospace}
+#view-mermaid #mm-quit:not([hidden]),#view-mermaid #mm-rank-retry:not([hidden]){position:static;transform:none;width:100%;min-height:44px;border-radius:0;color:#102747;background:#d9dee7;border:3px outset white}
+#view-mermaid .stats{position:absolute;inset:44px 0 auto;display:flex;gap:12px;height:43px;padding:5px;margin:0;border:2px outset #edf0f8;border-radius:0;background:var(--mm-silver);box-sizing:border-box;pointer-events:none;z-index:12}
+#view-mermaid .stats>div{display:flex;align-items:center;gap:8px;flex:1;min-width:0;padding:2px 7px;border:2px inset #edf0f8;border-radius:0;background:none;color:#0c1b3b}
+#view-mermaid .stats dt{font:14px/1 monospace;color:#0c1b3b;white-space:nowrap}
+#view-mermaid .stats dd{margin:0 0 0 auto;font:bold 17px/1 monospace;color:#0c1b3b;white-space:nowrap}
+#view-mermaid .mm-says{position:absolute;left:8px;right:8px;top:91px;height:29px;display:flex;align-items:center;gap:4px;color:#07304c;pointer-events:none}
+#view-mermaid .mm-bubble{font:12px/1.2 monospace;color:#062d43;-webkit-line-clamp:2;text-shadow:0 1px #74e4ec}
+#view-mermaid .mm-info{display:none}
+#view-mermaid .mm-board{position:absolute;left:4px;top:calc(87px + 7%);width:calc(100% - 8px);min-height:0;z-index:2}
+#view-mermaid .mm-col{border-radius:0}
+#view-mermaid .mm-card{border:1px solid #102747;border-radius:2px;background:#fffef0;box-shadow:1px 2px #104063}
+#view-mermaid .mm-card::after{display:none}
+#view-mermaid .mm-card.down{background:var(--mm-back) center/100% 100% no-repeat,#134aaa;image-rendering:pixelated}
+#view-mermaid .mm-card .r{left:5%;top:1%;font:bold calc(var(--cw)*.43)/1 Georgia,serif;letter-spacing:-.08em;color:#0d253b}
+#view-mermaid .mm-card .su{width:35%;height:35%;right:3%;top:3%}
+#view-mermaid .mm-card .big{width:64%;height:64%;bottom:6%}
+#view-mermaid .mm-card.s0{color:#8661bc}#view-mermaid .mm-card.s1{color:#ed7925}#view-mermaid .mm-card.s2{color:#d95988}#view-mermaid .mm-card.s3{color:#079cac}
+#view-mermaid .mm-collection{position:absolute;top:60%;left:10%;right:5%;height:70px;display:flex;align-items:center;gap:20px;z-index:3}
+#view-mermaid .mm-slots{gap:5px;justify-content:flex-start}
+#view-mermaid .mm-slot{width:22px;height:22px;max-width:22px;aspect-ratio:1;flex:1 1 0;border:1px solid #a9eaff;border-radius:50%;box-shadow:inset 1px 1px #087891,1px 1px #07627d;background:#19abc1}
+#view-mermaid .mm-slot.full{background:radial-gradient(circle at 34% 30%,#fff 0 10%,#ffe8e7 25%,#c2a9e7 55%,#8b93c7 70%,#e4f6ff 75%);border:2px ridge #f5eaff;box-shadow:2px 2px #255b8c}
+#view-mermaid .mm-slot svg{display:none}
+#view-mermaid .mm-stock{width:42px;height:59px;border:2px ridge #e4f5ff;border-radius:0;image-rendering:pixelated;background:var(--mm-back) center/100% 100%;box-shadow:3px -3px #dce8f2,4px -4px #173857,6px -6px #e9f3fa,7px -7px #173857}
+#view-mermaid .mm-stock-count{background:var(--mm-silver);border:2px outset white;border-radius:0;color:#102747;bottom:-6px;right:-4px;font:bold 17px/21px monospace;height:25px}
+#view-mermaid .mm-controls{position:absolute;bottom:0;left:0;right:0;height:88px;padding:8px 7px 0;display:flex;gap:8px;flex-wrap:wrap;align-content:flex-start;background:var(--mm-silver);border:3px ridge #f2f6ff;box-sizing:border-box;z-index:15}
+#view-mermaid .mm-tool,#view-mermaid #mm-go{display:flex;flex:1;align-items:center;justify-content:center;gap:6px;min-width:0;min-height:44px;padding:4px;border:3px outset #f6f7ff;border-radius:0;box-shadow:1px 1px #102747;background:var(--mm-silver);color:#0d1c38;font:bold 16px/1.1 Georgia,serif;letter-spacing:0;cursor:pointer}
+#view-mermaid .mm-tool b{font:26px/1 monospace}
+#view-mermaid .mm-tool span{display:inline}
+#view-mermaid .mm-tool:active:not(:disabled),#view-mermaid #mm-go:active{border-style:inset;transform:none}
+#view-mermaid .mm-tool:disabled{opacity:.5}
+#view-mermaid .mm-controls small{flex:0 0 100%;text-align:center;font:11px/20px monospace;letter-spacing:2px;color:#172e49}
+#view-mermaid #mm-go{position:absolute;inset:8px 7px auto;width:calc(100% - 14px);transform:none;z-index:2}
+#view-mermaid #mm-go:disabled{display:none}
+#view-mermaid .mm-cover{inset:125px 8px 38%;padding:14px 10px;justify-content:center;gap:18px;background:#c6cedd;border:3px outset #fff;box-shadow:3px 4px #16475f;z-index:10!important;box-sizing:border-box;overflow:auto}
+#view-mermaid .mm-cover-card{gap:15px}
+#view-mermaid .mm-hero-back{width:53px;height:75px;border:2px ridge white;border-radius:0;transform:none;image-rendering:pixelated;box-shadow:3px 3px #113758}
+#view-mermaid .mm-cover-copy h3{font:bold 22px/1.2 Georgia,serif;color:#0e2144}
+#view-mermaid .mm-cover-copy p{font:13px/1.5 monospace;color:#193759}
+#view-mermaid .mm-modes{gap:6px;flex-wrap:nowrap;width:100%}
+#view-mermaid .mm-mode{flex:1;min-width:0;min-height:48px;padding:6px 4px;border:3px outset white;border-radius:0;background:#b9c6d8;color:#132e4b;font:bold 14px/1.2 monospace}
+#view-mermaid .mm-mode small{font:10px/1.2 monospace;color:#324966}
+#view-mermaid .mm-mode[aria-pressed=true]{border-style:inset;background:#e0ecf7;box-shadow:none}
+#view-mermaid .mm-cover[hidden]{display:none}
+#view-mermaid #mm-msg{display:none}
+#view-mermaid .share-result:not([hidden]){position:absolute;bottom:92px;top:auto;left:50%;transform:translateX(-50%);width:auto;min-height:44px;z-index:18;border-radius:0}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+ #view-mermaid:not([hidden]) .fs-game{position:fixed;inset:0;transform:none;z-index:1200;width:100%;height:100dvh;min-height:0;margin:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);border:2px ridge #e5e9f1}
+}
+@media(max-height:650px){#view-mermaid .mm-board{top:125px}#view-mermaid .mm-collection{top:65%}#view-mermaid .mm-cover{top:120px;bottom:27%;gap:8px;padding:8px}#view-mermaid .mm-cover-copy h3{font-size:18px}#view-mermaid .mm-controls{height:64px}#view-mermaid .mm-controls small{display:none}}
+
+#view-mermaid .stats>div{flex-direction:row}
+#view-mermaid .mm-titlebar{height:48px}
+#view-mermaid .mm-titlebar h2{font-size:clamp(16px,5vw,22px)}
+#view-mermaid .fs-exit,#view-mermaid .mm-menu summary{width:44px;height:44px;min-width:44px}
+#view-mermaid .mm-menu>div{top:48px}
+#view-mermaid .stats{top:48px}
+#view-mermaid .mm-says{top:95px}
+#view-mermaid .mm-stage{image-rendering:pixelated}
+/* Generic mobile helper text is hidden; actual hint-marked cards remain visible. */
+#view-mermaid .mm-card.hint,#view-mermaid .mm-stock.hint{display:block;outline:2px dashed #fff400;outline-offset:1px}
+#view-mermaid .mm-title-shell{flex:none;width:22px;height:22px;color:#c499ef;filter:drop-shadow(1px 1px #11194c)}
+@media(orientation:landscape) and (max-height:500px){
+ #view-mermaid:not([hidden]) .fs-game{width:min(100%,430px);left:50%;right:auto;transform:translateX(-50%)}
+ #view-mermaid .mm-says{font-size:10px}
+}
+
+html:has(#view-mermaid:not([hidden])){overflow:hidden}

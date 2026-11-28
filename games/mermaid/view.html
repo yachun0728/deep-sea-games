@@ -12,32 +12,19 @@
 <symbol id="mm-art-j" viewBox="0 0 40 52"><path d="M24 5c-5-1.6-10 .6-10.4 5.4-.2 2.6 1.4 4.2 3.2 5.2-2.4 2.6-3 6.4-1.4 10 1.8 4 1.6 7.6-.8 10.6-2 2.6-6 3.2-8 .4 0 6 6 10.4 11.4 7.6 4.6-2.4 5.6-8 3.6-12.6-1.4-3.4-1-6 1.6-8.6 3.6-3.6 3.2-9.8-1.4-13.6z" fill="currentColor"/><path d="M14 9.6l-8 1.6 8 2.6z" fill="currentColor"/><path d="M26.4 8.6l5-3.4-1 6zM27.4 16l5.4-1.2-3 4.4zM25.6 23l5.2.4-3.8 3.6z" fill="#f6c453"/><circle cx="18.6" cy="9.4" r="1.2" fill="#fff"/><circle cx="18.8" cy="9.5" r=".55" fill="#2b2140"/><path d="M16 24q3 1.4 5.6 0M17 29q3 1.4 5.4 0M17.4 34q2.6 1.2 4.6 0" stroke="#fff" stroke-opacity=".5" stroke-width=".9" fill="none" stroke-linecap="round"/></symbol>
 
 </defs></svg>
-    <div class="console fs-game"><div class="mm-stage" id="mm-stage">
-      <div class="mm-top">
-        <div class="mm-says"><p class="mm-bubble" id="mm-bubble">{{t:mermaid.view.01}}</p><span class="mm-info" id="mm-info"></span></div>
-        <div class="mm-tools">
-          <button class="mm-stock" id="mm-stock" type="button" aria-label="{{t:mermaid.view.16}}" title="{{t:mermaid.view.16}}"><span class="mm-stock-count" id="mm-stock-count">5</span></button>
-          <div class="mm-slots" id="mm-slots" role="img" aria-label="{{t:mermaid.view.26}}"><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span></div>
-          <button class="mm-tool" id="mm-undo" type="button" aria-label="{{t:mermaid.view.02}}" title="{{t:mermaid.view.02}}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7L4 12l5 5M4 12h10a6 6 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 -3)"/></svg><span>{{t:mermaid.view.02}}</span></button>
-          <button class="mm-tool" id="mm-hint" type="button" aria-label="{{t:mermaid.view.27}}" title="{{t:mermaid.view.27}}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.2 5.6 5.8.5-4.4 3.8 1.4 5.8L12 15.2 7 18.2l1.4-5.8L4 8.6l5.8-.5z" fill="currentColor"/></svg><span>{{t:mermaid.view.03}}</span></button>
-        </div>
-      </div>
+    <div class="console fs-game"><div class="mm-stage" id="mm-stage"><section class="panel mm-shell" aria-label="{{t:mermaid.view.30}}">
+      <header class="mm-titlebar"><button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button><svg class="mm-title-shell" viewBox="0 0 24 24" aria-hidden="true"><use href="#mm-su0"/></svg><h2 lang="en">Mermaid Spider</h2><details class="mm-menu"><summary aria-label="{{t:mermaid.view.20}}">☰</summary><div><p>{{t:mermaid.view.14}} <strong id="mm-best">{{t:mermaid.view.15}}</strong></p><button class="chip mm-quit" id="mm-quit" type="button" hidden>{{t:mermaid.view.17}}</button><p id="mm-rank-status" role="status" hidden></p><button id="mm-rank-retry" type="button" hidden>{{t:mermaid.view.25}}</button></div></details></header>
+      <dl class="stats"><div><dt>{{t:mermaid.view.13}}</dt><dd id="mm-score">—</dd></div><div><dt>{{t:mermaid.view.12}}</dt><dd id="mm-pearls">0 / 8</dd></div></dl>
+      <div class="mm-says"><p class="mm-bubble" id="mm-bubble">{{t:mermaid.view.01}}</p><span class="mm-info" id="mm-info"></span></div>
       <div class="mm-board" id="mm-board" aria-label="{{t:mermaid.view.28}}"></div>
+      <div class="mm-collection"><div class="mm-slots" id="mm-slots" role="img" aria-label="{{t:mermaid.view.26}}"><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span></div><button class="mm-stock" id="mm-stock" type="button" aria-label="{{t:mermaid.view.16}}" title="{{t:mermaid.view.16}}"><span class="mm-stock-count" id="mm-stock-count">5</span></button></div>
       <div class="mm-cover" id="mm-cover">
         <div class="mm-cover-card"><div class="mm-hero-back" aria-hidden="true"></div><div class="mm-cover-copy"><h3 id="mm-cover-title">{{t:mermaid.view.04}}</h3><p id="mm-cover-text">{{t:mermaid.view.05}}</p></div></div>
         <div class="mm-modes" role="group" aria-label="{{t:mermaid.view.29}}"><button type="button" class="mm-mode" data-diff="1" aria-pressed="true">{{t:mermaid.view.06}}<small>{{t:mermaid.view.07}}</small></button><button type="button" class="mm-mode" data-diff="2" aria-pressed="false">{{t:mermaid.view.08}}<small>{{t:mermaid.view.09}}</small></button><button type="button" class="mm-mode" data-diff="4" aria-pressed="false">{{t:mermaid.view.10}}<small>{{t:mermaid.view.11}}</small></button></div>
       </div>
-    </div>
-      <button class="fs-exit" type="button" aria-label="{{t:blaster.view.04}}">←</button>
-      <div class="side"><section class="panel" aria-label="{{t:mermaid.view.30}}">
-        <dl class="stats"><div><dt>{{t:mermaid.view.12}}</dt><dd id="mm-pearls">0 / 8</dd></div><div><dt>{{t:mermaid.view.13}}</dt><dd id="mm-score">—</dd></div><div><dt>{{t:mermaid.view.14}}</dt><dd id="mm-best">{{t:mermaid.view.15}}</dd></div></dl>
-        
-        <button class="go" id="mm-go" type="button" data-mode="bet">{{t:mermaid.view.16}}</button>
-        <button class="chip mm-quit" id="mm-quit" type="button" hidden>{{t:mermaid.view.17}}</button>
-        <p class="msg" id="mm-msg" aria-live="polite">{{t:mermaid.view.18}}</p>
-        <p class="hint">{{t:mermaid.view.19}}</p>
-        <p id="mm-rank-status" role="status" hidden></p><button id="mm-rank-retry" type="button" hidden>{{t:mermaid.view.25}}</button>
-      </section></div>
-    </div>
-    <details class="rules"><summary>{{t:mermaid.view.20}}</summary><p>{{t:mermaid.view.21}}</p><p>{{t:mermaid.view.22}}</p><p>{{t:mermaid.view.23}}</p><p>{{t:mermaid.view.24}}</p></details>
+
+      <footer class="mm-controls"><button class="mm-tool" id="mm-undo" type="button"><b aria-hidden="true">↶</b><span>{{t:mermaid.view.02}}</span></button><button class="mm-tool" id="mm-hint" type="button" title="{{t:mermaid.view.27}}"><b aria-hidden="true">☼</b><span>{{t:mermaid.view.03}}</span></button><button class="mm-tool" id="mm-deal" type="button"><b aria-hidden="true">▤</b><span>{{t:mermaid.view.16}}</span></button><button class="go" id="mm-go" type="button" data-mode="bet">{{t:mermaid.view.16}}</button><small lang="en">RETRO AQUARIUM</small></footer>
+      <p class="msg" id="mm-msg" aria-live="polite">{{t:mermaid.view.18}}</p>
+    </section></div></div>
+    <details class="rules"><summary>{{t:mermaid.view.20}}</summary><p>{{t:mermaid.view.21}}</p><p>{{t:mermaid.view.22}}</p><p>{{t:mermaid.view.23}}</p><p>{{t:mermaid.view.24}}</p><p>{{t:mermaid.view.19}}</p></details>
 </section>
