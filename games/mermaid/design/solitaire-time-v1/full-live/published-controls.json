@@ -1,0 +1,14 @@
+{
+  "source": "902f8f8",
+  "siteVersion": "6dcf01b6-fa2b-46a1-bdf6-ce9b920a6582",
+  "results": [
+    "PASS mermaid live 390px: ranked start, selection disabled, unchanged real-card drag; celebration CSS present",
+    "PASS midnight-solitaire live 390px: ranked start, selection disabled, drag original hidden, invalid drop restored",
+    "PASS orbit-freecell live 390px: ranked start, selection disabled, drag original hidden, invalid drop restored",
+    "PASS production HTML SHA-256 equals released source after excluding Cloudflare-injected analytics script",
+    "PASS no QA entries mermaid-time-1",
+    "PASS no QA entries midnight-solitaire-time",
+    "PASS no QA entries orbit-freecell-time"
+  ],
+  "note": "Chrome 390x844 emulation; only starts/invalid drags, no new scores submitted"
+}
