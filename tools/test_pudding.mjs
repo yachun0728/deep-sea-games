@@ -9,7 +9,7 @@ const fee=Number(fs.readFileSync(new URL('js/config.js',root),'utf8').match(/ENT
 const hookAt='ui();draw();requestAnimationFrame(loop);';
 assert.ok(raw.includes(hookAt),'test hook anchor missing');
 // Expose the closure to the test only; the shipped source is not changed.
-const hook=`globalThis.__pd={update,start,draw,ev:code=>{const v=eval("with(G){"+code+"}");syncSimulation();return v&&typeof v==="object"?"@@"+JSON.stringify(v):v;}};`;
+const hook=`let recorded=0;const record=rank.record;rank.record=code=>{recorded++;record(code)};globalThis.__pd={records:()=>recorded,update,start,draw,ev:code=>{const v=eval("with(G){"+code+"}");syncSimulation();return v&&typeof v==="object"?"@@"+JSON.stringify(v):v;}};`;
 const source=raw.replace(hookAt,()=>hook+hookAt);
 const results=[];
 export function fixture(balance=500,savedBest=null,random=Math.random){
@@ -22,7 +22,7 @@ export function fixture(balance=500,savedBest=null,random=Math.random){
   const sandbox={document:{hidden:false,addEventListener(){}},window:{addEventListener(){}},addEventListener(name,fn){(listeners[name]??=[]).push(fn);},Image:class{complete=true;naturalWidth=1024;naturalHeight=1024;},Number,Math:math,String,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fmt:n=>String(n),AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
   sandbox.globalThis=sandbox;
   const ctx=vm.createContext(sandbox);for(const file of ['shared/timed-replay.cjs','shared/pudding-rules.cjs','js/timed-leaderboard.js'])vm.runInContext(readSource(file,root),ctx);vm.runInContext(source,ctx);
-  const raw_ev=sandbox.__pd.ev,F={update:sandbox.__pd.update,start:sandbox.__pd.start,draw:sandbox.__pd.draw,ev:c=>{const v=raw_ev(c);return typeof v==='string'&&v.startsWith('@@')?JSON.parse(v.slice(2)):v;}};
+  const raw_ev=sandbox.__pd.ev,F={records:sandbox.__pd.records,update:sandbox.__pd.update,start:sandbox.__pd.start,draw:sandbox.__pd.draw,ev:c=>{const v=raw_ev(c);return typeof v==='string'&&v.startsWith('@@')?JSON.parse(v.slice(2)):v;}};
   const fire=(type,e)=>{for(const fn of listeners[type]||[])fn(e);};
   return {F,el,events,storage,wallet:sandbox.S,ev:F.ev,busy:()=>vm.runInContext('puddingBusy',ctx),key:e=>fire('keydown',e),keyup:e=>fire('keyup',e),
     tap:(x,y)=>el('pd-canvas').handlers.pointerdown({button:0,clientX:x,clientY:y,pointerId:1,preventDefault(){}}),
@@ -89,6 +89,11 @@ check('Hold keys walk the hero, release stops, edges clamp, other views ignore k
   f.keyup({key:'ArrowRight'});const x1=f.ev('px');f.step(5);assert.equal(f.ev('px'),x1);
   f.key(e('d'));f.step(100);assert.equal(f.ev('px'),340);f.keyup({key:'d'});f.key(e('a'));f.step(200);assert.equal(f.ev('px'),60);f.keyup({key:'a'});
   f.el('view-pudding').hidden=true;k=e('ArrowRight');f.key(k);assert.equal(k.done,undefined);f.keyup({key:'ArrowRight'});
+});
+check('Held key auto-repeat records only actual press and release transitions',()=>{
+ const f=fixture();f.F.start();f.skipAndGo();const before=f.F.records();
+ for(let n=0;n<100;n++)f.key({key:'ArrowRight',repeat:n>0,target:{tagName:'CANVAS'},preventDefault(){}});
+ assert.equal(f.F.records()-before,1);for(let n=0;n<100;n++)f.keyup({key:'ArrowRight'});assert.equal(f.F.records()-before,2);
 });
 check('Press-and-hold walks toward the pointer and stops on release',()=>{
   const f=fixture();f.F.start();f.skipAndGo();f.F.ev('spawnT=99');f.tap(300,300);f.step(40);assert.equal(f.ev('px'),300);f.up();f.tap(100,300);f.up();f.step(20);assert.equal(f.ev('px'),300);
