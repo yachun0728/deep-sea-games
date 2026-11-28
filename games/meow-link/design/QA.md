@@ -42,3 +42,19 @@
 ## 發布核准與隱藏點數更新
 
 使用者已明確核准「上線吧」，並要求先隱藏 BONUS 與點數。已加入全站純顯示開關，資料、點數計算與 Analytics 不變；修改後重新通過 49 項 Python 測試及六尺寸 1758 項瀏覽器檢查，含錢包／標章隱藏、通關時不顯示獎勵、分數／玩法文字保留、顯示層不寫錢包。發布基準遠端 SHA `8cd4efcd530451ac6da2d15d69e558c424568f24`，已保留行人地獄最新版本；不包含其他本機踩地雷、首頁文字、美術暫存的變更。原待使用者核准的 BLOCKED 狀態已解除，實機及 GA4 後台仍未驗證。
+
+## 正式發布結果（2026-11-28）
+
+已依使用者明確指示發布 Meow Link（大廳第 4 款），並先隱藏 BONUS、點數錢包、獎勵說明、造型入口、每日點數捷徑與無障礙 BONUS 宣傳。內部計算、既有資料與遊戲分數／排行榜保留。
+
+- PASS：遠端基準 `8cd4efcd530451ac6da2d15d69e558c424568f24`，保留其他更新；Ocean Link／插隊／踩地雷來源及素材未修改。
+- PASS：正式 D1 migration 0022、API Worker `f4dbe0fc-0a0b-490e-9e64-d9012c074356`、網站 Worker `a4b779ac-fa67-47af-9add-288531a926b5` 依序完成。
+- PASS：49 項 Python、六尺寸 1770 項隔離瀏覽器檢查，另有三模式 30 關原始及洗牌解法與 Worker+SQLite 驗證。
+- PASS：實際正式站點選第 4 張卡、免費開局、提示配對 24 次完成一關；畫面顯示成績已送至排行榜，唯讀 D1 查得 meow-link score=1，重新載入大廳的公開榜也顯示貓咪連連看 1 關。
+- PASS：正式站 wallet 與每日點數捷徑 computed display=none；無障礙卡片名稱中 BONUS 數量為 0；手機版畫面見 qa/production-lobby.jpg。
+- FAIL：目前已執行驗證無失敗。
+- BLOCKED：無剩餘發布阻塞。
+- NOT TESTED：實體 iOS／Android／平板、所有舊遊戲的所有點數情境、長時間 FPS、GA4 後台；正式站僅實際完成簡單第 1 關，十關完整 DOM 流程已於隔離瀏覽器測試。
+- NOT APPLICABLE：CrazyGames 送審、SDK、廣告、IAP、多人。
+
+正式入口：https://ticaticagames.com/#meow-link 。版本來源為獨立發布副本 /private/tmp/meow-link-release-20261128，未覆蓋原工作區其他未提交修改。
