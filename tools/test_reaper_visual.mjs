@@ -18,10 +18,15 @@ assert.ok(.28<.35,'Visual animation finishes inside the unchanged input cooldown
 console.log('PASS: actual blade moves down into the gold-zone ghost, recovers, and preserves input cooldown');
 console.log(JSON.stringify({idleTip:from,strikeTip:to}));
 
-const legStart=source.indexOf('  function rpLegPose('),legEnd=source.indexOf('  function rpSoul(',legStart);
-vm.runInContext(source.slice(legStart,legEnd),context);
-const legs=context.rpLegPose;
-assert.ok(legs(.3,0).lift===0&&legs(.3,1).lift>7,'One foot is planted while the other lifts');
-assert.ok(legs(.8,1).lift===0&&legs(.8,0).lift>7,'Left and right legs alternate');
-for(const phase of [.1,.3,.55,.7,.9])for(const n of [0,1]){const p=legs(phase,n);const cross=(p.knee.x-p.hip.x)*(p.ankle.y-p.hip.y)-(p.knee.y-p.hip.y)*(p.ankle.x-p.hip.x);assert.ok(Math.abs(cross)>10,'Visible knee bend, not a rigid translated leg');}
-console.log('PASS: real two-link legs bend, plant, lift and alternate; the ghost is not a translated static sprite');
+const soulStart=source.indexOf('  function rpSoul('),soulEnd=source.indexOf('  function rpDraw(',soulStart);
+const calls=[];context.reaperCtx={save(){},restore(){},globalAlpha:1};
+context.rpImage=(...args)=>calls.push({args,alpha:context.reaperCtx.globalAlpha});
+vm.runInContext(source.slice(soulStart,soulEnd),context);
+for(const x of [80,200,310]){
+  calls.length=0;context.rpSoul(x,307,true,.6,.5);
+  assert.deepEqual(calls[0].args,['ghost',109,111,294,389,x-29,230,58,77]);
+  assert.equal(calls[0].alpha,.6);assert.equal(calls.length,3);
+  assert.equal(calls[1].alpha,.3);assert.equal(calls[2].alpha,.3);
+}
+calls.length=0;context.rpSoul(200,307,true,1,0);assert.equal(calls.length,1,'Expired permit stays hidden');
+console.log('PASS: conveyor carries the unchanged approved ghost pose; permit fade remains intact');

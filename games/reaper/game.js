@@ -80,7 +80,7 @@
     if(rpArt.loading)return;
     rpArt.loading=true;rpArt.failed=false;rpArt.ready=false;
     var attempt=++rpArt.attempt;
-    var files={background:'background-v1',body:'components/reaper_body',scythe:'components/reaper_scythe',ghost:'components/reaper_ghost',permit:'components/reaper_permit',hand:'motion-v3/hand/hand_resting',soulBody:'motion-v3/ghost/ghost_body',leftShoe:'motion-v3/ghost/ghost_left-shoe',rightShoe:'motion-v3/ghost/ghost_right-shoe'};
+    var files={background:'background-v1',body:'components/reaper_body',scythe:'components/reaper_scythe',ghost:'components/reaper_ghost',permit:'components/reaper_permit',hand:'motion-v3/hand/hand_resting'};
     Promise.all(Object.keys(files).map(function(key){return new Promise(function(resolve,reject){
       var im=new Image(),timer=setTimeout(function(){reject(new Error('art timeout'));},15000);
       im.onload=function(){clearTimeout(timer);resolve([key,im]);};
@@ -124,32 +124,14 @@
     g.lineWidth=1.7;g.fillStyle='#201d18';g.strokeStyle=filled?'#201d18':'#aa9674';if(filled)g.fill();else g.stroke();g.restore();
   }
   function rpImage(key,sx,sy,sw,sh,x,y,w,h){reaperCtx.drawImage(rpArt.images[key],sx,sy,sw,sh,x,y,w,h);}
-  function rpLegPose(cycle,leg){
-    var q=((cycle+leg*.5)%1+1)%1,stance=q<.55,t=stance?q/.55:(q-.55)/.45;
-    var dx=stance?13-26*t:-13+26*t,lift=stance?0:Math.sin(t*Math.PI)*9;
-    var hip={x:leg?9:-8,y:-24},ankle={x:(leg?7:-7)+dx,y:-7.7-lift};
-    var vx=ankle.x-hip.x,vy=ankle.y-hip.y,d=Math.max(.01,Math.hypot(vx,vy)),bend=Math.sqrt(Math.max(0,225-d*d/4));
-    return {hip:hip,ankle:ankle,knee:{x:(hip.x+ankle.x)/2+bend*vy/d,y:(hip.y+ankle.y)/2-bend*vx/d},lift:lift,roll:stance?0:-.25*Math.sin(t*Math.PI)};
-  }
-  function rpSoul(x,feet,permit,alpha,halo,cycle){
-    var g=reaperCtx;g.save();g.globalAlpha=alpha;g.translate(x,feet);
-    cycle=cycle||0;
-    for(var leg=0;leg<2;leg++){
-      var pose=rpLegPose(cycle,leg);g.save();g.strokeStyle=rpArt.ink;g.lineWidth=6;g.lineCap='round';g.lineJoin='round';
-      g.beginPath();g.moveTo(pose.hip.x,pose.hip.y);g.lineTo(pose.knee.x,pose.knee.y);g.lineTo(pose.ankle.x,pose.ankle.y);g.stroke();
-      g.translate(pose.ankle.x,pose.ankle.y);g.rotate(pose.roll);
-      if(leg)rpImage('rightShoe',2,111,510,349,-10.23,-6.3,20.46,14);
-      else rpImage('leftShoe',24,60,466,400,-8.155,-6.3,16.31,14);
-      g.restore();
-    }
-    var bob=reduceMotion?0:Math.cos(cycle*Math.PI*4)*.8;
-    g.save();g.translate(0,-49+bob);g.rotate(reduceMotion?0:Math.sin(cycle*Math.PI*2)*.025);
-    rpImage('soulBody',70,60,373,400,-27,-29,54,58);g.restore();
+  function rpSoul(x,feet,permit,alpha,halo){
+    var g=reaperCtx;g.save();g.globalAlpha=alpha;
+    // Conveyor passengers keep the approved pose; only the belt carries them.
+    rpImage('ghost',109,111,294,389,x-29,feet-77,58,77);
     if(permit&&halo>0){
       g.globalAlpha=alpha*halo;
-      // Halo AND badge keep the existing fade rule; walking never reveals an expired pass.
-      rpImage('permit',143,207,227,92,-25,-95+bob,50,20);
-      rpImage('permit',178,347,154,153,-7,-50+bob,19,19);
+      rpImage('permit',143,207,227,92,x-25,feet-95,50,20);
+      rpImage('permit',178,347,154,153,x-7,feet-50,19,19);
     }
     g.restore();
   }
@@ -182,7 +164,7 @@
     rpImage('hand',19,130,474,330,142,bodyY+143,50,34.81);
     // Show the original sample queue in standby; live souls use unchanged simulation x positions.
     var souls=RP.phase==='ready'?[{x:24,d:false},{x:85,d:false},{x:290,d:true},{x:385,d:false}]:RP.ghosts;
-    souls.forEach(function(o){var lv=rpLevel(),fade=lv<4?1:Math.max(0,Math.min(1,(200-(lv<7?35:90)-o.x)/80));rpSoul(o.x,307,o.d,o.m?.35:1,fade,RP.belt/54+o.x/360);});
+    souls.forEach(function(o){var lv=rpLevel(),fade=lv<4?1:Math.max(0,Math.min(1,(200-(lv<7?35:90)-o.x)/80));rpSoul(o.x,307,o.d,o.m?.35:1,fade);});
     RP.fx.forEach(function(f){
       var sink=Math.max(0,Math.min(1,(f.t-.08)/.28));
       g.save();g.translate(f.x+(200-f.x)*sink,307+27*sink);g.scale(1-.72*sink,1-.72*sink);
