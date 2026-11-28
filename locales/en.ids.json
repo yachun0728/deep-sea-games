@@ -3475,5 +3475,7 @@
   "solitaire.time.ranked": "RANKED TIME RUN",
   "solitaire.time.practice": "PRACTICE · NOT RANKED",
   "solitaire.mermaid.legacy": "Legacy best score",
-  "office-shoot.rank.retry": "Retry submission"
+  "office-shoot.rank.retry": "Retry submission",
+  "pet-walk.say.185": "Tap to reload artwork",
+  "pet-walk.say.186": "Stitching the trail…"
 }

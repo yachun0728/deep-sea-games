@@ -46,7 +46,7 @@
 | [血壓上升 Midnight Mosquito](mosquito/README.md) | `#mosquito` | 潛行偷閒 | 顯示 | 347 行 | 深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。 |
 | [尊嚴保衛戰 The Last Hair](last-hair/README.md) | `#last-hair` | 潛行偷閒 | 顯示 | 457 行 | 頂著最後三根頭髮，在強風中走完 500 公尺去面試。 |
 | [打磚塊 Breakout](breakout/README.md) | `#breakout` | 懷舊經典 | 顯示 | 150 行 | 移動擋板反彈小球，打光磚塊一關闖過一關。 |
-| [小灰出門 Pet Walkies](pet-walk/README.md) | `#pet-walk` | 跑酷動作 | 顯示 | 1104 行 | 一鍵帶小灰散步，路上撞見野狗、河鯊和幸運轉盤。 |
+| [小灰出門 Pet Walkies](pet-walk/README.md) | `#pet-walk` | 跑酷動作 | 顯示 | 852 行 | 一鍵帶小灰散步，路上撞見野狗、河鯊和幸運轉盤。 |
 | [拒絕加班 No Overtime!](office-shoot/README.md) | `#office-shoot` | 跑酷動作 | 顯示 | 632 行 | 自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。 |
 | [深海連連看 Ocean Link](ocean-link/README.md) | `#ocean-link` | 懷舊經典 | 顯示 | 472 行 | 把相同的圖案連起來，穿越礁石與移動棋盤。 |
 | [最後的晚餐 The Last Banquet](banquet/README.md) | `#banquet` | 益智策略 | 顯示 | 742 行 | 與莊家在暗室輪流喝未知的酒，用記憶、機率和道具撐到最後。 |

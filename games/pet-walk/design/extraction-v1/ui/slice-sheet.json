@@ -1,0 +1,190 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "ui-source-v1.png",
+  "grid": [
+    3,
+    2
+  ],
+  "canvas": {
+    "w": 512,
+    "h": 384
+  },
+  "baseline_y": 370.0,
+  "target_height": 340.0,
+  "scale": "cell",
+  "fit": "contain",
+  "factor": null,
+  "factor_from": null,
+  "alpha_cleanup": "alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "panel",
+      "file": "panel.png",
+      "factor": 1.0534979423868314,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 485,
+          "h": 253
+        },
+        "canvas": {
+          "w": 511,
+          "h": 267
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 103,
+        "w": 511,
+        "h": 267
+      },
+      "anchor": [
+        256.5,
+        370.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "gold",
+      "file": "gold.png",
+      "factor": 1.1228070175438596,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 455,
+          "h": 214
+        },
+        "canvas": {
+          "w": 511,
+          "h": 240
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 130,
+        "w": 511,
+        "h": 240
+      },
+      "anchor": [
+        256.5,
+        370.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "cream",
+      "file": "cream.png",
+      "factor": 1.0711297071129706,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 477,
+          "h": 199
+        },
+        "canvas": {
+          "w": 511,
+          "h": 213
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 157,
+        "w": 511,
+        "h": 213
+      },
+      "anchor": [
+        256.5,
+        370.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "tile",
+      "file": "tile.png",
+      "factor": 1.209964412811388,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 277,
+          "h": 281
+        },
+        "canvas": {
+          "w": 335,
+          "h": 340
+        }
+      },
+      "box": {
+        "x": 89,
+        "y": 30,
+        "w": 335,
+        "h": 340
+      },
+      "anchor": [
+        256.5,
+        370.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "diary",
+      "file": "diary.png",
+      "factor": 1.0089020771513353,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 493,
+          "h": 337
+        },
+        "canvas": {
+          "w": 497,
+          "h": 340
+        }
+      },
+      "box": {
+        "x": 8,
+        "y": 30,
+        "w": 497,
+        "h": 340
+      },
+      "anchor": [
+        256.5,
+        370.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "header",
+      "file": "header.png",
+      "factor": 1.0448979591836736,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 489,
+          "h": 154
+        },
+        "canvas": {
+          "w": 511,
+          "h": 161
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 209,
+        "w": 511,
+        "h": 161
+      },
+      "anchor": [
+        256.5,
+        370.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

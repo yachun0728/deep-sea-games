@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "test_kind": "private injected render regression; no gameplay proof",
+  "results": [
+    {
+      "lang": "zh-Hant",
+      "count": 108,
+      "minSize": 14,
+      "bad": []
+    },
+    {
+      "lang": "en",
+      "count": 108,
+      "minSize": 14,
+      "bad": []
+    },
+    {
+      "lang": "zh-Hans",
+      "count": 108,
+      "minSize": 14,
+      "bad": []
+    }
+  ]
+}

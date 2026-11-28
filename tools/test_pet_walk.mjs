@@ -17,7 +17,7 @@ function fixture(balance=500,{saved=null,lang='zh'}={}){
   const elements=new Map(),storage=new Map(saved===null?[]:[[KEY,saved]]),events=[],drawn=[];
   const rec=name=>(text)=>{drawn.push(String(text));};
   const drawing=new Proxy({},{get:(t,k)=>k==='fillText'||k==='strokeText'?rec(k):k==='measureText'?(x=>({width:String(x).length*7})):(k in t?t[k]:()=>({})),set:(t,k,v)=>{t[k]=v;return true;}});
-  function el(id){if(!elements.has(id))elements.set(id,{hidden:false,value:'10',textContent:'',className:'',dataset:{},style:{},disabled:false,handlers:{},focus(){},getContext:()=>drawing,getBoundingClientRect:()=>({left:0,top:0,width:400,height:560}),addEventListener(type,fn){this.handlers[type]=fn;}});return elements.get(id);}
+  function el(id){if(!elements.has(id))elements.set(id,{hidden:false,value:'10',textContent:'',className:'',dataset:{},style:{},disabled:false,handlers:{},focus(){},getContext:()=>drawing,getBoundingClientRect:()=>({left:0,top:0,width:400,height:844}),addEventListener(type,fn){this.handlers[type]=fn;}});return elements.get(id);}
   const listeners={};
   const sandbox={document:{hidden:false,addEventListener(){}},window:{addEventListener(name,fn){(listeners[name]??=[]).push(fn);},devicePixelRatio:1,deepSeaI18n:{getLanguage:()=>lang}},addEventListener(name,fn){(listeners[name]??=[]).push(fn);},Number,Math,String,parseInt,JSON,Object,Array,Date,performance:{now:()=>1000},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fmt:n=>String(n),AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
   sandbox.globalThis=sandbox;
@@ -51,7 +51,7 @@ check('Tapping the canvas or pressing Space on the title screen never starts a t
   const k={code:'Space',key:' ',target:{tagName:'CANVAS'},preventDefault(){this.stopped=true;}};f.key(k);
   assert.equal(f.G.mode,'TITLE');assert.equal(f.wallet.balance,500);
 });
-check('BONUS: +1 point at steps 20, 40 and 60, each exactly once; whole trip nets -7',()=>{
+check('BONUS: +1 point at steps 20, 40 and 60, each exactly once; final balance is start - current fee + 3',()=>{
   const f=fixture(500);reseed(f,11);f.C.begin();
   const seen=[];
   f.drive(()=>{const s=f.G.trip.steps;if(s>0&&s%20===0&&!seen.includes(s)){seen.push(s);assert.equal(f.wallet.balance,500-fee+s/20,'balance at step '+s);assert.equal(f.count('progress'),s/20);}return false;});
@@ -85,9 +85,9 @@ check('Choice events: Space or 8 s idle picks the free default option, so keyboa
 });
 check('Disabled choices cannot be picked (rope pry without rope, can feed without can)',()=>{
   const f=fixture(500);f.C.begin();f.ev("G.force='E03';triggerEvent()");f.C.update(0.5);
-  f.C.press({x:210,y:200});assert.equal(f.G.ev.phase,'choice');
+  f.C.press({x:290,y:802});assert.equal(f.G.ev.phase,'choice');
   assert.equal(f.G.save.inv.itm_rope||0,0);
-  const g=fixture(500);g.C.begin();g.ev("G.force='E04';triggerEvent()");g.C.update(0.5);g.C.press({x:40,y:200});assert.equal(g.G.ev.phase,'choice');
+  const g=fixture(500);g.C.begin();g.ev("G.force='E04';triggerEvent()");g.C.update(0.5);g.C.press({x:90,y:802});assert.equal(g.G.ev.phase,'choice');
 });
 check('Finale: after step 60 a last wheel appears before the diary, gives no points, and the trip ends once',()=>{
   const f=fixture(500);reseed(f,5);f.C.begin();let sawFinale=false;

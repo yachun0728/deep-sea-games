@@ -1,0 +1,358 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "props-source-v1.png",
+  "grid": [
+    4,
+    3
+  ],
+  "canvas": {
+    "w": 256,
+    "h": 256
+  },
+  "baseline_y": 248.0,
+  "target_height": 232.0,
+  "scale": "cell",
+  "fit": "contain",
+  "factor": null,
+  "factor_from": null,
+  "alpha_cleanup": "alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "wheel",
+      "file": "wheel.png",
+      "factor": 0.755700325732899,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 236,
+          "h": 307
+        },
+        "canvas": {
+          "w": 178,
+          "h": 232
+        }
+      },
+      "box": {
+        "x": 39,
+        "y": 16,
+        "w": 178,
+        "h": 232
+      },
+      "anchor": [
+        128.0,
+        248.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "chest",
+      "file": "chest.png",
+      "factor": 0.9175627240143369,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 278,
+          "h": 247
+        },
+        "canvas": {
+          "w": 255,
+          "h": 227
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 21,
+        "w": 255,
+        "h": 227
+      },
+      "anchor": [
+        128.5,
+        248.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "locker",
+      "file": "locker.png",
+      "factor": 0.6946107784431138,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 190,
+          "h": 334
+        },
+        "canvas": {
+          "w": 132,
+          "h": 232
+        }
+      },
+      "box": {
+        "x": 62,
+        "y": 16,
+        "w": 132,
+        "h": 232
+      },
+      "anchor": [
+        128.0,
+        248.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "dog",
+      "file": "dog.png",
+      "factor": 0.7864406779661017,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 271,
+          "h": 295
+        },
+        "canvas": {
+          "w": 213,
+          "h": 232
+        }
+      },
+      "box": {
+        "x": 22,
+        "y": 16,
+        "w": 213,
+        "h": 232
+      },
+      "anchor": [
+        128.5,
+        248.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "scarecrow",
+      "file": "scarecrow.png",
+      "factor": 0.6763848396501457,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 293,
+          "h": 343
+        },
+        "canvas": {
+          "w": 198,
+          "h": 232
+        }
+      },
+      "box": {
+        "x": 29,
+        "y": 16,
+        "w": 198,
+        "h": 232
+      },
+      "anchor": [
+        128.0,
+        248.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "shark",
+      "file": "shark.png",
+      "factor": 0.7804878048780488,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 327,
+          "h": 235
+        },
+        "canvas": {
+          "w": 255,
+          "h": 183
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 65,
+        "w": 255,
+        "h": 183
+      },
+      "anchor": [
+        128.5,
+        248.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "crate",
+      "file": "crate.png",
+      "factor": 0.8619528619528619,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 296,
+          "h": 259
+        },
+        "canvas": {
+          "w": 255,
+          "h": 223
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 25,
+        "w": 255,
+        "h": 223
+      },
+      "anchor": [
+        128.5,
+        248.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "fisher",
+      "file": "fisher.png",
+      "factor": 0.7759197324414716,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 328,
+          "h": 299
+        },
+        "canvas": {
+          "w": 255,
+          "h": 232
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 16,
+        "w": 255,
+        "h": 232
+      },
+      "anchor": [
+        128.5,
+        248.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "cave",
+      "file": "cave.png",
+      "factor": 0.7664670658682635,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 333,
+          "h": 242
+        },
+        "canvas": {
+          "w": 255,
+          "h": 185
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 63,
+        "w": 255,
+        "h": 185
+      },
+      "anchor": [
+        128.5,
+        248.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "rocks",
+      "file": "rocks.png",
+      "factor": 0.8231511254019293,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 310,
+          "h": 228
+        },
+        "canvas": {
+          "w": 255,
+          "h": 188
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 60,
+        "w": 255,
+        "h": 188
+      },
+      "anchor": [
+        128.5,
+        248.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "lamp",
+      "file": "lamp.png",
+      "factor": 0.709480122324159,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 204,
+          "h": 327
+        },
+        "canvas": {
+          "w": 145,
+          "h": 232
+        }
+      },
+      "box": {
+        "x": 56,
+        "y": 16,
+        "w": 145,
+        "h": 232
+      },
+      "anchor": [
+        128.5,
+        248.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "rainbow",
+      "file": "rainbow.png",
+      "factor": 0.047619047619047616,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 284,
+          "h": 172
+        },
+        "canvas": {
+          "w": 14,
+          "h": 8
+        }
+      },
+      "box": {
+        "x": 120,
+        "y": 240,
+        "w": 15,
+        "h": 16
+      },
+      "anchor": [
+        127.769,
+        248.094
+      ],
+      "clipped_px": 0,
+      "parts": 10
+    }
+  ]
+}

@@ -277,6 +277,7 @@ games/boba/game.js 首次進入時從產出的 boba-source JSON 設定 iframe.sr
 
 
 **其他遊戲的差異**：
+- 小灰出門毛氈版（2026-11-29）：`games/pet-walk/style.css` 將舞台固定為 400×844 等比例畫面（桌面置中）；Canvas 自畫 HUD，DOM 統計不另疊加，原始出門按鈕仍使用同一節點及 listener。`art/felt-v1/` 圖片延遲至進入該遊戲才載入；三層水平背景、角色部件骨架與九宮格布料面板皆在原遊戲 Canvas 繪製，沒有更換共用 runtime 或資料契約。
 - 舞台是 iframe 的 `.console` 遊戲（一口氣探險、捷運搶位）：iframe 填滿 HUD 以下的區域，並用 `--reserve`（72px）在畫面底部留出位置給平台的開始鈕，免得蓋住子頁自己的開始按鈕；這兩款隱藏 `.msg` 提示條（會蓋住子頁按鈕）。
 - 泡麵煎餅翻面比照插珍奶：頂列只留退出鈕與結算後的「分享成績」，隱藏提示、訊息與「結束本局」鈕。
 - 人魚接龍（`mermaid`）、最後的晚餐（`banquet`）是 DOM 版面而非 Canvas：舞台（`.mm-stage`、`.bq-stage`）填滿 HUD 以下並可垂直捲動（需 `box-sizing:border-box`，否則 padding 會把開始鈕擠出畫面）。人魚接龍的「放棄本局」鈕、最後的晚餐的 Home／Forfeit 鈕固定在右上角（HUD 右側預留 96px）；最後的晚餐面板裡的音效與進階模式鈕由場景內選單代為觸發，所以在全螢幕時隱藏。開始鈕托盤 z-index 提高到 30，免得被場景自己的覆蓋層蓋住。
