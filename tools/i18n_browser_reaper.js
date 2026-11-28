@@ -9,9 +9,12 @@
     var view=document.getElementById('view-reaper'),button=document.getElementById('rp-go');
     await until(function(){return !button.disabled;});
     assert(!view.hidden,'Reaper direct route opens approved artwork');
+    assert(view.querySelector('.reaper-sign strong').textContent==='Reaper Shift','Supplemental sign is localized in English');
+    assert(view.querySelector('.reaper-work-order p').textContent.includes('White souls'),'Supplemental work order is localized in English');
     var rect=document.getElementById('rp-canvas').getBoundingClientRect();
     assert(rect.left>=0&&rect.right<=innerWidth+.5&&rect.bottom<=innerHeight+.5,'Artwork fits viewport without cropping');
-    assert(Math.abs(rect.width/rect.height-400/523)<.002,'Approved composition keeps original proportions');
+    assert(Math.abs(rect.width/rect.height-400/523)<.002,'Approved scene remains whole and proportional');
+    assert(Math.abs(view.querySelector('.reaper-stage').getBoundingClientRect().height-innerHeight)<2,'Supplemental stationery fills the screen height');
     var action=button.getBoundingClientRect();assert(action.width>=44&&action.height>=44,'Action target is at least 44px');
     button.click();await until(function(){return button.dataset.mode==='surface';});
     assert(button.textContent==='SWING','English action reads SWING');

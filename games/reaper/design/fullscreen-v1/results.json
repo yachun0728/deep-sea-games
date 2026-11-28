@@ -1,0 +1,134 @@
+[
+  {
+    "result": "PASS",
+    "check": "Fullscreen artwork loads"
+  },
+  {
+    "result": "PASS",
+    "check": "390x844: stage fills height and stays in viewport"
+  },
+  {
+    "result": "PASS",
+    "check": "390x844: action stays inside lower screen"
+  },
+  {
+    "result": "PASS",
+    "check": "390x844: approved character dimensions and uniform scale"
+  },
+  {
+    "result": "PASS",
+    "check": "390x844: original composition remains whole"
+  },
+  {
+    "result": "PASS",
+    "check": "320x568: stage fills height and stays in viewport"
+  },
+  {
+    "result": "PASS",
+    "check": "320x568: action stays inside lower screen"
+  },
+  {
+    "result": "PASS",
+    "check": "320x568: approved character dimensions and uniform scale"
+  },
+  {
+    "result": "PASS",
+    "check": "320x568: original composition remains whole"
+  },
+  {
+    "result": "PASS",
+    "check": "430x932: stage fills height and stays in viewport"
+  },
+  {
+    "result": "PASS",
+    "check": "430x932: action stays inside lower screen"
+  },
+  {
+    "result": "PASS",
+    "check": "430x932: approved character dimensions and uniform scale"
+  },
+  {
+    "result": "PASS",
+    "check": "430x932: original composition remains whole"
+  },
+  {
+    "result": "PASS",
+    "check": "768x1024: stage fills height and stays in viewport"
+  },
+  {
+    "result": "PASS",
+    "check": "768x1024: action stays inside lower screen"
+  },
+  {
+    "result": "PASS",
+    "check": "768x1024: approved character dimensions and uniform scale"
+  },
+  {
+    "result": "PASS",
+    "check": "768x1024: original composition remains whole"
+  },
+  {
+    "result": "PASS",
+    "check": "1366x900: stage fills height and stays in viewport"
+  },
+  {
+    "result": "PASS",
+    "check": "1366x900: action stays inside lower screen"
+  },
+  {
+    "result": "PASS",
+    "check": "1366x900: approved character dimensions and uniform scale"
+  },
+  {
+    "result": "PASS",
+    "check": "1366x900: original composition remains whole"
+  },
+  {
+    "result": "PASS",
+    "check": "844x390: stage fills height and stays in viewport"
+  },
+  {
+    "result": "PASS",
+    "check": "844x390: action stays inside lower screen"
+  },
+  {
+    "result": "PASS",
+    "check": "844x390: approved character dimensions and uniform scale"
+  },
+  {
+    "result": "PASS",
+    "check": "844x390: original composition remains whole"
+  },
+  {
+    "result": "PASS",
+    "check": "Simulated 44/34px layout padding protects HUD and controls (not iOS device validation)"
+  },
+  {
+    "result": "PASS",
+    "check": "Touch starts one normal round"
+  },
+  {
+    "result": "PASS",
+    "check": "Original hit rule captures a conveyor ghost with intact scene"
+  },
+  {
+    "result": "PASS",
+    "check": "Rotate and return preserve score and active round"
+  },
+  {
+    "result": "PASS",
+    "check": "Normal three-heart ending still works"
+  },
+  {
+    "result": "PASS",
+    "check": "Touch restarts after settlement"
+  },
+  {
+    "result": "PASS",
+    "check": "Exit to lobby remains reachable"
+  },
+  {
+    "result": "PASS",
+    "check": "No runtime errors during fullscreen/resize/replay checks"
+  }
+]

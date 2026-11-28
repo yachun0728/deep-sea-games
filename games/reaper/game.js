@@ -13,6 +13,7 @@
   function rpUI(){
     var L=rpLevel(),nx=rpNext(RP.good);
     $('rp-level').textContent='第 '+L+' 班';$('rp-progress').textContent=(RP.good%RP_PER)+' / '+RP_PER;$('rp-lives').textContent=RP.lives+' / 3';$('rp-score').textContent=RP.total+' 位';$('rp-best').textContent=RP.best+' 位';
+    $('rp-banner-best').textContent=RP.best;
     $('rp-next').textContent=nx[0]+' 位 · +'+nx[1];$('rp-amount').disabled=RP.active;
     $('rp-action-label').textContent=!rpArt.ready?(rpArt.failed?'{{t:reaper.skin.retry}}':'{{t:reaper.skin.loading}}'):RP.phase==='run'?'{{t:reaper.skin.swing}}':'{{t:reaper.msg.002}}';$('rp-go').disabled=(!rpArt.ready&&!rpArt.failed)||reaperRank.busy()||RP.phase==='run'&&RP.cd>0;
     $('rp-go').setAttribute('aria-label',!rpArt.ready?(rpArt.failed?'{{t:reaper.skin.retry}}':'{{t:reaper.skin.loading}}'):RP.phase==='run'?'{{t:reaper.msg.001}}':'{{t:reaper.msg.002}}');

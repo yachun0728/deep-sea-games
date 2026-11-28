@@ -1583,23 +1583,23 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
  #view-elevator .fs-game .stats dt{font-size:9px;letter-spacing:0}
 }
 
-/* Approved C: keep the actual 490:641 artwork intact, with no stretching or cropping. */
+/* Keep approved artwork whole. Additional sign/work-order panels fill portrait margins. */
 #view-reaper{--fs-bg:#201d18;color:#201d18}
-#view-reaper:not([hidden]) .console.fs-game{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:100%;height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);margin:0;border:0;border-radius:0;background:#201d18;overflow:hidden;overscroll-behavior:none}
+#view-reaper:not([hidden]) .console.fs-game{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:100%;height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);margin:0;border:0;border-radius:0;background:#f4dfb8;overflow:hidden;overscroll-behavior:none}
 html:has(#view-reaper:not([hidden])){overflow:hidden}
-#view-reaper:not([hidden]) .console.fs-game>.reaper-stage{position:relative;display:block;flex:none;container-type:inline-size;width:min(100%,calc((100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * 400 / 523));height:auto;aspect-ratio:400/523;border:0;border-radius:0;background:#f4dfb8;overflow:hidden}
-#view-reaper:not([hidden]) .console.fs-game .reaper-stage canvas{display:block;width:100%;height:100%;max-height:none;aspect-ratio:400/523;object-fit:contain;touch-action:manipulation;outline-offset:-4px}
+#view-reaper:not([hidden]) .console.fs-game>.reaper-stage{position:relative;display:block;flex:none;container-type:size;width:min(100%,calc((100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * 400 / 523));height:100%;--rp-extra:max(0px,calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 130.75cqw));background-image:url("games/reaper/art/fullscreen/paper.webp");background-size:110px 84px;border:0;border-radius:0;background:#f4dfb8;overflow:hidden}
+#view-reaper:not([hidden]) .console.fs-game .reaper-stage canvas{position:absolute;left:0;top:calc(var(--rp-extra)/2);display:block;width:100%;height:130.75cqw;max-height:none;object-fit:contain;touch-action:manipulation;outline-offset:-4px}
 #view-reaper .console.fs-game .side,#view-reaper .console.fs-game .panel{display:contents}
 #view-reaper .console.fs-game .stats,#view-reaper .console.fs-game .reaper-legend,#view-reaper .console.fs-game .hint,#view-reaper .console.fs-game .msg,#view-reaper .console.fs-game #rp-rank-status{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip-path:inset(50%);white-space:nowrap}
-#view-reaper .console.fs-game .fs-exit{display:grid;place-items:center;position:absolute;z-index:4;top:-.25%;left:0;width:16.5%;height:10%;min-width:44px;min-height:44px;padding:0;border:0;border-radius:12px;background:transparent;color:#201d18;font:900 clamp(23px,7cqw,40px) Georgia,serif;box-shadow:none}
-#view-reaper .console.fs-game #rp-go{position:absolute;z-index:4;left:35%;top:69.5%;bottom:auto;right:auto;transform:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;box-sizing:border-box;width:45%;height:25%;min-width:44px;min-height:44px;padding:0 0 6%;margin:0;border:0;border-radius:45%;background:transparent;box-shadow:none;color:#fff0d1;font:900 clamp(19px,8cqw,48px)/1.1 Grandstander,'Noto Sans TC',system-ui,sans-serif;text-align:center;touch-action:manipulation;cursor:pointer;text-shadow:1px 1px #201d18}
+#view-reaper .console.fs-game .fs-exit{display:grid;place-items:center;position:absolute;z-index:4;top:calc(var(--rp-extra)/2);left:0;width:16.5%;height:13.075cqw;min-width:44px;min-height:44px;padding:0;border:0;border-radius:12px;background:transparent;color:#201d18;font:900 clamp(23px,7cqw,40px) Georgia,serif;box-shadow:none}
+#view-reaper .console.fs-game #rp-go{position:absolute;z-index:4;left:35%;top:calc(90.87125cqw + var(--rp-extra)/2);bottom:auto;right:auto;transform:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;box-sizing:border-box;width:45%;height:32.6875cqw;min-width:44px;min-height:44px;padding:0 0 6%;margin:0;border:0;border-radius:45%;background:transparent;box-shadow:none;color:#fff0d1;font:900 clamp(19px,8cqw,48px)/1.1 Grandstander,'Noto Sans TC',system-ui,sans-serif;text-align:center;touch-action:manipulation;cursor:pointer;text-shadow:1px 1px #201d18}
 #view-reaper .console.fs-game #rp-go[data-mode="bet"]{font-size:clamp(14px,4.8cqw,30px);padding-bottom:6%}
 #view-reaper .console.fs-game #rp-go:disabled{display:flex;opacity:1;cursor:wait;color:#cdbc9e}
 #view-reaper .console.fs-game #rp-go:active:not(:disabled){filter:brightness(1.2)}
 #view-reaper .console.fs-game :is(#rp-go,.fs-exit):focus-visible{outline:3px dashed #d69e28;outline-offset:-3px}
 #view-reaper>.rules{display:none}
-#view-reaper .console.fs-game #rp-rank-retry:not([hidden]){position:absolute;z-index:6;top:10%;bottom:auto;left:3%;transform:none;width:50%;min-height:44px;max-width:90%;font-size:12px;border:2px solid #201d18;background:#f7e7c9;color:#201d18}
-#view-reaper .console.fs-game .share-result:not([hidden]){position:absolute;z-index:5;top:10%;right:3%;bottom:auto;left:auto;transform:none;width:42%;min-width:44px;min-height:44px;padding:5px 10px;border:2px solid #201d18;border-radius:12px;background:#f7e7c9;color:#201d18;font-size:13px}
+#view-reaper .console.fs-game #rp-rank-retry:not([hidden]){position:absolute;z-index:6;top:calc(var(--rp-extra)/2 + 13.075cqw);bottom:auto;left:3%;transform:none;width:50%;min-height:44px;max-width:90%;font-size:12px;border:2px solid #201d18;background:#f7e7c9;color:#201d18}
+#view-reaper .console.fs-game .share-result:not([hidden]){position:absolute;z-index:5;top:calc(var(--rp-extra)/2 + 13.075cqw);right:3%;bottom:auto;left:auto;transform:none;width:42%;min-width:44px;min-height:44px;padding:5px 10px;border:2px solid #201d18;border-radius:12px;background:#f7e7c9;color:#201d18;font-size:13px}
 @media(max-height:450px) and (orientation:landscape){#view-reaper .console.fs-game #rp-go{min-height:44px;padding-bottom:4%;font-size:17px}#view-reaper .console.fs-game #rp-go[data-mode="bet"]{font-size:12px;padding:0 4% 4% 0}}
 
 /* Anchor the live label below the painted scythe; never align anonymous flex text. */
@@ -1615,6 +1615,20 @@ html:has(#view-reaper:not([hidden])){overflow:hidden}
 #view-reaper .console.fs-game,#view-reaper .console.fs-game *{user-select:none!important;-webkit-user-select:none!important;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 #view-reaper .console.fs-game,#view-reaper .console.fs-game *{touch-action:none!important}
 #view-reaper .console.fs-game svg{-webkit-user-drag:none}
+
+/* Supplemental stationery uses the original blank paper/plaque crops; no scene stretching. */
+#view-reaper .reaper-extra{position:absolute;left:0;width:100%;height:calc(var(--rp-extra)/2);display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none;text-align:center}
+#view-reaper .reaper-sign{top:0}
+#view-reaper .reaper-work-order{bottom:0}
+#view-reaper .reaper-paper{box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;width:90%;max-height:90%;padding:8px 18px;gap:4px;color:#201d18;font:700 clamp(10px,3cqw,16px)/1.3 Grandstander,'Noto Sans TC',system-ui,sans-serif;background:#f4dfb8 url("games/reaper/art/fullscreen/paper.webp") repeat;background-size:110px 84px;border:3px double #201d18;border-radius:10px;box-shadow:3px 3px 0 #201d18}
+#view-reaper .reaper-sign .reaper-paper{width:72%;padding:10px 14px}
+#view-reaper .reaper-sign strong{font-size:clamp(18px,6cqw,32px);line-height:1.1}
+#view-reaper .reaper-sign-en{font-size:clamp(9px,2.6cqw,14px);letter-spacing:.14em}
+#view-reaper .reaper-paper p{margin:0}
+#view-reaper .reaper-record{font-size:.85em;opacity:.85}
+@container(max-width:350px){#view-reaper .reaper-paper{gap:1px;padding:4px 12px}#view-reaper .reaper-sign .reaper-paper{padding:5px 12px}}
+
+@container(min-aspect-ratio:400/650){#view-reaper .reaper-extra{display:none}}
 
 .game-icon-runner img {
   display:block;
@@ -5819,7 +5833,7 @@ html.points-hidden [data-points-hidden] { display:none !important; }
     <details class="rules"><summary>玩法與點數</summary><p>你在辦公桌前，主管在走道來回巡邏。按住睡覺鍵累積睡意，睡意條滿了就過關，共 10 關。主管回頭前，頭上會先冒出紅色「!」；他盯著你的時候，如果你還在睡、剛放開還沒醒、或正在丟垃圾，就會被抓，扣一顆考績，睡意也會被扣掉一部分。考績扣完就被炒魷魚，這一局結束。</p><p>丟垃圾可以砸主管，每個垃圾扣他 1 點血；垃圾有數量限制，會慢慢補。血量歸零他會暈倒幾秒，暈倒時你睡得更快、不會被抓。但每被砸一次，主管下一次回頭會提早一點，亂丟會讓他更快轉過來。從第 3 關起，「!」有時只是虛驚一場；從第 5 關起，他看完一次可能再回頭瞪你一次。</p><p>每過 1 關獲得 1 點，當場入帳，之後結束也不會收回；10 關全過共 10 點。分數只是顯示用，不直接換點數。這是操作技巧遊戲，結果取決於你放開按鈕的時機。</p><p>切換遊戲或背景分頁會暫停，回來後繼續。重新整理會放棄本局，已入帳的點數會保留。最高分保存在瀏覽器中；點數與其他遊戲共用，沒有現金價值。</p></details>
 </section>
   <section class="view" id="view-reaper" hidden>
-    <div class="console fs-game"><div class="reaper-stage"><canvas id="rp-canvas" width="400" height="523" tabindex="0" aria-label="死神打工：普通靈魂經過金色區域時接走，帶綠色通行證的靈魂要放行"></canvas><button class="fs-exit" type="button" aria-label="退出遊戲"><svg viewBox="0 0 32 24" aria-hidden="true" focusable="false"><path d="M28 12H8"/><path d="m3 12 11-8v16z" fill="currentColor" stroke="none"/></svg></button><button class="go rp-action" id="rp-go" type="button" data-mode="bet"><span id="rp-action-label">開始值班</span></button><button id="rp-rank-retry" type="button" hidden>重送排行榜成績</button></div>
+    <div class="console fs-game"><div class="reaper-stage"><div class="reaper-extra reaper-sign"><div class="reaper-paper"><strong>死神打工</strong><span class="reaper-sign-en" aria-hidden="true">REAPER SHIFT</span></div></div><canvas id="rp-canvas" width="400" height="523" tabindex="0" aria-label="死神打工：普通靈魂經過金色區域時接走，帶綠色通行證的靈魂要放行"></canvas><button class="fs-exit" type="button" aria-label="退出遊戲"><svg viewBox="0 0 32 24" aria-hidden="true" focusable="false"><path d="M28 12H8"/><path d="m3 12 11-8v16z" fill="currentColor" stroke="none"/></svg></button><button class="go rp-action" id="rp-go" type="button" data-mode="bet"><span id="rp-action-label">開始值班</span></button><button id="rp-rank-retry" type="button" hidden>重送排行榜成績</button><div class="reaper-extra reaper-work-order"><div class="reaper-paper"><p>白色靈魂 → 金色區域接走</p><p>綠色通行證 → 不要動，放行</p><p class="reaper-record">最佳紀錄 <b id="rp-banner-best">0</b></p></div></div></div>
       <div class="side"><section class="panel" aria-label="死神打工操作">
         <dl class="stats"><div><dt>目前班次</dt><dd id="rp-level">第 1 班</dd></div><div><dt>本班進度</dt><dd id="rp-progress">0 / 10</dd></div><div><dt>剩餘愛心</dt><dd id="rp-lives">3 / 3</dd></div></dl>
         <dl class="stats"><div><dt>累計接走</dt><dd id="rp-score">0 位</dd></div><div><dt>最佳紀錄</dt><dd id="rp-best">0 位</dd></div><div><dt>下一個獎勵</dt><dd id="rp-next">120 位 · +3</dd></div></dl>
@@ -19574,6 +19588,7 @@ if (typeof module !== 'undefined') module.exports = reaperRules;
   function rpUI(){
     var L=rpLevel(),nx=rpNext(RP.good);
     $('rp-level').textContent='第 '+L+' 班';$('rp-progress').textContent=(RP.good%RP_PER)+' / '+RP_PER;$('rp-lives').textContent=RP.lives+' / 3';$('rp-score').textContent=RP.total+' 位';$('rp-best').textContent=RP.best+' 位';
+    $('rp-banner-best').textContent=RP.best;
     $('rp-next').textContent=nx[0]+' 位 · +'+nx[1];$('rp-amount').disabled=RP.active;
     $('rp-action-label').textContent=!rpArt.ready?(rpArt.failed?'重試載入':'美術載入中…'):RP.phase==='run'?'揮鐮':'開始值班';$('rp-go').disabled=(!rpArt.ready&&!rpArt.failed)||reaperRank.busy()||RP.phase==='run'&&RP.cd>0;
     $('rp-go').setAttribute('aria-label',!rpArt.ready?(rpArt.failed?'重試載入':'美術載入中…'):RP.phase==='run'?'揮鐮接走':'開始值班');
