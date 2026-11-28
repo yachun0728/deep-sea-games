@@ -1,0 +1,46 @@
+[
+  {
+    "result": "PASS",
+    "check": "Published motion version loads"
+  },
+  {
+    "result": "PASS",
+    "check": "New HUD and native gesture guard are published"
+  },
+  {
+    "result": "PASS",
+    "check": "Production touch starts a normal round"
+  },
+  {
+    "result": "PASS",
+    "check": "Production ranked round is enabled"
+  },
+  {
+    "result": "PASS",
+    "check": "New walking ghost can be captured by the original hit rule"
+  },
+  {
+    "result": "PASS",
+    "check": "Three-heart ending and submission work"
+  },
+  {
+    "result": "PASS",
+    "check": "Server confirms the submitted score"
+  },
+  {
+    "result": "PASS",
+    "check": "Actual ranked API creates the round with HTTP 201"
+  },
+  {
+    "result": "PASS",
+    "check": "Actual server replay accepts score 1 with HTTP 200"
+  },
+  {
+    "result": "PASS",
+    "check": "Live client queues exactly one start and one end"
+  },
+  {
+    "result": "PASS",
+    "check": "No JavaScript errors in the published motion version"
+  }
+]
