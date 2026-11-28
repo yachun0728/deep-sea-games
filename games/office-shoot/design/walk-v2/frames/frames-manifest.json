@@ -1,0 +1,119 @@
+{
+  "ok": true,
+  "engine": "component-row",
+  "engine_revision": "3aff783d20f2",
+  "extract_args": {
+    "min_used_pixels": 30
+  },
+  "run_dir": "/Users/angellu/Documents/dev/deep-sea-games/games/office-shoot/design/walk-v2",
+  "cell": {
+    "shape": "rect",
+    "width": 192,
+    "height": 320,
+    "safe_margin_x": 8,
+    "safe_margin_y": 8
+  },
+  "chroma_key": {
+    "name": "green",
+    "hex": "#00FF00",
+    "rgb": [
+      0,
+      255,
+      0
+    ],
+    "selection": "manual"
+  },
+  "rows": [
+    {
+      "state": "walk",
+      "frames": 6,
+      "method": "components",
+      "files": [
+        "frames/walk/frame-0.png",
+        "frames/walk/frame-1.png",
+        "frames/walk/frame-2.png",
+        "frames/walk/frame-3.png",
+        "frames/walk/frame-4.png",
+        "frames/walk/frame-5.png"
+      ],
+      "frame_records": [
+        {
+          "index": 0,
+          "nontransparent_pixels": 18912,
+          "bbox": [
+            12,
+            8,
+            179,
+            312
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 1,
+          "nontransparent_pixels": 17280,
+          "bbox": [
+            27,
+            8,
+            165,
+            312
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 2,
+          "nontransparent_pixels": 17551,
+          "bbox": [
+            27,
+            8,
+            164,
+            312
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 3,
+          "nontransparent_pixels": 18933,
+          "bbox": [
+            20,
+            8,
+            172,
+            312
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 4,
+          "nontransparent_pixels": 17586,
+          "bbox": [
+            28,
+            8,
+            163,
+            312
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 5,
+          "nontransparent_pixels": 18122,
+          "bbox": [
+            14,
+            8,
+            178,
+            312
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        }
+      ],
+      "ok": true,
+      "engine_revision": "3aff783d20f2"
+    }
+  ],
+  "errors": [],
+  "warnings": []
+}

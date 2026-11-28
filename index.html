@@ -2495,7 +2495,39 @@ html:has(#view-last-hair:not([hidden])){overflow:hidden}
 #view-last-hair #lh-canvas:focus{outline:0}
 #view-last-hair #lh-canvas:focus-visible{outline:2px solid rgba(255,233,190,.55);outline-offset:-2px}
 
-.sneak-stage #os-canvas{width:min(100%,450px,calc(80vh * 450 / 800));height:auto;aspect-ratio:450/800;max-height:none;object-fit:fill}
+@font-face{font-family:"Office Comic TC";src:url("games/office-shoot/art/comic-v2/fonts/office-comic-tc-black.woff2") format("woff2");font-weight:900;font-display:swap}
+@font-face{font-family:"Office Comic Latin";src:url("games/office-shoot/art/comic-v2/fonts/office-comic-latin.woff2") format("woff2");font-weight:900;font-display:swap}
+/* Approved American comic art direction 02. All rules are scoped to this game. */
+#view-office-shoot{--hud:0px;--reserve:0px;--fs-bg:#05080c}
+html:has(#view-office-shoot:not([hidden])){overflow:hidden}
+#view-office-shoot:not([hidden]) .fs-game{position:fixed;inset:0;z-index:1200;display:block;box-sizing:border-box;width:min(100vw,calc(100dvh * 390 / 844));height:100dvh;margin:0 auto;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);background:#05080c;border:0;border-radius:0;overscroll-behavior:none}
+#view-office-shoot .fs-game>.sneak-stage{position:relative;display:block;width:100%;height:100%;margin:0;border:0;border-radius:0;overflow:hidden;background:#05172d}
+#view-office-shoot .fs-game .sneak-stage #os-canvas{display:block;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto;object-fit:fill;outline-offset:-4px;touch-action:none}
+#view-office-shoot .side,#view-office-shoot .panel{display:contents}
+#view-office-shoot .stats,#view-office-shoot .msg,#view-office-shoot .hint,#view-office-shoot>.rules,#view-office-shoot>.game-exit-link,#view-office-shoot>.mobile-scroll-pad{display:none!important}
+#view-office-shoot .fs-exit,#view-office-shoot #os-pause,#view-office-shoot #os-sound{position:absolute;z-index:35;display:grid;place-items:center;box-sizing:border-box;min-width:44px;min-height:44px;padding:0;margin:0;border:0;border-radius:0;background:transparent;color:#fff02b;font:900 26px/1 Arial,sans-serif;cursor:pointer}
+#view-office-shoot .fs-exit{top:calc(env(safe-area-inset-top) + 3px);left:4px;width:10%;height:5.4%}
+#view-office-shoot #os-pause{top:calc(env(safe-area-inset-top) + 3px);left:59%;width:11%;height:5.4%;font-size:23px}
+#view-office-shoot #os-sound{right:8px;bottom:calc(env(safe-area-inset-bottom) + 7%);width:44px;height:44px;background:#060a0e;border:2px solid #fff4dc;font-size:17px}
+#view-office-shoot #os-go:not(:disabled){position:absolute;z-index:34;left:50%;bottom:calc(env(safe-area-inset-bottom) + 9%);transform:translateX(-50%);box-sizing:border-box;width:80%;min-height:52px;margin:0;border:3px solid #fff4dc;border-radius:0;background:#ffed26;color:#06090d;box-shadow:5px 5px 0 #020204;font:italic 900 19px/1.2 Arial,'PingFang TC',sans-serif}
+#view-office-shoot #os-go:disabled{display:none}
+#view-office-shoot .mobile-stage-actions{position:static;transform:none;width:auto;padding:0}
+#view-office-shoot .mobile-stage-action{position:static}
+#view-office-shoot .share-result:not([hidden]){position:absolute;z-index:34;left:50%;bottom:2%;transform:translateX(-50%);width:80%;min-height:44px;border:2px solid #fff4dc;border-radius:0;background:#05080b;color:#ffed26}
+#view-office-shoot button:focus-visible{outline:3px solid #00dcff;outline-offset:-4px}
+@media(max-width:880px){
+ #view-office-shoot:not([hidden]) .fs-game{width:100vw}
+}
+@media(orientation:landscape) and (max-height:600px){
+ #view-office-shoot:not([hidden]) .fs-game{width:min(100vw,calc(100dvh * 450 / 800))}
+ #view-office-shoot .fs-exit,#view-office-shoot #os-pause{height:44px;top:0}
+}
+/* The controls are transparent hit areas over the approved illustrated UI. */
+#view-office-shoot .fs-exit,#view-office-shoot #os-pause{font-size:0!important;color:transparent}
+#view-office-shoot .fs-exit{left:1%;width:11%;top:calc(env(safe-area-inset-top) + .4%);height:6%}
+#view-office-shoot #os-pause{left:65.8%;width:10%;top:calc(env(safe-area-inset-top) + .4%);height:6%}
+#view-office-shoot #os-sound[hidden]{display:none}
+#view-office-shoot #os-sound{left:50%;right:auto;bottom:25%;transform:translateX(-50%);width:64px;color:#fff126;border-color:#fff7e7}
 
 .es-stage{min-width:0;display:flex;flex-direction:column;align-items:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#000}.es-stage iframe{display:block;width:100%;height:min(780px,calc(100svh - 150px));min-height:520px;border:0;background:#000}
 
@@ -4569,7 +4601,8 @@ html.points-hidden [data-points-hidden] { display:none !important; }
 <symbol id="icon-blaster" viewBox="0 0 96 96"><path d="M27 9v77M68 9v77" stroke="#326475" stroke-width="2" stroke-dasharray="4 5"/><path d="m47 53 21 29-21-6-21 6z" fill="#62e6d2"/><rect x="44" y="48" width="6" height="14" rx="3" fill="#ffe1a0"/><path d="M47 38v-9" stroke="#ffb638" stroke-width="5" stroke-linecap="round"/><circle cx="47" cy="16" r="13" fill="#b8a4f4"/><circle cx="43" cy="15" r="3" fill="#163e50"/><circle cx="52" cy="15" r="3" fill="#163e50"/><rect x="69" y="38" width="22" height="22" rx="6" fill="#ffb638"/><path d="m81 42-7 9h5l-1 6 8-10h-5z" fill="#694d24"/></symbol>
 <symbol id="icon-clock-out" viewBox="0 0 96 96"><rect x="10" y="58" width="76" height="24" rx="5" fill="#8d6e63"/><rect x="16" y="62" width="30" height="16" rx="3" fill="#a1887f"/><rect x="50" y="62" width="30" height="16" rx="3" fill="#a1887f"/><circle cx="48" cy="34" r="24" fill="#fff8e1" stroke="#37474f" stroke-width="4"/><path d="M48 34V20M48 34l11 7" stroke="#37474f" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="34" r="3" fill="#e53935"/><rect x="64" y="8" width="22" height="22" rx="2" fill="#ffd54f" transform="rotate(8 75 19)"/><path d="M68 16h14M68 22h10" stroke="#8d6e63" stroke-width="2.5" stroke-linecap="round" transform="rotate(8 75 19)"/></symbol><symbol id="icon-mosquito" viewBox="0 0 96 96"><image href="games/mosquito/leaderboard.webp?v=1" width="96" height="96" preserveAspectRatio="xMidYMid slice"/></symbol>
 <symbol id="icon-banquet" viewBox="0 0 96 96"><defs><radialGradient id="bqg-bg" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#1f6b57"/><stop offset=".65" stop-color="#0b2a25"/><stop offset="1" stop-color="#04110f"/></radialGradient><clipPath id="bqg-clip"><rect x="6" y="6" width="84" height="84" rx="20"/></clipPath></defs><rect x="6" y="6" width="84" height="84" rx="20" fill="url(#bqg-bg)"/><g clip-path="url(#bqg-clip)"><image href="data:image/webp;base64,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" x="9" y="12" width="78" height="78" preserveAspectRatio="xMidYMid slice"/><ellipse cx="48" cy="92" rx="40" ry="14" fill="#04110f" opacity=".55"/></g><rect x="6" y="6" width="84" height="84" rx="20" fill="none" stroke="#e8c675" stroke-width="2.5"/><rect x="9.5" y="9.5" width="77" height="77" rx="17" fill="none" stroke="#e8c675" stroke-opacity=".35" stroke-width="1"/><image href="data:image/webp;base64,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" x="65" y="44" width="19" height="40" preserveAspectRatio="xMidYMid meet"/></symbol><symbol id="icon-peek" viewBox="0 0 96 96"><rect width="96" height="96" rx="0" fill="none"/><rect x="14" y="44" width="68" height="36" rx="6" fill="#b8863b" stroke="#120d0a" stroke-width="3"/><path d="M12 44 L16 30 H80 L84 44 Z" fill="#d6a24e" stroke="#120d0a" stroke-width="3" stroke-linejoin="round"/><circle cx="34" cy="62" r="6" fill="#8a6226"/><circle cx="54" cy="62" r="6" fill="#8a6226"/><path d="M82 62h8" stroke="#e8c675" stroke-width="4" stroke-linecap="round"/><circle cx="91" cy="62" r="4" fill="#e8c675"/><ellipse cx="48" cy="37" rx="9" ry="5" fill="#2a0505"/><circle cx="48" cy="37" r="3.4" fill="#ff2a2a"/><path d="M48 37 L30 8 L66 8 Z" fill="#ff3030" opacity=".28"/><path d="M20 20q6-8 12 0" stroke="#dfe6ff" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/></symbol><symbol id="icon-pet-walk" viewBox="0 0 96 96"><rect x="0" y="66" width="96" height="30" fill="#59616a"/><path d="M0 66h96" stroke="#3a424a" stroke-width="3"/><circle cx="42" cy="46" r="26" fill="#8d99a6" stroke="#2b3138" stroke-width="4"/><path d="M50 21q6-9 2-17" fill="none" stroke="#2b3138" stroke-width="3.5" stroke-linecap="round"/><circle cx="52" cy="4" r="4.5" fill="#f2a93b"/><ellipse cx="33" cy="42" rx="5" ry="7" fill="#1b1b24"/><ellipse cx="51" cy="42" rx="5" ry="7" fill="#1b1b24"/><circle cx="33" cy="42" r="3.5" fill="#ffc23d"/><circle cx="51" cy="42" r="3.5" fill="#ffc23d"/><path d="M37 55q5 5 10 0" fill="none" stroke="#2b3138" stroke-width="2.5" stroke-linecap="round"/><path d="M70 74l6-8 6 8M76 66v-14" stroke="#f2a93b" stroke-width="3.5" stroke-linecap="round" fill="none"/></symbol>
-<symbol id="icon-office-shoot" viewBox="0 0 96 96"><rect width="48" height="96" fill="#1c3b44"/><rect x="48" width="48" height="96" fill="#2e2638"/><path d="M46 0h4v72h-4z" fill="#ffd43b" opacity=".55"/><rect x="58" y="10" width="26" height="32" rx="3" fill="#e9ecef" stroke="#1b1b24" stroke-width="3"/><path d="M63 19h16M63 25h16M63 31h11" stroke="#868e96" stroke-width="2.5" stroke-linecap="round"/><rect x="8" y="16" width="30" height="20" rx="4" fill="#8fe3ff" opacity=".85" stroke="#1b1b24" stroke-width="3"/><path d="M23 20v12M17 26h12" stroke="#1b1b24" stroke-width="3" stroke-linecap="round"/><circle cx="71" cy="54" r="3.5" fill="#4d8dff"/><circle cx="71" cy="64" r="3.5" fill="#4d8dff"/><path d="M0 74h96" stroke="#ff4d5e" stroke-width="3" stroke-dasharray="7 5"/><rect y="76" width="96" height="20" fill="#14161c"/><ellipse cx="71" cy="86" rx="15" ry="9" fill="#3d4a63" stroke="#1b1b24" stroke-width="3"/><circle cx="71" cy="84" r="7" fill="#2a1f1a"/><rect x="69" y="66" width="4" height="12" rx="1.5" fill="#e8ecf2"/></symbol><symbol id="icon-eat-smaller" viewBox="0 0 96 96"><circle cx="74" cy="22" r="15" fill="#ff8a7a" stroke="#1b1b2f" stroke-width="3"/><path d="M63 12l-4-6M74 7V0M85 12l4-6" stroke="#1b1b2f" stroke-width="3" stroke-linecap="round"/><text x="74" y="28" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="17" fill="#1b1b2f">9</text><circle cx="42" cy="56" r="28" fill="#6cc4ff" stroke="#1b1b2f" stroke-width="3.5"/><path d="M42 56 70 44a28 28 0 0 1 0 24z" fill="#10283d"/><text x="34" y="66" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="26" fill="#1b1b2f">5</text><circle cx="35" cy="40" r="3" fill="#1b1b2f"/><circle cx="82" cy="58" r="9" fill="#8bc34a" stroke="#1b1b2f" stroke-width="3"/><text x="82" y="63" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="12" fill="#1b1b2f">3</text><path d="M8 88h22M60 88h28" stroke="#f5c26b" stroke-width="4" stroke-linecap="round"/></symbol>
+<symbol id="icon-office-shoot" viewBox="0 0 96 96"><image href="games/office-shoot/leaderboard.webp" width="96" height="96" preserveAspectRatio="xMidYMid meet"/></symbol>
+<symbol id="icon-eat-smaller" viewBox="0 0 96 96"><circle cx="74" cy="22" r="15" fill="#ff8a7a" stroke="#1b1b2f" stroke-width="3"/><path d="M63 12l-4-6M74 7V0M85 12l4-6" stroke="#1b1b2f" stroke-width="3" stroke-linecap="round"/><text x="74" y="28" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="17" fill="#1b1b2f">9</text><circle cx="42" cy="56" r="28" fill="#6cc4ff" stroke="#1b1b2f" stroke-width="3.5"/><path d="M42 56 70 44a28 28 0 0 1 0 24z" fill="#10283d"/><text x="34" y="66" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="26" fill="#1b1b2f">5</text><circle cx="35" cy="40" r="3" fill="#1b1b2f"/><circle cx="82" cy="58" r="9" fill="#8bc34a" stroke="#1b1b2f" stroke-width="3"/><text x="82" y="63" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="12" fill="#1b1b2f">3</text><path d="M8 88h22M60 88h28" stroke="#f5c26b" stroke-width="4" stroke-linecap="round"/></symbol>
 <symbol id="icon-mirror-twins" viewBox="0 0 96 96"><path d="M48 6v84" stroke="#9fe8f7" stroke-width="3" stroke-dasharray="5 6" stroke-linecap="round"/><rect x="10" y="44" width="28" height="26" rx="9" fill="#e8ecff" stroke="#1b1b2f" stroke-width="3"/><circle cx="24" cy="32" r="15" fill="#e8ecff" stroke="#1b1b2f" stroke-width="3"/><ellipse cx="26" cy="33" rx="10" ry="7.5" fill="#2a8cff"/><ellipse cx="29" cy="30" rx="3" ry="2" fill="#fff"/><rect x="58" y="44" width="28" height="26" rx="9" fill="#e8ecff" stroke="#1b1b2f" stroke-width="3"/><circle cx="72" cy="32" r="15" fill="#e8ecff" stroke="#1b1b2f" stroke-width="3"/><ellipse cx="70" cy="33" rx="10" ry="7.5" fill="#ff9a1f"/><ellipse cx="67" cy="30" rx="3" ry="2" fill="#fff"/><path d="M14 84h20m-6-6 6 6-6 6M62 84h20m-14-6-6 6 6 6" fill="none" stroke="#f5c26b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 <symbol id="icon-shadow-relay" viewBox="0 0 96 96"><circle cx="48" cy="50" r="38" fill="#f0b46a" stroke="#8a5a2e" stroke-width="4"/><circle cx="48" cy="42" r="22" fill="#fbdca6" opacity=".7"/><path d="M74 12v6" stroke="#1b1b2f" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="74" cy="28" rx="8" ry="10" fill="#e0452f" stroke="#1b1b2f" stroke-width="2.5"/><path d="M70 18h8M70 38h8" stroke="#1b1b2f" stroke-width="3" stroke-linecap="round"/><g fill="#1b1b2f" opacity=".35"><circle cx="30" cy="56" r="11"/><path d="M22 51l2-14 6 9zM32 46l6-9 2 14zM41 53l11 4-11 5z"/></g><g fill="#1b1b2f"><circle cx="52" cy="58" r="11"/><path d="M44 53l2-14 6 9zM54 48l6-9 2 14zM63 55l11 4-11 5z"/></g><circle cx="56" cy="55" r="2.6" fill="#ff6b6b"/><path d="M50 69l-5 12M28 67l-5 12" stroke="#1b1b2f" stroke-width="2.5" stroke-linecap="round"/></symbol>
 <symbol id="icon-one-line-defense" viewBox="0 0 96 96"><circle cx="48" cy="54" r="20" fill="#2f4a3a" stroke="#1b1b2f" stroke-width="3"/><circle cx="48" cy="54" r="14" fill="none" stroke="#bfe8a8" stroke-width="3"/><path d="M39 62V49h4v4h3v-6h4v6h3v-4h4v13z" fill="#bfe8a8" stroke="#1b1b2f" stroke-width="2" stroke-linejoin="round"/><path d="M14 36Q46 14 82 34" fill="none" stroke="#6be3f5" stroke-width="6" stroke-linecap="round"/><circle cx="82" cy="34" r="5" fill="#f5c26b" stroke="#1b1b2f" stroke-width="2.5"/><path d="M20 8l10 10M30 8 20 18M60 4l9 9M69 4l-9 9M8 76l9 9M17 76l-9 9M78 78l9 9M87 78l-9 9" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/></symbol>
@@ -4630,7 +4663,7 @@ html.points-hidden [data-points-hidden] { display:none !important; }
 <symbol id="icon-baby" viewBox="0 0 96 96"><image width="96" height="96" href="./games/baby/leaderboard.webp"/></symbol>
 <symbol id="icon-pudding" viewBox="0 0 96 96"><image width="96" height="96" href="./games/pudding/leaderboard.webp"/></symbol>
 </defs></svg>
-    <aside class="lobby-sidebar" aria-label="遊戲選單"><div class="side-top"><a class="side-logo" href="#lobby" data-i18n-ignore aria-label="TICATICA GAMES"><img src="images/ticatica-logo.png?v=2" alt="" width="900" height="233" decoding="async"></a><button type="button" class="side-toggle" id="side-toggle" aria-expanded="true" aria-label="收合選單" title="收合選單"><i class="fa-solid fa-bars" aria-hidden="true"></i></button></div><a class="side-feature" href="#keno" title="每日挖礦"><i class="fa-solid fa-gem side-head-icon" aria-hidden="true"></i><span>每日挖礦</span><span class="side-feature-art" aria-hidden="true"></span></a><div class="side-section side-section-quick"><div class="side-head"><i class="fa-solid fa-fire side-head-icon" aria-hidden="true"></i><span>熱門遊戲</span><button type="button" class="side-random" id="side-random"><i class="fa-solid fa-shuffle" aria-hidden="true"></i>隨機</button></div><div class="side-quick"><a class="side-quick-item" href="#rocket-chair" aria-label="社畜要下班" title="社畜要下班"><img src="games/rocket-chair/cover.webp?v=084d76dc" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#eat-smaller" aria-label="數字吞噬" title="數字吞噬"><img src="games/eat-smaller/cover.webp?v=54f5022e" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#mirror-twins" aria-label="鏡像雙子" title="鏡像雙子"><img src="games/mirror-twins/cover.webp?v=268c863d" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#shadow-relay" aria-label="影子接力" title="影子接力"><img src="games/shadow-relay/cover.webp?v=1b1c5a28" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#ocean-link" aria-label="深海連連看" title="深海連連看"><img src="games/ocean-link/cover.webp?v=16f8e3e8" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#banquet" aria-label="最後的晚餐" title="最後的晚餐"><img src="games/banquet/cover.webp?v=c872f4ba" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#office-shoot" aria-label="拒絕加班" title="拒絕加班"><img src="games/office-shoot/cover.webp?v=5c8a8d4d" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#mermaid" aria-label="人魚接龍" title="人魚接龍"><img src="games/mermaid/cover.webp?v=0b70a141" alt="" loading="lazy" decoding="async"></a></div></div><div class="side-section"><div class="side-head"><i class="fa-solid fa-bolt side-head-icon" aria-hidden="true"></i><span>遊戲分類</span></div><div class="lobby-filters side-filters" id="side-filters" role="group" aria-label="篩選遊戲類型"><button title="全部" type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button title="跑酷動作" type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button title="潛行偷閒" type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button title="時機操作" type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button title="益智策略" type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button title="經典小遊戲" type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button title="機率挑戰" type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div></div><div class="side-section"><div class="side-head"><i class="fa-solid fa-circle-info side-head-icon" aria-hidden="true"></i><span>其他資訊</span></div><nav class="side-links" aria-label="其他資訊"><a href="#member" title="會員中心"><i class="fa-solid fa-user" aria-hidden="true"></i><span>會員中心</span></a><a href="#keno" title="每日挖礦"><i class="fa-solid fa-gem" aria-hidden="true"></i><span>每日挖礦</span></a></nav></div></aside>
+    <aside class="lobby-sidebar" aria-label="遊戲選單"><div class="side-top"><a class="side-logo" href="#lobby" data-i18n-ignore aria-label="TICATICA GAMES"><img src="images/ticatica-logo.png?v=2" alt="" width="900" height="233" decoding="async"></a><button type="button" class="side-toggle" id="side-toggle" aria-expanded="true" aria-label="收合選單" title="收合選單"><i class="fa-solid fa-bars" aria-hidden="true"></i></button></div><a class="side-feature" href="#keno" title="每日挖礦"><i class="fa-solid fa-gem side-head-icon" aria-hidden="true"></i><span>每日挖礦</span><span class="side-feature-art" aria-hidden="true"></span></a><div class="side-section side-section-quick"><div class="side-head"><i class="fa-solid fa-fire side-head-icon" aria-hidden="true"></i><span>熱門遊戲</span><button type="button" class="side-random" id="side-random"><i class="fa-solid fa-shuffle" aria-hidden="true"></i>隨機</button></div><div class="side-quick"><a class="side-quick-item" href="#rocket-chair" aria-label="社畜要下班" title="社畜要下班"><img src="games/rocket-chair/cover.webp?v=084d76dc" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#eat-smaller" aria-label="數字吞噬" title="數字吞噬"><img src="games/eat-smaller/cover.webp?v=54f5022e" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#mirror-twins" aria-label="鏡像雙子" title="鏡像雙子"><img src="games/mirror-twins/cover.webp?v=268c863d" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#shadow-relay" aria-label="影子接力" title="影子接力"><img src="games/shadow-relay/cover.webp?v=1b1c5a28" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#ocean-link" aria-label="深海連連看" title="深海連連看"><img src="games/ocean-link/cover.webp?v=16f8e3e8" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#banquet" aria-label="最後的晚餐" title="最後的晚餐"><img src="games/banquet/cover.webp?v=c872f4ba" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#office-shoot" aria-label="拒絕加班" title="拒絕加班"><img src="games/office-shoot/cover.webp?v=7fce4824" alt="" loading="lazy" decoding="async"></a><a class="side-quick-item" href="#mermaid" aria-label="人魚接龍" title="人魚接龍"><img src="games/mermaid/cover.webp?v=0b70a141" alt="" loading="lazy" decoding="async"></a></div></div><div class="side-section"><div class="side-head"><i class="fa-solid fa-bolt side-head-icon" aria-hidden="true"></i><span>遊戲分類</span></div><div class="lobby-filters side-filters" id="side-filters" role="group" aria-label="篩選遊戲類型"><button title="全部" type="button" data-lobby-filter="all" aria-pressed="true"><i class="fa-solid fa-table-cells-large filter-icon" aria-hidden="true"></i>全部 <span>30</span></button><button title="跑酷動作" type="button" data-lobby-filter="run" aria-pressed="false"><i class="fa-solid fa-person-running filter-icon" aria-hidden="true"></i>跑酷動作 <span>0</span></button><button title="潛行偷閒" type="button" data-lobby-filter="stealth" aria-pressed="false"><i class="fa-solid fa-user-secret filter-icon" aria-hidden="true"></i>潛行偷閒 <span>0</span></button><button title="時機操作" type="button" data-lobby-filter="timing" aria-pressed="false"><i class="fa-solid fa-stopwatch filter-icon" aria-hidden="true"></i>時機操作 <span>0</span></button><button title="益智策略" type="button" data-lobby-filter="puzzle" aria-pressed="false"><i class="fa-solid fa-puzzle-piece filter-icon" aria-hidden="true"></i>益智策略 <span>0</span></button><button title="經典小遊戲" type="button" data-lobby-filter="retro" aria-pressed="false"><i class="fa-solid fa-gamepad filter-icon" aria-hidden="true"></i>經典小遊戲 <span>2</span></button><button title="機率挑戰" type="button" data-lobby-filter="chance" aria-pressed="false"><i class="fa-solid fa-dice filter-icon" aria-hidden="true"></i>機率挑戰 <span>0</span></button></div></div><div class="side-section"><div class="side-head"><i class="fa-solid fa-circle-info side-head-icon" aria-hidden="true"></i><span>其他資訊</span></div><nav class="side-links" aria-label="其他資訊"><a href="#member" title="會員中心"><i class="fa-solid fa-user" aria-hidden="true"></i><span>會員中心</span></a><a href="#keno" title="每日挖礦"><i class="fa-solid fa-gem" aria-hidden="true"></i><span>每日挖礦</span></a></nav></div></aside>
     <div class="lobby-banners"><div class="lobby-banner banner-welcome"><span class="banner-spark spark-a"></span><span class="banner-spark spark-b"></span><span class="banner-spark spark-c"></span><div class="banner-copy"><p class="lobby-eyebrow">TICATICA GAMES</p><h2>今天，想玩<br>哪一款？</h2><p class="lobby-intro">挑一款就開玩，同一個點數錢包。</p><button class="lobby-hero-link" id="lobby-explore" type="button">探索全部遊戲 <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button></div><svg class="banner-art" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-ocean-link"></use></svg></div><a class="lobby-banner banner-new" href="#rocket-chair"><span class="banner-spark spark-a"></span><span class="banner-spark spark-b"></span><span class="banner-spark spark-c"></span><div class="banner-copy"><p class="lobby-eyebrow">NEW GAME</p><h2>社畜要下班</h2><p class="lobby-intro">新遊戲上架，對著手機大吼衝破天花板。</p></div><svg class="banner-art" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-rocket-chair"></use></svg></a><a class="lobby-banner banner-free" href="#mines"><span class="banner-spark spark-a"></span><span class="banner-spark spark-b"></span><span class="banner-spark spark-c"></span><div class="banner-copy"><p class="lobby-eyebrow">FREE</p><h2>經典小遊戲</h2><p class="lobby-intro">踩地雷不限次數。</p></div><svg class="banner-art" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mines"></use></svg></a></div>
     <section class="daily-supply" aria-label="每日補給"><a class="game-card" href="#keno" data-art="icon" id="gold-float" title="每日挖礦" aria-describedby="gold-daily-status" data-game-category="daily" aria-label="每日挖金礦：每天 3 次，每次挖5格，最多獲得30點">
   <div class="gold-banner-art" aria-hidden="true"><svg viewBox="0 0 96 96" focusable="false"><use href="#icon-keno"></use></svg><span id="gold-free-badge">3</span></div>
@@ -4680,7 +4713,7 @@ html.points-hidden [data-points-hidden] { display:none !important; }
   <p class="game-card-description">把相同的圖案連起來，穿越礁石與移動棋盤。</p>
   <div class="game-card-footer"><span>不限次數</span><span>配對解謎</span></div>
 </a>
-<a class="game-card" href="#office-shoot" data-art="cover" style="--cover:url(games/office-shoot/cover.webp?v=5c8a8d4d)" data-game-category="run" aria-label="遊玩拒絕加班：自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-office-shoot"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-office-shoot"></use></svg></div><h3>拒絕加班</h3><p class="game-card-en">No Overtime!</p><p class="game-card-description">自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。</p><div class="game-card-footer"><span>立即開玩</span><span>自動射擊</span></div></a>
+<a class="game-card" href="#office-shoot" data-art="cover" style="--cover:url(games/office-shoot/cover.webp?v=7fce4824)" data-game-category="run" aria-label="遊玩拒絕加班：自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-office-shoot"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-office-shoot"></use></svg></div><h3>拒絕加班</h3><p class="game-card-en">No Overtime!</p><p class="game-card-description">自動開火擋下湧入的工作，打倒 17:00 大魔王準時下班。</p><div class="game-card-footer"><span>立即開玩</span><span>自動射擊</span></div></a>
 <a class="game-card" href="#pet-walk" data-art="cover" style="--cover:url(games/pet-walk/cover.webp?v=e8058a8f)" data-game-category="run" aria-label="遊玩小灰出門：點一下走一步，路上遇到隨機事件和轉盤，走滿 60 步回家。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">跑酷動作</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-pet-walk"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-pet-walk"></use></svg></div><h3>小灰出門</h3><p class="game-card-en">Pet Walkies</p><p class="game-card-description">一鍵帶小灰散步，路上撞見野狗、河鯊和幸運轉盤。</p><div class="game-card-footer"><span>立即開玩</span><span>一鍵散步</span></div></a>
 <a class="game-card" href="#last-hair" data-art="cover" style="--cover:url(games/last-hair/cover.webp?v=a6d40f82)" data-game-category="stealth" aria-label="遊玩尊嚴保衛戰：頂著最後三根頭髮，在強風中走完 500 公尺去面試。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-last-hair"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-last-hair"></use></svg></div><h3>尊嚴保衛戰</h3><p class="game-card-en">The Last Hair</p><p class="game-card-description">頂著最後三根頭髮，在強風中走完 500 公尺去面試。</p><div class="game-card-footer"><span>立即開玩</span><span>雙拇指操作</span></div></a>
 <a class="game-card" href="#mosquito" data-art="cover" style="--cover:url(games/mosquito/cover.webp?v=2042ff8d)" data-game-category="stealth" aria-label="遊玩血壓上升：深夜當蚊子，吸飽血再從窗戶逃走，別把睡著的人吵醒。有 BONUS 獎勵。"><div class="game-card-top"><span class="game-card-category">潛行偷閒</span><span class="game-card-bonus">✦ BONUS</span><span class="game-card-arrow" aria-hidden="true">↗</span></div><div class="game-card-icon game-icon-mosquito"><svg viewBox="0 0 96 96" aria-hidden="true" focusable="false"><use href="#icon-mosquito"></use></svg></div><h3>血壓上升</h3><p class="game-card-en">Midnight Mosquito</p><p class="game-card-description">深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。</p><div class="game-card-footer"><span>立即開玩</span><span>按住吸血</span></div></a>
@@ -5920,7 +5953,7 @@ html.points-hidden [data-points-hidden] { display:none !important; }
   <section class="view" id="view-office-shoot" hidden>
     <div class="console fs-game"><div class="sneak-stage"><canvas id="os-canvas" tabindex="0" width="450" height="800" aria-label="拒絕加班：左右移動自動開火，擋住右道湧入的工作，打破左道補給拿新裝備，每天 17:00 擊敗大魔王準時下班"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="拒絕加班操作">
-        <dl class="stats"><div><dt>目前天數</dt><dd id="os-day" data-i18n-ignore>—</dd></div><div><dt>績效分數</dt><dd id="os-score" data-i18n-ignore>—</dd></div><div><dt>最佳績效</dt><dd id="os-best" data-i18n-ignore>0</dd></div></dl>
+        <button id="os-pause" type="button" aria-label="暫停／繼續">Ⅱ</button><button id="os-sound" type="button" aria-label="切換音效">♫</button><dl class="stats"><div><dt>目前天數</dt><dd id="os-day" data-i18n-ignore>—</dd></div><div><dt>績效分數</dt><dd id="os-score" data-i18n-ignore>—</dd></div><div><dt>最佳績效</dt><dd id="os-best" data-i18n-ignore>0</dd></div></dl>
         <dl class="stats"><div><dt>本局 BONUS 點數</dt><dd id="os-pay" data-i18n-ignore>0 / 10</dd></div></dl>
         
         <button class="go" id="os-go" type="button" data-mode="bet">開始上班</button>
@@ -11311,25 +11344,6 @@ html.points-hidden [data-points-hidden] { display:none !important; }
   "補給被新需求砸爛了！|Supply crushed by a new request!": "Supply crushed by a new request!",
   "停火！要改需求了|Hold fire! Requirements changing!": "Hold fire! Requirements changing!",
   "互換位置！|Swapped!": "Swapped!",
-  "▼ 補給站|▼ SUPPLIES": "▼ SUPPLIES",
-  "▼ 工作湧入|▼ INCOMING WORK": "▼ INCOMING WORK",
-  "— 下班線 —|— CLOCK-OUT LINE —": "— CLOCK-OUT LINE —",
-  "已讀|SEEN": "SEEN",
-  "必勝|WIN": "WIN",
-  "當機中…|Frozen…": "Frozen…",
-  "在嗎?|u there?": "u there?",
-  "報表|REPORT": "REPORT",
-  "急|ASAP": "ASAP",
-  "會議|MTG": "MTG",
-  "待辦|TODO": "TODO",
-  "老闆交辦|BOSS ORDER": "BOSS ORDER",
-  "緊急|URGENT": "URGENT",
-  "★ 精煉 +{n}|★ REFINE +{n}": "★ REFINE +{n}",
-  "★ 新裝備|★ NEW GEAR": "★ NEW GEAR",
-  "進度？|ETA?": "ETA?",
-  "在嗎？|Ping!": "Ping!",
-  "專案_最終版_v38|Project_FINAL_v38": "Project_FINAL_v38",
-  "結案日：未定|Due date: TBD": "Due date: TBD",
   "報告|Report": "Report",
   "回信|Email": "Email",
   "訂會議|Meeting": "Meeting",
@@ -11343,8 +11357,6 @@ html.points-hidden [data-points-hidden] { display:none !important; }
   "已讀|Seen": "Seen",
   "17:00 加班危機|5 PM — OVERTIME!": "5 PM — OVERTIME!",
   "第 {n} 天|Day {n}": "Day {n}",
-  "績效|SCORE": "SCORE",
-  "戰力 {n} / 秒|Power {n}/s": "Power {n}/s",
   "拒絕加班|No Overtime!": "No Overtime!",
   "← →  /  拖曳  左右移動，自動開火|← → / Drag to move — you fire automatically": "← → / Drag to move — you fire automatically",
   "左道補給站：打破護盾 → 拿新裝備、強化|Left lane: break shields for new gear & boosts": "Left lane: break shields for new gear & boosts",
@@ -12359,6 +12371,13 @@ html.points-hidden [data-points-hidden] { display:none !important; }
   "側目": "SUSPICION",
   "手汗": "SWEAT",
   "風向": "WIND",
+  "切換音效": "Toggle sound",
+  "工作": "WORK",
+  "準時下班防線": "CLOCK-OUT LINE",
+  "暈！": "STUN!",
+  "拖曳移動・自動開火": "DRAG TO MOVE · AUTO FIRE",
+  "素材載入失敗，請重新整理": "ART LOAD FAILED · RELOAD",
+  "載入漫畫素材…": "LOADING COMIC ART…",
   "重試載入": "Retry loading",
   "美術載入中…": "Loading artwork…",
   "美術載入失敗，請重試": "Artwork unavailable. Please retry.",
@@ -12417,6 +12436,7 @@ html.points-hidden [data-points-hidden] { display:none !important; }
   "滑鼠": "鼠标",
   "滾著": "滚着",
   "照著": "照着",
+  "畫素": "像素",
   "登入": "登录",
   "登出": "退出登录",
   "盯著": "盯着",
@@ -25233,6 +25253,49 @@ const BONUS_PER_DAY=2,BONUS_DAYS=5,BEST_KEY='deep-sea-office-shoot-best';
 const cv=$('os-canvas'),ctx=cv.getContext('2d');
 {const dpr=Math.min(window.devicePixelRatio||1,2);cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
 
+// Approved art direction 02: full painted office + native-alpha comic actors.
+const COMIC_PATH='games/office-shoot/art/comic-v2/';
+const comic={};let comicReady=false,comicFailed=false,comicStarted=false,walkClock=0,walkX=0;
+const WORLD_TOP=210,VIEW_LINE=600,WORLD_SCALE=(VIEW_LINE-WORLD_TOP)/LINE;
+// Presentation-only horizontal projection: retain the approved narrower supply lane.
+// Simulation coordinates and all collision/spawn rules stay in the original 450x800 world.
+const VIEW_MID=190,VIEW_ANCHOR=MID/2;
+function drawX(x){return x<=VIEW_ANCHOR?x:x<=MID?VIEW_ANCHOR+(x-VIEW_ANCHOR)*(VIEW_MID-VIEW_ANCHOR)/(MID-VIEW_ANCHOR):VIEW_MID+(x-MID)*(W-VIEW_MID)/(W-MID);}
+function worldX(x){return x<=VIEW_ANCHOR?x:x<=VIEW_MID?VIEW_ANCHOR+(x-VIEW_ANCHOR)*(MID-VIEW_ANCHOR)/(VIEW_MID-VIEW_ANCHOR):MID+(x-VIEW_MID)*(W-MID)/(W-VIEW_MID);}
+
+const comicNames=['office','player','folder','paper','meeting','boss','crate','stapler','coffee','pen','shredder','printer','laser','walk','frame','footer'];
+function loadComicArt(){
+  if(comicStarted)return;comicStarted=true;
+  if(typeof Image==='undefined'){comicReady=true;return;}
+  let pending=comicNames.length+1;
+  const loaded=()=>{if(--pending===0){comicReady=true;comicFailed=false;}};
+  if(document.fonts&&document.fonts.load){
+    Promise.all([document.fonts.load('900 22px "Office Comic TC"'),document.fonts.load('900 28px "Office Comic Latin"')]).then(loaded,()=>{comicFailed=true;});
+  }else loaded();
+  for(const name of comicNames){
+    const im=new Image();comic[name]=im;
+    im.onload=loaded;
+    im.onerror=()=>{comicFailed=true;};
+    im.src=COMIC_PATH+name+'.webp';
+  }
+}
+if(typeof Image==='undefined')comicReady=true; // Behavior fixtures do not load raster assets.
+const comicBounds={"paper": [1, 22, 256, 376], "meeting": [1, 103, 256, 376], "shredder": [1, 103, 256, 376], "coffee": [1, 171, 256, 376], "crate": [1, 119, 256, 376], "pen": [100, 16, 157, 376], "boss": [1, 191, 256, 376], "laser": [92, 16, 164, 376], "stapler": [26, 237, 256, 376], "folder": [1, 121, 256, 376], "printer": [1, 153, 256, 376], "player": [20, 16, 238, 376]};
+function comicImage(name,x,y,w,h){
+  const im=comic[name];if(!im||!im.complete||!im.naturalWidth)return;
+  const b=comicBounds[name];
+  if(!b){ctx.drawImage(im,x,y,w,h);return;}
+  const sw=b[2]-b[0],sh=b[3]-b[1],k=Math.min(w/sw,h/sh);
+  ctx.drawImage(im,b[0],b[1],sw,sh,x+(w-sw*k)/2,y+(h-sh*k)/2,sw*k,sh*k);
+}
+function comicBox(x,y,w,h,fill){
+  ctx.fillStyle='#050709';ctx.fillRect(x+3,y+3,w,h);
+  ctx.fillStyle=fill;ctx.fillRect(x,y,w,h);ctx.strokeStyle='#f8f3df';ctx.lineWidth=1.5;ctx.strokeRect(x,y,w,h);
+}
+function comicText(text,x,y,size,color,max){
+  ctx.font=`italic 900 ${size}px "Office Comic Latin",Impact,"Arial Black","Office Comic TC",${FONT}`;ctx.textBaseline='middle';ctx.fillStyle=color;
+  ctx.fillText(text,x,y,max||W);
+}
 // ====== 多語系：每個字串寫成「中文|English」，語言跟隨大廳切換 ======
 let lang='zh';
 function syncLang(){lang=(window.deepSeaI18n&&window.deepSeaI18n.getLanguage()==='en')?'en':'zh';}
@@ -25786,158 +25849,53 @@ function updateBosses(dt){
 }
 
 // ====== 繪製 ======
-let bgL=null,bgR=null;
-function hash(k){const x=Math.sin(k*127.1+311.7)*43758.5453;return x-Math.floor(x);}
-function decor(kind,x,y,flip){
-  ctx.save();ctx.translate(x,y);if(flip)ctx.scale(-1,1);
-  if(kind===0){ // 盆栽
-    ctx.fillStyle='#8a5a3a';ctx.beginPath();ctx.moveTo(-8,0);ctx.lineTo(8,0);ctx.lineTo(6,12);ctx.lineTo(-6,12);ctx.closePath();ctx.fill();
-    ctx.fillStyle='#4cae6a';for(const [a,l] of [[-2.2,16],[-1.57,20],[-.9,16],[-1.9,12],[-1.2,13]]){ctx.beginPath();ctx.ellipse(Math.cos(a)*l*.5,Math.sin(a)*l*.5,4,l*.5,a+1.57,0,6.283);ctx.fill();}
-  }else if(kind===1){ // 飲水機
-    ctx.fillStyle='#dfe7ef';rr(-8,-6,16,24,3);ctx.fill();ctx.fillStyle='#74c0fc';rr(-6,-22,12,17,5);ctx.fill();
-    ctx.fillStyle='#4dabf7';ctx.fillRect(-3,4,6,3);
-  }else if(kind===2){ // 咖啡機
-    ctx.fillStyle='#343a40';rr(-9,-10,18,24,3);ctx.fill();ctx.fillStyle='#868e96';ctx.fillRect(-6,-6,12,6);
-    ctx.fillStyle='#fff';ctx.fillRect(-3,6,6,6);ctx.fillStyle='#8a5a3a';ctx.fillRect(-2,7,4,2);
-  }else{ // 沙發
-    ctx.fillStyle='#e8590c';rr(-10,-14,20,28,5);ctx.fill();ctx.fillStyle='#fd7e14';rr(-6,-10,12,20,3);ctx.fill();
-  }
-  ctx.restore();
-}
-function desk(x,y,k){
-  ctx.save();ctx.translate(x,y);
-  ctx.fillStyle='#5c4a3d';ctx.fillRect(-16,-22,32,44);           // 桌面
-  ctx.fillStyle='#2b2f36';ctx.fillRect(-12,-18,6,22);             // 螢幕（側面看）
-  ctx.fillStyle=hash(k+3)<.5?'#4dabf7':'#69db7c';ctx.fillRect(-11,-16,4,18);
-  ctx.fillStyle='#e9ecef';ctx.fillRect(0,-8,9,12);                // 文件
-  ctx.fillStyle='#868e96';ctx.fillRect(1,-5,7,1);ctx.fillRect(1,-2,7,1);
-  if(hash(k+7)<.5){ctx.fillStyle='#fff';circle(6,12,3.5);ctx.fill();}  // 馬克杯
-  ctx.fillStyle='#343a40';circle(20,0,8);ctx.fill();               // 椅子
-  ctx.restore();
-}
 function drawBG(){
-  const s=t*45;
-  // 左：茶水間（淺色地磚）
-  ctx.fillStyle='#1c3b44';ctx.fillRect(0,0,MID,H);
-  ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=2;
-  const ts=56,oy=s%ts;
-  for(let y=oy-ts;y<LINE;y+=ts){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(MID,y);ctx.stroke();}
-  for(let x=ts/2;x<MID;x+=ts){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,LINE);ctx.stroke();}
-  // 右：開放式辦公室（地毯斜紋）
-  ctx.fillStyle='#2e2638';ctx.fillRect(MID,0,MID,H);
-  ctx.save();ctx.beginPath();ctx.rect(MID,0,MID,LINE);ctx.clip();
-  ctx.strokeStyle='rgba(255,255,255,.035)';ctx.lineWidth=6;
-  const sp=28,od=s%sp;
-  for(let k=-H;k<W;k+=sp){ctx.beginPath();ctx.moveTo(MID+k,od-sp);ctx.lineTo(MID+k+H,od-sp+H);ctx.stroke();}
-  ctx.restore();
-  // 兩側擺設（跟著地板一起捲動，淡淡的不搶戲）
-  ctx.save();ctx.globalAlpha=.35;
-  const gap=150,k0=Math.floor((s-LINE-60)/gap),k1=Math.floor((s+60)/gap);
-  for(let k=k0;k<=k1;k++){
-    const y=s-k*gap;if(y<-40||y>LINE+30)continue;
-    decor(Math.floor(hash(k)*4),14,y+hash(k+1)*30,false);
-    desk(W-10,y+40,k);
+  // Every frame uses the full approved scene, including both edges and carpet.
+  const office=comic.office;
+  if(office&&office.complete&&office.naturalWidth)ctx.drawImage(office,0,105,900,1495,0,104,W,H-104-52);
+  const y=210,bot=VIEW_LINE-10;
+  ctx.save();ctx.lineWidth=2.5;ctx.setLineDash([10,7]);
+  for(const [col,x1,x2] of [['#00d8f6',58,174],['#ff3948',211,W-36]]){
+    ctx.strokeStyle=col;
+    for(const x of [x1,x2]){ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,bot);ctx.stroke();}
   }
-  ctx.restore();
-  // 中間分隔：腳踏墊式的黃黑警示線
-  ctx.save();ctx.beginPath();ctx.rect(MID-4,0,8,LINE);ctx.clip();
-  for(let y=(s%20)-20;y<LINE;y+=20){ctx.fillStyle='rgba(255,212,59,.35)';ctx.beginPath();ctx.moveTo(MID-4,y);ctx.lineTo(MID+4,y-8);ctx.lineTo(MID+4,y+2);ctx.lineTo(MID-4,y+10);ctx.closePath();ctx.fill();}
-  ctx.restore();
-  if(phase!=='boss'){
-    ctx.font=`bold 13px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillStyle='rgba(140,230,220,.6)';ctx.fillText(L('▼ 補給站|▼ SUPPLIES'),MID/2,TOP+18);
-    ctx.fillStyle='rgba(255,150,170,.6)';ctx.fillText(L('▼ 工作湧入|▼ INCOMING WORK'),MID*1.5,TOP+18);
-  }
-  // 下班線以下：打卡區
-  ctx.fillStyle='#14161c';ctx.fillRect(0,LINE,W,H-LINE);
-  ctx.fillStyle='rgba(255,255,255,.04)';for(let x=0;x<W;x+=30)ctx.fillRect(x,LINE,15,H-LINE);
-  ctx.strokeStyle='rgba(255,70,90,.8)';ctx.lineWidth=2;ctx.setLineDash([10,8]);ctx.lineDashOffset=-t*30;
-  ctx.beginPath();ctx.moveTo(0,LINE);ctx.lineTo(W,LINE);ctx.stroke();ctx.setLineDash([]);
-  ctx.font=`bold 10px ${FONT}`;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillStyle='rgba(255,110,130,.85)';ctx.fillText(L('— 下班線 —|— CLOCK-OUT LINE —'),6,LINE+9);
+  ctx.setLineDash([]);ctx.restore();
+  ctx.textAlign='center';
+  comicBox(65,y-27,104,22,'#00d8f6');comicText(L('補給|Supplies'),117,y-16,16,'#030709');
+  comicBox(248,y-27,142,22,'#ff3948');comicText(L('工作|WORK'),319,y-16,16,'#030709');
+  ctx.save();ctx.beginPath();ctx.rect(0,VIEW_LINE-8,W,18);ctx.clip();ctx.fillStyle='#ff6031';ctx.fillRect(0,VIEW_LINE-8,W,18);
+  ctx.strokeStyle='#101015';ctx.lineWidth=4;
+  for(let x=-20;x<W+20;x+=14){ctx.beginPath();ctx.moveTo(x,VIEW_LINE+10);ctx.lineTo(x+12,VIEW_LINE-8);ctx.stroke();}
+  ctx.fillStyle='#ff6031';ctx.fillRect(W/2-92,VIEW_LINE-8,184,18);ctx.restore();
+  ctx.textAlign='center';comicText(L('準時下班防線|CLOCK-OUT LINE'),W/2,VIEW_LINE+1,13,'#050709',180);
 }
 function drawGun(gx,gy,tier,w,s){
+  const name=['pen','stapler','shredder','laser','coffee','printer','laser'][tier];
   ctx.save();ctx.translate(gx,gy);if(s)ctx.scale(s,s);
-  switch(tier){
-    case 0: // 原子筆
-      ctx.fillStyle='#e8ecf2';rr(-2.5,-18,5,18,2);ctx.fill();
-      ctx.fillStyle='#2f6fe0';ctx.fillRect(-2.5,-6,5,6);ctx.fillRect(1.5,-15,2,8);
-      ctx.fillStyle='#333';ctx.beginPath();ctx.moveTo(-2,-18);ctx.lineTo(2,-18);ctx.lineTo(0,-22);ctx.closePath();ctx.fill();break;
-    case 1: // 釘書機
-      ctx.fillStyle='#2b2f36';rr(-4.5,-28,9,28,3);ctx.fill();
-      ctx.fillStyle='#d64545';rr(-3.5,-27,7,18,3);ctx.fill();
-      ctx.fillStyle='#d9dee6';ctx.fillRect(-2,-30,4,3);break;
-    case 2: // 碎紙機
-      ctx.fillStyle='#5b6573';rr(-8,-20,16,20,3);ctx.fill();
-      ctx.fillStyle='#1a1d22';ctx.fillRect(-6,-22,12,3);
-      ctx.fillStyle='#fff';for(const x of [-5,-2,1,4])ctx.fillRect(x,-29+Math.sin(t*20+x)*1.5,1.6,7);
-      ctx.fillStyle='#ffa94d';ctx.fillRect(-8,-8,16,2);break;
-    case 3: // 雷射簡報筆
-      ctx.fillStyle='#1f2329';rr(-3,-32,6,32,3);ctx.fill();
-      ctx.fillStyle='#888';ctx.fillRect(-3,-12,6,2);
-      ctx.fillStyle='rgba(255,40,40,.5)';circle(0,-34,5);ctx.fill();ctx.fillStyle='#fff';circle(0,-34,2);ctx.fill();break;
-    case 4: // 咖啡火箭（保溫瓶發射器）
-      ctx.fillStyle='#6b3e26';rr(-7,-36,14,36,4);ctx.fill();
-      ctx.fillStyle='#e0a96d';ctx.fillRect(-7,-30,14,3);ctx.fillRect(-7,-10,14,3);
-      ctx.fillStyle='#fff';ctx.fillRect(-6,-40,12,4);
-      ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=1.5;for(const x of [-3,3]){ctx.beginPath();ctx.moveTo(x,-42);ctx.quadraticCurveTo(x+3*Math.sin(t*6),-47,x,-52);ctx.stroke();}break;
-    case 5: // 印表機
-      ctx.fillStyle='#e8ecf2';rr(-10,-24,20,24,3);ctx.fill();
-      ctx.fillStyle='#2b3a67';ctx.fillRect(-10,-16,20,4);
-      ctx.fillStyle='#fff';ctx.fillRect(-7,-34+Math.sin(t*12)*2,14,12);
-      ctx.fillStyle='#9aa4b5';for(const y of [-31,-28])ctx.fillRect(-5,y+Math.sin(t*12)*2,10,1);
-      ctx.fillStyle='#7dff9a';circle(7,-6,1.5);ctx.fill();break;
-    case 6: // 已讀不回砲（手機）
-      ctx.fillStyle='#1a1a1a';rr(-8,-46,16,46,4);ctx.fill();
-      ctx.fillStyle=hexA(w.color,.6+.4*Math.random());rr(-6,-43,12,36,2);ctx.fill();
-      ctx.fillStyle='#1a1a1a';ctx.font=`bold 6px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(L('已讀|SEEN'),0,-26,11);
-      ctx.fillStyle='#fff3a8';ctx.fillRect(-8,-4,16,2);break;
-  }
-  ctx.restore();
+  comicImage(name,-11,-GUN_LEN[tier]-10,22,GUN_LEN[tier]+12);ctx.restore();
 }
 function drawPlayer(){
-  const w=WEAPONS[p.tier],T=p.tier;
-  ctx.save();ctx.translate(p.x,PY);
-  if(T>=3){
-    const pr=(50+5*Math.min(p.wlv,8))*(1+Math.sin(t*6)*.08);
-    const g=ctx.createRadialGradient(0,0,6,0,0,pr);g.addColorStop(0,hexA(w.color,.42));g.addColorStop(1,hexA(w.color,0));
-    ctx.fillStyle=g;circle(0,0,pr);ctx.fill();
+  // Rear-view animation has alternating feet/knees, not whole-image bobbing.
+  const moving=Math.abs(p.x-walkX)>.25;
+  if(moving)walkClock+=Math.abs(p.x-walkX)/95;
+  walkX=p.x;
+  const sheet=comic.walk,idx=moving?Math.floor(walkClock*8)%6:0;
+  ctx.save();ctx.translate(drawX(p.x),PY);
+  const im=moving?sheet:comic.player;
+  ctx.save();if(p.tier>0){ctx.beginPath();ctx.rect(-70,-104,140,180);ctx.clip();}
+  if(im&&im.complete&&im.naturalWidth){
+    if(moving){const sw=im.naturalWidth/6;ctx.drawImage(im,idx*sw,0,sw,im.naturalHeight,-52,-128,104,174);}
+    else comicImage('player',-52,-128,104,174);
   }
-  if(T>=6){
-    ctx.save();ctx.globalCompositeOperation='lighter';ctx.lineWidth=3;
-    const nw=5+Math.min(p.wlv,5);for(let i=0;i<nw;i++){ctx.strokeStyle=hexA(w.trim,Math.max(.06,.3-i*.025));
-      for(const sd of [-1,1]){ctx.beginPath();ctx.moveTo(sd*16,2);ctx.lineTo(sd*(42+i*7),8-i*10+Math.sin(t*4+i)*3);ctx.stroke();}}
-    ctx.restore();
+  ctx.restore();
+  // The approved ballpoint is baked into the first tier; upgraded tools replace its silhouette.
+  if(p.tier>0)drawGun(18,-92+p.recoil,p.tier,WEAPONS[p.tier],1);
+  for(let i=1;i<p.barrels;i++)drawGun((i-(p.barrels-1)/2)*15,-92+p.recoil,p.tier,WEAPONS[p.tier],.7);
+  if(p.recoil>2&&p.stun<=0){
+    ctx.fillStyle='#fff231';ctx.strokeStyle='#090909';ctx.lineWidth=1.5;
+    ctx.beginPath();for(let i=0;i<10;i++){const a=i*Math.PI/5,r=i%2?3:8;const x=18+Math.cos(a)*r,y=-128+Math.sin(a)*r;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fill();ctx.stroke();
   }
-  ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.ellipse(0,16,24,8,0,0,6.283);ctx.fill();
-  // 飄逸的領帶（第 4 階起，從背後飛出來）
-  if(T>=4){ctx.fillStyle=w.trim;ctx.beginPath();ctx.moveTo(-3,8);ctx.lineTo(3,8);ctx.lineTo(6+Math.sin(t*7)*4,34);ctx.lineTo(0+Math.sin(t*7+1)*4,40);ctx.lineTo(-6+Math.sin(t*7)*4,34);ctx.closePath();ctx.fill();}
-  // 西裝肩膀
-  ctx.fillStyle=w.armor;ctx.strokeStyle='rgba(0,0,0,.45)';ctx.lineWidth=2;
-  ctx.beginPath();ctx.ellipse(0,3,20,12,0,0,6.283);ctx.fill();ctx.stroke();
-  ctx.strokeStyle='rgba(255,255,255,.18)';ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(0,14);ctx.stroke();
-  // 識別證（第 2 階起）
-  if(T>=2){ctx.fillStyle='#fff';rr(9,4,8,9,1.5);ctx.fill();ctx.fillStyle=w.trim;ctx.fillRect(9,4,8,3);}
-  const n=p.barrels,gl=GUN_LEN[T];
-  ctx.strokeStyle=w.armor;ctx.lineWidth=5;ctx.lineCap='round';
-  for(let i=0;i<n;i++){const gx=(i-(n-1)/2)*15;
-    ctx.beginPath();ctx.moveTo(gx<0?-14:gx>0?14:-12,-2);ctx.lineTo(gx-2,-12+p.recoil);ctx.stroke();
-    if(gx===0){ctx.beginPath();ctx.moveTo(12,-2);ctx.lineTo(2,-12+p.recoil);ctx.stroke();}}
-  // 白襯衫領口 + 頭（後腦勺）
-  ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(-6,-2);ctx.lineTo(6,-2);ctx.lineTo(0,6);ctx.closePath();ctx.fill();
-  ctx.fillStyle='#f1c9a5';circle(-10,5,3);ctx.fill();circle(10,5,3);ctx.fill();
-  ctx.fillStyle='#2a1f1a';circle(0,5,10);ctx.fill();
-  ctx.strokeStyle='#3d2e26';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(1,3,4,0,Math.PI*1.4);ctx.stroke();
-  if(T>=5){ctx.fillStyle='#e03131';ctx.fillRect(-10,0,20,4);ctx.fillStyle='#fff';ctx.font=`bold 4px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(L('必勝|WIN'),0,2.2,18);}
-  if(T>=6){ctx.fillStyle='#ffd43b';ctx.beginPath();ctx.moveTo(-7,-4);ctx.lineTo(-7,-10);ctx.lineTo(-3,-6);ctx.lineTo(0,-11);ctx.lineTo(3,-6);ctx.lineTo(7,-10);ctx.lineTo(7,-4);ctx.closePath();ctx.fill();}
-  for(let i=0;i<n;i++){
-    const gx=(i-(n-1)/2)*15;drawGun(gx,-10+p.recoil,T,w);
-    if(p.recoil>2&&p.stun<=0){ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=hexA(w.color,.7);circle(gx,-10-gl,3+p.recoil);ctx.fill();ctx.restore();}
-  }
-  if(p.stun>0){
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`bold 12px ${FONT}`;
-    ctx.fillStyle='#fff';ctx.strokeStyle='#000';ctx.lineWidth=3;ctx.strokeText(L('當機中…|Frozen…'),0,30);ctx.fillText(L('當機中…|Frozen…'),0,30);
-    ctx.font=`14px ${FONT}`;for(let i=0;i<3;i++){const a=t*6+i*2.09;ctx.fillText('💫',Math.cos(a)*18,-2+Math.sin(a)*6);}
-  }
+  if(p.stun>0){ctx.textAlign='center';comicText(L('暈！|STUN!'),0,-146,15,'#fff231',70);}
   ctx.restore();
 }
 function eyes(r,y,sp,angry,col){
@@ -25946,154 +25904,38 @@ function eyes(r,y,sp,angry,col){
 }
 function txt(s,x,y,size,col,bold,maxW){ctx.font=`${bold===false?'':'bold '}${size}px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=col;if(maxW)ctx.fillText(s,x,y,maxW);else ctx.fillText(s,x,y);}
 function drawEnemy(e){
-  const d=e.d,r=e.r,fl=e.hit>0&&Math.floor(t*30)%2===0;
-  ctx.save();ctx.translate(e.x,e.y+Math.sin(e.wob)*1.5);
-  ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(0,r*.95,r*.9,r*.3,0,0,6.283);ctx.fill();
-  if(e.elite){const g=ctx.createRadialGradient(0,0,r*.6,0,0,r*1.9);g.addColorStop(0,'rgba(255,212,59,.55)');g.addColorStop(1,'rgba(255,212,59,0)');ctx.fillStyle=g;circle(0,0,r*1.9);ctx.fill();}
-  if(e.dashing){ctx.fillStyle='rgba(255,60,60,.25)';ctx.beginPath();ctx.moveTo(-r,0);ctx.lineTo(r,0);ctx.lineTo(0,-r*4);ctx.closePath();ctx.fill();}
-  if(fl)ctx.scale(1.18,.82); // 被打到 Q 彈壓扁
-  const ol=e.elite?'#ffd43b':'rgba(0,0,0,.55)';ctx.lineWidth=e.elite?3:2;ctx.strokeStyle=ol;
-  switch(e.type){
-    case 'grunt':{ // 便利貼
-      ctx.rotate(Math.sin(e.wob*.5)*.12);
-      ctx.fillStyle=fl?'#fff':'#ffe066';ctx.fillRect(-r,-r,2*r,2*r);ctx.strokeRect(-r,-r,2*r,2*r);
-      ctx.fillStyle='#e6c13a';ctx.beginPath();ctx.moveTo(r,r*.45);ctx.lineTo(r,r);ctx.lineTo(r*.45,r);ctx.closePath();ctx.fill();
-      ctx.strokeStyle='rgba(0,0,0,.18)';ctx.lineWidth=1;for(const y of [-.55,-.35])ctx.beginPath(),ctx.moveTo(-r*.7,y*r),ctx.lineTo(r*.7,y*r),ctx.stroke();
-      eyes(r,r*.05,.38,true);ctx.strokeStyle='#111';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(0,r*.62,r*.2,Math.PI*1.15,Math.PI*1.85);ctx.stroke();break;}
-    case 'runner':{ // 「在嗎？」訊息
-      ctx.strokeStyle='rgba(125,255,154,.5)';ctx.lineWidth=2;for(const x of [-6,0,6]){ctx.beginPath();ctx.moveTo(x,-r-3);ctx.lineTo(x,-r-12);ctx.stroke();}
-      ctx.fillStyle=fl?'#fff':'#5fd17a';rr(-r*1.45,-r*.85,r*2.9,r*1.7,r*.7);ctx.fill();
-      ctx.beginPath();ctx.moveTo(-r*.6,r*.7);ctx.lineTo(-r*1.1,r*1.25);ctx.lineTo(-r*.1,r*.8);ctx.closePath();ctx.fill();
-      txt(L('在嗎?|u there?'),0,1,r*(lang==='en'?.62:.82),'#123',true,r*2.6);break;}
-    case 'tank':{ // 一疊報表
-      for(let i=2;i>=0;i--){ctx.fillStyle=i?'#d9dee6':(fl?'#fff':'#f5f7fa');ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=1.5;
-        rr(-r+i*3,-r*.85-i*4,2*r,r*1.75,3);ctx.fill();ctx.stroke();}
-      ctx.strokeStyle='rgba(0,0,0,.15)';ctx.lineWidth=1;for(let i=0;i<4;i++){ctx.beginPath();ctx.moveTo(-r*.7,-r*.5+i*r*.18);ctx.lineTo(r*.3,-r*.5+i*r*.18);ctx.stroke();}
-      ctx.fillStyle='#4dabf7';for(let i=0;i<4;i++)ctx.fillRect(r*.4+i*4,r*.1-i*5,3,i*5+6);
-      txt(L('報表|REPORT'),-r*.25,-r*.65,r*.36,'#d64545',true,r*1.2);
-      eyes(r,r*.25,.36,true);ctx.fillStyle='#111';rr(-r*.25,r*.55,r*.5,r*.14,2);ctx.fill();break;}
-    case 'charger':{ // 急件
-      ctx.fillStyle=fl?'#fff':'#e03131';rr(-r*.7,-r*1.15,r*.8,r*.4,3);ctx.fill();rr(-r,-r*.9,2*r,r*1.8,4);ctx.fill();ctx.stroke();
-      txt(L('急|ASAP'),0,-r*.25,r*(lang==='en'?.55:.95),'#fff',true,r*1.8);
-      eyes(r,r*.5,.42,true);if(e.dashing){txt('!!',r*1.1,-r,r,'#ffd43b');}break;}
-    case 'shield':{ // 郵件
-      ctx.fillStyle=fl?'#fff':'#e8f0ff';rr(-r*1.1,-r*.8,r*2.2,r*1.6,3);ctx.fill();ctx.stroke();
-      ctx.strokeStyle='#9aa4b5';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-r*1.1,-r*.8);ctx.lineTo(0,r*.05);ctx.lineTo(r*1.1,-r*.8);ctx.stroke();
-      eyes(r,r*.35,.42,true);break;}
-    case 'armor':{ // KPI 檔案櫃
-      ctx.fillStyle=fl?'#fff':'#8d99a6';rr(-r*.9,-r,r*1.8,r*2,3);ctx.fill();ctx.stroke();
-      ctx.strokeStyle='#39424d';ctx.lineWidth=1.5;for(const y of [-.33,.33]){ctx.beginPath();ctx.moveTo(-r*.9,y*r);ctx.lineTo(r*.9,y*r);ctx.stroke();}
-      ctx.fillStyle='#39424d';for(const y of [-.66,0,.66])ctx.fillRect(-r*.2,y*r-1.5,r*.4,3);
-      txt('KPI',0,-r*.66,r*.5,'#ff4040');eyes(r,r*.02,.4,true,'#ff2020');break;}
-    case 'splitter': case 'mini':{ // 會議邀請 / 後續會議
-      ctx.fillStyle=fl?'#fff':'#ffffff';rr(-r,-r*.85,2*r,r*1.85,3);ctx.fill();ctx.stroke();
-      ctx.fillStyle='#e64980';ctx.fillRect(-r,-r*.85,2*r,r*.5);
-      ctx.fillStyle='#555';for(const sd of [-1,1])ctx.fillRect(sd*r*.5-1.5,-r*1.05,3,r*.4);
-      if(e.type==='splitter'){txt(L('會議|MTG'),0,-r*.6,r*.36,'#fff',true,r*1.8);eyes(r,r*.25,.4,true);}
-      else txt('+1',0,r*.3,r*.9,'#e64980');
-      break;}
-    case 'healer':{ // 再改一版
-      ctx.fillStyle=fl?'#fff':'#ffc9de';rr(-r,-r,2*r,2*r,4);ctx.fill();ctx.stroke();
-      txt('↻ v2',0,-r*.45,r*.6,'#c2255c');
-      eyes(r,r*.2,.38,false);ctx.strokeStyle='#111';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(0,r*.45,r*.22,.2,Math.PI-.2);ctx.stroke();break;}
-    case 'larva':{ // 待辦事項
-      ctx.strokeStyle='#7a5c00';ctx.lineWidth=2;for(const sd of [-1,1])for(const y of [-.3,.3]){ctx.beginPath();ctx.moveTo(sd*r*.8,y*r);ctx.lineTo(sd*r*1.3,y*r+Math.sin(e.wob*2+y*5)*3);ctx.stroke();}
-      ctx.fillStyle=fl?'#fff':'#fff8db';ctx.strokeStyle='#7a5c00';rr(-r*.85,-r*.85,r*1.7,r*1.7,3);ctx.fill();ctx.stroke();
-      txt(L('待辦|TODO'),0,-r*.25,r*.55,'#7a5c00',true,r*1.5);eyes(r,r*.35,.35,false);break;}
-  }
-  if(e.elite){ctx.fillStyle='#ffd43b';rr(-r*1.2,-r-15,r*2.4,11,3);ctx.fill();txt(L('老闆交辦|BOSS ORDER'),0,-r-9.5,8,'#5a3d00',true,r*2.3);}
-  if(e.shieldHits>0){
-    const k=e.shieldHits/e.shieldMax;
-    ctx.fillStyle=`rgba(224,49,49,${.75+.25*k})`;rr(-r*1.1,r*.9,r*2.2,r*.75,3);ctx.fill();
-    ctx.strokeStyle='#fff';ctx.lineWidth=1.5;rr(-r*1.1,r*.9,r*2.2,r*.75,3);ctx.stroke();
-    txt(L('緊急|URGENT'),0,r*1.28,r*.5,'#fff',true,r*2.1);
-    ctx.fillStyle='rgba(255,255,255,.7)';ctx.fillRect(-r*1.1,r*1.7,r*2.2*k,2);
-  }
+  const r=e.r,fl=e.hit>0;
+  const name=['tank','armor','healer'].includes(e.type)?'paper':['splitter','mini','shield','runner'].includes(e.type)?'meeting':'folder';
+  ctx.save();ctx.translate(drawX(e.x),e.y);ctx.scale(1,1/WORLD_SCALE);ctx.rotate(Math.sin(e.wob*.5)*.04);
+  const size=r*4.3;comicImage(name,-size/2,-size/2,size,size);
+  if(e.elite){ctx.strokeStyle='#ffed24';ctx.lineWidth=2;ctx.strokeRect(-size/2-2,-size/2-2,size+4,size+4);}
+  ctx.textAlign='center';
+  comicBox(-r-3,r+3,r*2+6,13,e.shieldHits>0?'#00cef5':'#d92335');
+  comicText(e.shieldHits>0?'SH '+fmt(e.shieldHits):fmt(e.hp),0,r+10,9,'#fff');
+  if(fl){ctx.save();ctx.translate(r+10,-r-5);ctx.rotate(-.16);comicBox(-15,-8,30,16,'#ffed24');comicText('PAK!',0,0,10,'#050709');ctx.restore();}
   ctx.restore();
-  if(e.hp<e.max){const bw=r*2;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(e.x-bw/2,e.y-r-9-(e.elite?12:0),bw,4);ctx.fillStyle=e.elite?'#ffd43b':'#ff5f5f';ctx.fillRect(e.x-bw/2,e.y-r-9-(e.elite?12:0),bw*Math.max(0,e.hp/e.max),4);}
 }
 function drawCrate(c,top){
-  const isW=c.weapon!=null,ratio=Math.max(0,c.shield/c.max),w=c.w,h=c.h,iw=w-22,ih=h-20;
-  ctx.save();ctx.translate(c.x,c.y);
-  if(top){
-    ctx.textBaseline='middle';ctx.lineWidth=4;ctx.strokeStyle='rgba(0,0,0,.85)';
-    if(isW){
-      const nw=WEAPONS[c.weapon];
-      ctx.save();ctx.translate(-iw/2+12,4);ctx.rotate(Math.PI/2);drawGun(0,0,c.weapon,nw,.9);ctx.restore();
-      ctx.textAlign='left';ctx.font=`bold 10px ${FONT}`;const tag=c.refine?LF('★ 精煉 +{n}|★ REFINE +{n}',{n:c.refine}):L('★ 新裝備|★ NEW GEAR');ctx.strokeText(tag,-iw/2+62,-11,iw-66);ctx.fillStyle='#ffd54a';ctx.fillText(tag,-iw/2+62,-11,iw-66);
-      ctx.font=`bold ${lang==='en'?14:18}px ${FONT}`;ctx.strokeText(wName(nw),-iw/2+62,9,iw-66);ctx.fillStyle=nw.color;ctx.fillText(wName(nw),-iw/2+62,9,iw-66);
-    }else{
-      const s=c.mod.icon+' '+mLabel(c.mod);ctx.textAlign='center';ctx.font=`bold 15px ${FONT}`;ctx.strokeText(s,0,2,iw-8);ctx.fillStyle=c.mod.col;ctx.fillText(s,0,2,iw-8);
-    }
-    const label='🛡 '+fmt(c.shield);ctx.font=`bold 15px ${FONT}`;
-    const tw=ctx.measureText(label).width+18;
-    ctx.fillStyle='rgba(8,18,36,.95)';ctx.strokeStyle='#8fe3ff';ctx.lineWidth=1.5;rr(-tw/2,-h/2-12,tw,22,11);ctx.fill();ctx.stroke();
-    ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText(label,0,-h/2-1);
-    ctx.restore();return;
+  const isW=c.weapon!=null,w=Math.min(c.w-24,78),h=48;
+  ctx.save();ctx.translate(drawX(c.x),c.y);ctx.scale(1,1/WORLD_SCALE);ctx.textAlign='center';
+  if(!top){
+    comicImage('crate',-w/2,-h/2,w,h);
+    if(c.hit>0){ctx.strokeStyle='#fff232';ctx.lineWidth=2;ctx.strokeRect(-w/2,-h/2,w,h);}
+  }else{
+    comicBox(-w/2,h/2,w,17,'#060b0f');comicText(fmt(c.shield),0,h/2+9,12,'#fff');
+    const label=isW?wName(WEAPONS[c.weapon]):mLabel(c.mod);
+    comicBox(-Math.min(c.w/2-5,78),-h/2-20,Math.min(c.w-10,156),17,'#00cce9');
+    comicText(label,0,-h/2-11,11,'#02080c',Math.min(c.w-18,146));
   }
-  if(isW){
-    const col=WEAPONS[c.weapon].color;
-    ctx.save();ctx.globalCompositeOperation='lighter';ctx.rotate(t*.6);
-    for(let i=0;i<8;i++){ctx.rotate(Math.PI/4);ctx.fillStyle=hexA(col,.08);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(-14,-110);ctx.lineTo(14,-110);ctx.closePath();ctx.fill();}
-    ctx.restore();
-  }
-  ctx.fillStyle=isW?'#2e2208':'#162030';ctx.strokeStyle=isW?'#ffd54a':c.mod.col;ctx.lineWidth=2;
-  rr(-iw/2,-ih/2,iw,ih,8);ctx.fill();ctx.stroke();
-  const pulse=.5+.5*Math.sin(t*5+c.y*.05);
-  ctx.fillStyle=`rgba(90,190,255,${.08+.16*ratio+(c.hit>0?.25:0)})`;
-  ctx.strokeStyle=`rgba(140,220,255,${.35+.5*pulse*ratio+(c.hit>0?.3:0)})`;ctx.lineWidth=2.5;
-  rr(-w/2,-h/2,w,h,16);ctx.fill();ctx.stroke();
-  ctx.save();rr(-w/2,-h/2,w,h,16);ctx.clip();ctx.strokeStyle=`rgba(180,235,255,${.12*ratio})`;ctx.lineWidth=1;
-  for(let x=-w;x<w;x+=14){ctx.beginPath();ctx.moveTo(x,-h/2);ctx.lineTo(x+h,h/2);ctx.stroke();}ctx.restore();
   ctx.restore();
 }
 function drawBoss(b){
   const d=b.def,sh=SHAPES[d.shape],w=sh.w,h=sh.h,M=b.M,fl=b.hit>0&&!b.fake&&Math.floor(t*30)%3===0;
-  ctx.save();ctx.translate(b.x,b.y);ctx.scale(b.scale,b.scale);
+  ctx.save();ctx.translate(drawX(b.x),b.y);ctx.scale(b.scale,b.scale/WORLD_SCALE);
   if(b.fake)ctx.globalAlpha=.6+.3*Math.abs(Math.sin(t*6+b.hx));
   else{ctx.fillStyle='rgba(0,0,0,.45)';ctx.beginPath();ctx.ellipse(0,h/2+6,w*.58,13,0,0,6.283);ctx.fill();}
   if(b.absorbOn>0){ctx.save();ctx.globalCompositeOperation='lighter';for(let i=0;i<3;i++){const q=((t*60+i*30)%90)+30;ctx.strokeStyle=`rgba(200,80,255,${.5*(1-(q-30)/90)})`;ctx.lineWidth=3;circle(0,0,w*.5+90-q);ctx.stroke();}ctx.restore();}
-  if(d.look==='robot'){
-    ctx.strokeStyle='#5a6270';ctx.lineWidth=4;ctx.lineCap='round';
-    for(const sd of [-1,1]){ctx.beginPath();ctx.moveTo(sd*w/2,0);ctx.lineTo(sd*(w/2+14),h*.2+Math.sin(b.t*5+sd)*5);ctx.stroke();ctx.fillStyle='#5a6270';circle(sd*(w/2+14),h*.2+Math.sin(b.t*5+sd)*5,7);ctx.fill();}
-    ctx.fillStyle=fl?'#fff':d.col;ctx.strokeStyle='#3a4048';ctx.lineWidth=4;rr(-w/2,-h/2,w,h,14);ctx.fill();ctx.stroke();
-    ctx.strokeStyle='#3a4048';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,-h/2);ctx.lineTo(0,-h/2-20);ctx.stroke();ctx.fillStyle='#ff4040';circle(0,-h/2-22,4+Math.sin(t*8));ctx.fill();
-    ctx.fillStyle='#1a1d22';rr(-w*.38,-h*.38,w*.76,h*.42,8);ctx.fill();
-    ctx.fillStyle='#7dff9a';ctx.font=`bold 15px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(Math.floor(t*2)%2?L('進度？|ETA?'):L('在嗎？|Ping!'),0,-h*.17,w*.7);
-    ctx.fillStyle='#c5ccd6';for(const [x,y] of [[-.42,-.42],[.42,-.42],[-.42,.42],[.42,.42]]){circle(x*w,y*h,3);ctx.fill();}
-    ctx.fillStyle='#3a4048';rr(-w*.3,h*.14,w*.6,h*.2,4);ctx.fill();ctx.fillStyle='#ff4040';for(let i=0;i<5;i++)ctx.fillRect(-w*.26+i*w*.11,h*.19,w*.07,h*.1);
-  }else if(d.look==='folder'){
-    ctx.fillStyle=fl?'#fff':'#2f8a55';rr(-w/2,-h/2-14,w*.45,24,6);ctx.fill();
-    ctx.fillStyle='#fff';for(let i=0;i<3;i++){ctx.save();ctx.rotate((i-1)*.12);ctx.fillRect(-w*.35+i*w*.2,-h/2-10-i*3,w*.3,30);ctx.restore();}
-    ctx.fillStyle=fl?'#fff':d.col;ctx.strokeStyle='#1d4a2c';ctx.lineWidth=4;rr(-w/2,-h/2,w,h,12);ctx.fill();ctx.stroke();
-    ctx.fillStyle='#fff';rr(-w*.36,-h*.36,w*.72,22,4);ctx.fill();
-    ctx.fillStyle='#1d4a2c';ctx.font=`bold 12px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(L('專案_最終版_v38|Project_FINAL_v38'),0,-h*.36+11,w*.68);
-    faceFeatures(w,h,d,b,-h*.02);
-    ctx.fillStyle='#1d4a2c';ctx.font=`bold 11px ${FONT}`;ctx.fillText(L('結案日：未定|Due date: TBD'),0,h*.36,w*.8);
-  }else{
-    // 手（拿著文件）
-    for(const sd of [-1,1]){const y=h*.2+Math.sin(b.t*4+sd)*4;ctx.fillStyle=d.col;ctx.strokeStyle='rgba(0,0,0,.5)';ctx.lineWidth=3;circle(sd*(w/2+4),y,15);ctx.fill();ctx.stroke();ctx.fillStyle='#f1c9a5';circle(sd*(w/2+10),y+8,8);ctx.fill();}
-    // 西裝身體
-    ctx.fillStyle=fl?'#fff':d.col;ctx.strokeStyle='rgba(0,0,0,.6)';ctx.lineWidth=4;rr(-w/2,-h/2,w,h,sh.r);ctx.fill();ctx.stroke();
-    // 臉
-    const fy=-h/2+6,fh=h*.6;
-    ctx.fillStyle=fl?'#fff':'#f1c9a5';rr(-w*.38,fy,w*.76,fh,Math.min(sh.r,30));ctx.fill();
-    // 頭髮
-    ctx.fillStyle='#2a1f1a';
-    if(d.hair==='comb'){rr(-w*.38,fy-6,w*.76,16,8);ctx.fill();ctx.strokeStyle='#2a1f1a';ctx.lineWidth=2;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(-w*.3,fy+12+i*3);ctx.quadraticCurveTo(0,fy+4+i*3,w*.3,fy+14+i*3);ctx.stroke();}}
-    else if(d.hair==='part'){rr(-w*.4,fy-8,w*.8,20,10);ctx.fill();ctx.fillStyle='#f1c9a5';ctx.fillRect(-w*.08,fy-8,3,14);}
-    else if(d.hair==='spiky'){ctx.beginPath();ctx.moveTo(-w*.4,fy+10);for(let i=0;i<=7;i++)ctx.lineTo(-w*.4+i*w*.8/7,fy+(i%2?-14:8));ctx.lineTo(w*.4,fy+10);ctx.closePath();ctx.fill();}
-    else if(d.hair==='bun'){circle(0,fy-14,14);ctx.fill();rr(-w*.4,fy-6,w*.8,16,8);ctx.fill();ctx.fillStyle='#ffd43b';ctx.fillRect(-12,fy-16,24,3);}
-    else if(d.hair==='bald'){ctx.fillStyle='rgba(255,255,255,.55)';ctx.beginPath();ctx.ellipse(-w*.18,fy+8,10,4,-.3,0,6.283);ctx.fill();
-      ctx.fillStyle='#2a1f1a';for(const sd of [-1,1])rr(sd*w*.38-(sd>0?6:0),fy+14,6,18,3),ctx.fill();}
-    faceFeatures(w,h,d,b,fy+fh*.42);
-    // 白襯衫 + 領帶
-    ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(-w*.18,fy+fh);ctx.lineTo(w*.18,fy+fh);ctx.lineTo(0,h/2-4);ctx.closePath();ctx.fill();
-    ctx.fillStyle=d.tie;ctx.beginPath();ctx.moveTo(-5,fy+fh);ctx.lineTo(5,fy+fh);ctx.lineTo(8,h/2-10);ctx.lineTo(0,h/2-2);ctx.lineTo(-8,h/2-10);ctx.closePath();ctx.fill();
-    if(d.headset){ctx.strokeStyle='#222';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,fy+fh*.45,w*.42,Math.PI*1.1,Math.PI*1.9);ctx.stroke();ctx.fillStyle='#222';for(const sd of [-1,1])rr(sd*w*.42-5,fy+fh*.3,10,18,4),ctx.fill();
-      ctx.beginPath();ctx.moveTo(-w*.4,fy+fh*.6);ctx.quadraticCurveTo(-w*.3,fy+fh*.95,-w*.1,fy+fh*.85);ctx.stroke();}
-  }
+  comicImage(d.look==='folder'?'folder':d.look==='robot'?'printer':'boss',-w*.62,-h*.64,w*1.24,h*1.28);
   if(M.has('hive')){const notes=['報告|Report','回信|Email','訂會議|Meeting','簽核|Sign'].map(L);for(let i=0;i<4;i++){const x=(i%2?.36:-.36)*w,y=(i<2?.08:.32)*h;ctx.save();ctx.translate(x,y);ctx.rotate((i-1.5)*.15);ctx.fillStyle='#ffe066';ctx.fillRect(-14,-10,28,20);ctx.fillStyle='#7a5c00';ctx.font=`bold 8px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(notes[i],0,0,26);ctx.restore();}}
   if(d.crown){ctx.fillStyle='#ffd43b';ctx.beginPath();ctx.moveTo(-26,-h/2+2);for(let i=0;i<5;i++)ctx.lineTo(-26+i*13,-h/2-(i%2?6:18));ctx.lineTo(26,-h/2+2);ctx.closePath();ctx.fill();}
   if(M.has('weak')){const wx=b.weakX/b.scale,wy=h/2-12,pr=18+Math.sin(t*10)*2;
@@ -26131,7 +25973,7 @@ function bubble(x,y,s,col){
 }
 function drawHazards(){
   for(const h of hazards){
-    ctx.save();ctx.translate(h.x,h.y);
+    ctx.save();ctx.translate(drawX(h.x),h.y);
     if(h.type==='rock'){ // 飛來的文件夾
       ctx.rotate(h.rot);ctx.fillStyle=h.hit>0?'#fff':'#e0a96d';ctx.strokeStyle='#6b3e26';ctx.lineWidth=2;
       rr(-h.r,-h.r*.75,h.r*2,h.r*1.5,3);ctx.fill();ctx.stroke();
@@ -26145,48 +25987,52 @@ function drawHazards(){
     }
     ctx.restore();
     const tt=(PY-h.y)/Math.max(1,h.vy);
-    if(h.vy>0&&tt<1.2){const tx=h.x+h.vx*tt;ctx.strokeStyle=`rgba(255,80,80,${.3+.3*Math.sin(t*20)})`;ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(tx,PY+6,22,7,0,0,6.283);ctx.stroke();}
+    if(h.vy>0&&tt<1.2){const tx=drawX(h.x+h.vx*tt);ctx.strokeStyle=`rgba(255,80,80,${.3+.3*Math.sin(t*20)})`;ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(tx,PY+6,22,7,0,0,6.283);ctx.stroke();}
   }
 }
 function drawBullets(){
+  ctx.save();ctx.beginPath();ctx.rect(0,0,W,(PY-128-WORLD_TOP)/WORLD_SCALE);ctx.clip();
   for(const b of bullets){
-    if(b.laser){ctx.strokeStyle=b.col;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x,b.y+28);ctx.stroke();
-      ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x,b.y+24);ctx.stroke();}
+    if(b.laser){ctx.strokeStyle=b.col;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(drawX(b.x),b.y);ctx.lineTo(drawX(b.x),b.y+28);ctx.stroke();
+      ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(drawX(b.x),b.y);ctx.lineTo(drawX(b.x),b.y+24);ctx.stroke();}
     else if(b.rocket){ // 咖啡杯
-      ctx.fillStyle='#8a5a3a';ctx.beginPath();ctx.moveTo(b.x-5,b.y-6);ctx.lineTo(b.x+5,b.y-6);ctx.lineTo(b.x+4,b.y+7);ctx.lineTo(b.x-4,b.y+7);ctx.closePath();ctx.fill();
-      ctx.fillStyle='#fff';ctx.fillRect(b.x-6,b.y-9,12,3);ctx.fillStyle='#e0a96d';ctx.fillRect(b.x-5,b.y-1,10,3);}
+      ctx.fillStyle='#8a5a3a';ctx.beginPath();ctx.moveTo(drawX(b.x)-5,b.y-6);ctx.lineTo(drawX(b.x)+5,b.y-6);ctx.lineTo(drawX(b.x)+4,b.y+7);ctx.lineTo(drawX(b.x)-4,b.y+7);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#fff';ctx.fillRect(drawX(b.x)-6,b.y-9,12,3);ctx.fillStyle='#e0a96d';ctx.fillRect(drawX(b.x)-5,b.y-1,10,3);}
     else if(b.orb){ // 揉爛的紙團
-      ctx.fillStyle=hexA(b.col,.35);circle(b.x,b.y,b.r*1.8);ctx.fill();
-      ctx.fillStyle='#f5f7fa';circle(b.x,b.y,b.r);ctx.fill();
-      ctx.strokeStyle='#9aa4b5';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(b.x-b.r*.6,b.y-b.r*.2);ctx.lineTo(b.x,b.y+b.r*.3);ctx.lineTo(b.x+b.r*.5,b.y-b.r*.4);ctx.moveTo(b.x-b.r*.2,b.y-b.r*.7);ctx.lineTo(b.x+b.r*.1,b.y);ctx.stroke();}
-    else if(b.look==='staple'){ctx.strokeStyle='#e8ecf2';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(b.x-4,b.y+3);ctx.lineTo(b.x-4,b.y-2);ctx.lineTo(b.x+4,b.y-2);ctx.lineTo(b.x+4,b.y+3);ctx.stroke();}
-    else if(b.look==='shred'){ctx.save();ctx.translate(b.x,b.y);ctx.rotate(Math.atan2(b.vy,b.vx)+Math.PI/2);ctx.fillStyle='#fff';ctx.fillRect(-1.2,-5,2.4,10);ctx.restore();}
-    else{ctx.fillStyle=b.col;ctx.beginPath();ctx.moveTo(b.x,b.y-b.r*1.6);ctx.quadraticCurveTo(b.x+b.r,b.y,b.x,b.y+b.r);ctx.quadraticCurveTo(b.x-b.r,b.y,b.x,b.y-b.r*1.6);ctx.fill();}
+      ctx.fillStyle=hexA(b.col,.35);circle(drawX(b.x),b.y,b.r*1.8);ctx.fill();
+      ctx.fillStyle='#f5f7fa';circle(drawX(b.x),b.y,b.r);ctx.fill();
+      ctx.strokeStyle='#9aa4b5';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(drawX(b.x)-b.r*.6,b.y-b.r*.2);ctx.lineTo(drawX(b.x),b.y+b.r*.3);ctx.lineTo(drawX(b.x)+b.r*.5,b.y-b.r*.4);ctx.moveTo(drawX(b.x)-b.r*.2,b.y-b.r*.7);ctx.lineTo(drawX(b.x)+b.r*.1,b.y);ctx.stroke();}
+    else if(b.look==='staple'){ctx.strokeStyle='#e8ecf2';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(drawX(b.x)-4,b.y+3);ctx.lineTo(drawX(b.x)-4,b.y-2);ctx.lineTo(drawX(b.x)+4,b.y-2);ctx.lineTo(drawX(b.x)+4,b.y+3);ctx.stroke();}
+    else if(b.look==='shred'){ctx.save();ctx.translate(drawX(b.x),b.y);ctx.rotate(Math.atan2(b.vy,b.vx)+Math.PI/2);ctx.fillStyle='#fff';ctx.fillRect(-1.2,-5,2.4,10);ctx.restore();}
+    else{ctx.fillStyle=b.col;ctx.beginPath();ctx.moveTo(drawX(b.x),b.y-b.r*1.6);ctx.quadraticCurveTo(drawX(b.x)+b.r,b.y,drawX(b.x),b.y+b.r);ctx.quadraticCurveTo(drawX(b.x)-b.r,b.y,drawX(b.x),b.y-b.r*1.6);ctx.fill();}
   }
+  ctx.restore();
 }
 function drawBeams(){
+  ctx.save();ctx.beginPath();ctx.rect(0,0,W,(PY-128-WORLD_TOP)/WORLD_SCALE);ctx.clip();
   for(const q of beams){const k=q.life/q.max,bw=q.w*k;
-    ctx.fillStyle=hexA(q.col,.12*k);ctx.fillRect(q.x-bw,0,bw*2,PY-40);
-    ctx.fillStyle=hexA(q.col,.45*k);ctx.fillRect(q.x-bw/2,0,bw,PY-40);
-    ctx.fillStyle=`rgba(255,255,255,${k})`;ctx.fillRect(q.x-bw/6,0,bw/3,PY-40);
+    ctx.fillStyle=hexA(q.col,.12*k);ctx.fillRect(drawX(q.x)-bw,0,bw*2,PY-40);
+    ctx.fillStyle=hexA(q.col,.45*k);ctx.fillRect(drawX(q.x)-bw/2,0,bw,PY-40);
+    ctx.fillStyle=`rgba(255,255,255,${k})`;ctx.fillRect(drawX(q.x)-bw/6,0,bw/3,PY-40);
     if(q.tag==null)q.tag=rand(120,PY-120);
-    ctx.globalAlpha=k;ctx.font=`bold 11px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff';ctx.fillText(L('已讀|Seen'),q.x+14,q.tag);ctx.globalAlpha=1;}
+    ctx.globalAlpha=k;ctx.font=`bold 11px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff';ctx.fillText(L('已讀|Seen'),drawX(q.x)+14,q.tag);ctx.globalAlpha=1;}
+  ctx.restore();
 }
 function drawParts(){
-  for(const q of parts){const k=q.life/q.max;ctx.fillStyle=hexA(q.col,Math.min(1,k*1.5));ctx.fillRect(q.x-q.size/2,q.y-q.size/2,q.size,q.size);}
-  for(const q of rings){const k=q.life/q.mx;ctx.strokeStyle=hexA(q.col,k*.8);ctx.lineWidth=3*k+1;circle(q.x,q.y,q.r);ctx.stroke();}
+  for(const q of parts){const k=q.life/q.max;ctx.fillStyle=hexA(q.col,Math.min(1,k*1.5));ctx.fillRect(drawX(q.x)-q.size/2,q.y-q.size/2,q.size,q.size);}
+  for(const q of rings){const k=q.life/q.mx;ctx.strokeStyle=hexA(q.col,k*.8);ctx.lineWidth=3*k+1;circle(drawX(q.x),q.y,q.r);ctx.stroke();}
 }
 function drawTexts(){
   ctx.textAlign='center';ctx.textBaseline='middle';
   for(const q of texts){const k=q.life/q.max;ctx.globalAlpha=Math.min(1,k*2);
-    ctx.font=`bold ${q.size}px ${FONT}`;ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.8)';ctx.strokeText(q.text,q.x,q.y);ctx.fillStyle=q.col;ctx.fillText(q.text,q.x,q.y);}
+    ctx.font=`bold ${q.size}px ${FONT}`;ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.8)';ctx.strokeText(q.text,drawX(q.x),q.y);ctx.fillStyle=q.col;ctx.fillText(q.text,drawX(q.x),q.y);}
   ctx.globalAlpha=1;
 }
 function drawVignette(){
-  if(danger<=0||state!=='play')return;
-  const a=danger*(.45+.15*Math.sin(t*12));
-  const g=ctx.createRadialGradient(W/2,H/2,H*.3,W/2,H/2,H*.75);g.addColorStop(0,'rgba(255,0,0,0)');g.addColorStop(1,`rgba(255,0,30,${a})`);
-  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  // Use the actual approved inked side rails; no synthetic clean rectangular frame.
+  const im=comic.frame;if(!im||!im.complete||!im.naturalWidth)return;
+  ctx.drawImage(im,932,5,8,1013,0,0,6,H);
+  ctx.drawImage(im,1522,5,10,1013,W-7,0,7,H);
 }
 function clockStr(){
   if(phase!=='waves')return L('17:00 加班危機|5 PM — OVERTIME!');
@@ -26194,36 +26040,34 @@ function clockStr(){
   return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
 }
 function drawHUD(){
-  ctx.textBaseline='middle';
-  ctx.fillStyle='rgba(5,8,15,.82)';ctx.fillRect(0,0,W,TOP);
-  ctx.textAlign='left';ctx.fillStyle='#fff';ctx.font=`bold 19px ${FONT}`;const dayS=LF('第 {n} 天|Day {n}',{n:stage});ctx.fillText(dayS,14,20);
-  const tw=ctx.measureText(dayS).width;
-  ctx.font=`bold 13px ${FONT}`;ctx.fillStyle=phase==='waves'?'#8fe3d8':'#ff6b6b';ctx.fillText('🕘 '+clockStr(),22+tw,21);
-  const pr=phase==='waves'?Math.min(1,stageT/STAGE_LEN):1;
-  ctx.fillStyle='#2a2f3a';rr(14,36,150,8,4);ctx.fill();
-  ctx.fillStyle=phase==='waves'?'#8fe3d8':'#ff4d4d';rr(14,36,Math.max(8,150*pr),8,4);ctx.fill();
-  ctx.font=`12px ${FONT}`;ctx.fillText('🏠',170,40);
-  ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font=`bold 20px ${FONT}`;ctx.fillText(score.toLocaleString(),W-52,20,150);
-  ctx.fillStyle='#8a93a6';ctx.font=`10px ${FONT}`;ctx.fillText(L('績效|SCORE'),W-52,40);
-  ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font=`18px ${FONT}`;ctx.fillText(muted?'🔇':'🔊',W-22,28);
+  const im=comic.frame;
+  if(!im||!im.complete||!im.naturalWidth)return;
+  // Native crops retain the approved brushwork, dividers, arrow, portrait and icons.
+  ctx.drawImage(im,935,5,592,130,0,0,W,104);
+  ctx.fillStyle='#020304';
+  ctx.fillRect(190,12,91,32);ctx.fillRect(354,12,86,32);
+  ctx.textAlign='center';
+  if(stage!==1){ctx.fillRect(61,12,115,32);comicText('DAY '+stage,119,29,28,'#fff126',105);}
+  comicText(clockStr(),235,29,28,'#fff7e7',86);
+  ctx.textAlign='right';comicText(score.toLocaleString(),439,29,28,'#fff126',84);
+  if(paused){ctx.fillStyle='#fff02b';ctx.fillRect(298,18,33,23);ctx.fillStyle='#050608';ctx.beginPath();ctx.moveTo(309,22);ctx.lineTo(309,37);ctx.lineTo(323,29);ctx.closePath();ctx.fill();}
   const real=bosses.filter(b=>!b.dead&&!b.fake);
-  if(phase==='boss'&&real.length&&curBoss){
-    const y=TOP+6,hp=real.reduce((s,b)=>s+Math.max(0,b.hp),0),k=Math.min(1,hp/bossTotal);
-    ctx.fillStyle='rgba(0,0,0,.7)';rr(10,y,W-20,38,6);ctx.fill();
-    ctx.fillStyle=curBoss.tie||curBoss.col;rr(12,y+2,Math.max(0,(W-24)*k),18,5);ctx.fill();
-    ctx.fillStyle='#fff';ctx.font=`bold 12px ${FONT}`;ctx.lineWidth=3;ctx.strokeStyle='#000';
-    const s=`${bName(curBoss)}  ${fmt(hp)}`;ctx.strokeText(s,W/2,y+11,W-40);ctx.fillText(s,W/2,y+11,W-40);
-    ctx.fillStyle='#ffd27a';ctx.font=`11px ${FONT}`;ctx.fillText('⚠ '+bHint(curBoss),W/2,y+29,W-36);
+  const k=phase==='boss'&&real.length?Math.max(0,real.reduce((sum,b)=>sum+b.hp,0)/bossTotal):Math.min(1,stageT/STAGE_LEN);
+  ctx.fillStyle='#100b10';ctx.fillRect(119,73,286,14);
+  if(k>0)ctx.drawImage(im,1100,97,330*Math.min(1,k),16,119,73,286*Math.min(1,k),14);
+  // The user's 22:41 screenshot is the source of truth for the pen and arrows.
+  // Preserve their actual pixel proportions instead of stretching the original board strip.
+  const footer=comic.footer,stretch=(cv.clientHeight||H)/H/((cv.clientWidth||W)/W);
+  const fh=W*85/592/stretch,by=H-fh;
+  if(footer&&footer.complete&&footer.naturalWidth)ctx.drawImage(footer,108,61,592,85,0,by,W,fh);
+  if(lang!=='en'){
+    ctx.fillStyle='#020304';ctx.fillRect(148,by+fh*.12,226,fh*.64);
+    ctx.save();ctx.translate(260,by+fh*.43);ctx.transform(1,0,-.16,1/stretch,0,0);
+    ctx.font='900 24px "Office Comic TC",'+FONT;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillStyle='#fff126';ctx.strokeStyle='#fff126';ctx.lineWidth=.45;
+    const label=L('拖曳移動・自動開火|DRAG TO MOVE · AUTO FIRE');ctx.strokeText(label,0,0,218);ctx.fillText(label,0,0,218);ctx.restore();
   }
-  const by=H-62,w=WEAPONS[p.tier];
-  ctx.fillStyle='rgba(5,8,15,.85)';ctx.fillRect(0,by,W,62);
-  ctx.fillStyle=hexA(w.color,.6);ctx.fillRect(0,by,W,2);
-  for(let i=0;i<WEAPONS.length;i++){ctx.fillStyle=i<=p.tier?WEAPONS[i].color:'#2a2f3a';rr(14+i*17,by+10,13,13,3);ctx.fill();}
-  ctx.textAlign='left';ctx.fillStyle=w.color;ctx.font=`bold 19px ${FONT}`;ctx.fillText(wName(w)+(p.wlv?` +${p.wlv}`:''),14,by+42,200);
-  if(lang!=='en'){const nw=ctx.measureText(wName(w)+(p.wlv?` +${p.wlv}`:'')).width;ctx.fillStyle='#8a93a6';ctx.font=`11px ${FONT}`;ctx.fillText(w.en,20+nw,by+44);}
-  ctx.textAlign='right';ctx.fillStyle='#dde3ee';ctx.font=`bold 14px ${FONT}`;
-  ctx.fillText(`☕×${fmtMul(p.rateMul)}  💰×${fmtMul(p.dmgMul)}  🤚×${p.barrels}`,W-14,by+18,250);
-  ctx.fillStyle='#7dffa1';ctx.font=`bold 13px ${FONT}`;ctx.fillText(LF('戰力 {n} / 秒|Power {n}/s',{n:fmt(dps())}),W-14,by+43);
+
 }
 function drawBanner(){
   if(!banner)return;
@@ -26239,19 +26083,30 @@ function drawBanner(){
   ctx.restore();
 }
 function drawOverlay(title,titleCol,lines,cta,y0){
-  ctx.fillStyle='rgba(4,6,12,.72)';ctx.fillRect(0,0,W,H);
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.font=`900 46px ${FONT}`;ctx.lineWidth=8;ctx.strokeStyle='#000';ctx.strokeText(title,W/2,H*.22,W-24);
-  ctx.fillStyle=titleCol;ctx.fillText(title,W/2,H*.22,W-24);
-  let y=y0||H*.33;
-  for(const l of lines){ctx.font=`${l.b?'bold ':''}${l.s||16}px ${FONT}`;ctx.fillStyle=l.c||'#dfe6f2';ctx.fillText(l.t,W/2,y,W-20);y+=l.gap||30;}
-  if(cta){ctx.globalAlpha=.55+.45*Math.sin(t*4);ctx.font=`bold 20px ${FONT}`;ctx.fillStyle='#ffe066';ctx.fillText(cta,W/2,H*.8,W-20);ctx.globalAlpha=1;}
+  const menu=state==='menu',ys=menu?H*.32:H*.27;
+  ctx.textAlign='center';comicBox(20,ys-64,W-40,menu?286:390,'#080a0f');
+  comicBox(28,ys-57,W-56,57,'#ffed26');
+  comicText(menu?'NO OVERTIME!':title,W/2,ys-28,menu?33:27,'#080a0c',W-76);
+  const selected=menu?[lines[2],lines[3],lines[4],lines[5],lines[6],lines[8]]:lines;
+  let y=ys+25;
+  for(const l of selected){if(!l)continue;comicText(l.t,W/2,y,Math.min(l.s||15,19),l.c||'#f8f3df',W-68);y+=menu?31:32;}
+  if(cta){comicText(cta,W/2,ys+(menu?220:302),16,'#ffed26',W-64);}
 }
 function render(){
   ctx.setTransform(cv.width/W,0,0,cv.height/H,0,0);
+  if(!comicReady){
+    ctx.fillStyle='#07111d';ctx.fillRect(0,0,W,H);comicImage('office',0,0,W,H);
+    comicBox(24,H*.4,W-48,100,'#05080c');ctx.textAlign='center';
+    comicText(comicFailed?L('素材載入失敗，請重新整理|ART LOAD FAILED · RELOAD'):L('載入漫畫素材…|LOADING COMIC ART…'),W/2,H*.4+50,21,'#fff126',W-72);
+    return;
+  }
   ctx.save();
   if(shake>0)ctx.translate(rand(-shake,shake),rand(-shake,shake));
   drawBG();
+  // Camera projection reserves the illustrated back wall without changing world positions,
+  // speed, spawn timing, collision radii, weapon range or the clock-out threshold.
+  ctx.save();ctx.beginPath();ctx.rect(0,WORLD_TOP-10,W,PY+40-WORLD_TOP);ctx.clip();
+  ctx.translate(0,WORLD_TOP);ctx.scale(1,WORLD_SCALE);
   for(const c of crates)drawCrate(c);
   for(const e of enemies)drawEnemy(e);
   for(const b of bosses)if(!b.dead)drawBoss(b);
@@ -26259,8 +26114,9 @@ function render(){
   ctx.globalCompositeOperation='lighter';drawBeams();drawParts();ctx.globalCompositeOperation='source-over';
   drawBullets();
   for(const c of crates)drawCrate(c,true);
-  if(state!=='over'||overT<.15)drawPlayer();
   drawTexts();
+  ctx.restore();
+  if(state!=='over'||overT<.15)drawPlayer();
   ctx.restore();
   drawVignette();drawHUD();drawBanner();
   if(flash>0){ctx.fillStyle=`rgba(255,255,255,${flash*.5})`;ctx.fillRect(0,0,W,H);}
@@ -26309,23 +26165,22 @@ addEventListener('keydown',e=>{
 addEventListener('keyup',e=>{const k=e.key;
   if(k==='ArrowLeft'||k==='a'||k==='A')keys.left=false;
   if(k==='ArrowRight'||k==='d'||k==='D')keys.right=false;});
-function toLocal(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H};}
+function toLocal(e){const r=cv.getBoundingClientRect();const sx=(e.clientX-r.left)/r.width*W;return{x:worldX(sx),screenX:sx,y:(e.clientY-r.top)/r.height*H};}
 cv.addEventListener('pointerdown',e=>{
   if(!osShown())return;
   if(e.pointerType==='mouse'&&e.button!==0)return;
   e.preventDefault();initAudio();const pt=toLocal(e);
-  if(pt.y<TOP&&pt.x>W-42){muted=!muted;return;}
   if(state!=='play'){say(state==='over'?'這一局已結算。按「再上一次班」開始新的一局。|This shift is settled. Press "Clock in again" for a new one.':'先按「開始上班」。|Press "Clock in" first.');return;}
   try{cv.focus();}catch(_){}
   if(paused){paused=false;last=null;return;}
   if(e.pointerType==='mouse'){p.tx=pt.x;}
-  else{drag={off:p.x-pt.x};try{cv.setPointerCapture(e.pointerId);}catch(_){}}
+  else{drag={off:drawX(p.x)-pt.screenX};try{cv.setPointerCapture(e.pointerId);}catch(_){}}
 });
 cv.addEventListener('pointermove',e=>{
   if(state!=='play'||paused||!osShown())return;
   const pt=toLocal(e);
   if(e.pointerType==='mouse')p.tx=pt.x;
-  else if(drag)p.tx=pt.x+drag.off;
+  else if(drag)p.tx=worldX(pt.screenX+drag.off);
 });
 const endDrag=()=>{drag=null;};
 cv.addEventListener('pointerup',endDrag);cv.addEventListener('pointercancel',endDrag);cv.addEventListener('lostpointercapture',endDrag);
@@ -26350,7 +26205,12 @@ function ui(){
   setText('os-score',played?score.toLocaleString():'—');
   setText('os-best',best.toLocaleString());
   setText('os-pay',earned+' / '+BONUS_PER_DAY*BONUS_DAYS);
-  const b=$('os-go');b.disabled=live;
+  const b=$('os-go');b.disabled=live||!comicReady;
+  if($v.dataset)$v.dataset.round=state;
+  setText('os-pause',paused?'▶':'Ⅱ');
+  setText('os-sound',muted?'♫ ×':'♫');
+  $('os-sound').hidden=!(state==='play'&&paused);
+  if(!comicReady){setText('os-go',comicFailed?L('素材載入失敗，請重新整理|ART LOAD FAILED · RELOAD'):L('載入漫畫素材…|LOADING COMIC ART…'));renderMsg();return;}
   setText('os-go',live?'上班中':state==='over'?'再上一次班':'開始上班');
   renderMsg();
 }
@@ -26373,6 +26233,7 @@ function settle(){
 }
 function begin(){
   if(otBusy)return;
+  if(!comicReady)return;
   if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');return;}
   analytics=AN.start('office-shoot',ENTRY_FEE);otBusy=true;otStake=ENTRY_FEE;earned=0;paidDays={};
   save();renderAll();
@@ -26381,6 +26242,8 @@ function begin(){
   ui();try{cv.focus();}catch(_){}
 }
 $('os-go').addEventListener('click',begin);
+$('os-pause').addEventListener('click',()=>{if(state!=='play')return;if(paused){paused=false;last=null;}else pauseNow();});
+$('os-sound').addEventListener('click',()=>{muted=!muted;});
 // 先於共用離頁處理結束，讓 abandoned 帶上已入帳的 BONUS
 window.addEventListener('pagehide',e=>{if(!e.persisted&&otBusy&&analytics){AN.end(analytics,earned,'abandoned',{stage,score,step:kills,weapon_level:p.tier+1});analytics=null;otBusy=false;otStake=0;}},true);
 
@@ -26388,6 +26251,7 @@ window.addEventListener('pagehide',e=>{if(!e.persisted&&otBusy&&analytics){AN.en
 let last=null;
 function frame(now){
   if(osShown()){
+    loadComicArt();
     if(last===null)last=now;
     const dt=Math.min(.05,Math.max(0,(now-last)/1000)||0);last=now;
     syncLang();

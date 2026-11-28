@@ -1,1 +1,33 @@
-.sneak-stage #os-canvas{width:min(100%,450px,calc(80vh * 450 / 800));height:auto;aspect-ratio:450/800;max-height:none;object-fit:fill}
+@font-face{font-family:"Office Comic TC";src:url("games/office-shoot/art/comic-v2/fonts/office-comic-tc-black.woff2") format("woff2");font-weight:900;font-display:swap}
+@font-face{font-family:"Office Comic Latin";src:url("games/office-shoot/art/comic-v2/fonts/office-comic-latin.woff2") format("woff2");font-weight:900;font-display:swap}
+/* Approved American comic art direction 02. All rules are scoped to this game. */
+#view-office-shoot{--hud:0px;--reserve:0px;--fs-bg:#05080c}
+html:has(#view-office-shoot:not([hidden])){overflow:hidden}
+#view-office-shoot:not([hidden]) .fs-game{position:fixed;inset:0;z-index:1200;display:block;box-sizing:border-box;width:min(100vw,calc(100dvh * 390 / 844));height:100dvh;margin:0 auto;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);background:#05080c;border:0;border-radius:0;overscroll-behavior:none}
+#view-office-shoot .fs-game>.sneak-stage{position:relative;display:block;width:100%;height:100%;margin:0;border:0;border-radius:0;overflow:hidden;background:#05172d}
+#view-office-shoot .fs-game .sneak-stage #os-canvas{display:block;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto;object-fit:fill;outline-offset:-4px;touch-action:none}
+#view-office-shoot .side,#view-office-shoot .panel{display:contents}
+#view-office-shoot .stats,#view-office-shoot .msg,#view-office-shoot .hint,#view-office-shoot>.rules,#view-office-shoot>.game-exit-link,#view-office-shoot>.mobile-scroll-pad{display:none!important}
+#view-office-shoot .fs-exit,#view-office-shoot #os-pause,#view-office-shoot #os-sound{position:absolute;z-index:35;display:grid;place-items:center;box-sizing:border-box;min-width:44px;min-height:44px;padding:0;margin:0;border:0;border-radius:0;background:transparent;color:#fff02b;font:900 26px/1 Arial,sans-serif;cursor:pointer}
+#view-office-shoot .fs-exit{top:calc(env(safe-area-inset-top) + 3px);left:4px;width:10%;height:5.4%}
+#view-office-shoot #os-pause{top:calc(env(safe-area-inset-top) + 3px);left:59%;width:11%;height:5.4%;font-size:23px}
+#view-office-shoot #os-sound{right:8px;bottom:calc(env(safe-area-inset-bottom) + 7%);width:44px;height:44px;background:#060a0e;border:2px solid #fff4dc;font-size:17px}
+#view-office-shoot #os-go:not(:disabled){position:absolute;z-index:34;left:50%;bottom:calc(env(safe-area-inset-bottom) + 9%);transform:translateX(-50%);box-sizing:border-box;width:80%;min-height:52px;margin:0;border:3px solid #fff4dc;border-radius:0;background:#ffed26;color:#06090d;box-shadow:5px 5px 0 #020204;font:italic 900 19px/1.2 Arial,'PingFang TC',sans-serif}
+#view-office-shoot #os-go:disabled{display:none}
+#view-office-shoot .mobile-stage-actions{position:static;transform:none;width:auto;padding:0}
+#view-office-shoot .mobile-stage-action{position:static}
+#view-office-shoot .share-result:not([hidden]){position:absolute;z-index:34;left:50%;bottom:2%;transform:translateX(-50%);width:80%;min-height:44px;border:2px solid #fff4dc;border-radius:0;background:#05080b;color:#ffed26}
+#view-office-shoot button:focus-visible{outline:3px solid #00dcff;outline-offset:-4px}
+@media(max-width:880px){
+ #view-office-shoot:not([hidden]) .fs-game{width:100vw}
+}
+@media(orientation:landscape) and (max-height:600px){
+ #view-office-shoot:not([hidden]) .fs-game{width:min(100vw,calc(100dvh * 450 / 800))}
+ #view-office-shoot .fs-exit,#view-office-shoot #os-pause{height:44px;top:0}
+}
+/* The controls are transparent hit areas over the approved illustrated UI. */
+#view-office-shoot .fs-exit,#view-office-shoot #os-pause{font-size:0!important;color:transparent}
+#view-office-shoot .fs-exit{left:1%;width:11%;top:calc(env(safe-area-inset-top) + .4%);height:6%}
+#view-office-shoot #os-pause{left:65.8%;width:10%;top:calc(env(safe-area-inset-top) + .4%);height:6%}
+#view-office-shoot #os-sound[hidden]{display:none}
+#view-office-shoot #os-sound{left:50%;right:auto;bottom:25%;transform:translateX(-50%);width:64px;color:#fff126;border-color:#fff7e7}

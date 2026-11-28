@@ -1,0 +1,50 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "boss.png",
+  "grid": [
+    1,
+    1
+  ],
+  "canvas": {
+    "w": 192,
+    "h": 192
+  },
+  "baseline_y": 190.0,
+  "target_height": 184.0,
+  "scale": "cell",
+  "fit": "contain",
+  "factor": null,
+  "factor_from": null,
+  "alpha_cleanup": null,
+  "cells": [
+    {
+      "name": "leaderboard",
+      "file": "leaderboard.png",
+      "factor": 0.7529411764705882,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 254,
+          "h": 185
+        },
+        "canvas": {
+          "w": 191,
+          "h": 139
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 51,
+        "w": 191,
+        "h": 139
+      },
+      "anchor": [
+        96.5,
+        190.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

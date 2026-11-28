@@ -1,0 +1,16 @@
+{
+  "browser": "Chrome/158.0.8127.37",
+  "viewport": [
+    390,
+    844
+  ],
+  "leaderboardData": "Read-only browser fetch fixture; no D1/API writes",
+  "checks": [
+    "actual leaderboard row uses hero image",
+    "row links to #office-shoot and game starts",
+    "cover background loads",
+    "no horizontal overflow"
+  ],
+  "thumbnail": "games/office-shoot/leaderboard.webp",
+  "cover": "url(\"http://127.0.0.1:55682/games/office-shoot/cover.webp?v=7fce4824\")"
+}

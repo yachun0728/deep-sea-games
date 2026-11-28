@@ -25,6 +25,8 @@
 /games/last-hair/art/rig-v3/
 /games/last-hair/art/walk-v4/*.json
 
+/games/office-shoot/design/
+
 /games/reaper/design/
 /games/reaper/art/components/*.png
 /games/reaper/art/components/*.json

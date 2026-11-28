@@ -118,9 +118,15 @@ check('Keys only steer while the view is shown and a shift runs; buttons and inp
   f.el('view-office-shoot').hidden=true;e=k('ArrowLeft');f.key(e);assert.equal(e.done,undefined);
 });
 check('Touch drag moves relative to the finger; mouse follows the pointer',()=>{
-  const f=fixture();f.begin();const x0=f.ev('p.x');f.ptr('pointerdown',100,600);f.ptr('pointermove',160,600);assert.equal(f.ev('p.tx'),x0+60);
-  f.ptr('pointerup',160,600);f.ptr('pointermove',10,600);assert.equal(f.ev('p.tx'),x0+60);
-  f.ptr('pointermove',90,600,2,'mouse');assert.equal(f.ev('p.tx'),90);
+  const f=fixture();f.begin();const x0=f.ev('p.x');f.ptr('pointerdown',100,600);f.ptr('pointermove',160,600);assert.ok(Math.abs(f.ev('drawX(p.tx)')-f.ev('drawX('+x0+')')-60)<1e-9);
+  f.ptr('pointerup',160,600);f.ptr('pointermove',10,600);assert.ok(Math.abs(f.ev('drawX(p.tx)')-f.ev('drawX('+x0+')')-60)<1e-9);
+  f.ptr('pointermove',90,600,2,'mouse');assert.equal(f.ev('drawX(p.tx)'),90);
+});
+check('The camera preserves lane coordinates and pointer inversion at both lane boundaries',()=>{
+  const f=fixture();for(const x of [0,22,90,112.5,174,190,225,300,428,450]){
+    assert.ok(Math.abs(f.ev('worldX(drawX('+x+'))')-x)<1e-9);
+  }
+  assert.equal(f.ev('MID'),225);assert.equal(f.ev('drawX(MID)'),190);
 });
 check('Reset guard and message: otSay shows the shared note',()=>{
   const f=fixture();f.ev('otSay("這一局結束後才能重設點數。")');f.step(1);assert.equal(f.el('os-msg').textContent,'這一局結束後才能重設點數。');

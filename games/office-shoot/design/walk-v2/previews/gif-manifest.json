@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "kind": "sprite-gen-gif-run",
+  "run_dir": "/Users/angellu/Documents/dev/deep-sea-games/games/office-shoot/design/walk-v2",
+  "exports": [
+    {
+      "state": "walk",
+      "output": "/Users/angellu/Documents/dev/deep-sea-games/games/office-shoot/design/walk-v2/previews/walk.gif",
+      "frames": 6,
+      "fps": 10.0,
+      "loop": true,
+      "gif_report": {
+        "path": "/Users/angellu/Documents/dev/deep-sea-games/games/office-shoot/design/walk-v2/previews/walk.gif",
+        "frames": 6,
+        "delay_ticks": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "loop": 0,
+        "transparent": true,
+        "disposal": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ]
+      }
+    }
+  ]
+}
