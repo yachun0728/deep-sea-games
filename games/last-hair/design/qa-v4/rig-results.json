@@ -1,0 +1,32 @@
+[
+  {
+    "size": [
+      790,
+      740
+    ],
+    "result": "PASS",
+    "geometry": {
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 790,
+        "height": 740,
+        "top": 0,
+        "right": 790,
+        "bottom": 740,
+        "left": 0
+      },
+      "scroll": 790
+    },
+    "checks": [
+      "full available viewport",
+      "assets",
+      "run",
+      "six painted frames render",
+      "flag and visible numerals vertically centered",
+      "CDP touch hold/release",
+      "English",
+      "blur freezes phase"
+    ]
+  }
+]

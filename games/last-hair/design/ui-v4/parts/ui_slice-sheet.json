@@ -1,0 +1,81 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "ui-source.png",
+  "grid": [
+    1,
+    2
+  ],
+  "canvas": {
+    "w": 1200,
+    "h": 480
+  },
+  "baseline_y": 460.0,
+  "target_height": 400.0,
+  "scale": "sheet",
+  "fit": "contain",
+  "factor": 0.6944444444444444,
+  "factor_from": {
+    "rule": "fit",
+    "cell": "paper"
+  },
+  "alpha_cleanup": "ui_alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "paper",
+      "file": "ui_paper.png",
+      "factor": 0.6944444444444444,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 1727,
+          "h": 335
+        },
+        "canvas": {
+          "w": 1199,
+          "h": 233
+        }
+      },
+      "box": {
+        "x": 0,
+        "y": 227,
+        "w": 1200,
+        "h": 233
+      },
+      "anchor": [
+        600.347,
+        460.0
+      ],
+      "clipped_px": 0,
+      "parts": 2
+    },
+    {
+      "name": "hold",
+      "file": "ui_hold.png",
+      "factor": 0.6944444444444444,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 501,
+          "h": 353
+        },
+        "canvas": {
+          "w": 348,
+          "h": 245
+        }
+      },
+      "box": {
+        "x": 426,
+        "y": 215,
+        "w": 348,
+        "h": 245
+      },
+      "anchor": [
+        600.0,
+        460.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+[
+  {
+    "phase": "b",
+    "sourceSize": [
+      1200,
+      1310
+    ],
+    "sourceOpaqueBounds": [
+      62,
+      129,
+      1127,
+      1259
+    ],
+    "targetHeight": 482,
+    "rule": "preserve 512/sourceWidth scale, align planted sole to y=540"
+  },
+  {
+    "phase": "c",
+    "sourceSize": [
+      1199,
+      1312
+    ],
+    "sourceOpaqueBounds": [
+      63,
+      128,
+      1132,
+      1248
+    ],
+    "targetHeight": 478,
+    "rule": "preserve 512/sourceWidth scale, align planted sole to y=540"
+  },
+  {
+    "phase": "e",
+    "sourceSize": [
+      1199,
+      1312
+    ],
+    "sourceOpaqueBounds": [
+      62,
+      129,
+      1125,
+      1232
+    ],
+    "targetHeight": 471,
+    "rule": "preserve 512/sourceWidth scale, align planted sole to y=540"
+  },
+  {
+    "phase": "d",
+    "sourceSize": [
+      1199,
+      1312
+    ],
+    "sourceOpaqueBounds": [
+      62,
+      126,
+      1133,
+      1260
+    ],
+    "targetHeight": 484,
+    "rule": "preserve 512/sourceWidth scale, align planted sole to y=540"
+  },
+  {
+    "phase": "f",
+    "sourceSize": [
+      1199,
+      1312
+    ],
+    "sourceOpaqueBounds": [
+      62,
+      126,
+      1132,
+      1257
+    ],
+    "targetHeight": 483,
+    "rule": "preserve 512/sourceWidth scale, align planted sole to y=540"
+  }
+]

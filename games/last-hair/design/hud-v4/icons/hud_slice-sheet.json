@@ -1,0 +1,249 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "icons-source.png",
+  "grid": [
+    4,
+    2
+  ],
+  "canvas": {
+    "w": 512,
+    "h": 512
+  },
+  "baseline_y": 492.0,
+  "target_height": 460.0,
+  "scale": "sheet",
+  "fit": "contain",
+  "factor": 1.2137203166226913,
+  "factor_from": {
+    "rule": "target_height",
+    "cell": "hair"
+  },
+  "alpha_cleanup": "hud_alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "hair",
+      "file": "hud_hair.png",
+      "factor": 1.2137203166226913,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 371,
+          "h": 379
+        },
+        "canvas": {
+          "w": 450,
+          "h": 460
+        }
+      },
+      "box": {
+        "x": 31,
+        "y": 32,
+        "w": 450,
+        "h": 460
+      },
+      "anchor": [
+        256.0,
+        492.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "glue",
+      "file": "hud_glue.png",
+      "factor": 1.2137203166226913,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 187,
+          "h": 335
+        },
+        "canvas": {
+          "w": 227,
+          "h": 407
+        }
+      },
+      "box": {
+        "x": 143,
+        "y": 85,
+        "w": 227,
+        "h": 407
+      },
+      "anchor": [
+        256.5,
+        492.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "root",
+      "file": "hud_root.png",
+      "factor": 1.2137203166226913,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 277,
+          "h": 283
+        },
+        "canvas": {
+          "w": 336,
+          "h": 343
+        }
+      },
+      "box": {
+        "x": 89,
+        "y": 149,
+        "w": 336,
+        "h": 343
+      },
+      "anchor": [
+        257.0,
+        492.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "eye",
+      "file": "hud_eye.png",
+      "factor": 1.2137203166226913,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 395,
+          "h": 257
+        },
+        "canvas": {
+          "w": 479,
+          "h": 312
+        }
+      },
+      "box": {
+        "x": 17,
+        "y": 180,
+        "w": 479,
+        "h": 312
+      },
+      "anchor": [
+        256.5,
+        492.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "sweat",
+      "file": "hud_sweat.png",
+      "factor": 1.2137203166226913,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 238,
+          "h": 353
+        },
+        "canvas": {
+          "w": 289,
+          "h": 428
+        }
+      },
+      "box": {
+        "x": 112,
+        "y": 64,
+        "w": 289,
+        "h": 428
+      },
+      "anchor": [
+        256.5,
+        492.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "flag",
+      "file": "hud_flag.png",
+      "factor": 1.2137203166226913,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 342,
+          "h": 308
+        },
+        "canvas": {
+          "w": 415,
+          "h": 374
+        }
+      },
+      "box": {
+        "x": 49,
+        "y": 118,
+        "w": 415,
+        "h": 374
+      },
+      "anchor": [
+        256.5,
+        492.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "wind",
+      "file": "hud_wind.png",
+      "factor": 1.2137203166226913,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 386,
+          "h": 224
+        },
+        "canvas": {
+          "w": 468,
+          "h": 272
+        }
+      },
+      "box": {
+        "x": 22,
+        "y": 220,
+        "w": 468,
+        "h": 272
+      },
+      "anchor": [
+        256.0,
+        492.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "button",
+      "file": "hud_button.png",
+      "factor": 1.2137203166226913,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 345,
+          "h": 327
+        },
+        "canvas": {
+          "w": 419,
+          "h": 397
+        }
+      },
+      "box": {
+        "x": 47,
+        "y": 95,
+        "w": 419,
+        "h": 397
+      },
+      "anchor": [
+        256.5,
+        492.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

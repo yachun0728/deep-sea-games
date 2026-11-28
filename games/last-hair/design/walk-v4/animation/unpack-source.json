@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "kind": "sprite-gen-unpack-source",
+  "layout_source": "imported-pngs",
+  "cell": {
+    "width": 512,
+    "height": 560
+  },
+  "source_dir": "/Users/angellu/Documents/dev/deep-sea-games/games/last-hair/design/walk-v4/inputs/walk",
+  "files": [
+    "1-a.png",
+    "2-b.png",
+    "3-e.png",
+    "4-c.png",
+    "5-d.png",
+    "6-f.png"
+  ],
+  "labels": [
+    "1-a",
+    "2-b",
+    "3-e",
+    "4-c",
+    "5-d",
+    "6-f"
+  ],
+  "groups": [
+    "walk"
+  ],
+  "base_source": "base-source.png",
+  "imported_refs": {}
+}

@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "engine": "component-row",
+  "run_dir": "/Users/angellu/Documents/dev/deep-sea-games/games/last-hair/design/walk-v4/animation",
+  "cell": {
+    "shape": "rect",
+    "width": 512,
+    "height": 560,
+    "size": 512,
+    "safe_margin": 0
+  },
+  "rows": [
+    {
+      "state": "walk",
+      "frames": 6,
+      "method": "imported-pngs",
+      "files": [
+        "frames/walk/frame-0.png",
+        "frames/walk/frame-1.png",
+        "frames/walk/frame-2.png",
+        "frames/walk/frame-3.png",
+        "frames/walk/frame-4.png",
+        "frames/walk/frame-5.png"
+      ],
+      "labels": [
+        "1-a",
+        "2-b",
+        "3-e",
+        "4-c",
+        "5-d",
+        "6-f"
+      ],
+      "ok": true
+    }
+  ],
+  "errors": [],
+  "warnings": []
+}

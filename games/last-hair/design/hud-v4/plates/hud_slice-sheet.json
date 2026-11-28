@@ -1,0 +1,109 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "plates-source.png",
+  "grid": [
+    1,
+    3
+  ],
+  "canvas": {
+    "w": 1200,
+    "h": 360
+  },
+  "baseline_y": 340.0,
+  "target_height": 310.0,
+  "scale": "sheet",
+  "fit": "contain",
+  "factor": 0.8202323991797676,
+  "factor_from": {
+    "rule": "fit",
+    "cell": "meter"
+  },
+  "alpha_cleanup": "hud_alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "distance",
+      "file": "hud_distance.png",
+      "factor": 0.8202323991797676,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 1186,
+          "h": 214
+        },
+        "canvas": {
+          "w": 973,
+          "h": 176
+        }
+      },
+      "box": {
+        "x": 114,
+        "y": 164,
+        "w": 973,
+        "h": 176
+      },
+      "anchor": [
+        600.5,
+        340.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "card",
+      "file": "hud_card.png",
+      "factor": 0.8202323991797676,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 767,
+          "h": 310
+        },
+        "canvas": {
+          "w": 629,
+          "h": 254
+        }
+      },
+      "box": {
+        "x": 286,
+        "y": 86,
+        "w": 629,
+        "h": 254
+      },
+      "anchor": [
+        600.5,
+        340.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "meter",
+      "file": "hud_meter.png",
+      "factor": 0.8202323991797676,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 1462,
+          "h": 227
+        },
+        "canvas": {
+          "w": 1199,
+          "h": 186
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 154,
+        "w": 1199,
+        "h": 186
+      },
+      "anchor": [
+        600.5,
+        340.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

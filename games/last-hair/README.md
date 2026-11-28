@@ -7,35 +7,36 @@
 - 網址：`#last-hair`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「頂著最後三根頭髮，在強風中走完 500 公尺去面試。」｜立即開玩 · 雙拇指操作
 - 追蹤名稱（GA4 `game_name`）：尊嚴保衛戰，`game_id` 為 `last-hair`
-- 檔案：`games/last-hair/card.html`、`games/last-hair/cover.webp`、`games/last-hair/game.js`、`games/last-hair/icon.svg`、`games/last-hair/style.css`、`games/last-hair/view.html`；`game.js` 共 383 行、29.0 KB
+- 檔案：`games/last-hair/card.html`、`games/last-hair/cover.webp`、`games/last-hair/game.js`、`games/last-hair/icon.svg`、`games/last-hair/style.css`、`games/last-hair/view.html`；`game.js` 共 457 行、36.9 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「36. 尊嚴保衛戰 The Last Hair（last-hair）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-last-hair`、`lh-canvas`、`lh-dist`、`lh-hairs`、`lh-best`、`lh-amount`、`lh-go`、`lh-msg`、`lh-rank-status`、`lh-rank-retry`
+`view-last-hair`、`lh-canvas`、`lh-dist`、`lh-hairs`、`lh-best`、`lh-pause`、`lh-amount`、`lh-go`、`lh-msg`、`lh-rank-status`、`lh-rank-retry`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`SFX`（L59）、`hairBusy`（L2）
-- L6 常數：`SCENE_H`
-- L7 常數：`DPR`
-- L9 常數：`FONT`
-- L18 常數：`REWARDS`
-- L19 常數：`RANK_ORDER`
-- L20 常數：`RANKS`
-- L26 常數：`CAUSE`
-- L27 常數：`WIN_MSG`
-- L28 常數：`HAIR_LEFT`
-- L29 常數：`TIPS`
-- L59 常數：`SFX`
-- L111 常數：`INK`、`PAPER`
-- L141 常數：`SKIN`
-- L256 常數：`TOGGLES`
+- 狀態物件／進行中旗標：`SFX`（L62）、`hairBusy`（L2）
+- L7 常數：`SCENE_H`
+- L8 常數：`DPR`
+- L10 常數：`FONT`
+- L20 常數：`REWARDS`
+- L21 常數：`RANK_ORDER`
+- L22 常數：`RANKS`
+- L28 常數：`CAUSE`
+- L29 常數：`WIN_MSG`
+- L30 常數：`HAIR_LEFT`
+- L31 常數：`TIPS`
+- L62 常數：`SFX`
+- L114 常數：`INK`、`PAPER`
+- L151 常數：`SKIN`
+- L171 常數：`WALK_RECTS`
+- …另有 2 行常數宣告，請直接搜尋大寫名稱
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`artReady` L17、`lsSet` L34、`lerp` L42、`hash` L43、`padBox` L44、`say` L45、`setText` L47、`aliveN` L48、`ui` L49、`audioInit` L56、`tone` L57、`vib` L58、`addFloat` L60、`end` L62、`milestones` L79、`handleEvents` L87、`txt` L106、`rrect` L107、`bar` L108、`mix` L109、`inkBox` L112、`drawScene` L113、`drawStreaks` L136、`drawHair` L142、`drawMan` L160、`drawEventsWorld` L181、`bannerList` L188、`drawHUD` L200、`drawControls` L226、`wrapC` L249、`TOGGLES` L256、`drawReady` L257、`drawOver` L269、`draw` L286、`shown` L298、`toLocal` L299、`clampT` L300、`recomputePress` L301、`clearInput` L302、`pauseNow` L303、`start` L304、`endPointer` L344、`loop` L362
+`artReady` L19、`lsSet` L36、`lerp` L44、`hash` L45、`padBox` L46、`say` L47、`setText` L49、`aliveN` L50、`ui` L51、`audioInit` L59、`tone` L60、`vib` L61、`addFloat` L63、`end` L65、`milestones` L82、`handleEvents` L90、`txt` L109、`rrect` L110、`bar` L111、`mix` L112、`inkBox` L115、`drawScene` L116、`drawStreaks` L146、`drawHair` L152、`walkFrameAt` L173、`clipLegs` L174、`clipUpper` L175、`drawMan` L183、`handFont` L206、`paintedText` L207、`drawPaper` L210、`drawEventsWorld` L217、`bannerList` L226、`uiText` L238、`paintPlate` L239、`hudIcon` L245、`paintedMeter` L249、`distanceLayout` L255、`drawHUD` L264、`drawControls` L291、`wrapC` L311、`TOGGLES` L318、`drawReady` L319、`drawOver` L331、`draw` L350、`fitViewport` L361、`shown` L371、`toLocal` L372、`clampT` L373、`recomputePress` L374、`clearInput` L375、`pauseNow` L376、`start` L377、`endPointer` L418、`loop` L436
 
 ## 錢包與結算接點
 
@@ -43,19 +44,19 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L81 `milestones`：`S.balance+=pts;`
+- L84 `milestones`：`S.balance+=pts;`
 
 **餘額檢查**
-- L308 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L381 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L73 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:Math.floor(g.dist),step:earned,stage:Math.min(4,rew…`
-- L82 `milestones`：`AN.progress(analytics,{stage:rewarded,step:earned,score:Math.floor(g.dist),bonus_points:pts,total_bonus_point…`
-- L310 `start`：`analytics=AN.start('last-hair',amount);`
+- L76 `end`：`AN.end(analytics,earned,earned>0?'complete':'loss',{score:Math.floor(g.dist),step:earned,stage:Math.min(4,rew…`
+- L85 `milestones`：`AN.progress(analytics,{stage:rewarded,step:earned,score:Math.floor(g.dist),bonus_points:pts,total_bonus_point…`
+- L383 `start`：`analytics=AN.start('last-hair',amount);`
 
 - 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 

@@ -1,0 +1,53 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "b.png",
+  "grid": [
+    1,
+    1
+  ],
+  "canvas": {
+    "w": 512,
+    "h": 560
+  },
+  "baseline_y": 540.0,
+  "target_height": 482.0,
+  "scale": "sheet",
+  "fit": "contain",
+  "factor": 0.42541924095322153,
+  "factor_from": {
+    "rule": "target_height",
+    "cell": "b"
+  },
+  "alpha_cleanup": "frame_alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "b",
+      "file": "frame_b.png",
+      "factor": 0.42541924095322153,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 1069,
+          "h": 1133
+        },
+        "canvas": {
+          "w": 455,
+          "h": 482
+        }
+      },
+      "box": {
+        "x": 29,
+        "y": 58,
+        "w": 455,
+        "h": 482
+      },
+      "anchor": [
+        256.5,
+        540.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "sprite-gen-request",
+  "engine": "component-row",
+  "character": {
+    "id": "animation",
+    "description": "imported PNG set from /Users/angellu/Documents/dev/deep-sea-games/games/last-hair/design/walk-v4/inputs/walk"
+  },
+  "cell": {
+    "shape": "rect",
+    "width": 512,
+    "height": 560,
+    "size": 512,
+    "safe_margin": 0
+  },
+  "chroma_key": {
+    "name": "magenta",
+    "hex": "#FF00FF",
+    "rgb": [
+      255,
+      0,
+      255
+    ]
+  },
+  "states": {
+    "walk": {
+      "frames": 6,
+      "fps": 8,
+      "loop": true,
+      "action": "Full-body painted short-stocky walk poses A-B-E-C-D-F, canonical normalization, no bone deformation"
+    }
+  }
+}

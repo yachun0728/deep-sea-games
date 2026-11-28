@@ -2437,6 +2437,39 @@ body.ml-expanded { overflow: hidden; }
  #view-last-hair .fs-game:has(.share-result:not([hidden])) .side #lh-go:not(:disabled){left:12px;transform:none;width:calc(50% - 16px)}
  #view-last-hair .fs-game .share-result:not([hidden]){left:calc(50% + 4px);transform:none;width:calc(50% - 16px);min-height:48px;background:#365a63;border-color:#a9916d;color:#ffedca}
 }
+/* v3: fill the actual viewport; the renderer extends its logical scene without stretching artwork. */
+#view-last-hair:not([hidden]) .console.fs-game{position:fixed;inset:0;z-index:1200;display:block;box-sizing:border-box;width:100%;height:100dvh;margin:0;--reserve:0px;padding:calc(env(safe-area-inset-top) + 52px) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + var(--reserve)) env(safe-area-inset-left);background:#254750}
+#view-last-hair:not([hidden]) .fs-game:has(#lh-go:not(:disabled)),#view-last-hair:not([hidden]) .fs-game:has(.share-result:not([hidden])){--reserve:84px}
+#view-last-hair:not([hidden]) .fs-game .sneak-stage{position:relative;display:block;box-sizing:border-box;width:100%;height:100%;padding:0;margin:0;border:0;border-radius:0;overflow:visible}
+#view-last-hair:not([hidden]) .fs-game .sneak-stage #lh-canvas{display:block;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto;object-fit:fill;border:0;border-radius:0}
+#view-last-hair .fs-game .side,#view-last-hair .fs-game .panel{display:contents}
+#view-last-hair .fs-game .stats{position:absolute;top:calc(env(safe-area-inset-top) + 8px);left:auto;right:12px;width:130px;margin:0}
+#view-last-hair .fs-game .stats>div:not(:last-child){display:none}
+#view-last-hair .fs-game .stats>div:last-child{padding:3px 8px;border-radius:10px;background:#ffedca;color:#263b42}
+#view-last-hair .fs-game .stats dt{font-size:10px;line-height:1.2}
+#view-last-hair .fs-game .stats dd{font-size:14px;line-height:1.4}
+#view-last-hair .fs-game .fs-exit{display:grid;place-items:center;position:absolute;top:calc(env(safe-area-inset-top) + 6px);left:calc(env(safe-area-inset-left) + 8px);width:44px;height:44px;padding:0;border-radius:10px;background:#ffedca;color:#263b42;font-size:24px}
+#view-last-hair .fs-game #lh-msg{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#view-last-hair .fs-game .hint,#view-last-hair>.rules{display:none}
+#view-last-hair .fs-game .side #lh-go:not(:disabled){position:absolute;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);min-height:48px}
+#view-last-hair .fs-game .side #lh-go:disabled{display:none}
+#view-last-hair .fs-game:has(.share-result:not([hidden])) .side #lh-go:not(:disabled){left:12px;transform:none;width:calc(50% - 16px)}
+#view-last-hair .fs-game .share-result:not([hidden]){position:absolute;left:calc(50% + 4px);bottom:calc(env(safe-area-inset-bottom) + 16px);transform:none;width:calc(50% - 16px);min-height:48px;background:#365a63;color:#ffedca}
+html:has(#view-last-hair:not([hidden])){overflow:hidden}
+/* The approved HUD owns the top row; no separate platform statistics bar. */
+#view-last-hair:not([hidden]) .console.fs-game{padding-top:env(safe-area-inset-top)}
+#view-last-hair .fs-game .stats{width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%)}
+#view-last-hair .fs-game .fs-exit,#view-last-hair .fs-game #lh-pause{position:absolute;z-index:8;top:calc(env(safe-area-inset-top) + 7px);width:44px;height:44px;padding:0;border:0;border-radius:13px;background:transparent url('games/last-hair/art/hud-v4/hud_button.webp') center/100% 100% no-repeat;color:#273d40;font:900 25px 'Chalkboard SE',system-ui;box-shadow:none;cursor:pointer}
+#view-last-hair .fs-game .fs-exit{left:calc(env(safe-area-inset-left) + 9px)}
+#view-last-hair .fs-game #lh-pause{right:calc(env(safe-area-inset-right) + 9px)}
+#view-last-hair .fs-game #lh-pause:disabled{opacity:.5;cursor:default}
+@font-face{font-family:LastHairLatin;src:url('games/last-hair/art/fonts/last-hair-latin.woff2') format('woff2');font-style:normal;font-weight:700;font-display:swap}
+@font-face{font-family:LastHairHand;src:url('games/last-hair/art/fonts/last-hair-hand.woff2') format('woff2');font-style:normal;font-weight:700;font-display:swap}
+#view-last-hair .fs-game #lh-pause{font-size:0}
+#view-last-hair #lh-pause::before{content:"";position:absolute;left:13px;top:12px;width:7px;height:20px;border-radius:3px;background:#273d40;box-shadow:11px 0 #273d40}
+#view-last-hair #lh-pause[data-paused="1"]::before{left:17px;top:12px;width:0;height:0;border-radius:2px;background:transparent;box-shadow:none;border-left:14px solid #273d40;border-top:10px solid transparent;border-bottom:10px solid transparent}
+#view-last-hair #lh-canvas:focus{outline:0}
+#view-last-hair #lh-canvas:focus-visible{outline:2px solid rgba(255,233,190,.55);outline-offset:-2px}
 
 .sneak-stage #os-canvas{width:min(100%,450px,calc(80vh * 450 / 800));height:auto;aspect-ratio:450/800;max-height:none;object-fit:fill}
 
@@ -6079,10 +6112,11 @@ html.points-hidden [data-points-hidden] { display:none !important; }
     <div class="console fs-game"><div class="sneak-stage"><canvas id="lh-canvas" tabindex="0" width="400" height="720" aria-label="尊嚴保衛戰：左手滑動脖子迎著風歪頭，右手按住壓住頭髮；走完 500 公尺去面試，至少要留下一根頭髮"></canvas></div><button class="fs-exit" type="button" aria-label="退出遊戲">←</button>
       <div class="side"><section class="panel" aria-label="尊嚴保衛戰操作">
         <dl class="stats"><div><dt>目前距離</dt><dd id="lh-dist">0 m</dd></div><div><dt>剩餘頭髮</dt><dd id="lh-hairs">3 / 3</dd></div><div><dt>最遠紀錄</dt><dd id="lh-best">0 m</dd></div></dl>
+        <button id="lh-pause" class="lh-pause" type="button" aria-label="暫停／繼續" disabled>Ⅱ</button>
         <input id="lh-amount" type="hidden" value="0">
         <button class="go" id="lh-go" type="button" data-mode="bet">開始出門</button>
         <p class="msg" id="lh-msg" aria-live="polite">佐藤只剩 3 根頭髮，今天要去面試！開始後出門，迎著風歪頭、壓住頭髮，走完 500 公尺。</p>
-        <p class="hint">手機：左手在左半邊畫面滑動脖子，把滑桿移到綠圈；右手在右半邊畫面按住「死命壓住」。電腦：<kbd>A</kbd><kbd>D</kbd>（或 <kbd>←</kbd><kbd>→</kbd>、滑鼠左右移動）歪頭，按住 <kbd>空白鍵</kbd> 或滑鼠壓頭。歪頭太久脖子會抽筋，壓太久手會流汗、路人會側目。</p>
+        <p class="hint">手機：左手在左半邊畫面滑動脖子，把滑桿移到綠圈；右手在右半邊畫面按住「護髮」。電腦：<kbd>A</kbd><kbd>D</kbd>（或 <kbd>←</kbd><kbd>→</kbd>、滑鼠左右移動）歪頭，按住 <kbd>空白鍵</kbd> 或滑鼠壓頭。歪頭太久脖子會抽筋，壓太久手會流汗、路人會側目。</p>
         <p id="lh-rank-status" role="status" hidden></p><button id="lh-rank-retry" type="button" hidden>重送排行榜成績</button>
       </section></div>
     </div>
@@ -10018,7 +10052,7 @@ html.points-hidden [data-points-hidden] { display:none !important; }
   "剩餘頭髮": "Hairs left",
   "開始出門": "Head out",
   "佐藤只剩 3 根頭髮，今天要去面試！開始後出門，迎著風歪頭、壓住頭髮，走完 500 公尺。": "Sato has only 3 hairs left and an interview today! Head out, tilt into the wind, press your hair down, and walk 500 m.",
-  "手機：左手在左半邊畫面滑動脖子，把滑桿移到綠圈；右手在右半邊畫面按住「死命壓住」。電腦：": "Mobile: slide the neck on the left half of the screen to move the slider into the green ring; hold \"Press hard\" on the right half. Desktop:",
+  "手機：左手在左半邊畫面滑動脖子，把滑桿移到綠圈；右手在右半邊畫面按住「護髮」。電腦：": "Mobile: slide the neck on the left half of the screen to move the slider into the green ring; hold \"HOLD\" on the right half. Desktop:",
   "（或": "(or",
   "、滑鼠左右移動）歪頭，按住": ", or move the mouse left and right) to tilt your head; hold",
   "或滑鼠壓頭。歪頭太久脖子會抽筋，壓太久手會流汗、路人會側目。": "or mouse to press the hair. Tilting too long cramps your neck; pressing too long makes your hand sweat and passers-by stare.",
@@ -10957,15 +10991,8 @@ html.points-hidden [data-points-hidden] { display:none !important; }
   "面試官要回頭！放開手！": "The interviewer is turning around! Let go!",
   "面試官在看！優雅！別壓頭": "The interviewer is watching! Stay elegant, no pressing!",
   "社死中…腳步變慢": "Mortified... walking slower",
-  "黃＝髮膠　紅＝髮根": "Yellow = gel Red = root",
-  "側目": "Stares",
-  "手汗": "Sweat",
   "變向！": "Wind shift!",
-  "脖子": "Neck",
-  "◀ 左歪": "◀ Tilt left",
-  "右歪 ▶": "Tilt right ▶",
   "手被佔住": "Hand occupied",
-  "死命壓住": "Press hard",
   "按住不放": "Keep holding",
   "操作：左壓右歪": "Controls: left presses, right tilts",
   "操作：左歪右壓": "Controls: left tilts, right presses",
@@ -12305,7 +12332,15 @@ html.points-hidden [data-points-hidden] { display:none !important; }
   "全破 10 關才列入計時排行；簡單、普通、困難分榜，時間越短越前面。結算畫面不計時，排名用時由伺服器核對。": "Clear all 10 stages to rank by time. Easy, Normal and Hard have separate boards. Results-screen time is excluded; ranked time is verified by the server.",
   "本關已驗證，全破 10 關後才列入計時排行。": "Stage verified. Clear all 10 stages to enter the time leaderboard.",
   "美術素材載入中…": "Loading artwork…",
-  "素材載入失敗，請重新整理後再試。": "Artwork could not load. Please reload to try again."
+  "素材載入失敗，請重新整理後再試。": "Artwork could not load. Please reload to try again.",
+  "平衡": "BALANCE",
+  "抽筋": "CRAMP",
+  "護髮": "HOLD",
+  "暫停／繼續": "Pause / resume",
+  "髮絲": "HAIR",
+  "側目": "SUSPICION",
+  "手汗": "SWEAT",
+  "風向": "WIND"
 }</script>
 <script type="application/json" id="arcade-hans">{
  "chars": [
@@ -23538,18 +23573,20 @@ if(typeof module!=="undefined")module.exports=hairRules;
   (function(){
 // ===== 全部數值集中在 CONFIG =====
 const {CONFIG,clamp,createGame,rankOf}=hairRules;
-const c=$('lh-canvas'),ctx=c.getContext('2d'),W=400,H=720,SCENE_H=482,PX=18;
-const DPR=Math.min(2,Math.max(1,window.devicePixelRatio||1));
+const c=$('lh-canvas'),ctx=c.getContext('2d'),PX=18;
+let W=400,H=720,SCENE_H=518;
+let DPR=Math.min(2,Math.max(1,window.devicePixelRatio||1));
 c.width=Math.round(W*DPR);c.height=Math.round(H*DPR);
 const FONT='"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif';
 // Reference-derived production artwork, not a code approximation of the approved character.
-const art={};let artFailed=false;
+const art={};let artFailed=false,typeReady=!document.fonts;
+if(document.fonts)Promise.all([document.fonts.load('700 24px LastHairLatin'),document.fonts.load('700 24px LastHairHand')]).then(()=>{typeReady=true}).catch(()=>{typeReady=true});
 if(typeof Image!=='undefined'){
- for(const [key,path] of Object.entries({city:'city-v2.webp',walk:'character-v2/hair_walk.webp',protect:'character-v2/hair_protect.webp',lost:'character-v2/hair_lost.webp'})){
+ for(const [key,path] of Object.entries({city:'city-v2.webp',cityWide:'city-wide-v3.webp',paving:'walk-v4/paving.webp',walk:'character-v2/hair_walk.webp',protect:'character-v2/hair_protect.webp',lost:'character-v2/hair_lost.webp',walkCycle:'walk-v4/walk-cycle.webp',paper:'ui-v4/ui_paper.webp',hold:'ui-v4/hold-exact.webp',hudHair:'hud-v4/hud_hair.webp',hudGlue:'hud-v4/hud_glue.webp',hudRoot:'hud-v4/hud_root.webp',hudEye:'hud-v4/hud_eye.webp',hudSweat:'hud-v4/hud_sweat.webp',hudFlag:'hud-v4/hud_flag.webp',hudWind:'hud-v4/hud_wind.webp',hudDistance:'hud-v4/hud_distance.webp',hudCard:'hud-v4/hud_card.webp',hudMeter:'hud-v4/hud_meter.webp'})){
   const image=new Image();image.onerror=()=>{artFailed=true};image.src='games/last-hair/art/'+path;art[key]=image;
  }
 }
-const artReady=()=>typeof Image==='undefined'||Object.values(art).every(image=>image.complete&&image.naturalWidth>0);
+const artReady=()=>typeof Image==='undefined'||typeReady&&Object.values(art).every(image=>image.complete&&image.naturalWidth>0);
 const REWARDS=[[100,1],[250,2],[400,3],[500,4]];   // 固定里程碑：抵達該公尺立即入帳；共 10 點，與入場費、頭髮根數、結局無關
 const RANK_ORDER=['C','BEARD','B','A','S'];
 const RANKS={
@@ -23576,7 +23613,7 @@ for(let i=0;i<30;i++)streaks.push({x:Math.random()*W,y:90+Math.random()*380,l:20
 for(let i=0;i<18;i++)ups.push({x:Math.random()*W,y:Math.random()*SCENE_H,l:14+Math.random()*26,v:.6+Math.random()});
 const lerp=(a,b,t)=>a+(b-a)*t;
 function hash(n){const s=Math.sin(n*127.1+311.7)*43758.5453;return s-Math.floor(s)}
-const padBox=()=>({cx:swap?300:100,r:78}),btnBox=()=>({cx:swap?100:300,cy:612,r:76});
+const padBox=()=>({cx:W*(swap?.75:.25),r:Math.min(160,W*.225)}),btnBox=()=>({cx:W*(swap?.22:.78),cy:SCENE_H+99,r:76});
 function say(text,kind){$('lh-msg').textContent=text;$('lh-msg').className='msg'+(kind?' '+kind:'')}
 hairSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
@@ -23584,6 +23621,7 @@ function aliveN(){return g.hairs.filter(h=>h.alive).length}
 function ui(){
  const live=st==='run';
  setText('lh-dist',Math.floor(live||st==='over'?g.dist:0)+' m');setText('lh-hairs',(live||st==='over'?aliveN():3)+' / 3');setText('lh-best',best.toFixed(0)+' m');
+ $('lh-pause').disabled=!live;$('lh-pause').dataset.paused=paused?'1':'0';setText('lh-pause',paused?'▶':'Ⅱ');
  $('lh-amount').disabled=hairBusy;$('lh-go').disabled=live||rank.busy()||!artReady();setText('lh-go',live?'逆風前進中':st==='over'?'再玩一次':'開始出門');
 }
 // ---- audio / haptics ----
@@ -23647,15 +23685,21 @@ const INK='#263b42',PAPER='#ffedca';
 function inkBox(x,y,w,h,r,fill,line=INK){ctx.fillStyle=fill;rrect(x,y,w,h,r);ctx.fill();if(line){ctx.strokeStyle=line;ctx.lineWidth=2;ctx.stroke()}}
 function drawScene(){
  const d=g.dist;
- if(art.city&&art.city.complete&&art.city.naturalWidth){
-  // Slow, bounded camera travel avoids stretching or a visible repeating seam.
-  const zoom=1.07,drift=Math.sin(d/100)*10;
-  ctx.drawImage(art.city,-14+drift,-26,W*zoom,SCENE_H*zoom);
+ const backdrop=W/SCENE_H>1.05?art.cityWide:art.city;
+ if(backdrop&&backdrop.complete&&backdrop.naturalWidth){
+  const cover=Math.max(W/backdrop.naturalWidth,SCENE_H/backdrop.naturalHeight),sw=W/cover,sh=SCENE_H/cover;
+  const marginX=(backdrop.naturalWidth-sw)/2,sx=marginX+Math.sin(d/100)*Math.min(12,marginX),sy=(backdrop.naturalHeight-sh)*.6;
+  ctx.drawImage(backdrop,sx,sy,sw,sh,0,0,W,SCENE_H);
  }else{ctx.fillStyle='#284f5a';ctx.fillRect(0,0,W,SCENE_H)}
- const shade=ctx.createLinearGradient(0,0,0,200);shade.addColorStop(0,'rgba(24,51,62,.85)');shade.addColorStop(1,'rgba(24,51,62,0)');ctx.fillStyle=shade;ctx.fillRect(0,0,W,200);
+ if(art.paving&&art.paving.complete&&art.paving.naturalWidth){
+  const height=80,width=art.paving.naturalWidth*height/art.paving.naturalHeight,scale=Math.min(.86,(SCENE_H-206)/690),offset=(d*40*scale)%width;
+  for(let x=-offset;x<W;x+=width)ctx.drawImage(art.paving,x,SCENE_H-height,width,height);
+ }
+ const shade=ctx.createLinearGradient(0,0,0,200);shade.addColorStop(0,'rgba(24,51,62,.2)');shade.addColorStop(1,'rgba(24,51,62,0)');ctx.fillStyle=shade;ctx.fillRect(0,0,W,200);
  // Decorative leaves remain animated independently of the painted scene.
  ctx.fillStyle='#bb9852';
- for(let i=0;i<5;i++){const x=((i*103-d*32)%460+460)%460-30,y=242+(i*53)%210;ctx.save();ctx.translate(x,y+Math.sin(time*2+i)*12);ctx.rotate(time+i);ctx.beginPath();ctx.ellipse(0,0,6,2,0,0,7);ctx.fill();ctx.restore()}
+ for(let i=0;i<5;i++){const span=W+60,x=((i*103-d*32)%span+span)%span-30,y=242+(i*53)%210;ctx.save();ctx.translate(x,y+Math.sin(time*2+i)*12);ctx.rotate(time+i);ctx.beginPath();ctx.ellipse(0,0,6,2,0,0,7);ctx.fill();ctx.restore()}
+ ctx.save();ctx.translate((W-400)/2,SCENE_H-482);
  if(st!=='ready')for(const t of deaths){const x=200+(t.d-d)*PX+70;if(x<-30||x>W+30||t.d>d+40)continue;ctx.fillStyle='#6f7680';rrect(x-13,418,26,36,10);ctx.fill();ctx.fillStyle='#4b5159';ctx.fillRect(x-2,424,4,14);ctx.fillRect(x-7,429,14,4);txt(t.d.toFixed(0)+'m',x,464,11,'#33383f','center',true)}
  if(d>400){
   const gx=200+(500-d)*PX+120,hgt=520;ctx.fillStyle='#4a5568';ctx.fillRect(gx-90,392-hgt,360,hgt+90);
@@ -23667,6 +23711,7 @@ function drawScene(){
   if(look){ctx.fillStyle='#222';ctx.fillRect(ix-8,iy-77,4,4);ctx.fillRect(ix+4,iy-77,4,4);ctx.fillRect(ix-6,iy-68,12,2);txt('！',ix,iy-104,26,'#ff5252','center',true,'#000')}
   else{ctx.fillStyle='#3b2f2a';ctx.beginPath();ctx.arc(ix,iy-77,12,Math.PI,0);ctx.fill()}
  }
+ ctx.restore();
 }
 function drawStreaks(dt){
  const w=g.wind,a=clamp(Math.abs(w),0,1);ctx.strokeStyle='rgba(255,255,255,'+(.15+a*.45)+')';ctx.lineWidth=2;ctx.lineCap='round';
@@ -23692,33 +23737,61 @@ function drawHair(i,pressing,dtr){
  ctx.strokeStyle='#1d1610';ctx.lineWidth=3.2;ctx.lineCap='round';ctx.stroke();
  if(h.glue>55){ctx.strokeStyle='rgba(255,235,150,.65)';ctx.lineWidth=1;ctx.stroke()}
 }
+// Full painted short-stocky poses. Upper body is always the approved original artwork.
+const WALK_RECTS=[{"x":0,"y":0,"w":512,"h":560},{"x":512,"y":0,"w":512,"h":560},{"x":1024,"y":0,"w":512,"h":560},{"x":1536,"y":0,"w":512,"h":560},{"x":2048,"y":0,"w":512,"h":560},{"x":2560,"y":0,"w":512,"h":560}];
+const WALK_WAIST=[368,379,382,375,370,371];
+function walkFrameAt(distance){return Math.floor((((distance/6.8)%1)+1)%1*WALK_RECTS.length)}
+function clipLegs(){ctx.beginPath();ctx.moveTo(183,342);ctx.lineTo(365,342);ctx.lineTo(365,417);ctx.lineTo(430,457);ctx.lineTo(471,485);ctx.lineTo(490,560);ctx.lineTo(68,560);ctx.lineTo(72,475);ctx.lineTo(128,429);ctx.lineTo(156,389);ctx.closePath();ctx.clip()}
+function clipUpper(pressing){
+ ctx.beginPath();ctx.rect(0,0,512,348);ctx.rect(196,340,179,38);
+ ctx.moveTo(76,278);ctx.lineTo(205,283);ctx.lineTo(209,380);ctx.lineTo(103,384);ctx.closePath();
+ // The case stays in its approved hand and size, covering the rear thigh naturally.
+ ctx.moveTo(42,342);ctx.lineTo(214,373);ctx.lineTo(188,494);ctx.lineTo(18,450);ctx.closePath();
+ if(!pressing){ctx.moveTo(385,342);ctx.lineTo(444,350);ctx.lineTo(459,391);ctx.lineTo(441,422);ctx.lineTo(386,418);ctx.lineTo(374,381);ctx.closePath()}
+ ctx.clip();
+}
 function drawMan(dtr,opt){
- opt=opt||{};
- const pose=opt.lost?'lost':g.pressing?'protect':'walk',image=art[pose];
- if(!image||!image.complete||!image.naturalWidth)return;
- const bob=opt.lost?0:Math.sin(g.dist*2.4)*2,scale=.54,px=57,py=174+bob;
- ctx.save();ctx.translate(200,455);ctx.rotate(opt.lost?0:g.tilt*.085);ctx.translate(-200,-455);
- ctx.fillStyle='rgba(25,39,43,.2)';ctx.beginPath();ctx.ellipse(203,467,88,9,0,0,Math.PI*2);ctx.fill();
- ctx.drawImage(image,px,py,512*scale,560*scale);
- // The crown hairs remain individual live entities. They are not baked into the artwork.
- // Anchors measured on the sliced 512×560 pose images; pose scale is shared by sprite-gen.
- if(!opt.lost){
-  const crown=pose==='protect'?{x:323,y:99}:{x:320,y:96};
-  ctx.save();ctx.translate(px+crown.x*scale,py+crown.y*scale);ctx.scale(scale*1.2,scale);
-  for(let i=0;i<3;i++)drawHair(i,g.pressing,dtr);
-  ctx.restore();
- }
- // Added sweat follows the gameplay state, beyond the painted expression.
- if(g.sweat>.3){ctx.fillStyle='#83d2dd';for(let i=0;i<2;i++){const x=px+390*scale+i*8,y=py+100*scale+((time*28+i*15)%25);ctx.beginPath();ctx.ellipse(x,y,2,4,0,0,7);ctx.fill()}}
- if(opt.beard){ctx.strokeStyle=INK;ctx.lineWidth=2;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(250+i*4,300);ctx.quadraticCurveTo(266,317,278+i*3,298);ctx.stroke()}}
+ if(!artReady())return;opt=opt||{};
+ const scale=Math.min(.9,(SCENE_H-226)/486),px=W/2-256*scale,py=SCENE_H-540*scale-10;
+ if(opt.lost){const image=art.lost;if(image?.naturalWidth)ctx.drawImage(image,px,py,512*scale,560*scale);return}
+ if(!art.walkCycle?.naturalWidth)return;
+ const walking=st==='run'&&!g.over,phase=walking?g.dist/6.8:0,frame=walking?walkFrameAt(g.dist):0,r=WALK_RECTS[frame];
+ ctx.fillStyle='rgba(25,39,43,.17)';ctx.beginPath();ctx.ellipse(W/2,SCENE_H-7,65*scale,7*scale,0,0,Math.PI*2);ctx.fill();
+ ctx.save();ctx.translate(px,py);ctx.scale(scale,scale);
+ ctx.save();clipLegs();
+ // Register each painted waist to the approved belt while keeping its sole at y=540.
+ // This is at most 9% vertical registration; width, head, torso and original leg span stay fixed.
+ const sourceWaist=WALK_WAIST[frame],legScale=(540-368)/(540-sourceWaist);
+ if(g.pressing&&frame===0)ctx.drawImage(art.protect,0,368,512,192,0,368,512,192);
+ else ctx.drawImage(art.walkCycle,r.x,r.y+sourceWaist,r.w,560-sourceWaist,0,368,512,(560-sourceWaist)*legScale);
  ctx.restore();
+ const bob=walking?Math.sin(phase*Math.PI*4)*2:0;
+ ctx.save();ctx.translate(300,350+bob);ctx.rotate(g.tilt*.065+(walking?Math.sin(phase*Math.PI*2)*.009:0));ctx.translate(-300,-350);
+ ctx.save();clipUpper(g.pressing);ctx.drawImage(g.pressing?art.protect:art.walk,0,0);ctx.restore();
+ ctx.save();ctx.translate(320,96);ctx.scale(1.2,1);for(let i=0;i<3;i++)drawHair(i,g.pressing,dtr);ctx.restore();
+ if(g.sweat>.3){ctx.fillStyle='#83d2dd';for(let i=0;i<2;i++){ctx.beginPath();ctx.ellipse(392+i*9,135+((time*28+i*15)%25),3,6,0,0,7);ctx.fill()}}
+ if(opt.beard){ctx.strokeStyle=INK;ctx.lineWidth=3;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(365+i*5,216);ctx.quadraticCurveTo(390,251,413+i*3,218);ctx.stroke()}}
+ ctx.restore();ctx.restore();
+}
+const handFont=size=>'700 '+size+'px LastHairLatin,LastHairHand,'+FONT;
+function paintedText(text,x,y,size,col,align='center',maxWidth,baseline='middle',angle=-.025){
+ ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.font=handFont(size);ctx.textAlign=align;ctx.textBaseline=baseline;ctx.fillStyle=col;ctx.fillText(text,0,0,maxWidth);ctx.restore();
+}
+function drawPaper(y,height){
+ ctx.fillStyle=PAPER;ctx.fillRect(0,y,W,height);
+ if(!art.paper?.naturalWidth)return;
+ const image=art.paper,sw=image.naturalWidth,sh=image.naturalHeight,edge=Math.min(64,sh/3),target=24;
+ const sx=[0,edge,sw-edge,sw],sy=[0,edge,sh-edge,sh],dx=[0,target,W-target,W],dy=[y,y+target,y+height-target,y+height];
+ for(let row=0;row<3;row++)for(let col=0;col<3;col++)ctx.drawImage(image,sx[col],sy[row],sx[col+1]-sx[col],sy[row+1]-sy[row],dx[col],dy[row],dx[col+1]-dx[col],dy[row+1]-dy[row]);
 }
 function drawEventsWorld(){
+ ctx.save();ctx.translate((W-400)/2,SCENE_H-482);
  const e=g.ev,C=game.config;
  if(e.flyer){const t=e.flyer.tele>0?1-e.flyer.tele/C.flyer.tele:1,x=lerp(430,318,t);ctx.fillStyle='#ef6c00';rrect(x-16,372,32,70,12);ctx.fill();ctx.fillStyle=SKIN;ctx.beginPath();ctx.arc(x,358,13,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.fillRect(x-10,350,20,4)}
  if(e.drip&&e.drip.tele>0){const t=1-e.drip.tele/C.drip.tele,y=lerp(10,215,t*t);ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.ellipse(200,232,20*t+6,5,0,0,7);ctx.fill();ctx.fillStyle='#4fc3f7';ctx.beginPath();ctx.moveTo(200,y-14);ctx.quadraticCurveTo(212,y+6,200,y+10);ctx.quadraticCurveTo(188,y+6,200,y-14);ctx.fill()}
  if(e.vortex){const n=7,t=e.vortex.started?time:time*.7;ctx.fillStyle='rgba(40,40,50,.85)';for(let i=0;i<n;i++){const x=((t*160+i*71)%520)-60,y=120+(i%4)*28+Math.sin(t*8+i)*10,f=Math.sin(t*24+i)*6;ctx.beginPath();ctx.moveTo(x-12,y);ctx.quadraticCurveTo(x,y-8-f,x+12,y);ctx.quadraticCurveTo(x,y+2+f*.5,x-12,y);ctx.fill()}}
  for(const f of flyHairs){ctx.save();ctx.translate(f.x,f.y);ctx.rotate(f.r);ctx.strokeStyle='#1d1610';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-30,0);ctx.quadraticCurveTo(0,-12,30,4);ctx.stroke();ctx.restore()}
+ ctx.restore();
 }
 function bannerList(){
  const b=[],e=g.ev,c=game.config;
@@ -23732,54 +23805,78 @@ function bannerList(){
  if(g.slowT>0)b.push(['社死中…腳步變慢','#ff8a80']);
  return b.slice(0,2);
 }
+function uiText(text){return window.deepSeaI18n?window.deepSeaI18n.text(text):text}
+function paintPlate(image,x,y,width,height,radius=.36){
+ if(!image?.naturalWidth)return;
+ const sw=image.naturalWidth,sh=image.naturalHeight,edge=Math.min(sh*.46,sw/3),target=height*radius;
+ const sx=[0,edge,sw-edge,sw],sy=[0,edge,sh-edge,sh],dx=[x,x+target,x+width-target,x+width],dy=[y,y+target,y+height-target,y+height];
+ for(let row=0;row<3;row++)for(let col=0;col<3;col++)ctx.drawImage(image,sx[col],sy[row],sx[col+1]-sx[col],sy[row+1]-sy[row],dx[col],dy[row],dx[col+1]-dx[col],dy[row+1]-dy[row]);
+}
+function hudIcon(image,x,y,width,height){
+ if(!image?.naturalWidth)return;
+ const scale=Math.min(width/image.naturalWidth,height/image.naturalHeight),w=image.naturalWidth*scale,h=image.naturalHeight*scale;ctx.drawImage(image,x+(width-w)/2,y+(height-h)/2,w,h);
+}
+function paintedMeter(x,y,width,height,value,color){
+ ctx.fillStyle='#253c40';rrect(x,y,width,height,height/2);ctx.fill();ctx.strokeStyle='#d8c7a4';ctx.lineWidth=1.4;ctx.stroke();
+ if(value<=0)return;
+ ctx.save();rrect(x+2,y+2,Math.max(height-4,(width-4)*clamp(value,0,1)),height-4,(height-4)/2);ctx.clip();
+ const grad=ctx.createLinearGradient(0,y,0,y+height);grad.addColorStop(0,'#fff0be');grad.addColorStop(.3,color);grad.addColorStop(1,color);ctx.fillStyle=grad;ctx.fillRect(x+2,y+2,width-4,height-4);ctx.fillStyle='rgba(255,255,255,.35)';ctx.fillRect(x+5,y+3,width-10,2);ctx.restore();
+}
+function distanceLayout(distance){
+ ctx.save();ctx.textAlign='left';ctx.textBaseline='alphabetic';
+ const text=Math.floor(distance)+' / 500 m',badgeWidth=Math.min(228,W-128),flagWidth=25,gap=9;
+ let size=27;ctx.font=handFont(size);let metrics=ctx.measureText(text),textWidth=(metrics.actualBoundingBoxLeft||0)+(metrics.actualBoundingBoxRight||metrics.width);
+ if(textWidth+flagWidth+gap>badgeWidth-22){size*= (badgeWidth-22-flagWidth-gap)/textWidth;ctx.font=handFont(size);metrics=ctx.measureText(text);textWidth=(metrics.actualBoundingBoxLeft||0)+(metrics.actualBoundingBoxRight||metrics.width)}
+ const width=flagWidth+gap+textWidth,left=(W-width)/2;
+ const textY=27.5+((metrics.actualBoundingBoxAscent||size*.75)-(metrics.actualBoundingBoxDescent||0))/2;
+ const layout={text,size,badgeWidth,flagWidth,gap,width,left,textX:left+flagWidth+gap+(metrics.actualBoundingBoxLeft||0),textY,textWidth,center:left+width/2,inkCenterY:textY-((metrics.actualBoundingBoxAscent||size*.75)-(metrics.actualBoundingBoxDescent||0))/2};ctx.restore();return layout;
+}
 function drawHUD(){
- inkBox(12,8,376,32,14,'rgba(27,51,61,.86)');
- txt(g.dist.toFixed(0)+' / 500m',200,23,17,PAPER);
- bar(20,42,360,4,g.dist/500,'#edbc4a','rgba(255,237,202,.2)');
+ const distance=distanceLayout(g.dist);
+ paintPlate(art.hudDistance,(W-distance.badgeWidth)/2,6,distance.badgeWidth,43,.49);
+ hudIcon(art.hudFlag,distance.left,12,distance.flagWidth,31);
+ paintedText(distance.text,distance.textX,distance.textY,distance.size,PAPER,'left',undefined,'alphabetic',0);
+ const cardWidth=(W-32)/3,medallion=Math.min(62,cardWidth*.40),cardHeight=medallion+8,meterY=57+cardHeight+8;
  for(let i=0;i<3;i++){
-  const h=g.hairs[i],x=12+i*127;
-  inkBox(x,53,122,48,12,'rgba(255,237,202,.96)');
-  ctx.strokeStyle=h.alive?INK:'#9b9484';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.beginPath();
-  if(h.alive){ctx.moveTo(x+17,89);ctx.quadraticCurveTo(x+17,68,x+32,61)}
-  else{ctx.moveTo(x+14,66);ctx.lineTo(x+31,87);ctx.moveTo(x+31,66);ctx.lineTo(x+14,87)}ctx.stroke();
-  txt(String(i+1),x+44,64,10,INK,'left');
-  bar(x+44,72,67,7,h.alive?h.glue/100:0,'#edbd4b','#d4c4a7');
-  bar(x+44,84,67,7,h.alive?h.root/100:0,'#dd725a','#d4c4a7');
+  const hair=g.hairs[i],x=8+i*(cardWidth+8),y=57;
+  paintPlate(art.hudCard,x,y,cardWidth,cardHeight,.3);
+  ctx.save();ctx.globalAlpha=hair.alive?1:.3;hudIcon(art.hudHair,x+3,y+4,medallion,medallion);ctx.restore();
+  if(!hair.alive){ctx.strokeStyle='#e19a77';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x+12,y+14);ctx.lineTo(x+44,y+43);ctx.stroke()}
+  const labelX=x+medallion+9,barX=labelX+10,barWidth=x+cardWidth-barX-10;
+  paintedText(uiText('髮絲')+' '+(i+1),labelX,y+cardHeight*.21,Math.min(15,cardHeight*.23),PAPER,'left',cardWidth-medallion-14);
+  hudIcon(art.hudGlue,labelX-2,y+cardHeight*.40,8,13);paintedMeter(barX,y+cardHeight*.47,barWidth,10,hair.alive?hair.glue/100:0,'#f1c45c');
+  hudIcon(art.hudRoot,labelX-3,y+cardHeight*.72,11,11);paintedMeter(barX,y+cardHeight*.76,barWidth,10,hair.alive?hair.root/100:0,'#e97b5f');
  }
- txt('黃＝髮膠　紅＝髮根',200,108,9,PAPER);
- inkBox(12,117,183,31,12,'rgba(28,53,61,.9)');inkBox(205,117,183,31,12,'rgba(28,53,61,.9)');
- txt('側目',22,132,12,PAPER,'left');bar(61,128,121,8,g.sideEye/100,g.sideEye>70?'#ec775b':'#edbd4b','#576c6d');
- txt('手汗',215,132,12,PAPER,'left');bar(254,128,121,8,g.sweat,'#7dd1df','#576c6d');
- const w=g.wind,a=clamp(Math.abs(w),0,1.2),dir=-Math.sign(w)||-1,len=22+40*a,cx=200,cy=171;
- ctx.save();ctx.translate(cx,cy);ctx.scale(dir,1);ctx.fillStyle='#f0c35d';ctx.strokeStyle=INK;ctx.lineWidth=2;
- ctx.beginPath();ctx.moveTo(len,0);ctx.lineTo(len-20,-15);ctx.lineTo(len-20,-6);ctx.lineTo(-len,-6);ctx.lineTo(-len,6);ctx.lineTo(len-20,6);ctx.lineTo(len-20,15);ctx.closePath();ctx.stroke();ctx.fill();ctx.restore();
- if(g.tele){const side=g.tele.dir>0?1:-1;ctx.save();ctx.translate(200+side*150,171);ctx.scale(-side,1);ctx.fillStyle='#f0a06d';ctx.beginPath();ctx.moveTo(18,0);ctx.lineTo(-6,-13);ctx.lineTo(-6,13);ctx.closePath();ctx.fill();ctx.restore();txt('變向！',200+side*145,193,12,PAPER,'center',true,INK)}
- const bl=bannerList();
- if(tipT>0&&!bl.length){inkBox(20,439,360,29,12,'rgba(28,53,61,.94)');txt(tipText,200,453,12,PAPER,'center',true,null,338)}
- bl.forEach((it,i)=>{inkBox(20,398+i*36,360,30,12,'rgba(28,53,61,.94)');txt(it[0],200,413+i*36,14,it[1],'center',true,null,338)});
+ const half=(W-24)/2;
+ [{x:8,icon:art.hudEye,label:'側目',value:g.sideEye/100,color:'#f2c65f'},
+  {x:W/2+4,icon:art.hudSweat,label:'手汗',value:g.sweat,color:'#72cfdf'}].forEach(item=>{
+   paintPlate(art.hudMeter,item.x,meterY,half,40,.46);hudIcon(item.icon,item.x+6,meterY+3,36,34);paintedText(item.label,item.x+48,meterY+10,13,PAPER,'left',half-58);paintedMeter(item.x+48,meterY+23,half-62,11,item.value,item.color);
+  });
+ const sign=-Math.sign(g.wind)||-1,width=82+Math.min(1,Math.abs(g.wind))*16;
+ ctx.save();ctx.translate(W/2-45,193);ctx.scale(sign,1);hudIcon(art.hudWind,-width/2,-21,width,42);ctx.restore();
+ paintedText('風向',W/2-103,193,18,PAPER,'right',72);
+ if(g.tele){paintedText('變向！',W/2,209,13,'#f7c58b');}
+ const warnings=bannerList();warnings.forEach((item,i)=>{paintPlate(art.hudMeter,20,SCENE_H-80+i*34,W-40,28,.44);paintedText(item[0],W/2,SCENE_H-66+i*34,14,item[1],'center',W-60)});
 }
 function drawControls(){
- ctx.fillStyle=PAPER;ctx.fillRect(0,SCENE_H,W,H-SCENE_H);ctx.fillStyle='#a9916d';ctx.fillRect(0,SCENE_H,W,3);txt('THE LAST HAIR',200,510,14,INK);
- const pd=padBox(),b=btnBox(),y=612;
- ctx.fillStyle='rgba(139,108,65,.09)';rrect(pd.cx-pd.r-14,y-70,pd.r*2+28,140,22);ctx.fill();
- txt('脖子',pd.cx-52,y-50,14,INK);
- {const v=g.crampLocked?1:g.cramp/game.config.cramp.trigger;bar(pd.cx-24,y-56,76,10,v,v>.66?'#ff5252':'#ffb74d')}
- if(st==='run'){
-  const s=Math.sign(g.wind)||1,pulse=.6+.4*Math.sin(time*8);
-  if(Math.abs(g.wind)>.2){ctx.strokeStyle='rgba(105,240,174,'+pulse+')';ctx.lineWidth=5;ctx.beginPath();ctx.arc(pd.cx+s*.8*pd.r,y,28,0,7);ctx.stroke();txt('▼',pd.cx+s*.8*pd.r,y-36,14,'#69f0ae')}
-  if(g.tele&&Math.floor(time*8)%2){ctx.strokeStyle='rgba(255,138,101,.9)';ctx.setLineDash([6,6]);ctx.lineWidth=4;ctx.beginPath();ctx.arc(pd.cx+(g.tele.dir>0?1:-1)*.8*pd.r,y,28,0,7);ctx.stroke();ctx.setLineDash([])}
- }
- ctx.fillStyle='#6f6e5d';rrect(pd.cx-pd.r,y-7,pd.r*2,14,7);ctx.fill();
- ctx.fillStyle='rgba(255,255,255,.35)';ctx.fillRect(pd.cx-1,y-12,2,24);
- const lim=game.config.cramp.limit*pd.r;ctx.fillStyle='rgba(255,112,67,.5)';ctx.fillRect(pd.cx-pd.r,y-7,pd.r-lim,14);ctx.fillRect(pd.cx+lim,y-7,pd.r-lim,14);
- const kx=pd.cx+input.tilt*pd.r;ctx.fillStyle='#ffd54f';ctx.beginPath();ctx.arc(kx,y,22,0,7);ctx.fill();ctx.strokeStyle='#8d6e00';ctx.lineWidth=3;ctx.stroke();
- txt('◀ 左歪',pd.cx-pd.r+8,y+46,13,INK,'left');txt('右歪 ▶',pd.cx+pd.r-8,y+46,13,INK,'right');
- const locked=g.pressLock>0,on=g.pressing;
- ctx.fillStyle=locked?'#7e8175':(on?'#e98b32':'#e36d37');ctx.beginPath();ctx.arc(b.cx,b.cy,b.r,0,7);ctx.fill();
- ctx.lineWidth=6;ctx.strokeStyle=on?'#ffe0b2':'rgba(0,0,0,.35)';ctx.stroke();
- if(g.sweat>.05){ctx.strokeStyle='#4fc3f7';ctx.lineWidth=7;ctx.beginPath();ctx.arc(b.cx,b.cy,b.r+8,-Math.PI/2,-Math.PI/2+Math.PI*2*g.sweat);ctx.stroke()}
- if(art.protect&&art.protect.complete&&art.protect.naturalWidth)ctx.drawImage(art.protect,270,34,220,190,b.cx-35,b.cy-60,70,60);
- txt(locked?'手被佔住':'死命壓住',b.cx,b.cy+12,18,'#fff');if(!locked)txt('按住不放',b.cx,b.cy+38,12,'#fff1d5','center',false);
+ drawPaper(SCENE_H-5,H-SCENE_H+10);
+ const pd=padBox(),button=btnBox(),railY=SCENE_H+82;
+ // Same playful ink marks, warm paper, inset slot and golden knob as the approved drawing.
+ paintedText('平衡',pd.cx,SCENE_H+28,23,INK,'center',pd.r*2-20);
+ ctx.strokeStyle='#776c59';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(W*(swap?.44:.56),SCENE_H+24);ctx.quadraticCurveTo(W*(swap?.44:.56)+2,SCENE_H+93,W*(swap?.44:.56)-1,H-20);ctx.stroke();
+ ctx.font=handFont(23);const titleWidth=ctx.measureText(uiText('平衡')).width,accent=Math.min(pd.r-10,titleWidth/2+18);
+ ctx.strokeStyle=INK;ctx.lineWidth=3;[-1,1].forEach(side=>{ctx.beginPath();ctx.moveTo(pd.cx+side*accent,SCENE_H+22);ctx.lineTo(pd.cx+side*(accent-7),SCENE_H+14);ctx.stroke()});
+ inkBox(pd.cx-pd.r,railY-13,pd.r*2,26,13,'#645946','#a18d6d');ctx.strokeStyle='#fff1cc';ctx.lineWidth=2;ctx.stroke();
+ ctx.strokeStyle='#e6d3ad';ctx.lineWidth=2.5;for(let i=0;i<5;i++){const x=pd.cx-pd.r+14+(pd.r*2-28)*i/4;ctx.beginPath();ctx.moveTo(x,railY-5);ctx.lineTo(x,railY+5);ctx.stroke()}
+ if(st==='run'&&Math.abs(g.wind)>.2){const x=pd.cx+(Math.sign(g.wind)||1)*pd.r*.8;ctx.strokeStyle='#9cc9a1';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,railY,25,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#81ba91';ctx.beginPath();ctx.moveTo(x,railY-27);ctx.lineTo(x-6,railY-36);ctx.lineTo(x+6,railY-36);ctx.fill()}
+ const knobX=pd.cx+input.tilt*pd.r;ctx.fillStyle='#9d7527';ctx.beginPath();ctx.arc(knobX,railY+3,23,0,7);ctx.fill();ctx.fillStyle='#f4ca48';ctx.beginPath();ctx.arc(knobX,railY-1,22,0,7);ctx.fill();ctx.strokeStyle='#704f23';ctx.lineWidth=2;ctx.stroke();ctx.strokeStyle='#ffedac';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(knobX-1,railY-2,17,Math.PI*1.1,Math.PI*1.8);ctx.stroke();
+ paintedText('抽筋',pd.cx-pd.r+2,SCENE_H+146,15,INK,'left',65);
+ const value=g.crampLocked?1:g.cramp/game.config.cramp.trigger;bar(pd.cx-pd.r+67,SCENE_H+138,pd.r*2-68,15,value,'#ea7758','#363c38');ctx.strokeStyle='#8c7960';ctx.lineWidth=2;rrect(pd.cx-pd.r+64,SCENE_H+135,pd.r*2-62,21,10);ctx.stroke();
+ const width=Math.min(W*.42,188),height=width*(art.hold?.naturalHeight||1)/(art.hold?.naturalWidth||1),left=button.cx-width/2,top=SCENE_H+10+(g.pressing?4:0);
+ if(art.hold?.naturalWidth)ctx.drawImage(art.hold,left,top,width,height);
+ paintedText(g.pressLock>0?'手被佔住':'護髮',button.cx,top+height*.79,Math.min(26,width*.15),'#fff2d3','center',width*.85);
+ if(g.sweat>.05){ctx.strokeStyle='#6abec8';ctx.lineWidth=4;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(left+20,top+height+3);ctx.lineTo(left+20+(width-40)*g.sweat,top+height+3);ctx.stroke()}
+ paintedText('按住不放',button.cx,SCENE_H+187,12,INK,'center',width);
 }
 function wrapC(s,x,y,w,lh,size,col,align){
  // Translate the whole sentence first so English wraps on words instead of on Chinese characters.
@@ -23788,24 +23885,25 @@ function wrapC(s,x,y,w,lh,size,col,align){
  for(const word of words){const next=line?line+sep+word:word;if(line&&ctx.measureText(next).width>w){txt(line,x,yy,size,col,align);line=word;yy+=lh}else line=next}
  txt(line,x,yy,size,col,align);
 }
-const TOGGLES=()=>[[24,swap?'操作：左壓右歪':'操作：左歪右壓'],[204,soundOn?'音效：開':'音效：關']];
+const TOGGLES=()=>[[W/2-176,swap?'操作：左壓右歪':'操作：左歪右壓'],[W/2+4,soundOn?'音效：開':'音效：關']];
 function drawReady(){
  const keep=g;g=idleG;idleG.E=.05;idleG.wind=Math.sin(time*1.5)*.15;
  drawScene();drawMan(.016,{});g=keep;
- ctx.fillStyle='rgba(30,62,72,.94)';ctx.fillRect(0,0,W,190);txt('THE LAST HAIR',200,24,16,PAPER);
- txt('尊嚴保衛戰',200,66,38,'#ffd54f','center',true,'#000');txt('強風中的地中海',200,100,22,'#fff','center',true);
- txt('用最後 3 根頭髮，走完 500 公尺去面試',200,140,15,'rgba(255,255,255,.85)','center',false);
- ctx.fillStyle=PAPER;ctx.fillRect(0,SCENE_H,W,H-SCENE_H);txt('THE LAST HAIR',200,510,18,INK);
- ['左手把脖子滑到綠圈：迎著風歪頭','右手按住壓頭：抗風 ×4，但會流汗、被側目','歪頭太久脖子會抽筋；遇到路人記得放手'].forEach((s,i)=>txt(s,200,542+i*25,13,INK,'center',false,null,370));
- txt('到操作區開始',200,624,17,'#795f36');
- TOGGLES().forEach(it=>{ctx.fillStyle='#365a63';rrect(it[0],642,172,42,14);ctx.fill();txt(it[1],it[0]+86,663,16,'#fff','center',true,null,160)});
- txt('最遠紀錄 '+best.toFixed(0)+' m',200,704,14,INK,'center',false);
+ ctx.fillStyle='rgba(30,62,72,.94)';ctx.fillRect(0,0,W,190);txt('THE LAST HAIR',W/2,24,16,PAPER);
+ txt('尊嚴保衛戰',W/2,66,38,'#ffd54f','center',true,'#000');txt('強風中的地中海',W/2,100,22,'#fff','center',true);
+ txt('用最後 3 根頭髮，走完 500 公尺去面試',W/2,140,15,'rgba(255,255,255,.85)','center',false);
+ drawPaper(SCENE_H-5,H-SCENE_H+10);txt('THE LAST HAIR',W/2,SCENE_H+18,18,INK);
+ ['左手把脖子滑到綠圈：迎著風歪頭','右手按住壓頭：抗風 ×4，但會流汗、被側目','歪頭太久脖子會抽筋；遇到路人記得放手'].forEach((s,i)=>txt(s,W/2,H-164+i*22,13,INK,'center',false,null,370));
+ txt('到操作區開始',W/2,H-96,17,'#795f36');
+ TOGGLES().forEach(it=>{ctx.fillStyle='#365a63';rrect(it[0],H-78,172,42,14);ctx.fill();txt(it[1],it[0]+86,H-57,16,'#fff','center',true,null,160)});
+ txt('最遠紀錄 '+best.toFixed(0)+' m',W/2,H-16,14,INK,'center',false);
 }
 function drawOver(){
  const won=g.won;
  drawScene();drawStreaks(0);drawMan(.016,{lost:!won,beard:won&&g.rankKey==='BEARD'});drawEventsWorld();
  if(!won){ctx.save();ctx.globalCompositeOperation='saturation';ctx.fillStyle='#808080';ctx.fillRect(0,0,W,SCENE_H);ctx.restore();ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(0,0,W,SCENE_H)}
  ctx.fillStyle='rgba(16,19,27,.96)';ctx.fillRect(0,SCENE_H,W,H-SCENE_H);ctx.fillStyle='#10131b';ctx.fillRect(0,SCENE_H,W,3);
+ ctx.save();ctx.translate((W-400)/2,H-720);
  if(won){
   const r=RANKS[g.rankKey];txt('抵達面試現場！',200,552,15,'rgba(255,255,255,.8)');
   txt(r.big,64,622,76,r.col,'center',true,'#000');txt(r.title,124,582,24,r.col,'left',true,null,270);
@@ -23817,18 +23915,28 @@ function drawOver(){
   txt('最遠紀錄 '+best.toFixed(0)+' m',200,676,14,'rgba(255,255,255,.65)','center',false);
  }
  if(time-endAt>.8){txt('到操作區再玩一次',200,704,18,'#ffd54f')}
+ ctx.restore();
 }
 function draw(dt){
  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);
- if(st==='ready'){drawReady();if(!artReady()){inkBox(20,402,360,56,14,'#ffedca');wrapC(artFailed?'素材載入失敗，請重新整理後再試。':'美術素材載入中…',200,420,330,18,14,INK)}return}
+ if(st==='ready'){drawReady();if(!artReady()){inkBox(20,SCENE_H-80,W-40,56,14,'#ffedca');wrapC(artFailed?'素材載入失敗，請重新整理後再試。':'美術素材載入中…',W/2,SCENE_H-62,W-70,18,14,INK)}return}
  if(st==='over'){drawOver();return}
  ctx.save();if(g.crampLocked)ctx.translate((Math.random()-.5)*4,(Math.random()-.5)*3);
  drawScene();drawStreaks(dt);drawMan(dt);drawEventsWorld();ctx.restore();
  drawHUD();drawControls();
- for(let i=floats.length-1;i>=0;i--){const f=floats[i];f.t-=dt;if(f.t<=0){floats.splice(i,1);continue}ctx.globalAlpha=clamp(f.t/(f.d*.5),0,1);txt(f.text,f.x,f.y-(1-f.t/f.d)*36,f.size,f.col,'center',true,'rgba(0,0,0,.6)');ctx.globalAlpha=1}
+ for(let i=floats.length-1;i>=0;i--){const f=floats[i];f.t-=dt;if(f.t<=0){floats.splice(i,1);continue}ctx.globalAlpha=clamp(f.t/(f.d*.5),0,1);txt(f.text,f.x+(W-400)/2,f.y+(SCENE_H-482)-(1-f.t/f.d)*36,f.size,f.col,'center',true,'rgba(0,0,0,.6)');ctx.globalAlpha=1}
  for(let i=flyHairs.length-1;i>=0;i--){const f=flyHairs[i];f.t-=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=120*dt;f.r+=5*dt;if(f.t<=0)flyHairs.splice(i,1)}
- if(paused){ctx.fillStyle='rgba(0,0,0,.7)';ctx.fillRect(0,0,W,H);txt('暫停中',200,320,36,'#fff');txt('點一下畫面繼續',200,380,22,'#ffd54f')}
+ if(paused){ctx.fillStyle='rgba(0,0,0,.7)';ctx.fillRect(0,0,W,H);txt('暫停中',W/2,H*.45,36,'#fff');txt('點一下畫面繼續',W/2,H*.53,22,'#ffd54f')}
 }
+function fitViewport(){
+ const rect=c.getBoundingClientRect();if(!rect.width||!rect.height)return;
+ const ratio=rect.width/rect.height,nextW=Math.max(400,720*ratio),nextH=Math.max(720,400/ratio);
+ const nextDPR=Math.min(2,Math.max(.5,(window.devicePixelRatio||1)*Math.min(rect.width/nextW,rect.height/nextH)));
+ if(Math.abs(nextW-W)<.5&&Math.abs(nextH-H)<.5&&Math.abs(nextDPR-DPR)<.01)return;
+ W=nextW;H=nextH;SCENE_H=H-202;DPR=nextDPR;c.width=Math.round(W*DPR);c.height=Math.round(H*DPR);
+}
+if(typeof ResizeObserver!=='undefined'){const resize=new ResizeObserver(fitViewport);resize.observe(c);}
+window.addEventListener('resize',fitViewport);
 // ---- input ----
 const shown=()=>!$('view-last-hair').hidden&&!document.hidden;
 const toLocal=e=>{const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H}};
@@ -23848,6 +23956,7 @@ function start(){
  },ui);
 }
 $('lh-go').addEventListener('click',start);
+$('lh-pause').addEventListener('click',()=>{if(st!=='run')return;if(paused){paused=false;clearInput();last=performance.now()}else pauseNow()});
 c.addEventListener('pointerdown',e=>{
  if(e.button!==undefined&&e.button!==0)return;
  if(!shown())return;
@@ -23855,9 +23964,9 @@ c.addEventListener('pointerdown',e=>{
  if(st!=='run'){
   e.preventDefault();
   if(st==='ready'){
-   if(p.y>642&&p.y<684){
-    if(p.x>24&&p.x<196){swap=!swap;lsSet('deep-sea-last-hair-swap',swap?'1':'0')}
-    else if(p.x>204&&p.x<376){soundOn=!soundOn;lsSet('deep-sea-last-hair-sound',soundOn?'1':'0');if(soundOn)audioInit()}
+   if(p.y>H-78&&p.y<H-36){
+    if(p.x>W/2-176&&p.x<W/2-4){swap=!swap;lsSet('deep-sea-last-hair-swap',swap?'1':'0')}
+    else if(p.x>W/2+4&&p.x<W/2+176){soundOn=!soundOn;lsSet('deep-sea-last-hair-sound',soundOn?'1':'0');if(soundOn)audioInit()}
     else say('先按「開始出門」。');
    }else say('先按「開始出門」。');
   }else say('這一局已結算。按「再玩一次」開始新的一局。');

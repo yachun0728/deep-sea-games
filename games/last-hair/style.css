@@ -28,3 +28,36 @@
  #view-last-hair .fs-game:has(.share-result:not([hidden])) .side #lh-go:not(:disabled){left:12px;transform:none;width:calc(50% - 16px)}
  #view-last-hair .fs-game .share-result:not([hidden]){left:calc(50% + 4px);transform:none;width:calc(50% - 16px);min-height:48px;background:#365a63;border-color:#a9916d;color:#ffedca}
 }
+/* v3: fill the actual viewport; the renderer extends its logical scene without stretching artwork. */
+#view-last-hair:not([hidden]) .console.fs-game{position:fixed;inset:0;z-index:1200;display:block;box-sizing:border-box;width:100%;height:100dvh;margin:0;--reserve:0px;padding:calc(env(safe-area-inset-top) + 52px) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + var(--reserve)) env(safe-area-inset-left);background:#254750}
+#view-last-hair:not([hidden]) .fs-game:has(#lh-go:not(:disabled)),#view-last-hair:not([hidden]) .fs-game:has(.share-result:not([hidden])){--reserve:84px}
+#view-last-hair:not([hidden]) .fs-game .sneak-stage{position:relative;display:block;box-sizing:border-box;width:100%;height:100%;padding:0;margin:0;border:0;border-radius:0;overflow:visible}
+#view-last-hair:not([hidden]) .fs-game .sneak-stage #lh-canvas{display:block;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto;object-fit:fill;border:0;border-radius:0}
+#view-last-hair .fs-game .side,#view-last-hair .fs-game .panel{display:contents}
+#view-last-hair .fs-game .stats{position:absolute;top:calc(env(safe-area-inset-top) + 8px);left:auto;right:12px;width:130px;margin:0}
+#view-last-hair .fs-game .stats>div:not(:last-child){display:none}
+#view-last-hair .fs-game .stats>div:last-child{padding:3px 8px;border-radius:10px;background:#ffedca;color:#263b42}
+#view-last-hair .fs-game .stats dt{font-size:10px;line-height:1.2}
+#view-last-hair .fs-game .stats dd{font-size:14px;line-height:1.4}
+#view-last-hair .fs-game .fs-exit{display:grid;place-items:center;position:absolute;top:calc(env(safe-area-inset-top) + 6px);left:calc(env(safe-area-inset-left) + 8px);width:44px;height:44px;padding:0;border-radius:10px;background:#ffedca;color:#263b42;font-size:24px}
+#view-last-hair .fs-game #lh-msg{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#view-last-hair .fs-game .hint,#view-last-hair>.rules{display:none}
+#view-last-hair .fs-game .side #lh-go:not(:disabled){position:absolute;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(88%,360px);min-height:48px}
+#view-last-hair .fs-game .side #lh-go:disabled{display:none}
+#view-last-hair .fs-game:has(.share-result:not([hidden])) .side #lh-go:not(:disabled){left:12px;transform:none;width:calc(50% - 16px)}
+#view-last-hair .fs-game .share-result:not([hidden]){position:absolute;left:calc(50% + 4px);bottom:calc(env(safe-area-inset-bottom) + 16px);transform:none;width:calc(50% - 16px);min-height:48px;background:#365a63;color:#ffedca}
+html:has(#view-last-hair:not([hidden])){overflow:hidden}
+/* The approved HUD owns the top row; no separate platform statistics bar. */
+#view-last-hair:not([hidden]) .console.fs-game{padding-top:env(safe-area-inset-top)}
+#view-last-hair .fs-game .stats{width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%)}
+#view-last-hair .fs-game .fs-exit,#view-last-hair .fs-game #lh-pause{position:absolute;z-index:8;top:calc(env(safe-area-inset-top) + 7px);width:44px;height:44px;padding:0;border:0;border-radius:13px;background:transparent url('games/last-hair/art/hud-v4/hud_button.webp') center/100% 100% no-repeat;color:#273d40;font:900 25px 'Chalkboard SE',system-ui;box-shadow:none;cursor:pointer}
+#view-last-hair .fs-game .fs-exit{left:calc(env(safe-area-inset-left) + 9px)}
+#view-last-hair .fs-game #lh-pause{right:calc(env(safe-area-inset-right) + 9px)}
+#view-last-hair .fs-game #lh-pause:disabled{opacity:.5;cursor:default}
+@font-face{font-family:LastHairLatin;src:url('games/last-hair/art/fonts/last-hair-latin.woff2') format('woff2');font-style:normal;font-weight:700;font-display:swap}
+@font-face{font-family:LastHairHand;src:url('games/last-hair/art/fonts/last-hair-hand.woff2') format('woff2');font-style:normal;font-weight:700;font-display:swap}
+#view-last-hair .fs-game #lh-pause{font-size:0}
+#view-last-hair #lh-pause::before{content:"";position:absolute;left:13px;top:12px;width:7px;height:20px;border-radius:3px;background:#273d40;box-shadow:11px 0 #273d40}
+#view-last-hair #lh-pause[data-paused="1"]::before{left:17px;top:12px;width:0;height:0;border-radius:2px;background:transparent;box-shadow:none;border-left:14px solid #273d40;border-top:10px solid transparent;border-bottom:10px solid transparent}
+#view-last-hair #lh-canvas:focus{outline:0}
+#view-last-hair #lh-canvas:focus-visible{outline:2px solid rgba(255,233,190,.55);outline-offset:-2px}
