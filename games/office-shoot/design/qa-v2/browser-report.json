@@ -1,0 +1,24 @@
+{
+  "browser": "Chrome/158.0.8127.37",
+  "environment": "macOS headless Chromium, CSS device emulation (not physical devices)",
+  "checks": [
+    "layout 390x844, full-height scene and controls >=44px",
+    "layout 320x568, full-height scene and controls >=44px",
+    "layout 430x760, full-height scene and controls >=44px",
+    "layout 768x1024, full-height scene and controls >=44px",
+    "layout 1366x900, full-height scene and controls >=44px",
+    "layout 844x390, full-height scene and controls >=44px",
+    "real start, touch drag, full office art, approved native header/footer, local comic fonts, no duplicate HUD",
+    "walking played 6 distinct sprite cells during touch movement",
+    "pause and mute controls",
+    "English running/paused/loss text, natural game-over and replay control",
+    "restart and route leave/return pauses the active round",
+    "no JavaScript runtime errors"
+  ],
+  "frameIntervals": {
+    "medianMs": 16.69999999999891,
+    "p95Ms": 16.799999999999272,
+    "samples": 300
+  },
+  "errors": []
+}

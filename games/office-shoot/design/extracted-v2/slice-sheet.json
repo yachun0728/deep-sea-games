@@ -1,0 +1,358 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "actors-source.png",
+  "grid": [
+    4,
+    3
+  ],
+  "canvas": {
+    "w": 256,
+    "h": 384
+  },
+  "baseline_y": 376.0,
+  "target_height": 360.0,
+  "scale": "cell",
+  "fit": "contain",
+  "factor": null,
+  "factor_from": null,
+  "alpha_cleanup": "alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "player",
+      "file": "player.png",
+      "factor": 0.9809264305177112,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 222,
+          "h": 367
+        },
+        "canvas": {
+          "w": 218,
+          "h": 360
+        }
+      },
+      "box": {
+        "x": 20,
+        "y": 16,
+        "w": 218,
+        "h": 360
+      },
+      "anchor": [
+        129.0,
+        376.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "folder",
+      "file": "folder.png",
+      "factor": 0.8827586206896552,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 289,
+          "h": 289
+        },
+        "canvas": {
+          "w": 255,
+          "h": 255
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 121,
+        "w": 255,
+        "h": 255
+      },
+      "anchor": [
+        128.5,
+        376.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "paper",
+      "file": "paper.png",
+      "factor": 0.9961089494163424,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 256,
+          "h": 355
+        },
+        "canvas": {
+          "w": 255,
+          "h": 354
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 22,
+        "w": 255,
+        "h": 354
+      },
+      "anchor": [
+        128.5,
+        376.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "meeting",
+      "file": "meeting.png",
+      "factor": 0.8258064516129032,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 309,
+          "h": 295
+        },
+        "canvas": {
+          "w": 255,
+          "h": 244
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 103,
+        "w": 255,
+        "h": 273
+      },
+      "anchor": [
+        128.5,
+        376.0
+      ],
+      "clipped_px": 0,
+      "parts": 3
+    },
+    {
+      "name": "boss",
+      "file": "boss.png",
+      "factor": 0.6336633663366337,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 403,
+          "h": 292
+        },
+        "canvas": {
+          "w": 255,
+          "h": 185
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 191,
+        "w": 255,
+        "h": 185
+      },
+      "anchor": [
+        128.5,
+        376.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "crate",
+      "file": "crate.png",
+      "factor": 1.0534979423868314,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 242,
+          "h": 244
+        },
+        "canvas": {
+          "w": 255,
+          "h": 257
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 119,
+        "w": 255,
+        "h": 257
+      },
+      "anchor": [
+        128.5,
+        376.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "stapler",
+      "file": "stapler.png",
+      "factor": 0.6481012658227848,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 316,
+          "h": 215
+        },
+        "canvas": {
+          "w": 205,
+          "h": 139
+        }
+      },
+      "box": {
+        "x": 26,
+        "y": 237,
+        "w": 230,
+        "h": 139
+      },
+      "anchor": [
+        128.366,
+        376.0
+      ],
+      "clipped_px": 0,
+      "parts": 5
+    },
+    {
+      "name": "coffee",
+      "file": "coffee.png",
+      "factor": 0.757396449704142,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 337,
+          "h": 271
+        },
+        "canvas": {
+          "w": 255,
+          "h": 205
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 171,
+        "w": 255,
+        "h": 205
+      },
+      "anchor": [
+        128.5,
+        376.0
+      ],
+      "clipped_px": 0,
+      "parts": 4
+    },
+    {
+      "name": "pen",
+      "file": "pen.png",
+      "factor": 0.9625668449197861,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 59,
+          "h": 374
+        },
+        "canvas": {
+          "w": 57,
+          "h": 360
+        }
+      },
+      "box": {
+        "x": 100,
+        "y": 16,
+        "w": 57,
+        "h": 360
+      },
+      "anchor": [
+        128.5,
+        376.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "shredder",
+      "file": "shredder.png",
+      "factor": 0.8421052631578947,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 303,
+          "h": 323
+        },
+        "canvas": {
+          "w": 255,
+          "h": 272
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 103,
+        "w": 255,
+        "h": 273
+      },
+      "anchor": [
+        128.5,
+        376.0
+      ],
+      "clipped_px": 0,
+      "parts": 2
+    },
+    {
+      "name": "printer",
+      "file": "printer.png",
+      "factor": 0.7231638418079096,
+      "factor_from": "fit",
+      "subject": {
+        "sheet": {
+          "w": 353,
+          "h": 308
+        },
+        "canvas": {
+          "w": 255,
+          "h": 223
+        }
+      },
+      "box": {
+        "x": 1,
+        "y": 153,
+        "w": 255,
+        "h": 223
+      },
+      "anchor": [
+        128.5,
+        376.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "laser",
+      "file": "laser.png",
+      "factor": 0.9625668449197861,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 75,
+          "h": 374
+        },
+        "canvas": {
+          "w": 72,
+          "h": 360
+        }
+      },
+      "box": {
+        "x": 92,
+        "y": 16,
+        "w": 72,
+        "h": 360
+      },
+      "anchor": [
+        128.0,
+        376.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}
