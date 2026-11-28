@@ -32,3 +32,4 @@
 
 正式入口：<https://ticaticagames.com/?v=pudding-cloud-2#pudding>
 - 初次整站比對遇到同步死神發布，布丁雲端回合仍正常，但該份正式 HTML 尚未包含長按去重。已合併最新遠端 `4b9b07a`，保留死神更新與布丁修正後重新組合；最終部署驗證另列下方。
+- PASS：最終正式版本 `064e2931-7e32-4d0f-b68c-dbc7caafee94`；重新下載 HTML 與合併來源逐位元組一致（排除平台注入的 analytics script），SHA-256 `103ae11d3ff22dfa3c769ce45f7527abd2ccd29bca86167c79914941295e1884`。包含布丁長按去重及最新死神／接龍內容。
