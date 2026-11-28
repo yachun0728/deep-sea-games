@@ -7,17 +7,17 @@
 - 網址：`#pudding`　分類：跑酷動作　狀態：顯示中
 - 大廳卡片：「拼出武器，背著小王子殺出重圍。」｜立即開玩 · 拼武器闖關
 - 追蹤名稱（GA4 `game_name`）：布丁突圍，`game_id` 為 `pudding`
-- 檔案：`games/pudding/card.html`、`games/pudding/cover.webp`、`games/pudding/game.js`、`games/pudding/icon.svg`、`games/pudding/leaderboard.webp`、`games/pudding/style.css`、`games/pudding/view.html`；`game.js` 共 371 行、27.7 KB
+- 檔案：`games/pudding/card.html`、`games/pudding/cover.webp`、`games/pudding/game.js`、`games/pudding/icon.svg`、`games/pudding/leaderboard.webp`、`games/pudding/style.css`、`games/pudding/view.html`；`game.js` 共 259 行、21.4 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「27. 布丁突圍 Pudding Dash（pudding）」（下方「規則摘要」已複製）
 
 ## 畫面元素（view.html 的 id）
 
-`view-pudding`、`pd-canvas`、`pd-seg`、`pd-score`、`pd-best`、`pd-amount`、`pd-go`、`pd-msg`
+`view-pudding`、`pd-canvas`、`pd-seg`、`pd-score`、`pd-best`、`pd-amount`、`pd-go`、`pd-rank-status`、`pd-rank-retry`、`pd-msg`
 
 ## 狀態與常數
 
-- 狀態物件／進行中旗標：`E`（L42）、`A`（L194）、`EK`（L227）、`puddingBusy`（L2）
+- 狀態物件／進行中旗標：`A`（L80）、`EK`（L113）、`puddingBusy`（L2）
 - L4 常數：`DPR`、`FONT`
 - L5 常數：`XMIN`、`XMAX`、`KEY_SPEED`、`PTR_SPEED`
 - L6 常數：`CELL`、`WTOP`
@@ -32,11 +32,11 @@
 - L25 常數：`CARD_HINT`
 - L26 常數：`TYPES`
 - L28 常數：`SHAPES`
-- …另有 2 行常數宣告，請直接搜尋大寫名稱
+- …另有 3 行常數宣告，請直接搜尋大寫名稱
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`rnd` L32、`wpick` L33、`RR` L34、`tx` L35、`cardX` L36、`inRect` L37、`emptyGrid` L39、`startGrid` L40、`computeStats` L41、`rotateCells` L53、`dims` L54、`reset` L61、`resetRun` L62、`clearInput` L63、`say` L65、`setText` L67、`ui` L68、`fl` L73、`end` L74、`enterForge` L87、`clampGhost` L93、`previewGrid` L94、`forgeRotate` L95、`forgeConfirm` L96、`forgeSkip` L102、`forgeTap` L103、`weaponCells` L110、`touches` L111、`makeEnemy` L112、`spawn` L113、`hurt` L118、`kill` L123、`moveHero` L128、`endSegment` L134、`updateRun` L143、`update` L178、`ok` L195、`spr` L197、`sprBox` L198、`panel` L200、`btn` L201、`drawRoad` L209、`mood` L214、`drawHero` L215、`drawWeaponWorld` L221、`drawEnemyBody` L228、`drawEnemy` L229、`drawArcher` L235、`drawBar` L236、`drawGrid` L244、`drawRun` L252、`drawForge` L271、`segs` L281、`line` L287、`wrapLines` L305、`rowsCard` L306、`lh` L309、`drawOver` L311、`drawReady` L324、`draw` L331、`start` L336、`shown` L343、`ptX` L344、`release` L354、`isL` L357、`loop` L368
+`RR` L32、`tx` L33、`cardX` L34、`inRect` L35、`syncSimulation` L38、`reset` L39、`computeStats` L43、`previewGrid` L44、`weaponCells` L45、`dims` L46、`update` L47、`input` L50、`clearInput` L51、`forgeConfirm` L52、`forgeRotate` L52、`forgeSkip` L52、`forgeTap` L53、`target` L57、`say` L59、`setText` L61、`ui` L62、`fl` L67、`settle` L68、`ok` L81、`spr` L83、`sprBox` L84、`panel` L86、`btn` L87、`drawRoad` L95、`mood` L100、`drawHero` L101、`drawWeaponWorld` L107、`drawEnemyBody` L114、`drawEnemy` L115、`drawArcher` L121、`drawBar` L122、`drawGrid` L130、`drawRun` L138、`drawForge` L157、`segs` L167、`line` L173、`wrapLines` L191、`rowsCard` L192、`lh` L195、`drawOver` L197、`drawReady` L210、`draw` L217、`start` L222、`shown` L231、`ptX` L232、`release` L242、`isL` L245、`loop` L256
 
 ## 錢包與結算接點
 
@@ -44,20 +44,20 @@
 - （game.js 內沒有直接操作；可能透過共用函式或其他檔案）
 
 **入帳（領回／獎勵）**
-- L77 `end`：`S.balance+=WIN_REWARD}`
-- L137 `endSegment`：`S.balance+=SEG_REWARD;`
+- L41 `reset`：`S.balance+=SEG_REWARD;`
+- L69 `settle`：`S.balance+=WIN_REWARD}`
 
 **餘額檢查**
-- L339 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
+- L225 `start`：`if(amount>S.balance){say(LOW_MSG,'lose');`
 
 - 入場費常數 `ENTRY_FEE` 在本檔出現 1 次、餘額不足訊息 `LOW_MSG` 1 次（定義在 `js/config.js`）。
 - 規範：每局只扣一次、只結算一次，重新整理與重複點擊不可重複扣款或入帳。
 
 ## 追蹤（GA4）
 
-- L80 `end`：`AN.end(analytics,earned,reason==='win'||earned>0?'complete':'loss',{score:score,step:seg,stage:seg});`
-- L138 `endSegment`：`AN.progress(analytics,{stage:seg,step:seg,score:score,bonus_points:SEG_REWARD});`
-- L340 `start`：`analytics=AN.start('pudding',amount);`
+- L41 `reset`：`AN.progress(analytics,{stage:seg,step:seg,score,bonus_points:SEG_REWARD});`
+- L72 `settle`：`AN.end(analytics,earned,reason==='win'||earned>0?'complete':'loss',{score:score,step:seg,stage:seg});`
+- L227 `start`：`analytics=AN.start('pudding',amount);`
 
 - 契約見 [ANALYTICS.md](../../docs/ANALYTICS.md)：每局一次 start、結束只送一次 end，不可傳個資。
 
@@ -73,7 +73,7 @@
 
 ## 規則摘要（取自 GAME_RULES.md）
 
-定位：`puddingBusy` 所在 IIFE。橫向護送闖關：玩家護送「布丁」走過 8 段路（每段 16 秒），敵人從上方逼近。每段開始前進營帳，拿到刃（紅）、矛（藍）、盾（黃）各一塊隨機拼圖碎片，選一塊放進 4×4 武器格（新碎片覆蓋舊格子，可旋轉，也可跳過）。武器畫在布丁正前方（每格 20 畫素、畫布 y 332～412），這個武器就是實際判定範圍。
+定位：`games/pudding/game.js` 負責畫面與平台，`shared/pudding-rules.cjs` 為前後端共用模擬規則。橫向護送闖關：玩家護送「布丁」走過 8 段路（每段 16 秒），敵人從上方逼近。每段開始前進營帳，拿到刃（紅）、矛（藍）、盾（黃）各一塊隨機拼圖碎片，選一塊放進 4×4 武器格（新碎片覆蓋舊格子，可旋轉，也可跳過）。武器畫在布丁正前方（每格 20 畫素、畫布 y 332～412），這個武器就是實際判定範圍。
 
 - 移動：按住 ←→ 或 A／D（`KEY_SPEED` 230 畫素/秒），或按住畫面朝指標走（`PTR_SPEED` 280 畫素/秒）；範圍 x 60～340。切換遊戲、換分頁、放開按鍵時停止移動。營帳階段可按 R 旋轉、Enter 確認、S 跳過。
 - 刃：武器格碰到敵人時持續傷害，每格每秒 4×權重，且敵人移動速度 ×0.5。矛：碰到時一次 3×權重，0.5 秒冷卻，並把敵人擊退 14 畫素（騎兵 ×1.5）。盾：擋下箭矢；受傷減免 = min(0.6, 0.05×有效盾格數)。
@@ -100,6 +100,8 @@
 獎勵：入場固定 10 點；**每突破一段 +1 點**（`SEG_REWARD`），當下加入共用餘額並存檔，每段只入帳一次；全部 8 段突破再 +2 點（`WIN_REWARD`），一局最多 10 點，剛好回本、沒有倍率也沒有領回。中途失敗不扣回已入帳點數。`AN.end` 的 payout_points 為本局累計入帳（`earned`），有入帳為 complete、沒有為 loss，附 score、step、stage；每段入帳另送 game_progress。大廳卡片以 `game-card-bonus` 標示。
 
 注意：每段 +1、全破 +2 是暫定經濟，可調整 `SEG_REWARD`／`WIN_REWARD`。難度用機器人模擬調過（各策略 100 局，機器人會自動走位閃躲，屬理想化操作）：均衡混搭放置約 70%，只塞矛約 21%，只塞刃約 14%，偏重刃矛的貪婪混搭約 29%，隨機放置約 7%，大多跳過與全塞盾為 0%。這不是真人數據，上線後看正式站 `game_end` 的 stage 分布調整 `LV`。切換遊戲或背景分頁時暫停，重新整理放棄本局、不退款、已入帳保留。最佳紀錄 `deep-sea-pudding-best` 存分數。本款沒有音效。
+
+- 雲端訪客榜：規則版本 1，由 Worker 發種子，以 10ms 步進驗證拼圖選擇、旋轉、放置、鍛造／跳過及左右移動。合法失敗或八段全破才結算分數，沿用最高分與前 50 名；網路失敗可重送同一證明。超過 10 分鐘或 4,000 筆操作時僅保留本機成績，獎勵與玩法不受影響。既有本機最佳不直接上傳。
 
 ## 修改檢查清單
 

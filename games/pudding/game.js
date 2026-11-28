@@ -29,165 +29,51 @@ const SHAPES=[{c:[[0,0]],w:2},{c:[[0,0],[1,0]],w:3},{c:[[0,0],[1,0],[2,0]],w:3},
 const GX=112,GY=108,GC=44,FS=358,CY=408,CH=86,BY=500;   // forge layout on the canvas: grid, stat lines, piece cards, buttons
 let best=0;try{best=+localStorage.getItem('deep-sea-pudding-best')||0}catch(e){}
 let analytics=null,earned=0;
-const rnd=(a,b)=>a+Math.random()*(b-a);
-function wpick(ws){let t=0;for(const w of ws)t+=w;let r=Math.random()*t;for(let i=0;i<ws.length;i++){r-=ws[i];if(r<0)return i}return ws.length-1}
 const RR=(x,y,w,h,r)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()};
 function tx(s,x,y,sz,col,al,mw){mw=mw||W-40;g.font='900 '+sz+'px '+FONT;g.textAlign=al||'center';g.textBaseline='middle';g.lineJoin='round';g.lineWidth=Math.max(3,sz/4);g.strokeStyle=OL;g.strokeText(s,x,y,mw);g.fillStyle=col;g.fillText(s,x,y,mw)}
 const cardX=i=>20+(3-cards.length)*62+124*i;
 const inRect=(x,y,rx,ry,w,h)=>x>=rx&&x<rx+w&&y>=ry&&y<ry+h;
-// ---- weapon grid ----
-const emptyGrid=()=>[0,1,2,3].map(()=>[null,null,null,null]);
-function startGrid(){const gr=emptyGrid();for(const t of['b','m','d'])for(const[cx,cy]of START_CELLS[t])gr[cy][cx]=t;return gr}
-function computeStats(gr){
- const E={b:0,m:0,d:0},cs=emptyGrid().map(r=>r.map(()=>0)),cw=emptyGrid().map(r=>r.map(()=>0)),seen=emptyGrid().map(r=>r.map(()=>false));
- for(let r=0;r<4;r++)for(let q=0;q<4;q++){
-  const t=gr[r][q];if(!t||seen[r][q])continue;
-  const stack=[[q,r]],cells=[];seen[r][q]=true;
-  while(stack.length){const[x,y]=stack.pop();cells.push([x,y]);
-   for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy;if(nx>=0&&nx<4&&ny>=0&&ny<4&&!seen[ny][nx]&&gr[ny][nx]===t){seen[ny][nx]=true;stack.push([nx,ny])}}}
-  const s=cells.length,eff=s+Math.max(0,s-2);E[t]+=eff;   // a group of s cells counts as s + max(0, s-2) effective cells
-  for(const[x,y]of cells){cs[y][x]=s;cw[y][x]=eff/s}}
- const cols=new Set(),rows=new Set();
- for(let r=0;r<4;r++)for(let q=0;q<4;q++)if(gr[r][q]){cols.add(q);rows.add(r)}
- return{E,cs,cw,bladeDps:BLADE_DPS*E.b,spear:SPEAR_BURST*E.m,guard:Math.min(GUARD_MAX,GUARD_PER*E.d),width:cols.size,length:rows.size}}
-function rotateCells(cells){const q=cells.map(([x,y])=>[-y,x]),mx=Math.min(...q.map(p=>p[0])),my=Math.min(...q.map(p=>p[1]));return q.map(([x,y])=>[x-mx,y-my])}
-const dims=cells=>({w:Math.max(...cells.map(p=>p[0]))+1,h:Math.max(...cells.map(p=>p[1]))+1});
-// ---- state ----
-let st='ready',ph='forge',why='',rec=false,tt=0,last=0,forgeCount=0;
-let grid=startGrid(),stats=computeStats(grid),calm=100,score=0,killScore=0,segScore=0,calmBonus=0,winBonus=0,seg=1;
-let cards=[],sel=-1,ghost=null,flashCells=[],flashT=0,fPhase='edit',fT=0;
-let rt=0,spawnT=0,enemies=[],warns=[],archers=[],arrows=[],dying=[],floats=[],lastX=-999,streak=0,px=200,hurtT=0,worryT=0,happyT=0,redT=0,shakeT=0,scroll=0,sub='play',subT=0,banner='';
-let kL=false,kR=false,ptr=null;
-function reset(){grid=startGrid();stats=computeStats(grid);calm=100;score=0;killScore=0;segScore=0;calmBonus=0;winBonus=0;seg=1;forgeCount=0;why='';rec=false;px=200;clearInput();resetRun();cards=[];sel=-1;ghost=null;fPhase='edit'}
-function resetRun(){rt=0;spawnT=FIRST_SPAWN;enemies=[];warns=[];archers=[];arrows=[];dying=[];floats=[];lastX=-999;streak=0;hurtT=0;worryT=0;happyT=0;redT=0;shakeT=0;scroll=0;sub='play';subT=0;banner=''}
-function clearInput(){kL=false;kR=false;ptr=null}
+const RULE_LABELS={'pudding.msg.010':'{{t:pudding.msg.010}}','pudding.msg.011':'{{t:pudding.msg.011}}'};
+let G;let st,ph,why,tt,forgeCount,grid,stats,calm,score,killScore,segScore,calmBonus,winBonus,seg,cards,sel,ghost,flashCells,flashT,fPhase,fT,rt,spawnT,enemies,warns,archers,arrows,dying,floats,lastX,streak,px,hurtT,worryT,happyT,redT,shakeT,scroll,sub,subT,banner,kL,kR,ptr;let rec=false,last=0;
+function syncSimulation(){({st,ph,why,tt,forgeCount,grid,stats,calm,score,killScore,segScore,calmBonus,winBonus,seg,cards,sel,ghost,flashCells,flashT,fPhase,fT,rt,spawnT,enemies,warns,archers,arrows,dying,floats,lastX,streak,px,hurtT,worryT,happyT,redT,shakeT,scroll,sub,subT,banner,kL,kR,ptr}=G);}
+function reset(random){G=puddingRules.createGame(random||Math.random,{
+ label:id=>RULE_LABELS[id]||id,reduceMotion:()=>reduceMotion,say,
+ segment:()=>{syncSimulation();earned+=SEG_REWARD;S.balance+=SEG_REWARD;save();renderAll();AN.progress(analytics,{stage:seg,step:seg,score,bonus_points:SEG_REWARD});},
+ end:reason=>{syncSimulation();settle(reason);}});syncSimulation();}
+function computeStats(...args){const result=G.computeStats(...args);syncSimulation();return result;}
+function previewGrid(...args){const result=G.previewGrid(...args);syncSimulation();return result;}
+function weaponCells(...args){const result=G.weaponCells(...args);syncSimulation();return result;}
+function dims(...args){const result=G.dims(...args);syncSimulation();return result;}
+function update(...args){const result=G.update(...args);syncSimulation();return result;}
+const rank=timedLeaderboard('pudding','pd',puddingRules.inputCount,ui,
+ ()=>window.dispatchEvent(new CustomEvent('deep-sea-score-saved',{detail:{gameId:'pudding'}})),{canvas:'pd-canvas',maxInputs:4000});
+function input(code){if(st!=='run')return;puddingRules.input(G,code);rank.record(code);syncSimulation();}
+function clearInput(){if(st==='run')input(4005);else G?.clearInput();syncSimulation();}
+function forgeRotate(){input(4036);}function forgeConfirm(){input(4037);}function forgeSkip(){input(4038);}
+function forgeTap(x,y){if(fPhase!=='edit')return;
+ for(let i=0;i<cards.length;i++)if(inRect(x,y,cardX(i),CY,112,CH)){input(4010+i);return;}
+ if(inRect(x,y,GX,GY,GC*4,GC*4)){input(4020+Math.floor((x-GX)/GC)+Math.floor((y-GY)/GC)*4);return;}
+ if(inRect(x,y,20,BY,110,50))forgeRotate();else if(inRect(x,y,145,BY,110,50))forgeConfirm();else if(inRect(x,y,270,BY,110,50))forgeSkip();}
+function target(x){const n=Math.round(Math.max(0,Math.min(400,x))*10);if(ptr!==n/10)input(n);}
 reset();
 function say(text,kind){$('pd-msg').textContent=text;$('pd-msg').className='msg'+(kind?' '+kind:'')}
 puddingSay=say;
 function setText(id,value){const el=$(id);if(el.textContent!==value)el.textContent=value}
 function ui(){
- const live=st==='run';
+ const live=st==='run';$('view-pudding').dataset.round=st;
  setText('pd-seg','第 '+seg+'/'+SEGS+' 段');setText('pd-score',String(score));setText('pd-best',best+' 分');
- $('pd-amount').disabled=puddingBusy;$('pd-go').disabled=live;setText('pd-go',live?'{{t:pudding.msg.007}}':st==='over'?'{{t:pudding.msg.008}}':'{{t:pudding.msg.009}}');
+ $('pd-amount').disabled=puddingBusy;$('pd-go').disabled=live||rank.busy();setText('pd-go',live?'{{t:pudding.msg.007}}':st==='over'?'{{t:pudding.msg.008}}':'{{t:pudding.msg.009}}');
 }
 const fl=(s,x,y,col)=>floats.push({s,x,y,col,t:0});
-function end(reason){
- if(st!=='run')return;
- st='over';why=reason;clearInput();
- if(reason==='win'){winBonus=WIN_SCORE;calmBonus=Math.floor(calm)*CALM_SCORE;score+=winBonus+calmBonus;earned+=WIN_REWARD;S.balance+=WIN_REWARD}
+function settle(reason){
+ if(reason==='win'){earned+=WIN_REWARD;S.balance+=WIN_REWARD}
  rec=score>best;
  if(rec){best=score;try{localStorage.setItem('deep-sea-pudding-best',best)}catch(e){}}
  AN.end(analytics,earned,reason==='win'||earned>0?'complete':'loss',{score:score,step:seg,stage:seg});puddingBusy=false;save();renderAll();
  if(reason==='win')say('成功護送布丁到援軍橋！本局共入帳 '+fmt(earned)+' 點。','win');
  else if(!earned)say('布丁哭了，撐到第 '+seg+' 段。這一局沒有額外成就獎勵。','lose');
  else say('布丁哭了，撐到第 '+seg+' 段，本局共入帳 '+fmt(earned)+' 點。','win');
- ui();
-}
-// ---- forge (camp) ----
-function enterForge(){
- ph='forge';forgeCount++;stats=computeStats(grid);
- const order=seg>=SHIELD_FROM?['b','m','d']:['b','m'];for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
- cards=order.map(t=>({type:t,cells:SHAPES[wpick(SHAPES.map(s=>s.w))].c.map(p=>p.slice())}));
- sel=-1;ghost=null;fPhase='edit';fT=0;flashCells=[];flashT=0;clearInput();
-}
-function clampGhost(){if(sel<0||!ghost)return;const d=dims(cards[sel].cells);ghost.x=Math.max(0,Math.min(ghost.x,4-d.w));ghost.y=Math.max(0,Math.min(ghost.y,4-d.h))}
-function previewGrid(){const gr=grid.map(r=>r.slice());if(sel>=0&&ghost){const cd=cards[sel];for(const[dx,dy]of cd.cells)gr[ghost.y+dy][ghost.x+dx]=cd.type}return gr}
-function forgeRotate(){if(fPhase!=='edit'||sel<0)return;cards[sel].cells=rotateCells(cards[sel].cells);clampGhost()}
-function forgeConfirm(){
- if(fPhase!=='edit'||sel<0||!ghost)return;
- const cd=cards[sel];flashCells=[];
- for(const[dx,dy]of cd.cells){grid[ghost.y+dy][ghost.x+dx]=cd.type;flashCells.push((ghost.x+dx)+','+(ghost.y+dy))}
- flashT=.3;ghost=null;sel=-1;cards=[];stats=computeStats(grid);fPhase='delay';fT=.5;
-}
-function forgeSkip(){if(fPhase!=='edit')return;cards=[];sel=-1;ghost=null;fPhase='banner';fT=.8}
-function forgeTap(x,y){
- if(fPhase!=='edit')return;
- for(let i=0;i<cards.length;i++)if(inRect(x,y,cardX(i),CY,112,CH)){sel=i;clampGhost();return}
- if(inRect(x,y,GX,GY,GC*4,GC*4)){if(sel<0)return;const d=dims(cards[sel].cells);ghost={x:Math.min(Math.floor((x-GX)/GC),4-d.w),y:Math.min(Math.floor((y-GY)/GC),4-d.h)};return}
- if(inRect(x,y,20,BY,110,50))forgeRotate();else if(inRect(x,y,145,BY,110,50))forgeConfirm();else if(inRect(x,y,270,BY,110,50))forgeSkip();
-}
-// ---- run ----
-function weaponCells(x){const out=[];for(let r=0;r<4;r++)for(let q=0;q<4;q++)if(grid[r][q])out.push({t:grid[r][q],w:stats.cw[r][q],cx:x-2*CELL+q*CELL+CELL/2,cy:WTOP+r*CELL+CELL/2});return out}
-const touches=(e,cl)=>Math.abs(e.x-cl.cx)<(EW+CELL)/2&&Math.abs(e.y-cl.cy)<(EH+CELL)/2;
-function makeEnemy(kind,x,lv){const hp=Math.round(lv.hp[kind]*HP_MUL);return{t:kind,x,y:-30,hp,maxHp:hp,speed:lv.base*SPEED_MUL[kind],flash:0,slow:false,spearCd:0}}
-function spawn(lv){
- const kind=['inf','cav','shield','archer'][wpick(lv.w)];
- let x=rnd(SPAWN_X[0],SPAWN_X[1]);if(Math.abs(x-lastX)<50)x=rnd(SPAWN_X[0],SPAWN_X[1]);lastX=x;
- if(kind==='cav')warns.push({x,t:CAV_WARN});else if(kind==='archer')archers.push({x,t:0,fired:false});else enemies.push(makeEnemy(kind,x,lv));
-}
-function hurt(base,kind){
- const amt=Math.round(base*(1-stats.guard)*10)/10;calm=Math.max(0,calm-amt);streak=0;
- if(kind==='pass'){worryT=.3;fl('-'+amt,px,PY+60,'#9e9e9e')}
- else{hurtT=.2;redT=.1;if(!reduceMotion)shakeT=.2;fl('-'+amt,px,PY-50,'#ff5252')}
-}
-function kill(e){
- const sc=KILL[e.t];score+=sc;killScore+=sc;fl('+'+sc,e.x,e.y,'#ffe082');dying.push({x:e.x,y:e.y,t:e.t,life:.15});
- if(!reduceMotion)shakeT=Math.max(shakeT,.06);e.dead=true;streak++;
- if(streak%STREAK_STEP===0){calm=Math.min(100,calm+STREAK_HEAL);happyT=.5;fl('+'+STREAK_HEAL,px+14,PY-52,'#69f0ae')}
-}
-function moveHero(dt){
- const dir=(kR?1:0)-(kL?1:0);
- if(dir!==0)px+=dir*KEY_SPEED*dt;
- else if(ptr!==null){const d=ptr-px,step=PTR_SPEED*dt;if(Math.abs(d)<=step)px=ptr;else px+=Math.sign(d)*step}
- px=Math.max(XMIN,Math.min(XMAX,px));
-}
-function endSegment(){
- enemies=[];warns=[];archers=[];arrows=[];
- score+=SEG_SCORE;segScore+=SEG_SCORE;
- earned+=SEG_REWARD;S.balance+=SEG_REWARD;save();renderAll();
- AN.progress(analytics,{stage:seg,step:seg,score:score,bonus_points:SEG_REWARD});
- if(seg>=SEGS){end('win');return}
- sub='clear';subT=.8;banner='第 '+seg+' 段突破！';
- say('第 '+seg+' 段突破！+'+SEG_REWARD+' 點已入帳。','win');
-}
-function updateRun(dt){
- const lv=LV[seg-1];
- if(sub==='clear'){subT-=dt;if(subT<=0){calm=Math.min(100,calm+SEG_HEAL);seg++;enterForge();resetRun();ph='forge';say('第 '+seg+' 段營帳：拼一塊碎片，再出發。')}return}
- rt+=dt;scroll+=120*dt;
- if(rt>=SEG_TIME){endSegment();return}
- if(rt<SPAWN_STOP){spawnT-=dt;if(spawnT<=0){spawn(lv);spawnT=rnd(lv.iv[0],lv.iv[1])}}
- for(const w of warns)w.t-=dt;
- for(const w of warns.filter(w=>w.t<=0))enemies.push(makeEnemy('cav',w.x,lv));
- warns=warns.filter(w=>w.t>0);
- for(const a of archers){a.t+=dt;if(!a.fired&&a.t>=1){a.fired=true;arrows.push({x:a.x,y:80})}}
- archers=archers.filter(a=>a.t<1.3);
- moveHero(dt);
- for(const e of enemies){e.y+=e.speed*(e.slow?(e.t==='cav'?CAV_SLOW:BLADE_SLOW):1)*dt;e.slow=false;if(e.spearCd>0)e.spearCd-=dt}
- for(const a of arrows)a.y+=ARROW_SPEED*dt;
- // weapon contact: blades cut over time and slow, spears stab once and knock back, shields stop arrows
- const cells=weaponCells(px);
- for(const e of enemies){
-  let dps=0,burst=0;
-  for(const cl of cells){if(cl.t==='d'||!touches(e,cl))continue;if(cl.t==='b')dps+=BLADE_DPS*cl.w;else if(e.spearCd<=0)burst+=SPEAR_BURST*cl.w}
-  if(e.t==='shield'){dps*=SHIELD_BLADE;burst*=SHIELD_SPEAR}
-  if(dps>0){e.hp-=dps*dt;e.flash=.08;e.slow=true}
-  if(burst>0){e.hp-=burst;e.flash=.08;e.spearCd=SPEAR_CD;e.y-=SPEAR_KNOCK*(e.t==='cav'?CAV_KNOCK:1);fl('-'+Math.round(burst),e.x,e.y-20,'#fff')}
-  if(e.hp<=0&&!e.dead)kill(e);
- }
- enemies=enemies.filter(e=>!e.dead);
- for(const a of arrows)for(const cl of cells)if(cl.t==='d'&&Math.abs(a.x-cl.cx)<3+CELL/2&&Math.abs(a.y-cl.cy)<15+CELL/2){a.dead=true;fl('{{t:pudding.msg.010}}',a.x,a.y,'#fdd835');break}
- // hits on the hero: contact, arrow, then enemies that slip past
- for(const e of enemies)if(Math.abs(e.x-px)<=38&&Math.abs(e.y-PY)<=30){e.dead=true;hurt(HURT[e.t],'hit')}
- enemies=enemies.filter(e=>!e.dead);
- for(const a of arrows)if(!a.dead&&Math.abs(a.x-px)<=20&&Math.abs(a.y-PY)<=20){a.dead=true;hurt(HURT.arrow,'hit')}
- arrows=arrows.filter(a=>!a.dead&&a.y<=520);
- for(const e of enemies)if(e.y>PY+30){e.dead=true;hurt(HURT.pass,'pass')}
- enemies=enemies.filter(e=>!e.dead);
- if(calm<=0){calm=0;end('calm')}
-}
-function update(dt){
- tt+=dt;
- if(flashT>0)flashT-=dt;
- if(hurtT>0)hurtT-=dt;if(worryT>0)worryT-=dt;if(happyT>0)happyT-=dt;if(redT>0)redT-=dt;if(shakeT>0)shakeT-=dt;
- for(const e of enemies)if(e.flash>0)e.flash-=dt;
- for(const d of dying)d.life-=dt;dying=dying.filter(d=>d.life>0);
- for(const f of floats)f.t+=dt;floats=floats.filter(f=>f.t<.5);
- if(st!=='run')return;
- if(ph==='forge'){
-  if(fPhase==='delay'){fT-=dt;if(fT<=0){fPhase='banner';fT=.8}}
-  else if(fPhase==='banner'){fT-=dt;if(fT<=0){ph='run';resetRun();say('{{t:pudding.msg.011}}')}}
-  return}
- updateRun(dt);
+ rank.finish(score);ui();
 }
 // ---- drawing ----
 const SPR=new Image();SPR.src='games/pudding/art/sprites.webp';const SCN=new Image();SCN.src='games/pudding/art/scene.webp';
@@ -334,11 +220,13 @@ function draw(){
 }
 // ---- start and input ----
 function start(){
- if(st==='run')return;
+ if(st==='run'||rank.busy())return;
  const amount=ENTRY_FEE;
  if(amount>S.balance){say(LOW_MSG,'lose');return}
+ rank.start(random=>{
  analytics=AN.start('pudding',amount);puddingStake=amount;puddingBusy=true;save();renderAll();
- reset();earned=0;st='run';last=performance.now();enterForge();say('{{t:pudding.msg.045}}');ui();c.focus();
+ reset(random);earned=0;st=G.st='run';last=performance.now();G.enterForge();syncSimulation();say('{{t:pudding.msg.045}}');ui();c.focus();
+ },undefined,{rulesVersion:puddingRules.rulesVersion});ui();
 }
 const shown=()=>!$('view-pudding').hidden&&!document.hidden;
 const ptX=e=>{const rc=c.getBoundingClientRect();return(e.clientX-rc.left)*W/(rc.width||W)},ptY=e=>{const rc=c.getBoundingClientRect();return(e.clientY-rc.top)*H/(rc.height||H)};
@@ -348,23 +236,23 @@ c.addEventListener('pointerdown',e=>{
  if(st!=='run'){say(st==='over'?'{{t:pudding.msg.046}}':'{{t:pudding.msg.047}}');return}
  if(!shown())return;e.preventDefault();c.focus();
  if(ph==='forge')forgeTap(ptX(e),ptY(e));
- else if(sub==='play'){ptr=ptX(e);try{c.setPointerCapture(e.pointerId)}catch(err){}}
+ else if(sub==='play'){target(ptX(e));try{c.setPointerCapture(e.pointerId)}catch(err){}}
 });
-c.addEventListener('pointermove',e=>{if(ptr!==null)ptr=ptX(e)});
-const release=()=>{ptr=null};
+c.addEventListener('pointermove',e=>{if(ptr!==null)target(ptX(e))});
+const release=()=>{if(ptr!==null)input(4006)};
 c.addEventListener('pointerup',release);c.addEventListener('pointercancel',release);
 c.addEventListener('contextmenu',e=>e.preventDefault());
 const isL=k=>k==='ArrowLeft'||k==='a'||k==='A',isR=k=>k==='ArrowRight'||k==='d'||k==='D';
 addEventListener('keydown',e=>{
  if(!shown()||st!=='run'||e.metaKey||e.altKey||e.ctrlKey)return;if(['INPUT','BUTTON','A','SUMMARY'].includes(e.target.tagName))return;
  const k=e.key;
- if(ph==='run'){if(isL(k)){e.preventDefault();kL=true}else if(isR(k)){e.preventDefault();kR=true}}
+ if(ph==='run'){if(isL(k)){e.preventDefault();input(4001)}else if(isR(k)){e.preventDefault();input(4003)}}
  else if(!e.repeat){if(k==='r'||k==='R'){e.preventDefault();forgeRotate()}else if(k==='Enter'){e.preventDefault();forgeConfirm()}else if(k==='s'||k==='S'){e.preventDefault();forgeSkip()}}
 });
-addEventListener('keyup',e=>{if(isL(e.key))kL=false;else if(isR(e.key))kR=false});
+addEventListener('keyup',e=>{if(isL(e.key))input(4002);else if(isR(e.key))input(4004)});
 addEventListener('blur',()=>{last=performance.now();clearInput()});
 document.addEventListener('visibilitychange',()=>{last=performance.now();clearInput()});
 window.addEventListener('hashchange',()=>{last=performance.now();clearInput()});
-function loop(t){const dt=Math.min(.05,Math.max(0,(t-last)/1000)||0);last=t;if(shown()){update(dt);ui();draw()}requestAnimationFrame(loop)}
+function loop(t){const dt=Math.min(.05,Math.max(0,(t-last)/1000)||0);last=t;if(shown()){rank.update(dt*1000,()=>st==='run',update);ui();draw()}requestAnimationFrame(loop)}
 ui();draw();requestAnimationFrame(loop);
   })();

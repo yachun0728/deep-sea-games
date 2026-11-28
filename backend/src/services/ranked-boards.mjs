@@ -1,3 +1,4 @@
+import puddingRules from '../../../shared/pudding-rules.cjs';
 import {completionTimeBoards} from './completion-time-boards.mjs';
 import berryTrailRules from '../../../shared/berry-trail-rules.cjs';
 import pedestrianHellRules from '../../../shared/pedestrian-hell-rules.cjs';
@@ -131,6 +132,7 @@ function puzzleBoard(rules) {
 }
 const boards = new Map([
   ...completionTimeBoards,
+  ['pudding',{...timedBoard(puddingRules,puddingRules.rulesVersion),rulesVersion:puddingRules.rulesVersion}],
   // TOP DOGGO now uses a local campaign; retired boards reject new rounds.
  ['cat-match',{
   create:level=>({seed:newSeed(),level,version:catMatchRules.VERSION,issuedAt:Date.now(),score:null}),

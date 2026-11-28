@@ -40,7 +40,7 @@
 | [胖老闆追人 Chubby Boss](boss/README.md) | `#boss` | 跑酷動作 | 顯示 | 386 行 | 遲到了！跳過障礙，別被胖老闆追上。 |
 | [偷水果的貓 Fruit Thief Cat](thief/README.md) | `#thief` | 跑酷動作 | 顯示 | 980 行 | 換道、跳籃子，偷水果躲開老闆娘。 |
 | [寶寶逃洗澡 Baby Bath Escape](baby/README.md) | `#baby` | 跑酷動作 | 顯示 | 286 行 | 跳過玩具、鑽過櫃子，別被媽媽抓去洗澡。 |
-| [布丁突圍 Pudding Dash](pudding/README.md) | `#pudding` | 跑酷動作 | 顯示 | 371 行 | 拼出武器，背著小王子殺出重圍。 |
+| [布丁突圍 Pudding Dash](pudding/README.md) | `#pudding` | 跑酷動作 | 顯示 | 259 行 | 拼出武器，背著小王子殺出重圍。 |
 | [下班保衛戰 Clock Out](clock-out/README.md) | `#clock-out` | 益智策略 | 顯示 | 1096 行 | 擺好辦公用品擋住一波波工作，撐到 17:00 打卡下班。 |
 | [別看 Don’t Peek](peek/README.md) | `#peek` | 潛行偷閒 | 顯示 | 923 行 | 抱著八音盒夜逃，聽聲辨位躲開走廊裡的東西，點對牠怕的道具。 |
 | [血壓上升 Midnight Mosquito](mosquito/README.md) | `#mosquito` | 潛行偷閒 | 顯示 | 347 行 | 深夜當蚊子，吸飽血再從窗戶逃走，別吵醒他。 |

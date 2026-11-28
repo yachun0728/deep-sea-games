@@ -9,7 +9,7 @@ const fee=Number(fs.readFileSync(new URL('js/config.js',root),'utf8').match(/ENT
 const hookAt='ui();draw();requestAnimationFrame(loop);';
 assert.ok(raw.includes(hookAt),'test hook anchor missing');
 // Expose the closure to the test only; the shipped source is not changed.
-const hook=`globalThis.__pd={update,start,draw,ev:code=>{const v=eval(code);return v&&typeof v==="object"?"@@"+JSON.stringify(v):v;}};`;
+const hook=`globalThis.__pd={update,start,draw,ev:code=>{const v=eval("with(G){"+code+"}");syncSimulation();return v&&typeof v==="object"?"@@"+JSON.stringify(v):v;}};`;
 const source=raw.replace(hookAt,()=>hook+hookAt);
 const results=[];
 export function fixture(balance=500,savedBest=null,random=Math.random){
@@ -19,9 +19,9 @@ export function fixture(balance=500,savedBest=null,random=Math.random){
   function el(id){if(!elements.has(id))elements.set(id,{hidden:false,value:'10',textContent:'',className:'',dataset:{},style:{},disabled:false,handlers:{},focus(){},setPointerCapture(){},getContext:()=>drawing,getBoundingClientRect:()=>({left:0,top:0,width:400,height:560}),addEventListener(type,fn){this.handlers[type]=fn;}});return elements.get(id);}
   const listeners={};
   const math=Object.create(Math);math.random=random;
-  const sandbox={document:{hidden:false,addEventListener(){}},window:{addEventListener(){}},addEventListener(name,fn){(listeners[name]??=[]).push(fn);},Number,Math:math,String,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fmt:n=>String(n),AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
+  const sandbox={document:{hidden:false,addEventListener(){}},window:{addEventListener(){}},addEventListener(name,fn){(listeners[name]??=[]).push(fn);},Image:class{complete=true;naturalWidth=1024;naturalHeight=1024;},Number,Math:math,String,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame(){},$:el,ENTRY_FEE:fee,LOW_MSG:'insufficient',reduceMotion:true,S:{balance},save(){storage.set('crush-depth-balance',String(sandbox.S.balance));},renderAll(){},fmt:n=>String(n),AN:{start:(...a)=>{events.push(['start',...a]);return 'round';},progress:(...a)=>events.push(['progress',...a]),end:(...a)=>events.push(['end',...a])}};
   sandbox.globalThis=sandbox;
-  const ctx=vm.createContext(sandbox);vm.runInContext(source,ctx);
+  const ctx=vm.createContext(sandbox);for(const file of ['shared/timed-replay.cjs','shared/pudding-rules.cjs','js/timed-leaderboard.js'])vm.runInContext(readSource(file,root),ctx);vm.runInContext(source,ctx);
   const raw_ev=sandbox.__pd.ev,F={update:sandbox.__pd.update,start:sandbox.__pd.start,draw:sandbox.__pd.draw,ev:c=>{const v=raw_ev(c);return typeof v==='string'&&v.startsWith('@@')?JSON.parse(v.slice(2)):v;}};
   const fire=(type,e)=>{for(const fn of listeners[type]||[])fn(e);};
   return {F,el,events,storage,wallet:sandbox.S,ev:F.ev,busy:()=>vm.runInContext('puddingBusy',ctx),key:e=>fire('keydown',e),keyup:e=>fire('keyup',e),
@@ -70,8 +70,8 @@ check('Starting weapon: blade 8/s, spear 6, no guard; clusters of 3+ count extra
 check('A piece dropped at the edge is clamped inside the grid and overwrites what is there',()=>{
   const f=fixture();f.F.start();
   f.F.ev("cards[0]={type:'d',cells:[[0,0],[1,0],[2,0],[3,0]]};sel=0");
-  f.tap(300,300);assert.deepEqual(f.ev('ghost'),{x:0,y:3});
-  f.tap(75,515);assert.equal(f.ev('dims(cards[0].cells).h'),4);assert.equal(f.ev('ghost.x'),0);f.tap(300,300);assert.deepEqual(f.ev('ghost'),{x:3,y:0});
+  f.tap(280,280);assert.deepEqual(f.ev('ghost'),{x:0,y:3});
+  f.tap(75,515);assert.equal(f.ev('dims(cards[0].cells).h'),4);assert.equal(f.ev('ghost.x'),0);f.tap(280,280);assert.deepEqual(f.ev('ghost'),{x:3,y:0});
   f.tap(200,515);assert.equal(f.ev("grid[3][3]"),'d');assert.equal(f.ev("grid[0][3]"),'d');assert.equal(f.ev("fPhase"),'delay');
   assert.equal(f.ev('grid[2][1]'),'b');   // untouched cell keeps its blade
 });
