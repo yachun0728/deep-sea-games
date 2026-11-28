@@ -265,19 +265,26 @@
 /* Fishing（大漁旗浮世繪）：手機與桌機都是單一直式遊戲畫面，數值、張力條與收線鈕都疊在畫面裡 */
 #view-fishing .fs-game .stats>div,#view-fishing .fs-game .fs-exit{border:1px solid #b98a3c;background:#1d2b55;color:#fff2d2}
 #view-fishing .fs-game .stats dt{color:#d8c9a4}
+/* 距離改由畫面上的船與魚圖示量條顯示；文字保留給螢幕報讀 */
+#view-fishing .fs-game .stats>div:has(#fi-distance){position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 #view-fishing .fs-game .stats dd{color:#fff2d2}
 #view-fishing .fs-game .queue-watch{background:#fff2d2;border:2px solid #e8b04b;color:#17223f;font-weight:700}
 #view-fishing .fs-game .queue-watch[data-state="warn"]{background:#ffd84a;color:#17223f}
 #view-fishing .fs-game .queue-watch[data-state="struggle"]{background:#c8321e;border-color:#ffd84a;color:#fff}
 #view-fishing .fs-game .field{border:2px solid #b98a3c;background:rgba(18,28,56,.92);color:#fff2d2}
 #view-fishing .fs-game .fishing-tension-label{color:#fff2d2}
-#view-fishing .fs-game .fishing-tension{height:16px;background:#0a1128}
+/* 張力是分區儀表（太鬆｜安全 20～75｜注意｜斷線 88 以上）加指針，不做成會填滿的進度條，避免被當成離岸距離 */
+#view-fishing .fs-game .fishing-tension{position:relative;overflow:visible;height:16px;margin:3px 0;border-radius:6px;background:linear-gradient(90deg,#6f86a8 0 20%,#35b878 20% 75%,#ffc83d 75% 88%,#e8342a 88% 100%)}
+#view-fishing .fs-game #fi-tension-fill{position:relative;height:100%;background:none!important;min-width:2px}
+#view-fishing .fs-game #fi-tension-fill::after{content:"";position:absolute;top:-5px;bottom:-5px;right:-4px;width:8px;border:2px solid #0a1128;border-radius:4px;background:#fff;box-shadow:0 0 6px #fff}
+#view-fishing .fs-game .fishing-tension-ends{display:flex;justify-content:space-between;margin-top:2px;font-size:11px;font-weight:700;line-height:1.3;color:#b9c8de}
+#view-fishing .fs-game .fishing-tension-ends span:last-child{color:#ff9a80}
 #view-fishing .fs-game .fishing-hold,#view-fishing .fs-game .side .go:not(:disabled),#view-fishing .fs-game .mobile-stage-action>.go:not(:disabled){min-height:78px;border:4px solid #e8b04b!important;border-radius:40px!important;background:#c8321e!important;color:#fff6de!important;font-size:20px;font-weight:800!important;box-shadow:0 5px 0 #631408}
 #view-fishing .fs-game .fishing-hold:active:not(:disabled){background:#e8542c!important;box-shadow:0 2px 0 #631408}
 @media(max-width:880px),(pointer:coarse) and (max-width:1100px){
   #view-fishing:not([hidden]) .fs-game>:first-child canvas{width:100%;height:100%}
-  #view-fishing .fs-game .field{top:auto;bottom:calc(env(safe-area-inset-bottom) + 108px);padding:7px 12px 9px}
-  #view-fishing .fs-game .msg{bottom:calc(env(safe-area-inset-bottom) + 176px)}
+  #view-fishing .fs-game .field{top:auto;bottom:calc(env(safe-area-inset-bottom) + 106px);padding:6px 12px 5px}
+  #view-fishing .fs-game .msg{bottom:calc(env(safe-area-inset-bottom) + 196px)}
 }
 /* 桌機：置中的手機比例畫面，不分右側欄；高度配合視窗 */
 @media(min-width:881px) and (pointer:fine),(min-width:1101px){
@@ -291,8 +298,8 @@
   #view-fishing .fs-game .stats dt{font-size:11px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #view-fishing .fs-game .stats dd{margin:0;font-size:13px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #view-fishing .fs-game .queue-watch{position:absolute;z-index:3;top:52px;left:8px;right:8px;margin:0;padding:4px 10px;border-radius:99px;font-size:13px;text-align:center;pointer-events:none}
-  #view-fishing .fs-game .field{position:absolute;z-index:3;left:10px;right:10px;bottom:112px;margin:0;padding:7px 12px 9px;border-radius:10px;pointer-events:none}
-  #view-fishing .fs-game .msg{position:absolute;z-index:3;left:14px;right:14px;bottom:180px;margin:0;padding:4px 10px;border-radius:12px;background:rgba(5,12,24,.78);color:#e8f2ff;font-size:12px;line-height:1.45;text-align:center;pointer-events:none}
+  #view-fishing .fs-game .field{position:absolute;z-index:3;left:10px;right:10px;bottom:110px;margin:0;padding:6px 12px 5px;border-radius:10px;pointer-events:none}
+  #view-fishing .fs-game .msg{position:absolute;z-index:3;left:14px;right:14px;bottom:198px;margin:0;padding:4px 10px;border-radius:12px;background:rgba(5,12,24,.78);color:#e8f2ff;font-size:12px;line-height:1.45;text-align:center;pointer-events:none}
   #view-fishing .fs-game .msg:empty{display:none}
   #view-fishing .fs-game .fishing-hold,#view-fishing .fs-game .side .go:not(:disabled),#view-fishing .fs-game .mobile-stage-action>.go:not(:disabled){position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:18px;width:min(88%,360px);margin:0}
   #view-fishing .fs-game .fishing-hold:disabled,#view-fishing .fs-game .side .go:disabled{display:none}

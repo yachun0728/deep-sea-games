@@ -1439,19 +1439,26 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
 /* Fishing（大漁旗浮世繪）：手機與桌機都是單一直式遊戲畫面，數值、張力條與收線鈕都疊在畫面裡 */
 #view-fishing .fs-game .stats>div,#view-fishing .fs-game .fs-exit{border:1px solid #b98a3c;background:#1d2b55;color:#fff2d2}
 #view-fishing .fs-game .stats dt{color:#d8c9a4}
+/* 距離改由畫面上的船與魚圖示量條顯示；文字保留給螢幕報讀 */
+#view-fishing .fs-game .stats>div:has(#fi-distance){position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 #view-fishing .fs-game .stats dd{color:#fff2d2}
 #view-fishing .fs-game .queue-watch{background:#fff2d2;border:2px solid #e8b04b;color:#17223f;font-weight:700}
 #view-fishing .fs-game .queue-watch[data-state="warn"]{background:#ffd84a;color:#17223f}
 #view-fishing .fs-game .queue-watch[data-state="struggle"]{background:#c8321e;border-color:#ffd84a;color:#fff}
 #view-fishing .fs-game .field{border:2px solid #b98a3c;background:rgba(18,28,56,.92);color:#fff2d2}
 #view-fishing .fs-game .fishing-tension-label{color:#fff2d2}
-#view-fishing .fs-game .fishing-tension{height:16px;background:#0a1128}
+/* 張力是分區儀表（太鬆｜安全 20～75｜注意｜斷線 88 以上）加指針，不做成會填滿的進度條，避免被當成離岸距離 */
+#view-fishing .fs-game .fishing-tension{position:relative;overflow:visible;height:16px;margin:3px 0;border-radius:6px;background:linear-gradient(90deg,#6f86a8 0 20%,#35b878 20% 75%,#ffc83d 75% 88%,#e8342a 88% 100%)}
+#view-fishing .fs-game #fi-tension-fill{position:relative;height:100%;background:none!important;min-width:2px}
+#view-fishing .fs-game #fi-tension-fill::after{content:"";position:absolute;top:-5px;bottom:-5px;right:-4px;width:8px;border:2px solid #0a1128;border-radius:4px;background:#fff;box-shadow:0 0 6px #fff}
+#view-fishing .fs-game .fishing-tension-ends{display:flex;justify-content:space-between;margin-top:2px;font-size:11px;font-weight:700;line-height:1.3;color:#b9c8de}
+#view-fishing .fs-game .fishing-tension-ends span:last-child{color:#ff9a80}
 #view-fishing .fs-game .fishing-hold,#view-fishing .fs-game .side .go:not(:disabled),#view-fishing .fs-game .mobile-stage-action>.go:not(:disabled){min-height:78px;border:4px solid #e8b04b!important;border-radius:40px!important;background:#c8321e!important;color:#fff6de!important;font-size:20px;font-weight:800!important;box-shadow:0 5px 0 #631408}
 #view-fishing .fs-game .fishing-hold:active:not(:disabled){background:#e8542c!important;box-shadow:0 2px 0 #631408}
 @media(max-width:880px),(pointer:coarse) and (max-width:1100px){
   #view-fishing:not([hidden]) .fs-game>:first-child canvas{width:100%;height:100%}
-  #view-fishing .fs-game .field{top:auto;bottom:calc(env(safe-area-inset-bottom) + 108px);padding:7px 12px 9px}
-  #view-fishing .fs-game .msg{bottom:calc(env(safe-area-inset-bottom) + 176px)}
+  #view-fishing .fs-game .field{top:auto;bottom:calc(env(safe-area-inset-bottom) + 106px);padding:6px 12px 5px}
+  #view-fishing .fs-game .msg{bottom:calc(env(safe-area-inset-bottom) + 196px)}
 }
 /* 桌機：置中的手機比例畫面，不分右側欄；高度配合視窗 */
 @media(min-width:881px) and (pointer:fine),(min-width:1101px){
@@ -1465,8 +1472,8 @@ a.lobby-banner:focus-visible{outline:2px solid var(--tc-accent);outline-offset:2
   #view-fishing .fs-game .stats dt{font-size:11px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #view-fishing .fs-game .stats dd{margin:0;font-size:13px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #view-fishing .fs-game .queue-watch{position:absolute;z-index:3;top:52px;left:8px;right:8px;margin:0;padding:4px 10px;border-radius:99px;font-size:13px;text-align:center;pointer-events:none}
-  #view-fishing .fs-game .field{position:absolute;z-index:3;left:10px;right:10px;bottom:112px;margin:0;padding:7px 12px 9px;border-radius:10px;pointer-events:none}
-  #view-fishing .fs-game .msg{position:absolute;z-index:3;left:14px;right:14px;bottom:180px;margin:0;padding:4px 10px;border-radius:12px;background:rgba(5,12,24,.78);color:#e8f2ff;font-size:12px;line-height:1.45;text-align:center;pointer-events:none}
+  #view-fishing .fs-game .field{position:absolute;z-index:3;left:10px;right:10px;bottom:110px;margin:0;padding:6px 12px 5px;border-radius:10px;pointer-events:none}
+  #view-fishing .fs-game .msg{position:absolute;z-index:3;left:14px;right:14px;bottom:198px;margin:0;padding:4px 10px;border-radius:12px;background:rgba(5,12,24,.78);color:#e8f2ff;font-size:12px;line-height:1.45;text-align:center;pointer-events:none}
   #view-fishing .fs-game .msg:empty{display:none}
   #view-fishing .fs-game .fishing-hold,#view-fishing .fs-game .side .go:not(:disabled),#view-fishing .fs-game .mobile-stage-action>.go:not(:disabled){position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:18px;width:min(88%,360px);margin:0}
   #view-fishing .fs-game .fishing-hold:disabled,#view-fishing .fs-game .side .go:disabled{display:none}
@@ -5123,7 +5130,7 @@ html.frontier-immersive{overflow:hidden}
       <div class="side"><section class="panel" aria-label="釣魚操作">
         <dl class="stats"><div><dt>挑戰第幾條</dt><dd id="fi-number">第 1 條</dd></div><div><dt>距離岸邊</dt><dd id="fi-distance">20.0 m</dd></div><div><dt>最佳紀錄</dt><dd id="fi-best">0 條</dd></div><div><dt>下一個獎勵</dt><dd id="fi-next">釣到 10 條 · +3</dd></div></dl>
         <p class="fishing-name" id="fi-name">小丑魚</p><div class="queue-watch" id="fi-signal" role="status" aria-live="polite" data-state="calm">下竿後，觀察魚的動作</div>
-        <div class="field"><div class="fishing-tension-label"><label id="fi-tension-label">魚線張力</label><span id="fi-tension-value">45 / 100</span></div><div class="fishing-tension" id="fi-tension" role="progressbar" aria-labelledby="fi-tension-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45"><div id="fi-tension-fill"></div></div><p class="hint" id="fi-slack">張力 20～75 較穩定</p></div>
+        <div class="field"><div class="fishing-tension-label"><label id="fi-tension-label">魚線張力</label><span id="fi-tension-value">45 / 100</span></div><div class="fishing-tension" id="fi-tension" role="progressbar" aria-labelledby="fi-tension-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45"><div id="fi-tension-fill"></div></div><div class="fishing-tension-ends" aria-hidden="true"><span>◀ 太鬆</span><span>斷線 ▶</span></div><p class="hint" id="fi-slack">張力 20～75 較穩定</p></div>
         <input id="fi-amount" type="hidden" value="0">
         <button class="go" id="fi-go" type="button" data-mode="bet">下竿</button>
         <button class="chip fishing-hold" id="fi-hold" type="button" disabled>按住收線 · 放開卸力</button>
@@ -9472,6 +9479,8 @@ html.frontier-immersive{overflow:hidden}
   "切換遊戲或背景分頁會暫停並放開收線，回來需要重新按住。視窗失焦會放開收線。重新整理會放棄本局，已入帳的點數會保留。點數與其他遊戲共用。": "Switching games or hiding the tab pauses play and releases the reel; Hold again when you return. Losing focus also releases the reel. Refreshing abandons the round but keeps credited points. Points are shared; The reset remains for testing.",
   "深海釣手：按住收線、放開卸力，把魚拉上岸": "Fishing: hold to reel, release to ease tension and land the fish",
   "釣魚操作": "Fishing controls",
+  "太鬆": "Too slack",
+  "斷線": "Snaps",
   "本局吃掉": "Bugs eaten",
   "目前等級": "Current level",
   "開始吃蟲": "Play · Start eating",
@@ -15496,6 +15505,29 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
   function fiMark(x,y){var g=fishingCtx,s=1+(reduceMotion?0:Math.abs(Math.sin(FV.now*9))*.18);g.save();g.translate(x,y);g.scale(s,s);g.fillStyle='#ffd84a';g.strokeStyle='#17223f';g.lineWidth=5;g.lineJoin='round';
     g.beginPath();g.moveTo(-11,-46);g.lineTo(11,-46);g.lineTo(5,-12);g.lineTo(-5,-12);g.closePath();g.stroke();g.fill();g.beginPath();g.arc(0,2,7,0,Math.PI*2);g.stroke();g.fill();g.restore();}
   function fiSpark(x,y,r){var g=fishingCtx;g.fillStyle='#ffe27a';g.beginPath();for(var i=0;i<8;i++){var a=i*Math.PI/4,d=i%2?r*.32:r;g.lineTo(x+Math.cos(a)*d,y+Math.sin(a)*d);}g.closePath();g.fill();}
+  // Distance to shore as a little chart, deliberately unlike the tension meter: a boat, a dotted sea route and the hooked
+  // fish swimming along it (0 m is at the boat).
+  function fiBoatIcon(x,y){
+    var g=fishingCtx;g.save();g.translate(x,y);g.lineJoin='round';g.lineWidth=2;g.strokeStyle='#e8b04b';
+    g.fillStyle='#fff2d2';g.beginPath();g.moveTo(1,-20);g.lineTo(1,-2);g.lineTo(-17,-2);g.closePath();g.fill();
+    g.fillStyle='#e8442c';g.beginPath();g.moveTo(5,-16);g.lineTo(18,-2);g.lineTo(5,-2);g.closePath();g.fill();
+    g.fillStyle='#b96f33';g.beginPath();g.moveTo(-23,2);g.lineTo(25,2);g.lineTo(16,15);g.lineTo(-15,15);g.closePath();g.fill();g.stroke();g.restore();
+  }
+  function fiGauge(){
+    var g=fishingCtx,from=96,to=466,d=Math.max(0,FI.distance),start=FI.start||1;
+    var at=d<=start?d/start*.72:.72+Math.min(1,(d-start)/(start*.8))*.28,x=from+(to-from)*at,away=FI.mode==='struggle';
+    g.fillStyle='rgba(18,28,56,.82)';g.beginPath();[[38,8],[482,8],[510,36],[482,64],[38,64],[10,36]].forEach(function(p){g.lineTo(p[0],p[1]);});g.closePath();g.fill();g.strokeStyle='#e8b04b';g.lineWidth=2;g.stroke();
+    fiBoatIcon(54,35);
+    // sea route: dots that drift toward the boat while reeling in, away from it while the fish runs
+    var drift=reduceMotion?0:(FV.now*(away?10:-10))%18;
+    g.fillStyle=away?'#ff8a6a':'#8fd4e8';for(var px=from+((drift+18)%18);px<to+8;px+=18){g.beginPath();g.arc(px,35+Math.sin(px/17)*4,px<x?3.2:2,0,Math.PI*2);g.globalAlpha=px<x?1:.3;g.fill();}g.globalAlpha=1;
+    var name=fiFishSheet(FI.number,'swim'),m=FI_SHEETS[name];
+    g.fillStyle='rgba(255,242,210,.95)';g.beginPath();g.ellipse(x+4,31,38,20,0,0,Math.PI*2);g.fill();g.strokeStyle=away?'#e8442c':'#e8b04b';g.lineWidth=3;g.stroke();
+    fiSprite(name,reduceMotion?0:Math.floor(FV.now*(away?16:9))%8,x+4,31,62/m.w,0);
+    var tag=d.toFixed(1)+' m',tx=Math.max(from+30,Math.min(to-22,x+4));
+    g.fillStyle='#17223f';g.fillRect(tx-34,52,68,19);g.strokeStyle='#e8b04b';g.lineWidth=1.5;g.strokeRect(tx-34,52,68,19);
+    g.font='800 13px system-ui';g.textAlign='center';g.fillStyle=away?'#ff9a80':'#fff2d2';g.fillText(tag,tx,66);
+  }
   function fiResize(){
     var c=fishingCanvas,w=c.clientWidth,h=c.clientHeight;
     var H=w&&h?Math.round(Math.max(600,Math.min(1130,520*h/w))):640,k=Math.max(1,Math.min(2,(w||520)*(window.devicePixelRatio||1)/520));
@@ -15521,7 +15553,7 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
 
     // ----- fish position -----
     // keep the fish above the tension bar and button on short phones (about 170 CSS px at the bottom)
-    var covered=(window.innerHeight>740?212:170)*520/(fishingCanvas.clientWidth||390),depth=Math.max(74,Math.min(118,H-covered-water-52));
+    var covered=(window.innerHeight>740?224:184)*520/(fishingCanvas.clientWidth||390),depth=Math.max(74,Math.min(118,H-covered-water-52));
     var progress=Math.max(-.6,Math.min(1,1-FI.distance/FI.start)),size=fiFishSize(FI.number),swimSheet=FI_SHEETS[fiFishSheet(FI.number,'swim')],reach=(swimSheet.w-swimSheet.x)*size;
     var tx=Math.min(398,394-progress*70)+Math.sin(t*1.3)*(mode==='calm'?12:5),ty=water+depth-Math.max(0,progress)*Math.max(0,depth-84)+Math.sin(t*2.2)*7,angle=Math.sin(t*2.2+1)*.05,air=0;
     if(!fishing&&FI.phase!=='lost'){tx=320+Math.sin(t*.7)*70;ty=water+depth+Math.sin(t*1.4)*12;}
@@ -15586,8 +15618,8 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
 
     function banner(y,h){g.fillStyle='rgba(18,28,56,.9)';g.fillRect(42,y,436,h);g.strokeStyle='#e8b04b';g.lineWidth=4;g.strokeRect(42,y,436,h);g.lineWidth=1.5;g.strokeRect(50,y+8,420,h-16);}
     g.textAlign='center';
-    FI.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=Math.max(70,water-390)-(reduceMotion?0:Math.min(1,p.age*3)*22);g.lineJoin='round';g.strokeStyle='#17223f';g.lineWidth=7;g.fillStyle='#ffd84a';g.font='800 46px system-ui';g.strokeText('+'+p.b+' 點',W/2,py);g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#fff6de';g.font='700 20px system-ui';g.lineWidth=5;g.strokeText('釣到 '+p.n+' 條里程碑',W/2,py+32);g.fillText('釣到 '+p.n+' 條里程碑',W/2,py+32);g.globalAlpha=1;});
-    if(fishing){g.fillStyle='rgba(18,28,56,.78)';g.fillRect(10,10,204,28);g.fillStyle='#fff2d2';g.font='700 14px system-ui';g.textAlign='left';g.fillText('第 '+FI.number+' 條 · 本局 +'+FI.earned+' 點',20,29);}
+    FI.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=Math.max(146,water-390)-(reduceMotion?0:Math.min(1,p.age*3)*22);g.lineJoin='round';g.strokeStyle='#17223f';g.lineWidth=7;g.fillStyle='#ffd84a';g.font='800 46px system-ui';g.strokeText('+'+p.b+' 點',W/2,py);g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#fff6de';g.font='700 20px system-ui';g.lineWidth=5;g.strokeText('釣到 '+p.n+' 條里程碑',W/2,py+32);g.fillText('釣到 '+p.n+' 條里程碑',W/2,py+32);g.globalAlpha=1;});
+    if(fishing){fiGauge();if(FI.earned>0){g.fillStyle='rgba(18,28,56,.78)';g.fillRect(10,78,204,26);g.fillStyle='#fff2d2';g.font='700 14px system-ui';g.textAlign='left';g.fillText('第 '+FI.number+' 條 · 本局 +'+FI.earned+' 點',20,96);}}
     if(FI.phase==='lost'||FI.phase==='ready'){
       var by=10;banner(by,112);g.textAlign='center';g.fillStyle='#fff6de';g.font='800 14px system-ui';g.fillText('深海釣手',W/2,by+25);g.fillStyle=FI.phase==='lost'?'#ff8a6a':'#ffd84a';g.font='800 25px system-ui';g.fillText(FI.phase==='ready'?'準備釣一條大魚？':'魚逃走了！',W/2,by+55);g.fillStyle='#fff6de';g.font='15px system-ui';g.fillText(FI.phase==='ready'?'先下竿，再按住畫面開始收線':'本局釣到 '+FI.landed+' 條'+(FI.earned>0?' · 入帳 +'+FI.earned+' 點':''),W/2,by+79);g.font='12px system-ui';g.fillStyle='#d8c9a4';g.fillText('按住收線 · 放開卸力 · 把魚拉上岸',W/2,by+97);
     }

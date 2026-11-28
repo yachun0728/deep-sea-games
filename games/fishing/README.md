@@ -7,7 +7,7 @@
 - 網址：`#fishing`　分類：時機操作　狀態：顯示中
 - 大廳卡片：「按住收線、放開卸力，把大魚拉上岸。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：深海釣手，`game_id` 為 `fishing`
-- 檔案：`games/fishing/card.html`、`games/fishing/cover.webp`、`games/fishing/game.js`、`games/fishing/icon.svg`、`games/fishing/leaderboard.webp`、`games/fishing/view.html`；`game.js` 共 232 行、26.5 KB
+- 檔案：`games/fishing/card.html`、`games/fishing/cover.webp`、`games/fishing/game.js`、`games/fishing/icon.svg`、`games/fishing/leaderboard.webp`、`games/fishing/view.html`；`game.js` 共 255 行、28.6 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「16. Fishing（fishing）」（下方「規則摘要」已複製）
 
@@ -28,7 +28,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`fiBonusAt` L5、`fiNextMilestone` L6、`fiFishName` L7、`fiText` L11、`fiSay` L12、`fiHold` L14、`fiRelease` L15、`fiRemember` L16、`fiUI` L17、`fiRound` L32、`fiStart` L36、`fiLose` L51、`fiAward` L52、`fiLand` L53、`fiSync` L59、`fiSpecies` L66、`fiFishSheet` L67、`fiFishSize` L68、`fiImg` L72、`fiPreload` L74、`fiSprite` L76、`fiSplash` L81、`fiSeason` L82、`fiBackdrop` L83、`fiWave` L89、`wy` L90、`fiLine` L101、`fiSpeedLines` L109、`fiAura` L114、`fiMark` L120、`fiSpark` L122、`fiResize` L123、`fiDraw` L129、`drawFish` L182、`banner` L211、`fiPress` L219、`fiLift` L220、`fiLoop` L228
+`fiBonusAt` L5、`fiNextMilestone` L6、`fiFishName` L7、`fiText` L11、`fiSay` L12、`fiHold` L14、`fiRelease` L15、`fiRemember` L16、`fiUI` L17、`fiRound` L32、`fiStart` L36、`fiLose` L51、`fiAward` L52、`fiLand` L53、`fiSync` L59、`fiSpecies` L66、`fiFishSheet` L67、`fiFishSize` L68、`fiImg` L72、`fiPreload` L74、`fiSprite` L76、`fiSplash` L81、`fiSeason` L82、`fiBackdrop` L83、`fiWave` L89、`wy` L90、`fiLine` L101、`fiSpeedLines` L109、`fiAura` L114、`fiMark` L120、`fiSpark` L122、`fiBoatIcon` L125、`fiGauge` L131、`fiResize` L146、`fiDraw` L152、`drawFish` L205、`banner` L234、`fiPress` L242、`fiLift` L243、`fiLoop` L251
 
 ## 錢包與結算接點
 

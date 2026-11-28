@@ -120,6 +120,29 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
   function fiMark(x,y){var g=fishingCtx,s=1+(reduceMotion?0:Math.abs(Math.sin(FV.now*9))*.18);g.save();g.translate(x,y);g.scale(s,s);g.fillStyle='#ffd84a';g.strokeStyle='#17223f';g.lineWidth=5;g.lineJoin='round';
     g.beginPath();g.moveTo(-11,-46);g.lineTo(11,-46);g.lineTo(5,-12);g.lineTo(-5,-12);g.closePath();g.stroke();g.fill();g.beginPath();g.arc(0,2,7,0,Math.PI*2);g.stroke();g.fill();g.restore();}
   function fiSpark(x,y,r){var g=fishingCtx;g.fillStyle='#ffe27a';g.beginPath();for(var i=0;i<8;i++){var a=i*Math.PI/4,d=i%2?r*.32:r;g.lineTo(x+Math.cos(a)*d,y+Math.sin(a)*d);}g.closePath();g.fill();}
+  // Distance to shore as a little chart, deliberately unlike the tension meter: a boat, a dotted sea route and the hooked
+  // fish swimming along it (0 m is at the boat).
+  function fiBoatIcon(x,y){
+    var g=fishingCtx;g.save();g.translate(x,y);g.lineJoin='round';g.lineWidth=2;g.strokeStyle='#e8b04b';
+    g.fillStyle='#fff2d2';g.beginPath();g.moveTo(1,-20);g.lineTo(1,-2);g.lineTo(-17,-2);g.closePath();g.fill();
+    g.fillStyle='#e8442c';g.beginPath();g.moveTo(5,-16);g.lineTo(18,-2);g.lineTo(5,-2);g.closePath();g.fill();
+    g.fillStyle='#b96f33';g.beginPath();g.moveTo(-23,2);g.lineTo(25,2);g.lineTo(16,15);g.lineTo(-15,15);g.closePath();g.fill();g.stroke();g.restore();
+  }
+  function fiGauge(){
+    var g=fishingCtx,from=96,to=466,d=Math.max(0,FI.distance),start=FI.start||1;
+    var at=d<=start?d/start*.72:.72+Math.min(1,(d-start)/(start*.8))*.28,x=from+(to-from)*at,away=FI.mode==='struggle';
+    g.fillStyle='rgba(18,28,56,.82)';g.beginPath();[[38,8],[482,8],[510,36],[482,64],[38,64],[10,36]].forEach(function(p){g.lineTo(p[0],p[1]);});g.closePath();g.fill();g.strokeStyle='#e8b04b';g.lineWidth=2;g.stroke();
+    fiBoatIcon(54,35);
+    // sea route: dots that drift toward the boat while reeling in, away from it while the fish runs
+    var drift=reduceMotion?0:(FV.now*(away?10:-10))%18;
+    g.fillStyle=away?'#ff8a6a':'#8fd4e8';for(var px=from+((drift+18)%18);px<to+8;px+=18){g.beginPath();g.arc(px,35+Math.sin(px/17)*4,px<x?3.2:2,0,Math.PI*2);g.globalAlpha=px<x?1:.3;g.fill();}g.globalAlpha=1;
+    var name=fiFishSheet(FI.number,'swim'),m=FI_SHEETS[name];
+    g.fillStyle='rgba(255,242,210,.95)';g.beginPath();g.ellipse(x+4,31,38,20,0,0,Math.PI*2);g.fill();g.strokeStyle=away?'#e8442c':'#e8b04b';g.lineWidth=3;g.stroke();
+    fiSprite(name,reduceMotion?0:Math.floor(FV.now*(away?16:9))%8,x+4,31,62/m.w,0);
+    var tag=d.toFixed(1)+' m',tx=Math.max(from+30,Math.min(to-22,x+4));
+    g.fillStyle='#17223f';g.fillRect(tx-34,52,68,19);g.strokeStyle='#e8b04b';g.lineWidth=1.5;g.strokeRect(tx-34,52,68,19);
+    g.font='800 13px system-ui';g.textAlign='center';g.fillStyle=away?'#ff9a80':'#fff2d2';g.fillText(tag,tx,66);
+  }
   function fiResize(){
     var c=fishingCanvas,w=c.clientWidth,h=c.clientHeight;
     var H=w&&h?Math.round(Math.max(600,Math.min(1130,520*h/w))):640,k=Math.max(1,Math.min(2,(w||520)*(window.devicePixelRatio||1)/520));
@@ -145,7 +168,7 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
 
     // ----- fish position -----
     // keep the fish above the tension bar and button on short phones (about 170 CSS px at the bottom)
-    var covered=(window.innerHeight>740?212:170)*520/(fishingCanvas.clientWidth||390),depth=Math.max(74,Math.min(118,H-covered-water-52));
+    var covered=(window.innerHeight>740?224:184)*520/(fishingCanvas.clientWidth||390),depth=Math.max(74,Math.min(118,H-covered-water-52));
     var progress=Math.max(-.6,Math.min(1,1-FI.distance/FI.start)),size=fiFishSize(FI.number),swimSheet=FI_SHEETS[fiFishSheet(FI.number,'swim')],reach=(swimSheet.w-swimSheet.x)*size;
     var tx=Math.min(398,394-progress*70)+Math.sin(t*1.3)*(mode==='calm'?12:5),ty=water+depth-Math.max(0,progress)*Math.max(0,depth-84)+Math.sin(t*2.2)*7,angle=Math.sin(t*2.2+1)*.05,air=0;
     if(!fishing&&FI.phase!=='lost'){tx=320+Math.sin(t*.7)*70;ty=water+depth+Math.sin(t*1.4)*12;}
@@ -210,8 +233,8 @@ function fiFishName(n){return n<=10?FI_NAMES[n-1]:'深海魚王 · 第 '+(n-9)+'
 
     function banner(y,h){g.fillStyle='rgba(18,28,56,.9)';g.fillRect(42,y,436,h);g.strokeStyle='#e8b04b';g.lineWidth=4;g.strokeRect(42,y,436,h);g.lineWidth=1.5;g.strokeRect(50,y+8,420,h-16);}
     g.textAlign='center';
-    FI.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=Math.max(70,water-390)-(reduceMotion?0:Math.min(1,p.age*3)*22);g.lineJoin='round';g.strokeStyle='#17223f';g.lineWidth=7;g.fillStyle='#ffd84a';g.font='800 46px system-ui';g.strokeText('+'+p.b+' 點',W/2,py);g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#fff6de';g.font='700 20px system-ui';g.lineWidth=5;g.strokeText('釣到 '+p.n+' 條里程碑',W/2,py+32);g.fillText('釣到 '+p.n+' 條里程碑',W/2,py+32);g.globalAlpha=1;});
-    if(fishing){g.fillStyle='rgba(18,28,56,.78)';g.fillRect(10,10,204,28);g.fillStyle='#fff2d2';g.font='700 14px system-ui';g.textAlign='left';g.fillText('第 '+FI.number+' 條 · 本局 +'+FI.earned+' 點',20,29);}
+    FI.pops.forEach(function(p){g.globalAlpha=Math.max(0,1-p.age/2.2);var py=Math.max(146,water-390)-(reduceMotion?0:Math.min(1,p.age*3)*22);g.lineJoin='round';g.strokeStyle='#17223f';g.lineWidth=7;g.fillStyle='#ffd84a';g.font='800 46px system-ui';g.strokeText('+'+p.b+' 點',W/2,py);g.fillText('+'+p.b+' 點',W/2,py);g.fillStyle='#fff6de';g.font='700 20px system-ui';g.lineWidth=5;g.strokeText('釣到 '+p.n+' 條里程碑',W/2,py+32);g.fillText('釣到 '+p.n+' 條里程碑',W/2,py+32);g.globalAlpha=1;});
+    if(fishing){fiGauge();if(FI.earned>0){g.fillStyle='rgba(18,28,56,.78)';g.fillRect(10,78,204,26);g.fillStyle='#fff2d2';g.font='700 14px system-ui';g.textAlign='left';g.fillText('第 '+FI.number+' 條 · 本局 +'+FI.earned+' 點',20,96);}}
     if(FI.phase==='lost'||FI.phase==='ready'){
       var by=10;banner(by,112);g.textAlign='center';g.fillStyle='#fff6de';g.font='800 14px system-ui';g.fillText('{{t:fishing.msg.028}}',W/2,by+25);g.fillStyle=FI.phase==='lost'?'#ff8a6a':'#ffd84a';g.font='800 25px system-ui';g.fillText(FI.phase==='ready'?'{{t:fishing.msg.030}}':'{{t:fishing.msg.031}}',W/2,by+55);g.fillStyle='#fff6de';g.font='15px system-ui';g.fillText(FI.phase==='ready'?'{{t:fishing.msg.032}}':'本局釣到 '+FI.landed+' 條'+(FI.earned>0?' · 入帳 +'+FI.earned+' 點':''),W/2,by+79);g.font='12px system-ui';g.fillStyle='#d8c9a4';g.fillText('{{t:fishing.msg.029}}',W/2,by+97);
     }
