@@ -1,0 +1,193 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "cast-02-source.png",
+  "grid": [
+    3,
+    2
+  ],
+  "canvas": {
+    "w": 300,
+    "h": 400
+  },
+  "baseline_y": 392.0,
+  "target_height": 370.0,
+  "scale": "sheet",
+  "fit": "none",
+  "factor": 0.7535641547861507,
+  "factor_from": {
+    "rule": "target_height",
+    "cell": "tablet-safe"
+  },
+  "alpha_cleanup": "alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "umbrella-safe",
+      "file": "umbrella-safe.png",
+      "factor": 0.7535641547861507,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 197,
+          "h": 472
+        },
+        "canvas": {
+          "w": 148,
+          "h": 356
+        }
+      },
+      "box": {
+        "x": 76,
+        "y": 36,
+        "w": 148,
+        "h": 356
+      },
+      "anchor": [
+        150.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "umbrella-warn",
+      "file": "umbrella-warn.png",
+      "factor": 0.7535641547861507,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 194,
+          "h": 469
+        },
+        "canvas": {
+          "w": 146,
+          "h": 353
+        }
+      },
+      "box": {
+        "x": 77,
+        "y": 39,
+        "w": 146,
+        "h": 353
+      },
+      "anchor": [
+        150.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "umbrella-look",
+      "file": "umbrella-look.png",
+      "factor": 0.7535641547861507,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 194,
+          "h": 469
+        },
+        "canvas": {
+          "w": 146,
+          "h": 353
+        }
+      },
+      "box": {
+        "x": 77,
+        "y": 39,
+        "w": 146,
+        "h": 353
+      },
+      "anchor": [
+        150.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "tablet-safe",
+      "file": "tablet-safe.png",
+      "factor": 0.7535641547861507,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 153,
+          "h": 491
+        },
+        "canvas": {
+          "w": 115,
+          "h": 370
+        }
+      },
+      "box": {
+        "x": 93,
+        "y": 22,
+        "w": 115,
+        "h": 370
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "tablet-warn",
+      "file": "tablet-warn.png",
+      "factor": 0.7535641547861507,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 162,
+          "h": 487
+        },
+        "canvas": {
+          "w": 122,
+          "h": 367
+        }
+      },
+      "box": {
+        "x": 89,
+        "y": 25,
+        "w": 122,
+        "h": 367
+      },
+      "anchor": [
+        150.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "tablet-look",
+      "file": "tablet-look.png",
+      "factor": 0.7535641547861507,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 161,
+          "h": 484
+        },
+        "canvas": {
+          "w": 121,
+          "h": 365
+        }
+      },
+      "box": {
+        "x": 90,
+        "y": 27,
+        "w": 121,
+        "h": 365
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

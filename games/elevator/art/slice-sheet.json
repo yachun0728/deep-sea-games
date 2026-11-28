@@ -1,0 +1,277 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "characters-source.png",
+  "grid": [
+    3,
+    3
+  ],
+  "canvas": {
+    "w": 300,
+    "h": 400
+  },
+  "baseline_y": 392.0,
+  "target_height": 370.0,
+  "scale": "sheet",
+  "fit": "none",
+  "factor": 0.9536082474226805,
+  "factor_from": {
+    "rule": "target_height",
+    "cell": "man-safe"
+  },
+  "alpha_cleanup": "alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "idle",
+      "file": "idle.png",
+      "factor": 0.9536082474226805,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 115,
+          "h": 377
+        },
+        "canvas": {
+          "w": 110,
+          "h": 360
+        }
+      },
+      "box": {
+        "x": 96,
+        "y": 32,
+        "w": 110,
+        "h": 360
+      },
+      "anchor": [
+        151.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "step-a",
+      "file": "step-a.png",
+      "factor": 0.9536082474226805,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 194,
+          "h": 343
+        },
+        "canvas": {
+          "w": 185,
+          "h": 327
+        }
+      },
+      "box": {
+        "x": 58,
+        "y": 65,
+        "w": 185,
+        "h": 327
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "step-b",
+      "file": "step-b.png",
+      "factor": 0.9536082474226805,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 210,
+          "h": 337
+        },
+        "canvas": {
+          "w": 200,
+          "h": 321
+        }
+      },
+      "box": {
+        "x": 50,
+        "y": 71,
+        "w": 200,
+        "h": 321
+      },
+      "anchor": [
+        150.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "man-safe",
+      "file": "man-safe.png",
+      "factor": 0.9536082474226805,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 135,
+          "h": 388
+        },
+        "canvas": {
+          "w": 129,
+          "h": 370
+        }
+      },
+      "box": {
+        "x": 86,
+        "y": 22,
+        "w": 129,
+        "h": 370
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "man-warn",
+      "file": "man-warn.png",
+      "factor": 0.9536082474226805,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 131,
+          "h": 382
+        },
+        "canvas": {
+          "w": 125,
+          "h": 364
+        }
+      },
+      "box": {
+        "x": 88,
+        "y": 28,
+        "w": 125,
+        "h": 364
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "man-look",
+      "file": "man-look.png",
+      "factor": 0.9536082474226805,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 134,
+          "h": 381
+        },
+        "canvas": {
+          "w": 128,
+          "h": 363
+        }
+      },
+      "box": {
+        "x": 87,
+        "y": 29,
+        "w": 128,
+        "h": 363
+      },
+      "anchor": [
+        151.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "woman-safe",
+      "file": "woman-safe.png",
+      "factor": 0.9536082474226805,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 125,
+          "h": 386
+        },
+        "canvas": {
+          "w": 119,
+          "h": 368
+        }
+      },
+      "box": {
+        "x": 91,
+        "y": 24,
+        "w": 119,
+        "h": 368
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "woman-warn",
+      "file": "woman-warn.png",
+      "factor": 0.9536082474226805,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 123,
+          "h": 386
+        },
+        "canvas": {
+          "w": 117,
+          "h": 368
+        }
+      },
+      "box": {
+        "x": 92,
+        "y": 24,
+        "w": 117,
+        "h": 368
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "woman-look",
+      "file": "woman-look.png",
+      "factor": 0.9536082474226805,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 138,
+          "h": 380
+        },
+        "canvas": {
+          "w": 132,
+          "h": 362
+        }
+      },
+      "box": {
+        "x": 85,
+        "y": 30,
+        "w": 132,
+        "h": 362
+      },
+      "anchor": [
+        151.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "cast-03-source.png",
+  "grid": [
+    3,
+    2
+  ],
+  "canvas": {
+    "w": 300,
+    "h": 400
+  },
+  "baseline_y": 392.0,
+  "target_height": 370.0,
+  "scale": "sheet",
+  "fit": "none",
+  "factor": 0.7034220532319392,
+  "factor_from": {
+    "rule": "target_height",
+    "cell": "backpack-safe"
+  },
+  "alpha_cleanup": "alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "reader-safe",
+      "file": "reader-safe.png",
+      "factor": 0.7034220532319392,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 174,
+          "h": 463
+        },
+        "canvas": {
+          "w": 122,
+          "h": 326
+        }
+      },
+      "box": {
+        "x": 89,
+        "y": 66,
+        "w": 122,
+        "h": 326
+      },
+      "anchor": [
+        150.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "reader-warn",
+      "file": "reader-warn.png",
+      "factor": 0.7034220532319392,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 179,
+          "h": 463
+        },
+        "canvas": {
+          "w": 126,
+          "h": 326
+        }
+      },
+      "box": {
+        "x": 87,
+        "y": 66,
+        "w": 126,
+        "h": 326
+      },
+      "anchor": [
+        150.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "reader-look",
+      "file": "reader-look.png",
+      "factor": 0.7034220532319392,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 173,
+          "h": 464
+        },
+        "canvas": {
+          "w": 122,
+          "h": 326
+        }
+      },
+      "box": {
+        "x": 90,
+        "y": 66,
+        "w": 122,
+        "h": 326
+      },
+      "anchor": [
+        151.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "backpack-safe",
+      "file": "backpack-safe.png",
+      "factor": 0.7034220532319392,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 173,
+          "h": 526
+        },
+        "canvas": {
+          "w": 122,
+          "h": 370
+        }
+      },
+      "box": {
+        "x": 90,
+        "y": 22,
+        "w": 122,
+        "h": 370
+      },
+      "anchor": [
+        151.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "backpack-warn",
+      "file": "backpack-warn.png",
+      "factor": 0.7034220532319392,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 175,
+          "h": 523
+        },
+        "canvas": {
+          "w": 123,
+          "h": 368
+        }
+      },
+      "box": {
+        "x": 89,
+        "y": 24,
+        "w": 123,
+        "h": 368
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "backpack-look",
+      "file": "backpack-look.png",
+      "factor": 0.7034220532319392,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 180,
+          "h": 519
+        },
+        "canvas": {
+          "w": 127,
+          "h": 365
+        }
+      },
+      "box": {
+        "x": 87,
+        "y": 27,
+        "w": 127,
+        "h": 365
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

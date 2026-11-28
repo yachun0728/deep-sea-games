@@ -1,0 +1,193 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "step-source.png",
+  "grid": [
+    6,
+    1
+  ],
+  "canvas": {
+    "w": 300,
+    "h": 400
+  },
+  "baseline_y": 392.0,
+  "target_height": 360.0,
+  "scale": "sheet",
+  "fit": "none",
+  "factor": 0.6857142857142857,
+  "factor_from": {
+    "rule": "target_height",
+    "cell": "1"
+  },
+  "alpha_cleanup": "alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "1",
+      "file": "1.png",
+      "factor": 0.6857142857142857,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 190,
+          "h": 525
+        },
+        "canvas": {
+          "w": 130,
+          "h": 360
+        }
+      },
+      "box": {
+        "x": 85,
+        "y": 32,
+        "w": 130,
+        "h": 360
+      },
+      "anchor": [
+        150.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "2",
+      "file": "2.png",
+      "factor": 0.6857142857142857,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 243,
+          "h": 491
+        },
+        "canvas": {
+          "w": 167,
+          "h": 337
+        }
+      },
+      "box": {
+        "x": 67,
+        "y": 55,
+        "w": 167,
+        "h": 337
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "3",
+      "file": "3.png",
+      "factor": 0.6857142857142857,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 286,
+          "h": 482
+        },
+        "canvas": {
+          "w": 196,
+          "h": 331
+        }
+      },
+      "box": {
+        "x": 52,
+        "y": 61,
+        "w": 196,
+        "h": 331
+      },
+      "anchor": [
+        150.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "4",
+      "file": "4.png",
+      "factor": 0.6857142857142857,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 281,
+          "h": 482
+        },
+        "canvas": {
+          "w": 193,
+          "h": 331
+        }
+      },
+      "box": {
+        "x": 54,
+        "y": 61,
+        "w": 193,
+        "h": 331
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "5",
+      "file": "5.png",
+      "factor": 0.6857142857142857,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 213,
+          "h": 503
+        },
+        "canvas": {
+          "w": 146,
+          "h": 345
+        }
+      },
+      "box": {
+        "x": 77,
+        "y": 47,
+        "w": 146,
+        "h": 345
+      },
+      "anchor": [
+        150.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "6",
+      "file": "6.png",
+      "factor": 0.6857142857142857,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 191,
+          "h": 524
+        },
+        "canvas": {
+          "w": 131,
+          "h": 359
+        }
+      },
+      "box": {
+        "x": 85,
+        "y": 33,
+        "w": 131,
+        "h": 359
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

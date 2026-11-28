@@ -1,0 +1,193 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "cast-05-source.png",
+  "grid": [
+    3,
+    2
+  ],
+  "canvas": {
+    "w": 300,
+    "h": 400
+  },
+  "baseline_y": 392.0,
+  "target_height": 370.0,
+  "scale": "sheet",
+  "fit": "none",
+  "factor": 0.7429718875502008,
+  "factor_from": {
+    "rule": "target_height",
+    "cell": "newspaper-safe"
+  },
+  "alpha_cleanup": "alpha-cleanup.json",
+  "cells": [
+    {
+      "name": "ponytail-safe",
+      "file": "ponytail-safe.png",
+      "factor": 0.7429718875502008,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 168,
+          "h": 491
+        },
+        "canvas": {
+          "w": 125,
+          "h": 365
+        }
+      },
+      "box": {
+        "x": 88,
+        "y": 27,
+        "w": 125,
+        "h": 365
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "ponytail-warn",
+      "file": "ponytail-warn.png",
+      "factor": 0.7429718875502008,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 167,
+          "h": 489
+        },
+        "canvas": {
+          "w": 124,
+          "h": 363
+        }
+      },
+      "box": {
+        "x": 88,
+        "y": 29,
+        "w": 124,
+        "h": 363
+      },
+      "anchor": [
+        150.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "ponytail-look",
+      "file": "ponytail-look.png",
+      "factor": 0.7429718875502008,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 193,
+          "h": 492
+        },
+        "canvas": {
+          "w": 143,
+          "h": 366
+        }
+      },
+      "box": {
+        "x": 79,
+        "y": 26,
+        "w": 143,
+        "h": 366
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "newspaper-safe",
+      "file": "newspaper-safe.png",
+      "factor": 0.7429718875502008,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 169,
+          "h": 498
+        },
+        "canvas": {
+          "w": 126,
+          "h": 370
+        }
+      },
+      "box": {
+        "x": 88,
+        "y": 22,
+        "w": 126,
+        "h": 370
+      },
+      "anchor": [
+        151.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "newspaper-warn",
+      "file": "newspaper-warn.png",
+      "factor": 0.7429718875502008,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 168,
+          "h": 498
+        },
+        "canvas": {
+          "w": 125,
+          "h": 370
+        }
+      },
+      "box": {
+        "x": 88,
+        "y": 22,
+        "w": 125,
+        "h": 370
+      },
+      "anchor": [
+        150.5,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    },
+    {
+      "name": "newspaper-look",
+      "file": "newspaper-look.png",
+      "factor": 0.7429718875502008,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 169,
+          "h": 496
+        },
+        "canvas": {
+          "w": 126,
+          "h": 369
+        }
+      },
+      "box": {
+        "x": 88,
+        "y": 23,
+        "w": 126,
+        "h": 369
+      },
+      "anchor": [
+        151.0,
+        392.0
+      ],
+      "clipped_px": 0,
+      "parts": 1
+    }
+  ]
+}

@@ -7,7 +7,7 @@
 - 網址：`#elevator`　分類：潛行偷閒　狀態：顯示中
 - 大廳卡片：「趁乘客背對你，偷偷往前插一位。」｜立即開玩 · 無盡挑戰
 - 追蹤名稱（GA4 `game_name`）：插隊大師，`game_id` 為 `elevator`
-- 檔案：`games/elevator/card.html`、`games/elevator/cover.webp`、`games/elevator/game.js`、`games/elevator/icon.svg`、`games/elevator/queue-cutter-leaderboard.webp`、`games/elevator/view.html`；`game.js` 共 129 行、11.3 KB
+- 檔案：`games/elevator/card.html`、`games/elevator/cover.webp`、`games/elevator/game.js`、`games/elevator/icon.svg`、`games/elevator/leaderboard.webp`、`games/elevator/queue-cutter-leaderboard.webp`、`games/elevator/style.css`、`games/elevator/view.html`；`game.js` 共 156 行、12.6 KB
 
 - 完整規則與公式：[GAME_RULES.md](../../docs/GAME_RULES.md) 的「14. Queue Cutter（elevator）」（下方「規則摘要」已複製）
 
@@ -22,7 +22,7 @@
 
 ## 函式索引（game.js，行號為宣告位置）
 
-`eqBonusAt` L6、`eqNext` L7、`eqCount` L11、`eqTotal` L12、`eqRound` L13、`eqSay` L14、`eqRemember` L15、`eqUI` L16、`eqLose` L28、`eqAward` L29、`eqEvent` L30、`eqSync` L43、`eqAction` L44、`eqPerson` L64、`eqDraw` L83、`spot` L85、`eqLoop` L126
+`eqBonusAt` L6、`eqNext` L7、`eqCount` L11、`eqTotal` L12、`eqRound` L13、`eqSay` L14、`eqRemember` L15、`eqUI` L16、`eqLose` L28、`eqAward` L29、`eqEvent` L30、`eqSync` L43、`eqAction` L44、`eqLoadArt` L68、`eqPerson` L72、`paint` L78、`eqDraw` L104、`eqLoop` L153
 
 ## 錢包與結算接點
 

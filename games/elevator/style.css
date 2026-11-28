@@ -1,0 +1,78 @@
+/* Queue Cutter: one warm, illustrated portrait stage on every screen. */
+#view-elevator{--hud:104px;--reserve:184px;--fs-bg:#f3dab7;color:#62432f}
+#view-elevator .console.fs-game{position:relative;display:block;box-sizing:border-box;width:min(100%,470px);height:min(940px,calc(100dvh - 28px));min-height:340px;margin:0 auto;padding:104px 0 184px;overflow:hidden;border:2px solid #875e40;border-radius:24px;background:#f3dab7;box-shadow:0 14px 45px #261a1633}
+#view-elevator .fs-game>.queue-stage{display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:0;border:0;border-radius:0;background:#f3dab7;overflow:hidden}
+#view-elevator .fs-game .queue-stage canvas{display:block;width:100%;height:100%;max-height:none;object-fit:contain;touch-action:manipulation}
+#view-elevator .fs-game .side,#view-elevator .fs-game .panel{display:contents}
+#view-elevator .eq-title{position:absolute;top:12px;left:64px;right:64px;text-align:center;color:#593722;font:italic 900 24px Georgia,serif;line-height:44px}
+#view-elevator .fs-game .fs-exit{display:grid;place-items:center;position:absolute;z-index:6;top:12px;left:12px;width:44px;height:44px;border:2px solid #9c7352;border-radius:13px;background:#fff4dc;color:#62432f;font-size:23px;box-shadow:0 3px 0 #c7a27d}
+#view-elevator .fs-game .stats{position:absolute;top:65px;left:16px;right:16px;display:flex;gap:8px;margin:0;pointer-events:none}
+#view-elevator .fs-game .stats>div{flex:1;padding:3px 8px;border:1px solid #b89a77;border-radius:10px;background:#fff4df;color:#62432f;min-width:0}
+#view-elevator .fs-game .stats dt{font-size:10px;color:#886748;line-height:1.2;white-space:nowrap}
+#view-elevator .fs-game .stats dd{font-size:15px;font-weight:800;color:#62432f;line-height:1.3;margin:0}
+#view-elevator .fs-game .stats~.stats{top:65px;left:auto;right:16px;width:43%}
+#view-elevator .fs-game .stats:first-of-type{right:calc(43% + 24px)}
+#view-elevator .fs-game .stats:first-of-type>div:nth-child(2),#view-elevator .fs-game .stats~.stats>div:last-child{display:none}
+#view-elevator .fs-game .queue-watch{position:absolute;z-index:3;top:auto;bottom:117px;left:22px;right:22px;padding:8px 12px;margin:0;border:2px solid #638474;border-radius:22px;background:#f6f2d9;color:#3b665a;font-size:14px;font-weight:800;text-align:center;pointer-events:none}
+#view-elevator .fs-game .queue-watch[data-state="warn"]{color:#875710;border-color:#b88a34;background:#fff0c1}
+#view-elevator .fs-game .queue-watch[data-state="look"]{color:#a13f2c;border-color:#be6148;background:#ffe7d8}
+#view-elevator .fs-game #eq-go{display:block;position:absolute;z-index:5;bottom:25px;left:22px;right:22px;transform:none;width:calc(100% - 44px);min-height:66px;margin:0;border:3px solid #93632c;border-radius:32px;background:linear-gradient(#ffdb70,#f3b331);box-shadow:0 5px 0 #b97d32,inset 0 2px 0 #fff2c0;color:#57351e;font-size:21px;font-weight:900;touch-action:manipulation;transition:filter .12s}
+#view-elevator .fs-game #eq-go:active:not(:disabled){filter:brightness(.95);box-shadow:0 2px 0 #b97d32}
+#view-elevator .fs-game #eq-go:disabled{display:block;opacity:.75;cursor:wait}
+#view-elevator .fs-game .msg{position:absolute;top:auto;bottom:96px;left:18px;right:18px;margin:0;padding:0;background:none;color:#76523b;text-align:center;font-size:11px;line-height:1.3;pointer-events:none}
+#view-elevator .fs-game .hint,#view-elevator .fs-game .queue-legend,#view-elevator .fs-game [id$="-rank-status"],#view-elevator>.rules{display:none}
+#view-elevator .fs-game>.mobile-start-stage>.mobile-stage-actions{position:static;transform:none}
+#view-elevator .fs-game .share-result:not([hidden]){position:absolute;top:12px;bottom:auto;left:auto;right:12px;width:44px;height:44px;min-height:44px;padding:0;transform:none;overflow:hidden;font-size:0;background:#fff4dc;border:2px solid #9c7352;color:#62432f}
+#view-elevator .share-result i{font-size:18px;color:#62432f}
+#view-elevator .fs-game [id$="-rank-retry"]:not([hidden]){position:absolute;bottom:162px;left:50%;transform:translateX(-50%);z-index:7;min-height:44px}
+@media(max-width:880px),(pointer:coarse) and (max-width:1100px){
+ #view-elevator:not([hidden]) .console.fs-game{position:fixed;inset:0;z-index:1200;width:100%;height:100dvh;min-height:0;margin:0;border:0;border-radius:0;padding:calc(env(safe-area-inset-top) + 104px) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + 184px) env(safe-area-inset-left)}
+ #view-elevator .eq-title{top:calc(env(safe-area-inset-top) + 12px)}
+ #view-elevator .fs-game .fs-exit,#view-elevator .fs-game .share-result:not([hidden]){top:calc(env(safe-area-inset-top) + 12px)}
+ #view-elevator .fs-game .stats,#view-elevator .fs-game .stats~.stats{top:calc(env(safe-area-inset-top) + 65px)}
+ #view-elevator .fs-game .queue-watch{bottom:calc(env(safe-area-inset-bottom) + 117px)}
+ #view-elevator .fs-game #eq-go{bottom:calc(env(safe-area-inset-bottom) + 25px)}
+ #view-elevator .fs-game .msg{bottom:calc(env(safe-area-inset-bottom) + 96px)}
+}
+@media(max-height:500px) and (orientation:landscape){
+ #view-elevator:not([hidden]) .console.fs-game{padding-top:62px;padding-bottom:88px}
+ #view-elevator .fs-game .stats,#view-elevator .fs-game .stats~.stats{display:none}
+ #view-elevator .fs-game .queue-watch{left:12px;right:auto;bottom:20px;width:40%;padding:10px}
+ #view-elevator .fs-game #eq-go{left:auto;right:12px;width:48%;bottom:16px;min-height:52px}
+ #view-elevator .fs-game .msg{display:none}
+}
+/* The existing mobile action tray must anchor to the console, not the scene. */
+#view-elevator:not([hidden]) .fs-game>.queue-stage{position:static}
+#view-elevator .fs-game .mobile-stage-actions,#view-elevator .fs-game .mobile-stage-action{position:static;transform:none}
+@media(min-width:881px) and (pointer:fine){
+ html:has(#view-elevator:not([hidden])){overflow:hidden}
+ #view-elevator:not([hidden]) .console.fs-game{position:fixed;z-index:1200;top:12px;left:50%;transform:translateX(-50%);height:calc(100dvh - 24px);box-shadow:0 0 0 100vmax #30251f}
+}
+/* Keep sharing recognizable even when the optional icon font is unavailable. */
+#view-elevator .fs-game .share-result:not([hidden])::before{content:'↗';font:800 25px system-ui}
+#view-elevator .fs-game .share-result i{display:none}
+/* Long round instructions occupy the gap between status and action, never overlap them. */
+#view-elevator .fs-game .msg{top:calc(100% - env(safe-area-inset-bottom) - 114px);bottom:auto;font-size:10px;line-height:11px;max-height:22px;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+@media(max-height:500px) and (orientation:landscape){#view-elevator .fs-game .msg{display:none}}
+/* v3: full-bleed play surface, including the areas beneath floating controls. */
+#view-elevator:not([hidden]) .console.fs-game{position:fixed;inset:0;z-index:1200;top:0;left:0;transform:none;box-sizing:border-box;width:100vw;height:100dvh;min-height:0;margin:0;padding:0;border:0;border-radius:0;box-shadow:none}
+#view-elevator:not([hidden]) .console.fs-game>.queue-stage{position:absolute;inset:0;display:block;width:100%;height:100%;overflow:hidden}
+#view-elevator:not([hidden]) .fs-game>.queue-stage canvas{width:100%;height:100%;max-width:none;max-height:none;object-fit:fill}
+#view-elevator .eq-title{background:rgba(255,244,220,.86);border-radius:14px}
+#view-elevator .fs-game .msg{background:rgba(255,244,220,.92);border-radius:6px}
+@media(min-width:881px) and (min-height:501px){
+ #view-elevator .fs-game #eq-go{left:50%;right:auto;transform:translateX(-50%);width:min(480px,calc(100% - 44px))}
+ #view-elevator .fs-game .queue-watch,#view-elevator .fs-game .msg{left:50%;right:auto;transform:translateX(-50%);width:min(480px,calc(100% - 44px));box-sizing:border-box}
+}
+/* v4: a local rounded Chinese face and four equal, centered statistic cards. */
+@font-face{font-family:'Queue Cutter Rounded';src:url('games/elevator/art/fonts/queue-cutter-rounded.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+#view-elevator .fs-game .stats,#view-elevator .fs-game #eq-go,#view-elevator .fs-game #eq-watch,#view-elevator .fs-game #eq-msg{font-family:'Queue Cutter Rounded','Arial Rounded MT Bold','PingFang TC',sans-serif}
+#view-elevator .fs-game .stats:first-of-type{left:16px;right:auto;width:calc(50% - 20px)}
+#view-elevator .fs-game .stats~.stats{left:auto;right:16px;width:calc(50% - 20px)}
+#view-elevator .fs-game .stats>div{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4px 6px}
+#view-elevator .fs-game .stats dt{width:100%;font-weight:400;font-size:10px;line-height:13px;letter-spacing:.02em;text-align:center}
+#view-elevator .fs-game .stats dd{width:100%;margin:0;font-weight:700;font-size:18px;line-height:22px;letter-spacing:.01em;text-align:center;font-variant-numeric:tabular-nums}
+@media(max-width:360px){
+ #view-elevator .fs-game .stats>div{padding-inline:4px}
+ #view-elevator .fs-game .stats dt{font-size:9px;letter-spacing:0}
+}
