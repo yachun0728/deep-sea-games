@@ -7,7 +7,7 @@ const CELL=20,WTOP=332,EW=54,EH=40;                          // weapon cell size
 const SEGS=8,SEG_TIME=16,SPAWN_STOP=13,FIRST_SPAWN=.8,CAV_WARN=.6,ARROW_SPEED=420;
 const SPEED_MUL={inf:1,cav:1.7,shield:.7},HURT={inf:10,cav:15,shield:12,arrow:8,pass:3},KILL={inf:10,cav:15,shield:20};
 const SEG_SCORE=100,WIN_SCORE=500,CALM_SCORE=5,STREAK_STEP=8,STREAK_HEAL=5,SEG_HEAL=10;
-const SEG_REWARD=1,WIN_REWARD=2;      // fixed points credited for each cleared segment, and once more for clearing all eight (8+2 = the 10-point entry fee)
+const SEG_REWARD=1,WIN_REWARD=2;      // fixed rewards: one per cleared segment, plus two for clearing all eight (maximum 10)
 const BLADE_DPS=4,SPEAR_BURST=3,SPEAR_CD=.5,SPEAR_KNOCK=14,BLADE_SLOW=.5,GUARD_PER=.05,GUARD_MAX=.6;
 const CAV_SLOW=.8,SHIELD_BLADE=.5,SHIELD_SPEAR=1.3,CAV_KNOCK=1.5,SHIELD_FROM=3;   // counters: blades barely slow cavalry, shield soldiers resist blades and break on spears; shield pieces are offered from segment 3
 const HP_MUL=1.2;   // global enemy HP multiplier, tuned with the bot simulation after the counters were added
