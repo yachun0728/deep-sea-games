@@ -145,3 +145,9 @@ html:has(#view-mermaid:not([hidden])){overflow:hidden}
 #view-mermaid .stats dd{font-size:15px}
 #view-mermaid .stats>div:first-child{flex:1.5}
 #view-mermaid #mm-board-entries{padding-left:24px;font-size:12px}
+
+/* Keep repeated taps and long presses inside the card-game controls. */
+#view-mermaid,#view-mermaid *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#view-mermaid{touch-action:pan-y}
+/* Dark text on the silver win dialog must stay crisp, without a duplicate shadow. */
+#view-mermaid .solitaire-won .mm-cover-copy h3{text-shadow:none;letter-spacing:0}

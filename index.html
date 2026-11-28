@@ -2538,6 +2538,11 @@ html:has(#view-office-shoot:not([hidden])){overflow:hidden}
 #view-office-shoot #os-sound[hidden]{display:none}
 #view-office-shoot #os-sound{left:50%;right:auto;bottom:25%;transform:translateX(-50%);width:64px;color:#fff126;border-color:#fff7e7}
 
+/* Upload notices appear only outside gameplay; the approved play HUD is untouched. */
+#view-office-shoot #os-rank-status:not([hidden]){display:block!important;position:absolute;z-index:36;left:50%;bottom:calc(env(safe-area-inset-bottom) + 17%);transform:translateX(-50%);box-sizing:border-box;width:84%;padding:6px 9px;margin:0;background:#05090e;color:#fff126;border:1px solid #fff4dc;font:900 12px/1.4 "Office Comic TC",sans-serif;text-align:center}
+#view-office-shoot[data-round="play"] #os-rank-status{display:none!important}
+#view-office-shoot #os-rank-retry:not([hidden]){display:block;position:absolute;z-index:36;left:50%;bottom:calc(env(safe-area-inset-bottom) + 23%);transform:translateX(-50%);min-height:44px;width:64%;border:2px solid #fff4dc;border-radius:0;background:#ffed26;color:#05090e;font:900 15px "Office Comic TC",sans-serif}
+
 .es-stage{min-width:0;display:flex;flex-direction:column;align-items:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#000}.es-stage iframe{display:block;width:100%;height:min(780px,calc(100svh - 150px));min-height:520px;border:0;background:#000}
 
 .mt-stage{min-width:0;display:flex;flex-direction:column;align-items:center;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#000}.mt-stage iframe{display:block;width:100%;height:min(780px,calc(100svh - 150px));min-height:520px;border:0;background:#000}
@@ -2692,6 +2697,12 @@ html:has(#view-mermaid:not([hidden])){overflow:hidden}
 #view-mermaid .stats dd{font-size:15px}
 #view-mermaid .stats>div:first-child{flex:1.5}
 #view-mermaid #mm-board-entries{padding-left:24px;font-size:12px}
+
+/* Keep repeated taps and long presses inside the card-game controls. */
+#view-mermaid,#view-mermaid *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#view-mermaid{touch-action:pan-y}
+/* Dark text on the silver win dialog must stay crisp, without a duplicate shadow. */
+#view-mermaid .solitaire-won .mm-cover-copy h3{text-shadow:none;letter-spacing:0}
 /* Approved pixel settings: native responsive UI over the original production backgrounds. */
 html:has(.view:not([hidden]) .sc-window){overflow:hidden}
 .sc-window{position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:1200;width:min(100%,470px);height:100dvh;max-height:1000px;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);overflow:hidden;box-sizing:border-box;border:3px ridge var(--sc-chrome,#d4b783);border-radius:0;background:var(--sc-bg,#25140e) var(--sc-scene) center/100% 100% no-repeat;color:#fff1d5;font:14px monospace;--sc-cw:42px;--sc-ch:60px;--sc-accent:#edc780;--sc-panel:#10213a;--sc-chrome:#d2b991;image-rendering:pixelated;isolation:isolate}
@@ -2732,6 +2743,18 @@ html:has(.view:not([hidden]) .sc-window){overflow:hidden}
 .sc-rack{top:140px}
 @media(max-height:650px){.sc-titlebar{height:45px}.sc-message{top:106px}.sc-rack{top:124px}}
 @media(orientation:landscape) and (max-height:500px){.sc-message{display:none}.sc-rack{top:108px}}
+
+/* Keep repeated taps and long presses inside the card-game controls. */
+.sc-window,.sc-window *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.sc-window{touch-action:pan-y}
+
+.solitaire-celebration{position:absolute;inset:0;z-index:150;overflow:hidden;pointer-events:none;--party-a:#ffe49b;--party-b:#ffad67;--party-c:#e7f3ff}
+.solitaire-celebration.solitaire-party-sea{--party-a:#c9a4ff;--party-b:#6ffff0;--party-c:#fff3b9}.solitaire-celebration.solitaire-party-space{--party-a:#70f5ff;--party-b:#d4a0ff;--party-c:#e8fcff}
+.solitaire-celebration span{position:absolute;left:var(--x);top:-24px;color:var(--party-a);font:bold 20px/1 monospace;text-shadow:2px 2px #07152b;animation:solitaire-party 2.5s var(--delay) both steps(35)}
+.solitaire-celebration span:nth-child(3n){color:var(--party-b)}.solitaire-celebration span:nth-child(3n+1){color:var(--party-c)}
+.solitaire-won h3{color:#ffe79c;text-shadow:2px 2px #08203f}.solitaire-won h3::before{content:'★ ';color:#ffe277}.solitaire-won h3::after{content:' ★';color:#ffe277}
+@keyframes solitaire-party{0%{transform:translate(0,-20px) rotate(0);opacity:0}8%{opacity:1}85%{opacity:1}100%{transform:translate(var(--drift),85dvh) rotate(var(--turn));opacity:0}}
+@media(prefers-reduced-motion:reduce){.solitaire-celebration span{animation:none;top:18%;opacity:.8}.solitaire-celebration span:nth-child(2n){top:78%}}
 #view-midnight-solitaire .sc-window{--sc-scene:url(games/midnight-solitaire/art/background.webp);--sc-back:url(games/midnight-solitaire/art/back.webp);--sc-courts:url(games/midnight-solitaire/art/courts.webp);}
 #view-orbit-freecell .sc-window{--sc-scene:url(games/orbit-freecell/art/background.webp);--sc-back:url(games/orbit-freecell/art/back.webp);--sc-courts:url(games/orbit-freecell/art/courts.webp);--sc-accent:#92efff;--sc-panel:#25204f;--sc-chrome:#aaa8c7;--sc-bg:#080d2d;}
 /* 貓咪疊書舖：樣式皆以 bs- 為前綴，飛行中的書本會附加在 body，所以不依賴祖先選擇器。 */
@@ -6022,6 +6045,7 @@ html.points-hidden [data-points-hidden] { display:none !important; }
         <dl class="stats"><div><dt>本局 BONUS 點數</dt><dd id="os-pay" data-i18n-ignore>0 / 10</dd></div></dl>
         
         <button class="go" id="os-go" type="button" data-mode="bet">開始上班</button>
+        <p id="os-rank-status" role="status" aria-live="polite" hidden></p><button id="os-rank-retry" type="button" hidden>重送成績</button>
         <p class="msg" id="os-msg" aria-live="polite" data-i18n-ignore>開始後開始上班：擊敗第 1～5 天的大魔王，每天 BONUS +2 點。</p>
         <p class="hint">角色會自動開火。電腦用 <kbd>←</kbd><kbd>→</kbd> 或 <kbd>A</kbd><kbd>D</kbd>、滑鼠左右移動；手機在畫面上按住左右拖曳。右道的工作碰到下班線就結束；左道補給箱打破護盾可換新裝備或強化。<kbd>M</kbd> 或右上角喇叭切換音效。</p>
       </section></div>
@@ -6100,7 +6124,7 @@ html.points-hidden [data-points-hidden] { display:none !important; }
       <div class="mm-board" id="mm-board" aria-label="人魚接龍牌桌：把牌從大排到小，同花色排滿 K 到 A 就會收成珍珠"></div>
       <div class="mm-collection"><div class="mm-slots" id="mm-slots" role="img" aria-label="已收集的珍珠"><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span><span class="mm-slot"><svg viewBox="0 0 24 24"><use href=""/></svg></span></div><button class="mm-stock" id="mm-stock" type="button" aria-label="發牌" title="發牌"><span class="mm-stock-count" id="mm-stock-count">5</span></button></div>
       <div class="mm-cover" id="mm-cover">
-        <div class="mm-cover-card"><div class="mm-hero-back" aria-hidden="true"></div><div class="mm-cover-copy"><h3 id="mm-cover-title">人魚蜘蛛接龍</h3><p id="mm-cover-text">把牌排成 K 到 A 的同花色序列，收集 8 顆珍珠。</p></div></div>
+        <div class="mm-cover-card"><div class="mm-hero-back" aria-hidden="true"></div><div class="mm-cover-copy"><h3 id="mm-cover-title">人魚蜘蛛接龍</h3><p id="mm-cover-text">把牌排成 K 到 A 的同花色序列，收集 8 顆珍珠。</p><p id="mm-result-rank" role="status" hidden></p></div></div>
         <div class="mm-modes" role="group" aria-label="海域難度"><button type="button" class="mm-mode" data-diff="1" aria-pressed="true">淺灘<small>1 種花色</small></button><button type="button" class="mm-mode" data-diff="2" aria-pressed="false">珊瑚礁<small>2 種花色</small></button><button type="button" class="mm-mode" data-diff="4" aria-pressed="false">深海<small>4 種花色</small></button></div>
       </div>
 
@@ -6114,8 +6138,8 @@ html.points-hidden [data-points-hidden] { display:none !important; }
 <p class="sc-type">經典接龍 · 七欄紅黑交錯 · 有抽牌堆</p><div class="sc-hud"><time id="ks-time">00:00.000</time><span>步數 <b id="ks-moves">0</b></span><span>收牌 <b id="ks-home">0/52</b></span></div>
 <p class="sc-message" id="ks-message" role="status"></p><div class="sc-rack" id="ks-rack"></div><div class="sc-table" id="ks-table" aria-label="接龍牌桌"></div>
 <footer class="sc-controls"><button type="button" id="ks-undo">↶ 悔棋</button><button type="button" id="ks-hint">☼ 提示</button><button type="button" id="ks-restart">▤ 新牌局</button><small id="ks-ranking">MIDNIGHT KLONDIKE · NIGHT TRAIN</small></footer>
-<div class="sc-overlay" id="ks-cover"><section class="sc-dialog"><h3>夜航經典接龍</h3><p>Midnight Klondike</p><p id="ks-result">搭上夜航列車，紅黑交錯接牌，四種花色依序收 A→K。</p><div class="sc-diagram">K♠ <em>Q♥</em> J♣</div><p class="sc-help-rule">只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。</p><button id="ks-go" type="button">開始遊玩</button></section></div>
-<div class="sc-overlay" id="ks-help" hidden><section class="sc-dialog" role="dialog" aria-modal="true" aria-labelledby="ks-help-title"><h3 id="ks-help-title">玩法說明</h3><div class="sc-diagram">K♠ <em>Q♥</em> J♣</div><ol><li>七欄牌由大到小、紅黑交錯接牌：黑 K 接紅 Q，再接黑 J。</li><li>左上牌堆一次翻一張，可循環重翻；只有 K 能放入空欄。</li><li>右上四格各按花色從 A 收到 K，收齊 52 張才通關。</li></ol><p class="sc-help-rule">只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。</p><details id="ks-board-list"><summary>最快通關排行榜</summary><ol class="sc-entries" id="ks-entries"></ol></details><p id="ks-rank-status" role="status" hidden></p><button id="ks-rank-retry" type="button" hidden>重試排行榜</button><button id="ks-help-close" type="button">回到牌局</button></section></div>
+<div class="sc-overlay" id="ks-cover"><section class="sc-dialog"><h3>夜航經典接龍</h3><p>Midnight Klondike</p><p id="ks-result">搭上夜航列車，紅黑交錯接牌，四種花色依序收 A→K。</p><p id="ks-result-rank" class="sc-help-rule" role="status" hidden></p><div class="sc-diagram">K♠ <em>Q♥</em> J♣</div><p class="sc-help-rule">只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。</p><button id="ks-go" type="button">開始遊玩</button></section></div>
+<div class="sc-overlay" id="ks-help" hidden><section class="sc-dialog" role="dialog" aria-modal="true" aria-labelledby="ks-help-title"><h3 id="ks-help-title">玩法說明</h3><div class="sc-diagram">K♠ <em>Q♥</em> J♣</div><ol><li>七欄牌由大到小、紅黑交錯接牌：黑 K 接紅 Q，再接黑 J。</li><li>左上牌堆一次翻一張，可循環重翻；只有 K 能放入空欄。</li><li>右上四格各按花色從 A 收到 K，收齊 52 張才通關。可雙擊牌張，自動收到右上花色區。</li></ol><p class="sc-help-rule">只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。</p><details id="ks-board-list"><summary>最快通關排行榜</summary><ol class="sc-entries" id="ks-entries"></ol></details><p id="ks-rank-status" role="status" hidden></p><button id="ks-rank-retry" type="button" hidden>重試排行榜</button><button id="ks-help-close" type="button">回到牌局</button></section></div>
 <div class="sc-overlay" id="ks-confirm" hidden><section class="sc-dialog" role="dialog" aria-modal="true" aria-label="新牌局"><h3>新牌局</h3><p>重發會結束目前這局，未通關時間不列入紀錄。</p><button id="ks-confirm-yes" type="button">新牌局</button><button id="ks-confirm-no" type="button">繼續這局</button></section></div>
 </div></section>
 <section class="view" id="view-orbit-freecell" hidden><div class="sc-window" id="fc-window" style="--sc-columns:8">
@@ -6123,8 +6147,8 @@ html.points-hidden [data-points-hidden] { display:none !important; }
 <p class="sc-type">新接龍 · 八欄全明牌 · 四個暫存格</p><div class="sc-hud"><time id="fc-time">00:00.000</time><span>步數 <b id="fc-moves">0</b></span><span>收牌 <b id="fc-home">0/52</b></span></div>
 <p class="sc-message" id="fc-message" role="status"></p><div class="sc-rack" id="fc-rack"></div><div class="sc-table" id="fc-table" aria-label="接龍牌桌"></div>
 <footer class="sc-controls"><button type="button" id="fc-undo">↶ 悔棋</button><button type="button" id="fc-hint">☼ 提示</button><button type="button" id="fc-restart">▤ 新牌局</button><small id="fc-ranking">ORBIT FREECELL · ORBITAL STATION</small></footer>
-<div class="sc-overlay" id="fc-cover"><section class="sc-dialog"><h3>星軌新接龍</h3><p>Orbit FreeCell</p><p id="fc-result">太空維修站裡，運用四個暫存格調度全明牌，四花色收 A→K。</p><div class="sc-diagram">K♠ <em>Q♥</em> J♣</div><p class="sc-help-rule">只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。</p><button id="fc-go" type="button">開始遊玩</button></section></div>
-<div class="sc-overlay" id="fc-help" hidden><section class="sc-dialog" role="dialog" aria-modal="true" aria-labelledby="fc-help-title"><h3 id="fc-help-title">玩法說明</h3><div class="sc-diagram">□ □ □ □ &nbsp; + &nbsp; A→K</div><ol><li>八欄全明牌，由大到小、紅黑交錯接牌。</li><li>左上四個暫存格各放一張；空欄可放任意牌。</li><li>一疊能搬幾張取決於空暫存格與空欄；右上四格依花色收 A→K。</li></ol><p class="sc-help-rule">只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。</p><details id="fc-board-list"><summary>最快通關排行榜</summary><ol class="sc-entries" id="fc-entries"></ol></details><p id="fc-rank-status" role="status" hidden></p><button id="fc-rank-retry" type="button" hidden>重試排行榜</button><button id="fc-help-close" type="button">回到牌局</button></section></div>
+<div class="sc-overlay" id="fc-cover"><section class="sc-dialog"><h3>星軌新接龍</h3><p>Orbit FreeCell</p><p id="fc-result">太空維修站裡，運用四個暫存格調度全明牌，四花色收 A→K。</p><p id="fc-result-rank" class="sc-help-rule" role="status" hidden></p><div class="sc-diagram">K♠ <em>Q♥</em> J♣</div><p class="sc-help-rule">只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。</p><button id="fc-go" type="button">開始遊玩</button></section></div>
+<div class="sc-overlay" id="fc-help" hidden><section class="sc-dialog" role="dialog" aria-modal="true" aria-labelledby="fc-help-title"><h3 id="fc-help-title">玩法說明</h3><div class="sc-diagram">□ □ □ □ &nbsp; + &nbsp; A→K</div><ol><li>八欄全明牌，由大到小、紅黑交錯接牌。</li><li>左上四個暫存格各放一張；空欄可放任意牌。</li><li>一疊能搬幾張取決於空暫存格與空欄；右上四格依花色收 A→K。安全可收的牌會自動收上去，也可雙擊手動收牌。</li></ol><p class="sc-help-rule">只排完整通關時間，越快越前。悔棋、查看說明與切背景都不暫停計時；每局限兩小時。</p><details id="fc-board-list"><summary>最快通關排行榜</summary><ol class="sc-entries" id="fc-entries"></ol></details><p id="fc-rank-status" role="status" hidden></p><button id="fc-rank-retry" type="button" hidden>重試排行榜</button><button id="fc-help-close" type="button">回到牌局</button></section></div>
 <div class="sc-overlay" id="fc-confirm" hidden><section class="sc-dialog" role="dialog" aria-modal="true" aria-label="新牌局"><h3>新牌局</h3><p>重發會結束目前這局，未通關時間不列入紀錄。</p><button id="fc-confirm-yes" type="button">新牌局</button><button id="fc-confirm-no" type="button">繼續這局</button></section></div>
 </div></section>
   <section class="view" id="view-book-sort" hidden>
@@ -12486,10 +12510,10 @@ html.points-hidden [data-points-hidden] { display:none !important; }
   "四格暫存新接龍": "Four-cell FreeCell",
   "七欄牌由大到小、紅黑交錯接牌：黑 K 接紅 Q，再接黑 J。": "Build seven columns down in alternating colors: black K, red Q, then black J.",
   "左上牌堆一次翻一張，可循環重翻；只有 K 能放入空欄。": "Draw one card from the upper-left stock; redeals are unlimited. Only a King fills an empty column.",
-  "右上四格各按花色從 A 收到 K，收齊 52 張才通關。": "Build each of the four foundations from Ace to King by suit. Home all 52 cards to win.",
+  "右上四格各按花色從 A 收到 K，收齊 52 張才通關。可雙擊牌張，自動收到右上花色區。": "Build each of the four foundations from Ace to King by suit. Home all 52 cards to win. Double-click a card to send it to its foundation.",
   "八欄全明牌，由大到小、紅黑交錯接牌。": "All eight columns are face-up. Build down in alternating colors.",
   "左上四個暫存格各放一張；空欄可放任意牌。": "Each of the four free cells holds one card. Any card can fill an empty column.",
-  "一疊能搬幾張取決於空暫存格與空欄；右上四格依花色收 A→K。": "Empty cells and columns limit how many cards can move together. Build each foundation from A→K by suit.",
+  "一疊能搬幾張取決於空暫存格與空欄；右上四格依花色收 A→K。安全可收的牌會自動收上去，也可雙擊手動收牌。": "Empty cells and columns limit how many cards can move together. Build each foundation from A→K by suit. Safe cards go to foundations automatically; double-click to collect a card manually.",
   "最快通關排行榜": "Fastest completion leaderboard",
   "全部完成！通關時間：": "Completed! Finish time:",
   "本局未通關，不列入時間榜。": "Incomplete rounds do not enter the time leaderboard.",
@@ -12522,8 +12546,8 @@ html.points-hidden [data-points-hidden] { display:none !important; }
 }</script>
 <script type="application/json" id="arcade-hans">{
  "chars": [
-  "丟並乾亂亞佈佔併來係倉個們側偵偽傘備傢傳傷傾僅價儀優儲兇兌兒內兩冊凍別則剋剛創劃劇動務勝勢勵勸勻匯區協卻厲參叢員問啟喚單喲嗎嗚嗶嘆嘗噓噴嚇嚴囉國圍園圓圖團執報場塊塵墊墳壓壞壯夠夢夥夾奪婦媽學宮實寧寫寬寶將專尋對導尷屜層屬島嶼師帳帶幀幣幫幹幾庫廂廈廚廟廠廢廣廳張強彈彎後徑從復悶惡愛態慶憶懇應懶懷懸戰戲戶拋捨捲掃掙掛採揚換揮損搖搗搶摻撐撥撲撿擁擇擊擋據擠擬擲擴擺擾攏攤敗敵數斷於時暈暫曬書會東桿條棄棟楊楓業極構槍樂樑樓標樣樹橋機橢橫檔檢檸檻櫃櫻欄權欖歡歷歸殘殺殼毀氣決沒況涼淨淵淺減渦測湊湧準溝溫滅滾滿漁漢漬漲漸漿潛潰澤濃濕濺瀏灑灘灣為烏無煉煙熱燈燒營燼爍爐爛爺爾牆牽狀猶獄獅獎獨獲獵獸現瑪環瓊產畢畫異當疊療癒癡癢癮發皺盜盞盡監盤盪眾睜確碼磚礎礙礦祕禦禮禱種稱積穩穫窩窮窺竅竊筆節範築篩簡簽籃籠籤籬糧糰紀約紅紋納純紙級紛細紹終組絆結絕絡給統絲綁經綠維網綴綿緊線緣編緩練緻縫縮總績繞繩繪繼續纏羅習聞聯聲職聽脅脈脫腦腳膚膠膽臉臨與興舉舊舖艙荊莊萬葉蓋蓮蔔蔥蕩薦薩藍藝藥蘇蘋蘿處虛號虧蝦蝸螢蟲術衛衝補裝裡製複褲襬襯襲見規視覺覽觀觸訂計訊討訓託記訣訪設許訴註評詛詞試詩話該誌認誘語誤說誰課調請論諧諷謊謎講謝謠證識譯議護讀變讓豎豐豔貓貝負財貨販貪貫責貴買貸費貼資賊賞賠賤質賭賴賺購賽贈贏贓趕跡蹟蹤躍車軌軍軟軸較載輔輕輛輩輪輯輸轉辦辭迴這連週進遊運過達遞遠適遲選遺還邊邏郵鄰醜醫醬釋釘針釣鈕鈴鉗鉛鉤銀銅銷鋒鋪鋸鋼錄錘錢錦錨錯錶鍊鍋鍛鍵鎖鎚鏈鏟鏡鏤鏽鐘鐮鐵鐺鑑鑣鑽長門閃閉開閒間閘閱闆闔闖關陣陰陽隊階隕際隨險隱隻雙雜雞離難雲電霧靈靜響頁頂項順須頌預頒頓領頭頰頸頻顆題額顏類顧顯風颱飄飆飛飯飲飽飾餃餅養餌餓餘館餵馬騎騙騰驗驚髏體髮鬆鬍鬚鬥鬱魚魷鮪鮭鮮鯉鯊鯛鯨鰭鰻鱗鱷鱸鳥鳳鳴鴉鴨鴿鵝鵡鶴鷹鸚麗麥麵麼黃點鼴齊龍龜",
-  "丢并干乱亚布占并来系仓个们侧侦伪伞备家传伤倾仅价仪优储凶兑儿内两册冻别则克刚创划剧动务胜势励劝匀汇区协却厉参丛员问启唤单哟吗呜哔叹尝嘘喷吓严啰国围园圆图团执报场块尘垫坟压坏壮够梦伙夹夺妇妈学宫实宁写宽宝将专寻对导尴屉层属岛屿师帐带帧币帮干几库厢厦厨庙厂废广厅张强弹弯后径从复闷恶爱态庆忆恳应懒怀悬战戏户抛舍卷扫挣挂采扬换挥损摇捣抢掺撑拨扑捡拥择击挡据挤拟掷扩摆扰拢摊败敌数断于时晕暂晒书会东杆条弃栋杨枫业极构枪乐梁楼标样树桥机椭横档检柠槛柜樱栏权榄欢历归残杀壳毁气决没况凉净渊浅减涡测凑涌准沟温灭滚满渔汉渍涨渐浆潜溃泽浓湿溅浏洒滩湾为乌无炼烟热灯烧营烬烁炉烂爷尔墙牵状犹狱狮奖独获猎兽现玛环琼产毕画异当叠疗愈痴痒瘾发皱盗盏尽监盘荡众睁确码砖础碍矿秘御礼祷种称积稳获窝穷窥窍窃笔节范筑筛简签篮笼签篱粮团纪约红纹纳纯纸级纷细绍终组绊结绝络给统丝绑经绿维网缀绵紧线缘编缓练致缝缩总绩绕绳绘继续缠罗习闻联声职听胁脉脱脑脚肤胶胆脸临与兴举旧铺舱荆庄万叶盖莲卜葱荡荐萨蓝艺药苏苹萝处虚号亏虾蜗萤虫术卫冲补装里制复裤摆衬袭见规视觉览观触订计讯讨训托记诀访设许诉注评诅词试诗话该志认诱语误说谁课调请论谐讽谎谜讲谢谣证识译议护读变让竖丰艳猫贝负财货贩贪贯责贵买贷费贴资贼赏赔贱质赌赖赚购赛赠赢赃赶迹迹踪跃车轨军软轴较载辅轻辆辈轮辑输转办辞回这连周进游运过达递远适迟选遗还边逻邮邻丑医酱释钉针钓钮铃钳铅钩银铜销锋铺锯钢录锤钱锦锚错表炼锅锻键锁锤链铲镜镂锈钟镰铁铛鉴镳钻长门闪闭开闲间闸阅板阖闯关阵阴阳队阶陨际随险隐只双杂鸡离难云电雾灵静响页顶项顺须颂预颁顿领头颊颈频颗题额颜类顾显风台飘飙飞饭饮饱饰饺饼养饵饿余馆喂马骑骗腾验惊髅体发松胡须斗郁鱼鱿鲔鲑鲜鲤鲨鲷鲸鳍鳗鳞鳄鲈鸟凤鸣鸦鸭鸽鹅鹉鹤鹰鹦丽麦面么黄点鼹齐龙龟"
+  "丟並乾亂亞佈佔併來係倉個們側偵偽傘備傢傳傷傾僅價儀優儲兇兌兒內兩冊凍別則剋剛創劃劇動務勝勢勵勸勻匯區協卻厲參叢員問啟喚單喲嗎嗚嗶嘆嘗噓噴嚇嚴囉國圍園圓圖團執報場塊塵墊墳壓壞壯夠夢夥夾奪婦媽學宮實寧寫寬寶將專尋對導尷屜層屬島嶼師帳帶幀幣幫幹幾庫廂廈廚廟廠廢廣廳張強彈彎後徑從復悶惡愛態慶憶懇應懶懷懸戰戲戶拋捨捲掃掙掛採揚換揮損搖搗搶摻撐撥撲撿擁擇擊擋據擠擬擲擴擺擾攏攤敗敵數斷於時暈暫曬書會東桿條棄棟楊楓業極構槍樂樑樓標樣樹橋機橢橫檔檢檸檻櫃櫻欄權欖歡歷歸殘殺殼毀氣決沒況涼淨淵淺減渦測湊湧準溝溫滅滾滿漁漢漬漲漸漿潛潰澤濃濕濺瀏灑灘灣為烏無煉煙熱燈燒營燼爍爐爛爺爾牆牽狀猶獄獅獎獨獲獵獸現瑪環瓊產畢畫異當疊療癒癡癢癮發皺盜盞盡監盤盪眾睜確碼磚礎礙礦祕禦禮禱種稱積穩穫窩窮窺竅竊筆節範築篩簡簽籃籠籤籬糧糰紀約紅紋納純紙級紛細紹終組絆結絕絡給統絲綁經綠維網綴綿緊線緣編緩練緻縫縮總績繞繩繪繼續纏羅習聞聯聲職聽脅脈脫腦腳膚膠膽臉臨與興舉舊舖艙荊莊萬葉蓋蓮蔔蔥蕩薦薩藍藝藥蘇蘋蘿處虛號虧蝦蝸螢蟲術衛衝補裝裡製複褲襬襯襲見規視覺覽觀觸訂計訊討訓託記訣訪設許訴註評詛詞試詩話該誌認誘語誤說誰課調請論諧諷謊謎講謝謠證識譯議護讀變讓豎豐豔貓貝負財貨販貪貫責買貸費貼資賊賞賠賤質賭賴賺購賽贈贏贓趕跡蹟蹤躍車軌軍軟軸較載輔輕輛輩輪輯輸轉辦辭迴這連週進遊運過達遞遠適遲選遺還邊邏郵鄰醜醫醬釋釘針釣鈕鈴鉗鉛鉤銀銅銷鋒鋪鋸鋼錄錘錢錦錨錯錶鍊鍋鍛鍵鎖鎚鏈鏟鏡鏤鏽鐘鐮鐵鐺鑑鑣鑽長門閃閉開閒間閘閱闆闔闖關陣陰陽隊階際隨險隱隻雙雜雞離難雲電霧靈靜響頁頂項順須頌預頒頓領頭頰頸頻顆題額顏類顧顯風颱飄飆飛飯飲飽飾餃餅養餌餓餘館餵馬騎騙騰驗驚髏體髮鬆鬍鬚鬥鬱魚魷鮪鮭鮮鯉鯊鯛鯨鰭鰻鱗鱷鱸鳥鳳鳴鴉鴨鴿鵝鵡鶴鷹鸚麗麥麵麼黃點鼴齊龍龜",
+  "丢并干乱亚布占并来系仓个们侧侦伪伞备家传伤倾仅价仪优储凶兑儿内两册冻别则克刚创划剧动务胜势励劝匀汇区协却厉参丛员问启唤单哟吗呜哔叹尝嘘喷吓严啰国围园圆图团执报场块尘垫坟压坏壮够梦伙夹夺妇妈学宫实宁写宽宝将专寻对导尴屉层属岛屿师帐带帧币帮干几库厢厦厨庙厂废广厅张强弹弯后径从复闷恶爱态庆忆恳应懒怀悬战戏户抛舍卷扫挣挂采扬换挥损摇捣抢掺撑拨扑捡拥择击挡据挤拟掷扩摆扰拢摊败敌数断于时晕暂晒书会东杆条弃栋杨枫业极构枪乐梁楼标样树桥机椭横档检柠槛柜樱栏权榄欢历归残杀壳毁气决没况凉净渊浅减涡测凑涌准沟温灭滚满渔汉渍涨渐浆潜溃泽浓湿溅浏洒滩湾为乌无炼烟热灯烧营烬烁炉烂爷尔墙牵状犹狱狮奖独获猎兽现玛环琼产毕画异当叠疗愈痴痒瘾发皱盗盏尽监盘荡众睁确码砖础碍矿秘御礼祷种称积稳获窝穷窥窍窃笔节范筑筛简签篮笼签篱粮团纪约红纹纳纯纸级纷细绍终组绊结绝络给统丝绑经绿维网缀绵紧线缘编缓练致缝缩总绩绕绳绘继续缠罗习闻联声职听胁脉脱脑脚肤胶胆脸临与兴举旧铺舱荆庄万叶盖莲卜葱荡荐萨蓝艺药苏苹萝处虚号亏虾蜗萤虫术卫冲补装里制复裤摆衬袭见规视觉览观触订计讯讨训托记诀访设许诉注评诅词试诗话该志认诱语误说谁课调请论谐讽谎谜讲谢谣证识译议护读变让竖丰艳猫贝负财货贩贪贯责买贷费贴资贼赏赔贱质赌赖赚购赛赠赢赃赶迹迹踪跃车轨军软轴较载辅轻辆辈轮辑输转办辞回这连周进游运过达递远适迟选遗还边逻邮邻丑医酱释钉针钓钮铃钳铅钩银铜销锋铺锯钢录锤钱锦锚错表炼锅锻键锁锤链铲镜镂锈钟镰铁铛鉴镳钻长门闪闭开闲间闸阅板阖闯关阵阴阳队阶际随险隐只双杂鸡离难云电雾灵静响页顶项顺须颂预颁顿领头颊颈频颗题额颜类顾显风台飘飙飞饭饮饱饰饺饼养饵饿余馆喂马骑骗腾验惊髅体发松胡须斗郁鱼鱿鲔鲑鲜鲤鲨鲷鲸鳍鳗鳞鳄鲈鸟凤鸣鸦鸭鸽鹅鹉鹤鹰鹦丽麦面么黄点鼹齐龙龟"
  ],
  "words": {
   "亮著": "亮着",
@@ -15335,7 +15359,7 @@ if (typeof module !== 'undefined') module.exports = timedReplay;
     }
     function record(input) {
       if (!round) return;
-      if (actions.length >= timedReplay.MAX_INPUTS) { fallBack(); return; }
+      if (actions.length >= Math.min(timedReplay.MAX_INPUTS, options.maxInputs ?? timedReplay.MAX_INPUTS)) { fallBack(); return; }
       actions.push(tick * inputCount + input);
     }
     function update(ms, active, step) {
@@ -25439,98 +25463,40 @@ function frame(ts){
 G.mode='TITLE';ui();render();requestAnimationFrame(frame);
 
   })();
-  /* ---------- No Overtime!: auto-fire lane shooter; fixed BONUS +2 per boss day cleared on days 1-5 (max 10 per run) ---------- */
-  var otBusy=false,otStake=0,otSay=function(){};
-  (function(){
-'use strict';
-// ====== 基本設定 ======
+// No Overtime simulation, extracted from the shipped game. Browser and Worker run
+// the same numbers, collision rules, seeded randomness and terminal condition.
+const officeShootRules=(()=>{
+const rulesVersion=1,TARGET_SCALE=10,KEY_LEFT_DOWN=4501,KEY_LEFT_UP=4502,KEY_RIGHT_DOWN=4503,KEY_RIGHT_UP=4504,CLEAR=4505;
+const inputCount=4506;
+function createGame(random=Math.random,callbacks={}){
 const W=450,H=800,MID=W/2,TOP=56,PY=H-112,LINE=H-150,STAGE_LEN=35;
-const FONT='"PingFang TC","Noto Sans TC","Microsoft JhengHei","Heiti TC",sans-serif';
-// ====== 平台設定（BONUS 為固定里程碑獎勵，不依入場費計算）======
-const BONUS_PER_DAY=2,BONUS_DAYS=5,BEST_KEY='deep-sea-office-shoot-best';
-const cv=$('os-canvas'),ctx=cv.getContext('2d');
-{const dpr=Math.min(window.devicePixelRatio||1,2);cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
-
-// Approved art direction 02: full painted office + native-alpha comic actors.
-const COMIC_PATH='games/office-shoot/art/comic-v2/';
-const comic={};let comicReady=false,comicFailed=false,comicStarted=false,walkClock=0,walkX=0;
-const WORLD_TOP=210,VIEW_LINE=600,WORLD_SCALE=(VIEW_LINE-WORLD_TOP)/LINE;
-// Presentation-only horizontal projection: retain the approved narrower supply lane.
-// Simulation coordinates and all collision/spawn rules stay in the original 450x800 world.
-const VIEW_MID=190,VIEW_ANCHOR=MID/2;
-function drawX(x){return x<=VIEW_ANCHOR?x:x<=MID?VIEW_ANCHOR+(x-VIEW_ANCHOR)*(VIEW_MID-VIEW_ANCHOR)/(MID-VIEW_ANCHOR):VIEW_MID+(x-MID)*(W-VIEW_MID)/(W-MID);}
-function worldX(x){return x<=VIEW_ANCHOR?x:x<=VIEW_MID?VIEW_ANCHOR+(x-VIEW_ANCHOR)*(MID-VIEW_ANCHOR)/(VIEW_MID-VIEW_ANCHOR):MID+(x-VIEW_MID)*(W-MID)/(W-VIEW_MID);}
-
-const comicNames=['office','player','folder','paper','meeting','boss','crate','stapler','coffee','pen','shredder','printer','laser','walk','frame','footer'];
-function loadComicArt(){
-  if(comicStarted)return;comicStarted=true;
-  if(typeof Image==='undefined'){comicReady=true;return;}
-  let pending=comicNames.length+1;
-  const loaded=()=>{if(--pending===0){comicReady=true;comicFailed=false;}};
-  if(document.fonts&&document.fonts.load){
-    Promise.all([document.fonts.load('900 22px "Office Comic TC"'),document.fonts.load('900 28px "Office Comic Latin"')]).then(loaded,()=>{comicFailed=true;});
-  }else loaded();
-  for(const name of comicNames){
-    const im=new Image();comic[name]=im;
-    im.onload=loaded;
-    im.onerror=()=>{comicFailed=true;};
-    im.src=COMIC_PATH+name+'.webp';
-  }
-}
-if(typeof Image==='undefined')comicReady=true; // Behavior fixtures do not load raster assets.
-const comicBounds={"paper": [1, 22, 256, 376], "meeting": [1, 103, 256, 376], "shredder": [1, 103, 256, 376], "coffee": [1, 171, 256, 376], "crate": [1, 119, 256, 376], "pen": [100, 16, 157, 376], "boss": [1, 191, 256, 376], "laser": [92, 16, 164, 376], "stapler": [26, 237, 256, 376], "folder": [1, 121, 256, 376], "printer": [1, 153, 256, 376], "player": [20, 16, 238, 376]};
-function comicImage(name,x,y,w,h){
-  const im=comic[name];if(!im||!im.complete||!im.naturalWidth)return;
-  const b=comicBounds[name];
-  if(!b){ctx.drawImage(im,x,y,w,h);return;}
-  const sw=b[2]-b[0],sh=b[3]-b[1],k=Math.min(w/sw,h/sh);
-  ctx.drawImage(im,b[0],b[1],sw,sh,x+(w-sw*k)/2,y+(h-sh*k)/2,sw*k,sh*k);
-}
-function comicBox(x,y,w,h,fill){
-  ctx.fillStyle='#050709';ctx.fillRect(x+3,y+3,w,h);
-  ctx.fillStyle=fill;ctx.fillRect(x,y,w,h);ctx.strokeStyle='#f8f3df';ctx.lineWidth=1.5;ctx.strokeRect(x,y,w,h);
-}
-function comicText(text,x,y,size,color,max){
-  ctx.font=`italic 900 ${size}px "Office Comic Latin",Impact,"Arial Black","Office Comic TC",${FONT}`;ctx.textBaseline='middle';ctx.fillStyle=color;
-  ctx.fillText(text,x,y,max||W);
-}
-// ====== 多語系：每個字串寫成「中文|English」，語言跟隨大廳切換 ======
-let lang='zh';
-function syncLang(){lang=(window.deepSeaI18n&&window.deepSeaI18n.getLanguage()==='en')?'en':'zh';}
-syncLang();
-const ZH=s=>s.slice(0,s.indexOf('|')),EN=s=>s.slice(s.indexOf('|')+1);
-const L=s=>lang==='en'?EN(s):ZH(s);
+const rand=(a,b)=>a+random()*(b-a),clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const ZH=s=>callbacks.ZH?callbacks.ZH(s):s,EN=s=>callbacks.EN?callbacks.EN(s):s;
+const L=s=>callbacks.L?callbacks.L(s):s;
 const LF=(s,o)=>L(s).replace(/\{(\w+)\}/g,(m,k)=>o[k]);
-const pickL=a=>L(a[Math.floor(Math.random()*a.length)]);
+const pickL=a=>L(a[Math.floor(random()*a.length)]);
 const wName=w=>L(w.name),bName=d=>L(d.name),bHint=d=>L(d.hint),mLabel=m=>L(m.label);
-const rand=(a,b)=>a+Math.random()*(b-a);
-const clamp=(v,a,b)=>v<a?a:v>b?b:v;
 const UNITS=['','K','M','B','T','Qa','Qi','Sx','Sp','Oc','No','Dc'];
-function fmtMul(x){return x<10?x.toFixed(2):x<1000?x.toFixed(1):fmt(x);}
-function fmt(n){n=Math.max(0,Math.ceil(n));if(n<1000)return ''+n;let i=Math.min(UNITS.length-1,Math.floor(Math.log10(n)/3));const v=n/Math.pow(1000,i);return (v<10?v.toFixed(1):Math.floor(v))+UNITS[i];}
-function hexA(h,a){const n=parseInt(h.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
-function rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
-function circle(x,y,r){ctx.beginPath();ctx.arc(x,y,Math.max(0,r),0,Math.PI*2);}
+function fmt(n){n=Math.max(0,Math.ceil(n));if(n<1000)return ''+n;const i=Math.min(UNITS.length-1,Math.floor(Math.log10(n)/3)),v=n/Math.pow(1000,i);return(v<10?v.toFixed(1):Math.floor(v))+UNITS[i];}
 function seeded(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function hsl2hex(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return '#'+[f(0),f(8),f(4)].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');}
-function wpick(list){let tw=0;for(const x of list)tw+=x[1];let r=Math.random()*tw;for(const x of list){r-=x[1];if(r<=0)return x[0];}return list[0][0];}
-
+function wpick(list){let tw=0;for(const x of list)tw+=x[1];let r=random()*tw;for(const x of list){r-=x[1];if(r<=0)return x[0];}return list[0][0];}
 // ====== 武器進化線 ======
 const WEAPONS=[
- {name:'原子筆|Ballpoint Pen',en:'BALLPOINT PEN',color:'#4d8dff',rate:4,dmg:1,spd:720,type:'bullet',size:3.5,look:'ink',armor:'#5b6573',trim:'#d64545'},
- {name:'釘書機|Stapler',en:'STAPLER',color:'#d9dee6',rate:10,dmg:1,spd:820,type:'bullet',size:3,jitter:.06,look:'staple',armor:'#3d4a63',trim:'#4dabf7'},
- {name:'碎紙機|Shredder',en:'SHREDDER',color:'#ffffff',rate:2.4,dmg:1.6,spd:680,type:'spread',pellets:5,spread:.34,size:3.5,armor:'#4a3b2f',trim:'#ffa94d'},
- {name:'雷射簡報筆|Laser Pointer',en:'LASER POINTER',color:'#ff3b3b',rate:7,dmg:4.3,spd:1150,type:'laser',pierce:3,armor:'#1f2937',trim:'#ff3b3b'},
- {name:'咖啡火箭|Coffee Rocket',en:'COFFEE ROCKET',color:'#c8874a',rate:2.3,dmg:20,spd:260,type:'rocket',aoe:58,armor:'#6b3e26',trim:'#e0a96d'},
- {name:'印表機|Printer',en:'PRINTER',color:'#bcd4ff',rate:4.5,dmg:15,spd:540,type:'orb',size:9,pierce:6,armor:'#2b3a67',trim:'#e8f0ff'},
- {name:'已讀不回砲|Seen-Zone Cannon',en:'SEEN-ZONE CANNON',color:'#7dff9a',rate:2.6,dmg:46,type:'rail',width:18,armor:'#a8841f',trim:'#fff3a8'},
+ {name:'office-shoot.say.001',en:'BALLPOINT PEN',color:'#4d8dff',rate:4,dmg:1,spd:720,type:'bullet',size:3.5,look:'ink',armor:'#5b6573',trim:'#d64545'},
+ {name:'office-shoot.say.002',en:'STAPLER',color:'#d9dee6',rate:10,dmg:1,spd:820,type:'bullet',size:3,jitter:.06,look:'staple',armor:'#3d4a63',trim:'#4dabf7'},
+ {name:'office-shoot.say.003',en:'SHREDDER',color:'#ffffff',rate:2.4,dmg:1.6,spd:680,type:'spread',pellets:5,spread:.34,size:3.5,armor:'#4a3b2f',trim:'#ffa94d'},
+ {name:'office-shoot.say.004',en:'LASER POINTER',color:'#ff3b3b',rate:7,dmg:4.3,spd:1150,type:'laser',pierce:3,armor:'#1f2937',trim:'#ff3b3b'},
+ {name:'office-shoot.say.005',en:'COFFEE ROCKET',color:'#c8874a',rate:2.3,dmg:20,spd:260,type:'rocket',aoe:58,armor:'#6b3e26',trim:'#e0a96d'},
+ {name:'office-shoot.say.006',en:'PRINTER',color:'#bcd4ff',rate:4.5,dmg:15,spd:540,type:'orb',size:9,pierce:6,armor:'#2b3a67',trim:'#e8f0ff'},
+ {name:'office-shoot.say.007',en:'SEEN-ZONE CANNON',color:'#7dff9a',rate:2.6,dmg:46,type:'rail',width:18,armor:'#a8841f',trim:'#fff3a8'},
 ];
 const WDPS=[4,10,15,30,46,67,120];
 const GUN_LEN=[18,30,28,34,42,42,48];
 const MODS=[
- {id:'rate',label:'咖啡 射速+15%|Coffee  Rate +15%',icon:'☕',w:3,col:'#ffd43b'},
- {id:'dmg',label:'加薪 傷害+20%|Raise  Dmg +20%',icon:'💰',w:3,col:'#7dff9a'},
- {id:'barrel',label:'多一隻手 +1|Extra Hand +1',icon:'🤚',w:1.3,col:'#4dabf7'},
+ {id:'rate',label:'office-shoot.say.008',icon:'☕',w:3,col:'#ffd43b'},
+ {id:'dmg',label:'office-shoot.say.009',icon:'💰',w:3,col:'#7dff9a'},
+ {id:'barrel',label:'office-shoot.say.010',icon:'🤚',w:1.3,col:'#4dabf7'},
 ];
 const ETYPES={
  grunt:{r:15,ttk:.5,spd:52,col:'#5cd65c',dark:'#1f5e22',score:10},
@@ -25548,21 +25514,21 @@ const ETYPES={
 // ====== Boss ======
 const SHAPES={round:{w:130,h:105,r:45},square:{w:130,h:100,r:16},tall:{w:112,h:125,r:30}};
 const BOSS_DEFS=[
- {name:'無限會議經理|The Endless-Meeting Manager',mech:['split'],hint:'血量減半就分裂出副理，再分裂出組長|Splits into deputies at half HP, then into team leads',look:'human',col:'#3d4a63',tie:'#d64545',hair:'comb',glasses:true,shape:'square'},
- {name:'開會中總監|The In-a-Meeting Director',mech:['shield'],hint:'「開會中」時無敵，等他開完會再打|Invincible while "In a meeting" — wait it out',look:'human',col:'#2f2f3a',tie:'#ffb347',hair:'part',headset:true,shape:'square'},
- {name:'待辦清單女王|The To-Do List Queen',mech:['hive'],hint:'不斷產出新的待辦事項，別讓它們淹沒你|Keeps spawning new to-dos — don\'t get buried',look:'human',col:'#8a3b6b',tie:'#ffd43b',hair:'bun',glasses:true,shape:'tall'},
- {name:'KPI 鐵血董事|The Iron-Fisted KPI Director',mech:['weak'],hint:'刀槍不入，只怕打中他的「KPI 缺口」|Armored — only the moving "KPI GAP" takes real damage',look:'human',col:'#4a4f57',tie:'#9fb3c8',hair:'bald',shape:'square'},
- {name:'改需求的客戶|The Client Who Changes Everything',mech:['absorb'],hint:'說「還是第一版好」時子彈會被吸收，快躲去左道|"I liked v1 better" = bullets heal her. Dodge left!',look:'human',col:'#6b4fa0',tie:'#ff6b6b',hair:'spiky',glasses:true,shape:'round'},
- {name:'永不結案的專案|The Project That Never Ends',mech:['regen'],hint:'一停手就自動延期回血，火力不能斷|Heals when you stop firing — keep the pressure on',look:'folder',col:'#3fae6a',shape:'tall'},
- {name:'雙胞胎 PM|The Twin PMs',mech:['mirror'],hint:'只有「有影子」的才是真的 PM，會互換位置|Only the one with a shadow is real. They swap places',look:'human',col:'#2b7a8a',tie:'#5ad1e6',hair:'part',shape:'round'},
- {name:'週五五點的新需求|The Friday 5 PM Request',mech:['meteor'],hint:'亂丟文件，會砸爛補給，也會把你砸暈|Throws paperwork that smashes supplies and stuns you',look:'human',col:'#8a5a3a',tie:'#ffd43b',hair:'spiky',shape:'square'},
- {name:'神出鬼沒的老闆|The Boss Who Appears Out of Nowhere',mech:['teleport'],hint:'每掉 20% 血就閃現回來，還帶人來|Every 20% HP lost, warps back with backup',look:'human',col:'#1a1a1a',tie:'#ffd43b',hair:'bald',crown:true,glasses:true,shape:'round'},
- {name:'全自動催稿機器人|The Auto Deadline-Chaser Bot',mech:['missile'],hint:'狂發「進度如何？」訊息彈，被打中會當機|Spams "ETA?" missiles — getting hit freezes you',look:'robot',col:'#c0c8d0',shape:'square'},
+ {name:'office-shoot.say.011',mech:['split'],hint:'office-shoot.say.012',look:'human',col:'#3d4a63',tie:'#d64545',hair:'comb',glasses:true,shape:'square'},
+ {name:'office-shoot.say.013',mech:['shield'],hint:'office-shoot.say.014',look:'human',col:'#2f2f3a',tie:'#ffb347',hair:'part',headset:true,shape:'square'},
+ {name:'office-shoot.say.015',mech:['hive'],hint:'office-shoot.say.016',look:'human',col:'#8a3b6b',tie:'#ffd43b',hair:'bun',glasses:true,shape:'tall'},
+ {name:'office-shoot.say.017',mech:['weak'],hint:'office-shoot.say.018',look:'human',col:'#4a4f57',tie:'#9fb3c8',hair:'bald',shape:'square'},
+ {name:'office-shoot.say.019',mech:['absorb'],hint:'office-shoot.say.020',look:'human',col:'#6b4fa0',tie:'#ff6b6b',hair:'spiky',glasses:true,shape:'round'},
+ {name:'office-shoot.say.021',mech:['regen'],hint:'office-shoot.say.022',look:'folder',col:'#3fae6a',shape:'tall'},
+ {name:'office-shoot.say.023',mech:['mirror'],hint:'office-shoot.say.024',look:'human',col:'#2b7a8a',tie:'#5ad1e6',hair:'part',shape:'round'},
+ {name:'office-shoot.say.025',mech:['meteor'],hint:'office-shoot.say.026',look:'human',col:'#8a5a3a',tie:'#ffd43b',hair:'spiky',shape:'square'},
+ {name:'office-shoot.say.027',mech:['teleport'],hint:'office-shoot.say.028',look:'human',col:'#1a1a1a',tie:'#ffd43b',hair:'bald',crown:true,glasses:true,shape:'round'},
+ {name:'office-shoot.say.029',mech:['missile'],hint:'office-shoot.say.030',look:'robot',col:'#c0c8d0',shape:'square'},
 ];
 const MECH_POOL=['split','shield','hive','weak','absorb','regen','mirror','meteor','teleport','missile'];
-const MECH_NAME={split:'愛開會|Meeting-Happy',shield:'已讀不回|Ghosting',hive:'交辦狂|Task-Dumping',weak:'KPI|KPI-Obsessed',absorb:'朝令夕改|Flip-Flopping',regen:'愛拖延|Procrastinating',mirror:'有分身|Two-Faced',meteor:'愛丟包|Buck-Passing',teleport:'神出鬼沒|Lurking',missile:'奪命連環call|Spam-Calling'};
-const MECH_HINT={split:'會分裂|Splits',shield:'週期無敵|Periodic invincibility',hive:'狂丟待辦|Spawns to-dos',weak:'只怕 KPI 缺口|Only the KPI gap hurts',absorb:'改需求時停火|Hold fire when it flip-flops',regen:'停火會回血|Heals if you stop firing',mirror:'找有影子的真身|Find the one with a shadow',meteor:'亂丟文件|Throws paperwork',teleport:'閃現帶人|Warps in with backup',missile:'狂發訊息彈|Fires message missiles'};
-const NOUNS=['經理|Manager','總監|Director','協理|VP','董事|Board Member','顧問|Consultant','副總|Deputy','老闆|Boss','特助|Assistant'];
+const MECH_NAME={split:'office-shoot.say.031',shield:'office-shoot.say.032',hive:'office-shoot.say.033',weak:'KPI|KPI-Obsessed',absorb:'office-shoot.say.034',regen:'office-shoot.say.035',mirror:'office-shoot.say.036',meteor:'office-shoot.say.037',teleport:'office-shoot.say.038',missile:'office-shoot.say.039'};
+const MECH_HINT={split:'office-shoot.say.040',shield:'office-shoot.say.041',hive:'office-shoot.say.042',weak:'office-shoot.say.043',absorb:'office-shoot.say.044',regen:'office-shoot.say.045',mirror:'office-shoot.say.046',meteor:'office-shoot.say.047',teleport:'office-shoot.say.048',missile:'office-shoot.say.049'};
+const NOUNS=['office-shoot.say.050','office-shoot.say.051','office-shoot.say.052','office-shoot.say.053','office-shoot.say.054','office-shoot.say.055','office-shoot.say.056','office-shoot.say.057'];
 function bossDefFor(s){
   if(s<=BOSS_DEFS.length)return BOSS_DEFS[s-1];
   const R=seeded(s*7919+13),n=s>=16?3:2,pool=MECH_POOL.slice(),mech=[];
@@ -25572,7 +25538,7 @@ function bossDefFor(s){
     mech.push(m);
   }
   const hue=Math.floor(R()*360),pick=a=>a[Math.floor(R()*a.length)],ni=Math.floor(R()*NOUNS.length);
-  const NAME_FMT='{a}的{b}|The {a} {b}',fill=(s,o)=>s.replace(/\{(\w+)\}/g,(m,k)=>o[k]);
+  const NAME_FMT='office-shoot.say.058',fill=(s,o)=>s.replace(/\{(\w+)\}/g,(m,k)=>o[k]);
   const name=fill(ZH(NAME_FMT),{a:mech.map(m=>ZH(MECH_NAME[m])).join('・'),b:ZH(NOUNS[ni])})+'|'+fill(EN(NAME_FMT),{a:mech.map(m=>EN(MECH_NAME[m])).join(', '),b:EN(NOUNS[ni])});
   return {name,mech,hint:mech.map(m=>ZH(MECH_HINT[m])).join(' ＋ ')+'|'+mech.map(m=>EN(MECH_HINT[m])).join(' + '),look:R()<.15?'robot':'human',col:hsl2hex(hue,40,32),tie:hsl2hex((hue+150)%360,75,60),
     hair:pick(['comb','part','spiky','bun','bald']),glasses:R()<.5,headset:R()<.3,crown:s>=15,shape:pick(['round','square','tall'])};
@@ -25581,11 +25547,10 @@ function bossDefFor(s){
 let state='menu',phase='waves',stage=1,stageT=0,phaseT=0,score=0,best=0,t=0,overT=0,kills=0;
 let p,bullets,enemies,crates,bosses,hazards,parts,texts,beams,rings,shake=0,banner=null,flash=0,danger=0,bossTotal=1,curBoss=null;
 let spawnT,crateT,sinceWeapon,modsTaken,eliteT=8,shotSfxT=0,quipT=0,critT=0,overTitle='',overQuip='';
-const QUIPS=['我還有房貸…|I still have a mortgage…','告訴我媽我愛她|Tell my mom I love her','這不在我的 JD 裡|Not in my job description','先這樣…|Let\'s circle back…','已讀…|Seen…','明天見…|See you tomorrow…','我只是個便利貼啊|I\'m just a sticky note!','記得幫我打卡|Clock me out, please','謝謝指教（哭）|Thanks for the feedback (sob)','收到，處理中…|Noted, on it…'];
-const MISS=['欸你的強化不要了喔|You didn\'t want that?','它哭著離開了|It left in tears','補給：我先下班了|Supply: I\'m clocking out','錯過了…（嘆）|Missed it… (sigh)','被隔壁同事拿走了|Your coworker grabbed it'];
-const OVER_T=['今晚加班 確定|Overtime Confirmed','週末沒了|Bye-Bye Weekend','又是加班的一天|Another Late Night','爆肝結局|Burnout Ending'];
-const OVER_Q=['下次一定準時下班（大概）|You\'ll leave on time next time (probably)','老闆：辛苦了，明天早點來|Boss: Great work. Come in early tomorrow','至少你努力過了（考績：C）|At least you tried (Review: C)','加班費？什麼加班費？|Overtime pay? What overtime pay?'];
-try{best=+localStorage.getItem(BEST_KEY)||0}catch(e){}
+const QUIPS=['office-shoot.say.059','office-shoot.say.060','office-shoot.say.061','office-shoot.say.062','office-shoot.say.063','office-shoot.say.064','office-shoot.say.065','office-shoot.say.066','office-shoot.say.067','office-shoot.say.068'];
+const MISS=['office-shoot.say.069','office-shoot.say.070','office-shoot.say.071','office-shoot.say.072','office-shoot.say.073'];
+const OVER_T=['office-shoot.say.074','office-shoot.say.075','office-shoot.say.076','office-shoot.say.077'];
+const OVER_Q=['office-shoot.say.078','office-shoot.say.079','office-shoot.say.080','office-shoot.say.081'];
 
 function reset(){
   p={x:MID*1.5,tx:MID*1.5,tier:0,rateMul:1,dmgMul:1,barrels:1,cd:0,recoil:0,stun:0,dpsSlow:4,wlv:0};
@@ -25613,21 +25578,9 @@ function effRate(w){return Math.min(w.rate*p.rateMul,RATE_CAP[w.type]);} // 射�
 function grow(){return 1+.1*(stage-1);} // 敵人相對你的強度，每天慢慢提高
 function power(){return Math.max(expDPS(),.75*p.dpsSlow);}
 
-// ====== 音效 ======
-let actx=null,muted=false;
-function initAudio(){if(actx)return;try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){actx=null;}}
-function tone(f,d,type,v,slide,delay){
-  if(!actx||muted)return;
-  try{
-    const t0=actx.currentTime+(delay||0);
-    const o=actx.createOscillator(),g=actx.createGain();
-    o.type=type||'square';o.frequency.setValueAtTime(f,t0);
-    if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(30,f*slide),t0+d);
-    g.gain.setValueAtTime(v||.05,t0);g.gain.exponentialRampToValueAtTime(.0001,t0+d);
-    o.connect(g);g.connect(actx.destination);o.start(t0);o.stop(t0+d+.02);
-  }catch(e){}
-}
 
+const keys={left:false,right:false};let lang=callbacks.language?.()||'zh';
+function tone(...args){callbacks.tone?.(...args);}
 // ====== 生成 ======
 function spawnEnemy(type,x,y,noElite){
   const d=ETYPES[type];
@@ -25690,7 +25643,7 @@ function spawnBoss(){
   const hp=power()*grow()*22*f;
   const spd=Math.min(22,13+.6*stage)*(M.has('hive')?.6:1)*(M.has('teleport')?1.5:1);
   bosses=[];bossTotal=hp;curBoss=def;
-  if(M.has('mirror')){const real=Math.random()<.5?0:1;for(let i=0;i<2;i++)bosses.push(makeBoss(def,.7,i?W-58:MID+58,hp,spd,i!==real));}
+  if(M.has('mirror')){const real=random()<.5?0:1;for(let i=0;i<2;i++)bosses.push(makeBoss(def,.7,i?W-58:MID+58,hp,spd,i!==real));}
   else bosses.push(makeBoss(def,1,MID*1.5,hp,spd,false));
   tone(80,.6,'sawtooth',.08,.5);
 }
@@ -25721,10 +25674,10 @@ function weakHit(b,src){
 function damage(t,d,src){
   if(t.dead||t.broken||t.gone)return;
   if(t.kind==='boss'){
-    if(t.fake){if(Math.random()<.3)spark(src.x||t.x,t.y+t.h/2,'#9aa4b5',2,90,2);return;}
-    if(t.shieldOn>0){if(Math.random()<.3)spark(src.x||t.x,t.y+t.h/2,'#ffb347',2,120,2);return;}
-    if(t.M.has('weak')){const wh=weakHit(t,src);d*=wh?1.5:.15;if(wh&&Math.random()<.4)spark(src.x||t.x,t.y+t.h/2,'#ff3030',3,160,2.5);}
-    if(t.absorbOn>0){t.hp=Math.min(t.max,t.hp+d*.5);t.hit=.07;if(Math.random()<.2)spark(t.x+rand(-30,30),t.y,'#7dff9a',2,80,2.5);return;}
+    if(t.fake){if(random()<.3)spark(src.x||t.x,t.y+t.h/2,'#9aa4b5',2,90,2);return;}
+    if(t.shieldOn>0){if(random()<.3)spark(src.x||t.x,t.y+t.h/2,'#ffb347',2,120,2);return;}
+    if(t.M.has('weak')){const wh=weakHit(t,src);d*=wh?1.5:.15;if(wh&&random()<.4)spark(src.x||t.x,t.y+t.h/2,'#ff3030',3,160,2.5);}
+    if(t.absorbOn>0){t.hp=Math.min(t.max,t.hp+d*.5);t.hit=.07;if(random()<.2)spark(t.x+rand(-30,30),t.y,'#7dff9a',2,80,2.5);return;}
     t.idle=0;
   }
   if(t.armor)d=Math.max(d*.15,d-t.armor);
@@ -25761,7 +25714,7 @@ function fire(){
 function railShot(x,dmg,w){
   const bw=w.width+1.5*Math.min(p.wlv,6),hw=bw/2,src={rail:true,x,w:bw};
   for(const t of allTargets()){
-    if(Math.abs(t.x-x)<halfW(t)+hw&&t.y-halfH(t)<PY&&t.y+halfH(t)>0){damage(t,dmg,src);if(Math.random()<.5)spark(x,t.y+halfH(t),w.color,3,180);}
+    if(Math.abs(t.x-x)<halfW(t)+hw&&t.y-halfH(t)<PY&&t.y+halfH(t)>0){damage(t,dmg,src);if(random()<.5)spark(x,t.y+halfH(t),w.color,3,180);}
   }
   beams.push({x,w:bw,life:.16,max:.16,col:p.wlv>=5?hsl2hex((t*120)%360,90,70):w.color});
 }
@@ -25789,11 +25742,11 @@ function killEnemy(e){
   e.dead=true;kills++;score+=e.d.score*stage*(e.elite?5:1);
   spark(e.x,e.y,e.d.col,12,220,3);spark(e.x,e.y,'#fff',4,120,2);
   if(e.type==='tank'){tone(95,.28,'sawtooth',.05,.55);tone(70,.2,'square',.03,.7,.05);}else tone(rand(500,700),.1,'sine',.03,2.2);
-  if(quipT<=0&&Math.random()<.07){quipT=1.4;floatText(e.x,e.y-14,pickL(QUIPS),'#ffe8a3',13);}
+  if(quipT<=0&&random()<.07){quipT=1.4;floatText(e.x,e.y-14,pickL(QUIPS),'#ffe8a3',13);}
   if(e.type==='splitter')for(let i=0;i<3;i++)spawnEnemy('mini',e.x+(i-1)*20,e.y+rand(-6,6),true);
   if(e.elite){
-    if(Math.random()<.5){p.rateMul*=1.06;floatText(e.x,e.y-10,L('老闆請喝飲料 ☕+6%|Boss bought drinks ☕+6%'),'#ffd43b',15);}
-    else{p.dmgMul*=1.08;floatText(e.x,e.y-10,L('年終獎金 💰+8%|Year-end bonus 💰+8%'),'#7dff9a',15);}
+    if(random()<.5){p.rateMul*=1.06;floatText(e.x,e.y-10,L('office-shoot.say.082'),'#ffd43b',15);}
+    else{p.dmgMul*=1.08;floatText(e.x,e.y-10,L('office-shoot.say.083'),'#7dff9a',15);}
     tone(880,.1,'sine',.05,1.5);
     rings.push({x:e.x,y:e.y,r:8,max:70,life:.4,mx:.4,col:'#ffd43b'});
   }
@@ -25806,7 +25759,7 @@ function splitBoss(b){
     c.y=b.y;c.gen=b.gen+1;c.t=b.t+k;bosses.push(c);
   }
   spark(b.x,b.y,b.def.col,30,300,4);rings.push({x:b.x,y:b.y,r:10,max:140,life:.45,mx:.45,col:b.def.col});
-  floatText(b.x,b.y-b.h/2-12,b.gen===0?L('分裂！副理登場|Split! Deputies incoming'):L('再分裂！組長登場|Split again! Team leads!'),'#ff4d4d',20);shake=Math.max(shake,8);
+  floatText(b.x,b.y-b.h/2-12,b.gen===0?L('office-shoot.say.084'):L('office-shoot.say.085'),'#ff4d4d',20);shake=Math.max(shake,8);
   tone(160,.3,'sawtooth',.06,.5);
 }
 function killBoss(b){
@@ -25822,10 +25775,10 @@ function killBoss(b){
   for(const e of enemies)if(!e.dead)killEnemy(e);
   for(const h of hazards)h.dead=true;
   p.dmgMul*=1.3;
-  floatText(p.x,PY-70,L('準時下班獎勵 💰傷害 +30%|On-time bonus 💰Dmg +30%'),'#ffd43b',17);
+  floatText(p.x,PY-70,L('office-shoot.say.086'),'#ffd43b',17);
   phase='clear';phaseT=0;
-  dayCleared(stage);
-  banner={text:LF('第 {n} 天 準時下班！|Day {n}: Clocked Out!',{n:stage}),sub:LF('成功擺脫 {b}|Escaped {b}',{b:bName(b.def)}),col:'#ffe066',t:0,dur:2.4};
+  callbacks.dayCleared?.(stage);
+  banner={text:LF('office-shoot.say.087',{n:stage}),sub:LF('office-shoot.say.088',{b:bName(b.def)}),col:'#ffe066',t:0,dur:2.4};
   tone(523,.15,'square',.04,1,.25);tone(659,.15,'square',.04,1,.4);tone(784,.3,'square',.04,1,.55);
 }
 function breakCrate(c){
@@ -25834,12 +25787,12 @@ function breakCrate(c){
   rings.push({x:c.x,y:c.y,r:10,max:110,life:.35,mx:.35,col:'#8fe3ff'});
   if(c.refine){
     p.wlv=c.refine;p.dmgMul*=1.3;const w=WEAPONS[p.tier];
-    banner={text:wName(w)+' +'+p.wlv+'!',sub:L('裝備精煉 · 傷害 ×1.3|Gear refined · Damage ×1.3'),col:'#ffd43b',t:0,dur:2.2};
+    banner={text:wName(w)+' +'+p.wlv+'!',sub:L('office-shoot.say.089'),col:'#ffd43b',t:0,dur:2.2};
     rings.push({x:p.x,y:PY,r:10,max:180,life:.6,mx:.6,col:'#ffd43b'});spark(p.x,PY,'#ffd43b',50,340,3.5);
     flash=.6;shake=Math.max(shake,8);[659,784,988,1319].forEach((f,i)=>tone(f,.16,'square',.045,1,i*.08));
   }else if(c.weapon!=null){
     p.tier=c.weapon;const w=WEAPONS[p.tier];
-    banner={text:LF('獲得 {w}！|Got the {w}!',{w:wName(w)}),sub:(lang==='en'?'':w.en+'  ·  ')+LF('裝備升級 {a} / {b}|Gear upgrade {a} / {b}',{a:p.tier+1,b:WEAPONS.length}),col:w.color,t:0,dur:2.2};
+    banner={text:LF('office-shoot.say.090',{w:wName(w)}),sub:(lang==='en'?'':w.en+'  ·  ')+LF('office-shoot.say.091',{a:p.tier+1,b:WEAPONS.length}),col:w.color,t:0,dur:2.2};
     rings.push({x:p.x,y:PY,r:10,max:160,life:.6,mx:.6,col:w.color});
     spark(p.x,PY,w.color,40,320,3.5);
     flash=.6;shake=Math.max(shake,8);
@@ -25848,13 +25801,13 @@ function breakCrate(c){
 }
 function stunPlayer(){
   p.stun=1;flash=Math.max(flash,.3);shake=Math.max(shake,6);
-  floatText(p.x,PY-50,L('當機！|Frozen!'),'#ff6b6b',20);tone(140,.3,'square',.05,.5);
+  floatText(p.x,PY-50,L('office-shoot.say.092'),'#ff6b6b',20);tone(140,.3,'square',.05,.5);
 }
 function throwRock(b){
   let tx,ty;
   const cs=crates.filter(c=>c.y>b.y+30&&c.y<LINE-120);
-  if(cs.length&&Math.random()<.65){const c=cs[Math.floor(Math.random()*cs.length)];tx=c.x+rand(-30,30);ty=c.y+c.spd*1.2;}
-  else{tx=Math.random()<.6?p.x:rand(20,W-20);ty=PY;}
+  if(cs.length&&random()<.65){const c=cs[Math.floor(random()*cs.length)];tx=c.x+rand(-30,30);ty=c.y+c.spd*1.2;}
+  else{tx=random()<.6?p.x:rand(20,W-20);ty=PY;}
   const T=Math.max(.8,(ty-b.y)/230),hp=power()*.35;
   hazards.push({kind:'hazard',type:'rock',x:b.x,y:b.y,vx:(tx-b.x)/T,vy:(ty-b.y)/T,r:14,hp,max:hp,hit:0,acc:0,accT:0,rot:rand(0,6)});
 }
@@ -25867,7 +25820,7 @@ function teleportBoss(b){
   spark(b.x,b.y,'#c77dff',30,260,3);rings.push({x:b.x,y:b.y,r:10,max:120,life:.4,mx:.4,col:'#c77dff'});
   b.y=70;
   rings.push({x:b.x,y:b.y,r:120,max:10,life:.4,mx:.4,col:'#c77dff'});
-  floatText(b.x,b.y+b.h/2+14,L('老闆閃現！還帶人來了|Boss warped in with backup!'),'#e599f7',17);
+  floatText(b.x,b.y+b.h/2+14,L('office-shoot.say.093'),'#e599f7',17);
   for(let i=0;i<4;i++)spawnEnemy(pickType(),rand(MID+30,W-30),b.y+b.h/2+rand(0,40));
   tone(900,.3,'sine',.05,.3);
 }
@@ -25877,9 +25830,8 @@ function gameOver(x,y){
   spark(x,y,'#ff4d4d',50,380,4);spark(p.x,PY,'#fff',30,300,3);
   rings.push({x,y,r:10,max:260,life:.7,mx:.7,col:'#ff4d4d'});
   shake=18;flash=.7;
-  if(score>best){best=score;try{localStorage.setItem(BEST_KEY,''+best)}catch(e){}}
-  settle();
-  overTitle=Math.floor(Math.random()*4);overQuip=Math.floor(Math.random()*4);
+  callbacks.end?.(score);
+  overTitle=Math.floor(random()*4);overQuip=Math.floor(random()*4);
   [392,370,349].forEach((f,i)=>tone(f,.32,'sawtooth',.05,1,i*.35));tone(330,.9,'sawtooth',.05,.9,1.05);
 }
 
@@ -25905,6 +25857,7 @@ function updateFx(dt){
   if(state==='over')overT+=dt;
 }
 function update(dt){
+  lang=callbacks.language?.()||'zh';
   t+=dt;updateFx(dt);
   if(state!=='play')return;
   stageT+=dt;phaseT+=dt;sinceWeapon+=dt;shotSfxT-=dt;eliteT-=dt;quipT-=dt;critT-=dt;
@@ -25924,14 +25877,14 @@ function update(dt){
     spawnT-=dt;
     if(spawnT<=0){
       spawnT=spawnInterval();
-      if(Math.random()<Math.min(.4,.12+.03*(stage-1))){
-        const x=rand(MID+40,W-40),n=Math.min(6,3+Math.floor(stage/3)),tp=Math.random()<.5?'runner':'grunt';
+      if(random()<Math.min(.4,.12+.03*(stage-1))){
+        const x=rand(MID+40,W-40),n=Math.min(6,3+Math.floor(stage/3)),tp=random()<.5?'runner':'grunt';
         for(let i=0;i<n;i++)spawnEnemy(tp,x+rand(-30,30),-15-i*28,true);
       }else spawnEnemy(pickType());
     }
     if(stageT>=STAGE_LEN){phase='warn';phaseT=0;
       const d=bossDefFor(stage);
-      banner={text:L('⚠ 17:00 大魔王出沒 ⚠|⚠ 5 PM BOSS INCOMING ⚠'),sub:bName(d),hint:bHint(d),col:'#ff4d4d',t:0,dur:2.6};
+      banner={text:L('office-shoot.say.094'),sub:bName(d),hint:bHint(d),col:'#ff4d4d',t:0,dur:2.6};
       tone(392,.22,'square',.05,1);tone(415,.22,'square',.05,1,.25);tone(370,.5,'square',.05,.97,.5);}
   }else if(phase==='warn'){
     if(phaseT>=2.4){spawnBoss();phase='boss';phaseT=0;}
@@ -25946,7 +25899,7 @@ function update(dt){
   const targets=allTargets();
   for(const b of bullets){
     b.life-=dt;
-    if(b.rocket){b.vy-=700*dt;if(Math.random()<.7)parts.push({x:b.x+rand(-2,2),y:b.y+8,vx:rand(-20,20),vy:rand(40,90),life:.35,max:.35,col:'#e8e0d0',size:2.5});}
+    if(b.rocket){b.vy-=700*dt;if(random()<.7)parts.push({x:b.x+rand(-2,2),y:b.y+8,vx:rand(-20,20),vy:rand(40,90),life:.35,max:.35,col:'#e8e0d0',size:2.5});}
     b.x+=b.vx*dt;b.y+=b.vy*dt;
     if(b.y<-30||b.x<-20||b.x>W+20||b.life<=0){b.dead=true;continue;}
     for(const tg of targets){
@@ -25956,12 +25909,12 @@ function update(dt){
         if(b.rocket){explode(b.x,b.y,b.aoe,b.dmg,b.col);b.dead=true;break;}
         if(tg.shieldHits>0&&!b.laser&&!b.orb){
           tg.shieldHits--;tg.hit=.05;b.dead=true;spark(b.x,b.y,'#9fd3ff',2,120,2);
-          if(tg.shieldHits===0){floatText(tg.x,tg.y-24,L('緊急牌被打掉了|Urgent sign down!'),'#ffc9c9',13);spark(tg.x,tg.y+tg.r,'#9fd3ff',12,200,2.5);}
+          if(tg.shieldHits===0){floatText(tg.x,tg.y-24,L('office-shoot.say.095'),'#ffc9c9',13);spark(tg.x,tg.y+tg.r,'#9fd3ff',12,200,2.5);}
           break;
         }
-        let dd=b.dmg;if(Math.random()<.06){dd*=2;if(critT<=0){critT=.35;floatText(b.x+rand(-8,8),b.y-12,L('爆擊！|CRIT!'),'#ff922b',15);}}
+        let dd=b.dmg;if(random()<.06){dd*=2;if(critT<=0){critT=.35;floatText(b.x+rand(-8,8),b.y-12,L('office-shoot.say.096'),'#ff922b',15);}}
         damage(tg,dd,b);
-        if(Math.random()<.5)spark(b.x,b.y,tg.kind==='crate'?'#8fe3ff':b.col,2,120,2);
+        if(random()<.5)spark(b.x,b.y,tg.kind==='crate'?'#8fe3ff':b.col,2,120,2);
         b.pierce--;if(b.pierce<=0){b.dead=true;break;}
         (b.hits||(b.hits=new Set())).add(tg);
       }
@@ -25973,14 +25926,14 @@ function update(dt){
   for(const e of enemies){
     if(e.dead)continue;
     let sp=e.spd;
-    if(e.d.dash&&e.y>e.dashY){sp*=6.5;if(!e.dashing){e.dashing=true;floatText(e.x,e.y-20,L('急件！！|ASAP!!'),'#ff4d4d',18);}}
+    if(e.d.dash&&e.y>e.dashY){sp*=6.5;if(!e.dashing){e.dashing=true;floatText(e.x,e.y-20,L('office-shoot.say.097'),'#ff4d4d',18);}}
     e.y+=sp*dt;e.wob+=dt*7;e.hit-=dt;
     if(e.type==='healer'){
       e.healT-=dt;
       if(e.healT<=0){e.healT=2;let n=0;
         for(const o of enemies)if(o!==e&&!o.dead&&o.hp<o.max&&Math.hypot(o.x-e.x,o.y-e.y)<100){o.hp=Math.min(o.max,o.hp+o.max*.2);n++;spark(o.x,o.y,'#7dff9a',4,80,2.5);}
         rings.push({x:e.x,y:e.y,r:8,max:100,life:.5,mx:.5,col:'#7dff9a'});
-        if(n)floatText(e.x,e.y-22,L('再改一版！|One more revision!'),'#ff8cc6',13);}
+        if(n)floatText(e.x,e.y-22,L('office-shoot.say.098'),'#ff8cc6',13);}
     }
     danger=Math.max(danger,(e.y+e.r-(LINE-190))/190);
     if(e.y+e.r>=LINE){gameOver(e.x,LINE);break;}
@@ -25992,9 +25945,9 @@ function update(dt){
     h.x+=h.vx*dt;h.y+=h.vy*dt;h.hit-=dt;
     if(h.type==='rock'){h.rot+=dt*4;
       for(const c of crates){if(!c.broken&&!c.gone&&Math.abs(c.x-h.x)<c.w/2+h.r&&Math.abs(c.y-h.y)<c.h/2+h.r){
-        c.gone=true;h.dead=true;floatText(c.x,c.y,L('補給被新需求砸爛了！|Supply crushed by a new request!'),'#ff9a6b',15);
+        c.gone=true;h.dead=true;floatText(c.x,c.y,L('office-shoot.say.099'),'#ff9a6b',15);
         spark(c.x,c.y,'#c49a6c',25,260,3.5);spark(c.x,c.y,'#8fe3ff',12,200,2.5);shake=Math.max(shake,5);tone(120,.25,'sawtooth',.05,.5);break;}}
-    }else if(Math.random()<.8)parts.push({x:h.x-h.vx*.04,y:h.y-h.vy*.04,vx:rand(-20,20),vy:rand(-20,20),life:.3,max:.3,col:'#ffb36b',size:2.5});
+    }else if(random()<.8)parts.push({x:h.x-h.vx*.04,y:h.y-h.vy*.04,vx:rand(-20,20),vy:rand(-20,20),life:.3,max:.3,col:'#ffb36b',size:2.5});
     if(!h.dead&&h.y>=PY-8){
       h.dead=true;
       spark(h.x,PY,h.type==='rock'?'#c49a6c':'#ff9a3c',16,240,3);rings.push({x:h.x,y:PY,r:6,max:40,life:.3,mx:.3,col:'#ff9a3c'});
@@ -26030,20 +25983,291 @@ function updateBosses(dt){
     if(M.has('absorb')){
       if(b.absorbOn>0)b.absorbOn-=dt;
       else{b.absorbT-=dt;
-        if(b.absorbT<=1.1&&!b.absWarned){b.absWarned=true;floatText(b.x,b.y+b.h/2+16,L('停火！要改需求了|Hold fire! Requirements changing!'),'#ff4d4d',16);tone(660,.1,'square',.04,1);tone(660,.1,'square',.04,1,.2);}
+        if(b.absorbT<=1.1&&!b.absWarned){b.absWarned=true;floatText(b.x,b.y+b.h/2+16,L('office-shoot.say.100'),'#ff4d4d',16);tone(660,.1,'square',.04,1);tone(660,.1,'square',.04,1,.2);}
         if(b.absorbT<=0){b.absorbOn=2.5;b.absorbT=7;b.absWarned=false;}}
     }
-    if(M.has('regen')&&b.idle>1.5&&b.hp<b.max&&!b.fake){b.hp=Math.min(b.max,b.hp+b.max*.07*dt);if(Math.random()<.3)parts.push({x:b.x+rand(-b.w/2,b.w/2),y:b.y+rand(-b.h/2,b.h/2),vx:0,vy:-40,life:.6,max:.6,col:'#7dff9a',size:3});}
+    if(M.has('regen')&&b.idle>1.5&&b.hp<b.max&&!b.fake){b.hp=Math.min(b.max,b.hp+b.max*.07*dt);if(random()<.3)parts.push({x:b.x+rand(-b.w/2,b.w/2),y:b.y+rand(-b.h/2,b.h/2),vx:0,vy:-40,life:.6,max:.6,col:'#7dff9a',size:3});}
     if(M.has('weak'))b.weakX=Math.sin(b.t*1.6)*b.w*.34;
     if(M.has('hive')){b.hiveT-=dt;if(b.hiveT<=0){b.hiveT=Math.max(.7,1.2-stage*.02);spawnEnemy('larva',b.x+rand(-b.w/3,b.w/3),b.y+b.h/2,true);}}
     if(M.has('meteor')){b.meteorT-=dt;if(b.meteorT<=0){b.meteorT=2.2;throwRock(b);}}
     if(M.has('missile')){b.missileT-=dt;if(b.missileT<=0){b.missileT=Math.max(1.1,1.8-stage*.03);fireMissile(b);}}
     if(M.has('teleport')&&!b.fake&&b.tpNext>.1&&b.hp<=b.max*b.tpNext){b.tpNext-=.2;teleportBoss(b);}
     if(M.has('mirror')&&!b.fake){b.swapT-=dt;if(b.swapT<=0){b.swapT=6;const o=alive.find(k=>k!==b);
-      if(o){const hx=b.hx;b.hx=o.hx;o.hx=hx;for(const k of [b,o]){spark(k.x,k.y,'#5ad1e6',20,220,3);k.x=k.hx;}floatText(MID*1.5,b.y-b.h/2-14,L('互換位置！|Swapped!'),'#5ad1e6',16);}}}
+      if(o){const hx=b.hx;b.hx=o.hx;o.hx=hx;for(const k of [b,o]){spark(k.x,k.y,'#5ad1e6',20,220,3);k.x=k.hx;}floatText(MID*1.5,b.y-b.h/2-14,L('office-shoot.say.101'),'#5ad1e6',16);}}}
     b.y+=sp*dt;
     if(b.y+b.h/2>=LINE){gameOver(b.x,LINE);return;}
   }
+}
+
+const game={keys,WEAPONS,WDPS,GUN_LEN,MODS,ETYPES,SHAPES,BOSS_DEFS,QUIPS,MISS,OVER_T,OVER_Q,fmt,seeded,hsl2hex,wpick,bossDefFor,reset,prog,expDPS,dps,effRate,grow,power,tone,spawnEnemy,pickType,spawnInterval,spawnCrate,makeBoss,spawnBoss,allTargets,hitTest,weakPos,weakHit,damage,addBullet,fire,railShot,explode,applyMod,killEnemy,splitBoss,killBoss,breakCrate,stunPlayer,throwRock,fireMissile,teleportBoss,gameOver,spark,floatText,updateFx,update,updateBosses};
+Object.defineProperties(game,{
+state:{enumerable:true,get:()=>state,set:v=>{state=v}},
+phase:{enumerable:true,get:()=>phase,set:v=>{phase=v}},
+stage:{enumerable:true,get:()=>stage,set:v=>{stage=v}},
+stageT:{enumerable:true,get:()=>stageT,set:v=>{stageT=v}},
+phaseT:{enumerable:true,get:()=>phaseT,set:v=>{phaseT=v}},
+score:{enumerable:true,get:()=>score,set:v=>{score=v}},
+t:{enumerable:true,get:()=>t,set:v=>{t=v}},
+overT:{enumerable:true,get:()=>overT,set:v=>{overT=v}},
+kills:{enumerable:true,get:()=>kills,set:v=>{kills=v}},
+p:{enumerable:true,get:()=>p,set:v=>{p=v}},
+bullets:{enumerable:true,get:()=>bullets,set:v=>{bullets=v}},
+enemies:{enumerable:true,get:()=>enemies,set:v=>{enemies=v}},
+crates:{enumerable:true,get:()=>crates,set:v=>{crates=v}},
+bosses:{enumerable:true,get:()=>bosses,set:v=>{bosses=v}},
+hazards:{enumerable:true,get:()=>hazards,set:v=>{hazards=v}},
+parts:{enumerable:true,get:()=>parts,set:v=>{parts=v}},
+texts:{enumerable:true,get:()=>texts,set:v=>{texts=v}},
+beams:{enumerable:true,get:()=>beams,set:v=>{beams=v}},
+rings:{enumerable:true,get:()=>rings,set:v=>{rings=v}},
+shake:{enumerable:true,get:()=>shake,set:v=>{shake=v}},
+banner:{enumerable:true,get:()=>banner,set:v=>{banner=v}},
+flash:{enumerable:true,get:()=>flash,set:v=>{flash=v}},
+danger:{enumerable:true,get:()=>danger,set:v=>{danger=v}},
+bossTotal:{enumerable:true,get:()=>bossTotal,set:v=>{bossTotal=v}},
+curBoss:{enumerable:true,get:()=>curBoss,set:v=>{curBoss=v}},
+spawnT:{enumerable:true,get:()=>spawnT,set:v=>{spawnT=v}},
+crateT:{enumerable:true,get:()=>crateT,set:v=>{crateT=v}},
+sinceWeapon:{enumerable:true,get:()=>sinceWeapon,set:v=>{sinceWeapon=v}},
+modsTaken:{enumerable:true,get:()=>modsTaken,set:v=>{modsTaken=v}},
+eliteT:{enumerable:true,get:()=>eliteT,set:v=>{eliteT=v}},
+shotSfxT:{enumerable:true,get:()=>shotSfxT,set:v=>{shotSfxT=v}},
+quipT:{enumerable:true,get:()=>quipT,set:v=>{quipT=v}},
+critT:{enumerable:true,get:()=>critT,set:v=>{critT=v}},
+overTitle:{enumerable:true,get:()=>overTitle,set:v=>{overTitle=v}},
+overQuip:{enumerable:true,get:()=>overQuip,set:v=>{overQuip=v}},
+dead:{enumerable:true,get:()=>state==='over'}
+});
+return game;
+}
+function create(random){const game=createGame(random);game.state='play';return game;}
+function input(game,code){
+ if(game.dead||!Number.isInteger(code)||code<0||code>=inputCount)return false;
+ if(code<=4500)game.p.tx=code/TARGET_SCALE;
+ else if(code===KEY_LEFT_DOWN)game.keys.left=true;
+ else if(code===KEY_LEFT_UP)game.keys.left=false;
+ else if(code===KEY_RIGHT_DOWN)game.keys.right=true;
+ else if(code===KEY_RIGHT_UP)game.keys.right=false;
+ else game.keys.left=game.keys.right=false;
+ return true;
+}
+return {rulesVersion,inputCount,TARGET_SCALE,KEY_LEFT_DOWN,KEY_LEFT_UP,KEY_RIGHT_DOWN,KEY_RIGHT_UP,CLEAR,
+ createGame,create,input,advance:(game,dt)=>game.update(dt),score:game=>game.score};
+})();
+if(typeof module!=='undefined')module.exports=officeShootRules;
+  /* ---------- No Overtime!: auto-fire lane shooter; fixed BONUS +2 per boss day cleared on days 1-5 (max 10 per run) ---------- */
+  var otBusy=false,otStake=0,otSay=function(){};
+  (function(){
+'use strict';
+// ====== 基本設定 ======
+const W=450,H=800,MID=W/2,TOP=56,PY=H-112,LINE=H-150,STAGE_LEN=35;
+const FONT='"PingFang TC","Noto Sans TC","Microsoft JhengHei","Heiti TC",sans-serif';
+// ====== 平台設定（BONUS 為固定里程碑獎勵，不依入場費計算）======
+const BONUS_PER_DAY=2,BONUS_DAYS=5,BEST_KEY='deep-sea-office-shoot-best';
+const cv=$('os-canvas'),ctx=cv.getContext('2d');
+{const dpr=Math.min(window.devicePixelRatio||1,2);cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
+
+// Approved art direction 02: full painted office + native-alpha comic actors.
+const COMIC_PATH='games/office-shoot/art/comic-v2/';
+const comic={};let comicReady=false,comicFailed=false,comicStarted=false,walkClock=0,walkX=0;
+const WORLD_TOP=210,VIEW_LINE=600,WORLD_SCALE=(VIEW_LINE-WORLD_TOP)/LINE;
+// Presentation-only horizontal projection: retain the approved narrower supply lane.
+// Simulation coordinates and all collision/spawn rules stay in the original 450x800 world.
+const VIEW_MID=190,VIEW_ANCHOR=MID/2;
+function drawX(x){return x<=VIEW_ANCHOR?x:x<=MID?VIEW_ANCHOR+(x-VIEW_ANCHOR)*(VIEW_MID-VIEW_ANCHOR)/(MID-VIEW_ANCHOR):VIEW_MID+(x-MID)*(W-VIEW_MID)/(W-MID);}
+function worldX(x){return x<=VIEW_ANCHOR?x:x<=VIEW_MID?VIEW_ANCHOR+(x-VIEW_ANCHOR)*(MID-VIEW_ANCHOR)/(VIEW_MID-VIEW_ANCHOR):MID+(x-VIEW_MID)*(W-MID)/(W-VIEW_MID);}
+
+const comicNames=['office','player','folder','paper','meeting','boss','crate','stapler','coffee','pen','shredder','printer','laser','walk','frame','footer'];
+function loadComicArt(){
+  if(comicStarted)return;comicStarted=true;
+  if(typeof Image==='undefined'){comicReady=true;return;}
+  let pending=comicNames.length+1;
+  const loaded=()=>{if(--pending===0){comicReady=true;comicFailed=false;}};
+  if(document.fonts&&document.fonts.load){
+    Promise.all([document.fonts.load('900 22px "Office Comic TC"'),document.fonts.load('900 28px "Office Comic Latin"')]).then(loaded,()=>{comicFailed=true;});
+  }else loaded();
+  for(const name of comicNames){
+    const im=new Image();comic[name]=im;
+    im.onload=loaded;
+    im.onerror=()=>{comicFailed=true;};
+    im.src=COMIC_PATH+name+'.webp';
+  }
+}
+if(typeof Image==='undefined')comicReady=true; // Behavior fixtures do not load raster assets.
+const comicBounds={"paper": [1, 22, 256, 376], "meeting": [1, 103, 256, 376], "shredder": [1, 103, 256, 376], "coffee": [1, 171, 256, 376], "crate": [1, 119, 256, 376], "pen": [100, 16, 157, 376], "boss": [1, 191, 256, 376], "laser": [92, 16, 164, 376], "stapler": [26, 237, 256, 376], "folder": [1, 121, 256, 376], "printer": [1, 153, 256, 376], "player": [20, 16, 238, 376]};
+function comicImage(name,x,y,w,h){
+  const im=comic[name];if(!im||!im.complete||!im.naturalWidth)return;
+  const b=comicBounds[name];
+  if(!b){ctx.drawImage(im,x,y,w,h);return;}
+  const sw=b[2]-b[0],sh=b[3]-b[1],k=Math.min(w/sw,h/sh);
+  ctx.drawImage(im,b[0],b[1],sw,sh,x+(w-sw*k)/2,y+(h-sh*k)/2,sw*k,sh*k);
+}
+function comicBox(x,y,w,h,fill){
+  ctx.fillStyle='#050709';ctx.fillRect(x+3,y+3,w,h);
+  ctx.fillStyle=fill;ctx.fillRect(x,y,w,h);ctx.strokeStyle='#f8f3df';ctx.lineWidth=1.5;ctx.strokeRect(x,y,w,h);
+}
+function comicText(text,x,y,size,color,max){
+  ctx.font=`italic 900 ${size}px "Office Comic Latin",Impact,"Arial Black","Office Comic TC",${FONT}`;ctx.textBaseline='middle';ctx.fillStyle=color;
+  ctx.fillText(text,x,y,max||W);
+}
+// ====== 多語系：每個字串寫成「中文|English」，語言跟隨大廳切換 ======
+let lang='zh';
+function syncLang(){lang=(window.deepSeaI18n&&window.deepSeaI18n.getLanguage()==='en')?'en':'zh';}
+syncLang();
+const ZH=s=>{s=RULE_TEXT[s]||s;return s.slice(0,s.indexOf('|'));},EN=s=>{s=RULE_TEXT[s]||s;return s.slice(s.indexOf('|')+1);};
+const L=s=>lang==='en'?EN(s):ZH(s);
+const LF=(s,o)=>L(s).replace(/\{(\w+)\}/g,(m,k)=>o[k]);
+const pickL=a=>L(a[Math.floor(Math.random()*a.length)]);
+const wName=w=>L(w.name),bName=d=>L(d.name),bHint=d=>L(d.hint),mLabel=m=>L(m.label);
+const rand=(a,b)=>a+Math.random()*(b-a);
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const UNITS=['','K','M','B','T','Qa','Qi','Sx','Sp','Oc','No','Dc'];
+function fmtMul(x){return x<10?x.toFixed(2):x<1000?x.toFixed(1):fmt(x);}
+function fmt(n){n=Math.max(0,Math.ceil(n));if(n<1000)return ''+n;let i=Math.min(UNITS.length-1,Math.floor(Math.log10(n)/3));const v=n/Math.pow(1000,i);return (v<10?v.toFixed(1):Math.floor(v))+UNITS[i];}
+function hexA(h,a){const n=parseInt(h.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+function rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function circle(x,y,r){ctx.beginPath();ctx.arc(x,y,Math.max(0,r),0,Math.PI*2);}
+function seeded(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function hsl2hex(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return '#'+[f(0),f(8),f(4)].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');}
+function wpick(list){let tw=0;for(const x of list)tw+=x[1];let r=Math.random()*tw;for(const x of list){r-=x[1];if(r<=0)return x[0];}return list[0][0];}
+
+const RULE_TEXT={
+  "office-shoot.say.001": "原子筆|Ballpoint Pen",
+  "office-shoot.say.002": "釘書機|Stapler",
+  "office-shoot.say.003": "碎紙機|Shredder",
+  "office-shoot.say.004": "雷射簡報筆|Laser Pointer",
+  "office-shoot.say.005": "咖啡火箭|Coffee Rocket",
+  "office-shoot.say.006": "印表機|Printer",
+  "office-shoot.say.007": "已讀不回砲|Seen-Zone Cannon",
+  "office-shoot.say.008": "咖啡 射速+15%|Coffee  Rate +15%",
+  "office-shoot.say.009": "加薪 傷害+20%|Raise  Dmg +20%",
+  "office-shoot.say.010": "多一隻手 +1|Extra Hand +1",
+  "office-shoot.say.011": "無限會議經理|The Endless-Meeting Manager",
+  "office-shoot.say.012": "血量減半就分裂出副理，再分裂出組長|Splits into deputies at half HP, then into team leads",
+  "office-shoot.say.013": "開會中總監|The In-a-Meeting Director",
+  "office-shoot.say.014": "「開會中」時無敵，等他開完會再打|Invincible while \"In a meeting\" — wait it out",
+  "office-shoot.say.015": "待辦清單女王|The To-Do List Queen",
+  "office-shoot.say.016": "不斷產出新的待辦事項，別讓它們淹沒你|Keeps spawning new to-dos — don't get buried",
+  "office-shoot.say.017": "KPI 鐵血董事|The Iron-Fisted KPI Director",
+  "office-shoot.say.018": "刀槍不入，只怕打中他的「KPI 缺口」|Armored — only the moving \"KPI GAP\" takes real damage",
+  "office-shoot.say.019": "改需求的客戶|The Client Who Changes Everything",
+  "office-shoot.say.020": "說「還是第一版好」時子彈會被吸收，快躲去左道|\"I liked v1 better\" = bullets heal her. Dodge left!",
+  "office-shoot.say.021": "永不結案的專案|The Project That Never Ends",
+  "office-shoot.say.022": "一停手就自動延期回血，火力不能斷|Heals when you stop firing — keep the pressure on",
+  "office-shoot.say.023": "雙胞胎 PM|The Twin PMs",
+  "office-shoot.say.024": "只有「有影子」的才是真的 PM，會互換位置|Only the one with a shadow is real. They swap places",
+  "office-shoot.say.025": "週五五點的新需求|The Friday 5 PM Request",
+  "office-shoot.say.026": "亂丟文件，會砸爛補給，也會把你砸暈|Throws paperwork that smashes supplies and stuns you",
+  "office-shoot.say.027": "神出鬼沒的老闆|The Boss Who Appears Out of Nowhere",
+  "office-shoot.say.028": "每掉 20% 血就閃現回來，還帶人來|Every 20% HP lost, warps back with backup",
+  "office-shoot.say.029": "全自動催稿機器人|The Auto Deadline-Chaser Bot",
+  "office-shoot.say.030": "狂發「進度如何？」訊息彈，被打中會當機|Spams \"ETA?\" missiles — getting hit freezes you",
+  "office-shoot.say.031": "愛開會|Meeting-Happy",
+  "office-shoot.say.032": "已讀不回|Ghosting",
+  "office-shoot.say.033": "交辦狂|Task-Dumping",
+  "office-shoot.say.034": "朝令夕改|Flip-Flopping",
+  "office-shoot.say.035": "愛拖延|Procrastinating",
+  "office-shoot.say.036": "有分身|Two-Faced",
+  "office-shoot.say.037": "愛丟包|Buck-Passing",
+  "office-shoot.say.038": "神出鬼沒|Lurking",
+  "office-shoot.say.039": "奪命連環call|Spam-Calling",
+  "office-shoot.say.040": "會分裂|Splits",
+  "office-shoot.say.041": "週期無敵|Periodic invincibility",
+  "office-shoot.say.042": "狂丟待辦|Spawns to-dos",
+  "office-shoot.say.043": "只怕 KPI 缺口|Only the KPI gap hurts",
+  "office-shoot.say.044": "改需求時停火|Hold fire when it flip-flops",
+  "office-shoot.say.045": "停火會回血|Heals if you stop firing",
+  "office-shoot.say.046": "找有影子的真身|Find the one with a shadow",
+  "office-shoot.say.047": "亂丟文件|Throws paperwork",
+  "office-shoot.say.048": "閃現帶人|Warps in with backup",
+  "office-shoot.say.049": "狂發訊息彈|Fires message missiles",
+  "office-shoot.say.050": "經理|Manager",
+  "office-shoot.say.051": "總監|Director",
+  "office-shoot.say.052": "協理|VP",
+  "office-shoot.say.053": "董事|Board Member",
+  "office-shoot.say.054": "顧問|Consultant",
+  "office-shoot.say.055": "副總|Deputy",
+  "office-shoot.say.056": "老闆|Boss",
+  "office-shoot.say.057": "特助|Assistant",
+  "office-shoot.say.058": "{a}的{b}|The {a} {b}",
+  "office-shoot.say.059": "我還有房貸…|I still have a mortgage…",
+  "office-shoot.say.060": "告訴我媽我愛她|Tell my mom I love her",
+  "office-shoot.say.061": "這不在我的 JD 裡|Not in my job description",
+  "office-shoot.say.062": "先這樣…|Let's circle back…",
+  "office-shoot.say.063": "已讀…|Seen…",
+  "office-shoot.say.064": "明天見…|See you tomorrow…",
+  "office-shoot.say.065": "我只是個便利貼啊|I'm just a sticky note!",
+  "office-shoot.say.066": "記得幫我打卡|Clock me out, please",
+  "office-shoot.say.067": "謝謝指教（哭）|Thanks for the feedback (sob)",
+  "office-shoot.say.068": "收到，處理中…|Noted, on it…",
+  "office-shoot.say.069": "欸你的強化不要了喔|You didn't want that?",
+  "office-shoot.say.070": "它哭著離開了|It left in tears",
+  "office-shoot.say.071": "補給：我先下班了|Supply: I'm clocking out",
+  "office-shoot.say.072": "錯過了…（嘆）|Missed it… (sigh)",
+  "office-shoot.say.073": "被隔壁同事拿走了|Your coworker grabbed it",
+  "office-shoot.say.074": "今晚加班 確定|Overtime Confirmed",
+  "office-shoot.say.075": "週末沒了|Bye-Bye Weekend",
+  "office-shoot.say.076": "又是加班的一天|Another Late Night",
+  "office-shoot.say.077": "爆肝結局|Burnout Ending",
+  "office-shoot.say.078": "下次一定準時下班（大概）|You'll leave on time next time (probably)",
+  "office-shoot.say.079": "老闆：辛苦了，明天早點來|Boss: Great work. Come in early tomorrow",
+  "office-shoot.say.080": "至少你努力過了（考績：C）|At least you tried (Review: C)",
+  "office-shoot.say.081": "加班費？什麼加班費？|Overtime pay? What overtime pay?",
+  "office-shoot.say.082": "老闆請喝飲料 ☕+6%|Boss bought drinks ☕+6%",
+  "office-shoot.say.083": "年終獎金 💰+8%|Year-end bonus 💰+8%",
+  "office-shoot.say.084": "分裂！副理登場|Split! Deputies incoming",
+  "office-shoot.say.085": "再分裂！組長登場|Split again! Team leads!",
+  "office-shoot.say.086": "準時下班獎勵 💰傷害 +30%|On-time bonus 💰Dmg +30%",
+  "office-shoot.say.087": "第 {n} 天 準時下班！|Day {n}: Clocked Out!",
+  "office-shoot.say.088": "成功擺脫 {b}|Escaped {b}",
+  "office-shoot.say.089": "裝備精煉 · 傷害 ×1.3|Gear refined · Damage ×1.3",
+  "office-shoot.say.090": "獲得 {w}！|Got the {w}!",
+  "office-shoot.say.091": "裝備升級 {a} / {b}|Gear upgrade {a} / {b}",
+  "office-shoot.say.092": "當機！|Frozen!",
+  "office-shoot.say.093": "老闆閃現！還帶人來了|Boss warped in with backup!",
+  "office-shoot.say.094": "⚠ 17:00 大魔王出沒 ⚠|⚠ 5 PM BOSS INCOMING ⚠",
+  "office-shoot.say.095": "緊急牌被打掉了|Urgent sign down!",
+  "office-shoot.say.096": "爆擊！|CRIT!",
+  "office-shoot.say.097": "急件！！|ASAP!!",
+  "office-shoot.say.098": "再改一版！|One more revision!",
+  "office-shoot.say.099": "補給被新需求砸爛了！|Supply crushed by a new request!",
+  "office-shoot.say.100": "停火！要改需求了|Hold fire! Requirements changing!",
+  "office-shoot.say.101": "互換位置！|Swapped!"
+};
+let G,keys;
+let state='menu',phase,stage,stageT,phaseT,score,t,overT,kills,p,bullets,enemies,crates,bosses,hazards,parts,texts,beams,rings,shake,banner,flash,danger,bossTotal,curBoss,spawnT,crateT,sinceWeapon,modsTaken,eliteT,shotSfxT,quipT,critT,overTitle,overQuip;
+let WEAPONS,WDPS,GUN_LEN,MODS,ETYPES,SHAPES,BOSS_DEFS,QUIPS,MISS,OVER_T,OVER_Q;
+let best=0;try{best=+localStorage.getItem(BEST_KEY)||0}catch(e){}
+function syncSimulation(){({state,phase,stage,stageT,phaseT,score,t,overT,kills,p,bullets,enemies,crates,bosses,hazards,parts,texts,beams,rings,shake,banner,flash,danger,bossTotal,curBoss,spawnT,crateT,sinceWeapon,modsTaken,eliteT,shotSfxT,quipT,critT,overTitle,overQuip,WEAPONS,WDPS,GUN_LEN,MODS,ETYPES,SHAPES,BOSS_DEFS,QUIPS,MISS,OVER_T,OVER_Q,keys}=G);}
+function reset(random){
+ G=officeShootRules.createGame(random||Math.random,{L,ZH,EN,language:()=>lang,tone,
+  dayCleared:day=>{syncSimulation();dayCleared(day);},
+  end:()=>{syncSimulation();if(score>best){best=score;try{localStorage.setItem(BEST_KEY,''+best)}catch(e){}}settle();rank.finish(score);ui();}});
+ syncSimulation();
+}
+function dps(){return G.dps();}
+function floatText(...args){return G.floatText(...args);}
+function updateFx(dt){G.updateFx(dt);syncSimulation();}
+function update(dt){G.update(dt);syncSimulation();}
+const rank=timedLeaderboard('office-shoot','os',officeShootRules.inputCount,ui,
+ ()=>window.dispatchEvent(new CustomEvent('deep-sea-score-saved',{detail:{gameId:'office-shoot'}})),
+ {canvas:'os-canvas',maxInputs:4000});
+function input(code){if(state!=='play')return;officeShootRules.input(G,code);rank.record(code);}
+function target(x){const code=Math.round(clamp(x,0,W)*officeShootRules.TARGET_SCALE);if(Math.round(p.tx*officeShootRules.TARGET_SCALE)!==code)input(code);}
+reset();
+// ====== 音效 ======
+let actx=null,muted=false;
+function initAudio(){if(actx)return;try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){actx=null;}}
+function tone(f,d,type,v,slide,delay){
+  if(!actx||muted)return;
+  try{
+    const t0=actx.currentTime+(delay||0);
+    const o=actx.createOscillator(),g=actx.createGain();
+    o.type=type||'square';o.frequency.setValueAtTime(f,t0);
+    if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(30,f*slide),t0+d);
+    g.gain.setValueAtTime(v||.05,t0);g.gain.exponentialRampToValueAtTime(.0001,t0+d);
+    o.connect(g);g.connect(actx.destination);o.start(t0);o.stop(t0+d+.02);
+  }catch(e){}
 }
 
 // ====== 繪製 ======
@@ -26345,10 +26569,9 @@ function render(){
   }
 }
 // ====== 輸入（只在本款畫面顯示時作用）======
-const keys={left:false,right:false};
 let paused=false,drag=null;
 function osShown(){return !$v.hidden&&!document.hidden;}
-function clearInput(){keys.left=keys.right=false;drag=null;}
+function clearInput(){if(state==='play')input(officeShootRules.CLEAR);keys.left=keys.right=false;drag=null;}
 function pauseNow(){if(state==='play'&&!paused){paused=true;clearInput();}last=null;}
 addEventListener('keydown',e=>{
   if(!osShown()||e.metaKey||e.altKey||e.ctrlKey)return;
@@ -26356,13 +26579,13 @@ addEventListener('keydown',e=>{
   const k=e.key;
   if(k==='m'||k==='M'){muted=!muted;return;}
   if(state!=='play')return;
-  if(k==='ArrowLeft'||k==='a'||k==='A'){keys.left=true;e.preventDefault();}
-  else if(k==='ArrowRight'||k==='d'||k==='D'){keys.right=true;e.preventDefault();}
+  if(k==='ArrowLeft'||k==='a'||k==='A'){input(officeShootRules.KEY_LEFT_DOWN);e.preventDefault();}
+  else if(k==='ArrowRight'||k==='d'||k==='D'){input(officeShootRules.KEY_RIGHT_DOWN);e.preventDefault();}
   else if(k===' '||k==='Enter'){e.preventDefault();if(paused){paused=false;last=null;}}
 });
 addEventListener('keyup',e=>{const k=e.key;
-  if(k==='ArrowLeft'||k==='a'||k==='A')keys.left=false;
-  if(k==='ArrowRight'||k==='d'||k==='D')keys.right=false;});
+  if(k==='ArrowLeft'||k==='a'||k==='A')input(officeShootRules.KEY_LEFT_UP);
+  if(k==='ArrowRight'||k==='d'||k==='D')input(officeShootRules.KEY_RIGHT_UP);});
 function toLocal(e){const r=cv.getBoundingClientRect();const sx=(e.clientX-r.left)/r.width*W;return{x:worldX(sx),screenX:sx,y:(e.clientY-r.top)/r.height*H};}
 cv.addEventListener('pointerdown',e=>{
   if(!osShown())return;
@@ -26371,14 +26594,14 @@ cv.addEventListener('pointerdown',e=>{
   if(state!=='play'){say(state==='over'?'這一局已結算。按「再上一次班」開始新的一局。|This shift is settled. Press "Clock in again" for a new one.':'先按「開始上班」。|Press "Clock in" first.');return;}
   try{cv.focus();}catch(_){}
   if(paused){paused=false;last=null;return;}
-  if(e.pointerType==='mouse'){p.tx=pt.x;}
+  if(e.pointerType==='mouse'){target(pt.x);}
   else{drag={off:drawX(p.x)-pt.screenX};try{cv.setPointerCapture(e.pointerId);}catch(_){}}
 });
 cv.addEventListener('pointermove',e=>{
   if(state!=='play'||paused||!osShown())return;
   const pt=toLocal(e);
-  if(e.pointerType==='mouse')p.tx=pt.x;
-  else if(drag)p.tx=worldX(pt.screenX+drag.off);
+  if(e.pointerType==='mouse')target(pt.x);
+  else if(drag)target(worldX(pt.screenX+drag.off));
 });
 const endDrag=()=>{drag=null;};
 cv.addEventListener('pointerup',endDrag);cv.addEventListener('pointercancel',endDrag);cv.addEventListener('lostpointercapture',endDrag);
@@ -26403,7 +26626,7 @@ function ui(){
   setText('os-score',played?score.toLocaleString():'—');
   setText('os-best',best.toLocaleString());
   setText('os-pay',earned+' / '+BONUS_PER_DAY*BONUS_DAYS);
-  const b=$('os-go');b.disabled=live||!comicReady;
+  const b=$('os-go');b.disabled=live||!comicReady||rank.busy();
   if($v.dataset)$v.dataset.round=state;
   setText('os-pause',paused?'▶':'Ⅱ');
   setText('os-sound',muted?'♫ ×':'♫');
@@ -26430,14 +26653,17 @@ function settle(){
   ui();
 }
 function begin(){
-  if(otBusy)return;
+  if(otBusy||rank.busy())return;
   if(!comicReady)return;
   if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');return;}
+  rank.start(random=>{
   analytics=AN.start('office-shoot',ENTRY_FEE);otBusy=true;otStake=ENTRY_FEE;earned=0;paidDays={};
   save();renderAll();
-  reset();clearInput();paused=false;state='play';last=null;initAudio();
+  reset(random);clearInput();paused=false;state=G.state='play';last=null;initAudio();
   say('上班囉！擊敗第 1～{d} 天的大魔王，每天 BONUS +{n} 點。|Shift started! Beat the boss on days 1–{d} for BONUS +{n} pts each.','',{d:BONUS_DAYS,n:BONUS_PER_DAY});
   ui();try{cv.focus();}catch(_){}
+  },undefined,{rulesVersion:officeShootRules.rulesVersion});
+  ui();
 }
 $('os-go').addEventListener('click',begin);
 $('os-pause').addEventListener('click',()=>{if(state!=='play')return;if(paused){paused=false;last=null;}else pauseNow();});
@@ -26453,7 +26679,7 @@ function frame(now){
     if(last===null)last=now;
     const dt=Math.min(.05,Math.max(0,(now-last)/1000)||0);last=now;
     syncLang();
-    if(paused)updateFx(0);else update(dt);
+    if(paused)updateFx(0);else rank.update(dt*1000,()=>state==='play'&&!paused,update);
     ui();render();
   }else last=null;
   requestAnimationFrame(frame);
@@ -26718,7 +26944,7 @@ if(typeof module!=='undefined')module.exports=solitaireTime;
     const clock=$(prefix+'-time'),indicator=$(prefix+'-ranking');
     function markRanked(value){if(indicator)indicator.textContent=value?'時間榜記錄中':'練習局 · 不列入排行榜';}
     function elapsed(){return running?Math.max(0,Date.now()-startMs):finalMs;}
-    function status(text,retry=false){$(prefix+'-rank-status').textContent=text;$(prefix+'-rank-status').hidden=!text;$(prefix+'-rank-retry').hidden=!retry;}
+    function status(text,retry=false){$(prefix+'-rank-status').textContent=text;$(prefix+'-rank-status').hidden=!text;$(prefix+'-rank-retry').hidden=!retry;const result=$(prefix+'-result-rank');if(result){result.textContent=text;result.hidden=!text;}}
     function paint(){if(round&&elapsed()>=solitaireTime.LIMIT_MS){round=null;markRanked(false);status('這一局可在本機遊玩。');}if(clock){const text=solitaireTime.format(elapsed());if(clock.textContent!==text)clock.textContent=text;}}
     async function start(callback,cancel){
       if(starting||sending)return;
@@ -26954,7 +27180,8 @@ function ui(){
  setText('mm-info',live&&G?G.score+' · '+G.moves:'');
  stage.dataset.mode=mode;
  document.querySelectorAll('.mm-mode').forEach(b=>{b.setAttribute('aria-pressed',String(Number(b.dataset.diff)===mode));b.disabled=live||rank.busy()});
- cover.hidden=live;
+ cover.hidden=live;$('mm-result-rank').hidden=st!=='over'||!$('mm-result-rank').textContent;cover.classList.toggle('solitaire-won',st==='over'&&!!lastResult?.win);
+ if(live)stage.querySelector('.solitaire-celebration')?.remove();
  if(st==='over'&&lastResult){setText('mm-cover-title',lastResult.win?'全部珍珠收集完成！':'本局結束');
   setText('mm-cover-text',lastResult.win?'全部完成！通關時間： '+rank.formatted():'本局未通關，不列入時間榜。')}
  else{setText('mm-cover-title','人魚蜘蛛接龍');setText('mm-cover-text','把牌排成 K 到 A 的同花色序列，收集 8 顆珍珠。');
@@ -26987,7 +27214,7 @@ function end(win){
  save();renderAll();render();
  if(win)say('通關！8 顆珍珠全部收集完成，本局共入帳 '+earned+' 點。','win');
  else say('本局結束，共入帳 '+earned+' 點。','lose');
- ui()}
+ ui();if(win)celebrateSolitaire(stage,'sea')}
 function start(){
  if(st==='run'||rank.busy())return;
  if(ENTRY_FEE>S.balance){say(LOW_MSG,'lose');return}
@@ -27050,7 +27277,11 @@ function finishDrag(e,cancel){
  else{say('這裡放不下：要放在比它大 1 的牌上面。','lose');render()}}
 board.addEventListener('pointerup',e=>finishDrag(e,false));
 board.addEventListener('pointercancel',e=>finishDrag(e,true));
+board.addEventListener('lostpointercapture',e=>finishDrag(e,true));
 board.addEventListener('contextmenu',e=>e.preventDefault());
+$('view-mermaid').addEventListener('contextmenu',e=>e.preventDefault());
+$('view-mermaid').addEventListener('selectstart',e=>e.preventDefault());
+$('view-mermaid').addEventListener('dblclick',e=>e.preventDefault());
 stockBtn.addEventListener('click',()=>{
  if(st!=='run'||locked())return;
  if(!G.stock.length){say('牌堆已經發完了。','lose');return}
@@ -27160,12 +27391,22 @@ function replay(kind,seededRandom,actions){const s=create(kind,seededRandom);for
 return {create,rank,suit,red,pile,run,canMove,move,draw,undo,encode,input,hint,replay,INPUT_COUNT};
 })();
 if(typeof module!=='undefined')module.exports=solitaireRules;
+  function celebrateSolitaire(host,theme){
+    host.querySelector('.solitaire-celebration')?.remove();
+    const layer=document.createElement('div');layer.className='solitaire-celebration solitaire-party-'+theme;layer.setAttribute('aria-hidden','true');
+    const marks=theme==='sea'?['✦','●','★']:theme==='rail'?['✦','▪','★']:['✧','▪','★'];
+    for(let i=0;i<30;i++){
+      const p=document.createElement('span');p.textContent=marks[i%marks.length];
+      p.style.setProperty('--x',((i*37)%100)+'%');p.style.setProperty('--delay',((i%7)*.08)+'s');p.style.setProperty('--drift',((i%2?1:-1)*(20+i%5*9))+'px');p.style.setProperty('--turn',((i%2?1:-1)*180)+'deg');layer.appendChild(p);
+    }
+    host.appendChild(layer);setTimeout(()=>layer.remove(),3200);
+  }
   // Formal native-DOM controller; rules and server-clock ranking stay in their own modules.
   function createSolitaireGame(gameId,prefix,kind){
     const R=solitaireRules,E=suffix=>$(prefix+'-'+suffix),view=$('view-'+gameId),windowEl=E('window');
     const ranks=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'],suits=['♣','♦','♥','♠'];
     const words={ready:'點選一張牌，再點要接上的牌或空格。',invalid:'這裡不能放，請換一個位置。',noHint:'目前沒有建議步，試試悔棋或新牌局。',draw:'試試翻一張牌。',win:'四種花色全部完成！',ended:'本局結束，未通關不列入時間榜。',start:'開始遊玩',again:'重新發牌',restart:'重發會結束目前這局，未通關時間不列入紀錄。'};
-    let g=R.create(kind),phase='idle',selection=null,drag=null,round=null,helpFocus=null,progress=0;
+    let g=R.create(kind),phase='idle',selection=null,drag=null,round=null,helpFocus=null,progress=0,lastTap=null,autoTimer=null;
     const rank=completionTimeLeaderboard(gameId+'-time',gameId,prefix,ui);
     const cards=new Map(),table=E('table'),rack=E('rack');let cw=40,ch=58;
     function message(text){E('message').textContent=text;}
@@ -27208,20 +27449,39 @@ if(typeof module!=='undefined')module.exports=solitaireRules;
       E('undo').disabled=phase!=='run'||!g.history.length;E('hint').disabled=phase!=='run';
     }
     function ui(){
-      const cover=E('cover');cover.hidden=phase==='run';E('go').disabled=rank.busy();
+      const cover=E('cover');cover.hidden=phase==='run';cover.classList.toggle('solitaire-won',phase==='over'&&g.won);E('result-rank').hidden=phase!=='over'||!E('result-rank').textContent;E('go').disabled=rank.busy();
       E('go').textContent=phase==='idle'?words.start:words.again;
       if(phase==='over'){E('result').textContent=g.won?words.win+' '+rank.formatted():words.ended;}
       paint();
     }
     function finish(result){
       if(phase!=='run')return;phase='over';selection=null;clearDrag();
-      if(g.won){rank.finish();try{const key='deep-sea-'+gameId+'-time-best-v1',prior=Number(localStorage.getItem(key));if(!prior||rank.elapsed()<prior)localStorage.setItem(key,String(rank.elapsed()));}catch{}}
+      if(g.won){celebrateSolitaire(windowEl,kind==='classic'?'rail':'space');rank.finish();try{const key='deep-sea-'+gameId+'-time-best-v1',prior=Number(localStorage.getItem(key));if(!prior||rank.elapsed()<prior)localStorage.setItem(key,String(rank.elapsed()));}catch{}}
       else rank.abandon();
       AN.end(round,0,result,{score:foundationCount(),step:g.moves,elapsed_seconds:g.won?Math.ceil(rank.elapsed()/1000):undefined});round=null;ui();
     }
+    function collect(from,index){
+      if(phase!=='run'||view.hidden||!E('help').hidden||from>=12&&from!==16)return false;
+      const pile=R.pile(g,from),card=pile?.[index];
+      return card!==undefined&&index===pile.length-1&&attempt(from,index,12+R.suit(card));
+    }
+    function scheduleAuto(){
+      clearTimeout(autoTimer);if(kind!=='freecell'||phase!=='run')return;
+      autoTimer=setTimeout(()=>{
+        if(phase!=='run'||view.hidden||!E('help').hidden||drag)return;
+        for(const from of [...g.cols.keys(),8,9,10,11]){
+          const pile=R.pile(g,from);if(!pile?.length)continue;
+          const card=pile[pile.length-1],r=R.rank(card),suit=R.suit(card);
+          // A card is safe once both opposite colors and the other same-color suit
+          // have advanced far enough that no remaining tableau move needs it.
+          const safe=r<=2||[0,1,2,3].every(s=>s===suit||g.found[s].length>=r-(R.red(s*13)===R.red(card)?2:1));
+          if(safe&&collect(from,pile.length-1))return;
+        }
+      },160);
+    }
     function changed(code){
       rank.record(code);const total=foundationCount();if(Math.floor(total/13)>progress){progress=Math.floor(total/13);AN.progress(round,{stage:progress,score:total,step:g.moves});}
-      selection=null;message(words.ready);paint();if(g.won)finish('complete');
+      selection=null;message(words.ready);paint();if(g.won)finish('complete');else if(code!==1)scheduleAuto();
     }
     function attempt(from,index,to){if(!R.move(g,from,index,to))return false;changed(R.encode(from,index,to));return true;}
     function choose(from,index){
@@ -27230,36 +27490,44 @@ if(typeof module!=='undefined')module.exports=solitaireRules;
       if(selection){if(selection.from===from&&selection.index===index){selection=null;paint();return;}if(attempt(selection.from,selection.index,from))return;}
       if(index!==null&&R.run(g,from,index)){selection={from,index};message(label(R.pile(g,from)[index]));}else{selection=null;message(words.invalid);}paint();
     }
-    function clearDrag(){if(!drag)return;drag.ghosts?.forEach(n=>n.remove());drag=null;}
+    function clearDrag(){if(!drag)return;drag.ghosts?.forEach(n=>n.remove());drag.originals?.forEach(n=>n.style.visibility='');drag=null;}
     function down(event){
       if(phase!=='run'||view.hidden||!E('help').hidden||event.button>0||!event.isPrimary)return;
       const node=event.target.closest('[data-from]');if(!node)return;const from=Number(node.dataset.from),index=node.dataset.index===undefined?null:Number(node.dataset.index);
       if(from===17){choose(17,null);return;}
-      event.preventDefault();drag={from,index,id:event.pointerId,x:event.clientX,y:event.clientY,started:false,ghosts:[]};try{windowEl.setPointerCapture(event.pointerId);}catch{}
+      event.preventDefault();drag={from,index,id:event.pointerId,x:event.clientX,y:event.clientY,started:false,ghosts:[],originals:[]};try{windowEl.setPointerCapture(event.pointerId);}catch{}
     }
     function motion(event){
       if(!drag||event.pointerId!==drag.id)return;const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
       if(!drag.started){if(Math.hypot(dx,dy)<8)return;if(drag.index===null||!R.run(g,drag.from,drag.index)){clearDrag();return;}drag.started=true;
-        const wr=windowEl.getBoundingClientRect();R.pile(g,drag.from).slice(drag.index).forEach(card=>{const original=cards.get(card),r=original.getBoundingClientRect(),ghost=original.cloneNode(true);ghost.className='sc-card sc-ghost'+(original.classList.contains('red')?' red':'');ghost.style.cssText='left:'+(r.left-wr.left)+'px;top:'+(r.top-wr.top)+'px;width:'+r.width+'px;height:'+r.height+'px';ghost.style.setProperty('--sc-cw',r.width+'px');ghost.style.setProperty('--sc-ch',r.height+'px');windowEl.append(ghost);drag.ghosts.push(ghost);});}
+        const wr=windowEl.getBoundingClientRect();R.pile(g,drag.from).slice(drag.index).forEach(card=>{const original=cards.get(card),r=original.getBoundingClientRect(),ghost=original.cloneNode(true);ghost.className='sc-card sc-ghost'+(original.classList.contains('red')?' red':'');ghost.style.cssText='left:'+(r.left-wr.left-windowEl.clientLeft)+'px;top:'+(r.top-wr.top-windowEl.clientTop)+'px;width:'+r.width+'px;height:'+r.height+'px';ghost.style.setProperty('--sc-cw',r.width+'px');ghost.style.setProperty('--sc-ch',r.height+'px');windowEl.append(ghost);drag.ghosts.push(ghost);original.style.visibility='hidden';drag.originals.push(original);});}
       drag.ghosts.forEach(n=>n.style.transform='translate('+dx+'px,'+dy+'px)');
     }
     function release(event,cancel=false){
       if(!drag||event.pointerId!==drag.id)return;const d=drag;
-      if(!d.started){clearDrag();if(!cancel)choose(d.from,d.index);return;}
+      if(!d.started){clearDrag();if(!cancel){
+        const now=performance.now(),card=R.pile(g,d.from)?.[d.index];
+        if(card!==undefined&&lastTap?.card===card&&now-lastTap.at<400){lastTap=null;if(collect(d.from,d.index))return;}
+        else lastTap=card===undefined?null:{card,at:now};
+        choose(d.from,d.index);
+      }return;}lastTap=null;
       const hit=document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-from]');const to=hit?Number(hit.dataset.from):-1;
       clearDrag();if(cancel||to<0||!attempt(d.from,d.index,to)){message(words.invalid);paint();}
     }
-    windowEl.addEventListener('pointerdown',down);windowEl.addEventListener('pointermove',motion);windowEl.addEventListener('pointerup',e=>release(e));windowEl.addEventListener('pointercancel',e=>release(e,true));
+    windowEl.addEventListener('pointerdown',down);windowEl.addEventListener('pointermove',motion);windowEl.addEventListener('pointerup',e=>release(e));windowEl.addEventListener('pointercancel',e=>release(e,true));windowEl.addEventListener('lostpointercapture',clearDrag);
     // Keyboard activation uses the same move path, with no Escape or browser shortcut interception.
     windowEl.addEventListener('click',event=>{if(event.detail!==0)return;const b=event.target.closest('[data-from]');if(b)choose(Number(b.dataset.from),b.dataset.index===undefined?null:Number(b.dataset.index));});
-    E('go').addEventListener('click',()=>{if(rank.busy()||phase==='run')return;rank.start(random=>{g=R.create(kind,random||Math.random);phase='run';progress=0;selection=null;round=AN.start(gameId,0);E('help').hidden=true;message(words.ready);ui();});});
-    E('undo').addEventListener('click',()=>{if(phase==='run'&&R.undo(g))changed(1);});
+    windowEl.addEventListener('selectstart',event=>event.preventDefault());
+    windowEl.addEventListener('contextmenu',event=>event.preventDefault());
+    windowEl.addEventListener('dblclick',event=>{event.preventDefault();const b=event.target.closest('.sc-card');if(b){collect(Number(b.dataset.from),Number(b.dataset.index));}});
+    E('go').addEventListener('click',()=>{if(rank.busy()||phase==='run')return;rank.start(random=>{g=R.create(kind,random||Math.random);phase='run';progress=0;selection=null;round=AN.start(gameId,0);E('help').hidden=true;lastTap=null;windowEl.querySelector('.solitaire-celebration')?.remove();message(words.ready);ui();scheduleAuto();});});
+    E('undo').addEventListener('click',()=>{clearTimeout(autoTimer);lastTap=null;if(phase==='run'&&R.undo(g))changed(1);});
     E('hint').addEventListener('click',()=>{if(phase!=='run')return;const hint=R.hint(g);if(hint?.draw){message(words.draw);return;}if(!hint){message(words.noHint);return;}selection={from:hint.from,index:hint.index};paint();const destination=hint.to<8?table.querySelector('.sc-empty[data-from="'+hint.to+'"]'):rack.querySelector('[data-from="'+hint.to+'"]');destination?.classList.add('sc-suggestion');message(label(R.pile(g,hint.from)[hint.index])+' → '+(hint.to<8?hint.to+1:hint.to<12?'□':suits[hint.to-12]));});
     E('restart').addEventListener('click',()=>{if(phase==='run'){E('confirm').hidden=false;E('confirm-yes').focus();}else E('go').click();});
     E('confirm-no').addEventListener('click',()=>E('confirm').hidden=true);
     E('confirm-yes').addEventListener('click',()=>{E('confirm').hidden=true;finish('restart');E('go').click();});
     E('info').addEventListener('click',()=>{helpFocus=document.activeElement;E('help').hidden=false;E('help-close').focus();});
-    E('help-close').addEventListener('click',()=>{E('help').hidden=true;helpFocus?.focus();});
+    E('help-close').addEventListener('click',()=>{E('help').hidden=true;helpFocus?.focus();scheduleAuto();});
     E('board-list').addEventListener('toggle',async()=>{if(!E('board-list').open)return;const list=E('entries');list.textContent='';try{const api=await import('./frontend/services/api.mjs'),data=await api.createApiClient(api.arcadeApiOrigin()).leaderboard(gameId+'-time',AbortSignal.timeout(10000));if(!data.entries.length){const li=document.createElement('li');li.textContent='目前尚無排行榜紀錄。';list.append(li);}for(const entry of data.entries){const li=document.createElement('li');const name=document.createElement('span');if(entry.displayName)name.setAttribute('data-i18n-ignore','');name.textContent=entry.displayName||'訪客';li.append(name,document.createTextNode(' · '+entry.time));list.append(li);}}catch{const li=document.createElement('li');li.textContent='目前無法載入排行榜。';list.append(li);}});
     window.addEventListener('hashchange',()=>{clearDrag();if(view.hidden&&phase==='run')finish('abandoned');else requestAnimationFrame(paint);});
     window.addEventListener('resize',()=>{clearDrag();paint();});window.addEventListener('arcade-languagechange',paint);

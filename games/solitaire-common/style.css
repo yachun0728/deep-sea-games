@@ -38,3 +38,15 @@ html:has(.view:not([hidden]) .sc-window){overflow:hidden}
 .sc-rack{top:140px}
 @media(max-height:650px){.sc-titlebar{height:45px}.sc-message{top:106px}.sc-rack{top:124px}}
 @media(orientation:landscape) and (max-height:500px){.sc-message{display:none}.sc-rack{top:108px}}
+
+/* Keep repeated taps and long presses inside the card-game controls. */
+.sc-window,.sc-window *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.sc-window{touch-action:pan-y}
+
+.solitaire-celebration{position:absolute;inset:0;z-index:150;overflow:hidden;pointer-events:none;--party-a:#ffe49b;--party-b:#ffad67;--party-c:#e7f3ff}
+.solitaire-celebration.solitaire-party-sea{--party-a:#c9a4ff;--party-b:#6ffff0;--party-c:#fff3b9}.solitaire-celebration.solitaire-party-space{--party-a:#70f5ff;--party-b:#d4a0ff;--party-c:#e8fcff}
+.solitaire-celebration span{position:absolute;left:var(--x);top:-24px;color:var(--party-a);font:bold 20px/1 monospace;text-shadow:2px 2px #07152b;animation:solitaire-party 2.5s var(--delay) both steps(35)}
+.solitaire-celebration span:nth-child(3n){color:var(--party-b)}.solitaire-celebration span:nth-child(3n+1){color:var(--party-c)}
+.solitaire-won h3{color:#ffe79c;text-shadow:2px 2px #08203f}.solitaire-won h3::before{content:'★ ';color:#ffe277}.solitaire-won h3::after{content:' ★';color:#ffe277}
+@keyframes solitaire-party{0%{transform:translate(0,-20px) rotate(0);opacity:0}8%{opacity:1}85%{opacity:1}100%{transform:translate(var(--drift),85dvh) rotate(var(--turn));opacity:0}}
+@media(prefers-reduced-motion:reduce){.solitaire-celebration span{animation:none;top:18%;opacity:.8}.solitaire-celebration span:nth-child(2n){top:78%}}

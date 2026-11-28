@@ -13,7 +13,7 @@
 
 ## 畫面元素（view.html 的 id）
 
-`view-midnight-solitaire`、`ks-window`、`ks-info`、`ks-time`、`ks-moves`、`ks-home`、`ks-message`、`ks-rack`、`ks-table`、`ks-undo`、`ks-hint`、`ks-restart`、`ks-ranking`、`ks-cover`、`ks-result`、`ks-go`、`ks-help`、`ks-help-title`、`ks-board-list`、`ks-entries`、`ks-rank-status`、`ks-rank-retry`、`ks-help-close`、`ks-confirm`、`ks-confirm-yes`、`ks-confirm-no`
+`view-midnight-solitaire`、`ks-window`、`ks-info`、`ks-time`、`ks-moves`、`ks-home`、`ks-message`、`ks-rack`、`ks-table`、`ks-undo`、`ks-hint`、`ks-restart`、`ks-ranking`、`ks-cover`、`ks-result`、`ks-result-rank`、`ks-go`、`ks-help`、`ks-help-title`、`ks-board-list`、`ks-entries`、`ks-rank-status`、`ks-rank-retry`、`ks-help-close`、`ks-confirm`、`ks-confirm-yes`、`ks-confirm-no`
 
 ## 狀態與常數
 

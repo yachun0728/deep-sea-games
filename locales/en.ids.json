@@ -3436,10 +3436,10 @@
   "solitaire.freecell.tag": "Four-cell FreeCell",
   "solitaire.classic.help1": "Build seven columns down in alternating colors: black K, red Q, then black J.",
   "solitaire.classic.help2": "Draw one card from the upper-left stock; redeals are unlimited. Only a King fills an empty column.",
-  "solitaire.classic.help3": "Build each of the four foundations from Ace to King by suit. Home all 52 cards to win.",
+  "solitaire.classic.help3": "Build each of the four foundations from Ace to King by suit. Home all 52 cards to win. Double-click a card to send it to its foundation.",
   "solitaire.freecell.help1": "All eight columns are face-up. Build down in alternating colors.",
   "solitaire.freecell.help2": "Each of the four free cells holds one card. Any card can fill an empty column.",
-  "solitaire.freecell.help3": "Empty cells and columns limit how many cards can move together. Build each foundation from A→K by suit.",
+  "solitaire.freecell.help3": "Empty cells and columns limit how many cards can move together. Build each foundation from A→K by suit. Safe cards go to foundations automatically; double-click to collect a card manually.",
   "solitaire.leaderboard": "Fastest completion leaderboard",
   "solitaire.time.label": "Time",
   "solitaire.time.complete": "Completed! Finish time:",
@@ -3474,5 +3474,6 @@
   "solitaire.ui.category": "Puzzle & strategy",
   "solitaire.time.ranked": "RANKED TIME RUN",
   "solitaire.time.practice": "PRACTICE · NOT RANKED",
-  "solitaire.mermaid.legacy": "Legacy best score"
+  "solitaire.mermaid.legacy": "Legacy best score",
+  "office-shoot.rank.retry": "Retry submission"
 }

@@ -1,0 +1,68 @@
+{
+  "mermaid-time-1": {
+    "gameId": "mermaid-time-1",
+    "gameName": "Mermaid Spider \u00b7 1 Suit",
+    "entries": [
+      {
+        "playerId": "a365b24e-0ea2-4f9d-bc7f-460037963b29",
+        "displayName": null,
+        "score": 7154696,
+        "recordedAt": "2026-11-28T16:02:54.384Z",
+        "elapsedMs": 45304,
+        "time": "00:45.304"
+      },
+      {
+        "playerId": "53fad5e3-b400-4465-baee-b3e0694e9595",
+        "displayName": null,
+        "score": 7123234,
+        "recordedAt": "2026-11-28T16:04:38.908Z",
+        "elapsedMs": 76766,
+        "time": "01:16.766"
+      }
+    ]
+  },
+  "midnight-solitaire-time": {
+    "gameId": "midnight-solitaire-time",
+    "gameName": "Midnight Klondike",
+    "entries": [
+      {
+        "playerId": "53fad5e3-b400-4465-baee-b3e0694e9595",
+        "displayName": null,
+        "score": 7196288,
+        "recordedAt": "2026-11-28T16:04:47.605Z",
+        "elapsedMs": 3712,
+        "time": "00:03.712"
+      },
+      {
+        "playerId": "a365b24e-0ea2-4f9d-bc7f-460037963b29",
+        "displayName": null,
+        "score": 7194522,
+        "recordedAt": "2026-11-28T16:03:05.134Z",
+        "elapsedMs": 5478,
+        "time": "00:05.478"
+      }
+    ]
+  },
+  "orbit-freecell-time": {
+    "gameId": "orbit-freecell-time",
+    "gameName": "Orbit FreeCell",
+    "entries": [
+      {
+        "playerId": "a365b24e-0ea2-4f9d-bc7f-460037963b29",
+        "displayName": null,
+        "score": 7195510,
+        "recordedAt": "2026-11-28T16:03:14.107Z",
+        "elapsedMs": 4490,
+        "time": "00:04.490"
+      },
+      {
+        "playerId": "53fad5e3-b400-4465-baee-b3e0694e9595",
+        "displayName": null,
+        "score": 7195487,
+        "recordedAt": "2026-11-28T16:04:56.504Z",
+        "elapsedMs": 4513,
+        "time": "00:04.513"
+      }
+    ]
+  }
+}

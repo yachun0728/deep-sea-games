@@ -1,9 +1,19 @@
+  function celebrateSolitaire(host,theme){
+    host.querySelector('.solitaire-celebration')?.remove();
+    const layer=document.createElement('div');layer.className='solitaire-celebration solitaire-party-'+theme;layer.setAttribute('aria-hidden','true');
+    const marks=theme==='sea'?['✦','●','★']:theme==='rail'?['✦','▪','★']:['✧','▪','★'];
+    for(let i=0;i<30;i++){
+      const p=document.createElement('span');p.textContent=marks[i%marks.length];
+      p.style.setProperty('--x',((i*37)%100)+'%');p.style.setProperty('--delay',((i%7)*.08)+'s');p.style.setProperty('--drift',((i%2?1:-1)*(20+i%5*9))+'px');p.style.setProperty('--turn',((i%2?1:-1)*180)+'deg');layer.appendChild(p);
+    }
+    host.appendChild(layer);setTimeout(()=>layer.remove(),3200);
+  }
   // Formal native-DOM controller; rules and server-clock ranking stay in their own modules.
   function createSolitaireGame(gameId,prefix,kind){
     const R=solitaireRules,E=suffix=>$(prefix+'-'+suffix),view=$('view-'+gameId),windowEl=E('window');
     const ranks=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'],suits=['♣','♦','♥','♠'];
     const words={ready:'{{t:solitaire.ui.ready}}',invalid:'{{t:solitaire.ui.invalid}}',noHint:'{{t:solitaire.ui.nohint}}',draw:'{{t:solitaire.ui.drawhint}}',win:'{{t:solitaire.ui.win}}',ended:'{{t:solitaire.ui.ended}}',start:'{{t:solitaire.ui.start}}',again:'{{t:solitaire.ui.again}}',restart:'{{t:solitaire.ui.restarttext}}'};
-    let g=R.create(kind),phase='idle',selection=null,drag=null,round=null,helpFocus=null,progress=0;
+    let g=R.create(kind),phase='idle',selection=null,drag=null,round=null,helpFocus=null,progress=0,lastTap=null,autoTimer=null;
     const rank=completionTimeLeaderboard(gameId+'-time',gameId,prefix,ui);
     const cards=new Map(),table=E('table'),rack=E('rack');let cw=40,ch=58;
     function message(text){E('message').textContent=text;}
@@ -46,20 +56,39 @@
       E('undo').disabled=phase!=='run'||!g.history.length;E('hint').disabled=phase!=='run';
     }
     function ui(){
-      const cover=E('cover');cover.hidden=phase==='run';E('go').disabled=rank.busy();
+      const cover=E('cover');cover.hidden=phase==='run';cover.classList.toggle('solitaire-won',phase==='over'&&g.won);E('result-rank').hidden=phase!=='over'||!E('result-rank').textContent;E('go').disabled=rank.busy();
       E('go').textContent=phase==='idle'?words.start:words.again;
       if(phase==='over'){E('result').textContent=g.won?words.win+' '+rank.formatted():words.ended;}
       paint();
     }
     function finish(result){
       if(phase!=='run')return;phase='over';selection=null;clearDrag();
-      if(g.won){rank.finish();try{const key='deep-sea-'+gameId+'-time-best-v1',prior=Number(localStorage.getItem(key));if(!prior||rank.elapsed()<prior)localStorage.setItem(key,String(rank.elapsed()));}catch{}}
+      if(g.won){celebrateSolitaire(windowEl,kind==='classic'?'rail':'space');rank.finish();try{const key='deep-sea-'+gameId+'-time-best-v1',prior=Number(localStorage.getItem(key));if(!prior||rank.elapsed()<prior)localStorage.setItem(key,String(rank.elapsed()));}catch{}}
       else rank.abandon();
       AN.end(round,0,result,{score:foundationCount(),step:g.moves,elapsed_seconds:g.won?Math.ceil(rank.elapsed()/1000):undefined});round=null;ui();
     }
+    function collect(from,index){
+      if(phase!=='run'||view.hidden||!E('help').hidden||from>=12&&from!==16)return false;
+      const pile=R.pile(g,from),card=pile?.[index];
+      return card!==undefined&&index===pile.length-1&&attempt(from,index,12+R.suit(card));
+    }
+    function scheduleAuto(){
+      clearTimeout(autoTimer);if(kind!=='freecell'||phase!=='run')return;
+      autoTimer=setTimeout(()=>{
+        if(phase!=='run'||view.hidden||!E('help').hidden||drag)return;
+        for(const from of [...g.cols.keys(),8,9,10,11]){
+          const pile=R.pile(g,from);if(!pile?.length)continue;
+          const card=pile[pile.length-1],r=R.rank(card),suit=R.suit(card);
+          // A card is safe once both opposite colors and the other same-color suit
+          // have advanced far enough that no remaining tableau move needs it.
+          const safe=r<=2||[0,1,2,3].every(s=>s===suit||g.found[s].length>=r-(R.red(s*13)===R.red(card)?2:1));
+          if(safe&&collect(from,pile.length-1))return;
+        }
+      },160);
+    }
     function changed(code){
       rank.record(code);const total=foundationCount();if(Math.floor(total/13)>progress){progress=Math.floor(total/13);AN.progress(round,{stage:progress,score:total,step:g.moves});}
-      selection=null;message(words.ready);paint();if(g.won)finish('complete');
+      selection=null;message(words.ready);paint();if(g.won)finish('complete');else if(code!==1)scheduleAuto();
     }
     function attempt(from,index,to){if(!R.move(g,from,index,to))return false;changed(R.encode(from,index,to));return true;}
     function choose(from,index){
@@ -68,36 +97,44 @@
       if(selection){if(selection.from===from&&selection.index===index){selection=null;paint();return;}if(attempt(selection.from,selection.index,from))return;}
       if(index!==null&&R.run(g,from,index)){selection={from,index};message(label(R.pile(g,from)[index]));}else{selection=null;message(words.invalid);}paint();
     }
-    function clearDrag(){if(!drag)return;drag.ghosts?.forEach(n=>n.remove());drag=null;}
+    function clearDrag(){if(!drag)return;drag.ghosts?.forEach(n=>n.remove());drag.originals?.forEach(n=>n.style.visibility='');drag=null;}
     function down(event){
       if(phase!=='run'||view.hidden||!E('help').hidden||event.button>0||!event.isPrimary)return;
       const node=event.target.closest('[data-from]');if(!node)return;const from=Number(node.dataset.from),index=node.dataset.index===undefined?null:Number(node.dataset.index);
       if(from===17){choose(17,null);return;}
-      event.preventDefault();drag={from,index,id:event.pointerId,x:event.clientX,y:event.clientY,started:false,ghosts:[]};try{windowEl.setPointerCapture(event.pointerId);}catch{}
+      event.preventDefault();drag={from,index,id:event.pointerId,x:event.clientX,y:event.clientY,started:false,ghosts:[],originals:[]};try{windowEl.setPointerCapture(event.pointerId);}catch{}
     }
     function motion(event){
       if(!drag||event.pointerId!==drag.id)return;const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
       if(!drag.started){if(Math.hypot(dx,dy)<8)return;if(drag.index===null||!R.run(g,drag.from,drag.index)){clearDrag();return;}drag.started=true;
-        const wr=windowEl.getBoundingClientRect();R.pile(g,drag.from).slice(drag.index).forEach(card=>{const original=cards.get(card),r=original.getBoundingClientRect(),ghost=original.cloneNode(true);ghost.className='sc-card sc-ghost'+(original.classList.contains('red')?' red':'');ghost.style.cssText='left:'+(r.left-wr.left)+'px;top:'+(r.top-wr.top)+'px;width:'+r.width+'px;height:'+r.height+'px';ghost.style.setProperty('--sc-cw',r.width+'px');ghost.style.setProperty('--sc-ch',r.height+'px');windowEl.append(ghost);drag.ghosts.push(ghost);});}
+        const wr=windowEl.getBoundingClientRect();R.pile(g,drag.from).slice(drag.index).forEach(card=>{const original=cards.get(card),r=original.getBoundingClientRect(),ghost=original.cloneNode(true);ghost.className='sc-card sc-ghost'+(original.classList.contains('red')?' red':'');ghost.style.cssText='left:'+(r.left-wr.left-windowEl.clientLeft)+'px;top:'+(r.top-wr.top-windowEl.clientTop)+'px;width:'+r.width+'px;height:'+r.height+'px';ghost.style.setProperty('--sc-cw',r.width+'px');ghost.style.setProperty('--sc-ch',r.height+'px');windowEl.append(ghost);drag.ghosts.push(ghost);original.style.visibility='hidden';drag.originals.push(original);});}
       drag.ghosts.forEach(n=>n.style.transform='translate('+dx+'px,'+dy+'px)');
     }
     function release(event,cancel=false){
       if(!drag||event.pointerId!==drag.id)return;const d=drag;
-      if(!d.started){clearDrag();if(!cancel)choose(d.from,d.index);return;}
+      if(!d.started){clearDrag();if(!cancel){
+        const now=performance.now(),card=R.pile(g,d.from)?.[d.index];
+        if(card!==undefined&&lastTap?.card===card&&now-lastTap.at<400){lastTap=null;if(collect(d.from,d.index))return;}
+        else lastTap=card===undefined?null:{card,at:now};
+        choose(d.from,d.index);
+      }return;}lastTap=null;
       const hit=document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-from]');const to=hit?Number(hit.dataset.from):-1;
       clearDrag();if(cancel||to<0||!attempt(d.from,d.index,to)){message(words.invalid);paint();}
     }
-    windowEl.addEventListener('pointerdown',down);windowEl.addEventListener('pointermove',motion);windowEl.addEventListener('pointerup',e=>release(e));windowEl.addEventListener('pointercancel',e=>release(e,true));
+    windowEl.addEventListener('pointerdown',down);windowEl.addEventListener('pointermove',motion);windowEl.addEventListener('pointerup',e=>release(e));windowEl.addEventListener('pointercancel',e=>release(e,true));windowEl.addEventListener('lostpointercapture',clearDrag);
     // Keyboard activation uses the same move path, with no Escape or browser shortcut interception.
     windowEl.addEventListener('click',event=>{if(event.detail!==0)return;const b=event.target.closest('[data-from]');if(b)choose(Number(b.dataset.from),b.dataset.index===undefined?null:Number(b.dataset.index));});
-    E('go').addEventListener('click',()=>{if(rank.busy()||phase==='run')return;rank.start(random=>{g=R.create(kind,random||Math.random);phase='run';progress=0;selection=null;round=AN.start(gameId,0);E('help').hidden=true;message(words.ready);ui();});});
-    E('undo').addEventListener('click',()=>{if(phase==='run'&&R.undo(g))changed(1);});
+    windowEl.addEventListener('selectstart',event=>event.preventDefault());
+    windowEl.addEventListener('contextmenu',event=>event.preventDefault());
+    windowEl.addEventListener('dblclick',event=>{event.preventDefault();const b=event.target.closest('.sc-card');if(b){collect(Number(b.dataset.from),Number(b.dataset.index));}});
+    E('go').addEventListener('click',()=>{if(rank.busy()||phase==='run')return;rank.start(random=>{g=R.create(kind,random||Math.random);phase='run';progress=0;selection=null;round=AN.start(gameId,0);E('help').hidden=true;lastTap=null;windowEl.querySelector('.solitaire-celebration')?.remove();message(words.ready);ui();scheduleAuto();});});
+    E('undo').addEventListener('click',()=>{clearTimeout(autoTimer);lastTap=null;if(phase==='run'&&R.undo(g))changed(1);});
     E('hint').addEventListener('click',()=>{if(phase!=='run')return;const hint=R.hint(g);if(hint?.draw){message(words.draw);return;}if(!hint){message(words.noHint);return;}selection={from:hint.from,index:hint.index};paint();const destination=hint.to<8?table.querySelector('.sc-empty[data-from="'+hint.to+'"]'):rack.querySelector('[data-from="'+hint.to+'"]');destination?.classList.add('sc-suggestion');message(label(R.pile(g,hint.from)[hint.index])+' → '+(hint.to<8?hint.to+1:hint.to<12?'□':suits[hint.to-12]));});
     E('restart').addEventListener('click',()=>{if(phase==='run'){E('confirm').hidden=false;E('confirm-yes').focus();}else E('go').click();});
     E('confirm-no').addEventListener('click',()=>E('confirm').hidden=true);
     E('confirm-yes').addEventListener('click',()=>{E('confirm').hidden=true;finish('restart');E('go').click();});
     E('info').addEventListener('click',()=>{helpFocus=document.activeElement;E('help').hidden=false;E('help-close').focus();});
-    E('help-close').addEventListener('click',()=>{E('help').hidden=true;helpFocus?.focus();});
+    E('help-close').addEventListener('click',()=>{E('help').hidden=true;helpFocus?.focus();scheduleAuto();});
     E('board-list').addEventListener('toggle',async()=>{if(!E('board-list').open)return;const list=E('entries');list.textContent='';try{const api=await import('./frontend/services/api.mjs'),data=await api.createApiClient(api.arcadeApiOrigin()).leaderboard(gameId+'-time',AbortSignal.timeout(10000));if(!data.entries.length){const li=document.createElement('li');li.textContent='目前尚無排行榜紀錄。';list.append(li);}for(const entry of data.entries){const li=document.createElement('li');const name=document.createElement('span');if(entry.displayName)name.setAttribute('data-i18n-ignore','');name.textContent=entry.displayName||'訪客';li.append(name,document.createTextNode(' · '+entry.time));list.append(li);}}catch{const li=document.createElement('li');li.textContent='目前無法載入排行榜。';list.append(li);}});
     window.addEventListener('hashchange',()=>{clearDrag();if(view.hidden&&phase==='run')finish('abandoned');else requestAnimationFrame(paint);});
     window.addEventListener('resize',()=>{clearDrag();paint();});window.addEventListener('arcade-languagechange',paint);

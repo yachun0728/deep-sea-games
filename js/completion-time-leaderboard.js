@@ -5,7 +5,7 @@
     const clock=$(prefix+'-time'),indicator=$(prefix+'-ranking');
     function markRanked(value){if(indicator)indicator.textContent=value?'{{t:solitaire.time.ranked}}':'{{t:solitaire.time.practice}}';}
     function elapsed(){return running?Math.max(0,Date.now()-startMs):finalMs;}
-    function status(text,retry=false){$(prefix+'-rank-status').textContent=text;$(prefix+'-rank-status').hidden=!text;$(prefix+'-rank-retry').hidden=!retry;}
+    function status(text,retry=false){$(prefix+'-rank-status').textContent=text;$(prefix+'-rank-status').hidden=!text;$(prefix+'-rank-retry').hidden=!retry;const result=$(prefix+'-result-rank');if(result){result.textContent=text;result.hidden=!text;}}
     function paint(){if(round&&elapsed()>=solitaireTime.LIMIT_MS){round=null;markRanked(false);status('{{t:timed-leaderboard.msg.003}}');}if(clock){const text=solitaireTime.format(elapsed());if(clock.textContent!==text)clock.textContent=text;}}
     async function start(callback,cancel){
       if(starting||sending)return;

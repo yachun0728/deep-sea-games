@@ -51,7 +51,7 @@
     }
     function record(input) {
       if (!round) return;
-      if (actions.length >= timedReplay.MAX_INPUTS) { fallBack(); return; }
+      if (actions.length >= Math.min(timedReplay.MAX_INPUTS, options.maxInputs ?? timedReplay.MAX_INPUTS)) { fallBack(); return; }
       actions.push(tick * inputCount + input);
     }
     function update(ms, active, step) {
