@@ -1,4 +1,6 @@
 /* Temporary presentation switch: preserve wallet data, rewards and analytics. */
+html.points-hidden #gold-float,
+html.points-hidden .side-feature[href="#keno"],
 html.points-hidden .wallet-box,
 html.points-hidden .game-card-bonus,
 html.points-hidden .account-points,

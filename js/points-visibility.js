@@ -34,6 +34,11 @@
       if (!root || !root.isConnected) return;
       if (root.nodeType === 3) { scrub(root); return; }
       if (root.nodeType !== 1 || root.closest('script,style,pre,code,button,select,textarea,input,option')) return;
+      const attributes = [...(root.matches('[aria-label],[title]') ? [root] : []), ...root.querySelectorAll('[aria-label],[title]')];
+      for(const node of attributes) for(const key of ['aria-label','title']) {
+        const text=node.getAttribute(key);
+        if(text && reward.test(text)) { const visible=clean(text); if(visible!==text)node.setAttribute(key,visible); }
+      }
       const walker = doc.createTreeWalker(root,win.NodeFilter.SHOW_TEXT);
       while (walker.nextNode()) scrub(walker.currentNode);
       const frames = root.matches('iframe') ? [root] : root.querySelectorAll('iframe');
@@ -62,10 +67,10 @@
     scan(doc.body);
     new win.MutationObserver(records=>{
       for (const record of records) {
-        if(record.type==='characterData')scan(record.target);
+        if(record.type==='characterData' || record.type==='attributes')scan(record.target);
         else record.addedNodes.forEach(scan);
       }
-    }).observe(doc.body,{subtree:true,childList:true,characterData:true});
+    }).observe(doc.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['aria-label','title']});
   }
   install(document);
 })();
