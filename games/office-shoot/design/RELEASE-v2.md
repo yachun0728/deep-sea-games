@@ -24,3 +24,14 @@
 - NOT TESTED：手機／平板實機、Safari／Firefox、長時間或後期高負載 FPS、音訊聽感、GA4 後台收件。
 - NOT APPLICABLE：新雲端成績上傳、D1 migration、API Worker 更新、CrazyGames 審核／QA Tool／SDK／廣告。本次僅本站發布。
 - FAIL／BLOCKED：目前無未解決的發布阻塞；正式站部署與驗證結果於完成後補記。
+
+## 正式發布與驗證結果
+
+- PASS：`9b71ec0d09d579305a4c8ae6b854aad2c63e76d5` 已推送 main；主站 Worker 版本 `f1fd456b-28ec-435b-bd37-e7b3cf2b7219` 已部署。
+- 正式入口：https://ticaticagames.com/?v=office-comic-v2&lang=zh-Hant#office-shoot 。
+- PASS：24 個正式發布檔案核對 SHA-256，包括首頁、封面、排行榜縮圖、全部 runtime WebP／字型，以及插隊與尊嚴保衛戰的保留素材。首頁只排除 Cloudflare 既有自動注入的 beacon 後核對，其餘原頁逐位元組一致；圖片／字型不作正規化。
+- PASS：Codex 內建瀏覽器在 390×844、1366×900 CSS viewport 的正式網址，實際開局、分數前進、指標拖曳、自然失敗／重玩、暫停恢復、桌機右方向鍵、返回大廳與中英文切換。控制台 error 紀錄為空。截圖在 qa-production-v2；這是桌面瀏覽器的尺寸測試，不是實體手機。
+- PASS：真正正式排行榜 API HTTP 200，回傳 38 款遊戲資料；正式大廳呈現最近 10 款真實排行紀錄，未使用 fixture 或寫入測試分數。此遊戲尚未串雲端上傳，因此真實 feed 沒有 office-shoot 紀錄，符合使用者本次指定僅更新縮圖與檢查既有榜單的範圍。office-shoot 新縮圖的真正列接線／點擊流程另已於本機唯讀 fixture 驗證，不把 fixture 說成正式成績。
+- NOT TESTED：實體手機／平板、其他引擎、實際音訊聽感、長時間高負載、GA4 後台收件。自動 Chrome 管道工具在正式網路測試時受描述符／程序終止問題影響，已改用內建瀏覽器完成正式 UI 驗證；不把失敗的自動工具當作測通。
+- NOT APPLICABLE：本次無新增雲端成績上傳、D1／API Worker 變更或 CrazyGames 審核。
+- FAIL／BLOCKED：目前無未解決的本次發布阻塞。完整記錄見 qa-production-v2/production-report.json。

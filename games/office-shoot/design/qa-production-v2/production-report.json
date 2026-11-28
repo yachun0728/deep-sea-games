@@ -1,0 +1,237 @@
+{
+  "site": "https://ticaticagames.com",
+  "commit": "9b71ec0d09d579305a4c8ae6b854aad2c63e76d5",
+  "workerVersion": "f1fd456b-28ec-435b-bd37-e7b3cf2b7219",
+  "browser": "Codex in-app browser on macOS",
+  "viewports": [
+    [
+      390,
+      844
+    ],
+    [
+      1366,
+      900
+    ]
+  ],
+  "checks": [
+    "formal site start and score progression",
+    "pointer drag",
+    "natural game over and replay",
+    "pause and resume",
+    "desktop right-arrow input",
+    "exit to lobby",
+    "English and Traditional Chinese switching",
+    "real leaderboard shows 10 existing rows",
+    "cover loads from official URL"
+  ],
+  "leaderboardRows": [
+    {
+      "game": "#last-hair",
+      "score": "367"
+    },
+    {
+      "game": "#elevator",
+      "score": "14"
+    },
+    {
+      "game": "#pedestrian-hell",
+      "score": "2"
+    },
+    {
+      "game": "#mosquito",
+      "score": "83"
+    },
+    {
+      "game": "#sneak",
+      "score": "5"
+    },
+    {
+      "game": "#campaign",
+      "score": "8,250"
+    },
+    {
+      "game": "#skybuilder",
+      "score": "28"
+    },
+    {
+      "game": "#fishing",
+      "score": "2"
+    },
+    {
+      "game": "#breakout",
+      "score": "565"
+    },
+    {
+      "game": "#dream",
+      "score": "19"
+    }
+  ],
+  "consoleErrors": [],
+  "notTested": [
+    "physical mobile devices",
+    "other browser engines",
+    "listening to audio",
+    "long high-load performance",
+    "GA4 inbox"
+  ],
+  "notApplicable": [
+    "new cloud score upload",
+    "D1 migration",
+    "CrazyGames review"
+  ],
+  "assetVerification": {
+    "assets": [
+      {
+        "path": "index.html",
+        "bytes": 4035380,
+        "sha256": "65d04e90967189a157ea7abb1efbc01688df77ae5191f06a1e570bdbce0b3f77",
+        "platformInjectedBytes": 367
+      },
+      {
+        "path": "games/office-shoot/cover.webp",
+        "bytes": 294184,
+        "sha256": "55ec8b8e818829b4e9de600661f2da9f18df6d6a77e95fabff1bed0e031d7671",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/leaderboard.webp",
+        "bytes": 27654,
+        "sha256": "f560b1c0838f9d3a78cb08c3d74e7a407eefdcfe2c26ae7b50cef5824bff5f4e",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/meeting.webp",
+        "bytes": 70764,
+        "sha256": "a0d4c13cb5995aa67b3014439e46c2f885bf7e83c4cdd08574ae06610631e887",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/frame.webp",
+        "bytes": 823696,
+        "sha256": "dc8a4fc0f692833bfd98dfd7eb5e173e4c9867d434f2c8c64a15673b76d0e1b5",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/crate.webp",
+        "bytes": 96728,
+        "sha256": "c376b3d5557a8a9d6126b4d7cad078e7d63be935f8f3b26a777f195cf1da88b4",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/paper.webp",
+        "bytes": 124416,
+        "sha256": "4b7588bf12f4dd5a93ee52295995cdc67e2d5e56e7db98a0931e7084a68f86c1",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/shredder.webp",
+        "bytes": 89442,
+        "sha256": "4f35886b61f0ed4044d93e8b7881e0df52c63cd0c1bf31df448534f77473d811",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/laser.webp",
+        "bytes": 28678,
+        "sha256": "caf4b0be3da95862ef3a3e8921d24275c232a8701dac0bcb9cc4b5333bde499d",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/player.webp",
+        "bytes": 62104,
+        "sha256": "571287c4051cf414df1773c2d57a7e2dc39ae9de48539e27f8cd34de1c77aa03",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/coffee.webp",
+        "bytes": 64674,
+        "sha256": "395f7a072bed6bf347ededcc16e82daf17eb66c8071bc41ed619f5f7ae93937c",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/pen.webp",
+        "bytes": 38514,
+        "sha256": "0af8c67753c7b2890a2afa96e0ddab8382ffdcc7f76a6418ca2700d2897cee53",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/office.webp",
+        "bytes": 590942,
+        "sha256": "6377e6b8f1cd39ddd0fb0c99f891f8573d72393d137fb33d225995797dbb3656",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/walk.webp",
+        "bytes": 220608,
+        "sha256": "e340423aeb13bbdddd3675d42d07547b02ad3a00a8700cddfab4e4d773d6869e",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/footer.webp",
+        "bytes": 91312,
+        "sha256": "2f69a6480da00377ea4dd3d1da68d67bb2872d753868aa91a4249d63b0361eaf",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/stapler.webp",
+        "bytes": 38646,
+        "sha256": "ba301208cb498b9e7794e377b6cc18d7e18e8a209ead057cde07f983256c2fa2",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/boss.webp",
+        "bytes": 74002,
+        "sha256": "98ce0f7b77bbac85ab5d51c8b755f612aa6b87e26b8a363a1b56a149ae362ea2",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/folder.webp",
+        "bytes": 87946,
+        "sha256": "06972808b3693a667af3b778e722af1d65c3b763307d70c80365ed24ee550e6f",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/printer.webp",
+        "bytes": 62600,
+        "sha256": "33124b70e5b9029c29ccd545ab75118b6f19d67a4607276cbc324a3a1f1d4a5c",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/fonts/office-comic-latin.woff2",
+        "bytes": 13804,
+        "sha256": "2ce7dd13ce78d8b39bae87800fd8a18b10be5af2ea9996336d0a74eabd11343f",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/office-shoot/art/comic-v2/fonts/office-comic-tc-black.woff2",
+        "bytes": 73484,
+        "sha256": "d113d67672edf8d0db8d4ed35c54981b6f7cebb334e6b507c76f2f6db0223662",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/elevator/cover.webp",
+        "bytes": 215874,
+        "sha256": "7bd0f217b758b8c6176c5defcfe1d5cd017bf1e3caee6a82945087da80d948b0",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/last-hair/cover.webp",
+        "bytes": 270752,
+        "sha256": "eab29e3dfc2e6b4f2e9edca67950f5e3983d12e2d448e6ff84c419efc6cee38c",
+        "platformInjectedBytes": 0
+      },
+      {
+        "path": "games/last-hair/leaderboard.webp",
+        "bytes": 14468,
+        "sha256": "78f89ea209d0a0731d66fda585fefb183aa142a14de11d3e58ce56002c29b8ba",
+        "platformInjectedBytes": 0
+      }
+    ],
+    "leaderboard": {
+      "httpStatus": 200,
+      "games": 38,
+      "officePresent": false,
+      "source": "real production API; no fixtures and no score writes"
+    }
+  },
+  "htmlNormalization": "Only Cloudflare-injected static.cloudflareinsights.com beacon removed before matching index SHA-256; all other bytes unchanged."
+}
